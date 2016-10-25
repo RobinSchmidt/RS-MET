@@ -143,19 +143,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Code\Executables\Demos\ArrayDemos.cpp" />
-    <ClCompile Include="..\..\Code\Executables\Demos\FilterDemos.cpp" />
-    <ClCompile Include="..\..\Code\Executables\Main.cpp" />
-    <ClCompile Include="..\..\Code\Executables\Shared\GNUPlotter.cpp" />
-    <ClCompile Include="..\..\Code\Executables\Shared\Plotting.cpp" />
+    <ClInclude Include="..\..\Code\Executables\RAPTInstantiations.cpp" />
+    <ClInclude Include="..\..\Source\Executables\Demos\ArrayDemos.h" />
+    <ClInclude Include="..\..\Source\Executables\Demos\FilterDemos.h" />
+    <ClInclude Include="..\..\Source\Executables\Shared\Plotting\GNUPlotter.h" />
+    <ClInclude Include="..\..\Source\Executables\Shared\Plotting\Plotting.h" />
+    <ClInclude Include="..\..\Source\Executables\Shared\Shared.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Code\Executables\Demos\ArrayDemos.h" />
-    <ClInclude Include="..\..\Code\Executables\Demos\FilterDemos.h" />
-    <ClInclude Include="..\..\Code\Executables\RAPTInstantiations.cpp" />
-    <ClInclude Include="..\..\Code\Executables\Shared\GNUPlotter.h" />
-    <ClInclude Include="..\..\Code\Executables\Shared\Plotting.h" />
-    <ClInclude Include="..\..\Code\Executables\Shared\Shared.h" />
+    <ClCompile Include="..\..\Source\Executables\Demos\ArrayDemos.cpp" />
+    <ClCompile Include="..\..\Source\Executables\Demos\FilterDemos.cpp" />
+    <ClCompile Include="..\..\Source\Executables\Main.cpp" />
+    <ClCompile Include="..\..\Source\Executables\Shared\Plotting\GNUPlotter.cpp" />
+    <ClCompile Include="..\..\Source\Executables\Shared\Plotting\Plotting.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

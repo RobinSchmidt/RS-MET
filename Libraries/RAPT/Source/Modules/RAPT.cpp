@@ -2,6 +2,8 @@
 into one compilation unit, otherwise you may get "symbol already defined" linker errors (i
 think) */
 
+#include "RAPT.h"
+
 #include "Basics/Basics.cpp" 
 //#include "Data/Data.cpp"
 //#include "Math/Math.cpp" 

@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Basics">
+      <UniqueIdentifier>{4f90bfff-0593-49ce-af01-103b897280f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Filters">
+      <UniqueIdentifier>{8c25dcb3-aeb2-43f5-b296-7582fbf4c899}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Filters\Musical">
+      <UniqueIdentifier>{426ba0e3-3a09-436c-93f3-086327942d4c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Source\Modules\Basics\Basics.cpp">
+      <Filter>Basics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Modules\Filters\Filters.cpp">
+      <Filter>Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Modules\Filters\Musical\LadderFilter.cpp">
+      <Filter>Filters\Musical</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Modules\RAPT.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Source\Modules\Basics\Basics.h">
+      <Filter>Basics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Modules\Basics\Constants.h">
+      <Filter>Basics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Modules\Filters\Filters.h">
+      <Filter>Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Modules\Filters\Musical\LadderFilter.h">
+      <Filter>Filters\Musical</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Modules\RAPT.h" />
+  </ItemGroup>
+</Project>

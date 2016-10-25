@@ -7,38 +7,41 @@
     <Filter Include="Shared">
       <UniqueIdentifier>{9f2534ad-8285-4457-8f98-25a34d74e3be}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shared\Plotting">
+      <UniqueIdentifier>{51044f81-1047-490e-8f94-95db2290009f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Code\Executables\Main.cpp" />
-    <ClCompile Include="..\..\Code\Executables\Shared\GNUPlotter.cpp">
-      <Filter>Shared</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Code\Executables\Demos\FilterDemos.cpp">
-      <Filter>Demos</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Code\Executables\Demos\ArrayDemos.cpp">
-      <Filter>Demos</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Code\Executables\Shared\Plotting.cpp">
-      <Filter>Shared</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\Code\Executables\Shared\GNUPlotter.h">
-      <Filter>Shared</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Code\Executables\RAPTInstantiations.cpp" />
-    <ClInclude Include="..\..\Code\Executables\Demos\FilterDemos.h">
+    <ClInclude Include="..\..\Source\Executables\Demos\ArrayDemos.h">
       <Filter>Demos</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Code\Executables\Demos\ArrayDemos.h">
+    <ClInclude Include="..\..\Source\Executables\Demos\FilterDemos.h">
       <Filter>Demos</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Code\Executables\Shared\Plotting.h">
+    <ClInclude Include="..\..\Source\Executables\Shared\Plotting\GNUPlotter.h">
+      <Filter>Shared\Plotting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Executables\Shared\Plotting\Plotting.h">
+      <Filter>Shared\Plotting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Executables\Shared\Shared.h">
       <Filter>Shared</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Code\Executables\Shared\Shared.h">
-      <Filter>Shared</Filter>
-    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Source\Executables\Main.cpp" />
+    <ClCompile Include="..\..\Source\Executables\Demos\ArrayDemos.cpp">
+      <Filter>Demos</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Executables\Demos\FilterDemos.cpp">
+      <Filter>Demos</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Executables\Shared\Plotting\GNUPlotter.cpp">
+      <Filter>Shared\Plotting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Executables\Shared\Plotting\Plotting.cpp">
+      <Filter>Shared\Plotting</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

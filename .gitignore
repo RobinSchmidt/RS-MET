@@ -1,1 +1,36 @@
 *.pdf
+/Libraries/RAPT/Build/VisualStudio2015/x64/Debug/*.obj
+/Libraries/RAPT/Build/VisualStudio2015/x64/Debug/*.exe
+/Products/AudioPlugins/TestPluginJURA/Builds/VisualStudio2015/x64/Debug/*.dll
+/Products/AudioApplications/PluginHost/Builds/VisualStudio2015/x64/Debug/*.exe
+/Products/AudioPlugins/TestPluginJURA/Builds/VisualStudio2015/x64/Debug/*.exp
+/Products/AudioApplications/PluginHost/Builds/VisualStudio2015/x64/Debug/*.obj
+/Products/AudioApplications/PluginHost/Builds/VisualStudio2015/x64/Debug/*.log
+/Products/AudioPlugins/TestPluginJURA/Builds/VisualStudio2015/x64/Debug/*.obj
+/Libraries/RAPT/Build/VisualStudio2015/x64/Debug/*.lib
+/Libraries/RAPT/Build/VisualStudio2015/x64/Debug/*.idb
+/Libraries/RAPT/Build/VisualStudio2015/x64/Debug/*.ilk
+/Libraries/RAPT/Build/VisualStudio2015/x64/Debug/Executables.tlog/*.lastbuildstate
+/Libraries/RAPT/Build/VisualStudio2015/x64/Debug/*.pdb
+/Products/AudioApplications/PluginHost/Builds/VisualStudio2015/x64/Debug/*.ilk
+/Products/AudioPlugins/TestPluginJURA/Builds/VisualStudio2015/x64/Debug/*.ilk
+/Libraries/RAPT/Build/VisualStudio2015/x64/Debug/Modules.tlog/*.lastbuildstate
+/Products/AudioApplications/PluginHost/Builds/VisualStudio2015/x64/Debug/Plugin Host.tlog/*.lastbuildstate
+/Products/AudioPlugins/TestPluginJURA/Builds/VisualStudio2015/x64/Debug/TestPluginJURA.tlog/*.lastbuildstate
+/Products/AudioPlugins/TestPluginJURA/Builds/VisualStudio2015/x64/Debug/*.lib
+/Libraries/RAPT/Build/VisualStudio2015/x64/Debug/*.log
+/Products/AudioPlugins/TestPluginJURA/Builds/VisualStudio2015/x64/Debug/*.log
+/Products/AudioApplications/PluginHost/Builds/VisualStudio2015/x64/Debug/*.pdb
+/Products/AudioPlugins/TestPluginJURA/Builds/VisualStudio2015/x64/Debug/*.pdb
+/Products/AudioApplications/PluginHost/Builds/VisualStudio2015/*.sdf
+/Products/AudioPlugins/TestPluginJURA/Builds/VisualStudio2015/*.sdf
+/Libraries/RAPT/Build/VisualStudio2015/.vs/RAPT/v14/*.suo
+/Products/AudioApplications/PluginHost/Builds/VisualStudio2015/.vs/Plugin Host/v14/*.suo
+/Libraries/RAPT/Build/VisualStudio2015/x64/Debug/Executables.tlog/*.tlog
+/Libraries/RAPT/Build/VisualStudio2015/x64/Debug/Modules.tlog/*.tlog
+/Products/AudioApplications/PluginHost/Builds/VisualStudio2015/x64/Debug/Plugin Host.tlog/*.tlog
+/Products/AudioPlugins/TestPluginJURA/Builds/VisualStudio2015/x64/Debug/TestPluginJURA.tlog/*.tlog
+/Libraries/RAPT/Documentation/LaTeX/UserManual/*.aux
+/Libraries/RAPT/Documentation/LaTeX/UserManual/*.bbl
+/Libraries/RAPT/Documentation/LaTeX/UserManual/*.blg
+/Products/AudioPlugins/TestPluginJURA/Builds/VisualStudio2015/x64/Debug

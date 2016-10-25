@@ -1,5 +1,4 @@
 #include "GNUPlotter.h"
-//#include <stdarg.h>  // needed?
 #include <fstream>
 #include <iostream>
 #include <algorithm>

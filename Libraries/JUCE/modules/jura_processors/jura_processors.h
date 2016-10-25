@@ -38,7 +38,7 @@
 using namespace juce;
 // do we actually need all these includes? - most of them are included by jura_framework already
 
-#include "../../RAPT/Code/Library/RAPT.h"
+#include "../../RAPT/Source/Modules/RAPT.h"
 using namespace RAPT;
 
 namespace jura

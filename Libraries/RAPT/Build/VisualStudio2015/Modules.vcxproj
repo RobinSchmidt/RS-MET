@@ -19,32 +19,32 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Code\Library\Basics\Basics.cpp">
+    <ClCompile Include="..\..\Source\Modules\Basics\Basics.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Code\Library\Filters\Filters.cpp">
+    <ClCompile Include="..\..\Source\Modules\Filters\Filters.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Code\Library\Filters\LadderFilter.cpp">
+    <ClCompile Include="..\..\Source\Modules\Filters\Musical\LadderFilter.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Code\Library\RAPT.cpp" />
+    <ClCompile Include="..\..\Source\Modules\RAPT.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Code\Library\Basics\Basics.h" />
-    <ClInclude Include="..\..\Code\Library\Basics\Constants.h" />
-    <ClInclude Include="..\..\Code\Library\Filters\Filters.h" />
-    <ClInclude Include="..\..\Code\Library\Filters\LadderFilter.h" />
-    <ClInclude Include="..\..\Code\Library\RAPT.h" />
+    <ClInclude Include="..\..\Source\Modules\Basics\Basics.h" />
+    <ClInclude Include="..\..\Source\Modules\Basics\Constants.h" />
+    <ClInclude Include="..\..\Source\Modules\Filters\Filters.h" />
+    <ClInclude Include="..\..\Source\Modules\Filters\Musical\LadderFilter.h" />
+    <ClInclude Include="..\..\Source\Modules\RAPT.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{12EA9BBD-009F-49DD-8046-AE9D08D9EA9D}</ProjectGuid>

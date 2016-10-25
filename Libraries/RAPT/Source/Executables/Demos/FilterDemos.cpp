@@ -1,6 +1,6 @@
 #include "FilterDemos.h"
-#include "../../Library/RAPT.cpp"
-#include "../Shared/Plotting.cpp"
+#include "../../Modules/RAPT.cpp"
+#include "../Shared/Plotting/Plotting.cpp"
 
 void ladderImpulseResponse()
 {
