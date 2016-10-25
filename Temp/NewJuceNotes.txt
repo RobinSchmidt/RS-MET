@@ -1,0 +1,3 @@
+-classes like SliderListener have been replaced with Slider::Listener
+-the subcomoponents may now be direct members instead of pointers, so we don't
+ need to call deleteAllChildren in the destructor of components 

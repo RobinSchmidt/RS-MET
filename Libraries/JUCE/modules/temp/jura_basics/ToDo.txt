@@ -1,0 +1,4 @@
+-maybe move the folder into the JURA project
+-maybe move some frameworkish classes down into RAPT (Parameter, AudioModule, 
+ etc.) so they can be used from within other frameworks, too and use JUCE
+ really only for the GUI and I/O (but not for managing parameters, etc.)

@@ -1,0 +1,5 @@
+Template classes spilt into .h and .cpp file
+http://www.codeproject.com/Articles/48575/How-to-define-a-template-class-in-a-h-file-and-imp
+
+Lock free programming:
+http://moodycamel.com/blog/2013/a-fast-lock-free-queue-for-c++

@@ -1,0 +1,5 @@
+#ifndef RAPT_MATH_H_INCLUDED
+#define RAPT_MATH_H_INCLUDED
+
+
+#endif

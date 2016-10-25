@@ -1,0 +1,164 @@
+\chapter{Mathematics}
+Digital signal processing is in general a very mathematical subject and audio- and musical signal processing is no exception to that rule. So it shouldn't come as a surprise, that many of the RAPT library functions rely on underlying algorithms that implement a considerable mathematical machinery. This chapter discusses some of the mathematical concepts that are relevant in the context of audio processing and shows how they are implemented in RAPT. The purpose here is mostly to explain, \emph{what} the respective classes and functions do, not \emph{how} they work internally. Most of the algorithms discussed in this chapter fall under the broad umbrella of numerical analysis. 
+Detailed explanations and derivations can be found in the vast literature, specifically [Reference: Numerical Recipies] is a first class reference for such things.
+
+\section{Complex Numbers}
+For representing complex numbers, RAPT uses \texttt{std::complex} from the C++ standard library.
+
+\section{Functions}
+For representing functions, RAPT uses \texttt{std::function} from the C++ standard library ....maybe...this has to be decided
+
+\section{Sequences}
+Mathematically, a sequence is an ordered set of elements of some given type.
+
+\section{Polynomials}
+A polynomial of a variable $x$ is a weighted sum of integer powers of $x$, starting at $x^0 = 1$ and going up to $x^N$. Polynomials play a central role in the theory of analog and digital filters and they occur in the context of interpolation, curve fitting and function approximation - that's reason enough for RAPT to devote them a dedicated class - which is unsurprisingly called \texttt{Polynomial}. Mathematically, a polynomial $p(x)$ of order $N$ is defined as:
+\begin{equation}
+	p(x) = \sum_{n=0}^N a_n x^n
+\end{equation}
+where the $a_n, n=0,\ldots,N$ are called the coefficients. An $N$th order polynomial has $N+1$ coefficients, ranging from index $0$ to index $N$. This is also the convention in which polynomial coefficient arrays are represented in RAPT - as length \texttt{N+1} arrays \texttt{a[0]}...\texttt{a[N]}.  Consider the following code for multiplying the 2nd order polynomial $p(x) = 2 - 3 x + x^2$ by the 1st order polynomial $q(x) = -3 + 4x$ and evaluating the resulting polynomial $r(x)$ at $x = 2$:
+\begin{lstlisting}
+Polynomial<int> p(2, 2, -3, 1), q(1, -3, 4);  // allocation, initialization
+Polynomial<int> r = p * q;                    // multiplication
+int y = r(2);                                 // evaluation
+\end{lstlisting}
+This code uses the high-level interface of the RAPT library. The first line creates the two polynomials (with integer coefficients). The first parameter of the constructor of the \texttt{Polynomial} class is the order of the polynomial followed by an appropriate number of coefficients. The 2nd line multiplies the two polynomials which results in another polynomial which is stored in the variable \texttt{r}. The third line produces a numeric output by applying the product polynomial $r$ to the value $x=2$. The code looks reasonably straightforward and readable by C/C++ standards. However, if you have to do polynomial multiplication in a context where performance is critical, for example inside a realtime audio callback, you probably don't want to have any dynamic memory allocations. But that's what the constructors of the \texttt{Polynomial} class do. For performance and predictability reasons, you may want to operate on pre-allocated arrays, even if that means to uglify your code. In this case, your code could look something like this:
+\begin{lstlisting}
+// pre-allocation and initialization:
+int p[3] = { 2, -3, 1};                  // 2nd order, 3 coeffs,  2 - 3x + x^2
+int q[2] = {-3,  4};                     // 1st order, 2 coeffs, -3 + 4x
+int r[4];                                // 3rd order, 4 coeffs
+
+// multiplication and evaluation:
+Polynomial<int>::mul(&p, 2, &q, 1, &r);  // multiply p, q, store result in r
+int y = Polynomial<int>::eval(&r, 3, 2); // evaluate polynomial r at 2
+\end{lstlisting}
+First, we allocate the three arrays \texttt{p, q, r} of lengths \texttt{3, 2, 4} respectively. The order of the result polynomial \texttt{r} is given by the sum of the orders of the factors $2+1=3$, so we need space for $4=3+1$ coefficients for the \texttt{r} polynomial. The \texttt{p, q} arrays are also initialized in this process. Then we call static member functions \texttt{mul} and \texttt{eval} of the \texttt{Polynomial} class that operate on pre-allocated arrays of polynomial coefficients to perform the multiplication and evaluation. Arguably, the 2nd version is much less readable but these static member functions can be used whenever it is undesirable to have any dynamic memory allocations. Internally, the operators \texttt{*} and \texttt{()} of the \texttt{Polynomial} class call the low-level routines on internally managed coefficient array member variables. This idiom of static member functions that are internally called from the non-static functions and operators on the instance variables of an object will be used throughout the library. It allows the low- and high-level interface to share the same code.
+
+\section{Root Finding}
+Root finding is the problem of finding one or more solutions of the equation:
+\begin{equation}
+	f(x) = 0
+\end{equation}
+where $f(x)$ is, in general, an arbitrary function. Any value of $x$ that turns the equation into a true statement, when substituted for $x$, is called a solution or 'root' of the equation. In this problem setting, it is assumed that we have a means to evaluate the function at arbitrary values of $x$. In RAPT, the root finding algorithms must get such a means by passing them either function pointer to the respective function or a function object of class \texttt{Functor}. Functors are objects that provide a means to evaluate a function at some point $x$. What makes them more flexible than plain functions is the fact that they can have internal instance variables which may affect the function evaluation. They can be seen as a general way to define families of functions with an arbitrary set of parameters. A polynomial is an example for such a functor where the parameters are the coefficients.
+
+\subsection{Bisection}
+Suppose that, for two particular values $x=a$ and $x=b$, we know that $f(a)<0$ and $f(b)>0$. By assuming that the function is continuous between $a$ and $b$, that means that a root, i.e. a zero crossing, must be present somewhere between $a$ and $b$. The same is true, if $f(a)>0$ and $f(b)<0$. We say, the root is bracketed by the values $a$ and $b$. We may now evaluate the function at the midpoint between $a$ and $b$. If the value is equal to $0$, we have found our root, if it's less than $0$ or greater than $0$, we have found a new bracketing interval either to the left or to the right of the midpoint. The new bracketing interval is only half as long as the old one. Iterating that procedure, the brackets move closer and closer to the root. When their difference reaches a threshold, typically related to the numeric precision of the floating point datatype, we stop the iteration. It is then converged to the root (up to an error given by our threshold). Since the interval halves at each iteration, the number of correct binary digits in our approximate solution (given by the current midpoint) increases by one. Because the number of correct digits is a linear function of the iteration number, we say that the algorithm has a linear order of convergence. In RAPT, root finding by bisection is implemented in \texttt{RootFinder::bisection}. As a subtle sidenote, it may make sense to choose the new evaluation point not exactly at the midpoint of the bracketing interval, but at [... tbc. Reference NR].
+
+\subsection{Newton Iteration}
+Newton iteration is a method to iteratively improve an initial guess $x_0$ for the solution by iteratively applying the update rule:
+\begin{equation}
+	x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}
+\end{equation}
+This formula results from approximating the function $f(x)$ as a straight line that goes through the point $(x_0, y_0=f(x_0))$. This straight line is constructed to match the slope of the function $f(x_0)$ given by the derivative $f'(x_0)$ in the point $(x_0, y_0)$. The resulting line equation is then solved for the zero crossing of the line, which becomes our new root estimate $x_{n+1}$. Thus, to actually implement it, we also need a means to evaluate the derivative of $f(x)$ for any $x$ in addition to being able to evaluate the function $f(x)$ itself. The convergence of this iteration is typically quadratic, which means that in each iteration, the number of correct digits doubles [verify this] but in certain pathological cases it may be slower and in some cases, the iteration may even diverge. If a reasonable initial guess for the solution is available that is close to the true solution and the function is well behaved near the solution and we know how evaluate the derivative, Newton iteration is one of the methods of choice to converge to a true solution. In RAPT, Newton iteration is available in the function \texttt{RootFinder::newton} which takes two function pointers or functors - one for the function itself and one for the derivative and also takes an initial guess and returns the refined value.
+
+\subsection{Secant Method}
+The secant method works similar to the bisection method, just that we choose the new evaluation point not as midpoint of our current bracketing interval $[a, b]$, but instead, we fit a straight line to the points $(a, f(a)), (b, f(b))$ and solve for the root of this straight line. The order of convergence is given by the golden ratio: $\alpha = (1+\sqrt{5})/2 \approx 1.618$. So, it converges faster than the bisection method but not quite as fast as the Newton iteration. It can be seen as an approximation to Newton iteration, where the derivative is replaced by a finite difference approximation. On the plus side, it does not need to evaluate the derivative, which might be expensive or sometimes even not feasible. The method is available in \texttt{RootFinder::secant}. Note that it may also diverge, since the new evaluation point may fall outside the initial bracketing interval.
+
+\subsection{False Position}
+Also known as 'regula falsi', this method is similar to the secant method, but it applies...
+
+%\subsection{Fixpoint Iteration}
+%\subsection{Brent's Method}
+%\subsection{Ridders' Method}
+
+\subsection{Roots of Polynomials}
+If the function $f(x)$ is a polynomial, there are specialized algorithms for finding its roots. One such algorithm is the Laguerre algorithm which is implemented in \texttt{Polynomial::roots(T *a, int N, complex<T> *r)}. It takes an array of \texttt{N+1} coefficients as parameter and returns the roots in the length \texttt{N} array \texttt{r}. The fundamental theorem of algebra tells us that each polynomial of order $N$ has exactly $N$ roots such that it can be expressed as:
+\begin{equation}
+  \label{Eq:PolynomialProductForm}
+	p(x) = k \prod_{n=1}^N (x - r_n)
+\end{equation}
+that is, a scaled product of the differences between $x$ and the respective root $r_n$. Remember that a product is zero, if and only if (at least) one of its factors is zero, so if $x$ is equal to one of the roots $r_n$, the corresponding factor $x - r_n$ in the product is zero, making the whole product zero - which verifies that $r_n$ is a root, indeed. These roots, however, may not be unique - some of them may have a multiplicity, i.e. occur more than once in the above product. Some of the roots may also be complex. If the coefficients of the polynomial are real, complex roots will always come in pairs of complex conjugate numbers. In audio applications, we will mostly deal will polynomials that have real coefficients. For generality, however, there's also a version of the polynomial root finder that takes an array of complex coefficients. Internally, the same algorithm is used anyway, no matter if the coefficients are real or complex. For example, the roots of the $5$th order polynomial $p(x) = 1 + 2 x - 3 x^2 + 3 x^4 - x^5$ can be found via:
+\begin{lstlisting}
+vector<complex<double>> r(5);
+r = Polynomial<double>(5, 1., 2. -3., 0., 3., -1.).roots();
+\end{lstlisting}
+or, alternatively using the low-level routine that operates on pre-allocated arrays:
+\begin{lstlisting}
+double a[6] = { 1., 2. -3., 0., 3., -1. };
+complex<double> r[5];
+Polynomial<double>::roots(a, 5, &r);
+\end{lstlisting}
+A function for getting from the roots back to the coefficients is also available via the function \texttt{Polynomial::fromRoots}. In addition to the $N$ roots, it also needs the value of the overall scaling constant $k$ in Eq. \ref{Eq:PolynomialProductForm}. This is simply the $N$th coefficient, but in case you forget that, the \texttt{Polynomial} class has also the function \texttt{productFormScaler(int N, T a)} which trivially just returns \texttt{a[N]}. Since the \texttt{Polynomial} class is a subclass of class \texttt{Functor}, the general root finders from above can be applied for polynomial root finding as well. They can, however, find only one root at a time and you need an initial guess or bracketing interval.
+% reconstructing the coefficients form the roots
+
+
+\section{Rational Functions}
+A rational function is a quotient or 'ratio' of two polynomials:
+\begin{equation}
+	r(x) = \frac{\sum_{m=0}^M b_m x^m} {\sum_{n=0}^N a_n x^n}
+\end{equation}
+where $M$ is the order of the numerator and $N$ is the order of the denominator. All realizable analog and digital filter transfer functions are functions of this very type - which explains the special significance of rational functions, and hence polynomials, in the field of signal processing. The roots of the numerator are called the zeros of the transfer function and the roots of the denominator are called the poles. Since the denominator is zero at these poles, the value of the rational function at these points goes to infinity, unless there's a corresponding zero in the numerator at exactly the same point to cancel the pole. RAPT provides the class \texttt{RationalFunction} to deal with rational functions.
+
+\subsection{Partial Fraction Decomposition}
+Any rational function can be expanded into the form of a sum of a polynomial and several first order rational functions, in which the numerator is a  constant (called the residue which is possibly complex) and the denominator is a linear function of $x$. That is:
+\begin{equation}
+	r(x) = \frac{\sum_{m=0}^M b_m x^m} {\sum_{n=0}^N a_n x^n}
+	     = \sum ...
+\end{equation}
+If the coefficients of the original numerator and denominator polynomial are both real, complex values for the numerators and denominators in the expanded form come in conjugate pairs, such that 1st order terms can be combined pairwise into 2nd order terms with real coefficients. In signal processing applications, such decompositions amount to decomposing a direct form filter into a parallel connection of the respective 1st or 2nd order filters and an FIR part, where the latter results from the polynomial part. Because the individual terms are easier to understand and analyze, partial fraction decompositions play a role in certain filter analysis applications. For example, they are required for finding closed form expressions of a filter's impulse response. This impulse response is given by the inverse $z$-transform of its transfer function, but inverse $z$-transforms are only available for low-order terms - which is precisely what the decomposition delivers. Partial fraction decomposition is available in RAPT via \texttt{RationalFunction::partialFractions}.
+
+
+\section{Vectors}
+\section{Matrices}
+
+\section{Transforms}
+Transforms are - together with filters - one of the mainstays in the field of signal processing. Consider an $N$ dimensional vector $\mathbf{x}$ which may represent a (segment of a) signal. A general transform would take that vector as input and produce a new vector $\mathbf{y}$ as output. If the transform is designed well, the transformed vector $\mathbf{y}$ may reveal relevant features of the signal that are hard to see in the original representation. An important concern is invertibility - we want to be able to reconstruct the original vector $\mathbf{x}$ from the transformed vector $\mathbf{y}$ by some kind of associated inverse transform. Given such a pair of a transform and its inverse, we could transform an input vector, modify the transformed representation and apply the inverse transform to get a modified output vector/signal. A good transform in an audio processing setting would be one, that allows for convenient modifications that closely relate to modifications of perceptual, auditory attributes of the signal. We will consider mainly linear transforms. These are the class of operations on our input vector $\mathbf{x}$ that can be expressed as a matrix-vector multiplication of an  $N \times N$ matrix $\mathbf{A}$ with our input vector $\mathbf{x}$:
+\begin{equation}
+	\mathbf{y} = \mathbf{A} \mathbf{x}
+\end{equation}
+If the matrix $\mathbf{A}$ is non-singular, there will be an inverse matrix $\mathbf{A}^{-1}$ and hence, there will be an inverse transform, given by:
+\begin{equation}
+	\mathbf{x} = \mathbf{A}^{-1} \mathbf{y}
+\end{equation}
+Alternatively to thinking in terms of an $N$ dimensional vector $\mathbf{x}$, we may also consider the inputs and outputs as sequences of length $N$, which, in this context, can be seen as merely a different name for the same thing - a finite, ordered set of $N$ numbers.
+
+\subsection{Discrete Fourier Transform}
+The discrete Fourier transform (DFT) of a length $N$ sequence $x_0, \ldots, x_{N-1}$ is another length $N$ sequence $X_0, \ldots, X_{N-1}$ in which each element $X_k$ can be computed by the formula:
+\begin{equation}
+	X_k = \sum_{n=0}^{N-1} x_n W_N^{k n}, \qquad \text{where }W_N = e^{-j \frac{2 \pi}{N} }
+\end{equation}
+expressed as matrix-vector product, this looks like:
+\begin{equation}
+	...
+\end{equation}
+Computing a product of an $N \times N$ matrix and an $N$ vector in general requires $\mathcal{O}(N^2)$ operations, because we have to form $N^2$ individual products between numbers. In the DFT matrix, however, not all elements are distinct. This redundancy of the matrix elements allows for an algorithmic shortcut, known as the fast Fourier transform (FFT) which requires only $\mathcal{O}(N \cdot \log N)$ operations. Fast Fourier transforms are particularly efficient when $N$ is a power of two - these transforms are known as radix-2 FFTs. There are also $\mathcal{O}(N \cdot \log N)$ algorithms for arbitrary $N$, for example, the Bluestein FFT algorithm which uses a radix-2 algorithm on a zero-padded sequence internally. In RAPT, both radix-2 and Bluestein FFTs are available via the functions \texttt{Transforms::fftRadix2} and \texttt{Transforms::fftBluestein}. There's also the function \texttt{Transforms::fft} which tests, if $N$ is a power of two and then dispatches between the radix-2 and the Bluestein algorithm accordingly.
+
+\subsubsection{Inverse Transform}
+
+
+
+
+\subsection{Short Time Fourier Transforms}
+
+\subsection{Wavelet Transforms}
+
+\section{Statistics}
+Statistical signal measures such as the mean value, the autocorrelation sequence or the crosscorrelation sequence (between two signals) play an important role in many signal analysis algorithms and in adaptive filters. ...
+
+\section{Interpolation}
+Assume that we have a certain number $N$ of pairs of abscissa/ordinate values $(x_n, y_n), n = 0, \ldots, N-1$ represented as length \texttt{N} arrays \texttt{x} and \texttt{y}. We imagine these data points as a table that represents a continuous function and we assume that the $x$-values are in strictly ascending order. The goal of interpolation is to create a continuous function from the discrete data. That means, interpolation would connect the points by assigning a $y$-value to \emph{any} $x$-value between \texttt{x[0]} and \texttt{x[N-1]}. If we try to find a $y$-value for an $x$-value outside this range, it's called extrapolation. In RAPT, a continuous interpolating (and extrapolating) function is represented as an \texttt{Interpolator} object which itself is subclassed from \texttt{Functor}. This implies that the root-finding algorithms can be applied to interpolating functions in the same way as they are applied to regular functions. In the context of audio processing, interpolation may be required for obtaining signal values between the actual sample values or for creating smooth curves of control-data for which values are available only at certain time instants but not at each sample instant.
+
+\subsection{Linear Interpolation}
+A very simple way of interpolating between datapoints is to connect the datapoints with straight lines. 
+%It's not suitable for high-quality audio interpolation (unless, maybe, in combination with oversampling) but it has its place for interpolating control data. A feature that is sometimes desirable is that is preserves the mean value - i.e. the mean value of the interpolated \texttt{y}-array equals the mean of the original \texttt{y}-array [verify]
+%The only form of interpolation that is even more crude would be piecewise constant interpolation which just returns the $y$-value of the nearest neighbour. 
+
+\subsection{Lagrange Interpolation}
+Lagrange interpolation takes a given number $N$ of datapoints and constructs an $N$th order polynomial that passes exactly through these points. Such an interpolating polynomial tends to oscillate wildly between the actual datapoints, especially if the order of the polynomial is high. In most application, such oscillations are undesirable and that's why Lagrange interpolation is mostly used only with low orders. In certain audio applications, however, these oscillations might actually be exactly what is needed - as the order of the Lagrange interpolator goes up, it approaches the optimal sinc-interpolator [Reference: 'Elephant interpolators']
+
+\subsection{Spline Interpolation}
+
+
+\subsection{Sinc Interpolation}
+
+
+
+\section{Numerical Differentiation}
+
+%\section{Numerical Integration}
+%\section{Ordinary Differential Equations}
+%\section{Partial Differential Equations}
+%\section{Curve Fitting}
+%\section{Optimization}
+

@@ -1,0 +1,51 @@
+\documentclass[11pt,a4paper]{report}
+
+%\topmargin=-1.0in
+%\bottommargin=-2.0in
+%\leftmargin=-5.0cm
+%\rightmargin=-5.0cm
+%\evensidemargin=0.0cm
+%\oddsidemargin=0.0cm
+%\textheight=23cm
+%\textwidth=19cm
+
+% ToDo: set up a bibliography, fix the indentation problem in the code listings
+
+
+\usepackage{amsmath}             % advanced math typesetting
+\usepackage{color}               % colored text
+\usepackage{float}               % positioning graphics via [h!]
+\usepackage{hyperref}            % hyperlinks
+\usepackage{fullpage}
+
+\usepackage{listings}            % source code formatting 
+%\lstset{language=C++}
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+\lstset{ %
+  backgroundcolor=\color{white},   
+  basicstyle=\footnotesize\ttfamily,  % the size of the fonts that are used for the code
+  captionpos=none,                    % no captions (and no empty space either)
+  commentstyle=\color{mygreen},       % comment style
+  frame=single,	                      % adds a frame around the code
+  keywordstyle=\color{blue},          % keyword style
+  language=C++,
+  stringstyle=\color{mymauve},        % string literal style
+  columns=flexible,                   %
+  keepspaces=true,                    % keeps spaces in text
+  tabsize=2,
+}
+
+\begin{document}
+
+  \title{RAPT: Rob's Audio Processing Toolkit - User Manual}
+  \author{Robin Schmidt}
+  \date{\today}
+  \maketitle
+
+  \include{Introduction}
+
+	\include{Mathematics}
+
+\end{document}

@@ -1,0 +1,21 @@
+-drag over the plot subclasses
+-implement a freq-response plot editor for the Ladder
+-drag over all the remaining widgets
+
+-make the editors skinnable (background image, etc.)
+-make the widgets skinnable (choose colors, fonts, images (.png or .svg), etc.)
+-it should be possible to load skins at runtime or compile them into the binary
+
+
+-maybe move some frameworkish classes down into RAPT (Parameter, AudioModule, 
+ etc.) so they can be used from within other frameworks, too and use JUCE
+ really only for the GUI and I/O (but not for managing parameters, etc.)
+-reorganize the jura modules (in order of dependency):
+ -jura_basics: basic tools and utilities, threading, etc.
+ -jura_gui: drawing primitives, widgets, color-schemes, skins, etc.
+ -jura_visualization: plots (functions, frequency responses, etc.), waveform displays
+ -jura_audioprocessors: subclasses of juce::AudioProcessor and their editors
+  -the only module that depends on RAPT
+ -jura_daw: classes for building software with DAW-like functionality
+  -does not specifically depend on jura_audioprocessors - don't treat our own processors 
+   differently than generic subclasses of juce::AudioProcessor

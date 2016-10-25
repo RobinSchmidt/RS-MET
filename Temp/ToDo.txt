@@ -1,0 +1,26 @@
+-maybe split jura_framework module into jura_basics and jura_gui
+-make a jura_daw module
+
+
+
+
+
+
+make JUCE leaner:
+
+The binaries for the JUCE based products are really big. Maybe we can reduce the bloat in the 
+following way:
+-in Libraries/JUCE create a 2nd subfolder modules_lean (or modules_stripped or whatever)
+-copy over the folder contents of the original modules folder
+-in each module folder, delete the guts and edit the master module header file to refer
+ the includes to the original mdoule folder (this might potentially be a problem since
+ the guts are not inside the module folder itself - if it turns out to be a problem,
+ don't delete them and don't change the references)
+-now that we have our own copy of the module folder, we can in each module include 
+ h/cpp file pair comment out everything we don't need, thus we have a finer granularity of control
+ over what gets compiled into the binary compared to leaving out completet modules (which may
+ be not possible when we need a subset of some module)
+-in the Projucer projects, set up the module path accordingly to use the modules 
+ from the modules_lean folder
+-this should reduce reduce the binary size and compilation time
+  

@@ -1,0 +1,33 @@
+-release the library as GPL
+
+-give out individual closed source licenses on a case-by-case basis, with the 
+ following policy:
+ 
+ -for individuals, closed source licenses and non-GPL open source licenses are
+  possible by individual negotiation
+  
+ -for companies, sell licenses that apply to a particular version of the 
+  library and a particular product of the respective company
+  -for using updated versions of the library, an update fee may be charged
+  -for using the library in another product, another license is required
+  -price depends on the size of the company and product - rough orientation:
+   for small-scale products, it may be a 3-figure number, for large scale 
+   companies/products, a 4-figure number
+  -rationale: 
+   -i, as licensor, am most interested in creating a steady revenue 
+    stream in the long run - from my perspective, a subscription based 
+	licensing model would be preferable
+   -the licensee is interested in being able to use the code indefinitely into
+    the future, independently from any such subscription costs - they would 
+	presumably prefer a (possibly rather high) one-time fee that applies to 
+	all of their present and future products and to all future versions of the
+	library
+   -the scheme above gives a compromise between both interests that should be
+    acceptable for both sides
+  -update costs will depend on the version difference and will possibly take
+   into account, if a company/product has grown larger since purchase of the 
+   initial license (or previous update)
+   
+ -clients usually get an appropriate license included, provided that they 
+  already pay reasonably for work hours (i.e. a certain minium number of 
+  work-hours are purchased)   

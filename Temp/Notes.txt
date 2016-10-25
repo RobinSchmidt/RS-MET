@@ -1,0 +1,37 @@
+Directory structure:
+-Libraries:
+ -JUCE   Jules' Utility Class Extensions
+ -RAPT   Rob's Audio Processig Toolkit
+ -JURA   JUCE/RAPT Software Framework
+-Products:
+ -AudioPlugin (one project for all plugins)
+  -ChaosGenerator
+ 
+Build System:
+-JURA is built as DLL and itself compiles all the required JUCE and RAPT code into it
+
+-the ChaosGenerator uses the JURA.dll
+ -> binary code 
+
+ 
+Building RAPT:
+-RAPT is not supposed to be built by itself, but is directly compiled into the 
+ client code.
+-The client code should include the RAPT.h file somewhere and add the RAPT.cpp 
+ file to their project, in order to compile the library along with the client
+ code.
+-Many functions and classes are templated and the RAPT.cpp file is responsible
+ for instantiating the templates for specific data types.
+-Client code may create further instantiations for additional datatypes
+
+and the client code is responsible
+-
+ 
+ 
+CPU usage in VSTHost:
+nothing:                         1.8%
+TestPluginJUCE (release, x64):   4.6%
+...with deactivated audio code:  4.2%
+TestPluginJUCE (release, x86):  
+...with deactivated audio code:  
+

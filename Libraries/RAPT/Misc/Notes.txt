@@ -1,0 +1,46 @@
+Rob's Audio Processing Toolkit
+
+Basic math classes:
+Array, Vector, Matrix, Polynomial, Conversion, Interpolation, Real, Integer, Rational, Complex
+
+use subnamespaces for the modules
+maybe, we should have descriptive function names like linearToExponential and if they are used
+often, we may use alias names, like 
+#define Math::amplitudeToDecibels amp2db
+#define lin2exp linearToExponential  ..or see here:
+http://stackoverflow.com/questions/3053561/how-do-i-assign-an-alias-to-a-function-name-in-c
+
+Numeric Types:
+-float(32,64,multi), integer, rational, fixed-point, SIMD, complex
+-for fixed-point: use int64, interpret as pair of int32
+
+Convention for conversion functions: 
+ -amp2db, freq2pitch, rad2deg, lin2log, log2lin etc.
+filter frequency conversions:
+ -lp2bp_s2s, lp2ls_s2s, bilin_s2z, mzti_s2z, impinv_s2z, stepinv_s2z
+filter structure conversions:
+ -tf2sos, tf2lat, zpk2tf, etc.
+ 
+filter zpk representation:
+<template class T>
+struct FilterZPK<T>  // T is typically a complex type
+{
+  vector<T> z, p;
+  T k;
+}
+struct FilterCoeffsDF<T>
+{
+  vector<T> b, a;
+}
+struct FilterCoeffsSOS<T>
+{
+  vector<T> b0, b1, b2, a1, a2;
+}
+struct FilterCoeffs3OS<T>
+{
+  vector<T> b0, b1, b2, b3, a1, a2, a3;
+}
+struct FilterCoeffs2p1z<T>
+{
+  vector<T> b0, b1, a1, a2;
+}

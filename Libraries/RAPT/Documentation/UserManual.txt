@@ -1,0 +1,113 @@
+
+
+Design Goals:
+-portability
+ -no platform-/machine-/compiler-specific code - use plain, standard 
+  compliant C++
+-readability:
+ -use variable names, that resemble mathematical formulas
+ -prefer short variable names, explain their meaning in comments
+ -prefer descriptive function names
+ -
+-efficiency:
+ -no temporary memory allocations - pass around a workspace pointer instead
+  (pointer to void *work)
+ -in place processing: where possible, allow for output arrays to point to the 
+  same location as input arrays (document, if a routine may be used in place)
+-flexibility:
+ -use templates whereever there's even a slight chance that a generic version 
+  may make sense - for handling different number types (double, 
+  complex<double>, multiprecision numbers, multichannel data, 
+  SIMD vector types, etc.)
+ -make internal variables public (makes it easier to debug), maybe use structs
+-convenience of interfacing:
+ -use standard C/C++ datatypes where possible (for example std::complex, 
+  std::string) instead of proprietary datatypes
+ -for multiprecision arithmetic, maybe use boost
+-independence:
+ -avoid dependencies on other libraries, if a subroutine from another library 
+  is used, make that opaque to client code (embedd the code of the subroutine 
+  into the library)
+  
+Principles and Guidelines:
+-no redundant parameters (like frequency and samplerate for filters - pass a 
+ normalized frequency)
+-prefer user convenience over implementor convenience
+-prefer efficiency over user convenience
+-in convenience functions, prefer numerically more precise algorithms over 
+ faster ones. For example, a matrix operation C = A/B could perfom finding 
+ the pseudo-inverse of B using singular value decomposition which is 
+ numerically stable but demanding. - if the user wants to optimize the 
+ operation using a faster (and less well behaved) algorithm, they have to 
+ explictly work with the static member functions that perform the linear 
+ algebra. Or - maybe use a static member variable of the type of the 
+ appropriate function-pointer in the matrix class that determines the default
+ operator implementation. then, client code could switch between different
+ implementations of the operator
+-use classes as function collections (static member functions) as well as 
+ having their own state - functions can be used on raw data as well as on
+ member variables.
+-where possible and meaningful, use conventions similar to those in 
+ Python/NumPy/SciPy for function parameters
+-use 2-space indent and line limit of 79 (similar to Python PEP8)
+ -or: 4-space indent, but don't indent namespace and class
+-implement everything in the header files
+-minimize number of words in comments (skip unnecessary "the", "a", etc.)
+
+ 
+Example Code:
+
+<template class T>
+struct Matrix
+{
+  /** Decompose NxM matrix A into lower and upper triangular matrix and
+  return result in LU which may point to the same memory location as A. */
+  static void decomposeLU(T **A, size_t N, size_t M, T **LU);
+  
+  /** Given NxM matrix A and right hand side M-vector y, solve linear system 
+  y = A * x for M-vector x using Gaussian elimination with partial pivoting. 
+  Matrix A is destroyed in the process. */
+  static void solveGauss(T **A, size_t N, size_t M, T *x, T *y);
+
+  //.....
+  
+  size_t N, M;  // number of rows and columns
+  T *data;      // flat data array
+  T **A;        // pointers to the rows
+}
+
+<template class T>
+struct FilterDesignIIR
+{
+   /** Computes the zeros, poles and gain (z, p, k) of an Nth order analog 
+   Butterworth prototype filter with unit cutoff frequency. The squared gain 
+   at the cutoff frequency is given by gc2. In addition to the usual lowpass 
+   prototype, you may also design a low shelving prototype with squared 
+   reference gain g02 and squared DC gain g2. */
+   static void prototypeButterworth(int N, T *z, T *p, T *k, T gc2 = 0.5, 
+     T g2 = T(1), T g02 = T(0));
+
+}
+
+in code that uses the static functions from the function-collection classes,
+we could define an object to be used as shorthand for the classname. 
+instead of writing:
+
+FilterDesignIIR::prototypeButterworth()
+
+we may write:
+
+FilterDesignIIR d;
+d.prototypeButterworth()
+
+which makes the code shorter, when we call many functions from the class in
+sequence
+
+
+
+name alternatives:
+Template Signal Processing Toolkit - TSPT (pronounce: TossPott)
+Audio Processing Toolkit (APT)
+Audio Processing Algorithm Kit (APAK)
+Signal Processing Algorithm Kit (SPAK) -Toolkit (SPAT)
+

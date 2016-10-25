@@ -1,0 +1,41 @@
+Synthax:
+-sound anlysis/transformation/synthesis scripting system
+-maybe based on AngelScript -> close to C++ -> good for prototyping
+-can be realized as plugin
+-provide a pane on which GUI elements can be placed, allow them to access (set/get) variables in 
+ the code
+
+RaptDaw:
+-DAW based on the RAPT library
+-standalone audio application
+-can reuse the old Mixconic code
+-use PAC architecture - each concept (such as Clip, Track, Arrangement, etc.) 
+ is represented as a triad of an:
+ -(A)bstraction: 
+  -keeps and manipulates the underlying data
+  -should be totally agnostic of controllers and presenters (does not keep
+   references to them, doesn't even know about their existence)
+ -(C)ontroller: 
+  -mediates all access and manipulation of the abstraction's data
+  -has one associated abstraction as member (either pointer or direct member)
+  -keeps an array of references to registered presenters 
+  -communicates with the abstraction by calling its accessors (set/get functions)
+  -communicates with the presenter(s) by callbacks (presenters are observers
+   of the controller)
+  -provides persistence (load/save)
+  -provides undo/redo functionality
+  -is responsible for thread safety
+ -(P)resentation:
+  -keeps reference(s) to controller(s)
+  -is called back by the controller(s) in an observer pattern
+  -calls manipulation methods of the controllers in response to user input
+  -there can be two kinds of presenters: "Views" for GUI display and "Players" for audio output
+-each such triad is kept in a pair of .h/.cpp files, for example Track.h/Track.cpp
+-clips and tracks should use the composite pattern: can (recursively) contain any number of 
+ subclips/subtracks (as references, of course)
+-for handling the concurrence using lock free queues, maybe look into these:
+https://github.com/cameron314/readerwriterqueue 
+https://github.com/cameron314/concurrentqueue
+->write JUCE wrappers for them and integrate them into the JURA framework
+-allow wrapping of a full arrangement into a clip - allows for hierarchical arrangements
+ for example - arrange a drumloop, warp it up into a clip and use it in a higher level arrangement

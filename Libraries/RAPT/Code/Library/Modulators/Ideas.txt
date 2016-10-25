@@ -1,0 +1,14 @@
+
+Autonomous Modulator ("AutoMod"?):
+Often, it is desirable to not create a modulation signal from scratch
+(using oscillators, envelope generators, etc.) but rather derive it from the 
+input signal itself. If we are running oscillators, etc., we always have a 
+kind of absolute time-reference, making the system non-autonomous - i.e. the
+output signal will depend on when was the last time, we resetted our 
+oscillator phase. To avoid this, the idea is to derive a modulation signal
+from the input signal itself (and/or output or, more generaly weighted, sum 
+between those). Perhaps, we could somehow shred the input signal to turn it 
+into a kind of white noise (maybe via fmod) and then apply a narrow bandpass
+filter to that to get a kind of signal-derived pseudo-sinusoidal modulation
+signal. Maybe somehow, we could also use a level detector in this setup to
+make sure that the modulation signal has always about the same level.

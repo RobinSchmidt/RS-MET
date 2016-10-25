@@ -1,0 +1,46 @@
+-rename the "Code" folder to "Source" and the "Library" subfolder to "Modules"
+ ...and modify the visual studio project accordingly
+ 
+-let the Filter module have subfolders: 
+ -Basics: 1st order and biquads, biquad cascade, (cookbook) formulas, etc.
+ -Musical: ladder, svf, variable-slope, decaying-sine, etc.
+ -Scientific: Butterworth, elliptic, pole/zero transformations, 
+  coefficient conversions, ...
+  
+-use a sub-namespace for each module - that helps to create a nice orderly doxygen 
+ documentation (i hope - try it)  
+
+-include the actual GNUPlotCPP distribution folder and refer to it from RAPT instead
+ of having the code copied into the RAPT source (maybe)
+
+-move ArrayFunctions into Data module
+-wrap functions into class ArrayFunctions
+
+-get rid of the rs prefixes
+-wrap array functions into class Array (as static member functions)
+ -only those that are applicable to arrays of any dimension (but in flattened representation) 
+  should be in this class
+  
+adopt the following conventions:
+-frequencies are represented as normalized radian frequencies (2*pi*freq/sampleRate)
+-typical type names: TSig: signal type, TPar: parameter type, TCof: coefficient type,
+ TInt: integer type, TRe: real type, TComp: complex type
+-when used as parameter, the function should be named setOmega
+
+all realtime processors should have processing functions like:
+
+inline TSig getSample(TSig in);
+inline void processFrame(TSig *in, TSig *out);
+void processBlock(TSig *in, TSig *out, int numSamples);
+
+some may also have:
+inline void processFrameNoUpdate(TSig *in, TSig *out);
+inline void updateState(...);
+for setting up zero-delay feedback loops
+
+nonrealtime processors should have:
+
+void processSignal(TSig *in, TSig *out, int numSamples); // takes the whole signal at once
+vector<TSig> getOutput(const vector<TSig> &input);       // convenience function, does memory allocation
+
+these functions can optionally be added to realtime processors as well

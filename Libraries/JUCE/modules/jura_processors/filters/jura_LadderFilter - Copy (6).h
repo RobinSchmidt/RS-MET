@@ -1,0 +1,193 @@
+#ifndef jura_LadderFilter_h
+#define jura_LadderFilter_h
+  
+// We want to use two RAPT::LadderFilter instances that use double precision numbers for the 
+// signal as well as for the parameters/coefficients. For convenience, we make a typedef for the
+// particular template instantiation:
+typedef RAPT::LadderFilter<double, double> RAPTLadder;
+
+//=================================================================================================
+
+/** Wraps two RAPT LadderFilter instances into a single object, for stereo processing. In order to
+make it more interesting than just instantiating the RAPT::LadderFilter template for a kind of 
+stereo signal type (which would be also possible), we allow the two cutoff frequencies of both 
+channels to be different by introducing a stereo spread parameter. */
+
+class JUCE_API Ladder : public jura::AudioModule
+{
+
+public:
+
+  Ladder();
+    
+  /** Creates the static parameters for this module (i.e. parameters that are not created
+  dynamically and are thus always there). */
+  virtual void createStaticParameters();
+
+  /** Creates the GUI editor (returns an object of an appropriate subclass of 
+  AudioProcessorEditor) */
+  AudioProcessorEditor *createEditor() override;
+
+  // overriden from AudioModule baseclass:
+  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
+  virtual void setSampleRate(double newSampleRate) override; 
+  virtual void reset() override;
+
+  // target functions for callbacks that are called on parameter changes:
+  void setCutoff(double newCutoff);
+  void setResonance(double newResonance);
+  void setMode(int newMode);
+  void setStereoSpread(double newSpreadInSemitones);
+  void setMidSideMode(bool shouldBeInMidSideMode);
+
+  // for the magnitude plot/editor later...
+  double getCutoff()    { return cutoff; }
+  double getResonance() { return 0.0;    }  // preliminary
+
+  double getMagnitudeAt(double frequency); // returns the magnitude at the given frequency
+
+  void getMagnitudeResponse(const double *frequencies, double *magnitudes, int numBins, 
+    bool inDecibels = true);
+
+protected:
+
+  // some members to store the parameter values:
+  double cutoff      = 1000.0;
+  double spread      = 0.0;
+  double freqFactorL = 1.0;
+  double freqFactorR = 1.0;
+  bool   midSideMode = false;
+
+  // embedded core DSP objects from the RAPT library:
+  RAPTLadder ladderL, ladderR;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Ladder)
+};
+
+//=================================================================================================
+// the magnitude response plot/editor:
+
+class JUCE_API LadderSpectrumEditor : public SpectrumDisplayOld, public ParameterObserver, 
+  public ChangeBroadcaster // why is this a changeBroadcaster? may this be obsolete? all widgets
+    // (i.e. the sliders and ths plot-editor) actually observe the Parameter object, so we should 
+    // not need any other mechanism to sync the widgets
+{
+
+public:
+
+  //-----------------------------------------------------------------------------------------------
+  // construction/destruction:
+
+  /** Constructor. */
+  LadderSpectrumEditor(const juce::String& name = juce::String("LadderSpectrumEditor"));   
+
+  /** Destructor. */
+  virtual ~LadderSpectrumEditor(); 
+
+  //-----------------------------------------------------------------------------------------------
+  // setup:
+
+  /** Passes a pointer the the actual rosic::MoogyFilter object which is to be edited. Make 
+  sure to call this function again with a NULL-pointer when the object get deleted for some 
+  reason. */
+  virtual void setFilterToEdit(jura::Ladder* newFilterToEdit);
+
+  /** Assigns a Parameter object to the frequency (horizontal axis) for observation and 
+  manipulation. */
+  virtual void assignParameterFreq(Parameter* parameterToAssign);
+
+  /** Assigns a Parameter object to the resonance (vertical axis) for observation and 
+  manipulation. */
+  virtual void assignParameterReso(Parameter* parameterToAssign);
+
+  /** Un-Assigns a previously Parameter object to the horizontal axis. */
+  virtual void unAssignParameterFreq();
+
+  /** Un-Assigns a previously Parameter object to the verical axis. */
+  virtual void unAssignParameterReso();
+
+  //-----------------------------------------------------------------------------------------------
+  // callbacks:
+
+  virtual void parameterChanged(Parameter* parameterThatHasChanged);
+  virtual void parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted);
+
+  /** This method is called when one of the assigned rosic::AutomatableParameters has been changed.
+  We override it here in the subclass to do the actual GUI update. */
+  virtual void updateWidgetFromAssignedParameter(bool sendMessage = false);
+
+  /** Overrides the changeListetnerCcallback in order to receive messages which this object sends 
+  to itself. */
+  virtual void changeListenerCallback(ChangeBroadcaster *objectThatHasChanged);
+
+  /** Overrides mouseDown for adjusting the frequency and resonance and lets a context menu pop up 
+  when the right button is clicked for MIDI-learn functionality. */
+  virtual void mouseDown(const MouseEvent& e);
+
+  /** Overrides mouseDrag for adjusting the frequency and resonance. */
+  virtual void mouseDrag(const MouseEvent& e);
+
+  /** Overrides the resized-method. */
+  virtual void resized();
+
+  /** Updates the frequency response plot. */
+  virtual void updatePlot();
+
+protected:
+
+  /** Does the setup of the filter according to some new mouse position) */
+  virtual void setupFilterAccordingToMousePosition(double mouseX, double mouseY);
+
+  /** Overrides CurveFamilyPlot::plotCurveFamily in order to additionally draw the handle. */
+  virtual void plotCurveFamily(Graphics &g, Image *targetImage = NULL, 
+    XmlElement *targetSVG = NULL) override;
+
+  /** Converts a resonance value to an y-coordinate in components/image coordinates. */
+  double resoToY(double reso, Image *targetImage = NULL);
+
+  /** Converts an y-coordinate in components/image coordinates to a resonance value. */
+  double yToReso(double y, Image *targetImage = NULL);
+
+  /** Radius of the dot-handle to be drawn. */
+  float dotRadius;
+
+  /** Pointer to the actual jura::Ladder object which is being edited. */
+  jura::Ladder* filterToEdit;
+
+  // the parameters which wil cause re-plotting and therefore must be listened to:
+  Parameter* freqParameter;
+  Parameter* resoParameter;
+
+  // magnitude response display stuff:
+  int    numBins;
+  double *frequencies, *magnitudes;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LadderSpectrumEditor)
+};
+
+//=================================================================================================
+
+/** This is the GUI editor class for the jura::Ladder audio processor. */
+
+class JUCE_API LadderEditor : public AudioModuleEditor
+{
+
+public:
+
+  LadderEditor(jura::Ladder *newLadderToEdit);
+  virtual void resized();
+
+protected:
+
+  Ladder *ladderToEdit;
+
+  LadderSpectrumEditor *frequencyResponseDisplay; // rename to spectrumEditor
+
+  RSlider *cutoffSlider, *resonanceSlider, *spreadSlider;
+  RComboBox *modeComboBox;
+  //RButton *invertButton;  
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LadderEditor)
+};
+
+#endif 

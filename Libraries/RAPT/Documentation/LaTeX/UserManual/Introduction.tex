@@ -1,0 +1,129 @@
+\chapter{Introduction}
+
+\section{What is it}
+Rob's Audio Processing Toolkit (abbreviated as RAPT) is an open source C++ library for audio signal processing with a focus on musical signals. The lower levels of the library provide the numerical functionality that is relevant in this context (such as basic linear algebra, polynomial manipulation, Fourier transforms, interpolation, etc.). On top of that, a toolkit of audio processing specific algorithms is built. These algorithms are typically the ones, that client code will want to call, although it is also possible to reach down into the lower levels of the basic mathematical number crunching routines.
+%For the basic mathematical functionality, a mix of proprietary implementations and wrappers around freely available libraries is used. The audio specific code is mostly original 
+
+\section{Copyright and Licensing}
+The copyright of the code is owned by the author, Robin Schmidt, and is released under the terms of the GNU General Public License (GPL). Basically, that means, if you want to use it somewhere, you have to open-source your project, too. If you want to use the code in a closed source product, you may contact me for negotiating the terms [...t.b.c]
+
+
+\section{Design Principles}
+
+\subsection{Type Independence}
+Most of the functions and classes are written in a generic way in order to make them applicable to whatever kind of datatype you are dealing with. Technically, that means they are implemented as C++ templates. For example, if you have a class for representing multichannel audio data and that class provides appropriate operators for addition and multiplication (i.e. add/multiply the individual channel data element-wise), you can apply a generic convolution routine that convolves two sequences of your multichannel datatype (assuming they have a compatible number of channels - but these compatibility requirements will depend on the implementation of the \texttt{+} and \texttt{*} operators of your class). You may also want to use convolutions on complex numbers and/or multiprecision datatypes. The genericity of the implementation allows for that. TODO: change example  - explain how to use a ladder filter on generic datatypes
+
+
+%\subsection{Convenient Integration}
+%RAPT should integrate with other software projects as smoothly as possible. That's why it strives for using the C++ standard library as much as possible for representing commonly used datatypes such as complex numbers or vectors. Instead of defining it's own classes for representing these things, \texttt{std:complex} and \texttt{std::vector} are used. For matrices, the \texttt{boost::matrix} implementation is used. Prior to implementing this library, I had a habit of reinventing the wheel which was unnecessary additional work and complicates the integration with other code, since proprietary data representations would have to be converted back and forth. I assume, that a lot of client code will also make use of these existing implementations, since they are fairly standard and authoritative. Moreover, for standard library vectors, debuggers tend to be able to let the programmer inspect their contents more conveniently. I hope that at some stage, C++ itself will provide a matrix datatype - if this should ever happen, it is likely that it will be taken from the \texttt{boost} library.
+
+\subsection{Two Interface Levels}
+For certain tasks, the library supports 2 levels of interfacing - a more convenient high-level interface and a more performance efficient low-level interface. The idea is that you may write prototype code using the high-level interface which will result in readable code. Later, you may want translate that into production code using the low-level interface, which avoids certain overheads such as dynamic memory allocation. The low-level interface also gives you more options for tuning the runtime performance. For example, you may choose between different algorithms that perform the same task but have different numerical stability and efficiency properties. The low level interface will often operate on plain C-style arrays of your respective datatype. Some of those functions will assume that input and output arrays do not overlap while others may not care and therefore may be used 'in-place'. If in-place operation is possible, it will be said so in the documentation, otherwise assume it isn't.
+
+% functions that need temporary memory may get an optional workspace parameter which defaults to nullptr, inside the function, the passed argument will be checked, if it is a nullptr, temporary memory will be allocated (and freed before exiting)
+
+\subsection{Classes for Code Organization}
+The code of the library is organized in classes such as \texttt{Polynomial, Matrix, FilterDesign, Transforms}, etc. which group together related functionality. This organizing principle is also used in cases where the client code is not supposed to instantiate any objects of a class. For example, the class \texttt{IntegerFunctions} is merely a collection of functions that perform common operations on integer numbers, such as \texttt{IntegerFunctions::gcd(T x, T y)} for finding the greatest common divisor of the two numbers \texttt{x, y} (of a templated integer type \texttt{T}). This makes it easier to find the required functionality than in an unorganized collection of functions that all occupy the same namespace. The generated doxygen documentation will also show related functions under a common 'headline'.
+
+\subsection{Goals}
+The primary goal is to provide a collection of audio processing algorithms that is practically useful in actual audio software products. Thus, the code should be reasonably efficient. A secondary goal for the library is to have educational value. That means, the code should be written in a readable way and familiar conventions known from signal processing literature and other DSP software libraries (such as MatLab's signal processing toolbox) should be followed, where reasonable. Sometimes, these two goals are in conflict - the most efficient implementation is sometimes not the most readable. In these cases, efficiency is most often preferred and complications in the code will often be annotated by comments. However, the library does not try to squeeze the last bit of performance out of the computer. Specifically, all code is plain C/C++ and there are no assembler optimizations or use of intrinsic SIMD types and functions. This wouldn't make sense in a type independent template based library anyway. However, if client code wraps SIMD datatypes and operations into classes, the template implementations of RAPT may be instantiated for these class types as well, potentially leading to higher performance - but such considerations will be left to client code.
+
+%\subsection{Library Structure}
+%The library is subdivided into....don't know yet
+
+\section{Basic Examples}
+
+\subsection{Butterworth Filter}
+Suppose, you want to compute the coefficients of a 5th order Butterworth filter with a cutoff frequency of 1 kHz operating at a samplerate of 44.1 kHz. With RAPT, you may do this like this:
+\begin{lstlisting}
+double fs = 44100;     // samplerate
+double fc =  1000;     // cutoff frequency
+double b[6], a[6];     // filter coefficients
+FilterDesign<double>::butterCoeffs(b, a, 5, 2*fc/fs);
+\end{lstlisting}
+The last line of this code snippet will fill the arrays \texttt{b, a} with the feedforward and feedback coefficients of a Butterworth filter in direct form, i.e. a filter that implements the difference equation:
+\begin{equation}
+  \label{Eq:FilterDiffEq}
+	y_n = \sum_{k=0}^5 b_k x_{n-k} - \sum_{k=1}^5 a_k y_{n-k}
+\end{equation}
+Note that the frequency passed to the filter design routine is a normalized frequency, i.e. a frequency value between $0$ and $1$ where $1$ corresponds to the Nyquist frequency (half of the samplerate). This convention is used for frequencies throughout the library and is in line with usage in MatLab/Octave/SciPy/etc. [verify]. Next, suppose you have an array \texttt{x} of length \texttt{N} and you want to filter that array using the Butterworth coefficients. The output shall be stored in another array \texttt{y} of length \texttt{M}. This can be done by:
+\begin{lstlisting}
+Filter<double>::applyDF2(x, N, y, M, b, 5, a, 5);
+\end{lstlisting}
+this computes \texttt{M} output samples by applying the filter using a so called direct form II implementation structure. The length of the output \texttt{M} may be different from the length of the input \texttt{N}.
+
+\subsubsection{A Realtime Implementation}
+The code above applies the filter to the whole array \texttt{x} at once. This would be adequate only in situations, where you have the whole signal available, like in an audio editor application. But now imagine, for example, your product is a realtime audio plugin. In this case, you will typically have to write a subclass that is derived from a baseclass that comes from an audio plugin API. Such plugin APIs typically have some kind of audio callback function, often called \texttt{process}, that takes a short buffer of input samples as (pointer-type) parameter and is supposed to produce a corresponding buffer of output samples. The plugin programmer has to override this function in their derived subclass and do there whatever computations are needed to achieve the desired effect. For example, your \texttt{process} callback for a Butterworth filter plugin based on RAPT could look like:
+\begin{lstlisting}
+void MyFilterPlugin::process(int numSamples, int numChannels, 
+                             float **in, float **out)
+{
+  assert(numChannels == 2);                   // handles only stereo signals
+	filterL.process(in[0], out[0], numSamples); // process left channel
+	filterR.process(in[1], out[1], numSamples); // process right channel
+}
+\end{lstlisting}
+where \texttt{filterL, filterR} are objects of the class \texttt{Filter}. Many of RAPT's audio processing classes provide such a process function. As you can see from the difference equation \ref{Eq:FilterDiffEq}, each filter output sample is computed as a weighted sum of the current input sample, past input samples and past output samples. An object of class \texttt{Filter} is responsible for keeping track of these in a realtime situation. In some situations, for example, when the user stops or restarts the audio playback in a digital audio workstation (DAW), it is appropriate to reset these state variables to their initial state (which is zero, in this case). The plugin interface will typically have another callback for you to override in these situations, for example called \texttt{suspend} in the VST API. There, you would call:
+\begin{lstlisting}
+void MyFilterPlugin::suspend()
+{
+	filterL.reset();
+	filterR.reset();
+}
+\end{lstlisting}
+In addition to the \texttt{process} callback, realtime audio plugin APIs also provide a means to let the user set up the plugin's parameters, typically in the form a \texttt{setParameter} function that is supposed to be called whenever the user changes a parameter. In our case, the user might want to change the filter's cutoff frequency from a GUI. Whenever the cutoff frequency is changed, the filter coefficients have to be recomputed. Our implementation could look like:
+\begin{lstlisting}
+void MyFilterPlugin::setParameter(int index, float value)
+{
+  switch( index )
+  {
+  case CUTOFF:
+    {
+      // User wants to change cutoff frequency. 
+
+      // Convert normalized parameter value to desired cutoff frequency:
+      cutoff = RAPT::Conversions<float>::linToExp(value, 0, 1, 20, 20000);
+
+      // Compute new filter coefficients:
+      FilterDesign<float>::butterCoeffs(b, a, 5, 2*cutoff/samplerate);
+
+      // Pass the new coefficients to the filter objects for left and right
+      // channel:
+      filterL.setCoeffs(b, a, 5);
+      filterR.setCoeffs(b, a, 5);
+    }
+    break;
+    // ... handle other parameter updates here	
+  }
+}
+\end{lstlisting}
+This example is purely for instructional purposes and therefore kept simple. It's not the most efficient way to do it. Specifically, the call to \texttt{FilterDesign<double>::butterCoeffs} is computationally expensive. A rather elaborate mathematical machinery is invoked to compute these coefficients and they are always computed from scratch in such a call. It is possible to save some of the computational steps, by storing some intermediate results that are expensive to compute and don't change when the cutoff frequency is changed (namely the poles of the analog prototype filter). Furthermore, \texttt{setParameter} and \texttt{process} are typically called from different threads, so you may want to take some care about synchronization, for example by wrapping the two calls to \texttt{setCoeffs} and the two calls to \texttt{process} into a mutex lock. So, take this example code with a grain of salt - it shall just demonstrate the basic principles and is not production ready code. Note that you would also need to recompute the coefficients, when the samplerate changes. You will be informed about this in yet another callback.
+
+\paragraph{Realtime and Latency} The above scheme is typical for realtime audio plugins, but the designation as 'realtime' has to be taken with a grain of salt. The plugin's audio callback is called with a given buffer size $B$, i.e. a certain number of samples to be processed. From the perspective of the host application, that means, when it wants to produce an output sample at a given time instant $n$, it must know all samples from $n$ up to $n+B-1$, so it can feed them into plugin's \texttt{process} callback already at instant $n$. Sometimes the host can't know these future samples in advance, for example because the host itself receives them from a realtime input. In such a case, it must first accumulate $B$ samples, then pass the buffer of $B$ samples to the plugin, receive the output and pass it on further down the signal chain. This wait-and-accumulate strategy introduces a delay of $B-1$ samples between input and output. Typically the buffer sizes are a couple of tens or hundreds of samples which translates to a couple of milliseconds or tens of milliseconds of delay. Delays below 10 ms are below the threshold of human perception, but it has to be kept in mind in certain situations, especially when similar signals are to be mixed. If the buffer size is just a single sample, there's no such delay and the mode of operation can be properly called 'realtime'. In some situations, such behavior is required, that's why the \texttt{Filter} class also provides a special \texttt{process} function which produces just a single output sample from a single input sample. An idiom, typically seen throughout the library in realtime capable classes, is that a buffer based \texttt{process} function actually calls a (possibly inlined) single sample based \texttt{process} function inside a loop that runs over all the samples in the buffer. If you are building a modular system with modules from RAPT and you want to introduce a feedback loop in a modular patch, you will probably want to use the the sample based processing functions. In this context, your feedback loop will then only have a single sample of delay - you can use the output of a module produced at instant $n$ as input to the same module from instant $n+1$ onwards.
+
+\subparagraph{Zero Delay Feedback}
+In cases where even that single sample of delay in the feedback path is too much, you can use special \texttt{processNoUpdate} functions which can produce the output sample without updating the internal state of the object. Using these functions, you might be able to set up a convergent iteration [t.b.c. ...]. %Such a scheme is called a fixpoint iteration - bett
+
+
+
+
+
+
+
+
+
+
+
+
+%\subsection{Frequency Analysis}
+%\subsection{Interpolation}
+
+
+
+
+
+
+
+
+
+
