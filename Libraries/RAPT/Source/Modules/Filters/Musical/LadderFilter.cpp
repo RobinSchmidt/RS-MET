@@ -5,7 +5,7 @@ LadderFilter<TSig, TPar>::LadderFilter()
   cutoff     = 1000.0;
   resonance  = 0.0;
   setMode(LP_24);
-  calcCoeffs();
+  updateCoefficients();
   reset();
 }
 
@@ -13,21 +13,21 @@ template<class TSig, class TPar>
 void LadderFilter<TSig, TPar>::setCutoff(TPar newCutoff)
 {
   cutoff = newCutoff;
-  calcCoeffs();
+  updateCoefficients();
 }
 
 template<class TSig, class TPar>
 void LadderFilter<TSig, TPar>::setSampleRate(TPar newSampleRate)
 {
   sampleRate = newSampleRate;
-  calcCoeffs();
+  updateCoefficients();
 }
 
 template<class TSig, class TPar>
 void LadderFilter<TSig, TPar>::setResonance(TPar newResonance)
 {
   resonance = newResonance;
-  calcCoeffs();
+  updateCoefficients();
 }
 
 template<class TSig, class TPar>
@@ -60,35 +60,26 @@ void LadderFilter<TSig, TPar>::setMode(int newMode)
     case BP_12_12: setMixingCoefficients(0,  0,   4,  -8,  4);  break;
     case BP_18_6:  setMixingCoefficients(0,  4, -12,  12, -4);  break;  
 
-    //// these were found in a thread on KVR: http://www.kvraudio.com/forum/viewtopic.php?&t=466588 
-    //case KVR_BP2:  setMixingCoefficients(0,  2, -2,  0,  0);  break;  // is BP_6_6 * 2 (scaled up by 2)
-    //case KVR_BP4:  setMixingCoefficients(0,  0,  4, -8,  4);  break;  // is BP_12_12 * 4
+    //// these additional modes were found in a thread on KVR: 
+    // http://www.kvraudio.com/forum/viewtopic.php?&t=466588 
     //case KVR_NF2:  setMixingCoefficients(1, -2,  2,  0,  0);  break;
     //case KVR_NF4:  setMixingCoefficients(1, -4,  8, -8,  4);  break;
     //case KVR_PF2:  setMixingCoefficients(1, -1,  1,  0,  0);  break;
     //case KVR_PF4:  setMixingCoefficients(1, -2,  3, -2,  1);  break;
-    //  // The 1st 2 are bandpasses scaled by 2, the 2nd two notch filters and the last
-    //  // 2 seem to be allpasses. It seems better to scale the bandpasses by factor 2 - they are too
-    //  // quiet otherwise - the scaling is important! maybe just scale by the sum of the 2 slopes divided 
-    //  // by 6 ...check out the math
+    // the 1st two are notches, the 2nd two allpasses
 
     default:       setMixingCoefficients(0,  0,  0,  0,  0);  break; // out of range -> silence
     }
   }
 }
 
+// inquiry:
+
 template<class TSig, class TPar>
 void LadderFilter<TSig, TPar>::getState(TSig *state)
 {
   for(int i = 0; i < 5; i++) // later use: ArrayFunctions::copy(y, state, 5);
     state[i] = y[i];
-}
-
-template<class TSig, class TPar>
-void LadderFilter<TSig, TPar>::reset()
-{
-  for(int i = 0; i < 5; i++) // later use: ArrayFunctions::clear(y, 5);
-    y[i] = 0;
 }
 
 template<class TSig, class TPar>
@@ -120,12 +111,50 @@ TPar LadderFilter<TSig, TPar>::getMagnitudeResponseAt(TPar frequency)
   // function -> computer algebra
 }
 
-//// test:
-//template<class TSig, class TPar>
-//TPar LadderFilter<TSig, TPar>::computeCompensationGain(TPar k)
-//{
-//  return 1+k;
-//}
+// audio processing:
+
+template<class TSig, class TPar>
+inline TSig LadderFilter<TSig, TPar>::getSampleNoGain(TSig in)
+{
+  y[4] /= 1 + y[4]*y[4];     // (ad hoc) nonlinearity applied to the feedback signal
+  y[0]  = in - k*y[4];       // linear
+  //y[0] /= 1 + y[0]*y[0];     // nonlineariry applied to input plus feedback signal
+  y[1]  = b*y[0]  - a*y[1];
+  y[2]  = b*y[1]  - a*y[2];
+  y[3]  = b*y[2]  - a*y[3];
+  y[4]  = b*y[3]  - a*y[4];
+  return c[0]*y[0] + c[1]*y[1] + c[2]*y[2] + c[3]*y[3] + c[4]*y[4];
+
+  // we should experiment with placing saturation at different points..
+}
+
+template<class TSig, class TPar>
+inline TSig LadderFilter<TSig, TPar>::getSample(TSig in)
+{
+  return g * getSampleNoGain(in);
+  // \todo Make the amount of gain compensation available as user parameter - we then compute
+  // g = 1 + k * compensationAmount; instead of g = 1 + k -> filter becomes continuously adjustable 
+  // between no compensation and full compensation. Then, we also don't really need the factored 
+  // out getSampleNoGain fucntion anymore
+}
+
+template<class TSig, class TPar>
+inline void LadderFilter<TSig, TPar>::process(TSig *in, TSig *out, int length)
+{
+  for(int n = 0; n < length; n++)
+    out[n] = getSample(in[n]);
+}
+
+// misc:
+
+template<class TSig, class TPar>
+void LadderFilter<TSig, TPar>::reset()
+{
+  for(int i = 0; i < 5; i++) // later use: ArrayFunctions::clear(y, 5);
+    y[i] = 0;
+}
+
+// coefficient computations:
 
 template<class TSig, class TPar>
 TPar LadderFilter<TSig, TPar>::computeFeedbackFactor(TPar fb, TPar cosWc, TPar a, TPar b)
@@ -153,9 +182,7 @@ void LadderFilter<TSig, TPar>::computeCoeffs(TPar wc, TPar fb, TPar *a, TPar *b,
   TPar *g)
 {
   computeCoeffs(wc, fb, a, b, k);
-  //*g = computeCompensationGain(*k);
-  *g = 1 + *k;
-  //*g = computeCompensationGain(*a, *b, *k);
+  *g = 1 + *k; // this overall gain factor ensures unit gain at DC regardless of resonance
 }
 
 template<class TSig, class TPar>
@@ -185,8 +212,10 @@ void LadderFilter<TSig, TPar>::computeCoeffs(TPar wc, TPar fb, TPar *a, TPar *b,
   // problem with formulas becoming numerically ill behaved for cutoff frequencies near zero
 }
 
+// internal functions:
+
 template<class TSig, class TPar>
-void LadderFilter<TSig, TPar>::calcCoeffs()
+void LadderFilter<TSig, TPar>::updateCoefficients()
 {
   TPar wc = 2 * (TPar)PI * cutoff / sampleRate;
   computeCoeffs(wc, resonance, &a, &b, &k, &g);

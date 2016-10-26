@@ -1,12 +1,7 @@
 #ifndef RAPT_LADDERFILTER_H_INCLUDED
 #define RAPT_LADDERFILTER_H_INCLUDED
 
-//#include <complex>  // temporary - this should go away and be done in the RAPT.h ..or somewhere else
-//using namespace std;
-
-/**
-
-This is an implementation of a ladder filter based on a chain of 4 one-pole lowpasses without a 
+/** This is an implementation of a ladder filter based on a chain of 4 one-pole lowpasses without a 
 zero (i.e. leaky integrators) of the general form: y[n] = b*x[n] - a*y[n-1] where a is in the range 
 (-1,0] and b = 1+a. It's a linear ladder with a unit delay in the feedback path. The coefficients 
 of the lowpass stages (a,b) and the feedback gain are adjusted in order to compensate for the side 
@@ -22,9 +17,7 @@ to prevent the sound becoming too weak. But this should be done in a subclass (i
 calculations a lot)
 
 \todo: explore the possibilities of spreading the cutoff frequencies of the individual lowpass 
-stages instead of letting them have all the same cutoff frequency
-
-*/
+stages instead of letting them have all the same cutoff frequency */
 
 template<class TSig, class TPar> // signal, parameter types
 class LadderFilter
@@ -51,15 +44,6 @@ public:
     BP_12_6,
     BP_12_12,
     BP_18_6,
-
-    //// experimental, from a KVR thread:
-    //KVR_BP2,   // = BP_6_6 * 2 (2 times louder - fits the lowpass better)
-    //KVR_BP4,   // = BP_12_12 * 2
-    //KVR_NF2,   // notch/bandreject
-    //KVR_NF4,   // notch/bandreject
-    //KVR_PF2,   // 2nd order allpass? phase-shift?
-    //KVR_PF4,   // 4th order allpass
-    //// todo: do the math
 
     NUM_MODES
   };
@@ -116,42 +100,18 @@ public:
   /** Returns the filter's magnitude response at the given frequency in Hz. */
   TPar getMagnitudeResponseAt(TPar frequency);
 
-  // currently, the
-
 
   /** \name Audio Processing */
 
   /** Returns a single output sample without gain-compensation */
-  inline TSig getSampleNoGain(TSig in)
-  {
-    //y[0] = in     - k*y[4];
-    //y[0] = tanh(in - k*y[4]);   // test
-
-    y[4] /= 1 + y[4]*y[4];     // nonlinearity applied to the feedback signal
-    y[0]  = in - k*y[4];       // linear
-    //y[0] /= 1 + y[0]*y[0];     // nonlineariry applied to input plus feedback signal
-    y[1]  = b*y[0]  - a*y[1];
-    y[2]  = b*y[1]  - a*y[2];
-    y[3]  = b*y[2]  - a*y[3];
-    y[4]  = b*y[3]  - a*y[4];
-    return c[0]*y[0] + c[1]*y[1] + c[2]*y[2] + c[3]*y[3] + c[4]*y[4];
-
-    // we should experiment with placing saturation at different points..
-  }
+  inline TSig getSampleNoGain(TSig in);
 
   /** Returns a single output sample (with gain-compensation such that the DC-gain remains 
   unity, irrespective of the resonance) */
-  inline TSig getSample(TSig in)
-  {
-    return g * getSampleNoGain(in);
-  }
+  inline TSig getSample(TSig in);
 
   /** Processes a buffer of given length. */
-  inline void process(TSig *in, TSig *out, int length)
-  {
-    for(int n = 0; n < length; n++)
-      out[n] = getSample(in[n]);
-  }
+  inline void process(TSig *in, TSig *out, int length);
 
 
   /** \name Misc */
@@ -161,11 +121,6 @@ public:
 
 
   /** \name Coefficient Computations */
-
-  ///** Computes the desired compensation gain factor to get unit gain at DC with given filter- and
-  //feedback coefficients a, b, k. */
-  ////static TPar computeCompensationGain(TPar a, TPar b, TPar k);
-  //static TPar computeCompensationGain(TPar k);
 
   /** Given some normalized net feedback loop gain fb (in the range 0..1 where 1 is the 
   self-oscillation/instability limit), cos(wc) and lowpass coefficients a, b, this function 
@@ -193,13 +148,12 @@ public:
 
   // make a static method for the output coefficients c[] 
 
-
 protected:
 
   /** \name Internal Functions */
                         
   /** Calculates the one-pole coefficients, feedback-gain and output gain from the parameters. */
-  virtual void calcCoeffs(); 
+  virtual void updateCoefficients(); 
 
   /** \name Data */
 
@@ -212,8 +166,6 @@ protected:
   TPar k;           // feedback gain
   TPar g;           // output gain
   TPar a, b;        // leaky integrator coefficients for a stage: y[n] = b*x[n] - a*y[n-1]
-
-  // maybe combine cutoff and samplerate into wc (normalized radian cutoff)
 };
 
 #endif
