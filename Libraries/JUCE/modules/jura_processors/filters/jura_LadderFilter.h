@@ -26,7 +26,8 @@ public:
 
   /** Creates the GUI editor (returns an object of an appropriate subclass of 
   AudioProcessorEditor) */
-  AudioProcessorEditor *createEditor() override;
+  //AudioProcessorEditor *createEditor() override;
+  AudioModuleEditor *createEditor() override;
 
   // overriden from AudioModule baseclass:
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;

@@ -80,10 +80,4 @@ inline double expToLin(double in, double inMin, double inMax, double outMin, dou
   return outMin + tmp * (outMax - outMin);
 }
 
-
-// get rid of rs prefix
-// if we don't want to use inlining, the implementations must be moved to the cpp file to avoid
-// linker errors ("function already defined")
-
-
 #endif

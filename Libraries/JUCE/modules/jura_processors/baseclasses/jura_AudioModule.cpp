@@ -24,6 +24,7 @@ void AudioModuleDeletionWatcher::removeWatchedAudioModule(AudioModule
 }
 
 //=================================================================================================
+// class AudioModule
 
 // construction/destruction:
 
@@ -355,108 +356,293 @@ void AudioModule::updateCoreObjectAccordingToParameters()
     parameterChanged(observedParameters[i]);
 }
 
-//-------------------------------------------------------------------------------------------------
-// overrides for juce:AudioProcessor baseclass:
+//=================================================================================================
+// class AudioModuleEditor
 
-void AudioModule::prepareToPlay(double sampleRate, int maximumExpectedSamplesPerBlock) 
+AudioModuleEditor::AudioModuleEditor(AudioModule* newModuleToEdit)
 {
-  if(getProcessingPrecision() == singlePrecision)
+  plugInLock = newModuleToEdit->plugInLock;
+
+  ScopedLock scopedLock(*plugInLock);
+
+  moduleToEdit = newModuleToEdit;
+
+  if( moduleToEdit != NULL )
   {
-    // The host is going to call the single precision version of the processBlock callback but we
-    // need the double precision version to be called internally. So we allocate an internal buffer
-    // that is used for back and forth conversion.
-    internalAudioBuffer.setSize(numChannels, maximumExpectedSamplesPerBlock,
-      false,  // keepExistingContent
-      false,  // clearExtraSpace
-      true);  // avoidReallocating
+    moduleToEdit->checkForCrack(); // todo: move this to somewhere else - maybe triggered by a Timer-thread
+    setHeadlineText(moduleToEdit->getModuleHeadlineString());
+  }
+
+  addWidget( infoField = new RTextField() );
+  infoField->setNoBackgroundAndOutline(true);
+  infoField->setDescription(juce::String("Description of GUI elements will appear here"));
+  setDescriptionField(infoField, true);
+
+  addWidget( webLink = 
+    new RHyperlinkButton("www.rs-met.com", URL("http://www.rs-met.com")) );
+  webLink->setNoBackgroundAndOutline(true);
+  webLink->setDescription(juce::String("Visit www.rs-met.com in the web"));
+  webLink->setDescriptionField(infoField);
+
+  stateWidgetSet = new StateLoadSaveWidgetSet();
+  addChildColourSchemeComponent( stateWidgetSet );
+  if( moduleToEdit != NULL )
+    moduleToEdit->addStateWatcher(stateWidgetSet);
+  stateWidgetSet->setDescriptionField(infoField);
+  stateWidgetSet->stateLabel->setText(juce::String("Preset"));
+  stateWidgetSet->addChangeListener(this);
+
+  addWidget( setupButton = new RClickButton(juce::String("Setup")) );
+  setupButton->setDescription(juce::String("Opens a dialog for the general settings"));
+  setupButton->setDescriptionField(infoField);
+  setupButton->setClickingTogglesState(false);
+  setupButton->addRButtonListener(this);
+
+  setupDialog = NULL; // we create it only when needed the first time - i.e. 'lazy initialization'
+
+  isTopLevelEditor      = false;
+  presetSectionPosition = RIGHT_TO_HEADLINE;
+  linkPosition          = RIGHT_TO_INFOLINE;
+  numHueOffsets         = 0;
+
+  loadPreferencesFromFile();
+  updateWidgetsAccordingToState();
+
+  setSize(400, 300); // do we need this?
+}
+
+AudioModuleEditor::~AudioModuleEditor()
+{
+  ScopedLock scopedLock(*plugInLock);
+  stateWidgetSet->removeChangeListener(this);
+  if( moduleToEdit != NULL )
+    moduleToEdit->removeStateWatcher(stateWidgetSet);
+  deleteAllChildren();
+}
+
+//-------------------------------------------------------------------------------------------------
+// setup:
+
+void AudioModuleEditor::setModuleToEdit(AudioModule *newModuleToEdit)
+{
+  ScopedLock scopedLock(*plugInLock);
+  if( moduleToEdit != NULL )
+    moduleToEdit->removeStateWatcher(stateWidgetSet);
+  moduleToEdit = newModuleToEdit;
+  if( moduleToEdit != NULL )
+  {
+    setHeadlineText(moduleToEdit->getModuleHeadlineString());
+    moduleToEdit->addStateWatcher(stateWidgetSet);
+  }
+}
+
+void AudioModuleEditor::invalidateModulePointer()
+{
+  ScopedLock scopedLock(*plugInLock);
+  moduleToEdit = NULL;
+}
+
+//-------------------------------------------------------------------------------------------------
+// inquiry:
+
+int AudioModuleEditor::getPresetSectionBottom()
+{
+  return stateWidgetSet->getBottom();
+}
+
+//-------------------------------------------------------------------------------------------------
+// callbacks:
+
+void AudioModuleEditor::rDialogBoxChanged(RDialogBox* dialogBoxThatHasChanged)
+{
+  copyColourSettingsFrom(setupDialog);
+}
+
+void AudioModuleEditor::rDialogBoxOKClicked(RDialogBox* dialogBoxThatWantsToAcceptAndLeave)
+{
+  copyColourSettingsFrom(setupDialog);
+  setupDialog->setVisible(false);
+  savePreferencesToFile();
+}
+
+void AudioModuleEditor::rDialogBoxCancelClicked(RDialogBox* dialogBoxThatWantsToBeCanceled)
+{
+  copyColourSettingsFrom(setupDialog);
+  setupDialog->setVisible(false);
+}
+
+void AudioModuleEditor::rButtonClicked(RButton *buttonThatWasClicked)
+{
+  if( buttonThatWasClicked == setupButton )
+    openPreferencesDialog();
+}
+
+void AudioModuleEditor::changeListenerCallback(juce::ChangeBroadcaster *objectThatHasChanged)
+{
+  if( objectThatHasChanged == stateWidgetSet )
+    updateWidgetsAccordingToState();
+}
+
+void AudioModuleEditor::updateWidgetsAccordingToState()
+{
+  ScopedLock scopedLock(*plugInLock);
+  Editor::updateWidgetsAccordingToState();
+  if( moduleToEdit != NULL )
+    stateWidgetSet->stateFileNameLabel->setText(moduleToEdit->getStateNameWithStarIfDirty());
+  updateWidgetEnablement();
+}
+
+void AudioModuleEditor::resized()
+{
+  Editor::resized();
+
+  if( isTopLevelEditor )
+  {
+    setupButton->setVisible(true);
+    setupButton->setBounds(getWidth()-44, 4, 40, 16);
+
+
+    infoField->setVisible(true);
+    infoField->setBounds(0, getHeight()-16, getWidth(), 16);
+
+    //int webLinkWidth = 60;
+    webLink->setVisible(true);
+    //int webLinkWidth = boldFont10px.getTextPixelWidth(webLink->getButtonText(), 1);
+    int webLinkWidth = BitmapFontRoundedBoldA10D0::instance.getTextPixelWidth(webLink->getButtonText(), 1);
+
+    if( linkPosition == RIGHT_TO_HEADLINE )
+      webLink->setBounds(getWidth()-webLinkWidth-6, 0, webLinkWidth, 20);
+    else if( linkPosition == RIGHT_TO_INFOLINE )
+      webLink->setBounds(getWidth()-webLinkWidth-6, getHeight()-16+3, webLinkWidth, 16);
+    else
+      webLink->setVisible(false);
   }
   else
   {
-    // The host will call the double precision version of the processBlock callback, so we don't 
-    // need an internal conversion buffer. We don't want to waste memory, so we request the
-    // internal buffer to allocate a zero-sized memory block (i hope, this works - ToDo: check in 
-    // the debugger):
-    internalAudioBuffer.setSize(0, 0, false, false, false);
+    setupButton->setBounds(getWidth(), 4, 40, 16); // shifts it out to the right
+    setupButton->setVisible(false);
+    infoField->setVisible(false);
+
+    infoField->setBounds(0, getHeight(), getWidth(), 16); 
+    // despite being invisible, it needs well-defined bounds anyway because some subclasses 
+    // use them to arrange their widgets - we postion the infoField just below the actual 
+    // component in this case
+
+    webLink->setVisible(false);
   }
 
-  // Maybe we could release the buffer when the host calls releaseResources() - we'll see.
-
-  setSampleRate(sampleRate);  // Subclasses may want to do something in their overriden version
-}
-
-void AudioModule::getStateInformation(juce::MemoryBlock& destData)
-{
-  XmlElement* xmlState = getStateAsXml("StateAsRequestedByHost", false);
-  copyXmlToBinary(*xmlState, destData);
-  delete xmlState;
-}
-
-void AudioModule::setStateInformation(const void* data, int sizeInBytes)
-{
-  XmlElement* const xmlState = getXmlFromBinary(data, sizeInBytes);
-  //ParameterObserver::globalAutomationSwitch = false; // why this - threading problems? -> interferes with total recall in quadrifex
-  ParameterObserver::guiAutomationSwitch = false;
-  setStateFromXml(*xmlState, "recalled by host", false);
-  ParameterObserver::guiAutomationSwitch = true;
-  //ParameterObserver::globalAutomationSwitch = true;
-  delete xmlState;
-
-  // some hosts (Tracktion) seem to keep and re-use an open GUI when a new project is loaded, so
-  // we must make sure, that this re-used GUI is updated according to the new recalled state - we 
-  // do this by broadcasting a changeMessage which will be picked up by AudioPlugInEditor
-  //sendChangeMessage();
-  // (this comment is old and refers to the old way of doing it ...but i want to verify this in 
-  // Tracktion someday)
-}
-
-// maybe move this helper function to jura_framework/tools:
-template<class SourceType, class TargetType>
-void convertAudioBuffer(const AudioBuffer<SourceType>& source, AudioBuffer<TargetType>& target)
-{
-  int numChannels = jmin(source.getNumChannels(), target.getNumChannels());
-  int numSamples  = jmin(source.getNumSamples(),  target.getNumSamples());
-  const SourceType *sourcePointer;    
-        TargetType *targetPointer;
-  for(int channel = 0; channel < numChannels; channel++)
+  if( presetSectionPosition != INVISIBLE )
   {
-    sourcePointer = source.getReadPointer(channel);
-    targetPointer = target.getWritePointer(channel);
-    for(int sample = 0; sample < numSamples; sample++)
-      targetPointer[sample] = (TargetType)sourcePointer[sample];
+    int w = setupButton->getX();;
+    stateWidgetSet->setVisible(true);
+    if( Editor::headlineStyle == NO_HEADLINE )
+      stateWidgetSet->setBounds(0, 4, w, 16);
+    else
+    {
+      int offset = 0;
+      if( closeButton != NULL )
+        offset = 20;
+      if( presetSectionPosition == RIGHT_TO_HEADLINE )
+        stateWidgetSet->setBounds(getHeadlineRight(), 6, w-getHeadlineRight()-offset, 16);
+      else if( presetSectionPosition == BELOW_HEADLINE )
+        stateWidgetSet->setBounds(0, getHeadlineBottom()+4, w, 16);
+    }
+  }
+  else
+  {
+    stateWidgetSet->setVisible(false);
+    stateWidgetSet->setBounds(0, 0, 0, 0);
   }
 }
 
-void AudioModule::processBlock(AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
+void AudioModuleEditor::openPreferencesDialog()
+{
+  if( setupDialog == NULL )
+  {
+    addChildComponent( setupDialog = new ColourSchemeSetupDialog(this, numHueOffsets) );
+    setupDialog->setDescriptionField(infoField, true);
+    setupDialog->addListener(this);
+  }
+  setupDialog->setCentreRelative(0.5f, 0.5f);
+  setupDialog->setVisible(true);
+}
+
+void AudioModuleEditor::loadPreferencesFromFile()
+{
+  XmlElement *xmlPreferences = getXmlFromFile( getPreferencesFileName() );    
+  if( xmlPreferences == NULL ) 
+    return;
+  XmlElement *xmlColors = xmlPreferences->getChildByName(juce::String("ColorScheme"));
+  if( xmlColors == NULL ) 
+    return;
+  setColourSchemeFromXml(*xmlColors);
+  delete xmlPreferences;
+}
+
+void AudioModuleEditor::savePreferencesToFile()
+{
+  XmlElement *xmlPreferences = new XmlElement( getPreferencesTagName() );
+  XmlElement *xmlColors      = getColourSchemeAsXml();
+  xmlPreferences->addChildElement(xmlColors);
+  saveXmlToFile(*xmlPreferences, File(getPreferencesFileName()), false);
+  delete xmlPreferences; // will also delete xmlColors
+}
+
+juce::String AudioModuleEditor::getPreferencesTagName()
 {
   ScopedLock scopedLock(*plugInLock);
-
-  convertAudioBuffer(buffer, internalAudioBuffer);  // float -> double
-  processBlock(internalAudioBuffer, midiMessages);  // process doubles
-  convertAudioBuffer(internalAudioBuffer, buffer);  // double -> float
+  if( moduleToEdit != NULL )
+    return moduleToEdit->getModuleName() + juce::String("Preferences");
+  else
+    return juce::String("Preferences");
 }
 
-void AudioModule::processBlock(AudioBuffer<double> &buffer, MidiBuffer &midiMessages)
+juce::String AudioModuleEditor::getPreferencesFileName()
 {
-  ScopedLock scopedLock(*plugInLock);
-
-  int numChannels = buffer.getNumChannels();
-  int numSamples  = buffer.getNumSamples();
-  double **inOutBuffer = buffer.getArrayOfWritePointers();
-
-  processBlock(inOutBuffer, numChannels, numSamples);
+  return getApplicationDirectory() + File::separatorString + getPreferencesTagName() 
+    + juce::String(".xml");
 }
 
-bool AudioModule::setPreferredBusArrangement(bool isInput, int bus, 
-  const AudioChannelSet& preferredSet)
-{
-  // I don't really know, if it's necessarry to override this, but i did hit a breakpoint related 
-  // to this one day and overriding this made it go away. But it might have been something else to 
-  // blame (some things have changed since then). We need some testing/debugging with and without 
-  // this override...
-
-  // Reject any bus arrangements that are not compatible with your plugin
-  const int numChannels = preferredSet.size();
-  if (numChannels != 1 && numChannels != 2)
-    return false;
-  return AudioProcessor::setPreferredBusArrangement(isInput, bus, preferredSet);
-}
+//void AudioModuleEditor::autoGenerateSliders()
+//{
+//  ScopedLock scopedLock(*plugInLock);
+//  if( moduleToEdit == NULL )
+//    return;
+//
+//  sliders.getLock().enter();
+//
+//  Parameter* p;
+//  RSlider*   s;
+//  for(int i=0; i < moduleToEdit->getNumParameters(); i++)
+//  {
+//    // retrieve data of the parameter:
+//    p           = moduleToEdit->getParameterByIndex(i);
+//    juce::String name = juce::String(p->getName());
+//
+//    s = new RSlider(name + juce::String(T("Slider")));
+//    addWidget(s);
+//    s->setRange(p->getLowerLimit(), p->getUpperLimit(), p->getInterval(), p->getDefaultValue());
+//    s->assignParameter(p);
+//    s->setSliderName(name);
+//    s->setDescriptionField(infoField);
+//    s->setStringConversionFunction(&valueToString);
+//    sliders.addIfNotAlreadyThere(s);
+//  }
+//
+//  sliders.getLock().exit();
+//}
+//
+//RSlider* AudioModuleEditor::getSliderByName(const juce::String &sliderName)
+//{
+//  automatableSliders.getLock().enter();
+//  for(int i=0; i<automatableSliders.size(); i++)
+//  {
+//    if( automatableSliders[i]->getSliderName() == sliderName )
+//    {
+//      automatableSliders.getLock().exit();
+//      return automatableSliders[i];
+//    }
+//  }
+//  automatableSliders.getLock().exit();
+//  return NULL;
+//}

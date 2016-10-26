@@ -70,20 +70,33 @@ void Ladder::createStaticParameters()
 //-------------------------------------------------------------------------------------------------
 // Editor creation:
 
-template<class ProcessorType, class EditorType>
-AudioProcessorEditor* createAudioProcessorEditor(ProcessorType processor, EditorType *dummy)
+AudioModuleEditor* Ladder::createEditor()
 {
-  jura::ParameterObserver::guiAutomationSwitch = false;  // don't automate widgets during creation
-  EditorType* editor = new EditorType(processor);
-  AudioProcessorEditor *wrapper = new AudioModuleEditorWrapper(editor, processor);
-  jura::ParameterObserver::guiAutomationSwitch = true;   // now, widgets can be automated again
-  return wrapper;
+  return new jura::LadderEditor(this);
+
+  //jura::ParameterObserver::guiAutomationSwitch = false;  // don't automate widgets during creation
+  //LadderEditor* editor = new LadderEditor(this);
+  //jura::ParameterObserver::guiAutomationSwitch = true;   // now, widgets can be automated again
+  //return editor;
+  //// wrap this into a template-based code generation macro...
 }
-AudioProcessorEditor* Ladder::createEditor()
-{
-  LadderEditor *dummy = nullptr;
-  return createAudioProcessorEditor(this, dummy);
-}
+
+//// might be obsolote soon - or maybe adapted:
+//template<class ProcessorType, class EditorType>
+//AudioProcessorEditor* createAudioProcessorEditor(ProcessorType processor, EditorType *dummy)
+//{
+//  jura::ParameterObserver::guiAutomationSwitch = false;  // don't automate widgets during creation
+//  EditorType* editor = new EditorType(processor);
+//  AudioProcessorEditor *wrapper = new AudioModuleEditorWrapper(editor, processor);
+//  jura::ParameterObserver::guiAutomationSwitch = true;   // now, widgets can be automated again
+//  return wrapper;
+//}
+
+//AudioProcessorEditor* Ladder::createEditor()
+//{
+//  LadderEditor *dummy = nullptr;
+//  return createAudioProcessorEditor(this, dummy);
+//}
 // The template function createAudioProcessorEditor and the createEditor function that makes use of 
 // the template are a little trick to let the compiler generate the equivalent of the following 
 // code:

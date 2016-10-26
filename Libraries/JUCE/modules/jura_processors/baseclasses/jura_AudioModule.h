@@ -2,6 +2,7 @@
 #define jura_AudioModule_h
 
 class AudioModule;
+class AudioModuleEditor;
 
 /** A class that can be informed (via a callback method) when an AudioModule object is going to be 
 deleted. Mainly intended as baseclass for GUI elements that keep a pointer to an AudioModule that 
@@ -9,9 +10,7 @@ is being edited
 
 hmm.. - maybe, we don't need that. The documentation of the 
 AudioProcessorEditor* AudioProcessor::createEditor() function says:
-"It's safe to assume that an editor will be deleted before its filter."
-
-*/
+"It's safe to assume that an editor will be deleted before its filter." */
 
 class JUCE_API AudioModuleDeletionWatcher
 {
@@ -42,9 +41,15 @@ protected:
 
 //=================================================================================================
 
-/** This class is the base class for all audio modules. rename to RAudioProcessor or AudioUnit.*/
+/** This class is the base class for all audio modules. 
+rename to RAudioProcessor or AudioUnit.
+\todo get rid of inheritance from juce::AudioProcessor - implemet a wrapper class instead. The 
+AudioModule class should be lean and don't always contain all the overhead inherited from
+juce::AudioProcessor.
 
-class JUCE_API AudioModule : public AudioProcessor, public AutomatableModule, 
+*/
+
+class JUCE_API AudioModule : /*public AudioProcessor,*/ public AutomatableModule, 
   public StateFileManager
 {
 
@@ -118,6 +123,10 @@ public:
   their state. This makes preset files more economical. */
   bool wantsSaveAndRecallState() const { return saveAndRecallState; }
 
+  /** Your subclass must override this to return an object of an appropriate subclass of
+  AudioModuleEditor. */
+  virtual AudioModuleEditor *createEditor() = 0;
+
   //-----------------------------------------------------------------------------------------------
   // automation and state management:
 
@@ -189,38 +198,6 @@ public:
   /** Flag to indicate that this module needs tempo sync information (current BPM). */
   bool wantsTempoSyncInfo;
 
-  // These should all be factored out into a subclass AudioModuleWithMidi -  in this subclass
-  // we override the processBlock(AudioBuffer<double> &buffer, MidiBuffer &midiMessages) in order 
-  // to actually use the incoming midi data. In this override we take care of sample accurate 
-  // handling of midi events...
-
-  //-----------------------------------------------------------------------------------------------
-  // mandatory overrides for juce::AudioProcessor baseclass:
-
-  virtual const String getName() const override { return "AudioModule"; }
-  virtual void  prepareToPlay(double sampleRate, int maximumExpectedSamplesPerBlock) override;
-  virtual void releaseResources() override {}
-  virtual double getTailLengthSeconds() const override { return 0.0; }
-  virtual bool acceptsMidi()  const override { return false; }
-  virtual bool producesMidi() const override { return false; }
-  virtual bool hasEditor() const override { return true; }
-  virtual AudioProcessorEditor* createEditor() override { return nullptr; } // override in your subclass !!
-  virtual int getNumPrograms() override { return 1; }                       // 1, because 0 is not allowed
-  virtual int getCurrentProgram() override { return 0; }
-  virtual void setCurrentProgram(int index) override {}
-  virtual const String getProgramName (int index) override { return String::empty; }
-  virtual void changeProgramName(int index, const String& newName) override {}
-  virtual void getStateInformation(juce::MemoryBlock& destData) override;
-  virtual void setStateInformation(const void* data, int sizeInBytes); 
-  virtual void processBlock(AudioBuffer<float>& buffer, MidiBuffer& midiMessages) override;
-
-  // optional AudioProcessor overrides:
-  virtual void processBlock(AudioBuffer<double> &buffer, MidiBuffer &midiMessages) override;
-  virtual bool supportsDoublePrecisionProcessing() const override { return true; }
-
-  virtual bool setPreferredBusArrangement(bool isInput, int bus,
-    const AudioChannelSet& preferredSet) override;
-
 protected:
 
   /** Must be overriden by subclasses to fill the inherited array of observed parameters. */
@@ -230,17 +207,6 @@ protected:
   states. */
   juce::Array<AudioModule*, CriticalSection> childModules;
 
-  /** The number of channels that is desired for the in/out buffer that is passed to the 
-  processBlock callback. You may set that value in the constructor of your subclass. If the number
-  of channels is supposed to change after construction, we may have to make sure that we are in a 
-  suspended state before we change that value. I did not yet run into this situation, so i haven't 
-  figured it out. */
-  int numChannels = 2;
-
-  /** An internal double precision buffer that is used in cases, where the host calls the single
-  precision version of the processBlock callback. In such a case, we need to convert back and forth
-  between float/double and double/float. That's what this buffer is used for. */
-  AudioBuffer<double> internalAudioBuffer; 
 
   CriticalSection *plugInLock;     // mutex to access the wrapped core dsp object - make this a nom-pointer member
   double triggerInterval;          // interval (in beats) for calls to trigger()
@@ -268,10 +234,143 @@ private:
   juce_UseDebuggingNewOperator;
 };
 
+
 //=================================================================================================
 
-// here goes the subclass AudioModuleWithMidi....
+/** Baseclass for GUI editors for AudioModule objects. */
 
+class AudioModuleEditor : public jura::Editor, public ChangeListener, public RDialogBoxListener, 
+  public RButtonListener
+{
+
+public:
+
+  enum positions
+  {
+    INVISIBLE,
+    RIGHT_TO_HEADLINE,
+    BELOW_HEADLINE,
+    RIGHT_TO_INFOLINE
+  };
+
+  //-----------------------------------------------------------------------------------------------
+  // construction/destruction:
+
+  /** Constructor. */
+  AudioModuleEditor(AudioModule* newModuleToEdit);
+
+  /** Destructor. */
+  virtual ~AudioModuleEditor();
+
+  //-----------------------------------------------------------------------------------------------
+  // setup:
+
+  /** Passes a new AudioModule objcet to be edited. This should be used when the same editor object 
+  should be re-used for editing another AudioModule. */
+  virtual void setModuleToEdit(AudioModule* newModuleToEdit);
+
+  /** Sets the pointer to the moduleToEdit member to NULL without doing anything else. This should 
+  be called whenever the underlying AudioModule was deleted. */
+  virtual void invalidateModulePointer();
+
+  /** Makes this a top-level editor meaning that some additional widgets (global preferences 
+  button, infoline etc.) should be drawn. */
+  virtual void setAsTopLevelEditor(bool isTopLevel) { isTopLevelEditor = isTopLevel; }
+
+  /** Sets the position of the link to the website. @see positions */
+  virtual void setLinkPosition(int newPosition) { linkPosition = newPosition; }
+
+  /** Sets the position of preset load/saev section. @see positions */
+  virtual void setPresetSectionPosition(int newPosition) { presetSectionPosition = newPosition; }
+
+  //-----------------------------------------------------------------------------------------------
+  // inquiry:
+
+  /** Returns the bottom (in pixels) of the preset section. */
+  virtual int getPresetSectionBottom();
+
+  //-----------------------------------------------------------------------------------------------
+  // callbacks:
+
+  virtual void rDialogBoxChanged(RDialogBox* dialogBoxThatHasChanged);
+  virtual void rDialogBoxOKClicked(RDialogBox* dialogBoxThatWantsToAcceptAndLeave);
+  virtual void rDialogBoxCancelClicked(RDialogBox* dialogBoxThatWantsToBeCanceled);
+  virtual void rButtonClicked(RButton *buttonThatWasClicked);
+  virtual void changeListenerCallback(juce::ChangeBroadcaster *objectThatHasChanged);
+  virtual void resized();
+
+  /** Updates the widgets according to the state of the assignedParameter (if any) and updates the 
+  state-widget set. calls updateWidgetEnablement(). */
+  virtual void updateWidgetsAccordingToState();
+
+  /** Override this if you want to update the enablement of some widgets according to the state
+  of the module. Will be called from updateWidgetsAccordingToState(). */
+  virtual void updateWidgetEnablement() {}
+
+  //-----------------------------------------------------------------------------------------------
+  // public data members:
+
+  StateLoadSaveWidgetSet* stateWidgetSet;  // \todo check, why we have this in the public area?
+
+protected:
+
+  /** Automatically generates a slider for each parameter in the module which is being edited. */
+  //virtual void autoGenerateSliders();
+
+  /** Returns a poiner to an RSlider object with the given name or NULL if no such slider exists
+  (in our array automatableSliders) */
+  //virtual RSlider* getSliderByName(const juce::String& sliderName);
+
+  /** Opens a dialog to adjust the global preferences like the colour-scheme, preset paths etc.
+  If your subclass needs some special settings (like, for example, a sample-path), you may override
+  this an open a custom dialog in your class. */
+  virtual void openPreferencesDialog();
+
+  /** Loads the current colorscheme into a file. @see aveColorSchemeToFile(). */
+  virtual void loadPreferencesFromFile();
+
+  /** Saves the current colorscheme into a file. The filename will be given by the name of the 
+  underlying AudioModule concatenated with 'Preferences'. Later we may want to store other settings
+  there as well (such as preset- and sample-paths etc.) - we may then have to move the function 
+  into AudioModule. */
+  virtual void savePreferencesToFile();
+
+  // todo: replace loadColorSchemeFromFile()/saveColorSchemeToFile() with loadPreferencesFromFile()/savePreferencesToFile(),
+  // introduce methods getPreferencesAsXml/setPreferencesFromXml - these can then be overrided by subclasses
+
+  /** Returns the xml tag-name that should be used for storing the preferences. */
+  virtual juce::String getPreferencesTagName();
+
+  /** Returns the xml filename that should be used for storing the preferences. */
+  virtual juce::String getPreferencesFileName();
+
+  // factor some of them out into a subclass TopLevelAudioModule
+  RClickButton            *setupButton;
+  RHyperlinkButton        *webLink;
+  RTextField              *infoField;
+  ColourSchemeSetupDialog *setupDialog;
+
+  CriticalSection *plugInLock;         // pointer to the global plugInLock
+  AudioModule     *moduleToEdit;
+
+  int presetSectionPosition, linkPosition;
+
+  /** This is an array of the automatable sliders - if add RSlider objects here, they will be
+  updated in AudioModuleEditor::updateWidgetsAccordingToState via calls to their
+  updateWidgetFromAssignedParameter() methods. In the destructor, this array is cleared first
+  without deleting the objects, such that it does not interfere with the deleteAllChildren-function
+  (which is supposed to be called in the destructor). */
+  //OwnedArray<RSlider,   CriticalSection> sliders;
+  //OwnedArray<RButton,   CriticalSection> buttons;
+  //OwnedArray<RComboBox, CriticalSection> comboBoxes;
+
+  // factor out into a class TopLevelEditor (or something like that):
+  bool   drawGradientsBasedOnOutlines, isTopLevelEditor;
+  Colour gradientMidColour;
+  int    numHueOffsets; 
+
+  juce_UseDebuggingNewOperator;
+};
 
 
 #endif 
