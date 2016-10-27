@@ -37,6 +37,13 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Modules\Modulators\Envelopes\BreakpointModulator.cpp" />
+    <ClCompile Include="..\..\Source\Modules\Modulators\Modulators.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Modules\RAPT.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -44,7 +51,12 @@
     <ClInclude Include="..\..\Source\Modules\Basics\Constants.h" />
     <ClInclude Include="..\..\Source\Modules\Filters\Filters.h" />
     <ClInclude Include="..\..\Source\Modules\Filters\Musical\LadderFilter.h" />
+    <ClInclude Include="..\..\Source\Modules\Modulators\Envelopes\BreakpointModulator.h" />
+    <ClInclude Include="..\..\Source\Modules\Modulators\Modulators.h" />
     <ClInclude Include="..\..\Source\Modules\RAPT.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\Source\Modules\Modulators\Ideas.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{12EA9BBD-009F-49DD-8046-AE9D08D9EA9D}</ProjectGuid>

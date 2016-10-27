@@ -1,8 +1,10 @@
 #ifndef RAPT_H_INCLUDED
 #define RAPT_H_INCLUDED
 
-// maybe these standar library includes should go somewhere else?
-#include <complex>
+// maybe these standard library includes should go somewhere else?
+#include <ctgmath>       // template generic math?
+//#include <complex>       // included already by ctgmath
+#include <vector>
 using namespace std;
 
 #include "Basics/Basics.h"           // type definitions, constants, functions, etc.
@@ -15,7 +17,7 @@ using namespace std;
 //#include "Circuits/Circuits.h"       // circuit modeling
 //#include "Spectral/Spectral.h"       // phase vocoder, source/filter modeling
 //#include "Generators/Generators.h"   // oscillator, sample player, etc.
-//#include "Modulators/Modulators.h"   // ADSR, LFO, step-sequencer, breakpoint-modulator, etc.
+#include "Modulators/Modulators.h"   // ADSR, LFO, step-sequencer, breakpoint-modulator, etc.
 //#include "Effects/Effects.h"         // reverb, distortion, dynamics, chorus, etc.
 //#include "Framework/Framework.h"     // parameter handling, save/recall, threading, polyphony, etc.
 //#include "Instruments/Instruments.h" // full blown instruments with polyphony, state-recall, etc.

@@ -10,6 +10,12 @@
     <Filter Include="Filters\Musical">
       <UniqueIdentifier>{426ba0e3-3a09-436c-93f3-086327942d4c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Modulators">
+      <UniqueIdentifier>{794aad85-c7b3-4541-b39b-3667b01ace98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modulators\Envelopes">
+      <UniqueIdentifier>{b8f1e486-93fe-413b-9569-3ebe1b0b7210}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\Modules\Basics\Basics.cpp">
@@ -22,6 +28,12 @@
       <Filter>Filters\Musical</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Modules\RAPT.cpp" />
+    <ClCompile Include="..\..\Source\Modules\Modulators\Modulators.cpp">
+      <Filter>Modulators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Modules\Modulators\Envelopes\BreakpointModulator.cpp">
+      <Filter>Modulators\Envelopes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\Modules\Basics\Basics.h">
@@ -37,5 +49,16 @@
       <Filter>Filters\Musical</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Modules\RAPT.h" />
+    <ClInclude Include="..\..\Source\Modules\Modulators\Modulators.h">
+      <Filter>Modulators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Modules\Modulators\Envelopes\BreakpointModulator.h">
+      <Filter>Modulators\Envelopes</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\Source\Modules\Modulators\Ideas.txt">
+      <Filter>Modulators</Filter>
+    </Text>
   </ItemGroup>
 </Project>

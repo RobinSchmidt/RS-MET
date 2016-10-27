@@ -13,7 +13,7 @@ think) */
 //#include "Circuits/Circuits.cpp" 
 //#include "Spectral/Spectral.cpp" 
 //#include "Generators/Generators.cpp" 
-//#include "Modulators/Modulators.cpp" 
+#include "Modulators/Modulators.cpp" 
 //#include "Effects/Effects.cpp" 
 //#include "Framework/Framework.cpp".
 //#include "Music/Music.cpp"  

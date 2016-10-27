@@ -10,9 +10,11 @@
     <Filter Include="Shared\Plotting">
       <UniqueIdentifier>{51044f81-1047-490e-8f94-95db2290009f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shared\RaptLibraryCode">
+      <UniqueIdentifier>{61bd323a-512f-4a12-90eb-e65a22e58813}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Code\Executables\RAPTInstantiations.cpp" />
     <ClInclude Include="..\..\Source\Executables\Demos\ArrayDemos.h">
       <Filter>Demos</Filter>
     </ClInclude>
@@ -28,6 +30,9 @@
     <ClInclude Include="..\..\Source\Executables\Shared\Shared.h">
       <Filter>Shared</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Executables\Demos\ModulatorDemos.h">
+      <Filter>Demos</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\Executables\Main.cpp" />
@@ -42,6 +47,12 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Executables\Shared\Plotting\Plotting.cpp">
       <Filter>Shared\Plotting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Executables\Shared\RaptLibraryCode\RaptInstantiations.cpp">
+      <Filter>Shared\RaptLibraryCode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Executables\Demos\ModulatorDemos.cpp">
+      <Filter>Demos</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

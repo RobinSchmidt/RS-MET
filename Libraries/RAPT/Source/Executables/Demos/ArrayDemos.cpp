@@ -1,5 +1,4 @@
 #include "ArrayDemos.h"
-#include "../../Modules/RAPT.cpp"
 
 // maybe turn this into a unit test
 void convolutionDemo()

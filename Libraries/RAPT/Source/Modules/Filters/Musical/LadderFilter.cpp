@@ -85,14 +85,15 @@ void LadderFilter<TSig, TPar>::getState(TSig *state)
 template<class TSig, class TPar>
 complex<TPar> LadderFilter<TSig, TPar>::getTransferFunctionAt(complex<TPar> z)
 {
-  complex<double> G1, G2, G3, G4; // transfer functions of n-th stage output, n = 1..4
-  complex<double> H;              // transfer function with resonance        
+  complex<TPar> G1, G2, G3, G4; // transfer functions of n-th stage output, n = 1..4
+  complex<TPar> H;              // transfer function with resonance   
+  complex<TPar> one(1, 0);
 
-  G1 = b / (1.0 + a/z);
+  G1 = b / (one + a/z);
   G2 = G1*G1;
   G3 = G2*G1;
   G4 = G3*G1;
-  H  = g * (c[0] + c[1]*G1 + c[2]*G2 + c[3]*G3 + c[4]*G4) / (1.0 + k * G4 / z);
+  H  = g * (c[0] + c[1]*G1 + c[2]*G2 + c[3]*G3 + c[4]*G4) / (one + k * G4 / z);
 
   return H;
 }
@@ -100,7 +101,7 @@ complex<TPar> LadderFilter<TSig, TPar>::getTransferFunctionAt(complex<TPar> z)
 template<class TSig, class TPar>
 TPar LadderFilter<TSig, TPar>::getMagnitudeResponseAt(TPar frequency)
 {
-  TPar w = 2*PI*frequency/sampleRate;
+  TPar w = 2 * TPar(PI) * frequency/sampleRate;
   complex<TPar> j(0, 1);                      // imaginary unit
   complex<TPar> z = exp(j*w);                 // location in the z-plane
   complex<TPar> H = getTransferFunctionAt(z); // H(z) at our z

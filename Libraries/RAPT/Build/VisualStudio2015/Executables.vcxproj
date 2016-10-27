@@ -143,9 +143,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Code\Executables\RAPTInstantiations.cpp" />
     <ClInclude Include="..\..\Source\Executables\Demos\ArrayDemos.h" />
     <ClInclude Include="..\..\Source\Executables\Demos\FilterDemos.h" />
+    <ClInclude Include="..\..\Source\Executables\Demos\ModulatorDemos.h" />
     <ClInclude Include="..\..\Source\Executables\Shared\Plotting\GNUPlotter.h" />
     <ClInclude Include="..\..\Source\Executables\Shared\Plotting\Plotting.h" />
     <ClInclude Include="..\..\Source\Executables\Shared\Shared.h" />
@@ -153,9 +153,11 @@
   <ItemGroup>
     <ClCompile Include="..\..\Source\Executables\Demos\ArrayDemos.cpp" />
     <ClCompile Include="..\..\Source\Executables\Demos\FilterDemos.cpp" />
+    <ClCompile Include="..\..\Source\Executables\Demos\ModulatorDemos.cpp" />
     <ClCompile Include="..\..\Source\Executables\Main.cpp" />
     <ClCompile Include="..\..\Source\Executables\Shared\Plotting\GNUPlotter.cpp" />
     <ClCompile Include="..\..\Source\Executables\Shared\Plotting\Plotting.cpp" />
+    <ClCompile Include="..\..\Source\Executables\Shared\RaptLibraryCode\RaptInstantiations.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
