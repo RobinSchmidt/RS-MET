@@ -46,9 +46,11 @@ namespace jura
 
 #include "baseclasses/jura_AudioModule.h"
 #include "baseclasses/jura_AudioPlugin.h"
-//#include "baseclasses/jura_AudioModuleEditor.h"
 
 #include "filters/jura_LadderFilter.h"
+
+#include "modulators/jura_BreakpointModulatorAudioModule.h"
+//#include "modulators/jura_BreakpointModulatorEditor.h"
 
 }
 

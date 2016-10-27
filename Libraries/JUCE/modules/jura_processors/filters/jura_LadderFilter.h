@@ -23,7 +23,8 @@ class JUCE_API Ladder : public jura::AudioModule
 
 public:
 
-  Ladder();
+  Ladder(CriticalSection *lockToUse);
+  //Ladder();
     
   /** Creates the static parameters for this module (i.e. parameters that are not created
   dynamically and are thus always there). */

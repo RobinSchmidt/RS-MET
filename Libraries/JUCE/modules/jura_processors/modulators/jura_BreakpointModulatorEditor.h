@@ -1,0 +1,327 @@
+#ifndef jura_BreakpointModulatorEditor_h
+#define jura_BreakpointModulatorEditor_h
+
+//#include "../../rosic_displays/rosof_ModulatorCurveEditor.h"
+//#include "../rosof_AudioModuleEditor.h"
+//#include "rosof_BreakpointModulatorAudioModule.h"
+//#include "../../../rojue/components/coordinate_systems/rojue_CoordinateSystemZoomerOld.h"
+
+namespace rosof
+{
+
+  //=======================================================================================================================================
+  // class BreakpointModulatorGlobalEditor
+
+  /**
+
+  This class encapsulates the widgets for the global settings that are used in a BreakpointModulatorEditor in order to facilitate working 
+  with arrays of such sets as needed in BreakpointModulatorEditorMulti. 
+  
+  */
+
+  class BreakpointModulatorGlobalEditor : public AudioModuleEditor
+  {
+
+    friend class BreakpointModulatorEditor;
+    friend class BreakpointModulatorEditorMulti;
+
+  public:
+
+    //-------------------------------------------------------------------------------------------------------------------------------------
+    // construction/destruction:
+
+    /** Constructor. */
+    BreakpointModulatorGlobalEditor(CriticalSection *newPlugInLock, BreakpointModulatorAudioModule* newModulatorToEdit);
+
+    //-------------------------------------------------------------------------------------------------------------------------------------
+    // setup:
+
+    /** Passes a pointer the the actual rosic::Modulator object which is to be edited. Make sure to call this function again with a 
+    NULL-pointer when the object get deleted for some reason. */
+    virtual void setModulatorToEdit(BreakpointModulatorAudioModule* newModulatorToEdit);
+
+    /** Selects one of the available widget-layouts. */
+    virtual void setLayout(int newLayout);
+
+    //-------------------------------------------------------------------------------------------------------------------------------------
+    // callbacks:
+
+    virtual void rButtonClicked(RButton *buttonThatWasClicked);
+    virtual void rSliderValueChanged(RSlider *sliderThatHasChanged);
+    virtual void resized();
+    virtual void updateWidgetsAccordingToState();
+
+  //=======================================================================================================================================
+    juce_UseDebuggingNewOperator;
+
+  protected:
+
+    // pointer to the edited object:
+    BreakpointModulatorAudioModule* modulatorToEdit;
+
+    // widgets:
+    RSlider *timeScaleSlider, *timeScaleByKeySlider, *timeScaleByVelSlider, 
+            *depthSlider,     *depthByKeySlider,     *depthByVelSlider;
+    RButton *loopButton, *syncButton, *editButton;
+    
+    // data members:
+    int layout;
+
+  };
+
+
+  //=======================================================================================================================================
+  // class BreakpointParameterEditor
+
+  /**
+
+  This class encapsulates the widgets for the per-breakpoint settings that are used in a BreakpointModulatorEditor in order to facilitate 
+  to treat this part of the editor as one entity (to change the color-scheme at once, for example).
+  
+  */
+
+  class BreakpointParameterEditor : public AudioModuleEditor, public ChangeBroadcaster, public RSliderListener, public RComboBoxObserver
+  {
+
+    friend class BreakpointModulatorEditorMulti;
+
+  public:
+
+    //-------------------------------------------------------------------------------------------------------------------------------------
+    // construction/destruction:
+
+    /** Constructor. */
+    BreakpointParameterEditor(CriticalSection *newPlugInLock);
+
+    //-------------------------------------------------------------------------------------------------------------------------------------
+    // setup:
+
+    /** Passes a pointer the the actual rosic::Modulator object which is to be edited. Make sure to call this function again with a 
+    NULL-pointer when the object get deleted for some reason. */
+    virtual void setModulatorToEdit(BreakpointModulatorAudioModule* newModulatorToEdit);
+
+    /** Selects a breakpoint and updates the widgets accordingly. */
+    virtual void selectBreakpoint(int index);
+
+    /** De-selects the currently selected breakpoint (if any) and updates the GUI accordingly (makes some widgets invisible) */
+    virtual void deSelectBreakpoint();
+
+    //-------------------------------------------------------------------------------------------------------------------------------------
+    // callbacks:
+
+    virtual void rButtonClicked(RButton *buttonThatWasClicked);
+    virtual void rComboBoxChanged(RComboBox *rComboBoxThatHasChanged);
+    virtual void rSliderValueChanged(RSlider *sliderThatHasChanged);
+    virtual void resized();
+    virtual void updateWidgetsAccordingToState();
+
+  //=======================================================================================================================================
+    juce_UseDebuggingNewOperator;
+
+  protected:
+
+    // pointer to the edited object:
+    BreakpointModulatorAudioModule* modulatorToEdit;
+
+    // widgets:
+    RTextField *indexLabel, *indexValueLabel;
+    RSlider    *timeSlider, *levelSlider, *shapeSlider;
+    RButton    *shapeToAllButton;
+    RNamedComboBox *shapeComboBox;
+
+    // data members:
+    int selectedBreakpointIndex;
+
+  };
+
+
+  //=======================================================================================================================================
+  // class BreakpointModulatorEditor
+
+  /**
+
+  This class is a component, intended to serve as base-class for all components that represent some kind of sub-editor, for example an 
+  envelope-editor inside an editor for a synthesizer. It is also a ChangeBroadcaster such that an outlying editor-class can respond to 
+  changes inside the sub-editor. Sub-classes must override the purely virtual methods setStateFromXml() and getStateAsXml().
+
+  \todo: use a TimeGridComboBox in place of the generic one
+
+  */
+
+  class BreakpointModulatorEditor : virtual public AudioModuleEditor, public ChangeBroadcaster, public RComboBoxObserver
+  {
+
+  friend class BreakpointModulatorEditorCompact;
+
+  public:
+
+    enum parameters
+    {
+      NONE = 0,
+      SOME_BREAKPOINT,
+      TIME_SCALE, 
+
+      //...
+
+      ALL // when we load a preset, everything changes at once
+    };
+
+    //-------------------------------------------------------------------------------------------------------------------------------------
+    // construction/destruction:
+
+    /** Constructor. */
+    BreakpointModulatorEditor(CriticalSection *newPlugInLock, BreakpointModulatorAudioModule* newModulatorToEdit);  
+
+    //-------------------------------------------------------------------------------------------------------------------------------------
+    // setup:
+
+    /** Passes a pointer the the actual rosic::Modulator object which is to be edited. Make sure to call this function again with a 
+    NULL-pointer when the object get deleted for some reason. */
+    virtual void setModulatorToEdit(rosic::BreakpointModulator* newModulatorToEdit);
+ 
+    /** Sets the juce::Label in which the descriptions for the widgets will appear. */
+    //virtual void setDescriptionField(RLabel* newDescriptionField);
+
+    /** De-selects the currently selected breakpoint (if any) and updates the GUI accordingly. */
+    virtual void deSelectBreakpoint();
+
+    //-------------------------------------------------------------------------------------------------------------------------------------
+    // callbacks:
+
+    virtual void rButtonClicked(RButton *buttonThatWasClicked);
+    virtual void changeListenerCallback(ChangeBroadcaster *objectThatHasChanged);
+    virtual void rComboBoxChanged(RComboBox *rComboBoxThatHasChanged);
+    //virtual void rLabelTextChanged(RLabel* rLabelThatHasChanged);
+    //virtual void rSliderValueChanged(RSlider *sliderThatHasChanged);
+    virtual void paint(Graphics &g);
+    virtual void resized();
+
+    /** Updates the sliders, buttons, etc. accordning to the state of the rosic::Modulator object which is being edited. It makes sense to 
+    de-select any possibly selected after restoring a state, so this might be done here optionally too. */
+    virtual void updateWidgetsAccordingToState(bool deSelectBreakpoint);
+
+    /** Calls updateWidgetsAccordingToState(bool) with true as argument (we need to implement this purely virtual function here). */
+    virtual void updateWidgetsAccordingToState();
+
+  //=======================================================================================================================================
+    juce_UseDebuggingNewOperator;
+
+  protected:
+
+    /** Returns the grid-interval which belongs to a given interval-index. */
+    virtual double gridIntervalFromIndex(int index);
+
+    /** Returns the index which belongs to a given grid-interval. */
+    virtual int indexFromGridInterval(double interval);
+
+    /** Returns the time-interval which belongs to a given interval-index. */
+    virtual double timeIntervalFromIndex(int index);
+
+    /** Returns the index which belongs to a given time-interval. */
+    virtual int indexFromTimeInterval(double interval);
+
+    /** Automatically adjusts the x-axis plot-range according to the current content. */    
+    virtual void autoAdjustPlotRangeX();
+
+    /** Automatically adjusts the y-axis plot-range according to the current content. */
+    virtual void autoAdjustPlotRangeY();
+
+    // pointer to the actual Modulator object which is being edited:
+    rosic::BreakpointModulator* modulatorToEdit;
+
+    // some rectangles to define functional groups:
+    Rectangle<int> breakpointGroupRectangle, timeAndDepthGroupRectangle, snapRectangle;
+
+    // sub-editors:
+    BreakpointModulatorGlobalEditor* globalEditor;
+    BreakpointParameterEditor*       breakpointParameterEditor;
+
+    // widgets:
+    RButton   *snapXButton, *snapYButton;
+    RComboBox *snapXComboBox, *snapYComboBox;
+
+    // plot and related stuff:
+    ModulatorCurveEditor*      breakpointEditor;
+    CoordinateSystemZoomerOld* breakpointZoomer;
+
+  };
+
+
+  //=======================================================================================================================================
+
+  /**
+
+  Compact editor for the BreakpointModulatorAudioModule.
+
+  */
+
+  class BreakpointModulatorEditorCompact : virtual public AudioModuleEditor
+  {
+
+  public:
+
+    enum layouts
+    {
+      STANDARD,
+      COMPACT,
+
+      NUM_LAYOUTS
+    };
+
+    //-------------------------------------------------------------------------------------------------------------------------------------
+    // construction/destruction:
+
+    BreakpointModulatorEditorCompact(CriticalSection *newPlugInLock, BreakpointModulatorAudioModule* breakpointModulatorModuleToEdit);  
+    virtual ~BreakpointModulatorEditorCompact();  
+
+    //-------------------------------------------------------------------------------------------------------------------------------------
+    // setup:
+
+    /** Selects one of the predefined layouts for the widgets. @see layouts */
+    virtual void setLayout(int newLayout);
+
+    /** Sets up the bounds of the popup editor relative to the top-left position of the edit-button. */
+    virtual void setPopUpEditorBounds(int x, int y, int w, int h);
+
+    /** Sets the headline text for both, the compact editor and the embedded popup editor. */
+    virtual void setHeadlineText(const juce::String& newHeadlineText);
+
+    //-------------------------------------------------------------------------------------------------------------------------------------
+    // callbacks:
+
+    virtual void rButtonClicked(RButton *buttonThatWasClicked);
+    virtual void changeListenerCallback(ChangeBroadcaster *objectThatHasChanged);
+    virtual void resized();
+    virtual void updateWidgetsAccordingToState();
+    virtual void updatePlot();
+
+  //=======================================================================================================================================
+    juce_UseDebuggingNewOperator;
+
+  protected:
+
+    // pointers to the edited objects (wrapped and non-wrapped):
+    rosic::BreakpointModulator     *modulatorToEdit;
+    BreakpointModulatorAudioModule *modulatorModuleToEdit;
+
+    // big editor that opens when clicking on the 'More' button:
+    BreakpointModulatorEditor *popUpEditor;
+
+    // widgets:
+    RButton *editButton;
+
+    // plot and related stuff:
+    CurveFamilyPlotOld  *plot;
+    double *xValues, *yValues;
+    int    numSamplesInPlot;
+
+    // bounds of the big editor relative to the top-left position of the edit-button:
+    int popUpEditorX, popUpEditorY, popUpEditorW, popUpEditorH; 
+
+    int layout;
+
+  };
+
+}
+
+#endif  

@@ -41,16 +41,9 @@ protected:
 
 //=================================================================================================
 
-/** This class is the base class for all audio modules. 
-rename to RAudioProcessor or AudioUnit.
-\todo get rid of inheritance from juce::AudioProcessor - implemet a wrapper class instead. The 
-AudioModule class should be lean and don't always contain all the overhead inherited from
-juce::AudioProcessor.
+/** This class is the base class for all audio modules. */
 
-*/
-
-class JUCE_API AudioModule : /*public AudioProcessor,*/ public AutomatableModule, 
-  public StateFileManager
+class JUCE_API AudioModule : public AutomatableModule, public StateFileManager
 {
 
 public:
@@ -58,8 +51,12 @@ public:
   //-----------------------------------------------------------------------------------------------
   // construction/destruction:
 
-  /** Constructor. */
-  AudioModule();
+  /** Constructor. The caller must pass a pointer to a critical section object that must exist 
+  somewhere outside and will be used here to acquire mutually exclusive access from different 
+  threads to the underlying dsp object. For example, if the AudioModule is wrapped into a plugin,
+  the Criticalsection object could exist on the level of the plugin (an its lifetime be managed 
+  there).  */
+  AudioModule(CriticalSection *lockToUse);
 
   /** Destructor. */
   virtual ~AudioModule();
@@ -133,6 +130,7 @@ public:
   /** Callback to indicate that a parameter has changed - subclasses should override this and
   update their signal processing accordingly. */
   virtual void parameterChanged(Parameter* parameterThatHasChanged);
+   // is this obsolete now that we use the callback mechanism? if so, get rid...
 
   /** Calls a parameterChanged for each of the observed parameters - this should trigger the
   appropriate updating of the signal processing core in the subclasses. */
@@ -208,7 +206,10 @@ protected:
   juce::Array<AudioModule*, CriticalSection> childModules;
 
 
-  CriticalSection *plugInLock;     // mutex to access the wrapped core dsp object - make this a nom-pointer member
+  CriticalSection *plugInLock;     
+  // mutex to access the wrapped core dsp object
+
+
   double triggerInterval;          // interval (in beats) for calls to trigger()
   bool saveAndRecallState;         // indicates, that this module wants to save/recall its state
   int patchFormatIndex;            // version of patch format (for backwards compatibility)

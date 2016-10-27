@@ -418,6 +418,9 @@
     <Filter Include="Juce Modules\jura_processors\filters">
       <UniqueIdentifier>{9ADA914B-D4D5-2886-1EA5-949A51D4755A}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Juce Modules\jura_processors\modulators">
+      <UniqueIdentifier>{F3BE0A48-927D-212D-4616-74156915FA80}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Juce Library Code">
       <UniqueIdentifier>{8B4D1BAA-6DB4-CAEC-A0FA-271F354D5C61}</UniqueIdentifier>
     </Filter>
@@ -2208,6 +2211,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\baseclasses\jura_AudioModule.cpp">
       <Filter>Juce Modules\jura_processors\baseclasses</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\baseclasses\jura_AudioPlugin.cpp">
+      <Filter>Juce Modules\jura_processors\baseclasses</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_LadderFilter.cpp">
       <Filter>Juce Modules\jura_processors\filters</Filter>
     </ClCompile>
@@ -2265,8 +2271,14 @@
     <ClCompile Include="..\..\JuceLibraryCode\jura_processors.cpp">
       <Filter>Juce Library Code</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\baseclasses\jura_AudioPlugin.cpp">
-      <Filter>Juce Modules\jura_processors\baseclasses</Filter>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\jura_BreakpointModulatorAudioModule.cpp">
+      <Filter>Juce Modules\jura_processors\modulators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\jura_BreakpointModulatorEditor.cpp">
+      <Filter>Juce Modules\jura_processors\modulators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\jura_BreakpointModulatorEditorMulti.cpp">
+      <Filter>Juce Modules\jura_processors\modulators</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -4349,6 +4361,9 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\baseclasses\jura_AudioModule.h">
       <Filter>Juce Modules\jura_processors\baseclasses</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\baseclasses\jura_AudioPlugin.h">
+      <Filter>Juce Modules\jura_processors\baseclasses</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_LadderFilter.h">
       <Filter>Juce Modules\jura_processors\filters</Filter>
     </ClInclude>
@@ -4380,8 +4395,46 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_video\juce_video.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\jura_framework.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\jura_processors.h" />
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\baseclasses\jura_AudioPlugin.h">
-      <Filter>Juce Modules\jura_processors\baseclasses</Filter>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\jura_BreakpointModulatorAudioModule.h">
+      <Filter>Juce Modules\jura_processors\modulators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_basics\juce_audio_basics.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_devices\juce_audio_devices.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_formats\juce_audio_formats.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_plugin_client\juce_audio_plugin_client.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\juce_audio_processors.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_core\juce_core.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_cryptography\juce_cryptography.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_data_structures\juce_data_structures.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_events\juce_events.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_graphics\juce_graphics.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_gui_basics\juce_gui_basics.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_gui_extra\juce_gui_extra.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_opengl\juce_opengl.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_video\juce_video.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\jura_framework.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\jura_processors.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\jura_BreakpointModulatorEditor.h">
+      <Filter>Juce Modules\jura_processors\modulators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_basics\juce_audio_basics.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_devices\juce_audio_devices.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_formats\juce_audio_formats.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_plugin_client\juce_audio_plugin_client.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\juce_audio_processors.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_core\juce_core.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_cryptography\juce_cryptography.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_data_structures\juce_data_structures.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_events\juce_events.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_graphics\juce_graphics.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_gui_basics\juce_gui_basics.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_gui_extra\juce_gui_extra.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_opengl\juce_opengl.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_video\juce_video.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\jura_framework.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\jura_processors.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\jura_BreakpointModulatorEditorMulti.h">
+      <Filter>Juce Modules\jura_processors\modulators</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

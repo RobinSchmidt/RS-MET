@@ -75,7 +75,7 @@ void convertAudioBuffer(const AudioBuffer<SourceType>& source, AudioBuffer<Targe
 }
 void AudioPlugin::processBlock(AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
 {
-  ScopedLock scopedLock(plugInLock);
+  //ScopedLock scopedLock(plugInLock);
 
   convertAudioBuffer(buffer, internalAudioBuffer);  // float -> double
   processBlock(internalAudioBuffer, midiMessages);  // process doubles

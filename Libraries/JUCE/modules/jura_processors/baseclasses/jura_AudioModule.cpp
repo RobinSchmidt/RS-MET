@@ -28,9 +28,11 @@ void AudioModuleDeletionWatcher::removeWatchedAudioModule(AudioModule
 
 // construction/destruction:
 
-AudioModule::AudioModule()
+AudioModule::AudioModule(CriticalSection *lockToUse)
 {
-  plugInLock = new CriticalSection;
+  //plugInLock = new CriticalSection;
+
+  plugInLock = lockToUse;
 
   ParameterObserver::localAutomationSwitch = true;  // activate automation for this instance
   wantsTempoSyncInfo = true;
@@ -45,7 +47,8 @@ AudioModule::AudioModule()
 
 AudioModule::~AudioModule()
 {
-  plugInLock->enter();
+  ScopedLock scopedLock(*plugInLock);
+  //plugInLock->enter();
 
   for(int i = 0; i < deletionWatchers.size(); i++)
     deletionWatchers[i]->audioModuleWillBeDeleted(this);
@@ -62,8 +65,8 @@ AudioModule::~AudioModule()
   }
   childModules.getLock().exit();
 
-  plugInLock->exit();
-  delete plugInLock;
+  //plugInLock->exit();
+  //delete plugInLock;
 }
 
 //-------------------------------------------------------------------------------------------------

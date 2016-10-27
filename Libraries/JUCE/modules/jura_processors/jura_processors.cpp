@@ -19,8 +19,10 @@ namespace jura
 
 #include "baseclasses/jura_AudioModule.cpp"
 #include "baseclasses/jura_AudioPlugin.cpp"
-//#include "baseclasses/jura_AudioModuleEditor.cpp"
 
 #include "filters/jura_LadderFilter.cpp"
+
+#include "modulators/jura_BreakpointModulatorAudioModule.cpp"
+//#include "modulators/jura_BreakpointModulatorEditor.cpp"
 
 }

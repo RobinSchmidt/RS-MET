@@ -1,5 +1,6 @@
 
-Ladder::Ladder()
+Ladder::Ladder(CriticalSection *lockToUse) : AudioModule(lockToUse)
+//Ladder::Ladder()
 {
   ScopedLock scopedLock(*plugInLock);
   moduleName = "Ladder";
@@ -400,7 +401,7 @@ void LadderSpectrumEditor::setupFilterAccordingToMousePosition(double mouseX, do
     resoParameter->setValue(reso, true, true);
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // drawing:
 
 void LadderSpectrumEditor::resized()
@@ -538,21 +539,21 @@ LadderEditor::LadderEditor(jura::Ladder *newLadderToEdit) : AudioModuleEditor(ne
   frequencyResponseDisplay->assignParameterReso( moduleToEdit->getParameterByName("Resonance"));
   addPlot( frequencyResponseDisplay );
 
-  addWidget( cutoffSlider = new RSlider ("CutoffSlider") );
+  addWidget( cutoffSlider = new RSlider("CutoffSlider") );
   cutoffSlider->assignParameter( ladderToEdit->getParameterByName("Cutoff") );
   cutoffSlider->setSliderName("Cutoff");
   cutoffSlider->setDescription("Cutoff frequency in Hz");
   cutoffSlider->setDescriptionField(infoField);
   cutoffSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
-  addWidget( resonanceSlider = new RSlider ("ResoSlider") );
+  addWidget( resonanceSlider = new RSlider("ResoSlider") );
   resonanceSlider->assignParameter( ladderToEdit->getParameterByName("Resonance") );
   resonanceSlider->setSliderName("Resonance");
   resonanceSlider->setDescription("Amount of feedback");
   resonanceSlider->setDescriptionField(infoField);
   resonanceSlider->setStringConversionFunction(&valueToStringTotal5);
 
-  addWidget( spreadSlider = new RSlider ("SpreadSlider") );
+  addWidget( spreadSlider = new RSlider("SpreadSlider") );
   spreadSlider->assignParameter( ladderToEdit->getParameterByName("StereoSpread") );
   spreadSlider->setSliderName("Spread");
   spreadSlider->setDescription("Detunes cutoff frequencies of channels");
