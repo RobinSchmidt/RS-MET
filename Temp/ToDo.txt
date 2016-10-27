@@ -1,5 +1,9 @@
+-drag over the breakpoint modulator
+-drag over the remaining GUI widget classes
+
+
 -maybe split jura_framework module into jura_basics and jura_gui
--make a jura_daw module
+
 
 
 

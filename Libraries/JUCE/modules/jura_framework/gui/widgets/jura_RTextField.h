@@ -1,9 +1,6 @@
 #ifndef jura_RTextField_h
 #define jura_RTextField_h
 
-//#include "rojue_RWidget.h"
-
-
 //=================================================================================================
 // class RTextField:
 
@@ -103,32 +100,31 @@ public:
 };
 
 
-/**
+/** This class implements a textfield, the content of which may be edited by the user. Moreover, 
+the class sends out notifications when the text was changed to any registered 
+RTextEntryFieldObserver.
 
-This class implements a textfield, the content of which may be edited by the user. Moreover, the class sends out notifications when the
-text was changed to any registered RTextEntryFieldObserver.
-
-\todo: implement auto scrolling (such that caret is always visible)
-
-*/
+\todo: implement auto scrolling (such that caret is always visible) */
 
 class JUCE_API RTextEntryField : public RTextField, public Timer
 {
 
 public:
 
-  //-------------------------------------------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
   // construction/destruction:
 
   /** Constructor. */
   RTextEntryField(const juce::String& initialText = juce::String::empty);
 
-  //-------------------------------------------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
   // setup:
 
-  /** Sets the permitted characters and optionally deletes the non-permitted ones from the current text. You can pass an empty string to
-  indicate that all characters are permitted (which is the default). */
-  virtual void setPermittedCharacters(const juce::String& newCharacters, bool deleteNonPermittedCharsFromText = true);
+  /** Sets the permitted characters and optionally deletes the non-permitted ones from the current 
+  text. You can pass an empty string to indicate that all characters are permitted (which is the 
+  default). */
+  virtual void setPermittedCharacters(const juce::String& newCharacters, 
+    bool deleteNonPermittedCharsFromText = true);
 
   /** Registers an observer that will get notified about events via the respective callbacks. */
   virtual void registerTextEntryFieldObserver(RTextEntryFieldObserver *observerToRegister);
@@ -142,11 +138,12 @@ public:
   /** De-selects selected text (if any). */
   virtual void deSelect();
 
-  /** You can used this function to tell the text-entry field that the current text is invalid. This will cause the widget to be
-  displayed with a reddish background colour such that user knows that something is wrong. */
+  /** You can used this function to tell the text-entry field that the current text is invalid. 
+  This will cause the widget to be displayed with a reddish background colour such that user knows 
+  that something is wrong. */
   virtual void markTextAsInvalid(bool shouldBeMarkedInvalid);
 
-  //-------------------------------------------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
   // inquiry:
 
   /** Returns the pixel-position of the top-left pixel of the caret. */
@@ -155,7 +152,8 @@ public:
   /** Returns the pixel x-coordinate of the character with given index in our displayed string. */
   virtual int characterIndexToPixelPosition(int index) const;
 
-  /** Returns the index of the character in our displayed string that is at or closest to the given pixel x-coordinate. */
+  /** Returns the index of the character in our displayed string that is at or closest to the given 
+  pixel x-coordinate. */
   virtual int pixelPositionToCharacterIndex(int pixelX) const;
 
   /** Returns the text before the start of the selected area. */
@@ -167,9 +165,10 @@ public:
   /** Returns the text after the end of the selected area. */
   virtual juce::String getTextAfterSelection() const;
 
-  /** Returns the substring before the caret (or before the selection) and the substring after the caret (or after the selection)
-  separately which are called head and tail here respectively. This is useful for inserting soemthing in between and thereby possibly
-  replacing the selected section, for example. */
+  /** Returns the substring before the caret (or before the selection) and the substring after the 
+  caret (or after the selection) separately which are called head and tail here respectively. This 
+  is useful for inserting soemthing in between and thereby possibly replacing the selected section, 
+  for example. */
   virtual void getHeadAndTailString(juce::String &head, juce::String &tail) const;
 
   /** Returns true if the selection is empty (i.e. nothing is selected), false otherwise. */
@@ -178,7 +177,7 @@ public:
   /** Overriden from RTextField in order to optionally send out a change message. */
   virtual void setStateFromString(const juce::String &stateString, bool sendChangeMessage = true);
 
-  //-------------------------------------------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
   // callbacks:
 
   /** Overriden to loose focus when the entry filed is modal and the user clicks somewhere else. */
@@ -193,7 +192,8 @@ public:
   /** Overriden to stop the blinking of the caret. */
   virtual void focusLost(FocusChangeType cause);
 
-  /** Implements the timerCallback in order to make the caret periodically visible/invisible (i.e. blinking). */
+  /** Implements the timerCallback in order to make the caret periodically visible/invisible (i.e. 
+  blinking). */
   virtual void timerCallback();
 
   /** Overriden to position the caret and de-select any selected portion of the text. */
@@ -207,9 +207,6 @@ public:
 
   /** Paints the text-field taking into account selection, caret-visibility, etc. */
   virtual void paint(Graphics& g);
-
-  //=====================================================================================================================================
-  juce_UseDebuggingNewOperator;
 
 protected:
 
@@ -232,32 +229,30 @@ protected:
 
   juce::Array<RTextEntryFieldObserver*> textEntryFieldObservers;
 
+  juce_UseDebuggingNewOperator;
 };
 
-//=======================================================================================================================================
+//=================================================================================================
 // class RLabeledTextEntryField:
 
-/**
-
-This class implements a text entry field with an associated field for a label.
-
-*/
+/** This class implements a text entry field with an associated field for a label. */
 
 class JUCE_API RLabeledTextEntryField : public RWidget
 {
 
 public:
 
-  //-------------------------------------------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
   // construction/destruction:
 
   /** Constructor. */
-  RLabeledTextEntryField(const juce::String& labelText = juce::String::empty, const juce::String& entryFieldText = juce::String::empty);
+  RLabeledTextEntryField(const juce::String& labelText = juce::String::empty, 
+    const juce::String& entryFieldText = juce::String::empty);
 
   /** Destructor. */
   virtual ~RLabeledTextEntryField();
 
-  //-------------------------------------------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
   // setup:
 
   /** Sets up the text to be shown in the label. */
@@ -267,10 +262,12 @@ public:
   virtual void setEntryFieldText(const juce::String &newText) { entryField->setText(newText); }
 
   /** Sets the justification for positioning the text in the label. */
-  virtual void setLabelJustification(const Justification& newJustification) { labelField->setJustification(newJustification); }
+  virtual void setLabelJustification(const Justification& newJustification) 
+  { labelField->setJustification(newJustification); }
 
   /** Sets the justification for positioning the text in the text entry box. */
-  virtual void setEntryFieldJustification(const Justification& newJustification) { entryField->setJustification(newJustification); }
+  virtual void setEntryFieldJustification(const Justification& newJustification) 
+  { entryField->setJustification(newJustification); }
 
   /** Sets the same description for both, label and entry field. */
   virtual void setDescription(const juce::String &newDescription);
@@ -281,7 +278,7 @@ public:
   /** Overriden from RWidget - sets the text in the entry field to the passed stateString. */
   virtual void setStateFromString(const juce::String &stateString, bool sendChangeMessage = true);
 
-  //-------------------------------------------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
   // inquiry:
 
   /** Returns the text that is shown in the label. */
@@ -290,19 +287,18 @@ public:
   /** Returns the text that is shown in the text entry field. */
   virtual juce::String getEntryFieldText() const { return entryField->getText(); }
 
-  /** Returns a pointer to the embedded RTextEntryField. This may be needed, for example, to register observers for the entry field. */
+  /** Returns a pointer to the embedded RTextEntryField. This may be needed, for example, to 
+  register observers for the entry field. */
   virtual RTextEntryField* getTextEntryField() const { return entryField; }
 
-  /** Overriden from RWidget - returns the state (defined here as the text inside the entry field). */
+  /** Overriden from RWidget - returns the state (defined here as the text inside the entry 
+  field). */
   virtual juce::String getStateAsString() const { return entryField->getStateAsString(); }
 
-  //-------------------------------------------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
   // callbacks:
 
   virtual void resized();
-
-  //=====================================================================================================================================
-  juce_UseDebuggingNewOperator;
 
 protected:
 
@@ -310,6 +306,7 @@ protected:
   RTextEntryField *entryField;
   int labelWidth;
 
+  juce_UseDebuggingNewOperator;
 };
 
 // \todo maybe make an RTextFieldWithModalEntryField, add comments and separator-lines in the cpp 

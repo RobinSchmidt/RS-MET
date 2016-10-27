@@ -1,9 +1,6 @@
 #ifndef jura_RScrollBar_h
 #define jura_RScrollBar_h
 
-//#include "rojue_RButton.h"
-//#include "rojue_RWidget.h"
-
 class RScrollBar;
 
 /** A class for receiving events from an RScrollBar. You can register an RScrollBarListener with

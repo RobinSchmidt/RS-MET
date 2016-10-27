@@ -11,7 +11,12 @@ typedef RAPT::LadderFilter<double, double> RAPTLadder;
 /** Wraps two RAPT LadderFilter instances into a single object, for stereo processing. In order to
 make it more interesting than just instantiating the RAPT::LadderFilter template for a kind of 
 stereo signal type (which would be also possible), we allow the two cutoff frequencies of both 
-channels to be different by introducing a stereo spread parameter. */
+channels to be different by introducing a stereo spread parameter. 
+
+\todo: 
+-let the user freely adjust the mixing coefficients for the filters stages (via the DraggableNumber
+ widget) - the mode-combobox then selects between various predefined settings
+*/
 
 class JUCE_API Ladder : public jura::AudioModule
 {

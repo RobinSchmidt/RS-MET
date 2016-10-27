@@ -125,13 +125,18 @@ inline TSig LadderFilter<TSig, TPar>::getSampleNoGain(TSig in)
   y[4]  = b*y[3]  - a*y[4];
   return c[0]*y[0] + c[1]*y[1] + c[2]*y[2] + c[3]*y[3] + c[4]*y[4];
 
-  // we should experiment with placing saturation at different points..
+  // We should experiment with placing saturation at different points - and, of course, try more 
+  // realistic functions. The y = x / (1 + x^2) that is currently used is not even a proper
+  // sigmoid shape (it goes down to zero again) ...but maybe that's not necessarily a bad thing.
+  // Maybe try y = b + (x-b) / (1 + a*x^2) with adjustable parameters a and b. "a" adjusts the 
+  // amount of signal squasheing whereas "b" introduces asymmetry.
 }
 
 template<class TSig, class TPar>
 inline TSig LadderFilter<TSig, TPar>::getSample(TSig in)
 {
   return g * getSampleNoGain(in);
+  
   // \todo Make the amount of gain compensation available as user parameter - we then compute
   // g = 1 + k * compensationAmount; instead of g = 1 + k -> filter becomes continuously adjustable 
   // between no compensation and full compensation. Then, we also don't really need the factored 
