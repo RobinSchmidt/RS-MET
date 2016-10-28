@@ -4,7 +4,7 @@
 /** This class wraps a RAPT::BreakpointModulator into a jura::AudioModule to facilitate its use as 
 plugIn or sub-module inside a plugIn. */
 
-class BreakpointModulatorAudioModule : public AudioModule
+class JUCE_API BreakpointModulatorAudioModule : public AudioModule
 {
 
   friend class BreakpointModulatorEditor;

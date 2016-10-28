@@ -41,6 +41,11 @@ using namespace juce;
 #include "../../RAPT/Source/Modules/RAPT.h"
 using namespace RAPT;
 
+// disable warnings related to "inherits ... via dominance", todo: try to get rid of virtual 
+// inheritance and reactivate the warning
+#pragma warning (disable : 4250)  
+                                  
+
 namespace jura
 {
 
@@ -50,6 +55,7 @@ namespace jura
 #include "filters/jura_LadderFilter.h"
 
 #include "modulators/jura_BreakpointModulatorAudioModule.h"
+#include "modulators/jura_ModulatorCurveEditor.h"
 //#include "modulators/jura_BreakpointModulatorEditor.h"
 
 }

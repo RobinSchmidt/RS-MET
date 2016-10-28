@@ -357,16 +357,6 @@ void RTreeView::mouseMove(const MouseEvent &e)
   repaint();
 }
 
-//inline int sign(float x)
-//{
-//  // temporary - maybe remove..
-//  if(x > 0.f)
-//    return 1;
-//  else if(x < 0.f)
-//    return -1;
-//  else
-//    return 0;
-//}
 void RTreeView::mouseWheelMove(const MouseEvent &e, const MouseWheelDetails &wheel)
 {
   if( upDownScrollBar->isVisible() )

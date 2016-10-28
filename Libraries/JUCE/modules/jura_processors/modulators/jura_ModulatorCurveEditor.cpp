@@ -1,13 +1,10 @@
-#include "rosof_ModulatorCurveEditor.h"
-using namespace rosof;
-
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
 ModulatorCurveEditor::ModulatorCurveEditor(const juce::String& name) 
 : CurveFamilyPlotOld(name), InteractiveCoordinateSystemOld(name)
 {
-  setDescription(T("Left-click: insert, right-click: remove, shift-drag: time-shifts subsequent breakpoints"));
+  setDescription("Left-click: insert, right-click: remove, shift-drag: time-shifts subsequent breakpoints");
 
   modulatorToEdit            = NULL;
   selectedBreakpoint         = -1;
@@ -84,7 +81,7 @@ ModulatorCurveEditor::~ModulatorCurveEditor()
 //-------------------------------------------------------------------------------------------------
 // setup:
 
-void ModulatorCurveEditor::setModulatorToEdit(rosic::BreakpointModulator* newModulatorToEdit)
+void ModulatorCurveEditor::setModulatorToEdit(RAPT::rsBreakpointModulator* newModulatorToEdit)
 {
   modulatorToEdit = newModulatorToEdit;
   updatePlotCurveData(editedModulatorIndex, modulatorToEdit, true);
@@ -220,7 +217,8 @@ void ModulatorCurveEditor::setAllBreakpointShapes(int newShape, bool broadcastMe
   updatePlotCurveData(editedModulatorIndex, modulatorToEdit, true);
 }
 
-bool ModulatorCurveEditor::setSelectedBreakpointShapeAmount(double newShapeAmount, bool broadcastMessage)
+bool ModulatorCurveEditor::setSelectedBreakpointShapeAmount(double newShapeAmount, 
+  bool broadcastMessage)
 {
   if( modulatorToEdit == NULL )
     return false;
@@ -244,7 +242,8 @@ bool ModulatorCurveEditor::setSelectedBreakpointShapeAmount(double newShapeAmoun
   }
 }
 
-void ModulatorCurveEditor::setAllBreakpointShapeAmounts(double newShapeAmount, bool broadcastMessage)
+void ModulatorCurveEditor::setAllBreakpointShapeAmounts(double newShapeAmount, 
+  bool broadcastMessage)
 {
   if( modulatorToEdit == NULL )
     return;
@@ -549,12 +548,12 @@ int ModulatorCurveEditor::whatIsUnderTheMouseCursor(const MouseEvent &e)
   transformToComponentsCoordinates(x2, y2);
 
   if( abs(x1+2-mouseX) <= 4.0   &&
-      modulatorToEdit->getLoopMode() != rosic::BreakpointModulator::NO_LOOP )
+      modulatorToEdit->getLoopMode() != RAPT::rsBreakpointModulator::NO_LOOP )
   {
     return LOOP_START_LOCATOR;
   }
   else if( abs(x2+2-mouseX) <= 4.0  &&
-           modulatorToEdit->getLoopMode() != rosic::BreakpointModulator::NO_LOOP )
+           modulatorToEdit->getLoopMode() != RAPT::rsBreakpointModulator::NO_LOOP )
   {
     return LOOP_END_LOCATOR;
   }
@@ -563,7 +562,7 @@ int ModulatorCurveEditor::whatIsUnderTheMouseCursor(const MouseEvent &e)
   return NO_OBJECT;
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // callbacks:
 
 void ModulatorCurveEditor::parameterChanged(Parameter* parameterThatHasChanged)
@@ -637,7 +636,7 @@ void ModulatorCurveEditor::mouseDown(const MouseEvent &e)
     // check if one of the locators is being dragged (we need to check that only
     // when no point is being dragged):
     if( breakpointBeingDragged == -1 && 
-        modulatorToEdit->getLoopMode() != rosic::BreakpointModulator::NO_LOOP)
+        modulatorToEdit->getLoopMode() != RAPT::rsBreakpointModulator::NO_LOOP)
     {
       if( whatIsUnderTheMouseCursor(e) == LOOP_START_LOCATOR )
       {
@@ -802,9 +801,9 @@ void ModulatorCurveEditor::mouseDrag(const MouseEvent &e)
     snapToGrid(x,y);
 
     if( e.mods.isShiftDown() )
-      modulatorToEdit->setEditMode(BreakpointModulator::EDIT_WITH_SHIFT);
+      modulatorToEdit->setEditMode(RAPT::rsBreakpointModulator::EDIT_WITH_SHIFT);
     else
-      modulatorToEdit->setEditMode(BreakpointModulator::EDIT_WITHOUT_SHIFT);
+      modulatorToEdit->setEditMode(RAPT::rsBreakpointModulator::EDIT_WITHOUT_SHIFT);
 
     // pass the new breakpoint to our preview envelope generator:
     modulatorToEdit->modifyBreakpoint(breakpointBeingDragged, x, y);
@@ -925,8 +924,8 @@ void ModulatorCurveEditor::resized()
 //-------------------------------------------------------------------------------------------------
 // others:
 
-void ModulatorCurveEditor::updatePlotCurveData(int curveIndex, BreakpointModulator* modulator, 
-                                               bool updateGUI)
+void ModulatorCurveEditor::updatePlotCurveData(int curveIndex, 
+  RAPT::rsBreakpointModulator* modulator, bool updateGUI)
 {
   if( modulator == NULL )
     return;
@@ -945,7 +944,7 @@ void ModulatorCurveEditor::updatePlotCurveData(int curveIndex, BreakpointModulat
 
   // copy the data from the modulator into a temporary object which has mostly the same data 
   // as the passed modulator now, but with some adjustments for plotting:
-  BreakpointModulator tmpModulator;
+  RAPT::rsBreakpointModulator tmpModulator;
   tmpModulator.copyDataFrom(*modulator);
   tmpModulator.setLoopMode(false);
   tmpModulator.setSyncMode(false);
@@ -1025,7 +1024,7 @@ void ModulatorCurveEditor::plotCurveFamily(Graphics &g, Image *targetImage, XmlE
 }
 
 void ModulatorCurveEditor::plotBreakpoints(Graphics &g, Image *targetImage, 
-  BreakpointModulator* modulator, const Colour& dotColour)
+  RAPT::rsBreakpointModulator* modulator, const Colour& dotColour)
 {
   if( modulator == NULL )
     return;
@@ -1062,7 +1061,7 @@ void ModulatorCurveEditor::plotBreakpoints(Graphics &g, Image *targetImage,
 }
 
 void ModulatorCurveEditor::plotLoopLocators(Graphics &g, Image *targetImage, 
-  BreakpointModulator* modulator, const Colour& locatorColour, bool fullHeight)
+  RAPT::rsBreakpointModulator* modulator, const Colour& locatorColour, bool fullHeight)
 {
   if( modulator == NULL )
     return;
@@ -1070,7 +1069,7 @@ void ModulatorCurveEditor::plotLoopLocators(Graphics &g, Image *targetImage,
   double scale  = modulator->getScaleFactor();
   double offset = modulator->getOffset();
 
-  if( modulator->getLoopMode() == rosic::BreakpointModulator::NO_LOOP )
+  if( modulator->getLoopMode() == RAPT::rsBreakpointModulator::NO_LOOP )
     return; // nothing to do
 
   double x1, x2, y1, y2;
@@ -1099,8 +1098,6 @@ void ModulatorCurveEditor::plotLoopLocators(Graphics &g, Image *targetImage,
   CoordinateSystemOld::transformToComponentsCoordinates(x1, y1);
   drawTriangle(g, (float)x1-6.f, (float)y1, (float)x1+4.f, (float)y1-6.f, (float)x1+4.f, 
                (float)y1+6.f, true); 
-
-
 
   // draw a preliminary transparent locator of the currently edited modulator, when a locator 
   // is being dragged (we need to check modulator == modulatorToEdit because otherwise the call

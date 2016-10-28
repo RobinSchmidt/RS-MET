@@ -23,6 +23,7 @@ namespace jura
 #include "filters/jura_LadderFilter.cpp"
 
 #include "modulators/jura_BreakpointModulatorAudioModule.cpp"
+#include "modulators/jura_ModulatorCurveEditor.cpp"
 //#include "modulators/jura_BreakpointModulatorEditor.cpp"
 
 }
