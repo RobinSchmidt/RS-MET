@@ -79,7 +79,6 @@ inline double expToLin(double in, double inMin, double inMax, double outMin, dou
   double tmp = log(in / inMin) / log(inMax / inMin);
   return outMin + tmp * (outMax - outMin);
 }
-
 inline int sign(double x)
 {
   if(x > 0.f)
@@ -89,5 +88,17 @@ inline int sign(double x)
   else
     return 0;
 }
+inline void fillWithIndex(double *arrayToFill, int length)
+{
+  for(int i = 0; i < length; i++)
+    arrayToFill[i] = (double)i;
+}
+inline void fillWithZeros(double *arrayToFill, int length)
+{
+  for(int i = 0; i < length; i++)
+    arrayToFill[i] = 0.0;
+}
+
+
 
 #endif

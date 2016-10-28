@@ -4,6 +4,9 @@
 /** A class to combine all the required data for one modulation breakpoint. 
 
 \todo: make this class internal to BreakpointModulatorData
+\todo: perhaps, we should use the thread-safe version from rosic instead of this unsafe one from 
+       RSLib
+
 
 */
 

@@ -260,6 +260,11 @@ public:
   /** Constructor. */
   AudioModuleEditor(AudioModule* newModuleToEdit);
 
+  /** Sometimes, the module to edit is irrelevant or unknown to the editor, but we still need to
+  access the mutex-lock of the module. In this case, this constructor can be used. */
+  AudioModuleEditor(CriticalSection* pluginLockToUse);
+
+
   /** Destructor. */
   virtual ~AudioModuleEditor();
 

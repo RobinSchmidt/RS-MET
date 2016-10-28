@@ -414,6 +414,17 @@ AudioModuleEditor::AudioModuleEditor(AudioModule* newModuleToEdit)
   setSize(400, 300); // do we need this?
 }
 
+AudioModuleEditor::AudioModuleEditor(CriticalSection* pluginLockToUse)
+{
+  plugInLock   = pluginLockToUse;
+  moduleToEdit = nullptr;
+
+  jassertfalse;
+
+  // we need to factor out all the initialization code from the other constructor above (that 
+  // takes a pointer to the AudioModule and call this init-function it from there and from here...
+}
+
 AudioModuleEditor::~AudioModuleEditor()
 {
   ScopedLock scopedLock(*plugInLock);

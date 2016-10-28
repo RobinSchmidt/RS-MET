@@ -24,6 +24,8 @@ namespace jura
 
 #include "modulators/jura_BreakpointModulatorAudioModule.cpp"
 #include "modulators/jura_ModulatorCurveEditor.cpp"
-//#include "modulators/jura_BreakpointModulatorEditor.cpp"
+#include "modulators/jura_BreakpointModulatorEditor.cpp"
+//#include "modulators/jura_ModulatorCurveEditorMulti.cpp"
+//#include "modulators/jura_BreakpointModulatorEditorMulti.cpp"
 
 }

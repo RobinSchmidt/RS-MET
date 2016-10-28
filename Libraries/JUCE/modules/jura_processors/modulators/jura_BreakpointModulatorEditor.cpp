@@ -1,12 +1,10 @@
-#include "rosof_BreakpointModulatorEditor.h"
-using namespace rosof;
-
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-BreakpointModulatorGlobalEditor::BreakpointModulatorGlobalEditor(CriticalSection *newPlugInLock, 
-                                                                 BreakpointModulatorAudioModule* newModulatorToEdit) 
-                                                                 : AudioModuleEditor(newPlugInLock, newModulatorToEdit)
+BreakpointModulatorGlobalEditor::BreakpointModulatorGlobalEditor(CriticalSection *newPlugInLock,                                                                
+  BreakpointModulatorAudioModule* newModulatorToEdit) 
+  : AudioModuleEditor(newModulatorToEdit)
+  //: AudioModuleEditor(newPlugInLock, newModulatorToEdit)
 {
   layout = 0;
 
@@ -14,59 +12,59 @@ BreakpointModulatorGlobalEditor::BreakpointModulatorGlobalEditor(CriticalSection
   modulatorToEdit = newModulatorToEdit;
   jassert(modulatorToEdit != NULL);
 
-  addWidget( timeScaleSlider = new RSlider(juce::String(T("TimeScaleSlider"))) );
-  timeScaleSlider->setSliderName(juce::String(T("Time Scale")));
-  timeScaleSlider->setDescription(juce::String(T("Scales overall time duration by a factor")));
+  addWidget( timeScaleSlider = new RSlider("TimeScaleSlider") );
+  timeScaleSlider->setSliderName("Time Scale");
+  timeScaleSlider->setDescription("Scales overall time duration by a factor");
   timeScaleSlider->setStringConversionFunction(&valueToString4);
   timeScaleSlider->setRange(0.0625, 16.0, 0.01, 1.0);
   timeScaleSlider->setScaling(Parameter::EXPONENTIAL);
 
-  addWidget( timeScaleByKeySlider = new RSlider(juce::String(T("TimeScaleByKeySlider"))) );
-  timeScaleByKeySlider->setSliderName(T("Key"));
-  timeScaleByKeySlider->setDescription(juce::String(T("Key dependence of the the overall time duration")));
+  addWidget( timeScaleByKeySlider = new RSlider("TimeScaleByKeySlider") );
+  timeScaleByKeySlider->setSliderName("Key");
+  timeScaleByKeySlider->setDescription("Key dependence of the the overall time duration");
   timeScaleByKeySlider->setStringConversionFunction(&percentToStringWithUnit0);
   timeScaleByKeySlider->setRange(-150.0, 150.0, 1.0, 0.0);
   timeScaleByKeySlider->setScaling(Parameter::LINEAR_BIPOLAR);
 
-  addWidget( timeScaleByVelSlider = new RSlider(juce::String(T("TimeScaleByVelSlider"))) );
-  timeScaleByVelSlider->setSliderName(T("Vel"));
-  timeScaleByVelSlider->setDescription(juce::String(T("Velocity dependence of the the overall time duration")));
+  addWidget( timeScaleByVelSlider = new RSlider("TimeScaleByVelSlider") );
+  timeScaleByVelSlider->setSliderName("Vel");
+  timeScaleByVelSlider->setDescription("Velocity dependence of the the overall time duration");
   timeScaleByVelSlider->setStringConversionFunction(&percentToStringWithUnit0);
   timeScaleByVelSlider->setRange(-150.0, 150.0, 1.0, 0.0);
   timeScaleByVelSlider->setScaling(Parameter::LINEAR_BIPOLAR);
 
-  addWidget( depthSlider = new RSlider(juce::String(T("DepthSlider"))) );
-  depthSlider->setSliderName(T("Depth"));
-  depthSlider->setDescription(juce::String(T("Depth of the modulation")));
+  addWidget( depthSlider = new RSlider("DepthSlider") );
+  depthSlider->setSliderName("Depth");
+  depthSlider->setDescription("Depth of the modulation");
   depthSlider->setStringConversionFunction(&valueToString2);
   depthSlider->setRange(0.0, 4.0, 0.01, 1.0);
 
-  addWidget( depthByKeySlider = new RSlider(juce::String(T("DepthByKeySlider"))) );
-  depthByKeySlider->setSliderName(T("Key"));
-  depthByKeySlider->setDescription(juce::String(T("Key dependence of the modulation depth")));
+  addWidget( depthByKeySlider = new RSlider("DepthByKeySlider") );
+  depthByKeySlider->setSliderName("Key");
+  depthByKeySlider->setDescription("Key dependence of the modulation depth");
   depthByKeySlider->setStringConversionFunction(&percentToStringWithUnit0);
   depthByKeySlider->setRange(-150.0, 150.0, 1.0, 0.0);
   depthByKeySlider->setScaling(Parameter::LINEAR_BIPOLAR);
 
-  addWidget( depthByVelSlider = new RSlider(juce::String(T("DepthByVelSlider"))) );
-  depthByVelSlider->setSliderName(T("Vel"));
-  depthByVelSlider->setDescription(juce::String(T("Velocity dependence of the modulation depth")));
+  addWidget( depthByVelSlider = new RSlider("DepthByVelSlider") );
+  depthByVelSlider->setSliderName("Vel");
+  depthByVelSlider->setDescription("Velocity dependence of the modulation depth");
   depthByVelSlider->setStringConversionFunction(&percentToStringWithUnit0);
   depthByVelSlider->setRange(-150.0, 150.0, 1.0, 0.0);
   depthByVelSlider->setScaling(Parameter::LINEAR_BIPOLAR);
 
-  addWidget( loopButton = new RButton(juce::String(T("Loop"))) );
-  loopButton->setDescription(juce::String(T("Toggle sustain loop on/off")));
+  addWidget( loopButton = new RButton("Loop") );
+  loopButton->setDescription("Toggle sustain loop on/off");
   loopButton->setClickingTogglesState(true);
   loopButton->addRButtonListener(this);
 
-  addWidget( syncButton = new RButton(juce::String(T("Sync"))) );
-  syncButton->setDescription(juce::String(T("Toggle sync on/off. Time unit is beats in sync-mode, seconds otherwise")));
+  addWidget( syncButton = new RButton("Sync") );
+  syncButton->setDescription("Toggle sync on/off. Time unit is beats in sync-mode, seconds otherwise");
   syncButton->setClickingTogglesState(true);
   syncButton->addRButtonListener(this);
 
-  addWidget( editButton = new RButton(juce::String(T("Edit"))) );
-  editButton->setDescription(juce::String(T("Selects the envelope for editing")));
+  addWidget( editButton = new RButton("Edit") );
+  editButton->setDescription("Selects the envelope for editing");
 
   setHeadlineStyle(AudioModuleEditor::NO_HEADLINE);
   webLink->setVisible(false);
@@ -75,7 +73,7 @@ BreakpointModulatorGlobalEditor::BreakpointModulatorGlobalEditor(CriticalSection
   setModulatorToEdit(modulatorToEdit); // will also call updateWidgetsAccordingToState
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // setup:
 
 void BreakpointModulatorGlobalEditor::setModulatorToEdit(
@@ -88,15 +86,15 @@ void BreakpointModulatorGlobalEditor::setModulatorToEdit(
 
   timeScaleSlider->assignParameter(modulatorToEdit->getParameterByName("TimeScale"));
   timeScaleByKeySlider->assignParameter(modulatorToEdit->getParameterByName("TimeScaleByKey"));
-  timeScaleByKeySlider->setSliderName(T("Key"));
+  timeScaleByKeySlider->setSliderName("Key");
   timeScaleByVelSlider->assignParameter(modulatorToEdit->getParameterByName("TimeScaleByVel"));
-  timeScaleByVelSlider->setSliderName(T("Vel"));
+  timeScaleByVelSlider->setSliderName("Vel");
 
   depthSlider->assignParameter(modulatorToEdit->getParameterByName("Depth"));
   depthByKeySlider->assignParameter(modulatorToEdit->getParameterByName("DepthByKey"));
-  depthByKeySlider->setSliderName(T("Key"));
+  depthByKeySlider->setSliderName("Key");
   depthByVelSlider->assignParameter(modulatorToEdit->getParameterByName("DepthByVel"));
-  depthByVelSlider->setSliderName(T("Vel"));
+  depthByVelSlider->setSliderName("Vel");
 
   setLinkPosition(INVISIBLE);
 
@@ -109,7 +107,7 @@ void BreakpointModulatorGlobalEditor::setLayout(int newLayout)
   resized();
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // callbacks:
 
 void BreakpointModulatorGlobalEditor::rButtonClicked(RButton *buttonThatWasClicked)
@@ -231,7 +229,7 @@ void BreakpointModulatorGlobalEditor::updateWidgetsAccordingToState()
   if( modulatorToEdit->wrappedBreakpointModulator == NULL )
     return;
 
-  rosic::BreakpointModulator* m = modulatorToEdit->wrappedBreakpointModulator;
+  RAPT::rsBreakpointModulator* m = modulatorToEdit->wrappedBreakpointModulator;
 
   // restore the slider settings:
   timeScaleSlider->setValue(     m->getTimeScale(),        false);
@@ -248,37 +246,38 @@ void BreakpointModulatorGlobalEditor::updateWidgetsAccordingToState()
   stateWidgetSet->updateStateNameField();
 }
 
-//=========================================================================================================================================
+//=================================================================================================
 // class BreakpointParameterEditor:
 
 BreakpointParameterEditor::BreakpointParameterEditor(CriticalSection *newPlugInLock)
-: AudioModuleEditor(newPlugInLock, NULL) // mmm...will this 'NULL' cause problems?
+//: AudioModuleEditor(newPlugInLock, NULL) // mmm...will this 'NULL' cause problems?
+: AudioModuleEditor(newPlugInLock)
 {
   modulatorToEdit         = NULL;
   selectedBreakpointIndex = -1;
 
-  addWidget( indexLabel = new RTextField( juce::String(T("Breakpoint"))) );
-  indexLabel->setDescription(juce::String(T("Index of selected breakpoint")));
+  addWidget( indexLabel = new RTextField("Breakpoint") );
+  indexLabel->setDescription("Index of selected breakpoint");
   indexLabel->setNoBackgroundAndOutline(true);
   indexLabel->setJustification(Justification::centred);
 
   addWidget( indexValueLabel = new RTextField() );
-  indexValueLabel->setDescription(juce::String(T("Index of selected breakpoint")));
+  indexValueLabel->setDescription("Index of selected breakpoint");
   indexValueLabel->setNoBackgroundAndOutline(true);
   indexValueLabel->setJustification(Justification::centred);
 
-  addWidget( timeSlider = new RSlider(juce::String(T("TimeSlider"))) );
+  addWidget( timeSlider = new RSlider("TimeSlider") );
   timeSlider->addListener(this);
-  timeSlider->setSliderName(juce::String(T("Time")));
-  timeSlider->setDescription(juce::String(T("Time stamp of slected breakpoint (in seconds or beats)")));
+  timeSlider->setSliderName("Time");
+  timeSlider->setDescription("Time stamp of slected breakpoint (in seconds or beats)");
   timeSlider->setStringConversionFunction(&secondsToStringWithUnitTotal4);
   timeSlider->setRange(0.0, 5.0, 0.0001, 0.0);
   timeSlider->setLayout(RSlider::NAME_ABOVE);
 
-  addWidget( levelSlider = new RSlider(juce::String(T("LevelSlider"))) );
+  addWidget( levelSlider = new RSlider("LevelSlider") );
   levelSlider->addListener(this);
-  levelSlider->setSliderName(juce::String(T("Level")));
-  levelSlider->setDescription(juce::String(T("Level of selected breakpoint")));
+  levelSlider->setSliderName("Level");
+  levelSlider->setDescription("Level of selected breakpoint");
   levelSlider->setStringConversionFunction(&valueToString3);
   //levelSlider->setRange(-2.0, 2.0, 0.001, 1.0);
   levelSlider->setRange(0.0, 4.0, 0.001, 1.0);
@@ -296,38 +295,39 @@ BreakpointParameterEditor::BreakpointParameterEditor(CriticalSection *newPlugInL
   defaultValues.add(4.0);
   levelSlider->setDefaultValues(defaultValues);
 
-  addWidget( shapeComboBox = new RNamedComboBox(juce::String(T("ShapeComboBox")), juce::String(T("Shape"))) );
-  shapeComboBox->setDescription(juce::String(T("Shape of the curve approaching the selected breakpoint")));
+  addWidget( shapeComboBox = new RNamedComboBox("ShapeComboBox", "Shape") );
+  shapeComboBox->setDescription("Shape of the curve approaching the selected breakpoint");
   shapeComboBox->setNameLabelPosition(RNamedComboBox::ABOVE_BOX);
   shapeComboBox->registerComboBoxObserver(this);
-  shapeComboBox->addItem(0, T("Stairstep")  );
-  shapeComboBox->addItem(1, T("Linear")     );
-  shapeComboBox->addItem(2, T("Smooth")     );
-  shapeComboBox->addItem(3, T("Analog")     );
-  shapeComboBox->addItem(4, T("AntiAnalog") );
-  shapeComboBox->addItem(5, T("Sigmoid")    );
-  shapeComboBox->addItem(6, T("Spikey")     );
-  shapeComboBox->addItem(7, T("Sine 1")     );
-  shapeComboBox->addItem(8, T("Sine 2")     );
+  shapeComboBox->addItem(0, "Stairstep"  );
+  shapeComboBox->addItem(1, "Linear"     );
+  shapeComboBox->addItem(2, "Smooth"     );
+  shapeComboBox->addItem(3, "Analog"     );
+  shapeComboBox->addItem(4, "AntiAnalog" );
+  shapeComboBox->addItem(5, "Sigmoid"    );
+  shapeComboBox->addItem(6, "Spikey"     );
+  shapeComboBox->addItem(7, "Sine 1"     );
+  shapeComboBox->addItem(8, "Sine 2"     );
 
-  addWidget( shapeSlider = new RSlider(juce::String(T("ShapeSlider"))) );
+  addWidget( shapeSlider = new RSlider("ShapeSlider") );
   shapeSlider->addListener(this);
   shapeSlider->setSliderName(juce::String::empty);
-  shapeSlider->setDescription(juce::String(T("Amount of the shape (shapiness)")));
+  shapeSlider->setDescription("Amount of the shape (shapiness)");
   shapeSlider->setStringConversionFunction(&valueToString2);
   shapeSlider->setRange(0.1, 10.0, 0.01, 1.0);
   shapeSlider->setScaling(Parameter::EXPONENTIAL);
 
-  addWidget( shapeToAllButton = new RButton(juce::String(T("ToAll"))) );
-  shapeToAllButton->setDescription(juce::String(T("Apply the current shape setting to all breakpoints")));
+  addWidget( shapeToAllButton = new RButton("ToAll") );
+  shapeToAllButton->setDescription("Apply the current shape setting to all breakpoints");
   shapeToAllButton->setClickingTogglesState(true);
   shapeToAllButton->addRButtonListener(this);
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // setup:
 
-void BreakpointParameterEditor::setModulatorToEdit(BreakpointModulatorAudioModule* newModulatorToEdit)
+void BreakpointParameterEditor::setModulatorToEdit(
+  BreakpointModulatorAudioModule* newModulatorToEdit)
 {
   modulatorToEdit = newModulatorToEdit;
   deSelectBreakpoint();
@@ -341,7 +341,7 @@ void BreakpointParameterEditor::selectBreakpoint(int index)
   if( modulatorToEdit->wrappedBreakpointModulator == NULL )
     return;
 
-  rosic::BreakpointModulator* m = modulatorToEdit->wrappedBreakpointModulator;
+  RAPT::rsBreakpointModulator* m = modulatorToEdit->wrappedBreakpointModulator;
 
   if( index == -1 )
     deSelectBreakpoint();
@@ -375,7 +375,7 @@ void BreakpointParameterEditor::deSelectBreakpoint()
   shapeToAllButton->setVisible(false);
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // callbacks:
 
 void BreakpointParameterEditor::rButtonClicked(RButton *buttonThatWasClicked)
@@ -385,7 +385,7 @@ void BreakpointParameterEditor::rButtonClicked(RButton *buttonThatWasClicked)
   if( modulatorToEdit->wrappedBreakpointModulator == NULL )
     return;
 
-  rosic::BreakpointModulator* m = modulatorToEdit->wrappedBreakpointModulator;
+  RAPT::rsBreakpointModulator* m = modulatorToEdit->wrappedBreakpointModulator;
 
   if( buttonThatWasClicked == shapeToAllButton )
   {
@@ -410,7 +410,7 @@ void BreakpointParameterEditor::rComboBoxChanged(RComboBox *rComboBoxThatHasChan
   if( modulatorToEdit->wrappedBreakpointModulator == NULL )
     return;
 
-  rosic::BreakpointModulator* m = modulatorToEdit->wrappedBreakpointModulator;
+  RAPT::rsBreakpointModulator* m = modulatorToEdit->wrappedBreakpointModulator;
 
   if( rComboBoxThatHasChanged == shapeComboBox )
   {
@@ -441,7 +441,7 @@ void BreakpointParameterEditor::rSliderValueChanged(RSlider *sliderThatHasChange
   if( modulatorToEdit->wrappedBreakpointModulator == NULL )
     return;
 
-  rosic::BreakpointModulator* m = modulatorToEdit->wrappedBreakpointModulator;
+  RAPT::rsBreakpointModulator* m = modulatorToEdit->wrappedBreakpointModulator;
 
   if( sliderThatHasChanged == timeSlider )
     m->setBreakpointTime(selectedBreakpointIndex, timeSlider->getValue());
@@ -488,9 +488,10 @@ void BreakpointParameterEditor::updateWidgetsAccordingToState()
   if( modulatorToEdit->wrappedBreakpointModulator == NULL )
     return;
 
-  rosic::BreakpointModulator* m = modulatorToEdit->wrappedBreakpointModulator;
+  RAPT::rsBreakpointModulator* m = modulatorToEdit->wrappedBreakpointModulator;
 
-  indexValueLabel->setText(valueToString0(selectedBreakpointIndex+1) + juce::String(T("/")) + valueToString0(m->getNumBreakpoints()));
+  indexValueLabel->setText(valueToString0(selectedBreakpointIndex+1) + juce::String("/") 
+    + valueToString0(m->getNumBreakpoints()));
 
   double minTime = m->getBreakpointMinTime(selectedBreakpointIndex);
   double maxTime = m->getBreakpointMaxTime(selectedBreakpointIndex);
@@ -505,30 +506,34 @@ void BreakpointParameterEditor::updateWidgetsAccordingToState()
   levelSlider->setValue(m->getBreakpointLevel(selectedBreakpointIndex), false);
 
   shapeSlider->setValue(m->getBreakpointShapeAmount(selectedBreakpointIndex),  false);
-  int shapeIndex = rmax(m->getBreakpointShape(selectedBreakpointIndex), (int) ModBreakpoint::STAIRSTEP);
+  //int shapeIndex = rmax(m->getBreakpointShape(selectedBreakpointIndex), 
+  //  (int) rsModBreakpoint::STAIRSTEP);
+  int shapeIndex = jmax(m->getBreakpointShape(selectedBreakpointIndex), 
+    (int) rsModBreakpoint::STAIRSTEP);
   shapeComboBox->selectItemByIndex(shapeIndex, false);
   shapeSlider->setEnabled(false);
   if( shapeIndex >= 3 && shapeIndex <= 6 ) 
     shapeSlider->setEnabled(true);
 }
 
-//=========================================================================================================================================
+//=================================================================================================
 // class BreakpointModulatorEditor:
 
 BreakpointModulatorEditor::BreakpointModulatorEditor(CriticalSection *newPlugInLock, 
-                                                     BreakpointModulatorAudioModule* newBreakpointModulatorAudioModule) 
-                                                     : AudioModuleEditor(newPlugInLock, newBreakpointModulatorAudioModule)
+  BreakpointModulatorAudioModule* newBreakpointModulatorAudioModule)                                                    
+: AudioModuleEditor(newBreakpointModulatorAudioModule)
+//  : AudioModuleEditor(newPlugInLock, newBreakpointModulatorAudioModule)
 {
   modulatorToEdit = NULL; // ? old and obsolete ?
   jassert(newBreakpointModulatorAudioModule != NULL);
   setLinkPosition(INVISIBLE);
 
   // change the headline from the default "Sub-Editor" to "Modulator-Editor":
-  setHeadlineText(juce::String(T("Modulator")));
-  setDescription(juce::String(T("This is a multi-breakpoint modulation generator")));
+  setHeadlineText("Modulator");
+  setDescription("This is a multi-breakpoint modulation generator");
 
   // create the breakpoint-editor:
-  breakpointEditor = new ModulatorCurveEditor(juce::String(T("PlotEditor")));
+  breakpointEditor = new ModulatorCurveEditor("PlotEditor");
   breakpointEditor->addChangeListener(this);
   addPlot(breakpointEditor);
 
@@ -549,70 +554,65 @@ BreakpointModulatorEditor::BreakpointModulatorEditor(CriticalSection *newPlugInL
   breakpointParameterEditor->setModulatorToEdit(newBreakpointModulatorAudioModule);
   addChildEditor( breakpointParameterEditor );
 
-  addWidget( snapXButton = new RButton(juce::String(T("#X:"))) );
-  snapXButton->setDescription(juce::String(T("Toggle time-quantization on/off.")));
+  addWidget( snapXButton = new RButton("#X:") );
+  snapXButton->setDescription("Toggle time-quantization on/off.");
   snapXButton->setClickingTogglesState(true);
   snapXButton->addRButtonListener(this);
 
-  addWidget( snapXComboBox = new RComboBox(juce::String(T("SnapXComboBox"))) );
+  addWidget( snapXComboBox = new RComboBox("SnapXComboBox") );
   snapXComboBox->registerComboBoxObserver(this);
-  snapXComboBox->setDescription(juce::String(T("Select spacing of the vertical grid lines")));
-  snapXComboBox->addItem(0, T("1/2")   );
-  snapXComboBox->addItem(1, T("1/4")   );
-  snapXComboBox->addItem(2, T("1/8")   );
-  snapXComboBox->addItem(3, T("0.1")   );
-  snapXComboBox->addItem(4, T("1/16")  );
-  snapXComboBox->addItem(5, T("1/32")  );
-  snapXComboBox->addItem(6, T("1/64")  );
-  snapXComboBox->addItem(7, T("0.01")  );
-  snapXComboBox->addItem(8, T("1/128") );
+  snapXComboBox->setDescription("Select spacing of the vertical grid lines");
+  snapXComboBox->addItem(0, "1/2"   );
+  snapXComboBox->addItem(1, "1/4"   );
+  snapXComboBox->addItem(2, "1/8"   );
+  snapXComboBox->addItem(3, "0.1"   );
+  snapXComboBox->addItem(4, "1/16"  );
+  snapXComboBox->addItem(5, "1/32"  );
+  snapXComboBox->addItem(6, "1/64"  );
+  snapXComboBox->addItem(7, "0.01"  );
+  snapXComboBox->addItem(8, "1/128" );
   snapXComboBox->selectItemByIndex(2, false);
 
-  addWidget( snapYButton = new RButton(juce::String(T("#Y:"))) );
-  snapYButton->setDescription(juce::String(T("Toggle level-quantization on/off.")));
+  addWidget( snapYButton = new RButton("#Y:") );
+  snapYButton->setDescription("Toggle level-quantization on/off.");
   snapYButton->setClickingTogglesState(true);
   snapYButton->addRButtonListener(this);
 
-  addWidget( snapYComboBox = new RComboBox(juce::String(T("SnapYComboBox"))) );
+  addWidget( snapYComboBox = new RComboBox("SnapYComboBox") );
   snapYComboBox->registerComboBoxObserver(this);
-  snapYComboBox->setDescription(juce::String(T("Select spacing of the horizontal grid lines")));
-  snapYComboBox->addItem(0, T("1/2")   );
-  snapYComboBox->addItem(1, T("1/4")   );
-  snapYComboBox->addItem(2, T("1/8")   );
-  snapYComboBox->addItem(3, T("0.1")   );
-  snapYComboBox->addItem(4, T("1/16")  );
-  snapYComboBox->addItem(5, T("1/32")  );
-  snapYComboBox->addItem(6, T("1/64")  );
-  snapYComboBox->addItem(7, T("0.01")  );
-  snapYComboBox->addItem(8, T("1/128") );
+  snapYComboBox->setDescription("Select spacing of the horizontal grid lines");
+  snapYComboBox->addItem(0, "1/2"   );
+  snapYComboBox->addItem(1, "1/4"   );
+  snapYComboBox->addItem(2, "1/8"   );
+  snapYComboBox->addItem(3, "0.1"   );
+  snapYComboBox->addItem(4, "1/16"  );
+  snapYComboBox->addItem(5, "1/32"  );
+  snapYComboBox->addItem(6, "1/64"  );
+  snapYComboBox->addItem(7, "0.01"  );
+  snapYComboBox->addItem(8, "1/128" );
   snapYComboBox->selectItemByIndex(2, false);
-   // get rid of this duplication...
+   // get rid of this code duplication...
 
   addWidget(closeButton = new RButton(RButton::CLOSE), true, false); // invisible by default
-  closeButton->setDescription(juce::String(T("Closes the modulator editor")));
+  closeButton->setDescription("Closes the modulator editor");
   closeButton->setClickingTogglesState(false);
   // we don't listen to this button ourselves - this is the job of the outlying editor object
 
   // customize the descriptions for the load/save buttons:
-  stateWidgetSet->stateLoadButton->setDescription(
-    juce::String(T("Load modulator settings from file")));
-  stateWidgetSet->stateSaveButton->setDescription(
-    juce::String(T("Save modulator settings to file")));
-  stateWidgetSet->statePlusButton->setDescription(
-    juce::String(T("Skip to next modulation curve in current directory")));
-  stateWidgetSet->stateMinusButton->setDescription(
-    juce::String(T("Skip to previous modulation curve in current directory")));
-  stateWidgetSet->stateFileNameLabel->setDescription(
-    juce::String(T("Name of current preset for the breakpoint modulator (if any)")));
+  stateWidgetSet->stateLoadButton->setDescription("Load modulator settings from file");
+  stateWidgetSet->stateSaveButton->setDescription("Save modulator settings to file");
+  stateWidgetSet->statePlusButton->setDescription("Skip to next modulation curve in current directory");
+  stateWidgetSet->stateMinusButton->setDescription("Skip to previous modulation curve in current directory");
+  stateWidgetSet->stateFileNameLabel->setDescription("Name of current preset for the breakpoint modulator (if any)");
 
   setModulatorToEdit(newBreakpointModulatorAudioModule->wrappedBreakpointModulator);
      // this will also set up the widgets according to the state of the modulator
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // parameter-settings:
 
-void BreakpointModulatorEditor::setModulatorToEdit(BreakpointModulator* newModulatorToEdit)
+void BreakpointModulatorEditor::setModulatorToEdit(RAPT::rsBreakpointModulator* newModulatorToEdit)
 {
   modulatorToEdit = newModulatorToEdit;
   //setPresetRemembererToEdit( modulatorToEdit );
@@ -649,7 +649,7 @@ void BreakpointModulatorEditor::setDescriptionField(RLabel *newDescriptionField)
 }
 */
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // callbacks:
 
 void BreakpointModulatorEditor::rButtonClicked(RButton *buttonThatWasClicked)
@@ -785,7 +785,8 @@ void BreakpointModulatorEditor::paint(Graphics &g)
   int w = breakpointGroupRectangle.getWidth();
   int h = breakpointGroupRectangle.getHeight();
   fillRectWithBilinearGradient(g, x, y, jmax(1,w), jmax(1,h),
-    editorColourScheme.topLeft, editorColourScheme.topRight, editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
+    editorColourScheme.topLeft, editorColourScheme.topRight, 
+    editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
   g.setColour(editorColourScheme.outline);
   //g.drawRect(x, y, w, h);
 
@@ -794,7 +795,8 @@ void BreakpointModulatorEditor::paint(Graphics &g)
   w = timeAndDepthGroupRectangle.getWidth();
   h = timeAndDepthGroupRectangle.getHeight();
   fillRectWithBilinearGradient(g, x, y, jmax(1,w), jmax(1,h),
-    editorColourScheme.topLeft, editorColourScheme.topRight, editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
+    editorColourScheme.topLeft, editorColourScheme.topRight, 
+    editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
   g.setColour(editorColourScheme.outline);
   //g.drawRect(x, y, w, h);
 
@@ -877,9 +879,11 @@ void BreakpointModulatorEditor::updateWidgetsAccordingToState(bool deSelectBreak
   breakpointParameterEditor->updateWidgetsAccordingToState();
 
   snapXButton->setToggleState(breakpointEditor->isVerticalFineGridVisible(), false);
-  snapXComboBox->selectItemByIndex(indexFromGridInterval(breakpointEditor->getVerticalFineGridInterval())-1, false);
+  snapXComboBox->selectItemByIndex(
+    indexFromGridInterval(breakpointEditor->getVerticalFineGridInterval())-1, false);
   snapYButton->setToggleState(breakpointEditor->isHorizontalFineGridVisible(), false);
-  snapYComboBox->selectItemByIndex(indexFromGridInterval(breakpointEditor->getHorizontalFineGridInterval())-1, false);
+  snapYComboBox->selectItemByIndex(
+    indexFromGridInterval(breakpointEditor->getHorizontalFineGridInterval())-1, false);
 
   // update the plot:
   breakpointEditor->updateMaximumRange(true);
@@ -893,7 +897,7 @@ void BreakpointModulatorEditor::updateWidgetsAccordingToState()
   updateWidgetsAccordingToState(true);
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // internal functions:
 
 void BreakpointModulatorEditor::autoAdjustPlotRangeX()
@@ -989,17 +993,15 @@ int BreakpointModulatorEditor::indexFromTimeInterval(double interval)
   else                              return  1; // no predefined interval
 }
 
-
-
-//=========================================================================================================================================
+//=================================================================================================
 // class BreakpointModulatorEditorCompact:
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-BreakpointModulatorEditorCompact::BreakpointModulatorEditorCompact(CriticalSection *newPlugInLock, 
-                                                                   BreakpointModulatorAudioModule* newModulatorToEdit) 
-: AudioModuleEditor(newPlugInLock, newModulatorToEdit)
+BreakpointModulatorEditorCompact::BreakpointModulatorEditorCompact(CriticalSection *newPlugInLock,                                                                  
+  BreakpointModulatorAudioModule* newModulatorToEdit) 
+: AudioModuleEditor(newModulatorToEdit)
+//: AudioModuleEditor(newPlugInLock, newModulatorToEdit)
 {
   setLinkPosition(AudioModuleEditor::INVISIBLE);
 
@@ -1007,17 +1009,17 @@ BreakpointModulatorEditorCompact::BreakpointModulatorEditorCompact(CriticalSecti
   modulatorModuleToEdit = newModulatorToEdit;
   modulatorToEdit       = newModulatorToEdit->wrappedBreakpointModulator;
 
-  addWidget( editButton = new RButton(juce::String(T("Edit"))) );
+  addWidget( editButton = new RButton("Edit") );
   editButton->addRButtonListener(this);
-  editButton->setDescription(juce::String(T("Open/close context menu with more options")));
+  editButton->setDescription("Open/close context menu with more options");
   editButton->setClickingTogglesState(true);
 
   numSamplesInPlot = 0;
   xValues          = NULL;
   yValues          = NULL;
-  plot = new CurveFamilyPlotOld(juce::String(T("Plot")));
-  plot->setDescription(juce::String(T("Envelope")));
-  plot->setAxisLabels(juce::String(T("")), juce::String(T("")));
+  plot = new CurveFamilyPlotOld("Plot");
+  plot->setDescription("Envelope");
+  plot->setAxisLabels("", "");
   plot->setVerticalCoarseGrid(1.0, false);
   plot->setHorizontalCoarseGrid(1.0, false);
   plot->setAxisValuesPositionX(CoordinateSystemOld::INVISIBLE);
@@ -1051,7 +1053,7 @@ BreakpointModulatorEditorCompact::~BreakpointModulatorEditorCompact()
   delete yValues;
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // setup:
 
 void BreakpointModulatorEditorCompact::setLayout(int newLayout)
@@ -1077,7 +1079,7 @@ void BreakpointModulatorEditorCompact::setHeadlineText(const juce::String& newHe
   popUpEditor->setHeadlineText(newHeadlineText);
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // callbacks:
 
 void BreakpointModulatorEditorCompact::rButtonClicked(RButton *buttonThatWasClicked)
@@ -1104,7 +1106,8 @@ void BreakpointModulatorEditorCompact::rButtonClicked(RButton *buttonThatWasClic
     editButton->setToggleState(false, true);
 }
 
-void BreakpointModulatorEditorCompact::changeListenerCallback(ChangeBroadcaster *objectThatHasChanged)
+void BreakpointModulatorEditorCompact::changeListenerCallback(
+  ChangeBroadcaster *objectThatHasChanged)
 {
   /*
   updateWidgetsAccordingToState();
@@ -1132,7 +1135,7 @@ void BreakpointModulatorEditorCompact::updatePlot()
 {
   if( modulatorModuleToEdit == NULL || modulatorToEdit == NULL )
     return;
-  rosic::BreakpointModulator tmpModulator;
+  RAPT::rsBreakpointModulator tmpModulator;
   tmpModulator.copyDataFrom(*modulatorToEdit);
   tmpModulator.fillBufferWithEnvelope(yValues, numSamplesInPlot, false);
   double xMin    = tmpModulator.getStartTime();
@@ -1175,8 +1178,8 @@ void BreakpointModulatorEditorCompact::resized()
   if( yValues != NULL ) { delete[] yValues; yValues = NULL; }
   xValues = new double[numSamplesInPlot];
   yValues = new double[numSamplesInPlot];
-  rosic::fillWithIndex(xValues, numSamplesInPlot);
-  rosic::fillWithZeros(yValues, numSamplesInPlot);
+  fillWithIndex(xValues, numSamplesInPlot);
+  fillWithZeros(yValues, numSamplesInPlot);
   plot->setMaximumRange(0.0, numSamplesInPlot, -1.1, 1.1);
   plot->setCurrentRange(plot->getMaximumRange());
   updatePlot();
