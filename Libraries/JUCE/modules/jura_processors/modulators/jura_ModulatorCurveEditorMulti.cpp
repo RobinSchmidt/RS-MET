@@ -1,7 +1,7 @@
-#include "rosof_ModulatorCurveEditorMulti.h"
-using namespace rosof;
+//#include "rosof_ModulatorCurveEditorMulti.h"
+//using namespace rosof;
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
 ModulatorCurveEditorMulti::ModulatorCurveEditorMulti(const juce::String& name) 
@@ -15,10 +15,10 @@ ModulatorCurveEditorMulti::~ModulatorCurveEditorMulti()
 
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // setup:
 
-void ModulatorCurveEditorMulti::addModulatorToEdit(rosic::BreakpointModulator *newModulatorToEdit)
+void ModulatorCurveEditorMulti::addModulatorToEdit(RAPT::rsBreakpointModulator *newModulatorToEdit)
 {
   modulators.getLock().enter();
   modulators.addIfNotAlreadyThere(newModulatorToEdit);
@@ -74,7 +74,7 @@ void ModulatorCurveEditorMulti::changeCurveColour(int index, const ColourAHSL& n
   curveColours.set(index, newColour);
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // inquiry:
 
 Colour ModulatorCurveEditorMulti::getCurveColour(int index) const
@@ -85,7 +85,7 @@ Colour ModulatorCurveEditorMulti::getCurveColour(int index) const
     return curveColours[index % curveColours.size()].getAsJuceColour();
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // callbacks:
 
 void ModulatorCurveEditorMulti::resized()
@@ -106,7 +106,8 @@ void ModulatorCurveEditorMulti::resized()
    // other stuff could be factored out into a function (better style)...
 }
 
-void ModulatorCurveEditorMulti::updateCurveDataForAllPlots(bool redrawCurves, bool redrawCoordinateSystem)
+void ModulatorCurveEditorMulti::updateCurveDataForAllPlots(bool redrawCurves, 
+  bool redrawCoordinateSystem)
 {
   modulators.getLock().enter();
   for(int i=0; i<modulators.size(); i++)
@@ -193,5 +194,3 @@ void ModulatorCurveEditorMulti::plotCurveFamily(Graphics &g, Image *targetImage,
   plotLoopLocators(g, targetImage, modulators[m], locatorColour);
   */
 }
-
-
