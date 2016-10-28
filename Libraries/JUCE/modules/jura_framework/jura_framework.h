@@ -80,7 +80,8 @@ namespace jura
 #include "gui/widgets/jura_StateLoadSaveWidgetSet.h"
 // there are still some special widgets missing - copy them over soon...
 
-#include "gui/plots/jura_CoordinateSystemOld.h" // should be renamed
+#include "gui/plots/jura_CoordinateSystemOld.h"        // these should be renamed - get rid of the "Old"
+#include "gui/plots/jura_CoordinateSystemZoomerOld.h"
 #include "gui/plots/jura_CurveFamilyPlotOld.h" 
 #include "gui/plots/jura_SpectrumDisplayOld.h"
 

@@ -53,6 +53,7 @@ namespace jura
 #include "gui/widgets/jura_StateLoadSaveWidgetSet.cpp"
 
 #include "gui/plots/jura_CoordinateSystemOld.cpp"
+#include "gui/plots/jura_CoordinateSystemZoomerOld.cpp"
 #include "gui/plots/jura_CurveFamilyPlotOld.cpp" 
 #include "gui/plots/jura_SpectrumDisplayOld.cpp"
 

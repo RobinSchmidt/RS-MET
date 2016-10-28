@@ -2148,9 +2148,6 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_SpectrumDisplayOld.cpp">
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\rojue_CoordinateSystemZoomerOld.cpp">
-      <Filter>Juce Modules\jura_framework\gui\plots</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\rojue_InteractiveCoordinateSystemOld.cpp">
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClCompile>
@@ -2279,6 +2276,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\jura_BreakpointModulatorEditorMulti.cpp">
       <Filter>Juce Modules\jura_processors\modulators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_CoordinateSystemZoomerOld.cpp">
+      <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -4295,9 +4295,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_SpectrumDisplayOld.h">
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\rojue_CoordinateSystemZoomerOld.h">
-      <Filter>Juce Modules\jura_framework\gui\plots</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\rojue_InteractiveCoordinateSystemOld.h">
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClInclude>
@@ -4435,6 +4432,25 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\jura_processors.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\jura_BreakpointModulatorEditorMulti.h">
       <Filter>Juce Modules\jura_processors\modulators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_basics\juce_audio_basics.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_devices\juce_audio_devices.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_formats\juce_audio_formats.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_plugin_client\juce_audio_plugin_client.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\juce_audio_processors.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_core\juce_core.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_cryptography\juce_cryptography.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_data_structures\juce_data_structures.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_events\juce_events.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_graphics\juce_graphics.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_gui_basics\juce_gui_basics.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_gui_extra\juce_gui_extra.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_opengl\juce_opengl.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_video\juce_video.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\jura_framework.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\jura_processors.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_CoordinateSystemZoomerOld.h">
+      <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
