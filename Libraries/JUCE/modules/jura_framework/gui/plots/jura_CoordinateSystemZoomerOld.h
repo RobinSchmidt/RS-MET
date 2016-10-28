@@ -8,7 +8,7 @@ otherwise it will be NULL and emptyness will be shown.
 
 \todo: y-zoom on shift/or ctrl-wheel */
 
-class CoordinateSystemZoomerOld : public ColourSchemeComponent, public RButtonListener, 
+class JUCE_API CoordinateSystemZoomerOld : public ColourSchemeComponent, public RButtonListener, 
   public RScrollBarListener
 {
 

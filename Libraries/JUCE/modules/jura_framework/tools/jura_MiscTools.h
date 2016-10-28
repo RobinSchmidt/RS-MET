@@ -80,4 +80,14 @@ inline double expToLin(double in, double inMin, double inMax, double outMin, dou
   return outMin + tmp * (outMax - outMin);
 }
 
+inline int sign(double x)
+{
+  if(x > 0.f)
+    return 1;
+  else if(x < 0.f)
+    return -1;
+  else
+    return 0;
+}
+
 #endif

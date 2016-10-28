@@ -1,6 +1,3 @@
-#include "rojue_InteractiveCoordinateSystemOld.h"
-using namespace rojue;
-
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
@@ -18,7 +15,7 @@ InteractiveCoordinateSystemOld::InteractiveCoordinateSystemOld(const String& nam
   matchedLoopConnectorColour   = Colour(0x0000ff00);
   unmatchedLoopConnectorColour = Colour(0xffff0000);
 
-  setDescription(T("Some coordinate system widget."));
+  setDescription("Some coordinate system widget.");
 }
 
 InteractiveCoordinateSystemOld::~InteractiveCoordinateSystemOld()
@@ -162,10 +159,10 @@ const
   XmlElement* xmlState = CoordinateSystemOld::getStateAsXml(stateName);
 
   // add parameters which are specific to this subclass:
-  xmlState->setAttribute(String(T("SnapToCoarseGridX")), snapToCoarseGridX);
-  xmlState->setAttribute(String(T("SnapToCoarseGridY")), snapToCoarseGridY);
-  xmlState->setAttribute(String(T("SnapToFineGridX")),   snapToFineGridX);
-  xmlState->setAttribute(String(T("SnapToFineGridY")),   snapToFineGridY);
+  xmlState->setAttribute("SnapToCoarseGridX", snapToCoarseGridX);
+  xmlState->setAttribute("SnapToCoarseGridY", snapToCoarseGridY);
+  xmlState->setAttribute("SnapToFineGridX",   snapToFineGridX);
+  xmlState->setAttribute("SnapToFineGridY",   snapToFineGridY);
 
   return xmlState;
 }
@@ -177,10 +174,10 @@ bool InteractiveCoordinateSystemOld::setStateFromXml(const XmlElement &xmlState)
   bool success = CoordinateSystemOld::setStateFromXml(xmlState); 
 
   // restore all the relevant parameters which are specific to this subclass:
-  snapToCoarseGridX = xmlState.getBoolAttribute(String(T("SnapToCoarseGridX")), false);
-  snapToCoarseGridY = xmlState.getBoolAttribute(String(T("SnapToCoarseGridY")), false);
-  snapToFineGridX   = xmlState.getBoolAttribute(String(T("SnapToFineGridX")),   false);
-  snapToFineGridY   = xmlState.getBoolAttribute(String(T("SnapToFineGridY")),   false);
+  snapToCoarseGridX = xmlState.getBoolAttribute("SnapToCoarseGridX", false);
+  snapToCoarseGridY = xmlState.getBoolAttribute("SnapToCoarseGridY", false);
+  snapToFineGridX   = xmlState.getBoolAttribute("SnapToFineGridX",   false);
+  snapToFineGridY   = xmlState.getBoolAttribute("SnapToFineGridY",   false);
 
   return success; // if everything worked well, this flag is still true
 }
@@ -188,8 +185,9 @@ bool InteractiveCoordinateSystemOld::setStateFromXml(const XmlElement &xmlState)
 
 void InteractiveCoordinateSystemOld::openRightClickPopupMenu()
 {
-  DEBUG_BREAK;
-  // the code below for opening the context menu is outdated - change it to deal with the new RPopUpMenu
+  jassertfalse;
+  // the code below for opening the context menu is outdated - change it to deal with the new 
+  // RPopUpMenu
 
   /*
   RPopUpMenuOld* menu         = NULL;
