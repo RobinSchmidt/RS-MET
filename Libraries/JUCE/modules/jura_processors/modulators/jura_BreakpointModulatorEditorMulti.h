@@ -1,118 +1,107 @@
-#ifndef rosof_BreakpointModulatorEditorMulti_h
-#define rosof_BreakpointModulatorEditorMulti_h
+#ifndef jura_BreakpointModulatorEditorMulti_h
+#define jura_BreakpointModulatorEditorMulti_h
 
-#include "../../rosic_displays/rosof_ModulatorCurveEditorMulti.h"
-#include "rosof_BreakpointModulatorEditor.h"
+/** This class is an editor for several breakpoint modulators at once.
 
-namespace rosof
+\todo make the RadioGroup-stuff for the Edit-buttons work again 
+\todo move this class into the file jura_BreakpointModulatorEditorMulti - we don't really need a 
+separate file for this 
+
+*/
+
+class JUCE_API BreakpointModulatorEditorMulti : public BreakpointModulatorEditor
 {
 
-  /**
+public:
 
-  This class is...
+  //-----------------------------------------------------------------------------------------------
+  // construction/destruction:
 
-  \todo: make the RadioGroup-stuff for the Edit-buttons work again
+  /** Constructor. */
+  BreakpointModulatorEditorMulti(CriticalSection *newPlugInLock, 
+    BreakpointModulatorAudioModule* newBreakpointModulatorAudioModule);
 
-  */
+  /** Destructor. */
+  //virtual ~BreakpointModulatorEditorMulti(); 
 
-  class BreakpointModulatorEditorMulti : public BreakpointModulatorEditor
-  {
+  //-----------------------------------------------------------------------------------------------
+  // setup:
 
-  public:
+  /** Adds a rosic::Breakpointmodulator object to the array of edited modulators. */
+  //virtual void addModulatorToEdit(rosic::BreakpointModulator* newModulatorToEdit);
+  virtual void addModulatorToEdit(BreakpointModulatorAudioModule* newModulatorToEdit,
+    bool createWidgets = true);
 
+  /** Selects one of the rosic::Breakpointmodulator objects for editing. */
+  virtual void selectModulatorToEdit(int index);
 
-    //---------------------------------------------------------------------------------------------
-    // construction/destruction:
+  /** Sets the juce::Label in which the descriptions for the widgets will appear. */
+  //virtual void setDescriptionField(RLabel* newDescriptionField);
 
-    /** Constructor. */
-    BreakpointModulatorEditorMulti(CriticalSection *newPlugInLock, BreakpointModulatorAudioModule* newBreakpointModulatorAudioModule); 
+  /** De-selects the currently selected breakpoint (if any) and updates the GUI accordingly. */
+  virtual void deSelectBreakpoint();
 
-    /** Destructor. */
-    //virtual ~BreakpointModulatorEditorMulti(); 
+  /** Sets the label for the modulator that appears top-left to the preset-filenam field. */
+  virtual void setModulatorLabel(int index, const juce::String& newLabel);
 
-    //---------------------------------------------------------------------------------------------
-    // setup:
+  /** Sets up the ColourScheme for one of the widget-sets. */
+  virtual void setChildColourScheme(int index, const EditorColourScheme& newEditorColourScheme,
+    const WidgetColourScheme& newWidgetColourScheme);
+  //virtual void setWidgetSetColourScheme(int index, const WidgetColourScheme& newColourScheme);
 
-    /** Adds a rosic::Breakpointmodulator object to the array of edited modulators. */
-    //virtual void addModulatorToEdit(rosic::BreakpointModulator* newModulatorToEdit);
-    virtual void addModulatorToEdit(BreakpointModulatorAudioModule* newModulatorToEdit, 
-      bool createWidgets = true);
+  //-----------------------------------------------------------------------------------------------
+  // callbacks:
 
-    /** Selects one of the rosic::Breakpointmodulator objects for editing. */
-    virtual void selectModulatorToEdit(int index);
+  virtual void rButtonClicked(RButton *buttonThatWasClicked);
+  virtual void changeListenerCallback(ChangeBroadcaster *objectThatHasChanged);
+  virtual void rComboBoxChanged(RComboBox *rComboBoxThatHasChanged);
 
-    /** Sets the juce::Label in which the descriptions for the widgets will appear. */
-    //virtual void setDescriptionField(RLabel* newDescriptionField);
+  virtual void copyColourSettingsFrom(const ColourSchemeComponent *componentToCopyFrom);
+  virtual void paint(Graphics &g);
+  virtual void resized();
 
-    /** De-selects the currently selected breakpoint (if any) and updates the GUI accordingly. */
-    virtual void deSelectBreakpoint();
+  //-----------------------------------------------------------------------------------------------
+  // others:
 
-    /** Sets the label for the modulator that appears top-left to the preset-filenam field. */
-    virtual void setModulatorLabel(int index, const juce::String& newLabel);
+  /** Updates the sliders, buttons, etc. according to the state of the rosic::Modulator object
+  which is being edited. It makes sense to de-select any possibly selected after restoring a
+  state, so this might be done here optionally too. */
+  virtual void updateWidgetsAccordingToState(bool deSelectBreakpoint);
 
-    /** Sets up the ColourScheme for one of the widget-sets. */
-    virtual void setChildColourScheme(int index, const EditorColourScheme& newEditorColourScheme, 
-      const WidgetColourScheme& newWidgetColourScheme);
-    //virtual void setWidgetSetColourScheme(int index, const WidgetColourScheme& newColourScheme);
+  /** Calls updateWidgetsAccordingToState(bool) with true as argument (we need to implement this
+  purely virtual function here). */
+  virtual void updateWidgetsAccordingToState();
 
-    //---------------------------------------------------------------------------------------------
-    // callbacks:
+  //-----------------------------------------------------------------------------------------------
+  // public data members:
 
-    virtual void rButtonClicked(RButton *buttonThatWasClicked);
-    virtual void changeListenerCallback(ChangeBroadcaster *objectThatHasChanged);
-    virtual void rComboBoxChanged(RComboBox *rComboBoxThatHasChanged);
+  // widgets:
+  juce::Array<BreakpointModulatorGlobalEditor*, CriticalSection> globalEditors;
+  //juce::Array<StateLoadSaveWidgetSet*,       CriticalSection> stateWidgetSets;
 
-    virtual void copyColourSettingsFrom(const ColourSchemeComponent *componentToCopyFrom);
-    virtual void paint(Graphics &g);
-    virtual void resized();
+  // the plot editor:
+  ModulatorCurveEditorMulti* breakpointEditorMulti;
+  //CoordinateSystemZoomer*    breakpointZoomer;
 
-    //---------------------------------------------------------------------------------------------
-    // others:
+protected:
 
-    /** Updates the sliders, buttons, etc. according to the state of the rosic::Modulator object 
-    which is being edited. It makes sense to de-select any possibly selected after restoring a 
-    state, so this might be done here optionally too. */
-    virtual void updateWidgetsAccordingToState(bool deSelectBreakpoint);
+  /** Creates the widgets for a new modulator - called from addModulatorToEdit. */
+  virtual void createWidgetsForNewModulator(BreakpointModulatorAudioModule* newModulator);
 
-    /** Calls updateWidgetsAccordingToState(bool) with true as argument (we need to implement this 
-    purely virtual function here). */
-    virtual void updateWidgetsAccordingToState();
+  /** Automatically adjusts the x-axis plot-range according to the current content. */
+  virtual void autoAdjustPlotRangeX();
 
-    //---------------------------------------------------------------------------------------------
-    // public data members:
+  /** Automatically adjusts the y-axis plot-range according to the current content. */
+  virtual void autoAdjustPlotRangeY();
 
-    // widgets:
-    juce::Array<BreakpointModulatorGlobalEditor*, CriticalSection> globalEditors;
-    //juce::Array<StateLoadSaveWidgetSet*,       CriticalSection> stateWidgetSets;
+  juce::Array<BreakpointModulatorAudioModule*, CriticalSection> modulatorModules;
+  int editedModulatorIndex; // -1, if none
+  //Rectangle leftSectionRectangle;
+  juce::OwnedArray<Rectangle<int> > leftSectionRectangles;
 
-    // the plot editor:
-    ModulatorCurveEditorMulti* breakpointEditorMulti;
-    //CoordinateSystemZoomer*    breakpointZoomer;
+  //juce::Array<BreakpointModulatorWidgetSet*> widgetSets;
 
-    //===============================================================================================
-    juce_UseDebuggingNewOperator;
-
-  protected:
-
-    /** Creates the widgets for a new modulator - called from addModulatorToEdit. */
-    virtual void createWidgetsForNewModulator(BreakpointModulatorAudioModule* newModulator);
-
-    /** Automatically adjusts the x-axis plot-range according to the current content. */    
-    virtual void autoAdjustPlotRangeX();
-
-    /** Automatically adjusts the y-axis plot-range according to the current content. */
-    virtual void autoAdjustPlotRangeY();
-
-    juce::Array<BreakpointModulatorAudioModule*, CriticalSection> modulatorModules;
-    int editedModulatorIndex; // -1, if none
-    //Rectangle leftSectionRectangle;
-    juce::OwnedArray<Rectangle<int> > leftSectionRectangles;
-
-    //juce::Array<BreakpointModulatorWidgetSet*> widgetSets;
-
-
-  };
-
-}
+  juce_UseDebuggingNewOperator;
+};
 
 #endif  

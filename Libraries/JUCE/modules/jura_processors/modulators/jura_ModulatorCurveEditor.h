@@ -1,10 +1,6 @@
 #ifndef jura_ModulatorCurveEditor_h
 #define jura_ModulatorCurveEditor_h
 
-//#include "../xml_tools/rosof_XmlToolsForRosic.h"
-//#include "../../rojue/components/coordinate_systems/rojue_CurveFamilyPlotOld.h"
-//#include "../../rojue/components/coordinate_systems/rojue_InteractiveCoordinateSystemOld.h"
-
 /** This class is intended to be used as a graphical editor for a BreakpointModulator-object.
 Breakpoints can be created, removed and dragged around.
 

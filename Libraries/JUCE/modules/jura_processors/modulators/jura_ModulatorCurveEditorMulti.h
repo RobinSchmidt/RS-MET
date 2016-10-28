@@ -4,7 +4,9 @@
 /** This class is used for editing several breakpoint-modulator curves in a single plot.  
 
 \todo maybe move this class into the file jura_ModulatorCurveEditor - we don't really need a 
-separate file for this */
+separate file for this 
+
+*/
 
 class JUCE_API ModulatorCurveEditorMulti : public ModulatorCurveEditor
 {

@@ -19,7 +19,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   // construction/destruction:
 
-  /** Constructor. */
+  /** Constructor. \todo remove the CriticalSection parameter */
   BreakpointModulatorGlobalEditor(CriticalSection *newPlugInLock, 
     BreakpointModulatorAudioModule* newModulatorToEdit);
 

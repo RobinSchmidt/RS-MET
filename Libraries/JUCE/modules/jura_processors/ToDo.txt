@@ -3,5 +3,7 @@
  -it may not terribly useful by itself but we need some context to drag over the 
   BreakpointModulator code
  -...but actually it might be even useful as a modulation plugin - we may also
-  let it modulate pan and or a (ladder) filter
+  let it modulate pan and/or a (ladder) filter
+ -..yes - make two plugins - one that only modulates amplitude and one that modulates
+  amplitude, pan and filter - with the 2nd, we can test the multi-editor
 

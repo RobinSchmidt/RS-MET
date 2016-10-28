@@ -58,7 +58,7 @@ namespace jura
 #include "modulators/jura_ModulatorCurveEditor.h"
 #include "modulators/jura_BreakpointModulatorEditor.h"
 #include "modulators/jura_ModulatorCurveEditorMulti.h"
-//#include "modulators/jura_BreakpointModulatorEditorMulti.h"
+#include "modulators/jura_BreakpointModulatorEditorMulti.h"
 
 }
 

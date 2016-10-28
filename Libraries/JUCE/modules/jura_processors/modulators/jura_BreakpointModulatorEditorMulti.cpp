@@ -1,13 +1,10 @@
-#include "rosof_BreakpointModulatorEditorMulti.h"
-using namespace rosof;
-
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-BreakpointModulatorEditorMulti::BreakpointModulatorEditorMulti(CriticalSection *newPlugInLock, 
-                                                               BreakpointModulatorAudioModule* newBreakpointModulatorAudioModule) 
+BreakpointModulatorEditorMulti::BreakpointModulatorEditorMulti(CriticalSection *newPlugInLock,                                                             
+  BreakpointModulatorAudioModule* newBreakpointModulatorAudioModule) 
  : BreakpointModulatorEditor(newPlugInLock, newBreakpointModulatorAudioModule)
- , AudioModuleEditor(newPlugInLock, newBreakpointModulatorAudioModule)
+ , AudioModuleEditor(newBreakpointModulatorAudioModule)
 {
   // init the pointer to the modulator to be edited to NULL:
   modulatorToEdit = NULL;
@@ -17,13 +14,13 @@ BreakpointModulatorEditorMulti::BreakpointModulatorEditorMulti(CriticalSection *
 
   // change the headline from the default "Sub-Editor" to "Modulator-Editor":
   //headline->setText(juce::String(T("Modulator")), false);
-  setHeadlineText(juce::String(T("Modulators")));
-  setDescription(juce::String(T("This is an editor for multi-breakpoint modulation generators")));
+  setHeadlineText("Modulators");
+  setDescription("This is an editor for multi-breakpoint modulation generators");
 
   // create the breakpoint-editor for multiple modulators, make the inherited single-modulator 
   // editor invisible and re-assign the zoomer:
   breakpointEditor->setVisible(false);
-  breakpointEditorMulti = new ModulatorCurveEditorMulti(juce::String(T("PlotEditor")));
+  breakpointEditorMulti = new ModulatorCurveEditorMulti("PlotEditor");
   breakpointEditorMulti->addChangeListener(this);
   addPlot(breakpointEditorMulti);
   breakpointZoomer->setCoordinateSystem(breakpointEditorMulti);
@@ -31,10 +28,10 @@ BreakpointModulatorEditorMulti::BreakpointModulatorEditorMulti(CriticalSection *
 
   // add the inherited widgets for the single modulator as first elements to our arrays:
   globalEditors.add(globalEditor);
-  globalEditor->timeScaleByKeySlider->setSliderName(juce::String(T("K")));
-  globalEditor->timeScaleByVelSlider->setSliderName(juce::String(T("V")));
-  globalEditor->depthByKeySlider->setSliderName(    juce::String(T("K")));
-  globalEditor->depthByVelSlider->setSliderName(    juce::String(T("V")));
+  globalEditor->timeScaleByKeySlider->setSliderName("K");
+  globalEditor->timeScaleByVelSlider->setSliderName("V");
+  globalEditor->depthByKeySlider->setSliderName(    "K");
+  globalEditor->depthByVelSlider->setSliderName(    "V");
   globalEditor->setLayout(1);
   globalEditor->editButton->addRButtonListener(this);
   //globalEditor->editButton->setRadioGroupId(1);
@@ -145,14 +142,10 @@ void BreakpointModulatorEditorMulti::setModulatorLabel(int index, const juce::St
   */
 }
    
-void BreakpointModulatorEditorMulti::setChildColourScheme(int index, const EditorColourScheme& newEditorColourScheme, 
-                                                          const WidgetColourScheme& newWidgetColourScheme)
+void BreakpointModulatorEditorMulti::setChildColourScheme(int index, 
+  const EditorColourScheme& newEditorColourScheme, const WidgetColourScheme& newWidgetColourScheme)
 {
-
-
-
   int dummy = 0;
-
 
   /*
   globalEditors.getLock().enter();
@@ -213,7 +206,8 @@ void BreakpointModulatorEditorMulti::rButtonClicked(RButton *buttonThatWasClicke
         {
           if( modulatorModules[i]->wrappedBreakpointModulator != NULL )
           {
-            modulatorModules[i]->wrappedBreakpointModulator->setLoopMode( globalEditors[i]->loopButton->getToggleState() );
+            modulatorModules[i]->wrappedBreakpointModulator->setLoopMode( 
+              globalEditors[i]->loopButton->getToggleState() );
             modulatorModules[i]->markStateAsDirty();
           }
           else
@@ -238,7 +232,8 @@ void BreakpointModulatorEditorMulti::rButtonClicked(RButton *buttonThatWasClicke
   //BreakpointModulatorEditor::rButtonClicked(buttonThatWasClicked);
 }
 
-void BreakpointModulatorEditorMulti::changeListenerCallback(ChangeBroadcaster *objectThatHasChanged)
+void BreakpointModulatorEditorMulti::changeListenerCallback(
+  ChangeBroadcaster *objectThatHasChanged)
 {
   if( modulatorToEdit == NULL )
     return;
@@ -267,7 +262,8 @@ void BreakpointModulatorEditorMulti::changeListenerCallback(ChangeBroadcaster *o
 
   if( objectThatHasChanged == breakpointEditorMulti )
   {
-    breakpointParameterEditor->selectBreakpoint(breakpointEditorMulti->getSelectedBreakpointIndex());
+    breakpointParameterEditor->selectBreakpoint(
+      breakpointEditorMulti->getSelectedBreakpointIndex());
     breakpointZoomer->updateScrollbars();
   }
   else if( objectThatHasChanged == breakpointParameterEditor )
@@ -286,18 +282,21 @@ void BreakpointModulatorEditorMulti::rComboBoxChanged(RComboBox *rComboBoxThatHa
   else if( rComboBoxThatHasChanged == snapXComboBox )
   {
     int newGridIntervalIndex = snapXComboBox->getSelectedItemIdentifier();
-    breakpointEditorMulti->setVerticalFineGrid(gridIntervalFromIndex(newGridIntervalIndex), snapXButton->getToggleState());
+    breakpointEditorMulti->setVerticalFineGrid(gridIntervalFromIndex(newGridIntervalIndex), 
+      snapXButton->getToggleState());
     breakpointEditorMulti->repaint();
   }
   else if( rComboBoxThatHasChanged == snapYComboBox )
   {
     int newGridIntervalIndex = snapYComboBox->getSelectedItemIdentifier();
-    breakpointEditorMulti->setHorizontalFineGrid(gridIntervalFromIndex(newGridIntervalIndex), snapYButton->getToggleState());
+    breakpointEditorMulti->setHorizontalFineGrid(gridIntervalFromIndex(newGridIntervalIndex), 
+      snapYButton->getToggleState());
     breakpointEditorMulti->repaint();
   }
 }
 
-void BreakpointModulatorEditorMulti::copyColourSettingsFrom(const ColourSchemeComponent *componentToCopyFrom)
+void BreakpointModulatorEditorMulti::copyColourSettingsFrom(
+  const ColourSchemeComponent *componentToCopyFrom)
 {
   AudioModuleEditor::copyColourSettingsFrom(componentToCopyFrom);
 
@@ -320,8 +319,8 @@ void BreakpointModulatorEditorMulti::paint(Graphics &g)
 {
   Editor::paint(g);
 
-  fillRectWithBilinearGradient(g, snapRectangle, editorColourScheme.topLeft, editorColourScheme.topRight, 
-    editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
+  fillRectWithBilinearGradient(g, snapRectangle, editorColourScheme.topLeft, 
+    editorColourScheme.topRight, editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
 
   Editor::drawHeadline(g);
 
@@ -346,7 +345,8 @@ void BreakpointModulatorEditorMulti::resized()
   // the right section:
   breakpointGroupRectangle.setBounds(x, y, w, h);
   breakpointParameterEditor->setBounds(x-2, y, w+2, h);
-  snapRectangle.setBounds(x, breakpointGroupRectangle.getBottom(), w, getHeight() - breakpointGroupRectangle.getBottom() );
+  snapRectangle.setBounds(x, breakpointGroupRectangle.getBottom(), w, 
+    getHeight() - breakpointGroupRectangle.getBottom() );
 
   x = snapRectangle.getX();
   y = snapRectangle.getY();
@@ -364,7 +364,8 @@ void BreakpointModulatorEditorMulti::resized()
   y = 0;
   w = breakpointGroupRectangle.getX()-x+2;
   h = getHeight()-y+2;
-  breakpointEditorMulti->setBounds(x, y, w-breakpointZoomer->getZoomerSize(), h-breakpointZoomer->getZoomerSize());
+  breakpointEditorMulti->setBounds(x, y, w-breakpointZoomer->getZoomerSize(), 
+    h-breakpointZoomer->getZoomerSize());
   breakpointZoomer->alignWidgetsToCoordinateSystem();
 
   // the left section:
@@ -427,32 +428,32 @@ void BreakpointModulatorEditorMulti::updateWidgetsAccordingToState()
 //-------------------------------------------------------------------------------------------------
 // internal functions:
 
-void BreakpointModulatorEditorMulti::createWidgetsForNewModulator(BreakpointModulatorAudioModule *newModulator)
+void BreakpointModulatorEditorMulti::createWidgetsForNewModulator(
+  BreakpointModulatorAudioModule *newModulator)
 {
-  BreakpointModulatorGlobalEditor* tmpEditor = new BreakpointModulatorGlobalEditor(plugInLock, newModulator);
-  //addWidgetSet(tmpWidgetSet); // this makes the encapsulated widgets child-components and registers 
-                              // this object as linstener to the widgets
+  BreakpointModulatorGlobalEditor* tmpEditor = 
+    new BreakpointModulatorGlobalEditor(plugInLock, newModulator);
+
+  //addWidgetSet(tmpWidgetSet); // this makes the encapsulated widgets child-components and 
+                                // registers this object as listener to the widgets
   //automatableSliders.addIfNotAlreadyThere(tmpWidgetSet->timeScaleSlider);
   //automatableSliders.addIfNotAlreadyThere(tmpWidgetSet->depthSlider);
-  tmpEditor->timeScaleByKeySlider->setSliderName(juce::String(T("K")));
-  tmpEditor->timeScaleByVelSlider->setSliderName(juce::String(T("V")));
-  tmpEditor->depthByKeySlider->setSliderName(    juce::String(T("K")));
-  tmpEditor->depthByVelSlider->setSliderName(    juce::String(T("V")));
+  tmpEditor->timeScaleByKeySlider->setSliderName("K");
+  tmpEditor->timeScaleByVelSlider->setSliderName("V");
+  tmpEditor->depthByKeySlider->setSliderName(    "K");
+  tmpEditor->depthByVelSlider->setSliderName(    "V");
   tmpEditor->setLayout(1);
   tmpEditor->loopButton->addRButtonListener(this);
   tmpEditor->editButton->addRButtonListener(this);
-
 
   newModulator->addStateWatcher(tmpEditor->stateWidgetSet);
   tmpEditor->stateWidgetSet->addChangeListener(this);
   //tmpEditor->stateWidgetSet->setDescriptionField(infoField);
 
-
   //tmpEditor->editButton->setRadioGroupId(1);
   globalEditors.add(tmpEditor);
   //addAndMakeVisible(tmpEditor);
   addChildEditor(tmpEditor);
-
 
   /*
   StateLoadSaveWidgetSet* tmpStateWidgetSet = new StateLoadSaveWidgetSet();
@@ -482,11 +483,3 @@ void BreakpointModulatorEditorMulti::autoAdjustPlotRangeY()
   breakpointEditorMulti->setCurrentRangeY(minLevel, maxLevel);
   breakpointZoomer->zoomToAllY();
 }
-
-
-
-
-
-
-
-
