@@ -235,7 +235,6 @@ private:
   juce_UseDebuggingNewOperator;
 };
 
-
 //=================================================================================================
 
 /** Baseclass for GUI editors for AudioModule objects. */

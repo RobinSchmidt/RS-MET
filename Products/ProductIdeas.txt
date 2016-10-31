@@ -39,3 +39,11 @@ https://github.com/cameron314/concurrentqueue
 ->write JUCE wrappers for them and integrate them into the JURA framework
 -allow wrapping of a full arrangement into a clip - allows for hierarchical arrangements
  for example - arrange a drumloop, warp it up into a clip and use it in a higher level arrangement
+ 
+RaptPlug:
+-a modular routing plugin (like the juce plugin host but as plugin)
+-allows modular routing between plugins/processors
+-has all the rapt-based audio modules as built-in processors
+ ->user can use it as router for PlugIns and BuiltIns
+-this way, we have to maintain only one single plugin project for all 
+ processors
