@@ -82,6 +82,15 @@ void AudioPlugin::processBlock(AudioBuffer<float>& buffer, MidiBuffer& midiMessa
   convertAudioBuffer(internalAudioBuffer, buffer);  // double -> float
 }
 
+//bool AudioPlugin::acceptsMidi() const 
+//{ 
+//  if(dynamic_cast<AudioModuleWithMidiIn*>(underlyingAudioModule) != nullptr)
+//    return true;
+//  return false;
+//  // \todo at some point (when we want to write MIDI processors, i.e. plugins that modify or 
+//  // produce MIDI data, we should handle the producesMidi function in a similar way
+//} 
+
 AudioProcessorEditor* AudioPlugin::createEditor() 
 { 
   if(underlyingAudioModule == nullptr)
@@ -159,4 +168,156 @@ bool AudioPlugin::setPreferredBusArrangement(bool isInput, int bus,
   if (numChannels != 1 && numChannels != 2)
     return false;
   return AudioProcessor::setPreferredBusArrangement(isInput, bus, preferredSet);
+}
+
+//=================================================================================================
+
+AudioPluginWithMidiIn::AudioPluginWithMidiIn(AudioModuleWithMidiIn *moduleToWrap)
+  : AudioPlugin(moduleToWrap)
+{
+  wrappedModuleWithMidiIn = moduleToWrap;
+}
+
+void AudioPluginWithMidiIn::processBlock(AudioBuffer<double> &buffer, MidiBuffer &midiMessages)
+{
+  //AudioPlugin::processBlock(buffer, midiMessages); 
+  //// preliminary - later we need to handle the midiMessages here....
+
+  ScopedLock sl(plugInLock);
+
+#ifdef DEBUG
+  static int callCount = 1;
+  if( underlyingAudioModule == NULL )
+  {
+    buffer.clear();
+    jassertfalse;
+    return;
+  }
+  _clearfp();                                        // reset
+  unsigned int cw = _controlfp(0, 0);                // get state
+  //cw &= ~(EM_OVERFLOW | EM_UNDERFLOW | EM_ZERODIVIDE | EM_DENORMAL | EM_INVALID); // unmask all exceptions
+  cw &= ~(EM_OVERFLOW | EM_ZERODIVIDE | EM_DENORMAL | EM_INVALID); // unmask all exceptions
+  unsigned int cw0 = _controlfp(cw, _MCW_EM);
+#endif
+
+  // request time-info from host and update the bpm-values for the modulators accordingly, if they 
+  // are in sync mode (maybe this should be moved up into the baseclass AudioModule):
+  int timeToNextTriggerInSamples = -1;
+  if( underlyingAudioModule->wantsTempoSyncInfo )
+  {
+    AudioPlayHead::CurrentPositionInfo info;
+    if( getPlayHead() != 0  &&  getPlayHead()->getCurrentPosition(info) )
+    {
+      if( info.bpm <= 0.0 )
+        info.bpm = 120.0;  // fallback value when nothing meaningful is passed
+      underlyingAudioModule->setBeatsPerMinute(info.bpm); 
+    }
+
+    if( underlyingAudioModule->getTriggerInterval() != 0.0 )
+    {
+      double timeInBeats = secondsToBeats(info.timeInSeconds, info.bpm); 
+      // kludge - will probably not work when tempo changes - use ppqPosition here later....
+
+      double timeToNextTriggerInBeats = underlyingAudioModule->getTriggerInterval()                                 
+        - fmod(timeInBeats, underlyingAudioModule->getTriggerInterval());
+
+      timeToNextTriggerInSamples = 
+        roundToInt(getSampleRate()*beatsToSeconds(timeToNextTriggerInBeats, info.bpm));
+
+      if( timeToNextTriggerInSamples >= buffer.getNumSamples() )
+        timeToNextTriggerInSamples = -1; // indicates that we don't need to trigger in this block
+    }
+  }
+
+  if(midiMessages.isEmpty() && timeToNextTriggerInSamples == -1)
+  {
+    //underlyingAudioModule->processBlock(buffer, 0, buffer.getNumSamples()); // old
+    AudioPlugin::processBlock(buffer, midiMessages); 
+    // no messages to process - baseclass method can handle this
+  }
+  else
+  {
+    // some stuff for the input midi-buffer
+    MidiBuffer::Iterator midiBufferIterator(midiMessages);
+    MidiMessage          currentMidiMessage(0x80,0,0,0.0);
+    int                  currentMidiMessageOffset = -1;
+    bool                 aMidiMessageWasRetrieved = false;
+    int start     = 0;
+    int subLength = buffer.getNumSamples();
+    while( start < buffer.getNumSamples() )
+    {
+      // check if there are midi-messages at this instant of time:
+      int i = start;
+      midiBufferIterator.setNextSamplePosition(i);
+      currentMidiMessageOffset = -1; // may be set to another value by function on next line
+      aMidiMessageWasRetrieved = midiBufferIterator.getNextEvent(
+        currentMidiMessage, currentMidiMessageOffset);
+      while( aMidiMessageWasRetrieved && currentMidiMessageOffset == i ) 
+      {
+        handleMidiMessage(currentMidiMessage); // respond to the midi-message
+        aMidiMessageWasRetrieved = midiBufferIterator.getNextEvent(currentMidiMessage, 
+          currentMidiMessageOffset);           // get the next message at this sample
+      }
+
+      // check if we should spawn a trigger-event at this instant:
+      if( start == timeToNextTriggerInSamples )
+      {
+        underlyingAudioModule->trigger();
+
+        // update the time to the next trigger:
+        timeToNextTriggerInSamples = -1;  
+        // preliminary - assumes that the next trigger is not inside this buffer (which is assured
+        // only when buffersize is much smaller than the retrigger interval - which is probably
+        // true in realtime situations but maybe not in rendering)
+
+        int dummy = 0;
+      }
+
+      // all messages at this time instant have been processed - now determine the time-offset to 
+      // the next event and compute the number of samples that can be processed without 
+      // interrupting events (subLength):    
+      if( aMidiMessageWasRetrieved ) 
+      {
+        // ignore clock messages:
+        while( aMidiMessageWasRetrieved && currentMidiMessage.isMidiClock() )
+        {
+          aMidiMessageWasRetrieved = midiBufferIterator.getNextEvent(
+            currentMidiMessage, currentMidiMessageOffset);      
+        }
+        if( aMidiMessageWasRetrieved )
+          subLength = currentMidiMessageOffset - start; 
+        else
+          subLength = buffer.getNumSamples() - start;
+      }
+      else if( timeToNextTriggerInSamples != -1 )
+        subLength = timeToNextTriggerInSamples - start; 
+      else
+        subLength = buffer.getNumSamples() - start;
+
+      // process the block of sample-frames before the occurrence of the next event:  
+      //underlyingAudioModule->processBlock(buffer, start, subLength); // old
+      double* channelPointers[2];   // we assume 2 channels
+      channelPointers[0] = buffer.getWritePointer(0) + start;
+      channelPointers[1] = buffer.getWritePointer(1) + start;
+      underlyingAudioModule->processBlock(channelPointers, 2, subLength);
+
+      start += subLength; // increment start position for next iteration
+
+      //midiMessages.clear(0, start+subLength);
+    }
+  }
+
+#ifdef DEBUG
+  callCount++;
+  _controlfp(cw0, _MCW_EM);
+#endif
+}
+
+void AudioPluginWithMidiIn::handleMidiMessage(MidiMessage message)
+{
+  ScopedLock sl(plugInLock);
+  if( message.isMidiClock() )
+    return;
+  if( wrappedModuleWithMidiIn != NULL )
+    wrappedModuleWithMidiIn->handleMidiMessage(message);
 }

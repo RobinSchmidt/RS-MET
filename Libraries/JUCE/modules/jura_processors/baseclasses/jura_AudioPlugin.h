@@ -20,8 +20,10 @@ public:
   virtual void  prepareToPlay(double sampleRate, int maximumExpectedSamplesPerBlock) override;
   virtual void releaseResources() override {}
   virtual double getTailLengthSeconds() const override { return 0.0; }
-  virtual bool acceptsMidi()  const override { return false; }  // preliminary ..or maybe make
-                                                                // subclass AudioPluginWithMidiIn
+  virtual bool acceptsMidi() const override 
+  { 
+    return false; // doesn't seem to get called by JUCE's plugin host ..or maybe only on scan?
+  }
   virtual bool producesMidi() const override { return false; }
   virtual bool hasEditor() const override { return true; }
   virtual AudioProcessorEditor* createEditor() override;
@@ -73,6 +75,38 @@ protected:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioPlugin)
 };
+
+//=================================================================================================
+
+/** A wrapper class that wraps an object of a subclass of AudioModuleWithMidiIn into a 
+juce::AudioProcessor. We need a different wrapper class for modules with MIDI than for those 
+without MIDI because we must inform the host that we want to receive MIDI events (for this we 
+override acceptsMidi here) and furthermore, we actually have to handle the events by passing them 
+to the event handler methods of AudioModuleWithMidiIn - which the baseclass AudioModule doesn't 
+even have. We will call these event handlers from our overriden processBlock method. */
+
+class JUCE_API AudioPluginWithMidiIn : public AudioPlugin
+{
+
+public:
+
+  AudioPluginWithMidiIn(AudioModuleWithMidiIn *moduleToWrap);
+
+  virtual bool acceptsMidi() const override { return true; }
+
+  virtual void processBlock(AudioBuffer<double> &buffer, MidiBuffer &midiMessages) override;
+
+  virtual void handleMidiMessage(MidiMessage message);
+
+
+protected:
+
+  AudioModuleWithMidiIn *wrappedModuleWithMidiIn;  
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioPluginWithMidiIn)
+};
+
+
 
 //=================================================================================================
 

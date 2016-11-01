@@ -156,30 +156,7 @@ public:
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) = 0;
 
   //-----------------------------------------------------------------------------------------------
-  // Event processing - move into subclass AudioModuleWithMidi - there, we need to re-implement
-  // processBlock(AudioBuffer<double> &buffer, MidiBuffer &midiMessages) callback in order to
-  // actually do something with the passed MidiBuffer there - from there, we should call the 
-  // individual event-handlers which can int turn be overriden by subclasses of 
-  // AudioModuleWithMidi...
-
-  /** Handles a generic MidiMessage. */
-  virtual void handleMidiMessage(MidiMessage message);
-
-  /** Triggers a note-on event. */
-  virtual void noteOn(int noteNumber, int velocity);
-
-  /** Triggers a note-off event. */
-  virtual void noteOff(int noteNumber);
-
-  /** Triggers an all-notes-off event. */
-  virtual void allNotesOff();
-
-  /** Overrides setMidiController which is inherited from both base-classes - and we simply we pass
-  through the function call to both of them here. */
-  virtual void setMidiController(int controllerNumber, int controllerValue);
-
-  /** Triggers a pitch-bend event. */
-  virtual void setPitchBend(int pitchBendValue);
+  // Misc:
 
   /** Override this and set triggerInterval to some nonzero value if you need to re-trigger 
   something at regular intervals (like LFOs, for example). This function will be called from the 
@@ -231,6 +208,51 @@ private:
 
   juce::Array<AudioModuleDeletionWatcher*> deletionWatchers;
   friend class AudioModuleDeletionWatcher;
+
+  juce_UseDebuggingNewOperator;
+};
+
+//=================================================================================================
+
+/** A subclass of AudioModule that accepts MIDI input. If you derive your effect or instrument from
+this baseclass and wrap it into a juce::AudioProcessor (via the wrapper class jura::AudioPlugin),
+the plugin will have a MIDI input. Also, you can override the event handler methods in your 
+subclass (noteOn, noteOff, setMidiController, etc.) in order to respond to incoming MIDI events  */
+
+class JUCE_API AudioModuleWithMidiIn : public AudioModule
+{
+
+public:
+
+  //-----------------------------------------------------------------------------------------------
+  // Event processing - move into subclass AudioModuleWithMidi - there, we need to re-implement
+  // processBlock(AudioBuffer<double> &buffer, MidiBuffer &midiMessages) callback in order to
+  // actually do something with the passed MidiBuffer there - from there, we should call the 
+  // individual event-handlers which can int turn be overriden by subclasses of 
+  // AudioModuleWithMidi...
+
+  /** Handles a generic MidiMessage. */
+  virtual void handleMidiMessage(MidiMessage message);
+
+  /** Triggers a note-on event. */
+  virtual void noteOn(int noteNumber, int velocity);
+
+  /** Triggers a note-off event. */
+  virtual void noteOff(int noteNumber);
+
+  /** Triggers an all-notes-off event. */
+  virtual void allNotesOff();
+
+  /** Overrides setMidiController which is inherited from both base-classes - and we simply we pass
+  through the function call to both of them here. */
+  virtual void setMidiController(int controllerNumber, int controllerValue);
+
+  /** Triggers a pitch-bend event. */
+  virtual void setPitchBend(int pitchBendValue);
+
+
+protected:
+
 
   juce_UseDebuggingNewOperator;
 };
@@ -376,6 +398,5 @@ protected:
 
   juce_UseDebuggingNewOperator;
 };
-
 
 #endif 

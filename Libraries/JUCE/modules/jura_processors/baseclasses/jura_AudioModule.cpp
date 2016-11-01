@@ -275,9 +275,30 @@ void AudioModule::deRegisterDeletionWatcher(AudioModuleDeletionWatcher *watcher)
 }
 
 //-------------------------------------------------------------------------------------------------
-// event processing:
+// others:
 
-void AudioModule::handleMidiMessage(MidiMessage message)
+void AudioModule::initializeAutomatableParameters()
+{
+
+}
+
+void AudioModule::updateCoreObjectAccordingToParameters()
+{
+  ScopedLock scopedLock(*plugInLock);
+
+  // make a call to parameterChanged for each parameter in order to set up the DSP-core to reflect 
+  // the values the automatable parameters:
+  for(int i=0; i < (int) observedParameters.size(); i++ )
+    parameterChanged(observedParameters[i]);
+}
+
+//=================================================================================================
+// class AudioModuleWithMidiIn
+
+//-------------------------------------------------------------------------------------------------
+// event processing (must be moved to subclass):
+
+void AudioModuleWithMidiIn::handleMidiMessage(MidiMessage message)
 {
   ScopedLock scopedLock(*plugInLock);
   if( message.isController() )
@@ -296,28 +317,28 @@ void AudioModule::handleMidiMessage(MidiMessage message)
     setPitchBend(message.getPitchWheelValue());
 }
 
-void AudioModule::noteOn(int noteNumber, int velocity)
+void AudioModuleWithMidiIn::noteOn(int noteNumber, int velocity)
 {
   //ScopedLock scopedLock(*plugInLock);
   //if( underlyingRosicInstrument != NULL )
   //  underlyingRosicInstrument->noteOn(noteNumber, velocity);
 }
 
-void AudioModule::noteOff(int noteNumber)
+void AudioModuleWithMidiIn::noteOff(int noteNumber)
 {
   //ScopedLock scopedLock(*plugInLock);
   //if( underlyingRosicInstrument != NULL )
   //  underlyingRosicInstrument->noteOff(noteNumber);
 }
 
-void AudioModule::allNotesOff()
+void AudioModuleWithMidiIn::allNotesOff()
 {
   //ScopedLock scopedLock(*plugInLock);
   //if( underlyingRosicInstrument != NULL )
   //  underlyingRosicInstrument->allNotesOff();
 }
 
-void AudioModule::setMidiController(int controllerNumber, int controllerValue)
+void AudioModuleWithMidiIn::setMidiController(int controllerNumber, int controllerValue)
 {
   ScopedLock scopedLock(*plugInLock);
   AutomatableModule::setMidiController(controllerNumber, controllerValue);
@@ -331,7 +352,7 @@ void AudioModule::setMidiController(int controllerNumber, int controllerValue)
   childModules.getLock().exit();
 }
 
-void AudioModule::setPitchBend(int pitchBendValue)
+void AudioModuleWithMidiIn::setPitchBend(int pitchBendValue)
 {
   //ScopedLock scopedLock(*plugInLock);
   //if( underlyingRosicInstrument != NULL )
@@ -339,24 +360,6 @@ void AudioModule::setPitchBend(int pitchBendValue)
   //  double wheelValueMapped = (double) (pitchBendValue-8192) / 8192.0; // check this
   //  underlyingRosicInstrument->setPitchBend(wheelValueMapped);
   //}
-}
-
-//-------------------------------------------------------------------------------------------------
-// others:
-
-void AudioModule::initializeAutomatableParameters()
-{
-
-}
-
-void AudioModule::updateCoreObjectAccordingToParameters()
-{
-  ScopedLock scopedLock(*plugInLock);
-
-  // make a call to parameterChanged for each parameter in order to set up the DSP-core to reflect 
-  // the values the automatable parameters:
-  for(int i=0; i < (int) observedParameters.size(); i++ )
-    parameterChanged(observedParameters[i]);
 }
 
 //=================================================================================================

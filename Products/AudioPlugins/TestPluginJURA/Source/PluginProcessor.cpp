@@ -7,7 +7,11 @@ AudioProcessor* JUCE_CALLTYPE createPlugin(AudioModuleType *dummy)
   AudioModuleType   *module = new AudioModuleType(&plugIn->plugInLock);
   plugIn->underlyingAudioModule = module;
   return plugIn;
+  // \todo: we need a 2nd version of that to handle plugins with MIDI input - or maybe we can try
+  // to cast the dummy pointer to AudioModuleWithMidiIn and if that's successful wrap it into an
+  // AudioPluginWithMidiIn, otherwise wrap it into a regular AudioPlugin (without midi).
 }
+
 AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
   // We just create a dummy pointer here of the subclass of jura::AudioModule that we want to wrap 
