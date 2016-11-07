@@ -1,15 +1,39 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 
+
+
 template<class AudioModuleType>
-AudioProcessor* JUCE_CALLTYPE createPlugin(AudioModuleType *dummy)
+AudioProcessor* JUCE_CALLTYPE createPluginWithoutMidi(AudioModuleType *dummy)
 {
+  // wraps audio module into plugin without midi input
   jura::AudioPlugin *plugIn = new jura::AudioPlugin(nullptr);
   AudioModuleType   *module = new AudioModuleType(&plugIn->plugInLock);
   plugIn->underlyingAudioModule = module;
   return plugIn;
-  // \todo: we need a 2nd version of that to handle plugins with MIDI input - or maybe we can try
-  // to cast the dummy pointer to AudioModuleWithMidiIn and if that's successful wrap it into an
-  // AudioPluginWithMidiIn, otherwise wrap it into a regular AudioPlugin (without midi).
+}
+
+template<class AudioModuleType>
+AudioProcessor* JUCE_CALLTYPE createPluginWithMidi(AudioModuleType *dummy)
+{
+  // wraps audio module into plugin with midi input
+  jura::AudioPluginWithMidiIn *plugIn = new jura::AudioPluginWithMidiIn(nullptr);
+  AudioModuleType *module = new AudioModuleType(&plugIn->plugInLock);
+  plugIn->underlyingAudioModule = module;
+  return plugIn;
+}
+
+template<class AudioModuleType>
+AudioProcessor* JUCE_CALLTYPE createPlugin(AudioModuleType *dummy)
+{
+  // dispatcher between the different wrappers above (unfortunately, it doesn't work that way 
+  // - why? maybe because a nullptr is passed and that can't be used to infer the type?)
+  // -> maybe, we should not pass a nullptr, i.e. a dummy but instead a valid object and wrap 
+  // that...
+  if( dynamic_cast<jura::AudioModuleWithMidiIn*> (dummy) != nullptr )
+    return createPluginWithMidi(dummy);
+  else
+    return createPluginWithoutMidi(dummy);
+  // maybe, we can use the "decltype" mechanism
 }
 
 AudioProcessor* JUCE_CALLTYPE createPluginFilter()
@@ -17,11 +41,16 @@ AudioProcessor* JUCE_CALLTYPE createPluginFilter()
   // We just create a dummy pointer here of the subclass of jura::AudioModule that we want to wrap 
   // into a plugin in order to be able to invoke the template above (the dummy is just for the 
   // preprocessor, such that it can infer the type, for which the template should be instantiated):
-  jura::Ladder *dummy = nullptr;
+
+  jura::Ladder    *dummy = nullptr;
+  //jura::Enveloper *dummy = nullptr;
 
   // Now, invoking the template with the dummy pointer will return an object of the appropriate 
   // class (to which the pointer is declared):
-  return createPlugin(dummy);
+  //return createPlugin(dummy);
+  return createPluginWithoutMidi(dummy);
+  //return createPluginWithMidi(dummy);
+
 
   // This trick saves us from writing out the following code for each AudioModule subclass, which 
   // we want to wrap into a plugin:

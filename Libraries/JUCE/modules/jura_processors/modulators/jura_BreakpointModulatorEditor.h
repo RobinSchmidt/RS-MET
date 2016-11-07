@@ -152,7 +152,8 @@ public:
   //-----------------------------------------------------------------------------------------------
   // construction/destruction:
 
-  /** Constructor. */
+  /** Constructor. 
+  \todo: get rid of the pluginLock parameter */
   BreakpointModulatorEditor(CriticalSection *newPlugInLock, 
     BreakpointModulatorAudioModule* newModulatorToEdit);
 

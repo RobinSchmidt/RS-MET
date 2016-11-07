@@ -367,11 +367,26 @@ void AudioModuleWithMidiIn::setPitchBend(int pitchBendValue)
 
 AudioModuleEditor::AudioModuleEditor(AudioModule* newModuleToEdit)
 {
-  plugInLock = newModuleToEdit->plugInLock;
-
-  ScopedLock scopedLock(*plugInLock);
-
+  plugInLock   = newModuleToEdit->plugInLock;
   moduleToEdit = newModuleToEdit;
+  init();
+}
+
+AudioModuleEditor::AudioModuleEditor(CriticalSection* pluginLockToUse)
+{
+  plugInLock   = pluginLockToUse;
+  moduleToEdit = nullptr;
+  init();
+
+  //jassertfalse;
+  // we need to factor out all the initialization code from the other constructor above (that 
+  // takes a pointer to the AudioModule and call this init-function it from there and from here...
+  // -> done -> test it
+}
+
+void AudioModuleEditor::init()
+{
+  ScopedLock scopedLock(*plugInLock);
 
   if( moduleToEdit != NULL )
   {
@@ -415,17 +430,6 @@ AudioModuleEditor::AudioModuleEditor(AudioModule* newModuleToEdit)
   updateWidgetsAccordingToState();
 
   setSize(400, 300); // do we need this?
-}
-
-AudioModuleEditor::AudioModuleEditor(CriticalSection* pluginLockToUse)
-{
-  plugInLock   = pluginLockToUse;
-  moduleToEdit = nullptr;
-
-  jassertfalse;
-
-  // we need to factor out all the initialization code from the other constructor above (that 
-  // takes a pointer to the AudioModule and call this init-function it from there and from here...
 }
 
 AudioModuleEditor::~AudioModuleEditor()

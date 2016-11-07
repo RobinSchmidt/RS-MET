@@ -224,6 +224,8 @@ class JUCE_API AudioModuleWithMidiIn : public AudioModule
 
 public:
 
+  AudioModuleWithMidiIn(CriticalSection *lockToUse) : AudioModule(lockToUse) {}
+
   //-----------------------------------------------------------------------------------------------
   // Event processing - move into subclass AudioModuleWithMidi - there, we need to re-implement
   // processBlock(AudioBuffer<double> &buffer, MidiBuffer &midiMessages) callback in order to
@@ -284,6 +286,10 @@ public:
   /** Sometimes, the module to edit is irrelevant or unknown to the editor, but we still need to
   access the mutex-lock of the module. In this case, this constructor can be used. */
   AudioModuleEditor(CriticalSection* pluginLockToUse);
+
+  /** Initialization function that is called from the constructors (factored out to consolidate
+  stuff that is common to both constructors into one function) */
+  void init();
 
 
   /** Destructor. */

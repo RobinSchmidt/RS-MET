@@ -24,15 +24,12 @@ class JUCE_API Ladder : public jura::AudioModule
 public:
 
   Ladder(CriticalSection *lockToUse);
-  //Ladder();
     
   /** Creates the static parameters for this module (i.e. parameters that are not created
   dynamically and are thus always there). */
   virtual void createStaticParameters();
 
-  /** Creates the GUI editor (returns an object of an appropriate subclass of 
-  AudioProcessorEditor) */
-  //AudioProcessorEditor *createEditor() override;
+  /** Creates the GUI editor (returns an object of an appropriate subclass of AudioModuleEditor) */
   AudioModuleEditor *createEditor() override;
 
   // overriden from AudioModule baseclass:

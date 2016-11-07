@@ -6,6 +6,4 @@
   let it modulate pan and/or a (ladder) filter
  -..yes - make two plugins - one that only modulates amplitude and one that modulates
   amplitude, pan and filter - with the 2nd, we can test the multi-editor
- -i think, i need to first reactivate the midi-handling code - perhaps best in a subclass
-  of AudioModule - AudioModuleWithMidiIn
 

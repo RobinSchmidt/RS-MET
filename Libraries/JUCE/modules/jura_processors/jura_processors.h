@@ -60,6 +60,8 @@ namespace jura
 #include "modulators/jura_ModulatorCurveEditorMulti.h"
 #include "modulators/jura_BreakpointModulatorEditorMulti.h"
 
+#include "effects/jura_Enveloper.h"
+
 }
 
 #endif   // JURA_PROCESSORS_H_INCLUDED

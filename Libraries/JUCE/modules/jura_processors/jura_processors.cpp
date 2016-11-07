@@ -28,4 +28,6 @@ namespace jura
 #include "modulators/jura_ModulatorCurveEditorMulti.cpp"
 #include "modulators/jura_BreakpointModulatorEditorMulti.cpp"
 
+#include "effects/jura_Enveloper.cpp"
+
 }
