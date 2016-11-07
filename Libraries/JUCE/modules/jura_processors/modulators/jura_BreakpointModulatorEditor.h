@@ -30,7 +30,8 @@ public:
   call this function again with a NULL-pointer when the object get deleted for some reason. */
   virtual void setModulatorToEdit(BreakpointModulatorAudioModule* newModulatorToEdit);
 
-  /** Selects one of the available widget-layouts. */
+  /** Selects one of the available widget-layouts. 
+  \todo: give them names in an enumeration  */
   virtual void setLayout(int newLayout);
 
   //-----------------------------------------------------------------------------------------------

@@ -142,7 +142,7 @@ void BreakpointModulatorGlobalEditor::resized()
   {
     stateWidgetSet->stateLabel->setVisible(true);
     stateWidgetSet->setLayout(StateLoadSaveWidgetSet::LABEL_AND_BUTTONS_ABOVE);
-    AudioModuleEditor::resized();
+    AudioModuleEditor::resized(); // do we need this?
 
     x = 0;
     y = 2;

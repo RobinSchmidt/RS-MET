@@ -429,7 +429,7 @@ void AudioModuleEditor::init()
   loadPreferencesFromFile();
   updateWidgetsAccordingToState();
 
-  setSize(400, 300); // do we need this?
+  //setSize(400, 300); // do we need this?
 }
 
 AudioModuleEditor::~AudioModuleEditor()

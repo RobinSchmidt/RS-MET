@@ -1,9 +1,8 @@
--make a BreakpointEnvelope AudioModule with editor 
- -it just applies the envelope to the incoming signal
- -it may not terribly useful by itself but we need some context to drag over the 
-  BreakpointModulator code
- -...but actually it might be even useful as a modulation plugin - we may also
-  let it modulate pan and/or a (ladder) filter
- -..yes - make two plugins - one that only modulates amplitude and one that modulates
-  amplitude, pan and filter - with the 2nd, we can test the multi-editor
+Enveloper:
+-fix the GUI mess
+-check, why it goes through release twice when there's no loop active
+
+-maybe make a plugin that uses two or three envelopes to test the multi-editor
+ (perhaps a dual ladder filter)
+
 

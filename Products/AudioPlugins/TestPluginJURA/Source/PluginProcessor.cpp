@@ -18,7 +18,8 @@ AudioProcessor* JUCE_CALLTYPE createPluginWithMidi(AudioModuleType *dummy)
   // wraps audio module into plugin with midi input
   jura::AudioPluginWithMidiIn *plugIn = new jura::AudioPluginWithMidiIn(nullptr);
   AudioModuleType *module = new AudioModuleType(&plugIn->plugInLock);
-  plugIn->underlyingAudioModule = module;
+  plugIn->underlyingAudioModule   = module;
+  plugIn->wrappedModuleWithMidiIn = module;
   return plugIn;
 }
 
@@ -42,14 +43,14 @@ AudioProcessor* JUCE_CALLTYPE createPluginFilter()
   // into a plugin in order to be able to invoke the template above (the dummy is just for the 
   // preprocessor, such that it can infer the type, for which the template should be instantiated):
 
-  jura::Ladder    *dummy = nullptr;
-  //jura::Enveloper *dummy = nullptr;
+  //jura::Ladder    *dummy = nullptr;
+  jura::Enveloper *dummy = nullptr;
 
   // Now, invoking the template with the dummy pointer will return an object of the appropriate 
   // class (to which the pointer is declared):
   //return createPlugin(dummy);
-  return createPluginWithoutMidi(dummy);
-  //return createPluginWithMidi(dummy);
+  //return createPluginWithoutMidi(dummy);
+  return createPluginWithMidi(dummy);
 
 
   // This trick saves us from writing out the following code for each AudioModule subclass, which 
