@@ -23,19 +23,22 @@ AudioProcessor* JUCE_CALLTYPE createPluginWithMidi(AudioModuleType *dummy)
   return plugIn;
 }
 
-template<class AudioModuleType>
-AudioProcessor* JUCE_CALLTYPE createPlugin(AudioModuleType *dummy)
-{
-  // dispatcher between the different wrappers above (unfortunately, it doesn't work that way 
-  // - why? maybe because a nullptr is passed and that can't be used to infer the type?)
-  // -> maybe, we should not pass a nullptr, i.e. a dummy but instead a valid object and wrap 
-  // that...
-  if( dynamic_cast<jura::AudioModuleWithMidiIn*> (dummy) != nullptr )
-    return createPluginWithMidi(dummy);
-  else
-    return createPluginWithoutMidi(dummy);
-  // maybe, we can use the "decltype" mechanism
-}
+//template<class AudioModuleType>
+//AudioProcessor* JUCE_CALLTYPE createPlugin(AudioModuleType *dummy, bool withMidiIn)
+//{
+//  // dispatcher between the different wrappers above
+//  if( withMidiIn == true )
+//    return createPluginWithMidi(dummy);
+//  else
+//    return createPluginWithoutMidi(dummy);
+//
+//  // todo:
+//  // Maybe, we can somehow infer, whether or not we need to create a plugin with or without midi 
+//  // from the type of the passed pointer to get rid of the boolean flag "withMidiIn". But 
+//  // dynamic_cast and checking agianst a nullptr doesn't work when we actually pass a nullptr 
+//  // (which is what we do). Maybe somethign using decltype or type-traits or some other C++11 
+//  // feature may help - we'll see.
+//}
 
 AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
@@ -43,14 +46,14 @@ AudioProcessor* JUCE_CALLTYPE createPluginFilter()
   // into a plugin in order to be able to invoke the template above (the dummy is just for the 
   // preprocessor, such that it can infer the type, for which the template should be instantiated):
 
-  //jura::Ladder    *dummy = nullptr;
-  jura::Enveloper *dummy = nullptr;
+  //jura::Ladder    *dummy = nullptr; return createPluginWithoutMidi(dummy);
+  jura::Enveloper *dummy = nullptr; return createPluginWithMidi(dummy);
 
   // Now, invoking the template with the dummy pointer will return an object of the appropriate 
   // class (to which the pointer is declared):
-  //return createPlugin(dummy);
+  //return createPlugin(dummy, withMidiIn);
   //return createPluginWithoutMidi(dummy);
-  return createPluginWithMidi(dummy);
+  //return createPluginWithMidi(dummy);
 
 
   // This trick saves us from writing out the following code for each AudioModule subclass, which 
