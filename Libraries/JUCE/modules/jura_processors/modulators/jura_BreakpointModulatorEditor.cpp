@@ -140,9 +140,15 @@ void BreakpointModulatorGlobalEditor::resized()
   int x, y, w, h;
   if( layout == 0 ) // bottom section of a single-modulator editor
   {
-    stateWidgetSet->stateLabel->setVisible(true);
-    stateWidgetSet->setLayout(StateLoadSaveWidgetSet::LABEL_AND_BUTTONS_ABOVE);
     AudioModuleEditor::resized(); // do we need this?
+
+    //// old:
+    //stateWidgetSet->stateLabel->setVisible(true);
+    //stateWidgetSet->setLayout(StateLoadSaveWidgetSet::LABEL_AND_BUTTONS_ABOVE);
+
+    // new:
+    stateWidgetSet->setVisible(false);
+    stateWidgetSet->stateLabel->setVisible(false);
 
     x = 0;
     y = 2;
@@ -810,24 +816,26 @@ void BreakpointModulatorEditor::resized()
 {
   AudioModuleEditor::resized();
 
-  closeButton->setBounds(getWidth()-16, 0, 16, 16);
+  closeButton->setBounds(getWidth()-16, 0, 16, 16); // for what is this?
 
   int bottomSectionHeight = 44;
   int rightSectionWidth   = 100;
+  int lineWidth           = 2;   // we should infer this from the skin
 
   int x = getWidth()-rightSectionWidth;
   int y = getHeadlineBottom()+4;
   int w = getWidth()-x;
   int h = getHeight()-y-bottomSectionHeight;
 
-  breakpointGroupRectangle.setBounds(x, y, w, h);
+  breakpointGroupRectangle.setBounds(x, y, w, h+lineWidth);
   timeAndDepthGroupRectangle.setBounds(0, getHeight()-bottomSectionHeight, 
-    getWidth()-rightSectionWidth, bottomSectionHeight);
+    getWidth()-rightSectionWidth+lineWidth, bottomSectionHeight);
 
-  x = 4;
+  //x = 4; // old
+  x = 0;
   y = getHeadlineBottom()+4;
-  w = breakpointGroupRectangle.getX()-x;
-  h = timeAndDepthGroupRectangle.getY()-y;
+  w = breakpointGroupRectangle.getX()-x   + 4;  // why do we need the +4 here?
+  h = timeAndDepthGroupRectangle.getY()-y + 4;  // ..and here?
   breakpointEditor->setBounds(x, y, 
     w-breakpointZoomer->getZoomerSize(), 
     h-breakpointZoomer->getZoomerSize());

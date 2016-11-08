@@ -13,7 +13,7 @@ AudioModuleEditor* Enveloper::createEditor()
   jura::BreakpointModulatorEditor* editor = 
     new jura::BreakpointModulatorEditor(plugInLock, &envGenWrapper);
   //editor->setLayout(1);
-  editor->setSize(500, 300);
+  editor->setSize(500, 260);
   return editor;
   // somehow, the widgets below the plot are messed up ..or, there is something in the background
   // also, the arrangement of the subsections is not yet optimal - we need to get rid of some 
