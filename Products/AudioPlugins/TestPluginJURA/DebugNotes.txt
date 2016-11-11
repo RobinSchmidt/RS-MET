@@ -4,5 +4,5 @@ runs the just built Plugin Host). For this to work, set on the Property settings
 und er "Debugging" the "Command" field to the .exe that results from the build.
 On my machine, the path is:
 
-E:\Programming\C++\RS-MET-Preliminary\Products\AudioApplications\PluginHost\Builds\VisualStudio2015\x64\Debug\Plugin Host.exe
+E:\Programming\C++\RS-MET\Products\AudioApplications\PluginHost\Builds\VisualStudio2015\x64\Debug\Plugin Host.exe
 

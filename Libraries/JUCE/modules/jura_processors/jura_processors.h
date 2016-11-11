@@ -62,6 +62,8 @@ namespace jura
 
 #include "effects/jura_Enveloper.h"
 
+#include "misc/jura_PluginCreation.h"
+
 }
 
 #endif   // JURA_PROCESSORS_H_INCLUDED
