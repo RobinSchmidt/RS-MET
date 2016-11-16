@@ -38,3 +38,4 @@
 /Libraries/RAPT/Build/VisualStudio2015/*.sdf
 /Libraries/RAPT/Build/VisualStudio2015/x64/Debug
 /Products/AudioPlugins/TestPluginJURA/Builds/VisualStudio2015/*.opensdf
+/Products/AudioApplications/PluginHost/Builds/VisualStudio2015/x64/Debug
