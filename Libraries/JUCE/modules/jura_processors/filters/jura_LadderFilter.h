@@ -14,6 +14,9 @@ stereo signal type (which would be also possible), we allow the two cutoff frequ
 channels to be different by introducing a stereo spread parameter. 
 
 \todo: 
+-rename the class to LadderStereo
+-make the GUI editor work for the basic ladder filter (not only for this stereo version)
+ (maybe we have to make this a subclass of the underlying RAPT::LadderFilter)
 -let the user freely adjust the mixing coefficients for the filters stages (via the DraggableNumber
  widget) - the mode-combobox then selects between various predefined settings
 */
@@ -28,6 +31,7 @@ public:
   /** Creates the static parameters for this module (i.e. parameters that are not created
   dynamically and are thus always there). */
   virtual void createStaticParameters();
+    // maybe rename to createParameters
 
   /** Creates the GUI editor (returns an object of an appropriate subclass of AudioModuleEditor) */
   AudioModuleEditor *createEditor() override;

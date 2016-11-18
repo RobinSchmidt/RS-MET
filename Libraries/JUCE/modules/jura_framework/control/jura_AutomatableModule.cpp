@@ -71,7 +71,7 @@ void AutomatableModule::revertToDefaultMapping()
 
 Parameter* AutomatableModule::getParameterByName(const String& nameOfParameter) const
 {
-  Parameter* result = NULL;
+  Parameter* result = nullptr;
 
   observedParameters.getLock().enter();
   for(int i=0; i < (int) observedParameters.size(); i++)
@@ -81,6 +81,7 @@ Parameter* AutomatableModule::getParameterByName(const String& nameOfParameter) 
   }
   observedParameters.getLock().exit();
 
+  jassert(result != nullptr);   // parameter with given name doesn't exist
   return result;
 }
 
