@@ -385,13 +385,17 @@ void RSlider::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &w
     else
       s = -1.0;
 
+    float scale = 1.0;
+    if(ModifierKeys::getCurrentModifiers().isCtrlDown())
+      scale = 0.0125f;
+
     if( interval > 0.0 )
     {
-      tmpValue = getValue() + s * interval;
+      tmpValue = getValue() + scale * s * interval;
       setValue(constrainAndQuantizeValue(tmpValue), true, false);
     }
     else
-      setProportionalValue(getProportionalValue() + 0.01*wheel.deltaY, true, false);
+      setProportionalValue(getProportionalValue() + scale * 0.01 * wheel.deltaY, true, false);
   }
 }
 //void RSlider::mouseWheelMove (const MouseEvent& e, float wheelIncrementX, float wheelIncrementY)
