@@ -185,20 +185,21 @@ void AudioPluginWithMidiIn::processBlock(AudioBuffer<double> &buffer, MidiBuffer
 
   ScopedLock sl(plugInLock);
 
-#ifdef DEBUG
-  static int callCount = 1;
-  if( underlyingAudioModule == NULL )
-  {
-    buffer.clear();
-    jassertfalse;
-    return;
-  }
-  _clearfp();                                        // reset
-  unsigned int cw = _controlfp(0, 0);                // get state
-  //cw &= ~(EM_OVERFLOW | EM_UNDERFLOW | EM_ZERODIVIDE | EM_DENORMAL | EM_INVALID); // unmask all exceptions
-  cw &= ~(EM_OVERFLOW | EM_ZERODIVIDE | EM_DENORMAL | EM_INVALID); // unmask all exceptions
-  unsigned int cw0 = _controlfp(cw, _MCW_EM);
-#endif
+//#ifdef DEBUG
+//  static int callCount = 1;
+//  if( underlyingAudioModule == NULL )
+//  {
+//    buffer.clear();
+//    jassertfalse;
+//    return;
+//  }
+//  _clearfp();                                        // reset
+//  unsigned int cw = _controlfp(0, 0);                // get state
+//  //cw &= ~(EM_OVERFLOW | EM_UNDERFLOW | EM_ZERODIVIDE | EM_DENORMAL | EM_INVALID); // unmask all exceptions
+//  cw &= ~(EM_OVERFLOW | EM_ZERODIVIDE | EM_DENORMAL | EM_INVALID); // unmask all exceptions
+//  unsigned int cw0 = _controlfp(cw, _MCW_EM);
+//#endif
+// this crashes reaper
 
   // request time-info from host and update the bpm-values for the modulators accordingly, if they 
   // are in sync mode (maybe this should be moved up into the baseclass AudioModule):
@@ -303,14 +304,14 @@ void AudioPluginWithMidiIn::processBlock(AudioBuffer<double> &buffer, MidiBuffer
 
       start += subLength; // increment start position for next iteration
 
-      //midiMessages.clear(0, start+subLength);
+      //midiMessages.clear(0, start+subLength); // test
     }
   }
 
-#ifdef DEBUG
-  callCount++;
-  _controlfp(cw0, _MCW_EM);
-#endif
+//#ifdef DEBUG
+//  callCount++;
+//  _controlfp(cw0, _MCW_EM);
+//#endif
 }
 
 void AudioPluginWithMidiIn::handleMidiMessage(MidiMessage message)

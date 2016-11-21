@@ -373,7 +373,6 @@ void RSlider::mouseDoubleClick(const MouseEvent& e)
     setValue(openModalNumberEntryField(), true, false);
 }
 
-
 void RSlider::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel)
 {
   double tmpValue;
@@ -398,26 +397,6 @@ void RSlider::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &w
       setProportionalValue(getProportionalValue() + scale * 0.01 * wheel.deltaY, true, false);
   }
 }
-//void RSlider::mouseWheelMove (const MouseEvent& e, float wheelIncrementX, float wheelIncrementY)
-//{
-//  double tmpValue;
-//  if( isEnabled() )
-//  {
-//    float s;
-//    if( wheelIncrementY >= 0.0 )
-//      s = 1.0;
-//    else
-//      s = -1.0;
-//
-//    if( interval > 0.0 )
-//    {
-//      tmpValue = getValue() + s * interval;
-//      setValue(constrainAndQuantizeValue(tmpValue), true, false);
-//    }
-//    else
-//      setProportionalValue(getProportionalValue() + 0.01*wheelIncrementY, true, false);
-//  }
-//}
 
 void RSlider::paint(Graphics& g)
 {
