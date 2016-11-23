@@ -15,12 +15,30 @@
 // music/audio related constants:
 #define SEMITONE_FACTOR 1.0594630943592952645618252949463
 
-//// macros
-//#define INF(T) (std::numeric_limits<T>::infinity())
-//#define MIN(T) (std::numeric_limits<T>::min())
-//#define MAX(T) (std::numeric_limits<T>::max())
-//#define NAN(T) (std::numeric_limits<T>::quiet_NaN())
-//#define EPS(T) (std::numeric_limits<T>::epsilon())
+// constants related to numeric format:
+#define RS_INF(T) (std::numeric_limits<T>::infinity())
+#define RS_MIN(T) (std::numeric_limits<T>::min())
+#define RS_MAX(T) (std::numeric_limits<T>::max())
+#define RS_NAN(T) (std::numeric_limits<T>::quiet_NaN())
+#define RS_EPS(T) (std::numeric_limits<T>::epsilon())
+
+// powers of two:
+#define RS_POW2_0 1          // 2^0 = 1
+#define RS_POW2_1 2          // 2^1 = 2
+#define RS_POW2_2 4          // 2^2 = 4
+#define RS_POW2_3 8          // 2^3 = 8
+#define RS_POW2_4 16         // etc.
+#define RS_POW2_5 32
+#define RS_POW2_6 64
+#define RS_POW2_7 128
+#define RS_POW2_8 256
+#define RS_POW2_9 512
+#define RS_POW2_10 1024
+#define RS_POW2_11 2048
+#define RS_POW2_12 4096
+#define RS_POW2_13 8192
+#define RS_POW2_14 16384
+#define RS_POW2_15 32768
 
 
 #endif

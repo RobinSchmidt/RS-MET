@@ -37,6 +37,25 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Modules\Math\Functions\BasicFunctions.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Modules\Math\Functions\BellFunctions.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Modules\Math\Functions\Sigmoids.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Modules\Math\Math.cpp" />
     <ClCompile Include="..\..\Source\Modules\Modulators\Envelopes\BreakpointModulator.cpp" />
     <ClCompile Include="..\..\Source\Modules\Modulators\Modulators.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -49,8 +68,13 @@
   <ItemGroup>
     <ClInclude Include="..\..\Source\Modules\Basics\Basics.h" />
     <ClInclude Include="..\..\Source\Modules\Basics\Constants.h" />
+    <ClInclude Include="..\..\Source\Modules\Basics\TypeDefinitions.h" />
     <ClInclude Include="..\..\Source\Modules\Filters\Filters.h" />
     <ClInclude Include="..\..\Source\Modules\Filters\Musical\LadderFilter.h" />
+    <ClInclude Include="..\..\Source\Modules\Math\Functions\BasicFunctions.h" />
+    <ClInclude Include="..\..\Source\Modules\Math\Functions\BellFunctions.h" />
+    <ClInclude Include="..\..\Source\Modules\Math\Functions\Sigmoids.h" />
+    <ClInclude Include="..\..\Source\Modules\Math\Math.h" />
     <ClInclude Include="..\..\Source\Modules\Modulators\Envelopes\BreakpointModulator.h" />
     <ClInclude Include="..\..\Source\Modules\Modulators\Modulators.h" />
     <ClInclude Include="..\..\Source\Modules\RAPT.h" />

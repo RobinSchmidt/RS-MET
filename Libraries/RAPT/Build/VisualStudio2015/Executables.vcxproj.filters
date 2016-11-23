@@ -33,6 +33,9 @@
     <ClInclude Include="..\..\Source\Executables\Demos\ModulatorDemos.h">
       <Filter>Demos</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Executables\Demos\MathDemos.h">
+      <Filter>Demos</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\Executables\Main.cpp" />
@@ -52,6 +55,9 @@
       <Filter>Shared\RaptLibraryCode</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Executables\Demos\ModulatorDemos.cpp">
+      <Filter>Demos</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Executables\Demos\MathDemos.cpp">
       <Filter>Demos</Filter>
     </ClCompile>
   </ItemGroup>

@@ -14,11 +14,11 @@ inline int rsRoundToInt(double x)
   else
     return (int) xFloor;
 }
-template <class T> 
-inline T rsSign(T x)
-{
-  return T(T(0) < x) - (x < T(0));
-}
+//template <class T> 
+//inline T rsSign(T x)
+//{
+//  return T(T(0) < x) - (x < T(0));
+//}
 inline double rsPowBipolar(double base, double exponent)
 {
   if( base > 0.0 )

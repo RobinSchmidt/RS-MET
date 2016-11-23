@@ -1,4 +1,5 @@
 #include "Demos/ArrayDemos.h"
+#include "Demos/MathDemos.h"
 #include "Demos/FilterDemos.h"
 #include "Demos/ModulatorDemos.h"
 
@@ -12,15 +13,18 @@ int main(int argc, char** argv)
   // Demos:
 
   // Array Demos:
-  convolutionDemo();
+  //convolutionDemo();
+
+  // Math Demos:
+  sigmoids();
 
   // Filter Demos:
-  ladderImpulseResponse();
+  //ladderImpulseResponse();
   // add ladderMagnitudeResponse... - maybe create a template that plots 
   // impulse/step/magnitude/phase - responses in a single window
 
   // Filter Demos:
-  breakpointModulatorDefault();
+  //breakpointModulatorDefault();
 
 
   // ToDo: check for memory leaks here

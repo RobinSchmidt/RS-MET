@@ -16,6 +16,12 @@
     <Filter Include="Modulators\Envelopes">
       <UniqueIdentifier>{b8f1e486-93fe-413b-9569-3ebe1b0b7210}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Math">
+      <UniqueIdentifier>{2648744f-c317-41ab-be0a-c01695969602}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Math\Functions">
+      <UniqueIdentifier>{5d8ef78f-314f-47c2-b0f9-cd23dc15042a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\Modules\Basics\Basics.cpp">
@@ -33,6 +39,18 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Modules\Modulators\Envelopes\BreakpointModulator.cpp">
       <Filter>Modulators\Envelopes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Modules\Math\Functions\BellFunctions.cpp">
+      <Filter>Math\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Modules\Math\Functions\Sigmoids.cpp">
+      <Filter>Math\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Modules\Math\Math.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Modules\Math\Functions\BasicFunctions.cpp">
+      <Filter>Math\Functions</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -54,6 +72,21 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Modules\Modulators\Envelopes\BreakpointModulator.h">
       <Filter>Modulators\Envelopes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Modules\Math\Functions\BellFunctions.h">
+      <Filter>Math\Functions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Modules\Math\Functions\Sigmoids.h">
+      <Filter>Math\Functions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Modules\Math\Math.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Modules\Math\Functions\BasicFunctions.h">
+      <Filter>Math\Functions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Modules\Basics\TypeDefinitions.h">
+      <Filter>Basics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
