@@ -23,13 +23,12 @@ void svfImpulseResponse()
 {
   // Demonstrates, how to use the StateVariableFilter class. 
 
-  typedef double Real;
-  typedef RAPT::StateVariableFilter SVF;  // for convenience
-  //typedef RAPT::StateVariableFilter<Real, Real> SVF;  // for convenience - to be used after templatization
+  typedef float Real;
+  typedef RAPT::StateVariableFilter<Real, Real> SVF;  // for convenience
 
   // create and set up the filter:
-  RAPT::StateVariableFilter flt;
-  flt.setSampleRate( 44100);
+  SVF flt;
+  flt.setSampleRate( 44100); 
   flt.setFrequency(  1000);
   flt.setMode(SVF::LOWPASS);
   flt.setBandwidth(0.25);       // irrelevant for lowpass

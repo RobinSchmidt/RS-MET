@@ -23,21 +23,26 @@ code may also define its own instantiation file. */
 
 // Math:
 template RAPT::NormalizedSigmoids<double>;
+template RAPT::NormalizedSigmoids<float>;
 template RAPT::ParametricSigmoid<double>;
-template RAPT::rsPositiveBellFunctions<double>;
-template RAPT::rsParametricBellFunction<double>;
+template RAPT::ParametricSigmoid<float>;
 
-// instantiation for float - just to test that it works/compiles withour errors/warning
-//template RAPT::NormalizedSigmoids<float>;
-//template RAPT::ParametricSigmoid<float>;
+template RAPT::rsPositiveBellFunctions<double>;
 template RAPT::rsPositiveBellFunctions<float>;
+template RAPT::rsParametricBellFunction<double>;
 template RAPT::rsParametricBellFunction<float>;
 
 
-
 // Filters:
-template RAPT::LadderFilter<float, float>;
 template RAPT::LadderFilter<double, double>;
+template RAPT::LadderFilter<float, float>;
+template RAPT::StateVariableFilter<double, double>;
+template RAPT::StateVariableFilter<float, float>; 
+
+// todo: maybe get rid of all the instantiations for double - we should test exclusively using float
+// because compiling for float tends to produce more truncation warnings which may slip through, if 
+// we just compile for double..
+
 
 // Modulators:
 //template RAPT::rsBreakpointModulator<double>; // will be needed, when the class is templatized

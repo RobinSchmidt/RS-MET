@@ -7,6 +7,7 @@ highpass) from the SVF core by calling getOutputs() or let the filter itself for
 combination of the these 3 to obtain a desired filter mode (in addition to the 3 modes above, there 
 are also shelvers, a bell, etc.). */
 
+template<class TSig, class TPar> // signal, parameter types
 class StateVariableFilter
 {
 
@@ -41,7 +42,7 @@ public:
   /** \name Setup */
 
   /** Sets the sample-rate. */
-  void setSampleRate(double newSampleRate);
+  void setSampleRate(TPar newSampleRate);
 
   /** Chooses the filter mode. See the enumeration for available modes. */
   void setMode(int newMode);
@@ -49,20 +50,20 @@ public:
   /** Sets the characteristic frequency (which is the cutoff-frequency for lowpass and highpass,
   the center-frequency for bandpass, bandreject and bell, and the halfgain-frequency for
   shelvers). */
-  void setFrequency(double newFrequency);
+  void setFrequency(TPar newFrequency);
 
   /** Sets the resonance gain (as linear gain factor) for low-, high- and (constant skirt gain)
   bandpass filters or the boost/cut gain for bell- and shelving filters. */
-  void setGain(double newGain);
+  void setGain(TPar newGain);
 
   /** Sets the bandwidth (in octaves) for (constant peak gain) bandpass filters and bell filters.
   In the case of shelving filters, this also determines the slope at the halfgain point.
   At B = (2*asinh(1/rsSqrt(2)))/log(2) = 1.899968626952992, the slope is as steep as it can be
   without overshooting. */
-  void setBandwidth(double newBandwidth);
+  void setBandwidth(TPar newBandwidth);
 
   /** Morphing parameter for the morphing filter types - this feature is under construction. */
-  void setMorph(double newMorph);
+  void setMorph(TPar newMorph);
 
 
   /** \name Inquiry */
@@ -70,17 +71,18 @@ public:
   /** When you use getOutputs() directly to obtain the lowpass, bandpass and highpass signals
   of the core SVF, this function returns the value by which the bandpass signal has to be scaled
   in order to achieve lowpass + scaler*bandpass + highpass == original input. */
-  inline double getBandpassScaler() const { return R2; }
+  inline TPar getBandpassScaler() const { return R2; }
 
 
   /** \name Audio Processing */
 
   /** Returns the 3 outputs (lowpass, bandpass, highpass) of the core SVF. */
-  inline void getOutputs(double in, double &yL, double &yB, double &yH);
+  inline void getOutputs(TSig in, TSig &yL, TSig &yB, TSig &yH);
+    // use pointer parameters for the outputs
 
   /** Returns an appropriate linear combination of the 3 outputs of the core SVF in order to
   achieve various filter modes as selected via setMode(). */
-  inline double getSample(double in);
+  inline TSig getSample(TSig in);
 
 
   /** \name Misc */
@@ -97,34 +99,35 @@ protected:
 
   /** Computes damping coefficient R from desired bandwidth and the prewarped radian center
   frequency (for bandpass with constant peak gain, bandreject and allpass). */
-  double bandwidthToR(double B);
+  TPar bandwidthToR(TPar B);
 
 
   /** \name Data */
 
   // state:
-  double s1, s2;
+  TSig s1, s2;
 
   // filter coefficients:
-  double g;          // embedded integrator gain
-  double R2;         // twice the damping coefficient (R2 == 2*R == 1/Q)
-  double h;          // factor for feedback (== 1/(1+2*R*g+g*g))
-  double cL, cB, cH; // coefficients for low-, band-, and highpass signals
+  TPar g;          // embedded integrator gain
+  TPar R2;         // twice the damping coefficient (R2 == 2*R == 1/Q)
+  TPar h;          // factor for feedback (== 1/(1+2*R*g+g*g))
+  TPar cL, cB, cH; // coefficients for low-, band-, and highpass signals
 
   // parameters:
-  double fs;    // sample-rate
-  double fc;    // characteristic frequency
-  double G;     // gain
-  double B;     // bandwidth (in octaves)
-  double m;     // morph parameter (0...1)
-  int    mode;  // filter-mode
+  TPar fs;         // sample-rate
+  TPar fc;         // characteristic frequency
+  TPar G;          // gain
+  TPar B;          // bandwidth (in octaves)
+  TPar m;          // morph parameter (0...1)
+  int  mode;       // filter-mode
 
 };
 
-//-----------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // inlined functions:
 
-inline void StateVariableFilter::getOutputs(double in, double &yL, double &yB, double &yH)
+template<class TSig, class TPar>
+inline void StateVariableFilter<TSig, TPar>::getOutputs(TSig in, TSig &yL, TSig &yB, TSig &yH)
 {
   // compute highpass output via Eq. 5.1:
   yH = (in - R2*s1 - g*s1 - s2) * h;
@@ -147,9 +150,10 @@ inline void StateVariableFilter::getOutputs(double in, double &yL, double &yB, d
   //s2 = tanh(s2);
 }
 
-inline double StateVariableFilter::getSample(double in)
+template<class TSig, class TPar>
+inline TSig StateVariableFilter<TSig, TPar>::getSample(TSig in)
 {
-  double yL, yB, yH;
+  TSig yL, yB, yH;
   getOutputs(in, yL, yB, yH);
   return cL*yL + cB*yB + cH*yH;
 }

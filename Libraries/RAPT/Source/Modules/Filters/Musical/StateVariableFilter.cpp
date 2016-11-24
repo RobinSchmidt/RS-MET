@@ -1,11 +1,12 @@
 // Construction/Destruction:
 
-StateVariableFilter::StateVariableFilter()
+template<class TSig, class TPar>
+StateVariableFilter<TSig, TPar>::StateVariableFilter()
 {
   fs   = 44100.0;
   fc   = 1000.0;
   mode = LOWPASS; 
-  G    = SQRT2_INV;
+  G    = (TPar)SQRT2_INV;
   B    = 2.0;
   m    = 0.0;
   calcCoeffs();
@@ -14,53 +15,59 @@ StateVariableFilter::StateVariableFilter()
 
 // Setup:
 
-void StateVariableFilter::setSampleRate(double newSampleRate)
+template<class TSig, class TPar>
+void StateVariableFilter<TSig, TPar>::setSampleRate(TPar newSampleRate)
 {
   fs = newSampleRate;
-  fc = rsClipToRange(fc, 0.0, 0.5*fs);
   calcCoeffs();
 }
 
-void StateVariableFilter::setMode(int newMode)
+template<class TSig, class TPar>
+void StateVariableFilter<TSig, TPar>::setMode(int newMode)
 {
   mode = newMode;
   calcCoeffs();
 }
 
-void StateVariableFilter::setFrequency(double newFrequency)
+template<class TSig, class TPar>
+void StateVariableFilter<TSig, TPar>::setFrequency(TPar newFrequency)
 {
-  fc = rsClipToRange(newFrequency, 0.0, 0.5*fs);
+  fc = newFrequency;
   calcCoeffs();
 }
  
-void StateVariableFilter::setGain(double newGain)
+template<class TSig, class TPar>
+void StateVariableFilter<TSig, TPar>::setGain(TPar newGain)
 {
-  G = rsClipToRange(newGain, 0.0, 100.0);
+  G = newGain;
   calcCoeffs();
 }
 
-void StateVariableFilter::setBandwidth(double newBandwidth)
+template<class TSig, class TPar>
+void StateVariableFilter<TSig, TPar>::setBandwidth(TPar newBandwidth)
 {
-  B = rsClipToRange(newBandwidth, 0.0, 100.0);
+  B = newBandwidth;
   calcCoeffs();
 }
 
-void StateVariableFilter::setMorph(double newMorph)
+template<class TSig, class TPar>
+void StateVariableFilter<TSig, TPar>::setMorph(TPar newMorph)
 {
-  m = rsClipToRange(newMorph, 0.0, 1.0);
+  m = newMorph;
   calcCoeffs();
 }
 
 // Misc:
 
-void StateVariableFilter::calcCoeffs()
+template<class TSig, class TPar>
+void StateVariableFilter<TSig, TPar>::calcCoeffs()
 {
   // \todo look at this paper - it has simpler formulas and even formulas that work for biquads 
   // with arbitrary coefiicients:
   // http://www.dafx14.fau.de/papers/dafx14_aaron_wishnick_time_varying_filters_for_.pdf
 
 
-  g = tan(PI*fc/fs);  // embedded integrator gain (Fig 3.11)
+  g = tan( TPar(PI) * fc/fs);  // embedded integrator gain (Fig 3.11)
 
   switch( mode )
   {
@@ -104,27 +111,27 @@ void StateVariableFilter::calcCoeffs()
     break;
   case BELL:
     {
-      double fl = fc*pow(2, -B/2); // lower bandedge frequency (in Hz)
-      double wl = tan(PI*fl/fs);   // warped radian lower bandedge frequency /(2*fs)
-      double r  = g/wl; r *= r;    // warped frequency ratio wu/wl == (wc/wl)^2 where wu is the 
-                                   // warped upper bandedge, wc the center
-      R2 = 2*sqrt(((r*r+1)/r-2)/(4*G));
+      TPar fl = TPar(fc*pow(2, -B/2)); // lower bandedge frequency (in Hz)
+      TPar wl = TPar(tan(PI*fl/fs));   // warped radian lower bandedge frequency /(2*fs)
+      TPar r  = g/wl; r *= r;          // warped frequency ratio wu/wl == (wc/wl)^2 where wu is the 
+                                       // warped upper bandedge, wc the center
+      R2 = TPar(2*sqrt(((r*r+1)/r-2)/(4*G)));
       cL = 1; cB = R2*G; cH = 1;
     }
     break;
   case LOWSHELF:
     {
-      double A = sqrt(G);
-      g /= sqrt(A);               // scale SVF-cutoff frequency for shelvers
-      R2 = 2*sinh(B*log(2.0)/2);
+      TPar A = sqrt(G);
+      g /= sqrt(A);                    // scale SVF-cutoff frequency for shelvers
+      R2 = TPar(2*sinh(B*log(2.0)/2));
       cL = G; cB = R2*A; cH = 1;
     }
     break;
   case HIGHSHELF:
     {
-      double A = sqrt(G);
-      g *= sqrt(A);               // scale SVF-cutoff frequency for shelvers
-      R2 = 2*sinh(B*log(2.0)/2);
+      TPar A = sqrt(G);
+      g *= sqrt(A);                    // scale SVF-cutoff frequency for shelvers
+      R2 = TPar(2*sinh(B*log(2.0)/2));
       cL = 1; cB = R2*A; cH = G;
     }
     break;
@@ -139,16 +146,16 @@ void StateVariableFilter::calcCoeffs()
   case MORPH_LP_BP_HP:
     {
       R2 = 1 / G;
-      double x  = 2*m-1;
+      TPar x  = 2*m-1;
 
       //double x2 = x*x;
       //cL = 0.5*(x2-x); cB = 1-x2; cH = 0.5*(x2+x); // nah - not good
 
       // better:
-      cL = rsMax(-x, 0.0); cH = rsMax(x, 0.0); cB = 1-(cL+cH);
-      cB = pow(cB, 0.25);
-        // freq-responses look good (on a linear scale), but we really have to check how it "feels" - it
-        // would also be nice to get rid of the expensive pow-function and to replace it by 
+      cL = rsMax(-x, TPar(0)); cH = rsMax(x, TPar(0)); cB = 1-(cL+cH);
+      cB = pow(cB, TPar(0.25));
+        // freq-responses look good (on a linear scale), but we really have to check how it "feels" 
+        // it would also be nice to get rid of the expensive pow-function and to replace it by 
         // something cheaper - the function should map the range 0...1 monotonically to itself
 
       // another (cheap) possibility:
@@ -161,7 +168,7 @@ void StateVariableFilter::calcCoeffs()
 
       // this scaling ensures constant magnitude at the cutoff point (we divide the coefficients by 
       // the magnitude response value at the cutoff frequency and scale back by the gain):
-      double s = G * sqrt((R2*R2) / (cL*cL + cB*cB + cH*cH - 2*cL*cH));
+      TPar s = G * sqrt((R2*R2) / (cL*cL + cB*cB + cH*cH - 2*cL*cH));
       cL *= s; cB *= s; cH *= s;
     }
     break;
@@ -171,17 +178,19 @@ void StateVariableFilter::calcCoeffs()
   h = 1 / (1 + R2*g + g*g);  // factor for feedback precomputation
 }
 
-double StateVariableFilter::bandwidthToR(double B)
+template<class TSig, class TPar>
+TPar StateVariableFilter<TSig, TPar>::bandwidthToR(TPar B)
 {
-  double fl = fc*pow(2, -B/2); // lower bandedge frequency (in Hz)
-  double gl = tan(PI*fl/fs);   // warped radian lower bandedge frequency /(2*fs)
-  double r  = gl/g;            // ratio between warped lower bandedge- and center-frequencies
-                               // unwarped: r = pow(2, -B/2) -> approximation for low
-                               // center-frequencies
+  TPar fl = fc*pow(TPar(2), TPar(-B/2)); // lower bandedge frequency (in Hz)
+  TPar gl = tan(TPar(PI)*fl/fs);         // warped radian lower bandedge frequency /(2*fs)
+  TPar r  = gl/g;            // ratio between warped lower bandedge- and center-frequencies
+                             // unwarped: r = pow(2, -B/2) -> approximation for low
+                             // center-frequencies
   return sqrt((1-r*r)*(1-r*r)/(4*r*r));
 }
 
-void StateVariableFilter::reset()
+template<class TSig, class TPar>
+void StateVariableFilter<TSig, TPar>::reset()
 {
   s1 = s2 = 0.0;
 }
