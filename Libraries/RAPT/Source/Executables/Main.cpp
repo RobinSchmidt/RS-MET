@@ -16,7 +16,8 @@ int main(int argc, char** argv)
   //convolutionDemo();
 
   // Math Demos:
-  sigmoids();
+  parametricBell();
+  //sigmoids();
 
   // Filter Demos:
   //ladderImpulseResponse();

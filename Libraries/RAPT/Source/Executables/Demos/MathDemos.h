@@ -3,6 +3,7 @@
 
 #include "../Shared/Shared.h"
 
+void parametricBell();
 void sigmoids();
 
 #endif
