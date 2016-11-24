@@ -24,9 +24,16 @@ code may also define its own instantiation file. */
 // Math:
 template RAPT::NormalizedSigmoids<double>;
 template RAPT::ParametricSigmoid<double>;
+template RAPT::rsPositiveBellFunctions<double>;
+template RAPT::rsParametricBellFunction<double>;
 
+// instantiation for float - just to test that it works/compiles withour errors/warning
 //template RAPT::NormalizedSigmoids<float>;
 //template RAPT::ParametricSigmoid<float>;
+template RAPT::rsPositiveBellFunctions<float>;
+template RAPT::rsParametricBellFunction<float>;
+
+
 
 // Filters:
 template RAPT::LadderFilter<float, float>;

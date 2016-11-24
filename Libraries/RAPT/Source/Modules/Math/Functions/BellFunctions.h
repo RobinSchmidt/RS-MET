@@ -8,25 +8,26 @@ nonnegative: x >= 0. If your input value may be negative, you can just pass the 
 such that the positive side will be mirrored at the y-axis. The functions don't do that 
 themselves for possible effciency gains, when you already know that the input is nonnegative. */
 
+template<class T>
 class rsPositiveBellFunctions
 {
 
 public:
 
   /** Ramps down from 1 to 0 in a straight line such that f(x = 0) = 1, f(x >= 1) = 0. */
-  static double linear(double x);
+  static T linear(T x);
 
   /** Uses a cubic polynomial to smoothly ramp down from 1 to 0 such that  f(x = 0) = 1, 
   f(x >= 1) = 0. The polynomial between 0 <= x <= 1 is chosen such that f'(0) = 0 and f'(1) = 0. */
-  static double cubic(double x);
+  static T cubic(T x);
 
   /** Like cubic, but uses a quintic (5th order) polynomial that additionally satisfies  
   f''(0) = 0 and f''(1) = 0. */
-  static double quintic(double x);
+  static T quintic(T x);
 
   /** Like quintic, but uses a heptic (7th order) polynomial that additionally satisfies  
   f'''(0) = 0 and f'''(1) = 0. */
-  static double heptic(double x);
+  static T heptic(T x);
 
 };
 
@@ -42,6 +43,7 @@ function that you can pass as function pointer (suitable functions are those fro
 rsPositiveBellFunctions, but you may also use others as well). This class here will then scale and 
 shift the input according to your desired center value, width and flat-top length.  */
 
+template<class T>
 class rsParametricBellFunction
 {
 
@@ -56,25 +58,25 @@ public:
   /** \name Setup */
 
   /** Sets the center value for the function. */
-  void setCenter(double newCenter);
+  void setCenter(T newCenter);
 
   /** Sets the width value for the function. */
-  void setWidth(double newWidth);
+  void setWidth(T newWidth);
 
   /** Sets the relative width of the flat top. If 0, there will be no flat top at all. If 1, the
   whole bell will reduce to a rectangular pulse between center-width/2...center+width/2. */
-  void setFlatTopWidth(double newWidth);
+  void setFlatTopWidth(T newWidth);
 
   /** Sets the prototype function to use. This prototype is supposed to represent a zero-centered
   bell shaped function. It is sufficient, if this function is defined for nonnegative input values
   only, because symmetrization is done internally in this class anyway. */
-  void setPrototypeBell(double (*newFunction)(double));
+  void setPrototypeBell(T (*newFunction)(T));
 
 
   /** \name Function Evaluation */
 
   /** Returns an output value for given x. */
-  inline double getValue(double x);
+  inline T getValue(T x);
 
 
 protected:
@@ -83,17 +85,18 @@ protected:
   /** \name Data */
 
   // user parameters:
-  double center, flat;     // center and relative length of flat zone
-  double (*bell)(double);  // prototype bell function
+  T center, flat;     // center and relative length of flat zone
+  T (*bell)(T);       // prototype bell function
 
   // internal coefficients:
-  double a, b;
+  T a, b;
 
 };
 
-inline double rsParametricBellFunction::getValue(double x)
+template<class T>
+inline T rsParametricBellFunction<T>::getValue(T x)
 {
-  double tmp = rsAbs(a*(x-center));
+  T tmp = rsAbs(a*(x-center));
   //double tmp = fabs(a*(x-center));
   if(tmp < flat)
     return bell(0.0);

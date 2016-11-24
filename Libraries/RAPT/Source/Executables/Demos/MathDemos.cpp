@@ -32,7 +32,7 @@ void parametricBell()
   double flat   =  0.5;   // relative length of flat top zone (between 0 and 1) 
 
   // create and set up parametric bell object:
-  rsParametricBellFunction bell;
+  rsParametricBellFunction<double> bell;
   bell.setCenter(center);
   bell.setWidth(width);
   bell.setFlatTopWidth(flat);
@@ -46,16 +46,16 @@ void parametricBell()
   int n;
 
   // create the family of curves (we look at different shapes for the prototype bell):
-  bell.setPrototypeBell(&rsPositiveBellFunctions::linear);
+  bell.setPrototypeBell(&rsPositiveBellFunctions<double>::linear);
   for(n = 0; n < N; n++)
     yl[n] = bell.getValue(x[n]);
-  bell.setPrototypeBell(&rsPositiveBellFunctions::cubic);
+  bell.setPrototypeBell(&rsPositiveBellFunctions<double>::cubic);
   for(n = 0; n < N; n++)
     yc[n] = bell.getValue(x[n]);
-  bell.setPrototypeBell(&rsPositiveBellFunctions::quintic);
+  bell.setPrototypeBell(&rsPositiveBellFunctions<double>::quintic);
   for(n = 0; n < N; n++)
     yq[n] = bell.getValue(x[n]);
-  bell.setPrototypeBell(&rsPositiveBellFunctions::heptic);
+  bell.setPrototypeBell(&rsPositiveBellFunctions<double>::heptic);
   for(n = 0; n < N; n++)
     yh[n] = bell.getValue(x[n]);
 
