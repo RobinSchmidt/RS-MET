@@ -27,35 +27,35 @@ void parametricBell()
   // width.
 
   static const int N = 1000;
-  double center =  10.0;  // center of the bell
-  double width  =  4.0;   // width
-  double flat   =  0.5;   // relative length of flat top zone (between 0 and 1) 
+  float center = 10;    // center of the bell
+  float width  = 4;     // width
+  float flat   = 0.5;   // relative length of flat top zone (between 0 and 1) 
 
   // create and set up parametric bell object:
-  rsParametricBellFunction<double> bell;
+  rsParametricBellFunction<float> bell;
   bell.setCenter(center);
   bell.setWidth(width);
   bell.setFlatTopWidth(flat);
 
   // create x-axis and allocate y arrays:
-  double xMin =  center - 1.2 * width/2;
-  double xMax =  center + 1.2 * width/2;
-  double x[N];
+  float xMin =  center - 1.2f * width/2;
+  float xMax =  center + 1.2f * width/2;
+  float x[N];
   rsFillWithRangeLinear(x, N, xMin, xMax);
-  double yl[N], yc[N], yq[N], yh[N]; // linear, cubic, quintic, heptic
+  float yl[N], yc[N], yq[N], yh[N]; // linear, cubic, quintic, heptic
   int n;
 
   // create the family of curves (we look at different shapes for the prototype bell):
-  bell.setPrototypeBell(&rsPositiveBellFunctions<double>::linear);
+  bell.setPrototypeBell(&rsPositiveBellFunctions<float>::linear);
   for(n = 0; n < N; n++)
     yl[n] = bell.getValue(x[n]);
-  bell.setPrototypeBell(&rsPositiveBellFunctions<double>::cubic);
+  bell.setPrototypeBell(&rsPositiveBellFunctions<float>::cubic);
   for(n = 0; n < N; n++)
     yc[n] = bell.getValue(x[n]);
-  bell.setPrototypeBell(&rsPositiveBellFunctions<double>::quintic);
+  bell.setPrototypeBell(&rsPositiveBellFunctions<float>::quintic);
   for(n = 0; n < N; n++)
     yq[n] = bell.getValue(x[n]);
-  bell.setPrototypeBell(&rsPositiveBellFunctions<double>::heptic);
+  bell.setPrototypeBell(&rsPositiveBellFunctions<float>::heptic);
   for(n = 0; n < N; n++)
     yh[n] = bell.getValue(x[n]);
 
@@ -68,18 +68,17 @@ void sigmoids()
 {
   // Plots various sigmoid saturation functions.
 
-  typedef double Real;  // define the real number datatype to use
   int N = 501;          // number of datapoints
-  Real xMin = -5;
-  Real xMax = +5;
+  float xMin = -5;
+  float xMax = +5;
 
   // create x-axis:
-  vector<Real> x(N);   // x-axis values
+  vector<float> x(N);   // x-axis values
   rsFillWithRangeLinear(&x[0], N, xMin, xMax);
 
   // plot functions:
   GNUPlotter plt;
-  typedef RAPT::NormalizedSigmoids<Real> Sigmoids;
+  typedef RAPT::NormalizedSigmoids<float> Sigmoids;
   plt.addDataFunctions(N, &x[0], &Sigmoids::clip);
   plt.addDataFunctions(N, &x[0], &Sigmoids::atan);
   plt.addDataFunctions(N, &x[0], &Sigmoids::tanh);

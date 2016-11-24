@@ -17,32 +17,22 @@ and (2) there will be only one such instantiation of a particular template for a
 If somewhere you'll get an "undefined external symbol" error, add the respective request for 
 explicit template instantiation here. 
 
+For the demos here, we instantiate all classes and functions for "float" (because "double" would 
+not show all the trunction-warnings that we get for "float").
+
 \todo: provide a predefined template instantiation file within the RAPT library folder, that
 instantiates all templates for double. That file can be used by client code by default but client
 code may also define its own instantiation file. */
 
 // Math:
-template RAPT::NormalizedSigmoids<double>;
 template RAPT::NormalizedSigmoids<float>;
-template RAPT::ParametricSigmoid<double>;
 template RAPT::ParametricSigmoid<float>;
-
-template RAPT::rsPositiveBellFunctions<double>;
-template RAPT::rsPositiveBellFunctions<float>;
-template RAPT::rsParametricBellFunction<double>;
+template RAPT::rsPositiveBellFunctions<float>;    // get rid of rs-prefixes
 template RAPT::rsParametricBellFunction<float>;
 
-
 // Filters:
-template RAPT::LadderFilter<double, double>;
 template RAPT::LadderFilter<float, float>;
-template RAPT::StateVariableFilter<double, double>;
 template RAPT::StateVariableFilter<float, float>; 
-
-// todo: maybe get rid of all the instantiations for double - we should test exclusively using float
-// because compiling for float tends to produce more truncation warnings which may slip through, if 
-// we just compile for double..
-
 
 // Modulators:
 //template RAPT::rsBreakpointModulator<double>; // will be needed, when the class is templatized

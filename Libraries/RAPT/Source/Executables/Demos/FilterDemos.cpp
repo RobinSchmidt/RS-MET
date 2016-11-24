@@ -5,7 +5,7 @@ void ladderImpulseResponse()
 {
   // Demonstrates, how to use the LadderFilter class. 
 
-  typedef double Real; // real numbers are "float" - you can change this to "double"
+  typedef float Real; // real numbers are "float" - you can change this to "double"
   typedef RAPT::LadderFilter<Real, Real> LadderFilterR;  // for convenience
 
   // create and set up the filter:
