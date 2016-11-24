@@ -21,6 +21,12 @@ explicit template instantiation here.
 instantiates all templates for double. That file can be used by client code by default but client
 code may also define its own instantiation file. */
 
+// Math:
+template RAPT::NormalizedSigmoids<double>;
+template RAPT::ParametricSigmoid<double>;
+
+//template RAPT::NormalizedSigmoids<float>;
+//template RAPT::ParametricSigmoid<float>;
 
 // Filters:
 template RAPT::LadderFilter<float, float>;

@@ -36,7 +36,7 @@ void sigmoids()
 
   // plot functions:
   GNUPlotter plt;
-  typedef RAPT::rsNormalizedSigmoids Sigmoids;
+  typedef RAPT::NormalizedSigmoids<Real> Sigmoids;
   plt.addDataFunctions(N, &x[0], &Sigmoids::clip);
   plt.addDataFunctions(N, &x[0], &Sigmoids::atan);
   plt.addDataFunctions(N, &x[0], &Sigmoids::tanh);

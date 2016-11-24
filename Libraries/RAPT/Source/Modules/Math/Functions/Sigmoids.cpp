@@ -1,7 +1,8 @@
 //-------------------------------------------------------------------------------------------------
 // positive range saturation functions:
 
-double rsPositiveSigmoids::linear(double x)
+template<class T>
+T PositiveSigmoids<T>::linear(T x)
 {
   if(x > 2.0)
     return 1.0;
@@ -9,22 +10,25 @@ double rsPositiveSigmoids::linear(double x)
     return 0.5*x;
 }
 
-double rsPositiveSigmoids::rational(double x)
+template<class T>
+T PositiveSigmoids<T>::rational(T x)
 {
   return x / (1+x);
 }
 
-double rsPositiveSigmoids::cubicRational(double x)
+template<class T>
+T PositiveSigmoids<T>::cubicRational(T x)
 {
   x *= 1 + x + x*x;    //  x + x^2 + x^3
   return x / (x+1);    // (x + x^2 + x^3) + (x + x^2 + x^3 + 1)
 }
 
-double rsPositiveSigmoids::cubic(double x)
+template<class T>
+T PositiveSigmoids<T>::cubic(T x)
 {
   // The coefficient for the cubic term. If we wanted f'(0)=k, we'd get a3 = -k*(k-3)^2/27 which
   // reduces to -4/27 for k=1:
-  static const double a3 = -4.0/27.0;
+  static const T a3 = T(-4) / T(27);
 
   if(x > 1.5)
     return 1.0;
@@ -32,27 +36,30 @@ double rsPositiveSigmoids::cubic(double x)
     return x + a3*x*x*x;
 }
 
-double rsPositiveSigmoids::quartic(double x)
+template<class T>
+T PositiveSigmoids<T>::quartic(T x)
 {
   if(x > 2.0)
     return 1.0;
   else
-    return 0.0625*x*((x-4)*x*x + 16); // y = x - x^3/4 + x^4/16
+    return T(0.0625*x*((x-4)*x*x + 16)); // y = x - x^3/4 + x^4/16
 }
 
-double rsPositiveSigmoids::hexic(double x)
+template<class T>
+T PositiveSigmoids<T>::hexic(T x)
 {
   if(x > 2.0)
     return 1.0;
   else
   {
-    double x2 = x*x;    // x^2
-    double x4 = x2*x2;  // x^4
-    return x - 0.3125*x4 + 0.1875*x4*x - 0.03125*x4*x2;
+    T x2 = x*x;    // x^2
+    T x4 = x2*x2;  // x^4
+    return  T(x - 0.3125*x4 + 0.1875*x4*x - 0.03125*x4*x2);
   }
 }
 
-double rsPositiveSigmoids::softClipHexic(double x, double t)
+template<class T>
+T PositiveSigmoids<T>::softClipHexic(T x, T t)
 {
   if(x <= t)
     return x;
@@ -60,12 +67,13 @@ double rsPositiveSigmoids::softClipHexic(double x, double t)
     return t + (1-t) * hexic((x-t)/(1-t));
 }
 
-double rsPositiveSigmoids::softClipHexic(double x)
+template<class T>
+T PositiveSigmoids<T>::softClipHexic(T x)
 {
   if(x <= 0.5)
     return x;
   else
-    return 0.5 + 0.5 * hexic(2*(x-0.5));
+    return T(0.5 + 0.5 * hexic(2*(x-(T)0.5)));
 }
 
 // saturation polynomials:
@@ -103,7 +111,8 @@ double rsPositiveSigmoids::softClipHexic(double x)
 //-------------------------------------------------------------------------------------------------
 // normalized, symmetric saturation functions:
 
-double rsNormalizedSigmoids::clip(double x)
+template<class T>
+T NormalizedSigmoids<T>::clip(T x)
 {
   if(x < -1.0)
     return -1.0;
@@ -112,22 +121,25 @@ double rsNormalizedSigmoids::clip(double x)
   return x;
 }
 
-double rsNormalizedSigmoids::atan(double x)
+template<class T>
+T NormalizedSigmoids<T>::atan(T x)
 {
-  return ::atan(0.5*PI*x) / (0.5*PI);  // optimize: precompute PI/2 and 1/(PI/2)
+  return (T) (::atan(0.5*PI*x) / (0.5*PI));  // optimize: precompute PI/2 and 1/(PI/2)
 }
 
-double rsNormalizedSigmoids::tanh(double x)
+template<class T>
+T NormalizedSigmoids<T>::tanh(T x)
 {
   return ::tanh(x);
   //return rsTanh(x); // use the exp-based version later (more efficient), whe the real functions 
                     // have been added
 }
 
-double rsNormalizedSigmoids::powRatio(double x, double p)
+template<class T>
+T NormalizedSigmoids<T>::powRatio(T x, T p)
 {
-  double tmp = pow(fabs(x), p);
-  if(tmp == RS_INF(double))
+  T tmp = pow(fabs(x), p);
+  if(tmp == RS_INF(T))
     return rsSign(x);
   return x * pow(1 + tmp, -1/p);
 }
@@ -135,92 +147,105 @@ double rsNormalizedSigmoids::powRatio(double x, double p)
 // symmetrized positive-range functions (some boilerplate code):
 // maybe try rsSign(x) * positiveSigmoid(fabs(x)) - make performance test
 
-double rsNormalizedSigmoids::rational(double x)
+template<class T>
+T NormalizedSigmoids<T>::rational(T x)
 {
   return x / (1+rsAbs(x));
 }
 
-double rsNormalizedSigmoids::cubicRational(double x)
+template<class T>
+T NormalizedSigmoids<T>::cubicRational(T x)
 {
-  return rsSign(x) * rsPositiveSigmoids::cubicRational(rsAbs(x));
+  return rsSign(x) * PositiveSigmoids<T>::cubicRational(rsAbs(x));
 }
 
-double rsNormalizedSigmoids::cubic(double x)
+template<class T>
+T NormalizedSigmoids<T>::cubic(T x)
 {
   if(x >= 0.0)
-    return rsPositiveSigmoids::cubic(x);
+    return PositiveSigmoids<T>::cubic(x);
   else
-    return -rsPositiveSigmoids::cubic(-x);
+    return -PositiveSigmoids<T>::cubic(-x);
 }
 
-double rsNormalizedSigmoids::quartic(double x)
+template<class T>
+T NormalizedSigmoids<T>::quartic(T x)
 {
   if(x >= 0.0)
-    return rsPositiveSigmoids::quartic(x);
+    return PositiveSigmoids<T>::quartic(x);
   else
-    return -rsPositiveSigmoids::quartic(-x);
+    return -PositiveSigmoids<T>::quartic(-x);
 }
 
-double rsNormalizedSigmoids::hexic(double x)
+template<class T>
+T NormalizedSigmoids<T>::hexic(T x)
 {
   if(x >= 0.0)
-    return rsPositiveSigmoids::hexic(x);
+    return PositiveSigmoids<T>::hexic(x);
   else
-    return -rsPositiveSigmoids::hexic(-x);
+    return -PositiveSigmoids<T>::hexic(-x);
 }
 
-double rsNormalizedSigmoids::softClipHexic(double x)
+template<class T>
+T NormalizedSigmoids<T>::softClipHexic(T x)
 {
   if(x >= 0.0)
-    return rsPositiveSigmoids::softClipHexic(x);
+    return PositiveSigmoids<T>::softClipHexic(x);
   else
-    return -rsPositiveSigmoids::softClipHexic(-x);
+    return -PositiveSigmoids<T>::softClipHexic(-x);
 }
 
 //-------------------------------------------------------------------------------------------------
 // class rsParametricSigmoid:
 
-rsParametricSigmoid::rsParametricSigmoid()
+template<class T>
+ParametricSigmoid<T>::ParametricSigmoid()
 {
   y1 = 0.75;         // value y at x=1
   yb = 0.75;         // breakpoint for y1, above which we switch to piecewise function
   computeCoeffs();
 }
 
-void rsParametricSigmoid::setValueAt1(double newValue)
+template<class T>
+void ParametricSigmoid<T>::setValueAt1(T newValue)
 {
   y1 = newValue;
   computeCoeffs();
 }
 
-void rsParametricSigmoid::setThreshold(double newThreshold)
+template<class T>
+void ParametricSigmoid<T>::setThreshold(T newThreshold)
 {
-  setValueAt1(newThreshold * 0.25 + 0.75);
+  setValueAt1(newThreshold * (T)0.25 + (T)0.75);
   // nope - formula is wrong
 }
 
-void rsParametricSigmoid::setPiecewiseBreakpoint(double newBreakpoint)
+template<class T>
+void ParametricSigmoid<T>::setPiecewiseBreakpoint(T newBreakpoint)
 {
   yb = newBreakpoint;
   computeCoeffs();
 }
 
-double rsParametricSigmoid::coreFunction(double x, double a, double b)
+template<class T>
+T ParametricSigmoid<T>::coreFunction(T x, T a, T b)
 {
-  double t = x*x;              // t = x^2
+  T t = x*x;              // t = x^2
   t = x + a*(b*t + (1-b)*t*x); // t = x + a*(b*x^2 + (1-b)*x^3) 
   return t / (t+1);            //    (x + a*(b*x^2 + (1-b)*x^3)) / (x + a*(b*x^2 + (1-b)*x^3) + 1)
 }
 
-double rsParametricSigmoid::getA(double y1)
+template<class T>
+T ParametricSigmoid<T>::getA(T y1)
 {
   return (1-2*y1)/(y1-1);
 }
 
-double rsParametricSigmoid::getB(double a)
+template<class T>
+T ParametricSigmoid<T>::getB(T a)
 {
   //return 1 / (a+1);
-  return 1 / rsMax(1.0, a);
+  return 1 / rsMax((T)1, a);
 
   // The formula: b = 1 / (a+1) is motivated as follows: the 2nd derivative (curvature) of the 
   // core function f at the origin x=0 is given by c = 2*a*b - 2. It would seem desirable to set the 
@@ -253,7 +278,8 @@ double rsParametricSigmoid::getB(double a)
   // with a grain of salt - i didn't really verify this.
 }
 
-void rsParametricSigmoid::computeCoeffs()
+template<class T>
+void ParametricSigmoid<T>::computeCoeffs()
 {
   if(y1 > yb)
   {
@@ -261,7 +287,7 @@ void rsParametricSigmoid::computeCoeffs()
     b  = getB(a);
     ty = (y1 - coreFunction(1, a, b)) / (1 - yb);
     sy = 1-ty;
-    if(sy >= RS_EPS(double))
+    if(sy >= RS_EPS(T))
       sx = 1/sy;
     else
       sx = 1.0;

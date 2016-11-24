@@ -1,46 +1,45 @@
 #ifndef RAPT_SIGMOIDS_H_INCLUDED
 #define RAPT_SIGMOIDS_H_INCLUDED
 
-// ToDo: templatize this class
-
 /** This class is a collection of saturation functions that are supposed to be applied to positive
 input values only. To get a value for a negative input value x, use -f(-x), i.e. symmetrize it 
 manually. */
 
-class rsPositiveSigmoids
+template<class T>
+class PositiveSigmoids
 {
 
 public:
 
   /** ... */
-  static double linear(double x);
+  static T linear(T x);
 
   /** Implements y = x / (1+x). */
-  static double rational(double x);
+  static T rational(T x);
 
   /** Implements y = (x + x^2 + x^3) / (x + x^2 + x^3 + 1). This is the special case of the 
-  parametric sigmoid function implemented in class rsParametricSigmoid with the parameter value
+  parametric sigmoid function implemented in class ParametricSigmoid with the parameter value
   y1 = 0.75, which is the critical value at which the 2nd derivative of the core function becomes 
   0 (see comments of the class for more details). */
-  static double cubicRational(double x);
+  static T cubicRational(T x);
 
   /** This function implements a cubic polynomial y = x + a3*x^3. It satisfies the conditions:
   f(0)=0, f'(0)=1, f''(0)=0 by design, regardless of the value of a3. The coefficient a3 is chosen
   according to the condition: f(s)=1 where s is the maximum at which f'(s)=0 holds. The location of
   this maximum comes out as s=1.5 and a3=-4/27. Input values larger than 1.5 are mapped to unity, 
   i.e. saturated at unity. */
-  static double cubic(double x);
+  static T cubic(T x);
 
   /** This function implements a quartic polynomial y = x + a3*x^3 + a4*x^4. In addition to the 
   conditions that are satisfied by the cubic, this function also satisfies f''(s)=0 which
   makes the function smoother at the junction between nonlinear and constant zone. The maximum of
   the polynomial (i.e. the saturation level) occurs at x=2 and we have a3=-1/4, a4=1/16. */
-  static double quartic(double x);
+  static T quartic(T x);
 
   /** This function implements a hexic polynomial y = x + a4*x^4 + a5*x^5 + a6*x^6. In addition to 
   the conditions that are satisfied by the quartic, it also satisfies f'''(0)=f'''(s)=0 where the 
   saturation level is given by s=2. */
-  static double hexic(double x);
+  static T hexic(T x);
 
   /** This function is an identity function for x < 0.5, equal to 1 for x > 1 and a third order 
   order polynomial in between, such that at x=0.5, the function value and 1st derivative is 
@@ -51,10 +50,10 @@ public:
 
   /** Soft clipping using a hexic polynomial with threshold t. Below t, the output is the identity
   function, above t, a properly scaled and shifted sextic polynomial will be used. */
-  static double softClipHexic(double x, double t);
+  static T softClipHexic(T x, T t);
 
   /** Special case of softClipHexic(double x, double t) where t = 0.5. */
-  static double softClipHexic(double x);
+  static T softClipHexic(T x);
 
 };
 
@@ -64,34 +63,35 @@ public:
 sense that they go through the output range from -1 to +1 as the input x goes from -inf to +inf and 
 they also have unit slope at the origin. */
 
-class rsNormalizedSigmoids
+template<class T>
+class NormalizedSigmoids
 {
 
 public:
 
   /** Clips the input to the range -1..+1. */
-  static double clip(double x);
+  static T clip(T x);
 
   /** Normalized arc-tangent function. */
-  static double atan(double x);
+  static T atan(T x);
 
   /** Normalized arc-tangent function. */
-  static double tanh(double x);
+  static T tanh(T x);
 
   /** A family of sigmoid curves with a parameter p, realizing the function: 
   y = x / (1 + |x|^p)^(1/p) = x * (1 + |x|^p)^(-1/p)
   The parameter p determines, how fast the saturation level will be reached. It should be p >= 1.
   When p approaches infinity, the function approaches the hard clipper. ...beware of numerical 
   problems with large p though. */
-  static double powRatio(double x, double p);
+  static T powRatio(T x, T p);
 
   // symmetrized versions of the corresponding positive-range functions:
-  static double rational(double x);
-  static double cubicRational(double x);
-  static double cubic(double x);
-  static double quartic(double x);
-  static double hexic(double x);
-  static double softClipHexic(double x);
+  static T rational(T x);
+  static T cubicRational(T x);
+  static T cubic(T x);
+  static T quartic(T x);
+  static T hexic(T x);
+  static T softClipHexic(T x);
 
 };
 
@@ -133,7 +133,8 @@ ToDo:
 
 */
 
-class rsParametricSigmoid
+template<class T>
+class ParametricSigmoid
 {
 
 public:
@@ -141,24 +142,24 @@ public:
   /** \name Construction/Destruction */
 
   /** Constructor. */
-  rsParametricSigmoid();
+  ParametricSigmoid();
 
 
   /** \name Setup */
 
   /** Sets the desired output-value when the input value is unity. The value should be in the
   range 0.5..1 (inclusive). */
-  void setValueAt1(double newValue);
+  void setValueAt1(T newValue);
 
   /** Sets the threshold above which the nonlinear range begins. Can be used alternatively to
   setValueAt1. */
-  void setThreshold(double newThreshold);
+  void setThreshold(T newThreshold);
 
   /** Beyond some breakpoint for the value passed into setValueAt1, we will switch to a piecewise
   defined function that is an identity function in the lower range and an appropriately scaled
   and shifted version of the original function in the upper range. This breakpoint is set with this
   function. The most reasonable values are in the range 0.7..0.8. */
-  void setPiecewiseBreakpoint(double newBreakpoint);
+  void setPiecewiseBreakpoint(T newBreakpoint);
 
 
   /** \name Function Evaluation */
@@ -166,10 +167,10 @@ public:
   /** Implements the core function 
   y = f(x) = (x + a*(b*x^2 + (1-b)*x^3)) / (x + a*(b*x^2 + (1-b)*x^3) + 1) for some given parameters
   a and b. This is mainly for internal use. */
-  static double coreFunction(double x, double a, double b);
+  static T coreFunction(T x, T a, T b);
 
   /** Returns an output value for given x. */
-  inline double getValue(double x);
+  inline T getValue(T x);
 
   // todo: getValueAndDerivative
 
@@ -179,42 +180,43 @@ protected:
   /** \name Misc */
 
   /** Computes the a-parameter form the desired value y1 = f(x=1) */
-  double getA(double y1);
+  T getA(T y1);
 
   /** Computes the b-parameter from a given a-parameter. */
-  double getB(double a);
+  T getB(T a);
 
   /** Computes the coefficient "a" and the scale/shift coefficients sx,sy,ty from y1,yb. */
   void computeCoeffs();
 
   /** Implements the core-function (for postive x, without possible scale-and shift) with parameters
   given by our member variables. */
-  inline double coreFunction(double x);
+  inline T coreFunction(T x);
 
 
   /** \name Data */
 
-  double y1;         // value y at x=1
-  double yb;         // breakpoint for y1 beyond which we switch to a piecewise function
-                     // maybe rename to yc (critical value)
-  double a, b;       // parameters
-  double c2, c3;     // coeffs for x^2 and x^3
-  double sx, sy, ty; // scale/shift coefficients for the piecewise case
+  T y1;         // value y at x=1
+  T yb;         // breakpoint for y1 beyond which we switch to a piecewise function
+  T a, b;       // parameters
+  T c2, c3;     // coeffs for x^2 and x^3
+  T sx, sy, ty; // scale/shift coefficients for the piecewise case
 
 };
 
 //-------------------------------------------------------------------------------------------------
 // inlined functions:
 
-inline double rsParametricSigmoid::coreFunction(double x)
+template<class T>
+inline T ParametricSigmoid<T>::coreFunction(T x)
 {
   x *= 1 + c2*x + c3*x*x;    // x + c2*x^2 + c3*x^3 = x + a*(b*x^2 + (1-b)*x^3)
   return x / (x+1);          // (x + a*(b*x^2 + (1-b)*x^3)) / (x + a*(b*x^2 + (1-b)*x^3) + 1)
 }
 
-inline double rsParametricSigmoid::getValue(double x)
+template<class T>
+inline T ParametricSigmoid<T>::getValue(T x)
 {
-  double t = rsAbs(x);
+  T t = rsAbs(x);
   if(t < ty)
     return x;                                                // identity below threshold
   else
