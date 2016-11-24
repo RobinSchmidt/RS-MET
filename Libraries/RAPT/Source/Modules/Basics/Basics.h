@@ -6,6 +6,7 @@ namespace RAPT
 
 #include "Constants.h"
 #include "TypeDefinitions.h"
+#include "MacroDefinitions.h"
 
 }
 

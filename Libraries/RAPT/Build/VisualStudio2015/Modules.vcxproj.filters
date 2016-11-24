@@ -52,6 +52,9 @@
     <ClCompile Include="..\..\Source\Modules\Math\Functions\BasicFunctions.cpp">
       <Filter>Math\Functions</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Modules\Filters\Musical\StateVariableFilter.cpp">
+      <Filter>Filters\Musical</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\Modules\Basics\Basics.h">
@@ -86,6 +89,12 @@
       <Filter>Math\Functions</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Modules\Basics\TypeDefinitions.h">
+      <Filter>Basics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Modules\Filters\Musical\StateVariableFilter.h">
+      <Filter>Filters\Musical</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Modules\Basics\MacroDefinitions.h">
       <Filter>Basics</Filter>
     </ClInclude>
   </ItemGroup>

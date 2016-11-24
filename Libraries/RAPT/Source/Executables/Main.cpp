@@ -16,11 +16,12 @@ int main(int argc, char** argv)
   //convolutionDemo();
 
   // Math Demos:
-  parametricBell();
+  //parametricBell();
   //sigmoids();
 
   // Filter Demos:
   //ladderImpulseResponse();
+  svfImpulseResponse();
   // add ladderMagnitudeResponse... - maybe create a template that plots 
   // impulse/step/magnitude/phase - responses in a single window
 

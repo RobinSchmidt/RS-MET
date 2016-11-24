@@ -15,7 +15,7 @@ namespace RAPT
 //...
 
 #include "Musical/LadderFilter.h"
-//include "Musical/StateVariableFilter.h"
+#include "Musical/StateVariableFilter.h"
 //include "Musical/AttackDecaySineFilter.h" // maybe get rid of writing "Filter" all the time
 
 //files to come:
