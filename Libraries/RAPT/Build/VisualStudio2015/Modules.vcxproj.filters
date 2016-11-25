@@ -55,6 +55,9 @@
     <ClCompile Include="..\..\Source\Modules\Filters\Musical\StateVariableFilter.cpp">
       <Filter>Filters\Musical</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Modules\Filters\Musical\PhasorFilter.cpp">
+      <Filter>Filters\Musical</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\Modules\Basics\Basics.h">
@@ -96,6 +99,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Modules\Basics\MacroDefinitions.h">
       <Filter>Basics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Modules\Filters\Musical\PhasorFilter.h">
+      <Filter>Filters\Musical</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

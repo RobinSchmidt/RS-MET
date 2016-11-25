@@ -37,6 +37,12 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Modules\Filters\Musical\PhasorFilter.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Modules\Filters\Musical\StateVariableFilter.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -78,6 +84,7 @@
     <ClInclude Include="..\..\Source\Modules\Basics\TypeDefinitions.h" />
     <ClInclude Include="..\..\Source\Modules\Filters\Filters.h" />
     <ClInclude Include="..\..\Source\Modules\Filters\Musical\LadderFilter.h" />
+    <ClInclude Include="..\..\Source\Modules\Filters\Musical\PhasorFilter.h" />
     <ClInclude Include="..\..\Source\Modules\Filters\Musical\StateVariableFilter.h" />
     <ClInclude Include="..\..\Source\Modules\Math\Functions\BasicFunctions.h" />
     <ClInclude Include="..\..\Source\Modules\Math\Functions\BellFunctions.h" />

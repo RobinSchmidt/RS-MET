@@ -111,7 +111,7 @@ public:
   inline TSig getSample(TSig in);
 
   /** Processes a buffer of given length. */
-  inline void process(TSig *in, TSig *out, int length);
+  void process(TSig *in, TSig *out, int length);
 
 
   /** \name Misc */
@@ -154,6 +154,7 @@ protected:
                         
   /** Calculates the one-pole coefficients, feedback-gain and output gain from the parameters. */
   virtual void updateCoefficients(); 
+    // why virtual - can we get rid of this?
 
   /** \name Data */
 

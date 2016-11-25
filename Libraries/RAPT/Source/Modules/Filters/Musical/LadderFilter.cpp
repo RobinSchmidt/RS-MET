@@ -145,7 +145,7 @@ inline TSig LadderFilter<TSig, TPar>::getSample(TSig in)
 }
 
 template<class TSig, class TPar>
-inline void LadderFilter<TSig, TPar>::process(TSig *in, TSig *out, int length)
+void LadderFilter<TSig, TPar>::process(TSig *in, TSig *out, int length)
 {
   for(int n = 0; n < length; n++)
     out[n] = getSample(in[n]);
