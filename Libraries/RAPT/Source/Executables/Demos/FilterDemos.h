@@ -4,6 +4,7 @@
 #include "../Shared/Shared.h"
 
 void ladderImpulseResponse();
+void phasorImpulseResponse();
 void svfImpulseResponse();
 
 #endif

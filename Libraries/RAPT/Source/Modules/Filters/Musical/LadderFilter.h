@@ -158,15 +158,16 @@ protected:
 
   /** \name Data */
 
-  TPar c[5];        // mixing coeffs for stages 0..4
   TSig y[5];        // outputs of the stages 0..4
+  TPar c[5];        // mixing coeffs for stages 0..4
+  TPar a, b;        // leaky integrator coefficients for a stage: y[n] = b*x[n] - a*y[n-1]
+  TPar k;           // feedback gain
+  TPar g;           // output gain
   TPar cutoff;      // cutoff frequency in Hz
   TPar resonance;   // resonance 0..1
   TPar sampleRate;  // samplerate in Hz
   int  mode;        // filter mode (see modes-enum)
-  TPar k;           // feedback gain
-  TPar g;           // output gain
-  TPar a, b;        // leaky integrator coefficients for a stage: y[n] = b*x[n] - a*y[n-1]
+
 };
 
 #endif

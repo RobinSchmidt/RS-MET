@@ -15,18 +15,19 @@ int main(int argc, char** argv)
   // Array Demos:
   //convolutionDemo();
 
-  // Math Demos:
-  parametricBell();
-  sigmoids();
+  //// Math Demos:
+  //parametricBell();
+  //sigmoids();
 
   // Filter Demos:
-  ladderImpulseResponse();
-  svfImpulseResponse();
+  //ladderImpulseResponse();
+  phasorImpulseResponse();
+  //svfImpulseResponse();
   // add ladderMagnitudeResponse... - maybe create a template that plots 
   // impulse/step/magnitude/phase - responses in a single window
 
   // Filter Demos:
-  breakpointModulatorDefault();
+  //breakpointModulatorDefault();
 
 
   // ToDo: check for memory leaks here

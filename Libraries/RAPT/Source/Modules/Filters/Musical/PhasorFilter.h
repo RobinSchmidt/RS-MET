@@ -26,14 +26,18 @@ public:
   /** Sets the characteristic frequency in Hz. */
   void setFrequency(TPar newFrequency);
 
-  /** Sets the decay time in seconds */
+  /** Sets the decay time in seconds. You can also pass infinity in which case the filter will 
+  produce a steady sinusoid as impulse response - so you can use it as oscillator as well. */
   void setDecayTime(TPar newDecay);
 
 
   /** \name Audio Processing */
 
-  /** Processes a single sample frame. */
+  /** Processes a single sample frame... */
   inline void processFrame(TSig *x, TSig *y);
+
+  /** Computes an output sample from a given input sample */
+  inline TSig getSample(TSig in);
 
 
   /** \name Misc */
@@ -51,11 +55,16 @@ protected:
 
   /** \name Data */
 
-  TSig xOld, yOld;  // previous values of x- and y-coordinate
+  // state variables:
+  TSig xOld, yOld;           // previous values of x- and y-coordinate
 
-  TPar sampleRate;  // samplerate in Hz
-  TPar frequency;   // filter frequency in Hz
-  TPar decay;       // decay time constant in seconds
+  // internal coefficients:
+  TPar Axx, Axy, Ayx, Ayy;   // spiraling matrix elements
+
+  // user parameters:
+  TPar sampleRate;           // samplerate in Hz
+  TPar frequency;            // filter frequency in Hz
+  TPar decay;                // decay time constant in seconds
 
 };
 

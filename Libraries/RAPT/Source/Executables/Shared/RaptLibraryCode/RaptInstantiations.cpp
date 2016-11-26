@@ -32,6 +32,7 @@ template RAPT::rsParametricBellFunction<float>;
 
 // Filters:
 template RAPT::LadderFilter<float, float>;
+template RAPT::PhasorFilter<float, float>;
 template RAPT::StateVariableFilter<float, float>; 
 
 // Modulators:
