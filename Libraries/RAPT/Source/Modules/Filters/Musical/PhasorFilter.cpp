@@ -39,39 +39,41 @@ inline void applyNonlinearity(TSig &x, TSig &y)
   // We make a nonlinear transformation of the xy-vector subject to the constraint that the length
   // sqrt(x^2 + y^2) must remain the same.
      
+  // compute some nonlinear combinations of the coordinates:
+  TSig xx = x*x;
+  TSig xy = x*y;
+  TSig yy = y*y;
+
   // compute squared length of (x,y) input vector:
-  TSig r2 = x*x + y*y; 
+  TSig r2 = xx + yy; 
+
+  // coefficients for the nonlinear transformation (make them user adjustable later):
+  TSig a = TSig(-0.050); // coeff for same^2
+  TSig b = TSig(-0.050); // coeff for other^2
+  TSig c = TSig(-0.150); // coeff for cross-term same*other
+  TSig d = TSig(-0.006); // constant
 
   // apply a nonlinear transformation to the vector:
+  x += a*xx + b*yy + c*xy + d;
+  y += b*xx + a*yy + c*xy + d;
 
-  //TSig a   = TSig(-0.125);   // nonlinearity coefficient
-  //TSig tmp = x*y + TSig(0.0);
-  //x += a * ( tmp / (1+y*y) );
-  //y += a * ( tmp / (1+x*x) );
-
-  TSig a   = TSig(+0.1);   // nonlinearity coefficient
-  TSig tmp = x*y + TSig(+0.3);
-  tmp *= 1 / (1 + tmp*tmp);
-  x = (1-a)*x + a*tmp;
-  y = (1-a)*y + a*tmp;
-
-  // I'm just experimenting here, trying soem arbitrary stuff. Maybe we should use a functor for 
-  // the core-nonlinearity (excluding the renormalization) - then we could perhaps write a plugin 
-  // and use an expression-evaluator for experimentation.
-
-  // compute squared length after transformation:
-  TSig R2 = x*x + y*y;
-
-  // restore old length (renormalization):
-  TSig s = sqrt(r2/R2);
-  x *= s;
-  y *= s;
+  // restore old vector length (renormalization):
+  TSig R2 = x*x + y*y;      // new length
+  if(R2 > 0)                // avoid div-by-zero
+  {
+    TSig s = sqrt(r2/R2);   // scaler to restore length
+    x *= s;
+    y *= s;
+  }
+  // maybe we should have different renormalization modes: never, always, if R2 > r2, etc.
 
   // Maybe it's possible to use some function that doesn't require explicit renormalization. If 
   // we use xNew = x + f(x,y), yNew = y + g(x,y) for the application of the nonlinearity, I think
   // we should satisfy the constraint: (x + f(x,y))^2 + (y + g(x,y))^2 = x^2 + y^2, or shorter:
   // (x+f)^2 + (y+g)^2 = x^2 + y^2 - maybe we can find such a pair of functions that satisfies this
   // equation (for all values of x,y)
+
+  // \todo: make this a member function in a subclass PhasorFilterNonlinear
 }
 
 template<class TSig, class TPar>
@@ -79,7 +81,9 @@ inline void PhasorFilter<TSig, TPar>::processFrame(TSig *x, TSig *y)
 {
   *x  += Axx * xOld  +  Axy * yOld;
   *y  += Ayx * xOld  +  Ayy * yOld;
+
   applyNonlinearity(*x, *y);  // experimental
+
   xOld = *x;
   yOld = *y;
 }
