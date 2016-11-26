@@ -27,11 +27,12 @@ void phasorImpulseResponse()
   PhsFlt flt;
   flt.setSampleRate(44100); 
   flt.setFrequency(441);
-  flt.setDecayTime(0.01f);
+  //flt.setDecayTime(0.01f);
+  flt.setDecayTime(0.05f);
   //flt.setDecayTime(RS_INF(float));
 
   // plot the impulse response:
-  plotImpulseResponse(flt, 1600, 1.f);
+  plotImpulseResponse(flt, 1600, 1.0f);
 }
 
 void svfImpulseResponse()
