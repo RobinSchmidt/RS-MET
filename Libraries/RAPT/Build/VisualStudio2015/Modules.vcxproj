@@ -88,6 +88,7 @@
     <ClInclude Include="..\..\Source\Modules\Filters\Musical\StateVariableFilter.h" />
     <ClInclude Include="..\..\Source\Modules\Math\Functions\BasicFunctions.h" />
     <ClInclude Include="..\..\Source\Modules\Math\Functions\BellFunctions.h" />
+    <ClInclude Include="..\..\Source\Modules\Math\Functions\FunctionObjects.h" />
     <ClInclude Include="..\..\Source\Modules\Math\Functions\Sigmoids.h" />
     <ClInclude Include="..\..\Source\Modules\Math\Math.h" />
     <ClInclude Include="..\..\Source\Modules\Modulators\Envelopes\BreakpointModulator.h" />

@@ -23,6 +23,7 @@ void phasorImpulseResponse()
 {
   // Plots an impulse response of the PhasorFilter. 
 
+  // create and set up the filter:
   typedef RAPT::PhasorFilter<float, float> PhsFlt;  // for convenience
   PhsFlt flt;
   flt.setSampleRate(44100); 
@@ -30,6 +31,16 @@ void phasorImpulseResponse()
   //flt.setDecayTime(0.01f);
   flt.setDecayTime(0.015f);
   //flt.setDecayTime(RS_INF(float));
+
+  // create the state-mapper, set it up and pass it to the filter:
+  PhasorStateMapper<float> mapper;
+  mapper.setSameSquare(            -0.05f);
+  mapper.setOtherSquare(           -0.02f);
+  mapper.setCrossProduct(          -0.15f);
+  mapper.setAddedConstant(         -0.006f);
+  mapper.setPreNormalizeSaturation( 0.3);
+  mapper.setPostNormalizeSaturation(0.005f);
+  flt.setStateMapper(&mapper);
 
   // plot the impulse response:
   plotImpulseResponse(flt, 1600, 1.0f);

@@ -103,6 +103,9 @@
     <ClInclude Include="..\..\Source\Modules\Filters\Musical\PhasorFilter.h">
       <Filter>Filters\Musical</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Modules\Math\Functions\FunctionObjects.h">
+      <Filter>Math\Functions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\Source\Modules\Modulators\Ideas.txt">

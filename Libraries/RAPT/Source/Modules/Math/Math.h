@@ -8,6 +8,7 @@ namespace RAPT
 
 #include "Functions/BasicFunctions.h"
 #include "Functions/BellFunctions.h"
+#include "Functions/FunctionObjects.h"
 #include "Functions/Sigmoids.h"
 
 }
