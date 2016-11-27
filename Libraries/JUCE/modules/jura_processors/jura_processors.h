@@ -53,6 +53,7 @@ namespace jura
 #include "baseclasses/jura_AudioPlugin.h"
 
 #include "filters/jura_LadderFilter.h"
+#include "filters/jura_PhasorFilter.h"
 
 #include "modulators/jura_BreakpointModulatorAudioModule.h"
 #include "modulators/jura_ModulatorCurveEditor.h"

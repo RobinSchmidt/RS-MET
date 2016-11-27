@@ -1,7 +1,8 @@
-Enveloper:
--fix the GUI mess
--check, why it goes through release twice when there's no loop active
+-implement a generic AudioModuleEditor
+-use it for a PhasorFilter demo plugin
 
+Enveloper:
+-check, why it goes through release twice when there's no loop active
 -maybe make a plugin that uses two or three envelopes to test the multi-editor
  (perhaps a dual ladder filter)
 
