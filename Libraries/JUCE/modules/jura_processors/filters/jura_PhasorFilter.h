@@ -1,6 +1,8 @@
 #ifndef jura_PhasorFilter_h
 #define jura_PhasorFilter_h
   
+typedef RAPT::PhasorFilter<double, double> RAPTPhasorFilter;
+
 /** Wraps a RAPT::PhasorFilter into an AudioModule. */
 
 class JUCE_API PhasorFilter : public jura::AudioModule
@@ -14,9 +16,6 @@ public:
   dynamically and are thus always there). */
   virtual void createStaticParameters();
 
-  /** Creates the GUI editor (returns an object of an appropriate subclass of AudioModuleEditor) */
-  AudioModuleEditor *createEditor() override;
-
   // overriden from AudioModule baseclass:
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
   virtual void setSampleRate(double newSampleRate) override; 
@@ -24,7 +23,7 @@ public:
 
 protected:
 
-  RAPT::PhasorFilter<double, double> filterCore;
+  RAPTPhasorFilter filterCore;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhasorFilter)
 };

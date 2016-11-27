@@ -162,6 +162,11 @@ juce::String AudioModule::getModuleHeadlineString()
   return moduleName + moduleNameAppendix;
 }
 
+AudioModuleEditor* AudioModule::createEditor()
+{
+  return new GenericAudioModuleEditor(this);
+}
+
 //-------------------------------------------------------------------------------------------------
 // automation and state management:
 
@@ -428,8 +433,6 @@ void AudioModuleEditor::init()
 
   loadPreferencesFromFile();
   updateWidgetsAccordingToState();
-
-  //setSize(400, 300); // do we need this?
 }
 
 AudioModuleEditor::~AudioModuleEditor()
@@ -667,3 +670,80 @@ juce::String AudioModuleEditor::getPreferencesFileName()
 //  automatableSliders.getLock().exit();
 //  return NULL;
 //}
+
+//=================================================================================================
+
+GenericAudioModuleEditor::GenericAudioModuleEditor(AudioModule* newModuleToEdit)
+  : AudioModuleEditor(newModuleToEdit)
+{
+  ScopedLock scopedLock(*plugInLock);
+
+  setPresetSectionPosition(RIGHT_TO_HEADLINE);
+  createWidgets();
+  setSize(360, 180);
+
+  // \todo figure out, what size is needed (before calling setSize) and maybe do something more 
+  // clever in resized to arrange the widgets in a visually more pleasant way
+}
+
+void GenericAudioModuleEditor::resized()
+{
+  ScopedLock scopedLock(*plugInLock);
+  AudioModuleEditor::resized();
+
+  // preliminary - this arrangement is still ugly:
+  int x  = 0;
+  int y  = getPresetSectionBottom() + 4;
+  int w  = getWidth();
+  int h  = getHeight();
+  int wh = 16;           // widget height
+  int dw = 4;            // distance between widgets
+  for(int i = 0; i < parameterWidgets.size(); i++)
+  {
+    parameterWidgets[i]->setBounds(x+4, y, w-8, wh);
+    y += wh + dw;
+  }
+}
+
+void GenericAudioModuleEditor::createWidgets()
+{
+  ScopedLock scopedLock(*plugInLock);
+  jassert(moduleToEdit != nullptr);
+
+  // for each of the module's parameter, create an appropriate widget and add it to this editor
+  // using the inherited addWidget method (this will add the widget to out inherited widgets
+  // array)
+
+  Parameter *p;
+  RSlider   *s;
+  //RComboBox *c;
+  //RButton   *b;
+  for(int i = 0; i < moduleToEdit->getNumParameters(); i++)
+  {
+    p = moduleToEdit->getParameterByIndex(i);
+    juce::String name = juce::String(p->getName());
+
+    if(p->getScaling() == Parameter::BOOLEAN)
+    {
+      // on/off parameter - create button:
+      jassertfalse; // not yet implemented
+    }
+    else if(p->getScaling() == Parameter::STRING)
+    {
+      // multiple-choice parameter - create combobox:
+      jassertfalse; // not yet implemented
+    }
+    else
+    {
+      // numeric parameter - create slider:
+      s = new RSlider(name + "Slider");
+      s->setRange(p->getMinValue(), p->getMaxValue(), p->getInterval(), p->getDefaultValue());
+      s->assignParameter(p);
+      s->setSliderName(name);
+      s->setDescriptionField(infoField);
+      s->setStringConversionFunction(&valueToString);
+      addWidget(s);
+      parameterWidgets.add(s);
+    }
+  }
+}

@@ -1,5 +1,4 @@
--implement a generic AudioModuleEditor
--use it for a PhasorFilter demo plugin
+-refine GenericAudioModuleEditor (widget arrangement)
 
 Enveloper:
 -check, why it goes through release twice when there's no loop active

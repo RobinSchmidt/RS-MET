@@ -108,8 +108,7 @@ public:
   virtual int getIndexAmongNameSakes(AudioModule *child);
 
   /** Returns a string that is to be used as headline for a GUI-editor for this module - this will 
-  be typically the name of the module, perhaps appended by some qualifier like "Demo Version", 
-  "Cracked By bLaH" or something. */
+  be typically the name of the module, perhaps appended by some qualifier like "Demo Version". */
   virtual juce::String getModuleHeadlineString();
 
   /** Returns the interval at which the module wants to receive callbacks to trigger(). */
@@ -120,9 +119,10 @@ public:
   their state. This makes preset files more economical. */
   bool wantsSaveAndRecallState() const { return saveAndRecallState; }
 
-  /** Your subclass must override this to return an object of an appropriate subclass of
-  AudioModuleEditor. */
-  virtual AudioModuleEditor *createEditor() = 0;
+  /** Your subclass may override this to return an object of an appropriate subclass of
+  AudioModuleEditor. The baseclass implementation will return a generic editor with sliders, 
+  comboboxes and button for all the Parameters of this AudioModule. */
+  virtual AudioModuleEditor* createEditor();
 
   //-----------------------------------------------------------------------------------------------
   // automation and state management:
@@ -403,6 +403,34 @@ protected:
   int    numHueOffsets; 
 
   juce_UseDebuggingNewOperator;
+};
+
+//=================================================================================================
+
+/** Implements a generic editor for AudioModules which just show a simple widget for each of the 
+underlying AudioModule's Parameters. Which kind of widget is shown depends on the type of the 
+respective Parameter - for continuous numeric parameters, it shows a slider, for multiple choice 
+parameters a combobox and for boolean parameters a button. An object of this generic editor class 
+is returned in the baseclass cimplementation AudioModule::createEditor. */
+
+class GenericAudioModuleEditor : public AudioModuleEditor
+{
+
+public:
+
+  GenericAudioModuleEditor(AudioModule* newModuleToEdit);
+  virtual void resized() override;
+
+
+protected:
+
+  /** Creates an appropriate widget for each of the parameters in the underlying AudioModule.
+  Called from the constructor. */
+  virtual void createWidgets();
+
+  juce::Array<RWidget*> parameterWidgets; // array of the widgets for the paraters
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GenericAudioModuleEditor)
 };
 
 #endif 
