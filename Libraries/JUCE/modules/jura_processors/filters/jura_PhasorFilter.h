@@ -2,6 +2,7 @@
 #define jura_PhasorFilter_h
   
 typedef RAPT::PhasorFilter<double, double> RAPTPhasorFilter;
+typedef RAPT::PhasorStateMapper<double> RAPTPhasorMapper;
 
 /** Wraps a RAPT::PhasorFilter into an AudioModule. */
 
@@ -24,6 +25,9 @@ public:
 protected:
 
   RAPTPhasorFilter filterCore;
+  RAPTPhasorMapper stateMapper;
+
+  double inOld;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhasorFilter)
 };

@@ -37,9 +37,9 @@ void phasorImpulseResponse()
   mapper.setSameSquare(            -0.05f);
   mapper.setOtherSquare(           -0.02f);
   mapper.setCrossProduct(          -0.15f);
-  mapper.setAddedConstant(         -0.006f);
-  mapper.setPreNormalizeSaturation( 0.3);
-  mapper.setPostNormalizeSaturation(0.005f);
+  mapper.setOffset(                -0.006f);
+  mapper.setPreNormalizeSaturation( 1.1f);
+  mapper.setPostNormalizeSaturation(0.1f);
   flt.setStateMapper(&mapper);
 
   // plot the impulse response:

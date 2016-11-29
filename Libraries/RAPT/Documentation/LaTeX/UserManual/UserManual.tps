@@ -35,7 +35,7 @@ Class=LaTeXView
 Document=Introduction.tex
 
 [Frame1_View0,0]
-TopLine=0
+TopLine=33
 Cursor=2232
 
 [Frame2]
@@ -53,10 +53,10 @@ Class=LaTeXView
 Document=Mathematics.tex
 
 [Frame2_View0,0]
-TopLine=0
-Cursor=1250
+TopLine=235
+Cursor=22656
 
 [SessionInfo]
 FrameCount=3
-ActiveFrame=1
+ActiveFrame=2
 

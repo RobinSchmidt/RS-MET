@@ -101,11 +101,16 @@ public:
 
   void setCrossProduct(T newCoeff);
 
-  void setAddedConstant(T newCoeff);
+  void setOffset(T newCoeff);
 
-  void setPreNormalizeSaturation(T newCoeff);
+  /** Sets up the amount of saturation that is applied to both coordinates separately before the 
+  renormalization step. The parameter is given as the reciprocal of the saturation level. So for 0,
+  there's no saturation at all because the level at which is would saturate is at infinity, For 1,
+  it will also saturate at 1, for 2 it will saturate at 0.5, etc. so the higher the value, the more
+  the output of the function gets squashed. */
+  void setPreNormalizeSaturation(T newLevelReciprocal);
 
-  void setPostNormalizeSaturation(T newCoeff);
+  void setPostNormalizeSaturation(T newLevelReciprocal);
 
 
   /** \name Mapping */
@@ -115,7 +120,7 @@ public:
 protected:
 
   // add parameters
-  T a, b, c, d, sat1, sat2;
+  T same, other, cross, offset, satPre, satPost;
 
 };
 

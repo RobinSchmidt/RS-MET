@@ -51,12 +51,17 @@ inline void PhasorFilter<TSig, TPar>::processFrame(TSig *x, TSig *y)
 
   xOld = *x;
   yOld = *y;
+
+  // the output loudness depends of the cutoff frequency - we must scale either the input or the 
+  // output in dependence of the cutoff (check, which scaling position is better behaved when we 
+  // have nonlinearity - probably input?)
 }
 
 template<class TSig, class TPar>
 inline TSig PhasorFilter<TSig, TPar>::getSample(TSig in)
 {
   TSig x = in;
+  //TSig x = 2 * (frequency/sampleRate) * in; // test
   TSig y = 0;
   processFrame(&x, &y);
   //return x;    // maybe use weighted sum of in, x and y according to output coeffs
@@ -102,48 +107,48 @@ void PhasorFilter<TSig, TPar>::updateCoefficients()
 template<class T>
 PhasorStateMapper<T>::PhasorStateMapper()
 {
-  a    = 0;   // coeff for same^2
-  b    = 0;   // coeff for other^2
-  c    = 0;   // coeff for cross-term same*other
-  d    = 0;   // constant
-  sat1 = 0;   // higher values introduce a pre-gap in resonance
-  sat2 = 0;   // higher values shorten the resonance
+  same    = 0;   // coeff for same^2
+  other   = 0;   // coeff for other^2
+  cross   = 0;   // coeff for cross-term same*other
+  offset  = 0;   // added constant
+  satPre  = 0;   // higher values introduce a pre-gap in resonance
+  satPost = 0;   // higher values shorten the resonance
 }
 
 template<class T>
 void PhasorStateMapper<T>::setSameSquare(T newCoeff)
 {
-  a = newCoeff;
+  same = newCoeff;
 }
 
 template<class T>
 void PhasorStateMapper<T>::setOtherSquare(T newCoeff)
 {
-  b = newCoeff;
+  other = newCoeff;
 }
 
 template<class T>
 void PhasorStateMapper<T>::setCrossProduct(T newCoeff)
 {
-  c = newCoeff;
+  cross = newCoeff;
 }
 
 template<class T>
-void PhasorStateMapper<T>::setAddedConstant(T newCoeff)
+void PhasorStateMapper<T>::setOffset(T newCoeff)
 {
-  d = newCoeff;
+  offset = newCoeff;
 }
 
 template<class T>
-void PhasorStateMapper<T>::setPreNormalizeSaturation(T newCoeff)
+void PhasorStateMapper<T>::setPreNormalizeSaturation(T c)
 {
-  sat1 = newCoeff;
+  satPre = T(0.25)*c*c;
 }
 
 template<class T>
-void PhasorStateMapper<T>::setPostNormalizeSaturation(T newCoeff)
+void PhasorStateMapper<T>::setPostNormalizeSaturation(T c)
 {
-  sat2 = newCoeff;
+  satPost = T(0.25)*c*c;
 }
 
 template<class T>
@@ -164,13 +169,12 @@ void PhasorStateMapper<T>::map(T *xInOut, T *yInOut)
   T r2 = xx + yy; 
 
   // apply a nonlinear transformation to the vector:
-  x += a*xx + b*yy + c*xy + d;
-  y += b*xx + a*yy + c*xy + d;
+  x += xx*same  + yy*other + xy*cross + offset;
+  y += xx*other + yy*same  + xy*cross + offset;
 
-  // saturation 1:
-
-  x /= 1 + sat1*x*x;
-  y /= 1 + sat1*y*y;
+  // pre-renormalize saturation:
+  x /= 1 + satPre*x*x;
+  y /= 1 + satPre*y*y;
 
   // restore old vector length (renormalization):
   T R2 = x*x + y*y;         // new length
@@ -182,14 +186,16 @@ void PhasorStateMapper<T>::map(T *xInOut, T *yInOut)
   }
   // maybe we should have different renormalization modes: never, always, if R2 > r2, etc.
 
-  // saturation 2:
-  T s = 1 / (1 + sat2 *  (x*x + y*y));
+  // post-renormalize saturation:
+  T s = 1 / (1 + satPost * (x*x + y*y));
   x *= s;
   y *= s;
 
   // assign outputs:
   *xInOut = x;
   *yInOut = y;
+
+  // maybe include also an input saturation before adding the prod
 
   // Maybe it's possible to use some function that doesn't require explicit renormalization. If 
   // we use xNew = x + f(x,y), yNew = y + g(x,y) for the application of the nonlinearity, I think

@@ -10,25 +10,33 @@
 \BOOKMARK [2][-]{subsection.1.4.1}{Butterworth Filter}{section.1.4}% 10
 \BOOKMARK [0][-]{chapter.2}{Mathematics}{}% 11
 \BOOKMARK [1][-]{section.2.1}{Complex Numbers}{chapter.2}% 12
-\BOOKMARK [1][-]{section.2.2}{Polynomials}{chapter.2}% 13
-\BOOKMARK [1][-]{section.2.3}{Root Finding}{chapter.2}% 14
-\BOOKMARK [2][-]{subsection.2.3.1}{Bisection}{section.2.3}% 15
-\BOOKMARK [2][-]{subsection.2.3.2}{Newton Iteration}{section.2.3}% 16
-\BOOKMARK [2][-]{subsection.2.3.3}{Secant Method}{section.2.3}% 17
-\BOOKMARK [2][-]{subsection.2.3.4}{False Position}{section.2.3}% 18
-\BOOKMARK [2][-]{subsection.2.3.5}{Roots of Polynomials}{section.2.3}% 19
-\BOOKMARK [1][-]{section.2.4}{Rational Functions}{chapter.2}% 20
-\BOOKMARK [2][-]{subsection.2.4.1}{Partial Fraction Decomposition}{section.2.4}% 21
-\BOOKMARK [1][-]{section.2.5}{Vectors}{chapter.2}% 22
-\BOOKMARK [1][-]{section.2.6}{Matrices}{chapter.2}% 23
-\BOOKMARK [1][-]{section.2.7}{Transforms}{chapter.2}% 24
-\BOOKMARK [2][-]{subsection.2.7.1}{Discrete Fourier Transform}{section.2.7}% 25
-\BOOKMARK [2][-]{subsection.2.7.2}{Short Time Fourier Transforms}{section.2.7}% 26
-\BOOKMARK [2][-]{subsection.2.7.3}{Wavelet Transforms}{section.2.7}% 27
-\BOOKMARK [1][-]{section.2.8}{Statistics}{chapter.2}% 28
-\BOOKMARK [1][-]{section.2.9}{Interpolation}{chapter.2}% 29
-\BOOKMARK [2][-]{subsection.2.9.1}{Linear Interpolation}{section.2.9}% 30
-\BOOKMARK [2][-]{subsection.2.9.2}{Lagrange Interpolation}{section.2.9}% 31
-\BOOKMARK [2][-]{subsection.2.9.3}{Spline Interpolation}{section.2.9}% 32
-\BOOKMARK [2][-]{subsection.2.9.4}{Sinc Interpolation}{section.2.9}% 33
-\BOOKMARK [1][-]{section.2.10}{Numerical Differentiation}{chapter.2}% 34
+\BOOKMARK [1][-]{section.2.2}{Functions}{chapter.2}% 13
+\BOOKMARK [1][-]{section.2.3}{Sequences}{chapter.2}% 14
+\BOOKMARK [1][-]{section.2.4}{Polynomials}{chapter.2}% 15
+\BOOKMARK [1][-]{section.2.5}{Root Finding}{chapter.2}% 16
+\BOOKMARK [2][-]{subsection.2.5.1}{Bisection}{section.2.5}% 17
+\BOOKMARK [2][-]{subsection.2.5.2}{Newton Iteration}{section.2.5}% 18
+\BOOKMARK [2][-]{subsection.2.5.3}{Secant Method}{section.2.5}% 19
+\BOOKMARK [2][-]{subsection.2.5.4}{False Position}{section.2.5}% 20
+\BOOKMARK [2][-]{subsection.2.5.5}{Roots of Polynomials}{section.2.5}% 21
+\BOOKMARK [1][-]{section.2.6}{Rational Functions}{chapter.2}% 22
+\BOOKMARK [2][-]{subsection.2.6.1}{Partial Fraction Decomposition}{section.2.6}% 23
+\BOOKMARK [1][-]{section.2.7}{Vectors}{chapter.2}% 24
+\BOOKMARK [1][-]{section.2.8}{Matrices}{chapter.2}% 25
+\BOOKMARK [1][-]{section.2.9}{Transforms}{chapter.2}% 26
+\BOOKMARK [2][-]{subsection.2.9.1}{Discrete Fourier Transform}{section.2.9}% 27
+\BOOKMARK [2][-]{subsection.2.9.2}{Short Time Fourier Transforms}{section.2.9}% 28
+\BOOKMARK [2][-]{subsection.2.9.3}{Wavelet Transforms}{section.2.9}% 29
+\BOOKMARK [1][-]{section.2.10}{Statistics}{chapter.2}% 30
+\BOOKMARK [1][-]{section.2.11}{Interpolation}{chapter.2}% 31
+\BOOKMARK [2][-]{subsection.2.11.1}{Linear Interpolation}{section.2.11}% 32
+\BOOKMARK [2][-]{subsection.2.11.2}{Lagrange Interpolation}{section.2.11}% 33
+\BOOKMARK [2][-]{subsection.2.11.3}{Spline Interpolation}{section.2.11}% 34
+\BOOKMARK [2][-]{subsection.2.11.4}{Sinc Interpolation}{section.2.11}% 35
+\BOOKMARK [1][-]{section.2.12}{Numerical Differentiation}{chapter.2}% 36
+\BOOKMARK [1][-]{section.2.13}{Numerical Integration}{chapter.2}% 37
+\BOOKMARK [1][-]{section.2.14}{Differential Equations}{chapter.2}% 38
+\BOOKMARK [2][-]{subsection.2.14.1}{Ordinary Differential Equations}{section.2.14}% 39
+\BOOKMARK [2][-]{subsection.2.14.2}{Partial Differential Equations}{section.2.14}% 40
+\BOOKMARK [1][-]{section.2.15}{Curve Fitting}{chapter.2}% 41
+\BOOKMARK [1][-]{section.2.16}{Optimization}{chapter.2}% 42
