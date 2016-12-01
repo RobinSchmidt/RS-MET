@@ -147,19 +147,23 @@
     <ClInclude Include="..\..\Source\Executables\Demos\FilterDemos.h" />
     <ClInclude Include="..\..\Source\Executables\Demos\MathDemos.h" />
     <ClInclude Include="..\..\Source\Executables\Demos\ModulatorDemos.h" />
+    <ClInclude Include="..\..\Source\Executables\Experiments\FilterExperiments.h" />
     <ClInclude Include="..\..\Source\Executables\Shared\Plotting\GNUPlotter.h" />
     <ClInclude Include="..\..\Source\Executables\Shared\Plotting\Plotting.h" />
     <ClInclude Include="..\..\Source\Executables\Shared\Shared.h" />
+    <ClInclude Include="..\..\Source\Executables\Shared\Utilities\TestInputCreation.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\Executables\Demos\ArrayDemos.cpp" />
     <ClCompile Include="..\..\Source\Executables\Demos\FilterDemos.cpp" />
     <ClCompile Include="..\..\Source\Executables\Demos\MathDemos.cpp" />
     <ClCompile Include="..\..\Source\Executables\Demos\ModulatorDemos.cpp" />
+    <ClCompile Include="..\..\Source\Executables\Experiments\FilterExperiments.cpp" />
     <ClCompile Include="..\..\Source\Executables\Main.cpp" />
     <ClCompile Include="..\..\Source\Executables\Shared\Plotting\GNUPlotter.cpp" />
     <ClCompile Include="..\..\Source\Executables\Shared\Plotting\Plotting.cpp" />
     <ClCompile Include="..\..\Source\Executables\Shared\RaptLibraryCode\RaptInstantiations.cpp" />
+    <ClCompile Include="..\..\Source\Executables\Shared\Utilities\TestInputCreation.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -78,7 +78,7 @@ protected:
 
 //=================================================================================================
 
-/**
+/** 
 
 \todo make different kinds of mappers, for example one that expresses the new phase explicitly as
 function of the old phase and the magnitude.
@@ -94,6 +94,8 @@ public:
 
 
   /** \name Setup */
+
+  void setInputSaturation(T newLevelReciprocal);
 
   void setSameSquare(T newCoeff);
 
@@ -120,7 +122,7 @@ public:
 protected:
 
   // add parameters
-  T same, other, cross, offset, satPre, satPost;
+  T satIn, same, other, cross, offset, satPre, satPost;
 
 };
 

@@ -149,7 +149,9 @@ String decibelsToStringWithUnit2(double value)
 
 String degreesToStringWithUnit0(double value)
 {
-  return String(value, 0) + String("°");
+  return String(value, 2) + String(" deg");
+  //return String(value, 0) + String(CharPointer_UTF8("°")); // ° not available in my pixelfont
+  //return String(value, 0) + String("°"); // old - raises assertion
 }
 
 String frequencyInHzAndAsNote(double frequencyInHz)

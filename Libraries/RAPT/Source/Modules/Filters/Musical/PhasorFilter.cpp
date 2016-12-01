@@ -111,8 +111,15 @@ PhasorStateMapper<T>::PhasorStateMapper()
   other   = 0;   // coeff for other^2
   cross   = 0;   // coeff for cross-term same*other
   offset  = 0;   // added constant
+  satIn   = 0;
   satPre  = 0;   // higher values introduce a pre-gap in resonance
   satPost = 0;   // higher values shorten the resonance
+}
+
+template<class T>
+void PhasorStateMapper<T>::setInputSaturation(T c)
+{
+  satIn = T(0.25)*c*c;
 }
 
 template<class T>
@@ -168,6 +175,11 @@ void PhasorStateMapper<T>::map(T *xInOut, T *yInOut)
   // compute squared length of (x,y) input vector:
   T r2 = xx + yy; 
 
+  // apply input saturation:
+  T s = 1 / (1 + satIn * r2);
+  x  *= s;
+  y  *= s;
+
   // apply a nonlinear transformation to the vector:
   x += xx*same  + yy*other + xy*cross + offset;
   y += xx*other + yy*same  + xy*cross + offset;
@@ -187,7 +199,7 @@ void PhasorStateMapper<T>::map(T *xInOut, T *yInOut)
   // maybe we should have different renormalization modes: never, always, if R2 > r2, etc.
 
   // post-renormalize saturation:
-  T s = 1 / (1 + satPost * (x*x + y*y));
+  s  = 1 / (1 + satPost * (x*x + y*y));
   x *= s;
   y *= s;
 

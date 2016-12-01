@@ -680,10 +680,9 @@ GenericAudioModuleEditor::GenericAudioModuleEditor(AudioModule* newModuleToEdit)
 
   setPresetSectionPosition(RIGHT_TO_HEADLINE);
   createWidgets();
-  setSize(360, 180);
 
-  // \todo figure out, what size is needed (before calling setSize) and maybe do something more 
-  // clever in resized to arrange the widgets in a visually more pleasant way
+  int height = (widgetHeight+widgetDistance) * parameterWidgets.size() + 28;
+  setSize(360, height);
 }
 
 void GenericAudioModuleEditor::resized()
@@ -696,12 +695,10 @@ void GenericAudioModuleEditor::resized()
   int y  = getPresetSectionBottom() + 4;
   int w  = getWidth();
   int h  = getHeight();
-  int wh = 16;           // widget height
-  int dw = 4;            // distance between widgets
   for(int i = 0; i < parameterWidgets.size(); i++)
   {
-    parameterWidgets[i]->setBounds(x+4, y, w-8, wh);
-    y += wh + dw;
+    parameterWidgets[i]->setBounds(x+4, y, w-8, widgetHeight);
+    y += widgetHeight + widgetDistance;
   }
 }
 

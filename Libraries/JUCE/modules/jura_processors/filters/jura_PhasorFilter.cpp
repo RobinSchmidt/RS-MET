@@ -30,23 +30,40 @@ void PhasorFilter::createStaticParameters()
 
   // nonlinearity parameters:
 
-  p = new AutomatableParameter(plugInLock, "Same", -2.0, 2.0, 0.0, 0.0, Parameter::LINEAR_BIPOLAR);
+  p = new AutomatableParameter(plugInLock, "SatInput", 0.1, 100, 0.0, 1.0, 
+    Parameter::EXPONENTIAL);
+  addObservedParameter(p);
+  p->setValueChangeCallback<RAPTPhasorMapper>(&stateMapper, 
+    &RAPTPhasorMapper::setInputSaturation);
+
+  p = new AutomatableParameter(plugInLock, "Same", -2.0, 2.0, 0.0, 0.0, 
+    Parameter::LINEAR_BIPOLAR);
   addObservedParameter(p);
   p->setValueChangeCallback<RAPTPhasorMapper>(&stateMapper, &RAPTPhasorMapper::setSameSquare);
 
-  p = new AutomatableParameter(plugInLock, "Other", -2.0, 2.0, 0.0, 0.0, Parameter::LINEAR_BIPOLAR);
+  p = new AutomatableParameter(plugInLock, "Other", -2.0, 2.0, 0.0, 0.0, 
+    Parameter::LINEAR_BIPOLAR);
   addObservedParameter(p);
   p->setValueChangeCallback<RAPTPhasorMapper>(&stateMapper, &RAPTPhasorMapper::setOtherSquare);
 
-  p = new AutomatableParameter(plugInLock, "Cross", -2.0, 2.0, 0.0, 0.0, Parameter::LINEAR_BIPOLAR);
+  p = new AutomatableParameter(plugInLock, "Cross", -2.0, 2.0, 0.0, 0.0, 
+    Parameter::LINEAR_BIPOLAR);
   addObservedParameter(p);
   p->setValueChangeCallback<RAPTPhasorMapper>(&stateMapper, &RAPTPhasorMapper::setCrossProduct);
 
-  p = new AutomatableParameter(plugInLock, "Offset", -2.0, 2.0, 0.0, 0.0, Parameter::LINEAR_BIPOLAR);
+  p = new AutomatableParameter(plugInLock, "Offset", -2.0, 2.0, 0.0, 0.0, 
+    Parameter::LINEAR_BIPOLAR);
   addObservedParameter(p);
   p->setValueChangeCallback<RAPTPhasorMapper>(&stateMapper, &RAPTPhasorMapper::setOffset);
 
-  p = new AutomatableParameter(plugInLock, "SatPostRenorm", 0.0, 10, 0.0, 1.0, Parameter::LINEAR);
+  p = new AutomatableParameter(plugInLock, "SatPreRenorm", 0.1, 100, 0.0, 1.0, 
+    Parameter::EXPONENTIAL);
+  addObservedParameter(p);
+  p->setValueChangeCallback<RAPTPhasorMapper>(&stateMapper, 
+    &RAPTPhasorMapper::setPreNormalizeSaturation);
+
+  p = new AutomatableParameter(plugInLock, "SatPostRenorm", 0.1, 100, 0.0, 1.0, 
+    Parameter::EXPONENTIAL);
   addObservedParameter(p);
   p->setValueChangeCallback<RAPTPhasorMapper>(&stateMapper, 
     &RAPTPhasorMapper::setPostNormalizeSaturation);

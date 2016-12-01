@@ -430,6 +430,9 @@ protected:
 
   juce::Array<RWidget*> parameterWidgets; // array of the widgets for the paraters
 
+  int widgetHeight   = 16; 
+  int widgetDistance = 4;
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GenericAudioModuleEditor)
 };
 

@@ -3,6 +3,8 @@
 #include "Demos/FilterDemos.h"
 #include "Demos/ModulatorDemos.h"
 
+#include "Experiments/FilterExperiments.h"
+
 int main(int argc, char** argv)
 {
   // In this main function, you can select, which demo, test or whatever will be run by 
@@ -21,13 +23,18 @@ int main(int argc, char** argv)
 
   // Filter Demos:
   //ladderImpulseResponse();
-  phasorImpulseResponse();
+  //phasorImpulseResponse();
   //svfImpulseResponse();
   // add ladderMagnitudeResponse... - maybe create a template that plots 
   // impulse/step/magnitude/phase - responses in a single window
 
-  // Filter Demos:
+  // Modulator Demos:
   //breakpointModulatorDefault();
+
+  //-----------------------------------------------------------------------------------------------
+  // Experiments:
+
+  ladderResonanceManipulation();
 
 
   // ToDo: check for memory leaks here

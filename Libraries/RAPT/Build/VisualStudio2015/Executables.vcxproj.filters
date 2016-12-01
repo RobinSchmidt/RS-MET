@@ -13,6 +13,12 @@
     <Filter Include="Shared\RaptLibraryCode">
       <UniqueIdentifier>{61bd323a-512f-4a12-90eb-e65a22e58813}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Experiments">
+      <UniqueIdentifier>{ce3caed1-c0e2-44db-9990-b24a8e4bb369}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shared\Utilities">
+      <UniqueIdentifier>{b29bbf09-8e58-4f4a-90d1-6086395616bd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\Executables\Demos\ArrayDemos.h">
@@ -35,6 +41,12 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Executables\Demos\MathDemos.h">
       <Filter>Demos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Executables\Experiments\FilterExperiments.h">
+      <Filter>Experiments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Executables\Shared\Utilities\TestInputCreation.h">
+      <Filter>Shared\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -59,6 +71,12 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Executables\Demos\MathDemos.cpp">
       <Filter>Demos</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Executables\Experiments\FilterExperiments.cpp">
+      <Filter>Experiments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Executables\Shared\Utilities\TestInputCreation.cpp">
+      <Filter>Shared\Utilities</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

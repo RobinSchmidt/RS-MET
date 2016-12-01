@@ -1,4 +1,4 @@
-#ifndef RAPT_PLOTTING_CPP
+#ifndef RAPT_PLOTTING_CPP // why? i think, it may be deleted
 #define RAPT_PLOTTING_CPP
 
 #include "Plotting.h" 

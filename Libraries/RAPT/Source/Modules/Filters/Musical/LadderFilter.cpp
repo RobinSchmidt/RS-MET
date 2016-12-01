@@ -117,7 +117,7 @@ TPar LadderFilter<TSig, TPar>::getMagnitudeResponseAt(TPar frequency)
 template<class TSig, class TPar>
 inline TSig LadderFilter<TSig, TPar>::getSampleNoGain(TSig in)
 {
-  y[4] /= 1 + y[4]*y[4];     // (ad hoc) nonlinearity applied to the feedback signal
+  //y[4] /= 1 + y[4]*y[4];     // (ad hoc) nonlinearity applied to the feedback signal
   y[0]  = in - k*y[4];       // linear
   //y[0] /= 1 + y[0]*y[0];     // nonlineariry applied to input plus feedback signal
   y[1]  = b*y[0]  - a*y[1];
@@ -136,7 +136,8 @@ inline TSig LadderFilter<TSig, TPar>::getSampleNoGain(TSig in)
 template<class TSig, class TPar>
 inline TSig LadderFilter<TSig, TPar>::getSample(TSig in)
 {
-  return g * getSampleNoGain(in);
+  return getSampleNoGain(g * in);     // apply gain at input
+  //return g * getSampleNoGain(in);   // apply gain at output
   
   // \todo Make the amount of gain compensation available as user parameter - we then compute
   // g = 1 + k * compensationAmount; instead of g = 1 + k -> filter becomes continuously adjustable 
