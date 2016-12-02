@@ -16,11 +16,11 @@ void ladderResonanceManipulation()
   // a sawtooth wave into them.
 
   // parameters:
-  int   N   =  1000;      // number of samples
+  int   N   =  2000;      // number of samples
   float fs  = 44100;      // sample rate
-  float fc  =  500;      // cutoff frequency
-  float res =    0.7f;   // resonance
-  float fIn =   100;      // input frequency
+  float fc  =  500;       // cutoff frequency
+  float res =    0.99f;   // resonance
+  float fIn =   80;       // input frequency
 
   // create and set up the filters:
   typedef RAPT::LadderFilter<float, float> LDR;  // for convenience
@@ -46,6 +46,7 @@ void ladderResonanceManipulation()
   vector<float> y0(N), y1(N), y2(N), y3(N), y4(N);
   vector<float> z0(N), z1(N), z2(N), z3(N), z4(N);
   vector<float> r0(N), r1(N), r2(N), r3(N), r4(N);
+  vector<float> offset(N);
   float y[5], z[5];
   float dummy;
   for(int n = 0; n < N; n++)
@@ -76,6 +77,18 @@ void ladderResonanceManipulation()
     r2[n] = y[2] - z[2];
     r3[n] = y[3] - z[3];
     r4[n] = y[4] - z[4];
+
+    // scale difference-states with appropriate factor to make the sinusoids have the same 
+    // amplitude:
+    r1[n] *= (float)SQRT2;      // s2^1, s2: sqrt(2)
+    r2[n] *= 2;                 // s2^2
+    r3[n] *= 2*(float)SQRT2;    // s2^3
+    r4[n] *= 4;                 // s2^4
+
+    // According to the model, this value would be zero because r0 and r4 are 180° out of phase. 
+    // Any deviation from 0 is a shortcoming of the model and considered an offset to the idealized
+    // value:
+    offset[n] = r0[n] + r4[n];
   }
 
   // plot:
@@ -83,7 +96,9 @@ void ladderResonanceManipulation()
   plt.addDataArrays(N, &t[0], &x[0]);
   //plt.addDataArrays(N, &t[0], &y0[0], &y1[0], &y2[0], &y3[0], &y4[0]);
   //plt.addDataArrays(N, &t[0], &z0[0], &z1[0], &z2[0], &z3[0], &z4[0]);
-  plt.addDataArrays(N, &t[0], &r0[0], &r1[0], &r2[0], &r3[0], &r4[0]);
+  //plt.addDataArrays(N, &t[0], &r0[0], &r1[0], &r2[0], &r3[0], &r4[0]);
+  plt.addDataArrays(N, &t[0], &r0[0], &r4[0]); // should be 180° out of phase
+  plt.addDataArrays(N, &t[0], &offset[0]);
   //plt.addDataArrays(N, &t[0], &y0[0], &z0[0], &r0[0]);
   plt.plot();
 
@@ -107,7 +122,13 @@ void ladderResonanceManipulation()
   // compute our new states r0,...,r4 using the formulas above. Having done that, we may update the 
   // states of the resonant filter according to y0 = z0 + r0, ..., y4 = z4 + r4.  This should give 
   // us a ladder filter in which we can freely mess with the instantaneous phase of the resonance 
-  // without needing to post-process the resonance signal 
+  // without needing to post-process the resonance signal.
+  // hmm...well, all of this holds only approximately. Maybe we should estimate the sine parameters
+  // not from r2,r4 but from r3,r4 (so we use the 2 most filtered outputs) and maybe we should 
+  // compute the difference between the actual states and the idealized states according to the 
+  // model and add this difference back after modification of the states, such that when we don't
+  // apply any modification, we really don't apply any modification (when recomuting the states
+  // according to the formulas)
 
   // Note: it works only when the compensation gain is applied at the input and when the filter
   // is linear.
