@@ -508,6 +508,15 @@ void RRadioButtonGroup::toggleRadioButtonOn(RRadioButton *buttonToToggleOn, bool
   }
 }
 
+bool RRadioButtonGroup::isButtonMemberOfGroup(RButton *buttonToCheck)
+{
+  RRadioButton *radioButton = dynamic_cast<RRadioButton*> (buttonToCheck);
+  if(radioButton == nullptr)
+    return false;
+  else
+    return radioButtons.contains(radioButton);
+}
+
 //=================================================================================================
 // class RHyperlinkButton
 

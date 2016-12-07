@@ -28,13 +28,13 @@ public:
   virtual void rTextEditorTextChanged(RTextEditor& editor) = 0;
 
   /** Called when the user presses the return key. */
-  virtual void rTextEditorReturnKeyPressed(RTextEditor& editor) = 0;
+  virtual void rTextEditorReturnKeyPressed(RTextEditor& editor) { rTextEditorTextChanged(editor); }
 
   /** Called when the user presses the escape key. */
-  virtual void rTextEditorEscapeKeyPressed(RTextEditor& editor) = 0;
+  virtual void rTextEditorEscapeKeyPressed(RTextEditor& editor) { rTextEditorTextChanged(editor); }
 
   /** Called when the text editor loses focus. */
-  virtual void rTextEditorFocusLost(RTextEditor& editor) = 0;
+  virtual void rTextEditorFocusLost(RTextEditor& editor) { rTextEditorTextChanged(editor); }
 
 };
 
@@ -168,10 +168,10 @@ public:
   //void setScrollBarButtonVisibility (const bool buttonsVisible);
 
   /** Registers a listener to be told when things happen to the text. */
-  void addListener (RTextEditorListener* const newListener) throw();
+  void addListener(RTextEditorListener* const newListener) throw();
 
   /** Deregisters a listener. */
-  void removeListener (RTextEditorListener* const listenerToRemove) throw();
+  void removeListener(RTextEditorListener* const listenerToRemove) throw();
 
   /** Returns the entire contents of the editor. */
   const juce::String getText() const throw();

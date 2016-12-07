@@ -288,6 +288,9 @@ public:
   other buttons in the group off. */
   virtual void toggleRadioButtonOn(RRadioButton *buttonToToggleOn, bool sendNotifications);
 
+  /** Returns true if the passed button pointer points to a member of the radio-group. */
+  virtual bool isButtonMemberOfGroup(RButton *buttonToCheck);
+
 protected:
 
   juce::Array<RRadioButton*> radioButtons;
