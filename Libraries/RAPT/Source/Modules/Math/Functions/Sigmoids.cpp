@@ -303,3 +303,35 @@ void ParametricSigmoid<T>::computeCoeffs()
   c2 = a*b;
   c3 = a*(1-b);
 }
+
+//-------------------------------------------------------------------------------------------------
+// class ScaledAndShiftedSigmoid:
+
+template<class T>
+void ScaledAndShiftedSigmoid<T>::setCenter(T newCenter)
+{
+  center = newCenter;
+  updateCoeffs();
+}
+
+template<class T>
+void ScaledAndShiftedSigmoid<T>::setWidth(T newWidth)
+{
+  width = newWidth;
+  updateCoeffs();
+}
+
+template<class T>
+void ScaledAndShiftedSigmoid<T>::setPrototypeSigmoid(T (*newSigmoid)(T))
+{
+  sigmoid = newSigmoid;
+}
+
+template<class T>
+void ScaledAndShiftedSigmoid<T>::updateCoeffs()
+{
+  rsRangeConversionCoefficients(center-T(0.5)*width, center+T(0.5)*width, T(-1), T(+1), 
+    &scaleX, &shiftX);
+  scaleY =  1 / scaleX; 
+  shiftY = -shiftX * scaleY;
+}

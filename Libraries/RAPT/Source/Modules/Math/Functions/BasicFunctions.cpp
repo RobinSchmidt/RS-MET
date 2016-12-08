@@ -263,12 +263,18 @@ inline double rsRandomUniform(double min, double max, int seed)
   return min + (max - min) * ((1.0 / 4294967296.0) * state);
 }
 
-inline void rsRangeConversionCoefficients(double inMin, double inMax,
-  double outMin, double outMax, double *scale, double *shift)
+template<class T>
+inline void rsRangeConversionCoefficients(T inMin, T inMax, T outMin, T outMax, T *scale, T *shift)
 {
   *scale = (outMax-outMin) / (inMax-inMin);
   *shift = outMin - (*scale * inMin);
 }
+//inline void rsRangeConversionCoefficients(double inMin, double inMax,
+//  double outMin, double outMax, double *scale, double *shift)
+//{
+//  *scale = (outMax-outMin) / (inMax-inMin);
+//  *shift = outMin - (*scale * inMin);
+//}
 
 template <class T>
 inline T rsSign(T x)

@@ -19,7 +19,9 @@ int main(int argc, char** argv)
 
   //// Math Demos:
   //parametricBell();
+  scaledAndShiftedSigmoid();
   //sigmoids();
+
 
   // Filter Demos:
   //ladderImpulseResponse();
@@ -34,7 +36,7 @@ int main(int argc, char** argv)
   //-----------------------------------------------------------------------------------------------
   // Experiments:
 
-  ladderResonanceManipulation();
+  //ladderResonanceManipulation();
 
 
   // ToDo: check for memory leaks here

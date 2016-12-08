@@ -64,6 +64,34 @@ void parametricBell()
   plt.plot();
 }
 
+void scaledAndShiftedSigmoid()
+{
+  // Plots a scaled and shifted sigmoid function
+
+  static const int N = 500;   // number of datapoints
+  float center = 10;          // center of the sigmoid
+  float width  = 4;           // width
+
+  // set up sigmoid:
+  ScaledAndShiftedSigmoid<float> sigmoid;
+  sigmoid.setCenter(center);
+  sigmoid.setWidth(width);
+  //sigmoid.setPrototypeSigmoid(&RAPT::NormalizedSigmoids<float>::softClipHexic);
+
+  // create data:
+  float x[N], y[N];
+  float xMin =  center - 3 * width/2;
+  float xMax =  center + 3 * width/2;
+  rsFillWithRangeLinear(x, N, xMin, xMax);
+  for(int n = 0; n < N; n++)
+    y[n] = sigmoid.getValue(x[n]);
+
+  // plot:
+  GNUPlotter plt;
+  plt.addDataArrays(N, x, y);
+  plt.plot();
+}
+
 void sigmoids()
 {
   // Plots various sigmoid saturation functions.

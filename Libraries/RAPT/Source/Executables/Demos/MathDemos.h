@@ -4,6 +4,7 @@
 #include "../Shared/Shared.h"
 
 void parametricBell();
+void scaledAndShiftedSigmoid();
 void sigmoids();
 
 #endif

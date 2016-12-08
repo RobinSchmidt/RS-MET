@@ -27,6 +27,7 @@ code may also define its own instantiation file. */
 // Math:
 template RAPT::NormalizedSigmoids<float>;
 template RAPT::ParametricSigmoid<float>;
+template RAPT::ScaledAndShiftedSigmoid<float>;
 template RAPT::rsPositiveBellFunctions<float>;    // get rid of rs-prefixes
 template RAPT::rsParametricBellFunction<float>;
 

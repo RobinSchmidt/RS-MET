@@ -133,8 +133,11 @@ inline double rsRandomUniform(double min = 0.0, double max = 1.0, int seed = -1)
 that an input range of x-values from inMin to inMax is mapped linearly to an output range of
 transformed x'-values from outMin to outMax. You compute the transformed variable by
 x' = scale*x + shift, using the scale/shift coefficients computed by this function. */
-inline void rsRangeConversionCoefficients(double inMin, double inMax,
-  double outMin, double outMax, double *scale, double *shift);
+//inline void rsRangeConversionCoefficients(double inMin, double inMax,
+//  double outMin, double outMax, double *scale, double *shift);
+template<class T>
+inline void rsRangeConversionCoefficients(T inMin, T inMax, T outMin, T outMax, 
+  T *scale, T *shift);
 
 /** Returns +1 for x > 0, -1 for x < 0 and 0 for x == 0. */
 template <class T>

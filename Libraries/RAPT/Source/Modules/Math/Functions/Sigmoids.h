@@ -223,4 +223,60 @@ inline T ParametricSigmoid<T>::getValue(T x)
     return rsSign(x) * (ty + sy * coreFunction(sx*(t-ty)));  // scaled/shifted core function
 }
 
+//=================================================================================================
+
+/** Implements a scaled and shifted version of any normalized "prototype" sigmoid function. The 
+prototype function is supposed to be bounded by -1 and +1. You can set up the desired center and 
+width such that the resulting (scaled and shifted) function will be bounded by center - width/2
+and center + width/2.  */
+
+template<class T>
+class ScaledAndShiftedSigmoid
+{
+
+public:
+
+  /** \name Setup */
+
+  /** Sets the center value. This is the point where x = y = center (assuming the prototype 
+  function goes through the origin).  */
+  void setCenter(T newCenter);
+
+  /** Sets the width. The output values of the function will be bounded by center +- width/2. 
+  newWidth should be > 0. */
+  void setWidth(T newWidth);
+
+  /** Sets the prototype sigmoid function. It is assumed that the prototype is bounded by +-1 and
+  goes through the origin. */
+  void setPrototypeSigmoid(T (*newSigmoid)(T));
+
+
+  /** \name Function Evaluation */
+
+  /** Computes the output value for the given input x. */
+  inline T getValue(T x);
+
+
+protected:
+
+
+  /** Updates the coefficients from the desired center and width. */
+  void updateCoeffs();
+
+  /** \name Data */
+
+  T center = 0;
+  T width  = 2;
+  T scaleX = 1, scaleY = 1;  // scale factors for input and output
+  T shiftX = 0, shiftY = 0;  // shift offsets for input and output
+  T (*sigmoid)(T) = tanh;    // (normalized) prototype sigmoid function
+
+};
+
+template<class T>
+inline T ScaledAndShiftedSigmoid<T>::getValue(T x)
+{
+  return shiftY + scaleY * sigmoid(scaleX * x + shiftX);
+}
+
 #endif
