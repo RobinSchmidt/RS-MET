@@ -21,6 +21,7 @@ template RAPT::StateVariableFilter<double, double>;
 template RAPT::rsParametricBellFunction<double>;
 template RAPT::rsPositiveBellFunctions<double>;
 template RAPT::NormalizedSigmoids<double>;
+template RAPT::ScaledAndShiftedSigmoid<double>;
 
 
 namespace jura
