@@ -413,6 +413,9 @@
     <Filter Include="Juce Modules\jura_processors">
       <UniqueIdentifier>{4B2D04F3-BFD7-5757-84EA-3541AEABB839}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Juce Modules\jura_processors\analyzers">
+      <UniqueIdentifier>{884A90C2-9EA1-7ED2-F91E-5FCB2882A445}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Juce Modules\jura_processors\baseclasses">
       <UniqueIdentifier>{8681808D-EC9F-D5BE-C5B8-120304278235}</UniqueIdentifier>
     </Filter>
@@ -2358,6 +2361,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\jura_framework.cpp">
       <Filter>Juce Modules\jura_framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_PhaseScope.cpp">
+      <Filter>Juce Modules\jura_processors\analyzers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\baseclasses\jura_AudioModule.cpp">
       <Filter>Juce Modules\jura_processors\baseclasses</Filter>
@@ -4520,6 +4526,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\jura_framework.h">
       <Filter>Juce Modules\jura_framework</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_PhaseScope.h">
+      <Filter>Juce Modules\jura_processors\analyzers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\baseclasses\jura_AudioModule.h">
       <Filter>Juce Modules\jura_processors\baseclasses</Filter>

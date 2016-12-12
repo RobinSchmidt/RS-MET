@@ -1,3 +1,5 @@
+-implement stereoscope
+
 -refine GenericAudioModuleEditor (widget arrangement)
 
 Enveloper:

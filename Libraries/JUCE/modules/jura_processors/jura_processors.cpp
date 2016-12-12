@@ -30,6 +30,8 @@ namespace jura
 #include "baseclasses/jura_AudioModule.cpp"
 #include "baseclasses/jura_AudioPlugin.cpp"
 
+#include "analyzers/jura_PhaseScope.cpp"
+
 #include "filters/jura_LadderFilter.cpp"
 #include "filters/jura_PhasorFilter.cpp"
 

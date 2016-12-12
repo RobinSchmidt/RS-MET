@@ -52,6 +52,8 @@ namespace jura
 #include "baseclasses/jura_AudioModule.h"
 #include "baseclasses/jura_AudioPlugin.h"
 
+#include "analyzers/jura_PhaseScope.h"
+
 #include "filters/jura_LadderFilter.h"
 #include "filters/jura_PhasorFilter.h"
 
