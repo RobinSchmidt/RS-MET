@@ -22,6 +22,9 @@
     <Filter Include="Math\Functions">
       <UniqueIdentifier>{5d8ef78f-314f-47c2-b0f9-cd23dc15042a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Data">
+      <UniqueIdentifier>{08400994-dfb4-4225-8ebf-9c5acccabe20}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\Modules\Basics\Basics.cpp">
@@ -57,6 +60,15 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Modules\Filters\Musical\PhasorFilter.cpp">
       <Filter>Filters\Musical</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Modules\Data\Data.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Modules\Data\MatrixTools.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Modules\Data\ArrayTools.cpp">
+      <Filter>Data</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -105,6 +117,15 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Modules\Math\Functions\FunctionObjects.h">
       <Filter>Math\Functions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Modules\Data\Data.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Modules\Data\MatrixTools.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Modules\Data\ArrayTools.h">
+      <Filter>Data</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
