@@ -6,7 +6,8 @@ algebra stuff is not included here - this is part of the math module. */
 
 class MatrixTools
 {
-  // Here, we have some functions for basic handling of 2D arrays (i.e. matrices). 
+
+public:
 
   template<class T>
   static void rsAllocateMatrix(T**& A, int N, int M);

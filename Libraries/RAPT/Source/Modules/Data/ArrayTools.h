@@ -6,6 +6,9 @@
 
 class ArrayTools
 {
+
+public:
+
   // todo write functions for element-wise multiply, divide, negate,
   // max, min, absMax, createCopy, filter, impulseResponse, impulseResponseLength,
   // fillWith(double value = 0.0), circularShift, resample,
