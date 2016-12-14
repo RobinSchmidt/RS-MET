@@ -1,7 +1,6 @@
 
 PhaseScopeBuffer::PhaseScopeBuffer()
 {
-  sampleRate = 44100.0;
   frameRate  = 25.0;
   decayTime  = 0.1;
   updateDecayFactor();
@@ -12,6 +11,7 @@ PhaseScopeBuffer::PhaseScopeBuffer()
   height     = 200;
   allocateBuffer();
 
+  setSampleRate(44100.0);
   reset();
 }
 
