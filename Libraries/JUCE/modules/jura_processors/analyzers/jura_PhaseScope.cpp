@@ -23,7 +23,7 @@ PhaseScopeBuffer::~PhaseScopeBuffer()
 void PhaseScopeBuffer::setSampleRate(double newSampleRate)
 {
   sampleRate = newSampleRate;
-  double brightness = 4000.0;        // make this a member variable later
+  double brightness = 6000.0;        // make this a member variable later
   insertFactor = (float) (brightness/sampleRate);
 }
 
@@ -145,7 +145,7 @@ PhaseScopeDisplay::PhaseScopeDisplay(jura::PhaseScope *newPhaseScopeToEdit)
   : AudioModuleEditor(newPhaseScopeToEdit)
 {
   phaseScope = newPhaseScopeToEdit;
-  setSize(200, 200);
+  setSize(300, 300);
 
   startTimerHz(25);
   phaseScope->phaseScopeBuffer.setFrameRate(25);
@@ -157,23 +157,50 @@ void PhaseScopeDisplay::resized()
   image = Image(Image::ARGB, getWidth(), getHeight(), false);
 }
 
-void PhaseScopeDisplay::paint(Graphics &g)
+
+// \todo move these 2 helper functions to jura_GraphicsTools, maybe templatize so it can be used 
+// for double also:
+void dataMatrixToPixelBrightness(float **data, uint8 *pixels, int width, int height)
 {
-  // this is very preliminary and (probably) horribly inefficient (we should work with an 
-  // internally bufferd image and somehow obtain a pixel pointer and manipulate this data 
-  // directly):
-  g.fillAll(Colours::black);
-  for(int x = 0; x < getWidth(); x++)
+  uint8 *p = pixels;
+  for(int y = 0; y < height; y++)     // loop over lines
   {
-    for(int y = 0; y < getHeight(); y++)
+    for(int x = 0; x < width; x++)    // loop over pixels
     {
-      g.setColour(phaseScope->getColourAt(x, y));
-      g.setPixel(x, y);
+      // we assume here, that the alpha channel comes last in the byte order of the pixels
+      p[0] = p[1] = p[2] = (uint8) (255 * data[y][x]);  // data determines white-value
+      p[3] = 255;                                       // set to full opacity ("alpha")
+      p   += 4;                                         // jump to next pixel
     }
   }
+  // todo: write a version of this function that uses a colormap
+}
+void dataMatrixToImage(float **data, Image &image)
+{
+  // We assume here that the size of the image (width and height) matches the dimensions of the 
+  // data matrix)
+  Image::BitmapData bitmap(image, Image::BitmapData::writeOnly);
+  jassert(bitmap.pixelStride == 4);
+  uint8 *pixelPointer = bitmap.getPixelPointer(0, 0);
+  dataMatrixToPixelBrightness(data, pixelPointer, bitmap.width, bitmap.height);
+}
 
 
-  //g.drawImageAt(image, 0, 0);
+void PhaseScopeDisplay::paint(Graphics &g)
+{
+  dataMatrixToImage(phaseScope->phaseScopeBuffer.getDataMatrix(), image);
+  g.drawImageAt(image, 0, 0);
+
+  //// this is the old, direct and horribly inefficient way to do it:
+  //g.fillAll(Colours::black);
+  //for(int x = 0; x < getWidth(); x++)
+  //{
+  //  for(int y = 0; y < getHeight(); y++)
+  //  {
+  //    g.setColour(phaseScope->getColourAt(x, y));
+  //    g.setPixel(x, y);
+  //  }
+  //}
 }
 
 void PhaseScopeDisplay::timerCallback()

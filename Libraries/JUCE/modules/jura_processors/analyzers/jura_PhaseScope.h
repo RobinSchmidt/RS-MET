@@ -42,6 +42,9 @@ public:
   make sure that the indices are valid. */
   inline float getValueAt(int x, int y) { return buffer[x][y]; }
 
+  /** Returns a pointer to our internally stored data matrix. */
+  float** getDataMatrix() { return buffer; }
+
 protected:
 
   void allocateBuffer();
