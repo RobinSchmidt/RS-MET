@@ -28,8 +28,16 @@ public:
   to the pixel size of the display. */
   void setSize(int newWidth, int newHeight);
 
+  /** Converts the raw left- and right signal amplitude values to the matrix indices, where the 
+  data should be written. This is the xy-pixel coordinates (kept still as real numbers), where the 
+  display is to be illuminated in response to the given amplitude values. */
+  void convertAmplitudesToMatrixIndices(double &x, double &y);
+
   /** Accepts one input sample frame for buffering. */
   void bufferSampleFrame(double left, double right);
+
+  /** Alternative */
+  void bufferSampleFrameAntiAliased(double left, double right);
 
   /** Applies our pixel decay-factor to the matrix of buffered values. This assumed to be called at 
   the frame rate. */

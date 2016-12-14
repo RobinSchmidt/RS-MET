@@ -23,7 +23,7 @@ PhaseScopeBuffer::~PhaseScopeBuffer()
 void PhaseScopeBuffer::setSampleRate(double newSampleRate)
 {
   sampleRate = newSampleRate;
-  double brightness = 6000.0;        // make this a member variable later
+  double brightness = 10000.0;        // make this a member variable later
   insertFactor = (float) (brightness/sampleRate);
 }
 
@@ -50,26 +50,47 @@ void PhaseScopeBuffer::setSize(int newWidth, int newHeight)
   }
 }
 
-void PhaseScopeBuffer::bufferSampleFrame(double left, double right)
+void PhaseScopeBuffer::convertAmplitudesToMatrixIndices(double &x, double &y)
 {
-  double x, y;
-  x = left;   // preliminary - later, rotate by 45 degrees
-  y = right;
-
-  // compute coordinates, where this new pixel should be placed
   x  = 0.5*(x+1);  // convert -1..+1 into 0..1
   y  = 0.5*(y+1);
   x *= width;
   y *= height;
+  // maybe we should add 0.5 after multiplication by width/height?
+}
+
+void PhaseScopeBuffer::bufferSampleFrame(double x, double y)
+{
+  convertAmplitudesToMatrixIndices(x, y);
   int i = (int)round(x);
   int j = (int)round(y);
-
-  // place the new pixel:
-  if(i >= 0 && i < width && j >=0 && j < height)
+  if(i >= 0 && i < width && j >= 0 && j < height)
     buffer[i][j] = min(1.f, buffer[i][j]+insertFactor);
+    //buffer[i][j] += insertFactor;
+}
 
-  // todo: we could refine the display by de-interpolating the value into the buffer (i.e. modify 
-  // not one but 4 pixels according to the frcational parts of x and y)
+void PhaseScopeBuffer::bufferSampleFrameAntiAliased(double x, double y)
+{
+  convertAmplitudesToMatrixIndices(x, y);
+  int i = (int)floor(x);  // integer part of x
+  int j = (int)floor(y);  // integer part of y
+  x -= i;                 // fractional part of x
+  y -= j;                 // fractional part of y
+
+  // maybe factor this computation out into a function bilinearDeInterpolationWeights:
+  double a, b, c, d;
+  d = x*y;
+  b = x-d;
+  c = y-d;
+  a = d-x-y+1;
+
+  if(i >= 0 && i < width-1 && j >= 0 && j < height-1)
+  {
+    buffer[i]  [j]   = min(1.f, buffer[i]  [j]   + (float)a * insertFactor);
+    buffer[i+1][j]   = min(1.f, buffer[i+1][j]   + (float)b * insertFactor);
+    buffer[i]  [j+1] = min(1.f, buffer[i]  [j+1] + (float)c * insertFactor);
+    buffer[i+1][j+1] = min(1.f, buffer[i+1][j+1] + (float)d * insertFactor);
+  }
 }
 
 void PhaseScopeBuffer::applyPixelDecay()
@@ -126,7 +147,8 @@ void PhaseScope::processBlock(double **inOutBuffer, int numChannels, int numSamp
 {
   jassert(numChannels == 2);
   for(int n = 0; n < numSamples; n++)
-    phaseScopeBuffer.bufferSampleFrame(inOutBuffer[0][n], inOutBuffer[1][n]);
+    //phaseScopeBuffer.bufferSampleFrame(inOutBuffer[0][n], inOutBuffer[1][n]);
+    phaseScopeBuffer.bufferSampleFrameAntiAliased(inOutBuffer[0][n], inOutBuffer[1][n]);
 }
 
 void PhaseScope::setSampleRate(double newSampleRate)
