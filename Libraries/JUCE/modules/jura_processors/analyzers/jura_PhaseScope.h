@@ -31,6 +31,11 @@ public:
   /** Switches anti-aliasing on/off. */
   void setAntiAlias(bool shouldAntiAlias);
 
+  /** Sets up the density of the lines the connect our actual datapoints. It actually determines the 
+  number of artificial datapoints that are inserted (by linear interpolation) between our actual 
+  incoming datapoints. If set to zero, it will just draw the datapoints as dots. */
+  void setLineDensity(float newDensity);
+
   /** Converts the raw left- and right signal amplitude values to the matrix indices, where the 
   data should be written. This is the xy-pixel coordinates (kept still as real numbers), where the 
   display is to be illuminated in response to the given amplitude values. */
@@ -55,8 +60,18 @@ public:
 
 protected:
 
+  /** Returns the distance between the pixels with coordinates (x1,y1) and (x1,y2). This distance 
+  is used in our line drawing function to determine the number of additional dots that are to be 
+  inserted between our actual datapoints. */
+  float pixelDistance(float x1, float y1, float x2, float y2);
+
+  /** Adds a line to the given x,y coordinates (in pixel coordinates). The starting point of the 
+  line are the old pixel coordinates xOld, yOld. It takes into account our line density - when it's 
+  set to zero, it will just draw a dot at the new given position. */
+  void addLineTo(float x, float y);
+
   /** Adds a dot into our data matrix at the given position (given in matrix-index (i.e. pixel-) 
-  coordinates using bilinear deinterpolation for anti-aliiasing. */
+  coordinates using bilinear deinterpolation for anti-aliasing. */
   void addDot(float x, float y);
 
   /** Like addDot but without anti-aliasing (we just round the coordinates to the nearest 
@@ -75,10 +90,12 @@ protected:
 
   double sampleRate;
   double frameRate;
-  double decayTime;
+  double decayTime;      // pixel illumination time
   float  decayFactor;    // factor by which pixels decay (applied at frameRate)
   float  insertFactor;   // factor by which are pixels "inserted" (applied at sampleRate)
-  int    width, height;
+  float  lineDensity;    // density of the inserted points between actual datapoints
+  float  xOld, yOld;     // pixel coordinates of old datapoint (one sample ago)
+  int    width, height;  // pixel width and height
   bool   antiAlias;      // flag to switch anti-aliasing on/off
 
   // the actual matrix-shaped buffer (maybe use a kind of MatrixView class that wraps a std::vector 

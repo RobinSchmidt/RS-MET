@@ -1,9 +1,10 @@
 
 PhaseScopeBuffer::PhaseScopeBuffer()
 {
-  antiAlias  = true;
-  frameRate  = 25.0;
-  decayTime  = 0.1;
+  antiAlias   = true;
+  frameRate   = 25.0;
+  decayTime   = 0.1;
+  lineDensity = 1.f;
   updateDecayFactor();
 
   bufferFlat = nullptr;
@@ -57,6 +58,11 @@ void PhaseScopeBuffer::setAntiAlias(bool shouldAntiAlias)
   antiAlias = shouldAntiAlias;
 }
 
+void PhaseScopeBuffer::setLineDensity(float newDensity)
+{
+  lineDensity = newDensity;
+}
+
 void PhaseScopeBuffer::convertAmplitudesToMatrixIndices(double &x, double &y)
 {
   x  = 0.5*(x+1);  // convert -1..+1 into 0..1
@@ -69,7 +75,7 @@ void PhaseScopeBuffer::convertAmplitudesToMatrixIndices(double &x, double &y)
 void PhaseScopeBuffer::bufferSampleFrame(double x, double y)
 {
   convertAmplitudesToMatrixIndices(x, y);
-  addDot((float)x, (float)y);
+  addLineTo((float)x, (float)y);
 }
 
 void PhaseScopeBuffer::applyPixelDecay()
@@ -80,6 +86,36 @@ void PhaseScopeBuffer::applyPixelDecay()
 void PhaseScopeBuffer::reset()
 {
   ArrayTools::rsFillWithZeros(bufferFlat, width*height);
+
+  // (xOld,yOld) = (0,0) - but in pixel coordinates:
+  xOld = 0.5f*width;   
+  yOld = 0.5f*height;
+}
+
+float PhaseScopeBuffer::pixelDistance(float x1, float y1, float x2, float y2)
+{
+  float dx = x2-x1;
+  float dy = y2-y1;
+  return max(fabs(dx), fabs(dy)); // we use the "Manhattan distance" measure
+}
+
+void PhaseScopeBuffer::addLineTo(float x, float y)
+{
+  if(lineDensity == 0.f)
+  {
+    addDot(x, y);
+    return;
+  }
+
+  int numDots = max(1, (int)floor(lineDensity*pixelDistance(xOld, yOld, x, y)));
+  float k;
+  for(int i = 1; i <= numDots; i++)
+  {
+    k = (float)i / (float)numDots;
+    addDot((1-k)*xOld + k*x, (1-k)*yOld + k*y);
+  }
+  xOld = x;
+  yOld = y;
 }
 
 void PhaseScopeBuffer::addDot(float x, float y)
@@ -172,7 +208,6 @@ void PhaseScope::processBlock(double **inOutBuffer, int numChannels, int numSamp
   jassert(numChannels == 2);
   for(int n = 0; n < numSamples; n++)
     phaseScopeBuffer.bufferSampleFrame(inOutBuffer[0][n], inOutBuffer[1][n]);
-    //phaseScopeBuffer.bufferSampleFrameAntiAliased(inOutBuffer[0][n], inOutBuffer[1][n]);
 }
 
 void PhaseScope::setSampleRate(double newSampleRate)
