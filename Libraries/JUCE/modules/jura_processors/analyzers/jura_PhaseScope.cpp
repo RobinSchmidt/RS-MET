@@ -1,6 +1,7 @@
 
 PhaseScopeBuffer::PhaseScopeBuffer()
 {
+  antiAlias  = true;
   frameRate  = 25.0;
   decayTime  = 0.1;
   updateDecayFactor();
@@ -47,7 +48,13 @@ void PhaseScopeBuffer::setSize(int newWidth, int newHeight)
     width  = newWidth;
     height = newHeight;
     allocateBuffer();
+    reset();           // avoid flickering at size-change
   }
+}
+
+void PhaseScopeBuffer::setAntiAlias(bool shouldAntiAlias)
+{
+  antiAlias = shouldAntiAlias;
 }
 
 void PhaseScopeBuffer::convertAmplitudesToMatrixIndices(double &x, double &y)
@@ -62,16 +69,27 @@ void PhaseScopeBuffer::convertAmplitudesToMatrixIndices(double &x, double &y)
 void PhaseScopeBuffer::bufferSampleFrame(double x, double y)
 {
   convertAmplitudesToMatrixIndices(x, y);
-  int i = (int)round(x);
-  int j = (int)round(y);
-  if(i >= 0 && i < width && j >= 0 && j < height)
-    buffer[i][j] = min(1.f, buffer[i][j]+insertFactor);
-    //buffer[i][j] += insertFactor;
+  addDot((float)x, (float)y);
 }
 
-void PhaseScopeBuffer::bufferSampleFrameAntiAliased(double x, double y)
+void PhaseScopeBuffer::applyPixelDecay()
 {
-  convertAmplitudesToMatrixIndices(x, y);
+  ArrayTools::rsScale(bufferFlat, width*height, decayFactor);
+}
+
+void PhaseScopeBuffer::reset()
+{
+  ArrayTools::rsFillWithZeros(bufferFlat, width*height);
+}
+
+void PhaseScopeBuffer::addDot(float x, float y)
+{
+  if(!antiAlias)
+  {
+    addDotFast(x, y);
+    return;
+  }
+
   int i = (int)floor(x);  // integer part of x
   int j = (int)floor(y);  // integer part of y
   x -= i;                 // fractional part of x
@@ -91,16 +109,22 @@ void PhaseScopeBuffer::bufferSampleFrameAntiAliased(double x, double y)
     buffer[i]  [j+1] = min(1.f, buffer[i]  [j+1] + (float)c * insertFactor);
     buffer[i+1][j+1] = min(1.f, buffer[i+1][j+1] + (float)d * insertFactor);
   }
+
+  // \todo: for optimization, take the min-operation out here and let it be applied at frame-rate
+  // whenever the matrix is being read out (we need to provide a function saturateMatrixValues or 
+  // something which the user can call at framerate and which applies the min function to the whole 
+  // matrix at once) - then we can simply do 
+  // buffer[i][j] += (float)a * insertFactor);  etc. here in this innermost code
+  // ....but: it might be more expensive because it must be applied to the whole matrix,...hmmm
 }
 
-void PhaseScopeBuffer::applyPixelDecay()
+void PhaseScopeBuffer::addDotFast(float x, float y)
 {
-  ArrayTools::rsScale(bufferFlat, width*height, decayFactor);
-}
-
-void PhaseScopeBuffer::reset()
-{
-  ArrayTools::rsFillWithZeros(bufferFlat, width*height);
+  int i = (int)round(x);
+  int j = (int)round(y);
+  if(i >= 0 && i < width && j >= 0 && j < height)
+    buffer[i][j] = min(1.f, buffer[i][j]+insertFactor);
+  //buffer[i][j] += insertFactor;
 }
 
 void PhaseScopeBuffer::allocateBuffer()
@@ -147,8 +171,8 @@ void PhaseScope::processBlock(double **inOutBuffer, int numChannels, int numSamp
 {
   jassert(numChannels == 2);
   for(int n = 0; n < numSamples; n++)
-    //phaseScopeBuffer.bufferSampleFrame(inOutBuffer[0][n], inOutBuffer[1][n]);
-    phaseScopeBuffer.bufferSampleFrameAntiAliased(inOutBuffer[0][n], inOutBuffer[1][n]);
+    phaseScopeBuffer.bufferSampleFrame(inOutBuffer[0][n], inOutBuffer[1][n]);
+    //phaseScopeBuffer.bufferSampleFrameAntiAliased(inOutBuffer[0][n], inOutBuffer[1][n]);
 }
 
 void PhaseScope::setSampleRate(double newSampleRate)

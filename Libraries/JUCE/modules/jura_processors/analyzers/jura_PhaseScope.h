@@ -28,6 +28,9 @@ public:
   to the pixel size of the display. */
   void setSize(int newWidth, int newHeight);
 
+  /** Switches anti-aliasing on/off. */
+  void setAntiAlias(bool shouldAntiAlias);
+
   /** Converts the raw left- and right signal amplitude values to the matrix indices, where the 
   data should be written. This is the xy-pixel coordinates (kept still as real numbers), where the 
   display is to be illuminated in response to the given amplitude values. */
@@ -35,9 +38,6 @@ public:
 
   /** Accepts one input sample frame for buffering. */
   void bufferSampleFrame(double left, double right);
-
-  /** Alternative */
-  void bufferSampleFrameAntiAliased(double left, double right);
 
   /** Applies our pixel decay-factor to the matrix of buffered values. This assumed to be called at 
   the frame rate. */
@@ -55,18 +55,31 @@ public:
 
 protected:
 
+  /** Adds a dot into our data matrix at the given position (given in matrix-index (i.e. pixel-) 
+  coordinates using bilinear deinterpolation for anti-aliiasing. */
+  void addDot(float x, float y);
+
+  /** Like addDot but without anti-aliasing (we just round the coordinates to the nearest 
+  integer). */
+  void addDotFast(float x, float y);
+
+  /** Allocates the memory for our data matrix buffer. */
   void allocateBuffer();
 
+  /** Frees the memory for our data matrix buffer. */
   void freeBuffer();
 
+  /** Updates the pixel decay factor according to the settings of frame rate and desired decay 
+  time. */
   void updateDecayFactor();
 
   double sampleRate;
   double frameRate;
   double decayTime;
-  float decayFactor;    // factor by which pixels decay (applied at frameRate)
-  float insertFactor;   // factor by which are pixels "inserted" (applied at sampleRate)
-  int width, height;
+  float  decayFactor;    // factor by which pixels decay (applied at frameRate)
+  float  insertFactor;   // factor by which are pixels "inserted" (applied at sampleRate)
+  int    width, height;
+  bool   antiAlias;      // flag to switch anti-aliasing on/off
 
   // the actual matrix-shaped buffer (maybe use a kind of MatrixView class that wraps a std::vector 
   // later):
