@@ -3,9 +3,9 @@ PhaseScopeBuffer::PhaseScopeBuffer()
 {
   antiAlias   = true;
   frameRate   = 25.0;
-  decayTime   = 0.1;
-  lineDensity = 1.f;
-  thickness   = 0.0f;
+  decayTime   = 0.5;
+  lineDensity = 0.0f;
+  thickness   = 0.707f;
   updateDecayFactor();
 
   bufferFlat = nullptr;
@@ -26,7 +26,8 @@ PhaseScopeBuffer::~PhaseScopeBuffer()
 void PhaseScopeBuffer::setSampleRate(double newSampleRate)
 {
   sampleRate = newSampleRate;
-  double brightness = 10000.0;        // make this a member variable later
+  double brightness = 4000.0;   // make this a member variable later, perhaps it should depend on 
+                                // the deacy time as well
   insertFactor = (float) (brightness/sampleRate);
 }
 
@@ -97,6 +98,7 @@ float PhaseScopeBuffer::pixelDistance(float x1, float y1, float x2, float y2)
 {
   float dx = x2-x1;
   float dy = y2-y1;
+  //return sqrt(dx*dx + dy*dy);   // Euclidean distance
   return max(fabs(dx), fabs(dy)); // maybe try Euclidean distance instead
 }
 
@@ -250,6 +252,7 @@ PhaseScope::PhaseScope(CriticalSection *lockToUse) : AudioModule(lockToUse)
   ScopedLock scopedLock(*plugInLock);
   moduleName = "PhaseScope";
   setActiveDirectory(getApplicationDirectory() + "/PhaseScopePresets");
+  needsPixelDecay = false;
 }
 
 void PhaseScope::setPixelSize(int width, int height)
@@ -265,6 +268,11 @@ AudioModuleEditor* PhaseScope::createEditor()
 void PhaseScope::processBlock(double **inOutBuffer, int numChannels, int numSamples)
 {
   jassert(numChannels == 2);
+  if(needsPixelDecay)
+  {
+    phaseScopeBuffer.applyPixelDecay();
+    needsPixelDecay = false;
+  }
   for(int n = 0; n < numSamples; n++)
     phaseScopeBuffer.bufferSampleFrame(inOutBuffer[0][n], inOutBuffer[1][n]);
 }
@@ -285,7 +293,7 @@ PhaseScopeDisplay::PhaseScopeDisplay(jura::PhaseScope *newPhaseScopeToEdit)
   : AudioModuleEditor(newPhaseScopeToEdit)
 {
   phaseScope = newPhaseScopeToEdit;
-  setSize(300, 300);
+  setSize(400, 400);
 
   startTimerHz(25);
   phaseScope->phaseScopeBuffer.setFrameRate(25);
@@ -307,6 +315,8 @@ void dataMatrixToPixelBrightness(float **data, uint8 *pixels, int width, int hei
   {
     for(int x = 0; x < width; x++)    // loop over pixels
     {
+      //jassert(data[y][x] <= 1.f);   // for test
+
       // we assume here, that the alpha channel comes last in the byte order of the pixels
       p[0] = p[1] = p[2] = (uint8) (255 * data[y][x]);  // data determines white-value
       p[3] = 255;                                       // set to full opacity ("alpha")
@@ -346,5 +356,12 @@ void PhaseScopeDisplay::paint(Graphics &g)
 void PhaseScopeDisplay::timerCallback()
 {
   repaint();
-  phaseScope->phaseScopeBuffer.applyPixelDecay();
+  //phaseScope->phaseScopeBuffer.applyPixelDecay();
+  phaseScope->triggerPixelDecay();
+
+  // there's a kind of bug - the display flickers and the flickering seems to be different if
+  // we apply the pixel decay in the GUI thread (by calling 
+  // phaseScope->phaseScopeBuffer.applyPixelDecay() here) or apply it in the audio thread
+  // (by calling phaseScope->triggerPixelDecay()). maybe we need to do some kind of thread
+  // synchronization
 }

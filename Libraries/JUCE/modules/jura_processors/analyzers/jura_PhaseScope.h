@@ -145,6 +145,8 @@ public:
   /** Sets the desired pixel size. */
   void setPixelSize(int width, int height);
 
+  inline void triggerPixelDecay() { needsPixelDecay = true; }
+
   // overriden from AudioModule baseclass:
   AudioModuleEditor *createEditor() override;
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
@@ -162,6 +164,8 @@ protected:
 
   PhaseScopeBuffer phaseScopeBuffer;
 
+  bool needsPixelDecay;   // flag to indicate that a pixel decay should be triggered
+
   friend class PhaseScopeDisplay;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhaseScope)
@@ -172,7 +176,14 @@ protected:
 /** Implements the GUI display for the phase scope. 
 
 \todo Maybe this class should be derived from the CoordinateSystem baseclass and use the angular 
-and radial grids from there. */
+and radial grids from there. 
+
+\todo BUG: there's a flickering of the lines...could this be related to threading issues?
+..it's more obvious with faster decay times - maybe it's because the decay is applied in the GUI 
+thread whereas accumulation is done in the audio-thread? instead of calling applyPixelDecay in the 
+GUI thread we could set a flag in the phaseScope audio module and the apply the decay there
+
+*/
 
 class JUCE_API PhaseScopeDisplay : public AudioModuleEditor, public Timer
 {
