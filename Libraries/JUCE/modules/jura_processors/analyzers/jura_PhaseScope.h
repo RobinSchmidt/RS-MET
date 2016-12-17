@@ -117,6 +117,8 @@ protected:
   float  decayFactor;    // factor by which pixels decay (applied at frameRate)
   float  insertFactor;   // factor by which are pixels "inserted" (applied at sampleRate)
   float  lineDensity;    // density of the artificial points between actual datapoints
+  float  thickness;      // line (or dot) thickness from 0 to 1. 0: one pixel, 1: 3 pixels
+                         // maybe rename to spread or weight or something
   float  xOld, yOld;     // pixel coordinates of old datapoint (one sample ago)
   int    width, height;  // pixel width and height
   bool   antiAlias;      // flag to switch anti-aliasing on/off

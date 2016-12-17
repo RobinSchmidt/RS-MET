@@ -5,6 +5,7 @@ PhaseScopeBuffer::PhaseScopeBuffer()
   frameRate   = 25.0;
   decayTime   = 0.1;
   lineDensity = 1.f;
+  thickness   = 0.0f;
   updateDecayFactor();
 
   bufferFlat = nullptr;
@@ -138,13 +139,57 @@ void PhaseScopeBuffer::addDot(float x, float y)
   c = y-d;
   a = d-x-y+1;
 
-  // accumulate into the matrix:
+  // compute values to accumulate into the 4 pixels at (i,j),(i+1,j),(i,j+1),(i+1,j+1):
+  a *= insertFactor;
+  b *= insertFactor;
+  c *= insertFactor;
+  d *= insertFactor;
+
+  // accumulate values into the matrix:
   if(i >= 0 && i < width-1 && j >= 0 && j < height-1)
   {
-    accumulate(buffer[i]  [j],   a * insertFactor);
-    accumulate(buffer[i+1][j],   b * insertFactor);
-    accumulate(buffer[i]  [j+1], c * insertFactor);
-    accumulate(buffer[i+1][j+1], d * insertFactor);
+    accumulate(buffer[i]  [j],   a);
+    accumulate(buffer[i+1][j],   b);
+    accumulate(buffer[i]  [j+1], c);
+    accumulate(buffer[i+1][j+1], d);
+  }
+
+  // apply thickness:
+  if(thickness > 0.f && i >= 1 && i < width-2 && j >= 1 && j < height-2)
+  {
+    float t, s, sa, sb, sc, sd, ta, tb, tc, td;
+    t = thickness;             // weight for direct neighbour pixels
+    s = t * (float)SQRT2_INV;  // weight for diagonal neighbour pixels
+
+    sa = s*a;
+    sb = s*b;
+    sc = s*c;
+    sd = s*d;
+
+    ta = t*a;
+    tb = t*b;
+    tc = t*c;
+    td = t*d;
+
+    accumulate(buffer[i-1][j-1], sa);
+    accumulate(buffer[i-1][j],   ta+sc);
+    accumulate(buffer[i-1][j+1], tc+sa);
+    accumulate(buffer[i-1][j+2], sc);
+
+    accumulate(buffer[i]  [j-1], ta+sb);
+    accumulate(buffer[i]  [j],   tb+tc+sd);
+    accumulate(buffer[i]  [j+1], ta+td+sb);
+    accumulate(buffer[i]  [j+2], tc+sd);
+
+    accumulate(buffer[i+1][j-1], tb+sa);
+    accumulate(buffer[i+1][j],   ta+td+sc);
+    accumulate(buffer[i+1][j+1], tb+tc+sa);
+    accumulate(buffer[i+1][j+2], td+sc);
+
+    accumulate(buffer[i+2][j-1], sb);
+    accumulate(buffer[i+2][j],   tb+sd);
+    accumulate(buffer[i+2][j+1], td+sb);
+    accumulate(buffer[i+2][j+2], sd);
   }
 }
 
@@ -152,8 +197,29 @@ void PhaseScopeBuffer::addDotFast(float x, float y)
 {
   int i = (int)round(x);
   int j = (int)round(y);
+
   if(i >= 0 && i < width && j >= 0 && j < height)
     accumulate(buffer[i][j], insertFactor);
+
+  // apply thickness:
+  if(thickness > 0.f && i >= 1 && i < width-1 && j >= 1 && j < height-1)
+  {
+    float a, ta, sa;
+    a  = insertFactor;
+    ta = a  * thickness;
+    sa = ta * (float)SQRT2_INV;
+
+    accumulate(buffer[i-1][j-1], sa);
+    accumulate(buffer[i-1][j],   ta);
+    accumulate(buffer[i-1][j+1], sa);
+
+    accumulate(buffer[i]  [j-1], ta);
+    accumulate(buffer[i]  [j+1], ta);
+
+    accumulate(buffer[i+1][j-1], sa);
+    accumulate(buffer[i+1][j],   ta);
+    accumulate(buffer[i+1][j+1], sa);
+  }
 }
 
 void PhaseScopeBuffer::allocateBuffer()
