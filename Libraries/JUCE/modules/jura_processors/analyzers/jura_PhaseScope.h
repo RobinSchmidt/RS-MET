@@ -2,7 +2,22 @@
 #define jura_PhaseScope_h
   
 
-/** Implements the buffering for a phasescope analyzer (maybe move this class to RAPT). */
+/** Implements the buffering for a phasescope analyzer. 
+
+\todo
+-maybe move this class to RAPT
+-optimize:
+ -maybe use unsigned char for the storage matrix 
+  ->cuts memory use by factor 4
+  ->maybe it allows to use saturating arithmetic, avoiding the max() operations
+  see:
+  https://felix.abecassis.me/2011/10/sse-saturation-arithmetic/
+  http://codereview.stackexchange.com/questions/6502/fastest-way-to-clamp-an-integer-to-the-range-0-255
+  https://locklessinc.com/articles/sat_arithmetic/
+ -or maybe get rid of max function by bit-masking the exponent of the floating point number (make an
+  inlined function accumulateAndSaturate(float &accu, float &value)
+
+*/
 
 class JUCE_API PhaseScopeBuffer
 {
@@ -66,8 +81,8 @@ protected:
   float pixelDistance(float x1, float y1, float x2, float y2);
 
   /** Adds a line to the given x,y coordinates (in pixel coordinates). The starting point of the 
-  line are the old pixel coordinates xOld, yOld. It takes into account our line density - when it's 
-  set to zero, it will just draw a dot at the new given position. */
+  line are the old pixel coordinates xOld, yOld (member variables). It takes into account our line 
+  density - when it's set to zero, it will just draw a dot at the new given position. */
   void addLineTo(float x, float y);
 
   /** Adds a dot into our data matrix at the given position (given in matrix-index (i.e. pixel-) 
@@ -88,12 +103,20 @@ protected:
   time. */
   void updateDecayFactor();
 
+  /** Accumulates the given value into the accumulator accu. This accumulation amounts to adding
+  the value and the saturating at 1. \todo maybe this can be optimized and/or a different accumulation
+  function can be used to get different contrast and saturation behavior.  */
+  inline void accumulate(float &accu, float value)
+  {
+    accu = min(1.f, accu + value);
+  }
+
   double sampleRate;
   double frameRate;
   double decayTime;      // pixel illumination time
   float  decayFactor;    // factor by which pixels decay (applied at frameRate)
   float  insertFactor;   // factor by which are pixels "inserted" (applied at sampleRate)
-  float  lineDensity;    // density of the inserted points between actual datapoints
+  float  lineDensity;    // density of the artificial points between actual datapoints
   float  xOld, yOld;     // pixel coordinates of old datapoint (one sample ago)
   int    width, height;  // pixel width and height
   bool   antiAlias;      // flag to switch anti-aliasing on/off

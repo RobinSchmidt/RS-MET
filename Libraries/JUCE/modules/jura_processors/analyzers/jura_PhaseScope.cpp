@@ -96,7 +96,7 @@ float PhaseScopeBuffer::pixelDistance(float x1, float y1, float x2, float y2)
 {
   float dx = x2-x1;
   float dy = y2-y1;
-  return max(fabs(dx), fabs(dy)); // we use the "Manhattan distance" measure
+  return max(fabs(dx), fabs(dy)); // maybe try Euclidean distance instead
 }
 
 void PhaseScopeBuffer::addLineTo(float x, float y)
@@ -111,8 +111,8 @@ void PhaseScopeBuffer::addLineTo(float x, float y)
   float k;
   for(int i = 1; i <= numDots; i++)
   {
-    k = (float)i / (float)numDots;
-    addDot((1-k)*xOld + k*x, (1-k)*yOld + k*y);
+    k = (float)i / (float)numDots;  // optimize: use scaler * i, where scaler = 1 / numDots
+    addDot((1-k)*xOld + k*x, (1-k)*yOld + k*y); // maybe use xOld + k*dx, where dx = x - xOld
   }
   xOld = x;
   yOld = y;
@@ -131,27 +131,21 @@ void PhaseScopeBuffer::addDot(float x, float y)
   x -= i;                 // fractional part of x
   y -= j;                 // fractional part of y
 
-  // maybe factor this computation out into a function bilinearDeInterpolationWeights:
-  double a, b, c, d;
+  // compute weights for bilinear deinterpolation (maybe factor out):
+  float a, b, c, d;
   d = x*y;
   b = x-d;
   c = y-d;
   a = d-x-y+1;
 
+  // accumulate into the matrix:
   if(i >= 0 && i < width-1 && j >= 0 && j < height-1)
   {
-    buffer[i]  [j]   = min(1.f, buffer[i]  [j]   + (float)a * insertFactor);
-    buffer[i+1][j]   = min(1.f, buffer[i+1][j]   + (float)b * insertFactor);
-    buffer[i]  [j+1] = min(1.f, buffer[i]  [j+1] + (float)c * insertFactor);
-    buffer[i+1][j+1] = min(1.f, buffer[i+1][j+1] + (float)d * insertFactor);
+    accumulate(buffer[i]  [j],   a * insertFactor);
+    accumulate(buffer[i+1][j],   b * insertFactor);
+    accumulate(buffer[i]  [j+1], c * insertFactor);
+    accumulate(buffer[i+1][j+1], d * insertFactor);
   }
-
-  // \todo: for optimization, take the min-operation out here and let it be applied at frame-rate
-  // whenever the matrix is being read out (we need to provide a function saturateMatrixValues or 
-  // something which the user can call at framerate and which applies the min function to the whole 
-  // matrix at once) - then we can simply do 
-  // buffer[i][j] += (float)a * insertFactor);  etc. here in this innermost code
-  // ....but: it might be more expensive because it must be applied to the whole matrix,...hmmm
 }
 
 void PhaseScopeBuffer::addDotFast(float x, float y)
@@ -159,8 +153,7 @@ void PhaseScopeBuffer::addDotFast(float x, float y)
   int i = (int)round(x);
   int j = (int)round(y);
   if(i >= 0 && i < width && j >= 0 && j < height)
-    buffer[i][j] = min(1.f, buffer[i][j]+insertFactor);
-  //buffer[i][j] += insertFactor;
+    accumulate(buffer[i][j], insertFactor);
 }
 
 void PhaseScopeBuffer::allocateBuffer()
