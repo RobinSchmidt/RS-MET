@@ -54,6 +54,11 @@ public:
   incoming datapoints. If set to zero, it will just draw the datapoints as dots. */
   void setLineDensity(float newDensity);
 
+  /** Sets up a weight by which ech pixel is not only accumulated into its actual place but also 
+  into the neighbouring pixels to add more weight or thickness. It should be a value between 0 
+  and 1. */
+  void setPixelSpread(float newSpread);
+
   /** Converts the raw left- and right signal amplitude values to the matrix indices, where the 
   data should be written. This is the xy-pixel coordinates (kept still as real numbers), where the 
   display is to be illuminated in response to the given amplitude values. */
@@ -145,10 +150,26 @@ public:
 
   PhaseScope(CriticalSection *lockToUse);
 
+  /** Creates the parameters to control the drawing. 
+  \todo: maybe make this function a virtual member function of the AudioModule baseclass to be 
+  overriden - the call it from the constructor there. */
+  virtual void createParameters();
+
   /** Sets the desired pixel size. */
   void setPixelSize(int width, int height);
 
+  // parameter setup functions (to be used for the callbacks from the parameters):
+  void setAfterGlow(double newGlow);
+  void setLineDensity(double newDensity);
+  void setPixelSpread(double newSpread);
+  //void setFrameRate(double newRate);
+  //void setAntiAlias(bool shouldAntiAlias);
+  //void setDrawingMode(int newMode);
+
   inline void triggerPixelDecay() { needsPixelDecay = true; }
+
+
+
 
   // overriden from AudioModule baseclass:
   AudioModuleEditor *createEditor() override;
@@ -189,12 +210,9 @@ GUI thread we could set a flag in the phaseScope audio module and the apply the 
 \todo let the internal pixel-buffer size possibly be different from the display size (use image
 rescaling) such that the line thickness my scale up when increasing the display size
 
-\todo write a PhaseScopeEditor (with sliders for the parameters), then we do not need to derive
-this class from AudioModuleEditor anymore
-
 */
 
-class JUCE_API PhaseScopeDisplay : public AudioModuleEditor, public Timer
+class JUCE_API PhaseScopeDisplay : public Component, public Timer
 {
 
 public:
@@ -225,6 +243,8 @@ public:
 
   PhaseScopeEditor(jura::PhaseScope *newPhaseScopeToEdit);
 
+  virtual void createWidgets();
+
   //void setDisplayPixelSize(int newWidth, int newHeight);
 
   virtual void resized() override;
@@ -234,6 +254,10 @@ protected:
   PhaseScope *scope;
   PhaseScopeDisplay display;
   int widgetMargin;
+
+  // Widgets:
+  RSlider *afterglowSlider, *pixelSpreadSlider, *lineDensitySlider;
+
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhaseScopeEditor)
 };

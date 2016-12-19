@@ -65,6 +65,11 @@ void PhaseScopeBuffer::setLineDensity(float newDensity)
   lineDensity = newDensity;
 }
 
+void PhaseScopeBuffer::setPixelSpread(float newSpread)
+{
+  thickness = newSpread;
+}
+
 void PhaseScopeBuffer::convertAmplitudesToMatrixIndices(double &x, double &y)
 {
   x  = 0.5*(x+1);  // convert -1..+1 into 0..1
@@ -246,6 +251,11 @@ void PhaseScopeBuffer::allocateBuffer()
   // first index pointing to a particular horizontal line. Maybe we should use a memory layout here
   // that corresponds to images (x-coordinate as 2nd index) ..i have to verify/modify all formulas 
   // again...i think, we just need to replace i with j and vice versa in all the "accumulate" calls
+
+  // BUG:
+  // there's definitely still something wrong somewhere - currently, the lines wrap around when the 
+  // display is not square - figure it out and fix it - maybe make the GUI resizable before that, 
+  // so it's better for testing in various size settings
 }
 
 void PhaseScopeBuffer::freeBuffer()
@@ -269,11 +279,44 @@ PhaseScope::PhaseScope(CriticalSection *lockToUse) : AudioModule(lockToUse)
   moduleName = "PhaseScope";
   setActiveDirectory(getApplicationDirectory() + "/PhaseScopePresets");
   needsPixelDecay = false;
+  createParameters();
+}
+
+void PhaseScope::createParameters()
+{
+  ScopedLock scopedLock(*plugInLock);
+
+  Parameter* p;
+
+  p = new Parameter(plugInLock, "AfterGlow", 0.001, 10.0, 0.0, 0.1, Parameter::EXPONENTIAL);
+  addObservedParameter(p);
+  p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setAfterGlow);
+
+  p = new Parameter(plugInLock, "PixelSpread", 0.0, 1.0, 0.0, 0.5, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setPixelSpread);
+
+  p = new Parameter(plugInLock, "LineDensity", 0.0, 1.0, 0.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setLineDensity);
 }
 
 void PhaseScope::setPixelSize(int width, int height)
 {
   phaseScopeBuffer.setSize(width, height);
+}
+
+void PhaseScope::setAfterGlow(double newGlow)
+{
+  phaseScopeBuffer.setDecayTime(newGlow);
+}
+void PhaseScope::setLineDensity(double newDensity)
+{
+  phaseScopeBuffer.setLineDensity((float)newDensity);
+}
+void PhaseScope::setPixelSpread(double newSpread)
+{
+  phaseScopeBuffer.setPixelSpread((float)newSpread);
 }
 
 AudioModuleEditor* PhaseScope::createEditor()
@@ -307,7 +350,7 @@ void PhaseScope::reset()
 //=================================================================================================
 
 PhaseScopeDisplay::PhaseScopeDisplay(jura::PhaseScope *newPhaseScopeToEdit)
-  : AudioModuleEditor(newPhaseScopeToEdit)
+  //: AudioModuleEditor(newPhaseScopeToEdit)
 {
   phaseScope = newPhaseScopeToEdit;
   setSize(400, 400);
@@ -394,10 +437,35 @@ PhaseScopeEditor::PhaseScopeEditor(jura::PhaseScope *newPhaseScopeToEdit)
   widgetMargin = 120; 
 
   addAndMakeVisible(display);
+  createWidgets();
 
   setSize(400+widgetMargin, 400);  // preliminary
+}
 
-  //setDisplayPixelSize(400, 400);
+void PhaseScopeEditor::createWidgets()
+{
+  RSlider *s;
+
+  addWidget( afterglowSlider = s = new RSlider("GlowSlider") );
+  s->assignParameter( scope->getParameterByName("AfterGlow") );
+  s->setSliderName("Glow");
+  s->setDescription("Afterglow time in seconds");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&secondsToStringWithUnitTotal4);
+
+  addWidget( pixelSpreadSlider = s = new RSlider("SpreadSlider") );
+  s->assignParameter( scope->getParameterByName("PixelSpread") );
+  s->setSliderName("Spread");
+  s->setDescription("Pixel spreading");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString3);
+
+  addWidget( lineDensitySlider = s = new RSlider("DensitySlider") );
+  s->assignParameter( scope->getParameterByName("LineDensity") );
+  s->setSliderName("Density");
+  s->setDescription("Line Density");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString3);
 }
 
 //void PhaseScopeEditor::setDisplayPixelSize(int newWidth, int newHeight)
@@ -420,5 +488,12 @@ void PhaseScopeEditor::resized()
   display.setBounds(0, y, w-widgetMargin, h-y);
 
   // set up widgets:
-  //...
+  int x = display.getRight() + 4;
+  w = getWidth() - x - 8;          // slider width
+  h = 16;                          // slider height
+  int dy = h+4;                    // vertical distance ("delta-y") between widgets
+
+  afterglowSlider  ->setBounds(x, y, w, h); y += dy;
+  pixelSpreadSlider->setBounds(x, y, w, h); y += dy;
+  lineDensitySlider->setBounds(x, y, w, h); y += dy;
 }
