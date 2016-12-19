@@ -116,6 +116,8 @@ void PhaseScopeBuffer::addLineTo(float x, float y)
   {
     k = (float)i / (float)numDots;  // optimize: use scaler * i, where scaler = 1 / numDots
     addDot((1-k)*xOld + k*x, (1-k)*yOld + k*y); // maybe use xOld + k*dx, where dx = x - xOld
+
+    // maybe we should add the dot with an intesity scaled by 1/numDots
   }
   xOld = x;
   yOld = y;
@@ -141,11 +143,11 @@ void PhaseScopeBuffer::addDot(float x, float y)
   c = y-d;
   a = d-x-y+1;
 
-  // compute values to accumulate into the 4 pixels at (i,j),(i+1,j),(i,j+1),(i+1,j+1):
-  a *= insertFactor;
-  b *= insertFactor;
-  c *= insertFactor;
-  d *= insertFactor;
+  // compute values to accumulate into the 4 pixels at (i,j), (i+1,j), (i,j+1), (i+1,j+1):
+  a *= insertFactor;  // (i,   j)
+  b *= insertFactor;  // (i+1, j)
+  c *= insertFactor;  // (i,   j+1)
+  d *= insertFactor;  // (i+1, j+1)
 
   // accumulate values into the matrix:
   if(i >= 0 && i < width-1 && j >= 0 && j < height-1)
@@ -227,9 +229,23 @@ void PhaseScopeBuffer::addDotFast(float x, float y)
 void PhaseScopeBuffer::allocateBuffer()
 {
   bufferFlat = new float[width*height];
-  buffer = new float*[height];
-  for(int i = 0; i < height; i++)
-    buffer[i] = &bufferFlat[i*width];
+
+  buffer = new float*[width];
+  for(int i = 0; i < width; i++)
+    buffer[i] = &bufferFlat[i*height];
+
+
+  // old - it's wrong and worked only so far because width and height were always equal:
+
+  //buffer = new float*[height];
+  //for(int i = 0; i < height; i++)
+  //  buffer[i] = &bufferFlat[i*width]; 
+  
+  // We have the second index running over the y-coordinate and the first index running over the 
+  // x-coordinate here...this is actually the other way around than in images where we have the 
+  // first index pointing to a particular horizontal line. Maybe we should use a memory layout here
+  // that corresponds to images (x-coordinate as 2nd index) ..i have to verify/modify all formulas 
+  // again...i think, we just need to replace i with j and vice versa in all the "accumulate" calls
 }
 
 void PhaseScopeBuffer::freeBuffer()
@@ -262,7 +278,8 @@ void PhaseScope::setPixelSize(int width, int height)
 
 AudioModuleEditor* PhaseScope::createEditor()
 {
-  return new PhaseScopeDisplay(this);
+  //return new PhaseScopeDisplay(this);
+  return new PhaseScopeEditor(this);
 }
 
 void PhaseScope::processBlock(double **inOutBuffer, int numChannels, int numSamples)
@@ -364,4 +381,44 @@ void PhaseScopeDisplay::timerCallback()
   // phaseScope->phaseScopeBuffer.applyPixelDecay() here) or apply it in the audio thread
   // (by calling phaseScope->triggerPixelDecay()). maybe we need to do some kind of thread
   // synchronization
+}
+
+//=================================================================================================
+
+PhaseScopeEditor::PhaseScopeEditor(jura::PhaseScope *newPhaseScopeToEdit)
+  : AudioModuleEditor(newPhaseScopeToEdit)
+  , display(newPhaseScopeToEdit)
+{
+  ScopedLock scopedLock(*plugInLock);
+  scope = newPhaseScopeToEdit;
+  widgetMargin = 120; 
+
+  addAndMakeVisible(display);
+
+  setSize(400+widgetMargin, 400);  // preliminary
+
+  //setDisplayPixelSize(400, 400);
+}
+
+//void PhaseScopeEditor::setDisplayPixelSize(int newWidth, int newHeight)
+//{
+//  ScopedLock scopedLock(*plugInLock);
+//  setSize(newWidth+widgetMargin, newHeight);
+//
+//  // hmm...maybe, we should also allow for the headline, preset section, etc.
+//}
+
+void PhaseScopeEditor::resized()
+{
+  ScopedLock scopedLock(*plugInLock);
+  AudioModuleEditor::resized();
+
+  int w = getWidth();
+  int h = getHeight();
+  int y = getPresetSectionBottom() + 4;
+
+  display.setBounds(0, y, w-widgetMargin, h-y);
+
+  // set up widgets:
+  //...
 }

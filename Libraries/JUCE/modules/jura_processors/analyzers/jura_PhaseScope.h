@@ -6,6 +6,9 @@
 
 \todo
 -maybe move this class to RAPT
+-maybe rename to PixelAccumulator (it may be reusable in more general circumstances)
+-refactor to include a general CoordinateTransformer object (as pointer member) which is 
+ responsible for the tranformation from input- to pixel coordinates
 -optimize:
  -maybe use unsigned char for the storage matrix 
   ->cuts memory use by factor 4
@@ -183,6 +186,12 @@ and radial grids from there.
 thread whereas accumulation is done in the audio-thread? instead of calling applyPixelDecay in the 
 GUI thread we could set a flag in the phaseScope audio module and the apply the decay there
 
+\todo let the internal pixel-buffer size possibly be different from the display size (use image
+rescaling) such that the line thickness my scale up when increasing the display size
+
+\todo write a PhaseScopeEditor (with sliders for the parameters), then we do not need to derive
+this class from AudioModuleEditor anymore
+
 */
 
 class JUCE_API PhaseScopeDisplay : public AudioModuleEditor, public Timer
@@ -204,6 +213,31 @@ protected:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhaseScopeDisplay)
 };
+
+//=================================================================================================
+
+/** Implements a GUI editor for the XY phase scope. */
+
+class JUCE_API PhaseScopeEditor : public AudioModuleEditor
+{
+
+public:
+
+  PhaseScopeEditor(jura::PhaseScope *newPhaseScopeToEdit);
+
+  //void setDisplayPixelSize(int newWidth, int newHeight);
+
+  virtual void resized() override;
+
+protected:
+
+  PhaseScope *scope;
+  PhaseScopeDisplay display;
+  int widgetMargin;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhaseScopeEditor)
+};
+
 
 
 
