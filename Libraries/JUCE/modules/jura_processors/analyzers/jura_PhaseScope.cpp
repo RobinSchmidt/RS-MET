@@ -122,7 +122,7 @@ void PhaseScopeBuffer::addLineTo(float x, float y)
     k = (float)i / (float)numDots;  // optimize: use scaler * i, where scaler = 1 / numDots
     addDot((1-k)*xOld + k*x, (1-k)*yOld + k*y); // maybe use xOld + k*dx, where dx = x - xOld
 
-    // maybe we should add the dot with an intesity scaled by 1/numDots
+    // maybe we should add the dot with an intensity scaled by 1/numDots
   }
   xOld = x;
   yOld = y;
@@ -136,35 +136,35 @@ void PhaseScopeBuffer::addDot(float x, float y)
     return;
   }
 
-  int i = (int)floor(x);  // integer part of x
-  int j = (int)floor(y);  // integer part of y
-  x -= i;                 // fractional part of x
-  y -= j;                 // fractional part of y
+  int j = (int)floor(x);  // integer part of x
+  int i = (int)floor(y);  // integer part of y
+  x -= j;                 // fractional part of x
+  y -= i;                 // fractional part of y
 
   // compute weights for bilinear deinterpolation (maybe factor out):
   float a, b, c, d;
   d = x*y;
-  b = x-d;
   c = y-d;
-  a = d-x-y+1;
+  b = x-d;
+  a = 1+d-x-y;
 
   // compute values to accumulate into the 4 pixels at (i,j), (i+1,j), (i,j+1), (i+1,j+1):
   a *= insertFactor;  // (i,   j)
-  b *= insertFactor;  // (i+1, j)
-  c *= insertFactor;  // (i,   j+1)
+  b *= insertFactor;  // (i+1, j+1)
+  c *= insertFactor;  // (i+1, j)
   d *= insertFactor;  // (i+1, j+1)
 
   // accumulate values into the matrix:
-  if(i >= 0 && i < width-1 && j >= 0 && j < height-1)
+  if(j >= 0 && j < width-1 && i >= 0 && i < height-1)
   {
     accumulate(buffer[i]  [j],   a);
-    accumulate(buffer[i+1][j],   b);
-    accumulate(buffer[i]  [j+1], c);
+    accumulate(buffer[i]  [j+1], b);
+    accumulate(buffer[i+1][j],   c);
     accumulate(buffer[i+1][j+1], d);
   }
 
   // apply thickness:
-  if(thickness > 0.f && i >= 1 && i < width-2 && j >= 1 && j < height-2)
+  if(thickness > 0.f && j >= 1 && j < width-2 && i >= 1 && i < height-2)
   {
     float t, s, sa, sb, sc, sd, ta, tb, tc, td;
     t = thickness;             // weight for direct neighbour pixels
@@ -181,37 +181,37 @@ void PhaseScopeBuffer::addDot(float x, float y)
     td = t*d;
 
     accumulate(buffer[i-1][j-1], sa);
-    accumulate(buffer[i-1][j],   ta+sc);
-    accumulate(buffer[i-1][j+1], tc+sa);
-    accumulate(buffer[i-1][j+2], sc);
+    accumulate(buffer[i-1][j],   ta+sb);
+    accumulate(buffer[i-1][j+1], tb+sa);
+    accumulate(buffer[i-1][j+2], sb);
 
-    accumulate(buffer[i]  [j-1], ta+sb);
-    accumulate(buffer[i]  [j],   tb+tc+sd);
-    accumulate(buffer[i]  [j+1], ta+td+sb);
-    accumulate(buffer[i]  [j+2], tc+sd);
+    accumulate(buffer[i]  [j-1], ta+sc);
+    accumulate(buffer[i]  [j],   sd+tb+tc);
+    accumulate(buffer[i]  [j+1], sc+ta+td);
+    accumulate(buffer[i]  [j+2], tb+sd);
 
-    accumulate(buffer[i+1][j-1], tb+sa);
-    accumulate(buffer[i+1][j],   ta+td+sc);
-    accumulate(buffer[i+1][j+1], tb+tc+sa);
-    accumulate(buffer[i+1][j+2], td+sc);
+    accumulate(buffer[i+1][j-1], tc+sa);
+    accumulate(buffer[i+1][j],   sb+ta+td);
+    accumulate(buffer[i+1][j+1], sa+tb+tc);
+    accumulate(buffer[i+1][j+2], td+sb);
 
-    accumulate(buffer[i+2][j-1], sb);
-    accumulate(buffer[i+2][j],   tb+sd);
-    accumulate(buffer[i+2][j+1], td+sb);
+    accumulate(buffer[i+2][j-1], sc);
+    accumulate(buffer[i+2][j],   tc+sd);
+    accumulate(buffer[i+2][j+1], td+sc);
     accumulate(buffer[i+2][j+2], sd);
   }
 }
 
 void PhaseScopeBuffer::addDotFast(float x, float y)
 {
-  int i = (int)round(x);
-  int j = (int)round(y);
+  int j = (int)round(x);
+  int i = (int)round(y);
 
-  if(i >= 0 && i < width && j >= 0 && j < height)
+  if(j >= 0 && j < width && i >= 0 && i < height)
     accumulate(buffer[i][j], insertFactor);
 
   // apply thickness:
-  if(thickness > 0.f && i >= 1 && i < width-1 && j >= 1 && j < height-1)
+  if(thickness > 0.f && j >= 1 && j < width-1 && i >= 1 && i < height-1)
   {
     float a, ta, sa;
     a  = insertFactor;
@@ -234,17 +234,13 @@ void PhaseScopeBuffer::addDotFast(float x, float y)
 void PhaseScopeBuffer::allocateBuffer()
 {
   bufferFlat = new float[width*height];
+  buffer = new float*[height];
+  for(int i = 0; i < height; i++)
+    buffer[i] = &bufferFlat[i*width]; 
 
-  buffer = new float*[width];
-  for(int i = 0; i < width; i++)
-    buffer[i] = &bufferFlat[i*height];
-
-
-  // old - it's wrong and worked only so far because width and height were always equal:
-
-  //buffer = new float*[height];
-  //for(int i = 0; i < height; i++)
-  //  buffer[i] = &bufferFlat[i*width]; 
+  //buffer = new float*[width];
+  //for(int i = 0; i < width; i++)
+  //  buffer[i] = &bufferFlat[i*height];
   
   // We have the second index running over the y-coordinate and the first index running over the 
   // x-coordinate here...this is actually the other way around than in images where we have the 
@@ -371,14 +367,14 @@ void PhaseScopeDisplay::resized()
 void dataMatrixToPixelBrightness(float **data, uint8 *pixels, int width, int height)
 {
   uint8 *p = pixels;
-  for(int y = 0; y < height; y++)     // loop over lines
+  for(int i = 0; i < height; i++)     // loop over lines
   {
-    for(int x = 0; x < width; x++)    // loop over pixels
+    for(int j = 0; j < width; j++)    // loop over pixels
     {
       //jassert(data[y][x] <= 1.f);   // for test
 
       // we assume here, that the alpha channel comes last in the byte order of the pixels
-      p[0] = p[1] = p[2] = (uint8) (255 * data[y][x]);  // data determines white-value
+      p[0] = p[1] = p[2] = (uint8) (255 * data[i][j]);  // data determines white-value
       p[3] = 255;                                       // set to full opacity ("alpha")
       p   += 4;                                         // jump to next pixel
     }

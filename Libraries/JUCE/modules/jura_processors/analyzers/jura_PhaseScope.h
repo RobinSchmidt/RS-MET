@@ -6,7 +6,7 @@
 
 \todo
 -maybe move this class to RAPT
--maybe rename to PixelAccumulator (it may be reusable in more general circumstances)
+-factor out a class PixelBuffer (it may be reusable in more general circumstances)
 -refactor to include a general CoordinateTransformer object (as pointer member) which is 
  responsible for the tranformation from input- to pixel coordinates
 -optimize:
@@ -131,10 +131,11 @@ protected:
   int    width, height;  // pixel width and height
   bool   antiAlias;      // flag to switch anti-aliasing on/off
 
-  // the actual matrix-shaped buffer (maybe use a kind of MatrixView class that wraps a std::vector 
-  // later):
-  float *bufferFlat;
+  // the actual matrix-shaped buffer, we use the indexing common in image processing: the first 
+  // index points to a horizontal line and the second index is the pixel in this line, so the first
+  // index runs from 0 to height-1 and the second from 0 to width-1:
   float **buffer;
+  float *bufferFlat; 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhaseScopeBuffer)
 };
@@ -162,6 +163,7 @@ public:
   void setAfterGlow(double newGlow);
   void setLineDensity(double newDensity);
   void setPixelSpread(double newSpread);
+  //void setBrightness(double newBrightness);
   //void setFrameRate(double newRate);
   //void setAntiAlias(bool shouldAntiAlias);
   //void setDrawingMode(int newMode);
