@@ -85,6 +85,9 @@ public:
   /** Returns a pointer to our internally stored data matrix. */
   float** getDataMatrix() { return buffer; }
 
+  /** Returns the frame rate. */
+  inline double getFrameRate() { return frameRate; }
+
 protected:
 
   /** Returns the distance between the pixels with coordinates (x1,y1) and (x1,y2). This distance 
@@ -176,11 +179,11 @@ public:
   void setAntiAlias(bool shouldAntiAlias);
   //void setFrameRate(double newRate);
   //void setDrawingMode(int newMode);
+  void setRainbowMode(bool shouldUseRainbowColors); // maybe provide more modes and a function 
+    // setColorMode(int newMode) - can have different settings: fixed color, hue rotation, 
+    // alternating colors, colormapped values, etc.
 
   inline void triggerPixelDecay() { needsPixelDecay = true; }
-
-
-
 
   // overriden from AudioModule baseclass:
   AudioModuleEditor *createEditor() override;
@@ -188,18 +191,29 @@ public:
   virtual void setSampleRate(double newSampleRate) override; 
   virtual void reset() override;
 
+  /** Returns the color that should be used for this frame. We assume here that this function is 
+  called at frame rate (it will update the internal color-period counter, so it msut be called at 
+  the correct rate - otherwise the olor perido will be wrong). */
+  Colour getAndUpdateColor();
+
   inline Colour getColourAt(int x, int y) 
   { 
     uint8 c = 255;
     const Colour baseColor(c, c, c, c);  // make user selectable member later
     return baseColor.withAlpha(phaseScopeBuffer.getValueAt(x, y));
   }
+  // cn be removed
 
 protected:
 
   PhaseScopeBuffer phaseScopeBuffer;
 
   bool needsPixelDecay;   // flag to indicate that a pixel decay should be triggered
+  bool rainbow;           // indicates usage of rainbow colors (i.e. hue rotation)
+  double colorPeriod;     // period for one complete color change cycle (in seconds)
+
+  double colorCounter;
+
 
   friend class PhaseScopeDisplay;
 

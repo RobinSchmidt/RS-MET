@@ -288,6 +288,9 @@ PhaseScope::PhaseScope(CriticalSection *lockToUse) : AudioModule(lockToUse)
   moduleName = "PhaseScope";
   setActiveDirectory(getApplicationDirectory() + "/PhaseScopePresets");
   needsPixelDecay = false;
+  rainbow = true;
+  colorPeriod = 5.0;
+  colorCounter = 0.0;
   createParameters();
 }
 
@@ -343,6 +346,10 @@ void PhaseScope::setAntiAlias(bool shouldAntiAlias)
 {
   phaseScopeBuffer.setAntiAlias(shouldAntiAlias);
 }
+void PhaseScope::setRainbowMode(bool shouldUseRainbowColors)
+{
+  rainbow = shouldUseRainbowColors;
+}
 
 AudioModuleEditor* PhaseScope::createEditor()
 {
@@ -369,6 +376,20 @@ void PhaseScope::setSampleRate(double newSampleRate)
 void PhaseScope::reset()
 {
   phaseScopeBuffer.reset();
+  colorCounter = 0.0;
+}
+
+Colour PhaseScope::getAndUpdateColor()
+{
+  //return Colours::white;  // preliminary
+
+  ColourAHSL colorAHSL((float)colorCounter, 1.f, 0.5f, 0.5f);
+
+  double inc    = 1.0 / (colorPeriod * phaseScopeBuffer.getFrameRate()); // color increment
+  colorCounter += inc;
+  colorCounter  = fmod(colorCounter, 1.0);
+
+  return colorAHSL.getAsJuceColour();
 }
 
 //=================================================================================================
@@ -388,10 +409,9 @@ void PhaseScopeDisplay::resized()
   image = Image(Image::ARGB, getWidth(), getHeight(), false);
 }
 
-
-// \todo move these 2 helper functions to jura_GraphicsTools, maybe templatize so it can be used 
+// \todo move these helper functions to jura_GraphicsTools, maybe templatize so it can be used 
 // for double also:
-void dataMatrixToPixelBrightness(float **data, uint8 *pixels, int width, int height)
+void dataMatrixToPixelBrightnessGray(float **data, uint8 *pixels, int width, int height)
 {
   uint8 *p = pixels;
   for(int i = 0; i < height; i++)     // loop over lines
@@ -404,22 +424,48 @@ void dataMatrixToPixelBrightness(float **data, uint8 *pixels, int width, int hei
       p   += 4;                                         // jump to next pixel
     }
   }
-  // todo: write a version of this function that uses a colormap
 }
-void dataMatrixToImage(float **data, Image &image)
+void dataMatrixToPixelBrightness(float **data, uint8 *pixels, int width, int height,
+  uint8 red = 255, uint8 green = 255, uint8 blue = 255)
+{
+  uint8 *p = pixels;
+  for(int i = 0; i < height; i++)     // loop over lines
+  {
+    for(int j = 0; j < width; j++)    // loop over pixels
+    {
+      // we assume here, that the byte order of the pixels is BGRA (seems to be true on PC)
+      p[0] = (uint8) (blue  * data[i][j]);
+      p[1] = (uint8) (green * data[i][j]);
+      p[2] = (uint8) (red   * data[i][j]);
+      p[3] = 255; // full opacity ("alpha")
+      p   += 4;
+    }
+  }
+}
+// todo: write a version of this function that uses a colormap
+
+void dataMatrixToImage(float **data, Image &image, 
+  uint8 red = 255, uint8 green = 255, uint8 blue = 255)
 {
   // We assume here that the size of the image (width and height) matches the dimensions of the 
   // data matrix)
   Image::BitmapData bitmap(image, Image::BitmapData::writeOnly);
   jassert(bitmap.pixelStride == 4);
   uint8 *pixelPointer = bitmap.getPixelPointer(0, 0);
-  dataMatrixToPixelBrightness(data, pixelPointer, bitmap.width, bitmap.height);
+  if(red == green && green == blue)
+    dataMatrixToPixelBrightnessGray(data, pixelPointer, bitmap.width, bitmap.height);
+  else
+    dataMatrixToPixelBrightness(data, pixelPointer, bitmap.width, bitmap.height, red, green, blue);
 }
-
 
 void PhaseScopeDisplay::paint(Graphics &g)
 {
-  dataMatrixToImage(phaseScope->phaseScopeBuffer.getDataMatrix(), image);
+  //dataMatrixToImage(phaseScope->phaseScopeBuffer.getDataMatrix(), image);
+  //dataMatrixToImage(phaseScope->phaseScopeBuffer.getDataMatrix(), image, 0, 0, 255);
+
+  Colour c = phaseScope->getAndUpdateColor();
+  dataMatrixToImage(phaseScope->phaseScopeBuffer.getDataMatrix(), image, c.getRed(), c.getGreen(), 
+    c.getBlue());
   g.drawImageAt(image, 0, 0);
 
   //// this is the old, direct and horribly inefficient way to do it:
