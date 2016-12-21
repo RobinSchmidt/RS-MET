@@ -173,8 +173,8 @@ public:
   void setAfterGlow(double newGlow);
   void setLineDensity(double newDensity);
   void setPixelSpread(double newSpread);
+  void setAntiAlias(bool shouldAntiAlias);
   //void setFrameRate(double newRate);
-  //void setAntiAlias(bool shouldAntiAlias);
   //void setDrawingMode(int newMode);
 
   inline void triggerPixelDecay() { needsPixelDecay = true; }
@@ -267,7 +267,8 @@ protected:
   int widgetMargin;
 
   // Widgets:
-  RSlider *brightnessSlider, *afterglowSlider, *pixelSpreadSlider, *lineDensitySlider;
+  RSlider *sliderBrightness, *sliderAfterglow, *sliderPixelSpread, *sliderLineDensity;
+  RButton *buttonAntiAlias;
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhaseScopeEditor)

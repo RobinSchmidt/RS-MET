@@ -312,6 +312,10 @@ void PhaseScope::createParameters()
   p = new Parameter(plugInLock, "LineDensity", 0.0, 1.0, 0.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setLineDensity);
+
+  p = new Parameter(plugInLock, "AntiAlias", 0.0, 1.0, 0.0, 1.0, Parameter::BOOLEAN);
+  p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setAntiAlias);
+  addObservedParameter(p);
 }
 
 void PhaseScope::setPixelSize(int width, int height)
@@ -335,10 +339,13 @@ void PhaseScope::setPixelSpread(double newSpread)
 {
   phaseScopeBuffer.setPixelSpread((float)newSpread);
 }
+void PhaseScope::setAntiAlias(bool shouldAntiAlias)
+{
+  phaseScopeBuffer.setAntiAlias(shouldAntiAlias);
+}
 
 AudioModuleEditor* PhaseScope::createEditor()
 {
-  //return new PhaseScopeDisplay(this);
   return new PhaseScopeEditor(this);
 }
 
@@ -367,7 +374,6 @@ void PhaseScope::reset()
 //=================================================================================================
 
 PhaseScopeDisplay::PhaseScopeDisplay(jura::PhaseScope *newPhaseScopeToEdit)
-  //: AudioModuleEditor(newPhaseScopeToEdit)
 {
   phaseScope = newPhaseScopeToEdit;
   setSize(400, 400);
@@ -392,8 +398,6 @@ void dataMatrixToPixelBrightness(float **data, uint8 *pixels, int width, int hei
   {
     for(int j = 0; j < width; j++)    // loop over pixels
     {
-      //jassert(data[y][x] <= 1.f);   // for test
-
       // we assume here, that the alpha channel comes last in the byte order of the pixels
       p[0] = p[1] = p[2] = (uint8) (255 * data[i][j]);  // data determines white-value
       p[3] = 255;                                       // set to full opacity ("alpha")
@@ -461,35 +465,41 @@ PhaseScopeEditor::PhaseScopeEditor(jura::PhaseScope *newPhaseScopeToEdit)
 
 void PhaseScopeEditor::createWidgets()
 {
+  RButton *b;
   RSlider *s;
 
-  addWidget( brightnessSlider = s = new RSlider("BrightnessSlider") );
+  addWidget( sliderBrightness = s = new RSlider("BrightnessSlider") );
   s->assignParameter( scope->getParameterByName("Brightness") );
   s->setSliderName("Brightness");
   s->setDescription("Brightness");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
 
-  addWidget( afterglowSlider = s = new RSlider("GlowSlider") );
+  addWidget( sliderAfterglow = s = new RSlider("GlowSlider") );
   s->assignParameter( scope->getParameterByName("AfterGlow") );
   s->setSliderName("Glow");
   s->setDescription("Afterglow time in seconds");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&secondsToStringWithUnitTotal4);
 
-  addWidget( pixelSpreadSlider = s = new RSlider("SpreadSlider") );
+  addWidget( sliderPixelSpread = s = new RSlider("SpreadSlider") );
   s->assignParameter( scope->getParameterByName("PixelSpread") );
   s->setSliderName("Spread");
   s->setDescription("Pixel spreading");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
 
-  addWidget( lineDensitySlider = s = new RSlider("DensitySlider") );
+  addWidget( sliderLineDensity = s = new RSlider("DensitySlider") );
   s->assignParameter( scope->getParameterByName("LineDensity") );
   s->setSliderName("Density");
   s->setDescription("Line Density");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
+
+  addWidget( buttonAntiAlias = b = new RButton("AntiAlias") );
+  b->assignParameter( scope->getParameterByName("AntiAlias") );
+  b->setDescription("Anti aliased drawing (bilinear deinterpolation)");
+  b->setDescriptionField(infoField);
 }
 
 //void PhaseScopeEditor::setDisplayPixelSize(int newWidth, int newHeight)
@@ -517,8 +527,10 @@ void PhaseScopeEditor::resized()
   h = 16;                          // slider height
   int dy = h+4;                    // vertical distance ("delta-y") between widgets
 
-  brightnessSlider ->setBounds(x, y, w, h); y += dy;
-  afterglowSlider  ->setBounds(x, y, w, h); y += dy;
-  pixelSpreadSlider->setBounds(x, y, w, h); y += dy;
-  lineDensitySlider->setBounds(x, y, w, h); y += dy;
+  sliderBrightness ->setBounds(x, y, w, h); y += dy;
+  sliderAfterglow  ->setBounds(x, y, w, h); y += dy;
+  sliderPixelSpread->setBounds(x, y, w, h); y += dy;
+  sliderLineDensity->setBounds(x, y, w, h); y += dy;
+
+  buttonAntiAlias->setBounds(x, y,   w, h); y += dy;
 }
