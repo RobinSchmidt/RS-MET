@@ -6,6 +6,7 @@ PhaseScopeBuffer::PhaseScopeBuffer()
   decayTime   = 0.5;
   lineDensity = 0.0f;
   thickness   = 0.707f;
+  brightness  = 1.0;
   updateDecayFactor();
 
   bufferFlat = nullptr;
@@ -26,15 +27,19 @@ PhaseScopeBuffer::~PhaseScopeBuffer()
 void PhaseScopeBuffer::setSampleRate(double newSampleRate)
 {
   sampleRate = newSampleRate;
-  double brightness = 4000.0;   // make this a member variable later, perhaps it should depend on 
-                                // the deacy time as well
-  insertFactor = (float) (brightness/sampleRate);
+  updateInsertFactor();
 }
 
 void PhaseScopeBuffer::setFrameRate(double newFrameRate)
 {
   frameRate = newFrameRate;
   updateDecayFactor();
+}
+
+void PhaseScopeBuffer::setBrightness(float newBrightness)
+{
+  brightness = newBrightness;
+  updateInsertFactor();
 }
 
 void PhaseScopeBuffer::setDecayTime(double newDecayTime)
@@ -267,6 +272,14 @@ void PhaseScopeBuffer::updateDecayFactor()
   decayFactor = (float) exp(-1 / (decayTime*frameRate));
 }
 
+void PhaseScopeBuffer::updateInsertFactor()
+{
+  insertFactor = (float) (5000*brightness / sampleRate);
+    // The 5000 factor is totally ad-hoc - maybe come up with some more meaningful factor. 
+    // However, the proportionality to the birghtness parameter and inverse proportionality to 
+    // the sample rate seems to make sense.
+}
+
 //=================================================================================================
 
 PhaseScope::PhaseScope(CriticalSection *lockToUse) : AudioModule(lockToUse)
@@ -283,6 +296,10 @@ void PhaseScope::createParameters()
   ScopedLock scopedLock(*plugInLock);
 
   Parameter* p;
+
+  p = new Parameter(plugInLock, "Brightness", 0.1, 2.0, 0.0, 1.0, Parameter::EXPONENTIAL);
+  addObservedParameter(p);
+  p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setBrightness);
 
   p = new Parameter(plugInLock, "AfterGlow", 0.001, 10.0, 0.0, 0.1, Parameter::EXPONENTIAL);
   addObservedParameter(p);
@@ -302,6 +319,10 @@ void PhaseScope::setPixelSize(int width, int height)
   phaseScopeBuffer.setSize(width, height);
 }
 
+void PhaseScope::setBrightness(double newBrightness)
+{
+  phaseScopeBuffer.setBrightness((float)newBrightness);
+}
 void PhaseScope::setAfterGlow(double newGlow)
 {
   phaseScopeBuffer.setDecayTime(newGlow);
@@ -442,6 +463,13 @@ void PhaseScopeEditor::createWidgets()
 {
   RSlider *s;
 
+  addWidget( brightnessSlider = s = new RSlider("BrightnessSlider") );
+  s->assignParameter( scope->getParameterByName("Brightness") );
+  s->setSliderName("Brightness");
+  s->setDescription("Brightness");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString3);
+
   addWidget( afterglowSlider = s = new RSlider("GlowSlider") );
   s->assignParameter( scope->getParameterByName("AfterGlow") );
   s->setSliderName("Glow");
@@ -489,6 +517,7 @@ void PhaseScopeEditor::resized()
   h = 16;                          // slider height
   int dy = h+4;                    // vertical distance ("delta-y") between widgets
 
+  brightnessSlider ->setBounds(x, y, w, h); y += dy;
   afterglowSlider  ->setBounds(x, y, w, h); y += dy;
   pixelSpreadSlider->setBounds(x, y, w, h); y += dy;
   lineDensitySlider->setBounds(x, y, w, h); y += dy;

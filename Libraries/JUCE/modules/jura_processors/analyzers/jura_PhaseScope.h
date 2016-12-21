@@ -39,6 +39,10 @@ public:
   /** Sets the frame rate. */
   void setFrameRate(double newFrameRate);
 
+  /** Sets the overall brightness. This parameter, together with the sample rate, determines the 
+  weight by which new dot are added in. */
+  void setBrightness(float newBrightness);
+
   /** Sets the time it takes for "color" to decay away. */
   void setDecayTime(double newDecayTime);
 
@@ -111,6 +115,10 @@ protected:
   time. */
   void updateDecayFactor();
 
+  /** Updates the pixel insertion factor (i.e. the weight by which new dots are multiplied when 
+  they get added in according to the settings of sample rate and brightness parameter. */
+  void updateInsertFactor();
+
   /** Accumulates the given value into the accumulator accu. This accumulation amounts to adding
   the value and the saturating at 1. \todo maybe this can be optimized and/or a different accumulation
   function can be used to get different contrast and saturation behavior.  */
@@ -123,6 +131,7 @@ protected:
   double frameRate;
   double decayTime;      // pixel illumination time
   float  decayFactor;    // factor by which pixels decay (applied at frameRate)
+  float  brightness;     // determines weight by which dots are added in
   float  insertFactor;   // factor by which are pixels "inserted" (applied at sampleRate)
   float  lineDensity;    // density of the artificial points between actual datapoints
   float  thickness;      // line (or dot) thickness from 0 to 1. 0: one pixel, 1: 3 pixels
@@ -160,10 +169,10 @@ public:
   void setPixelSize(int width, int height);
 
   // parameter setup functions (to be used for the callbacks from the parameters):
+  void setBrightness(double newBrightness);
   void setAfterGlow(double newGlow);
   void setLineDensity(double newDensity);
   void setPixelSpread(double newSpread);
-  //void setBrightness(double newBrightness);
   //void setFrameRate(double newRate);
   //void setAntiAlias(bool shouldAntiAlias);
   //void setDrawingMode(int newMode);
@@ -258,7 +267,7 @@ protected:
   int widgetMargin;
 
   // Widgets:
-  RSlider *afterglowSlider, *pixelSpreadSlider, *lineDensitySlider;
+  RSlider *brightnessSlider, *afterglowSlider, *pixelSpreadSlider, *lineDensitySlider;
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhaseScopeEditor)
