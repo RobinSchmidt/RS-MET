@@ -104,40 +104,45 @@ void PhaseScopeBuffer::reset()
   yOld = 0.5f*height;
 }
 
-float PhaseScopeBuffer::pixelDistance(float x1, float y1, float x2, float y2)
-{
-  float dx = x2-x1;
-  float dy = y2-y1;
-  //return sqrt(dx*dx + dy*dy);   // Euclidean distance
-  return max(fabs(dx), fabs(dy)); // maybe try Euclidean distance instead
-}
+//// get rid of this function:
+//float PhaseScopeBuffer::pixelDistance(float x1, float y1, float x2, float y2)
+//{
+//  float dx = x2-x1;
+//  float dy = y2-y1;
+//  return sqrt(dx*dx + dy*dy);   // Euclidean distance
+//  //return max(fabs(dx), fabs(dy)); // maybe try Euclidean distance instead
+//}
 
 void PhaseScopeBuffer::addLineTo(float x, float y)
 {
   if(lineDensity == 0.f)
   {
-    addDot(x, y);
+    addDot(x, y, insertFactor);
     return;
   }
 
-  int numDots = max(1, (int)floor(lineDensity*pixelDistance(xOld, yOld, x, y)));
+  float dx = x-xOld;
+  float dy = y-yOld;
+  float pixelDistance = sqrt(dx*dx + dy*dy);
+  int   numDots = max(1, (int)floor(lineDensity*pixelDistance));
+  float intensity = (float) (insertFactor/numDots);
+  float scaler = (float)(1.0 / numDots);
   float k;
   for(int i = 1; i <= numDots; i++)
   {
-    k = (float)i / (float)numDots;  // optimize: use scaler * i, where scaler = 1 / numDots
-    addDot((1-k)*xOld + k*x, (1-k)*yOld + k*y); // maybe use xOld + k*dx, where dx = x - xOld
-
-    // maybe we should add the dot with an intensity scaled by 1/numDots
+    k = scaler * i;  // == i / numDots
+    //addDot((1-k)*xOld + k*x, (1-k)*yOld + k*y, intensity); // unoptimized
+    addDot(xOld + k*dx, yOld + k*dy, intensity);
   }
   xOld = x;
   yOld = y;
 }
 
-void PhaseScopeBuffer::addDot(float x, float y)
+void PhaseScopeBuffer::addDot(float x, float y, float intensity)
 {
   if(!antiAlias)
   {
-    addDotFast(x, y);
+    addDotFast(x, y, intensity);
     return;
   }
 
@@ -154,10 +159,10 @@ void PhaseScopeBuffer::addDot(float x, float y)
   a = 1+d-x-y;
 
   // compute values to accumulate into the 4 pixels at (i,j), (i+1,j), (i,j+1), (i+1,j+1):
-  a *= insertFactor;  // (i,   j)
-  b *= insertFactor;  // (i+1, j+1)
-  c *= insertFactor;  // (i+1, j)
-  d *= insertFactor;  // (i+1, j+1)
+  a *= intensity;  // (i,   j)
+  b *= intensity;  // (i+1, j+1)
+  c *= intensity;  // (i+1, j)
+  d *= intensity;  // (i+1, j+1)
 
   // accumulate values into the matrix:
   if(j >= 0 && j < width-1 && i >= 0 && i < height-1)
@@ -207,19 +212,19 @@ void PhaseScopeBuffer::addDot(float x, float y)
   }
 }
 
-void PhaseScopeBuffer::addDotFast(float x, float y)
+void PhaseScopeBuffer::addDotFast(float x, float y, float intensity)
 {
   int j = (int)round(x);
   int i = (int)round(y);
 
   if(j >= 0 && j < width && i >= 0 && i < height)
-    accumulate(buffer[i][j], insertFactor);
+    accumulate(buffer[i][j], intensity);
 
   // apply thickness:
   if(thickness > 0.f && j >= 1 && j < width-1 && i >= 1 && i < height-1)
   {
     float a, ta, sa;
-    a  = insertFactor;
+    a  = intensity;
     ta = a  * thickness;
     sa = ta * (float)SQRT2_INV;
 
@@ -288,7 +293,7 @@ PhaseScope::PhaseScope(CriticalSection *lockToUse) : AudioModule(lockToUse)
   moduleName = "PhaseScope";
   setActiveDirectory(getApplicationDirectory() + "/PhaseScopePresets");
   needsPixelDecay = false;
-  rainbow = true;
+  rainbow = false;
   colorPeriod = 5.0;
   colorCounter = 0.0;
   createParameters();
@@ -324,7 +329,7 @@ void PhaseScope::createParameters()
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setAntiAlias);
   addObservedParameter(p);
 
-  p = new Parameter(plugInLock, "Rainbow", 0.0, 1.0, 0.0, 1.0, Parameter::BOOLEAN);
+  p = new Parameter(plugInLock, "Rainbow", 0.0, 1.0, 0.0, 0.0, Parameter::BOOLEAN);
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setRainbowMode);
   addObservedParameter(p);
 }
@@ -501,7 +506,7 @@ void PhaseScopeDisplay::timerCallback()
   phaseScope->triggerPixelDecay();
 
   //startTimerHz(phaseScope->getFrameRate());
-  startTimer( 1000.0 / phaseScope->getFrameRate() ); // fps to ms
+  startTimer((int) (1000.0 / phaseScope->getFrameRate())); // fps to ms
 
   // there's a kind of bug - the display flickers and the flickering seems to be different if
   // we apply the pixel decay in the GUI thread (by calling 

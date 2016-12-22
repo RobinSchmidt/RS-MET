@@ -93,7 +93,7 @@ protected:
   /** Returns the distance between the pixels with coordinates (x1,y1) and (x1,y2). This distance 
   is used in our line drawing function to determine the number of additional dots that are to be 
   inserted between our actual datapoints. */
-  float pixelDistance(float x1, float y1, float x2, float y2);
+  //float pixelDistance(float x1, float y1, float x2, float y2);
 
   /** Adds a line to the given x,y coordinates (in pixel coordinates). The starting point of the 
   line are the old pixel coordinates xOld, yOld (member variables). It takes into account our line 
@@ -102,11 +102,11 @@ protected:
 
   /** Adds a dot into our data matrix at the given position (given in matrix-index (i.e. pixel-) 
   coordinates using bilinear deinterpolation for anti-aliasing. */
-  void addDot(float x, float y);
+  void addDot(float x, float y, float intensity);
 
   /** Like addDot but without anti-aliasing (we just round the coordinates to the nearest 
   integer). */
-  void addDotFast(float x, float y);
+  void addDotFast(float x, float y, float intensity);
 
   /** Allocates the memory for our data matrix buffer. */
   void allocateBuffer();
