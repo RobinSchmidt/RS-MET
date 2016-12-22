@@ -177,13 +177,15 @@ public:
   void setLineDensity(double newDensity);
   void setPixelSpread(double newSpread);
   void setAntiAlias(bool shouldAntiAlias);
-  //void setFrameRate(double newRate);
+  void setFrameRate(double newRate);
   //void setDrawingMode(int newMode);
   void setRainbowMode(bool shouldUseRainbowColors); // maybe provide more modes and a function 
     // setColorMode(int newMode) - can have different settings: fixed color, hue rotation, 
     // alternating colors, colormapped values, etc.
 
   inline void triggerPixelDecay() { needsPixelDecay = true; }
+
+  inline double getFrameRate() { return phaseScopeBuffer.getFrameRate(); }
 
   // overriden from AudioModule baseclass:
   AudioModuleEditor *createEditor() override;
@@ -202,7 +204,7 @@ public:
     const Colour baseColor(c, c, c, c);  // make user selectable member later
     return baseColor.withAlpha(phaseScopeBuffer.getValueAt(x, y));
   }
-  // cn be removed
+  // can be removed
 
 protected:
 
@@ -281,8 +283,9 @@ protected:
   int widgetMargin;
 
   // Widgets:
-  RSlider *sliderBrightness, *sliderAfterglow, *sliderPixelSpread, *sliderLineDensity;
-  RButton *buttonAntiAlias;
+  RSlider *sliderBrightness, *sliderAfterglow, *sliderPixelSpread, *sliderLineDensity, 
+    *sliderFrameRate;
+  RButton *buttonAntiAlias, *buttonRainbow;
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhaseScopeEditor)

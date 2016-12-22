@@ -316,8 +316,16 @@ void PhaseScope::createParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setLineDensity);
 
+  p = new Parameter(plugInLock, "FrameRate", 1.0, 50.0, 0.0, 25.0, Parameter::EXPONENTIAL);
+  addObservedParameter(p);
+  p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setFrameRate);
+
   p = new Parameter(plugInLock, "AntiAlias", 0.0, 1.0, 0.0, 1.0, Parameter::BOOLEAN);
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setAntiAlias);
+  addObservedParameter(p);
+
+  p = new Parameter(plugInLock, "Rainbow", 0.0, 1.0, 0.0, 1.0, Parameter::BOOLEAN);
+  p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setRainbowMode);
   addObservedParameter(p);
 }
 
@@ -350,6 +358,11 @@ void PhaseScope::setRainbowMode(bool shouldUseRainbowColors)
 {
   rainbow = shouldUseRainbowColors;
 }
+void PhaseScope::setFrameRate(double newRate)
+{
+  phaseScopeBuffer.setFrameRate(newRate);
+}
+
 
 AudioModuleEditor* PhaseScope::createEditor()
 {
@@ -381,7 +394,8 @@ void PhaseScope::reset()
 
 Colour PhaseScope::getAndUpdateColor()
 {
-  //return Colours::white;  // preliminary
+  if(!rainbow)
+    return Colours::white;
 
   ColourAHSL colorAHSL((float)colorCounter, 1.f, 0.5f, 0.5f);
 
@@ -486,6 +500,9 @@ void PhaseScopeDisplay::timerCallback()
   //phaseScope->phaseScopeBuffer.applyPixelDecay();
   phaseScope->triggerPixelDecay();
 
+  //startTimerHz(phaseScope->getFrameRate());
+  startTimer( 1000.0 / phaseScope->getFrameRate() ); // fps to ms
+
   // there's a kind of bug - the display flickers and the flickering seems to be different if
   // we apply the pixel decay in the GUI thread (by calling 
   // phaseScope->phaseScopeBuffer.applyPixelDecay() here) or apply it in the audio thread
@@ -542,9 +559,21 @@ void PhaseScopeEditor::createWidgets()
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
 
+  addWidget( sliderFrameRate = s = new RSlider("FrameRateSlider") );
+  s->assignParameter( scope->getParameterByName("FrameRate") );
+  s->setSliderName("FrameRate");
+  s->setDescription("Frame rate for redrawing");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString3);
+
   addWidget( buttonAntiAlias = b = new RButton("AntiAlias") );
   b->assignParameter( scope->getParameterByName("AntiAlias") );
   b->setDescription("Anti aliased drawing (bilinear deinterpolation)");
+  b->setDescriptionField(infoField);
+
+  addWidget( buttonRainbow = b = new RButton("Rainbow") );
+  b->assignParameter( scope->getParameterByName("Rainbow") );
+  b->setDescription("Rainbow color rotation");
   b->setDescriptionField(infoField);
 }
 
@@ -577,6 +606,8 @@ void PhaseScopeEditor::resized()
   sliderAfterglow  ->setBounds(x, y, w, h); y += dy;
   sliderPixelSpread->setBounds(x, y, w, h); y += dy;
   sliderLineDensity->setBounds(x, y, w, h); y += dy;
+  sliderFrameRate  ->setBounds(x, y, w, h); y += dy;
 
   buttonAntiAlias->setBounds(x, y,   w, h); y += dy;
+  buttonRainbow  ->setBounds(x, y,   w, h); y += dy;
 }
