@@ -127,7 +127,12 @@ protected:
   function can be used to get different contrast and saturation behavior.  */
   inline void accumulate(float &accu, float value)
   {
-    accu = min(1.f, accu + value);
+    //accu = min(1.f, accu + value);
+
+    // this seems to be actually cheaper than the min() call and saturates more smoothly:
+    accu += value;
+    accu /= (1 + value);
+    //accu /= (1 + accu);
   }
 
   double sampleRate;

@@ -279,8 +279,8 @@ void PhaseScopeBuffer::updateDecayFactor()
 
 void PhaseScopeBuffer::updateInsertFactor()
 {
-  insertFactor = (float) (5000*brightness / sampleRate);
-    // The 5000 factor is totally ad-hoc - maybe come up with some more meaningful factor. 
+  insertFactor = (float) (10000*brightness / sampleRate);
+    // The factor is totally ad-hoc - maybe come up with some more meaningful factor. 
     // However, the proportionality to the birghtness parameter and inverse proportionality to 
     // the sample rate seems to make sense.
 }
