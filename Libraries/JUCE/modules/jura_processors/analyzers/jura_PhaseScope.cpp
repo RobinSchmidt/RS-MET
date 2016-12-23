@@ -309,7 +309,7 @@ void PhaseScope::createParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setBrightness);
 
-  p = new Parameter(plugInLock, "AfterGlow", 0.001, 10.0, 0.0, 0.1, Parameter::EXPONENTIAL);
+  p = new Parameter(plugInLock, "AfterGlow", 0.001, 50.0, 0.0, 0.1, Parameter::EXPONENTIAL);
   addObservedParameter(p);
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setAfterGlow);
 
@@ -321,7 +321,7 @@ void PhaseScope::createParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setLineDensity);
 
-  p = new Parameter(plugInLock, "FrameRate", 1.0, 50.0, 0.0, 25.0, Parameter::EXPONENTIAL);
+  p = new Parameter(plugInLock, "FrameRate", 1.0, 100.0, 0.0, 25.0, Parameter::EXPONENTIAL);
   addObservedParameter(p);
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setFrameRate);
 
