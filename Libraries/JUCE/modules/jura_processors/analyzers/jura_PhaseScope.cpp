@@ -305,7 +305,7 @@ void PhaseScope::createParameters()
 
   Parameter* p;
 
-  p = new Parameter(plugInLock, "Brightness", 0.1, 2.0, 0.0, 1.0, Parameter::EXPONENTIAL);
+  p = new Parameter(plugInLock, "Brightness", 0.1, 10.0, 0.0, 1.0, Parameter::EXPONENTIAL);
   addObservedParameter(p);
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setBrightness);
 
