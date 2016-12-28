@@ -88,6 +88,12 @@ public:
   /** Returns the frame rate. */
   inline double getFrameRate() { return frameRate; }
 
+  /** Returns the width in pixels. */
+  inline int getWidth() { return width; }
+
+  /** Returns the height in pixels. */
+  inline int getHeight() { return height; }
+
 protected:
 
   /** Returns the distance between the pixels with coordinates (x1,y1) and (x1,y2). This distance 
@@ -173,14 +179,16 @@ public:
   overriden - the call it from the constructor there. */
   virtual void createParameters();
 
-  /** Sets the desired pixel size. */
-  void setPixelSize(int width, int height);
+  /** Sets the desired pixel size for the display. This function will update the internal pixel 
+  size of the buffer according to the passed values and the desired rescaling factor. " */
+  void setDisplayPixelSize(int width, int height);
 
   // parameter setup functions (to be used for the callbacks from the parameters):
   void setBrightness(double newBrightness);
   void setAfterGlow(double newGlow);
   void setLineDensity(double newDensity);
   void setPixelSpread(double newSpread);
+  void setPixelScale(double newFactor);
   void setAntiAlias(bool shouldAntiAlias);
   void setFrameRate(double newRate);
   //void setDrawingMode(int newMode);
@@ -190,7 +198,10 @@ public:
 
   inline void triggerPixelDecay() { needsPixelDecay = true; }
 
+  // inquiry functions:
   inline double getFrameRate() { return phaseScopeBuffer.getFrameRate(); }
+  inline int getInternalPixelWidth() { return phaseScopeBuffer.getWidth(); }
+  inline int getInternalPixelHeight() { return phaseScopeBuffer.getHeight(); }
 
   // overriden from AudioModule baseclass:
   AudioModuleEditor *createEditor() override;
@@ -213,14 +224,22 @@ public:
 
 protected:
 
+  /** Updates the size of the internal buffer according to the settings of displayWidth, 
+  displayHeight and pixelScale. */
+  void updateBufferSize();
+
   PhaseScopeBuffer phaseScopeBuffer;
 
   bool needsPixelDecay;   // flag to indicate that a pixel decay should be triggered
   bool rainbow;           // indicates usage of rainbow colors (i.e. hue rotation)
   double colorPeriod;     // period for one complete color change cycle (in seconds)
-
   double colorCounter;
 
+  double pixelScale;      // scale factor between internal and external pixel sizes of the image
+  int displayWidth;       // display width in pixels
+  int displayHeight;      // display height in pixels
+
+  Image image;
 
   friend class PhaseScopeDisplay;
 
@@ -259,8 +278,6 @@ protected:
 
   PhaseScope *phaseScope;
 
-  Image image;
-
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhaseScopeDisplay)
 };
 
@@ -288,8 +305,8 @@ protected:
   int widgetMargin;
 
   // Widgets:
-  RSlider *sliderBrightness, *sliderAfterglow, *sliderPixelSpread, *sliderLineDensity, 
-    *sliderFrameRate;
+  RSlider *sliderBrightness, *sliderAfterglow, *sliderPixelSpread, *sliderPixelScale, 
+    *sliderLineDensity, *sliderFrameRate;
   RButton *buttonAntiAlias, *buttonRainbow;
 
 

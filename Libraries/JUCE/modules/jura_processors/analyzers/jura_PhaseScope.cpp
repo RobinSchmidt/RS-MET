@@ -294,6 +294,12 @@ PhaseScope::PhaseScope(CriticalSection *lockToUse) : AudioModule(lockToUse)
   setActiveDirectory(getApplicationDirectory() + "/PhaseScopePresets");
   needsPixelDecay = false;
   rainbow = false;
+
+  pixelScale = 1.0;
+  displayWidth  = 100;
+  displayHeight = 100; 
+  updateBufferSize();
+
   colorPeriod = 5.0;
   colorCounter = 0.0;
   createParameters();
@@ -317,6 +323,10 @@ void PhaseScope::createParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setPixelSpread);
 
+  p = new Parameter(plugInLock, "PixelScale", 1.0, 8.0, 0.0, 1.0, Parameter::EXPONENTIAL);
+  addObservedParameter(p);
+  p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setPixelScale);
+
   p = new Parameter(plugInLock, "LineDensity", 0.0, 1.0, 0.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setLineDensity);
@@ -334,9 +344,11 @@ void PhaseScope::createParameters()
   addObservedParameter(p);
 }
 
-void PhaseScope::setPixelSize(int width, int height)
+void PhaseScope::setDisplayPixelSize(int width, int height)
 {
-  phaseScopeBuffer.setSize(width, height);
+  displayWidth  = width;
+  displayHeight = height; 
+  updateBufferSize();
 }
 
 void PhaseScope::setBrightness(double newBrightness)
@@ -355,6 +367,12 @@ void PhaseScope::setPixelSpread(double newSpread)
 {
   phaseScopeBuffer.setPixelSpread((float)newSpread);
 }
+void PhaseScope::setPixelScale(double newFactor)
+{
+  jassert(newFactor >= 1.0);
+  pixelScale = newFactor;
+  updateBufferSize();
+}
 void PhaseScope::setAntiAlias(bool shouldAntiAlias)
 {
   phaseScopeBuffer.setAntiAlias(shouldAntiAlias);
@@ -367,7 +385,6 @@ void PhaseScope::setFrameRate(double newRate)
 {
   phaseScopeBuffer.setFrameRate(newRate);
 }
-
 
 AudioModuleEditor* PhaseScope::createEditor()
 {
@@ -411,12 +428,20 @@ Colour PhaseScope::getAndUpdateColor()
   return colorAHSL.getAsJuceColour();
 }
 
+void PhaseScope::updateBufferSize()
+{
+  int w = (int) round(displayWidth  / pixelScale);
+  int h = (int) round(displayHeight / pixelScale);
+  phaseScopeBuffer.setSize(w, h);
+  image = Image(Image::ARGB, w, h, false);
+}
+
 //=================================================================================================
 
 PhaseScopeDisplay::PhaseScopeDisplay(jura::PhaseScope *newPhaseScopeToEdit)
 {
   phaseScope = newPhaseScopeToEdit;
-  setSize(400, 400);
+  //setSize(400, 400);
 
   startTimerHz(25);
   phaseScope->phaseScopeBuffer.setFrameRate(25);
@@ -424,8 +449,7 @@ PhaseScopeDisplay::PhaseScopeDisplay(jura::PhaseScope *newPhaseScopeToEdit)
 
 void PhaseScopeDisplay::resized()
 {
-  phaseScope->setPixelSize(getWidth(), getHeight());
-  image = Image(Image::ARGB, getWidth(), getHeight(), false);
+  phaseScope->setDisplayPixelSize(getWidth(), getHeight());
 }
 
 // \todo move these helper functions to jura_GraphicsTools, maybe templatize so it can be used 
@@ -483,9 +507,19 @@ void PhaseScopeDisplay::paint(Graphics &g)
   //dataMatrixToImage(phaseScope->phaseScopeBuffer.getDataMatrix(), image, 0, 0, 255);
 
   Colour c = phaseScope->getAndUpdateColor();
-  dataMatrixToImage(phaseScope->phaseScopeBuffer.getDataMatrix(), image, c.getRed(), c.getGreen(), 
-    c.getBlue());
-  g.drawImageAt(image, 0, 0);
+  dataMatrixToImage(phaseScope->phaseScopeBuffer.getDataMatrix(), phaseScope->image, c.getRed(), 
+    c.getGreen(), c.getBlue());
+
+  //g.drawImageAt(phaseScope->image, 0, 0);
+
+  g.setImageResamplingQuality(Graphics::highResamplingQuality);
+  g.drawImage(phaseScope->image, Rectangle<float>(0.f, 0.f, (float) getWidth(), 
+    (float) getHeight()));
+
+  // maybe all of this should be refactored in way, such that we need to write only
+  // g.drawImageAt(phaseScope->getImage(), 0, 0);  here - we could take care of proper thread 
+  // synchronization there also
+
 
   //// this is the old, direct and horribly inefficient way to do it:
   //g.fillAll(Colours::black);
@@ -557,6 +591,13 @@ void PhaseScopeEditor::createWidgets()
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
 
+  addWidget( sliderPixelScale = s = new RSlider("ScaleSlider") );
+  s->assignParameter( scope->getParameterByName("PixelScale") );
+  s->setSliderName("Scale");
+  s->setDescription("Pixel size rescaling");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString3);
+
   addWidget( sliderLineDensity = s = new RSlider("DensitySlider") );
   s->assignParameter( scope->getParameterByName("LineDensity") );
   s->setSliderName("Density");
@@ -610,6 +651,7 @@ void PhaseScopeEditor::resized()
   sliderBrightness ->setBounds(x, y, w, h); y += dy;
   sliderAfterglow  ->setBounds(x, y, w, h); y += dy;
   sliderPixelSpread->setBounds(x, y, w, h); y += dy;
+  sliderPixelScale ->setBounds(x, y, w, h); y += dy;
   sliderLineDensity->setBounds(x, y, w, h); y += dy;
   sliderFrameRate  ->setBounds(x, y, w, h); y += dy;
 
