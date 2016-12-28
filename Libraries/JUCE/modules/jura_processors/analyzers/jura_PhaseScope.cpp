@@ -160,7 +160,7 @@ void PhaseScopeBuffer::addDot(float x, float y, float intensity)
 
   // compute values to accumulate into the 4 pixels at (i,j), (i+1,j), (i,j+1), (i+1,j+1):
   a *= intensity;  // (i,   j)
-  b *= intensity;  // (i+1, j+1)
+  b *= intensity;  // (i,   j+1)
   c *= intensity;  // (i+1, j)
   d *= intensity;  // (i+1, j+1)
 
