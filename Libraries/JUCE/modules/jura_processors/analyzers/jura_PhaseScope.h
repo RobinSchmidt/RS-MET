@@ -19,6 +19,19 @@
   https://locklessinc.com/articles/sat_arithmetic/
  -or maybe get rid of max function by bit-masking the exponent of the floating point number (make an
   inlined function accumulateAndSaturate(float &accu, float &value)
+ -factor out a class Image or PixelAccumulator
+
+-maybe we should use an Image class, templated on the pixel-type Image<TPix> and an ImageProcessor 
+ class
+-a suitable subclass of ImageProcessor would be responsible for drawing on the image via methods 
+ like drawDot, drawLine, etc. ...maybe it could be called ImageDrawer
+-the ImageProcessor class can be templated on an Accumulator class such that we can choose 
+ different accumulation methods at compile time (simple add, add-and-clip, add-and-saturate) - it
+ should be selected at compile time so we can inline the accumulation function for efficiency
+
+-there's a problem with drawing - sometimes the brightness flickers, especially with short decay 
+ times - could this be due to jitter in the calls to applyPixelDecay - i.e. somewhat irregular 
+ timing?
 
 */
 
@@ -58,15 +71,17 @@ public:
   incoming datapoints. If set to zero, it will just draw the datapoints as dots. */
   void setLineDensity(float newDensity);
 
-  /** Sets up a weight by which ech pixel is not only accumulated into its actual place but also 
+  /** Sets up a weight by which each pixel is not only accumulated into its actual place but also 
   into the neighbouring pixels to add more weight or thickness. It should be a value between 0 
   and 1. */
   void setPixelSpread(float newSpread);
+    // maybe rename to setDotSpread
 
   /** Converts the raw left- and right signal amplitude values to the matrix indices, where the 
   data should be written. This is the xy-pixel coordinates (kept still as real numbers), where the 
   display is to be illuminated in response to the given amplitude values. */
   void convertAmplitudesToMatrixIndices(double &x, double &y);
+    // rename to toPixelCoordinates
 
   /** Accepts one input sample frame for buffering. */
   void bufferSampleFrame(double left, double right);
@@ -165,7 +180,20 @@ protected:
 
 //=================================================================================================
 
-/** Implements a phasescope analyzer */
+/** Implements a phasescope analyzer. 
+
+\todo
+-maybe implement a linear decay in addition to the exponential decay: 
+ new = expDecay * old - linDecay (the result must be clipped at zero)
+-line density should be either 0 or 1, intermediate values are not useful
+-independently adjustable line-brightness and dot-brightness  
+ -the same thing also for the thicknesses
+-make line-thickness dependent on dot-distance via parameter
+-implement different drawing modes (the current one, and some based on juce's vector drawing engine
+ with lines, circles, etc.)
+-implement rainbow mode (hue-rotation, we may choose a basic hue and rotation speed which may be 
+ set to zero)
+*/
 
 class JUCE_API PhaseScope : public jura::AudioModule
 {

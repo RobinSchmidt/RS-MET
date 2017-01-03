@@ -180,6 +180,8 @@ void PhaseScopeBuffer::addDot(float x, float y, float intensity)
     t = thickness;             // weight for direct neighbour pixels
     s = t * (float)SQRT2_INV;  // weight for diagonal neighbour pixels
 
+    s = t*t;  // test
+
     sa = s*a;
     sb = s*b;
     sc = s*c;
@@ -512,7 +514,9 @@ void PhaseScopeDisplay::paint(Graphics &g)
 
   //g.drawImageAt(phaseScope->image, 0, 0);
 
-  g.setImageResamplingQuality(Graphics::highResamplingQuality);
+  g.setImageResamplingQuality(Graphics::lowResamplingQuality);
+  //g.setImageResamplingQuality(Graphics::mediumResamplingQuality);
+  //g.setImageResamplingQuality(Graphics::highResamplingQuality);
   g.drawImage(phaseScope->image, Rectangle<float>(0.f, 0.f, (float) getWidth(), 
     (float) getHeight()));
 
@@ -562,7 +566,8 @@ PhaseScopeEditor::PhaseScopeEditor(jura::PhaseScope *newPhaseScopeToEdit)
   addAndMakeVisible(display);
   createWidgets();
 
-  setSize(400+widgetMargin, 400);  // preliminary
+  int headerMargin = 26;  // this is the height we need for headline and preset-section
+  setSize(400+widgetMargin, 400+headerMargin);
 }
 
 void PhaseScopeEditor::createWidgets()
