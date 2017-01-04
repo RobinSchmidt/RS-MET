@@ -149,6 +149,9 @@ public:
   to do the actual conversion. */
   virtual XmlElement convertXmlStateIfNecessary(const XmlElement& xmlState);
 
+  /** Resets all the parameters to their default values. */
+  virtual void resetParametersToDefaultValues();
+
   //-----------------------------------------------------------------------------------------------
   // Audio processing:
 

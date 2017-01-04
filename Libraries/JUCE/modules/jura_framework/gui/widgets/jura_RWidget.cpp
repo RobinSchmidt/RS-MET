@@ -49,6 +49,7 @@ void RWidget::assignParameter(Parameter *parameterToAssign)
     assignedParameter->deRegisterParameterObserver(this);
 
   assignedParameter = parameterToAssign;
+  updateWidgetFromAssignedParameter();
 
   if( assignedParameter != NULL )
     assignedParameter->registerParameterObserver(this);

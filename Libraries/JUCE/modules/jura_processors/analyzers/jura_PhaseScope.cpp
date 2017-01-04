@@ -344,10 +344,13 @@ void PhaseScope::createParameters()
   p = new Parameter(plugInLock, "Rainbow", 0.0, 1.0, 0.0, 0.0, Parameter::BOOLEAN);
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setRainbowMode);
   addObservedParameter(p);
+
+  //resetParametersToDefaultValues();
 }
 
 void PhaseScope::setDisplayPixelSize(int width, int height)
 {
+  ScopedLock scopedLock(*plugInLock);
   displayWidth  = width;
   displayHeight = height; 
   updateBufferSize();
@@ -395,6 +398,7 @@ AudioModuleEditor* PhaseScope::createEditor()
 
 void PhaseScope::processBlock(double **inOutBuffer, int numChannels, int numSamples)
 {
+  ScopedLock scopedLock(*plugInLock);
   jassert(numChannels == 2);
   if(needsPixelDecay)
   {
@@ -407,17 +411,21 @@ void PhaseScope::processBlock(double **inOutBuffer, int numChannels, int numSamp
 
 void PhaseScope::setSampleRate(double newSampleRate)
 {
+  ScopedLock scopedLock(*plugInLock);
   phaseScopeBuffer.setSampleRate(newSampleRate);
 }
 
 void PhaseScope::reset()
 {
+  ScopedLock scopedLock(*plugInLock);
   phaseScopeBuffer.reset();
   colorCounter = 0.0;
 }
 
 Colour PhaseScope::getAndUpdateColor()
 {
+  ScopedLock scopedLock(*plugInLock);
+
   if(!rainbow)
     return Colours::white;
 
@@ -432,6 +440,7 @@ Colour PhaseScope::getAndUpdateColor()
 
 void PhaseScope::updateBufferSize()
 {
+  ScopedLock scopedLock(*plugInLock);
   int w = (int) round(displayWidth  / pixelScale);
   int h = (int) round(displayHeight / pixelScale);
   phaseScopeBuffer.setSize(w, h);

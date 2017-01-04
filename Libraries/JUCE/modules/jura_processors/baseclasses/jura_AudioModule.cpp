@@ -266,6 +266,13 @@ XmlElement AudioModule::convertXmlStateIfNecessary(const XmlElement& xmlState)
 
   return xmlState;
 }
+
+void AudioModule::resetParametersToDefaultValues()
+{
+  ScopedLock scopedLock(*plugInLock);
+  for(int i = 0; i < (int)observedParameters.size(); i++)
+    observedParameters[i]->resetToDefaultValue(true, true);
+}
     
 void AudioModule::registerDeletionWatcher(AudioModuleDeletionWatcher *watcher)
 {

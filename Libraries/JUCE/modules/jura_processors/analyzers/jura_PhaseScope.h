@@ -239,7 +239,7 @@ public:
 
   /** Returns the color that should be used for this frame. We assume here that this function is 
   called at frame rate (it will update the internal color-period counter, so it msut be called at 
-  the correct rate - otherwise the olor perido will be wrong). */
+  the correct rate - otherwise the color period will be wrong). */
   Colour getAndUpdateColor();
 
   inline Colour getColourAt(int x, int y) 

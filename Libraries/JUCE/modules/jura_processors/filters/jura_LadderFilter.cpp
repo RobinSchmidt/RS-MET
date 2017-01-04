@@ -63,6 +63,8 @@ void Ladder::createStaticParameters()
   // make sure that the parameters are initially in sync with the audio engine:
   for(int i = 0; i < (int)observedParameters.size(); i++)
     observedParameters[i]->resetToDefaultValue(true, true);
+  // replace this loop by a call to:
+  //resetParametersToDefaultValues();
 
   // there seems to be bug - when saving a preset, it saves a controller-mapping of (nonexistent)
   // controller number -1 for the mode parameter -> check this...
