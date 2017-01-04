@@ -256,6 +256,10 @@ protected:
   displayHeight and pixelScale. */
   void updateBufferSize();
 
+  /** Updates the image for the scope picture, i.e. writes/converts the content of the 
+  phaseScopeBuffer member into the image member. */
+  void updateScopeImage();
+
   PhaseScopeBuffer phaseScopeBuffer;
 
   bool needsPixelDecay;   // flag to indicate that a pixel decay should be triggered

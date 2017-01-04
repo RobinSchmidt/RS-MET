@@ -447,22 +447,6 @@ void PhaseScope::updateBufferSize()
   image = Image(Image::ARGB, w, h, false);
 }
 
-//=================================================================================================
-
-PhaseScopeDisplay::PhaseScopeDisplay(jura::PhaseScope *newPhaseScopeToEdit)
-{
-  phaseScope = newPhaseScopeToEdit;
-  //setSize(400, 400);
-
-  startTimerHz(25);
-  phaseScope->phaseScopeBuffer.setFrameRate(25);
-}
-
-void PhaseScopeDisplay::resized()
-{
-  phaseScope->setDisplayPixelSize(getWidth(), getHeight());
-}
-
 // \todo move these helper functions to jura_GraphicsTools, maybe templatize so it can be used 
 // for double also:
 void dataMatrixToPixelBrightnessGray(float **data, uint8 *pixels, int width, int height)
@@ -495,9 +479,8 @@ void dataMatrixToPixelBrightness(float **data, uint8 *pixels, int width, int hei
       p   += 4;
     }
   }
+  // todo: write a version of this function that uses a colormap
 }
-// todo: write a version of this function that uses a colormap
-
 void dataMatrixToImage(float **data, Image &image, 
   uint8 red = 255, uint8 green = 255, uint8 blue = 255)
 {
@@ -512,16 +495,36 @@ void dataMatrixToImage(float **data, Image &image,
     dataMatrixToPixelBrightness(data, pixelPointer, bitmap.width, bitmap.height, red, green, blue);
 }
 
+void PhaseScope::updateScopeImage()
+{
+  // old (without color change):
+  //dataMatrixToImage(phaseScopeBuffer.getDataMatrix(), image);
+  //dataMatrixToImage(phaseScopeBuffer.getDataMatrix(), image, 0, 0, 255);
+
+  Colour c = getAndUpdateColor();
+  dataMatrixToImage(phaseScopeBuffer.getDataMatrix(), image, 
+    c.getRed(), c.getGreen(), c.getBlue());
+}
+
+//=================================================================================================
+
+PhaseScopeDisplay::PhaseScopeDisplay(jura::PhaseScope *newPhaseScopeToEdit)
+{
+  phaseScope = newPhaseScopeToEdit;
+  //setSize(400, 400);
+
+  startTimerHz(25);
+  phaseScope->phaseScopeBuffer.setFrameRate(25);
+}
+
+void PhaseScopeDisplay::resized()
+{
+  phaseScope->setDisplayPixelSize(getWidth(), getHeight());
+}
+
 void PhaseScopeDisplay::paint(Graphics &g)
 {
-  //dataMatrixToImage(phaseScope->phaseScopeBuffer.getDataMatrix(), image);
-  //dataMatrixToImage(phaseScope->phaseScopeBuffer.getDataMatrix(), image, 0, 0, 255);
-
-  Colour c = phaseScope->getAndUpdateColor();
-  dataMatrixToImage(phaseScope->phaseScopeBuffer.getDataMatrix(), phaseScope->image, c.getRed(), 
-    c.getGreen(), c.getBlue());
-
-  //g.drawImageAt(phaseScope->image, 0, 0);
+  phaseScope->updateScopeImage();
 
   g.setImageResamplingQuality(Graphics::lowResamplingQuality);
   //g.setImageResamplingQuality(Graphics::mediumResamplingQuality);
@@ -532,7 +535,6 @@ void PhaseScopeDisplay::paint(Graphics &g)
   // maybe all of this should be refactored in way, such that we need to write only
   // g.drawImageAt(phaseScope->getImage(), 0, 0);  here - we could take care of proper thread 
   // synchronization there also
-
 
   //// this is the old, direct and horribly inefficient way to do it:
   //g.fillAll(Colours::black);
