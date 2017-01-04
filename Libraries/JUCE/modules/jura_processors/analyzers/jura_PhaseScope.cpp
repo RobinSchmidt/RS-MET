@@ -294,7 +294,7 @@ PhaseScope::PhaseScope(CriticalSection *lockToUse) : AudioModule(lockToUse)
   ScopedLock scopedLock(*plugInLock);
   moduleName = "PhaseScope";
   setActiveDirectory(getApplicationDirectory() + "/PhaseScopePresets");
-  needsPixelDecay = false;
+  //needsPixelDecay = false;
   rainbow = false;
 
   pixelScale = 1.0;
@@ -305,6 +305,8 @@ PhaseScope::PhaseScope(CriticalSection *lockToUse) : AudioModule(lockToUse)
   colorPeriod = 5.0;
   colorCounter = 0.0;
   createParameters();
+
+  reset();
 }
 
 void PhaseScope::createParameters()
@@ -389,6 +391,7 @@ void PhaseScope::setRainbowMode(bool shouldUseRainbowColors)
 void PhaseScope::setFrameRate(double newRate)
 {
   phaseScopeBuffer.setFrameRate(newRate);
+  updateRepaintInterval();
 }
 
 AudioModuleEditor* PhaseScope::createEditor()
@@ -400,19 +403,31 @@ void PhaseScope::processBlock(double **inOutBuffer, int numChannels, int numSamp
 {
   ScopedLock scopedLock(*plugInLock);
   jassert(numChannels == 2);
-  if(needsPixelDecay)
-  {
-    phaseScopeBuffer.applyPixelDecay();
-    needsPixelDecay = false;
-  }
+
+  //// this may be obsolete soon:
+  //if(needsPixelDecay)
+  //{
+  //  phaseScopeBuffer.applyPixelDecay();
+  //  needsPixelDecay = false;
+  //}
+
   for(int n = 0; n < numSamples; n++)
     phaseScopeBuffer.bufferSampleFrame(inOutBuffer[0][n], inOutBuffer[1][n]);
+
+  repaintCounter += numSamples;
+  if(repaintCounter > repaintIntervalInSamples)
+  {
+    updateScopeImage();
+    sendImageUpdateNotification(&image);
+    repaintCounter -= repaintIntervalInSamples;
+  }
 }
 
 void PhaseScope::setSampleRate(double newSampleRate)
 {
   ScopedLock scopedLock(*plugInLock);
   phaseScopeBuffer.setSampleRate(newSampleRate);
+  updateRepaintInterval();
 }
 
 void PhaseScope::reset()
@@ -420,6 +435,7 @@ void PhaseScope::reset()
   ScopedLock scopedLock(*plugInLock);
   phaseScopeBuffer.reset();
   colorCounter = 0.0;
+  repaintCounter = 0;
 }
 
 Colour PhaseScope::getAndUpdateColor()
@@ -504,6 +520,14 @@ void PhaseScope::updateScopeImage()
   Colour c = getAndUpdateColor();
   dataMatrixToImage(phaseScopeBuffer.getDataMatrix(), image, 
     c.getRed(), c.getGreen(), c.getBlue());
+  phaseScopeBuffer.applyPixelDecay();
+}
+
+void PhaseScope::updateRepaintInterval()
+{
+  repaintIntervalInSamples = 
+    (int) round(phaseScopeBuffer.getSampleRate() / phaseScopeBuffer.getFrameRate());
+  repaintCounter = 0;
 }
 
 //=================================================================================================
@@ -511,10 +535,18 @@ void PhaseScope::updateScopeImage()
 PhaseScopeDisplay::PhaseScopeDisplay(jura::PhaseScope *newPhaseScopeToEdit)
 {
   phaseScope = newPhaseScopeToEdit;
-  //setSize(400, 400);
+  phaseScope->addImageUpdateListener(this);
 
-  startTimerHz(25);
-  phaseScope->phaseScopeBuffer.setFrameRate(25);
+  addChangeListener(this);
+
+  //setSize(400, 400);
+  //startTimerHz(25);
+  //phaseScope->phaseScopeBuffer.setFrameRate(25);
+}
+
+PhaseScopeDisplay::~PhaseScopeDisplay()
+{
+  phaseScope->removeImageUpdateListener(this);
 }
 
 void PhaseScopeDisplay::resized()
@@ -524,7 +556,7 @@ void PhaseScopeDisplay::resized()
 
 void PhaseScopeDisplay::paint(Graphics &g)
 {
-  phaseScope->updateScopeImage();
+  //phaseScope->updateScopeImage();
 
   g.setImageResamplingQuality(Graphics::lowResamplingQuality);
   //g.setImageResamplingQuality(Graphics::mediumResamplingQuality);
@@ -548,20 +580,37 @@ void PhaseScopeDisplay::paint(Graphics &g)
   //}
 }
 
-void PhaseScopeDisplay::timerCallback()
+//void PhaseScopeDisplay::timerCallback()
+//{
+//  repaint();
+//  phaseScope->phaseScopeBuffer.applyPixelDecay();
+//  //phaseScope->triggerPixelDecay();
+//
+//  //startTimerHz(phaseScope->getFrameRate());
+//  startTimer((int) (1000.0 / phaseScope->getFrameRate())); // fps to ms
+//
+//  // there's a kind of bug - the display flickers and the flickering seems to be different if
+//  // we apply the pixel decay in the GUI thread (by calling 
+//  // phaseScope->phaseScopeBuffer.applyPixelDecay() here) or apply it in the audio thread
+//  // (by calling phaseScope->triggerPixelDecay()). maybe we need to do some kind of thread
+//  // synchronization
+//}
+
+void PhaseScopeDisplay::imageWasUpdated(Image* image)
+{
+  sendChangeMessage();
+  // We will receive the change message ourselves and when we do, we will trigger a repaint. We 
+  // can't directly call repaint here because then we hit an assertion which says we should acquire
+  // a MessageManagerLock - but when we do so, it becomes unresponsive.
+
+  // this doesn't work:
+  //const MessageManagerLock mmLock;
+  //repaint();
+}
+
+void PhaseScopeDisplay::changeListenerCallback(ChangeBroadcaster *source)
 {
   repaint();
-  //phaseScope->phaseScopeBuffer.applyPixelDecay();
-  phaseScope->triggerPixelDecay();
-
-  //startTimerHz(phaseScope->getFrameRate());
-  startTimer((int) (1000.0 / phaseScope->getFrameRate())); // fps to ms
-
-  // there's a kind of bug - the display flickers and the flickering seems to be different if
-  // we apply the pixel decay in the GUI thread (by calling 
-  // phaseScope->phaseScopeBuffer.applyPixelDecay() here) or apply it in the audio thread
-  // (by calling phaseScope->triggerPixelDecay()). maybe we need to do some kind of thread
-  // synchronization
 }
 
 //=================================================================================================

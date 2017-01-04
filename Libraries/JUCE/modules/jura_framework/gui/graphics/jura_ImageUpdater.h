@@ -8,6 +8,7 @@ your GUI component be repainted whenever that image was updated. */
 class JUCE_API ImageUpdateListener
 {
 public:
+  ImageUpdateListener() {}
   virtual void imageWasUpdated(Image* image) = 0;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ImageUpdateListener)
 };
@@ -20,13 +21,11 @@ class JUCE_API ImageUpdater
 
 public:
 
-  //ImageUpdater();
-  //virtual ~ImageUpdater();
+  ImageUpdater() {}
+  virtual ~ImageUpdater(){}
 
   virtual void addImageUpdateListener(ImageUpdateListener* listenerToAdd);
-
   virtual void removeImageUpdateListener(ImageUpdateListener* listenerToRemove);
-
   virtual void sendImageUpdateNotification(Image* image);
 
 protected:

@@ -100,6 +100,9 @@ public:
   /** Returns a pointer to our internally stored data matrix. */
   float** getDataMatrix() { return buffer; }
 
+  /** Returns the sample rate. */
+  inline double getSampleRate() { return sampleRate; }
+
   /** Returns the frame rate. */
   inline double getFrameRate() { return frameRate; }
 
@@ -195,7 +198,7 @@ protected:
  set to zero)
 */
 
-class JUCE_API PhaseScope : public jura::AudioModule
+class JUCE_API PhaseScope : public jura::AudioModule, public jura::ImageUpdater
 {
 
 public:
@@ -224,7 +227,7 @@ public:
     // setColorMode(int newMode) - can have different settings: fixed color, hue rotation, 
     // alternating colors, colormapped values, etc.
 
-  inline void triggerPixelDecay() { needsPixelDecay = true; }
+  //inline void triggerPixelDecay() { needsPixelDecay = true; }  // obsolete
 
   // inquiry functions:
   inline double getFrameRate() { return phaseScopeBuffer.getFrameRate(); }
@@ -260,9 +263,13 @@ protected:
   phaseScopeBuffer member into the image member. */
   void updateScopeImage();
 
+  /** Updates our repaint triggering interval - needs to be called whenever frame rate or sample
+  rate changes. It's the number of samples between two frames. */
+  void updateRepaintInterval();
+
   PhaseScopeBuffer phaseScopeBuffer;
 
-  bool needsPixelDecay;   // flag to indicate that a pixel decay should be triggered
+  //bool needsPixelDecay;   // flag to indicate that a pixel decay should be triggered
   bool rainbow;           // indicates usage of rainbow colors (i.e. hue rotation)
   double colorPeriod;     // period for one complete color change cycle (in seconds)
   double colorCounter;
@@ -270,6 +277,10 @@ protected:
   double pixelScale;      // scale factor between internal and external pixel sizes of the image
   int displayWidth;       // display width in pixels
   int displayHeight;      // display height in pixels
+
+
+  int repaintIntervalInSamples;
+  int repaintCounter;
 
   Image image;
 
@@ -295,16 +306,22 @@ rescaling) such that the line thickness my scale up when increasing the display 
 
 */
 
-class JUCE_API PhaseScopeDisplay : public Component, public Timer
+class JUCE_API PhaseScopeDisplay : public Component, public ImageUpdateListener,
+  public ChangeListener, public ChangeBroadcaster
+
+  /*public Timer*/
 {
 
 public:
 
   PhaseScopeDisplay(jura::PhaseScope *newPhaseScopeToEdit);
+  virtual ~PhaseScopeDisplay();
 
   virtual void resized() override;
   virtual void paint(Graphics &g)	override;
-  virtual void timerCallback() override;
+  //virtual void timerCallback() override;
+  virtual void imageWasUpdated(Image* image) override;
+  virtual void changeListenerCallback(ChangeBroadcaster *source) override;
 
 protected:
 
