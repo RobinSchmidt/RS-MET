@@ -61,6 +61,7 @@ namespace jura
 #include "gui/graphics/jura_ColourScheme.h"
 #include "gui/graphics/jura_BitmapFonts.h"
 #include "gui/graphics/jura_GraphicsTools.h"
+#include "gui/graphics/jura_ImageUpdater.h"
 
 #include "gui/misc/jura_DescribedComponent.h"
 #include "gui/misc/jura_ColourSchemeComponent.h"

@@ -34,6 +34,7 @@ namespace jura
 #include "gui/graphics/jura_ColourScheme.cpp"
 #include "gui/graphics/jura_BitmapFonts.cpp"
 #include "gui/graphics/jura_GraphicsTools.cpp"
+#include "gui/graphics/jura_ImageUpdater.cpp"
 
 #include "gui/misc/jura_DescribedComponent.cpp"
 #include "gui/misc/jura_ColourSchemeComponent.cpp"
