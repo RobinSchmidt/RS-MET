@@ -415,7 +415,7 @@ void PhaseScope::processBlock(double **inOutBuffer, int numChannels, int numSamp
     phaseScopeBuffer.bufferSampleFrame(inOutBuffer[0][n], inOutBuffer[1][n]);
 
   repaintCounter += numSamples;
-  if(repaintCounter > repaintIntervalInSamples)
+  while(repaintCounter > repaintIntervalInSamples)
   {
     updateScopeImage();
     sendImageUpdateNotification(&image);
@@ -557,6 +557,8 @@ void PhaseScopeDisplay::resized()
 void PhaseScopeDisplay::paint(Graphics &g)
 {
   //phaseScope->updateScopeImage();
+
+  //ScopedLock scopedLock(*(phaseScope->plugInLock));
 
   g.setImageResamplingQuality(Graphics::lowResamplingQuality);
   //g.setImageResamplingQuality(Graphics::mediumResamplingQuality);

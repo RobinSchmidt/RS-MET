@@ -1,10 +1,26 @@
+-make the editors skinnable (background image, etc.)
+-make the widgets skinnable (choose colors, fonts, images (.png or .svg), etc.)
+-it should be possible to load skins at runtime or compile them into the binary
+Idea: In all widgets that should be skinnable, use the "strategy" pattern for painting, for 
+example, in RButton::paint delegate the actual painting to buttonPainter->paint(this, g), where
+buttonPainter is the strategy object responsible for the actual painting. It is a pointer member
+of the RButton class and of type RButtonPainter or some subclass thereof. The baseclass 
+implementation would provide the default painting style and we could have subclasses 
+RButtonPainterSVG, RButtonPainterPNG, etc. that use custom graphics. Or the baseclass would be
+abstract and we would have a RButtonPainterDefault class which is used as fallback.The painter 
+object can be assigned at runtime via RButton::setButtonPainter. The widget colour-scheme stuff 
+would be moved into the RButtonPainterDefault class. ...or, maybe for easier backwards 
+compatibility, we could by default let this strategy object be a nullptr and check in 
+RButton::paint against nulltptr and invoke the painter object only if not null. A similar scheme
+can be used for the editors - their painter objects could then be equipped with background images,
+fonts, etc.
+
+
 -drag over the plot subclasses
 -implement a freq-response plot editor for the Ladder
 -drag over all the remaining widgets
 
--make the editors skinnable (background image, etc.)
--make the widgets skinnable (choose colors, fonts, images (.png or .svg), etc.)
--it should be possible to load skins at runtime or compile them into the binary
+
 
 
 -maybe move some frameworkish classes down into RAPT (Parameter, AudioModule, 

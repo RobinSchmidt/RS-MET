@@ -300,15 +300,10 @@ and radial grids from there.
 ..it's more obvious with faster decay times - maybe it's because the decay is applied in the GUI 
 thread whereas accumulation is done in the audio-thread? instead of calling applyPixelDecay in the 
 GUI thread we could set a flag in the phaseScope audio module and the apply the decay there
-
-\todo let the internal pixel-buffer size possibly be different from the display size (use image
-rescaling) such that the line thickness my scale up when increasing the display size
-
-*/
+-> done - this seems to help indeed but also seems to introduce tearing artifacts */
 
 class JUCE_API PhaseScopeDisplay : public Component, public ImageUpdateListener,
   public ChangeListener, public ChangeBroadcaster
-
   /*public Timer*/
 {
 
