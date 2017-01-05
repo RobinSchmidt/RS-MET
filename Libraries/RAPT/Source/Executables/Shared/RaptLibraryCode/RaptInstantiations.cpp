@@ -37,5 +37,8 @@ template RAPT::PhasorFilter<float, float>;
 template RAPT::PhasorStateMapper<float>;
 template RAPT::StateVariableFilter<float, float>; 
 
+// Visualization
+template RAPT::Image<float>;
+
 // Modulators:
 //template RAPT::rsBreakpointModulator<double>; // will be needed, when the class is templatized

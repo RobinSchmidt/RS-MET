@@ -79,6 +79,13 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\Modules\RAPT.cpp" />
+    <ClCompile Include="..\..\Source\Modules\Visualization\Graphics\Image.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Modules\Visualization\Visualization.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\Modules\Basics\Basics.h" />
@@ -100,6 +107,8 @@
     <ClInclude Include="..\..\Source\Modules\Modulators\Envelopes\BreakpointModulator.h" />
     <ClInclude Include="..\..\Source\Modules\Modulators\Modulators.h" />
     <ClInclude Include="..\..\Source\Modules\RAPT.h" />
+    <ClInclude Include="..\..\Source\Modules\Visualization\Graphics\Image.h" />
+    <ClInclude Include="..\..\Source\Modules\Visualization\Visualization.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\Source\Modules\Modulators\Ideas.txt" />

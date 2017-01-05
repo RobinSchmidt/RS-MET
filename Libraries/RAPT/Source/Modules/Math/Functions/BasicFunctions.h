@@ -1,5 +1,5 @@
-#ifndef RS_BASICFUNCTIONS_H_INCLUDED
-#define RS_BASICFUNCTIONS_H_INCLUDED
+#ifndef RAPT_BASICFUNCTIONS_H_INCLUDED
+#define RAPT_BASICFUNCTIONS_H_INCLUDED
 
 /** Returns the absolute value of the input argument. It is intended to replace the standard
 "abs" and "fabs" c-functions where genericity is desired. */

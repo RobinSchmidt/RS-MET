@@ -12,6 +12,7 @@ think) */
 //#include "Physics/Physics.cpp"
 //#include "Circuits/Circuits.cpp" 
 //#include "Spectral/Spectral.cpp" 
+#include "Visualization/Visualization.cpp"
 //#include "Generators/Generators.cpp" 
 #include "Modulators/Modulators.cpp" 
 //#include "Effects/Effects.cpp" 
