@@ -460,7 +460,7 @@ void LadderSpectrumEditor::updatePlot()
   //repaint();
 }
 
-void LadderSpectrumEditor::plotCurveFamily(Graphics &g, Image* targetImage, 
+void LadderSpectrumEditor::plotCurveFamily(Graphics &g, juce::Image* targetImage, 
   XmlElement *targetSVG)
 {
   if(freqParameter == nullptr || resoParameter == nullptr) // pointers need to be assigned
@@ -499,14 +499,14 @@ void LadderSpectrumEditor::plotCurveFamily(Graphics &g, Image* targetImage,
 
 // internal functions:
 
-double LadderSpectrumEditor::resoToY(double reso, Image *targetImage)
+double LadderSpectrumEditor::resoToY(double reso, juce::Image *targetImage)
 {
   double maxRes = resoParameter->getMaxValue();
   double y = (1 - reso/maxRes) * getPlotHeight(targetImage);
   return y;
 }
 
-double LadderSpectrumEditor::yToReso(double y, Image *targetImage)
+double LadderSpectrumEditor::yToReso(double y, juce::Image *targetImage)
 {
   double maxRes = resoParameter->getMaxValue();
   double reso = maxRes * ( 1.0 - y/getPlotHeight(targetImage) );    

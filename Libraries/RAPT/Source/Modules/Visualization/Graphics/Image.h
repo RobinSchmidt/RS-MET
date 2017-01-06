@@ -80,6 +80,7 @@ public:
   {
     return &data[y*width+x];
   }
+  // maybe use operator (x, y) instead of function..., but the operator should return a reference
 
   /** Returns the color of the pixel at (x,y). */
   inline TPix getPixelColor(int x, int y) const

@@ -282,7 +282,7 @@ protected:
   int repaintIntervalInSamples;
   int repaintCounter;
 
-  Image image;
+  juce::Image image;
 
   friend class PhaseScopeDisplay;
 
@@ -315,7 +315,7 @@ public:
   virtual void resized() override;
   virtual void paint(Graphics &g)	override;
   //virtual void timerCallback() override;
-  virtual void imageWasUpdated(Image* image) override;
+  virtual void imageWasUpdated(juce::Image* image) override;
   virtual void changeListenerCallback(ChangeBroadcaster *source) override;
 
 protected:

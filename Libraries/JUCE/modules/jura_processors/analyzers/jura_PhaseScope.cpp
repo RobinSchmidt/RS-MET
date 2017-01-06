@@ -460,7 +460,7 @@ void PhaseScope::updateBufferSize()
   int w = (int) round(displayWidth  / pixelScale);
   int h = (int) round(displayHeight / pixelScale);
   phaseScopeBuffer.setSize(w, h);
-  image = Image(Image::ARGB, w, h, false);
+  image = juce::Image(juce::Image::ARGB, w, h, false);
 }
 
 // \todo move these helper functions to jura_GraphicsTools, maybe templatize so it can be used 
@@ -497,12 +497,12 @@ void dataMatrixToPixelBrightness(float **data, uint8 *pixels, int width, int hei
   }
   // todo: write a version of this function that uses a colormap
 }
-void dataMatrixToImage(float **data, Image &image, 
+void dataMatrixToImage(float **data, juce::Image &image, 
   uint8 red = 255, uint8 green = 255, uint8 blue = 255)
 {
   // We assume here that the size of the image (width and height) matches the dimensions of the 
   // data matrix)
-  Image::BitmapData bitmap(image, Image::BitmapData::writeOnly);
+  juce::Image::BitmapData bitmap(image, juce::Image::BitmapData::writeOnly);
   jassert(bitmap.pixelStride == 4);
   uint8 *pixelPointer = bitmap.getPixelPointer(0, 0);
   if(red == green && green == blue)
@@ -598,7 +598,7 @@ void PhaseScopeDisplay::paint(Graphics &g)
 //  // synchronization
 //}
 
-void PhaseScopeDisplay::imageWasUpdated(Image* image)
+void PhaseScopeDisplay::imageWasUpdated(juce::Image* image)
 {
   sendChangeMessage();
   // We will receive the change message ourselves and when we do, we will trigger a repaint. We 

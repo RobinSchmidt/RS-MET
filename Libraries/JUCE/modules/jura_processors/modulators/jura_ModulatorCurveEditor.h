@@ -181,17 +181,17 @@ public:
 protected:
 
   /** Overrides CurveFamilyPlot::plotCurveFamily in order to additionally draw the nodes. */
-  virtual void plotCurveFamily(Graphics &g, Image *targetImage = NULL,
+  virtual void plotCurveFamily(Graphics &g, juce::Image *targetImage = NULL,
     XmlElement *targetSVG = NULL);
 
   /** Plots the breakpoints as dots of some modulator. */
-  virtual void plotBreakpoints(Graphics &g, Image *targetImage, 
+  virtual void plotBreakpoints(Graphics &g, juce::Image *targetImage, 
     RAPT::rsBreakpointModulator* modulator, const Colour& dotColour);
 
   /** Plots the loop locators of some modulator. If fullHeight is false, it will draw only
   small locators which are more suitable for unfocused curves when there are more curves in one
   plot. */
-  virtual void plotLoopLocators(Graphics &g, Image *targetImage, 
+  virtual void plotLoopLocators(Graphics &g, juce::Image *targetImage, 
     RAPT::rsBreakpointModulator* modulator, const Colour& locatorColour, bool fullHeight = true);
 
 

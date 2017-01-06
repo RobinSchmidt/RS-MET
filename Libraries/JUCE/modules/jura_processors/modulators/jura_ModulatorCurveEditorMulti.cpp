@@ -157,7 +157,8 @@ void ModulatorCurveEditorMulti::updateMaximumRange(bool alsoUpdateCurrentRange)
     setMaximumRange(minX-marginX, maxX+marginX, minY-marginY, maxY+marginY);
 }
 
-void ModulatorCurveEditorMulti::plotCurveFamily(Graphics &g, Image *targetImage, XmlElement *targetSVG)
+void ModulatorCurveEditorMulti::plotCurveFamily(Graphics &g, juce::Image *targetImage, 
+  XmlElement *targetSVG)
 {
   CurveFamilyPlotOld::plotCurveFamily(g, targetImage, targetSVG); // draws axes, labels, grids, curves
 

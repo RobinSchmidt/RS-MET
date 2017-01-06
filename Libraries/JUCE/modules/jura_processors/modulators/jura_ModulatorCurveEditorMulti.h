@@ -80,7 +80,7 @@ public:
 protected:
 
   /** Overrides ModulatorCurveEditor::plotCurveFamily in order to draw all curves. */
-  virtual void plotCurveFamily(Graphics &g, Image *targetImage = NULL, 
+  virtual void plotCurveFamily(Graphics &g, juce::Image *targetImage = NULL, 
     XmlElement *targetSVG = NULL);
 
   juce::Array<RAPT::rsBreakpointModulator*, CriticalSection> modulators;

@@ -999,7 +999,8 @@ void ModulatorCurveEditor::updateMaximumRange(bool alsoUpdateCurrentRange)
 //-------------------------------------------------------------------------------------------------
 // internal functions:
 
-void ModulatorCurveEditor::plotCurveFamily(Graphics &g, Image *targetImage, XmlElement *targetSVG)
+void ModulatorCurveEditor::plotCurveFamily(Graphics &g, juce::Image *targetImage, 
+  XmlElement *targetSVG)
 {
   // call the paint-method of the CurveFamilyPlot base class, which draws the axes, labels, grids,
   // the curves themselves etc.:
@@ -1023,7 +1024,7 @@ void ModulatorCurveEditor::plotCurveFamily(Graphics &g, Image *targetImage, XmlE
   plotLoopLocators(g, targetImage, modulatorToEdit, locatorColour);
 }
 
-void ModulatorCurveEditor::plotBreakpoints(Graphics &g, Image *targetImage, 
+void ModulatorCurveEditor::plotBreakpoints(Graphics &g, juce::Image *targetImage, 
   RAPT::rsBreakpointModulator* modulator, const Colour& dotColour)
 {
   if( modulator == NULL )
@@ -1060,7 +1061,7 @@ void ModulatorCurveEditor::plotBreakpoints(Graphics &g, Image *targetImage,
   }
 }
 
-void ModulatorCurveEditor::plotLoopLocators(Graphics &g, Image *targetImage, 
+void ModulatorCurveEditor::plotLoopLocators(Graphics &g, juce::Image *targetImage, 
   RAPT::rsBreakpointModulator* modulator, const Colour& locatorColour, bool fullHeight)
 {
   if( modulator == NULL )
