@@ -31,6 +31,9 @@
     <Filter Include="Visualization\Graphics">
       <UniqueIdentifier>{1d1119de-a3d7-4091-b4f6-ee395d614e0f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Visualization\Misc">
+      <UniqueIdentifier>{48fd5223-b194-471a-9db6-68a57dbb298e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\Modules\Basics\Basics.cpp">
@@ -81,6 +84,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Modules\Visualization\Visualization.cpp">
       <Filter>Visualization</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Modules\Visualization\Misc\PhaseScopeBuffer.cpp">
+      <Filter>Visualization\Misc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -144,6 +150,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Modules\Visualization\Visualization.h">
       <Filter>Visualization</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Modules\Visualization\Misc\PhaseScopeBuffer.h">
+      <Filter>Visualization\Misc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

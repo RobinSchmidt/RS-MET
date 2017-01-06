@@ -8,6 +8,8 @@ namespace RAPT
 
 #include "Graphics/Image.h"
 
+#include "Misc/PhaseScopeBuffer.h"
+
 }
 
 #endif
