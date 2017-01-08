@@ -1018,7 +1018,7 @@ template <class T1, class T2>
 void ArrayTools::rsScale(T1 *buffer, int length, T2 scaleFactor)
 {
   for(int n = 0; n < length; n++)
-    buffer[n] *= scaleFactor;
+    buffer[n] *= (T1)scaleFactor;
 }
 
 template <class T1, class T2>

@@ -87,8 +87,8 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::setPixelSpread(TPar newSpread)
 template<class TSig, class TPix, class TPar>
 void PhaseScopeBuffer<TSig, TPix, TPar>::convertAmplitudesToMatrixIndices(TSig &x, TSig &y)
 {
-  x  = 0.5*(x+1);  // convert -1..+1 into 0..1
-  y  = 0.5*(y+1);
+  x  = (TSig)0.5*(x+1);  // convert -1..+1 into 0..1
+  y  = (TSig)0.5*(y+1);
   x *= width;
   y *= height;
   // maybe we should add 0.5 after multiplication by width/height?
@@ -129,7 +129,7 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::addLineTo(TSig x, TSig y)
   TSig dx = x-xOld;
   TSig dy = y-yOld;
   TSig pixelDistance = sqrt(dx*dx + dy*dy);
-  int  numDots = max(1, (int)floor(lineDensity*pixelDistance));
+  int  numDots = rsMax(1, (int)floor(lineDensity*pixelDistance));
   TPix intensity = (TPix) (insertFactor/numDots);
   TSig scaler = (TSig)(1.0 / numDots);
   TSig k;
@@ -183,7 +183,7 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::addDot(TSig x, TSig y, TPix intensity)
   if(thickness > 0.f && j >= 1 && j < width-2 && i >= 1 && i < height-2)
   {
     TPix t, s, sa, sb, sc, sd, ta, tb, tc, td;
-    t = thickness;             // weight for direct neighbour pixels
+    t = (TPix)thickness;      // weight for direct neighbour pixels
     s = t * (TPix)SQRT2_INV;  // weight for diagonal neighbour pixels
 
     s = t*t;  // test
@@ -234,7 +234,7 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::addDotFast(TSig x, TSig y, TPix intensi
   {
     TPix a, ta, sa;
     a  = intensity;
-    ta = a  * thickness;
+    ta = a  * (TPix)thickness;
     sa = ta * (TPix)SQRT2_INV;
 
     accumulate(buffer[i-1][j-1], sa);

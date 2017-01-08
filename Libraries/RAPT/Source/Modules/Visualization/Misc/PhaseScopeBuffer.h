@@ -24,6 +24,13 @@ public:
 
   /** Sets the frame rate. */
   void setFrameRate(TPar newFrameRate);
+  // Replace the frame rate with an integer number decayGranularity that gives the number of 
+  // samples after which a multiplication of the whole buffer with the decayFactor is 
+  // automatically triggered. Reasonable values should be around 1000. At 44.1kHz sample rate, the 
+  // decay update rate would be 44.1 Hz which is equal to a reasonable frame rate. With lower 
+  // values (around 100), we would apply the decay more often, so we would see less artifacts like
+  // lines having a constant gray value for some length, then switch, etc. - the color gradients on
+  // the display will be smoother, especially with low glow times
 
   /** Sets the overall brightness. This parameter, together with the sample rate, determines the 
   weight by which new dot are added in. */
@@ -68,7 +75,7 @@ public:
 
   /** Returns the buffered value at the given (x,y) pixel position. No bounds checking is done - 
   you must make sure that the indices are valid. */
-  inline TPix getValueAt(int x, int y) { return buffer[x][y]; }
+  //inline TPix getValueAt(int x, int y) { return buffer[x][y]; } // should return buffer[y][x]
 
   /** Returns a pointer to our internally stored data matrix. */
   TPix** getDataMatrix() { return buffer; }

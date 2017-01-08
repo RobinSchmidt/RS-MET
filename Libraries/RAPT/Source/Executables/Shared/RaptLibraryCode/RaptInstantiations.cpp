@@ -39,7 +39,7 @@ template RAPT::StateVariableFilter<float, float>;
 
 // Visualization
 template RAPT::Image<float>;
-//template RAPT::PhaseScopeBuffer<float, float, double>; // does not yet compile 
+template RAPT::PhaseScopeBuffer<float, float, double>;
 
 // Modulators:
 //template RAPT::rsBreakpointModulator<double>; // will be needed, when the class is templatized
