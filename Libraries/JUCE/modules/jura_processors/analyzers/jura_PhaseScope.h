@@ -245,13 +245,13 @@ public:
   the correct rate - otherwise the color period will be wrong). */
   Colour getAndUpdateColor();
 
-  inline Colour getColourAt(int x, int y) 
-  { 
-    uint8 c = 255;
-    const Colour baseColor(c, c, c, c);  // make user selectable member later
-    return baseColor.withAlpha(phaseScopeBuffer.getValueAt(x, y));
-  }
-  // can be removed
+  //inline Colour getColourAt(int x, int y) 
+  //{ 
+  //  uint8 c = 255;
+  //  const Colour baseColor(c, c, c, c);  // make user selectable member later
+  //  return baseColor.withAlpha(phaseScopeBuffer.getValueAt(x, y));
+  //}
+  //// can be removed
 
 protected:
 
@@ -267,7 +267,8 @@ protected:
   rate changes. It's the number of samples between two frames. */
   void updateRepaintInterval();
 
-  PhaseScopeBuffer phaseScopeBuffer;
+  //PhaseScopeBuffer phaseScopeBuffer; // old
+  RAPT::PhaseScopeBuffer<double, float, double> phaseScopeBuffer;
 
   //bool needsPixelDecay;   // flag to indicate that a pixel decay should be triggered
   bool rainbow;           // indicates usage of rainbow colors (i.e. hue rotation)

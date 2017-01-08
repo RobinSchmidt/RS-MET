@@ -87,8 +87,8 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::setPixelSpread(TPar newSpread)
 template<class TSig, class TPix, class TPar>
 void PhaseScopeBuffer<TSig, TPix, TPar>::convertAmplitudesToMatrixIndices(TSig &x, TSig &y)
 {
-  x  = (TSig)0.5*(x+1);  // convert -1..+1 into 0..1
-  y  = (TSig)0.5*(y+1);
+  x  = TSig(0.5) * (x+1);  // convert -1..+1 into 0..1
+  y  = TSig(0.5) * (y+1);
   x *= width;
   y *= height;
   // maybe we should add 0.5 after multiplication by width/height?
@@ -130,6 +130,7 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::addLineTo(TSig x, TSig y)
   TSig dy = y-yOld;
   TSig pixelDistance = sqrt(dx*dx + dy*dy);
   int  numDots = rsMax(1, (int)floor(lineDensity*pixelDistance));
+  //int   numDots = max(1, (int)floor(lineDensity*pixelDistance));
   TPix intensity = (TPix) (insertFactor/numDots);
   TSig scaler = (TSig)(1.0 / numDots);
   TSig k;
@@ -159,10 +160,10 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::addDot(TSig x, TSig y, TPix intensity)
 
   // compute weights for bilinear deinterpolation (maybe factor out):
   TPix a, b, c, d;
-  d = x*y;
-  c = y-d;
-  b = x-d;
-  a = 1+d-x-y;
+  d = TPix(x*y);
+  c = TPix(y)-d;
+  b = TPix(x)-d;
+  a = 1+d-TPix(x+y);
 
   // compute values to accumulate into the 4 pixels at (i,j), (i+1,j), (i,j+1), (i+1,j+1):
   a *= intensity;  // (i,   j)
