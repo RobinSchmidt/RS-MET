@@ -34,6 +34,9 @@
     <Filter Include="Visualization\Misc">
       <UniqueIdentifier>{48fd5223-b194-471a-9db6-68a57dbb298e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Data\Simd">
+      <UniqueIdentifier>{c34052f4-1f4f-4c6c-891f-5f738892ec25}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\Modules\Basics\Basics.cpp">
@@ -153,6 +156,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Modules\Visualization\Misc\PhaseScopeBuffer.h">
       <Filter>Visualization\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Modules\Data\Simd\Float32x4.h">
+      <Filter>Data\Simd</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

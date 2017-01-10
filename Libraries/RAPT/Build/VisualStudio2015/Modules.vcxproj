@@ -96,6 +96,7 @@
     <ClInclude Include="..\..\Source\Modules\Data\ArrayTools.h" />
     <ClInclude Include="..\..\Source\Modules\Data\Data.h" />
     <ClInclude Include="..\..\Source\Modules\Data\MatrixTools.h" />
+    <ClInclude Include="..\..\Source\Modules\Data\Simd\Float32x4.h" />
     <ClInclude Include="..\..\Source\Modules\Filters\Filters.h" />
     <ClInclude Include="..\..\Source\Modules\Filters\Musical\LadderFilter.h" />
     <ClInclude Include="..\..\Source\Modules\Filters\Musical\PhasorFilter.h" />
