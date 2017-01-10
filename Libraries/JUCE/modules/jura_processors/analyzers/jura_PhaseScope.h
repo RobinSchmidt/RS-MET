@@ -1,186 +1,6 @@
 #ifndef jura_PhaseScope_h
 #define jura_PhaseScope_h
   
-
-/** Implements the buffering for a phasescope analyzer. 
-
-\todo
--maybe move this class to RAPT
--factor out a class PixelBuffer (it may be reusable in more general circumstances)
--refactor to include a general CoordinateTransformer object (as pointer member) which is 
- responsible for the tranformation from input- to pixel coordinates
--optimize:
- -maybe use unsigned char for the storage matrix 
-  ->cuts memory use by factor 4
-  ->maybe it allows to use saturating arithmetic, avoiding the max() operations
-  see:
-  https://felix.abecassis.me/2011/10/sse-saturation-arithmetic/
-  http://codereview.stackexchange.com/questions/6502/fastest-way-to-clamp-an-integer-to-the-range-0-255
-  https://locklessinc.com/articles/sat_arithmetic/
- -or maybe get rid of max function by bit-masking the exponent of the floating point number (make an
-  inlined function accumulateAndSaturate(float &accu, float &value)
- -factor out a class Image or PixelAccumulator
-
--maybe we should use an Image class, templated on the pixel-type Image<TPix> and an ImageProcessor 
- class
--a suitable subclass of ImageProcessor would be responsible for drawing on the image via methods 
- like drawDot, drawLine, etc. ...maybe it could be called ImageDrawer
--the ImageProcessor class can be templated on an Accumulator class such that we can choose 
- different accumulation methods at compile time (simple add, add-and-clip, add-and-saturate) - it
- should be selected at compile time so we can inline the accumulation function for efficiency
-
--there's a problem with drawing - sometimes the brightness flickers, especially with short decay 
- times - could this be due to jitter in the calls to applyPixelDecay - i.e. somewhat irregular 
- timing?
-
-*/
-
-class JUCE_API PhaseScopeBuffer
-{
-
-public:
-
-  /** Constructor. */
-  PhaseScopeBuffer();
-
-  /** Destructor. */
-  virtual ~PhaseScopeBuffer();
-
-  /** Sets the sample rate. */
-  void setSampleRate(double newSampleRate);
-
-  /** Sets the frame rate. */
-  void setFrameRate(double newFrameRate);
-
-  /** Sets the overall brightness. This parameter, together with the sample rate, determines the 
-  weight by which new dot are added in. */
-  void setBrightness(float newBrightness);
-
-  /** Sets the time it takes for "color" to decay away. */
-  void setDecayTime(double newDecayTime);
-
-  /** Sets the size of the matrix into which we buffer the incoming samples. This should correspond 
-  to the pixel size of the display. */
-  void setSize(int newWidth, int newHeight);
-
-  /** Switches anti-aliasing on/off. */
-  void setAntiAlias(bool shouldAntiAlias);
-
-  /** Sets up the density of the lines the connect our actual datapoints. It actually determines the 
-  number of artificial datapoints that are inserted (by linear interpolation) between our actual 
-  incoming datapoints. If set to zero, it will just draw the datapoints as dots. */
-  void setLineDensity(float newDensity);
-
-  /** Sets up a weight by which each pixel is not only accumulated into its actual place but also 
-  into the neighbouring pixels to add more weight or thickness. It should be a value between 0 
-  and 1. */
-  void setPixelSpread(float newSpread);
-    // maybe rename to setDotSpread
-
-  /** Converts the raw left- and right signal amplitude values to the matrix indices, where the 
-  data should be written. This is the xy-pixel coordinates (kept still as real numbers), where the 
-  display is to be illuminated in response to the given amplitude values. */
-  void convertAmplitudesToMatrixIndices(double &x, double &y);
-    // rename to toPixelCoordinates
-
-  /** Accepts one input sample frame for buffering. */
-  void bufferSampleFrame(double left, double right);
-
-  /** Applies our pixel decay-factor to the matrix of buffered values. This assumed to be called at 
-  the frame rate. */
-  void applyPixelDecay();
-
-  /** Resets the internal buffer to all zeros. */
-  void reset();
-
-  /** Returns the buffered value at the give xy pixel position. No bounds checking is done - you must
-  make sure that the indices are valid. */
-  inline float getValueAt(int x, int y) { return buffer[x][y]; }
-
-  /** Returns a pointer to our internally stored data matrix. */
-  float** getDataMatrix() { return buffer; }
-
-  /** Returns the sample rate. */
-  inline double getSampleRate() { return sampleRate; }
-
-  /** Returns the frame rate. */
-  inline double getFrameRate() { return frameRate; }
-
-  /** Returns the width in pixels. */
-  inline int getWidth() { return width; }
-
-  /** Returns the height in pixels. */
-  inline int getHeight() { return height; }
-
-protected:
-
-  /** Returns the distance between the pixels with coordinates (x1,y1) and (x1,y2). This distance 
-  is used in our line drawing function to determine the number of additional dots that are to be 
-  inserted between our actual datapoints. */
-  //float pixelDistance(float x1, float y1, float x2, float y2);
-
-  /** Adds a line to the given x,y coordinates (in pixel coordinates). The starting point of the 
-  line are the old pixel coordinates xOld, yOld (member variables). It takes into account our line 
-  density - when it's set to zero, it will just draw a dot at the new given position. */
-  void addLineTo(float x, float y);
-
-  /** Adds a dot into our data matrix at the given position (given in matrix-index (i.e. pixel-) 
-  coordinates using bilinear deinterpolation for anti-aliasing. */
-  void addDot(float x, float y, float intensity);
-
-  /** Like addDot but without anti-aliasing (we just round the coordinates to the nearest 
-  integer). */
-  void addDotFast(float x, float y, float intensity);
-
-  /** Allocates the memory for our data matrix buffer. */
-  void allocateBuffer();
-
-  /** Frees the memory for our data matrix buffer. */
-  void freeBuffer();
-
-  /** Updates the pixel decay factor according to the settings of frame rate and desired decay 
-  time. */
-  void updateDecayFactor();
-
-  /** Updates the pixel insertion factor (i.e. the weight by which new dots are multiplied when 
-  they get added in according to the settings of sample rate and brightness parameter. */
-  void updateInsertFactor();
-
-  /** Accumulates the given value into the accumulator accu. This accumulation amounts to adding
-  the value and the saturating at 1. \todo maybe this can be optimized and/or a different accumulation
-  function can be used to get different contrast and saturation behavior.  */
-  inline void accumulate(float &accu, float value)
-  {
-    //accu = min(1.f, accu + value);
-
-    // this seems to be actually cheaper than the min() call and saturates more smoothly:
-    accu += value;
-    accu /= (1 + value);
-    //accu /= (1 + accu);
-  }
-
-  double sampleRate;
-  double frameRate;
-  double decayTime;      // pixel illumination time
-  float  decayFactor;    // factor by which pixels decay (applied at frameRate)
-  float  brightness;     // determines weight by which dots are added in
-  float  insertFactor;   // factor by which are pixels "inserted" (applied at sampleRate)
-  float  lineDensity;    // density of the artificial points between actual datapoints
-  float  thickness;      // line (or dot) thickness from 0 to 1. 0: one pixel, 1: 3 pixels
-                         // maybe rename to spread or weight or something
-  float  xOld, yOld;     // pixel coordinates of old datapoint (one sample ago)
-  int    width, height;  // pixel width and height
-  bool   antiAlias;      // flag to switch anti-aliasing on/off
-
-  // the actual matrix-shaped buffer, we use the indexing common in image processing: the first 
-  // index points to a horizontal line and the second index is the pixel in this line, so the first
-  // index runs from 0 to height-1 and the second from 0 to width-1:
-  float **buffer;
-  float *bufferFlat; 
-
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhaseScopeBuffer)
-};
-
 //=================================================================================================
 
 /** Implements a phasescope analyzer. 
@@ -267,9 +87,6 @@ protected:
   rate changes. It's the number of samples between two frames. */
   void updateRepaintInterval();
 
-  //PhaseScopeBuffer phaseScopeBuffer; // old
-  RAPT::PhaseScopeBuffer<double, float, double> phaseScopeBuffer;
-
   //bool needsPixelDecay;   // flag to indicate that a pixel decay should be triggered
   bool rainbow;           // indicates usage of rainbow colors (i.e. hue rotation)
   double colorPeriod;     // period for one complete color change cycle (in seconds)
@@ -284,6 +101,9 @@ protected:
   int repaintCounter;
 
   juce::Image image;
+
+  // this object is reponsible for drawing the incoming data onto a virtual screen:
+  RAPT::PhaseScopeBuffer<double, float, double> phaseScopeBuffer;
 
   friend class PhaseScopeDisplay;
 
@@ -357,8 +177,5 @@ protected:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhaseScopeEditor)
 };
-
-
-
 
 #endif 
