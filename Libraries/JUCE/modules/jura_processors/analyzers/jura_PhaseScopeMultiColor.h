@@ -1,21 +1,33 @@
-#ifndef jura_PhaseScope_h
-#define jura_PhaseScope_h
+#ifndef jura_PhaseScopeMultiColor_h
+#define jura_PhaseScopeMultiColor_h
   
 //=================================================================================================
 
-/** Implements a phasescope analyzer. 
+/** Implements a phasescope analyzer with color rotation. This must instantiate the RAPT template
+PhaseScopeBuffer with a different template parameter for the pixel type (so the pixels can hold
+independent values for RGB). That's why we unfotunatley have duplicate a lot of the code from the
+monochromatic PhaseScope. On the other hand, it allows to use some different approaches and 
+trade-offs in the two versions.
 
 \todo
--revert to juce::Timer based pixel decay (applies multiplication in GUI thread -> no CPU load 
-spikes in audio thread, but the decay may jitter a bit leading to some slight (but imho tolerable)
-flickering artifact. */
+-maybe implement a linear decay in addition to the exponential decay: 
+ new = expDecay * old - linDecay (the result must be clipped at zero)
+-line density should be either 0 or 1, intermediate values are not useful
+-independently adjustable line-brightness and dot-brightness  
+ -the same thing also for the thicknesses
+-make line-thickness dependent on dot-distance via parameter
+-implement different drawing modes (the current one, and some based on juce's vector drawing engine
+ with lines, circles, etc.)
+-implement rainbow mode (hue-rotation, we may choose a basic hue and rotation speed which may be 
+ set to zero)
+*/
 
-class JUCE_API PhaseScope : public jura::AudioModule, public jura::ImageUpdater
+class JUCE_API PhaseScopeMultiColor : public jura::AudioModule, public jura::ImageUpdater
 {
 
 public:
 
-  PhaseScope(CriticalSection *lockToUse);
+  PhaseScopeMultiColor(CriticalSection *lockToUse);
 
   /** Creates the parameters to control the drawing. 
   \todo: maybe make this function a virtual member function of the AudioModule baseclass to be 
@@ -38,8 +50,6 @@ public:
   void setRainbowMode(bool shouldUseRainbowColors); // maybe provide more modes and a function 
     // setColorMode(int newMode) - can have different settings: fixed color, hue rotation, 
     // alternating colors, colormapped values, etc.
-
-  //inline void triggerPixelDecay() { needsPixelDecay = true; }  // obsolete
 
   // inquiry functions:
   inline double getFrameRate() { return phaseScopeBuffer.getFrameRate(); }
@@ -71,7 +81,6 @@ protected:
   rate changes. It's the number of samples between two frames. */
   void updateRepaintInterval();
 
-  //bool needsPixelDecay;   // flag to indicate that a pixel decay should be triggered
   bool rainbow;           // indicates usage of rainbow colors (i.e. hue rotation)
   double colorPeriod;     // period for one complete color change cycle (in seconds)
   double colorCounter;
@@ -80,7 +89,6 @@ protected:
   int displayWidth;       // display width in pixels
   int displayHeight;      // display height in pixels
 
-
   int repaintIntervalInSamples;
   int repaintCounter;
 
@@ -88,69 +96,56 @@ protected:
 
   // this object is reponsible for drawing the incoming data onto a virtual screen:
   RAPT::PhaseScopeBuffer<double, float, double> phaseScopeBuffer;
+  //RAPT::PhaseScopeBuffer<double, RAPT::Float32x4, double> phaseScopeBuffer;
 
-  friend class PhaseScopeDisplay;
+  friend class PhaseScopeMultiColorDisplay;
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhaseScope)
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhaseScopeMultiColor)
 };
 
 //=================================================================================================
 
-/** Implements the GUI display for the phase scope. 
+/** Implements the GUI display for the phase scope.  */
 
-\todo Maybe this class should be derived from the CoordinateSystem baseclass and use the angular 
-and radial grids from there. 
-
-\todo BUG: there's a flickering of the lines...could this be related to threading issues?
-..it's more obvious with faster decay times - maybe it's because the decay is applied in the GUI 
-thread whereas accumulation is done in the audio-thread? instead of calling applyPixelDecay in the 
-GUI thread we could set a flag in the phaseScope audio module and the apply the decay there
--> done - this seems to help indeed but also seems to introduce tearing artifacts */
-
-class JUCE_API PhaseScopeDisplay : public Component, public ImageUpdateListener,
+class JUCE_API PhaseScopeMultiColorDisplay : public Component, public ImageUpdateListener,
   public ChangeListener, public ChangeBroadcaster
-  /*public Timer*/
 {
 
 public:
 
-  PhaseScopeDisplay(jura::PhaseScope *newPhaseScopeToEdit);
-  virtual ~PhaseScopeDisplay();
+  PhaseScopeMultiColorDisplay(jura::PhaseScopeMultiColor *newPhaseScopeToEdit);
+  virtual ~PhaseScopeMultiColorDisplay();
 
   virtual void resized() override;
   virtual void paint(Graphics &g)	override;
-  //virtual void timerCallback() override;
   virtual void imageWasUpdated(juce::Image* image) override;
   virtual void changeListenerCallback(ChangeBroadcaster *source) override;
 
 protected:
 
-  PhaseScope *phaseScope;
+  PhaseScopeMultiColor *phaseScope;
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhaseScopeDisplay)
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhaseScopeMultiColorDisplay)
 };
 
 //=================================================================================================
 
-/** Implements a GUI editor for the XY phase scope. */
+/** Implements a GUI editor for the multi colored XY phase scope. */
 
-class JUCE_API PhaseScopeEditor : public AudioModuleEditor
+class JUCE_API PhaseScopeMultiColorEditor : public AudioModuleEditor
 {
 
 public:
 
-  PhaseScopeEditor(jura::PhaseScope *newPhaseScopeToEdit);
+  PhaseScopeMultiColorEditor(jura::PhaseScopeMultiColor *newPhaseScopeToEdit);
 
   virtual void createWidgets();
-
-  //void setDisplayPixelSize(int newWidth, int newHeight);
-
   virtual void resized() override;
 
 protected:
 
-  PhaseScope *scope;
-  PhaseScopeDisplay display;
+  PhaseScopeMultiColor *scope;
+  PhaseScopeMultiColorDisplay display;
   int widgetMargin;
 
   // Widgets:
@@ -159,7 +154,7 @@ protected:
   RButton *buttonAntiAlias, *buttonRainbow;
 
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhaseScopeEditor)
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhaseScopeMultiColorEditor)
 };
 
 #endif 
