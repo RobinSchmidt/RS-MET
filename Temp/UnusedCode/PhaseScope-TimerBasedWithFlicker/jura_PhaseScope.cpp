@@ -46,6 +46,8 @@ void PhaseScope::createParameters()
   p = new Parameter(plugInLock, "AntiAlias", 0.0, 1.0, 0.0, 1.0, Parameter::BOOLEAN);
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setAntiAlias);
   addObservedParameter(p);
+
+  //resetParametersToDefaultValues();
 }
 
 void PhaseScope::setDisplayPixelSize(int width, int height)
@@ -85,7 +87,6 @@ void PhaseScope::setAntiAlias(bool shouldAntiAlias)
 void PhaseScope::setFrameRate(double newRate)
 {
   phaseScopeBuffer.setFrameRate(newRate);
-  updateRepaintInterval();
 }
 
 AudioModuleEditor* PhaseScope::createEditor()
@@ -100,28 +101,18 @@ void PhaseScope::processBlock(double **inOutBuffer, int numChannels, int numSamp
 
   for(int n = 0; n < numSamples; n++)
     phaseScopeBuffer.bufferSampleFrame(inOutBuffer[0][n], inOutBuffer[1][n]);
-
-  repaintCounter += numSamples;
-  while(repaintCounter > repaintIntervalInSamples)
-  {
-    updateScopeImage();
-    sendImageUpdateNotification(&image);
-    repaintCounter -= repaintIntervalInSamples;
-  }
 }
 
 void PhaseScope::setSampleRate(double newSampleRate)
 {
   ScopedLock scopedLock(*plugInLock);
   phaseScopeBuffer.setSampleRate(newSampleRate);
-  updateRepaintInterval();
 }
 
 void PhaseScope::reset()
 {
   ScopedLock scopedLock(*plugInLock);
   phaseScopeBuffer.reset();
-  repaintCounter = 0;
 }
 
 void PhaseScope::updateBufferSize()
@@ -136,14 +127,6 @@ void PhaseScope::updateBufferSize()
 void PhaseScope::updateScopeImage()
 {
   dataMatrixToImage(phaseScopeBuffer.getDataMatrix(), image);
-  phaseScopeBuffer.applyPixelDecay();
-}
-
-void PhaseScope::updateRepaintInterval()
-{
-  repaintIntervalInSamples = 
-    (int) round(phaseScopeBuffer.getSampleRate() / phaseScopeBuffer.getFrameRate());
-  repaintCounter = 0;
 }
 
 //=================================================================================================
@@ -151,13 +134,7 @@ void PhaseScope::updateRepaintInterval()
 PhaseScopeDisplay::PhaseScopeDisplay(jura::PhaseScope *newPhaseScopeToEdit)
 {
   phaseScope = newPhaseScopeToEdit;
-  phaseScope->addImageUpdateListener(this);
-  addChangeListener(this);
-}
-
-PhaseScopeDisplay::~PhaseScopeDisplay()
-{
-  phaseScope->removeImageUpdateListener(this);
+  startTimer(1);
 }
 
 void PhaseScopeDisplay::resized()
@@ -176,21 +153,12 @@ void PhaseScopeDisplay::paint(Graphics &g)
     (float) getHeight()));
 }
 
-void PhaseScopeDisplay::imageWasUpdated(juce::Image* image)
+void PhaseScopeDisplay::timerCallback()
 {
-  sendChangeMessage();
-  // We will receive the change message ourselves and when we do, we will trigger a repaint. We 
-  // can't directly call repaint here because then we hit an assertion which says we should acquire
-  // a MessageManagerLock - but when we do so, it becomes unresponsive.
-
-  // this doesn't work:
-  //const MessageManagerLock mmLock;
-  //repaint();
-}
-
-void PhaseScopeDisplay::changeListenerCallback(ChangeBroadcaster *source)
-{
+  phaseScope->updateScopeImage();
   repaint();
+  phaseScope->phaseScopeBuffer.applyPixelDecay();
+  startTimer((int) (1000.0 / phaseScope->getFrameRate())); // fps to ms
 }
 
 //=================================================================================================

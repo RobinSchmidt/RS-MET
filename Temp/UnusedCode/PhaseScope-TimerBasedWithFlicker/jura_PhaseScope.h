@@ -10,7 +10,7 @@
 spikes in audio thread, but the decay may jitter a bit leading to some slight (but imho tolerable)
 flickering artifact. */
 
-class JUCE_API PhaseScope : public jura::AudioModule, public jura::ImageUpdater
+class JUCE_API PhaseScope : public jura::AudioModule /*, public jura::ImageUpdater*/
 {
 
 public:
@@ -56,16 +56,9 @@ protected:
   phaseScopeBuffer member into the image member. */
   void updateScopeImage();
 
-  /** Updates our repaint triggering interval - needs to be called whenever frame rate or sample
-  rate changes. It's the number of samples between two frames. */
-  void updateRepaintInterval();
-
   double pixelScale;      // scale factor between internal and external pixel sizes of the image
   int displayWidth;       // display width in pixels
   int displayHeight;      // display height in pixels
-
-  int repaintIntervalInSamples;
-  int repaintCounter;
 
   juce::Image image;
 
@@ -90,19 +83,16 @@ thread whereas accumulation is done in the audio-thread? instead of calling appl
 GUI thread we could set a flag in the phaseScope audio module and the apply the decay there
 -> done - this seems to help indeed but also seems to introduce tearing artifacts */
 
-class JUCE_API PhaseScopeDisplay : public Component, public ImageUpdateListener,
-  public ChangeListener, public ChangeBroadcaster
+class JUCE_API PhaseScopeDisplay : public Component, public Timer
 {
 
 public:
 
   PhaseScopeDisplay(jura::PhaseScope *newPhaseScopeToEdit);
-  virtual ~PhaseScopeDisplay();
 
   virtual void resized() override;
   virtual void paint(Graphics &g)	override;
-  virtual void imageWasUpdated(juce::Image* image) override;
-  virtual void changeListenerCallback(ChangeBroadcaster *source) override;
+  virtual void timerCallback() override;
 
 protected:
 
@@ -123,7 +113,6 @@ public:
   PhaseScopeEditor(jura::PhaseScope *newPhaseScopeToEdit);
 
   virtual void createWidgets();
-
   virtual void resized() override;
 
 protected:
