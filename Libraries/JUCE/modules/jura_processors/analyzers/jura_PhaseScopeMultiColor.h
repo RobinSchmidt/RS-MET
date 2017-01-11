@@ -41,13 +41,14 @@ public:
   // parameter setup functions (to be used for the callbacks from the parameters):
   void setBrightness(double newBrightness);
   void setAfterGlow(double newGlow);
+  void setColorCyclePeriod(double newPeriod);
   void setLineDensity(double newDensity);
   void setPixelSpread(double newSpread);
   void setPixelScale(double newFactor);
   void setAntiAlias(bool shouldAntiAlias);
   void setFrameRate(double newRate);
   //void setDrawingMode(int newMode);
-  void setRainbowMode(bool shouldUseRainbowColors); // maybe provide more modes and a function 
+  //void setRainbowMode(bool shouldUseRainbowColors); // maybe provide more modes and a function 
     // setColorMode(int newMode) - can have different settings: fixed color, hue rotation, 
     // alternating colors, colormapped values, etc.
 
@@ -62,10 +63,6 @@ public:
   virtual void setSampleRate(double newSampleRate) override; 
   virtual void reset() override;
 
-  ///** Returns the color that should be used for this frame. We assume here that this function is 
-  //called at frame rate (it will update the internal color-period counter, so it msut be called at 
-  //the correct rate - otherwise the color period will be wrong). */
-  //Colour getAndUpdateColor();
 
 protected:
 
@@ -151,10 +148,9 @@ protected:
   int widgetMargin;
 
   // Widgets:
-  RSlider *sliderBrightness, *sliderAfterglow, *sliderPixelSpread, *sliderPixelScale, 
-    *sliderLineDensity, *sliderFrameRate;
-  RButton *buttonAntiAlias, *buttonRainbow;
-
+  RSlider *sliderBrightness, *sliderAfterglow, *sliderColorPeriod, *sliderPixelSpread, 
+    *sliderPixelScale, *sliderLineDensity, *sliderFrameRate;
+  RButton *buttonAntiAlias;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhaseScopeMultiColorEditor)
 };

@@ -31,6 +31,11 @@ void PhaseScopeMultiColor::createParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<PhaseScopeMultiColor>(this, &PhaseScopeMultiColor::setAfterGlow);
 
+  p = new Parameter(plugInLock, "ColorPeriod", 0.0, 3.0, 0.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<PhaseScopeMultiColor>(
+    this, &PhaseScopeMultiColor::setColorCyclePeriod);
+
   p = new Parameter(plugInLock, "PixelSpread", 0.0, 1.0, 0.0, 0.5, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<PhaseScopeMultiColor>(this, &PhaseScopeMultiColor::setPixelSpread);
@@ -51,9 +56,9 @@ void PhaseScopeMultiColor::createParameters()
   p->setValueChangeCallback<PhaseScopeMultiColor>(this, &PhaseScopeMultiColor::setAntiAlias);
   addObservedParameter(p);
 
-  p = new Parameter(plugInLock, "Rainbow", 0.0, 1.0, 0.0, 0.0, Parameter::BOOLEAN);
-  p->setValueChangeCallback<PhaseScopeMultiColor>(this, &PhaseScopeMultiColor::setRainbowMode);
-  addObservedParameter(p);
+  //p = new Parameter(plugInLock, "Rainbow", 0.0, 1.0, 0.0, 0.0, Parameter::BOOLEAN);
+  //p->setValueChangeCallback<PhaseScopeMultiColor>(this, &PhaseScopeMultiColor::setRainbowMode);
+  //addObservedParameter(p);
 
   //resetParametersToDefaultValues();
 }
@@ -75,6 +80,10 @@ void PhaseScopeMultiColor::setAfterGlow(double newGlow)
 {
   phaseScopeBuffer.setDecayTime(newGlow);
 }
+void PhaseScopeMultiColor::setColorCyclePeriod(double newPeriod)
+{
+  colorPeriod = newPeriod;
+}
 void PhaseScopeMultiColor::setLineDensity(double newDensity)
 {
   phaseScopeBuffer.setLineDensity((float)newDensity);
@@ -93,10 +102,10 @@ void PhaseScopeMultiColor::setAntiAlias(bool shouldAntiAlias)
 {
   phaseScopeBuffer.setAntiAlias(shouldAntiAlias);
 }
-void PhaseScopeMultiColor::setRainbowMode(bool shouldUseRainbowColors)
-{
-  rainbow = shouldUseRainbowColors;
-}
+//void PhaseScopeMultiColor::setRainbowMode(bool shouldUseRainbowColors)
+//{
+//  rainbow = shouldUseRainbowColors;
+//}
 void PhaseScopeMultiColor::setFrameRate(double newRate)
 {
   phaseScopeBuffer.setFrameRate(newRate);
@@ -115,20 +124,24 @@ void PhaseScopeMultiColor::processBlock(double **inOutBuffer, int numChannels, i
 
   for(int n = 0; n < numSamples; n++)
   {
-    phaseScopeBuffer.setBrightness(Float32x4(brightness));
+    //phaseScopeBuffer.setBrightness(Float32x4(brightness));
       // preliminary
 
-    // preliminary, very inefficient (optimize later):
-    double inc    = 1.0 / (colorPeriod * phaseScopeBuffer.getSampleRate()); // color increment
-    colorCounter += inc;
-    colorCounter  = fmod(colorCounter, 1.0);
-    float red     = 0.5f + 0.5f*sin(2*PI*colorCounter);
-    float green   = 0.5f + 0.5f*sin(2*PI*colorCounter + PI*120/180);  // 120° phase shift
-    float blue    = 0.5f + 0.5f*sin(2*PI*colorCounter + PI*240/180);  // 240° phase shift
-    float b = brightness;
-    phaseScopeBuffer.setBrightness(Float32x4(b*red, b*green, b*blue, 1.f));
+    // preliminary, very inefficient (optimize later and maybe factor out):
+    float b       = float(brightness);
+    if(colorPeriod != 0.0)
+    {
+      double inc    = 1.0 / (colorPeriod * phaseScopeBuffer.getSampleRate()); // color increment
+      colorCounter += inc;
+      colorCounter  = fmod(colorCounter, 1.0);
+      float red     = float(0.5f + 0.5f*sin(2*PI*colorCounter));
+      float green   = float(0.5f + 0.5f*sin(2*PI*colorCounter + PI*120/180));  // 120° phase shift
+      float blue    = float(0.5f + 0.5f*sin(2*PI*colorCounter + PI*240/180));  // 240° phase shift
 
-
+      phaseScopeBuffer.setBrightness(Float32x4(b*red, b*green, b*blue, 1.f));
+    }
+    else
+      phaseScopeBuffer.setBrightness(Float32x4(b, b, b, 1.f));
 
 
     phaseScopeBuffer.bufferSampleFrame(inOutBuffer[0][n], inOutBuffer[1][n]);
@@ -158,22 +171,6 @@ void PhaseScopeMultiColor::reset()
   repaintCounter = 0;
 }
 
-//Colour PhaseScopeMultiColor::getAndUpdateColor()
-//{
-//  ScopedLock scopedLock(*plugInLock);
-//
-//  if(!rainbow)
-//    return Colours::white;
-//
-//  ColourAHSL colorAHSL((float)colorCounter, 1.f, 0.5f, 0.5f);
-//
-//  double inc    = 1.0 / (colorPeriod * phaseScopeBuffer.getFrameRate()); // color increment
-//  colorCounter += inc;
-//  colorCounter  = fmod(colorCounter, 1.0);
-//
-//  return colorAHSL.getAsJuceColour();
-//}
-
 void PhaseScopeMultiColor::updateBufferSize()
 {
   ScopedLock scopedLock(*plugInLock);
@@ -201,7 +198,7 @@ void dataMatrixToImage(RAPT::Float32x4 *data, juce::Image &image)
       targetPointer[0] = (uint8) (255 * sourcePointer[2]);
       targetPointer[1] = (uint8) (255 * sourcePointer[1]);
       targetPointer[2] = (uint8) (255 * sourcePointer[0]);
-      //targetPointer[3] = (uint8) (sourcePointer[3]);
+      //targetPointer[3] = (uint8) (255 * sourcePointer[3]);
       targetPointer[3] = 255;  // preliminary - full opacity
 
       sourcePointer += 4;
@@ -213,12 +210,6 @@ void PhaseScopeMultiColor::updateScopeImage()
 {
   dataMatrixToImage(phaseScopeBuffer.getDataMatrix()[0], image);
   phaseScopeBuffer.applyPixelDecay();
-
-  // old:
-  //Colour c = getAndUpdateColor();
-  //dataMatrixToImage(phaseScopeBuffer.getDataMatrix(), image, 
-  //  c.getRed(), c.getGreen(), c.getBlue());
-  //phaseScopeBuffer.applyPixelDecay();
 }
 
 void PhaseScopeMultiColor::updateRepaintInterval()
@@ -313,6 +304,13 @@ void PhaseScopeMultiColorEditor::createWidgets()
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&secondsToStringWithUnitTotal4);
 
+  addWidget( sliderColorPeriod = s = new RSlider("ColorPeriodSlider") );
+  s->assignParameter( scope->getParameterByName("ColorPeriod") );
+  s->setSliderName("ColorPeriod");
+  s->setDescription("Periodicity of the hue cycling time in seconds");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&secondsToStringWithUnitTotal4);
+
   addWidget( sliderPixelSpread = s = new RSlider("SpreadSlider") );
   s->assignParameter( scope->getParameterByName("PixelSpread") );
   s->setSliderName("Spread");
@@ -346,10 +344,10 @@ void PhaseScopeMultiColorEditor::createWidgets()
   b->setDescription("Anti aliased drawing (bilinear deinterpolation)");
   b->setDescriptionField(infoField);
 
-  addWidget( buttonRainbow = b = new RButton("Rainbow") );
-  b->assignParameter( scope->getParameterByName("Rainbow") );
-  b->setDescription("Rainbow color rotation");
-  b->setDescriptionField(infoField);
+  //addWidget( buttonRainbow = b = new RButton("Rainbow") );
+  //b->assignParameter( scope->getParameterByName("Rainbow") );
+  //b->setDescription("Rainbow color rotation");
+  //b->setDescriptionField(infoField);
 }
 
 void PhaseScopeMultiColorEditor::resized()
@@ -371,11 +369,12 @@ void PhaseScopeMultiColorEditor::resized()
 
   sliderBrightness ->setBounds(x, y, w, h); y += dy;
   sliderAfterglow  ->setBounds(x, y, w, h); y += dy;
+  sliderColorPeriod->setBounds(x, y, w, h); y += dy;
   sliderPixelSpread->setBounds(x, y, w, h); y += dy;
   sliderPixelScale ->setBounds(x, y, w, h); y += dy;
   sliderLineDensity->setBounds(x, y, w, h); y += dy;
   sliderFrameRate  ->setBounds(x, y, w, h); y += dy;
 
   buttonAntiAlias->setBounds(x, y,   w, h); y += dy;
-  buttonRainbow  ->setBounds(x, y,   w, h); y += dy;
+  //buttonRainbow  ->setBounds(x, y,   w, h); y += dy;
 }
