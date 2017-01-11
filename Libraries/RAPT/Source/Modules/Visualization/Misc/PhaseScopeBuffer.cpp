@@ -130,7 +130,7 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::addLineTo(TSig x, TSig y)
   TSig dy = y-yOld;
   TSig pixelDistance = sqrt(dx*dx + dy*dy);
   int  numDots = rsMax(1, (int)floor(lineDensity*pixelDistance));
-  TPix intensity = (TPix) (insertFactor/numDots);
+  TPix intensity = (TPix) (insertFactor / (TPix)numDots);
   TSig scaler = (TSig)(1.0 / numDots);
   TSig k;
   for(int i = 1; i <= numDots; i++)
@@ -161,7 +161,8 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::addDot(TSig x, TSig y, TPix intensity)
   d = TPix(x*y);
   c = TPix(y)-d;
   b = TPix(x)-d;
-  a = 1+d-TPix(x+y);
+  //a = TPix(1)+d-TPix(x+y);
+  a = d+TPix(1-x-y);
 
   // compute values to accumulate into the 4 pixels at (i,j), (i+1,j), (i,j+1), (i+1,j+1):
   a *= intensity;  // (i,   j)
@@ -276,7 +277,7 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::updateDecayFactor()
 template<class TSig, class TPix, class TPar>
 void PhaseScopeBuffer<TSig, TPix, TPar>::updateInsertFactor()
 {
-  insertFactor = (TPix) (10000*brightness / sampleRate);
+  insertFactor = (TPix(10000) * brightness / TPix(sampleRate));
   // The factor is totally ad-hoc - maybe come up with some more meaningful factor. 
   // However, the proportionality to the birghtness parameter and inverse proportionality to 
   // the sample rate seems to make sense.

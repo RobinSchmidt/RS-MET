@@ -10,7 +10,7 @@ PhaseScopeMultiColor::PhaseScopeMultiColor(CriticalSection *lockToUse) : AudioMo
   displayHeight = 100; 
   updateBufferSize();
 
-  colorPeriod = 5.0;
+  colorPeriod = 0.3;
   colorCounter = 0.0;
   createParameters();
 
@@ -68,7 +68,8 @@ void PhaseScopeMultiColor::setDisplayPixelSize(int width, int height)
 
 void PhaseScopeMultiColor::setBrightness(double newBrightness)
 {
-  phaseScopeBuffer.setBrightness((float)newBrightness);
+  brightness = newBrightness;
+  //phaseScopeBuffer.setBrightness((float)newBrightness);
 }
 void PhaseScopeMultiColor::setAfterGlow(double newGlow)
 {
@@ -113,7 +114,25 @@ void PhaseScopeMultiColor::processBlock(double **inOutBuffer, int numChannels, i
   jassert(numChannels == 2);
 
   for(int n = 0; n < numSamples; n++)
+  {
+    phaseScopeBuffer.setBrightness(Float32x4(brightness));
+      // preliminary
+
+    // preliminary, very inefficient (optimize later):
+    double inc    = 1.0 / (colorPeriod * phaseScopeBuffer.getSampleRate()); // color increment
+    colorCounter += inc;
+    colorCounter  = fmod(colorCounter, 1.0);
+    float red     = 0.5f + 0.5f*sin(2*PI*colorCounter);
+    float green   = 0.5f + 0.5f*sin(2*PI*colorCounter + PI*120/180);  // 120° phase shift
+    float blue    = 0.5f + 0.5f*sin(2*PI*colorCounter + PI*240/180);  // 240° phase shift
+    float b = brightness;
+    phaseScopeBuffer.setBrightness(Float32x4(b*red, b*green, b*blue, 1.f));
+
+
+
+
     phaseScopeBuffer.bufferSampleFrame(inOutBuffer[0][n], inOutBuffer[1][n]);
+  }
 
   repaintCounter += numSamples;
   while(repaintCounter > repaintIntervalInSamples)
@@ -139,21 +158,21 @@ void PhaseScopeMultiColor::reset()
   repaintCounter = 0;
 }
 
-Colour PhaseScopeMultiColor::getAndUpdateColor()
-{
-  ScopedLock scopedLock(*plugInLock);
-
-  if(!rainbow)
-    return Colours::white;
-
-  ColourAHSL colorAHSL((float)colorCounter, 1.f, 0.5f, 0.5f);
-
-  double inc    = 1.0 / (colorPeriod * phaseScopeBuffer.getFrameRate()); // color increment
-  colorCounter += inc;
-  colorCounter  = fmod(colorCounter, 1.0);
-
-  return colorAHSL.getAsJuceColour();
-}
+//Colour PhaseScopeMultiColor::getAndUpdateColor()
+//{
+//  ScopedLock scopedLock(*plugInLock);
+//
+//  if(!rainbow)
+//    return Colours::white;
+//
+//  ColourAHSL colorAHSL((float)colorCounter, 1.f, 0.5f, 0.5f);
+//
+//  double inc    = 1.0 / (colorPeriod * phaseScopeBuffer.getFrameRate()); // color increment
+//  colorCounter += inc;
+//  colorCounter  = fmod(colorCounter, 1.0);
+//
+//  return colorAHSL.getAsJuceColour();
+//}
 
 void PhaseScopeMultiColor::updateBufferSize()
 {
@@ -164,14 +183,42 @@ void PhaseScopeMultiColor::updateBufferSize()
   image = juce::Image(juce::Image::ARGB, w, h, false);
 }
 
+// helper function - might be moved to somewhere else in the library later:
+void dataMatrixToImage(RAPT::Float32x4 *data, juce::Image &image)
+{
+  juce::Image::BitmapData bitmap(image, juce::Image::BitmapData::writeOnly);
+  jassert(bitmap.pixelStride == 4);
+
+  float *sourcePointer = reinterpret_cast<float*>(data);
+  uint8 *targetPointer = bitmap.getPixelPointer(0, 0);
+
+  for(int i = 0; i < bitmap.height; i++)     // loop over lines
+  {
+    for(int j = 0; j < bitmap.width; j++)    // loop over pixels
+    {
+      // we assume here, that the byte order of the pixels in the target image is BGRA (seems to 
+      // be true on PC) and in the source data is RGBA:
+      targetPointer[0] = (uint8) (255 * sourcePointer[2]);
+      targetPointer[1] = (uint8) (255 * sourcePointer[1]);
+      targetPointer[2] = (uint8) (255 * sourcePointer[0]);
+      //targetPointer[3] = (uint8) (sourcePointer[3]);
+      targetPointer[3] = 255;  // preliminary - full opacity
+
+      sourcePointer += 4;
+      targetPointer += 4;
+    }
+  }
+}
 void PhaseScopeMultiColor::updateScopeImage()
 {
-  // this function must be updated
-
-  Colour c = getAndUpdateColor();
-  dataMatrixToImage(phaseScopeBuffer.getDataMatrix(), image, 
-    c.getRed(), c.getGreen(), c.getBlue());
+  dataMatrixToImage(phaseScopeBuffer.getDataMatrix()[0], image);
   phaseScopeBuffer.applyPixelDecay();
+
+  // old:
+  //Colour c = getAndUpdateColor();
+  //dataMatrixToImage(phaseScopeBuffer.getDataMatrix(), image, 
+  //  c.getRed(), c.getGreen(), c.getBlue());
+  //phaseScopeBuffer.applyPixelDecay();
 }
 
 void PhaseScopeMultiColor::updateRepaintInterval()

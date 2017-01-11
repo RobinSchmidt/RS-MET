@@ -62,10 +62,10 @@ public:
   virtual void setSampleRate(double newSampleRate) override; 
   virtual void reset() override;
 
-  /** Returns the color that should be used for this frame. We assume here that this function is 
-  called at frame rate (it will update the internal color-period counter, so it msut be called at 
-  the correct rate - otherwise the color period will be wrong). */
-  Colour getAndUpdateColor();
+  ///** Returns the color that should be used for this frame. We assume here that this function is 
+  //called at frame rate (it will update the internal color-period counter, so it msut be called at 
+  //the correct rate - otherwise the color period will be wrong). */
+  //Colour getAndUpdateColor();
 
 protected:
 
@@ -85,6 +85,8 @@ protected:
   double colorPeriod;     // period for one complete color change cycle (in seconds)
   double colorCounter;
 
+  double brightness;
+
   double pixelScale;      // scale factor between internal and external pixel sizes of the image
   int displayWidth;       // display width in pixels
   int displayHeight;      // display height in pixels
@@ -95,8 +97,8 @@ protected:
   juce::Image image;
 
   // this object is reponsible for drawing the incoming data onto a virtual screen:
-  RAPT::PhaseScopeBuffer<double, float, double> phaseScopeBuffer;
-  //RAPT::PhaseScopeBuffer<double, RAPT::Float32x4, double> phaseScopeBuffer;
+  //RAPT::PhaseScopeBuffer<double, float, double> phaseScopeBuffer;
+  RAPT::PhaseScopeBuffer<double, RAPT::Float32x4, double> phaseScopeBuffer;
 
   friend class PhaseScopeMultiColorDisplay;
 

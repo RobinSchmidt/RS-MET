@@ -35,7 +35,13 @@ public:
     float f = (float)value;
     setValues(f, f, f, f);
   }
-
+   
+  /** Conversion constructor for int. */
+  Float32x4(int value)
+  {
+    float f = (float)value;
+    setValues(f, f, f, f);
+  }
 
   /** \name Setup */
 
@@ -92,6 +98,17 @@ public:
     return Float32x4(v[0]/y.v[0], v[1]/y.v[1], v[2]/y.v[2], v[3]/y.v[3]);
   }
 
+  /** In place multiplication of this Float32x4 vector with another. */
+  inline Float32x4 operator*=(const Float32x4 &y)
+  {
+    v[0] *= y.v[0];
+    v[1] *= y.v[1];
+    v[2] *= y.v[2];
+    v[3] *= y.v[3];
+    return *this;
+  }
+
+  // the set of operators is still incomplete
 
 protected:
 

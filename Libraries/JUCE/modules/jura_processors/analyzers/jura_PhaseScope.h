@@ -123,7 +123,6 @@ public:
   PhaseScopeEditor(jura::PhaseScope *newPhaseScopeToEdit);
 
   virtual void createWidgets();
-
   virtual void resized() override;
 
 protected:

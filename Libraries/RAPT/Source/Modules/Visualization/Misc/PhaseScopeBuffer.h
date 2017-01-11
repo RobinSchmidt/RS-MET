@@ -126,7 +126,7 @@ protected:
   into saturation smoothly. */
   inline void accumulate(TPix &accu, TPix value)
   {
-    accu = (accu + value) / (1 + value);
+    accu = (accu + value) / (TPix(1) + value);
 
     //accu += value;
     //accu /= (1 + value);
