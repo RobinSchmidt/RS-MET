@@ -15,7 +15,7 @@ void copyImage(juce::Image *sourceImage, juce::Image *targetImage)
     Justification::centred, false);
   return;
 
-  //// the cold below doesn't work anymore because the juce::Image class has changed and does not have
+  //// the code below doesn't work anymore because the juce::Image class has changed and does not have
   //// the setPixelData function anymore - we need to check out, how this code needs to be updated:
   //if(  sourceImage->getWidth()  != targetImage->getWidth()
   //  || sourceImage->getHeight() != targetImage->getHeight()
@@ -31,14 +31,57 @@ void copyImage(juce::Image *sourceImage, juce::Image *targetImage)
   //  // maybe optimize this by retrieving the BitmapData and doing a memcpy - but comparing with "do-nothing", it doesn't seem to be
   //  // much of a difference, so it probably doesn't matter -- hmm - in another try it used more
 
-
-
-
   // this does not belong to the code that needs to be updated - it was already commented out:
   //targetImage->clear(Rectangle<int>(0,0,w,h), Colours::white); // seems to use more CPU than setPixelData
   //int numPixels = w*h;
   //int byteSize  = targetImage->getSharedImage()->getPixelStride();
   //int dummy = 0;
+}
+
+void dataMatrixToPixelBrightnessGray(float **data, uint8 *pixels, int width, int height, uint8 gray)
+{
+  uint8 *p = pixels;
+  for(int i = 0; i < height; i++)     // loop over lines
+  {
+    for(int j = 0; j < width; j++)    // loop over pixels
+    {
+      // we assume here, that the alpha channel comes last in the byte order of the pixels
+      p[0] = p[1] = p[2] = (uint8) (gray * data[i][j]); // data determines gray-value
+      p[3] = 255;                                       // set to full opacity ("alpha")
+      p   += 4;                                         // jump to next pixel
+    }
+  }
+  // maybe templatize so it can be used for double also
+}
+void dataMatrixToPixelBrightness(float **data, uint8 *pixels, int width, int height, 
+  uint8 red, uint8 green, uint8 blue)
+{
+  uint8 *p = pixels;
+  for(int i = 0; i < height; i++)     // loop over lines
+  {
+    for(int j = 0; j < width; j++)    // loop over pixels
+    {
+      // we assume here, that the byte order of the pixels is BGRA (seems to be true on PC)
+      p[0] = (uint8) (blue  * data[i][j]);
+      p[1] = (uint8) (green * data[i][j]);
+      p[2] = (uint8) (red   * data[i][j]);
+      p[3] = 255; // full opacity ("alpha")
+      p   += 4;
+    }
+  }
+  // todo: write a version of this function that uses a colormap
+}
+void dataMatrixToImage(float **data, juce::Image &image, uint8 red, uint8 green, uint8 blue)
+{
+  // We assume here that the size of the image (width and height) matches the dimensions of the 
+  // data matrix)
+  juce::Image::BitmapData bitmap(image, juce::Image::BitmapData::writeOnly);
+  jassert(bitmap.pixelStride == 4);
+  uint8 *pixelPointer = bitmap.getPixelPointer(0, 0);
+  if(red == green && green == blue)
+    dataMatrixToPixelBrightnessGray(data, pixelPointer, bitmap.width, bitmap.height, red);
+  else
+    dataMatrixToPixelBrightness(data, pixelPointer, bitmap.width, bitmap.height, red, green, blue);
 }
 
 int drawBitmapFontText(Graphics &g, int x, int y, const String& textToDraw, 

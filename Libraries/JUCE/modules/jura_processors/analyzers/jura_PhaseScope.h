@@ -65,14 +65,6 @@ public:
   the correct rate - otherwise the color period will be wrong). */
   Colour getAndUpdateColor();
 
-  //inline Colour getColourAt(int x, int y) 
-  //{ 
-  //  uint8 c = 255;
-  //  const Colour baseColor(c, c, c, c);  // make user selectable member later
-  //  return baseColor.withAlpha(phaseScopeBuffer.getValueAt(x, y));
-  //}
-  //// can be removed
-
 protected:
 
   /** Updates the size of the internal buffer according to the settings of displayWidth, 

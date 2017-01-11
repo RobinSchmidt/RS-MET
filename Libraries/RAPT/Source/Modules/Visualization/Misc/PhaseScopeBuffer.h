@@ -60,8 +60,7 @@ public:
   /** Converts the raw left- and right signal amplitude values to the matrix indices, where the 
   data should be written. This is the xy-pixel coordinates (kept still as real numbers), where the 
   display is to be illuminated in response to the given amplitude values. */
-  void convertAmplitudesToMatrixIndices(TSig &x, TSig &y);
-  // rename to toPixelCoordinates
+  void toPixelCoordinates(TSig &x, TSig &y);
 
   /** Accepts one input sample frame for buffering. */
   void bufferSampleFrame(TSig left, TSig right);
@@ -94,11 +93,6 @@ public:
 
 protected:
 
-  /** Returns the distance between the pixels with coordinates (x1,y1) and (x1,y2). This distance 
-  is used in our line drawing function to determine the number of additional dots that are to be 
-  inserted between our actual datapoints. */
-  //float pixelDistance(float x1, float y1, float x2, float y2);
-
   /** Adds a line to the given x,y coordinates (in pixel coordinates). The starting point of the 
   line are the old pixel coordinates xOld, yOld (member variables). It takes into account our line 
   density - when it's set to zero, it will just draw a dot at the new given position. */
@@ -126,17 +120,16 @@ protected:
   they get added in according to the settings of sample rate and brightness parameter. */
   void updateInsertFactor();
 
-  /** Accumulates the given value into the accumulator accu. This accumulation amounts to adding
-  the value and the saturating at 1. \todo maybe this can be optimized and/or a different accumulation
-  function can be used to get different contrast and saturation behavior.  */
+  /** Accumulates the given value into the accumulator accu. We use a rather peculiar accumulation
+  function here: newAccu = (oldAccu + value) / (1 + value). When accu starts out a zero and all 
+  accumulated values are >= 0, this function will ensure that accu is always < 1 and it will go
+  into saturation smoothly. */
   inline void accumulate(TPix &accu, TPix value)
   {
-    //accu = min(1.f, accu + value);
+    accu = (accu + value) / (1 + value);
 
-    // this seems to be actually cheaper than the min() call and saturates more smoothly:
-    accu += value;
-    accu /= (1 + value);
-    //accu /= (1 + accu);
+    //accu += value;
+    //accu /= (1 + value);
   }
 
   bool antiAlias;      // flag to switch anti-aliasing on/off

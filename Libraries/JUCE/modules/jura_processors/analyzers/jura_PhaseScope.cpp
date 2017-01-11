@@ -1,4 +1,3 @@
-
 PhaseScope::PhaseScope(CriticalSection *lockToUse) : AudioModule(lockToUse)
 {
   ScopedLock scopedLock(*plugInLock);
@@ -173,54 +172,6 @@ void PhaseScope::updateBufferSize()
   image = juce::Image(juce::Image::ARGB, w, h, false);
 }
 
-// \todo move these helper functions to jura_GraphicsTools, maybe templatize so it can be used 
-// for double also:
-void dataMatrixToPixelBrightnessGray(float **data, uint8 *pixels, int width, int height)
-{
-  uint8 *p = pixels;
-  for(int i = 0; i < height; i++)     // loop over lines
-  {
-    for(int j = 0; j < width; j++)    // loop over pixels
-    {
-      // we assume here, that the alpha channel comes last in the byte order of the pixels
-      p[0] = p[1] = p[2] = (uint8) (255 * data[i][j]);  // data determines white-value
-      p[3] = 255;                                       // set to full opacity ("alpha")
-      p   += 4;                                         // jump to next pixel
-    }
-  }
-}
-void dataMatrixToPixelBrightness(float **data, uint8 *pixels, int width, int height,
-  uint8 red = 255, uint8 green = 255, uint8 blue = 255)
-{
-  uint8 *p = pixels;
-  for(int i = 0; i < height; i++)     // loop over lines
-  {
-    for(int j = 0; j < width; j++)    // loop over pixels
-    {
-      // we assume here, that the byte order of the pixels is BGRA (seems to be true on PC)
-      p[0] = (uint8) (blue  * data[i][j]);
-      p[1] = (uint8) (green * data[i][j]);
-      p[2] = (uint8) (red   * data[i][j]);
-      p[3] = 255; // full opacity ("alpha")
-      p   += 4;
-    }
-  }
-  // todo: write a version of this function that uses a colormap
-}
-void dataMatrixToImage(float **data, juce::Image &image, 
-  uint8 red = 255, uint8 green = 255, uint8 blue = 255)
-{
-  // We assume here that the size of the image (width and height) matches the dimensions of the 
-  // data matrix)
-  juce::Image::BitmapData bitmap(image, juce::Image::BitmapData::writeOnly);
-  jassert(bitmap.pixelStride == 4);
-  uint8 *pixelPointer = bitmap.getPixelPointer(0, 0);
-  if(red == green && green == blue)
-    dataMatrixToPixelBrightnessGray(data, pixelPointer, bitmap.width, bitmap.height);
-  else
-    dataMatrixToPixelBrightness(data, pixelPointer, bitmap.width, bitmap.height, red, green, blue);
-}
-
 void PhaseScope::updateScopeImage()
 {
   // old (without color change):
@@ -279,17 +230,6 @@ void PhaseScopeDisplay::paint(Graphics &g)
   // maybe all of this should be refactored in way, such that we need to write only
   // g.drawImageAt(phaseScope->getImage(), 0, 0);  here - we could take care of proper thread 
   // synchronization there also
-
-  //// this is the old, direct and horribly inefficient way to do it:
-  //g.fillAll(Colours::black);
-  //for(int x = 0; x < getWidth(); x++)
-  //{
-  //  for(int y = 0; y < getHeight(); y++)
-  //  {
-  //    g.setColour(phaseScope->getColourAt(x, y));
-  //    g.setPixel(x, y);
-  //  }
-  //}
 }
 
 //void PhaseScopeDisplay::timerCallback()

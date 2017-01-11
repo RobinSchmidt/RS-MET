@@ -9,6 +9,13 @@
 compatible (same dimensions and pixel-format). */
 JUCE_API void copyImage(juce::Image *sourceImage, juce::Image *targetImage);
 
+/** Converts a data-matrix of float values into an image. The matrix values are supposed to be in 
+the range 0..1 and their values will determine the pixel brightnesses. You can set a base color in 
+terms of red/green/blue values. The output image will then use the color so defined multiplied by 
+the matrix values for the pixels. */
+JUCE_API void dataMatrixToImage(float **data, juce::Image &image, 
+  uint8 red = 255, uint8 green = 255, uint8 blue = 255);
+
 /** Draws a text with a BitmapFont with the given style-settings and returns the x-coordinate where 
 the drawn text ends (and subsequent text can be appended, if desired). */
 JUCE_API int drawBitmapFontText(Graphics &g, int x, int y, const juce::String& textToDraw, 
