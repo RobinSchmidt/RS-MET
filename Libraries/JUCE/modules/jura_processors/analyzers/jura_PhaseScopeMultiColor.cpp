@@ -276,7 +276,7 @@ PhaseScopeMultiColorEditor::PhaseScopeMultiColorEditor(
 {
   ScopedLock scopedLock(*plugInLock);
   scope = newPhaseScopeToEdit;
-  widgetMargin = 120; 
+  widgetMargin = 150; 
 
   addAndMakeVisible(display);
   createWidgets();
