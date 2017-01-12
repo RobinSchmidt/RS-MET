@@ -9,12 +9,26 @@
 compatible (same dimensions and pixel-format). */
 JUCE_API void copyImage(juce::Image *sourceImage, juce::Image *targetImage);
 
+/** Given an image (assumed to be of RGBA type), this function returns the indices of the red, 
+green, blue and alpha components, i.e. assigns ri,gi,bi,ai to some permutaion of 0,1,2,3. 
+\TODO: the implementation is preliminary and just returns a fixed order that seems to be valid on
+a windows PC. this is likely to be changed for other platforms. */
+JUCE_API void colorComponentIndices(juce::Image& image, int &ri, int &gi, int &bi, int &ai);
+
 /** Converts a data-matrix of float values into an image. The matrix values are supposed to be in 
 the range 0..1 and their values will determine the pixel brightnesses. You can set a base color in 
 terms of red/green/blue values. The output image will then use the color so defined multiplied by 
 the matrix values for the pixels. */
 JUCE_API void dataMatrixToImage(float **data, juce::Image &image, 
   uint8 red = 255, uint8 green = 255, uint8 blue = 255);
+
+/** Takes a pointer to floating point data and converts it into an image. The float array is 
+supposed to be of length 4*w*h where w,h are width and height of the image. Presumably the array 
+represents a w-times-h matrix of data where each datapoint consists of 4 float numbers 
+representing red, green, blue and alpha (although the alpha channel is not used here - we write the
+RGB values with full opacity into the image). So it's a conversion function from an internal 
+float-RGBA pixel format to the juce::Image pixel format. */
+JUCE_API void dataToImageOpaqueFloat32x4(float *data, juce::Image &image);
 
 /** Draws a text with a BitmapFont with the given style-settings and returns the x-coordinate where 
 the drawn text ends (and subsequent text can be appended, if desired). */

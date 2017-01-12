@@ -94,7 +94,6 @@ protected:
   juce::Image image;
 
   // this object is reponsible for drawing the incoming data onto a virtual screen:
-  //RAPT::PhaseScopeBuffer<double, float, double> phaseScopeBuffer;
   RAPT::PhaseScopeBuffer<double, RAPT::Float32x4, double> phaseScopeBuffer;
 
   friend class PhaseScopeMultiColorDisplay;

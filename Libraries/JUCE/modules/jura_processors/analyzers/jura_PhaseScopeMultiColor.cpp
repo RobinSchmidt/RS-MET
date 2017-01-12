@@ -124,9 +124,6 @@ void PhaseScopeMultiColor::processBlock(double **inOutBuffer, int numChannels, i
 
   for(int n = 0; n < numSamples; n++)
   {
-    //phaseScopeBuffer.setBrightness(Float32x4(brightness));
-      // preliminary
-
     // preliminary, very inefficient (optimize later and maybe factor out):
     float b       = float(brightness);
     if(colorPeriod != 0.0)
@@ -180,35 +177,12 @@ void PhaseScopeMultiColor::updateBufferSize()
   image = juce::Image(juce::Image::ARGB, w, h, false);
 }
 
-// helper function - might be moved to somewhere else in the library later:
-void dataMatrixToImage(RAPT::Float32x4 *data, juce::Image &image)
-{
-  juce::Image::BitmapData bitmap(image, juce::Image::BitmapData::writeOnly);
-  jassert(bitmap.pixelStride == 4);
-
-  float *sourcePointer = reinterpret_cast<float*>(data);
-  uint8 *targetPointer = bitmap.getPixelPointer(0, 0);
-
-  for(int i = 0; i < bitmap.height; i++)     // loop over lines
-  {
-    for(int j = 0; j < bitmap.width; j++)    // loop over pixels
-    {
-      // we assume here, that the byte order of the pixels in the target image is BGRA (seems to 
-      // be true on PC) and in the source data is RGBA:
-      targetPointer[0] = (uint8) (255 * sourcePointer[2]);
-      targetPointer[1] = (uint8) (255 * sourcePointer[1]);
-      targetPointer[2] = (uint8) (255 * sourcePointer[0]);
-      //targetPointer[3] = (uint8) (255 * sourcePointer[3]);
-      targetPointer[3] = 255;  // preliminary - full opacity
-
-      sourcePointer += 4;
-      targetPointer += 4;
-    }
-  }
-}
 void PhaseScopeMultiColor::updateScopeImage()
 {
-  dataMatrixToImage(phaseScopeBuffer.getDataMatrix()[0], image);
+  RAPT::Float32x4 *tmp = phaseScopeBuffer.getDataMatrix()[0];
+  float *floatData = reinterpret_cast<float*>(tmp);
+  dataToImageOpaqueFloat32x4(floatData, image);
+
   phaseScopeBuffer.applyPixelDecay();
 }
 

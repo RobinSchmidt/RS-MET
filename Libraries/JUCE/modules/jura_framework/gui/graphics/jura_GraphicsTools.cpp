@@ -126,6 +126,37 @@ int drawBitmapFontText(Graphics &g, int x, int y, const String& textToDraw,
   return x;
 }
 
+void colorComponentIndices(juce::Image& image, int &ri, int &gi, int &bi, int &ai)
+{
+  // preliminary, seems valid on PC - todo: figure these out in a platform specific way from the 
+  // passed image:
+  ri = 2;
+  gi = 1;
+  bi = 0; 
+  ai = 3;
+}
+
+void dataToImageOpaqueFloat32x4(float *data, juce::Image &image)
+{
+  juce::Image::BitmapData bitmap(image, juce::Image::BitmapData::writeOnly);
+  jassert(bitmap.pixelStride == 4);
+
+  // indices for RGBA components in target image:
+  int ri, gi, bi, ai;
+  colorComponentIndices(image, ri, gi, bi, ai);
+
+  uint8 *p = bitmap.getPixelPointer(0, 0);
+  for(int i = 0; i < bitmap.height * bitmap.width; i++)
+  {
+    p[ri] = (uint8)(255 * data[0]);
+    p[gi] = (uint8)(255 * data[1]);
+    p[bi] = (uint8)(255 * data[2]);
+    p[ai] = 255;  // full opacity
+    p    += 4;
+    data += 4;
+  }
+}
+
 Colour getMixedColour(const Colour colour1, const Colour colour2, double weight1, double weight2)
 {
   float a1 = colour1.getFloatAlpha();
