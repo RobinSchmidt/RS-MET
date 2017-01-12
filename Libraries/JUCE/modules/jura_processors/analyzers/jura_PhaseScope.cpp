@@ -133,9 +133,57 @@ void PhaseScope::updateBufferSize()
   image = juce::Image(juce::Image::ARGB, w, h, false);
 }
 
+// move to GraphicsTools
+void normalizedDataToImageGrayScale(float *data, juce::Image &image)
+{
+  juce::Image::BitmapData bitmap(image, juce::Image::BitmapData::writeOnly);
+  jassert(bitmap.pixelStride == 4);
+
+  // indices for RGBA components in target image:
+  int ri, gi, bi, ai;
+  colorComponentIndices(image, ri, gi, bi, ai);
+
+  uint8 *p = bitmap.getPixelPointer(0, 0);
+  uint8 gray;
+  for(int i = 0; i < bitmap.height * bitmap.width; i++)
+  {
+    gray  = (uint8)(255 * data[i]);
+    p[ri] = p[gi] = p[bi] = gray;
+    p[ai] = 255;  // full opacity
+    p    += 4;
+  }
+}
+void normalizedDataToImage(float *data, juce::Image &image, juce::ColourGradient *colorMap = nullptr)
+{
+  if(colorMap == nullptr)
+  {
+    normalizedDataToImageGrayScale(data, image);
+    return;
+  }
+
+  int w = image.getWidth();
+  int h = image.getHeight();
+  for(int y = 0; y < h; y++)
+  {
+    for(int x = 0; x < w; x++)
+      image.setPixelAt(x, y, colorMap->getColourAtPosition(data[y*w+x]));
+  }
+}
+
 void PhaseScope::updateScopeImage()
 {
-  dataMatrixToImage(phaseScopeBuffer.getDataMatrix(), image);
+  // test color gradient (\todo: make this a member - maybe as pointer and have a class 
+  // ColorGradientSelector or something):
+  juce::ColourGradient gradient;
+  gradient.addColour(0.0, Colour(  0,   0,   0));
+  gradient.addColour(0.2, Colour(  0,   0, 255));
+  gradient.addColour(0.4, Colour(  0, 255, 255));
+  gradient.addColour(0.6, Colour(  0, 255,   0));
+  gradient.addColour(0.8, Colour(255, 255,   0));
+  gradient.addColour(1.0, Colour(255,   0,   0));
+
+  //normalizedDataToImage(phaseScopeBuffer.getDataMatrix()[0], image);
+  normalizedDataToImage(phaseScopeBuffer.getDataMatrix()[0], image, &gradient);
   phaseScopeBuffer.applyPixelDecay();
 }
 

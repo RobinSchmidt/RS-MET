@@ -29,6 +29,7 @@ representing red, green, blue and alpha (although the alpha channel is not used 
 RGB values with full opacity into the image). So it's a conversion function from an internal 
 float-RGBA pixel format to the juce::Image pixel format. */
 JUCE_API void dataToImageOpaqueFloat32x4(float *data, juce::Image &image);
+// maybe rename into something more meaningful
 
 /** Draws a text with a BitmapFont with the given style-settings and returns the x-coordinate where 
 the drawn text ends (and subsequent text can be appended, if desired). */

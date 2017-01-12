@@ -38,6 +38,7 @@ void copyImage(juce::Image *sourceImage, juce::Image *targetImage)
   //int dummy = 0;
 }
 
+// these 3 are obsolete - superseded by normalizedDataToImage - delete soon
 void dataMatrixToPixelBrightnessGray(float **data, uint8 *pixels, int width, int height, uint8 gray)
 {
   uint8 *p = pixels;
