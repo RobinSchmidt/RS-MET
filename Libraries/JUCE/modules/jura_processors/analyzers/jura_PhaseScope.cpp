@@ -144,13 +144,11 @@ void normalizedDataToImageGrayScale(float *data, juce::Image &image)
   colorComponentIndices(image, ri, gi, bi, ai);
 
   uint8 *p = bitmap.getPixelPointer(0, 0);
-  uint8 gray;
   for(int i = 0; i < bitmap.height * bitmap.width; i++)
   {
-    gray  = (uint8)(255 * data[i]);
-    p[ri] = p[gi] = p[bi] = gray;
+    p[ri] = p[gi] = p[bi] = (uint8)(255 * data[i]);
     p[ai] = 255;  // full opacity
-    p    += 4;
+    p += 4;
   }
 }
 void normalizedDataToImage(float *data, juce::Image &image, juce::ColourGradient *colorMap = nullptr)
@@ -175,12 +173,42 @@ void PhaseScope::updateScopeImage()
   // test color gradient (\todo: make this a member - maybe as pointer and have a class 
   // ColorGradientSelector or something):
   juce::ColourGradient gradient;
-  gradient.addColour(0.0, Colour(  0,   0,   0));
-  gradient.addColour(0.2, Colour(  0,   0, 255));
-  gradient.addColour(0.4, Colour(  0, 255, 255));
-  gradient.addColour(0.6, Colour(  0, 255,   0));
-  gradient.addColour(0.8, Colour(255, 255,   0));
-  gradient.addColour(1.0, Colour(255,   0,   0));
+  //gradient.addColour(0.0, Colour(  0,   0,   0));
+  //gradient.addColour(0.2, Colour(  0,   0, 255));
+  //gradient.addColour(0.4, Colour(  0, 255, 255));
+  //gradient.addColour(0.6, Colour(  0, 255,   0));
+  //gradient.addColour(0.8, Colour(255, 255,   0));
+  //gradient.addColour(1.0, Colour(255,   0,   0)); // maybe add magenta as last
+
+  //gradient.addColour(0.0, Colour(  0,   0,   0));
+  //gradient.addColour(0.2, Colour(  0,   0, 255));
+  //gradient.addColour(0.4, Colour(  0, 127, 127));
+  //gradient.addColour(0.6, Colour(  0, 255,   0));
+  //gradient.addColour(0.8, Colour(255, 255,   0));
+  //gradient.addColour(1.0, Colour(255, 255, 255));
+
+  // "Sun"
+  gradient.addColour(0.0, Colour(  0,   0,   0));  // black
+  gradient.addColour(0.4, Colour(255,   0,   0));  // red
+  gradient.addColour(0.6, Colour(255, 255,   0));  // yellow
+  gradient.addColour(1.0, Colour(255, 255, 255));  // white
+
+  //// "Ice"
+  //gradient.addColour(0.0, Colour(  0,   0,   0));  // black
+  //gradient.addColour(0.4, Colour(  0,   0, 255));  // blue
+  //gradient.addColour(0.6, Colour(  0, 255, 255));  // cyan
+  //gradient.addColour(1.0, Colour(255, 255, 255));  // white
+
+  //// "Grass"
+  //gradient.addColour(0.0, Colour(  0,   0,   0));  // black
+  //gradient.addColour(0.4, Colour(  0, 255,   0));  // green
+  //gradient.addColour(0.6, Colour(255, 255,   0));  // yellow
+  //gradient.addColour(1.0, Colour(255, 255, 255));  // white
+
+  // here's a good tutorial about colormaps:
+  //http://www.research.ibm.com/people/l/lloydt/color/color.HTM
+
+
 
   //normalizedDataToImage(phaseScopeBuffer.getDataMatrix()[0], image);
   normalizedDataToImage(phaseScopeBuffer.getDataMatrix()[0], image, &gradient);

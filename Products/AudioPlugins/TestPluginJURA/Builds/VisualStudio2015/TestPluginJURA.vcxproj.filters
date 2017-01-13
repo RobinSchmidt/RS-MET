@@ -2272,6 +2272,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\graphics\jura_BitmapFonts.cpp">
       <Filter>Juce Modules\jura_framework\gui\graphics</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\graphics\jura_ColorMap.cpp">
+      <Filter>Juce Modules\jura_framework\gui\graphics</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\graphics\jura_ColourAHSL.cpp">
       <Filter>Juce Modules\jura_framework\gui\graphics</Filter>
     </ClCompile>
@@ -4438,6 +4441,9 @@
       <Filter>Juce Modules\jura_framework\gui\editors</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\graphics\jura_BitmapFonts.h">
+      <Filter>Juce Modules\jura_framework\gui\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\graphics\jura_ColorMap.h">
       <Filter>Juce Modules\jura_framework\gui\graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\graphics\jura_ColourAHSL.h">

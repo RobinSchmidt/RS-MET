@@ -56,6 +56,7 @@ namespace jura
 #include "files/jura_AudioFileManager.h"
 #include "files/jura_ImageFileManager.h"
 
+#include "gui/graphics/jura_ColorMap.h"
 #include "gui/graphics/jura_ColourAHSL.h"
 #include "gui/graphics/jura_ColourizableBitmap.h"
 #include "gui/graphics/jura_ColourScheme.h"

@@ -29,6 +29,7 @@ namespace jura
 #include "files/jura_AudioFileManager.cpp"
 #include "files/jura_ImageFileManager.cpp"
 
+#include "gui/graphics/jura_ColorMap.cpp"
 #include "gui/graphics/jura_ColourAHSL.cpp"
 #include "gui/graphics/jura_ColourizableBitmap.cpp"
 #include "gui/graphics/jura_ColourScheme.cpp"
