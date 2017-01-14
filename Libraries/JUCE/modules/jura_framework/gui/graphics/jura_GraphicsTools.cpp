@@ -38,7 +38,35 @@ void copyImage(juce::Image *sourceImage, juce::Image *targetImage)
   //int dummy = 0;
 }
 
-// these 3 are obsolete - superseded by normalizedDataToImage - delete soon
+void normalizedDataToImage(float *data, juce::Image &image, const jura::ColorMap& colorMap)
+{
+  juce::Image::BitmapData bitmap(image, juce::Image::BitmapData::writeOnly);
+  jassert(bitmap.pixelStride == 4);
+  uint8 *p8 = bitmap.getPixelPointer(0, 0);
+  uint32 *p = reinterpret_cast<uint32*>(p8);
+  for(int i = 0; i < bitmap.height * bitmap.width; i++)
+    p[i] = colorMap.getColorAsUint32(data[i]);
+}
+
+void normalizedDataToImage(float *data, juce::Image &image)
+{
+  juce::Image::BitmapData bitmap(image, juce::Image::BitmapData::writeOnly);
+  jassert(bitmap.pixelStride == 4);
+
+  // indices for RGBA components in target image:
+  int ri, gi, bi, ai;
+  colorComponentIndices(image, ri, gi, bi, ai);
+
+  uint8 *p = bitmap.getPixelPointer(0, 0);
+  for(int i = 0; i < bitmap.height * bitmap.width; i++)
+  {
+    p[ri] = p[gi] = p[bi] = (uint8)(255 * data[i]);
+    p[ai] = 255;  // full opacity
+    p += 4;
+  }
+}
+
+// these 3 are obsolete - superseded by dataToImage - delete soon
 void dataMatrixToPixelBrightnessGray(float **data, uint8 *pixels, int width, int height, uint8 gray)
 {
   uint8 *p = pixels;

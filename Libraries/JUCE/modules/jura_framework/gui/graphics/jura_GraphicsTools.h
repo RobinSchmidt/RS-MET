@@ -15,6 +15,21 @@ green, blue and alpha components, i.e. assigns ri,gi,bi,ai to some permutaion of
 a windows PC. this is likely to be changed for other platforms. */
 JUCE_API void colorComponentIndices(juce::Image& image, int &ri, int &gi, int &bi, int &ai);
 
+/** Converts the given data (assumed to represent a flattened representation of 2D data with width 
+and height equal to the dimensions of the passed image) into pixel colors on the image using the 
+given colormap. The data is assumed to be normalized to the range 0..1 (ends inclusive). 
+WARNING: it is VERY important that the data is in this range indeed, otherwise you'll get access 
+violations!!! */
+JUCE_API void normalizedDataToImage(float *data, juce::Image &image, 
+  const jura::ColorMap& colorMap);
+// \todo: make a version of this function that deals with unnormalized data - we need to pass a min
+// and max value and then use these internally to scale the data values during readout
+
+/** Similar to version of this function with the colormap but uses grayscale values. It also 
+assumes normalized data, but if it's not you won't get access violations but just a wraparound from 
+white to black when the data value is > 1. */
+JUCE_API void normalizedDataToImage(float *data, juce::Image &image);
+
 /** Converts a data-matrix of float values into an image. The matrix values are supposed to be in 
 the range 0..1 and their values will determine the pixel brightnesses. You can set a base color in 
 terms of red/green/blue values. The output image will then use the color so defined multiplied by 

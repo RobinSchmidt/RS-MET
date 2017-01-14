@@ -7,6 +7,11 @@ gradient by creating an internal array of pre-interpolated colors. So, basically
 table for a ColourGradient object. 
 
 \todo: provide methods for conversion from/to xml
+
+References:
+http://www.research.ibm.com/people/l/lloydt/color/color.HTM
+https://www.mathworks.com/tagteam/81137_92238v00_RainbowColorMap_57312.pdf
+http://davidjohnstone.net/pages/lch-lab-colour-gradient-picker
 */
 
 class JUCE_API ColorMap
@@ -44,7 +49,7 @@ public:
   /** Returns the color as uint32 value at the given normalized index which must be in the range 
   0..1 (ends inclusive). For efficiency, the range is not checked, so the caller must make sure 
   that it is indeed in this range, otherwise an access violation will occur. */
-  inline uint32 getColorAsUint32(float normalizedIndex)
+  inline uint32 getColorAsUint32(float normalizedIndex) const
   {
     return colors[int(normalizedIndex*lastIndex)];
   }

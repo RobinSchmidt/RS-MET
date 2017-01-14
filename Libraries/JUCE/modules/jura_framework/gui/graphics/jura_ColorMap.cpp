@@ -1,7 +1,9 @@
 ColorMap::ColorMap()
 {
-  colors.resize(2048);
-  lastIndex = 2047;
+  int initialSize = 2048;
+
+  colors.resize(initialSize);
+  lastIndex = initialSize-1;
   setDefaultMap(grayScale);
 }
 
