@@ -45,6 +45,9 @@ public:
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
   virtual void setSampleRate(double newSampleRate) override; 
   virtual void reset() override;
+  virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 
+    bool markAsClean) override;
+  virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean) override;
 
 protected:
 

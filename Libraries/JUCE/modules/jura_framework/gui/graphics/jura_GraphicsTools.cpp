@@ -159,10 +159,10 @@ void colorComponentIndices(juce::Image& image, int &ri, int &gi, int &bi, int &a
 {
   // preliminary, seems valid on PC - todo: figure these out in a platform specific way from the 
   // passed image:
+  ai = 3;
   ri = 2;
   gi = 1;
   bi = 0; 
-  ai = 3;
 }
 
 void dataToImageOpaqueFloat32x4(float *data, juce::Image &image)

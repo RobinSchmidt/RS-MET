@@ -16,6 +16,9 @@ void ColorMap::setFromColourGradient(const ColourGradient &g)
 void ColorMap::setDefaultMap(int index)
 {
   setFromColourGradient(getDefaultGradient(index));
+  // with the named pre-defined maps, we are not even restricted to using maps based on a 
+  // juce::ColourGradient object (which uses linear interpolation RGB space, which might not be
+  // ideal). We can use custom formulas or use the ColorAHSL class to create the map
 }
 
 void ColorMap::setSize(int newSize)
@@ -23,6 +26,32 @@ void ColorMap::setSize(int newSize)
   colors.resize(newSize);
   lastIndex = newSize-1;
   updateArray();
+}
+
+void ColorMap::setFromXml(const XmlElement& xml)
+{
+  // not yet implemented
+}
+
+XmlElement* ColorMap::getAsXml()
+{
+  XmlElement* xml = new XmlElement("ColorMap"); 
+
+  // \todo have a mechanism to determine whether this current colormap is one of the default 
+  // hard-coded ones or a custom map. if it's a hard coded one, we just store the name of the map
+  // as one attribute like DefaultMap="Fire" or something like that
+
+  // we can have a defaultMapIndex member that we set to -1 when it's a custom map
+
+  for(int i = 0; i < gradient.getNumColours(); i++)
+  {
+    double p = gradient.getColourPosition(i);
+    Colour c = gradient.getColour(i);
+    String s = c.toString();
+    xml->setAttribute(s, String(p));
+  }
+
+  return xml;
 }
 
 ColourGradient ColorMap::getDefaultGradient(int index)
@@ -57,11 +86,7 @@ ColourGradient ColorMap::getDefaultGradient(int index)
 
 void ColorMap::updateArray()
 {
-  Colour c;
   double scaler = 1.0 / lastIndex;
   for(int i = 0; i < colors.size(); i++)
-  {
-    c = gradient.getColourAtPosition(scaler * i);
-    colors[i] = c.getARGB();
-  }
+    colors[i] = gradient.getColourAtPosition(scaler*i).getARGB();
 }

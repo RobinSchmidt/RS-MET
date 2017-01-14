@@ -26,6 +26,8 @@ public:
     fire,
     ice
   };
+  // \todo: provide bipolar maps - for example going from bright blue to black in the middle and 
+  // then to bright red
 
   /** Constructor. */
   ColorMap();
@@ -43,15 +45,21 @@ public:
   /** Sets the size of the array. Larger sizes will give smoother color transitions. */
   void setSize(int newSize);
 
+  /** Sets up the colormap for the given xml element. */ 
+  void setFromXml(const XmlElement& xml);
+
+  /** Returns an xml representation of this colormap. */
+  XmlElement* getAsXml();
+
 
   /** \name Color retrieval */
 
-  /** Returns the color as uint32 value at the given normalized index which must be in the range 
+  /** Returns the color as uint32 value at the given normalized position which must be in the range 
   0..1 (ends inclusive). For efficiency, the range is not checked, so the caller must make sure 
   that it is indeed in this range, otherwise an access violation will occur. */
-  inline uint32 getColorAsUint32(float normalizedIndex) const
+  inline uint32 getColorAsUint32(float position) const
   {
-    return colors[int(normalizedIndex*lastIndex)];
+    return colors[int(position*lastIndex)];
   }
 
 

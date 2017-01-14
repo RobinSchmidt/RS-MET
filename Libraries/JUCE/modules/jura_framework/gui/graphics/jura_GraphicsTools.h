@@ -2,15 +2,13 @@
 #define jura_GraphicsTools_h
 
 // Maybe wrap these functions into a class at some point 
-//..maybe they need the JUCE_API macro prefix in front of their declarations, so they can be 
-// wrapped into a DLL?
 
 /** Copies the pixel-data from one image into another. For this to work, the images must be 
 compatible (same dimensions and pixel-format). */
 JUCE_API void copyImage(juce::Image *sourceImage, juce::Image *targetImage);
 
 /** Given an image (assumed to be of RGBA type), this function returns the indices of the red, 
-green, blue and alpha components, i.e. assigns ri,gi,bi,ai to some permutaion of 0,1,2,3. 
+green, blue and alpha components, i.e. assigns ri,gi,bi,ai to some permutation of 0,1,2,3. 
 \TODO: the implementation is preliminary and just returns a fixed order that seems to be valid on
 a windows PC. this is likely to be changed for other platforms. */
 JUCE_API void colorComponentIndices(juce::Image& image, int &ri, int &gi, int &bi, int &ai);

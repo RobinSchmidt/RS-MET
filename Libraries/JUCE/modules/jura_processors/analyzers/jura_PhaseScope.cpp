@@ -126,6 +126,22 @@ void PhaseScope::reset()
   repaintCounter = 0;
 }
 
+void PhaseScope::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
+  bool markAsClean)
+{
+  AudioModule::setStateFromXml(xmlState, stateName, markAsClean);
+  
+  // todo: restore the color-map from the xml...
+}
+
+XmlElement* PhaseScope::getStateAsXml(const juce::String& stateName, bool markAsClean)
+{
+  XmlElement* xml = AudioModule::getStateAsXml(stateName, markAsClean);
+  XmlElement* colorMapXml = colorMap.getAsXml();
+  xml->addChildElement(colorMapXml);
+  return xml;
+}
+
 void PhaseScope::updateBufferSize()
 {
   ScopedLock scopedLock(*plugInLock);
@@ -139,7 +155,7 @@ void PhaseScope::updateScopeImage()
 {
   // test color gradient (\todo: make this a member - maybe as pointer and have a class 
   // ColorGradientSelector or something):
-  juce::ColourGradient gradient;
+  //juce::ColourGradient gradient;
   //gradient.addColour(0.0, Colour(  0,   0,   0));
   //gradient.addColour(0.2, Colour(  0,   0, 255));
   //gradient.addColour(0.4, Colour(  0, 255, 255));
