@@ -22,9 +22,10 @@ public:
   /** Enumeration of the hard coded predefined maps. */
   enum defaultMaps
   {
-    grayScale,
+    gray,
     fire,
-    ice
+    ice, 
+    rainbow
   };
   // \todo: provide bipolar maps - for example going from bright blue to black in the middle and 
   // then to bright red
@@ -70,12 +71,20 @@ public:
 
 protected:
 
+  /** Fills our array of default map names. Called internally in the constructor. */
+  void fillDefaultMapNameArray();
+
   /** Updates our internally stored array of colors according to the gradient member. */
   void updateArray();
 
-
   std::vector<uint32> colors;
   int lastIndex;
+
+  int defaultMapIndex;          // if not -1, we are using one of the predefined maps
+  StringArray defaultMapNames;
+    // this could actually be a static member - we would have to make fillDefaultMapNameArray
+    // a static member function then and inside it, we could check, if the array is already filled
+    // and fill it only if necessarry
 
   ColourGradient gradient; // the juce color gradient object on which this map is based
 

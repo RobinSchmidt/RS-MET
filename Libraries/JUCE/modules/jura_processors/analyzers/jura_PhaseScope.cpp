@@ -12,7 +12,16 @@ PhaseScope::PhaseScope(CriticalSection *lockToUse) : AudioModule(lockToUse)
   createParameters();
   reset();
 
-  colorMap.setDefaultMap(ColorMap::fire);
+  //colorMap.setDefaultMap(ColorMap::fire);
+
+  juce::ColourGradient g;
+  g.addColour(0.0, Colour(  0,   0,   0));
+  g.addColour(0.2, Colour(  0,   0, 255));
+  g.addColour(0.4, Colour(  0, 255, 255));
+  g.addColour(0.6, Colour(  0, 255,   0));
+  g.addColour(0.8, Colour(255, 255,   0));
+  g.addColour(1.0, Colour(255,   0,   0)); // maybe add magenta as last
+  colorMap.setFromColourGradient(g);
 }
 
 void PhaseScope::createParameters()
@@ -130,8 +139,9 @@ void PhaseScope::setStateFromXml(const XmlElement& xmlState, const juce::String&
   bool markAsClean)
 {
   AudioModule::setStateFromXml(xmlState, stateName, markAsClean);
-  
-  // todo: restore the color-map from the xml...
+  XmlElement* xmlColorMap = xmlState.getChildByName("ColorMap");
+  if(xmlColorMap != nullptr)
+    colorMap.setFromXml(*xmlColorMap);
 }
 
 XmlElement* PhaseScope::getStateAsXml(const juce::String& stateName, bool markAsClean)
@@ -153,16 +163,6 @@ void PhaseScope::updateBufferSize()
 
 void PhaseScope::updateScopeImage()
 {
-  // test color gradient (\todo: make this a member - maybe as pointer and have a class 
-  // ColorGradientSelector or something):
-  //juce::ColourGradient gradient;
-  //gradient.addColour(0.0, Colour(  0,   0,   0));
-  //gradient.addColour(0.2, Colour(  0,   0, 255));
-  //gradient.addColour(0.4, Colour(  0, 255, 255));
-  //gradient.addColour(0.6, Colour(  0, 255,   0));
-  //gradient.addColour(0.8, Colour(255, 255,   0));
-  //gradient.addColour(1.0, Colour(255,   0,   0)); // maybe add magenta as last
-
   normalizedDataToImage(phaseScopeBuffer.getDataMatrix()[0], image, colorMap);
   phaseScopeBuffer.applyPixelDecay();
 }
