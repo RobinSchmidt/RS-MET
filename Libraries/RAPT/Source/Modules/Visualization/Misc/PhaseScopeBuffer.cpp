@@ -91,6 +91,7 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::toPixelCoordinates(TSig &x, TSig &y)
   y  = TSig(0.5) * (y+1);
   x *= width;
   y *= height;
+  y  = height-1 - y;
   // maybe we should add 0.5 after multiplication by width/height?
 }
 

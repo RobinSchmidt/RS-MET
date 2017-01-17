@@ -13,15 +13,16 @@ PhaseScope::PhaseScope(CriticalSection *lockToUse) : AudioModule(lockToUse)
   reset();
 
   //colorMap.setDefaultMap(ColorMap::fire);
+  colorMap.setDefaultMap(ColorMap::ice);
 
-  juce::ColourGradient g;
-  g.addColour(0.0, Colour(  0,   0,   0));
-  g.addColour(0.2, Colour(  0,   0, 255));
-  g.addColour(0.4, Colour(  0, 255, 255));
-  g.addColour(0.6, Colour(  0, 255,   0));
-  g.addColour(0.8, Colour(255, 255,   0));
-  g.addColour(1.0, Colour(255,   0,   0)); // maybe add magenta as last
-  colorMap.setFromColourGradient(g);
+  //juce::ColourGradient g;
+  //g.addColour(0.0, Colour(  0,   0,   0));
+  //g.addColour(0.2, Colour(  0,   0, 255));
+  //g.addColour(0.4, Colour(  0, 255, 255));
+  //g.addColour(0.6, Colour(  0, 255,   0));
+  //g.addColour(0.8, Colour(255, 255,   0));
+  //g.addColour(1.0, Colour(255,   0,   0)); // maybe add magenta as last
+  //colorMap.setFromColourGradient(g);
 }
 
 void PhaseScope::createParameters()

@@ -16,12 +16,32 @@ void ColorMap::setFromColourGradient(const ColourGradient &g)
 
 void ColorMap::setDefaultMap(int index)
 {
-  setFromColourGradient(getDefaultGradient(index));
+  //setFromColourGradient(getDefaultGradient(index));
   defaultMapIndex = index;
 
-  // with the named pre-defined maps, we are not even restricted to using maps based on a 
-  // juce::ColourGradient object (which uses linear interpolation RGB space, which might not be
-  // ideal). We can use custom formulas or use the ColorAHSL class to create the map
+  // experimental:
+  double scaler = 1.0 / lastIndex;
+  switch(index)
+  {
+  case fire:
+  {
+    for(int i = 0; i < colors.size(); i++)
+      colors[i] = ColourAHSL(
+        -0.1f + float(0.4f*i*scaler), 1.f, float(i*scaler), 1.f).getAsJuceColour().getARGB();
+  } break;
+  case ice:
+  {
+    for(int i = 0; i < colors.size(); i++)
+      colors[i] = ColourAHSL(
+        -0.2f - float(0.5f*i*scaler), 1.f, float(i*scaler), 1.f).getAsJuceColour().getARGB();
+  } break;
+  case rainbow:
+  {
+    for(int i = 0; i < colors.size(); i++)
+      colors[i] = ColourAHSL(0.7f - float(2.0f*i*scaler), 1.f, 
+        0.0f + float(1.0f*i*scaler), 1.f).getAsJuceColour().getARGB();
+  } break;
+  }
 }
 
 void ColorMap::setSize(int newSize)
