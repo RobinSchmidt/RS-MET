@@ -91,6 +91,9 @@
     <ClCompile Include="..\..\Source\Modules\Visualization\Misc\PhaseScopeBuffer.cpp">
       <Filter>Visualization\Misc</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Modules\Visualization\Graphics\ImagePainter.cpp">
+      <Filter>Visualization\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\Modules\Basics\Basics.h">
@@ -159,6 +162,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Modules\Data\Simd\Float32x4.h">
       <Filter>Data\Simd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Modules\Visualization\Graphics\ImagePainter.h">
+      <Filter>Visualization\Graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
