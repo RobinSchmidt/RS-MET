@@ -164,7 +164,8 @@ void PhaseScope::updateBufferSize()
 
 void PhaseScope::updateScopeImage()
 {
-  normalizedDataToImage(phaseScopeBuffer.getDataMatrix()[0], image, colorMap);
+  //normalizedDataToImage(phaseScopeBuffer.getDataMatrix()[0], image, colorMap); // old
+  normalizedDataToImage(phaseScopeBuffer.getImage()->getPixelPointer(0, 0), image, colorMap);
   phaseScopeBuffer.applyPixelDecay();
 }
 

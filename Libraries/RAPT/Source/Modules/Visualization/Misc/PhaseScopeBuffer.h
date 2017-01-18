@@ -77,7 +77,11 @@ public:
   //inline TPix getValueAt(int x, int y) { return buffer[x][y]; } // should return buffer[y][x]
 
   /** Returns a pointer to our internally stored data matrix. */
-  TPix** getDataMatrix() { return buffer; }
+  //TPix** getDataMatrix() { return buffer; }
+    // obsolete - delete soon...
+
+  /** Returns a pointer to our image that we use as buffer. */
+  Image<TPix> *getImage() { return &image; }
 
   /** Returns the sample rate. */
   inline TPar getSampleRate() { return sampleRate; }
@@ -86,10 +90,10 @@ public:
   inline TPar getFrameRate() { return frameRate; }
 
   /** Returns the width in pixels. */
-  inline int getWidth() { return width; }
+  inline int getWidth() { return image.getWidth(); }
 
   /** Returns the height in pixels. */
-  inline int getHeight() { return height; }
+  inline int getHeight() { return image.getHeight(); }
 
 protected:
 
@@ -106,11 +110,11 @@ protected:
   integer). */
   void addDotFast(TSig x, TSig y, TPix intensity);
 
-  /** Allocates the memory for our data matrix buffer. */
-  void allocateBuffer();
+  ///** Allocates the memory for our data matrix buffer. */
+  //void allocateBuffer();
 
-  /** Frees the memory for our data matrix buffer. */
-  void freeBuffer();
+  ///** Frees the memory for our data matrix buffer. */
+  //void freeBuffer();
 
   /** Updates the pixel decay factor according to the settings of frame rate and desired decay 
   time. */
@@ -131,9 +135,10 @@ protected:
     //accu += value;
     //accu /= (1 + value);
   }
+  // obsolete...
 
   bool antiAlias;      // flag to switch anti-aliasing on/off
-  int  width, height;  // pixel width and height
+  //int  width, height;  // pixel width and height
 
   TPar sampleRate;
   TPar frameRate;
@@ -151,8 +156,14 @@ protected:
   // the actual matrix-shaped buffer, we use the indexing common in image processing: the first 
   // index points to a horizontal line and the second index is the pixel in this line, so the first
   // index runs from 0 to height-1 and the second from 0 to width-1:
-  TPix **buffer;
-  TPix *bufferFlat; 
+  //TPix **buffer;
+  //TPix *bufferFlat; 
+    // obsolete - replace by a Image member
+
+  Image<TPix> image;
+  Image<TPar> brush;
+  ImagePainter<TPix, TPar, TSig> painter;
+
 };
 
 #endif

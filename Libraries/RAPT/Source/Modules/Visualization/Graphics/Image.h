@@ -19,7 +19,7 @@ public:
   /** \name Construction/Destruction */
 
   /** Constructor. Allocates memory for the pixels. */
-  Image(int initialWidth, int initialHeight);
+  Image(int initialWidth = 1, int initialHeight = 1);
 
   /** Constructor. Allocates memory for the pixels and initializes pixel values. */
   Image(int initialWidth, int initialHeight, const TPix &initialPixelColor);
@@ -76,7 +76,7 @@ public:
   }
 
   /** Returns a pointer to the pixel at the specified location. */
-  inline TPix* getPointerToPixel(int x, int y) const
+  inline TPix* getPixelPointer(int x, int y) const
   {
     return &data[y*width+x];
   }
@@ -114,6 +114,15 @@ public:
   // increaseContrast, applyFilter(const ImageFilter &filterToApply), etc...
   // maybe make a class ImageProcessor that takes a pointer to an image and performs the
   // operations on that pointed image
+
+
+  /** \name Operators */
+
+  /** Allows read/write acces to the pixel at position x,y. */
+  inline TPix& operator()(int x, int y) 
+  {
+    return data[y*width+x];
+  }
 
 protected:
 

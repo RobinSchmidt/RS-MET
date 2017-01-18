@@ -179,10 +179,10 @@ void PhaseScopeMultiColor::updateBufferSize()
 
 void PhaseScopeMultiColor::updateScopeImage()
 {
-  RAPT::Float32x4 *tmp = phaseScopeBuffer.getDataMatrix()[0];
+  //RAPT::Float32x4 *tmp = phaseScopeBuffer.getDataMatrix()[0]; // old
+  RAPT::Float32x4 *tmp = phaseScopeBuffer.getImage()->getPixelPointer(0, 0);
   float *floatData = reinterpret_cast<float*>(tmp);
   dataToImageOpaqueFloat32x4(floatData, image);
-
   phaseScopeBuffer.applyPixelDecay();
 }
 

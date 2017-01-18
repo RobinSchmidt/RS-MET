@@ -18,7 +18,7 @@ public:
   /** \name Construction/Destruction */
 
   /** Constructor. */
-  ImagePainter(Image<TPix> *imageToPaintOn = nullptr, Image<TWgt> *brushToUse = nullptr);
+  ImagePainter(Image<TPix> *imageToPaintOn, Image<TWgt> *brushToUse);
 
 
   /** \name Setup */
@@ -37,16 +37,50 @@ public:
 
   /** \name Painting */
 
+  /** Function for painting a simple 3x3 dot at given integer position. */
+  void paintDot3x3(int x, int y, TPix color, TWgt weightStraight = 0, TWgt weightDiagonal = 0);  
+
+    /** Function for painting a simple 3x3 dot at given noninteger position. */
+  void paintDot3x3(TCor x, TCor y, TPix color, TWgt weightStraight = 0, TWgt weightDiagonal = 0);
+
+  void paintDot(int x, int y, TPix color);
+
   void paintDot(TCor x, TCor y, TPix color);
+
+
+
+
+
+
+
+  //void paintDot1x1(TCor x, TCor y, TPix color, TWgt weightStraight, TWgt weightDiagonal);
+
+  //void paintDot1x1(int x, int y, TPix color, TWgt weightStraight, TWgt weightDiagonal);
 
 
 
 protected:
 
+  /** Internal functions. */
+
+  /** Accumulates the given value into the accumulator accu. We use a rather peculiar accumulation
+  function here: newAccu = (oldAccu + value) / (1 + value). When accu starts out a zero and all 
+  accumulated values are >= 0, this function will ensure that accu is always < 1 and it will go
+  into saturation smoothly. */
+  inline void accumulate(TPix &accu, TPix value)
+  {
+    accu = (accu + value) / (TPix(1) + value);
+  }
+  // rename to addAndSaturate
+
   // data members:
 
   Image<TPix> *image;
   Image<TWgt> *brush;
+  //bool antiAlias;
+
+  int wi, hi;    // image width and height
+  int wb2, hb2;  // brush width/2 and height/2
 
 };
 
