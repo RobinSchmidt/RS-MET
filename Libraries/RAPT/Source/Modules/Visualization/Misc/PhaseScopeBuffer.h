@@ -1,11 +1,7 @@
 #ifndef RAPT_PHASESCOPEBUFFER_H_INCLUDED
 #define RAPT_PHASESCOPEBUFFER_H_INCLUDED
 
-/** Implements the buffering for a phasescope analyzer. 
-
-\todo
--subclass this from Image
--factor out some of the drawing functions into Image (or an ImageDrawer class) */
+/** Implements the buffering for a phasescope analyzer. */
 
 template<class TSig, class TPix, class TPar> // signal, pixel, parameter types
 class PhaseScopeBuffer
@@ -15,9 +11,6 @@ public:
 
   /** Constructor. */
   PhaseScopeBuffer();
-
-  /** Destructor. */
-  virtual ~PhaseScopeBuffer();
 
   /** Sets the sample rate. */
   void setSampleRate(TPar newSampleRate);
@@ -72,14 +65,6 @@ public:
   /** Resets the internal buffer to all zeros. */
   void reset();
 
-  /** Returns the buffered value at the given (x,y) pixel position. No bounds checking is done - 
-  you must make sure that the indices are valid. */
-  //inline TPix getValueAt(int x, int y) { return buffer[x][y]; } // should return buffer[y][x]
-
-  /** Returns a pointer to our internally stored data matrix. */
-  //TPix** getDataMatrix() { return buffer; }
-    // obsolete - delete soon...
-
   /** Returns a pointer to our image that we use as buffer. */
   Image<TPix> *getImage() { return &image; }
 
@@ -106,16 +91,6 @@ protected:
   coordinates using bilinear deinterpolation for anti-aliasing. */
   void addDot(TSig x, TSig y, TPix intensity);
 
-  /** Like addDot but without anti-aliasing (we just round the coordinates to the nearest 
-  integer). */
-  void addDotFast(TSig x, TSig y, TPix intensity);
-
-  ///** Allocates the memory for our data matrix buffer. */
-  //void allocateBuffer();
-
-  ///** Frees the memory for our data matrix buffer. */
-  //void freeBuffer();
-
   /** Updates the pixel decay factor according to the settings of frame rate and desired decay 
   time. */
   void updateDecayFactor();
@@ -124,21 +99,8 @@ protected:
   they get added in according to the settings of sample rate and brightness parameter. */
   void updateInsertFactor();
 
-  /** Accumulates the given value into the accumulator accu. We use a rather peculiar accumulation
-  function here: newAccu = (oldAccu + value) / (1 + value). When accu starts out a zero and all 
-  accumulated values are >= 0, this function will ensure that accu is always < 1 and it will go
-  into saturation smoothly. */
-  inline void accumulate(TPix &accu, TPix value)
-  {
-    accu = (accu + value) / (TPix(1) + value);
-
-    //accu += value;
-    //accu /= (1 + value);
-  }
-  // obsolete...
 
   bool antiAlias;      // flag to switch anti-aliasing on/off
-  //int  width, height;  // pixel width and height
 
   TPar sampleRate;
   TPar frameRate;
@@ -153,13 +115,7 @@ protected:
 
   TSig xOld, yOld;     // pixel coordinates of old datapoint (one sample ago)
 
-  // the actual matrix-shaped buffer, we use the indexing common in image processing: the first 
-  // index points to a horizontal line and the second index is the pixel in this line, so the first
-  // index runs from 0 to height-1 and the second from 0 to width-1:
-  //TPix **buffer;
-  //TPix *bufferFlat; 
-    // obsolete - replace by a Image member
-
+  // members for actual painting on an image:
   Image<TPix> image;
   Image<TPar> brush;
   ImagePainter<TPix, TPar, TSig> painter;

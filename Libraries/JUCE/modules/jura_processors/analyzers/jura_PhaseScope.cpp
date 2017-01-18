@@ -31,7 +31,7 @@ void PhaseScope::createParameters()
 
   Parameter* p;
 
-  p = new Parameter(plugInLock, "Brightness", 0.1, 10.0, 0.0, 1.0, Parameter::EXPONENTIAL);
+  p = new Parameter(plugInLock, "Brightness", 0.1, 100.0, 0.0, 1.0, Parameter::EXPONENTIAL);
   addObservedParameter(p);
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setBrightness);
 
@@ -231,7 +231,7 @@ PhaseScopeEditor::PhaseScopeEditor(jura::PhaseScope *newPhaseScopeToEdit)
 {
   ScopedLock scopedLock(*plugInLock);
   scope = newPhaseScopeToEdit;
-  widgetMargin = 120; 
+  widgetMargin = 150; 
 
   addAndMakeVisible(display);
   createWidgets();

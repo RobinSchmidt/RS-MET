@@ -30,9 +30,7 @@ public:
   void setBrushToUse(Image<TWgt> *brushToUse);
 
 
-
   /** \name Inquiry */
-
 
 
   /** \name Painting */
@@ -46,17 +44,6 @@ public:
   void paintDot(int x, int y, TPix color);
 
   void paintDot(TCor x, TCor y, TPix color);
-
-
-
-
-
-
-
-  //void paintDot1x1(TCor x, TCor y, TPix color, TWgt weightStraight, TWgt weightDiagonal);
-
-  //void paintDot1x1(int x, int y, TPix color, TWgt weightStraight, TWgt weightDiagonal);
-
 
 
 protected:
@@ -77,7 +64,6 @@ protected:
 
   Image<TPix> *image;
   Image<TWgt> *brush;
-  //bool antiAlias;
 
   int wi, hi;    // image width and height
   int wb2, hb2;  // brush width/2 and height/2

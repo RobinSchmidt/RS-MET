@@ -3,7 +3,6 @@ ImagePainter<TPix, TWgt, TCor>::ImagePainter(Image<TPix> *imageToPaintOn, Image<
 {
   setImageToPaintOn(imageToPaintOn);
   setBrushToUse(brushToUse);
-  //antiAlias = true;
 }
 
 // setup
@@ -148,8 +147,3 @@ void ImagePainter<TPix, TWgt, TCor>::paintDot(TCor x, TCor y, TPix color)
   // maybe call the function: paintSinglePixelDot or paintSimpleDot something
   // maybe have a member antiAlias
 }
-
-
-
-
-
