@@ -38,9 +38,11 @@ public:
   /** Function for painting a simple 3x3 dot at given integer position. */
   void paintDot3x3(int x, int y, TPix color, TWgt weightStraight = 0, TWgt weightDiagonal = 0);  
 
-    /** Function for painting a simple 3x3 dot at given noninteger position. */
+  /** Function for painting a simple 3x3 dot at given noninteger position. */
   void paintDot3x3(TCor x, TCor y, TPix color, TWgt weightStraight = 0, TWgt weightDiagonal = 0);
 
+  /** Paints a dot at an integer position using out stored brush (which represents a prototype 
+  dot). */
   void paintDot(int x, int y, TPix color);
 
   void paintDot(TCor x, TCor y, TPix color);
@@ -64,9 +66,13 @@ protected:
 
   Image<TPix> *image;
   Image<TWgt> *brush;
+  //ImageBrush<TWgt, TCor> *brush;
+
+
+
 
   int wi, hi;    // image width and height
-  int wb2, hb2;  // brush width/2 and height/2
+  int wb, hb;    // brush width and height
 
 };
 

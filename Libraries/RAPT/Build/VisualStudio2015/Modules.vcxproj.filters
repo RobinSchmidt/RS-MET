@@ -94,6 +94,9 @@
     <ClCompile Include="..\..\Source\Modules\Visualization\Graphics\ImagePainter.cpp">
       <Filter>Visualization\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Modules\Visualization\Graphics\ImageBrush.cpp">
+      <Filter>Visualization\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\Modules\Basics\Basics.h">
@@ -164,6 +167,9 @@
       <Filter>Data\Simd</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Modules\Visualization\Graphics\ImagePainter.h">
+      <Filter>Visualization\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Modules\Visualization\Graphics\ImageBrush.h">
       <Filter>Visualization\Graphics</Filter>
     </ClInclude>
   </ItemGroup>

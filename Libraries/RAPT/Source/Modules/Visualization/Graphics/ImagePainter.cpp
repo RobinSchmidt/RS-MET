@@ -20,8 +20,8 @@ template<class TPix, class TWgt, class TCor>
 void ImagePainter<TPix, TWgt, TCor>::setBrushToUse(Image<TWgt> *brushToUse)
 {
   brush = brushToUse;
-  wb2 = brush->getWidth() / 2;
-  hb2 = brush->getHeight() / 2;
+  wb = brush->getWidth();
+  hb = brush->getHeight();
   // todo: handle nullptr case
 }
 
@@ -128,9 +128,46 @@ void ImagePainter<TPix, TWgt, TCor>::paintDot3x3(TCor x, TCor y, TPix color, TWg
 template<class TPix, class TWgt, class TCor>
 void ImagePainter<TPix, TWgt, TCor>::paintDot(int x, int y, TPix color)
 {
+  // write coordinates in target image:
+  x      = x - wb/2;  // start x-coordinate
+  y      = y - hb/2;  // start y coordinate
+  int xe = x + wb-1;  // end x coordinate
+  int ye = y + hb-1;  // end y coordinate
 
+  // read coordinates in brush image:
+  int bxs = 0;        // start x
+  int by  = 0;        // start y
+
+  // checks to not write beyond image bounds:
+  if(x < 0)
+  {
+    bxs = -x;
+    x   =  0;
+  }
+  if(y < 0)
+  {
+    by = -y;
+    y  =  0;
+  }
+  if(xe >= wi)
+    xe = wi-1;
+  if(ye >= hi)
+    ye = hi-1;
+
+  // the actual painting loop over the pixels in target image and brush image:
+  int bx;
+  while(y++ <= ye)
+  {
+    x  = xs;
+    bx = bxs;
+    while(x++ <= xe)
+    {
+      accumulate((*image)(x, y), color * (*brush)(xb, yb));
+      bx++;
+    }
+    by++;
+  }
 }
-
 
 template<class TPix, class TWgt, class TCor>
 void ImagePainter<TPix, TWgt, TCor>::paintDot(TCor x, TCor y, TPix color)

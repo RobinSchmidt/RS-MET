@@ -7,6 +7,7 @@ namespace RAPT
 // make a nested namespace Visualization
 
 #include "Graphics/Image.h"
+#include "Graphics/ImageBrush.h"
 #include "Graphics/ImagePainter.h"
 
 #include "Misc/PhaseScopeBuffer.h"
