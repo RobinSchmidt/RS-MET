@@ -39,7 +39,7 @@ public:
 
   /** Sets a new size for the image. The contents of the old image is lost when doing this.
   \todo have an optional boolean parameter to retain the contents of the old image */
-  void setSize(int newWidth, int newHeight);
+  virtual void setSize(int newWidth, int newHeight);
 
 
   /** \name Inquiry */
@@ -144,6 +144,41 @@ protected:
 
   int width, height;
   TPix *data;         // contiguous block of memory for the whole image
+
+};
+
+//=================================================================================================
+
+/** A subclass of Image that allows for more efficient resizing. The regular image class does a 
+memory reallocation, everytime you call setSize. This subclass here defines a maximum width and 
+height below which a resizeing operation does not lead to memory reallocation and overrides setSize 
+accordingly. This is useful for images that must be dynamically resized at runtime often. */
+
+template<class TPix>  // pixel type
+class ImageResizable : public Image<TPix>
+{
+
+public:
+
+  /** \name Construction/Destruction */
+
+  /** Constructor. Allocates memory for the pixels. */
+  ImageResizable(int initialWidth = 1, int initialHeight = 1);
+
+
+  /** \name Setup */
+
+  /** Sets a new size for the image. This will cause a memory reallocation only if the new width 
+  or height are greater than our respective maximum width or height values. */
+  virtual void setSize(int newWidth, int newHeight) override;
+
+  /** Sets a new maximum width and height. */
+  void setMaxSize(int newMaxWidth, int newMaxHeight);
+
+
+protected:
+
+  int maxWidth, maxHeight;
 
 };
 

@@ -1,10 +1,14 @@
 #ifndef RAPT_IMAGEBRUSH_H_INCLUDED
 #define RAPT_IMAGEBRUSH_H_INCLUDED
 
-/** This is a subclass of Image intended to be used as a kind of prototype dot */
+/** This is a subclass of Image intended to be used as a kind of prototype dot.
 
-template<class TPix, class TPar>  // pixel, parameter types
-class ImageBrush : public Image<TPix>
+Maybe rename to ImageMask
+
+*/
+
+template<class TPix>  // pixel type
+class ImageBrush : private Image<TPix>
 {
 
 public:
@@ -12,7 +16,9 @@ public:
 
   /** \name Setup */
 
-  void setSize(TPar newSize);
+  void setMaxPixelSize(int newMaxWidth, int newMaxHeight);
+
+  void setSize(double newSize);
 
   void setShape(int newShape);
     // circle, rectangle, etc

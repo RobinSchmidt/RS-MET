@@ -65,7 +65,7 @@ protected:
   // data members:
 
   Image<TPix> *image;
-  Image<TWgt> *brush;
+  Image<TWgt> *brush;  // maybe use a member of type ImageMask
   //ImageBrush<TWgt, TCor> *brush;
 
 
