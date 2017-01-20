@@ -1,18 +1,21 @@
 #ifndef RAPT_ALPHAMASK_H_INCLUDED
 #define RAPT_ALPHAMASK_H_INCLUDED
 
-/** This is a subclass of Image intended to be used as a kind of prototype dot.
-
-Maybe rename to ImageMask
-
-*/
+/** This is a subclass of Image intended to be used as alpha mask for blending pixels in an 
+existing image with new colors. Your pixel type should be a monochromatic type, i.e. a scalar
+such as float or double. */
 
 template<class TPix>  // pixel type
 class AlphaMask : public ImageResizable<TPix>
-//class AlphaMask : private Image<TPix>
 {
 
 public:
+
+
+  /** \name Construction/Destruction */
+
+  /** Constructor. */
+  AlphaMask();
 
 
   /** \name Setup */
@@ -21,12 +24,15 @@ public:
 
   void setSize(double newSize);
 
-  void setShape(int newShape);
+  //void setShape(int newShape);
     // circle, rectangle, etc
 
 
 protected:
 
+  void renderMask();
+
+  double size;
 
 };
 
