@@ -1,8 +1,8 @@
 template<class TPix, class TWgt, class TCor>
-ImagePainter<TPix, TWgt, TCor>::ImagePainter(Image<TPix> *imageToPaintOn, Image<TWgt> *brushToUse)
+ImagePainter<TPix, TWgt, TCor>::ImagePainter(Image<TPix> *imageToPaintOn, AlphaMask<TWgt> *maskToUse)
 {
   setImageToPaintOn(imageToPaintOn);
-  setBrushToUse(brushToUse);
+  setAlphaMaskForDot(maskToUse);
 }
 
 // setup
@@ -17,11 +17,11 @@ void ImagePainter<TPix, TWgt, TCor>::setImageToPaintOn(Image<TPix> *imageToPaint
 }
 
 template<class TPix, class TWgt, class TCor>
-void ImagePainter<TPix, TWgt, TCor>::setBrushToUse(Image<TWgt> *brushToUse)
+void ImagePainter<TPix, TWgt, TCor>::setAlphaMaskForDot(AlphaMask<TWgt> *maskToUse)
 {
-  brush = brushToUse;
-  wb = brush->getWidth();
-  hb = brush->getHeight();
+  mask = maskToUse;
+  //wb = mask->getWidth();
+  //hb = mask->getHeight();
   // todo: handle nullptr case
 }
 
@@ -85,6 +85,8 @@ void ImagePainter<TPix, TWgt, TCor>::paintDot3x3(TCor x, TCor y, TPix color, TWg
     accumulate((*image)(xi,   yi+1), c);
     accumulate((*image)(xi+1, yi+1), d);
   }
+  // \todo: maybe use a "blend" function that can be set up by the user as a function pointer 
+  // this will allow for different blend modes
 
   // apply thickness:
   if(weightStraight > 0.f && xi >= 1 && xi < wi-2 && yi >= 1 && yi < hi-2)
@@ -128,6 +130,9 @@ void ImagePainter<TPix, TWgt, TCor>::paintDot3x3(TCor x, TCor y, TPix color, TWg
 template<class TPix, class TWgt, class TCor>
 void ImagePainter<TPix, TWgt, TCor>::paintDot(int x, int y, TPix color)
 {
+  int wb = mask->getWidth();   // rename to wm, hm
+  int hb = mask->getHeight();
+
   // write coordinates in target image:
   x      = x - wb/2;  // start x-coordinate
   y      = y - hb/2;  // start y coordinate
@@ -162,7 +167,7 @@ void ImagePainter<TPix, TWgt, TCor>::paintDot(int x, int y, TPix color)
     bx = bxs;
     while(x++ <= xe)
     {
-      accumulate((*image)(x, y), color * (*brush)(xb, yb));
+      accumulate((*image)(x, y), color * (*mask)(xb, yb));
       bx++;
     }
     by++;

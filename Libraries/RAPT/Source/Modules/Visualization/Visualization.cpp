@@ -4,7 +4,7 @@ namespace RAPT
 {
 
 #include "Graphics/Image.cpp"
-#include "Graphics/ImageBrush.cpp"
+#include "Graphics/AlphaMask.cpp"
 #include "Graphics/ImagePainter.cpp"
 
 #include "Misc/PhaseScopeBuffer.cpp"

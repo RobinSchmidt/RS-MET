@@ -1,6 +1,6 @@
 template<class TSig, class TPix, class TPar>
 PhaseScopeBuffer<TSig, TPix, TPar>::PhaseScopeBuffer()
-  : painter(&image, &brush)
+  : painter(&image, &alphaMask)
 {
   antiAlias   = true;
   frameRate   = 25.0;

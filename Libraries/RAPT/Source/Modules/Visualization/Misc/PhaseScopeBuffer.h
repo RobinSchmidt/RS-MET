@@ -117,8 +117,10 @@ protected:
 
   // members for actual painting on an image:
   Image<TPix> image;
-  Image<TPar> brush;
   ImagePainter<TPix, TPar, TSig> painter;
+  AlphaMask<TPar> alphaMask; // factor out into subclass for artistic scope - the simple version 
+                             // doesn't need this
+  //Image<TPar> brush;
 
 };
 

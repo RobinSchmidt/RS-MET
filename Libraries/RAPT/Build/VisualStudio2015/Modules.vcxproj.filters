@@ -94,7 +94,7 @@
     <ClCompile Include="..\..\Source\Modules\Visualization\Graphics\ImagePainter.cpp">
       <Filter>Visualization\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Modules\Visualization\Graphics\ImageBrush.cpp">
+    <ClCompile Include="..\..\Source\Modules\Visualization\Graphics\AlphaMask.cpp">
       <Filter>Visualization\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
@@ -169,7 +169,7 @@
     <ClInclude Include="..\..\Source\Modules\Visualization\Graphics\ImagePainter.h">
       <Filter>Visualization\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Modules\Visualization\Graphics\ImageBrush.h">
+    <ClInclude Include="..\..\Source\Modules\Visualization\Graphics\AlphaMask.h">
       <Filter>Visualization\Graphics</Filter>
     </ClInclude>
   </ItemGroup>
