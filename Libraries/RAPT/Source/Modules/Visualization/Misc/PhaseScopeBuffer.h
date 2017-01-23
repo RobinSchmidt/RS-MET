@@ -87,10 +87,6 @@ protected:
   density - when it's set to zero, it will just draw a dot at the new given position. */
   void addLineTo(TSig x, TSig y);
 
-  /** Adds a dot into our data matrix at the given position (given in matrix-index (i.e. pixel-) 
-  coordinates using bilinear deinterpolation for anti-aliasing. */
-  void addDot(TSig x, TSig y, TPix intensity);
-
   /** Updates the pixel decay factor according to the settings of frame rate and desired decay 
   time. */
   void updateDecayFactor();
@@ -118,9 +114,36 @@ protected:
   // members for actual painting on an image:
   Image<TPix> image;
   ImagePainter<TPix, TPar, TSig> painter;
-  AlphaMask<TPar> alphaMask; // factor out into subclass for artistic scope - the simple version 
-                             // doesn't need this
-  //Image<TPar> brush;
+
+
+};
+
+//=================================================================================================
+
+/** Extends the basic PhaseScopeBuffer class with some more artistic features such as an alpha-mask 
+rendered dot, blurring bewteen frames, etc. These features are factored out into a subclass to keep 
+the baseclass lean. */
+
+template<class TSig, class TPix, class TPar> // signal, pixel, parameter types
+class PhaseScopeBuffer2 : public PhaseScopeBuffer<TSig, TPix, TPar>
+{
+
+public:
+
+  /** Constructor. */
+  PhaseScopeBuffer2();
+
+  /** Sets the dot size in pixels. */
+  void setDotSize(TPar newSize);
+
+  /** Sets the fuzziness of the dot from 0 (sharp) to 1 (maximally fuzzy). */
+  void setDotFuzziness(TPar newFuzziness);
+
+
+protected:
+
+
+  AlphaMask<TPar> dotMask; // alpha mask used for drawing a "dot"
 
 };
 

@@ -1,6 +1,6 @@
 template<class TSig, class TPix, class TPar>
 PhaseScopeBuffer<TSig, TPix, TPar>::PhaseScopeBuffer()
-  : painter(&image, &alphaMask)
+  : painter(&image, nullptr)
 {
   antiAlias   = true;
   frameRate   = 25.0;
@@ -106,36 +106,11 @@ template<class TSig, class TPix, class TPar>
 void PhaseScopeBuffer<TSig, TPix, TPar>::addLineTo(TSig x, TSig y)
 {
   if(lineDensity == 0.f)
-  {
-    addDot(x, y, insertFactor);
-    return;
-  }
-
-  TSig dx = x-xOld;
-  TSig dy = y-yOld;
-  TSig pixelDistance = sqrt(dx*dx + dy*dy);
-  int  numDots = rsMax(1, (int)floor(lineDensity*pixelDistance));
-  TPix intensity = (TPix) (insertFactor / (TPix)numDots);
-  TSig scaler = (TSig)(1.0 / numDots);
-  TSig k;
-  for(int i = 1; i <= numDots; i++)
-  {
-    k = scaler * i;  // == i / numDots
-    addDot(xOld + k*dx, yOld + k*dy, intensity);
-  }
+    painter.paintDot(x, y, insertFactor);
+  else
+    painter.drawDottedLine(xOld, yOld, x, y, insertFactor, lineDensity);
   xOld = x;
   yOld = y;
-
-  // maybe move this function to class ImagePainter - provide a function paintDottedLine there
-}
-
-template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer<TSig, TPix, TPar>::addDot(TSig x, TSig y, TPix intensity)
-{
-  if(antiAlias)
-    painter.paintDot3x3(x, y, intensity, thickness, thickness*thickness);
-  else
-    painter.paintDot3x3((int)round(x), (int)round(y), intensity, thickness, thickness*thickness);
 }
 
 template<class TSig, class TPix, class TPar>
@@ -152,3 +127,6 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::updateInsertFactor()
   // However, the proportionality to the birghtness parameter and inverse proportionality to 
   // the sample rate seems to make sense.
 }
+
+//-------------------------------------------------------------------------------------------------
+

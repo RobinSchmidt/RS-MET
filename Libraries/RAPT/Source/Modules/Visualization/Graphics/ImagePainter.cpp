@@ -1,6 +1,10 @@
 template<class TPix, class TWgt, class TCor>
 ImagePainter<TPix, TWgt, TCor>::ImagePainter(Image<TPix> *imageToPaintOn, AlphaMask<TWgt> *maskToUse)
 {
+  antiAlias = true;
+  useMask = false;
+  setNeighbourWeightsForSimpleDot(0, 0);
+
   setImageToPaintOn(imageToPaintOn);
   setAlphaMaskForDot(maskToUse);
 }
@@ -25,7 +29,36 @@ void ImagePainter<TPix, TWgt, TCor>::setAlphaMaskForDot(AlphaMask<TWgt> *maskToU
   // todo: handle nullptr case
 }
 
+template<class TPix, class TWgt, class TCor>
+void ImagePainter<TPix, TWgt, TCor>::setNeighbourWeightsForSimpleDot(TWgt straight, TWgt diagonal)
+{
+  straightNeighbourWeight = straight;
+  diagonalNeighbourWeight = diagonal;
+}
+
 // painting
+
+template<class TPix, class TWgt, class TCor>
+void ImagePainter<TPix, TWgt, TCor>::paintDot(TCor x, TCor y, TPix color)
+{
+  // todo: get rid of this dispatcher code - use a member function pointer instead.
+
+  if(useMask)
+  {
+    if(antiAlias)
+      paintDotViaMask(x, y, color);
+    else
+      paintDotViaMask((int) round(x), (int) round(y), color);
+  }
+  else
+  {
+    if(antiAlias)
+      paintDot3x3(x, y, color, straightNeighbourWeight, diagonalNeighbourWeight);
+    else
+      paintDot3x3((int) round(x), (int) round(y), color, 
+        straightNeighbourWeight, diagonalNeighbourWeight);
+  }
+}
 
 template<class TPix, class TWgt, class TCor>
 void ImagePainter<TPix, TWgt, TCor>::paintDot3x3(int x, int y, TPix color, TWgt weightStraight, 
@@ -128,13 +161,13 @@ void ImagePainter<TPix, TWgt, TCor>::paintDot3x3(TCor x, TCor y, TPix color, TWg
 }
 
 template<class TPix, class TWgt, class TCor>
-void ImagePainter<TPix, TWgt, TCor>::paintDot(int x, int y, TPix color)
+void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(int x, int y, TPix color)
 {
   int wb = mask->getWidth();   // rename to wm, hm
   int hb = mask->getHeight();
 
   // write coordinates in target image:
-  x      = x - wb/2;  // start x-coordinate
+  int xs = x - wb/2;  // start x-coordinate
   y      = y - hb/2;  // start y coordinate
   int xe = x + wb-1;  // end x coordinate
   int ye = y + hb-1;  // end y coordinate
@@ -147,7 +180,7 @@ void ImagePainter<TPix, TWgt, TCor>::paintDot(int x, int y, TPix color)
   if(x < 0)
   {
     bxs = -x;
-    x   =  0;
+    xs  =  0;
   }
   if(y < 0)
   {
@@ -167,7 +200,7 @@ void ImagePainter<TPix, TWgt, TCor>::paintDot(int x, int y, TPix color)
     bx = bxs;
     while(x++ <= xe)
     {
-      accumulate((*image)(x, y), color * (*mask)(xb, yb));
+      accumulate((*image)(x, y), TPix(color * (*mask)(bx, by)));
       bx++;
     }
     by++;
@@ -175,7 +208,7 @@ void ImagePainter<TPix, TWgt, TCor>::paintDot(int x, int y, TPix color)
 }
 
 template<class TPix, class TWgt, class TCor>
-void ImagePainter<TPix, TWgt, TCor>::paintDot(TCor x, TCor y, TPix color)
+void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
 {
   // ...something to do...
   // we need a (nested) loop over all (x,y) pixels in the brush, multiply the brush value there 
@@ -189,3 +222,22 @@ void ImagePainter<TPix, TWgt, TCor>::paintDot(TCor x, TCor y, TPix color)
   // maybe call the function: paintSinglePixelDot or paintSimpleDot something
   // maybe have a member antiAlias
 }
+
+template<class TPix, class TWgt, class TCor>
+void ImagePainter<TPix, TWgt, TCor>::drawDottedLine(TCor x1, TCor y1, TCor x2, TCor y2, TPix color, 
+  TCor density)
+{
+  TCor dx = x2-x1;
+  TCor dy = y2-y1;
+  TCor pixelDistance = sqrt(dx*dx + dy*dy);
+  int  numDots = rsMax(1, (int)floor(density*pixelDistance));
+  TPix scaledColor = (TPix) (color / (TPix)numDots); // maybe make this scaling optional
+  TCor scaler = (TCor)(1.0 / numDots);
+  TCor k;
+  for(int i = 1; i <= numDots; i++)
+  {
+    k = scaler * i;  // == i / numDots
+    paintDot(x1 + k*dx, y1 + k*dy, scaledColor);
+  }
+}
+
