@@ -66,6 +66,7 @@ template<class TSig, class TPix, class TPar>
 void PhaseScopeBuffer<TSig, TPix, TPar>::setPixelSpread(TPar newSpread)
 {
   thickness = newSpread;
+  painter.setNeighbourWeightsForSimpleDot(thickness, 0.5*thickness);
 }
 
 template<class TSig, class TPix, class TPar>
@@ -106,9 +107,10 @@ template<class TSig, class TPix, class TPar>
 void PhaseScopeBuffer<TSig, TPix, TPar>::addLineTo(TSig x, TSig y)
 {
   if(lineDensity == 0.f)
-    painter.paintDot(x, y, insertFactor);
+    painter.paintDot(x, y, (TPix) insertFactor);
   else
-    painter.drawDottedLine(xOld, yOld, x, y, insertFactor, lineDensity);
+    painter.drawDottedLine((TSig)xOld, (TSig)yOld, (TSig)x, (TSig)y, (TPix) insertFactor, 
+      (TSig)lineDensity);
   xOld = x;
   yOld = y;
 }
@@ -129,4 +131,24 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::updateInsertFactor()
 }
 
 //-------------------------------------------------------------------------------------------------
+
+template<class TSig, class TPix, class TPar>
+PhaseScopeBuffer2<TSig, TPix, TPar>::PhaseScopeBuffer2()
+{
+  dotMask.setMaxSize(20, 20);
+  setDotSize(5.0);
+  setDotFuzziness(0.5);
+}
+
+template<class TSig, class TPix, class TPar>
+void PhaseScopeBuffer2<TSig, TPix, TPar>::setDotSize(TPar newSize)
+{
+  dotMask.setSize(newSize);
+}
+
+template<class TSig, class TPix, class TPar>
+void PhaseScopeBuffer2<TSig, TPix, TPar>::setDotFuzziness(TPar newFuzziness)
+{
+  dotMask.setTransitionWidth(newFuzziness);
+}
 

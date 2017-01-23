@@ -71,7 +71,8 @@ protected:
   int repaintCounter;
 
   // this object is reponsible for drawing the incoming data onto a virtual screen:
-  RAPT::PhaseScopeBuffer<double, float, double> phaseScopeBuffer;
+  //RAPT::PhaseScopeBuffer<double, float, double> phaseScopeBuffer;
+  RAPT::PhaseScopeBuffer2<double, float, double> phaseScopeBuffer;
 
   juce::Image image;       // image for the display
   jura::ColorMap colorMap; // the color map to translate the buffered data matrix to colors

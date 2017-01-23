@@ -20,9 +20,12 @@ public:
 
   /** \name Setup */
 
-  //void setMaxPixelSize(int newMaxWidth, int newMaxHeight);
-
+  /** Sets the size/diameter of the mask in pixels. */
   void setSize(double newSize);
+
+  /** Sets the width of the transition from full alpha to zero as value between 0 and 1. 0 means a 
+  hard transition, 1 a maximally soft transition. */
+  void setTransitionWidth(double newWidth);
 
   //void setShape(int newShape);
     // circle, rectangle, etc
@@ -32,7 +35,9 @@ protected:
 
   void renderMask();
 
-  double size;
+  /*double size, transitionWidth;*/
+
+  rsParametricBellFunction<double> bell;
 
 };
 
