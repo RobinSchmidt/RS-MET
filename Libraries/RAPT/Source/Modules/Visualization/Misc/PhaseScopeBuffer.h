@@ -96,8 +96,6 @@ protected:
   void updateInsertFactor();
 
 
-  bool antiAlias;      // flag to switch anti-aliasing on/off
-
   TPar sampleRate;
   TPar frameRate;
   TPar decayTime;      // pixel illumination time
@@ -114,7 +112,6 @@ protected:
   // members for actual painting on an image:
   Image<TPix> image;
   ImagePainter<TPix, TPar, TSig> painter;
-
 
 };
 
@@ -136,8 +133,11 @@ public:
   /** Sets the dot size in pixels. */
   void setDotSize(TPar newSize);
 
-  /** Sets the fuzziness of the dot from 0 (sharp) to 1 (maximally fuzzy). */
-  void setDotFuzziness(TPar newFuzziness);
+  /** Sets the amount of blur for the dot from 0 (sharp) to 1 (maximally blurry). */
+  void setDotBlur(TPar newBlur);
+
+  /** Switches between simple and alpha-mask based dot drawing. */
+  void setUseAlphaMask(bool shouldUseMask);
 
 
 protected:

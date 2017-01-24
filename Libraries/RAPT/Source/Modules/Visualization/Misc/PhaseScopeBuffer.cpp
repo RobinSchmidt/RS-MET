@@ -2,7 +2,8 @@ template<class TSig, class TPix, class TPar>
 PhaseScopeBuffer<TSig, TPix, TPar>::PhaseScopeBuffer()
   : painter(&image, nullptr)
 {
-  antiAlias   = true;
+  painter.setUseAlphaMask(false);
+
   frameRate   = 25.0;
   decayTime   = 0.5;
   lineDensity = 0.0f;
@@ -53,7 +54,7 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::setSize(int newWidth, int newHeight)
 template<class TSig, class TPix, class TPar>
 void PhaseScopeBuffer<TSig, TPix, TPar>::setAntiAlias(bool shouldAntiAlias)
 {
-  antiAlias = shouldAntiAlias;
+  painter.setAntiAlias(shouldAntiAlias);
 }
 
 template<class TSig, class TPix, class TPar>
@@ -135,9 +136,10 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::updateInsertFactor()
 template<class TSig, class TPix, class TPar>
 PhaseScopeBuffer2<TSig, TPix, TPar>::PhaseScopeBuffer2()
 {
+  painter.setAlphaMaskForDot(&dotMask);
   dotMask.setMaxSize(20, 20);
   setDotSize(5.0);
-  setDotFuzziness(0.5);
+  setDotBlur(0.5);
 }
 
 template<class TSig, class TPix, class TPar>
@@ -147,8 +149,14 @@ void PhaseScopeBuffer2<TSig, TPix, TPar>::setDotSize(TPar newSize)
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer2<TSig, TPix, TPar>::setDotFuzziness(TPar newFuzziness)
+void PhaseScopeBuffer2<TSig, TPix, TPar>::setDotBlur(TPar newBlur)
 {
-  dotMask.setTransitionWidth(newFuzziness);
+  dotMask.setTransitionWidth(newBlur);
+}
+
+template<class TSig, class TPix, class TPar>
+void PhaseScopeBuffer2<TSig, TPix, TPar>::setUseAlphaMask(bool shouldUseMask)
+{
+  painter.setUseAlphaMask(shouldUseMask);
 }
 

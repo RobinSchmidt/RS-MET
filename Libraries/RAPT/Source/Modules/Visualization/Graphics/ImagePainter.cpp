@@ -36,6 +36,18 @@ void ImagePainter<TPix, TWgt, TCor>::setNeighbourWeightsForSimpleDot(TWgt straig
   diagonalNeighbourWeight = diagonal;
 }
 
+template<class TPix, class TWgt, class TCor>
+void ImagePainter<TPix, TWgt, TCor>::setAntiAlias(bool shouldAntiAlias)
+{
+  antiAlias = shouldAntiAlias;
+}
+
+template<class TPix, class TWgt, class TCor>
+void ImagePainter<TPix, TWgt, TCor>::setUseAlphaMask(bool shouldUseMask)
+{
+  useMask = shouldUseMask;
+}
+
 // painting
 
 template<class TPix, class TWgt, class TCor>
@@ -210,6 +222,10 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(int x, int y, TPix color)
 template<class TPix, class TWgt, class TCor>
 void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
 {
+  paintDotViaMask((int)round(x), (int)round(y), color);
+    // preliminary - calls the non anti-aliased version
+
+
   // ...something to do...
   // we need a (nested) loop over all (x,y) pixels in the brush, multiply the brush value there 
   // with the color accumulate it into the corresponding location in the target image using 

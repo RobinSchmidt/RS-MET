@@ -6,7 +6,8 @@ PhaseScope::PhaseScope(CriticalSection *lockToUse) : AudioModule(lockToUse)
 
   pixelScale = 1.0;
   displayWidth  = 100;
-  displayHeight = 100; 
+  displayHeight = 100;
+  phaseScopeBuffer.setUseAlphaMask(false);
   updateBufferSize();
 
   createParameters();
@@ -326,16 +327,18 @@ PhaseScope2::PhaseScope2(CriticalSection *lockToUse) : PhaseScope(lockToUse)
 {
   ScopedLock scopedLock(*plugInLock);
   createParameters();  // creates the additional parameters
+
+  //phaseScopeBuffer.setUseAlphaMask(true);
 }
 
 void PhaseScope2::setDotSize(double newSize)
 {
-
+  phaseScopeBuffer.setDotSize(newSize);
 }
 
 void PhaseScope2::setDotBlur(double newBlur)
 {
-
+  phaseScopeBuffer.setDotBlur(newBlur);
 }
 
 void PhaseScope2::createParameters()

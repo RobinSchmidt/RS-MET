@@ -28,6 +28,12 @@ public:
   /** Sets the weights that are used in the simple (non alpha mask based) dot drawing mode. */
   void setNeighbourWeightsForSimpleDot(TWgt straight, TWgt diagonal);
 
+  /** Switches anti-aliasing on/off. */
+  void setAntiAlias(bool shouldAntiAlias);
+
+  /** Switches between using the alpha-mask and the simple dot algorithm. */
+  void setUseAlphaMask(bool shouldUseMask);
+
 
   /** \name Inquiry */
 
@@ -70,6 +76,7 @@ protected:
   into saturation smoothly. */
   inline void accumulate(TPix &accu, TPix value)
   {
+    //assert(value >= TPix(0));
     accu = (accu + value) / (TPix(1) + value);
   }
   // rename to addAndSaturate
