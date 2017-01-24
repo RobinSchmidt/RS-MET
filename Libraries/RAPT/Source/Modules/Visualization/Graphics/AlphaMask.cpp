@@ -22,7 +22,7 @@ void AlphaMask<TPix>::setSize(double newSize)
 template<class TPix>
 void AlphaMask<TPix>::setTransitionWidth(double newWidth)
 {
-  bell.setFlatTopWidth(newWidth);
+  bell.setFlatTopWidth(1-newWidth);
   renderMask();
 }
 

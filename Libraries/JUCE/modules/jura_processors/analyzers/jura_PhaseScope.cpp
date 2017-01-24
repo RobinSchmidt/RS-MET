@@ -164,7 +164,6 @@ void PhaseScope::updateBufferSize()
 
 void PhaseScope::updateScopeImage()
 {
-  //normalizedDataToImage(phaseScopeBuffer.getDataMatrix()[0], image, colorMap); // old
   normalizedDataToImage(phaseScopeBuffer.getImage()->getPixelPointer(0, 0), image, colorMap);
   phaseScopeBuffer.applyPixelDecay();
 }
@@ -318,3 +317,58 @@ void PhaseScopeEditor::resized()
   sliderFrameRate  ->setBounds(x, y, w, h); y += dy;
   buttonAntiAlias  ->setBounds(x, y, w, h); y += dy;
 }
+
+
+//=================================================================================================
+// the artistically entended version of the PhaseScope:
+
+PhaseScope2::PhaseScope2(CriticalSection *lockToUse) : PhaseScope(lockToUse)
+{
+
+  int dummy = 0;
+}
+
+void PhaseScope2::setDotSize(double newSize)
+{
+
+}
+
+void PhaseScope2::setDotFuzziness(double newFuzziness)
+{
+
+}
+
+void PhaseScope2::createParameters()
+{
+  ScopedLock scopedLock(*plugInLock);
+  PhaseScope::createParameters();
+  Parameter* p;
+
+  p = new Parameter(plugInLock, "DotSize", 1.0, 10.0, 0.0, 2.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setDotSize);
+}
+
+AudioModuleEditor* PhaseScope2::createEditor()
+{
+  return new PhaseScopeEditor2(this);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+PhaseScopeEditor2::PhaseScopeEditor2(jura::PhaseScope2 *newPhaseScopeToEdit)
+  : PhaseScopeEditor(newPhaseScopeToEdit)
+{
+
+}
+
+void PhaseScopeEditor2::createWidgets()
+{
+
+}
+
+void PhaseScopeEditor2::resized()
+{
+
+}
+

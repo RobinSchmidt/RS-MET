@@ -3,12 +3,7 @@
   
 //=================================================================================================
 
-/** Implements a phasescope analyzer. 
-
-\todo
--revert to juce::Timer based pixel decay (applies multiplication in GUI thread -> no CPU load 
-spikes in audio thread, but the decay may jitter a bit leading to some slight (but imho tolerable)
-flickering artifact. */
+/** Implements a phasescope analyzer. */
 
 class JUCE_API PhaseScope : public jura::AudioModule, public jura::ImageUpdater
 {
@@ -41,7 +36,7 @@ public:
   inline int getInternalPixelHeight() { return phaseScopeBuffer.getHeight(); }
 
   // overriden from AudioModule baseclass:
-  AudioModuleEditor *createEditor() override;
+  virtual AudioModuleEditor *createEditor() override;
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
   virtual void setSampleRate(double newSampleRate) override; 
   virtual void reset() override;
@@ -85,9 +80,6 @@ protected:
 //=================================================================================================
 
 /** Implements the GUI display for the phase scope. 
-
-\todo Maybe this class should be derived from the CoordinateSystem baseclass and use the angular 
-and radial grids from there. 
 
 \todo BUG: there's a flickering of the lines...could this be related to threading issues?
 ..it's more obvious with faster decay times - maybe it's because the decay is applied in the GUI 
@@ -142,6 +134,57 @@ protected:
   RButton *buttonAntiAlias;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhaseScopeEditor)
+};
+
+
+
+//=================================================================================================
+
+/** Extends the basic PhaseScope by some more artistic features such as a customizable dot, 
+blurring, etc. */
+
+class JUCE_API PhaseScope2 : public jura::PhaseScope
+{
+
+public:
+
+  PhaseScope2(CriticalSection *lockToUse);
+
+  // additional setup functions:
+  void setDotSize(double newSize);
+  void setDotFuzziness(double newFuzziness);
+
+  // overriden from PhaseScope baseclass:
+  virtual void createParameters() override;
+  virtual AudioModuleEditor *createEditor() override;
+
+protected:
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhaseScope2)
+};
+
+
+/** GUI editor for the extended PhaseScope */
+
+class JUCE_API PhaseScopeEditor2 : public PhaseScopeEditor
+{
+
+public:
+
+  PhaseScopeEditor2(jura::PhaseScope2 *newPhaseScopeToEdit);
+
+
+  virtual void createWidgets() override;
+  virtual void resized() override;
+
+protected:
+
+
+  // additional widgets:
+  RSlider *sliderDotSize, *sliderDotFuzziness;
+
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhaseScopeEditor2)
 };
 
 #endif 
