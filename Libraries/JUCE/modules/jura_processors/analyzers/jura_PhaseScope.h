@@ -152,7 +152,7 @@ public:
 
   // additional setup functions:
   void setDotSize(double newSize);
-  void setDotFuzziness(double newFuzziness);
+  void setDotBlur(double newBlur);
 
   // overriden from PhaseScope baseclass:
   virtual void createParameters() override;
@@ -181,7 +181,7 @@ protected:
 
 
   // additional widgets:
-  RSlider *sliderDotSize, *sliderDotFuzziness;
+  RSlider *sliderDotSize, *sliderDotBlur;
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhaseScopeEditor2)

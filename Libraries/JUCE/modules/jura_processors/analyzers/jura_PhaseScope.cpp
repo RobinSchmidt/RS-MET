@@ -324,8 +324,8 @@ void PhaseScopeEditor::resized()
 
 PhaseScope2::PhaseScope2(CriticalSection *lockToUse) : PhaseScope(lockToUse)
 {
-
-  int dummy = 0;
+  ScopedLock scopedLock(*plugInLock);
+  createParameters();  // creates the additional parameters
 }
 
 void PhaseScope2::setDotSize(double newSize)
@@ -333,7 +333,7 @@ void PhaseScope2::setDotSize(double newSize)
 
 }
 
-void PhaseScope2::setDotFuzziness(double newFuzziness)
+void PhaseScope2::setDotBlur(double newBlur)
 {
 
 }
@@ -341,12 +341,15 @@ void PhaseScope2::setDotFuzziness(double newFuzziness)
 void PhaseScope2::createParameters()
 {
   ScopedLock scopedLock(*plugInLock);
-  PhaseScope::createParameters();
   Parameter* p;
 
   p = new Parameter(plugInLock, "DotSize", 1.0, 10.0, 0.0, 2.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setDotSize);
+
+  p = new Parameter(plugInLock, "DotBlur", 0.0, 1.0, 0.0, 0.5, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setDotBlur);
 }
 
 AudioModuleEditor* PhaseScope2::createEditor()
@@ -359,16 +362,42 @@ AudioModuleEditor* PhaseScope2::createEditor()
 PhaseScopeEditor2::PhaseScopeEditor2(jura::PhaseScope2 *newPhaseScopeToEdit)
   : PhaseScopeEditor(newPhaseScopeToEdit)
 {
-
+  createWidgets();
+  resized();
 }
 
 void PhaseScopeEditor2::createWidgets()
 {
+  RSlider *s;
 
+  addWidget( sliderDotSize = s = new RSlider("DotSizeSlider") );
+  s->assignParameter( scope->getParameterByName("DotSize") );
+  s->setSliderName("DotSize");
+  s->setDescription("Dot size in pixels");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString3);
+
+  addWidget( sliderDotBlur = s = new RSlider("DotBlurSlider") );
+  s->assignParameter( scope->getParameterByName("DotBlur") );
+  s->setSliderName("DotBlur");
+  s->setDescription("Dot blur from 0..1");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString3);
 }
 
 void PhaseScopeEditor2::resized()
 {
+  PhaseScopeEditor::resized();
 
+  // set up additional widgets:
+  int x, y, w, h, dy;
+  x  = display.getRight() + 4;
+  w  = buttonAntiAlias->getWidth();   // slider width
+  h  = 16;                            // slider height
+  dy = h+4;                           // vertical distance ("delta-y") between widgets
+  y  = buttonAntiAlias->getBottom() + dy;
+  
+  sliderDotSize->setBounds(x, y, w, h); y += dy;
+  sliderDotBlur->setBounds(x, y, w, h); y += dy;
 }
 
