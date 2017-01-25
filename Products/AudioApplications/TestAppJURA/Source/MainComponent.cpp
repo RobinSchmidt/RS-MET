@@ -1,11 +1,8 @@
 #ifndef MAINCOMPONENT_H_INCLUDED  // hey, but it's a .cpp file (this was auto generated)
 #define MAINCOMPONENT_H_INCLUDED
 
-//#include "../JuceLibraryCode/JuceHeader.h"
-//using namespace jura;
 
 #include  "Tests/RAPT/Visualization/ImageProcessing/ImagePainterTests.h"
-
 
 
 /** This component lives inside our window, and this is where you should put all your controls 

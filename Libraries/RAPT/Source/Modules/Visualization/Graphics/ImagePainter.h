@@ -14,7 +14,7 @@ public:
   /** \name Construction/Destruction */
 
   /** Constructor. */
-  ImagePainter(Image<TPix> *imageToPaintOn, AlphaMask<TWgt> *maskToUse);
+  ImagePainter(Image<TPix> *imageToPaintOn = nullptr, AlphaMask<TWgt> *maskToUse = nullptr);
 
 
   /** \name Setup */

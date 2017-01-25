@@ -22,6 +22,7 @@ template RAPT::rsParametricBellFunction<double>;
 template RAPT::rsPositiveBellFunctions<double>;
 template RAPT::NormalizedSigmoids<double>;
 template RAPT::ScaledAndShiftedSigmoid<double>;
+template RAPT::ImagePainter<float, float, float>;
 
 
 namespace jura

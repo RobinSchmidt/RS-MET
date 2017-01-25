@@ -15,9 +15,13 @@ template<class TPix, class TWgt, class TCor>
 void ImagePainter<TPix, TWgt, TCor>::setImageToPaintOn(Image<TPix> *imageToPaintOn)
 {
   image = imageToPaintOn;
-  wi = image->getWidth();
-  hi = image->getHeight();
-  // todo: handle nullptr case
+  if(image != nullptr)
+  {
+    wi = image->getWidth();
+    hi = image->getHeight();
+  }
+  else
+    wi = hi = 0;
 }
 
 template<class TPix, class TWgt, class TCor>

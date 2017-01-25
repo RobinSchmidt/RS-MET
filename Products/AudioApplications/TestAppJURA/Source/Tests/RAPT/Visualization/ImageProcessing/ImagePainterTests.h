@@ -21,7 +21,7 @@ public:
 protected:
 
   RAPT::Image<float> paintImage, dotMask;
-  //RAPT::ImagePainter<float, float, float> painter;
+  RAPT::ImagePainter<float, float, float> painter;
 
   juce::Image displayImage;  // the juce image that is used for displaying the paintImage
 
