@@ -329,6 +329,7 @@ PhaseScope2::PhaseScope2(CriticalSection *lockToUse) : PhaseScope(lockToUse)
   createParameters();  // creates the additional parameters
 
   //phaseScopeBuffer.setUseAlphaMask(true);
+    // still very buggy - activate only for debugging
 }
 
 void PhaseScope2::setDotSize(double newSize)

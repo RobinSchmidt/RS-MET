@@ -1,0 +1,19 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2015
+Project("{A0AE68CA-1C77-0EDB-ACE3-96DAA3C811AE}") = "TestAppJURA", "TestAppJURA.vcxproj", "{36B5A78D-F34B-DE0B-A95E-B173AFC71327}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{36B5A78D-F34B-DE0B-A95E-B173AFC71327}.Debug|Win32.ActiveCfg = Debug|Win32
+		{36B5A78D-F34B-DE0B-A95E-B173AFC71327}.Debug|Win32.Build.0 = Debug|Win32
+		{36B5A78D-F34B-DE0B-A95E-B173AFC71327}.Release|Win32.ActiveCfg = Release|Win32
+		{36B5A78D-F34B-DE0B-A95E-B173AFC71327}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
