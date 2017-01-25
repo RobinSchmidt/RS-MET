@@ -8,6 +8,18 @@
     <Filter Include="TestAppJURA\Source">
       <UniqueIdentifier>{888E7CD3-A270-841D-A5BE-851BF8DCEF80}</UniqueIdentifier>
     </Filter>
+    <Filter Include="TestAppJURA\Source\Tests">
+      <UniqueIdentifier>{4680A4A7-567B-CB25-30FA-D9A1BA099BA4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TestAppJURA\Source\Tests\RAPT">
+      <UniqueIdentifier>{DD154EFC-8A2D-0483-13D4-39D71760A943}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TestAppJURA\Source\Tests\RAPT\Visualization">
+      <UniqueIdentifier>{19ADE345-0361-9006-AD3C-7CA5C3066179}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TestAppJURA\Source\Tests\RAPT\Visualization\ImageProcessing">
+      <UniqueIdentifier>{D658B48C-9119-D7E9-148A-21DA49F16123}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Juce Modules">
       <UniqueIdentifier>{422C46B7-0467-2DB0-BF3C-16DFCAFD69AC}</UniqueIdentifier>
     </Filter>
@@ -421,6 +433,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\Tests\RAPT\Visualization\ImageProcessing\ImagePainterTests.cpp">
+      <Filter>TestAppJURA\Source\Tests\RAPT\Visualization\ImageProcessing</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\MainComponent.cpp">
       <Filter>TestAppJURA\Source</Filter>
     </ClCompile>
@@ -2337,6 +2352,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\Tests\RAPT\Visualization\ImageProcessing\ImagePainterTests.h">
+      <Filter>TestAppJURA\Source\Tests\RAPT\Visualization\ImageProcessing</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_basics\buffers\juce_AudioDataConverters.h">
       <Filter>Juce Modules\juce_audio_basics\buffers</Filter>
     </ClInclude>

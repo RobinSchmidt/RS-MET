@@ -42,3 +42,5 @@
 /Libraries/RAPT/Build/VisualStudio2015/*.opensdf
 /Products/AudioApplications/TestAppJURA/Builds/VisualStudio2015/*.opensdf
 /Products/AudioApplications/TestAppJURA/Builds/VisualStudio2015/*.sdf
+/Products/AudioApplications/TestAppJURA/Builds/VisualStudio2015/x64/Debug
+/Products/AudioApplications/TestAppJURA/Builds/VisualStudio2015/.vs/TestAppJURA/v14/*.suo

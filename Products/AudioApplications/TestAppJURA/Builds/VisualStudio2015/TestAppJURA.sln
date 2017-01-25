@@ -4,14 +4,14 @@ Project("{A0AE68CA-1C77-0EDB-ACE3-96DAA3C811AE}") = "TestAppJURA", "TestAppJURA.
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Win32 = Debug|Win32
-		Release|Win32 = Release|Win32
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{36B5A78D-F34B-DE0B-A95E-B173AFC71327}.Debug|Win32.ActiveCfg = Debug|Win32
-		{36B5A78D-F34B-DE0B-A95E-B173AFC71327}.Debug|Win32.Build.0 = Debug|Win32
-		{36B5A78D-F34B-DE0B-A95E-B173AFC71327}.Release|Win32.ActiveCfg = Release|Win32
-		{36B5A78D-F34B-DE0B-A95E-B173AFC71327}.Release|Win32.Build.0 = Release|Win32
+		{36B5A78D-F34B-DE0B-A95E-B173AFC71327}.Debug|x64.ActiveCfg = Debug|x64
+		{36B5A78D-F34B-DE0B-A95E-B173AFC71327}.Debug|x64.Build.0 = Debug|x64
+		{36B5A78D-F34B-DE0B-A95E-B173AFC71327}.Release|x64.ActiveCfg = Release|x64
+		{36B5A78D-F34B-DE0B-A95E-B173AFC71327}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

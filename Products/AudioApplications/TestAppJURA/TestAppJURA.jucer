@@ -6,6 +6,18 @@
               companyEmail="robin@rs-met.com">
   <MAINGROUP id="K1ItHv" name="TestAppJURA">
     <GROUP id="{E7DA5915-A163-B06A-6F1B-762E629AA87C}" name="Source">
+      <GROUP id="{F297B51F-ADA4-24A8-B081-EC977DA1BEC7}" name="Tests">
+        <GROUP id="{0E8EC52A-9DE3-82D9-102B-E8FFD6A10DBD}" name="RAPT">
+          <GROUP id="{926D8825-12A1-B444-C06E-AAB4263B527F}" name="Visualization">
+            <GROUP id="{624F1522-EF97-3D89-8D5E-9B32E14E8E50}" name="ImageProcessing">
+              <FILE id="QOkTcS" name="ImagePainterTests.cpp" compile="1" resource="0"
+                    file="Source/Tests/RAPT/Visualization/ImageProcessing/ImagePainterTests.cpp"/>
+              <FILE id="Xo97dg" name="ImagePainterTests.h" compile="0" resource="0"
+                    file="Source/Tests/RAPT/Visualization/ImageProcessing/ImagePainterTests.h"/>
+            </GROUP>
+          </GROUP>
+        </GROUP>
+      </GROUP>
       <FILE id="Z3HofW" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
       <FILE id="xStltQ" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
@@ -14,9 +26,9 @@
   <EXPORTFORMATS>
     <VS2015 targetFolder="Builds/VisualStudio2015">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
+        <CONFIGURATION name="Debug" winWarningLevel="3" generateManifest="1" winArchitecture="x64"
                        isDebug="1" optimisation="1" targetName="TestAppJURA"/>
-        <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
+        <CONFIGURATION name="Release" winWarningLevel="3" generateManifest="1" winArchitecture="x64"
                        isDebug="0" optimisation="3" targetName="TestAppJURA"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
