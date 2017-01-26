@@ -201,10 +201,10 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(int x, int y, TPix color)
   int by  = 0;        // start y
 
   // checks to not write beyond image bounds:
-  if(x < 0)
+  if(xs < 0)
   {
-    bxs = -x;
-    xs  =  0;
+    bxs = -xs;
+    xs  = 0;
   }
   if(y < 0)
   {
@@ -224,7 +224,11 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(int x, int y, TPix color)
     bx = bxs;
     while(x <= xe)
     {
-      //rsAssert(x >= 0 && x < wi);
+      // debug:
+      rsAssert(x  >= 0 && x  < wi);
+      rsAssert(y  >= 0 && y  < hi);
+      rsAssert(bx >= 0 && bx < wb);
+      rsAssert(by >= 0 && by < hb);
 
       accumulate((*image)(x, y), TPix(color * (*mask)(bx, by)));
       x++;
