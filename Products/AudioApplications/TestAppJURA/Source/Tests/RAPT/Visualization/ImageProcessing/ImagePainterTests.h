@@ -6,9 +6,6 @@ using namespace jura;
 
 /** A component to be used to paint on a RAPT::Image object and to display it on the screen. Mainly 
 intended to test the RAPT::ImagePainter class 
-
-
-
 */
 
 class PaintCanvas : public Component
@@ -32,15 +29,16 @@ protected:
 
 
 
-  RAPT::Image<float> paintImage, dotMask;
+  RAPT::ImageResizable<float> paintImage;
+  RAPT::AlphaMask<float> dotMask;
   RAPT::ImagePainter<float, float, float> painter;
-
   juce::Image displayImage;  // the juce image that is used for displaying the paintImage
+
+  float brightness;
 
 
 
   friend class PainterComponent;
-
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PaintCanvas)
 };
 

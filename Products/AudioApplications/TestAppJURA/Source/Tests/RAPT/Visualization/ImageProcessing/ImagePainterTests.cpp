@@ -2,32 +2,45 @@
 
 PaintCanvas::PaintCanvas()
 {
+  brightness = 1.f;
 
+  paintImage.setMaxSize(2000, 1000);
+  dotMask.setMaxSize(50, 50);
+
+  painter.setImageToPaintOn(&paintImage);
+  painter.setAlphaMaskForDot(&dotMask);
 }
 
-void PaintCanvas::mouseDown(const MouseEvent &event)
+void PaintCanvas::mouseDown(const MouseEvent &e)
 {
-
+  paintDot(e.x, e.y);
 }
 
-void PaintCanvas::mouseDrag(const MouseEvent &event)
+void PaintCanvas::mouseDrag(const MouseEvent &e)
 {
-
+  paintDot(e.x, e.y);
 }
 
 void PaintCanvas::paint(Graphics &g)
 {
-  g.fillAll(Colours::black); // preliminary
+  normalizedDataToImage(paintImage.getPixelPointer(0, 0), displayImage);
+  //normalizedDataToImage(paintImage.getPixelPointer(0, 0), displayImage, colorMap); // maybe later
+  g.drawImage(displayImage, Rectangle<float>(0.f, 0.f, (float) getWidth(), (float) getHeight()));
 }
 
 void PaintCanvas::resized()
 {
-
+  int w, h;
+  w = getWidth();
+  h = getHeight();
+  paintImage.setSize(w, h);
+  displayImage = juce::Image(juce::Image::ARGB, w, h, false);
 }
 
 void PaintCanvas::paintDot(int x, int y)
 {
-
+  painter.paintDotViaMask(x, y, brightness);
+  repaint();
 }
 
 //=================================================================================================
@@ -38,7 +51,7 @@ PainterComponent::PainterComponent()
 
 
   sliderSize.setSliderName("Size");
-  sliderSize.setRange(0.0, 30.0, 0.125, 3.0);
+  sliderSize.setRange(0.0, 50.0, 0.125, 15.0);
   addAndMakeVisible(sliderSize);
 
   sliderBlur.setSliderName("Blur");
@@ -83,5 +96,5 @@ void PainterComponent::resized()
 
 void PainterComponent::rSliderValueChanged(RSlider* rSlider)
 {
-
+  // \todo: update the respective setting in the ImagePainter
 }

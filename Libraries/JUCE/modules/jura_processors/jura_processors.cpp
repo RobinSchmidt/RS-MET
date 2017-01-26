@@ -17,11 +17,15 @@
 // which use these classes, they may be deleted. At the moment, they are needed for Elan's 
 // Chaosfly but are nowhere instantiatied within jura. It's not a very elegant solution, but it's 
 // supposed to be temporary anyway:
-template RAPT::StateVariableFilter<double, double>;
+
 template RAPT::rsParametricBellFunction<double>;
 template RAPT::rsPositiveBellFunctions<double>;
 template RAPT::NormalizedSigmoids<double>;
 template RAPT::ScaledAndShiftedSigmoid<double>;
+
+template RAPT::StateVariableFilter<double, double>;
+
+template RAPT::AlphaMask<float>;
 template RAPT::ImagePainter<float, float, float>;
 
 
