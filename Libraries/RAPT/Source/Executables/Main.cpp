@@ -18,8 +18,8 @@ int main(int argc, char** argv)
   //convolutionDemo();
 
   //// Math Demos:
-  //parametricBell();
-  scaledAndShiftedSigmoid();
+  parametricBell();
+  //scaledAndShiftedSigmoid();
   //sigmoids();
 
 

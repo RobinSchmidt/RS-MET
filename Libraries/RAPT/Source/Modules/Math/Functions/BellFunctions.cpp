@@ -71,10 +71,11 @@ template<class T>
 void rsParametricBellFunction<T>::setFlatTopWidth(T newWidth)
 {
   flat = newWidth;
-  if(flat != 1)
-    b = 1 / (1 - flat);
-  else
-    b = 1;
+  b = 1 / (1 - flat);
+  //if(flat != 1)
+  //  b = 1 / (1 - flat);
+  //else
+  //  b = 1;
 }
 
 template<class T>

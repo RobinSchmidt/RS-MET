@@ -347,7 +347,7 @@ void PhaseScope2::createParameters()
   ScopedLock scopedLock(*plugInLock);
   Parameter* p;
 
-  p = new Parameter(plugInLock, "DotSize", 1.0, 10.0, 0.0, 2.0, Parameter::LINEAR);
+  p = new Parameter(plugInLock, "DotSize", 1.0, 30.0, 0.0, 2.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setDotSize);
 
