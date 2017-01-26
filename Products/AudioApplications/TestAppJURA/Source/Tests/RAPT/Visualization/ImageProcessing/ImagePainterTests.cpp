@@ -69,21 +69,23 @@ PainterComponent::PainterComponent()
 {
   addAndMakeVisible(canvas);
 
-
   sliderSize.setSliderName("Size");
   sliderSize.addListener(this);
-  sliderSize.setRange(0.0, 50.0, 0.125, 15.0);
+  sliderSize.setRange(1.0, 50.0, 0.125, 15.0);
   addAndMakeVisible(sliderSize);
+  rSliderValueChanged(&sliderSize);
 
   sliderBlur.setSliderName("Blur");
   sliderBlur.addListener(this);
   addAndMakeVisible(sliderBlur);
+  rSliderValueChanged(&sliderBlur);
 
   sliderBrightness.setSliderName("Brightness");
   sliderBrightness.addListener(this);
   addAndMakeVisible(sliderBrightness);
+  rSliderValueChanged(&sliderBrightness);
 
-  updatePreviewDot();
+  //updatePreviewDot();
 }
 
 void PainterComponent::paint(Graphics &g)
@@ -91,10 +93,10 @@ void PainterComponent::paint(Graphics &g)
   g.fillAll(Colour::greyLevel(0.25f));
 
   float x, y, w, h;
-  x = sliderBrightness.getX();
-  y = sliderBrightness.getBottom() + 8;
-  w = previewDot.getWidth();
-  h = previewDot.getHeight();
+  x = (float)sliderBrightness.getX();
+  y = (float)sliderBrightness.getBottom() + 8.f;
+  w = (float)previewDot.getWidth();
+  h = (float)previewDot.getHeight();
   g.drawImage(previewDot, Rectangle<float>(x, y, w, h));
 }
 
