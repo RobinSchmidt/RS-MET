@@ -108,7 +108,21 @@ public:
     return *this;
   }
 
+  /** Less-or-equal comparison. Returns true, if all 4 values are less or equal. */
+  inline bool operator<=(const Float32x4 &y)
+  {
+    return v[0] <= y.v[0] && v[1] <= y.v[1] && v[2] <= y.v[2] && v[3] <= y.v[3];
+  }
+
+  /** Greater-or-equal comparison. Returns true, if all 4 values are greater or equal. */
+  inline bool operator>=(const Float32x4 &y)
+  {
+    return v[0] >= y.v[0] && v[1] >= y.v[1] && v[2] >= y.v[2] && v[3] >= y.v[3];
+  }
+
   // the set of operators is still incomplete
+
+
 
 protected:
 

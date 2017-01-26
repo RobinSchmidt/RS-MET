@@ -98,7 +98,7 @@ inline T rsParametricBellFunction<T>::getValue(T x)
 {
   T tmp = rsAbs(a*(x-center));
   //double tmp = fabs(a*(x-center));
-  if(tmp < flat)
+  if(tmp <= flat)
     return bell(0.0);
   else
     return bell(b*(tmp-flat));

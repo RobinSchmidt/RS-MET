@@ -40,6 +40,7 @@ void AlphaMask<TPix>::renderMask()
       double dy = y - cy;
       double distance = sqrt(dx*dx + dy*dy);
       TPix alpha = (TPix) bell.getValue(distance);
+      //rsAssert(alpha >= TPix(0));
       setPixelColor(x, y, alpha);
     }
   }

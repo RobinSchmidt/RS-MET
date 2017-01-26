@@ -224,6 +224,8 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(int x, int y, TPix color)
     bx = bxs;
     while(x <= xe)
     {
+      //rsAssert(x >= 0 && x < wi);
+
       accumulate((*image)(x, y), TPix(color * (*mask)(bx, by)));
       x++;
       bx++;

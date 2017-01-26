@@ -43,8 +43,6 @@ void PaintCanvas::resized()
 void PaintCanvas::setDotSize(double newSize)
 {
   dotMask.setSize(newSize);
-  // bug - seems to have problems with even integer sizes (visible only with blur=0)
-  // could it go above 1?
 }
 
 void PaintCanvas::setDotBlur(double newBlur)

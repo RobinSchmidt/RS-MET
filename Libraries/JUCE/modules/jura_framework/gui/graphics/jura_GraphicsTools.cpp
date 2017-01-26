@@ -60,6 +60,10 @@ void normalizedDataToImage(float *data, juce::Image &image)
   uint8 *p = bitmap.getPixelPointer(0, 0);
   for(int i = 0; i < bitmap.height * bitmap.width; i++)
   {
+    //// for debug:
+    //float tmp = data[i];
+    //jassert(data[i] <= 1); 
+
     p[ri] = p[gi] = p[bi] = (uint8)(255 * data[i]);
     p[ai] = 255;  // full opacity
     p += 4;

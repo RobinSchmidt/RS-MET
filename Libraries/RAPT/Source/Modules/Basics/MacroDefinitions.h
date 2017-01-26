@@ -10,14 +10,14 @@
   #define ASM(x) asm("x");
 #endif
 
-#ifdef RS_DEBUG
+#if defined(DEBUG) || defined(_DEBUG)
   #ifdef _MSC_VER
     #pragma intrinsic (__debugbreak)
     #define RS_DEBUG_BREAK __debugbreak();
   #else
     #define RS_DEBUG_BREAK __builtin_trap();  // preliminary - gcc only
   #endif
-  //#define rsAssert(expression) { if (! (expression)) RS_DEBUG_BREAK }
+  #define rsAssert(expression) { if (! (expression)) RS_DEBUG_BREAK }
 #else
   #define RS_DEBUG_BREAK { }
   #define rsAssert(expression) { }
