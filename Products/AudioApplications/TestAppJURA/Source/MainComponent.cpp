@@ -6,7 +6,9 @@
 
 
 /** This component lives inside our window, and this is where you should put all your controls 
-and content. */
+and content. 
+\todo: split into .h and .cpp file
+*/
 
 class MainContentComponent : public AudioAppComponent
 {
@@ -15,6 +17,8 @@ public:
 
   MainContentComponent()
   {
+    addAndMakeVisible(painter);
+
     setSize(800, 600);
     setAudioChannels(2, 2); // number of input and output channels
   }
@@ -55,14 +59,14 @@ public:
 
   // Overriden Component callbacks:
 
-  void paint (Graphics& g) override
-  {
-      // (Our component is opaque, so we must completely fill the background with a solid colour)
-    g.fillAll (Colours::black);
+  //void paint (Graphics& g) override
+  //{
+  //    // (Our component is opaque, so we must completely fill the background with a solid colour)
+  //  g.fillAll (Colours::black);
 
 
-    // You can add your drawing code here!
-  }
+  //  // You can add your drawing code here!
+  //}
 
 
   void resized() override
