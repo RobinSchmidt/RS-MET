@@ -13,6 +13,10 @@ the inherited (purely virtual) parameterChanged() method.
 WARNING: This class is not thread-safe, that is: accesses to the vector of observed parameters
 are not mutually exclusive (mutex'ed) from each other.
 
+\todo factor out a baseclass ParameterManager - can be used for all classes that need to maintain 
+a set of parameters, these classes need not to be audio related - this should perhaps also be a 
+subclass of StateManager
+
 */
 
 class JUCE_API AutomatableModule : public ParameterObserver

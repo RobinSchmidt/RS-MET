@@ -5,8 +5,7 @@
 using namespace jura;
 
 /** A component to be used to paint on a RAPT::Image object and to display it on the screen. Mainly 
-intended to test the RAPT::ImagePainter class 
-*/
+intended to test the RAPT::ImagePainter class */
 
 class PaintCanvas : public Component
 {
@@ -21,21 +20,25 @@ public:
   virtual void paint(Graphics &g)	override;
   virtual void resized() override;
 
+  // dot setup:
+  void setDotSize(double newSize);
+  void setDotBlur(double newBlur);
+  void setDotBrightness(double newBrightness);
+
 
 protected:
 
   /** Paints a dot at the given position. */
   void paintDot(int x, int y);
 
+  // image/painting stuff:
+  RAPT::ImageResizable<float> paintImage;           // image to paint on
+  RAPT::AlphaMask<float> dotMask;                   // prototype dot
+  juce::Image displayImage;                         // for displaying the paintImage
+  RAPT::ImagePainter<float, float, float> painter;  // handles to actual painting
 
-
-  RAPT::ImageResizable<float> paintImage;
-  RAPT::AlphaMask<float> dotMask;
-  RAPT::ImagePainter<float, float, float> painter;
-  juce::Image displayImage;  // the juce image that is used for displaying the paintImage
-
-  float brightness;
-
+  // data:
+  float brightness;  // brightness of inserted dots
 
 
   friend class PainterComponent;
@@ -49,8 +52,7 @@ etc.
 
 \todo:
 -have a preview of the dot below the widgets
--maybe we should use a baseclass to maintain a set of parameters instead of deriving from
- RSliderListener
+
 */
 
 class PainterComponent : public Component, public RSliderListener

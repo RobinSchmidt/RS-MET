@@ -11,6 +11,8 @@ PaintCanvas::PaintCanvas()
   painter.setAlphaMaskForDot(&dotMask);
 }
 
+// Component callbacks:
+
 void PaintCanvas::mouseDown(const MouseEvent &e)
 {
   paintDot(e.x, e.y);
@@ -36,6 +38,25 @@ void PaintCanvas::resized()
   paintImage.setSize(w, h);
   displayImage = juce::Image(juce::Image::ARGB, w, h, false);
 }
+
+// setup:
+
+void PaintCanvas::setDotSize(double newSize)
+{
+  dotMask.setSize(newSize);
+}
+
+void PaintCanvas::setDotBlur(double newBlur)
+{
+  dotMask.setTransitionWidth(newBlur);
+}
+
+void PaintCanvas::setDotBrightness(double newBrightness)
+{
+  brightness = (float) newBrightness;
+}
+
+// misc:
 
 void PaintCanvas::paintDot(int x, int y)
 {
@@ -96,5 +117,13 @@ void PainterComponent::resized()
 
 void PainterComponent::rSliderValueChanged(RSlider* rSlider)
 {
-  // \todo: update the respective setting in the ImagePainter
+  if(rSlider == &sliderSize)
+    canvas.setDotSize(sliderSize.getValue());
+  else if(rSlider == &sliderBrightness)
+    canvas.setDotBrightness(sliderBrightness.getValue());
+  else if(rSlider == &sliderBlur)
+    canvas.setDotBlur(sliderBlur.getValue());
+
+  // \todo: maybe we should use a baseclass to maintain a set of parameters instead of deriving 
+  // from RSliderListener - but this would require some refactoring
 }
