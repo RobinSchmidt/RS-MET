@@ -191,10 +191,10 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(int x, int y, TPix color)
   int hb = mask->getHeight();
 
   // write coordinates in target image:
-  int xs = x - wb/2;  // start x-coordinate
-  y      = y - hb/2;  // start y coordinate
-  int xe = x + wb-1;  // end x coordinate
-  int ye = y + hb-1;  // end y coordinate
+  int xs = x  - wb/2;    // start x-coordinate
+  y      = y  - hb/2;    // start y coordinate
+  int xe = xs + wb-1;  // end x coordinate
+  int ye = y  + hb-1;  // end y coordinate
 
   // read coordinates in brush image:
   int bxs = 0;        // start x
