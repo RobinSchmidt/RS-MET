@@ -25,8 +25,7 @@ void PaintCanvas::mouseDrag(const MouseEvent &e)
 
 void PaintCanvas::paint(Graphics &g)
 {
-  normalizedDataToImage(paintImage.getPixelPointer(0, 0), displayImage);
-  //normalizedDataToImage(paintImage.getPixelPointer(0, 0), displayImage, colorMap); // maybe later
+  normalizedDataToImage(paintImage.getPixelPointer(0, 0), displayImage);  // maybe use colormap
   g.drawImage(displayImage, Rectangle<float>(0.f, 0.f, (float) getWidth(), (float) getHeight()));
 }
 
@@ -83,11 +82,20 @@ PainterComponent::PainterComponent()
   sliderBrightness.setSliderName("Brightness");
   sliderBrightness.addListener(this);
   addAndMakeVisible(sliderBrightness);
+
+  updatePreviewDot();
 }
 
 void PainterComponent::paint(Graphics &g)
 {
   g.fillAll(Colour::greyLevel(0.25f));
+
+  float x, y, w, h;
+  x = sliderBrightness.getX();
+  y = sliderBrightness.getBottom() + 8;
+  w = previewDot.getWidth();
+  h = previewDot.getHeight();
+  g.drawImage(previewDot, Rectangle<float>(x, y, w, h));
 }
 
 void PainterComponent::resized()
@@ -127,6 +135,17 @@ void PainterComponent::rSliderValueChanged(RSlider* rSlider)
   else if(rSlider == &sliderBlur)
     canvas.setDotBlur(sliderBlur.getValue());
 
+  updatePreviewDot();
+
   // \todo: maybe we should use a baseclass to maintain a set of parameters instead of deriving 
   // from RSliderListener - but this would require some refactoring
+}
+
+void PainterComponent::updatePreviewDot()
+{
+  int w = canvas.dotMask.getWidth();
+  int h = canvas.dotMask.getHeight();
+  previewDot = juce::Image(juce::Image::ARGB, w, h, false);
+  normalizedDataToImage(canvas.dotMask.getPixelPointer(0, 0), previewDot);
+  repaint();
 }

@@ -210,15 +210,17 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(int x, int y, TPix color)
 
   // the actual painting loop over the pixels in target image and brush image:
   int bx;
-  while(y++ <= ye)
+  while(y <= ye)
   {
     x  = xs;
     bx = bxs;
-    while(x++ <= xe)
+    while(x <= xe)
     {
       accumulate((*image)(x, y), TPix(color * (*mask)(bx, by)));
+      x++;
       bx++;
     }
+    y++;
     by++;
   }
 }

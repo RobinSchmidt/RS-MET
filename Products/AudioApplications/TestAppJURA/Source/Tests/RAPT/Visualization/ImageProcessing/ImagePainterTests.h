@@ -70,11 +70,14 @@ public:
 
 protected:
 
+  /** Updates the image for previewing the dot */
+  void updatePreviewDot();
+
   PaintCanvas canvas;
+  juce::Image previewDot; 
 
   // widgets for setting up the brush/pen:
   RSlider sliderSize, sliderBlur, sliderBrightness;
-
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PainterComponent)
 };
