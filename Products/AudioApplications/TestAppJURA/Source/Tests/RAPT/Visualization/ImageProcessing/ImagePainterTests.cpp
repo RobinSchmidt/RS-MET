@@ -72,13 +72,16 @@ PainterComponent::PainterComponent()
 
 
   sliderSize.setSliderName("Size");
+  sliderSize.addListener(this);
   sliderSize.setRange(0.0, 50.0, 0.125, 15.0);
   addAndMakeVisible(sliderSize);
 
   sliderBlur.setSliderName("Blur");
+  sliderBlur.addListener(this);
   addAndMakeVisible(sliderBlur);
 
   sliderBrightness.setSliderName("Brightness");
+  sliderBrightness.addListener(this);
   addAndMakeVisible(sliderBrightness);
 }
 
