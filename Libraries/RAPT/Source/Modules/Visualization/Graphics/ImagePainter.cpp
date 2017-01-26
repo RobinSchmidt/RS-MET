@@ -15,13 +15,13 @@ template<class TPix, class TWgt, class TCor>
 void ImagePainter<TPix, TWgt, TCor>::setImageToPaintOn(Image<TPix> *imageToPaintOn)
 {
   image = imageToPaintOn;
-  if(image != nullptr)
-  {
-    wi = image->getWidth();
-    hi = image->getHeight();
-  }
-  else
-    wi = hi = 0;
+  //if(image != nullptr)
+  //{
+  //  wi = image->getWidth();
+  //  hi = image->getHeight();
+  //}
+  //else
+  //  wi = hi = 0;
 }
 
 template<class TPix, class TWgt, class TCor>
@@ -80,6 +80,9 @@ template<class TPix, class TWgt, class TCor>
 void ImagePainter<TPix, TWgt, TCor>::paintDot3x3(int x, int y, TPix color, TWgt weightStraight, 
   TWgt weightDiagonal)
 {
+  int wi = image->getWidth();
+  int hi = image->getHeight();
+
   if(x >= 0 && x < wi && y >= 0 && y < hi)
     accumulate((*image)(x, y), color);
 
@@ -108,6 +111,9 @@ template<class TPix, class TWgt, class TCor>
 void ImagePainter<TPix, TWgt, TCor>::paintDot3x3(TCor x, TCor y, TPix color, TWgt weightStraight, 
   TWgt weightDiagonal)
 {
+  int wi = image->getWidth();
+  int hi = image->getHeight();
+
   int xi = (int)floor(x);  // integer part of x
   int yi = (int)floor(y);  // integer part of y
   x -= xi;                 // fractional part of x
@@ -179,6 +185,8 @@ void ImagePainter<TPix, TWgt, TCor>::paintDot3x3(TCor x, TCor y, TPix color, TWg
 template<class TPix, class TWgt, class TCor>
 void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(int x, int y, TPix color)
 {
+  int wi = image->getWidth();
+  int hi = image->getHeight();
   int wb = mask->getWidth();   // rename to wm, hm
   int hb = mask->getHeight();
 

@@ -132,6 +132,7 @@ protected:
   inline void allocateMemory()
   {
     data = new TPix[width*height];
+    fillAll(TPix(0));
   }
 
   /** Frees the allocated memory for the picture. */

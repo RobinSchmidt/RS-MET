@@ -60,6 +60,7 @@ void PaintCanvas::setDotBrightness(double newBrightness)
 void PaintCanvas::paintDot(int x, int y)
 {
   painter.paintDotViaMask(x, y, brightness);
+  //painter.paintDot3x3(x, y, brightness, 0.5, 0.25); // test
   repaint();
 }
 

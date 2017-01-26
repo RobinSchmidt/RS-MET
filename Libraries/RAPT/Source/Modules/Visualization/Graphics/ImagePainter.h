@@ -86,7 +86,7 @@ protected:
   Image<TPix> *image;
   AlphaMask<TWgt> *mask;
 
-  int wi, hi;    // image width and height
+  //int wi, hi;    // image width and height
 
   bool antiAlias, useMask;
   TWgt straightNeighbourWeight, diagonalNeighbourWeight;

@@ -95,5 +95,5 @@ void ImageResizable<TPix>::setMaxSize(int newMaxWidth, int newMaxHeight)
 {
   maxWidth  = newMaxWidth;
   maxHeight = newMaxHeight;
-  Image<TPix>::setSize(maxWidth, maxHeight);
+  Image<TPix>::setSize(maxWidth, maxHeight); // for memory reallocation
 }
