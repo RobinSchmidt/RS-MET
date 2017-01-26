@@ -328,8 +328,8 @@ PhaseScope2::PhaseScope2(CriticalSection *lockToUse) : PhaseScope(lockToUse)
   ScopedLock scopedLock(*plugInLock);
   createParameters();  // creates the additional parameters
 
-  //phaseScopeBuffer.setUseAlphaMask(true);
-    // still very buggy - activate only for debugging
+  phaseScopeBuffer.setUseAlphaMask(true);
+  // i think, either the dot brightness should scale inversely to the dotSize or the lineDensity
 }
 
 void PhaseScope2::setDotSize(double newSize)
