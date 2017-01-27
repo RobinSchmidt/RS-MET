@@ -230,7 +230,7 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(int x, int y, TPix color)
       //rsAssert(mx >= 0 && mx < wm);
       //rsAssert(my >= 0 && my < hm);
 
-      accumulate((*image)(x, y), TPix(color * (*mask)(mx, my)));
+      accumulate((*image)(x, y), color * TPix((*mask)(mx, my)));
       x++;
       mx++;
     }
@@ -257,17 +257,17 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
   TCor yf = y - yi;         // fractional part of y
 
   // compute pixel coverages (these are the same as the weights for bilinear deinterpolation):
-  TPix a, b, c, d;
-  d = TPix(xf*yf);
-  c = TPix(yf)-d;
-  b = TPix(xf)-d;
-  a = d+TPix(1-xf-yf);
+  TWgt a, b, c, d;
+  d = TWgt(xf*yf);
+  c = TWgt(yf)-d;
+  b = TWgt(xf)-d;
+  a = d+TWgt(1-xf-yf);
 
   // write coordinates in target image:
   int xs = xi - wm/2;    // start x-coordinate
-  yi     = yi - hm/2;    // start y coordinate
+  int ys = yi - hm/2;    // start y coordinate
   int xe = xs + wm;      // end x coordinate
-  int ye = yi + hm;      // end y coordinate
+  int ye = ys + hm;      // end y coordinate
 
   // read coordinates in mask image:
   int mxs = 0;           // start x
@@ -280,10 +280,10 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
     mxs = -xs;
     xs  = 0;
   }
-  if(yi < 0)
+  if(ys < 0)
   {
-    my = -yi;
-    yi =  0;
+    my = -ys;
+    ys =  0;
   }
   if(xe >= wi)
     xe = wi-1;
@@ -291,17 +291,20 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
     ye = hi-1;
 
   // paint corners:
-  accumulate((*image)(xs, ys), TPix(a * color * (*mask)(0,    0)));     // top left
-  accumulate((*image)(xe, ys), TPix(b * color * (*mask)(wm-1, 0)));     // top right
-  accumulate((*image)(xs, ye), TPix(c * color * (*mask)(0,    hm-1)));  // bottom left
-  accumulate((*image)(xe, ye), TPix(d * color * (*mask)(wm-1, hm-1)));  // bottom right
-
-
-
-
+  accumulate((*image)(xs, ys), color * TPix(a * (*mask)(0,    0)));     // top left
+  accumulate((*image)(xe, ys), color * TPix(b * (*mask)(wm-1, 0)));     // top right
+  accumulate((*image)(xs, ye), color * TPix(c * (*mask)(0,    hm-1)));  // bottom left
+  accumulate((*image)(xe, ye), color * TPix(d * (*mask)(wm-1, hm-1)));  // bottom right
 
 
   // paint edges:
+  TWgt w;
+  int i;
+  for(i = xs+1; i < xe-1; i++) // top edge
+  {
+    w = a * (*mask)(i-1, 0) + b * (*mask)(i, 0);
+    accumulate((*image)(i, 0), color*TPix(w));
+  }
 
 
   // paint interior rectangle:
@@ -311,7 +314,7 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
 
 
   // the actual painting loop over the pixels in target image and brush image:
-  int mx;
+  //int mx;
 
 
 
