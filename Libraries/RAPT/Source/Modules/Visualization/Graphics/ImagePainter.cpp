@@ -242,9 +242,11 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(int x, int y, TPix color)
 template<class TPix, class TWgt, class TCor>
 void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
 {
-  paintDotViaMask((int)round(x), (int)round(y), color);
-  return;
+  //paintDotViaMask((int)round(x), (int)round(y), color);
+  //return;
     // preliminary - calls the non anti-aliased version
+
+  // it's still wrong - we need to debug - maybe it's best, to write a unit test
 
   int wi = image->getWidth();
   int hi = image->getHeight();
