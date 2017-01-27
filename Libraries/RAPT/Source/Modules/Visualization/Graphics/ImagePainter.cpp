@@ -244,9 +244,7 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
 {
   //paintDotViaMask((int)round(x), (int)round(y), color);
   //return;
-    // preliminary - calls the non anti-aliased version
-
-  // it's still wrong - we need to debug - maybe it's best, to write a unit test
+  //  // preliminary - calls the non anti-aliased version
 
   int wi = image->getWidth();
   int hi = image->getHeight();
@@ -273,7 +271,7 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
 
   // read coordinates in mask image:
   int mxs = 0;           // start x
-  int my  = 0;           // start y
+  int mys = 0;           // start y
 
   // checks to not write beyond image bounds (maybe factor out, it's the same as in 
   // the non-anti-aliased version):
@@ -284,8 +282,8 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
   }
   if(ys < 0)
   {
-    my = -ys;
-    ys =  0;
+    mys = -ys;
+    ys  =  0;
   }
   if(xe >= wi)
     xe = wi-1;
@@ -326,10 +324,10 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
   }
 
   // paint interior rectangle:
-  ym = 1;
+  ym = mys+1;
   for(yi = ys+1; yi <= ye-1; yi++)
   {
-    xm = 1;
+    xm = mxs+1;
     for(xi = xs+1; xi <= xe-1; xi++)
     {
       w = a * (*mask)(xm+1, ym+1) + b * (*mask)(xm, ym+1)
