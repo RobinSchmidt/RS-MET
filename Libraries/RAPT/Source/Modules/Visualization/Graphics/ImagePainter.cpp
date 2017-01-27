@@ -296,15 +296,23 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
   accumulate((*image)(xs, ye), color * TPix(c * (*mask)(0,    hm-1)));  // bottom left
   accumulate((*image)(xe, ye), color * TPix(d * (*mask)(wm-1, hm-1)));  // bottom right
 
-
   // paint edges:
   TWgt w;
-  int i;
-  for(i = xs+1; i < xe-1; i++) // top edge
+  int i, j = 0;
+  for(i = xs+1; i < xe-1; i++) // top and bottom edges
   {
-    w = a * (*mask)(i-1, 0) + b * (*mask)(i, 0);
-    accumulate((*image)(i, 0), color*TPix(w));
+    w = a * (*mask)(j, 0) + b * (*mask)(j+1, 0);        // top
+    accumulate((*image)(i, 0), color*TPix(w)); 
+
+    w = c * (*mask)(j, hm-1) + d * (*mask)(j+1, hm-1);  // bottom
+    accumulate((*image)(i, ye), color*TPix(w)); 
+
+    j++;
   }
+
+
+  j = 0;
+
 
 
   // paint interior rectangle:

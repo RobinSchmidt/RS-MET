@@ -110,17 +110,31 @@ void PhaseScope::processBlock(double **inOutBuffer, int numChannels, int numSamp
 {
   ScopedLock scopedLock(*plugInLock);
   jassert(numChannels == 2);
-
   for(int n = 0; n < numSamples; n++)
-    phaseScopeBuffer.bufferSampleFrame(inOutBuffer[0][n], inOutBuffer[1][n]);
-
-  repaintCounter += numSamples;
-  while(repaintCounter > repaintIntervalInSamples)
   {
-    updateScopeImage();
-    sendImageUpdateNotification(&image);
-    repaintCounter -= repaintIntervalInSamples;
+    phaseScopeBuffer.bufferSampleFrame(inOutBuffer[0][n], inOutBuffer[1][n]);
+    repaintCounter++;
+    if(repaintCounter > repaintIntervalInSamples)
+    {
+      updateScopeImage();
+      sendImageUpdateNotification(&image);
+      repaintCounter = 0;
+    }
   }
+
+  //// old - had some flashiness due to jitter when not sample-accurately (only block accurately) 
+  // handling the counter (for reference - may be deleted at some point):
+
+  //for(int n = 0; n < numSamples; n++)
+  //  phaseScopeBuffer.bufferSampleFrame(inOutBuffer[0][n], inOutBuffer[1][n]);
+
+  //repaintCounter += numSamples;
+  //while(repaintCounter > repaintIntervalInSamples)
+  //{
+  //  updateScopeImage();
+  //  sendImageUpdateNotification(&image);
+  //  repaintCounter -= repaintIntervalInSamples;
+  //}
 }
 
 void PhaseScope::setSampleRate(double newSampleRate)
