@@ -264,10 +264,10 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
   a = d+TWgt(1-xf-yf);
 
   // write coordinates in target image:
-  int xs = xi - wm/2;    // start x-coordinate
-  int ys = yi - hm/2;    // start y coordinate
-  int xe = xs + wm;      // end x coordinate
-  int ye = ys + hm;      // end y coordinate
+  int xs = xi - wm/2;    // start x-coordinate in image
+  int ys = yi - hm/2;    // start y coordinate in image
+  int xe = xs + wm;      // end x coordinate in image
+  int ye = ys + hm;      // end y coordinate in image
 
   // read coordinates in mask image:
   int mxs = 0;           // start x
@@ -298,37 +298,45 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
 
   // paint edges:
   TWgt w;
-  int i, j = 0;
-  for(i = xs+1; i < xe-1; i++) // top and bottom edges
+  //int xi;     // x-index in image - already defined, can be reused
+  int xm = 0; // x-index in mask
+  for(xi = xs+1; xi <= xe-1; xi++) // top and bottom edges
   {
-    w = a * (*mask)(j, 0) + b * (*mask)(j+1, 0);        // top
-    accumulate((*image)(i, 0), color*TPix(w)); 
+    w = a * (*mask)(xm+1, 0) + b * (*mask)(xm, 0);        // top
+    accumulate((*image)(xi, 0), color*TPix(w)); 
 
-    w = c * (*mask)(j, hm-1) + d * (*mask)(j+1, hm-1);  // bottom
-    accumulate((*image)(i, ye), color*TPix(w)); 
+    w = c * (*mask)(xm+1, hm-1) + d * (*mask)(xm, hm-1);  // bottom
+    accumulate((*image)(xi, ye), color*TPix(w)); 
 
-    j++;
+    xm++;
+  }
+  //int yi;     // y-index in image - already defined, can be reused
+  int ym = 0; // y-index in mask
+  for(yi = ys+1; yi <= ye-1; yi++) // left and right edges
+  {
+    w = a * (*mask)(0, ym+1) + c * (*mask)(0, ym);        // left
+    accumulate((*image)(0, yi), color*TPix(w)); 
+
+    w = b * (*mask)(wm-1, ym+1) + d * (*mask)(wm-1, ym);  // right
+    accumulate((*image)(xe, yi), color*TPix(w)); 
+
+    ym++;
   }
 
-
-  j = 0;
-
-
-
   // paint interior rectangle:
-
-
-
-
-
-  // the actual painting loop over the pixels in target image and brush image:
-  //int mx;
-
-
-
-
-
-
+  ym = 1;
+  for(yi = ys+1; yi <= ye-1; yi++)
+  {
+    xm = 1;
+    for(xi = xs+1; xi <= xe-1; xi++)
+    {
+      w = a * (*mask)(xm+1, ym+1) + b * (*mask)(xm, ym+1)
+        + c * (*mask)(xm+1, ym)   + d * (*mask)(xm, ym);   // check this carefully!
+      accumulate((*image)(xi, yi), color*TPix(w)); 
+      xm++;
+    }
+    ym++;
+  }
 }
 
 template<class TPix, class TWgt, class TCor>
