@@ -76,7 +76,7 @@ protected:
   into saturation smoothly. */
   inline void accumulate(TPix &accu, TPix value)
   {
-    rsAssert(value >= TPix(0));
+    //rsAssert(value >= TPix(0));
     accu = (accu + value) / (TPix(1) + value);
   }
   // rename to addAndSaturate
@@ -85,8 +85,6 @@ protected:
 
   Image<TPix> *image;
   AlphaMask<TWgt> *mask;
-
-  //int wi, hi;    // image width and height
 
   bool antiAlias, useMask;
   TWgt straightNeighbourWeight, diagonalNeighbourWeight;

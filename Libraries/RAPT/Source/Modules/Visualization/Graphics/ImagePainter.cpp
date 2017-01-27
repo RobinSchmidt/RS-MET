@@ -187,28 +187,28 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(int x, int y, TPix color)
 {
   int wi = image->getWidth();
   int hi = image->getHeight();
-  int wb = mask->getWidth();   // rename to wm, hm
-  int hb = mask->getHeight();
+  int wm = mask->getWidth();
+  int hm = mask->getHeight();
 
   // write coordinates in target image:
-  int xs = x  - wb/2;    // start x-coordinate
-  y      = y  - hb/2;    // start y coordinate
-  int xe = xs + wb-1;  // end x coordinate
-  int ye = y  + hb-1;  // end y coordinate
+  int xs = x  - wm/2;    // start x-coordinate
+  y      = y  - hm/2;    // start y coordinate
+  int xe = xs + wm-1;    // end x coordinate
+  int ye = y  + hm-1;    // end y coordinate
 
-  // read coordinates in brush image:
-  int bxs = 0;        // start x
-  int by  = 0;        // start y
+  // read coordinates in mask image:
+  int mxs = 0;          // start x
+  int my  = 0;          // start y
 
   // checks to not write beyond image bounds:
   if(xs < 0)
   {
-    bxs = -xs;
+    mxs = -xs;
     xs  = 0;
   }
   if(y < 0)
   {
-    by = -y;
+    my = -y;
     y  =  0;
   }
   if(xe >= wi)
@@ -217,25 +217,25 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(int x, int y, TPix color)
     ye = hi-1;
 
   // the actual painting loop over the pixels in target image and brush image:
-  int bx;
+  int mx;
   while(y <= ye)
   {
     x  = xs;
-    bx = bxs;
+    mx = mxs;
     while(x <= xe)
     {
       //// debug:
       //rsAssert(x  >= 0 && x  < wi);
       //rsAssert(y  >= 0 && y  < hi);
-      //rsAssert(bx >= 0 && bx < wb);
-      //rsAssert(by >= 0 && by < hb);
+      //rsAssert(mx >= 0 && mx < wm);
+      //rsAssert(my >= 0 && my < hm);
 
-      accumulate((*image)(x, y), TPix(color * (*mask)(bx, by)));
+      accumulate((*image)(x, y), TPix(color * (*mask)(mx, my)));
       x++;
-      bx++;
+      mx++;
     }
     y++;
-    by++;
+    my++;
   }
 }
 
@@ -243,20 +243,81 @@ template<class TPix, class TWgt, class TCor>
 void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
 {
   paintDotViaMask((int)round(x), (int)round(y), color);
+  return;
     // preliminary - calls the non anti-aliased version
 
+  int wi = image->getWidth();
+  int hi = image->getHeight();
+  int wm = mask->getWidth();
+  int hm = mask->getHeight();
 
-  // ...something to do...
-  // we need a (nested) loop over all (x,y) pixels in the brush, multiply the brush value there 
-  // with the color accumulate it into the corresponding location in the target image using 
-  // bilinear deinterpolation to write into fractional positions
-  // or: loop over a rectangle of size wb,wh in the target image and read out the brush at 
-  // corresponding positions using bilinear interpolation ...maybe provide both methods so we
-  // can compare the results (should they be equal? idk) and also the performance
-  // maybe name them paintDot, paintDotDeInterpolated
-  // copy over the functions from PhaseScopeBuffer addDot, etc. which add single pixel dots
-  // maybe call the function: paintSinglePixelDot or paintSimpleDot something
-  // maybe have a member antiAlias
+  int  xi = (int)floor(x);  // integer part of x
+  int  yi = (int)floor(y);  // integer part of y
+  TCor xf = x - xi;         // fractional part of x
+  TCor yf = y - yi;         // fractional part of y
+
+  // compute pixel coverages (these are the same as the weights for bilinear deinterpolation):
+  TPix a, b, c, d;
+  d = TPix(xf*yf);
+  c = TPix(yf)-d;
+  b = TPix(xf)-d;
+  a = d+TPix(1-xf-yf);
+
+  // write coordinates in target image:
+  int xs = xi - wm/2;    // start x-coordinate
+  yi     = yi - hm/2;    // start y coordinate
+  int xe = xs + wm;      // end x coordinate
+  int ye = yi + hm;      // end y coordinate
+
+  // read coordinates in mask image:
+  int mxs = 0;           // start x
+  int my  = 0;           // start y
+
+  // checks to not write beyond image bounds (maybe factor out, it's the same as in 
+  // the non-anti-aliased version):
+  if(xs < 0)
+  {
+    mxs = -xs;
+    xs  = 0;
+  }
+  if(yi < 0)
+  {
+    my = -yi;
+    yi =  0;
+  }
+  if(xe >= wi)
+    xe = wi-1;
+  if(ye >= hi)
+    ye = hi-1;
+
+  // paint corners:
+  accumulate((*image)(xs, ys), TPix(a * color * (*mask)(0,    0)));     // top left
+  accumulate((*image)(xe, ys), TPix(b * color * (*mask)(wm-1, 0)));     // top right
+  accumulate((*image)(xs, ye), TPix(c * color * (*mask)(0,    hm-1)));  // bottom left
+  accumulate((*image)(xe, ye), TPix(d * color * (*mask)(wm-1, hm-1)));  // bottom right
+
+
+
+
+
+
+  // paint edges:
+
+
+  // paint interior rectangle:
+
+
+
+
+
+  // the actual painting loop over the pixels in target image and brush image:
+  int mx;
+
+
+
+
+
+
 }
 
 template<class TPix, class TWgt, class TCor>

@@ -4,6 +4,7 @@ AlphaMask<TPix>::AlphaMask()
   bell.setCenter(0);
   bell.setWidth(2);
   bell.setFlatTopWidth(0.5);
+  //bell.setPrototypeBell(&rsPositiveBellFunctions<double>::linear);
   bell.setPrototypeBell(&rsPositiveBellFunctions<double>::cubic);
     // make this user adjustable later
 
