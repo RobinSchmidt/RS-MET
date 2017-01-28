@@ -84,7 +84,7 @@ void ImagePainter<TPix, TWgt, TCor>::paintDot3x3(int x, int y, TPix color, TWgt 
   int hi = image->getHeight();
 
   if(x >= 0 && x < wi && y >= 0 && y < hi)
-    accumulate((*image)(x, y), color);
+    blend(x, y, color);
 
   // apply thickness:
   if(weightStraight > 0.f && x >= 1 && x < wi-1 && y >= 1 && y < hi-1)
@@ -94,16 +94,16 @@ void ImagePainter<TPix, TWgt, TCor>::paintDot3x3(int x, int y, TPix color, TWgt 
     ta = a * (TPix)weightStraight;
     sa = a * (TPix)weightDiagonal;
 
-    accumulate((*image)(x-1, y-1), sa);
-    accumulate((*image)(x,   y-1), ta);
-    accumulate((*image)(x+1, y-1), sa);
+    blend(x-1, y-1, sa);
+    blend(x,   y-1, ta);
+    blend(x+1, y-1, sa);
 
-    accumulate((*image)(x-1, y  ), ta);
-    accumulate((*image)(x+1, y  ), ta);
+    blend(x-1, y,   ta);
+    blend(x+1, y,   ta);
 
-    accumulate((*image)(x-1, y+1), sa);
-    accumulate((*image)(x,   y+1), ta);
-    accumulate((*image)(x+1, y+1), sa);
+    blend(x-1, y+1, sa);
+    blend(x,   y+1, ta);
+    blend(x+1, y+1, sa);
   }
 }
 
@@ -135,13 +135,11 @@ void ImagePainter<TPix, TWgt, TCor>::paintDot3x3(TCor x, TCor y, TPix color, TWg
   // accumulate values into the pixels:
   if(xi >= 0 && xi < wi-1 && yi >= 0 && yi < hi-1)
   {
-    accumulate((*image)(xi,   yi  ), a);
-    accumulate((*image)(xi+1, yi  ), b);
-    accumulate((*image)(xi,   yi+1), c);
-    accumulate((*image)(xi+1, yi+1), d);
+    blend(xi,   yi,   a);
+    blend(xi+1, yi,   b);
+    blend(xi,   yi+1, c);
+    blend(xi+1, yi+1, d);
   }
-  // \todo: maybe use a "blend" function that can be set up by the user as a function pointer 
-  // this will allow for different blend modes
 
   // apply thickness:
   if(weightStraight > 0.f && xi >= 1 && xi < wi-2 && yi >= 1 && yi < hi-2)
@@ -160,25 +158,25 @@ void ImagePainter<TPix, TWgt, TCor>::paintDot3x3(TCor x, TCor y, TPix color, TWg
     tc = t*c;
     td = t*d;
 
-    accumulate((*image)(xi-1, yi-1), sa);
-    accumulate((*image)(xi,   yi-1), ta+sb);
-    accumulate((*image)(xi+1, yi-1), tb+sa);
-    accumulate((*image)(xi+2, yi-1), sb);
+    blend(xi-1, yi-1, sa);
+    blend(xi,   yi-1, ta+sb);
+    blend(xi+1, yi-1, tb+sa);
+    blend(xi+2, yi-1, sb);
 
-    accumulate((*image)(xi-1, yi  ), ta+sc);
-    accumulate((*image)(xi,   yi  ), sd+tb+tc);
-    accumulate((*image)(xi+1, yi  ), sc+ta+td);
-    accumulate((*image)(xi+2, yi  ), tb+sd);
+    blend(xi-1, yi,   ta+sc);
+    blend(xi,   yi,   sd+tb+tc);
+    blend(xi+1, yi,   sc+ta+td);
+    blend(xi+2, yi,   tb+sd);
 
-    accumulate((*image)(xi-1, yi+1), tc+sa);
-    accumulate((*image)(xi,   yi+1), sb+ta+td);
-    accumulate((*image)(xi+1, yi+1), sa+tb+tc);
-    accumulate((*image)(xi+2, yi+1), td+sb);
+    blend(xi-1, yi+1, tc+sa);
+    blend(xi,   yi+1, sb+ta+td);
+    blend(xi+1, yi+1, sa+tb+tc);
+    blend(xi+2, yi+1, td+sb);
 
-    accumulate((*image)(xi-1, yi+2), sc);
-    accumulate((*image)(xi,   yi+2), tc+sd);
-    accumulate((*image)(xi+1, yi+2), td+sc);
-    accumulate((*image)(xi+2, yi+2), sd);
+    blend(xi-1, yi+2, sc);
+    blend(xi,   yi+2, tc+sd);
+    blend(xi+1, yi+2, td+sc);
+    blend(xi+2, yi+2, sd);
   }
 }
 
@@ -231,7 +229,6 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(int x, int y, TPix color)
       //rsAssert(my >= 0 && my < hm);
 
       blend(x, y, color, (*mask)(mx, my));
-      //accumulate((*image)(x, y), color * TPix((*mask)(mx, my)));
       x++;
       mx++;
     }
