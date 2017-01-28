@@ -299,35 +299,30 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
   // paint edges:
   TWgt w;
   int xm = 0; // x-index in mask
+  int ym = 0; // y-index in mask
   for(xi = xs+1; xi <= xe-1; xi++) // top and bottom edges
   {
-    w = a * (*mask)(xm+1, 0) + b * (*mask)(xm, 0);        // top
-    blend(xi, ys, color, w); 
-
-    w = c * (*mask)(xm+1, hm-1) + d * (*mask)(xm, hm-1);  // bottom
-    blend(xi, ye, color, w); 
-
+    w = a * (*mask)(xm+1,    0) + b * (*mask)(xm,    0); blend(xi, ys, color, w);  // top
+    w = c * (*mask)(xm+1, hm-1) + d * (*mask)(xm, hm-1); blend(xi, ye, color, w);  // bottom
     xm++;
   }
-  int ym = 0; // y-index in mask
   for(yi = ys+1; yi <= ye-1; yi++) // left and right edges
   {
-    w = a * (*mask)(0, ym+1) + c * (*mask)(0, ym);        // left
-    blend(xs, yi, color, w); 
-
-    w = b * (*mask)(wm-1, ym+1) + d * (*mask)(wm-1, ym);  // right 
-    blend(xe, yi, color, w); 
-
+    w = a * (*mask)(0,    ym+1) + c * (*mask)(0,    ym); blend(xs, yi, color, w);  // left
+    w = b * (*mask)(wm-1, ym+1) + d * (*mask)(wm-1, ym); blend(xe, yi, color, w);  // right 
     ym++;
   }
+  // we need to check, if the edges are inside the image and render them conditionally - the same 
+  // goes for the corners
+
 
   // paint interior rectangle:
   //ym = mys+1;
-  ym = mys;
+  ym = mys;  // why not +1?
   for(yi = ys+1; yi <= ye-1; yi++)
   {
     //xm = mxs+1;
-    xm = mxs;
+    xm = mxs; // why not +1?
     for(xi = xs+1; xi <= xe-1; xi++)
     {
       w = a * (*mask)(xm+1, ym+1) + b * (*mask)(xm, ym+1)

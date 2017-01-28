@@ -59,7 +59,9 @@ void PaintCanvas::setDotBrightness(double newBrightness)
 
 void PaintCanvas::paintDot(int x, int y)
 {
-  painter.paintDotViaMask(x, y, brightness);
+  //painter.paintDotViaMask(x, y, brightness);
+
+  painter.paintDotViaMask(x+0.25f, y+0.75f, brightness); // test - use anti-aliased function
   //painter.paintDot3x3(x, y, brightness, 0.5, 0.25); // test
   repaint();
 }
