@@ -230,7 +230,8 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(int x, int y, TPix color)
       //rsAssert(mx >= 0 && mx < wm);
       //rsAssert(my >= 0 && my < hm);
 
-      accumulate((*image)(x, y), color * TPix((*mask)(mx, my)));
+      blend(x, y, color, (*mask)(mx, my));
+      //accumulate((*image)(x, y), color * TPix((*mask)(mx, my)));
       x++;
       mx++;
     }
@@ -296,47 +297,47 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
   accumulate((*image)(xs, ye), color * TPix(c * (*mask)(0,    hm-1)));  // bottom left
   accumulate((*image)(xe, ye), color * TPix(d * (*mask)(wm-1, hm-1)));  // bottom right
 
-  //// paint edges:
-  //TWgt w;
-  ////int xi;     // x-index in image - already defined, can be reused
-  //int xm = 0; // x-index in mask
-  //for(xi = xs+1; xi <= xe-1; xi++) // top and bottom edges
-  //{
-  //  w = a * (*mask)(xm+1, 0) + b * (*mask)(xm, 0);        // top
-  //  accumulate((*image)(xi, 0), color*TPix(w)); 
+  // paint edges:
+  TWgt w;
+  //int xi;     // x-index in image - already defined, can be reused
+  int xm = 0; // x-index in mask
+  for(xi = xs+1; xi <= xe-1; xi++) // top and bottom edges
+  {
+    w = a * (*mask)(xm+1, 0) + b * (*mask)(xm, 0);        // top
+    accumulate((*image)(xi, 0), color*TPix(w)); 
 
-  //  w = c * (*mask)(xm+1, hm-1) + d * (*mask)(xm, hm-1);  // bottom
-  //  accumulate((*image)(xi, ye), color*TPix(w)); 
+    w = c * (*mask)(xm+1, hm-1) + d * (*mask)(xm, hm-1);  // bottom
+    accumulate((*image)(xi, ye), color*TPix(w)); 
 
-  //  xm++;
-  //}
-  ////int yi;     // y-index in image - already defined, can be reused
-  //int ym = 0; // y-index in mask
-  //for(yi = ys+1; yi <= ye-1; yi++) // left and right edges
-  //{
-  //  w = a * (*mask)(0, ym+1) + c * (*mask)(0, ym);        // left
-  //  accumulate((*image)(0, yi), color*TPix(w)); 
+    xm++;
+  }
+  //int yi;     // y-index in image - already defined, can be reused
+  int ym = 0; // y-index in mask
+  for(yi = ys+1; yi <= ye-1; yi++) // left and right edges
+  {
+    w = a * (*mask)(0, ym+1) + c * (*mask)(0, ym);        // left
+    accumulate((*image)(0, yi), color*TPix(w)); 
 
-  //  w = b * (*mask)(wm-1, ym+1) + d * (*mask)(wm-1, ym);  // right 
-  //  accumulate((*image)(xe, yi), color*TPix(w)); 
+    w = b * (*mask)(wm-1, ym+1) + d * (*mask)(wm-1, ym);  // right 
+    accumulate((*image)(xe, yi), color*TPix(w)); 
 
-  //  ym++;
-  //}
+    ym++;
+  }
 
-  //// paint interior rectangle:
-  //ym = mys+1;
-  //for(yi = ys+1; yi <= ye-1; yi++)
-  //{
-  //  xm = mxs+1;
-  //  for(xi = xs+1; xi <= xe-1; xi++)
-  //  {
-  //    w = a * (*mask)(xm+1, ym+1) + b * (*mask)(xm, ym+1)
-  //      + c * (*mask)(xm+1, ym)   + d * (*mask)(xm, ym);   // check this carefully!
-  //    accumulate((*image)(xi, yi), color*TPix(w)); 
-  //    xm++;
-  //  }
-  //  ym++;
-  //}
+  // paint interior rectangle:
+  ym = mys+1;
+  for(yi = ys+1; yi <= ye-1; yi++)
+  {
+    xm = mxs+1;
+    for(xi = xs+1; xi <= xe-1; xi++)
+    {
+      w = a * (*mask)(xm+1, ym+1) + b * (*mask)(xm, ym+1)
+        + c * (*mask)(xm+1, ym)   + d * (*mask)(xm, ym);   // check this carefully!
+      accumulate((*image)(xi, yi), color*TPix(w)); 
+      xm++;
+    }
+    ym++;
+  }
 }
 
 template<class TPix, class TWgt, class TCor>

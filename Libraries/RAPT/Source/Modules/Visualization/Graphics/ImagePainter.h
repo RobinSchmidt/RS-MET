@@ -81,6 +81,26 @@ protected:
   }
   // rename to addAndSaturate
 
+  /** Blends the pixel in the image at given coordinates with a new color according to some weight.
+  If the weight is 0, the pixel's color is unchanged, if it's 1, the new color has the biggest 
+  impact (\todo: what exactly happens should depend on a blend-mode setting). */
+  inline void blend(int x, int y, TPix color, TWgt weight)
+  {
+    blend(x, y, TPix(weight) * color);
+    //accumulate((*image)(x, y), TPix(weight) * color);
+    // todo: use blend modes here
+  }
+
+  /** Same as 4-argument blend() with weight = 1. */
+  inline void blend(int x, int y, TPix color)
+  {
+    accumulate((*image)(x, y), color);
+  }
+
+
+
+
+
   // data members:
 
   Image<TPix> *image;
@@ -88,7 +108,6 @@ protected:
 
   bool antiAlias, useMask;
   TWgt straightNeighbourWeight, diagonalNeighbourWeight;
-
 };
 
 #endif
