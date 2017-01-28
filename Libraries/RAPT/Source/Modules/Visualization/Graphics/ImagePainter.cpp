@@ -288,50 +288,55 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
   if(ye >= hi)
     ye = hi-1;
 
+  // this does not work properly yet - dots inserted at the edges are still wrong
+
   // paint corners:
-  accumulate((*image)(xs, ys), color * TPix(a * (*mask)(0,    0)));     // top left
-  accumulate((*image)(xe, ys), color * TPix(b * (*mask)(wm-1, 0)));     // top right
-  accumulate((*image)(xs, ye), color * TPix(c * (*mask)(0,    hm-1)));  // bottom left
-  accumulate((*image)(xe, ye), color * TPix(d * (*mask)(wm-1, hm-1)));  // bottom right
+  blend(xs, ys, color, a * (*mask)(0,    0));     // top left
+  blend(xe, ys, color, b * (*mask)(wm-1, 0));     // top right
+  blend(xs, ye, color, c * (*mask)(0,    hm-1));  // bottom left
+  blend(xe, ye, color, d * (*mask)(wm-1, hm-1));  // bottom right
 
   // paint edges:
   TWgt w;
-  //int xi;     // x-index in image - already defined, can be reused
   int xm = 0; // x-index in mask
   for(xi = xs+1; xi <= xe-1; xi++) // top and bottom edges
   {
     w = a * (*mask)(xm+1, 0) + b * (*mask)(xm, 0);        // top
-    accumulate((*image)(xi, 0), color*TPix(w)); 
+    blend(xi, ys, color, w); 
 
     w = c * (*mask)(xm+1, hm-1) + d * (*mask)(xm, hm-1);  // bottom
-    accumulate((*image)(xi, ye), color*TPix(w)); 
+    blend(xi, ye, color, w); 
 
     xm++;
   }
-  //int yi;     // y-index in image - already defined, can be reused
   int ym = 0; // y-index in mask
   for(yi = ys+1; yi <= ye-1; yi++) // left and right edges
   {
     w = a * (*mask)(0, ym+1) + c * (*mask)(0, ym);        // left
-    accumulate((*image)(0, yi), color*TPix(w)); 
+    blend(xs, yi, color, w); 
 
     w = b * (*mask)(wm-1, ym+1) + d * (*mask)(wm-1, ym);  // right 
-    accumulate((*image)(xe, yi), color*TPix(w)); 
+    blend(xe, yi, color, w); 
 
     ym++;
   }
 
   // paint interior rectangle:
-  ym = mys+1;
+  //ym = mys+1;
+  ym = mys;
   for(yi = ys+1; yi <= ye-1; yi++)
   {
-    xm = mxs+1;
+    //xm = mxs+1;
+    xm = mxs;
     for(xi = xs+1; xi <= xe-1; xi++)
     {
       w = a * (*mask)(xm+1, ym+1) + b * (*mask)(xm, ym+1)
         + c * (*mask)(xm+1, ym)   + d * (*mask)(xm, ym);   // check this carefully!
-      accumulate((*image)(xi, yi), color*TPix(w)); 
+      blend(xi, yi, color, w); 
       xm++;
+
+      // debug:
+      //rsAssert(w == 0.5);
     }
     ym++;
   }
