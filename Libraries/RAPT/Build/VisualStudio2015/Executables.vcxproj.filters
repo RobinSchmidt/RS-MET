@@ -63,6 +63,9 @@
     <ClInclude Include="..\..\Source\Executables\UnitTests\UnitTests.h">
       <Filter>UnitTests</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Executables\Shared\Utilities\FileWriting.h">
+      <Filter>Shared\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\Executables\Main.cpp" />
@@ -104,6 +107,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Executables\UnitTests\UnitTests.cpp">
       <Filter>UnitTests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Executables\Shared\Utilities\FileWriting.cpp">
+      <Filter>Shared\Utilities</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

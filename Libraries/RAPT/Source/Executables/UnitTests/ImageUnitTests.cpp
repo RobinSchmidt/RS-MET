@@ -11,32 +11,6 @@ void fillWithCheckerBoardPattern(Image<float>& image)
   }
 }
 
-// move this function to the shared code, make a version that supports color:
-void writeImageToFilePPM(const Image<float>& img, const char* path)
-{
-  int w = img.getWidth();
-  int h = img.getHeight();
-  unsigned char* buf = new unsigned char[w*h*3];
-
-  for(int y = 0; y < h; y++) {
-    for(int x = 0; x < w; x++) {
-      int i = y*w*3 + x*3;
-      unsigned char gray = (unsigned char) (255 * img.getPixelColor(x, y));
-      buf[i+0] = gray;
-      buf[i+1] = gray;
-      buf[i+2] = gray;
-    }
-  }
-
-  FILE* fd = fopen(path, "wb");  // "wb": write binary
-  fprintf(fd, "P6\n%d %d\n255\n", w, h);
-  fwrite(buf, 1, w*h*3, fd);
-
-  fclose(fd);
-  delete[] buf;
-}
-
-
 bool imagePainterUnitTest()
 {
   bool r = true;
