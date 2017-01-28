@@ -16,6 +16,8 @@
                     file="Source/Tests/RAPT/Visualization/ImageProcessing/ImagePainterTests.h"/>
             </GROUP>
           </GROUP>
+          <FILE id="XNAOrw" name="Tests.cpp" compile="1" resource="0" file="Source/Tests/RAPT/Tests.cpp"/>
+          <FILE id="yJz4p2" name="Tests.h" compile="0" resource="0" file="Source/Tests/RAPT/Tests.h"/>
         </GROUP>
       </GROUP>
       <FILE id="Z3HofW" name="MainComponent.cpp" compile="1" resource="0"

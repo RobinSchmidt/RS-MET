@@ -75,12 +75,16 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\Executables\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\Executables\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\Executables\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\Executables\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -144,26 +148,34 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\Executables\Demos\ArrayDemos.h" />
+    <ClInclude Include="..\..\Source\Executables\Demos\Demos.h" />
     <ClInclude Include="..\..\Source\Executables\Demos\FilterDemos.h" />
     <ClInclude Include="..\..\Source\Executables\Demos\MathDemos.h" />
     <ClInclude Include="..\..\Source\Executables\Demos\ModulatorDemos.h" />
+    <ClInclude Include="..\..\Source\Executables\Experiments\Experiments.h" />
     <ClInclude Include="..\..\Source\Executables\Experiments\FilterExperiments.h" />
     <ClInclude Include="..\..\Source\Executables\Shared\Plotting\GNUPlotter.h" />
     <ClInclude Include="..\..\Source\Executables\Shared\Plotting\Plotting.h" />
     <ClInclude Include="..\..\Source\Executables\Shared\Shared.h" />
     <ClInclude Include="..\..\Source\Executables\Shared\Utilities\TestInputCreation.h" />
+    <ClInclude Include="..\..\Source\Executables\UnitTests\ImageUnitTests.h" />
+    <ClInclude Include="..\..\Source\Executables\UnitTests\UnitTests.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\Executables\Demos\ArrayDemos.cpp" />
+    <ClCompile Include="..\..\Source\Executables\Demos\Demos.cpp" />
     <ClCompile Include="..\..\Source\Executables\Demos\FilterDemos.cpp" />
     <ClCompile Include="..\..\Source\Executables\Demos\MathDemos.cpp" />
     <ClCompile Include="..\..\Source\Executables\Demos\ModulatorDemos.cpp" />
+    <ClCompile Include="..\..\Source\Executables\Experiments\Experiments.cpp" />
     <ClCompile Include="..\..\Source\Executables\Experiments\FilterExperiments.cpp" />
     <ClCompile Include="..\..\Source\Executables\Main.cpp" />
     <ClCompile Include="..\..\Source\Executables\Shared\Plotting\GNUPlotter.cpp" />
     <ClCompile Include="..\..\Source\Executables\Shared\Plotting\Plotting.cpp" />
     <ClCompile Include="..\..\Source\Executables\Shared\RaptLibraryCode\RaptInstantiations.cpp" />
     <ClCompile Include="..\..\Source\Executables\Shared\Utilities\TestInputCreation.cpp" />
+    <ClCompile Include="..\..\Source\Executables\UnitTests\ImageUnitTests.cpp" />
+    <ClCompile Include="..\..\Source\Executables\UnitTests\UnitTests.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

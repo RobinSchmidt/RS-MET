@@ -129,6 +129,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\Tests\RAPT\Visualization\ImageProcessing\ImagePainterTests.cpp"/>
+    <ClCompile Include="..\..\Source\Tests\RAPT\Tests.cpp"/>
     <ClCompile Include="..\..\Source\MainComponent.cpp"/>
     <ClCompile Include="..\..\Source\Main.cpp"/>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_basics\buffers\juce_AudioDataConverters.cpp">
@@ -1887,6 +1888,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\Tests\RAPT\Visualization\ImageProcessing\ImagePainterTests.h"/>
+    <ClInclude Include="..\..\Source\Tests\RAPT\Tests.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_basics\buffers\juce_AudioDataConverters.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_basics\buffers\juce_AudioSampleBuffer.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_basics\buffers\juce_FloatVectorOperations.h"/>

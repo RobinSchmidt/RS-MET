@@ -1,42 +1,18 @@
-#include "Demos/ArrayDemos.h"
-#include "Demos/MathDemos.h"
-#include "Demos/FilterDemos.h"
-#include "Demos/ModulatorDemos.h"
-
-#include "Experiments/FilterExperiments.h"
+#include "Demos/Demos.h"
+#include "Experiments/Experiments.h"
+#include "UnitTests/UnitTests.h"
 
 int main(int argc, char** argv)
 {
-  // In this main function, you can select, which demo, test or whatever will be run by 
-  // uncommenting the respective function call (and maybe commenting the one which was previously
-  // active).
+  // Select, if you want to run demos, experiments, unit tests or performance tests:
 
-  //-----------------------------------------------------------------------------------------------
-  // Demos:
-
-  // Array Demos:
-  //convolutionDemo();
-
-  //// Math Demos:
-  parametricBell();
-  //scaledAndShiftedSigmoid();
-  //sigmoids();
+  //runDemos();
+  //runExperiments();
+  runUnitTests();
+  //runPerformanceTests();  // not yet implemented
 
 
-  // Filter Demos:
-  //ladderImpulseResponse();
-  //phasorImpulseResponse();
-  //svfImpulseResponse();
-  // add ladderMagnitudeResponse... - maybe create a template that plots 
-  // impulse/step/magnitude/phase - responses in a single window
 
-  // Modulator Demos:
-  //breakpointModulatorDefault();
-
-  //-----------------------------------------------------------------------------------------------
-  // Experiments:
-
-  //ladderResonanceManipulation();
 
 
   // ToDo: check for memory leaks here

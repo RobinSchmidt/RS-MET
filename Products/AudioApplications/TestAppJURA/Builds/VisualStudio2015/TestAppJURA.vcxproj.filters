@@ -436,6 +436,9 @@
     <ClCompile Include="..\..\Source\Tests\RAPT\Visualization\ImageProcessing\ImagePainterTests.cpp">
       <Filter>TestAppJURA\Source\Tests\RAPT\Visualization\ImageProcessing</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Tests\RAPT\Tests.cpp">
+      <Filter>TestAppJURA\Source\Tests\RAPT</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\MainComponent.cpp">
       <Filter>TestAppJURA\Source</Filter>
     </ClCompile>
@@ -2354,6 +2357,9 @@
   <ItemGroup>
     <ClInclude Include="..\..\Source\Tests\RAPT\Visualization\ImageProcessing\ImagePainterTests.h">
       <Filter>TestAppJURA\Source\Tests\RAPT\Visualization\ImageProcessing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Tests\RAPT\Tests.h">
+      <Filter>TestAppJURA\Source\Tests\RAPT</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_basics\buffers\juce_AudioDataConverters.h">
       <Filter>Juce Modules\juce_audio_basics\buffers</Filter>

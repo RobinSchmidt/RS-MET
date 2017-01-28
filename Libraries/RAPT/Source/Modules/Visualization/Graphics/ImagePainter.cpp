@@ -317,7 +317,7 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
     w = a * (*mask)(0, ym+1) + c * (*mask)(0, ym);        // left
     accumulate((*image)(0, yi), color*TPix(w)); 
 
-    w = b * (*mask)(wm-1, ym+1) + d * (*mask)(wm-1, ym);  // right
+    w = b * (*mask)(wm-1, ym+1) + d * (*mask)(wm-1, ym);  // right 
     accumulate((*image)(xe, yi), color*TPix(w)); 
 
     ym++;

@@ -19,6 +19,9 @@
     <Filter Include="Shared\Utilities">
       <UniqueIdentifier>{b29bbf09-8e58-4f4a-90d1-6086395616bd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="UnitTests">
+      <UniqueIdentifier>{05f758c3-f439-40cb-9a45-024f267a2b01}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\Executables\Demos\ArrayDemos.h">
@@ -47,6 +50,18 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Executables\Shared\Utilities\TestInputCreation.h">
       <Filter>Shared\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Executables\Demos\Demos.h">
+      <Filter>Demos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Executables\Experiments\Experiments.h">
+      <Filter>Experiments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Executables\UnitTests\ImageUnitTests.h">
+      <Filter>UnitTests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Executables\UnitTests\UnitTests.h">
+      <Filter>UnitTests</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -77,6 +92,18 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Executables\Shared\Utilities\TestInputCreation.cpp">
       <Filter>Shared\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Executables\Demos\Demos.cpp">
+      <Filter>Demos</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Executables\Experiments\Experiments.cpp">
+      <Filter>Experiments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Executables\UnitTests\ImageUnitTests.cpp">
+      <Filter>UnitTests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Executables\UnitTests\UnitTests.cpp">
+      <Filter>UnitTests</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
