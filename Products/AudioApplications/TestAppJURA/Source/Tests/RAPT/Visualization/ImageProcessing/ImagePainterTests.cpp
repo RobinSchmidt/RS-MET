@@ -152,3 +152,30 @@ void PainterComponent::updatePreviewDot()
   normalizedDataToImage(canvas.dotMask.getPixelPointer(0, 0), previewDot);
   repaint();
 }
+
+//=================================================================================================
+
+PainterUnitTest::PainterUnitTest() : UnitTest("ImagePainter") 
+{
+
+}
+
+void PainterUnitTest::runTest()
+{
+  beginTest("Alpha Mask Dot Painting");
+  //expect(maskDot1x1());
+  //expect(maskDot2x2());
+  //expect(maskDot3x3());
+  //expect(maskDot4x4());
+  expect(maskDot5x5());
+}
+
+bool PainterUnitTest::maskDot1x1()
+{
+  return true; // preliminary
+}
+bool PainterUnitTest::maskDot5x5()
+{
+  return true; // preliminary
+}
+

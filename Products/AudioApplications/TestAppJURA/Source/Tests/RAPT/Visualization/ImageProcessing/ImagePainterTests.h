@@ -48,12 +48,7 @@ protected:
 //=================================================================================================
  
 /** A component to wrap a PaintCanvas and add widgets for setting up the brush size, blur, color, 
-etc. 
-
-\todo:
--have a preview of the dot below the widgets
-
-*/
+etc. */
 
 class PainterComponent : public Component, public RSliderListener
 {
@@ -81,5 +76,30 @@ protected:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PainterComponent)
 };
+
+//=================================================================================================
+
+/** A unit test for the RAPT::ImagePainter class. */
+
+class PainterUnitTest : public UnitTest
+{
+
+public:
+
+  PainterUnitTest();
+  virtual void runTest() override;
+
+protected:
+
+  bool maskDot1x1();
+  bool maskDot5x5();
+
+  RAPT::ImageResizable<float> image;               // image to paint on
+  RAPT::AlphaMask<float> mask;                     // prototype dot
+  RAPT::ImagePainter<float, float, float> painter; // painter object 
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PainterUnitTest)
+};
+
 
 #endif
