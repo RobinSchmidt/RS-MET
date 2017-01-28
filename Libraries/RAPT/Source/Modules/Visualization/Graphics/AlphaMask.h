@@ -38,6 +38,13 @@ protected:
   /*double size, transitionWidth;*/
 
   rsParametricBellFunction<double> bell;
+  // instead of the parameteric bell, use a 3rd order polynomial with adjustable slopes at start-
+  // and endpoint.
+  // f(x) = a0 + a1*x + a2*x^2 + a3*x^3 with f(0) = 1, f'(0) = s0, f(1) = 0, f'(1) = s1
+  // solving it yields: a0 = 1, a1 = s0, a2 = -s1 - 2*s0 - 3, a3 = 2 + s0 + s1
+  // maybe the user parameter should be the negative slope
+  // we should figure out the condition for not having a local minimum or maximum between 0..1 and 
+  // perhaps restrict the parameter range
 
 };
 

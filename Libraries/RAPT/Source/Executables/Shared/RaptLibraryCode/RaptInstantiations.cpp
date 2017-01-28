@@ -39,6 +39,8 @@ template RAPT::StateVariableFilter<float, float>;
 
 // Visualization
 template RAPT::Image<float>;
+template RAPT::AlphaMask<float>;
+template RAPT::ImagePainter<float, float, float>;
 template RAPT::PhaseScopeBuffer<float, float, double>;
 
 // Modulators:
