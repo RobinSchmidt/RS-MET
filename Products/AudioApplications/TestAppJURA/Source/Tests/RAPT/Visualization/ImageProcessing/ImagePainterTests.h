@@ -40,6 +40,8 @@ protected:
   // data:
   float brightness;  // brightness of inserted dots
 
+  // todo: use color-painting
+
 
   friend class PainterComponent;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PaintCanvas)
@@ -50,7 +52,8 @@ protected:
 /** A component to wrap a PaintCanvas and add widgets for setting up the brush size, blur, color, 
 etc. */
 
-class PainterComponent : public Component, public RSliderListener
+class PainterComponent : public Component, public RSliderListener 
+  // maybe derive from StateManager - or maybe StateManagerWithParameters (to be written)
 {
 
 public:
@@ -77,9 +80,9 @@ protected:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PainterComponent)
 };
 
-/** Runs a unit test for the RAPT::ImagePainter class and returns true when the test was passed and 
-false if the test has failed. */
-bool unitTestImagePainter();
+///** Runs a unit test for the RAPT::ImagePainter class and returns true when the test was passed and 
+//false if the test has failed. */
+//bool unitTestImagePainter();
 
 
 ////=================================================================================================

@@ -17,6 +17,8 @@ are not mutually exclusive (mutex'ed) from each other.
 a set of parameters, these classes need not to be audio related - this should perhaps also be a 
 subclass of StateManager
 
+actually, this class would better fit into the jura_processors module
+
 */
 
 class JUCE_API AutomatableModule : public ParameterObserver

@@ -5,7 +5,7 @@ PaintCanvas::PaintCanvas()
   brightness = 1.f;
 
   paintImage.setMaxSize(2000, 1000);
-  dotMask.setMaxSize(50, 50);
+  dotMask.setMaxSize(200, 200);
 
   painter.setImageToPaintOn(&paintImage);
   painter.setAlphaMaskForDot(&dotMask);
@@ -72,7 +72,7 @@ PainterComponent::PainterComponent()
 
   sliderSize.setSliderName("Size");
   sliderSize.addListener(this);
-  sliderSize.setRange(1.0, 50.0, 0.125, 15.0);
+  sliderSize.setRange(1.0, 160.0, 0.125, 50.0);
   addAndMakeVisible(sliderSize);
   rSliderValueChanged(&sliderSize);
 
@@ -155,11 +155,11 @@ void PainterComponent::updatePreviewDot()
 
 //=================================================================================================
 
-bool unitTestImagePainter()
-{
-
-  return true;
-}
+//bool unitTestImagePainter()
+//{
+//
+//  return true;
+//}
 
 //
 //PainterUnitTest::PainterUnitTest() : UnitTest("ImagePainter") 
