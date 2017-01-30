@@ -23,15 +23,27 @@ void AlphaMask<TPix>::setTransitionWidth(double newWidth)
 }
 
 template<class TPix>
+void AlphaMask<TPix>::setInnerSlope(double newSlope)
+{
+  slope0 = newSlope;
+  renderMask();
+}
+
+template<class TPix>
+void AlphaMask<TPix>::setOuterSlope(double newSlope)
+{
+  slope1 = newSlope;
+  renderMask();
+}
+
+template<class TPix>
 void AlphaMask<TPix>::renderMask()
 {
   // render circular alpha mask - alpha value depends on distance from center:
   double cx = 0.5 * width;  // x-coordinate of center
   double cy = 0.5 * height; // y-coordinate of center
-  //double sx = 1.0 / width;  // x-scaler
-  //double sy = 1.0 / height; // y-scaler
-  double sx = 1.0 / cx;  // x-scaler
-  double sy = 1.0 / cy;  // y-scaler
+  double sx = 1.0 / cx;     // x-scaler
+  double sy = 1.0 / cy;     // y-scaler
 
   for(int y = 0; y < height; y++)
   {
@@ -56,14 +68,19 @@ double AlphaMask<TPix>::getAlphaForDistance(double d)
   if(d > 1.0)
     return 0.0;
 
-  double x = (d-flat) / (1-flat); // todo: catch div-by-zero when flat==1
+  double x;
+  if(flat != 1.0)
+    x = (d-flat) / (1-flat); // todo: catch div-by-zero when flat==1
+  else
+    x = d;
+
   double s0 = -slope0;
   double s1 = -slope1;
   double a2 = -s1 - 2*s0 - 3; 
   double a3 =  s1 +   s0 + 2;
   // todo: precompute the coeffs
 
-  return 1 + s0*x + a2*x*x + a3*x*x*x;  // optimize
+  return 1 + s0*x + a2*x*x + a3*x*x*x;  // optimize, limit to 0..1
 
   // we use a 3rd order polynomial with adjustable slopes at start- and endpoint.
   // f(x) = a0 + a1*x + a2*x^2 + a3*x^3 with f(0) = 1, f'(0) = s0, f(1) = 0, f'(1) = s1

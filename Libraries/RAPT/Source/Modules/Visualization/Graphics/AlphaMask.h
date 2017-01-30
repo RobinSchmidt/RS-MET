@@ -27,6 +27,12 @@ public:
   hard transition, 1 a maximally soft transition. */
   void setTransitionWidth(double newWidth);
 
+  /** Sets the slope of the transition at the inside of the flat-color zone. */
+  void setInnerSlope(double newSlope);
+
+  /** Sets the slope of the transition at the outside of the dot. */
+  void setOuterSlope(double newSlope);
+
   //void setShape(int newShape);
     // circle, rectangle, etc
 

@@ -50,6 +50,16 @@ void PaintCanvas::setDotBlur(double newBlur)
   dotMask.setTransitionWidth(newBlur);
 }
 
+void PaintCanvas::setDotInnerSlope(double newSlope)
+{
+  dotMask.setInnerSlope(newSlope);
+}
+
+void PaintCanvas::setDotOuterSlope(double newSlope)
+{
+  dotMask.setOuterSlope(newSlope);
+}
+
 void PaintCanvas::setDotBrightness(double newBrightness)
 {
   brightness = (float) newBrightness;
@@ -57,11 +67,17 @@ void PaintCanvas::setDotBrightness(double newBrightness)
 
 // misc:
 
+void PaintCanvas::clearImage()
+{
+  paintImage.clear();
+  repaint();
+}
+
 void PaintCanvas::paintDot(int x, int y)
 {
-  //painter.paintDotViaMask(x, y, brightness);
+  painter.paintDotViaMask(x, y, brightness);
 
-  painter.paintDotViaMask(x+0.25f, y+0.75f, brightness); // test - use anti-aliased function
+  //painter.paintDotViaMask(x+0.25f, y+0.75f, brightness); // test - use anti-aliased function
   //painter.paintDot3x3(x, y, brightness, 0.5, 0.25); // test
   repaint();
 }
@@ -83,10 +99,27 @@ PainterComponent::PainterComponent()
   addAndMakeVisible(sliderBlur);
   rSliderValueChanged(&sliderBlur);
 
+  sliderInnerSlope.setSliderName("InnerSlope");
+  sliderInnerSlope.addListener(this);
+  sliderInnerSlope.setRange(0.0, 3.0, 0.0, 0.5);
+  addAndMakeVisible(sliderInnerSlope);
+  rSliderValueChanged(&sliderInnerSlope);
+
+  sliderOuterSlope.setSliderName("OuterSlope");
+  sliderOuterSlope.addListener(this);
+  sliderOuterSlope.setRange(0.0, 3.0, 0.0, 1.0);
+  addAndMakeVisible(sliderOuterSlope);
+  rSliderValueChanged(&sliderOuterSlope);
+
   sliderBrightness.setSliderName("Brightness");
   sliderBrightness.addListener(this);
   addAndMakeVisible(sliderBrightness);
   rSliderValueChanged(&sliderBrightness);
+
+  clearButton.setButtonText("Clear");
+  clearButton.addRButtonListener(this);
+  addAndMakeVisible(clearButton);
+
 
   //updatePreviewDot();
 }
@@ -126,8 +159,11 @@ void PainterComponent::resized()
   h  = widgetHeight;
   dy = h+margin;
 
-  sliderSize.setBounds(x, y, w, h); y += dy;
-  sliderBlur.setBounds(x, y, w, h); y += dy;
+  clearButton.setBounds(     x, y, w, h); y += dy;
+  sliderSize.setBounds(      x, y, w, h); y += dy;
+  sliderBlur.setBounds(      x, y, w, h); y += dy;
+  sliderInnerSlope.setBounds(x, y, w, h); y += dy;
+  sliderOuterSlope.setBounds(x, y, w, h); y += dy;
   sliderBrightness.setBounds(x, y, w, h); y += dy;
 }
 
@@ -135,15 +171,25 @@ void PainterComponent::rSliderValueChanged(RSlider* rSlider)
 {
   if(rSlider == &sliderSize)
     canvas.setDotSize(sliderSize.getValue());
-  else if(rSlider == &sliderBrightness)
-    canvas.setDotBrightness(sliderBrightness.getValue());
   else if(rSlider == &sliderBlur)
     canvas.setDotBlur(sliderBlur.getValue());
+  else if(rSlider == &sliderInnerSlope)
+    canvas.setDotInnerSlope(sliderInnerSlope.getValue());
+  else if(rSlider == &sliderOuterSlope)
+    canvas.setDotOuterSlope(sliderOuterSlope.getValue());
+  else if(rSlider == &sliderBrightness)
+    canvas.setDotBrightness(sliderBrightness.getValue());
 
   updatePreviewDot();
 
   // \todo: maybe we should use a baseclass to maintain a set of parameters instead of deriving 
   // from RSliderListener - but this would require some refactoring
+}
+
+void PainterComponent::rButtonClicked(RButton* button)
+{
+  if(button == &clearButton)
+    canvas.clearImage();
 }
 
 void PainterComponent::updatePreviewDot()

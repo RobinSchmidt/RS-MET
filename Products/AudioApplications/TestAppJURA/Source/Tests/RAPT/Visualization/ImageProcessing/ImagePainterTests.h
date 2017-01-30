@@ -23,7 +23,12 @@ public:
   // dot setup:
   void setDotSize(double newSize);
   void setDotBlur(double newBlur);
+  void setDotInnerSlope(double newSlope);
+  void setDotOuterSlope(double newSlope);
   void setDotBrightness(double newBrightness);
+
+  // misc:
+  void clearImage();
 
 
 protected:
@@ -52,7 +57,7 @@ protected:
 /** A component to wrap a PaintCanvas and add widgets for setting up the brush size, blur, color, 
 etc. */
 
-class PainterComponent : public Component, public RSliderListener 
+class PainterComponent : public Component, public RSliderListener, public RButtonListener
   // maybe derive from StateManager - or maybe StateManagerWithParameters (to be written)
 {
 
@@ -65,6 +70,7 @@ public:
 
   // widget callbacks:
   virtual void rSliderValueChanged(RSlider* rSlider) override;
+  virtual void rButtonClicked(RButton* button) override;
 
 protected:
 
@@ -75,7 +81,9 @@ protected:
   juce::Image previewDot; 
 
   // widgets for setting up the brush/pen:
-  RSlider sliderSize, sliderBlur, sliderBrightness;
+  RSlider sliderSize, sliderBlur, sliderInnerSlope, sliderOuterSlope, sliderBrightness;
+  RClickButton clearButton;
+
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PainterComponent)
 };
