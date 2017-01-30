@@ -38,18 +38,34 @@ bool imagePainterUnitTest()
   image.setSize(imageWidth, imageHeight);
   image.clear();
 
-  mask.setSize(7);
-  r &= mask.getWidth()  == 7;
-  r &= mask.getHeight() == 7;
+  mask.setSize(9);
+  r &= mask.getWidth()  == 9;
+  r &= mask.getHeight() == 9;
   //fillWithCheckerBoardPattern(mask);
   fillWithCross(mask);
 
   //painter.paintDotViaMask(10,    11,    1);
   //painter.paintDotViaMask(10.5f, 11.5f, 1);
   //painter.paintDotViaMask(10.25f, 11.75f, 1);
-  painter.paintDotViaMask(10.75f, 11.25f, 1);
-  painter.paintDotViaMask(2.75f, 2.25f, 1);                        // top-left - is wrong
-  painter.paintDotViaMask(imageWidth-2.75f, imageHeight-2.25f, 1); // bottom-right - looks ok
+
+  float dx = 1.5;
+  float dy = 1.5;
+  float w  = imageWidth;
+  float w2 = w/2;
+  float h  = imageHeight;
+  float h2 = h/2;
+
+  //painter.paintDotViaMask(10.75f, 11.25f, 1);  // far from border -> ok
+  painter.paintDotViaMask(w2+dx, h2+dy, 1);   // far from border -> ok
+  painter.paintDotViaMask(dx,    dy,    1);   // top-left        -> wrong
+  painter.paintDotViaMask(w2,    dy,    1);   // top-center      -> wrong
+  painter.paintDotViaMask(w-dx,  dy,    1);   // top-right       -> wrong
+  painter.paintDotViaMask(dx,    h2,    1);   // center-left     -> wrong
+  painter.paintDotViaMask(w-dx,  h2,    1);   // center-right    -> ok
+  painter.paintDotViaMask(dx,    h-dy,  1);   // bottom-left     -> wrong
+  painter.paintDotViaMask(w2,    h-dy,  1);   // bottom-center   -> ok
+  painter.paintDotViaMask(w-dx,  h-dy,  1);   // bottom-right    -> ok
+
 
   //painter.paintDotViaMask(10.2f, 10.6f, 1);
   // we use the 1000 here, because the painter uses this strange saturating function - maybe, we 

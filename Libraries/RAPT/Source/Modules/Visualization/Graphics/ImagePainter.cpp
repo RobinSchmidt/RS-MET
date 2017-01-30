@@ -268,52 +268,97 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
   int ye = ys + hm;      // end y coordinate in image
 
   // read coordinates in mask image:
-  int mxs = 0;           // start x
-  int mys = 0;           // start y
+  int mxs = 0;   // start x
+  int mys = 0;   // start y
 
-  // checks to not write beyond image bounds (maybe factor out, it's the same as in 
-  // the non-anti-aliased version):
+  TWgt w; // weight for current pixel
+
+  // checks to not write beyond image bounds:
+  bool leftEdge, rightEdge, topEdge, bottomEdge;
+  leftEdge   = true;
+  rightEdge  = true;
+  topEdge    = true;
+  bottomEdge = true;
   if(xs < 0)
   {
     mxs = -xs;
     xs  = 0;
+    leftEdge = false;
   }
   if(ys < 0)
   {
     mys = -ys;
     ys  =  0;
+    topEdge = false;
   }
   if(xe >= wi)
+  {
     xe = wi-1;
+    rightEdge = false;
+  }
   if(ye >= hi)
+  {
     ye = hi-1;
-
-  // this does not work properly yet - dots inserted at the edges are still wrong
-
-  // paint corners:
-  blend(xs, ys, color, a * (*mask)(0,    0));     // top left
-  blend(xe, ys, color, b * (*mask)(wm-1, 0));     // top right
-  blend(xs, ye, color, c * (*mask)(0,    hm-1));  // bottom left
-  blend(xe, ye, color, d * (*mask)(wm-1, hm-1));  // bottom right
-
-  // paint edges:
-  TWgt w;
-  int xm = 0; // x-index in mask
-  int ym = 0; // y-index in mask
-  for(xi = xs+1; xi <= xe-1; xi++) // top and bottom edges
-  {
-    w = a * (*mask)(xm+1,    0) + b * (*mask)(xm,    0); blend(xi, ys, color, w);  // top
-    w = c * (*mask)(xm+1, hm-1) + d * (*mask)(xm, hm-1); blend(xi, ye, color, w);  // bottom
-    xm++;
+    bottomEdge = false;
   }
-  for(yi = ys+1; yi <= ye-1; yi++) // left and right edges
+
+  // paint edges and corners:
+  int xm, ym;   // x- and y-index in mask
+  if(leftEdge)
   {
-    w = a * (*mask)(0,    ym+1) + c * (*mask)(0,    ym); blend(xs, yi, color, w);  // left
-    w = b * (*mask)(wm-1, ym+1) + d * (*mask)(wm-1, ym); blend(xe, yi, color, w);  // right 
-    ym++;
+    //ym = 0;
+    ym = mys;
+    for(yi = ys+1; yi <= ye-1; yi++)
+    {
+      w = a * (*mask)(0,    ym+1) + c * (*mask)(0,    ym); 
+      blend(xs, yi, color, w);
+      ym++;
+    }
+    if(topEdge)
+      blend(xs, ys, color, a * (*mask)(0,    0));  // top left corner
   }
-  // we need to check, if the edges are inside the image and render them conditionally - the same 
-  // goes for the corners
+  if(topEdge)
+  {
+    //xm = 0;
+    xm = mxs;
+    for(xi = xs+1; xi <= xe-1; xi++) 
+    {
+      w = a * (*mask)(xm+1,    0) + b * (*mask)(xm,    0); 
+      blend(xi, ys, color, w);
+      xm++;
+    }
+    if(rightEdge)
+      blend(xe, ys, color, b * (*mask)(wm-1, 0));  // top right corner
+  }
+  if(rightEdge)
+  {
+    //ym = 0;
+    ym = mys;
+    for(yi = ys+1; yi <= ye-1; yi++) 
+    {
+      w = b * (*mask)(wm-1, ym+1) + d * (*mask)(wm-1, ym); 
+      blend(xe, yi, color, w);
+      ym++;
+    }
+  }
+  if(bottomEdge)
+  {
+    //xm = 0;
+    xm = mxs;
+    for(xi = xs+1; xi <= xe-1; xi++) 
+    {
+      w = c * (*mask)(xm+1, hm-1) + d * (*mask)(xm, hm-1); 
+      blend(xi, ye, color, w);
+      xm++;
+    }
+    if(leftEdge)
+      blend(xs, ye, color, c * (*mask)(0,    hm-1));  // bottom left corner
+    if(rightEdge)
+      blend(xe, ye, color, d * (*mask)(wm-1, hm-1));  // bottom right corner
+  }
+
+
+
 
 
   // paint interior rectangle:
