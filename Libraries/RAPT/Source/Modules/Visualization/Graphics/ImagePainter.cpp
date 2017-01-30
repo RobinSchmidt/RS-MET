@@ -266,6 +266,13 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
   int ys = yi - hm/2;    // start y coordinate in image
   int xe = xs + wm;      // end x coordinate in image
   int ye = ys + hm;      // end y coordinate in image
+  //int xs = floor(x - 0.5*wm);  // start x-coordinate in image
+  //int ys = floor(y - 0.5*hm);  // start y coordinate in image
+  //int xe = ceil (x + 0.5*wm);  // end x coordinate in image
+  //int ye = ceil (y + 0.5*hm);  // end y coordinate in image
+
+
+
 
   // read coordinates in mask image:
   int xms = 0;   // start x
@@ -356,10 +363,8 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
       blend(xe, ye, color, d * (*mask)(wm-1, hm-1));  // bottom right corner
   }
 
-  // there's still something wrong with the edge code - if the mask is NxM, we need to paint into an
-  // (N+1)x(M+1) rectangle in the target image
-
-
+  // there's still something wrong with the edge code - there's a 1 pixel wide zone border in the 
+  // image onto which nothing is drawn
 
 
   // paint interior rectangle:
