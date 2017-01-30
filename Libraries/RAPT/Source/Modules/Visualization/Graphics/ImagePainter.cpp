@@ -268,8 +268,8 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
   int ye = ys + hm;      // end y coordinate in image
 
   // read coordinates in mask image:
-  int mxs = 0;   // start x
-  int mys = 0;   // start y
+  int xms = 0;   // start x
+  int yms = 0;   // start y
 
   TWgt w; // weight for current pixel
 
@@ -281,13 +281,13 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
   bottomEdge = true;
   if(xs < 0)
   {
-    mxs = -xs;
+    xms = -xs;
     xs  = 0;
     leftEdge = false;
   }
   if(ys < 0)
   {
-    mys = -ys;
+    yms = -ys;
     ys  =  0;
     topEdge = false;
   }
@@ -306,24 +306,23 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
   int xm, ym;   // x- and y-index in mask
   if(leftEdge)
   {
-    //ym = 0;
-    ym = mys;
+    ym = yms;
     for(yi = ys+1; yi <= ye-1; yi++)
     {
-      w = a * (*mask)(0,    ym+1) + c * (*mask)(0,    ym); 
+      w = a * (*mask)(0, ym+1) + c * (*mask)(0, ym); 
       blend(xs, yi, color, w);
       ym++;
     }
     if(topEdge)
-      blend(xs, ys, color, a * (*mask)(0,    0));  // top left corner
+      blend(xs, ys, color, a * (*mask)(0, 0));  // top left corner
   }
   if(topEdge)
   {
     //xm = 0;
-    xm = mxs;
+    xm = xms;
     for(xi = xs+1; xi <= xe-1; xi++) 
     {
-      w = a * (*mask)(xm+1,    0) + b * (*mask)(xm,    0); 
+      w = a * (*mask)(xm+1, 0) + b * (*mask)(xm, 0); 
       blend(xi, ys, color, w);
       xm++;
     }
@@ -333,7 +332,7 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
   if(rightEdge)
   {
     //ym = 0;
-    ym = mys;
+    ym = yms;
     for(yi = ys+1; yi <= ye-1; yi++) 
     {
       w = b * (*mask)(wm-1, ym+1) + d * (*mask)(wm-1, ym); 
@@ -344,7 +343,7 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
   if(bottomEdge)
   {
     //xm = 0;
-    xm = mxs;
+    xm = xms;
     for(xi = xs+1; xi <= xe-1; xi++) 
     {
       w = c * (*mask)(xm+1, hm-1) + d * (*mask)(xm, hm-1); 
@@ -357,26 +356,25 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
       blend(xe, ye, color, d * (*mask)(wm-1, hm-1));  // bottom right corner
   }
 
+  // there's still something wrong with the edge code - if the mask is NxM, we need to paint into an
+  // (N+1)x(M+1) rectangle in the target image
 
 
 
 
   // paint interior rectangle:
-  //ym = mys+1;
-  ym = mys;  // why not +1?
+  //ym = yms+1;
+  ym = yms;  // why not +1?
   for(yi = ys+1; yi <= ye-1; yi++)
   {
-    //xm = mxs+1;
-    xm = mxs; // why not +1?
+    //xm = xms+1;
+    xm = xms; // why not +1?
     for(xi = xs+1; xi <= xe-1; xi++)
     {
       w = a * (*mask)(xm+1, ym+1) + b * (*mask)(xm, ym+1)
         + c * (*mask)(xm+1, ym)   + d * (*mask)(xm, ym);   // check this carefully!
       blend(xi, yi, color, w); 
       xm++;
-
-      // debug:
-      //rsAssert(w == 0.5);
     }
     ym++;
   }
