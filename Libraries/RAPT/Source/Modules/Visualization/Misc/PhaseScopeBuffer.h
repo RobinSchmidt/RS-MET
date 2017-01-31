@@ -135,20 +135,13 @@ public:
   /** Constructor. */
   PhaseScopeBuffer2();
 
-  /** Sets the dot size in pixels. */
-  void setDotSize(TPar newSize);
-
-  /** Sets the amount of blur for the dot from 0 (sharp) to 1 (maximally blurry). */
-  void setDotBlur(TPar newBlur);
-
   /** Switches between simple and alpha-mask based dot drawing. */
   void setUseAlphaMask(bool shouldUseMask);
 
 
-protected:
-
-
-  AlphaMask<TPar> dotMask; // alpha mask used for drawing a "dot"
+  /** Alpha mask used for drawing a "dot", a public member, such that we don't need to implement
+  lots of delegations here for setting it up. */
+  AlphaMask<TPar> dotMask; 
 
 };
 

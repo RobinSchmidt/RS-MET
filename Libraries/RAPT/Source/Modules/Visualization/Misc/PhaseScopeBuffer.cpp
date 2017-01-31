@@ -145,20 +145,8 @@ PhaseScopeBuffer2<TSig, TPix, TPar>::PhaseScopeBuffer2()
 {
   painter.setAlphaMaskForDot(&dotMask);
   dotMask.setMaxSize(20, 20);
-  setDotSize(5.0);
-  setDotBlur(0.5);
-}
-
-template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer2<TSig, TPix, TPar>::setDotSize(TPar newSize)
-{
-  dotMask.setSize(newSize);
-}
-
-template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer2<TSig, TPix, TPar>::setDotBlur(TPar newBlur)
-{
-  dotMask.setTransitionWidth(newBlur);
+  dotMask.setSize(5);
+  dotMask.setTransitionWidth(0.5);
 }
 
 template<class TSig, class TPix, class TPar>
@@ -166,4 +154,3 @@ void PhaseScopeBuffer2<TSig, TPix, TPar>::setUseAlphaMask(bool shouldUseMask)
 {
   painter.setUseAlphaMask(shouldUseMask);
 }
-

@@ -154,8 +154,13 @@ public:
   PhaseScope2(CriticalSection *lockToUse);
 
   // additional setup functions:
+  void setUseBigDot(bool shouldUseBigDot);
   void setDotSize(double newSize);
   void setDotBlur(double newBlur);
+  void setDotInnerSlope(double newSlope);
+  void setDotOuterSlope(double newSlope);
+
+
 
   // overriden from PhaseScope baseclass:
   virtual void createParameters() override;
@@ -184,7 +189,8 @@ protected:
 
 
   // additional widgets:
-  RSlider *sliderDotSize, *sliderDotBlur;
+  RButton *buttonBigDot;
+  RSlider *sliderDotSize, *sliderDotBlur, *sliderDotInnerSlope, *sliderDotOuterSlope;
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhaseScopeEditor2)

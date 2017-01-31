@@ -60,7 +60,7 @@ bool imagePainterUnitTest()
   float h  = imageHeight;
   float h2 = h/2;
   float b  = 0.75f; // brightness
-  //painter.paintDotViaMask(    dx,     dy, b);   // top-left
+  painter.paintDotViaMask(    dx,     dy, b);   // top-left
   //painter.paintDotViaMask(w2 +dx,     dy, b);   // top-center
   //painter.paintDotViaMask(w-1+dx,     dy, b);   // top-right
   //painter.paintDotViaMask(    dx, h2 +dy, b);   // center-left
@@ -68,7 +68,7 @@ bool imagePainterUnitTest()
   //painter.paintDotViaMask(    dx, h-1+dy, b);   // bottom-left
   //painter.paintDotViaMask(w2 +dx, h-1+dy, b);   // bottom-center
   //painter.paintDotViaMask(w-1+dx, h-1+dy, b);   // bottom-right
-  painter.paintDotViaMask(w2 +dx, h2 +dy, b);   // center
+  //painter.paintDotViaMask(w2 +dx, h2 +dy, b);   // center
 
   // it seems, things drawn on the left border leak into the right border
 

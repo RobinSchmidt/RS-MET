@@ -335,8 +335,8 @@ void PhaseScopeEditor::resized()
   sliderAfterglow  ->setBounds(x, y, w, h); y += dy;
   sliderPixelSpread->setBounds(x, y, w, h); y += dy;
   sliderPixelScale ->setBounds(x, y, w, h); y += dy;
-  sliderDotLimit   ->setBounds(x, y, w, h); y += dy;
   sliderLineDensity->setBounds(x, y, w, h); y += dy;
+  sliderDotLimit   ->setBounds(x, y, w, h); y += dy;
   sliderFrameRate  ->setBounds(x, y, w, h); y += dy;
   buttonAntiAlias  ->setBounds(x, y, w, h); y += dy;
 }
@@ -354,20 +354,35 @@ PhaseScope2::PhaseScope2(CriticalSection *lockToUse) : PhaseScope(lockToUse)
   // i think, either the dot brightness should scale inversely to the dotSize or the lineDensity
 }
 
+void PhaseScope2::setUseBigDot(bool shouldUseBigDot)
+{
+  phaseScopeBuffer.setUseAlphaMask(shouldUseBigDot);
+}
 void PhaseScope2::setDotSize(double newSize)
 {
-  phaseScopeBuffer.setDotSize(newSize);
+  phaseScopeBuffer.dotMask.setSize(newSize);
 }
-
 void PhaseScope2::setDotBlur(double newBlur)
 {
-  phaseScopeBuffer.setDotBlur(newBlur);
+  phaseScopeBuffer.dotMask.setTransitionWidth(newBlur);
+}
+void PhaseScope2::setDotInnerSlope(double newSlope)
+{
+  phaseScopeBuffer.dotMask.setInnerSlope(newSlope);
+}
+void PhaseScope2::setDotOuterSlope(double newSlope)
+{
+  phaseScopeBuffer.dotMask.setOuterSlope(newSlope);
 }
 
 void PhaseScope2::createParameters()
 {
   ScopedLock scopedLock(*plugInLock);
   Parameter* p;
+
+  p = new Parameter(plugInLock, "UseBigDot", 0.0, 1.0, 0.0, 1.0, Parameter::BOOLEAN);
+  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setUseBigDot);
+  addObservedParameter(p);
 
   p = new Parameter(plugInLock, "DotSize", 1.0, 30.0, 0.0, 2.0, Parameter::LINEAR);
   addObservedParameter(p);
@@ -376,6 +391,14 @@ void PhaseScope2::createParameters()
   p = new Parameter(plugInLock, "DotBlur", 0.0, 1.0, 0.0, 0.5, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setDotBlur);
+
+  p = new Parameter(plugInLock, "DotInnerSlope", 0.0, 3.0, 0.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setDotInnerSlope);
+
+  p = new Parameter(plugInLock, "DotOuterSlope", 0.0, 3.0, 0.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setDotOuterSlope);
 }
 
 AudioModuleEditor* PhaseScope2::createEditor()
@@ -389,13 +412,19 @@ PhaseScopeEditor2::PhaseScopeEditor2(jura::PhaseScope2 *newPhaseScopeToEdit)
   : PhaseScopeEditor(newPhaseScopeToEdit)
 {
   createWidgets();
-  //setSize(800, 600);
+  setSize(800, 600);
   //resized();
 }
 
 void PhaseScopeEditor2::createWidgets()
 {
+  RButton *b;
   RSlider *s;
+
+  addWidget( buttonBigDot = b = new RButton("Big Dot") );
+  b->assignParameter( scope->getParameterByName("UseBigDot") );
+  b->setDescription("Switches to use the big expensive dot");
+  b->setDescriptionField(infoField);
 
   addWidget( sliderDotSize = s = new RSlider("DotSizeSlider") );
   s->assignParameter( scope->getParameterByName("DotSize") );
@@ -408,6 +437,20 @@ void PhaseScopeEditor2::createWidgets()
   s->assignParameter( scope->getParameterByName("DotBlur") );
   s->setSliderName("DotBlur");
   s->setDescription("Dot blur from 0..1");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString3);
+
+  addWidget( sliderDotInnerSlope = s = new RSlider("DotInnerSlopeSlider") );
+  s->assignParameter( scope->getParameterByName("DotInnerSlope") );
+  s->setSliderName("DotInnerSlope");
+  s->setDescription("Dot brightness slope at center");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString3);
+
+  addWidget( sliderDotOuterSlope = s = new RSlider("DotOuterSlopeSlider") );
+  s->assignParameter( scope->getParameterByName("DotOuterSlope") );
+  s->setSliderName("DotOuterSlope");
+  s->setDescription("Dot brightness slope at border");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
 }
@@ -424,7 +467,10 @@ void PhaseScopeEditor2::resized()
   dy = h+4;                           // vertical distance ("delta-y") between widgets
   y  = buttonAntiAlias->getBottom() + dy;
   
-  sliderDotSize->setBounds(x, y, w, h); y += dy;
-  sliderDotBlur->setBounds(x, y, w, h); y += dy;
+  buttonBigDot       ->setBounds(x, y, w, h); y += dy;
+  sliderDotSize      ->setBounds(x, y, w, h); y += dy;
+  sliderDotBlur      ->setBounds(x, y, w, h); y += dy;
+  sliderDotInnerSlope->setBounds(x, y, w, h); y += dy;
+  sliderDotOuterSlope->setBounds(x, y, w, h); y += dy;
 }
 

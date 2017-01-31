@@ -286,53 +286,53 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
 
 
   // checks to not write beyond image bounds:
-  //// old version:
-  //if(xs < 0)
-  //{
-  //  xms = -xs;
-  //  xs  = 0;
-  //  leftEdge = false;
-  //}
-  //if(ys < 0)
-  //{
-  //  yms = -ys;
-  //  ys  =  0;
-  //  topEdge = false;
-  //}
-  //if(xe >= wi)
-  //{
-  //  xe = wi-1;
-  //  rightEdge = false;
-  //}
-  //if(ye >= hi)
-  //{
-  //  ye = hi-1;
-  //  bottomEdge = false;
-  //}
-
-  // new version:
-  if(xs < -1)
+  // old version:
+  if(xs < 0)
   {
     xms = -xs;
     xs  = 0;
     leftEdge = false;
   }
-  if(ys < -1)
+  if(ys < 0)
   {
     yms = -ys;
     ys  =  0;
     topEdge = false;
   }
-  if(xe > wi)
+  if(xe >= wi)
   {
-    xe = wi;
+    xe = wi-1;
     rightEdge = false;
   }
-  if(ye > hi)
+  if(ye >= hi)
   {
-    ye = hi;
+    ye = hi-1;
     bottomEdge = false;
   }
+
+  //// new version:
+  //if(xs < -1)
+  //{
+  //  xms = -xs;
+  //  xs  = 0;
+  //  leftEdge = false;
+  //}
+  //if(ys < -1)
+  //{
+  //  yms = -ys;
+  //  ys  =  0;
+  //  topEdge = false;
+  //}
+  //if(xe > wi)
+  //{
+  //  xe = wi;
+  //  rightEdge = false;
+  //}
+  //if(ye > hi)
+  //{
+  //  ye = hi;
+  //  bottomEdge = false;
+  //}
 
 
   // paint edges and corners:

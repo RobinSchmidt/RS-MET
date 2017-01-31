@@ -72,7 +72,7 @@ void AlphaMask<TPix>::renderMask()
       double dx = sx * (x - cx);
       double dy = sy * (y - cy);
       double distance = sqrt(dx*dx + dy*dy);
-      TPix alpha = (TPix) getAlphaForDistance(distance);
+      TPix alpha = (TPix) abs(getAlphaForDistance(distance));
       setPixelColor(x, y, alpha);
     }
   }
