@@ -381,7 +381,7 @@ PhaseScopeEditor2::PhaseScopeEditor2(jura::PhaseScope2 *newPhaseScopeToEdit)
   : PhaseScopeEditor(newPhaseScopeToEdit)
 {
   createWidgets();
-  setSize(800, 600);
+  //setSize(800, 600);
   //resized();
 }
 

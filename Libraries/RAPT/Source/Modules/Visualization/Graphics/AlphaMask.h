@@ -36,6 +36,9 @@ public:
   //void setShape(int newShape);
     // circle, rectangle, etc
 
+  static double cubicBell(double x, double steepnessAt0, double steepnessAt1);
+
+  static double expGaussBell(double x, double steepnessAt0, double steepnessAt1);
 
 protected:
 

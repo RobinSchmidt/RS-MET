@@ -37,6 +37,41 @@ void AlphaMask<TPix>::setOuterSlope(double newSlope)
 }
 
 template<class TPix>
+double AlphaMask<TPix>::cubicBell(double x, double steepnessAt0, double steepnessAt1)
+{
+  double s0 = -steepnessAt0;
+  double s1 = -steepnessAt1;
+  double a2 = -s1 - 2*s0 - 3; 
+  double a3 =  s1 +   s0 + 2;
+  // todo: precompute the coeffs
+
+  double y = 1 + s0*x + a2*x*x + a3*x*x*x;  // optimize, limit to 0..1
+  return y;
+
+  // we use a 3rd order polynomial with adjustable slopes at start- and endpoint.
+  // f(x) = a0 + a1*x + a2*x^2 + a3*x^3 with f(0) = 1, f'(0) = s0, f(1) = 0, f'(1) = s1
+  // solving it yields: a0 = 1, a1 = s0, a2 = -s1 - 2*s0 - 3, a3 = 2 + s0 + s1
+  // maybe the user parameters slope1, slope2 are -s1, -s2
+  // maybe we should figure out the condition for not having a local minimum or maximum 
+  // between 0..1 and perhaps restrict the parameter range
+}
+
+template<class TPix>
+double AlphaMask<TPix>::expGaussBell(double x, double steepnessAt0, double steepnessAt1)
+{
+  double s0, s1, r, a, b, c, d;
+  s0 = -steepnessAt0;
+  s1 = -steepnessAt1;
+  r  = s1/s0;
+  b  = log(0.25*(1+sqrt(8*r+1)));  // wolfram alpha solution to r = 2*e^(2*b) - e^b 
+  d  = b;
+  a  = -s0/b;
+  c  = -a;
+  return a * exp(b*x) + c * exp(d*x*x);
+  // nope - something is wrong with this formula
+}
+
+template<class TPix>
 void AlphaMask<TPix>::renderMask()
 {
   // render circular alpha mask - alpha value depends on distance from center:
@@ -74,18 +109,24 @@ double AlphaMask<TPix>::getAlphaForDistance(double d)
   else
     x = d;
 
-  double s0 = -slope0;
-  double s1 = -slope1;
-  double a2 = -s1 - 2*s0 - 3; 
-  double a3 =  s1 +   s0 + 2;
-  // todo: precompute the coeffs
+  //return cubicBell(x, slope0, slope1);
+  return expGaussBell(x, slope0, slope1);
 
-  return 1 + s0*x + a2*x*x + a3*x*x*x;  // optimize, limit to 0..1
 
-  // we use a 3rd order polynomial with adjustable slopes at start- and endpoint.
-  // f(x) = a0 + a1*x + a2*x^2 + a3*x^3 with f(0) = 1, f'(0) = s0, f(1) = 0, f'(1) = s1
-  // solving it yields: a0 = 1, a1 = s0, a2 = -s1 - 2*s0 - 3, a3 = 2 + s0 + s1
-  // maybe the user parameters slope1, slope2 are -s1, -s2
-  // maybe we should figure out the condition for not having a local minimum or maximum 
-  // between 0..1 and perhaps restrict the parameter range
+  //double s0 = -slope0;
+  //double s1 = -slope1;
+  //double a2 = -s1 - 2*s0 - 3; 
+  //double a3 =  s1 +   s0 + 2;
+  //// todo: precompute the coeffs
+
+  //double alpha = 1 + s0*x + a2*x*x + a3*x*x*x;  // optimize, limit to 0..1
+  ////alpha = rsLimitToRange(alpha, 0.0, 1.0);
+  //return alpha;
+
+  //// we use a 3rd order polynomial with adjustable slopes at start- and endpoint.
+  //// f(x) = a0 + a1*x + a2*x^2 + a3*x^3 with f(0) = 1, f'(0) = s0, f(1) = 0, f'(1) = s1
+  //// solving it yields: a0 = 1, a1 = s0, a2 = -s1 - 2*s0 - 3, a3 = 2 + s0 + s1
+  //// maybe the user parameters slope1, slope2 are -s1, -s2
+  //// maybe we should figure out the condition for not having a local minimum or maximum 
+  //// between 0..1 and perhaps restrict the parameter range
 }

@@ -2,5 +2,9 @@
 
 void runExperiments()
 {
-  ladderResonanceManipulation();
+  // Math:
+  productLogPlot();
+
+  // Filter:
+  //ladderResonanceManipulation();
 }
