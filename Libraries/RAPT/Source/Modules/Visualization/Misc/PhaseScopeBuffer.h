@@ -44,6 +44,10 @@ public:
   incoming datapoints. If set to zero, it will just draw the datapoints as dots. */
   void setLineDensity(TPar newDensity);
 
+  /** Sets a limit of the number of artificial datapoints that may be inserted per drawing 
+  operation. This is important to keep the cpu usage under control. */
+  void setLineDensityLimit(int newMaxNumDotsPerLine);
+
   /** Sets up a weight by which each pixel is not only accumulated into its actual place but also 
   into the neighbouring pixels to add more weight or thickness. It should be a value between 0 
   and 1. */
@@ -101,6 +105,7 @@ protected:
   TPar decayTime;      // pixel illumination time
   TPar decayFactor;    // factor by which pixels decay (applied at frameRate)
   TPar lineDensity;    // density of the artificial points between actual datapoints
+  int  maxDotsPerLine;
   TPar thickness;      // line (or dot) thickness from 0 to 1. 0: one pixel, 1: 3 pixels
                        // maybe rename to spread or weight or something
 

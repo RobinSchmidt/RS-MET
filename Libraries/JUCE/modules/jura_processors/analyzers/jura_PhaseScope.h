@@ -25,6 +25,7 @@ public:
   void setBrightness(double newBrightness);
   void setAfterGlow(double newGlow);
   void setLineDensity(double newDensity);
+  void setDotLimit(double newLimit);
   void setPixelSpread(double newSpread);
   void setPixelScale(double newFactor);
   void setAntiAlias(bool shouldAntiAlias);
@@ -130,7 +131,7 @@ protected:
 
   // Widgets:
   RSlider *sliderBrightness, *sliderAfterglow, *sliderPixelSpread, *sliderPixelScale, 
-    *sliderLineDensity, *sliderFrameRate;
+    *sliderLineDensity, *sliderDotLimit, *sliderFrameRate;
   RButton *buttonAntiAlias;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhaseScopeEditor)

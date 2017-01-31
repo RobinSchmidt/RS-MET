@@ -45,7 +45,13 @@ void normalizedDataToImage(float *data, juce::Image &image, const jura::ColorMap
   uint8 *p8 = bitmap.getPixelPointer(0, 0);
   uint32 *p = reinterpret_cast<uint32*>(p8);
   for(int i = 0; i < bitmap.height * bitmap.width; i++)
+  {
+    //// for debug:
+    //float tmp = data[i];
+    //jassert(data[i] <= 1); 
+
     p[i] = colorMap.getColorAsUint32(data[i]);
+  }
 }
 
 void normalizedDataToImage(float *data, juce::Image &image)

@@ -32,9 +32,9 @@ bool imagePainterUnitTest()
   AlphaMask<float> mask;  // maybe use a regular image as mask
   ImagePainter<float, float, float> painter(&image, &mask);
 
-  int imageWidth  = 30;
-  int imageHeight = 30; // 50x50 image with 3x3 mask gives an access violation
-  int maskSize    = 7;
+  int imageWidth  = 10;
+  int imageHeight = 10; // 50x50 image with 3x3 mask gives an access violation
+  int maskSize    = 5;
 
   // maybe, we should 1st use the simplest case: 1x1 mask
 
@@ -59,15 +59,15 @@ bool imagePainterUnitTest()
   float w2 = w/2;
   float h  = imageHeight;
   float h2 = h/2;
-  float b  = 1.0f; // brightness
-  painter.paintDotViaMask(    dx,     dy, b);   // top-left
-  painter.paintDotViaMask(w2 +dx,     dy, b);   // top-center
-  painter.paintDotViaMask(w-1+dx,     dy, b);   // top-right
-  painter.paintDotViaMask(    dx, h2 +dy, b);   // center-left
-  painter.paintDotViaMask(w-1+dx, h2 +dy, b);   // center-right
-  painter.paintDotViaMask(    dx, h-1+dy, b);   // bottom-left
-  painter.paintDotViaMask(w2 +dx, h-1+dy, b);   // bottom-center
-  painter.paintDotViaMask(w-1+dx, h-1+dy, b);   // bottom-right
+  float b  = 0.75f; // brightness
+  //painter.paintDotViaMask(    dx,     dy, b);   // top-left
+  //painter.paintDotViaMask(w2 +dx,     dy, b);   // top-center
+  //painter.paintDotViaMask(w-1+dx,     dy, b);   // top-right
+  //painter.paintDotViaMask(    dx, h2 +dy, b);   // center-left
+  //painter.paintDotViaMask(w-1+dx, h2 +dy, b);   // center-right
+  //painter.paintDotViaMask(    dx, h-1+dy, b);   // bottom-left
+  //painter.paintDotViaMask(w2 +dx, h-1+dy, b);   // bottom-center
+  //painter.paintDotViaMask(w-1+dx, h-1+dy, b);   // bottom-right
   painter.paintDotViaMask(w2 +dx, h2 +dy, b);   // center
 
   // it seems, things drawn on the left border leak into the right border

@@ -411,12 +411,14 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
 
 template<class TPix, class TWgt, class TCor>
 void ImagePainter<TPix, TWgt, TCor>::drawDottedLine(TCor x1, TCor y1, TCor x2, TCor y2, TPix color, 
-  TCor density)
+  TCor density, int maxNumDots)
 {
   TCor dx = x2-x1;
   TCor dy = y2-y1;
   TCor pixelDistance = sqrt(dx*dx + dy*dy);
   int  numDots = rsMax(1, (int)floor(density*pixelDistance));
+  if(maxNumDots > 0)
+    numDots = rsMin(numDots, maxNumDots);
   TPix scaledColor = (TPix) (color / (TPix)numDots); // maybe make this scaling optional
   TCor scaler = (TCor)(1.0 / numDots);
   TCor k;

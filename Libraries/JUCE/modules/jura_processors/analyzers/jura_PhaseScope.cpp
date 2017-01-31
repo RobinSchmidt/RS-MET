@@ -52,6 +52,10 @@ void PhaseScope::createParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setLineDensity);
 
+  p = new Parameter(plugInLock, "DotLimit", 1.0, 500.0, 1.0, 500.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setDotLimit);
+
   p = new Parameter(plugInLock, "FrameRate", 1.0, 100.0, 0.0, 25.0, Parameter::EXPONENTIAL);
   addObservedParameter(p);
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setFrameRate);
@@ -80,6 +84,10 @@ void PhaseScope::setAfterGlow(double newGlow)
 void PhaseScope::setLineDensity(double newDensity)
 {
   phaseScopeBuffer.setLineDensity((float)newDensity);
+}
+void PhaseScope::setDotLimit(double newLimit)
+{
+  phaseScopeBuffer.setLineDensityLimit((int)round(newLimit));
 }
 void PhaseScope::setPixelSpread(double newSpread)
 {
@@ -294,6 +302,13 @@ void PhaseScopeEditor::createWidgets()
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
 
+  addWidget( sliderDotLimit = s = new RSlider("DotLimitSlider") );
+  s->assignParameter( scope->getParameterByName("DotLimit") );
+  s->setSliderName("DotLimit");
+  s->setDescription("Limit for number of dots per line");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString3);
+
   addWidget( sliderFrameRate = s = new RSlider("FrameRateSlider") );
   s->assignParameter( scope->getParameterByName("FrameRate") );
   s->setSliderName("FrameRate");
@@ -328,6 +343,7 @@ void PhaseScopeEditor::resized()
   sliderAfterglow  ->setBounds(x, y, w, h); y += dy;
   sliderPixelSpread->setBounds(x, y, w, h); y += dy;
   sliderPixelScale ->setBounds(x, y, w, h); y += dy;
+  sliderDotLimit   ->setBounds(x, y, w, h); y += dy;
   sliderLineDensity->setBounds(x, y, w, h); y += dy;
   sliderFrameRate  ->setBounds(x, y, w, h); y += dy;
   buttonAntiAlias  ->setBounds(x, y, w, h); y += dy;

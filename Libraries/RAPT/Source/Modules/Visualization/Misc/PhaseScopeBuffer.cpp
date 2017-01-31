@@ -4,11 +4,12 @@ PhaseScopeBuffer<TSig, TPix, TPar>::PhaseScopeBuffer()
 {
   painter.setUseAlphaMask(false);
 
-  frameRate   = 25.0;
-  decayTime   = 0.5;
-  lineDensity = 0.0f;
-  thickness   = 0.707f;
-  brightness  = 1.0;
+  frameRate      = 25.0;
+  decayTime      = 0.5;
+  lineDensity    = 0.0f;
+  maxDotsPerLine = 100;
+  thickness      = 0.707f;
+  brightness     = 1.0;
   updateDecayFactor();
 
   setSampleRate(44100.0);
@@ -64,6 +65,12 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::setLineDensity(TPar newDensity)
 }
 
 template<class TSig, class TPix, class TPar>
+void PhaseScopeBuffer<TSig, TPix, TPar>::setLineDensityLimit(int newMaxNumDotsPerLine)
+{
+  maxDotsPerLine = newMaxNumDotsPerLine;
+}
+
+template<class TSig, class TPix, class TPar>
 void PhaseScopeBuffer<TSig, TPix, TPar>::setPixelSpread(TPar newSpread)
 {
   thickness = newSpread;
@@ -111,7 +118,7 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::addLineTo(TSig x, TSig y)
     painter.paintDot(x, y, (TPix) insertFactor);
   else
     painter.drawDottedLine((TSig)xOld, (TSig)yOld, (TSig)x, (TSig)y, (TPix) insertFactor, 
-      (TSig)lineDensity);
+      (TSig)lineDensity, maxDotsPerLine);
   xOld = x;
   yOld = y;
 }
