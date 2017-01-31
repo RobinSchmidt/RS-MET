@@ -66,6 +66,8 @@ protected:
   int repaintIntervalInSamples;
   int repaintCounter;
 
+  bool bypassPixelDecay;
+
   // this object is reponsible for drawing the incoming data onto a virtual screen:
   //RAPT::PhaseScopeBuffer<double, float, double> phaseScopeBuffer;
   RAPT::PhaseScopeBuffer2<double, float, double> phaseScopeBuffer;

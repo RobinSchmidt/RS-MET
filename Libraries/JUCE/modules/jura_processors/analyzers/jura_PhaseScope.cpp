@@ -7,6 +7,7 @@ PhaseScope::PhaseScope(CriticalSection *lockToUse) : AudioModule(lockToUse)
   pixelScale = 1.0;
   displayWidth  = 100;
   displayHeight = 100;
+  bypassPixelDecay = false;
   phaseScopeBuffer.setUseAlphaMask(false);
   updateBufferSize();
 
@@ -80,6 +81,10 @@ void PhaseScope::setBrightness(double newBrightness)
 void PhaseScope::setAfterGlow(double newGlow)
 {
   phaseScopeBuffer.setDecayTime(newGlow);
+  if(newGlow == 50.0)
+    bypassPixelDecay = true;
+  else
+    bypassPixelDecay = false;
 }
 void PhaseScope::setLineDensity(double newDensity)
 {
@@ -129,20 +134,6 @@ void PhaseScope::processBlock(double **inOutBuffer, int numChannels, int numSamp
       repaintCounter = 0;
     }
   }
-
-  //// old - had some flashiness due to jitter when not sample-accurately (only block accurately) 
-  // handling the counter (for reference - may be deleted at some point):
-
-  //for(int n = 0; n < numSamples; n++)
-  //  phaseScopeBuffer.bufferSampleFrame(inOutBuffer[0][n], inOutBuffer[1][n]);
-
-  //repaintCounter += numSamples;
-  //while(repaintCounter > repaintIntervalInSamples)
-  //{
-  //  updateScopeImage();
-  //  sendImageUpdateNotification(&image);
-  //  repaintCounter -= repaintIntervalInSamples;
-  //}
 }
 
 void PhaseScope::setSampleRate(double newSampleRate)
@@ -188,7 +179,8 @@ void PhaseScope::updateBufferSize()
 void PhaseScope::updateScopeImage()
 {
   normalizedDataToImage(phaseScopeBuffer.getImage()->getPixelPointer(0, 0), image, colorMap);
-  phaseScopeBuffer.applyPixelDecay();
+  if(!bypassPixelDecay)
+    phaseScopeBuffer.applyPixelDecay();
 }
 
 void PhaseScope::updateRepaintInterval()
