@@ -3,7 +3,8 @@
 void runExperiments()
 {
   // Math:
-  productLogPlot();
+  expGaussBell();
+  //productLogPlot();
 
   // Filter:
   //ladderResonanceManipulation();

@@ -57,21 +57,6 @@ double AlphaMask<TPix>::cubicBell(double x, double steepnessAt0, double steepnes
 }
 
 template<class TPix>
-double AlphaMask<TPix>::expGaussBell(double x, double steepnessAt0, double steepnessAt1)
-{
-  double s0, s1, r, a, b, c, d;
-  s0 = -steepnessAt0;
-  s1 = -steepnessAt1;
-  r  = s1/s0;
-  b  = log(0.25*(1+sqrt(8*r+1)));  // wolfram alpha solution to r = 2*e^(2*b) - e^b 
-  d  = b;
-  a  = -s0/b;
-  c  = -a;
-  return a * exp(b*x) + c * exp(d*x*x);
-  // nope - something is wrong with this formula
-}
-
-template<class TPix>
 void AlphaMask<TPix>::renderMask()
 {
   // render circular alpha mask - alpha value depends on distance from center:
@@ -109,8 +94,8 @@ double AlphaMask<TPix>::getAlphaForDistance(double d)
   else
     x = d;
 
-  //return cubicBell(x, slope0, slope1);
-  return expGaussBell(x, slope0, slope1);
+  return cubicBell(x, slope0, slope1);
+  //return expGaussBell(x, slope0, slope1);
 
 
   //double s0 = -slope0;

@@ -38,8 +38,6 @@ public:
 
   static double cubicBell(double x, double steepnessAt0, double steepnessAt1);
 
-  static double expGaussBell(double x, double steepnessAt0, double steepnessAt1);
-
 protected:
 
   /** Renders the mask. Called internally whenever a parameter chenges. */

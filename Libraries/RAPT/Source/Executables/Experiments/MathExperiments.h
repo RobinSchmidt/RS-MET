@@ -3,6 +3,7 @@
 
 #include "../Shared/Shared.h"
 
+void expGaussBell();
 void productLogPlot();
 
 #endif
