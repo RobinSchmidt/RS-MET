@@ -277,14 +277,16 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
 
   TWgt w; // weight for current pixel
 
-  // checks to not write beyond image bounds:
+  // flags to indicate whether or not we need to draw the 4 edges of the mask:
   bool leftEdge, rightEdge, topEdge, bottomEdge;
   leftEdge   = true;
   rightEdge  = true;
   topEdge    = true;
   bottomEdge = true;
 
-  // old version:
+
+  // checks to not write beyond image bounds:
+  //// old version:
   //if(xs < 0)
   //{
   //  xms = -xs;
@@ -311,13 +313,13 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
   // new version:
   if(xs < -1)
   {
-    xms = -xs+1;
+    xms = -xs;
     xs  = 0;
     leftEdge = false;
   }
   if(ys < -1)
   {
-    yms = -ys+1;
+    yms = -ys;
     ys  =  0;
     topEdge = false;
   }
@@ -392,11 +394,9 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
 
 
   // paint interior rectangle:
-  //ym = yms+1;
-  ym = yms;  // why not +1?
+  ym = yms;
   for(yi = ys+1; yi <= ye-1; yi++)
   {
-    //xm = xms+1;
     xm = xms; // why not +1?
     for(xi = xs+1; xi <= xe-1; xi++)
     {
