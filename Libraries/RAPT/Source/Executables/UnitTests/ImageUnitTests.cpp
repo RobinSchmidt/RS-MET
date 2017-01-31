@@ -30,9 +30,11 @@ bool imagePainterUnitTest()
   AlphaMask<float> mask;  // maybe use a regular image as mask
   ImagePainter<float, float, float> painter(&image, &mask);
 
-  int imageWidth  = 50;
-  int imageHeight = 50;
-  int maskSize    = 9;
+  int imageWidth  = 12;
+  int imageHeight = 12;
+  int maskSize    = 3;
+
+  // maybe, we should 1st use the simplest case: 1x1 mask
 
   image.setSize(imageWidth, imageHeight);
   image.clear();
@@ -43,28 +45,26 @@ bool imagePainterUnitTest()
   //fillWithCheckerBoardPattern(mask);
   fillWithCross(mask);
 
-
   //painter.paintDotViaMask(0.25f, 0.75f, 1);
   //painter.paintDotViaMask(2.25f, 3.75f, 1);
   //painter.paintDotViaMask(3.25f, 3.75f, 1);
 
-
   // draw in center and at all 4 edges:
-  float dx = 1.5;
-  float dy = 1.5;
+  float dx = 0.0;
+  float dy = 0.0;
   float w  = imageWidth;
   float w2 = w/2;
   float h  = imageHeight;
   float h2 = h/2;
-  painter.paintDotViaMask(w2+dx, h2+dy, 1);   // far from border -> ok
-  painter.paintDotViaMask(dx,    dy,    1);   // top-left        -> wrong
-  painter.paintDotViaMask(w2,    dy,    1);   // top-center      -> wrong
-  painter.paintDotViaMask(w-dx,  dy,    1);   // top-right       -> wrong
-  painter.paintDotViaMask(dx,    h2,    1);   // center-left     -> wrong
-  painter.paintDotViaMask(w-dx,  h2,    1);   // center-right    -> ok
-  painter.paintDotViaMask(dx,    h-dy,  1);   // bottom-left     -> wrong
-  painter.paintDotViaMask(w2,    h-dy,  1);   // bottom-center   -> ok
-  painter.paintDotViaMask(w-dx,  h-dy,  1);   // bottom-right    -> ok
+  painter.paintDotViaMask(w2 +dx, h2 +dy,  1);   // far from border -> ok
+  painter.paintDotViaMask(    dx,     dy,  1);   // top-left        -> wrong
+  painter.paintDotViaMask(w2 +dx,     dy,  1);   // top-center      -> wrong
+  painter.paintDotViaMask(w-1+dx,     dy,  1);   // top-right       -> wrong
+  painter.paintDotViaMask(    dx, h2 +dy,  1);   // center-left     -> wrong
+  painter.paintDotViaMask(w-1+dx, h2 +dy,  1);   // center-right    -> ok
+  painter.paintDotViaMask(    dx, h-1+dy,  1);   // bottom-left     -> wrong
+  painter.paintDotViaMask(w2 +dx, h-1+dy,  1);   // bottom-center   -> ok
+  painter.paintDotViaMask(w-1+dx, h-1+dy,  1);   // bottom-right    -> ok
 
 
   //painter.paintDotViaMask(10.2f, 10.6f, 1);

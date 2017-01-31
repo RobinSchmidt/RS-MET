@@ -271,9 +271,6 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
   //int xe = ceil (x + 0.5*wm);  // end x coordinate in image
   //int ye = ceil (y + 0.5*hm);  // end y coordinate in image
 
-
-
-
   // read coordinates in mask image:
   int xms = 0;   // start x
   int yms = 0;   // start y
@@ -286,28 +283,55 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
   rightEdge  = true;
   topEdge    = true;
   bottomEdge = true;
-  if(xs < 0)
+
+  // old version:
+  //if(xs < 0)
+  //{
+  //  xms = -xs;
+  //  xs  = 0;
+  //  leftEdge = false;
+  //}
+  //if(ys < 0)
+  //{
+  //  yms = -ys;
+  //  ys  =  0;
+  //  topEdge = false;
+  //}
+  //if(xe >= wi)
+  //{
+  //  xe = wi-1;
+  //  rightEdge = false;
+  //}
+  //if(ye >= hi)
+  //{
+  //  ye = hi-1;
+  //  bottomEdge = false;
+  //}
+
+  // new version:
+  if(xs < -1)
   {
-    xms = -xs;
+    xms = -xs+1;
     xs  = 0;
     leftEdge = false;
   }
-  if(ys < 0)
+  if(ys < -1)
   {
-    yms = -ys;
+    yms = -ys+1;
     ys  =  0;
     topEdge = false;
   }
-  if(xe >= wi)
+  if(xe > wi)
   {
-    xe = wi-1;
+    xe = wi;
     rightEdge = false;
   }
-  if(ye >= hi)
+  if(ye > hi)
   {
-    ye = hi-1;
+    ye = hi;
     bottomEdge = false;
   }
+
 
   // paint edges and corners:
   int xm, ym;   // x- and y-index in mask

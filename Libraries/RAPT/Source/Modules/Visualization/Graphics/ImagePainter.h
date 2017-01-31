@@ -77,9 +77,9 @@ protected:
   inline void accumulate(TPix &accu, TPix value)
   {
     //rsAssert(value >= TPix(0));
-    accu = (accu + value) / (TPix(1) + value);
+    //accu = (accu + value) / (TPix(1) + value);
 
-    //accu = accu+value; // just for testing
+    accu = accu+value; // just for testing
   }
   // rename to addAndSaturate
 

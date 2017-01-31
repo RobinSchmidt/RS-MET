@@ -95,23 +95,4 @@ double AlphaMask<TPix>::getAlphaForDistance(double d)
     x = d;
 
   return cubicBell(x, slope0, slope1);
-  //return expGaussBell(x, slope0, slope1);
-
-
-  //double s0 = -slope0;
-  //double s1 = -slope1;
-  //double a2 = -s1 - 2*s0 - 3; 
-  //double a3 =  s1 +   s0 + 2;
-  //// todo: precompute the coeffs
-
-  //double alpha = 1 + s0*x + a2*x*x + a3*x*x*x;  // optimize, limit to 0..1
-  ////alpha = rsLimitToRange(alpha, 0.0, 1.0);
-  //return alpha;
-
-  //// we use a 3rd order polynomial with adjustable slopes at start- and endpoint.
-  //// f(x) = a0 + a1*x + a2*x^2 + a3*x^3 with f(0) = 1, f'(0) = s0, f(1) = 0, f'(1) = s1
-  //// solving it yields: a0 = 1, a1 = s0, a2 = -s1 - 2*s0 - 3, a3 = 2 + s0 + s1
-  //// maybe the user parameters slope1, slope2 are -s1, -s2
-  //// maybe we should figure out the condition for not having a local minimum or maximum 
-  //// between 0..1 and perhaps restrict the parameter range
 }
