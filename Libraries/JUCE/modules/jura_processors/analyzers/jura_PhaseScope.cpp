@@ -485,6 +485,18 @@ void PhaseScopeEditor2::resized()
   sliderDotOuterSlope->setBounds(x, y, w, h); y += dy;
 }
 
+void PhaseScopeEditor2::paint(Graphics& g)
+{
+  PhaseScopeEditor::paint(g);
+
+  float x, y, w, h;
+  x = (float)sliderDotOuterSlope->getX();
+  y = (float)sliderDotOuterSlope->getBottom() + 8.f;
+  w = (float)dotPreviewImage.getWidth();
+  h = (float)dotPreviewImage.getHeight();
+  g.drawImage(dotPreviewImage, Rectangle<float>(x, y, w, h));
+}
+
 void PhaseScopeEditor2::rSliderValueChanged(RSlider* slider)
 {
   updatePreviewDot();
@@ -495,6 +507,7 @@ void PhaseScopeEditor2::updatePreviewDot()
   dotPreviewMask.copyShapeParametersFrom(scope->phaseScopeBuffer.dotMask);
 
   //normalizedDataToImage(dotPreviewMask.getPixelPointer(0, 0), dotPreviewImage);
+  normalizedDataToImage(dotPreviewMask.getPixelPointer(0, 0), dotPreviewImage, scope->colorMap);
     // ...but we need to use the colormap here...
 
   repaint();

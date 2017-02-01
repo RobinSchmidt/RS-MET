@@ -185,7 +185,7 @@ public:
 
   virtual void createWidgets() override;
   virtual void resized() override;
-
+  virtual void paint(Graphics& g) override;
 
   virtual void rSliderValueChanged(RSlider* slider) override;
 
