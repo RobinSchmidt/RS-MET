@@ -28,6 +28,8 @@ bool testAlphaMaskPaintingAntiAliased(ImagePainter<float, float, float>& painter
   // ImagePainter) and then check, if all pixels outside the rectangle of the dot are still
   // zero after that.
   // todo: maybe check also, if the pixels inside the rectangle have expected values
+  // ...but this is complicated, maybe first, we should check if they are nonzero (but this 
+  // assumes that the dot mask is nonzero everywhere)
 
   bool result = true;
 
@@ -59,9 +61,8 @@ bool testAlphaMaskPaintingAntiAliased(ImagePainter<float, float, float>& painter
       else
       {
         //result &= (*img)(xi, yi) != 0.f;
-        // whether or not the pixel should be nonzero depends on the mask ...maybe w ecould figure
+        // whether or not the pixel should be nonzero depends on the mask ...maybe we could figure
         // out the correct target value and check against that...
-
       }
     }
   }
@@ -82,8 +83,6 @@ bool imagePainterUnitTest()
   int imageWidth  = 20;
   int imageHeight = 20; // 50x50 image with 3x3 mask gives an access violation
   int maskSize    = 5;
-
-
 
   // maybe, we should 1st use the simplest case: 1x1 mask
 
@@ -111,6 +110,8 @@ bool imagePainterUnitTest()
   float b  = 0.75f; // brightness
 
   // do unit tets for various cases:
+  dx = 0.5;
+  dy = 0.5;
   result &= testAlphaMaskPaintingAntiAliased(painter,     dx,     dy);   // top-left
   result &= testAlphaMaskPaintingAntiAliased(painter, w2 +dx,     dy);   // top-center
   result &= testAlphaMaskPaintingAntiAliased(painter, w-1+dx,     dy);   // top-right
@@ -122,7 +123,25 @@ bool imagePainterUnitTest()
   result &= testAlphaMaskPaintingAntiAliased(painter, w2 +dx, h2 +dy);   // center
   rsAssert(result);
 
+  // try some cases where the dot is painted outside the image:
+  dx = -3.0; // when the mask size is 5, -3.0 still works, but -3.1 doesn't
+  dy = -3.0;
+  result &= testAlphaMaskPaintingAntiAliased(painter,     dx,     dy);   // top-left
+  result &= testAlphaMaskPaintingAntiAliased(painter, w2 +dx,     dy);   // top-center
+  result &= testAlphaMaskPaintingAntiAliased(painter, w-1+dx,     dy);   // top-right
+  result &= testAlphaMaskPaintingAntiAliased(painter,     dx, h2 +dy);   // center-left
+  result &= testAlphaMaskPaintingAntiAliased(painter, w-1+dx, h2 +dy);   // center-right
+  result &= testAlphaMaskPaintingAntiAliased(painter,     dx, h-1+dy);   // bottom-left
+  result &= testAlphaMaskPaintingAntiAliased(painter, w2 +dx, h-1+dy);   // bottom-center
+  result &= testAlphaMaskPaintingAntiAliased(painter, w-1+dx, h-1+dy);   // bottom-right
+  result &= testAlphaMaskPaintingAntiAliased(painter, w2 +dx, h2 +dy);   // center
+  rsAssert(result);
+
+
+
   // paint some dots and write image to file for visual inspection:
+  dx = 0.5;
+  dy = 0.5;
   image.clear();
   painter.paintDotViaMask(    dx,     dy, b);   // top-left
   painter.paintDotViaMask(w2 +dx,     dy, b);   // top-center
@@ -134,14 +153,12 @@ bool imagePainterUnitTest()
   painter.paintDotViaMask(w-1+dx, h-1+dy, b);   // bottom-right
   painter.paintDotViaMask(w2 +dx, h2 +dy, b);   // center
 
-  // it seems, things drawn on the left border leak into the right border
 
   //painter.paintDotViaMask(10.2f, 10.6f, 1);
   // we use the 1000 here, because the painter uses this strange saturating function - maybe, we 
   // should introduce a blend-mode: mix, add, add-and-clip, add-and-saturate, multiply, ...
   // for testing here, we should use either alpha-blend or add-and-clip (should give same results)
 
-  // it seems to work, as long as we are not too close to the edge of the image
 
   writeImageToFilePPM(mask,  "PaintTestMask.ppm");
   writeImageToFilePPM(image, "PaintTestImage.ppm");
