@@ -125,7 +125,7 @@ void PhaseScope::processBlock(double **inOutBuffer, int numChannels, int numSamp
   jassert(numChannels == 2);
   for(int n = 0; n < numSamples; n++)
   {
-    phaseScopeBuffer.bufferSampleFrame(inOutBuffer[0][n], inOutBuffer[1][n]);
+    phaseScopeBuffer.bufferSampleFrame((float)inOutBuffer[0][n], (float)inOutBuffer[1][n]);
     repaintCounter++;
     if(repaintCounter > repaintIntervalInSamples)
     {
@@ -412,6 +412,14 @@ PhaseScopeEditor2::PhaseScopeEditor2(jura::PhaseScope2 *newPhaseScopeToEdit)
   : PhaseScopeEditor(newPhaseScopeToEdit)
 {
   createWidgets();
+
+  // init preview dot (maybe factor out):
+  dotPreviewMask.setSize(100.0);  // 100 pixels wide and high
+  dotPreviewImage = juce::Image(juce::Image::ARGB, 
+    dotPreviewMask.getWidth(), dotPreviewMask.getHeight(), false);
+  updatePreviewDot();
+
+
   setSize(800, 600);
   //resized();
 }
@@ -439,6 +447,7 @@ void PhaseScopeEditor2::createWidgets()
   s->setDescription("Dot blur from 0..1");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
+  s->addListener(this);
 
   addWidget( sliderDotInnerSlope = s = new RSlider("DotInnerSlopeSlider") );
   s->assignParameter( scope->getParameterByName("DotInnerSlope") );
@@ -446,6 +455,7 @@ void PhaseScopeEditor2::createWidgets()
   s->setDescription("Dot brightness slope at center");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
+  s->addListener(this);
 
   addWidget( sliderDotOuterSlope = s = new RSlider("DotOuterSlopeSlider") );
   s->assignParameter( scope->getParameterByName("DotOuterSlope") );
@@ -453,6 +463,7 @@ void PhaseScopeEditor2::createWidgets()
   s->setDescription("Dot brightness slope at border");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
+  s->addListener(this);
 }
 
 void PhaseScopeEditor2::resized()
@@ -474,8 +485,18 @@ void PhaseScopeEditor2::resized()
   sliderDotOuterSlope->setBounds(x, y, w, h); y += dy;
 }
 
+void PhaseScopeEditor2::rSliderValueChanged(RSlider* slider)
+{
+  updatePreviewDot();
+}
+
 void PhaseScopeEditor2::updatePreviewDot()
 {
-  // something to do...
+  dotPreviewMask.copyShapeParametersFrom(scope->phaseScopeBuffer.dotMask);
+
+  //normalizedDataToImage(dotPreviewMask.getPixelPointer(0, 0), dotPreviewImage);
+    // ...but we need to use the colormap here...
+
+  repaint();
 }
 

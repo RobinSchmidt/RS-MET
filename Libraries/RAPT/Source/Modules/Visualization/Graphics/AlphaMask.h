@@ -36,6 +36,25 @@ public:
   //void setShape(int newShape);
     // circle, rectangle, etc
 
+  /** Copies the user parameters which determine the shape (transition width, slopes, etc.) from
+  some other mask. Basically, that's all user parameters except the size. It's intended to be used
+  for creating a preview of a mask, where the preview does not necessarily need to be of the same 
+  size as the actual mask used for painting. The other mask may use a different template parameter
+  for the pixels. */
+  template<class T>
+  void copyShapeParametersFrom(const AlphaMask<T>& otherMask);
+
+  /** \name Inquiry */
+
+  inline double getTransitionWidth() const { return flat; }
+
+  inline double getInnerSlope()      const { return slope0; }
+
+  inline double getOuterSlope()      const { return slope1; }
+
+
+
+
   static double cubicBell(double x, double steepnessAt0, double steepnessAt1);
 
 protected:

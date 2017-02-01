@@ -116,7 +116,11 @@ protected:
 
   // members for actual painting on an image:
   Image<TPix> image;
-  ImagePainter<TPix, TPar, TSig> painter;
+  //ImagePainter<TPix, float, TSig> painter; // float: weight-type for alpha mask
+  //ImagePainter<TPix, TPar, TSig> painter;  // using TPar for the 2nd TWgt template parameter
+  //                                         // might not be ideal
+  ImagePainter<TPix, TSig, TSig> painter;  // using TPar for the 2nd TWgt template parameter
+                                           // might not be ideal
 
 };
 
@@ -141,7 +145,9 @@ public:
 
   /** Alpha mask used for drawing a "dot", a public member, such that we don't need to implement
   lots of delegations here for setting it up. */
-  AlphaMask<TPar> dotMask; 
+  AlphaMask<TSig> dotMask; 
+  //AlphaMask<TPar> dotMask; 
+  //AlphaMask<float> dotMask; 
 
 };
 

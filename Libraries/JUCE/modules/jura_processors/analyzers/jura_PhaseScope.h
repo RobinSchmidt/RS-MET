@@ -76,6 +76,7 @@ protected:
   jura::ColorMap colorMap; // the color map to translate the buffered data matrix to colors
 
   friend class PhaseScopeDisplay;
+  friend class PhaseScopeEditor2;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhaseScope)
 };
@@ -174,7 +175,7 @@ protected:
 
 /** GUI editor for the extended PhaseScope */
 
-class JUCE_API PhaseScopeEditor2 : public PhaseScopeEditor
+class JUCE_API PhaseScopeEditor2 : public PhaseScopeEditor, public RSliderListener
 {
 
 public:
@@ -185,6 +186,9 @@ public:
   virtual void createWidgets() override;
   virtual void resized() override;
 
+
+  virtual void rSliderValueChanged(RSlider* slider) override;
+
 protected:
 
   /** Updates the image for previewing the dot. */
@@ -194,8 +198,9 @@ protected:
   RButton *buttonBigDot;
   RSlider *sliderDotSize, *sliderDotBlur, *sliderDotInnerSlope, *sliderDotOuterSlope;
 
-  // image for previewinf the dot:
-  juce::Image previewDot; 
+  // image for previewing the dot:
+  RAPT::AlphaMask<float> dotPreviewMask;          
+  juce::Image dotPreviewImage; 
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhaseScopeEditor2)

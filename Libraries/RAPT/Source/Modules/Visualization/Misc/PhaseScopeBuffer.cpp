@@ -74,7 +74,7 @@ template<class TSig, class TPix, class TPar>
 void PhaseScopeBuffer<TSig, TPix, TPar>::setPixelSpread(TPar newSpread)
 {
   thickness = newSpread;
-  painter.setNeighbourWeightsForSimpleDot(thickness, 0.5*thickness);
+  painter.setNeighbourWeightsForSimpleDot(thickness, 0.5f*thickness);
 }
 
 template<class TSig, class TPix, class TPar>

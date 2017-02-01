@@ -37,6 +37,16 @@ void AlphaMask<TPix>::setOuterSlope(double newSlope)
 }
 
 template<class TPix>
+template<class T>
+void AlphaMask<TPix>::copyShapeParametersFrom(const AlphaMask<T>& other)
+{
+  flat   = (TPix)other.getTransitionWidth();     
+  slope0 = (TPix)other.getInnerSlope();
+  slope1 = (TPix)other.getOuterSlope();
+  renderMask();
+}
+
+template<class TPix>
 double AlphaMask<TPix>::cubicBell(double x, double steepnessAt0, double steepnessAt1)
 {
   double s0 = -steepnessAt0;
