@@ -37,6 +37,12 @@ public:
 
   /** \name Inquiry */
 
+  /** Returns a pointer to the target image onto which we paint. */
+  Image<TPix>* getImage() { return image; }
+
+  /** Returns a pointer to the alpha mask that we use for painting. */
+  AlphaMask<TWgt>* getAlphaMask() { return mask; }
+
 
   /** \name Painting */
 
@@ -102,10 +108,6 @@ protected:
   {
     accumulate((*image)(x, y), color);
   }
-
-
-
-
 
   // data members:
 

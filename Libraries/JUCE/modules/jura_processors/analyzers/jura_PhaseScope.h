@@ -187,10 +187,15 @@ public:
 
 protected:
 
+  /** Updates the image for previewing the dot. */
+  void updatePreviewDot();
 
   // additional widgets:
   RButton *buttonBigDot;
   RSlider *sliderDotSize, *sliderDotBlur, *sliderDotInnerSlope, *sliderDotOuterSlope;
+
+  // image for previewinf the dot:
+  juce::Image previewDot; 
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhaseScopeEditor2)

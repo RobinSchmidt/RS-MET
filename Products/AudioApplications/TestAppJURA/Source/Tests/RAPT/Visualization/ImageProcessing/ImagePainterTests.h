@@ -74,7 +74,7 @@ public:
 
 protected:
 
-  /** Updates the image for previewing the dot */
+  /** Updates the image for previewing the dot. */
   void updatePreviewDot();
 
   PaintCanvas canvas;

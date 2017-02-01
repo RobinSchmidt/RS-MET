@@ -397,7 +397,7 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
   ym = yms;
   for(yi = ys+1; yi <= ye-1; yi++)
   {
-    xm = xms; // why not +1?
+    xm = xms;
     for(xi = xs+1; xi <= xe-1; xi++)
     {
       w = a * (*mask)(xm+1, ym+1) + b * (*mask)(xm, ym+1)

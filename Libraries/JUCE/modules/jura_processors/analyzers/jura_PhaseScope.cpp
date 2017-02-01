@@ -474,3 +474,8 @@ void PhaseScopeEditor2::resized()
   sliderDotOuterSlope->setBounds(x, y, w, h); y += dy;
 }
 
+void PhaseScopeEditor2::updatePreviewDot()
+{
+  // something to do...
+}
+
