@@ -414,7 +414,7 @@ PhaseScopeEditor2::PhaseScopeEditor2(jura::PhaseScope2 *newPhaseScopeToEdit)
   createWidgets();
 
   // init preview dot (maybe factor out):
-  dotPreviewMask.setSize(100.0);  // 100 pixels wide and high
+  dotPreviewMask.setSize(widgetMargin-12.0); 
   dotPreviewImage = juce::Image(juce::Image::ARGB, 
     dotPreviewMask.getWidth(), dotPreviewMask.getHeight(), false);
   updatePreviewDot();
