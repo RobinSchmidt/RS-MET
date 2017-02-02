@@ -173,6 +173,10 @@ void PhaseScopeMultiColor::updateBufferSize()
   ScopedLock scopedLock(*plugInLock);
   int w = (int) round(displayWidth  / pixelScale);
   int h = (int) round(displayHeight / pixelScale);
+
+  jassert(w <= phaseScopeBuffer.getImage()->getMaxWidth());
+  jassert(h <= phaseScopeBuffer.getImage()->getMaxHeight());
+
   phaseScopeBuffer.setSize(w, h);
   image = juce::Image(juce::Image::ARGB, w, h, false);
 }

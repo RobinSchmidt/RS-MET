@@ -183,6 +183,15 @@ public:
   void setMaxSize(int newMaxWidth, int newMaxHeight);
 
 
+  /** \name Inquiry */
+
+  /** Returns maximum width (without re-allocation of memory taking place). */
+  int getMaxWidth() { return maxWidth; }
+
+  /** Returns maximum height (without re-allocation of memory taking place). */
+  int getMaxHeight() { return maxHeight; }
+
+
 protected:
 
   int maxWidth, maxHeight;

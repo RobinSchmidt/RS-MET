@@ -59,6 +59,12 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::setAntiAlias(bool shouldAntiAlias)
 }
 
 template<class TSig, class TPix, class TPar>
+void PhaseScopeBuffer<TSig, TPix, TPar>::setMaxSizeWithoutReAllocation(int newMaxWidth, int newMaxHeight)
+{
+  image.setMaxSize(newMaxWidth, newMaxHeight);
+}
+
+template<class TSig, class TPix, class TPar>
 void PhaseScopeBuffer<TSig, TPix, TPar>::setLineDensity(TPar newDensity)
 {
   lineDensity = newDensity;

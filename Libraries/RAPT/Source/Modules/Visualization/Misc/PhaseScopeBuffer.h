@@ -36,6 +36,15 @@ public:
   to the pixel size of the display. */
   void setSize(int newWidth, int newHeight);
 
+  /** Sets the maximum size of the image into which we draw. The class will pre-allocate an 
+  appropriate amount of memory for the pixels and subsequent call to setSize will not reallocate 
+  memory but just interpret the preallocated memory differently 8and possibly leaving part of it 
+  unused. If you call setSize with a size larger than the pre-allocated maximum size, memory 
+  re-allocation will occur (and the new maximum size will be increased). When the user resizes the 
+  display from the GUI thread while we write samples into the buffer in the audio thread, we don't 
+  want to let memory reallocation take place... */
+  void setMaxSizeWithoutReAllocation(int newMaxWidth, int newMaxHeight);
+
   /** Switches anti-aliasing on/off. */
   void setAntiAlias(bool shouldAntiAlias);
 
@@ -70,7 +79,7 @@ public:
   void reset();
 
   /** Returns a pointer to our image that we use as buffer. */
-  Image<TPix> *getImage() { return &image; }
+  ImageResizable<TPix> *getImage() { return &image; }
 
   /** Returns the sample rate. */
   inline TPar getSampleRate() { return sampleRate; }
@@ -115,7 +124,8 @@ protected:
   TSig xOld, yOld;     // pixel coordinates of old datapoint (one sample ago)
 
   // members for actual painting on an image:
-  Image<TPix> image;
+  //Image<TPix> image;
+  ImageResizable<TPix> image;
   //ImagePainter<TPix, float, TSig> painter; // float: weight-type for alpha mask
   //ImagePainter<TPix, TPar, TSig> painter;  // using TPar for the 2nd TWgt template parameter
   //                                         // might not be ideal
