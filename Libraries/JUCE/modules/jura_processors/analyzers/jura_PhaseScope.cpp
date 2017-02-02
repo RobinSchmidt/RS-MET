@@ -252,6 +252,12 @@ PhaseScopeEditor::PhaseScopeEditor(jura::PhaseScope *newPhaseScopeToEdit)
 
   int headerMargin = 26;  // this is the height we need for headline and preset-section
   setSize(400+widgetMargin, 400+headerMargin);
+
+  setResizable(true);
+  // todo: we should really use a ResizableImage in PhaseScopeBuffer, set up a maximum size and 
+  // then set up the ComponentResizeBoundsConstraine accordingly - otherwise, we may get threading
+  // problems due to reallocating memory in the gui thread while writing into the same memory
+  // in the audio thread
 }
 
 void PhaseScopeEditor::createWidgets()
@@ -419,9 +425,8 @@ PhaseScopeEditor2::PhaseScopeEditor2(jura::PhaseScope2 *newPhaseScopeToEdit)
     dotPreviewMask.getWidth(), dotPreviewMask.getHeight(), false);
   updatePreviewDot();
 
-
-  setSize(800, 600);
-  //resized();
+  //resized();       // to position additional widgets
+  setSize(800, 600); // calls resized()
 }
 
 void PhaseScopeEditor2::createWidgets()

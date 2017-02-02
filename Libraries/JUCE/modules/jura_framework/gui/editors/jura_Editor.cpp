@@ -6,7 +6,9 @@ Editor::Editor(const String& newEditorName)
 {
   headlineX   = 4;
   headlineY   = 4;
-  closeButton = NULL;
+  closeButton = nullptr;
+  resizer     = nullptr;
+
   setHeadlineStyle(SUB_HEADLINE);
 
   //setMouseClickGrabsKeyboardFocus(false); 
@@ -69,7 +71,27 @@ void Editor::setHeadlinePosition(int newHeadlinePosition)
     }
     break;
   }
-  int dummy = 0;
+}
+
+void Editor::setResizable(bool shouldBeResizable)
+{
+  if(shouldBeResizable)
+  {
+    if(resizer == nullptr)
+    {
+      resizer = new ResizableBorderComponent(this, nullptr);
+      resizer->setBorderThickness(BorderSize<int>(4, 4, 4, 4)); // 4 pixels
+      resizer->setBounds(0, 0, getWidth(), getHeight());
+      addAndMakeVisible(resizer);
+    }
+  }
+  else
+  {
+    delete resizer;   
+    resizer = nullptr;
+    // it's ok to delete a child component before removing it, see 
+    // Component::removeChildComponent documentation
+  }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -115,6 +137,8 @@ void Editor::resized()
 {
   ColourSchemeComponent::resized();
   setHeadlinePosition(headlinePosition);
+  if(resizer != nullptr)
+    resizer->setBounds(0, 0, getWidth(), getHeight());
   //repaint();
 }
 
