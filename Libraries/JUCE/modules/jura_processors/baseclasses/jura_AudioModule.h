@@ -380,16 +380,11 @@ protected:
   /** Returns the xml filename that should be used for storing the preferences. */
   virtual juce::String getPreferencesFileName();
 
-  // factor some of them out into a subclass TopLevelAudioModule
-  RClickButton            *setupButton;
-  RHyperlinkButton        *webLink;
-  RTextField              *infoField;
-  ColourSchemeSetupDialog *setupDialog;
-
-  CriticalSection *plugInLock;         // pointer to the global plugInLock
+  RTextField      *infoField;       // field for short help texts, when mouse is over a widget
+  CriticalSection *plugInLock;      // pointer to the global plugInLock
   AudioModule     *moduleToEdit;
-
   int presetSectionPosition, linkPosition;
+
 
   /** This is an array of the automatable sliders - if add RSlider objects here, they will be
   updated in AudioModuleEditor::updateWidgetsAccordingToState via calls to their
@@ -404,6 +399,10 @@ protected:
   bool   drawGradientsBasedOnOutlines, isTopLevelEditor;
   Colour gradientMidColour;
   int    numHueOffsets; 
+
+  RClickButton             *setupButton;
+  RHyperlinkButton         *webLink;
+  ColourSchemeSetupDialog  *setupDialog;
 
   juce_UseDebuggingNewOperator;
 };

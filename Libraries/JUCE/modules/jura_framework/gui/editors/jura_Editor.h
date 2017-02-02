@@ -101,6 +101,8 @@ protected:
 
   RButton *closeButton;  // not always needed, therefore NULL by default
 
+  //ResizableBorderComponent *resizer;
+
   juce_UseDebuggingNewOperator;
 };
 

@@ -90,7 +90,8 @@ PainterComponent::PainterComponent()
 
   sliderSize.setSliderName("Size");
   sliderSize.addListener(this);
-  sliderSize.setRange(1.0, 160.0, 0.125, 50.0);
+  //sliderSize.setRange(1.0, 160.0, 0.125, 50.0);
+  sliderSize.setRange(1.0, 160.0, 1.0, 50.0);
   addAndMakeVisible(sliderSize);
   rSliderValueChanged(&sliderSize);
 
