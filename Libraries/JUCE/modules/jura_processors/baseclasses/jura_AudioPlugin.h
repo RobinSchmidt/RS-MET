@@ -122,6 +122,11 @@ public:
   {
     contentComponent = newContentComponent;
     setSize(contentComponent->getWidth(), contentComponent->getHeight());
+
+    //// test:
+    //setResizable(true, true); 
+    ////setResizeLimits(200, 100, 2000, 1000);
+
     addAndMakeVisible(contentComponent);
   }
 
@@ -133,6 +138,12 @@ public:
   }
 
   virtual void paint(Graphics &g) override {} // we hit a breakpoint if we don't override this
+  //virtual void resized() override
+  //{
+  //  AudioProcessorEditor::resized();
+  //  //contentComponent->setBounds(0, 0, getWidth(), getHeight());
+  //  // in VSTHost, when the window is resized, this function doesn't get called
+  //}
 
 protected:
 
