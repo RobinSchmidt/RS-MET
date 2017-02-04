@@ -34,7 +34,7 @@ void PhaseScope::createParameters()
 
   Parameter* p;
 
-  p = new Parameter(plugInLock, "Brightness", 0.1, 100.0, 0.0, 1.0, Parameter::EXPONENTIAL);
+  p = new Parameter(plugInLock, "Brightness", 0.001, 100.0, 0.0, 1.0, Parameter::EXPONENTIAL);
   addObservedParameter(p);
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setBrightness);
 
@@ -334,7 +334,9 @@ void PhaseScopeEditor::resized()
   int h = getHeight();
   int y = getPresetSectionBottom() + 4;
 
-  display.setBounds(0, y, w-widgetMargin, h-y);
+  //display.setBounds(0, y, w-widgetMargin, h-y); // old - allows non-square display
+  int ds = jmin(w-widgetMargin, h-y);  // display size - always square
+  display.setBounds(0, y, ds, ds);
 
   // set up widgets:
   int x = display.getRight() + 4;
