@@ -1,7 +1,7 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
-#include "../../../../Libraries/RAPT/Code/Library/RAPT.cpp"
+#include "../../../../Libraries/RAPT/Source/Modules/RAPT.cpp"
 
 TestPluginAudioProcessor::TestPluginAudioProcessor()
 {

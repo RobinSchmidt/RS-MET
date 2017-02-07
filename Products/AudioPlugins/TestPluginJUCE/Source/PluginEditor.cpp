@@ -96,9 +96,16 @@ void TestPluginAudioProcessorEditor::sliderValueChanged(Slider* slider)
   ScopedLock(processor.getCallbackLock());
 
   if(slider == &sliderCutoff)
-    processor.setParameterNotifyingHost(TestPluginAudioProcessor::CUTOFF, (float)sliderCutoff.getValue());
+    processor.setParameter(TestPluginAudioProcessor::CUTOFF, (float)sliderCutoff.getValue());
   else if(slider == &sliderReso)
-    processor.setParameterNotifyingHost(TestPluginAudioProcessor::RESO, (float)sliderReso.getValue());
+    processor.setParameter(TestPluginAudioProcessor::RESO, (float)sliderReso.getValue());
+
+  // code below triggers a breakpoint - we probably need to add the parameters to an array of 
+  // automatable parameters first - otherwise we get some index-out-of-range error:
+  //if(slider == &sliderCutoff)
+  //  processor.setParameterNotifyingHost(TestPluginAudioProcessor::CUTOFF, (float)sliderCutoff.getValue());
+  //else if(slider == &sliderReso)
+  //  processor.setParameterNotifyingHost(TestPluginAudioProcessor::RESO, (float)sliderReso.getValue());
 }
 
 void TestPluginAudioProcessorEditor::comboBoxChanged(ComboBox *box)

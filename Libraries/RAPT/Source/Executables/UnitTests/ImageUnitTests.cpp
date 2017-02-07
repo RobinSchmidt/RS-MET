@@ -93,8 +93,8 @@ bool imagePainterUnitTest()
   result &= mask.getWidth()  == maskSize;
   result &= mask.getHeight() == maskSize;
   //fillWithCheckerBoardPattern(mask);
-  //fillWithCross(mask);
-  mask.fillAll(1.f);  // full white
+  fillWithCross(mask);
+  //mask.fillAll(1.f);  // full white
 
   //painter.paintDotViaMask(0.25f, 0.75f, 1);
   //painter.paintDotViaMask(2.25f, 3.75f, 1);

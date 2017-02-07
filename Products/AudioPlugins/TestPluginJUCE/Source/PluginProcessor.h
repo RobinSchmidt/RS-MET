@@ -3,10 +3,10 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
-#include <complex>    // abused for representing stero signals
+#include <complex>    // abused for representing stereo signals
 using namespace std;
 
-#include "../../../../Libraries/RAPT/Code/Library/RAPT.h"
+#include "../../../../Libraries/RAPT/Source/Modules/RAPT.h"
 using namespace RAPT;
 
 /** A test plugin implementing a multimode ladder filter  */

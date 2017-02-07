@@ -44,3 +44,10 @@
 /Products/AudioApplications/TestAppJURA/Builds/VisualStudio2015/*.sdf
 /Products/AudioApplications/TestAppJURA/Builds/VisualStudio2015/x64/Debug
 /Products/AudioApplications/TestAppJURA/Builds/VisualStudio2015/.vs/TestAppJURA/v14/*.suo
+/Products/AudioPlugins/TestPluginJUCE/Builds/VisualStudio2015/Debug
+/Products/AudioPlugins/TestPluginJUCE/Builds/VisualStudio2015/*.sdf
+/Products/AudioPlugins/TestPluginJUCE/Builds/VisualStudio2015/*.opensdf
+/Products/AudioPlugins/TestPluginJUCE/Builds/VisualStudio2015/.vs/TestPluginJUCE/v14/*.suo
+/Products/AudioPlugins/TestPluginJUCE/Builds/VisualStudio2015/x64/Debug
+/Products/AudioPlugins/TestPluginJUCE/Builds/VisualStudio2015/*.user
+/Products/AudioPlugins/TestPluginJUCE/Builds/VisualStudio2015/resources.rc
