@@ -121,13 +121,14 @@ public:
     : AudioProcessorEditor(processorToEdit)
   {
     contentComponent = newContentComponent;
-    setSize(contentComponent->getWidth(), contentComponent->getHeight());
+    int w = contentComponent->getWidth();
+    int h = contentComponent->getHeight();
 
-    ////// test:
     //setResizable(true, true); 
-    //setResizeLimits(200, 100, 2000, 1000);
+    setResizeLimits(200, 100, 2000, 1000); // limits set ad hoc - maybe that needs to be changed
 
-    addAndMakeVisible(contentComponent); // commented for test
+    setSize(w, h);  // must be called AFTER calling setResizeLimits or setResizable
+    addAndMakeVisible(contentComponent); 
   }
 
   AudioPluginEditor::~AudioPluginEditor()
@@ -137,15 +138,12 @@ public:
     // components - is this a change with respect to the old juce?
   }
 
-  virtual void paint(Graphics &g) override {} // we hit a breakpoint if we don't override this
-  //virtual void resized() override
-  //{
-  //  int dummy = 0;
+  virtual void paint(Graphics &g) override { } // we hit a breakpoint if we don't override this
 
-  //  //AudioProcessorEditor::resized();
-  //  //contentComponent->setBounds(0, 0, getWidth(), getHeight());
-  //  // in VSTHost, when the window is resized, this function doesn't get called
-  //}
+  virtual void resized() override
+  {
+    contentComponent->setBounds(0, 0, getWidth(), getHeight());
+  }
 
 protected:
 

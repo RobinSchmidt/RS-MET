@@ -61,7 +61,7 @@ TestPluginAudioProcessorEditor::TestPluginAudioProcessorEditor (TestPluginAudioP
   setSize(250, 100);
 }
 
-void TestPluginAudioProcessorEditor::paint (Graphics& g)
+void TestPluginAudioProcessorEditor::paint(Graphics& g)
 {
   g.fillAll(Colours::grey);
 }
