@@ -51,9 +51,6 @@ public:
   /** Sets the position where the headline is to be drawn. @see headlinePositions */
   virtual void setHeadlinePosition(int newHeadlinePosition);
 
-  /** Makes this Editor resizable by dragging edges and corners. */
-  virtual void setResizable(bool shouldBeResizable);
-
   //-----------------------------------------------------------------------------------------------
   // inquiry:
 
@@ -104,7 +101,6 @@ protected:
 
   // these are not always needed, therefore nullptr by default:
   RButton *closeButton;               
-  ResizableBorderComponent *resizer;
 
   juce_UseDebuggingNewOperator;
 };

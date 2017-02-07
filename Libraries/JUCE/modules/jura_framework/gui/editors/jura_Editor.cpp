@@ -7,7 +7,6 @@ Editor::Editor(const String& newEditorName)
   headlineX   = 4;
   headlineY   = 4;
   closeButton = nullptr;
-  resizer     = nullptr;
 
   setHeadlineStyle(SUB_HEADLINE);
 
@@ -73,27 +72,6 @@ void Editor::setHeadlinePosition(int newHeadlinePosition)
   }
 }
 
-void Editor::setResizable(bool shouldBeResizable)
-{
-  if(shouldBeResizable)
-  {
-    if(resizer == nullptr)
-    {
-      resizer = new ResizableBorderComponent(this, nullptr);
-      resizer->setBorderThickness(BorderSize<int>(4, 4, 4, 4)); // 4 pixels
-      resizer->setBounds(0, 0, getWidth(), getHeight());
-      addAndMakeVisible(resizer);
-    }
-  }
-  else
-  {
-    delete resizer;   
-    resizer = nullptr;
-    // it's ok to delete a child component before removing it, see 
-    // Component::removeChildComponent documentation
-  }
-}
-
 //-------------------------------------------------------------------------------------------------
 // inquiry:
 
@@ -137,26 +115,6 @@ void Editor::resized()
 {
   ColourSchemeComponent::resized();
   setHeadlinePosition(headlinePosition);
-  if(resizer != nullptr)
-  {
-    resizer->setBounds(0, 0, getWidth(), getHeight());
-
-    //// test - we want the plugin window which contains this editor to resize itself::
-    //ComponentPeer* peer = getPeer();
-    //if(peer != nullptr)
-    //{
-    //  peer->updateBounds();
-    //  // doesn't work in juce host, crashes VSTHost
-    //}
-
-    //Component *parent = getParentComponent();
-    //if(parent != nullptr)
-    //  parent->resized();
-    //// does not work, too
-
-    // nope - we must do something in our subclass of AudioProcessorEditor - there are some 
-    // setResizable/isResizable/et.c functions
-  }
   //repaint();
 }
 
