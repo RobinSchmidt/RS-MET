@@ -4,8 +4,6 @@
 TestPluginAudioProcessorEditor::TestPluginAudioProcessorEditor (TestPluginAudioProcessor& p)
     : AudioProcessorEditor (&p), processor (p)
 {
-  setSize(250, 100);
-
   labelMode.setText("Mode", NotificationType::dontSendNotification);
   labelMode.setJustificationType(Justification::centredLeft);
   addAndMakeVisible(&labelMode);
@@ -58,6 +56,9 @@ TestPluginAudioProcessorEditor::TestPluginAudioProcessorEditor (TestPluginAudioP
   sliderReso.addListener(this);
   sliderReso.setValue(0.0);
   addAndMakeVisible(&sliderReso);
+
+  setResizeLimits(250, 100, 500, 200);
+  setSize(250, 100);
 }
 
 void TestPluginAudioProcessorEditor::paint (Graphics& g)
