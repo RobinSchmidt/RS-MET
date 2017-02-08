@@ -106,9 +106,11 @@ void AudioPlugin::getStateInformation(juce::MemoryBlock& destData)
 {
   if(underlyingAudioModule != nullptr)
   {
-    XmlElement* xmlState = underlyingAudioModule->getStateAsXml("StateAsRequestedByHost", false);
-    copyXmlToBinary(*xmlState, destData);
-    delete xmlState;
+    XmlElement* xml = underlyingAudioModule->getStateAsXml("StateAsRequestedByHost", false);
+    xml->setAttribute("EditorWidth",  editorWidth);
+    xml->setAttribute("EditorHeight", editorHeight);
+    copyXmlToBinary(*xml, destData);
+    delete xml;
   }
 }
 
@@ -116,13 +118,15 @@ void AudioPlugin::setStateInformation(const void* data, int sizeInBytes)
 {
   if(underlyingAudioModule != nullptr)
   {
-    XmlElement* const xmlState = getXmlFromBinary(data, sizeInBytes);
+    XmlElement* const xml = getXmlFromBinary(data, sizeInBytes);
     //ParameterObserver::globalAutomationSwitch = false; // why this - threading problems? -> interferes with total recall in quadrifex
     ParameterObserver::guiAutomationSwitch = false;
-    underlyingAudioModule->setStateFromXml(*xmlState, "recalled by host", false);
+    underlyingAudioModule->setStateFromXml(*xml, "recalled by host", false);
+    editorWidth  = xml->getIntAttribute("EditorWidth",  0);
+    editorHeight = xml->getIntAttribute("EditorHeight", 0);
     ParameterObserver::guiAutomationSwitch = true;
     //ParameterObserver::globalAutomationSwitch = true;
-    delete xmlState;
+    delete xml;
 
     // some hosts (Tracktion) seem to keep and re-use an open GUI when a new project is loaded, so
     // we must make sure, that this re-used GUI is updated according to the new recalled state - we 

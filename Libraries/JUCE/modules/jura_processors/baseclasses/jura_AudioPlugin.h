@@ -73,6 +73,11 @@ protected:
   juce::String plugInName;  // assign this in the constructor of your subclass
    // maybe get rid of this and let the wrapper return the name of the wrapped AudioModule
 
+  int editorWidth  = 0;
+  int editorHeight = 0;
+
+  friend class AudioPluginEditor;
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioPlugin)
 };
 
@@ -117,23 +122,30 @@ class AudioPluginEditor : public juce::AudioProcessorEditor
 
 public:
 
-  AudioPluginEditor(AudioModuleEditor *newContentComponent, AudioProcessor* processorToEdit) 
-    : AudioProcessorEditor(processorToEdit)
+  AudioPluginEditor(AudioModuleEditor *editorToWrap, AudioPlugin* pluginToEdit) 
+    : AudioProcessorEditor(pluginToEdit)
   {
-    contentComponent = newContentComponent;
-    int w = contentComponent->getWidth();
-    int h = contentComponent->getHeight();
+    this->pluginToEdit  = pluginToEdit;
+    this->wrappedEditor = editorToWrap;
 
-    //setResizable(true, true); 
-    setResizeLimits(200, 100, 2000, 1000); // limits set ad hoc - maybe that needs to be changed
+    // retrieve desired size from values stored in the plugin:
+    int w = pluginToEdit->editorWidth;
+    int h = pluginToEdit->editorHeight;
 
-    setSize(w, h);  // must be called AFTER calling setResizeLimits or setResizable
-    addAndMakeVisible(contentComponent); 
+    // ...unless there are none stored - then use intitial size of the editor that we wrap:
+    if(w == 0)
+      w = wrappedEditor->getWidth();
+    if(h == 0)
+      h = wrappedEditor->getHeight();
+
+    setResizeLimits(200, 100, 2000, 1000); // must be called BEFORE setSize
+    setSize(w, h);
+    addAndMakeVisible(wrappedEditor); 
   }
 
   AudioPluginEditor::~AudioPluginEditor()
   {
-    delete contentComponent;  
+    delete wrappedEditor;  
     // we need to delete it here because the baseclass destructor does not delete it's child 
     // components - is this a change with respect to the old juce?
   }
@@ -142,12 +154,18 @@ public:
 
   virtual void resized() override
   {
-    contentComponent->setBounds(0, 0, getWidth(), getHeight());
+    wrappedEditor->setBounds(0, 0, getWidth(), getHeight());
+
+    // store the size in the plugin, so it can be recalled with the DAW project:
+    pluginToEdit->editorWidth  = getWidth();
+    pluginToEdit->editorHeight = getHeight();
   }
 
 protected:
 
-  AudioModuleEditor *contentComponent;
+  AudioModuleEditor *wrappedEditor;
+
+  AudioPlugin *pluginToEdit;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioPluginEditor)
 };
