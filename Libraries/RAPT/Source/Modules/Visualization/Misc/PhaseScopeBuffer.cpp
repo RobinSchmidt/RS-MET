@@ -160,3 +160,46 @@ void PhaseScopeBuffer2<TSig, TPix, TPar>::setUseAlphaMask(bool shouldUseMask)
 {
   painter.setUseAlphaMask(shouldUseMask);
 }
+
+template<class TSig, class TPix, class TPar>
+void PhaseScopeBuffer2<TSig, TPix, TPar>::setPixelDecayByValue(TPar newDecayByValue)
+{
+  decayByValue = newDecayByValue;
+  updateDecayFactor();
+}
+
+template<class TSig, class TPix, class TPar>
+void PhaseScopeBuffer2<TSig, TPix, TPar>::setPixelDecayByAverage(TPar newDecayByAverage)
+{
+  decayByAverage = newDecayByAverage;
+}
+
+template<class TSig, class TPix, class TPar>
+void PhaseScopeBuffer2<TSig, TPix, TPar>::applyPixelDecay()
+{
+  if(decayByValue == 0)
+    PhaseScopeBuffer::applyPixelDecay();
+  else
+  {
+
+
+    int dummy = 0;
+  }
+
+
+  if(decayByAverage != 0)
+  {
+    // something to do...apply additional decay that depends on the global average value
+    //TPix mean = mean of all pixel brightnesses
+    //TPix scale = 1 / (1 + decayByAverage*mean); // maybe try a formula with exp
+    // scale all pixels be "scale"
+  }
+}
+
+template<class TSig, class TPix, class TPar>
+void PhaseScopeBuffer2<TSig, TPix, TPar>::updateDecayFactor()
+{
+  PhaseScopeBuffer::updateDecayFactor();
+
+  decayFactorAt1 = decayFactor; // preliminary
+}

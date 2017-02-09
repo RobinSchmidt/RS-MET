@@ -23,7 +23,9 @@ public:
 
   // parameter setup functions (to be used for the callbacks from the parameters):
   void setBrightness(double newBrightness);
-  void setAfterGlow(double newGlow);
+  void setAfterGlow(double newGlow);  // rename to setPixelDecayTime
+  //void setPixelDecayByValue(double newDependency);
+  //void setPixelDecayByAverage(double newDependency);
   void setLineDensity(double newDensity);
   void setDotLimit(double newLimit);
   void setPixelSpread(double newSpread);
@@ -71,6 +73,9 @@ protected:
   // this object is reponsible for drawing the incoming data onto a virtual screen:
   //RAPT::PhaseScopeBuffer<double, float, double> phaseScopeBuffer;
   RAPT::PhaseScopeBuffer2<double, float, double> phaseScopeBuffer;
+    // maybe declare a pointer to a PhaseScopeBuffer here and in subclass PhaseScope2 declare a 
+    // pointer to PahseScopeBuffer2 and in the constructor re-assign the inherited pointer - so we
+    // don't have the overhead of PhaseScopeBuffer2 here.
 
   juce::Image image;       // image for the display
   jura::ColorMap colorMap; // the color map to translate the buffered data matrix to colors

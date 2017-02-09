@@ -31,6 +31,7 @@ public:
 
   /** Sets the time it takes for "color" to decay away. */
   void setDecayTime(TPar newDecayTime);
+    // rename to setPixelDecayTime
 
   /** Sets the size of the matrix into which we buffer the incoming samples. This should correspond 
   to the pixel size of the display. */
@@ -73,7 +74,7 @@ public:
 
   /** Applies our pixel decay-factor to the matrix of buffered values. This assumed to be called at 
   the frame rate. */
-  void applyPixelDecay();
+  virtual void applyPixelDecay();
 
   /** Resets the internal buffer to all zeros. */
   void reset();
@@ -102,7 +103,7 @@ protected:
 
   /** Updates the pixel decay factor according to the settings of frame rate and desired decay 
   time. */
-  void updateDecayFactor();
+  virtual void updateDecayFactor();
 
   /** Updates the pixel insertion factor (i.e. the weight by which new dots are multiplied when 
   they get added in according to the settings of sample rate and brightness parameter. */
@@ -152,12 +153,33 @@ public:
   /** Switches between simple and alpha-mask based dot drawing. */
   void setUseAlphaMask(bool shouldUseMask);
 
+  /** Sets up a dependency of the pixel decay time on the current brightness value of the pixel. 
+  When it's zero, the pixel decay time is independent of the brightness such that the decay behaves
+  the same way as in the baseclass. When it's greater than zero, bright pixels will decay faster 
+  than dark pixels, when it's less than zero, bright pixels will decay more slowly than dark 
+  pixels. It can be used to make the decay initially fast and later slow of vice versa. */
+  void setPixelDecayByValue(TPar newDecayByValue);
+
+  /** Sets a dependency of the pixel decay time on the global average brightness of the whole 
+  screen.... */
+  void setPixelDecayByAverage(TPar newDecayByAverage);
+
+
+  virtual void applyPixelDecay() override;
+
 
   /** Alpha mask used for drawing a "dot", a public member, such that we don't need to implement
-  lots of delegations here for setting it up. */
+  lots of delegations here for setting it up (maybe move to protected and provide access 
+  functions). */
   AlphaMask<TSig> dotMask; 
-  //AlphaMask<TPar> dotMask; 
-  //AlphaMask<float> dotMask; 
+
+protected:
+
+  virtual void updateDecayFactor() override;
+
+  TPar decayByValue = 0;     // dependency of pixel decay on current pixel value
+  TPar decayByAverage = 0;   // dependency of pixel decay on global average brightness
+  TPar decayFactorAt1;
 
 };
 

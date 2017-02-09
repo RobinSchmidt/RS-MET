@@ -146,11 +146,11 @@ public:
   AudioPluginEditor::~AudioPluginEditor()
   {
     delete wrappedEditor;  
-    // we need to delete it here because the baseclass destructor does not delete it's child 
+    // we need to delete it here because the baseclass destructor does not delete its child 
     // components - is this a change with respect to the old juce?
   }
 
-  virtual void paint(Graphics &g) override { } // we hit a breakpoint if we don't override this
+  virtual void paint(Graphics &g) override {} // we hit a breakpoint if we don't override this
 
   virtual void resized() override
   {
