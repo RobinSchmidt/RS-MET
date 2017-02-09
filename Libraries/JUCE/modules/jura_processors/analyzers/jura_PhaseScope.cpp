@@ -355,7 +355,7 @@ void PhaseScopeEditor::resized()
 
 
 //=================================================================================================
-// the artistically entended version of the PhaseScope:
+// the artistically extended version of the PhaseScope:
 
 PhaseScope2::PhaseScope2(CriticalSection *lockToUse) : PhaseScope(lockToUse)
 {
@@ -366,6 +366,14 @@ PhaseScope2::PhaseScope2(CriticalSection *lockToUse) : PhaseScope(lockToUse)
   // i think, either the dot brightness should scale inversely to the dotSize or the lineDensity
 }
 
+void PhaseScope2::setPixelDecayByValue(double newDecayByValue)
+{
+  phaseScopeBuffer.setPixelDecayByValue(newDecayByValue);
+}
+void PhaseScope2::setPixelDecayByAverage(double newDecayByAverage)
+{
+  phaseScopeBuffer.setPixelDecayByAverage(newDecayByAverage);
+}
 void PhaseScope2::setUseBigDot(bool shouldUseBigDot)
 {
   phaseScopeBuffer.setUseAlphaMask(shouldUseBigDot);
@@ -391,6 +399,15 @@ void PhaseScope2::createParameters()
 {
   ScopedLock scopedLock(*plugInLock);
   Parameter* p;
+
+  p = new Parameter(plugInLock, "DecayByValue", -4.0, +4.0, 0.0, 0.0, Parameter::LINEAR_BIPOLAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setPixelDecayByValue);
+
+  p = new Parameter(plugInLock, "DecayByAverage", -4.0, +4.0, 0.0, 0.0, Parameter::LINEAR_BIPOLAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setPixelDecayByAverage);
+
 
   p = new Parameter(plugInLock, "UseBigDot", 0.0, 1.0, 0.0, 1.0, Parameter::BOOLEAN);
   p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setUseBigDot);
@@ -439,6 +456,22 @@ void PhaseScopeEditor2::createWidgets()
 {
   RButton *b;
   RSlider *s;
+
+  addWidget( sliderDecayByValue = s = new RSlider("DecayByValueSlider") );
+  s->assignParameter( scope->getParameterByName("DecayByValue") );
+  s->setSliderName("DecayByValue");
+  s->setDescription("Dependency of pixel decay time on pixel brightness");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString3);
+
+  addWidget( sliderDecayByAverage = s = new RSlider("DecayByAverageSlider") );
+  s->assignParameter( scope->getParameterByName("DecayByAverage") );
+  s->setSliderName("DecayByAverage");
+  s->setDescription("Dependency of pixel decay time on average brightness of screen");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString3);
+
+
 
   addWidget( buttonBigDot = b = new RButton("Big Dot") );
   b->assignParameter( scope->getParameterByName("UseBigDot") );
@@ -489,11 +522,16 @@ void PhaseScopeEditor2::resized()
   dy = h+4;                           // vertical distance ("delta-y") between widgets
   y  = buttonAntiAlias->getBottom() + dy;
   
-  buttonBigDot       ->setBounds(x, y, w, h); y += dy;
-  sliderDotSize      ->setBounds(x, y, w, h); y += dy;
-  sliderDotBlur      ->setBounds(x, y, w, h); y += dy;
-  sliderDotInnerSlope->setBounds(x, y, w, h); y += dy;
-  sliderDotOuterSlope->setBounds(x, y, w, h); y += dy;
+  sliderDecayByValue  ->setBounds(x, y, w, h); y += dy;
+  sliderDecayByAverage->setBounds(x, y, w, h); y += dy;
+    // maybe arrange diffently - these should be below the PixelDecay slider and maybe 
+    // somehow attached to it
+
+  buttonBigDot        ->setBounds(x, y, w, h); y += dy;
+  sliderDotSize       ->setBounds(x, y, w, h); y += dy;
+  sliderDotBlur       ->setBounds(x, y, w, h); y += dy;
+  sliderDotInnerSlope ->setBounds(x, y, w, h); y += dy;
+  sliderDotOuterSlope ->setBounds(x, y, w, h); y += dy;
 }
 
 void PhaseScopeEditor2::paint(Graphics& g)
@@ -516,11 +554,8 @@ void PhaseScopeEditor2::rSliderValueChanged(RSlider* slider)
 void PhaseScopeEditor2::updatePreviewDot()
 {
   dotPreviewMask.copyShapeParametersFrom(scope->phaseScopeBuffer.dotMask);
-
-  //normalizedDataToImage(dotPreviewMask.getPixelPointer(0, 0), dotPreviewImage);
+  //normalizedDataToImage(dotPreviewMask.getPixelPointer(0, 0), dotPreviewImage); // gray values
   normalizedDataToImage(dotPreviewMask.getPixelPointer(0, 0), dotPreviewImage, scope->colorMap);
-    // ...but we need to use the colormap here...
-
   repaint();
 }
 

@@ -24,8 +24,6 @@ public:
   // parameter setup functions (to be used for the callbacks from the parameters):
   void setBrightness(double newBrightness);
   void setAfterGlow(double newGlow);  // rename to setPixelDecayTime
-  //void setPixelDecayByValue(double newDependency);
-  //void setPixelDecayByAverage(double newDependency);
   void setLineDensity(double newDensity);
   void setDotLimit(double newLimit);
   void setPixelSpread(double newSpread);
@@ -150,7 +148,9 @@ protected:
 //=================================================================================================
 
 /** Extends the basic PhaseScope by some more artistic features such as a customizable dot, 
-blurring, etc. */
+blurring, etc. 
+todo: rename to PrettyScope
+*/
 
 class JUCE_API PhaseScope2 : public jura::PhaseScope
 {
@@ -160,12 +160,14 @@ public:
   PhaseScope2(CriticalSection *lockToUse);
 
   // additional setup functions:
+  void setPixelDecayByValue(double newDecayByValue);
+  void setPixelDecayByAverage(double newDecayByAverage);
   void setUseBigDot(bool shouldUseBigDot);
   void setDotSize(double newSize);
   void setDotBlur(double newBlur);
   void setDotInnerSlope(double newSlope);
   void setDotOuterSlope(double newSlope);
-
+  // todo: add smear/blur-functions setLeft/Right/Up/DownSmear...
 
 
   // overriden from PhaseScope baseclass:
@@ -200,6 +202,7 @@ protected:
   void updatePreviewDot();
 
   // additional widgets:
+  RSlider *sliderDecayByValue, *sliderDecayByAverage;
   RButton *buttonBigDot;
   RSlider *sliderDotSize, *sliderDotBlur, *sliderDotInnerSlope, *sliderDotOuterSlope;
 

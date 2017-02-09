@@ -183,9 +183,9 @@ void PhaseScopeBuffer2<TSig, TPix, TPar>::applyPixelDecay()
   {
 
 
+    PhaseScopeBuffer::applyPixelDecay(); // preliminary
     int dummy = 0;
   }
-
 
   if(decayByAverage != 0)
   {
