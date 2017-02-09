@@ -181,10 +181,9 @@ void PhaseScopeBuffer2<TSig, TPix, TPar>::applyPixelDecay()
     PhaseScopeBuffer::applyPixelDecay();
   else
   {
-
-
-    PhaseScopeBuffer::applyPixelDecay(); // preliminary
-    int dummy = 0;
+    TPix *p = image.getPixelPointer(0, 0);
+    for(int n = 0; n < image.getNumPixels(); n++)
+      p[n] *= p[n]*TPix(decayFactorAt1) + (1-p[n])*TPix(decayFactor);
   }
 
   if(decayByAverage != 0)
@@ -199,7 +198,19 @@ void PhaseScopeBuffer2<TSig, TPix, TPar>::applyPixelDecay()
 template<class TSig, class TPix, class TPar>
 void PhaseScopeBuffer2<TSig, TPix, TPar>::updateDecayFactor()
 {
-  PhaseScopeBuffer::updateDecayFactor();
+  //PhaseScopeBuffer::updateDecayFactor();
 
-  decayFactorAt1 = decayFactor; // preliminary
+  if(decayByValue == 0)
+  {
+    decayFactor = (TPar)exp(-1 / (decayTime*frameRate)); // taken from baseclass
+    decayFactorAt1 = decayFactor;
+  }
+  else
+  {
+    TPar factor    = pow(2, 0.5*decayByValue);
+    TPar decayAt1  = decayTime * factor;
+    TPar decayAt0  = decayTime / factor;
+    decayFactor    = (TPar)exp(-1 / (decayAt0*frameRate));
+    decayFactorAt1 = (TPar)exp(-1 / (decayAt1*frameRate));
+  }
 }

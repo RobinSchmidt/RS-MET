@@ -15,8 +15,8 @@ PhaseScope::PhaseScope(CriticalSection *lockToUse) : AudioModule(lockToUse)
   createParameters();
   reset();
 
-  //colorMap.setDefaultMap(ColorMap::fire);
-  colorMap.setDefaultMap(ColorMap::ice);
+  colorMap.setDefaultMap(ColorMap::fire);
+  //colorMap.setDefaultMap(ColorMap::ice);
 
   //juce::ColourGradient g;
   //g.addColour(0.0, Colour(  0,   0,   0));
@@ -400,11 +400,11 @@ void PhaseScope2::createParameters()
   ScopedLock scopedLock(*plugInLock);
   Parameter* p;
 
-  p = new Parameter(plugInLock, "DecayByValue", -4.0, +4.0, 0.0, 0.0, Parameter::LINEAR_BIPOLAR);
+  p = new Parameter(plugInLock, "DecayByValue", -20.0, +20.0, 0.0, 0.0, Parameter::LINEAR_BIPOLAR);
   addObservedParameter(p);
   p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setPixelDecayByValue);
 
-  p = new Parameter(plugInLock, "DecayByAverage", -4.0, +4.0, 0.0, 0.0, Parameter::LINEAR_BIPOLAR);
+  p = new Parameter(plugInLock, "DecayByAverage", 0.0, +8.0, 0.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setPixelDecayByAverage);
 
