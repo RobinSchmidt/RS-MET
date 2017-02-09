@@ -177,21 +177,27 @@ void PhaseScopeBuffer2<TSig, TPix, TPar>::setPixelDecayByAverage(TPar newDecayBy
 template<class TSig, class TPix, class TPar>
 void PhaseScopeBuffer2<TSig, TPix, TPar>::applyPixelDecay()
 {
+  int   N = image.getNumPixels();  
+  TPix *p = image.getPixelPointer(0, 0);
+
   if(decayByValue == 0)
     PhaseScopeBuffer::applyPixelDecay();
   else
   {
-    TPix *p = image.getPixelPointer(0, 0);
-    for(int n = 0; n < image.getNumPixels(); n++)
+
+    for(int n = 0; n < N; n++)
       p[n] *= p[n]*TPix(decayFactorAt1) + (1-p[n])*TPix(decayFactor);
+    // i think, a linear interpolation between two different decay factors might not be ideal
+    // maybe we should use a table instead
   }
 
   if(decayByAverage != 0)
   {
-    // something to do...apply additional decay that depends on the global average value
-    //TPix mean = mean of all pixel brightnesses
-    //TPix scale = 1 / (1 + decayByAverage*mean); // maybe try a formula with exp
-    // scale all pixels be "scale"
+    // apply additional decay that depends on the global average value
+    TPix mean   = ArrayTools::rsMean(p, N);
+    //TPix scaler = 1 / (1 + decayByAverage*mean); // maybe try a formula with exp
+    TPix scaler =  (TPix) (1-exp(-1 / (decayByAverage*mean)));
+    ArrayTools::rsScale(p, N, scaler);
   }
 }
 

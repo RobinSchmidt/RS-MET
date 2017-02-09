@@ -404,7 +404,7 @@ void PhaseScope2::createParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setPixelDecayByValue);
 
-  p = new Parameter(plugInLock, "DecayByAverage", 0.0, +8.0, 0.0, 0.0, Parameter::LINEAR);
+  p = new Parameter(plugInLock, "DecayByAverage", 0.0, +20.0, 0.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setPixelDecayByAverage);
 
