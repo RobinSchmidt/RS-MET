@@ -240,9 +240,8 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(int x, int y, TPix color)
 template<class TPix, class TWgt, class TCor>
 void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
 {
-  //paintDotViaMask((int)round(x), (int)round(y), color);
-  //return;
-  //  // preliminary - calls the non anti-aliased version
+  // This almost works, but there's still something wrong with the edge code - there's a 1 pixel 
+  // wide zone border in the image onto which nothing is drawn
 
   int wi = image->getWidth();
   int hi = image->getHeight();
@@ -356,10 +355,6 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
     if(rightEdge)
       blend(xe, ye, color, d * (*mask)(wm-1, hm-1));  // bottom right corner
   }
-
-  // there's still something wrong with the edge code - there's a 1 pixel wide zone border in the 
-  // image onto which nothing is drawn
-
 
   // paint interior rectangle:
   ym = yms;
