@@ -80,9 +80,9 @@ bool imagePainterUnitTest()
   ImagePainter<float, float, float> painter(&image, &mask);
 
 
-  int imageWidth  = 20;
-  int imageHeight = 20; // 50x50 image with 3x3 mask gives an access violation
-  int maskSize    = 5;
+  int imageWidth  = 30;
+  int imageHeight = 30; // 50x50 image with 3x3 mask gives an access violation
+  int maskSize    = 7;
 
   // maybe, we should 1st use the simplest case: 1x1 mask
 
@@ -93,8 +93,8 @@ bool imagePainterUnitTest()
   result &= mask.getWidth()  == maskSize;
   result &= mask.getHeight() == maskSize;
   //fillWithCheckerBoardPattern(mask);
-  fillWithCross(mask);
-  //mask.fillAll(1.f);  // full white
+  //fillWithCross(mask);
+  mask.fillAll(1.f);  // full white
 
   //painter.paintDotViaMask(0.25f, 0.75f, 1);
   //painter.paintDotViaMask(2.25f, 3.75f, 1);

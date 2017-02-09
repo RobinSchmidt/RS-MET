@@ -86,7 +86,9 @@ protected:
   into saturation smoothly. */
   inline void accumulate(TPix &accu, TPix value)
   {
+    //rsAssert(value <= TPix(1));
     //rsAssert(value >= TPix(0));
+
     accu = (accu + value) / (TPix(1) + value);
 
     //accu = accu+value; // just for testing

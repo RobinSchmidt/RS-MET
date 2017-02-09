@@ -237,6 +237,145 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(int x, int y, TPix color)
   }
 }
 
+//template<class TPix, class TWgt, class TCor>
+//void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
+//{
+//  int wi = image->getWidth();
+//  int hi = image->getHeight();
+//  int wm = mask->getWidth();
+//  int hm = mask->getHeight();
+//
+//  int  xi = (int)floor(x);  // integer part of x
+//  int  yi = (int)floor(y);  // integer part of y
+//  TCor xf = x - xi;         // fractional part of x
+//  TCor yf = y - yi;         // fractional part of y
+//
+//                            // compute pixel coverages (these are the same as the weights for bilinear deinterpolation):
+//  TWgt a, b, c, d;
+//  d = TWgt(xf*yf);
+//  c = TWgt(yf)-d;
+//  b = TWgt(xf)-d;
+//  a = d+TWgt(1-xf-yf);
+//
+//  // compute write coordinates in target image:
+//  int xs = xi - wm/2;    // start x-coordinate in image
+//  int ys = yi - hm/2;    // start y coordinate in image
+//  int xe = xs + wm;      // end x coordinate in image
+//  int ye = ys + hm;      // end y coordinate in image
+//
+//  if(xe < 0 || xs >= wi || ye < 0 || ys >= hi)
+//    return; // dot completely off the canvas (...but do we need this check?)
+//
+//  // read coordinates in mask image:
+//  int xms = 0;   // start x in mask
+//  int yms = 0;   // start y in mask
+//
+//  // flags to indicate whether or not we need to draw the 4 edges of the mask:
+//  bool leftEdge, rightEdge, topEdge, bottomEdge;
+//  leftEdge   = true;
+//  rightEdge  = true;
+//  topEdge    = true;
+//  bottomEdge = true;
+//
+//  // checks to not write beyond image bounds:
+//  if(xs < 0)
+//  {
+//    xms = -xs-1;
+//    xs  = 0;
+//    leftEdge = false;
+//  }
+//  if(ys < 0)
+//  {
+//    yms = -ys-1;
+//    ys  =  0;
+//    topEdge = false;
+//  }
+//  if(xe >= wi)
+//  {
+//    xe = wi-1;
+//    rightEdge = false;
+//  }
+//  if(ye >= hi)
+//  {
+//    ye = hi-1;
+//    bottomEdge = false;
+//  }
+//
+//  int xm, ym;    // x- and y-index in mask
+//  TWgt w;        // weight for current pixel
+//
+//  //// paint edges and corners:
+//  if(leftEdge)
+//  {
+//    ym = yms;
+//    for(yi = ys+1; yi <= ye-1; yi++)
+//    {
+//      w = a * (*mask)(0, ym+1) + c * (*mask)(0, ym); 
+//      blend(xs, yi, color, w);
+//      ym++;
+//    }
+//    if(topEdge)
+//      blend(xs, ys, color, a * (*mask)(0, 0));  // top left corner
+//  }
+//  if(topEdge)
+//  {
+//    xm = xms;
+//    for(xi = xs+1; xi <= xe-1; xi++) 
+//    {
+//      w = a * (*mask)(xm+1, 0) + b * (*mask)(xm, 0); 
+//      blend(xi, ys, color, w);
+//      xm++;
+//    }
+//    if(rightEdge)
+//      blend(xe, ys, color, b * (*mask)(wm-1, 0));  // top right corner
+//  }
+//  if(rightEdge)
+//  {
+//    ym = yms;
+//    for(yi = ys+1; yi <= ye-1; yi++) 
+//    {
+//      w = b * (*mask)(wm-1, ym+1) + d * (*mask)(wm-1, ym); 
+//      blend(xe, yi, color, w);
+//      ym++;
+//    }
+//  }
+//  if(bottomEdge)
+//  {
+//    xm = xms;
+//    for(xi = xs+1; xi <= xe-1; xi++) 
+//    {
+//      w = c * (*mask)(xm+1, hm-1) + d * (*mask)(xm, hm-1); 
+//      blend(xi, ye, color, w);
+//      xm++;
+//    }
+//    if(leftEdge)
+//      blend(xs, ye, color, c * (*mask)(0,    hm-1));  // bottom left corner
+//    if(rightEdge)
+//      blend(xe, ye, color, d * (*mask)(wm-1, hm-1));  // bottom right corner
+//  }
+//
+//  // adjust start/endp pixels when edges were drawn:
+//  if(leftEdge)   { xs++; xms++; }
+//  if(topEdge)    { ys++; yms++; }
+//  if(rightEdge)  { xe--;        }
+//  if(bottomEdge) { ye--;        }
+//
+//  // paint interior rectangle:
+//  ym = yms;
+//  for(yi = ys; yi <= ye-1; yi++)
+//  {
+//    xm = xms;
+//    for(xi = xs; xi <= xe-1; xi++)
+//    {
+//      w = a * (*mask)(xm+1, ym+1) + b * (*mask)(xm, ym+1)
+//        + c * (*mask)(xm+1, ym)   + d * (*mask)(xm, ym);   // check this carefully!
+//      blend(xi, yi, color, w); 
+//      xm++;
+//    }
+//    ym++;
+//  }
+//}
+
 template<class TPix, class TWgt, class TCor>
 void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
 {
@@ -304,9 +443,10 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
     bottomEdge = false;
   }
 
-  // paint edges and corners:
   int xm, ym;    // x- and y-index in mask
   TWgt w;        // weight for current pixel
+
+  // paint edges and corners:
   if(leftEdge)
   {
     ym = yms;
