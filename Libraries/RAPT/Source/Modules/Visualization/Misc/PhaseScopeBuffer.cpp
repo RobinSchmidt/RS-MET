@@ -213,10 +213,16 @@ void PhaseScopeBuffer2<TSig, TPix, TPar>::updateDecayFactor()
   }
   else
   {
-    TPar factor    = pow(2, 0.5*decayByValue);
+    TPar factor    = pow(2, decayByValue);
     TPar decayAt1  = decayTime * factor;
-    TPar decayAt0  = decayTime / factor;
+    TPar decayAt0  = decayTime;
     decayFactor    = (TPar)exp(-1 / (decayAt0*frameRate));
     decayFactorAt1 = (TPar)exp(-1 / (decayAt1*frameRate));
+
+    //TPar factor    = pow(2, 0.5*decayByValue);
+    //TPar decayAt1  = decayTime * factor;
+    //TPar decayAt0  = decayTime / factor;
+    //decayFactor    = (TPar)exp(-1 / (decayAt0*frameRate));
+    //decayFactorAt1 = (TPar)exp(-1 / (decayAt1*frameRate));
   }
 }
