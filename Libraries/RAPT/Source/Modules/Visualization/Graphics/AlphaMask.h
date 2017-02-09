@@ -47,15 +47,16 @@ public:
   /** \name Inquiry */
 
   inline double getTransitionWidth() const { return flat; }
-
   inline double getInnerSlope()      const { return slope0; }
-
   inline double getOuterSlope()      const { return slope1; }
 
 
-
+  /** \name Misc */
 
   static double cubicBell(double x, double steepnessAt0, double steepnessAt1);
+    // move to Math
+
+  //static double rationalMap(double x, double a);
 
 protected:
 
