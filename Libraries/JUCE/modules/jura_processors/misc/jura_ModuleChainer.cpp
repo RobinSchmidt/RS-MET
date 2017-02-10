@@ -83,7 +83,13 @@ void ModuleChainer::reset()
 
 AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector") 
 {
-  // add the options for the different modules...
+  // add menu items for the different module types:
+  int i = 0;
+  addItem(i, "None");         i++;
+  addItem(i, "Ladder");       i++;
+  addItem(i, "PhasorFilter"); i++;
+  addItem(i, "PhaseScope");   i++;
+  addItem(i, "Enveloper");    i++;
 }
 
 //=================================================================================================
@@ -93,8 +99,22 @@ ModuleChainerEditor::ModuleChainerEditor(jura::ModuleChainer *moduleChainerToEdi
 {
   ScopedLock scopedLock(*plugInLock);
   chainer = moduleChainerToEdit;
-
-  //createWidgets();
-
+  createWidgets();
   setSize(200, 100);
+}
+
+void ModuleChainerEditor::createWidgets()
+{
+  // create combo-boxes for selecting modules...
+}
+
+void ModuleChainerEditor::resized()
+{
+  // We should arrange the GUI in a way such that the plugin-chain and global preset all go into 
+  // the left column (maybe around 150..200 pixels wide). To the right of that, the editor for the
+  // currently active plugin is shown
+
+  // maybe, we could have bypass switches for each plugin
+
+  // arrange combo-boxes...
 }

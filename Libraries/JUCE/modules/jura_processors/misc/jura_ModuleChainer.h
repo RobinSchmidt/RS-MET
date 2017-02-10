@@ -79,8 +79,9 @@ public:
 
   ModuleChainerEditor(jura::ModuleChainer *moduleChainerToEdit);
 
-  //virtual void createWidgets();
-  //virtual void resized() override;
+  virtual void createWidgets();
+
+  virtual void resized() override;
 
 protected:
 
@@ -90,6 +91,5 @@ protected:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModuleChainerEditor)
 };
-
 
 #endif 
