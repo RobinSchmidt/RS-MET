@@ -8,6 +8,7 @@ ModuleChainer::ModuleChainer(CriticalSection *lockToUse) : AudioModuleWithMidiIn
 
 AudioModule* ModuleChainer::createModule(const String& type)
 {
+  if(type == "None")         return new DummyModule( plugInLock);
   if(type == "PhaseScope")   return new PhaseScope(  plugInLock);
   if(type == "Enveloper")    return new Enveloper(   plugInLock);
   if(type == "Ladder")       return new Ladder(      plugInLock);

@@ -1,6 +1,17 @@
 #ifndef jura_ModuleChainer_h
 #define jura_ModuleChainer_h
   
+/** A do-nothing dummy AudioModule to be used as placeholder. Maybe move somewhere else... */
+class JUCE_API DummyModule : public jura::AudioModule
+{
+public:
+  DummyModule(CriticalSection *lockToUse) : AudioModule(lockToUse) {}
+  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override {}
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DummyModule)
+};
+
+//=================================================================================================
+
 /** A shell module that can be used to create a chain (i.e. series connection) of some number of
 AudioModule objects. */
 
@@ -11,8 +22,14 @@ public:
 
   ModuleChainer(CriticalSection *lockToUse);
 
-  //void addModule(AudioModule *moduleToAdd, int position = -1);
+  /** Creates and returns a pointer to an object of some subclass of AudioModule. Which subclass it 
+  is, is determined by the passed String parameter. */
   AudioModule* createModule(const String& type);
+
+  // todo:
+  //void addModule(AudioModule *moduleToAdd, int position = -1);
+  //void replaceModule(int position, AudioModule replacementModule);
+  //void removeModule(int position);
 
   // overriden from AudioModule baseclass:
   AudioModuleEditor *createEditor() override;
@@ -47,6 +64,8 @@ public:
 protected:
 
   ModuleChainer *chainer;
+
+  Array<AudioModuleEditor*> editors;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModuleChainerEditor)
 };
