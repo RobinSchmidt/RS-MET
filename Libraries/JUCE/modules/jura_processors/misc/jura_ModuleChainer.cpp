@@ -1,4 +1,53 @@
 
+AudioModule* AudioModuleFactory::createModule(const String& type, CriticalSection *lock)
+{
+  if(type == "None")         return new DummyModule( lock);
+  if(type == "PhaseScope")   return new PhaseScope(  lock);
+  if(type == "Enveloper")    return new Enveloper(   lock);
+  if(type == "Ladder")       return new Ladder(      lock);
+  if(type == "PhasorFilter") return new PhasorFilter(lock);
+
+  jassertfalse;  // unknown module type requested
+  return nullptr;
+}
+
+String AudioModuleFactory::getModuleType(AudioModule *m)
+{
+  if(dynamic_cast<DummyModule*>  (m)) return "None";
+  if(dynamic_cast<PhaseScope*>   (m)) return "PhaseScope";
+  if(dynamic_cast<Enveloper*>    (m)) return "Enveloper";
+  if(dynamic_cast<Ladder*>       (m)) return "Ladder";
+  if(dynamic_cast<PhasorFilter*> (m)) return "PhasorFilter";
+
+  jassertfalse;  // unknown module type was passed
+  return String();
+}
+
+StringArray AudioModuleFactory::getAvailableModuleTypes()
+{
+  StringArray a;
+  a.add("None");
+  a.add("PhaseScope");
+  a.add("Enveloper");
+  a.add("Ladder");
+  a.add("PhasorFilter");
+  return a;
+}
+
+//=================================================================================================
+
+AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector") 
+{
+  StringArray a = AudioModuleFactory::getAvailableModuleTypes();
+  for(int i = 0; i < a.size(); i++)
+    addItem(i, a[i]); 
+
+  // maybe later we should use a subclass of TreeView and organize the modules in groups: 
+  // Analysis, Filter, etc.
+}
+
+//=================================================================================================
+
 ModuleChainer::ModuleChainer(CriticalSection *lockToUse) : AudioModuleWithMidiIn(lockToUse)
 {
   ScopedLock scopedLock(*plugInLock);
@@ -15,25 +64,10 @@ ModuleChainer::~ModuleChainer()
     delete modules[i];
 }
 
-AudioModule* ModuleChainer::createModule(const String& type)
-{
-  ScopedLock scopedLock(*plugInLock);
-
-  if(type == "None")         return new DummyModule( plugInLock);
-  if(type == "PhaseScope")   return new PhaseScope(  plugInLock);
-  if(type == "Enveloper")    return new Enveloper(   plugInLock);
-  if(type == "Ladder")       return new Ladder(      plugInLock);
-  if(type == "PhasorFilter") return new PhasorFilter(plugInLock);
-  // add more module types here...
-
-  jassertfalse;  // unknown module type requested
-  return nullptr;
-}
-
 void ModuleChainer::addModule(const String& type)
 {
   ScopedLock scopedLock(*plugInLock);
-  AudioModule *m = createModule(type);
+  AudioModule *m = AudioModuleFactory::createModule(type, plugInLock);
   modules.add(m);
 }
 
@@ -68,6 +102,7 @@ void ModuleChainer::noteOn(int noteNumber, int velocity)
     if(m != nullptr)
       m->noteOn(noteNumber, velocity);
   }
+  // todo: maybe let different slots receive MIDI on different channels
 }
 
 void ModuleChainer::noteOff(int noteNumber)
@@ -86,21 +121,6 @@ void ModuleChainer::reset()
   ScopedLock scopedLock(*plugInLock);
   for(int i = 0; i < modules.size(); i++)
     modules[i]->reset();
-}
-
-//=================================================================================================
-
-AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector") 
-{
-  // add menu items for the different module types:
-  int i = 0;
-  addItem(i, "None");         i++;
-  addItem(i, "Ladder");       i++;
-  addItem(i, "PhasorFilter"); i++;
-  addItem(i, "PhaseScope");   i++;
-  addItem(i, "Enveloper");    i++;
-
-  // maybe later we should use a subclass of TreeView and have groups: Analysis, Filter, etc.
 }
 
 //=================================================================================================
