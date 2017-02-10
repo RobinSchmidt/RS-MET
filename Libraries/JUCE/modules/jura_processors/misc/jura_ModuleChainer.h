@@ -64,11 +64,15 @@ public:
 
   /** Adds a module of the given type at the end of the chain. */
   void addModule(const String& type);
+    // Maybe replace this function by addEmptySlot - we just use it to create an empty (bypass)
+    // slot. Actual modules are then created by replacing the empty dummy module with some other 
+    // type. We should also have a function: removeTrailingEmptySlots which gets invoked from
+    // replaceModule. The last slot should always be an empty slot.
 
-  // todo:
-  //void addModule(AudioModule *moduleToAdd, int position = -1);
-  //void replaceModule(int position, AudioModule replacementModule);
-  //void removeModule(int position);
+  /** Replaces the module at the given with a new module of given type unless the given type 
+  matches that of the module which is already there at this position in which case nothing 
+  happens. */
+  void replaceModule(int index, const String& type);
 
   // overriden from AudioModule baseclass:
   AudioModuleEditor *createEditor() override;
@@ -77,12 +81,11 @@ public:
   virtual void noteOn(int noteNumber, int velocity) override;
   virtual void noteOff(int noteNumber) override;
   virtual void reset() override;
-  // override getStateXml, etc...
+  // override getStateAsXml, etc...
 
 protected:
 
-  Array<AudioModule*> modules;
-  //OwnedArray<AudioModule*> modules;
+  Array<AudioModule*> modules;   // maybe use the inherited childModules array instead?
 
   friend class ModuleChainerEditor;
 
@@ -93,7 +96,7 @@ protected:
 
 /** Implements a GUI editor for the ModuleChainer. */
 
-class JUCE_API ModuleChainerEditor : public AudioModuleEditor
+class JUCE_API ModuleChainerEditor : public AudioModuleEditor, public RComboBoxObserver
 {
 
 public:
@@ -103,7 +106,9 @@ public:
 
   virtual void createWidgets();
 
+  // overrides:
   virtual void resized() override;
+  virtual void rComboBoxChanged(RComboBox* comboBoxThatHasChanged) override;
 
 protected:
 

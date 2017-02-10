@@ -72,6 +72,17 @@ void ModuleChainer::addModule(const String& type)
   modules.add(m);
 }
 
+void ModuleChainer::replaceModule(int index, const String& type)
+{
+  ScopedLock scopedLock(*plugInLock);
+  jassert(index >= 0 && index < modules.size()); // index out of range
+  if(type != AudioModuleFactory::getModuleType(modules[index]))
+  {
+    delete modules[index];
+    modules.set(index, AudioModuleFactory::createModule(type, plugInLock));
+  }
+}
+
 // overrides:
 
 AudioModuleEditor* ModuleChainer::createEditor()
@@ -104,6 +115,11 @@ void ModuleChainer::noteOn(int noteNumber, int velocity)
       m->noteOn(noteNumber, velocity);
   }
   // todo: maybe let different slots receive MIDI on different channels
+  // and/or don't override the noteOn/etc. functions here but rather let the MIDI events also
+  // apss through the modules in series. most modules just pass them through, but we can also
+  // have MIDI effects such as appregiators and sequencers which modify the sequence and pass
+  // the modified sequence to the next module - we could have an appregiator in front of a 
+  // synth, for example
 }
 
 void ModuleChainer::noteOff(int noteNumber)
@@ -149,6 +165,7 @@ void ModuleChainerEditor::createWidgets()
   {
     AudioModuleSelector *s = new AudioModuleSelector();
     s->selectItemFromText(AudioModuleFactory::getModuleType(chainer->modules[i]), false);
+    s->registerComboBoxObserver(this);
     addWidget(s);
     selectors.add(s);
   }
@@ -169,12 +186,21 @@ void ModuleChainerEditor::resized()
   // arrange selectors:
   y  = getPresetSectionBottom() + margin;
   dy = h;
-  for(int i = 0; i < selectors.size(); i++)
-  {
+  for(int i = 0; i < selectors.size(); i++){
     selectors[i]->setBounds(x, y, w, h);
     y += dy;
   }
 
   // maybe, we could have bypass switches for each plugin
   // arrange setup button for color scheme, infoline, link, etc.
+}
+
+void ModuleChainerEditor::rComboBoxChanged(RComboBox* box)
+{
+  ScopedLock scopedLock(*plugInLock);
+  for(int i = 0; i < selectors.size(); i++){
+    if(box == selectors[i]){
+      chainer->replaceModule(i, box->getSelectedItemText());
+    }
+  }
 }
