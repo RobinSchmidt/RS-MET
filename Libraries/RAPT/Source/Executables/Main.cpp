@@ -1,5 +1,6 @@
 #include "Demos/Demos.h"
 #include "Experiments/Experiments.h"
+#include "PerformanceTests/PerformanceTests.h"
 #include "UnitTests/UnitTests.h"
 
 int main(int argc, char** argv)
@@ -8,12 +9,8 @@ int main(int argc, char** argv)
 
   //runDemos();
   //runExperiments();
-  runUnitTests();
-  //runPerformanceTests();  // not yet implemented
-
-
-
-
+  runPerformanceTests();
+  //runUnitTests();
 
   // ToDo: check for memory leaks here
 }

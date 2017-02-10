@@ -22,6 +22,9 @@
     <Filter Include="UnitTests">
       <UniqueIdentifier>{05f758c3-f439-40cb-9a45-024f267a2b01}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PerformanceTests">
+      <UniqueIdentifier>{946a0145-cfde-45e8-98da-b5452be1c3c3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\Executables\Demos\ArrayDemos.h">
@@ -68,6 +71,12 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Executables\Experiments\MathExperiments.h">
       <Filter>Experiments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Executables\PerformanceTests\ImagePerformanceTests.h">
+      <Filter>PerformanceTests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Executables\PerformanceTests\PerformanceTests.h">
+      <Filter>PerformanceTests</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -116,6 +125,12 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Executables\Experiments\MathExperiments.cpp">
       <Filter>Experiments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Executables\PerformanceTests\ImagePerformanceTests.cpp">
+      <Filter>PerformanceTests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Executables\PerformanceTests\PerformanceTests.cpp">
+      <Filter>PerformanceTests</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -155,6 +155,8 @@
     <ClInclude Include="..\..\Source\Executables\Experiments\Experiments.h" />
     <ClInclude Include="..\..\Source\Executables\Experiments\FilterExperiments.h" />
     <ClInclude Include="..\..\Source\Executables\Experiments\MathExperiments.h" />
+    <ClInclude Include="..\..\Source\Executables\PerformanceTests\ImagePerformanceTests.h" />
+    <ClInclude Include="..\..\Source\Executables\PerformanceTests\PerformanceTests.h" />
     <ClInclude Include="..\..\Source\Executables\Shared\Plotting\GNUPlotter.h" />
     <ClInclude Include="..\..\Source\Executables\Shared\Plotting\Plotting.h" />
     <ClInclude Include="..\..\Source\Executables\Shared\Shared.h" />
@@ -173,6 +175,8 @@
     <ClCompile Include="..\..\Source\Executables\Experiments\FilterExperiments.cpp" />
     <ClCompile Include="..\..\Source\Executables\Experiments\MathExperiments.cpp" />
     <ClCompile Include="..\..\Source\Executables\Main.cpp" />
+    <ClCompile Include="..\..\Source\Executables\PerformanceTests\ImagePerformanceTests.cpp" />
+    <ClCompile Include="..\..\Source\Executables\PerformanceTests\PerformanceTests.cpp" />
     <ClCompile Include="..\..\Source\Executables\Shared\Plotting\GNUPlotter.cpp" />
     <ClCompile Include="..\..\Source\Executables\Shared\Plotting\Plotting.cpp" />
     <ClCompile Include="..\..\Source\Executables\Shared\RaptLibraryCode\RaptInstantiations.cpp" />

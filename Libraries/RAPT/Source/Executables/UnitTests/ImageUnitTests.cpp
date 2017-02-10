@@ -103,9 +103,9 @@ bool imagePainterUnitTest()
   // draw in center and at all 4 edges:
   float dx = 0.5;
   float dy = 0.5;
-  float w  = imageWidth;
+  float w  = (float)imageWidth;
   float w2 = w/2;
-  float h  = imageHeight;
+  float h  = (float)imageHeight;
   float h2 = h/2;
   float b  = 0.75f; // brightness
 
