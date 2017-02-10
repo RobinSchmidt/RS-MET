@@ -61,8 +61,6 @@ ModuleChainer::ModuleChainer(CriticalSection *lockToUse) : AudioModuleWithMidiIn
 ModuleChainer::~ModuleChainer()
 {
   ScopedLock scopedLock(*plugInLock);
-  for(int i = 0; i < editors.size(); i++)
-    delete editors[i];
   for(int i = 0; i < modules.size(); i++)
     delete modules[i];
 }
@@ -72,34 +70,21 @@ void ModuleChainer::addModule(const String& type)
   ScopedLock scopedLock(*plugInLock);
   AudioModule *m = AudioModuleFactory::createModule(type, plugInLock);
   modules.add(m);
-  editors.add(nullptr);
 }
 
-void ModuleChainer::replaceModule(int index, const String& type)
+bool ModuleChainer::replaceModule(int index, const String& type)
 {
   ScopedLock scopedLock(*plugInLock);
   jassert(index >= 0 && index < modules.size()); // index out of range
-  jassert(index >= 0 && index < editors.size()); // index out of range 
 
   if(type != AudioModuleFactory::getModuleType(modules[index]))
   {
-    delete editors[index];
-    editors.set(index, nullptr);
     delete modules[index];
     modules.set(index, AudioModuleFactory::createModule(type, plugInLock));
     activeSlot = index;
+    return true;
   }
-}
-
-AudioModuleEditor* ModuleChainer::getEditorForSlot(int index)
-{
-  ScopedLock scopedLock(*plugInLock);
-  jassert(index >= 0 && index < modules.size()); // index out of range
-  jassert(index >= 0 && index < editors.size()); // index out of range
-
-  if(editors[index] == nullptr)
-    editors.set(index, modules[index]->createEditor());  
-  return editors[index];
+  return false;
 }
 
 // overrides:
@@ -168,6 +153,7 @@ ModuleChainerEditor::ModuleChainerEditor(jura::ModuleChainer *moduleChainerToEdi
   chainer = moduleChainerToEdit;
   setHeadlinePosition(TOP_LEFT);
   stateWidgetSet->setLayout(StateLoadSaveWidgetSet::LABEL_AND_BUTTONS_ABOVE);
+  initEditorArray();
   createWidgets();
   updateEditor();
   //setSize(200, 100);
@@ -175,40 +161,42 @@ ModuleChainerEditor::ModuleChainerEditor(jura::ModuleChainer *moduleChainerToEdi
 
 ModuleChainerEditor::~ModuleChainerEditor()
 {
-
+  clearEditorArray();
 }
 
-void ModuleChainerEditor::createWidgets()
+AudioModuleEditor* ModuleChainerEditor::getEditorForSlot(int index)
 {
   ScopedLock scopedLock(*plugInLock);
-  for(int i = 0; i < chainer->modules.size(); i++)
+  jassert(index >= 0 && index < editors.size()); // index out of range
+  if(editors[index] == nullptr)
+    editors.set(index, chainer->modules[index]->createEditor());  
+  return editors[index];
+}
+
+void ModuleChainerEditor::replaceModule(int index, const String& type)
+{
+  ScopedLock scopedLock(*plugInLock);
+  jassert(index >= 0 && index < editors.size()); // index out of range
+  bool wasReplaced = chainer->replaceModule(index, type);
+  if(wasReplaced)
   {
-    AudioModuleSelector *s = new AudioModuleSelector();
-    s->selectItemFromText(AudioModuleFactory::getModuleType(chainer->modules[i]), false);
-    s->registerComboBoxObserver(this);
-    addWidget(s);
-    selectors.add(s);
+    delete editors[index];
+    editors.set(index, chainer->modules[index]->createEditor());
   }
 }
 
 void ModuleChainerEditor::updateEditor()
 {
   ScopedLock scopedLock(*plugInLock);
-  AudioModuleEditor* tmpEditor = chainer->getEditorForActiveSlot();
+  AudioModuleEditor* tmpEditor = getEditorForActiveSlot();
   if(tmpEditor != activeEditor)
   {
-    //removeChildEditor(activeEditor, false);
-    //addChildEditor(tmpEditor);
+    removeChildEditor(activeEditor, false);
+    addChildEditor(tmpEditor);
     activeEditor = tmpEditor;
     setSize(activeEditor->getWidth() + leftColumnWidth, 
       activeEditor->getHeight() + bottomRowHeight);
   }
-
-  //if(activeEditor != nullptr)  // do we need this check?
-  //  removeChildEditor(activeEditor, false);
-  //activeEditor = chainer->getEditorForActiveSlot();
-  //addChildEditor(activeEditor); // crashes juce PluginHost
-  //setSize(activeEditor->getWidth() + leftColumnWidth, activeEditor->getHeight() + bottomRowHeight);
 }
 
 void ModuleChainerEditor::resized()
@@ -219,7 +207,7 @@ void ModuleChainerEditor::resized()
   margin = 4;
   x = margin;
   y = getHeadlineBottom() + margin;
-  w = leftColumnWidth; // - x - margin?
+  w = leftColumnWidth - x - margin;
   h = 16;
   stateWidgetSet->setBounds(x, y, w, 32);
 
@@ -237,9 +225,8 @@ void ModuleChainerEditor::resized()
     x = leftColumnWidth;
     w = getWidth()  - leftColumnWidth;
     h = getHeight() - bottomRowHeight;
-    //activeEditor->setBounds(x, y, w, h);
+    activeEditor->setBounds(x, y, w, h);
   }
-
 
   // maybe, we could have bypass switches for each plugin
   // arrange setup button for color scheme, infoline, link, etc.
@@ -250,7 +237,36 @@ void ModuleChainerEditor::rComboBoxChanged(RComboBox* box)
   ScopedLock scopedLock(*plugInLock);
   for(int i = 0; i < selectors.size(); i++){
     if(box == selectors[i]){
-      chainer->replaceModule(i, box->getSelectedItemText());
+      replaceModule(i, box->getSelectedItemText());
     }
+  }
+}
+
+void ModuleChainerEditor::clearEditorArray()
+{
+  ScopedLock scopedLock(*plugInLock);
+  for(int i = 0; i < editors.size(); i++)
+    delete editors[i];
+  editors.clear();
+}
+
+void ModuleChainerEditor::initEditorArray()
+{
+  ScopedLock scopedLock(*plugInLock);
+  clearEditorArray();
+  for(int i = 0; i < chainer->modules.size(); i++)
+    editors.add(nullptr);
+}
+
+void ModuleChainerEditor::createWidgets()
+{
+  ScopedLock scopedLock(*plugInLock);
+  for(int i = 0; i < chainer->modules.size(); i++)
+  {
+    AudioModuleSelector *s = new AudioModuleSelector();
+    s->selectItemFromText(AudioModuleFactory::getModuleType(chainer->modules[i]), false);
+    s->registerComboBoxObserver(this);
+    addWidget(s);
+    selectors.add(s);
   }
 }

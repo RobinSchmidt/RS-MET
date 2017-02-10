@@ -71,14 +71,8 @@ public:
 
   /** Replaces the module at the given with a new module of given type unless the given type 
   matches that of the module which is already there at this position in which case nothing 
-  happens. */
-  void replaceModule(int index, const String& type);
-
-  /** Returns an editor for the AudioModule in the given slot index. */
-  AudioModuleEditor* getEditorForSlot(int index);
-
-  /** Returns the editor for the currently active slot. */
-  inline AudioModuleEditor* getEditorForActiveSlot() { return getEditorForSlot(activeSlot); }
+  happens. Returns true, if the module was replaced, false otherwise. */
+  bool replaceModule(int index, const String& type);
 
   // overriden from AudioModule baseclass:
   AudioModuleEditor *createEditor() override;
@@ -92,12 +86,7 @@ public:
 protected:
 
   Array<AudioModule*> modules;   // maybe use the inherited childModules array instead?
-
-  // it seems to be a bad idea to keep pointers to the editors here - the objects may be deleted
-  // when our editor is deatroyed - we should keep them in ModuleChainerEditor
-  Array<AudioModuleEditor*> editors;
   int activeSlot = 0;
-
 
   friend class ModuleChainerEditor;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModuleChainer)
@@ -115,7 +104,20 @@ public:
   ModuleChainerEditor(jura::ModuleChainer *moduleChainerToEdit);
   virtual ~ModuleChainerEditor();
 
-  virtual void createWidgets();
+
+
+  /** Returns an editor for the AudioModule in the given slot index. */
+  AudioModuleEditor* getEditorForSlot(int index);
+
+  /** Returns the editor for the currently active slot. */
+  inline AudioModuleEditor* getEditorForActiveSlot() 
+  { 
+    return getEditorForSlot(chainer->activeSlot); 
+  }
+
+  /** Replaces the module at the given with a new module of given type, if necessary and also 
+  replaces the corresponding editor. */
+  void replaceModule(int index, const String& type);
 
   /** Updates this editor. This involves figuring out, which slot is active, retrieving the editor
   for the active slot and adding it as child-editor here. This may also cause the GUI to resize
@@ -128,10 +130,21 @@ public:
 
 protected:
 
+
+  void clearEditorArray();
+
+  void initEditorArray();
+
+  void createWidgets();
+
+
   ModuleChainer* chainer;
   Array<AudioModuleSelector*> selectors;
 
+  Array<AudioModuleEditor*> editors;
   AudioModuleEditor* activeEditor = nullptr;
+
+
 
   int leftColumnWidth = 160; // for the chainer widgets
   int bottomRowHeight =  20; // for infoline, link, etc.
