@@ -6,6 +6,20 @@ ModuleChainer::ModuleChainer(CriticalSection *lockToUse) : AudioModuleWithMidiIn
   setActiveDirectory(getApplicationDirectory() + "/ModuleChainerPresets");
 }
 
+AudioModule* ModuleChainer::createModule(const String& type)
+{
+  if(type == "PhaseScope")   return new PhaseScope(  plugInLock);
+  if(type == "Enveloper")    return new Enveloper(   plugInLock);
+  if(type == "Ladder")       return new Ladder(      plugInLock);
+  if(type == "PhasorFilter") return new PhasorFilter(plugInLock);
+  // add more module types here...
+
+  jassertfalse;  // unknown module type requested
+  return nullptr;
+}
+
+// overrides:
+
 AudioModuleEditor* ModuleChainer::createEditor()
 {
   return new ModuleChainerEditor(this);

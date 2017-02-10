@@ -12,6 +12,7 @@ public:
   ModuleChainer(CriticalSection *lockToUse);
 
   //void addModule(AudioModule *moduleToAdd, int position = -1);
+  AudioModule* createModule(const String& type);
 
   // overriden from AudioModule baseclass:
   AudioModuleEditor *createEditor() override;
@@ -20,6 +21,7 @@ public:
   virtual void noteOn(int noteNumber, int velocity) override;
   virtual void noteOff(int noteNumber) override;
   virtual void reset() override;
+  // override getStateXml, etc...
 
 protected:
 
