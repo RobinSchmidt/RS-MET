@@ -74,6 +74,12 @@ public:
   happens. */
   void replaceModule(int index, const String& type);
 
+  /** Returns an editor for the AudioModule in the given slot index. */
+  AudioModuleEditor* getEditorForSlot(int index);
+
+  /** Returns the editor for the currently active slot. */
+  inline AudioModuleEditor* getEditorForActiveSlot() { return getEditorForSlot(activeSlot); }
+
   // overriden from AudioModule baseclass:
   AudioModuleEditor *createEditor() override;
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
@@ -86,9 +92,12 @@ public:
 protected:
 
   Array<AudioModule*> modules;   // maybe use the inherited childModules array instead?
+  Array<AudioModuleEditor*> editors;
+
+  int activeSlot = 0;
+
 
   friend class ModuleChainerEditor;
-
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModuleChainer)
 };
 
@@ -106,15 +115,24 @@ public:
 
   virtual void createWidgets();
 
+  /** Updates this editor. This involves figuring out, which slot is active, retrieving the editor
+  for the active slot and adding it as child-editor here. This may also cause the GUI to resize
+  itself. */
+  virtual void updateEditor();
+
   // overrides:
   virtual void resized() override;
   virtual void rComboBoxChanged(RComboBox* comboBoxThatHasChanged) override;
 
 protected:
 
-  ModuleChainer *chainer;
+  ModuleChainer* chainer;
   Array<AudioModuleSelector*> selectors;
-  Array<AudioModuleEditor*>   editors;
+
+  AudioModuleEditor* activeEditor = nullptr;
+
+  int leftColumnWidth = 160; // for the chainer widgets
+  int bottomRowHeight =  20; // for infoline, link, etc.
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModuleChainerEditor)
 };

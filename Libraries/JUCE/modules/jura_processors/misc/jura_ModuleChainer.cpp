@@ -54,13 +54,15 @@ ModuleChainer::ModuleChainer(CriticalSection *lockToUse) : AudioModuleWithMidiIn
   moduleName = "Chainer";
   setActiveDirectory(getApplicationDirectory() + "/ChainerPresets");
 
-  addModule("None"); // always have at least one dummy module in the chain
-  //addModule("Ladder"); // for test
+  //addModule("None"); // always have at least one dummy module in the chain
+  addModule("Ladder"); // for test
 }
 
 ModuleChainer::~ModuleChainer()
 {
   ScopedLock scopedLock(*plugInLock);
+  for(int i = 0; i < editors.size(); i++)
+    delete editors[i];
   for(int i = 0; i < modules.size(); i++)
     delete modules[i];
 }
@@ -70,17 +72,34 @@ void ModuleChainer::addModule(const String& type)
   ScopedLock scopedLock(*plugInLock);
   AudioModule *m = AudioModuleFactory::createModule(type, plugInLock);
   modules.add(m);
+  editors.add(nullptr);
 }
 
 void ModuleChainer::replaceModule(int index, const String& type)
 {
   ScopedLock scopedLock(*plugInLock);
   jassert(index >= 0 && index < modules.size()); // index out of range
+  jassert(index >= 0 && index < editors.size()); // index out of range 
+
   if(type != AudioModuleFactory::getModuleType(modules[index]))
   {
+    delete editors[index];
+    editors.set(index, nullptr);
     delete modules[index];
     modules.set(index, AudioModuleFactory::createModule(type, plugInLock));
+    activeSlot = index;
   }
+}
+
+AudioModuleEditor* ModuleChainer::getEditorForSlot(int index)
+{
+  ScopedLock scopedLock(*plugInLock);
+  jassert(index >= 0 && index < modules.size()); // index out of range
+  jassert(index >= 0 && index < editors.size()); // index out of range
+
+  if(editors[index] == nullptr)
+    editors.set(index, modules[index]->createEditor());  
+  return editors[index];
 }
 
 // overrides:
@@ -150,12 +169,13 @@ ModuleChainerEditor::ModuleChainerEditor(jura::ModuleChainer *moduleChainerToEdi
   setHeadlinePosition(TOP_LEFT);
   stateWidgetSet->setLayout(StateLoadSaveWidgetSet::LABEL_AND_BUTTONS_ABOVE);
   createWidgets();
-  setSize(200, 100);
+  updateEditor();
+  //setSize(200, 100);
 }
 
 ModuleChainerEditor::~ModuleChainerEditor()
 {
-  // delete editors 
+
 }
 
 void ModuleChainerEditor::createWidgets()
@@ -171,6 +191,15 @@ void ModuleChainerEditor::createWidgets()
   }
 }
 
+void ModuleChainerEditor::updateEditor()
+{
+  ScopedLock scopedLock(*plugInLock);
+  removeChildEditor(activeEditor, false);
+  activeEditor = chainer->getEditorForActiveSlot();
+  //addChildEditor(activeEditor);
+  //setSize(activeEditor->getWidth() + leftColumnWidth, activeEditor->getHeight() + bottomRowHeight);
+}
+
 void ModuleChainerEditor::resized()
 {
   Editor::resized();
@@ -179,7 +208,7 @@ void ModuleChainerEditor::resized()
   margin = 4;
   x = margin;
   y = getHeadlineBottom() + margin;
-  w = 160;
+  w = leftColumnWidth; // - x - margin?
   h = 16;
   stateWidgetSet->setBounds(x, y, w, 32);
 
@@ -190,6 +219,16 @@ void ModuleChainerEditor::resized()
     selectors[i]->setBounds(x, y, w, h);
     y += dy;
   }
+
+  // set up bounds of the editor for the active module:
+  if(activeEditor != nullptr){
+    y = 0;
+    x = leftColumnWidth;
+    w = getWidth()  - leftColumnWidth;
+    h = getHeight() - bottomRowHeight;
+    //activeEditor->setBounds(x, y, w, h);
+  }
+
 
   // maybe, we could have bypass switches for each plugin
   // arrange setup button for color scheme, infoline, link, etc.
