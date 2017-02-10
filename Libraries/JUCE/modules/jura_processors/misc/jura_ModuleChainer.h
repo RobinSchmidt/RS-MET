@@ -11,6 +11,8 @@ public:
 
   ModuleChainer(CriticalSection *lockToUse);
 
+  //void addModule(AudioModule *moduleToAdd, int position = -1);
+
   // overriden from AudioModule baseclass:
   AudioModuleEditor *createEditor() override;
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
@@ -21,10 +23,31 @@ public:
 
 protected:
 
+  Array<AudioModule*> modules;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModuleChainer)
 };
 
-// add class ModuleChainerEditor....
+//=================================================================================================
+
+/** Implements a GUI editor for the ModuleChainer. */
+
+class JUCE_API ModuleChainerEditor : public AudioModuleEditor
+{
+
+public:
+
+  ModuleChainerEditor(jura::ModuleChainer *moduleChainerToEdit);
+
+  //virtual void createWidgets();
+  //virtual void resized() override;
+
+protected:
+
+  ModuleChainer *chainer;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModuleChainerEditor)
+};
+
 
 #endif 
