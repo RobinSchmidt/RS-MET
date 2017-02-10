@@ -26,7 +26,7 @@ code may also define its own instantiation file. */
 
 // Data:
 template void RAPT::ArrayTools::rsFillWithRangeLinear(float* x, int N, float min, float max);
-
+template void RAPT::ArrayTools::rsFillWithRandomValues(float* x, int N, double min, double max, int seed);
 
 // Math:
 template RAPT::NormalizedSigmoids<float>;

@@ -13,4 +13,8 @@ int main(int argc, char** argv)
   //runUnitTests();
 
   // ToDo: check for memory leaks here
+
+
+  getchar();
+  return(EXIT_SUCCESS);
 }

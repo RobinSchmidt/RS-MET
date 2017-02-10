@@ -1,13 +1,13 @@
 #ifndef PERFORMANCETESTTOOLS_INCLUDED
 #define PERFORMANCETESTTOOLS_INCLUDED
 
+#include <iostream>
+
 #ifdef _MSC_VER
 #include <intrin.h> // Or #include <ia32intrin.h> etc.
 #endif
 
-
 void printPerformanceTestResult(const char *testName, double numCyclesPerOperation);
-
 
 /** This class implements a CPU cycle counter which is useful for performance tests. It does not 
 literally count but instead measure the time stamps before and after a sequence of commands. Works 
