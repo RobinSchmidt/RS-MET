@@ -78,6 +78,7 @@ class JUCE_API ModuleChainerEditor : public AudioModuleEditor
 public:
 
   ModuleChainerEditor(jura::ModuleChainer *moduleChainerToEdit);
+  virtual ~ModuleChainerEditor();
 
   virtual void createWidgets();
 
