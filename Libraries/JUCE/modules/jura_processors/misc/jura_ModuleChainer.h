@@ -92,8 +92,10 @@ public:
 protected:
 
   Array<AudioModule*> modules;   // maybe use the inherited childModules array instead?
-  Array<AudioModuleEditor*> editors;
 
+  // it seems to be a bad idea to keep pointers to the editors here - the objects may be deleted
+  // when our editor is deatroyed - we should keep them in ModuleChainerEditor
+  Array<AudioModuleEditor*> editors;
   int activeSlot = 0;
 
 

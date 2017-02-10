@@ -194,9 +194,20 @@ void ModuleChainerEditor::createWidgets()
 void ModuleChainerEditor::updateEditor()
 {
   ScopedLock scopedLock(*plugInLock);
-  removeChildEditor(activeEditor, false);
-  activeEditor = chainer->getEditorForActiveSlot();
-  //addChildEditor(activeEditor);
+  AudioModuleEditor* tmpEditor = chainer->getEditorForActiveSlot();
+  if(tmpEditor != activeEditor)
+  {
+    //removeChildEditor(activeEditor, false);
+    //addChildEditor(tmpEditor);
+    activeEditor = tmpEditor;
+    setSize(activeEditor->getWidth() + leftColumnWidth, 
+      activeEditor->getHeight() + bottomRowHeight);
+  }
+
+  //if(activeEditor != nullptr)  // do we need this check?
+  //  removeChildEditor(activeEditor, false);
+  //activeEditor = chainer->getEditorForActiveSlot();
+  //addChildEditor(activeEditor); // crashes juce PluginHost
   //setSize(activeEditor->getWidth() + leftColumnWidth, activeEditor->getHeight() + bottomRowHeight);
 }
 
