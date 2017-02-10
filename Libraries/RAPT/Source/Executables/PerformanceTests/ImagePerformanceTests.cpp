@@ -5,20 +5,23 @@ void matrixAdressingTest()
   // Compares two matrix addressing schemes: using a flat array with pointer arithmetic vs. using
   // an pointer-to-pointer array. The test is to copy matrix values from one matrix into another.
 
-  int N = 500;    // number of rows
-  int M = 700;    // number of columns
+  typedef float Data;
+  //typedef double Data;
+
+  int N = 500;     // number of rows
+  int M = 200;     // number of columns
   int i, j;       // row and column indices
 
   // allocate flat matrices and row-pointers, fill a-matrix with random values:
-  float *af = new float[N*M];   // a1 matrix as flat array
-  float *bf = new float[N*M];
-  float **a = new float*[N];    // a1 row pointers
-  float **b = new float*[N];
+  Data *af = new Data[N*M];   // a1 matrix as flat array
+  Data *bf = new Data[N*M];
+  Data **a = new Data*[N];    // a1 row pointers
+  Data **b = new Data*[N];
   for(i = 0; i < N; i++){
     a[i] = &af[i*M];
     b[i] = &bf[i*M];
   }
-  ArrayTools::rsFillWithRandomValues(af, N*M, -1.f, +1.f, 0);
+  ArrayTools::rsFillWithRandomValues(af, N*M, -1.0, +1.0, 0);
 
   // measure copying a into b via pointer-to-pointer access:
   ProcessorCycleCounter counter;
