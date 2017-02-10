@@ -161,6 +161,7 @@
     <ClInclude Include="..\..\Source\Executables\Shared\Plotting\Plotting.h" />
     <ClInclude Include="..\..\Source\Executables\Shared\Shared.h" />
     <ClInclude Include="..\..\Source\Executables\Shared\Utilities\FileWriting.h" />
+    <ClInclude Include="..\..\Source\Executables\Shared\Utilities\PerformanceTestTools.h" />
     <ClInclude Include="..\..\Source\Executables\Shared\Utilities\TestInputCreation.h" />
     <ClInclude Include="..\..\Source\Executables\UnitTests\ImageUnitTests.h" />
     <ClInclude Include="..\..\Source\Executables\UnitTests\UnitTests.h" />
@@ -181,6 +182,7 @@
     <ClCompile Include="..\..\Source\Executables\Shared\Plotting\Plotting.cpp" />
     <ClCompile Include="..\..\Source\Executables\Shared\RaptLibraryCode\RaptInstantiations.cpp" />
     <ClCompile Include="..\..\Source\Executables\Shared\Utilities\FileWriting.cpp" />
+    <ClCompile Include="..\..\Source\Executables\Shared\Utilities\PerformanceTestTools.cpp" />
     <ClCompile Include="..\..\Source\Executables\Shared\Utilities\TestInputCreation.cpp" />
     <ClCompile Include="..\..\Source\Executables\UnitTests\ImageUnitTests.cpp" />
     <ClCompile Include="..\..\Source\Executables\UnitTests\UnitTests.cpp" />

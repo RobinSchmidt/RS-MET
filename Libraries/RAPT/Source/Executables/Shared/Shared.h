@@ -4,6 +4,7 @@
 #include "Plotting/Plotting.h"
 #include "Utilities/TestInputCreation.h"
 #include "Utilities/FileWriting.h"
+#include "Utilities/PerformanceTestTools.h"
 
 
 #endif

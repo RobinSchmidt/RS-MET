@@ -78,6 +78,9 @@
     <ClInclude Include="..\..\Source\Executables\PerformanceTests\PerformanceTests.h">
       <Filter>PerformanceTests</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Executables\Shared\Utilities\PerformanceTestTools.h">
+      <Filter>Shared\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\Executables\Main.cpp" />
@@ -131,6 +134,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Executables\PerformanceTests\PerformanceTests.cpp">
       <Filter>PerformanceTests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Executables\Shared\Utilities\PerformanceTestTools.cpp">
+      <Filter>Shared\Utilities</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
