@@ -55,6 +55,7 @@ ModuleChainer::ModuleChainer(CriticalSection *lockToUse) : AudioModuleWithMidiIn
   setActiveDirectory(getApplicationDirectory() + "/ChainerPresets");
 
   addModule("None"); // always have at least one dummy module in the chain
+  //addModule("Ladder"); // for test
 }
 
 ModuleChainer::~ModuleChainer()
@@ -143,13 +144,11 @@ ModuleChainerEditor::~ModuleChainerEditor()
 
 void ModuleChainerEditor::createWidgets()
 {
+  ScopedLock scopedLock(*plugInLock);
   for(int i = 0; i < chainer->modules.size(); i++)
   {
     AudioModuleSelector *s = new AudioModuleSelector();
-
-    // set up the selector to reflect the correct module type
-    // ...
-
+    s->selectItemFromText(AudioModuleFactory::getModuleType(chainer->modules[i]), false);
     addWidget(s);
     selectors.add(s);
   }
