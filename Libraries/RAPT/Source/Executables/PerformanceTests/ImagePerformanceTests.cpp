@@ -17,7 +17,6 @@ void matrixAdressingTest()
   for(i = 0; i < N; i++){
     a[i] = &af[i*M];
     b[i] = &bf[i*M];
-
   }
   ArrayTools::rsFillWithRandomValues(af, N*M, -1.f, +1.f, 0);
 
@@ -54,5 +53,9 @@ void matrixAdressingTest()
   // medium sized matrices (a couple of thousands of elements), but even for smaller and larger
   // matrices, pointer arithmetic beats pointer arrays.
 
-  delete[] af, bf, a, b;
+  //delete[] af, bf, a, b; // nope - gives memory leak - we need to delete them all separately
+  delete[] af;
+  delete[] bf;
+  delete[] a;
+  delete[] b;
 }

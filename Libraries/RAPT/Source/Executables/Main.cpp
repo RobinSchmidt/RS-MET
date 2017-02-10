@@ -12,8 +12,10 @@ int main(int argc, char** argv)
   runPerformanceTests();
   //runUnitTests();
 
-  // ToDo: check for memory leaks here
 
+
+  if( detectMemoryLeaks() )
+    std::cout << "\n\n!!! Memory leaks detected !!! \n";
 
   getchar();
   return(EXIT_SUCCESS);

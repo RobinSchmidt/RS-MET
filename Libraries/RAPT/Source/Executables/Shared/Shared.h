@@ -6,5 +6,14 @@
 #include "Utilities/FileWriting.h"
 #include "Utilities/PerformanceTestTools.h"
 
+inline bool detectMemoryLeaks()
+{
+#ifdef _MSC_VER
+  return _CrtDumpMemoryLeaks() == 1;
+#else
+  return false;
+#endif
+}
+
 
 #endif
