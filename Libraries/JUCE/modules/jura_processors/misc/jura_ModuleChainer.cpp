@@ -4,6 +4,14 @@ ModuleChainer::ModuleChainer(CriticalSection *lockToUse) : AudioModuleWithMidiIn
   ScopedLock scopedLock(*plugInLock);
   moduleName = "ModuleChainer";
   setActiveDirectory(getApplicationDirectory() + "/ModuleChainerPresets");
+
+  addModule("None"); // always have at least one dummy module in the chain
+}
+
+ModuleChainer::~ModuleChainer()
+{
+  for(int i = 0; i < modules.size(); i++)
+    delete modules[i];
 }
 
 AudioModule* ModuleChainer::createModule(const String& type)
@@ -17,6 +25,12 @@ AudioModule* ModuleChainer::createModule(const String& type)
 
   jassertfalse;  // unknown module type requested
   return nullptr;
+}
+
+void ModuleChainer::addModule(const String& type)
+{
+  AudioModule *m = createModule(type);
+  modules.add(m);
 }
 
 // overrides:
@@ -63,6 +77,13 @@ void ModuleChainer::reset()
 {
   for(int i = 0; i < modules.size(); i++)
     modules[i]->reset();
+}
+
+//=================================================================================================
+
+AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector") 
+{
+  // add the options for the different modules...
 }
 
 //=================================================================================================

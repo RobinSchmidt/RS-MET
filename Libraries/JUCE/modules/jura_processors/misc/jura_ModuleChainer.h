@@ -22,9 +22,15 @@ public:
 
   ModuleChainer(CriticalSection *lockToUse);
 
+  virtual ~ModuleChainer();
+
+
   /** Creates and returns a pointer to an object of some subclass of AudioModule. Which subclass it 
   is, is determined by the passed String parameter. */
   AudioModule* createModule(const String& type);
+
+  /** Adds a module of the given type at the end of the chain. */
+  void addModule(const String& type);
 
   // todo:
   //void addModule(AudioModule *moduleToAdd, int position = -1);
@@ -43,8 +49,23 @@ public:
 protected:
 
   Array<AudioModule*> modules;
+  //OwnedArray<AudioModule*> modules;
+
+  friend class ModuleChainerEditor;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModuleChainer)
+};
+
+//=================================================================================================
+
+/** A widget class for selecting a specific type of AudioModule. */
+
+class JUCE_API AudioModuleSelector : public RComboBox
+{
+public:
+  AudioModuleSelector();
+protected:
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioModuleSelector)
 };
 
 //=================================================================================================
@@ -64,8 +85,8 @@ public:
 protected:
 
   ModuleChainer *chainer;
-
-  Array<AudioModuleEditor*> editors;
+  Array<AudioModuleSelector*> selectors;
+  Array<AudioModuleEditor*>   editors;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModuleChainerEditor)
 };
