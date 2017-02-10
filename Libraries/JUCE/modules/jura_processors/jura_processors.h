@@ -66,6 +66,7 @@ namespace jura
 
 #include "effects/jura_Enveloper.h"
 
+#include "misc/jura_ModuleChainer.h"
 #include "misc/jura_PluginCreation.h"
 
 }
