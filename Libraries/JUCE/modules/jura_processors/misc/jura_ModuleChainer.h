@@ -52,7 +52,14 @@ protected:
 //=================================================================================================
 
 /** A shell module that can be used to create a chain (i.e. series connection) of some number of
-AudioModule objects. */
+AudioModule objects. 
+
+\todo: 
+-the GUI is unresponsive when the PhaseScope is replaced by any other module - maybe it has 
+ to do with the lock? check this...
+-sometimes, the module editor is totally on the left after replacing, this seems to happen more
+ often for editors that are fast to create (the Dummy and PhasorFilter editors)
+*/
 
 class JUCE_API ModuleChainer : public jura::AudioModuleWithMidiIn
 {

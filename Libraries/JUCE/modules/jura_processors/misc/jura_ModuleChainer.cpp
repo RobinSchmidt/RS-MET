@@ -201,10 +201,9 @@ void ModuleChainerEditor::updateEditor()
     removeChildEditor(activeEditor, false);
     addChildEditor(tmpEditor);
     activeEditor = tmpEditor;
-    int w = max(200, activeEditor->getWidth()  + leftColumnWidth);
-    int h = max(100, activeEditor->getHeight() + bottomRowHeight);
+    int w = max(360, activeEditor->getWidth()  + leftColumnWidth);
+    int h = max(240, activeEditor->getHeight() + bottomRowHeight);
     setSize(w, h);
-    // this does not update the size of the outlying AudioPlugInEditor -> fix this
   }
 }
 
@@ -239,6 +238,12 @@ void ModuleChainerEditor::resized()
 
   // maybe, we could have bypass switches for each plugin
   // arrange setup button for color scheme, infoline, link, etc.
+
+  // If this is a ModuleChainer wrapped into an AudioPlugIn, we want to resize the whole parent 
+  // window as well:
+  Component *parent =	getParentComponent();
+  if(dynamic_cast<AudioPluginEditor*>(parent))
+    parent->setSize(getWidth(), getHeight());
 }
 
 void ModuleChainerEditor::rComboBoxChanged(RComboBox* box)
