@@ -54,8 +54,8 @@ ModuleChainer::ModuleChainer(CriticalSection *lockToUse) : AudioModuleWithMidiIn
   moduleName = "Chainer";
   setActiveDirectory(getApplicationDirectory() + "/ChainerPresets");
 
-  //addModule("None"); // always have at least one dummy module in the chain
-  addModule("Ladder"); // for test
+  addModule("None"); // always have at least one dummy module in the chain
+  //addModule("Ladder"); // for test
 }
 
 ModuleChainer::~ModuleChainer()
@@ -201,9 +201,10 @@ void ModuleChainerEditor::updateEditor()
     removeChildEditor(activeEditor, false);
     addChildEditor(tmpEditor);
     activeEditor = tmpEditor;
-    int w = max(360, activeEditor->getWidth()  + leftColumnWidth);
-    int h = max(240, activeEditor->getHeight() + bottomRowHeight);
-    setSize(w, h);
+    int w = max(240, activeEditor->getWidth());
+    int h = max(180, activeEditor->getHeight());
+    activeEditor->setBounds(leftColumnWidth, 0, w, h);
+    setSize(w + leftColumnWidth, h + bottomRowHeight);
   }
 }
 

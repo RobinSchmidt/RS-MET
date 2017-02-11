@@ -56,10 +56,8 @@ AudioModule objects.
 
 \todo: 
 -the GUI is unresponsive when the PhaseScope is replaced by any other module - maybe it has 
- to do with the lock? check this...
--sometimes, the module editor is totally on the left after replacing, this seems to happen more
- often for editors that are fast to create (the Dummy and PhasorFilter editors)
-*/
+ to do with the lock? check this... 
+ */
 
 class JUCE_API ModuleChainer : public jura::AudioModuleWithMidiIn
 {
