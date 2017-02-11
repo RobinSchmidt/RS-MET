@@ -72,7 +72,12 @@ public:
   /** Replaces the module at the given with a new module of given type unless the given type 
   matches that of the module which is already there at this position in which case nothing 
   happens. Returns true, if the module was replaced, false otherwise. */
-  bool replaceModule(int index, const String& type);
+  void replaceModule(int index, const String& type);
+
+  /** Returns true if the module at the given index matches the type specified by the type 
+  string. */
+  bool isModuleOfType(int index, const String& type);
+
 
   // overriden from AudioModule baseclass:
   AudioModuleEditor *createEditor() override;
@@ -103,7 +108,6 @@ public:
 
   ModuleChainerEditor(jura::ModuleChainer *moduleChainerToEdit);
   virtual ~ModuleChainerEditor();
-
 
 
   /** Returns an editor for the AudioModule in the given slot index. */

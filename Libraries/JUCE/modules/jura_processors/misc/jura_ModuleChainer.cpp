@@ -72,19 +72,23 @@ void ModuleChainer::addModule(const String& type)
   modules.add(m);
 }
 
-bool ModuleChainer::replaceModule(int index, const String& type)
+void ModuleChainer::replaceModule(int index, const String& type)
 {
   ScopedLock scopedLock(*plugInLock);
   jassert(index >= 0 && index < modules.size()); // index out of range
-
-  if(type != AudioModuleFactory::getModuleType(modules[index]))
-  {
+  if(!isModuleOfType(index, type))
+  { // replace only, if new type is different
     delete modules[index];
     modules.set(index, AudioModuleFactory::createModule(type, plugInLock));
     activeSlot = index;
-    return true;
   }
-  return false;
+}
+
+bool ModuleChainer::isModuleOfType(int index, const String& type)
+{
+  ScopedLock scopedLock(*plugInLock);
+  jassert(index >= 0 && index < modules.size()); // index out of range
+  return type == AudioModuleFactory::getModuleType(modules[index]);
 }
 
 // overrides:
@@ -177,11 +181,19 @@ void ModuleChainerEditor::replaceModule(int index, const String& type)
 {
   ScopedLock scopedLock(*plugInLock);
   jassert(index >= 0 && index < editors.size()); // index out of range
-  bool wasReplaced = chainer->replaceModule(index, type);
-  if(wasReplaced)
+  if(!chainer->isModuleOfType(index, type))
   {
+    // clean up old editor (maybe factor out into deleteEditor(int index)):
+    if(activeEditor == editors[index])
+      activeEditor = nullptr;
     delete editors[index];
-    editors.set(index, chainer->modules[index]->createEditor());
+    editors.set(index, nullptr);
+
+    // replace the module and create new editor:
+    chainer->replaceModule(index, type);
+    editors.set(index, getEditorForSlot(index));
+
+    updateEditor();
   }
 }
 
