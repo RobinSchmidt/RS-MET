@@ -90,8 +90,8 @@ public:
 
 protected:
 
-  Array<AudioModule*> modules;   // maybe use the inherited childModules array instead?
-  int activeSlot = 0;
+  Array<AudioModule*> modules; // maybe use the inherited childModules array instead?
+  int activeSlot = 0;          // slot for which the editor is currently shown 
 
   friend class ModuleChainerEditor;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModuleChainer)
@@ -134,24 +134,28 @@ public:
 
 protected:
 
+  /** Deletes the editor at given index in the array. The slot entry will be replaced by 
+  nullptr. */
+  void deleteEditor(int index);
 
+  /** Deletes all the editors in our array and clears the array itself. */
   void clearEditorArray();
 
+  /** Initializes the editors array by creating a nullptr for each of the AudioModules in the 
+  chain. */
   void initEditorArray();
 
+  /** Creates the comboboxes for selecting/replacing AudioModules. */
   void createWidgets();
 
-
-  ModuleChainer* chainer;
-  Array<AudioModuleSelector*> selectors;
-
-  Array<AudioModuleEditor*> editors;
-  AudioModuleEditor* activeEditor = nullptr;
-
-
+  // Data:
+  ModuleChainer* chainer;                     // the edited object
+  Array<AudioModuleSelector*> selectors;      // combo-boxes for selecting modules
+  Array<AudioModuleEditor*> editors;          // array of editors for the modules
+  AudioModuleEditor* activeEditor = nullptr;  // currently shown editor
 
   int leftColumnWidth = 160; // for the chainer widgets
-  int bottomRowHeight =  20; // for infoline, link, etc.
+  int bottomRowHeight =  16; // for infoline, link, etc.
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModuleChainerEditor)
 };

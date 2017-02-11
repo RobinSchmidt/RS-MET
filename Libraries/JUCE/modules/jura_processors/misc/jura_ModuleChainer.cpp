@@ -128,6 +128,9 @@ void ModuleChainer::noteOn(int noteNumber, int velocity)
   // have MIDI effects such as appregiators and sequencers which modify the sequence and pass
   // the modified sequence to the next module - we could have an appregiator in front of a 
   // synth, for example
+
+  // all synthesizer modules should pass through the incoming audio and add their own signal
+  // (unless the use it inside for their own signal processing) -> this allows for layering
 }
 
 void ModuleChainer::noteOff(int noteNumber)
@@ -160,7 +163,6 @@ ModuleChainerEditor::ModuleChainerEditor(jura::ModuleChainer *moduleChainerToEdi
   initEditorArray();
   createWidgets();
   updateEditor();
-  //setSize(200, 100);
 }
 
 ModuleChainerEditor::~ModuleChainerEditor()
@@ -183,16 +185,9 @@ void ModuleChainerEditor::replaceModule(int index, const String& type)
   jassert(index >= 0 && index < editors.size()); // index out of range
   if(!chainer->isModuleOfType(index, type))
   {
-    // clean up old editor (maybe factor out into deleteEditor(int index)):
-    if(activeEditor == editors[index])
-      activeEditor = nullptr;
-    delete editors[index];
-    editors.set(index, nullptr);
-
-    // replace the module and create new editor:
+    deleteEditor(index);
     chainer->replaceModule(index, type);
     editors.set(index, getEditorForSlot(index));
-
     updateEditor();
   }
 }
@@ -206,8 +201,10 @@ void ModuleChainerEditor::updateEditor()
     removeChildEditor(activeEditor, false);
     addChildEditor(tmpEditor);
     activeEditor = tmpEditor;
-    setSize(activeEditor->getWidth() + leftColumnWidth, 
-      activeEditor->getHeight() + bottomRowHeight);
+    int w = max(200, activeEditor->getWidth()  + leftColumnWidth);
+    int h = max(100, activeEditor->getHeight() + bottomRowHeight);
+    setSize(w, h);
+    // this does not update the size of the outlying AudioPlugInEditor -> fix this
   }
 }
 
@@ -254,9 +251,20 @@ void ModuleChainerEditor::rComboBoxChanged(RComboBox* box)
   }
 }
 
+void ModuleChainerEditor::deleteEditor(int index)
+{
+  ScopedLock scopedLock(*plugInLock);
+  jassert(index >= 0 && index < editors.size()); // index out of range
+  if(activeEditor == editors[index])
+    activeEditor = nullptr;
+  delete editors[index];
+  editors.set(index, nullptr);
+}
+
 void ModuleChainerEditor::clearEditorArray()
 {
   ScopedLock scopedLock(*plugInLock);
+  activeEditor = nullptr;
   for(int i = 0; i < editors.size(); i++)
     delete editors[i];
   editors.clear();
