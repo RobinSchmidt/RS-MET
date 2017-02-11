@@ -76,8 +76,7 @@ void ModuleChainer::replaceModule(int index, const String& type)
 {
   ScopedLock scopedLock(*plugInLock);
   jassert(index >= 0 && index < modules.size()); // index out of range
-  if(!isModuleOfType(index, type))
-  { // replace only, if new type is different
+  if(!isModuleOfType(index, type)){              // replace only, if new type is different
     delete modules[index];
     modules.set(index, AudioModuleFactory::createModule(type, plugInLock));
     activeSlot = index;
@@ -116,8 +115,7 @@ void ModuleChainer::setSampleRate(double newSampleRate)
 void ModuleChainer::noteOn(int noteNumber, int velocity)
 {
   ScopedLock scopedLock(*plugInLock);
-  for(int i = 0; i < modules.size(); i++)
-  {
+  for(int i = 0; i < modules.size(); i++){
     AudioModuleWithMidiIn *m = dynamic_cast<AudioModuleWithMidiIn*> (modules[i]);
     if(m != nullptr)
       m->noteOn(noteNumber, velocity);
@@ -136,8 +134,7 @@ void ModuleChainer::noteOn(int noteNumber, int velocity)
 void ModuleChainer::noteOff(int noteNumber)
 {
   ScopedLock scopedLock(*plugInLock);
-  for(int i = 0; i < modules.size(); i++)
-  {
+  for(int i = 0; i < modules.size(); i++){
     AudioModuleWithMidiIn *m = dynamic_cast<AudioModuleWithMidiIn*> (modules[i]);
     if(m != nullptr)
       m->noteOff(noteNumber);
@@ -183,8 +180,7 @@ void ModuleChainerEditor::replaceModule(int index, const String& type)
 {
   ScopedLock scopedLock(*plugInLock);
   jassert(index >= 0 && index < editors.size()); // index out of range
-  if(!chainer->isModuleOfType(index, type))
-  {
+  if(!chainer->isModuleOfType(index, type)){
     deleteEditor(index);
     chainer->replaceModule(index, type);
     editors.set(index, getEditorForSlot(index));
@@ -196,8 +192,7 @@ void ModuleChainerEditor::updateEditor()
 {
   ScopedLock scopedLock(*plugInLock);
   AudioModuleEditor* tmpEditor = getEditorForActiveSlot();
-  if(tmpEditor != activeEditor)
-  {
+  if(tmpEditor != activeEditor){
     removeChildEditor(activeEditor, false);
     addChildEditor(tmpEditor);
     activeEditor = tmpEditor;
@@ -287,8 +282,7 @@ void ModuleChainerEditor::initEditorArray()
 void ModuleChainerEditor::createWidgets()
 {
   ScopedLock scopedLock(*plugInLock);
-  for(int i = 0; i < chainer->modules.size(); i++)
-  {
+  for(int i = 0; i < chainer->modules.size(); i++){
     AudioModuleSelector *s = new AudioModuleSelector();
     s->selectItemFromText(AudioModuleFactory::getModuleType(chainer->modules[i]), false);
     s->registerComboBoxObserver(this);
