@@ -10,5 +10,5 @@ AudioProcessor* JUCE_CALLTYPE createPluginFilter()
   //jura::Enveloper    *dummy = nullptr; return createPluginWithMidi(dummy);
 
 
-  jura::ModuleChainer *dummy = nullptr; return createPluginWithoutMidi(dummy);
+  jura::ModuleChainer *dummy = nullptr; return createPluginWithMidi(dummy);
 }

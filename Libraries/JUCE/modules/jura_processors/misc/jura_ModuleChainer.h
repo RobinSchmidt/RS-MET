@@ -56,17 +56,6 @@ AudioModule objects.
 
 \todo: 
 -implement state save/recall
--the GUI is unresponsive when the PhaseScope is replaced by any other module - maybe it has 
- to do with the lock? it seems to take long to get the lock in rComboBoxChanged. it doesn't help
- to comment out acquiring the lock in processBlock (in ModuleChainer and PhaseScope). what helps is 
- comment out the per-frame call to updateScopeImage() in PhaseScope::processBlock (of course, the 
- scope doesn't work then). maybe we can have an atomic boolean variable in PhaseScope isProcessing
- and check it at the beginning of processBlock and if false bypass processing (maybe including 
- acquiring the lock - we could then set it to false in the destructor ...or something - the idea is
- to put the plugin in non-processing mode before trying to acquire the lock)
--Enveloper produces silence even whne midi-in is connected
--PhaseScope seems extreeeemely slow, it works only with very small display size and high 
- scale-factor (resolution reduction)
  */
 
 class JUCE_API ModuleChainer : public jura::AudioModuleWithMidiIn
@@ -107,6 +96,7 @@ protected:
 
   Array<AudioModule*> modules; // maybe use the inherited childModules array instead?
   int activeSlot = 0;          // slot for which the editor is currently shown 
+  double sampleRate;
 
   friend class ModuleChainerEditor;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModuleChainer)

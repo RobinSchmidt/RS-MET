@@ -79,6 +79,7 @@ void ModuleChainer::replaceModule(int index, const String& type)
   if(!isModuleOfType(index, type)){              // replace only, if new type is different
     delete modules[index];
     modules.set(index, AudioModuleFactory::createModule(type, plugInLock));
+    modules[index]->setSampleRate(sampleRate);
     activeSlot = index;
   }
 }
@@ -108,8 +109,9 @@ void ModuleChainer::processBlock(double **inOutBuffer, int numChannels, int numS
 void ModuleChainer::setSampleRate(double newSampleRate)
 {
   ScopedLock scopedLock(*plugInLock);
+  sampleRate = newSampleRate;
   for(int i = 0; i < modules.size(); i++)
-    modules[i]->setSampleRate(newSampleRate);
+    modules[i]->setSampleRate(sampleRate);
 }
 
 void ModuleChainer::noteOn(int noteNumber, int velocity)
