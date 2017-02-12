@@ -53,9 +53,13 @@ protected:
 
 /** A shell module that can be used to create a chain (i.e. series connection) of some number of
 AudioModule objects. 
-
 \todo: 
+-implement automatic empty slot creation/deletion such that there's alway one empty slot at the end
+ of the chain
 -implement state save/recall
+-organize modules in groups (Generators, Filters, Analyzers, etc.) and use a tree-view for 
+ selection
+-add more modules
  */
 
 class JUCE_API ModuleChainer : public jura::AudioModuleWithMidiIn
@@ -90,7 +94,9 @@ public:
   virtual void noteOn(int noteNumber, int velocity) override;
   virtual void noteOff(int noteNumber) override;
   virtual void reset() override;
-  // override getStateAsXml, etc...
+  virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean) override;
+  virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 
+    bool markAsClean) override;
 
 protected:
 

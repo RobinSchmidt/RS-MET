@@ -150,6 +150,23 @@ void ModuleChainer::reset()
     modules[i]->reset();
 }
 
+XmlElement* ModuleChainer::getStateAsXml(const juce::String& stateName, bool markAsClean)
+{
+  return AudioModule::getStateAsXml(stateName, markAsClean); // preliminary
+  // We need to loop over the slots (i.e. the modules array) and for each slot N create a child
+  // xml with name SlotN, with attributes like Type="Ladder", Bypass="0", etc and the state
+  // of the module as child element.
+}
+
+void ModuleChainer::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
+  bool markAsClean)
+{
+  AudioModule::setStateFromXml(xmlState, stateName, markAsClean); // preliminary
+  // We need to clear the modules array, then loop over the child xml elements, infer the Type 
+  // attribute and create and add a module of appropriate type to the array and then set up it's
+  // state from the child xml-state.
+}
+
 //=================================================================================================
 
 ModuleChainerEditor::ModuleChainerEditor(jura::ModuleChainer *moduleChainerToEdit)
