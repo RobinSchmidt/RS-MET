@@ -303,6 +303,10 @@ void ModuleChainerEditor::updateEditorArray()
     e = editors[numEditors-1];
     if(e == activeEditor)
       activeEditor = nullptr;
+
+    //if(e != nullptr)
+    //  e->invalidateModulePointer(); // this is hacky
+
     delete e;
     remove(editors, numEditors-1);
     numEditors--;
