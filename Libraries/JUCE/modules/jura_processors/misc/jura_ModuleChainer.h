@@ -183,8 +183,9 @@ protected:
 
   // Data:
   ModuleChainer* chainer;                     // the edited object
-  Array<AudioModuleSelector*> selectors;      // combo-boxes for selecting modules
-  Array<AudioModuleEditor*> editors;          // array of editors for the modules
+  vector<AudioModuleSelector*> selectors;     // combo-boxes for selecting modules
+  vector<AudioModuleEditor*>   editors;       // array of editors for the modules
+
   AudioModuleEditor* activeEditor = nullptr;  // currently shown editor
 
   int leftColumnWidth = 160; // for the chainer widgets

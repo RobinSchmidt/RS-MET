@@ -7,7 +7,7 @@ inline int size(const vector<T>& v)
 }
 
 template<class T>
-inline void append(vector<T>& v, T& newElement)
+inline void append(vector<T>& v, T newElement)
 {
   v.push_back(newElement);
 }
@@ -242,7 +242,7 @@ AudioModuleEditor* ModuleChainerEditor::getEditorForSlot(int index)
   ScopedLock scopedLock(*plugInLock);
   jassert(index >= 0 && index < editors.size()); // index out of range
   if(editors[index] == nullptr)
-    editors.set(index, chainer->modules[index]->createEditor());  
+    editors[index] = chainer->modules[index]->createEditor();  
   return editors[index];
 }
 
@@ -256,7 +256,8 @@ void ModuleChainerEditor::replaceModule(int index, const String& type)
 
     updateEditorArray();
     index = chainer->activeSlot;
-    editors.set(index, getEditorForSlot(index));
+    
+    editors[index] = getEditorForSlot(index);
 
     updateSelectorArray();
     updateActiveEditor();
@@ -267,14 +268,14 @@ void ModuleChainerEditor::updateSelectorArray()
 {
   ScopedLock scopedLock(*plugInLock);
   int numModules   = size(chainer->modules);
-  int numSelectors = selectors.size();
+  int numSelectors = size(selectors);
   AudioModuleSelector *s;
 
   // remove superfluous selectors:
   while(numSelectors > numModules){
     s = selectors[numSelectors-1];
     removeWidget(s, true, true);
-    selectors.remove(numSelectors-1);
+    remove(selectors, numSelectors-1);
     numSelectors--;
   }
 
@@ -285,7 +286,7 @@ void ModuleChainerEditor::updateSelectorArray()
       AudioModuleFactory::getModuleType(chainer->modules[numSelectors]), false);
     s->registerComboBoxObserver(this);
     addWidget(s);
-    selectors.add(s);
+    append(selectors, s);
     numSelectors++;
   }
 }
@@ -294,7 +295,7 @@ void ModuleChainerEditor::updateEditorArray()
 {
   ScopedLock scopedLock(*plugInLock);
   int numModules = size(chainer->modules);
-  int numEditors = editors.size();
+  int numEditors = size(editors);
   AudioModuleEditor *e;
 
   // remove superfluous editors:
@@ -303,13 +304,13 @@ void ModuleChainerEditor::updateEditorArray()
     if(e == activeEditor)
       activeEditor = nullptr;
     delete e;
-    editors.remove(numEditors-1);
+    remove(editors, numEditors-1);
     numEditors--;
   }
 
   // add placeholders for required selectors:
   while(numModules > numEditors){
-    editors.add(nullptr);
+    append(editors, (AudioModuleEditor*)nullptr);
     numEditors++;
   }
 }
@@ -387,7 +388,7 @@ void ModuleChainerEditor::deleteEditor(int index)
   if(activeEditor == editors[index])
     activeEditor = nullptr;
   delete editors[index];
-  editors.set(index, nullptr);
+  editors[index] = nullptr;
 }
 
 void ModuleChainerEditor::clearEditorArray()
@@ -404,7 +405,7 @@ void ModuleChainerEditor::initEditorArray()
   ScopedLock scopedLock(*plugInLock);
   clearEditorArray();
   for(int i = 0; i < chainer->modules.size(); i++)
-    editors.add(nullptr);
+    append(editors, (AudioModuleEditor*) nullptr);
 }
 
 void ModuleChainerEditor::createSelectorWidgets()
@@ -415,7 +416,7 @@ void ModuleChainerEditor::createSelectorWidgets()
     s->selectItemFromText(AudioModuleFactory::getModuleType(chainer->modules[i]), false);
     s->registerComboBoxObserver(this);
     addWidget(s);
-    selectors.add(s);
+    append(selectors, s);
   }
 
   // this method may be superfluous now - we can use updateSelectorArray()
