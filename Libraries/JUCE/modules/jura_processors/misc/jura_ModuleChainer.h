@@ -55,7 +55,7 @@ protected:
 AudioModule objects. 
 \todo: 
 -implement automatic empty slot creation/deletion such that there's alway one empty slot at the end
- of the chain
+ of the chain -> done, but not yet reflected in editor
 -implement state save/recall
 -organize modules in groups (Generators, Filters, Analyzers, etc.) and use a tree-view for 
  selection
@@ -70,22 +70,29 @@ public:
   ModuleChainer(CriticalSection *lockToUse);
   virtual ~ModuleChainer();
 
+  /** Adds an empty slot the end of the chain. */
+  void addEmptySlot();
+
   /** Adds a module of the given type at the end of the chain. */
   void addModule(const String& type);
-    // Maybe replace this function by addEmptySlot - we just use it to create an empty (bypass)
-    // slot. Actual modules are then created by replacing the empty dummy module with some other 
-    // type. We should also have a function: removeTrailingEmptySlots which gets invoked from
-    // replaceModule. The last slot should always be an empty slot.
 
   /** Replaces the module at the given with a new module of given type unless the given type 
   matches that of the module which is already there at this position in which case nothing 
   happens. Returns true, if the module was replaced, false otherwise. */
   void replaceModule(int index, const String& type);
 
+  /** Removes the last module from the chain. */
+  void removeLastModule();
+
   /** Returns true if the module at the given index matches the type specified by the type 
   string. */
   bool isModuleOfType(int index, const String& type);
 
+  /** Ensures that at the end of the module chain, there is exactly one empty slot that can be used
+  to insert another module into the chain. If the last slot is not empty, an empty slot will be 
+  added, if there are more than one empty slots at the end, the superfluous ones will be 
+  deleted. */
+  void ensureOneEmptySlotAtEnd();
 
   // overriden from AudioModule baseclass:
   AudioModuleEditor *createEditor() override;
@@ -101,6 +108,7 @@ public:
 protected:
 
   Array<AudioModule*> modules; // maybe use the inherited childModules array instead?
+                               // maybe use a std::vector -> better for debugging
   int activeSlot = 0;          // slot for which the editor is currently shown 
   double sampleRate;
 
@@ -110,7 +118,10 @@ protected:
 
 //=================================================================================================
 
-/** Implements a GUI editor for the ModuleChainer. */
+/** Implements a GUI editor for the ModuleChainer.
+todo: maybe this class should derive from AudioModuleDeletionWatcher, so we can take appropriate 
+actions (i.e. delete an editor), when a module gets deleted from the ModuleChainer, for example due 
+to loading a preset. */
 
 class JUCE_API ModuleChainerEditor : public AudioModuleEditor, public RComboBoxObserver
 {

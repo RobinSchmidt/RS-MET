@@ -53,8 +53,9 @@ ModuleChainer::ModuleChainer(CriticalSection *lockToUse) : AudioModuleWithMidiIn
   ScopedLock scopedLock(*plugInLock);
   moduleName = "Chainer";
   setActiveDirectory(getApplicationDirectory() + "/ChainerPresets");
+  addEmptySlot();
 
-  addModule("None"); // always have at least one dummy module in the chain
+  //addModule("None"); // always have at least one dummy module in the chain
   //addModule("Ladder"); // for test
 }
 
@@ -63,6 +64,11 @@ ModuleChainer::~ModuleChainer()
   ScopedLock scopedLock(*plugInLock);
   for(int i = 0; i < modules.size(); i++)
     delete modules[i];
+}
+
+void ModuleChainer::addEmptySlot()
+{
+  addModule("None");
 }
 
 void ModuleChainer::addModule(const String& type)
@@ -81,7 +87,18 @@ void ModuleChainer::replaceModule(int index, const String& type)
     modules.set(index, AudioModuleFactory::createModule(type, plugInLock));
     modules[index]->setSampleRate(sampleRate);
     activeSlot = index;
+    ensureOneEmptySlotAtEnd();
   }
+}
+
+void ModuleChainer::removeLastModule()
+{
+  ScopedLock scopedLock(*plugInLock);
+  int index = modules.size() - 1;
+  if(activeSlot == index)
+    activeSlot--;
+  delete modules[index];
+  modules.remove(index);
 }
 
 bool ModuleChainer::isModuleOfType(int index, const String& type)
@@ -89,6 +106,22 @@ bool ModuleChainer::isModuleOfType(int index, const String& type)
   ScopedLock scopedLock(*plugInLock);
   jassert(index >= 0 && index < modules.size()); // index out of range
   return type == AudioModuleFactory::getModuleType(modules[index]);
+}
+
+void ModuleChainer::ensureOneEmptySlotAtEnd()
+{
+  ScopedLock scopedLock(*plugInLock);
+
+  // if the last module/slot is not the "empty" dummy module, add another slot:
+  if(!isModuleOfType(modules.size()-1, "None"))
+    addEmptySlot();
+
+  // remove superfluous empty slots at end:
+  while(modules.size() > 1 && isModuleOfType(modules.size()-1, "None") 
+                           && isModuleOfType(modules.size()-2, "None"))
+  { // if the last two slots are empty, remove the last
+    removeLastModule();
+  }
 }
 
 // overrides:
