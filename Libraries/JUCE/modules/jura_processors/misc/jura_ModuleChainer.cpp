@@ -93,8 +93,7 @@ void ModuleChainer::addModule(const String& type)
 {
   ScopedLock scopedLock(*plugInLock);
   AudioModule *m = AudioModuleFactory::createModule(type, plugInLock);
-  //modules.add(m);
-  modules.push_back(m);
+  append(modules, m);
 }
 
 void ModuleChainer::replaceModule(int index, const String& type)
@@ -103,7 +102,6 @@ void ModuleChainer::replaceModule(int index, const String& type)
   jassert(index >= 0 && index < modules.size()); // index out of range
   if(!isModuleOfType(index, type)){              // replace only, if new type is different
     delete modules[index];
-    //modules.set(index, AudioModuleFactory::createModule(type, plugInLock));
     modules[index] = AudioModuleFactory::createModule(type, plugInLock);
     modules[index]->setSampleRate(sampleRate);
     activeSlot = index;
@@ -114,13 +112,11 @@ void ModuleChainer::replaceModule(int index, const String& type)
 void ModuleChainer::removeLastModule()
 {
   ScopedLock scopedLock(*plugInLock);
-  //int index = modules.size() - 1;
-  size_t index = modules.size() - 1;
+  int index = size(modules) - 1;
   if(activeSlot == index)
     activeSlot--;
   delete modules[index];
-  //modules.remove(index);
-  modules.erase(modules.begin() + index);
+  remove(modules, index);
 }
 
 bool ModuleChainer::isModuleOfType(int index, const String& type)
@@ -135,12 +131,12 @@ void ModuleChainer::ensureOneEmptySlotAtEnd()
   ScopedLock scopedLock(*plugInLock);
 
   // if the last module/slot is not the "empty" dummy module, add another slot:
-  if(!isModuleOfType(modules.size()-1, "None"))
+  if(!isModuleOfType(size(modules)-1, "None"))
     addEmptySlot();
 
   // remove superfluous empty slots at end:
-  while(modules.size() > 1 && isModuleOfType(modules.size()-1, "None") 
-                           && isModuleOfType(modules.size()-2, "None"))
+  while(modules.size() > 1 && isModuleOfType(size(modules)-1, "None") 
+                           && isModuleOfType(size(modules)-2, "None"))
   { // if the last two slots are empty, remove the last
     removeLastModule();
   }
@@ -270,7 +266,7 @@ void ModuleChainerEditor::replaceModule(int index, const String& type)
 void ModuleChainerEditor::updateSelectorArray()
 {
   ScopedLock scopedLock(*plugInLock);
-  int numModules   = chainer->modules.size();
+  int numModules   = size(chainer->modules);
   int numSelectors = selectors.size();
   AudioModuleSelector *s;
 
@@ -297,7 +293,7 @@ void ModuleChainerEditor::updateSelectorArray()
 void ModuleChainerEditor::updateEditorArray()
 {
   ScopedLock scopedLock(*plugInLock);
-  int numModules  = chainer->modules.size();
+  int numModules = size(chainer->modules);
   int numEditors = editors.size();
   AudioModuleEditor *e;
 

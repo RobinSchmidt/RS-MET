@@ -106,11 +106,9 @@ public:
     bool markAsClean) override;
 
 protected:
-
-  //Array<AudioModule*> modules; // maybe use the inherited childModules array instead?
-                               // maybe use a std::vector -> better for debugging
-  vector<AudioModule*> modules;
-  int activeSlot = 0;          // slot for which the editor is currently shown 
+                     
+  vector<AudioModule*> modules;  // std::vector better for debugging than juce::Array
+  int activeSlot = 0;            // slot for which the editor is currently shown 
   double sampleRate;
 
   friend class ModuleChainerEditor;
