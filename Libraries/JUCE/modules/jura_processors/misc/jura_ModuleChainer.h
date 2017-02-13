@@ -107,8 +107,9 @@ public:
 
 protected:
 
-  Array<AudioModule*> modules; // maybe use the inherited childModules array instead?
+  //Array<AudioModule*> modules; // maybe use the inherited childModules array instead?
                                // maybe use a std::vector -> better for debugging
+  vector<AudioModule*> modules;
   int activeSlot = 0;          // slot for which the editor is currently shown 
   double sampleRate;
 
@@ -124,6 +125,7 @@ todo:
  the active slot selector
 -bug: fill 3 slots, remove the 2nd, remove the 3rd -> access violation
  fill 2 slots, delete 1st, delete 2nd -> access violation
+ fill 2 slots, delete 2nd, delete 1st -> other access violation
 -maybe this class should derive from AudioModuleDeletionWatcher, so we can take appropriate 
  actions (i.e. delete an editor), when a module gets deleted from the ModuleChainer, for example due 
  to loading a preset. */

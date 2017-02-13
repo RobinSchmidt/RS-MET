@@ -1,3 +1,24 @@
+// some little helper/convenience functions to deal with std::vectors (move to RAPT)
+
+template<class T>
+inline int size(const vector<T>& v)
+{
+  return (int)v.size();
+}
+
+template<class T>
+inline void append(vector<T>& v, T& newElement)
+{
+  v.push_back(newElement);
+}
+
+template<class T>
+inline void remove(vector<T>& v, int index)
+{
+  v.erase(v.begin() + index);
+}
+
+//-------------------------------------------------------------------------------------------------
 
 AudioModule* AudioModuleFactory::createModule(const String& type, CriticalSection *lock)
 {
@@ -72,7 +93,8 @@ void ModuleChainer::addModule(const String& type)
 {
   ScopedLock scopedLock(*plugInLock);
   AudioModule *m = AudioModuleFactory::createModule(type, plugInLock);
-  modules.add(m);
+  //modules.add(m);
+  modules.push_back(m);
 }
 
 void ModuleChainer::replaceModule(int index, const String& type)
@@ -81,7 +103,8 @@ void ModuleChainer::replaceModule(int index, const String& type)
   jassert(index >= 0 && index < modules.size()); // index out of range
   if(!isModuleOfType(index, type)){              // replace only, if new type is different
     delete modules[index];
-    modules.set(index, AudioModuleFactory::createModule(type, plugInLock));
+    //modules.set(index, AudioModuleFactory::createModule(type, plugInLock));
+    modules[index] = AudioModuleFactory::createModule(type, plugInLock);
     modules[index]->setSampleRate(sampleRate);
     activeSlot = index;
     ensureOneEmptySlotAtEnd();
@@ -91,11 +114,13 @@ void ModuleChainer::replaceModule(int index, const String& type)
 void ModuleChainer::removeLastModule()
 {
   ScopedLock scopedLock(*plugInLock);
-  int index = modules.size() - 1;
+  //int index = modules.size() - 1;
+  size_t index = modules.size() - 1;
   if(activeSlot == index)
     activeSlot--;
   delete modules[index];
-  modules.remove(index);
+  //modules.remove(index);
+  modules.erase(modules.begin() + index);
 }
 
 bool ModuleChainer::isModuleOfType(int index, const String& type)
