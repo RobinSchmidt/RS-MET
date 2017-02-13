@@ -122,10 +122,11 @@ protected:
 todo: 
 -make it possible to select the active slot by clicking on the corresponding selector, highlight
  the active slot selector
--bug: when inserting the PhaseScope at very first, no new slot appears
+-bug: fill a lot of slots, remove the 2nd
+
 -maybe this class should derive from AudioModuleDeletionWatcher, so we can take appropriate 
-actions (i.e. delete an editor), when a module gets deleted from the ModuleChainer, for example due 
-to loading a preset. */
+ actions (i.e. delete an editor), when a module gets deleted from the ModuleChainer, for example due 
+ to loading a preset. */
 
 class JUCE_API ModuleChainerEditor : public AudioModuleEditor, public RComboBoxObserver
 {

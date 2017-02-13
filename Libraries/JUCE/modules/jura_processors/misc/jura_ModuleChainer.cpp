@@ -232,9 +232,9 @@ void ModuleChainerEditor::replaceModule(int index, const String& type)
   if(!chainer->isModuleOfType(index, type)){
     deleteEditor(index);
     chainer->replaceModule(index, type);
-    editors.set(index, getEditorForSlot(index));
     updateSelectorArray();
     updateEditorArray();
+    editors.set(index, getEditorForSlot(index));
     updateActiveEditor();
   }
 }
@@ -302,6 +302,8 @@ void ModuleChainerEditor::updateActiveEditor()
     int h = max(180, activeEditor->getHeight());
     activeEditor->setBounds(leftColumnWidth, 0, w, h);
     setSize(w + leftColumnWidth, h + bottomRowHeight);
+    resized(); // setSize will call resized only if the size actually changes but we need to make 
+               // sure that it always gets called to arrange the selectors
   }
 }
 
