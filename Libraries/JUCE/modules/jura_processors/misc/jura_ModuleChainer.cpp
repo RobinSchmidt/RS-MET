@@ -232,9 +232,12 @@ void ModuleChainerEditor::replaceModule(int index, const String& type)
   if(!chainer->isModuleOfType(index, type)){
     deleteEditor(index);
     chainer->replaceModule(index, type);
-    updateSelectorArray();
+
     updateEditorArray();
+    index = chainer->activeSlot;
     editors.set(index, getEditorForSlot(index));
+
+    updateSelectorArray();
     updateActiveEditor();
   }
 }

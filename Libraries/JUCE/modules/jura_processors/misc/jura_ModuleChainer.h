@@ -122,8 +122,8 @@ protected:
 todo: 
 -make it possible to select the active slot by clicking on the corresponding selector, highlight
  the active slot selector
--bug: fill a lot of slots, remove the 2nd
-
+-bug: fill 3 slots, remove the 2nd, remove the 3rd -> access violation
+ fill 2 slots, delete 1st, delete 2nd -> access violation
 -maybe this class should derive from AudioModuleDeletionWatcher, so we can take appropriate 
  actions (i.e. delete an editor), when a module gets deleted from the ModuleChainer, for example due 
  to loading a preset. */
