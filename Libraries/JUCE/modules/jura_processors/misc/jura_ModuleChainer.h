@@ -119,7 +119,9 @@ protected:
 //=================================================================================================
 
 /** Implements a GUI editor for the ModuleChainer.
-todo: maybe this class should derive from AudioModuleDeletionWatcher, so we can take appropriate 
+todo: 
+-write updateEditorArray method
+-maybe this class should derive from AudioModuleDeletionWatcher, so we can take appropriate 
 actions (i.e. delete an editor), when a module gets deleted from the ModuleChainer, for example due 
 to loading a preset. */
 
@@ -145,10 +147,13 @@ public:
   replaces the corresponding editor. */
   void replaceModule(int index, const String& type);
 
+  /** Updates our array of selector-widgets (comboboxes) to select the module for each slot. */
+  void updateSelectorArray();
+
   /** Updates this editor. This involves figuring out, which slot is active, retrieving the editor
   for the active slot and adding it as child-editor here. This may also cause the GUI to resize
   itself. */
-  virtual void updateEditor();
+  void updateEditor();
 
   // overrides:
   virtual void resized() override;
@@ -168,7 +173,7 @@ protected:
   void initEditorArray();
 
   /** Creates the comboboxes for selecting/replacing AudioModules. */
-  void createWidgets();
+  void createSelectorWidgets(); // rename to createSelectorWidgets
 
   // Data:
   ModuleChainer* chainer;                     // the edited object

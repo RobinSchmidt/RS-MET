@@ -26,7 +26,7 @@ String AudioModuleFactory::getModuleType(AudioModule *m)
 StringArray AudioModuleFactory::getAvailableModuleTypes()
 {
   StringArray a;
-  a.add("None");
+  a.add("None");        // maybe use "Empty" instead of "None"
   a.add("PhaseScope");
   a.add("Enveloper");
   a.add("Ladder");
@@ -54,9 +54,6 @@ ModuleChainer::ModuleChainer(CriticalSection *lockToUse) : AudioModuleWithMidiIn
   moduleName = "Chainer";
   setActiveDirectory(getApplicationDirectory() + "/ChainerPresets");
   addEmptySlot();
-
-  //addModule("None"); // always have at least one dummy module in the chain
-  //addModule("Ladder"); // for test
 }
 
 ModuleChainer::~ModuleChainer()
@@ -210,7 +207,7 @@ ModuleChainerEditor::ModuleChainerEditor(jura::ModuleChainer *moduleChainerToEdi
   setHeadlinePosition(TOP_LEFT);
   stateWidgetSet->setLayout(StateLoadSaveWidgetSet::LABEL_AND_BUTTONS_ABOVE);
   initEditorArray();
-  createWidgets();
+  createSelectorWidgets();
   updateEditor();
 }
 
@@ -236,8 +233,39 @@ void ModuleChainerEditor::replaceModule(int index, const String& type)
     deleteEditor(index);
     chainer->replaceModule(index, type);
     editors.set(index, getEditorForSlot(index));
+    updateSelectorArray();
+    //updateEditorArray();
     updateEditor();
   }
+}
+
+void ModuleChainerEditor::updateSelectorArray()
+{
+  ScopedLock scopedLock(*plugInLock);
+  int numModules   = chainer->modules.size();
+  int numSelectors = selectors.size();
+  AudioModuleSelector *s;
+
+  // remove superfluous selectors:
+  while(numSelectors > numModules){
+    s = selectors[numSelectors-1];
+    removeWidget(s, true, true);
+    selectors.remove(numSelectors-1);
+    numSelectors--;
+  }
+
+  // add additional selectors:
+  while(numModules > numSelectors){
+    s = new AudioModuleSelector();
+    s->selectItemFromText(
+      AudioModuleFactory::getModuleType(chainer->modules[numSelectors]), false);
+    s->registerComboBoxObserver(this);
+    addWidget(s);
+    selectors.add(s);
+    numSelectors++;
+  }
+
+  // we may need a similar method updateEditorArray
 }
 
 void ModuleChainerEditor::updateEditor()
@@ -269,7 +297,7 @@ void ModuleChainerEditor::resized()
 
   // arrange selectors:
   y  = getPresetSectionBottom() + margin;
-  dy = h;
+  dy = h-2;
   for(int i = 0; i < selectors.size(); i++){
     selectors[i]->setBounds(x, y, w, h);
     y += dy;
@@ -331,7 +359,7 @@ void ModuleChainerEditor::initEditorArray()
     editors.add(nullptr);
 }
 
-void ModuleChainerEditor::createWidgets()
+void ModuleChainerEditor::createSelectorWidgets()
 {
   ScopedLock scopedLock(*plugInLock);
   for(int i = 0; i < chainer->modules.size(); i++){
@@ -341,4 +369,6 @@ void ModuleChainerEditor::createWidgets()
     addWidget(s);
     selectors.add(s);
   }
+
+  // this method may be superfluous now - we can use updateSelectorArray()
 }
