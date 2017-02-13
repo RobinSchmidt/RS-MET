@@ -208,7 +208,7 @@ ModuleChainerEditor::ModuleChainerEditor(jura::ModuleChainer *moduleChainerToEdi
   stateWidgetSet->setLayout(StateLoadSaveWidgetSet::LABEL_AND_BUTTONS_ABOVE);
   initEditorArray();
   createSelectorWidgets();
-  updateEditor();
+  updateActiveEditor();
 }
 
 ModuleChainerEditor::~ModuleChainerEditor()
@@ -234,8 +234,8 @@ void ModuleChainerEditor::replaceModule(int index, const String& type)
     chainer->replaceModule(index, type);
     editors.set(index, getEditorForSlot(index));
     updateSelectorArray();
-    //updateEditorArray();
-    updateEditor();
+    updateEditorArray();
+    updateActiveEditor();
   }
 }
 
@@ -254,7 +254,7 @@ void ModuleChainerEditor::updateSelectorArray()
     numSelectors--;
   }
 
-  // add additional selectors:
+  // add required selectors:
   while(numModules > numSelectors){
     s = new AudioModuleSelector();
     s->selectItemFromText(
@@ -264,11 +264,33 @@ void ModuleChainerEditor::updateSelectorArray()
     selectors.add(s);
     numSelectors++;
   }
-
-  // we may need a similar method updateEditorArray
 }
 
-void ModuleChainerEditor::updateEditor()
+void ModuleChainerEditor::updateEditorArray()
+{
+  ScopedLock scopedLock(*plugInLock);
+  int numModules  = chainer->modules.size();
+  int numEditors = editors.size();
+  AudioModuleEditor *e;
+
+  // remove superfluous editors:
+  while(numEditors > numModules){
+    e = editors[numEditors-1];
+    if(e == activeEditor)
+      activeEditor = nullptr;
+    delete e;
+    editors.remove(numEditors-1);
+    numEditors--;
+  }
+
+  // add placeholders for required selectors:
+  while(numModules > numEditors){
+    editors.add(nullptr);
+    numEditors++;
+  }
+}
+
+void ModuleChainerEditor::updateActiveEditor()
 {
   ScopedLock scopedLock(*plugInLock);
   AudioModuleEditor* tmpEditor = getEditorForActiveSlot();

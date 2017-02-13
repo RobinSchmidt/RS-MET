@@ -120,7 +120,9 @@ protected:
 
 /** Implements a GUI editor for the ModuleChainer.
 todo: 
--write updateEditorArray method
+-make it possible to select the active slot by clicking on the corresponding selector, highlight
+ the active slot selector
+-bug: when inserting the PhaseScope at very first, no new slot appears
 -maybe this class should derive from AudioModuleDeletionWatcher, so we can take appropriate 
 actions (i.e. delete an editor), when a module gets deleted from the ModuleChainer, for example due 
 to loading a preset. */
@@ -150,10 +152,13 @@ public:
   /** Updates our array of selector-widgets (comboboxes) to select the module for each slot. */
   void updateSelectorArray();
 
-  /** Updates this editor. This involves figuring out, which slot is active, retrieving the editor
-  for the active slot and adding it as child-editor here. This may also cause the GUI to resize
-  itself. */
-  void updateEditor();
+  /** Updates our array of AudioModuleEditors to match the number of modules of the edited 
+  ModuleChainer. */
+  void updateEditorArray();
+
+  /** Updates this editor to show the module-editor of the currently active slot. This may also 
+  cause the GUI to resize itself. */
+  void updateActiveEditor();
 
   // overrides:
   virtual void resized() override;
