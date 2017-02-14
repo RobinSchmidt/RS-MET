@@ -41,7 +41,7 @@ String AudioModuleFactory::getModuleType(AudioModule *m)
   if(dynamic_cast<PhasorFilter*> (m)) return "PhasorFilter";
 
   jassertfalse;  // unknown module type was passed
-  return String();
+  return "UnknownType";
 }
 
 StringArray AudioModuleFactory::getAvailableModuleTypes()
@@ -210,10 +210,17 @@ void ModuleChainer::reset()
 
 XmlElement* ModuleChainer::getStateAsXml(const juce::String& stateName, bool markAsClean)
 {
-  return AudioModule::getStateAsXml(stateName, markAsClean); // preliminary
-  // We need to loop over the slots (i.e. the modules array) and for each slot N create a child
-  // xml with name SlotN, with attributes like Type="Ladder", Bypass="0", etc and the state
-  // of the module as child element.
+  ScopedLock scopedLock(*plugInLock);
+  XmlElement *xml = AudioModule::getStateAsXml(stateName, markAsClean);
+  for(int i = 0; i < size(modules); i++){
+    String typeString = AudioModuleFactory::getModuleType(modules[i]);
+    XmlElement *child = new XmlElement("Slot" + String(i+1));
+    child->setAttribute("Type", typeString);
+    //child->setAttribute("Bypass", isSlotBypassed(i)); // add later
+    child->addChildElement(modules[i]->getStateAsXml(typeString, markAsClean));
+    xml->addChildElement(child);
+  }
+  return xml;
 }
 
 void ModuleChainer::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,

@@ -46,6 +46,17 @@ void Enveloper::noteOff(int noteNumber)
   envGen.noteOff(true);
 }
 
+XmlElement* Enveloper::getStateAsXml(const juce::String& stateName, bool markAsClean)
+{
+  return envGenWrapper.getStateAsXml(stateName, markAsClean);
+}
+
+void Enveloper::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
+  bool markAsClean)
+{
+  envGenWrapper.setStateFromXml(xmlState, stateName, markAsClean);
+}
+
 //void Enveloper::reset()
 //{
 // 

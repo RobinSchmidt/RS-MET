@@ -20,6 +20,9 @@ public:
   virtual void setSampleRate(double newSampleRate) override; 
   virtual void noteOn(int noteNumber, int velocity) override;
   virtual void noteOff(int noteNumber) override;
+  virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean) override;
+  virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 
+    bool markAsClean) override;
   //virtual void reset() override;
 
 protected:
