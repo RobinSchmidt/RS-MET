@@ -325,6 +325,10 @@ public:
   /** Returns the bottom (in pixels) of the preset section. */
   virtual int getPresetSectionBottom();
 
+  /** Returns a pointer to the AudioModule that is edited by this editor. It's a const pointer 
+  because you are not supposed to change the value of the pointer. */
+  const AudioModule* getModuleToEdit() { return moduleToEdit; }
+
   //-----------------------------------------------------------------------------------------------
   // callbacks:
 

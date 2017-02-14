@@ -88,6 +88,10 @@ public:
   string. */
   bool isModuleOfType(int index, const String& type);
 
+  /** Returns the moduel in the chain at the given index. If the index is out of range, it will 
+  return a nullptr. */
+  AudioModule* getModuleAt(int index);
+
   /** Ensures that at the end of the module chain, there is exactly one empty slot that can be used
   to insert another module into the chain. If the last slot is not empty, an empty slot will be 
   added, if there are more than one empty slots at the end, the superfluous ones will be 
@@ -121,6 +125,8 @@ protected:
 todo: 
 -make it possible to select the active slot by clicking on the corresponding selector, highlight
  the active slot selector
+-plugin enveloper in 1st slot, plug it out - ModuleChainerEditor::audioModuleWillBeDeleted is not 
+ called - why? --bcas we delete the editor already in replaceModule
 -bug: fill 3 slots, remove the 2nd, remove the 3rd -> access violation
  fill 2 slots, delete 1st, delete 2nd -> access violation
  fill 2 slots, delete 2nd, delete 1st -> other access violation
@@ -130,7 +136,8 @@ todo:
  actions (i.e. delete an editor), when a module gets deleted from the ModuleChainer, for example due 
  to loading a preset. */
 
-class JUCE_API ModuleChainerEditor : public AudioModuleEditor, public RComboBoxObserver
+class JUCE_API ModuleChainerEditor : public AudioModuleEditor, public AudioModuleDeletionWatcher,
+  public RComboBoxObserver
 {
 
 public:
@@ -165,6 +172,7 @@ public:
 
   // overrides:
   virtual void resized() override;
+  virtual void audioModuleWillBeDeleted(AudioModule *moduleToBeDeleted) override;
   virtual void rComboBoxChanged(RComboBox* comboBoxThatHasChanged) override;
 
 protected:

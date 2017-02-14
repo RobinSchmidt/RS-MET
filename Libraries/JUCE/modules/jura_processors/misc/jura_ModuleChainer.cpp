@@ -126,6 +126,13 @@ bool ModuleChainer::isModuleOfType(int index, const String& type)
   return type == AudioModuleFactory::getModuleType(modules[index]);
 }
 
+AudioModule* ModuleChainer::getModuleAt(int index)
+{
+  if(index < 0 || index >= size(modules))  // no assert, this is supposed to happen
+    return nullptr;
+  return modules[index];
+}
+
 void ModuleChainer::ensureOneEmptySlotAtEnd()
 {
   ScopedLock scopedLock(*plugInLock);
@@ -249,10 +256,18 @@ AudioModuleEditor* ModuleChainerEditor::getEditorForSlot(int index)
 void ModuleChainerEditor::replaceModule(int index, const String& type)
 {
   ScopedLock scopedLock(*plugInLock);
-  jassert(index >= 0 && index < editors.size()); // index out of range
+  jassert(index >= 0 && index < editors.size());  // index out of range
   if(!chainer->isModuleOfType(index, type)){
-    deleteEditor(index);
-    chainer->replaceModule(index, type);
+
+    deleteEditor(index); 
+      // should not needed anymore - deletion is done in audioModuleWillBeDeleted, but when we 
+      // remove it, the automatic appending of empty slots doesn't work anymore - figure out
+
+    chainer->replaceModule(index, type); // may call audioModuleWillBeDeleted
+
+    AudioModule* m = chainer->getModuleAt(index); // can be 0, if dummy module was placed at end
+    if(m != nullptr) 
+      addWatchedAudioModule(m);
 
     updateEditorArray();
     index = chainer->activeSlot;
@@ -373,6 +388,20 @@ void ModuleChainerEditor::resized()
   Component *parent =	getParentComponent();
   if(dynamic_cast<AudioPluginEditor*>(parent))
     parent->setSize(getWidth(), getHeight());
+}
+
+void ModuleChainerEditor::audioModuleWillBeDeleted(AudioModule *m)
+{
+  ScopedLock scopedLock(*plugInLock);
+
+  // we need to figure out which editor corresponds to this module and delete the editor..
+
+  for(int i = 0; i < size(editors); i++){
+    if(editors[i] != nullptr && m == editors[i]->getModuleToEdit())
+      deleteEditor(i);
+  }
+  removeWatchedAudioModule(m);
+  int dummy = 0;
 }
 
 void ModuleChainerEditor::rComboBoxChanged(RComboBox* box)
