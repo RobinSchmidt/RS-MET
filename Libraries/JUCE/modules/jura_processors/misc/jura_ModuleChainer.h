@@ -140,7 +140,7 @@ todo:
  */
 
 class JUCE_API ModuleChainerEditor : public AudioModuleEditor, public AudioModuleDeletionWatcher,
-  public RComboBoxObserver
+  public RComboBoxObserver, public ChangeBroadcaster /*, public ChangeListener*/
 {
 
 public:
@@ -177,8 +177,18 @@ public:
   virtual void resized() override;
   virtual void audioModuleWillBeDeleted(AudioModule *moduleToBeDeleted) override;
   virtual void rComboBoxChanged(RComboBox* comboBoxThatHasChanged) override;
+  virtual void changeListenerCallback(ChangeBroadcaster *source) override;
 
 protected:
+
+  /** Sends out a change message that we will receive ourselves. On receive, we will call
+  updateSelectorArray. This mechanism is used to cause a deferred update of the selectors array 
+  from replaceModule. The deferrence is necessray, because replaceModule is called from 
+  rComboBoxChanged - if we would call updateSelectorArray directly in replaceModule, we would 
+  possibly delete the combobox that has changed before rComboBoxChanged returns which results
+  in a combox trying to update itself with an invalid this-pointer. So, we need a deferred 
+  destruction. */
+  void scheduleSelectorArrayUpdate();
 
   /** Deletes the editor at given index in the array. The slot entry will be replaced by 
   nullptr. */

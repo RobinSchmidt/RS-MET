@@ -237,6 +237,7 @@ ModuleChainerEditor::ModuleChainerEditor(jura::ModuleChainer *moduleChainerToEdi
   updateEditorArray();
   updateSelectorArray();
   updateActiveEditor();
+  addChangeListener(this); // we listen to ourselves for deferred destruction of selectors
 }
 
 ModuleChainerEditor::~ModuleChainerEditor()
@@ -265,23 +266,14 @@ void ModuleChainerEditor::replaceModule(int index, const String& type)
       // also, we get an error when closing the editor
 
     chainer->replaceModule(index, type);          // may call audioModuleWillBeDeleted
-
     AudioModule* m = chainer->getModuleAt(index); // can be 0, if dummy module was placed at end
     if(m != nullptr) 
       addWatchedAudioModule(m);
-
     updateEditorArray();
     index = chainer->activeSlot;
-    
     editors[index] = getEditorForSlot(index);
     updateActiveEditor();
-
-    updateSelectorArray();
-    resized(); // hack!
-    // what we really should do here is schedule a deferred update of the selector array and maybe 
-    // from that deferred update call resize. we then may be able to get rid of the resized call at
-    // the end of updateActiveEditor() (but i'm not sure) - so it should read:
-    //scheduleSelectorArrayUpadate();
+    scheduleSelectorArrayUpdate();                // deferred call to updateSelectorArray
   }
 }
 
@@ -410,6 +402,24 @@ void ModuleChainerEditor::rComboBoxChanged(RComboBox* box)
       replaceModule(i, box->getSelectedItemText());
     }
   }
+}
+
+void ModuleChainerEditor::changeListenerCallback(ChangeBroadcaster *source)
+{
+  ScopedLock scopedLock(*plugInLock);
+  if(source == this)
+  {
+    updateSelectorArray();
+    resized();  // to arrange selectors
+  }
+  else
+    AudioModuleEditor::changeListenerCallback(source);
+}
+
+void ModuleChainerEditor::scheduleSelectorArrayUpdate()
+{
+  sendChangeMessage(); 
+  // we will receive the message ourselves which causes a call to updateSelectorArray()
 }
 
 void ModuleChainerEditor::deleteEditor(int index)
