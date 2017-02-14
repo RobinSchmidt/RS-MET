@@ -1,7 +1,13 @@
 #ifndef jura_ModuleChainer_h
 #define jura_ModuleChainer_h
   
-/** A do-nothing dummy AudioModule to be used as placeholder. Maybe move somewhere else... */
+/** A do-nothing dummy AudioModule to be used as placeholder. 
+todo:
+-maybe move somewhere else in the library
+-maybe override create editor to create a special kind of editor that says something like
+ "Select Module - Editor will appear here"
+
+*/
 
 class JUCE_API DummyModule : public jura::AudioModule
 {
@@ -121,7 +127,11 @@ protected:
 
 /** Implements a GUI editor for the ModuleChainer.
 todo: 
--make it possible to select the active slot by clicking on the corresponding selector
+-bug: sometimes, we get an access violation when removing a module, the violation occurs in 
+ ~AudioModuleEditor() when it calls moduleToEdit->removeStateWatcher(stateWidgetSet); - the 
+ moduleToEdit pointer is apparently invalid ....so it seems, we have kept an editor around for a 
+ module that has already been deleted - how can this be? we actually delete editors when their
+ module gets deleted - also, it does not always happen - strange...
 -make it possible to drag the slots up and down to change the order of the modules
 -plugin enveloper in 1st slot, plug it out - ModuleChainerEditor::audioModuleWillBeDeleted is not 
  called - why? bcs we delete the editor already in replaceModule - but it should not be necessary 
