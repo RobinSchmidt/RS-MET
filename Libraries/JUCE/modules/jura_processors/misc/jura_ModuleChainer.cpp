@@ -295,6 +295,7 @@ void ModuleChainerEditor::updateSelectorArray()
   // add required selectors:
   while(numModules > numSelectors){
     s = new AudioModuleSelector();
+    s->setInterceptsMouseClicks(false, false); // we handle them 1st and possibly pass them through
     s->selectItemFromText(
       AudioModuleFactory::getModuleType(chainer->modules[numSelectors]), false);
     s->registerComboBoxObserver(this);
@@ -345,8 +346,32 @@ void ModuleChainerEditor::updateActiveEditor()
   }
 }
 
+void ModuleChainerEditor::mouseDown(const MouseEvent &e)
+{
+  ScopedLock scopedLock(*plugInLock);
+  int i = chainer->activeSlot;
+  Rectangle<int> rect = selectors[i]->getBounds();
+  if(rect.contains(e.x, e.y)){ 
+    // click was on active slot selector - pass event through:
+    selectors[i]->mouseDown(e.getEventRelativeTo(selectors[i]));
+  }
+  else{
+    for(i = 0; i < size(selectors); i++){
+      rect = selectors[i]->getBounds();
+      if(rect.contains(e.x, e.y)){ 
+        // click was on inactive slot selector - activate:
+        chainer->activeSlot = i;
+        updateActiveEditor();
+        repaint();
+      }
+    }
+  }
+}
+
 void ModuleChainerEditor::resized()
 {
+  ScopedLock scopedLock(*plugInLock);
+
   Editor::resized();
 
   int x, y, w, h, dy, margin;

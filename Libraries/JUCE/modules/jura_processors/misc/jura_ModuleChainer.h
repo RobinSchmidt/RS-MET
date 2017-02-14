@@ -163,6 +163,7 @@ public:
   void updateActiveEditor();
 
   // overrides:
+  virtual void mouseDown(const MouseEvent &e) override;
   virtual void resized() override;
   virtual void paintOverChildren(Graphics& g) override;
   virtual void audioModuleWillBeDeleted(AudioModule *moduleToBeDeleted) override;
