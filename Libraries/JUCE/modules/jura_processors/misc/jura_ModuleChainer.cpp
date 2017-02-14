@@ -274,9 +274,14 @@ void ModuleChainerEditor::replaceModule(int index, const String& type)
     index = chainer->activeSlot;
     
     editors[index] = getEditorForSlot(index);
+    updateActiveEditor();
 
     updateSelectorArray();
-    updateActiveEditor();
+    resized(); // hack!
+    // what we really should do here is schedule a deferred update of the selector array and maybe 
+    // from that deferred update call resize. we then may be able to get rid of the resized call at
+    // the end of updateActiveEditor() (but i'm not sure) - so it should read:
+    //scheduleSelectorArrayUpadate();
   }
 }
 
