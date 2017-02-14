@@ -125,16 +125,14 @@ protected:
 todo: 
 -make it possible to select the active slot by clicking on the corresponding selector, highlight
  the active slot selector
+
+-bug: fill 2 slots, delete 1st, delete 2nd -> access violation - we and up in
+ RComboBox::selectItemByIndex with an invalid "this" pointer
+ 
 -plugin enveloper in 1st slot, plug it out - ModuleChainerEditor::audioModuleWillBeDeleted is not 
- called - why? --bcas we delete the editor already in replaceModule
--bug: fill 3 slots, remove the 2nd, remove the 3rd -> access violation
- fill 2 slots, delete 1st, delete 2nd -> access violation
- fill 2 slots, delete 2nd, delete 1st -> other access violation
- it seems like a module gets deleted before its editor is deleted keeping a dangling pointer inside 
- the editor - maybe this can be fixed by the next point on the list:
--maybe this class should derive from AudioModuleDeletionWatcher, so we can take appropriate 
- actions (i.e. delete an editor), when a module gets deleted from the ModuleChainer, for example due 
- to loading a preset. */
+ called - why? bcs we delete the editor already in replaceModule - but it should not be necessary 
+ to call it there (see comments in the function)
+ */
 
 class JUCE_API ModuleChainerEditor : public AudioModuleEditor, public AudioModuleDeletionWatcher,
   public RComboBoxObserver

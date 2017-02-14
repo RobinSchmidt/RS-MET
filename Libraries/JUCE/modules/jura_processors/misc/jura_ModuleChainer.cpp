@@ -258,13 +258,13 @@ void ModuleChainerEditor::replaceModule(int index, const String& type)
   ScopedLock scopedLock(*plugInLock);
   jassert(index >= 0 && index < editors.size());  // index out of range
   if(!chainer->isModuleOfType(index, type)){
-
     deleteEditor(index); 
       // should not needed anymore - deletion is done in audioModuleWillBeDeleted, but when we 
-      // remove it, the automatic appending of empty slots doesn't work anymore - figure out
+      // remove it, the automatic appending of empty slots doesn't work anymore
       // seems in updateActiveEditor(), tmpEditor == activeEditor, so resized() never gets called
+      // also, we get an error when closing the editor
 
-    chainer->replaceModule(index, type); // may call audioModuleWillBeDeleted
+    chainer->replaceModule(index, type);          // may call audioModuleWillBeDeleted
 
     AudioModule* m = chainer->getModuleAt(index); // can be 0, if dummy module was placed at end
     if(m != nullptr) 
