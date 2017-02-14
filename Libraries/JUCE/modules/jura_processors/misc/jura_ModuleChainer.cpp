@@ -212,9 +212,11 @@ XmlElement* ModuleChainer::getStateAsXml(const juce::String& stateName, bool mar
 {
   ScopedLock scopedLock(*plugInLock);
   XmlElement *xml = AudioModule::getStateAsXml(stateName, markAsClean);
+  //xml->setAttribute("ActiveSlot", activeSlot+1);
   for(int i = 0; i < size(modules); i++){
     String typeString = AudioModuleFactory::getModuleType(modules[i]);
-    XmlElement *child = new XmlElement("Slot" + String(i+1));
+    //XmlElement *child = new XmlElement("Slot" + String(i+1));
+    XmlElement *child = new XmlElement("Slot");
     child->setAttribute("Type", typeString);
     //child->setAttribute("Bypass", isSlotBypassed(i)); // add later
     child->addChildElement(modules[i]->getStateAsXml(typeString, markAsClean));
@@ -226,10 +228,31 @@ XmlElement* ModuleChainer::getStateAsXml(const juce::String& stateName, bool mar
 void ModuleChainer::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
   bool markAsClean)
 {
+  ScopedLock scopedLock(*plugInLock);
   AudioModule::setStateFromXml(xmlState, stateName, markAsClean); // preliminary
+
   // We need to clear the modules array, then loop over the child xml elements, infer the Type 
   // attribute and create and add a module of appropriate type to the array and then set up it's
   // state from the child xml-state.
+
+  //clearModulesArray();
+  //int i = 0;
+  //forEachXmlChildElementWithTagName(xmlState, slotState, "Slot")
+  //{
+  //  String type = slotState->getStringAttribute("Type");
+  //  addModule(type);
+  //  XmlElement *moduleState = slotState->getChildElement(0);
+  //  modules[i]->setStateFromXml(*moduleState, "", markAsClean);
+  //  i++;
+  //}
+}
+
+void ModuleChainer::clearModulesArray()
+{
+  ScopedLock scopedLock(*plugInLock);
+  for(int i = 0; i < size(modules); i++)
+    delete modules[i];
+  modules.clear();
 }
 
 //=================================================================================================
