@@ -212,10 +212,9 @@ XmlElement* ModuleChainer::getStateAsXml(const juce::String& stateName, bool mar
 {
   ScopedLock scopedLock(*plugInLock);
   XmlElement *xml = AudioModule::getStateAsXml(stateName, markAsClean);
-  //xml->setAttribute("ActiveSlot", activeSlot+1);
+  xml->setAttribute("ActiveSlot", activeSlot+1);
   for(int i = 0; i < size(modules); i++){
     String typeString = AudioModuleFactory::getModuleType(modules[i]);
-    //XmlElement *child = new XmlElement("Slot" + String(i+1));
     XmlElement *child = new XmlElement("Slot");
     child->setAttribute("Type", typeString);
     //child->setAttribute("Bypass", isSlotBypassed(i)); // add later
@@ -229,22 +228,18 @@ void ModuleChainer::setStateFromXml(const XmlElement& xmlState, const juce::Stri
   bool markAsClean)
 {
   ScopedLock scopedLock(*plugInLock);
-  AudioModule::setStateFromXml(xmlState, stateName, markAsClean); // preliminary
-
-  // We need to clear the modules array, then loop over the child xml elements, infer the Type 
-  // attribute and create and add a module of appropriate type to the array and then set up it's
-  // state from the child xml-state.
-
-  //clearModulesArray();
-  //int i = 0;
-  //forEachXmlChildElementWithTagName(xmlState, slotState, "Slot")
-  //{
-  //  String type = slotState->getStringAttribute("Type");
-  //  addModule(type);
-  //  XmlElement *moduleState = slotState->getChildElement(0);
-  //  modules[i]->setStateFromXml(*moduleState, "", markAsClean);
-  //  i++;
-  //}
+  AudioModule::setStateFromXml(xmlState, stateName, markAsClean); // actually does nothing?
+  activeSlot = -1;
+  clearModulesArray();
+  int i = 0;
+  forEachXmlChildElementWithTagName(xmlState, slotState, "Slot"){
+    String type = slotState->getStringAttribute("Type");
+    addModule(type);
+    XmlElement *moduleState = slotState->getChildElement(0);
+    modules[i]->setStateFromXml(*moduleState, "", markAsClean);
+    i++;
+  }
+  activeSlot = xmlState.getIntAttribute("ActiveSlot", 1) - 1;
 }
 
 void ModuleChainer::clearModulesArray()
@@ -278,6 +273,8 @@ ModuleChainerEditor::~ModuleChainerEditor()
 AudioModuleEditor* ModuleChainerEditor::getEditorForSlot(int index)
 {
   ScopedLock scopedLock(*plugInLock);
+  if(size(editors) == 0)                         // may be zero during xml state recall
+    return nullptr; 
   jassert(index >= 0 && index < editors.size()); // index out of range
   if(editors[index] == nullptr)
     editors[index] = chainer->modules[index]->createEditor();  
@@ -443,6 +440,8 @@ void ModuleChainerEditor::paintOverChildren(Graphics& g)
 {
   // highlight active slot by drawing a rectangle around it:
   ScopedLock scopedLock(*plugInLock);
+  if(size(selectors) == 0)   // occurs during state recall
+    return;
   g.setColour(Colours::black);
   Rectangle<int> rect = selectors[chainer->activeSlot]->getBounds();
   g.drawRect(rect, 2);  // 2nd param: thickness

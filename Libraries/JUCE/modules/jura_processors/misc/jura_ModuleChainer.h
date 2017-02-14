@@ -130,6 +130,7 @@ protected:
 
 /** Implements a GUI editor for the ModuleChainer.
 todo: 
+-bug: Ladder cutoff frequency not recalled
 -bug: sometimes, we get an access violation when removing a module, the violation occurs in 
  ~AudioModuleEditor() when it calls moduleToEdit->removeStateWatcher(stateWidgetSet); - the 
  moduleToEdit pointer is apparently invalid ....so it seems, we have kept an editor around for a 
@@ -151,10 +152,12 @@ public:
   virtual ~ModuleChainerEditor();
 
 
-  /** Returns an editor for the AudioModule in the given slot index. */
+  /** Returns an editor for the AudioModule in the given slot index. Note that this may return a 
+  nullptr in the case when the "modules" and "editors" arrays are empty (this occurs as a 
+  transitional situation when recalling the state of the chainer from an xml).*/
   AudioModuleEditor* getEditorForSlot(int index);
 
-  /** Returns the editor for the currently active slot. */
+  /** Returns the editor for the currently active slot.  */
   inline AudioModuleEditor* getEditorForActiveSlot() 
   { 
     return getEditorForSlot(chainer->activeSlot); 
