@@ -126,8 +126,13 @@ todo:
 -make it possible to select the active slot by clicking on the corresponding selector, highlight
  the active slot selector
 
--bug: fill 2 slots, delete 1st, delete 2nd -> access violation - we and up in
- RComboBox::selectItemByIndex with an invalid "this" pointer
+-bug: fill 2 slots, delete 1st, delete 2nd -> access violation - we end up in
+ RComboBox::selectItemByIndex with an invalid "this" pointer 
+ -> in rComboBoxChanged(RComboBox* box), the call to replaceModule will get the combobox itself
+ deleted and when it tries to update it's own state, it will find a deleted this pointer
+ ->we have a situation where choosing a particular option from the combobox will result in the 
+ deletion of the combobox itself - maybe we need to keep it around and defer the deletion using
+ changeListenerCallback or something like that.
  
 -plugin enveloper in 1st slot, plug it out - ModuleChainerEditor::audioModuleWillBeDeleted is not 
  called - why? bcs we delete the editor already in replaceModule - but it should not be necessary 
