@@ -54,8 +54,6 @@ protected:
 /** A shell module that can be used to create a chain (i.e. series connection) of some number of
 AudioModule objects. 
 \todo: 
--implement automatic empty slot creation/deletion such that there's alway one empty slot at the end
- of the chain -> done, but not yet reflected in editor
 -implement state save/recall
 -organize modules in groups (Generators, Filters, Analyzers, etc.) and use a tree-view for 
  selection
@@ -123,17 +121,8 @@ protected:
 
 /** Implements a GUI editor for the ModuleChainer.
 todo: 
--make it possible to select the active slot by clicking on the corresponding selector, highlight
- the active slot selector
-
--bug: fill 2 slots, delete 1st, delete 2nd -> access violation - we end up in
- RComboBox::selectItemByIndex with an invalid "this" pointer 
- -> in rComboBoxChanged(RComboBox* box), the call to replaceModule will get the combobox itself
- deleted and when it tries to update it's own state, it will find a deleted this pointer
- ->we have a situation where choosing a particular option from the combobox will result in the 
- deletion of the combobox itself - maybe we need to keep it around and defer the deletion using
- changeListenerCallback or something like that.
- 
+-make it possible to select the active slot by clicking on the corresponding selector
+-make it possible to drag the slots up and down to change the order of the modules
 -plugin enveloper in 1st slot, plug it out - ModuleChainerEditor::audioModuleWillBeDeleted is not 
  called - why? bcs we delete the editor already in replaceModule - but it should not be necessary 
  to call it there (see comments in the function)
@@ -175,6 +164,7 @@ public:
 
   // overrides:
   virtual void resized() override;
+  virtual void paintOverChildren(Graphics& g) override;
   virtual void audioModuleWillBeDeleted(AudioModule *moduleToBeDeleted) override;
   virtual void rComboBoxChanged(RComboBox* comboBoxThatHasChanged) override;
   virtual void changeListenerCallback(ChangeBroadcaster *source) override;

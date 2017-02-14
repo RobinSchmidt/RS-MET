@@ -384,6 +384,15 @@ void ModuleChainerEditor::resized()
     parent->setSize(getWidth(), getHeight());
 }
 
+void ModuleChainerEditor::paintOverChildren(Graphics& g)
+{
+  // highlight active slot by drawing a rectangle around it:
+  ScopedLock scopedLock(*plugInLock);
+  g.setColour(Colours::black);
+  Rectangle<int> rect = selectors[chainer->activeSlot]->getBounds();
+  g.drawRect(rect, 2);  // 2nd param: thickness
+}
+
 void ModuleChainerEditor::audioModuleWillBeDeleted(AudioModule *m)
 {
   ScopedLock scopedLock(*plugInLock);
