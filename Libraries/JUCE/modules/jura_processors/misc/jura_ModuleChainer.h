@@ -130,6 +130,11 @@ protected:
 
 /** Implements a GUI editor for the ModuleChainer.
 todo: 
+-bug: loading presets from the gui doesn't work (total recall by the host works though, presumably
+ because the ModuleChainer state is recalled before the GUI editor is created) - maybe we need a
+ ModuleChainerOberver baseclass, derive the ModuleChainerEditor from it and notify the editor about
+ changes ...this may also be used alternatively for informing about module deletion - we could have
+ different callbacks: moduleWillBeDeleted, moduleChainHasChanged, etc.
 -bug: Ladder cutoff frequency not recalled
 -bug: sometimes, we get an access violation when removing a module, the violation occurs in 
  ~AudioModuleEditor() when it calls moduleToEdit->removeStateWatcher(stateWidgetSet); - the 
