@@ -234,8 +234,8 @@ ModuleChainerEditor::ModuleChainerEditor(jura::ModuleChainer *moduleChainerToEdi
   chainer = moduleChainerToEdit;
   setHeadlinePosition(TOP_LEFT);
   stateWidgetSet->setLayout(StateLoadSaveWidgetSet::LABEL_AND_BUTTONS_ABOVE);
-  initEditorArray();
-  createSelectorWidgets();
+  updateEditorArray();
+  updateSelectorArray();
   updateActiveEditor();
 }
 
@@ -262,6 +262,7 @@ void ModuleChainerEditor::replaceModule(int index, const String& type)
     deleteEditor(index); 
       // should not needed anymore - deletion is done in audioModuleWillBeDeleted, but when we 
       // remove it, the automatic appending of empty slots doesn't work anymore - figure out
+      // seems in updateActiveEditor(), tmpEditor == activeEditor, so resized() never gets called
 
     chainer->replaceModule(index, type); // may call audioModuleWillBeDeleted
 
@@ -318,10 +319,6 @@ void ModuleChainerEditor::updateEditorArray()
     e = editors[numEditors-1];
     if(e == activeEditor)
       activeEditor = nullptr;
-
-    //if(e != nullptr)
-    //  e->invalidateModulePointer(); // this is hacky
-
     delete e;
     remove(editors, numEditors-1);
     numEditors--;
@@ -393,15 +390,11 @@ void ModuleChainerEditor::resized()
 void ModuleChainerEditor::audioModuleWillBeDeleted(AudioModule *m)
 {
   ScopedLock scopedLock(*plugInLock);
-
-  // we need to figure out which editor corresponds to this module and delete the editor..
-
   for(int i = 0; i < size(editors); i++){
     if(editors[i] != nullptr && m == editors[i]->getModuleToEdit())
       deleteEditor(i);
   }
   removeWatchedAudioModule(m);
-  int dummy = 0;
 }
 
 void ModuleChainerEditor::rComboBoxChanged(RComboBox* box)
@@ -431,26 +424,4 @@ void ModuleChainerEditor::clearEditorArray()
   for(int i = 0; i < editors.size(); i++)
     delete editors[i];
   editors.clear();
-}
-
-void ModuleChainerEditor::initEditorArray()
-{
-  ScopedLock scopedLock(*plugInLock);
-  clearEditorArray();
-  for(int i = 0; i < chainer->modules.size(); i++)
-    append(editors, (AudioModuleEditor*) nullptr);
-}
-
-void ModuleChainerEditor::createSelectorWidgets()
-{
-  ScopedLock scopedLock(*plugInLock);
-  for(int i = 0; i < chainer->modules.size(); i++){
-    AudioModuleSelector *s = new AudioModuleSelector();
-    s->selectItemFromText(AudioModuleFactory::getModuleType(chainer->modules[i]), false);
-    s->registerComboBoxObserver(this);
-    addWidget(s);
-    append(selectors, s);
-  }
-
-  // this method may be superfluous now - we can use updateSelectorArray()
 }

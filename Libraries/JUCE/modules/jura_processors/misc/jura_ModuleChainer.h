@@ -184,13 +184,6 @@ protected:
   /** Deletes all the editors in our array and clears the array itself. */
   void clearEditorArray();
 
-  /** Initializes the editors array by creating a nullptr for each of the AudioModules in the 
-  chain. */
-  void initEditorArray();
-
-  /** Creates the comboboxes for selecting/replacing AudioModules. */
-  void createSelectorWidgets(); // rename to createSelectorWidgets
-
   // Data:
   ModuleChainer* chainer;                     // the edited object
   vector<AudioModuleSelector*> selectors;     // combo-boxes for selecting modules
