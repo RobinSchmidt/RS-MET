@@ -173,6 +173,8 @@ void PhaseScope::updateBufferSize()
   ScopedLock scopedLock(*plugInLock);
   int w = (int) round(displayWidth  / pixelScale);
   int h = (int) round(displayHeight / pixelScale);
+  w = jmax(w, 1);
+  h = jmax(h, 1);
 
   jassert(w <= phaseScopeBuffer.getImage()->getMaxWidth());
   jassert(h <= phaseScopeBuffer.getImage()->getMaxHeight());
@@ -335,6 +337,7 @@ void PhaseScopeEditor::resized()
 
   //display.setBounds(0, y, w-widgetMargin, h-y); // old - allows non-square display
   int ds = jmin(w-widgetMargin, h-y);  // display size - always square
+  ds = jmax(ds, 1);                    // at least 1x1
   display.setBounds(0, y, ds, ds);
 
   // set up widgets:
