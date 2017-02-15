@@ -1,4 +1,5 @@
-// some little helper/convenience functions to deal with std::vectors (move to RAPT)
+// some little helper/convenience functions to deal with std::vectors (move to RAPT, maybe don't 
+// inline them all)
 
 template<class T>
 inline int size(const vector<T>& v)
@@ -17,6 +18,33 @@ inline void remove(vector<T>& v, int index)
 {
   v.erase(v.begin() + index);
 }
+
+template<class T>
+inline void removeFirstOccurrence(vector<T>& v, T elementToRemove)
+{
+  for(int i = 0; i < size(v); i++)
+    if(v[i] == elementToRemove){
+      remove(v, i);
+      return;
+    }
+}
+
+template<class T>
+inline bool contains(vector<T>& v, T elementToCheckFor)
+{
+  for(int i = 0; i < size(v); i++)
+    if(v[i] == elementToCheckFor)
+      return true;
+  return false;
+}
+
+template<class T>
+inline void appendIfNotAlreadyThere(vector<T>& v, T newElement)
+{
+  if(!contains(v, newElement))
+    append(v, newElement);
+}
+
 
 //-------------------------------------------------------------------------------------------------
 
@@ -147,6 +175,40 @@ void AudioModuleChain::ensureOneEmptySlotAtEnd()
   { // if the last two slots are empty, remove the last
     removeLastModule();
   }
+}
+
+void AudioModuleChain::addAudioModuleChainObserver(AudioModuleChainObserver *observerToAdd)
+{
+  ScopedLock scopedLock(*plugInLock);
+  appendIfNotAlreadyThere(observers, observerToAdd);
+}
+
+void AudioModuleChain::removeAudioModuleChainObserver(AudioModuleChainObserver *observerToRemove)
+{
+  ScopedLock scopedLock(*plugInLock);
+  removeFirstOccurrence(observers, observerToRemove);
+}
+
+void AudioModuleChain::sendAudioModuleWasAddedNotification(AudioModule *module, int index)
+{
+  ScopedLock scopedLock(*plugInLock);
+  for(int i = 0; i < size(observers); i++)
+    observers[i]->audioModuleWasAdded(this, module, index);
+}
+
+void AudioModuleChain::sendAudioModuleWillBeDeletedNotification(AudioModule *module, int index)
+{
+  ScopedLock scopedLock(*plugInLock);
+  for(int i = 0; i < size(observers); i++)
+    observers[i]->audioModuleWillBeDeleted(this, module, index);
+}
+
+void AudioModuleChain::sendAudioModuleWillBeReplacedNotification(AudioModule *oldModule, 
+  AudioModule *newModule, int index)
+{
+  ScopedLock scopedLock(*plugInLock);
+  for(int i = 0; i < size(observers); i++)
+    observers[i]->audioModuleWillBeReplaced(this, oldModule, newModule, index);
 }
 
 // overrides:

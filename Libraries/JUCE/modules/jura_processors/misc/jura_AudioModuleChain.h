@@ -68,17 +68,20 @@ class JUCE_API AudioModuleChainObserver
 
 public:
 
-  /** Called whenever a module was added to the chain. */
+  /** Called whenever a module was added to the chain. Your observer subclass may want to keep a 
+  pointer to the module to modify it, create an editor, etc. */
   virtual void audioModuleWasAdded(AudioModuleChain *chain, AudioModule *module, int index) = 0;
-
-  /** Called whenever a module in the chain was replaced by another module. */
-  virtual void audioModuleWasReplaced(AudioModuleChain *chain, AudioModule *module, 
-    int index) = 0;
 
   /** Called before modules in the chain will be deleted. Your observer subclass will probably want 
   to invalidate any pointers to the module that it keeps, delete editors, etc. */
   virtual void audioModuleWillBeDeleted(AudioModuleChain *chain, AudioModule *module, 
     int index) = 0;
+
+  /** Called whenever a module in the chain was replaced by another module. Note that the old 
+  module may also be deleted, so you should invalidate all pointers to it that you may have 
+  around. */
+  virtual void audioModuleWillBeReplaced(AudioModuleChain *chain, AudioModule *oldModule, 
+    AudioModule *newModule, int index) = 0;
 
 };
 
@@ -134,6 +137,22 @@ public:
   deleted. */
   void ensureOneEmptySlotAtEnd();
 
+   /** Adds an observer that will get notified about changes to the state of the chain. */
+  void addAudioModuleChainObserver(AudioModuleChainObserver *observerToAdd);
+
+  /** Removes an oberver that was previously added by addAudioModuleChainObserver. */
+  void removeAudioModuleChainObserver(AudioModuleChainObserver *observerToRemove);
+
+  /** Called internally, whenever a module was added to the chain. */
+  void sendAudioModuleWasAddedNotification(AudioModule *module, int index);
+
+  /** Called internally, whenever a module was removed from the chain. */
+  void sendAudioModuleWillBeDeletedNotification(AudioModule *module, int index);
+
+  /** Called internally, whenever a module in the chain was replaced by another module. */
+  void sendAudioModuleWillBeReplacedNotification(AudioModule *oldModule, AudioModule *newModule, 
+    int index);
+
   // overriden from AudioModule baseclass:
   AudioModuleEditor *createEditor() override;
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
@@ -153,6 +172,8 @@ protected:
   vector<AudioModule*> modules;  // std::vector better for debugging than juce::Array
   int activeSlot = 0;            // slot for which the editor is currently shown 
   double sampleRate;
+
+  vector<AudioModuleChainObserver*> observers;
 
   friend class AudioModuleChainEditor;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioModuleChain)
