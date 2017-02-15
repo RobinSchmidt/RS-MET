@@ -57,10 +57,37 @@ protected:
 
 //=================================================================================================
 
+class JUCE_API AudioModuleChain; // forward declaration
+
+/** Baseclass for objects that must keep track of the state of one (or more) AudioModuleChain 
+objects. Observers must override some callback fucntions to take appropriate actions for various 
+kinds of state changes. */
+
+class JUCE_API AudioModuleChainObserver
+{
+
+public:
+
+  /** Called whenever a module was added to the chain. */
+  virtual void audioModuleWasAdded(AudioModuleChain *chain, AudioModule *module, int index) = 0;
+
+  /** Called whenever a module in the chain was replaced by another module. */
+  virtual void audioModuleWasReplaced(AudioModuleChain *chain, AudioModule *module, 
+    int index) = 0;
+
+  /** Called before modules in the chain will be deleted. Your observer subclass will probably want 
+  to invalidate any pointers to the module that it keeps, delete editors, etc. */
+  virtual void audioModuleWillBeDeleted(AudioModuleChain *chain, AudioModule *module, 
+    int index) = 0;
+
+};
+
+//=================================================================================================
+
 /** A shell module that can be used to create a chain (i.e. series connection) of some number of
 AudioModule objects. 
 \todo: 
--rename to AudioModuleChain
+-keep an array of observers that get notified about state changes
 -let the plugin have midi-out, so we can make midi effects too
 -organize modules in groups (Generators, Filters, Analyzers, etc.) and use a tree-view for 
  selection
