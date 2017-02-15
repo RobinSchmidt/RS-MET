@@ -87,6 +87,7 @@ StringArray AudioModuleFactory::getAvailableModuleTypes()
 
 AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector") 
 {
+  setDescription("Select module type");
   StringArray a = AudioModuleFactory::getAvailableModuleTypes();
   for(int i = 0; i < a.size(); i++)
     addItem(i, a[i]); 
@@ -396,6 +397,7 @@ void AudioModuleChainEditor::updateSelectorArray()
     s->selectItemFromText(
       AudioModuleFactory::getModuleType(chain->modules[numSelectors]), false);
     s->registerComboBoxObserver(this);
+    s->setDescriptionField(infoField); // somehow, this doesn't work
     addWidget(s);
     append(selectors, s);
     numSelectors++;
@@ -500,15 +502,23 @@ void AudioModuleChainEditor::resized()
     activeEditor->setBounds(x, y, w, h);
   }
 
-  // todo: set up bounds for setupButton
-
+  // set up bounds for inherited widgets:
   x = margin;
   y = getHeight() - bottomRowHeight;
   w = getWidth() - x - margin;
   infoField->setBounds(x, y, w, bottomRowHeight);
+
   x = getWidth() - 108;
   w = getWidth() - x - margin;
   webLink->setBounds(x, y+3, w, bottomRowHeight);
+
+  //// color setup doesn't work properly yet - the active selector rectangle is drawn on top of it 
+  //// and when doing other stuff while it's open there can be access violations - so the button 
+  //// setup code is commented out: 
+  //int buttonWidth = 40;
+  //x = leftColumnWidth - buttonWidth - margin;
+  //y = margin;
+  //setupButton->setBounds(x, y, buttonWidth, 16);
 
   // If this is a AudioModuleChain wrapped into an AudioPlugIn, we want to resize the whole parent 
   // window as well:
@@ -524,6 +534,8 @@ void AudioModuleChainEditor::paintOverChildren(Graphics& g)
   if(size(selectors) == 0)   // occurs during state recall
     return;
   g.setColour(Colours::black);
+  //g.setColour(Colours::darkred);
+  //g.setColour(selectors[chain->activeSlot]->getSpecialColour1());
   Rectangle<int> rect = selectors[chain->activeSlot]->getBounds();
   g.drawRect(rect, 2);  // 2nd param: thickness
 }

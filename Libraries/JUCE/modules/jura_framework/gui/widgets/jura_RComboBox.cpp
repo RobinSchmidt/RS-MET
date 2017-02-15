@@ -304,15 +304,17 @@ void RNamedComboBox::openPopUp()
 {
   int x = 0;
   int w = getWidth();
+  int h = popUpMenu->getRequiredHeight(true);
   if( nameLabelPosition == LEFT_TO_BOX )
   {
     x += nameLabelWidth+4;
     w -= nameLabelWidth+4;
   }
-  popUpMenu->setSize(w, popUpMenu->getRequiredHeight(true));  
+  popUpMenu->setSize(w, h);  
 
-  popUpMenu->show(false, RPopUpComponent::BELOW, w, 
-    popUpMenu->getRequiredHeight(true), x, -outlineThickness);
-  //popUpMenu->show(true, RPopUpComponent::BELOW, w, popUpMenu->getRequiredHeight(), x, -outlineThickness); 
-    // true for the 1st argument (showModally) causes problems - why? reproduce: in EngineersFilter open/close the same combobox twice
+  //popUpMenu->show(false, RPopUpComponent::BELOW, w, h, x, -outlineThickness);
+  popUpMenu->show(true, RPopUpComponent::BELOW, w, h, x, -outlineThickness); 
+    // true for the 1st argument (showModally) causes problems - why? reproduce: in EngineersFilter 
+    // open/close the same combobox twice ...but with false, the boxes for the color-setup don't 
+    // respond...
 }

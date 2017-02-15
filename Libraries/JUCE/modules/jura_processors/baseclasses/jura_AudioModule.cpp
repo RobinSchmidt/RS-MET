@@ -595,6 +595,7 @@ void AudioModuleEditor::openPreferencesDialog()
     setupDialog->addListener(this);
   }
   setupDialog->setCentreRelative(0.5f, 0.5f);
+  setupDialog->toFront(true);
   setupDialog->setVisible(true);
 }
 

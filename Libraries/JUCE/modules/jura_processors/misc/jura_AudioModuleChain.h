@@ -191,9 +191,9 @@ protected:
 
 /** Implements a GUI editor for the AudioModuleChain.
 \todo: 
+-Enveloper: set module name of the embedded Modulator module to "Enveloper"
 -add bypass switches for each module
--add the color scheme setup dialog
--make the infoline work for the PhaseScope module
+-make the infoline work for the selectors
 -make it possible to drag the slots up and down to change the order of the modules
  */
 
