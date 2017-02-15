@@ -191,7 +191,7 @@ protected:
 
 /** Implements a GUI editor for the AudioModuleChain.
 \todo: 
--when a popup from a combobox is open, the audio throughput is blocked - we need to avoid the lock
+-show the infoline and weblink
 -make it possible to drag the slots up and down to change the order of the modules
  */
 

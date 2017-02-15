@@ -449,7 +449,7 @@ void AudioModuleChainEditor::updateActiveEditor()
 
 void AudioModuleChainEditor::mouseDown(const MouseEvent &e)
 {
-  ScopedLock scopedLock(*plugInLock);
+  //ScopedLock scopedLock(*plugInLock); // blocks audio when popup is open
   int i = chain->activeSlot;
   Rectangle<int> rect = selectors[i]->getBounds();
   if(rect.contains(e.x, e.y)){ 
