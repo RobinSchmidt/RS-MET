@@ -135,7 +135,7 @@ todo:
  ModuleChainerOberver baseclass, derive the ModuleChainerEditor from it and notify the editor about
  changes ...this may also be used alternatively for informing about module deletion - we could have
  different callbacks: moduleWillBeDeleted, moduleChainHasChanged, etc.
--bug: Ladder cutoff frequency not recalled
+-when a popup from a combobox is open, the audio throughput is blocked - we need to avoid the lock
 -bug: sometimes, we get an access violation when removing a module, the violation occurs in 
  ~AudioModuleEditor() when it calls moduleToEdit->removeStateWatcher(stateWidgetSet); - the 
  moduleToEdit pointer is apparently invalid ....so it seems, we have kept an editor around for a 

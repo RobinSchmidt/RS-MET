@@ -144,8 +144,9 @@ void Ladder::setSampleRate(double newSampleRate){
   ladderR.setSampleRate(newSampleRate);
 }
 void Ladder::setCutoff(double newCutoff){
-  ladderL.setCutoff(freqFactorL * newCutoff); 
-  ladderR.setCutoff(freqFactorR * newCutoff);
+  cutoff = newCutoff;
+  ladderL.setCutoff(freqFactorL * cutoff); 
+  ladderR.setCutoff(freqFactorR * cutoff);
 }
 void Ladder::setResonance(double newResonance){
   ladderL.setResonance(newResonance);
