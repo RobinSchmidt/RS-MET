@@ -1,12 +1,12 @@
-#ifndef jura_ModuleChainer_h
-#define jura_ModuleChainer_h
+#ifndef jura_AudioModuleChain_h
+#define jura_AudioModuleChain_h
   
 /** A do-nothing dummy AudioModule to be used as placeholder. 
 todo:
+-rename to DummyAudioModule
 -maybe move somewhere else in the library
 -maybe override create editor to create a special kind of editor that says something like
  "Select Module - Editor will appear here"
-
 */
 
 class JUCE_API DummyModule : public jura::AudioModule
@@ -71,13 +71,13 @@ AudioModule objects.
 -rename the plugin to RAPTPlug...or just RAPT
  */
 
-class JUCE_API ModuleChainer : public jura::AudioModuleWithMidiIn
+class JUCE_API AudioModuleChain : public jura::AudioModuleWithMidiIn
 {
 
 public:
 
-  ModuleChainer(CriticalSection *lockToUse);
-  virtual ~ModuleChainer();
+  AudioModuleChain(CriticalSection *lockToUse);
+  virtual ~AudioModuleChain();
 
   /** Adds an empty slot the end of the chain. */
   void addEmptySlot();
@@ -127,19 +127,19 @@ protected:
   int activeSlot = 0;            // slot for which the editor is currently shown 
   double sampleRate;
 
-  friend class ModuleChainerEditor;
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModuleChainer)
+  friend class AudioModuleChainEditor;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioModuleChain)
 };
 
 //=================================================================================================
 
-/** Implements a GUI editor for the ModuleChainer.
+/** Implements a GUI editor for the AudioModuleChain.
 todo: 
 -bug: loading presets from the gui doesn't work (total recall by the host works though, presumably
- because the ModuleChainer state is recalled before the GUI editor is created) - maybe we need a
- ModuleChainerOberver baseclass, derive the ModuleChainerEditor from it and notify the editor about
- changes ...this may also be used alternatively for informing about module deletion - we could have
- different callbacks: moduleWillBeDeleted, moduleChainHasChanged, etc.
+ because the AudioModuleChain state is recalled before the GUI editor is created) - maybe we need a
+ AudioModuleChainOberver baseclass, derive the AudioModuleChainEditor from it and notify the editor 
+ about changes ...this may also be used alternatively for informing about module deletion - we 
+ could have different callbacks: moduleWillBeDeleted, moduleChainHasChanged, etc.
 -when a popup from a combobox is open, the audio throughput is blocked - we need to avoid the lock
 -bug: sometimes, we get an access violation when removing a module, the violation occurs in 
  ~AudioModuleEditor() when it calls moduleToEdit->removeStateWatcher(stateWidgetSet); - the 
@@ -147,20 +147,19 @@ todo:
  module that has already been deleted - how can this be? we actually delete editors when their
  module gets deleted - also, it does not always happen - strange...
 -make it possible to drag the slots up and down to change the order of the modules
--plugin enveloper in 1st slot, plug it out - ModuleChainerEditor::audioModuleWillBeDeleted is not 
+-plugin enveloper in 1st slot, plug it out - AudioModuleChainEditor::audioModuleWillBeDeleted is not 
  called - why? bcs we delete the editor already in replaceModule - but it should not be necessary 
  to call it there (see comments in the function)
  */
 
-class JUCE_API ModuleChainerEditor : public AudioModuleEditor, public AudioModuleDeletionWatcher,
-  public RComboBoxObserver, public ChangeBroadcaster /*, public ChangeListener*/
+class JUCE_API AudioModuleChainEditor : public AudioModuleEditor, 
+  public AudioModuleDeletionWatcher, public RComboBoxObserver, public ChangeBroadcaster
 {
 
 public:
 
-  ModuleChainerEditor(jura::ModuleChainer *moduleChainerToEdit);
-  virtual ~ModuleChainerEditor();
-
+  AudioModuleChainEditor(jura::AudioModuleChain *moduleChainerToEdit);
+  virtual ~AudioModuleChainEditor();
 
   /** Returns an editor for the AudioModule in the given slot index. Note that this may return a 
   nullptr in the case when the "modules" and "editors" arrays are empty (this occurs as a 
@@ -181,7 +180,7 @@ public:
   void updateSelectorArray();
 
   /** Updates our array of AudioModuleEditors to match the number of modules of the edited 
-  ModuleChainer. */
+  AudioModuleChain. */
   void updateEditorArray();
 
   /** Updates this editor to show the module-editor of the currently active slot. This may also 
@@ -215,7 +214,7 @@ protected:
   void clearEditorArray();
 
   // Data:
-  ModuleChainer* chainer;                     // the edited object
+  AudioModuleChain* chainer;                  // the edited object
   vector<AudioModuleSelector*> selectors;     // combo-boxes for selecting modules
   vector<AudioModuleEditor*>   editors;       // array of editors for the modules
 
@@ -224,7 +223,7 @@ protected:
   int leftColumnWidth = 160; // for the chainer widgets
   int bottomRowHeight =  16; // for infoline, link, etc.
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModuleChainerEditor)
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioModuleChainEditor)
 };
 
 #endif 

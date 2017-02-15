@@ -49,6 +49,6 @@ namespace jura
 
 #include "effects/jura_Enveloper.cpp"
 
-#include "misc/jura_ModuleChainer.cpp"
+#include "misc/jura_AudioModuleChain.cpp"
 
 }

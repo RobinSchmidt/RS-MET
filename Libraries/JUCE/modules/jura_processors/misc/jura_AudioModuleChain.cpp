@@ -69,7 +69,7 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
 
 //=================================================================================================
 
-ModuleChainer::ModuleChainer(CriticalSection *lockToUse) : AudioModuleWithMidiIn(lockToUse)
+AudioModuleChain::AudioModuleChain(CriticalSection *lockToUse) : AudioModuleWithMidiIn(lockToUse)
 {
   ScopedLock scopedLock(*plugInLock);
   moduleName = "Chainer";
@@ -77,26 +77,26 @@ ModuleChainer::ModuleChainer(CriticalSection *lockToUse) : AudioModuleWithMidiIn
   addEmptySlot();
 }
 
-ModuleChainer::~ModuleChainer()
+AudioModuleChain::~AudioModuleChain()
 {
   ScopedLock scopedLock(*plugInLock);
   for(int i = 0; i < modules.size(); i++)
     delete modules[i];
 }
 
-void ModuleChainer::addEmptySlot()
+void AudioModuleChain::addEmptySlot()
 {
   addModule("None");
 }
 
-void ModuleChainer::addModule(const String& type)
+void AudioModuleChain::addModule(const String& type)
 {
   ScopedLock scopedLock(*plugInLock);
   AudioModule *m = AudioModuleFactory::createModule(type, plugInLock);
   append(modules, m);
 }
 
-void ModuleChainer::replaceModule(int index, const String& type)
+void AudioModuleChain::replaceModule(int index, const String& type)
 {
   ScopedLock scopedLock(*plugInLock);
   jassert(index >= 0 && index < modules.size()); // index out of range
@@ -109,7 +109,7 @@ void ModuleChainer::replaceModule(int index, const String& type)
   }
 }
 
-void ModuleChainer::removeLastModule()
+void AudioModuleChain::removeLastModule()
 {
   ScopedLock scopedLock(*plugInLock);
   int index = size(modules) - 1;
@@ -119,21 +119,21 @@ void ModuleChainer::removeLastModule()
   remove(modules, index);
 }
 
-bool ModuleChainer::isModuleOfType(int index, const String& type)
+bool AudioModuleChain::isModuleOfType(int index, const String& type)
 {
   ScopedLock scopedLock(*plugInLock);
   jassert(index >= 0 && index < modules.size()); // index out of range
   return type == AudioModuleFactory::getModuleType(modules[index]);
 }
 
-AudioModule* ModuleChainer::getModuleAt(int index)
+AudioModule* AudioModuleChain::getModuleAt(int index)
 {
   if(index < 0 || index >= size(modules))  // no assert, this is supposed to happen
     return nullptr;
   return modules[index];
 }
 
-void ModuleChainer::ensureOneEmptySlotAtEnd()
+void AudioModuleChain::ensureOneEmptySlotAtEnd()
 {
   ScopedLock scopedLock(*plugInLock);
 
@@ -151,12 +151,12 @@ void ModuleChainer::ensureOneEmptySlotAtEnd()
 
 // overrides:
 
-AudioModuleEditor* ModuleChainer::createEditor()
+AudioModuleEditor* AudioModuleChain::createEditor()
 {
-  return new ModuleChainerEditor(this);
+  return new AudioModuleChainEditor(this);
 }
 
-void ModuleChainer::processBlock(double **inOutBuffer, int numChannels, int numSamples)
+void AudioModuleChain::processBlock(double **inOutBuffer, int numChannels, int numSamples)
 {
   ScopedLock scopedLock(*plugInLock);
   jassert(numChannels == 2);
@@ -164,7 +164,7 @@ void ModuleChainer::processBlock(double **inOutBuffer, int numChannels, int numS
     modules[i]->processBlock(inOutBuffer, numChannels, numSamples);
 }
 
-void ModuleChainer::setSampleRate(double newSampleRate)
+void AudioModuleChain::setSampleRate(double newSampleRate)
 {
   ScopedLock scopedLock(*plugInLock);
   sampleRate = newSampleRate;
@@ -172,7 +172,7 @@ void ModuleChainer::setSampleRate(double newSampleRate)
     modules[i]->setSampleRate(sampleRate);
 }
 
-void ModuleChainer::noteOn(int noteNumber, int velocity)
+void AudioModuleChain::noteOn(int noteNumber, int velocity)
 {
   ScopedLock scopedLock(*plugInLock);
   for(int i = 0; i < modules.size(); i++){
@@ -191,7 +191,7 @@ void ModuleChainer::noteOn(int noteNumber, int velocity)
   // (unless the use it inside for their own signal processing) -> this allows for layering
 }
 
-void ModuleChainer::noteOff(int noteNumber)
+void AudioModuleChain::noteOff(int noteNumber)
 {
   ScopedLock scopedLock(*plugInLock);
   for(int i = 0; i < modules.size(); i++){
@@ -201,14 +201,14 @@ void ModuleChainer::noteOff(int noteNumber)
   }
 }
 
-void ModuleChainer::reset()
+void AudioModuleChain::reset()
 {
   ScopedLock scopedLock(*plugInLock);
   for(int i = 0; i < modules.size(); i++)
     modules[i]->reset();
 }
 
-XmlElement* ModuleChainer::getStateAsXml(const juce::String& stateName, bool markAsClean)
+XmlElement* AudioModuleChain::getStateAsXml(const juce::String& stateName, bool markAsClean)
 {
   ScopedLock scopedLock(*plugInLock);
   XmlElement *xml = AudioModule::getStateAsXml(stateName, markAsClean);
@@ -224,7 +224,7 @@ XmlElement* ModuleChainer::getStateAsXml(const juce::String& stateName, bool mar
   return xml;
 }
 
-void ModuleChainer::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
+void AudioModuleChain::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
   bool markAsClean)
 {
   ScopedLock scopedLock(*plugInLock);
@@ -242,7 +242,7 @@ void ModuleChainer::setStateFromXml(const XmlElement& xmlState, const juce::Stri
   activeSlot = xmlState.getIntAttribute("ActiveSlot", 1) - 1;
 }
 
-void ModuleChainer::clearModulesArray()
+void AudioModuleChain::clearModulesArray()
 {
   ScopedLock scopedLock(*plugInLock);
   for(int i = 0; i < size(modules); i++)
@@ -252,7 +252,7 @@ void ModuleChainer::clearModulesArray()
 
 //=================================================================================================
 
-ModuleChainerEditor::ModuleChainerEditor(jura::ModuleChainer *moduleChainerToEdit)
+AudioModuleChainEditor::AudioModuleChainEditor(jura::AudioModuleChain *moduleChainerToEdit)
   : AudioModuleEditor(moduleChainerToEdit)
 {
   ScopedLock scopedLock(*plugInLock);
@@ -265,12 +265,12 @@ ModuleChainerEditor::ModuleChainerEditor(jura::ModuleChainer *moduleChainerToEdi
   addChangeListener(this); // we listen to ourselves for deferred destruction of selectors
 }
 
-ModuleChainerEditor::~ModuleChainerEditor()
+AudioModuleChainEditor::~AudioModuleChainEditor()
 {
   clearEditorArray();
 }
 
-AudioModuleEditor* ModuleChainerEditor::getEditorForSlot(int index)
+AudioModuleEditor* AudioModuleChainEditor::getEditorForSlot(int index)
 {
   ScopedLock scopedLock(*plugInLock);
   if(size(editors) == 0)                         // may be zero during xml state recall
@@ -281,7 +281,7 @@ AudioModuleEditor* ModuleChainerEditor::getEditorForSlot(int index)
   return editors[index];
 }
 
-void ModuleChainerEditor::replaceModule(int index, const String& type)
+void AudioModuleChainEditor::replaceModule(int index, const String& type)
 {
   ScopedLock scopedLock(*plugInLock);
   jassert(index >= 0 && index < editors.size());  // index out of range
@@ -304,7 +304,7 @@ void ModuleChainerEditor::replaceModule(int index, const String& type)
   }
 }
 
-void ModuleChainerEditor::updateSelectorArray()
+void AudioModuleChainEditor::updateSelectorArray()
 {
   ScopedLock scopedLock(*plugInLock);
   int numModules   = size(chainer->modules);
@@ -332,7 +332,7 @@ void ModuleChainerEditor::updateSelectorArray()
   }
 }
 
-void ModuleChainerEditor::updateEditorArray()
+void AudioModuleChainEditor::updateEditorArray()
 {
   ScopedLock scopedLock(*plugInLock);
   int numModules = size(chainer->modules);
@@ -356,7 +356,7 @@ void ModuleChainerEditor::updateEditorArray()
   }
 }
 
-void ModuleChainerEditor::updateActiveEditor()
+void AudioModuleChainEditor::updateActiveEditor()
 {
   ScopedLock scopedLock(*plugInLock);
   AudioModuleEditor* tmpEditor = getEditorForActiveSlot();
@@ -373,7 +373,7 @@ void ModuleChainerEditor::updateActiveEditor()
   }
 }
 
-void ModuleChainerEditor::mouseDown(const MouseEvent &e)
+void AudioModuleChainEditor::mouseDown(const MouseEvent &e)
 {
   ScopedLock scopedLock(*plugInLock);
   int i = chainer->activeSlot;
@@ -395,7 +395,7 @@ void ModuleChainerEditor::mouseDown(const MouseEvent &e)
   }
 }
 
-void ModuleChainerEditor::resized()
+void AudioModuleChainEditor::resized()
 {
   ScopedLock scopedLock(*plugInLock);
 
@@ -429,14 +429,14 @@ void ModuleChainerEditor::resized()
   // maybe, we could have bypass switches for each plugin
   // arrange setup button for color scheme, infoline, link, etc.
 
-  // If this is a ModuleChainer wrapped into an AudioPlugIn, we want to resize the whole parent 
+  // If this is a AudioModuleChain wrapped into an AudioPlugIn, we want to resize the whole parent 
   // window as well:
   Component *parent =	getParentComponent();
   if(dynamic_cast<AudioPluginEditor*>(parent))
     parent->setSize(getWidth(), getHeight());
 }
 
-void ModuleChainerEditor::paintOverChildren(Graphics& g)
+void AudioModuleChainEditor::paintOverChildren(Graphics& g)
 {
   // highlight active slot by drawing a rectangle around it:
   ScopedLock scopedLock(*plugInLock);
@@ -447,7 +447,7 @@ void ModuleChainerEditor::paintOverChildren(Graphics& g)
   g.drawRect(rect, 2);  // 2nd param: thickness
 }
 
-void ModuleChainerEditor::audioModuleWillBeDeleted(AudioModule *m)
+void AudioModuleChainEditor::audioModuleWillBeDeleted(AudioModule *m)
 {
   ScopedLock scopedLock(*plugInLock);
   for(int i = 0; i < size(editors); i++){
@@ -457,7 +457,7 @@ void ModuleChainerEditor::audioModuleWillBeDeleted(AudioModule *m)
   removeWatchedAudioModule(m);
 }
 
-void ModuleChainerEditor::rComboBoxChanged(RComboBox* box)
+void AudioModuleChainEditor::rComboBoxChanged(RComboBox* box)
 {
   ScopedLock scopedLock(*plugInLock);
   for(int i = 0; i < selectors.size(); i++){
@@ -467,7 +467,7 @@ void ModuleChainerEditor::rComboBoxChanged(RComboBox* box)
   }
 }
 
-void ModuleChainerEditor::changeListenerCallback(ChangeBroadcaster *source)
+void AudioModuleChainEditor::changeListenerCallback(ChangeBroadcaster *source)
 {
   ScopedLock scopedLock(*plugInLock);
   if(source == this)
@@ -479,13 +479,13 @@ void ModuleChainerEditor::changeListenerCallback(ChangeBroadcaster *source)
     AudioModuleEditor::changeListenerCallback(source);
 }
 
-void ModuleChainerEditor::scheduleSelectorArrayUpdate()
+void AudioModuleChainEditor::scheduleSelectorArrayUpdate()
 {
   sendChangeMessage(); 
   // we will receive the message ourselves which causes a call to updateSelectorArray()
 }
 
-void ModuleChainerEditor::deleteEditor(int index)
+void AudioModuleChainEditor::deleteEditor(int index)
 {
   ScopedLock scopedLock(*plugInLock);
   jassert(index >= 0 && index < editors.size()); // index out of range
@@ -495,7 +495,7 @@ void ModuleChainerEditor::deleteEditor(int index)
   editors[index] = nullptr;
 }
 
-void ModuleChainerEditor::clearEditorArray()
+void AudioModuleChainEditor::clearEditorArray()
 {
   ScopedLock scopedLock(*plugInLock);
   activeEditor = nullptr;
