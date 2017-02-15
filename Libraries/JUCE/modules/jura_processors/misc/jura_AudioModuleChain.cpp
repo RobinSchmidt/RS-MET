@@ -303,6 +303,8 @@ void AudioModuleChain::setStateFromXml(const XmlElement& xmlState, const juce::S
   ScopedLock scopedLock(*plugInLock);
   AudioModule::setStateFromXml(xmlState, stateName, markAsClean); // actually does nothing?
   activeSlot = -1;  // i think, that's not necessary - should be already -1
+  //activeSlot = 0;
+  //activeSlot = xmlState.getIntAttribute("ActiveSlot", 1) - 1;
   clearModulesArray();
   int i = 0;
   forEachXmlChildElementWithTagName(xmlState, slotState, "Slot"){
@@ -348,7 +350,7 @@ AudioModuleChainEditor::~AudioModuleChainEditor()
 AudioModuleEditor* AudioModuleChainEditor::getEditorForSlot(int index)
 {
   ScopedLock scopedLock(*plugInLock);
-  if(size(editors) == 0)                         // may be zero during xml state recall
+  if(size(editors) == 0 || index < 0)            // may happen during xml state recall
     return nullptr; 
   jassert(index >= 0 && index < editors.size()); // index out of range
   if(editors[index] == nullptr)
@@ -361,14 +363,8 @@ void AudioModuleChainEditor::replaceModule(int index, const String& type)
   ScopedLock scopedLock(*plugInLock);
   jassert(index >= 0 && index < editors.size());  // index out of range
   if(!chain->isModuleOfType(index, type)){
-    //deleteEditor(index); 
-      // should not needed anymore - deletion is done in audioModuleWillBeDeleted, but when we 
-      // remove it, the automatic appending of empty slots doesn't work anymore
-      // seems in updateActiveEditor(), tmpEditor == activeEditor, so resized() never gets called
-      // also, we get an error when closing the editor
-
-    chain->replaceModule(index, type);          // may call audioModuleWillBeDeleted
-    AudioModule* m = chain->getModuleAt(index); // can be 0, if dummy module was placed at end
+    chain->replaceModule(index, type);            // will call audioModuleWillBeDeleted
+    AudioModule* m = chain->getModuleAt(index);   // can be 0, if dummy module was placed at end
     updateEditorArray();
     index = chain->activeSlot;
     editors[index] = getEditorForSlot(index);
@@ -455,6 +451,8 @@ void AudioModuleChainEditor::mouseDown(const MouseEvent &e)
 {
   ScopedLock scopedLock(*plugInLock);
   int i = chain->activeSlot;
+  //if(i < 0 || i >= size(selectors))   // occurs during state recall
+  //  return;
   Rectangle<int> rect = selectors[i]->getBounds();
   if(rect.contains(e.x, e.y)){ 
     // click was on active slot selector - pass event through:
@@ -523,6 +521,14 @@ void AudioModuleChainEditor::paintOverChildren(Graphics& g)
   g.setColour(Colours::black);
   Rectangle<int> rect = selectors[chain->activeSlot]->getBounds();
   g.drawRect(rect, 2);  // 2nd param: thickness
+
+
+  //int i = chain->activeSlot;
+  ////if(i < 0 || i >= size(selectors))   // occurs during state recall
+  ////  return;
+  //g.setColour(Colours::black);
+  //Rectangle<int> rect = selectors[i]->getBounds();
+  //g.drawRect(rect, 2);  // 2nd param: thickness
 }
 
 void AudioModuleChainEditor::rComboBoxChanged(RComboBox* box)
@@ -552,6 +558,7 @@ void AudioModuleChainEditor::audioModuleWasAdded(AudioModuleChain *chain,
 {
   ScopedLock scopedLock(*plugInLock);
   updateEditorArray();
+  updateActiveEditor();
   updateSelectorArray();
 }
 

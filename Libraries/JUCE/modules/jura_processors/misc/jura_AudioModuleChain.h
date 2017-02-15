@@ -93,7 +93,6 @@ public:
 /** A shell module that can be used to create a chain (i.e. series connection) of some number of
 AudioModule objects. 
 \todo: 
--keep an array of observers that get notified about state changes
 -let the plugin have midi-out, so we can make midi effects too
 -organize modules in groups (Generators, Filters, Analyzers, etc.) and use a tree-view for 
  selection
@@ -129,8 +128,6 @@ public:
   happens. Returns true, if the module was replaced, false otherwise. */
   void replaceModule(int index, const String& type);
 
-
-
   /** Returns true if the module at the given index matches the type specified by the type 
   string. */
   bool isModuleOfType(int index, const String& type);
@@ -144,6 +141,8 @@ public:
   added, if there are more than one empty slots at the end, the superfluous ones will be 
   deleted. */
   void ensureOneEmptySlotAtEnd();
+
+  // observer stuff:
 
    /** Adds an observer that will get notified about changes to the state of the chain. */
   void addAudioModuleChainObserver(AudioModuleChainObserver *observerToAdd);
@@ -160,6 +159,8 @@ public:
   /** Called internally, whenever a module in the chain was replaced by another module. */
   void sendAudioModuleWasBeReplacedNotification(AudioModule *oldModule, AudioModule *newModule, 
     int index);
+
+
 
   // overriden from AudioModule baseclass:
   AudioModuleEditor *createEditor() override;
@@ -191,7 +192,9 @@ protected:
 
 /** Implements a GUI editor for the AudioModuleChain.
 todo: 
--bug: after loading a preset, the active editor is not shown
+-bug: after loading a preset, the active editor is not shown - there is no callback from the chain
+ to the editor after the activeSlot variable is set in setStateFromXml, so we don't get notified 
+ here
 -when a popup from a combobox is open, the audio throughput is blocked - we need to avoid the lock
 -make it possible to drag the slots up and down to change the order of the modules
 -plugin enveloper in 1st slot, plug it out - AudioModuleChainEditor::audioModuleWillBeDeleted is not 
