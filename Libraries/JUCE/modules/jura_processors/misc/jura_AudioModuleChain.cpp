@@ -151,7 +151,7 @@ void AudioModuleChain::replaceModule(int index, const String& type)
     AudioModule* newModule = AudioModuleFactory::createModule(type, plugInLock);
     newModule->setSampleRate(sampleRate);
     modules[index] = newModule;
-    sendAudioModuleWasBeReplacedNotification(oldModule, newModule, index);
+    sendAudioModuleWasReplacedNotification(oldModule, newModule, index);
     delete oldModule;
     activeSlot = index;
     ensureOneEmptySlotAtEnd();
@@ -214,12 +214,12 @@ void AudioModuleChain::sendAudioModuleWillBeDeletedNotification(AudioModule *mod
     observers[i]->audioModuleWillBeDeleted(this, module, index);
 }
 
-void AudioModuleChain::sendAudioModuleWasBeReplacedNotification(AudioModule *oldModule, 
+void AudioModuleChain::sendAudioModuleWasReplacedNotification(AudioModule *oldModule, 
   AudioModule *newModule, int index)
 {
   ScopedLock scopedLock(*plugInLock);
   for(int i = 0; i < size(observers); i++)
-    observers[i]->audioModuleWasBeReplaced(this, oldModule, newModule, index);
+    observers[i]->audioModuleWasReplaced(this, oldModule, newModule, index);
 }
 
 // overrides:
@@ -303,18 +303,18 @@ void AudioModuleChain::setStateFromXml(const XmlElement& xmlState, const juce::S
   ScopedLock scopedLock(*plugInLock);
   AudioModule::setStateFromXml(xmlState, stateName, markAsClean); // actually does nothing?
   activeSlot = -1;  // i think, that's not necessary - should be already -1
-  //activeSlot = 0;
-  //activeSlot = xmlState.getIntAttribute("ActiveSlot", 1) - 1;
+  int tmpActiveSlot = xmlState.getIntAttribute("ActiveSlot", 1) - 1;
   clearModulesArray();
   int i = 0;
   forEachXmlChildElementWithTagName(xmlState, slotState, "Slot"){
     String type = slotState->getStringAttribute("Type");
+    if(i == tmpActiveSlot)        // hack: we set it before adding the module, so the editor
+      activeSlot = tmpActiveSlot; // retrieves the correct value in the moduleAdded callback
     addModule(type);
     XmlElement *moduleState = slotState->getChildElement(0);
     modules[i]->setStateFromXml(*moduleState, "", markAsClean);
     i++;
   }
-  activeSlot = xmlState.getIntAttribute("ActiveSlot", 1) - 1;
 }
 
 void AudioModuleChain::clearModulesArray()
@@ -451,8 +451,6 @@ void AudioModuleChainEditor::mouseDown(const MouseEvent &e)
 {
   ScopedLock scopedLock(*plugInLock);
   int i = chain->activeSlot;
-  //if(i < 0 || i >= size(selectors))   // occurs during state recall
-  //  return;
   Rectangle<int> rect = selectors[i]->getBounds();
   if(rect.contains(e.x, e.y)){ 
     // click was on active slot selector - pass event through:
@@ -521,14 +519,6 @@ void AudioModuleChainEditor::paintOverChildren(Graphics& g)
   g.setColour(Colours::black);
   Rectangle<int> rect = selectors[chain->activeSlot]->getBounds();
   g.drawRect(rect, 2);  // 2nd param: thickness
-
-
-  //int i = chain->activeSlot;
-  ////if(i < 0 || i >= size(selectors))   // occurs during state recall
-  ////  return;
-  //g.setColour(Colours::black);
-  //Rectangle<int> rect = selectors[i]->getBounds();
-  //g.drawRect(rect, 2);  // 2nd param: thickness
 }
 
 void AudioModuleChainEditor::rComboBoxChanged(RComboBox* box)
@@ -570,7 +560,7 @@ void AudioModuleChainEditor::audioModuleWillBeDeleted(AudioModuleChain *chain,
   scheduleSelectorArrayUpdate();
 }
 
-void AudioModuleChainEditor::audioModuleWasBeReplaced(AudioModuleChain *chain,
+void AudioModuleChainEditor::audioModuleWasReplaced(AudioModuleChain *chain,
   AudioModule *oldModule, AudioModule *newModule, int index)
 {
   ScopedLock scopedLock(*plugInLock);

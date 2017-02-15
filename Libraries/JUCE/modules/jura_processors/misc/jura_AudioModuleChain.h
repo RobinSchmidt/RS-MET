@@ -83,7 +83,7 @@ public:
   /** Called whenever a module in the chain was replaced by another module. Note that the old 
   module may also be deleted after being replaced, so you should invalidate all pointers to it that 
   you may have around. */
-  virtual void audioModuleWasBeReplaced(AudioModuleChain *chain, AudioModule *oldModule, 
+  virtual void audioModuleWasReplaced(AudioModuleChain *chain, AudioModule *oldModule, 
     AudioModule *newModule, int index) = 0;
 
 };
@@ -157,9 +157,8 @@ public:
   void sendAudioModuleWillBeDeletedNotification(AudioModule *module, int index);
 
   /** Called internally, whenever a module in the chain was replaced by another module. */
-  void sendAudioModuleWasBeReplacedNotification(AudioModule *oldModule, AudioModule *newModule, 
+  void sendAudioModuleWasReplacedNotification(AudioModule *oldModule, AudioModule *newModule, 
     int index);
-
 
 
   // overriden from AudioModule baseclass:
@@ -191,15 +190,9 @@ protected:
 //=================================================================================================
 
 /** Implements a GUI editor for the AudioModuleChain.
-todo: 
--bug: after loading a preset, the active editor is not shown - there is no callback from the chain
- to the editor after the activeSlot variable is set in setStateFromXml, so we don't get notified 
- here
+\todo: 
 -when a popup from a combobox is open, the audio throughput is blocked - we need to avoid the lock
 -make it possible to drag the slots up and down to change the order of the modules
--plugin enveloper in 1st slot, plug it out - AudioModuleChainEditor::audioModuleWillBeDeleted is not 
- called - why? bcs we delete the editor already in replaceModule - but it should not be necessary 
- to call it there (see comments in the function)
  */
 
 class JUCE_API AudioModuleChainEditor : public AudioModuleEditor, public AudioModuleChainObserver,
@@ -247,7 +240,7 @@ public:
     AudioModule *module, int index) override;
   virtual void audioModuleWillBeDeleted(AudioModuleChain *chain, 
     AudioModule *module, int index) override;
-  virtual void audioModuleWasBeReplaced(AudioModuleChain *chain, 
+  virtual void audioModuleWasReplaced(AudioModuleChain *chain, 
     AudioModule *oldModule, AudioModule *newModule, int index) override;
 
 
