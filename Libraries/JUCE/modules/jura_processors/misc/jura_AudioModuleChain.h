@@ -191,8 +191,7 @@ protected:
 
 /** Implements a GUI editor for the AudioModuleChain.
 todo: 
--bug: when loading a preset, the 1st slot selector is not updated, also, the active editor is not 
- correctly shown
+-bug: after loading a preset, the active editor is not shown
 -when a popup from a combobox is open, the audio throughput is blocked - we need to avoid the lock
 -make it possible to drag the slots up and down to change the order of the modules
 -plugin enveloper in 1st slot, plug it out - AudioModuleChainEditor::audioModuleWillBeDeleted is not 

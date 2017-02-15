@@ -361,7 +361,7 @@ void AudioModuleChainEditor::replaceModule(int index, const String& type)
   ScopedLock scopedLock(*plugInLock);
   jassert(index >= 0 && index < editors.size());  // index out of range
   if(!chain->isModuleOfType(index, type)){
-    deleteEditor(index); 
+    //deleteEditor(index); 
       // should not needed anymore - deletion is done in audioModuleWillBeDeleted, but when we 
       // remove it, the automatic appending of empty slots doesn't work anymore
       // seems in updateActiveEditor(), tmpEditor == activeEditor, so resized() never gets called
@@ -404,6 +404,10 @@ void AudioModuleChainEditor::updateSelectorArray()
     append(selectors, s);
     numSelectors++;
   }
+
+  // without it, the selector for 1st slot is wrong after preset loading:
+  if(numSelectors > 0 )
+    selectors[0]->selectItemFromText(AudioModuleFactory::getModuleType(chain->modules[0]), false);
 }
 
 void AudioModuleChainEditor::updateEditorArray()
