@@ -192,6 +192,8 @@ protected:
 
 /** Implements a GUI editor for the AudioModuleChain.
 todo: 
+-derive from AudioModuleVhainObserver (and not from AudioModuleDeletionWatcher anymore), implement
+ appropriate actions in the callbacks and then check if the bugs still persist
 -bug: loading presets from the gui doesn't work (total recall by the host works though, presumably
  because the AudioModuleChain state is recalled before the GUI editor is created) - maybe we need a
  AudioModuleChainOberver baseclass, derive the AudioModuleChainEditor from it and notify the editor 
