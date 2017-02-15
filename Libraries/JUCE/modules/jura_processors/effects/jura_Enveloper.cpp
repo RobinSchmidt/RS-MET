@@ -5,6 +5,7 @@ Enveloper::Enveloper(CriticalSection *lockToUse)
 {
   ScopedLock scopedLock(*plugInLock);
   moduleName = "Enveloper";
+  //envGenWrapper.setModuleName(moduleName);
   setActiveDirectory(getApplicationDirectory() + "/EnveloperPresets");
 }
 
@@ -13,6 +14,7 @@ AudioModuleEditor* Enveloper::createEditor()
   jura::BreakpointModulatorEditor* editor = 
     new jura::BreakpointModulatorEditor(plugInLock, &envGenWrapper);
   //editor->setLayout(1);
+  editor->setHeadlineText("Enveloper");
   editor->setSize(500, 260);
   return editor;
   // somehow, the widgets below the plot are messed up ..or, there is something in the background
