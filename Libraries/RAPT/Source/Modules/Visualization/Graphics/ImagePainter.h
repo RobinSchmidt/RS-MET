@@ -67,12 +67,12 @@ public:
   /** Draws a line by inserting a number of dots along the line. The number is proportional to the 
   given density parameter and to the Euclidean distance between the two endpoints (i.e. the length 
   of the line). The color will be scaled inversely proportional to the length, such that the total
-  amount of color added to the picture is independent of the length. The last parameter maxNumDots
+  amount of color added to the picture is independent of the length. The maxNumDots parameter
   is for restricting the number of dots that are used which maight be important in realtime 
-  situations.
+  situations. scaleByNumDots ...
   \todo: maybe make this color scaling optional  */
   void drawDottedLine(TCor x1, TCor y1, TCor x2, TCor y2, TPix color, TCor density = 1, 
-    int maxNumDots = 0);
+    int maxNumDots = 0, bool scaleByNumDots = false);
     
 
 
@@ -92,6 +92,7 @@ protected:
     accu = (accu + value) / (TPix(1) + value);
 
     //accu = accu+value; // just for testing
+    //accu = rsMin(TPix(1), accu+value);
   }
   // rename to addAndSaturate
 

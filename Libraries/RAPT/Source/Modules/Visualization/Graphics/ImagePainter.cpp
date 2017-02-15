@@ -514,7 +514,7 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
 
 template<class TPix, class TWgt, class TCor>
 void ImagePainter<TPix, TWgt, TCor>::drawDottedLine(TCor x1, TCor y1, TCor x2, TCor y2, TPix color, 
-  TCor density, int maxNumDots)
+  TCor density, int maxNumDots, bool scaleByNumDots = false)
 {
   TCor dx = x2-x1;
   TCor dy = y2-y1;
@@ -522,7 +522,12 @@ void ImagePainter<TPix, TWgt, TCor>::drawDottedLine(TCor x1, TCor y1, TCor x2, T
   int  numDots = rsMax(1, (int)floor(density*pixelDistance));
   if(maxNumDots > 0)
     numDots = rsMin(numDots, maxNumDots);
-  TPix scaledColor = (TPix) (color / (TPix)numDots); // maybe make this scaling optional
+
+  TPix scaledColor = color;
+  if(scaleByNumDots)
+    scaledColor /= (TPix)numDots;
+  //TPix scaledColor = (TPix) (color / (TPix)numDots); // maybe make this scaling optional
+
   TCor scaler = (TCor)(1.0 / numDots);
   TCor k;
   for(int i = 1; i <= numDots; i++)
@@ -530,5 +535,7 @@ void ImagePainter<TPix, TWgt, TCor>::drawDottedLine(TCor x1, TCor y1, TCor x2, T
     k = scaler * i;  // == i / numDots
     paintDot(x1 + k*dx, y1 + k*dy, scaledColor);
   }
+
+  // i think, we should start the loop at i=0 and use scaler = 1.0 / (numDots-1)
 }
 

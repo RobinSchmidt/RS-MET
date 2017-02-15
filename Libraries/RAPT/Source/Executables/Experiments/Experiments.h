@@ -3,6 +3,7 @@
 
 #include "MathExperiments.h"
 #include "FilterExperiments.h"
+#include "GraphicsExperiments.h"
 
 void runExperiments();
 

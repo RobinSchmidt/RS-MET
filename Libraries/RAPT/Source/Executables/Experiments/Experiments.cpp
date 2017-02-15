@@ -3,9 +3,13 @@
 void runExperiments()
 {
   // Math:
-  expGaussBell();
+  //expGaussBell();
   //productLogPlot();
 
   // Filter:
   //ladderResonanceManipulation();
+
+  // Graphics:
+  lineDrawing();
+
 }

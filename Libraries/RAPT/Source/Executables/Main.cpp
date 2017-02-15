@@ -8,8 +8,8 @@ int main(int argc, char** argv)
   // Select, if you want to run demos, experiments, unit tests or performance tests:
 
   //runDemos();
-  //runExperiments();
-  runPerformanceTests();
+  runExperiments();
+  //runPerformanceTests();
   //runUnitTests();
 
 

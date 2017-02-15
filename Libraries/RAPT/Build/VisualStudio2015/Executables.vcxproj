@@ -154,6 +154,7 @@
     <ClInclude Include="..\..\Source\Executables\Demos\ModulatorDemos.h" />
     <ClInclude Include="..\..\Source\Executables\Experiments\Experiments.h" />
     <ClInclude Include="..\..\Source\Executables\Experiments\FilterExperiments.h" />
+    <ClInclude Include="..\..\Source\Executables\Experiments\GraphicsExperiments.h" />
     <ClInclude Include="..\..\Source\Executables\Experiments\MathExperiments.h" />
     <ClInclude Include="..\..\Source\Executables\PerformanceTests\ImagePerformanceTests.h" />
     <ClInclude Include="..\..\Source\Executables\PerformanceTests\PerformanceTests.h" />
@@ -174,6 +175,7 @@
     <ClCompile Include="..\..\Source\Executables\Demos\ModulatorDemos.cpp" />
     <ClCompile Include="..\..\Source\Executables\Experiments\Experiments.cpp" />
     <ClCompile Include="..\..\Source\Executables\Experiments\FilterExperiments.cpp" />
+    <ClCompile Include="..\..\Source\Executables\Experiments\GraphicsExperiments.cpp" />
     <ClCompile Include="..\..\Source\Executables\Experiments\MathExperiments.cpp" />
     <ClCompile Include="..\..\Source\Executables\Main.cpp" />
     <ClCompile Include="..\..\Source\Executables\PerformanceTests\ImagePerformanceTests.cpp" />
