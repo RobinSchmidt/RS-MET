@@ -191,7 +191,9 @@ protected:
 
 /** Implements a GUI editor for the AudioModuleChain.
 \todo: 
--show the infoline and weblink
+-add bypass switches for each module
+-add the color scheme setup dialog
+-make the infoline work for the PhaseScope module
 -make it possible to drag the slots up and down to change the order of the modules
  */
 

@@ -500,8 +500,15 @@ void AudioModuleChainEditor::resized()
     activeEditor->setBounds(x, y, w, h);
   }
 
-  // maybe, we could have bypass switches for each plugin
-  // arrange setup button for color scheme, infoline, link, etc.
+  // todo: set up bounds for setupButton
+
+  x = margin;
+  y = getHeight() - bottomRowHeight;
+  w = getWidth() - x - margin;
+  infoField->setBounds(x, y, w, bottomRowHeight);
+  x = getWidth() - 108;
+  w = getWidth() - x - margin;
+  webLink->setBounds(x, y+3, w, bottomRowHeight);
 
   // If this is a AudioModuleChain wrapped into an AudioPlugIn, we want to resize the whole parent 
   // window as well:
