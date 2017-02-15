@@ -61,7 +61,10 @@ class JUCE_API AudioModuleChain; // forward declaration
 
 /** Baseclass for objects that must keep track of the state of one (or more) AudioModuleChain 
 objects. Observers must override some callback fucntions to take appropriate actions for various 
-kinds of state changes. */
+kinds of state changes. 
+\todo: maybe it's sufficient to pass the index in the callbacks - we may not really need to pass 
+the pointers along as well
+*/
 
 class JUCE_API AudioModuleChainObserver
 {
@@ -78,9 +81,9 @@ public:
     int index) = 0;
 
   /** Called whenever a module in the chain was replaced by another module. Note that the old 
-  module may also be deleted, so you should invalidate all pointers to it that you may have 
-  around. */
-  virtual void audioModuleWillBeReplaced(AudioModuleChain *chain, AudioModule *oldModule, 
+  module may also be deleted after being replaced, so you should invalidate all pointers to it that 
+  you may have around. */
+  virtual void audioModuleWasBeReplaced(AudioModuleChain *chain, AudioModule *oldModule, 
     AudioModule *newModule, int index) = 0;
 
 };
@@ -115,13 +118,19 @@ public:
   /** Adds a module of the given type at the end of the chain. */
   void addModule(const String& type);
 
+  /** Deletes the module at the given index. */
+  void deleteModule(int index);
+
+  /** Removes the last module from the chain. */
+  void removeLastModule();
+    // rename to deleteLastModule
+
   /** Replaces the module at the given with a new module of given type unless the given type 
   matches that of the module which is already there at this position in which case nothing 
   happens. Returns true, if the module was replaced, false otherwise. */
   void replaceModule(int index, const String& type);
 
-  /** Removes the last module from the chain. */
-  void removeLastModule();
+
 
   /** Returns true if the module at the given index matches the type specified by the type 
   string. */
@@ -150,7 +159,7 @@ public:
   void sendAudioModuleWillBeDeletedNotification(AudioModule *module, int index);
 
   /** Called internally, whenever a module in the chain was replaced by another module. */
-  void sendAudioModuleWillBeReplacedNotification(AudioModule *oldModule, AudioModule *newModule, 
+  void sendAudioModuleWasBeReplacedNotification(AudioModule *oldModule, AudioModule *newModule, 
     int index);
 
   // overriden from AudioModule baseclass:

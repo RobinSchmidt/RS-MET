@@ -122,6 +122,31 @@ void AudioModuleChain::addModule(const String& type)
   ScopedLock scopedLock(*plugInLock);
   AudioModule *m = AudioModuleFactory::createModule(type, plugInLock);
   append(modules, m);
+  sendAudioModuleWasAddedNotification(m, size(modules)-1);
+}
+
+void AudioModuleChain::deleteModule(int index)
+{
+  ScopedLock scopedLock(*plugInLock);
+  jassert(index >= 0 && index < modules.size()); // index out of range
+  if(activeSlot == index)
+    activeSlot--;
+  sendAudioModuleWillBeDeletedNotification(modules[index], index);
+  delete modules[index];
+  remove(modules, index);
+}
+
+void AudioModuleChain::removeLastModule()
+{
+  ScopedLock scopedLock(*plugInLock);
+  deleteModule(size(modules) - 1);
+
+  // old:
+  //int index = size(modules) - 1;
+  //if(activeSlot == index)
+  //  activeSlot--;
+  //delete modules[index];
+  //remove(modules, index);
 }
 
 void AudioModuleChain::replaceModule(int index, const String& type)
@@ -129,22 +154,22 @@ void AudioModuleChain::replaceModule(int index, const String& type)
   ScopedLock scopedLock(*plugInLock);
   jassert(index >= 0 && index < modules.size()); // index out of range
   if(!isModuleOfType(index, type)){              // replace only, if new type is different
-    delete modules[index];
-    modules[index] = AudioModuleFactory::createModule(type, plugInLock);
-    modules[index]->setSampleRate(sampleRate);
+    AudioModule* oldModule = modules[index];
+    AudioModule* newModule = AudioModuleFactory::createModule(type, plugInLock);
+    newModule->setSampleRate(sampleRate);
+    modules[index] = newModule;
+    sendAudioModuleWasBeReplacedNotification(oldModule, newModule, index);
+    delete oldModule;
     activeSlot = index;
     ensureOneEmptySlotAtEnd();
-  }
-}
 
-void AudioModuleChain::removeLastModule()
-{
-  ScopedLock scopedLock(*plugInLock);
-  int index = size(modules) - 1;
-  if(activeSlot == index)
-    activeSlot--;
-  delete modules[index];
-  remove(modules, index);
+    // old code:
+    //delete modules[index];
+    //modules[index] = AudioModuleFactory::createModule(type, plugInLock);
+    //modules[index]->setSampleRate(sampleRate);
+    //activeSlot = index;
+    //ensureOneEmptySlotAtEnd();
+  }
 }
 
 bool AudioModuleChain::isModuleOfType(int index, const String& type)
@@ -203,12 +228,12 @@ void AudioModuleChain::sendAudioModuleWillBeDeletedNotification(AudioModule *mod
     observers[i]->audioModuleWillBeDeleted(this, module, index);
 }
 
-void AudioModuleChain::sendAudioModuleWillBeReplacedNotification(AudioModule *oldModule, 
+void AudioModuleChain::sendAudioModuleWasBeReplacedNotification(AudioModule *oldModule, 
   AudioModule *newModule, int index)
 {
   ScopedLock scopedLock(*plugInLock);
   for(int i = 0; i < size(observers); i++)
-    observers[i]->audioModuleWillBeReplaced(this, oldModule, newModule, index);
+    observers[i]->audioModuleWasBeReplaced(this, oldModule, newModule, index);
 }
 
 // overrides:
@@ -291,7 +316,7 @@ void AudioModuleChain::setStateFromXml(const XmlElement& xmlState, const juce::S
 {
   ScopedLock scopedLock(*plugInLock);
   AudioModule::setStateFromXml(xmlState, stateName, markAsClean); // actually does nothing?
-  activeSlot = -1;
+  activeSlot = -1;  // i think, that's not necessary - should be already -1
   clearModulesArray();
   int i = 0;
   forEachXmlChildElementWithTagName(xmlState, slotState, "Slot"){
@@ -307,9 +332,13 @@ void AudioModuleChain::setStateFromXml(const XmlElement& xmlState, const juce::S
 void AudioModuleChain::clearModulesArray()
 {
   ScopedLock scopedLock(*plugInLock);
-  for(int i = 0; i < size(modules); i++)
-    delete modules[i];
-  modules.clear();
+  while(size(modules) > 0)
+    removeLastModule();
+
+  // old:
+  //for(int i = 0; i < size(modules); i++)
+  //  delete modules[i];
+  //modules.clear();
 }
 
 //=================================================================================================
