@@ -353,11 +353,14 @@ AudioModuleChainEditor::AudioModuleChainEditor(jura::AudioModuleChain *moduleCha
   updateEditorArray();
   updateSelectorArray();
   updateActiveEditor();
+  chainer->addAudioModuleChainObserver(this);
   addChangeListener(this); // we listen to ourselves for deferred destruction of selectors
 }
 
 AudioModuleChainEditor::~AudioModuleChainEditor()
 {
+  ScopedLock scopedLock(*plugInLock);
+  chainer->removeAudioModuleChainObserver(this);
   clearEditorArray();
 }
 
@@ -385,8 +388,8 @@ void AudioModuleChainEditor::replaceModule(int index, const String& type)
 
     chainer->replaceModule(index, type);          // may call audioModuleWillBeDeleted
     AudioModule* m = chainer->getModuleAt(index); // can be 0, if dummy module was placed at end
-    if(m != nullptr) 
-      addWatchedAudioModule(m);
+    //if(m != nullptr) 
+    //  addWatchedAudioModule(m);
     updateEditorArray();
     index = chainer->activeSlot;
     editors[index] = getEditorForSlot(index);
@@ -538,16 +541,6 @@ void AudioModuleChainEditor::paintOverChildren(Graphics& g)
   g.drawRect(rect, 2);  // 2nd param: thickness
 }
 
-void AudioModuleChainEditor::audioModuleWillBeDeleted(AudioModule *m)
-{
-  ScopedLock scopedLock(*plugInLock);
-  for(int i = 0; i < size(editors); i++){
-    if(editors[i] != nullptr && m == editors[i]->getModuleToEdit())
-      deleteEditor(i);
-  }
-  removeWatchedAudioModule(m);
-}
-
 void AudioModuleChainEditor::rComboBoxChanged(RComboBox* box)
 {
   ScopedLock scopedLock(*plugInLock);
@@ -568,6 +561,40 @@ void AudioModuleChainEditor::changeListenerCallback(ChangeBroadcaster *source)
   }
   else
     AudioModuleEditor::changeListenerCallback(source);
+}
+
+//void AudioModuleChainEditor::audioModuleWillBeDeleted(AudioModule *m)
+//{
+//  ScopedLock scopedLock(*plugInLock);
+//  for(int i = 0; i < size(editors); i++){
+//    if(editors[i] != nullptr && m == editors[i]->getModuleToEdit())
+//      deleteEditor(i);
+//  }
+//  removeWatchedAudioModule(m);
+//}
+// to be removed
+
+void AudioModuleChainEditor::audioModuleWasAdded(AudioModuleChain *chain,
+  AudioModule *module, int index)
+{
+  ScopedLock scopedLock(*plugInLock);
+  updateEditorArray();
+  updateSelectorArray();
+}
+
+void AudioModuleChainEditor::audioModuleWillBeDeleted(AudioModuleChain *chain,
+  AudioModule *module, int index)
+{
+  ScopedLock scopedLock(*plugInLock);
+  deleteEditor(index);
+  scheduleSelectorArrayUpdate();
+}
+
+void AudioModuleChainEditor::audioModuleWasBeReplaced(AudioModuleChain *chain,
+  AudioModule *oldModule, AudioModule *newModule, int index)
+{
+  ScopedLock scopedLock(*plugInLock);
+  deleteEditor(index);
 }
 
 void AudioModuleChainEditor::scheduleSelectorArrayUpdate()

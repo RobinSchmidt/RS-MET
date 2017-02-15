@@ -211,8 +211,8 @@ todo:
  to call it there (see comments in the function)
  */
 
-class JUCE_API AudioModuleChainEditor : public AudioModuleEditor, 
-  public AudioModuleDeletionWatcher, public RComboBoxObserver, public ChangeBroadcaster
+class JUCE_API AudioModuleChainEditor : public AudioModuleEditor, public AudioModuleChainObserver,
+  /*public AudioModuleDeletionWatcher,*/ public RComboBoxObserver, public ChangeBroadcaster
 {
 
 public:
@@ -250,9 +250,19 @@ public:
   virtual void mouseDown(const MouseEvent &e) override;
   virtual void resized() override;
   virtual void paintOverChildren(Graphics& g) override;
-  virtual void audioModuleWillBeDeleted(AudioModule *moduleToBeDeleted) override;
   virtual void rComboBoxChanged(RComboBox* comboBoxThatHasChanged) override;
   virtual void changeListenerCallback(ChangeBroadcaster *source) override;
+
+  //virtual void audioModuleWillBeDeleted(AudioModule *moduleToBeDeleted) override;
+  // to be removed
+
+  virtual void audioModuleWasAdded(AudioModuleChain *chain, 
+    AudioModule *module, int index) override;
+  virtual void audioModuleWillBeDeleted(AudioModuleChain *chain, 
+    AudioModule *module, int index) override;
+  virtual void audioModuleWasBeReplaced(AudioModuleChain *chain, 
+    AudioModule *oldModule, AudioModule *newModule, int index) override;
+
 
 protected:
 
