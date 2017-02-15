@@ -122,8 +122,7 @@ public:
   void deleteModule(int index);
 
   /** Removes the last module from the chain. */
-  void removeLastModule();
-    // rename to deleteLastModule
+  void deleteLastModule();
 
   /** Replaces the module at the given with a new module of given type unless the given type 
   matches that of the module which is already there at this position in which case nothing 
@@ -192,19 +191,9 @@ protected:
 
 /** Implements a GUI editor for the AudioModuleChain.
 todo: 
--derive from AudioModuleVhainObserver (and not from AudioModuleDeletionWatcher anymore), implement
- appropriate actions in the callbacks and then check if the bugs still persist
--bug: loading presets from the gui doesn't work (total recall by the host works though, presumably
- because the AudioModuleChain state is recalled before the GUI editor is created) - maybe we need a
- AudioModuleChainOberver baseclass, derive the AudioModuleChainEditor from it and notify the editor 
- about changes ...this may also be used alternatively for informing about module deletion - we 
- could have different callbacks: moduleWillBeDeleted, moduleChainHasChanged, etc.
+-bug: when loading a preset, the 1st slot selector is not updated, also, the active editor is not 
+ correctly shown
 -when a popup from a combobox is open, the audio throughput is blocked - we need to avoid the lock
--bug: sometimes, we get an access violation when removing a module, the violation occurs in 
- ~AudioModuleEditor() when it calls moduleToEdit->removeStateWatcher(stateWidgetSet); - the 
- moduleToEdit pointer is apparently invalid ....so it seems, we have kept an editor around for a 
- module that has already been deleted - how can this be? we actually delete editors when their
- module gets deleted - also, it does not always happen - strange...
 -make it possible to drag the slots up and down to change the order of the modules
 -plugin enveloper in 1st slot, plug it out - AudioModuleChainEditor::audioModuleWillBeDeleted is not 
  called - why? bcs we delete the editor already in replaceModule - but it should not be necessary 
@@ -212,12 +201,12 @@ todo:
  */
 
 class JUCE_API AudioModuleChainEditor : public AudioModuleEditor, public AudioModuleChainObserver,
-  /*public AudioModuleDeletionWatcher,*/ public RComboBoxObserver, public ChangeBroadcaster
+  public RComboBoxObserver, public ChangeBroadcaster
 {
 
 public:
 
-  AudioModuleChainEditor(jura::AudioModuleChain *moduleChainerToEdit);
+  AudioModuleChainEditor(jura::AudioModuleChain *moduleChainToEdit);
   virtual ~AudioModuleChainEditor();
 
   /** Returns an editor for the AudioModule in the given slot index. Note that this may return a 
@@ -228,7 +217,7 @@ public:
   /** Returns the editor for the currently active slot.  */
   inline AudioModuleEditor* getEditorForActiveSlot() 
   { 
-    return getEditorForSlot(chainer->activeSlot); 
+    return getEditorForSlot(chain->activeSlot); 
   }
 
   /** Replaces the module at the given with a new module of given type, if necessary and also 
@@ -252,10 +241,6 @@ public:
   virtual void paintOverChildren(Graphics& g) override;
   virtual void rComboBoxChanged(RComboBox* comboBoxThatHasChanged) override;
   virtual void changeListenerCallback(ChangeBroadcaster *source) override;
-
-  //virtual void audioModuleWillBeDeleted(AudioModule *moduleToBeDeleted) override;
-  // to be removed
-
   virtual void audioModuleWasAdded(AudioModuleChain *chain, 
     AudioModule *module, int index) override;
   virtual void audioModuleWillBeDeleted(AudioModuleChain *chain, 
@@ -283,7 +268,7 @@ protected:
   void clearEditorArray();
 
   // Data:
-  AudioModuleChain* chainer;                  // the edited object
+  AudioModuleChain* chain;                    // the edited object
   vector<AudioModuleSelector*> selectors;     // combo-boxes for selecting modules
   vector<AudioModuleEditor*>   editors;       // array of editors for the modules
 
