@@ -37,39 +37,39 @@ void drawLineWu(ImageF& img, float x0, float y0, float x1, float y1, float color
   int   xend  = roundToInt(x0);                     
   float yend  = y0 + gradient * (xend - x0);
   float xgap  = rfpart(x0 + 0.5f);
-  int   xpxl1 = xend;                            // will be used in the main loop
+  int   xpxl1 = xend;                  // will be used in the main loop
   int   ypxl1 = ipart(yend);
   if(steep){
-    plot(img, ypxl1,   xpxl1, rfpart(yend) * xgap);
-    plot(img, ypxl1+1, xpxl1,  fpart(yend) * xgap); } 
+    plot(img, ypxl1,   xpxl1, rfpart(yend) * xgap * color);
+    plot(img, ypxl1+1, xpxl1,  fpart(yend) * xgap * color); } 
   else {
-    plot(img, xpxl1, ypxl1,   rfpart(yend) * xgap);
-    plot(img, xpxl1, ypxl1+1,  fpart(yend) * xgap); }
-  float intery = yend + gradient;                // first y-intersection for the main loop
+    plot(img, xpxl1, ypxl1,   rfpart(yend) * xgap * color);
+    plot(img, xpxl1, ypxl1+1,  fpart(yend) * xgap * color); }
+  float intery = yend + gradient;      // first y-intersection for the main loop
 
   // handle second endpoint:  
   xend = roundToInt(x1);
   yend = y1 + gradient * (xend - x1);
   xgap = fpart(x1 + 0.5f);
-  int xpxl2 = xend;                              // will be used in the main loop
+  int xpxl2 = xend;                    // will be used in the main loop
   int ypxl2 = ipart(yend);
   if(steep){
-    plot(img, ypxl2,   xpxl2, rfpart(yend) * xgap);
-    plot(img, ypxl2+1, xpxl2,  fpart(yend) * xgap); }
+    plot(img, ypxl2,   xpxl2, rfpart(yend) * xgap * color);
+    plot(img, ypxl2+1, xpxl2,  fpart(yend) * xgap * color); }
   else {
-    plot(img, xpxl2, ypxl2,   rfpart(yend) * xgap);
-    plot(img, xpxl2, ypxl2+1,  fpart(yend) * xgap); }
+    plot(img, xpxl2, ypxl2,   rfpart(yend) * xgap * color);
+    plot(img, xpxl2, ypxl2+1,  fpart(yend) * xgap * color); }
   
   // main loop:
   if(steep){
     for(int x = xpxl1+1; x <= xpxl2-1; x++){
-      plot(img, ipart(intery),   x, rfpart(intery));
-      plot(img, ipart(intery)+1, x,  fpart(intery));
+      plot(img, ipart(intery),   x, rfpart(intery) * color);
+      plot(img, ipart(intery)+1, x,  fpart(intery) * color);
       intery = intery + gradient; }}
   else{
     for(int x = xpxl1+1; x <= xpxl2-1; x++){
-      plot(img, x, ipart(intery),  rfpart(intery));
-      plot(img, x, ipart(intery)+1, fpart(intery));
+      plot(img, x, ipart(intery),  rfpart(intery) * color);
+      plot(img, x, ipart(intery)+1, fpart(intery) * color);
       intery = intery + gradient; }}
 }
 
