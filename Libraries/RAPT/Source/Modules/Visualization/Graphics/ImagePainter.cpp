@@ -525,7 +525,7 @@ void ImagePainter<TPix, TWgt, TCor>::drawDottedLine(TCor x1, TCor y1, TCor x2, T
 
   TPix scaledColor = color;
   if(scaleByNumDots)
-    scaledColor /= (TPix)numDots;
+    scaledColor = scaledColor / (TPix)numDots;
 
   TCor scaler = (TCor)(1.0 / (numDots-1));
   TCor k;

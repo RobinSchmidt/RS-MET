@@ -89,10 +89,10 @@ protected:
     //rsAssert(value <= TPix(1));
     //rsAssert(value >= TPix(0));
 
-    //accu = (accu + value) / (TPix(1) + value);
+    accu = (accu + value) / (TPix(1) + value);
 
     //accu = accu+value; // just for testing
-    accu = rsMin(TPix(1), accu+value);
+    //accu = rsMin(TPix(1), accu+value);
   }
   // rename to addAndSaturate
 

@@ -1,9 +1,30 @@
 #include "GraphicsExperiments.h"
 
 // Sources:
+// Anti Aliasing in general:
 // http://hinjang.com/articles/01.html
-// https://en.wikipedia.org/wiki/Xiaolin_Wu's_line_algorithm
-// https://github.com/tobsa/Xiaolin-Wus-Line-Algorithm/blob/master/Xiaolin%20Wu's%20Line%20Algorithm/Source/XiaolinWusLineAlgorithm.cpp
+
+// Gupta Sproull Algorithm:
+// http://www.vis.uky.edu/~ryang/Teaching/cs535-2012spr/Lectures/18-anti-aliasing.pdf
+// https://courses.engr.illinois.edu/ece390/archive/archive-f2000/mp/mp4/anti.html // 1-pixel
+
+// Graphics Gems:
+// http://www.graphicsgems.org/
+// http://www.realtimerendering.com/resources/GraphicsGems/category.html#2D Rendering_link
+
+// thick lines
+// http://kt8216.unixcab.org/murphy/index.html
+// http://www.zoo.co.uk/murphy/thickline/  // parallel line perpendicular or parallel to primary line
+// http://ect.bell-labs.com/who/hobby/87_2-04.pdf // actually curves, no anti alias
+// http://e-collection.library.ethz.ch/view/eth:3201
+// http://e-collection.library.ethz.ch/eserv/eth:3201/eth-3201-01.pdf
+// Ch3: geometric approach, Ch4: brush trajectory approach
+// other ideas: scanlines - like Wu/Bresenham/Gupta but with a nested orthogonal loop over a
+// a scanline orthogonal to the major direction, for example along y when line is x-dominant
+// the interior of the scanline can just be filled, only at the ends we must compute coverages
+// http://ect.bell-labs.com/who/hobby/thesis.pdf // Digitized Brush Trajectories (John Hobby)
+
+
 
 // This is the Wu line drawing algorithm, directly translated from the pseudocode here:
 // https://en.wikipedia.org/wiki/Xiaolin_Wu's_line_algorithm
@@ -74,29 +95,29 @@ void drawLineWu(ImageF& img, float x0, float y0, float x1, float y1, float color
 }
 
 // Bresenham line drawing algorithm:
-void drawLineBresenham(ImageF& img, int x1, int y1, int x2, int y2, float color)
+void drawLineBresenham(ImageF& img, int x0, int y0, int x1, int y1, float color)
 {
-  bool steep = abs(y2 - y1) > abs(x2 - x1);
+  bool steep = abs(y1 - y0) > abs(x1 - x0);
 
   if(steep){
-    swap(x1, y1);
-    swap(x2, y2); }
-  if(x1 > x2){
-    swap(x1, x2);
-    swap(y1, y2); }
+    swap(x0, y0);
+    swap(x1, y1); }
+  if(x0 > x1){
+    swap(x0, x1);
+    swap(y0, y1); }
 
-  int deltaX = x2 - x1;
-  int deltaY = abs(y2 - y1);
+  int deltaX = x1 - x0;
+  int deltaY = abs(y1 - y0);
   int error  = deltaX / 2;
   int ystep;
-  int y = y1;
+  int y = y0;
 
-  if(y1 < y2)
+  if(y0 < y1)
     ystep = 1;
   else
     ystep = -1;
 
-  for(int x = x1; x <= x2; x++){
+  for(int x = x0; x <= x1; x++){
     if(steep)
       plot(img, y, x, color);
     else
@@ -134,14 +155,12 @@ void lineDrawing()
   vector<float> x2, y2;
   for(i = 0; i < numLines; i++){    // flat, horizontal'ish
     x2.push_back(imageWidth - margin);
-    y2.push_back(margin + i * (imageHeight - margin) / numLines);
-  }
+    y2.push_back(margin + i * (imageHeight - margin) / numLines); }
   x2.push_back(imageWidth -margin); // 45° diagonal
   y2.push_back(imageHeight-margin);
   for(i = 0; i < numLines; i++){    // steep, vertical'ish
     x2.push_back(margin + i * (imageWidth - margin) / numLines);
-    y2.push_back(imageHeight - margin);
-  }
+    y2.push_back(imageHeight - margin); }
 
   // dotted algorithm:
   for(i = 0; i < x2.size(); i++)
