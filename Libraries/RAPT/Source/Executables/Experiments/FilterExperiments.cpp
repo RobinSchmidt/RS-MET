@@ -136,7 +136,8 @@ void ladderResonanceManipulation()
 
 
 /** N: num samples, x: abscissa-values (mostly time), y: ordinate values, avg: average - the 
-output, weightFunc: normalized weighting function - should have a support in the range -1..+1 */
+output, width: length/width/range of the support of the filter, weightFunc: normalized weighting
+function - should have a support in the range -1..+1 */
 template<class T>
 void movingAverage(int N, T* x, T* y, T* avg, T width, T (*weightFunc)(T))
 {
@@ -146,8 +147,8 @@ void movingAverage(int N, T* x, T* y, T* avg, T width, T (*weightFunc)(T))
   int k;                                       // inner loop index
   for(int n = 0; n < N; n++){                  // outer loop over all points
     T wgt = weightFunc(0);                     // weight
-    T sw  = weight;                            // sum of weights
-    T swv = weight * y[n];                     // sum of weighted values
+    T sw  = wgt;                               // sum of weights
+    T swv = wgt * y[n];                        // sum of weighted values
     k = n-1;                                   // immediate left neighbour
     while(k >= 0 && dist = (x[n]-x[k]) <= w2){ // left side loop
       wgt  = weightFunc(dist * w2r);           // compute weight for distance
