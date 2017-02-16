@@ -73,6 +73,42 @@ void drawLineWu(ImageF& img, float x0, float y0, float x1, float y1, float color
       intery = intery + gradient; }}
 }
 
+// Bresenham line drawing algorithm:
+void drawLineBresenham(ImageF& img, int x1, int y1, int x2, int y2, float color)
+{
+  bool steep = abs(y2 - y1) > abs(x2 - x1);
+
+  if( steep ) {
+    swap(x1, y1);
+    swap(x2, y2); }
+  if( x1 > x2 ) {
+    swap(x1, x2);
+    swap(y1, y2); }
+
+  int deltaX = x2 - x1;
+  int deltaY = abs(y2 - y1);
+  int error  = deltaX / 2;
+  int ystep;
+  int y = y1;
+
+  if( y1 < y2 )
+    ystep = 1;
+  else
+    ystep = -1;
+
+  for(int x=x1; x<=x2; x++){
+    if( steep )
+      plot(img, y, x, color);
+    else
+      plot(img, x, y, color);
+    error = error - deltaY;
+    if( error < 0 ){
+      y = y + ystep;
+      error = error + deltaX; }}
+}
+
+
+
 void lineDrawing()
 {
   // Compares different line drawing algorithms. We draw lines of different directions.
@@ -104,15 +140,22 @@ void lineDrawing()
     y2.push_back(imageHeight - margin);
   }
 
-  // draw lines using the algorithm that creates them from dots:
+  // dotted algorithm:
   for(i = 0; i < x2.size(); i++)
     painter.drawDottedLine(x1, y1, x2[i], y2[i], brightness);
-  writeImageToFilePPM(image, "DottedLines.ppm");
+  writeImageToFilePPM(image, "LinesDotted.ppm");
 
-  // draw lines with Wu algorithm:
+  // Wu algorithm:
   image.clear();
   for(i = 0; i < x2.size(); i++)
     drawLineWu(image, x1, y1, x2[i], y2[i], brightness);
-  writeImageToFilePPM(image, "WuLines.ppm");
+  writeImageToFilePPM(image, "LinesWu.ppm");
+
+  // Bresenham algorithm:
+  image.clear();
+  for(i = 0; i < x2.size(); i++)
+    drawLineBresenham(image, roundToInt(x1), roundToInt(y1), 
+      roundToInt(x2[i]), roundToInt(y2[i]), brightness);
+  writeImageToFilePPM(image, "LinesBresenham.ppm");
 }
 
