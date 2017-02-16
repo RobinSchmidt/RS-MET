@@ -4,5 +4,6 @@
 #include "../Shared/Shared.h"
 
 void ladderResonanceManipulation();
+void nonUniformMovingAverage();
 
 #endif

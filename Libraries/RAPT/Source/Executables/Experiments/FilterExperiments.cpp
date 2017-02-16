@@ -132,6 +132,41 @@ void ladderResonanceManipulation()
 
   // Note: it works only when the compensation gain is applied at the input and when the filter
   // is linear.
+}
 
 
+/** N: num samples, x: abscissa-values (mostly time), y: ordinate values, avg: average - the 
+output, weightFunc: normalized weighting function - should have a support in the range -1..+1 */
+template<class T>
+void movingAverage(int N, T* x, T* y, T* avg, T width, T (*weightFunc)(T))
+{
+  T w2  = 0.5 * width;                         // half width
+  T w2r = 1 / w2;                              // reciprocal of half width
+  T dist;                                      // distance
+  int k;                                       // inner loop index
+  for(int n = 0; n < N; n++){                  // outer loop over all points
+    T wgt = weightFunc(0);                     // weight
+    T sw  = weight;                            // sum of weights
+    T swv = weight * y[n];                     // sum of weighted values
+    k = n-1;                                   // immediate left neighbour
+    while(k >= 0 && dist = (x[n]-x[k]) <= w2){ // left side loop
+      wgt  = weightFunc(dist * w2r);           // compute weight for distance
+      sw  += wgt;                              // accumulate weight sum
+      swv += wgt * y[k];                       // accumulate weighted values
+      k--; }                                   // jump to next neighbour
+    k = n+1;
+    while(k < N && dist = (x[k]-x[n]) <= w2){  // right side loop
+      wgt  = weightFunc(dist * w2r);
+      sw  += wgt;
+      swv += wgt * y[k];
+      k++; }
+    avg[n] = swv / sw; }
+}
+
+void nonUniformMovingAverage()
+{
+
+
+
+  int dummy = 0;
 }
