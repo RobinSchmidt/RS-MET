@@ -111,6 +111,7 @@ protected:
   {
     accumulate((*image)(x, y), color);
   }
+  // rename the blend() functions to plot()
 
   // data members:
 

@@ -78,10 +78,10 @@ void drawLineBresenham(ImageF& img, int x1, int y1, int x2, int y2, float color)
 {
   bool steep = abs(y2 - y1) > abs(x2 - x1);
 
-  if( steep ) {
+  if(steep){
     swap(x1, y1);
     swap(x2, y2); }
-  if( x1 > x2 ) {
+  if(x1 > x2){
     swap(x1, x2);
     swap(y1, y2); }
 
@@ -91,27 +91,30 @@ void drawLineBresenham(ImageF& img, int x1, int y1, int x2, int y2, float color)
   int ystep;
   int y = y1;
 
-  if( y1 < y2 )
+  if(y1 < y2)
     ystep = 1;
   else
     ystep = -1;
 
-  for(int x=x1; x<=x2; x++){
-    if( steep )
+  for(int x = x1; x <= x2; x++){
+    if(steep)
       plot(img, y, x, color);
     else
       plot(img, x, y, color);
-    error = error - deltaY;
-    if( error < 0 ){
-      y = y + ystep;
-      error = error + deltaX; }}
+    error -= deltaY;
+    if(error < 0){
+      y += ystep;
+      error += deltaX; }}
 }
-
-
 
 void lineDrawing()
 {
   // Compares different line drawing algorithms. We draw lines of different directions.
+  // todo:
+  // Move the prototype implementations to another shared file, so they can also be used in unit
+  // tests
+  // drag the prototypes to ImagePainter, write unit tests, do optimzations, write performance
+  // comparison between Bresenham, Wu and Dotted line
 
   // user parameters:
   int imageWidth   = 400;
