@@ -42,11 +42,16 @@ template RAPT::PhasorFilter<float, float>;
 template RAPT::PhasorStateMapper<float>;
 template RAPT::StateVariableFilter<float, float>; 
 
-// Visualization
+// Visualization:
 template RAPT::Image<float>;
 template RAPT::AlphaMask<float>;
 template RAPT::ImagePainter<float, float, float>;
 template RAPT::PhaseScopeBuffer<float, float, double>;
+
+typedef RAPT::Image<float> ImageF;
+typedef RAPT::AlphaMask<float> AlphaMaskF;
+typedef RAPT::ImagePainter<float, float, float> ImagePainterFFF;
+typedef RAPT::PhaseScopeBuffer<float, float, double> PhaseScopeBufferFFD;
 
 // Modulators:
 //template RAPT::rsBreakpointModulator<double>; // will be needed, when the class is templatized

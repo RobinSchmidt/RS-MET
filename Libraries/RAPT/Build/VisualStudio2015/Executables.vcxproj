@@ -160,6 +160,7 @@
     <ClInclude Include="..\..\Source\Executables\PerformanceTests\PerformanceTests.h" />
     <ClInclude Include="..\..\Source\Executables\Shared\Plotting\GNUPlotter.h" />
     <ClInclude Include="..\..\Source\Executables\Shared\Plotting\Plotting.h" />
+    <ClInclude Include="..\..\Source\Executables\Shared\RaptLibraryCode\RaptTypedefInstantiations.h" />
     <ClInclude Include="..\..\Source\Executables\Shared\Shared.h" />
     <ClInclude Include="..\..\Source\Executables\Shared\Utilities\FileWriting.h" />
     <ClInclude Include="..\..\Source\Executables\Shared\Utilities\PerformanceTestTools.h" />

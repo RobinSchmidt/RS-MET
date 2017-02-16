@@ -1,6 +1,6 @@
 #include "ImageUnitTests.h"
 
-void fillWithCheckerBoardPattern(Image<float>& image)
+void fillWithCheckerBoardPattern(ImageF& image)
 {
   image.clear();
   for(int x = 0; x < image.getWidth(); x++) {
@@ -11,7 +11,7 @@ void fillWithCheckerBoardPattern(Image<float>& image)
   }
 }
 
-void fillWithCross(Image<float>& image)
+void fillWithCross(ImageF& image)
 {
   image.clear();
   int cx = image.getWidth()  / 2;
@@ -22,21 +22,25 @@ void fillWithCross(Image<float>& image)
     image(cx, y) = 1;
 }
 
-bool testAlphaMaskPaintingAntiAliased(ImagePainter<float, float, float>& painter, float x, float y)
+bool testAlphaMaskPaintingAntiAliased(ImagePainterFFF& painter, float x, float y)
 {
   // We clear the image and paint a "dot" into the image (that is pointed to in the passed 
   // ImagePainter) and then check, if all pixels outside the rectangle of the dot are still
   // zero after that.
   // todo: maybe check also, if the pixels inside the rectangle have expected values
   // ...but this is complicated, maybe first, we should check if they are nonzero (but this 
-  // assumes that the dot mask is nonzero everywhere)
+  // assumes that the dot mask is nonzero everywhere) - maybe we can do it by providing a prototype
+  // paint function that loops through the source pixels in the mask (instead of target pixels in 
+  // the image), computes the non-integer position where to put the pixel and calla 
+  // plotPixel(float x, float y) function for each target point, which performs bounds checking
+  // internally - and then compare the pictures drawn with the regular and prototype function.
 
   bool result = true;
 
   // initializations:
   int wi, hi, wm, hm, xs, xe, ys, ye;
-  Image<float>     *img = painter.getImage();
-  AlphaMask<float> *msk = painter.getAlphaMask();
+  ImageF     *img = painter.getImage();
+  AlphaMaskF *msk = painter.getAlphaMask();
   wi = img->getWidth();       // image width
   hi = img->getHeight();      // image height
   wm = msk->getWidth();       // mask width
@@ -75,9 +79,9 @@ bool imagePainterUnitTest()
 {
   bool result = true;
 
-  Image<float> image;
-  AlphaMask<float> mask;  // maybe use a regular image as mask
-  ImagePainter<float, float, float> painter(&image, &mask);
+  ImageF image;
+  AlphaMaskF mask;  // maybe use a regular image as mask
+  ImagePainterFFF painter(&image, &mask);
 
 
   int imageWidth  = 30;

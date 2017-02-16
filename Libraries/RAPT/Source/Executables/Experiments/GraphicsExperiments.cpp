@@ -12,8 +12,8 @@ void lineDrawing()
   float brightness = 0.5f;
 
   // create objects:
-  Image<float> image(imageWidth, imageHeight);
-  ImagePainter<float, float, float> painter(&image, nullptr);
+  ImageF image(imageWidth, imageHeight);
+  ImagePainterFFF painter(&image, nullptr);
   float x1 = margin;
   float y1 = margin;
   float x2, y2;

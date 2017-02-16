@@ -1,8 +1,9 @@
 #ifndef RAPT_TESTINPUTCREATION_H
 #define RAPT_TESTINPUTCREATION_H
 
-#include "../../../Modules/RAPT.h"
-using namespace RAPT;
+#include "../RaptLibraryCode/RaptTypedefInstantiations.h"
+//#include "../../../Modules/RAPT.h"
+//using namespace RAPT;
 
 /** Creates a time-axis (in seconds) given the sample-rate. */
 void createTimeAxis(int numSamples, float *timeAxis, float sampleRate);

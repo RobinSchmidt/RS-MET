@@ -2,6 +2,9 @@
 #define RAPT_EXECUTABLES_SHARED_H
 
 #include "Plotting/Plotting.h"
+
+//#include "RaptLibraryCode/RaptTypedefInstantiations.h"
+
 #include "Utilities/TestInputCreation.h"
 #include "Utilities/FileWriting.h"
 #include "Utilities/PerformanceTestTools.h"
