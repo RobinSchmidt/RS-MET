@@ -1,5 +1,3 @@
-#include "../../../../Source/Modules/RAPT.cpp"
-
 /** Many RAPT functions and classes are written as C++ templates in order to be type independent. 
 This implies that the compiler does not actually compile any code unless the template gets 
 instantiated from somewhere inside the client code. That means, if you include the RAPT.h file from 
@@ -24,6 +22,8 @@ not show all the trunction-warnings that we get for "float").
 instantiates all templates for double. That file can be used by client code by default but client
 code may also define its own instantiation file. */
 
+#include "../../../../Source/Modules/RAPT.cpp"
+
 // Data:
 template void RAPT::ArrayTools::rsFillWithRangeLinear(float* x, int N, float min, float max);
 template void RAPT::ArrayTools::rsFillWithRandomValues(float* x, int N, double min, double max, int seed);
@@ -47,11 +47,6 @@ template RAPT::Image<float>;
 template RAPT::AlphaMask<float>;
 template RAPT::ImagePainter<float, float, float>;
 template RAPT::PhaseScopeBuffer<float, float, double>;
-
-typedef RAPT::Image<float> ImageF;
-typedef RAPT::AlphaMask<float> AlphaMaskF;
-typedef RAPT::ImagePainter<float, float, float> ImagePainterFFF;
-typedef RAPT::PhaseScopeBuffer<float, float, double> PhaseScopeBufferFFD;
 
 // Modulators:
 //template RAPT::rsBreakpointModulator<double>; // will be needed, when the class is templatized

@@ -84,7 +84,7 @@
     <ClInclude Include="..\..\Source\Executables\Experiments\GraphicsExperiments.h">
       <Filter>Experiments</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Executables\Shared\RaptLibraryCode\RaptTypedefInstantiations.h">
+    <ClInclude Include="..\..\Source\Executables\Shared\RaptLibraryCode\RaptInstantiations.h">
       <Filter>Shared\RaptLibraryCode</Filter>
     </ClInclude>
   </ItemGroup>
