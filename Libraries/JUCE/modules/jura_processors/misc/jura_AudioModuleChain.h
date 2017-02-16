@@ -93,6 +93,8 @@ public:
 /** A shell module that can be used to create a chain (i.e. series connection) of some number of
 AudioModule objects. 
 \todo: 
+-bug: PhaseScope2 can't be replaced by PhaseScope - it's because the PhaseScope2 subclass pointer
+ cn be cast into a PhaseScope pointer, so the dynamic cast returns true
 -let the plugin have midi-out, so we can make midi effects too
 -organize modules in groups (Generators, Filters, Analyzers, etc.) and use a tree-view for 
  selection
