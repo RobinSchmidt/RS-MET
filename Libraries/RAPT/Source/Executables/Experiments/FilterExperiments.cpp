@@ -135,9 +135,10 @@ void ladderResonanceManipulation()
 }
 
 
-/** N: num samples, x: abscissa-values (mostly time), y: ordinate values, avg: average - the 
-output, width: length/width/range of the support of the filter, weightFunc: normalized weighting
-function - should have a support in the range -1..+1 */
+/** Moving average filter for non-uniformly spaced samples. N: num samples, x: abscissa-values
+(mostly time), y: ordinate values, avg: average - the output (must be distinct from y), width: 
+length/width/range of the support of the filter, weightFunc: normalized weighting function, 
+should have a support in the range -1..+1, this is the filter kernel as continuous function */
 template<class T>
 void movingAverage(int N, T* x, T* y, T* avg, T width, T (*weightFunc)(T))
 {
@@ -150,13 +151,13 @@ void movingAverage(int N, T* x, T* y, T* avg, T width, T (*weightFunc)(T))
     T sw  = wgt;                               // sum of weights
     T swv = wgt * y[n];                        // sum of weighted values
     k = n-1;                                   // immediate left neighbour
-    while(k >= 0 && dist = (x[n]-x[k]) <= w2){ // left side loop
+    while(k >= 0 && (dist = x[n]-x[k]) <= w2){ // left side loop
       wgt  = weightFunc(dist * w2r);           // compute weight for distance
       sw  += wgt;                              // accumulate weight sum
       swv += wgt * y[k];                       // accumulate weighted values
       k--; }                                   // jump to next neighbour
     k = n+1;
-    while(k < N && dist = (x[k]-x[n]) <= w2){  // right side loop
+    while(k < N  && (dist = x[k]-x[n]) <= w2){ // right side loop
       wgt  = weightFunc(dist * w2r);
       sw  += wgt;
       swv += wgt * y[k];
@@ -164,10 +165,85 @@ void movingAverage(int N, T* x, T* y, T* avg, T width, T (*weightFunc)(T))
     avg[n] = swv / sw; }
 }
 
+// weighting functions for nununiform MA;
+float box(float x)
+{
+  if(fabs(x) > 1)
+    return 0;
+  return 1;
+}
+float tent(float x)
+{
+  x = fabs(x);
+  if(x > 1)
+    return 0;
+  return 1 - x;
+}
+float rationalTent(float x)
+{
+  x = fabs(x);
+  if(x > 1)
+    return 0;
+  return (1-x) / (1+x);
+}
+float cubicBell(float x)
+{
+  return rsPositiveBellFunctions<float>::cubic(fabs(x));
+}
+float quinticBell(float x)
+{
+  return rsPositiveBellFunctions<float>::quintic(fabs(x));
+}
+float hepticBell(float x)
+{
+  return rsPositiveBellFunctions<float>::heptic(fabs(x));
+}
+
+
 void nonUniformMovingAverage()
 {
+  // user parameters:
+  static const int N = 300;  // number of samples
+  float minDist = 1.f;       // minimum distance between successive samples
+  float maxDist = 10.f;      // maximum ...
+  float minY    = -10.f;     // minimum y value
+  float maxY    = +10.f;     // maximum
+  float width   =  30.f;     // filter support width for box, others are scaled by their area
+  int   seed    = 0;
 
+  // create input data:
+  float x[N], y[N];
+  float t = 0.f; // time
+  float dt;      // time delta between samples
+  x[0] = t;
+  y[0] = (float)round(rsRandomUniform(minY, maxY, seed)); 
+  for(int n = 1; n < N; n++){
+    dt = (float)round(rsRandomUniform(minDist, maxDist));
+    t += dt;
+    x[n] = t;
+    y[n] = (float)round(rsRandomUniform(minY, maxY)); }
 
+  // create filtered versions:
+  float a = 1.f / float(log(4.f)-1); // reciprocal of area under rationalTent weighting function
+                                     // ...the definite integral from 0 to 1
+  float y0[N], y1[N], y2[N], y3[N], y4[N], yR[N]; // 0,1,2,3,4 is the smoothness of the weight function
+  movingAverage(N, x, y, y0,   width, box);
+  movingAverage(N, x, y, y1, 2*width, tent);
+  movingAverage(N, x, y, y2, 2*width, cubicBell);
+  movingAverage(N, x, y, y3, 2*width, quinticBell);
+  movingAverage(N, x, y, y4, 2*width, hepticBell);
+  movingAverage(N, x, y, yR, a*width, rationalTent); 
+  // For all weighting functiosn other than the box, we scale the support width by factor 2 to
+  // make the plots more easily comparable. These ther functions have only half of the area under
+  // the curve compared with the box filter, so the factor 2 in length compensates that.
 
-  int dummy = 0;
+  // plot:
+  GNUPlotter plt;
+  //plt.addDataArrays(N, x, y, y0, y1, y2, y3, y4);
+  //plt.addDataArrays(N, x, y0, y1, yR);
+  //plt.addDataArrays(N, x, y0, y1, y2, y3, y4, yR);
+  //plt.addDataArrays(N, x, y0, y2, y4);
+  plt.addDataArrays(N, x, y, y0, y1, yR);
+
+  plt.plot();
 }
