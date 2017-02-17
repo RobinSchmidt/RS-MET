@@ -94,74 +94,6 @@ void drawLineWuPrototype(ImageF& img, float x0, float y0, float x1, float y1, fl
       intery = intery + gradient; }}
 }
 
-/*
-// Wu algorithm with a few obvious optimizations:
-void drawLineWu(ImageF& img, float x0, float y0, float x1, float y1, float color)
-{
-  bool steep = abs(y1 - y0) > abs(x1 - x0);
-
-  if(steep){
-    swap(x0, y0);
-    swap(x1, y1); }
-  if(x0 > x1){
-    swap(x0, x1);
-    swap(y0, y1); }
-
-  float dx = x1 - x0;
-  float dy = y1 - y0;
-  float gradient = dy / dx;
-  if(dx == 0.0)
-    gradient = 1.0;
-
-  // handle first endpoint:
-  int   xend  = roundToInt(x0);                     
-  float yend  = y0 + gradient * (xend - x0);
-  float xgap  = rfpart(x0 + 0.5f);
-  int   xpxl1 = xend;                  // will be used in the main loop
-  int   ypxl1 = ipart(yend);
-  float fp    = fpart(yend);           // == yend-ypxl1
-  if(steep){
-    plot(img, ypxl1,   xpxl1, (1-fp) * xgap * color);
-    plot(img, ypxl1+1, xpxl1,    fp  * xgap * color); } 
-  else {
-    plot(img, xpxl1, ypxl1,   (1-fp) * xgap * color);
-    plot(img, xpxl1, ypxl1+1,    fp  * xgap * color); }
-  float intery = yend + gradient;      // first y-intersection for the main loop
-
-  // handle second endpoint:  
-  xend      = roundToInt(x1);
-  yend      = y1 + gradient * (xend - x1);
-  xgap      = fpart(x1 + 0.5f);
-  int xpxl2 = xend;                    // will be used in the main loop
-  int ypxl2 = ipart(yend);
-  fp        = fpart(yend);             // == yend-ypxl2
-  if(steep){
-    plot(img, ypxl2,   xpxl2, (1-fp) * xgap * color);
-    plot(img, ypxl2+1, xpxl2,    fp  * xgap * color); }
-  else {
-    plot(img, xpxl2, ypxl2,   (1-fp) * xgap * color);
-    plot(img, xpxl2, ypxl2+1,    fp  * xgap * color); }
-
-  // main loop:
-  int ip;
-  if(steep){
-    for(int x = xpxl1+1; x <= xpxl2-1; x++){
-      ip = ipart(intery);
-      fp = intery-ip;
-      plot(img, ip,   x, (1-fp) * color);
-      plot(img, ip+1, x,    fp  * color);
-      intery += gradient; }}
-  else{
-    for(int x = xpxl1+1; x <= xpxl2-1; x++){
-      ip = ipart(intery);
-      fp = intery-ip;
-      plot(img, x, ip,  (1-fp) * color);
-      plot(img, x, ip+1,   fp  * color);
-      intery += gradient; }}
-}
-*/
-
-
 // Bresenham line drawing algorithm:
 void drawLineBresenham(ImageF& img, int x0, int y0, int x1, int y1, float color)
 {
@@ -239,7 +171,7 @@ void lineDrawing()
   image.clear();
   for(i = 0; i < x2.size(); i++)
     painter.drawLineWu(x1, y1, x2[i], y2[i], brightness);
-    //drawLineWu(image, x1, y1, x2[i], y2[i], brightness);
+    //drawLineWuPrototype(image, x1, y1, x2[i], y2[i], brightness);
   writeImageToFilePPM(image, "LinesWu.ppm");
 
   // Bresenham algorithm:

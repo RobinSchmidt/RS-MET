@@ -86,8 +86,7 @@ public:
   algorithm. See https://en.wikipedia.org/wiki/Xiaolin_Wu's_line_algorithm */
   void drawLineWu(TCor x0, TCor y0, TCor x1, TCor y1, TPix color);
 
-
-  // todo:
+  // todo:/ drag over from GraphicsExperiments.cpp:
   //void drawLineBresenham(int x0, int y0, int x1, int y1, TPix color);
 
 protected:

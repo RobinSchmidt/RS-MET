@@ -534,31 +534,21 @@ void ImagePainter<TPix, TWgt, TCor>::drawDottedLine(TCor x1, TCor y1, TCor x2, T
     k = scaler * i;  // == i / (numDots-1)
     paintDot(x1 + k*dx, y1 + k*dy, scaledColor);
   }
-
-  //TCor scaler = (TCor)(1.0 / numDots);
-  //TCor k;
-  //for(int i = 1; i <= numDots; i++)
-  //{
-  //  k = scaler * i;  // == i / numDots
-  //  paintDot(x1 + k*dx, y1 + k*dy, scaledColor);
-  //}
-  //// i think, we should start the loop at i=0 and use scaler = 1.0 / (numDots-1)
 }
 
-// some helper functions used in Wu algorithm:
+// some helper functions used in Wu algorithm (maybe try to get rid of them):
 template<class T> inline int        ipart(T x) { return (int) x;         }
-template<class T> inline T          fpart(T x) { return x - ipart(x);    } // get rid
+template<class T> inline T          fpart(T x) { return x - ipart(x);    }
 template<class T> inline T         rfpart(T x) { return 1 - fpart(x);    }
 template<class T> inline int   roundToInt(T x) { return ipart(x + 0.5f); }
 template<class T> inline void swap(T& x, T& y) { T t = x; x = y; y = t;  }
 template<class T> inline float   min(T x, T y) { return x < y ? x : y;   }
-
+ 
+// Wu line drawing algorithm translated from
+// https://en.wikipedia.org/wiki/Xiaolin_Wu's_line_algorithm with a few obvious optimizations:
 template<class TPix, class TWgt, class TCor>
 void ImagePainter<TPix, TWgt, TCor>::drawLineWu(TCor x0, TCor y0, TCor x1, TCor y1, TPix color)
 {
-  // translated from https://en.wikipedia.org/wiki/Xiaolin_Wu's_line_algorithm with a few
-  // obvious optimizations
-
   bool steep = abs(y1 - y0) > abs(x1 - x0);
 
   if(steep){
