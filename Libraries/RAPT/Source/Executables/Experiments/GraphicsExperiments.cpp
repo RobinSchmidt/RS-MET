@@ -94,6 +94,7 @@ void drawLineWuPrototype(ImageF& img, float x0, float y0, float x1, float y1, fl
       intery = intery + gradient; }}
 }
 
+/*
 // Wu algorithm with a few obvious optimizations:
 void drawLineWu(ImageF& img, float x0, float y0, float x1, float y1, float color)
 {
@@ -158,6 +159,7 @@ void drawLineWu(ImageF& img, float x0, float y0, float x1, float y1, float color
       plot(img, x, ip+1,   fp  * color);
       intery += gradient; }}
 }
+*/
 
 
 // Bresenham line drawing algorithm:
@@ -236,7 +238,8 @@ void lineDrawing()
   // Wu algorithm:
   image.clear();
   for(i = 0; i < x2.size(); i++)
-    drawLineWu(image, x1, y1, x2[i], y2[i], brightness);
+    painter.drawLineWu(x1, y1, x2[i], y2[i], brightness);
+    //drawLineWu(image, x1, y1, x2[i], y2[i], brightness);
   writeImageToFilePPM(image, "LinesWu.ppm");
 
   // Bresenham algorithm:

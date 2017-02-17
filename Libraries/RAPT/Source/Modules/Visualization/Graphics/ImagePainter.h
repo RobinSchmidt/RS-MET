@@ -3,7 +3,14 @@
 
 /** A class for painting on an Image object. It is based on an "alpha-mask" that is used as 
 prototype "dot". Whenever a dot is painted onto the image at a particular location, the mask will
-be used to blend the existing colors at these pixels with a new target color.  */
+be used to blend the existing colors at these pixels with a new target color.  
+
+\todo
+-rename functions to "draw" instead of "paint"
+-maybe rename this class to ImageDrawer
+-rename this "mask" stuff to "brush"
+...these terms are more conventional in the computer graphics literature
+*/
 
 template<class TPix, class TWgt, class TCor>  // pixel, weight, coordinate types
 class ImagePainter
@@ -123,7 +130,8 @@ protected:
   // data members:
 
   Image<TPix> *image;
-  AlphaMask<TWgt> *mask;
+  AlphaMask<TWgt> *mask; // rename to brush...hmm...or well, an actual brush should have its
+                         // own colors - this mask here has only weights
 
   bool antiAlias, useMask;
   TWgt straightNeighbourWeight, diagonalNeighbourWeight;
