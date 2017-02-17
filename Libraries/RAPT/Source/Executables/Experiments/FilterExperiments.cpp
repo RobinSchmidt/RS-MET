@@ -165,26 +165,34 @@ void movingAverage(int N, T* x, T* y, T* avg, T width, T (*weightFunc)(T))
     avg[n] = swv / sw; }
 }
 
-// weighting functions for nununiform MA;
-float box(float x)
+// Weighting functions for nununiform MA. Maybe implement more, see here:
+// https://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use
+//
+float uniform(float x)       // rename to uniform, maybe scale by 0.5
 {
   if(fabs(x) > 1)
     return 0;
   return 1;
 }
-float tent(float x)
+float triangular(float x)      // half-area: 0.5 (integral from 0 to 1)
 {
   x = fabs(x);
   if(x > 1)
     return 0;
   return 1 - x;
 }
-float rationalTent(float x)
+float rationalTent(float x)   // half-area: log(4)-1
 {
   x = fabs(x);
   if(x > 1)
     return 0;
   return (1-x) / (1+x);
+}
+float parabolic(float x)      // half-area: 2/3  (Epanechikov)
+{
+  if(fabs(x) > 1)
+    return 0;
+  return 1 - x*x;
 }
 float cubicBell(float x)
 {
@@ -203,7 +211,7 @@ float hepticBell(float x)
 void nonUniformMovingAverage()
 {
   // user parameters:
-  static const int N = 300;  // number of samples
+  static const int N = 200;  // number of samples
   float minDist = 1.f;       // minimum distance between successive samples
   float maxDist = 10.f;      // maximum ...
   float minY    = -10.f;     // minimum y value
@@ -226,13 +234,20 @@ void nonUniformMovingAverage()
   // create filtered versions:
   float a = 1.f / float(log(4.f)-1); // reciprocal of area under rationalTent weighting function
                                      // ...the definite integral from 0 to 1
-  float y0[N], y1[N], y2[N], y3[N], y4[N], yR[N]; // 0,1,2,3,4 is the smoothness of the weight function
-  movingAverage(N, x, y, y0,   width, box);
-  movingAverage(N, x, y, y1, 2*width, tent);
-  movingAverage(N, x, y, y2, 2*width, cubicBell);
-  movingAverage(N, x, y, y3, 2*width, quinticBell);
-  movingAverage(N, x, y, y4, 2*width, hepticBell);
-  movingAverage(N, x, y, yR, a*width, rationalTent); 
+  float y0[N], y1[N], y2[N], y3[N], y4[N],
+    yR[N],  // rational
+    yP[N];  // parabolic
+
+  // 0,1,2,3,4 is the smoothness of the weight function
+
+  movingAverage(N, x, y, y0,  width,      uniform);
+  movingAverage(N, x, y, y1,  width*2,    triangular);
+  movingAverage(N, x, y, yR,  width*a,    rationalTent); 
+  movingAverage(N, x, y, yP,  width*1.5f, parabolic);
+  movingAverage(N, x, y, y2,  width*2,    cubicBell);
+  movingAverage(N, x, y, y3,  width*2,    quinticBell);
+  movingAverage(N, x, y, y4,  width*2,    hepticBell);
+
   // For all weighting functiosn other than the box, we scale the support width by factor 2 to
   // make the plots more easily comparable. These ther functions have only half of the area under
   // the curve compared with the box filter, so the factor 2 in length compensates that.
@@ -243,7 +258,10 @@ void nonUniformMovingAverage()
   //plt.addDataArrays(N, x, y0, y1, yR);
   //plt.addDataArrays(N, x, y0, y1, y2, y3, y4, yR);
   //plt.addDataArrays(N, x, y0, y2, y4);
-  plt.addDataArrays(N, x, y, y0, y1, yR);
-
+  plt.addDataArrays(N, x, /*y,*/ y0, y1, yR, yP);
   plt.plot();
+
+  // Observations: The rationalTent weighting seems best in terms of smoothing. It shows the 
+  // smallest deviations from the average, i.e. the curve is the most "inside" of all. 
+  // ToDo: maybe try to find even better weighting functions.
 }
