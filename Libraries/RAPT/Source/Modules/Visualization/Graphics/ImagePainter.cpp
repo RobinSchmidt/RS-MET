@@ -84,7 +84,7 @@ void ImagePainter<TPix, TWgt, TCor>::paintDot3x3(int x, int y, TPix color, TWgt 
   int hi = image->getHeight();
 
   if(x >= 0 && x < wi && y >= 0 && y < hi)
-    blend(x, y, color);
+    plot(x, y, color);
 
   // apply thickness:
   if(weightStraight > 0.f && x >= 1 && x < wi-1 && y >= 1 && y < hi-1)
@@ -94,16 +94,16 @@ void ImagePainter<TPix, TWgt, TCor>::paintDot3x3(int x, int y, TPix color, TWgt 
     ta = a * (TPix)weightStraight;
     sa = a * (TPix)weightDiagonal;
 
-    blend(x-1, y-1, sa);
-    blend(x,   y-1, ta);
-    blend(x+1, y-1, sa);
+    plot(x-1, y-1, sa);
+    plot(x,   y-1, ta);
+    plot(x+1, y-1, sa);
 
-    blend(x-1, y,   ta);
-    blend(x+1, y,   ta);
+    plot(x-1, y,   ta);
+    plot(x+1, y,   ta);
 
-    blend(x-1, y+1, sa);
-    blend(x,   y+1, ta);
-    blend(x+1, y+1, sa);
+    plot(x-1, y+1, sa);
+    plot(x,   y+1, ta);
+    plot(x+1, y+1, sa);
   }
 }
 
@@ -135,10 +135,10 @@ void ImagePainter<TPix, TWgt, TCor>::paintDot3x3(TCor x, TCor y, TPix color, TWg
   // accumulate values into the pixels:
   if(xi >= 0 && xi < wi-1 && yi >= 0 && yi < hi-1)
   {
-    blend(xi,   yi,   a);
-    blend(xi+1, yi,   b);
-    blend(xi,   yi+1, c);
-    blend(xi+1, yi+1, d);
+    plot(xi,   yi,   a);
+    plot(xi+1, yi,   b);
+    plot(xi,   yi+1, c);
+    plot(xi+1, yi+1, d);
   }
 
   // apply thickness:
@@ -158,25 +158,25 @@ void ImagePainter<TPix, TWgt, TCor>::paintDot3x3(TCor x, TCor y, TPix color, TWg
     tc = t*c;
     td = t*d;
 
-    blend(xi-1, yi-1, sa);
-    blend(xi,   yi-1, ta+sb);
-    blend(xi+1, yi-1, tb+sa);
-    blend(xi+2, yi-1, sb);
+    plot(xi-1, yi-1, sa);
+    plot(xi,   yi-1, ta+sb);
+    plot(xi+1, yi-1, tb+sa);
+    plot(xi+2, yi-1, sb);
 
-    blend(xi-1, yi,   ta+sc);
-    blend(xi,   yi,   sd+tb+tc);
-    blend(xi+1, yi,   sc+ta+td);
-    blend(xi+2, yi,   tb+sd);
+    plot(xi-1, yi,   ta+sc);
+    plot(xi,   yi,   sd+tb+tc);
+    plot(xi+1, yi,   sc+ta+td);
+    plot(xi+2, yi,   tb+sd);
 
-    blend(xi-1, yi+1, tc+sa);
-    blend(xi,   yi+1, sb+ta+td);
-    blend(xi+1, yi+1, sa+tb+tc);
-    blend(xi+2, yi+1, td+sb);
+    plot(xi-1, yi+1, tc+sa);
+    plot(xi,   yi+1, sb+ta+td);
+    plot(xi+1, yi+1, sa+tb+tc);
+    plot(xi+2, yi+1, td+sb);
 
-    blend(xi-1, yi+2, sc);
-    blend(xi,   yi+2, tc+sd);
-    blend(xi+1, yi+2, td+sc);
-    blend(xi+2, yi+2, sd);
+    plot(xi-1, yi+2, sc);
+    plot(xi,   yi+2, tc+sd);
+    plot(xi+1, yi+2, td+sc);
+    plot(xi+2, yi+2, sd);
   }
 }
 
@@ -228,7 +228,7 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(int x, int y, TPix color)
       //rsAssert(mx >= 0 && mx < wm);
       //rsAssert(my >= 0 && my < hm);
 
-      blend(x, y, color, (*mask)(mx, my));
+      plot(x, y, color, (*mask)(mx, my));
       x++;
       mx++;
     }
@@ -311,11 +311,11 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(int x, int y, TPix color)
 //    for(yi = ys+1; yi <= ye-1; yi++)
 //    {
 //      w = a * (*mask)(0, ym+1) + c * (*mask)(0, ym); 
-//      blend(xs, yi, color, w);
+//      plot(xs, yi, color, w);
 //      ym++;
 //    }
 //    if(topEdge)
-//      blend(xs, ys, color, a * (*mask)(0, 0));  // top left corner
+//      plot(xs, ys, color, a * (*mask)(0, 0));  // top left corner
 //  }
 //  if(topEdge)
 //  {
@@ -323,11 +323,11 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(int x, int y, TPix color)
 //    for(xi = xs+1; xi <= xe-1; xi++) 
 //    {
 //      w = a * (*mask)(xm+1, 0) + b * (*mask)(xm, 0); 
-//      blend(xi, ys, color, w);
+//      plot(xi, ys, color, w);
 //      xm++;
 //    }
 //    if(rightEdge)
-//      blend(xe, ys, color, b * (*mask)(wm-1, 0));  // top right corner
+//      plot(xe, ys, color, b * (*mask)(wm-1, 0));  // top right corner
 //  }
 //  if(rightEdge)
 //  {
@@ -335,7 +335,7 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(int x, int y, TPix color)
 //    for(yi = ys+1; yi <= ye-1; yi++) 
 //    {
 //      w = b * (*mask)(wm-1, ym+1) + d * (*mask)(wm-1, ym); 
-//      blend(xe, yi, color, w);
+//      plot(xe, yi, color, w);
 //      ym++;
 //    }
 //  }
@@ -345,13 +345,13 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(int x, int y, TPix color)
 //    for(xi = xs+1; xi <= xe-1; xi++) 
 //    {
 //      w = c * (*mask)(xm+1, hm-1) + d * (*mask)(xm, hm-1); 
-//      blend(xi, ye, color, w);
+//      plot(xi, ye, color, w);
 //      xm++;
 //    }
 //    if(leftEdge)
-//      blend(xs, ye, color, c * (*mask)(0,    hm-1));  // bottom left corner
+//      plot(xs, ye, color, c * (*mask)(0,    hm-1));  // bottom left corner
 //    if(rightEdge)
-//      blend(xe, ye, color, d * (*mask)(wm-1, hm-1));  // bottom right corner
+//      plot(xe, ye, color, d * (*mask)(wm-1, hm-1));  // bottom right corner
 //  }
 //
 //  // adjust start/endp pixels when edges were drawn:
@@ -369,7 +369,7 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(int x, int y, TPix color)
 //    {
 //      w = a * (*mask)(xm+1, ym+1) + b * (*mask)(xm, ym+1)
 //        + c * (*mask)(xm+1, ym)   + d * (*mask)(xm, ym);   // check this carefully!
-//      blend(xi, yi, color, w); 
+//      plot(xi, yi, color, w); 
 //      xm++;
 //    }
 //    ym++;
@@ -453,11 +453,11 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
     for(yi = ys+1; yi <= ye-1; yi++)
     {
       w = a * (*mask)(0, ym+1) + c * (*mask)(0, ym); 
-      blend(xs, yi, color, w);
+      plot(xs, yi, color, w);
       ym++;
     }
     if(topEdge)
-      blend(xs, ys, color, a * (*mask)(0, 0));  // top left corner
+      plot(xs, ys, color, a * (*mask)(0, 0));  // top left corner
   }
   if(topEdge)
   {
@@ -465,11 +465,11 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
     for(xi = xs+1; xi <= xe-1; xi++) 
     {
       w = a * (*mask)(xm+1, 0) + b * (*mask)(xm, 0); 
-      blend(xi, ys, color, w);
+      plot(xi, ys, color, w);
       xm++;
     }
     if(rightEdge)
-      blend(xe, ys, color, b * (*mask)(wm-1, 0));  // top right corner
+      plot(xe, ys, color, b * (*mask)(wm-1, 0));  // top right corner
   }
   if(rightEdge)
   {
@@ -477,7 +477,7 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
     for(yi = ys+1; yi <= ye-1; yi++) 
     {
       w = b * (*mask)(wm-1, ym+1) + d * (*mask)(wm-1, ym); 
-      blend(xe, yi, color, w);
+      plot(xe, yi, color, w);
       ym++;
     }
   }
@@ -487,13 +487,13 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
     for(xi = xs+1; xi <= xe-1; xi++) 
     {
       w = c * (*mask)(xm+1, hm-1) + d * (*mask)(xm, hm-1); 
-      blend(xi, ye, color, w);
+      plot(xi, ye, color, w);
       xm++;
     }
     if(leftEdge)
-      blend(xs, ye, color, c * (*mask)(0,    hm-1));  // bottom left corner
+      plot(xs, ye, color, c * (*mask)(0,    hm-1));  // bottom left corner
     if(rightEdge)
-      blend(xe, ye, color, d * (*mask)(wm-1, hm-1));  // bottom right corner
+      plot(xe, ye, color, d * (*mask)(wm-1, hm-1));  // bottom right corner
   }
 
   // paint interior rectangle:
@@ -505,7 +505,7 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
     {
       w = a * (*mask)(xm+1, ym+1) + b * (*mask)(xm, ym+1)
         + c * (*mask)(xm+1, ym)   + d * (*mask)(xm, ym);   // check this carefully!
-      blend(xi, yi, color, w); 
+      plot(xi, yi, color, w); 
       xm++;
     }
     ym++;
@@ -543,5 +543,11 @@ void ImagePainter<TPix, TWgt, TCor>::drawDottedLine(TCor x1, TCor y1, TCor x2, T
   //  paintDot(x1 + k*dx, y1 + k*dy, scaledColor);
   //}
   //// i think, we should start the loop at i=0 and use scaler = 1.0 / (numDots-1)
+}
+
+template<class TPix, class TWgt, class TCor>
+void ImagePainter<TPix, TWgt, TCor>::drawLineWu(TCor x0, TCor y0, TCor x1, TCor y1, TPix color)
+{
+
 }
 

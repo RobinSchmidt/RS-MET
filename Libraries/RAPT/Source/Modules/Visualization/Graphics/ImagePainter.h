@@ -73,8 +73,15 @@ public:
   \todo: maybe make this color scaling optional  */
   void drawDottedLine(TCor x1, TCor y1, TCor x2, TCor y2, TPix color, TCor density = 1, 
     int maxNumDots = 0, bool scaleByNumDots = false);
-    
+  // rename to drawLineDotted
 
+  /** Draws a 1-pixel wide line with the given color from (x0,y0) to (x1,y2) using Xiaolin Wu's 
+  algorithm. See https://en.wikipedia.org/wiki/Xiaolin_Wu's_line_algorithm */
+  void drawLineWu(TCor x0, TCor y0, TCor x1, TCor y1, TPix color);
+
+
+  // todo:
+  //void drawLineBresenham(int x0, int y0, int x1, int y1, TPix color);
 
 protected:
 
@@ -94,24 +101,24 @@ protected:
     //accu = accu+value; // just for testing
     //accu = rsMin(TPix(1), accu+value);
   }
-  // rename to addAndSaturate
+  // rename to addAndSaturate or blend
 
   /** Blends the pixel in the image at given coordinates with a new color according to some weight.
   If the weight is 0, the pixel's color is unchanged, if it's 1, the new color has the biggest 
   impact (\todo: what exactly happens should depend on a blend-mode setting). */
-  inline void blend(int x, int y, TPix color, TWgt weight)
+  inline void plot(int x, int y, TPix color, TWgt weight)
   {
-    blend(x, y, TPix(weight) * color);
+    plot(x, y, TPix(weight) * color);
     //accumulate((*image)(x, y), TPix(weight) * color);
     // todo: use blend modes here
   }
 
   /** Same as 4-argument blend() with weight = 1. */
-  inline void blend(int x, int y, TPix color)
+  inline void plot(int x, int y, TPix color)
   {
     accumulate((*image)(x, y), color);
   }
-  // rename the blend() functions to plot()
+
 
   // data members:
 
