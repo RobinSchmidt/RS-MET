@@ -8,9 +8,9 @@ void runExperiments()
 
   // Filter:
   //ladderResonanceManipulation();
-  nonUniformMovingAverage();
+  //nonUniformMovingAverage();
 
   // Graphics:
-  //lineDrawing();
+  lineDrawing();
 
 }

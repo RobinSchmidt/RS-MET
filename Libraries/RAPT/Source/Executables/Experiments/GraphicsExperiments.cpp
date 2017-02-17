@@ -34,10 +34,10 @@ inline int   roundToInt(float x)      { return ipart(x + 0.5f);      }
 inline float fpart(float x)           { return x - ipart(x);         }
 inline float rfpart(float x)          { return 1 - fpart(x);         }
 inline void  swap(float& x, float& y) { float t = x; x = y; y = t;   }
-//inline void  plot(ImageF& im, int x, int y, float c){ im(x, y) += c; }
 inline float min(float x, float y)    { return x < y ? x : y; }
+//inline void  plot(ImageF& im, int x, int y, float c){ im(x, y) += c; }
 inline void  plot(ImageF& im, int x, int y, float c){ im(x,y) = min(1.f, im(x,y)+c); }
-void drawLineWu(ImageF& img, float x0, float y0, float x1, float y1, float color)
+void drawLineWuPrototype(ImageF& img, float x0, float y0, float x1, float y1, float color)
 {
   bool steep = abs(y1 - y0) > abs(x1 - x0);
 
@@ -93,6 +93,73 @@ void drawLineWu(ImageF& img, float x0, float y0, float x1, float y1, float color
       plot(img, x, ipart(intery)+1, fpart(intery) * color);
       intery = intery + gradient; }}
 }
+
+// Wu algorithm with a few obvious optimizations:
+void drawLineWu(ImageF& img, float x0, float y0, float x1, float y1, float color)
+{
+  bool steep = abs(y1 - y0) > abs(x1 - x0);
+
+  if(steep){
+    swap(x0, y0);
+    swap(x1, y1); }
+  if(x0 > x1){
+    swap(x0, x1);
+    swap(y0, y1); }
+
+  float dx = x1 - x0;
+  float dy = y1 - y0;
+  float gradient = dy / dx;
+  if(dx == 0.0)
+    gradient = 1.0;
+
+  // handle first endpoint:
+  int   xend  = roundToInt(x0);                     
+  float yend  = y0 + gradient * (xend - x0);
+  float xgap  = rfpart(x0 + 0.5f);
+  int   xpxl1 = xend;                  // will be used in the main loop
+  int   ypxl1 = ipart(yend);
+  float fp    = fpart(yend);           //  fpart(yend)
+  float rfp   = 1-fp;                  // rfpart(yend) ...maybe get rid of this variable
+  if(steep){
+    plot(img, ypxl1,   xpxl1, rfp * xgap * color);
+    plot(img, ypxl1+1, xpxl1,  fp * xgap * color); } 
+  else {
+    plot(img, xpxl1, ypxl1,   rfp * xgap * color);
+    plot(img, xpxl1, ypxl1+1,  fp * xgap * color); }
+  float intery = yend + gradient;      // first y-intersection for the main loop
+
+  // handle second endpoint:  
+  xend      = roundToInt(x1);
+  yend      = y1 + gradient * (xend - x1);
+  xgap      = fpart(x1 + 0.5f);
+  int xpxl2 = xend;                    // will be used in the main loop
+  int ypxl2 = ipart(yend);
+  fp        = fpart(yend);             //  fpart(yend)
+  rfp       = 1-fp;                    // rfpart(yend)
+  if(steep){
+    plot(img, ypxl2,   xpxl2, rfp * xgap * color);
+    plot(img, ypxl2+1, xpxl2,  fp * xgap * color); }
+  else {
+    plot(img, xpxl2, ypxl2,   rfp * xgap * color);
+    plot(img, xpxl2, ypxl2+1,  fp * xgap * color); }
+
+  // main loop:
+  if(steep){
+    for(int x = xpxl1+1; x <= xpxl2-1; x++){
+      fp  = fpart(intery);
+      rfp = 1-fp;
+      plot(img, ipart(intery),   x, rfp * color);
+      plot(img, ipart(intery)+1, x,  fp * color);
+      intery = intery + gradient; }}
+  else{
+    for(int x = xpxl1+1; x <= xpxl2-1; x++){
+      fp  = fpart(intery);
+      rfp = 1-fp;
+      plot(img, x, ipart(intery),  rfp * color);
+      plot(img, x, ipart(intery)+1, fp * color);
+      intery = intery + gradient; }}
+}
+
 
 // Bresenham line drawing algorithm:
 void drawLineBresenham(ImageF& img, int x0, int y0, int x1, int y1, float color)
