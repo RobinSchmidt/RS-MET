@@ -142,17 +142,17 @@ should have a support in the range -1..+1, this is the filter kernel as continuo
 \todo: maybe let the user pass a functor for the weighting function isntead of a function 
 pointer (maybe it's possible to write a functor-wrapper for ordinary functions with automatic
 type casting such that ordinary functions can still be passed as usual?) */
-template<class T>
-void movingAverage(int N, T* x, T* y, T* avg, T width, T (*weightFunc)(T))
+template<class Tx, class Ty>
+void movingAverage(int N, Tx* x, Ty* y, Ty* avg, Tx width, Ty (*weightFunc)(Tx))
 {
-  T w2  = 0.5 * width;                         // half width
-  T w2r = 1 / w2;                              // reciprocal of half width
-  T dist;                                      // distance
+  Tx w2  = 0.5 * width;                        // half width
+  Tx w2r = 1 / w2;                             // reciprocal of half width
+  Tx dist;                                     // distance
   int k;                                       // inner loop index
   for(int n = 0; n < N; n++){                  // outer loop over all points
-    T wgt = weightFunc(0);                     // weight
-    T sw  = wgt;                               // sum of weights
-    T swv = wgt * y[n];                        // sum of weighted values
+    Ty wgt = weightFunc(0);                    // weight
+    Ty sw  = wgt;                              // sum of weights
+    Ty swv = wgt * y[n];                       // sum of weighted values
     k = n-1;                                   // immediate left neighbour
     while(k >= 0 && (dist = x[n]-x[k]) <= w2){ // left side loop
       wgt  = weightFunc(dist * w2r);           // compute weight for distance
@@ -167,6 +167,7 @@ void movingAverage(int N, T* x, T* y, T* avg, T width, T (*weightFunc)(T))
       k++; }
     avg[n] = swv / sw; }
 }
+// maybe allow different tpyes for x and y, i.e. Tx, Ty
 
 // Weighting functions for nununiform MA. Maybe implement more, see here:
 // https://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use
