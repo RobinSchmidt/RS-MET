@@ -118,7 +118,7 @@ void drawLineWu(ImageF& img, float x0, float y0, float x1, float y1, float color
   float xgap  = rfpart(x0 + 0.5f);
   int   xpxl1 = xend;                  // will be used in the main loop
   int   ypxl1 = ipart(yend);
-  float fp    = fpart(yend);
+  float fp    = fpart(yend);           // == yend-ypxl1
   if(steep){
     plot(img, ypxl1,   xpxl1, (1-fp) * xgap * color);
     plot(img, ypxl1+1, xpxl1,    fp  * xgap * color); } 
@@ -133,7 +133,7 @@ void drawLineWu(ImageF& img, float x0, float y0, float x1, float y1, float color
   xgap      = fpart(x1 + 0.5f);
   int xpxl2 = xend;                    // will be used in the main loop
   int ypxl2 = ipart(yend);
-  fp        = fpart(yend);
+  fp        = fpart(yend);             // == yend-ypxl2
   if(steep){
     plot(img, ypxl2,   xpxl2, (1-fp) * xgap * color);
     plot(img, ypxl2+1, xpxl2,    fp  * xgap * color); }
@@ -142,17 +142,20 @@ void drawLineWu(ImageF& img, float x0, float y0, float x1, float y1, float color
     plot(img, xpxl2, ypxl2+1,    fp  * xgap * color); }
 
   // main loop:
+  int ip;
   if(steep){
     for(int x = xpxl1+1; x <= xpxl2-1; x++){
-      fp = fpart(intery);
-      plot(img, ipart(intery),   x, (1-fp) * color);
-      plot(img, ipart(intery)+1, x,    fp  * color);
+      ip = ipart(intery);
+      fp = intery-ip;
+      plot(img, ip,   x, (1-fp) * color);
+      plot(img, ip+1, x,    fp  * color);
       intery += gradient; }}
   else{
     for(int x = xpxl1+1; x <= xpxl2-1; x++){
-      fp = fpart(intery);
-      plot(img, x, ipart(intery),  (1-fp) * color);
-      plot(img, x, ipart(intery)+1,   fp  * color);
+      ip = ipart(intery);
+      fp = intery-ip;
+      plot(img, x, ip,  (1-fp) * color);
+      plot(img, x, ip+1,   fp  * color);
       intery += gradient; }}
 }
 
