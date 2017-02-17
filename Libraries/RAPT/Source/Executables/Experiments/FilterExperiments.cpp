@@ -138,7 +138,10 @@ void ladderResonanceManipulation()
 /** Moving average filter for non-uniformly spaced samples. N: num samples, x: abscissa-values
 (mostly time), y: ordinate values, avg: average - the output (must be distinct from y), width: 
 length/width/range of the support of the filter, weightFunc: normalized weighting function, 
-should have a support in the range -1..+1, this is the filter kernel as continuous function */
+should have a support in the range -1..+1, this is the filter kernel as continuous function. 
+\todo: maybe let the user pass a functor for the weighting function isntead of a function 
+pointer (maybe it's possible to write a functor-wrapper for ordinary functions with automatic
+type casting such that ordinary functions can still be passed as usual?) */
 template<class T>
 void movingAverage(int N, T* x, T* y, T* avg, T width, T (*weightFunc)(T))
 {
@@ -167,7 +170,13 @@ void movingAverage(int N, T* x, T* y, T* avg, T width, T (*weightFunc)(T))
 
 // Weighting functions for nununiform MA. Maybe implement more, see here:
 // https://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use
-//
+// actually, for use in movingAverage, the checks against > 1 are superfluous bcs the loops there
+// ensure already that x <= 1. maybe we can wrap all this stuff into a class 
+// NonUniformMovingAverage. We could have functions like setNominalWidth (the width used for 
+// uniform weighting), setWeightingFunction(T (*func)(T), T area) and for functions with unknown
+// area just setWeightingFunction(T (*func)(T)) which finds the area by numerical integration
+// and then calls setWeightingFunction(T (*func)(T), T area) with the numerically computed area
+// ...finally an opportunity to implement and use numerical integration algorithms :-)
 float uniform(float x)       // rename to uniform, maybe scale by 0.5
 {
   if(fabs(x) > 1)
