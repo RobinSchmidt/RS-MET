@@ -186,16 +186,51 @@ void lineDrawing()
 void drawThickLine(ImageF& img, float x0, float y0, float x1, float y1, float color, 
   float thickness)
 {
-  drawLineWuPrototype(img, x0, y0, x1, y1, color); // preliminary
+  if(thickness <= 1)
+    drawLineWuPrototype(img, x0, y0, x1, y1, thickness*color); 
+
+  float dx, dy, s, ax, ay, t2, x0p, y0p, x0m, y0m, x1p, y1p, x1m, y1m;
+
+  // compute 4 corners (x0p,y0p), (x0m,y0m), (x1p,y1p), (x1m, y1m) of the rectangle reprenting the
+  // thick line:
+  dx  = x1 - x0;                 // (dx,dy) is a vector in the direction of our line
+  dy  = y1 - y0;                 //
+  s   = 1 / sqrt(dx*dx + dy*dy); // 1 / length(dx,dy)
+  ax  = -dy*s;                   // (ax,ay) is a unit vector in a direction perpendicular to the
+  ay  =  dx*s;                   // direction of our line
+  t2  = 0.5*thickness;
+  x0p = x0 + t2 * ax;
+  y0p = y0 + t2 * ay;
+  x0m = x0 - t2 * ax;
+  y0m = y0 - t2 * ay;
+  x1p = x1 + t2 * ax;
+  y1p = y1 + t2 * ay;
+  x1m = x1 - t2 * ax;
+  y1m = y1 - t2 * ay;
+
+  // draw outermost lines:
+  drawLineWuPrototype(img, x0p, y0p, x1p, y1p, color); 
+  drawLineWuPrototype(img, x0m, y0m, x1m, y1m, color); 
+
+
+  drawLineWuPrototype(img, x0, y0, x1, y1, color); 
+  // preliminary - we have to call this inside a loop several times to darw several parallel
+  // Wu lines as explained for the case of Bresenham lines here: 
+  // http://www.zoo.co.uk/murphy/thickline/. We use the same general principle her (the 2nd 
+  // version, drawing lines parallel and stepping perpendicularly), with the only difference
+  // that each line is a Wu line instead of a bresenham line. Maybe this can be further optimized
+  // by drawing indeed Bresenham lines for the inner 1-pixel lines and using Wu lines only for
+  // the 2 outermost lines?
 }
+
 void lineDrawingThick()
 {
   // user parameters:
   int imageWidth   = 400;
   int imageHeight  = 400;
-  int numAngles     = 10;
+  int numAngles     = 5;
   float brightness = 0.5f;
-  float thickness  = 1.f;
+  float thickness  = 6.f;
 
   // create objects:
   ImageF image(imageWidth, imageHeight);
@@ -222,4 +257,5 @@ void lineDrawingThick()
     drawThickLine(image, x0[i], y0[i], x1[i], y1[i], brightness, thickness); 
   writeImageToFilePPM(image, "LinesThick.ppm");
 
+  // Seems like the lines are 1 pixel too wide
 }
