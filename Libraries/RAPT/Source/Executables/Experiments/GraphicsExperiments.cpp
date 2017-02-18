@@ -25,7 +25,6 @@
 // http://ect.bell-labs.com/who/hobby/thesis.pdf // Digitized Brush Trajectories (John Hobby)
 
 
-
 // This is the Wu line drawing algorithm, directly translated from the pseudocode here:
 // https://en.wikipedia.org/wiki/Xiaolin_Wu's_line_algorithm
 // todo: move to a Prototypes.h/cpp pair of files in the Shared folder
@@ -128,6 +127,7 @@ void drawLineBresenham(ImageF& img, int x0, int y0, int x1, int y1, float color)
       error += deltaX; }}
 }
 
+
 void lineDrawing()
 {
   // Compares different line drawing algorithms. We draw lines of different directions.
@@ -147,38 +147,79 @@ void lineDrawing()
   // create objects:
   ImageF image(imageWidth, imageHeight);
   ImagePainterFFF painter(&image, nullptr);
-  float x1 = margin;
-  float y1 = margin;
+  float x0 = margin;
+  float y0 = margin;
   int i;
 
   // create arrays for line endpoints:
-  vector<float> x2, y2;
+  vector<float> x1, y1;
   for(i = 0; i < numLines; i++){    // flat, horizontal'ish
-    x2.push_back(imageWidth - margin);
-    y2.push_back(margin + i * (imageHeight - margin) / numLines); }
-  x2.push_back(imageWidth -margin); // 45° diagonal
-  y2.push_back(imageHeight-margin);
+    x1.push_back(imageWidth - margin);
+    y1.push_back(margin + i * (imageHeight - margin) / numLines); }
+  x1.push_back(imageWidth -margin); // 45° diagonal
+  y1.push_back(imageHeight-margin);
   for(i = 0; i < numLines; i++){    // steep, vertical'ish
-    x2.push_back(margin + i * (imageWidth - margin) / numLines);
-    y2.push_back(imageHeight - margin); }
+    x1.push_back(margin + i * (imageWidth - margin) / numLines);
+    y1.push_back(imageHeight - margin); }
 
   // dotted algorithm:
-  for(i = 0; i < x2.size(); i++)
-    painter.drawDottedLine(x1, y1, x2[i], y2[i], brightness);
+  for(i = 0; i < x1.size(); i++)
+    painter.drawDottedLine(x0, y0, x1[i], y1[i], brightness);
   writeImageToFilePPM(image, "LinesDotted.ppm");
 
   // Wu algorithm:
   image.clear();
-  for(i = 0; i < x2.size(); i++)
-    painter.drawLineWu(x1, y1, x2[i], y2[i], brightness);
-    //drawLineWuPrototype(image, x1, y1, x2[i], y2[i], brightness);
+  for(i = 0; i < x1.size(); i++)
+    painter.drawLineWu(x0, y0, x1[i], y1[i], brightness);
+    //drawLineWuPrototype(image, x0, y0, x1[i], y1[i], brightness);
   writeImageToFilePPM(image, "LinesWu.ppm");
 
   // Bresenham algorithm:
   image.clear();
-  for(i = 0; i < x2.size(); i++)
-    drawLineBresenham(image, roundToInt(x1), roundToInt(y1), 
-      roundToInt(x2[i]), roundToInt(y2[i]), brightness);
+  for(i = 0; i < x1.size(); i++)
+    drawLineBresenham(image, roundToInt(x0), roundToInt(y0), 
+      roundToInt(x1[i]), roundToInt(y1[i]), brightness);
   writeImageToFilePPM(image, "LinesBresenham.ppm");
 }
 
+
+void drawThickLine(ImageF& img, float x0, float y0, float x1, float y1, float color, 
+  float thickness)
+{
+  drawLineWuPrototype(img, x0, y0, x1, y1, color); // preliminary
+}
+void lineDrawingThick()
+{
+  // user parameters:
+  int imageWidth   = 400;
+  int imageHeight  = 400;
+  int numAngles     = 10;
+  float brightness = 0.5f;
+  float thickness  = 1.f;
+
+  // create objects:
+  ImageF image(imageWidth, imageHeight);
+
+  // create endpoint arrays:
+  float margin = 8*thickness;
+  int numLines = 2*numAngles - 2;
+  vector<float> x0(numLines), y0(numLines), x1(numLines), y1(numLines);
+  int i, j;
+  for(i = 0; i < numAngles; i++){
+    x0[i] = margin + i * (imageWidth - 2*margin) / (numAngles-1);
+    y0[i] = margin;
+    x1[i] = imageWidth - x0[i];
+    y1[i] = imageHeight - margin; }
+  for(i = 0; i < numAngles-2; i++){
+    j = numAngles + i;
+    y0[j] = margin + (i+1) * (imageHeight - 2*margin) / (numAngles-1);
+    x0[j] = margin;
+    y1[j] = imageHeight - y0[j];
+    x1[j] = imageWidth - margin; }
+
+  // draw the lines:
+  for(i = 0; i < numLines; i++)
+    drawThickLine(image, x0[i], y0[i], x1[i], y1[i], brightness, thickness); 
+  writeImageToFilePPM(image, "LinesThick.ppm");
+
+}

@@ -167,7 +167,6 @@ void movingAverage(int N, Tx* x, Ty* y, Ty* avg, Tx width, Ty (*weightFunc)(Tx))
       k++; }
     avg[n] = swv / sw; }
 }
-// maybe allow different tpyes for x and y, i.e. Tx, Ty
 
 // Weighting functions for nununiform MA. Maybe implement more, see here:
 // https://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use
@@ -178,6 +177,7 @@ void movingAverage(int N, Tx* x, Ty* y, Ty* avg, Tx width, Ty (*weightFunc)(Tx))
 // area just setWeightingFunction(T (*func)(T)) which finds the area by numerical integration
 // and then calls setWeightingFunction(T (*func)(T), T area) with the numerically computed area
 // ...finally an opportunity to implement and use numerical integration algorithms :-)
+// other functions to try: (1-x^a)/(1+x^a), a = 1, 1/2, 1/3, 2, 
 float uniform(float x)       // rename to uniform, maybe scale by 0.5
 {
   if(fabs(x) > 1)
@@ -236,10 +236,13 @@ void nonUniformMovingAverage()
   x[0] = t;
   y[0] = (float)round(rsRandomUniform(minY, maxY, seed)); 
   for(int n = 1; n < N; n++){
-    dt = (float)round(rsRandomUniform(minDist, maxDist));
+    //dt = (float)round(rsRandomUniform(minDist, maxDist));
+    dt = (float)rsRandomUniform(minDist, maxDist);
     t += dt;
     x[n] = t;
-    y[n] = (float)round(rsRandomUniform(minY, maxY)); }
+    y[n] = (float)rsRandomUniform(minY, maxY); 
+    //y[n] = (float)round(rsRandomUniform(minY, maxY)); 
+  }
 
   // create filtered versions:
   float a = 1.f / float(log(4.f)-1); // reciprocal of area under rationalTent weighting function
@@ -268,10 +271,13 @@ void nonUniformMovingAverage()
   //plt.addDataArrays(N, x, y0, y1, yR);
   //plt.addDataArrays(N, x, y0, y1, y2, y3, y4, yR);
   //plt.addDataArrays(N, x, y0, y2, y4);
-  plt.addDataArrays(N, x, /*y,*/ y0, y1, yR, yP);
+  plt.addDataArrays(N, x, y, y0, y1, yR, yP);
   plt.plot();
 
   // Observations: The rationalTent weighting seems best in terms of smoothing. It shows the 
-  // smallest deviations from the average, i.e. the curve is the most "inside" of all. 
-  // ToDo: maybe try to find even better weighting functions.
+  // smallest deviations from the average, i.e. the curve is the most "inside" of all (stays
+  // closer to the mean than the others). 
+  // ToDo: maybe try to find even better weighting functions. Maybe the smoothness is related to 
+  // the area? smaller area -> more width widening -> better smoothing? maybe because the jitter
+  // gets averaged out better?
 }
