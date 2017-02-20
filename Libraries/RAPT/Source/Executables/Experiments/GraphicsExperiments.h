@@ -5,5 +5,7 @@
 
 void lineDrawing();
 void lineDrawingThick();
+void lineDrawingThick2();
+
 
 #endif
