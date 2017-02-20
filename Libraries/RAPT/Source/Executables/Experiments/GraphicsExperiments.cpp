@@ -284,60 +284,47 @@ void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float c
   // We assume here that dx >= dy and dy/dx >= 0. Other cases can later be added by 
   // appropriately swapping roles of variables
 
-  float dx  = x1 - x0;
-  float dy  = y1 - y0;
-  float s   = dy/dx;     // slope
-  float err = s - 0.5f;  // y-error accumulator
-
-  // should we use rounding instead of truncation?
-  int y = (int) y0;
-  for(int x = (int)x0; x <= (int)x1; x++){
-    plot(img, x, y, color);
-    err += s;
-    if(err >= 0.5f){
-      y++;
-      err -= 1.f; }}
-
 
   // from https://en.wikipedia.org/wiki/Bresenham's_line_algorithm - seems to deal only with 
   // integer endpoints:
-  //function line(x0, y0, x1, y1)
-  //  real deltax := x1 - x0
-  //  real deltay := y1 - y0
-  //  real deltaerr := abs(deltay / deltax)    // Assume deltax != 0 (line is not vertical),
-  //                                           // note that this division needs to be done in a way that preserves the fractional part
-  //  real error := deltaerr - 0.5
-  //  int y := y0
-  //  for x from x0 to x1 
-  //    plot(x,y)
-  //    error := error + deltaerr
-  //    if error ? 0.5 then
-  //      y := y + 1
-  //      error := error - 1.0
+  //float dx  = x1 - x0;
+  //float dy  = y1 - y0;
+  //float s   = dy/dx;      // slope
+  //float err = s - 0.5f;   // y-error accumulator ..formula is for integer endpoints
+  //int y = (int) y0;      // should we use rounding instead of truncation?
+  //for(int x = (int)x0; x <= (int)x1; x++){
+  //  plot(img, x, y, color);
+  //  err += s;
+  //  if(err >= 0.5f){
+  //    y++;
+  //    err -= 1.f; }}
 
-  // from http://graphics.idav.ucdavis.edu/education/GraphicsNotes/Bresenhams-Algorithm.pdf
-  // page 9, deals with arbitrary (non-integer) endpoints:
-  //Let ?x = x 2 ? x 1
-  //  Let ?y = y 2 ? y 1
-  //  Let m =
-  //  ?y
-  //  ?x
-  //  Let i 1 = bx 1 c
-  //  Let j = by 1 c
-  //  Let i 2 = bx 2 c
-  //  Let  = ?(1 ? (y 1 ? j) ?
-  //    ?y(1?(x 1 ?i 1 ))
-  //    ?x
-  //    )
-  //  for i = i 1 to i 2
-  //    illuminate (i, j)
-  //    if ( ? 0)
-  //      j + = 1
-  //       ? = 1.0
-  //      end if
-  //      i + = 1
-  //       + = m
-  //      next i
+
+  // From http://graphics.idav.ucdavis.edu/education/GraphicsNotes/Bresenhams-Algorithm.pdf
+  // page 9, deals with arbitrary (non-integer) endpoints. We also use a different convention for
+  // the error - instead of having it between -1..0, we have it between -0.5..+0.5
+  float dx  = x1 - x0;
+  float dy  = y1 - y0;
+  float s   = dy/dx;      // slope
+  int   i0  = (int)x0;    // 1st x-index
+  int   j   = (int)y0;    // 1st y-index
+  int   i1  = (int)x1;    // last x-index
+  float e   = -(1-(y0-j)-s*(1-(x0-i0)))+0.5f; // the +0.5 is different from pdf 
+  for(int i = i0; i <= i1; i++) // stepping through the major axis (x)
+  {
+    plot(img, i, j, color);
+    // todo: instead of plotting a single pixel here, we must plot a whole scanline along the 
+    // y-axis
+
+
+    // conditional Bresenham step along minor axis (y) and error update:
+    if(e >= 0.5f)                             // different from pdf (+0.5)
+    {                           
+      j++;
+      e -= 1; 
+    }
+    e += s; 
+  }
 }
 void lineDrawingThick2()
 {
@@ -346,8 +333,8 @@ void lineDrawingThick2()
   int imageHeight  =  50;
   float brightness = 0.5f;
   float thickness  = 4.f;
-  //float x0 = 10.3, y0 = 10.6, x1 = 90.2, y1 = 40.4;
-  float x0 = 10, y0 = 10, x1 = 90, y1 = 40;
+  float x0 = 10.3, y0 = 10.6, x1 = 90.2, y1 = 40.4;
+  //float x0 = 10, y0 = 10, x1 = 90, y1 = 40;
 
 
   ImageF image(imageWidth, imageHeight);
