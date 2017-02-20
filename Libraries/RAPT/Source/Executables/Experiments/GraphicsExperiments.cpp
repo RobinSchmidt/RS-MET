@@ -325,6 +325,11 @@ void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float c
     }
     e += s; 
   }
+
+  // Here are more sources:
+  // http://members.chello.at/~easyfilter/bresenham.html --> GOOD, complete with 100 page pdf and..
+  // http://members.chello.at/~easyfilter/Bresenham.pdf  ...C sourcecode, demo program, etc.
+  // https://www.cs.helsinki.fi/group/goa/mallinnus/lines/bresenh.html
 }
 void lineDrawingThick2()
 {
