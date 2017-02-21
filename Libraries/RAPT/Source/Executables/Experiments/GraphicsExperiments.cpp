@@ -352,7 +352,11 @@ void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float c
 
   // ToDo: 
   // -make function work negative slope lines and steep lines (dy > dx)
-  // -handle end caps properly (draw half circles)
+  // -handle end caps properly (draw half circles) - to do that, we need to figure out, if the 
+  //  current pixel belongs to the left (or right) end cap and if so, use the distance from the
+  //  endpoint to the pixel (instead of the pixel-line distance). Even better would be to not use
+  //  the lineProfile function but a corresponding dotProfile function (which, i think, should be
+  //  the derivative of the lineProfile function)
 
   thickness += 1.f; // hack, because the line seems one pixel too narrow
 
@@ -371,23 +375,20 @@ void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float c
 
   // additional variables for thickness: 
   float L   = sqrt(dx*dx + dy*dy); // length
-  float sp  = dx / L;              // conversion factor between vertical and perpedicular distance
+  float sp  = dx / L;              // conversion factor between vertical and perpendicular distance
   float t2  = 0.5f*thickness;      // half-thickness
-  int j0, j1;                      // pixel y-index in scanline
-  int dj = (int)ceil(t2/sp);       // maximum vertical pixel distance from line
-  float dp;                        // perpendicuar pixel distance from line
-  float sc;                        // color scaler
+  int dj    = (int)ceil(t2/sp);    // maximum vertical pixel distance from line
 
-  // main loop:
-  for(int i = i0; i <= i1; i++){         // stepping through the major axis (x)
-    //plot(img, i, J, color);            // this is, what regular Bresenham algo would do...
-                                         // ...instead, we plot a whole scanline here
-    j0 = rsMax(J-dj, 0);                 // scanline start
-    j1 = rsMin(J+dj, img.getHeight()-1); // scanline end
-    for(int j = j0; j <= j1; j++){       // loop over scanline
-      dp = sp * abs(J-j+e);              // vertical to perpendicular distance
-      sc = lineIntensity4(dp, t2);       // distance to intensity/color scaler
-      plot(img, i, j, sc*color); }       // color pixel 
+  // main loop, stepping through the major axis (x):
+  for(int i = i0; i <= i1; i++){
+    //plot(img, i, J, color);                // this is, what regular Bresenham algo would do...
+                                             // ...instead, we plot a whole scanline here
+    int j0 = rsMax(J-dj, 0);                 // scanline start
+    int j1 = rsMin(J+dj, img.getHeight()-1); // scanline end
+    for(int j = j0; j <= j1; j++){           // loop over scanline
+      float dp = sp * abs(J-j+e);            // perpendicuar pixel distance from line
+      float sc = lineIntensity4(dp, t2);     // intensity/color scaler
+      plot(img, i, j, sc*color); }           // color pixel 
 
     // conditional Bresenham step along minor axis (y) and error update:
     if(e >= 0.5f){                       // different from pdf by +0.5                
