@@ -274,94 +274,9 @@ void lineDrawingThick()
 }
 
 
-float lineIntensity(float d, float t2)
-{
-  // Computes intensity for (perpendicular) distance d of a a pixel from a line with 
-  // t2 = thickness/2
-  if(d <= t2-1)
-    return 1;
-  if(d <= t2)
-    return t2-d;
-  return 0;
-}
-void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float color,
-  float thickness)
-{
-  // ...Under construction...
-  // Draws a thick line using a Bresenham stepper along the major axis in an outer loop and for 
-  // each Bresenham pixel, it draws a scanline along the minor axis.
-
-  // We assume here that dx >= dy and dy/dx >= 0. Other cases can later be added by 
-  // appropriately swapping roles of variables
 
 
-  // From http://graphics.idav.ucdavis.edu/education/GraphicsNotes/Bresenhams-Algorithm.pdf
-  // page 9, deals with arbitrary (non-integer) endpoints. We also use a different convention for
-  // the error - instead of having it between -1..0, we have it between -0.5..+0.5
 
-  // variables: for original Bresenham algo:
-  float dx  = x1 - x0;
-  float dy  = y1 - y0;
-  float s   = dy/dx;      // slope
-  int   i0  = (int)x0;    // 1st x-index
-  int   J   = (int)y0;    // 1st y-index
-  int   i1  = (int)x1;    // last x-index
-  float e   = -(1-(y0-J)-s*(1-(x0-i0)))+0.5f; // different from pdf by +0.5
-
-  // additional variables for thickness: 
-  float L   = sqrt(dx*dx + dy*dy); // length
-  float sp  = dx/L;                // conversion factor between y- and perpedicular distance
-  float t2  = 0.5f*thickness;    
-  int j0, j1;                      // pixel index in scanline
-  int dj = (int)ceil(t2/sp);       // maybe should be ceil((t2+1)/sp)?
-  float dp;                        // perpendicuar distance
-  float sc;                        // color scaler
-
-  // main loop:
-  for(int i = i0; i <= i1; i++) // stepping through the major axis (x)
-  {
-    //plot(img, i, J, color); 
-    // The original Bresenham algo whould just plot the pixel at position i,J. Instead, we must
-    // run a loop over the scanline along the minor coordinate here (y-axis)
-
-    j0 = J - dj;
-    j1 = J + dj;
-    for(int j = j0; j <= j1; j++)
-    {
-      dp = sp * abs(J-j+e);        // vertical to perpendicular distance
-      sc = lineIntensity(dp, t2);  // distance to intensity/color scaler
-      plot(img, i, j, sc*color);   // color pixel
-    }
-
-    // conditional Bresenham step along minor axis (y) and error update:
-    if(e >= 0.5f)                             // different from pdf by +0.5
-    {                           
-      J++;
-      e -= 1; 
-    }
-    e += s; 
-  }
-
-
-  // from https://en.wikipedia.org/wiki/Bresenham's_line_algorithm - seems to deal only with 
-  // integer endpoints:
-  //float dx  = x1 - x0;
-  //float dy  = y1 - y0;
-  //float s   = dy/dx;      // slope
-  //float err = s - 0.5f;   // y-error accumulator ..formula is for integer endpoints
-  //int y = (int) y0;      // should we use rounding instead of truncation?
-  //for(int x = (int)x0; x <= (int)x1; x++){
-  //  plot(img, x, y, color);
-  //  err += s;
-  //  if(err >= 0.5f){
-  //    y++;
-  //    err -= 1.f; }}
-
-  // Here are more sources:
-  // http://members.chello.at/~easyfilter/bresenham.html --> GOOD, complete with 100 page pdf and..
-  // http://members.chello.at/~easyfilter/Bresenham.pdf  ...C sourcecode, demo program, etc.
-  // https://www.cs.helsinki.fi/group/goa/mallinnus/lines/bresenh.html
-}
 
 void plotLineWidth(ImageF& img, int x0, int y0, int x1, int y1, float wd)
 { 
@@ -394,22 +309,101 @@ void plotLineWidth(ImageF& img, int x0, int y0, int x1, int y1, float wd)
   // The left endpoint looks wrong.
 }
 
+float lineIntensity1(float d, float t2)
+{
+  // Computes intensity for a solid color line as function of the (perpendicular) distance d of a 
+  // pixel from a line where t2 = thickness/2.
+  if(d <= t2-1)
+    return 1;
+  if(d <= t2)
+    return t2-d;
+  return 0;
+}
+float lineIntensity2(float d, float t2)
+{
+  // Can be used alternatively to lineIntensity1 - instad of a solid color, the line has an 
+  // intensity profile that decreases linearly from the center to the periphery of the line.
+  if(d > t2)
+    return 0;
+  return (t2-d)/t2;
+}
+void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float color,
+  float thickness)
+{
+  // ...Under construction...
+  // Draws a thick line using a Bresenham stepper along the major axis in an outer loop and for 
+  // each Bresenham pixel, it draws a scanline along the minor axis.
+
+  // We assume here that dx >= dy and dy/dx >= 0. Other cases can later be added by 
+  // appropriately swapping roles of variables and/or taking negative direction steps along the
+  // major axis
+
+  // ToDo: 
+  // -make function work negative slope lines and steep lines (dy > dx)
+  // -handle end caps properly (draw half circles)
+
+  thickness += 1.f; // hack, because the line seems one pixel too narrow
+
+  // From http://graphics.idav.ucdavis.edu/education/GraphicsNotes/Bresenhams-Algorithm.pdf
+  // page 9, deals with arbitrary (non-integer) endpoints. We also use a different convention for
+  // the error - instead of having it between -1..0, we have it between -0.5..+0.5
+
+  // variables for original Bresenham algo:
+  float dx  = x1 - x0;    // x distance
+  float dy  = y1 - y0;    // y distance
+  float s   = dy / dx;    // slope
+  int   i0  = (int)x0;    // 1st x-index
+  int   i1  = (int)x1;    // last x-index
+  int   J   = (int)y0;    // 1st y-index in Bresenham algo, maybe rename to jB
+  float e   = -(1-(y0-J)-s*(1-(x0-i0)))+0.5f; // Bresenham y-error, different from pdf by +0.5
+
+  // additional variables for thickness: 
+  float L   = sqrt(dx*dx + dy*dy); // length
+  float sp  = dx / L;              // conversion factor between vertical and perpedicular distance
+  float t2  = 0.5f*thickness;      // half-thickness
+  int j0, j1;                      // pixel y-index in scanline
+  int dj = (int)ceil(t2/sp);       // maximum vertical pixel distance from line
+  float dp;                        // perpendicuar pixel distance from line
+  float sc;                        // color scaler
+
+  // main loop:
+  for(int i = i0; i <= i1; i++){         // stepping through the major axis (x)
+    //plot(img, i, J, color);            // this is, what regular Bresenham algo would do...
+                                         // ...instead, we plot a whole scanline here
+    j0 = rsMin(J-dj, 0);                 // scanline start
+    j1 = rsMax(J+dj, img.getHeight()-1); // scanline end
+    for(int j = j0; j <= j1; j++){       // loop over scanline
+      dp = sp * abs(J-j+e);              // vertical to perpendicular distance
+      sc = lineIntensity1(dp, t2);       // distance to intensity/color scaler
+      plot(img, i, j, sc*color); }       // color pixel 
+
+    // conditional Bresenham step along minor axis (y) and error update:
+    if(e >= 0.5f){                       // different from pdf by +0.5                
+      J++;
+      e -= 1; }
+    e += s; 
+  }
+
+  // Here are some sources:
+  // http://members.chello.at/~easyfilter/bresenham.html --> GOOD, complete with 100 page pdf and..
+  // http://members.chello.at/~easyfilter/Bresenham.pdf  ...C sourcecode, demo program, etc.
+  // https://www.cs.helsinki.fi/group/goa/mallinnus/lines/bresenh.html
+}
+
 void lineDrawingThick2()
 {
   // user parameters:
   int imageWidth   = 100;
   int imageHeight  =  50;
   float brightness = 0.5f;
-  float thickness  = 8.f;
+  float thickness  = 4.f;
   float x0 = 10.3f, y0 = 10.6f, x1 = 90.2f, y1 = 40.4f;
   //float x0 = 10, y0 = 10, x1 = 90, y1 = 40;
 
-
   ImageF image(imageWidth, imageHeight);
-  drawThickLine2(image, 10, 10, 70, 30, 1.f, thickness);
+  drawThickLine2(image, 10, 10, 70, 30, 1.f, 15.f);
   //drawThickLine2(image, x0, y0, x1, y1, brightness, thickness);
   //plotLineWidth(image, (int)x0, (int)y0, (int)x1, (int)y1, thickness);
-
 
   writeImageToFilePPM(image, "ThickLineScanlineTest.ppm");
 }
