@@ -201,7 +201,7 @@ void drawThickLine(ImageF& img, float x0, float y0, float x1, float y1, float co
   s   = 1 / sqrt(dx*dx + dy*dy); // 1 / length(dx,dy)
   ax  = -dy*s;                   // (ax,ay) is a unit vector in a direction perpendicular to the
   ay  =  dx*s;                   // direction of our line
-  t2  = 0.5*(thickness-1);       // why -1? it works, but why?
+  t2  = 0.5f*(thickness-1);      // why -1? it works, but why?
   x0p = x0 + t2 * ax;
   y0p = y0 + t2 * ay;
   x0m = x0 - t2 * ax;
@@ -224,7 +224,7 @@ void drawThickLine(ImageF& img, float x0, float y0, float x1, float y1, float co
   // the 2 outermost lines?
 
   // draw lines:
-  int numLines = ceil(thickness);
+  int numLines = (int)ceil(thickness);
   xs = (x0p-x0m) / (numLines); // step in x-direction
   ys = (y0p-y0m) / (numLines); // step in y-direction
   for(int i = 0; i < numLines; i++){
@@ -331,6 +331,38 @@ void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float c
   // http://members.chello.at/~easyfilter/Bresenham.pdf  ...C sourcecode, demo program, etc.
   // https://www.cs.helsinki.fi/group/goa/mallinnus/lines/bresenh.html
 }
+
+void plotLineWidth(ImageF& img, int x0, int y0, int x1, int y1, float wd)
+{ 
+  // Adapted from http://members.chello.at/~easyfilter/bresenham.c. The setPixelColor calls had to
+  // be modified, the original code was kept as comment.
+
+  // plot an anti-aliased line of width wd
+  int dx = abs(x1-x0), sx = x0 < x1 ? 1 : -1;
+  int dy = abs(y1-y0), sy = y0 < y1 ? 1 : -1;
+  int err = dx-dy, e2, x2, y2;                                   // error value e_xy
+  float ed = dx+dy == 0 ? 1 : sqrt((float)dx*dx+(float)dy*dy);
+
+  for (wd = (wd+1)/2; ; ) {                                      // pixel loop
+    plot(img, x0, y0, 1-rsMax(0.f, abs(err-dx+dy)/ed-wd+1));     //setPixelColor(x0, y0, max(0,255*(abs(err-dx+dy)/ed-wd+1)));
+    e2 = err; x2 = x0;
+    if (2*e2 >= -dx) {                                            // x step
+      for (e2 += dy, y2 = y0; e2 < ed*wd && (y1 != y2 || dx > dy); e2 += dx)
+        plot(img, x0, y2 += sy, 1-rsMax(0.f, abs(e2)/ed-wd+1));   //setPixelColor(x0, y2 += sy, max(0,255*(abs(e2)/ed-wd+1)));
+      if (x0 == x1) break;
+      e2 = err; err -= dy; x0 += sx;
+    }
+    if (2*e2 <= dy) {                                             // y step
+      for (e2 = dx-e2; e2 < ed*wd && (x1 != x2 || dx < dy); e2 += dy)
+        plot(img, x2 += sx, y0, 1-rsMax(0.f, abs(e2)/ed-wd+1));   //setPixelColor(x2 += sx, y0, max(0,255*(abs(e2)/ed-wd+1)));
+      if (y0 == y1) break;
+      err += dx; y0 += sy;
+    }
+  }
+
+  // The left endpoint looks wrong.
+}
+
 void lineDrawingThick2()
 {
   // user parameters:
@@ -338,11 +370,13 @@ void lineDrawingThick2()
   int imageHeight  =  50;
   float brightness = 0.5f;
   float thickness  = 4.f;
-  float x0 = 10.3, y0 = 10.6, x1 = 90.2, y1 = 40.4;
+  float x0 = 10.3f, y0 = 10.6f, x1 = 90.2f, y1 = 40.4f;
   //float x0 = 10, y0 = 10, x1 = 90, y1 = 40;
 
 
   ImageF image(imageWidth, imageHeight);
-  drawThickLine2(image, x0, y0, x1, y1, brightness, thickness);
+  //drawThickLine2(image, x0, y0, x1, y1, brightness, thickness);
+  plotLineWidth(image, (int)x0, (int)y0, (int)x1, (int)y1, thickness);
+
   writeImageToFilePPM(image, "ThickLineScanlineTest.ppm");
 }
