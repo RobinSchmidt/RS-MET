@@ -401,6 +401,17 @@ void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float c
   // Here are some sources:
   // http://members.chello.at/~easyfilter/bresenham.html --> GOOD, complete with 100 page pdf and..
   // http://members.chello.at/~easyfilter/Bresenham.pdf  ...C sourcecode, demo program, etc.
+  // The general idea there is to use the implicit equation of a curve F(x,y) = 0 as a distance
+  // function. F(x,y) = d gives the distance of any point from the curve. This distance could
+  // directly be used as input to a lineIntensityProfile function.
+
+  // https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical-implementation
+  // https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical-implementation/rasterization-stage
+  // https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical-implementation/rasterization-practical-implementation
+
+  // A pretty cool website about computer graphics
+
+
   // https://www.cs.helsinki.fi/group/goa/mallinnus/lines/bresenh.html
 }
 
