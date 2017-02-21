@@ -370,8 +370,8 @@ void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float c
   for(int i = i0; i <= i1; i++){         // stepping through the major axis (x)
     //plot(img, i, J, color);            // this is, what regular Bresenham algo would do...
                                          // ...instead, we plot a whole scanline here
-    j0 = rsMin(J-dj, 0);                 // scanline start
-    j1 = rsMax(J+dj, img.getHeight()-1); // scanline end
+    j0 = rsMax(J-dj, 0);                 // scanline start
+    j1 = rsMin(J+dj, img.getHeight()-1); // scanline end
     for(int j = j0; j <= j1; j++){       // loop over scanline
       dp = sp * abs(J-j+e);              // vertical to perpendicular distance
       sc = lineIntensity1(dp, t2);       // distance to intensity/color scaler
