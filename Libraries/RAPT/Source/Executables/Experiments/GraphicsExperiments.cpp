@@ -337,6 +337,13 @@ float lineIntensity4(float d, float t2)
   float x = d/t2;
   return rsPositiveBellFunctions<float>::cubic(fabs(x));
 }
+inline void plot(ImageF& img, int x, int y, float color, bool swapXY)
+{
+  if(swapXY)
+    plot(img, y, x, color);
+  else
+    plot(img, x, y, color);
+}
 void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float color,
   float thickness)
 {
@@ -378,8 +385,8 @@ void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float c
   float s   = dy / dx;      // slope
   int   i0  = (int)x0;      // 1st x-index
   int   i1  = (int)x1;      // last x-index
-  int   J   = (int)y0;      // 1st y-index in Bresenham algo, maybe rename to jB
-  float e   = -(1-(y0-J)-s*(1-(x0-i0)))+0.5f; // Bresenham y-error, different from pdf by +0.5
+  int   jb  = (int)y0;      // y-index in Bresenham algo
+  float e   = -(1-(y0-jb)-s*(1-(x0-i0)))+0.5f; // Bresenham y-error, different from pdf by +0.5
                                               // -> check, if this formula is right
 
   // additional variables for thickness: 
@@ -399,27 +406,25 @@ void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float c
     // Regular Bresenham algo would plot a pixel at (i,J) for non-steep or (J,i) for steep lines 
     // here. Instead, we polt a whole scanline along the minor j-direction, extending from J-dj
     // to J+dj:
-    int j0 = rsMax(J-dj, 0);                 // scanline start
-    int j1 = rsMin(J+dj, jMax);              // scanline end
-    for(int j = j0; j <= j1; j++)            // loop over scanline
+    int   j0 = rsMax(jb-dj, 0);     // scanline start
+    int   j1 = rsMin(jb+dj, jMax);  // scanline end
+    float jr = jb+ystep*e;          // reference minor coordinate to which distance is taken
+    for(int j = j0; j <= j1; j++)   // loop over scanline
     {           
       // here, we have to include a check, if pixel (i,j) is one of the endpoints - if so, we
       // need to compute the distance to the respective endpoint instead of the perpendicular
-      // distance to the line...
+      // distance to the line. ..but to make that work, we first have to extend the line by
+      // t2 at both ends
 
-      float dp = sp * abs(J-j+ystep*e);      // perpendicuar pixel distance from line
-      float sc = lineIntensity4(dp, t2);     // intensity/color scaler
-
-      if(steep)
-        plot(img, j, i, sc*color);           // color pixel 
-      else
-        plot(img, i, j, sc*color); 
+      float dp = sp * abs(jr-j);             // perpendicuar pixel distance from line
+      float sc = lineIntensity3(dp, t2);     // intensity/color scaler
+      plot(img, i, j, sc*color, steep);      // color pixel (may swap i,j according to "steep") 
     }          
 
     // conditional Bresenham step along minor axis (y) and error update:
     if(e >= 0.5f){                       // different from pdf by +0.5                                                
-      J += ystep;
-      e -= 1; }
+      jb += ystep;
+      e  -= 1; }
     e += s; 
   }
 
@@ -433,8 +438,8 @@ void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float c
   // https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical-implementation
   // https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical-implementation/rasterization-stage
   // https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical-implementation/rasterization-practical-implementation
-
-  // A pretty cool website about computer graphics
+  // A pretty cool website about computer graphics, 2nd link explains the edge-function which may 
+  // be useful for the end caps 
 
   // https://www.cs.helsinki.fi/group/goa/mallinnus/lines/bresenh.html
 }
@@ -452,9 +457,9 @@ void lineDrawingThick2()
   ImageF image(imageWidth, imageHeight);
   //drawThickLine2(image, 10, 10, 70, 30, 1.f, 15.f); // dx > dy, x0 < x1, base case
   //drawThickLine2(image, 10, 10, 30, 70, 1.f, 15.f); // dx < dy, x0 < x1, steep case
-  //drawThickLine2(image, 70, 10, 10, 30, 1.f, 15.f); // dx > dy, x0 > x1, x-swap case
+  drawThickLine2(image, 70, 10, 10, 30, 1.f, 15.f); // dx > dy, x0 > x1, x-swap case
   //drawThickLine2(image, 10, 30, 70, 10, 1.f, 15.f);
-  drawThickLine2(image, 30, 10, 10, 70, 1.f, 15.f);
+  //drawThickLine2(image, 30, 10, 10, 70, 1.f, 15.f);
                                                     
   //drawThickLine2(image, 10, 10, 50, 90, 1.f, 15.f);
   //drawThickLine2(image, x0, y0, x1, y1, brightness, thickness);
