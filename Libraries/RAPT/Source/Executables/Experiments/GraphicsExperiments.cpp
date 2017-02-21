@@ -327,6 +327,18 @@ float lineIntensity2(float d, float t2)
     return 0;
   return (t2-d)/t2;
 }
+float lineIntensity3(float d, float t2)
+{
+  float x = d/t2;
+  if(fabs(x) > 1)
+    return 0;
+  return 1 - x*x;
+}
+float lineIntensity4(float d, float t2)
+{
+  float x = d/t2;
+  return rsPositiveBellFunctions<float>::cubic(fabs(x));
+}
 void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float color,
   float thickness)
 {
@@ -374,12 +386,13 @@ void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float c
     j1 = rsMin(J+dj, img.getHeight()-1); // scanline end
     for(int j = j0; j <= j1; j++){       // loop over scanline
       dp = sp * abs(J-j+e);              // vertical to perpendicular distance
-      sc = lineIntensity1(dp, t2);       // distance to intensity/color scaler
+      sc = lineIntensity4(dp, t2);       // distance to intensity/color scaler
       plot(img, i, j, sc*color); }       // color pixel 
 
     // conditional Bresenham step along minor axis (y) and error update:
     if(e >= 0.5f){                       // different from pdf by +0.5                
-      J++;
+    //while(e >= 0.5f){                      // different from pdf by +0.5, "while" instead of "if" to handle steep lines
+      J++;                                 
       e -= 1; }
     e += s; 
   }
@@ -394,7 +407,7 @@ void lineDrawingThick2()
 {
   // user parameters:
   int imageWidth   = 100;
-  int imageHeight  =  50;
+  int imageHeight  = 100;
   float brightness = 0.5f;
   float thickness  = 4.f;
   float x0 = 10.3f, y0 = 10.6f, x1 = 90.2f, y1 = 40.4f;
@@ -402,6 +415,7 @@ void lineDrawingThick2()
 
   ImageF image(imageWidth, imageHeight);
   drawThickLine2(image, 10, 10, 70, 30, 1.f, 15.f);
+  //drawThickLine2(image, 10, 10, 50, 90, 1.f, 15.f);
   //drawThickLine2(image, x0, y0, x1, y1, brightness, thickness);
   //plotLineWidth(image, (int)x0, (int)y0, (int)x1, (int)y1, thickness);
 
