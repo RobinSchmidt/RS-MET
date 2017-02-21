@@ -98,24 +98,22 @@ void drawLineWuPrototype(ImageF& img, float x0, float y0, float x1, float y1, fl
 void drawLineBresenham(ImageF& img, int x0, int y0, int x1, int y1, float color)
 {
   bool steep = abs(y1 - y0) > abs(x1 - x0);
-
   if(steep){
     swap(x0, y0);
     swap(x1, y1); }
   if(x0 > x1){
     swap(x0, x1);
     swap(y0, y1); }
-
-  int deltaX = x1 - x0;
-  int deltaY = abs(y1 - y0);
-  int error  = deltaX / 2;
   int ystep;
-  int y = y0;
-
   if(y0 < y1)
     ystep = 1;
   else
     ystep = -1;
+
+  int deltaX = x1 - x0;
+  int deltaY = abs(y1 - y0);
+  int error  = deltaX / 2;
+  int y = y0;
 
   for(int x = x0; x <= x1; x++){
     if(steep)
@@ -346,54 +344,81 @@ void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float c
   // Draws a thick line using a Bresenham stepper along the major axis in an outer loop and for 
   // each Bresenham pixel, it draws a scanline along the minor axis.
 
-  // We assume here that dx >= dy and dy/dx >= 0. Other cases can later be added by 
-  // appropriately swapping roles of variables and/or taking negative direction steps along the
-  // major axis
-
   // ToDo: 
-  // -make function work negative slope lines and steep lines (dy > dx)
   // -handle end caps properly (draw half circles) - to do that, we need to figure out, if the 
   //  current pixel belongs to the left (or right) end cap and if so, use the distance from the
   //  endpoint to the pixel (instead of the pixel-line distance). Even better would be to not use
   //  the lineProfile function but a corresponding dotProfile function (which, i think, should be
   //  the derivative of the lineProfile function)
+  // -test with all possible cases
 
   thickness += 1.f; // hack, because the line seems one pixel too narrow
+
+  // adjustments for steep lines and negative slopes:
+  bool steep = abs(y1 - y0) > abs(x1 - x0);
+  if(steep){         // swap roles of x and y
+    swap(x0, y0);
+    swap(x1, y1); }
+  if(x0 > x1){       // swap roles of start and end
+    swap(x0, x1);
+    swap(y0, y1); }
+  int ystep;
+  if(y0 < y1)        
+    ystep = 1;
+  else
+    ystep = -1;
 
   // From http://graphics.idav.ucdavis.edu/education/GraphicsNotes/Bresenhams-Algorithm.pdf
   // page 9, deals with arbitrary (non-integer) endpoints. We also use a different convention for
   // the error - instead of having it between -1..0, we have it between -0.5..+0.5
 
   // variables for original Bresenham algo:
-  float dx  = x1 - x0;    // x distance
-  float dy  = y1 - y0;    // y distance
-  float s   = dy / dx;    // slope
-  int   i0  = (int)x0;    // 1st x-index
-  int   i1  = (int)x1;    // last x-index
-  int   J   = (int)y0;    // 1st y-index in Bresenham algo, maybe rename to jB
+  float dx  =     x1 - x0;  // x distance, x1 >= x0 is already ensured
+  float dy  = abs(y1 - y0); // y distance
+  float s   = dy / dx;      // slope
+  int   i0  = (int)x0;      // 1st x-index
+  int   i1  = (int)x1;      // last x-index
+  int   J   = (int)y0;      // 1st y-index in Bresenham algo, maybe rename to jB
   float e   = -(1-(y0-J)-s*(1-(x0-i0)))+0.5f; // Bresenham y-error, different from pdf by +0.5
+                                              // -> check, if this formula is right
 
   // additional variables for thickness: 
   float L   = sqrt(dx*dx + dy*dy); // length
   float sp  = dx / L;              // conversion factor between vertical and perpendicular distance
   float t2  = 0.5f*thickness;      // half-thickness
   int dj    = (int)ceil(t2/sp);    // maximum vertical pixel distance from line
+  int jMax;
+  if(steep)
+    jMax = img.getWidth()-1;
+  else
+    jMax = img.getHeight()-1;
 
   // main loop, stepping through the major axis (x):
-  for(int i = i0; i <= i1; i++){
-    //plot(img, i, J, color);                // this is, what regular Bresenham algo would do...
-                                             // ...instead, we plot a whole scanline here
+  for(int i = i0; i <= i1; i++)
+  {
+    // Regular Bresenham algo would plot a pixel at (i,J) for non-steep or (J,i) for steep lines 
+    // here. Instead, we polt a whole scanline along the minor j-direction, extending from J-dj
+    // to J+dj:
     int j0 = rsMax(J-dj, 0);                 // scanline start
-    int j1 = rsMin(J+dj, img.getHeight()-1); // scanline end
-    for(int j = j0; j <= j1; j++){           // loop over scanline
-      float dp = sp * abs(J-j+e);            // perpendicuar pixel distance from line
+    int j1 = rsMin(J+dj, jMax);              // scanline end
+    for(int j = j0; j <= j1; j++)            // loop over scanline
+    {           
+      // here, we have to include a check, if pixel (i,j) is one of the endpoints - if so, we
+      // need to compute the distance to the respective endpoint instead of the perpendicular
+      // distance to the line...
+
+      float dp = sp * abs(J-j+ystep*e);      // perpendicuar pixel distance from line
       float sc = lineIntensity4(dp, t2);     // intensity/color scaler
-      plot(img, i, j, sc*color); }           // color pixel 
+
+      if(steep)
+        plot(img, j, i, sc*color);           // color pixel 
+      else
+        plot(img, i, j, sc*color); 
+    }          
 
     // conditional Bresenham step along minor axis (y) and error update:
-    if(e >= 0.5f){                       // different from pdf by +0.5                
-    //while(e >= 0.5f){                      // different from pdf by +0.5, "while" instead of "if" to handle steep lines
-      J++;                                 
+    if(e >= 0.5f){                       // different from pdf by +0.5                                                
+      J += ystep;
       e -= 1; }
     e += s; 
   }
@@ -411,7 +436,6 @@ void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float c
 
   // A pretty cool website about computer graphics
 
-
   // https://www.cs.helsinki.fi/group/goa/mallinnus/lines/bresenh.html
 }
 
@@ -426,7 +450,12 @@ void lineDrawingThick2()
   //float x0 = 10, y0 = 10, x1 = 90, y1 = 40;
 
   ImageF image(imageWidth, imageHeight);
-  drawThickLine2(image, 10, 10, 70, 30, 1.f, 15.f);
+  //drawThickLine2(image, 10, 10, 70, 30, 1.f, 15.f); // dx > dy, x0 < x1, base case
+  //drawThickLine2(image, 10, 10, 30, 70, 1.f, 15.f); // dx < dy, x0 < x1, steep case
+  //drawThickLine2(image, 70, 10, 10, 30, 1.f, 15.f); // dx > dy, x0 > x1, x-swap case
+  //drawThickLine2(image, 10, 30, 70, 10, 1.f, 15.f);
+  drawThickLine2(image, 30, 10, 10, 70, 1.f, 15.f);
+                                                    
   //drawThickLine2(image, 10, 10, 50, 90, 1.f, 15.f);
   //drawThickLine2(image, x0, y0, x1, y1, brightness, thickness);
   //plotLineWidth(image, (int)x0, (int)y0, (int)x1, (int)y1, thickness);
