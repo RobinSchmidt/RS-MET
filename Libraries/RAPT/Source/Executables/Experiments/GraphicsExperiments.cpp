@@ -345,13 +345,15 @@ inline void plot(ImageF& img, int x, int y, float color, bool swapXY)
     plot(img, x, y, color);
 }
 void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float color,
-  float thickness)
+  float thickness, int endCaps = 0)
 {
   // ...Under construction...
   // Draws a thick line using a Bresenham stepper along the major axis in an outer loop and for 
   // each Bresenham pixel, it draws a scanline along the minor axis.
 
   // ToDo: 
+  // -endCaps: 0: no special handling (hard cutoff of the main loop), 1: flat, 
+  //  2: round (half circular)
   // -handle end caps properly (draw half circles) - to do that, we need to figure out, if the 
   //  current pixel belongs to the left (or right) end cap and if so, use the distance from the
   //  endpoint to the pixel (instead of the pixel-line distance). Even better would be to not use
@@ -400,15 +402,63 @@ void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float c
   else
     jMax = img.getHeight()-1;
 
-  // main loop, stepping through the major axis (x):
+  // variables use in the loops:
+  int j0, j1;
+  float jr, dp, sc;
+
+  //-------------------------------------------------------
+  // handling of end caps
+
+  // To handle the left end-cap, we take a line starting at x0,y0 which is perpendicular to the 
+  // main line, express this line with the implicit line equation A*x + B*y + C = d. When the 
+  // coefficients are normalized such that A^2 + B^2 = 1, then d gives the signed distance of the
+  // point x,y from the line. If this distance negative for a given x,y, the point belongs to the
+  // cap ahnd we need a different fomula to determine its brightness. A similar procedure is used 
+  // for right end cap, just that x1,y1 is used as start point for the perpendicular line.
+
+  //float ax = -dy; 
+  //float ay =  dx;  // maybe get rid of them - use -dy, dx directly
+  // (ax,ay) is a vector in a direction perpendicular to the direction of our line which 
+  // defines the parametric line: x = x0 + t*ax, y = y0 + t*ay. Solving the 1st equation for t and 
+  // inserting in the 2nd gives the non-normalized coefficients for our implicit line equation
+  // A*x + B*y + C = 0 as: A = -ay/ax, B = 1, C = ay*x0*y0
+
+  float A = dx/dy;
+  float B = 1.f; 
+  float C = dx*x0*y0;
+
+  // normalize line equation coeffs (can this be simplified?):
+  float tmp = A*A + B*B;
+  tmp = 1.f / sqrt(tmp);
+  A *= tmp;
+  B *= tmp;
+  C *= tmp;
+  tmp = A*A + B*B;  // for check
+  int dummy = 0;
+
+
+
+  // handle left end cap:
+  //bool capHandled = false;
+  //while(!capHandled)
+  //{
+
+  //}
+
+
+
+  // end of handling of end caps
+  //-------------------------------------------------------
+
+  // main loop to draw the line, stepping through the major axis (x):
   for(int i = i0; i <= i1; i++)
   {
     // Regular Bresenham algo would plot a pixel at (i,J) for non-steep or (J,i) for steep lines 
     // here. Instead, we polt a whole scanline along the minor j-direction, extending from J-dj
     // to J+dj:
-    int   j0 = rsMax(jb-dj, 0);     // scanline start
-    int   j1 = rsMin(jb+dj, jMax);  // scanline end
-    float jr = jb+ystep*e;          // reference minor coordinate to which distance is taken
+    j0 = rsMax(jb-dj, 0);           // scanline start
+    j1 = rsMin(jb+dj, jMax);        // scanline end
+    jr = jb+ystep*e;                // reference minor coordinate to which distance is taken
     for(int j = j0; j <= j1; j++)   // loop over scanline
     {           
       // here, we have to include a check, if pixel (i,j) is one of the endpoints - if so, we
@@ -416,9 +466,9 @@ void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float c
       // distance to the line. ..but to make that work, we first have to extend the line by
       // t2 at both ends
 
-      float dp = sp * abs(jr-j);             // perpendicuar pixel distance from line
-      float sc = lineIntensity3(dp, t2);     // intensity/color scaler
-      plot(img, i, j, sc*color, steep);      // color pixel (may swap i,j according to "steep") 
+      dp = sp * abs(jr-j);               // perpendicuar pixel distance from line
+      sc = lineIntensity3(dp, t2);       // intensity/color scaler
+      plot(img, i, j, sc*color, steep);  // color pixel (may swap i,j according to "steep") 
     }          
 
     // conditional Bresenham step along minor axis (y) and error update:
@@ -456,8 +506,9 @@ void lineDrawingThick2()
 
   ImageF image(imageWidth, imageHeight);
   //drawThickLine2(image, 10, 10, 70, 30, 1.f, 15.f); // dx > dy, x0 < x1, base case
+  drawThickLine2(image, 20, 20, 80, 80, 1.f, 15.f); // dx = dy, x0 < x1, 45° diagonal
   //drawThickLine2(image, 10, 10, 30, 70, 1.f, 15.f); // dx < dy, x0 < x1, steep case
-  drawThickLine2(image, 70, 10, 10, 30, 1.f, 15.f); // dx > dy, x0 > x1, x-swap case
+  //drawThickLine2(image, 70, 10, 10, 30, 1.f, 15.f); // dx > dy, x0 > x1, x-swap case
   //drawThickLine2(image, 10, 30, 70, 10, 1.f, 15.f);
   //drawThickLine2(image, 30, 10, 10, 70, 1.f, 15.f);
                                                     
