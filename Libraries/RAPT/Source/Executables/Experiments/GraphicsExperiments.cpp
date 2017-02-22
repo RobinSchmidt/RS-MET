@@ -411,8 +411,9 @@ void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float c
   float B   = 1.f; 
   float C0  = -y0-A*x0;
   float C1  = -y1-A*x1;
-  float tmp = A*A + B*B;
-  tmp = 1.f / sqrt(tmp);
+  //float tmp = A*A + B*B; // is it possible to get rid of this renormalization by somehow 
+  //tmp = 1.f / sqrt(tmp); // pre-normalizing . or maybe simplify it using the length of the line?
+  float tmp = dy / L;      // ..yes! this simpler formula seems also valid for the normalizer
   A  *= tmp;
   B  *= tmp;
   C0 *= tmp;
@@ -502,8 +503,8 @@ void lineDrawingThick2()
 
   ImageF image(imageWidth, imageHeight);
   //drawThickLine2(image, 10, 10, 70, 30, 1.f, 15.f); // dx > dy, x0 < x1, base case
-  drawThickLine2(image, 20, 20, 80, 80, 1.f, 15.f); // dx = dy, x0 < x1, 45° diagonal
-  //drawThickLine2(image, 10, 10, 30, 70, 1.f, 15.f); // dx < dy, x0 < x1, steep case
+  //drawThickLine2(image, 20, 20, 80, 80, 1.f, 15.f); // dx = dy, x0 < x1, 45° diagonal
+  drawThickLine2(image, 10, 10, 30, 70, 1.f, 15.f); // dx < dy, x0 < x1, steep case
   //drawThickLine2(image, 70, 10, 10, 30, 1.f, 15.f); // dx > dy, x0 > x1, x-swap case
   //drawThickLine2(image, 10, 30, 70, 10, 1.f, 15.f);
   //drawThickLine2(image, 30, 10, 10, 70, 1.f, 15.f);
