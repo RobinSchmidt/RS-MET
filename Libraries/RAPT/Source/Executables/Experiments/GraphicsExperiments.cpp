@@ -406,49 +406,30 @@ void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float c
   int j0, j1;
   float jr, dp, sc;
 
-  //-------------------------------------------------------
-  // handling of end caps
-
-  // To handle the left end-cap, we take a line starting at x0,y0 which is perpendicular to the 
-  // main line, express this line with the implicit line equation A*x + B*y + C = d. When the 
-  // coefficients are normalized such that A^2 + B^2 = 1, then d gives the signed distance of the
-  // point x,y from the line. If this distance negative for a given x,y, the point belongs to the
-  // cap ahnd we need a different fomula to determine its brightness. A similar procedure is used 
-  // for right end cap, just that x1,y1 is used as start point for the perpendicular line.
-
-  //float ax = -dy; 
-  //float ay =  dx;  // maybe get rid of them - use -dy, dx directly
-  // (ax,ay) is a vector in a direction perpendicular to the direction of our line which 
-  // defines the parametric line: x = x0 + t*ax, y = y0 + t*ay. Solving the 1st equation for t and 
-  // inserting in the 2nd gives the non-normalized coefficients for our implicit line equation
-  // A*x + B*y + C = 0 as: A = -ay/ax, B = 1, C = ay*x0*y0
-
-  float A = dx/dy;
-  float B = 1.f; 
-  float C = dx*x0*y0;
-
-  // normalize line equation coeffs (can this be simplified?):
+  // variables for end cap handling:
+  float A   = dx/dy; // = -ay/ax = -dx/-dy = dx/dy
+  float B   = 1.f; 
+  float C0  = -y0-A*x0;
+  float C1  = -y1-A*x1;
   float tmp = A*A + B*B;
   tmp = 1.f / sqrt(tmp);
-  A *= tmp;
-  B *= tmp;
-  C *= tmp;
-  tmp = A*A + B*B;  // for check
-  int dummy = 0;
+  A  *= tmp;
+  B  *= tmp;
+  C0 *= tmp;
+  C1 *= tmp;
+  //tmp = A*A + B*B;  // for check - should be 1
+  //int dummy = 0;
+  // To handle the left end-cap, we take a line starting at x0,y0 which is perpendicular to the 
+  // main line, express this line with the implicit line equation A*x + B*y + C = 0. When the 
+  // coefficients are normalized such that A^2 + B^2 = 1, then the right hand side gives the 
+  // signed distance of the point x,y from the line. If this distance negative for a given 
+  // x,y, the point belongs to the cap and we need a different fomula to determine its brightness. 
+  // A similar procedure is used for right end cap, just that x1,y1 is used as start point for the
+  // perpendicular line and the rhs must be positive. For the right end cap, only the C coefficient
+  // is different, A and B are equal, so we have two C coeffs C0 for the left and C1 for the right
+  // endpoint.
+  // ToDo - to get this right, we should extend the line by at most t2...but later...
 
-
-
-  // handle left end cap:
-  //bool capHandled = false;
-  //while(!capHandled)
-  //{
-
-  //}
-
-
-
-  // end of handling of end caps
-  //-------------------------------------------------------
 
   // main loop to draw the line, stepping through the major axis (x):
   for(int i = i0; i <= i1; i++)
@@ -465,6 +446,21 @@ void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float c
       // need to compute the distance to the respective endpoint instead of the perpendicular
       // distance to the line. ..but to make that work, we first have to extend the line by
       // t2 at both ends
+      float d;
+      if( (d = A*i + B*j + C0) < 0.f)
+      {
+        // left end cap
+        //dummy = 0;
+        continue;
+      }
+      if( (d = A*i + B*j + C1) > 0.f)
+      {
+        // right end cap
+        //dummy = 0;
+        continue;
+      }
+
+
 
       dp = sp * abs(jr-j);               // perpendicuar pixel distance from line
       sc = lineIntensity3(dp, t2);       // intensity/color scaler
