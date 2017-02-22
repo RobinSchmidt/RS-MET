@@ -407,28 +407,22 @@ void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float c
   float jr, dp, sc;
 
   // variables for end cap handling:
-  float A   = dx/dy; // = -ay/ax = -dx/-dy = dx/dy
-  float B   = 1.f; 
-  float C0  = -y0-A*x0;
-  float C1  = -y1-A*x1;
-  //float tmp = A*A + B*B; // is it possible to get rid of this renormalization by somehow 
-  //tmp = 1.f / sqrt(tmp); // pre-normalizing . or maybe simplify it using the length of the line?
-  float tmp = dy / L;      // ..yes! this simpler formula seems also valid for the normalizer
-  A  *= tmp;
-  B  *= tmp;
-  C0 *= tmp;
-  C1 *= tmp;
+  float A  = dx / L;
+  float B  = dy / L;
+  float C0 = -(A*x0 + B*y0);
+  float C1 = -(A*x1 + B*y1);
   //tmp = A*A + B*B;  // for check - should be 1
   //int dummy = 0;
   // To handle the left end-cap, we take a line starting at x0,y0 which is perpendicular to the 
   // main line, express this line with the implicit line equation A*x + B*y + C = 0. When the 
-  // coefficients are normalized such that A^2 + B^2 = 1, then the right hand side gives the 
-  // signed distance of the point x,y from the line. If this distance negative for a given 
-  // x,y, the point belongs to the cap and we need a different fomula to determine its brightness. 
+  // coefficients are normalized such that A^2 + B^2 = 1 (which is the case for the formulas 
+  // above), then the right hand side gives the signed distance of the point x,y from the line. If 
+  // this distance is negative for a given x,y, the point is left to the perpendicular line through
+  // x0,y0 and belongs to the left cap so we need a different fomula to determine its brightness. 
   // A similar procedure is used for right end cap, just that x1,y1 is used as start point for the
-  // perpendicular line and the rhs must be positive. For the right end cap, only the C coefficient
-  // is different, A and B are equal, so we have two C coeffs C0 for the left and C1 for the right
-  // endpoint.
+  // perpendicular line and the rhs must be positive (the point must be to the right of the right
+  // border line). For the right end cap, only the C coefficient is different, A and B are equal, 
+  // so we have two C coeffs C0 for the left and C1 for the right endpoint.
   // ToDo - to get this right, we should extend the line by at most t2...but later...
 
 
