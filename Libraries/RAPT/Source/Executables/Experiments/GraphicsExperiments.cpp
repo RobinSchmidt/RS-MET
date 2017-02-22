@@ -402,10 +402,6 @@ void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float c
   else
     jMax = img.getHeight()-1;
 
-  // variables use in the loops:
-  int j0, j1;
-  float jr, dp, sc;
-
   // variables for end cap handling:
   float A  = dx / L;
   float B  = dy / L;
@@ -416,14 +412,20 @@ void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float c
   // To handle the left end-cap, we take a line starting at x0,y0 which is perpendicular to the 
   // main line, express this line with the implicit line equation A*x + B*y + C = 0. When the 
   // coefficients are normalized such that A^2 + B^2 = 1 (which is the case for the formulas 
-  // above), then the right hand side gives the signed distance of the point x,y from the line. If 
+  // above), then the right hand side gives the signed distance of any point x,y from the line. If 
   // this distance is negative for a given x,y, the point is left to the perpendicular line through
-  // x0,y0 and belongs to the left cap so we need a different fomula to determine its brightness. 
+  // x0,y0 and belongs to the left cap so we need a different formula to determine its brightness. 
   // A similar procedure is used for right end cap, just that x1,y1 is used as start point for the
   // perpendicular line and the rhs must be positive (the point must be to the right of the right
   // border line). For the right end cap, only the C coefficient is different, A and B are equal, 
   // so we have two C coeffs C0 for the left and C1 for the right endpoint.
   // ToDo - to get this right, we should extend the line by at most t2...but later...
+  // Maybe we should wrap these formulas into a function 
+  // lineTwoPointsToImplicit(T x0, T y0, T x1, T y2, T& A, T& B, T& C)
+
+  // variables use in the loop:
+  int j0, j1;
+  float jr, dp, sc, d;
 
 
   // main loop to draw the line, stepping through the major axis (x):
@@ -437,35 +439,23 @@ void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float c
     jr = jb+ystep*e;                // reference minor coordinate to which distance is taken
     for(int j = j0; j <= j1; j++)   // loop over scanline
     {           
-      // here, we have to include a check, if pixel (i,j) is one of the endpoints - if so, we
-      // need to compute the distance to the respective endpoint instead of the perpendicular
-      // distance to the line. ..but to make that work, we first have to extend the line by
-      // t2 at both ends
-      float d;
-      if( (d = A*i + B*j + C0) < 0.f)
-      {
-        // left end cap
-        //dummy = 0;
+      if((d = A*i + B*j + C0) < 0.f){ // left end cap
+        // something to do...
         continue;
       }
-      if( (d = A*i + B*j + C1) > 0.f)
-      {
-        // right end cap
-        //dummy = 0;
+      if((d = A*i + B*j + C1) > 0.f){// right end cap
+        // something to do
         continue;
       }
-
-
 
       dp = sp * abs(jr-j);               // perpendicuar pixel distance from line
       sc = lineIntensity3(dp, t2);       // intensity/color scaler
       plot(img, i, j, sc*color, steep);  // color pixel (may swap i,j according to "steep") 
     }          
 
-    // conditional Bresenham step along minor axis (y) and error update:
-    if(e >= 0.5f){                       // different from pdf by +0.5                                                
-      jb += ystep;
-      e  -= 1; }
+    if(e >= 0.5f){   // different from pdf by +0.5                                                
+      jb += ystep;   // conditional Bresenham step along minor axis (y) a
+      e  -= 1; }     // error update
     e += s; 
   }
 
