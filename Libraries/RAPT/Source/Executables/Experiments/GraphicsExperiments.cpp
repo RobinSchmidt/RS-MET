@@ -443,7 +443,7 @@ void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float c
 }
 
 void drawThickLine(ImageF& img, float x0, float y0, float x1, float y1, float color,
-  float thickness, int endCaps = 0)
+  float thickness, bool roundCaps = false)
 {
   thickness += 1.f; // hack, because line are one pixel too narrow (why?)
 
@@ -484,8 +484,6 @@ void drawThickLine(ImageF& img, float x0, float y0, float x1, float y1, float co
   xs  = rsLimit((int)floor(x0-d), 0, xMax);  // start x-index 
   xe  = rsLimit((int)ceil( x1+d), 0, xMax);  // end x-index
   dvy = (int)ceil(t2/A);                     // maximum vertical pixel distance from line
-
-  bool roundCaps = true;
 
   // main loop:
   for(x = xs; x <= xe; x++){                  // outer loop over x
@@ -544,7 +542,7 @@ void lineDrawingThick()
 
   // draw the lines and save file:
   for(i = 0; i < numLines; i++)
-    drawThickLine(image, x0[i], y0[i], x1[i], y1[i], brightness, thickness);
+    drawThickLine(image, x0[i], y0[i], x1[i], y1[i], brightness, thickness, true);
   writeImageToFilePPM(image, "LinesThick.ppm");
 
   // for 20px wide lines, there are artifacts at the end caps - looks like they are cut off early
