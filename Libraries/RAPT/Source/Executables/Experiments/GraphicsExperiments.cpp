@@ -34,8 +34,8 @@ inline float fpart(float x)           { return x - ipart(x);         }
 inline float rfpart(float x)          { return 1 - fpart(x);         }
 inline void  swap(float& x, float& y) { float t = x; x = y; y = t;   }
 inline float min(float x, float y)    { return x < y ? x : y; }
-inline void  plot(ImageF& im, int x, int y, float c){ im(x, y) += c; }
-//inline void  plot(ImageF& im, int x, int y, float c){ im(x,y) = min(1.f, im(x,y)+c); }
+//inline void  plot(ImageF& im, int x, int y, float c){ im(x, y) += c; }
+inline void  plot(ImageF& im, int x, int y, float c){ im(x,y) = min(1.f, im(x,y)+c); }
 //inline void  plot(ImageF& im, int x, int y, float c){ im(x,y) = (im(x,y)+c)/(1+c) ; }
 void drawLineWuPrototype(ImageF& img, float x0, float y0, float x1, float y1, float color)
 {
@@ -445,61 +445,62 @@ void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float c
 void drawThickLine(ImageF& img, float x0, float y0, float x1, float y1, float color,
   float thickness, int endCaps = 0)
 {
-  float dx, dy, a, b, t2, yf, e, dp, sc, d, AxBy;
-  int xMax, yMax, xs, xe, ys, ye, x, y;
+  thickness += 1.f; // hack, because line are one pixel too narrow (why?)
+
+  float dx, dy, a, b, t2, yf, e, dp, sc, d, L, A, B, C0, C1, AxBy;
+  int xMax, yMax, xs, xe, ys, ye, x, y, dvy;
   bool steep;
 
-  t2    = 0.5f*thickness;        // half thickness
-  xMax  = img.getWidth()-1;      // guard for x index
-  yMax  = img.getHeight()-1;     // guard fo y index
-  dx    = x1 - x0;               // x-distance
-  dy    = y1 - y0;               // y-distance
+  t2   = 0.5f*thickness;        // half thickness
+  xMax = img.getWidth()-1;      // guard for x index
+  yMax = img.getHeight()-1;     // guard fo y index
+  dx   = x1 - x0;               // x-distance
+  dy   = y1 - y0;               // y-distance
+  L    = sqrt(dx*dx + dy*dy);   // length of the line
   steep = abs(dy) > abs(dx); 
-  if(steep){                     // swap roles of x and y for steep lines
+  if(steep){                    // swap roles of x and y for steep lines
     swap(dx, dy);
     swap(x0, y0);
     swap(x1, y1);
     swap(xMax, yMax); }
-  if(x0 > x1){                   // swap roles of start and end for leftward lines
+  if(x0 > x1){                  // swap roles of start and end for leftward lines
     swap(x0, x1);
     swap(y0, y1); 
     dx = -dx;
     dy = -dy; }
 
-  // slope/intercept coefficients of line: y = a*x + b:
+  // slope/intercept equation y = a*x + b coefficients for main line:
   a = dy / dx;
   b = y0 - a*x0;
 
-  float L   = sqrt(dx*dx + dy*dy); // length of the line
-  float sp  = dx / L;              // conversion factor between vertical and perpendicular distance
-  int   dvy = (int)ceil(t2/sp);    // maximum vertical pixel distance from line
-
   // implicit line equation A*x + B*y + C = 0 coeffs for perpendicular lines through the endpoints:
-  float A  = dx / L;         // A and B are the saem for both endpoints, we also have A^2 + B^2 = 1
-  float B  = dy / L;         // A*x + B*y + C = d gives the signed distance of x,y to line
-  float C0 = -(A*x0 + B*y0); // C coeff for left endpoint
-  float C1 = -(A*x1 + B*y1); // C coeff for right endpoint
+  A  = dx / L;         // A and B are the same for both endpoints, we also have A^2 + B^2 = 1, so
+  B  = dy / L;         // A*x + B*y + C = d gives the signed distance of any x,y to the line
+  C0 = -(A*x0 + B*y0); // C coeff for left endpoint
+  C1 = -(A*x1 + B*y1); // C coeff for right endpoint
+
+  // loop variables:
+  xs  = rsLimit((int)floor(x0-t2), 0, xMax);  // start x-index 
+  xe  = rsLimit((int)ceil( x1+t2), 0, xMax);  // end x-index
+  dvy = (int)ceil(t2/A);                      // maximum vertical pixel distance from line
 
   // main loop:
-  xs = rsLimit((int)floor(x0-t2), 0, xMax);  // start x-index 
-  xe = rsLimit((int)ceil( x1+t2), 0, xMax);  // end x-index
   for(x = xs; x <= xe; x++){                  // outer loop over x
-    yf = a*x + b;                            // ideal y (float)
-    y  = roundToInt(yf);                     // rounded y
-    e  = yf-y;                               // y-error -0.5..+0.5
-    ys = rsMax(y-dvy, 0);                    // scanline start
-    ye = rsMin(y+dvy, yMax);                 // scanline end
-    for(y = ys; y <= ye; y++){               // inner loop over scanline
-      dp = sp * abs(yf-y);                   // perpendicuar pixel distance from line
-      sc = lineIntensity3(dp, t2);           // intensity/color scaler
+    yf = a*x + b;                             // ideal y (float)
+    y  = roundToInt(yf);                      // rounded y
+    e  = yf-y;                                // y-error -0.5..+0.5
+    ys = rsMax(y-dvy, 0);                     // scanline start
+    ye = rsMin(y+dvy, yMax);                  // scanline end
+    for(y = ys; y <= ye; y++){                // inner loop over scanline
+      dp = A * abs(yf-y);                     // perpendicuar pixel distance from line
+      sc = lineIntensity3(dp, t2);            // intensity/color scaler
       AxBy = A*x + B*y;
-      if((d = AxBy + C0) < 0.f)              // left end cap
+      if((d = AxBy + C0) < 0.f)               // left end cap
         sc *= lineIntensity3(-d, t2);
-      if((d = AxBy + C1) > 0.f)              // right end cap
-        sc *= lineIntensity3(d, t2);
-      plot(img, x, y, sc*color, steep); }}   // color pixel (may swap x,y according to "steep") 
+      if((d = AxBy + C1) > 0.f)               // right end cap
+        sc *= lineIntensity3( d, t2);
+      plot(img, x, y, sc*color, steep); }}    // color pixel (may swap x,y according to "steep") 
 }
-
 
 void lineDrawingThick()
 {
@@ -534,6 +535,8 @@ void lineDrawingThick()
   for(i = 0; i < numLines; i++)
     drawThickLine(image, x0[i], y0[i], x1[i], y1[i], brightness, thickness);
   writeImageToFilePPM(image, "LinesThick.ppm");
+
+  // for 20px wide lines, there are artifacts at the end caps - looks like they are cut off early
 }
 void lineDrawingThick2()
 {
