@@ -453,7 +453,7 @@ void drawThickLine(ImageF& img, float x0, float y0, float x1, float y1, float co
 
   t2   = 0.5f*thickness;        // half thickness
   xMax = img.getWidth()-1;      // guard for x index
-  yMax = img.getHeight()-1;     // guard fo y index
+  yMax = img.getHeight()-1;     // guard for y index
   dx   = x1 - x0;               // x-distance
   dy   = y1 - y0;               // y-distance
   L    = sqrt(dx*dx + dy*dy);   // length of the line
@@ -509,7 +509,7 @@ void lineDrawingThick()
   int imageHeight  = 400;
   int numAngles     = 7;
   float brightness = 0.5f;
-  float thickness  = 11.f;
+  float thickness  = 20.f;
 
   // create objects:
   ImageF image(imageWidth, imageHeight);
@@ -537,6 +537,7 @@ void lineDrawingThick()
   writeImageToFilePPM(image, "LinesThick.ppm");
 
   // for 20px wide lines, there are artifacts at the end caps - looks like they are cut off early
+  // use lineIntensity1 to make it obvious
 }
 void lineDrawingThick2()
 {
