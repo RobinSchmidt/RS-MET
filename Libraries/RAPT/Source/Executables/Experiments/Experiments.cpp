@@ -12,7 +12,7 @@ void runExperiments()
 
   // Graphics:
   //lineDrawing();
-  //lineDrawingThick();
-  lineDrawingThick2();
+  lineDrawingThick();
+  //lineDrawingThick2();
 
 }

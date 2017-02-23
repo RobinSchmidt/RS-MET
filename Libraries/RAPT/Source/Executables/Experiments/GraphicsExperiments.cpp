@@ -184,9 +184,12 @@ void lineDrawing()
 }
 
 
-void drawThickLine(ImageF& img, float x0, float y0, float x1, float y1, float color, 
+void drawThickLineViaWu(ImageF& img, float x0, float y0, float x1, float y1, float color, 
   float thickness)
 {
+  // This function tries to draw a thick line by drawing several parallel 1 pixel wide Wu lines. It 
+  // doesn't work. There are artifacts from overdrawing pixels.
+
   if(thickness <= 1)
     drawLineWuPrototype(img, x0, y0, x1, y1, thickness*color); 
 
@@ -236,45 +239,6 @@ void drawThickLine(ImageF& img, float x0, float y0, float x1, float y1, float co
     // or maybe we are still using wrong stepsizes? -> experiment a bit 
     // xs = (x0p-x0m) / (numLines) is different from xs = (x0p-x0m) / (numLines-1) etc.
 }
-void lineDrawingThick()
-{
-  // user parameters:
-  int imageWidth   = 400;
-  int imageHeight  = 400;
-  int numAngles     = 7;
-  float brightness = 0.5f;
-  float thickness  = 11.f;
-
-  // create objects:
-  ImageF image(imageWidth, imageHeight);
-
-  // create endpoint arrays:
-  float margin = 2*thickness;
-  int numLines = 2*numAngles - 2;
-  vector<float> x0(numLines), y0(numLines), x1(numLines), y1(numLines);
-  int i, j;
-  for(i = 0; i < numAngles; i++){
-    x0[i] = margin + i * (imageWidth - 2*margin) / (numAngles-1);
-    y0[i] = margin;
-    x1[i] = imageWidth - x0[i];
-    y1[i] = imageHeight - margin; }
-  for(i = 0; i < numAngles-2; i++){
-    j = numAngles + i;
-    y0[j] = margin + (i+1) * (imageHeight - 2*margin) / (numAngles-1);
-    x0[j] = margin;
-    y1[j] = imageHeight - y0[j];
-    x1[j] = imageWidth - margin; }
-
-  // draw the lines:
-  for(i = 0; i < numLines; i++)
-    drawThickLine(image, x0[i], y0[i], x1[i], y1[i], brightness, thickness); 
-  writeImageToFilePPM(image, "LinesThick.ppm");
-}
-
-
-
-
-
 
 void plotLineWidth(ImageF& img, int x0, int y0, int x1, int y1, float wd)
 { 
@@ -392,7 +356,7 @@ void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float c
                                               // -> check, if this formula is right
 
   // additional variables for thickness: 
-  float L   = sqrt(dx*dx + dy*dy); // length
+  float L   = sqrt(dx*dx + dy*dy); // length of the line
   float sp  = dx / L;              // conversion factor between vertical and perpendicular distance
   float t2  = 0.5f*thickness;      // half-thickness
   int dj    = (int)ceil(t2/sp);    // maximum vertical pixel distance from line
@@ -403,19 +367,19 @@ void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float c
     jMax = img.getHeight()-1;
 
   // variables for end cap handling:
-  float A  = dx / L;
+  float A  = dx / L;  // = sp
   float B  = dy / L;
   float C0 = -(A*x0 + B*y0);
   float C1 = -(A*x1 + B*y1);
   //tmp = A*A + B*B;  // for check - should be 1
   //int dummy = 0;
-  // To handle the left end-cap, we take a line starting at x0,y0 which is perpendicular to the 
+  // To handle the left end-cap, we take a line going through x0,y0 which is perpendicular to the 
   // main line, express this line with the implicit line equation A*x + B*y + C = 0. When the 
   // coefficients are normalized such that A^2 + B^2 = 1 (which is the case for the formulas 
   // above), then the right hand side gives the signed distance of any point x,y from the line. If 
   // this distance is negative for a given x,y, the point is left to the perpendicular line through
   // x0,y0 and belongs to the left cap so we need a different formula to determine its brightness. 
-  // A similar procedure is used for right end cap, just that x1,y1 is used as start point for the
+  // A similar procedure is used for right end cap, just that x1,y1 is used as point on the
   // perpendicular line and the rhs must be positive (the point must be to the right of the right
   // border line). For the right end cap, only the C coefficient is different, A and B are equal, 
   // so we have two C coeffs C0 for the left and C1 for the right endpoint.
@@ -431,30 +395,33 @@ void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float c
   // main loop to draw the line, stepping through the major axis (x):
   for(int i = i0; i <= i1; i++)
   {
-    // Regular Bresenham algo would plot a pixel at (i,J) for non-steep or (J,i) for steep lines 
-    // here. Instead, we polt a whole scanline along the minor j-direction, extending from J-dj
-    // to J+dj:
+    // Regular Bresenham algo would plot a pixel at (i,jb) for non-steep or (jb,i) for steep lines 
+    // here. Instead, we plot a whole scanline along the minor j-direction, extending from jb-dj
+    // to jb+dj:
     j0 = rsMax(jb-dj, 0);           // scanline start
     j1 = rsMin(jb+dj, jMax);        // scanline end
-    jr = jb+ystep*e;                // reference minor coordinate to which distance is taken
+    jr = jb+ystep*e;                // reference minor coordinate to which y-distance is taken
     for(int j = j0; j <= j1; j++)   // loop over scanline
-    {           
-      if((d = A*i + B*j + C0) < 0.f){ // left end cap
+    {    
+      // end cap handling:
+      float AiBj = A*i + B*j;
+      if((d = AiBj + C0) < 0.f){ // left end cap
         // something to do...
         continue;
       }
-      if((d = A*i + B*j + C1) > 0.f){// right end cap
+      if((d = AiBj + C1) > 0.f){ // right end cap
         // something to do
         continue;
       }
 
+      // no cap, use perpendicular pixel/line distance:
       dp = sp * abs(jr-j);               // perpendicuar pixel distance from line
       sc = lineIntensity3(dp, t2);       // intensity/color scaler
       plot(img, i, j, sc*color, steep);  // color pixel (may swap i,j according to "steep") 
     }          
 
     if(e >= 0.5f){   // different from pdf by +0.5                                                
-      jb += ystep;   // conditional Bresenham step along minor axis (y) a
+      jb += ystep;   // conditional Bresenham step along minor axis (y)
       e  -= 1; }     // error update
     e += s; 
   }
@@ -475,6 +442,99 @@ void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float c
   // https://www.cs.helsinki.fi/group/goa/mallinnus/lines/bresenh.html
 }
 
+void drawThickLine(ImageF& img, float x0, float y0, float x1, float y1, float color,
+  float thickness, int endCaps = 0)
+{
+  float dx, dy, a, b, t2, yf, e, dp, sc, d, AxBy;
+  int xMax, yMax, xs, xe, ys, ye, x, y;
+  bool steep;
+
+  t2    = 0.5f*thickness;        // half thickness
+  xMax  = img.getWidth()-1;      // guard for x index
+  yMax  = img.getHeight()-1;     // guard fo y index
+  dx    = x1 - x0;               // x-distance
+  dy    = y1 - y0;               // y-distance
+  steep = abs(dy) > abs(dx); 
+  if(steep){                     // swap roles of x and y for steep lines
+    swap(dx, dy);
+    swap(x0, y0);
+    swap(x1, y1);
+    swap(xMax, yMax); }
+  if(x0 > x1){                   // swap roles of start and end for leftward lines
+    swap(x0, x1);
+    swap(y0, y1); 
+    dx = -dx;
+    dy = -dy; }
+
+  // slope/intercept coefficients of line: y = a*x + b:
+  a = dy / dx;
+  b = y0 - a*x0;
+
+  float L   = sqrt(dx*dx + dy*dy); // length of the line
+  float sp  = dx / L;              // conversion factor between vertical and perpendicular distance
+  int   dvy = (int)ceil(t2/sp);    // maximum vertical pixel distance from line
+
+  // implicit line equation A*x + B*y + C = 0 coeffs for perpendicular lines through the endpoints:
+  float A  = dx / L;         // A and B are the saem for both endpoints, we also have A^2 + B^2 = 1
+  float B  = dy / L;         // A*x + B*y + C = d gives the signed distance of x,y to line
+  float C0 = -(A*x0 + B*y0); // C coeff for left endpoint
+  float C1 = -(A*x1 + B*y1); // C coeff for right endpoint
+
+  // main loop:
+  xs = rsLimit((int)floor(x0-t2), 0, xMax);  // start x-index 
+  xe = rsLimit((int)ceil( x1+t2), 0, xMax);  // end x-index
+  for(x = xs; x <= xe; x++){                  // outer loop over x
+    yf = a*x + b;                            // ideal y (float)
+    y  = roundToInt(yf);                     // rounded y
+    e  = yf-y;                               // y-error -0.5..+0.5
+    ys = rsMax(y-dvy, 0);                    // scanline start
+    ye = rsMin(y+dvy, yMax);                 // scanline end
+    for(y = ys; y <= ye; y++){               // inner loop over scanline
+      dp = sp * abs(yf-y);                   // perpendicuar pixel distance from line
+      sc = lineIntensity3(dp, t2);           // intensity/color scaler
+      AxBy = A*x + B*y;
+      if((d = AxBy + C0) < 0.f)              // left end cap
+        sc *= lineIntensity3(-d, t2);
+      if((d = AxBy + C1) > 0.f)              // right end cap
+        sc *= lineIntensity3(d, t2);
+      plot(img, x, y, sc*color, steep); }}   // color pixel (may swap x,y according to "steep") 
+}
+
+
+void lineDrawingThick()
+{
+  // user parameters:
+  int imageWidth   = 400;
+  int imageHeight  = 400;
+  int numAngles     = 7;
+  float brightness = 0.5f;
+  float thickness  = 11.f;
+
+  // create objects:
+  ImageF image(imageWidth, imageHeight);
+
+  // create endpoint arrays:
+  float margin = 2*thickness;
+  int numLines = 2*numAngles - 2;
+  vector<float> x0(numLines), y0(numLines), x1(numLines), y1(numLines);
+  int i, j;
+  for(i = 0; i < numAngles; i++){
+    x0[i] = margin + i * (imageWidth - 2*margin) / (numAngles-1);
+    y0[i] = margin;
+    x1[i] = imageWidth - x0[i];
+    y1[i] = imageHeight - margin; }
+  for(i = 0; i < numAngles-2; i++){
+    j = numAngles + i;
+    y0[j] = margin + (i+1) * (imageHeight - 2*margin) / (numAngles-1);
+    x0[j] = margin;
+    y1[j] = imageHeight - y0[j];
+    x1[j] = imageWidth - margin; }
+
+  // draw the lines and save file:
+  for(i = 0; i < numLines; i++)
+    drawThickLine(image, x0[i], y0[i], x1[i], y1[i], brightness, thickness);
+  writeImageToFilePPM(image, "LinesThick.ppm");
+}
 void lineDrawingThick2()
 {
   // user parameters:
@@ -487,8 +547,8 @@ void lineDrawingThick2()
 
   ImageF image(imageWidth, imageHeight);
   //drawThickLine2(image, 10, 10, 70, 30, 1.f, 15.f); // dx > dy, x0 < x1, base case
-  //drawThickLine2(image, 20, 20, 80, 80, 1.f, 15.f); // dx = dy, x0 < x1, 45° diagonal
-  drawThickLine2(image, 10, 10, 30, 70, 1.f, 15.f); // dx < dy, x0 < x1, steep case
+  drawThickLine2(image, 20, 20, 80, 80, 1.f, 15.f); // dx = dy, x0 < x1, 45° diagonal
+  //drawThickLine2(image, 10, 10, 30, 70, 1.f, 15.f); // dx < dy, x0 < x1, steep case
   //drawThickLine2(image, 70, 10, 10, 30, 1.f, 15.f); // dx > dy, x0 > x1, x-swap case
   //drawThickLine2(image, 10, 30, 70, 10, 1.f, 15.f);
   //drawThickLine2(image, 30, 10, 10, 70, 1.f, 15.f);

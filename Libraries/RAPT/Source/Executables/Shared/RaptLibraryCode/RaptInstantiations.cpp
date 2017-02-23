@@ -24,12 +24,16 @@ code may also define its own instantiation file. */
 
 #include "../../../../Source/Modules/RAPT.cpp"
 
+// Basics:
+
+
 // Data:
 template void RAPT::ArrayTools::rsFillWithRangeLinear(float* x, int N, float min, float max);
 template void RAPT::ArrayTools::rsFillWithRandomValues(float* x, int N, double min, double max, int seed);
 template void RAPT::ArrayTools::rsFillWithRandomValues(double* x, int N, double min, double max, int seed);
 
 // Math:
+template int RAPT::rsLimit(int x, int min, int max);
 template RAPT::NormalizedSigmoids<float>;
 template RAPT::ParametricSigmoid<float>;
 template RAPT::ScaledAndShiftedSigmoid<float>;
