@@ -1,4 +1,3 @@
-
 template<class TPix, class TWgt, class TCor>
 ImageDrawer<TPix, TWgt, TCor>::ImageDrawer(Image<TPix> *imageToDrawOn)
 {
@@ -49,4 +48,18 @@ void ImageDrawer<TPix, TWgt, TCor>::addAndSaturate(TPix &pixel, TPix color, TWgt
 {
   color *= blend;
   pixel  = (pixel + color) / (TPix(1) + color);
+}
+
+//=================================================================================================
+
+template<class TPix, class TWgt, class TCor>
+void LineDrawer<TPix, TWgt, TCor>::setLineProfile(int newProfile)
+{
+  rsAssert(newProfile >= 0);
+  rsAssert(newProfile < NUM_LINE_PROFILES);
+  profileIndex = newProfile;
+
+  // include a switch and assign the lineProfile function pointer here - provide a couple of
+  // predefined profiles in a similar way as is done the the blend-modes
+
 }
