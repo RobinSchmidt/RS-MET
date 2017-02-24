@@ -103,6 +103,9 @@
     <ClCompile Include="..\..\Source\Modules\Math\Geometry\Line2D.cpp">
       <Filter>Math\Geometry</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Modules\Visualization\Graphics\ImageDrawer.cpp">
+      <Filter>Visualization\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\Modules\Basics\Basics.h">
@@ -180,6 +183,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Modules\Math\Geometry\Line2D.h">
       <Filter>Math\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Modules\Visualization\Graphics\ImageDrawer.h">
+      <Filter>Visualization\Graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

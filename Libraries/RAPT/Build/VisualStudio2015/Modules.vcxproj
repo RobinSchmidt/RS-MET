@@ -92,6 +92,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Modules\Visualization\Graphics\ImageDrawer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Modules\Visualization\Graphics\ImagePainter.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -125,6 +129,7 @@
     <ClInclude Include="..\..\Source\Modules\RAPT.h" />
     <ClInclude Include="..\..\Source\Modules\Visualization\Graphics\Image.h" />
     <ClInclude Include="..\..\Source\Modules\Visualization\Graphics\AlphaMask.h" />
+    <ClInclude Include="..\..\Source\Modules\Visualization\Graphics\ImageDrawer.h" />
     <ClInclude Include="..\..\Source\Modules\Visualization\Graphics\ImagePainter.h" />
     <ClInclude Include="..\..\Source\Modules\Visualization\Misc\PhaseScopeBuffer.h" />
     <ClInclude Include="..\..\Source\Modules\Visualization\Visualization.h" />

@@ -8,6 +8,7 @@ namespace RAPT
 
 #include "Graphics/Image.h"
 #include "Graphics/AlphaMask.h"
+#include "Graphics/ImageDrawer.h"
 #include "Graphics/ImagePainter.h"
 
 #include "Misc/PhaseScopeBuffer.h"

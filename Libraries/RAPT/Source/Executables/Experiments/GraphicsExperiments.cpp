@@ -523,7 +523,7 @@ void lineDrawingThick()
   int imageWidth   = 800;
   int imageHeight  = 800;
   int numAngles     = 7;
-  float brightness = 0.5f;
+  float brightness = 0.25f;
   float thickness  = 50.f;
 
   // create objects:

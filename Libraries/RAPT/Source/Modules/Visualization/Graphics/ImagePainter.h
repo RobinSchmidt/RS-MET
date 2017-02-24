@@ -6,8 +6,7 @@ prototype "dot". Whenever a dot is painted onto the image at a particular locati
 be used to blend the existing colors at these pixels with a new target color.  
 
 \todo
--rename functions to "draw" instead of "paint"
--maybe rename this class to ImageDrawer
+-derive this class from ImageDrawer, get rid of superfluous methods
 -rename this "mask" stuff to "brush"
 ...these terms are more conventional in the computer graphics literature
 */
@@ -143,6 +142,10 @@ protected:
 
   bool antiAlias, useMask;
   TWgt straightNeighbourWeight, diagonalNeighbourWeight;
+
+  //TWgt (*lineProfile)(TWgt, TWgt) = lineProfileSolid;
+  // lineProfileLinear (metal), lineProfileParabolic (plastic), lineProfileSmooth (cloud)
+
 };
 
 #endif
