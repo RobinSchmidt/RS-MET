@@ -445,6 +445,8 @@ void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float c
 void drawThickLine(ImageF& img, float x0, float y0, float x1, float y1, float color,
   float thickness, bool roundCaps = false)
 {
+  float (*lineProfile)(float, float) = lineIntensity1;
+
   thickness += 1.f; // hack, because line are one pixel too narrow (why?)
 
   float dx, dy, a, b, t2, yf, dp, sc, d, L, A, B, C0, C1, AxBy;
@@ -479,8 +481,12 @@ void drawThickLine(ImageF& img, float x0, float y0, float x1, float y1, float co
   C0 = -(A*x0 + B*y0); // C coeff for left endpoint
   C1 = -(A*x1 + B*y1); // C coeff for right endpoint
 
+  // end-cap extension:
+  d = t2;   
+  if(!roundCaps)
+    d *= (abs(dx)+abs(dy))/L;
+
   // loop variables:
-  d   = 1.25f*t2;                            // without 1.25, caps are cut off early (why?)
   xs  = rsLimit((int)floor(x0-d), 0, xMax);  // start x-index 
   xe  = rsLimit((int)ceil( x1+d), 0, xMax);  // end x-index
   dvy = (int)ceil(t2/A);                     // maximum vertical pixel distance from line
@@ -491,31 +497,33 @@ void drawThickLine(ImageF& img, float x0, float y0, float x1, float y1, float co
     y  = roundToInt(yf);                      // rounded y
     ys = rsMax(y-dvy, 0);                     // scanline start
     ye = rsMin(y+dvy, yMax);                  // scanline end
-    for(y = ys; y <= ye; y++){                // inner loop over scanline
+    for(y = ys; y <= ye; y++){                // inner loop over y-scanline
       dp = A * abs(yf-y);                     // perpendicuar pixel distance from line
-      sc = lineIntensity3(dp, t2);            // intensity/color scaler
+      sc = lineProfile(dp, t2);            // intensity/color scaler
       AxBy = A*x + B*y;
       if((d = AxBy + C0) < 0.f){              // left end cap
         d = -d; 
         if(roundCaps){
           d  = sqrt(dp*dp+d*d);
-          sc = lineIntensity3(d, t2); }
+          sc = lineProfile(d, t2); }
         else
-          sc *= lineIntensity3(d, t2); }
+          sc *= lineProfile(d, t2); }
       if((d = AxBy + C1) > 0.f){              // right end cap
         if(roundCaps){
           d = sqrt(dp*dp+d*d);
-          sc = lineIntensity3(d, t2);  }
+          sc = lineProfile(d, t2);  }
         else
-          sc *= lineIntensity3(d, t2); }
-      plot(img, x, y, sc*color, steep); }}    // color pixel (may swap x,y according to "steep") 
+          sc *= lineProfile(d, t2); }
+      plot(img, x, y, sc*color, steep);       // color pixel (may swap x,y according to "steep") 
+    }// for y
+  }// for x    
 }
 
 void lineDrawingThick()
 {
   // user parameters:
-  int imageWidth   = 928;
-  int imageHeight  = 928;
+  int imageWidth   = 800;
+  int imageHeight  = 800;
   int numAngles     = 7;
   float brightness = 0.5f;
   float thickness  = 50.f;
@@ -549,6 +557,7 @@ void lineDrawingThick()
   // use lineIntensity1 to make it obvious - solved by increasing the range of the x-loop
 
   // for canvas sizes >= 929x929, the lines begin to look ugly - why?
+  // nope - it's just the irfan view zoom setting
 }
 void lineDrawingThick2()
 {
@@ -562,11 +571,18 @@ void lineDrawingThick2()
 
   ImageF image(imageWidth, imageHeight);
   //drawThickLine(image, 10, 10, 70, 30, 1.f, 15.f); // dx > dy, x0 < x1, base case
-  drawThickLine(image, 20, 20, 80, 80, 1.f, 15.f); // dx = dy, x0 < x1, 45° diagonal
+  //drawThickLine(image, 20, 20, 80, 80, 1.f, 15.f); // dx = dy, x0 < x1, 45° diagonal
   //drawThickLine(image, 10, 10, 30, 70, 1.f, 15.f); // dx < dy, x0 < x1, steep case
   //drawThickLine(image, 70, 10, 10, 30, 1.f, 15.f); // dx > dy, x0 > x1, x-swap case
   //drawThickLine(image, 10, 30, 70, 10, 1.f, 15.f);
   //drawThickLine(image, 30, 10, 10, 70, 1.f, 15.f);
+  //drawThickLine(image, 10, 10, 25, 15, 1.f,  8.f, true);
+  //drawThickLine(image, 20, 20, 50, 30, 1.f, 16.f, false);
+  drawThickLine(image, 20, 20, 50, 50, 1.f, 20.f, true);
+  drawThickLine(image, 20, 50, 50, 80, 1.f, 20.f, false);
+  //drawThickLine(image, 20, 70, 50, 70, 1.f, 5.f, false);
+
+
                                                     
   //drawThickLine(image, 10, 10, 50, 90, 1.f, 15.f);
   //drawThickLine(image, x0, y0, x1, y1, brightness, thickness);

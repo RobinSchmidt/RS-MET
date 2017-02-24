@@ -41,6 +41,15 @@ public:
   /** Switches between using the alpha-mask and the simple dot algorithm. */
   void setUseAlphaMask(bool shouldUseMask);
 
+  // todo:
+  //inline void setColor(TPix newColor)  { color = newColor;  }
+  //inline void setLineWidth(TCor width) { lineWidth = width; }
+  //void setLineCapType(int type);
+  //void setLineProfile(int profile, bool useForLeftCap = true, bool useForRightCap = true);
+  //void setLeftCapProfile(int profile);  // hmm ...seems to make no sense to use different
+  //void setRightCapProfile(int profile); // profiles for caps
+  //void setBlendMode(int mode); // assigns function pointer
+
 
   /** \name Inquiry */
 
