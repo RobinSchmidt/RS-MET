@@ -445,7 +445,7 @@ void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float c
 void drawThickLine(ImageF& img, float x0, float y0, float x1, float y1, float color,
   float thickness, bool roundCaps = false)
 {
-  float (*lineProfile)(float, float) = lineIntensity1;
+  float (*lineProfile)(float, float) = lineIntensity3;
 
   thickness += 1.f; // hack, because line are one pixel too narrow (why?)
 
@@ -486,12 +486,10 @@ void drawThickLine(ImageF& img, float x0, float y0, float x1, float y1, float co
   if(!roundCaps)
     d *= (abs(dx)+abs(dy))/L;
 
-  // loop variables:
-  xs  = rsLimit((int)floor(x0-d), 0, xMax);  // start x-index 
-  xe  = rsLimit((int)ceil( x1+d), 0, xMax);  // end x-index
-  dvy = (int)ceil(t2/A);                     // maximum vertical pixel distance from line
-
   // main loop:
+  xs  = rsLimit((int)floor(x0-d), 0, xMax);   // start x-index 
+  xe  = rsLimit((int)ceil( x1+d), 0, xMax);   // end x-index
+  dvy = (int)ceil(t2/A);                      // maximum vertical pixel distance from line
   for(x = xs; x <= xe; x++){                  // outer loop over x
     yf = a*x + b;                             // ideal y (float)
     y  = roundToInt(yf);                      // rounded y
@@ -499,7 +497,7 @@ void drawThickLine(ImageF& img, float x0, float y0, float x1, float y1, float co
     ye = rsMin(y+dvy, yMax);                  // scanline end
     for(y = ys; y <= ye; y++){                // inner loop over y-scanline
       dp = A * abs(yf-y);                     // perpendicuar pixel distance from line
-      sc = lineProfile(dp, t2);            // intensity/color scaler
+      sc = lineProfile(dp, t2);               // intensity/color scaler
       AxBy = A*x + B*y;
       if((d = AxBy + C0) < 0.f){              // left end cap
         d = -d; 
@@ -552,12 +550,6 @@ void lineDrawingThick()
   for(i = 0; i < numLines; i++)
     drawThickLine(image, x0[i], y0[i], x1[i], y1[i], brightness, thickness, true);
   writeImageToFilePPM(image, "LinesThick.ppm");
-
-  // for 20px wide lines, there are artifacts at the end caps - looks like they are cut off early
-  // use lineIntensity1 to make it obvious - solved by increasing the range of the x-loop
-
-  // for canvas sizes >= 929x929, the lines begin to look ugly - why?
-  // nope - it's just the irfan view zoom setting
 }
 void lineDrawingThick2()
 {
