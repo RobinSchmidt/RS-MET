@@ -70,6 +70,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Modules\Math\Geometry\Line2D.cpp" />
     <ClCompile Include="..\..\Source\Modules\Math\Math.cpp" />
     <ClCompile Include="..\..\Source\Modules\Modulators\Envelopes\BreakpointModulator.cpp" />
     <ClCompile Include="..\..\Source\Modules\Modulators\Modulators.cpp">
@@ -117,6 +118,7 @@
     <ClInclude Include="..\..\Source\Modules\Math\Functions\BellFunctions.h" />
     <ClInclude Include="..\..\Source\Modules\Math\Functions\FunctionObjects.h" />
     <ClInclude Include="..\..\Source\Modules\Math\Functions\Sigmoids.h" />
+    <ClInclude Include="..\..\Source\Modules\Math\Geometry\Line2D.h" />
     <ClInclude Include="..\..\Source\Modules\Math\Math.h" />
     <ClInclude Include="..\..\Source\Modules\Modulators\Envelopes\BreakpointModulator.h" />
     <ClInclude Include="..\..\Source\Modules\Modulators\Modulators.h" />

@@ -445,7 +445,7 @@ void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float c
 void drawThickLine(ImageF& img, float x0, float y0, float x1, float y1, float color,
   float thickness, bool roundCaps = false)
 {
-  float (*lineProfile)(float, float) = lineIntensity3;
+  float (*lineProfile)(float, float) = lineIntensity2;
 
   thickness += 1.f; // hack, because line are one pixel too narrow (why?)
 
@@ -499,8 +499,8 @@ void drawThickLine(ImageF& img, float x0, float y0, float x1, float y1, float co
       dp = A * abs(yf-y);                     // perpendicuar pixel distance from line
       sc = lineProfile(dp, t2);               // intensity/color scaler
       AxBy = A*x + B*y;
-      if((d = AxBy + C0) < 0.f){              // left end cap
-        d = -d; 
+      if((d = -AxBy - C0) > 0.f){              // left end cap
+        //d = -d; 
         if(roundCaps){
           d  = sqrt(dp*dp+d*d);
           sc = lineProfile(d, t2); }

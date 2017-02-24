@@ -7,4 +7,6 @@ namespace RAPT
 #include "Functions/BellFunctions.cpp"
 #include "Functions/Sigmoids.cpp"
 
+#include "Geometry/Line2D.cpp"
+
 }

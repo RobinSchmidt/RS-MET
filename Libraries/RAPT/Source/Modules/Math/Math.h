@@ -11,6 +11,8 @@ namespace RAPT
 #include "Functions/FunctionObjects.h"
 #include "Functions/Sigmoids.h"
 
+#include "Geometry/Line2D.h"
+
 }
 
 #endif

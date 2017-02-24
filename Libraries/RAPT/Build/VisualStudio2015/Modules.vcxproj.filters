@@ -37,6 +37,9 @@
     <Filter Include="Data\Simd">
       <UniqueIdentifier>{c34052f4-1f4f-4c6c-891f-5f738892ec25}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Math\Geometry">
+      <UniqueIdentifier>{0639e315-8be4-41c5-9c00-971f541834a2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\Modules\Basics\Basics.cpp">
@@ -96,6 +99,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Modules\Visualization\Graphics\AlphaMask.cpp">
       <Filter>Visualization\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Modules\Math\Geometry\Line2D.cpp">
+      <Filter>Math\Geometry</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -171,6 +177,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Modules\Visualization\Graphics\AlphaMask.h">
       <Filter>Visualization\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Modules\Math\Geometry\Line2D.h">
+      <Filter>Math\Geometry</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
