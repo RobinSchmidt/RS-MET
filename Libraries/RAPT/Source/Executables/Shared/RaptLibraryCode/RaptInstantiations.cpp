@@ -41,6 +41,7 @@ template RAPT::rsPositiveBellFunctions<float>;    // get rid of rs-prefixes
 template RAPT::rsParametricBellFunction<float>;
 
 template void RAPT::Statistics::linearRegression(int N, float* x, float* y, float& a, float& b);
+template float RAPT::Statistics::proportionalRegression(int N, float* x, float* y);
 
 // Filters:
 template RAPT::LadderFilter<float, float>;

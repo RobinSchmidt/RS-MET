@@ -24,8 +24,9 @@ void linearRegression()
   }
 
   // retrieve a,b from the data:
-  float ar, br;
+  float ar, br = 0;
   Statistics::linearRegression(N, x, y, ar, br);
+  //ar = Statistics::proportionalRegression(N, x, y);
 
   // create lines for correct and retrieved line parameters:
   float yc[N], yr[N];
