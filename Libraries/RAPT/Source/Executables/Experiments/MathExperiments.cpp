@@ -1,5 +1,45 @@
 #include "MathExperiments.h"
 
+
+void linearRegression()
+{
+  static const int N = 500;  // number of samples
+  float minDist = 0.1f;       // minimum distance between successive samples
+  float maxDist = 1.0f;      // maximum ...
+  float a       = 0.8;
+  float b       = 20.0;
+  float noise   = 10.0;
+  int   seed    = 0;
+
+  // create input data:
+  float x[N], y[N];
+  float dx;      // delta between samples
+  x[0] = 10.f;
+  y[0] = a*x[0] + b + noise * (float)round(rsRandomUniform(-1, +1, seed)); 
+  int n;
+  for(n = 1; n < N; n++){
+    dx = (float)rsRandomUniform(minDist, maxDist);
+    x[n] = x[n-1] + dx;
+    y[n] = a*x[n] + b + noise * (float)rsRandomUniform(-1, +1); 
+  }
+
+  // retrieve a,b from the data:
+  float ar, br;
+  Statistics::linearRegression(N, x, y, ar, br);
+
+  // create lines for correct and retrieved line parameters:
+  float yc[N], yr[N];
+  for(n = 0; n < N; n++){
+    yc[n] = a *x[n] + b;
+    yr[n] = ar*x[n] + br; }
+
+  // plot:
+  GNUPlotter plt;
+  plt.addDataArrays(N, &x[0], &y[0], &yc[0], &yr[0]);
+  plt.plot();
+}
+
+
 double productLog(const double z) 
 {
   // Evaluates the product-log function W(z) defined as the inverse of the function f(W) = W * e^W.
@@ -56,6 +96,23 @@ double productLog(const double z)
   rsAssertFalse; // no convergeance
   return 0.0;
 }
+void productLogPlot()
+{
+  int N = 1000;        // number of values
+  float xMin = -3.0;
+  float xMax = +15.0;
+
+  // evaluate function:
+  vector<float> x(N), y(N);
+  ArrayTools::rsFillWithRangeLinear(&x[0], N, xMin, xMax);
+  for(int n = 0; n < N; n++)
+    y[n] = (float) productLog(x[n]);
+
+  // plot:
+  GNUPlotter plt;
+  plt.addDataArrays(N, &x[0], &y[0]);
+  plt.plot();
+}
 
 void expGaussBell()
 {
@@ -89,14 +146,14 @@ void expGaussBell()
   double s0   = -0.1f; // slope at 0
   double s1   = -0.2f; // slope at 1
 
-  // compute coefficients:
+                       // compute coefficients:
   double a, b, c, d;
   a = -s0 / productLog(0.5*s0*s1);
   b = -s0 / a;
   c = 1 - a;
   d = b; // wrong!
 
-  // evaluate function:
+         // evaluate function:
   vector<float> x(N), y(N);
   ArrayTools::rsFillWithRangeLinear(&x[0], N, xMin, xMax);
   for(int n = 0; n < N; n++)
@@ -105,24 +162,6 @@ void expGaussBell()
     t = a*exp(b*t) + c*exp(d*t);
     y[n] = (float)t;
   }
-
-  // plot:
-  GNUPlotter plt;
-  plt.addDataArrays(N, &x[0], &y[0]);
-  plt.plot();
-}
-
-void productLogPlot()
-{
-  int N = 1000;        // number of values
-  float xMin = -3.0;
-  float xMax = +15.0;
-
-  // evaluate function:
-  vector<float> x(N), y(N);
-  ArrayTools::rsFillWithRangeLinear(&x[0], N, xMin, xMax);
-  for(int n = 0; n < N; n++)
-    y[n] = (float) productLog(x[n]);
 
   // plot:
   GNUPlotter plt;

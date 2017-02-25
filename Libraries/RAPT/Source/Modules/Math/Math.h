@@ -13,6 +13,8 @@ namespace RAPT
 
 #include "Geometry/Line2D.h"
 
+#include "Misc/Statistics.h"
+
 }
 
 #endif

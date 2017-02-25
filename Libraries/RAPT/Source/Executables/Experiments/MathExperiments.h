@@ -3,7 +3,8 @@
 
 #include "../Shared/Shared.h"
 
-void expGaussBell();
+void linearRegression();
 void productLogPlot();
+void expGaussBell();
 
 #endif

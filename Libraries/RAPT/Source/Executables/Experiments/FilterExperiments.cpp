@@ -167,7 +167,6 @@ void movingAverage(int N, Tx* x, Ty* y, Ty* avg, Tx width, Ty (*weightFunc)(Tx))
       k++; }
     avg[n] = swv / sw; }
 }
-
 // Weighting functions for nununiform MA. Maybe implement more, see here:
 // https://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use
 // actually, for use in movingAverage, the checks against > 1 are superfluous bcs the loops there
@@ -216,8 +215,6 @@ float hepticBell(float x)
 {
   return rsPositiveBellFunctions<float>::heptic(fabs(x));
 }
-
-
 void nonUniformMovingAverage()
 {
   // user parameters:

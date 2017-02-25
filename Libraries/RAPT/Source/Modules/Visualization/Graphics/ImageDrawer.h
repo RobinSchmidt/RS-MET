@@ -67,8 +67,8 @@ protected:
 
   /** \name Blend functions */
 
-  static void linearBlend(TPix &pixel, TPix color, TWgt blend);
-  static void addAndClip(TPix &pixel, TPix color, TWgt blend);
+  static void linearBlend(   TPix &pixel, TPix color, TWgt blend);
+  static void addAndClip(    TPix &pixel, TPix color, TWgt blend);
   static void addAndSaturate(TPix &pixel, TPix color, TWgt blend);
 
 };
@@ -76,7 +76,7 @@ protected:
 //=================================================================================================
 
 /** A class for drawing straight lines. The lines do not necessarily have to have a solid color -
- instead, you can choose one of the line profiles that lets the color vary in dependence on the
+instead, you can choose one of the line profiles that lets the color vary in dependence on the
 distance of a pixel from the ideal geometric line.  */
 
 template<class TPix, class TWgt, class TCor>  // pixel, weight, coordinate types

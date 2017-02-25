@@ -40,6 +40,9 @@
     <Filter Include="Math\Geometry">
       <UniqueIdentifier>{0639e315-8be4-41c5-9c00-971f541834a2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Math\Misc">
+      <UniqueIdentifier>{7311e484-a085-41a9-98ba-5bb485af030b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\Modules\Basics\Basics.cpp">
@@ -105,6 +108,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Modules\Visualization\Graphics\ImageDrawer.cpp">
       <Filter>Visualization\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Modules\Math\Misc\Statistics.cpp">
+      <Filter>Math\Misc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -186,6 +192,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Modules\Visualization\Graphics\ImageDrawer.h">
       <Filter>Visualization\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Modules\Math\Misc\Statistics.h">
+      <Filter>Math\Misc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -2,9 +2,7 @@ template<class TPix, class TWgt, class TCor>
 ImageDrawer<TPix, TWgt, TCor>::ImageDrawer(Image<TPix> *imageToDrawOn)
 {
   setImageToDrawOn(imageToDrawOn);
-
-  blendMode = 0;
-  blendFunction = linearBlend;
+  setBlendMode(0);
 }
 
 // setup:

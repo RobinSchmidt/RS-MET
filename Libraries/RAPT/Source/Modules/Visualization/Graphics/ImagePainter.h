@@ -7,6 +7,8 @@ be used to blend the existing colors at these pixels with a new target color.
 
 \todo
 -derive this class from ImageDrawer, get rid of superfluous methods
+-rename this clas into DotDrawer
+-move line drawing functions into LineDrawer
 -rename this "mask" stuff to "brush"
 ...these terms are more conventional in the computer graphics literature
 */

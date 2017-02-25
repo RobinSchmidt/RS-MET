@@ -9,4 +9,6 @@ namespace RAPT
 
 #include "Geometry/Line2D.cpp"
 
+#include "Misc/Statistics.cpp"
+
 }
