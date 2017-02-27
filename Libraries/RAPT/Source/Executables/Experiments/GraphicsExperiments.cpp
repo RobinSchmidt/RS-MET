@@ -557,6 +557,7 @@ void lineDrawingThick()
     drawer.drawLine(x0[i], y0[i], x1[i], y1[i]);
     //drawThickLine(image, x0[i], y0[i], x1[i], y1[i], brightness, thickness, true);
   }
+  //drawer.drawLine(0, 0, 0, 0); // should be able to handle this
   writeImageToFilePPM(image, "LinesThick.ppm");
 }
 void lineDrawingThick2()

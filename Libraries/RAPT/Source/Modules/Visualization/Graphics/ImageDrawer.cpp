@@ -114,6 +114,14 @@ void LineDrawer<TPix, TWgt, TCor>::drawLine(TCor x0, TCor y0, TCor x1, TCor y1)
     dx = -dx;
     dy = -dy; }
 
+  // hack/workaround to deal with zero-length lines (which result in division by zero):
+  if(dx == 0)
+  {
+    return;  // preliminary - this is not the right way to handle this
+    //L = 1;  // is this right? we need to avoid div-by-zero
+  }
+
+
   // slope/intercept equation y = a*x + b coefficients for main line:
   a = dy / dx;
   b = y0 - a*x0;
