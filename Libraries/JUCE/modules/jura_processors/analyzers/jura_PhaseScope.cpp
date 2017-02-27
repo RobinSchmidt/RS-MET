@@ -522,8 +522,6 @@ void PhaseScopeEditor2::createWidgets()
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
 
-
-
   addWidget( buttonDrawDots = b = new RButton("Dots") );
   b->assignParameter( scope->getParameterByName("DrawDots") );
   b->setDescription("Switches dot drawing on/off");
@@ -641,7 +639,7 @@ void PhaseScopeEditor2::paint(Graphics& g)
 {
   PhaseScopeEditor::paint(g);
 
-  RWidget *bottomWidget = sliderLineWidth;
+  RWidget *bottomWidget = boxLineProfile;
   float x, y, w, h;
   x = (float)bottomWidget->getX();
   y = (float)bottomWidget->getBottom() + 8.f;
