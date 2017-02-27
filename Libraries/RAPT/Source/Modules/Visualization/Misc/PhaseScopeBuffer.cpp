@@ -156,7 +156,7 @@ PhaseScopeBuffer2<TSig, TPix, TPar>::PhaseScopeBuffer2()
   dotMask.setTransitionWidth(0.5);
 
   lineDrawer.setBlendMode(ImageDrawer<TPix, TSig, TSig>::BLEND_ADD_SATURATE);
-  lineDrawer.setRoundCaps(false); // preliminary
+  lineDrawer.setRoundCaps(true); // preliminary
 }
 
 template<class TSig, class TPix, class TPar>
@@ -253,7 +253,10 @@ void PhaseScopeBuffer2<TSig, TPix, TPar>::addLineTo(TSig x, TSig y)
   if(drawLines){
     TSig dx = x - xOld;
     TSig dy = y - yOld;
-    TPar scaler = 1 / sqrt(dx*dx + dy*dy);
+    TPar L  = sqrt(dx*dx + dy*dy);
+    TPar scaler = 1;
+    if(L > 1)
+      scaler = 1/L;
     lineDrawer.setColor(lineBrightness * TPix(scaler));
     lineDrawer.drawLine(xOld, yOld, x, y); }
   if(drawDots)

@@ -210,12 +210,15 @@ protected:
 
   // additional widgets:
   RSlider *sliderDecayByValue, *sliderDecayByAverage;
-  RButton *buttonBigDot;
-  RSlider *sliderDotSize, *sliderDotBlur, *sliderDotInnerSlope, *sliderDotOuterSlope;
+  RButton *buttonBigDot, *buttonDrawDots, *buttonDrawLines;
+  RSlider *sliderDotSize, *sliderDotBlur, *sliderDotInnerSlope, *sliderDotOuterSlope,
+    *sliderLineBrightness, *sliderLineWidth;
+  RComboBox *boxLineProfile;
 
   // image for previewing the dot:
   RAPT::AlphaMask<float> dotPreviewMask;          
   juce::Image dotPreviewImage; 
+    // add a preview for the line-profile, too
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhaseScopeEditor2)

@@ -506,6 +506,7 @@ void PhaseScopeEditor2::createWidgets()
 {
   RButton *b;
   RSlider *s;
+  RComboBox *c;
 
   addWidget( sliderDecayByValue = s = new RSlider("DecayByValueSlider") );
   s->assignParameter( scope->getParameterByName("DecayByValue") );
@@ -522,6 +523,11 @@ void PhaseScopeEditor2::createWidgets()
   s->setStringConversionFunction(&valueToString3);
 
 
+
+  addWidget( buttonDrawDots = b = new RButton("Dots") );
+  b->assignParameter( scope->getParameterByName("DrawDots") );
+  b->setDescription("Switches dot drawing on/off");
+  b->setDescriptionField(infoField);
 
   addWidget( buttonBigDot = b = new RButton("Big Dot") );
   b->assignParameter( scope->getParameterByName("UseBigDot") );
@@ -558,6 +564,32 @@ void PhaseScopeEditor2::createWidgets()
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
   s->addListener(this);
+
+
+  addWidget( buttonDrawLines = b = new RButton("Lines") );
+  b->assignParameter( scope->getParameterByName("DrawLines") );
+  b->setDescription("Switches line drawing on/off");
+  b->setDescriptionField(infoField);
+
+  addWidget( sliderLineBrightness = s = new RSlider("LineBrightnessSlider") );
+  s->assignParameter( scope->getParameterByName("LineBrightness") );
+  s->setSliderName("LineBrightness");
+  s->setDescription("Brightness of lines");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString3);
+
+  addWidget( sliderLineWidth = s = new RSlider("LineWidthSlider") );
+  s->assignParameter( scope->getParameterByName("LineWidth") );
+  s->setSliderName("LineWidth");
+  s->setDescription("Width of lines");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString3);
+  //s->addListener(this);  // may be needed when we have a line preview
+
+  addWidget( boxLineProfile = c = new RComboBox("LineProfileBox") );
+  c->assignParameter( scope->getParameterByName("LineProfile") );
+  c->setDescription("Select line profile");
+  c->setDescriptionField(infoField);
 }
 
 void PhaseScopeEditor2::resized()
@@ -571,6 +603,9 @@ void PhaseScopeEditor2::resized()
   int w  = getWidth() - x - 8;          // slider width
   int h  = 16;                          // slider height
   int dy = h-2;                           // vertical distance ("delta-y") between widgets
+  int w3 = (w-8)/3;
+  int x2 = x  + w3 + 4;
+  int x3 = x2 + w3 + 4;
 
   // general scope controls:
   sliderFrameRate     ->setBounds(x, y, w, h); y += dy;
@@ -581,41 +616,35 @@ void PhaseScopeEditor2::resized()
 
   // dot controls:
   y += 8;
+  buttonDrawDots ->setBounds(x,  y, w3, h); 
+  buttonBigDot   ->setBounds(x2, y, w3, h); 
+  buttonAntiAlias->setBounds(x3, y, w3, h); 
+  y += dy;
   sliderBrightness   ->setBounds(x, y, w, h); y += dy;
   sliderPixelSpread  ->setBounds(x, y, w, h); y += dy;
   sliderLineDensity  ->setBounds(x, y, w, h); y += dy;
   sliderDotLimit     ->setBounds(x, y, w, h); y += dy;
-  buttonAntiAlias    ->setBounds(x, y, w, h); y += dy;
-  buttonBigDot       ->setBounds(x, y, w, h); y += dy;
   sliderDotSize      ->setBounds(x, y, w, h); y += dy;
   sliderDotBlur      ->setBounds(x, y, w, h); y += dy;
   sliderDotInnerSlope->setBounds(x, y, w, h); y += dy;
   sliderDotOuterSlope->setBounds(x, y, w, h); y += dy;
 
   // line controls:
-  // brightness, width, profile...
-  //sliderLineBrightness
-
-
-  //// set up additional widgets:
-  //int x, y, w, h, dy;
-  //x  = display.getRight() + 4;
-  //w  = buttonAntiAlias->getWidth();   // slider width
-  //h  = 16;                            // slider height
-  //dy = h+4;                           // vertical distance ("delta-y") between widgets
-  //y  = buttonAntiAlias->getBottom() + dy;
-
-    // maybe arrange diffently - these should be below the PixelDecay slider and maybe 
-    // somehow attached to it
+  y += 8;
+  buttonDrawLines     ->setBounds(x, y, w3, h); y += dy;
+  sliderLineBrightness->setBounds(x, y, w,  h); y += dy;
+  sliderLineWidth     ->setBounds(x, y, w,  h); y += dy;
+  boxLineProfile      ->setBounds(x, y, w,  h); y += dy;
 }
 
 void PhaseScopeEditor2::paint(Graphics& g)
 {
   PhaseScopeEditor::paint(g);
 
+  RWidget *bottomWidget = sliderLineWidth;
   float x, y, w, h;
-  x = (float)sliderDotOuterSlope->getX();
-  y = (float)sliderDotOuterSlope->getBottom() + 8.f;
+  x = (float)bottomWidget->getX();
+  y = (float)bottomWidget->getBottom() + 8.f;
   w = (float)dotPreviewImage.getWidth();
   h = (float)dotPreviewImage.getHeight();
   g.drawImage(dotPreviewImage, Rectangle<float>(x, y, w, h));
