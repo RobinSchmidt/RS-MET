@@ -156,7 +156,7 @@ PhaseScopeBuffer2<TSig, TPix, TPar>::PhaseScopeBuffer2()
   dotMask.setTransitionWidth(0.5);
 
   lineDrawer.setBlendMode(ImageDrawer<TPix, TSig, TSig>::BLEND_ADD_SATURATE);
-  lineDrawer.setRoundCaps(true);
+  lineDrawer.setRoundCaps(false); // preliminary
 }
 
 template<class TSig, class TPix, class TPar>
@@ -181,7 +181,7 @@ void PhaseScopeBuffer2<TSig, TPix, TPar>::setPixelDecayByAverage(TPar newDecayBy
 template<class TSig, class TPix, class TPar>
 void PhaseScopeBuffer2<TSig, TPix, TPar>::setLineBrightness(TPar newBrightness)
 {
-  lineBrightness = newBrightness;
+  lineBrightness = TPix(newBrightness);
 }
 
 template<class TSig, class TPix, class TPar>
@@ -250,11 +250,15 @@ void PhaseScopeBuffer2<TSig, TPix, TPar>::updateDecayFactor()
 template<class TSig, class TPix, class TPar>
 void PhaseScopeBuffer2<TSig, TPix, TPar>::addLineTo(TSig x, TSig y)
 {
-  if(lineBrightness > 0)
-  {
-    TPar scaler = 1 / sqrt(x*x + y*y);
+  if(drawLines){
+    TSig dx = x - xOld;
+    TSig dy = y - yOld;
+    TPar scaler = 1 / sqrt(dx*dx + dy*dy);
     lineDrawer.setColor(lineBrightness * TPix(scaler));
-    lineDrawer.drawLine(xOld, yOld, x, y); 
-  }
-  PhaseScopeBuffer::addLineTo(x, y); // draws dotted line, updates xOld, yOld
+    lineDrawer.drawLine(xOld, yOld, x, y); }
+  if(drawDots)
+    PhaseScopeBuffer::addLineTo(x, y); // draws dotted line, updates xOld, yOld
+  else {
+    xOld = x;
+    yOld = y; }
 }

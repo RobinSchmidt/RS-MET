@@ -174,6 +174,11 @@ public:
   /** Selects one of the line-profile functions from LineDrawer::lineProfiles. */
   void setLineProfile(int newProfile);
 
+  /** Switches dot drawing on/off */
+  void setDrawDots(bool shouldDrawDots) { drawDots = shouldDrawDots; }
+
+  /** Switches line drawing on/off */
+  void setDrawLines(bool shouldDrawLines) { drawLines = shouldDrawLines; }
 
   /** Overriden to take into account our new decay-by-value and decay-by average features. */
   virtual void applyPixelDecay() override;
@@ -192,6 +197,8 @@ protected:
   TPar decayByAverage = 0;   // dependency of pixel decay on global average brightness
   TPar decayFactorAt1;
   TPix lineBrightness = 0;
+  bool drawLines = false;
+  bool drawDots  = true;
 
   LineDrawer<TPix, TSig, TSig> lineDrawer;
 };

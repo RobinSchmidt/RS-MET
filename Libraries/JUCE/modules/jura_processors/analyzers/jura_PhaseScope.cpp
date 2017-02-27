@@ -370,12 +370,16 @@ PhaseScope2::PhaseScope2(CriticalSection *lockToUse) : PhaseScope(lockToUse)
 }
 
 void PhaseScope2::setPixelDecayByValue(double newDecayByValue)
-{
-  phaseScopeBuffer.setPixelDecayByValue(newDecayByValue);
+{ 
+  phaseScopeBuffer.setPixelDecayByValue(newDecayByValue); 
 }
 void PhaseScope2::setPixelDecayByAverage(double newDecayByAverage)
 {
   phaseScopeBuffer.setPixelDecayByAverage(newDecayByAverage);
+}
+void PhaseScope2::setDrawDots(bool shouldDraw)
+{
+  phaseScopeBuffer.setDrawDots(shouldDraw);
 }
 void PhaseScope2::setUseBigDot(bool shouldUseBigDot)
 {
@@ -397,6 +401,23 @@ void PhaseScope2::setDotOuterSlope(double newSlope)
 {
   phaseScopeBuffer.dotMask.setOuterSlope(newSlope);
 }
+void PhaseScope2::setDrawLines(bool shouldDraw)
+{
+  phaseScopeBuffer.setDrawLines(shouldDraw);
+}
+void PhaseScope2::setLineBrightness(double newBrightness)
+{
+  phaseScopeBuffer.setLineBrightness(newBrightness);
+}
+void PhaseScope2::setLineWidth(double newWidth)
+{
+  phaseScopeBuffer.setLineWidth(newWidth);
+}
+void PhaseScope2::setLineProfile(int newProfile)
+{
+  phaseScopeBuffer.setLineProfile(newProfile);
+}
+
 
 void PhaseScope2::createParameters()
 {
@@ -411,6 +432,10 @@ void PhaseScope2::createParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setPixelDecayByAverage);
 
+
+  p = new Parameter(plugInLock, "DrawDots", 0.0, 1.0, 0.0, 1.0, Parameter::BOOLEAN);
+  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setDrawDots);
+  addObservedParameter(p);
 
   p = new Parameter(plugInLock, "UseBigDot", 0.0, 1.0, 0.0, 1.0, Parameter::BOOLEAN);
   p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setUseBigDot);
@@ -431,6 +456,27 @@ void PhaseScope2::createParameters()
   p = new Parameter(plugInLock, "DotOuterSlope", 0.0, 3.0, 0.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setDotOuterSlope);
+
+
+  p = new Parameter(plugInLock, "DrawLines", 0.0, 1.0, 0.0, 0.0, Parameter::BOOLEAN);
+  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setDrawLines);
+  addObservedParameter(p);
+
+  p = new Parameter(plugInLock, "LineBrightness", 0.001, 100.0, 0.0, 1.0, Parameter::EXPONENTIAL);
+  addObservedParameter(p);
+  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setLineBrightness);
+
+  p = new Parameter(plugInLock, "LineWidth", 1.0, 50.0, 0.0, 1.0, Parameter::EXPONENTIAL);
+  addObservedParameter(p);
+  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setLineWidth);
+
+  p = new Parameter(plugInLock, "LineProfile", 0.0, 3.0, 1.0, 0.0, Parameter::STRING);
+  p->addStringValue("Flat");
+  p->addStringValue("Linear");
+  p->addStringValue("Parabolic");
+  p->addStringValue("Cubic");
+  addObservedParameter(p);
+  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setLineProfile);
 }
 
 AudioModuleEditor* PhaseScope2::createEditor()

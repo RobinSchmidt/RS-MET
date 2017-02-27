@@ -162,12 +162,19 @@ public:
   // additional setup functions:
   void setPixelDecayByValue(double newDecayByValue);
   void setPixelDecayByAverage(double newDecayByAverage);
+  // todo: add smear/blur-functions setLeft/Right/Up/DownSmear...
+
+  void setDrawDots(bool shouldDraw);
   void setUseBigDot(bool shouldUseBigDot);
   void setDotSize(double newSize);
   void setDotBlur(double newBlur);
   void setDotInnerSlope(double newSlope);
   void setDotOuterSlope(double newSlope);
-  // todo: add smear/blur-functions setLeft/Right/Up/DownSmear...
+
+  void setDrawLines(bool shouldDraw);
+  void setLineBrightness(double newBrightness);
+  void setLineWidth(double newWidth);
+  void setLineProfile(int newProfile);
 
 
   // overriden from PhaseScope baseclass:
