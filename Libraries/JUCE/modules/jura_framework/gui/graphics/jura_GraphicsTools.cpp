@@ -48,6 +48,7 @@ void normalizedDataToImage(float *data, juce::Image &image, const jura::ColorMap
   {
     // for debug:
     float tmp = data[i];
+    jassert(data[i] >= 0); 
     jassert(data[i] <= 1); 
 
     p[i] = colorMap.getColorAsUint32(data[i]);

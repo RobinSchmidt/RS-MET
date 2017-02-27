@@ -47,6 +47,9 @@ void ImageDrawer<TPix, TWgt, TCor>::addAndSaturate(TPix &pixel, TPix color, TWgt
 {
   color *= TPix(blend);
   pixel  = (pixel + color) / (TPix(1) + color);
+
+  //pixel  = (pixel + color) / (TPix(1) + abs(color)); // must be able to handle negative values
+  // maybe try pixel = (pixel + color) / (TPix(1) + color*color); as alternative
 }
 
 //=================================================================================================
