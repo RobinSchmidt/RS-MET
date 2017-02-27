@@ -52,7 +52,7 @@ public:
   color has the biggest impact.  What exactly happens depends on the blend-mode setting. */
   inline void plot(int x, int y, TWgt weight)
   {
-    blendFunction((*image)(x, y), TPix(weight) * color);
+    blendFunction((*image)(x, y), color, TPix(weight));
   }
 
 
@@ -63,8 +63,6 @@ protected:
   TPix color;
   int blendMode;
   void (*blendFunction)(TPix& pixel, TPix color, TWgt weight);
-
-  // maybe have a color member
 
 
   /** \name Blend functions */
@@ -103,7 +101,7 @@ public:
 
 
   /** Constructor. */
-  LineDrawer(Image<TPix> *imageToDrawOn); // : ImageDrawer(imageToDrawOn) {}
+  LineDrawer(Image<TPix> *imageToDrawOn);
 
 
   /** \name Setup */
@@ -112,7 +110,7 @@ public:
   void setLineProfile(int newProfile);
 
   /** Sets the width of the line in pixels. */
-  void setWidth(TCor newWidth);
+  void setLineWidth(TCor newWidth);
 
   /** Sets the drawer up to draw half-circular end caps, if true. If false, the caps will be 
   rectangular. */
@@ -124,9 +122,20 @@ public:
   /** Draws a line from (x0,y0) to (x1,y1). */
   void drawLine(TCor x0, TCor y0, TCor x1, TCor y1);
 
-  // have members for simplified lineDrawing: drawLineWu, drawLineBresenham
+  // todo: have members for simplified 1-pixel line drawing: drawLineWu, drawLineBresenham
+
 
 protected:
+
+  /** Convenience function to possibly plot a pixel with swapped x/y coordinates (needed for steep 
+  lines). */
+  inline void plot(int x, int y, TWgt weight, bool swapXY)
+  {
+    if(swapXY)
+      ImageDrawer::plot(y, x, weight);
+    else
+      ImageDrawer::plot(x, y, weight);
+  }
 
   bool roundCaps = true;
   TCor w2;                // lineWidth/2

@@ -528,6 +528,11 @@ void lineDrawingThick()
 
   // create objects:
   ImageF image(imageWidth, imageHeight);
+  LineDrawerFFF drawer(&image);
+  drawer.setColor(brightness);
+  drawer.setBlendMode(ImageDrawerFFF::BLEND_ADD_SATURATE);
+  drawer.setLineWidth(thickness);
+  drawer.setLineProfile(LineDrawerFFF::PROFILE_LINEAR);
 
   // create endpoint arrays:
   float margin = 2*thickness;
@@ -548,7 +553,10 @@ void lineDrawingThick()
 
   // draw the lines and save file:
   for(i = 0; i < numLines; i++)
-    drawThickLine(image, x0[i], y0[i], x1[i], y1[i], brightness, thickness, true);
+  {
+    drawer.drawLine(x0[i], y0[i], x1[i], y1[i]);
+    //drawThickLine(image, x0[i], y0[i], x1[i], y1[i], brightness, thickness, true);
+  }
   writeImageToFilePPM(image, "LinesThick.ppm");
 }
 void lineDrawingThick2()

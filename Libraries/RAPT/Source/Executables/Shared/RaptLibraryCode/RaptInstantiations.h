@@ -24,6 +24,8 @@ typedef RAPT::StateVariableFilter<float, float> StateVariableFilterFF;
 typedef RAPT::Image<float> ImageF;
 typedef RAPT::AlphaMask<float> AlphaMaskF;
 typedef RAPT::ImagePainter<float, float, float> ImagePainterFFF;
+typedef RAPT::ImageDrawer<float, float, float> ImageDrawerFFF;
+typedef RAPT::LineDrawer<float, float, float> LineDrawerFFF;
 typedef RAPT::PhaseScopeBuffer<float, float, double> PhaseScopeBufferFFD;
 
 #endif
