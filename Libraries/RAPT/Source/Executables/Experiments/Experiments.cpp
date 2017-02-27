@@ -4,7 +4,7 @@ void runExperiments()
 {
   // Math:
   //expGaussBell();
-  linearRegression();
+  //linearRegression();
   //productLogPlot();
 
   // Filter:
@@ -13,7 +13,7 @@ void runExperiments()
 
   // Graphics:
   //lineDrawing();
-  //lineDrawingThick();
+  lineDrawingThick();
   ///lineDrawingThick2(); // obsolete
 
 }

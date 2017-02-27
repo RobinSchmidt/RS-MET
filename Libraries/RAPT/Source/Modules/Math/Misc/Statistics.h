@@ -16,7 +16,7 @@ public:
 
   /** Like linearRegression, just that we assume the b-value (the y-intercept, offset) to be
   equal to zero. This is appropriate, when a proportionality between x and y is assumed. Also,
-  we return the a-coefficient in the function's return value here. */
+  we return the a-coefficient for the line y = a*x in the function's return value here. */
   template<class T>
   static T proportionalRegression(int N, T* x, T* y);
 

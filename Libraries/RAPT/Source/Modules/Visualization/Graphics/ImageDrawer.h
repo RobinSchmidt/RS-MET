@@ -35,6 +35,9 @@ public:
   /** Sets the image that we will draw on. */
   void setImageToDrawOn(Image<TPix> *imageToDrawOn);
 
+  /** Sets the color with which we draw on the image. */
+  inline void setColor(TPix newColor) { color = newColor; }
+
   /** Selects one of the blend modes. The blend mode is the function that is used to compute a new
   color for a pixel from an incoming desired color, the pixel's old color and a weight between
   0 and 1 that determines how to mix the old and the new color. */
@@ -44,14 +47,12 @@ public:
 
   /** \name Drawing */
 
-  /** Blends the pixel in the image at given coordinates with a new color according to some weight.
-  If the weight is 0, the pixel's color is unchanged, if it's 1, the new color has the biggest 
-  impact.  What exactly happens depends on the blend-mode setting. */
-  inline void plot(int x, int y, TPix color, TWgt weight)
+  /** Blends the pixel color in the image at given coordinates with the color of this drawer 
+  according to some weight. If the weight is 0, the pixel's color is unchanged, if it's 1, the new 
+  color has the biggest impact.  What exactly happens depends on the blend-mode setting. */
+  inline void plot(int x, int y, TWgt weight)
   {
     blendFunction((*image)(x, y), TPix(weight) * color);
-     // maybe we should use a color member instead of passing it as argument ...but maybe we
-     // can have both versions of the function
   }
 
 
@@ -59,6 +60,7 @@ protected:
 
   Image<TPix> *image;
 
+  TPix color;
   int blendMode;
   void (*blendFunction)(TPix& pixel, TPix color, TWgt weight);
 
@@ -90,17 +92,18 @@ public:
   incoming color and a blend amount. */
   enum lineProfiles
   {
-    PROFILE_FLAT = 0,    // solid color
-    PROFILE_LINEAR,      // metallic
-    PROFILE_PARABOLIC,   // plastic
-    PROFILE_CUBIC,       // cloudy
+    PROFILE_FLAT = 0,      // solid/flat color
+    PROFILE_LINEAR,        // metallic
+    PROFILE_PARABOLIC,     // plastic
+    PROFILE_CUBIC,         // cloudy
+    //PROFILE_PARAMETRIC,  // add later: define solid-width and 2 slopes (like in the dot)
 
     NUM_LINE_PROFILES
   };
 
 
   /** Constructor. */
-  LineDrawer(Image<TPix> *imageToDrawOn) : ImageDrawer(imageToDrawOn) {}
+  LineDrawer(Image<TPix> *imageToDrawOn); // : ImageDrawer(imageToDrawOn) {}
 
 
   /** \name Setup */
@@ -108,13 +111,37 @@ public:
   /** Selects one of the line profiles. */
   void setLineProfile(int newProfile);
 
+  /** Sets the width of the line in pixels. */
+  void setWidth(TCor newWidth);
+
+  /** Sets the drawer up to draw half-circular end caps, if true. If false, the caps will be 
+  rectangular. */
+  void setRoundCaps(bool shouldBeRound);
+
+
+  /** \name Drawing */
+
+  /** Draws a line from (x0,y0) to (x1,y1). */
+  void drawLine(TCor x0, TCor y0, TCor x1, TCor y1);
+
+  // have members for simplified lineDrawing: drawLineWu, drawLineBresenham
 
 protected:
 
-  int profileIndex;
+  bool roundCaps = true;
+  TCor w2;                // lineWidth/2
+  int  profileIndex;
   TWgt (*lineProfile)(TCor distance, TCor halfWidth);
 
   //vector<Line2D> lines;
+
+
+  /** \name Line profile functions */
+
+  static TWgt profileFlat(     TCor distance, TCor halfWidth);
+  static TWgt profileLinear(   TCor distance, TCor halfWidth);
+  static TWgt profileParabolic(TCor distance, TCor halfWidth);
+  static TWgt profileCubic(    TCor distance, TCor halfWidth);
 
 };
 
