@@ -70,7 +70,7 @@ public:
   void toPixelCoordinates(TSig &x, TSig &y);
 
   /** Accepts one input sample frame for buffering. */
-  void bufferSampleFrame(TSig left, TSig right);
+  void processSampleFrame(TSig left, TSig right);
 
   /** Applies our pixel decay-factor to the matrix of buffered values. This assumed to be called at 
   the frame rate. */
@@ -99,7 +99,7 @@ protected:
   /** Adds a line to the given x,y coordinates (in pixel coordinates). The starting point of the 
   line are the old pixel coordinates xOld, yOld (member variables). It takes into account our line 
   density - when it's set to zero, it will just draw a dot at the new given position. */
-  void addLineTo(TSig x, TSig y);
+  virtual void addLineTo(TSig x, TSig y);
 
   /** Updates the pixel decay factor according to the settings of frame rate and desired decay 
   time. */
@@ -161,12 +161,22 @@ public:
   void setPixelDecayByValue(TPar newDecayByValue);
 
   /** Sets a dependency of the pixel decay time on the global average brightness of the whole 
-  screen.... */
+  screen. This may help to avoid an overcrowding of the canvas by making it decay faster when its
+  fuller. */
   void setPixelDecayByAverage(TPar newDecayByAverage);
 
+  /** Sets the brightness for the additional lines drawn by the line-drawer. */
+  void setLineBrightness(TPar newBrightness);
 
+  /** Sets the width of the lines in pixels. */
+  void setLineWidth(TPar newWidth);
+
+  /** Selects one of the line-profile functions from LineDrawer::lineProfiles. */
+  void setLineProfile(int newProfile);
+
+
+  /** Overriden to take into account our new decay-by-value and decay-by average features. */
   virtual void applyPixelDecay() override;
-
 
   /** Alpha mask used for drawing a "dot", a public member, such that we don't need to implement
   lots of delegations here for setting it up (maybe move to protected and provide access 
@@ -176,11 +186,14 @@ public:
 protected:
 
   virtual void updateDecayFactor() override;
+  virtual void addLineTo(TSig x, TSig y) override;
 
   TPar decayByValue = 0;     // dependency of pixel decay on current pixel value
   TPar decayByAverage = 0;   // dependency of pixel decay on global average brightness
   TPar decayFactorAt1;
+  TPix lineBrightness = 0;
 
+  LineDrawer<TPix, TSig, TSig> lineDrawer;
 };
 
 #endif

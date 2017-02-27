@@ -141,7 +141,7 @@ void PhaseScopeMultiColor::processBlock(double **inOutBuffer, int numChannels, i
       phaseScopeBuffer.setBrightness(Float32x4(b, b, b, 1.f));
 
 
-    phaseScopeBuffer.bufferSampleFrame((float)inOutBuffer[0][n], (float)inOutBuffer[1][n]);
+    phaseScopeBuffer.processSampleFrame((float)inOutBuffer[0][n], (float)inOutBuffer[1][n]);
   }
 
   repaintCounter += numSamples;

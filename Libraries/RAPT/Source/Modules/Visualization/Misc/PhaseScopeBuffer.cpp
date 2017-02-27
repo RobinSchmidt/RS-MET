@@ -95,7 +95,7 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::toPixelCoordinates(TSig &x, TSig &y)
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer<TSig, TPix, TPar>::bufferSampleFrame(TSig x, TSig y)
+void PhaseScopeBuffer<TSig, TPix, TPar>::processSampleFrame(TSig x, TSig y)
 {
   toPixelCoordinates(x, y);
   addLineTo(x, y);
@@ -147,12 +147,16 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::updateInsertFactor()
 //-------------------------------------------------------------------------------------------------
 
 template<class TSig, class TPix, class TPar>
-PhaseScopeBuffer2<TSig, TPix, TPar>::PhaseScopeBuffer2()
+PhaseScopeBuffer2<TSig, TPix, TPar>::PhaseScopeBuffer2() 
+: lineDrawer(&image)
 {
   painter.setAlphaMaskForDot(&dotMask);
   dotMask.setMaxSize(20, 20);
   dotMask.setSize(5);
   dotMask.setTransitionWidth(0.5);
+
+  lineDrawer.setBlendMode(ImageDrawer<TPix, TSig, TSig>::BLEND_ADD_SATURATE);
+  lineDrawer.setRoundCaps(true);
 }
 
 template<class TSig, class TPix, class TPar>
@@ -172,6 +176,24 @@ template<class TSig, class TPix, class TPar>
 void PhaseScopeBuffer2<TSig, TPix, TPar>::setPixelDecayByAverage(TPar newDecayByAverage)
 {
   decayByAverage = newDecayByAverage;
+}
+
+template<class TSig, class TPix, class TPar>
+void PhaseScopeBuffer2<TSig, TPix, TPar>::setLineBrightness(TPar newBrightness)
+{
+  lineBrightness = newBrightness;
+}
+
+template<class TSig, class TPix, class TPar>
+void PhaseScopeBuffer2<TSig, TPix, TPar>::setLineWidth(TPar newWidth)
+{
+  lineDrawer.setLineWidth(newWidth);
+}
+
+template<class TSig, class TPix, class TPar>
+void PhaseScopeBuffer2<TSig, TPix, TPar>::setLineProfile(int newProfile)
+{
+  lineDrawer.setLineProfile(newProfile);
 }
 
 template<class TSig, class TPix, class TPar>
@@ -204,8 +226,6 @@ void PhaseScopeBuffer2<TSig, TPix, TPar>::applyPixelDecay()
 template<class TSig, class TPix, class TPar>
 void PhaseScopeBuffer2<TSig, TPix, TPar>::updateDecayFactor()
 {
-  //PhaseScopeBuffer::updateDecayFactor();
-
   if(decayByValue == 0)
   {
     decayFactor = (TPar)exp(-1 / (decayTime*frameRate)); // taken from baseclass
@@ -225,4 +245,16 @@ void PhaseScopeBuffer2<TSig, TPix, TPar>::updateDecayFactor()
     //decayFactor    = (TPar)exp(-1 / (decayAt0*frameRate));
     //decayFactorAt1 = (TPar)exp(-1 / (decayAt1*frameRate));
   }
+}
+
+template<class TSig, class TPix, class TPar>
+void PhaseScopeBuffer2<TSig, TPix, TPar>::addLineTo(TSig x, TSig y)
+{
+  if(lineBrightness > 0)
+  {
+    TPar scaler = 1 / sqrt(x*x + y*y);
+    lineDrawer.setColor(lineBrightness * TPix(scaler));
+    lineDrawer.drawLine(xOld, yOld, x, y); 
+  }
+  PhaseScopeBuffer::addLineTo(x, y); // draws dotted line, updates xOld, yOld
 }

@@ -126,7 +126,7 @@ void PhaseScope::processBlock(double **inOutBuffer, int numChannels, int numSamp
   jassert(numChannels == 2);
   for(int n = 0; n < numSamples; n++)
   {
-    phaseScopeBuffer.bufferSampleFrame((float)inOutBuffer[0][n], (float)inOutBuffer[1][n]);
+    phaseScopeBuffer.processSampleFrame((float)inOutBuffer[0][n], (float)inOutBuffer[1][n]);
     repaintCounter++;
     if(repaintCounter > repaintIntervalInSamples)
     {
@@ -446,7 +446,8 @@ PhaseScopeEditor2::PhaseScopeEditor2(jura::PhaseScope2 *newPhaseScopeToEdit)
   createWidgets();
 
   // init preview dot (maybe factor out):
-  dotPreviewMask.setSize(widgetMargin-12.0); 
+  //dotPreviewMask.setSize(widgetMargin-12.0); 
+  dotPreviewMask.setSize((widgetMargin-4.0)/2); 
   dotPreviewImage = juce::Image(juce::Image::ARGB, 
     dotPreviewMask.getWidth(), dotPreviewMask.getHeight(), false);
   updatePreviewDot();
@@ -517,24 +518,49 @@ void PhaseScopeEditor2::resized()
 {
   PhaseScopeEditor::resized();
 
-  // set up additional widgets:
-  int x, y, w, h, dy;
-  x  = display.getRight() + 4;
-  w  = buttonAntiAlias->getWidth();   // slider width
-  h  = 16;                            // slider height
-  dy = h+4;                           // vertical distance ("delta-y") between widgets
-  y  = buttonAntiAlias->getBottom() + dy;
-  
+
+  // this is from the baseclass - but we should arrange the differently here
+  int x  = display.getRight() + 4;
+  int y  = getPresetSectionBottom() + 4;
+  int w  = getWidth() - x - 8;          // slider width
+  int h  = 16;                          // slider height
+  int dy = h-2;                           // vertical distance ("delta-y") between widgets
+
+  // general scope controls:
+  sliderFrameRate     ->setBounds(x, y, w, h); y += dy;
+  sliderAfterglow     ->setBounds(x, y, w, h); y += dy;
   sliderDecayByValue  ->setBounds(x, y, w, h); y += dy;
   sliderDecayByAverage->setBounds(x, y, w, h); y += dy;
+  sliderPixelScale    ->setBounds(x, y, w, h); y += dy;
+
+  // dot controls:
+  y += 8;
+  sliderBrightness   ->setBounds(x, y, w, h); y += dy;
+  sliderPixelSpread  ->setBounds(x, y, w, h); y += dy;
+  sliderLineDensity  ->setBounds(x, y, w, h); y += dy;
+  sliderDotLimit     ->setBounds(x, y, w, h); y += dy;
+  buttonAntiAlias    ->setBounds(x, y, w, h); y += dy;
+  buttonBigDot       ->setBounds(x, y, w, h); y += dy;
+  sliderDotSize      ->setBounds(x, y, w, h); y += dy;
+  sliderDotBlur      ->setBounds(x, y, w, h); y += dy;
+  sliderDotInnerSlope->setBounds(x, y, w, h); y += dy;
+  sliderDotOuterSlope->setBounds(x, y, w, h); y += dy;
+
+  // line controls:
+  // brightness, width, profile...
+  //sliderLineBrightness
+
+
+  //// set up additional widgets:
+  //int x, y, w, h, dy;
+  //x  = display.getRight() + 4;
+  //w  = buttonAntiAlias->getWidth();   // slider width
+  //h  = 16;                            // slider height
+  //dy = h+4;                           // vertical distance ("delta-y") between widgets
+  //y  = buttonAntiAlias->getBottom() + dy;
+
     // maybe arrange diffently - these should be below the PixelDecay slider and maybe 
     // somehow attached to it
-
-  buttonBigDot        ->setBounds(x, y, w, h); y += dy;
-  sliderDotSize       ->setBounds(x, y, w, h); y += dy;
-  sliderDotBlur       ->setBounds(x, y, w, h); y += dy;
-  sliderDotInnerSlope ->setBounds(x, y, w, h); y += dy;
-  sliderDotOuterSlope ->setBounds(x, y, w, h); y += dy;
 }
 
 void PhaseScopeEditor2::paint(Graphics& g)

@@ -33,19 +33,19 @@ void ImageDrawer<TPix, TWgt, TCor>::setBlendMode(int newMode)
 template<class TPix, class TWgt, class TCor>
 void ImageDrawer<TPix, TWgt, TCor>::linearBlend(TPix &pixel, TPix color, TWgt blend)
 {
-  pixel = (1-blend)*pixel + blend*color;
+  pixel = (1-TPix(blend)) * pixel + TPix(blend) * color;
 }
 
 template<class TPix, class TWgt, class TCor>
 void ImageDrawer<TPix, TWgt, TCor>::addAndClip(TPix &pixel, TPix color, TWgt blend)
 {
-  pixel = rsMin(TPix(1), pixel + blend*color);
+  pixel = rsMin(TPix(1), pixel + TPix(blend)*color);
 }
 
 template<class TPix, class TWgt, class TCor>
 void ImageDrawer<TPix, TWgt, TCor>::addAndSaturate(TPix &pixel, TPix color, TWgt blend)
 {
-  color *= blend;
+  color *= TPix(blend);
   pixel  = (pixel + color) / (TPix(1) + color);
 }
 
@@ -92,7 +92,7 @@ void LineDrawer<TPix, TWgt, TCor>::setRoundCaps(bool shouldBeRound)
 template<class TPix, class TWgt, class TCor>
 void LineDrawer<TPix, TWgt, TCor>::drawLine(TCor x0, TCor y0, TCor x1, TCor y1)
 {
-  TCor dx, dy, a, b, t2, yf, dp, d, L, A, B, C0, C1, AxBy;
+  TCor dx, dy, a, b, yf, dp, d, L, A, B, C0, C1, AxBy;
   TWgt sc;
   int xMax, yMax, xs, xe, ys, ye, x, y, dvy;
   bool steep;
