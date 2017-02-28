@@ -5,7 +5,8 @@
 
 void lineDrawing();
 void lineDrawingThick();
-void lineDrawingThick2();
+//void lineDrawingThick2(); // obsolete
+void lineJoints();
 
 
 #endif

@@ -42,5 +42,7 @@
 #define RS_POW2_14 16384
 #define RS_POW2_15 32768
 
+//#define FIX_DENORM 1.e-12  // small constant to add to avoid denormal numbers
+
 
 #endif

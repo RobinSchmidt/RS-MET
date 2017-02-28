@@ -557,7 +557,6 @@ void lineDrawingThick()
     drawer.drawLine(x0[i], y0[i], x1[i], y1[i]);
     //drawThickLine(image, x0[i], y0[i], x1[i], y1[i], brightness, thickness, true);
   }
-  //drawer.drawLine(0, 0, 0, 0); // should be able to handle this
   writeImageToFilePPM(image, "LinesThick.ppm");
 }
 void lineDrawingThick2()
@@ -582,12 +581,56 @@ void lineDrawingThick2()
   drawThickLine(image, 20, 20, 50, 50, 1.f, 20.f, true);
   drawThickLine(image, 20, 50, 50, 80, 1.f, 20.f, false);
   //drawThickLine(image, 20, 70, 50, 70, 1.f, 5.f, false);
-
-
-                                                    
+                                            
   //drawThickLine(image, 10, 10, 50, 90, 1.f, 15.f);
   //drawThickLine(image, x0, y0, x1, y1, brightness, thickness);
   //plotLineWidth(image, (int)x0, (int)y0, (int)x1, (int)y1, thickness);
 
   writeImageToFilePPM(image, "ThickLineScanlineTest.ppm");
+}
+
+void lineJoints()
+{
+  // user parameters:
+  int imageWidth   = 800;
+  int imageHeight  = 800;
+  int numAngles    = 10;
+  float brightness = 0.5f;
+  float thickness  = 20.f;
+
+  // create objects:
+  ImageF image(imageWidth, imageHeight);
+  LineDrawerFFF drawer(&image);
+  drawer.setBlendMode(ImageDrawerFFF::BLEND_ADD_SATURATE);
+  //drawer.setLineProfile(LineDrawerFFF::PROFILE_LINEAR);
+  drawer.setLineProfile(LineDrawerFFF::PROFILE_FLAT);
+  drawer.setLineWidth(thickness);
+  drawer.setColor(brightness);
+
+  // create endpoint arrays:
+  // draw lines:
+  float margin = 2*thickness;
+  //vector<float> x0, y0, x1, y1;
+  float x0, y0, x1, y1;
+  float w2 = 0.5*imageWidth;
+  float h2 = 0.5*imageHeight;
+  //float dy = h2 numAngles;
+  float dy = (float)margin;
+  float offset;
+  for(int i = 0; i < numAngles; i++)
+  {
+    offset = i*margin;
+    x0 = margin;
+    y0 = margin + offset;
+    x1 = w2;
+    y1 = margin + i*dy + offset;
+    drawer.drawLine(x0, y0, x1, y1);
+    x0 = x1;
+    y0 = y1;
+    x1 = imageWidth - margin;
+    y1 = margin + offset;
+    drawer.drawLine(x0, y0, x1, y1);
+  }
+
+  writeImageToFilePPM(image, "LineJoints.ppm");
 }
