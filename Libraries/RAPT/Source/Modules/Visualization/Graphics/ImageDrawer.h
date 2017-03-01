@@ -169,14 +169,22 @@ private:
   endpoints. */
   void setupAlgorithmVariables(TCor x0, TCor y0, TCor x1, TCor y1);
 
-  /** Draws the left end cap of the line. */
-  void drawLeftCap();
-
-  /** Draws the right end cap of the line. */
-  void drawRightCap();
-
   /** Draws the middle section between the end caps. */
   void drawMiddleSection();
+
+  /** Draws the left end cap of the line. */
+  inline void drawLeftCap() { drawCap(xs, xel); }
+
+  /** Draws the right end cap of the line. */
+  inline void drawRightCap() { drawCap(xsr, xe); }
+
+  /** Draws either left opr right end cap, called internally from drawLeftCap and drawRightCap. The
+  code is exactly the same except for different loop start and end indices, because we need to 
+  check against both caps everytime - because any pixel may be part of both caps at the same time
+  (occurs for very short slanted lines). */
+  void drawCap(int start, int end);
+
+
 
   // internal variables for the actual drawing algorithm:
   TCor dx, dy, a, b, yf, dp, d, L, A, B, C0, C1, AxBy;

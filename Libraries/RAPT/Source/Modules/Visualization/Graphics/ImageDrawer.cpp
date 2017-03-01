@@ -101,59 +101,14 @@ void LineDrawer<TPix, TWgt, TCor>::drawLine(TCor x0, TCor y0, TCor x1, TCor y1)
   if(dx == 0)
     return;  // preliminary - we should draw a circle or rectangle (depending on cap setting)
 
-  //drawLeftCap(x0, y0, x1, y1);
-  //drawRightCap(     x0, y0, x1, y1);
-  //drawMiddleSection(x0, y0, x1, y1);
-
+  // draw segments:
   drawMiddleSection();
   drawLeftCap();
   drawRightCap();
 
-
-
-
-
   // store line endpoint to be used as startpoint for subsequent lineTo calls
   this->x0 = x1; 
   this->y0 = y1;
-
-
-  // Using three loops for left-end, middle section and right end complicates the code and produces
-  // a lot of duplication, but it avoids unnecessary checks against end-cap conditions in the
-  // loop for the middle section which is assumed to be longer than the caps, so it may be worth it
-  // for effifiency reasons. Below is the old prototype main loop that draws both caps and middle 
-  // section in  one single loop:
-
-  //d = w2;                         // end-cap extension
-  //if(!roundCaps)
-  //  d *= (abs(dx)+abs(dy))/L;
-  //xs  = rsLimit((int)floor(x0-d), 0, xMax);   // start x-index 
-  //xe  = rsLimit((int)ceil( x1+d), 0, xMax);   // end x-index
-  //dvy = (int)ceil(w2/A);                      // maximum vertical pixel distance from line
-  //for(x = xs; x <= xe; x++){                  // outer loop over x
-  //  yf = a*x + b;                             // ideal y (float)
-  //  y  = roundToInt(yf);                      // rounded y
-  //  ys = rsMax(y-dvy, 0);                     // scanline start
-  //  ye = rsMin(y+dvy, yMax);                  // scanline end
-  //  for(y = ys; y <= ye; y++){                // inner loop over y-scanline
-  //    dp = A * abs(yf-y);                     // perpendicuar pixel distance from line
-  //    sc = lineProfile(dp, w2);               // intensity/color scaler
-  //    AxBy = A*x + B*y;
-  //    if((d = -AxBy - C0) > 0.f){              // left end cap
-  //      if(roundCaps){
-  //        d  = sqrt(dp*dp+d*d);
-  //        sc = lineProfile(d, w2); }
-  //      else
-  //        sc *= lineProfile(d, w2); }
-  //    if((d = AxBy + C1) > 0.f){              // right end cap
-  //      if(roundCaps){
-  //        d = sqrt(dp*dp+d*d);
-  //        sc = lineProfile(d, w2);  }
-  //      else
-  //        sc *= lineProfile(d, w2); }
-  //    plot(x, y, sc, steep);                  // plot pixel (may swap x,y according to "steep") 
-  //  }// for y
-  //}// for x  
 }
 
 template<class TPix, class TWgt, class TCor>
@@ -248,9 +203,25 @@ void LineDrawer<TPix, TWgt, TCor>::setupAlgorithmVariables(TCor x0, TCor y0, TCo
 }
 
 template<class TPix, class TWgt, class TCor>
-void LineDrawer<TPix, TWgt, TCor>::drawLeftCap()
+void LineDrawer<TPix, TWgt, TCor>::drawMiddleSection()
 {
-  for(x = xs; x <= xel; x++){
+  for(x = xel+1; x <= xsr-1; x++){            // outer loop over x
+    yf = a*x + b;                             // ideal y (float)
+    y  = roundToInt(yf);                      // rounded y
+    ys = rsMax(y-dvy, 0);                     // scanline start
+    ye = rsMin(y+dvy, yMax);                  // scanline end
+    for(y = ys; y <= ye; y++){                // inner loop over y-scanline
+      dp = A * abs(yf-y);                     // perpendicuar pixel distance from line
+      sc = lineProfile(dp, w2);               // intensity/color scaler
+      plot(x, y, sc, steep);                  // plot pixel (may swap x,y according to "steep") 
+    }// for y
+  }// for x 
+}
+
+template<class TPix, class TWgt, class TCor>
+void LineDrawer<TPix, TWgt, TCor>::drawCap(int start, int end)
+{
+  for(x = start; x <= end; x++){
     yf = a*x + b;
     y  = roundToInt(yf);
     ys = rsMax(y-dvy, 0);
@@ -274,52 +245,4 @@ void LineDrawer<TPix, TWgt, TCor>::drawLeftCap()
       plot(x, y, sc, steep);
     }// for y
   }// for x  
-}
-
-template<class TPix, class TWgt, class TCor>
-void LineDrawer<TPix, TWgt, TCor>::drawRightCap()
-{
-  // this is actually a duplicate of drawLeftCap except for the loop start and endpoints - factor
-  // out inot function drawCap(int xStart, int xEnd)
-
-  for(x = xsr; x <= xe; x++){
-    yf = a*x + b;
-    y  = roundToInt(yf);
-    ys = rsMax(y-dvy, 0);
-    ye = rsMin(y+dvy, yMax);
-    for(y = ys; y <= ye; y++){
-      dp = A * abs(yf-y);
-      sc = lineProfile(dp, w2);
-      AxBy = A*x + B*y;
-      if((d = -AxBy - C0) > 0.f){
-        if(roundCaps){
-          d  = sqrt(dp*dp+d*d);
-          sc = lineProfile(d, w2); }
-        else
-          sc *= lineProfile(d, w2); }
-      if((d = AxBy + C1) > 0.f){
-        if(roundCaps){
-          d = sqrt(dp*dp+d*d);
-          sc = lineProfile(d, w2);  }
-        else
-          sc *= lineProfile(d, w2); }
-      plot(x, y, sc, steep);
-    }// for y
-  }// for x  
-}
-
-template<class TPix, class TWgt, class TCor>
-void LineDrawer<TPix, TWgt, TCor>::drawMiddleSection()
-{
-  for(x = xel+1; x <= xsr-1; x++){            // outer loop over x
-    yf = a*x + b;                             // ideal y (float)
-    y  = roundToInt(yf);                      // rounded y
-    ys = rsMax(y-dvy, 0);                     // scanline start
-    ye = rsMin(y+dvy, yMax);                  // scanline end
-    for(y = ys; y <= ye; y++){                // inner loop over y-scanline
-      dp = A * abs(yf-y);                     // perpendicuar pixel distance from line
-      sc = lineProfile(dp, w2);               // intensity/color scaler
-      plot(x, y, sc, steep);                  // plot pixel (may swap x,y according to "steep") 
-    }// for y
-  }// for x 
 }
