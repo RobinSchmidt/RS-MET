@@ -139,7 +139,7 @@ void LineDrawer<TPix, TWgt, TCor>::lineTo(TCor x, TCor y)
   }
   else
   {
-    // steep backward lines - doesn't work yet
+    // steep backward lines:
     if(steep)
     {
       drawCapForJoint(xs, xel, y, x);
@@ -152,6 +152,10 @@ void LineDrawer<TPix, TWgt, TCor>::lineTo(TCor x, TCor y)
       drawCapForJoint(xsr, xe, xOld, yOld);
     }
   }
+  // it still sometimes doesn't work (check with random lines) - i think, we need to pass
+  // xj, yj to the drawCapForJoint - these are the coordinates for the joint at which we 
+  // don't draw. here, we need to figure out xj, yj from the conditions whether current and/or
+  // previous line was steep and/or backwards
 
   xOld = x; 
   yOld = y;
