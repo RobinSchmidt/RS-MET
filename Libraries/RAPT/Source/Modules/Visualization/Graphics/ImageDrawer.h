@@ -122,6 +122,16 @@ public:
   /** Draws a line from (x0,y0) to (x1,y1). */
   void drawLine(TCor x0, TCor y0, TCor x1, TCor y1);
 
+
+  /** Special line drawing function that is supposed to be used for drawing sequences of connected
+  lines. After an initial call to drawLine or a previous call to lineTo, you can call this 
+  function in order to avoid artifacts (phantom circles) at the line joints. */ 
+  void lineTo(TCor x1, TCor y1);
+
+  //void drawConnectedLine(TCor x0, TCor y0, TCor x1, TCor y1);
+
+
+
   // todo: have members for simplified 1-pixel line drawing: drawLineWu, drawLineBresenham
 
 
@@ -139,6 +149,7 @@ protected:
 
   bool roundCaps = true;
   TCor w2;                // lineWidth/2
+  TCor x0 = 0, y0 = 0;    // start-point for lineTo function
   int  profileIndex;
   TWgt (*lineProfile)(TCor distance, TCor halfWidth);
 
@@ -151,6 +162,18 @@ protected:
   static TWgt profileLinear(   TCor distance, TCor halfWidth);
   static TWgt profileParabolic(TCor distance, TCor halfWidth);
   static TWgt profileCubic(    TCor distance, TCor halfWidth);
+
+private:
+
+  /** Sets up the internal variables for the line drawing algorithm for the two given 
+  endpoints. */
+  void setupAlgorithmVariables(TCor x0, TCor y0, TCor x1, TCor y1);
+
+  // internal variables for the actual drawing algorithm:
+  TCor dx, dy, a, b, yf, dp, d, L, A, B, C0, C1, AxBy;
+  TWgt sc;
+  int xMax, yMax, xs, xe, xel, xsr, ys, ye, x, y, dvy;
+  bool steep;
 
 };
 

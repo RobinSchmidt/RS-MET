@@ -95,27 +95,7 @@ void LineDrawer<TPix, TWgt, TCor>::setRoundCaps(bool shouldBeRound)
 template<class TPix, class TWgt, class TCor>
 void LineDrawer<TPix, TWgt, TCor>::drawLine(TCor x0, TCor y0, TCor x1, TCor y1)
 {
-  TCor dx, dy, a, b, yf, dp, d, L, A, B, C0, C1, AxBy;
-  TWgt sc;
-  int xMax, yMax, xs, xe, xel, xsr, ys, ye, x, y, dvy;
-  bool steep;
-
-  xMax  = image->getWidth()-1;   // guard for x index
-  yMax  = image->getHeight()-1;  // guard for y index
-  dx    = x1 - x0;               // x-distance
-  dy    = y1 - y0;               // y-distance
-  L     = sqrt(dx*dx + dy*dy);   // length of the line
-  steep = abs(dy) > abs(dx); 
-  if(steep){                     // swap roles of x and y for steep lines
-    swap(dx, dy);
-    swap(x0, y0);
-    swap(x1, y1);
-    swap(xMax, yMax); }
-  if(x0 > x1){                   // swap roles of start and end for leftward lines
-    swap(x0, x1);
-    swap(y0, y1); 
-    dx = -dx;
-    dy = -dy; }
+  setupAlgorithmVariables(x0, y0, x1, y1);
 
   // hack/workaround to deal with zero-length lines (which result in division by zero):
   if(dx == 0)
@@ -123,26 +103,6 @@ void LineDrawer<TPix, TWgt, TCor>::drawLine(TCor x0, TCor y0, TCor x1, TCor y1)
     return;  // preliminary - this is not the right way to handle this
     //L = 1;  // is this right? we need to avoid div-by-zero
   }
-
-  // slope/intercept equation y = a*x + b coefficients for main line:
-  a = dy / dx;
-  b = y0 - a*x0;
-
-  // implicit line equation A*x + B*y + C = 0 coeffs for perpendicular lines through the endpoints:
-  A  = dx / L;         // A and B are the same for both endpoints, we also have A^2 + B^2 = 1, so
-  B  = dy / L;         // A*x + B*y + C = d gives the signed distance of any x,y to the line
-  C0 = -(A*x0 + B*y0); // C coeff for left endpoint
-  C1 = -(A*x1 + B*y1); // C coeff for right endpoint
-
-  // compute loop limits:
-  d = w2;                         // end-cap extension
-  if(!roundCaps)
-    d *= (abs(dx)+abs(dy))/L;
-  xs  = rsLimit((int)floor(x0-d), 0, xMax);   // start of left cap (and overall line)
-  xel = rsLimit((int)ceil( x0+d), 0, xMax);   // end of left cap
-  xsr = rsLimit((int)floor(x1-d), 0, xMax);   // start of right cap
-  xe  = rsLimit((int)ceil( x1+d), 0, xMax);   // end of right cap (and overall line)
-  dvy = (int)ceil(w2/A);                      // maximum vertical pixel distance from line  
 
   // draw middle section:
   for(x = xel+1; x <= xsr-1; x++){            // outer loop over x
@@ -209,6 +169,10 @@ void LineDrawer<TPix, TWgt, TCor>::drawLine(TCor x0, TCor y0, TCor x1, TCor y1)
     }// for y
   }// for x  
 
+  // store line endpoint to be used as startpoint for subsequent lineTo calls
+  this->x0 = x1; 
+  this->y0 = y1;
+
 
   // Using three loops for left-end, middle section and right end complicates the code and produces
   // a lot of duplication, but it avoids unnecessary checks against end-cap conditions in the
@@ -248,7 +212,6 @@ void LineDrawer<TPix, TWgt, TCor>::drawLine(TCor x0, TCor y0, TCor x1, TCor y1)
   //}// for x  
 }
 
-
 // profile functions:
 
 template<class TPix, class TWgt, class TCor>
@@ -283,4 +246,45 @@ TWgt LineDrawer<TPix, TWgt, TCor>::profileCubic(TCor d, TCor w2)
 {
   TCor x = d/w2;
   return rsPositiveBellFunctions<TCor>::cubic(abs(x));
+}
+
+template<class TPix, class TWgt, class TCor>
+void LineDrawer<TPix, TWgt, TCor>::setupAlgorithmVariables(TCor x0, TCor y0, TCor x1, TCor y1)
+{
+  xMax  = image->getWidth()-1;   // guard for x index
+  yMax  = image->getHeight()-1;  // guard for y index
+  dx    = x1 - x0;               // x-distance
+  dy    = y1 - y0;               // y-distance
+  L     = sqrt(dx*dx + dy*dy);   // length of the line
+  steep = abs(dy) > abs(dx); 
+  if(steep){                     // swap roles of x and y for steep lines
+    swap(dx, dy);
+    swap(x0, y0);
+    swap(x1, y1);
+    swap(xMax, yMax); }
+  if(x0 > x1){                   // swap roles of start and end for leftward lines
+    swap(x0, x1);
+    swap(y0, y1); 
+    dx = -dx;
+    dy = -dy; }
+
+  // slope/intercept equation y = a*x + b coefficients for main line:
+  a = dy / dx;
+  b = y0 - a*x0;
+
+  // implicit line equation A*x + B*y + C = 0 coeffs for perpendicular lines through the endpoints:
+  A  = dx / L;         // A and B are the same for both endpoints, we also have A^2 + B^2 = 1, so
+  B  = dy / L;         // A*x + B*y + C = d gives the signed distance of any x,y to the line
+  C0 = -(A*x0 + B*y0); // C coeff for left endpoint
+  C1 = -(A*x1 + B*y1); // C coeff for right endpoint
+
+  // compute loop limits:
+  d = w2;                                     // end-cap extension
+  if(!roundCaps)
+    d *= (abs(dx)+abs(dy))/L;
+  xs  = rsLimit((int)floor(x0-d), 0, xMax);   // start of left cap (and overall line)
+  xel = rsLimit((int)ceil( x0+d), 0, xMax);   // end of left cap
+  xsr = rsLimit((int)floor(x1-d), 0, xMax);   // start of right cap
+  xe  = rsLimit((int)ceil( x1+d), 0, xMax);   // end of right cap (and overall line)
+  dvy = (int)ceil(w2/A);                      // maximum vertical pixel distance from line  
 }
