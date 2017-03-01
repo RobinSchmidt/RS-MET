@@ -445,7 +445,7 @@ void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float c
 void drawThickLine(ImageF& img, float x0, float y0, float x1, float y1, float color,
   float thickness, bool roundCaps = false)
 {
-  float (*lineProfile)(float, float) = lineIntensity2;
+  float (*lineProfile)(float, float) = lineIntensity1;
 
   thickness += 1.f; // hack, because line are one pixel too narrow (why?)
 
@@ -604,6 +604,7 @@ void lineJoints()
   drawer.setBlendMode(ImageDrawerFFF::BLEND_ADD_SATURATE);
   //drawer.setLineProfile(LineDrawerFFF::PROFILE_LINEAR);
   drawer.setLineProfile(LineDrawerFFF::PROFILE_FLAT);
+  //drawer.setLineProfile(LineDrawerFFF::PROFILE_CUBIC);
   drawer.setLineWidth(thickness);
   drawer.setColor(brightness);
 
@@ -614,7 +615,6 @@ void lineJoints()
   float x0, y0, x1, y1;
   float w2 = 0.5*imageWidth;
   float h2 = 0.5*imageHeight;
-  //float dy = h2 numAngles;
   float dy = (float)margin;
   float offset;
   for(int i = 0; i < numAngles; i++)
@@ -625,11 +625,13 @@ void lineJoints()
     x1 = w2;
     y1 = margin + i*dy + offset;
     drawer.drawLine(x0, y0, x1, y1);
+    //drawThickLine(image, x0, y0, x1, y1, brightness, thickness, true);
     x0 = x1;
     y0 = y1;
     x1 = imageWidth - margin;
     y1 = margin + offset;
     drawer.drawLine(x0, y0, x1, y1);
+    //drawThickLine(image, x0, y0, x1, y1, brightness, thickness, true);
   }
 
   writeImageToFilePPM(image, "LineJoints.ppm");

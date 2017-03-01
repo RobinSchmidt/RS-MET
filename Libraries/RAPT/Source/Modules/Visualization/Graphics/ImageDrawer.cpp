@@ -97,7 +97,7 @@ void LineDrawer<TPix, TWgt, TCor>::drawLine(TCor x0, TCor y0, TCor x1, TCor y1)
 {
   TCor dx, dy, a, b, yf, dp, d, L, A, B, C0, C1, AxBy;
   TWgt sc;
-  int xMax, yMax, xs, xe, ys, ye, x, y, dvy;
+  int xMax, yMax, xs, xe, xel, xsr, ys, ye, x, y, dvy;
   bool steep;
 
   xMax  = image->getWidth()-1;   // guard for x index
@@ -124,7 +124,6 @@ void LineDrawer<TPix, TWgt, TCor>::drawLine(TCor x0, TCor y0, TCor x1, TCor y1)
     //L = 1;  // is this right? we need to avoid div-by-zero
   }
 
-
   // slope/intercept equation y = a*x + b coefficients for main line:
   a = dy / dx;
   b = y0 - a*x0;
@@ -135,16 +134,18 @@ void LineDrawer<TPix, TWgt, TCor>::drawLine(TCor x0, TCor y0, TCor x1, TCor y1)
   C0 = -(A*x0 + B*y0); // C coeff for left endpoint
   C1 = -(A*x1 + B*y1); // C coeff for right endpoint
 
-  // end-cap extension:
-  d = w2;   
+  // compute loop limits:
+  d = w2;                         // end-cap extension
   if(!roundCaps)
     d *= (abs(dx)+abs(dy))/L;
+  xs  = rsLimit((int)floor(x0-d), 0, xMax);   // start of left cap (and overall line)
+  xel = rsLimit((int)ceil( x0+d), 0, xMax);   // end of left cap
+  xsr = rsLimit((int)floor(x1-d), 0, xMax);   // start of right cap
+  xe  = rsLimit((int)ceil( x1+d), 0, xMax);   // end of right cap (and overall line)
+  dvy = (int)ceil(w2/A);                      // maximum vertical pixel distance from line  
 
-  // main loop:
-  xs  = rsLimit((int)floor(x0-d), 0, xMax);   // start x-index 
-  xe  = rsLimit((int)ceil( x1+d), 0, xMax);   // end x-index
-  dvy = (int)ceil(w2/A);                      // maximum vertical pixel distance from line
-  for(x = xs; x <= xe; x++){                  // outer loop over x
+  // draw middle section:
+  for(x = xel+1; x <= xsr-1; x++){            // outer loop over x
     yf = a*x + b;                             // ideal y (float)
     y  = roundToInt(yf);                      // rounded y
     ys = rsMax(y-dvy, 0);                     // scanline start
@@ -152,22 +153,99 @@ void LineDrawer<TPix, TWgt, TCor>::drawLine(TCor x0, TCor y0, TCor x1, TCor y1)
     for(y = ys; y <= ye; y++){                // inner loop over y-scanline
       dp = A * abs(yf-y);                     // perpendicuar pixel distance from line
       sc = lineProfile(dp, w2);               // intensity/color scaler
+      plot(x, y, sc, steep);                  // plot pixel (may swap x,y according to "steep") 
+    }// for y
+  }// for x 
+
+  // draw left cap:
+  for(x = xs; x <= xel; x++){
+    yf = a*x + b;
+    y  = roundToInt(yf);
+    ys = rsMax(y-dvy, 0);
+    ye = rsMin(y+dvy, yMax);
+    for(y = ys; y <= ye; y++){
+      dp = A * abs(yf-y);
+      sc = lineProfile(dp, w2);
       AxBy = A*x + B*y;
-      if((d = -AxBy - C0) > 0.f){              // left end cap
+      if((d = -AxBy - C0) > 0.f){             // pixel is left to left trimline (in left cap)
         if(roundCaps){
           d  = sqrt(dp*dp+d*d);
           sc = lineProfile(d, w2); }
         else
           sc *= lineProfile(d, w2); }
-      if((d = AxBy + C1) > 0.f){              // right end cap
+      if((d = AxBy + C1) > 0.f){              // right to right trimline (right end cap) - a pixel
+        if(roundCaps){                        // may be in both, so we need to check both
+          d = sqrt(dp*dp+d*d);                // conditions in both cap-drawing loops :-(
+          sc = lineProfile(d, w2);  }
+        else
+          sc *= lineProfile(d, w2); }
+      plot(x, y, sc, steep);
+    }// for y
+  }// for x  
+
+  // draw right cap:
+  for(x = xsr; x <= xe; x++){
+    yf = a*x + b;
+    y  = roundToInt(yf);
+    ys = rsMax(y-dvy, 0);
+    ye = rsMin(y+dvy, yMax);
+    for(y = ys; y <= ye; y++){
+      dp = A * abs(yf-y);
+      sc = lineProfile(dp, w2);
+      AxBy = A*x + B*y;
+      if((d = -AxBy - C0) > 0.f){
+        if(roundCaps){
+          d  = sqrt(dp*dp+d*d);
+          sc = lineProfile(d, w2); }
+        else
+          sc *= lineProfile(d, w2); }
+      if((d = AxBy + C1) > 0.f){
         if(roundCaps){
           d = sqrt(dp*dp+d*d);
           sc = lineProfile(d, w2);  }
         else
           sc *= lineProfile(d, w2); }
-      plot(x, y, sc, steep);                  // plot pixel (may swap x,y according to "steep") 
+      plot(x, y, sc, steep);
     }// for y
   }// for x  
+
+
+  // Using three loops for left-end, middle section and right end complicates the code and produces
+  // a lot of duplication, but it avoids unnecessary checks against end-cap conditions in the
+  // loop for the middle section which is assumed to be longer than the caps, so it may be worth it
+  // for effifiency reasons. Below is the old prototype main loop that draws both caps and middle 
+  // section in  one single loop:
+
+  //d = w2;                         // end-cap extension
+  //if(!roundCaps)
+  //  d *= (abs(dx)+abs(dy))/L;
+  //xs  = rsLimit((int)floor(x0-d), 0, xMax);   // start x-index 
+  //xe  = rsLimit((int)ceil( x1+d), 0, xMax);   // end x-index
+  //dvy = (int)ceil(w2/A);                      // maximum vertical pixel distance from line
+  //for(x = xs; x <= xe; x++){                  // outer loop over x
+  //  yf = a*x + b;                             // ideal y (float)
+  //  y  = roundToInt(yf);                      // rounded y
+  //  ys = rsMax(y-dvy, 0);                     // scanline start
+  //  ye = rsMin(y+dvy, yMax);                  // scanline end
+  //  for(y = ys; y <= ye; y++){                // inner loop over y-scanline
+  //    dp = A * abs(yf-y);                     // perpendicuar pixel distance from line
+  //    sc = lineProfile(dp, w2);               // intensity/color scaler
+  //    AxBy = A*x + B*y;
+  //    if((d = -AxBy - C0) > 0.f){              // left end cap
+  //      if(roundCaps){
+  //        d  = sqrt(dp*dp+d*d);
+  //        sc = lineProfile(d, w2); }
+  //      else
+  //        sc *= lineProfile(d, w2); }
+  //    if((d = AxBy + C1) > 0.f){              // right end cap
+  //      if(roundCaps){
+  //        d = sqrt(dp*dp+d*d);
+  //        sc = lineProfile(d, w2);  }
+  //      else
+  //        sc *= lineProfile(d, w2); }
+  //    plot(x, y, sc, steep);                  // plot pixel (may swap x,y according to "steep") 
+  //  }// for y
+  //}// for x  
 }
 
 
