@@ -81,7 +81,7 @@ template<class TPix, class TWgt, class TCor>
 void LineDrawer<TPix, TWgt, TCor>::setLineWidth(TCor newWidth)
 {
   rsAssert(newWidth > 0);
-  w2 = 0.5*(newWidth+1);   // +1 is a hack, otherwise lines are 1 pixel too narrow
+  w2 = 0.5f*(newWidth+1);   // +1 is a hack, otherwise lines are 1 pixel too narrow
 }
 
 template<class TPix, class TWgt, class TCor>
@@ -117,10 +117,12 @@ void LineDrawer<TPix, TWgt, TCor>::lineTo(TCor x1, TCor y1)
   setupAlgorithmVariables(x0, y0, x1, y1);
   if(dx == 0)
     return;   // todo: maybe draw circle
+  drawMiddleSection();
+  //drawLeftCap();
+  //drawRightCap();
+  drawCapForJoint(xs,  xel, x1, y1);
+  drawCapForJoint(xsr, xe,  x1, y1);
 
-
-
-  // store endpoint as startpoint for next call:
   x0 = x1; 
   y0 = y1;
 }
@@ -200,6 +202,10 @@ void LineDrawer<TPix, TWgt, TCor>::setupAlgorithmVariables(TCor x0, TCor y0, TCo
   xsr = rsLimit((int)floor(x1-d), 0, xMax);   // start of right cap
   xe  = rsLimit((int)ceil( x1+d), 0, xMax);   // end of right cap (and overall line)
   dvy = (int)ceil(w2/A);                      // maximum vertical pixel distance from line  
+
+  //// store line endpoint to be used as startpoint (for lineTo calls):
+  //this->x0 = x1; 
+  //this->y0 = y1;
 }
 
 template<class TPix, class TWgt, class TCor>
@@ -242,6 +248,49 @@ void LineDrawer<TPix, TWgt, TCor>::drawCap(int start, int end)
           sc = lineProfile(d, w2);  }
         else
           sc *= lineProfile(d, w2); }
+      plot(x, y, sc, steep);
+    }// for y
+  }// for x  
+}
+
+template<class TPix, class TWgt, class TCor>
+void LineDrawer<TPix, TWgt, TCor>::drawCapForJoint(int start, int end, TCor x1, TCor y1)
+{
+  //TCor r2;
+  TCor r0, r1;
+  for(x = start; x <= end; x++){
+    yf = a*x + b;
+    y  = roundToInt(yf);
+    ys = rsMax(y-dvy, 0);
+    ye = rsMin(y+dvy, yMax);
+    for(y = ys; y <= ye; y++){
+      dp = A * abs(yf-y);
+      sc = lineProfile(dp, w2);
+      AxBy = A*x + B*y;
+
+      // regular end cap code:
+      if((d = -AxBy - C0) > 0.f){             // pixel is left to left trimline (in left cap)
+        if(roundCaps){
+          d  = sqrt(dp*dp+d*d);
+          sc = lineProfile(d, w2); }
+        else
+          sc *= lineProfile(d, w2); }
+      if((d = AxBy + C1) > 0.f){              // right to right trimline (right end cap) - a pixel
+        if(roundCaps){                        // may be in both, so we need to check both
+          d = sqrt(dp*dp+d*d);                // conditions in both cap-drawing loops :-(
+          sc = lineProfile(d, w2);  }
+        else
+          sc *= lineProfile(d, w2); }
+
+      // additional joining code:
+      r0 = (x-x0)*(x-x0) + (y-y0)*(y-y0);
+      if(r0 < w2*w2)
+        sc *= 0.0;
+      //r1 = (x-x1)*(x-x1) + (y-y1)*(y-y1);
+      //if(r1 < w2*w2)
+      //  sc *= 0.5;
+
+
       plot(x, y, sc, steep);
     }// for y
   }// for x  

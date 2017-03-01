@@ -15,7 +15,7 @@ void runExperiments()
   //lineDrawing();
   //lineDrawingThick();
   ///lineDrawingThick2(); // obsolete
-  lineJoints();
-  //randomPolyLine();
+  //lineJoints();
+  randomPolyLine();
 
 }

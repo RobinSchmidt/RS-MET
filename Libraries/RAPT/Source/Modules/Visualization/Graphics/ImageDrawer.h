@@ -184,6 +184,14 @@ private:
   (occurs for very short slanted lines). */
   void drawCap(int start, int end);
 
+  /** A special variant of the left cap drawing code to be used for joined lines (in lineTo). It 
+  avoids drawing anything within the left end-circle. When used in round caps mode, it avoids the
+  phantom circles that woul otherwise appear in the line joints. */
+  //void drawLeftCapForJoint();
+   // currently works only in round cap mode
+
+  void drawCapForJoint(int start, int end, TCor x1, TCor y1);
+
 
 
   // internal variables for the actual drawing algorithm:

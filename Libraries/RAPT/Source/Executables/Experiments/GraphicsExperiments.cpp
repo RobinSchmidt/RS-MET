@@ -642,14 +642,15 @@ void randomPolyLine()
   // user parameters:
   int imageWidth   = 800;
   int imageHeight  = 800;
-  int numLines     = 10;
-  float brightness = 0.5f;
+  int numLines     = 30;
+  float brightness = 0.25f;
   float thickness  = 20.f;
 
   // create objects:
   ImageF image(imageWidth, imageHeight);
   LineDrawerFFF drawer(&image);
-  drawer.setBlendMode(ImageDrawerFFF::BLEND_ADD_SATURATE);
+  //drawer.setBlendMode(ImageDrawerFFF::BLEND_ADD_SATURATE);
+  drawer.setBlendMode(ImageDrawerFFF::BLEND_ADD_CLIP);
   //drawer.setLineProfile(LineDrawerFFF::PROFILE_LINEAR);
   drawer.setLineProfile(LineDrawerFFF::PROFILE_FLAT);
   //drawer.setLineProfile(LineDrawerFFF::PROFILE_CUBIC);
@@ -662,7 +663,7 @@ void randomPolyLine()
   xMax = imageWidth  - margin;
   yMax = imageHeight - margin;
   drawer.drawLine(xMin, yMin, xMax, yMax);
-  rsRandomUniform(0.0, 1.0, 0);
+  rsRandomUniform(0.0, 1.0, 3);
   float x1, y1;
   for(int i = 2; i <= numLines; i++)
   {
