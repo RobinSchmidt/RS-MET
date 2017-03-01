@@ -125,7 +125,13 @@ public:
   /** Special line drawing function that is supposed to be used for drawing sequences of connected
   lines. After an initial call to drawLine or a previous call to lineTo, you can call this 
   function in order to avoid artifacts (phantom circles) at the line joints. */ 
-  void lineTo(TCor x1, TCor y1);
+  void lineTo(TCor x, TCor y);
+
+  inline void initLine(TCor x, TCor y)
+  {
+    xOld = x;
+    yOld = y;
+  }
 
 
   //void drawConnectedLine(TCor x0, TCor y0, TCor x1, TCor y1);
@@ -139,7 +145,7 @@ protected:
 
   bool roundCaps = true;
   TCor w2;                // lineWidth/2
-  TCor x0 = 0, y0 = 0;    // start-point for lineTo function
+  //TCor x0 = 0, y0 = 0;    // start-point for lineTo function
   int  profileIndex;
   TWgt (*lineProfile)(TCor distance, TCor halfWidth);
 
@@ -198,7 +204,10 @@ private:
   TCor dx, dy, a, b, yf, dp, d, L, A, B, C0, C1, AxBy;
   TWgt sc; // scaler for color
   int xMax, yMax, xs, xe, xel, xsr, ys, ye, x, y, dvy;
-  bool steep;
+  bool steep, back;
+
+
+  TCor xOld = 0, yOld = 0;
 
 };
 

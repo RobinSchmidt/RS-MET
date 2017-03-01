@@ -107,24 +107,36 @@ void LineDrawer<TPix, TWgt, TCor>::drawLine(TCor x0, TCor y0, TCor x1, TCor y1)
   drawRightCap();
 
   // store line endpoint to be used as startpoint for subsequent lineTo calls
-  this->x0 = x1; 
-  this->y0 = y1;
+  xOld = x1; 
+  xOld = y1;
 }
 
 template<class TPix, class TWgt, class TCor>
-void LineDrawer<TPix, TWgt, TCor>::lineTo(TCor x1, TCor y1)
+void LineDrawer<TPix, TWgt, TCor>::lineTo(TCor x, TCor y)
 {
-  setupAlgorithmVariables(x0, y0, x1, y1);
+  setupAlgorithmVariables(xOld, yOld, x, y);
   if(dx == 0)
     return;   // todo: maybe draw circle
   drawMiddleSection();
   //drawLeftCap();
   //drawRightCap();
-  drawCapForJoint(xs,  xel, x1, y1);
-  drawCapForJoint(xsr, xe,  x1, y1);
 
-  x0 = x1; 
-  y0 = y1;
+  //drawCapForJoint(xs, xel, x, y);
+  //drawCapForJoint(xsr, xe, x, y);
+
+  if(!back)
+  {
+    drawCapForJoint(xs, xel, xOld, yOld);
+    drawCapForJoint(xsr, xe, xOld, yOld);
+  }
+  else
+  {
+    drawCapForJoint(xs, xel, x, y);
+    drawCapForJoint(xsr, xe, x, y);
+  }
+
+  xOld = x; 
+  yOld = y;
 }
 
 // profile functions:
@@ -177,7 +189,8 @@ void LineDrawer<TPix, TWgt, TCor>::setupAlgorithmVariables(TCor x0, TCor y0, TCo
     swap(x0, y0);
     swap(x1, y1);
     swap(xMax, yMax); }
-  if(x0 > x1){                   // swap roles of start and end for leftward lines
+  back = x0 > x1;
+  if(back){                      // swap roles of start and end for leftward lines
     swap(x0, x1);
     swap(y0, y1); 
     dx = -dx;
@@ -283,9 +296,14 @@ void LineDrawer<TPix, TWgt, TCor>::drawCapForJoint(int start, int end, TCor x1, 
           sc *= lineProfile(d, w2); }
 
       // additional joining code:
-      r0 = (x-x0)*(x-x0) + (y-y0)*(y-y0);
+      r0 = w2*w2;
+      if(back)
+        r0 = (x-xOld)*(x-xOld) + (y-yOld)*(y-yOld);
+      else
+        r0 = (x-x1)*(x-x1) + (y-y1)*(y-y1);
       if(r0 < w2*w2)
         sc *= 0.0;
+
       //r1 = (x-x1)*(x-x1) + (y-y1)*(y-y1);
       //if(r1 < w2*w2)
       //  sc *= 0.5;

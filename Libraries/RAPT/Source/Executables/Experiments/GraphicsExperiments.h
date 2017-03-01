@@ -7,7 +7,7 @@ void lineDrawing();
 void lineDrawingThick();
 //void lineDrawingThick2(); // obsolete
 void lineJoints();
-void randomPolyLine();
-
+void polyLineRandom();
+void polyLineZigZag();
 
 #endif
