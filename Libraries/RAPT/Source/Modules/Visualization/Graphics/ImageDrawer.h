@@ -122,11 +122,11 @@ public:
   /** Draws a line from (x0,y0) to (x1,y1). */
   void drawLine(TCor x0, TCor y0, TCor x1, TCor y1);
 
-
   /** Special line drawing function that is supposed to be used for drawing sequences of connected
   lines. After an initial call to drawLine or a previous call to lineTo, you can call this 
   function in order to avoid artifacts (phantom circles) at the line joints. */ 
   void lineTo(TCor x1, TCor y1);
+
 
   //void drawConnectedLine(TCor x0, TCor y0, TCor x1, TCor y1);
 
@@ -136,16 +136,6 @@ public:
 
 
 protected:
-
-  /** Convenience function to possibly plot a pixel with swapped x/y coordinates (needed for steep 
-  lines). */
-  inline void plot(int x, int y, TWgt weight, bool swapXY)
-  {
-    if(swapXY)
-      ImageDrawer::plot(y, x, weight);
-    else
-      ImageDrawer::plot(x, y, weight);
-  }
 
   bool roundCaps = true;
   TCor w2;                // lineWidth/2
@@ -165,13 +155,32 @@ protected:
 
 private:
 
+  /** Convenience function to possibly plot a pixel with swapped x/y coordinates (needed for steep 
+  lines). */
+  inline void plot(int x, int y, TWgt weight, bool swapXY)
+  {
+    if(swapXY)
+      ImageDrawer::plot(y, x, weight);
+    else
+      ImageDrawer::plot(x, y, weight);
+  }
+
   /** Sets up the internal variables for the line drawing algorithm for the two given 
   endpoints. */
   void setupAlgorithmVariables(TCor x0, TCor y0, TCor x1, TCor y1);
 
+  /** Draws the left end cap of the line. */
+  void drawLeftCap();
+
+  /** Draws the right end cap of the line. */
+  void drawRightCap();
+
+  /** Draws the middle section between the end caps. */
+  void drawMiddleSection();
+
   // internal variables for the actual drawing algorithm:
   TCor dx, dy, a, b, yf, dp, d, L, A, B, C0, C1, AxBy;
-  TWgt sc;
+  TWgt sc; // scaler for color
   int xMax, yMax, xs, xe, xel, xsr, ys, ye, x, y, dvy;
   bool steep;
 

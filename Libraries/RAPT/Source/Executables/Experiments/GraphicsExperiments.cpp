@@ -636,3 +636,40 @@ void lineJoints()
 
   writeImageToFilePPM(image, "LineJoints.ppm");
 }
+
+void randomPolyLine()
+{
+  // user parameters:
+  int imageWidth   = 800;
+  int imageHeight  = 800;
+  int numLines     = 10;
+  float brightness = 0.5f;
+  float thickness  = 20.f;
+
+  // create objects:
+  ImageF image(imageWidth, imageHeight);
+  LineDrawerFFF drawer(&image);
+  drawer.setBlendMode(ImageDrawerFFF::BLEND_ADD_SATURATE);
+  //drawer.setLineProfile(LineDrawerFFF::PROFILE_LINEAR);
+  drawer.setLineProfile(LineDrawerFFF::PROFILE_FLAT);
+  //drawer.setLineProfile(LineDrawerFFF::PROFILE_CUBIC);
+  drawer.setLineWidth(thickness);
+  drawer.setColor(brightness);
+
+  float margin = 2*thickness;
+  float xMin, yMin, xMax, yMax;
+  xMin = yMin = margin;
+  xMax = imageWidth  - margin;
+  yMax = imageHeight - margin;
+  drawer.drawLine(xMin, yMin, xMax, yMax);
+  rsRandomUniform(0.0, 1.0, 0);
+  float x1, y1;
+  for(int i = 2; i <= numLines; i++)
+  {
+    x1 = rsRandomUniform(xMin, xMax);
+    y1 = rsRandomUniform(yMin, yMax);
+    drawer.lineTo(x1, y1);
+  }
+
+  writeImageToFilePPM(image, "RandomPolyLine.ppm");
+}
