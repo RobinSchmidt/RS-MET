@@ -527,13 +527,22 @@ void ImagePainter<TPix, TWgt, TCor>::drawDottedLine(TCor x1, TCor y1, TCor x2, T
   if(scaleByNumDots)
     scaledColor = scaledColor / (TPix)numDots;
 
-  TCor scaler = (TCor)(1.0 / (numDots-1));
+  //TCor scaler = (TCor)(1.0 / (numDots-1));
+  //TCor k;
+  //for(int i = 0; i < numDots; i++)
+  //{
+  //  k = scaler * i;  // == i / (numDots-1)
+  //  paintDot(x1 + k*dx, y1 + k*dy, scaledColor);
+  //}
+
+  TCor scaler = (TCor)(1.0 / numDots);
   TCor k;
-  for(int i = 0; i < numDots; i++)
+  for(int i = 1; i <= numDots; i++)
   {
-    k = scaler * i;  // == i / (numDots-1)
+    k = scaler * i;  // == i / numDots
     paintDot(x1 + k*dx, y1 + k*dy, scaledColor);
   }
+  // i think, we should start the loop at i=0 and use scaler = 1.0 / (numDots-1)
 }
 
 // some helper functions used in Wu algorithm (maybe try to get rid of them):
