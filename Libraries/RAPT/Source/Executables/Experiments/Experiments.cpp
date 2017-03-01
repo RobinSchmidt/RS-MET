@@ -16,7 +16,9 @@ void runExperiments()
   //lineDrawingThick();
   ///lineDrawingThick2(); // obsolete
   //lineJoints();
-  //polyLineRandom();
-  polyLineZigZag();
+  polyLineRandom();
+  polyLineZigZagHorz();
+  polyLineZigZagVert();
+
 
 }

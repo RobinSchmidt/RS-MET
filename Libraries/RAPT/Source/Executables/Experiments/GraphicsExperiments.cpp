@@ -681,7 +681,7 @@ void polyLineRandom()
   writeImageToFilePPM(image, "PolyLineRandom.ppm");
 }
 
-void polyLineZigZag()
+void polyLineZigZagHorz()
 {  
   // user parameters:
   int imageWidth   = 800;
@@ -702,6 +702,7 @@ void polyLineZigZag()
   dy   = 5*thickness;
   xMin = margin;
   xMax = imageWidth - margin;
+
   y    = margin;
   drawer.initLine(xMin, y);
   while(y < imageHeight)
@@ -709,7 +710,63 @@ void polyLineZigZag()
     drawer.lineTo(xMax, y);
     y += dy;
     drawer.lineTo(xMin, y); 
+    y += dy;
   }
 
-  writeImageToFilePPM(image, "PolyLineZigZag.ppm");
+  y = imageHeight - margin;
+  drawer.initLine(xMax, y);
+  while(y > 0)
+  {
+    drawer.lineTo(xMax, y);
+    y -= dy;
+    drawer.lineTo(xMin, y); 
+    y -= dy;
+  }
+
+  writeImageToFilePPM(image, "PolyLineZigZagHorz.ppm");
+}
+
+void polyLineZigZagVert()
+{  
+  // user parameters:
+  int imageWidth   = 800;
+  int imageHeight  = 800;
+  float brightness = 0.25f;
+  float thickness  = 20.f;
+
+  // create objects:
+  ImageF image(imageWidth, imageHeight);
+  LineDrawerFFF drawer(&image);
+  drawer.setBlendMode(ImageDrawerFFF::BLEND_ADD_CLIP);
+  drawer.setLineProfile(LineDrawerFFF::PROFILE_FLAT);
+  drawer.setLineWidth(thickness);
+  drawer.setColor(brightness);
+
+  float margin = 2*thickness;
+  float yMin, yMax, x, dx;
+  dx   = 5*thickness;
+  yMin = margin;
+  yMax = imageHeight - margin;
+
+  x    = margin;
+  drawer.initLine(x, yMin);
+  while(x < imageWidth)
+  {
+    drawer.lineTo(x, yMax);
+    x += dx;
+    drawer.lineTo(x, yMin); 
+    x += dx;
+  }
+
+  x = imageWidth - margin;
+  drawer.initLine(x, yMax);
+  while(x > 0)
+  {
+    drawer.lineTo(x, yMax);
+    x -= dx;
+    drawer.lineTo(x, yMin); 
+    x -= dx;
+  }
+
+  writeImageToFilePPM(image, "PolyLineZigZagVert.ppm");
 }

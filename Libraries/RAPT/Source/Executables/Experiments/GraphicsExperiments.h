@@ -8,6 +8,7 @@ void lineDrawingThick();
 //void lineDrawingThick2(); // obsolete
 void lineJoints();
 void polyLineRandom();
-void polyLineZigZag();
+void polyLineZigZagHorz();
+void polyLineZigZagVert();
 
 #endif

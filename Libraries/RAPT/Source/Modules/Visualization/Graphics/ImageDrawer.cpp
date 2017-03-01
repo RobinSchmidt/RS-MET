@@ -118,21 +118,39 @@ void LineDrawer<TPix, TWgt, TCor>::lineTo(TCor x, TCor y)
   if(dx == 0)
     return;   // todo: maybe draw circle
   drawMiddleSection();
-  //drawLeftCap();
-  //drawRightCap();
 
-  //drawCapForJoint(xs, xel, x, y);
-  //drawCapForJoint(xsr, xe, x, y);
-
+  // code currently works for forward and backward flat lines and for forawrd steep lines
+  // backward steep lines are still wrong
   if(!back)
   {
-    drawCapForJoint(xs, xel, xOld, yOld);
-    drawCapForJoint(xsr, xe, xOld, yOld);
+    // forward lines
+    if(steep)
+    {
+      // steep forward lines - works
+      drawCapForJoint(xs, xel, yOld, xOld);
+      drawCapForJoint(xsr, xe, y, x);
+    }
+    else
+    {
+      // flat forward lines - works
+      drawCapForJoint(xs, xel, xOld, yOld);
+      drawCapForJoint(xsr, xe, xOld, yOld);
+    }
   }
   else
   {
-    drawCapForJoint(xs, xel, x, y);
-    drawCapForJoint(xsr, xe, x, y);
+    // steep backward lines - doesn't work yet
+    if(steep)
+    {
+      drawCapForJoint(xs, xel, y, x);
+      drawCapForJoint(xsr, xe, yOld, xOld);
+    }
+    else
+    {
+      // flat backward lines - works
+      drawCapForJoint(xs, xel, xOld, yOld);
+      drawCapForJoint(xsr, xe, xOld, yOld);
+    }
   }
 
   xOld = x; 
