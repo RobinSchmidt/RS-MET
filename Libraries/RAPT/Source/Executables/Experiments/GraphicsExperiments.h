@@ -9,7 +9,5 @@ void lineDrawingThick();
 void lineJoints();
 void lineTo();
 void polyLineRandom();
-void polyLineZigZagHorz();
-void polyLineZigZagVert();
 
 #endif
