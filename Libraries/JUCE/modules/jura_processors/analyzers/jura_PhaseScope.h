@@ -92,7 +92,11 @@ protected:
 ..it's more obvious with faster decay times - maybe it's because the decay is applied in the GUI 
 thread whereas accumulation is done in the audio-thread? instead of calling applyPixelDecay in the 
 GUI thread we could set a flag in the phaseScope audio module and the apply the decay there
--> done - this seems to help indeed but also seems to introduce tearing artifacts */
+-> done - this seems to help indeed but also seems to introduce tearing artifacts 
+
+maybe we should have a version of it which uses OpenGL - here's a tutorial:
+http://duriansoftware.com/joe/An-intro-to-modern-OpenGL.-Table-of-Contents.html
+*/
 
 class JUCE_API PhaseScopeDisplay : public Component, public ImageUpdateListener,
   public ChangeListener, public ChangeBroadcaster
@@ -150,6 +154,14 @@ protected:
 /** Extends the basic PhaseScope by some more artistic features such as a customizable dot, 
 blurring, etc. 
 todo: rename to PrettyScope
+
+
+Give me these controls
+1. min-pixel-distance between dots
+2. maximum draw calls per frame (one control that limits both dots and lines)
+3. Let's start creating controls that are resolution-dependent. OH Actually if all size controls scale with resolution I don't have to limit the scope size, because then CPU usage is tied to resolution which is very good. So, give me percentages of resolution for dot size and line size rather than pixel size.
+4. Give me a master brightness control (so I can control dot/line brightness simultaneously)
+
 */
 
 class JUCE_API PhaseScope2 : public jura::PhaseScope

@@ -138,7 +138,7 @@ protected:
 //=================================================================================================
 
 /** Extends the basic PhaseScopeBuffer class with some more artistic features such as an alpha-mask 
-rendered dot, blurring bewteen frames, etc. These features are factored out into a subclass to keep 
+rendered dot, blurring between frames, etc. These features are factored out into a subclass to keep 
 the baseclass lean. */
 
 template<class TSig, class TPix, class TPar> // signal, pixel, parameter types

@@ -259,7 +259,9 @@ void PhaseScopeBuffer2<TSig, TPix, TPar>::addLineTo(TSig x, TSig y)
     if(L > 1)
       scaler = 1/L;
     lineDrawer.setColor(lineBrightness * TPix(scaler));
-    lineDrawer.drawLine(xOld, yOld, x, y); }
+    //lineDrawer.drawLine(xOld, yOld, x, y); // old - creates phantom dots at joints
+    lineDrawer.lineTo(x, y);
+  }
   if(drawDots)
     PhaseScopeBuffer::addLineTo(x, y); // draws dotted line, updates xOld, yOld
   else {

@@ -89,7 +89,7 @@ public:
   situations. scaleByNumDots ...
   \todo: maybe make this color scaling optional  */
   void drawDottedLine(TCor x1, TCor y1, TCor x2, TCor y2, TPix color, TCor density = 1, 
-    int maxNumDots = 0, bool scaleByNumDots = false);
+    int maxNumDots = 0, bool scaleByNumDots = false, TCor minDotDistance = 1);
   // rename to drawLineDotted
 
   /** Draws a 1-pixel wide line with the given color from (x0,y0) to (x1,y2) using Xiaolin Wu's 
