@@ -117,45 +117,29 @@ void LineDrawer<TPix, TWgt, TCor>::lineTo(TCor x, TCor y)
   setupAlgorithmVariables(xOld, yOld, x, y);
   if(dx == 0)
     return;   // todo: maybe draw circle
+
   drawMiddleSection();
 
-  // code currently works for forward and backward flat lines and for forawrd steep lines
-  // backward steep lines are still wrong
-  if(!back)
-  {
-    // forward lines
-    if(steep)
-    {
-      // steep forward lines - works
+  // draw caps, some logic is needed to figure out which cap is to be drawn wnd which isn't
+  // because of potential swapping of start/end and/or x/y:
+  if(!back){                                        // forward
+    if(steep){                                      // forward and steep
       drawCapForJoint(xs, xel, yOld, xOld);
-      drawCapForJoint(xsr, xe, y, x);
-    }
-    else
-    {
-      // flat forward lines - works
+      drawCapForJoint(xsr, xe, y, x);        }
+    else{                                           // forward and flat 
       drawCapForJoint(xs, xel, xOld, yOld);
-      drawCapForJoint(xsr, xe, xOld, yOld);
-    }
-  }
-  else
-  {
-    // steep backward lines:
-    if(steep)
-    {
-      drawCapForJoint(xs, xel, y, x);
-      drawCapForJoint(xsr, xe, yOld, xOld);
-    }
-    else
-    {
-      // flat backward lines - works
+      drawCapForJoint(xsr, xe, xOld, yOld);  }}
+  else{                                             // backward
+    if(steep){                                      // backward and steep 
+      drawCapForJoint(xs, xel, yOld, xOld);
+      drawCapForJoint(xsr, xe, y,    x);     }
+    else{                                           // backward and flat
       drawCapForJoint(xs, xel, xOld, yOld);
-      drawCapForJoint(xsr, xe, xOld, yOld);
-    }
-  }
-  // it still sometimes doesn't work (check with random lines) - i think, we need to pass
-  // xj, yj to the drawCapForJoint - these are the coordinates for the joint at which we 
-  // don't draw. here, we need to figure out xj, yj from the conditions whether current and/or
-  // previous line was steep and/or backwards
+      drawCapForJoint(xsr, xe, xOld, yOld);  }}
+
+  // it still sometimes doesn't work (check with random lines) - maybe we have also take into 
+  // account whether or not the previous line was forward or backward and/or steep or flat?
+
 
   xOld = x; 
   yOld = y;
@@ -289,10 +273,11 @@ void LineDrawer<TPix, TWgt, TCor>::drawCap(int start, int end)
 }
 
 template<class TPix, class TWgt, class TCor>
-void LineDrawer<TPix, TWgt, TCor>::drawCapForJoint(int start, int end, TCor x1, TCor y1)
+void LineDrawer<TPix, TWgt, TCor>::drawCapForJoint(int start, int end, TCor xj, TCor yj)
 {
   //TCor r2;
-  TCor r0, r1;
+  //TCor r0, r1;
+  TCor dj; // distance from join (we may actually reuse the regular d for that);
   for(x = start; x <= end; x++){
     yf = a*x + b;
     y  = roundToInt(yf);
@@ -318,17 +303,21 @@ void LineDrawer<TPix, TWgt, TCor>::drawCapForJoint(int start, int end, TCor x1, 
           sc *= lineProfile(d, w2); }
 
       // additional joining code:
-      r0 = w2*w2;
-      if(back)
-        r0 = (x-xOld)*(x-xOld) + (y-yOld)*(y-yOld);
-      else
-        r0 = (x-x1)*(x-x1) + (y-y1)*(y-y1);
-      if(r0 < w2*w2)
-        sc *= 0.0;
+      dj = (x-xj)*(x-xj) + (y-yj)*(y-yj);
+      if(dj < w2*w2)
+      {
+        sc *= 1-profileFlat(sqrt(dj), w2);
+        //sc *= 0.0; // use anti-aliasing - call (1-profileFlat(sqrt(dj)) 
+      }
 
-      //r1 = (x-x1)*(x-x1) + (y-y1)*(y-y1);
-      //if(r1 < w2*w2)
-      //  sc *= 0.5;
+      //// old:
+      //r0 = w2*w2;
+      //if(back)
+      //  r0 = (x-xOld)*(x-xOld) + (y-yOld)*(y-yOld);
+      //else
+      //  r0 = (x-x1)*(x-x1) + (y-y1)*(y-y1);
+      //if(r0 < w2*w2)
+      //  sc *= 0.0;
 
 
       plot(x, y, sc, steep);

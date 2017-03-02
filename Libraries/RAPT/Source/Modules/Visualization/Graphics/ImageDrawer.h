@@ -196,7 +196,7 @@ private:
   //void drawLeftCapForJoint();
    // currently works only in round cap mode
 
-  void drawCapForJoint(int start, int end, TCor x1, TCor y1);
+  void drawCapForJoint(int start, int end, TCor xj, TCor yj);
 
 
 
