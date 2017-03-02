@@ -116,30 +116,15 @@ void LineDrawer<TPix, TWgt, TCor>::lineTo(TCor x, TCor y)
 {
   setupAlgorithmVariables(xOld, yOld, x, y);
   if(dx == 0)
-    return;   // todo: maybe draw circle
+    return;   // todo: draw circle
 
   drawMiddleSection();
-
-  // draw caps, some logic is needed to figure out which cap is to be drawn wnd which isn't
-  // because of potential swapping of start/end and/or x/y:
-  if(!back){                                        // forward
-    if(steep){                                      // forward and steep
-      drawCapForJoint(xs, xel, yOld, xOld);
-      drawCapForJoint(xsr, xe, y, x);        }
-    else{                                           // forward and flat 
-      drawCapForJoint(xs, xel, xOld, yOld);
-      drawCapForJoint(xsr, xe, xOld, yOld);  }}
-  else{                                             // backward
-    if(steep){                                      // backward and steep 
-      drawCapForJoint(xs, xel, yOld, xOld);
-      drawCapForJoint(xsr, xe, y,    x);     }
-    else{                                           // backward and flat
-      drawCapForJoint(xs, xel, xOld, yOld);
-      drawCapForJoint(xsr, xe, xOld, yOld);  }}
-
-  // it still sometimes doesn't work (check with random lines) - maybe we have also take into 
-  // account whether or not the previous line was forward or backward and/or steep or flat?
-
+  if(steep){                                      // steep
+    drawCapForJoint(xs, xel, yOld, xOld);
+    drawCapForJoint(xsr, xe, yOld, xOld);  }
+  else{                                           // flat 
+    drawCapForJoint(xs, xel, xOld, yOld);
+    drawCapForJoint(xsr, xe, xOld, yOld);  }
 
   xOld = x; 
   yOld = y;
@@ -221,10 +206,6 @@ void LineDrawer<TPix, TWgt, TCor>::setupAlgorithmVariables(TCor x0, TCor y0, TCo
   xsr = rsLimit((int)floor(x1-d), 0, xMax);   // start of right cap
   xe  = rsLimit((int)ceil( x1+d), 0, xMax);   // end of right cap (and overall line)
   dvy = (int)ceil(w2/A);                      // maximum vertical pixel distance from line  
-
-  //// store line endpoint to be used as startpoint (for lineTo calls):
-  //this->x0 = x1; 
-  //this->y0 = y1;
 }
 
 template<class TPix, class TWgt, class TCor>
@@ -275,9 +256,6 @@ void LineDrawer<TPix, TWgt, TCor>::drawCap(int start, int end)
 template<class TPix, class TWgt, class TCor>
 void LineDrawer<TPix, TWgt, TCor>::drawCapForJoint(int start, int end, TCor xj, TCor yj)
 {
-  //TCor r2;
-  //TCor r0, r1;
-  TCor dj; // distance from join (we may actually reuse the regular d for that);
   for(x = start; x <= end; x++){
     yf = a*x + b;
     y  = roundToInt(yf);
@@ -302,23 +280,10 @@ void LineDrawer<TPix, TWgt, TCor>::drawCapForJoint(int start, int end, TCor xj, 
         else
           sc *= lineProfile(d, w2); }
 
-      // additional joining code:
-      dj = (x-xj)*(x-xj) + (y-yj)*(y-yj);
-      if(dj < w2*w2)
-      {
-        sc *= 1-profileFlat(sqrt(dj), w2);
-        //sc *= 0.0; // use anti-aliasing - call (1-profileFlat(sqrt(dj)) 
-      }
-
-      //// old:
-      //r0 = w2*w2;
-      //if(back)
-      //  r0 = (x-xOld)*(x-xOld) + (y-yOld)*(y-yOld);
-      //else
-      //  r0 = (x-x1)*(x-x1) + (y-y1)*(y-y1);
-      //if(r0 < w2*w2)
-      //  sc *= 0.0;
-
+      // additional joining code (optimize!):
+      d = (x-xj)*(x-xj) + (y-yj)*(y-yj);
+      if(d < w2*w2)
+        sc *= 1-profileFlat(sqrt(d), w2);
 
       plot(x, y, sc, steep);
     }// for y

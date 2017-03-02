@@ -637,6 +637,46 @@ void lineJoints()
   writeImageToFilePPM(image, "LineJoints.ppm");
 }
 
+void lineTo()
+{
+  // Test the lineTo function by drawing 4 lines using lineTo for the 4 combinations of back/steep
+
+  // user parameters:
+  int size = 800;         // image width and height
+  float brightness = 0.5f;
+  float thickness  = 20.f;
+
+  // create objects:
+  ImageF image(size, size);
+  LineDrawerFFF drawer(&image);
+  drawer.setBlendMode(ImageDrawerFFF::BLEND_ADD_SATURATE);
+  //drawer.setLineProfile(LineDrawerFFF::PROFILE_LINEAR);
+  drawer.setLineProfile(LineDrawerFFF::PROFILE_FLAT);
+  //drawer.setLineProfile(LineDrawerFFF::PROFILE_CUBIC);
+  drawer.setLineWidth(thickness);
+  drawer.setColor(brightness);
+
+  float margin = 2*thickness;
+
+  // flat, forward:
+  drawer.initLine(     margin, 0.4f*size);
+  drawer.lineTo(  size-margin, 0.6f*size);
+
+  // flat, backward:
+  drawer.initLine(size-margin, 0.4f*size);
+  drawer.lineTo(       margin, 0.6f*size);
+
+  // steep, forward:
+  drawer.initLine(0.4f*size,      margin);
+  drawer.lineTo(  0.6f*size, size-margin);
+
+  // steep, backward:
+  drawer.initLine(0.4f*size, size-margin);
+  drawer.lineTo(  0.6f*size,      margin);
+
+  writeImageToFilePPM(image, "LineTo.ppm");
+}
+
 void polyLineRandom()
 {
   // user parameters:
