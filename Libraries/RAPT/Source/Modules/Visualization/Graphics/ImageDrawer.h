@@ -123,14 +123,17 @@ public:
   void drawLine(TCor x0, TCor y0, TCor x1, TCor y1);
 
   /** Special line drawing function that is supposed to be used for drawing sequences of connected
-  lines. After an initial call to drawLine or a previous call to lineTo, you can call this 
+  lines. After an initial call to initLine or a previous call to lineTo, you can call this 
   function in order to avoid artifacts (phantom circles) at the line joints. */ 
   void lineTo(TCor x, TCor y);
 
-  inline void initLine(TCor x, TCor y)
+  /** Function to initialize our xOld, yOld members which are used for polyline drawing. Call this 
+  once with the start point of the polyline before repeatedly callign lineTo  */
+  inline void initPolyLine(TCor x, TCor y)
   {
     xOld = x;
     yOld = y;
+    // maybe it should draw a circle?
   }
 
 

@@ -126,6 +126,11 @@ void LineDrawer<TPix, TWgt, TCor>::lineTo(TCor x, TCor y)
     drawCapForJoint(xs, xel, xOld, yOld);
     drawCapForJoint(xsr, xe, xOld, yOld);  }
 
+  // \todo: make a version of it that always draws both caps (start and end) but with half
+  // brightness/alpha - because the current startegy is only suitable for polylines in which each
+  // adjacent line segment has the same color. if the color is changed between segments, artifacts 
+  // appear
+
   xOld = x; 
   yOld = y;
 }

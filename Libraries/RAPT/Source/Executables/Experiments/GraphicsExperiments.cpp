@@ -523,7 +523,7 @@ void lineDrawingThick()
   int imageWidth   = 800;
   int imageHeight  = 800;
   int numAngles     = 7;
-  float brightness = 0.25f;
+  float brightness = 0.75f;
   float thickness  = 50.f;
 
   // create objects:
@@ -533,6 +533,7 @@ void lineDrawingThick()
   drawer.setBlendMode(ImageDrawerFFF::BLEND_ADD_SATURATE);
   drawer.setLineWidth(thickness);
   drawer.setLineProfile(LineDrawerFFF::PROFILE_LINEAR);
+  drawer.setRoundCaps(false);
 
   // create endpoint arrays:
   float margin = 2*thickness;
@@ -659,19 +660,19 @@ void lineTo()
   float margin = 2*thickness;
 
   // flat, forward:
-  drawer.initLine(     margin, 0.4f*size);
+  drawer.initPolyLine(     margin, 0.4f*size);
   drawer.lineTo(  size-margin, 0.6f*size);
 
   // flat, backward:
-  drawer.initLine(size-margin, 0.4f*size);
+  drawer.initPolyLine(size-margin, 0.4f*size);
   drawer.lineTo(       margin, 0.6f*size);
 
   // steep, forward:
-  drawer.initLine(0.4f*size,      margin);
+  drawer.initPolyLine(0.4f*size,      margin);
   drawer.lineTo(  0.6f*size, size-margin);
 
   // steep, backward:
-  drawer.initLine(0.4f*size, size-margin);
+  drawer.initPolyLine(0.4f*size, size-margin);
   drawer.lineTo(  0.6f*size,      margin);
 
   writeImageToFilePPM(image, "LineTo.ppm");
@@ -680,25 +681,28 @@ void lineTo()
 void polyLineRandom()
 {
   // user parameters:
-  int imageWidth   = 800;
-  int imageHeight  = 800;
-  int numLines     = 30;
-  float brightness = 0.25f;
-  float thickness  = 20.f;
+  int imageWidth      = 800;
+  int imageHeight     = 800;
+  int numLines        = 50;
+  float minBrightness = 0.125f;
+  float maxBrightness = 1.0f;
+  float thickness     = 20.f;
 
   // create objects:
   ImageF image(imageWidth, imageHeight);
   LineDrawerFFF drawer(&image);
-  //drawer.setBlendMode(ImageDrawerFFF::BLEND_ADD_SATURATE);
-  drawer.setBlendMode(ImageDrawerFFF::BLEND_ADD_CLIP);
+  drawer.setBlendMode(ImageDrawerFFF::BLEND_ADD_SATURATE);
+  //drawer.setBlendMode(ImageDrawerFFF::BLEND_ADD_CLIP);
   //drawer.setLineProfile(LineDrawerFFF::PROFILE_LINEAR);
   drawer.setLineProfile(LineDrawerFFF::PROFILE_FLAT);
   //drawer.setLineProfile(LineDrawerFFF::PROFILE_CUBIC);
   drawer.setLineWidth(thickness);
-  drawer.setColor(brightness);
+  //drawer.setColor(brightness);
+  drawer.setRoundCaps(false);
 
   float margin = 2*thickness;
   float xMin, yMin, xMax, yMax;
+  float br;
   xMin = yMin = margin;
   xMax = imageWidth  - margin;
   yMax = imageHeight - margin;
@@ -707,13 +711,15 @@ void polyLineRandom()
   float x0, y0, x1, y1;
   x0 = rsRandomUniform(xMin, xMax);  
   y0 = rsRandomUniform(yMin, yMax);
-  drawer.initLine(x0, y0);
+  drawer.initPolyLine(x0, y0);
   for(int i = 2; i <= numLines; i++)
   {
     x1 = rsRandomUniform(xMin, xMax);
     y1 = rsRandomUniform(yMin, yMax);
-    //drawer.drawLine(x0, y0, x1, y1);
-    drawer.lineTo(x1, y1);
+    br = rsRandomUniform(minBrightness, maxBrightness);
+    drawer.drawLine(x0, y0, x1, y1);
+    drawer.setColor(br);
+    //drawer.lineTo(x1, y1);
     x0 = x1;
     y0 = y1;
   }

@@ -13,10 +13,10 @@ void runExperiments()
 
   // Graphics:
   //lineDrawing();
-  //lineDrawingThick();
+  lineDrawingThick();
   ///lineDrawingThick2(); // obsolete
   //lineJoints();
-  lineTo();
+  //lineTo();
   polyLineRandom();
 
 }
