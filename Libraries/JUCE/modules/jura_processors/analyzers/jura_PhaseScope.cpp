@@ -4,12 +4,14 @@ PhaseScope::PhaseScope(CriticalSection *lockToUse) : AudioModule(lockToUse)
   moduleName = "PhaseScope";
   setActiveDirectory(getApplicationDirectory() + "/PhaseScopePresets");
 
+  phaseScopeBuffer = new PhaseScopeBuffer<double, float, double>;
+
   pixelScale = 1.0;
   displayWidth  = 100;
   displayHeight = 100;
   bypassPixelDecay = false;
-  phaseScopeBuffer.setUseAlphaMask(false);
-  phaseScopeBuffer.setMaxSizeWithoutReAllocation(1000, 1000);
+  //phaseScopeBuffer->setUseAlphaMask(false);
+  phaseScopeBuffer->setMaxSizeWithoutReAllocation(1000, 1000);
   updateBufferSize();
 
   createParameters();
@@ -26,6 +28,11 @@ PhaseScope::PhaseScope(CriticalSection *lockToUse) : AudioModule(lockToUse)
   //g.addColour(0.8, Colour(255, 255,   0));
   //g.addColour(1.0, Colour(255,   0,   0)); // maybe add magenta as last
   //colorMap.setFromColourGradient(g);
+}
+
+PhaseScope::~PhaseScope()
+{
+  delete phaseScopeBuffer;
 }
 
 void PhaseScope::createParameters()
@@ -78,11 +85,11 @@ void PhaseScope::setDisplayPixelSize(int width, int height)
 
 void PhaseScope::setBrightness(double newBrightness)
 {
-  phaseScopeBuffer.setBrightness((float)newBrightness);
+  phaseScopeBuffer->setBrightness((float)newBrightness);
 }
 void PhaseScope::setAfterGlow(double newGlow)
 {
-  phaseScopeBuffer.setDecayTime(newGlow);
+  phaseScopeBuffer->setDecayTime(newGlow);
   if(newGlow == 50.0)
     bypassPixelDecay = true;
   else
@@ -90,15 +97,15 @@ void PhaseScope::setAfterGlow(double newGlow)
 }
 void PhaseScope::setLineDensity(double newDensity)
 {
-  phaseScopeBuffer.setLineDensity((float)newDensity);
+  phaseScopeBuffer->setLineDensity((float)newDensity);
 }
 void PhaseScope::setDotLimit(double newLimit)
 {
-  phaseScopeBuffer.setLineDensityLimit((int)round(newLimit));
+  phaseScopeBuffer->setLineDensityLimit((int)round(newLimit));
 }
 void PhaseScope::setPixelSpread(double newSpread)
 {
-  phaseScopeBuffer.setPixelSpread((float)newSpread);
+  phaseScopeBuffer->setPixelSpread((float)newSpread);
 }
 void PhaseScope::setPixelScale(double newFactor)
 {
@@ -108,11 +115,11 @@ void PhaseScope::setPixelScale(double newFactor)
 }
 void PhaseScope::setAntiAlias(bool shouldAntiAlias)
 {
-  phaseScopeBuffer.setAntiAlias(shouldAntiAlias);
+  phaseScopeBuffer->setAntiAlias(shouldAntiAlias);
 }
 void PhaseScope::setFrameRate(double newRate)
 {
-  phaseScopeBuffer.setFrameRate(newRate);
+  phaseScopeBuffer->setFrameRate(newRate);
   updateRepaintInterval();
 }
 
@@ -127,7 +134,7 @@ void PhaseScope::processBlock(double **inOutBuffer, int numChannels, int numSamp
   jassert(numChannels == 2);
   for(int n = 0; n < numSamples; n++)
   {
-    phaseScopeBuffer.processSampleFrame((float)inOutBuffer[0][n], (float)inOutBuffer[1][n]);
+    phaseScopeBuffer->processSampleFrame((float)inOutBuffer[0][n], (float)inOutBuffer[1][n]);
     repaintCounter++;
     if(repaintCounter > repaintIntervalInSamples)
     {
@@ -141,14 +148,14 @@ void PhaseScope::processBlock(double **inOutBuffer, int numChannels, int numSamp
 void PhaseScope::setSampleRate(double newSampleRate)
 {
   ScopedLock scopedLock(*plugInLock);
-  phaseScopeBuffer.setSampleRate(newSampleRate);
+  phaseScopeBuffer->setSampleRate(newSampleRate);
   updateRepaintInterval();
 }
 
 void PhaseScope::reset()
 {
   ScopedLock scopedLock(*plugInLock);
-  phaseScopeBuffer.reset();
+  phaseScopeBuffer->reset();
   repaintCounter = 0;
 }
 
@@ -177,24 +184,24 @@ void PhaseScope::updateBufferSize()
   w = jmax(w, 1);
   h = jmax(h, 1);
 
-  jassert(w <= phaseScopeBuffer.getImage()->getMaxWidth());
-  jassert(h <= phaseScopeBuffer.getImage()->getMaxHeight());
+  jassert(w <= phaseScopeBuffer->getImage()->getMaxWidth());
+  jassert(h <= phaseScopeBuffer->getImage()->getMaxHeight());
 
-  phaseScopeBuffer.setSize(w, h);
+  phaseScopeBuffer->setSize(w, h);
   image = juce::Image(juce::Image::ARGB, w, h, false);
 }
 
 void PhaseScope::updateScopeImage()
 {
-  normalizedDataToImage(phaseScopeBuffer.getImage()->getPixelPointer(0, 0), image, colorMap);
+  normalizedDataToImage(phaseScopeBuffer->getImage()->getPixelPointer(0, 0), image, colorMap);
   if(!bypassPixelDecay)
-    phaseScopeBuffer.applyPixelDecay();
+    phaseScopeBuffer->applyPixelDecay();
 }
 
 void PhaseScope::updateRepaintInterval()
 {
   repaintIntervalInSamples = 
-    (int) round(phaseScopeBuffer.getSampleRate() / phaseScopeBuffer.getFrameRate());
+    (int) round(phaseScopeBuffer->getSampleRate() / phaseScopeBuffer->getFrameRate());
   repaintCounter = 0;
 }
 
@@ -356,309 +363,309 @@ void PhaseScopeEditor::resized()
   sliderFrameRate  ->setBounds(x, y, w, h); y += dy;
   buttonAntiAlias  ->setBounds(x, y, w, h); y += dy;
 }
-
-
-//=================================================================================================
-// the artistically extended version of the PhaseScope:
-
-PhaseScope2::PhaseScope2(CriticalSection *lockToUse) : PhaseScope(lockToUse)
-{
-  ScopedLock scopedLock(*plugInLock);
-  createParameters();  // creates the additional parameters
-
-  //phaseScopeBuffer.setUseAlphaMask(true);
-  // i think, either the dot brightness should scale inversely to the dotSize or the lineDensity
-}
-
-void PhaseScope2::setPixelDecayByValue(double newDecayByValue)
-{ 
-  phaseScopeBuffer.setPixelDecayByValue(newDecayByValue); 
-}
-void PhaseScope2::setPixelDecayByAverage(double newDecayByAverage)
-{
-  phaseScopeBuffer.setPixelDecayByAverage(newDecayByAverage);
-}
-void PhaseScope2::setDrawDots(bool shouldDraw)
-{
-  phaseScopeBuffer.setDrawDots(shouldDraw);
-}
-void PhaseScope2::setUseBigDot(bool shouldUseBigDot)
-{
-  phaseScopeBuffer.setUseAlphaMask(shouldUseBigDot);
-}
-void PhaseScope2::setDotSize(double newSize)
-{
-  phaseScopeBuffer.dotMask.setSize(newSize);
-}
-void PhaseScope2::setDotBlur(double newBlur)
-{
-  phaseScopeBuffer.dotMask.setTransitionWidth(newBlur);
-}
-void PhaseScope2::setDotInnerSlope(double newSlope)
-{
-  phaseScopeBuffer.dotMask.setInnerSlope(newSlope);
-}
-void PhaseScope2::setDotOuterSlope(double newSlope)
-{
-  phaseScopeBuffer.dotMask.setOuterSlope(newSlope);
-}
-void PhaseScope2::setDrawLines(bool shouldDraw)
-{
-  phaseScopeBuffer.setDrawLines(shouldDraw);
-}
-void PhaseScope2::setLineBrightness(double newBrightness)
-{
-  phaseScopeBuffer.setLineBrightness(newBrightness);
-}
-void PhaseScope2::setLineWidth(double newWidth)
-{
-  phaseScopeBuffer.setLineWidth(newWidth);
-}
-void PhaseScope2::setLineProfile(int newProfile)
-{
-  phaseScopeBuffer.setLineProfile(newProfile);
-}
-
-
-void PhaseScope2::createParameters()
-{
-  ScopedLock scopedLock(*plugInLock);
-  Parameter* p;
-
-  p = new Parameter(plugInLock, "DecayByValue", -20.0, +20.0, 0.0, 0.0, Parameter::LINEAR_BIPOLAR);
-  addObservedParameter(p);
-  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setPixelDecayByValue);
-
-  p = new Parameter(plugInLock, "DecayByAverage", 0.0, +5.0, 0.0, 0.0, Parameter::LINEAR);
-  addObservedParameter(p);
-  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setPixelDecayByAverage);
-
-
-  p = new Parameter(plugInLock, "DrawDots", 0.0, 1.0, 0.0, 1.0, Parameter::BOOLEAN);
-  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setDrawDots);
-  addObservedParameter(p);
-
-  p = new Parameter(plugInLock, "UseBigDot", 0.0, 1.0, 0.0, 1.0, Parameter::BOOLEAN);
-  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setUseBigDot);
-  addObservedParameter(p);
-
-  p = new Parameter(plugInLock, "DotSize", 1.0, 30.0, 0.0, 2.0, Parameter::LINEAR);
-  addObservedParameter(p);
-  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setDotSize);
-
-  p = new Parameter(plugInLock, "DotBlur", 0.0, 1.0, 0.0, 0.5, Parameter::LINEAR);
-  addObservedParameter(p);
-  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setDotBlur);
-
-  p = new Parameter(plugInLock, "DotInnerSlope", 0.0, 3.0, 0.0, 0.0, Parameter::LINEAR);
-  addObservedParameter(p);
-  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setDotInnerSlope);
-
-  p = new Parameter(plugInLock, "DotOuterSlope", 0.0, 3.0, 0.0, 0.0, Parameter::LINEAR);
-  addObservedParameter(p);
-  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setDotOuterSlope);
-
-
-  p = new Parameter(plugInLock, "DrawLines", 0.0, 1.0, 0.0, 0.0, Parameter::BOOLEAN);
-  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setDrawLines);
-  addObservedParameter(p);
-
-  p = new Parameter(plugInLock, "LineBrightness", 0.001, 100.0, 0.0, 1.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p);
-  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setLineBrightness);
-
-  p = new Parameter(plugInLock, "LineWidth", 1.0, 50.0, 0.0, 1.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p);
-  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setLineWidth);
-
-  p = new Parameter(plugInLock, "LineProfile", 0.0, 3.0, 1.0, 0.0, Parameter::STRING);
-  p->addStringValue("Flat");
-  p->addStringValue("Linear");
-  p->addStringValue("Parabolic");
-  p->addStringValue("Cubic");
-  addObservedParameter(p);
-  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setLineProfile);
-}
-
-AudioModuleEditor* PhaseScope2::createEditor()
-{
-  return new PhaseScopeEditor2(this);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-PhaseScopeEditor2::PhaseScopeEditor2(jura::PhaseScope2 *newPhaseScopeToEdit)
-  : PhaseScopeEditor(newPhaseScopeToEdit)
-{
-  createWidgets();
-
-  // init preview dot (maybe factor out):
-  //dotPreviewMask.setSize(widgetMargin-12.0); 
-  dotPreviewMask.setSize((widgetMargin-4.0)/2); 
-  dotPreviewImage = juce::Image(juce::Image::ARGB, 
-    dotPreviewMask.getWidth(), dotPreviewMask.getHeight(), false);
-  updatePreviewDot();
-
-  //resized();       // to position additional widgets
-  setSize(800, 600); // calls resized()
-}
-
-void PhaseScopeEditor2::createWidgets()
-{
-  RButton *b;
-  RSlider *s;
-  RComboBox *c;
-
-  addWidget( sliderDecayByValue = s = new RSlider("DecayByValueSlider") );
-  s->assignParameter( scope->getParameterByName("DecayByValue") );
-  s->setSliderName("DecayByValue");
-  s->setDescription("Dependency of pixel decay time on pixel brightness");
-  s->setDescriptionField(infoField);
-  s->setStringConversionFunction(&valueToString3);
-
-  addWidget( sliderDecayByAverage = s = new RSlider("DecayByAverageSlider") );
-  s->assignParameter( scope->getParameterByName("DecayByAverage") );
-  s->setSliderName("DecayByAverage");
-  s->setDescription("Dependency of pixel decay time on average brightness of screen");
-  s->setDescriptionField(infoField);
-  s->setStringConversionFunction(&valueToString3);
-
-  addWidget( buttonDrawDots = b = new RButton("Dots") );
-  b->assignParameter( scope->getParameterByName("DrawDots") );
-  b->setDescription("Switches dot drawing on/off");
-  b->setDescriptionField(infoField);
-
-  addWidget( buttonBigDot = b = new RButton("Big Dot") );
-  b->assignParameter( scope->getParameterByName("UseBigDot") );
-  b->setDescription("Switches to use the big expensive dot");
-  b->setDescriptionField(infoField);
-
-  addWidget( sliderDotSize = s = new RSlider("DotSizeSlider") );
-  s->assignParameter( scope->getParameterByName("DotSize") );
-  s->setSliderName("DotSize");
-  s->setDescription("Dot size in pixels");
-  s->setDescriptionField(infoField);
-  s->setStringConversionFunction(&valueToString3);
-
-  addWidget( sliderDotBlur = s = new RSlider("DotBlurSlider") );
-  s->assignParameter( scope->getParameterByName("DotBlur") );
-  s->setSliderName("DotBlur");
-  s->setDescription("Dot blur from 0..1");
-  s->setDescriptionField(infoField);
-  s->setStringConversionFunction(&valueToString3);
-  s->addListener(this);
-
-  addWidget( sliderDotInnerSlope = s = new RSlider("DotInnerSlopeSlider") );
-  s->assignParameter( scope->getParameterByName("DotInnerSlope") );
-  s->setSliderName("DotInnerSlope");
-  s->setDescription("Dot brightness slope at center");
-  s->setDescriptionField(infoField);
-  s->setStringConversionFunction(&valueToString3);
-  s->addListener(this);
-
-  addWidget( sliderDotOuterSlope = s = new RSlider("DotOuterSlopeSlider") );
-  s->assignParameter( scope->getParameterByName("DotOuterSlope") );
-  s->setSliderName("DotOuterSlope");
-  s->setDescription("Dot brightness slope at border");
-  s->setDescriptionField(infoField);
-  s->setStringConversionFunction(&valueToString3);
-  s->addListener(this);
-
-
-  addWidget( buttonDrawLines = b = new RButton("Lines") );
-  b->assignParameter( scope->getParameterByName("DrawLines") );
-  b->setDescription("Switches line drawing on/off");
-  b->setDescriptionField(infoField);
-
-  addWidget( sliderLineBrightness = s = new RSlider("LineBrightnessSlider") );
-  s->assignParameter( scope->getParameterByName("LineBrightness") );
-  s->setSliderName("LineBrightness");
-  s->setDescription("Brightness of lines");
-  s->setDescriptionField(infoField);
-  s->setStringConversionFunction(&valueToString3);
-
-  addWidget( sliderLineWidth = s = new RSlider("LineWidthSlider") );
-  s->assignParameter( scope->getParameterByName("LineWidth") );
-  s->setSliderName("LineWidth");
-  s->setDescription("Width of lines");
-  s->setDescriptionField(infoField);
-  s->setStringConversionFunction(&valueToString3);
-  //s->addListener(this);  // may be needed when we have a line preview
-
-  addWidget( boxLineProfile = c = new RComboBox("LineProfileBox") );
-  c->assignParameter( scope->getParameterByName("LineProfile") );
-  c->setDescription("Select line profile");
-  c->setDescriptionField(infoField);
-}
-
-void PhaseScopeEditor2::resized()
-{
-  PhaseScopeEditor::resized();
-
-
-  // this is from the baseclass - but we should arrange the differently here
-  int x  = display.getRight() + 4;
-  int y  = getPresetSectionBottom() + 4;
-  int w  = getWidth() - x - 8;          // slider width
-  int h  = 16;                          // slider height
-  int dy = h-2;                           // vertical distance ("delta-y") between widgets
-  int w3 = (w-8)/3;
-  int x2 = x  + w3 + 4;
-  int x3 = x2 + w3 + 4;
-
-  // general scope controls:
-  sliderFrameRate     ->setBounds(x, y, w, h); y += dy;
-  sliderAfterglow     ->setBounds(x, y, w, h); y += dy;
-  sliderDecayByValue  ->setBounds(x, y, w, h); y += dy;
-  sliderDecayByAverage->setBounds(x, y, w, h); y += dy;
-  sliderPixelScale    ->setBounds(x, y, w, h); y += dy;
-
-  // dot controls:
-  y += 8;
-  buttonDrawDots ->setBounds(x,  y, w3, h); 
-  buttonBigDot   ->setBounds(x2, y, w3, h); 
-  buttonAntiAlias->setBounds(x3, y, w3, h); 
-  y += dy;
-  sliderBrightness   ->setBounds(x, y, w, h); y += dy;
-  sliderPixelSpread  ->setBounds(x, y, w, h); y += dy;
-  sliderLineDensity  ->setBounds(x, y, w, h); y += dy;
-  sliderDotLimit     ->setBounds(x, y, w, h); y += dy;
-  sliderDotSize      ->setBounds(x, y, w, h); y += dy;
-  sliderDotBlur      ->setBounds(x, y, w, h); y += dy;
-  sliderDotInnerSlope->setBounds(x, y, w, h); y += dy;
-  sliderDotOuterSlope->setBounds(x, y, w, h); y += dy;
-
-  // line controls:
-  y += 8;
-  buttonDrawLines     ->setBounds(x, y, w3, h); y += dy;
-  sliderLineBrightness->setBounds(x, y, w,  h); y += dy;
-  sliderLineWidth     ->setBounds(x, y, w,  h); y += dy;
-  boxLineProfile      ->setBounds(x, y, w,  h); y += dy;
-}
-
-void PhaseScopeEditor2::paint(Graphics& g)
-{
-  PhaseScopeEditor::paint(g);
-
-  RWidget *bottomWidget = boxLineProfile;
-  float x, y, w, h;
-  x = (float)bottomWidget->getX();
-  y = (float)bottomWidget->getBottom() + 8.f;
-  w = (float)dotPreviewImage.getWidth();
-  h = (float)dotPreviewImage.getHeight();
-  g.drawImage(dotPreviewImage, Rectangle<float>(x, y, w, h));
-}
-
-void PhaseScopeEditor2::rSliderValueChanged(RSlider* slider)
-{
-  updatePreviewDot();
-}
-
-void PhaseScopeEditor2::updatePreviewDot()
-{
-  dotPreviewMask.copyShapeParametersFrom(scope->phaseScopeBuffer.dotMask);
-  //normalizedDataToImage(dotPreviewMask.getPixelPointer(0, 0), dotPreviewImage); // gray values
-  normalizedDataToImage(dotPreviewMask.getPixelPointer(0, 0), dotPreviewImage, scope->colorMap);
-  repaint();
-}
+//
+//
+////=================================================================================================
+//// the artistically extended version of the PhaseScope:
+//
+//PhaseScope2::PhaseScope2(CriticalSection *lockToUse) : PhaseScope(lockToUse)
+//{
+//  ScopedLock scopedLock(*plugInLock);
+//  createParameters();  // creates the additional parameters
+//
+//  //phaseScopeBuffer->setUseAlphaMask(true);
+//  // i think, either the dot brightness should scale inversely to the dotSize or the lineDensity
+//}
+//
+//void PhaseScope2::setPixelDecayByValue(double newDecayByValue)
+//{ 
+//  phaseScopeBuffer->setPixelDecayByValue(newDecayByValue); 
+//}
+//void PhaseScope2::setPixelDecayByAverage(double newDecayByAverage)
+//{
+//  phaseScopeBuffer->setPixelDecayByAverage(newDecayByAverage);
+//}
+//void PhaseScope2::setDrawDots(bool shouldDraw)
+//{
+//  phaseScopeBuffer->setDrawDots(shouldDraw);
+//}
+//void PhaseScope2::setUseBigDot(bool shouldUseBigDot)
+//{
+//  phaseScopeBuffer->setUseAlphaMask(shouldUseBigDot);
+//}
+//void PhaseScope2::setDotSize(double newSize)
+//{
+//  phaseScopeBuffer->dotMask.setSize(newSize);
+//}
+//void PhaseScope2::setDotBlur(double newBlur)
+//{
+//  phaseScopeBuffer->dotMask.setTransitionWidth(newBlur);
+//}
+//void PhaseScope2::setDotInnerSlope(double newSlope)
+//{
+//  phaseScopeBuffer->dotMask.setInnerSlope(newSlope);
+//}
+//void PhaseScope2::setDotOuterSlope(double newSlope)
+//{
+//  phaseScopeBuffer->dotMask.setOuterSlope(newSlope);
+//}
+//void PhaseScope2::setDrawLines(bool shouldDraw)
+//{
+//  phaseScopeBuffer->setDrawLines(shouldDraw);
+//}
+//void PhaseScope2::setLineBrightness(double newBrightness)
+//{
+//  phaseScopeBuffer->setLineBrightness(newBrightness);
+//}
+//void PhaseScope2::setLineWidth(double newWidth)
+//{
+//  phaseScopeBuffer->setLineWidth(newWidth);
+//}
+//void PhaseScope2::setLineProfile(int newProfile)
+//{
+//  phaseScopeBuffer->setLineProfile(newProfile);
+//}
+//
+//
+//void PhaseScope2::createParameters()
+//{
+//  ScopedLock scopedLock(*plugInLock);
+//  Parameter* p;
+//
+//  p = new Parameter(plugInLock, "DecayByValue", -20.0, +20.0, 0.0, 0.0, Parameter::LINEAR_BIPOLAR);
+//  addObservedParameter(p);
+//  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setPixelDecayByValue);
+//
+//  p = new Parameter(plugInLock, "DecayByAverage", 0.0, +5.0, 0.0, 0.0, Parameter::LINEAR);
+//  addObservedParameter(p);
+//  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setPixelDecayByAverage);
+//
+//
+//  p = new Parameter(plugInLock, "DrawDots", 0.0, 1.0, 0.0, 1.0, Parameter::BOOLEAN);
+//  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setDrawDots);
+//  addObservedParameter(p);
+//
+//  p = new Parameter(plugInLock, "UseBigDot", 0.0, 1.0, 0.0, 1.0, Parameter::BOOLEAN);
+//  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setUseBigDot);
+//  addObservedParameter(p);
+//
+//  p = new Parameter(plugInLock, "DotSize", 1.0, 30.0, 0.0, 2.0, Parameter::LINEAR);
+//  addObservedParameter(p);
+//  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setDotSize);
+//
+//  p = new Parameter(plugInLock, "DotBlur", 0.0, 1.0, 0.0, 0.5, Parameter::LINEAR);
+//  addObservedParameter(p);
+//  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setDotBlur);
+//
+//  p = new Parameter(plugInLock, "DotInnerSlope", 0.0, 3.0, 0.0, 0.0, Parameter::LINEAR);
+//  addObservedParameter(p);
+//  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setDotInnerSlope);
+//
+//  p = new Parameter(plugInLock, "DotOuterSlope", 0.0, 3.0, 0.0, 0.0, Parameter::LINEAR);
+//  addObservedParameter(p);
+//  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setDotOuterSlope);
+//
+//
+//  p = new Parameter(plugInLock, "DrawLines", 0.0, 1.0, 0.0, 0.0, Parameter::BOOLEAN);
+//  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setDrawLines);
+//  addObservedParameter(p);
+//
+//  p = new Parameter(plugInLock, "LineBrightness", 0.001, 100.0, 0.0, 1.0, Parameter::EXPONENTIAL);
+//  addObservedParameter(p);
+//  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setLineBrightness);
+//
+//  p = new Parameter(plugInLock, "LineWidth", 1.0, 50.0, 0.0, 1.0, Parameter::EXPONENTIAL);
+//  addObservedParameter(p);
+//  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setLineWidth);
+//
+//  p = new Parameter(plugInLock, "LineProfile", 0.0, 3.0, 1.0, 0.0, Parameter::STRING);
+//  p->addStringValue("Flat");
+//  p->addStringValue("Linear");
+//  p->addStringValue("Parabolic");
+//  p->addStringValue("Cubic");
+//  addObservedParameter(p);
+//  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setLineProfile);
+//}
+//
+//AudioModuleEditor* PhaseScope2::createEditor()
+//{
+//  return new PhaseScopeEditor2(this);
+//}
+//
+////-------------------------------------------------------------------------------------------------
+//
+//PhaseScopeEditor2::PhaseScopeEditor2(jura::PhaseScope2 *newPhaseScopeToEdit)
+//  : PhaseScopeEditor(newPhaseScopeToEdit)
+//{
+//  createWidgets();
+//
+//  // init preview dot (maybe factor out):
+//  //dotPreviewMask.setSize(widgetMargin-12.0); 
+//  dotPreviewMask.setSize((widgetMargin-4.0)/2); 
+//  dotPreviewImage = juce::Image(juce::Image::ARGB, 
+//    dotPreviewMask.getWidth(), dotPreviewMask.getHeight(), false);
+//  updatePreviewDot();
+//
+//  //resized();       // to position additional widgets
+//  setSize(800, 600); // calls resized()
+//}
+//
+//void PhaseScopeEditor2::createWidgets()
+//{
+//  RButton *b;
+//  RSlider *s;
+//  RComboBox *c;
+//
+//  addWidget( sliderDecayByValue = s = new RSlider("DecayByValueSlider") );
+//  s->assignParameter( scope->getParameterByName("DecayByValue") );
+//  s->setSliderName("DecayByValue");
+//  s->setDescription("Dependency of pixel decay time on pixel brightness");
+//  s->setDescriptionField(infoField);
+//  s->setStringConversionFunction(&valueToString3);
+//
+//  addWidget( sliderDecayByAverage = s = new RSlider("DecayByAverageSlider") );
+//  s->assignParameter( scope->getParameterByName("DecayByAverage") );
+//  s->setSliderName("DecayByAverage");
+//  s->setDescription("Dependency of pixel decay time on average brightness of screen");
+//  s->setDescriptionField(infoField);
+//  s->setStringConversionFunction(&valueToString3);
+//
+//  addWidget( buttonDrawDots = b = new RButton("Dots") );
+//  b->assignParameter( scope->getParameterByName("DrawDots") );
+//  b->setDescription("Switches dot drawing on/off");
+//  b->setDescriptionField(infoField);
+//
+//  addWidget( buttonBigDot = b = new RButton("Big Dot") );
+//  b->assignParameter( scope->getParameterByName("UseBigDot") );
+//  b->setDescription("Switches to use the big expensive dot");
+//  b->setDescriptionField(infoField);
+//
+//  addWidget( sliderDotSize = s = new RSlider("DotSizeSlider") );
+//  s->assignParameter( scope->getParameterByName("DotSize") );
+//  s->setSliderName("DotSize");
+//  s->setDescription("Dot size in pixels");
+//  s->setDescriptionField(infoField);
+//  s->setStringConversionFunction(&valueToString3);
+//
+//  addWidget( sliderDotBlur = s = new RSlider("DotBlurSlider") );
+//  s->assignParameter( scope->getParameterByName("DotBlur") );
+//  s->setSliderName("DotBlur");
+//  s->setDescription("Dot blur from 0..1");
+//  s->setDescriptionField(infoField);
+//  s->setStringConversionFunction(&valueToString3);
+//  s->addListener(this);
+//
+//  addWidget( sliderDotInnerSlope = s = new RSlider("DotInnerSlopeSlider") );
+//  s->assignParameter( scope->getParameterByName("DotInnerSlope") );
+//  s->setSliderName("DotInnerSlope");
+//  s->setDescription("Dot brightness slope at center");
+//  s->setDescriptionField(infoField);
+//  s->setStringConversionFunction(&valueToString3);
+//  s->addListener(this);
+//
+//  addWidget( sliderDotOuterSlope = s = new RSlider("DotOuterSlopeSlider") );
+//  s->assignParameter( scope->getParameterByName("DotOuterSlope") );
+//  s->setSliderName("DotOuterSlope");
+//  s->setDescription("Dot brightness slope at border");
+//  s->setDescriptionField(infoField);
+//  s->setStringConversionFunction(&valueToString3);
+//  s->addListener(this);
+//
+//
+//  addWidget( buttonDrawLines = b = new RButton("Lines") );
+//  b->assignParameter( scope->getParameterByName("DrawLines") );
+//  b->setDescription("Switches line drawing on/off");
+//  b->setDescriptionField(infoField);
+//
+//  addWidget( sliderLineBrightness = s = new RSlider("LineBrightnessSlider") );
+//  s->assignParameter( scope->getParameterByName("LineBrightness") );
+//  s->setSliderName("LineBrightness");
+//  s->setDescription("Brightness of lines");
+//  s->setDescriptionField(infoField);
+//  s->setStringConversionFunction(&valueToString3);
+//
+//  addWidget( sliderLineWidth = s = new RSlider("LineWidthSlider") );
+//  s->assignParameter( scope->getParameterByName("LineWidth") );
+//  s->setSliderName("LineWidth");
+//  s->setDescription("Width of lines");
+//  s->setDescriptionField(infoField);
+//  s->setStringConversionFunction(&valueToString3);
+//  //s->addListener(this);  // may be needed when we have a line preview
+//
+//  addWidget( boxLineProfile = c = new RComboBox("LineProfileBox") );
+//  c->assignParameter( scope->getParameterByName("LineProfile") );
+//  c->setDescription("Select line profile");
+//  c->setDescriptionField(infoField);
+//}
+//
+//void PhaseScopeEditor2::resized()
+//{
+//  PhaseScopeEditor::resized();
+//
+//
+//  // this is from the baseclass - but we should arrange the differently here
+//  int x  = display.getRight() + 4;
+//  int y  = getPresetSectionBottom() + 4;
+//  int w  = getWidth() - x - 8;          // slider width
+//  int h  = 16;                          // slider height
+//  int dy = h-2;                           // vertical distance ("delta-y") between widgets
+//  int w3 = (w-8)/3;
+//  int x2 = x  + w3 + 4;
+//  int x3 = x2 + w3 + 4;
+//
+//  // general scope controls:
+//  sliderFrameRate     ->setBounds(x, y, w, h); y += dy;
+//  sliderAfterglow     ->setBounds(x, y, w, h); y += dy;
+//  sliderDecayByValue  ->setBounds(x, y, w, h); y += dy;
+//  sliderDecayByAverage->setBounds(x, y, w, h); y += dy;
+//  sliderPixelScale    ->setBounds(x, y, w, h); y += dy;
+//
+//  // dot controls:
+//  y += 8;
+//  buttonDrawDots ->setBounds(x,  y, w3, h); 
+//  buttonBigDot   ->setBounds(x2, y, w3, h); 
+//  buttonAntiAlias->setBounds(x3, y, w3, h); 
+//  y += dy;
+//  sliderBrightness   ->setBounds(x, y, w, h); y += dy;
+//  sliderPixelSpread  ->setBounds(x, y, w, h); y += dy;
+//  sliderLineDensity  ->setBounds(x, y, w, h); y += dy;
+//  sliderDotLimit     ->setBounds(x, y, w, h); y += dy;
+//  sliderDotSize      ->setBounds(x, y, w, h); y += dy;
+//  sliderDotBlur      ->setBounds(x, y, w, h); y += dy;
+//  sliderDotInnerSlope->setBounds(x, y, w, h); y += dy;
+//  sliderDotOuterSlope->setBounds(x, y, w, h); y += dy;
+//
+//  // line controls:
+//  y += 8;
+//  buttonDrawLines     ->setBounds(x, y, w3, h); y += dy;
+//  sliderLineBrightness->setBounds(x, y, w,  h); y += dy;
+//  sliderLineWidth     ->setBounds(x, y, w,  h); y += dy;
+//  boxLineProfile      ->setBounds(x, y, w,  h); y += dy;
+//}
+//
+//void PhaseScopeEditor2::paint(Graphics& g)
+//{
+//  PhaseScopeEditor::paint(g);
+//
+//  RWidget *bottomWidget = boxLineProfile;
+//  float x, y, w, h;
+//  x = (float)bottomWidget->getX();
+//  y = (float)bottomWidget->getBottom() + 8.f;
+//  w = (float)dotPreviewImage.getWidth();
+//  h = (float)dotPreviewImage.getHeight();
+//  g.drawImage(dotPreviewImage, Rectangle<float>(x, y, w, h));
+//}
+//
+//void PhaseScopeEditor2::rSliderValueChanged(RSlider* slider)
+//{
+//  updatePreviewDot();
+//}
+//
+//void PhaseScopeEditor2::updatePreviewDot()
+//{
+//  dotPreviewMask.copyShapeParametersFrom(scope->phaseScopeBuffer->dotMask);
+//  //normalizedDataToImage(dotPreviewMask.getPixelPointer(0, 0), dotPreviewImage); // gray values
+//  normalizedDataToImage(dotPreviewMask.getPixelPointer(0, 0), dotPreviewImage, scope->colorMap);
+//  repaint();
+//}
 

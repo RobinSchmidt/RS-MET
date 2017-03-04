@@ -86,8 +86,8 @@ class LineDrawer : public ImageDrawer<TPix, TWgt, TCor>
 public:
 
 
-  /** The blend modes for determining a new pixel color as function of its current color, an 
-  incoming color and a blend amount. */
+  /** The function to determine the brightness/weight as function of the perpendicular distance 
+  to the ideal geometric line. */
   enum lineProfiles
   {
     PROFILE_FLAT = 0,      // solid/flat color
@@ -128,7 +128,7 @@ public:
   void lineTo(TCor x, TCor y);
 
   /** Function to initialize our xOld, yOld members which are used for polyline drawing. Call this 
-  once with the start point of the polyline before repeatedly callign lineTo  */
+  once with the start point of the polyline before repeatedly calling lineTo  */
   inline void initPolyLine(TCor x, TCor y)
   {
     xOld = x;
@@ -187,7 +187,7 @@ private:
   /** Draws the right end cap of the line. */
   inline void drawRightCap() { drawCap(xsr, xe); }
 
-  /** Draws either left opr right end cap, called internally from drawLeftCap and drawRightCap. The
+  /** Draws either left or right end cap, called internally from drawLeftCap and drawRightCap. The
   code is exactly the same except for different loop start and end indices, because we need to 
   check against both caps everytime - because any pixel may be part of both caps at the same time
   (occurs for very short slanted lines). */

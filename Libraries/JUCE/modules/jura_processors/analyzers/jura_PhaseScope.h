@@ -12,6 +12,8 @@ public:
 
   PhaseScope(CriticalSection *lockToUse);
 
+  virtual ~PhaseScope();
+
   /** Creates the parameters to control the drawing. 
   \todo: maybe make this function a virtual member function of the AudioModule baseclass to be 
   overriden - the call it from the constructor there. */
@@ -32,9 +34,11 @@ public:
   void setFrameRate(double newRate);
 
   // inquiry functions:
-  inline double getFrameRate() { return phaseScopeBuffer.getFrameRate(); }
-  inline int getInternalPixelWidth() { return phaseScopeBuffer.getWidth(); }
-  inline int getInternalPixelHeight() { return phaseScopeBuffer.getHeight(); }
+  inline double getFrameRate() { return phaseScopeBuffer->getFrameRate(); }
+  inline int getInternalPixelWidth() { return phaseScopeBuffer->getWidth(); }
+  inline int getInternalPixelHeight() { return phaseScopeBuffer->getHeight(); }
+  const ColorMap& getColorMap() { return colorMap; }
+
 
   // overriden from AudioModule baseclass:
   virtual AudioModuleEditor *createEditor() override;
@@ -70,7 +74,8 @@ protected:
 
   // this object is reponsible for drawing the incoming data onto a virtual screen:
   //RAPT::PhaseScopeBuffer<double, float, double> phaseScopeBuffer;
-  RAPT::PhaseScopeBuffer2<double, float, double> phaseScopeBuffer;
+  //RAPT::PhaseScopeBuffer2<double, float, double> phaseScopeBuffer;
+  RAPT::PhaseScopeBuffer<double, float, double> *phaseScopeBuffer;
     // maybe declare a pointer to a PhaseScopeBuffer here and in subclass PhaseScope2 declare a 
     // pointer to PahseScopeBuffer2 and in the constructor re-assign the inherited pointer - so we
     // don't have the overhead of PhaseScopeBuffer2 here.
@@ -79,7 +84,7 @@ protected:
   jura::ColorMap colorMap; // the color map to translate the buffered data matrix to colors
 
   friend class PhaseScopeDisplay;
-  friend class PhaseScopeEditor2;
+  //friend class PhaseScopeEditor2;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhaseScope)
 };
@@ -149,91 +154,90 @@ protected:
 
 
 
-//=================================================================================================
-
-/** Extends the basic PhaseScope by some more artistic features such as a customizable dot, 
-blurring, etc. 
-todo: rename to PrettyScope
-
-
-Give me these controls
-1. min-pixel-distance between dots
-2. maximum draw calls per frame (one control that limits both dots and lines)
-3. Let's start creating controls that are resolution-dependent. OH Actually if all size controls scale with resolution I don't have to limit the scope size, because then CPU usage is tied to resolution which is very good. So, give me percentages of resolution for dot size and line size rather than pixel size.
-4. Give me a master brightness control (so I can control dot/line brightness simultaneously)
-
-*/
-
-class JUCE_API PhaseScope2 : public jura::PhaseScope
-{
-
-public:
-
-  PhaseScope2(CriticalSection *lockToUse);
-
-  // additional setup functions:
-  void setPixelDecayByValue(double newDecayByValue);
-  void setPixelDecayByAverage(double newDecayByAverage);
-  // todo: add smear/blur-functions setLeft/Right/Up/DownSmear...
-
-  void setDrawDots(bool shouldDraw);
-  void setUseBigDot(bool shouldUseBigDot);
-  void setDotSize(double newSize);
-  void setDotBlur(double newBlur);
-  void setDotInnerSlope(double newSlope);
-  void setDotOuterSlope(double newSlope);
-
-  void setDrawLines(bool shouldDraw);
-  void setLineBrightness(double newBrightness);
-  void setLineWidth(double newWidth);
-  void setLineProfile(int newProfile);
-
-
-  // overriden from PhaseScope baseclass:
-  virtual void createParameters() override;
-  virtual AudioModuleEditor *createEditor() override;
-
-protected:
-
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhaseScope2)
-};
-
-
-/** GUI editor for the extended PhaseScope */
-
-class JUCE_API PhaseScopeEditor2 : public PhaseScopeEditor, public RSliderListener
-{
-
-public:
-
-  PhaseScopeEditor2(jura::PhaseScope2 *newPhaseScopeToEdit);
-
-
-  virtual void createWidgets() override;
-  virtual void resized() override;
-  virtual void paint(Graphics& g) override;
-
-  virtual void rSliderValueChanged(RSlider* slider) override;
-
-protected:
-
-  /** Updates the image for previewing the dot. */
-  void updatePreviewDot();
-
-  // additional widgets:
-  RSlider *sliderDecayByValue, *sliderDecayByAverage;
-  RButton *buttonBigDot, *buttonDrawDots, *buttonDrawLines;
-  RSlider *sliderDotSize, *sliderDotBlur, *sliderDotInnerSlope, *sliderDotOuterSlope,
-    *sliderLineBrightness, *sliderLineWidth;
-  RComboBox *boxLineProfile;
-
-  // image for previewing the dot:
-  RAPT::AlphaMask<float> dotPreviewMask;          
-  juce::Image dotPreviewImage; 
-    // add a preview for the line-profile, too
-
-
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhaseScopeEditor2)
-};
+////=================================================================================================
+//
+///** Extends the basic PhaseScope by some more artistic features such as a customizable dot, 
+//blurring, etc. 
+//todo: rename to PrettyScope
+//
+//Give me these controls
+//1. min-pixel-distance between dots
+//2. maximum draw calls per frame (one control that limits both dots and lines)
+//3. Let's start creating controls that are resolution-dependent. OH Actually if all size controls scale with resolution I don't have to limit the scope size, because then CPU usage is tied to resolution which is very good. So, give me percentages of resolution for dot size and line size rather than pixel size.
+//4. Give me a master brightness control (so I can control dot/line brightness simultaneously)
+//
+//*/
+//
+//class JUCE_API PhaseScope2 : public jura::PhaseScope
+//{
+//
+//public:
+//
+//  PhaseScope2(CriticalSection *lockToUse);
+//
+//  // additional setup functions:
+//  void setPixelDecayByValue(double newDecayByValue);
+//  void setPixelDecayByAverage(double newDecayByAverage);
+//  // todo: add smear/blur-functions setLeft/Right/Up/DownSmear...
+//
+//  void setDrawDots(bool shouldDraw);
+//  void setUseBigDot(bool shouldUseBigDot);
+//  void setDotSize(double newSize);
+//  void setDotBlur(double newBlur);
+//  void setDotInnerSlope(double newSlope);
+//  void setDotOuterSlope(double newSlope);
+//
+//  void setDrawLines(bool shouldDraw);
+//  void setLineBrightness(double newBrightness);
+//  void setLineWidth(double newWidth);
+//  void setLineProfile(int newProfile);
+//
+//
+//  // overriden from PhaseScope baseclass:
+//  virtual void createParameters() override;
+//  virtual AudioModuleEditor *createEditor() override;
+//
+//protected:
+//
+//  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhaseScope2)
+//};
+//
+//
+///** GUI editor for the extended PhaseScope */
+//
+//class JUCE_API PhaseScopeEditor2 : public PhaseScopeEditor, public RSliderListener
+//{
+//
+//public:
+//
+//  PhaseScopeEditor2(jura::PhaseScope2 *newPhaseScopeToEdit);
+//
+//
+//  virtual void createWidgets() override;
+//  virtual void resized() override;
+//  virtual void paint(Graphics& g) override;
+//
+//  virtual void rSliderValueChanged(RSlider* slider) override;
+//
+//protected:
+//
+//  /** Updates the image for previewing the dot. */
+//  void updatePreviewDot();
+//
+//  // additional widgets:
+//  RSlider *sliderDecayByValue, *sliderDecayByAverage;
+//  RButton *buttonBigDot, *buttonDrawDots, *buttonDrawLines;
+//  RSlider *sliderDotSize, *sliderDotBlur, *sliderDotInnerSlope, *sliderDotOuterSlope,
+//    *sliderLineBrightness, *sliderLineWidth;
+//  RComboBox *boxLineProfile;
+//
+//  // image for previewing the dot:
+//  RAPT::AlphaMask<float> dotPreviewMask;          
+//  juce::Image dotPreviewImage; 
+//    // add a preview for the line-profile, too
+//
+//
+//  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhaseScopeEditor2)
+//};
 
 #endif 

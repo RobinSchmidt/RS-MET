@@ -106,9 +106,9 @@ void LineDrawer<TPix, TWgt, TCor>::drawLine(TCor x0, TCor y0, TCor x1, TCor y1)
   drawLeftCap();
   drawRightCap();
 
-  // store line endpoint to be used as startpoint for subsequent lineTo calls
+  // store line endpoint to be used as startpoint for subsequent lineTo calls:
   xOld = x1; 
-  xOld = y1;
+  yOld = y1;
 }
 
 template<class TPix, class TWgt, class TCor>

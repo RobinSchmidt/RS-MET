@@ -28,6 +28,10 @@ template RAPT::StateVariableFilter<double, double>;
 template RAPT::AlphaMask<float>;
 template RAPT::ImagePainter<float, float, float>;
 
+// for Elan's PrettyScope:
+template RAPT::AlphaMask<double>;
+template RAPT::PhaseScopeBuffer2<double, float, double>;
+
 
 namespace jura
 {

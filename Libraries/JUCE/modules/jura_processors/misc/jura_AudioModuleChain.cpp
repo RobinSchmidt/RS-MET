@@ -52,7 +52,7 @@ AudioModule* AudioModuleFactory::createModule(const String& type, CriticalSectio
 {
   if(type == "None")         return new DummyModule( lock);
   if(type == "PhaseScope")   return new PhaseScope(  lock);
-  if(type == "PhaseScope2")  return new PhaseScope2( lock);
+  //if(type == "PhaseScope2")  return new PhaseScope2( lock);
   if(type == "Enveloper")    return new Enveloper(   lock);
   if(type == "Ladder")       return new Ladder(      lock);
   if(type == "PhasorFilter") return new PhasorFilter(lock);
@@ -64,7 +64,7 @@ AudioModule* AudioModuleFactory::createModule(const String& type, CriticalSectio
 String AudioModuleFactory::getModuleType(AudioModule *m)
 {
   if(dynamic_cast<DummyModule*>  (m)) return "None";
-  if(dynamic_cast<PhaseScope2*>  (m)) return "PhaseScope2"; // check subclasse before...
+  //if(dynamic_cast<PhaseScope2*>  (m)) return "PhaseScope2"; // check subclasse before...
   if(dynamic_cast<PhaseScope*>   (m)) return "PhaseScope";  // ...their superclasses
   if(dynamic_cast<Enveloper*>    (m)) return "Enveloper";
   if(dynamic_cast<Ladder*>       (m)) return "Ladder";
@@ -79,7 +79,7 @@ StringArray AudioModuleFactory::getAvailableModuleTypes()
   StringArray a;
   a.add("None");        // maybe use "Empty" instead of "None"
   a.add("PhaseScope");
-  a.add("PhaseScope2");
+  //a.add("PhaseScope2");
   a.add("Enveloper");
   a.add("Ladder");
   a.add("PhasorFilter");

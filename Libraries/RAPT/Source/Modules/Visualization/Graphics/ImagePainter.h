@@ -74,7 +74,7 @@ public:
   /** Function for painting a simple 3x3 dot at given noninteger position. */
   void paintDot3x3(TCor x, TCor y, TPix color, TWgt weightStraight = 0, TWgt weightDiagonal = 0);
 
-  /** Paints a dot at an integer position using out stored alpha mask (which represents a prototype 
+  /** Paints a dot at an integer position using our stored alpha mask (which represents a prototype 
   dot). */
   void paintDotViaMask(int x, int y, TPix color);
 
@@ -85,7 +85,7 @@ public:
   given density parameter and to the Euclidean distance between the two endpoints (i.e. the length 
   of the line). The color will be scaled inversely proportional to the length, such that the total
   amount of color added to the picture is independent of the length. The maxNumDots parameter
-  is for restricting the number of dots that are used which maight be important in realtime 
+  is for restricting the number of dots that are used which might be important in realtime 
   situations. scaleByNumDots ...
   \todo: maybe make this color scaling optional  */
   void drawDottedLine(TCor x1, TCor y1, TCor x2, TCor y2, TPix color, TCor density = 1, 
@@ -104,7 +104,7 @@ protected:
   /** Internal functions. */
 
   /** Accumulates the given value into the accumulator accu. We use a rather peculiar accumulation
-  function here: newAccu = (oldAccu + value) / (1 + value). When accu starts out a zero and all 
+  function here: newAccu = (oldAccu + value) / (1 + value). When accu starts out at zero and all 
   accumulated values are >= 0, this function will ensure that accu is always < 1 and it will go
   into saturation smoothly. */
   inline void accumulate(TPix &accu, TPix value)
