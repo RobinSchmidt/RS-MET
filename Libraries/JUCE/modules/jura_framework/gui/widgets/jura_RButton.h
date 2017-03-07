@@ -1,12 +1,12 @@
 #ifndef jura_RButton_h
 #define jura_RButton_h  // maybe rename to RButtons
 
-//#include "rojue_RWidget.h"
 
 
 class RButton;
 
 /** A class to receive callbacks when a button is clicked. */
+
 class JUCE_API RButtonListener
 {
 
@@ -18,11 +18,26 @@ public:
 };
 
 
-/**
+/** Baseclass for custom painting of buttons. In a concrete subclass, you overrided the 
+paintButton method to actually paint the button. To assign a custom painter to a button, you would
+call myButton->setPainter(myButtonPainter) where myButtonPainter is asumed to be an object of your
+RButtonPainter subclass. */
 
-This class ....
+class JUCE_API RButtonPainter
+{
 
-*/
+public:
+
+  /** Called, when a button wants to paint itself. */
+  virtual void paintButton(Graphics& g, RButton *button) = 0;
+
+};
+
+
+
+//=================================================================================================
+
+/** This is a class for representing buttons an a GUI. */
 
 class JUCE_API RButton : public RWidget
 {
@@ -67,7 +82,10 @@ public:
   virtual void setSymbolIndex(int newSymbolIndex);
 
   /** Changes the button's text. */
-  void setButtonText(const juce::String& newText) throw();
+  void setButtonText(const juce::String& newText) throw(); // why throw?
+
+  /** Sets a custom painter object to paint this button. This is used for customized GUIs. */
+  void setButtonPainter(RButtonPainter *painterToUse);
 
   /** Decides, whether or not this button should change its on/off state when clicked. */
   void setClickingTogglesState(const bool shouldToggle);
@@ -130,6 +148,7 @@ protected:
 
   juce::String text;
   juce::Array<RButtonListener*> buttonListeners;
+  RButtonPainter *painter = nullptr;
 
   bool isOn;
   bool clickTogglesState;
@@ -147,14 +166,8 @@ private:
 //=================================================================================================
 // class RClickButton: 
 
-/**
-
-This class implements a button that paints as active when mouse is down, and switches back into 
-inactive state when the mouse is up again.
-
-maybe rename to RBangButton
-
-*/
+/** This class implements a button that paints as active when mouse is down, and switches back into 
+inactive state when the mouse is up again. maybe rename to RBangButton */
 
 class JUCE_API RClickButton : public RButton
 {
@@ -173,17 +186,12 @@ public:
   juce_UseDebuggingNewOperator;
 };
 
-
 //=================================================================================================
 // class RClickButtonNotifyOnMouseUp: 
 
-/**
-
-This class is like an RClickButton but it sends out a click message only on mouse-up events. 
+/** This class is like an RClickButton but it sends out a click message only on mouse-up events. 
 Moreover, these mouse-up events must occur inside this button after a mouse-down event occured. 
-This behaviour is desirable for OK/Cancel buttons on dialog boxes, for example.
-
-*/
+This behaviour is desirable for OK/Cancel buttons on dialog boxes, for example. */
 
 class JUCE_API RClickButtonNotifyOnMouseUp : public RClickButton
 {
@@ -204,12 +212,8 @@ public:
 //=================================================================================================
 // class RClickButtonWithAutoRepeat 
 
-/**
-
-This class is like an RClickButton but it sends out click messages repeatedly as long as it is 
-clicked.
-
-*/
+/** This class is like an RClickButton but it sends out click messages repeatedly as long as it is 
+clicked. */
 
 class JUCE_API RClickButtonWithAutoRepeat : public RClickButton, public Timer
 {
@@ -238,13 +242,9 @@ protected:
 
 class RRadioButtonGroup;
 
-/**
-
-This class implements a button that can be used in a group of mutually exclusively pressed buttons.
-That means, only one at a time canbe in 'pressed' state (this kind of behavior is also known as 
-"radio-button").
-
-*/
+/** This class implements a button that can be used in a group of mutually exclusively pressed 
+buttons. That means, only one at a time canbe in 'pressed' state (this kind of behavior is also 
+known as "radio-button"). */
 
 class JUCE_API RRadioButton : public RButton
 {
@@ -334,6 +334,16 @@ private:
   juce_UseDebuggingNewOperator
 };
 
+//=================================================================================================
 
+/** A button painter class that gives the button a pseudo 3D'ish look. 
+todo: test it... */
+
+class JUCE_API RButtonPainter3D : public RButtonPainter
+{
+public:
+  virtual void paintButton(Graphics& g, RButton *button);
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RButtonPainter3D)
+};
 
 #endif  

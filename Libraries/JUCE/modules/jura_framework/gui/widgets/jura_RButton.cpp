@@ -44,6 +44,11 @@ void RButton::setButtonText(const String& newText) throw()
   }
 }
 
+void RButton::setButtonPainter(RButtonPainter *painterToUse)
+{
+  painter = painterToUse;
+}
+
 void RButton::setClickingTogglesState(const bool shouldToggle)
 {
   clickTogglesState = shouldToggle;
@@ -130,6 +135,12 @@ void RButton::clicked()
 
 void RButton::paint(Graphics &g)
 {
+  if(painter != nullptr)
+  {
+    painter->paintButton(g, this);
+    return;
+  }
+
   int x = 0;
   int y = 0;
   int w = getWidth();
@@ -142,87 +153,6 @@ void RButton::paint(Graphics &g)
     g.fillAll(getBackgroundColour());
   g.setColour(getOutlineColour());
   g.drawRect(0, 0, getWidth(), getHeight(), 2);
-
-  /*
-  // experimental - 3Dish looking drawing \todo: put into a function 
-  // drawEngravedRectangle, refine the corners
-  float threeDeeDepth = 1.0f;
-  float x1, x2, y1, y2;
-  float thickness = (float) RWidget::outlineThickness;
-  if( getToggleState() )
-  {
-    g.fillAll(getHandleColour());
-
-    g.setColour(getHandleColour().brighter(2.f*threeDeeDepth));
-
-    // right line:
-    x1 = (float) getWidth() - 0.5f * thickness;
-    x2 = (float) getWidth() - 0.5f * thickness;
-    y1 = 0.f; 
-    y2 = (float) getHeight(); 
-    g.drawLine(x1, y1, x2, y2, thickness);
-
-    // bottom line:
-    x1 = 0.f; 
-    x2 = (float) getWidth(); 
-    y1 = (float) getHeight() - 0.5f * thickness;
-    y2 = (float) getHeight() - 0.5f * thickness;
-    g.drawLine(x1, y1, x2, y2, thickness);
-
-    g.setColour(getHandleColour().darker(threeDeeDepth));
-
-    // left line:
-    x1 = 0.5f * thickness;
-    x2 = 0.5f * thickness;
-    y1 = 0.f; 
-    y2 = (float) getHeight(); 
-    g.drawLine(x1, y1, x2, y2, thickness);
-
-    // top line:
-    x1 = 0.f; 
-    x2 = (float) getWidth(); 
-    y1 = 0.5f * thickness;
-    y2 = 0.5f * thickness;
-    g.drawLine(x1, y1, x2, y2, thickness);
-  }
-  else
-  {
-    g.fillAll(getBackgroundColour());
-
-    g.setColour(getHandleColour().darker(threeDeeDepth));
-
-    // right line:
-    x1 = (float) getWidth() - 0.5f * thickness;
-    x2 = (float) getWidth() - 0.5f * thickness;
-    y1 = 0.f; 
-    y2 = (float) getHeight(); 
-    g.drawLine(x1, y1, x2, y2, thickness);
-
-    // bottom line:
-    x1 = 0.f; 
-    x2 = (float) getWidth(); 
-    y1 = (float) getHeight() - 0.5f * thickness;
-    y2 = (float) getHeight() - 0.5f * thickness;
-    g.drawLine(x1, y1, x2, y2, thickness);
-
-    g.setColour(getHandleColour().brighter(2.f*threeDeeDepth));
-
-    // left line:
-    x1 = 0.5f * thickness;
-    x2 = 0.5f * thickness;
-    y1 = 0.f; 
-    y2 = (float) getHeight(); 
-    g.drawLine(x1, y1, x2, y2, thickness);
-
-    // top line:
-    x1 = 0.f; 
-    x2 = (float) getWidth(); 
-    y1 = 0.5f * thickness;
-    y2 = 0.5f * thickness;
-    g.drawLine(x1, y1, x2, y2, thickness);
-  }
-  */
-
 
   // draw the text or symbol:
   y = getHeight()/2 - 3;
@@ -544,4 +474,88 @@ void RHyperlinkButton::clicked()
 void RHyperlinkButton::paint(Graphics& g)
 {
   drawBitmapFontText(g, 0, 0, getButtonText(), font, getTextColour());
+}
+
+//=================================================================================================
+
+void RButtonPainter3D::paintButton(Graphics& g, RButton *button)
+{
+  // experimental 
+
+  // todo - use w,h variables for width and height
+
+  float threeDeeDepth = 1.0f;
+  float x1, x2, y1, y2;
+  float thickness = (float) button->outlineThickness;
+  if(button->getToggleState())
+  {
+    g.fillAll(button->getHandleColour());
+    g.setColour(button->getHandleColour().brighter(2.f*threeDeeDepth));
+
+    // right line:
+    x1 = (float)button->getWidth() - 0.5f * thickness;
+    x2 = (float)button->getWidth() - 0.5f * thickness;
+    y1 = 0.f;
+    y2 = (float)button->getHeight();
+    g.drawLine(x1, y1, x2, y2, thickness);
+
+    // bottom line:
+    x1 = 0.f;
+    x2 = (float)button->getWidth();
+    y1 = (float)button->getHeight() - 0.5f * thickness;
+    y2 = (float)button->getHeight() - 0.5f * thickness;
+    g.drawLine(x1, y1, x2, y2, thickness);
+
+    g.setColour(button->getHandleColour().darker(threeDeeDepth));
+
+    // left line:
+    x1 = 0.5f * thickness;
+    x2 = 0.5f * thickness;
+    y1 = 0.f;
+    y2 = (float)button->getHeight();
+    g.drawLine(x1, y1, x2, y2, thickness);
+
+    // top line:
+    x1 = 0.f;
+    x2 = (float)button->getWidth();
+    y1 = 0.5f * thickness;
+    y2 = 0.5f * thickness;
+    g.drawLine(x1, y1, x2, y2, thickness);
+  }
+  else
+  {
+    g.fillAll(button->getBackgroundColour());
+
+    g.setColour(button->getHandleColour().darker(threeDeeDepth));
+
+    // right line:
+    x1 = (float)button->getWidth() - 0.5f * thickness;
+    x2 = (float)button->getWidth() - 0.5f * thickness;
+    y1 = 0.f;
+    y2 = (float)button->getHeight();
+    g.drawLine(x1, y1, x2, y2, thickness);
+
+    // bottom line:
+    x1 = 0.f;
+    x2 = (float)button->getWidth();
+    y1 = (float)button->getHeight() - 0.5f * thickness;
+    y2 = (float)button->getHeight() - 0.5f * thickness;
+    g.drawLine(x1, y1, x2, y2, thickness);
+
+    g.setColour(button->getHandleColour().brighter(2.f*threeDeeDepth));
+
+    // left line:
+    x1 = 0.5f * thickness;
+    x2 = 0.5f * thickness;
+    y1 = 0.f;
+    y2 = (float)button->getHeight();
+    g.drawLine(x1, y1, x2, y2, thickness);
+
+    // top line:
+    x1 = 0.f;
+    x2 = (float)button->getWidth();
+    y1 = 0.5f * thickness;
+    y2 = 0.5f * thickness;
+    g.drawLine(x1, y1, x2, y2, thickness);
+  }
 }
