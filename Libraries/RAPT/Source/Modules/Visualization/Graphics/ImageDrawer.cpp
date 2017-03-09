@@ -93,7 +93,8 @@ void LineDrawer<TPix, TWgt, TCor>::setRoundCaps(bool shouldBeRound)
 // drawing:
 
 template<class TPix, class TWgt, class TCor>
-void LineDrawer<TPix, TWgt, TCor>::drawLine(TCor x0, TCor y0, TCor x1, TCor y1)
+void LineDrawer<TPix, TWgt, TCor>::drawLine(TCor x0, TCor y0, TCor x1, TCor y1,
+  bool joinableStart, bool joinableEnd)
 {
   setupAlgorithmVariables(x0, y0, x1, y1);
 
@@ -103,8 +104,8 @@ void LineDrawer<TPix, TWgt, TCor>::drawLine(TCor x0, TCor y0, TCor x1, TCor y1)
 
   // draw segments:
   drawMiddleSection();
-  drawLeftCap();
-  drawRightCap();
+  drawLeftCap(joinableStart);
+  drawRightCap(joinableEnd);
 
   // store line endpoint to be used as startpoint for subsequent lineTo calls:
   xOld = x1; 
@@ -112,19 +113,23 @@ void LineDrawer<TPix, TWgt, TCor>::drawLine(TCor x0, TCor y0, TCor x1, TCor y1)
 }
 
 template<class TPix, class TWgt, class TCor>
-void LineDrawer<TPix, TWgt, TCor>::lineTo(TCor x, TCor y)
+void LineDrawer<TPix, TWgt, TCor>::lineTo(TCor x, TCor y, bool uniformColor)
 {
+  if(!uniformColor){
+    drawLine(xOld, yOld, x, y, true, true);
+    return; }
+
   setupAlgorithmVariables(xOld, yOld, x, y);
   if(dx == 0)
     return;   // todo: draw circle
 
   drawMiddleSection();
-  if(steep){                                      // steep
-    drawCapForJoint(xs, xel, yOld, xOld);
-    drawCapForJoint(xsr, xe, yOld, xOld);  }
-  else{                                           // flat 
-    drawCapForJoint(xs, xel, xOld, yOld);
-    drawCapForJoint(xsr, xe, xOld, yOld);  }
+  if(steep){  // steep line
+    drawCapForJointUniformColor(xs, xel, yOld, xOld);
+    drawCapForJointUniformColor(xsr, xe, yOld, xOld); }
+  else{       // flat line
+    drawCapForJointUniformColor(xs, xel, xOld, yOld);
+    drawCapForJointUniformColor(xsr, xe, xOld, yOld); }
 
   // \todo: make a version of it that always draws both caps (start and end) but with half
   // brightness/alpha - because the current startegy is only suitable for polylines in which each
@@ -230,8 +235,11 @@ void LineDrawer<TPix, TWgt, TCor>::drawMiddleSection()
 }
 
 template<class TPix, class TWgt, class TCor>
-void LineDrawer<TPix, TWgt, TCor>::drawCap(int start, int end)
+void LineDrawer<TPix, TWgt, TCor>::drawCap(int start, int end, bool joinable)
 {
+  TWgt js = 1;  // joint scaler
+  if(joinable)
+    js = 0.5;
   for(x = start; x <= end; x++){
     yf = a*x + b;
     y  = roundToInt(yf);
@@ -244,13 +252,13 @@ void LineDrawer<TPix, TWgt, TCor>::drawCap(int start, int end)
       if((d = -AxBy - C0) > 0.f){             // pixel is left to left trimline (in left cap)
         if(roundCaps){
           d  = sqrt(dp*dp+d*d);
-          sc = lineProfile(d, w2); }
+          sc = js*lineProfile(d, w2); }
         else
           sc *= lineProfile(d, w2); }
       if((d = AxBy + C1) > 0.f){              // right to right trimline (right end cap) - a pixel
         if(roundCaps){                        // may be in both, so we need to check both
           d = sqrt(dp*dp+d*d);                // conditions in both cap-drawing loops :-(
-          sc = lineProfile(d, w2);  }
+          sc = js*lineProfile(d, w2);  }
         else
           sc *= lineProfile(d, w2); }
       plot(x, y, sc, steep);
@@ -259,7 +267,8 @@ void LineDrawer<TPix, TWgt, TCor>::drawCap(int start, int end)
 }
 
 template<class TPix, class TWgt, class TCor>
-void LineDrawer<TPix, TWgt, TCor>::drawCapForJoint(int start, int end, TCor xj, TCor yj)
+void LineDrawer<TPix, TWgt, TCor>::drawCapForJointUniformColor(int start, int end, 
+  TCor xj, TCor yj)
 {
   for(x = start; x <= end; x++){
     yf = a*x + b;

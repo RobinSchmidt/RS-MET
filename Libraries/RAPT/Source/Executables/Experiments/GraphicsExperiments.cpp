@@ -691,14 +691,14 @@ void polyLineRandom()
   // create objects:
   ImageF image(imageWidth, imageHeight);
   LineDrawerFFF drawer(&image);
-  drawer.setBlendMode(ImageDrawerFFF::BLEND_ADD_SATURATE);
-  //drawer.setBlendMode(ImageDrawerFFF::BLEND_ADD_CLIP);
+  //drawer.setBlendMode(ImageDrawerFFF::BLEND_ADD_SATURATE);
+  drawer.setBlendMode(ImageDrawerFFF::BLEND_ADD_CLIP);
   //drawer.setLineProfile(LineDrawerFFF::PROFILE_LINEAR);
   drawer.setLineProfile(LineDrawerFFF::PROFILE_FLAT);
   //drawer.setLineProfile(LineDrawerFFF::PROFILE_CUBIC);
   drawer.setLineWidth(thickness);
   //drawer.setColor(brightness);
-  drawer.setRoundCaps(false);
+  drawer.setRoundCaps(true);
 
   float margin = 2*thickness;
   float xMin, yMin, xMax, yMax;
@@ -717,9 +717,10 @@ void polyLineRandom()
     x1 = rsRandomUniform(xMin, xMax);
     y1 = rsRandomUniform(yMin, yMax);
     br = rsRandomUniform(minBrightness, maxBrightness);
-    drawer.drawLine(x0, y0, x1, y1);
+    //drawer.drawLine(x0, y0, x1, y1);
     drawer.setColor(br);
     //drawer.lineTo(x1, y1);
+    drawer.lineTo(x1, y1, true); // true: line joining code for uniform color polylines
     x0 = x1;
     y0 = y1;
   }

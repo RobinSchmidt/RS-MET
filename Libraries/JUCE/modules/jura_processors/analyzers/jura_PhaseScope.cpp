@@ -12,6 +12,8 @@ PhaseScope::PhaseScope(CriticalSection *lockToUse) : AudioModule(lockToUse)
   bypassPixelDecay = false;
   //phaseScopeBuffer->setUseAlphaMask(false);
   phaseScopeBuffer->setMaxSizeWithoutReAllocation(1000, 1000);
+  //phaseScopeBuffer->setMaxSizeWithoutReAllocation(3840, 2160); // UHD
+  //phaseScopeBuffer->setMaxSizeWithoutReAllocation(4096, 4096);
   updateBufferSize();
 
   createParameters();
@@ -332,6 +334,7 @@ void PhaseScopeEditor::createWidgets()
   b->assignParameter( scope->getParameterByName("AntiAlias") );
   b->setDescription("Anti aliased drawing (bilinear deinterpolation)");
   b->setDescriptionField(infoField);
+  //b->setButtonPainter(&buttonPainter); // temporary, for test
 }
 
 void PhaseScopeEditor::resized()

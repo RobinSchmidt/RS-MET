@@ -119,13 +119,19 @@ public:
 
   /** \name Drawing */
 
-  /** Draws a line from (x0,y0) to (x1,y1). */
-  void drawLine(TCor x0, TCor y0, TCor x1, TCor y1);
+  /** Draws a line from (x0,y0) to (x1,y1). The joinableStart/End parameters scale the color weight
+  inside the end-circles (in round cap mode) by 0.5 - this is supposed to lead to nice line
+  joints, but that doesn't work yet - the joints still look funky :-(  */
+  void drawLine(TCor x0, TCor y0, TCor x1, TCor y1, bool joinableStart = false, 
+    bool joinableEnd = false);
 
   /** Special line drawing function that is supposed to be used for drawing sequences of connected
   lines. After an initial call to initLine or a previous call to lineTo, you can call this 
-  function in order to avoid artifacts (phantom circles) at the line joints. */ 
-  void lineTo(TCor x, TCor y);
+  function in order to avoid artifacts (phantom circles) at the line joints. The optional
+  uniformColor parameter indicates that between successive calls to lineTo, the color will not be 
+  changed (by setColor). If the whole polyline has the same color, you can pass true and then a 
+  simpler, more efficient end cap handling code will be invoked. */ 
+  void lineTo(TCor x, TCor y, bool uniformColor = false);
 
   /** Function to initialize our xOld, yOld members which are used for polyline drawing. Call this 
   once with the start point of the polyline before repeatedly calling lineTo  */
@@ -182,24 +188,22 @@ private:
   void drawMiddleSection();
 
   /** Draws the left end cap of the line. */
-  inline void drawLeftCap() { drawCap(xs, xel); }
+  inline void drawLeftCap(bool joinable) { drawCap(xs, xel, joinable); }
 
   /** Draws the right end cap of the line. */
-  inline void drawRightCap() { drawCap(xsr, xe); }
+  inline void drawRightCap(bool joinable) { drawCap(xsr, xe, joinable); }
 
   /** Draws either left or right end cap, called internally from drawLeftCap and drawRightCap. The
   code is exactly the same except for different loop start and end indices, because we need to 
   check against both caps everytime - because any pixel may be part of both caps at the same time
   (occurs for very short slanted lines). */
-  void drawCap(int start, int end);
+  void drawCap(int start, int end, bool joinable = false);
 
-  /** A special variant of the left cap drawing code to be used for joined lines (in lineTo). It 
-  avoids drawing anything within the left end-circle. When used in round caps mode, it avoids the
-  phantom circles that woul otherwise appear in the line joints. */
-  //void drawLeftCapForJoint();
-   // currently works only in round cap mode
-
-  void drawCapForJoint(int start, int end, TCor xj, TCor yj);
+  /** A special variant of the cap drawing code to be used for joined lines (in lineTo) with 
+  uniform color. It avoids drawing anything within the left end-circle. When used in round caps 
+  mode, it avoids the phantom circles that woul otherwise appear in the line joints. xj, yj are the
+  coordinates of the cap (which sits inside the joint) that shall not be drawn. */
+  void drawCapForJointUniformColor(int start, int end, TCor xj, TCor yj);
 
 
 

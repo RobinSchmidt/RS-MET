@@ -149,6 +149,8 @@ protected:
     *sliderLineDensity, *sliderDotLimit, *sliderFrameRate;
   RButton *buttonAntiAlias;
 
+  //RButtonPainter3D buttonPainter; // only temporary, experimental
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhaseScopeEditor)
 };
 
