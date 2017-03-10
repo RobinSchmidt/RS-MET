@@ -138,7 +138,7 @@ public:
     if(h == 0)
       h = wrappedEditor->getHeight();
 
-    setResizeLimits(200, 100, 2000, 1000); // must be called BEFORE setSize
+    setResizeLimits(200, 100, 6000, 3000); // must be called BEFORE setSize
     setSize(w, h);
     addAndMakeVisible(wrappedEditor); 
   }
