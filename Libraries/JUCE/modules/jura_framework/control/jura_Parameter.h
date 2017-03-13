@@ -30,17 +30,17 @@ public:
   //-----------------------------------------------------------------------------------------------
   // callbacks:
 
-  /** A callback that will be called from the destructor of the Parameter class - it is intended to 
-  give ParameterObserver objects an opportunity to invalidate any pointers to a particular 
-  Parameter object that they may hold. */
-  virtual void parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted) = 0;
-
   /** The callback method that will get called when one of our observed parameters was changed. */
   virtual void parameterChanged(Parameter* parameterThatHasChanged) = 0;
 
+  /** A callback that will be called from the destructor of the Parameter class - it is intended to 
+  give ParameterObserver objects an opportunity to invalidate any pointers to a particular 
+  Parameter object that they may hold. */
+  virtual void parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted) {};
+
   /** The callback method that will get called when one of our observed parameters has changed its 
   range. */
-  virtual void parameterRangeChanged(Parameter* parameterThatHasChangedRange) { }
+  virtual void parameterRangeChanged(Parameter* parameterThatHasChangedRange) {}
 
   // maybe, we should get rid of the stuff below:
 
