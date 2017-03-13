@@ -545,6 +545,23 @@ void ImagePainter<TPix, TWgt, TCor>::drawDottedLine(TCor x1, TCor y1, TCor x2, T
   // i think, we should start the loop at i=0 and use scaler = 1.0 / (numDots-1)
 }
 
+template<class TPix, class TWgt, class TCor>
+void ImagePainter<TPix, TWgt, TCor>::drawDottedSpline(TCor x1, TCor x1s, TCor y1, TCor y1s, 
+  TCor x2, TCor x2s, TCor y2, TCor y2s, TPix color, TCor density, int maxNumDots, 
+  bool scaleByNumDots)
+{
+  // Not yet implemented. Here is what we would have to do:
+  // -compute coeffs of the two polynomials:
+  //  x(t) = a0 + a1*x + a2*x^2 + a3*x^3
+  //  y(t) = b0 + b1*y + b2*y^2 + b3*y^3
+  // -compute the total length of the spline segment (this will be some kind of analytic line 
+  //  integral) to be used to scale the brightness of the dots
+  // -compute a sequence of t-values at which to evaluate the polynomials and set a dot - these
+  //  t-values should be chosen such that the spline segments between successive t-values have
+  //  all the same length, t should be in the range 0..1
+  // -the rest is conceptually similar to drawDottedLine
+}
+
 // some helper functions used in Wu algorithm (maybe try to get rid of them):
 template<class T> inline int        ipart(T x) { return (int) x;         }
 template<class T> inline T          fpart(T x) { return x - ipart(x);    }
