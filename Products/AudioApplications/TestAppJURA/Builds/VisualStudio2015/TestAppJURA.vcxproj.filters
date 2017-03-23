@@ -2161,6 +2161,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\dialogs\jura_RDialogBox.cpp">
       <Filter>Juce Modules\jura_framework\gui\dialogs</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\dialogs\jura_RMessageBox.cpp">
+      <Filter>Juce Modules\jura_framework\gui\dialogs</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\dialogs\rojue_ImageSavingDialog.cpp">
       <Filter>Juce Modules\jura_framework\gui\dialogs</Filter>
     </ClCompile>
@@ -2286,6 +2289,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_PhasorFilter.cpp">
       <Filter>Juce Modules\jura_processors\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\misc\jura_AudioModuleChain.cpp">
+      <Filter>Juce Modules\jura_processors\misc</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\jura_BreakpointModulatorAudioModule.cpp">
       <Filter>Juce Modules\jura_processors\modulators</Filter>
@@ -4218,6 +4224,9 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\dialogs\jura_RDialogBox.h">
       <Filter>Juce Modules\jura_framework\gui\dialogs</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\dialogs\jura_RMessageBox.h">
+      <Filter>Juce Modules\jura_framework\gui\dialogs</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\dialogs\rojue_ImageSavingDialog.h">
       <Filter>Juce Modules\jura_framework\gui\dialogs</Filter>
     </ClInclude>
@@ -4346,6 +4355,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_PhasorFilter.h">
       <Filter>Juce Modules\jura_processors\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\misc\jura_AudioModuleChain.h">
+      <Filter>Juce Modules\jura_processors\misc</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\misc\jura_PluginCreation.h">
       <Filter>Juce Modules\jura_processors\misc</Filter>

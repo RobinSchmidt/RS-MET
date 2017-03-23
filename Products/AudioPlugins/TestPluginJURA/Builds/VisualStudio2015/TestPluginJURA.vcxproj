@@ -1814,6 +1814,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\dialogs\jura_RDialogBox.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\dialogs\jura_RMessageBox.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\dialogs\rojue_ImageSavingDialog.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2638,6 +2641,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\files\jura_StateFileManager.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\dialogs\jura_ColourSchemeSetupDialog.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\dialogs\jura_RDialogBox.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\dialogs\jura_RMessageBox.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\dialogs\rojue_ImageSavingDialog.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\editors\jura_Editor.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\graphics\jura_BitmapFonts.h"/>

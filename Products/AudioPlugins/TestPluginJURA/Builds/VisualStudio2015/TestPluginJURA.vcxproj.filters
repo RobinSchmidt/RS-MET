@@ -2263,6 +2263,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\dialogs\jura_RDialogBox.cpp">
       <Filter>Juce Modules\jura_framework\gui\dialogs</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\dialogs\jura_RMessageBox.cpp">
+      <Filter>Juce Modules\jura_framework\gui\dialogs</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\dialogs\rojue_ImageSavingDialog.cpp">
       <Filter>Juce Modules\jura_framework\gui\dialogs</Filter>
     </ClCompile>
@@ -4435,6 +4438,9 @@
       <Filter>Juce Modules\jura_framework\gui\dialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\dialogs\jura_RDialogBox.h">
+      <Filter>Juce Modules\jura_framework\gui\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\dialogs\jura_RMessageBox.h">
       <Filter>Juce Modules\jura_framework\gui\dialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\dialogs\rojue_ImageSavingDialog.h">

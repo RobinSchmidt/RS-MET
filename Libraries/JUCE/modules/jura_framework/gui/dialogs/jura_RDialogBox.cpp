@@ -1,6 +1,3 @@
-//#include "rojue_RDialogBox.h"
-//using namespace rojue;
-
 RDialogBox::RDialogBox()
 {
   setHeadlineText(String("Dialog"));

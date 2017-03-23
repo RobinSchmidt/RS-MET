@@ -61,6 +61,7 @@ namespace jura
 #include "gui/plots/jura_SpectrumDisplayOld.cpp"
 
 #include "gui/dialogs/jura_RDialogBox.cpp"
+#include "gui/dialogs/jura_RMessageBox.cpp"
 #include "gui/dialogs/jura_ColourSchemeSetupDialog.cpp"
 
 #include "gui/editors/jura_Editor.cpp"

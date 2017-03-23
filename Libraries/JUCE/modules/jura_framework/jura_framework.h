@@ -96,6 +96,7 @@ namespace jura
 #include "gui/editors/jura_Editor.h"
 
 #include "gui/dialogs/jura_RDialogBox.h"
+#include "gui/dialogs/jura_RMessageBox.h"
 #include "gui/dialogs/jura_ColourSchemeSetupDialog.h"
 
 }

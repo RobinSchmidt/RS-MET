@@ -1,9 +1,6 @@
 #ifndef jura_RDialogBox_h
 #define jura_RDialogBox_h
 
-//#include "../editors/rojue_Editor.h"
-//#include "../widgets/rojue_Widgets.h"
-
 class RDialogBox;
 
 /** A class for receiving events from a RDialogBox.  */

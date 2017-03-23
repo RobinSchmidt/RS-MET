@@ -33,14 +33,14 @@ public:
   virtual const String getProgramName (int index) override { return String::empty; }
   virtual void changeProgramName(int index, const String& newName) override {}
   virtual void getStateInformation(juce::MemoryBlock& destData) override;
-  virtual void setStateInformation(const void* data, int sizeInBytes); 
+  virtual void setStateInformation(const void* data, int sizeInBytes) override; 
   virtual void processBlock(AudioBuffer<float>& buffer, MidiBuffer& midiMessages) override;
 
   //-----------------------------------------------------------------------------------------------
   // optional overrides for juce::AudioProcessor baseclass:
 
   virtual bool supportsDoublePrecisionProcessing() const override { return true; }
-  virtual void processBlock(AudioBuffer<double> &buffer, MidiBuffer &midiMessages) override;
+  virtual void processBlock(AudioBuffer<double>& buffer, MidiBuffer& midiMessages) override;
   virtual bool setPreferredBusArrangement(bool isInput, int bus,
     const AudioChannelSet& preferredSet) override;
 
@@ -99,7 +99,7 @@ public:
 
   virtual bool acceptsMidi() const override { return true; }
 
-  virtual void processBlock(AudioBuffer<double> &buffer, MidiBuffer &midiMessages) override;
+  virtual void processBlock(AudioBuffer<double>& buffer, MidiBuffer& midiMessages) override;
 
   virtual void handleMidiMessage(MidiMessage message);
 
@@ -122,7 +122,7 @@ class AudioPluginEditor : public juce::AudioProcessorEditor
 
 public:
 
-  AudioPluginEditor(AudioModuleEditor *editorToWrap, AudioPlugin* pluginToEdit) 
+  AudioPluginEditor(AudioModuleEditor* editorToWrap, AudioPlugin* pluginToEdit) 
     : AudioProcessorEditor(pluginToEdit)
   {
     this->pluginToEdit  = pluginToEdit;
@@ -163,9 +163,9 @@ public:
 
 protected:
 
-  AudioModuleEditor *wrappedEditor;
+  AudioModuleEditor* wrappedEditor;
 
-  AudioPlugin *pluginToEdit;
+  AudioPlugin* pluginToEdit;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioPluginEditor)
 };
