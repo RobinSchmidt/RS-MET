@@ -13,6 +13,10 @@ public:
   AudioPlugin(AudioModule *moduleToWrap);
   virtual ~AudioPlugin();
 
+  // setup:
+
+  void setPluginName(const String& newName) { plugInName = newName; }
+
   //-----------------------------------------------------------------------------------------------
   // mandatory overrides for juce::AudioProcessor baseclass:
 
