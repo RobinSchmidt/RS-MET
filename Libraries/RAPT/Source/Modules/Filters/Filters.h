@@ -6,12 +6,12 @@ namespace RAPT
   
 // make a nested namespace Filters or Filter
 
-//files to come:
-//#include "Basics/OnePole.h"
-//#include "Basics/OnePoleOneZero.h"
-//#include "Basics/TwoPoleOneZero.h"  // decaying sine, etc.
-//#include "Basics/Biquad.h"
-//#include "Basics/BiquadChain.h"
+//#include "Basic/OnePoleFilter.h"
+
+//#include "Basic/OnePoleOneZero.h"
+//#include "Basic/TwoPoleOneZero.h"  // decaying sine, etc.
+//#include "Basic/Biquad.h"
+//#include "Basic/BiquadChain.h"
 //...
 
 #include "Musical/LadderFilter.h"

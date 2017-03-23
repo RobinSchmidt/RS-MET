@@ -43,6 +43,9 @@
     <Filter Include="Math\Misc">
       <UniqueIdentifier>{7311e484-a085-41a9-98ba-5bb485af030b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Filters\Basic">
+      <UniqueIdentifier>{c130a901-3a9e-48e2-956d-1458f8fefc9a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\Modules\Basics\Basics.cpp">
@@ -111,6 +114,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Modules\Math\Misc\Statistics.cpp">
       <Filter>Math\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Modules\Filters\Basic\OnePoleFilter.cpp">
+      <Filter>Filters\Basic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -195,6 +201,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Modules\Math\Misc\Statistics.h">
       <Filter>Math\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Modules\Filters\Basic\OnePoleFilter.h">
+      <Filter>Filters\Basic</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
