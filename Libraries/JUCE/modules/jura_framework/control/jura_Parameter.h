@@ -379,13 +379,14 @@ public:
     valueChangeCallbackBool   = NULL;
   }
 
-protected:
-
   /** Notifies the observers that this parameter has been changed. */
   virtual void notifyObservers();
 
   /** Calls all currently registered callback functions for a value change. */
   virtual void callValueChangeCallbacks();
+
+protected:
+
 
   /** Restrics a value to the permitted parameter range as defined by minValue and maxValue. */
   virtual double restrictValueToParameterRange(double valueToRestrict);

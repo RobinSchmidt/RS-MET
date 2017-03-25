@@ -136,6 +136,14 @@ public:
   appropriate updating of the signal processing core in the subclasses. */
   virtual void updateCoreObjectAccordingToParameters();
 
+  /** Calls the associated callback function for each of our observed Parameters, optionally also
+  recursively for all child AudioModules. */
+  void callParameterCallbacks(bool recursivelyForChildModules);
+
+  /** Calls the parameterChanged callback for each of our observed parameters, such that each 
+  parameter nofies each of its obervers about a parameter update. */
+  void notifyParameterObservers(bool recursivelyForChildModules);
+
   /** Recalls a state (i.e. the settings of all relevant parameters) from an XmlElement. */
   virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 
     bool markAsClean);

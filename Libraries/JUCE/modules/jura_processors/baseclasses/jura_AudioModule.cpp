@@ -304,6 +304,26 @@ void AudioModule::updateCoreObjectAccordingToParameters()
     parameterChanged(observedParameters[i]);
 }
 
+void AudioModule::callParameterCallbacks(bool recursivelyForChildModules)
+{
+  int i;
+  for(i = 0; i < observedParameters.size(); i++)
+    observedParameters[i]->callValueChangeCallbacks();
+  if(recursivelyForChildModules)
+    for(i = 0; i < childModules.size(); i++)
+      childModules[i]->callParameterCallbacks(true);
+}
+
+void AudioModule::notifyParameterObservers(bool recursivelyForChildModules)
+{
+  int i;
+  for(i = 0; i < observedParameters.size(); i++)
+    observedParameters[i]->notifyObservers();
+  if(recursivelyForChildModules)
+    for(i = 0; i < childModules.size(); i++)
+      childModules[i]->notifyParameterObservers(true);
+}
+
 //=================================================================================================
 // class AudioModuleWithMidiIn
 
