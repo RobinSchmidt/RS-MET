@@ -614,8 +614,8 @@ void lineJoints()
   float margin = 2*thickness;
   //vector<float> x0, y0, x1, y1;
   float x0, y0, x1, y1;
-  float w2 = 0.5*imageWidth;
-  float h2 = 0.5*imageHeight;
+  float w2 = 0.5f*imageWidth;
+  float h2 = 0.5f*imageHeight;
   float dy = (float)margin;
   float offset;
   for(int i = 0; i < numAngles; i++)
@@ -709,14 +709,14 @@ void polyLineRandom()
   //drawer.drawLine(xMin, yMin, xMax, yMax);
   rsRandomUniform(0.0, 1.0, 1);
   float x0, y0, x1, y1;
-  x0 = rsRandomUniform(xMin, xMax);  
-  y0 = rsRandomUniform(yMin, yMax);
+  x0 = (float) rsRandomUniform(xMin, xMax);  
+  y0 = (float) rsRandomUniform(yMin, yMax);
   drawer.initPolyLine(x0, y0);
   for(int i = 2; i <= numLines; i++)
   {
-    x1 = rsRandomUniform(xMin, xMax);
-    y1 = rsRandomUniform(yMin, yMax);
-    br = rsRandomUniform(minBrightness, maxBrightness);
+    x1 = (float) rsRandomUniform(xMin, xMax);
+    y1 = (float) rsRandomUniform(yMin, yMax);
+    br = (float) rsRandomUniform(minBrightness, maxBrightness);
     //drawer.drawLine(x0, y0, x1, y1);
     drawer.setColor(br);
     //drawer.lineTo(x1, y1);

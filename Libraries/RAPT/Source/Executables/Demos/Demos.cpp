@@ -6,7 +6,7 @@ void runDemos()
   //convolutionDemo();
 
   // Math:
-  parametricBell();
+  //parametricBell();
   //scaledAndShiftedSigmoid();
   //sigmoids();
 
@@ -18,5 +18,5 @@ void runDemos()
   // impulse/step/magnitude/phase - responses in a single window
 
   // Modulator Demos:
-  //breakpointModulatorDefault();
+  breakpointModulatorDefault();
 }

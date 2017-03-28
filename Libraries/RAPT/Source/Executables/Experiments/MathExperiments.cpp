@@ -6,9 +6,9 @@ void linearRegression()
   static const int N = 500;  // number of samples
   float minDist = 0.1f;       // minimum distance between successive samples
   float maxDist = 1.0f;      // maximum ...
-  float a       = 0.8;
-  float b       = 20.0;
-  float noise   = 10.0;
+  float a       = 0.8f;
+  float b       = 20.0f;
+  float noise   = 10.0f;
   int   seed    = 0;
 
   // create input data:

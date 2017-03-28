@@ -3,6 +3,13 @@
 
 #include "Plotting.h" 
 
+//void plotData(int N, float *x, float *y1, float *y2, float *y3, float *y4, float *y5)
+//{
+//  GNUPlotter plt;
+//  plt.addDataArrays(N, x, y1, y2, y3, y4, y5);
+//  plt.plot();
+//}
+
 template<class TSig, class TFlt>
 vector<TSig> impulseResponse(TFlt &filter, int N, TSig scale)
 {
