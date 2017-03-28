@@ -392,7 +392,7 @@ public:
   bool isInSyncMode() const;
 
   /** Returns the number of cycles per time unit (seconds or whole notes). */
-  T getNumCyclesPerTimeUnit() const;
+  //T getNumCyclesPerTimeUnit() const;
 
   /** Returns the current tempo to which this object is set. */
   T getBeatsPerMinute() const;
@@ -507,8 +507,9 @@ protected:
 
   /** Make a copy-constructor unavailable because this class needs deep copying (because of the
   pointers in the MutexLocks). If you need to create a new object based on an existing one,
-  simply create a new object with the default constructor and then use copyDataFrom(). */
-  rsBreakpointModulator(const rsBreakpointModulator& modulatorToCopy);
+  simply create a new object with the default constructor and then use copyDataFrom(). 
+  ...doesn't apply anymore...  */
+  //rsBreakpointModulator(const rsBreakpointModulator& modulatorToCopy);
 
   //---------------------------------------------------------------------------------------------
 
@@ -637,7 +638,7 @@ inline T rsBreakpointModulator<T>::getSample()
     tmp1   = state1_change*state1 - state2;
     state2 = state1;
     state1 = tmp1;
-    out    = leftLevel + levelDelta*(0.5*tmp1+0.5);
+    out    = leftLevel + levelDelta*(0.5f*tmp1+0.5f);
   }
   break;
   case rsModBreakpoint<T>::ANALOG:
@@ -660,7 +661,7 @@ inline T rsBreakpointModulator<T>::getSample()
       tmp1 = 0.0;
     else
       tmp1 = (tmp2-tmp1) / (tmp2+tmp1);
-    tmp1    = 0.5 * tmp1 + 0.5; // may be optimized away later
+    tmp1    = 0.5f * tmp1 + 0.5f; // may be optimized away later
     out     = leftLevel + levelDelta*tmp1;
     state1 *= state1_change;
     state2 *= state2_change;
@@ -670,7 +671,7 @@ inline T rsBreakpointModulator<T>::getSample()
   {
     tmp1    = scaler1*(state1-state1_min);
     tmp2    = scaler1*(state2-state1_min); // state2_min == state1_min
-    tmp1    = 0.5*(tmp2-tmp1) + 0.5;
+    tmp1    = 0.5f*(tmp2-tmp1) + 0.5f;
     out     = leftLevel + levelDelta*tmp1;
     state1 *= state1_change;
     state2 *= state2_change;
@@ -689,7 +690,7 @@ inline T rsBreakpointModulator<T>::getSample()
     tmp1   = state1_change*state1 - state2;
     state2 = state1;
     state1 = tmp1;
-    out    = leftLevel + 2*levelDelta*(0.5*tmp1+0.5);
+    out    = leftLevel + 2*levelDelta*(0.5f*tmp1+0.5f);
   }
   break;
 

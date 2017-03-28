@@ -55,7 +55,6 @@ rsBreakpointModulator<T>::~rsBreakpointModulator()
 template<class T>
 void rsBreakpointModulator<T>::copyDataFrom(const rsBreakpointModulator &source)
 {
-  // copy everything except the mutex-member:
   state1                      = source.state1;
   state2                      = source.state2;
   state1_change               = source.state1_change;
@@ -572,7 +571,7 @@ T rsBreakpointModulator<T>::getBreakpointMinTime(int index) const
   else
   {
     if( index == 0 )
-      return data->breakpoints[index].timeStamp - 1.0;
+      return data->breakpoints[index].timeStamp - 1.f;
       //return 0.0;
     else
       return data->breakpoints[index-1].timeStamp + data->minBreakpointDistance;
@@ -1094,7 +1093,7 @@ void rsBreakpointModulator<T>::setupStateVariables()
     break;
   case rsModBreakpoint<T>::SMOOTH:
     {
-      T omega  = PI / (T) segmentLength;
+      T omega  = T(PI/segmentLength);
       state1_change = 2.f*cos(omega);
       state1        = sin( -T(0.5*PI) - omega );
       state2        = sin( -T(0.5*PI) - 2.f*omega );

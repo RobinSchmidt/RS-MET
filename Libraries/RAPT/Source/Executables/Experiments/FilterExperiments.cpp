@@ -145,7 +145,7 @@ type casting such that ordinary functions can still be passed as usual?) */
 template<class Tx, class Ty>
 void movingAverage(int N, Tx* x, Ty* y, Ty* avg, Tx width, Ty (*weightFunc)(Tx))
 {
-  Tx w2  = 0.5 * width;                        // half width
+  Tx w2  = 0.5f * width;                        // half width
   Tx w2r = 1 / w2;                             // reciprocal of half width
   Tx dist;                                     // distance
   int k;                                       // inner loop index
