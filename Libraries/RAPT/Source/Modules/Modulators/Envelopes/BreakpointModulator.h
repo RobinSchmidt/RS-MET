@@ -1,20 +1,21 @@
 #ifndef RAPT_BREAKPOINTMODULATOR_H_INCLUDED
 #define RAPT_BREAKPOINTMODULATOR_H_INCLUDED
 
-/** A class to combine all the required data for one modulation breakpoint. 
 
+//template<class T>
+//class rsBreakpointModulatorData<T>;
+
+/** A class to combine all the required data for one modulation breakpoint. 
 \todo: make this class internal to BreakpointModulatorData
 \todo: perhaps, we should use the thread-safe version from rosic instead of this unsafe one from 
-       RSLib
+       RSLib...but no - we want to take care of synchronization on a higher level */
 
-
-*/
-
+template<class T>
 class rsModBreakpoint
 {
 
-  friend class rsBreakpointModulator;
-  friend class rsBreakpointModulatorData;
+  //friend class rsBreakpointModulator;
+  //friend class rsBreakpointModulatorData<T>;
 
 public:
 
@@ -41,12 +42,12 @@ public:
     shape       = 1;
   }
 
-protected:
+//protected:
 
   // member variables:
-  double timeStamp;
-  double level;
-  double shapeAmount;
+  T timeStamp;
+  T level;
+  T shapeAmount;
   int    shape;
 
 };
@@ -70,25 +71,26 @@ class.
 
 */
 
+template<class T>
 class rsBreakpointModulatorData
 {
 
 public:
 
-  double scaleFactor;
-  double offset;
-  double bpm;
-  double sampleRate;
-  double minimumAllowedLevel;
-  double maximumAllowedLevel;
-  double endLevel;
-  double minBreakpointDistance;
-  double timeScale;
-  double timeScaleByKey;
-  double timeScaleByVel;
-  double depth;
-  double depthByKey;
-  double depthByVel;
+  T scaleFactor;
+  T offset;
+  T bpm;
+  T sampleRate;
+  T minimumAllowedLevel;
+  T maximumAllowedLevel;
+  T endLevel;
+  T minBreakpointDistance;
+  T timeScale;
+  T timeScaleByKey;
+  T timeScaleByVel;
+  T depth;
+  T depthByKey;
+  T depthByVel;
 
   int loopStartIndex;
   int loopEndIndex;
@@ -99,9 +101,10 @@ public:
   bool syncMode;
   bool endLevelFixedAtZero;
 
-  std::vector<rsModBreakpoint> breakpoints;
+  std::vector<rsModBreakpoint<T>> breakpoints;
 
-  rsBreakpointModulatorData()
+  /** Constructor. */
+  rsBreakpointModulatorData<T>()
   {
     scaleFactor           = 1.0;
     offset                = 0.0;
@@ -129,35 +132,35 @@ public:
 
     // initialize the breakpoint-vector with an analog-like ADSR curve:
     breakpoints.clear();
-    rsModBreakpoint newBreakpoint;
+    rsModBreakpoint<double> newBreakpoint;
 
     newBreakpoint.timeStamp   = 0.0;
     newBreakpoint.level       = 0.0;
-    newBreakpoint.shape       = rsModBreakpoint::ANALOG;
+    newBreakpoint.shape       = rsModBreakpoint<double>::ANALOG;
     newBreakpoint.shapeAmount = 1.0;
     breakpoints.push_back(newBreakpoint);
 
     newBreakpoint.timeStamp   = 0.5;
     newBreakpoint.level       = 1.0;
-    newBreakpoint.shape       = rsModBreakpoint::ANALOG;
+    newBreakpoint.shape       = rsModBreakpoint<double>::ANALOG;
     newBreakpoint.shapeAmount = 1.0;
     breakpoints.push_back(newBreakpoint);
 
     newBreakpoint.timeStamp   = 1.0;
     newBreakpoint.level       = 0.5;
-    newBreakpoint.shape       = rsModBreakpoint::ANALOG;
+    newBreakpoint.shape       = rsModBreakpoint<double>::ANALOG;
     newBreakpoint.shapeAmount = 1.0;
     breakpoints.push_back(newBreakpoint);
 
     newBreakpoint.timeStamp   = 2.0;
     newBreakpoint.level       = 0.5;
-    newBreakpoint.shape       = rsModBreakpoint::ANALOG;
+    newBreakpoint.shape       = rsModBreakpoint<double>::ANALOG;
     newBreakpoint.shapeAmount = 1.0;
     breakpoints.push_back(newBreakpoint);
 
     newBreakpoint.timeStamp   = 3.0;
     newBreakpoint.level       = 0.0;
-    newBreakpoint.shape       = rsModBreakpoint::ANALOG;
+    newBreakpoint.shape       = rsModBreakpoint<double>::ANALOG;
     newBreakpoint.shapeAmount = 1.0;
     breakpoints.push_back(newBreakpoint);
 
@@ -571,7 +574,7 @@ protected:
   int currentKey, currentVel;
 
   /** A pointer to the data which are potentially shared by among instances. */
-  rsBreakpointModulatorData* data;
+  rsBreakpointModulatorData<double>* data;
 
   /** A vector of pointers to other instances of this class which shall be kept in sync to this
   instance with regard to their parameters. */
@@ -616,18 +619,18 @@ inline double rsBreakpointModulator::getSample()
   // what's going on, refer to the comments in the MatLab/Octave implementation):
   switch(currentShape)
   {
-  case rsModBreakpoint::STAIRSTEP:
+  case rsModBreakpoint<double>::STAIRSTEP:
   {
     out     = state1;
   }
   break;
-  case rsModBreakpoint::LINEAR:
+  case rsModBreakpoint<double>::LINEAR:
   {
     out     = state1;
     state1 += state1_change;
   }
   break;
-  case rsModBreakpoint::SMOOTH:
+  case rsModBreakpoint<double>::SMOOTH:
   {
     tmp1   = state1_change*state1 - state2;
     state2 = state1;
@@ -635,19 +638,19 @@ inline double rsBreakpointModulator::getSample()
     out    = leftLevel + levelDelta*(0.5*tmp1+0.5);
   }
   break;
-  case rsModBreakpoint::ANALOG:
+  case rsModBreakpoint<double>::ANALOG:
   {
     out     = leftLevel + levelDelta - scaler1*(state1-state1_min);
     state1 *= state1_change;
   }
   break;
-  case rsModBreakpoint::GROWING:
+  case rsModBreakpoint<double>::GROWING:
   {
     out     = leftLevel + scaler1*(state1-state1_min);
     state1 *= state1_change;
   }
   break;
-  case rsModBreakpoint::SIGMOID:
+  case rsModBreakpoint<double>::SIGMOID:
   {
     tmp1 = scaler1*(state1-state1_min);
     tmp2 = scaler1*(state2-state1_min); // state2_min == state1_min
@@ -661,7 +664,7 @@ inline double rsBreakpointModulator::getSample()
     state2 *= state2_change;
   }
   break;
-  case rsModBreakpoint::SPIKEY:
+  case rsModBreakpoint<double>::SPIKEY:
   {
     tmp1    = scaler1*(state1-state1_min);
     tmp2    = scaler1*(state2-state1_min); // state2_min == state1_min
@@ -671,7 +674,7 @@ inline double rsBreakpointModulator::getSample()
     state2 *= state2_change;
   }
   break;
-  case rsModBreakpoint::SINE_1:
+  case rsModBreakpoint<double>::SINE_1:
   {
     tmp1   = state1_change*state1 - state2;
     state2 = state1;
@@ -679,7 +682,7 @@ inline double rsBreakpointModulator::getSample()
     out    = leftLevel + levelDelta*(tmp1);
   }
   break;
-  case rsModBreakpoint::SINE_2:
+  case rsModBreakpoint<double>::SINE_2:
   {
     tmp1   = state1_change*state1 - state2;
     state2 = state1;

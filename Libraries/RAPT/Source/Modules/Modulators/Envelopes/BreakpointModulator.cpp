@@ -34,9 +34,9 @@ inline double rsPowBipolar(double base, double exponent)
 
 rsBreakpointModulator::rsBreakpointModulator()
 {
-  data         = new rsBreakpointModulatorData;
+  data         = new rsBreakpointModulatorData<double>;
   isMaster     = true;
-  currentShape = rsModBreakpoint::LINEAR;
+  currentShape = rsModBreakpoint<double>::LINEAR;
   initialize();
   setToDefaultValues();
 }
@@ -171,7 +171,7 @@ int rsBreakpointModulator::insertBreakpoint(double newTimeStamp,
 
         // create a new breakpoint for insertion right before the breakpoint with 
         // the current index:
-        rsModBreakpoint newBreakpoint;
+        rsModBreakpoint<double> newBreakpoint;
         newBreakpoint.timeStamp   = newTimeStamp;
         newBreakpoint.level       = clipLevelToRange(newLevel);
 
@@ -663,8 +663,8 @@ bool rsBreakpointModulator::setBreakpointShape(int index, int newShape)
 {
   if( index >= 0 && index <= lastBreakpointIndex() )
   {
-    if( newShape >= rsModBreakpoint::STAIRSTEP &&
-      newShape <= rsModBreakpoint::SINE_2 )
+    if( newShape >= rsModBreakpoint<double>::STAIRSTEP &&
+      newShape <= rsModBreakpoint<double>::SINE_2 )
     {
       data->breakpoints[index].shape = newShape;
       return true;
@@ -1014,19 +1014,19 @@ void rsBreakpointModulator::setupStateVariables()
   currentShape = data->breakpoints[rightIndex].shape;
   switch( currentShape )
   {
-  case rsModBreakpoint::STAIRSTEP:
+  case rsModBreakpoint<double>::STAIRSTEP:
     {
       state1        = leftLevel;
       //state1_change = 0.0;
     }
     break;
-  case rsModBreakpoint::LINEAR:
+  case rsModBreakpoint<double>::LINEAR:
     {
       state1        = leftLevel;
       state1_change = levelDelta / (double) segmentLength;
     }
     break;
-  case rsModBreakpoint::SMOOTH:
+  case rsModBreakpoint<double>::SMOOTH:
     {
       double omega  = PI / (double) segmentLength;
       state1_change = 2.0*cos(omega);
@@ -1034,7 +1034,7 @@ void rsBreakpointModulator::setupStateVariables()
       state2        = sin( -(0.5*PI) - 2.0*omega );
     }
     break;
-  case rsModBreakpoint::ANALOG:
+  case rsModBreakpoint<double>::ANALOG:
     {
       state1_min    = pow(0.01, data->breakpoints[rightIndex].shapeAmount);
       state1_max    = pow(state1_min, 1.0 / (double) (segmentLength+1));
@@ -1043,7 +1043,7 @@ void rsBreakpointModulator::setupStateVariables()
       state1_change = state1_max;
     }
     break;
-  case rsModBreakpoint::GROWING:
+  case rsModBreakpoint<double>::GROWING:
     {
       state1_min    = pow(0.01, data->breakpoints[rightIndex].shapeAmount);
       state1_max    = pow(state1_min, 1.0 / (double) (segmentLength+1));
@@ -1052,7 +1052,7 @@ void rsBreakpointModulator::setupStateVariables()
       state1_change = 1.0/state1_max;
     }
     break;
-  case rsModBreakpoint::SIGMOID:
+  case rsModBreakpoint<double>::SIGMOID:
     {
       state1_min    = pow(0.01, data->breakpoints[rightIndex].shapeAmount);
       state1_max    = pow(state1_min, 1.0 / (double) (segmentLength+1));
@@ -1065,7 +1065,7 @@ void rsBreakpointModulator::setupStateVariables()
       state2_change = 1.0 / state1_max;
     }
     break;
-  case rsModBreakpoint::SPIKEY:
+  case rsModBreakpoint<double>::SPIKEY:
     {
       state1_min    = pow(0.01, data->breakpoints[rightIndex].shapeAmount);
       state1_max    = pow(state1_min, 1.0 / (double) (segmentLength+1));
@@ -1079,7 +1079,7 @@ void rsBreakpointModulator::setupStateVariables()
       state2_change = 1.0 / state1_max;
     }
     break;
-  case rsModBreakpoint::SINE_1:
+  case rsModBreakpoint<double>::SINE_1:
     {
       double omega  = 0.5*PI / (double) segmentLength;
       state1_change = 2.0*cos(omega);
@@ -1087,7 +1087,7 @@ void rsBreakpointModulator::setupStateVariables()
       state2        = sin( -(0.0*PI) - 2.0*omega );
     }
     break;
-  case rsModBreakpoint::SINE_2:
+  case rsModBreakpoint<double>::SINE_2:
     {
       double omega  = 0.5*PI / (double) segmentLength;
       state1_change = 2.0*cos(omega);
@@ -1147,35 +1147,35 @@ void rsBreakpointModulator::setToDefaultValues()
   // be there (their data can be modified, though), additional entries can be 
   // inserted and removed at will in between:
   data->breakpoints.clear();
-  rsModBreakpoint newBreakpoint;
+  rsModBreakpoint<double> newBreakpoint;
 
   newBreakpoint.timeStamp   = 0.0;
   newBreakpoint.level       = 0.0;
-  newBreakpoint.shape       = rsModBreakpoint::ANALOG;
+  newBreakpoint.shape       = rsModBreakpoint<double>::ANALOG;
   newBreakpoint.shapeAmount = 1.0;
   data->breakpoints.push_back(newBreakpoint);
 
   newBreakpoint.timeStamp   = 0.5;
   newBreakpoint.level       = 1.0;
-  newBreakpoint.shape       = rsModBreakpoint::ANALOG;
+  newBreakpoint.shape       = rsModBreakpoint<double>::ANALOG;
   newBreakpoint.shapeAmount = 1.0;
   data->breakpoints.push_back(newBreakpoint);
 
   newBreakpoint.timeStamp   = 1.0;
   newBreakpoint.level       = 0.5;
-  newBreakpoint.shape       = rsModBreakpoint::ANALOG;
+  newBreakpoint.shape       = rsModBreakpoint<double>::ANALOG;
   newBreakpoint.shapeAmount = 1.0;
   data->breakpoints.push_back(newBreakpoint);
 
   newBreakpoint.timeStamp   = 2.0;
   newBreakpoint.level       = 0.5;
-  newBreakpoint.shape       = rsModBreakpoint::ANALOG;
+  newBreakpoint.shape       = rsModBreakpoint<double>::ANALOG;
   newBreakpoint.shapeAmount = 1.0;
   data->breakpoints.push_back(newBreakpoint);
 
   newBreakpoint.timeStamp   = 3.0;
   newBreakpoint.level       = 0.0;
-  newBreakpoint.shape       = rsModBreakpoint::ANALOG;
+  newBreakpoint.shape       = rsModBreakpoint<double>::ANALOG;
   newBreakpoint.shapeAmount = 1.0;
   data->breakpoints.push_back(newBreakpoint);
 }
@@ -1214,17 +1214,17 @@ void rsBreakpointModulator::initialize()
   // be there (their data can be modified, though), additional entries can be 
   // inserted and removed at will in between:
   data->breakpoints.clear();
-  rsModBreakpoint newBreakpoint;
+  rsModBreakpoint<double> newBreakpoint;
 
   newBreakpoint.timeStamp   = 0.0;
   newBreakpoint.level       = 1.0;
-  newBreakpoint.shape       = rsModBreakpoint::ANALOG;
+  newBreakpoint.shape       = rsModBreakpoint<double>::ANALOG;
   newBreakpoint.shapeAmount = 1.0;
   data->breakpoints.push_back(newBreakpoint);
 
   newBreakpoint.timeStamp   = 1.0;
   newBreakpoint.level       = 1.0;
-  newBreakpoint.shape       = rsModBreakpoint::ANALOG;
+  newBreakpoint.shape       = rsModBreakpoint<double>::ANALOG;
   newBreakpoint.shapeAmount = 1.0;
   data->breakpoints.push_back(newBreakpoint);
 }
