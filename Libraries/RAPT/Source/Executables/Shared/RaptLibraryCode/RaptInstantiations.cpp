@@ -49,6 +49,9 @@ template RAPT::PhasorFilter<float, float>;
 template RAPT::PhasorStateMapper<float>;
 template RAPT::StateVariableFilter<float, float>; 
 
+// Modulation:
+template RAPT::rsBreakpointModulator<float>;
+
 // Visualization:
 template RAPT::Image<float>;
 template RAPT::AlphaMask<float>;

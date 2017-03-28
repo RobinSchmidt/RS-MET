@@ -9,7 +9,8 @@ void breakpointModulatorDefault()
   int noteOffAt = 5000;            // sample at which we trigger the note-off
   vector<double> y(N);
 
-  rsBreakpointModulator envGen;
+  rsBreakpointModulatorF envGen;
+  //rsBreakpointModulator<double> envGen;
   envGen.setTimeScale(0.05);       // otherwise, it would be too long for plotting
   envGen.noteOn();
   for(int n = 0; n < N; n++)

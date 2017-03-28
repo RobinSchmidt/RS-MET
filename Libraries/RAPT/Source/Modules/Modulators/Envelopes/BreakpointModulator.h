@@ -132,35 +132,35 @@ public:
 
     // initialize the breakpoint-vector with an analog-like ADSR curve:
     breakpoints.clear();
-    rsModBreakpoint<double> newBreakpoint;
+    rsModBreakpoint<T> newBreakpoint;
 
     newBreakpoint.timeStamp   = 0.0;
     newBreakpoint.level       = 0.0;
-    newBreakpoint.shape       = rsModBreakpoint<double>::ANALOG;
+    newBreakpoint.shape       = rsModBreakpoint<T>::ANALOG;
     newBreakpoint.shapeAmount = 1.0;
     breakpoints.push_back(newBreakpoint);
 
     newBreakpoint.timeStamp   = 0.5;
     newBreakpoint.level       = 1.0;
-    newBreakpoint.shape       = rsModBreakpoint<double>::ANALOG;
+    newBreakpoint.shape       = rsModBreakpoint<T>::ANALOG;
     newBreakpoint.shapeAmount = 1.0;
     breakpoints.push_back(newBreakpoint);
 
     newBreakpoint.timeStamp   = 1.0;
     newBreakpoint.level       = 0.5;
-    newBreakpoint.shape       = rsModBreakpoint<double>::ANALOG;
+    newBreakpoint.shape       = rsModBreakpoint<T>::ANALOG;
     newBreakpoint.shapeAmount = 1.0;
     breakpoints.push_back(newBreakpoint);
 
     newBreakpoint.timeStamp   = 2.0;
     newBreakpoint.level       = 0.5;
-    newBreakpoint.shape       = rsModBreakpoint<double>::ANALOG;
+    newBreakpoint.shape       = rsModBreakpoint<T>::ANALOG;
     newBreakpoint.shapeAmount = 1.0;
     breakpoints.push_back(newBreakpoint);
 
     newBreakpoint.timeStamp   = 3.0;
     newBreakpoint.level       = 0.0;
-    newBreakpoint.shape       = rsModBreakpoint<double>::ANALOG;
+    newBreakpoint.shape       = rsModBreakpoint<T>::ANALOG;
     newBreakpoint.shapeAmount = 1.0;
     breakpoints.push_back(newBreakpoint);
 
@@ -179,6 +179,7 @@ data?)
 
 */
 
+template<class T>
 class rsBreakpointModulator
 {
 
@@ -217,19 +218,19 @@ public:
   // parameter settings:
 
   /** Sets the sample-rate. */
-  void setSampleRate(double newSampleRate);
+  void setSampleRate(T newSampleRate);
 
   /** Sets an overall scale factor by which the output signal will be scaled. */
-  void setScaleFactor(double newScaleFactor);
+  void setScaleFactor(T newScaleFactor);
 
   /** Sets an overall offset by which the output signal will be shifted. */
-  void setOffset(double newOffset);
+  void setOffset(T newOffset);
 
   /** Sets a minimum for the level-values */
-  void setMinimumAllowedLevel(double newMinimium);
+  void setMinimumAllowedLevel(T newMinimium);
 
   /** Sets a maximum for the level-values */
-  void setMaximumAllowedLevel(double newMaximium);
+  void setMaximumAllowedLevel(T newMaximium);
 
   /** Fixes the end level of this generator at zero - useful for amplitude envelopes. */
   void fixEndLevelAtZero(bool shouldBeFixed);
@@ -239,8 +240,8 @@ public:
   already existing breakpoint, for example). The integer return-value informs, at which index if
   the new breakpoint was inserted. It will return -1, when the breakpoint could not be
   inserted. */
-  int  insertBreakpoint(double newTimeStamp, double newLevel, int newShape = 0,
-    double newShapeAmount = 0.0);
+  int  insertBreakpoint(T newTimeStamp, T newLevel, int newShape = 0,
+    T newShapeAmount = 0.0);
 
   /** Removes a breakpoint from the vector. The return-value informs, if there was actually a
   breakpoint removed (if you try to remove a non-existing breakpoint, or a breakpoint which
@@ -249,15 +250,15 @@ public:
 
   /** Modifies the data of an existing breakpoint. If you try to modify a non-existent breakpoint
   or try to modify the data in such a way which is not allowed, it will return false. */
-  bool modifyBreakpoint(int index, double newTimeStamp, double newLevel,
-    int newShape = 0, double newShapeAmount = 0.0);
+  bool modifyBreakpoint(int index, T newTimeStamp, T newLevel,
+    int newShape = 0, T newShapeAmount = 0.0);
 
   /** Changes the time (in seconds or beats) of one breakpoint and reports about the success of
   that operation. */
-  bool setBreakpointTime(int index, double newTime);
+  bool setBreakpointTime(int index, T newTime);
 
   /** Changes the level of one breakpoint and reports about the success of that operation. */
-  bool setBreakpointLevel(int index, double newLevel);
+  bool setBreakpointLevel(int index, T newLevel);
 
   /** Changes the shape (index) of one breakpoint and reports about the success of that
   operation. */
@@ -268,10 +269,10 @@ public:
 
   /** Changes the shape-amount of one breakpoint and reports about the success of that
   operation. */
-  bool setBreakpointShapeAmount(int index, double newShapeAmount);
+  bool setBreakpointShapeAmount(int index, T newShapeAmount);
 
   /** Changes the shape amount for all breakpoints at once. */
-  void setAllBreakpointsShapeAmount(double newAmount);
+  void setAllBreakpointsShapeAmount(T newAmount);
 
   /** Turns looping on or off. */
   void setLoopMode(bool shouldBeLooped);
@@ -303,25 +304,25 @@ public:
 
   /** Sets the beats per minute value in order to allow beat syncronous modulations (call
   setSyncMode() to toggle sync-mode on or off). */
-  void setBeatsPerMinute(double newBpm);
+  void setBeatsPerMinute(T newBpm);
 
   /** Sets the time scale factor. */
-  void setTimeScale(double newTimeScale);
+  void setTimeScale(T newTimeScale);
 
   /** Sets the key dependence of the time scale factor in percent. */
-  void setTimeScaleByKey(double newTimeScaleByKey);
+  void setTimeScaleByKey(T newTimeScaleByKey);
 
   /** Sets the velocity dependence of the time scale factor. */
-  void setTimeScaleByVel(double newTimeScaleByVel);
+  void setTimeScaleByVel(T newTimeScaleByVel);
 
   /** Sets the depth. */
-  void setDepth(double newDepth);
+  void setDepth(T newDepth);
 
   /** Sets the key dependence of the depth. */
-  void setDepthByKey(double newDepthByKey);
+  void setDepthByKey(T newDepthByKey);
 
   /** Sets the velocity dependence of the depth. */
-  void setDepthByVel(double newDepthByVel);
+  void setDepthByVel(T newDepthByVel);
 
   //---------------------------------------------------------------------------------------------
   // inquiry:
@@ -333,39 +334,39 @@ public:
   int getNumBreakpoints() const;  // \todo: return rsUint32
 
   /** Returns the overall scaling factor of the modulation signal. */
-  double getScaleFactor() const;
+  T getScaleFactor() const;
 
   /** Returns the overall shift/offset factor of the modulation signal. */
-  double getOffset() const;
+  T getOffset() const;
 
   /** Returns the starting time (in seconds or beats), is usually zero. */
-  double getStartTime() const;
+  T getStartTime() const;
 
   /** Returns the end time (in seconds or beats), i.e. the time stamp of thelast breakpoint. */
-  double getEndTime() const;
+  T getEndTime() const;
 
   /** Returns the minimum level of the curve. */
-  double getMinLevel() const;
+  T getMinLevel() const;
 
   /** Returns the maximum level of the curve. */
-  double getMaxLevel() const;
+  T getMaxLevel() const;
 
   /** Returns the absolute time (in seconds or beats) of one breakpoint. If the index is out of
   range, it will return -1.0. */
-  double getBreakpointTime(int index) const;
+  T getBreakpointTime(int index) const;
 
   /** Returns the minimum value to which the time variable of a breakpoint can be set without
   violating the constraints to not come too close to its neighbours. If the index is out of
   range, it will return -1.0. */
-  double getBreakpointMinTime(int index) const;
+  T getBreakpointMinTime(int index) const;
 
   /** Returns the maximum value to which the time variable of a breakpoint can be set without
   violating the constraints to not come too close to its neighbours. If the index is out of
   range, it will return -1.0. */
-  double getBreakpointMaxTime(int index) const;
+  T getBreakpointMaxTime(int index) const;
 
   /** Returns the level of one breakpoint. If the index is out of range, it will return 0.0. */
-  double getBreakpointLevel(int index) const;
+  T getBreakpointLevel(int index) const;
 
   /** Returns the (index of) the shape of one breakpoint. If the index is out of range, it will
   return -1. */
@@ -373,7 +374,7 @@ public:
 
   /** Returns the amount of the shape of one breakpoint. If the index is out of range, it will
   return 0.0. */
-  double getBreakpointShapeAmount(int index) const;
+  T getBreakpointShapeAmount(int index) const;
 
   /** Returns the current loop mode. */
   int getLoopMode() const;
@@ -391,28 +392,28 @@ public:
   bool isInSyncMode() const;
 
   /** Returns the number of cycles per time unit (seconds or whole notes). */
-  double getNumCyclesPerTimeUnit() const;
+  T getNumCyclesPerTimeUnit() const;
 
   /** Returns the current tempo to which this object is set. */
-  double getBeatsPerMinute() const;
+  T getBeatsPerMinute() const;
 
   /** Returns the time scale factor. */
-  double getTimeScale() const;
+  T getTimeScale() const;
 
   /** Returns the key dependence of the time scale factor. */
-  double getTimeScaleByKey() const;
+  T getTimeScaleByKey() const;
 
   /** Returns the velocity dependence of the time scale factor. */
-  double getTimeScaleByVel() const;
+  T getTimeScaleByVel() const;
 
   /** Returns the time scale factor. */
-  double getDepth() const;
+  T getDepth() const;
 
   /** Returns the key dependence of the time scale factor. */
-  double getDepthByKey() const;
+  T getDepthByKey() const;
 
   /** Returns the velocity dependence of the time scale factor. */
-  double getDepthByVel() const;
+  T getDepthByVel() const;
 
   //---------------------------------------------------------------------------------------------
   // event-handling:
@@ -442,11 +443,11 @@ public:
   // audio processing:
 
   /** Calculates one output sample at a time. */
-  inline double getSample();
+  inline T getSample();
 
   /** Fills the passed buffer with the envelope (or the loop-portion thereof). This function
   comes in handy for generating waveforms for the LowFrequencyOscillator class. */
-  void fillBufferWithEnvelope(double *buffer, int length, bool useOnlyLoop);
+  void fillBufferWithEnvelope(T *buffer, int length, bool useOnlyLoop);
 
   //---------------------------------------------------------------------------------------------
   // master/slave configuration:
@@ -499,10 +500,10 @@ protected:
 
   /** Returns a number which is clipped into the range between minimumAllowedLevel and
   maximumAllowedLevel. */
-  double clipLevelToRange(double inLevel);
+  T clipLevelToRange(T inLevel);
 
   /** Returns the level at a given index scaled by the current key and velocity. */
-  double scaleLevelByKeyAndVelocity(double unscaledLevel);
+  T scaleLevelByKeyAndVelocity(T unscaledLevel);
 
   /** Make a copy-constructor unavailable because this class needs deep copying (because of the
   pointers in the MutexLocks). If you need to create a new object based on an existing one,
@@ -512,33 +513,33 @@ protected:
   //---------------------------------------------------------------------------------------------
 
   /** Buffering-variables for the variuos recursions. */
-  double state1, state2;
+  T state1, state2;
 
   /** The increment/decrement for state1 and state2 (which can have multiplictive or additive
   nature depending on the chosen shape, so we call it genrally 'change'). */
-  double state1_change, state2_change;
+  T state1_change, state2_change;
 
   /** Level of the breakpoint left to (before) or at the current time, scaled by key and
   velocity. */
-  double leftLevel;
+  T leftLevel;
 
   /** Level of the breakpoint right to (after) or at the current time, scaled by key and
   velocity. */
-  double rightLevel;
+  T rightLevel;
 
   /** The difference between the levels of the two data->breakpoints to the left
   and to the right. */
-  double levelDelta;
+  T levelDelta;
 
   /** The minimum-values for state1 and state2. */
-  double state1_min, state2_min;
+  T state1_min, state2_min;
 
   /** The maximum-values for state1 and state2. */
-  double state1_max, state2_max;
+  T state1_max, state2_max;
 
   /** Some scale-factors, to scale the normalized modulation shape (which is
   created in the range 0...1) to the desired range. */
-  double scaler1, scaler2;
+  T scaler1, scaler2;
 
   /** The shape of the breakpoint, we are currently aiming. */
   int currentShape;
@@ -551,7 +552,7 @@ protected:
   integer number of samples, a timing error accumulates during the course of the envelope. This
   variable keeps track of this error and whenever it exceed +- 0.5 samples, an extra sample is
   inserted or a sample is dropped. */
-  double accumulatedTimingError;
+  T accumulatedTimingError;
 
   /** Index of the breakpoint from which we come, this is  to the left on the time-axis (or we
   sit exactly on it). */
@@ -565,16 +566,16 @@ protected:
 
   /** Value of the previous output sample. This variable is also used to represent a constant
   output level (at the end and in sustain-loops of length zero). */
-  double previousOut;
+  T previousOut;
 
   /** Scales the overall time-length of the modulator. */
-  double timeScaleFactor;
+  T timeScaleFactor;
 
   /** Current note key and velocity. */
   int currentKey, currentVel;
 
   /** A pointer to the data which are potentially shared by among instances. */
-  rsBreakpointModulatorData<double>* data;
+  rsBreakpointModulatorData<T>* data;
 
   /** A vector of pointers to other instances of this class which shall be kept in sync to this
   instance with regard to their parameters. */
@@ -598,10 +599,11 @@ protected:
 // from here: definitions of the functions to be inlined, i.e. all functions which are supposed
 // to be called at audio-rate (they can't be put into the .cpp file):
 
-inline double rsBreakpointModulator::getSample()
+template<class T>
+inline T rsBreakpointModulator<T>::getSample()
 {
-  double tmp1, tmp2; // temporary variables for intermediate results
-  double out = 0.0;  // output variable
+  T tmp1, tmp2; // temporary variables for intermediate results
+  T out = 0.0;  // output variable
 
   // return the value of the 'previousOut' member when the output is constant:
   if(outLevelIsConstant)
@@ -619,18 +621,18 @@ inline double rsBreakpointModulator::getSample()
   // what's going on, refer to the comments in the MatLab/Octave implementation):
   switch(currentShape)
   {
-  case rsModBreakpoint<double>::STAIRSTEP:
+  case rsModBreakpoint<T>::STAIRSTEP:
   {
     out     = state1;
   }
   break;
-  case rsModBreakpoint<double>::LINEAR:
+  case rsModBreakpoint<T>::LINEAR:
   {
     out     = state1;
     state1 += state1_change;
   }
   break;
-  case rsModBreakpoint<double>::SMOOTH:
+  case rsModBreakpoint<T>::SMOOTH:
   {
     tmp1   = state1_change*state1 - state2;
     state2 = state1;
@@ -638,19 +640,19 @@ inline double rsBreakpointModulator::getSample()
     out    = leftLevel + levelDelta*(0.5*tmp1+0.5);
   }
   break;
-  case rsModBreakpoint<double>::ANALOG:
+  case rsModBreakpoint<T>::ANALOG:
   {
     out     = leftLevel + levelDelta - scaler1*(state1-state1_min);
     state1 *= state1_change;
   }
   break;
-  case rsModBreakpoint<double>::GROWING:
+  case rsModBreakpoint<T>::GROWING:
   {
     out     = leftLevel + scaler1*(state1-state1_min);
     state1 *= state1_change;
   }
   break;
-  case rsModBreakpoint<double>::SIGMOID:
+  case rsModBreakpoint<T>::SIGMOID:
   {
     tmp1 = scaler1*(state1-state1_min);
     tmp2 = scaler1*(state2-state1_min); // state2_min == state1_min
@@ -664,7 +666,7 @@ inline double rsBreakpointModulator::getSample()
     state2 *= state2_change;
   }
   break;
-  case rsModBreakpoint<double>::SPIKEY:
+  case rsModBreakpoint<T>::SPIKEY:
   {
     tmp1    = scaler1*(state1-state1_min);
     tmp2    = scaler1*(state2-state1_min); // state2_min == state1_min
@@ -674,7 +676,7 @@ inline double rsBreakpointModulator::getSample()
     state2 *= state2_change;
   }
   break;
-  case rsModBreakpoint<double>::SINE_1:
+  case rsModBreakpoint<T>::SINE_1:
   {
     tmp1   = state1_change*state1 - state2;
     state2 = state1;
@@ -682,7 +684,7 @@ inline double rsBreakpointModulator::getSample()
     out    = leftLevel + levelDelta*(tmp1);
   }
   break;
-  case rsModBreakpoint<double>::SINE_2:
+  case rsModBreakpoint<T>::SINE_2:
   {
     tmp1   = state1_change*state1 - state2;
     state2 = state1;

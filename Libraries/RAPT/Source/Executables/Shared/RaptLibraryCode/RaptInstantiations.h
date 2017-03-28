@@ -20,6 +20,9 @@ typedef RAPT::PhasorFilter<float, float> PhasorFilterFF;
 typedef RAPT::PhasorStateMapper<float> PhasorStateMapperF;
 typedef RAPT::StateVariableFilter<float, float> StateVariableFilterFF; 
 
+// Modulation:
+typedef RAPT::rsBreakpointModulator<float> rsBreakpointModulatorF;
+
 // Visualization:
 typedef RAPT::Image<float> ImageF;
 typedef RAPT::AlphaMask<float> AlphaMaskF;

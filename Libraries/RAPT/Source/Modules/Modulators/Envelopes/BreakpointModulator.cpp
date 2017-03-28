@@ -32,16 +32,18 @@ inline double rsPowBipolar(double base, double exponent)
 
 // construction/destruction:
 
-rsBreakpointModulator::rsBreakpointModulator()
+template<class T>
+rsBreakpointModulator<T>::rsBreakpointModulator()
 {
-  data         = new rsBreakpointModulatorData<double>;
+  data         = new rsBreakpointModulatorData<T>;
   isMaster     = true;
-  currentShape = rsModBreakpoint<double>::LINEAR;
+  currentShape = rsModBreakpoint<T>::LINEAR;
   initialize();
   setToDefaultValues();
 }
 
-rsBreakpointModulator::~rsBreakpointModulator()
+template<class T>
+rsBreakpointModulator<T>::~rsBreakpointModulator()
 {
   if( isMaster && data != NULL )
   {
@@ -50,7 +52,8 @@ rsBreakpointModulator::~rsBreakpointModulator()
   }
 }
 
-void rsBreakpointModulator::copyDataFrom(const rsBreakpointModulator &source)
+template<class T>
+void rsBreakpointModulator<T>::copyDataFrom(const rsBreakpointModulator &source)
 {
   // copy everything except the mutex-member:
   state1                      = source.state1;
@@ -94,25 +97,29 @@ void rsBreakpointModulator::copyDataFrom(const rsBreakpointModulator &source)
 //-------------------------------------------------------------------------------------------------
 // parameter settings:
 
-void rsBreakpointModulator::setSampleRate(double newSampleRate)
+template<class T>
+void rsBreakpointModulator<T>::setSampleRate(T newSampleRate)
 {
   if( newSampleRate > 0.0 )
     data->sampleRate = newSampleRate;
 }
 
-void rsBreakpointModulator::setScaleFactor(double newScaleFactor)
+template<class T>
+void rsBreakpointModulator<T>::setScaleFactor(T newScaleFactor)
 {
   data->scaleFactor = newScaleFactor;
   //markPresetAsDirty();
 }
 
-void rsBreakpointModulator::setOffset(double newOffset)
+template<class T>
+void rsBreakpointModulator<T>::setOffset(T newOffset)
 {
   data->offset = newOffset;
   //markPresetAsDirty();
 }
 
-void rsBreakpointModulator::setMinimumAllowedLevel(double newMinimum)
+template<class T>
+void rsBreakpointModulator<T>::setMinimumAllowedLevel(T newMinimum)
 {
   if( newMinimum < data->maximumAllowedLevel-0.001 )
     data->minimumAllowedLevel = newMinimum;
@@ -124,7 +131,8 @@ void rsBreakpointModulator::setMinimumAllowedLevel(double newMinimum)
   }
 }
 
-void rsBreakpointModulator::setMaximumAllowedLevel(double newMaximum)
+template<class T>
+void rsBreakpointModulator<T>::setMaximumAllowedLevel(T newMaximum)
 {
   if( newMaximum > data->minimumAllowedLevel+0.001 )
     data->maximumAllowedLevel = newMaximum;
@@ -136,15 +144,17 @@ void rsBreakpointModulator::setMaximumAllowedLevel(double newMaximum)
   }
 }
 
-void rsBreakpointModulator::fixEndLevelAtZero(bool shouldBeFixed)
+template<class T>
+void rsBreakpointModulator<T>::fixEndLevelAtZero(bool shouldBeFixed)
 {
   data->endLevelFixedAtZero = shouldBeFixed;
 }
 
-int rsBreakpointModulator::insertBreakpoint(double newTimeStamp, 
-                                            double newLevel, 
+template<class T>
+int rsBreakpointModulator<T>::insertBreakpoint(T newTimeStamp, 
+                                            T newLevel, 
                                             int    newShape, 
-                                            double newShapeAmount)
+                                            T newShapeAmount)
 {
   if( newTimeStamp >= getStartTime() )
   {
@@ -155,7 +165,7 @@ int rsBreakpointModulator::insertBreakpoint(double newTimeStamp,
     // breakpoint to be inserted, we know that this is the index, right before 
     // which the new breakpoint has to be inserted:
     int    bpIndex = 1;  // omit the first breakpoint(index 0)
-    double bpTime  = 0.0;
+    T bpTime  = 0.0;
     while( bpIndex < (int) data->breakpoints.size() )
     {
       bpTime = data->breakpoints[bpIndex].timeStamp;
@@ -171,7 +181,7 @@ int rsBreakpointModulator::insertBreakpoint(double newTimeStamp,
 
         // create a new breakpoint for insertion right before the breakpoint with 
         // the current index:
-        rsModBreakpoint<double> newBreakpoint;
+        rsModBreakpoint<T> newBreakpoint;
         newBreakpoint.timeStamp   = newTimeStamp;
         newBreakpoint.level       = clipLevelToRange(newLevel);
 
@@ -229,7 +239,8 @@ int rsBreakpointModulator::insertBreakpoint(double newTimeStamp,
     return -1; // data->breakpoints with newTimeStamp < 0 are illegal
 }
 
-bool rsBreakpointModulator::removeBreakpoint(int index)
+template<class T>
+bool rsBreakpointModulator<T>::removeBreakpoint(int index)
 {
   // do not allow removal of the first and last breakpoint:
   if( index > 0 && index < lastBreakpointIndex() )
@@ -265,11 +276,12 @@ bool rsBreakpointModulator::removeBreakpoint(int index)
     return false;
 }
 
-bool rsBreakpointModulator::modifyBreakpoint(int    index, 
-                                             double newTimeStamp, 
-                                             double newLevel, 
+template<class T>
+bool rsBreakpointModulator<T>::modifyBreakpoint(int    index, 
+                                             T newTimeStamp, 
+                                             T newLevel, 
                                              int    newShape, 
-                                             double newShapeAmount)
+                                             T newShapeAmount)
 {
   if( index >= 0 && index < (int) data->breakpoints.size()  )   
   {
@@ -352,7 +364,7 @@ bool rsBreakpointModulator::modifyBreakpoint(int    index,
 
         // move all the succeeding data->breakpoints in time by the difference between
         // the new and the old value:
-        double timeShift = newTimeStamp - data->breakpoints[index].timeStamp;
+        T timeShift = newTimeStamp - data->breakpoints[index].timeStamp;
         for(int bp=index+1; bp <= lastBreakpointIndex(); bp++)
           data->breakpoints[bp].timeStamp += timeShift;
 
@@ -372,12 +384,14 @@ bool rsBreakpointModulator::modifyBreakpoint(int    index,
     return false;
 }
 
-void rsBreakpointModulator::setLoopMode(bool shouldBeLooped)
+template<class T>
+void rsBreakpointModulator<T>::setLoopMode(bool shouldBeLooped)
 {
   data->loopIsOn = shouldBeLooped;
 }
 
-bool rsBreakpointModulator::setLoopStartIndex(int newLoopStartIndex)
+template<class T>
+bool rsBreakpointModulator<T>::setLoopStartIndex(int newLoopStartIndex)
 {
   // make sure, that the new loop start makes sense and then update our 
   // member accordingly:
@@ -392,7 +406,8 @@ bool rsBreakpointModulator::setLoopStartIndex(int newLoopStartIndex)
     return false;
 }
 
-bool rsBreakpointModulator::setLoopEndIndex(int newLoopEndIndex)
+template<class T>
+bool rsBreakpointModulator<T>::setLoopEndIndex(int newLoopEndIndex)
 {
   // make sure, that the new loop end makes sense and then update our 
   // member accordingly:
@@ -407,29 +422,34 @@ bool rsBreakpointModulator::setLoopEndIndex(int newLoopEndIndex)
     return false;
 }
 
-void rsBreakpointModulator::setEditMode(int newEditMode)
+template<class T>
+void rsBreakpointModulator<T>::setEditMode(int newEditMode)
 {
   data->editMode = newEditMode;
 }
 
-void rsBreakpointModulator::setNumCyclesInLoop(int newNumberOfCyclesInLoop)
+template<class T>
+void rsBreakpointModulator<T>::setNumCyclesInLoop(int newNumberOfCyclesInLoop)
 {
   if( newNumberOfCyclesInLoop >= 1 )
     data->numCyclesInLoop = newNumberOfCyclesInLoop;
 }
 
-void rsBreakpointModulator::setSyncMode(bool shouldBeSynced)
+template<class T>
+void rsBreakpointModulator<T>::setSyncMode(bool shouldBeSynced)
 {
   data->syncMode = shouldBeSynced;
 }
 
-void rsBreakpointModulator::setBeatsPerMinute(double newBpm)
+template<class T>
+void rsBreakpointModulator<T>::setBeatsPerMinute(T newBpm)
 {
   if( newBpm > 0.0 )
     data->bpm = newBpm;
 }
 
-void rsBreakpointModulator::setTimeScale(double newTimeScale)
+template<class T>
+void rsBreakpointModulator<T>::setTimeScale(T newTimeScale)
 { 
   if( newTimeScale >= 0.0001 )
   {
@@ -438,61 +458,72 @@ void rsBreakpointModulator::setTimeScale(double newTimeScale)
   }
 }
 
-void rsBreakpointModulator::setTimeScaleByKey(double newTimeScaleByKey)
+template<class T>
+void rsBreakpointModulator<T>::setTimeScaleByKey(T newTimeScaleByKey)
 { 
   data->timeScaleByKey  = newTimeScaleByKey;
   updateTimeScaleFactor();
 }
 
-void rsBreakpointModulator::setTimeScaleByVel(double newTimeScaleByVel)
+template<class T>
+void rsBreakpointModulator<T>::setTimeScaleByVel(T newTimeScaleByVel)
 { 
   data->timeScaleByVel  = newTimeScaleByVel;
   updateTimeScaleFactor();
 }
 
-void rsBreakpointModulator::setDepth(double newDepth)
+template<class T>
+void rsBreakpointModulator<T>::setDepth(T newDepth)
 { 
   data->depth = newDepth;
 }
 
-void rsBreakpointModulator::setDepthByKey(double newDepthByKey)
+template<class T>
+void rsBreakpointModulator<T>::setDepthByKey(T newDepthByKey)
 { 
   data->depthByKey = newDepthByKey;
 }
 
-void rsBreakpointModulator::setDepthByVel(double newDepthByVel)
+template<class T>
+void rsBreakpointModulator<T>::setDepthByVel(T newDepthByVel)
 { 
   data->depthByVel = newDepthByVel;
 }
 
 // inquiry:
 
-int rsBreakpointModulator::getNumBreakpoints() const
+template<class T>
+int rsBreakpointModulator<T>::getNumBreakpoints() const
 {
   return (int) data->breakpoints.size();
 }
 
-int rsBreakpointModulator::lastBreakpointIndex() const
+template<class T>
+int rsBreakpointModulator<T>::lastBreakpointIndex() const
 {
   return (int)data->breakpoints.size()-1;
 }
 
-double rsBreakpointModulator::getScaleFactor() const
+template<class T>
+T rsBreakpointModulator<T>::getScaleFactor() const
 {
   return data->scaleFactor;
 }
 
-double rsBreakpointModulator::getOffset() const
+template<class T>
+T rsBreakpointModulator<T>::getOffset() const
 {
   return data->offset;
 }
 
-double rsBreakpointModulator::getStartTime() const
+template<class T>
+T rsBreakpointModulator<T>::getStartTime() const
 {
   return data->breakpoints[0].timeStamp;
 }
 
-double rsBreakpointModulator::getEndTime() const
+template<class T>
+T rsBreakpointModulator<T>::getEndTime() const
 {
   if( data->breakpoints.size() > 1)
     return data->breakpoints[data->breakpoints.size()-1].timeStamp;
@@ -500,9 +531,10 @@ double rsBreakpointModulator::getEndTime() const
     return 0.0;
 }
 
-double rsBreakpointModulator::getMinLevel() const
+template<class T>
+T rsBreakpointModulator<T>::getMinLevel() const
 {
-  double min = data->breakpoints[0].level;
+  T min = data->breakpoints[0].level;
   for(int p=0; p < (int) data->breakpoints.size(); p++)
   {
     if( data->breakpoints[p].level < min )
@@ -511,9 +543,10 @@ double rsBreakpointModulator::getMinLevel() const
   return min;
 }
 
-double rsBreakpointModulator::getMaxLevel() const
+template<class T>
+T rsBreakpointModulator<T>::getMaxLevel() const
 {
-  double max = data->breakpoints[0].level;
+  T max = data->breakpoints[0].level;
   for(int p=0; p < (int) data->breakpoints.size(); p++)
   {
     if( data->breakpoints[p].level > max )
@@ -522,7 +555,8 @@ double rsBreakpointModulator::getMaxLevel() const
   return max;
 }
 
-double rsBreakpointModulator::getBreakpointTime(int index) const
+template<class T>
+T rsBreakpointModulator<T>::getBreakpointTime(int index) const
 {
   if( index < 0 || index > (int) data->breakpoints.size()-1 )
     return -1.0;
@@ -530,7 +564,8 @@ double rsBreakpointModulator::getBreakpointTime(int index) const
     return data->breakpoints[index].timeStamp;
 }
 
-double rsBreakpointModulator::getBreakpointMinTime(int index) const
+template<class T>
+T rsBreakpointModulator<T>::getBreakpointMinTime(int index) const
 {
   if( index < 0 || index > (int) data->breakpoints.size()-1 )
     return 0.0;
@@ -544,7 +579,8 @@ double rsBreakpointModulator::getBreakpointMinTime(int index) const
   }
 }
 
-double rsBreakpointModulator::getBreakpointMaxTime(int index) const
+template<class T>
+T rsBreakpointModulator<T>::getBreakpointMaxTime(int index) const
 {
   if( index < 0 || index > (int) data->breakpoints.size()-1 )
     return 0.0;
@@ -559,7 +595,8 @@ double rsBreakpointModulator::getBreakpointMaxTime(int index) const
   }
 }
 
-bool rsBreakpointModulator::setBreakpointTime(int index, double newTimeStamp)
+template<class T>
+bool rsBreakpointModulator<T>::setBreakpointTime(int index, T newTimeStamp)
 {
   // check if the first and last data->breakpoints are being modified and impose
   // some restrictions on them....
@@ -611,7 +648,7 @@ bool rsBreakpointModulator::setBreakpointTime(int index, double newTimeStamp)
 
       // move all the succeeding data->breakpoints in time by the difference between
       // the new and the old value:
-      double timeShift = newTimeStamp - data->breakpoints[index].timeStamp;
+      T timeShift = newTimeStamp - data->breakpoints[index].timeStamp;
       for(int bp=index+1; bp <= lastBreakpointIndex(); bp++)
         data->breakpoints[bp].timeStamp += timeShift;
 
@@ -624,7 +661,8 @@ bool rsBreakpointModulator::setBreakpointTime(int index, double newTimeStamp)
     return false;
 }
 
-double rsBreakpointModulator::getBreakpointLevel(int index) const
+template<class T>
+T rsBreakpointModulator<T>::getBreakpointLevel(int index) const
 {
   if( index < 0 || index > (int) data->breakpoints.size()-1 )
     return 0.0;
@@ -632,7 +670,8 @@ double rsBreakpointModulator::getBreakpointLevel(int index) const
     return data->breakpoints[index].level;
 }
 
-bool rsBreakpointModulator::setBreakpointLevel(int index, double newLevel)
+template<class T>
+bool rsBreakpointModulator<T>::setBreakpointLevel(int index, T newLevel)
 {
   if( index == lastBreakpointIndex() )
   {
@@ -651,7 +690,8 @@ bool rsBreakpointModulator::setBreakpointLevel(int index, double newLevel)
     return false;
 }
 
-int rsBreakpointModulator::getBreakpointShape(int index) const
+template<class T>
+int rsBreakpointModulator<T>::getBreakpointShape(int index) const
 {
   if( index < 0 || index > (int) data->breakpoints.size()-1 )
     return -1;
@@ -659,12 +699,13 @@ int rsBreakpointModulator::getBreakpointShape(int index) const
     return data->breakpoints[index].shape;
 }
 
-bool rsBreakpointModulator::setBreakpointShape(int index, int newShape)
+template<class T>
+bool rsBreakpointModulator<T>::setBreakpointShape(int index, int newShape)
 {
   if( index >= 0 && index <= lastBreakpointIndex() )
   {
-    if( newShape >= rsModBreakpoint<double>::STAIRSTEP &&
-      newShape <= rsModBreakpoint<double>::SINE_2 )
+    if( newShape >= rsModBreakpoint<T>::STAIRSTEP &&
+      newShape <= rsModBreakpoint<T>::SINE_2 )
     {
       data->breakpoints[index].shape = newShape;
       return true;
@@ -676,13 +717,15 @@ bool rsBreakpointModulator::setBreakpointShape(int index, int newShape)
     return false;
 }
 
-void rsBreakpointModulator::setAllBreakpointsShape(int newShape)
+template<class T>
+void rsBreakpointModulator<T>::setAllBreakpointsShape(int newShape)
 {
   for(int i = 0; i <= lastBreakpointIndex(); i++)
     setBreakpointShape(i, newShape);
 }
 
-double rsBreakpointModulator::getBreakpointShapeAmount(int index) const
+template<class T>
+T rsBreakpointModulator<T>::getBreakpointShapeAmount(int index) const
 {
   if( index < 0 || index > (int) data->breakpoints.size()-1 )
     return 0.0;
@@ -692,7 +735,8 @@ double rsBreakpointModulator::getBreakpointShapeAmount(int index) const
   }
 }
 
-bool rsBreakpointModulator::setBreakpointShapeAmount(int index, double newShapeAmount)
+template<class T>
+bool rsBreakpointModulator<T>::setBreakpointShapeAmount(int index, T newShapeAmount)
 {
   if( index >= 0 && index <= lastBreakpointIndex() )
   {
@@ -707,68 +751,81 @@ bool rsBreakpointModulator::setBreakpointShapeAmount(int index, double newShapeA
     return false;
 }
 
-void rsBreakpointModulator::setAllBreakpointsShapeAmount(double newAmount)
+template<class T>
+void rsBreakpointModulator<T>::setAllBreakpointsShapeAmount(T newAmount)
 {
   for(int i = 0; i <= lastBreakpointIndex(); i++)
     setBreakpointShapeAmount(i, newAmount);
 }
 
-int rsBreakpointModulator::getLoopMode() const
+template<class T>
+int rsBreakpointModulator<T>::getLoopMode() const
 {
   return data->loopIsOn;
 }
 
-int rsBreakpointModulator::getLoopStartIndex() const
+template<class T>
+int rsBreakpointModulator<T>::getLoopStartIndex() const
 {
   return data->loopStartIndex;
 }
 
-int rsBreakpointModulator::getLoopEndIndex() const
+template<class T>
+int rsBreakpointModulator<T>::getLoopEndIndex() const
 {
   return data->loopEndIndex;
 }
 
-int rsBreakpointModulator::getNumCyclesInLoop() const
+template<class T>
+int rsBreakpointModulator<T>::getNumCyclesInLoop() const
 {
   return data->numCyclesInLoop;
 }
 
-bool rsBreakpointModulator::isInSyncMode() const
+template<class T>
+bool rsBreakpointModulator<T>::isInSyncMode() const
 {
   return data->syncMode;
 }
 
-double rsBreakpointModulator::getBeatsPerMinute() const
+template<class T>
+T rsBreakpointModulator<T>::getBeatsPerMinute() const
 {
   return data->bpm;
 }
 
-double rsBreakpointModulator::getTimeScale() const
+template<class T>
+T rsBreakpointModulator<T>::getTimeScale() const
 {
   return data->timeScale;
 }
 
-double rsBreakpointModulator::getTimeScaleByKey() const
+template<class T>
+T rsBreakpointModulator<T>::getTimeScaleByKey() const
 {
   return data->timeScaleByKey;
 }
 
-double rsBreakpointModulator::getTimeScaleByVel() const
+template<class T>
+T rsBreakpointModulator<T>::getTimeScaleByVel() const
 {
   return data->timeScaleByVel;
 }
 
-double rsBreakpointModulator::getDepth() const
+template<class T>
+T rsBreakpointModulator<T>::getDepth() const
 {
   return data->depth;
 }
 
-double rsBreakpointModulator::getDepthByKey() const
+template<class T>
+T rsBreakpointModulator<T>::getDepthByKey() const
 {
   return data->depthByKey;
 }
 
-double rsBreakpointModulator::getDepthByVel() const
+template<class T>
+T rsBreakpointModulator<T>::getDepthByVel() const
 {
   return data->depthByVel;
 }
@@ -776,7 +833,8 @@ double rsBreakpointModulator::getDepthByVel() const
 //-------------------------------------------------------------------------------------------------
 // event handling:
 
-void rsBreakpointModulator::noteOn(bool startFromCurrentLevel, int newKey, int newVel)
+template<class T>
+void rsBreakpointModulator<T>::noteOn(bool startFromCurrentLevel, int newKey, int newVel)
 {
   noteIsOn   = true;
   leftIndex  = 0;
@@ -808,7 +866,8 @@ void rsBreakpointModulator::noteOn(bool startFromCurrentLevel, int newKey, int n
   setupStateVariables();
 }
 
-void rsBreakpointModulator::noteOnAndAdvanceTime(int sampleIndexToStartFrom)
+template<class T>
+void rsBreakpointModulator<T>::noteOnAndAdvanceTime(int sampleIndexToStartFrom)
 {
   noteOn(false);
   for(int i=0; i<sampleIndexToStartFrom; i++)
@@ -816,7 +875,8 @@ void rsBreakpointModulator::noteOnAndAdvanceTime(int sampleIndexToStartFrom)
   // crude implementation - runs through all breakpoints which possibly may have been skipped
 }
 
-void rsBreakpointModulator::noteOff(bool startFromCurrentLevel)
+template<class T>
+void rsBreakpointModulator<T>::noteOff(bool startFromCurrentLevel)
 {
   noteIsOn   = false;
   leftIndex  = data->loopEndIndex;
@@ -849,7 +909,8 @@ void rsBreakpointModulator::noteOff(bool startFromCurrentLevel)
   setupStateVariables();
 }
 
-void rsBreakpointModulator::handleBreakpointArrival()
+template<class T>
+void rsBreakpointModulator<T>::handleBreakpointArrival()
 {
   // increment the breakpoint indices to the next pair of breakpoints:
   leftIndex++;
@@ -913,7 +974,8 @@ void rsBreakpointModulator::handleBreakpointArrival()
   outLevelIsConstant = false;
 }
 
-void rsBreakpointModulator::wrapAroundIndicesForLoop()
+template<class T>
+void rsBreakpointModulator<T>::wrapAroundIndicesForLoop()
 {
   if( leftIndex >= data->loopEndIndex )
     leftIndex  = data->loopStartIndex;
@@ -924,7 +986,8 @@ void rsBreakpointModulator::wrapAroundIndicesForLoop()
     rightIndex = leftIndex; // loop of zero length
 }
 
-int rsBreakpointModulator::getNextNonSimultaneousIndex(int startIndex)
+template<class T>
+int rsBreakpointModulator<T>::getNextNonSimultaneousIndex(int startIndex)
 {
   //data->mutex.lock();
   // mutex is not necesarry - this function is called only internally from functions which 
@@ -953,7 +1016,8 @@ int rsBreakpointModulator::getNextNonSimultaneousIndex(int startIndex)
   return foundIndex;
 }
 
-int rsBreakpointModulator::getLastSimultaneousIndex(int index)
+template<class T>
+int rsBreakpointModulator<T>::getLastSimultaneousIndex(int index)
 {
   // make sure to not access out-of-range indices: 
   if( index+1 > lastBreakpointIndex() )
@@ -972,18 +1036,19 @@ int rsBreakpointModulator::getLastSimultaneousIndex(int index)
   return index;
 }
 
-void rsBreakpointModulator::updateSamplesToNextBreakpoint()
+template<class T>
+void rsBreakpointModulator<T>::updateSamplesToNextBreakpoint()
 {
   // get the length of the envelope-segment to be generated (in seconds):
-  double timeDelta = data->breakpoints[rightIndex].timeStamp 
+  T timeDelta = data->breakpoints[rightIndex].timeStamp 
     - data->breakpoints[leftIndex].timeStamp;
   if( data->syncMode == true )
     timeDelta = rsBeatsToSeconds(timeDelta, data->bpm);
 
   // convert to samples and use this length as initial value for our countdown-variable:
-  double samplesExact     = timeScaleFactor * timeDelta * data->sampleRate;
+  T samplesExact     = timeScaleFactor * timeDelta * data->sampleRate;
   samplesToNextBreakpoint = rsRoundToInt(samplesExact);
-  double error            = (double) samplesToNextBreakpoint - samplesExact;
+  T error            = (T) samplesToNextBreakpoint - samplesExact;
   accumulatedTimingError += error;
   if( accumulatedTimingError > 0.5 )
   {
@@ -997,7 +1062,8 @@ void rsBreakpointModulator::updateSamplesToNextBreakpoint()
   }
 }
 
-void rsBreakpointModulator::setupStateVariables()
+template<class T>
+void rsBreakpointModulator<T>::setupStateVariables()
 {
   // do the specific initializations for the different envelope shapes (for 
   // details about what's going on, refer to comments in the MatLab
@@ -1014,48 +1080,48 @@ void rsBreakpointModulator::setupStateVariables()
   currentShape = data->breakpoints[rightIndex].shape;
   switch( currentShape )
   {
-  case rsModBreakpoint<double>::STAIRSTEP:
+  case rsModBreakpoint<T>::STAIRSTEP:
     {
       state1        = leftLevel;
       //state1_change = 0.0;
     }
     break;
-  case rsModBreakpoint<double>::LINEAR:
+  case rsModBreakpoint<T>::LINEAR:
     {
       state1        = leftLevel;
-      state1_change = levelDelta / (double) segmentLength;
+      state1_change = levelDelta / (T) segmentLength;
     }
     break;
-  case rsModBreakpoint<double>::SMOOTH:
+  case rsModBreakpoint<T>::SMOOTH:
     {
-      double omega  = PI / (double) segmentLength;
+      T omega  = PI / (T) segmentLength;
       state1_change = 2.0*cos(omega);
       state1        = sin( -(0.5*PI) - omega );
       state2        = sin( -(0.5*PI) - 2.0*omega );
     }
     break;
-  case rsModBreakpoint<double>::ANALOG:
+  case rsModBreakpoint<T>::ANALOG:
     {
       state1_min    = pow(0.01, data->breakpoints[rightIndex].shapeAmount);
-      state1_max    = pow(state1_min, 1.0 / (double) (segmentLength+1));
+      state1_max    = pow(state1_min, 1.0 / (T) (segmentLength+1));
       scaler1       = levelDelta / (state1_max-state1_min);
       state1        = state1_max;
       state1_change = state1_max;
     }
     break;
-  case rsModBreakpoint<double>::GROWING:
+  case rsModBreakpoint<T>::GROWING:
     {
       state1_min    = pow(0.01, data->breakpoints[rightIndex].shapeAmount);
-      state1_max    = pow(state1_min, 1.0 / (double) (segmentLength+1));
+      state1_max    = pow(state1_min, 1.0 / (T) (segmentLength+1));
       scaler1       = levelDelta / (state1_max-state1_min);
       state1        = state1_min;
       state1_change = 1.0/state1_max;
     }
     break;
-  case rsModBreakpoint<double>::SIGMOID:
+  case rsModBreakpoint<T>::SIGMOID:
     {
       state1_min    = pow(0.01, data->breakpoints[rightIndex].shapeAmount);
-      state1_max    = pow(state1_min, 1.0 / (double) (segmentLength+1));
+      state1_max    = pow(state1_min, 1.0 / (T) (segmentLength+1));
       scaler1       = levelDelta / (state1_max-state1_min);
       state1        = state1_max;
       state1_change = state1_max;
@@ -1065,10 +1131,10 @@ void rsBreakpointModulator::setupStateVariables()
       state2_change = 1.0 / state1_max;
     }
     break;
-  case rsModBreakpoint<double>::SPIKEY:
+  case rsModBreakpoint<T>::SPIKEY:
     {
       state1_min    = pow(0.01, data->breakpoints[rightIndex].shapeAmount);
-      state1_max    = pow(state1_min, 1.0 / (double) (segmentLength+1));
+      state1_max    = pow(state1_min, 1.0 / (T) (segmentLength+1));
       scaler1       = 1.0 / (state1_max-state1_min);
       state1        = state1_max;
       state1_change = state1_max;
@@ -1079,17 +1145,17 @@ void rsBreakpointModulator::setupStateVariables()
       state2_change = 1.0 / state1_max;
     }
     break;
-  case rsModBreakpoint<double>::SINE_1:
+  case rsModBreakpoint<T>::SINE_1:
     {
-      double omega  = 0.5*PI / (double) segmentLength;
+      T omega  = 0.5*PI / (T) segmentLength;
       state1_change = 2.0*cos(omega);
       state1        = sin( -(0.0*PI) - omega );
       state2        = sin( -(0.0*PI) - 2.0*omega );
     }
     break;
-  case rsModBreakpoint<double>::SINE_2:
+  case rsModBreakpoint<T>::SINE_2:
     {
-      double omega  = 0.5*PI / (double) segmentLength;
+      T omega  = 0.5*PI / (T) segmentLength;
       state1_change = 2.0*cos(omega);
       state1        = sin( -(0.5*PI) - omega );
       state2        = sin( -(0.5*PI) - 2.0*omega );
@@ -1098,14 +1164,14 @@ void rsBreakpointModulator::setupStateVariables()
   default:  // linear by default
     {
       state1        = leftLevel;
-      state1_change = levelDelta / (double) segmentLength;
+      state1_change = levelDelta / (T) segmentLength;
     }
 
   } // end of switch( shape )
 
   // a very unelegant method to skip the samples which are to be skipped:
   /*
-  double dummy;
+  T dummy;
   for(int i = 0; i < sampleIndexToStart; i++)
     dummy = getSample();
   */
@@ -1113,7 +1179,8 @@ void rsBreakpointModulator::setupStateVariables()
 
 // initialization:
 
-void rsBreakpointModulator::setToDefaultValues()
+template<class T>
+void rsBreakpointModulator<T>::setToDefaultValues()
 {
   data->editMode            =  EDIT_WITHOUT_SHIFT;
   //loopMode                  =  NO_LOOP;
@@ -1147,40 +1214,41 @@ void rsBreakpointModulator::setToDefaultValues()
   // be there (their data can be modified, though), additional entries can be 
   // inserted and removed at will in between:
   data->breakpoints.clear();
-  rsModBreakpoint<double> newBreakpoint;
+  rsModBreakpoint<T> newBreakpoint;
 
   newBreakpoint.timeStamp   = 0.0;
   newBreakpoint.level       = 0.0;
-  newBreakpoint.shape       = rsModBreakpoint<double>::ANALOG;
+  newBreakpoint.shape       = rsModBreakpoint<T>::ANALOG;
   newBreakpoint.shapeAmount = 1.0;
   data->breakpoints.push_back(newBreakpoint);
 
   newBreakpoint.timeStamp   = 0.5;
   newBreakpoint.level       = 1.0;
-  newBreakpoint.shape       = rsModBreakpoint<double>::ANALOG;
+  newBreakpoint.shape       = rsModBreakpoint<T>::ANALOG;
   newBreakpoint.shapeAmount = 1.0;
   data->breakpoints.push_back(newBreakpoint);
 
   newBreakpoint.timeStamp   = 1.0;
   newBreakpoint.level       = 0.5;
-  newBreakpoint.shape       = rsModBreakpoint<double>::ANALOG;
+  newBreakpoint.shape       = rsModBreakpoint<T>::ANALOG;
   newBreakpoint.shapeAmount = 1.0;
   data->breakpoints.push_back(newBreakpoint);
 
   newBreakpoint.timeStamp   = 2.0;
   newBreakpoint.level       = 0.5;
-  newBreakpoint.shape       = rsModBreakpoint<double>::ANALOG;
+  newBreakpoint.shape       = rsModBreakpoint<T>::ANALOG;
   newBreakpoint.shapeAmount = 1.0;
   data->breakpoints.push_back(newBreakpoint);
 
   newBreakpoint.timeStamp   = 3.0;
   newBreakpoint.level       = 0.0;
-  newBreakpoint.shape       = rsModBreakpoint<double>::ANALOG;
+  newBreakpoint.shape       = rsModBreakpoint<T>::ANALOG;
   newBreakpoint.shapeAmount = 1.0;
   data->breakpoints.push_back(newBreakpoint);
 }
 
-void rsBreakpointModulator::initialize()
+template<class T>
+void rsBreakpointModulator<T>::initialize()
 {
   data->editMode          =  EDIT_WITHOUT_SHIFT;
   samplesToNextBreakpoint =  0;
@@ -1214,35 +1282,36 @@ void rsBreakpointModulator::initialize()
   // be there (their data can be modified, though), additional entries can be 
   // inserted and removed at will in between:
   data->breakpoints.clear();
-  rsModBreakpoint<double> newBreakpoint;
+  rsModBreakpoint<T> newBreakpoint;
 
   newBreakpoint.timeStamp   = 0.0;
   newBreakpoint.level       = 1.0;
-  newBreakpoint.shape       = rsModBreakpoint<double>::ANALOG;
+  newBreakpoint.shape       = rsModBreakpoint<T>::ANALOG;
   newBreakpoint.shapeAmount = 1.0;
   data->breakpoints.push_back(newBreakpoint);
 
   newBreakpoint.timeStamp   = 1.0;
   newBreakpoint.level       = 1.0;
-  newBreakpoint.shape       = rsModBreakpoint<double>::ANALOG;
+  newBreakpoint.shape       = rsModBreakpoint<T>::ANALOG;
   newBreakpoint.shapeAmount = 1.0;
   data->breakpoints.push_back(newBreakpoint);
 }
 
 // audio processing:
 
-void rsBreakpointModulator::fillBufferWithEnvelope(double *buffer, int length, bool useOnlyLoop)
+template<class T>
+void rsBreakpointModulator<T>::fillBufferWithEnvelope(T *buffer, int length, bool useOnlyLoop)
 {
   // retrieve a couple of parameters that must be modified for later restore:
-  double tmpSampleRate = data->sampleRate;
+  T tmpSampleRate = data->sampleRate;
   bool   tmpSync       = data->syncMode;
   bool   tmpLoop       = data->loopIsOn;
 
   // fill the buffer:
   if( useOnlyLoop == false )
   {
-    double lengthInSeconds = getEndTime() - getStartTime();
-    data->sampleRate = (double) length / lengthInSeconds;
+    T lengthInSeconds = getEndTime() - getStartTime();
+    data->sampleRate = (T) length / lengthInSeconds;
     data->syncMode   = false;
     data->loopIsOn   = false;
     noteOn();
@@ -1251,10 +1320,10 @@ void rsBreakpointModulator::fillBufferWithEnvelope(double *buffer, int length, b
   }
   else
   {
-    double end             = getBreakpointTime(getLoopEndIndex());
-    double start           = getBreakpointTime(getLoopStartIndex());
-    double lengthInSeconds = end - start;
-    data->sampleRate = (double) length / lengthInSeconds;
+    T end             = getBreakpointTime(getLoopEndIndex());
+    T start           = getBreakpointTime(getLoopStartIndex());
+    T lengthInSeconds = end - start;
+    data->sampleRate = (T) length / lengthInSeconds;
     data->syncMode   = false;
     data->loopIsOn   = false;
     noteOnAndAdvanceTime(rsRoundToInt(start*data->sampleRate));
@@ -1270,7 +1339,8 @@ void rsBreakpointModulator::fillBufferWithEnvelope(double *buffer, int length, b
 
 // internal helper functions:
 
-void rsBreakpointModulator::updateTimeScaleFactor()
+template<class T>
+void rsBreakpointModulator<T>::updateTimeScaleFactor()
 {
   timeScaleFactor  = data->timeScale;  
   timeScaleFactor *= pow(2.0, (0.01*data->timeScaleByKey/12.0) * (currentKey-64) );
@@ -1280,9 +1350,10 @@ void rsBreakpointModulator::updateTimeScaleFactor()
     slaves[s]->updateTimeScaleFactor();
 }
 
-double rsBreakpointModulator::clipLevelToRange(double inLevel)
+template<class T>
+T rsBreakpointModulator<T>::clipLevelToRange(T inLevel)
 {
-  double outLevel = inLevel;
+  T outLevel = inLevel;
 
   if( outLevel < data->minimumAllowedLevel )
     outLevel = data->minimumAllowedLevel;
@@ -1292,9 +1363,10 @@ double rsBreakpointModulator::clipLevelToRange(double inLevel)
   return outLevel;
 }
 
-double rsBreakpointModulator::scaleLevelByKeyAndVelocity(double unscaledLevel)
+template<class T>
+T rsBreakpointModulator<T>::scaleLevelByKeyAndVelocity(T unscaledLevel)
 {
-  double scaledLevel;
+  T scaledLevel;
   scaledLevel = rsPowBipolar(unscaledLevel, data->depth);  
   scaledLevel = rsPowBipolar(scaledLevel, pow(2.0, (0.01*data->depthByKey/12.0)*(currentKey-64)));  
   scaledLevel = rsPowBipolar(scaledLevel, pow(2.0, (0.01*data->depthByVel/63.0)*(currentVel-64)));
@@ -1304,7 +1376,8 @@ double rsBreakpointModulator::scaleLevelByKeyAndVelocity(double unscaledLevel)
 //-------------------------------------------------------------------------------------------------
 // master/slave config:
 
-void rsBreakpointModulator::addSlave(rsBreakpointModulator* newSlave)
+template<class T>
+void rsBreakpointModulator<T>::addSlave(rsBreakpointModulator* newSlave)
 {
   // add the new slave to the vector of slaves:
   slaves.push_back(newSlave);
