@@ -81,7 +81,7 @@ ModulatorCurveEditor::~ModulatorCurveEditor()
 //-------------------------------------------------------------------------------------------------
 // setup:
 
-void ModulatorCurveEditor::setModulatorToEdit(RAPT::rsBreakpointModulator* newModulatorToEdit)
+void ModulatorCurveEditor::setModulatorToEdit(RAPT::rsBreakpointModulator<double>* newModulatorToEdit)
 {
   modulatorToEdit = newModulatorToEdit;
   updatePlotCurveData(editedModulatorIndex, modulatorToEdit, true);
@@ -548,12 +548,12 @@ int ModulatorCurveEditor::whatIsUnderTheMouseCursor(const MouseEvent &e)
   transformToComponentsCoordinates(x2, y2);
 
   if( abs(x1+2-mouseX) <= 4.0   &&
-      modulatorToEdit->getLoopMode() != RAPT::rsBreakpointModulator::NO_LOOP )
+      modulatorToEdit->getLoopMode() != RAPT::rsBreakpointModulator<double>::NO_LOOP )
   {
     return LOOP_START_LOCATOR;
   }
   else if( abs(x2+2-mouseX) <= 4.0  &&
-           modulatorToEdit->getLoopMode() != RAPT::rsBreakpointModulator::NO_LOOP )
+           modulatorToEdit->getLoopMode() != RAPT::rsBreakpointModulator<double>::NO_LOOP )
   {
     return LOOP_END_LOCATOR;
   }
@@ -636,7 +636,7 @@ void ModulatorCurveEditor::mouseDown(const MouseEvent &e)
     // check if one of the locators is being dragged (we need to check that only
     // when no point is being dragged):
     if( breakpointBeingDragged == -1 && 
-        modulatorToEdit->getLoopMode() != RAPT::rsBreakpointModulator::NO_LOOP)
+        modulatorToEdit->getLoopMode() != RAPT::rsBreakpointModulator<double>::NO_LOOP)
     {
       if( whatIsUnderTheMouseCursor(e) == LOOP_START_LOCATOR )
       {
@@ -801,9 +801,9 @@ void ModulatorCurveEditor::mouseDrag(const MouseEvent &e)
     snapToGrid(x,y);
 
     if( e.mods.isShiftDown() )
-      modulatorToEdit->setEditMode(RAPT::rsBreakpointModulator::EDIT_WITH_SHIFT);
+      modulatorToEdit->setEditMode(RAPT::rsBreakpointModulator<double>::EDIT_WITH_SHIFT);
     else
-      modulatorToEdit->setEditMode(RAPT::rsBreakpointModulator::EDIT_WITHOUT_SHIFT);
+      modulatorToEdit->setEditMode(RAPT::rsBreakpointModulator<double>::EDIT_WITHOUT_SHIFT);
 
     // pass the new breakpoint to our preview envelope generator:
     modulatorToEdit->modifyBreakpoint(breakpointBeingDragged, x, y);
@@ -925,7 +925,7 @@ void ModulatorCurveEditor::resized()
 // others:
 
 void ModulatorCurveEditor::updatePlotCurveData(int curveIndex, 
-  RAPT::rsBreakpointModulator* modulator, bool updateGUI)
+  RAPT::rsBreakpointModulator<double>* modulator, bool updateGUI)
 {
   if( modulator == NULL )
     return;
@@ -944,7 +944,7 @@ void ModulatorCurveEditor::updatePlotCurveData(int curveIndex,
 
   // copy the data from the modulator into a temporary object which has mostly the same data 
   // as the passed modulator now, but with some adjustments for plotting:
-  RAPT::rsBreakpointModulator tmpModulator;
+  RAPT::rsBreakpointModulator<double> tmpModulator;
   tmpModulator.copyDataFrom(*modulator);
   tmpModulator.setLoopMode(false);
   tmpModulator.setSyncMode(false);
@@ -1025,7 +1025,7 @@ void ModulatorCurveEditor::plotCurveFamily(Graphics &g, juce::Image *targetImage
 }
 
 void ModulatorCurveEditor::plotBreakpoints(Graphics &g, juce::Image *targetImage, 
-  RAPT::rsBreakpointModulator* modulator, const Colour& dotColour)
+  RAPT::rsBreakpointModulator<double>* modulator, const Colour& dotColour)
 {
   if( modulator == NULL )
     return;
@@ -1062,7 +1062,7 @@ void ModulatorCurveEditor::plotBreakpoints(Graphics &g, juce::Image *targetImage
 }
 
 void ModulatorCurveEditor::plotLoopLocators(Graphics &g, juce::Image *targetImage, 
-  RAPT::rsBreakpointModulator* modulator, const Colour& locatorColour, bool fullHeight)
+  RAPT::rsBreakpointModulator<double>* modulator, const Colour& locatorColour, bool fullHeight)
 {
   if( modulator == NULL )
     return;
@@ -1070,7 +1070,7 @@ void ModulatorCurveEditor::plotLoopLocators(Graphics &g, juce::Image *targetImag
   double scale  = modulator->getScaleFactor();
   double offset = modulator->getOffset();
 
-  if( modulator->getLoopMode() == RAPT::rsBreakpointModulator::NO_LOOP )
+  if( modulator->getLoopMode() == RAPT::rsBreakpointModulator<double>::NO_LOOP )
     return; // nothing to do
 
   double x1, x2, y1, y2;

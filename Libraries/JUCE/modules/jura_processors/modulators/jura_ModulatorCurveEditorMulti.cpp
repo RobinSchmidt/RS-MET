@@ -18,7 +18,8 @@ ModulatorCurveEditorMulti::~ModulatorCurveEditorMulti()
 //-------------------------------------------------------------------------------------------------
 // setup:
 
-void ModulatorCurveEditorMulti::addModulatorToEdit(RAPT::rsBreakpointModulator *newModulatorToEdit)
+void ModulatorCurveEditorMulti::addModulatorToEdit(
+  RAPT::rsBreakpointModulator<double>* newModulatorToEdit)
 {
   modulators.getLock().enter();
   modulators.addIfNotAlreadyThere(newModulatorToEdit);

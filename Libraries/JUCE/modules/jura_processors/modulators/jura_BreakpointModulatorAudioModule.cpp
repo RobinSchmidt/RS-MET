@@ -2,7 +2,7 @@
 // construction/destruction:
 
 BreakpointModulatorAudioModule::BreakpointModulatorAudioModule(CriticalSection *newPlugInLock,                                                          
-  RAPT::rsBreakpointModulator *newBreakpointModulatorToWrap)                                                              
+  RAPT::rsBreakpointModulator<double> *newBreakpointModulatorToWrap)                                                              
   : AudioModule(newPlugInLock)
 {
   jassert( newBreakpointModulatorToWrap != NULL ); // you must pass a valid object to the constructor
@@ -39,30 +39,32 @@ void BreakpointModulatorAudioModule::parameterChanged(Parameter* parameterThatHa
 
 int stringToModBreakpointShapeIndex(const juce::String &shapeString)
 {
-  if(      shapeString == "Stairstep" )     return rsModBreakpoint::STAIRSTEP;
-  else if( shapeString == "Linear" )        return rsModBreakpoint::LINEAR;
-  else if( shapeString == "Smooth" )        return rsModBreakpoint::SMOOTH;
-  else if( shapeString == "Analog" )        return rsModBreakpoint::ANALOG;
-  else if( shapeString == "AntiAnalog" )    return rsModBreakpoint::GROWING;
-  else if( shapeString == "Sigmoid" )       return rsModBreakpoint::SIGMOID;
-  else if( shapeString == "Spikey" )        return rsModBreakpoint::SPIKEY;
-  else if( shapeString == "Sine 1" )        return rsModBreakpoint::SINE_1;
-  else if( shapeString == "Sine 2" )        return rsModBreakpoint::SINE_2;
-  else                                      return rsModBreakpoint::LINEAR;
+  typedef rsModBreakpoint<double> BP;
+  if(      shapeString == "Stairstep" )  return BP::STAIRSTEP;
+  else if( shapeString == "Linear" )     return BP::LINEAR;
+  else if( shapeString == "Smooth" )     return BP::SMOOTH;
+  else if( shapeString == "Analog" )     return BP::ANALOG;
+  else if( shapeString == "AntiAnalog" ) return BP::GROWING;
+  else if( shapeString == "Sigmoid" )    return BP::SIGMOID;
+  else if( shapeString == "Spikey" )     return BP::SPIKEY;
+  else if( shapeString == "Sine 1" )     return BP::SINE_1;
+  else if( shapeString == "Sine 2" )     return BP::SINE_2;
+  else                                   return BP::LINEAR;
 }
 
 const juce::String modBreakpointShapeIndexToString(int shapeIndex)
 {
-  if(      shapeIndex == rsModBreakpoint::STAIRSTEP ) return "Stairstep";
-  else if( shapeIndex == rsModBreakpoint::LINEAR )    return "Linear";
-  else if( shapeIndex == rsModBreakpoint::SMOOTH )    return "Smooth";
-  else if( shapeIndex == rsModBreakpoint::ANALOG )    return "Analog";
-  else if( shapeIndex == rsModBreakpoint::GROWING )   return "AntiAnalog";
-  else if( shapeIndex == rsModBreakpoint::SIGMOID )   return "Sigmoid";
-  else if( shapeIndex == rsModBreakpoint::SPIKEY )    return "Spikey";
-  else if( shapeIndex == rsModBreakpoint::SINE_1 )    return "Sine 1";
-  else if( shapeIndex == rsModBreakpoint::SINE_2 )    return "Sine 2";
-  else                                                return juce::String::empty;
+  typedef rsModBreakpoint<double> BP;
+  if(      shapeIndex == BP::STAIRSTEP ) return "Stairstep";
+  else if( shapeIndex == BP::LINEAR )    return "Linear";
+  else if( shapeIndex == BP::SMOOTH )    return "Smooth";
+  else if( shapeIndex == BP::ANALOG )    return "Analog";
+  else if( shapeIndex == BP::GROWING )   return "AntiAnalog";
+  else if( shapeIndex == BP::SIGMOID )   return "Sigmoid";
+  else if( shapeIndex == BP::SPIKEY )    return "Spikey";
+  else if( shapeIndex == BP::SINE_1 )    return "Sine 1";
+  else if( shapeIndex == BP::SINE_2 )    return "Sine 2";
+  else                                   return juce::String::empty;
 }
 
 XmlElement* BreakpointModulatorAudioModule::getStateAsXml(const juce::String& stateName,                                                         
@@ -93,7 +95,7 @@ XmlElement* BreakpointModulatorAudioModule::getStateAsXml(const juce::String& st
   xmlState->setAttribute(juce::String("LoopStartIndex"),   wrappedBreakpointModulator->getLoopStartIndex() );
   xmlState->setAttribute(juce::String("LoopEndIndex"),     wrappedBreakpointModulator->getLoopEndIndex() );
 
-  if( wrappedBreakpointModulator->getLoopMode() == rsBreakpointModulator::FORWARD_LOOP )
+  if( wrappedBreakpointModulator->getLoopMode() == rsBreakpointModulator<double>::FORWARD_LOOP )
     xmlState->setAttribute(juce::String("LoopMode"), juce::String("Forward") );
   else
     xmlState->setAttribute(juce::String("LoopMode"), juce::String("Off") );
@@ -127,7 +129,7 @@ void BreakpointModulatorAudioModule::setStateFromXml(const XmlElement& xmlState,
 
   bool success = true;  // get rid
 
-  rsBreakpointModulator *modulator = wrappedBreakpointModulator; // use a shorter name here...
+  rsBreakpointModulator<double> *modulator = wrappedBreakpointModulator; // use a shorter name here...
 
   // restore the settings:
   modulator->setScaleFactor(xmlState.getDoubleAttribute(   "ScaleFactor",    1.0));
