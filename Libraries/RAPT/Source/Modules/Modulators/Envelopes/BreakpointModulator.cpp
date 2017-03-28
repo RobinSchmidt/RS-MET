@@ -1043,7 +1043,7 @@ void rsBreakpointModulator<T>::updateSamplesToNextBreakpoint()
   T timeDelta = data->breakpoints[rightIndex].timeStamp 
     - data->breakpoints[leftIndex].timeStamp;
   if( data->syncMode == true )
-    timeDelta = rsBeatsToSeconds(timeDelta, data->bpm);
+    timeDelta = (T)rsBeatsToSeconds(timeDelta, data->bpm);
 
   // convert to samples and use this length as initial value for our countdown-variable:
   T samplesExact     = timeScaleFactor * timeDelta * data->sampleRate;
@@ -1095,15 +1095,15 @@ void rsBreakpointModulator<T>::setupStateVariables()
   case rsModBreakpoint<T>::SMOOTH:
     {
       T omega  = PI / (T) segmentLength;
-      state1_change = 2.0*cos(omega);
-      state1        = sin( -(0.5*PI) - omega );
-      state2        = sin( -(0.5*PI) - 2.0*omega );
+      state1_change = 2.f*cos(omega);
+      state1        = sin( -T(0.5*PI) - omega );
+      state2        = sin( -T(0.5*PI) - 2.f*omega );
     }
     break;
   case rsModBreakpoint<T>::ANALOG:
     {
-      state1_min    = pow(0.01, data->breakpoints[rightIndex].shapeAmount);
-      state1_max    = pow(state1_min, 1.0 / (T) (segmentLength+1));
+      state1_min    = pow(T(0.01), data->breakpoints[rightIndex].shapeAmount);
+      state1_max    = pow(state1_min, 1.f / (T) (segmentLength+1));
       scaler1       = levelDelta / (state1_max-state1_min);
       state1        = state1_max;
       state1_change = state1_max;
@@ -1111,54 +1111,54 @@ void rsBreakpointModulator<T>::setupStateVariables()
     break;
   case rsModBreakpoint<T>::GROWING:
     {
-      state1_min    = pow(0.01, data->breakpoints[rightIndex].shapeAmount);
-      state1_max    = pow(state1_min, 1.0 / (T) (segmentLength+1));
+      state1_min    = (T)pow(T(0.01), data->breakpoints[rightIndex].shapeAmount);
+      state1_max    = (T)pow(state1_min, 1.0 / (T) (segmentLength+1));
       scaler1       = levelDelta / (state1_max-state1_min);
       state1        = state1_min;
-      state1_change = 1.0/state1_max;
+      state1_change = 1.f / state1_max;
     }
     break;
   case rsModBreakpoint<T>::SIGMOID:
     {
-      state1_min    = pow(0.01, data->breakpoints[rightIndex].shapeAmount);
-      state1_max    = pow(state1_min, 1.0 / (T) (segmentLength+1));
+      state1_min    = (T)pow(T(0.01), data->breakpoints[rightIndex].shapeAmount);
+      state1_max    = (T)pow(state1_min, 1.f / (T) (segmentLength+1));
       scaler1       = levelDelta / (state1_max-state1_min);
       state1        = state1_max;
       state1_change = state1_max;
       //state2_min    = state1_min; // these two variables are actually not used
       //state2_max    = state1_max; // therefore their assignment is omitted
       state2        = state1_min;
-      state2_change = 1.0 / state1_max;
+      state2_change = 1.f / state1_max;
     }
     break;
   case rsModBreakpoint<T>::SPIKEY:
     {
-      state1_min    = pow(0.01, data->breakpoints[rightIndex].shapeAmount);
-      state1_max    = pow(state1_min, 1.0 / (T) (segmentLength+1));
-      scaler1       = 1.0 / (state1_max-state1_min);
+      state1_min    = (T)pow(T(0.01), data->breakpoints[rightIndex].shapeAmount);
+      state1_max    = (T)pow(state1_min, 1.f / (T) (segmentLength+1));
+      scaler1       = 1.f / (state1_max-state1_min);
       state1        = state1_max;
       state1_change = state1_max;
 
       //state2_min    = state1_min; // these two variables are actually not used
       //state2_max    = state1_max; // therefore their assignment is omitted
       state2        = state1_min;
-      state2_change = 1.0 / state1_max;
+      state2_change = 1.f / state1_max;
     }
     break;
   case rsModBreakpoint<T>::SINE_1:
     {
-      T omega  = 0.5*PI / (T) segmentLength;
-      state1_change = 2.0*cos(omega);
-      state1        = sin( -(0.0*PI) - omega );
-      state2        = sin( -(0.0*PI) - 2.0*omega );
+      T omega  = T(0.5*PI) / (T) segmentLength;
+      state1_change = 2.f*cos(omega);
+      state1        = sin(-omega);
+      state2        = sin(-2.f*omega);
     }
     break;
   case rsModBreakpoint<T>::SINE_2:
     {
-      T omega  = 0.5*PI / (T) segmentLength;
-      state1_change = 2.0*cos(omega);
-      state1        = sin( -(0.5*PI) - omega );
-      state2        = sin( -(0.5*PI) - 2.0*omega );
+      T omega  = T(0.5*PI) / (T) segmentLength;
+      state1_change = 2.f*cos(omega);
+      state1        = sin( -T(0.5*PI) - omega );
+      state2        = sin( -T(0.5*PI) - 2.f*omega );
     }
     break;
   default:  // linear by default
@@ -1343,8 +1343,8 @@ template<class T>
 void rsBreakpointModulator<T>::updateTimeScaleFactor()
 {
   timeScaleFactor  = data->timeScale;  
-  timeScaleFactor *= pow(2.0, (0.01*data->timeScaleByKey/12.0) * (currentKey-64) );
-  timeScaleFactor *= pow(2.0, (0.01*data->timeScaleByVel/63.0) * (currentVel-64) ); 
+  timeScaleFactor *= pow(T(2), T(0.01*data->timeScaleByKey/12.0) * (currentKey-64) );
+  timeScaleFactor *= pow(T(2), T(0.01*data->timeScaleByVel/63.0) * (currentVel-64) ); 
       
   for(unsigned int s = 0; s < slaves.size(); s++)  
     slaves[s]->updateTimeScaleFactor();
@@ -1367,9 +1367,9 @@ template<class T>
 T rsBreakpointModulator<T>::scaleLevelByKeyAndVelocity(T unscaledLevel)
 {
   T scaledLevel;
-  scaledLevel = rsPowBipolar(unscaledLevel, data->depth);  
-  scaledLevel = rsPowBipolar(scaledLevel, pow(2.0, (0.01*data->depthByKey/12.0)*(currentKey-64)));  
-  scaledLevel = rsPowBipolar(scaledLevel, pow(2.0, (0.01*data->depthByVel/63.0)*(currentVel-64)));
+  scaledLevel = (T)rsPowBipolar(unscaledLevel, data->depth);  
+  scaledLevel = (T)rsPowBipolar(scaledLevel, pow(2.f, T(0.01*data->depthByKey/12.0)*(currentKey-64)));  
+  scaledLevel = (T)rsPowBipolar(scaledLevel, pow(2.f, T(0.01*data->depthByVel/63.0)*(currentVel-64)));
   return scaledLevel;
 }
 
