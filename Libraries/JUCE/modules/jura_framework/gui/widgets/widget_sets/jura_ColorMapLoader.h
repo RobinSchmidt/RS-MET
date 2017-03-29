@@ -19,11 +19,35 @@ protected:
 
   ColorMap *colorMap;
 
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ColorMapPreviewer)
 };
 
 //=================================================================================================
 
-/** A widget set for loading and previewing a ColorMap.  */
+/** A colormap subclass that can be set up by loading appropriate xml files via a ColorMapLoader
+GUI object. */
+
+class JUCE_API LoadableColorMap : public ColorMap, public StateFileManager
+{
+
+public:
+
+
+protected:
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LoadableColorMap)
+};
+
+
+
+
+
+//=================================================================================================
+
+/** A widget set for loading and previewing a ColorMap.  
+\todo: to make Load buttons work, we need a ColorMap subclass that also derives from 
+StateFileManager so it can keep track of what file is loaded, etc.
+*/
 
 class JUCE_API ColorMapLoader : public StateLoadSaveWidgetSet
 {
