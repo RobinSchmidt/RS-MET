@@ -42,7 +42,6 @@ namespace jura
 #include "gui/misc/jura_RectangleComponent.cpp"
 
 #include "gui/widgets/jura_RWidget.cpp"
-#include "gui/widgets/jura_WidgetSet.cpp"
 #include "gui/widgets/jura_RTextField.cpp"
 #include "gui/widgets/jura_RTextEditor.cpp"
 #include "gui/widgets/jura_RButton.cpp"
@@ -52,7 +51,10 @@ namespace jura
 #include "gui/widgets/jura_RPopUpMenu.cpp"
 #include "gui/widgets/jura_RSlider.cpp"
 #include "gui/widgets/jura_RComboBox.cpp"
-#include "gui/widgets/jura_StateLoadSaveWidgetSet.cpp"
+
+#include "gui/widgets/widget_sets/jura_WidgetSet.cpp"
+#include "gui/widgets/widget_sets/jura_StateLoadSaveWidgetSet.cpp"
+
 
 #include "gui/plots/jura_CoordinateSystemOld.cpp"
 #include "gui/plots/jura_InteractiveCoordinateSystemOld.cpp" 

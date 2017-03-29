@@ -147,7 +147,9 @@ protected:
   // Widgets:
   RSlider *sliderBrightness, *sliderAfterglow, *sliderPixelSpread, *sliderPixelScale, 
     *sliderLineDensity, *sliderDotLimit, *sliderFrameRate;
+
   RButton *buttonAntiAlias;
+
 
   //RButtonPainter3D buttonPainter; // only temporary, experimental
 

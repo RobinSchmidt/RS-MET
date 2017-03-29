@@ -69,7 +69,6 @@ namespace jura
 #include "gui/misc/jura_RectangleComponent.h"
 
 #include "gui/widgets/jura_RWidget.h"
-#include "gui/widgets/jura_WidgetSet.h"
 #include "gui/widgets/jura_RTextField.h"
 #include "gui/widgets/jura_RTextEditor.h" // maybe later it should be moved below RScrollBar...
 #include "gui/widgets/jura_RButton.h"     // ..if the texteditor becomes scrollable
@@ -79,8 +78,11 @@ namespace jura
 #include "gui/widgets/jura_RPopUpMenu.h"
 #include "gui/widgets/jura_RSlider.h"
 #include "gui/widgets/jura_RComboBox.h"
-#include "gui/widgets/jura_StateLoadSaveWidgetSet.h"
 // there are still some special widgets missing - copy them over soon...
+
+#include "gui/widgets/widget_sets/jura_WidgetSet.h"
+#include "gui/widgets/widget_sets/jura_StateLoadSaveWidgetSet.h"
+
 
 // these should be renamed - get rid of the "Old" (but only when we have dragged over all other
 // subclasses):

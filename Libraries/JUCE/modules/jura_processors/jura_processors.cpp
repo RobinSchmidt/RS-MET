@@ -40,7 +40,7 @@ namespace jura
 #include "baseclasses/jura_AudioPlugin.cpp"
 
 #include "analyzers/jura_PhaseScope.cpp"
-#include "analyzers/jura_PhaseScopeMultiColor.cpp"
+//#include "analyzers/jura_PhaseScopeMultiColor.cpp"
 
 #include "filters/jura_LadderFilter.cpp"
 #include "filters/jura_PhasorFilter.cpp"

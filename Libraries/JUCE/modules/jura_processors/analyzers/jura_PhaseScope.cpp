@@ -355,16 +355,16 @@ void PhaseScopeEditor::resized()
   int x = display.getRight() + 4;
   w = getWidth() - x - 8;          // slider width
   h = 16;                          // slider height
-  int dy = h+4;                    // vertical distance ("delta-y") between widgets
+  int dy = h-2;                    // vertical distance ("delta-y") between widgets
 
-  sliderBrightness ->setBounds(x, y, w, h); y += dy;
-  sliderAfterglow  ->setBounds(x, y, w, h); y += dy;
-  sliderPixelSpread->setBounds(x, y, w, h); y += dy;
-  sliderPixelScale ->setBounds(x, y, w, h); y += dy;
-  sliderLineDensity->setBounds(x, y, w, h); y += dy;
-  sliderDotLimit   ->setBounds(x, y, w, h); y += dy;
-  sliderFrameRate  ->setBounds(x, y, w, h); y += dy;
-  buttonAntiAlias  ->setBounds(x, y, w, h); y += dy;
+  sliderBrightness ->setBounds(x, y, w,   h); y += dy;
+  sliderAfterglow  ->setBounds(x, y, w,   h); y += dy;
+  sliderPixelSpread->setBounds(x, y, w,   h); y += dy;
+  sliderPixelScale ->setBounds(x, y, w,   h); y += dy;
+  sliderLineDensity->setBounds(x, y, w,   h); y += dy;
+  sliderDotLimit   ->setBounds(x, y, w,   h); y += dy;
+  sliderFrameRate  ->setBounds(x, y, w,   h); y += dy;
+  buttonAntiAlias  ->setBounds(x, y, w/2, h); y += dy;
 }
 //
 //
