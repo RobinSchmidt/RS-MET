@@ -21,6 +21,19 @@ void ColorMapPreviewer::paint(Graphics& g)
 
 //=================================================================================================
 
+void LoadableColorMap::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
+  bool markAsClean)
+{
+  ColorMap::setFromXml(xmlState);
+}
+
+XmlElement* LoadableColorMap::getStateAsXml(const juce::String& stateName, bool markAsClean)
+{
+  return ColorMap::getAsXml();
+}
+
+//=================================================================================================
+
 ColorMapLoader::ColorMapLoader(ColorMap *mapToUpdate)
   : StateLoadSaveWidgetSet(String("ColorMapLoader"))
   , previewer(mapToUpdate)

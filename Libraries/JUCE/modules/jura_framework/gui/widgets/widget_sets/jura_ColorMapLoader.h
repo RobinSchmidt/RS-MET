@@ -32,15 +32,17 @@ class JUCE_API LoadableColorMap : public ColorMap, public StateFileManager
 
 public:
 
+  LoadableColorMap() {}
+
+  virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 
+    bool markAsClean) override;
+
+  virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean) override;
 
 protected:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LoadableColorMap)
 };
-
-
-
-
 
 //=================================================================================================
 
@@ -63,6 +65,8 @@ public:
 protected:
 
   ColorMapPreviewer previewer;
+
+  // i think, we need a LoadableColorMap member and use that underlying StateManager object
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ColorMapLoader)
 };

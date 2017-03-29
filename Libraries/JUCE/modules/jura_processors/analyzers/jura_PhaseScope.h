@@ -82,7 +82,8 @@ protected:
     // don't have the overhead of PhaseScopeBuffer2 here.
 
   juce::Image image;       // image for the display
-  jura::ColorMap colorMap; // the color map to translate the buffered data matrix to colors
+  //jura::ColorMap colorMap; // the color map to translate the buffered data matrix to colors
+  jura::LoadableColorMap colorMap; // the color map to translate the buffered data matrix to colors
 
   friend class PhaseScopeDisplay;
   //friend class PhaseScopeEditor2;
