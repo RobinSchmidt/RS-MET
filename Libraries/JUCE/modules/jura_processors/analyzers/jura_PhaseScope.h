@@ -38,7 +38,7 @@ public:
   inline int getInternalPixelWidth() { return phaseScopeBuffer->getWidth(); }
   inline int getInternalPixelHeight() { return phaseScopeBuffer->getHeight(); }
   const ColorMap& getColorMap() { return colorMap; }
-  ColorMap* getColorMapPointer() { return &colorMap; }
+  LoadableColorMap* getColorMapPointer() { return &colorMap; }
 
 
   // overriden from AudioModule baseclass:

@@ -46,10 +46,7 @@ protected:
 
 //=================================================================================================
 
-/** A widget set for loading and previewing a ColorMap.  
-\todo: to make Load buttons work, we need a ColorMap subclass that also derives from 
-StateFileManager so it can keep track of what file is loaded, etc.
-*/
+/** A widget set for loading and previewing a ColorMap. */
 
 class JUCE_API ColorMapLoader : public StateLoadSaveWidgetSet
 {
@@ -58,15 +55,14 @@ public:
 
   /** Constructor. You must pass a valid pointer to a ColorMap object. This is the object that 
   will be updated, when the user loads a new colormap xml file. */
-  ColorMapLoader(ColorMap *mapToUpdate);
+  ColorMapLoader(LoadableColorMap *mapToUpdate);
 
   virtual void resized() override;
 
 protected:
 
   ColorMapPreviewer previewer;
-
-  // i think, we need a LoadableColorMap member and use that underlying StateManager object
+  LoadableColorMap *loadableColorMap;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ColorMapLoader)
 };

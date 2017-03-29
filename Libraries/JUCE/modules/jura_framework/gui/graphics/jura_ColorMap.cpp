@@ -53,7 +53,9 @@ void ColorMap::setSize(int newSize)
 
 void ColorMap::setFromXml(const XmlElement& xml)
 {
-  jassert(xml.getTagName() == "ColorMap");  // seems to be the wrong type of XML element
+  //jassert(xml.getTagName() == "ColorMap");  // seems to be the wrong type of XML element
+  if(xml.getTagName() != "ColorMap")
+    return; 
 
   String s = xml.getStringAttribute("Predefined", String::empty);
   if(s != String::empty)

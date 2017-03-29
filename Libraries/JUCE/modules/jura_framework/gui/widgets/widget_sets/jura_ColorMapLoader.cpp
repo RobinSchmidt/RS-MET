@@ -34,10 +34,14 @@ XmlElement* LoadableColorMap::getStateAsXml(const juce::String& stateName, bool 
 
 //=================================================================================================
 
-ColorMapLoader::ColorMapLoader(ColorMap *mapToUpdate)
+ColorMapLoader::ColorMapLoader(LoadableColorMap *mapToUpdate)
   : StateLoadSaveWidgetSet(String("ColorMapLoader"))
   , previewer(mapToUpdate)
 {
+  loadableColorMap = mapToUpdate;
+
+  loadableColorMap->addStateWatcher(this);
+
   layout = LABEL_AND_BUTTONS_ABOVE;
 
   stateLabel->setText("ColorMap");
