@@ -10,7 +10,7 @@ when they are added
 
 */
 
-class JUCE_API WidgetSet : public Component, public DescribedItem
+class JUCE_API WidgetSet : public ColourSchemeComponent
 {
 
   friend class Editor;

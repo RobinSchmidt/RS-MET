@@ -82,6 +82,7 @@ namespace jura
 
 #include "gui/widgets/widget_sets/jura_WidgetSet.h"
 #include "gui/widgets/widget_sets/jura_StateLoadSaveWidgetSet.h"
+#include "gui/widgets/widget_sets/jura_ColorMapLoader.h"
 
 
 // these should be renamed - get rid of the "Old" (but only when we have dragged over all other

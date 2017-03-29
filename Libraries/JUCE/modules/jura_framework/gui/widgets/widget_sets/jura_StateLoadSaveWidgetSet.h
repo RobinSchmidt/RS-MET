@@ -9,9 +9,8 @@ preset new preset is loaded.
 preset - in this menu, the available presets (in the current folder) are shown and the user can 
 select a new one. */
 
-class JUCE_API StateLoadSaveWidgetSet : virtual public ColourSchemeComponent, 
-  virtual public RButtonListener, virtual public StateWatcher, virtual public DescribedItem, 
-  virtual public ChangeBroadcaster
+class JUCE_API StateLoadSaveWidgetSet : public WidgetSet, virtual public RButtonListener, 
+  virtual public StateWatcher, virtual public ChangeBroadcaster
 {
 
 public:

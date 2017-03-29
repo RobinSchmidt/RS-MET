@@ -335,6 +335,11 @@ void PhaseScopeEditor::createWidgets()
   b->setDescription("Anti aliased drawing (bilinear deinterpolation)");
   b->setDescriptionField(infoField);
   //b->setButtonPainter(&buttonPainter); // temporary, for test
+
+  colorMapLoader = new ColorMapLoader();
+  addWidgetSet(colorMapLoader);
+
+  int dummy = 0;
 }
 
 void PhaseScopeEditor::resized()
@@ -365,6 +370,10 @@ void PhaseScopeEditor::resized()
   sliderDotLimit   ->setBounds(x, y, w,   h); y += dy;
   sliderFrameRate  ->setBounds(x, y, w,   h); y += dy;
   buttonAntiAlias  ->setBounds(x, y, w/2, h); y += dy;
+
+  //// preliminary:
+  //y += 16;
+  //colorMapLoader->setBounds(x, y, w, 48);
 }
 //
 //

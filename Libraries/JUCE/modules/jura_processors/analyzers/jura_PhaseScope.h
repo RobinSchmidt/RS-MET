@@ -150,9 +150,9 @@ protected:
 
   RButton *buttonAntiAlias;
 
+  ColorMapLoader *colorMapLoader;
 
   //RButtonPainter3D buttonPainter; // only temporary, experimental
-
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhaseScopeEditor)
 };
 

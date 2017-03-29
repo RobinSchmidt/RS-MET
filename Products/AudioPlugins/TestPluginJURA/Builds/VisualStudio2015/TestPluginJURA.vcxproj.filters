@@ -2326,6 +2326,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\rojue_WaveformDisplayOld.cpp">
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\widget_sets\jura_ColorMapLoader.cpp">
+      <Filter>Juce Modules\jura_framework\gui\widgets\widget_sets</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\widget_sets\jura_StateLoadSaveWidgetSet.cpp">
       <Filter>Juce Modules\jura_framework\gui\widgets\widget_sets</Filter>
     </ClCompile>
@@ -4502,6 +4505,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\rojue_WaveformDisplayOld.h">
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\widget_sets\jura_ColorMapLoader.h">
+      <Filter>Juce Modules\jura_framework\gui\widgets\widget_sets</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\widget_sets\jura_StateLoadSaveWidgetSet.h">
       <Filter>Juce Modules\jura_framework\gui\widgets\widget_sets</Filter>
