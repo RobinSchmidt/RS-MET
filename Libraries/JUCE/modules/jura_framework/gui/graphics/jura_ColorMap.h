@@ -69,6 +69,9 @@ public:
   /** Returns one of the default color gradients as juce::ColourGradient object. */
   ColourGradient getDefaultGradient(int index);
 
+  /** Returns the juce::ColourGradient object that this color map is based on. */
+  ColourGradient getAsColourGradient() { return gradient; }
+
 protected:
 
   /** Fills our array of default map names. Called internally in the constructor. */

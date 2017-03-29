@@ -19,17 +19,17 @@ PhaseScope::PhaseScope(CriticalSection *lockToUse) : AudioModule(lockToUse)
   createParameters();
   reset();
 
-  colorMap.setDefaultMap(ColorMap::fire);
+  //colorMap.setDefaultMap(ColorMap::fire);
   //colorMap.setDefaultMap(ColorMap::ice);
 
-  //juce::ColourGradient g;
-  //g.addColour(0.0, Colour(  0,   0,   0));
-  //g.addColour(0.2, Colour(  0,   0, 255));
-  //g.addColour(0.4, Colour(  0, 255, 255));
-  //g.addColour(0.6, Colour(  0, 255,   0));
-  //g.addColour(0.8, Colour(255, 255,   0));
-  //g.addColour(1.0, Colour(255,   0,   0)); // maybe add magenta as last
-  //colorMap.setFromColourGradient(g);
+  juce::ColourGradient g;
+  g.addColour(0.0, Colour(  0,   0,   0));
+  g.addColour(0.2, Colour(  0,   0, 255));
+  g.addColour(0.4, Colour(  0, 255, 255));
+  g.addColour(0.6, Colour(  0, 255,   0));
+  g.addColour(0.8, Colour(255, 255,   0));
+  g.addColour(1.0, Colour(255,   0,   0)); // maybe add magenta as last
+  colorMap.setFromColourGradient(g);
 }
 
 PhaseScope::~PhaseScope()
@@ -336,7 +336,7 @@ void PhaseScopeEditor::createWidgets()
   b->setDescriptionField(infoField);
   //b->setButtonPainter(&buttonPainter); // temporary, for test
 
-  colorMapLoader = new ColorMapLoader();
+  colorMapLoader = new ColorMapLoader(scope->getColorMapPointer());
   addWidgetSet(colorMapLoader);
 
   int dummy = 0;
@@ -371,9 +371,9 @@ void PhaseScopeEditor::resized()
   sliderFrameRate  ->setBounds(x, y, w,   h); y += dy;
   buttonAntiAlias  ->setBounds(x, y, w/2, h); y += dy;
 
-  //// preliminary:
-  //y += 16;
-  //colorMapLoader->setBounds(x, y, w, 48);
+  // preliminary:
+  y += 16;
+  colorMapLoader->setBounds(x, y, w, 32);
 }
 //
 //
