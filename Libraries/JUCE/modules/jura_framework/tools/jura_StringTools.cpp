@@ -9,7 +9,8 @@ char* toZeroTerminatedString(String stringToConvert)
   char* stringC = new char[length+1];
   //stringToConvert.copyToBuffer(stringC, length);
   //stringToConvert.copyToCString(stringC, length);
-  stringToConvert.copyToUTF8(stringC, length);
+  size_t numWritten = stringToConvert.copyToUTF8(stringC, length+1); // was formerly legth - how could that ever work?
+  jassert(numWritten == length+1);
   return stringC;
 }
 
