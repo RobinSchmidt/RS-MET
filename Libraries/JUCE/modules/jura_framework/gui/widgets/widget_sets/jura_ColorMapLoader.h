@@ -53,8 +53,8 @@ class JUCE_API ColorMapLoader : public StateLoadSaveWidgetSet
 
 public:
 
-  /** Constructor. You must pass a valid pointer to a ColorMap object. This is the object that 
-  will be updated, when the user loads a new colormap xml file. */
+  /** Constructor. You must pass a valid pointer to a LoadableColorMap object. This is the object 
+  that will be updated, when the user loads a new colormap xml file. */
   ColorMapLoader(LoadableColorMap *mapToUpdate);
 
   virtual void stateDirtyFlagChanged(StateManager *stateManager) override;
