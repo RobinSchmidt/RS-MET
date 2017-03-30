@@ -54,20 +54,16 @@ ColorMapLoader::ColorMapLoader(LoadableColorMap *mapToUpdate)
   stateSaveButton->setVisible(false);  // later, we may want to edit and save the maps, too
 
   addAndMakeVisible(previewer);
-  //previewer.toFront(false);
+}
+
+void ColorMapLoader::stateDirtyFlagChanged(StateManager *stateManager)
+{
+  StateLoadSaveWidgetSet::stateDirtyFlagChanged(stateManager);
+  previewer.repaint();
 }
 
 void ColorMapLoader::resized()
 {
-  //StateLoadSaveWidgetSet::resized();
-  //previewer.setBounds(stateFileNameLabel->getBounds());
-
-  // hmm...maybe it would be better to show the filename and put the preview below
-
-  //int y = stateFileNameLabel->getBottom() + 2;
-  //int w = getWidth();
-  //previewer.setBounds(0, y, w, 16);
-
   int x = 0;
   int y = 0;
   int w = getWidth();
@@ -88,10 +84,8 @@ void ColorMapLoader::resized()
     x  = 0;
     y += (h3-2);
     stateFileNameLabel->setBounds(0, y, w, h3);
-    y += (h3-4);
+    y += h3;
     previewer.setBounds(0, y, w, h3);
-    // BUG: for some reason, the previewer get only patially repainted when loading a new map.
-    // upon resizing, it will be repainted fully again ...the old code worked - wtf?
   }
   else // ONE_LINE
   {

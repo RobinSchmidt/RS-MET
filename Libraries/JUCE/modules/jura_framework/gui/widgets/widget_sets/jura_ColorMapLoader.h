@@ -57,6 +57,9 @@ public:
   will be updated, when the user loads a new colormap xml file. */
   ColorMapLoader(LoadableColorMap *mapToUpdate);
 
+  virtual void stateDirtyFlagChanged(StateManager *stateManager) override;
+  // overriden to trigger repaint of the previewer
+
   virtual void resized() override;
 
 protected:
