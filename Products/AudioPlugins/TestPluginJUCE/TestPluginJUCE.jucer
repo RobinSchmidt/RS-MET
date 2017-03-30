@@ -37,9 +37,6 @@
         <MODULEPATH id="juce_data_structures" path="../../../Libraries/JUCE/modules"/>
         <MODULEPATH id="juce_gui_basics" path="../../../Libraries/JUCE/modules"/>
         <MODULEPATH id="juce_gui_extra" path="../../../Libraries/JUCE/modules"/>
-        <MODULEPATH id="juce_cryptography" path="../../../Libraries/JUCE/modules"/>
-        <MODULEPATH id="juce_video" path="../../../Libraries/JUCE/modules"/>
-        <MODULEPATH id="juce_opengl" path="../../../Libraries/JUCE/modules"/>
         <MODULEPATH id="juce_audio_basics" path="../../../Libraries/JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../../Libraries/JUCE/modules"/>
         <MODULEPATH id="juce_audio_formats" path="../../../Libraries/JUCE/modules"/>
@@ -47,6 +44,25 @@
         <MODULEPATH id="juce_audio_plugin_client" path="../../../Libraries/JUCE/modules"/>
       </MODULEPATHS>
     </VS2015>
+    <CODEBLOCKS_WINDOWS targetFolder="Builds/CodeBlocksWindows" extraCompilerFlags="-fpermissive">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="TestPluginJUCE"/>
+        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="TestPluginJUCE"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_gui_extra" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../../../Libraries/JUCE/modules"/>
+      </MODULEPATHS>
+    </CODEBLOCKS_WINDOWS>
   </EXPORTFORMATS>
   <MODULES>
     <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0"/>
@@ -55,14 +71,11 @@
     <MODULE id="juce_audio_plugin_client" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_core" showAllCode="1" useLocalCopy="0"/>
-    <MODULE id="juce_cryptography" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_events" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0"/>
-    <MODULE id="juce_opengl" showAllCode="1" useLocalCopy="0"/>
-    <MODULE id="juce_video" showAllCode="1" useLocalCopy="0"/>
   </MODULES>
-  <JUCEOPTIONS JUCE_QUICKTIME="disabled"/>
+  <JUCEOPTIONS JUCE_QUICKTIME="disabled" JUCE_WEB_BROWSER="disabled" JUCE_ENABLE_LIVE_CONSTANT_EDITOR="disabled"/>
 </JUCERPROJECT>

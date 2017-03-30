@@ -1,7 +1,7 @@
 #ifndef RAPT_IMAGEDRAWER_H_INCLUDED
 #define RAPT_IMAGEDRAWER_H_INCLUDED
 
-/** A baseclass for drawing on images. It consolidates the data and functionality that all drawers 
+/** A baseclass for drawing on images. It consolidates the data and functionality that all drawers
 have in common, regardless of what they draw. Subclasses like LineDrawer will do the actual drawing
 and likely define more data and methods. */
 
@@ -11,7 +11,7 @@ class ImageDrawer
 
 public:
 
-  /** The blend modes for determining a new pixel color as function of its current color, an 
+  /** The blend modes for determining a new pixel color as function of its current color, an
   incoming color and a blend amount. */
   enum blendModes
   {
@@ -42,13 +42,13 @@ public:
   color for a pixel from an incoming desired color, the pixel's old color and a weight between
   0 and 1 that determines how to mix the old and the new color. */
   void setBlendMode(int newMode);
-    // maybe make it possible to provide a function pointer to a custom blend function 
+    // maybe make it possible to provide a function pointer to a custom blend function
 
 
   /** \name Drawing */
 
-  /** Blends the pixel color in the image at given coordinates with the color of this drawer 
-  according to some weight. If the weight is 0, the pixel's color is unchanged, if it's 1, the new 
+  /** Blends the pixel color in the image at given coordinates with the color of this drawer
+  according to some weight. If the weight is 0, the pixel's color is unchanged, if it's 1, the new
   color has the biggest impact.  What exactly happens depends on the blend-mode setting. */
   inline void plot(int x, int y, TWgt weight)
   {
@@ -86,7 +86,7 @@ class LineDrawer : public ImageDrawer<TPix, TWgt, TCor>
 public:
 
 
-  /** The function to determine the brightness/weight as function of the perpendicular distance 
+  /** The function to determine the brightness/weight as function of the perpendicular distance
   to the ideal geometric line. */
   enum lineProfiles
   {
@@ -112,7 +112,7 @@ public:
   /** Sets the width of the line in pixels. */
   void setLineWidth(TCor newWidth);
 
-  /** Sets the drawer up to draw half-circular end caps, if true. If false, the caps will be 
+  /** Sets the drawer up to draw half-circular end caps, if true. If false, the caps will be
   rectangular. */
   void setRoundCaps(bool shouldBeRound);
 
@@ -122,18 +122,18 @@ public:
   /** Draws a line from (x0,y0) to (x1,y1). The joinableStart/End parameters scale the color weight
   inside the end-circles (in round cap mode) by 0.5 - this is supposed to lead to nice line
   joints, but that doesn't work yet - the joints still look funky :-(  */
-  void drawLine(TCor x0, TCor y0, TCor x1, TCor y1, bool joinableStart = false, 
+  void drawLine(TCor x0, TCor y0, TCor x1, TCor y1, bool joinableStart = false,
     bool joinableEnd = false);
 
   /** Special line drawing function that is supposed to be used for drawing sequences of connected
-  lines. After an initial call to initLine or a previous call to lineTo, you can call this 
+  lines. After an initial call to initLine or a previous call to lineTo, you can call this
   function in order to avoid artifacts (phantom circles) at the line joints. The optional
-  uniformColor parameter indicates that between successive calls to lineTo, the color will not be 
-  changed (by setColor). If the whole polyline has the same color, you can pass true and then a 
-  simpler, more efficient end cap handling code will be invoked. */ 
+  uniformColor parameter indicates that between successive calls to lineTo, the color will not be
+  changed (by setColor). If the whole polyline has the same color, you can pass true and then a
+  simpler, more efficient end cap handling code will be invoked. */
   void lineTo(TCor x, TCor y, bool uniformColor = false);
 
-  /** Function to initialize our xOld, yOld members which are used for polyline drawing. Call this 
+  /** Function to initialize our xOld, yOld members which are used for polyline drawing. Call this
   once with the start point of the polyline before repeatedly calling lineTo  */
   inline void initPolyLine(TCor x, TCor y)
   {
@@ -170,17 +170,21 @@ protected:
 
 private:
 
-  /** Convenience function to possibly plot a pixel with swapped x/y coordinates (needed for steep 
+  /** Convenience function to possibly plot a pixel with swapped x/y coordinates (needed for steep
   lines). */
   inline void plot(int x, int y, TWgt weight, bool swapXY)
   {
     if(swapXY)
-      ImageDrawer::plot(y, x, weight);
+      plot(y, x, weight);
     else
-      ImageDrawer::plot(x, y, weight);
+      plot(x, y, weight);
+//    if(swapXY)
+//      ImageDrawer<TPix, TWgt, TCor>::plot(y, x, weight);
+//    else
+//      ImageDrawer<TPix, TWgt, TCor>::plot(x, y, weight);
   }
 
-  /** Sets up the internal variables for the line drawing algorithm for the two given 
+  /** Sets up the internal variables for the line drawing algorithm for the two given
   endpoints. */
   void setupAlgorithmVariables(TCor x0, TCor y0, TCor x1, TCor y1);
 
@@ -194,13 +198,13 @@ private:
   inline void drawRightCap(bool joinable) { drawCap(xsr, xe, joinable); }
 
   /** Draws either left or right end cap, called internally from drawLeftCap and drawRightCap. The
-  code is exactly the same except for different loop start and end indices, because we need to 
+  code is exactly the same except for different loop start and end indices, because we need to
   check against both caps everytime - because any pixel may be part of both caps at the same time
   (occurs for very short slanted lines). */
   void drawCap(int start, int end, bool joinable = false);
 
-  /** A special variant of the cap drawing code to be used for joined lines (in lineTo) with 
-  uniform color. It avoids drawing anything within the left end-circle. When used in round caps 
+  /** A special variant of the cap drawing code to be used for joined lines (in lineTo) with
+  uniform color. It avoids drawing anything within the left end-circle. When used in round caps
   mode, it avoids the phantom circles that woul otherwise appear in the line joints. xj, yj are the
   coordinates of the cap (which sits inside the joint) that shall not be drawn. */
   void drawCapForJointUniformColor(int start, int end, TCor xj, TCor yj);

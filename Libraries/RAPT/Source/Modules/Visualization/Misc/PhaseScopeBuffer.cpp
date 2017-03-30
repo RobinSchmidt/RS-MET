@@ -124,7 +124,7 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::addLineTo(TSig x, TSig y)
   if(lineDensity == 0.f)
     painter.paintDot(x, y, (TPix) insertFactor);
   else
-    painter.drawDottedLine((TSig)xOld, (TSig)yOld, (TSig)x, (TSig)y, (TPix) insertFactor, 
+    painter.drawDottedLine((TSig)xOld, (TSig)yOld, (TSig)x, (TSig)y, (TPix) insertFactor,
       (TSig)lineDensity, maxDotsPerLine);
   xOld = x;
   yOld = y;
@@ -140,18 +140,18 @@ template<class TSig, class TPix, class TPar>
 void PhaseScopeBuffer<TSig, TPix, TPar>::updateInsertFactor()
 {
   insertFactor = (TPix(10000) * brightness / TPix(sampleRate));
-  // The factor is totally ad-hoc - maybe come up with some more meaningful factor. 
-  // However, the proportionality to the birghtness parameter and inverse proportionality to 
+  // The factor is totally ad-hoc - maybe come up with some more meaningful factor.
+  // However, the proportionality to the birghtness parameter and inverse proportionality to
   // the sample rate seems to make sense.
 }
 
 //-------------------------------------------------------------------------------------------------
 
 template<class TSig, class TPix, class TPar>
-PhaseScopeBuffer2<TSig, TPix, TPar>::PhaseScopeBuffer2() 
-: lineDrawer(&image)
+PhaseScopeBuffer2<TSig, TPix, TPar>::PhaseScopeBuffer2()
+: lineDrawer(&this->image)
 {
-  painter.setAlphaMaskForDot(&dotMask);
+  this->painter.setAlphaMaskForDot(&this->dotMask);
   dotMask.setMaxSize(20, 20);
   dotMask.setSize(5);
   dotMask.setTransitionWidth(0.5);
@@ -163,7 +163,7 @@ PhaseScopeBuffer2<TSig, TPix, TPar>::PhaseScopeBuffer2()
 template<class TSig, class TPix, class TPar>
 void PhaseScopeBuffer2<TSig, TPix, TPar>::setUseAlphaMask(bool shouldUseMask)
 {
-  painter.setUseAlphaMask(shouldUseMask);
+  this->painter.setUseAlphaMask(shouldUseMask);
 }
 
 template<class TSig, class TPix, class TPar>
@@ -200,16 +200,15 @@ void PhaseScopeBuffer2<TSig, TPix, TPar>::setLineProfile(int newProfile)
 template<class TSig, class TPix, class TPar>
 void PhaseScopeBuffer2<TSig, TPix, TPar>::applyPixelDecay()
 {
-  int   N = image.getNumPixels();  
-  TPix *p = image.getPixelPointer(0, 0);
+  int   N = this->image.getNumPixels();
+  TPix *p = this->image.getPixelPointer(0, 0);
 
   if(decayByValue == 0)
-    PhaseScopeBuffer::applyPixelDecay();
+    PhaseScopeBuffer<TSig, TPix, TPar>::applyPixelDecay();
   else
   {
-
     for(int n = 0; n < N; n++)
-      p[n] *= p[n]*TPix(decayFactorAt1) + (1-p[n])*TPix(decayFactor);
+      p[n] *= p[n]*TPix(decayFactorAt1) + (1-p[n])*TPix(this->decayFactor);
     // i think, a linear interpolation between two different decay factors might not be ideal
     // maybe we should use a table instead
   }
@@ -229,16 +228,16 @@ void PhaseScopeBuffer2<TSig, TPix, TPar>::updateDecayFactor()
 {
   if(decayByValue == 0)
   {
-    decayFactor = (TPar)exp(-1 / (decayTime*frameRate)); // taken from baseclass
-    decayFactorAt1 = decayFactor;
+    this->decayFactor = (TPar)exp(-1 / (this->decayTime*this->frameRate)); // taken from baseclass
+    decayFactorAt1 = this->decayFactor;
   }
   else
   {
-    TPar factor    = pow(2, decayByValue);
-    TPar decayAt1  = decayTime * factor;
-    TPar decayAt0  = decayTime;
-    decayFactor    = (TPar)exp(-1 / (decayAt0*frameRate));
-    decayFactorAt1 = (TPar)exp(-1 / (decayAt1*frameRate));
+    TPar factor       = pow(2, decayByValue);
+    TPar decayAt1     = this->decayTime * factor;
+    TPar decayAt0     = this->decayTime;
+    this->decayFactor = (TPar)exp(-1 / (decayAt0*this->frameRate));
+    decayFactorAt1    = (TPar)exp(-1 / (decayAt1*this->frameRate));
 
     //TPar factor    = pow(2, 0.5*decayByValue);
     //TPar decayAt1  = decayTime * factor;
@@ -252,8 +251,8 @@ template<class TSig, class TPix, class TPar>
 void PhaseScopeBuffer2<TSig, TPix, TPar>::addLineTo(TSig x, TSig y)
 {
   if(drawLines){
-    TSig dx = x - xOld;
-    TSig dy = y - yOld;
+    TSig dx = x - this->xOld;
+    TSig dy = y - this->yOld;
     TPar L  = sqrt(dx*dx + dy*dy);
     TPar scaler = 1;
     if(L > 1)
@@ -263,8 +262,8 @@ void PhaseScopeBuffer2<TSig, TPix, TPar>::addLineTo(TSig x, TSig y)
     lineDrawer.lineTo(x, y);
   }
   if(drawDots)
-    PhaseScopeBuffer::addLineTo(x, y); // draws dotted line, updates xOld, yOld
+    PhaseScopeBuffer<TSig, TPix, TPar>::addLineTo(x, y); // draws dotted line, updates xOld, yOld
   else {
-    xOld = x;
-    yOld = y; }
+    this->xOld = x;
+    this->yOld = y; }
 }

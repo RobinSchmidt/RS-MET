@@ -1,5 +1,5 @@
 template<class TPix>
-Image<TPix>::Image(int initialWidth, int initialHeight) 
+Image<TPix>::Image(int initialWidth, int initialHeight)
   : width(initialWidth), height(initialHeight)
 {
   allocateMemory();
@@ -77,8 +77,10 @@ template<class TPix>
 ImageResizable<TPix>::ImageResizable(int initialWidth, int initialHeight)
   : Image<TPix>(initialWidth, initialHeight)
 {
-  maxWidth  = width;
-  maxHeight = height;
+  maxWidth  = initialWidth;
+  maxHeight = initialHeight;
+//  maxWidth  = width;
+//  maxHeight = height;
 }
 
 template<class TPix>
@@ -86,8 +88,10 @@ void ImageResizable<TPix>::setSize(int newWidth, int newHeight)
 {
   if(newWidth > maxWidth || newHeight > maxHeight)  // memory reallocation, only if necessary
     setMaxSize(rsMax(maxWidth, newWidth), rsMax(maxHeight, newHeight));
-  width  = newWidth;
-  height = newHeight;
+//  width  = newWidth;
+//  height = newHeight;
+  Image<TPix>::width = newWidth;
+  Image<TPix>::height = newHeight;
 }
 
 template<class TPix>

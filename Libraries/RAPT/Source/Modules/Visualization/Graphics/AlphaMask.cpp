@@ -11,7 +11,7 @@ template<class TPix>
 void AlphaMask<TPix>::setSize(double newSize)
 {
   int pixelSize = (int)ceil(newSize);
-  ImageResizable::setSize(pixelSize, pixelSize);
+  ImageResizable<TPix>::setSize(pixelSize, pixelSize);
   renderMask();
 }
 
@@ -40,7 +40,7 @@ template<class TPix>
 template<class T>
 void AlphaMask<TPix>::copyShapeParametersFrom(const AlphaMask<T>& other)
 {
-  flat   = (TPix)other.getTransitionWidth();     
+  flat   = (TPix)other.getTransitionWidth();
   slope0 = (TPix)other.getInnerSlope();
   slope1 = (TPix)other.getOuterSlope();
   renderMask();
@@ -51,7 +51,7 @@ double AlphaMask<TPix>::cubicBell(double x, double steepnessAt0, double steepnes
 {
   double s0 = -steepnessAt0;
   double s1 = -steepnessAt1;
-  double a2 = -s1 - 2*s0 - 3; 
+  double a2 = -s1 - 2*s0 - 3;
   double a3 =  s1 +   s0 + 2;
   // todo: precompute the coeffs
 
@@ -62,22 +62,25 @@ double AlphaMask<TPix>::cubicBell(double x, double steepnessAt0, double steepnes
   // f(x) = a0 + a1*x + a2*x^2 + a3*x^3 with f(0) = 1, f'(0) = s0, f(1) = 0, f'(1) = s1
   // solving it yields: a0 = 1, a1 = s0, a2 = -s1 - 2*s0 - 3, a3 = 2 + s0 + s1
   // maybe the user parameters slope1, slope2 are -s1, -s2
-  // maybe we should figure out the condition for not having a local minimum or maximum 
+  // maybe we should figure out the condition for not having a local minimum or maximum
   // between 0..1 and perhaps restrict the parameter range
 }
 
 template<class TPix>
 void AlphaMask<TPix>::renderMask()
 {
+  int w = this->width;
+  int h = this->height;
+
   // render circular alpha mask - alpha value depends on distance from center:
-  double cx = 0.5 * width;  // x-coordinate of center
-  double cy = 0.5 * height; // y-coordinate of center
+  double cx = 0.5 * w;      // x-coordinate of center
+  double cy = 0.5 * h;      // y-coordinate of center
   double sx = 1.0 / cx;     // x-scaler
   double sy = 1.0 / cy;     // y-scaler
 
-  for(int y = 0; y < height; y++)
+  for(int y = 0; y < h; y++)
   {
-    for(int x = 0; x < width; x++)
+    for(int x = 0; x < w; x++)
     {
       double dx = sx * (x - cx);
       double dy = sy * (y - cy);
@@ -86,7 +89,7 @@ void AlphaMask<TPix>::renderMask()
       setPixelColor(x, y, alpha);
     }
   }
-  // maybe the code can be generalized to an elliptic mask: divide dx by width and dy by height 
+  // maybe the code can be generalized to an elliptic mask: divide dx by width and dy by height
   // and use a bell with width = 1
 }
 

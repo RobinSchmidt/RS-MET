@@ -55,8 +55,8 @@ void ImageDrawer<TPix, TWgt, TCor>::addAndSaturate(TPix &pixel, TPix color, TWgt
 //=================================================================================================
 
 template<class TPix, class TWgt, class TCor>
-LineDrawer<TPix, TWgt, TCor>::LineDrawer(Image<TPix> *imageToDrawOn) 
-  : ImageDrawer(imageToDrawOn) 
+LineDrawer<TPix, TWgt, TCor>::LineDrawer(Image<TPix> *imageToDrawOn)
+  : ImageDrawer<TPix, TWgt, TCor>(imageToDrawOn)
 {
   setLineProfile(0);
   setLineWidth(1);
@@ -108,7 +108,7 @@ void LineDrawer<TPix, TWgt, TCor>::drawLine(TCor x0, TCor y0, TCor x1, TCor y1,
   drawRightCap(joinableEnd);
 
   // store line endpoint to be used as startpoint for subsequent lineTo calls:
-  xOld = x1; 
+  xOld = x1;
   yOld = y1;
 }
 
@@ -133,10 +133,10 @@ void LineDrawer<TPix, TWgt, TCor>::lineTo(TCor x, TCor y, bool uniformColor)
 
   // \todo: make a version of it that always draws both caps (start and end) but with half
   // brightness/alpha - because the current startegy is only suitable for polylines in which each
-  // adjacent line segment has the same color. if the color is changed between segments, artifacts 
+  // adjacent line segment has the same color. if the color is changed between segments, artifacts
   // appear
 
-  xOld = x; 
+  xOld = x;
   yOld = y;
 }
 
@@ -179,21 +179,21 @@ TWgt LineDrawer<TPix, TWgt, TCor>::profileCubic(TCor d, TCor w2)
 template<class TPix, class TWgt, class TCor>
 void LineDrawer<TPix, TWgt, TCor>::setupAlgorithmVariables(TCor x0, TCor y0, TCor x1, TCor y1)
 {
-  xMax  = image->getWidth()-1;   // guard for x index
-  yMax  = image->getHeight()-1;  // guard for y index
-  dx    = x1 - x0;               // x-distance
-  dy    = y1 - y0;               // y-distance
-  L     = sqrt(dx*dx + dy*dy);   // length of the line
-  steep = abs(dy) > abs(dx); 
-  if(steep){                     // swap roles of x and y for steep lines
+  xMax  = this->image->getWidth()-1;   // guard for x index
+  yMax  = this->image->getHeight()-1;  // guard for y index
+  dx    = x1 - x0;                     // x-distance
+  dy    = y1 - y0;                     // y-distance
+  L     = sqrt(dx*dx + dy*dy);         // length of the line
+  steep = abs(dy) > abs(dx);
+  if(steep){                           // swap roles of x and y for steep lines
     swap(dx, dy);
     swap(x0, y0);
     swap(x1, y1);
     swap(xMax, yMax); }
   back = x0 > x1;
-  if(back){                      // swap roles of start and end for leftward lines
+  if(back){                            // swap roles of start and end for leftward lines
     swap(x0, x1);
-    swap(y0, y1); 
+    swap(y0, y1);
     dx = -dx;
     dy = -dy; }
 
@@ -215,7 +215,7 @@ void LineDrawer<TPix, TWgt, TCor>::setupAlgorithmVariables(TCor x0, TCor y0, TCo
   xel = rsLimit((int)ceil( x0+d), 0, xMax);   // end of left cap
   xsr = rsLimit((int)floor(x1-d), 0, xMax);   // start of right cap
   xe  = rsLimit((int)ceil( x1+d), 0, xMax);   // end of right cap (and overall line)
-  dvy = (int)ceil(w2/A);                      // maximum vertical pixel distance from line  
+  dvy = (int)ceil(w2/A);                      // maximum vertical pixel distance from line
 }
 
 template<class TPix, class TWgt, class TCor>
@@ -229,9 +229,9 @@ void LineDrawer<TPix, TWgt, TCor>::drawMiddleSection()
     for(y = ys; y <= ye; y++){                // inner loop over y-scanline
       dp = A * abs(yf-y);                     // perpendicuar pixel distance from line
       sc = lineProfile(dp, w2);               // intensity/color scaler
-      plot(x, y, sc, steep);                  // plot pixel (may swap x,y according to "steep") 
+      plot(x, y, sc, steep);                  // plot pixel (may swap x,y according to "steep")
     }// for y
-  }// for x 
+  }// for x
 }
 
 template<class TPix, class TWgt, class TCor>
@@ -263,11 +263,11 @@ void LineDrawer<TPix, TWgt, TCor>::drawCap(int start, int end, bool joinable)
           sc *= lineProfile(d, w2); }
       plot(x, y, sc, steep);
     }// for y
-  }// for x  
+  }// for x
 }
 
 template<class TPix, class TWgt, class TCor>
-void LineDrawer<TPix, TWgt, TCor>::drawCapForJointUniformColor(int start, int end, 
+void LineDrawer<TPix, TWgt, TCor>::drawCapForJointUniformColor(int start, int end,
   TCor xj, TCor yj)
 {
   for(x = start; x <= end; x++){
@@ -301,5 +301,5 @@ void LineDrawer<TPix, TWgt, TCor>::drawCapForJointUniformColor(int start, int en
 
       plot(x, y, sc, steep);
     }// for y
-  }// for x  
+  }// for x
 }
