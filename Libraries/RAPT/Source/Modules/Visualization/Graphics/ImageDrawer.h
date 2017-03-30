@@ -175,13 +175,9 @@ private:
   inline void plot(int x, int y, TWgt weight, bool swapXY)
   {
     if(swapXY)
-      plot(y, x, weight);
+      ImageDrawer<TPix, TWgt, TCor>::plot(y, x, weight);
     else
-      plot(x, y, weight);
-//    if(swapXY)
-//      ImageDrawer<TPix, TWgt, TCor>::plot(y, x, weight);
-//    else
-//      ImageDrawer<TPix, TWgt, TCor>::plot(x, y, weight);
+      ImageDrawer<TPix, TWgt, TCor>::plot(x, y, weight);
   }
 
   /** Sets up the internal variables for the line drawing algorithm for the two given

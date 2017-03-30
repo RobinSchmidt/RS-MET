@@ -22,13 +22,13 @@ class UniformTextSection
 {
 public:
 
-  UniformTextSection(const String& text, BitmapFont const* font_, const Colour& colour_) throw() 
+  UniformTextSection(const String& text, BitmapFont const* font_, const Colour& colour_) throw()
     : font (font_), colour (colour_)
   {
     initialiseAtoms(text);
   }
 
-  UniformTextSection (const UniformTextSection& other) throw() : font (other.font), 
+  UniformTextSection (const UniformTextSection& other) throw() : font (other.font),
     colour (other.colour)
   {
     for(int i = 0; i < other.atoms.size(); ++i)
@@ -75,7 +75,7 @@ public:
           {
             lastAtom->atomText += first->atomText;
             lastAtom->numChars = (uint16)(lastAtom->numChars + first->numChars);
-            lastAtom->width = 
+            lastAtom->width =
               font->getTextPixelWidth(lastAtom->getText(), font->getDefaultKerning());
             delete first;
             ++i;
@@ -111,7 +111,7 @@ public:
       {
         TextAtom* const secondAtom = new TextAtom();
         secondAtom->atomText = atom->atomText.substring(indexToBreakAt - index);
-        secondAtom->width = 
+        secondAtom->width =
           font->getTextPixelWidth(secondAtom->getText(), font->getDefaultKerning());
         secondAtom->numChars = (uint16)secondAtom->atomText.length();
         section2->atoms.add (secondAtom);
@@ -290,7 +290,7 @@ private:
       // create a whitespace atom unless it starts with non-ws
       if(CharacterFunctions::isWhitespace(text[i]) && text[i] != '\r' && text[i] != '\n')
       {
-        while(i < len && CharacterFunctions::isWhitespace(text[i]) && text[i] != '\r' 
+        while(i < len && CharacterFunctions::isWhitespace(text[i]) && text[i] != '\r'
           && text[i] != '\n')
           ++i;
       }
@@ -332,9 +332,9 @@ class RTextEditorIterator
 
 public:
 
-  RTextEditorIterator(const Array<void*>& sections_, const int wordWrapWidth_) throw() 
-    : indexInText(0), lineY(0), lineHeight(0), maxDescent(0), atomX(0), atomRight(0), atom(0), 
-    currentSection(0), sections(sections_), sectionIndex(0), atomIndex(0), 
+  RTextEditorIterator(const Array<void*>& sections_, const int wordWrapWidth_) throw()
+    : indexInText(0), lineY(0), lineHeight(0), maxDescent(0), atomX(0), atomRight(0), atom(0),
+    currentSection(0), sections(sections_), sectionIndex(0), atomIndex(0),
     wordWrapWidth(wordWrapWidth_)
   {
     jassert (wordWrapWidth_ > 0);
@@ -347,10 +347,10 @@ public:
     }
   }
 
-  RTextEditorIterator (const RTextEditorIterator& other) throw() : indexInText(other.indexInText), 
-    lineY(other.lineY), lineHeight(other.lineHeight), maxDescent(other.maxDescent), 
+  RTextEditorIterator (const RTextEditorIterator& other) throw() : indexInText(other.indexInText),
+    lineY(other.lineY), lineHeight(other.lineHeight), maxDescent(other.maxDescent),
     atomX(other.atomX), atomRight(other.atomRight), atom(other.atom),
-    currentSection(other.currentSection), sections(other.sections), 
+    currentSection(other.currentSection), sections(other.sections),
     sectionIndex(other.sectionIndex), atomIndex(other.atomIndex),
     wordWrapWidth(other.wordWrapWidth), tempAtom(other.tempAtom)
   {
@@ -376,8 +376,8 @@ public:
           lineY += lineHeight;
         indexInText += tempAtom.numChars;
 
-        // \todo: this is still preliminary (used mostly 'as is' from juce::TextEditor) - we have 
-        // to replace that glyphArrangement-stuff with something in BitmapFont....seems like it 
+        // \todo: this is still preliminary (used mostly 'as is' from juce::TextEditor) - we have
+        // to replace that glyphArrangement-stuff with something in BitmapFont....seems like it
         // is used here to determine the right side of some glyph....
         GlyphArrangement g;
         Font dummyFont(14.f);
@@ -427,7 +427,7 @@ public:
           int maxDescent2 = maxDescent;
           for(int section = sectionIndex+1; section<sections.size(); ++section)
           {
-            const UniformTextSection* const s = 
+            const UniformTextSection* const s =
               (const UniformTextSection*)sections.getUnchecked(section);
             if(s->getNumAtoms() == 0)
               break;
@@ -466,7 +466,7 @@ public:
     if(SHOULD_WRAP(atomRight, wordWrapWidth) || forceNewLine)
     {
       if(atom->isWhitespace())
-        atomRight = jmin(atomRight, wordWrapWidth); 
+        atomRight = jmin(atomRight, wordWrapWidth);
         // leave whitespace at the end of a line, but truncate it to avoid scrolling
       else
         return wrapCurrentAtom();
@@ -506,7 +506,7 @@ public:
         //g.setFont(currentSection->font);
       }
       jassert(atom->getTrimmedText().isNotEmpty());
-      drawBitmapFontText(g, atomX, lineY, atom->getTrimmedText(), (currentSection->font), 
+      drawBitmapFontText(g, atomX, lineY, atom->getTrimmedText(), (currentSection->font),
         currentSection->colour);
     }
   }
@@ -520,7 +520,7 @@ public:
     g.fillRect(startX, y, endX-startX, nextY-y);
   }
 
-  void drawSelectedText(Graphics& g, const int selectionStart, const int selectionEnd, 
+  void drawSelectedText(Graphics& g, const int selectionStart, const int selectionEnd,
     const Colour& selectedTextColour) const throw()
   {
     if(!atom->isWhitespace())
@@ -555,9 +555,9 @@ public:
       ga.draw (g);
       */
 
-      //drawBitmapFontText(g, atomX, roundFloatToInt(lineY), 
+      //drawBitmapFontText(g, atomX, roundFloatToInt(lineY),
         //atom->getTrimmedText(passwordCharacter), *(currentSection->font), Colours::yellow);
-      drawBitmapFontText(g, atomX, lineY, atom->getTrimmedText(), currentSection->font, 
+      drawBitmapFontText(g, atomX, lineY, atom->getTrimmedText(), currentSection->font,
         selectedTextColour);
     }
   }
@@ -568,7 +568,7 @@ public:
       return atomX;
     if(indexToFind >= indexInText + atom->numChars)
       return atomRight;
-    return currentSection->font->glyphIndexToX(atom->getText(), indexToFind-indexInText, 
+    return currentSection->font->glyphIndexToX(atom->getText(), indexToFind-indexInText,
       currentSection->font->getDefaultKerning());
   }
 
@@ -578,7 +578,7 @@ public:
       return indexInText;
     if(xToFind >= atomRight)
       return indexInText + atom->numChars;
-    return currentSection->font->xToGlyphIndex(atom->getText(), xToFind, 
+    return currentSection->font->xToGlyphIndex(atom->getText(), xToFind,
       currentSection->font->getDefaultKerning());
   }
 
@@ -587,7 +587,7 @@ public:
     int x = atomRight;
     int tempSectionIndex = sectionIndex;
     int tempAtomIndex    = atomIndex;
-    const UniformTextSection* currentSection = 
+    const UniformTextSection* currentSection =
       (const UniformTextSection*)sections.getUnchecked(tempSectionIndex);
     while(!SHOULD_WRAP (x, wordWrapWidth))
     {
@@ -610,7 +610,7 @@ public:
         break;
       if(checkSize)
       {
-        lineHeight = 
+        lineHeight =
           jmax((int)lineHeight, currentSection->font->getFontHeight()+textEditorLineSpacing);
         maxDescent = jmax((int)maxDescent, currentSection->font->getFontDescent());
       }
@@ -686,10 +686,10 @@ class RTextEditorInsertAction : public UndoableAction
 
 public:
 
-  RTextEditorInsertAction(RTextEditor& owner_, const String& text_, const int insertIndex_, 
-    BitmapFont const* font_, const Colour& colour_, const int oldCaretPos_, 
+  RTextEditorInsertAction(RTextEditor& owner_, const String& text_, const int insertIndex_,
+    BitmapFont const* font_, const Colour& colour_, const int oldCaretPos_,
     const int newCaretPos_) throw()
-    : owner(owner_), text(text_), insertIndex(insertIndex_), oldCaretPos(oldCaretPos_), 
+    : owner(owner_), text(text_), insertIndex(insertIndex_), oldCaretPos(oldCaretPos_),
     newCaretPos(newCaretPos_), font(font_), colour (colour_)
   {
 
@@ -729,10 +729,10 @@ class RTextEditorRemoveAction : public UndoableAction
 
 public:
 
-  RTextEditorRemoveAction(RTextEditor& owner_, const int startIndex_, const int endIndex_, 
-    const int oldCaretPos_, const int newCaretPos_, 
-    const Array<void*>& removedSections_) throw() 
-    : owner(owner_), startIndex(startIndex_), endIndex(endIndex_), oldCaretPos(oldCaretPos_), 
+  RTextEditorRemoveAction(RTextEditor& owner_, const int startIndex_, const int endIndex_,
+    const int oldCaretPos_, const int newCaretPos_,
+    const Array<void*>& removedSections_) throw()
+    : owner(owner_), startIndex(startIndex_), endIndex(endIndex_), oldCaretPos(oldCaretPos_),
     newCaretPos(newCaretPos_), removedSections(removedSections_)
   {
 
@@ -1058,7 +1058,7 @@ void RTextEditor::setText(const String& newText, const bool sendTextChangeMessag
     clearInternal(0);
     insert(newText, 0, currentFont, getTextColour(), 0, caretPosition);
 
-    // if you're adding text with line-feeds to a single-line text editor, it ain't gonna look 
+    // if you're adding text with line-feeds to a single-line text editor, it ain't gonna look
     // right!
     jassert (multiline || !newText.containsAnyOf("\r\n"));
     if(cursorWasAtEnd && !isMultiLine())
@@ -1193,7 +1193,7 @@ void RTextEditor::updateTextHolderSize() throw()
     while(i.next())
       maxWidth = jmax(maxWidth, i.atomRight);
     const int w = leftIndent + maxWidth;
-    const int h = topIndent  + jmax(i.lineY+i.lineHeight, 
+    const int h = topIndent  + jmax(i.lineY+i.lineHeight,
       currentFont->getFontHeight()+textEditorLineSpacing);
     textHolder->setSize(w + 1, h + 1);
   }
@@ -1244,7 +1244,7 @@ void RTextEditor::scrollToMakeSureCursorIsVisible() throw()
     if(relativeCursorX < jmax(1, proportionOfWidth (0.05f)))
       x += relativeCursorX - proportionOfWidth (0.2f);
     else if(relativeCursorX > jmax(0, viewport->getMaximumVisibleWidth() - (wordWrap ? 2 : 10)))
-      x += relativeCursorX + (isMultiLine() ? proportionOfWidth (0.2f) : 10) 
+      x += relativeCursorX + (isMultiLine() ? proportionOfWidth (0.2f) : 10)
       - viewport->getMaximumVisibleWidth();
     x = jlimit (0, jmax (0, textHolder->getWidth() + 8 - viewport->getMaximumVisibleWidth()), x);
     if(!isMultiLine())
@@ -1310,7 +1310,7 @@ void RTextEditor::moveCursorTo(const int newPosition, const bool isSelecting) th
 
 int RTextEditor::getTextIndexAt(const int x, const int y) throw()
 {
-  return indexAtPosition((x + viewport->getViewPositionX() - leftIndent), 
+  return indexAtPosition((x + viewport->getViewPositionX() - leftIndent),
     (y + viewport->getViewPositionY() - topIndent));
 }
 
@@ -1437,7 +1437,7 @@ void RTextEditor::paintOverChildren(Graphics& g)
     if(isMultiLine())
       drawBitmapFontText(g, 0, 0, textToShowWhenEmpty, currentFont, getTextColour());
     else
-      drawBitmapFontText(g, leftIndent, topIndent, textToShowWhenEmpty, currentFont, 
+      drawBitmapFontText(g, leftIndent, topIndent, textToShowWhenEmpty, currentFont,
         getTextColour());
   }
   g.setColour(getOutlineColour());
@@ -1579,13 +1579,13 @@ bool RTextEditor::keyPressed(const KeyPress& key)
   else if(key.isKeyCode(KeyPress::pageDownKey) && isMultiLine())
   {
     newTransaction();
-    moveCursorTo(indexAtPosition(cursorX, cursorY + cursorHeight + viewport->getViewHeight()), 
+    moveCursorTo(indexAtPosition(cursorX, cursorY + cursorHeight + viewport->getViewHeight()),
       key.getModifiers().isShiftDown());
   }
   else if(key.isKeyCode(KeyPress::pageUpKey) && isMultiLine())
   {
     newTransaction();
-    moveCursorTo(indexAtPosition(cursorX, cursorY - viewport->getViewHeight()), 
+    moveCursorTo(indexAtPosition(cursorX, cursorY - viewport->getViewHeight()),
       key.getModifiers().isShiftDown());
   }
   else if(key.isKeyCode (KeyPress::homeKey))
@@ -1600,7 +1600,7 @@ bool RTextEditor::keyPressed(const KeyPress& key)
   {
     newTransaction();
     if(isMultiLine() && !moveInWholeWordSteps)
-      moveCursorTo(indexAtPosition(textHolder->getWidth(), cursorY), 
+      moveCursorTo(indexAtPosition(textHolder->getWidth(), cursorY),
         key.getModifiers().isShiftDown());
     else
       moveCursorTo(getTotalNumChars(), key.getModifiers().isShiftDown());
@@ -1793,7 +1793,7 @@ void RTextEditor::handleCommandMessage(const int commandId)
 
 void RTextEditor::enablementChanged()
 {
-  setMouseCursor(MouseCursor (isReadOnly() ? 
+  setMouseCursor(MouseCursor (isReadOnly() ?
     MouseCursor::NormalCursor : MouseCursor::IBeamCursor));
   repaint();
 }
@@ -1803,13 +1803,13 @@ void RTextEditor::clearInternal(UndoManager* const um) throw()
   remove(0, getTotalNumChars(), um, caretPosition);
 }
 
-void RTextEditor::insert(const String& text, const int insertIndex, BitmapFont const* font, 
+void RTextEditor::insert(const String& text, const int insertIndex, BitmapFont const* font,
   const Colour& colour, UndoManager* const um, const int caretPositionToMoveTo) throw()
 {
   if(text.isNotEmpty())
   {
     if(um != 0)
-      um->perform(new RTextEditorInsertAction(*this, text, insertIndex, font, colour, 
+      um->perform(new RTextEditorInsertAction(*this, text, insertIndex, font, colour,
         caretPosition, caretPositionToMoveTo));
     else
     {
@@ -1875,7 +1875,7 @@ void RTextEditor::reinsert(const int insertIndex, const Array<void*>& sectionsTo
   totalNumChars = -1;
 }
 
-void RTextEditor::remove(const int startIndex, int endIndex, UndoManager* const um, 
+void RTextEditor::remove(const int startIndex, int endIndex, UndoManager* const um,
   const int caretPositionToMoveTo) throw()
 {
   if(endIndex > startIndex)
@@ -1915,7 +1915,7 @@ void RTextEditor::remove(const int startIndex, int endIndex, UndoManager* const 
           removedSections.add (new UniformTextSection (*section));
         index = nextIndex;
       }
-      um->perform(new RTextEditorRemoveAction(*this, startIndex, endIndex, caretPosition, 
+      um->perform(new RTextEditorRemoveAction(*this, startIndex, endIndex, caretPosition,
         caretPositionToMoveTo, removedSections));
     }
     else
@@ -1953,7 +1953,7 @@ const String RTextEditor::getText() const throw()
   return t;
 }
 
-const String RTextEditor::getTextSubstring(const int startCharacter, 
+const String RTextEditor::getTextSubstring(const int startCharacter,
   const int endCharacter) const throw()
 {
   String t;
@@ -1976,7 +1976,7 @@ const String RTextEditor::getTextSubstring(const int startCharacter,
 
 const String RTextEditor::getHighlightedText() const throw()
 {
-  return getTextSubstring(getHighlightedRegionStart(), getHighlightedRegionStart() 
+  return getTextSubstring(getHighlightedRegionStart(), getHighlightedRegionStart()
     + getHighlightedRegionLength());
 }
 
@@ -2043,7 +2043,7 @@ int RTextEditor::indexAtPosition(const int x, const int y) throw()
 
 static int getCharacterCategory(const juce_wchar character) throw()
 {
-  return CharacterFunctions::isLetterOrDigit(character) ? 
+  return CharacterFunctions::isLetterOrDigit(character) ?
     2 : (CharacterFunctions::isWhitespace(character) ? 0 : 1);
 }
 //static int getCharacterCategory (const tchar character) throw()
@@ -2088,7 +2088,7 @@ int RTextEditor::findWordBreakBefore(const int position) const throw()
 void RTextEditor::splitSection (const int sectionIndex, const int charToSplitAt) throw()
 {
   jassert(sections[sectionIndex] != 0);
-  sections.insert(sectionIndex + 1, 
+  sections.insert(sectionIndex + 1,
     ((UniformTextSection*)sections.getUnchecked(sectionIndex))->split(charToSplitAt));
 }
 

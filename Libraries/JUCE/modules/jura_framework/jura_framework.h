@@ -15,10 +15,10 @@
   website:          http://www.rs-met.com
   license:          GPL/Commercial
 
-  dependencies:     juce_core, juce_audio_basics, juce_graphics, juce_gui_basics, 
+  dependencies:     juce_core, juce_audio_basics, juce_graphics, juce_gui_basics,
                     juce_audio_formats, juce_audio_processors
-  OSXFrameworks:    
-  iOSFrameworks:    
+  OSXFrameworks:
+  iOSFrameworks:
 
  END_JUCE_MODULE_DECLARATION
 
@@ -28,12 +28,14 @@
 #ifndef JURA_FRAMEWORK_H_INCLUDED
 #define JURA_FRAMEWORK_H_INCLUDED
 
-#include <juce_core/juce_core.h> 
-#include <juce_audio_basics/juce_audio_basics.h> 
-#include <juce_audio_formats/juce_audio_formats.h> 
-#include <juce_audio_processors/juce_audio_processors.h> 
-#include <juce_graphics/juce_graphics.h> 
-#include <juce_gui_basics/juce_gui_basics.h> 
+#include <limits.h>
+
+#include <juce_core/juce_core.h>
+#include <juce_audio_basics/juce_audio_basics.h>
+#include <juce_audio_formats/juce_audio_formats.h>
+#include <juce_audio_processors/juce_audio_processors.h>
+#include <juce_graphics/juce_graphics.h>
+#include <juce_gui_basics/juce_gui_basics.h>
 using namespace juce;
 
 namespace jura
@@ -88,9 +90,9 @@ namespace jura
 // these should be renamed - get rid of the "Old" (but only when we have dragged over all other
 // subclasses):
 #include "gui/plots/jura_CoordinateSystemOld.h"
-#include "gui/plots/jura_InteractiveCoordinateSystemOld.h" 
+#include "gui/plots/jura_InteractiveCoordinateSystemOld.h"
 #include "gui/plots/jura_CoordinateSystemZoomerOld.h"
-#include "gui/plots/jura_CurveFamilyPlotOld.h" 
+#include "gui/plots/jura_CurveFamilyPlotOld.h"
 #include "gui/plots/jura_SpectrumDisplayOld.h"
 
 // after the plots, we may add some further plot-based widgets, such as XY-Pads, frequency-response

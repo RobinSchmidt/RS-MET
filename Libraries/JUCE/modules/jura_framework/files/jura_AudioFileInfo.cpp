@@ -4,7 +4,7 @@
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-AudioFileInfo::AudioFileInfo(File fileToExtractInfoFrom) 
+AudioFileInfo::AudioFileInfo(File fileToExtractInfoFrom)
 {
   // init the members:
   isValidAudioFile = false;
