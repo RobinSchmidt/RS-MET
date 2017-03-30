@@ -32,7 +32,7 @@ class JUCE_API LoadableColorMap : public ColorMap, public StateFileManager
 
 public:
 
-  LoadableColorMap() {}
+  LoadableColorMap();
 
   virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 
     bool markAsClean) override;

@@ -373,7 +373,7 @@ void PhaseScopeEditor::resized()
 
   // preliminary:
   y += 16;
-  colorMapLoader->setBounds(x, y, w, 32);
+  colorMapLoader->setBounds(x, y, w, 48);
 }
 //
 //

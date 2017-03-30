@@ -143,7 +143,7 @@ void StateLoadSaveWidgetSet::resized()
     y += (h2-2);
     stateFileNameLabel->setBounds(0, y, w, h2);
   }
-  else
+  else // ONE_LINE
   {
     x2  = getWidth()-4;
     w   = 16;
