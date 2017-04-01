@@ -1,5 +1,5 @@
 
-Ladder::Ladder(CriticalSection *lockToUse) : AudioModule(lockToUse)
+Ladder::Ladder(CriticalSection *lockToUse) : AudioModuleWithMidiIn(lockToUse)
 //Ladder::Ladder()
 {
   ScopedLock scopedLock(*plugInLock);
@@ -76,52 +76,7 @@ void Ladder::createStaticParameters()
 AudioModuleEditor* Ladder::createEditor()
 {
   return new jura::LadderEditor(this);
-
-  //jura::ParameterObserver::guiAutomationSwitch = false;  // don't automate widgets during creation
-  //LadderEditor* editor = new LadderEditor(this);
-  //jura::ParameterObserver::guiAutomationSwitch = true;   // now, widgets can be automated again
-  //return editor;
-  //// wrap this into a template-based code generation macro...
 }
-
-//// might be obsolote soon - or maybe adapted:
-//template<class ProcessorType, class EditorType>
-//AudioProcessorEditor* createAudioProcessorEditor(ProcessorType processor, EditorType *dummy)
-//{
-//  jura::ParameterObserver::guiAutomationSwitch = false;  // don't automate widgets during creation
-//  EditorType* editor = new EditorType(processor);
-//  AudioProcessorEditor *wrapper = new AudioModuleEditorWrapper(editor, processor);
-//  jura::ParameterObserver::guiAutomationSwitch = true;   // now, widgets can be automated again
-//  return wrapper;
-//}
-
-//AudioProcessorEditor* Ladder::createEditor()
-//{
-//  LadderEditor *dummy = nullptr;
-//  return createAudioProcessorEditor(this, dummy);
-//}
-// The template function createAudioProcessorEditor and the createEditor function that makes use of 
-// the template are a little trick to let the compiler generate the equivalent of the following 
-// code:
-// AudioProcessorEditor* Ladder::createEditor()
-// {
-//   jura::ParameterObserver::guiAutomationSwitch = false;  // don't automate widgets during creation
-//   LadderEditor* editor = new LadderEditor(this);
-//   AudioProcessorEditor *wrapper = new AudioModuleEditorWrapper(editor, this);
-//   jura::ParameterObserver::guiAutomationSwitch = true;   // now, widgets can be automated again
-//   return wrapper;
-// }
-// The advantage of doing it that way is, that the createAudioProcessorEditor template can be used 
-// for any other pairs of processor/editor classes such that the body of the function (this 
-// guiAutomation deactivation stuff etc.) does not need to be rewritten. We get rid of a lot of 
-// identical boilerplate code which would otherwise have to be written out. Now, we only need to 
-// write a two-liner for each processor/editor pair of classes instead of a five-liner. That 
-// makes it also easier to change the content of the editor creation function for all classes at 
-// once in one single location and thereby makes the code more maintenance friendly.
-
-// However, in order to make the createAudioProcessorEditor template available for the creation of 
-// other editors, we need to move it to another file which the other files that want to use it
-// will include.....later...
 
 //-------------------------------------------------------------------------------------------------
 // the audio processing callback:

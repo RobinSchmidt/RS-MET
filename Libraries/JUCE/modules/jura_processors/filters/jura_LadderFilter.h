@@ -21,7 +21,7 @@ channels to be different by introducing a stereo spread parameter.
  widget) - the mode-combobox then selects between various predefined settings
 */
 
-class JUCE_API Ladder : public jura::AudioModule
+class JUCE_API Ladder : public jura::AudioModuleWithMidiIn
 {
 
 public:

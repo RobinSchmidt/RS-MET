@@ -575,7 +575,8 @@ void RSlider::openRightClickPopupMenu()
   updatePopUpMenu();
   int w = jmax(getWidth(), rightClickPopUp->getRequiredWidth(true));
   int h = jmin(200,        rightClickPopUp->getRequiredHeight(true));
-  rightClickPopUp->show(false, RPopUpComponent::BELOW, w, h);
+  rightClickPopUp->show(false, RPopUpComponent::BELOW, w, h); // showModalyy = false
+  //rightClickPopUp->show(true, RPopUpComponent::BELOW, w, h); // showModally = true
 }
 
 double RSlider::openModalNumberEntryField()

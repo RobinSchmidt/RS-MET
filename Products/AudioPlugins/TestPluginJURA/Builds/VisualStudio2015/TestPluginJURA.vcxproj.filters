@@ -4400,6 +4400,9 @@
     <None Include="..\..\..\..\..\Libraries\JUCE\modules\juce_graphics\image_formats\pnglib\libpng_readme.txt">
       <Filter>Juce Modules\juce_graphics\image_formats\pnglib</Filter>
     </None>
+    <None Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\Notes.txt">
+      <Filter>Juce Modules\jura_framework</Filter>
+    </None>
     <None Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\ToDo.txt">
       <Filter>Juce Modules\jura_framework</Filter>
     </None>
