@@ -512,21 +512,49 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
   }
 }
 
+//template<class TPix, class TWgt, class TCor>
+//void ImagePainter<TPix, TWgt, TCor>::drawDottedLine(TCor x1, TCor y1, TCor x2, TCor y2, TPix color, 
+//  TCor density, int maxNumDots, bool scaleByNumDots, TCor minDotDistance)
+//{
+//  // maybe we should factor out this function into the PhaseScopeBuffer class
+//
+//  TCor dx = x2-x1;
+//  TCor dy = y2-y1;
+//  TCor pixelDistance = sqrt(dx*dx + dy*dy);
+//  int  numDots = rsMax(1, (int)floor(density*pixelDistance/minDotDistance));
+//  if(maxNumDots > 0)
+//    numDots = rsMin(numDots, maxNumDots);
+//
+//  TPix scaledColor = color;
+//  if(scaleByNumDots)
+//    scaledColor = scaledColor / (TPix)numDots;
+//
+//  TPix c1 = scaledColor;
+//  TPix c2 = scaledColor;
+//  drawLineDotted(x1, y1, x2, y2, c1, c2, numDots);
+//    // preliminary - later we want to use a color gradient, i.e. pass two different colors
+//}
+
 template<class TPix, class TWgt, class TCor>
-void ImagePainter<TPix, TWgt, TCor>::drawDottedLine(TCor x1, TCor y1, TCor x2, TCor y2, TPix color, 
-  TCor density, int maxNumDots, bool scaleByNumDots, TCor minDotDistance)
+void ImagePainter<TPix, TWgt, TCor>::drawLineDotted(TCor x1, TCor y1, TCor x2, TCor y2, 
+  TPix c1, TPix c2, int numDots)
 {
   TCor dx = x2-x1;
   TCor dy = y2-y1;
-  TCor pixelDistance = sqrt(dx*dx + dy*dy);
-  int  numDots = rsMax(1, (int)floor(density*pixelDistance/minDotDistance));
-  if(maxNumDots > 0)
-    numDots = rsMin(numDots, maxNumDots);
+  TPix dc = c2-c1;
 
-  TPix scaledColor = color;
-  if(scaleByNumDots)
-    scaledColor = scaledColor / (TPix)numDots;
+  TCor scaler = (TCor)(1.0 / numDots);
+  TCor k;
+  for(int i = 1; i <= numDots; i++)
+  {
+    k = scaler * i;  // == i / numDots
+    paintDot(x1 + k*dx, y1 + k*dy, c1 + k*dc);
+  }
 
+  // maybe we should rename this function to dottedLineTo (we don't draw the very 1st point of the
+  // line because we assume it has already been drawn as endpoint of a previous line)
+
+  // i think, we should start the loop at i=0 and use scaler = 1.0 / (numDots-1)
   //TCor scaler = (TCor)(1.0 / (numDots-1));
   //TCor k;
   //for(int i = 0; i < numDots; i++)
@@ -534,15 +562,6 @@ void ImagePainter<TPix, TWgt, TCor>::drawDottedLine(TCor x1, TCor y1, TCor x2, T
   //  k = scaler * i;  // == i / (numDots-1)
   //  paintDot(x1 + k*dx, y1 + k*dy, scaledColor);
   //}
-
-  TCor scaler = (TCor)(1.0 / numDots);
-  TCor k;
-  for(int i = 1; i <= numDots; i++)
-  {
-    k = scaler * i;  // == i / numDots
-    paintDot(x1 + k*dx, y1 + k*dy, scaledColor);
-  }
-  // i think, we should start the loop at i=0 and use scaler = 1.0 / (numDots-1)
 }
 
 template<class TPix, class TWgt, class TCor>

@@ -101,6 +101,17 @@ protected:
   density - when it's set to zero, it will just draw a dot at the new given position. */
   virtual void addLineTo(TSig x, TSig y);
 
+  /** Draws a line by inserting a number of dots along the line. The number is proportional to the 
+  given density parameter and to the Euclidean distance between the two endpoints (i.e. the length 
+  of the line). The color will be scaled inversely proportional to the length, such that the total
+  amount of color added to the picture is independent of the length. The maxNumDots parameter
+  is for restricting the number of dots that are used which might be important in realtime 
+  situations. scaleByNumDots ...
+  \todo: maybe make this color scaling optional  */
+  void drawDottedLine(TSig x1, TSig y1, TSig x2, TSig y2, TPix color, TPar density = 1, 
+    int maxNumDots = 0, bool scaleByNumDots = false, TPar minDotDistance = 1);
+  // rename to drawLineDotted
+
   /** Updates the pixel decay factor according to the settings of frame rate and desired decay 
   time. */
   virtual void updateDecayFactor();

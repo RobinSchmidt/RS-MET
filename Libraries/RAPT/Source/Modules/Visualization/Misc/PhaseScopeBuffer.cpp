@@ -124,11 +124,33 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::addLineTo(TSig x, TSig y)
   if(lineDensity == 0.f)
     painter.paintDot(x, y, (TPix) insertFactor);
   else
-    painter.drawDottedLine((TSig)xOld, (TSig)yOld, (TSig)x, (TSig)y, (TPix) insertFactor,
+    drawDottedLine((TSig)xOld, (TSig)yOld, (TSig)x, (TSig)y, (TPix) insertFactor,
       (TSig)lineDensity, maxDotsPerLine, true);
   xOld = x;
   yOld = y;
 }
+
+template<class TSig, class TPix, class TPar>
+void PhaseScopeBuffer<TSig, TPix, TPar>::drawDottedLine(TSig x1, TSig y1, TSig x2, 
+  TSig y2, TPix color, TPar density, int maxNumDots, bool scaleByNumDots, TPar minDotDistance)
+{
+  TSig dx = x2-x1;
+  TSig dy = y2-y1;
+  TSig pixelDistance = sqrt(dx*dx + dy*dy);
+  int  numDots = rsMax(1, (int)floor(density*pixelDistance/minDotDistance));
+  if(maxNumDots > 0)
+    numDots = rsMin(numDots, maxNumDots);
+
+  TPix scaledColor = color;
+  if(scaleByNumDots)
+    scaledColor = scaledColor / (TPix)numDots;
+
+  TPix c1 = scaledColor;
+  TPix c2 = scaledColor;
+  painter.drawLineDotted(x1, y1, x2, y2, c1, c2, numDots);
+  // preliminary - later we want to use a color gradient, i.e. pass two different colors
+}
+
 
 template<class TSig, class TPix, class TPar>
 void PhaseScopeBuffer<TSig, TPix, TPar>::updateDecayFactor()

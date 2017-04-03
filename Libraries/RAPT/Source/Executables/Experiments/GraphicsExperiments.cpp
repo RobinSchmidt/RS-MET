@@ -163,10 +163,10 @@ void lineDrawing()
     x1.push_back(margin + i * (imageWidth - margin) / numLines);
     y1.push_back(imageHeight - margin); }
 
-  // dotted algorithm:
-  for(i = 0; i < x1.size(); i++)
-    painter.drawDottedLine(x0, y0, x1[i], y1[i], brightness);
-  writeImageToFilePPM(image, "LinesDotted.ppm");
+  //// dotted algorithm:
+  //for(i = 0; i < x1.size(); i++)
+  //  painter.drawLineDotted(x0, y0, x1[i], y1[i], brightness, brightness, numDots); // we need to pass a number of dots
+  //writeImageToFilePPM(image, "LinesDotted.ppm");
 
   // Wu algorithm:
   image.clear();
