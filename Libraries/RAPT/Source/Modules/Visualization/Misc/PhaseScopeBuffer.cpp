@@ -10,6 +10,7 @@ PhaseScopeBuffer<TSig, TPix, TPar>::PhaseScopeBuffer()
   maxDotsPerLine = 100;
   thickness      = 0.707f;
   brightness     = 1.0;
+  useGradient    = false;
   updateDecayFactor();
 
   setSampleRate(44100.0);
@@ -35,6 +36,12 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::setBrightness(TPix newBrightness)
 {
   brightness = newBrightness;
   updateInsertFactor();
+}
+
+template<class TSig, class TPix, class TPar>
+void PhaseScopeBuffer<TSig, TPix, TPar>::setUseColorGradient(bool shouldUseGradient)
+{
+  useGradient = shouldUseGradient;
 }
 
 template<class TSig, class TPix, class TPar>
@@ -116,6 +123,7 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::reset()
   // (xOld,yOld) = (0,0) - but in pixel coordinates:
   xOld = 0.5f * image.getWidth();
   yOld = 0.5f * image.getHeight();
+  cOld = TPix(0);
 }
 
 template<class TSig, class TPix, class TPar>
@@ -141,16 +149,22 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::drawDottedLine(TSig x1, TSig y1, TSig x
   if(maxNumDots > 0)
     numDots = rsMin(numDots, maxNumDots);
 
-  TPix scaledColor = color;
-  if(scaleByNumDots)
-    scaledColor = scaledColor / (TPix)numDots;
-
-  TPix c1 = scaledColor;
-  TPix c2 = scaledColor;
-  painter.drawLineDotted(x1, y1, x2, y2, c1, c2, numDots);
-  // preliminary - later we want to use a color gradient, i.e. pass two different colors
+  TPix c;
+  if(useGradient)
+  {
+    c = (2.f*color / numDots) - cOld;
+    c = rsMax(c, TPix(color/numDots));
+    painter.drawLineDotted(x1, y1, x2, y2, cOld, c, numDots);
+    cOld = c;
+  }
+  else
+  {
+    c = color;
+    if(scaleByNumDots)
+      c = c / (TPix)numDots;
+    painter.drawLineDotted(x1, y1, x2, y2, c, c, numDots);
+  }
 }
-
 
 template<class TSig, class TPix, class TPar>
 void PhaseScopeBuffer<TSig, TPix, TPar>::updateDecayFactor()

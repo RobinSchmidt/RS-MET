@@ -744,8 +744,10 @@ void phaseScopeLissajous()
   psb.setAntiAlias(true);
   psb.setBrightness(100.f);
   psb.setLineDensity(1.f);
-  psb.setPixelSpread(0.5f);
+  psb.setPixelSpread(0.3f);
+  psb.setUseColorGradient(true);
   psb.setSize(400, 400);
+  psb.reset();
 
   // create image:
   float x[N], y[N];

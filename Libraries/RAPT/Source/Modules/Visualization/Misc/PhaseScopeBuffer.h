@@ -29,6 +29,12 @@ public:
   weight by which new dot are added in. */
   void setBrightness(TPix newBrightness);
 
+  /** When we draw line segments, we normally scale the brightness by the reciprocal of the length 
+  so as to always add the same total amount of brightness into the screen. However, this may lead
+  to abrupt color changes on line segment joints - so with this function, you can switch into a 
+  mode where a length-wise color gradient is used instead of a sudden switch. */
+  void setUseColorGradient(bool shouldUseGradient);
+
   /** Sets the time it takes for "color" to decay away. */
   void setDecayTime(TPar newDecayTime);
     // rename to setPixelDecayTime
@@ -134,6 +140,9 @@ protected:
   TPix insertFactor;   // factor by which are pixels "inserted" (applied at sampleRate)
 
   TSig xOld, yOld;     // pixel coordinates of old datapoint (one sample ago)
+  TPix cOld;           // old line end color
+
+  bool useGradient;    // use color gradient to seamlessly join line segments
 
   // members for actual painting on an image:
   //Image<TPix> image;
