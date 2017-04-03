@@ -152,8 +152,9 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::drawDottedLine(TSig x1, TSig y1, TSig x
   TPix c;
   if(useGradient)
   {
-    c = (2.f*color / numDots) - cOld;
-    c = rsMax(c, TPix(color/numDots));
+    TPix ct = color / (TPix)numDots;  // target color that would be used if we don't do gradients
+    c = (2.f*ct) - cOld;              // desired enpoint color
+    c = rsMax(c, ct);                 // c could coem out negative, use ct as lower bound
     painter.drawLineDotted(x1, y1, x2, y2, cOld, c, numDots);
     cOld = c;
   }
@@ -161,7 +162,7 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::drawDottedLine(TSig x1, TSig y1, TSig x
   {
     c = color;
     if(scaleByNumDots)
-      c = c / (TPix)numDots;
+      c = color / (TPix)numDots;
     painter.drawLineDotted(x1, y1, x2, y2, c, c, numDots);
   }
 }
