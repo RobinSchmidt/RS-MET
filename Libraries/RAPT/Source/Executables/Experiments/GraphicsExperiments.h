@@ -9,5 +9,6 @@ void lineDrawingThick();
 void lineJoints();
 void lineTo();
 void polyLineRandom();
+void phaseScopeLissajous();
 
 #endif

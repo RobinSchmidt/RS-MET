@@ -125,7 +125,7 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::addLineTo(TSig x, TSig y)
     painter.paintDot(x, y, (TPix) insertFactor);
   else
     painter.drawDottedLine((TSig)xOld, (TSig)yOld, (TSig)x, (TSig)y, (TPix) insertFactor,
-      (TSig)lineDensity, maxDotsPerLine);
+      (TSig)lineDensity, maxDotsPerLine, true);
   xOld = x;
   yOld = y;
 }

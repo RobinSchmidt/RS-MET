@@ -727,3 +727,42 @@ void polyLineRandom()
 
   writeImageToFilePPM(image, "PolyLineRandom.ppm");
 }
+
+void phaseScopeLissajous()
+{
+  // We create a PhaseScope image of a Lissajous figure to test the drawing code.
+  // x(t) = sin(2*pi*a*t), y(t) = sin(2*pi*b*t)
+
+  // input signal parameters:
+  static const int N = 80;  // number of data points
+  float a = 2.f;
+  float b = 7.f;
+  float scale = 0.9;
+
+  // create and set up PhaseScopeBuffer object:
+  PhaseScopeBufferFFD psb;
+  psb.setAntiAlias(true);
+  psb.setBrightness(100.f);
+  psb.setLineDensity(1.f);
+  psb.setPixelSpread(0.5f);
+  psb.setSize(400, 400);
+
+  // create image:
+  float x[N], y[N];
+  float s = 2*PI / (N-1);
+  for(int n = 0; n < N; n++)
+  {
+    x[n] = scale*sin(s*a*n);
+    y[n] = scale*sin(s*b*n);
+    psb.processSampleFrame(x[n], y[n]);
+  }
+
+  // retrieve and save image:
+  psb.getImage();
+  writeImageToFilePPM(*psb.getImage(), "PhaseScopeLissajous.ppm");
+
+  //// plot (for reference):
+  //GNUPlotter plt;
+  //plt.addDataArrays(N, x, y);
+  //plt.plot();
+}

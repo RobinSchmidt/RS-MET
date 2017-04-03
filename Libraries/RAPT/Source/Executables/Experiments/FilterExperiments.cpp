@@ -145,7 +145,7 @@ type casting such that ordinary functions can still be passed as usual?) */
 template<class Tx, class Ty>
 void movingAverage(int N, Tx* x, Ty* y, Ty* avg, Tx width, Ty (*weightFunc)(Tx))
 {
-  Tx w2  = 0.5f * width;                        // half width
+  Tx w2  = 0.5f * width;                       // half width
   Tx w2r = 1 / w2;                             // reciprocal of half width
   Tx dist;                                     // distance
   int k;                                       // inner loop index
@@ -258,9 +258,9 @@ void nonUniformMovingAverage()
   movingAverage(N, x, y, y3,  width*2,    quinticBell);
   movingAverage(N, x, y, y4,  width*2,    hepticBell);
 
-  // For all weighting functiosn other than the box, we scale the support width by factor 2 to
-  // make the plots more easily comparable. These ther functions have only half of the area under
-  // the curve compared with the box filter, so the factor 2 in length compensates that.
+  // For all weighting functions other than the box, we scale the support width by factor to
+  // equal to the reciprocal of the half of the area under the function to make the plots more 
+  // easily comparable. 
 
   // plot:
   GNUPlotter plt;

@@ -17,6 +17,7 @@ void runExperiments()
   ///lineDrawingThick2(); // obsolete
   //lineJoints();
   //lineTo();
-  polyLineRandom();
+  //polyLineRandom();
+  phaseScopeLissajous();
 
 }
