@@ -112,8 +112,11 @@ void RPopUpComponent::showAtNonModal(int screenX, int screenY, int width, int he
 void RPopUpComponent::showAt(bool showModally, int screenX, int screenY, int width, int height)
 {
   showAtNonModal(screenX, screenY, width, height);
-  if( showModally == true )
-    runModalLoop();
+  if(showModally == true)
+  {
+    //runModalLoop(); // old - the doc says that this method should never be used
+    enterModalState(true);
+  }
 }
 
 void RPopUpComponent::showAtMousePosition(bool showModally, int width, int height)

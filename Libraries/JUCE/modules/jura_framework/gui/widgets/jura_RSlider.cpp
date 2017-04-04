@@ -23,6 +23,7 @@ RSlider::RSlider(const String& name) : RWidget(name)
 
   rightClickPopUp = new RPopUpMenu(this);
   rightClickPopUp->registerPopUpMenuObserver(this);  
+  rightClickPopUp->setDismissOnFocusLoss(true);
   addChildWidget(rightClickPopUp, false, false);
   updatePopUpMenu();
 
@@ -575,8 +576,12 @@ void RSlider::openRightClickPopupMenu()
   updatePopUpMenu();
   int w = jmax(getWidth(), rightClickPopUp->getRequiredWidth(true));
   int h = jmin(200,        rightClickPopUp->getRequiredHeight(true));
-  rightClickPopUp->show(false, RPopUpComponent::BELOW, w, h); // showModalyy = false
-  //rightClickPopUp->show(true, RPopUpComponent::BELOW, w, h); // showModally = true
+  //rightClickPopUp->show(false, RPopUpComponent::BELOW, w, h); // showModally = false
+  rightClickPopUp->show(true, RPopUpComponent::BELOW, w, h); // showModally = true
+  // If we don't show it modally (1st parameter = true), it will be immediately dismissed
+  // after opening (so it appears as if it doesn't open at all). We could avoid it by calling
+  // setDismissOnFocusLoss(false) in our constructor, but then it will stay open all the time
+  // until we choose some option.
 }
 
 double RSlider::openModalNumberEntryField()
@@ -587,7 +592,11 @@ double RSlider::openModalNumberEntryField()
   addAndMakeVisible(entryField);
   entryField->setPermittedCharacters(String("0123456789.-"));
   entryField->selectAll();
-  entryField->runModalLoop();
+
+  entryField->runModalLoop();           // should not be used according to doc...
+  //entryField->enterModalState(true);  // ...but this doesn't work at all
+    // maybe we should keep an RTextEntryField member and register ourselves as observer
+
   double result = entryField->getText().getDoubleValue();
   removeChildComponent(entryField);
   delete entryField;
