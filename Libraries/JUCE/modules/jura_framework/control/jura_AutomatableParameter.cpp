@@ -77,7 +77,7 @@ void AutomatableParameter::revertToDefaultMidiController()
   assignedMidiController = defaultMidiController;
 }
 
-void AutomatableParameter::setMidiController(int controllerNumber, int controllerValue)
+void AutomatableParameter::setMidiController(int controllerNumber, float controllerValue)
 {
   ScopedPointerLock spl(mutex);
   if( controllerNumber == assignedMidiController )

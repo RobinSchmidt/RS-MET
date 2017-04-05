@@ -31,7 +31,7 @@ void AutomatableModule::assignMidiController(const String& nameOfParameter, int 
   observedParameters.getLock().exit();
 }
 
-void AutomatableModule::setMidiController(int controllerNumber, int controllerValue)
+void AutomatableModule::setMidiController(int controllerNumber, float controllerValue)
 {
   // loop through all the observed parameters and pass the controller value to them - the 
   // parameters themselves will take care to respond only to controller-numbers which are assigned

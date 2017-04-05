@@ -43,7 +43,7 @@ public:
 
   /** Receives MIDI controller messages and dispatches them to the appropriate to one of the
   Parameter object. */
-  virtual void setMidiController(int controllerNumber, int controllerValue);
+  virtual void setMidiController(int controllerNumber, float controllerValue);
 
   /** Reverts all observed parameters to their default settings. */
   virtual void revertToDefaultMapping();

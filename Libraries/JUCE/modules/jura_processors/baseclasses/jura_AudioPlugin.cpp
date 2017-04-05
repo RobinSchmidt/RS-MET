@@ -112,7 +112,7 @@ AudioProcessorEditor* AudioPlugin::createEditor()
 void AudioPlugin::setParameter(int index, float value)
 {
   parameters[index] = value;
-  // more to do...
+  underlyingAudioModule->setMidiController(index, 127.f * value);
 }
 
 void AudioPlugin::getStateInformation(juce::MemoryBlock& destData)

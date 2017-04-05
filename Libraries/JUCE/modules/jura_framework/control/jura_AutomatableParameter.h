@@ -101,7 +101,8 @@ public:
 
   /** Checks whether the controllerNumber matches the controller which is assigned to this 
   parameter, and if so, it sets up the automation value to controllerValue / 127.0. */
-  virtual void setMidiController(int controllerNumber, int controllerValue);
+  virtual void setMidiController(int controllerNumber, float controllerValue);
+  //virtual void setMidiController(int controllerNumber, int controllerValue);
 
   /** Switches this parameter into midi-learn mode - the very next received MIDI controller 
   will be assigned to this parameter then. */
