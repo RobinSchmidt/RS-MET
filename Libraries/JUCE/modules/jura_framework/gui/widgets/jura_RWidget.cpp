@@ -183,7 +183,7 @@ void RWidget::handleAsyncUpdate()
     updateWidgetFromAssignedParameter();
     localAutomationSwitch = true;
   }
-  repaint();
+  //repaint();
 }
 
 /*

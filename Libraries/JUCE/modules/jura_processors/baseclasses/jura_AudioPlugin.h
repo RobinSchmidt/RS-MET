@@ -31,6 +31,25 @@ public:
   virtual bool producesMidi() const override { return false; }
   virtual bool hasEditor() const override { return true; }
   virtual AudioProcessorEditor* createEditor() override;
+
+
+  virtual int getNumParameters() override { return 128; }
+  //virtual bool isMetaParameter(int parameterIndex) override { return true; }
+  virtual float getParameter(int index) override 
+  { 
+    return parameters[index]; 
+  }
+  virtual const String getParameterName(int index) override 
+  { 
+    return "Param" + String(index); 
+  };
+  virtual const String getParameterText(int	index) override 
+  { 
+    return String(parameters[index]); 
+  }
+  virtual void setParameter(int parameterIndex, float newValue) override;
+
+
   virtual int getNumPrograms() override { return 1; }                // 1, because 0 is not allowed
   virtual int getCurrentProgram() override { return 0; }
   virtual void setCurrentProgram(int index) override {}
@@ -73,6 +92,10 @@ protected:
   precision version of the processBlock callback. In such a case, we need to convert back and forth
   between float/double and double/float. That's what this buffer is used for. */
   AudioBuffer<double> internalAudioBuffer; 
+
+  static const int numParameters = 128;
+  float parameters[numParameters];
+  //AudioParameterFloat* parameters[numParameters];
 
   juce::String plugInName;  // assign this in the constructor of your subclass
    // maybe get rid of this and let the wrapper return the name of the wrapped AudioModule

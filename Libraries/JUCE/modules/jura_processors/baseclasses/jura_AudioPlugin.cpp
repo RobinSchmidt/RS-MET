@@ -14,6 +14,13 @@ AudioPlugin::AudioPlugin(AudioModule *moduleToWrap)
 
   // maybe, here, we could somehow set up the parameter that the plugin exposes to the host and 
   // connect them to the module's internal parameters
+  for(int i = 0; i < numParameters; i++)
+  {
+    parameters[i] = 0.f;
+    //String name = "Param" + String(i);
+    //parameters[i] = new AudioParameterFloat(String(i), name, 0.0f, 1.0f, 0.5f);
+    //addParameter(parameters[i]);
+  }
 }
 
 AudioPlugin::~AudioPlugin()
@@ -100,6 +107,12 @@ AudioProcessorEditor* AudioPlugin::createEditor()
   AudioPluginEditor *pluginEditor = new AudioPluginEditor(moduleEditor, this);
   ParameterObserver::guiAutomationSwitch = true;    // now, widgets can be automated again
   return pluginEditor;
+}
+
+void AudioPlugin::setParameter(int index, float value)
+{
+  parameters[index] = value;
+  // more to do...
 }
 
 void AudioPlugin::getStateInformation(juce::MemoryBlock& destData)
