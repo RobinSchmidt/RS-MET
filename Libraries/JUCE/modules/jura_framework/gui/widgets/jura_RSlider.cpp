@@ -319,6 +319,12 @@ void RSlider::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
   switch( selectedIdentifier )
   {
   case MIDI_LEARN:  ap->switchIntoMidiLearnMode();             break;
+  case MIDI_ASSIGN:
+  {
+    int result = (int) openModalNumberEntryField();
+    result = (int) clip(result, 0, 127);
+    ap->assignMidiController(result);
+  } break;
   case MIDI_MIN:    ap->setLowerAutomationLimit(getValue());   break;
   case MIDI_MAX:    ap->setUpperAutomationLimit(getValue());   break;
   case MIDI_REVERT: ap->revertToDefaults(false, false, false); break;
@@ -564,6 +570,7 @@ void RSlider::addPopUpMidiItems()
       String maxString = stringConversionFunction(ap->getUpperAutomationLimit());
 
       rightClickPopUp->addItem(MIDI_LEARN,  String("MIDI learn ") + ccString);
+      rightClickPopUp->addItem(MIDI_ASSIGN, String("MIDI assign"));
       rightClickPopUp->addItem(MIDI_MIN,    String("use value as lower limit (currently ") + minString + String(")"));
       rightClickPopUp->addItem(MIDI_MAX,    String("use value as upper limit (currently ") + maxString + String(")"));
       rightClickPopUp->addItem(MIDI_REVERT, String("revert MIDI mapping to defaults") );

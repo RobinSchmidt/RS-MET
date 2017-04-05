@@ -190,6 +190,7 @@ protected:
   {
     ENTER_VALUE = 1,
     DEFAULT_VALUE,
+    MIDI_ASSIGN,
     MIDI_LEARN,
     MIDI_MIN,
     MIDI_MAX,
