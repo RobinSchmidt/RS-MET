@@ -337,7 +337,7 @@ void AudioModuleWithMidiIn::handleMidiMessage(MidiMessage message)
   {
     int controllerNumber = message.getControllerNumber();
     int controllerValue  = message.getControllerValue();
-    setMidiController(controllerNumber, controllerValue);
+    setMidiController(controllerNumber, (float) controllerValue);
   }
   else if( message.isNoteOn() )
     noteOn(message.getNoteNumber(), message.getVelocity());
@@ -370,7 +370,7 @@ void AudioModuleWithMidiIn::allNotesOff()
   //  underlyingRosicInstrument->allNotesOff();
 }
 
-void AudioModuleWithMidiIn::setMidiController(int controllerNumber, int controllerValue)
+void AudioModuleWithMidiIn::setMidiController(int controllerNumber, float controllerValue)
 {
   ScopedLock scopedLock(*plugInLock);
   AutomatableModule::setMidiController(controllerNumber, controllerValue);

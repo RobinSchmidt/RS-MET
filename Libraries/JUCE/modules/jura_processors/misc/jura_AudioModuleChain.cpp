@@ -259,7 +259,7 @@ void AudioModuleChain::noteOn(int noteNumber, int velocity)
   }
   // todo: maybe let different slots receive MIDI on different channels
   // and/or don't override the noteOn/etc. functions here but rather let the MIDI events also
-  // apss through the modules in series. most modules just pass them through, but we can also
+  // pass through the modules in series. most modules just pass them through, but we can also
   // have MIDI effects such as appregiators and sequencers which modify the sequence and pass
   // the modified sequence to the next module - we could have an appregiator in front of a 
   // synth, for example
@@ -275,6 +275,16 @@ void AudioModuleChain::noteOff(int noteNumber)
     AudioModuleWithMidiIn *m = dynamic_cast<AudioModuleWithMidiIn*> (modules[i]);
     if(m != nullptr)
       m->noteOff(noteNumber);
+  }
+}
+
+void AudioModuleChain::setMidiController(int controllerNumber, float controllerValue)
+{
+  ScopedLock scopedLock(*plugInLock);
+  for(int i = 0; i < modules.size(); i++){
+    AudioModuleWithMidiIn *m = dynamic_cast<AudioModuleWithMidiIn*> (modules[i]);
+    if(m != nullptr)
+      m->setMidiController(controllerNumber, controllerValue);
   }
 }
 

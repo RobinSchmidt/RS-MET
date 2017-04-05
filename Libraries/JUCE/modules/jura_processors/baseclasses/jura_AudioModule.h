@@ -258,7 +258,7 @@ public:
 
   /** Overrides setMidiController which is inherited from both base-classes - and we simply we pass
   through the function call to both of them here. */
-  virtual void setMidiController(int controllerNumber, int controllerValue);
+  virtual void setMidiController(int controllerNumber, float controllerValue);
 
   /** Triggers a pitch-bend event. */
   virtual void setPitchBend(int pitchBendValue);
