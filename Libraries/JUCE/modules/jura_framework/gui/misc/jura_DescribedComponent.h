@@ -74,6 +74,14 @@ public:
   leaves the widget. */
   virtual void mouseExit(const MouseEvent &e);
 
+
+  /** Currently, this function triggers a repaint if this is the message thread. ToDo: later it
+  should cause a deferred repaint on the message thread, in case this isn't the message thread.
+  background: sometimes, repaints should can be triggered from the audio thread (when a plugin
+  recives midi controllers and should repaint a slider, for example) - but triggering repaint
+  from the audio thread isn't allowed in juce. */
+  void repaintOnMessageThread();
+
   juce_UseDebuggingNewOperator;
 };
 

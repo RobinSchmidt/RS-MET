@@ -56,3 +56,13 @@ void DescribedComponent::mouseExit(const MouseEvent &e)
   if( descriptionField != NULL )
     descriptionField->setText(String::empty);
 }
+
+void DescribedComponent::repaintOnMessageThread()
+{
+  // preliminary - repaint only if this is the message thread - what we actually should do is
+  // somehow trigger an asynchronous repaint on on the message thread, if this isn't the message 
+  // thread
+  MessageManager* mm = MessageManager::getInstance();
+  if(mm->isThisTheMessageThread())
+    repaint();  
+}

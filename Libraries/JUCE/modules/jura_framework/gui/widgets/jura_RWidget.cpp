@@ -183,6 +183,7 @@ void RWidget::handleAsyncUpdate()
     updateWidgetFromAssignedParameter();
     localAutomationSwitch = true;
   }
+  repaint();
 }
 
 /*
@@ -244,6 +245,7 @@ void RWidget::paint(Graphics& g)
   g.drawRect(0, 0, getWidth(), getHeight(), RWidget::outlineThickness);
   //g.fillAll(Colours::red); test
 }
+
 
 /*
 double RWidget::getValue()
