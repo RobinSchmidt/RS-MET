@@ -189,8 +189,8 @@ void AutomatableComboBox::parameterChanged(Parameter* p)
 
 //=================================================================================================
 
-AutomatableButton::AutomatableButton()
-  : AutomatableWidget(this)
+AutomatableButton::AutomatableButton(const juce::String& buttonText)
+  : RButton(buttonText), AutomatableWidget(this)
 {
 
 }
