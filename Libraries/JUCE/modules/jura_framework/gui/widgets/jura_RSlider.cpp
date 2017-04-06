@@ -1,12 +1,16 @@
 AutomatableWidget::AutomatableWidget()
 {
-  // todo: do lazy initialization (create this only when it's needed the 1st time), also factor
-  // out into RWidget because automation should also be available for RButton and RComboBox:
+  // todo: use lazy initialization (create this only when it's needed the 1st time):
   rightClickPopUp = new RPopUpMenu(this);
   rightClickPopUp->registerPopUpMenuObserver(this);  
   rightClickPopUp->setDismissOnFocusLoss(true);
   addChildWidget(rightClickPopUp, false, false);
   updatePopUpMenu();
+}
+
+AutomatableWidget::~AutomatableWidget()
+{
+  delete rightClickPopUp;
 }
 
 void AutomatableWidget::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
@@ -149,7 +153,6 @@ RSlider::~RSlider()
   // nonexistent listener:
   ParameterObserver::localAutomationSwitch = false;
 
-  delete rightClickPopUp;
   if( assignedParameter != NULL )
     assignedParameter->deRegisterParameterObserver(this);
   deleteAllChildren();

@@ -15,6 +15,7 @@ class JUCE_API AutomatableWidget : public RWidget, public RPopUpMenuObserver
 public:
 
   AutomatableWidget();
+  ~AutomatableWidget();
 
   virtual void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged) override;
 
