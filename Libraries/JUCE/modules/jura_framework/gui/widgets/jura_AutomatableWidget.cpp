@@ -61,8 +61,6 @@ void AutomatableWidget::addPopUpMidiItems()
   AutomatableParameter* ap = getParameter();
   if( ap != NULL )
   {
-    //AutomatableParameter *ap;
-    //ap = dynamic_cast<AutomatableParameter*> (assignedParameter);
     if( ap != NULL )
     {
       // prepare some strings for the popup menu:
@@ -109,11 +107,6 @@ AutomatableParameter* AutomatableWidget::getParameter()
   return dynamic_cast<AutomatableParameter*> (wrappedWidget->assignedParameter);
 }
 
-//void AutomatableWidget::assignParameter(Parameter* parameterToAssign)
-//{
-//  wrappedWidget->assignParameter(parameterToAssign);
-//}
-
 //=================================================================================================
 
 AutomatableSlider::AutomatableSlider() 
@@ -129,11 +122,6 @@ void AutomatableSlider::mouseDown(const MouseEvent& e)
   else
     RSlider::mouseDown(e);
 }
-
-//void AutomatableSlider::assignParameter(Parameter* parameterToAssign)
-//{
-//  AutomatableWidget::assignParameter(parameterToAssign);
-//}
 
 void AutomatableSlider::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
 {
@@ -183,11 +171,6 @@ AutomatableComboBox::AutomatableComboBox()
 
 }
 
-//void AutomatableComboBox::assignParameter(Parameter* parameterToAssign)
-//{
-//  AutomatableWidget::assignParameter(parameterToAssign);
-//}
-
 void AutomatableComboBox::mouseDown(const MouseEvent& e)
 {
   if( e.mods.isRightButtonDown() )
@@ -198,5 +181,8 @@ void AutomatableComboBox::mouseDown(const MouseEvent& e)
 
 void AutomatableComboBox::parameterChanged(Parameter* p)
 {
-  RWidget::parameterChanged(p); // preliminary
+  RWidget::parameterChanged(p); 
+  // not sure, why that's needed - isn't it supposed to be called anyway, i.e. if we don't override
+  // parameterChanged, the RWidget baseclass method would be called? but somehow, it doesn't seem
+  // to work
 }
