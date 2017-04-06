@@ -1,11 +1,6 @@
 AutomatableWidget::AutomatableWidget()
 {
-  // todo: use lazy initialization (create this only when it's needed the 1st time):
-  rightClickPopUp = new RPopUpMenu(this);
-  rightClickPopUp->registerPopUpMenuObserver(this);  
-  rightClickPopUp->setDismissOnFocusLoss(true);
-  addChildWidget(rightClickPopUp, false, false);
-  updatePopUpMenu();
+
 }
 
 AutomatableWidget::~AutomatableWidget()
@@ -44,6 +39,14 @@ void AutomatableWidget::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
 
 void AutomatableWidget::updatePopUpMenu()
 {
+  if(rightClickPopUp == nullptr)
+  {
+    // popup used the 1st time - we need to create it:
+    rightClickPopUp = new RPopUpMenu(this);
+    rightClickPopUp->registerPopUpMenuObserver(this);  
+    rightClickPopUp->setDismissOnFocusLoss(true);
+    addChildWidget(rightClickPopUp, false, false);
+  }
   rightClickPopUp->clear();
   addPopUpMenuItems();
 }

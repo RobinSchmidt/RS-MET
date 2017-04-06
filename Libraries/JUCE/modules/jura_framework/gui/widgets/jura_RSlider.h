@@ -20,7 +20,6 @@ public:
   virtual void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged) override;
 
 
-
 protected:
 
   /** Enumeration of the identifiers to used as return-values for the right-click popup menu. */
@@ -34,8 +33,6 @@ protected:
     MIDI_MAX,
     MIDI_REVERT
   };
-  // these MIDI - things are relevant only fo audio plugins - factor that into a subclass to make the
-  // slider more generally applicable
 
   /** Clears the popup-menu and then calls createPopUpMenuItems() */
   virtual void updatePopUpMenu();
@@ -50,13 +47,12 @@ protected:
   /** Opens the PopupMenu that appears on right clicks. */
   virtual void openRightClickPopupMenu();
 
-
   /** Opens a modal field for manually entering a value and returns the value entered. */
   virtual double openModalNumberEntryField();
 
+  RPopUpMenu *rightClickPopUp = nullptr; // object created when it's needed for the 1st time
 
-  RPopUpMenu *rightClickPopUp = nullptr;
-
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomatableWidget)
 };
 
 //=================================================================================================
