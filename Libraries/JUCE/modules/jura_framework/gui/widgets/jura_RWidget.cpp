@@ -186,42 +186,6 @@ void RWidget::handleAsyncUpdate()
   //repaint();
 }
 
-/*
-void RWidget::changeListenerCallback(void *objectThatHasChanged)
-{
-  if( objectThatHasChanged == this )
-  {
-    if( assignedParameter != NULL )
-    {
-      // temporarily switch the wantsAutomationNotification flag from the ParameterObserver base 
-      // class off to avoid circular notifications and updates:
-      localAutomationSwitch = false;
-  
-      // call the method which updates the widget:
-      updateWidgetFromAssignedParameter();
-      //setValue(assignedParameter->getValue());
-  
-      // switch the wantsAutomationNotification flag on again:  
-      localAutomationSwitch = true;
-    }
-  }
-}
-*/
-
-/*
-void RWidget::mouseEnter(const juce::MouseEvent &e)
-{
-  if( descriptionField != NULL )
-    descriptionField->setText(description, false);
-}
-
-void RWidget::mouseExit(const MouseEvent &e)
-{
-  if( descriptionField != NULL )
-    descriptionField->setText(String::empty, false);
-}
-*/
-
 void RWidget::updateWidgetFromAssignedParameter(bool sendChangeMessage)
 {
   // needs to be overriden in the subclasses to - for example - update a slider like this:
@@ -231,13 +195,6 @@ void RWidget::updateWidgetFromAssignedParameter(bool sendChangeMessage)
   // }
 }
 
-/*
-void RWidget::setValueFromString(const juce::String &valueString, bool sendChangeMessage)
-{
-
-}
-*/
-
 void RWidget::paint(Graphics& g)
 {
   g.fillAll(getBackgroundColour());
@@ -246,10 +203,3 @@ void RWidget::paint(Graphics& g)
   //g.fillAll(Colours::red); test
 }
 
-
-/*
-double RWidget::getValue()
-{
-  return 1.0;
-}
-*/

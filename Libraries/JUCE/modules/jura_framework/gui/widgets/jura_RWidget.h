@@ -1,18 +1,9 @@
 #ifndef jura_RWidget_h
 #define jura_RWidget_h
 
-/** This class serves as base class for various GUI widgets. This class is derived from 
-juce::MouseListener and not from juce::Component to make it easier to derive widgets from the 
-original JUCE widgets and from RWidget - the juce wdigets are themselves subclasses of Component, 
-which would raise problems when deriving from both. Whe you want to write an RWidget which does not 
-rely on some juce-widget, you may consider to derive it form WidgetComponent instead.
+/** This class serves as base class for various GUI widgets. 
 
-...hmmm - this smells like refactoring...this comment seems not to be true anymore - update...
-
-\todo: this ChangeListener/ChangeBroadCaster thing with messages-to-self is awkward - better use 
-AsyncUpdater as baseclass
 \todo: maybe make a class RWidgetObserver and get rid of all the custom observer/listener classes
-
 */
 
 class ColourSchemeComponent;
@@ -26,7 +17,7 @@ public:
   // construction/destruction:
 
   /** Constructor. */
-  RWidget(const juce::String& newDescription = juce::String("some widget"));
+  RWidget(const juce::String& newDescription = juce::String(""));
 
   /** Destructor. */
   virtual ~RWidget();
@@ -151,7 +142,7 @@ private:
     // \TODO (IMPORTANT): use a pointer such that a number of widget can share the colour-scheme 
     // - if NULL we may use a global default colorscheme object 
 
-  juce_UseDebuggingNewOperator;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RWidget)
 };
 
 #endif 

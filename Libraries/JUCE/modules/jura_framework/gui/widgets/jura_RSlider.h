@@ -1,10 +1,62 @@
 #ifndef jura_RSlider_h
 #define jura_RSlider_h
 
-////#include "rojue_RPopUpMenuOld.h"
-//#include "rojue_RPopUpMenu.h"
-//#include "rojue_RSliderListener.h"
-//#include "rojue_AutomatableParameter.h"
+
+
+//=================================================================================================
+
+/** RWidget subclass that adds automation facilities. */
+
+class JUCE_API AutomatableWidget : public RWidget, public RPopUpMenuObserver
+{
+
+public:
+
+  AutomatableWidget();
+
+  virtual void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged) override;
+
+
+
+protected:
+
+  /** Enumeration of the identifiers to used as return-values for the right-click popup menu. */
+  enum rightClickPopUpItemIdentifiers
+  {
+    ENTER_VALUE = 1,
+    DEFAULT_VALUE,
+    MIDI_ASSIGN,
+    MIDI_LEARN,
+    MIDI_MIN,
+    MIDI_MAX,
+    MIDI_REVERT
+  };
+  // these MIDI - things are relevant only fo audio plugins - factor that into a subclass to make the
+  // slider more generally applicable
+
+  /** Clears the popup-menu and then calls createPopUpMenuItems() */
+  virtual void updatePopUpMenu();
+
+  /** Populates the right-click popup menu with items, according to the settings of this RSlider. */
+  virtual void addPopUpMenuItems();
+  // rename to populateRightClickPopupMenu...or something
+
+  // called from createPopUpMenuItems:
+  virtual void addPopUpMidiItems();
+
+  /** Opens the PopupMenu that appears on right clicks. */
+  virtual void openRightClickPopupMenu();
+
+
+  /** Opens a modal field for manually entering a value and returns the value entered. */
+  virtual double openModalNumberEntryField();
+
+
+  RPopUpMenu *rightClickPopUp = nullptr;
+
+};
+
+//=================================================================================================
 
 class RSlider;
 
@@ -14,15 +66,14 @@ public:
   virtual void rSliderValueChanged(RSlider* rSlider) = 0;
 };
 
-//=================================================================================================
-
 /** This is a class for horizontal sliders....
 
 \todo: if needed, make a subclass VerticalSlider that overrides paint and the mouse-callbacks
 
 */
 
-class JUCE_API RSlider : public RWidget, public RPopUpMenuObserver
+//class JUCE_API RSlider : public RWidget, public RPopUpMenuObserver
+class JUCE_API RSlider : public AutomatableWidget
 {
 
 public:
@@ -149,7 +200,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   // callbacks:
 
-  virtual void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged);
+  virtual void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged) override;
 
   /** Overrides mouseDown to update the slider according to the mouse-position. */
   virtual void mouseDown (const MouseEvent& e);
@@ -185,36 +236,36 @@ public:
 
 protected:
 
-  /** Enumeration of the identifiers to used as return-values for the right-click popup menu. */
-  enum rightClickPopUpItemIdentifiers
-  {
-    ENTER_VALUE = 1,
-    DEFAULT_VALUE,
-    MIDI_ASSIGN,
-    MIDI_LEARN,
-    MIDI_MIN,
-    MIDI_MAX,
-    MIDI_REVERT
-  };
-  // these MIDI - things are relevant only fo audio plugins - factor that into a subclass to make the
-  // slider more generally applicable
+  ///** Enumeration of the identifiers to used as return-values for the right-click popup menu. */
+  //enum rightClickPopUpItemIdentifiers
+  //{
+  //  ENTER_VALUE = 1,
+  //  DEFAULT_VALUE,
+  //  MIDI_ASSIGN,
+  //  MIDI_LEARN,
+  //  MIDI_MIN,
+  //  MIDI_MAX,
+  //  MIDI_REVERT
+  //};
+  //// these MIDI - things are relevant only fo audio plugins - factor that into a subclass to make the
+  //// slider more generally applicable
 
-  /** Clears the popup-menu and then calls createPopUpMenuItems() */
-  virtual void updatePopUpMenu();
+  ///** Clears the popup-menu and then calls createPopUpMenuItems() */
+  //virtual void updatePopUpMenu();
 
-  /** Populates the right-click popup menu with items, according to the settings of this RSlider. */
-  virtual void addPopUpMenuItems();
+  ///** Populates the right-click popup menu with items, according to the settings of this RSlider. */
+  virtual void addPopUpMenuItems() override;
 
   // called from createPopUpMenuItems:
   virtual void addPopUpEnterValueItem();
   virtual void addPopUpDefaultValueItems();
-  virtual void addPopUpMidiItems();
+  //virtual void addPopUpMidiItems();
 
-  /** Opens the PopupMenu that appears on right clicks. */
-  virtual void openRightClickPopupMenu();
+  ///** Opens the PopupMenu that appears on right clicks. */
+  //virtual void openRightClickPopupMenu();
 
-  /** Opens a modal field for manually entering a value and returns the value entered. */
-  virtual double openModalNumberEntryField();
+  ///** Opens a modal field for manually entering a value and returns the value entered. */
+  //virtual double openModalNumberEntryField();
 
   /** Returns a value that is constrained to the range of the slider. */
   virtual double constrainValue(double value) const throw();
@@ -242,7 +293,7 @@ protected:
   Rectangle<int> handleRectangle;
   juce::String   sliderName;
   Component      *nameRectangle; // just a dummy in order to not receive mouse-events when the user clicks on the name-field
-  RPopUpMenu     *rightClickPopUp;
+  //RPopUpMenu     *rightClickPopUp;
 
 private:
 
