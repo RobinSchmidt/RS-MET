@@ -1,6 +1,6 @@
-AutomatableWidget::AutomatableWidget()
+AutomatableWidget::AutomatableWidget(RWidget *widgetToWrap)
 {
-
+  wrappedWidget = widgetToWrap;
 }
 
 AutomatableWidget::~AutomatableWidget()
@@ -17,7 +17,7 @@ void AutomatableWidget::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
     return;
   int selectedIdentifier = selectedItem->getNodeIdentifier();
 
-  AutomatableParameter *ap = dynamic_cast<AutomatableParameter*> (assignedParameter);
+  AutomatableParameter* ap = getParameter();
   if( ap == NULL )
     return;
   if(selectedIdentifier != MIDI_LEARN)
@@ -27,7 +27,7 @@ void AutomatableWidget::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
   case MIDI_LEARN:  ap->switchIntoMidiLearnMode();             break;
   case MIDI_ASSIGN:
   {
-    int result = (int) openModalNumberEntryField();
+    int result = (int) wrappedWidget->openModalNumberEntryField();
     result = (int) clip(result, 0, 127);
     ap->assignMidiController(result);
   } break;
@@ -42,10 +42,10 @@ void AutomatableWidget::updatePopUpMenu()
   if(rightClickPopUp == nullptr)
   {
     // popup used the 1st time - we need to create it:
-    rightClickPopUp = new RPopUpMenu(this);
+    rightClickPopUp = new RPopUpMenu(wrappedWidget);
     rightClickPopUp->registerPopUpMenuObserver(this);  
     rightClickPopUp->setDismissOnFocusLoss(true);
-    addChildWidget(rightClickPopUp, false, false);
+    wrappedWidget->addChildWidget(rightClickPopUp, false, false);
   }
   rightClickPopUp->clear();
   addPopUpMenuItems();
@@ -58,10 +58,11 @@ void AutomatableWidget::addPopUpMenuItems()
 
 void AutomatableWidget::addPopUpMidiItems()
 {
-  if( assignedParameter != NULL )
+  AutomatableParameter* ap = getParameter();
+  if( ap != NULL )
   {
-    AutomatableParameter *ap;
-    ap = dynamic_cast<AutomatableParameter*> (assignedParameter);
+    //AutomatableParameter *ap;
+    //ap = dynamic_cast<AutomatableParameter*> (assignedParameter);
     if( ap != NULL )
     {
       // prepare some strings for the popup menu:
@@ -78,8 +79,8 @@ void AutomatableWidget::addPopUpMidiItems()
         defaultString = String("CC") + String(defaultCc);
       else
         defaultString = String("none");
-      String minString = stringConversionFunction(ap->getLowerAutomationLimit());
-      String maxString = stringConversionFunction(ap->getUpperAutomationLimit());
+      String minString = wrappedWidget->stringConversionFunction(ap->getLowerAutomationLimit());
+      String maxString = wrappedWidget->stringConversionFunction(ap->getUpperAutomationLimit());
 
       rightClickPopUp->addItem(MIDI_LEARN,  String("MIDI learn ") + ccString);
       rightClickPopUp->addItem(MIDI_ASSIGN, String("MIDI assign"));
@@ -93,8 +94,8 @@ void AutomatableWidget::addPopUpMidiItems()
 void AutomatableWidget::openRightClickPopupMenu()
 {
   updatePopUpMenu();
-  int w = jmax(getWidth(), rightClickPopUp->getRequiredWidth(true));
-  int h = jmin(200,        rightClickPopUp->getRequiredHeight(true));
+  int w = jmax(wrappedWidget->getWidth(), rightClickPopUp->getRequiredWidth(true));
+  int h = jmin(200,                       rightClickPopUp->getRequiredHeight(true));
   //rightClickPopUp->show(false, RPopUpComponent::BELOW, w, h); // showModally = false
   rightClickPopUp->show(true, RPopUpComponent::BELOW, w, h); // showModally = true
   // If we don't show it modally (1st parameter = true), it will be immediately dismissed
@@ -103,26 +104,63 @@ void AutomatableWidget::openRightClickPopupMenu()
   // until we choose some option.
 }
 
-double AutomatableWidget::openModalNumberEntryField()
+AutomatableParameter* AutomatableWidget::getParameter()
 {
-  AutomatableParameter *ap = dynamic_cast<AutomatableParameter*> (assignedParameter);
-  if( ap == NULL )
-    return 0.0;
+  return dynamic_cast<AutomatableParameter*> (wrappedWidget->assignedParameter);
+}
 
-  RTextEntryField *entryField = new RTextEntryField( String(ap->getValue()) );
-  //entryField->setBounds(handleRectangle);
-  entryField->setBounds(2, 2, getWidth()-4, getHeight()-4);
-  entryField->setColourScheme(getColourScheme());
-  addAndMakeVisible(entryField);
-  entryField->setPermittedCharacters(String("0123456789.-"));
-  entryField->selectAll();
+//=================================================================================================
 
-  entryField->runModalLoop(); // should not be used according to doc...
-  // entryField->enterModalState(true);  // ...but this doesn't work at all
-  // maybe we should keep an RTextEntryField member and register ourselves as observer
+AutomatableSlider::AutomatableSlider() 
+  : AutomatableWidget(this)
+{
 
-  double result = entryField->getText().getDoubleValue();
-  removeChildComponent(entryField);
-  delete entryField;
-  return result;
+}
+
+void AutomatableSlider::mouseDown(const MouseEvent& e)
+{
+  if( e.mods.isRightButtonDown() )
+    openRightClickPopupMenu();
+  else
+    RSlider::mouseDown(e);
+}
+
+void AutomatableSlider::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
+{
+  if( menuThatHasChanged != rightClickPopUp )
+    return;
+  RTreeViewNode *selectedItem = rightClickPopUp->getSelectedItem();
+  if( selectedItem == NULL )
+    return;
+  int selectedIdentifier = selectedItem->getNodeIdentifier();
+
+  switch( selectedIdentifier )
+  {
+  case ENTER_VALUE:   setValue(openModalNumberEntryField(),                  true, false); break;
+  case DEFAULT_VALUE: setValue(selectedItem->getNodeText().getDoubleValue(), true, false); break;
+  default: AutomatableWidget::rPopUpMenuChanged(menuThatHasChanged);
+  }
+}
+
+void AutomatableSlider::addPopUpMenuItems()
+{
+  addPopUpEnterValueItem();
+  addPopUpDefaultValueItems();
+  AutomatableWidget::addPopUpMenuItems();
+}
+
+void AutomatableSlider::addPopUpEnterValueItem()
+{
+  rightClickPopUp->addItem(ENTER_VALUE, "Enter Value");
+}
+ 
+void AutomatableSlider::addPopUpDefaultValueItems()
+{
+  if( defaultValues.size() > 0 )
+  {
+    RTreeViewNode *defaultValuesNode = new RTreeViewNode("Default Values");
+    for(int i = 0; i < defaultValues.size(); i++)
+      defaultValuesNode->addChildNode(new RTreeViewNode(String(defaultValues[i]), DEFAULT_VALUE));
+    rightClickPopUp->addTreeNodeItem(defaultValuesNode);
+  }
 }

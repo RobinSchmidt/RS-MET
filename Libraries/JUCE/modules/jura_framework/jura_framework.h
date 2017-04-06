@@ -78,9 +78,9 @@ namespace jura
 #include "gui/widgets/jura_RTreeView.h"
 #include "gui/widgets/jura_RPopUpComponent.h"
 #include "gui/widgets/jura_RPopUpMenu.h"
-#include "gui/widgets/jura_AutomatableWidget.h"
 #include "gui/widgets/jura_RSlider.h"
 #include "gui/widgets/jura_RComboBox.h"
+#include "gui/widgets/jura_AutomatableWidget.h"
 // there are still some special widgets missing - copy them over soon...
 
 #include "gui/widgets/widget_sets/jura_WidgetSet.h"

@@ -203,3 +203,26 @@ void RWidget::paint(Graphics& g)
   //g.fillAll(Colours::red); test
 }
 
+double RWidget::openModalNumberEntryField()
+{
+  AutomatableParameter *ap = dynamic_cast<AutomatableParameter*> (assignedParameter);
+  if( ap == NULL )
+    return 0.0;
+
+  RTextEntryField *entryField = new RTextEntryField( String(ap->getValue()) );
+  //entryField->setBounds(handleRectangle);
+  entryField->setBounds(2, 2, getWidth()-4, getHeight()-4);
+  entryField->setColourScheme(getColourScheme());
+  addAndMakeVisible(entryField);
+  entryField->setPermittedCharacters(String("0123456789.-"));
+  entryField->selectAll();
+
+  entryField->runModalLoop(); // should not be used according to doc...
+                              // entryField->enterModalState(true);  // ...but this doesn't work at all
+  // maybe we should keep an RTextEntryField member and register ourselves as observer
+
+  double result = entryField->getText().getDoubleValue();
+  removeChildComponent(entryField);
+  delete entryField;
+  return result;
+}

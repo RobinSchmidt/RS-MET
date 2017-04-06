@@ -49,9 +49,9 @@ namespace jura
 #include "gui/widgets/jura_RTreeView.cpp"
 #include "gui/widgets/jura_RPopUpComponent.cpp"
 #include "gui/widgets/jura_RPopUpMenu.cpp"
-#include "gui/widgets/jura_AutomatableWidget.cpp"
 #include "gui/widgets/jura_RSlider.cpp"
 #include "gui/widgets/jura_RComboBox.cpp"
+#include "gui/widgets/jura_AutomatableWidget.cpp"
 
 #include "gui/widgets/widget_sets/jura_WidgetSet.cpp"
 #include "gui/widgets/widget_sets/jura_StateLoadSaveWidgetSet.cpp"

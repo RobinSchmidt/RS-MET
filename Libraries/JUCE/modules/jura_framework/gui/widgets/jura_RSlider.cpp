@@ -278,23 +278,6 @@ const String& RSlider::getSliderName() const
 //-------------------------------------------------------------------------------------------------
 // callbacks:
 
-void RSlider::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
-{
-  if( menuThatHasChanged != rightClickPopUp )
-    return;
-  RTreeViewNode *selectedItem = rightClickPopUp->getSelectedItem();
-  if( selectedItem == NULL )
-    return;
-  int selectedIdentifier = selectedItem->getNodeIdentifier();
-
-  switch( selectedIdentifier )
-  {
-  case ENTER_VALUE:   setValue(openModalNumberEntryField(),                  true, false); break;
-  case DEFAULT_VALUE: setValue(selectedItem->getNodeText().getDoubleValue(), true, false); break;
-  default: AutomatableWidget::rPopUpMenuChanged(menuThatHasChanged);
-  }
-}
-
 void RSlider::mouseDown(const MouseEvent& e)
 {
   if( e.originalComponent != this )
@@ -315,8 +298,6 @@ void RSlider::mouseDown(const MouseEvent& e)
       double tmpValue = proportionOfLengthToValue((double) e.x / (double) getWidth());
       setValue(constrainAndQuantizeValue(tmpValue), true, false);
     }
-    else if( e.mods.isRightButtonDown() )
-      openRightClickPopupMenu();
   }
 }
 
@@ -477,29 +458,6 @@ void RSlider::resized()
 
 //-------------------------------------------------------------------------------------------------
 // internal functions:
-
-void RSlider::addPopUpMenuItems()
-{
-  addPopUpEnterValueItem();
-  addPopUpDefaultValueItems();
-  AutomatableWidget::addPopUpMenuItems();
-}
-
-void RSlider::addPopUpEnterValueItem()
-{
-  rightClickPopUp->addItem(ENTER_VALUE, "Enter Value");
-}
- 
-void RSlider::addPopUpDefaultValueItems()
-{
-  if( defaultValues.size() > 0 )
-  {
-    RTreeViewNode *defaultValuesNode = new RTreeViewNode("Default Values");
-    for(int i = 0; i < defaultValues.size(); i++)
-      defaultValuesNode->addChildNode(new RTreeViewNode(String(defaultValues[i]), DEFAULT_VALUE));
-    rightClickPopUp->addTreeNodeItem(defaultValuesNode);
-  }
-}
 
 double RSlider::constrainValue(double value) const throw()
 {

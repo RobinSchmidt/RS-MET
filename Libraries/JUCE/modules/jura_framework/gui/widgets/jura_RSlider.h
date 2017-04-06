@@ -16,7 +16,8 @@ public:
 */
 
 //class JUCE_API RSlider : public RWidget, public RPopUpMenuObserver
-class JUCE_API RSlider : public AutomatableWidget
+//class JUCE_API RSlider : public AutomatableWidget
+class JUCE_API RSlider : public RWidget
 {
 
 public:
@@ -143,24 +144,12 @@ public:
   //-----------------------------------------------------------------------------------------------
   // callbacks:
 
-  virtual void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged) override;
-
-  /** Overrides mouseDown to update the slider according to the mouse-position. */
-  virtual void mouseDown (const MouseEvent& e);
-
-  /** Overrides mouseDrag to update the slider according to the mouse-position. */
-  virtual void mouseDrag(const MouseEvent& e);
-
-  /** Overrides mouseWheelMove in order adjust the slider on such events */
-  virtual void mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel);
-
-
-  virtual void mouseDoubleClick (const MouseEvent& e);
-
-  virtual void resized();
-
-  /** Paints the slider. */
-  virtual void paint(Graphics& g);
+  virtual void mouseDown(const MouseEvent& e) override;
+  virtual void mouseDrag(const MouseEvent& e) override;
+  virtual void mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel) override;
+  virtual void mouseDoubleClick(const MouseEvent& e) override;
+  virtual void resized() override;
+  virtual void paint(Graphics& g) override;
 
   //-----------------------------------------------------------------------------------------------
   // others:
@@ -178,10 +167,6 @@ public:
 
 protected:
 
-  /** Populates the right-click popup menu with items, according to the settings of this RSlider. */
-  virtual void addPopUpMenuItems() override;
-  virtual void addPopUpEnterValueItem();
-  virtual void addPopUpDefaultValueItems();
 
   /** Returns a value that is constrained to the range of the slider. */
   virtual double constrainValue(double value) const throw();

@@ -2,19 +2,18 @@
 #define jura_AutomatableWidget_h
 
 /** RWidget subclass that adds automation facilities. 
-Maybe move into jura_processors module
-*/
+Maybe move into jura_processors module  */
 
-class JUCE_API AutomatableWidget : public RWidget, public RPopUpMenuObserver
+class JUCE_API AutomatableWidget : virtual public RPopUpMenuObserver
 {
 
 public:
 
-  AutomatableWidget();
-  ~AutomatableWidget();
+  AutomatableWidget(RWidget *widgetToWrap);
+
+  virtual ~AutomatableWidget();
 
   virtual void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged) override;
-
 
 protected:
 
@@ -43,16 +42,38 @@ protected:
   /** Opens the PopupMenu that appears on right clicks. */
   virtual void openRightClickPopupMenu();
 
-  /** Opens a modal field for manually entering a value and returns the value entered. */
-  virtual double openModalNumberEntryField();
+  /** Returns a pointer to the AutomatableParameter object that is assigned to the wrapped 
+  widget.  */
+  AutomatableParameter* getParameter();
+
 
   RPopUpMenu *rightClickPopUp = nullptr; // object created when it's needed for the 1st time
+  RWidget *wrappedWidget;                // widget that is being made automatable
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomatableWidget)
 };
 
 //=================================================================================================
 
+/** A slider that can be automated via MIDI or the host automation system (using setParameter()) */
+
+class JUCE_API AutomatableSlider : public RSlider, public AutomatableWidget
+{
+
+public:
+
+  AutomatableSlider();
+
+  virtual void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged) override;
+  virtual void mouseDown(const MouseEvent& e) override;
+
+protected:
+
+  virtual void addPopUpMenuItems() override;
+  virtual void addPopUpEnterValueItem();
+  virtual void addPopUpDefaultValueItems();
+
+};
 
 
 #endif   

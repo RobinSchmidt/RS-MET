@@ -497,7 +497,8 @@ LadderEditor::LadderEditor(jura::Ladder *newLadderToEdit) : AudioModuleEditor(ne
   frequencyResponseDisplay->assignParameterReso( moduleToEdit->getParameterByName("Resonance"));
   addPlot( frequencyResponseDisplay );
 
-  addWidget( cutoffSlider = new RSlider("CutoffSlider") );
+  //addWidget( cutoffSlider = new RSlider("CutoffSlider") );
+  addWidget( cutoffSlider = new AutomatableSlider() );
   cutoffSlider->assignParameter( ladderToEdit->getParameterByName("Cutoff") );
   cutoffSlider->setSliderName("Cutoff");
   cutoffSlider->setDescription("Cutoff frequency in Hz");

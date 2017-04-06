@@ -122,6 +122,9 @@ public:
 
 protected:
 
+  /** Opens a modal field for manually entering a value and returns the value entered. */
+  virtual double openModalNumberEntryField();
+
   /** The assigned Parameter object. */
   Parameter* assignedParameter;
 
@@ -142,6 +145,7 @@ private:
     // \TODO (IMPORTANT): use a pointer such that a number of widget can share the colour-scheme 
     // - if NULL we may use a global default colorscheme object 
 
+  friend class AutomatableWidget;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RWidget)
 };
 
