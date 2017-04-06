@@ -200,7 +200,7 @@ void AutomatableButton::mouseDown(const MouseEvent& e)
   if( e.mods.isRightButtonDown() )
     openRightClickPopupMenu();
   else
-    AutomatableButton::mouseDown(e);
+    RButton::mouseDown(e);
 }
 
 void AutomatableButton::parameterChanged(Parameter* p)
