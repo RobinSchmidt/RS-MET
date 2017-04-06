@@ -497,7 +497,6 @@ LadderEditor::LadderEditor(jura::Ladder *newLadderToEdit) : AudioModuleEditor(ne
   frequencyResponseDisplay->assignParameterReso( moduleToEdit->getParameterByName("Resonance"));
   addPlot( frequencyResponseDisplay );
 
-  //addWidget( cutoffSlider = new RSlider("CutoffSlider") );
   addWidget( cutoffSlider = new AutomatableSlider() );
   cutoffSlider->assignParameter( ladderToEdit->getParameterByName("Cutoff") );
   cutoffSlider->setSliderName("Cutoff");
@@ -505,21 +504,21 @@ LadderEditor::LadderEditor(jura::Ladder *newLadderToEdit) : AudioModuleEditor(ne
   cutoffSlider->setDescriptionField(infoField);
   cutoffSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
-  addWidget( resonanceSlider = new RSlider("ResoSlider") );
+  addWidget( resonanceSlider = new AutomatableSlider() );
   resonanceSlider->assignParameter( ladderToEdit->getParameterByName("Resonance") );
   resonanceSlider->setSliderName("Resonance");
   resonanceSlider->setDescription("Amount of feedback");
   resonanceSlider->setDescriptionField(infoField);
   resonanceSlider->setStringConversionFunction(&valueToStringTotal5);
 
-  addWidget( spreadSlider = new RSlider("SpreadSlider") );
+  addWidget( spreadSlider = new AutomatableSlider() );
   spreadSlider->assignParameter( ladderToEdit->getParameterByName("StereoSpread") );
   spreadSlider->setSliderName("Spread");
   spreadSlider->setDescription("Detunes cutoff frequencies of channels");
   spreadSlider->setDescriptionField(infoField);
   spreadSlider->setStringConversionFunction(&valueToStringTotal5);
 
-  addWidget( modeComboBox = new RComboBox("ModeComboBox") );
+  addWidget( modeComboBox = new AutomatableComboBox() );
   modeComboBox->assignParameter( ladderToEdit->getParameterByName("Mode") );
   modeComboBox->setDescription("Select frequency response type");
   modeComboBox->setDescriptionField(infoField);

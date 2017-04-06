@@ -192,9 +192,9 @@ protected:
 
   LadderSpectrumEditor *frequencyResponseDisplay; // rename to spectrumEditor
 
-  AutomatableSlider *cutoffSlider;
-  RSlider /**cutoffSlider,*/ *resonanceSlider, *spreadSlider;
-  RComboBox *modeComboBox;
+  AutomatableSlider *cutoffSlider, *resonanceSlider, *spreadSlider;
+  AutomatableComboBox *modeComboBox;
+  //RComboBox *modeComboBox;
   //RButton *invertButton;  
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LadderEditor)

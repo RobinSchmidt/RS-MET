@@ -1,8 +1,12 @@
 #ifndef jura_AutomatableWidget_h
 #define jura_AutomatableWidget_h
 
-/** RWidget subclass that adds automation facilities. 
-Maybe move into jura_processors module  */
+/** RWidget subclass that adds automation facilities either via MIDI or the host automation system 
+using setParameter(). If you want to make a widget automatable, derive it from some widget class 
+and also from this class, for example, like: 
+class JUCE_API AutomatableSlider : public RSlider, public AutomatableWidget
+\todo: maybe move into jura_processors module (it's relevant only for audio plugins). 
+*/
 
 class JUCE_API AutomatableWidget : virtual public RPopUpMenuObserver
 {
@@ -55,15 +59,12 @@ protected:
 
 //=================================================================================================
 
-/** A slider that can be automated via MIDI or the host automation system (using setParameter()) */
-
 class JUCE_API AutomatableSlider : public RSlider, public AutomatableWidget
 {
 
 public:
 
   AutomatableSlider();
-
   virtual void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged) override;
   virtual void mouseDown(const MouseEvent& e) override;
 
@@ -73,7 +74,18 @@ protected:
   virtual void addPopUpEnterValueItem();
   virtual void addPopUpDefaultValueItems();
 
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomatableSlider)
 };
 
+
+class JUCE_API AutomatableComboBox : public RComboBox, public AutomatableWidget
+{
+
+public:
+
+  AutomatableComboBox();
+  virtual void mouseDown(const MouseEvent& e) override;
+
+};
 
 #endif   

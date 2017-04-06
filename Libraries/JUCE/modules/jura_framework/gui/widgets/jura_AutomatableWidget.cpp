@@ -164,3 +164,19 @@ void AutomatableSlider::addPopUpDefaultValueItems()
     rightClickPopUp->addTreeNodeItem(defaultValuesNode);
   }
 }
+
+//=================================================================================================
+
+AutomatableComboBox::AutomatableComboBox()
+  : AutomatableWidget(this)
+{
+
+}
+
+void AutomatableComboBox::mouseDown(const MouseEvent& e)
+{
+  if( e.mods.isRightButtonDown() )
+    openRightClickPopupMenu();
+  else
+    RComboBox::mouseDown(e);
+}
