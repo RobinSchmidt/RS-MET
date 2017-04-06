@@ -21,6 +21,8 @@ RSlider::RSlider(const String& name) : RWidget(name)
   nameRectangle->addMouseListener(this, true);
   setWantsKeyboardFocus(true); // we need this for the mousewheel to work
 
+  // todo: do lazy initialization (create this only when it's needed the 1st time), also factor
+  // out into RWidget because automation should also be available for RButton and RComboBox:
   rightClickPopUp = new RPopUpMenu(this);
   rightClickPopUp->registerPopUpMenuObserver(this);  
   rightClickPopUp->setDismissOnFocusLoss(true);
@@ -316,6 +318,8 @@ void RSlider::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
   AutomatableParameter *ap = dynamic_cast<AutomatableParameter*> (assignedParameter);
   if( ap == NULL )
     return;
+  if(selectedIdentifier != MIDI_LEARN)
+    ap->switchIntoMidiLearnMode(false); // turn off, if currently on and somehting else is selected
   switch( selectedIdentifier )
   {
   case MIDI_LEARN:  ap->switchIntoMidiLearnMode();             break;
@@ -556,14 +560,14 @@ void RSlider::addPopUpMidiItems()
       int cc = ap->getAssignedMidiController();
       String ccString;
       if( cc > -1 )
-        ccString = String("(currently CC#") + String(cc) + String(")");
+        ccString = String("(currently CC") + String(cc) + String(")");
       else
         ccString = String("(currently none)"); 
 
       int defaultCc = ap->getDefaultMidiController();
       String defaultString;
       if( defaultCc > -1 )
-        defaultString = String("CC#") + String(defaultCc);
+        defaultString = String("CC") + String(defaultCc);
       else
         defaultString = String("none");
       String minString = stringConversionFunction(ap->getLowerAutomationLimit());
