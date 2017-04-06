@@ -1,7 +1,9 @@
 #ifndef jura_AutomatableWidget_h
 #define jura_AutomatableWidget_h
 
-/** RWidget subclass that adds automation facilities. */
+/** RWidget subclass that adds automation facilities. 
+Maybe move into jura_processors module
+*/
 
 class JUCE_API AutomatableWidget : public RWidget, public RPopUpMenuObserver
 {
@@ -48,5 +50,9 @@ protected:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomatableWidget)
 };
+
+//=================================================================================================
+
+
 
 #endif   
