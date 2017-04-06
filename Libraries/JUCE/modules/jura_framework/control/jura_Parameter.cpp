@@ -293,7 +293,8 @@ double Parameter::restrictValueToParameterRange(double valueToRestrict)
   ScopedPointerLock spl(mutex);
   if( scaling == BOOLEAN )
     valueToRestrict = (double) (valueToRestrict >= 0.5);
-
+  if( scaling == STRING )
+    valueToRestrict = (double) round(valueToRestrict);
   if( valueToRestrict > maxValue )
     return maxValue;
   if( valueToRestrict < minValue )

@@ -155,9 +155,6 @@ ColourSchemeComponent* RWidget::getOutlyingColourSchemeComponent()
 
 void RWidget::parameterChanged(Parameter* parameterThatHasChanged)
 {
-  // send changeMessage to ourselves in order to do the update of the slider in the message thread:
-  //sendChangeMessage(this);
-
   triggerAsyncUpdate();
 }
 
@@ -205,12 +202,11 @@ void RWidget::paint(Graphics& g)
 
 double RWidget::openModalNumberEntryField()
 {
-  AutomatableParameter *ap = dynamic_cast<AutomatableParameter*> (assignedParameter);
-  if( ap == NULL )
+  if( assignedParameter == NULL )
     return 0.0;
 
-  RTextEntryField *entryField = new RTextEntryField( String(ap->getValue()) );
-  //entryField->setBounds(handleRectangle);
+  RTextEntryField *entryField = new RTextEntryField( 
+    String(assignedParameter->getValue()));
   entryField->setBounds(2, 2, getWidth()-4, getHeight()-4);
   entryField->setColourScheme(getColourScheme());
   addAndMakeVisible(entryField);
@@ -218,7 +214,7 @@ double RWidget::openModalNumberEntryField()
   entryField->selectAll();
 
   entryField->runModalLoop(); // should not be used according to doc...
-                              // entryField->enterModalState(true);  // ...but this doesn't work at all
+  // entryField->enterModalState(true);  // ...but this doesn't work at all
   // maybe we should keep an RTextEntryField member and register ourselves as observer
 
   double result = entryField->getText().getDoubleValue();

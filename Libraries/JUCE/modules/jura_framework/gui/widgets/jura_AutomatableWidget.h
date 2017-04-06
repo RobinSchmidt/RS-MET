@@ -50,6 +50,9 @@ protected:
   widget.  */
   AutomatableParameter* getParameter();
 
+  ///** Assigns the parameter to the wrappedWidget. */
+  //virtual void assignParameter(Parameter* parameterToAssign);
+
 
   RPopUpMenu *rightClickPopUp = nullptr; // object created when it's needed for the 1st time
   RWidget *wrappedWidget;                // widget that is being made automatable
@@ -65,6 +68,7 @@ class JUCE_API AutomatableSlider : public RSlider, public AutomatableWidget
 public:
 
   AutomatableSlider();
+  //virtual void assignParameter(Parameter* parameterToAssign) override;
   virtual void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged) override;
   virtual void mouseDown(const MouseEvent& e) override;
 
@@ -84,7 +88,10 @@ class JUCE_API AutomatableComboBox : public RComboBox, public AutomatableWidget
 public:
 
   AutomatableComboBox();
+  //virtual void assignParameter(Parameter* parameterToAssign) override;
   virtual void mouseDown(const MouseEvent& e) override;
+
+  virtual void parameterChanged(Parameter* p) override; // preliminary - for test
 
 };
 
