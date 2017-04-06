@@ -86,6 +86,20 @@ public:
   virtual void mouseDown(const MouseEvent& e) override;
   virtual void parameterChanged(Parameter* p) override;
 
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomatableComboBox)
 };
+
+class JUCE_API AutomatableButton : public RButton, public AutomatableWidget
+{
+
+public:
+
+  AutomatableButton();
+  virtual void mouseDown(const MouseEvent& e) override;
+  virtual void parameterChanged(Parameter* p) override;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomatableButton)
+};
+
 
 #endif   

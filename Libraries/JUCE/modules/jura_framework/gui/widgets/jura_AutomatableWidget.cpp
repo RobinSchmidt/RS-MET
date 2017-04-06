@@ -186,3 +186,24 @@ void AutomatableComboBox::parameterChanged(Parameter* p)
   // parameterChanged, the RWidget baseclass method would be called? but somehow, it doesn't seem
   // to work
 }
+
+//=================================================================================================
+
+AutomatableButton::AutomatableButton()
+  : AutomatableWidget(this)
+{
+
+}
+
+void AutomatableButton::mouseDown(const MouseEvent& e)
+{
+  if( e.mods.isRightButtonDown() )
+    openRightClickPopupMenu();
+  else
+    AutomatableButton::mouseDown(e);
+}
+
+void AutomatableButton::parameterChanged(Parameter* p)
+{
+  RWidget::parameterChanged(p); 
+}
