@@ -5,7 +5,9 @@
 
 //=================================================================================================
 
-/** RWidget subclass that adds automation facilities. */
+/** RWidget subclass that adds automation facilities. 
+\todo move this class into its own pair of h/cpp files
+*/
 
 class JUCE_API AutomatableWidget : public RWidget, public RPopUpMenuObserver
 {
@@ -210,7 +212,6 @@ public:
 
   /** Overrides mouseWheelMove in order adjust the slider on such events */
   virtual void mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel);
-  //virtual void mouseWheelMove(const MouseEvent& e, float wheelIncrementX, float wheelIncrementY);
 
 
   virtual void mouseDoubleClick (const MouseEvent& e);
@@ -236,36 +237,10 @@ public:
 
 protected:
 
-  ///** Enumeration of the identifiers to used as return-values for the right-click popup menu. */
-  //enum rightClickPopUpItemIdentifiers
-  //{
-  //  ENTER_VALUE = 1,
-  //  DEFAULT_VALUE,
-  //  MIDI_ASSIGN,
-  //  MIDI_LEARN,
-  //  MIDI_MIN,
-  //  MIDI_MAX,
-  //  MIDI_REVERT
-  //};
-  //// these MIDI - things are relevant only fo audio plugins - factor that into a subclass to make the
-  //// slider more generally applicable
-
-  ///** Clears the popup-menu and then calls createPopUpMenuItems() */
-  //virtual void updatePopUpMenu();
-
-  ///** Populates the right-click popup menu with items, according to the settings of this RSlider. */
+  /** Populates the right-click popup menu with items, according to the settings of this RSlider. */
   virtual void addPopUpMenuItems() override;
-
-  // called from createPopUpMenuItems:
   virtual void addPopUpEnterValueItem();
   virtual void addPopUpDefaultValueItems();
-  //virtual void addPopUpMidiItems();
-
-  ///** Opens the PopupMenu that appears on right clicks. */
-  //virtual void openRightClickPopupMenu();
-
-  ///** Opens a modal field for manually entering a value and returns the value entered. */
-  //virtual double openModalNumberEntryField();
 
   /** Returns a value that is constrained to the range of the slider. */
   virtual double constrainValue(double value) const throw();
@@ -293,7 +268,6 @@ protected:
   Rectangle<int> handleRectangle;
   juce::String   sliderName;
   Component      *nameRectangle; // just a dummy in order to not receive mouse-events when the user clicks on the name-field
-  //RPopUpMenu     *rightClickPopUp;
 
 private:
 
