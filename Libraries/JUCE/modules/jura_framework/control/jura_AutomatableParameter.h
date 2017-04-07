@@ -187,6 +187,25 @@ protected:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomatableParameter)
 };
 
+
+
+//=================================================================================================
+
+
+class MetaParameterManager;
+
+class JUCE_API MetaControlledParameter : public AutomatableParameter
+{
+
+public:
+
+protected:
+
+  MetaParameterManager* metaParaManager;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MetaControlledParameter)
+};
+
 //=================================================================================================
 
 /** A class to represent meta-parameters, i.e. parameters that control other (lower level) 
@@ -215,8 +234,43 @@ protected:
 
   double value = 0.0;
   std::vector<AutomatableParameter*> params; // list of pointers to the dependent parameters
+   // todo: use M
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MetaParameter)
 };
+
+//=================================================================================================
+
+class JUCE_API MetaParameterManager : public ParameterObserver
+{
+
+public:
+
+protected:
+
+
+  std::vector<MetaParameter*> metaParams;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MetaParameterManager)
+};
+
+
+/* 
+Idea: 3 classes
+
+MetaControlledParameter: 
+-has a pointer to a MetaParameterManager where it can register itself to listen to one of the
+ MetaParameters
+
+MetaParameter:
+-maintains a list of dependent MetaControlledParameters and sets all of of them when its 
+ setAutomationValue gets called
+-listens to each of its dependent parameters to provide cross-coupling: when one of the dependent
+ parameters changes, all others should change as well
+
+MetaParameterManager:
+-maintains a list of MetaParameters to allow MetaControlledParameter objects set themselves up
+ to listen to one specific MetaParameter
+*/
 
 #endif 
