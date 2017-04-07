@@ -208,3 +208,16 @@ void AutomatableParameter::updateAutomationFromParameter()
   }
 }
 
+//=================================================================================================
+
+MetaParameter::MetaParameter()
+{
+
+}
+
+void MetaParameter::parameterChanged(Parameter* p)
+{
+  jassertfalse; // not yet implemented
+  // todo: retrieve normalized value of p and set up all parameters in params (except p itself) to
+  // the same normalized value
+}

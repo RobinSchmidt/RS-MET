@@ -184,7 +184,32 @@ protected:
                                  // parameter will use the next incoming cotroller-event to 
                                  // re-assign the midi controller
 
-  juce_UseDebuggingNewOperator;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomatableParameter)
+};
+
+//=================================================================================================
+
+/** A class to represent meta-parameters, i.e. parameters that control other (lower level) 
+parameters. It derives from ParameterObserver in order to also provide a means of cross-coupling
+between the dependent parameters - whenever one of them changes, we get notified here and also
+set up all other dependent parameters accordingly. */
+
+class JUCE_API MetaParameter : public ParameterObserver
+{
+
+public:
+
+  MetaParameter();
+
+
+  virtual void parameterChanged(Parameter* p) override;
+
+
+protected:
+
+  std::vector<Parameter*> params; // list of pointers to the dependent parameters
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MetaParameter)
 };
 
 #endif 
