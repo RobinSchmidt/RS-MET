@@ -215,9 +215,43 @@ MetaParameter::MetaParameter()
 
 }
 
+void MetaParameter::addParameter(AutomatableParameter* p)
+{
+  p->registerParameterObserver(this);
+  appendIfNotAlreadyThere(params, p);
+}
+
+void MetaParameter::removeParameter(AutomatableParameter* p)
+{
+  p->deRegisterParameterObserver(this);
+  removeFirstOccurrence(params, p);
+}
+
+void MetaParameter::setAutomationValue(double v)
+{  
+  localAutomationSwitch = false; // so we don't call ourselves recursively
+  for(int i = 0; i < size(params); i++)  
+    params[i]->setAutomationValue(v, true, true);
+  localAutomationSwitch = true;
+
+  //jassertfalse; // not yet implemented
+}
+
 void MetaParameter::parameterChanged(Parameter* p)
 {
-  jassertfalse; // not yet implemented
-  // todo: retrieve normalized value of p and set up all parameters in params (except p itself) to
-  // the same normalized value
+  AutomatableParameter* ap = dynamic_cast<AutomatableParameter*>(p);
+  double v = ap->getAutomationValue();
+  localAutomationSwitch = false; // so we don't call ourselves recursively
+  for(int i = 0; i < size(params); i++)
+  {
+    if(params[i] != ap)
+      params[i]->setAutomationValue(v, true, true);
+  }
+  localAutomationSwitch = true;
+}
+
+void MetaParameter::parameterIsGoingToBeDeleted(Parameter* p)
+{
+  AutomatableParameter* ap = dynamic_cast<AutomatableParameter*>(p);
+  removeParameter(ap);
 }

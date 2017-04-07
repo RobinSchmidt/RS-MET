@@ -37,6 +37,7 @@ public:
   give ParameterObserver objects an opportunity to invalidate any pointers to a particular 
   Parameter object that they may hold. */
   virtual void parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted) {};
+    // rename to parameterWillBeDeleted
 
   /** The callback method that will get called when one of our observed parameters has changed its 
   range. */

@@ -201,13 +201,19 @@ public:
 
   MetaParameter();
 
+  void setAutomationValue(double v);
+  void addParameter(AutomatableParameter* p);
+  void removeParameter(AutomatableParameter* p);
 
+  // callbacks:
   virtual void parameterChanged(Parameter* p) override;
+  virtual void parameterIsGoingToBeDeleted(Parameter* p) override;
 
 
 protected:
 
-  std::vector<Parameter*> params; // list of pointers to the dependent parameters
+  double value = 0.0;
+  std::vector<AutomatableParameter*> params; // list of pointers to the dependent parameters
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MetaParameter)
 };
