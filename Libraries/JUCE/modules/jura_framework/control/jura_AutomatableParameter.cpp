@@ -217,7 +217,9 @@ MetaParameter::MetaParameter()
 
 void MetaParameter::addParameter(AutomatableParameter* p)
 {
-  p->setAutomationValue(value);
+  if(contains(params, p))
+    return; // already there, nothing to do, avoid recursive callbacks
+  p->setAutomationValue(value, true, true);
   p->registerParameterObserver(this);
   appendIfNotAlreadyThere(params, p);
 }

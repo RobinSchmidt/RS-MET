@@ -1,6 +1,46 @@
 #ifndef jura_AudioPlugin_h
 #define jura_AudioPlugin_h
 
+
+/** Subclass of juce::AudioProcessorParameter to provide the handling of host automation.
+\todo: inherit also from jura::MetaParameter for the "glue"
+*/
+
+class JUCE_API AudioPluginParameter : public AudioProcessorParameter
+{
+
+public:
+
+  // mandatory AudioProcessorParameter overrides:
+  virtual float getValue() const override { return value; }
+  virtual void setValue(float newValue) override
+  {
+    value = newValue; 
+    // something more to do here - we probably need to keep a pointer to the AudioPlugin object
+    // which this parameter is part of and call plugin->setParameter(getParameterIndex(), value)
+    // ...at least for a preliminary implementation...later, we will probably want to call the 
+    // MetaParameter setAutomationValue method
+  }
+  virtual float getDefaultValue() const override { return 0.f; }
+  virtual String getName(int maximumStringLength) const override { return "Param" + String(getParameterIndex()); }
+  virtual String getLabel() const override { return String::empty; }
+  virtual float getValueForText(const String &text) const override { return text.getFloatValue(); }
+
+  // optional AudioProcessorParameter overrides:
+  virtual bool isAutomatable() const override { return true; }
+  virtual bool isMetaParameter() const override { return true; }
+
+
+protected:
+
+  //int index; // not needed - we can use AudioProcessorParameter::getParameterIndex()
+  float value;
+
+};
+
+
+//=================================================================================================
+
 /** This class wraps a jura::AudioModule into a juce::AudioProcessor, so we can use it as 
 plugin.  
 \todo - mayb move this pair of h/cpp files into another folder */
