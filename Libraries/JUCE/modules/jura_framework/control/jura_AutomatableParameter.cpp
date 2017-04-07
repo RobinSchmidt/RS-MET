@@ -217,6 +217,7 @@ MetaParameter::MetaParameter()
 
 void MetaParameter::addParameter(AutomatableParameter* p)
 {
+  p->setAutomationValue(value);
   p->registerParameterObserver(this);
   appendIfNotAlreadyThere(params, p);
 }
@@ -229,23 +230,22 @@ void MetaParameter::removeParameter(AutomatableParameter* p)
 
 void MetaParameter::setAutomationValue(double v)
 {  
+  value = v;
   localAutomationSwitch = false; // so we don't call ourselves recursively
   for(int i = 0; i < size(params); i++)  
-    params[i]->setAutomationValue(v, true, true);
+    params[i]->setAutomationValue(value, true, true);
   localAutomationSwitch = true;
-
-  //jassertfalse; // not yet implemented
 }
 
 void MetaParameter::parameterChanged(Parameter* p)
 {
   AutomatableParameter* ap = dynamic_cast<AutomatableParameter*>(p);
-  double v = ap->getAutomationValue();
+  value = ap->getAutomationValue();
   localAutomationSwitch = false; // so we don't call ourselves recursively
   for(int i = 0; i < size(params); i++)
   {
     if(params[i] != ap)
-      params[i]->setAutomationValue(v, true, true);
+      params[i]->setAutomationValue(value, true, true);
   }
   localAutomationSwitch = true;
 }

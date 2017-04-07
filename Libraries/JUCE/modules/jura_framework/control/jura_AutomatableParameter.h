@@ -192,7 +192,8 @@ protected:
 /** A class to represent meta-parameters, i.e. parameters that control other (lower level) 
 parameters. It derives from ParameterObserver in order to also provide a means of cross-coupling
 between the dependent parameters - whenever one of them changes, we get notified here and also
-set up all other dependent parameters accordingly. */
+set up all other dependent parameters accordingly 
+\todo: maybe factor out coupling functionality into subclass CouplingMetaParameter */
 
 class JUCE_API MetaParameter : public ParameterObserver
 {
