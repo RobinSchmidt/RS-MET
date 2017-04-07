@@ -10,6 +10,8 @@ class JUCE_API AudioPluginParameter : public AudioProcessorParameter
 
 public:
 
+  AudioPluginParameter() {}
+
   // mandatory AudioProcessorParameter overrides:
   virtual float getValue() const override { return value; }
   virtual void setValue(float newValue) override;
@@ -26,7 +28,7 @@ public:
 protected:
 
   //int index; // not needed - we can use AudioProcessorParameter::getParameterIndex()
-  float value; // may be superfluous, when we inherit from MetaParameter
+  float value = 0.f; // may be superfluous, when we inherit from MetaParameter
 
 
   friend class AudioPlugin;
@@ -69,20 +71,20 @@ public:
   virtual bool hasEditor() const override { return true; }
   virtual AudioProcessorEditor* createEditor() override;
 
-  virtual int getNumParameters() override { return 128; }
-  virtual float getParameter(int index) override 
-  { 
-    return parameters[index]; 
-  }
-  virtual const String getParameterName(int index) override 
-  { 
-    return "Param" + String(index); 
-  };
-  virtual const String getParameterText(int	index) override 
-  { 
-    return String(parameters[index]); 
-  }
-  virtual void setParameter(int parameterIndex, float newValue) override;
+  //virtual int getNumParameters() override { return 128; }
+  //virtual float getParameter(int index) override 
+  //{ 
+  //  return parameters[index]; 
+  //}
+  //virtual const String getParameterName(int index) override 
+  //{ 
+  //  return "Param" + String(index); 
+  //};
+  //virtual const String getParameterText(int	index) override 
+  //{ 
+  //  return String(parameters[index]); 
+  //}
+  virtual void setParameter(int parameterIndex, float newValue) override; // preliminary
 
 
   virtual int getNumPrograms() override { return 1; }                // 1, because 0 is not allowed
@@ -129,8 +131,8 @@ protected:
   AudioBuffer<double> internalAudioBuffer; 
 
   static const int numParameters = 128;
-  float parameters[numParameters];
-  //AudioParameterFloat* parameters[numParameters];
+  //float parameters[numParameters];
+  AudioPluginParameter* parameters[numParameters];
 
   juce::String plugInName;  // assign this in the constructor of your subclass
    // maybe get rid of this and let the wrapper return the name of the wrapped AudioModule

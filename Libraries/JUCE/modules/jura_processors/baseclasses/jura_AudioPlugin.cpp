@@ -1,9 +1,8 @@
 
-
-
 void AudioPluginParameter::setValue(float newValue)
 {
   value = newValue; 
+  plugin->setParameter(getParameterIndex(), value);
   // something more to do here - we probably need to keep a pointer to the AudioPlugin object
   // which this parameter is part of and call plugin->setParameter(getParameterIndex(), value)
   // ...at least for a preliminary implementation...later, we will probably want to call the 
@@ -22,10 +21,11 @@ AudioPlugin::AudioPlugin(AudioModule *moduleToWrap)
   // connect them to the module's internal parameters
   for(int i = 0; i < numParameters; i++)
   {
-    parameters[i] = 0.f;
+    //parameters[i] = 0.f;
     //String name = "Param" + String(i);
-    //parameters[i] = new AudioParameterFloat(String(i), name, 0.0f, 1.0f, 0.5f);
-    //addParameter(parameters[i]);
+    parameters[i] = new AudioPluginParameter();
+    parameters[i]->plugin = this;
+    addParameter(parameters[i]);
   }
 }
 
@@ -117,8 +117,8 @@ AudioProcessorEditor* AudioPlugin::createEditor()
 
 void AudioPlugin::setParameter(int index, float value)
 {
-  parameters[index] = value;
-  underlyingAudioModule->setMidiController(index, 127.f * value);
+  //parameters[index] = value;
+  underlyingAudioModule->setMidiController(index, 127.f * value); // preliminary
 }
 
 void AudioPlugin::getStateInformation(juce::MemoryBlock& destData)
