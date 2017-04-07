@@ -1,16 +1,22 @@
+
+
+
+void AudioPluginParameter::setValue(float newValue)
+{
+  value = newValue; 
+  // something more to do here - we probably need to keep a pointer to the AudioPlugin object
+  // which this parameter is part of and call plugin->setParameter(getParameterIndex(), value)
+  // ...at least for a preliminary implementation...later, we will probably want to call the 
+  // MetaParameter setAutomationValue method
+}
+
+//=================================================================================================
+
 AudioPlugin::AudioPlugin(AudioModule *moduleToWrap)
 {
-  // this function is from rosic/basics/GlobalFunctions.h, it's currently not available:
-  //checkForMemoryLeaksOnExit();
-  //juce::String *leakString = new juce::String(T("String that should cause a memory leak")); // to test if leak-detection works
-
   ScopedLock sl(plugInLock);
-
-  // experimental:
-  initialiseJuce_GUI();  // ???
-
+  initialiseJuce_GUI();  // why do we need this?
   underlyingAudioModule = moduleToWrap;
-  //underlyingAudioModule = nullptr;
 
   // maybe, here, we could somehow set up the parameter that the plugin exposes to the host and 
   // connect them to the module's internal parameters

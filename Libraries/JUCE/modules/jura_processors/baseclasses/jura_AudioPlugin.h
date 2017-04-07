@@ -1,7 +1,6 @@
 #ifndef jura_AudioPlugin_h
 #define jura_AudioPlugin_h
 
-
 /** Subclass of juce::AudioProcessorParameter to provide the handling of host automation.
 \todo: inherit also from jura::MetaParameter for the "glue"
 */
@@ -13,14 +12,7 @@ public:
 
   // mandatory AudioProcessorParameter overrides:
   virtual float getValue() const override { return value; }
-  virtual void setValue(float newValue) override
-  {
-    value = newValue; 
-    // something more to do here - we probably need to keep a pointer to the AudioPlugin object
-    // which this parameter is part of and call plugin->setParameter(getParameterIndex(), value)
-    // ...at least for a preliminary implementation...later, we will probably want to call the 
-    // MetaParameter setAutomationValue method
-  }
+  virtual void setValue(float newValue) override;
   virtual float getDefaultValue() const override { return 0.f; }
   virtual String getName(int maximumStringLength) const override { return "Param" + String(getParameterIndex()); }
   virtual String getLabel() const override { return String::empty; }
@@ -34,8 +26,13 @@ public:
 protected:
 
   //int index; // not needed - we can use AudioProcessorParameter::getParameterIndex()
-  float value;
+  float value; // may be superfluous, when we inherit from MetaParameter
 
+
+  friend class AudioPlugin;
+  AudioPlugin *plugin; // preliminary - to call its setParameter callback in our setValue callback
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioPluginParameter)
 };
 
 
@@ -72,9 +69,7 @@ public:
   virtual bool hasEditor() const override { return true; }
   virtual AudioProcessorEditor* createEditor() override;
 
-
   virtual int getNumParameters() override { return 128; }
-  //virtual bool isMetaParameter(int parameterIndex) override { return true; }
   virtual float getParameter(int index) override 
   { 
     return parameters[index]; 
