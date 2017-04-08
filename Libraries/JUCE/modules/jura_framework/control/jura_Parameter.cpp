@@ -33,6 +33,21 @@ bool ParameterObserver::wantsAutomationNotification()
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
+Parameter::Parameter(const juce::String& newName, double newMin, double newMax,
+  double newDefault, int newScaling, double newInterval)
+{
+  jassert(!(newMin >= newMax));                           // invalid range
+  jassert(!(newMin <= 0.0 && newScaling == EXPONENTIAL)); // exponential scaling requires strictly positive minimum value
+
+  name         = newName;
+  minValue     = newMin;
+  maxValue     = newMax;
+  interval     = newInterval;
+  scaling      = newScaling;
+  defaultValue = restrictValueToParameterRange(newDefault);
+  value        = defaultValue;
+}
+
 Parameter::Parameter(CriticalSection *criticalSectionToUse, const String& newName, 
   double newMinValue, double newMaxValue, double newInterval, double newDefaultValue, 
   int newScaling) 
@@ -46,13 +61,13 @@ Parameter::Parameter(CriticalSection *criticalSectionToUse, const String& newNam
   maxValue      = newMaxValue;
   interval      = newInterval;
   scaling       = newScaling;  // set this before restrictValueToParameterRange is called
-  defaultValue  = restrictValueToParameterRange(newDefaultValue);;
+  defaultValue  = restrictValueToParameterRange(newDefaultValue);
   value         = defaultValue;
-  saveAndRecall = true;
 
-  valueChangeCallbackDouble = NULL;
-  valueChangeCallbackInt    = NULL;
-  valueChangeCallbackBool   = NULL;
+  //saveAndRecall = true;
+  //valueChangeCallbackDouble = NULL;
+  //valueChangeCallbackInt    = NULL;
+  //valueChangeCallbackBool   = NULL;
 }
 
 Parameter::~Parameter()
@@ -95,7 +110,7 @@ void Parameter::setStringValue(const juce::String &newString, bool sendNotificat
   bool callCallbacks)
 {
   ScopedPointerLock spl(mutex);
-  for(int i=0; i<stringValues.size(); i++)
+  for(int i = 0; i < stringValues.size(); i++)
   {
     if( stringValues[i] == newString )
     {
@@ -280,11 +295,11 @@ void Parameter::notifyObservers()
 void Parameter::callValueChangeCallbacks()
 {
   ScopedPointerLock spl(mutex);
-  if( valueChangeCallbackDouble != NULL )
+  if( valueChangeCallbackDouble != nullptr )
     valueChangeCallbackDouble->call(value);
-  if( valueChangeCallbackInt != NULL )
+  if( valueChangeCallbackInt != nullptr )
     valueChangeCallbackInt->call(juce::roundDoubleToInt(value));
-  if( valueChangeCallbackBool != NULL )
+  if( valueChangeCallbackBool != nullptr )
     valueChangeCallbackBool->call(value >= 0.5);
 }
 

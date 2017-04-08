@@ -2,9 +2,11 @@
 #define jura_AutomatableParameter_h
 
 
-/** This class represents a parameter which can be automated.
+/** This class represents a parameter which can be automated via a MIDI controller.
+
 
 \todo:
+-rename to MidiControlledParameter
 -rename get/setAutomationValue in get/setNormalizedValue
 -rename get/setMidi... in get/setMeta  */
 
@@ -194,14 +196,52 @@ protected:
 
 class MetaParameterManager;
 
-class JUCE_API MetaControlledParameter : public AutomatableParameter
+
+/** A subcclass of Parameter that can be controlled via a MetaParameter. To do so, it maintains a 
+pointer to a MetaParameterManager, where it can attach itself to one of the managed MetaParameters
+there. To make this work, you will have to call setMetaParameterManager to pass in the 
+MetaParameterManager to use. once this is done, you can attach this parameter to one of the 
+MetaParameters by calling attachToMetaParameter
+
+\todo maybe factor the handling of proportionalValue out into parameter baseclass
+*/
+
+class JUCE_API MetaControlledParameter : public Parameter
 {
 
 public:
 
+  /** Constructor */
+  MetaControlledParameter(const juce::String& name, double min = 0.0, double max = 1.0, 
+    double defaultValue = 0.5, int scaling = LINEAR, double interval = 0.0);
+
+  /** Sets the value of the parameter where the input argument is assumed to be normalized to the 
+  range 0...1 - arguments in this range will be mapped to the range between lowerAutomationLimit 
+  and upperAutomationLimit and the actual parameter will be adjusted accordingly. */
+  virtual void setProportionalValue(double newProportionalValue, bool sendNotification, 
+    bool callCallbacks);
+
+  /** Converts the clear text value to a proportional value in the range 0..1 according to our 
+  scaling/mapping function. */
+  virtual double valueToProportion(double value);
+
+  /** Converts a proportional value in the range 0..1 to a clear text value according to our 
+  scaling/mapping function. */
+  virtual double proportionToValue(double proportion);
+
+  /** Sets up the MetaParameterManager to use. */
+  virtual void setMetaParameterManager(MetaParameterManager *newManager);
+
+  /** Attaches this parameter to the MetaParameter with the given index (in the 
+  MetaParameterManager). */
+  virtual void attachToMetaParameter(int metaParameterIndex);
+
 protected:
 
-  MetaParameterManager* metaParaManager;
+  double proportionalValue;  // maybe factor out to Parameter
+
+  int metaIndex = -1;
+  MetaParameterManager* metaParaManager = nullptr;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MetaControlledParameter)
 };
@@ -241,10 +281,16 @@ protected:
 
 //=================================================================================================
 
-class JUCE_API MetaParameterManager : public ParameterObserver
+class JUCE_API MetaParameterManager /*: public ParameterObserver*/
 {
 
 public:
+
+
+
+  /** Attaches the passed MetaControlledParameter to the MetaParameter with given index and 
+  returns if this was successful (it may fail, if you pass an out-of-range index). */
+  virtual bool attachParameter(MetaControlledParameter* param, int index);
 
 protected:
 
@@ -271,6 +317,13 @@ MetaParameter:
 MetaParameterManager:
 -maintains a list of MetaParameters to allow MetaControlledParameter objects set themselves up
  to listen to one specific MetaParameter
+
+
+todo:
+-don't use class AutomatableParameter anymore
+-instead, make it possible to assign MIDI-controllers to a MetaParameter (maybe through a subclass
+ MidiControlledMetaParameter)
+
 */
 
 #endif 

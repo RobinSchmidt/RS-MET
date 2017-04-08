@@ -209,6 +209,7 @@ double RSlider::getValueFromText (const String& text) const
 
 double RSlider::proportionOfLengthToValue(double proportion) const
 {
+  // todo:  use linToLin, linToExp, expToLin
   switch( scaling )
   {
   case Parameter::LINEAR:         return minValue + (maxValue - minValue) * proportion;
@@ -222,6 +223,7 @@ double RSlider::proportionOfLengthToValue(double proportion) const
 double RSlider::valueToProportionOfLength(double value) const
 {
   // catch cases where minValue == maxValue
+  // todo:  use linToLin, linToExp, expToLin
 
   switch( scaling )
   {

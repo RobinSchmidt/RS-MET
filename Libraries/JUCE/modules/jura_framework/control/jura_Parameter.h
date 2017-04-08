@@ -145,13 +145,19 @@ public:
     LINEAR,
     EXPONENTIAL,
     LINEAR_BIPOLAR
-    // EXPONENTIAL_WITH_OFFSET
+    // EXPONENTIAL_WITH_OFFSET,
+    // CUSTOM // requires a ParameterMapper object to be passed
   };
 
   //-----------------------------------------------------------------------------------------------
   // construction/destruction:
 
-  /** Constructor. */
+  /** Constructor. You need to pass a name and optionally min/max/deafult values, a type of 
+  scaling @see secalings and a quantization interval. */
+  Parameter(const juce::String& name, double min = 0.0, double max = 1.0, 
+    double defaultValue = 0.5, int scaling = LINEAR, double interval = 0.0);
+
+  /** DEPRECATED constructor. Use the other constructor. */
   Parameter(CriticalSection *criticalSectionToUse, const juce::String& newName, 
     double newMinValue = 0.0, double newMaxValue = 1.0, double newInterval = 0.0, 
     double newDefaultValue = 0.0, int newScaling = LINEAR);
@@ -220,6 +226,8 @@ public:
 
   /** Adds a string value to the array - relevant only for string-based parameters. */
   virtual void addStringValue(const juce::String& valueToAdd);
+
+  virtual void setMutexToUse(CriticalSection* cs) { mutex = cs; }
 
   //-----------------------------------------------------------------------------------------------
   // inquiry:
@@ -375,9 +383,9 @@ public:
     delete valueChangeCallbackInt;
     delete valueChangeCallbackBool;
 
-    valueChangeCallbackDouble = NULL;
-    valueChangeCallbackInt    = NULL;
-    valueChangeCallbackBool   = NULL;
+    valueChangeCallbackDouble = nullptr;
+    valueChangeCallbackInt    = nullptr;
+    valueChangeCallbackBool   = nullptr;
   }
 
   /** Notifies the observers that this parameter has been changed. */
@@ -403,7 +411,7 @@ protected:
   double       interval;             // interval for adjustments
   double       defaultValue;         // default value of this parameter
   int          scaling;              // index to the scaling/mapping to be used
-  bool         saveAndRecall;        // flag, to switch automatic saving on/off - why?
+  bool         saveAndRecall = true; // flag, to switch automatic saving on/off - why?
 
   // array of some more default values, meant to be used for easy access via popup menu:
   juce::Array<double> defaultValues;
@@ -411,11 +419,13 @@ protected:
   // array of strings to be used for enum-based parameters (for comboboxes, etc.):
   StringArray stringValues;
 
-  CriticalSection *mutex; // 
+  // mutex lock to acquire when we notify our observers and call our callbacks:
+  CriticalSection *mutex = nullptr;
 
-  GenericMemberFunctionCallback1<void, double> *valueChangeCallbackDouble;
-  GenericMemberFunctionCallback1<void, int>    *valueChangeCallbackInt;
-  GenericMemberFunctionCallback1<void, bool>   *valueChangeCallbackBool;
+  // the callback objects
+  GenericMemberFunctionCallback1<void, double> *valueChangeCallbackDouble = nullptr;
+  GenericMemberFunctionCallback1<void, int>    *valueChangeCallbackInt    = nullptr;
+  GenericMemberFunctionCallback1<void, bool>   *valueChangeCallbackBool   = nullptr;
 
   juce::Array<ParameterObserver*> parameterObservers;
   //std::vector<ParameterObserver*> parameterObservers;

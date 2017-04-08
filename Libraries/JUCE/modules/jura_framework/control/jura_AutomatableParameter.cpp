@@ -1,5 +1,3 @@
-
-//-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
 AutomatableParameter::AutomatableParameter(CriticalSection *criticalSectionToUse, 
@@ -21,7 +19,6 @@ AutomatableParameter::~AutomatableParameter()
 
 }
 
-//-------------------------------------------------------------------------------------------------
 // parameter settings:
 
 void AutomatableParameter::setAutomationValue(double newAutomationValue, bool notifyListeners, 
@@ -107,7 +104,6 @@ void AutomatableParameter::revertToDefaults(bool resetValueAlso, bool sendNotifi
     setValue(defaultValue, sendNotification, callCallbacks);
 }
 
-//-------------------------------------------------------------------------------------------------
 // inquiry:
 
 bool AutomatableParameter::isInDefaultState() const
@@ -122,7 +118,6 @@ bool AutomatableParameter::isInDefaultState() const
   return true;
 }
 
-//-------------------------------------------------------------------------------------------------
 // others:
 
 double AutomatableParameter::restrictValueToAutomatableRange(double valueToRestrict)
@@ -210,6 +205,69 @@ void AutomatableParameter::updateAutomationFromParameter()
 
 //=================================================================================================
 
+MetaControlledParameter::MetaControlledParameter(const juce::String& name, double min, double max,
+  double defaultValue, int scaling, double interval)
+  : Parameter(name, min, max, defaultValue, scaling, interval)
+{
+  proportionalValue = valueToProportion(value);
+}
+
+void MetaControlledParameter::setProportionalValue(double newProportionalValue,
+  bool sendNotification, bool callCallbacks)
+{
+  ScopedPointerLock spl(mutex);
+  proportionalValue = newProportionalValue;
+  setValue(proportionToValue(proportionalValue), sendNotification, callCallbacks);
+}
+
+double MetaControlledParameter::valueToProportion(double value)
+{
+  if(minValue >= maxValue)
+    return 0.0;
+  switch( scaling )
+  {
+  case Parameter::EXPONENTIAL: 
+  {
+    if( minValue > 0.0 )
+      return jlimit(0.0, 1.0, log(value/minValue) / (log(maxValue)-log(minValue)) );
+    else
+      return 0.0;
+  }
+  default: return (value - minValue) / (maxValue - minValue); // LINEAR(_BIPOLAR)
+  }
+}
+
+double MetaControlledParameter::proportionToValue(double prop)
+{
+  switch( scaling )
+  {
+  case Parameter::LINEAR:         return minValue + (maxValue - minValue) * prop;
+  case Parameter::EXPONENTIAL:    return minValue * exp(prop*(log(maxValue)-log(minValue)));
+  case Parameter::LINEAR_BIPOLAR: return minValue + (maxValue - minValue) * prop;
+  default: return 0.0;
+  }
+  // maybe make valueToProportion/proportionToValue static methods and pass in min, max, scaling
+}
+
+void MetaControlledParameter::setMetaParameterManager(MetaParameterManager *newManager)
+{
+  metaParaManager = newManager;
+}
+
+void MetaControlledParameter::attachToMetaParameter(int index)
+{
+  jassert(metaParaManager != nullptr); // we need a reference to a MetaParameterManager object
+  if(metaParaManager == nullptr)
+    return;
+  bool success = metaParaManager->attachParameter(this, index);
+  if(success)
+    metaIndex = index;
+  else
+    index = -1;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 MetaParameter::MetaParameter()
 {
 
@@ -256,4 +314,11 @@ void MetaParameter::parameterIsGoingToBeDeleted(Parameter* p)
 {
   AutomatableParameter* ap = dynamic_cast<AutomatableParameter*>(p);
   removeParameter(ap);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool MetaParameterManager::attachParameter(MetaControlledParameter* param, int index)
+{
+  return false; // preliminary
 }
