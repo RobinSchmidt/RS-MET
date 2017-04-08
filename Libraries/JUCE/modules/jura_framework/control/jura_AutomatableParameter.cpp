@@ -273,52 +273,59 @@ MetaParameter::MetaParameter()
 
 }
 
-void MetaParameter::addParameter(AutomatableParameter* p)
+void MetaParameter::attachParameter(MetaControlledParameter* p)
 {
   if(contains(params, p))
     return; // already there, nothing to do, avoid recursive callbacks
-  p->setAutomationValue(value, true, true);
+  p->setProportionalValue(value, true, true);
   p->registerParameterObserver(this);
   appendIfNotAlreadyThere(params, p);
 }
 
-void MetaParameter::removeParameter(AutomatableParameter* p)
+void MetaParameter::detachParameter(MetaControlledParameter* p)
 {
   p->deRegisterParameterObserver(this);
   removeFirstOccurrence(params, p);
 }
 
-void MetaParameter::setAutomationValue(double v)
-{  
-  value = v;
+void MetaParameter::setValue(double newValue)
+{ 
+  jassert(newValue >= 0.0 && newValue <= 1.0); // must be a normalized value in the range 0..1
+  value = newValue;
   localAutomationSwitch = false; // so we don't call ourselves recursively
   for(int i = 0; i < size(params); i++)  
-    params[i]->setAutomationValue(value, true, true);
+    params[i]->setProportionalValue(value, true, true);
   localAutomationSwitch = true;
 }
 
 void MetaParameter::parameterChanged(Parameter* p)
 {
-  AutomatableParameter* ap = dynamic_cast<AutomatableParameter*>(p);
-  value = ap->getAutomationValue();
+  MetaControlledParameter* mcp = dynamic_cast<MetaControlledParameter*>(p);
+  value = mcp->getProportionalValue();
   localAutomationSwitch = false; // so we don't call ourselves recursively
-  for(int i = 0; i < size(params); i++)
-  {
-    if(params[i] != ap)
-      params[i]->setAutomationValue(value, true, true);
-  }
+  for(int i = 0; i < size(params); i++) {
+    if(params[i] != mcp)
+      params[i]->setProportionalValue(value, true, true); }
   localAutomationSwitch = true;
 }
 
 void MetaParameter::parameterIsGoingToBeDeleted(Parameter* p)
 {
-  AutomatableParameter* ap = dynamic_cast<AutomatableParameter*>(p);
-  removeParameter(ap);
+  MetaControlledParameter* mcp = dynamic_cast<MetaControlledParameter*>(p);
+  detachParameter(mcp);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 bool MetaParameterManager::attachParameter(MetaControlledParameter* param, int index)
 {
-  return false; // preliminary
+  // todo: if the passed parameter is already attached to some other MetaParameter (with other 
+  // index), we need to detach it there first ...maybe have a function detachFromAll
+
+  if(index >= 0 && index < size(metaParams)) {
+    metaParams[index]->attachParameter(param);
+    return true; }
+  else {
+    jassertfalse; // index out of range
+    return false; }
 }

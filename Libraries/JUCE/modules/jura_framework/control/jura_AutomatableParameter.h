@@ -236,6 +236,9 @@ public:
   MetaParameterManager). */
   virtual void attachToMetaParameter(int metaParameterIndex);
 
+  /** Returns the normalized value in the range 0..1. */
+  inline double getProportionalValue() { return proportionalValue; }
+
 protected:
 
   double proportionalValue;  // maybe factor out to Parameter
@@ -261,9 +264,15 @@ public:
 
   MetaParameter();
 
-  void setAutomationValue(double v);
-  void addParameter(AutomatableParameter* p);
-  void removeParameter(AutomatableParameter* p);
+  /** Sets this MetaParameter to the given value and updates all dependent MetaControlledParameters
+  accordingly. MetaParameter values are always in the normalized range 0..1. */
+  void setValue(double newValue);
+
+  /** Attaches the given MetaControlledParameter to this MetaParameter. */
+  void attachParameter(MetaControlledParameter* p);
+
+  /** Detaches the given MetaControlledParameter from this MetaParameter. */
+  void detachParameter(MetaControlledParameter* p);
 
   // callbacks:
   virtual void parameterChanged(Parameter* p) override;
@@ -273,27 +282,27 @@ public:
 protected:
 
   double value = 0.0;
-  std::vector<AutomatableParameter*> params; // list of pointers to the dependent parameters
-   // todo: use M
+
+  std::vector<MetaControlledParameter*> params; // list of pointers to the dependent parameters
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MetaParameter)
 };
 
 //=================================================================================================
 
+/** A class to manage a bunch of MetaParameters, allowing MetaControlledParameter objects to attach
+themselves to any of our manages MetaParameters. */
+
 class JUCE_API MetaParameterManager /*: public ParameterObserver*/
 {
 
 public:
-
-
 
   /** Attaches the passed MetaControlledParameter to the MetaParameter with given index and 
   returns if this was successful (it may fail, if you pass an out-of-range index). */
   virtual bool attachParameter(MetaControlledParameter* param, int index);
 
 protected:
-
 
   std::vector<MetaParameter*> metaParams;
 
