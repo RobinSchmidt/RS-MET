@@ -129,6 +129,20 @@ void AutomatableModule::addObservedParameter(Parameter *parameterToAdd,
   //observedParameters.push_back(parameterToAdd);
   observedParameters.addIfNotAlreadyThere(parameterToAdd);
   parameterToAdd->registerParameterObserver(this);
+
+  // under construction:
+  MetaControlledParameter* mcp = dynamic_cast<MetaControlledParameter*> (parameterToAdd);
+  if(mcp != nullptr)
+  {
+    jassertfalse;
+    // here, we need to tell the mcp, what MetaParameterManager it should use...but mabye we
+    // should do that in the subclass AudioModule...maybe we should get rid of the class
+    // AutomatableModule altogether...
+    // and maybe rename this function addParameter...or maybe rename this class 
+    // ParametrizedObject and get rid of the MIDI stuff
+  }
+
+
   //handlerFunctions.push_back(handlerFunction);
   observedParameters.getLock().exit();
 }
