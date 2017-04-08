@@ -197,13 +197,18 @@ protected:
 class MetaParameterManager;
 
 
-/** A subcclass of Parameter that can be controlled via a MetaParameter. To do so, it maintains a 
+/** A subclass of Parameter that can be controlled via a MetaParameter. To do so, it maintains a 
 pointer to a MetaParameterManager, where it can attach itself to one of the managed MetaParameters
 there. To make this work, you will have to call setMetaParameterManager to pass in the 
-MetaParameterManager to use. once this is done, you can attach this parameter to one of the 
+MetaParameterManager to use. Once this is done, you can attach this parameter to one of the 
 MetaParameters by calling attachToMetaParameter
 
-\todo maybe factor the handling of proportionalValue out into parameter baseclass
+\todo 
+-maybe factor the handling of proportionalValue out into parameter baseclass
+-maybe we should here have a setMetaValue function to replace the setProportionalValue that
+ 1st maps the meta-range 0..1 arbitrarily to itself (via some kind of ParameterMapper object) and
+ the calls Parameter::setProportionalValue with the mapped value. the mapper should be optional
+ and default to the identity-mapping.
 */
 
 class JUCE_API MetaControlledParameter : public Parameter
@@ -216,8 +221,7 @@ public:
     double defaultValue = 0.5, int scaling = LINEAR, double interval = 0.0);
 
   /** Sets the value of the parameter where the input argument is assumed to be normalized to the 
-  range 0...1 - arguments in this range will be mapped to the range between lowerAutomationLimit 
-  and upperAutomationLimit and the actual parameter will be adjusted accordingly. */
+  range 0...1  .... */
   virtual void setProportionalValue(double newProportionalValue, bool sendNotification, 
     bool callCallbacks);
 
