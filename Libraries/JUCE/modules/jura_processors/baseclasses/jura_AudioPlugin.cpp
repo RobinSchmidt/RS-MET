@@ -2,7 +2,9 @@
 void AudioPluginParameter::setValue(float newValue)
 {
   value = newValue; 
-  plugin->setParameter(getParameterIndex(), value);
+
+
+  //plugin->setParameter(getParameterIndex(), value);
   // something more to do here - we probably need to keep a pointer to the AudioPlugin object
   // which this parameter is part of and call plugin->setParameter(getParameterIndex(), value)
   // ...at least for a preliminary implementation...later, we will probably want to call the 
@@ -117,11 +119,11 @@ AudioProcessorEditor* AudioPlugin::createEditor()
   return pluginEditor;
 }
 
-void AudioPlugin::setParameter(int index, float value)
-{
-  //parameters[index] = value;
-  wrappedAudioModule->setMidiController(index, 127.f * value); // preliminary
-}
+//void AudioPlugin::setParameter(int index, float value)
+//{
+//  //parameters[index] = value;
+//  wrappedAudioModule->setMidiController(index, 127.f * value); // preliminary
+//}
 
 void AudioPlugin::getStateInformation(juce::MemoryBlock& destData)
 {

@@ -5,7 +5,8 @@
 \todo: inherit also from jura::MetaParameter for the "glue"
 */
 
-class JUCE_API AudioPluginParameter : public AudioProcessorParameter
+//class JUCE_API AudioPluginParameter : public AudioProcessorParameter
+class JUCE_API AudioPluginParameter : public AudioProcessorParameter, public MetaParameter
 {
 
 public:
@@ -16,7 +17,7 @@ public:
   virtual float getValue() const override { return value; }
   virtual void setValue(float newValue) override;
   virtual float getDefaultValue() const override { return 0.f; }
-  virtual String getName(int maximumStringLength) const override { return "Param" + String(getParameterIndex()); }
+  virtual String getName(int maximumStringLength) const override { return "Par" + String(getParameterIndex()); }
   virtual String getLabel() const override { return String::empty; }
   virtual float getValueForText(const String &text) const override { return text.getFloatValue(); }
 
@@ -81,7 +82,7 @@ public:
   virtual bool hasEditor() const override { return true; }
   virtual AudioProcessorEditor* createEditor() override;
 
-  virtual void setParameter(int parameterIndex, float newValue) override; // preliminary
+  //virtual void setParameter(int parameterIndex, float newValue) override; // preliminary
 
   virtual int getNumPrograms() override { return 1; }                // 1, because 0 is not allowed
   virtual int getCurrentProgram() override { return 0; }
