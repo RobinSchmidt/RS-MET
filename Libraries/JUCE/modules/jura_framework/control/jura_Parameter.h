@@ -98,8 +98,8 @@ connected to a Paramter object via registerValueChangeCallback and will be calle
 new value of the Parameter object as argument whenever the value has changed.
 
 The second callback mechanism has the advantage that the observing object does not need to derive 
-from ParameterObserver and does not need to know about the existence class Parameter at all. 
-Moreover, it may provide better performance thatn the 1st meachanism due to not having to figure 
+from ParameterObserver and does not need to know about the existence of class Parameter at all. 
+Moreover, it may provide better performance than the 1st meachanism due to not having to figure 
 out which Parameter has been changed on callback invocation. Disadvantages are, that it dictates a
 signature for the to-be-called-back member functions and potential code-bloat due to template 
 instantiation (it's based on template functors). It's recommended to be used mainly for performance
@@ -459,7 +459,7 @@ public:
   de-/re-allocated. */
   virtual void parameterSetChanged(ParameterSetHolder* parameterSetHolderThatHasChanged) = 0;
 
-  juce_UseDebuggingNewOperator;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParameterSetObserver)
 };
 
 
@@ -485,9 +485,9 @@ public:
 
 protected:
 
-  juce::Array<ParameterSetObserver*> parameterSetObservers;
+  std::vector<ParameterSetObserver*> parameterSetObservers; // use std::vector
 
-  juce_UseDebuggingNewOperator;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParameterSetHolder)
 };
 
 

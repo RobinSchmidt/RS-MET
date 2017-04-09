@@ -328,17 +328,17 @@ void Parameter::valueSanityCheck()
 
 void ParameterSetHolder::registerParameterSetObserver(ParameterSetObserver *observerToRegister)
 {
-  parameterSetObservers.addIfNotAlreadyThere(observerToRegister);
+  appendIfNotAlreadyThere(parameterSetObservers, observerToRegister);
 }
 
 void ParameterSetHolder::deRegisterParameterSetObserver(ParameterSetObserver *observerToDeRegister)
 {
-  parameterSetObservers.removeFirstMatchingValue(observerToDeRegister);
+  removeFirstOccurrence(parameterSetObservers, observerToDeRegister);
 }
 
 void ParameterSetHolder::sendParameterSetChangeNotification(
   ParameterSetHolder* parameterSetHolderThatHasChanged)
 {
-  for(int i=0; i<parameterSetObservers.size(); i++)
+  for(int i = 0; i < parameterSetObservers.size(); i++)
     parameterSetObservers[i]->parameterSetChanged(parameterSetHolderThatHasChanged);
 }
