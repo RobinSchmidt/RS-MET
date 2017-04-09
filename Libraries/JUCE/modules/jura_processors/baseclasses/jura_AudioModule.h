@@ -128,7 +128,7 @@ public:
 
   /** Returns a pointer to the MetaParameterManager that will be used by 
   MetaControlledParameters. */
-  MetaParameterManager* getMetaParameterManager() const;
+  MetaParameterManager* getMetaParameterManager() const { return metaParamManager; }
 
   /** Your subclass may override this to return an object of an appropriate subclass of
   AudioModuleEditor. The baseclass implementation will return a generic editor with sliders, 
@@ -171,6 +171,11 @@ public:
   /** Resets all the parameters to their default values. */
   virtual void resetParametersToDefaultValues();
 
+  /** Sets up the MetaParameterManager tha will be used by MetaControlledParameters. This object
+  is typically member of some outlying AudioPlugin and the AudioPlugin will set this up in its 
+  constructor. */
+  void setMetaParameterManager(MetaParameterManager* managerToUse);
+
   //-----------------------------------------------------------------------------------------------
   // Audio processing:
 
@@ -198,15 +203,15 @@ public:
 protected:
 
   /** Must be overriden by subclasses to fill the inherited array of observed parameters. */
-  virtual void initializeAutomatableParameters();
+  //virtual void initializeAutomatableParameters(); // remove
 
   /** Our child modules to which we will distribute MIDI-events and of which we manage the
   states. */
   juce::Array<AudioModule*, CriticalSection> childModules;
 
+  MetaParameterManager* metaParamManager = nullptr;
 
-  CriticalSection *plugInLock;     
-  // mutex to access the wrapped core dsp object
+  CriticalSection *plugInLock;     // mutex to access the wrapped core dsp object
 
 
   double triggerInterval;          // interval (in beats) for calls to trigger()
@@ -249,11 +254,7 @@ public:
   AudioModuleWithMidiIn(CriticalSection *lockToUse) : AudioModule(lockToUse) {}
 
   //-----------------------------------------------------------------------------------------------
-  // Event processing - move into subclass AudioModuleWithMidi - there, we need to re-implement
-  // processBlock(AudioBuffer<double> &buffer, MidiBuffer &midiMessages) callback in order to
-  // actually do something with the passed MidiBuffer there - from there, we should call the 
-  // individual event-handlers which can int turn be overriden by subclasses of 
-  // AudioModuleWithMidi...
+  // Event processing:
 
   /** Handles a generic MidiMessage. */
   virtual void handleMidiMessage(MidiMessage message);

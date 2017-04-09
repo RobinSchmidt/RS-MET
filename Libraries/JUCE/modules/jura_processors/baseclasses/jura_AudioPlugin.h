@@ -71,21 +71,7 @@ public:
   virtual bool hasEditor() const override { return true; }
   virtual AudioProcessorEditor* createEditor() override;
 
-  //virtual int getNumParameters() override { return 128; }
-  //virtual float getParameter(int index) override 
-  //{ 
-  //  return parameters[index]; 
-  //}
-  //virtual const String getParameterName(int index) override 
-  //{ 
-  //  return "Param" + String(index); 
-  //};
-  //virtual const String getParameterText(int	index) override 
-  //{ 
-  //  return String(parameters[index]); 
-  //}
   virtual void setParameter(int parameterIndex, float newValue) override; // preliminary
-
 
   virtual int getNumPrograms() override { return 1; }                // 1, because 0 is not allowed
   virtual int getCurrentProgram() override { return 0; }
@@ -107,7 +93,8 @@ public:
   //-----------------------------------------------------------------------------------------------
   // data:
 
-  AudioModule *underlyingAudioModule;  
+  AudioModule *wrappedAudioModule;  
+  //AudioModule *underlyingAudioModule;  
    // the wrapped jura::AudioModule - rename to wrappedAudioModule
 
   /** Mutex-lock for all accesses to the underlyingAudioModule's member functions - a pointer to 
@@ -130,9 +117,10 @@ protected:
   between float/double and double/float. That's what this buffer is used for. */
   AudioBuffer<double> internalAudioBuffer; 
 
+  // parameter-management:
   static const int numParameters = 128;
-  //float parameters[numParameters];
   AudioPluginParameter* parameters[numParameters];
+  MetaParameterManager metaParaManager;
 
   juce::String plugInName;  // assign this in the constructor of your subclass
    // maybe get rid of this and let the wrapper return the name of the wrapped AudioModule

@@ -23,7 +23,7 @@ AudioProcessor* JUCE_CALLTYPE createPluginWithoutMidi(AudioModuleType *dummy)
   // wraps audio module into plugin without midi input
   jura::AudioPlugin *plugIn = new jura::AudioPlugin(nullptr);
   AudioModuleType   *module = new AudioModuleType(&plugIn->plugInLock);
-  plugIn->underlyingAudioModule = module;
+  plugIn->wrappedAudioModule = module;
   return plugIn;
 }
 
@@ -33,8 +33,8 @@ AudioProcessor* JUCE_CALLTYPE createPluginWithMidi(AudioModuleType *dummy)
   // wraps audio module into plugin with midi input
   jura::AudioPluginWithMidiIn *plugIn = new jura::AudioPluginWithMidiIn(nullptr);
   AudioModuleType *module = new AudioModuleType(&plugIn->plugInLock);
-  plugIn->underlyingAudioModule   = module;
-  plugIn->wrappedModuleWithMidiIn = module;
+  plugIn->wrappedAudioModule = module;
+  plugIn->wrappedAudioModule = module;
   return plugIn;
 }
 

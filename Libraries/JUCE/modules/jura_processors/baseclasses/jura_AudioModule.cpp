@@ -30,10 +30,8 @@ void AudioModuleDeletionWatcher::removeWatchedAudioModule(AudioModule
 
 AudioModule::AudioModule(CriticalSection *lockToUse)
 {
-  //plugInLock = new CriticalSection;
 
   plugInLock = lockToUse;
-
   ParameterObserver::localAutomationSwitch = true;  // activate automation for this instance
   wantsTempoSyncInfo = true;
   //underlyingRosicInstrument = NULL;  // by default, this does not wrap an instrument
@@ -42,7 +40,7 @@ AudioModule::AudioModule(CriticalSection *lockToUse)
   patchFormatIndex = 1;
   triggerInterval = 0.0;
   saveAndRecallState = true;
-  initializeAutomatableParameters();
+  //initializeAutomatableParameters();  // remove
 }
 
 AudioModule::~AudioModule()
@@ -170,12 +168,6 @@ juce::String AudioModule::getModuleHeadlineString()
   return moduleName + moduleNameAppendix;
 }
 
-MetaParameterManager* AudioModule::getMetaParameterManager() const
-{
-  jassertfalse; // not yet implemeted
-  return nullptr;
-}
-
 AudioModuleEditor* AudioModule::createEditor()
 {
   return new GenericAudioModuleEditor(this);
@@ -206,11 +198,6 @@ XmlElement* AudioModule::getStateAsXml(const juce::String& stateName, bool markA
   // store controller mappings (if any)
   automatableModuleStateToXml(this, xmlState);
 
-  //// if this module is a polyphonic instrument, we store some global instrument parameters 
-  //// (such as number of voices, tuning, etc.):
-  //if( underlyingRosicInstrument != NULL )
-  //  polyphonicInstrumentStateToXml(underlyingRosicInstrument, xmlState);
-
   // save the states of all childModules in child-XmlElements:
   childModules.getLock().enter();
   for(int c=0; c<childModules.size(); c++)
@@ -233,13 +220,9 @@ void AudioModule::setStateFromXml(const XmlElement& xmlState, const juce::String
   ScopedLock scopedLock(*plugInLock);
 
   XmlElement convertedState = convertXmlStateIfNecessary(xmlState);
-  automatableModuleStateFromXml(this, convertedState);
+  automatableModuleStateFromXml(this, convertedState); // turn into member function
 
-  //// check, if this module wraps an instrument - if so, we wave some more settings to restore:
-  //if( underlyingRosicInstrument != NULL )
-  //  polyphonicInstrumentStateFromXml(underlyingRosicInstrument, convertedState);
-
-  juce::String thisName =  this->moduleName;  // for debug
+  //juce::String thisName =  this->moduleName;  // for debug
 
   // if we have child-modules, we try to restore their states by looking for corresponding
   // child XmlElements in the xmlState:
@@ -287,6 +270,13 @@ void AudioModule::resetParametersToDefaultValues()
   for(int i = 0; i < (int)observedParameters.size(); i++)
     observedParameters[i]->resetToDefaultValue(true, true);
 }
+
+void AudioModule::setMetaParameterManager(MetaParameterManager* managerToUse)
+{
+  ScopedLock scopedLock(*plugInLock);
+  metaParamManager = managerToUse;
+  // do we need to do something more here?
+}
     
 void AudioModule::registerDeletionWatcher(AudioModuleDeletionWatcher *watcher)
 {
@@ -303,10 +293,11 @@ void AudioModule::deRegisterDeletionWatcher(AudioModuleDeletionWatcher *watcher)
 //-------------------------------------------------------------------------------------------------
 // others:
 
-void AudioModule::initializeAutomatableParameters()
-{
-
-}
+// remove
+//void AudioModule::initializeAutomatableParameters()
+//{
+//
+//}
 
 void AudioModule::updateCoreObjectAccordingToParameters()
 {

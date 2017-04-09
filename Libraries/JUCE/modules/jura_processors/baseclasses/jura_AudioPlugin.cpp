@@ -15,7 +15,12 @@ AudioPlugin::AudioPlugin(AudioModule *moduleToWrap)
 {
   ScopedLock sl(plugInLock);
   initialiseJuce_GUI();  // why do we need this?
-  underlyingAudioModule = moduleToWrap;
+
+  wrappedAudioModule = moduleToWrap;
+
+  //underlyingAudioModule->setMetaParameterManager(&metaParaManager); 
+   // nope -  we may get called with a nullptr for this - we need to call a function
+   // setAudioModuleToWrap
 
   // maybe, here, we could somehow set up the parameter that the plugin exposes to the host and 
   // connect them to the module's internal parameters
@@ -32,10 +37,10 @@ AudioPlugin::AudioPlugin(AudioModule *moduleToWrap)
 AudioPlugin::~AudioPlugin()
 {    
   ScopedLock sl(plugInLock);
-  if( underlyingAudioModule != nullptr )  // not necessary? it's actually safe to delete a nullptr
+  if( wrappedAudioModule != nullptr )  // not necessary? it's actually safe to delete a nullptr
   {
-    delete underlyingAudioModule;
-    underlyingAudioModule = nullptr;
+    delete wrappedAudioModule;
+    wrappedAudioModule = nullptr;
   }
 }
 
@@ -65,8 +70,8 @@ void AudioPlugin::prepareToPlay(double sampleRate, int maximumExpectedSamplesPer
   }
   // Maybe we could release the buffer when the host calls releaseResources() - we'll see.
 
-  if( underlyingAudioModule != nullptr )
-    underlyingAudioModule->setSampleRate(sampleRate);
+  if( wrappedAudioModule != nullptr )
+    wrappedAudioModule->setSampleRate(sampleRate);
 }
 
 template<class SourceType, class TargetType>
@@ -106,10 +111,10 @@ void AudioPlugin::processBlock(AudioBuffer<float>& buffer, MidiBuffer& midiMessa
 
 AudioProcessorEditor* AudioPlugin::createEditor() 
 { 
-  if(underlyingAudioModule == nullptr)
+  if(wrappedAudioModule == nullptr)
     return nullptr;
   ParameterObserver::guiAutomationSwitch = false;   // don't automate widgets during creation
-  AudioModuleEditor *moduleEditor = underlyingAudioModule->createEditor();
+  AudioModuleEditor *moduleEditor = wrappedAudioModule->createEditor();
   AudioPluginEditor *pluginEditor = new AudioPluginEditor(moduleEditor, this);
   ParameterObserver::guiAutomationSwitch = true;    // now, widgets can be automated again
   return pluginEditor;
@@ -118,14 +123,14 @@ AudioProcessorEditor* AudioPlugin::createEditor()
 void AudioPlugin::setParameter(int index, float value)
 {
   //parameters[index] = value;
-  underlyingAudioModule->setMidiController(index, 127.f * value); // preliminary
+  wrappedAudioModule->setMidiController(index, 127.f * value); // preliminary
 }
 
 void AudioPlugin::getStateInformation(juce::MemoryBlock& destData)
 {
-  if(underlyingAudioModule != nullptr)
+  if(wrappedAudioModule != nullptr)
   {
-    XmlElement* xml = underlyingAudioModule->getStateAsXml("StateAsRequestedByHost", false);
+    XmlElement* xml = wrappedAudioModule->getStateAsXml("StateAsRequestedByHost", false);
     xml->setAttribute("EditorWidth",  editorWidth);
     xml->setAttribute("EditorHeight", editorHeight);
     copyXmlToBinary(*xml, destData);
@@ -135,12 +140,12 @@ void AudioPlugin::getStateInformation(juce::MemoryBlock& destData)
 
 void AudioPlugin::setStateInformation(const void* data, int sizeInBytes)
 {
-  if(underlyingAudioModule != nullptr)
+  if(wrappedAudioModule != nullptr)
   {
     XmlElement* const xml = getXmlFromBinary(data, sizeInBytes);
     //ParameterObserver::globalAutomationSwitch = false; // why this - threading problems? -> interferes with total recall in quadrifex
     ParameterObserver::guiAutomationSwitch = false;
-    underlyingAudioModule->setStateFromXml(*xml, "recalled by host", false);
+    wrappedAudioModule->setStateFromXml(*xml, "recalled by host", false);
     editorWidth  = xml->getIntAttribute("EditorWidth",  0);
     editorHeight = xml->getIntAttribute("EditorHeight", 0);
     ParameterObserver::guiAutomationSwitch = true;
@@ -162,7 +167,7 @@ void AudioPlugin::processBlock(AudioBuffer<double> &buffer, MidiBuffer &midiMess
 {
   ScopedLock scopedLock(plugInLock);
 
-  if(underlyingAudioModule != nullptr)
+  if(wrappedAudioModule != nullptr)
   {
     int numChannels = buffer.getNumChannels();
     int numSamples  = buffer.getNumSamples();
@@ -172,7 +177,7 @@ void AudioPlugin::processBlock(AudioBuffer<double> &buffer, MidiBuffer &midiMess
     // underlyingAudioModule->handleMidiMessage accordingly) ...but maybe we should do that in
     // a subclass AudioPluginWithMidiIn
 
-    underlyingAudioModule->processBlock(inOutBuffer, numChannels, numSamples);
+    wrappedAudioModule->processBlock(inOutBuffer, numChannels, numSamples);
   }
   else
     buffer.clear();
@@ -227,23 +232,23 @@ void AudioPluginWithMidiIn::processBlock(AudioBuffer<double> &buffer, MidiBuffer
   // request time-info from host and update the bpm-values for the modulators accordingly, if they 
   // are in sync mode (maybe this should be moved up into the baseclass AudioModule):
   int timeToNextTriggerInSamples = -1;
-  if( underlyingAudioModule->wantsTempoSyncInfo )
+  if( wrappedAudioModule->wantsTempoSyncInfo )
   {
     AudioPlayHead::CurrentPositionInfo info;
     if( getPlayHead() != 0  &&  getPlayHead()->getCurrentPosition(info) )
     {
       if( info.bpm <= 0.0 )
         info.bpm = 120.0;  // fallback value when nothing meaningful is passed
-      underlyingAudioModule->setBeatsPerMinute(info.bpm); 
+      wrappedAudioModule->setBeatsPerMinute(info.bpm); 
     }
 
-    if( underlyingAudioModule->getTriggerInterval() != 0.0 )
+    if( wrappedAudioModule->getTriggerInterval() != 0.0 )
     {
       double timeInBeats = secondsToBeats(info.timeInSeconds, info.bpm); 
       // kludge - will probably not work when tempo changes - use ppqPosition here later....
 
-      double timeToNextTriggerInBeats = underlyingAudioModule->getTriggerInterval()                                 
-        - fmod(timeInBeats, underlyingAudioModule->getTriggerInterval());
+      double timeToNextTriggerInBeats = wrappedAudioModule->getTriggerInterval()                                 
+        - fmod(timeInBeats, wrappedAudioModule->getTriggerInterval());
 
       timeToNextTriggerInSamples = 
         RAPT::roundToInt(getSampleRate()*beatsToSeconds(timeToNextTriggerInBeats, info.bpm));
@@ -286,7 +291,7 @@ void AudioPluginWithMidiIn::processBlock(AudioBuffer<double> &buffer, MidiBuffer
       // check if we should spawn a trigger-event at this instant:
       if( start == timeToNextTriggerInSamples )
       {
-        underlyingAudioModule->trigger();
+        wrappedAudioModule->trigger();
 
         // update the time to the next trigger:
         timeToNextTriggerInSamples = -1;  
@@ -323,7 +328,7 @@ void AudioPluginWithMidiIn::processBlock(AudioBuffer<double> &buffer, MidiBuffer
       double* channelPointers[2];   // we assume 2 channels
       channelPointers[0] = buffer.getWritePointer(0) + start;
       channelPointers[1] = buffer.getWritePointer(1) + start;
-      underlyingAudioModule->processBlock(channelPointers, 2, subLength);
+      wrappedAudioModule->processBlock(channelPointers, 2, subLength);
 
       start += subLength; // increment start position for next iteration
 

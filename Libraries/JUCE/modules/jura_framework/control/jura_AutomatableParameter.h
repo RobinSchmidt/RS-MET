@@ -297,14 +297,24 @@ protected:
 /** A class to manage a bunch of MetaParameters, allowing MetaControlledParameter objects to attach
 themselves to any of our manages MetaParameters. */
 
-class JUCE_API MetaParameterManager /*: public ParameterObserver*/
+class JUCE_API MetaParameterManager
 {
 
 public:
 
+  MetaParameterManager() {};
+
+  /** Adds the passed MetaParameter to our list of managed MetaParameters. */
+  void addMetaParamater(MetaParameter* metaParameterToAdd);
+
   /** Attaches the passed MetaControlledParameter to the MetaParameter with given index and 
   returns if this was successful (it may fail, if you pass an out-of-range index). */
-  virtual bool attachParameter(MetaControlledParameter* param, int index);
+  bool attachParameter(MetaControlledParameter* param, int metaIndex);
+
+  /** If the passed parameter is attached to any of our managed MetaParameters, this function
+  will detach it. */
+  void detachParameter(MetaControlledParameter* param);
+
 
 protected:
 

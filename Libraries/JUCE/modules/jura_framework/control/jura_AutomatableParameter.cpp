@@ -317,15 +317,24 @@ void MetaParameter::parameterIsGoingToBeDeleted(Parameter* p)
 
 //-------------------------------------------------------------------------------------------------
 
+void MetaParameterManager::addMetaParamater(MetaParameter* metaParameterToAdd)
+{
+  appendIfNotAlreadyThere(metaParams, metaParameterToAdd);
+}
+
 bool MetaParameterManager::attachParameter(MetaControlledParameter* param, int index)
 {
-  // todo: if the passed parameter is already attached to some other MetaParameter (with other 
-  // index), we need to detach it there first ...maybe have a function detachFromAll
-
+  detachParameter(param);
   if(index >= 0 && index < size(metaParams)) {
     metaParams[index]->attachParameter(param);
     return true; }
   else {
     jassertfalse; // index out of range
     return false; }
+}
+
+void MetaParameterManager::detachParameter(MetaControlledParameter* param)
+{
+  for(int i = 0; i < size(metaParams); i++)
+    metaParams[i]->detachParameter(param);
 }
