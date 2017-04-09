@@ -122,28 +122,11 @@ int AutomatableModule::getNumParameters() const
 //-------------------------------------------------------------------------------------------------
 // add/remove observed parameters:
 
-void AutomatableModule::addObservedParameter(Parameter *parameterToAdd, 
-  void (AutomatableModule::*handlerFunction)(double value)  )
+void AutomatableModule::addObservedParameter(Parameter *parameterToAdd)
 {
   observedParameters.getLock().enter();
-  //observedParameters.push_back(parameterToAdd);
   observedParameters.addIfNotAlreadyThere(parameterToAdd);
   parameterToAdd->registerParameterObserver(this);
-
-  // under construction:
-  MetaControlledParameter* mcp = dynamic_cast<MetaControlledParameter*> (parameterToAdd);
-  if(mcp != nullptr)
-  {
-    jassertfalse;
-    // here, we need to tell the mcp, what MetaParameterManager it should use...but mabye we
-    // should do that in the subclass AudioModule...maybe we should get rid of the class
-    // AutomatableModule altogether...
-    // and maybe rename this function addParameter...or maybe rename this class 
-    // ParametrizedObject and get rid of the MIDI stuff
-  }
-
-
-  //handlerFunctions.push_back(handlerFunction);
   observedParameters.getLock().exit();
 }
 
@@ -151,26 +134,14 @@ void AutomatableModule::removeObservedParameter(Parameter *parameterToRemove, bo
 {
   observedParameters.getLock().enter();
   int i=0;
-  while( i < (int) observedParameters.size() )
+  while( i < (int) observedParameters.size() ) 
   {
-    if( observedParameters[i] == parameterToRemove )
+    if( observedParameters[i] == parameterToRemove ) 
     {
-      // de-register ourselves as listener:
       parameterToRemove->deRegisterParameterObserver(this);
-
-      // remove the pointer from the array:
       observedParameters.removeFirstMatchingValue(parameterToRemove);
-      //observedParameters.removeValue(parameterToRemove);
-      //observedParameters.erase(observedParameters.begin() + i);
-
-      // remove the handler function from the function array:
-      //handlerFunctions.erase(handlerFunctions.begin() + i);
-
-      // free the memory associated with the pointer, if so chosen:
       if( deleteObject == true )
         delete parameterToRemove;
-
-      
       i--; // because array has shrunken
     }
     i++;
@@ -184,20 +155,9 @@ void AutomatableModule::removeAllObservedParameters(bool deleteObjects)
   Parameter *removee; // this is the currently removed parameter
   while( observedParameters.size() > 0 )
   {
-    // retrieve the pointer to the parameter to be removed from the array:
     removee = observedParameters[0];
-
-    // de-register ourselves as listener:
     removee->deRegisterParameterObserver(this);
-
-    // remove the parameter from the array:
     observedParameters.remove(0);
-    //observedParameters.erase(observedParameters.begin());
-
-    // remove the handler function from the function array:    
-    //handlerFunctions.erase(handlerFunctions.begin());
-
-    // optionally delete the parameter object associated with the pointer that was removed:
     if( deleteObjects == true )
       delete removee;   
   }
@@ -208,10 +168,6 @@ void AutomatableModule::parameterChanged(Parameter *parameterThatHasChanged)
 {
   observedParameters.getLock().enter();
   int index = getParameterIndex(parameterThatHasChanged);
-
-  //if( handlerFunctions[index] != NULL )
-  //  handlerFunctions[index](parameterThatHasChanged->getValue());
-
   observedParameters.getLock().exit();
 }
 

@@ -132,6 +132,14 @@ bool AudioModule::checkForCrack()
   return false;
 }
 
+void AudioModule::addObservedParameter(Parameter *parameterToAdd)
+{
+  AutomatableModule::addObservedParameter(parameterToAdd);
+  MetaControlledParameter* mcp = dynamic_cast<MetaControlledParameter*> (parameterToAdd);
+  if(mcp != nullptr)
+    mcp->setMetaParameterManager(getMetaParameterManager());
+}
+
 //-------------------------------------------------------------------------------------------------
 // inquiry:
 
@@ -160,6 +168,12 @@ int AudioModule::getIndexAmongNameSakes(AudioModule *child)
 juce::String AudioModule::getModuleHeadlineString()
 {
   return moduleName + moduleNameAppendix;
+}
+
+MetaParameterManager* AudioModule::getMetaParameterManager() const
+{
+  jassertfalse; // not yet implemeted
+  return nullptr;
 }
 
 AudioModuleEditor* AudioModule::createEditor()

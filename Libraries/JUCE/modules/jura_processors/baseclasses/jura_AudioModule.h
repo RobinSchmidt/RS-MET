@@ -94,6 +94,13 @@ public:
   /** Checks, if this is a cracked version and if so, it sets up the appendix for the headline 
   accordingly. Return value informs also whether or not a cracked version was detected. */
   virtual bool checkForCrack();
+    // move to another class
+
+  /** Overrides inherited method to additionaly wire the passed Parameter up to the 
+  MetaParameterManager. */
+  virtual void addObservedParameter(Parameter *parameterToAdd) override;
+
+
 
   //-----------------------------------------------------------------------------------------------
   // inquiry:
@@ -118,6 +125,10 @@ public:
   may have child modules which are  currently inactive and therefore don't need to save and recall 
   their state. This makes preset files more economical. */
   bool wantsSaveAndRecallState() const { return saveAndRecallState; }
+
+  /** Returns a pointer to the MetaParameterManager that will be used by 
+  MetaControlledParameters. */
+  MetaParameterManager* getMetaParameterManager() const;
 
   /** Your subclass may override this to return an object of an appropriate subclass of
   AudioModuleEditor. The baseclass implementation will return a generic editor with sliders, 

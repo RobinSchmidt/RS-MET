@@ -15,7 +15,8 @@ are not mutually exclusive (mutex'ed) from each other.
 
 \todo factor out a baseclass ParameterManager - can be used for all classes that need to maintain 
 a set of parameters, these classes need not to be audio related - this should perhaps also be a 
-subclass of StateManager
+subclass of StateManager - OR rename this class ParametrizedObject and get rid of the MIDI stuff
+-> move it to AudioModule
 
 actually, this class would better fit into the jura_processors module
 
@@ -40,13 +41,16 @@ public:
 
   /** Assigns a MIDI controller to one of the observed parameters. */
   virtual void assignMidiController(const juce::String& nameOfParameter, int controllerNumber);
+  // move to AudioModule
 
   /** Receives MIDI controller messages and dispatches them to the appropriate to one of the
   Parameter object. */
   virtual void setMidiController(int controllerNumber, float controllerValue);
+  // move to AudioModule
 
   /** Reverts all observed parameters to their default settings. */
   virtual void revertToDefaultMapping();
+  // move to AudioModule
 
   //-----------------------------------------------------------------------------------------------
   // retrieve pointers to the observed parameters:
@@ -74,20 +78,20 @@ public:
   //-----------------------------------------------------------------------------------------------
   // add/remove observed parameters:
 
-  //void dummyHandler(double value);
-
   /** Adds a pointer to an Parameter object to the array of observed parameters and
   registers this instance as listener to the passed parameter. */
-  virtual void addObservedParameter(Parameter *parameterToAdd,
-    void (AutomatableModule::*handlerFunction)(double value) = NULL);
+  virtual void addObservedParameter(Parameter *parameterToAdd);
+  // rename to addParameter
 
   /** Removes a pointer to an Parameter object from the array of observed parameters and optionally 
   deletes the object itself. */
   virtual void removeObservedParameter(Parameter *parameterToRemove, bool deleteObject);
+  // rename to removeParameter
 
   /** Removes all the pointers to the observed parameters and optionally deletes the objects 
   themselves. */
   virtual void removeAllObservedParameters(bool deleteObjects);
+  // rename to removeAllParameters
 
   /** Overrides the inherited parameterChanged function in order to pass the new value of the 
   parameter to the appropriate handler
@@ -104,9 +108,6 @@ protected:
 
   /** An array of our observed parameters. */
   juce::Array<Parameter*, CriticalSection> observedParameters;
-
-  //typedef void (AutomatableModule::*handlerFunctionPointer)(double);
-  //std::vector<handlerFunctionPointer> handlerFunctions;
 
   /** Returns the index of the parameter in the array or -1 if the parameter was not found .*/
   int getParameterIndex(Parameter *parameterToLookFor);
