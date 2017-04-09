@@ -275,7 +275,7 @@ void AudioModule::setMetaParameterManager(MetaParameterManager* managerToUse)
   for(i = 0; i < childModules.size(); i++)
     childModules[i]->setMetaParameterManager(metaParamManager);
 
-  // maybe factor out:
+  // maybe factor out - we may need to do this in other places as well:
   for(i = 0; i < observedParameters.size(); i++)
   {
     MetaControlledParameter* mcp = dynamic_cast<MetaControlledParameter*>(observedParameters[i]);

@@ -6,8 +6,8 @@ AudioProcessor* JUCE_CALLTYPE createPluginFilter()
   //jura::PhaseScope2 *dummy = nullptr; return createPluginWithoutMidi(dummy);
   //jura::PhaseScopeMultiColor *dummy = nullptr; return createPluginWithoutMidi(dummy);
   //jura::PhasorFilter *dummy = nullptr; return createPluginWithoutMidi(dummy);
-  //jura::Ladder       *dummy = nullptr; return createPluginWithMidi(dummy);
+  jura::Ladder       *dummy = nullptr; return createPluginWithMidi(dummy);
   //jura::Enveloper    *dummy = nullptr; return createPluginWithMidi(dummy);
 
-  jura::AudioModuleChain *dummy = nullptr; return createPluginWithMidi(dummy);
+  //jura::AudioModuleChain *dummy = nullptr; return createPluginWithMidi(dummy);
 }

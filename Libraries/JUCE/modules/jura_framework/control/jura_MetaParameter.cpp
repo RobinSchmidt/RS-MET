@@ -61,7 +61,12 @@ void MetaControlledParameter::attachToMetaParameter(int index)
 
 void MetaControlledParameter::detachFromMetaParameter()
 {
-  attachToMetaParameter(-1); // trying to attach to invalid meta-index will detach
+  jassert(metaParaManager != nullptr);
+  if(metaParaManager == nullptr)
+    return;
+  metaParaManager->detachParameter(this);
+
+  //attachToMetaParameter(-1); // trying to attach to invalid meta-index will detach
 }
 
 //-------------------------------------------------------------------------------------------------

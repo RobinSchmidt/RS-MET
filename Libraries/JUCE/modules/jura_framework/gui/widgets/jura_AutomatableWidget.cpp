@@ -105,7 +105,7 @@ void AutomatableWidget::addPopUpMetaItems()
   if(mcp != nullptr)
   {
     rightClickPopUp->addItem(META_ATTACH, String("Meta attach")); // todo: show currently attached meta index
-    rightClickPopUp->addItem(META_ATTACH, String("Meta detach"));
+    rightClickPopUp->addItem(META_DETACH, String("Meta detach"));
   }
 }
 
