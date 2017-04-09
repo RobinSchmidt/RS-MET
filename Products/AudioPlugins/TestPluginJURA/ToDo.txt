@@ -1,0 +1,4 @@
+Parameter: use std::vector for observers and defaultValues
+AutomatableModule: use std::vector for Parameters (may require manual locking)
+AudioModule: use std::vector for childModules
+AudioModuleChain: use inherited childModules array instead of "modules"

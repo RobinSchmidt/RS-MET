@@ -29,6 +29,7 @@
 #include <jura_framework/jura_framework.h>
 #include <jura_processors/jura_processors.h>
 
+#include "BinaryData.h"
 
 #if ! DONT_SET_USING_JUCE_NAMESPACE
  // If your code uses a lot of JUCE classes, then this will obviously save you

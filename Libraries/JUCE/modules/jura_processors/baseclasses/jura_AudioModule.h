@@ -208,6 +208,7 @@ protected:
   /** Our child modules to which we will distribute MIDI-events and of which we manage the
   states. */
   juce::Array<AudioModule*, CriticalSection> childModules;
+    // maybe use a std::vector -> better for debugging
 
   MetaParameterManager* metaParamManager = nullptr;
 
