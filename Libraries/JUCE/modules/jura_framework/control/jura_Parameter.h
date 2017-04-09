@@ -427,11 +427,10 @@ protected:
   GenericMemberFunctionCallback1<void, int>    *valueChangeCallbackInt    = nullptr;
   GenericMemberFunctionCallback1<void, bool>   *valueChangeCallbackBool   = nullptr;
 
-  juce::Array<ParameterObserver*> parameterObservers;
-  //std::vector<ParameterObserver*> parameterObservers;
-   // \todo switch back to juceArray - std::vector was only for debugging purposes
+  std::vector<ParameterObserver*> parameterObservers;
 
-  juce_UseDebuggingNewOperator;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Parameter)
 };
 
 //=================================================================================================

@@ -1,7 +1,3 @@
-//#include "rojue_Parameter.h"
-//using namespace rojue;
-
-//=================================================================================================
 // class ParameterObserver:
 
 bool ParameterObserver::globalAutomationSwitch = true;
@@ -63,11 +59,6 @@ Parameter::Parameter(CriticalSection *criticalSectionToUse, const String& newNam
   scaling       = newScaling;  // set this before restrictValueToParameterRange is called
   defaultValue  = restrictValueToParameterRange(newDefaultValue);
   value         = defaultValue;
-
-  //saveAndRecall = true;
-  //valueChangeCallbackDouble = NULL;
-  //valueChangeCallbackInt    = NULL;
-  //valueChangeCallbackBool   = NULL;
 }
 
 Parameter::~Parameter()
@@ -269,13 +260,15 @@ String Parameter::getScalingString() const
 void Parameter::registerParameterObserver(ParameterObserver *observerToAdd)
 {
   ScopedPointerLock spl(mutex);
-  parameterObservers.addIfNotAlreadyThere(observerToAdd);
+  appendIfNotAlreadyThere(parameterObservers, observerToAdd);
+  //parameterObservers.addIfNotAlreadyThere(observerToAdd);
 }
 
 void Parameter::deRegisterParameterObserver(ParameterObserver *observerToRemove)
 {
   ScopedPointerLock spl(mutex);
-  parameterObservers.removeFirstMatchingValue(observerToRemove);
+  removeFirstOccurrence(parameterObservers, observerToRemove);
+  //parameterObservers.removeFirstMatchingValue(observerToRemove);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -284,7 +277,7 @@ void Parameter::deRegisterParameterObserver(ParameterObserver *observerToRemove)
 void Parameter::notifyObservers()
 {
   ScopedPointerLock spl(mutex);
-  for(int i=0; i < (int) parameterObservers.size(); i++)
+  for(int i = 0; i < (int) parameterObservers.size(); i++)
   {
     ParameterObserver *observer = parameterObservers[i];
     if( parameterObservers[i]->wantsAutomationNotification() )
