@@ -24,8 +24,8 @@ protected:
   /** Enumeration of the identifiers to used as return-values for the right-click popup menu. */
   enum rightClickPopUpItemIdentifiers
   {
-    ENTER_VALUE = 1,
-    DEFAULT_VALUE,
+    ENTER_VALUE = 1,  // nope - these two should be available in the slider baseclass already
+    DEFAULT_VALUE,    
 
     MIDI_ASSIGN,
     MIDI_LEARN,

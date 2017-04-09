@@ -270,7 +270,8 @@ void BreakpointModulatorAudioModule::initializeAutomatableParameters()
   // is important because in parameterChanged(), the index (position in the array) will be used to
   // identify which particlua parameter has changed.
 
-  juce::Array<double> defaultValues;
+  //juce::Array<double> defaultValues;
+  std::vector<double> defaultValues;
 
   // this pointer will be used to temporarily store the addresses of the created Parameter-objects:
   AutomatableParameter* p;
@@ -278,23 +279,23 @@ void BreakpointModulatorAudioModule::initializeAutomatableParameters()
   // #00
   p = new AutomatableParameter(plugInLock, "TimeScale", 0.0625, 16.0, 0.0, 1.0, 
     Parameter::EXPONENTIAL);
-  defaultValues.add(1.0/16.0);
-  defaultValues.add(1.0/12.0);
-  defaultValues.add(1.0/8.0);
-  defaultValues.add(1.0/6.0);
-  defaultValues.add(1.0/4.0);
-  defaultValues.add(1.0/3.0);
-  defaultValues.add(1.0/2.0);
-  defaultValues.add(3.0/4.0);
-  defaultValues.add(1.0);
-  defaultValues.add(3.0/2.0);
-  defaultValues.add(2.0);
-  defaultValues.add(3.0);
-  defaultValues.add(4.0);
-  defaultValues.add(6.0);
-  defaultValues.add(8.0);
-  defaultValues.add(12.0);
-  defaultValues.add(16.0);
+  defaultValues.push_back(1.0/16.0);
+  defaultValues.push_back(1.0/12.0);
+  defaultValues.push_back(1.0/8.0);
+  defaultValues.push_back(1.0/6.0);
+  defaultValues.push_back(1.0/4.0);
+  defaultValues.push_back(1.0/3.0);
+  defaultValues.push_back(1.0/2.0);
+  defaultValues.push_back(3.0/4.0);
+  defaultValues.push_back(1.0);
+  defaultValues.push_back(3.0/2.0);
+  defaultValues.push_back(2.0);
+  defaultValues.push_back(3.0);
+  defaultValues.push_back(4.0);
+  defaultValues.push_back(6.0);
+  defaultValues.push_back(8.0);
+  defaultValues.push_back(12.0);
+  defaultValues.push_back(16.0);
   p->setDefaultValues(defaultValues);
   addObservedParameter(p);
 
@@ -302,9 +303,9 @@ void BreakpointModulatorAudioModule::initializeAutomatableParameters()
   p = new AutomatableParameter(plugInLock, "TimeScaleByKey", -150.0, 150.0, 1.0, 0.0, 
     Parameter::LINEAR);
   defaultValues.clear();
-  defaultValues.add(-100.0);
-  defaultValues.add(0.0);
-  defaultValues.add(100.0);
+  defaultValues.push_back(-100.0);
+  defaultValues.push_back(0.0);
+  defaultValues.push_back(100.0);
   p->setDefaultValues(defaultValues);
   addObservedParameter(p);
 
@@ -312,32 +313,32 @@ void BreakpointModulatorAudioModule::initializeAutomatableParameters()
   p = new AutomatableParameter(plugInLock, "TimeScaleByVel", -150.0, 150.0, 1.0, 0.0, 
     Parameter::LINEAR);
   defaultValues.clear();
-  defaultValues.add(-100.0);
-  defaultValues.add(0.0);
-  defaultValues.add(100.0);
+  defaultValues.push_back(-100.0);
+  defaultValues.push_back(0.0);
+  defaultValues.push_back(100.0);
   p->setDefaultValues(defaultValues);
   addObservedParameter(p);
 
   // #03
   p = new AutomatableParameter(plugInLock, "Depth", 0.0, 4.0, 0.0, 1.0, Parameter::LINEAR);
   defaultValues.clear();
-  defaultValues.add(1.0/16.0);
-  defaultValues.add(1.0/12.0);
-  defaultValues.add(1.0/8.0);
-  defaultValues.add(1.0/6.0);
-  defaultValues.add(1.0/4.0);
-  defaultValues.add(1.0/3.0);
-  defaultValues.add(1.0/2.0);
-  defaultValues.add(3.0/4.0);
-  defaultValues.add(1.0);
-  defaultValues.add(3.0/2.0);
-  defaultValues.add(2.0);
-  defaultValues.add(3.0);
-  defaultValues.add(4.0);
-  defaultValues.add(6.0);
-  defaultValues.add(8.0);
-  defaultValues.add(12.0);
-  defaultValues.add(16.0);
+  defaultValues.push_back(1.0/16.0);
+  defaultValues.push_back(1.0/12.0);
+  defaultValues.push_back(1.0/8.0);
+  defaultValues.push_back(1.0/6.0);
+  defaultValues.push_back(1.0/4.0);
+  defaultValues.push_back(1.0/3.0);
+  defaultValues.push_back(1.0/2.0);
+  defaultValues.push_back(3.0/4.0);
+  defaultValues.push_back(1.0);
+  defaultValues.push_back(3.0/2.0);
+  defaultValues.push_back(2.0);
+  defaultValues.push_back(3.0);
+  defaultValues.push_back(4.0);
+  defaultValues.push_back(6.0);
+  defaultValues.push_back(8.0);
+  defaultValues.push_back(12.0);
+  defaultValues.push_back(16.0);
   p->setDefaultValues(defaultValues);
   addObservedParameter(p);
 
@@ -345,9 +346,9 @@ void BreakpointModulatorAudioModule::initializeAutomatableParameters()
   p = new AutomatableParameter(plugInLock, "DepthByKey", -150.0, 150.0, 1.0, 0.0, 
     Parameter::LINEAR);
   defaultValues.clear();
-  defaultValues.add(-100.0);
-  defaultValues.add(0.0);
-  defaultValues.add(100.0);
+  defaultValues.push_back(-100.0);
+  defaultValues.push_back(0.0);
+  defaultValues.push_back(100.0);
   p->setDefaultValues(defaultValues);
   addObservedParameter(p);
 
@@ -355,9 +356,9 @@ void BreakpointModulatorAudioModule::initializeAutomatableParameters()
   p = new AutomatableParameter(plugInLock, "DepthByVel", -150.0, 150.0, 1.0, 0.0, 
     Parameter::LINEAR);
   defaultValues.clear();
-  defaultValues.add(-100.0);
-  defaultValues.add(0.0);
-  defaultValues.add(100.0);
+  defaultValues.push_back(-100.0);
+  defaultValues.push_back(0.0);
+  defaultValues.push_back(100.0);
   p->setDefaultValues(defaultValues);
   addObservedParameter(p);
 

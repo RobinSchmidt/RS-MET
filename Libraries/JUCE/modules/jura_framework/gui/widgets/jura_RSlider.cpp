@@ -128,7 +128,7 @@ void RSlider::setDefaultValue(double newDefaultValue)
   repaint();
 }
 
-void RSlider::setDefaultValues(juce::Array<double> newDefaultValues)
+void RSlider::setDefaultValues(std::vector<double> newDefaultValues)
 {
   defaultValues = newDefaultValues;
 }

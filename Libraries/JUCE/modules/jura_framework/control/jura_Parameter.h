@@ -196,7 +196,7 @@ public:
   virtual void setDefaultValue(double newDefaultValue, bool setToDefault = false);
 
   /** Sets multiple default values that can be easily accessed via a popup menu. */
-  virtual void setDefaultValues(juce::Array<double> newDefaultValues)
+  virtual void setDefaultValues(std::vector<double> newDefaultValues)
   {
     ScopedPointerLock spl(mutex);
     defaultValues = newDefaultValues;
@@ -266,7 +266,7 @@ public:
 
   /** Returns a pointer to an juce:Array of double values that are the default values for this 
   parameter. */
-  virtual juce::Array<double> getDefaultValues() const 
+  virtual std::vector<double> getDefaultValues() const 
   { 
     ScopedPointerLock spl(mutex); 
     return defaultValues; 
@@ -414,7 +414,7 @@ protected:
   bool         saveAndRecall = true; // flag, to switch automatic saving on/off - why?
 
   // array of some more default values, meant to be used for easy access via popup menu:
-  juce::Array<double> defaultValues;
+  std::vector<double> defaultValues;
 
   // array of strings to be used for enum-based parameters (for comboboxes, etc.):
   StringArray stringValues;

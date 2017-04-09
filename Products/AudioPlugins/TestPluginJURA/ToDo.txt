@@ -2,3 +2,5 @@ Parameter: use std::vector for defaultValues
 AutomatableModule: use std::vector for Parameters (may require manual locking)
 AudioModule: use std::vector for childModules
 AudioModuleChain: use inherited childModules array instead of "modules"
+RSlider: make default-values and enter-value available on right-click (it's currently only
+ available in subclass AutomatableSlider)

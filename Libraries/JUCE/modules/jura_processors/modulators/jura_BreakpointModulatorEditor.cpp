@@ -289,16 +289,16 @@ BreakpointParameterEditor::BreakpointParameterEditor(CriticalSection *newPlugInL
   levelSlider->setRange(0.0, 4.0, 0.001, 1.0);
   levelSlider->setLayout(RSlider::NAME_ABOVE);
 
-  juce::Array<double> defaultValues;
-  defaultValues.add(0.0);
-  defaultValues.add(0.25);
-  defaultValues.add(0.5);
-  defaultValues.add(0.75);
-  defaultValues.add(1.0);
-  defaultValues.add(1.5);
-  defaultValues.add(2.0);
-  defaultValues.add(3.0);
-  defaultValues.add(4.0);
+  std::vector<double> defaultValues;
+  defaultValues.push_back(0.0);
+  defaultValues.push_back(0.25);
+  defaultValues.push_back(0.5);
+  defaultValues.push_back(0.75);
+  defaultValues.push_back(1.0);
+  defaultValues.push_back(1.5);
+  defaultValues.push_back(2.0);
+  defaultValues.push_back(3.0);
+  defaultValues.push_back(4.0);
   levelSlider->setDefaultValues(defaultValues);
 
   addWidget( shapeComboBox = new RNamedComboBox("ShapeComboBox", "Shape") );

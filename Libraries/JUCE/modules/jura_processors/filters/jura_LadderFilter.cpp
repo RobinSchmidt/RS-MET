@@ -13,21 +13,21 @@ void Ladder::createStaticParameters()
 {
   ScopedLock scopedLock(*plugInLock);
 
-  juce::Array<double> defaultValues;
+  std::vector<double> defaultValues;
   //AutomatableParameter* p;
   Parameter* p;
 
   p = new AutomatableParameter(plugInLock, "Cutoff", 20.0, 20000.0, 0.0, 1000.0, 
     Parameter::EXPONENTIAL, 74);
   defaultValues.clear();
-  defaultValues.add(125.0);
-  defaultValues.add(250.0);
-  defaultValues.add(500.0);
-  defaultValues.add(1000.0);
-  defaultValues.add(2000.0);
-  defaultValues.add(4000.0);
-  defaultValues.add(8000.0);
-  defaultValues.add(16000.0);
+  defaultValues.push_back(125.0);
+  defaultValues.push_back(250.0);
+  defaultValues.push_back(500.0);
+  defaultValues.push_back(1000.0);
+  defaultValues.push_back(2000.0);
+  defaultValues.push_back(4000.0);
+  defaultValues.push_back(8000.0);
+  defaultValues.push_back(16000.0);
   p->setDefaultValues(defaultValues);
   addObservedParameter(p);
   p->setValueChangeCallback<Ladder>(this, &Ladder::setCutoff);

@@ -85,7 +85,7 @@ public:
   virtual void setDefaultValue(double newDefaultValue);
 
   /** Sets the default values that are accessible via right-click menu */
-  virtual void setDefaultValues(juce::Array<double> newDefaultValue);
+  virtual void setDefaultValues(std::vector<double> newDefaultValue);
 
   /** Sets the current value of the slider to the default value and optionally sends out a callback 
   message.. */
@@ -187,7 +187,7 @@ protected:
 
   // internal state variables:
   double currentValue, minValue, maxValue, defaultValue, interval;
-  juce::Array<double> defaultValues;
+  std::vector<double> defaultValues;
   int    scaling;
   int    layout;
 
