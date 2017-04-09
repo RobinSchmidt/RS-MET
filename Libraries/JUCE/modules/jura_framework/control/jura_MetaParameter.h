@@ -70,6 +70,9 @@ public:
   MetaParameterManager). */
   virtual void attachToMetaParameter(int metaParameterIndex);
 
+  /** Detaches this parameter from any MetaParameter, it may be attched to. */
+  virtual void detachFromMetaParameter();
+
   /** Returns the normalized value in the range 0..1. */
   inline double getProportionalValue() { return proportionalValue; }
 

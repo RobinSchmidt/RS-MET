@@ -59,6 +59,11 @@ void MetaControlledParameter::attachToMetaParameter(int index)
     index = -1;
 }
 
+void MetaControlledParameter::detachFromMetaParameter()
+{
+  attachToMetaParameter(-1); // trying to attach to invalid meta-index will detach
+}
+
 //-------------------------------------------------------------------------------------------------
 
 MetaParameter::MetaParameter()

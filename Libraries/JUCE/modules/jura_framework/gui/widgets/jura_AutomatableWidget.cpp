@@ -17,23 +17,35 @@ void AutomatableWidget::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
     return;
   int selectedIdentifier = selectedItem->getNodeIdentifier();
 
+  MetaControlledParameter* mcp = getMetaControlledParameter();
+  if(mcp != nullptr)
+  {
+    switch(selectedIdentifier)
+    {
+    case META_ATTACH: mcp->attachToMetaParameter( 
+      (int)wrappedWidget->openModalNumberEntryField() ); break;
+    case META_DETACH: mcp->detachFromMetaParameter();    break;
+    }
+  }
+   
   AutomatableParameter* ap = getAutomatbleParameter();
-  if( ap == nullptr )
-    return;
-  if(selectedIdentifier != MIDI_LEARN)
-    ap->switchIntoMidiLearnMode(false); // turn off, if currently on and somehting else is selected
-  switch( selectedIdentifier )
+  if(ap != nullptr)
   {
-  case MIDI_LEARN:  ap->switchIntoMidiLearnMode();             break;
-  case MIDI_ASSIGN:
-  {
-    int result = (int) wrappedWidget->openModalNumberEntryField();
-    result = (int) clip(result, 0, 127);
-    ap->assignMidiController(result);
-  } break;
-  case MIDI_MIN:    ap->setLowerAutomationLimit(ap->getValue());   break;
-  case MIDI_MAX:    ap->setUpperAutomationLimit(ap->getValue());   break;
-  case MIDI_REVERT: ap->revertToDefaults(false, false, false);     break;
+    if(selectedIdentifier != MIDI_LEARN)
+      ap->switchIntoMidiLearnMode(false); // turn off, if currently on and something else is selected
+    switch(selectedIdentifier)
+    {
+    case MIDI_LEARN:  ap->switchIntoMidiLearnMode();             break;
+    case MIDI_ASSIGN:
+    {
+      int result = (int)wrappedWidget->openModalNumberEntryField();
+      result = (int)clip(result, 0, 127);
+      ap->assignMidiController(result);
+    } break;
+    case MIDI_MIN:    ap->setLowerAutomationLimit(ap->getValue());   break;
+    case MIDI_MAX:    ap->setUpperAutomationLimit(ap->getValue());   break;
+    case MIDI_REVERT: ap->revertToDefaults(false, false, false);     break;
+    }
   }
 }
 
