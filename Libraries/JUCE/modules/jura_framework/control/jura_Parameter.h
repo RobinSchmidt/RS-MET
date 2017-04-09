@@ -140,7 +140,7 @@ public:
   enum scalings
   {
     BOOLEAN = 0,
-    STRING,
+    STRING,         // rename to CHOICE
     INTEGER,
     LINEAR,
     EXPONENTIAL,
@@ -428,7 +428,6 @@ protected:
   GenericMemberFunctionCallback1<void, bool>   *valueChangeCallbackBool   = nullptr;
 
   std::vector<ParameterObserver*> parameterObservers;
-
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Parameter)
 };

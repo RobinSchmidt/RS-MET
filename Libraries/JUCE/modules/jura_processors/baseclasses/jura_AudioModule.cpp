@@ -299,12 +299,6 @@ void AudioModule::deRegisterDeletionWatcher(AudioModuleDeletionWatcher *watcher)
 //-------------------------------------------------------------------------------------------------
 // others:
 
-// remove
-//void AudioModule::initializeAutomatableParameters()
-//{
-//
-//}
-
 void AudioModule::updateCoreObjectAccordingToParameters()
 {
   ScopedLock scopedLock(*plugInLock);
@@ -362,31 +356,23 @@ void AudioModuleWithMidiIn::handleMidiMessage(MidiMessage message)
 
 void AudioModuleWithMidiIn::noteOn(int noteNumber, int velocity)
 {
-  //ScopedLock scopedLock(*plugInLock);
-  //if( underlyingRosicInstrument != NULL )
-  //  underlyingRosicInstrument->noteOn(noteNumber, velocity);
+
 }
 
 void AudioModuleWithMidiIn::noteOff(int noteNumber)
 {
-  //ScopedLock scopedLock(*plugInLock);
-  //if( underlyingRosicInstrument != NULL )
-  //  underlyingRosicInstrument->noteOff(noteNumber);
+
 }
 
 void AudioModuleWithMidiIn::allNotesOff()
 {
-  //ScopedLock scopedLock(*plugInLock);
-  //if( underlyingRosicInstrument != NULL )
-  //  underlyingRosicInstrument->allNotesOff();
+
 }
 
 void AudioModuleWithMidiIn::setMidiController(int controllerNumber, float controllerValue)
 {
   ScopedLock scopedLock(*plugInLock);
   AutomatableModule::setMidiController(controllerNumber, controllerValue);
-  //if( underlyingRosicInstrument != NULL )
-  //  underlyingRosicInstrument->setMidiController(controllerNumber, controllerValue);
 
   // distribute the controller message to all children (i.e. embedded sub-modules):
   childModules.getLock().enter();
