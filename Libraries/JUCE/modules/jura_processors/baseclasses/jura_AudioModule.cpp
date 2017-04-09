@@ -98,6 +98,7 @@ void AudioModule::addChildAudioModule(AudioModule* moduleToAdd)
   ScopedLock scopedLock(*plugInLock);
   childModules.getLock().enter();
   childModules.addIfNotAlreadyThere(moduleToAdd);
+  moduleToAdd->setMetaParameterManager(metaParamManager);
   childModules.getLock().exit();
   addChildStateManager(moduleToAdd);
 }
@@ -112,6 +113,7 @@ void AudioModule::removeChildAudioModule(AudioModule* moduleToRemove, bool delet
   { 
     childModules.remove(index);
     removeChildStateManager(moduleToRemove);
+    moduleToRemove->setMetaParameterManager(nullptr);
     if( deleteObject == true )
       delete moduleToRemove;
   }
@@ -220,7 +222,7 @@ void AudioModule::setStateFromXml(const XmlElement& xmlState, const juce::String
   // if we have child-modules, we try to restore their states by looking for corresponding
   // child XmlElements in the xmlState:
   childModules.getLock().enter();
-  for(int c=0; c<childModules.size(); c++)
+  for(int c = 0; c < childModules.size(); c++)
   {
     childModules[c]->setStateToDefaults();
     int indexAmongNameSakes = getIndexAmongNameSakes(childModules[c]);
@@ -268,7 +270,18 @@ void AudioModule::setMetaParameterManager(MetaParameterManager* managerToUse)
 {
   ScopedLock scopedLock(*plugInLock);
   metaParamManager = managerToUse;
-  // do we need to do something more here?
+  int i;
+
+  for(i = 0; i < childModules.size(); i++)
+    childModules[i]->setMetaParameterManager(metaParamManager);
+
+  // maybe factor out:
+  for(i = 0; i < observedParameters.size(); i++)
+  {
+    MetaControlledParameter* mcp = dynamic_cast<MetaControlledParameter*>(observedParameters[i]);
+    if(mcp != nullptr)
+      mcp->setMetaParameterManager(metaParamManager);
+  }
 }
     
 void AudioModule::registerDeletionWatcher(AudioModuleDeletionWatcher *watcher)
