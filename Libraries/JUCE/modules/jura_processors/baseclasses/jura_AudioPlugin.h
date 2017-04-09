@@ -1,11 +1,12 @@
 #ifndef jura_AudioPlugin_h
 #define jura_AudioPlugin_h
 
-/** Subclass of juce::AudioProcessorParameter to provide the handling of host automation.
-\todo: inherit also from jura::MetaParameter for the "glue"
-*/
+/** Subclass of juce::AudioProcessorParameter to provide the handling of host automation. It also
+derives from jura::MetaParameter in order to provide the "glue" between juce's host automation
+handling and jura's MetaParameter handling. Whenever the setValue method, inherited and overriden 
+from AudioProcessorParameter, gets called (by the host), we will call MetaParameter's setValue 
+method there which in turn will update all the values of the attached MetaControlledParameters. */
 
-//class JUCE_API AudioPluginParameter : public AudioProcessorParameter
 class JUCE_API AudioPluginParameter : public AudioProcessorParameter, public MetaParameter
 {
 
@@ -14,7 +15,7 @@ public:
   AudioPluginParameter() {}
 
   // mandatory AudioProcessorParameter overrides:
-  virtual float getValue() const override { return value; }
+  virtual float getValue() const override { return (float) value; }
   virtual void setValue(float newValue) override;
   virtual float getDefaultValue() const override { return 0.f; }
   virtual String getName(int maximumStringLength) const override { return "Par" + String(getParameterIndex()); }
@@ -24,16 +25,6 @@ public:
   // optional AudioProcessorParameter overrides:
   virtual bool isAutomatable() const override { return true; }
   virtual bool isMetaParameter() const override { return true; }
-
-
-protected:
-
-  //int index; // not needed - we can use AudioProcessorParameter::getParameterIndex()
-  float value = 0.f; // may be superfluous, when we inherit from MetaParameter
-
-
-  friend class AudioPlugin;
-  AudioPlugin *plugin; // preliminary - to call its setParameter callback in our setValue callback
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioPluginParameter)
 };
@@ -127,7 +118,8 @@ protected:
   AudioBuffer<double> internalAudioBuffer; 
 
   // parameter-management:
-  static const int numParameters = 128;
+  //static const int numParameters = 128;
+  static const int numParameters = 10;
   AudioPluginParameter* parameters[numParameters];
   MetaParameterManager metaParaManager;
 

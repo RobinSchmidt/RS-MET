@@ -1,14 +1,7 @@
 
 void AudioPluginParameter::setValue(float newValue)
 {
-  value = newValue; 
-
-
-  //plugin->setParameter(getParameterIndex(), value);
-  // something more to do here - we probably need to keep a pointer to the AudioPlugin object
-  // which this parameter is part of and call plugin->setParameter(getParameterIndex(), value)
-  // ...at least for a preliminary implementation...later, we will probably want to call the 
-  // MetaParameter setAutomationValue method
+  MetaParameter::setValue((double)newValue);
 }
 
 //=================================================================================================
@@ -17,12 +10,11 @@ AudioPlugin::AudioPlugin()
 {
   ScopedLock sl(plugInLock);
   initialiseJuce_GUI();  // why do we need this?
-
   for(int i = 0; i < numParameters; i++)
   {
     parameters[i] = new AudioPluginParameter();
-    parameters[i]->plugin = this;
     addParameter(parameters[i]);
+    metaParaManager.addMetaParamater(parameters[i]);
   }
 }
 
@@ -129,6 +121,8 @@ void AudioPlugin::getStateInformation(juce::MemoryBlock& destData)
 {
   if(wrappedAudioModule != nullptr)
   {
+    // todo: store values of the MetaParameters
+
     XmlElement* xml = wrappedAudioModule->getStateAsXml("StateAsRequestedByHost", false);
     xml->setAttribute("EditorWidth",  editorWidth);
     xml->setAttribute("EditorHeight", editorHeight);
@@ -141,6 +135,8 @@ void AudioPlugin::setStateInformation(const void* data, int sizeInBytes)
 {
   if(wrappedAudioModule != nullptr)
   {
+    // todo: retrieve values of the MetaParameters
+
     XmlElement* const xml = getXmlFromBinary(data, sizeInBytes);
     //ParameterObserver::globalAutomationSwitch = false; // why this - threading problems? -> interferes with total recall in quadrifex
     ParameterObserver::guiAutomationSwitch = false;
