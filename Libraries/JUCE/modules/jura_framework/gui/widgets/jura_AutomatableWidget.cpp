@@ -17,8 +17,8 @@ void AutomatableWidget::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
     return;
   int selectedIdentifier = selectedItem->getNodeIdentifier();
 
-  AutomatableParameter* ap = getParameter();
-  if( ap == NULL )
+  AutomatableParameter* ap = getAutomatbleParameter();
+  if( ap == nullptr )
     return;
   if(selectedIdentifier != MIDI_LEARN)
     ap->switchIntoMidiLearnMode(false); // turn off, if currently on and somehting else is selected
@@ -53,39 +53,47 @@ void AutomatableWidget::updatePopUpMenu()
 
 void AutomatableWidget::addPopUpMenuItems()
 {
+  addPopUpMetaItems();
   addPopUpMidiItems();
 }
 
 void AutomatableWidget::addPopUpMidiItems()
 {
-  AutomatableParameter* ap = getParameter();
-  if( ap != NULL )
+  AutomatableParameter* ap = getAutomatbleParameter();
+  if(ap != nullptr)
   {
-    if( ap != NULL )
-    {
-      // prepare some strings for the popup menu:
-      int cc = ap->getAssignedMidiController();
-      String ccString;
-      if( cc > -1 )
-        ccString = String("(currently CC") + String(cc) + String(")");
-      else
-        ccString = String("(currently none)"); 
+    // prepare some strings for the popup menu:
+    int cc = ap->getAssignedMidiController();
+    String ccString;
+    if(cc > -1)
+      ccString = String("(currently CC") + String(cc) + String(")");
+    else
+      ccString = String("(currently none)");
 
-      int defaultCc = ap->getDefaultMidiController();
-      String defaultString;
-      if( defaultCc > -1 )
-        defaultString = String("CC") + String(defaultCc);
-      else
-        defaultString = String("none");
-      String minString = wrappedWidget->stringConversionFunction(ap->getLowerAutomationLimit());
-      String maxString = wrappedWidget->stringConversionFunction(ap->getUpperAutomationLimit());
+    int defaultCc = ap->getDefaultMidiController();
+    String defaultString;
+    if(defaultCc > -1)
+      defaultString = String("CC") + String(defaultCc);
+    else
+      defaultString = String("none");
+    String minString = wrappedWidget->stringConversionFunction(ap->getLowerAutomationLimit());
+    String maxString = wrappedWidget->stringConversionFunction(ap->getUpperAutomationLimit());
 
-      rightClickPopUp->addItem(MIDI_LEARN,  String("MIDI learn ") + ccString);
-      rightClickPopUp->addItem(MIDI_ASSIGN, String("MIDI assign"));
-      rightClickPopUp->addItem(MIDI_MIN,    String("use value as lower limit (currently ") + minString + String(")"));
-      rightClickPopUp->addItem(MIDI_MAX,    String("use value as upper limit (currently ") + maxString + String(")"));
-      rightClickPopUp->addItem(MIDI_REVERT, String("revert MIDI mapping to defaults") );
-    }
+    rightClickPopUp->addItem(MIDI_LEARN, String("MIDI learn ") + ccString);
+    rightClickPopUp->addItem(MIDI_ASSIGN, String("MIDI assign"));
+    rightClickPopUp->addItem(MIDI_MIN, String("use value as lower limit (currently ") + minString + String(")"));
+    rightClickPopUp->addItem(MIDI_MAX, String("use value as upper limit (currently ") + maxString + String(")"));
+    rightClickPopUp->addItem(MIDI_REVERT, String("revert MIDI mapping to defaults"));
+  }
+}
+
+void AutomatableWidget::addPopUpMetaItems()
+{
+  MetaControlledParameter* mcp = getMetaControlledParameter();
+  if(mcp != nullptr)
+  {
+    rightClickPopUp->addItem(META_ATTACH, String("Meta attach")); // todo: show currently attached meta index
+    rightClickPopUp->addItem(META_ATTACH, String("Meta detach"));
   }
 }
 
@@ -102,9 +110,14 @@ void AutomatableWidget::openRightClickPopupMenu()
   // until we choose some option.
 }
 
-AutomatableParameter* AutomatableWidget::getParameter()
+AutomatableParameter* AutomatableWidget::getAutomatbleParameter()
 {
   return dynamic_cast<AutomatableParameter*> (wrappedWidget->assignedParameter);
+}
+
+MetaControlledParameter* AutomatableWidget::getMetaControlledParameter()
+{
+  return dynamic_cast<MetaControlledParameter*> (wrappedWidget->assignedParameter);
 }
 
 //=================================================================================================

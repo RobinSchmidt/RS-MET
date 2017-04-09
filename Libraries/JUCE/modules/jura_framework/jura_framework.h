@@ -45,6 +45,7 @@ namespace jura
 #include "control/jura_Callbacks.h"
 #include "control/jura_Parameter.h"
 #include "control/jura_AutomatableParameter.h"
+#include "control/jura_MetaParameter.h"
 #include "control/jura_AutomatableModule.h"
 #include "control/jura_StateManager.h"
 

@@ -26,11 +26,15 @@ protected:
   {
     ENTER_VALUE = 1,
     DEFAULT_VALUE,
+
     MIDI_ASSIGN,
     MIDI_LEARN,
     MIDI_MIN,
     MIDI_MAX,
-    MIDI_REVERT
+    MIDI_REVERT,
+
+    META_ATTACH,
+    META_DETACH
   };
 
   /** Clears the popup-menu and then calls createPopUpMenuItems() */
@@ -40,15 +44,24 @@ protected:
   virtual void addPopUpMenuItems();
   // rename to populateRightClickPopupMenu...or something
 
-  // called from createPopUpMenuItems:
+  /** Adds the MIDI related items to the popoup menu (if applicable). */
   virtual void addPopUpMidiItems();
+
+  /** Adds the MetaParameter related items to the popoup menu (if applicable). */
+  virtual void addPopUpMetaItems();
 
   /** Opens the PopupMenu that appears on right clicks. */
   virtual void openRightClickPopupMenu();
 
-  /** Returns a pointer to the AutomatableParameter object that is assigned to the wrapped 
-  widget.  */
-  AutomatableParameter* getParameter();
+  /** Tries to cast the Parameter that is underlying the wrapped widget into an 
+  AutomatableParameter and returns the pointer to it. Note that this may return a nullptr, when 
+  the Parameter is not of type AutomatableParameter. */
+  AutomatableParameter* getAutomatbleParameter();
+
+  /** Similar to @see getAutomatbleParameter. */
+  MetaControlledParameter* getMetaControlledParameter();
+
+
 
   RPopUpMenu *rightClickPopUp = nullptr; // object created when it's needed for the 1st time
   RWidget *wrappedWidget;                // widget that is being made automatable

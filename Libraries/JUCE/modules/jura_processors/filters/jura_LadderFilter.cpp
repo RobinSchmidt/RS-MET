@@ -14,7 +14,8 @@ void Ladder::createStaticParameters()
   ScopedLock scopedLock(*plugInLock);
 
   juce::Array<double> defaultValues;
-  AutomatableParameter* p;
+  //AutomatableParameter* p;
+  Parameter* p;
 
   p = new AutomatableParameter(plugInLock, "Cutoff", 20.0, 20000.0, 0.0, 1000.0, 
     Parameter::EXPONENTIAL, 74);
@@ -31,8 +32,11 @@ void Ladder::createStaticParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<Ladder>(this, &Ladder::setCutoff);
 
-  p = new AutomatableParameter(plugInLock, "Resonance", 0.0, 1.0, 0.0, 0.2,  
-    Parameter::LINEAR, 71);
+  //p = new AutomatableParameter(plugInLock, "Resonance", 0.0, 1.0, 0.0, 0.2,  
+  //  Parameter::LINEAR, 71);
+  p = new MetaControlledParameter("Resonance", 0.0, 1.0, 0.2, Parameter::LINEAR, 0.01);
+  //MetaControlledParameter(const juce::String& name, double min = 0.0, double max = 1.0, 
+  //double defaultValue = 0.5, int scaling = LINEAR, double interval = 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback<Ladder>(this, &Ladder::setResonance);
 
