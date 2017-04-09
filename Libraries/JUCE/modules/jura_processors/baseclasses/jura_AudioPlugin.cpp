@@ -11,23 +11,13 @@ void AudioPluginParameter::setValue(float newValue)
 
 //=================================================================================================
 
-AudioPlugin::AudioPlugin(AudioModule *moduleToWrap)
+AudioPlugin::AudioPlugin()
 {
   ScopedLock sl(plugInLock);
   initialiseJuce_GUI();  // why do we need this?
 
-  wrappedAudioModule = moduleToWrap;
-
-  //underlyingAudioModule->setMetaParameterManager(&metaParaManager); 
-   // nope -  we may get called with a nullptr for this - we need to call a function
-   // setAudioModuleToWrap
-
-  // maybe, here, we could somehow set up the parameter that the plugin exposes to the host and 
-  // connect them to the module's internal parameters
   for(int i = 0; i < numParameters; i++)
   {
-    //parameters[i] = 0.f;
-    //String name = "Param" + String(i);
     parameters[i] = new AudioPluginParameter();
     parameters[i]->plugin = this;
     addParameter(parameters[i]);
@@ -42,6 +32,13 @@ AudioPlugin::~AudioPlugin()
     delete wrappedAudioModule;
     wrappedAudioModule = nullptr;
   }
+}
+
+void AudioPlugin::setAudioModuleToWrap(AudioModule* moduleToWrap)
+{
+  jassert(moduleToWrap != nullptr); // you must pass a valid object here
+  wrappedAudioModule = moduleToWrap;
+  wrappedAudioModule->setMetaParameterManager(&metaParaManager); 
 }
 
 // mandatory overrides for juce::AudioProcessor:
@@ -200,12 +197,6 @@ bool AudioPlugin::setPreferredBusArrangement(bool isInput, int bus,
 
 //=================================================================================================
 
-AudioPluginWithMidiIn::AudioPluginWithMidiIn(AudioModuleWithMidiIn *moduleToWrap)
-  : AudioPlugin(moduleToWrap)
-{
-  wrappedModuleWithMidiIn = moduleToWrap;
-}
-
 void AudioPluginWithMidiIn::processBlock(AudioBuffer<double> &buffer, MidiBuffer &midiMessages)
 {
   //AudioPlugin::processBlock(buffer, midiMessages); 
@@ -349,4 +340,12 @@ void AudioPluginWithMidiIn::handleMidiMessage(MidiMessage message)
     return;
   if( wrappedModuleWithMidiIn != NULL )
     wrappedModuleWithMidiIn->handleMidiMessage(message);
+}
+
+void AudioPluginWithMidiIn::setAudioModuleToWrap(AudioModule* moduleToWrap)
+{
+  AudioPlugin::setAudioModuleToWrap(moduleToWrap);
+  wrappedModuleWithMidiIn = dynamic_cast<AudioModuleWithMidiIn*>(moduleToWrap);
+  jassert(wrappedModuleWithMidiIn != nullptr); // trying to wrap a non-midi-enabled AudioModule 
+                                               // into a midi-enabled AudioPlugin?
 }

@@ -34,19 +34,15 @@ AudioModule::AudioModule(CriticalSection *lockToUse)
   plugInLock = lockToUse;
   ParameterObserver::localAutomationSwitch = true;  // activate automation for this instance
   wantsTempoSyncInfo = true;
-  //underlyingRosicInstrument = NULL;  // by default, this does not wrap an instrument
   moduleName = juce::String("AudioModule");
-  //versionjuce::String = juce::String(T("1.0"));
   patchFormatIndex = 1;
   triggerInterval = 0.0;
   saveAndRecallState = true;
-  //initializeAutomatableParameters();  // remove
 }
 
 AudioModule::~AudioModule()
 {
   ScopedLock scopedLock(*plugInLock);
-  //plugInLock->enter();
 
   for(int i = 0; i < deletionWatchers.size(); i++)
     deletionWatchers[i]->audioModuleWillBeDeleted(this);
@@ -62,9 +58,6 @@ AudioModule::~AudioModule()
     //childModules.removeLast();
   }
   childModules.getLock().exit();
-
-  //plugInLock->exit();
-  //delete plugInLock;
 }
 
 //-------------------------------------------------------------------------------------------------

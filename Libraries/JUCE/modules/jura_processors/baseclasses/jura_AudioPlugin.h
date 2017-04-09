@@ -49,12 +49,22 @@ class JUCE_API AudioPlugin : public AudioProcessor
 
 public:
 
-  AudioPlugin(AudioModule *moduleToWrap);
+  AudioPlugin(); 
+
+  //AudioPlugin(AudioModule *moduleToWrap); 
+  // remove the parameter from the constructor - we should now use setAudioModuleToWrap after the
+  // constructor has finished
+  
+
   virtual ~AudioPlugin();
 
+  //-----------------------------------------------------------------------------------------------
   // setup:
 
   void setPluginName(const String& newName) { plugInName = newName; }
+
+  /** Sets the jura::AudioModule object that is wrapped into an AudioPlugin. */
+  virtual void setAudioModuleToWrap(AudioModule* moduleToWrap);
 
   //-----------------------------------------------------------------------------------------------
   // mandatory overrides for juce::AudioProcessor baseclass:
@@ -93,9 +103,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   // data:
 
-  AudioModule *wrappedAudioModule;  
-  //AudioModule *underlyingAudioModule;  
-   // the wrapped jura::AudioModule - rename to wrappedAudioModule
+  AudioModule *wrappedAudioModule = nullptr;  // the wrapped jura::AudioModule
 
   /** Mutex-lock for all accesses to the underlyingAudioModule's member functions - a pointer to 
   the lock is  passed to the embedded AudioModule and should be used there also and the AudioModule
@@ -147,13 +155,17 @@ class JUCE_API AudioPluginWithMidiIn : public AudioPlugin
 
 public:
 
-  AudioPluginWithMidiIn(AudioModuleWithMidiIn *moduleToWrap);
+  AudioPluginWithMidiIn() {}
+  //AudioPluginWithMidiIn(AudioModuleWithMidiIn *moduleToWrap);
 
   virtual bool acceptsMidi() const override { return true; }
 
   virtual void processBlock(AudioBuffer<double>& buffer, MidiBuffer& midiMessages) override;
 
   virtual void handleMidiMessage(MidiMessage message);
+
+  virtual void setAudioModuleToWrap(AudioModule* moduleToWrap) override;
+
 
   AudioModuleWithMidiIn *wrappedModuleWithMidiIn;  
 

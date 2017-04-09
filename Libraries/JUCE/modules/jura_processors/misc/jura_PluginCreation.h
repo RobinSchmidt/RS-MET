@@ -23,7 +23,7 @@ AudioProcessor* JUCE_CALLTYPE createPluginWithoutMidi(AudioModuleType *dummy)
   // wraps audio module into plugin without midi input
   jura::AudioPlugin *plugIn = new jura::AudioPlugin(nullptr);
   AudioModuleType   *module = new AudioModuleType(&plugIn->plugInLock);
-  plugIn->wrappedAudioModule = module;
+  plugIn->setAudioModuleToWrap(module);
   return plugIn;
 }
 
@@ -31,12 +31,14 @@ template<class AudioModuleType>
 AudioProcessor* JUCE_CALLTYPE createPluginWithMidi(AudioModuleType *dummy)
 {
   // wraps audio module into plugin with midi input
-  jura::AudioPluginWithMidiIn *plugIn = new jura::AudioPluginWithMidiIn(nullptr);
+  jura::AudioPluginWithMidiIn *plugIn = new jura::AudioPluginWithMidiIn();
   AudioModuleType *module = new AudioModuleType(&plugIn->plugInLock);
-  plugIn->wrappedAudioModule = module;
-  plugIn->wrappedAudioModule = module;
+  plugIn->setAudioModuleToWrap(module);
   return plugIn;
+
+  // only the 1st line is different, the last 3 are duplicated -> factor out
 }
+
 
 //// The code below was supposed to dispatch between the createPluginWithoutMidi and 
 //// createPluginWithMidi version of the plugin creation code above. Unfortunately, it doesn't work 
