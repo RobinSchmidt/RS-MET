@@ -65,8 +65,7 @@ void MetaControlledParameter::detachFromMetaParameter()
   if(metaParaManager == nullptr)
     return;
   metaParaManager->detachParameter(this);
-
-  //attachToMetaParameter(-1); // trying to attach to invalid meta-index will detach
+  metaIndex = -1;
 }
 
 //-------------------------------------------------------------------------------------------------

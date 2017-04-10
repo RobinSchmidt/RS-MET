@@ -210,19 +210,32 @@ void AudioModule::parameterChanged(Parameter* parameterThatHasChanged)
 void AudioModule::midiMappingToXml(XmlElement* xmlState)
 {
   // child element will be added when there are any relevant controller-mappings to be stored:
-  XmlElement* xmlMapping = new XmlElement( juce::String("ControllerMapping") );
-  int numParameters = getNumParameters();
-  Parameter *p;
-  AutomatableParameter *ap;
-  for(int i = 0; i < numParameters; i++) {
-    p  = getParameterByIndex(i);
-    ap = dynamic_cast<AutomatableParameter*> (p);
+  XmlElement* xmlMapping = new XmlElement("MidiMapping");
+  for(int i = 0; i < getNumParameters(); i++) {
+    AutomatableParameter* ap = dynamic_cast<AutomatableParameter*>(getParameterByIndex(i));
     if( ap != nullptr ) {
       if( ap->isInDefaultState() == false ) { // store only non-default mappings
         XmlElement* xmlParameterSetup = new XmlElement(ap->getName());
         xmlParameterSetup->setAttribute("MidiCC", ap->getAssignedMidiController());
         xmlParameterSetup->setAttribute("Min",    ap->getLowerAutomationLimit()  );
         xmlParameterSetup->setAttribute("Max",    ap->getUpperAutomationLimit()  );
+        xmlMapping->addChildElement(xmlParameterSetup); }}}
+  if( xmlMapping->getNumChildElements() != 0 )
+    xmlState->addChildElement(xmlMapping);
+  else
+    delete xmlMapping;
+}
+
+void AudioModule::metaMappingToXml(XmlElement* xmlState)
+{
+  XmlElement* xmlMapping = new XmlElement("MetaMapping");
+  for(int i = 0; i < getNumParameters(); i++) {
+    MetaControlledParameter* mcp = dynamic_cast<MetaControlledParameter*>(getParameterByIndex(i));
+    if( mcp != nullptr ) {
+      if( mcp->getMetaParameterIndex() != -1 ) { // store only meta-assigned parameters
+        XmlElement* xmlParameterSetup = new XmlElement(mcp->getName());
+        xmlParameterSetup->setAttribute("MetaIndex", mcp->getMetaParameterIndex());
+        // todo: store the mapping function
         xmlMapping->addChildElement(xmlParameterSetup); }}}
   if( xmlMapping->getNumChildElements() != 0 )
     xmlState->addChildElement(xmlMapping);
@@ -243,14 +256,18 @@ XmlElement* AudioModule::getStateAsXml(const juce::String& stateName, bool markA
   // store a patch format version (useful when patch-formats change later):
   xmlState->setAttribute("PatchFormat", patchFormatIndex);
 
-  // store controller mappings (if any):
+  // store midi and/or meta mappings (if any):
   midiMappingToXml(xmlState);  
+  metaMappingToXml(xmlState);  
+
+  // maybe store smoothing values here
 
   // store current parameter values:
   for(int i = 0; i < getNumParameters(); i++) {
     Parameter* p = getParameterByIndex(i);
     if( p != nullptr ) {  // do we need this?
-      if( p->shouldBeSavedAndRecalled() && !p->isCurrentValueDefaultValue() ) {
+      if( p->shouldBeSavedAndRecalled() && !p->isCurrentValueDefaultValue() ) 
+      {
         if( p->isStringParameter() )
           xmlState->setAttribute(p->getName(), p->getStringValue());
         else
@@ -286,7 +303,7 @@ bool AudioModule::midiMappingFromXml(const XmlElement &xmlState)
 
   // check, if there's a controller mapping stored, if so, retrieve it:
   revertToDefaultMapping();
-  XmlElement* xmlMapping = xmlState.getChildByName(juce::String("ControllerMapping") );
+  XmlElement* xmlMapping = xmlState.getChildByName(juce::String("MidiMapping") );
   if( xmlMapping == nullptr )
     return success;
   numParameters = xmlMapping->getNumChildElements(); // we actually do not use this?

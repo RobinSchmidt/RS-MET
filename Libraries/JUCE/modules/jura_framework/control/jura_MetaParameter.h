@@ -76,6 +76,10 @@ public:
   /** Returns the normalized value in the range 0..1. */
   inline double getProportionalValue() { return proportionalValue; }
 
+  /** Returns the index of the MetaParameter that this parameter is attached to. If it's not 
+  attached to any MetaParameter, it returns -1. */
+  inline int getMetaParameterIndex() { return metaIndex; }
+
 protected:
 
   double proportionalValue;  // maybe factor out to Parameter
