@@ -27,12 +27,4 @@ child-elements with given name is smaller than the given index plus one. */
 JUCE_API XmlElement* getChildElementByNameAndIndexAmongNameSakes(const XmlElement& xml, 
   const juce::String& name, int index);
 
-/** Function to store the state of .. */
-JUCE_API XmlElement* automatableModuleStateToXml(const AutomatableModule* device, 
-  XmlElement* xmlElementToStartFrom = NULL);
-
-/** Function to retrieve the state of .. */
-JUCE_API bool automatableModuleStateFromXml(AutomatableModule* device, const XmlElement &xmlState);
-
-
 #endif

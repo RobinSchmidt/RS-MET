@@ -12,54 +12,7 @@ AutomatableModule::~AutomatableModule()
   removeAllObservedParameters(true);
 }
     
-//-------------------------------------------------------------------------------------------------
-// MIDI controller stuff:
 
-void AutomatableModule::assignMidiController(const String& nameOfParameter, int controllerNumber)
-{
-  ScopedLock scopedLock(*lock);
-  Parameter *p;
-  p = getParameterByName(nameOfParameter);
-  if( p != NULL )
-  {
-    AutomatableParameter* ap = dynamic_cast<AutomatableParameter*> (p);
-    if( ap != NULL )
-      ap->assignMidiController(controllerNumber);
-  }
-}
-
-void AutomatableModule::setMidiController(int controllerNumber, float controllerValue)
-{
-  // loop through all the observed parameters and pass the controller value to them - the 
-  // parameters themselves will take care to respond only to controller-numbers which are assigned
-  // to them:
-  ScopedLock scopedLock(*lock);
-  Parameter            *p;
-  AutomatableParameter *ap;
-  for(int i=0; i < (int) observedParameters.size(); i++)
-  {
-    p  = observedParameters[i];
-    ap = dynamic_cast<AutomatableParameter*> (p);
-    if( ap != NULL )
-      ap->setMidiController(controllerNumber, controllerValue);
-    //observedParameters[i]->setMidiController(controllerNumber, controllerValue);
-  }
-}
-
-void AutomatableModule::revertToDefaultMapping()
-{
-  ScopedLock scopedLock(*lock);
-  Parameter            *p;
-  AutomatableParameter *ap;
-  for(int i=0; i < (int) observedParameters.size(); i++)
-  {
-    p  = observedParameters[i];
-    ap = dynamic_cast<AutomatableParameter*> (p);
-    if( ap != NULL )
-      ap->revertToDefaults(false, false, false);
-    //observedParameters[i]->revertToDefaults();
-  }
-}
 
 //-------------------------------------------------------------------------------------------------
 // retrieve pointers to the observed parameters:

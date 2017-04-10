@@ -31,21 +31,7 @@ public:
   /** Destructor. */
   virtual ~AutomatableModule();
 
-  //-----------------------------------------------------------------------------------------------
-  // MIDI controller stuff:
 
-  /** Assigns a MIDI controller to one of the observed parameters. */
-  virtual void assignMidiController(const juce::String& nameOfParameter, int controllerNumber);
-  // move to AudioModule
-
-  /** Receives MIDI controller messages and dispatches them to the appropriate to one of the
-  Parameter object. */
-  virtual void setMidiController(int controllerNumber, float controllerValue);
-  // move to AudioModule
-
-  /** Reverts all observed parameters to their default settings. */
-  virtual void revertToDefaultMapping();
-  // move to AudioModule
 
   //-----------------------------------------------------------------------------------------------
   // retrieve pointers to the observed parameters:

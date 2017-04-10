@@ -41,6 +41,18 @@ protected:
 
 //=================================================================================================
 
+
+/** Function to store the state of .. */
+JUCE_API XmlElement* automatableModuleStateToXml(const AudioModule* device, 
+  XmlElement* xmlElementToStartFrom = NULL);
+// rename, make member of AudioModule
+
+/** Function to retrieve the state of .. */
+JUCE_API bool automatableModuleStateFromXml(AudioModule* device, const XmlElement &xmlState);
+// rename, make member of AudioModule
+
+
+
 /** This class is the base class for all audio modules. */
 
 class JUCE_API AudioModule : public AutomatableModule, public StateFileManager
@@ -100,7 +112,18 @@ public:
   MetaParameterManager. */
   virtual void addObservedParameter(Parameter *parameterToAdd) override;
 
+  //-----------------------------------------------------------------------------------------------
+  // MIDI controller stuff:
 
+  /** Assigns a MIDI controller to one of the observed parameters. */
+  virtual void assignMidiController(const juce::String& nameOfParameter, int controllerNumber);
+
+  /** Receives MIDI controller messages and dispatches them to the appropriate to one of the
+  Parameter object. */
+  virtual void setMidiController(int controllerNumber, float controllerValue);
+
+  /** Reverts all observed parameters to their default settings. */
+  virtual void revertToDefaultMapping();
 
   //-----------------------------------------------------------------------------------------------
   // inquiry:

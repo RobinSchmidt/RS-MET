@@ -1,7 +1,7 @@
 AutomatableModule/AudioModule
  refactor: 
+ -midi stuff should become part of AudioModule
  -rename AutomatableModule into ParametrizedModule (or ParameterManager)
- -midi stuff becomes part of AudioModule
  -state management an child-modules become part of AutomatableModule
  -rename some functions: addParameter, removeParameter
 
