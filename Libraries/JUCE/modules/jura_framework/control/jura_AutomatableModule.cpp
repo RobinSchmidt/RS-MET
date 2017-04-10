@@ -101,8 +101,7 @@ int AutomatableModule::getIndexOfParameter(Parameter* parameterToRetrieveIndexOf
 int AutomatableModule::getNumParameters() const
 {
   ScopedLock scopedLock(*lock);
-  int result = observedParameters.size();
-  return result;
+  return (int)observedParameters.size();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -113,7 +112,7 @@ void AutomatableModule::addObservedParameter(Parameter *parameterToAdd)
   ScopedLock scopedLock(*lock);
   parameterToAdd->setMutexToUse(lock);
   parameterToAdd->registerParameterObserver(this);
-  observedParameters.addIfNotAlreadyThere(parameterToAdd);
+  appendIfNotAlreadyThere(observedParameters, parameterToAdd);
 }
 
 void AutomatableModule::removeObservedParameter(Parameter *parameterToRemove, bool deleteObject)
@@ -126,7 +125,7 @@ void AutomatableModule::removeObservedParameter(Parameter *parameterToRemove, bo
     {
       parameterToRemove->deRegisterParameterObserver(this);
       parameterToRemove->setMutexToUse(nullptr);
-      observedParameters.removeFirstMatchingValue(parameterToRemove);
+      removeFirstOccurrence(observedParameters, parameterToRemove);
       if( deleteObject == true )
         delete parameterToRemove;
       i--; // because array has shrunken
@@ -144,7 +143,7 @@ void AutomatableModule::removeAllObservedParameters(bool deleteObjects)
     removee = observedParameters[0];
     removee->deRegisterParameterObserver(this);
     removee->setMutexToUse(nullptr);
-    observedParameters.remove(0);
+    remove(observedParameters, 0);
     if( deleteObjects == true )
       delete removee;   
   }
@@ -152,8 +151,7 @@ void AutomatableModule::removeAllObservedParameters(bool deleteObjects)
 
 void AutomatableModule::parameterChanged(Parameter *parameterThatHasChanged)
 {
-  //ScopedLock scopedLock(*lock);
-  //int index = getParameterIndex(parameterThatHasChanged);
+
 }
 
 void AutomatableModule::parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted)

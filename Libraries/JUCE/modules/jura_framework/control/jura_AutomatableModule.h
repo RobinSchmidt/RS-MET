@@ -14,7 +14,6 @@ a set of parameters, these classes need not to be audio related - this should pe
 subclass of StateManager - OR rename this class ParametrizedObject/Module and get rid of the MIDI 
 stuff -> move it to AudioModule
 
-
 */
 
 class JUCE_API AutomatableModule : public ParameterObserver
@@ -104,24 +103,13 @@ public:
 protected:
 
   /** An array of our observed parameters. */
-  juce::Array<Parameter*, CriticalSection> observedParameters;
+  std::vector<Parameter*> observedParameters;
 
   /** Returns the index of the parameter in the array or -1 if the parameter was not found .*/
   int getParameterIndex(Parameter *parameterToLookFor);
 
-  /** This is for retrieving the number of inherited parameters - each sub(sub...etc.) class
-  should write its number of parameters (including all the inherited ones) into a new slot of
-  this array (at the end of initializeAutomatableParameters) - this facilitates later extensions
-  of a baseclass's parameter set. */
-  //juce::Array<int> numInheritedParameters;
-
-  /** Assuming that subclasses correctly append their number of parameters to this array after
-  adding all their parameters
-  virtual int getNumInheritedParameters()
-  { return numInheritedParameters[numInheritedParameters.size()-1]; }
-
   /** A mutex-lock for accesses to the vector of observed parameters. */
-  CriticalSection *lock = nullptr;     // mutex to access the wrapped core dsp object
+  CriticalSection *lock = nullptr;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomatableModule)
 };
