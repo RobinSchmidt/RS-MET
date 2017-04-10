@@ -34,7 +34,7 @@ public:
 
 protected:
 
-  juce::Array<AudioModule*> watchedAudioModules;
+  juce::Array<AudioModule*> watchedAudioModules; // use std::vector
 
   juce_UseDebuggingNewOperator;
 };
@@ -94,7 +94,7 @@ public:
   /** Checks, if this is a cracked version and if so, it sets up the appendix for the headline 
   accordingly. Return value informs also whether or not a cracked version was detected. */
   virtual bool checkForCrack();
-    // move to another class
+    // move to another class or get rid
 
   /** Overrides inherited method to additionaly wire the passed Parameter up to the 
   MetaParameterManager. */
@@ -141,7 +141,6 @@ public:
   /** Callback to indicate that a parameter has changed - subclasses should override this and
   update their signal processing accordingly. */
   virtual void parameterChanged(Parameter* parameterThatHasChanged);
-   // is this obsolete now that we use the callback mechanism? if so, get rid...
 
   /** Calls a parameterChanged for each of the observed parameters - this should trigger the
   appropriate updating of the signal processing core in the subclasses. */
@@ -207,6 +206,7 @@ protected:
 
   /** Our child modules to which we will distribute MIDI-events and of which we manage the
   states. */
+  //std::vector<AudioModule*> childModules;  // maybe rename to childAudioModules
   juce::Array<AudioModule*, CriticalSection> childModules;
     // maybe use a std::vector -> better for debugging
 
