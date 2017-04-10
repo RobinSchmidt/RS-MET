@@ -286,7 +286,7 @@ XmlElement* AudioModule::getStateAsXml(const juce::String& stateName, bool markA
 
 void AudioModule::midiMappingFromXml(const XmlElement &xmlState)
 {
-  revertToDefaultMapping();
+  revertToDefaultMapping(); // rename to revertToDefaultMidiMapping
   XmlElement* xmlMapping = xmlState.getChildByName("MidiMapping");
   if( xmlMapping == nullptr )
     return; // no mapping stored, nothing to do
@@ -302,6 +302,7 @@ void AudioModule::midiMappingFromXml(const XmlElement &xmlState)
 void AudioModule::metaMappingFromXml(const XmlElement &xmlState)
 {
   // something to do
+  //detachMetaParameters(); // should detach all parameters from any MetaParameters
 }
 
 void AudioModule::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 
