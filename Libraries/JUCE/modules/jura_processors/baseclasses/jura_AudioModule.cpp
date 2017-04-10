@@ -30,7 +30,7 @@ void AudioModuleDeletionWatcher::removeWatchedAudioModule(AudioModule
 
 AudioModule::AudioModule(CriticalSection *lockToUse) : AutomatableModule(lockToUse)
 {
-  plugInLock = lockToUse;
+  //plugInLock = lockToUse;
   ParameterObserver::localAutomationSwitch = true;  // activate automation for this instance
   wantsTempoSyncInfo = true;
   moduleName = juce::String("AudioModule");
@@ -41,7 +41,7 @@ AudioModule::AudioModule(CriticalSection *lockToUse) : AutomatableModule(lockToU
 
 AudioModule::~AudioModule()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   for(int i = 0; i < deletionWatchers.size(); i++)
     deletionWatchers[i]->audioModuleWillBeDeleted(this);
@@ -64,7 +64,7 @@ AudioModule::~AudioModule()
 
 void AudioModule::setSampleRate(double newSampleRate)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   //childModules.getLock().enter();
   for(int i=0; i<childModules.size(); i++)
@@ -74,7 +74,7 @@ void AudioModule::setSampleRate(double newSampleRate)
 
 void AudioModule::setBeatsPerMinute(double newBpm)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   //childModules.getLock().enter();
   for(int i=0; i<childModules.size(); i++)
@@ -94,7 +94,7 @@ void AudioModule::setModuleNameAppendix(const juce::String& newAppendix)
 
 void AudioModule::addChildAudioModule(AudioModule* moduleToAdd)
 { 
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   //childModules.getLock().enter();
   //childModules.addIfNotAlreadyThere(moduleToAdd);
   appendIfNotAlreadyThere(childModules, moduleToAdd);
@@ -105,7 +105,7 @@ void AudioModule::addChildAudioModule(AudioModule* moduleToAdd)
 
 void AudioModule::removeChildAudioModule(AudioModule* moduleToRemove, bool deleteObject)
 { 
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   //childModules.getLock().enter();
   /*int index = childModules.indexOf(moduleToRemove);*/
   int index = find(childModules, moduleToRemove);
@@ -140,7 +140,7 @@ void AudioModule::addObservedParameter(Parameter *parameterToAdd)
 
 int AudioModule::getIndexAmongNameSakes(AudioModule *child)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   juce::String name = child->getModuleName();
   int index = -1;
@@ -175,13 +175,13 @@ AudioModuleEditor* AudioModule::createEditor()
 
 void AudioModule::parameterChanged(Parameter* parameterThatHasChanged)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   markStateAsDirty();
 }
 
 XmlElement* AudioModule::getStateAsXml(const juce::String& stateName, bool markAsClean)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   if( !wantsSaveAndRecallState() )
     return NULL;
@@ -214,7 +214,7 @@ XmlElement* AudioModule::getStateAsXml(const juce::String& stateName, bool markA
 void AudioModule::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 
   bool markAsClean)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   XmlElement convertedState = convertXmlStateIfNecessary(xmlState);
   automatableModuleStateFromXml(this, convertedState); // turn into member function
@@ -247,7 +247,7 @@ void AudioModule::setStateFromXml(const XmlElement& xmlState, const juce::String
 
 XmlElement AudioModule::convertXmlStateIfNecessary(const XmlElement& xmlState)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   int xmlPatchFormatIndex = xmlState.getIntAttribute("PatchFormat", 1);
   jassert( xmlPatchFormatIndex == this->patchFormatIndex ); 
@@ -261,14 +261,14 @@ XmlElement AudioModule::convertXmlStateIfNecessary(const XmlElement& xmlState)
 
 void AudioModule::resetParametersToDefaultValues()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   for(int i = 0; i < (int)observedParameters.size(); i++)
     observedParameters[i]->resetToDefaultValue(true, true);
 }
 
 void AudioModule::setMetaParameterManager(MetaParameterManager* managerToUse)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   metaParamManager = managerToUse;
   int i;
 
@@ -286,13 +286,13 @@ void AudioModule::setMetaParameterManager(MetaParameterManager* managerToUse)
     
 void AudioModule::registerDeletionWatcher(AudioModuleDeletionWatcher *watcher)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   deletionWatchers.addIfNotAlreadyThere(watcher);
 }
            
 void AudioModule::deRegisterDeletionWatcher(AudioModuleDeletionWatcher *watcher)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   deletionWatchers.removeFirstMatchingValue(watcher);
 }
 
@@ -301,7 +301,7 @@ void AudioModule::deRegisterDeletionWatcher(AudioModuleDeletionWatcher *watcher)
 
 void AudioModule::updateCoreObjectAccordingToParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   // make a call to parameterChanged for each parameter in order to set up the DSP-core to reflect 
   // the values the automatable parameters:
@@ -311,6 +311,7 @@ void AudioModule::updateCoreObjectAccordingToParameters()
 
 void AudioModule::callParameterCallbacks(bool recursivelyForChildModules)
 {
+  //ScopedLock scopedLock(*lock); // wasn't there but should be?
   int i;
   for(i = 0; i < observedParameters.size(); i++)
     observedParameters[i]->callValueChangeCallbacks();
@@ -321,6 +322,7 @@ void AudioModule::callParameterCallbacks(bool recursivelyForChildModules)
 
 void AudioModule::notifyParameterObservers(bool recursivelyForChildModules)
 {
+  //ScopedLock scopedLock(*lock); // wasn't there but should be?
   int i;
   for(i = 0; i < observedParameters.size(); i++)
     observedParameters[i]->notifyObservers();
@@ -337,7 +339,7 @@ void AudioModule::notifyParameterObservers(bool recursivelyForChildModules)
 
 void AudioModuleWithMidiIn::handleMidiMessage(MidiMessage message)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   if( message.isController() )
   {
     int controllerNumber = message.getControllerNumber();
@@ -371,7 +373,7 @@ void AudioModuleWithMidiIn::allNotesOff()
 
 void AudioModuleWithMidiIn::setMidiController(int controllerNumber, float controllerValue)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   AutomatableModule::setMidiController(controllerNumber, controllerValue);
 
   // distribute the controller message to all children (i.e. embedded sub-modules):
@@ -396,14 +398,14 @@ void AudioModuleWithMidiIn::setPitchBend(int pitchBendValue)
 
 AudioModuleEditor::AudioModuleEditor(AudioModule* newModuleToEdit)
 {
-  plugInLock   = newModuleToEdit->plugInLock;
+  lock = newModuleToEdit->lock;
   moduleToEdit = newModuleToEdit;
   init();
 }
 
 AudioModuleEditor::AudioModuleEditor(CriticalSection* pluginLockToUse)
 {
-  plugInLock   = pluginLockToUse;
+  lock = pluginLockToUse;
   moduleToEdit = nullptr;
   init();
 
@@ -415,7 +417,7 @@ AudioModuleEditor::AudioModuleEditor(CriticalSection* pluginLockToUse)
 
 void AudioModuleEditor::init()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   if( moduleToEdit != NULL )
   {
@@ -461,7 +463,7 @@ void AudioModuleEditor::init()
 
 AudioModuleEditor::~AudioModuleEditor()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   stateWidgetSet->removeChangeListener(this);
   if( moduleToEdit != NULL )
     moduleToEdit->removeStateWatcher(stateWidgetSet);
@@ -473,7 +475,7 @@ AudioModuleEditor::~AudioModuleEditor()
 
 void AudioModuleEditor::setModuleToEdit(AudioModule *newModuleToEdit)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   if( moduleToEdit != NULL )
     moduleToEdit->removeStateWatcher(stateWidgetSet);
   moduleToEdit = newModuleToEdit;
@@ -486,7 +488,7 @@ void AudioModuleEditor::setModuleToEdit(AudioModule *newModuleToEdit)
 
 void AudioModuleEditor::invalidateModulePointer()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   moduleToEdit = NULL;
 }
 
@@ -533,7 +535,7 @@ void AudioModuleEditor::changeListenerCallback(juce::ChangeBroadcaster *objectTh
 
 void AudioModuleEditor::updateWidgetsAccordingToState()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   Editor::updateWidgetsAccordingToState();
   if( moduleToEdit != NULL )
     stateWidgetSet->stateFileNameLabel->setText(moduleToEdit->getStateNameWithStarIfDirty());
@@ -639,7 +641,7 @@ void AudioModuleEditor::savePreferencesToFile()
 
 juce::String AudioModuleEditor::getPreferencesTagName()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   if( moduleToEdit != NULL )
     return moduleToEdit->getModuleName() + juce::String("Preferences");
   else
@@ -701,7 +703,7 @@ juce::String AudioModuleEditor::getPreferencesFileName()
 GenericAudioModuleEditor::GenericAudioModuleEditor(AudioModule* newModuleToEdit)
   : AudioModuleEditor(newModuleToEdit)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   setPresetSectionPosition(RIGHT_TO_HEADLINE);
   createWidgets();
@@ -712,7 +714,7 @@ GenericAudioModuleEditor::GenericAudioModuleEditor(AudioModule* newModuleToEdit)
 
 void GenericAudioModuleEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   AudioModuleEditor::resized();
 
   // preliminary - this arrangement is still ugly:
@@ -729,7 +731,7 @@ void GenericAudioModuleEditor::resized()
 
 void GenericAudioModuleEditor::createWidgets()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   jassert(moduleToEdit != nullptr);
 
   // for each of the module's parameter, create an appropriate widget and add it to this editor

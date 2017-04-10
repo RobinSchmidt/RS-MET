@@ -1,12 +1,9 @@
-AudioModule: use std::vector for childModules
- ->get rid of redundant locks in both classes
 AutomatableModule/AudioModule
  refactor: 
- -state management an child-modules become part of AutomatableModule
- -midi stuff becomes part of AudioModule
  -rename AutomatableModule into ParametrizedModule (or ParameterManager)
+ -midi stuff becomes part of AudioModule
+ -state management an child-modules become part of AutomatableModule
  -rename some functions: addParameter, removeParameter
-
 
 
 AudioModuleChain: use inherited childModules array instead of "modules"

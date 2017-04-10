@@ -1,7 +1,7 @@
 
 PhasorFilter::PhasorFilter(CriticalSection *lockToUse) : AudioModule(lockToUse)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   moduleName = "PhasorFilter";
   setActiveDirectory(getApplicationDirectory() + "/PhasorFilterPresets");
 
@@ -14,55 +14,55 @@ PhasorFilter::PhasorFilter(CriticalSection *lockToUse) : AudioModule(lockToUse)
 
 void PhasorFilter::createStaticParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AutomatableParameter* p;
 
-  p = new AutomatableParameter(plugInLock, "Frequency", 20.0, 20000.0, 0.0, 1000.0,  
+  p = new AutomatableParameter(lock, "Frequency", 20.0, 20000.0, 0.0, 1000.0,  
     Parameter::EXPONENTIAL, 74);
   addObservedParameter(p);
   p->setValueChangeCallback<RAPTPhasorFilter>(&filterCore, &RAPTPhasorFilter::setFrequency);
 
-  p = new AutomatableParameter(plugInLock, "Decay", 0.0001, 0.1, 0.0, 0.01, 
+  p = new AutomatableParameter(lock, "Decay", 0.0001, 0.1, 0.0, 0.01, 
     Parameter::EXPONENTIAL, 71);
   addObservedParameter(p);
   p->setValueChangeCallback<RAPTPhasorFilter>(&filterCore, &RAPTPhasorFilter::setDecayTime);
 
   // nonlinearity parameters:
 
-  p = new AutomatableParameter(plugInLock, "SatInput", 0.1, 100, 0.0, 1.0, 
+  p = new AutomatableParameter(lock, "SatInput", 0.1, 100, 0.0, 1.0, 
     Parameter::EXPONENTIAL);
   addObservedParameter(p);
   p->setValueChangeCallback<RAPTPhasorMapper>(&stateMapper, 
     &RAPTPhasorMapper::setInputSaturation);
 
-  p = new AutomatableParameter(plugInLock, "Same", -2.0, 2.0, 0.0, 0.0, 
+  p = new AutomatableParameter(lock, "Same", -2.0, 2.0, 0.0, 0.0, 
     Parameter::LINEAR_BIPOLAR);
   addObservedParameter(p);
   p->setValueChangeCallback<RAPTPhasorMapper>(&stateMapper, &RAPTPhasorMapper::setSameSquare);
 
-  p = new AutomatableParameter(plugInLock, "Other", -2.0, 2.0, 0.0, 0.0, 
+  p = new AutomatableParameter(lock, "Other", -2.0, 2.0, 0.0, 0.0, 
     Parameter::LINEAR_BIPOLAR);
   addObservedParameter(p);
   p->setValueChangeCallback<RAPTPhasorMapper>(&stateMapper, &RAPTPhasorMapper::setOtherSquare);
 
-  p = new AutomatableParameter(plugInLock, "Cross", -2.0, 2.0, 0.0, 0.0, 
+  p = new AutomatableParameter(lock, "Cross", -2.0, 2.0, 0.0, 0.0, 
     Parameter::LINEAR_BIPOLAR);
   addObservedParameter(p);
   p->setValueChangeCallback<RAPTPhasorMapper>(&stateMapper, &RAPTPhasorMapper::setCrossProduct);
 
-  p = new AutomatableParameter(plugInLock, "Offset", -2.0, 2.0, 0.0, 0.0, 
+  p = new AutomatableParameter(lock, "Offset", -2.0, 2.0, 0.0, 0.0, 
     Parameter::LINEAR_BIPOLAR);
   addObservedParameter(p);
   p->setValueChangeCallback<RAPTPhasorMapper>(&stateMapper, &RAPTPhasorMapper::setOffset);
 
-  p = new AutomatableParameter(plugInLock, "SatPreRenorm", 0.1, 100, 0.0, 1.0, 
+  p = new AutomatableParameter(lock, "SatPreRenorm", 0.1, 100, 0.0, 1.0, 
     Parameter::EXPONENTIAL);
   addObservedParameter(p);
   p->setValueChangeCallback<RAPTPhasorMapper>(&stateMapper, 
     &RAPTPhasorMapper::setPreNormalizeSaturation);
 
-  p = new AutomatableParameter(plugInLock, "SatPostRenorm", 0.1, 100, 0.0, 1.0, 
+  p = new AutomatableParameter(lock, "SatPostRenorm", 0.1, 100, 0.0, 1.0, 
     Parameter::EXPONENTIAL);
   addObservedParameter(p);
   p->setValueChangeCallback<RAPTPhasorMapper>(&stateMapper, 

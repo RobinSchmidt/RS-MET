@@ -3,7 +3,7 @@ Enveloper::Enveloper(CriticalSection *lockToUse)
   : AudioModuleWithMidiIn(lockToUse)
   , envGenWrapper(lockToUse, &envGen)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   moduleName = "Enveloper";
   //envGenWrapper.setModuleName(moduleName);
   setActiveDirectory(getApplicationDirectory() + "/EnveloperPresets");
@@ -12,7 +12,7 @@ Enveloper::Enveloper(CriticalSection *lockToUse)
 AudioModuleEditor* Enveloper::createEditor()
 {
   jura::BreakpointModulatorEditor* editor = 
-    new jura::BreakpointModulatorEditor(plugInLock, &envGenWrapper);
+    new jura::BreakpointModulatorEditor(lock, &envGenWrapper);
   //editor->setLayout(1);
   editor->setHeadlineText("Enveloper");
   editor->setSize(500, 260);

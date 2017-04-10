@@ -210,8 +210,8 @@ protected:
 
   MetaParameterManager* metaParamManager = nullptr;
 
-  CriticalSection *plugInLock;     // mutex to access the wrapped core dsp object
-                                   // -> get rid -> use inherited "lock" member
+  //CriticalSection *plugInLock;     // mutex to access the wrapped core dsp object
+  //                                 // -> get rid -> use inherited "lock" member
 
 
   double triggerInterval;          // interval (in beats) for calls to trigger()
@@ -405,7 +405,7 @@ protected:
   virtual juce::String getPreferencesFileName();
 
   RTextField      *infoField;       // field for short help texts, when mouse is over a widget
-  CriticalSection *plugInLock;      // pointer to the global plugInLock
+  CriticalSection *lock;            // pointer to the global plugInLock
   AudioModule     *moduleToEdit;
   int presetSectionPosition, linkPosition;
 

@@ -1,8 +1,7 @@
 
 Ladder::Ladder(CriticalSection *lockToUse) : AudioModuleWithMidiIn(lockToUse)
-//Ladder::Ladder()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   moduleName = "Ladder";
   setActiveDirectory(getApplicationDirectory() + "/LadderPresets");
 
@@ -11,13 +10,13 @@ Ladder::Ladder(CriticalSection *lockToUse) : AudioModuleWithMidiIn(lockToUse)
 
 void Ladder::createStaticParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   std::vector<double> defaultValues;
   //AutomatableParameter* p;
   Parameter* p;
 
-  p = new AutomatableParameter(plugInLock, "Cutoff", 20.0, 20000.0, 0.0, 1000.0, 
+  p = new AutomatableParameter(lock, "Cutoff", 20.0, 20000.0, 0.0, 1000.0, 
     Parameter::EXPONENTIAL, 74);
   defaultValues.clear();
   defaultValues.push_back(125.0);
@@ -32,7 +31,7 @@ void Ladder::createStaticParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<Ladder>(this, &Ladder::setCutoff);
 
-  //p = new AutomatableParameter(plugInLock, "Resonance", 0.0, 1.0, 0.0, 0.2,  
+  //p = new AutomatableParameter(lock, "Resonance", 0.0, 1.0, 0.0, 0.2,  
   //  Parameter::LINEAR, 71);
   p = new MetaControlledParameter("Resonance", 0.0, 1.0, 0.2, Parameter::LINEAR, 0.01);
   //MetaControlledParameter(const juce::String& name, double min = 0.0, double max = 1.0, 
@@ -40,12 +39,12 @@ void Ladder::createStaticParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<Ladder>(this, &Ladder::setResonance);
 
-  p = new AutomatableParameter(plugInLock, "StereoSpread", -24.0, 24.0, 0.0, 0.0, 
+  p = new AutomatableParameter(lock, "StereoSpread", -24.0, 24.0, 0.0, 0.0, 
     Parameter::LINEAR_BIPOLAR);
   addObservedParameter(p);
   p->setValueChangeCallback<Ladder>(this, &Ladder::setStereoSpread);
 
-  p = new AutomatableParameter(plugInLock, "Mode", 0.0, 14.0, 1.0, 4.0, Parameter::STRING);
+  p = new AutomatableParameter(lock, "Mode", 0.0, 14.0, 1.0, 4.0, Parameter::STRING);
   p->addStringValue("Flat");
   p->addStringValue("Lowpass 6 dB/oct");
   p->addStringValue("Lowpass 12 dB/oct");
@@ -481,7 +480,7 @@ double LadderSpectrumEditor::yToReso(double y, juce::Image *targetImage)
 
 LadderEditor::LadderEditor(jura::Ladder *newLadderToEdit) : AudioModuleEditor(newLadderToEdit)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   // maybe we should avoid this lock here and instead have a function that connects the widgets 
   // with the parameters where we acquire the lock - but maybe not
 
@@ -554,7 +553,7 @@ LadderEditor::LadderEditor(jura::Ladder *newLadderToEdit) : AudioModuleEditor(ne
 
 void LadderEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   AudioModuleEditor::resized();
 
   int x  = 0;

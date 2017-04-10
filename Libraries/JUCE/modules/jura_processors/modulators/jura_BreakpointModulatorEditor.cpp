@@ -551,11 +551,11 @@ BreakpointModulatorEditor::BreakpointModulatorEditor(CriticalSection *newPlugInL
   addChildColourSchemeComponent(breakpointZoomer);
   breakpointZoomer->setCoordinateSystem(breakpointEditor);
 
-  globalEditor = new BreakpointModulatorGlobalEditor(plugInLock, newBreakpointModulatorAudioModule);
+  globalEditor = new BreakpointModulatorGlobalEditor(lock, newBreakpointModulatorAudioModule);
   globalEditor->loopButton->addRButtonListener(this); 
   addChildEditor( globalEditor );
 
-  breakpointParameterEditor = new BreakpointParameterEditor(plugInLock);
+  breakpointParameterEditor = new BreakpointParameterEditor(lock);
   breakpointParameterEditor->addChangeListener(this);
   breakpointParameterEditor->setModulatorToEdit(newBreakpointModulatorAudioModule);
   addChildEditor( breakpointParameterEditor );
@@ -1034,7 +1034,7 @@ BreakpointModulatorEditorCompact::BreakpointModulatorEditorCompact(CriticalSecti
   plot->setAxisValuesPositionY(CoordinateSystemOld::INVISIBLE);
   addPlot(plot);
 
-  popUpEditor = new BreakpointModulatorEditor(plugInLock, modulatorModuleToEdit);
+  popUpEditor = new BreakpointModulatorEditor(lock, modulatorModuleToEdit);
   popUpEditor->addChangeListener(this);
   popUpEditor->setAlwaysOnTop(true);
   popUpEditor->setOpaque(true);

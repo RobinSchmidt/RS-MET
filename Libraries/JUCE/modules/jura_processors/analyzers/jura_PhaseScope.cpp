@@ -1,6 +1,6 @@
 PhaseScope::PhaseScope(CriticalSection *lockToUse) : AudioModule(lockToUse)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   moduleName = "PhaseScope";
   setActiveDirectory(getApplicationDirectory() + "/PhaseScopePresets");
 
@@ -39,47 +39,47 @@ PhaseScope::~PhaseScope()
 
 void PhaseScope::createParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   Parameter* p;
 
-  p = new Parameter(plugInLock, "Brightness", 0.001, 100.0, 0.0, 1.0, Parameter::EXPONENTIAL);
+  p = new Parameter(lock, "Brightness", 0.001, 100.0, 0.0, 1.0, Parameter::EXPONENTIAL);
   //p = new Parameter(plugInLock, "Brightness", -100.0, 100.0, 0.0, 1.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setBrightness);
 
-  p = new Parameter(plugInLock, "AfterGlow", 0.001, 50.0, 0.0, 0.1, Parameter::EXPONENTIAL);
+  p = new Parameter(lock, "AfterGlow", 0.001, 50.0, 0.0, 0.1, Parameter::EXPONENTIAL);
   addObservedParameter(p);
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setAfterGlow);
 
-  p = new Parameter(plugInLock, "PixelSpread", 0.0, 1.0, 0.0, 0.5, Parameter::LINEAR);
+  p = new Parameter(lock, "PixelSpread", 0.0, 1.0, 0.0, 0.5, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setPixelSpread);
 
-  p = new Parameter(plugInLock, "PixelScale", 1.0, 8.0, 0.0, 1.0, Parameter::EXPONENTIAL);
+  p = new Parameter(lock, "PixelScale", 1.0, 8.0, 0.0, 1.0, Parameter::EXPONENTIAL);
   addObservedParameter(p);
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setPixelScale);
 
-  p = new Parameter(plugInLock, "LineDensity", 0.0, 1.0, 0.0, 0.0, Parameter::LINEAR);
+  p = new Parameter(lock, "LineDensity", 0.0, 1.0, 0.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setLineDensity);
 
-  p = new Parameter(plugInLock, "DotLimit", 1.0, 500.0, 1.0, 500.0, Parameter::LINEAR);
+  p = new Parameter(lock, "DotLimit", 1.0, 500.0, 1.0, 500.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setDotLimit);
 
-  p = new Parameter(plugInLock, "FrameRate", 1.0, 100.0, 0.0, 25.0, Parameter::EXPONENTIAL);
+  p = new Parameter(lock, "FrameRate", 1.0, 100.0, 0.0, 25.0, Parameter::EXPONENTIAL);
   addObservedParameter(p);
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setFrameRate);
 
-  p = new Parameter(plugInLock, "AntiAlias", 0.0, 1.0, 0.0, 1.0, Parameter::BOOLEAN);
+  p = new Parameter(lock, "AntiAlias", 0.0, 1.0, 0.0, 1.0, Parameter::BOOLEAN);
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setAntiAlias);
   addObservedParameter(p);
 }
 
 void PhaseScope::setDisplayPixelSize(int width, int height)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   displayWidth  = width;
   displayHeight = height; 
   updateBufferSize();
@@ -132,7 +132,7 @@ AudioModuleEditor* PhaseScope::createEditor()
 
 void PhaseScope::processBlock(double **inOutBuffer, int numChannels, int numSamples)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   jassert(numChannels == 2);
   for(int n = 0; n < numSamples; n++)
   {
@@ -149,14 +149,14 @@ void PhaseScope::processBlock(double **inOutBuffer, int numChannels, int numSamp
 
 void PhaseScope::setSampleRate(double newSampleRate)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   phaseScopeBuffer->setSampleRate(newSampleRate);
   updateRepaintInterval();
 }
 
 void PhaseScope::reset()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   phaseScopeBuffer->reset();
   repaintCounter = 0;
 }
@@ -180,7 +180,7 @@ XmlElement* PhaseScope::getStateAsXml(const juce::String& stateName, bool markAs
 
 void PhaseScope::updateBufferSize()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   int w = (int) round(displayWidth  / pixelScale);
   int h = (int) round(displayHeight / pixelScale);
   w = jmax(w, 1);
@@ -228,7 +228,7 @@ void PhaseScopeDisplay::resized()
 
 void PhaseScopeDisplay::paint(Graphics &g)
 {
-  //ScopedLock scopedLock(*(phaseScope->plugInLock));
+  //ScopedLock scopedLock(*(phaseScope->lock));
 
   g.setImageResamplingQuality(Graphics::lowResamplingQuality);
   //g.setImageResamplingQuality(Graphics::mediumResamplingQuality);
@@ -260,7 +260,7 @@ PhaseScopeEditor::PhaseScopeEditor(jura::PhaseScope *newPhaseScopeToEdit)
   : AudioModuleEditor(newPhaseScopeToEdit)
   , display(newPhaseScopeToEdit)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   scope = newPhaseScopeToEdit;
   widgetMargin = 150; 
 
@@ -344,7 +344,7 @@ void PhaseScopeEditor::createWidgets()
 
 void PhaseScopeEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   AudioModuleEditor::resized();
 
   int w = getWidth();
@@ -382,7 +382,7 @@ void PhaseScopeEditor::resized()
 //
 //PhaseScope2::PhaseScope2(CriticalSection *lockToUse) : PhaseScope(lockToUse)
 //{
-//  ScopedLock scopedLock(*plugInLock);
+//  ScopedLock scopedLock(*lock);
 //  createParameters();  // creates the additional parameters
 //
 //  //phaseScopeBuffer->setUseAlphaMask(true);
@@ -441,23 +441,23 @@ void PhaseScopeEditor::resized()
 //
 //void PhaseScope2::createParameters()
 //{
-//  ScopedLock scopedLock(*plugInLock);
+//  ScopedLock scopedLock(*lock);
 //  Parameter* p;
 //
-//  p = new Parameter(plugInLock, "DecayByValue", -20.0, +20.0, 0.0, 0.0, Parameter::LINEAR_BIPOLAR);
+//  p = new Parameter(lock, "DecayByValue", -20.0, +20.0, 0.0, 0.0, Parameter::LINEAR_BIPOLAR);
 //  addObservedParameter(p);
 //  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setPixelDecayByValue);
 //
-//  p = new Parameter(plugInLock, "DecayByAverage", 0.0, +5.0, 0.0, 0.0, Parameter::LINEAR);
+//  p = new Parameter(lock, "DecayByAverage", 0.0, +5.0, 0.0, 0.0, Parameter::LINEAR);
 //  addObservedParameter(p);
 //  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setPixelDecayByAverage);
 //
 //
-//  p = new Parameter(plugInLock, "DrawDots", 0.0, 1.0, 0.0, 1.0, Parameter::BOOLEAN);
+//  p = new Parameter(lock, "DrawDots", 0.0, 1.0, 0.0, 1.0, Parameter::BOOLEAN);
 //  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setDrawDots);
 //  addObservedParameter(p);
 //
-//  p = new Parameter(plugInLock, "UseBigDot", 0.0, 1.0, 0.0, 1.0, Parameter::BOOLEAN);
+//  p = new Parameter(lock, "UseBigDot", 0.0, 1.0, 0.0, 1.0, Parameter::BOOLEAN);
 //  p->setValueChangeCallback<PhaseScope2>(this, &PhaseScope2::setUseBigDot);
 //  addObservedParameter(p);
 //

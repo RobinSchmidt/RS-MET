@@ -432,7 +432,7 @@ void BreakpointModulatorEditorMulti::createWidgetsForNewModulator(
   BreakpointModulatorAudioModule *newModulator)
 {
   BreakpointModulatorGlobalEditor* tmpEditor = 
-    new BreakpointModulatorGlobalEditor(plugInLock, newModulator);
+    new BreakpointModulatorGlobalEditor(lock, newModulator);
 
   //addWidgetSet(tmpWidgetSet); // this makes the encapsulated widgets child-components and 
                                 // registers this object as listener to the widgets
