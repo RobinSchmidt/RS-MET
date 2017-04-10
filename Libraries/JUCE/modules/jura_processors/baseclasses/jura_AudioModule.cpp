@@ -276,74 +276,34 @@ XmlElement* AudioModule::getStateAsXml(const juce::String& stateName, bool markA
 bool AudioModule::midiMappingFromXml(const XmlElement &xmlState)
 {
   bool success = true;
-
-  // try to restore the values of the automatable parameters:
   juce::String name;
   int numParameters = getNumParameters();
   Parameter* p;
-
-
-  double test;
-  for(int i = 0; i < numParameters; i++)
-  {
+  for(int i = 0; i < numParameters; i++) {
     p = getParameterByIndex(i);
-
-    // check the pointer against NULL to be on the safe side for cases in which another thread 
-    // changes the number of parameters while we are looping through them:
-    if( p != NULL )
-    {
-      // retrieve the name of the parameter:
+    if( p != nullptr ) {
       name = juce::String(p->getName());
-
-      // look, if there is an attribute stored with this name, if so, set up the device with the
-      // value, if not fall back to the default value:
-      if( p->shouldBeSavedAndRecalled() )
-      {
+      if( p->shouldBeSavedAndRecalled() ) {
         if( p->isStringParameter() )
           p->setStringValue(xmlState.getStringAttribute(
             name, p->getDefaultStringValue()), true, true);
         else
-        {
-          // test:
-          test =  xmlState.getDoubleAttribute(name, -10000);
-          //if( test == -10000 )
-          //  DEBUG_BREAK;
+          p->setValue(xmlState.getDoubleAttribute(name, p->getDefaultValue()), true, true); }}}
 
-          p->setValue(xmlState.getDoubleAttribute(name, p->getDefaultValue()), true, true);
-        }
-      }
-      //and the value
-      //xmlState->setAttribute( juce::String(p->getName()), juce::String(p->getValue()) );
-    }
-  }
-
-  // reset the controller mappings to the defaults:
+  // check, if there's a controller mapping stored, if so, retrieve it:
   revertToDefaultMapping();
-
-  // look for the controller mapping element - it is supposed to exist as child element in the
-  // xmlState element:
   XmlElement* xmlMapping = xmlState.getChildByName(juce::String("ControllerMapping") );
-  if( xmlMapping == NULL )
+  if( xmlMapping == nullptr )
     return success;
-
-  // it was not NULL so there are some controller mappings stored in this xmlState - we now 
-  // retrieve them:
   numParameters = xmlMapping->getNumChildElements(); // we actually do not use this?
   int    midiCC = -1;
   char*  nameC;
   double min, max;
-  //AutomatableParameter* p;
-
-  // the control mapping settings for the individual parameters are stored as child elements in 
-  // the xmlMapping element, so we loop through all those child elements now:
   forEachXmlChildElement(*xmlMapping, xmlParameterSetup)
   {
     name  = xmlParameterSetup->getTagName();
-    nameC = toZeroTerminatedString(name);
+    nameC = toZeroTerminatedString(name);  // is this needed?
     p     = getParameterByName(nameC);
-
-    // check if a parameter in the device has this name (pointer is non-null in this case) and if 
-    // so, restore its settings from the xmlParameterSetup:
     AutomatableParameter *ap = dynamic_cast<AutomatableParameter*> (p);
     if( ap != NULL )
     {
@@ -354,11 +314,8 @@ bool AudioModule::midiMappingFromXml(const XmlElement &xmlState)
       ap->setLowerAutomationLimit(min);
       ap->setUpperAutomationLimit(max);
     }
-
-    // we must take care to delete the c-string which is created by toZeroTerminatedString():
     delete[] nameC;
   }
-
   return success;
 }
 
