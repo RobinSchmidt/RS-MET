@@ -284,13 +284,41 @@ XmlElement* AudioModule::getStateAsXml(const juce::String& stateName, bool markA
   return xmlState;
 }
 
-bool AudioModule::midiMappingFromXml(const XmlElement &xmlState)
+void AudioModule::midiMappingFromXml(const XmlElement &xmlState)
 {
-  bool success = true;
+  revertToDefaultMapping();
+  XmlElement* xmlMapping = xmlState.getChildByName("MidiMapping");
+  if( xmlMapping == nullptr )
+    return; // no mapping stored, nothing to do
+  int midiCC = -1;
+  double min, max;
+  forEachXmlChildElement(*xmlMapping, xmlParameterSetup) {
+    Parameter* p = getParameterByName(xmlParameterSetup->getTagName());
+    AutomatableParameter *ap = dynamic_cast<AutomatableParameter*>(p);
+    if( ap != nullptr ) {
+      midiCC = xmlParameterSetup->getIntAttribute("MidiCC", -1);
+      min = xmlParameterSetup->getDoubleAttribute("Min",    ap->getMinValue());
+      max = xmlParameterSetup->getDoubleAttribute("Max",    ap->getMaxValue());    
+      ap->assignMidiController(midiCC);
+      ap->setLowerAutomationLimit(min);
+      ap->setUpperAutomationLimit(max); }}
+}
+
+void AudioModule::metaMappingFromXml(const XmlElement &xmlState)
+{
+  // something to do
+}
+
+void AudioModule::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 
+  bool markAsClean)
+{
+  ScopedLock scopedLock(*lock);
+
+  XmlElement convertedState = convertXmlStateIfNecessary(xmlState);
+
+  // retrieve parameter values:
   juce::String name;
   Parameter* p;
-
-  // this is the value-setting - move out of this function:
   for(int i = 0; i < size(parameters); i++) {
     p = parameters[i];
     name = p->getName();
@@ -301,35 +329,10 @@ bool AudioModule::midiMappingFromXml(const XmlElement &xmlState)
       else
         p->setValue(xmlState.getDoubleAttribute(name, p->getDefaultValue()), true, true); }}
 
-  // check, if there's a controller mapping stored, if so, retrieve it:
-  revertToDefaultMapping();
-  XmlElement* xmlMapping = xmlState.getChildByName("MidiMapping");
-  if( xmlMapping == nullptr )
-    return success;
-  int midiCC = -1;
-  double min, max;
-  forEachXmlChildElement(*xmlMapping, xmlParameterSetup) {
-    p = getParameterByName(xmlParameterSetup->getTagName());
-    AutomatableParameter *ap = dynamic_cast<AutomatableParameter*>(p);
-    if( ap != nullptr ) {
-      midiCC = xmlParameterSetup->getIntAttribute(   "MidiCC", -1);
-      min    = xmlParameterSetup->getDoubleAttribute("Min",    ap->getMinValue());
-      max    = xmlParameterSetup->getDoubleAttribute("Max",    ap->getMaxValue());    
-      ap->assignMidiController(midiCC);
-      ap->setLowerAutomationLimit(min);
-      ap->setUpperAutomationLimit(max); }}
-
-  return success;
-}
-
-void AudioModule::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 
-  bool markAsClean)
-{
-  ScopedLock scopedLock(*lock);
-
-  XmlElement convertedState = convertXmlStateIfNecessary(xmlState);
-
+  // retrieve midi- and/or meta mapping:
   midiMappingFromXml(convertedState);
+  metaMappingFromXml(convertedState);
+
 
   // if we have child-modules, we try to restore their states by looking for corresponding
   // child XmlElements in the xmlState:

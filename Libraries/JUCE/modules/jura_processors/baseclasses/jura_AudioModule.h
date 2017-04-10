@@ -215,9 +215,8 @@ protected:
   // used internally as sub-tasks in the get/setState functions:
   void midiMappingToXml(XmlElement* xmlElementToStartFrom);
   void metaMappingToXml(XmlElement* xmlElementToStartFrom);
-
-
-  bool midiMappingFromXml(const XmlElement &xmlState);
+  void midiMappingFromXml(const XmlElement &xmlState);
+  void metaMappingFromXml(const XmlElement &xmlState);
 
 
   /** Our child modules to which we will distribute MIDI-events and of which we manage the
