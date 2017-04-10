@@ -363,6 +363,6 @@ void BreakpointModulatorAudioModule::initializeAutomatableParameters()
   addObservedParameter(p);
 
   // make a call to setValue for each parameter in order to set up all the slave voices:
-  for(int i=0; i < (int) observedParameters.size(); i++ )
-    parameterChanged(observedParameters[i]);
+  for(int i=0; i < (int) parameters.size(); i++ )
+    parameterChanged(parameters[i]);
 }

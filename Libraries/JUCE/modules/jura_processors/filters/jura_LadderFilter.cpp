@@ -64,8 +64,8 @@ void Ladder::createStaticParameters()
   p->setValueChangeCallback<Ladder>(this, &Ladder::setMode);
 
   // make sure that the parameters are initially in sync with the audio engine:
-  for(int i = 0; i < (int)observedParameters.size(); i++)
-    observedParameters[i]->resetToDefaultValue(true, true);
+  for(int i = 0; i < (int)parameters.size(); i++)
+    parameters[i]->resetToDefaultValue(true, true);
   // replace this loop by a call to:
   //resetParametersToDefaultValues();
 

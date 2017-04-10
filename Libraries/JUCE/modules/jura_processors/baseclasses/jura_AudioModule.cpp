@@ -143,13 +143,13 @@ void AudioModule::setMidiController(int controllerNumber, float controllerValue)
   ScopedLock scopedLock(*lock);
   Parameter            *p;
   AutomatableParameter *ap;
-  for(int i=0; i < (int) observedParameters.size(); i++)
+  for(int i=0; i < (int) parameters.size(); i++)
   {
-    p  = observedParameters[i];
+    p  = parameters[i];
     ap = dynamic_cast<AutomatableParameter*> (p);
     if( ap != NULL )
       ap->setMidiController(controllerNumber, controllerValue);
-    //observedParameters[i]->setMidiController(controllerNumber, controllerValue);
+    //parameters[i]->setMidiController(controllerNumber, controllerValue);
   }
 }
 
@@ -158,13 +158,13 @@ void AudioModule::revertToDefaultMapping()
   ScopedLock scopedLock(*lock);
   Parameter            *p;
   AutomatableParameter *ap;
-  for(int i=0; i < (int) observedParameters.size(); i++)
+  for(int i=0; i < (int) parameters.size(); i++)
   {
-    p  = observedParameters[i];
+    p  = parameters[i];
     ap = dynamic_cast<AutomatableParameter*> (p);
     if( ap != NULL )
       ap->revertToDefaults(false, false, false);
-    //observedParameters[i]->revertToDefaults();
+    //parameters[i]->revertToDefaults();
   }
 }
 
@@ -380,8 +380,8 @@ XmlElement AudioModule::convertXmlStateIfNecessary(const XmlElement& xmlState)
 void AudioModule::resetParametersToDefaultValues()
 {
   ScopedLock scopedLock(*lock);
-  for(int i = 0; i < (int)observedParameters.size(); i++)
-    observedParameters[i]->resetToDefaultValue(true, true);
+  for(int i = 0; i < (int)parameters.size(); i++)
+    parameters[i]->resetToDefaultValue(true, true);
 }
 
 void AudioModule::setMetaParameterManager(MetaParameterManager* managerToUse)
@@ -394,9 +394,9 @@ void AudioModule::setMetaParameterManager(MetaParameterManager* managerToUse)
     childModules[i]->setMetaParameterManager(metaParamManager);
 
   // maybe factor out - we may need to do this in other places as well:
-  for(i = 0; i < observedParameters.size(); i++)
+  for(i = 0; i < parameters.size(); i++)
   {
-    MetaControlledParameter* mcp = dynamic_cast<MetaControlledParameter*>(observedParameters[i]);
+    MetaControlledParameter* mcp = dynamic_cast<MetaControlledParameter*>(parameters[i]);
     if(mcp != nullptr)
       mcp->setMetaParameterManager(metaParamManager);
   }
@@ -423,16 +423,16 @@ void AudioModule::updateCoreObjectAccordingToParameters()
 
   // make a call to parameterChanged for each parameter in order to set up the DSP-core to reflect 
   // the values the automatable parameters:
-  for(int i=0; i < (int) observedParameters.size(); i++ )
-    parameterChanged(observedParameters[i]);
+  for(int i=0; i < (int) parameters.size(); i++ )
+    parameterChanged(parameters[i]);
 }
 
 void AudioModule::callParameterCallbacks(bool recursivelyForChildModules)
 {
   //ScopedLock scopedLock(*lock); // wasn't there but should be?
   int i;
-  for(i = 0; i < observedParameters.size(); i++)
-    observedParameters[i]->callValueChangeCallbacks();
+  for(i = 0; i < parameters.size(); i++)
+    parameters[i]->callValueChangeCallbacks();
   if(recursivelyForChildModules)
     for(i = 0; i < childModules.size(); i++)
       childModules[i]->callParameterCallbacks(true);
@@ -442,8 +442,8 @@ void AudioModule::notifyParameterObservers(bool recursivelyForChildModules)
 {
   //ScopedLock scopedLock(*lock); // wasn't there but should be?
   int i;
-  for(i = 0; i < observedParameters.size(); i++)
-    observedParameters[i]->notifyObservers();
+  for(i = 0; i < parameters.size(); i++)
+    parameters[i]->notifyObservers();
   if(recursivelyForChildModules)
     for(i = 0; i < childModules.size(); i++)
       childModules[i]->notifyParameterObservers(true);

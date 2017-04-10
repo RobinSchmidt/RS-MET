@@ -74,8 +74,8 @@ void PhasorFilter::createStaticParameters()
   // more parameters to come..
 
   //// make sure that the parameters are initially in sync with the audio engine:
-  //for(int i = 0; i < (int)observedParameters.size(); i++)
-  //  observedParameters[i]->resetToDefaultValue(true, true);
+  //for(int i = 0; i < (int)parameters.size(); i++)
+  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 void PhasorFilter::processBlock(double **inOutBuffer, int numChannels, int numSamples)

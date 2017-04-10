@@ -77,7 +77,7 @@ public:
 protected:
 
   /** An array of our observed parameters. */
-  std::vector<Parameter*> observedParameters;
+  std::vector<Parameter*> parameters;
 
   /** Returns the index of the parameter in the array or -1 if the parameter was not found .*/
   int getParameterIndex(Parameter *parameterToLookFor);

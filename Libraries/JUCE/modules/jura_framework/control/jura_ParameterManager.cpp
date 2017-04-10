@@ -21,10 +21,10 @@ Parameter* ParameterManager::getParameterByName(const String& nameOfParameter) c
 {
   ScopedLock scopedLock(*lock);
   Parameter* result = nullptr;
-  for(int i=0; i < (int) observedParameters.size(); i++)
+  for(int i=0; i < (int) parameters.size(); i++)
   {
-    if( observedParameters[i]->hasName(nameOfParameter) )
-      result = observedParameters[i];
+    if( parameters[i]->hasName(nameOfParameter) )
+      result = parameters[i];
   }
   jassert(result != nullptr);   // parameter with given name doesn't exist
   return result;
@@ -34,8 +34,8 @@ Parameter* ParameterManager::getParameterByIndex(int indexOfParameter) const
 {
   ScopedLock scopedLock(*lock);
   Parameter* result = nullptr;
-  if( indexOfParameter < (int) observedParameters.size() )
-    result = observedParameters[indexOfParameter];
+  if( indexOfParameter < (int) parameters.size() )
+    result = parameters[indexOfParameter];
   return result;
 }
 
@@ -43,9 +43,9 @@ int ParameterManager::getIndexOfParameter(Parameter* parameterToRetrieveIndexOf)
 {
   ScopedLock scopedLock(*lock);
   int parameterIndex = -1;
-  for(int i=0; i < (int) observedParameters.size(); i++)
+  for(int i=0; i < (int) parameters.size(); i++)
   {
-    if( parameterToRetrieveIndexOf == observedParameters[i] )
+    if( parameterToRetrieveIndexOf == parameters[i] )
       parameterIndex = i;
   }  
   return parameterIndex;
@@ -54,7 +54,7 @@ int ParameterManager::getIndexOfParameter(Parameter* parameterToRetrieveIndexOf)
 int ParameterManager::getNumParameters() const
 {
   ScopedLock scopedLock(*lock);
-  return (int)observedParameters.size();
+  return (int)parameters.size();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -65,20 +65,20 @@ void ParameterManager::addObservedParameter(Parameter *parameterToAdd)
   ScopedLock scopedLock(*lock);
   parameterToAdd->setMutexToUse(lock);
   parameterToAdd->registerParameterObserver(this);
-  appendIfNotAlreadyThere(observedParameters, parameterToAdd);
+  appendIfNotAlreadyThere(parameters, parameterToAdd);
 }
 
 void ParameterManager::removeObservedParameter(Parameter *parameterToRemove, bool deleteObject)
 {
   ScopedLock scopedLock(*lock);
   int i=0;
-  while( i < (int) observedParameters.size() ) 
+  while( i < (int) parameters.size() ) 
   {
-    if( observedParameters[i] == parameterToRemove ) 
+    if( parameters[i] == parameterToRemove ) 
     {
       parameterToRemove->deRegisterParameterObserver(this);
       parameterToRemove->setMutexToUse(nullptr);
-      removeFirstOccurrence(observedParameters, parameterToRemove);
+      removeFirstOccurrence(parameters, parameterToRemove);
       if( deleteObject == true )
         delete parameterToRemove;
       i--; // because array has shrunken
@@ -91,12 +91,12 @@ void ParameterManager::removeAllObservedParameters(bool deleteObjects)
 {
   ScopedLock scopedLock(*lock);
   Parameter *removee; // this is the currently removed parameter
-  while( observedParameters.size() > 0 )
+  while( parameters.size() > 0 )
   {
-    removee = observedParameters[0];
+    removee = parameters[0];
     removee->deRegisterParameterObserver(this);
     removee->setMutexToUse(nullptr);
-    remove(observedParameters, 0);
+    remove(parameters, 0);
     if( deleteObjects == true )
       delete removee;   
   }
@@ -117,8 +117,8 @@ int ParameterManager::getParameterIndex(Parameter *parameterToLookFor)
 {
   ScopedLock scopedLock(*lock);
   int result = -1;
-  for(int i=0; i < (int) observedParameters.size(); i++) {
-    if( observedParameters[i] == parameterToLookFor )
+  for(int i=0; i < (int) parameters.size(); i++) {
+    if( parameters[i] == parameterToLookFor )
       return i; }
   return -1;
 }
