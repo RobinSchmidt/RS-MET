@@ -114,8 +114,17 @@ void MetaParameter::parameterChanged(Parameter* p)
 
 void MetaParameter::parameterIsGoingToBeDeleted(Parameter* p)
 {
-  MetaControlledParameter* mcp = dynamic_cast<MetaControlledParameter*>(p);
-  detachParameter(mcp);
+  p->deRegisterParameterObserver(this);
+
+  // removeFirstOccurrence(params, p); cant be used because of ambiguous template parameter, so we 
+  // have to do the serach loop ourselves:
+  for(int i = 0; i < size(params); i++) {
+    if(params[i] == p) {
+      remove(params, i);
+      return; }}
+
+  //MetaControlledParameter* mcp = dynamic_cast<MetaControlledParameter*>(p); // is null on deletion of a module in chainer
+  //detachParameter(mcp);
 }
 
 //-------------------------------------------------------------------------------------------------
