@@ -288,45 +288,37 @@ bool AudioModule::midiMappingFromXml(const XmlElement &xmlState)
 {
   bool success = true;
   juce::String name;
-  int numParameters = getNumParameters();
   Parameter* p;
-  for(int i = 0; i < numParameters; i++) {
-    p = getParameterByIndex(i);
-    if( p != nullptr ) {
-      name = juce::String(p->getName());
-      if( p->shouldBeSavedAndRecalled() ) {
-        if( p->isStringParameter() )
-          p->setStringValue(xmlState.getStringAttribute(
-            name, p->getDefaultStringValue()), true, true);
-        else
-          p->setValue(xmlState.getDoubleAttribute(name, p->getDefaultValue()), true, true); }}}
+
+  // this is the value-setting - move out of this function:
+  for(int i = 0; i < size(parameters); i++) {
+    p = parameters[i];
+    name = p->getName();
+    if(p->shouldBeSavedAndRecalled()) {
+      if(p->isStringParameter())
+        p->setStringValue(xmlState.getStringAttribute(
+          name, p->getDefaultStringValue()), true, true);
+      else
+        p->setValue(xmlState.getDoubleAttribute(name, p->getDefaultValue()), true, true); }}
 
   // check, if there's a controller mapping stored, if so, retrieve it:
   revertToDefaultMapping();
-  XmlElement* xmlMapping = xmlState.getChildByName(juce::String("MidiMapping") );
+  XmlElement* xmlMapping = xmlState.getChildByName("MidiMapping");
   if( xmlMapping == nullptr )
     return success;
-  numParameters = xmlMapping->getNumChildElements(); // we actually do not use this?
-  int    midiCC = -1;
-  char*  nameC;
+  int midiCC = -1;
   double min, max;
-  forEachXmlChildElement(*xmlMapping, xmlParameterSetup)
-  {
-    name  = xmlParameterSetup->getTagName();
-    nameC = toZeroTerminatedString(name);  // is this needed?
-    p     = getParameterByName(nameC);
-    AutomatableParameter *ap = dynamic_cast<AutomatableParameter*> (p);
-    if( ap != NULL )
-    {
-      midiCC = xmlParameterSetup->getIntAttribute(   juce::String("MidiCC"), -1);
-      min    = xmlParameterSetup->getDoubleAttribute(juce::String("Min"),    ap->getMinValue() );
-      max    = xmlParameterSetup->getDoubleAttribute(juce::String("Max"),    ap->getMaxValue() );    
+  forEachXmlChildElement(*xmlMapping, xmlParameterSetup) {
+    p = getParameterByName(xmlParameterSetup->getTagName());
+    AutomatableParameter *ap = dynamic_cast<AutomatableParameter*>(p);
+    if( ap != nullptr ) {
+      midiCC = xmlParameterSetup->getIntAttribute(   "MidiCC", -1);
+      min    = xmlParameterSetup->getDoubleAttribute("Min",    ap->getMinValue());
+      max    = xmlParameterSetup->getDoubleAttribute("Max",    ap->getMaxValue());    
       ap->assignMidiController(midiCC);
       ap->setLowerAutomationLimit(min);
-      ap->setUpperAutomationLimit(max);
-    }
-    delete[] nameC;
-  }
+      ap->setUpperAutomationLimit(max); }}
+
   return success;
 }
 
