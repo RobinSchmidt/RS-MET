@@ -213,9 +213,7 @@ public:
 protected:
 
 
-  XmlElement* midiMappingToXml(XmlElement* xmlElementToStartFrom);
-  // could be void?
-
+  void midiMappingToXml(XmlElement* xmlElementToStartFrom);
 
   bool midiMappingFromXml(const XmlElement &xmlState);
 

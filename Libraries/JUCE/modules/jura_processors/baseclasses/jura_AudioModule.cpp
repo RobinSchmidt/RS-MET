@@ -207,7 +207,7 @@ void AudioModule::parameterChanged(Parameter* parameterThatHasChanged)
   markStateAsDirty();
 }
 
-XmlElement* AudioModule::midiMappingToXml(XmlElement* xmlState)
+void AudioModule::midiMappingToXml(XmlElement* xmlState)
 {
   // child element will be added when there are any relevant controller-mappings to be stored:
   XmlElement* xmlMapping = new XmlElement( juce::String("ControllerMapping") );
@@ -229,7 +229,7 @@ XmlElement* AudioModule::midiMappingToXml(XmlElement* xmlState)
   else
     delete xmlMapping;
 
-  // store current values:
+  // store current parameter values (factor out into another function):
   for(int i = 0; i < numParameters; i++) {
     p = getParameterByIndex(i);
     if( p != nullptr ) {  // do we need this?
@@ -239,7 +239,8 @@ XmlElement* AudioModule::midiMappingToXml(XmlElement* xmlState)
         else
           xmlState->setAttribute(p->getName(), juce::String(p->getValue()) ); }}}
 
-  return xmlState;
+
+  // get rid of this function - move the code into getStateAsXml
 }
 
 XmlElement* AudioModule::getStateAsXml(const juce::String& stateName, bool markAsClean)
