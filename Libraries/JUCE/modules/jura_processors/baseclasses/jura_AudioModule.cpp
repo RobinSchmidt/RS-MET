@@ -35,7 +35,7 @@ XmlElement* automatableModuleStateToXml(const AudioModule* device,
   // the XmlElement which stores all the relevant state-information:
   XmlElement* xmlState;
   if( xmlElementToStartFrom == NULL )
-    xmlState = new XmlElement(juce::String("AutomatableModuleState")); 
+    xmlState = new XmlElement(juce::String("ParameterManagerState")); 
   else
     xmlState = xmlElementToStartFrom;
 
@@ -195,7 +195,7 @@ bool automatableModuleStateFromXml(AudioModule* device, const XmlElement &xmlSta
 
 // construction/destruction:
 
-AudioModule::AudioModule(CriticalSection *lockToUse) : AutomatableModule(lockToUse)
+AudioModule::AudioModule(CriticalSection *lockToUse) : ParameterManager(lockToUse)
 {
   //plugInLock = lockToUse;
   ParameterObserver::localAutomationSwitch = true;  // activate automation for this instance
@@ -296,7 +296,7 @@ bool AudioModule::checkForCrack()
 
 void AudioModule::addObservedParameter(Parameter *parameterToAdd)
 {
-  AutomatableModule::addObservedParameter(parameterToAdd);
+  ParameterManager::addObservedParameter(parameterToAdd);
   MetaControlledParameter* mcp = dynamic_cast<MetaControlledParameter*> (parameterToAdd);
   if(mcp != nullptr)
     mcp->setMetaParameterManager(getMetaParameterManager());

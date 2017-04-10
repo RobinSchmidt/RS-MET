@@ -1,12 +1,12 @@
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-AutomatableModule::AutomatableModule(CriticalSection *lockToUse)
+ParameterManager::ParameterManager(CriticalSection *lockToUse)
 {
   lock = lockToUse;
 }
 
-AutomatableModule::~AutomatableModule()
+ParameterManager::~ParameterManager()
 {
   ScopedLock scopedLock(*lock);
   removeAllObservedParameters(true);
@@ -17,7 +17,7 @@ AutomatableModule::~AutomatableModule()
 //-------------------------------------------------------------------------------------------------
 // retrieve pointers to the observed parameters:
 
-Parameter* AutomatableModule::getParameterByName(const String& nameOfParameter) const
+Parameter* ParameterManager::getParameterByName(const String& nameOfParameter) const
 {
   ScopedLock scopedLock(*lock);
   Parameter* result = nullptr;
@@ -30,7 +30,7 @@ Parameter* AutomatableModule::getParameterByName(const String& nameOfParameter) 
   return result;
 }
 
-Parameter* AutomatableModule::getParameterByIndex(int indexOfParameter) const
+Parameter* ParameterManager::getParameterByIndex(int indexOfParameter) const
 {
   ScopedLock scopedLock(*lock);
   Parameter* result = nullptr;
@@ -39,7 +39,7 @@ Parameter* AutomatableModule::getParameterByIndex(int indexOfParameter) const
   return result;
 }
 
-int AutomatableModule::getIndexOfParameter(Parameter* parameterToRetrieveIndexOf) const
+int ParameterManager::getIndexOfParameter(Parameter* parameterToRetrieveIndexOf) const
 {
   ScopedLock scopedLock(*lock);
   int parameterIndex = -1;
@@ -51,7 +51,7 @@ int AutomatableModule::getIndexOfParameter(Parameter* parameterToRetrieveIndexOf
   return parameterIndex;
 }
 
-int AutomatableModule::getNumParameters() const
+int ParameterManager::getNumParameters() const
 {
   ScopedLock scopedLock(*lock);
   return (int)observedParameters.size();
@@ -60,7 +60,7 @@ int AutomatableModule::getNumParameters() const
 //-------------------------------------------------------------------------------------------------
 // add/remove observed parameters:
 
-void AutomatableModule::addObservedParameter(Parameter *parameterToAdd)
+void ParameterManager::addObservedParameter(Parameter *parameterToAdd)
 {
   ScopedLock scopedLock(*lock);
   parameterToAdd->setMutexToUse(lock);
@@ -68,7 +68,7 @@ void AutomatableModule::addObservedParameter(Parameter *parameterToAdd)
   appendIfNotAlreadyThere(observedParameters, parameterToAdd);
 }
 
-void AutomatableModule::removeObservedParameter(Parameter *parameterToRemove, bool deleteObject)
+void ParameterManager::removeObservedParameter(Parameter *parameterToRemove, bool deleteObject)
 {
   ScopedLock scopedLock(*lock);
   int i=0;
@@ -87,7 +87,7 @@ void AutomatableModule::removeObservedParameter(Parameter *parameterToRemove, bo
   }
 }
 
-void AutomatableModule::removeAllObservedParameters(bool deleteObjects)
+void ParameterManager::removeAllObservedParameters(bool deleteObjects)
 {
   ScopedLock scopedLock(*lock);
   Parameter *removee; // this is the currently removed parameter
@@ -102,18 +102,18 @@ void AutomatableModule::removeAllObservedParameters(bool deleteObjects)
   }
 }
 
-void AutomatableModule::parameterChanged(Parameter *parameterThatHasChanged)
+void ParameterManager::parameterChanged(Parameter *parameterThatHasChanged)
 {
 
 }
 
-void AutomatableModule::parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted)
+void ParameterManager::parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted)
 {
   ScopedLock scopedLock(*lock);
   removeObservedParameter(parameterThatWillBeDeleted, false);
 }
 
-int AutomatableModule::getParameterIndex(Parameter *parameterToLookFor)
+int ParameterManager::getParameterIndex(Parameter *parameterToLookFor)
 {
   ScopedLock scopedLock(*lock);
   int result = -1;

@@ -1,22 +1,15 @@
-#ifndef jura_AutomatableModule_h
-#define jura_AutomatableModule_h
+#ifndef jura_ParameterManager_h
+#define jura_ParameterManager_h
 
+/** This class serves as baseclass fo objects that maintain an array of Parameters
 
-
-/** This class serves as base class for effect- or instrument plugins that provide support for  
-parameter automation. It derives from ParameterObserver and extends this class by a vector of 
-pointers to Parameter objects - this vector is the place where we keep track of the parameters we 
-are interested in. The class is still abstract in that it does not provide an implementation for 
-the inherited (purely virtual) parameterChanged() method.
-
-\todo factor out a baseclass ParameterManager - can be used for all classes that need to maintain 
-a set of parameters, these classes need not to be audio related - this should perhaps also be a 
-subclass of StateManager - OR rename this class ParametrizedObject/Module and get rid of the MIDI 
-stuff -> move it to AudioModule
+\todo: rename to ParameterManager
+\todo: maybe do state-management here (save/load settings)
+\todo; maybe maintain an array of sub-ParameterManagers
 
 */
 
-class JUCE_API AutomatableModule : public ParameterObserver
+class JUCE_API ParameterManager : public ParameterObserver
 {
 
 public:
@@ -26,10 +19,10 @@ public:
 
   /** Constructor. You need to pass a CriticalSection that will be used for accesses to the 
   parameters. */
-  AutomatableModule(CriticalSection *lockToUse);
+  ParameterManager(CriticalSection *lockToUse);
 
   /** Destructor. */
-  virtual ~AutomatableModule();
+  virtual ~ParameterManager();
 
 
 
@@ -97,7 +90,7 @@ protected:
   /** A mutex-lock for accesses to the vector of observed parameters. */
   CriticalSection *lock = nullptr;
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomatableModule)
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParameterManager)
 };
 
 #endif 

@@ -55,7 +55,7 @@ JUCE_API bool automatableModuleStateFromXml(AudioModule* device, const XmlElemen
 
 /** This class is the base class for all audio modules. */
 
-class JUCE_API AudioModule : public AutomatableModule, public StateFileManager
+class JUCE_API AudioModule : public ParameterManager, public StateFileManager
 {
 
 public:
