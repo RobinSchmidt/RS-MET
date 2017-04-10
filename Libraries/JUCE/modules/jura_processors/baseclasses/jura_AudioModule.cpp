@@ -228,19 +228,6 @@ void AudioModule::midiMappingToXml(XmlElement* xmlState)
     xmlState->addChildElement(xmlMapping);
   else
     delete xmlMapping;
-
-  // store current parameter values (factor out into another function):
-  for(int i = 0; i < numParameters; i++) {
-    p = getParameterByIndex(i);
-    if( p != nullptr ) {  // do we need this?
-      if( p->shouldBeSavedAndRecalled() && !p->isCurrentValueDefaultValue() ) {
-        if( p->isStringParameter() )
-          xmlState->setAttribute(p->getName(), p->getStringValue());
-        else
-          xmlState->setAttribute(p->getName(), juce::String(p->getValue()) ); }}}
-
-
-  // get rid of this function - move the code into getStateAsXml
 }
 
 XmlElement* AudioModule::getStateAsXml(const juce::String& stateName, bool markAsClean)
@@ -256,19 +243,26 @@ XmlElement* AudioModule::getStateAsXml(const juce::String& stateName, bool markA
   // store a patch format version (useful when patch-formats change later):
   xmlState->setAttribute("PatchFormat", patchFormatIndex);
 
-  // store controller mappings (if any)
-  midiMappingToXml(xmlState);
+  // store controller mappings (if any):
+  midiMappingToXml(xmlState);  
+
+  // store current parameter values:
+  for(int i = 0; i < getNumParameters(); i++) {
+    Parameter* p = getParameterByIndex(i);
+    if( p != nullptr ) {  // do we need this?
+      if( p->shouldBeSavedAndRecalled() && !p->isCurrentValueDefaultValue() ) {
+        if( p->isStringParameter() )
+          xmlState->setAttribute(p->getName(), p->getStringValue());
+        else
+          xmlState->setAttribute(p->getName(), juce::String(p->getValue()) ); }}}
 
   // save the states of all childModules in child-XmlElements:
-  for(int c = 0; c < childModules.size(); c++)
-  {
-    if( childModules[c]->wantsSaveAndRecallState() )
-    {
+  for(int c = 0; c < childModules.size(); c++) {
+    if( childModules[c]->wantsSaveAndRecallState() ) {
       XmlElement* childState = childModules[c]->getStateAsXml(
         childModules[c]->getStateName(), false);
-      xmlState->addChildElement(childState);
-    }
-  }
+      xmlState->addChildElement(childState); }}
+
   setStateName(stateName, markAsClean);
   return xmlState;
 }
