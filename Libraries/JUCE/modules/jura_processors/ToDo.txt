@@ -1,20 +1,10 @@
-ParameterManager/AudioModule
- -rename some functions: addParameter, removeParameter
-
-
 AudioModuleChain: use inherited childModules array instead of "modules"
 RSlider: make default-values and enter-value available on right-click (it's currently only
  available in subclass AutomatableSlider)
 
--create a Shell plugin that allows an arbitrary number of AudioProcessors be chained one after
- another (maybe allow later modular routing)
- ->have all the RAPT audio processors as "BuiltIns"
- ->support also PlugIns (VST, AU, etc.)
- ->to be used as test and demo environment
- ->Name: Chainer
- ->see Mixsonic code
-
--refine GenericAudioModuleEditor (widget arrangement)
+ParameterManager: rename addParameter, removeParameter
+AudioModule: absorb these controller-to-xml functions into the class
+GenericAudioModuleEditor: complete widget arrangement (buttons, boxes)
 
 Enveloper:
 -check, why it goes through release twice when there's no loop active

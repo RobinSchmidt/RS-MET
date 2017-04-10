@@ -4,7 +4,6 @@
 
 /** This class represents a parameter which can be automated via a MIDI controller.
 
-
 \todo:
 -rename to MidiControlledParameter
 -rename get/setAutomationValue in get/setNormalizedValue

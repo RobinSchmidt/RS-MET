@@ -3,11 +3,8 @@
 
 /** This class serves as baseclass fo objects that maintain an array of Parameters
 
-\todo: rename to ParameterManager
 \todo: maybe do state-management here (save/load settings)
-\todo; maybe maintain an array of sub-ParameterManagers
-
-*/
+\todo; maybe maintain an array of sub-ParameterManagers */
 
 class JUCE_API ParameterManager : public ParameterObserver
 {
@@ -23,8 +20,6 @@ public:
 
   /** Destructor. */
   virtual ~ParameterManager();
-
-
 
   //-----------------------------------------------------------------------------------------------
   // retrieve pointers to the observed parameters:

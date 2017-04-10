@@ -26,11 +26,9 @@ void AudioModuleDeletionWatcher::removeWatchedAudioModule(AudioModule
 
 //=================================================================================================
 
-// preliminary - turn into member functions of AudioModule:
+// preliminary - turn into member functions of AudioModule (or absorb into setState, etc):
 
-
-XmlElement* automatableModuleStateToXml(const AudioModule* device, 
-  XmlElement* xmlElementToStartFrom)
+XmlElement* automatableModuleStateToXml(const AudioModule* device, XmlElement* xmlElementToStartFrom)
 {
   // the XmlElement which stores all the relevant state-information:
   XmlElement* xmlState;
@@ -188,8 +186,6 @@ bool automatableModuleStateFromXml(AudioModule* device, const XmlElement &xmlSta
   return success;
 }
 
-
-
 //=================================================================================================
 // class AudioModule
 
@@ -197,7 +193,6 @@ bool automatableModuleStateFromXml(AudioModule* device, const XmlElement &xmlSta
 
 AudioModule::AudioModule(CriticalSection *lockToUse) : ParameterManager(lockToUse)
 {
-  //plugInLock = lockToUse;
   ParameterObserver::localAutomationSwitch = true;  // activate automation for this instance
   wantsTempoSyncInfo = true;
   moduleName = juce::String("AudioModule");
@@ -213,7 +208,6 @@ AudioModule::~AudioModule()
   for(int i = 0; i < deletionWatchers.size(); i++)
     deletionWatchers[i]->audioModuleWillBeDeleted(this);
 
-  //childModules.getLock().enter();
   AudioModule* childModule = NULL;
   while( childModules.size() > 0 )
   {
@@ -223,7 +217,6 @@ AudioModule::~AudioModule()
     //delete childModules[childModules.size()-1];
     //childModules.removeLast();
   }
-  //childModules.getLock().exit();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -232,21 +225,15 @@ AudioModule::~AudioModule()
 void AudioModule::setSampleRate(double newSampleRate)
 {
   ScopedLock scopedLock(*lock);
-
-  //childModules.getLock().enter();
   for(int i=0; i<childModules.size(); i++)
     childModules[i]->setSampleRate(newSampleRate);
-  //childModules.getLock().exit();
 }
 
 void AudioModule::setBeatsPerMinute(double newBpm)
 {
   ScopedLock scopedLock(*lock);
-
-  //childModules.getLock().enter();
   for(int i=0; i<childModules.size(); i++)
     childModules[i]->setBeatsPerMinute(newBpm);
-  //childModules.getLock().exit();
 }
 
 void AudioModule::setModuleName(const juce::String &newName)
@@ -262,31 +249,24 @@ void AudioModule::setModuleNameAppendix(const juce::String& newAppendix)
 void AudioModule::addChildAudioModule(AudioModule* moduleToAdd)
 { 
   ScopedLock scopedLock(*lock);
-  //childModules.getLock().enter();
-  //childModules.addIfNotAlreadyThere(moduleToAdd);
   appendIfNotAlreadyThere(childModules, moduleToAdd);
   moduleToAdd->setMetaParameterManager(metaParamManager);
-  //childModules.getLock().exit();
   addChildStateManager(moduleToAdd);
 }
 
 void AudioModule::removeChildAudioModule(AudioModule* moduleToRemove, bool deleteObject)
 { 
   ScopedLock scopedLock(*lock);
-  //childModules.getLock().enter();
-  /*int index = childModules.indexOf(moduleToRemove);*/
   int index = find(childModules, moduleToRemove);
   jassert( index != -1 ); // trying to remove a module which is not a child of this one?
   if( index != -1 )
   { 
-    //childModules.remove(index);
     remove(childModules, index);
     removeChildStateManager(moduleToRemove);
     moduleToRemove->setMetaParameterManager(nullptr);
     if( deleteObject == true )
       delete moduleToRemove;
   }
-  //childModules.getLock().exit();
 }
 
 bool AudioModule::checkForCrack()
@@ -357,11 +337,8 @@ void AudioModule::revertToDefaultMapping()
 int AudioModule::getIndexAmongNameSakes(AudioModule *child)
 {
   ScopedLock scopedLock(*lock);
-
   juce::String name = child->getModuleName();
   int index = -1;
-
-  //childModules.getLock().enter();
   for(int c = 0; c < childModules.size(); c++)
   {
     if( childModules[c]->getModuleName() == name )
@@ -371,8 +348,6 @@ int AudioModule::getIndexAmongNameSakes(AudioModule *child)
         break;
     }
   }
-  //childModules.getLock().exit();
-
   return index;
 }
 
@@ -400,7 +375,7 @@ XmlElement* AudioModule::getStateAsXml(const juce::String& stateName, bool markA
   ScopedLock scopedLock(*lock);
 
   if( !wantsSaveAndRecallState() )
-    return NULL;
+    return nullptr;
 
   // the XmlElement which stores all the relevant state-information:
   XmlElement* xmlState = new XmlElement(moduleName); 
@@ -412,7 +387,6 @@ XmlElement* AudioModule::getStateAsXml(const juce::String& stateName, bool markA
   automatableModuleStateToXml(this, xmlState);
 
   // save the states of all childModules in child-XmlElements:
-  //childModules.getLock().enter();
   for(int c=0; c<childModules.size(); c++)
   {
     if( childModules[c]->wantsSaveAndRecallState() )
@@ -422,7 +396,6 @@ XmlElement* AudioModule::getStateAsXml(const juce::String& stateName, bool markA
       xmlState->addChildElement(childState);
     }
   }
-  //childModules.getLock().exit();
   setStateName(stateName, markAsClean);
   return xmlState;
 }
@@ -437,7 +410,6 @@ void AudioModule::setStateFromXml(const XmlElement& xmlState, const juce::String
 
   // if we have child-modules, we try to restore their states by looking for corresponding
   // child XmlElements in the xmlState:
-  //childModules.getLock().enter();
   for(int c = 0; c < childModules.size(); c++)
   {
     childModules[c]->setStateToDefaults();
@@ -450,7 +422,6 @@ void AudioModule::setStateFromXml(const XmlElement& xmlState, const juce::String
       childModules[c]->setStateFromXml(*childState, juce::String::empty, markAsClean);
     }
   }
-  //childModules.getLock().exit();
 
   // this call we need for setting our parent dirty when some embedded sub-module loads a state 
   // - when the call was due to the outer parent loading its state, the subsequent call to 
@@ -591,12 +562,8 @@ void AudioModuleWithMidiIn::setMidiController(int controllerNumber, float contro
 {
   ScopedLock scopedLock(*lock);
   AudioModule::setMidiController(controllerNumber, controllerValue);
-
-  // distribute the controller message to all children (i.e. embedded sub-modules):
-  //childModules.getLock().enter();
-  for(int c=0; c<childModules.size(); c++)
+  for(int c = 0; c < childModules.size(); c++)
     childModules[c]->setMidiController(controllerNumber, controllerValue);
-  //childModules.getLock().exit();
 }
 
 void AudioModuleWithMidiIn::setPitchBend(int pitchBendValue)

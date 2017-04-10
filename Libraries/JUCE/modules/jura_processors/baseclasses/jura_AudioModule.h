@@ -36,22 +36,10 @@ protected:
 
   juce::Array<AudioModule*> watchedAudioModules; // use std::vector
 
-  juce_UseDebuggingNewOperator;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioModuleDeletionWatcher)
 };
 
 //=================================================================================================
-
-
-/** Function to store the state of .. */
-JUCE_API XmlElement* automatableModuleStateToXml(const AudioModule* device, 
-  XmlElement* xmlElementToStartFrom = NULL);
-// rename, make member of AudioModule
-
-/** Function to retrieve the state of .. */
-JUCE_API bool automatableModuleStateFromXml(AudioModule* device, const XmlElement &xmlState);
-// rename, make member of AudioModule
-
-
 
 /** This class is the base class for all audio modules. */
 
@@ -224,18 +212,11 @@ public:
 
 protected:
 
-  /** Must be overriden by subclasses to fill the inherited array of observed parameters. */
-  //virtual void initializeAutomatableParameters(); // remove
-
   /** Our child modules to which we will distribute MIDI-events and of which we manage the
   states. */
   std::vector<AudioModule*> childModules;  // maybe rename to childAudioModules
 
   MetaParameterManager* metaParamManager = nullptr;
-
-  //CriticalSection *plugInLock;     // mutex to access the wrapped core dsp object
-  //                                 // -> get rid -> use inherited "lock" member
-
 
   double triggerInterval;          // interval (in beats) for calls to trigger()
   bool saveAndRecallState;         // indicates, that this module wants to save/recall its state
@@ -259,7 +240,7 @@ private:
   juce::Array<AudioModuleDeletionWatcher*> deletionWatchers;
   friend class AudioModuleDeletionWatcher;
 
-  juce_UseDebuggingNewOperator;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioModule)
 };
 
 //=================================================================================================
@@ -298,11 +279,7 @@ public:
   /** Triggers a pitch-bend event. */
   virtual void setPitchBend(int pitchBendValue);
 
-
-protected:
-
-
-  juce_UseDebuggingNewOperator;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioModuleWithMidiIn)
 };
 
 //=================================================================================================
@@ -432,7 +409,7 @@ protected:
   AudioModule     *moduleToEdit;
   int presetSectionPosition, linkPosition;
 
-
+  // clean this up - it's obsolete:
   /** This is an array of the automatable sliders - if add RSlider objects here, they will be
   updated in AudioModuleEditor::updateWidgetsAccordingToState via calls to their
   updateWidgetFromAssignedParameter() methods. In the destructor, this array is cleared first
@@ -451,7 +428,8 @@ protected:
   RHyperlinkButton         *webLink;
   ColourSchemeSetupDialog  *setupDialog;
 
-  juce_UseDebuggingNewOperator;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioModuleEditor)
 };
 
 //=================================================================================================
@@ -477,7 +455,8 @@ protected:
   Called from the constructor. */
   virtual void createWidgets();
 
-  juce::Array<RWidget*> parameterWidgets; // array of the widgets for the paraters
+  juce::Array<RWidget*> parameterWidgets; // array of the widgets for the parameters
+                                          // use std::vector
 
   int widgetHeight   = 16; 
   int widgetDistance = 4;
