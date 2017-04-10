@@ -28,7 +28,7 @@ void AudioModuleDeletionWatcher::removeWatchedAudioModule(AudioModule
 
 // preliminary - turn into member functions of AudioModule (or absorb into setState, etc):
 
-XmlElement* automatableModuleStateToXml(const AudioModule* device, XmlElement* xmlElementToStartFrom)
+XmlElement* AudioModule::midiMappingToXml(const AudioModule* device, XmlElement* xmlElementToStartFrom)
 {
   // the XmlElement which stores all the relevant state-information:
   XmlElement* xmlState;
@@ -97,7 +97,7 @@ XmlElement* automatableModuleStateToXml(const AudioModule* device, XmlElement* x
   return xmlState;
 }
 
-bool automatableModuleStateFromXml(AudioModule* device, const XmlElement &xmlState)
+bool AudioModule::midiMappingFromXml(AudioModule* device, const XmlElement &xmlState)
 {
   bool success = true;
 
@@ -384,7 +384,7 @@ XmlElement* AudioModule::getStateAsXml(const juce::String& stateName, bool markA
   xmlState->setAttribute("PatchFormat", patchFormatIndex);
 
   // store controller mappings (if any)
-  automatableModuleStateToXml(this, xmlState);
+  midiMappingToXml(this, xmlState);
 
   // save the states of all childModules in child-XmlElements:
   for(int c=0; c<childModules.size(); c++)
@@ -406,7 +406,8 @@ void AudioModule::setStateFromXml(const XmlElement& xmlState, const juce::String
   ScopedLock scopedLock(*lock);
 
   XmlElement convertedState = convertXmlStateIfNecessary(xmlState);
-  automatableModuleStateFromXml(this, convertedState); // turn into member function
+
+  midiMappingFromXml(this, convertedState); // turn into member function
 
   // if we have child-modules, we try to restore their states by looking for corresponding
   // child XmlElements in the xmlState:

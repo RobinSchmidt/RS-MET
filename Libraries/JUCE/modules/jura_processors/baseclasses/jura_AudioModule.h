@@ -212,6 +212,12 @@ public:
 
 protected:
 
+
+  XmlElement* midiMappingToXml(const AudioModule* device, XmlElement* xmlElementToStartFrom);
+  bool midiMappingFromXml(AudioModule* device, const XmlElement &xmlState);
+  // get rid of the "this" pointer
+
+
   /** Our child modules to which we will distribute MIDI-events and of which we manage the
   states. */
   std::vector<AudioModule*> childModules;  // maybe rename to childAudioModules
