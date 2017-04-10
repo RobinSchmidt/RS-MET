@@ -548,7 +548,7 @@ void ImagePainter<TPix, TWgt, TCor>::drawLineDotted(TCor x1, TCor y1, TCor x2, T
   for(int i = 1; i <= numDots; i++)
   {
     k = scaler * i;  // == i / numDots
-    paintDot(x1 + k*dx, y1 + k*dy, c1 + k*dc);
+    paintDot(x1 + k*dx, y1 + k*dy, c1 + TPix(k)*dc);
   }
 
   // maybe we should rename this function to dottedLineTo (we don't draw the very 1st point of the

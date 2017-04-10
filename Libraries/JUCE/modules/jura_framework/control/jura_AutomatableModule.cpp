@@ -1,16 +1,14 @@
-//#include "rojue_AutomatableModule.h"
-//using namespace rojue;
-
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-AutomatableModule::AutomatableModule()
+AutomatableModule::AutomatableModule(CriticalSection *lockToUse)
 {
-
+  lock = lockToUse;
 }
 
 AutomatableModule::~AutomatableModule()
 {
+  ScopedLock scopedLock(*lock);
   removeAllObservedParameters(true);
 }
     
@@ -19,6 +17,7 @@ AutomatableModule::~AutomatableModule()
 
 void AutomatableModule::assignMidiController(const String& nameOfParameter, int controllerNumber)
 {
+  ScopedLock scopedLock(*lock);
   observedParameters.getLock().enter();
   Parameter *p;
   p = getParameterByName(nameOfParameter);
@@ -36,6 +35,7 @@ void AutomatableModule::setMidiController(int controllerNumber, float controller
   // loop through all the observed parameters and pass the controller value to them - the 
   // parameters themselves will take care to respond only to controller-numbers which are assigned
   // to them:
+  ScopedLock scopedLock(*lock);
   observedParameters.getLock().enter();
   Parameter            *p;
   AutomatableParameter *ap;
@@ -52,6 +52,7 @@ void AutomatableModule::setMidiController(int controllerNumber, float controller
 
 void AutomatableModule::revertToDefaultMapping()
 {
+  ScopedLock scopedLock(*lock);
   observedParameters.getLock().enter();
   Parameter            *p;
   AutomatableParameter *ap;
@@ -71,6 +72,7 @@ void AutomatableModule::revertToDefaultMapping()
 
 Parameter* AutomatableModule::getParameterByName(const String& nameOfParameter) const
 {
+  ScopedLock scopedLock(*lock);
   Parameter* result = nullptr;
 
   observedParameters.getLock().enter();
@@ -87,7 +89,8 @@ Parameter* AutomatableModule::getParameterByName(const String& nameOfParameter) 
 
 Parameter* AutomatableModule::getParameterByIndex(int indexOfParameter) const
 {
-  Parameter* result = NULL;
+  ScopedLock scopedLock(*lock);
+  Parameter* result = nullptr;
 
   observedParameters.getLock().enter();
   if( indexOfParameter < (int) observedParameters.size() )
@@ -99,6 +102,7 @@ Parameter* AutomatableModule::getParameterByIndex(int indexOfParameter) const
 
 int AutomatableModule::getIndexOfParameter(Parameter* parameterToRetrieveIndexOf) const
 {
+  ScopedLock scopedLock(*lock);
   int parameterIndex = -1;
   observedParameters.getLock().enter();
   for(int i=0; i < (int) observedParameters.size(); i++)
@@ -112,6 +116,7 @@ int AutomatableModule::getIndexOfParameter(Parameter* parameterToRetrieveIndexOf
 
 int AutomatableModule::getNumParameters() const
 {
+  ScopedLock scopedLock(*lock);
   observedParameters.getLock().enter();
   int result = observedParameters.size();
   observedParameters.getLock().exit();
@@ -124,6 +129,7 @@ int AutomatableModule::getNumParameters() const
 
 void AutomatableModule::addObservedParameter(Parameter *parameterToAdd)
 {
+  ScopedLock scopedLock(*lock);
   observedParameters.getLock().enter();
   observedParameters.addIfNotAlreadyThere(parameterToAdd);
   parameterToAdd->registerParameterObserver(this);
@@ -132,6 +138,7 @@ void AutomatableModule::addObservedParameter(Parameter *parameterToAdd)
 
 void AutomatableModule::removeObservedParameter(Parameter *parameterToRemove, bool deleteObject)
 {
+  ScopedLock scopedLock(*lock);
   observedParameters.getLock().enter();
   int i=0;
   while( i < (int) observedParameters.size() ) 
@@ -151,6 +158,7 @@ void AutomatableModule::removeObservedParameter(Parameter *parameterToRemove, bo
 
 void AutomatableModule::removeAllObservedParameters(bool deleteObjects)
 {
+  ScopedLock scopedLock(*lock);
   observedParameters.getLock().enter();
   Parameter *removee; // this is the currently removed parameter
   while( observedParameters.size() > 0 )
@@ -166,6 +174,7 @@ void AutomatableModule::removeAllObservedParameters(bool deleteObjects)
 
 void AutomatableModule::parameterChanged(Parameter *parameterThatHasChanged)
 {
+  ScopedLock scopedLock(*lock);
   observedParameters.getLock().enter();
   int index = getParameterIndex(parameterThatHasChanged);
   observedParameters.getLock().exit();
@@ -173,11 +182,13 @@ void AutomatableModule::parameterChanged(Parameter *parameterThatHasChanged)
 
 void AutomatableModule::parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted)
 {
+  ScopedLock scopedLock(*lock);
   removeObservedParameter(parameterThatWillBeDeleted, false);
 }
 
 int AutomatableModule::getParameterIndex(Parameter *parameterToLookFor)
 {
+  ScopedLock scopedLock(*lock);
   int result = -1;
   observedParameters.getLock().enter();
   for(int i=0; i < (int) observedParameters.size(); i++)

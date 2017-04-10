@@ -213,6 +213,7 @@ protected:
   MetaParameterManager* metaParamManager = nullptr;
 
   CriticalSection *plugInLock;     // mutex to access the wrapped core dsp object
+                                   // -> get rid -> use inherited "lock" member
 
 
   double triggerInterval;          // interval (in beats) for calls to trigger()

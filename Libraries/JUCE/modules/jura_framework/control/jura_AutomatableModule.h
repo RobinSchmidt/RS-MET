@@ -1,9 +1,8 @@
 #ifndef jura_AutomatableModule_h
 #define jura_AutomatableModule_h
 
-//#include "rojue_AutomatableParameter.h"
 
-  
+
 /** This class serves as base class for effect- or instrument plugins that provide support for  
 parameter automation. It derives from ParameterObserver and extends this class by a vector of 
 pointers to Parameter objects - this vector is the place where we keep track of the parameters we 
@@ -15,10 +14,9 @@ are not mutually exclusive (mutex'ed) from each other.
 
 \todo factor out a baseclass ParameterManager - can be used for all classes that need to maintain 
 a set of parameters, these classes need not to be audio related - this should perhaps also be a 
-subclass of StateManager - OR rename this class ParametrizedObject and get rid of the MIDI stuff
--> move it to AudioModule
+subclass of StateManager - OR rename this class ParametrizedObject/Module and get rid of the MIDI 
+stuff -> move it to AudioModule
 
-actually, this class would better fit into the jura_processors module
 
 */
 
@@ -31,7 +29,7 @@ public:
   // construction/destruction:
 
   /** Constructor. */
-  AutomatableModule();
+  AutomatableModule(CriticalSection *lockToUse);
 
   /** Destructor. */
   virtual ~AutomatableModule();
@@ -124,10 +122,11 @@ protected:
   { return numInheritedParameters[numInheritedParameters.size()-1]; }
 
   /** A mutex-lock for accesses to the vector of observed parameters. */
+  CriticalSection *lock = nullptr;     // mutex to access the wrapped core dsp object
   //CriticalSection lock;
   //MutexLock mutex;
 
-  juce_UseDebuggingNewOperator;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomatableModule)
 };
 
 #endif 

@@ -28,9 +28,8 @@ void AudioModuleDeletionWatcher::removeWatchedAudioModule(AudioModule
 
 // construction/destruction:
 
-AudioModule::AudioModule(CriticalSection *lockToUse)
+AudioModule::AudioModule(CriticalSection *lockToUse) : AutomatableModule(lockToUse)
 {
-
   plugInLock = lockToUse;
   ParameterObserver::localAutomationSwitch = true;  // activate automation for this instance
   wantsTempoSyncInfo = true;
