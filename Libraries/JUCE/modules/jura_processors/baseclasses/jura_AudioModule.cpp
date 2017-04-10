@@ -290,18 +290,13 @@ void AudioModule::midiMappingFromXml(const XmlElement &xmlState)
   XmlElement* xmlMapping = xmlState.getChildByName("MidiMapping");
   if( xmlMapping == nullptr )
     return; // no mapping stored, nothing to do
-  int midiCC = -1;
-  double min, max;
-  forEachXmlChildElement(*xmlMapping, xmlParameterSetup) {
-    Parameter* p = getParameterByName(xmlParameterSetup->getTagName());
+  forEachXmlChildElement(*xmlMapping, xmlParamSetup) {
+    Parameter* p = getParameterByName(xmlParamSetup->getTagName());
     AutomatableParameter *ap = dynamic_cast<AutomatableParameter*>(p);
-    if( ap != nullptr ) {
-      midiCC = xmlParameterSetup->getIntAttribute("MidiCC", -1);
-      min = xmlParameterSetup->getDoubleAttribute("Min",    ap->getMinValue());
-      max = xmlParameterSetup->getDoubleAttribute("Max",    ap->getMaxValue());    
-      ap->assignMidiController(midiCC);
-      ap->setLowerAutomationLimit(min);
-      ap->setUpperAutomationLimit(max); }}
+    if( ap != nullptr ) { 
+      ap->assignMidiController(   xmlParamSetup->getIntAttribute("MidiCC", -1));
+      ap->setLowerAutomationLimit(xmlParamSetup->getDoubleAttribute("Min", ap->getMinValue()));
+      ap->setUpperAutomationLimit(xmlParamSetup->getDoubleAttribute("Max", ap->getMaxValue())); }}
 }
 
 void AudioModule::metaMappingFromXml(const XmlElement &xmlState)
