@@ -96,7 +96,8 @@ void AudioModule::addChildAudioModule(AudioModule* moduleToAdd)
 { 
   ScopedLock scopedLock(*plugInLock);
   //childModules.getLock().enter();
-  childModules.addIfNotAlreadyThere(moduleToAdd);
+  //childModules.addIfNotAlreadyThere(moduleToAdd);
+  appendIfNotAlreadyThere(childModules, moduleToAdd);
   moduleToAdd->setMetaParameterManager(metaParamManager);
   //childModules.getLock().exit();
   addChildStateManager(moduleToAdd);
@@ -106,11 +107,13 @@ void AudioModule::removeChildAudioModule(AudioModule* moduleToRemove, bool delet
 { 
   ScopedLock scopedLock(*plugInLock);
   //childModules.getLock().enter();
-  int index = childModules.indexOf(moduleToRemove);
+  /*int index = childModules.indexOf(moduleToRemove);*/
+  int index = find(childModules, moduleToRemove);
   jassert( index != -1 ); // trying to remove a module which is not a child of this one?
   if( index != -1 )
   { 
-    childModules.remove(index);
+    //childModules.remove(index);
+    remove(childModules, index);
     removeChildStateManager(moduleToRemove);
     moduleToRemove->setMetaParameterManager(nullptr);
     if( deleteObject == true )

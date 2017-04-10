@@ -123,6 +123,15 @@ inline void remove(vector<T>& v, int index)
 }
 
 template<class T>
+inline int find(vector<T>& v, T elementToFind)
+{
+  for(int i = 0; i < size(v); i++)
+    if(v[i] == elementToFind)
+      return i;
+  return -1;
+}
+
+template<class T>
 inline void removeFirstOccurrence(vector<T>& v, T elementToRemove)
 {
   for(int i = 0; i < size(v); i++)
