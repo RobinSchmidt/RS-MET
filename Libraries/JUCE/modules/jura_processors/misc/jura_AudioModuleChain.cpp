@@ -76,6 +76,7 @@ void AudioModuleChain::addModule(const String& type)
 {
   ScopedLock scopedLock(*lock);
   AudioModule *m = AudioModuleFactory::createModule(type, lock);
+  m->setMetaParameterManager(metaParamManager); // without, we hit jassert(metaParaManager != nullptr) in MetaControlledParameter::attachToMetaParameter
   append(modules, m);
   sendAudioModuleWasAddedNotification(m, size(modules)-1);
 }

@@ -181,7 +181,7 @@ protected:
   void clearModulesArray();
                      
   vector<AudioModule*> modules;  // std::vector better for debugging than juce::Array
-    // we should better use the inherited childAudioModules array
+    // we should better use the inherited childAudioModules array - but there are errors
 
   int activeSlot = 0;            // slot for which the editor is currently shown 
   double sampleRate;
