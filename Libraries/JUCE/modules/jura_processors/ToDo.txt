@@ -1,9 +1,13 @@
+AudioModule:  
+-absorb these controller-to-xml functions into the class
+-add MetaParameter attachment settings to the xml state
+
 AudioModuleChain: use inherited childModules array instead of "modules"
 RSlider: make default-values and enter-value available on right-click (it's currently only
  available in subclass AutomatableSlider)
 
 ParameterManager: rename addParameter, removeParameter
-AudioModule: absorb these controller-to-xml functions into the class
+
 GenericAudioModuleEditor: complete widget arrangement (buttons, boxes)
 
 Enveloper:
