@@ -207,71 +207,37 @@ void AudioModule::parameterChanged(Parameter* parameterThatHasChanged)
   markStateAsDirty();
 }
 
-XmlElement* AudioModule::midiMappingToXml(XmlElement* xmlElementToStartFrom)
+XmlElement* AudioModule::midiMappingToXml(XmlElement* xmlState)
 {
-  // the XmlElement which stores all the relevant state-information:
-  XmlElement* xmlState;
-  if( xmlElementToStartFrom == NULL )
-    xmlState = new XmlElement(juce::String("ParameterManagerState")); 
-  else
-    xmlState = xmlElementToStartFrom;
-
-  // create an XmlElement which will be added as child element when there are any relevant 
-  // controller-mappings to be stored
+  // child element will be added when there are any relevant controller-mappings to be stored:
   XmlElement* xmlMapping = new XmlElement( juce::String("ControllerMapping") );
-
   int numParameters = getNumParameters();
-  Parameter            *p;
+  Parameter *p;
   AutomatableParameter *ap;
-  for(int i = 0; i < numParameters; i++)
-  {
+  for(int i = 0; i < numParameters; i++) {
     p  = getParameterByIndex(i);
     ap = dynamic_cast<AutomatableParameter*> (p);
-
-    // check the pointer against NULL to be on the safe side for cases in which another thread 
-    // changes the number of parameters while we are looping through them:
-    if( ap != NULL )
-    {
-      // store only non-default mappings:
-      if( ap->isInDefaultState() == false )
-      {
-        XmlElement* xmlParameterSetup = new XmlElement(juce::String(ap->getName()));
-        xmlParameterSetup->setAttribute(juce::String("MidiCC"), ap->getAssignedMidiController());
-        xmlParameterSetup->setAttribute(juce::String("Min"),    ap->getLowerAutomationLimit()  );
-        xmlParameterSetup->setAttribute(juce::String("Max"),    ap->getUpperAutomationLimit()  );
-        xmlMapping->addChildElement(xmlParameterSetup);
-      }
-    }
-  }
-
-  // when there is actually something stored in the xmlMapping element, add it as child element to
-  // the xmlState, otherwise delete it (in the former case, the parent will take care for the 
-  // deletion):
+    if( ap != nullptr ) {
+      if( ap->isInDefaultState() == false ) { // store only non-default mappings
+        XmlElement* xmlParameterSetup = new XmlElement(ap->getName());
+        xmlParameterSetup->setAttribute("MidiCC", ap->getAssignedMidiController());
+        xmlParameterSetup->setAttribute("Min",    ap->getLowerAutomationLimit()  );
+        xmlParameterSetup->setAttribute("Max",    ap->getUpperAutomationLimit()  );
+        xmlMapping->addChildElement(xmlParameterSetup); }}}
   if( xmlMapping->getNumChildElements() != 0 )
     xmlState->addChildElement(xmlMapping);
   else
     delete xmlMapping;
 
-  // having stored the controller mappings for the automatable parameters, we now proceed to store 
-  // their current values:
-  for(int i=0; i<numParameters; i++)
-  {
+  // store current values:
+  for(int i = 0; i < numParameters; i++) {
     p = getParameterByIndex(i);
-
-    // check the pointer against NULL to be on the safe side for cases in which another thread 
-    // changes the number of parameters while we are looping through them:
-    if( p != NULL )
-    {
-      if( p->shouldBeSavedAndRecalled() && !p->isCurrentValueDefaultValue() )
-      {
-        // retrieve the name and store the value of the parameter
+    if( p != nullptr ) {  // do we need this?
+      if( p->shouldBeSavedAndRecalled() && !p->isCurrentValueDefaultValue() ) {
         if( p->isStringParameter() )
-          xmlState->setAttribute( juce::String(p->getName()), juce::String(p->getStringValue()) );
+          xmlState->setAttribute(p->getName(), p->getStringValue());
         else
-          xmlState->setAttribute( juce::String(p->getName()), juce::String(p->getValue()) );
-      }
-    }
-  }
+          xmlState->setAttribute(p->getName(), juce::String(p->getValue()) ); }}}
 
   return xmlState;
 }

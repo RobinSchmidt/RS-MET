@@ -214,8 +214,10 @@ protected:
 
 
   XmlElement* midiMappingToXml(XmlElement* xmlElementToStartFrom);
+  // could be void?
+
+
   bool midiMappingFromXml(const XmlElement &xmlState);
-  // get rid of the "this" pointer
 
 
   /** Our child modules to which we will distribute MIDI-events and of which we manage the
