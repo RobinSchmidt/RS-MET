@@ -9,9 +9,6 @@ pointers to Parameter objects - this vector is the place where we keep track of 
 are interested in. The class is still abstract in that it does not provide an implementation for 
 the inherited (purely virtual) parameterChanged() method.
 
-WARNING: This class is not thread-safe, that is: accesses to the vector of observed parameters
-are not mutually exclusive (mutex'ed) from each other.
-
 \todo factor out a baseclass ParameterManager - can be used for all classes that need to maintain 
 a set of parameters, these classes need not to be audio related - this should perhaps also be a 
 subclass of StateManager - OR rename this class ParametrizedObject/Module and get rid of the MIDI 
@@ -28,7 +25,8 @@ public:
   //-----------------------------------------------------------------------------------------------
   // construction/destruction:
 
-  /** Constructor. */
+  /** Constructor. You need to pass a CriticalSection that will be used for accesses to the 
+  parameters. */
   AutomatableModule(CriticalSection *lockToUse);
 
   /** Destructor. */
@@ -76,8 +74,9 @@ public:
   //-----------------------------------------------------------------------------------------------
   // add/remove observed parameters:
 
-  /** Adds a pointer to an Parameter object to the array of observed parameters and
-  registers this instance as listener to the passed parameter. */
+  /** Adds a pointer to an Parameter object to the array of observed parameters and registers this 
+  instance as listener to the passed parameter and sets the Parameter up to use the same mutex 
+  lock as this object. */
   virtual void addObservedParameter(Parameter *parameterToAdd);
   // rename to addParameter
 
@@ -123,8 +122,6 @@ protected:
 
   /** A mutex-lock for accesses to the vector of observed parameters. */
   CriticalSection *lock = nullptr;     // mutex to access the wrapped core dsp object
-  //CriticalSection lock;
-  //MutexLock mutex;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomatableModule)
 };

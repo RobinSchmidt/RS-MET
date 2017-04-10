@@ -18,7 +18,6 @@ AutomatableModule::~AutomatableModule()
 void AutomatableModule::assignMidiController(const String& nameOfParameter, int controllerNumber)
 {
   ScopedLock scopedLock(*lock);
-  observedParameters.getLock().enter();
   Parameter *p;
   p = getParameterByName(nameOfParameter);
   if( p != NULL )
@@ -27,7 +26,6 @@ void AutomatableModule::assignMidiController(const String& nameOfParameter, int 
     if( ap != NULL )
       ap->assignMidiController(controllerNumber);
   }
-  observedParameters.getLock().exit();
 }
 
 void AutomatableModule::setMidiController(int controllerNumber, float controllerValue)
@@ -36,7 +34,6 @@ void AutomatableModule::setMidiController(int controllerNumber, float controller
   // parameters themselves will take care to respond only to controller-numbers which are assigned
   // to them:
   ScopedLock scopedLock(*lock);
-  observedParameters.getLock().enter();
   Parameter            *p;
   AutomatableParameter *ap;
   for(int i=0; i < (int) observedParameters.size(); i++)
@@ -47,13 +44,11 @@ void AutomatableModule::setMidiController(int controllerNumber, float controller
       ap->setMidiController(controllerNumber, controllerValue);
     //observedParameters[i]->setMidiController(controllerNumber, controllerValue);
   }
-  observedParameters.getLock().exit();
 }
 
 void AutomatableModule::revertToDefaultMapping()
 {
   ScopedLock scopedLock(*lock);
-  observedParameters.getLock().enter();
   Parameter            *p;
   AutomatableParameter *ap;
   for(int i=0; i < (int) observedParameters.size(); i++)
@@ -64,7 +59,6 @@ void AutomatableModule::revertToDefaultMapping()
       ap->revertToDefaults(false, false, false);
     //observedParameters[i]->revertToDefaults();
   }
-  observedParameters.getLock().exit();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -74,15 +68,11 @@ Parameter* AutomatableModule::getParameterByName(const String& nameOfParameter) 
 {
   ScopedLock scopedLock(*lock);
   Parameter* result = nullptr;
-
-  observedParameters.getLock().enter();
   for(int i=0; i < (int) observedParameters.size(); i++)
   {
     if( observedParameters[i]->hasName(nameOfParameter) )
       result = observedParameters[i];
   }
-  observedParameters.getLock().exit();
-
   jassert(result != nullptr);   // parameter with given name doesn't exist
   return result;
 }
@@ -91,12 +81,8 @@ Parameter* AutomatableModule::getParameterByIndex(int indexOfParameter) const
 {
   ScopedLock scopedLock(*lock);
   Parameter* result = nullptr;
-
-  observedParameters.getLock().enter();
   if( indexOfParameter < (int) observedParameters.size() )
     result = observedParameters[indexOfParameter];
-  observedParameters.getLock().exit();
-
   return result;
 }
 
@@ -104,23 +90,18 @@ int AutomatableModule::getIndexOfParameter(Parameter* parameterToRetrieveIndexOf
 {
   ScopedLock scopedLock(*lock);
   int parameterIndex = -1;
-  observedParameters.getLock().enter();
   for(int i=0; i < (int) observedParameters.size(); i++)
   {
     if( parameterToRetrieveIndexOf == observedParameters[i] )
       parameterIndex = i;
   }  
-  observedParameters.getLock().exit();
   return parameterIndex;
 }
 
 int AutomatableModule::getNumParameters() const
 {
   ScopedLock scopedLock(*lock);
-  observedParameters.getLock().enter();
   int result = observedParameters.size();
-  observedParameters.getLock().exit();
-
   return result;
 }
 
@@ -130,22 +111,21 @@ int AutomatableModule::getNumParameters() const
 void AutomatableModule::addObservedParameter(Parameter *parameterToAdd)
 {
   ScopedLock scopedLock(*lock);
-  observedParameters.getLock().enter();
-  observedParameters.addIfNotAlreadyThere(parameterToAdd);
+  parameterToAdd->setMutexToUse(lock);
   parameterToAdd->registerParameterObserver(this);
-  observedParameters.getLock().exit();
+  observedParameters.addIfNotAlreadyThere(parameterToAdd);
 }
 
 void AutomatableModule::removeObservedParameter(Parameter *parameterToRemove, bool deleteObject)
 {
   ScopedLock scopedLock(*lock);
-  observedParameters.getLock().enter();
   int i=0;
   while( i < (int) observedParameters.size() ) 
   {
     if( observedParameters[i] == parameterToRemove ) 
     {
       parameterToRemove->deRegisterParameterObserver(this);
+      parameterToRemove->setMutexToUse(nullptr);
       observedParameters.removeFirstMatchingValue(parameterToRemove);
       if( deleteObject == true )
         delete parameterToRemove;
@@ -153,31 +133,27 @@ void AutomatableModule::removeObservedParameter(Parameter *parameterToRemove, bo
     }
     i++;
   }
-  observedParameters.getLock().exit();
 }
 
 void AutomatableModule::removeAllObservedParameters(bool deleteObjects)
 {
   ScopedLock scopedLock(*lock);
-  observedParameters.getLock().enter();
   Parameter *removee; // this is the currently removed parameter
   while( observedParameters.size() > 0 )
   {
     removee = observedParameters[0];
     removee->deRegisterParameterObserver(this);
+    removee->setMutexToUse(nullptr);
     observedParameters.remove(0);
     if( deleteObjects == true )
       delete removee;   
   }
-  observedParameters.getLock().exit();
 }
 
 void AutomatableModule::parameterChanged(Parameter *parameterThatHasChanged)
 {
-  ScopedLock scopedLock(*lock);
-  observedParameters.getLock().enter();
-  int index = getParameterIndex(parameterThatHasChanged);
-  observedParameters.getLock().exit();
+  //ScopedLock scopedLock(*lock);
+  //int index = getParameterIndex(parameterThatHasChanged);
 }
 
 void AutomatableModule::parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted)
@@ -190,15 +166,8 @@ int AutomatableModule::getParameterIndex(Parameter *parameterToLookFor)
 {
   ScopedLock scopedLock(*lock);
   int result = -1;
-  observedParameters.getLock().enter();
-  for(int i=0; i < (int) observedParameters.size(); i++)
-  {
+  for(int i=0; i < (int) observedParameters.size(); i++) {
     if( observedParameters[i] == parameterToLookFor )
-    {
-      observedParameters.getLock().exit();
-      return i;
-    }
-  }
-  observedParameters.getLock().exit();
+      return i; }
   return -1;
 }
