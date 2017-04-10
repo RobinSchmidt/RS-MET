@@ -213,8 +213,8 @@ public:
 protected:
 
 
-  XmlElement* midiMappingToXml(const AudioModule* device, XmlElement* xmlElementToStartFrom);
-  bool midiMappingFromXml(AudioModule* device, const XmlElement &xmlState);
+  XmlElement* midiMappingToXml(XmlElement* xmlElementToStartFrom);
+  bool midiMappingFromXml(const XmlElement &xmlState);
   // get rid of the "this" pointer
 
 
