@@ -57,6 +57,9 @@ public:
 
   //--------------------
   // move to Parameter:
+  // there's also a bug - the proportional value is out of sync with the actual value - that's 
+  // (likely) also the reason why the cross-coupling fails.
+
   /** Sets the value of the parameter where the input argument is assumed to be normalized to the 
   range 0...1  .... */
   virtual void setProportionalValue(double newProportionalValue, bool sendNotification, 

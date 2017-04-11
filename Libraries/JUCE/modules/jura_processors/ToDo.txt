@@ -1,5 +1,8 @@
 AudioPlugin:  
 -make cross coupling of meta-controlled parameters work
+ ->move the proportionalValue handling into Parameter and take care this value is always
+   in sync with mapped value (it currently isn't - that's probably why cross-coupling
+   doesn't work)
 -notify host about (Meta) parameter changes
 -allow to optionally map midi controllers to meta-parameters
 

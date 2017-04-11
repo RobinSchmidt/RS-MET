@@ -16,8 +16,11 @@ void Ladder::createStaticParameters()
   //AutomatableParameter* p;
   Parameter* p;
 
-  p = new AutomatableParameter(lock, "Cutoff", 20.0, 20000.0, 0.0, 1000.0, 
-    Parameter::EXPONENTIAL, 74);
+
+
+  //p = new AutomatableParameter(lock, "Cutoff", 20.0, 20000.0, 0.0, 1000.0, 
+  //  Parameter::EXPONENTIAL, 74);
+  p = new MetaControlledParameter("Cutoff", 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL);
   defaultValues.clear();
   defaultValues.push_back(125.0);
   defaultValues.push_back(250.0);
@@ -39,8 +42,6 @@ void Ladder::createStaticParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<Ladder>(this, &Ladder::setResonance);
 
-  //p = new AutomatableParameter(lock, "StereoSpread", -24.0, 24.0, 0.0, 0.0, 
-  //  Parameter::LINEAR_BIPOLAR);
   p = new MetaControlledParameter("StereoSpread", -24.0, +24.0, 0.0, Parameter::LINEAR_BIPOLAR);
   addObservedParameter(p);
   p->setValueChangeCallback<Ladder>(this, &Ladder::setStereoSpread);
