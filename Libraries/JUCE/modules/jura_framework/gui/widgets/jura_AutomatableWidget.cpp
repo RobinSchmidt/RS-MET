@@ -13,7 +13,7 @@ void AutomatableWidget::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
   if(menuThatHasChanged != rightClickPopUp)
     return;
   RTreeViewNode *selectedItem = rightClickPopUp->getSelectedItem();
-  if(selectedItem == NULL)
+  if(selectedItem == nullptr)
     return;
   int selectedIdentifier = selectedItem->getNodeIdentifier();
 
@@ -78,24 +78,24 @@ void AutomatableWidget::addPopUpMidiItems()
     int cc = ap->getAssignedMidiController();
     String ccString;
     if(cc > -1)
-      ccString = String("(currently CC") + String(cc) + String(")");
+      ccString = "(currently CC" + String(cc) + ")";
     else
-      ccString = String("(currently none)");
+      ccString = "(currently none)";
 
     int defaultCc = ap->getDefaultMidiController();
     String defaultString;
     if(defaultCc > -1)
-      defaultString = String("CC") + String(defaultCc);
+      defaultString = "CC" + String(defaultCc);
     else
-      defaultString = String("none");
+      defaultString = "none";
     String minString = wrappedWidget->stringConversionFunction(ap->getLowerAutomationLimit());
     String maxString = wrappedWidget->stringConversionFunction(ap->getUpperAutomationLimit());
 
-    rightClickPopUp->addItem(MIDI_LEARN, String("MIDI learn ") + ccString);
-    rightClickPopUp->addItem(MIDI_ASSIGN, String("MIDI assign"));
-    rightClickPopUp->addItem(MIDI_MIN, String("use value as lower limit (currently ") + minString + String(")"));
-    rightClickPopUp->addItem(MIDI_MAX, String("use value as upper limit (currently ") + maxString + String(")"));
-    rightClickPopUp->addItem(MIDI_REVERT, String("revert MIDI mapping to defaults"));
+    rightClickPopUp->addItem(MIDI_LEARN,  "MIDI learn " + ccString);
+    rightClickPopUp->addItem(MIDI_ASSIGN, "MIDI assign");
+    rightClickPopUp->addItem(MIDI_MIN,    "use value as lower limit (currently " + minString + String(")"));
+    rightClickPopUp->addItem(MIDI_MAX,    "use value as upper limit (currently " + maxString + String(")"));
+    rightClickPopUp->addItem(MIDI_REVERT, "revert MIDI mapping to defaults");
   }
 }
 
@@ -104,8 +104,15 @@ void AutomatableWidget::addPopUpMetaItems()
   MetaControlledParameter* mcp = getMetaControlledParameter();
   if(mcp != nullptr)
   {
-    rightClickPopUp->addItem(META_ATTACH, String("Meta attach")); // todo: show currently attached meta index
-    rightClickPopUp->addItem(META_DETACH, String("Meta detach"));
+    int mi = mcp->getMetaParameterIndex();
+    String miString;
+    if(mi > -1)
+      miString = "(currently " + String(mi) + ")";
+    else
+      miString = "(currently none)";
+
+    rightClickPopUp->addItem(META_ATTACH, "Meta attach " + miString);
+    rightClickPopUp->addItem(META_DETACH, "Meta detach");
   }
 }
 

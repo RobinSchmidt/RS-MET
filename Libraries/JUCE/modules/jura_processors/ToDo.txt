@@ -1,6 +1,13 @@
-AudioModule:  
--add MetaParameter attachment settings to the xml state
+Automatble widget:
+-show current meta mapping
+
+AudioPlugin:  
 -notify host about (Meta) parameter changes
+-store values of MetaParameters...this may have to go into AudioModule and there, we
+ should store MetaParameters only for the top-level module - maybe have a flag: 
+ storeMetaParameters that is false by default and gets set to true when an AudioModule
+ gets wrapped into an AudioPlugin
+-allow to optionally map midi controllers to meta-parameters
 
 AudioModuleChain: use inherited childModules array instead of "modules"
 
@@ -8,6 +15,8 @@ RSlider: make default-values and enter-value available on right-click (it's curr
  available in subclass AutomatableSlider)
 
 ParameterManager: rename functions to addParameter, removeParameter
+
+State load/save widget set: click on textfield should open menu with files in current folder
 
 GenericAudioModuleEditor: complete widget arrangement (buttons, boxes)
 

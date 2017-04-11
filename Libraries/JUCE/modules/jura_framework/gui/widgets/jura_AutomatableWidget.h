@@ -57,6 +57,7 @@ protected:
   AutomatableParameter and returns the pointer to it. Note that this may return a nullptr, when 
   the Parameter is not of type AutomatableParameter. */
   AutomatableParameter* getAutomatbleParameter();
+   // fix typo
 
   /** Similar to @see getAutomatbleParameter. */
   MetaControlledParameter* getMetaControlledParameter();
