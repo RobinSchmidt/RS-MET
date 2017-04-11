@@ -213,15 +213,18 @@ public:
   virtual void setStateToDefaults() {}
 
   /** Flag to indicate that this module needs tempo sync information (current BPM). */
-  bool wantsTempoSyncInfo;
+  bool wantsTempoSyncInfo = true;  // why public?
 
 protected:
 
   // used internally as sub-tasks in the get/setState functions:
   void midiMappingToXml(XmlElement* xmlElementToStartFrom);
   void metaMappingToXml(XmlElement* xmlElementToStartFrom);
+  void metaValuesToXml(XmlElement* xmlElementToStartFrom);
+
   void midiMappingFromXml(const XmlElement &xmlState);
   void metaMappingFromXml(const XmlElement &xmlState);
+  void metaValuesFromXml(const XmlElement &xmlState);
 
 
 
@@ -233,9 +236,10 @@ protected:
 
   MetaParameterManager* metaParamManager = nullptr;
 
-  double triggerInterval;          // interval (in beats) for calls to trigger()
-  bool saveAndRecallState;         // indicates, that this module wants to save/recall its state
-  int patchFormatIndex;            // version of patch format (for backwards compatibility)
+  double triggerInterval = 0.0;    // interval (in beats) for calls to trigger()
+  bool saveAndRecallState = true;  // indicates, that this module wants to save/recall its state
+  bool saveAndRecallMetas = false; // store/recall values of meta-params - should be true for top-level modules only
+  int patchFormatIndex = 1;        // version of patch format (for backwards compatibility)
 
   juce::String moduleName;         // name of this AudioModule
   juce::String moduleNameAppendix; // string to be appended to the name on the GUI (such as 

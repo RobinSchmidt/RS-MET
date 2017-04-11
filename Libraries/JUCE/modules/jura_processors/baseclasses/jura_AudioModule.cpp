@@ -27,11 +27,13 @@ void AudioModuleDeletionWatcher::removeWatchedAudioModule(AudioModule
 AudioModule::AudioModule(CriticalSection *lockToUse) : ParameterManager(lockToUse)
 {
   ParameterObserver::localAutomationSwitch = true;  // activate automation for this instance
-  wantsTempoSyncInfo = true;
   moduleName = juce::String("AudioModule");
-  patchFormatIndex = 1;
-  triggerInterval = 0.0;
-  saveAndRecallState = true;
+
+  // initialized in header already:
+  //wantsTempoSyncInfo = true;
+  //patchFormatIndex = 1;
+  //triggerInterval = 0.0;
+  //saveAndRecallState = true;
 }
 
 AudioModule::~AudioModule()
@@ -230,6 +232,11 @@ void AudioModule::metaMappingToXml(XmlElement* xmlState)
     delete xmlMapping;
 }
 
+void AudioModule::metaValuesToXml(XmlElement* xmlElementToStartFrom)
+{
+
+}
+
 XmlElement* AudioModule::getStateAsXml(const juce::String& stateName, bool markAsClean)
 {
   ScopedLock scopedLock(*lock);
@@ -245,7 +252,8 @@ XmlElement* AudioModule::getStateAsXml(const juce::String& stateName, bool markA
 
   // store midi and/or meta mappings (if any):
   midiMappingToXml(xmlState);  
-  metaMappingToXml(xmlState);  
+  metaMappingToXml(xmlState);
+  metaValuesToXml(xmlState);
 
   // maybe store smoothing values here
 
@@ -299,6 +307,11 @@ void AudioModule::metaMappingFromXml(const XmlElement &xmlState)
       // todo: retrieve mapping function/curve
 }
 
+void AudioModule::metaValuesFromXml(const XmlElement &xmlState)
+{
+
+}
+
 void AudioModule::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 
   bool markAsClean)
 {
@@ -322,6 +335,7 @@ void AudioModule::setStateFromXml(const XmlElement& xmlState, const juce::String
   // retrieve midi- and/or meta mapping:
   midiMappingFromXml(convertedState);
   metaMappingFromXml(convertedState);
+  metaValuesFromXml(convertedState);
 
 
   // if we have child-modules, we try to restore their states by looking for corresponding

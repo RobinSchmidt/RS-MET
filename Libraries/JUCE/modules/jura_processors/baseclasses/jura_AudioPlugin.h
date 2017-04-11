@@ -26,7 +26,7 @@ public:
   virtual float getValue() const override { return (float) value; }
   virtual void setValue(float newValue) override;
   virtual float getDefaultValue() const override { return 0.f; }
-  virtual String getName(int maximumStringLength) const override { return "Par" + String(getParameterIndex()); }
+  virtual String getName(int maximumStringLength) const override { return "Meta " + String(getParameterIndex()); }
   virtual String getLabel() const override { return String::empty; }
   virtual float getValueForText(const String &text) const override { return text.getFloatValue(); }
 
