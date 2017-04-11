@@ -2,15 +2,15 @@ MetaControlledParameter::MetaControlledParameter(const juce::String& name, doubl
   double defaultValue, int scaling, double interval)
   : Parameter(name, min, max, defaultValue, scaling, interval)
 {
-  proportionalValue = valueToProportion(value);
+  //proportionalValue = valueToProportion(value);
 }
 
 void MetaControlledParameter::setProportionalValue(double newProportionalValue,
   bool sendNotification, bool callCallbacks)
 {
   ScopedPointerLock spl(mutex);
-  proportionalValue = newProportionalValue;
-  setValue(proportionToValue(proportionalValue), sendNotification, callCallbacks);
+  //proportionalValue = newProportionalValue;
+  setValue(proportionToValue(newProportionalValue), sendNotification, callCallbacks);
 }
 
 double MetaControlledParameter::valueToProportion(double value)

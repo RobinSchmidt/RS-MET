@@ -74,7 +74,8 @@ public:
   virtual double proportionToValue(double proportion);
 
   /** Returns the normalized value in the range 0..1. */
-  inline double getProportionalValue() { return proportionalValue; }
+  inline double getProportionalValue() { return valueToProportion(value); }
+  //inline double getProportionalValue() { return proportionalValue; }
   //----------------------
 
 
@@ -94,7 +95,7 @@ public:
 
 protected:
 
-  double proportionalValue;  // maybe factor out to Parameter
+  //double proportionalValue;  // maybe factor out to Parameter
 
   int metaIndex = -1;
   MetaParameterManager* metaParaManager = nullptr;
