@@ -1,6 +1,3 @@
-AudioModule:
--retrieve values of MetaParameters
-
 AudioPlugin:  
 -make cross coupling of meta-controlled parameters work
 -notify host about (Meta) parameter changes

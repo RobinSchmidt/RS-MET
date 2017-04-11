@@ -39,8 +39,9 @@ void Ladder::createStaticParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<Ladder>(this, &Ladder::setResonance);
 
-  p = new AutomatableParameter(lock, "StereoSpread", -24.0, 24.0, 0.0, 0.0, 
-    Parameter::LINEAR_BIPOLAR);
+  //p = new AutomatableParameter(lock, "StereoSpread", -24.0, 24.0, 0.0, 0.0, 
+  //  Parameter::LINEAR_BIPOLAR);
+  p = new MetaControlledParameter("StereoSpread", -24.0, +24.0, 0.0, Parameter::LINEAR_BIPOLAR);
   addObservedParameter(p);
   p->setValueChangeCallback<Ladder>(this, &Ladder::setStereoSpread);
 
