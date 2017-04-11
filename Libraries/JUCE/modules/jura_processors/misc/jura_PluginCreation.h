@@ -15,7 +15,11 @@ AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 }
 
 and that will wrap a jura::Ladder module into a plugin (in this case, a plugin without midi 
-input). */
+input). 
+
+\todo: move these function int AudioPlugin.h - there's no need for having them in a separate file
+
+*/
 
 template<class AudioModuleType>
 AudioProcessor* JUCE_CALLTYPE createPluginWithoutMidi(AudioModuleType *dummy)
@@ -23,6 +27,7 @@ AudioProcessor* JUCE_CALLTYPE createPluginWithoutMidi(AudioModuleType *dummy)
   // wraps audio module into plugin without midi input
   jura::AudioPlugin *plugIn = new jura::AudioPlugin(nullptr);
   AudioModuleType   *module = new AudioModuleType(&plugIn->plugInLock);
+  module->setSaveAndRecallMetaParameters(true);
   plugIn->setAudioModuleToWrap(module);
   return plugIn;
 }
@@ -33,10 +38,11 @@ AudioProcessor* JUCE_CALLTYPE createPluginWithMidi(AudioModuleType *dummy)
   // wraps audio module into plugin with midi input
   jura::AudioPluginWithMidiIn *plugIn = new jura::AudioPluginWithMidiIn();
   AudioModuleType *module = new AudioModuleType(&plugIn->plugInLock);
+  module->setSaveAndRecallMetaParameters(true);
   plugIn->setAudioModuleToWrap(module);
   return plugIn;
 
-  // only the 1st line is different, the last 3 are duplicated -> factor out
+  // only the 1st line is different, the others are duplicated -> factor out
 }
 
 

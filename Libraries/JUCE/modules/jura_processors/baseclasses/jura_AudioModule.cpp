@@ -234,7 +234,12 @@ void AudioModule::metaMappingToXml(XmlElement* xmlState)
 
 void AudioModule::metaValuesToXml(XmlElement* xmlElementToStartFrom)
 {
+  if(saveAndRecallMetas == true && metaParamManager != nullptr)
+  {
 
+
+    int dummy = 0;
+  }
 }
 
 XmlElement* AudioModule::getStateAsXml(const juce::String& stateName, bool markAsClean)

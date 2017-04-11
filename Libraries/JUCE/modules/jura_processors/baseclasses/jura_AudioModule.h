@@ -90,6 +90,16 @@ public:
   {
     saveAndRecallState = shouldSaveAndRecall;
   }
+  // why virtual? inline...
+
+  /** Call this function, if you want this module to store and recall the *values* of the 
+  MetaParameters in our MetaParameterManager member. Initially, this is false for all AudioModules
+  but should be activated for top-level modules, i.e. those that are wrapped into an AudioPlugin.
+  The function is called in the createPlugin... functions. */
+  inline void setSaveAndRecallMetaParameters(bool shouldSaveAndRecall) 
+  { 
+    saveAndRecallMetas = shouldSaveAndRecall; 
+  }
 
   /** Checks, if this is a cracked version and if so, it sets up the appendix for the headline 
   accordingly. Return value informs also whether or not a cracked version was detected. */

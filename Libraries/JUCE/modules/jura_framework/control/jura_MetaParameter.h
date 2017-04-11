@@ -116,7 +116,7 @@ public:
 
   /** Sets this MetaParameter to the given value and updates all dependent MetaControlledParameters
   accordingly. MetaParameter values are always in the normalized range 0..1. */
-  void setValue(double newValue);
+  void setMetaValue(double newValue);
 
   /** Attaches the given MetaControlledParameter to this MetaParameter. */
   void attachParameter(MetaControlledParameter* p);
@@ -131,7 +131,7 @@ public:
 
 protected:
 
-  double value = 0.0;
+  double metaValue = 0.0;
 
   std::vector<MetaControlledParameter*> params; // list of pointers to the dependent parameters
 

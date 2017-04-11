@@ -1,7 +1,7 @@
 
 void AudioPluginParameter::setValue(float newValue)
 {
-  MetaParameter::setValue((double)newValue);
+  MetaParameter::setMetaValue((double)newValue); // preliminary
 }
 
 //=================================================================================================

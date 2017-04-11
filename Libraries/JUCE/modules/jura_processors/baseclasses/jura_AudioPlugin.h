@@ -23,7 +23,7 @@ public:
   AudioPluginParameter() {}
 
   // mandatory AudioProcessorParameter overrides:
-  virtual float getValue() const override { return (float) value; }
+  virtual float getValue() const override { return (float) metaValue; }
   virtual void setValue(float newValue) override;
   virtual float getDefaultValue() const override { return 0.f; }
   virtual String getName(int maximumStringLength) const override { return "Meta " + String(getParameterIndex()); }

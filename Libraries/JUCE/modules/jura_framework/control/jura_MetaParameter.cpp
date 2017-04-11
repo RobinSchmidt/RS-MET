@@ -79,7 +79,7 @@ void MetaParameter::attachParameter(MetaControlledParameter* p)
 {
   if(contains(params, p))
     return; // already there, nothing to do, avoid recursive callbacks
-  p->setProportionalValue(value, true, true);
+  p->setProportionalValue(metaValue, true, true);
   p->registerParameterObserver(this);
   appendIfNotAlreadyThere(params, p);
 }
@@ -90,24 +90,24 @@ void MetaParameter::detachParameter(MetaControlledParameter* p)
   removeFirstOccurrence(params, p);
 }
 
-void MetaParameter::setValue(double newValue)
+void MetaParameter::setMetaValue(double newValue)
 { 
   jassert(newValue >= 0.0 && newValue <= 1.0); // must be a normalized value in the range 0..1
-  value = newValue;
+  metaValue = newValue;
   localAutomationSwitch = false; // so we don't call ourselves recursively
   for(int i = 0; i < size(params); i++)  
-    params[i]->setProportionalValue(value, true, true);
+    params[i]->setProportionalValue(metaValue, true, true);
   localAutomationSwitch = true;
 }
 
 void MetaParameter::parameterChanged(Parameter* p)
 {
   MetaControlledParameter* mcp = dynamic_cast<MetaControlledParameter*>(p);
-  value = mcp->getProportionalValue();
+  metaValue = mcp->getProportionalValue();
   localAutomationSwitch = false; // so we don't call ourselves recursively
   for(int i = 0; i < size(params); i++) {
     if(params[i] != mcp)
-      params[i]->setProportionalValue(value, true, true); }
+      params[i]->setProportionalValue(metaValue, true, true); }
   localAutomationSwitch = true;
 }
 
