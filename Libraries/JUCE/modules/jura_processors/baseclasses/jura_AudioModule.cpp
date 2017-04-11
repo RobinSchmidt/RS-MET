@@ -6,21 +6,17 @@ AudioModuleDeletionWatcher::~AudioModuleDeletionWatcher()
 
 void AudioModuleDeletionWatcher::addWatchedAudioModule(AudioModule *moduleToBeWatched)
 {
-  if( moduleToBeWatched != NULL )
-  {
+  if( moduleToBeWatched != nullptr ) {
     moduleToBeWatched->registerDeletionWatcher(this);
-    watchedAudioModules.addIfNotAlreadyThere(moduleToBeWatched);
-  }
+    watchedAudioModules.addIfNotAlreadyThere(moduleToBeWatched); }
 }
 
 void AudioModuleDeletionWatcher::removeWatchedAudioModule(AudioModule 
   *moduleNotToBeWatchedAnymore)
 {
-  if( moduleNotToBeWatchedAnymore != NULL )
-  {
+  if( moduleNotToBeWatchedAnymore != nullptr ) {
     moduleNotToBeWatchedAnymore->deRegisterDeletionWatcher(this);
-    watchedAudioModules.removeFirstMatchingValue(moduleNotToBeWatchedAnymore);
-  }
+    watchedAudioModules.removeFirstMatchingValue(moduleNotToBeWatchedAnymore); }
 }
 
 //=================================================================================================
@@ -45,7 +41,7 @@ AudioModule::~AudioModule()
   for(int i = 0; i < deletionWatchers.size(); i++)
     deletionWatchers[i]->audioModuleWillBeDeleted(this);
 
-  AudioModule* childModule = NULL;
+  AudioModule* childModule = nullptr;
   while( childModules.size() > 0 )
   {
     childModule = childModules[childModules.size()-1];
@@ -96,14 +92,12 @@ void AudioModule::removeChildAudioModule(AudioModule* moduleToRemove, bool delet
   ScopedLock scopedLock(*lock);
   int index = find(childModules, moduleToRemove);
   jassert( index != -1 ); // trying to remove a module which is not a child of this one?
-  if( index != -1 )
-  { 
+  if( index != -1 ) { 
     remove(childModules, index);
     removeChildStateManager(moduleToRemove);
     moduleToRemove->setMetaParameterManager(nullptr);
     if( deleteObject == true )
-      delete moduleToRemove;
-  }
+      delete moduleToRemove; }
 }
 
 bool AudioModule::checkForCrack()
@@ -125,14 +119,11 @@ void AudioModule::addObservedParameter(Parameter *parameterToAdd)
 void AudioModule::assignMidiController(const String& nameOfParameter, int controllerNumber)
 {
   ScopedLock scopedLock(*lock);
-  Parameter *p;
-  p = getParameterByName(nameOfParameter);
-  if( p != NULL )
-  {
-    AutomatableParameter* ap = dynamic_cast<AutomatableParameter*> (p);
-    if( ap != NULL )
-      ap->assignMidiController(controllerNumber);
-  }
+  Parameter* p = getParameterByName(nameOfParameter);
+  if( p != nullptr ) {
+    AutomatableParameter* ap = dynamic_cast<AutomatableParameter*>(p);
+    if( ap != nullptr )
+      ap->assignMidiController(controllerNumber); }
 }
 
 void AudioModule::setMidiController(int controllerNumber, float controllerValue)
@@ -141,31 +132,31 @@ void AudioModule::setMidiController(int controllerNumber, float controllerValue)
   // parameters themselves will take care to respond only to controller-numbers which are assigned
   // to them:
   ScopedLock scopedLock(*lock);
-  Parameter            *p;
   AutomatableParameter *ap;
-  for(int i=0; i < (int) parameters.size(); i++)
-  {
-    p  = parameters[i];
-    ap = dynamic_cast<AutomatableParameter*> (p);
-    if( ap != NULL )
-      ap->setMidiController(controllerNumber, controllerValue);
-    //parameters[i]->setMidiController(controllerNumber, controllerValue);
-  }
+  for(int i = 0; i < size(parameters); i++) {
+    ap = dynamic_cast<AutomatableParameter*>(parameters[i]);
+    if( ap != nullptr )
+      ap->setMidiController(controllerNumber, controllerValue); }
 }
 
 void AudioModule::revertToDefaultMapping()
 {
   ScopedLock scopedLock(*lock);
-  Parameter            *p;
   AutomatableParameter *ap;
-  for(int i=0; i < (int) parameters.size(); i++)
-  {
-    p  = parameters[i];
-    ap = dynamic_cast<AutomatableParameter*> (p);
-    if( ap != NULL )
-      ap->revertToDefaults(false, false, false);
-    //parameters[i]->revertToDefaults();
-  }
+  for(int i = 0; i < size(parameters); i++) {
+    ap = dynamic_cast<AutomatableParameter*>(parameters[i]);
+    if( ap != nullptr )
+      ap->revertToDefaults(false, false, false); }
+}
+
+void AudioModule::detachMetaParameters()
+{
+  ScopedLock scopedLock(*lock);
+  MetaControlledParameter *mcp;
+  for(int i = 0; i < size(parameters); i++) {
+    mcp = dynamic_cast<MetaControlledParameter*>(parameters[i]);
+    if( mcp != nullptr )
+      mcp->detachFromMetaParameter(); }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -176,15 +167,11 @@ int AudioModule::getIndexAmongNameSakes(AudioModule *child)
   ScopedLock scopedLock(*lock);
   juce::String name = child->getModuleName();
   int index = -1;
-  for(int c = 0; c < childModules.size(); c++)
-  {
-    if( childModules[c]->getModuleName() == name )
-    {
+  for(int c = 0; c < childModules.size(); c++) {
+    if( childModules[c]->getModuleName() == name ) {
       index++;
       if( childModules[c] == child )
-        break;
-    }
-  }
+        break; }}
   return index;
 }
 
@@ -266,8 +253,7 @@ XmlElement* AudioModule::getStateAsXml(const juce::String& stateName, bool markA
   for(int i = 0; i < getNumParameters(); i++) {
     Parameter* p = getParameterByIndex(i);
     if( p != nullptr ) {  // do we need this?
-      if( p->shouldBeSavedAndRecalled() && !p->isCurrentValueDefaultValue() ) 
-      {
+      if( p->shouldBeSavedAndRecalled() && !p->isCurrentValueDefaultValue() ) {
         if( p->isStringParameter() )
           xmlState->setAttribute(p->getName(), p->getStringValue());
         else
@@ -301,8 +287,9 @@ void AudioModule::midiMappingFromXml(const XmlElement &xmlState)
 
 void AudioModule::metaMappingFromXml(const XmlElement &xmlState)
 {
-  // something to do
-  //detachMetaParameters(); // should detach all parameters from any MetaParameters
+  detachMetaParameters(); 
+
+  // more to do...
 }
 
 void AudioModule::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 

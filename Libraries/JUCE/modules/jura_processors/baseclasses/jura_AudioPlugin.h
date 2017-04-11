@@ -5,7 +5,15 @@
 derives from jura::MetaParameter in order to provide the "glue" between juce's host automation
 handling and jura's MetaParameter handling. Whenever the setValue method, inherited and overriden 
 from AudioProcessorParameter, gets called (by the host), we will call MetaParameter's setValue 
-method there which in turn will update all the values of the attached MetaControlledParameters. */
+method there which in turn will update all the values of the attached MetaControlledParameters. 
+
+\todo override parameterChanged (inherited from MetaParameter) in order to notify host, we need
+to call setValueNotifyingHost(float newValue) ---is there a way to only notify the host without
+having it internally call setValue()? that would be more convenient bcs otherwise we must somehow
+avoid an endless recursion of callbacks
+
+
+*/
 
 class JUCE_API AudioPluginParameter : public AudioProcessorParameter, public MetaParameter
 {

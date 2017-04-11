@@ -101,7 +101,7 @@ public:
   virtual void addObservedParameter(Parameter *parameterToAdd) override;
 
   //-----------------------------------------------------------------------------------------------
-  // MIDI controller stuff:
+  // midi controller and meta parameter stuff:
 
   /** Assigns a MIDI controller to one of the observed parameters. */
   virtual void assignMidiController(const juce::String& nameOfParameter, int controllerNumber);
@@ -112,6 +112,11 @@ public:
 
   /** Reverts all observed parameters to their default settings. */
   virtual void revertToDefaultMapping();
+    // rename to revertToDefaultMidiMapping or assignDefaultMidiController, move to protected
+    // don't acquire lock
+
+  /** Detaches all our parameters from their controlling MetaParameter. */
+  virtual void detachMetaParameters();
 
   //-----------------------------------------------------------------------------------------------
   // inquiry:
@@ -217,6 +222,9 @@ protected:
   void metaMappingToXml(XmlElement* xmlElementToStartFrom);
   void midiMappingFromXml(const XmlElement &xmlState);
   void metaMappingFromXml(const XmlElement &xmlState);
+
+
+
 
 
   /** Our child modules to which we will distribute MIDI-events and of which we manage the

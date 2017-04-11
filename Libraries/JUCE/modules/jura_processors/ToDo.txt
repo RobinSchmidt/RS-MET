@@ -1,7 +1,9 @@
 AudioModule:  
 -add MetaParameter attachment settings to the xml state
+-notify host about (Meta) parameter changes
 
 AudioModuleChain: use inherited childModules array instead of "modules"
+
 RSlider: make default-values and enter-value available on right-click (it's currently only
  available in subclass AutomatableSlider)
 
@@ -13,5 +15,11 @@ Enveloper:
 -check, why it goes through release twice when there's no loop active
 -maybe make a plugin that uses two or three envelopes to test the multi-editor
  (perhaps a dual ladder filter)
+
+General:
+-use the "virtual" qualifier for methods more conservatively - only when overriding is needed
+-move more functions from public into protected, avoid acquiring mutex locks inside protected
+ functions (they are supposed to be called from public functions which already hold the mutex)
+-take more care about const correctness in declarations
 
 
