@@ -153,3 +153,17 @@ MetaParameter* MetaParameterManager::getMetaParameter(int index)
     return nullptr;
   return metaParams[index];
 }
+
+void MetaParameterManager::resetAllToDefaults()
+{
+  for(int i = 0; i < size(metaParams); i++)
+    metaParams[i]->resetToDefaultValue();
+}
+
+bool MetaParameterManager::setMetaValue(int index, double newValue)
+{
+  if(index < 0 || index >= size(metaParams))
+    return false;
+  metaParams[index]->setMetaValue(newValue);
+  return true;
+}

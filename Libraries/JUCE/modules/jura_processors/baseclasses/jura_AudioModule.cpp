@@ -322,7 +322,18 @@ void AudioModule::metaMappingFromXml(const XmlElement &xmlState)
 
 void AudioModule::metaValuesFromXml(const XmlElement &xmlState)
 {
-
+  if(saveAndRecallMetas == true && metaParamManager != nullptr) {
+    metaParamManager->resetAllToDefaults();
+    XmlElement* xmlValues = xmlState.getChildByName("MetaParameterValues");
+    if(xmlValues == nullptr)
+      return; 
+    for(int i = 0; i < xmlValues->getNumAttributes(); i++) {
+      String tmp = xmlValues->getAttributeName(i);
+      tmp = tmp.fromLastOccurrenceOf("M", false, false);
+      int metaIndex = tmp.getIntValue();
+      tmp = xmlValues->getAttributeValue(i);
+      double metaValue = tmp.getDoubleValue();
+      metaParamManager->setMetaValue(metaIndex, metaValue); }}
 }
 
 void AudioModule::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 

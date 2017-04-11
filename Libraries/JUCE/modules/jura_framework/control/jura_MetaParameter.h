@@ -127,6 +127,10 @@ public:
   /** Detaches the given MetaControlledParameter from this MetaParameter. */
   void detachParameter(MetaControlledParameter* p);
 
+  /** Resets this MetaParameter to its default value of 0.5 (causing callbacks and 
+  notifications). */
+  inline void resetToDefaultValue() { setMetaValue(0.5); }
+
   // callbacks:
   virtual void parameterChanged(Parameter* p) override;
   virtual void parameterIsGoingToBeDeleted(Parameter* p) override;
@@ -174,6 +178,13 @@ public:
   /** Returns a pointer to the MetaParameter with given index. If the index is out of range, it
   will be a nullptr. */
   MetaParameter* getMetaParameter(int index);
+
+  /** Resets all MetaParameters in out array to their default value of 0.5. */
+  void resetAllToDefaults();
+
+  /** Tries to set the MetaParameter with given index to the passed newValue and returns if
+  this was successful (it will fail, if metaIndex is out of range). */
+  bool setMetaValue(int index, double newValue);
 
 
 protected:

@@ -1,9 +1,7 @@
+AudioModule:
+-retrieve values of MetaParameters
 
 AudioPlugin:  
--store values of MetaParameters...this may have to go into AudioModule and there, we
- should store MetaParameters only for the top-level module - maybe have a flag: 
- storeMetaParameters that is false by default and gets set to true when an AudioModule
- gets wrapped into an AudioPlugin
 -make cross coupling of meta-controlled parameters work
 -notify host about (Meta) parameter changes
 -allow to optionally map midi controllers to meta-parameters
