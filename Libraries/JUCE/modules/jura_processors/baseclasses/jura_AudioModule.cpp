@@ -288,8 +288,15 @@ void AudioModule::midiMappingFromXml(const XmlElement &xmlState)
 void AudioModule::metaMappingFromXml(const XmlElement &xmlState)
 {
   detachMetaParameters(); 
-
-  // more to do...
+  XmlElement* xmlMapping = xmlState.getChildByName("MetaMapping");
+  if( xmlMapping == nullptr )
+    return; // no mapping stored, nothing to do
+  forEachXmlChildElement(*xmlMapping, xmlParamSetup) {
+    Parameter* p = getParameterByName(xmlParamSetup->getTagName());
+    MetaControlledParameter *mcp = dynamic_cast<MetaControlledParameter*>(p);
+    if(mcp != nullptr) {
+      mcp->attachToMetaParameter(xmlParamSetup->getIntAttribute("MetaIndex", -1)); }}
+      // todo: retrieve mapping function/curve
 }
 
 void AudioModule::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 
