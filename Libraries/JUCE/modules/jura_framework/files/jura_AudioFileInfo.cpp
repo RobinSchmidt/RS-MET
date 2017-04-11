@@ -1,6 +1,3 @@
-//#include "rojue_AudioFileInfo.h"
-//using namespace rojue;
-
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 

@@ -5,24 +5,28 @@
 Idea: 3 classes
 
 MetaControlledParameter: 
+-subclass of Parameter that can be controlled by a MetaParameter
 -has a pointer to a MetaParameterManager where it can register itself to listen to one of the
 MetaParameters
+-todo: provide custom mapping curves (from input 0..1 to output 0..1 - before it goes into the
+regular mapping provided by the Parameter baseclass)
+-todo: provide Smoothing (maybe by an intermediate subclass SmoothedParameter)
 
 MetaParameter:
 -maintains a list of dependent MetaControlledParameters and sets all of of them when its 
-setAutomationValue gets called
--listens to each of its dependent parameters to provide cross-coupling: when one of the dependent
-parameters changes, all others should change as well
+setValue method gets called
+-watches each of its dependent parameters for changes (by means of being subclass of 
+ParameterObserver) to provide cross-coupling: when one of the dependent parameters changes, all 
+others are updated as well
 
 MetaParameterManager:
 -maintains a list of MetaParameters to allow MetaControlledParameter objects set themselves up
 to listen to one specific MetaParameter
 
 todo:
+-make it possible to assign MIDI-controllers to a MetaParameter (maybe through a subclass
+MidiControlledMetaParameter)
 -don't use class AutomatableParameter anymore
--instead, make it possible to assign MIDI-controllers to a MetaParameter (maybe through a subclass
- MidiControlledMetaParameter)
-
 */
 
 class MetaParameterManager;
@@ -31,7 +35,7 @@ class MetaParameterManager;
 pointer to a MetaParameterManager, where it can attach itself to one of the managed MetaParameters
 there. To make this work, you will have to call setMetaParameterManager to pass in the 
 MetaParameterManager to use. Once this is done, you can attach this parameter to one of the 
-MetaParameters by calling attachToMetaParameter
+MetaParameters by calling attachToMetaParameter.
 
 \todo 
 -maybe factor the handling of proportionalValue out into parameter baseclass
@@ -50,6 +54,9 @@ public:
   MetaControlledParameter(const juce::String& name, double min = 0.0, double max = 1.0, 
     double defaultValue = 0.5, int scaling = LINEAR, double interval = 0.0);
 
+
+  //--------------------
+  // move to Parameter:
   /** Sets the value of the parameter where the input argument is assumed to be normalized to the 
   range 0...1  .... */
   virtual void setProportionalValue(double newProportionalValue, bool sendNotification, 
@@ -63,6 +70,11 @@ public:
   scaling/mapping function. */
   virtual double proportionToValue(double proportion);
 
+  /** Returns the normalized value in the range 0..1. */
+  inline double getProportionalValue() { return proportionalValue; }
+  //----------------------
+
+
   /** Sets up the MetaParameterManager to use. */
   virtual void setMetaParameterManager(MetaParameterManager *newManager);
 
@@ -72,9 +84,6 @@ public:
 
   /** Detaches this parameter from any MetaParameter, it may be attched to. */
   virtual void detachFromMetaParameter();
-
-  /** Returns the normalized value in the range 0..1. */
-  inline double getProportionalValue() { return proportionalValue; }
 
   /** Returns the index of the MetaParameter that this parameter is attached to. If it's not 
   attached to any MetaParameter, it returns -1. */
@@ -96,7 +105,7 @@ protected:
 parameters. It derives from ParameterObserver in order to also provide a means of cross-coupling
 between the dependent parameters - whenever one of them changes, we get notified here and also
 set up all other dependent parameters accordingly 
-\todo: maybe factor out coupling functionality into subclass CouplingMetaParameter */
+\todo: maybe factor out coupling functionality into subclass CrossCouplingMetaParameter */
 
 class JUCE_API MetaParameter : public ParameterObserver
 {
@@ -132,7 +141,7 @@ protected:
 //=================================================================================================
 
 /** A class to manage a bunch of MetaParameters, allowing MetaControlledParameter objects to attach
-themselves to any of our manages MetaParameters. */
+themselves to any of our managed MetaParameters. */
 
 class JUCE_API MetaParameterManager
 {
@@ -149,7 +158,7 @@ public:
   bool attachParameter(MetaControlledParameter* param, int metaIndex);
 
   /** If the passed parameter is attached to any of our managed MetaParameters, this function
-  will detach it. */
+  will detach it (otherwise it will have no effect). */
   void detachParameter(MetaControlledParameter* param);
 
 

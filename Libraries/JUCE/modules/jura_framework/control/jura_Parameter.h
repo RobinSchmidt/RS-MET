@@ -68,7 +68,7 @@ public:
   subclass when it is a GUI element. */
   bool isGuiElement;
 
-  juce_UseDebuggingNewOperator;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParameterObserver)
 };
 
 //=================================================================================================
@@ -227,6 +227,7 @@ public:
   /** Adds a string value to the array - relevant only for string-based parameters. */
   virtual void addStringValue(const juce::String& valueToAdd);
 
+  /** Sets the mutex lock to use for parameter changes. */
   virtual void setMutexToUse(CriticalSection* cs) { mutex = cs; }
 
   //-----------------------------------------------------------------------------------------------
@@ -334,12 +335,12 @@ public:
     void (CalleeClass::*memberToCall) (double))
   {
     ScopedPointerLock spl(mutex);
-    if(valueChangeCallbackDouble != NULL)
+    if(valueChangeCallbackDouble != nullptr)
     {
       delete valueChangeCallbackDouble;
-      valueChangeCallbackDouble = NULL;
+      valueChangeCallbackDouble = nullptr;
     }
-    if(calleeObject != NULL)
+    if(calleeObject != nullptr)
       valueChangeCallbackDouble = 
       new SpecificMemberFunctionCallback1<CalleeClass, void, double>(calleeObject, memberToCall);
   }
@@ -349,12 +350,12 @@ public:
   void setValueChangeCallback(CalleeClass *calleeObject, void (CalleeClass::*memberToCall) (int))
   {
     ScopedPointerLock spl(mutex);
-    if(valueChangeCallbackInt != NULL)
+    if(valueChangeCallbackInt != nullptr)
     {
       delete valueChangeCallbackInt;
-      valueChangeCallbackInt = NULL;
+      valueChangeCallbackInt = nullptr;
     }
-    if(calleeObject != NULL)
+    if(calleeObject != nullptr)
       valueChangeCallbackInt 
       = new SpecificMemberFunctionCallback1<CalleeClass, void, int>(calleeObject, memberToCall);
   }
@@ -364,12 +365,12 @@ public:
   void setValueChangeCallback(CalleeClass *calleeObject, void (CalleeClass::*memberToCall) (bool))
   {
     ScopedPointerLock spl(mutex);
-    if(valueChangeCallbackBool != NULL)
+    if(valueChangeCallbackBool != nullptr)
     {
       delete valueChangeCallbackBool;
-      valueChangeCallbackBool = NULL;
+      valueChangeCallbackBool = nullptr;
     }
-    if(calleeObject != NULL)
+    if(calleeObject != nullptr)
       valueChangeCallbackBool = 
       new SpecificMemberFunctionCallback1<CalleeClass, void, bool>(calleeObject, memberToCall);
   }
