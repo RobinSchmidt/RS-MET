@@ -146,3 +146,10 @@ void MetaParameterManager::detachParameter(MetaControlledParameter* param)
   for(int i = 0; i < size(metaParams); i++)
     metaParams[i]->detachParameter(param);
 }
+
+MetaParameter* MetaParameterManager::getMetaParameter(int index)
+{
+  if(index < 0 || index >= size(metaParams))
+    return nullptr;
+  return metaParams[index];
+}

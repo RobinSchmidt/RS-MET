@@ -118,6 +118,9 @@ public:
   accordingly. MetaParameter values are always in the normalized range 0..1. */
   void setMetaValue(double newValue);
 
+  /** Returns the current (meta) value of the MetaParameter. */
+  inline double getMetaValue() { return metaValue; }
+
   /** Attaches the given MetaControlledParameter to this MetaParameter. */
   void attachParameter(MetaControlledParameter* p);
 
@@ -131,7 +134,11 @@ public:
 
 protected:
 
-  double metaValue = 0.0;
+  /** The value of the meta parameter. It is initialized to 0.5 which is used as the default value.
+  the center value seems a resonable choice for most continuous parameters (which we assume to be
+  the majority). Note that changing this may break presets and states because meta values are only 
+  stored when they differ from the default value - so don't change that. */
+  double metaValue = 0.5; // NEVER change the 0.5 initialization, state save/recall relies on that
 
   std::vector<MetaControlledParameter*> params; // list of pointers to the dependent parameters
 
@@ -160,6 +167,13 @@ public:
   /** If the passed parameter is attached to any of our managed MetaParameters, this function
   will detach it (otherwise it will have no effect). */
   void detachParameter(MetaControlledParameter* param);
+
+  /** Returns the number of MetaParameters that are managed by this object. */
+  inline int getNumMetaParameters() { return (int) size(metaParams); }
+
+  /** Returns a pointer to the MetaParameter with given index. If the index is out of range, it
+  will be a nullptr. */
+  MetaParameter* getMetaParameter(int index);
 
 
 protected:

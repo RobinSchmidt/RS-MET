@@ -232,13 +232,21 @@ void AudioModule::metaMappingToXml(XmlElement* xmlState)
     delete xmlMapping;
 }
 
-void AudioModule::metaValuesToXml(XmlElement* xmlElementToStartFrom)
+void AudioModule::metaValuesToXml(XmlElement* xmlState)
 {
-  if(saveAndRecallMetas == true && metaParamManager != nullptr)
-  {
-
-
-    int dummy = 0;
+  if(saveAndRecallMetas == true && metaParamManager != nullptr) {
+    bool allMetasAtDefault = true;
+    XmlElement* xmlValues = new XmlElement("MetaParameterValues");
+    for(int i = 0; i < metaParamManager->getNumMetaParameters(); i++) {
+      MetaParameter* mp = metaParamManager->getMetaParameter(i);
+      double value = mp->getMetaValue();
+      if(value != 0.5) {     // .5 is the default, we store only values different from that
+        allMetasAtDefault = false;
+        xmlValues->setAttribute("M" + String(i), value); }}
+    if( !allMetasAtDefault ) // no child xml needs to be stored
+      xmlState->addChildElement(xmlValues); 
+    else
+      delete xmlValues; 
   }
 }
 
