@@ -4,6 +4,11 @@ void AudioPluginParameter::setValue(float newValue)
   MetaParameter::setMetaValue((double)newValue); // preliminary
 }
 
+void AudioPluginParameter::parameterChanged(Parameter* p)
+{
+  MetaParameter::parameterChanged(p); // preliminary
+}
+
 //=================================================================================================
 
 AudioPlugin::AudioPlugin()

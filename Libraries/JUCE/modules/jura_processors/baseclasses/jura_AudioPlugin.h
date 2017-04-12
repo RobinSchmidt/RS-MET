@@ -34,6 +34,9 @@ public:
   virtual bool isAutomatable() const override { return true; }
   virtual bool isMetaParameter() const override { return true; }
 
+  // overriden from MetaParameter to notify host:
+  virtual void parameterChanged(Parameter* p) override;
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioPluginParameter)
 };
 

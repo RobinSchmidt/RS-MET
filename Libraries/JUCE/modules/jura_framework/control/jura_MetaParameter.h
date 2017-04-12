@@ -40,14 +40,7 @@ class MetaParameterManager;
 pointer to a MetaParameterManager, where it can attach itself to one of the managed MetaParameters
 there. To make this work, you will have to call setMetaParameterManager to pass in the 
 MetaParameterManager to use. Once this is done, you can attach this parameter to one of the 
-MetaParameters by calling attachToMetaParameter.
-
-\todo 
--we should here have a setMetaValue function that  1st maps the meta-range 0..1 arbitrarily to 
- itself (via some kind of ParameterMapper object) and the calls Parameter::setProportionalValue 
- with the mapped value. the mapper should be optional and default to the identity-mapping.
-
-*/
+MetaParameters by calling attachToMetaParameter. */
 
 class JUCE_API MetaControlledParameter : public Parameter
 {
