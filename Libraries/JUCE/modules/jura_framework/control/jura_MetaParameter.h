@@ -2,31 +2,36 @@
 #define jura_MetaParameter_h
 
 /* 
-Idea: 3 classes
+The meta-parameter handling involves 3 classes:
 
 MetaControlledParameter: 
 -subclass of Parameter that can be controlled by a MetaParameter
 -has a pointer to a MetaParameterManager where it can register itself to listen to one of the
-MetaParameters
+ MetaParameters (which are manitained as a list there)
 -todo: provide custom mapping curves (from input 0..1 to output 0..1 - before it goes into the
-regular mapping provided by the Parameter baseclass)
--todo: provide Smoothing (maybe by an intermediate subclass SmoothedParameter)
+ regular mapping provided by the Parameter baseclass, so we have a two level mapping)
+-todo: provide smoothing (maybe by an intermediate subclass SmoothedParameter:
+ i.e. Parameter <- SmoothedParameter <- MetaControlledParameter)...or maybe just integrate it
+ directly .. and at some stage, we may need non-smoothed meta-controlled or non-meta-controlled 
+ smoothed parameters - then we can factor out the more basic class
 
 MetaParameter:
--maintains a list of dependent MetaControlledParameters and sets all of of them when its 
-setValue method gets called
--watches each of its dependent parameters for changes (by means of being subclass of 
-ParameterObserver) to provide cross-coupling: when one of the dependent parameters changes, all 
-others are updated as well
+-maintains a list of dependent MetaControlledParameters and updates all of them when its 
+ setMetaValue method gets called
+-watches each of its dependent MetaControlledParameters for changes (by means of being subclass of 
+ ParameterObserver) to provide cross-coupling: when one of the dependent parameters changes, all 
+ others are updated as well
 
 MetaParameterManager:
--maintains a list of MetaParameters to allow MetaControlledParameter objects set themselves up
-to listen to one specific MetaParameter
+-maintains a list of MetaParameters to allow MetaControlledParameter objects register themselves
+ to listen to one specific MetaParameter
 
 todo:
 -make it possible to assign MIDI-controllers to a MetaParameter (maybe through a subclass
-MidiControlledMetaParameter)
--don't use class AutomatableParameter anymore
+ MidiControlledMetaParameter)
+-don't use class AutomatableParameter anymore - consider it deprecated, but maybe it should still
+ be renamed into MidiControlledParameter...and perhaps be moved inot the jura_processors module
+ we may still need it for legacy code compatibility
 */
 
 class MetaParameterManager;
@@ -75,11 +80,12 @@ public:
 
   /** Returns the normalized value in the range 0..1. */
   inline double getProportionalValue() { return valueToProportion(value); }
-  //inline double getProportionalValue() { return proportionalValue; }
   //----------------------
 
 
-  /** Sets up the MetaParameterManager to use. */
+  /** Sets up the MetaParameterManager to use. This function should be called once shortly after 
+  this MetaControlledParameter object has been created and the passed manager object should remain 
+  valid for the whole lifetime of this object. */
   virtual void setMetaParameterManager(MetaParameterManager *newManager);
 
   /** Attaches this parameter to the MetaParameter with the given index (in the 
@@ -95,8 +101,6 @@ public:
 
 protected:
 
-  //double proportionalValue;  // maybe factor out to Parameter
-
   int metaIndex = -1;
   MetaParameterManager* metaParaManager = nullptr;
 
@@ -108,7 +112,7 @@ protected:
 /** A class to represent meta-parameters, i.e. parameters that control other (lower level) 
 parameters. It derives from ParameterObserver in order to also provide a means of cross-coupling
 between the dependent parameters - whenever one of them changes, we get notified here and also
-set up all other dependent parameters accordingly 
+update all other dependent parameters accordingly.
 \todo: maybe factor out coupling functionality into subclass CrossCouplingMetaParameter */
 
 class JUCE_API MetaParameter : public ParameterObserver
@@ -143,7 +147,7 @@ public:
 protected:
 
   /** The value of the meta parameter. It is initialized to 0.5 which is used as the default value.
-  the center value seems a resonable choice for most continuous parameters (which we assume to be
+  The center value seems a resonable choice for most continuous parameters (which we assume to be
   the majority). Note that changing this may break presets and states because meta values are only 
   stored when they differ from the default value - so don't change that. */
   double metaValue = 0.5; // NEVER change the 0.5 initialization, state save/recall relies on that
@@ -183,11 +187,11 @@ public:
   will be a nullptr. */
   MetaParameter* getMetaParameter(int index);
 
-  /** Resets all MetaParameters in out array to their default value of 0.5. */
+  /** Resets all MetaParameters in our array to their default value of 0.5. */
   void resetAllToDefaults();
 
   /** Tries to set the MetaParameter with given index to the passed newValue and returns if
-  this was successful (it will fail, if metaIndex is out of range). */
+  this was successful (it will fail, if index is out of range). */
   bool setMetaValue(int index, double newValue);
 
 

@@ -2,14 +2,13 @@ MetaControlledParameter::MetaControlledParameter(const juce::String& name, doubl
   double defaultValue, int scaling, double interval)
   : Parameter(name, min, max, defaultValue, scaling, interval)
 {
-  //proportionalValue = valueToProportion(value);
+
 }
 
 void MetaControlledParameter::setProportionalValue(double newProportionalValue,
   bool sendNotification, bool callCallbacks)
 {
   ScopedPointerLock spl(mutex);
-  //proportionalValue = newProportionalValue;
   setValue(proportionToValue(newProportionalValue), sendNotification, callCallbacks);
 }
 
@@ -22,7 +21,7 @@ double MetaControlledParameter::valueToProportion(double value)
   case Parameter::EXPONENTIAL: 
   {
     if( minValue > 0.0 )
-      return jlimit(0.0, 1.0, log(value/minValue) / (log(maxValue)-log(minValue)) );
+      return jlimit(0.0, 1.0, log(value/minValue) / (log(maxValue)-log(minValue)) ); // optimize
     else
       return 0.0;
   }
@@ -35,8 +34,8 @@ double MetaControlledParameter::proportionToValue(double prop)
   switch( scaling )
   {
   case Parameter::LINEAR:         return minValue + (maxValue - minValue) * prop;
-  case Parameter::EXPONENTIAL:    return minValue * exp(prop*(log(maxValue)-log(minValue)));
-  case Parameter::LINEAR_BIPOLAR: return minValue + (maxValue - minValue) * prop;
+  case Parameter::LINEAR_BIPOLAR: return minValue + (maxValue - minValue) * prop;  // is the same - get rid of duplication - use as default
+  case Parameter::EXPONENTIAL:    return minValue * exp(prop*(log(maxValue)-log(minValue))); // optimize: log(a)-log(b) = log(a/b)
   default: return 0.0;
   }
   // maybe make valueToProportion/proportionToValue static methods and pass in min, max, scaling
@@ -118,7 +117,6 @@ void MetaParameter::parameterIsGoingToBeDeleted(Parameter* p)
     if(params[i] == p) {
       remove(params, i);
       return; }}
-
   // removeFirstOccurrence(params, p); cant be used because of ambiguous template parameter, so we 
   // have to do the search-loop ourselves
 }
