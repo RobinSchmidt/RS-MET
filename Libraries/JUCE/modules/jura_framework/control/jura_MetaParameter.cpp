@@ -5,6 +5,22 @@ MetaControlledParameter::MetaControlledParameter(const juce::String& name, doubl
 
 }
 
+void MetaControlledParameter::setFromMetaValue(double newMetaValue, bool sendNotification, 
+  bool callCallbacks)
+{
+  setProportionalValue(newMetaValue, sendNotification, callCallbacks);
+
+  // Later, we can introduce a nonlinear mapping function of the range 0..1 to itself here before
+  // calling setProportionalValue. Maybe we can use an object some kind of ParameterMapper class
+  // for this. We could do: 
+  // if(parameterMapper == nullptr) 
+  //   setProportionalValue(newMetaValue, ..);
+  // else
+  //   setProportionalValue(parameterMapper->map(newMetaValue), ..)
+  // Subclases of this mapper class could realize Elan's rational function or we could have a 
+  // breakpoint-based mapping, etc.
+}
+
 void MetaControlledParameter::setMetaParameterManager(MetaParameterManager *newManager)
 {
   metaParaManager = newManager;
@@ -42,7 +58,7 @@ void MetaParameter::attachParameter(MetaControlledParameter* p)
 {
   if(contains(params, p))
     return; // already there, nothing to do, avoid recursive callbacks
-  p->setProportionalValue(metaValue, true, true);
+  p->setFromMetaValue(metaValue, true, true);
   p->registerParameterObserver(this);
   appendIfNotAlreadyThere(params, p);
 }
@@ -59,7 +75,7 @@ void MetaParameter::setMetaValue(double newValue)
   metaValue = newValue;
   localAutomationSwitch = false; // so we don't call ourselves recursively
   for(int i = 0; i < size(params); i++)  
-    params[i]->setProportionalValue(metaValue, true, true);
+    params[i]->setFromMetaValue(metaValue, true, true);
   localAutomationSwitch = true;
 }
 
@@ -70,7 +86,7 @@ void MetaParameter::parameterChanged(Parameter* p)
   localAutomationSwitch = false; // so we don't call ourselves recursively
   for(int i = 0; i < size(params); i++) {
     if(params[i] != mcp)
-      params[i]->setProportionalValue(metaValue, true, true); }
+      params[i]->setFromMetaValue(metaValue, true, true); }
   localAutomationSwitch = true;
 }
 

@@ -46,8 +46,6 @@ MetaParameters by calling attachToMetaParameter.
 -we should here have a setMetaValue function that  1st maps the meta-range 0..1 arbitrarily to 
  itself (via some kind of ParameterMapper object) and the calls Parameter::setProportionalValue 
  with the mapped value. the mapper should be optional and default to the identity-mapping.
--MetaParameter should call this setMetaValue function instead of directly calling
- setProportionalValue 
 
 */
 
@@ -59,6 +57,11 @@ public:
   /** Constructor */
   MetaControlledParameter(const juce::String& name, double min = 0.0, double max = 1.0, 
     double defaultValue = 0.5, int scaling = LINEAR, double interval = 0.0);
+
+  /** Sets this parameter up according to a given MetaParameter value and optionally notifies
+  observers and/or calls the callbacks. */
+  virtual void setFromMetaValue(double newMetaValue, bool sendNotification, 
+    bool callCallbacks);
 
   /** Sets up the MetaParameterManager to use. This function should be called once shortly after 
   this MetaControlledParameter object has been created and the passed manager object should remain 
