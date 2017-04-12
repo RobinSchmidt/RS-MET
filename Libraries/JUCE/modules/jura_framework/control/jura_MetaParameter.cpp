@@ -5,42 +5,6 @@ MetaControlledParameter::MetaControlledParameter(const juce::String& name, doubl
 
 }
 
-void MetaControlledParameter::setProportionalValue(double newProportionalValue,
-  bool sendNotification, bool callCallbacks)
-{
-  ScopedPointerLock spl(mutex);
-  setValue(proportionToValue(newProportionalValue), sendNotification, callCallbacks);
-}
-
-double MetaControlledParameter::valueToProportion(double value)
-{
-  if(minValue >= maxValue)
-    return 0.0;
-  switch( scaling )
-  {
-  case Parameter::EXPONENTIAL: 
-  {
-    if( minValue > 0.0 )
-      return jlimit(0.0, 1.0, log(value/minValue) / (log(maxValue)-log(minValue)) ); // optimize
-    else
-      return 0.0;
-  }
-  default: return (value - minValue) / (maxValue - minValue); // LINEAR(_BIPOLAR)
-  }
-}
-
-double MetaControlledParameter::proportionToValue(double prop)
-{
-  switch( scaling )
-  {
-  case Parameter::LINEAR:         return minValue + (maxValue - minValue) * prop;
-  case Parameter::LINEAR_BIPOLAR: return minValue + (maxValue - minValue) * prop;  // is the same - get rid of duplication - use as default
-  case Parameter::EXPONENTIAL:    return minValue * exp(prop*(log(maxValue)-log(minValue))); // optimize: log(a)-log(b) = log(a/b)
-  default: return 0.0;
-  }
-  // maybe make valueToProportion/proportionToValue static methods and pass in min, max, scaling
-}
-
 void MetaControlledParameter::setMetaParameterManager(MetaParameterManager *newManager)
 {
   metaParaManager = newManager;

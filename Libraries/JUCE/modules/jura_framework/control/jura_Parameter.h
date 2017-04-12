@@ -172,6 +172,11 @@ public:
   assigned callback function. */
   virtual void setValue(double newValue, bool sendNotification, bool callCallbacks);
 
+  /** Sets the value of the parameter where the input argument is assumed to be normalized to the 
+  range 0...1  .... */
+  virtual void setProportionalValue(double newProportionalValue, bool sendNotification, 
+    bool callCallbacks);
+
   /** Resets the value of the parameter to its default value and (optionally) notifies all the 
   listeners and calls the assigned callback function. */
   virtual void resetToDefaultValue(bool sendNotification, bool callCallbacks);
@@ -234,7 +239,18 @@ public:
   // inquiry:
 
   /** Returns the current value of the parameter. */
-  virtual double getValue() const { ScopedPointerLock spl(mutex); return value; }
+  virtual double getValue() const { ScopedPointerLock spl(mutex); return value; } // remove mutex, inline
+
+  /** Returns the normalized value in the range 0..1. */
+  inline double getProportionalValue() { return valueToProportion(value); }
+
+  /** Converts the clear text value to a proportional value in the range 0..1 according to our 
+  scaling/mapping function. */
+  virtual double valueToProportion(double value);
+
+  /** Converts a proportional value in the range 0..1 to a clear text value according to our 
+  scaling/mapping function. */
+  virtual double proportionToValue(double proportion);
 
   /** Returns the currently chosen string-value for string based parameters. When this parameter is
   not actually a string based parameter, it will return String::empty. */

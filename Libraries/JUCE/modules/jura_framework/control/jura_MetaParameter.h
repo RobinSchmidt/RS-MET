@@ -43,11 +43,12 @@ MetaParameterManager to use. Once this is done, you can attach this parameter to
 MetaParameters by calling attachToMetaParameter.
 
 \todo 
--maybe factor the handling of proportionalValue out into parameter baseclass
--maybe we should here have a setMetaValue function to replace the setProportionalValue that
- 1st maps the meta-range 0..1 arbitrarily to itself (via some kind of ParameterMapper object) and
- the calls Parameter::setProportionalValue with the mapped value. the mapper should be optional
- and default to the identity-mapping.
+-we should here have a setMetaValue function that  1st maps the meta-range 0..1 arbitrarily to 
+ itself (via some kind of ParameterMapper object) and the calls Parameter::setProportionalValue 
+ with the mapped value. the mapper should be optional and default to the identity-mapping.
+-MetaParameter should call this setMetaValue function instead of directly calling
+ setProportionalValue 
+
 */
 
 class JUCE_API MetaControlledParameter : public Parameter
@@ -58,30 +59,6 @@ public:
   /** Constructor */
   MetaControlledParameter(const juce::String& name, double min = 0.0, double max = 1.0, 
     double defaultValue = 0.5, int scaling = LINEAR, double interval = 0.0);
-
-
-  //--------------------
-  // move to Parameter:
-  // there's also a bug - the proportional value is out of sync with the actual value - that's 
-  // (likely) also the reason why the cross-coupling fails.
-
-  /** Sets the value of the parameter where the input argument is assumed to be normalized to the 
-  range 0...1  .... */
-  virtual void setProportionalValue(double newProportionalValue, bool sendNotification, 
-    bool callCallbacks);
-
-  /** Converts the clear text value to a proportional value in the range 0..1 according to our 
-  scaling/mapping function. */
-  virtual double valueToProportion(double value);
-
-  /** Converts a proportional value in the range 0..1 to a clear text value according to our 
-  scaling/mapping function. */
-  virtual double proportionToValue(double proportion);
-
-  /** Returns the normalized value in the range 0..1. */
-  inline double getProportionalValue() { return valueToProportion(value); }
-  //----------------------
-
 
   /** Sets up the MetaParameterManager to use. This function should be called once shortly after 
   this MetaControlledParameter object has been created and the passed manager object should remain 
