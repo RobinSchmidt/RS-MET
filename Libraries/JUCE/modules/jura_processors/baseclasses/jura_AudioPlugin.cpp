@@ -1,12 +1,14 @@
 
 void AudioPluginParameter::setValue(float newValue)
 {
-  MetaParameter::setMetaValue((double)newValue); // preliminary
+  MetaParameter::setMetaValue((double)newValue);
 }
 
 void AudioPluginParameter::parameterChanged(Parameter* p)
 {
-  MetaParameter::parameterChanged(p); // preliminary
+  beginChangeGesture();
+  setValueNotifyingHost((float) p->getProportionalValue());
+  endChangeGesture();
 }
 
 //=================================================================================================

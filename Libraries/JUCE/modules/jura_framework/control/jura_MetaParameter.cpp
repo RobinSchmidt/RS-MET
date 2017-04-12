@@ -81,11 +81,10 @@ void MetaParameter::setMetaValue(double newValue)
 
 void MetaParameter::parameterChanged(Parameter* p)
 {
-  MetaControlledParameter* mcp = dynamic_cast<MetaControlledParameter*>(p);
-  metaValue = mcp->getProportionalValue();
+  metaValue = p->getProportionalValue();
   localAutomationSwitch = false; // so we don't call ourselves recursively
   for(int i = 0; i < size(params); i++) {
-    if(params[i] != mcp)
+    if(params[i] != p)
       params[i]->setFromMetaValue(metaValue, true, true); }
   localAutomationSwitch = true;
 }
