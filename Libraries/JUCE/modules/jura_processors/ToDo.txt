@@ -1,7 +1,9 @@
 AudioPlugin:  
--check, why meta-parameters don't work for choice parameters
 -test automation recording
 -allow to optionally map midi controllers to meta-parameters
+-use MetaControlledParameters in all AudioModules
+-fix updating of the frequency-response plot in the Ladder when parameters are automated
+-check , if automation works for the BreakpointModulator
 
 AudioModuleChain: use inherited childModules array instead of "modules"
 
