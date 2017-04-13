@@ -50,7 +50,8 @@ protected:
   // widgets:
   AutomatableSlider *timeScaleSlider, *timeScaleByKeySlider, *timeScaleByVelSlider,
     *depthSlider, *depthByKeySlider, *depthByVelSlider;
-  AutomatableButton *loopButton, *syncButton;
+  //AutomatableButton *loopButton, *syncButton; // later - make them automatable
+  RButton *loopButton, *syncButton;
   RButton *editButton;
 
   // data members:

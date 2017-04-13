@@ -210,6 +210,7 @@ double RSlider::getValueFromText (const String& text) const
 double RSlider::proportionOfLengthToValue(double proportion) const
 {
   // todo:  use linToLin, linToExp, expToLin
+  // this code duplicates similar code in Parameter - factor out, get rid of redundancy
   switch( scaling )
   {
   case Parameter::LINEAR:         return minValue + (maxValue - minValue) * proportion;

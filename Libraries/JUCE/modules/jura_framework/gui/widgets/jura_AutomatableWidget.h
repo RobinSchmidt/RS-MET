@@ -56,8 +56,7 @@ protected:
   /** Tries to cast the Parameter that is underlying the wrapped widget into an 
   AutomatableParameter and returns the pointer to it. Note that this may return a nullptr, when 
   the Parameter is not of type AutomatableParameter. */
-  AutomatableParameter* getAutomatbleParameter();
-   // fix typo
+  AutomatableParameter* getAutomatableParameter();
 
   /** Similar to @see getAutomatbleParameter. */
   MetaControlledParameter* getMetaControlledParameter();

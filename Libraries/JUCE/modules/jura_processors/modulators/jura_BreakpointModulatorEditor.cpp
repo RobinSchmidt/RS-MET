@@ -53,12 +53,12 @@ BreakpointModulatorGlobalEditor::BreakpointModulatorGlobalEditor(CriticalSection
   depthByVelSlider->setRange(-150.0, 150.0, 1.0, 0.0);
   depthByVelSlider->setScaling(Parameter::LINEAR_BIPOLAR);
 
-  addWidget( loopButton = new AutomatableButton("Loop") );
+  addWidget( loopButton = new RButton("Loop") );
   loopButton->setDescription("Toggle sustain loop on/off");
   loopButton->setClickingTogglesState(true);
   loopButton->addRButtonListener(this);
 
-  addWidget( syncButton = new AutomatableButton("Sync") );
+  addWidget( syncButton = new RButton("Sync") );
   syncButton->setDescription("Toggle sync on/off. Time unit is beats in sync-mode, seconds otherwise");
   syncButton->setClickingTogglesState(true);
   syncButton->addRButtonListener(this);

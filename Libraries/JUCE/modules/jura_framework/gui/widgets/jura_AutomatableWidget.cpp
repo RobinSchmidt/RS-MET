@@ -28,7 +28,7 @@ void AutomatableWidget::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
     }
   }
    
-  AutomatableParameter* ap = getAutomatbleParameter();
+  AutomatableParameter* ap = getAutomatableParameter();
   if(ap != nullptr)
   {
     if(selectedIdentifier != MIDI_LEARN)
@@ -71,7 +71,7 @@ void AutomatableWidget::addPopUpMenuItems()
 
 void AutomatableWidget::addPopUpMidiItems()
 {
-  AutomatableParameter* ap = getAutomatbleParameter();
+  AutomatableParameter* ap = getAutomatableParameter();
   if(ap != nullptr)
   {
     // prepare some strings for the popup menu:
@@ -129,7 +129,7 @@ void AutomatableWidget::openRightClickPopupMenu()
   // until we choose some option.
 }
 
-AutomatableParameter* AutomatableWidget::getAutomatbleParameter()
+AutomatableParameter* AutomatableWidget::getAutomatableParameter()
 {
   return dynamic_cast<AutomatableParameter*> (wrappedWidget->assignedParameter);
 }

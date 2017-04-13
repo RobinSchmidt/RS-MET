@@ -1,22 +1,20 @@
+
+
+
 AudioPlugin:  
--use MetaControlledParameters in all AudioModules
- -BreakpointModulator:
-  -the menu for loop/sync buttons doesnt work
 -let PrettyScope parameters work like any other plugin - hide the Meta-stuff
  -no - wire them up to their low-level counterparts, give appropriate names but let the user
   reassign and rename them
 -have an Auto-Rename feature
 -allow to optionally map midi controllers to meta-parameters
 -fix updating of the frequency-response plot in the Ladder when parameters are automated
--check , if automation works for the BreakpointModulator
 
 AudioModuleChain: use inherited childModules array instead of "modules"
 
 RSlider: 
 -make default-values and enter-value available on right-click (it's currently only
  available in subclass AutomatableSlider)
--use the new setProportionalValue in Parameter instead of doing the conversion there (remove 
- redundant code)
+
 
 ParameterManager: rename functions to addParameter, removeParameter
 
