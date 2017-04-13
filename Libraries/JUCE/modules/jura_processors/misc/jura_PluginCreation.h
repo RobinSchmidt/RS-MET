@@ -25,7 +25,8 @@ template<class AudioModuleType>
 AudioProcessor* JUCE_CALLTYPE createPluginWithoutMidi(AudioModuleType *dummy)
 {
   // wraps audio module into plugin without midi input
-  jura::AudioPlugin *plugIn = new jura::AudioPlugin(nullptr);
+  /*jura::AudioPlugin *plugIn = new jura::AudioPlugin(nullptr);*/
+  jura::AudioPlugin *plugIn = new jura::AudioPlugin();
   AudioModuleType   *module = new AudioModuleType(&plugIn->plugInLock);
   module->setSaveAndRecallMetaParameters(true);
   plugIn->setAudioModuleToWrap(module);
