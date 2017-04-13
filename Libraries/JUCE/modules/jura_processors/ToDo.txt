@@ -1,4 +1,5 @@
 AudioPlugin:  
+-check, why meta-parameters don't work for choice parameters
 -test automation recording
 -allow to optionally map midi controllers to meta-parameters
 

@@ -13,14 +13,10 @@ void Ladder::createStaticParameters()
   ScopedLock scopedLock(*lock);
 
   std::vector<double> defaultValues;
-  //AutomatableParameter* p;
-  Parameter* p;
+  typedef MetaControlledParameter Param;
+  Param* p;
 
-
-
-  //p = new AutomatableParameter(lock, "Cutoff", 20.0, 20000.0, 0.0, 1000.0, 
-  //  Parameter::EXPONENTIAL, 74);
-  p = new MetaControlledParameter("Cutoff", 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL);
+  p = new Param("Cutoff", 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL);
   defaultValues.clear();
   defaultValues.push_back(125.0);
   defaultValues.push_back(250.0);
@@ -34,19 +30,15 @@ void Ladder::createStaticParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<Ladder>(this, &Ladder::setCutoff);
 
-  //p = new AutomatableParameter(lock, "Resonance", 0.0, 1.0, 0.0, 0.2,  
-  //  Parameter::LINEAR, 71);
-  p = new MetaControlledParameter("Resonance", 0.0, 1.0, 0.2, Parameter::LINEAR, 0.01);
-  //MetaControlledParameter(const juce::String& name, double min = 0.0, double max = 1.0, 
-  //double defaultValue = 0.5, int scaling = LINEAR, double interval = 0.0);
+  p = new Param("Resonance", 0.0, 1.0, 0.2, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback<Ladder>(this, &Ladder::setResonance);
 
-  p = new MetaControlledParameter("StereoSpread", -24.0, +24.0, 0.0, Parameter::LINEAR_BIPOLAR);
+  p = new Param("StereoSpread", -24.0, +24.0, 0.0, Parameter::LINEAR_BIPOLAR);
   addObservedParameter(p);
   p->setValueChangeCallback<Ladder>(this, &Ladder::setStereoSpread);
 
-  p = new AutomatableParameter(lock, "Mode", 0.0, 14.0, 1.0, 4.0, Parameter::STRING);
+  p = new Param("Mode", 0.0, 14.0, 4.0, Parameter::STRING);
   p->addStringValue("Flat");
   p->addStringValue("Lowpass 6 dB/oct");
   p->addStringValue("Lowpass 12 dB/oct");
@@ -65,14 +57,11 @@ void Ladder::createStaticParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<Ladder>(this, &Ladder::setMode);
 
-  // make sure that the parameters are initially in sync with the audio engine:
-  for(int i = 0; i < (int)parameters.size(); i++)
-    parameters[i]->resetToDefaultValue(true, true);
+  //// make sure that the parameters are initially in sync with the audio engine:
+  //for(int i = 0; i < (int)parameters.size(); i++)
+  //  parameters[i]->resetToDefaultValue(true, true); // do we need this?
   // replace this loop by a call to:
   //resetParametersToDefaultValues();
-
-  // there seems to be bug - when saving a preset, it saves a controller-mapping of (nonexistent)
-  // controller number -1 for the mode parameter -> check this...
 }
 
 //-------------------------------------------------------------------------------------------------

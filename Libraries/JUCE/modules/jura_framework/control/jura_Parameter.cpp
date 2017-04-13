@@ -35,6 +35,9 @@ Parameter::Parameter(const juce::String& newName, double newMin, double newMax,
   jassert(!(newMin >= newMax));                           // invalid range
   jassert(!(newMin <= 0.0 && newScaling == EXPONENTIAL)); // exponential scaling requires strictly positive minimum value
 
+  if(newScaling == STRING)
+    newInterval = 1.0;      // multiple choice are parameters represented by integers
+
   name         = newName;
   minValue     = newMin;
   maxValue     = newMax;
@@ -205,7 +208,7 @@ double Parameter::valueToProportion(double value)
   case Parameter::EXPONENTIAL: 
   {
     if( minValue > 0.0 )
-      return jlimit(0.0, 1.0, log(value/minValue) / (log(maxValue)-log(minValue)) ); // optimize
+      return jlimit(0.0, 1.0, log(value/minValue) / (log(maxValue/minValue)) );
     else
       return 0.0;
   }
@@ -217,12 +220,9 @@ double Parameter::proportionToValue(double prop)
 {
   switch( scaling )
   {
-  case Parameter::LINEAR:         return minValue + (maxValue - minValue) * prop;
-  case Parameter::LINEAR_BIPOLAR: return minValue + (maxValue - minValue) * prop;  // is the same - get rid of duplication - use as default
-  case Parameter::EXPONENTIAL:    return minValue * exp(prop*(log(maxValue)-log(minValue))); // optimize: log(a)-log(b) = log(a/b)
-  default: return 0.0;
+  case EXPONENTIAL: return minValue * exp(prop*(log(maxValue/minValue)));
+  default:          return minValue + (maxValue - minValue) * prop;
   }
-  // maybe make valueToProportion/proportionToValue static methods and pass in min, max, scaling
 }
 
 String Parameter::getStringValue() const
