@@ -11,6 +11,11 @@ void AudioPluginParameter::parameterChanged(Parameter* p)
   endChangeGesture();
 }
 
+void AudioPluginParameter::setName(const String& newName)
+{
+  name = newName;
+}
+
 //=================================================================================================
 
 AudioPlugin::AudioPlugin()
@@ -19,9 +24,10 @@ AudioPlugin::AudioPlugin()
   initialiseJuce_GUI();  // why do we need this?
   for(int i = 0; i < numParameters; i++)
   {
-    parameters[i] = new AudioPluginParameter();
-    addParameter(parameters[i]);
-    metaParaManager.addMetaParamater(parameters[i]);
+    AudioPluginParameter* p = parameters[i] = new AudioPluginParameter();
+    p->setName("Meta " + String(i));
+    addParameter(p);
+    metaParaManager.addMetaParamater(p);
   }
 }
 

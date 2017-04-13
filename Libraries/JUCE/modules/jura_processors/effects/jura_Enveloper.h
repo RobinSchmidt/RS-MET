@@ -28,7 +28,8 @@ public:
 protected:
 
   RAPT::rsBreakpointModulator<double> envGen;
-  jura::BreakpointModulatorAudioModule envGenWrapper; // rename to envGenModule
+  //jura::BreakpointModulatorAudioModule envGenWrapper; // rename to envGenModule
+  jura::BreakpointModulatorAudioModule* envGenWrapper;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Enveloper)
 };

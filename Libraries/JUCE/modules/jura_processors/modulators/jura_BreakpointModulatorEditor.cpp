@@ -12,53 +12,53 @@ BreakpointModulatorGlobalEditor::BreakpointModulatorGlobalEditor(CriticalSection
   modulatorToEdit = newModulatorToEdit;
   jassert(modulatorToEdit != NULL);
 
-  addWidget( timeScaleSlider = new RSlider("TimeScaleSlider") );
+  addWidget( timeScaleSlider = new AutomatableSlider );
   timeScaleSlider->setSliderName("Time Scale");
   timeScaleSlider->setDescription("Scales overall time duration by a factor");
   timeScaleSlider->setStringConversionFunction(&valueToString4);
   timeScaleSlider->setRange(0.0625, 16.0, 0.01, 1.0);
   timeScaleSlider->setScaling(Parameter::EXPONENTIAL);
 
-  addWidget( timeScaleByKeySlider = new RSlider("TimeScaleByKeySlider") );
+  addWidget( timeScaleByKeySlider = new AutomatableSlider );
   timeScaleByKeySlider->setSliderName("Key");
   timeScaleByKeySlider->setDescription("Key dependence of the the overall time duration");
   timeScaleByKeySlider->setStringConversionFunction(&percentToStringWithUnit0);
   timeScaleByKeySlider->setRange(-150.0, 150.0, 1.0, 0.0);
   timeScaleByKeySlider->setScaling(Parameter::LINEAR_BIPOLAR);
 
-  addWidget( timeScaleByVelSlider = new RSlider("TimeScaleByVelSlider") );
+  addWidget( timeScaleByVelSlider = new AutomatableSlider );
   timeScaleByVelSlider->setSliderName("Vel");
   timeScaleByVelSlider->setDescription("Velocity dependence of the the overall time duration");
   timeScaleByVelSlider->setStringConversionFunction(&percentToStringWithUnit0);
   timeScaleByVelSlider->setRange(-150.0, 150.0, 1.0, 0.0);
   timeScaleByVelSlider->setScaling(Parameter::LINEAR_BIPOLAR);
 
-  addWidget( depthSlider = new RSlider("DepthSlider") );
+  addWidget( depthSlider = new AutomatableSlider );
   depthSlider->setSliderName("Depth");
   depthSlider->setDescription("Depth of the modulation");
   depthSlider->setStringConversionFunction(&valueToString2);
   depthSlider->setRange(0.0, 4.0, 0.01, 1.0);
 
-  addWidget( depthByKeySlider = new RSlider("DepthByKeySlider") );
+  addWidget( depthByKeySlider = new AutomatableSlider );
   depthByKeySlider->setSliderName("Key");
   depthByKeySlider->setDescription("Key dependence of the modulation depth");
   depthByKeySlider->setStringConversionFunction(&percentToStringWithUnit0);
   depthByKeySlider->setRange(-150.0, 150.0, 1.0, 0.0);
   depthByKeySlider->setScaling(Parameter::LINEAR_BIPOLAR);
 
-  addWidget( depthByVelSlider = new RSlider("DepthByVelSlider") );
+  addWidget( depthByVelSlider = new AutomatableSlider );
   depthByVelSlider->setSliderName("Vel");
   depthByVelSlider->setDescription("Velocity dependence of the modulation depth");
   depthByVelSlider->setStringConversionFunction(&percentToStringWithUnit0);
   depthByVelSlider->setRange(-150.0, 150.0, 1.0, 0.0);
   depthByVelSlider->setScaling(Parameter::LINEAR_BIPOLAR);
 
-  addWidget( loopButton = new RButton("Loop") );
+  addWidget( loopButton = new AutomatableButton("Loop") );
   loopButton->setDescription("Toggle sustain loop on/off");
   loopButton->setClickingTogglesState(true);
   loopButton->addRButtonListener(this);
 
-  addWidget( syncButton = new RButton("Sync") );
+  addWidget( syncButton = new AutomatableButton("Sync") );
   syncButton->setDescription("Toggle sync on/off. Time unit is beats in sync-mode, seconds otherwise");
   syncButton->setClickingTogglesState(true);
   syncButton->addRButtonListener(this);

@@ -22,11 +22,14 @@ public:
 
   AudioPluginParameter() {}
 
+  /** Constructor. You n */
+  //AudioPluginParameter(const String& parameterName) : name(parameterName) {}
+
   // mandatory AudioProcessorParameter overrides:
   virtual float getValue() const override { return (float) metaValue; }
   virtual void setValue(float newValue) override;
   virtual float getDefaultValue() const override { return 0.f; }
-  virtual String getName(int maximumStringLength) const override { return "Meta " + String(getParameterIndex()); }
+  virtual String getName(int maximumStringLength) const override { return name; }
   virtual String getLabel() const override { return String::empty; }
   virtual float getValueForText(const String &text) const override { return text.getFloatValue(); }
 
@@ -36,6 +39,14 @@ public:
 
   // overriden from MetaParameter to notify host:
   virtual void parameterChanged(Parameter* p) override;
+
+  /** Sets the name of the parameter that is reported to the host. */
+  virtual void setName(const String& newName);
+    // move to MetaParameter, rename to setMetaName
+
+protected:
+
+  juce::String name;  
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioPluginParameter)
 };

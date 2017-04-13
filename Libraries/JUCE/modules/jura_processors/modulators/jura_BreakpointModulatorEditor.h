@@ -48,9 +48,10 @@ protected:
   BreakpointModulatorAudioModule* modulatorToEdit;
 
   // widgets:
-  RSlider *timeScaleSlider, *timeScaleByKeySlider, *timeScaleByVelSlider,
+  AutomatableSlider *timeScaleSlider, *timeScaleByKeySlider, *timeScaleByVelSlider,
     *depthSlider, *depthByKeySlider, *depthByVelSlider;
-  RButton *loopButton, *syncButton, *editButton;
+  AutomatableButton *loopButton, *syncButton;
+  RButton *editButton;
 
   // data members:
   int layout;

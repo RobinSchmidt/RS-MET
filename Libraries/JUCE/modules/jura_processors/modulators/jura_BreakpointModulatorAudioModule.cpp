@@ -273,12 +273,15 @@ void BreakpointModulatorAudioModule::initializeAutomatableParameters()
   //juce::Array<double> defaultValues;
   std::vector<double> defaultValues;
 
+
+  typedef MetaControlledParameter Param;
+  Param* p;
+
   // this pointer will be used to temporarily store the addresses of the created Parameter-objects:
-  AutomatableParameter* p;
+  //AutomatableParameter* p;
 
   // #00
-  p = new AutomatableParameter(lock, "TimeScale", 0.0625, 16.0, 0.0, 1.0, 
-    Parameter::EXPONENTIAL);
+  p = new Param("TimeScale", 0.0625, 16.0, 1.0, Parameter::EXPONENTIAL);
   defaultValues.push_back(1.0/16.0);
   defaultValues.push_back(1.0/12.0);
   defaultValues.push_back(1.0/8.0);
@@ -300,8 +303,7 @@ void BreakpointModulatorAudioModule::initializeAutomatableParameters()
   addObservedParameter(p);
 
   // #01
-  p = new AutomatableParameter(lock, "TimeScaleByKey", -150.0, 150.0, 1.0, 0.0, 
-    Parameter::LINEAR);
+  p = new Param("TimeScaleByKey", -150.0, 150.0, 0.0, Parameter::LINEAR, 1.0);
   defaultValues.clear();
   defaultValues.push_back(-100.0);
   defaultValues.push_back(0.0);
@@ -310,8 +312,7 @@ void BreakpointModulatorAudioModule::initializeAutomatableParameters()
   addObservedParameter(p);
 
   // #02
-  p = new AutomatableParameter(lock, "TimeScaleByVel", -150.0, 150.0, 1.0, 0.0, 
-    Parameter::LINEAR);
+  p = new Param("TimeScaleByVel", -150.0, 150.0, 0.0, Parameter::LINEAR, 1.0);
   defaultValues.clear();
   defaultValues.push_back(-100.0);
   defaultValues.push_back(0.0);
@@ -320,7 +321,7 @@ void BreakpointModulatorAudioModule::initializeAutomatableParameters()
   addObservedParameter(p);
 
   // #03
-  p = new AutomatableParameter(lock, "Depth", 0.0, 4.0, 0.0, 1.0, Parameter::LINEAR);
+  p = new Param("Depth", 0.0, 4.0, 1.0, Parameter::LINEAR);
   defaultValues.clear();
   defaultValues.push_back(1.0/16.0);
   defaultValues.push_back(1.0/12.0);
@@ -343,8 +344,7 @@ void BreakpointModulatorAudioModule::initializeAutomatableParameters()
   addObservedParameter(p);
 
   // #04
-  p = new AutomatableParameter(lock, "DepthByKey", -150.0, 150.0, 1.0, 0.0, 
-    Parameter::LINEAR);
+  p = new Param("DepthByKey", -150.0, 150.0, 0.0, Parameter::LINEAR, 1.0);
   defaultValues.clear();
   defaultValues.push_back(-100.0);
   defaultValues.push_back(0.0);
@@ -353,8 +353,7 @@ void BreakpointModulatorAudioModule::initializeAutomatableParameters()
   addObservedParameter(p);
 
   // #05
-  p = new AutomatableParameter(lock, "DepthByVel", -150.0, 150.0, 1.0, 0.0, 
-    Parameter::LINEAR);
+  p = new Param("DepthByVel", -150.0, 150.0, 0.0, Parameter::LINEAR, 1.0);
   defaultValues.clear();
   defaultValues.push_back(-100.0);
   defaultValues.push_back(0.0);
@@ -362,7 +361,8 @@ void BreakpointModulatorAudioModule::initializeAutomatableParameters()
   p->setDefaultValues(defaultValues);
   addObservedParameter(p);
 
-  // make a call to setValue for each parameter in order to set up all the slave voices:
+  // make a call to setValue for each parameter in order to set up all the slave voices (still
+  // necessary?):
   for(int i=0; i < (int) parameters.size(); i++ )
     parameterChanged(parameters[i]);
 }

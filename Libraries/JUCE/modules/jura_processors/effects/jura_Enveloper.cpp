@@ -1,18 +1,22 @@
 
 Enveloper::Enveloper(CriticalSection *lockToUse) 
-  : AudioModuleWithMidiIn(lockToUse)
-  , envGenWrapper(lockToUse, &envGen)
+  : AudioModuleWithMidiIn(lockToUse) /* , envGenWrapper(lockToUse, &envGen)*/
 {
   ScopedLock scopedLock(*lock);
   moduleName = "Enveloper";
   //envGenWrapper.setModuleName(moduleName);
+
+  envGenWrapper = new BreakpointModulatorAudioModule(lockToUse, &envGen);
+  addChildAudioModule(envGenWrapper);
+
   setActiveDirectory(getApplicationDirectory() + "/EnveloperPresets");
 }
 
 AudioModuleEditor* Enveloper::createEditor()
 {
-  jura::BreakpointModulatorEditor* editor = 
-    new jura::BreakpointModulatorEditor(lock, &envGenWrapper);
+  //jura::BreakpointModulatorEditor* editor = new jura::BreakpointModulatorEditor(lock, &envGenWrapper);
+  jura::BreakpointModulatorEditor* editor = new jura::BreakpointModulatorEditor(lock, envGenWrapper);
+
   //editor->setLayout(1);
   editor->setHeadlineText("Enveloper");
   editor->setSize(500, 260);
@@ -50,13 +54,13 @@ void Enveloper::noteOff(int noteNumber)
 
 XmlElement* Enveloper::getStateAsXml(const juce::String& stateName, bool markAsClean)
 {
-  return envGenWrapper.getStateAsXml(stateName, markAsClean);
+  return envGenWrapper->getStateAsXml(stateName, markAsClean);
 }
 
 void Enveloper::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
   bool markAsClean)
 {
-  envGenWrapper.setStateFromXml(xmlState, stateName, markAsClean);
+  envGenWrapper->setStateFromXml(xmlState, stateName, markAsClean);
 }
 
 //void Enveloper::reset()

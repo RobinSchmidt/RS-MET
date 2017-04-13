@@ -16,59 +16,50 @@ void PhasorFilter::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  AutomatableParameter* p;
+  typedef MetaControlledParameter Param;
+  Param* p;
 
-  p = new AutomatableParameter(lock, "Frequency", 20.0, 20000.0, 0.0, 1000.0,  
-    Parameter::EXPONENTIAL, 74);
+  p = new Param("Frequency", 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL);
   addObservedParameter(p);
   p->setValueChangeCallback<RAPTPhasorFilter>(&filterCore, &RAPTPhasorFilter::setFrequency);
 
-  p = new AutomatableParameter(lock, "Decay", 0.0001, 0.1, 0.0, 0.01, 
-    Parameter::EXPONENTIAL, 71);
+  p = new Param("Decay", 0.0001, 0.1, 0.01, Parameter::EXPONENTIAL);
   addObservedParameter(p);
   p->setValueChangeCallback<RAPTPhasorFilter>(&filterCore, &RAPTPhasorFilter::setDecayTime);
 
   // nonlinearity parameters:
 
-  p = new AutomatableParameter(lock, "SatInput", 0.1, 100, 0.0, 1.0, 
-    Parameter::EXPONENTIAL);
+  p = new Param("SatInput", 0.1, 100, 1.0, Parameter::EXPONENTIAL);
   addObservedParameter(p);
   p->setValueChangeCallback<RAPTPhasorMapper>(&stateMapper, 
     &RAPTPhasorMapper::setInputSaturation);
 
-  p = new AutomatableParameter(lock, "Same", -2.0, 2.0, 0.0, 0.0, 
-    Parameter::LINEAR_BIPOLAR);
+  p = new Param("Same", -2.0, 2.0, 0.0, Parameter::LINEAR_BIPOLAR);
   addObservedParameter(p);
   p->setValueChangeCallback<RAPTPhasorMapper>(&stateMapper, &RAPTPhasorMapper::setSameSquare);
 
-  p = new AutomatableParameter(lock, "Other", -2.0, 2.0, 0.0, 0.0, 
-    Parameter::LINEAR_BIPOLAR);
+  p = new Param("Other", -2.0, 2.0, 0.0, Parameter::LINEAR_BIPOLAR);
   addObservedParameter(p);
   p->setValueChangeCallback<RAPTPhasorMapper>(&stateMapper, &RAPTPhasorMapper::setOtherSquare);
 
-  p = new AutomatableParameter(lock, "Cross", -2.0, 2.0, 0.0, 0.0, 
-    Parameter::LINEAR_BIPOLAR);
+  p = new Param("Cross", -2.0, 2.0, 0.0, Parameter::LINEAR_BIPOLAR);
   addObservedParameter(p);
   p->setValueChangeCallback<RAPTPhasorMapper>(&stateMapper, &RAPTPhasorMapper::setCrossProduct);
 
-  p = new AutomatableParameter(lock, "Offset", -2.0, 2.0, 0.0, 0.0, 
-    Parameter::LINEAR_BIPOLAR);
+  p = new Param("Offset", -2.0, 2.0, 0.0, Parameter::LINEAR_BIPOLAR);
   addObservedParameter(p);
   p->setValueChangeCallback<RAPTPhasorMapper>(&stateMapper, &RAPTPhasorMapper::setOffset);
 
-  p = new AutomatableParameter(lock, "SatPreRenorm", 0.1, 100, 0.0, 1.0, 
-    Parameter::EXPONENTIAL);
+  p = new Param("SatPreRenorm", 0.1, 100, 1.0, Parameter::EXPONENTIAL);
   addObservedParameter(p);
   p->setValueChangeCallback<RAPTPhasorMapper>(&stateMapper, 
     &RAPTPhasorMapper::setPreNormalizeSaturation);
 
-  p = new AutomatableParameter(lock, "SatPostRenorm", 0.1, 100, 0.0, 1.0, 
-    Parameter::EXPONENTIAL);
+  p = new Param("SatPostRenorm", 0.1, 100, 1.0, Parameter::EXPONENTIAL);
   addObservedParameter(p);
   p->setValueChangeCallback<RAPTPhasorMapper>(&stateMapper, 
     &RAPTPhasorMapper::setPostNormalizeSaturation);
   // increasing this at high resonance creates a resonant ping when the input signal is turned off
-
 
 
   // more parameters to come..
