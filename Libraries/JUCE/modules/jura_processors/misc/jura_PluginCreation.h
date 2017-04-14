@@ -22,7 +22,8 @@ input).
 */
 
 template<class AudioModuleType>
-AudioProcessor* JUCE_CALLTYPE createPluginWithoutMidi(AudioModuleType *dummy, int numParameters = 10)
+//AudioProcessor* JUCE_CALLTYPE createPluginWithoutMidi(AudioModuleType *dummy, int numParameters = 10)
+AudioPlugin* JUCE_CALLTYPE createPluginWithoutMidi(AudioModuleType *dummy, int numParameters = 10)
 {
   // wraps audio module into plugin without midi input
   /*jura::AudioPlugin *plugIn = new jura::AudioPlugin(nullptr);*/
@@ -34,7 +35,8 @@ AudioProcessor* JUCE_CALLTYPE createPluginWithoutMidi(AudioModuleType *dummy, in
 }
 
 template<class AudioModuleType>
-AudioProcessor* JUCE_CALLTYPE createPluginWithMidi(AudioModuleType *dummy, int numParameters = 10)
+//AudioProcessor* JUCE_CALLTYPE createPluginWithMidi(AudioModuleType *dummy, int numParameters = 10)
+AudioPluginWithMidiIn* JUCE_CALLTYPE createPluginWithMidi(AudioModuleType *dummy, int numParameters = 10)
 {
   // wraps audio module into plugin with midi input
   jura::AudioPluginWithMidiIn *plugIn = new jura::AudioPluginWithMidiIn(numParameters);
