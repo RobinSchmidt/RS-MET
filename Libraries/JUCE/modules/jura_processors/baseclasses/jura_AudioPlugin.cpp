@@ -42,6 +42,21 @@ void AudioPlugin::setAudioModuleToWrap(AudioModule* moduleToWrap)
   wrappedAudioModule->setMetaParameterManager(&metaParaManager); 
 }
 
+void AudioPlugin::autoAttachMetaParameters()
+{
+  jassertfalse; // not yet implemented
+
+  //int N = jmin(wrappedAudioModule->getNumParameters(), metaParaManager.getNumMetaParameters());
+
+  // todo: loop through the parameters of wrappedAudioModule and assign each to a corresponding
+  // meta parameter ...but not every parameter there is a MetaControlledParameter - so we need
+  // some filtering we need to loop through all metaparameters, find the next meta-controlled
+  // parameter in the wrapped object, attach it, set the meta-name ...if we have reached the end of 
+  // the parameters before the end of the meta-parameters, break the loop
+
+  int dummy = 0;
+}
+
 // mandatory overrides for juce::AudioProcessor:
 
 void AudioPlugin::prepareToPlay(double sampleRate, int maximumExpectedSamplesPerBlock) 

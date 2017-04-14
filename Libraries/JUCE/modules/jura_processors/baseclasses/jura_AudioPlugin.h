@@ -80,6 +80,10 @@ public:
   /** Sets the jura::AudioModule object that is wrapped into an AudioPlugin. */
   virtual void setAudioModuleToWrap(AudioModule* moduleToWrap);
 
+  /** Automatically attaches each of the wrapped AudioModule's parameters to one of our (meta) 
+  parameters here (up to the minimum of the number of internal and meta parameters.  */
+  void autoAttachMetaParameters();
+
   //-----------------------------------------------------------------------------------------------
   // mandatory overrides for juce::AudioProcessor baseclass:
 
