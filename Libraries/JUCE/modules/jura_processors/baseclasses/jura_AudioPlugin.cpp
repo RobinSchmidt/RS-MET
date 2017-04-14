@@ -51,8 +51,9 @@ void AudioPlugin::autoAttachMetaParameters()
     Parameter* p = wrappedAudioModule->getParameterByIndex(paraIndex);
     MetaControlledParameter* mcp = dynamic_cast<MetaControlledParameter*>(p);
     if(mcp != nullptr) {
-      metaParaManager.attachParameter(mcp, metaIndex);
-      metaParaManager.setMetaName(metaIndex, p->getName());
+      metaParaManager.setMetaValue(metaIndex, mcp->getProportionalValue());
+      metaParaManager.setMetaName( metaIndex, mcp->getName());
+      mcp->attachToMetaParameter(metaIndex);
       metaIndex++; 
     }
   }
