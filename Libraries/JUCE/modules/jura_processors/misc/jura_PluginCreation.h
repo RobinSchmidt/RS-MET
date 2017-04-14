@@ -22,11 +22,11 @@ input).
 */
 
 template<class AudioModuleType>
-AudioProcessor* JUCE_CALLTYPE createPluginWithoutMidi(AudioModuleType *dummy)
+AudioProcessor* JUCE_CALLTYPE createPluginWithoutMidi(AudioModuleType *dummy, int numParameters = 10)
 {
   // wraps audio module into plugin without midi input
   /*jura::AudioPlugin *plugIn = new jura::AudioPlugin(nullptr);*/
-  jura::AudioPlugin *plugIn = new jura::AudioPlugin();
+  jura::AudioPlugin *plugIn = new jura::AudioPlugin(numParameters);
   AudioModuleType   *module = new AudioModuleType(&plugIn->plugInLock);
   module->setSaveAndRecallMetaParameters(true);
   plugIn->setAudioModuleToWrap(module);
@@ -34,10 +34,10 @@ AudioProcessor* JUCE_CALLTYPE createPluginWithoutMidi(AudioModuleType *dummy)
 }
 
 template<class AudioModuleType>
-AudioProcessor* JUCE_CALLTYPE createPluginWithMidi(AudioModuleType *dummy)
+AudioProcessor* JUCE_CALLTYPE createPluginWithMidi(AudioModuleType *dummy, int numParameters = 10)
 {
   // wraps audio module into plugin with midi input
-  jura::AudioPluginWithMidiIn *plugIn = new jura::AudioPluginWithMidiIn();
+  jura::AudioPluginWithMidiIn *plugIn = new jura::AudioPluginWithMidiIn(numParameters);
   AudioModuleType *module = new AudioModuleType(&plugIn->plugInLock);
   module->setSaveAndRecallMetaParameters(true);
   plugIn->setAudioModuleToWrap(module);

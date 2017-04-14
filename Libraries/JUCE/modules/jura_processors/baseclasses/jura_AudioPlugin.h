@@ -172,7 +172,7 @@ class JUCE_API AudioPluginWithMidiIn : public AudioPlugin
 
 public:
 
-  AudioPluginWithMidiIn() {}
+  AudioPluginWithMidiIn(int numParameters = 10) : AudioPlugin(numParameters) {}
   //AudioPluginWithMidiIn(AudioModuleWithMidiIn *moduleToWrap);
 
   virtual bool acceptsMidi() const override { return true; }
