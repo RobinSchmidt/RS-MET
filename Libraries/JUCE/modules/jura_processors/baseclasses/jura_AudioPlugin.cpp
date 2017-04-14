@@ -11,10 +11,10 @@ void AudioPluginParameter::parameterChanged(Parameter* p)
   endChangeGesture();
 }
 
-void AudioPluginParameter::setName(const String& newName)
-{
-  name = newName;
-}
+//void AudioPluginParameter::setName(const String& newName)
+//{
+//  name = newName;
+//}
 
 //=================================================================================================
 
@@ -44,17 +44,18 @@ void AudioPlugin::setAudioModuleToWrap(AudioModule* moduleToWrap)
 
 void AudioPlugin::autoAttachMetaParameters()
 {
-  jassertfalse; // not yet implemented
-
-  //int N = jmin(wrappedAudioModule->getNumParameters(), metaParaManager.getNumMetaParameters());
-
-  // todo: loop through the parameters of wrappedAudioModule and assign each to a corresponding
-  // meta parameter ...but not every parameter there is a MetaControlledParameter - so we need
-  // some filtering we need to loop through all metaparameters, find the next meta-controlled
-  // parameter in the wrapped object, attach it, set the meta-name ...if we have reached the end of 
-  // the parameters before the end of the meta-parameters, break the loop
-
-  int dummy = 0;
+  int metaIndex = 0; // meta-parameter index
+  for(int paraIndex = 0; paraIndex < wrappedAudioModule->getNumParameters(); paraIndex++) {
+    if(metaIndex >= metaParaManager.getNumMetaParameters())
+      break; // end of meta-array reached - we are done
+    Parameter* p = wrappedAudioModule->getParameterByIndex(paraIndex);
+    MetaControlledParameter* mcp = dynamic_cast<MetaControlledParameter*>(p);
+    if(mcp != nullptr) {
+      metaParaManager.attachParameter(mcp, metaIndex);
+      metaParaManager.setMetaName(metaIndex, p->getName());
+      metaIndex++; 
+    }
+  }
 }
 
 // mandatory overrides for juce::AudioProcessor:

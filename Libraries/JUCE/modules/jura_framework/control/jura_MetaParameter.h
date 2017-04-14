@@ -112,6 +112,12 @@ public:
   notifications). */
   inline void resetToDefaultValue() { setMetaValue(0.5); }
 
+  /** Gives this MetaParameter a name. */
+  void setName(const String& newName) { name = newName; }
+
+  /** Returns the name of this MetaParameter. */
+  String getName() const { return name; }
+
   // callbacks:
   virtual void parameterChanged(Parameter* p) override;
   virtual void parameterIsGoingToBeDeleted(Parameter* p) override;
@@ -124,6 +130,9 @@ protected:
   the majority). Note that changing this may break presets and states because meta values are only 
   stored when they differ from the default value - so don't change that. */
   double metaValue = 0.5; // NEVER change the 0.5 initialization, state save/recall relies on that
+
+  /** Name of this MetaParameter. */
+  juce::String name;  
 
   std::vector<MetaControlledParameter*> params; // list of pointers to the dependent parameters
 
@@ -163,9 +172,14 @@ public:
   /** Resets all MetaParameters in our array to their default value of 0.5. */
   void resetAllToDefaults();
 
-  /** Tries to set the MetaParameter with given index to the passed newValue and returns if
+  /** Tries to set the MetaParameter with given index to the passed newValue and reports if
   this was successful (it will fail, if index is out of range). */
   bool setMetaValue(int index, double newValue);
+
+  /** Tries to give a new name to the MetaParameter with given index and reports if this was 
+  successful (it will fail, if index is out of range). */
+  bool setMetaName(int index, const String& newName);
+
 
 
 protected:

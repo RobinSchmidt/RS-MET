@@ -3,17 +3,13 @@
 
 /** Subclass of juce::AudioProcessorParameter to provide the handling of host automation. It also
 derives from jura::MetaParameter in order to provide the "glue" between juce's host automation
-handling and jura's MetaParameter handling. Whenever the setValue method, inherited and overriden 
-from AudioProcessorParameter, gets called (by the host), we will call MetaParameter's setValue 
+handling and jura's MetaParameter handling. Whenever the setValue method (inherited and overriden 
+from AudioProcessorParameter) gets called by the host, we will call MetaParameter's setValue 
 method there which in turn will update all the values of the attached MetaControlledParameters. 
-
-\todo override parameterChanged (inherited from MetaParameter) in order to notify host, we need
-to call setValueNotifyingHost(float newValue) ---is there a way to only notify the host without
-having it internally call setValue()? that would be more convenient bcs otherwise we must somehow
-avoid an endless recursion of callbacks
-
-
-*/
+Whenever parameterChanged (overriden from MetaParameter) gets called, which happens when the user
+changes a parameter on the plugin's gui, we retrieve the value and call setValueNotifyingHost
+(inherited from AudioProcessorParameter) which notifies the host about the change and then calls
+our setValue (which in turn updates other Parameters attached to this MetaParameter, if any). */
 
 class JUCE_API AudioPluginParameter : public AudioProcessorParameter, public MetaParameter
 {
@@ -21,9 +17,6 @@ class JUCE_API AudioPluginParameter : public AudioProcessorParameter, public Met
 public:
 
   AudioPluginParameter() {}
-
-  /** Constructor. You n */
-  //AudioPluginParameter(const String& parameterName) : name(parameterName) {}
 
   // mandatory AudioProcessorParameter overrides:
   virtual float getValue() const override { return (float) metaValue; }
@@ -39,14 +32,6 @@ public:
 
   // overriden from MetaParameter to notify host:
   virtual void parameterChanged(Parameter* p) override;
-
-  /** Sets the name of the parameter that is reported to the host. */
-  virtual void setName(const String& newName);
-    // move to MetaParameter, rename to setMetaName
-
-protected:
-
-  juce::String name;  
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioPluginParameter)
 };

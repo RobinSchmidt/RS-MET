@@ -144,3 +144,11 @@ bool MetaParameterManager::setMetaValue(int index, double newValue)
   metaParams[index]->setMetaValue(newValue);
   return true;
 }
+
+bool MetaParameterManager::setMetaName(int index, const String& newName)
+{
+  if(index < 0 || index >= size(metaParams))
+    return false;
+  metaParams[index]->setName(newName);
+  return true;
+}
