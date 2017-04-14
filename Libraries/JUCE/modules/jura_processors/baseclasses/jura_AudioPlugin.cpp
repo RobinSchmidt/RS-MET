@@ -18,17 +18,11 @@ void AudioPluginParameter::setName(const String& newName)
 
 //=================================================================================================
 
-AudioPlugin::AudioPlugin()
+AudioPlugin::AudioPlugin(int numParameters)
 {
   ScopedLock sl(plugInLock);
   initialiseJuce_GUI();  // why do we need this?
-  for(int i = 0; i < numParameters; i++)
-  {
-    AudioPluginParameter* p = parameters[i] = new AudioPluginParameter();
-    p->setName("Meta " + String(i));
-    addParameter(p);
-    metaParaManager.addMetaParamater(p);
-  }
+  createHostAutomatableParameters(numParameters);
 }
 
 AudioPlugin::~AudioPlugin()
@@ -204,6 +198,18 @@ bool AudioPlugin::setPreferredBusArrangement(bool isInput, int bus,
   if (numChannels != 1 && numChannels != 2)
     return false;
   return AudioProcessor::setPreferredBusArrangement(isInput, bus, preferredSet);
+}
+
+void AudioPlugin::createHostAutomatableParameters(int numParameters)
+{
+  parameters.resize(numParameters);
+  for(int i = 0; i < numParameters; i++)
+  {
+    AudioPluginParameter* p = parameters[i] = new AudioPluginParameter();
+    p->setName("Meta " + String(i));
+    addParameter(p);
+    metaParaManager.addMetaParamater(p);
+  }
 }
 
 //=================================================================================================

@@ -63,13 +63,13 @@ class JUCE_API AudioPlugin : public AudioProcessor
 
 public:
 
-  AudioPlugin(); 
+  /** Constructor. You can pass a number of parameters that this plugin will report to the host and 
+  which will then be available to use as meta-parameters for automation. */
+  AudioPlugin(int numParameters = 10); 
+    // todo: change the default value to 0 - but only after updatind Elan's projects to pass in the 
+    // required number
 
-  //AudioPlugin(AudioModule *moduleToWrap); 
-  // remove the parameter from the constructor - we should now use setAudioModuleToWrap after the
-  // constructor has finished
   
-
   virtual ~AudioPlugin();
 
   //-----------------------------------------------------------------------------------------------
@@ -127,6 +127,10 @@ public:
 
 protected:
 
+  /** Creates the parameters that are reported to the host. Called internally from the 
+  constructor. */
+  void createHostAutomatableParameters(int numParameters);
+
   /** The number of channels that is desired for the in/out buffer that is passed to the 
   processBlock callback. You may set that value in the constructor of your subclass. If the number
   of channels is supposed to change after construction, we may have to make sure that we are in a 
@@ -140,9 +144,7 @@ protected:
   AudioBuffer<double> internalAudioBuffer; 
 
   // parameter-management:
-  //static const int numParameters = 128;
-  static const int numParameters = 10;
-  AudioPluginParameter* parameters[numParameters];
+  std::vector<AudioPluginParameter*> parameters;
   MetaParameterManager metaParaManager;
 
   juce::String plugInName;  // assign this in the constructor of your subclass
