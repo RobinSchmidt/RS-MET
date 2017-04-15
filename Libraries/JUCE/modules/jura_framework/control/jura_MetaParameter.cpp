@@ -58,9 +58,26 @@ void MetaParameter::attachParameter(MetaControlledParameter* p)
 {
   if(contains(params, p))
     return; // already there, nothing to do, avoid recursive callbacks
-  p->setFromMetaValue(metaValue, true, true);
+
+  //// old:
+  //p->setFromMetaValue(metaValue, true, true);
+  //p->registerParameterObserver(this);
+  //appendIfNotAlreadyThere(params, p);
+
+  // new:
+  if(size(params) == 0)
+    metaValue = p->getProportionalValue();
+  else
+    p->setFromMetaValue(metaValue, false, false);
   p->registerParameterObserver(this);
   appendIfNotAlreadyThere(params, p);
+  p->notifyObservers();          // notifies host that MetaParameter has (possibly) changed
+  p->callValueChangeCallbacks(); // might be relevant in other contexts
+
+  // Desired behavoir: when there are already other Parameters attached to this MetaParameter, set
+  // the newly attached Parameter to the current value of the MetaParameter. If there are currently
+  // none attached, let the MetaParameter take over the vealue from the attched Parameter.
+  // ...but somehow the host must get notified
 }
 
 void MetaParameter::detachParameter(MetaControlledParameter* p)
