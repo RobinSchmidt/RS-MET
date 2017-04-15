@@ -1,11 +1,18 @@
-
+Bugs:
+-on "Undo" in Reaper (to undo a parameter change), the widgets are not updated
+ -Reaper's "Undo" calls AudioPlugin::setStateInformation, there is the line
+  ParameterObserver::guiAutomationSwitch = false;
+  which temporarily turns off receiving notifications for all widgets globally 
+  and that's why the widgets don't update. i'm sure, what's the best way to 
+  fix that ...why do we switch that off anyway...is was to solve some other 
+  issue...figure out...
 
 
 AudioPlugin:  
--let PrettyScope parameters work like any other plugin - hide the Meta-stuff
- -no - wire them up to their low-level counterparts, give appropriate names but let the user
-  reassign and rename them
--have an Auto-Rename feature
+
+MetaParameters:
+-make renamable via GUI 
+-have an Auto-Rename feature (renames to assigned parameter's name)
 -allow to optionally map midi controllers to meta-parameters
 -fix updating of the frequency-response plot in the Ladder when parameters are automated
 
