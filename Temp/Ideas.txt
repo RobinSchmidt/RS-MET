@@ -1,0 +1,34 @@
+
+
+SmoothedValue:
+-see class juce::LinearSmoothedValue
+-generalize to an update equation: x[n+1] = a*x[n] + b
+-allows for linear and exponential smoothing and anything between
+-general term is: 
+ x[n] = a^n * x[0] + b * sum_{k=0}^{n-1} a^n 
+      = a^n * x0   + b * n * a^n 
+	  = a^n * (x0 + b)
+-maybe we can have a kind of "exponentiality" parameter p between 0..1
+ with 0, we have linear scaling (a = 1), with 1 exponential (b = 0)
+ maybe a = 1-p, b = p * c (for some suitable c)
+
+CommandQueue:
+-lockfree queue of commands
+-uses circular buffer (maybe juce::AbstractFifo)
+-used for sending commands from a main/gui thread to audio thread
+-main thread enqueues new commands
+-has a 2nd queue with dynamic memory allocation to let the producer thread
+ (main thread) store commands that currently don't fit in the buffer
+-audio thread's 1sta action inside the callback is to consume commands
+-a consumed command sets an atomic int field in the command with a status 
+ (initially 0: pending, 1: completed, 2: failed, higher values used for error 
+ codes which can be displayed later in the gui thread)
+-gui thread may delete completed commands ..or may keep them in a history
+ for undo, replay, etc.
+-fields for "Command":
+ uint32: identifier, std::atomic<uint32> status, void* data
+
+
+
+
+ 
