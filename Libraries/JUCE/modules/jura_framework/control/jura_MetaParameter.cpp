@@ -47,6 +47,13 @@ void MetaControlledParameter::detachFromMetaParameter()
   metaIndex = -1;
 }
 
+String MetaControlledParameter::getMetaParameterName()
+{
+  if(metaParaManager == nullptr || metaIndex == -1)
+    return String::empty;
+  return metaParaManager->getMetaParameterName(metaIndex);
+}
+
 //-------------------------------------------------------------------------------------------------
 
 MetaParameter::MetaParameter()
@@ -146,6 +153,13 @@ MetaParameter* MetaParameterManager::getMetaParameter(int index)
   if(index < 0 || index >= size(metaParams))
     return nullptr;
   return metaParams[index];
+}
+
+String MetaParameterManager::getMetaParameterName(int index)
+{
+  if(index < 0 || index >= size(metaParams))
+    return String::empty;
+  return metaParams[index]->getName();
 }
 
 void MetaParameterManager::resetAllToDefaults()

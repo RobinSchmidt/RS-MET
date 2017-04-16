@@ -72,6 +72,9 @@ public:
   attached to any MetaParameter, it returns -1. */
   inline int getMetaParameterIndex() { return metaIndex; }
 
+  /** Returns the name of the MetaParameter which this Parameter is attached to. */
+  String getMetaParameterName();
+
 protected:
 
   int metaIndex = -1;
@@ -168,6 +171,10 @@ public:
   /** Returns a pointer to the MetaParameter with given index. If the index is out of range, it
   will be a nullptr. */
   MetaParameter* getMetaParameter(int index);
+
+  /** Returns the name of the MetaParameter with given index (empty string, if index is out of 
+  range). */
+  String getMetaParameterName(int index);
 
   /** Resets all MetaParameters in our array to their default value of 0.5. */
   void resetAllToDefaults();
