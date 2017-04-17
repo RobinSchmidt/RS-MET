@@ -41,6 +41,10 @@ using namespace juce;
 namespace jura
 {
 
+#include "tools/jura_MiscTools.h"
+#include "tools/jura_StringTools.h"
+#include "tools/jura_XmlTools.h"
+
 #include "control/jura_ScopedPointerLock.h"
 #include "control/jura_Callbacks.h"
 #include "control/jura_Parameter.h"
@@ -48,10 +52,6 @@ namespace jura
 #include "control/jura_MetaParameter.h"
 #include "control/jura_ParameterManager.h"
 #include "control/jura_StateManager.h"
-
-#include "tools/jura_MiscTools.h"
-#include "tools/jura_StringTools.h"
-#include "tools/jura_XmlTools.h"
 
 #include "files/jura_AudioFileInfo.h"
 #include "files/jura_FileManager.h"

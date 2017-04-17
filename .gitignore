@@ -53,3 +53,5 @@
 /Products/AudioPlugins/TestPluginJUCE/Builds/VisualStudio2015/resources.rc
 /Libraries/RAPT/Build/VisualStudio2015/x64/Release/Executables
 /Libraries/RAPT/Build/VisualStudio2015/Release
+/Products/AudioPlugins/TestPluginJUCE/Builds/CodeBlocksWindows
+/Products/AudioPlugins/TestPluginJURA/Builds/CodeBlocksWindows/obj/Debug/Products/AudioPlugins/TestPluginJURA/JuceLibraryCode/*.o

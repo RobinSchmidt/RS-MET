@@ -7,10 +7,11 @@ SmoothedValue:
 -general term is: 
  x[n] = a^n * x[0] + b * sum_{k=0}^{n-1} a^n 
       = a^n * x0   + b * n * a^n 
-	  = a^n * (x0 + b)
+	  = a^n * (x0 + b*n)
 -maybe we can have a kind of "exponentiality" parameter p between 0..1
  with 0, we have linear scaling (a = 1), with 1 exponential (b = 0)
- maybe a = 1-p, b = p * c (for some suitable c)
+ maybe a = 1-p, b = p * c (for some suitable c, maybe 1/N (?) where N 
+ is the desired number of updates to reach the target)
 
 CommandQueue:
 -lockfree queue of commands
@@ -18,8 +19,9 @@ CommandQueue:
 -used for sending commands from a main/gui thread to audio thread
 -main thread enqueues new commands
 -has a 2nd queue with dynamic memory allocation to let the producer thread
- (main thread) store commands that currently don't fit in the buffer
--audio thread's 1sta action inside the callback is to consume commands
+ (main thread) store commands that currently don't fit in the buffer - they 
+ will the be postponed until the next audio-buffer will be produced
+-audio thread's first action inside the callback is to consume commands
 -a consumed command sets an atomic int field in the command with a status 
  (initially 0: pending, 1: completed, 2: failed, higher values used for error 
  codes which can be displayed later in the gui thread)

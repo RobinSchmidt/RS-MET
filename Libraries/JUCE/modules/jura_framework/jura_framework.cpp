@@ -12,6 +12,10 @@
 namespace jura
 {
 
+#include "tools/jura_MiscTools.cpp"
+#include "tools/jura_StringTools.cpp"
+#include "tools/jura_XmlTools.cpp"
+
 #include "control/jura_Parameter.cpp"
 #include "control/jura_AutomatableParameter.cpp"
 #include "control/jura_MetaParameter.cpp"
@@ -19,10 +23,6 @@ namespace jura
 #include "control/jura_StateManager.cpp"
 // maybe this control stuff can be done in RAPT to make it available to non-JUCE based client code, 
 // too
-
-#include "tools/jura_MiscTools.cpp"
-#include "tools/jura_StringTools.cpp"
-#include "tools/jura_XmlTools.cpp"
 
 #include "files/jura_AudioFileInfo.cpp"
 #include "files/jura_FileManager.cpp"

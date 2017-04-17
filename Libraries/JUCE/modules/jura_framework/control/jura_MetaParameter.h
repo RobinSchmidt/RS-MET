@@ -1,10 +1,10 @@
 #ifndef jura_MetaParameter_h
 #define jura_MetaParameter_h
 
-/* 
+/*
 The meta-parameter handling involves 3 classes:
 
-MetaControlledParameter: 
+MetaControlledParameter:
 -subclass of Parameter that can be controlled by a MetaParameter
 -has a pointer to a MetaParameterManager where it can register itself to listen to one of the
  MetaParameters (which are manitained as a list there)
@@ -12,14 +12,14 @@ MetaControlledParameter:
  regular mapping provided by the Parameter baseclass, so we have a two level mapping)
 -todo: provide smoothing (maybe by an intermediate subclass SmoothedParameter:
  i.e. Parameter <- SmoothedParameter <- MetaControlledParameter)...or maybe just integrate it
- directly .. and at some stage, we may need non-smoothed meta-controlled or non-meta-controlled 
+ directly .. and at some stage, we may need non-smoothed meta-controlled or non-meta-controlled
  smoothed parameters - then we can factor out the more basic class
 
 MetaParameter:
--maintains a list of dependent MetaControlledParameters and updates all of them when its 
+-maintains a list of dependent MetaControlledParameters and updates all of them when its
  setMetaValue method gets called
--watches each of its dependent MetaControlledParameters for changes (by means of being subclass of 
- ParameterObserver) to provide cross-coupling: when one of the dependent parameters changes, all 
+-watches each of its dependent MetaControlledParameters for changes (by means of being subclass of
+ ParameterObserver) to provide cross-coupling: when one of the dependent parameters changes, all
  others are updated as well
 
 MetaParameterManager:
@@ -36,10 +36,10 @@ todo:
 
 class MetaParameterManager;
 
-/** A subclass of Parameter that can be controlled via a MetaParameter. To do so, it maintains a 
+/** A subclass of Parameter that can be controlled via a MetaParameter. To do so, it maintains a
 pointer to a MetaParameterManager, where it can attach itself to one of the managed MetaParameters
-there. To make this work, you will have to call setMetaParameterManager to pass in the 
-MetaParameterManager to use. Once this is done, you can attach this parameter to one of the 
+there. To make this work, you will have to call setMetaParameterManager to pass in the
+MetaParameterManager to use. Once this is done, you can attach this parameter to one of the
 MetaParameters by calling attachToMetaParameter. */
 
 class JUCE_API MetaControlledParameter : public Parameter
@@ -48,27 +48,27 @@ class JUCE_API MetaControlledParameter : public Parameter
 public:
 
   /** Constructor */
-  MetaControlledParameter(const juce::String& name, double min = 0.0, double max = 1.0, 
+  MetaControlledParameter(const juce::String& name, double min = 0.0, double max = 1.0,
     double defaultValue = 0.5, int scaling = LINEAR, double interval = 0.0);
 
   /** Sets this parameter up according to a given MetaParameter value and optionally notifies
   observers and/or calls the callbacks. */
-  virtual void setFromMetaValue(double newMetaValue, bool sendNotification, 
+  virtual void setFromMetaValue(double newMetaValue, bool sendNotification,
     bool callCallbacks);
 
-  /** Sets up the MetaParameterManager to use. This function should be called once shortly after 
-  this MetaControlledParameter object has been created and the passed manager object should remain 
+  /** Sets up the MetaParameterManager to use. This function should be called once shortly after
+  this MetaControlledParameter object has been created and the passed manager object should remain
   valid for the whole lifetime of this object. */
   virtual void setMetaParameterManager(MetaParameterManager *newManager);
 
-  /** Attaches this parameter to the MetaParameter with the given index (in the 
+  /** Attaches this parameter to the MetaParameter with the given index (in the
   MetaParameterManager). */
   virtual void attachToMetaParameter(int metaParameterIndex);
 
   /** Detaches this parameter from any MetaParameter, it may be attched to. */
   virtual void detachFromMetaParameter();
 
-  /** Returns the index of the MetaParameter that this parameter is attached to. If it's not 
+  /** Returns the index of the MetaParameter that this parameter is attached to. If it's not
   attached to any MetaParameter, it returns -1. */
   inline int getMetaParameterIndex() { return metaIndex; }
 
@@ -85,7 +85,7 @@ protected:
 
 //=================================================================================================
 
-/** A class to represent meta-parameters, i.e. parameters that control other (lower level) 
+/** A class to represent meta-parameters, i.e. parameters that control other (lower level)
 parameters. It derives from ParameterObserver in order to also provide a means of cross-coupling
 between the dependent parameters - whenever one of them changes, we get notified here and also
 update all other dependent parameters accordingly.
@@ -111,7 +111,7 @@ public:
   /** Detaches the given MetaControlledParameter from this MetaParameter. */
   void detachParameter(MetaControlledParameter* p);
 
-  /** Resets this MetaParameter to its default value of 0.5 (causing callbacks and 
+  /** Resets this MetaParameter to its default value of 0.5 (causing callbacks and
   notifications). */
   inline void resetToDefaultValue() { setMetaValue(0.5); }
 
@@ -129,13 +129,13 @@ public:
 protected:
 
   /** The value of the meta parameter. It is initialized to 0.5 which is used as the default value.
-  The center value seems a resonable choice for most continuous parameters (which we assume to be
-  the majority). Note that changing this may break presets and states because meta values are only 
+  The center value seems a reasonable choice for most continuous parameters (which we assume to be
+  the majority). Note that changing this may break presets and states because meta values are only
   stored when they differ from the default value - so don't change that. */
   double metaValue = 0.5; // NEVER change the 0.5 initialization, state save/recall relies on that
 
   /** Name of this MetaParameter. */
-  juce::String name;  
+  juce::String name;
 
   std::vector<MetaControlledParameter*> params; // list of pointers to the dependent parameters
 
@@ -157,7 +157,7 @@ public:
   /** Adds the passed MetaParameter to our list of managed MetaParameters. */
   void addMetaParamater(MetaParameter* metaParameterToAdd);
 
-  /** Attaches the passed MetaControlledParameter to the MetaParameter with given index and 
+  /** Attaches the passed MetaControlledParameter to the MetaParameter with given index and
   returns if this was successful (it may fail, if you pass an out-of-range index). */
   bool attachParameter(MetaControlledParameter* param, int metaIndex);
 
@@ -172,7 +172,7 @@ public:
   will be a nullptr. */
   MetaParameter* getMetaParameter(int index);
 
-  /** Returns the name of the MetaParameter with given index (empty string, if index is out of 
+  /** Returns the name of the MetaParameter with given index (empty string, if index is out of
   range). */
   String getMetaParameterName(int index);
 
@@ -183,7 +183,7 @@ public:
   this was successful (it will fail, if index is out of range). */
   bool setMetaValue(int index, double newValue);
 
-  /** Tries to give a new name to the MetaParameter with given index and reports if this was 
+  /** Tries to give a new name to the MetaParameter with given index and reports if this was
   successful (it will fail, if index is out of range). */
   bool setMetaName(int index, const String& newName);
 
@@ -196,4 +196,4 @@ protected:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MetaParameterManager)
 };
 
-#endif 
+#endif
