@@ -3,7 +3,7 @@
 
 // maybe these standard library includes should go somewhere else?
 #include <ctgmath>       // template generic math?
-//#include <complex>       // included already by ctgmath
+#include <complex>       // included already by ctgmath ...but not on gcc/windows?
 #include <vector>
 using namespace std;
 

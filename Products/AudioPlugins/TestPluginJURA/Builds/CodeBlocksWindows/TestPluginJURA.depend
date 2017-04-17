@@ -4121,3 +4121,301 @@
 
 1478881838 e:\programming\c++\rs-met\libraries\juce\modules\juce_gui_extra\native\juce_android_webbrowsercomponent.cpp
 
+1490802568 source:e:\programming\c++\rs-met\products\audioplugins\testpluginjura\jucelibrarycode\jura_framework.cpp
+	"AppConfig.h"
+	<jura_framework/jura_framework.cpp>
+
+1492451748 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\jura_framework.cpp
+	"jura_framework.h"
+	"tools/jura_MiscTools.cpp"
+	"tools/jura_StringTools.cpp"
+	"tools/jura_XmlTools.cpp"
+	"control/jura_Parameter.cpp"
+	"control/jura_AutomatableParameter.cpp"
+	"control/jura_MetaParameter.cpp"
+	"control/jura_ParameterManager.cpp"
+	"control/jura_StateManager.cpp"
+	"files/jura_AudioFileInfo.cpp"
+	"files/jura_FileManager.cpp"
+	"files/jura_StateFileManager.cpp"
+	"files/jura_AudioFileManager.cpp"
+	"files/jura_ImageFileManager.cpp"
+	"gui/graphics/jura_ColorMap.cpp"
+	"gui/graphics/jura_ColourAHSL.cpp"
+	"gui/graphics/jura_ColourizableBitmap.cpp"
+	"gui/graphics/jura_ColourScheme.cpp"
+	"gui/graphics/jura_BitmapFonts.cpp"
+	"gui/graphics/jura_GraphicsTools.cpp"
+	"gui/graphics/jura_ImageUpdater.cpp"
+	"gui/misc/jura_DescribedComponent.cpp"
+	"gui/misc/jura_ColourSchemeComponent.cpp"
+	"gui/misc/jura_RectangleComponent.cpp"
+	"gui/widgets/jura_RWidget.cpp"
+	"gui/widgets/jura_RTextField.cpp"
+	"gui/widgets/jura_RTextEditor.cpp"
+	"gui/widgets/jura_RButton.cpp"
+	"gui/widgets/jura_RScrollBar.cpp"
+	"gui/widgets/jura_RTreeView.cpp"
+	"gui/widgets/jura_RPopUpComponent.cpp"
+	"gui/widgets/jura_RPopUpMenu.cpp"
+	"gui/widgets/jura_RSlider.cpp"
+	"gui/widgets/jura_RComboBox.cpp"
+	"gui/widgets/jura_AutomatableWidget.cpp"
+	"gui/widgets/widget_sets/jura_WidgetSet.cpp"
+	"gui/widgets/widget_sets/jura_StateLoadSaveWidgetSet.cpp"
+	"gui/widgets/widget_sets/jura_ColorMapLoader.cpp"
+	"gui/plots/jura_CoordinateSystemOld.cpp"
+	"gui/plots/jura_InteractiveCoordinateSystemOld.cpp"
+	"gui/plots/jura_CoordinateSystemZoomerOld.cpp"
+	"gui/plots/jura_CurveFamilyPlotOld.cpp"
+	"gui/plots/jura_SpectrumDisplayOld.cpp"
+	"gui/dialogs/jura_RDialogBox.cpp"
+	"gui/dialogs/jura_RMessageBox.cpp"
+	"gui/dialogs/jura_ColourSchemeSetupDialog.cpp"
+	"gui/editors/jura_Editor.cpp"
+
+1492451734 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\jura_framework.h
+	<limits.h>
+	<juce_core/juce_core.h>
+	<juce_audio_basics/juce_audio_basics.h>
+	<juce_audio_formats/juce_audio_formats.h>
+	<juce_audio_processors/juce_audio_processors.h>
+	<juce_graphics/juce_graphics.h>
+	<juce_gui_basics/juce_gui_basics.h>
+	"tools/jura_MiscTools.h"
+	"tools/jura_StringTools.h"
+	"tools/jura_XmlTools.h"
+	"control/jura_ScopedPointerLock.h"
+	"control/jura_Callbacks.h"
+	"control/jura_Parameter.h"
+	"control/jura_AutomatableParameter.h"
+	"control/jura_MetaParameter.h"
+	"control/jura_ParameterManager.h"
+	"control/jura_StateManager.h"
+	"files/jura_AudioFileInfo.h"
+	"files/jura_FileManager.h"
+	"files/jura_StateFileManager.h"
+	"files/jura_AudioFileManager.h"
+	"files/jura_ImageFileManager.h"
+	"gui/graphics/jura_ColorMap.h"
+	"gui/graphics/jura_ColourAHSL.h"
+	"gui/graphics/jura_ColourizableBitmap.h"
+	"gui/graphics/jura_ColourScheme.h"
+	"gui/graphics/jura_BitmapFonts.h"
+	"gui/graphics/jura_GraphicsTools.h"
+	"gui/graphics/jura_ImageUpdater.h"
+	"gui/misc/jura_DescribedComponent.h"
+	"gui/misc/jura_ColourSchemeComponent.h"
+	"gui/misc/jura_RectangleComponent.h"
+	"gui/widgets/jura_RWidget.h"
+	"gui/widgets/jura_RTextField.h"
+	"gui/widgets/jura_RTextEditor.h"
+	"gui/widgets/jura_RButton.h"
+	"gui/widgets/jura_RScrollBar.h"
+	"gui/widgets/jura_RTreeView.h"
+	"gui/widgets/jura_RPopUpComponent.h"
+	"gui/widgets/jura_RPopUpMenu.h"
+	"gui/widgets/jura_RSlider.h"
+	"gui/widgets/jura_RComboBox.h"
+	"gui/widgets/jura_AutomatableWidget.h"
+	"gui/widgets/widget_sets/jura_WidgetSet.h"
+	"gui/widgets/widget_sets/jura_StateLoadSaveWidgetSet.h"
+	"gui/widgets/widget_sets/jura_ColorMapLoader.h"
+	"gui/plots/jura_CoordinateSystemOld.h"
+	"gui/plots/jura_InteractiveCoordinateSystemOld.h"
+	"gui/plots/jura_CoordinateSystemZoomerOld.h"
+	"gui/plots/jura_CurveFamilyPlotOld.h"
+	"gui/plots/jura_SpectrumDisplayOld.h"
+	"gui/editors/jura_Editor.h"
+	"gui/dialogs/jura_RDialogBox.h"
+	"gui/dialogs/jura_RMessageBox.h"
+	"gui/dialogs/jura_ColourSchemeSetupDialog.h"
+
+1491844678 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\tools\jura_misctools.h
+
+1478881839 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\tools\jura_stringtools.h
+
+1491846397 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\tools\jura_xmltools.h
+
+1478881838 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\control\jura_scopedpointerlock.h
+
+1478881838 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\control\jura_callbacks.h
+
+1492006181 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\control\jura_parameter.h
+
+1491847604 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\control\jura_automatableparameter.h
+
+1492450849 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\control\jura_metaparameter.h
+
+1491865222 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\control\jura_parametermanager.h
+
+1478881838 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\control\jura_statemanager.h
+
+1478881838 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\files\jura_audiofileinfo.h
+
+1478881838 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\files\jura_filemanager.h
+
+1478881838 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\files\jura_statefilemanager.h
+
+1478881838 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\files\jura_audiofilemanager.h
+
+1478881838 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\files\jura_imagefilemanager.h
+
+1490806636 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\graphics\jura_colormap.h
+
+1478881838 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\graphics\jura_colourahsl.h
+
+1478881838 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\graphics\jura_colourizablebitmap.h
+
+1478881838 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\graphics\jura_colourscheme.h
+
+1478881838 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\graphics\jura_bitmapfonts.h
+
+1484436082 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\graphics\jura_graphicstools.h
+
+1483562909 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\graphics\jura_imageupdater.h
+
+1491416381 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\misc\jura_describedcomponent.h
+
+1480290727 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\misc\jura_colourschemecomponent.h
+
+1478881838 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\misc\jura_rectanglecomponent.h
+
+1491502474 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\widgets\jura_rwidget.h
+
+1478881839 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\widgets\jura_rtextfield.h
+
+1481134057 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\widgets\jura_rtexteditor.h
+
+1490792174 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\widgets\jura_rbutton.h
+
+1478881839 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\widgets\jura_rscrollbar.h
+
+1478881839 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\widgets\jura_rtreeview.h
+
+1478881838 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\widgets\jura_rpopupcomponent.h
+
+1478881838 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\widgets\jura_rpopupmenu.h
+
+1491774004 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\widgets\jura_rslider.h
+
+1491500227 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\widgets\jura_rcombobox.h
+
+1492130730 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\widgets\jura_automatablewidget.h
+
+1490803797 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\widgets\widget_sets\jura_widgetset.h
+
+1490871043 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\widgets\widget_sets\jura_stateloadsavewidgetset.h
+
+1490877757 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\widgets\widget_sets\jura_colormaploader.h
+
+1478881838 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\plots\jura_coordinatesystemold.h
+
+1478881838 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\plots\jura_interactivecoordinatesystemold.h
+
+1478881838 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\plots\jura_coordinatesystemzoomerold.h
+
+1478881838 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\plots\jura_curvefamilyplotold.h
+
+1478881838 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\plots\jura_spectrumdisplayold.h
+
+1486495174 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\editors\jura_editor.h
+
+1490302771 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\dialogs\jura_rdialogbox.h
+
+1490302842 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\dialogs\jura_rmessagebox.h
+
+1478881838 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\dialogs\jura_colourschemesetupdialog.h
+
+1491243390 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\tools\jura_misctools.cpp
+
+1490796874 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\tools\jura_stringtools.cpp
+
+1491846413 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\tools\jura_xmltools.cpp
+
+1492106742 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\control\jura_parameter.cpp
+
+1491756577 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\control\jura_automatableparameter.cpp
+
+1492353666 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\control\jura_metaparameter.cpp
+
+1491865691 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\control\jura_parametermanager.cpp
+
+1491060094 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\control\jura_statemanager.cpp
+
+1491893907 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\files\jura_audiofileinfo.cpp
+
+1478881838 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\files\jura_filemanager.cpp
+
+1478881838 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\files\jura_statefilemanager.cpp
+
+1478881838 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\files\jura_audiofilemanager.cpp
+
+1478881838 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\files\jura_imagefilemanager.cpp
+
+1490818306 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\graphics\jura_colormap.cpp
+
+1478881838 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\graphics\jura_colourahsl.cpp
+
+1478881838 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\graphics\jura_colourizablebitmap.cpp
+
+1478881838 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\graphics\jura_colourscheme.cpp
+
+1478881838 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\graphics\jura_bitmapfonts.cpp
+
+1488655773 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\graphics\jura_graphicstools.cpp
+
+1483560516 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\graphics\jura_imageupdater.cpp
+
+1491416062 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\misc\jura_describedcomponent.cpp
+
+1478881838 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\misc\jura_colourschemecomponent.cpp
+
+1478881838 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\misc\jura_rectanglecomponent.cpp
+
+1491503667 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\widgets\jura_rwidget.cpp
+
+1491415875 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\widgets\jura_rtextfield.cpp
+
+1490910397 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\widgets\jura_rtexteditor.cpp
+
+1488903821 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\widgets\jura_rbutton.cpp
+
+1478881838 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\widgets\jura_rscrollbar.cpp
+
+1478881839 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\widgets\jura_rtreeview.cpp
+
+1491315558 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\widgets\jura_rpopupcomponent.cpp
+
+1478881838 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\widgets\jura_rpopupmenu.cpp
+
+1492130195 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\widgets\jura_rslider.cpp
+
+1491501972 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\widgets\jura_rcombobox.cpp
+
+1492353757 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\widgets\jura_automatablewidget.cpp
+
+1478881839 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\widgets\widget_sets\jura_widgetset.cpp
+
+1490871116 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\widgets\widget_sets\jura_stateloadsavewidgetset.cpp
+
+1490873389 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\widgets\widget_sets\jura_colormaploader.cpp
+
+1478881838 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\plots\jura_coordinatesystemold.cpp
+
+1478881838 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\plots\jura_interactivecoordinatesystemold.cpp
+
+1478881838 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\plots\jura_coordinatesystemzoomerold.cpp
+
+1491415924 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\plots\jura_curvefamilyplotold.cpp
+
+1478881838 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\plots\jura_spectrumdisplayold.cpp
+
+1490302856 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\dialogs\jura_rdialogbox.cpp
+
+1490303182 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\dialogs\jura_rmessagebox.cpp
+
+1478881838 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\dialogs\jura_colourschemesetupdialog.cpp
+
+1486495295 e:\programming\c++\rs-met\libraries\juce\modules\jura_framework\gui\editors\jura_editor.cpp
+
