@@ -10,27 +10,27 @@
 #include "jura_processors.h"
 
 #include "../../RAPT/Source/Modules/RAPT.cpp"
-// i think, in order to safely avoid "multiple definition" linker errors, this here needs to be the 
+// i think, in order to safely avoid "multiple definition" linker errors, this here needs to be the
 // one and only place where RAPT.cpp gets included
 
-// We request some explicit instantiations here - later, when we add modules to the jura framework 
-// which use these classes, they may be deleted. At the moment, they are needed for Elan's 
-// Chaosfly but are nowhere instantiatied within jura. It's not a very elegant solution, but it's 
+// We request some explicit instantiations here - later, when we add modules to the jura framework
+// which use these classes, they may be deleted. At the moment, they are needed for Elan's
+// Chaosfly but are nowhere instantiatied within jura. It's not a very elegant solution, but it's
 // supposed to be temporary anyway:
 
-template RAPT::rsParametricBellFunction<double>;
-template RAPT::rsPositiveBellFunctions<double>;
-template RAPT::NormalizedSigmoids<double>;
-template RAPT::ScaledAndShiftedSigmoid<double>;
+template class RAPT::rsParametricBellFunction<double>;
+template class RAPT::rsPositiveBellFunctions<double>;
+template class RAPT::NormalizedSigmoids<double>;
+template class RAPT::ScaledAndShiftedSigmoid<double>;
 
-template RAPT::StateVariableFilter<double, double>;
+template class RAPT::StateVariableFilter<double, double>;
 
-template RAPT::AlphaMask<float>;
-template RAPT::ImagePainter<float, float, float>;
+template class RAPT::AlphaMask<float>;
+template class RAPT::ImagePainter<float, float, float>;
 
 // for Elan's PrettyScope:
-template RAPT::AlphaMask<double>;
-template RAPT::PhaseScopeBuffer2<double, float, double>;
+template class RAPT::AlphaMask<double>;
+template class RAPT::PhaseScopeBuffer2<double, float, double>;
 
 
 namespace jura
