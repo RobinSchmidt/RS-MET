@@ -28,6 +28,8 @@
 #ifndef JURA_FRAMEWORK_H_INCLUDED
 #define JURA_FRAMEWORK_H_INCLUDED
 
+//#include <cstdio.h>    // for gcc on windows - doesn't help
+//#include <stdio.h>
 #include <limits.h>
 
 #include <juce_core/juce_core.h>

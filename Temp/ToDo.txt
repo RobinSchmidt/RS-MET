@@ -2,6 +2,21 @@ fix linker errors in win/gcc:
 http://stackoverflow.com/questions/9329020/undefined-reference-to-sync-val-compare-and-swap-4-error-at-compilation-usi
 -maybe updating gcc will help...
 
+now i get a compiler error: 'sscanf' was not declared in this scope
+#include <cstdio> added to juce_win32_ComSamrtPtr.h
+fixed it
+
+now i get linker errors related to flac codec code - seems like whenever the 
+codec calls fprintf, it doesn't find the stdin, stdout, stderr things?
+from stdio.h:
+#define stdin	(&_iob[STDIN_FILENO])
+#define stdout	(&_iob[STDOUT_FILENO])
+#define stderr	(&_iob[STDERR_FILENO])
+it doesn't seem to find the iob thing - we may have tell the linker to link a 
+library that constains these symbols
+
+
+
 
 -drag over the remaining GUI widget classes
 
