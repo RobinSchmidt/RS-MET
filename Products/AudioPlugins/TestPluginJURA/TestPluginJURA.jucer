@@ -66,7 +66,8 @@
         <MODULEPATH id="juce_audio_basics" path="../../../Libraries/JUCE/modules"/>
       </MODULEPATHS>
     </CODEBLOCKS_WINDOWS>
-    <CODEBLOCKS_LINUX targetFolder="Builds/CodeBlocksLinux">
+    <CODEBLOCKS_LINUX targetFolder="Builds/CodeBlocksLinux" extraCompilerFlags="-fPIC"
+                      extraLinkerFlags="" externalLibraries="asound&#10;X11&#10;Xext&#10;freetype">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="TestPluginJURA"/>
         <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="TestPluginJURA"/>
