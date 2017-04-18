@@ -1,3 +1,28 @@
+//-------------------------------------------------------------------------------------------------
+// preliminary - to fix compiler error on linux/gcc (move to somewhere else)
+
+inline int rsFloorInt(double x)
+{
+  return int(x);
+}
+
+unsigned long rsBitReverse(unsigned long number, unsigned long numBits)
+{
+  unsigned long result = 0;
+  for(unsigned long n=0; n<numBits; n++)
+  {
+    // leftshift the previous result by one and accept the new LSB of the current number on the
+    // right:
+    result   = (result << 1) + (number & 1);
+
+    // rightshift the number to make the second bit from the right to the new LSB:
+    number >>= 1;
+  }
+  return result;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 template <class T>
 void ArrayTools::rsAdd(T *buffer1, T *buffer2, T *result, int length)
 {
@@ -105,6 +130,7 @@ void ArrayTools::rsCircularShiftInterpolated(T *buffer, int length, double numPo
   double read = rsWrapAround(numPositions, (double)length);
   int    w    = 0;                       // write position
   int    r    = rsFloorInt(read);          // integer part of read position
+  //int    r    = (int) read;              // integer part of read position
   double f    = read-r;                  // fractional part of read position
   double f2   = 1.0-f;
   T *tmp      = new T[length];
@@ -407,14 +433,14 @@ void ArrayTools::rsDeConvolve(T *y, int yLength, T *h, int hLength, T *x)
       x[n] -= h[k] * x[n-k+m];
     x[n] *= scaler;
   }
-  // Maybe this can be generalized such that the result x may be of arbitrary length? Here, we 
+  // Maybe this can be generalized such that the result x may be of arbitrary length? Here, we
   // assume xLength = yLength-hLength+1 but actually (i think), the sequence x is only finite if
-  // y is indeed a convolution product of some signal x with h (or, if the polynomial 
-  // represented by the y array is divisible by the polynomial in the h array). If y and h are 
+  // y is indeed a convolution product of some signal x with h (or, if the polynomial
+  // represented by the y array is divisible by the polynomial in the h array). If y and h are
   // arbitrary, the sequence x might be infinite. That means, we could want to calculate more
   // values. On the other hand, sometimes we may be interested only in the first few values of
-  // x because the later ones are irrelevant for our problem, in which case we want to compute 
-  // less values. So, let's introduce an optional parameter xLength that defaults to zero (in 
+  // x because the later ones are irrelevant for our problem, in which case we want to compute
+  // less values. So, let's introduce an optional parameter xLength that defaults to zero (in
   // which case it's taken to be calculated as yLength-hLength+1). Then the loop becomes:
   // if( xLength == 0 )
   //   xLength = yLength-hLength+1;

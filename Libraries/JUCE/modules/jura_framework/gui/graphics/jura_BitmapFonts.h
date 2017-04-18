@@ -6,7 +6,7 @@
 This is a baseclass for representing the bitmap fonts that are used in the GUI components. I'm not
 really happy with JUCE's font rendering - it looks blurry, especially for bright-on-dark text, so
 I'm defining bitmap fonts which have the advantage of always being ultra-sharp. The disadvantage is
-that they do not allow for scaling, transforming, etc. The actual fonts are subclasses of this 
+that they do not allow for scaling, transforming, etc. The actual fonts are subclasses of this
 class which define a set of related fonts (different sizes, weights, etc.) that are used on the
 GUI components. Of each such font subclass, there's a single global object.
 
@@ -101,27 +101,27 @@ protected:
 // better using binary resources at some point):
 
 
-/** This is the smallest bitmap font. It has an ascent of 7 pixels and no descent below the 
+/** This is the smallest bitmap font. It has an ascent of 7 pixels and no descent below the
 baseline. It is used mainly in plots for the axis labels, ticks, etc. */
 class BitmapFontRoundedA7D0 : public BitmapFont
 {
 public:
-  BitmapFontRoundedA7D0::BitmapFontRoundedA7D0();
+  BitmapFontRoundedA7D0();
 protected:
   virtual void createGlyphBitmaps();
   juce_UseDebuggingNewOperator;
 };
 //static const BitmapFontRoundedA7D0 normalFont7px;
 
-/** This is a medium sized bitmap font. It has an ascent of 9 pixels and no descent below the 
+/** This is a medium sized bitmap font. It has an ascent of 9 pixels and no descent below the
 baseline. It is currently not used anywhere (i think).
-Maybe it was once used in the alpha versions of Liberty? ...better to not delete it, just in 
+Maybe it was once used in the alpha versions of Liberty? ...better to not delete it, just in
 case...
 */
 class BitmapFontRoundedBoldA9D0 : public BitmapFont
 {
 public:
-  BitmapFontRoundedBoldA9D0::BitmapFontRoundedBoldA9D0();
+  BitmapFontRoundedBoldA9D0();
 protected:
   virtual void createGlyphBitmaps();
   juce_UseDebuggingNewOperator;
@@ -134,12 +134,12 @@ class BitmapFontRoundedBoldA10D0 : public BitmapFont
 {
 public:
 
-  BitmapFontRoundedBoldA10D0::BitmapFontRoundedBoldA10D0();
+  BitmapFontRoundedBoldA10D0();
 
-  static const BitmapFontRoundedBoldA10D0 instance;  
-  // we have one static member of this class as instance variable - this is the global object 
+  static const BitmapFontRoundedBoldA10D0 instance;
+  // we have one static member of this class as instance variable - this is the global object
   // which we can access from all widgets, editors, etc. - that seems to work - we should use that
-  // strategy for the other fonts, too - doing i this way makes them available in other modules, 
+  // strategy for the other fonts, too - doing i this way makes them available in other modules,
   // for example in the jura_audioprocessors module
 
 protected:
@@ -152,11 +152,11 @@ protected:
 class BitmapFontRoundedBoldA16D0 : public BitmapFont
 {
 public:
-  BitmapFontRoundedBoldA16D0::BitmapFontRoundedBoldA16D0();
+  BitmapFontRoundedBoldA16D0();
 protected:
   virtual void createGlyphBitmaps();
   juce_UseDebuggingNewOperator;
 };
-//static const BitmapFontRoundedBoldA16D0 boldFont16px;  
+//static const BitmapFontRoundedBoldA16D0 boldFont16px;
 
-#endif  
+#endif

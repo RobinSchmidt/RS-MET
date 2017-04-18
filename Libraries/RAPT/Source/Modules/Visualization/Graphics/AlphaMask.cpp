@@ -86,7 +86,7 @@ void AlphaMask<TPix>::renderMask()
       double dy = sy * (y - cy);
       double distance = sqrt(dx*dx + dy*dy);
       TPix alpha = (TPix) abs(getAlphaForDistance(distance));
-      setPixelColor(x, y, alpha);
+      ImageResizable<TPix>::setPixelColor(x, y, alpha);
     }
   }
   // maybe the code can be generalized to an elliptic mask: divide dx by width and dy by height

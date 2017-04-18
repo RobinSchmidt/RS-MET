@@ -3,9 +3,9 @@
 
 /** Subclass of juce::AudioProcessorParameter to provide the handling of host automation. It also
 derives from jura::MetaParameter in order to provide the "glue" between juce's host automation
-handling and jura's MetaParameter handling. Whenever the setValue method (inherited and overriden 
-from AudioProcessorParameter) gets called by the host, we will call MetaParameter's setValue 
-method there which in turn will update all the values of the attached MetaControlledParameters. 
+handling and jura's MetaParameter handling. Whenever the setValue method (inherited and overriden
+from AudioProcessorParameter) gets called by the host, we will call MetaParameter's setValue
+method there which in turn will update all the values of the attached MetaControlledParameters.
 Whenever parameterChanged (overriden from MetaParameter) gets called, which happens when the user
 changes a parameter on the plugin's gui, we retrieve the value and call setValueNotifyingHost
 (inherited from AudioProcessorParameter) which notifies the host about the change and then calls
@@ -39,8 +39,8 @@ public:
 
 //=================================================================================================
 
-/** This class wraps a jura::AudioModule into a juce::AudioProcessor, so we can use it as 
-plugin.  
+/** This class wraps a jura::AudioModule into a juce::AudioProcessor, so we can use it as
+plugin.
 \todo - mayb move this pair of h/cpp files into another folder */
 
 class JUCE_API AudioPlugin : public AudioProcessor
@@ -48,13 +48,13 @@ class JUCE_API AudioPlugin : public AudioProcessor
 
 public:
 
-  /** Constructor. You can pass a number of parameters that this plugin will report to the host and 
+  /** Constructor. You can pass a number of parameters that this plugin will report to the host and
   which will then be available to use as meta-parameters for automation. */
-  AudioPlugin(int numParameters = 10); 
-    // todo: change the default value to 0 - but only after updatind Elan's projects to pass in the 
+  AudioPlugin(int numParameters = 10);
+    // todo: change the default value to 0 - but only after updatind Elan's projects to pass in the
     // required number
 
-  
+
   virtual ~AudioPlugin();
 
   //-----------------------------------------------------------------------------------------------
@@ -65,7 +65,7 @@ public:
   /** Sets the jura::AudioModule object that is wrapped into an AudioPlugin. */
   virtual void setAudioModuleToWrap(AudioModule* moduleToWrap);
 
-  /** Automatically attaches each of the wrapped AudioModule's parameters to one of our (meta) 
+  /** Automatically attaches each of the wrapped AudioModule's parameters to one of our (meta)
   parameters here (up to the minimum of the number of internal and meta parameters.  */
   void autoAttachMetaParameters();
 
@@ -76,8 +76,8 @@ public:
   virtual void  prepareToPlay(double sampleRate, int maximumExpectedSamplesPerBlock) override;
   virtual void releaseResources() override {}
   virtual double getTailLengthSeconds() const override { return 0.0; }
-  virtual bool acceptsMidi() const override 
-  { 
+  virtual bool acceptsMidi() const override
+  {
     return false; // doesn't seem to get called by JUCE's plugin host ..or maybe only on scan?
   }
   virtual bool producesMidi() const override { return false; }
@@ -92,7 +92,7 @@ public:
   virtual const String getProgramName (int index) override { return String::empty; }
   virtual void changeProgramName(int index, const String& newName) override {}
   virtual void getStateInformation(juce::MemoryBlock& destData) override;
-  virtual void setStateInformation(const void* data, int sizeInBytes) override; 
+  virtual void setStateInformation(const void* data, int sizeInBytes) override;
   virtual void processBlock(AudioBuffer<float>& buffer, MidiBuffer& midiMessages) override;
 
   //-----------------------------------------------------------------------------------------------
@@ -108,29 +108,29 @@ public:
 
   AudioModule *wrappedAudioModule = nullptr;  // the wrapped jura::AudioModule
 
-  /** Mutex-lock for all accesses to the underlyingAudioModule's member functions - a pointer to 
+  /** Mutex-lock for all accesses to the underlyingAudioModule's member functions - a pointer to
   the lock is  passed to the embedded AudioModule and should be used there also and the AudioModule
   should also pass this lock on to the GUI Editors. */
-  CriticalSection plugInLock; 
+  CriticalSection plugInLock;
 
 
 protected:
 
-  /** Creates the parameters that are reported to the host. Called internally from the 
+  /** Creates the parameters that are reported to the host. Called internally from the
   constructor. */
   void createHostAutomatableParameters(int numParameters);
 
-  /** The number of channels that is desired for the in/out buffer that is passed to the 
+  /** The number of channels that is desired for the in/out buffer that is passed to the
   processBlock callback. You may set that value in the constructor of your subclass. If the number
-  of channels is supposed to change after construction, we may have to make sure that we are in a 
-  suspended state before we change that value. I did not yet run into this situation, so i haven't 
+  of channels is supposed to change after construction, we may have to make sure that we are in a
+  suspended state before we change that value. I did not yet run into this situation, so i haven't
   figured it out. */
   int numChannels = 2;
 
   /** An internal double precision buffer that is used in cases, where the host calls the single
   precision version of the processBlock callback. In such a case, we need to convert back and forth
   between float/double and double/float. That's what this buffer is used for. */
-  AudioBuffer<double> internalAudioBuffer; 
+  AudioBuffer<double> internalAudioBuffer;
 
   // parameter-management:
   std::vector<AudioPluginParameter*> parameters;
@@ -149,11 +149,11 @@ protected:
 
 //=================================================================================================
 
-/** A wrapper class that wraps an object of a subclass of AudioModuleWithMidiIn into a 
-juce::AudioProcessor. We need a different wrapper class for modules with MIDI than for those 
-without MIDI because we must inform the host that we want to receive MIDI events (for this we 
-override acceptsMidi here) and furthermore, we actually have to handle the events by passing them 
-to the event handler methods of AudioModuleWithMidiIn - which the baseclass AudioModule doesn't 
+/** A wrapper class that wraps an object of a subclass of AudioModuleWithMidiIn into a
+juce::AudioProcessor. We need a different wrapper class for modules with MIDI than for those
+without MIDI because we must inform the host that we want to receive MIDI events (for this we
+override acceptsMidi here) and furthermore, we actually have to handle the events by passing them
+to the event handler methods of AudioModuleWithMidiIn - which the baseclass AudioModule doesn't
 even have. We will call these event handlers from our overriden processBlock method. */
 
 class JUCE_API AudioPluginWithMidiIn : public AudioPlugin
@@ -173,7 +173,7 @@ public:
   virtual void setAudioModuleToWrap(AudioModule* moduleToWrap) override;
 
 
-  AudioModuleWithMidiIn *wrappedModuleWithMidiIn;  
+  AudioModuleWithMidiIn *wrappedModuleWithMidiIn;
 
 protected:
 
@@ -192,7 +192,7 @@ class AudioPluginEditor : public juce::AudioProcessorEditor
 
 public:
 
-  AudioPluginEditor(AudioModuleEditor* editorToWrap, AudioPlugin* pluginToEdit) 
+  AudioPluginEditor(AudioModuleEditor* editorToWrap, AudioPlugin* pluginToEdit)
     : AudioProcessorEditor(pluginToEdit)
   {
     this->pluginToEdit  = pluginToEdit;
@@ -210,13 +210,13 @@ public:
 
     setResizeLimits(200, 100, 6000, 3000); // must be called BEFORE setSize
     setSize(w, h);
-    addAndMakeVisible(wrappedEditor); 
+    addAndMakeVisible(wrappedEditor);
   }
 
-  AudioPluginEditor::~AudioPluginEditor()
+  ~AudioPluginEditor()
   {
-    delete wrappedEditor;  
-    // we need to delete it here because the baseclass destructor does not delete its child 
+    delete wrappedEditor;
+    // we need to delete it here because the baseclass destructor does not delete its child
     // components - is this a change with respect to the old juce?
   }
 
