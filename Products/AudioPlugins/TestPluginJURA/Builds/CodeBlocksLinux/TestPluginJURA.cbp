@@ -28,6 +28,7 @@
           <Add option="-DJUCE_APP_VERSION_HEX=0x10000"/>
           <Add directory="."/>
           <Add directory="..\..\JuceLibraryCode"/>
+          <Add directory="../../../../../Libraries/JUCE/modules"/>
           <Add directory="/usr/include/freetype2"/>
         </Compiler>
         <Linker>
@@ -56,6 +57,7 @@
           <Add option="-DJUCE_APP_VERSION_HEX=0x10000"/>
           <Add directory="."/>
           <Add directory="..\..\JuceLibraryCode"/>
+          <Add directory="../../../../../Libraries/JUCE/modules"/>
           <Add directory="/usr/include/freetype2"/>
         </Compiler>
         <Linker>

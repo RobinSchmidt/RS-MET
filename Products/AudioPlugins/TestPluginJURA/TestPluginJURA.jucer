@@ -69,8 +69,10 @@
     <CODEBLOCKS_LINUX targetFolder="Builds/CodeBlocksLinux" extraCompilerFlags="-fPIC"
                       extraLinkerFlags="" externalLibraries="asound&#10;X11&#10;Xext&#10;freetype">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="TestPluginJURA"/>
-        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="TestPluginJURA"/>
+        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="TestPluginJURA"
+                       headerPath="../../../../../Libraries/JUCE/modules"/>
+        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="TestPluginJURA"
+                       headerPath="../../../../../Libraries/JUCE/modules"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="jura_processors" path="../../../Libraries/JUCE/modules"/>
