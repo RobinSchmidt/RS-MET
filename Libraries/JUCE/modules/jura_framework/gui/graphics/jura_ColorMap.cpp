@@ -23,6 +23,12 @@ void ColorMap::setDefaultMap(int index)
   double scaler = 1.0 / lastIndex;
   switch(index)
   {
+  case gray:
+  {
+    for(int i = 0; i < colors.size(); i++)
+      colors[i] = Colour::greyLevel(float(i*scaler)).getARGB();
+  } break;
+
   case fire:
   {
     for(int i = 0; i < colors.size(); i++)
