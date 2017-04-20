@@ -28,9 +28,21 @@ template class RAPT::StateVariableFilter<double, double>;
 template class RAPT::AlphaMask<float>;
 template class RAPT::ImagePainter<float, float, float>;
 
-// for Elan's PrettyScope:
+// for Elan's PrettyScope (may be irrelevant now):
 template class RAPT::AlphaMask<double>;
 template class RAPT::PhaseScopeBuffer2<double, float, double>;
+
+
+// needed for the release build of ChaosFly on Linux - withou them, apparently the compiler
+// generates the classes only partially - some member functions are missing probably they called
+// from nowhere inside JURA:
+template double RAPT::rsAbs(double x);
+template class RAPT::rsBreakpointModulator<double>;
+template class RAPT::LadderFilter<double, double>;
+// ..i really should copy over the rosic code and only use actual rosic classes in products (not
+// class templates) - these classes can themselves, one-by-one, be made instantiations of
+// templates -  i propagate up the code intio RAPT - which them becomes
+// Rob's Audio Processing Templates
 
 
 namespace jura

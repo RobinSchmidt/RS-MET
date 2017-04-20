@@ -55,3 +55,9 @@
 /Libraries/RAPT/Build/VisualStudio2015/Release
 /Products/AudioPlugins/TestPluginJUCE/Builds/CodeBlocksWindows
 /Products/AudioPlugins/TestPluginJURA/Builds/CodeBlocksWindows/obj/Debug/Products/AudioPlugins/TestPluginJURA/JuceLibraryCode/*.o
+/Products/AudioPlugins/TestPluginJURA/Builds/CodeBlocksLinux/obj/Debug/Products/AudioPlugins/TestPluginJURA/JuceLibraryCode/*.o
+*.so
+*.o
+*.ppm
+*.user
+*.layout
