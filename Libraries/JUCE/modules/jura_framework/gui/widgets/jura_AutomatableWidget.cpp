@@ -23,7 +23,7 @@ void AutomatableWidget::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
     switch(selectedIdentifier)
     {
     case META_ATTACH: mcp->attachToMetaParameter( 
-      (int)wrappedWidget->openModalNumberEntryField() ); break;
+      (int)wrappedWidget->openModalNumberEntryField(mcp->getMetaParameterIndex()) ); break;
     case META_DETACH: mcp->detachFromMetaParameter();    break;
     }
   }
@@ -38,7 +38,7 @@ void AutomatableWidget::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
     case MIDI_LEARN:  ap->switchIntoMidiLearnMode();             break;
     case MIDI_ASSIGN:
     {
-      int result = (int)wrappedWidget->openModalNumberEntryField();
+      int result = (int)wrappedWidget->openModalNumberEntryField(ap->getAssignedMidiController());
       result = (int)clip(result, 0, 127);
       ap->assignMidiController(result);
     } break;
@@ -166,7 +166,7 @@ void AutomatableSlider::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
 
   switch( selectedIdentifier )
   {
-  case ENTER_VALUE:   setValue(openModalNumberEntryField(),                  true, false); break;
+  case ENTER_VALUE:   setValue(openModalNumberEntryField(getValue()),        true, false); break;
   case DEFAULT_VALUE: setValue(selectedItem->getNodeText().getDoubleValue(), true, false); break;
   default: AutomatableWidget::rPopUpMenuChanged(menuThatHasChanged);
   }

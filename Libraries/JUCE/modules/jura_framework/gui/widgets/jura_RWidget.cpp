@@ -200,13 +200,14 @@ void RWidget::paint(Graphics& g)
   //g.fillAll(Colours::red); test
 }
 
-double RWidget::openModalNumberEntryField()
+double RWidget::openModalNumberEntryField(double numberToShowInitially)
 {
-  if( assignedParameter == NULL )
-    return 0.0;
+  //if( assignedParameter == NULL )
+  //  return 0.0;
+  //RTextEntryField *entryField = new RTextEntryField( 
+  //  String(assignedParameter->getValue()));
 
-  RTextEntryField *entryField = new RTextEntryField( 
-    String(assignedParameter->getValue()));
+  RTextEntryField *entryField = new RTextEntryField(String(numberToShowInitially));
   entryField->setBounds(2, 2, getWidth()-4, getHeight()-4);
   entryField->setColourScheme(getColourScheme());
   addAndMakeVisible(entryField);

@@ -123,7 +123,8 @@ public:
 protected:
 
   /** Opens a modal field for manually entering a value and returns the value entered. */
-  virtual double openModalNumberEntryField();
+  virtual double openModalNumberEntryField(double numberToShowInitially);
+    // needs a double parameter for the value to show initially
 
   /** The assigned Parameter object. */
   Parameter* assignedParameter;
