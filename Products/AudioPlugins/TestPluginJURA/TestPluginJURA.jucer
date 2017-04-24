@@ -92,7 +92,7 @@
       </MODULEPATHS>
     </CODEBLOCKS_LINUX>
     <LINUX_MAKE targetFolder="Builds/LinuxMakefile" extraCompilerFlags="-fPIC"
-                externalLibraries="asound&#10;X11&#10;Xext&#10;freetype">
+                externalLibraries="asound&#10;X11&#10;Xext&#10;freetype" userNotes="to build a debug version, just type &quot;make&quot; into the commandline (launched in the same directory where the makefile resides), for a release version, type &quot;make CONFIG=Release&quot;">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="TestPluginJURA"
                        headerPath="../../../../../Libraries/JUCE/modules"/>
