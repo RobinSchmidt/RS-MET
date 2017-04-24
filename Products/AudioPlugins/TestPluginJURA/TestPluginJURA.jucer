@@ -67,7 +67,8 @@
       </MODULEPATHS>
     </CODEBLOCKS_WINDOWS>
     <CODEBLOCKS_LINUX targetFolder="Builds/CodeBlocksLinux" extraCompilerFlags="-fPIC"
-                      extraLinkerFlags="" externalLibraries="asound&#10;X11&#10;Xext&#10;freetype">
+                      extraLinkerFlags="" externalLibraries="asound&#10;X11&#10;Xext&#10;freetype"
+                      userNotes="The plugin builds but crashes without any hint what could be wrong. We need to use the makefile on linux">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="TestPluginJURA"
                        headerPath="../../../../../Libraries/JUCE/modules"/>
@@ -90,6 +91,30 @@
         <MODULEPATH id="juce_audio_basics" path="../../../Libraries/JUCE/modules"/>
       </MODULEPATHS>
     </CODEBLOCKS_LINUX>
+    <LINUX_MAKE targetFolder="Builds/LinuxMakefile" extraCompilerFlags="-fPIC"
+                externalLibraries="asound&#10;X11&#10;Xext&#10;freetype">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="TestPluginJURA"
+                       headerPath="../../../../../Libraries/JUCE/modules"/>
+        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="TestPluginJURA"
+                       headerPath="../../../../../Libraries/JUCE/modules"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="jura_processors" path="../../juce"/>
+        <MODULEPATH id="jura_framework" path="../../juce"/>
+        <MODULEPATH id="juce_gui_extra" path="../../juce"/>
+        <MODULEPATH id="juce_gui_basics" path="../../juce"/>
+        <MODULEPATH id="juce_graphics" path="../../juce"/>
+        <MODULEPATH id="juce_events" path="../../juce"/>
+        <MODULEPATH id="juce_data_structures" path="../../juce"/>
+        <MODULEPATH id="juce_core" path="../../juce"/>
+        <MODULEPATH id="juce_audio_processors" path="../../juce"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../juce"/>
+        <MODULEPATH id="juce_audio_formats" path="../../juce"/>
+        <MODULEPATH id="juce_audio_devices" path="../../juce"/>
+        <MODULEPATH id="juce_audio_basics" path="../../juce"/>
+      </MODULEPATHS>
+    </LINUX_MAKE>
   </EXPORTFORMATS>
   <MODULES>
     <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0"/>
