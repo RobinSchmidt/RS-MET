@@ -1,0 +1,22 @@
+ExprEval 3.3
+------------
+- Added support for arbitrary data objects to be passed to functions
+  with the '@' operator.  The expression library itself does not have
+  any understanding of the arbitrary data, but the functions can.
+
+ExprEval 3.2
+------------
+- Added Exception::GetType method to determine the type of error
+  without needing many catch statements.
+
+ExprEval 3.1
+------------
+- Removed Exception::what due to language problems.  Each application should
+  do testing and report the exception to the user itself, in whatever language
+  it needs.
+- Added Exception::GetStart and Exception::GetEnd to report where in the
+  expression string the error occurs when parsing.
+- Added Exception::GetValue to get the name of the object, function, etc
+  that is responsible for an exception, depending on the exception itself
+- In header files, replaced 'std::X' with '::std::X'
+

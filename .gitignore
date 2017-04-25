@@ -61,3 +61,5 @@
 *.ppm
 *.user
 *.layout
+/Products/AudioApplications/PluginHost/Builds/CodeBlocksLinux/Plugin Host.depend
+/Products/AudioApplications/PluginHost/Builds/CodeBlocksLinux/bin/Debug/Plugin Host

@@ -1,0 +1,49 @@
+To use the special functions from the cephes library, you must have the files:
+const.c
+ellpj.c
+mconf.c
+mtherr.c
+sincos.c
+in the project (or have pre-compiled object files for these c-files) in the intermediate-directory of the project.
+
+Some tweaks were necessary to make the functions compile, namely:
+
+function headers had to be changed from (example):
+
+int sincos(x, s, c, flg)
+double x;
+double *s, *c;
+int flg;
+{
+  \\function body
+}
+
+to
+
+int sincos(double x, double *s, double *c, int flg)
+{
+  \\function body
+}
+
+in the c-files
+
+Lines 92 and 97 in const.c:
+
+double INFINITY = 1.0/0.0;  /* 99e999; */
+double NAN = 1.0/0.0 - 1.0/0.0;
+
+caused compiler error C2099: initializer is not a constant in MSVC++ 2005. these had to be changed to:
+
+double NAN = 0xfff8000000000000;
+double INFINITY =  0x7ff0000000000000;
+
+these values were found with the MSVC++ debugger using the following code snippet:
+
+  double zero_d = sin(0.0);
+  double NaN_d  = 0.0/zero_d;
+  double inf_d  = 1.0/zero_d;
+  __int64 *NaN  = reinterpret_cast<__int64*>(&NaN_d);
+  __int64 *inf  = reinterpret_cast<__int64*>(&inf_d);
+
+
+

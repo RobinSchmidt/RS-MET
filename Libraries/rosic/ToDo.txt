@@ -1,0 +1,74 @@
+take out some stuff that could raise copyright issues:
+-some matrix-stuff - perhaps look into the book, rename variables, add comments
+-references to MatLab prototypes in Orfanidis filters
+-get rid of that angelscript stuff - maybe replace with lua script
+
+
+-implement the frequency warping stuff (maybe make a class WarpedBiquad) and z-plane frequency transformations
+-work out magnitude-matched s-to-z transforms -> use them in EngineersFilter and EasyQ
+
+classes to write:
+-WaveScanningOscillator: can scan through a number of wavetables by interpolating between them 
+ ->useful for having a different waveform on attack than in sustain
+ ->actual waveforms may be obtained from different sections of acoustic instrument samples
+-ShepardToneGenerator
+ setFrequency, setSpectralEnvelopeCenter, setSpectralEnvelopeWidth, setNumberOfPartials (see "Elements in Computer Music")
+-MinBlep without table:
+ -design an elliptic IIR lowpass filter, set the cuttoff according to the desired "oversampling" factor (actually this is
+  not terribly relevant, so halfband should be fine - it merely sets a scaling factor for our input arguments)
+ -the step response of our elliptic filter serves as our MinBlep
+ -when a specific value at some time-instant is required, compute the value by a closed form expression for the
+  step response (still to derive, might involove a partial fraction expansion of the transfer function)
+-write macros to auto-create the full set of comparison operators from the "<" operator using the logical equivalences:
+ x>y <-> y<x, x>=y <-> !(x<y), x<=y <-> !(y<x), x==y <-> !(x<y) && !(y<x), x!=y <-> (x<y) || (y<x)
+
+ 
+
+factor out a library rocor with some core functionality which is not necessarrily related to dsp, including:
+-datastructures, patterns, math, algorithms, numeric, expression-evaluation/scripting, threading, random
+
+class-design:
+-make a MasterSlave class - derive MasterSlave subclasses from their core-DSP class and the MasterSlave class, for example:
+OscillatorPoly : public Oscillator, public MasterSlave
+-where it makes sense, maintain the (possibly shared (among voices)) user parameters in a separate class and keep only the
+internal per-voice parameters inside the actual DSP class
+
+safety:
+-use new(std::nothrow) and pointer-check for NULL where appropriate
+
+functionality:
+-use a debugging new operator as juce does - will help to find the memory leaks on quitting straightliner
+-maybe implement the master/slave-mechanism as a base-class (use compile-time polymorphism only)
+
+efficiency:
+-for synths: detect when no voice is playing - return 0.0 immediately
+-use memmove in the adaptive filters
+-implement stereo processing by means of the vector class where it makes sense (filters, etc.)
+-OscilloscopeBuffer: create the peak-data on the fly and ditch syncing when zoomed far away
+-optimize TwoStageBiquad (partly done - maybe use memmove?), MoogishLowpass, OscillatorStereo (maybe store mip-map in single precision), 
+ BreakpointModulator
+-maybe use single precision float for delaylines
+
+cosmetic:
+-define a clean, generic interface (no data members) for all audio-modules that are relevant to rosof (regardless whether polyphonic or not) 
+ which can be wrapped by rosof::AudioModule
+-move arrayMinIndex and arrayMaxIndex into rosic_FunctionTemplates
+-clean up filters folder
+-make a ScopedLock class and use it throughout the whole library
+
+modifications and issues whenn porting to Mac:
+-typedef doubleA, etc. had to be replaced (with simple double -> do something better later)
+-#define INLINE __forceinline had to be replaced (with  simple inline)
+-#define DEBUG_BREAK had to be replaced with //
+-the extractExponent functions were modified
+-abs had to be changed to fabs in minkowski and srem
+-INT64, UINT64, UINT32 were introduced and replaced ocuurences of __int64, ...
+-macros ROTL, ROTR were introduced and replaced ocurrences of microsoft-specific _rotl and _rotr, we will have to find equivalents for gcc here
+-definitions of INF and NEG_INF had to be modified to avoid a warning
+-in rosic::Complex::powC, the 1.0/sqrt(0.0) was replaced by the newly defined INF value
+-the constant double INFINITY = 0x7ff0000000000000; and NAN in const.c of the cephes library were replaced with the original cephes definition, this might cause trouble with MSVC - we will have to find definitions of +-infinity and NaN that work with all compilers
+-there are a whole bunch of warnings when compiling the cephes files and one with ExprEval
+
+modifications since going back to PC:
+-renamed Crossover3Way in CrossOver
+

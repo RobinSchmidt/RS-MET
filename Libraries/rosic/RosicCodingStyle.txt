@@ -1,0 +1,8 @@
+-brace-style: Allman-style
+-maximum line-width: 100 - makes for good printing results in MSVC 2005 with left and right margin set to 5 mm
+-class-names: upper CamelCase
+-methods, member-variables: lower camelCase
+-functions: 1.: construction/destruction, 2.: set, 3.: get, 4.: audio-processing (getSample,...), 5.: event-processing
+            6.: others
+-indent depth: 2
+-doxygen-comment-style: comments follow the declarations (declaration first, then comment)

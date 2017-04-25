@@ -1,0 +1,24 @@
+Implementation of polyphonic instruments involves synchronizing the parameter
+sets of objects over across a number of voices. RoSiC uses two mechanisms to
+achieve this:
+
+each object which is supposed to be part of a voice of a polyphonic
+instrument...
+
+1.
+...holds its user parameters which should be shared across the voices in
+a pointer to a class which contains just these parameters. By default, each
+object initilizes this pointer with a 'new' operation in the cosntructor for its own (
+for standalone use), but it can be
+later made to delete this pointer and be directed to use another instance of
+parameters to use.
+
+2.
+...has a vector of pointers of other objects of its own class which is empty by
+default but when (pointers to) objects are added to the vector of one such object, it will
+take care that the referenced objects will stay in sync with itself (mostly by invoking
+the setter-functions of the referenced objects whenever the respective setter-
+function of
+the object is called). An object with a non-empty vector of pointers to other
+objects of the same class is called the master, the synced objects in the vector
+are called slaves.
