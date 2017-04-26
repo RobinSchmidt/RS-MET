@@ -109,12 +109,15 @@ integrating it into the Chainer.
 #include "filters/rosic_LowpassHighpass.cpp"
 #include "filters/rosic_LowpassHighpassStereo.cpp"
 #include "filters/rosic_LpfHpfApf.cpp"
-
 #include "filters/rosic_NyquistBlocker.cpp"
 #include "filters/rosic_QuadratureNetwork.cpp"
 #include "filters/rosic_SlopeFilter.cpp"
-
-//#include "filters
+#include "filters/rosic_TeeBeeFilter.cpp"
+#include "filters/rosic_ToneControl.cpp"
+#include "filters/rosic_TwoPoleBandpass.cpp"
+#include "filters/rosic_VowelFilterStereo.cpp"
+#include "filters/rosic_WarpedBiquadMonoDF1.cpp"   // empty
+#include "filters/rosic_WhiteToPinkFilter.cpp"
 
 
 // analysis:
