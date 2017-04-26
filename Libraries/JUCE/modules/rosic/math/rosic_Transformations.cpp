@@ -1,6 +1,9 @@
 #include "rosic_Transformations.h"
 using namespace rosic;
 
+// We need to include the kiss-fft code here
+#include "../_third_party/kiss_fft_v1_2_6/kiss_fft.c"
+
 void rosic::discreteFourierTransform(Complex *in, Complex *out, int length, bool isInverse)
 {
   // memory allocation:
@@ -13,8 +16,8 @@ void rosic::discreteFourierTransform(Complex *in, Complex *out, int length, bool
   for(k=0; k<length; k++)
   {
     // put kth sample in cx_in[k].r and cx_in[k].i:
-    cx_in[k].r = in[k].re;
-    cx_in[k].i = in[k].im;
+    cx_in[k].r = (kiss_fft_scalar) in[k].re;
+    cx_in[k].i = (kiss_fft_scalar) in[k].im;
   }
 
   // do the actual fft:
@@ -34,13 +37,10 @@ void rosic::discreteFourierTransform(Complex *in, Complex *out, int length, bool
   free(cfg);
 }
 
-
-
-
 void rosic::radixTwoFastFourierTransform(Complex *in, Complex *out, int length, bool isInverse)
 {
   // setup the internal variables for Stephan Bernsee's routine:
-  #define M_PI 3.14159265358979323846
+  //#define M_PI 3.14159265358979323846
   long    fftFrameSize = length;
   double* fftBuffer    = new double[2*fftFrameSize];
   double  sign;

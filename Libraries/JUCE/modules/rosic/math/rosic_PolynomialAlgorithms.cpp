@@ -532,7 +532,8 @@ void rosic::maximumSlopeMonotonicPolynomial(double *w, int n)
   {               
     for(i = 0; i <= k; i++) 
     {
-      a[i] = (2.0*i+1.0)/(M_SQRT2*(k+1.0));
+      //a[i] = (2.0*i+1.0)/(M_SQRT2*(k+1.0));
+      a[i] = (2.0*i+1.0)/(SQRT2*(k+1.0));
     }
   }                           // even
   else 

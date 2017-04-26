@@ -40,6 +40,16 @@ folders that are considered "above" in the hierarchy. */
 #include "datastructures/rosic_KeyValueMap.cpp"              // empty
 #include "datastructures/rosic_String.cpp"
 
+// math (some of the cpp files in this folder are already included in the basics section):
+#include "math/rosic_IntegerFunctions.cpp"
+#include "math/rosic_LinearAlgebra.cpp"
+#include "math/rosic_Vector.cpp"
+#include "math/rosic_Matrix.cpp"
+#include "math/rosic_MatrixVectorFunctions.cpp"
+#include "math/rosic_Interpolation.cpp"
+#include "math/rosic_PolynomialAlgorithms.cpp"
+#include "math/rosic_PrimeNumbers.cpp"
+#include "math/rosic_Transformations.cpp"
 
 
 
