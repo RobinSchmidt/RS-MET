@@ -119,15 +119,24 @@ integrating it into the Chainer.
 #include "filters/rosic_WarpedBiquadMonoDF1.cpp"   // empty
 #include "filters/rosic_WhiteToPinkFilter.cpp"
 
+// rendering:
+//#include "rendering/rosic_AdditveWaveformRenderer.cpp"    // obsolete?
+#include "rendering/rosic_AlgorithmicWaveformRenderer.cpp"
+#include "rendering/rosic_MultiSegmentWaveformRenderer.cpp"
+#include "rendering/rosic_NonRealtimeProcesses.cpp"         // should be renamed
+#include "rendering/rosic_StandardWaveformRenderer.cpp"
+#include "rendering/rosic_WaveformBuffer.cpp"
+#include "rendering/rosic_WaveformRenderer.cpp"
+
 // generators:
 #include "generators/rosic_MipMappedWaveTable.cpp"
-#include "generators/rosic_MipMappedWaveTableOld.cpp"      // can this be removed?
+#include "generators/rosic_MipMappedWaveTableOld.cpp"       // can this be removed?
 #include "generators/rosic_MipMappedWaveTableStereo.cpp"
 #include "generators/rosic_BlendOscillator.cpp"
 #include "generators/rosic_LorentzSystem.cpp"
-#include "generators/rosic_ModalSynthesizer.cpp"           // replace with code from RSLib
+#include "generators/rosic_ModalSynthesizer.cpp"            // replace with code from RSLib
 #include "generators/rosic_NoiseGenerator.cpp"
-#include "generators/rosic_NoiseGeneratorOld.cpp"          // can this be removed?
+#include "generators/rosic_NoiseGeneratorOld.cpp"           // can this be removed?
 #include "generators/rosic_Oscillator.cpp"
 #include "generators/rosic_OscillatorBank.cpp"
 #include "generators/rosic_OscillatorStereo.cpp"

@@ -203,7 +203,7 @@ void rosic::synthesizeModalRodFreeFree(double *x, int N, double frequency, doubl
     frequencies.push_back(fTmp);
   }
   
-  int numModes = frequencies.size();
+  int numModes = (int) frequencies.size();
   //double f0    = frequency;     // fundamental frequency
   double d0    = decayTime;     // fundamental decay-time
   double h;
