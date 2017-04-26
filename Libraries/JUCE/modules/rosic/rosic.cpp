@@ -19,7 +19,7 @@ folders that are considered "above" in the hierarchy. */
 #include "basics/rosic_HelperFunctions.cpp"
 #include "basics/rosic_Interpolator.cpp"
 #include "basics/rosic_NumberManipulations.cpp"        // empty
-#include "infrastructure/rosic_MutexLock.cpp"          // used by sample buffer
+#include "infrastructure/rosic_MutexLock.cpp"          // used by SampleBuffer
 #include "basics/rosic_SampleBuffer.cpp"
 #include "basics/rosic_SamplePlaybackParameters.cpp"
 
@@ -31,7 +31,7 @@ folders that are considered "above" in the hierarchy. */
 #include "math/rosic_ComplexFunctionsAlgorithms.cpp" 
 #include "math/rosic_ComplexFunctions.cpp"             // used by ExpressionEvaluator
 
-//#include "scripting/rosic_ExpressionEvaluator.cpp"     // used by TabulatedFunction
+#include "scripting/rosic_ExpressionEvaluator.cpp"     // used by TabulatedFunction
 
 //#include "basics/rosic_TabulatedFunction.cpp" // needs ExpressionEvaluator
 
