@@ -116,7 +116,7 @@ integrating it into the Chainer.
 #include "filters/rosic_ToneControl.cpp"
 #include "filters/rosic_TwoPoleBandpass.cpp"
 #include "filters/rosic_VowelFilterStereo.cpp"
-#include "filters/rosic_WarpedBiquadMonoDF1.cpp"   // empty
+#include "filters/rosic_WarpedBiquadMonoDF1.cpp"            // empty
 #include "filters/rosic_WhiteToPinkFilter.cpp"
 
 // rendering:
@@ -141,18 +141,16 @@ integrating it into the Chainer.
 #include "generators/rosic_OscillatorBank.cpp"
 #include "generators/rosic_OscillatorStereo.cpp"
 #include "generators/rosic_FourOscSection.cpp"
-#include "infrastructure/rosic_Module.cpp"                 // needed by Quadrigen
-#include "others/rosic_RoutingMatrix.cpp"                  // needed by Quadrigen
-#include "generators/rosic_Quadrigen.cpp"                  // needs Module, RoutingMatrix
+#include "infrastructure/rosic_Module.cpp"                  // needed by Quadrigen
+#include "others/rosic_RoutingMatrix.cpp"                   // needed by Quadrigen
+#include "generators/rosic_Quadrigen.cpp"                   // needs Module, RoutingMatrix
 #include "generators/rosic_SampleOscillator.cpp"
 #include "generators/rosic_SamplePlayer.cpp"
 #include "generators/rosic_SineOscillator.cpp"
 #include "generators/rosic_SineOscillatorStereo.cpp"
 #include "generators/rosic_SuperOscillator.cpp"
 #include "generators/rosic_TestGenerator.cpp"
-//#include "generators/rosic_VectorSamplePlayer.cpp"    // needs LowFrequencyOscillator
-//#include "generators/rosic_WaveTable.cpp"               // needs WaveformRenderer
-
+#include "generators/rosic_WaveTable.cpp"
 
 // modulators:
 //#include "modulators/MagicCarpetModulator.cpp" // needs MagicCarpetDefinitions.h - where is this?
@@ -168,8 +166,16 @@ integrating it into the Chainer.
 #include "others/rosic_SlewRateLimiter.cpp"         // move to basics
 #include "others/rosic_SlewRateLimiterLinear.cpp"
 //#include "others/rosic_SlewRateLimiterOld.cpp"    // not used anymore
-//#include "modulators/rosic_LowFrequencyOscillator.cpp" // needs SlewRateLimiter, WaveTable
-//#include "modulators/rosic_Modulator.cpp"
+#include "modulators/rosic_LowFrequencyOscillator.cpp" // needs SlewRateLimiter, WaveTable
+#include "modulators/rosic_PitchEnvRc.cpp"
+#include "modulators/rosic_SampleModulator.cpp"
+#include "modulators/rosic_Modulator.cpp"              // needs SampleModulator
+
+
+
+//#include "generators/rosic_VectorSamplePlayer.cpp"    // needs LowFrequencyOscillator (in modulators)
+                                                        // and VectorMixer
+
 
 // others:
 //#include "others/rosic_DemoVersionNoiseEmitter.cpp" // may not be needed - needs AmpEnvRc

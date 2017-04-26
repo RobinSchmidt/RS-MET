@@ -346,10 +346,22 @@ namespace rosic
     }
   }
 
+
+  // for some reason, circularShiftInterpolated can't use the overloaded wrapAround function above
+  // ...it would use the integer version there, if we don't specifically call a differently named 
+  // version there - the compiler gives a warning about convering double-to-int ...which is not what
+  // we want there . so, having this function is a workaround:
+  INLINE double wrapAroundDbl(double numberToWrap, double length)
+  {
+    while( numberToWrap < 0.0 )
+      numberToWrap += length;  
+    return fmod(numberToWrap, length);
+  }
+
   template <class T>
   void circularShiftInterpolated(T *buffer, int length, double numPositions)
   {
-    double read = wrapAround(numPositions, (double) length);
+    double read = wrapAroundDbl(numPositions, (double) length);
     int    w    = 0;                       // write position
     int    r    = floorInt(read);          // integer part of read position     
     double f    = read-r;                  // fractional part of read position

@@ -164,7 +164,6 @@ INLINE double wholeNotesToSeconds(double noteValue, double bpm);
 /** Wraps the number to the interval 0...length. */
 INLINE double wrapAround(double numberToWrap, double length);
 
-
 /** This function should be called on program startup when automatic detection of memory leaks should be turned on. */
 inline void checkForMemoryLeaksOnExit()
 {  
@@ -477,5 +476,8 @@ INLINE double wrapAround(double numberToWrap, double length)
     numberToWrap += length;  
   return fmod(numberToWrap, length);
 }
+
+
+
 
 #endif // #ifndef GlobalFunctions_h
