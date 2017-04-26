@@ -16,7 +16,7 @@ MutexLock::MutexLock(char* mutexName)
   name = NULL;
   if( mutexName != NULL )
   {
-    int length = strlen(mutexName);
+    int length = (int) strlen(mutexName);
     name = new char[length+1];
     strcpy(name, mutexName);
   }
