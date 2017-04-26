@@ -1,3 +1,31 @@
+/*******************************************************************************
+ The block below describes the properties of this module, and is read by
+ the Projucer to automatically generate project code that uses it.
+ For details about the syntax and how to create or use a module, see the
+ JUCE Module Format.txt file.
+
+
+ BEGIN_JUCE_MODULE_DECLARATION
+
+  ID:               rosic
+  vendor:           RS-MET
+  version:          0.0.1
+  name:             Rob's Signal Processing Classes
+  description:      Library of audio DSP algorithms
+  website:          http://www.rs-met.com
+  license:          GPL/Commercial
+  
+  dependencies:     
+  OSXFrameworks:    
+  iOSFrameworks:    
+
+ END_JUCE_MODULE_DECLARATION
+
+*******************************************************************************/
+
+
+
+
 /**
 
 This is the main include file for the RoSiC (Robin's Signal Processing 
@@ -5,8 +33,8 @@ Classes) library.
 
 */
 
-#ifndef rosic_h
-#define rosic_h
+#ifndef ROSIC_H_INCLUDED
+#define ROSIC_H_INCLUDED
 
 #include "analysis/rosic_Analysis.h"
 #include "basics/rosic_Basics.h"
@@ -28,7 +56,7 @@ Classes) library.
 //#include "plugins/rosic_PlugIns.h"
 #include "transforms/rosic_Transforms.h"
 
-#endif // end of #ifndef rosic_h
+#endif // #ifndef ROSIC_H_INCLUDED
 
 
 
