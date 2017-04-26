@@ -62,6 +62,12 @@ integrating it into the Chainer.
 #include "math/rosic_PrimeNumbers.cpp"
 #include "math/rosic_Transformations.cpp"
 
+// transforms:
+#include "transforms/rosic_FourierTransformerRadix2.cpp"
+#include "transforms/rosic_FourierTransformerBluestein.cpp"
+#include "transforms/rosic_WaveletTransforms.cpp"
+#include "transforms/rosic_SpectralManipulator.cpp"  // maybe move to other folder
+
 // filters
 #include "filters/rosic_AllpassChain.cpp"
 #include "filters/rosic_BiquadBase.cpp"
@@ -75,7 +81,7 @@ integrating it into the Chainer.
 #include "filters/rosic_DampingFilter.cpp"
 #include "filters/rosic_CombResonator.cpp"
 #include "filters/rosic_ConvolverBruteForce.cpp"
-//#include "filters/rosic_ConvolverFFT.cpp"  // needs FFT from transforms folder
+#include "filters/rosic_ConvolverFFT.cpp"  // needs FFT from transforms folder
 
 
 // analysis:

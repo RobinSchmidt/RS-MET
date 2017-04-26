@@ -91,7 +91,7 @@ void rosic::radixTwoFastFourierTransform(Complex *in, Complex *out, int length, 
     le2 = le>>1;
     ur = 1.0;
     ui = 0.0;
-    arg = M_PI / (le2>>1);
+    arg = PI / (le2>>1);
     wr = cos(arg);
     wi = sign*sin(arg);
     //rosic::sinCos(arg, &wi, &wr);

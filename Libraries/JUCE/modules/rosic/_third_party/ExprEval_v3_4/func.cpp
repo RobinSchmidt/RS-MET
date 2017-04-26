@@ -3,6 +3,8 @@
 // Purpose: ExprEval internal functions
 //------------------------------------------------------------------------------
 
+//#define M_PI 3.1415926535897932384626433832795 // added by Robin Schmidt
+
 // Includes
 #include <new>
 #include <memory>
@@ -986,7 +988,7 @@ namespace
         
             double DoEvaluate()
                 {
-                return (m_nodes[0]->Evaluate() * 180.0) / M_PI;
+                return (m_nodes[0]->Evaluate() * 180.0) / 3.1415926535897932384626433832795;
                 }
         };
         
@@ -1016,7 +1018,7 @@ namespace
         
             double DoEvaluate()
                 {
-                return (m_nodes[0]->Evaluate() * M_PI) / 180.0;
+                return (m_nodes[0]->Evaluate() * 3.1415926535897932384626433832795) / 180.0;
                 }
         };
         
@@ -1059,7 +1061,7 @@ namespace
                     
                 *m_refs[0] = d;
                 if(a < 0.0)
-                    *m_refs[1] = a + (2.0 * M_PI);
+                    *m_refs[1] = a + (2.0 * 3.1415926535897932384626433832795);
                 else
                     *m_refs[1] = a;
                     
