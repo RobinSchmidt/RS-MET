@@ -471,12 +471,12 @@ void BreakpointModulator::setDepthByVel(double newDepthByVel)
 
 int BreakpointModulator::getNumBreakpoints() const
 {
-  return data->breakpoints.size();
+  return (int) data->breakpoints.size();
 }
 
 int BreakpointModulator::lastBreakpointIndex() const
 {
-  return data->breakpoints.size()-1;
+  return (int) data->breakpoints.size()-1;
 }
 
 double BreakpointModulator::getScaleFactor() const

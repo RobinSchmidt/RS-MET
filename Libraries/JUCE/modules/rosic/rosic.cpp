@@ -119,12 +119,33 @@ integrating it into the Chainer.
 #include "filters/rosic_WarpedBiquadMonoDF1.cpp"   // empty
 #include "filters/rosic_WhiteToPinkFilter.cpp"
 
+// modulators:
+//#include "modulators/MagicCarpetModulator.cpp" // needs MagicCarpetDefinitions.h - where is this?
+#include "modulators/rosic_AmpEnvRc.cpp"
+#include "modulators/rosic_AnalogEnvelope.cpp"
+#include "modulators/rosic_AnalogEnvelopeScaled.cpp"
+#include "modulators/rosic_AttackDecayEnvelope.cpp"
+#include "modulators/rosic_BreakpointModulator.cpp"
+#include "modulators/rosic_DecayEnvelope.cpp"
+#include "modulators/rosic_EnvelopeGenerator.cpp"
+#include "modulators/rosic_EnvelopeGenerator2.cpp"  // do we need this?
+#include "modulators/rosic_ExponentialRamp.cpp"
+#include "others/rosic_SlewRateLimiter.cpp"         // move to basics
+#include "others/rosic_SlewRateLimiterLinear.cpp"
+//#include "others/rosic_SlewRateLimiterOld.cpp"    // not used anymore
+//#include "modulators/rosic_LowFrequencyOscillator.cpp" // needs SlewRateLimiter, WaveTable
+//#include "modulators/rosic_Modulator.cpp"
+
+// others:
+//#include "others/rosic_DemoVersionNoiseEmitter.cpp" // may not be needed - needs AmpEnvRc
 
 // analysis:
-#include "analysis/rosic_CyclicAutoCorrelator.cpp"  // no dependencies
-//#include "analysis/rosic_EnvelopeFollower.cpp"
-//#include "analysis/rosic_FormantPreserver.cpp"
-//#include "analysis/rosic_FormantRemover.cpp"
+#include "analysis/rosic_CyclicAutoCorrelator.cpp" 
+//#include "analysis/rosic_EnvelopeFollower.cpp"    // needs SlewRateLimiter
+#include "analysis/rosic_LinearPredictor.cpp"
+#include "analysis/rosic_FormantRemover.cpp"
+#include "analysis/rosic_FormantPreserver.cpp"
+
 //#include "analysis/rosic_InstantaneousEnvelopeDetector.cpp"
 //#include "analysis/rosic_LevelDetector.cpp"
 

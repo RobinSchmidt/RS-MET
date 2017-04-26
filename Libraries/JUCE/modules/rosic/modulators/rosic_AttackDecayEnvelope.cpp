@@ -145,7 +145,7 @@ void AttackDecayEnvelope::calculateCoeffsAndInitValue()
   }
   else if( ta == td )
   {
-    np = tp*fs;
+    np = roundToInt(tp*fs);  // maybe we should use a double for np
     xp = (np+1)*ba*ba*pow(aa, (double)np);
     normalizer = 1/xp; 
   }
@@ -156,7 +156,7 @@ void AttackDecayEnvelope::calculateCoeffsAndInitValue()
     double b02 = s * ad*ba*bd;
     double a01 = s * (ad-aa)*aa;
     double a02 = s * (ad-aa)*ad;
-    np         = tp*fs;
+    np         = roundToInt(tp*fs);
     xp         = b01*pow(a01, (double)np) - b02*pow(a02, (double)np);
     normalizer = 1/xp;
   }
