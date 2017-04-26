@@ -132,9 +132,17 @@ integrating it into the Chainer.
 #include "generators/rosic_OscillatorBank.cpp"
 #include "generators/rosic_OscillatorStereo.cpp"
 #include "generators/rosic_FourOscSection.cpp"
-//#include "generators/rosic_Quadrigen.cpp"
-//#include "generators/rosic_SampleOscillator.cpp"
-//#include "generators/rosic_SamplePlayer.cpp"
+#include "infrastructure/rosic_Module.cpp"                 // needed by Quadrigen
+#include "others/rosic_RoutingMatrix.cpp"                  // needed by Quadrigen
+#include "generators/rosic_Quadrigen.cpp"                  // needs Module, RoutingMatrix
+#include "generators/rosic_SampleOscillator.cpp"
+#include "generators/rosic_SamplePlayer.cpp"
+#include "generators/rosic_SineOscillator.cpp"
+#include "generators/rosic_SineOscillatorStereo.cpp"
+#include "generators/rosic_SuperOscillator.cpp"
+#include "generators/rosic_TestGenerator.cpp"
+//#include "generators/rosic_VectorSamplePlayer.cpp"    // needs LowFrequencyOscillator
+//#include "generators/rosic_WaveTable.cpp"               // needs WaveformRenderer
 
 
 // modulators:

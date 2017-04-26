@@ -12,7 +12,7 @@ ModulatableParameter::ModulatableParameter(const char* name, double initialValue
   nominalValue = instantaneousValue = initialValue; 
   if( name != NULL )
   {
-    int length = strlen(name);
+    int length = (int) strlen(name);
     this->name = new char[length+1];
     for(int c=0; c<=length; c++) // the <= is valid here, because we have one more cell allocated
       this->name[c] = name[c];
