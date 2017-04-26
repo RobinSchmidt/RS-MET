@@ -70,6 +70,12 @@ integrating it into the Chainer.
 #include "filters/rosic_BiquadDesigner.cpp"
 #include "filters/rosic_BiquadMonoDF1.cpp"
 #include "filters/rosic_BiquadStereoDF1.cpp"
+#include "filters/rosic_BiquadStereoDF2.cpp"
+#include "filters/rosic_CombFilter.cpp"
+#include "filters/rosic_DampingFilter.cpp"
+#include "filters/rosic_CombResonator.cpp"
+#include "filters/rosic_ConvolverBruteForce.cpp"
+//#include "filters/rosic_ConvolverFFT.cpp"  // needs FFT from transforms folder
 
 
 // analysis:
