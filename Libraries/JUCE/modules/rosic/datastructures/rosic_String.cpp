@@ -21,7 +21,7 @@ String::String(const char *initialString)
 {
   if( initialString != NULL )
   {
-    length       = strlen(initialString);
+    length       = (int) strlen(initialString);
     reservedSize = length+1;
     cString      = new char[reservedSize];
     strcpy(cString, initialString);
@@ -281,7 +281,7 @@ void String::printToStandardOutput() const
 
 void String::readFromBuffer(char *sourceBuffer)
 {
-  int sourceLength = strlen(sourceBuffer);
+  int sourceLength = (int) strlen(sourceBuffer);
   allocateMemory(sourceLength);
   strcpy(cString, sourceBuffer);
 }
@@ -336,7 +336,7 @@ void String::initFromDoubleValue(double doubleValue)
   // strncpy is unreliable with respect to copying the terminating zero, so we do it manually:
   char tmpString[64];
   sprintf(tmpString, "%-.17gl", doubleValue);
-  length = strspn(tmpString, "0123456789+-.eE");
+  length = (int) strspn(tmpString, "0123456789+-.eE");
 
   tmpString[length] = '\0'; // maybe removed later
   length = removeGarbageFromDoubleString(tmpString, length);
@@ -350,7 +350,7 @@ void String::initFromDoubleValue(double doubleValue)
 
 int String::removeGarbageFromDoubleString(char *s, int length)
 {
-  int dummy;
+  //int dummy;
 
   // leave scientifically notated strings as is:
   if( rosic::findIndexOf(s, 'e', length) != -1 || rosic::findIndexOf(s, 'E', length) != -1 )

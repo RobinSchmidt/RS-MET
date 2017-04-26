@@ -12,7 +12,7 @@ header files that the compiler may be using. */
 in the library accordingly, such that files in one library folder depend only on other files in 
 folders that are considered "above" in the hierarchy. */
 
-// basics (but we needed to intersperse some stuff from other folders):
+// basics (but we needed to intersperse some stuff from other folders)
 #include "basics/GlobalFunctions.cpp"
 #include "basics/rosic_ChannelMatrix2x2.cpp"
 #include "basics/rosic_Constants.cpp"                        // empty
@@ -33,6 +33,13 @@ folders that are considered "above" in the hierarchy. */
 #include "basics/rosic_TabulatedFunction.cpp"                // needs ExpressionEvaluator
 #include "basics/rosic_WarpedAllpassInterpolator.cpp"
 #include "basics/rosic_WindowDesigner.cpp"
+
+// datastructures
+#include "datastructures/rosic_Array.cpp"                    // empty
+#include "datastructures/rosic_ExtensionsForSTL.cpp"         // empty
+#include "datastructures/rosic_KeyValueMap.cpp"              // empty
+#include "datastructures/rosic_String.cpp"
+
 
 
 
