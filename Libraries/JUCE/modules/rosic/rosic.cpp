@@ -12,28 +12,28 @@ header files that the compiler may be using. */
 in the library accordingly, such that files in one library folder depend only on other files in 
 folders that are considered "above" in the hierarchy. */
 
+// basics (but we needed to intersperse some stuff from other folders):
 #include "basics/GlobalFunctions.cpp"
 #include "basics/rosic_ChannelMatrix2x2.cpp"
-#include "basics/rosic_Constants.cpp"                  // empty
-#include "basics/rosic_FunctionTemplates.cpp"          // empty
+#include "basics/rosic_Constants.cpp"                        // empty
+#include "basics/rosic_FunctionTemplates.cpp"                // empty
 #include "basics/rosic_HelperFunctions.cpp"
 #include "basics/rosic_Interpolator.cpp"
-#include "basics/rosic_NumberManipulations.cpp"        // empty
-#include "infrastructure/rosic_MutexLock.cpp"          // used by SampleBuffer
+#include "basics/rosic_NumberManipulations.cpp"              // empty
+#include "infrastructure/rosic_MutexLock.cpp"                // used by SampleBuffer
 #include "basics/rosic_SampleBuffer.cpp"
 #include "basics/rosic_SamplePlaybackParameters.cpp"
-
 #include "math/rosic_ElementaryFunctionsReal.cpp"            // used by SpecialFunctionsReal?
 #include "math/rosic_RealFunctionEvaluationAlgorithms.cpp"   // used by SpecialFunctionsReal
 #include "math/rosic_SpecialFunctionsReal.cpp"               // used by ComplexFunctions?
-
-#include "math/rosic_Complex.cpp"                      // used by ComplexFunctionsAlgorithms
+#include "math/rosic_Complex.cpp"                            // used by ComplexFunctionsAlgorithms
 #include "math/rosic_ComplexFunctionsAlgorithms.cpp" 
-#include "math/rosic_ComplexFunctions.cpp"             // used by ExpressionEvaluator
+#include "math/rosic_ComplexFunctions.cpp"                   // used by ExpressionEvaluator
+#include "scripting/rosic_ExpressionEvaluator.cpp"           // used by TabulatedFunction
+#include "basics/rosic_TabulatedFunction.cpp"                // needs ExpressionEvaluator
+#include "basics/rosic_WarpedAllpassInterpolator.cpp"
+#include "basics/rosic_WindowDesigner.cpp"
 
-#include "scripting/rosic_ExpressionEvaluator.cpp"     // used by TabulatedFunction
-
-//#include "basics/rosic_TabulatedFunction.cpp" // needs ExpressionEvaluator
 
 
 // analysis:
