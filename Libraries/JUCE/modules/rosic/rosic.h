@@ -26,15 +26,12 @@
 
 
 
-/**
-
-This is the main include file for the RoSiC (Robin's Signal Processing 
-Classes) library.
-
-*/
+/** ToDo: re-order the includes in the order in whcih they depend on each other */
 
 #ifndef ROSIC_H_INCLUDED
 #define ROSIC_H_INCLUDED
+
+
 
 #include "analysis/rosic_Analysis.h"
 #include "basics/rosic_Basics.h"
