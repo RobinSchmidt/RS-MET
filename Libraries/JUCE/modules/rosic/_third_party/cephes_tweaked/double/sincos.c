@@ -101,7 +101,7 @@
  */
 
 
-#include "mconf.h"
+//#include "mconf.h"
 
 /* Define one of the following to be 1:
  */
@@ -226,11 +226,11 @@ static double sintbl[92] = {
   9.99847695156391239157E-1,
 };
 
-#ifdef ANSIPROT
-double floor ( double );
-#else
-double floor();
-#endif
+//#ifdef ANSIPROT
+//double floor ( double );
+//#else
+//double floor();
+//#endif
 
 int sincos(double x, double *s, double *c, int flg)
 //double x;
@@ -258,7 +258,7 @@ x = x  -  360.0 * floor( x/360.0 );
  * Note there should be a domain error test here,
  * but this is omitted to gain speed.
  */
-ix = x + 0.5;
+ix = (int) (x + 0.5);
 z = x - ix;		/* the residual */
 
 /* Look up the sine and cosine of the integer.

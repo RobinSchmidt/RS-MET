@@ -55,7 +55,7 @@ Direct inquiries to 30 Frost Street, Cambridge, MA 02140
 */
 
 #include <stdio.h>
-#include "mconf.h"
+//#include "mconf.h"
 
 int merror = 0;
 
@@ -74,9 +74,9 @@ static char *ermsg[7] = {
 };
 
 
-int mtherr( name, code )
-char *name;
-int code;
+int mtherr(char*  name, int code)
+//char *name;
+//int code;
 {
 
 /* Display string passed by calling program,

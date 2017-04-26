@@ -87,7 +87,7 @@ bool ExpressionEvaluator::setExpressionString(const char* newExpressionString)
   }
   if( newExpressionString != NULL )
   {
-    int length = strlen(newExpressionString);
+    int length = (int) strlen(newExpressionString);
     expressionString = new char[length+1];
     if( expressionString != NULL )
     {

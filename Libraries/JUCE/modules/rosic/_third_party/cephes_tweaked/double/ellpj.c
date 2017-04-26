@@ -61,7 +61,7 @@ Cephes Math Library Release 2.8:  June, 2000
 Copyright 1984, 1987, 2000 by Stephen L. Moshier
 */
 
-#include "mconf.h"
+//#include "mconf.h"
 #ifdef ANSIPROT
 extern double sqrt ( double );
 extern double fabs ( double );

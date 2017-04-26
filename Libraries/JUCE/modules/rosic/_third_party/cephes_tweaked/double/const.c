@@ -60,7 +60,7 @@ Copyright 1984, 1995 by Stephen L. Moshier
 */
 
 #include <float.h>
-#include "mconf.h"
+//#include "mconf.h"
 
 #ifdef UNK
 #if 1
@@ -78,10 +78,10 @@ double MAXLOG =  7.08396418532264106224E2;     /* log 2**1022 */
 double MINLOG = -7.08396418532264106224E2;     /* log 2**-1022 */
 #endif
 double MAXNUM =  1.79769313486231570815E308;    /* 2**1024*(1-MACHEP) */
-double PI     =  3.14159265358979323846;       /* pi */
+//double PI     =  3.14159265358979323846;       /* pi */  // #defined by rosic
 double PIO2   =  1.57079632679489661923;       /* pi/2 */
 double PIO4   =  7.85398163397448309616E-1;    /* pi/4 */
-double SQRT2  =  1.41421356237309504880;       /* sqrt(2) */
+//double SQRT2  =  1.41421356237309504880;       /* sqrt(2) */  // #defined by rosic
 double SQRTH  =  7.07106781186547524401E-1;    /* sqrt(2)/2 */
 double LOG2E  =  1.4426950408889634073599;     /* 1/log(2) */
 double SQ2OPI =  7.9788456080286535587989E-1;  /* sqrt( 2/pi ) */
@@ -100,12 +100,13 @@ double TWOOPI =  6.36619772367581343075535E-1; /* 2/pi */
   double INFINITY = (*(reinterpret_cast<double *>(&INF_ULL)))
 	*/
 
-#ifdef _MSC_VER
-  //double INFINITY = 0x7ff0000000000000; // changed from: double INFINITY = 1.0/0.0;  /* 99e999; */
-  double INFINITY = (8.0*DBL_MAX);
-#else
-  double INFINITY = 1.0/0.0;
-#endif
+//// #defined by rosic
+//#ifdef _MSC_VER
+//  //double INFINITY = 0x7ff0000000000000; // changed from: double INFINITY = 1.0/0.0;  /* 99e999; */
+//  double INFINITY = (8.0*DBL_MAX);
+//#else
+//  double INFINITY = 1.0/0.0;
+//#endif
 
 #else 
   double INFINITY =  1.79769313486231570815E308;    /* 2**1024*(1-MACHEP) */
@@ -113,12 +114,13 @@ double TWOOPI =  6.36619772367581343075535E-1; /* 2/pi */
 
 #ifdef NANS
 
-#ifdef _MSC_VER
-  //double NAN = 0xfff8000000000000; // changed from double NAN = 1.0/0.0 - 1.0/0.0;
-  double NAN = ((8.0*DBL_MAX)-(8.0*DBL_MAX));
-#else
-  double NAN = 1.0/0.0 - 1.0/0.0;
-#endif
+//// #defined in rosic
+//#ifdef _MSC_VER
+//  //double NAN = 0xfff8000000000000; // changed from double NAN = 1.0/0.0 - 1.0/0.0;
+//  double NAN = ((8.0*DBL_MAX)-(8.0*DBL_MAX));
+//#else
+//  double NAN = 1.0/0.0 - 1.0/0.0;
+//#endif
 
 #else
 double NAN = 0.0;

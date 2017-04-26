@@ -1,6 +1,12 @@
 #include "rosic_SpecialFunctionsReal.h"
 using namespace rosic;
 
+#include "../_third_party/cephes_tweaked/double/mconf.h"
+#include "../_third_party/cephes_tweaked/double/mtherr.c"
+#include "../_third_party/cephes_tweaked/double/const.c"
+#include "../_third_party/cephes_tweaked/double/sincos.c"
+#include "../_third_party/cephes_tweaked/double/ellpj.c"
+
 double rosic::besselI0(double x)
 {
   // use the power series expansion (see Shenoi - Introduction to Digital Signal Processing and Filter Design, eq. 5.42, page 268):
