@@ -81,7 +81,17 @@ integrating it into the Chainer.
 #include "filters/rosic_DampingFilter.cpp"
 #include "filters/rosic_CombResonator.cpp"
 #include "filters/rosic_ConvolverBruteForce.cpp"
-#include "filters/rosic_ConvolverFFT.cpp"  // needs FFT from transforms folder
+#include "filters/rosic_ConvolverFFT.cpp"
+#include "filters/rosic_ConvolverPartitioned.cpp"
+#include "filters/rosic_CookbookFilter.cpp"
+#include "filters/rosic_PrototypeDesigner.cpp"
+#include "filters/rosic_PoleZeroMapper.cpp"
+#include "filters/rosic_FilterCoefficientConverter.cpp"
+#include "filters/rosic_InfiniteImpulseResponseDesigner.cpp"
+#include "filters/rosic_EngineersFilter.cpp"
+#include "filters/rosic_LinkwitzRileyCrossOver.cpp"
+#include "filters/rosic_CrossOver4Way.cpp"
+
 
 
 // analysis:
