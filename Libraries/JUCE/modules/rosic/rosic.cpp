@@ -119,6 +119,24 @@ integrating it into the Chainer.
 #include "filters/rosic_WarpedBiquadMonoDF1.cpp"   // empty
 #include "filters/rosic_WhiteToPinkFilter.cpp"
 
+// generators:
+#include "generators/rosic_MipMappedWaveTable.cpp"
+#include "generators/rosic_MipMappedWaveTableOld.cpp"      // can this be removed?
+#include "generators/rosic_MipMappedWaveTableStereo.cpp"
+#include "generators/rosic_BlendOscillator.cpp"
+#include "generators/rosic_LorentzSystem.cpp"
+#include "generators/rosic_ModalSynthesizer.cpp"           // replace with code from RSLib
+#include "generators/rosic_NoiseGenerator.cpp"
+#include "generators/rosic_NoiseGeneratorOld.cpp"          // can this be removed?
+#include "generators/rosic_Oscillator.cpp"
+#include "generators/rosic_OscillatorBank.cpp"
+#include "generators/rosic_OscillatorStereo.cpp"
+#include "generators/rosic_FourOscSection.cpp"
+//#include "generators/rosic_Quadrigen.cpp"
+//#include "generators/rosic_SampleOscillator.cpp"
+//#include "generators/rosic_SamplePlayer.cpp"
+
+
 // modulators:
 //#include "modulators/MagicCarpetModulator.cpp" // needs MagicCarpetDefinitions.h - where is this?
 #include "modulators/rosic_AmpEnvRc.cpp"

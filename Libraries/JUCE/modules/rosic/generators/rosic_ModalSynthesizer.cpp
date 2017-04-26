@@ -238,8 +238,8 @@ void ModalSynthesizer::setSampleRate(double newSampleRate)
   calculateModalFilterCoefficients();
 }
 
-void ModalSynthesizer::setModalParameters(Vector newFrequencies, Vector newAmplitudes, 
-                                          Vector newDecayTimes, Vector newStartPhases)
+void ModalSynthesizer::setModalParameters(rosic::Vector newFrequencies, 
+  rosic::Vector newAmplitudes, rosic::Vector newDecayTimes, rosic::Vector newStartPhases)
 {
   frequencies = newFrequencies;
   amplitudes  = newAmplitudes;

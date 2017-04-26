@@ -121,7 +121,7 @@ void MipMappedWaveTableStereo::setSampleName(char *newSampleName)
   }
   if( newSampleName != NULL )
   {
-    int newLength    = strlen(newSampleName);
+    int newLength    = (int) strlen(newSampleName);
     sampleName       = new char[newLength+1];
     for(int c=0; c<=newLength; c++) // the <= is valid here, because we have one more cell allocated
       sampleName[c] = newSampleName[c];
