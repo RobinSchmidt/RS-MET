@@ -91,7 +91,30 @@ integrating it into the Chainer.
 #include "filters/rosic_EngineersFilter.cpp"
 #include "filters/rosic_LinkwitzRileyCrossOver.cpp"
 #include "filters/rosic_CrossOver4Way.cpp"
+#include "filters/rosic_DirectFormFilter.cpp"
+#include "filters/rosic_TwoPoleFilter.cpp"
+#include "filters/rosic_DualTwoPoleFilter.cpp"
+#include "filters/rosic_EllipticQuarterBandFilter.cpp"
+#include "filters/rosic_EllipticSubBandFilter.cpp"
+#include "filters/rosic_EllipticSubBandFilterDirectForm.cpp"
+#include "filters/rosic_Equalizer.cpp"
+#include "filters/rosic_EqualizerStereo.cpp"
+#include "filters/rosic_FiniteImpulseResponseDesigner.cpp"
+#include "filters/rosic_FiniteImpulseResponseFilter.cpp"
+#include "filters/rosic_FourPoleFilter.cpp"
+#include "filters/rosic_OnePoleFilter.cpp"
+#include "filters/rosic_OnePoleFilterStereo.cpp"
+#include "filters/rosic_LadderFilter.cpp"
+#include "filters/rosic_LeakyIntegrator.cpp"
+#include "filters/rosic_LowpassHighpass.cpp"
+#include "filters/rosic_LowpassHighpassStereo.cpp"
+#include "filters/rosic_LpfHpfApf.cpp"
 
+#include "filters/rosic_NyquistBlocker.cpp"
+#include "filters/rosic_QuadratureNetwork.cpp"
+#include "filters/rosic_SlopeFilter.cpp"
+
+//#include "filters
 
 
 // analysis:

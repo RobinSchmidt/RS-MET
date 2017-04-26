@@ -41,7 +41,7 @@ int Equalizer::addBand(int newMode, double newFrequency, double newGain, double 
   newBand.setSampleRate(sampleRate);
 
   bands.push_back(newBand);
-  result = bands.size()-1;
+  result = (int) bands.size()-1;
   
   return result;
 }
@@ -122,7 +122,7 @@ bool Equalizer::setUpperBandedgeFrequency(unsigned int index, double newUpperBan
 
 int Equalizer::getNumBands()
 {
-  return bands.size();
+  return (int) bands.size();
 }
 
 int Equalizer::getBandMode(unsigned int index)
