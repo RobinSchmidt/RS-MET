@@ -67,8 +67,10 @@ double FilterAnalyzer::findAnalogFrequencyWithMagnitude(Complex *z, Complex *p, 
     AM = FilterAnalyzer::getAnalogMagnitudeResponseAt(z, p, *k, N, wM);
     i++;
 
-    if( abs(wM-wOld) < eps*std::min(wOld, wM) ) // 2nd convergence cirterion based on frequency difference - maybe use as only criterion
+    if( abs(wM-wOld) < eps * min(wOld, wM) ) // 2nd convergence cirterion based on frequency difference - maybe use as only criterion
       break;  
+    //if( abs(wM-wOld) < eps * std::min(wOld, wM) ) // 2nd convergence cirterion based on frequency difference - maybe use as only criterion
+    //  break;  
   }
 
   if( i >= iMax )

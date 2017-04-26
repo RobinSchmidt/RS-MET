@@ -8,9 +8,20 @@ header files that the compiler may be using. */
 
 #include "rosic.h"
 
-/** The cpp files are included in the order in which they depend on each other. ToDo: reorder them 
-in the library accordingly, such that files in one library folder depend only on other files in 
-folders that are considered "above" in the hierarchy. */
+/** The cpp files are included in the order in which they depend on each other. 
+ToDo: reorder them in the library accordingly, such that files in one library folder depend only on 
+other files in folders that are considered "above" in the hierarchy. 
+In the future, rosic should be made dependent on the RAPT library and whereever it makes sense, the
+rosic-class should be turned into an template instatiation of  RAPT class template.
+jura_processors should depend on the rosic module and grab its DSP code from there
+rename modules:
+rosic: rs_dsp (this should never depend on any juce class/module)
+jura_framework: rs_framework
+jura_processors: rs_audio_processors
+...namespace name should be rs (but do all of this only after dragging in all old plugin code and 
+integrating it into the Chainer.
+
+*/
 
 // basics (but we needed to intersperse some stuff from other folders)
 #include "basics/GlobalFunctions.cpp"
@@ -51,6 +62,14 @@ folders that are considered "above" in the hierarchy. */
 #include "math/rosic_PrimeNumbers.cpp"
 #include "math/rosic_Transformations.cpp"
 
+// filters
+#include "filters/rosic_AllpassChain.cpp"
+#include "filters/rosic_BiquadBase.cpp"
+#include "filters/rosic_FilterAnalyzer.cpp"
+#include "filters/rosic_BiquadCascade.cpp"
+#include "filters/rosic_BiquadDesigner.cpp"
+#include "filters/rosic_BiquadMonoDF1.cpp"
+#include "filters/rosic_BiquadStereoDF1.cpp"
 
 
 // analysis:
