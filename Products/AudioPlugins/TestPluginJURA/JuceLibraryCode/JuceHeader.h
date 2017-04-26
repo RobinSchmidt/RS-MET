@@ -28,6 +28,7 @@
 #include <juce_gui_extra/juce_gui_extra.h>
 #include <jura_framework/jura_framework.h>
 #include <jura_processors/jura_processors.h>
+#include <rosic/rosic.h>
 
 #include "BinaryData.h"
 

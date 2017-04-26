@@ -398,6 +398,114 @@
     <Filter Include="Juce Modules\jura_processors\modulators">
       <UniqueIdentifier>{F3BE0A48-927D-212D-4616-74156915FA80}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Juce Modules\rosic">
+      <UniqueIdentifier>{0624B2DA-7EBA-9F95-A793-0F3B9F53A8DF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rosic\_third_party">
+      <UniqueIdentifier>{BC43E6A8-76F8-540D-7309-A290CC4DC86E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rosic\_third_party\angelscript">
+      <UniqueIdentifier>{3B0405BB-D770-D76A-12A3-18C3375C3296}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rosic\_third_party\cephes_tweaked">
+      <UniqueIdentifier>{B67FD7ED-C590-4F04-C3E1-2EC545EA1554}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rosic\_third_party\cephes_tweaked\double">
+      <UniqueIdentifier>{8D63E5CE-1629-5F45-DA8F-B93851220349}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rosic\_third_party\ExprEval_v3_4">
+      <UniqueIdentifier>{99A166E4-CD4B-1368-38C4-395E38CFC2DD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rosic\_third_party\ExprEval_v3_4\docs">
+      <UniqueIdentifier>{4DDB2C7B-9ED8-EE44-2750-3FD8C9F970C1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rosic\_third_party\ExprEval_v3_4\test">
+      <UniqueIdentifier>{C3DA972B-6FCE-09E5-BB12-C10E388782B5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rosic\_third_party\kiss_fft_v1_2_6">
+      <UniqueIdentifier>{505E7BB8-51AB-7699-5642-293196F6B810}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rosic\_third_party\kiss_fft_v1_2_6\test">
+      <UniqueIdentifier>{2C9F7218-663F-237D-9600-6AE66534E5FA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rosic\_third_party\kiss_fft_v1_2_6\tools">
+      <UniqueIdentifier>{ED02845E-C3E1-EC3D-D416-0C91635DF64E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rosic\_third_party\ooura_fft">
+      <UniqueIdentifier>{078EF113-87E3-B4FE-4E43-0461DCD0FA98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rosic\_third_party\ooura_fft\sample1">
+      <UniqueIdentifier>{CA3698E4-C742-9077-446E-E3AF01766124}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rosic\_third_party\ooura_fft\sample2">
+      <UniqueIdentifier>{442A17F6-AE05-7526-9108-95513941C26C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rosic\_third_party\soundtouch">
+      <UniqueIdentifier>{447B93E0-F603-5EE1-ABE6-6139F4C1F1C1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rosic\analysis">
+      <UniqueIdentifier>{276694CF-CD98-9FDB-C58E-EF512A34BEE0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rosic\basics">
+      <UniqueIdentifier>{60A056A1-450E-D416-0C15-D0F10210A0A9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rosic\datastructures">
+      <UniqueIdentifier>{8A712136-C264-C28A-F7AC-BD7D7119878A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rosic\delaylines">
+      <UniqueIdentifier>{BE9D0A39-7DB6-1E1D-872B-4FA9057D25F3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rosic\dynamics">
+      <UniqueIdentifier>{55EC2A7F-ED80-CEA1-3063-17142E3B696E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rosic\effects">
+      <UniqueIdentifier>{CF758C07-287E-C07F-E51C-6FB48E3E3B95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rosic\filters">
+      <UniqueIdentifier>{3D2B5E25-7511-B3B6-9F41-229C2E7F51C7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rosic\generators">
+      <UniqueIdentifier>{0CCEE141-E075-2DD7-5E24-D63EB8AF7AA9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rosic\infrastructure">
+      <UniqueIdentifier>{21F98C13-EE72-4931-51A7-62789B479ADF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rosic\instruments">
+      <UniqueIdentifier>{E239FFE2-8F0B-D159-618A-D9870030259E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rosic\legacy">
+      <UniqueIdentifier>{DC4F5699-9649-4DEC-0723-3BA723D17ED9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rosic\math">
+      <UniqueIdentifier>{28884D68-8C3A-6187-E709-25DEE88C9F5E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rosic\modulators">
+      <UniqueIdentifier>{E7C8320C-7319-8CC6-9436-6DBF0DB9E87C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rosic\neural">
+      <UniqueIdentifier>{8747D329-B986-8F0E-0E09-EC592FBF98B4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rosic\numerical">
+      <UniqueIdentifier>{9349E120-DE3C-A8A5-482D-9A3292AFC28E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rosic\others">
+      <UniqueIdentifier>{C0D22416-D0CE-D996-717F-4877D6325D7A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rosic\rendering">
+      <UniqueIdentifier>{324D3A1E-DAAB-767C-D6A5-43E37C839CEA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rosic\scripting">
+      <UniqueIdentifier>{D928869A-6122-3C98-40A3-63CED0D697C8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rosic\scripting\bindings">
+      <UniqueIdentifier>{304A5C98-5DDA-4FCC-0D8E-46F48E44F5E3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rosic\sequencing">
+      <UniqueIdentifier>{E198B133-5005-7A20-A4FB-499AF25E68DA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rosic\transforms">
+      <UniqueIdentifier>{DD4EEF42-770F-71AE-01DC-2AB78CCFF66C}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Juce Library Code">
       <UniqueIdentifier>{8B4D1BAA-6DB4-CAEC-A0FA-271F354D5C61}</UniqueIdentifier>
     </Filter>
@@ -2305,6 +2413,1221 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\jura_processors.cpp">
       <Filter>Juce Modules\jura_processors</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_arrayobject.cpp">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_builder.cpp">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_bytecode.cpp">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_c.cpp">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_callfunc.cpp">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_callfunc_mips.cpp">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_callfunc_ppc.cpp">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_callfunc_sh4.cpp">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_callfunc_x86.cpp">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_compiler.cpp">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_configgroup.cpp">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_context.cpp">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_datatype.cpp">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_generic.cpp">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_memory.cpp">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_module.cpp">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_objecttype.cpp">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_outputbuffer.cpp">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_parser.cpp">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_restore.cpp">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_scriptcode.cpp">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_scriptengine.cpp">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_scriptfunction.cpp">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_scriptnode.cpp">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_scriptstruct.cpp">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_string.cpp">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_string_util.cpp">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_thread.cpp">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_tokenizer.cpp">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_typeinfo.cpp">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_variablescope.cpp">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\cephes_tweaked\double\const.c">
+      <Filter>Juce Modules\rosic\_third_party\cephes_tweaked\double</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\cephes_tweaked\double\ellpj.c">
+      <Filter>Juce Modules\rosic\_third_party\cephes_tweaked\double</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\cephes_tweaked\double\mtherr.c">
+      <Filter>Juce Modules\rosic\_third_party\cephes_tweaked\double</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\cephes_tweaked\double\sincos.c">
+      <Filter>Juce Modules\rosic\_third_party\cephes_tweaked\double</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ExprEval_v3_4\test\test.cpp">
+      <Filter>Juce Modules\rosic\_third_party\ExprEval_v3_4\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ExprEval_v3_4\datalist.cpp">
+      <Filter>Juce Modules\rosic\_third_party\ExprEval_v3_4</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ExprEval_v3_4\except.cpp">
+      <Filter>Juce Modules\rosic\_third_party\ExprEval_v3_4</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ExprEval_v3_4\expr.cpp">
+      <Filter>Juce Modules\rosic\_third_party\ExprEval_v3_4</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ExprEval_v3_4\func.cpp">
+      <Filter>Juce Modules\rosic\_third_party\ExprEval_v3_4</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ExprEval_v3_4\funclist.cpp">
+      <Filter>Juce Modules\rosic\_third_party\ExprEval_v3_4</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ExprEval_v3_4\node.cpp">
+      <Filter>Juce Modules\rosic\_third_party\ExprEval_v3_4</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ExprEval_v3_4\parser.cpp">
+      <Filter>Juce Modules\rosic\_third_party\ExprEval_v3_4</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ExprEval_v3_4\vallist.cpp">
+      <Filter>Juce Modules\rosic\_third_party\ExprEval_v3_4</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\test\benchfftw.c">
+      <Filter>Juce Modules\rosic\_third_party\kiss_fft_v1_2_6\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\test\benchkiss.c">
+      <Filter>Juce Modules\rosic\_third_party\kiss_fft_v1_2_6\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\test\doit.c">
+      <Filter>Juce Modules\rosic\_third_party\kiss_fft_v1_2_6\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\test\pstats.c">
+      <Filter>Juce Modules\rosic\_third_party\kiss_fft_v1_2_6\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\test\tailscrap.m">
+      <Filter>Juce Modules\rosic\_third_party\kiss_fft_v1_2_6\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\test\test_real.c">
+      <Filter>Juce Modules\rosic\_third_party\kiss_fft_v1_2_6\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\test\test_vs_dft.c">
+      <Filter>Juce Modules\rosic\_third_party\kiss_fft_v1_2_6\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\test\twotonetest.c">
+      <Filter>Juce Modules\rosic\_third_party\kiss_fft_v1_2_6\test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\tools\fftutil.c">
+      <Filter>Juce Modules\rosic\_third_party\kiss_fft_v1_2_6\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\tools\kfc.c">
+      <Filter>Juce Modules\rosic\_third_party\kiss_fft_v1_2_6\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\tools\kiss_fastfir.c">
+      <Filter>Juce Modules\rosic\_third_party\kiss_fft_v1_2_6\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\tools\kiss_fftnd.c">
+      <Filter>Juce Modules\rosic\_third_party\kiss_fft_v1_2_6\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\tools\kiss_fftndr.c">
+      <Filter>Juce Modules\rosic\_third_party\kiss_fft_v1_2_6\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\tools\kiss_fftr.c">
+      <Filter>Juce Modules\rosic\_third_party\kiss_fft_v1_2_6\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\tools\psdpng.c">
+      <Filter>Juce Modules\rosic\_third_party\kiss_fft_v1_2_6\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\kiss_fft.c">
+      <Filter>Juce Modules\rosic\_third_party\kiss_fft_v1_2_6</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ooura_fft\sample1\testxg.c">
+      <Filter>Juce Modules\rosic\_third_party\ooura_fft\sample1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ooura_fft\sample1\testxg_h.c">
+      <Filter>Juce Modules\rosic\_third_party\ooura_fft\sample1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ooura_fft\sample2\pi_fft.c">
+      <Filter>Juce Modules\rosic\_third_party\ooura_fft\sample2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ooura_fft\fft4g.c">
+      <Filter>Juce Modules\rosic\_third_party\ooura_fft</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ooura_fft\fft4g_h.c">
+      <Filter>Juce Modules\rosic\_third_party\ooura_fft</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ooura_fft\fft8g.c">
+      <Filter>Juce Modules\rosic\_third_party\ooura_fft</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ooura_fft\fft8g_h.c">
+      <Filter>Juce Modules\rosic\_third_party\ooura_fft</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ooura_fft\fftsg.c">
+      <Filter>Juce Modules\rosic\_third_party\ooura_fft</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ooura_fft\fftsg_h.c">
+      <Filter>Juce Modules\rosic\_third_party\ooura_fft</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\soundtouch\WavFile.cpp">
+      <Filter>Juce Modules\rosic\_third_party\soundtouch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_CyclicAutoCorrelator.cpp">
+      <Filter>Juce Modules\rosic\analysis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_EnvelopeFollower.cpp">
+      <Filter>Juce Modules\rosic\analysis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_FormantPreserver.cpp">
+      <Filter>Juce Modules\rosic\analysis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_FormantRemover.cpp">
+      <Filter>Juce Modules\rosic\analysis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_InstantaneousEnvelopeDetector.cpp">
+      <Filter>Juce Modules\rosic\analysis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_LevelDetector.cpp">
+      <Filter>Juce Modules\rosic\analysis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_LinearPredictor.cpp">
+      <Filter>Juce Modules\rosic\analysis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_OscilloscopeBufferOld.cpp">
+      <Filter>Juce Modules\rosic\analysis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_PitchDetector.cpp">
+      <Filter>Juce Modules\rosic\analysis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_SignalMeasures.cpp">
+      <Filter>Juce Modules\rosic\analysis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_SpectrumAnalyzer.cpp">
+      <Filter>Juce Modules\rosic\analysis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_TrackMeter.cpp">
+      <Filter>Juce Modules\rosic\analysis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_WaveformDisplayBuffer.cpp">
+      <Filter>Juce Modules\rosic\analysis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\GlobalFunctions.cpp">
+      <Filter>Juce Modules\rosic\basics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_ChannelMatrix2x2.cpp">
+      <Filter>Juce Modules\rosic\basics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_Constants.cpp">
+      <Filter>Juce Modules\rosic\basics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_FunctionTemplates.cpp">
+      <Filter>Juce Modules\rosic\basics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_HelperFunctions.cpp">
+      <Filter>Juce Modules\rosic\basics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_Interpolator.cpp">
+      <Filter>Juce Modules\rosic\basics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_NumberManipulations.cpp">
+      <Filter>Juce Modules\rosic\basics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_SampleBuffer.cpp">
+      <Filter>Juce Modules\rosic\basics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_SamplePlaybackParameters.cpp">
+      <Filter>Juce Modules\rosic\basics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_TabulatedFunction.cpp">
+      <Filter>Juce Modules\rosic\basics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_WarpedAllpassInterpolator.cpp">
+      <Filter>Juce Modules\rosic\basics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_WindowDesigner.cpp">
+      <Filter>Juce Modules\rosic\basics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\datastructures\rosic_Array.cpp">
+      <Filter>Juce Modules\rosic\datastructures</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\datastructures\rosic_ExtensionsForSTL.cpp">
+      <Filter>Juce Modules\rosic\datastructures</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\datastructures\rosic_KeyValueMap.cpp">
+      <Filter>Juce Modules\rosic\datastructures</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\datastructures\rosic_String.cpp">
+      <Filter>Juce Modules\rosic\datastructures</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\delaylines\rosic_AllpassDiffusor.cpp">
+      <Filter>Juce Modules\rosic\delaylines</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\delaylines\rosic_BasicIntegerDelayLine.cpp">
+      <Filter>Juce Modules\rosic\delaylines</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\delaylines\rosic_DelayLineStereo.cpp">
+      <Filter>Juce Modules\rosic\delaylines</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\delaylines\rosic_EchoLabDelayLine.cpp">
+      <Filter>Juce Modules\rosic\delaylines</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\delaylines\rosic_FractionalDelayLine.cpp">
+      <Filter>Juce Modules\rosic\delaylines</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\delaylines\rosic_FractionalDelayLineStereo.cpp">
+      <Filter>Juce Modules\rosic\delaylines</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\delaylines\rosic_IntegerDelayLine.cpp">
+      <Filter>Juce Modules\rosic\delaylines</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\delaylines\rosic_ModulatedDelayLine.cpp">
+      <Filter>Juce Modules\rosic\delaylines</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\delaylines\rosic_PingPongEcho.cpp">
+      <Filter>Juce Modules\rosic\delaylines</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\dynamics\rosic_BesselFilterForGainSignal.cpp">
+      <Filter>Juce Modules\rosic\dynamics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\dynamics\rosic_Compressor.cpp">
+      <Filter>Juce Modules\rosic\dynamics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\dynamics\rosic_DynamicsProcessorBase.cpp">
+      <Filter>Juce Modules\rosic\dynamics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\dynamics\rosic_Expander.cpp">
+      <Filter>Juce Modules\rosic\dynamics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\dynamics\rosic_Limiter.cpp">
+      <Filter>Juce Modules\rosic\dynamics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\dynamics\rosic_NoiseGate.cpp">
+      <Filter>Juce Modules\rosic\dynamics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\dynamics\rosic_SoftKneeCompressor.cpp">
+      <Filter>Juce Modules\rosic\dynamics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\dynamics\rosic_SoftKneeExpander.cpp">
+      <Filter>Juce Modules\rosic\dynamics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_AlgoVerb.cpp">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_AudioToMidi.cpp">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_BitCrusher.cpp">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_Chorus.cpp">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_CombBank.cpp">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_CombResonatorStereo.cpp">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_CombStereoizer.cpp">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_CompShaper.cpp">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_DelayPhaser.cpp">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_Distortion.cpp">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_EchoLab.cpp">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_FeedbackDelayNetwork.cpp">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_FeedbackDelayNetwork8.cpp">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_FeedbackDelayNetwork16.cpp">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_Flanger.cpp">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_FormantShifter.cpp">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_FrequencyShifter.cpp">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_FuncShaper.cpp">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_Harmonics.cpp">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_ModulatedAllpass.cpp">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_ModulationEffect.cpp">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_Moduluxury.cpp">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_Noisifier.cpp">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_Phaser.cpp">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_PhaseStereoizer.cpp">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_PitchShifter.cpp">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_PitchShifterGrainAdaptive.cpp">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_Quadrifex.cpp">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_Reverb.cpp">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_RingModulator.cpp">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_SingleSidebandModulator.cpp">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_StereoDelay.cpp">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_StereoPan.cpp">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_StereoWidth.cpp">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_Tremolo.cpp">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_Vibrato.cpp">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_WahWah.cpp">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_WaveShaper.cpp">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\lopt.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_AllpassChain.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_BiquadBase.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_BiquadCascade.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_BiquadDesigner.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_BiquadMonoDF1.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_BiquadStereoDF1.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_BiquadStereoDF2.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_CombFilter.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_CombResonator.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_ConvolverBruteForce.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_ConvolverFFT.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_ConvolverPartitioned.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_CookbookFilter.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_CrossOver4Way.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_DampingFilter.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_DirectFormFilter.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_DualTwoPoleFilter.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_EllipticQuarterBandFilter.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_EllipticSubBandFilter.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_EllipticSubBandFilterDirectForm.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_EngineersFilter.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_Equalizer.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_EqualizerStereo.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_FilterAnalyzer.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_FilterCoefficientConverter.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_FiniteImpulseResponseDesigner.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_FiniteImpulseResponseFilter.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_FourPoleFilter.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_InfiniteImpulseResponseDesigner.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_LadderFilter.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_LeakyIntegrator.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_LinkwitzRileyCrossOver.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_LowpassHighpass.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_LowpassHighpassStereo.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_LpfHpfApf.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_MultiModeFilter.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_NyquistBlocker.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_OnePoleFilter.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_OnePoleFilterStereo.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_PoleZeroMapper.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_PoleZeroMapperBlah.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_PrototypeDesigner.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_QuadratureNetwork.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_SlopeFilter.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_TeeBeeFilter.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_ToneControl.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_TwoPoleBandpass.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_TwoPoleFilter.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_VowelFilterStereo.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_WarpedBiquadMonoDF1.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_WhiteToPinkFilter.cpp">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_BlendOscillator.cpp">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_FourOscSection.cpp">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_LorentzSystem.cpp">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_MipMappedWaveTable.cpp">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_MipMappedWaveTableOld.cpp">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_MipMappedWaveTableStereo.cpp">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_ModalSynthesizer.cpp">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_NoiseGenerator.cpp">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_NoiseGeneratorOld.cpp">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_Oscillator.cpp">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_OscillatorBank.cpp">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_OscillatorStereo.cpp">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_Quadrigen.cpp">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SampleOscillator.cpp">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SamplePlayer.cpp">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SineOscillator.cpp">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SineOscillatorStereo.cpp">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SuperOscillator.cpp">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_TestGenerator.cpp">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_VectorSamplePlayer.cpp">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_WaveTable.cpp">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_EffectModules.cpp">
+      <Filter>Juce Modules\rosic\infrastructure</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_File.cpp">
+      <Filter>Juce Modules\rosic\infrastructure</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_FileInputOutput.cpp">
+      <Filter>Juce Modules\rosic\infrastructure</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_GeneratorModules.cpp">
+      <Filter>Juce Modules\rosic\infrastructure</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_MemoryUser.cpp">
+      <Filter>Juce Modules\rosic\infrastructure</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_MidiNoteEvent.cpp">
+      <Filter>Juce Modules\rosic\infrastructure</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_ModulatorModules.cpp">
+      <Filter>Juce Modules\rosic\infrastructure</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_Module.cpp">
+      <Filter>Juce Modules\rosic\infrastructure</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_MutexLock.cpp">
+      <Filter>Juce Modules\rosic\infrastructure</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_PolyphonicInstrument.cpp">
+      <Filter>Juce Modules\rosic\infrastructure</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_PolyphonicInstrumentVoice.cpp">
+      <Filter>Juce Modules\rosic\infrastructure</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_AciDevil.cpp">
+      <Filter>Juce Modules\rosic\instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_KeyShot.cpp">
+      <Filter>Juce Modules\rosic\instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_KeyShotVoice.cpp">
+      <Filter>Juce Modules\rosic\instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_MagicCarpet.cpp">
+      <Filter>Juce Modules\rosic\instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_MagicCarpetVoice.cpp">
+      <Filter>Juce Modules\rosic\instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_Open303.cpp">
+      <Filter>Juce Modules\rosic\instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_Quadriga.cpp">
+      <Filter>Juce Modules\rosic\instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_QuadrigaVoice.cpp">
+      <Filter>Juce Modules\rosic\instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_SimpleSampler.cpp">
+      <Filter>Juce Modules\rosic\instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_SimpleSamplerOscSection.cpp">
+      <Filter>Juce Modules\rosic\instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_SimpleSamplerVoice.cpp">
+      <Filter>Juce Modules\rosic\instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_Straightliner.cpp">
+      <Filter>Juce Modules\rosic\instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_StraightlinerVoice.cpp">
+      <Filter>Juce Modules\rosic\instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_Workhorse.cpp">
+      <Filter>Juce Modules\rosic\instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_WorkhorseOscSection.cpp">
+      <Filter>Juce Modules\rosic\instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_WorkhorseVoice.cpp">
+      <Filter>Juce Modules\rosic\instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\Aggressor.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\AggressorFilterSection.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\AggressorOscSection.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\AmpEnvRc.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\AntiAliasFilter.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\AudioModule.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\BiquadCascade.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\BiquadCascadeStereoSSE2.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\BiquadDesigner.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\BreakpointModulator.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\Complex.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\CookbookFilter.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\DampingFilter.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\DemoVersionNoiseEmitter.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\DirectFormIir.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\Distortion.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\DoubleNumberPair.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\DrumSynth.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\DrumSynthVoice.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\Elliptic8thBandFilter.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\EllipticHalfbandFilter.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\EllipticQuarterbandFilter.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\EnvelopeFollower.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\Equalizer5.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\ExponentialEnvelope.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\ExponentialRamp.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\ExpressionEvaluator.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\FeedbackDelayNetwork8.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\FeedbackDelayNetwork16.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\fft4g.c">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\FourierTransformer.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\FuncShaper.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\HighOrderEqualizer.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\IirDesigner.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\IirDesignerOld.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\IirDesignerOlder.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\IirFilter.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\Interpolation.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\Interpolator.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\KeyGenerator.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\KeyValidator.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\Kopie von BreakpointModulator.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\Kopie von MagicCarpetOscillator.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\LowpassHighpass.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\LowpassHighpassStereo.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\LowpassHighpassStereoSSE2.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\LpfHpfApf.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MagicCarpet.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MagicCarpetEqualizer.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MagicCarpetFilter.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MagicCarpetModulator.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MagicCarpetSSE2.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MagicCarpetVoice.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MIDIEventInterpreter.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MidiNoteEvent.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MidSideMixer.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MinBlep.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MoogFilter.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MoogFilter2.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MoreMath.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\NoiseGenerator.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\OnePoleFilter.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\Oscillator.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\PitchEnvRc.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\PrimeNumbers.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\RandomNumberGenerator.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\SampleLauncher.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\SampleLauncherVoice.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\SampleOscillator.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\SlewRateLimiter.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\SuperOscillator.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\TabulatedFunction.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\Time.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\ToneControl.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\Tools.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\TwoPoleBandpass.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\Upsampler.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\VSTools.c">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\VstTools.c">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\WaveTable.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\White2PinkFilter.cpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_Complex.cpp">
+      <Filter>Juce Modules\rosic\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_ComplexFunctions.cpp">
+      <Filter>Juce Modules\rosic\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_ComplexFunctionsAlgorithms.cpp">
+      <Filter>Juce Modules\rosic\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_ElementaryFunctionsReal.cpp">
+      <Filter>Juce Modules\rosic\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_IntegerFunctions.cpp">
+      <Filter>Juce Modules\rosic\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_Interpolation.cpp">
+      <Filter>Juce Modules\rosic\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_LinearAlgebra.cpp">
+      <Filter>Juce Modules\rosic\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_Matrix.cpp">
+      <Filter>Juce Modules\rosic\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_MatrixVectorFunctions.cpp">
+      <Filter>Juce Modules\rosic\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_PolynomialAlgorithms.cpp">
+      <Filter>Juce Modules\rosic\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_PrimeNumbers.cpp">
+      <Filter>Juce Modules\rosic\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_RealFunctionEvaluationAlgorithms.cpp">
+      <Filter>Juce Modules\rosic\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_SpecialFunctionsReal.cpp">
+      <Filter>Juce Modules\rosic\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_Transformations.cpp">
+      <Filter>Juce Modules\rosic\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_Vector.cpp">
+      <Filter>Juce Modules\rosic\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\MagicCarpetModulator.cpp">
+      <Filter>Juce Modules\rosic\modulators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_AmpEnvRc.cpp">
+      <Filter>Juce Modules\rosic\modulators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_AnalogEnvelope.cpp">
+      <Filter>Juce Modules\rosic\modulators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_AnalogEnvelopeScaled.cpp">
+      <Filter>Juce Modules\rosic\modulators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_AttackDecayEnvelope.cpp">
+      <Filter>Juce Modules\rosic\modulators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_BreakpointModulator.cpp">
+      <Filter>Juce Modules\rosic\modulators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_DecayEnvelope.cpp">
+      <Filter>Juce Modules\rosic\modulators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_EnvelopeGenerator.cpp">
+      <Filter>Juce Modules\rosic\modulators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_EnvelopeGenerator2.cpp">
+      <Filter>Juce Modules\rosic\modulators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_ExponentialRamp.cpp">
+      <Filter>Juce Modules\rosic\modulators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_LowFrequencyOscillator.cpp">
+      <Filter>Juce Modules\rosic\modulators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_Modulator.cpp">
+      <Filter>Juce Modules\rosic\modulators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_PitchEnvRc.cpp">
+      <Filter>Juce Modules\rosic\modulators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_SampleModulator.cpp">
+      <Filter>Juce Modules\rosic\modulators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\neural\rosic_MultiLayerPerceptron.cpp">
+      <Filter>Juce Modules\rosic\neural</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\neural\rosic_MultiLayerPerceptronErrorFunction.cpp">
+      <Filter>Juce Modules\rosic\neural</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\neural\rosic_MultiLayerPerceptronTrainer.cpp">
+      <Filter>Juce Modules\rosic\neural</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\numerical\rosic_FunctionObjects.cpp">
+      <Filter>Juce Modules\rosic\numerical</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\numerical\rosic_GradientBasedMinimizer.cpp">
+      <Filter>Juce Modules\rosic\numerical</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_DemoVersionNoiseEmitter.cpp">
+      <Filter>Juce Modules\rosic\others</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_KeyGenerator.cpp">
+      <Filter>Juce Modules\rosic\others</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_OverlapAddProcessor.cpp">
+      <Filter>Juce Modules\rosic\others</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_PiecewiseFunction.cpp">
+      <Filter>Juce Modules\rosic\others</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_Plotter.cpp">
+      <Filter>Juce Modules\rosic\others</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_ProcessorCycleCounter.cpp">
+      <Filter>Juce Modules\rosic\others</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_RandomNumberGenerator01.cpp">
+      <Filter>Juce Modules\rosic\others</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_RandomNumberGenerator02.cpp">
+      <Filter>Juce Modules\rosic\others</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_RoutingMatrix.cpp">
+      <Filter>Juce Modules\rosic\others</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_SlewRateLimiter.cpp">
+      <Filter>Juce Modules\rosic\others</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_SlewRateLimiterLinear.cpp">
+      <Filter>Juce Modules\rosic\others</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_SlewRateLimiterOld.cpp">
+      <Filter>Juce Modules\rosic\others</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_SpectralEnvelopeProcessor.cpp">
+      <Filter>Juce Modules\rosic\others</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_SpectralFilter.cpp">
+      <Filter>Juce Modules\rosic\others</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_SpectralProcessor.cpp">
+      <Filter>Juce Modules\rosic\others</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_TuningTable.cpp">
+      <Filter>Juce Modules\rosic\others</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_VectorMixer.cpp">
+      <Filter>Juce Modules\rosic\others</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_AdditveWaveformRenderer.cpp">
+      <Filter>Juce Modules\rosic\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_AlgorithmicWaveformRenderer.cpp">
+      <Filter>Juce Modules\rosic\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_MultiSegmentWaveformRenderer.cpp">
+      <Filter>Juce Modules\rosic\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_NonRealtimeProcesses.cpp">
+      <Filter>Juce Modules\rosic\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_StandardWaveformRenderer.cpp">
+      <Filter>Juce Modules\rosic\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_WaveformBuffer.cpp">
+      <Filter>Juce Modules\rosic\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_WaveformRenderer.cpp">
+      <Filter>Juce Modules\rosic\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\scripting\bindings\rosic_asSineOscillatorStereo.cpp">
+      <Filter>Juce Modules\rosic\scripting\bindings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\scripting\rosic_AngelScriptInterpreter.cpp">
+      <Filter>Juce Modules\rosic\scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\scripting\rosic_DspScriptInterpreter.cpp">
+      <Filter>Juce Modules\rosic\scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\scripting\rosic_DspWorkbench.cpp">
+      <Filter>Juce Modules\rosic\scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\scripting\rosic_ExpressionEvaluator.cpp">
+      <Filter>Juce Modules\rosic\scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\sequencing\rosic_AcidPattern.cpp">
+      <Filter>Juce Modules\rosic\sequencing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\sequencing\rosic_AcidSequencer.cpp">
+      <Filter>Juce Modules\rosic\sequencing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\transforms\rosic_FourierTransformerBluestein.cpp">
+      <Filter>Juce Modules\rosic\transforms</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\transforms\rosic_FourierTransformerRadix2.cpp">
+      <Filter>Juce Modules\rosic\transforms</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\transforms\rosic_SpectralManipulator.cpp">
+      <Filter>Juce Modules\rosic\transforms</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\transforms\rosic_WaveletTransforms.cpp">
+      <Filter>Juce Modules\rosic\transforms</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rosic.cpp">
+      <Filter>Juce Modules\rosic</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\BinaryData.cpp">
       <Filter>Juce Library Code</Filter>
     </ClCompile>
@@ -2348,6 +3671,9 @@
       <Filter>Juce Library Code</Filter>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\jura_processors.cpp">
+      <Filter>Juce Library Code</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\JuceLibraryCode\rosic.cpp">
       <Filter>Juce Library Code</Filter>
     </ClCompile>
   </ItemGroup>
@@ -4386,6 +5712,1272 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\jura_processors.h">
       <Filter>Juce Modules\jura_processors</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\angelscript.h">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_array.h">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_arrayobject.h">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_builder.h">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_bytecode.h">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_bytecodedef.h">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_callfunc.h">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_compiler.h">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_config.h">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_configgroup.h">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_context.h">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_datatype.h">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_debug.h">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_generic.h">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_map.h">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_memory.h">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_module.h">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_objecttype.h">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_outputbuffer.h">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_parser.h">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_property.h">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_restore.h">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_scriptcode.h">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_scriptengine.h">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_scriptfunction.h">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_scriptnode.h">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_scriptstruct.h">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_string.h">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_string_util.h">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_texts.h">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_thread.h">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_tokendef.h">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_tokenizer.h">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_typeinfo.h">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_variablescope.h">
+      <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\cephes_tweaked\double\mconf.h">
+      <Filter>Juce Modules\rosic\_third_party\cephes_tweaked\double</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ExprEval_v3_4\datalist.h">
+      <Filter>Juce Modules\rosic\_third_party\ExprEval_v3_4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ExprEval_v3_4\defs.h">
+      <Filter>Juce Modules\rosic\_third_party\ExprEval_v3_4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ExprEval_v3_4\except.h">
+      <Filter>Juce Modules\rosic\_third_party\ExprEval_v3_4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ExprEval_v3_4\expr.h">
+      <Filter>Juce Modules\rosic\_third_party\ExprEval_v3_4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ExprEval_v3_4\expreval.h">
+      <Filter>Juce Modules\rosic\_third_party\ExprEval_v3_4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ExprEval_v3_4\funclist.h">
+      <Filter>Juce Modules\rosic\_third_party\ExprEval_v3_4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ExprEval_v3_4\node.h">
+      <Filter>Juce Modules\rosic\_third_party\ExprEval_v3_4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ExprEval_v3_4\parser.h">
+      <Filter>Juce Modules\rosic\_third_party\ExprEval_v3_4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ExprEval_v3_4\vallist.h">
+      <Filter>Juce Modules\rosic\_third_party\ExprEval_v3_4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\test\pstats.h">
+      <Filter>Juce Modules\rosic\_third_party\kiss_fft_v1_2_6\test</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\tools\kfc.h">
+      <Filter>Juce Modules\rosic\_third_party\kiss_fft_v1_2_6\tools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\tools\kiss_fftnd.h">
+      <Filter>Juce Modules\rosic\_third_party\kiss_fft_v1_2_6\tools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\tools\kiss_fftndr.h">
+      <Filter>Juce Modules\rosic\_third_party\kiss_fft_v1_2_6\tools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\tools\kiss_fftr.h">
+      <Filter>Juce Modules\rosic\_third_party\kiss_fft_v1_2_6\tools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\_kiss_fft_guts.h">
+      <Filter>Juce Modules\rosic\_third_party\kiss_fft_v1_2_6</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\kiss_fft.h">
+      <Filter>Juce Modules\rosic\_third_party\kiss_fft_v1_2_6</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\soundtouch\WavFile.h">
+      <Filter>Juce Modules\rosic\_third_party\soundtouch</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_Analysis.h">
+      <Filter>Juce Modules\rosic\analysis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_CyclicAutoCorrelator.h">
+      <Filter>Juce Modules\rosic\analysis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_EnvelopeFollower.h">
+      <Filter>Juce Modules\rosic\analysis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_FormantPreserver.h">
+      <Filter>Juce Modules\rosic\analysis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_FormantRemover.h">
+      <Filter>Juce Modules\rosic\analysis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_InstantaneousEnvelopeDetector.h">
+      <Filter>Juce Modules\rosic\analysis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_LevelDetector.h">
+      <Filter>Juce Modules\rosic\analysis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_LinearPredictor.h">
+      <Filter>Juce Modules\rosic\analysis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_OscilloscopeBufferOld.h">
+      <Filter>Juce Modules\rosic\analysis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_PitchDetector.h">
+      <Filter>Juce Modules\rosic\analysis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_SignalMeasures.h">
+      <Filter>Juce Modules\rosic\analysis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_SpectrumAnalyzer.h">
+      <Filter>Juce Modules\rosic\analysis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_TrackMeter.h">
+      <Filter>Juce Modules\rosic\analysis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_WaveformDisplayBuffer.h">
+      <Filter>Juce Modules\rosic\analysis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\GlobalDefinitions.h">
+      <Filter>Juce Modules\rosic\basics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\GlobalFunctions.h">
+      <Filter>Juce Modules\rosic\basics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_Basics.h">
+      <Filter>Juce Modules\rosic\basics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_ChannelMatrix2x2.h">
+      <Filter>Juce Modules\rosic\basics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_Constants.h">
+      <Filter>Juce Modules\rosic\basics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_FunctionTemplates.h">
+      <Filter>Juce Modules\rosic\basics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_HelperFunctions.h">
+      <Filter>Juce Modules\rosic\basics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_Interpolator.h">
+      <Filter>Juce Modules\rosic\basics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_NumberManipulations.h">
+      <Filter>Juce Modules\rosic\basics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_SampleBuffer.h">
+      <Filter>Juce Modules\rosic\basics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_SamplePlaybackParameters.h">
+      <Filter>Juce Modules\rosic\basics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_TabulatedFunction.h">
+      <Filter>Juce Modules\rosic\basics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_WarpedAllpassInterpolator.h">
+      <Filter>Juce Modules\rosic\basics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_WindowDesigner.h">
+      <Filter>Juce Modules\rosic\basics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\datastructures\rosic_Array.h">
+      <Filter>Juce Modules\rosic\datastructures</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\datastructures\rosic_DataStructures.h">
+      <Filter>Juce Modules\rosic\datastructures</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\datastructures\rosic_ExtensionsForSTL.h">
+      <Filter>Juce Modules\rosic\datastructures</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\datastructures\rosic_KeyValueMap.h">
+      <Filter>Juce Modules\rosic\datastructures</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\datastructures\rosic_String.h">
+      <Filter>Juce Modules\rosic\datastructures</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\delaylines\rosic_AllpassDiffusor.h">
+      <Filter>Juce Modules\rosic\delaylines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\delaylines\rosic_BasicIntegerDelayLine.h">
+      <Filter>Juce Modules\rosic\delaylines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\delaylines\rosic_DelayLines.h">
+      <Filter>Juce Modules\rosic\delaylines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\delaylines\rosic_DelayLineStereo.h">
+      <Filter>Juce Modules\rosic\delaylines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\delaylines\rosic_EchoLabDelayLine.h">
+      <Filter>Juce Modules\rosic\delaylines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\delaylines\rosic_FractionalDelayLine.h">
+      <Filter>Juce Modules\rosic\delaylines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\delaylines\rosic_FractionalDelayLineStereo.h">
+      <Filter>Juce Modules\rosic\delaylines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\delaylines\rosic_IntegerDelayLine.h">
+      <Filter>Juce Modules\rosic\delaylines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\delaylines\rosic_ModulatedDelayLine.h">
+      <Filter>Juce Modules\rosic\delaylines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\delaylines\rosic_PingPongEcho.h">
+      <Filter>Juce Modules\rosic\delaylines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\dynamics\rosic_BesselFilterForGainSignal.h">
+      <Filter>Juce Modules\rosic\dynamics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\dynamics\rosic_Compressor.h">
+      <Filter>Juce Modules\rosic\dynamics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\dynamics\rosic_Dynamics.h">
+      <Filter>Juce Modules\rosic\dynamics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\dynamics\rosic_DynamicsProcessorBase.h">
+      <Filter>Juce Modules\rosic\dynamics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\dynamics\rosic_Expander.h">
+      <Filter>Juce Modules\rosic\dynamics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\dynamics\rosic_Limiter.h">
+      <Filter>Juce Modules\rosic\dynamics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\dynamics\rosic_NoiseGate.h">
+      <Filter>Juce Modules\rosic\dynamics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\dynamics\rosic_SoftKneeCompressor.h">
+      <Filter>Juce Modules\rosic\dynamics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\dynamics\rosic_SoftKneeExpander.h">
+      <Filter>Juce Modules\rosic\dynamics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_AlgoVerb.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_AudioToMidi.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_BitCrusher.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_Chorus.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_CombBank.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_CombResonatorStereo.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_CombStereoizer.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_CompShaper.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_DelayPhaser.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_Distortion.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_EchoLab.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_Effects.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_FeedbackDelayNetwork.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_FeedbackDelayNetwork8.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_FeedbackDelayNetwork16.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_Flanger.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_FormantShifter.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_FrequencyShifter.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_FuncShaper.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_Harmonics.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_ModulatedAllpass.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_ModulationEffect.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_Moduluxury.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_Noisifier.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_Phaser.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_PhaseStereoizer.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_PitchShifter.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_PitchShifterCubicTrial.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_PitchShifterGrainAdaptive.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_Quadrifex.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_Reverb.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_RingModulator.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_SingleSidebandModulator.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_StereoDelay.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_StereoPan.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_StereoWidth.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_Tremolo.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_Vibrato.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_WahWah.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_WaveShaper.h">
+      <Filter>Juce Modules\rosic\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_AllpassChain.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_BiquadBase.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_BiquadCascade.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_BiquadDesigner.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_BiquadMonoDF1.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_BiquadStereoDF1.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_BiquadStereoDF2.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_CombFilter.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_CombResonator.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_ConvolverBruteForce.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_ConvolverFFT.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_ConvolverPartitioned.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_CookbookFilter.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_CrossOver4Way.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_DampingFilter.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_DirectFormFilter.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_DualTwoPoleFilter.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_EllipticQuarterBandFilter.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_EllipticSubBandFilter.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_EllipticSubBandFilterDirectForm.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_EngineersFilter.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_Equalizer.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_EqualizerStereo.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_FilterAnalyzer.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_FilterCoefficientConverter.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_Filters.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_FiniteImpulseResponseDesigner.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_FiniteImpulseResponseFilter.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_FourPoleFilter.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_InfiniteImpulseResponseDesigner.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_LadderFilter.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_LeakyIntegrator.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_LinkwitzRileyCrossOver.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_LowpassHighpass.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_LowpassHighpassStereo.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_LpfHpfApf.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_MultiModeFilter.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_NyquistBlocker.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_OnePoleFilter.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_OnePoleFilterStereo.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_PoleZeroMapper.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_PrototypeDesigner.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_QuadratureNetwork.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_SlopeFilter.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_TeeBeeFilter.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_ToneControl.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_TwoPoleBandpass.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_TwoPoleFilter.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_VowelFilterStereo.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_WarpedBiquadMonoDF1.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_WhiteToPinkFilter.h">
+      <Filter>Juce Modules\rosic\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_BlendOscillator.h">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_BlepInitialization.h">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_FourOscSection.h">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_Generators.h">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_LorentzSystem.h">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_MipMappedWaveTable.h">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_MipMappedWaveTableOld.h">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_MipMappedWaveTableStereo.h">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_ModalSynthesizer.h">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_NoiseGenerator.h">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_NoiseGeneratorOld.h">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_Oscillator.h">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_OscillatorBank.h">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_OscillatorStereo.h">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_Quadrigen.h">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SampleOscillator.h">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SamplePlayer.h">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SineOscillator.h">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SineOscillatorStereo.h">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_SuperOscillator.h">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_TestGenerator.h">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_VectorSamplePlayer.h">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_WaveTable.h">
+      <Filter>Juce Modules\rosic\generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_EffectModules.h">
+      <Filter>Juce Modules\rosic\infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_File.h">
+      <Filter>Juce Modules\rosic\infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_FileInputOutput.h">
+      <Filter>Juce Modules\rosic\infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_GeneratorModules.h">
+      <Filter>Juce Modules\rosic\infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_Infrastructure.h">
+      <Filter>Juce Modules\rosic\infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_MemoryUser.h">
+      <Filter>Juce Modules\rosic\infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_MidiNoteEvent.h">
+      <Filter>Juce Modules\rosic\infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_ModulatorModules.h">
+      <Filter>Juce Modules\rosic\infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_Module.h">
+      <Filter>Juce Modules\rosic\infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_MutexLock.h">
+      <Filter>Juce Modules\rosic\infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_PolyphonicInstrument.h">
+      <Filter>Juce Modules\rosic\infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_PolyphonicInstrumentVoice.h">
+      <Filter>Juce Modules\rosic\infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_AciDevil.h">
+      <Filter>Juce Modules\rosic\instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_Instruments.h">
+      <Filter>Juce Modules\rosic\instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_KeyShot.h">
+      <Filter>Juce Modules\rosic\instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_KeyShotVoice.h">
+      <Filter>Juce Modules\rosic\instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_MagicCarpet.h">
+      <Filter>Juce Modules\rosic\instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_MagicCarpetVoice.h">
+      <Filter>Juce Modules\rosic\instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_Open303.h">
+      <Filter>Juce Modules\rosic\instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_Quadriga.h">
+      <Filter>Juce Modules\rosic\instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_QuadrigaVoice.h">
+      <Filter>Juce Modules\rosic\instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_SimpleSampler.h">
+      <Filter>Juce Modules\rosic\instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_SimpleSamplerOscSection.h">
+      <Filter>Juce Modules\rosic\instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_SimpleSamplerVoice.h">
+      <Filter>Juce Modules\rosic\instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_Straightliner.h">
+      <Filter>Juce Modules\rosic\instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_StraightlinerVoice.h">
+      <Filter>Juce Modules\rosic\instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_Workhorse.h">
+      <Filter>Juce Modules\rosic\instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_WorkhorseOscSection.h">
+      <Filter>Juce Modules\rosic\instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_WorkhorseVoice.h">
+      <Filter>Juce Modules\rosic\instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\Aggressor.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\AggressorFilterSection.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\AggressorOscSection.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\AmpEnvRc.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\AntiAliasFilter.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\AudioModule.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\BiquadCascade.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\BiquadCascadeStereoSSE2.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\BiquadDesigner.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\BlepInitialization.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\BraindocsAudioModules.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\BreakpointModulator.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\Complex.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\CookbookFilter.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\DampingFilter.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\Definitions.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\DemoVersionNoiseEmitter.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\DirectFormIir.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\Distortion.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\DoubleNumberPair.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\DrumSynth.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\DrumSynthVoice.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\Elliptic8thBandFilter.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\EllipticHalfbandFilter.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\EllipticQuarterbandFilter.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\EnvelopeFollower.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\Equalizer5.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\ExponentialEnvelope.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\ExponentialRamp.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\ExpressionEvaluator.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\ExpressionEvaluatorFunctions.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\FeedbackDelayNetwork8.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\FeedbackDelayNetwork16.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\FourierTransformer.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\FuncShaper.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\HighOrderEqualizer.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\IirDesigner.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\IirDesignerOld.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\IirDesignerOlder.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\IirFilter.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\Interpolator.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\KeyGenerator.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\KeyValidator.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\Kopie von BreakpointModulator.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\Kopie von MagicCarpetOscillator.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\LowpassHighpass.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\LowpassHighpassStereo.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\LowpassHighpassStereoSSE2.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\LpfHpfApf.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MagicCarpet.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MagicCarpetDefinitions.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MagicCarpetEqualizer.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MagicCarpetFilter.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MagicCarpetModulator.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MagicCarpetSSE2.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MagicCarpetVoice.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MIDIEventInterpreter.hpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MidiNoteEvent.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MidSideMixer.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MinBlep.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MinBlepArray.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MoogFilter.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MoogFilter2.hpp">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\MoreMath.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\NoiseGenerator.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\OnePoleFilter.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\Oscillator.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\PitchEnvRc.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\PrimeArray.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\PrimeNumbers.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\ProductIndices.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\RandomNumberGenerator.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\SampleLauncher.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\SampleLauncherDefinitions.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\SampleLauncherVoice.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\SampleOscillator.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\SlewRateLimiter.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\SuperOscillator.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\TabulatedFunction.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\Time.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\ToneControl.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\Tools.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\TwoPoleBandpass.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\Upsampler.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\VSTools.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\VstTools.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\WaveTable.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\White2PinkFilter.h">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_CephesDeclarations.h">
+      <Filter>Juce Modules\rosic\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_Complex.h">
+      <Filter>Juce Modules\rosic\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_ComplexFunctions.h">
+      <Filter>Juce Modules\rosic\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_ComplexFunctionsAlgorithms.h">
+      <Filter>Juce Modules\rosic\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_ElementaryFunctionsReal.h">
+      <Filter>Juce Modules\rosic\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_IntegerFunctions.h">
+      <Filter>Juce Modules\rosic\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_Interpolation.h">
+      <Filter>Juce Modules\rosic\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_LinearAlgebra.h">
+      <Filter>Juce Modules\rosic\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_Math.h">
+      <Filter>Juce Modules\rosic\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_Matrix.h">
+      <Filter>Juce Modules\rosic\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_MatrixVectorFunctions.h">
+      <Filter>Juce Modules\rosic\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_PolynomialAlgorithms.h">
+      <Filter>Juce Modules\rosic\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_PrimeArray.h">
+      <Filter>Juce Modules\rosic\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_PrimeNumbers.h">
+      <Filter>Juce Modules\rosic\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_RealFunctionEvaluationAlgorithms.h">
+      <Filter>Juce Modules\rosic\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_SpecialFunctionsReal.h">
+      <Filter>Juce Modules\rosic\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_Transformations.h">
+      <Filter>Juce Modules\rosic\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_Vector.h">
+      <Filter>Juce Modules\rosic\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\MagicCarpetModulator.h">
+      <Filter>Juce Modules\rosic\modulators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_AmpEnvRc.h">
+      <Filter>Juce Modules\rosic\modulators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_AnalogEnvelope.h">
+      <Filter>Juce Modules\rosic\modulators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_AnalogEnvelopeScaled.h">
+      <Filter>Juce Modules\rosic\modulators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_AttackDecayEnvelope.h">
+      <Filter>Juce Modules\rosic\modulators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_BreakpointModulator.h">
+      <Filter>Juce Modules\rosic\modulators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_DecayEnvelope.h">
+      <Filter>Juce Modules\rosic\modulators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_EnvelopeGenerator.h">
+      <Filter>Juce Modules\rosic\modulators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_EnvelopeGenerator2.h">
+      <Filter>Juce Modules\rosic\modulators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_ExponentialRamp.h">
+      <Filter>Juce Modules\rosic\modulators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_LowFrequencyOscillator.h">
+      <Filter>Juce Modules\rosic\modulators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_Modulator.h">
+      <Filter>Juce Modules\rosic\modulators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_Modulators.h">
+      <Filter>Juce Modules\rosic\modulators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_PitchEnvRc.h">
+      <Filter>Juce Modules\rosic\modulators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_SampleModulator.h">
+      <Filter>Juce Modules\rosic\modulators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\neural\rosic_MultiLayerPerceptron.h">
+      <Filter>Juce Modules\rosic\neural</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\neural\rosic_MultiLayerPerceptronErrorFunction.h">
+      <Filter>Juce Modules\rosic\neural</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\neural\rosic_MultiLayerPerceptronTrainer.h">
+      <Filter>Juce Modules\rosic\neural</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\neural\rosic_Neural.h">
+      <Filter>Juce Modules\rosic\neural</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\numerical\rosic_FunctionObjects.h">
+      <Filter>Juce Modules\rosic\numerical</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\numerical\rosic_GradientBasedMinimizer.h">
+      <Filter>Juce Modules\rosic\numerical</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\numerical\rosic_Numerical.h">
+      <Filter>Juce Modules\rosic\numerical</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_DemoVersionNoiseEmitter.h">
+      <Filter>Juce Modules\rosic\others</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_KeyGenerator.h">
+      <Filter>Juce Modules\rosic\others</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_Others.h">
+      <Filter>Juce Modules\rosic\others</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_OverlapAddProcessor.h">
+      <Filter>Juce Modules\rosic\others</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_PiecewiseFunction.h">
+      <Filter>Juce Modules\rosic\others</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_Plotter.h">
+      <Filter>Juce Modules\rosic\others</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_ProcessorCycleCounter.h">
+      <Filter>Juce Modules\rosic\others</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_ProductIndices.h">
+      <Filter>Juce Modules\rosic\others</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_RandomNumberGenerator01.h">
+      <Filter>Juce Modules\rosic\others</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_RandomNumberGenerator02.h">
+      <Filter>Juce Modules\rosic\others</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_RoutingMatrix.h">
+      <Filter>Juce Modules\rosic\others</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_SlewRateLimiter.h">
+      <Filter>Juce Modules\rosic\others</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_SlewRateLimiterLinear.h">
+      <Filter>Juce Modules\rosic\others</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_SlewRateLimiterOld.h">
+      <Filter>Juce Modules\rosic\others</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_SpectralEnvelopeProcessor.h">
+      <Filter>Juce Modules\rosic\others</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_SpectralFilter.h">
+      <Filter>Juce Modules\rosic\others</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_SpectralProcessor.h">
+      <Filter>Juce Modules\rosic\others</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_TuningTable.h">
+      <Filter>Juce Modules\rosic\others</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_VectorMixer.h">
+      <Filter>Juce Modules\rosic\others</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_AdditveWaveformRenderer.h">
+      <Filter>Juce Modules\rosic\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_AlgorithmicWaveformRenderer.h">
+      <Filter>Juce Modules\rosic\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_MultiSegmentWaveformRenderer.h">
+      <Filter>Juce Modules\rosic\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_NonRealtimeProcesses.h">
+      <Filter>Juce Modules\rosic\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_Rendering.h">
+      <Filter>Juce Modules\rosic\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_StandardWaveformRenderer.h">
+      <Filter>Juce Modules\rosic\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_WaveformBuffer.h">
+      <Filter>Juce Modules\rosic\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_WaveformRenderer.h">
+      <Filter>Juce Modules\rosic\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\scripting\bindings\rosic_asSineOscillatorStereo.h">
+      <Filter>Juce Modules\rosic\scripting\bindings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\scripting\rosic_AngelScriptInterpreter.h">
+      <Filter>Juce Modules\rosic\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\scripting\rosic_DspModules.h">
+      <Filter>Juce Modules\rosic\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\scripting\rosic_DspScriptInterpreter.h">
+      <Filter>Juce Modules\rosic\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\scripting\rosic_DspWorkbench.h">
+      <Filter>Juce Modules\rosic\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\scripting\rosic_ExpressionEvaluator.h">
+      <Filter>Juce Modules\rosic\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\scripting\rosic_ExpressionEvaluatorComplexFunctions.h">
+      <Filter>Juce Modules\rosic\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\scripting\rosic_ExpressionEvaluatorFunctions.h">
+      <Filter>Juce Modules\rosic\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\scripting\rosic_Scripting.h">
+      <Filter>Juce Modules\rosic\scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\sequencing\rosic_AcidPattern.h">
+      <Filter>Juce Modules\rosic\sequencing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\sequencing\rosic_AcidSequencer.h">
+      <Filter>Juce Modules\rosic\sequencing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\transforms\rosic_FourierTransformerBluestein.h">
+      <Filter>Juce Modules\rosic\transforms</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\transforms\rosic_FourierTransformerRadix2.h">
+      <Filter>Juce Modules\rosic\transforms</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\transforms\rosic_SpectralManipulator.h">
+      <Filter>Juce Modules\rosic\transforms</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\transforms\rosic_Transforms.h">
+      <Filter>Juce Modules\rosic\transforms</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\transforms\rosic_WaveletTransforms.h">
+      <Filter>Juce Modules\rosic\transforms</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rosic.h">
+      <Filter>Juce Modules\rosic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rosicOld.h">
+      <Filter>Juce Modules\rosic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rosic.h">
+      <Filter>Juce Modules\rosic</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h">
       <Filter>Juce Library Code</Filter>
     </ClInclude>
@@ -4432,6 +7024,54 @@
     </None>
     <None Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\ToDo.txt">
       <Filter>Juce Modules\jura_processors</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\cephes_tweaked\TweaksAndNotes.txt">
+      <Filter>Juce Modules\rosic\_third_party\cephes_tweaked</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ExprEval_v3_4\docs\changes.txt">
+      <Filter>Juce Modules\rosic\_third_party\ExprEval_v3_4\docs</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ExprEval_v3_4\docs\expreval.txt">
+      <Filter>Juce Modules\rosic\_third_party\ExprEval_v3_4\docs</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ExprEval_v3_4\docs\license.txt">
+      <Filter>Juce Modules\rosic\_third_party\ExprEval_v3_4\docs</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\CHANGELOG.txt">
+      <Filter>Juce Modules\rosic\_third_party\kiss_fft_v1_2_6</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\copying.txt">
+      <Filter>Juce Modules\rosic\_third_party\kiss_fft_v1_2_6</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\readme.txt">
+      <Filter>Juce Modules\rosic\_third_party\kiss_fft_v1_2_6</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\tips.txt">
+      <Filter>Juce Modules\rosic\_third_party\kiss_fft_v1_2_6</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ooura_fft\readme.txt">
+      <Filter>Juce Modules\rosic\_third_party\ooura_fft</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\ToDo.txt">
+      <Filter>Juce Modules\rosic\infrastructure</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\minBlep.txt">
+      <Filter>Juce Modules\rosic\legacy</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\math\ToDo.txt">
+      <Filter>Juce Modules\rosic\math</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\PolyphonyInRosic.txt">
+      <Filter>Juce Modules\rosic</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rosic.txt">
+      <Filter>Juce Modules\rosic</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\RosicCodingStyle.txt">
+      <Filter>Juce Modules\rosic</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\ToDo.txt">
+      <Filter>Juce Modules\rosic</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

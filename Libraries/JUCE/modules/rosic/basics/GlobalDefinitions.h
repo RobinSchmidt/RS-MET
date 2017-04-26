@@ -14,6 +14,9 @@ rosic namespace to facilitate their global use. */
 #define INLINE __attribute__((always_inline))
 #endif
 
+
+#define MSC_X86_ASM 0  // define this for certain asm number manipulations on X86 with MS compiler
+
 // something better to do here...
 
 //_SET_FLUSH_ZERO_MODE(_MM_FLUSH_ZERO_ON)

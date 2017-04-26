@@ -1,7 +1,7 @@
 #ifndef rosic_TuningTable_h
 #define rosic_TuningTable_h
 
-#include "../_third_party/MarkHenning/TuningMap.h"
+//#include "../_third_party/MarkHenning/TuningMap.h"
 #include "../math/rosic_ElementaryFunctionsReal.h"
 
 namespace rosic

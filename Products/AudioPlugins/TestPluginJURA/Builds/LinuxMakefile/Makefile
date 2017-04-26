@@ -73,6 +73,7 @@ OBJECTS := \
   $(JUCE_OBJDIR)/juce_gui_extra_4a026f23.o \
   $(JUCE_OBJDIR)/jura_framework_5993ff22.o \
   $(JUCE_OBJDIR)/jura_processors_5c414c7.o \
+  $(JUCE_OBJDIR)/rosic_b3603971.o \
 
 .PHONY: clean
 
@@ -173,6 +174,11 @@ $(JUCE_OBJDIR)/jura_framework_5993ff22.o: ../../JuceLibraryCode/jura_framework.c
 $(JUCE_OBJDIR)/jura_processors_5c414c7.o: ../../JuceLibraryCode/jura_processors.cpp
 	-@mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling jura_processors.cpp"
+	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/rosic_b3603971.o: ../../JuceLibraryCode/rosic.cpp
+	-@mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling rosic.cpp"
 	@$(CXX) $(JUCE_CXXFLAGS) -o "$@" -c "$<"
 
 -include $(OBJECTS:%.o=%.d)

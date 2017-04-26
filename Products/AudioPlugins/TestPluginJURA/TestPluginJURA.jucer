@@ -41,6 +41,7 @@
         <MODULEPATH id="juce_audio_plugin_client" path="../../../Libraries/JUCE/modules"/>
         <MODULEPATH id="jura_framework" path="../../../Libraries/JUCE/modules"/>
         <MODULEPATH id="jura_processors" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="rosic" path="../../../Libraries/JUCE/modules"/>
       </MODULEPATHS>
     </VS2015>
     <CODEBLOCKS_WINDOWS targetFolder="Builds/CodeBlocksWindows" extraCompilerFlags="-fpermissive">
@@ -64,6 +65,7 @@
         <MODULEPATH id="juce_audio_formats" path="../../../Libraries/JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../../Libraries/JUCE/modules"/>
         <MODULEPATH id="juce_audio_basics" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="rosic" path="../../../Libraries/JUCE/modules"/>
       </MODULEPATHS>
     </CODEBLOCKS_WINDOWS>
     <CODEBLOCKS_LINUX targetFolder="Builds/CodeBlocksLinux" extraCompilerFlags="-fPIC"
@@ -89,6 +91,7 @@
         <MODULEPATH id="juce_audio_formats" path="../../../Libraries/JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../../Libraries/JUCE/modules"/>
         <MODULEPATH id="juce_audio_basics" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="rosic" path="../../../Libraries/JUCE/modules"/>
       </MODULEPATHS>
     </CODEBLOCKS_LINUX>
     <LINUX_MAKE targetFolder="Builds/LinuxMakefile" extraCompilerFlags="-fPIC"
@@ -113,6 +116,7 @@
         <MODULEPATH id="juce_audio_formats" path="../../juce"/>
         <MODULEPATH id="juce_audio_devices" path="../../juce"/>
         <MODULEPATH id="juce_audio_basics" path="../../juce"/>
+        <MODULEPATH id="rosic" path="../../../Libraries/JUCE/modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
   </EXPORTFORMATS>
@@ -130,6 +134,7 @@
     <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="jura_framework" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="jura_processors" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="rosic" showAllCode="1" useLocalCopy="0"/>
   </MODULES>
   <JUCEOPTIONS JUCE_QUICKTIME="disabled" JUCE_WEB_BROWSER="disabled" JUCE_ENABLE_LIVE_CONSTANT_EDITOR="disabled"
                JUCE_USE_FLAC="enabled" JUCE_USE_OGGVORBIS="disabled" JUCE_USE_MP3AUDIOFORMAT="disabled"

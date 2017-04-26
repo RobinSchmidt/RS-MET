@@ -1,14 +1,14 @@
 #ifndef RAPT_MACRODEFINITIONS_H_INCLUDED
 #define RAPT_MACRODEFINITIONS_H_INCLUDED
 
-#ifdef _MSC_VER
-  #define RS_INLINE __forceinline
-  #define ASM(x) __asm {x}
-#else
-  #define RS_INLINE inline
-  //#define RS_INLINE __attribute__((always_inline))
-  #define ASM(x) asm("x");
-#endif
+//#ifdef _MSC_VER
+//  #define RS_INLINE __forceinline
+//  #define ASM(x) __asm {x}
+//#else
+//  #define RS_INLINE inline
+//  //#define RS_INLINE __attribute__((always_inline))
+//  #define ASM(x) asm("x");
+//#endif
 
 #if defined(DEBUG) || defined(_DEBUG)
   #ifdef _MSC_VER

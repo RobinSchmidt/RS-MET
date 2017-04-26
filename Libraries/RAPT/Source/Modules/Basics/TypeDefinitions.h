@@ -43,12 +43,12 @@ typedef double(*FunctionPointer2DoublesToDouble) (double, double);
 /** Pointer to a function that takes a 3 double parameters and returns a double */
 typedef double(*FunctionPointer3DoublesToDouble) (double, double, double);
 
-/** doubles, aligned at 64-bit (8 byte) boundaries */
-#ifdef _MSC_VER
-typedef __declspec(align(8)) double doubleA;
-#else
-typedef double doubleA; // something to do here...
-#endif
+///** doubles, aligned at 64-bit (8 byte) boundaries - conflict with rosic - not needed in RAPT */
+//#ifdef _MSC_VER
+//typedef __declspec(align(8)) double doubleA;
+//#else
+//typedef double doubleA; // something to do here...
+//#endif
 
 // todo: define SIMD types rsFloat32x4, rsFloat64x2, etc. (vector of 4 floats, 2 doubles, ...)
 // these should be wrapped into classes which should be subclasses of the respective compiler
