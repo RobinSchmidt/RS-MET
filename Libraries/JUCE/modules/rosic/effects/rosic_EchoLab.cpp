@@ -91,7 +91,7 @@ int EchoLab::addDelayLine(double newDelayTime, double newGainFactor)
   if( newDelayLine == NULL )
   {
     DEBUG_BREAK;  // memory allocation failed   
-    result = delayLines.size()-1;
+    result = (int) delayLines.size()-1;
     mutex.unlock();
     return result;
   }
@@ -107,7 +107,7 @@ int EchoLab::addDelayLine(double newDelayTime, double newGainFactor)
 
   // add it to the vector and return the new number of delaylines:
   delayLines.push_back(newDelayLine);
-  result = delayLines.size()-1;
+  result = (int) delayLines.size()-1;
   mutex.unlock();
   return result;
 }
@@ -213,7 +213,7 @@ int EchoLab::getNumDelayLines()
 {
   int result = 0;
   mutex.lock();
-  result = delayLines.size();
+  result = (int) delayLines.size();
   mutex.unlock();
   return result;
 }

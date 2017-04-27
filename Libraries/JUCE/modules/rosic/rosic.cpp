@@ -150,7 +150,7 @@ integrating it into the Chainer.
 #include "generators/rosic_WaveTable.cpp"
 
 // modulators
-//#include "modulators/MagicCarpetModulator.cpp" // needs MagicCarpetDefinitions.h - where is this?
+//#include "modulators/MagicCarpetModulator.cpp" // needs MagicCarpetDefinitions.h - where is this? legacy?
 #include "modulators/rosic_AmpEnvRc.cpp"
 #include "modulators/rosic_AnalogEnvelope.cpp"
 #include "modulators/rosic_AnalogEnvelopeScaled.cpp"
@@ -222,9 +222,24 @@ integrating it into the Chainer.
 // where's the Leveller?
 // make a dynamics processor with freely adjustable curve
 
-
-
 // effects
+#include "effects/rosic_FeedbackDelayNetwork.cpp"
+#include "effects/rosic_FeedbackDelayNetwork8.cpp"
+#include "effects/rosic_FeedbackDelayNetwork16.cpp"
+#include "effects/rosic_AlgoVerb.cpp"
+#include "effects/rosic_AudioToMidi.cpp"
+#include "effects/rosic_BitCrusher.cpp"
+#include "effects/rosic_ModulationEffect.cpp"
+#include "effects/rosic_Vibrato.cpp"
+#include "effects/rosic_Chorus.cpp"
+#include "effects/rosic_CombBank.cpp"
+#include "effects/rosic_CombResonatorStereo.cpp"
+#include "effects/rosic_CombStereoizer.cpp"
+#include "effects/rosic_CompShaper.cpp"
+#include "effects/rosic_Phaser.cpp"
+#include "effects/rosic_DelayPhaser.cpp"
+#include "effects/rosic_Distortion.cpp"
+#include "effects/rosic_EchoLab.cpp"
 
 
 
