@@ -210,9 +210,18 @@ integrating it into the Chainer.
 #include "delaylines/rosic_ModulatedDelayLine.cpp"
 #include "delaylines/rosic_PingPongEcho.cpp"
 
-
-
 // dynamics
+#include "dynamics/rosic_BesselFilterForGainSignal.cpp"
+#include "dynamics/rosic_DynamicsProcessorBase.cpp"
+#include "dynamics/rosic_Compressor.cpp"
+#include "dynamics/rosic_Expander.cpp"
+#include "dynamics/rosic_Limiter.cpp"
+#include "dynamics/rosic_NoiseGate.cpp"
+#include "dynamics/rosic_SoftKneeCompressor.cpp"
+#include "dynamics/rosic_SoftKneeExpander.cpp"
+// where's the Leveller?
+// make a dynamics processor with freely adjustable curve
+
 
 
 // effects
