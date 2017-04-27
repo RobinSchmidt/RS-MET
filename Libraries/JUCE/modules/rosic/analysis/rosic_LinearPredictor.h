@@ -1,8 +1,8 @@
 #ifndef rosic_LinearPredictor_h
 #define rosic_LinearPredictor_h
 
-//#include <string.h> // for memmove
-#include <string> // for memmove
+#include <string.h> // for memmove
+//#include <string> // for memmove
 
 // rosic-indcludes:
 #include "../math/rosic_ElementaryFunctionsReal.h"
@@ -17,7 +17,7 @@ namespace rosic
 
   */
 
-  class LinearPredictor  
+  class LinearPredictor
   {
 
   public:
@@ -34,20 +34,20 @@ namespace rosic
     /** \name Setup */
 
     /** Set the sample rate. */
-    void setSampleRate(double newSampleRate);  
+    void setSampleRate(double newSampleRate);
 
     /** Sets the order of the prediction filter. */
-    void setOrder(int newOrder);       
+    void setOrder(int newOrder);
 
     /** Sets the learning rate for the adaption of the weight vector. */
-    void setLearnRate(double newLearnRate);   
+    void setLearnRate(double newLearnRate);
 
     /** Sets the forgetting rate for the adaption of the weight vector. */
-    void setForgetRate(double newForgetRate);  
+    void setForgetRate(double newForgetRate);
 
-    /** Sets the momentum term for the adaption of the weight vector - this can be seen as a 
+    /** Sets the momentum term for the adaption of the weight vector - this can be seen as a
     smoother for the trajectory in weight space. */
-    void setMomentum(double newMomentum);    
+    void setMomentum(double newMomentum);
 
 
     /** \name Inquiry */
@@ -63,7 +63,7 @@ namespace rosic
     /** \name Audio Processing */
 
     /** Returns one prediction error sample and internally updates the weight vector. */
-    INLINE double getSample(double in); 
+    INLINE double getSample(double in);
 
 
     /** \name Miscellaneous */
@@ -78,16 +78,16 @@ namespace rosic
     int order, maxOrder;
       // The order of the prediction filter and its maximum value.
 
-    double learnRate, forgetRate, forgetFactor, momentum; 
+    double learnRate, forgetRate, forgetFactor, momentum;
       // The LMS adaption parameters.
 
-    double* weightVector;    
-      // The weight-vector for weigthing the past inputs. 
+    double* weightVector;
+      // The weight-vector for weigthing the past inputs.
 
-    double* pastInputs;      
+    double* pastInputs;
       // The input-vector which contains the past inputs.
 
-    double* updateVector;    
+    double* updateVector;
       // the vector which is added to the coefficient vector.
 
   };
@@ -101,7 +101,7 @@ namespace rosic
     double predictedSamp, errorSamp, normalizer;
     int    i;
 
-    // try to predict the incoming sample by means of a scalar product of the weight vector and the 
+    // try to predict the incoming sample by means of a scalar product of the weight vector and the
     // stored past input-samples:
     predictedSamp = 0.0;
     for(i=0; i<order; i++)
@@ -134,7 +134,7 @@ namespace rosic
     memmove(&pastInputs[1], &pastInputs[0], (order-1)*sizeof(double));
       // this is equivalent to: for(i=(order-1); i>0; i--)  pastInputs[i] = pastInputs[i-1];
 
-    // store the current input sample in the first position of the pastInputs-vector for the next 
+    // store the current input sample in the first position of the pastInputs-vector for the next
     // iteration:
     pastInputs[0] = in;
 

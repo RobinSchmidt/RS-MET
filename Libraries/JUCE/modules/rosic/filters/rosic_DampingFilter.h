@@ -11,15 +11,15 @@ namespace rosic
 
   /**
 
-  This class implements a filter which is meant be used as a frequency dependent gain inside a 
-  feedback loop, so as to apply a frequency dependent damping inside the loop. It applies a 
-  global gain factor to a signal as well as a first order low-shelving and a first order 
-  high-shelving filter. In that respect, it is very much like the ToneControl class, but here 
-  we use a different definition of the corner-frequency. In the ToneControl class, the 
+  This class implements a filter which is meant be used as a frequency dependent gain inside a
+  feedback loop, so as to apply a frequency dependent damping inside the loop. It applies a
+  global gain factor to a signal as well as a first order low-shelving and a first order
+  high-shelving filter. In that respect, it is very much like the ToneControl class, but here
+  we use a different definition of the corner-frequency. In the ToneControl class, the
   corner-frequency is defined to be the frequency at which the gain is the geometric mean between
-  the gain the reference gain (which is unity) - here the reference gain does not need to be 
-  unity and the relative gain at the corner-frequency can be specified arbitrarily. This 
-  facilitates the use of the filter inside the feedback-loop of a delay-line - here it may be 
+  the gain the reference gain (which is unity) - here the reference gain does not need to be
+  unity and the relative gain at the corner-frequency can be specified arbitrarily. This
+  facilitates the use of the filter inside the feedback-loop of a delay-line - here it may be
   desirable to define the corner-freq in terms of decay-time instead of in terms of gain.
 
   */
@@ -33,10 +33,10 @@ namespace rosic
     // construction/destruction:
 
     /** Constructor. */
-    DampingFilter();  
+    DampingFilter();
 
     /** Destructor. */
-    ~DampingFilter(); 
+    ~DampingFilter();
 
     //---------------------------------------------------------------------------------------------
     // parameter settings:
@@ -53,7 +53,7 @@ namespace rosic
     /** Sets the corner frequency of the low-shelving filter */
     void setLowCrossoverFreq(double newLowCornerFreq);
 
-    /** Sets the relative gain factor at which the crossover-frequency is measured for the 
+    /** Sets the relative gain factor at which the crossover-frequency is measured for the
     low-shelving filter. See Orfanidis' paper about High Order Equalizers for details. */
     void setLowCrossoverGainFactor(double newLowCrossoverGainFactor);
 
@@ -63,7 +63,7 @@ namespace rosic
     /** Sets the corner frequency of the high-shelving filter. */
     void setHighCrossoverFreq(double newHighCornerFreq);
 
-    /** Sets the relative gain factor at which the crossover-frequency is measured for the 
+    /** Sets the relative gain factor at which the crossover-frequency is measured for the
     high-shelving filter. */
     void setHighCrossoverGainFactor(double newHighCrossoverGainFactor);
 
@@ -84,10 +84,10 @@ namespace rosic
   protected:
 
     /** Calculates the coefficients for the filter. */
-    void calculateCoefficients();  
+    void calculateCoefficients();
 
-    /** Checks whether or not the combination of G and G_B is an allowed configuration - it must 
-    satisfy (G != 1) and (G_B != 1) and ( (1 < G_B < G) or (G < G_B < 1) ) in order to be 
+    /** Checks whether or not the combination of G and G_B is an allowed configuration - it must
+    satisfy (G != 1) and (G_B != 1) and ( (1 < G_B < G) or (G < G_B < 1) ) in order to be
     allowed. */
     bool areGainsAllowed(double G, double G_B);
 
@@ -122,7 +122,7 @@ namespace rosic
   };
 
   //-----------------------------------------------------------------------------------------------
-  // from here: definitions of the functions to be inlined, i.e. all functions which are supposed 
+  // from here: definitions of the functions to be inlined, i.e. all functions which are supposed
   // to be called at audio-rate (they can't be put into the .cpp file):
 
   INLINE double DampingFilter::getSample(double in)
@@ -132,7 +132,7 @@ namespace rosic
     // calculate output-sample:
     double out = b0*in + b1*x1 + b2*x2 + a1*y1 + a2*y2; // + TINY;
 
-    if( _isnan(out) )
+    if( _isnan(out) ) // we need to write our own, maybe isNan(double x ) { return x != x; }, see RSLib
       DEBUG_BREAK;
 
     // update buffer-variables:

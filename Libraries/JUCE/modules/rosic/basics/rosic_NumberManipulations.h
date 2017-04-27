@@ -36,10 +36,10 @@ halfway between two integers (instead of returning the nearest even integer in t
 Argument x must satify (INT_MIN/2)ñ1.0 < x < (INT_MAX/2)+1.0.  */
 INLINE int roundToInt(double x)
 {
-  const float round_to_nearest = 0.5f;
   int i;
 
 #if MSC_X86_ASM
+  const float round_to_nearest = 0.5f;
   __asm
   {
     fld x;
@@ -61,10 +61,10 @@ INLINE int roundToInt(double x)
 
 INLINE int floorInt(double x)
 {
-  const float round_towards_m_i = -0.5f;
   int i;
 
 #if MSC_X86_ASM
+  const float round_towards_m_i = -0.5f;
   __asm
   {
     fld x;
@@ -82,10 +82,10 @@ INLINE int floorInt(double x)
 
 INLINE int ceilInt(double x)
 {
-  const float round_towards_p_i = -0.5f;
   int i;
 
 #if MSC_X86_ASM
+  const float round_towards_p_i = -0.5f;
   __asm
   {
     fld x;
@@ -103,10 +103,10 @@ INLINE int ceilInt(double x)
 
 INLINE int truncateToInt(double x)
 {
-  const float round_towards_m_i = -0.5f;
   int i;
 
 #if MSC_X86_ASM
+  const float round_towards_m_i = -0.5f;
   __asm
   {
     fld x;
@@ -138,7 +138,8 @@ INLINE int extractExponent(double x)
 
 INLINE int extractExponent(float x)
 {
-  return (((*((reinterpret_cast<UINT32 *>(&x)))&0x7FFFFFFF)>>23)-127);
+  return (((*((reinterpret_cast<unsigned long *>(&x)))&0x7FFFFFFF)>>23)-127); // assumes unsigned long is 32-bit
+  //return (((*((reinterpret_cast<UINT32 *>(&x)))&0x7FFFFFFF)>>23)-127);
   //EXPOFFLT(value) (((*((reinterpret_cast<unsigned __int32 *>(&value)))&0x7FFFFFFF)>>23)-127)
 }
 

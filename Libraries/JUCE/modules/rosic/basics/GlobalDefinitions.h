@@ -7,7 +7,7 @@
 /** This file contains a bunch of useful macros which are not wrapped into the
 rosic namespace to facilitate their global use. */
 
-#ifdef _MSC_VER  
+#ifdef _MSC_VER
 #define INLINE __forceinline
 #else
 //#define INLINE inline
@@ -62,14 +62,14 @@ rosic namespace to facilitate their global use. */
 // UnaryFunctionPointer is a pointer to a function that takes a double and returns a double:
 typedef double(*UnaryFunctionPointer) (double);
 
-/** Pointer to a function that takes a double and returns nothing (void). */  
-typedef void(*FunctionPointerDoubleToVoid) (double); 
+/** Pointer to a function that takes a double and returns nothing (void). */
+typedef void(*FunctionPointerDoubleToVoid) (double);
 
-/** Pointer to a function that takes an int and a double and returns nothing (void). */  
-typedef void(*FunctionPointerIntDoubleToVoid) (int, double); 
+/** Pointer to a function that takes an int and a double and returns nothing (void). */
+typedef void(*FunctionPointerIntDoubleToVoid) (int, double);
 
-/** Pointer to a function that takes two ints and a double and returns nothing (void). */  
-typedef void(*FunctionPointerIntIntDoubleToVoid) (int, int, double); 
+/** Pointer to a function that takes two ints and a double and returns nothing (void). */
+typedef void(*FunctionPointerIntIntDoubleToVoid) (int, int, double);
 
 
 // doubles, aligned at 64-bit (8 byte) boundaries:
@@ -111,7 +111,7 @@ typedef signed long long INT64;
 #ifdef _MSC_VER
 typedef unsigned __int32 UINT32;
 #else
-typedef unsigned long UINT32;
+//typedef unsigned long UINT32;
 #endif
 
 // 32 bit integers:
@@ -159,11 +159,11 @@ INLINE double dummyFunction(double x) { return x; }
 
 #define DEBUG_HOOK { int debugDummy = 0; } // hook that can be placed for setting breakpoints
 
-#else 
+#else
 
 // evaluate macros to no-op in release builds:
 #define DEBUG_HOOK  {}
-#define DEBUG_BREAK {}  
+#define DEBUG_BREAK {}
 
 #endif
 

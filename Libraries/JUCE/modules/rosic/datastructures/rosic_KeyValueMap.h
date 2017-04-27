@@ -18,7 +18,7 @@ namespace rosic
   };
 
 
-  /* Less-than comparison between two pointers to key/value pairs which returns true when the key in the first pointer is less than the 
+  /* Less-than comparison between two pointers to key/value pairs which returns true when the key in the first pointer is less than the
   key in the second pointer. */
   template<class KeyType, class ValueType>
   bool keyValuePairPointerLessByKey(KeyValuePair<KeyType, ValueType> *pointer1, KeyValuePair<KeyType, ValueType> *pointer2)
@@ -40,7 +40,7 @@ namespace rosic
   };
 
 
-  /* Less-than comparison between two pointers to key/value pairs which returns true when the value in the first pointer is less than the 
+  /* Less-than comparison between two pointers to key/value pairs which returns true when the value in the first pointer is less than the
   value in the second pointer. */
   template<class KeyType, class ValueType>
   bool keyValuePairPointerLessByValue(KeyValuePair<KeyType, ValueType> *pointer1, KeyValuePair<KeyType, ValueType> *pointer2)
@@ -66,7 +66,7 @@ namespace rosic
   /**
 
   This class implements a mapping between keys and values where both, the key and the value can be of arbitrary type. The class allows fast
-  translation between a key and the corresponding value and vice versa by internally maintaining two sorted arrays where one is sorted by 
+  translation between a key and the corresponding value and vice versa by internally maintaining two sorted arrays where one is sorted by
   the key and the other is sorted by the value. This allows key/value conversion in either direction with complexitiy O(log(N)) where N is
   the number of key/value pairs. This could be used, for example, for a telephone number register where one could search for the name that
   corresponds to a given telephone number or vice versa with O(log(N)) complexity.
@@ -100,7 +100,7 @@ namespace rosic
       KeyValuePair<KeyType, ValueType> *newEntry = new KeyValuePair<KeyType, ValueType>;
       newEntry->key   = key;
       newEntry->value = value;
-      std::vector<KeyValuePair<KeyType, ValueType> *>::iterator iter;
+      typename std::vector<KeyValuePair<KeyType, ValueType> *>::iterator iter;
 
       // insert into the sorted-by-key array at the right position:
       KeyValuePairPointerLessByKey<KeyType, ValueType> compareByKey;
@@ -128,7 +128,7 @@ namespace rosic
     //--------------------------------------------------------------------------------------------------------------------------------------
     // inquiry:
 
-    /** If a pair with the given key is present in the map, the function returns the corresponding value and assigns the reference 
+    /** If a pair with the given key is present in the map, the function returns the corresponding value and assigns the reference
     parameter "wasFound" to true. If the key is not present, it returns a default value determined by ValueType's default constructor and
     assigns the reference parameter "wasFound" to false. */
     ValueType getValueForKey(KeyType key, bool &wasFound)
@@ -137,7 +137,7 @@ namespace rosic
       dummyEntry->key = key;
 
       KeyValuePairPointerLessByKey<KeyType, ValueType> compareByKey;
-      std::vector<KeyValuePair<KeyType, ValueType> *>::iterator iter;
+      typename std::vector<KeyValuePair<KeyType, ValueType> *>::iterator iter;
       iter = lower_bound(entriesSortedByKey.begin(), entriesSortedByKey.end(), dummyEntry, compareByKey);
 
       if( iter != entriesSortedByKey.end() && (*iter)->key == key )
@@ -154,7 +154,7 @@ namespace rosic
       }
     }
 
-    /** If a pair with the given value is present in the map, the function returns the corresponding key and assigns the reference 
+    /** If a pair with the given value is present in the map, the function returns the corresponding key and assigns the reference
     parameter "wasFound" to true. If the value is not present, it returns a default key determined by KeyType's default constructor and
     assigns the reference parameter "wasFound" to false. */
     KeyType getKeyForValue(ValueType value, bool &wasFound)
@@ -163,7 +163,7 @@ namespace rosic
       dummyEntry->value = value;
 
       KeyValuePairPointerLessByValue<KeyType, ValueType> compareByValue;
-      std::vector<KeyValuePair<KeyType, ValueType> *>::iterator iter;
+      typename std::vector<KeyValuePair<KeyType, ValueType> *>::iterator iter;
       iter = lower_bound(entriesSortedByValue.begin(), entriesSortedByValue.end(), dummyEntry, compareByValue);
 
       if( iter != entriesSortedByValue.end() && (*iter)->value == value )
@@ -185,7 +185,7 @@ namespace rosic
     int getNumEntries() const { return entriesSortedByKey.size(); }
 
     /** Returns true when the map is empty, false otherwise. */
-    bool isEmpty() const { return getNumEntries() == 0; } 
+    bool isEmpty() const { return getNumEntries() == 0; }
 
     //--------------------------------------------------------------------------------------------------------------------------------------
     // operators:
@@ -205,6 +205,6 @@ namespace rosic
 
   };
 
-} 
+}
 
-#endif 
+#endif
