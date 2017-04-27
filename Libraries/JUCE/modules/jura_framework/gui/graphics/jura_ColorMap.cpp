@@ -4,7 +4,13 @@ ColorMap::ColorMap()
   int initialSize = 2048;
   colors.resize(initialSize);
   lastIndex = initialSize-1;
-  setDefaultMap(gray);
+
+  //setDefaultMap(gray);
+
+  juce::ColourGradient g;
+  g.addColour(0.0, Colour(  0,   0,   0));
+  g.addColour(1.0, Colour(255, 255, 255));
+  setFromColourGradient(g);
 }
 
 void ColorMap::setFromColourGradient(const ColourGradient &g)
