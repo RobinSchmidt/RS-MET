@@ -56,7 +56,7 @@ FeedbackDelayNetwork16::FeedbackDelayNetwork16()
 
   // reset the content of the delaylines samples to zero and trigger a reset
   // in the embedded modules:
-  reset();         
+  reset();
 }
 
 FeedbackDelayNetwork16::~FeedbackDelayNetwork16()
@@ -174,7 +174,7 @@ void FeedbackDelayNetwork16::setWetPinkingSwitch(bool newWetPinkingSwitch)
 void FeedbackDelayNetwork16::setMinDelayTime(double newMinDelayTime)
 {
   // should be at least 1 millisecond shorter than the maximum:
-  if( newMinDelayTime >= 0.1 && newMinDelayTime <= 2000.0 && newMinDelayTime <  maxDelayTime-1.0 ) 
+  if( newMinDelayTime >= 0.1 && newMinDelayTime <= 2000.0 && newMinDelayTime <  maxDelayTime-1.0 )
     minDelayTime = newMinDelayTime;
   adjustDelayTimes();
 }
@@ -182,7 +182,7 @@ void FeedbackDelayNetwork16::setMinDelayTime(double newMinDelayTime)
 void FeedbackDelayNetwork16::setMaxDelayTime(double newMaxDelayTime)
 {
   // should be at least 1 millisecond longer than the minimum:
-  if( newMaxDelayTime >= 0.1 && newMaxDelayTime <= 2000.0  && newMaxDelayTime >  minDelayTime+1.0 ) 
+  if( newMaxDelayTime >= 0.1 && newMaxDelayTime <= 2000.0  && newMaxDelayTime >  minDelayTime+1.0 )
     maxDelayTime = newMaxDelayTime;
   adjustDelayTimes();
 }
@@ -229,8 +229,8 @@ void FeedbackDelayNetwork16::setAllRelativeDelayTimes(double *newRelativeDelayTi
   adjustDelayTimes();
 }
 
-void FeedbackDelayNetwork16::assignRelativeDelayTimesAlgorithmically(int distributionIndex, 
-                                                                     double parameter1, 
+void FeedbackDelayNetwork16::assignRelativeDelayTimesAlgorithmically(int distributionIndex,
+                                                                     double parameter1,
                                                                      double parameter2)
 {
   int i; // for indexing the delay-time
@@ -246,10 +246,10 @@ void FeedbackDelayNetwork16::assignRelativeDelayTimesAlgorithmically(int distrib
     }
     break;
   case DISTANCE_DECAY:
-    { 
+    {
       double delta         = parameter1;    // first distance
       double factor        = parameter2;    // decay factor for successive distances
-      double accu          = delta;   
+      double accu          = delta;
       double relativeDelay = 1.0;
       for(i=0; i<numDelayLines; i++)
       {
@@ -257,12 +257,11 @@ void FeedbackDelayNetwork16::assignRelativeDelayTimesAlgorithmically(int distrib
         relativeDelay         += accu;
         accu                  *= factor;
       }
-      int dummy = 0;
     }
     break;
   case SIMPLE_RATIO_MODES:
-    { 
-      relativeDelayTimes[ 0] = 1.0;     
+    {
+      relativeDelayTimes[ 0] = 1.0;
       relativeDelayTimes[ 1] =  8.0 / 7.0;  // 1.142857...
       relativeDelayTimes[ 2] =  7.0 / 6.0;  // 1.1666...
       relativeDelayTimes[ 3] =  6.0 / 5.0;  // 1.2
@@ -278,16 +277,15 @@ void FeedbackDelayNetwork16::assignRelativeDelayTimesAlgorithmically(int distrib
       relativeDelayTimes[13] =  7.0 / 4.0;  // 1.75
       relativeDelayTimes[14] =  9.0 / 5.0;  // 1.8
       relativeDelayTimes[15] = 11.0 / 6.0;  // 1.8333...
-      int dummy = 0;
     }
     break;
 
   case GEOMETRIC_MEANS:
-    { 
-      relativeDelayTimes[ 0] = parameter1;    
+    {
+      relativeDelayTimes[ 0] = parameter1;
       double dMax            = parameter2;
 
-      relativeDelayTimes[8]  = sqrt(dMax                   * relativeDelayTimes[0]  ); 
+      relativeDelayTimes[8]  = sqrt(dMax                   * relativeDelayTimes[0]  );
       relativeDelayTimes[4]  = sqrt(relativeDelayTimes[ 8] * relativeDelayTimes[0]  );
       relativeDelayTimes[12] = sqrt(dMax                   * relativeDelayTimes[8]  );
       relativeDelayTimes[2]  = sqrt(relativeDelayTimes[4]  * relativeDelayTimes[0]  );
@@ -303,10 +301,8 @@ void FeedbackDelayNetwork16::assignRelativeDelayTimesAlgorithmically(int distrib
       relativeDelayTimes[13] = sqrt(relativeDelayTimes[14] * relativeDelayTimes[12] );
       relativeDelayTimes[15] = sqrt(dMax                   * relativeDelayTimes[14] );
 
-      // hmm..isn't this equivalent to using a pow-function: 
+      // hmm..isn't this equivalent to using a pow-function:
       // delayTimes[i] = pow(dMax, i/(numDelayLines-1)) or something?
-
-      int dummy = 0;
     }
     break;
 
@@ -320,7 +316,7 @@ void FeedbackDelayNetwork16::assignRelativeDelayTimesAlgorithmically(int distrib
       double ratio = maxDelayTime/minDelayTime;
 
       for(i=1; i <= numDelayLines-2; i++)
-        desiredDelays[i] = desiredDelays[0] * 
+        desiredDelays[i] = desiredDelays[0] *
         pow(ratio, (double) i / (double) (numDelayLines-1) );
     }
     break;
@@ -367,7 +363,7 @@ void FeedbackDelayNetwork16::assignRelativeDelayTimesAlgorithmically(int distrib
     break;
     */
 
-  } 
+  }
   adjustDelayTimes();
 }
 
@@ -384,7 +380,7 @@ void FeedbackDelayNetwork16::setDelayOrdering(int newDelayOrdering)
 
 void FeedbackDelayNetwork16::setInjectionVector(int newInjectionVectorIndex)
 {
-  if( newInjectionVectorIndex >= 0 && 
+  if( newInjectionVectorIndex >= 0 &&
     newInjectionVectorIndex <  NUM_INJECTION_VECTORS )
   {
     injectionVectorIndex = newInjectionVectorIndex;
@@ -428,34 +424,34 @@ void FeedbackDelayNetwork16::setInjectionVector(int newInjectionVectorIndex)
   } // end of switch
 
 
-  
+
   /*
-  // normalize the input gains with respect to the delayline-lengths in order to ensure that the 
+  // normalize the input gains with respect to the delayline-lengths in order to ensure that the
   // height of the modes of the individual combs start at the same initial level:
   double normalizer;
   double refDelayInSamplesDbl = (0.001*referenceDelayTime*sampleRate);
   int    refDelayInSamples    = PrimeNumbers::findClosestPrime((int) refDelayInSamplesDbl);
   for(d=0; d<numDelayLines; d++)
   {
-    normalizer = (double) delaysInSamples[d] / (double) refDelayInSamples; 
+    normalizer = (double) delaysInSamples[d] / (double) refDelayInSamples;
     injectionVectorL[d] *= normalizer;
     injectionVectorR[d] *= normalizer;
   }
   */
-  
-  
+
+
 
   /*
   double normalizer;
   for(d=1; d<numDelayLines; d++)
   {
-    normalizer = (double) delaysInSamples[0] / (double) delaysInSamples[d]; 
+    normalizer = (double) delaysInSamples[0] / (double) delaysInSamples[d];
     injectionVectorL[d] *= normalizer;
     injectionVectorR[d] *= normalizer;
   }
   */
 
-  
+
 
 
 }
@@ -775,8 +771,8 @@ void FeedbackDelayNetwork16::setOutputVector(int newOutputVectorIndex)
   /*
   // the input gains are normalized with respect to the delayline-lengths in
   // order to ensure that the height of the modes of the individual combs
-  // start at the same initial level. to compensate for the undesired side 
-  // effect on the impulse-response we apply reciprocal factors in the 
+  // start at the same initial level. to compensate for the undesired side
+  // effect on the impulse-response we apply reciprocal factors in the
   // output-vector:
   //double c = 1.0/sqrt((double)numDelayLines);
   double c = 0.0;
@@ -786,11 +782,11 @@ void FeedbackDelayNetwork16::setOutputVector(int newOutputVectorIndex)
 
   double normalizer;
   double maxDelayInSamplesDbl = (0.001*maxDelayTime*sampleRate);
-  int    maxDelayInSamples    
+  int    maxDelayInSamples
   = PrimeNumbers::findClosestPrime((int) maxDelayInSamplesDbl);
   for(d=0; d<numDelayLines; d++)
   {
-  normalizer = c * (double) maxDelayInSamples / (double) delaysInSamples[d]; 
+  normalizer = c * (double) maxDelayInSamples / (double) delaysInSamples[d];
 
   outputVectorL[d] *= normalizer;
   outputVectorR[d] *= normalizer;
@@ -803,11 +799,11 @@ void FeedbackDelayNetwork16::setOutputVector(int newOutputVectorIndex)
 
 
 
-  
+
   double normalizer;
   for(d=1; d<numDelayLines; d++)
   {
-    normalizer = (double) delaysInSamples[0] / (double) delaysInSamples[d]; 
+    normalizer = (double) delaysInSamples[0] / (double) delaysInSamples[d];
     outputVectorL[d] *= normalizer;
     outputVectorR[d] *= normalizer;
   }
@@ -831,7 +827,7 @@ void FeedbackDelayNetwork16::adjustReadPointer(int index)
   // samples behind the write-pointer:
   tapOuts[index] = tapIns[index] - delaysInSamples[index];
 
-  // now we must take care, that the read-pointer is not below zero, that is, 
+  // now we must take care, that the read-pointer is not below zero, that is,
   // we need to do a forward-wraparound:
   while( tapOuts[index] < 0 )
     tapOuts[index] += maxDelayInSamples;
@@ -886,19 +882,19 @@ void FeedbackDelayNetwork16::adjustDelayTimes()
       delaysInSamples[15] = tmpDelays[ 8];
     }
     break;
-  } // end of switch( delayOrdering ) 
+  } // end of switch( delayOrdering )
 
-  // the new delay-times have been calculated (in samples), we now need to update the relative 
+  // the new delay-times have been calculated (in samples), we now need to update the relative
   // positions of the read-pointers
   for(i=0; i<numDelayLines; i++)
     adjustReadPointer(i);
 
-  // we also need to re-calculate the injection- and output-vectors, as they take into account the 
+  // we also need to re-calculate the injection- and output-vectors, as they take into account the
   // delay-times:
   setInjectionVector(injectionVectorIndex);
   setOutputVector(outputVectorIndex);
 
-  // changing the lengths of the delay-lines also affects the overall reverberation time, so we 
+  // changing the lengths of the delay-lines also affects the overall reverberation time, so we
   // need to update the damping-filters to compensate this:
   updateDampingAndCorrectionFilters();
 }
@@ -928,8 +924,8 @@ void FeedbackDelayNetwork16::updateDampingAndCorrectionFilters()
     g_hb_abs = pow(10.0, -3.0*delaysInSamples[d]/(T_hb*sampleRate) );
     g_h_abs  = pow(10.0, -3.0*delaysInSamples[d]/(T_h* sampleRate) );
 
-    // the desired absolute gains will be approximately realized by a low- and high-shelving filter 
-    // and a global gain, where the global gain is equal to the desired mid-frequency gain and the 
+    // the desired absolute gains will be approximately realized by a low- and high-shelving filter
+    // and a global gain, where the global gain is equal to the desired mid-frequency gain and the
     // shelves are set up to account for the relative gain-deviation:
     g_l_rel  = g_l_abs  / g_m_abs;
     g_lb_rel = g_lb_abs / g_m_abs;
@@ -945,12 +941,12 @@ void FeedbackDelayNetwork16::updateDampingAndCorrectionFilters()
     dampingFilters[d].setHighCrossoverGainFactor(g_hb_rel);
     dampingFilters[d].setHighGainFactor(g_h_rel);
 
-    // store the mid-gain factor in a member-variable because we need to know that value in the 
+    // store the mid-gain factor in a member-variable because we need to know that value in the
     // allpass-mode:
     feedbackGains[d] = g_m_abs;
   }
 
-  // set up the correction filters which decouple the overall frequency response from the frequency 
+  // set up the correction filters which decouple the overall frequency response from the frequency
   // dependent decay times:
   correctionFilterL.setGlobalGainFactor(1.0/sqrt(T_m));
   correctionFilterR.setGlobalGainFactor(1.0/sqrt(T_m));

@@ -74,7 +74,7 @@ void TabulatedFunction::setRange(double newLowerLimit, double newUpperLimit)
   mutex.unlock();
 }
 
-void TabulatedFunction::assignVariable(char *name, double value, bool reCalculateTable)
+void TabulatedFunction::assignVariable(const char *name, double value, bool reCalculateTable)
 {
   evaluator.assignVariable(name, value);
   if( reCalculateTable == true )

@@ -175,7 +175,7 @@ bool CTuningMap::ReadFromFile(const char * szFilepath)
 		} while ( (ifs) && (nCurrPos == 0) );
 		if ( nCurrPos >= 510 )
 		{
-			sprintf(m_szErrorString, "Line too long (line %d)", lLineCount);
+			sprintf(m_szErrorString, "Line too long (line %d)", (int) lLineCount);
 			return false; // Line too long
 		}
 		szLine[nCurrPos] = '\0';
@@ -204,7 +204,7 @@ bool CTuningMap::ReadFromFile(const char * szFilepath)
 		{
 			if ( szCurr[strlen(szCurr)-1] != ']' )
 			{
-				sprintf(m_szErrorString, "Syntax error: Section-tag must be the only string in the line! (line %d)", lLineCount);
+				sprintf(m_szErrorString, "Syntax error: Section-tag must be the only string in the line! (line %d)", (int) lLineCount);
 				return false; // error in section-tag! Must be the only one string in the line!
 			}
 			// Known section found?
@@ -232,7 +232,7 @@ bool CTuningMap::ReadFromFile(const char * szFilepath)
 		const char	* szValue = strchr(szCurr, '=');
 		if ( szValue == NULL )
 		{
-			sprintf(m_szErrorString, "Syntax error: '=' missing! (line %d)", lLineCount);
+			sprintf(m_szErrorString, "Syntax error: '=' missing! (line %d)", (int) lLineCount);
 			return false; // definitely an error: '=' missing!
 		}
 		++szValue; // Set the pointer to the first char behind the '='
@@ -299,7 +299,7 @@ bool CTuningMap::ReadFromFile(const char * szFilepath)
 
 		default: // This part of the code should never be reached!
 			assert(false);
-			sprintf(m_szErrorString, "Compilation error! Section not coded! (line %d)", lLineCount);
+			sprintf(m_szErrorString, "Compilation error! Section not coded! (line %d)", (int) lLineCount);
 			return false;
 		}
 	}

@@ -15,7 +15,7 @@ QuadrigaVoice::~QuadrigaVoice()
 }
 
 //-------------------------------------------------------------------------------------------------
-// parameter settings: 
+// parameter settings:
 
 void QuadrigaVoice::setSampleRate(double newSampleRate)
 {
@@ -34,7 +34,6 @@ void QuadrigaVoice::setMasterTuneA4(double newMasterTuneA4)
     noteFreq = getNoteFrequency(noteBeingReleased);
   else if( getCurrentNoteKey() != -1 )
     noteFreq = getNoteFrequency(getCurrentNoteKey());
-
   //oscSection.setPlaybackFrequencyNominal(noteFreq);
 }
 
@@ -62,7 +61,7 @@ void QuadrigaVoice::triggerNote(int newKey, int newVelocity, int newDetune)
     currentNoteEvent = noteList.front();
   mutex.unlock();
 
-  // tell the filter the current key and velocity, so it can set up the key and velocity 
+  // tell the filter the current key and velocity, so it can set up the key and velocity
   // scaled characteristic frequency:
   //oscSection.setKeyAndVel(newKey, newVelocity);
 

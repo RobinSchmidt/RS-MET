@@ -19,9 +19,9 @@ TuningTable::~TuningTable()
 }
 
 //-------------------------------------------------------------------------------------------------
-// parameter settings: 
+// parameter settings:
 
-void TuningTable::setName(char *newName)
+void TuningTable::setName(const char *newName)
 {
   // free old and allocate new memory for the name:
   if( name != NULL )
@@ -41,7 +41,7 @@ void TuningTable::setName(char *newName)
 
 void TuningTable::resetToDefaults()
 {
-  setName("12-TET"); 
+  setName("12-TET");
   masterTuneA4 = 440.0;
   detuneFactor = masterTuneA4 / 440.0;
   for(int i=0; i<128; i++)
@@ -72,7 +72,7 @@ void TuningTable::setMasterTuneA4(double newTuneA4)
 
 bool TuningTable::loadFromTunFile(char *path)
 {
-  // create a temporary object of Mark Henning's class CTuningMap and let it read in the tuning 
+  // create a temporary object of Mark Henning's class CTuningMap and let it read in the tuning
   // from the file:
   CTuningMap cTuningMap;
   bool success = cTuningMap.ReadFromFile(path);

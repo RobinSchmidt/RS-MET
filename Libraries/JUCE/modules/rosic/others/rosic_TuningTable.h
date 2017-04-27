@@ -8,8 +8,8 @@ namespace rosic
 {
   /**
 
-  This class implements a note-to-frequency mapping via a table which maps the 128 (0...127) 
-  MIDI notes to their corresponding frequency. The class can be used to realize different 
+  This class implements a note-to-frequency mapping via a table which maps the 128 (0...127)
+  MIDI notes to their corresponding frequency. The class can be used to realize different
   tunings/scales. By default, it realizes the equal tempered scale.
 
   */
@@ -31,21 +31,21 @@ namespace rosic
     //---------------------------------------------------------------------------------------------
     // parameter settings:
 
-    void setName(char* newName);
-    /**< Sets the name (i.e. the relative path from the standard tuning file directory) of the 
-    current tuning table - this function is only for conviniently handling loading/saving and 
-    preset management in a plugIn-context. The char-array is supposed to have 'newLength'+1 
+    void setName(const char* newName);
+    /**< Sets the name (i.e. the relative path from the standard tuning file directory) of the
+    current tuning table - this function is only for conviniently handling loading/saving and
+    preset management in a plugIn-context. The char-array is supposed to have 'newLength'+1
     elements where the last element should be the terminating zero.*/
 
     void resetToDefaults();
-    /**< Sets this tuning table into its default state (equal temperament, A4 = 440.0 Hz, 
+    /**< Sets this tuning table into its default state (equal temperament, A4 = 440.0 Hz,
     name = "EqualTemperament"). */
 
-    void assignFrequency(int note, double newFrequency); 
+    void assignFrequency(int note, double newFrequency);
     /**< Assigns a frequency to a particular note-number. */
 
-    void assignFrequencies(double* newFrequencies); 
-    /**< Assigns all frequencies at once - the passed array is assumed to have 128 entries 
+    void assignFrequencies(double* newFrequencies);
+    /**< Assigns all frequencies at once - the passed array is assumed to have 128 entries
     corresponding to the 128 MIDI notes. */
 
     void setMasterTuneA4(double newTuneA4);
@@ -58,19 +58,19 @@ namespace rosic
     // note to frequency conversion:
 
     char* getName();
-    /**< Returns the name of the tuning (i.e. the relative path from the standard tuning file 
+    /**< Returns the name of the tuning (i.e. the relative path from the standard tuning file
     directory) as a zero-terminated string. */
 
     bool isInDefaultState();
     /**< Informs whether or not this object is in its default state. */
 
     double getFrequency(int note);
-    /**< Converts a MIDI note number to a corresponding frequency by reading out the table at the 
+    /**< Converts a MIDI note number to a corresponding frequency by reading out the table at the
     position given by 'note' */
 
     double getFrequency(double note);
-    /**< Converts a MIDI note number to a corresponding frequency by reading out the table at the 
-    position given by a possibly non-integer note-number by linearly interpolating  between the two 
+    /**< Converts a MIDI note number to a corresponding frequency by reading out the table at the
+    position given by a possibly non-integer note-number by linearly interpolating  between the two
     adjacent pitches (not the frequencies). */
 
     double getMasterTuneA4();
@@ -91,7 +91,7 @@ namespace rosic
     /**< A flag to indicate whether or not this object is in default state. */
 
     char* name;
-    /**< A name assigned to the current tuning - this is supposed to be a relative path from the 
+    /**< A name assigned to the current tuning - this is supposed to be a relative path from the
     standard tuning file directory to the xml-file which represents the tuning. */
 
   };

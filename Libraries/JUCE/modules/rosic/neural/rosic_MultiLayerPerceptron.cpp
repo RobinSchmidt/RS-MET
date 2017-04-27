@@ -23,7 +23,7 @@ MultiLayerPerceptron::MultiLayerPerceptron(int numInputs, int numOutputs, int nu
   for(int i=1; i<numWeightLayers; i++)
   {
     z[i] = Vector(numNeuronsInHiddenLayers[i-1]+1);
-    Vector* zDbg = &(z[i]);
+    //Vector* zDbg = &(z[i]);  // debug
   }
   z[numWeightLayers] = Vector(numOutputs+1); // output layer has a dummy-bias, too
   for(int i=0; i<=numWeightLayers; i++)

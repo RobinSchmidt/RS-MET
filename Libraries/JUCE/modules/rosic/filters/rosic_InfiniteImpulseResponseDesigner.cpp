@@ -344,7 +344,7 @@ void InfiniteImpulseResponseDesigner::getBiquadCascadeCoefficients(double *b0, d
   else
     prototypeDesigner.setPrototypeMode(PrototypeDesigner::LOWPASS_PROTOTYPE);
 
-  double  f1, f2, wd1, wd2, wa1, wa2;
+  double  f1, f2, wd1, wd2; // wa1, wa2;
   double  fs = sampleRate;
 
   // use sanity-checked local frequency variables here:
@@ -368,16 +368,16 @@ void InfiniteImpulseResponseDesigner::getBiquadCascadeCoefficients(double *b0, d
   if( mode == BANDPASS || mode == BANDREJECT || mode == PEAK )
   {
     wd1 = 2.0*PI*f1/fs;         // normalized digital radian frequency 1
-    wa1 = 2.0*fs*tan(0.5*wd1);  // pre-warped analog radian frequency 1
+    //wa1 = 2.0*fs*tan(0.5*wd1);  // pre-warped analog radian frequency 1
     wd2 = 2.0*PI*f2/fs;         // normalized digital radian frequency 2
-    wa2 = 2.0*fs*tan(0.5*wd2);  // pre-warped analog radian frequency 2
+    //wa2 = 2.0*fs*tan(0.5*wd2);  // pre-warped analog radian frequency 2
   }
   else
   {
     wd1 = 2.0*PI*f1/fs;         // normalized digital radian frequency 1
-    wa1 = 2.0*fs*tan(0.5*wd1);  // pre-warped analog radian frequency 1
+    //wa1 = 2.0*fs*tan(0.5*wd1);  // pre-warped analog radian frequency 1
     wd2 = 0.0;                  // unused
-    wa2 = 0.0;                  // unused
+    //wa2 = 0.0;                  // unused
   }
 
   // allocate temporary memory:

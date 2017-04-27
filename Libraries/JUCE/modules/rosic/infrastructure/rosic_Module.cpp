@@ -7,9 +7,9 @@ using namespace rosic;
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-ModulatableParameter::ModulatableParameter(const char* name, double initialValue) 
-{    
-  nominalValue = instantaneousValue = initialValue; 
+ModulatableParameter::ModulatableParameter(const char* name, double initialValue)
+{
+  nominalValue = instantaneousValue = initialValue;
   if( name != NULL )
   {
     int length = (int) strlen(name);
@@ -18,7 +18,7 @@ ModulatableParameter::ModulatableParameter(const char* name, double initialValue
       this->name[c] = name[c];
   }
   else
-    this->name = "unknown parameter";
+    this->name = "unknown parameter";  // maybe we need strcpy
 }
 
 
@@ -41,8 +41,8 @@ ModulationRouter::~ModulationRouter()
 //-------------------------------------------------------------------------------------------------
 // setup:
 
-void ModulationRouter::establishNewConnection(ModulationSource *sourceToConnect, 
-                                              ModulatableParameter *parameterToConnect, 
+void ModulationRouter::establishNewConnection(ModulationSource *sourceToConnect,
+                                              ModulatableParameter *parameterToConnect,
                                               double connectionStrength)
 {
   mutex.lock();
@@ -71,7 +71,7 @@ void ModulationRouter::applyModulations(bool initWithNominalValue)
 {
   mutex.lock();
 
-  // this can't be dragged into the accumulation loop because that would cause parameters that 
+  // this can't be dragged into the accumulation loop because that would cause parameters that
   // appear in more than one connection to be re-initialized in each iteration:
   if( initWithNominalValue == true )
   {
@@ -100,7 +100,7 @@ char* Module::getModulatableParameterName(int index)
   else
   {
     DEBUG_BREAK;  // parameter-index out of range
-    return NULL; 
+    return NULL;
   }
 }
 

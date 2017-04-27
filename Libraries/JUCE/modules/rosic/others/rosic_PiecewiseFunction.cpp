@@ -99,8 +99,8 @@ int PiecewiseFunction::insertBreakpoint(double newX, double newY)
 {
   if( newX >= getMinX() )
   {
-    // Loop through the existing breakpoints and inspect their x-values. As soon as this x-value 
-    // gets (strictly) larger than the x--value of the new breakpoint to be inserted, we know that 
+    // Loop through the existing breakpoints and inspect their x-values. As soon as this x-value
+    // gets (strictly) larger than the x--value of the new breakpoint to be inserted, we know that
     // this is the index, right before which the new breakpoint has to be inserted:
     int    bpIndex = 1;  // omit the first breakpoint(index 0)
     double bpX     = 0.0;
@@ -109,21 +109,21 @@ int PiecewiseFunction::insertBreakpoint(double newX, double newY)
       bpX = breakpoints[bpIndex].x;
       if( bpX > newX )
       {
-        // make sure that the new  breakpoint to be inserted is not too close to 
+        // make sure that the new  breakpoint to be inserted is not too close to
         // another existing breakpoint:
-        if( newX - breakpoints[bpIndex-1].x < minBreakpointDistance 
+        if( newX - breakpoints[bpIndex-1].x < minBreakpointDistance
           || bpX - newX                     < minBreakpointDistance )
         {
           return -1;
         }
 
-        // create a new breakpoint for insertion right before the breakpoint with the current 
+        // create a new breakpoint for insertion right before the breakpoint with the current
         // index:
         FunctionBreakpoint newBreakpoint;
         newBreakpoint.x = newX;
         newBreakpoint.y = clip(newY, minY, maxY);
 
-        // insert the new breakpoint right before the breakpoint with the current index (this must 
+        // insert the new breakpoint right before the breakpoint with the current index (this must
         // be done inside a mutex-lock):
         mutex.lock();
         breakpoints.insert(breakpoints.begin()+bpIndex, 1, newBreakpoint);
@@ -138,7 +138,7 @@ int PiecewiseFunction::insertBreakpoint(double newX, double newY)
 
     } // end of while( bpIndex < (int) breakpoints.size() )
 
-    return -1; // this command should actually never be executed due to the 
+    return -1; // this command should actually never be executed due to the
     // logic of the stuff above, but we need it to suppress a compiler-warning
 
   } // end of  if( newX >= 0.0 )
@@ -163,7 +163,7 @@ bool PiecewiseFunction::removeBreakpoint(int index)
 
 bool PiecewiseFunction::modifyBreakpoint(int index, double newX, double newY)
 {
-  if( index >= 0 && index < (int) breakpoints.size()  )   
+  if( index >= 0 && index < (int) breakpoints.size()  )
   {
     if( index == lastBreakpointIndex() )
     {
@@ -196,7 +196,7 @@ bool PiecewiseFunction::modifyBreakpoint(int index, double newX, double newY)
       return true;
     } // end of if(index==0), else if(index==lastBreakpointIndex()), else
 
-  } // end of if( index >= 0 && index < (int) data->breakpoints.size()  )  
+  } // end of if( index >= 0 && index < (int) data->breakpoints.size()  )
   else
     return false;
 }
@@ -354,13 +354,13 @@ bool PiecewiseFunction::setBreakpointY(int index, double newY)
 int PiecewiseFunction::getNextNonCoincidingIndex(int startIndex)
 {
   //data->mutex.lock();
-  // mutex is not necesarry - this function is called only internally from functions which 
+  // mutex is not necesarry - this function is called only internally from functions which
   // already aquire the lock
 
   // when there are no breakpoints at the same time instant, this will be the default value:
   int foundIndex = startIndex + 1;
 
-  // make sure to not access out-of-range indices: 
+  // make sure to not access out-of-range indices:
   if( foundIndex > lastBreakpointIndex() )
     return 0;
 
@@ -369,20 +369,20 @@ int PiecewiseFunction::getNextNonCoincidingIndex(int startIndex)
     // timeStamp at foundIndex is not strictly larger than at startIndex - skip to next breakpoint:
     foundIndex++;
 
-    // make sure to not access out-of-range indices: 
+    // make sure to not access out-of-range indices:
     if( foundIndex > lastBreakpointIndex() )
       return 0;
   }
 
-  // O.K. we now have skipped to the first index for which the timeStamp is actually larger than 
-  // at the startIndex (and returned 0, if that would be out-of-range) - now we can return our 
+  // O.K. we now have skipped to the first index for which the timeStamp is actually larger than
+  // at the startIndex (and returned 0, if that would be out-of-range) - now we can return our
   // finding:
   return foundIndex;
 }
 
 int PiecewiseFunction::getLastCoincidingIndex(int index)
 {
-  // make sure to not access out-of-range indices: 
+  // make sure to not access out-of-range indices:
   if( index+1 > lastBreakpointIndex() )
     return lastBreakpointIndex();
 
@@ -391,7 +391,7 @@ int PiecewiseFunction::getLastCoincidingIndex(int index)
     // timeStamp at foundIndex is not strictly larger than at startIndex - skip to next breakpoint:
     index++;
 
-    // make sure to not access out-of-range indices: 
+    // make sure to not access out-of-range indices:
     if( index+1 > lastBreakpointIndex() )
       return lastBreakpointIndex();
   }
@@ -403,7 +403,7 @@ void PiecewiseFunction::initialize()
 {
   mutex.lock();
 
-  // initialize the breakpoint-vector with two entries, these two will always be there (their data 
+  // initialize the breakpoint-vector with two entries, these two will always be there (their data
   // can be modified, though), additional entries can be inserted and removed at will in between:
   breakpoints.clear();
   FunctionBreakpoint newBreakpoint;
@@ -425,7 +425,7 @@ void PiecewiseFunction::calculateCubicCoefficients()
 {
   mutex.lock();
 
-  if( breakpoints.size() != numSegments-1 )
+  if( (int) breakpoints.size() != numSegments-1 )
   {
     delete[] a;
     delete[] b;
@@ -447,7 +447,7 @@ void PiecewiseFunction::calculateCubicCoefficients()
   a[numSegments] = breakpoints[numSegments].y;
 
   // compute the right-hand-sides for the tridiagonal equation system:
-  double rhs[10];  
+  double rhs[10];
   for(int i=1; i<numSegments; i++)
     rhs[i] = 3 * ( (a[i+1]-a[i])/h[i] - (a[i]-a[i-1])/h[i-1] );  // Eq. 19.239
 

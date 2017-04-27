@@ -66,9 +66,9 @@ void WaveformDisplayBuffer::setDisplayWidth(int newDisplayWidth)
 // inquiry:
 
 double* WaveformDisplayBuffer::getDisplayBuffer()
-{ 
+{
   updateDisplayBuffer();
-  return displayBuffer; 
+  return displayBuffer;
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
@@ -87,19 +87,15 @@ void WaveformDisplayBuffer::updateTimeVariables()
   inc = displayBufferLength / numSamplesShown;
 
 
-  fillWithRangeLinear(timeAxisValues, displayBufferLength, 0.0, (numSamplesShown)/(sampleRate)); 
-  //fillWithRangeLinear(timeAxisValues, displayBufferLength, 0.0, (2*numSamplesShown-1)/(2*sampleRate)); 
-  //fillWithRangeLinear(timeAxisValues, displayBufferLength, 0.0, (numSamplesShown-1)/(sampleRate)); 
+  fillWithRangeLinear(timeAxisValues, displayBufferLength, 0.0, (numSamplesShown)/(sampleRate));
+  //fillWithRangeLinear(timeAxisValues, displayBufferLength, 0.0, (2*numSamplesShown-1)/(2*sampleRate));
+  //fillWithRangeLinear(timeAxisValues, displayBufferLength, 0.0, (numSamplesShown-1)/(sampleRate));
 
 
-   
   // \todo: check, if this is exact... might also be (numSamplesShown-1)/(sampleRate) or something
   // maybe use convenient values for the sample-rate (like 100 or something)
-   
 
-  double test = timeAxisValues[displayBufferLength-1];
-    
-   
+  //double test = timeAxisValues[displayBufferLength-1];
 
   clearBuffers();
 }
@@ -241,11 +237,11 @@ double* SyncedWaveformDisplayBuffer::getDisplayBuffer()
   if( syncMode == FREE_RUNNING )
     return WaveformDisplayBuffer::getDisplayBuffer();
   else
-    return displayBuffer; 
+    return displayBuffer;
 }
 
 void SyncedWaveformDisplayBuffer::feedInputSample(double x)
-{ 
+{
   if( syncMode == FREE_RUNNING || (timeWindowLength > syncThreshold) )
     WaveformDisplayBuffer::feedInputSample(x);
   else if( syncMode == ZEROS )
@@ -255,7 +251,7 @@ void SyncedWaveformDisplayBuffer::feedInputSample(double x)
 }
 
 void SyncedWaveformDisplayBuffer::feedInputSampleWithSync(double x, double y)
-{ 
+{
   // treat case where we sync the last pixel in the display:
   if( syncBackward == true )
   {
@@ -277,7 +273,7 @@ void SyncedWaveformDisplayBuffer::feedInputSampleWithSync(double x, double y)
     }
     else
     {
-      // maybe do a circular shift? or not? 
+      // maybe do a circular shift? or not?
     }
     bufferFull = false;
   }

@@ -3,14 +3,14 @@ using namespace rosic;
 
 #include "../_third_party/soundtouch/WavFile.cpp"
 
-void rosic::writeToMonoWaveFile(const char* path, float *signal, int numFrames, int sampleRate, 
+void rosic::writeToMonoWaveFile(const char* path, float *signal, int numFrames, int sampleRate,
                                 int numBits)
 {
   WavOutFile file(path, sampleRate, numBits, 1);
   file.write(signal, numFrames);
 }
- 
-void rosic::writeToMonoWaveFile(const char* path, double *signal, int numFrames, int sampleRate, 
+
+void rosic::writeToMonoWaveFile(const char* path, double *signal, int numFrames, int sampleRate,
                                 int numBits)
 {
   WavOutFile file(path, sampleRate, numBits, 1);
@@ -21,7 +21,7 @@ void rosic::writeToMonoWaveFile(const char* path, double *signal, int numFrames,
   delete[] tmp;
 }
 
-void rosic::writeToStereoWaveFile(const char* path, double *left, double *right, int numFrames,                           
+void rosic::writeToStereoWaveFile(const char* path, double *left, double *right, int numFrames,
                                   int sampleRate, int numBits)
 {
   WavOutFile file(path, sampleRate, numBits, 2);
@@ -35,7 +35,7 @@ void rosic::writeToStereoWaveFile(const char* path, double *left, double *right,
   delete[] tmp;
 }
 
-double** rosic::readFromWaveFile(const char* path, int& numChannels, int& numFrames, 
+double** rosic::readFromWaveFile(const char* path, int& numChannels, int& numFrames,
                                  int& sampleRate)
 {
   try
@@ -82,7 +82,7 @@ void rosic::writeStringToFile(const char* path, const char* stringToWrite)
   }
 }
 
-void rosic::writeDataToFile(const char* path, int numValues, double *x, double *y1, double *y2, 
+void rosic::writeDataToFile(const char* path, int numValues, double *x, double *y1, double *y2,
                             double *y3, double *y4, double *y5)
 {
   int charsPerNumber = 25;
@@ -182,10 +182,10 @@ void rosic::writeDataToFile(char* path, double *data, int pixelWidth, int pixelH
 */
 
 
-void rosic::writeDataToFile(const char* path, double *data, int pixelWidth, int pixelHeight, 
+void rosic::writeDataToFile(const char* path, double *data, int pixelWidth, int pixelHeight,
                             double *xAxis, double *yAxis)
 {
-  float zDbg[50][50];
+  //float zDbg[50][50]; // for debug
 
   FILE *f = fopen(path, "w");
   int pos = 0;
@@ -214,7 +214,7 @@ void rosic::writeDataToFile(const char* path, double *data, int pixelWidth, int 
       for(int ix=0; ix<pixelWidth; ix++)
       {
         float z  = (float) data[pixelWidth*iy+ix];
-        zDbg[ix][iy] = z;
+        //zDbg[ix][iy] = z;
         rassert(z<10);
         pos += (int) fwrite(&z, sizeof(float), 1, f);
       }

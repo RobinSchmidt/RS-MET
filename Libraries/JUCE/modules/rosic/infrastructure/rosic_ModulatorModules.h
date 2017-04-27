@@ -10,7 +10,7 @@ namespace rosic
 
   /**
 
-  This file defines wrapper classes that wrap some core modulation-source objects into 
+  This file defines wrapper classes that wrap some core modulation-source objects into
   ModulationSource objects to facilitate their use in a (semi) modular framework.
 
   */
@@ -18,14 +18,14 @@ namespace rosic
   class BreakpointModulatorModule : public ModulationSource, public BreakpointModulator
   {
   public:
-    virtual void setSampleRate(float newSampleRate) 
+    virtual void setSampleRate(float newSampleRate)
     { BreakpointModulator::setSampleRate(newSampleRate); }
-    virtual void setTempoInBPM(float newTempo) 
+    virtual void setTempoInBPM(float newTempo)
     { BreakpointModulator::setBeatsPerMinute(newTempo); }
     virtual void trigger() { BreakpointModulator::noteOn(); } // todo: include key/velocity
-    virtual double getSample() { BreakpointModulator::getSample(); }
+    virtual double getSample() { return BreakpointModulator::getSample(); }
   };
 
 } // end namespace rosic
 
-#endif 
+#endif

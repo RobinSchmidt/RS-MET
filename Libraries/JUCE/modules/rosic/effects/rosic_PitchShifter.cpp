@@ -38,8 +38,6 @@ PitchShifter::PitchShifter()
 
   antiAliasFilterL.setSubDivision(1.0);
   antiAliasFilterR.setSubDivision(1.0);
-
-  int dummy = 0;
 }
 
 PitchShifter::~PitchShifter()
@@ -72,7 +70,7 @@ void PitchShifter::setDetuneCoarse(double newDetuneCoarse)
 void PitchShifter::setDetuneFine(double newDetuneFine)
 {
   detuneFine = newDetuneFine;
-  updateIncrement();    
+  updateIncrement();
   //initTapDistances();
 }
 
@@ -156,7 +154,7 @@ bool PitchShifter::isPolarityNegative()
 {
   if( wetPolarity == -1.0 )
     return true;
-  else 
+  else
     return false;
 }
 
@@ -185,13 +183,13 @@ void PitchShifter::reset()
 void PitchShifter::updateIncrement()
 {
   // calculate the total detune in semitones
-  double detune    = detuneCoarse + 0.01*detuneFine; 
+  double detune    = detuneCoarse + 0.01*detuneFine;
 
   // calculate, to which tap-increment this corresponds:
   double increment = pitchOffsetToFreqFactor(detune);
 
-  // the difference between the hypotheticial increment for the read pointers and a unit increment 
-  // (which the write pointer has) gives the increment for the distance between the read and write 
+  // the difference between the hypotheticial increment for the read pointers and a unit increment
+  // (which the write pointer has) gives the increment for the distance between the read and write
   // pointers:
   distanceIncrement = -(increment-1.0);
 

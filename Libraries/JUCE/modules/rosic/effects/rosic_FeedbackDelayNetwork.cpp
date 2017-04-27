@@ -1,13 +1,13 @@
 #include "rosic_FeedbackDelayNetwork.h"
 using namespace rosic;
 
-// a little helper function that is supposed to reorder a buffer (of delayline-lengths) that is 
-// initially in ascending order in a way that maximizes the average crossfeedback between 
+// a little helper function that is supposed to reorder a buffer (of delayline-lengths) that is
+// initially in ascending order in a way that maximizes the average crossfeedback between
 // delaylines with most different lengths (when the diffusion parameter is neither 0 nor 1)
 // we implement it as template function outside the class because we need to apply it to the vector
 // of output-gains as well
-// maybe try the same with a buffer of initially descending lengths - this promotes stroger 
-// crossfeedback between the longer delaylines (whearas we currently have stronger crossfeedback 
+// maybe try the same with a buffer of initially descending lengths - this promotes stroger
+// crossfeedback between the longer delaylines (whearas we currently have stronger crossfeedback
 // between shorter delaylines - hmm but that could actually be desirable - higher modes denser)
 template<class T>
 void shuffleBuffer(T *buffer, int length)
@@ -30,7 +30,7 @@ void shuffleBuffer(T *buffer, int length)
 
 
 // Construction/Destruction:
-    
+
 FeedbackDelayNetwork::FeedbackDelayNetwork()
 {
   // some test code for development:
@@ -77,7 +77,7 @@ FeedbackDelayNetwork::FeedbackDelayNetwork()
   //log2NumDelayLines  = 10;
 
 
-  sampleRate         = 44100.0;   
+  sampleRate         = 44100.0;
   referenceDelayTime = 20.0/1000.0;  // 20 ms
   //referenceDelayTime = 0.5/1000.0;  // 2 ms
 
@@ -98,10 +98,10 @@ void FeedbackDelayNetwork::setDiffusion(double newDiffusion)
 {
   diffusion = newDiffusion;
 
-  // hmm...seems like we should have a nonlinear mapping - we need more precision in the lower 
+  // hmm...seems like we should have a nonlinear mapping - we need more precision in the lower
   // range
 
-  double d = 0.01*diffusion; 
+  double d = 0.01*diffusion;
   //d = d*d*d;  // nah - that's not yet a good mapping
 
   //d = mapLinearToRational(d, +0.7);
@@ -110,8 +110,8 @@ void FeedbackDelayNetwork::setDiffusion(double newDiffusion)
 
 
   /*
-  // found empirically to provide a perceptually uniform mapping - still between 75% and 100% 
-  // there's too little difference - maybe use a cubic spline and enforce steeper slope at 
+  // found empirically to provide a perceptually uniform mapping - still between 75% and 100%
+  // there's too little difference - maybe use a cubic spline and enforce steeper slope at
   // (x,y)=(1,1) - in any event the spline should go through (x,y)=(0.5, 0.25) and provide higher
   // resolution around that point (slope should be shallow there)
   if( d < 0.5 )
@@ -120,13 +120,13 @@ void FeedbackDelayNetwork::setDiffusion(double newDiffusion)
     d = 0.875 - 2.625*d + 2.75 * d*d;
   */
 
-  // i think, this required mapping comes about because the percived diffusion depends on the ratio 
-  // a/b which has singularities quickly towards the ends of of the interval ...maybe some tan or 
+  // i think, this required mapping comes about because the percived diffusion depends on the ratio
+  // a/b which has singularities quickly towards the ends of of the interval ...maybe some tan or
   // atan based formula could help?
 
   sinCos(d*PI/4, &b, &a);
 
-  // \todo - when introducing modulation for d (or the angle phi), check if it is better to 
+  // \todo - when introducing modulation for d (or the angle phi), check if it is better to
   // modulate the angle before or after the non linear mapping. if the modulation is applied before
   // the mapping, we should wrap the modulated value into 0...1 before the sin/cos
 }
@@ -142,7 +142,7 @@ void FeedbackDelayNetwork::reset()
   setupReadIndices();
 }
 
-void FeedbackDelayNetwork::fastGeneralizedHadamardTransform(double *x, int N, int log2N, 
+void FeedbackDelayNetwork::fastGeneralizedHadamardTransform(double *x, int N, int log2N,
                                                             double a, double b, double c, double d)
 {
   double *y               = (double*) alloca(N*sizeof(double));
@@ -156,7 +156,7 @@ void FeedbackDelayNetwork::fastGeneralizedHadamardTransform(double *x, int N, in
       y[j+N2] = c*x[2*j] + d*x[2*j+1];
       // maybe precompute 2*j, 2*j+1 and measure performance - but the compiler should be able
       // to do that optimization itself
-      // maybe this computation lends itself well to SSE2-optimization (do the 4 multiplications at 
+      // maybe this computation lends itself well to SSE2-optimization (do the 4 multiplications at
       // once)
     }
     rsSwap(x, y);
@@ -164,13 +164,13 @@ void FeedbackDelayNetwork::fastGeneralizedHadamardTransform(double *x, int N, in
   }
   if( !xContainsResult )
     memcpy(y, x, N*sizeof(double)); // try rosic::copyBuffer instead, measure performance
-     // huh - shouldn't we copy from y to x? ...but maybe it works because the pointers are also 
-     // swapped ->that's confusing, clean this up - maybe just rename the flag into something 
-     // neutral 
+     // huh - shouldn't we copy from y to x? ...but maybe it works because the pointers are also
+     // swapped ->that's confusing, clean this up - maybe just rename the flag into something
+     // neutral
 }
 
-void FeedbackDelayNetwork::fastInverseGeneralizedHadamardTransform(double *x, int N, int log2N, 
-                                                                   double a, double b, 
+void FeedbackDelayNetwork::fastInverseGeneralizedHadamardTransform(double *x, int N, int log2N,
+                                                                   double a, double b,
                                                                    double c, double d)
 {
   double s = 1.0 / (a*d - b*c);
@@ -198,14 +198,14 @@ void FeedbackDelayNetwork::setupRelativeDelayTimes()
     relativeDelayTimes[i] = pow(dMax, (double) i / (double) numDelayLines);
 
 
-  shuffleBuffer(relativeDelayTimes, numDelayLines); 
+  shuffleBuffer(relativeDelayTimes, numDelayLines);
     // put an if(shuffleLengths) around, or make a case-statement switching on an "ordering" member
 
   allocateDelayLines();
 
-  // or maybe use a formula that that is a weighted sum between this exponential rule and a linear 
-  // rule where the shape parameter determines the weights: shape = 0 - linear, very regular 
-  // echo-pattern, shape = 1 - exponential, more irregular. ....maybe call this parameter 
+  // or maybe use a formula that that is a weighted sum between this exponential rule and a linear
+  // rule where the shape parameter determines the weights: shape = 0 - linear, very regular
+  // echo-pattern, shape = 1 - exponential, more irregular. ....maybe call this parameter
   // "Regularity" or something
   // or maybe use a formula based on mode frequencies of a rectangular room - maybe generalize
   // the formula (replace the squares and square-root with an adjustable exponent or something)
@@ -263,16 +263,16 @@ void FeedbackDelayNetwork::freeDelayLines()
   }
 }
 
-// \todo inle this function later - during development, we want to have it non-inlined and in the 
+// \todo inle this function later - during development, we want to have it non-inlined and in the
 // cpp file to decrease build times
 void FeedbackDelayNetwork::processFrame(double *inOutL, double *inOutR)
 {
-  double delayLineOuts[1024]; 
+  double delayLineOuts[1024];
   // maybe use a member later with dynamic allocation
 
 
 
-      
+
 
 
   int i;
@@ -286,10 +286,10 @@ void FeedbackDelayNetwork::processFrame(double *inOutL, double *inOutR)
     // pull out the outputs of the delaylines:
     delayLineOuts[i] = delayLines[i][readIndices[i]];
 
-   
+
     // apply damping-filters to the delayline-outputs:
     //delayLineOuts[i] = dampingFilters[i].getSample(delayLineOuts[i]); // reactivate later
-   
+
 
     // stuff the new input into the delaylines via the injection-vectors:
     //delayLines[i][readIndices[i]] = injectionVectorL[i] * *inOutL + injectionVectorR[i] * *inOutL;
@@ -297,7 +297,7 @@ void FeedbackDelayNetwork::processFrame(double *inOutL, double *inOutR)
 
 
 
-    int dummy = 0;
+    //int dummy = 0;
     // huh? when "i" gets larger than 131, it wraps around to zero, so we end up in an endless loop for
     // FDNs larger than 128. WTF?
 
@@ -314,7 +314,7 @@ void FeedbackDelayNetwork::processFrame(double *inOutL, double *inOutR)
   double sign = 1.0;
   for(i = 0; i < numDelayLines; i+=2)
   {
-    wetL += sign * delayLineOuts[i];    
+    wetL += sign * delayLineOuts[i];
     wetR += sign * delayLineOuts[i+1];
     sign *= -1.0;
   }
@@ -326,13 +326,13 @@ void FeedbackDelayNetwork::processFrame(double *inOutL, double *inOutR)
   {
     //double c = 1.0 / (0.25*i+1);
     double c = 1.0;
-    wetL += c * (        delayLineOuts[i] 
-                 - 0.5 * delayLineOuts[i+1] 
-                 -       delayLineOuts[i+2]    
+    wetL += c * (        delayLineOuts[i]
+                 - 0.5 * delayLineOuts[i+1]
+                 -       delayLineOuts[i+2]
                  + 0.5 * delayLineOuts[i+3]);
-    wetR += c * (  0.5 * delayLineOuts[i] 
-                 +       delayLineOuts[i+1] 
-                 - 0.5 * delayLineOuts[i+2]    
+    wetR += c * (  0.5 * delayLineOuts[i]
+                 +       delayLineOuts[i+1]
+                 - 0.5 * delayLineOuts[i+2]
                  -       delayLineOuts[i+3]);
   }
 
@@ -342,22 +342,13 @@ void FeedbackDelayNetwork::processFrame(double *inOutL, double *inOutR)
   fastGeneralizedHadamardTransform(delayLineOuts, numDelayLines, log2NumDelayLines, a, b, -b, a);
   for(i = 0; i < numDelayLines; i++)
     delayLines[i][writeIndices[i]] += 0.9 * delayLineOuts[i];
- 
-
-
-
-      
 
   // preliminary - later use members:
   double dryGain = 1.0;
-  double wetGain = 1.0; // * 1.0/sqrt((double)numDelayLines); 
+  double wetGain = 1.0; // * 1.0/sqrt((double)numDelayLines);
     // compensates for the energy-addition of the delayline-outputs
 
-
   // mix dry and wet:
-  *inOutL = dryGain*(*inOutL) + wetGain*wetL;  
+  *inOutL = dryGain*(*inOutL) + wetGain*wetL;
   *inOutR = dryGain*(*inOutR) + wetGain*wetR;
-
-
-  int dummy = 0;
 }
