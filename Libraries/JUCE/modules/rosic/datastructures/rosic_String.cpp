@@ -84,7 +84,7 @@ int String::numberOfRequiredCharacters(int number)
   int numChars           = 0;
   int absValue           = abs(number);
   unsigned long long tmp = 1;             // must be able to go above INT_MAX
-  while( tmp <= absValue && tmp < (unsigned long long) INT_MAX )
+  while( tmp <= (unsigned long long) absValue && tmp < (unsigned long long) INT_MAX )
   {
     tmp *= 10;
     numChars++;

@@ -31,8 +31,6 @@ LadderFilter::LadderFilter()
 
   calculateCoefficients();
   reset();
-
-  int dummy = 0;
 }
 
 LadderFilter::~LadderFilter()

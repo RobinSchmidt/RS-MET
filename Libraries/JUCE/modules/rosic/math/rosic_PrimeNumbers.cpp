@@ -44,7 +44,7 @@ int PrimeNumbers::findClosestLowerPrimeIndex(int someNumber)
  int highIndex = primeArrayLength-1;
  int index     = (lowIndex+highIndex)/2;
  int prime     = primeArray[index];
- int result    = 0;
+ //int result    = 0;
 
  // binary search:
  while( lowIndex <= highIndex && prime != someNumber )

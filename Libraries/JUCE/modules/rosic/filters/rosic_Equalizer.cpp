@@ -42,7 +42,7 @@ int Equalizer::addBand(int newMode, double newFrequency, double newGain, double 
 
   bands.push_back(newBand);
   result = (int) bands.size()-1;
-  
+
   return result;
 }
 
@@ -71,7 +71,7 @@ bool Equalizer::modifyBand(unsigned int index, int newMode, double newFrequency,
     DEBUG_BREAK;
     return false;
   }
-  bands[index].setParameters(newMode, newFrequency, newGain, newBandwidth, true); 
+  bands[index].setParameters(newMode, newFrequency, newGain, newBandwidth, true);
   return true;
 }
 
@@ -220,10 +220,10 @@ void Equalizer::getMagnitudeResponse(double *frequencies, double *magnitudes, in
       magnitudes[k] = -120.0;
   }
 
-  // debug:
-  double m[1000];
-  copyBuffer(magnitudes, m, rmin(numBins, 1000));
-  int dummy = 0;
+//  // debug:
+//  double m[1000];
+//  copyBuffer(magnitudes, m, rmin(numBins, 1000));
+//  int dummy = 0;
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
