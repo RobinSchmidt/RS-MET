@@ -9,9 +9,9 @@ LadderFilter::LadderFilter()
   parameters = new LadderFilterParameters;
   isMaster   = true;
 
-  cutoff = 1000.0; 
+  cutoff = 1000.0;
   b0 = 1.0;
-  a1 = 0.0;      
+  a1 = 0.0;
   k  = 0.0;
   c0 = 0.0;
   c1 = 0.0;
@@ -164,7 +164,7 @@ c4 = [ 1 -1  1 -1  1];
 //-------------------------------------------------------------------------------------------------
 // inquiry:
 
-Complex LadderFilter::getTransferFunctionAt(Complex z, bool withFeedback, bool withMakeUpBoost, 
+Complex LadderFilter::getTransferFunctionAt(Complex z, bool withFeedback, bool withMakeUpBoost,
                                            bool withMakeUpGain, int stage)
 {
   Complex G1, G4, G, H;
@@ -205,7 +205,7 @@ double LadderFilter::getMagnitudeAt(double frequency, bool withFeedback, bool wi
   return H.getRadius();
 }
 
-void LadderFilter::getMagnitudeResponse(double *frequencies, double *magnitudes, int numBins, 
+void LadderFilter::getMagnitudeResponse(double *frequencies, double *magnitudes, int numBins,
                                        bool inDecibels, bool accumulate)
 {
   int k;
@@ -239,13 +239,13 @@ void LadderFilter::getMagnitudeResponse(double *frequencies, double *magnitudes,
 }
 
 double LadderFilter::getCutoff()
-{ 
-  return cutoff; 
+{
+  return cutoff;
 }
 
 double LadderFilter::getResonance()
-{ 
-  return parameters->resonanceRaw; 
+{
+  return parameters->resonanceRaw;
 }
 
 double LadderFilter::getDrive()
@@ -276,7 +276,7 @@ void LadderFilter::addSlave(LadderFilter* newSlave)
   // add the new slave to the vector of slaves:
   slaves.push_back(newSlave);
 
-  // delete the original parameter-set of the new slave and redirect it to ours (with some safety 
+  // delete the original parameter-set of the new slave and redirect it to ours (with some safety
   // checks):
   if( newSlave->parameters != NULL && newSlave->parameters != this->parameters )
   {
@@ -285,15 +285,15 @@ void LadderFilter::addSlave(LadderFilter* newSlave)
   }
   else
   {
-    DEBUG_BREAK; 
-    // the object to be added as slave did not contain a valid parameter-pointer - maybe it has 
+    DEBUG_BREAK;
+    // the object to be added as slave did not contain a valid parameter-pointer - maybe it has
     // been already added as slave to another master?
   }
 
-  // set the isMaster-flag of the new slave to false: 
+  // set the isMaster-flag of the new slave to false:
   newSlave->isMaster = false;
 
-  // this flag will prevent the destructor of the slave from trying to delete the parameter-set 
+  // this flag will prevent the destructor of the slave from trying to delete the parameter-set
   // which is now shared - only masters delete their parameter-set on destruction
 }
 
@@ -329,9 +329,9 @@ double LadderFilter::getSampleTest(double in)
   //double y0L = in;
 
 
-  if( a1 != a1Old ) 
+  if( a1 != a1Old )
   {
-    double b0Old = 1.0+a1Old;
+    //double b0Old = 1.0+a1Old;
 
 
     // cutoff was changed - update internal states to preserve energy
@@ -340,7 +340,7 @@ double LadderFilter::getSampleTest(double in)
 
 
 
-   
+
     /*
     double eOld, eNew, eG; // energy represented by integrator states
     eOld = y1L*y1L * (1/(1-a1Old*a1Old) - 1);
@@ -376,16 +376,16 @@ double LadderFilter::getSampleTest(double in)
   //int dummy = 0;
 
 
-  
+
   // cascade of 4 1st order sections:
   y1L = b0*y0L - a1*y1L;
   y2L = b0*y1L - a1*y2L;
   y3L = b0*y2L - a1*y3L;
   y4L = b0*y3L - a1*y4L;
- 
 
- 
-  // test some scalings of the feedback value in order to counteract energy changes under 
+
+
+  // test some scalings of the feedback value in order to counteract energy changes under
   // time-varying conditions:
   double s = 1.0;
   /*

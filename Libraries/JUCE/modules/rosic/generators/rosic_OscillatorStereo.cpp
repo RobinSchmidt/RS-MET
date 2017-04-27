@@ -121,8 +121,8 @@ void OscillatorStereo::setLevel(double newLevel)
   calculateKeyAndVelocityDependentParameters();
   //markPresetAsDirty();
 
-  // it's a bit wasteful to re-calculate all key and velocity dependent parameters when only one 
-  // of them has actually changed - however it is not supposed to be called at samplerate and makes 
+  // it's a bit wasteful to re-calculate all key and velocity dependent parameters when only one
+  // of them has actually changed - however it is not supposed to be called at samplerate and makes
   // for cleaner code
 }
 
@@ -442,7 +442,7 @@ void OscillatorStereo::getWaveformForDisplay(double **targetBuffer, int numSampl
     return;
   }
 
-  // determine the ratio of the lengths of between the buffer to be read and the buffer to be 
+  // determine the ratio of the lengths of between the buffer to be read and the buffer to be
   // written - this is somewhat similar to a phase-increment for the read-buffer:
   double  readWriteRatio = (double) waveTable->getTableLength() / (double) numSamplesToShow;
 
@@ -469,7 +469,7 @@ void OscillatorStereo::getWaveformForDisplay(double **targetBuffer, int numSampl
     // readout the table, thereby convert to L/R and apply M/S-scaling and pan:
     for(int n=0; n<tmpArrayLength; n++)
     {
-      // this is a bit dirty because if there wouldn't be a whole table-set in the mip-map, we 
+      // this is a bit dirty because if there wouldn't be a whole table-set in the mip-map, we
       // could get access violations - the clean way would be to account for wrapaorunds here....
 
       tmpL         = waveTable->getValue(0, 0, wrapAround(readIndex+n+shift, waveTable->getTableLength()), 0.0);
@@ -486,8 +486,8 @@ void OscillatorStereo::getWaveformForDisplay(double **targetBuffer, int numSampl
 
 
     // debug:
-    double minValue = tmpArrayL[minIndex];
-    double maxValue = tmpArrayL[maxIndex];
+    //double minValue = tmpArrayL[minIndex];
+    //double maxValue = tmpArrayL[maxIndex];
 
     if( minIndex < maxIndex )
     {
@@ -535,7 +535,7 @@ void OscillatorStereo::addSlave(OscillatorStereo* newSlave)
   // add the new slave to the vector of slaves:
   slaves.push_back(newSlave);
 
-  // delete the original parameter-set of the new slave and redirect it to ours (with some safety 
+  // delete the original parameter-set of the new slave and redirect it to ours (with some safety
   // checks):
   if( newSlave->parameters != NULL && newSlave->parameters != this->parameters )
   {
@@ -544,15 +544,15 @@ void OscillatorStereo::addSlave(OscillatorStereo* newSlave)
   }
   else
   {
-    DEBUG_BREAK; 
-    // the object to be added as slave did not contain a valid parameter-pointer - maybe it has 
+    DEBUG_BREAK;
+    // the object to be added as slave did not contain a valid parameter-pointer - maybe it has
     // been already added as slave to another master?
   }
 
-  // set the isMaster-flag of the new slave to false: 
+  // set the isMaster-flag of the new slave to false:
   newSlave->isMaster = false;
 
-  // this flag will prevent the destructor of the slave from trying to delete the parameter-set 
+  // this flag will prevent the destructor of the slave from trying to delete the parameter-set
   // which is now shared - only masters delete their parameter-set on destruction
 }
 

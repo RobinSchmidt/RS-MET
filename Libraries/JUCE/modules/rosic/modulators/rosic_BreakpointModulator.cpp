@@ -19,7 +19,7 @@ BreakpointModulator::~BreakpointModulator()
   {
     data->mutex.lock();
     data->breakpoints.clear();
-    data->mutex.unlock();  
+    data->mutex.unlock();
     delete data;
   }
 }
@@ -115,18 +115,18 @@ void BreakpointModulator::fixEndLevelAtZero(bool shouldBeFixed)
   data->endLevelFixedAtZero = shouldBeFixed;
 }
 
-int BreakpointModulator::insertBreakpoint(double newTimeStamp, 
-                                          double newLevel, 
-                                          int    newShape, 
+int BreakpointModulator::insertBreakpoint(double newTimeStamp,
+                                          double newLevel,
+                                          int    newShape,
                                           double newShapeAmount)
 {
   if( newTimeStamp >= getStartTime() )
   {
     //markPresetAsDirty();
 
-    // Loop through the existing data->breakpoints and inspect their time-stamps. As 
-    // soon as this time-stamp gets (strictly) larger than the time-stamp of the new 
-    // breakpoint to be inserted, we know that this is the index, right before 
+    // Loop through the existing data->breakpoints and inspect their time-stamps. As
+    // soon as this time-stamp gets (strictly) larger than the time-stamp of the new
+    // breakpoint to be inserted, we know that this is the index, right before
     // which the new breakpoint has to be inserted:
     int    bpIndex = 1;  // omit the first breakpoint(index 0)
     double bpTime  = 0.0;
@@ -135,23 +135,23 @@ int BreakpointModulator::insertBreakpoint(double newTimeStamp,
       bpTime = data->breakpoints[bpIndex].timeStamp;
       if( bpTime > newTimeStamp )
       {
-        // make sure that the new  breakpoint to be inserted is not too close to 
+        // make sure that the new  breakpoint to be inserted is not too close to
         // another existing breakpoint:
-        if( newTimeStamp-data->breakpoints[bpIndex-1].timeStamp < data->minBreakpointDistance 
+        if( newTimeStamp-data->breakpoints[bpIndex-1].timeStamp < data->minBreakpointDistance
           || bpTime-newTimeStamp < data->minBreakpointDistance )
         {
           return -1;
         }
 
-        // create a new breakpoint for insertion right before the breakpoint with 
+        // create a new breakpoint for insertion right before the breakpoint with
         // the current index:
         ModBreakpoint newBreakpoint;
         newBreakpoint.timeStamp   = newTimeStamp;
         newBreakpoint.level       = clipLevelToRange(newLevel);
 
         // copy the shape and shapeAmount from the succeeding breakpoint into,
-        // the new one if no shape and shapeAmount were specified (i.e. when they 
-        // are equal to their default-arguments which are zero), otherwise use the 
+        // the new one if no shape and shapeAmount were specified (i.e. when they
+        // are equal to their default-arguments which are zero), otherwise use the
         // passed arguments:
         if( newShape == 0 )
           newBreakpoint.shape = data->breakpoints[bpIndex].shape;
@@ -176,12 +176,12 @@ int BreakpointModulator::insertBreakpoint(double newTimeStamp,
           data->loopStartIndex++;
           data->loopEndIndex++;
         }
-        // if the breakpoint was inserted inside the current loop, increment the 
+        // if the breakpoint was inserted inside the current loop, increment the
         // loopEnd-index only:
         else if( bpIndex <= data->loopEndIndex )
           data->loopEndIndex++;
 
-        // a breakpoint may also be inserted during calls to getSample(), so we 
+        // a breakpoint may also be inserted during calls to getSample(), so we
         // need to keep the indices which are dereferenced there up to date:
         if( bpIndex <= rightIndex )
         {
@@ -201,8 +201,8 @@ int BreakpointModulator::insertBreakpoint(double newTimeStamp,
 
     } // end of while( bpIndex < (int) data->breakpoints.size() )
 
-    return -1; // this command should actually never be executed due to the 
-    // logic of the stuff above, but we need it to suppress a 
+    return -1; // this command should actually never be executed due to the
+    // logic of the stuff above, but we need it to suppress a
     // compiler-warning
 
   } // end of  if( newTimeStamp >= 0.0 )
@@ -229,7 +229,7 @@ bool BreakpointModulator::removeBreakpoint(int index)
       data->loopStartIndex--;
       data->loopEndIndex--;
     }
-    // if the breakpoint was removed inside the current loop, decrement the 
+    // if the breakpoint was removed inside the current loop, decrement the
     // loopEnd-index only:
     else if( index <= data->loopEndIndex )
       data->loopEndIndex--;
@@ -237,7 +237,7 @@ bool BreakpointModulator::removeBreakpoint(int index)
     if( data->loopEndIndex <= data->loopStartIndex )
       data->loopEndIndex++;
 
-    // a breakpoint may also be removed during calls to getSample(), so we 
+    // a breakpoint may also be removed during calls to getSample(), so we
     // need to keep the indices which are dereferenced there up to date:
     if( index <= rightIndex )
     {
@@ -254,13 +254,13 @@ bool BreakpointModulator::removeBreakpoint(int index)
     return false;
 }
 
-bool BreakpointModulator::modifyBreakpoint(int    index, 
-                                           double newTimeStamp, 
-                                           double newLevel, 
-                                           int    newShape, 
+bool BreakpointModulator::modifyBreakpoint(int    index,
+                                           double newTimeStamp,
+                                           double newLevel,
+                                           int    newShape,
                                            double newShapeAmount)
 {
-  if( index >= 0 && index < (int) data->breakpoints.size()  )   
+  if( index >= 0 && index < (int) data->breakpoints.size()  )
   {
     //markPresetAsDirty();
 
@@ -329,9 +329,9 @@ bool BreakpointModulator::modifyBreakpoint(int    index,
           data->breakpoints[index].shapeAmount = newShapeAmount;
       }
       // edit the breakpoint and shift its successors in time:
-      else 
+      else
       {
-        // make sure that the breakpoint does not come too close to its 
+        // make sure that the breakpoint does not come too close to its
         // predecessor:
         if( index > 0 )
         {
@@ -358,7 +358,7 @@ bool BreakpointModulator::modifyBreakpoint(int    index,
       return true;
     } // end of if(index==0), else if(index==lastBreakpointIndex()), else
 
-  } // end of if( index >= 0 && index < (int) data->breakpoints.size()  )  
+  } // end of if( index >= 0 && index < (int) data->breakpoints.size()  )
   else
     return false;
 }
@@ -370,9 +370,9 @@ void BreakpointModulator::setLoopMode(bool shouldBeLooped)
 
 bool BreakpointModulator::setLoopStartIndex(int newLoopStartIndex)
 {
-  // make sure, that the new loop start makes sense and then update our 
+  // make sure, that the new loop start makes sense and then update our
   // member accordingly:
-  if( newLoopStartIndex >=  0 && 
+  if( newLoopStartIndex >=  0 &&
     newLoopStartIndex <  lastBreakpointIndex() &&
     newLoopStartIndex <  data->loopEndIndex )
   {
@@ -386,9 +386,9 @@ bool BreakpointModulator::setLoopStartIndex(int newLoopStartIndex)
 
 bool BreakpointModulator::setLoopEndIndex(int newLoopEndIndex)
 {
-  // make sure, that the new loop end makes sense and then update our 
+  // make sure, that the new loop end makes sense and then update our
   // member accordingly:
-  if( newLoopEndIndex >  0 && 
+  if( newLoopEndIndex >  0 &&
     newLoopEndIndex <= lastBreakpointIndex() &&
     newLoopEndIndex >  data->loopStartIndex )
   {
@@ -425,7 +425,7 @@ void BreakpointModulator::setBeatsPerMinute(double newBpm)
 }
 
 void BreakpointModulator::setTimeScale(double newTimeScale)
-{ 
+{
   if( newTimeScale >= 0.0001 )
   {
     data->timeScale  = newTimeScale;
@@ -435,33 +435,33 @@ void BreakpointModulator::setTimeScale(double newTimeScale)
 }
 
 void BreakpointModulator::setTimeScaleByKey(double newTimeScaleByKey)
-{ 
+{
   data->timeScaleByKey  = newTimeScaleByKey;
   updateTimeScaleFactor();
   //markPresetAsDirty();
 }
 
 void BreakpointModulator::setTimeScaleByVel(double newTimeScaleByVel)
-{ 
+{
   data->timeScaleByVel  = newTimeScaleByVel;
   updateTimeScaleFactor();
   //markPresetAsDirty();
 }
 
 void BreakpointModulator::setDepth(double newDepth)
-{ 
+{
   data->depth = newDepth;
   //markPresetAsDirty();
 }
 
 void BreakpointModulator::setDepthByKey(double newDepthByKey)
-{ 
+{
   data->depthByKey = newDepthByKey;
   //markPresetAsDirty();
 }
 
 void BreakpointModulator::setDepthByVel(double newDepthByVel)
-{ 
+{
   data->depthByVel = newDepthByVel;
   //markPresetAsDirty();
 }
@@ -604,9 +604,9 @@ bool BreakpointModulator::setBreakpointTime(int index, double newTimeStamp)
       return true;
     }
     // edit the breakpoint and shift its successors in time:
-    else 
+    else
     {
-      // make sure that the breakpoint does not come too close to its 
+      // make sure that the breakpoint does not come too close to its
       // predecessor:
       if( newTimeStamp-data->breakpoints[index-1].timeStamp < data->minBreakpointDistance )
         newTimeStamp = data->breakpoints[index-1].timeStamp + data->minBreakpointDistance;
@@ -779,7 +779,7 @@ void BreakpointModulator::noteOn(bool startFromCurrentLevel, int newKey, int new
   /*
   timeScaleFactor  = data->timeScale;
   timeScaleFactor *= pow(2.0, (0.01*data->timeScaleByKey/12.0) * (currentKey-64) );
-  timeScaleFactor *= pow(2.0, (0.01*data->timeScaleByVel/63.0) * (currentVel-64) ); 
+  timeScaleFactor *= pow(2.0, (0.01*data->timeScaleByVel/63.0) * (currentVel-64) );
   */
 
   data->mutex.lock();
@@ -788,7 +788,7 @@ void BreakpointModulator::noteOn(bool startFromCurrentLevel, int newKey, int new
   updateSamplesToNextBreakpoint();
 
   // get the start-level and calculate the difference to the target-level:
-  if( startFromCurrentLevel == true && !endIsReached && data->breakpoints[0].level == 0.0)  
+  if( startFromCurrentLevel == true && !endIsReached && data->breakpoints[0].level == 0.0)
   //if( startFromCurrentLevel == true && !endIsReached )
   {
     leftLevel = previousOut;
@@ -815,7 +815,7 @@ void BreakpointModulator::noteOnAndAdvanceTime(int sampleIndexToStartFrom)
 {
   noteOn(false);
   for(int i=0; i<sampleIndexToStartFrom; i++)
-    getSample(); 
+    getSample();
   // crude implementation - runs through all breakpoints which possibly may have been skipped
 }
 
@@ -860,7 +860,7 @@ void BreakpointModulator::noteOff(bool startFromCurrentLevel)
 
 void BreakpointModulator::handleBreakpointArrival()
 {
-  // aquire mutual exclusive variable access to ensure that the vector is not modified during the 
+  // aquire mutual exclusive variable access to ensure that the vector is not modified during the
   // following actions:
   data->mutex.lock();
 
@@ -898,7 +898,7 @@ void BreakpointModulator::handleBreakpointArrival()
   {
     wrapAroundIndicesForLoop();
   }
-  
+
   // these wraparounds may result in leftIndex==rightIndex -> this condition indicates a loop of
   // length zero - in this case we just pop out the constant value at the left/right index:
   if( leftIndex == rightIndex )
@@ -915,7 +915,7 @@ void BreakpointModulator::handleBreakpointArrival()
   // set up the 'countdown' variable:
   updateSamplesToNextBreakpoint();
 
-  // get the current level on the left side and its difference to the level 
+  // get the current level on the left side and its difference to the level
   // on the right side:
   leftLevel  = data->breakpoints[leftIndex].level;
   leftLevel  = scaleLevelByKeyAndVelocity(leftLevel);
@@ -926,7 +926,7 @@ void BreakpointModulator::handleBreakpointArrival()
   // set up the internal state variables for the recursive formulas:
   setupStateVariables();
 
-  // the output will not be constant when we made to this point in the function (without leaving 
+  // the output will not be constant when we made to this point in the function (without leaving
   // it prematurely):
   outLevelIsConstant = false;
 
@@ -943,7 +943,7 @@ void BreakpointModulator::wrapAroundIndicesForLoop()
 
   if( data->loopEndIndex > data->loopStartIndex )
     rightIndex = leftIndex+1;
-  else 
+  else
     rightIndex = leftIndex; // loop of zero length
 
   data->mutex.unlock();
@@ -952,13 +952,13 @@ void BreakpointModulator::wrapAroundIndicesForLoop()
 int BreakpointModulator::getNextNonSimultaneousIndex(int startIndex)
 {
   //data->mutex.lock();
-  // mutex is not necesarry - this function is called only internally from functions which 
+  // mutex is not necesarry - this function is called only internally from functions which
   // already aquire the lock
 
   // when there are no breakpoints at the same time instant, this will be the default value:
   int foundIndex = startIndex + 1;
 
-  // make sure to not access out-of-range indices: 
+  // make sure to not access out-of-range indices:
   if( foundIndex > lastBreakpointIndex() )
     return 0;
 
@@ -967,20 +967,20 @@ int BreakpointModulator::getNextNonSimultaneousIndex(int startIndex)
     // timeStamp at foundIndex is not strictly larger than at startIndex - skip to next breakpoint:
     foundIndex++;
 
-    // make sure to not access out-of-range indices: 
+    // make sure to not access out-of-range indices:
     if( foundIndex > lastBreakpointIndex() )
       return 0;
   }
 
-  // O.K. we now have skipped to the first index for which the timeStamp is actually larger than 
-  // at the startIndex (and returned 0, if that would be out-of-range) - now we can return our 
+  // O.K. we now have skipped to the first index for which the timeStamp is actually larger than
+  // at the startIndex (and returned 0, if that would be out-of-range) - now we can return our
   // finding:
   return foundIndex;
 }
 
 int BreakpointModulator::getLastSimultaneousIndex(int index)
 {
-  // make sure to not access out-of-range indices: 
+  // make sure to not access out-of-range indices:
   if( index+1 > lastBreakpointIndex() )
     return lastBreakpointIndex();
 
@@ -989,7 +989,7 @@ int BreakpointModulator::getLastSimultaneousIndex(int index)
     // timeStamp at foundIndex is not strictly larger than at startIndex - skip to next breakpoint:
     index++;
 
-    // make sure to not access out-of-range indices: 
+    // make sure to not access out-of-range indices:
     if( index+1 > lastBreakpointIndex() )
       return lastBreakpointIndex();
   }
@@ -1000,7 +1000,7 @@ int BreakpointModulator::getLastSimultaneousIndex(int index)
 void BreakpointModulator::updateSamplesToNextBreakpoint()
 {
   // get the length of the envelope-segment to be generated (in seconds):
-  double timeDelta = data->breakpoints[rightIndex].timeStamp 
+  double timeDelta = data->breakpoints[rightIndex].timeStamp
     - data->breakpoints[leftIndex].timeStamp;
   if( data->syncMode == true )
     timeDelta = beatsToSeconds(timeDelta, data->bpm);
@@ -1024,14 +1024,14 @@ void BreakpointModulator::updateSamplesToNextBreakpoint()
 
 void BreakpointModulator::setupStateVariables()
 {
-  // do the specific initializations for the different envelope shapes (for 
+  // do the specific initializations for the different envelope shapes (for
   // details about what's going on, refer to comments in the MatLab
   // implementation):
   int segmentLength = samplesToNextBreakpoint;
 
   if( segmentLength < 1 )
   {
-    // TODO: catch this special condition (can occur when 
+    // TODO: catch this special condition (can occur when
     // loopEndIndex == loopStartIndex which is allowed).....
     return;
   }
@@ -1173,8 +1173,8 @@ void BreakpointModulator::setToDefaultValues()
   // ! enter critical section !
   data->mutex.lock();
 
-  // initialize the breakpoint-vector with two entries, these two will always 
-  // be there (their data can be modified, though), additional entries can be 
+  // initialize the breakpoint-vector with two entries, these two will always
+  // be there (their data can be modified, though), additional entries can be
   // inserted and removed at will in between:
   data->breakpoints.clear();
   ModBreakpoint newBreakpoint;
@@ -1248,8 +1248,8 @@ void BreakpointModulator::initialize()
   // ! enter critical section !
   data->mutex.lock();
 
-  // initialize the breakpoint-vector with two entries, these two will always 
-  // be there (their data can be modified, though), additional entries can be 
+  // initialize the breakpoint-vector with two entries, these two will always
+  // be there (their data can be modified, though), additional entries can be
   // inserted and removed at will in between:
   data->breakpoints.clear();
   ModBreakpoint newBreakpoint;
@@ -1300,7 +1300,7 @@ void BreakpointModulator::fillBufferWithEnvelope(double *buffer, int length, boo
     data->sampleRate = (double) length / lengthInSeconds;
     data->syncMode   = false;
     data->loopIsOn   = false;
-    double startSample = start*data->sampleRate; // for test only
+    //double startSample = start*data->sampleRate; // for test only
     noteOnAndAdvanceTime(roundToInt(start*data->sampleRate));
     for(int n=0; n<length; n++)
       buffer[n] = getSample();
@@ -1317,11 +1317,11 @@ void BreakpointModulator::fillBufferWithEnvelope(double *buffer, int length, boo
 
 void BreakpointModulator::updateTimeScaleFactor()
 {
-  timeScaleFactor  = data->timeScale;  
+  timeScaleFactor  = data->timeScale;
   timeScaleFactor *= pow(2.0, (0.01*data->timeScaleByKey/12.0) * (currentKey-64) );
-  timeScaleFactor *= pow(2.0, (0.01*data->timeScaleByVel/63.0) * (currentVel-64) ); 
-      
-  for(int s=0; s < (int) slaves.size(); s++)  
+  timeScaleFactor *= pow(2.0, (0.01*data->timeScaleByVel/63.0) * (currentVel-64) );
+
+  for(int s=0; s < (int) slaves.size(); s++)
     slaves[s]->updateTimeScaleFactor();
 }
 
@@ -1340,8 +1340,8 @@ double BreakpointModulator::clipLevelToRange(double inLevel)
 double BreakpointModulator::scaleLevelByKeyAndVelocity(double unscaledLevel)
 {
   double scaledLevel;
-  scaledLevel = powBipolar(unscaledLevel, data->depth);  
-  scaledLevel = powBipolar(scaledLevel,   pow(2.0, (0.01*data->depthByKey/12.0)*(currentKey-64)) );  
+  scaledLevel = powBipolar(unscaledLevel, data->depth);
+  scaledLevel = powBipolar(scaledLevel,   pow(2.0, (0.01*data->depthByKey/12.0)*(currentKey-64)) );
   scaledLevel = powBipolar(scaledLevel,   pow(2.0, (0.01*data->depthByVel/63.0)*(currentVel-64)) );
   return scaledLevel;
 }
@@ -1354,26 +1354,26 @@ void BreakpointModulator::addSlave(BreakpointModulator* newSlave)
   // add the new slave to the vector of slaves:
   slaves.push_back(newSlave);
 
-  // delete the original parameter-set of the new slave and redirect it to ours (with some safety 
+  // delete the original parameter-set of the new slave and redirect it to ours (with some safety
   // checks):
   if( newSlave->data != NULL && newSlave->data != this->data )
   {
     newSlave->data->mutex.lock();
     newSlave->data->breakpoints.clear();
-    newSlave->data->mutex.unlock();  
+    newSlave->data->mutex.unlock();
     delete newSlave->data;
     newSlave->data = this->data;
   }
   else
   {
-    DEBUG_BREAK; 
-    // the object to be added as slave did not contain a valid parameter-pointer - maybe it has 
+    DEBUG_BREAK;
+    // the object to be added as slave did not contain a valid parameter-pointer - maybe it has
     // been already added as slave to another master?
   }
 
-  // set the isMaster-flag of the new slave to false: 
+  // set the isMaster-flag of the new slave to false:
   newSlave->isMaster = false;
 
-  // this flag will prevent the destructor of the slave from trying to delete the parameter-set 
+  // this flag will prevent the destructor of the slave from trying to delete the parameter-set
   // which is now shared - only masters delete their parameter-set on destruction
 }

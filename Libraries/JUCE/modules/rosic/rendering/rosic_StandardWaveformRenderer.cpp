@@ -17,10 +17,10 @@ void StandardWaveformRenderer::renderWaveform(double *targetBuffer, int length)
   // dispatch the rendering request to the appropriate renderer:
   switch( waveform )
   {
-  case SINE:     renderSineWaveform(    targetBuffer, length);  break; 
-  case SAW:      renderSawWaveform(     targetBuffer, length);  break; 
-  case SQUARE:   renderSquareWaveform(  targetBuffer, length);  break; 
-  case TRIANGLE: renderTriangleWaveform(targetBuffer, length);  break; 
+  case SINE:     renderSineWaveform(    targetBuffer, length);  break;
+  case SAW:      renderSawWaveform(     targetBuffer, length);  break;
+  case SQUARE:   renderSquareWaveform(  targetBuffer, length);  break;
+  case TRIANGLE: renderTriangleWaveform(targetBuffer, length);  break;
   default:       fillWithZeros(         targetBuffer, length);
   }
 }
@@ -50,7 +50,7 @@ void StandardWaveformRenderer::renderSquareWaveform(  double *buffer, int length
   int    N  = length;
   double k  = 0.5;  // more general: k = symmetry
   int    N1 = clip(roundToInt(k*(N-1)), 1, N-1);
-  int    N2 = N-N1;
+  //int    N2 = N-N1;
   for(int n=0; n<N1; n++)
     buffer[n] = +1.0;
   for(int n=N1; n<N; n++)

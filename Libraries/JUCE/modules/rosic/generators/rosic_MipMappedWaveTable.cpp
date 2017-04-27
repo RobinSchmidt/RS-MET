@@ -29,7 +29,7 @@ void MipMappedWaveTable::setWaveform(double* newWaveForm, int lengthInSamples)
   int i;
   if( lengthInSamples == tableLength )
   {
-    // just copy the values into the internal buffer, when the length of the passed table and the 
+    // just copy the values into the internal buffer, when the length of the passed table and the
     // internal table match:
     for( i=0; i<tableLength; i++ )
       prototypeTable[i] = newWaveForm[i];
@@ -47,7 +47,7 @@ void MipMappedWaveTable::setWaveform(int newWaveform)
   {
     waveform = newWaveform;
     renderWaveform();
-  } 
+  }
 }
 
 void MipMappedWaveTable::setSymmetry(double newSymmetry)
@@ -125,7 +125,7 @@ void MipMappedWaveTable::renderWaveform()
   case   SQUARE303: fillWithSquare303();   break;
   case   SAW303:    fillWithSaw303();      break;
 
-  default :  fillWithSine();         
+  default :  fillWithSine();
   }
 }
 
@@ -139,7 +139,7 @@ void MipMappedWaveTable::generateMipMap()
   //offset   = tableLength+4; // offset between tow tables, the 4 is the number
   // of additional samples used for interpolation
 
-  // copy the prototypeTable into the 1st table of the mipmap (this actually makes the 
+  // copy the prototypeTable into the 1st table of the mipmap (this actually makes the
   // prototypeTable redundant - room for optimization here):
   t = 0;
   for(i=0; i<tableLength; i++)
@@ -213,7 +213,7 @@ void MipMappedWaveTable::fillWithSquare()
   int    N  = tableLength;
   double k  = symmetry;
   int    N1 = clip(roundToInt(k*(N-1)), 1, N-1);
-  int    N2 = N-N1;
+  //int    N2 = N-N1;
   for(int n=0; n<N1; n++)
     prototypeTable[n] = +1.0;
   for(int n=N1; n<N; n++)

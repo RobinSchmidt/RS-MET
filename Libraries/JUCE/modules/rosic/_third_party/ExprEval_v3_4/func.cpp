@@ -1586,8 +1586,17 @@ namespace
 // Initialize default functions
 void FunctionList::AddDefaultFunctions()
     {
+      /*
     #define ADDFUNCTION(name) \
         auto_ptr<FunctionFactory> name ## _func(new name ## _FunctionFactory()); \
+        m_functions.push_back(name ## _func.get()); \
+        name ## _func.release();
+      */
+
+    // according to http://stackoverflow.com/questions/2404115/is-auto-ptr-deprecated
+    // unique_ptr should be used instead of auto_ptr
+    #define ADDFUNCTION(name) \
+        unique_ptr<FunctionFactory> name ## _func(new name ## _FunctionFactory()); \
         m_functions.push_back(name ## _func.get()); \
         name ## _func.release();
 

@@ -639,7 +639,7 @@ void MipMappedWaveTableOld::fillWithNoiseCycle(int noiseColor)
   if( noiseColor==1 )
   {
     // apply a White2PinkFilter to the table:
-    double dummy = 0.0;
+    //double dummy = 0.0;
     white2pink.reset();
 
     // pass the table through the filter once, to overcome the transient

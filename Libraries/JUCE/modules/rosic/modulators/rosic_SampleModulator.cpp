@@ -30,7 +30,7 @@ SampleModulator::SampleModulator()
   audioProcessingIsSuspended = false;
 
   sampleDataEnd        = NULL;
-  int dummy            = 1;
+  //int dummy            = 1;
 }
 
 SampleModulator::~SampleModulator()
@@ -56,7 +56,7 @@ void SampleModulator::copyDataFrom(const SampleModulator &source)
   //startR                     = source.startR;
   syncMode                   = source.syncMode;
 
-  // create deep copies of the member arrays (WARNING: this will create memory leaks when this 
+  // create deep copies of the member arrays (WARNING: this will create memory leaks when this
   // object already has it's pointers assigned - i.e. the copyDataFrom was not called immediately
   // after construction):
   if( source.sampleName != NULL )
@@ -97,7 +97,7 @@ void SampleModulator::setSampleData(double *newSampleData, int newNumSamples)
   if( newSampleData == NULL || newNumSamples == 0 )
     return;
 
-  // we need to aquire a mutex-lock because we re-allocate memory which is dereferenced in the 
+  // we need to aquire a mutex-lock because we re-allocate memory which is dereferenced in the
   // getSample()-function:
   suspendAudioProcessing();
   mutex.lock();
@@ -143,7 +143,7 @@ void SampleModulator::setSampleData(float *newSampleData, int newNumSamples)
   if( newSampleData == NULL || newNumSamples == 0 )
     return;
 
-  // we need to aquire a mutex-lock because we re-allocate memory which is dereferenced in the 
+  // we need to aquire a mutex-lock because we re-allocate memory which is dereferenced in the
   // getSample()-function:
   suspendAudioProcessing();
   mutex.lock();

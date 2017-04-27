@@ -4,7 +4,7 @@ using namespace rosic;
 
 // Synthesis:
 
-void rosic::synthesizeWaveform(double *x, int N, int shape, double frequency, double sampleRate, 
+void rosic::synthesizeWaveform(double *x, int N, int shape, double frequency, double sampleRate,
                                double phase, bool antiAlias)
 {
   double w = 2*PI*frequency/sampleRate;
@@ -70,7 +70,7 @@ void rosic::synthesizeWaveform(double *x, int N, int shape, double frequency, do
       else
       {
         int    k = 1;
-        double s = 1.0; // sign 
+        double s = 1.0; // sign
         while( k*frequency < sampleRate/2 )
         {
           double a = 8.0 / (k*k*PI*PI);
@@ -85,7 +85,7 @@ void rosic::synthesizeWaveform(double *x, int N, int shape, double frequency, do
   }
 }
 
-void rosic::synthesizePulseWave(double *x, int N, double frequency, double dutyCycle, 
+void rosic::synthesizePulseWave(double *x, int N, double frequency, double dutyCycle,
                                 double sampleRate, double phase, bool antiAlias)
 {
   double w = 2*PI*frequency/sampleRate;
@@ -108,7 +108,7 @@ void rosic::synthesizePulseWave(double *x, int N, double frequency, double dutyC
   }
 }
 
-void rosic::synthesizeDecayingSine(double *x, int N, double frequency, double amplitude, 
+void rosic::synthesizeDecayingSine(double *x, int N, double frequency, double amplitude,
                                    double decayTime, double startPhase, double sampleRate)
 {
   ModalFilter filter;
@@ -120,7 +120,7 @@ void rosic::synthesizeDecayingSine(double *x, int N, double frequency, double am
     x[n] = filter.getSample(0.0);
 }
 
-void rosic::synthesizeModal(double *x, int N, Vector frequencies, Vector amplitudes, 
+void rosic::synthesizeModal(double *x, int N, Vector frequencies, Vector amplitudes,
                             Vector decayTimes, Vector startPhases, double sampleRate)
 {
   ModalSynthesizer synth;
@@ -132,8 +132,8 @@ void rosic::synthesizeModal(double *x, int N, Vector frequencies, Vector amplitu
   normalize(x, N, 1.0);
 }
 
-void rosic::synthesizeModalPluckedString(double *x, int N, double frequency, double sampleRate, 
-    double decayTime, double decayExponent, double amplitudeExponent, double inharmonicity, 
+void rosic::synthesizeModalPluckedString(double *x, int N, double frequency, double sampleRate,
+    double decayTime, double decayExponent, double amplitudeExponent, double inharmonicity,
     double phase, double evenAmplitudeScaler)
 {
   double f0 = frequency;     // fundamental frequency
@@ -146,7 +146,7 @@ void rosic::synthesizeModalPluckedString(double *x, int N, double frequency, dou
   Vector p(numModes);
   for(int m = 0; m < numModes; m++)
   {
-    h      = m + 1;               
+    h      = m + 1;
     f.v[m] = f0 * h * sqrt(1+inharmonicity*h*h);
     d.v[m] = d0 / pow(h, decayExponent);
     p.v[m] = phase;
@@ -159,13 +159,13 @@ void rosic::synthesizeModalPluckedString(double *x, int N, double frequency, dou
   synthesizeModal(x, N, f, a, d, p, sampleRate);
 }
 
-void rosic::synthesizeModalRodFreeFree(double *x, int N, double frequency, double sampleRate, 
-                                       double decayTime, double decayExponent, 
+void rosic::synthesizeModalRodFreeFree(double *x, int N, double frequency, double sampleRate,
+                                       double decayTime, double decayExponent,
                                        double amplitudeExponent, double phase)
 {
   // calculate frequency ratios (following Dave Benson's Math and Music):
   std::vector<double> lambdas;
-  std::vector<double> frequencies;    
+  std::vector<double> frequencies;
   double c, r, lambda;
   double fTmp = frequency;
   //double fScale;
@@ -202,7 +202,7 @@ void rosic::synthesizeModalRodFreeFree(double *x, int N, double frequency, doubl
     fTmp    = r * frequency;
     frequencies.push_back(fTmp);
   }
-  
+
   int numModes = (int) frequencies.size();
   //double f0    = frequency;     // fundamental frequency
   double d0    = decayTime;     // fundamental decay-time
@@ -212,7 +212,7 @@ void rosic::synthesizeModalRodFreeFree(double *x, int N, double frequency, doubl
   Vector d(numModes);
   Vector p(numModes);
   for(int m=0; m<numModes; m++)
-  {        
+  {
     f.v[m] = frequencies[m];
     h      = f.v[m] / f.v[0];
     d.v[m] = d0 / pow(h, decayExponent);
@@ -248,13 +248,13 @@ void rosic::upsampleLinear(double *in, int inLength, double *out, int upsampling
   }
 }
 
-void rosic::upsampleHermiteAsymmetric1(double *in, int inLength, double *out, int upsamplingFactor, 
+void rosic::upsampleHermiteAsymmetric1(double *in, int inLength, double *out, int upsamplingFactor,
                                        double shape)
 {
   int offset = 0;
   for(int n = 1; n < inLength; n++)
   {
-    // special handling for the input sample at index 1 - it has only one predecessor, 
+    // special handling for the input sample at index 1 - it has only one predecessor,
     // but the cubic interpolator needs two:
     double *tmpPointer;
     double tmpBuffer[3];
@@ -277,13 +277,13 @@ void rosic::upsampleHermiteAsymmetric1(double *in, int inLength, double *out, in
   }
 }
 
-void rosic::upsampleHermiteAsymmetricM(double *in, int inLength, double *out, 
+void rosic::upsampleHermiteAsymmetricM(double *in, int inLength, double *out,
                                        int upsamplingFactor, int M, double shape)
 {
   int n, m, i;
   int offset        = 0;
-  int bufferSize    = M+2;  
-  double *tmpBuffer = new double[bufferSize];  
+  int bufferSize    = M+2;
+  double *tmpBuffer = new double[bufferSize];
   double *tmpPointer;
 
   for(n = 1; n < inLength; n++)
@@ -305,7 +305,7 @@ void rosic::upsampleHermiteAsymmetricM(double *in, int inLength, double *out,
     offset += upsamplingFactor;
   }
 
-  // tail: 
+  // tail:
   rosic::fillWithZeros(tmpBuffer, M+2);
   for(i = 1; i <= rmin(M+1, inLength); i++)
     tmpBuffer[M+1-i] = in[inLength-i];
@@ -321,7 +321,7 @@ void rosic::upsampleHermiteAsymmetricM(double *in, int inLength, double *out,
 
 // Filtering:
 
-void rosic::filterButterworth(double *x, double *y, int N, double frequency, double sampleRate, 
+void rosic::filterButterworth(double *x, double *y, int N, double frequency, double sampleRate,
                               int mode, int prototypeOrder, double gain, bool forwardBackward)
 {
   EngineersFilter filter;
@@ -343,7 +343,7 @@ void rosic::filterButterworth(double *x, double *y, int N, double frequency, dou
 // Others:
 
 /*
-void rosic::estimateEnvelope(double *x, double *y, int N, double sampleRate, double attackTime, 
+void rosic::estimateEnvelope(double *x, double *y, int N, double sampleRate, double attackTime,
                              double releaseTime, int mode, bool forwardBackward)
 {
 
@@ -381,7 +381,7 @@ void rosic::ifftReal(Complex *spectrum, int fftSize, double *signalBlock)
   delete[] tmp;
 }
 
-void rosic::fftMagnitudesAndPhases(double *signalBlock, int blockSize, double *magnitudes, 
+void rosic::fftMagnitudesAndPhases(double *signalBlock, int blockSize, double *magnitudes,
                                    double *phases, int fftSize)
 {
   Complex *spectrum = new Complex[fftSize];
@@ -427,8 +427,8 @@ void rosic::minimumPhaseReconstruction(double *input, int numSamples, double *ou
   double *c = output; // use output buffer for intermediate results in cepstarl domain
   int N = numSamples;
 
-  signalToRealCepstrum(input, numSamples, c); 
-  
+  signalToRealCepstrum(input, numSamples, c);
+
   // apply cepstral window to make the cepstrum causal (left-to-zero indices are reflected into the
   // second half of the buffer):
   int n;
@@ -461,31 +461,30 @@ void rosic::crossCorrelation(double *x, int xLength, double *y, int yLength, dou
   fft(y, yLength, Y, fftSize);
   for(int k=0; k<fftSize; k++)
     X[k] *= Y[k].getConjugate();  // X is now the cross-spectrum
-  
+
   ifftReal(X, fftSize, result);
 
   delete[] X;
   delete[] Y;
 }
 
-double rosic::estimateFundamental(double *x, int N, double sampleRate,       
+double rosic::estimateFundamental(double *x, int N, double sampleRate,
                                   double minExpected, double maxExpected)
 {
-  int minLag = (int) floor(sampleRate / maxExpected);
-  int maxLag = (int) ceil(sampleRate  / minExpected);
+//  int minLag = (int) floor(sampleRate / maxExpected);
+//  int maxLag = (int) ceil(sampleRate  / minExpected);
+//
+//  // dummy instructions to avoid compiler warnings - delete, when function is properly implemented:
+//  minLag = maxLag;
+//  N = 1;
+//  x = 0;
 
 
-  // dummy instructions to avoid compiler warnings - delete, when function is properly implemented:
-  minLag = maxLag;
-  N = 1;
-  x = 0;
-  
- 
   return 0.0;  // preliminary
 }
 
 /*
-void rosic::estimateModalParameters(double *x, int N, Vector *frequencies, Vector *amplitudes, 
+void rosic::estimateModalParameters(double *x, int N, Vector *frequencies, Vector *amplitudes,
                                     Vector *decayTimes, double sampleRate)
 {
 
