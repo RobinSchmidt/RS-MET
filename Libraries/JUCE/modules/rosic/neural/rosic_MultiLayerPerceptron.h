@@ -148,6 +148,9 @@ namespace rosic
     Vector  x;   // vector of network inputs (excluding bias)
     Vector  y;   // vector of network outputs (exluding bias)
 
+
+    friend class MultiLayerPerceptronTrainer;
+
   };
 
   INLINE double MultiLayerPerceptron::activationFunction(double x) const

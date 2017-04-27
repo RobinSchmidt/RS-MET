@@ -194,7 +194,7 @@ integrating it into the Chainer.
 #include "analysis/rosic_InstantaneousEnvelopeDetector.cpp"
 #include "analysis/rosic_LevelDetector.cpp"
 #include "analysis/rosic_OscilloscopeBufferOld.cpp"
-#include "analysis/rosic_PitchDetector.cpp"  // there may be a bug - compare RSLib version
+#include "analysis/rosic_PitchDetector.cpp"           // may be buggy - compare to RSLib version
 #include "analysis/rosic_SignalMeasures.cpp"
 #include "analysis/rosic_SpectrumAnalyzer.cpp"
 #include "analysis/rosic_TrackMeter.cpp"
@@ -274,14 +274,14 @@ integrating it into the Chainer.
 #include "infrastructure/rosic_PolyphonicInstrument.cpp"
 #include "infrastructure/rosic_PolyphonicInstrumentVoice.cpp"
 
-
-
-
 // numerical (maybe move to math)
-
+#include "numerical/rosic_FunctionObjects.cpp"
+#include "numerical/rosic_GradientBasedMinimizer.cpp"
 
 // neural
-
+#include "neural/rosic_MultiLayerPerceptron.cpp"
+#include "neural/rosic_MultiLayerPerceptronErrorFunction.cpp"
+#include "neural/rosic_MultiLayerPerceptronTrainer.cpp"
 
 // sequencing
 

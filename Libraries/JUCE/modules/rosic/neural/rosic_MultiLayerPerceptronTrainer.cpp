@@ -1,7 +1,7 @@
 #include "rosic_MultiLayerPerceptronTrainer.h"
 using namespace rosic;
 
-double zeroValue(double x)    { return 0.0; }
+//double zeroValue(double x)    { return 0.0; }
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
@@ -12,7 +12,7 @@ MultiLayerPerceptronTrainer::MultiLayerPerceptronTrainer(MultiLayerPerceptron *m
 
   deltas = new Vector[mlp->numWeightLayers]; 
   for(int i=0; i < mlp->numWeightLayers; i++)
-    deltas[i] = Vector(mlp->z[i+1].d);
+    deltas[i] = Vector(mlp->z[i+1].dim);
 
   dwn = new Matrix[mlp->numWeightLayers];
   for(int i=0; i<mlp->numWeightLayers; i++)
@@ -37,7 +37,8 @@ MultiLayerPerceptronTrainer::~MultiLayerPerceptronTrainer()
 //-------------------------------------------------------------------------------------------------
 // setup:
 
-void MultiLayerPerceptronTrainer::setTrainingData(Vector *inputs, Vector *targets, int numPatterns)
+void MultiLayerPerceptronTrainer::setTrainingData(rosic::Vector *inputs, rosic::Vector *targets, 
+  int numPatterns)
 {
   xTrain = inputs;
   yTrain = targets;
@@ -75,7 +76,8 @@ void MultiLayerPerceptronTrainer::printPatternGradient()
 //-------------------------------------------------------------------------------------------------
 // internal functions:
 
-void MultiLayerPerceptronTrainer::computePatternGradientByWeightPerturbation(const Vector& yTarget)
+void MultiLayerPerceptronTrainer::computePatternGradientByWeightPerturbation(
+  const rosic::Vector& yTarget)
 {
   mlp->forwardPropagate();  // to obtain y, in case this has not already been done
   double eps   = 0.000001;  // epsilon
@@ -102,7 +104,7 @@ void MultiLayerPerceptronTrainer::computePatternGradientByWeightPerturbation(con
   mlp->forwardPropagate();      // restore the y with unperturbed weights
 }
 
-void MultiLayerPerceptronTrainer::computePatternGradient(const Vector& yTarget)
+void MultiLayerPerceptronTrainer::computePatternGradient(const rosic::Vector& yTarget)
 {
   computeDeltas(yTarget);
   for(int layer=0; layer<mlp->numWeightLayers; layer++)
@@ -118,10 +120,10 @@ void MultiLayerPerceptronTrainer::computePatternGradient(const Vector& yTarget)
   }
 }
 
-void MultiLayerPerceptronTrainer::computeDeltas(const Vector& yTarget)
+void MultiLayerPerceptronTrainer::computeDeltas(const rosic::Vector& yTarget)
 {
   int numNeurons;     // number of neurons (excluding bias) of current layer
-  int layer, i, j, k; // indices
+  int layer, j, k;    // indices
   Vector *dc;         // vector of the deltas that are currently being computed
   Vector *da;         // vector of the deltas that are already available and currently used
   Matrix *w;          // layer of weights that is currently worked with
@@ -130,7 +132,7 @@ void MultiLayerPerceptronTrainer::computeDeltas(const Vector& yTarget)
   // compute deltas for the (linear) output-layer:
   layer      = mlp->numWeightLayers-1; // -1, because there are no deltas for the input nodes
   dc         = &deltas[layer];         // we now compute deltas for the output layer 
-  numNeurons = dc->d - 1;              // -1, because the 0th node is a (dummy) bias-node
+  numNeurons = dc->dim - 1;            // -1, because the 0th node is a (dummy) bias-node
   dc->v[0]   = 0.0;                    // delta for a bias node is zero
   for(k=0; k<numNeurons; k++)  
   {
@@ -156,8 +158,8 @@ void MultiLayerPerceptronTrainer::computeDeltas(const Vector& yTarget)
     dc = &deltas[layer];             // deltas to be computed
     z  = &(mlp->z[layer+1]);         // nodes for which we compute the delta
     w  = &(mlp->w[layer+1]);         // weights from z to the subsequent layer
-    numSourceNodes = dc->d;          // number of nodes for which to compute the delta
-    numTargetNodes = da->d;          // number of deltas to sum over
+    numSourceNodes = dc->dim;        // number of nodes for which to compute the delta
+    numTargetNodes = da->dim;        // number of deltas to sum over
     dc->v[0]   = 0.0;                // delta for a bias node is zero
     for(j=1; j<numSourceNodes; j++)  
     {
@@ -173,7 +175,7 @@ void MultiLayerPerceptronTrainer::computeDeltas(const Vector& yTarget)
   }
 }
 
-double MultiLayerPerceptronTrainer::computePatternError(const Vector& yTarget)
+double MultiLayerPerceptronTrainer::computePatternError(const rosic::Vector& yTarget)
 {
   // todo: implement other error functions by using a switch statement
   double result = 0.0;
@@ -187,9 +189,9 @@ double MultiLayerPerceptronTrainer::computePatternError(const Vector& yTarget)
   return 0.5*result;
 }
 
-Vector MultiLayerPerceptronTrainer::getPatternGradient()
+rosic::Vector MultiLayerPerceptronTrainer::getPatternGradient()
 {
-  Vector gv(mlp->numWeights);
+  rosic::Vector gv(mlp->numWeights);
   mlp->vectorizeWeightMatrices(dwn, &gv);
   return gv;
 }

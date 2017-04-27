@@ -37,7 +37,8 @@ MultiLayerPerceptronErrorFunction::~MultiLayerPerceptronErrorFunction()
 //-------------------------------------------------------------------------------------------------
 // setup:
 
-void MultiLayerPerceptronErrorFunction::setTrainingData(Vector *inputs, Vector *targets, int numPatterns)
+void MultiLayerPerceptronErrorFunction::setTrainingData(rosic::Vector *inputs, 
+  rosic::Vector *targets, int numPatterns)
 {
   xTrain = inputs;
   yTrain = targets;
@@ -47,16 +48,16 @@ void MultiLayerPerceptronErrorFunction::setTrainingData(Vector *inputs, Vector *
 //-------------------------------------------------------------------------------------------------
 // overrides:
 
-double MultiLayerPerceptronErrorFunction::getValue(Vector p)
+double MultiLayerPerceptronErrorFunction::getValue(rosic::Vector p)
 {
-  Vector pTmp = mlp->getWeightsAsVector();
+  rosic::Vector pTmp = mlp->getWeightsAsVector();
   mlp->setWeightVector(p);
   double result = getTrainingError();
   mlp->setWeightVector(pTmp);
   return result;
 }
 
-Vector MultiLayerPerceptronErrorFunction::getGradient(Vector p)
+rosic::Vector MultiLayerPerceptronErrorFunction::getGradient(rosic::Vector p)
 {
   // set passed weight vector (remember current state for restoring it afterwards):
   Vector pTmp = mlp->getWeightsAsVector();
@@ -96,7 +97,8 @@ void MultiLayerPerceptronErrorFunction::printPatternGradient()
 //-------------------------------------------------------------------------------------------------
 // internal functions:
 
-void MultiLayerPerceptronErrorFunction::computePatternGradientByWeightPerturbation(const Vector& yTarget)
+void MultiLayerPerceptronErrorFunction::computePatternGradientByWeightPerturbation(
+  const rosic::Vector& yTarget)
 {
   mlp->forwardPropagate();  // to obtain y, in case this has not already been done
   double eps   = 0.00001;   // epsilon
@@ -123,7 +125,7 @@ void MultiLayerPerceptronErrorFunction::computePatternGradientByWeightPerturbati
   mlp->forwardPropagate();      // restore the y with unperturbed weights
 }
 
-void MultiLayerPerceptronErrorFunction::computePatternGradient(const Vector& yTarget)
+void MultiLayerPerceptronErrorFunction::computePatternGradient(const rosic::Vector& yTarget)
 {
   computeDeltas(yTarget);
   for(int layer=0; layer<mlp->numWeightLayers; layer++)
@@ -139,7 +141,7 @@ void MultiLayerPerceptronErrorFunction::computePatternGradient(const Vector& yTa
   }
 }
 
-void MultiLayerPerceptronErrorFunction::computeDeltas(const Vector& yTarget)
+void MultiLayerPerceptronErrorFunction::computeDeltas(const rosic::Vector& yTarget)
 {
   int numNeurons;     // number of neurons (excluding bias) of current layer
   int layer, j, k;    // indices
@@ -192,7 +194,7 @@ void MultiLayerPerceptronErrorFunction::computeDeltas(const Vector& yTarget)
   }
 }
 
-double MultiLayerPerceptronErrorFunction::getPatternError(const Vector& yTarget)
+double MultiLayerPerceptronErrorFunction::getPatternError(const rosic::Vector& yTarget)
 {
   // \todo: implement other error functions by using a switch statement
   return 0.5 * (mlp->y - yTarget).getSquaredNorm();
@@ -211,9 +213,9 @@ double MultiLayerPerceptronErrorFunction::getTrainingError()
   return sum;
 }
 
-Vector MultiLayerPerceptronErrorFunction::getPatternGradient()
+rosic::Vector MultiLayerPerceptronErrorFunction::getPatternGradient()
 {
-  Vector gv(mlp->numWeights);
+  rosic::Vector gv(mlp->numWeights);
   mlp->vectorizeWeightMatrices(dwn, &gv);
   return gv;
 }

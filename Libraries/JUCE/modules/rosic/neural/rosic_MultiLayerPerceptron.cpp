@@ -59,7 +59,7 @@ void MultiLayerPerceptron::setActivationFunction(int newActivationFunction)
     activationFunctionIndex = newActivationFunction;
 }
 
-void MultiLayerPerceptron::setWeightVector(const Vector &newWeightVector)
+void MultiLayerPerceptron::setWeightVector(const rosic::Vector &newWeightVector)
 {
   int i = 0;
   for(int layer=0; layer < numWeightLayers; layer++)
@@ -95,9 +95,9 @@ void MultiLayerPerceptron::loadStateFromFile(char *fileName)
 //-------------------------------------------------------------------------------------------------
 // inquiry:
 
-Vector MultiLayerPerceptron::getWeightsAsVector()
+rosic::Vector MultiLayerPerceptron::getWeightsAsVector()
 {
-  Vector wv(numWeights);
+  rosic::Vector wv(numWeights);
   vectorizeWeightMatrices(w, &wv);
   return wv;
 }
@@ -105,7 +105,7 @@ Vector MultiLayerPerceptron::getWeightsAsVector()
 //-------------------------------------------------------------------------------------------------
 // computation:
 
-void MultiLayerPerceptron::setInput(const Vector &xIn)
+void MultiLayerPerceptron::setInput(const rosic::Vector &xIn)
 {
   // copy input vector into member x:
   for(int i=0; i<numInputs; i++)
@@ -135,7 +135,7 @@ void MultiLayerPerceptron::forwardPropagate()
     y.v[j] = z[i].v[j+1];
 }
 
-Vector MultiLayerPerceptron::getOutput()
+rosic::Vector MultiLayerPerceptron::getOutput()
 {
   return y;
 }
@@ -144,7 +144,7 @@ void MultiLayerPerceptron::computeNetworkOutput(double *xIn, double *yOut)
 {
   // todo: optimize this function - get rid of some overhead due to absorbing the biases into the
   // weight matrices
-  setInput(Vector(numInputs, xIn));
+  setInput(rosic::Vector(numInputs, xIn));
   forwardPropagate();
   y.storeValuesInArray(yOut);
 }
@@ -204,7 +204,8 @@ void MultiLayerPerceptron::computeNumberOfWeights()
   }
 }
 
-void MultiLayerPerceptron::vectorizeWeightMatrices(Matrix *weightMatrices, Vector *weightVector)
+void MultiLayerPerceptron::vectorizeWeightMatrices(rosic::Matrix *weightMatrices, 
+  rosic::Vector *weightVector)
 {
   weightVector->setDimensionality(numWeights);
   int i = 0;

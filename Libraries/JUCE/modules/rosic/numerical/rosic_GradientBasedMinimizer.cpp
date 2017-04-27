@@ -27,8 +27,8 @@ GradientBasedMinimizer::~GradientBasedMinimizer()
 //-------------------------------------------------------------------------------------------------    
 // optimization:
 
-Vector GradientBasedMinimizer::minimizeFunction(MultivariateErrorFunction *functionToMinimize, 
-                                                Vector initialGuess)
+rosic::Vector GradientBasedMinimizer::minimizeFunction(
+  MultivariateErrorFunction *functionToMinimize, rosic::Vector initialGuess)
 {
   if( functionToMinimize == NULL )
     return initialGuess;

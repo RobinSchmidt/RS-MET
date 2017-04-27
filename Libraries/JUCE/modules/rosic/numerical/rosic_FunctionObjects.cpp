@@ -298,9 +298,9 @@ MultivariateErrorFunction::~MultivariateErrorFunction()
 
 }
 
-Vector MultivariateErrorFunction::getGradient(Vector p)
+rosic::Vector MultivariateErrorFunction::getGradient(rosic::Vector p)
 {
-  Vector g(p.dim);          // gradient vector to be computed
+  rosic::Vector g(p.dim);   // gradient vector to be computed
   double eps = 0.00001;     // epsilon for the approximation
   double pTmp;              // for temporary storage
   double ep;                // error at p[i] + eps
@@ -318,12 +318,13 @@ Vector MultivariateErrorFunction::getGradient(Vector p)
   return g;
 }
 
-Vector MultivariateErrorFunction::getVectorTimesHessianApproximate(Vector p, Vector v)
+rosic::Vector MultivariateErrorFunction::getVectorTimesHessianApproximate(rosic::Vector p, 
+  rosic::Vector v)
 {
   double eps  = 0.00001;                // epsilon for the approximation...
   eps        /= v.getEuclideanNorm();   // ...should be normalized by ||v||
-  Vector gp   = getGradient(p + eps*v); // gradient at p + eps*v
-  Vector gm   = getGradient(p - eps*v); // gradient at p - eps*v
+  rosic::Vector gp   = getGradient(p + eps*v); // gradient at p + eps*v
+  rosic::Vector gm   = getGradient(p - eps*v); // gradient at p - eps*v
   return (gp-gm) / (2.0*eps);
 }
 
