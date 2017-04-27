@@ -31,8 +31,8 @@ Complex::~Complex()
 
 double Complex::getRadius()
 {
-  //return sqrt(re*re + im*im);
-  return _hypot(re, im);
+  return sqrt(re*re + im*im);
+  //return _hypot(re, im);
 }
 
 double Complex::getAngle()

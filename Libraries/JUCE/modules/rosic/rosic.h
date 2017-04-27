@@ -14,10 +14,10 @@
   description:      Library of audio DSP algorithms
   website:          http://www.rs-met.com
   license:          GPL/Commercial
-  
-  dependencies:     
-  OSXFrameworks:    
-  iOSFrameworks:    
+
+  dependencies:
+  OSXFrameworks:
+  iOSFrameworks:
 
  END_JUCE_MODULE_DECLARATION
 
@@ -31,7 +31,8 @@
 #ifndef ROSIC_H_INCLUDED
 #define ROSIC_H_INCLUDED
 
-
+#include <malloc.h>  // for alloca - try to get rid..
+//#include <math.h>
 
 #include "analysis/rosic_Analysis.h"
 #include "basics/rosic_Basics.h"

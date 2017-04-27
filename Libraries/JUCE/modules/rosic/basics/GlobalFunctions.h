@@ -75,6 +75,14 @@ INLINE bool isCloseTo(double x, double targetValue, double tolerance);
 /** Checks, if x is even. */
 INLINE bool isEven(int x);
 
+/** Returns true, if x is not-a-number, false otherwise. */
+INLINE bool isNaN(double x)
+{
+  return !(x == x); 
+  // comparison of a NaN to any number (including NaN itself) always returns false, so x == x 
+  // will return false if (and only if) x is NaN
+}
+
 /** Checks, if x is odd. */
 INLINE bool isOdd(int x);
 

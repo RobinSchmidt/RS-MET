@@ -29,7 +29,7 @@ String::String(const char *initialString)
   else
   {
     length       = 0;
-    reservedSize = 1; 
+    reservedSize = 1;
     cString      = new char[reservedSize];
     strcpy(cString, "");
   }
@@ -38,17 +38,17 @@ String::String(const char *initialString)
 String::String(const String &other)
 {
   length       = other.length;
-  reservedSize = other.reservedSize; 
+  reservedSize = other.reservedSize;
   cString      = new char[reservedSize];
   strcpy(cString, other.cString);
 }
-   
+
 String::String(const int intValue)
-{   
+{
   length       = numberOfRequiredCharacters(intValue);
   reservedSize = length+1;
   cString      = new char[reservedSize];
-  itoa(intValue, cString, 10);  
+  sprintf(cString, "%d", intValue);      // old: itoa(intValue, cString, 10);
 }
 
 String::String(const unsigned int uintValue)
@@ -56,16 +56,16 @@ String::String(const unsigned int uintValue)
   length       = numberOfRequiredCharacters(uintValue);
   reservedSize = length+1;
   cString      = new char[reservedSize];
-  itoa(uintValue, cString, 10);  
+  sprintf(cString, "%d", uintValue);     // old: itoa(uintValue, cString, 10);
 }
 
 String::String(const float floatValue)
-{ 
+{
   initFromDoubleValue((double) floatValue);
 }
 
 String::String(const double doubleValue)
-{ 
+{
   initFromDoubleValue(doubleValue);
 }
 
@@ -122,11 +122,11 @@ int String::compareCharacters(char left, char right)
   if( leftUpper == rightUpper )
   {
     if( left < right )       // example: 'A' < 'a'
-      return -1;  
+      return -1;
     else if( left > right )  // example: 'a' > 'A'
       return +1;
     else                     // case actually already handled in if(left == right)
-      return 0;                
+      return 0;
   }
   else
   {
@@ -140,7 +140,7 @@ int String::compareCharacters(char left, char right)
 char String::toUpperCase(char c)
 {
   if( islower(c) )
-    return c-32; 
+    return c-32;
   else
     return c;
 }
@@ -201,13 +201,13 @@ String String::createSpanOfCharacters(char character, int length)
 
 //-------------------------------------------------------------------------------------------------
 // setup:
-  
+
 void String::padToLength(int desiredLength, char paddingCharacter)
 {
   int missingLength = rmax(desiredLength - getLength(), 0);
   *this += createSpanOfCharacters(paddingCharacter, missingLength);
 }
- 
+
 void String::prePadToLength(int desiredLength, char paddingCharacter)
 {
   int missingLength = rmax(desiredLength - getLength(), 0);
@@ -215,7 +215,7 @@ void String::prePadToLength(int desiredLength, char paddingCharacter)
 }
 
 void String::reserveSize(int numCharactersToReserve)
-{   
+{
   int requiredMemory = numCharactersToReserve + 1;
   if( reservedSize < requiredMemory )
   {
@@ -227,7 +227,7 @@ void String::reserveSize(int numCharactersToReserve)
   }
 }
 
-double String::asDouble() const    
+double String::asDouble() const
 {
   if( *this == String("INF") )
     return INF;
@@ -235,7 +235,7 @@ double String::asDouble() const
     return -INF;
   else if( *this == String("NaN") )
     return NAN;
-  return atof(cString); 
+  return atof(cString);
 }
 
 String String::toLowerCase(int start, int end) const
@@ -307,10 +307,10 @@ void String::allocateMemory(int numCharactersToAllocateExcludingZero)
   }
 }
 
-void String::initFromDoubleValue(double doubleValue) 
+void String::initFromDoubleValue(double doubleValue)
 {
   length       = 0;
-  reservedSize = 0;                    
+  reservedSize = 0;
   cString      = NULL;
   if( doubleValue == INF )
   {
@@ -324,15 +324,15 @@ void String::initFromDoubleValue(double doubleValue)
     int dummy = 0;
     return;
   }
-  else if( _isnan(doubleValue) )
+  else if( isNaN(doubleValue) )
   {
     *this = String("NaN");
     int dummy = 0;
     return;
   }
 
-  // create temporary string long enough to hold all the characters, determine the actually 
-  // required length and copy the repsective part of the temporary string - the c-book says, 
+  // create temporary string long enough to hold all the characters, determine the actually
+  // required length and copy the repsective part of the temporary string - the c-book says,
   // strncpy is unreliable with respect to copying the terminating zero, so we do it manually:
   char tmpString[64];
   sprintf(tmpString, "%-.17gl", doubleValue);
@@ -354,12 +354,12 @@ int String::removeGarbageFromDoubleString(char *s, int length)
 
   // leave scientifically notated strings as is:
   if( rosic::findIndexOf(s, 'e', length) != -1 || rosic::findIndexOf(s, 'E', length) != -1 )
-    return length; 
+    return length;
 
   // leave integer notated strings (without point) as is:
   int dotIndex = rosic::findIndexOf(s, '.', length);
   if( dotIndex == -1 )
-    return length; 
+    return length;
 
   int digitsBeforeDot;
   if( s[0] == '-' )
@@ -372,7 +372,7 @@ int String::removeGarbageFromDoubleString(char *s, int length)
 
   if( numDigits > 15 )
   {
-    // round, if last digit is very small (1, 2) or very large (8, 9) and there's a range of 0s or 9s before it (in this case, the total 
+    // round, if last digit is very small (1, 2) or very large (8, 9) and there's a range of 0s or 9s before it (in this case, the total
     // length is not required:
     if( s[length-2] == '0' )
     {

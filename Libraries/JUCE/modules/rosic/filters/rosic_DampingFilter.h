@@ -132,8 +132,10 @@ namespace rosic
     // calculate output-sample:
     double out = b0*in + b1*x1 + b2*x2 + a1*y1 + a2*y2; // + TINY;
 
-    if( _isnan(out) ) // we need to write our own, maybe isNan(double x ) { return x != x; }, see RSLib
+    if( isNaN(out) ) // do we still need this or is the issue fixed?
       DEBUG_BREAK;
+    //if( _isnan(out) ) // we need to write our own, maybe isNan(double x ) { return x != x; }, see RSLib
+    //  DEBUG_BREAK;
 
     // update buffer-variables:
     x2 = x1;

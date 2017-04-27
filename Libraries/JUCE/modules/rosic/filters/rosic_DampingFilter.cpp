@@ -49,7 +49,7 @@ void DampingFilter::setSampleRate(double newSampleRate)
 
 void DampingFilter::setGlobalGainFactor(double newGlobalGainFactor)
 {
-  if( _isnan(newGlobalGainFactor) )
+  if( isNaN(newGlobalGainFactor) )
     DEBUG_BREAK;
 
   globalGainFactor = newGlobalGainFactor;
@@ -140,11 +140,11 @@ void DampingFilter::calculateCoefficients()
   //---------------------------------------------------------------------------
   // low-shelf coefficient calculation:
 
-  G   = lowGainFactor;  
+  G   = lowGainFactor;
   G_B = lowCrossoverGainFactor;
 
   // catch some special (not allowed) conditions:
-  if( !areGainsAllowed(G, G_B) )  
+  if( !areGainsAllowed(G, G_B) )
   {
     b0Ls = 1.0;
     b1Ls = 0.0;
@@ -192,14 +192,14 @@ void DampingFilter::calculateCoefficients()
   //---------------------------------------------------------------------------
   // high-shelf coefficient calculation:
 
-  // we must take the reciprocal and scale by G, because the prototpye's 
-  // frequency response will be inverted when transforming from low-shelf to 
-  // high-shelf    
+  // we must take the reciprocal and scale by G, because the prototpye's
+  // frequency response will be inverted when transforming from low-shelf to
+  // high-shelf
   G   = highGainFactor;
-  G_B = G/highCrossoverGainFactor; 
+  G_B = G/highCrossoverGainFactor;
 
   // catch some special (not allowed) conditions:
-  if( !areGainsAllowed(G, G_B) )  
+  if( !areGainsAllowed(G, G_B) )
   {
     b0Hs = 1.0;
     b1Hs = 0.0;
@@ -207,7 +207,7 @@ void DampingFilter::calculateCoefficients()
   }
   else
   {
-    // assign/calculate some intermediate variables - 
+    // assign/calculate some intermediate variables -
     epsilon = sqrt( (G*G-G_B*G_B)/(G_B*G_B-1.0) );
     beta    = 1/epsilon;
 
@@ -215,15 +215,15 @@ void DampingFilter::calculateCoefficients()
     zProto = -(G*beta);
     pProto = -beta;
 
-    // convert the cutoff-frequency into a normalized cutoff-frequency in radians/sec (a frequency 
+    // convert the cutoff-frequency into a normalized cutoff-frequency in radians/sec (a frequency
     // between 0 and pi):
     omegaDig = (2.0*PI*highCrossoverFreq)/sampleRate;
 
-    // prewarp the desired digital cutoff radian frequency to the desired analog cutoff radian 
+    // prewarp the desired digital cutoff radian frequency to the desired analog cutoff radian
     // frequency:
     omegaAna = 2.0*sampleRate * tan(0.5*omegaDig);
 
-    // transform the filter to the desired selectivity and cutoff-frequency via an analog frequency 
+    // transform the filter to the desired selectivity and cutoff-frequency via an analog frequency
     // transformation (LowShelf->High-Shelf):
     pAna = zProto*omegaAna;
     zAna = pProto*omegaAna;
@@ -253,18 +253,18 @@ void DampingFilter::calculateCoefficients()
   a2 = -(a1Ls*a1Hs);
 
   // Remark:
-  // the a-coefficients have been given a minus-sign in order to implement the 
+  // the a-coefficients have been given a minus-sign in order to implement the
   // filters difference-equation as
   // out = b0*in + b1*x1 + b2*x2 + a1*y1 + a2*y2;
-  // which turned ot to be more efficient than subtracting weighted past 
+  // which turned ot to be more efficient than subtracting weighted past
   // output samples
 
-    
-  if( _isnan(b0) || _isnan(b1) || _isnan(b2) || _isnan(a1) || _isnan(a2) )  
+
+  if( isNaN(b0) || isNaN(b1) || isNaN(b2) || isNaN(a1) || isNaN(a2) )
     DEBUG_BREAK;
 
   /*
-  // coefficients of -0.0 seem to trigger a calculation of NAN - avoid this by 
+  // coefficients of -0.0 seem to trigger a calculation of NAN - avoid this by
   // converting to +0.0 - nah that seems not to solve it...:
   if( b0 == -0.0 ) b0 = 0.0;
   if( b1 == -0.0 ) b1 = 0.0;
