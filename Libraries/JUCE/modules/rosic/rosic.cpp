@@ -17,12 +17,15 @@ In the future, rosic should be made dependent on the RAPT library and whereever 
 rosic-class should be turned into an template instatiation of  RAPT class template.
 jura_processors should depend on the rosic module and grab its DSP code from there
 rename modules:
-rosic: rs_dsp (this should never depend on any juce class/module)
+
 jura_framework: rs_framework
 jura_processors: rs_audio_processors
 ...namespace name should be rs (but do all of this only after dragging in all old plugin code and 
 integrating it into the Chainer.
 
+rosic: rs_dsp (this should never depend on any juce class/module)
+ -..or maybe not - maybe it's good to be in its own namespace because we have a Module class here
+  and also an AudioModule class in jura...maybe keep it named rosic for the time being
 */
 
 // basics (but we needed to intersperse some stuff from other folders)
