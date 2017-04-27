@@ -4,7 +4,7 @@ using namespace rosic;
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-MultiLayerPerceptron::MultiLayerPerceptron(int numInputs, int numOutputs, int numHiddenLayers, 
+MultiLayerPerceptron::MultiLayerPerceptron(int numInputs, int numOutputs, int numHiddenLayers,
                                            int *numNeuronsInHiddenLayers)
 {
   activationFunctionIndex = LINEAR_RATIONAL;
@@ -64,7 +64,7 @@ void MultiLayerPerceptron::setWeightVector(const rosic::Vector &newWeightVector)
   int i = 0;
   for(int layer=0; layer < numWeightLayers; layer++)
   {
-    Matrix *wm  = &(w[layer]); 
+    Matrix *wm  = &(w[layer]);
 
     // assign the irrelevant weights to zeros:
     for(int c=0; c<wm->numColumns; c++)
@@ -110,7 +110,7 @@ void MultiLayerPerceptron::setInput(const rosic::Vector &xIn)
   // copy input vector into member x:
   for(int i=0; i<numInputs; i++)
   {
-    x.v[i]      = xIn.v[i]; 
+    x.v[i]      = xIn.v[i];
     z[0].v[i+1] = xIn.v[i];  // +1 to skip over bias node
   }
 }
@@ -122,10 +122,10 @@ void MultiLayerPerceptron::forwardPropagate()
   {
     z[i] = w[i-1] * z[i-1];  // matrix times vector
     for(int j=1; j<z[i].dim; j++)
-      z[i].v[j] = activationFunction( z[i].v[j] ); 
+      z[i].v[j] = activationFunction( z[i].v[j] );
     z[i].v[0] = 1.0;  // restore bias node that has been corrputed
   }
-  
+
   // final layer is linear - do the same procedure without the activation function:
   z[i]      = w[i-1] * z[i-1];  // matrix times vector
   z[i].v[0] = 1.0;              // restore (dummy) bias node that has been corrputed
@@ -160,7 +160,7 @@ void MultiLayerPerceptron::initializeWeightsToZeros()
 
 void MultiLayerPerceptron::initializeWeightsRandomly(double min, double max, int seed)
 {
-  double dummy = randomUniform(min, max, seed); // init PNRG
+  randomUniform(min, max, seed); // init PNRG
   for(int i=0; i<numWeightLayers; i++)
   {
     w[i].randomizeElements(min, max);
@@ -196,22 +196,22 @@ void MultiLayerPerceptron::forEachWeight( double (*f) (double) )
 
 void MultiLayerPerceptron::computeNumberOfWeights()
 {
-  numWeights = 0; 
+  numWeights = 0;
   for(int layer=0; layer < numWeightLayers; layer++)
   {
     Matrix *wm  = &(w[layer]);                        // weight matrix of layer 'layer'
-    numWeights += (wm->numRows - 1) * wm->numColumns; // 1st row is irrelevant 
+    numWeights += (wm->numRows - 1) * wm->numColumns; // 1st row is irrelevant
   }
 }
 
-void MultiLayerPerceptron::vectorizeWeightMatrices(rosic::Matrix *weightMatrices, 
+void MultiLayerPerceptron::vectorizeWeightMatrices(rosic::Matrix *weightMatrices,
   rosic::Vector *weightVector)
 {
   weightVector->setDimensionality(numWeights);
   int i = 0;
   for(int layer=0; layer < numWeightLayers; layer++)
-  { 
-    Matrix *wm  = &(weightMatrices[layer]); 
+  {
+    Matrix *wm  = &(weightMatrices[layer]);
     for(int r=1; r<wm->numRows; r++)
     {
       for(int c=0; c<wm->numColumns; c++)

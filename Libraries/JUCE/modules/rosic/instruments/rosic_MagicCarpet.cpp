@@ -25,7 +25,7 @@ MagicCarpet::MagicCarpet()
     voiceArray[v].oscSection.samplePlayerBottomRight.setSampleBufferToUse(&sampleBufferBottomRight);
   }
 
-  // configure the embedded objects of all voices other than [0] as slaves to the respective 
+  // configure the embedded objects of all voices other than [0] as slaves to the respective
   // objects in voice [0]:
   for(v=1; v<numAllocatedVoices; v++)
   {
@@ -43,7 +43,6 @@ MagicCarpet::MagicCarpet()
     voicePointers[v]->setTuningTable(&tuningTable);
 
   setSampleRate(44100.0);
-  int dummy = 1;
 }
 
 MagicCarpet::~MagicCarpet()

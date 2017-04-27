@@ -44,8 +44,5 @@ void DspScriptInterpreter::initFunctionList()
   functionList.Add( new FunctionFactorySineOscillator()       );
   */
 
-
-  int dummy = 0;
-
   mutex.unlock();
 }

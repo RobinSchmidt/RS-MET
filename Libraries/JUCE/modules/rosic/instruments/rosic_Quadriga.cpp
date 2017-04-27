@@ -27,7 +27,7 @@ Quadriga::Quadriga()
     */
   }
 
-  // configure the embedded objects of all voices other than [0] as slaves to the respective 
+  // configure the embedded objects of all voices other than [0] as slaves to the respective
   // objects in voice [0]:
   for(v=1; v<numAllocatedVoices; v++)
   {
@@ -48,7 +48,6 @@ Quadriga::Quadriga()
     voicePointers[v]->setTuningTable(&tuningTable);
 
   setSampleRate(44100.0);
-  int dummy = 1;
 }
 
 Quadriga::~Quadriga()

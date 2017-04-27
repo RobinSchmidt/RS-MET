@@ -21,7 +21,7 @@ KeyShot::KeyShot()
       // to be revised
   }
 
-  // configure the embedded objects of all voices other than [0] as slaves to the respective 
+  // configure the embedded objects of all voices other than [0] as slaves to the respective
   // objects in voice [0]:
   for(v=1; v<numAllocatedVoices; v++)
   {
@@ -34,7 +34,6 @@ KeyShot::KeyShot()
     voicePointers[v]->setTuningTable(&tuningTable);
 
   setSampleRate(44100.0);
-  int dummy = 1;
 }
 
 KeyShot::~KeyShot()
