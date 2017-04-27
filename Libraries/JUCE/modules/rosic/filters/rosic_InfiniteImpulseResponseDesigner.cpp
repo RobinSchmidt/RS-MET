@@ -170,17 +170,17 @@ bool InfiniteImpulseResponseDesigner::hasCurrentModeRejectionParameter()
 void InfiniteImpulseResponseDesigner::getPolesAndZeros(Complex* poles, Complex* zeros)
 {
   // calculate the required order and number of biquads for the filter:
-  int finalOrder, numBiquads;
-
+  int finalOrder;
   if( mode == BANDPASS || mode == BANDREJECT || mode == PEAK )
     finalOrder = 2*prototypeOrder;
   else
     finalOrder = prototypeOrder;
 
-  if( isEven(finalOrder) )
-    numBiquads = finalOrder/2;
-  else
-    numBiquads = (finalOrder+1)/2;
+//  int numBiquads;
+//  if( isEven(finalOrder) )
+//    numBiquads = finalOrder/2;
+//  else
+//    numBiquads = (finalOrder+1)/2;
 
   // set up the type for the prototype (lowpass/low-shelv):
   if( mode == LOW_SHELV || mode == HIGH_SHELV || mode == PEAK || mode == BYPASS )
@@ -209,7 +209,7 @@ void InfiniteImpulseResponseDesigner::getPolesAndZeros(Complex* poles, Complex* 
       f1 = 0.999*0.5*fs;  // ensure frequency < sampleRate/2
   }
 
-  // prewarp the frequencies to the desired frequencies required for the design of the 
+  // prewarp the frequencies to the desired frequencies required for the design of the
   // (unnormalized) analog prototype filter:
   if( mode == BANDPASS || mode == BANDREJECT || mode == PEAK )
   {
@@ -230,7 +230,7 @@ void InfiniteImpulseResponseDesigner::getPolesAndZeros(Complex* poles, Complex* 
   prototypeDesigner.setOrder(prototypeOrder);
   prototypeDesigner.setGain(gain);
   if( mode == LOWPASS || mode == HIGHPASS || mode == BANDPASS || mode == BANDREJECT )
-    prototypeDesigner.setReferenceGain(NEG_INF); 
+    prototypeDesigner.setReferenceGain(NEG_INF);
   else
     prototypeDesigner.setReferenceGain(0.0);
 
@@ -241,8 +241,8 @@ void InfiniteImpulseResponseDesigner::getPolesAndZeros(Complex* poles, Complex* 
   // design the analog prototype filter:
   if( mode == HIGH_SHELV )
   {
-    // we need to cope with exchange of roles of poles and zeros for high-shelving (inverse) 
-    // chebychevs because the low-shelv -> high-shelv frequency transform exchanges these roles 
+    // we need to cope with exchange of roles of poles and zeros for high-shelving (inverse)
+    // chebychevs because the low-shelv -> high-shelv frequency transform exchanges these roles
     // once again:
     if( prototypeDesigner.getApproximationMethod() == PrototypeDesigner::CHEBYCHEV )
     {
@@ -262,7 +262,7 @@ void InfiniteImpulseResponseDesigner::getPolesAndZeros(Complex* poles, Complex* 
   else
     prototypeDesigner.getPolesAndZeros(poles, zeros);
 
-  // because the PrototypeDesigner returns only one representant for each pair of complex conjugate poles/zeros, we now create the full 
+  // because the PrototypeDesigner returns only one representant for each pair of complex conjugate poles/zeros, we now create the full
   // set here:
   if( isOdd(prototypeOrder) )
   {
@@ -287,14 +287,14 @@ void InfiniteImpulseResponseDesigner::getPolesAndZeros(Complex* poles, Complex* 
   case BANDPASS:   PoleZeroMapper::sPlanePrototypeToBandpass(  protoPoles, protoZeros, poles, zeros, prototypeOrder, wa1, wa2); break;
   case BANDREJECT: PoleZeroMapper::sPlanePrototypeToBandreject(protoPoles, protoZeros, poles, zeros, prototypeOrder, wa1, wa2); break;
   case LOW_SHELV:  PoleZeroMapper::sPlanePrototypeToLowpass(   protoPoles, protoZeros, poles, zeros, prototypeOrder, wa1);      break;
-  case HIGH_SHELV: 
+  case HIGH_SHELV:
     {
       // this is ugly - rewrite the prototype design code such that all approximation methods can be treated uniformly:
       if( prototypeDesigner.needsSpecialHighShelvTransform() )
-        PoleZeroMapper::sPlanePrototypeToHighShelv( protoPoles, protoZeros, poles, zeros, prototypeOrder, wa1);     
+        PoleZeroMapper::sPlanePrototypeToHighShelv( protoPoles, protoZeros, poles, zeros, prototypeOrder, wa1);
       else
-        PoleZeroMapper::sPlanePrototypeToHighpass(  protoPoles, protoZeros, poles, zeros, prototypeOrder, wa1); 
-    } 
+        PoleZeroMapper::sPlanePrototypeToHighpass(  protoPoles, protoZeros, poles, zeros, prototypeOrder, wa1);
+    }
     break;
   case PEAK:       PoleZeroMapper::sPlanePrototypeToBandpass(  protoPoles, protoZeros, poles, zeros, prototypeOrder, wa1, wa2); break;
   default:         PoleZeroMapper::sPlanePrototypeToLowpass(   protoPoles, protoZeros, poles, zeros, prototypeOrder, wa1);      break;
@@ -337,7 +337,7 @@ void InfiniteImpulseResponseDesigner::getBiquadCascadeCoefficients(double *b0, d
         b2[b] = 0.0;
         a1[b] = 0.0;
         a2[b] = 0.0;
-        return; 
+        return;
       }
     }
   }
@@ -414,11 +414,11 @@ void InfiniteImpulseResponseDesigner::getDirectFormCoefficients(double *b, doubl
 
 void InfiniteImpulseResponseDesigner::calculateLowerAndUpperFrequency()
 {
-  lowerFrequency = frequency / pow(2.0, 0.5*bandwidth);  
-  upperFrequency = lowerFrequency * pow(2.0, bandwidth); 
+  lowerFrequency = frequency / pow(2.0, 0.5*bandwidth);
+  upperFrequency = lowerFrequency * pow(2.0, bandwidth);
 }
 
-void InfiniteImpulseResponseDesigner::normalizeGain(double *b0, double *b1, double *b2, 
+void InfiniteImpulseResponseDesigner::normalizeGain(double *b0, double *b1, double *b2,
                                                double *a1, double *a2, double wc, int numBiquads)
 {
   double w;
@@ -432,7 +432,7 @@ void InfiniteImpulseResponseDesigner::normalizeGain(double *b0, double *b1, doub
   double normalizeFactor = 1.0;
   if( prototypeDesigner.getPrototypeMode() == PrototypeDesigner::LOWSHELV_PROTOTYPE )
   {
-    if(  prototypeDesigner.getApproximationMethod() == PrototypeDesigner::INVERSE_CHEBYCHEV 
+    if(  prototypeDesigner.getApproximationMethod() == PrototypeDesigner::INVERSE_CHEBYCHEV
       || prototypeDesigner.getApproximationMethod() == PrototypeDesigner::ELLIPTIC )
     {
       if( isEven(prototypeDesigner.getOrder()) )
@@ -445,7 +445,7 @@ void InfiniteImpulseResponseDesigner::normalizeGain(double *b0, double *b1, doub
   }
   else // prototype is lowpass
   {
-    if(  prototypeDesigner.getApproximationMethod() == PrototypeDesigner::CHEBYCHEV 
+    if(  prototypeDesigner.getApproximationMethod() == PrototypeDesigner::CHEBYCHEV
       || prototypeDesigner.getApproximationMethod() == PrototypeDesigner::ELLIPTIC )
     {
       if( isEven(prototypeDesigner.getOrder()) )

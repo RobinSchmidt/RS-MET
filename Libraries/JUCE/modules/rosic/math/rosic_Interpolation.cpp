@@ -4,13 +4,13 @@
 #include "rosic_PolynomialAlgorithms.h"
 using namespace rosic;
 
-void rosic::fitCubicWithDerivative(double x1, double x2, double y1, double y2, double yd1,  
+void rosic::fitCubicWithDerivative(double x1, double x2, double y1, double y2, double yd1,
                                    double yd2, double *a3, double *a2, double *a1, double *a0)
 {
   *a3 = -( x2*(yd2+yd1) + x1*(-yd2-yd1) - 2*y2 + 2*y1 );
-  *a2 = x1*(x2*(yd2-yd1)-3*y2) + (x2*x2)*(yd2+2*yd1) + (x1*x1)*(-2*yd2-yd1) 
+  *a2 = x1*(x2*(yd2-yd1)-3*y2) + (x2*x2)*(yd2+2*yd1) + (x1*x1)*(-2*yd2-yd1)
        - 3*x2*y2 + (3*x2+3*x1)*y1;
-  *a1 = x1*((x2*x2)*(2*yd2+yd1)-6*x2*y2) - (x1*x1*x1)*yd2 + (x1*x1)*x2*(-yd2-2*yd1) 
+  *a1 = x1*((x2*x2)*(2*yd2+yd1)-6*x2*y2) - (x1*x1*x1)*yd2 + (x1*x1)*x2*(-yd2-2*yd1)
        + (x2*x2*x2)*yd1 + 6*x1*x2*y1;
   *a1 = -*a1;
   *a0 = (x1*x1)*((x2*x2)*(yd2-yd1)-3*x2*y2) + (x1*x1*x1)*(y2-x2*yd2) + x1*(x2*x2*x2)*yd1
@@ -33,8 +33,8 @@ void rosic::fitCubicWithDerivativeFixedX(double y0, double y1, double yd0, doubl
   *a1 = yd0;
   *a0 = y0;
 }
- 
-void rosic::fitQuinticWithDerivativesFixedX(double y0, double y1, double yd0, double yd1, double ydd0, double ydd1, double *a5, double *a4,  
+
+void rosic::fitQuinticWithDerivativesFixedX(double y0, double y1, double yd0, double yd1, double ydd0, double ydd1, double *a5, double *a4,
                                             double *a3, double *a2, double *a1, double *a0)
 {
   *a0 = y0;
@@ -47,7 +47,7 @@ void rosic::fitQuinticWithDerivativesFixedX(double y0, double y1, double yd0, do
 
 void rosic::getHermiteCoeffsM(double *y0, double *y1, double *a, int M)
 {
-  int N = 2*M+1;
+  //int N = 2*M+1;
   int n, i, j;
 
   // compute a[0],...,a[M]:
@@ -67,7 +67,7 @@ void rosic::getHermiteCoeffsM(double *y0, double *y1, double *a, int M)
   rosic::Matrix A(M+1, M+1);
   for(i = 1; i <= M+1; i++)
   {
-    for(j = 1; j <= M+1; j++) 
+    for(j = 1; j <= M+1; j++)
       A.m[i-1][j-1] = product(M+j-i+2, M+j);
   }
 
@@ -82,7 +82,7 @@ void rosic::getHermiteCoeffs1(double *y0, double *y1, double *a)
   a[1] = y0[1];     // a1 = y'(0)
 
   double k1 = y1[0] - a[1] - a[0];
-  double k2 = y1[1] - a[1];  
+  double k2 = y1[1] - a[1];
 
   a[2] = 3*k1 - k2;
   a[3] = k2 - 2*k1;
@@ -95,7 +95,7 @@ void rosic::getHermiteCoeffs2(double *y0, double *y1, double *a)
   a[2] = y0[2]/2;   // a2 = y''(0)/2
 
   double k1 = y1[0] - a[2]  - a[1] - a[0];
-  double k2 = y1[1] - y0[2] - a[1];  
+  double k2 = y1[1] - y0[2] - a[1];
   double k3 = y1[2] - y0[2];
 
   a[3] =  (k3-8*k2+20*k1)/2;
@@ -112,7 +112,7 @@ void rosic::getHermiteCoeffs3(double *y0, double *y1, double *a)
 
   // can be streamlined, using: 2*a2 = y''(0), 6*a3 = y'''(0)
   double k1 = y1[0] -   a[3] -   a[2] - a[1] - a[0];
-  double k2 = y1[1] - 3*a[3] - 2*a[2] - a[1];  
+  double k2 = y1[1] - 3*a[3] - 2*a[2] - a[1];
   double k3 = y1[2] - 6*a[3] - 2*a[2];
   double k4 = y1[3] - 6*a[3];
 
@@ -127,7 +127,7 @@ double rosic::getDelayedSampleLinear(double d, double *y)
 {
   return (1.0-d)*y[0] + d*y[-1];
 }
- 
+
 double rosic::getDelayedSampleAsymmetricHermite1(double d, double *y, double shape)
 {
   double y0[2], y1[2], a[4];
@@ -168,7 +168,7 @@ double rosic::getDelayedSampleAsymmetricHermiteM(double d, double *y, int M, dou
     for(i = 0; i < M+1; i++)
       yTmp[i] = yTmp[i] - yTmp[i+1];
     y1[j] = shape * yTmp[0];
-    y0[j] = shape * yTmp[1]; 
+    y0[j] = shape * yTmp[1];
     shape *= shape;
   }
 
@@ -180,8 +180,8 @@ double rosic::getDelayedSampleAsymmetricHermiteM(double d, double *y, int M, dou
   return rosic::evaluatePolynomialAt(x, a, N);
 }
 
-void rosic::fitCubicThroughFourPoints(double x0, double y0, double x1, double y1, double x2, 
-                                      double y2, double x3, double y3, double *a, double *b, 
+void rosic::fitCubicThroughFourPoints(double x0, double y0, double x1, double y1, double x2,
+                                      double y2, double x3, double y3, double *a, double *b,
                                       double *c, double *d)
 {
   // powers of the input value x:

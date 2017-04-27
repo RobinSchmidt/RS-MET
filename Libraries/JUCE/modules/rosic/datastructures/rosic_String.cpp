@@ -84,7 +84,7 @@ int String::numberOfRequiredCharacters(int number)
   int numChars           = 0;
   int absValue           = abs(number);
   unsigned long long tmp = 1;             // must be able to go above INT_MAX
-  while( tmp <= absValue && tmp < INT_MAX )
+  while( tmp <= absValue && tmp < (unsigned long long) INT_MAX )
   {
     tmp *= 10;
     numChars++;
@@ -315,19 +315,16 @@ void String::initFromDoubleValue(double doubleValue)
   if( doubleValue == INF )
   {
     *this = String("INF");
-    int dummy = 0;
     return;
   }
   else if( doubleValue == -INF )
   {
     *this = String("-INF");
-    int dummy = 0;
     return;
   }
   else if( isNaN(doubleValue) )
   {
     *this = String("NaN");
-    int dummy = 0;
     return;
   }
 

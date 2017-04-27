@@ -7,17 +7,13 @@ using namespace rosic;
 TabulatedFunction::TabulatedFunction()
 {
   // init the tableSize and allocate memory for the table:
-  tableSize = 1024;
-  funcTbl   = NULL;
-  funcTbl   = new doubleA[tableSize];
-
-  bool dummy;
-
+  tableSize  = 1024;
+  funcTbl    = NULL;
+  funcTbl    = new doubleA[tableSize];
   lowerLimit = -2.0;
   upperLimit =  2.0;
-
   setRange(lowerLimit, upperLimit);
-  dummy = setFunctionString("tanh(x);", true);
+  setFunctionString("tanh(x);", true);
 }
 
 TabulatedFunction::~TabulatedFunction()
@@ -107,8 +103,8 @@ void TabulatedFunction::calculateTable()
   mutex.lock();
 
   doubleA x, y;
-  doubleA a, b; // x = a*i + b where a and b are determined by 
-  // the upper and lower limit (mapping between the 
+  doubleA a, b; // x = a*i + b where a and b are determined by
+  // the upper and lower limit (mapping between the
   // table-index i and the x-variable)
 
   a = (upperLimit-lowerLimit)/(tableSize-1); // the slope of the mapping
@@ -118,7 +114,7 @@ void TabulatedFunction::calculateTable()
   {
     x = a*i + b;  // map table-index to an x-value
 
-    evaluator.assignVariable("x", x); 
+    evaluator.assignVariable("x", x);
     // occurrences of string "x" in newFunctionString will be replaced with
     // the current numeric value of variable x
 

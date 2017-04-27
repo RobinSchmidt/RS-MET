@@ -59,12 +59,9 @@ ExpressionEvaluator::ExpressionEvaluator()
   functionList.Add(new FunctionFactoryTanC());
   functionList.Add(new FunctionFactoryTanhC());
 
-
-
   expression.SetValueList(&valueList);
   expression.SetFunctionList(&functionList);
   setExpressionString("y=x;");
-
 
   valueList.AddDefaultValues();
   valueList.Add("pi", PI,    false);
@@ -72,9 +69,6 @@ ExpressionEvaluator::ExpressionEvaluator()
   //initVariableList();
 
   //...
-
-  int dummy = 0;
-
 }
 
 ExpressionEvaluator::~ExpressionEvaluator()
@@ -112,7 +106,7 @@ bool ExpressionEvaluator::setExpressionString(const char* newExpressionString)
     else
       success = false;
   }
-  else 
+  else
     success = false;
 
   mutex.unlock();
@@ -123,7 +117,7 @@ bool ExpressionEvaluator::parseExpression()
 {
   mutex.lock();
   try
-  { 
+  {
     expression.Parse(expressionString);
   }
   catch( ExprEval::Exception &theException )
@@ -170,7 +164,7 @@ void ExpressionEvaluator::initVariableList()
 
   // we need to re-parse after messing with the value list, otherwise the expression object will
   // deal with invalid pointers:
-  parseExpression(); 
+  parseExpression();
 
   mutex.unlock();
 }
@@ -204,7 +198,7 @@ void ExpressionEvaluator::assignVariable(const char* name, double value)
 {
   mutex.lock();
 
-  // check, if a variable with this name already exists, if yes, overwrite its value, if not add it 
+  // check, if a variable with this name already exists, if yes, overwrite its value, if not add it
   // and assign the value
   double* address = valueList.GetAddress(name);
   if( address != NULL )
@@ -214,7 +208,7 @@ void ExpressionEvaluator::assignVariable(const char* name, double value)
   else
   {
     valueList.Add(name, value, false);
-    address = valueList.GetAddress(name);  
+    address = valueList.GetAddress(name);
     *address = value;
   }
 
