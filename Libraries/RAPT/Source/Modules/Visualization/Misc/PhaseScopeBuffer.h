@@ -73,6 +73,15 @@ public:
   void setPixelSpread(TPar newSpread);
   // maybe rename to setDotSpread
 
+  /** Switches into 1D mode in which we replace the x-signal with an internally generated sawtooth
+  wave. This replacement is done after the geometric transformations have been applied. This allows
+  to use the rotation parameter for choosing which channel (or combination of channels) should be
+  displayed on the y-axis. 0°: right, 90°: left, 45°: mid. */
+  void setOneDimensionalMode(bool shouldBe1D);
+
+  /** Sets the frequency by which the beam scans the x-axis in 1D mode. */
+  void setScanningFrequency(TPar newFrequency);
+
   // geometric transformations:
   void setScaleX(TSig newScale);
   void setScaleY(TSig newScale);
@@ -149,8 +158,12 @@ protected:
   /** Updates the coefficients for the geometric transform that is applied to the input. */
   void updateTransformCoeffs();
 
+  /** Updates the increment for x-axis scanning. */
+  void updateScanIncrement();
 
   TPar sampleRate;
+  TPar scanFreq;       // x-scanning frequency in 1D mode
+  TPar scanInc;        // x-scanning increment
   TPar frameRate;
   TPar decayTime;      // pixel illumination time
   TPar decayFactor;    // factor by which pixels decay (applied at frameRate)
@@ -165,6 +178,8 @@ protected:
   TSig xOld, yOld;     // pixel coordinates of old datapoint (one sample ago)
   TPix cOld;           // old line end color
 
+  TSig scanPos;        // scan position in 1D mode
+
   // geometric transform parameters:
   TSig scaleX = 1, scaleY = 1;
   TSig shearX = 0, shearY = 0;
@@ -173,6 +188,7 @@ protected:
   TSig Axx, Axy, Ayx, Ayy;       // matrix coefficients
 
   bool useGradient;    // use color gradient to seamlessly join line segments
+  bool oneDimensonal = false;
 
   // members for actual painting on an image:
   //Image<TPix> image;

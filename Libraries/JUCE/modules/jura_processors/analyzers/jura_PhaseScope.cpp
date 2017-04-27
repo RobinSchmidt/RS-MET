@@ -187,6 +187,10 @@ void PhaseScope::setRotation(double degrees)
 //{
 //  phaseScopeBuffer->setShiftY(newShift);
 //}
+void PhaseScope::setOneDimensionalMode(bool shouldBe1D)
+{
+
+}
 
 AudioModuleEditor* PhaseScope::createEditor()
 {

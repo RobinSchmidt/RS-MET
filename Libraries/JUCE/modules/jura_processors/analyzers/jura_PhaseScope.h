@@ -39,6 +39,7 @@ public:
   void setRotation(double degrees);
   //void setShiftX(double newShift);
   //void setShiftY(double newShift);
+  void setOneDimensionalMode(bool shouldBe1D);
     // comment out shear and shift - it makes not much sense here
 
   // inquiry functions:
@@ -79,7 +80,8 @@ protected:
   int repaintIntervalInSamples;
   int repaintCounter;
 
-  bool bypassPixelDecay;
+  bool bypassPixelDecay;        // not needed anymore - Elan wanted this at some point
+  //bool oneDimensional = false;  // 1D mode
 
   // this object is reponsible for drawing the incoming data onto a virtual screen:
   //RAPT::PhaseScopeBuffer<double, float, double> phaseScopeBuffer;

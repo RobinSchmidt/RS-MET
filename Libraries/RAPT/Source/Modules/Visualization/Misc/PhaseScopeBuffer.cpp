@@ -4,6 +4,7 @@ PhaseScopeBuffer<TSig, TPix, TPar>::PhaseScopeBuffer()
 {
   painter.setUseAlphaMask(false);
 
+  scanFreq       = 1.0;
   frameRate      = 25.0;
   decayTime      = 0.5;
   lineDensity    = 0.0f;
@@ -22,6 +23,7 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::setSampleRate(TPar newSampleRate)
 {
   sampleRate = newSampleRate;
   updateInsertFactor();
+  updateScanIncrement();
 }
 
 template<class TSig, class TPix, class TPar>
@@ -92,6 +94,18 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::setPixelSpread(TPar newSpread)
 }
 
 template<class TSig, class TPix, class TPar>
+void PhaseScopeBuffer<TSig, TPix, TPar>::setOneDimensionalMode(bool shouldBe1D)
+{
+  oneDimensonal = shouldBe1D;
+}
+
+template<class TSig, class TPix, class TPar>
+void PhaseScopeBuffer<TSig, TPix, TPar>::setScanningFrequency(TPar newFrequency)
+{
+
+}
+
+template<class TSig, class TPix, class TPar>
 void PhaseScopeBuffer<TSig, TPix, TPar>::setScaleX(TSig newScale)
 {
   scaleX = newScale;
@@ -153,13 +167,28 @@ template<class TSig, class TPix, class TPar>
 void PhaseScopeBuffer<TSig, TPix, TPar>::processSampleFrame(TSig x, TSig y)
 {
   // apply affine transformation in normalized coordinates:
-  TSig xt = Axx * x + Axy * y + shiftX;
-  TSig yt = Ayx * x + Ayy * y + shiftY;
+  TSig xt = x;  // temporary
+  x = Axx * x  + Axy * y + shiftX;
+  y = Ayx * xt + Ayy * y + shiftY;
 
-  // transform to pixel coordinates (todo: collapse these 2 trafos into 1)
-  toPixelCoordinates(xt, yt);
+  // replace x with sawtooth-scanner in 1D mode:
+  if(oneDimensonal == true)
+  {
+    // x = getScannerSaw();
+  }
 
-  addLineTo(xt, yt);
+  // transform to pixel coordinates and draw line:
+  toPixelCoordinates(x, y);
+  addLineTo(x, y);
+
+
+  //TSig xt = Axx * x + Axy * y + shiftX;
+  //TSig yt = Ayx * x + Ayy * y + shiftY;
+
+  //// transform to pixel coordinates (todo: collapse these 2 trafos into 1)
+  //toPixelCoordinates(xt, yt);
+
+  //addLineTo(xt, yt);
 }
 
 template<class TSig, class TPix, class TPar>
@@ -172,6 +201,7 @@ template<class TSig, class TPix, class TPar>
 void PhaseScopeBuffer<TSig, TPix, TPar>::reset()
 {
   ArrayTools::rsFillWithZeros(image.getPixelPointer(0, 0), image.getNumPixels());
+  scanPos = 0.0;
 
   // (xOld,yOld) = (0,0) - but in pixel coordinates:
   xOld = 0.5f * image.getWidth();
@@ -244,6 +274,12 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::updateTransformCoeffs()
   Axy = s*scaleY + c*shearX;
   Ayx = c*shearY - s*scaleX;
   Ayy = c*scaleY - s*shearX;
+}
+
+template<class TSig, class TPix, class TPar>
+void PhaseScopeBuffer<TSig, TPix, TPar>::updateScanIncrement()
+{
+  scanInc = scanFreq / sampleRate;
 }
 
 //-------------------------------------------------------------------------------------------------
