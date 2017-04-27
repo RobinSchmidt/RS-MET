@@ -8,7 +8,9 @@ header files that the compiler may be using. */
 
 #include "rosic.h"
 
-/** The cpp files are included in the order in which they depend on each other. 
+/** The cpp files are included in the order in which they depend on each other. The only folder 
+from which we have not included the .cpp files is the legacy folder.
+
 ToDo: reorder them in the library accordingly, such that files in one library folder depend only on 
 other files in folders that are considered "above" in the hierarchy. 
 In the future, rosic should be made dependent on the RAPT library and whereever it makes sense, the
@@ -292,27 +294,27 @@ integrating it into the Chainer.
 #include "scripting/rosic_DspScriptInterpreter.cpp"
 #include "scripting/rosic_DspWorkbench.cpp"
 
-
-
 // instruments
-
-
-
-
-
-
+#include "instruments/rosic_AciDevil.cpp"
+#include "instruments/rosic_KeyShotVoice.cpp"
+#include "instruments/rosic_KeyShot.cpp"
+#include "instruments/rosic_MagicCarpetVoice.cpp"
+#include "instruments/rosic_MagicCarpet.cpp"
+#include "instruments/rosic_Open303.cpp"
+#include "instruments/rosic_QuadrigaVoice.cpp"
+#include "instruments/rosic_Quadriga.cpp"
+#include "instruments/rosic_SimpleSamplerOscSection.cpp"
+#include "instruments/rosic_SimpleSamplerVoice.cpp"
+#include "instruments/rosic_SimpleSampler.cpp"
+#include "instruments/rosic_StraightlinerVoice.cpp"
+#include "instruments/rosic_Straightliner.cpp"
+#include "instruments/rosic_WorkhorseOscSection.cpp"
+#include "instruments/rosic_WorkhorseVoice.cpp"
+#include "instruments/rosic_Workhorse.cpp"
 
 // these do not really fit into the directory order - they are kind-of higher-level classes, maybe 
 // they should be in the instruments section...or something:
-
 #include "effects/rosic_Quadrifex.cpp"  // needs the effects wrapped into "Module" subclasses
 #include "generators/rosic_Quadrigen.cpp"             // needs Module, RoutingMatrix
 #include "generators/rosic_VectorSamplePlayer.cpp"    // needs LowFrequencyOscillator (in modulators)
                                                       // and VectorMixer
-
-
-
-
-
-
-
