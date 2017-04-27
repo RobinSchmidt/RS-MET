@@ -9,13 +9,16 @@
 #include <crtdbg.h>
 #endif
 
-/** This file contains a bunch of useful macros and functions which are not wrapped into the
-rosic namespace to facilitate their global use. */
+/** Some basic functions */
+
+namespace rosic
+{
+
 
 /** Converts a raw amplitude value/factor to a value in decibels. */
 INLINE double amp2dB(double amp);
 
-/** Converts a raw amplitude value/factor to a value in decibels with a check, if the amplitude is close to zero (to avoid log-of-zero and 
+/** Converts a raw amplitude value/factor to a value in decibels with a check, if the amplitude is close to zero (to avoid log-of-zero and
 related errors). */
 INLINE double amp2dBWithCheck(double amp, double lowAmplitude = 0.000001);
 
@@ -65,7 +68,7 @@ INLINE double freqToPitch(double freq, double masterTuneA4);
 and then sets the pointer to NULL. */
 INLINE void ifNotNullDeleteAndSetNull(void* pointer);
 
-/** Maps an integer index in the range 0...numIndices-1 into a normalized floating point number in 
+/** Maps an integer index in the range 0...numIndices-1 into a normalized floating point number in
 the range 0...1. */
 INLINE float indexToNormalizedValue(int index, int numIndices);
 
@@ -78,7 +81,7 @@ INLINE bool isEven(int x);
 /** Returns true, if x is not-a-number, false otherwise. */
 INLINE bool isNaN(double x)
 {
-  return !(x == x); 
+  return !(x == x);
   // comparison of a NaN to any number (including NaN itself) always returns false, so x == x 
   // will return false if (and only if) x is NaN
 }
@@ -112,27 +115,27 @@ INLINE double linToExp(double in, double inMin, double inMax, double outMin, dou
 /** Same as linToExp but adds an offset afterwards and compensates for that offset by scaling the
 offsetted value so as to hit the outMax correctly. */
 INLINE double linToExpWithOffset(double in, double inMin, double inMax, double outMin,
-                                 double outMax, double offset = 0.0);
+  double outMax, double offset = 0.0);
 
 /** The Inverse of "linToExp" */
 INLINE double expToLin(double in, double inMin, double inMax, double outMin, double outMax);
 
 /** The Inverse of "linToExpWithOffset" */
 INLINE double expToLinWithOffset(double in, double inMin, double inMax, double outMin,
-                                 double outMax, double offset = 0.0);
+  double outMax, double offset = 0.0);
 
 /** Returns a power of two which is greater than or equal to the input argument. */
 template <class T>
 INLINE T nextPowerOfTwo(T x);
 
-/** Maps a normalized floating point number in the range 0...1 into an integer index in the range 
+/** Maps a normalized floating point number in the range 0...1 into an integer index in the range
 0...numIndices-1. */
 INLINE int normalizedValueToIndex(float normalizedValue, int numIndices);
 
 
 /** Maps the range x = [0...1] onto itself via a warping that is controlled by parameter "a" in
 the range ]-1...+1[. When a is zero, the mapping is the identity, when a is negative, the curve is
-above the identity-mapping (giving more precision in the upper range), when a is positive, the 
+above the identity-mapping (giving more precision in the upper range), when a is positive, the
 curve is below the identity mapping (giving more precsion in the lower range). */
 double mapLinearToRational(double x, double a);
 
@@ -149,10 +152,10 @@ INLINE double pitchToFreq(double pitch, double masterTuneA4);
 INLINE double radiantToDegree(double radiant);
 
 /** Generates a random number that is uniformly distributed between min and max (inclusive). The
-underlying integer pseudo random number generator is a linear congruential with period length of 
-2^32. It is based on Numerical Recipies in C (2nd edition), page 284. You may pass a seed to the 
-first call to initialize it - otherwise it will use 0 as seed. A negative number (as in the default 
-argument) will indicate to not initialize the state and just generate a random number based on the 
+underlying integer pseudo random number generator is a linear congruential with period length of
+2^32. It is based on Numerical Recipies in C (2nd edition), page 284. You may pass a seed to the
+first call to initialize it - otherwise it will use 0 as seed. A negative number (as in the default
+argument) will indicate to not initialize the state and just generate a random number based on the
 last state (which is the case for a typical call). */
 INLINE double randomUniform(double min = 0.0, double max = 1.0, int seed = -1);
 
@@ -174,7 +177,7 @@ INLINE double wrapAround(double numberToWrap, double length);
 
 /** This function should be called on program startup when automatic detection of memory leaks should be turned on. */
 inline void checkForMemoryLeaksOnExit()
-{  
+{
 #if defined _MSC_VER
   int tmpFlag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG); // gets the current flag
   tmpFlag |= _CRTDBG_LEAK_CHECK_DF;                  // turns on leak checking
@@ -186,11 +189,11 @@ inline void checkForMemoryLeaksOnExit()
 
 inline bool detectMemoryLeaks()
 {
-  #ifdef _MSC_VER 
+#ifdef _MSC_VER 
   return _CrtDumpMemoryLeaks() == 1;
-  #else
+#else
   return false;
-  #endif
+#endif
 }
 
 //=================================================================================================
@@ -204,7 +207,7 @@ INLINE double amp2dB(double amp)
 
 INLINE double amp2dBWithCheck(double amp, double lowAmplitude)
 {
-  if( amp >= lowAmplitude )
+  if(amp >= lowAmplitude)
     return 8.6858896380650365530225783783321 * log(amp);
   else
     return 8.6858896380650365530225783783321 * log(lowAmplitude);
@@ -217,7 +220,7 @@ INLINE int arrayMaxIndex(T* theArray, int numValues)
   double maxValue = theArray[0];
   for(int i=0; i<numValues; i++)
   {
-    if( theArray[i] > maxValue )
+    if(theArray[i] > maxValue)
     {
       maxValue = theArray[i];
       maxIndex = i;
@@ -233,7 +236,7 @@ INLINE int arrayMinIndex(T* theArray, int numValues)
   double minValue = theArray[0];
   for(int i=0; i<numValues; i++)
   {
-    if( theArray[i] < minValue )
+    if(theArray[i] < minValue)
     {
       minValue = theArray[i];
       minIndex = i;
@@ -268,7 +271,7 @@ INLINE void deleteAndNullifyPointer(void *pointer)
 
 INLINE double euclideanDistance(double x1, double y1, double x2, double y2)
 {
-  return sqrt( (x2-x1)*(x2-x1) + (y2-y1)*(y2-y1) );
+  return sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1));
 }
 
 INLINE double exp10(double x)
@@ -304,12 +307,12 @@ INLINE void ifNotNullDeleteAndSetNull(void* pointer)
 
 INLINE float indexToNormalizedValue(int index, int numIndices)
 {
-  return (float) (2*index+1) / (float) (2*numIndices);
+  return (float)(2*index+1) / (float)(2*numIndices);
 }
 
 INLINE bool isCloseTo(double x, double targetValue, double tolerance)
 {
-  if( fabs(x-targetValue) <= tolerance )
+  if(fabs(x-targetValue) <= tolerance)
     return true;
   else
     return false;
@@ -317,7 +320,7 @@ INLINE bool isCloseTo(double x, double targetValue, double tolerance)
 
 INLINE bool isEven(int x)
 {
-  if( x%2 == 0 )
+  if(x%2 == 0)
     return true;
   else
     return false;
@@ -325,7 +328,7 @@ INLINE bool isEven(int x)
 
 INLINE bool isOdd(int x)
 {
-  if( x%2 != 0 )
+  if(x%2 != 0)
     return true;
   else
     return false;
@@ -334,9 +337,9 @@ INLINE bool isOdd(int x)
 INLINE bool isPowerOfTwo(unsigned int x)
 {
   unsigned int currentPower = 1;
-  while( currentPower <= x )
+  while(currentPower <= x)
   {
-    if( currentPower == x )
+    if(currentPower == x)
       return true;
     currentPower *= 2;
   }
@@ -372,11 +375,11 @@ INLINE double linToExp(double in, double inMin, double inMax, double outMin, dou
 
   // map the tmp-value exponentially to the range outMin...outMax:
   //tmp = outMin * exp( tmp*(log(outMax)-log(outMin)) );
-  return outMin * exp( tmp*(log(outMax/outMin)) );
+  return outMin * exp(tmp*(log(outMax/outMin)));
 }
 
 INLINE double linToExpWithOffset(double in, double inMin, double inMax, double outMin,
-                                 double outMax, double offset)
+  double outMax, double offset)
 {
   double tmp = linToExp(in, inMin, inMax, outMin, outMax);
   tmp += offset;
@@ -391,7 +394,7 @@ INLINE double expToLin(double in, double inMin, double inMax, double outMin, dou
 }
 
 INLINE double expToLinWithOffset(double in, double inMin, double inMax, double outMin,
-                                 double outMax, double offset)
+  double outMax, double offset)
 {
   double tmp = in*(inMax+offset)/inMax;
   tmp -= offset;
@@ -415,7 +418,7 @@ INLINE T nextPowerOfTwo(T x)
 
 INLINE int normalizedValueToIndex(float normalizedValue, int numIndices)
 {
-  return (int) floor(normalizedValue*numIndices);
+  return (int)floor(normalizedValue*numIndices);
 }
 
 INLINE double pitchOffsetToFreqFactor(double pitchOffset)
@@ -444,7 +447,7 @@ INLINE double radiantToDegree(double radiant)
 INLINE double randomUniform(double min, double max, int seed)
 {
   static unsigned long state = 0;
-  if( seed >= 0 )
+  if(seed >= 0)
     state = seed;                                        // initialization, if desired
   state = 1664525*state + 1013904223;                    // mod implicitely by integer overflow
   return min + (max-min) * ((1.0/4294967296.0) * state); // transform to desired range
@@ -452,7 +455,7 @@ INLINE double randomUniform(double min, double max, int seed)
 
 INLINE double round(double x)
 {
-  if( x-floor(x) >= 0.5 )
+  if(x-floor(x) >= 0.5)
     return ceil(x);
   else
     return floor(x);
@@ -480,12 +483,12 @@ INLINE double wholeNotesToSeconds(double noteValue, double bpm)
 
 INLINE double wrapAround(double numberToWrap, double length)
 {
-  while( numberToWrap < 0.0 )
-    numberToWrap += length;  
+  while(numberToWrap < 0.0)
+    numberToWrap += length;
   return fmod(numberToWrap, length);
 }
 
 
-
+} // namespace rosic
 
 #endif // #ifndef GlobalFunctions_h
