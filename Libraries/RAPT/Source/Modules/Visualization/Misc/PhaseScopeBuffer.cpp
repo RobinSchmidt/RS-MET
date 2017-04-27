@@ -102,7 +102,8 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::setOneDimensionalMode(bool shouldBe1D)
 template<class TSig, class TPix, class TPar>
 void PhaseScopeBuffer<TSig, TPix, TPar>::setScanningFrequency(TPar newFrequency)
 {
-
+  scanFreq = newFrequency;
+  updateScanIncrement();
 }
 
 template<class TSig, class TPix, class TPar>
@@ -173,22 +174,11 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::processSampleFrame(TSig x, TSig y)
 
   // replace x with sawtooth-scanner in 1D mode:
   if(oneDimensonal == true)
-  {
-    // x = getScannerSaw();
-  }
+    x = getScannerSaw();
 
   // transform to pixel coordinates and draw line:
   toPixelCoordinates(x, y);
   addLineTo(x, y);
-
-
-  //TSig xt = Axx * x + Axy * y + shiftX;
-  //TSig yt = Ayx * x + Ayy * y + shiftY;
-
-  //// transform to pixel coordinates (todo: collapse these 2 trafos into 1)
-  //toPixelCoordinates(xt, yt);
-
-  //addLineTo(xt, yt);
 }
 
 template<class TSig, class TPix, class TPar>
@@ -280,6 +270,16 @@ template<class TSig, class TPix, class TPar>
 void PhaseScopeBuffer<TSig, TPix, TPar>::updateScanIncrement()
 {
   scanInc = scanFreq / sampleRate;
+}
+
+template<class TSig, class TPix, class TPar>
+TSig PhaseScopeBuffer<TSig, TPix, TPar>::getScannerSaw()
+{
+  TSig scanVal = 2*scanPos - 1; 
+  scanPos += scanInc;
+  if(scanPos > 1)
+    scanPos -= 1;
+  return scanVal;
 }
 
 //-------------------------------------------------------------------------------------------------

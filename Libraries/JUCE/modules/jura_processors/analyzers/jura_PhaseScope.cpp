@@ -76,6 +76,14 @@ void PhaseScope::createParameters()
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setAntiAlias);
   addObservedParameter(p);
 
+  p = new Parameter(lock, "OneDimensional", 0.0, 1.0, 0.0, 0.0, Parameter::BOOLEAN);
+  p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setOneDimensionalMode);
+  addObservedParameter(p);
+
+  p = new Parameter(lock, "ScanFrequency", 0.1, 10.0, 0.0, 1.0, Parameter::EXPONENTIAL);
+  addObservedParameter(p);
+  p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setScanningFrequency);
+
 
   // the geometric trafo parameters are of a different type because they were copy/pasted from
   // PrettyScope - eventually, they should all be the same type:
@@ -189,7 +197,11 @@ void PhaseScope::setRotation(double degrees)
 //}
 void PhaseScope::setOneDimensionalMode(bool shouldBe1D)
 {
-
+  phaseScopeBuffer->setOneDimensionalMode(shouldBe1D);
+}
+void PhaseScope::setScanningFrequency(double newFrequency)
+{
+  phaseScopeBuffer->setScanningFrequency(newFrequency);
 }
 
 AudioModuleEditor* PhaseScope::createEditor()
@@ -403,6 +415,18 @@ void PhaseScopeEditor::createWidgets()
   b->setDescriptionField(infoField);
   //b->setButtonPainter(&buttonPainter); // temporary, for test
 
+  addWidget( button1D = b = new RButton("1D") );
+  b->assignParameter( scope->getParameterByName("OneDimensional") );
+  b->setDescription("Replace x-input with sawtooth screen scanner");
+  b->setDescriptionField(infoField);
+
+
+  addWidget( s = sliderScanFreq = new AutomatableSlider );
+  s->assignParameter( scope->getParameterByName("ScanFrequency") );
+  s->setSliderName("ScanFreq");
+  s->setDescription("Scanning frequency in 1D mode");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString3);
 
   // geometric transforms:
   addWidget(s = sliderScaleX = new AutomatableSlider);
@@ -455,6 +479,8 @@ void PhaseScopeEditor::createWidgets()
   //s->setStringConversionFunction(&valueToString3);
 
 
+
+
   colorMapLoader = new ColorMapLoader(scope->getColorMapPointer());
   addWidgetSet(colorMapLoader);
 }
@@ -497,6 +523,9 @@ void PhaseScopeEditor::resized()
   sliderRotation->setBounds(x, y, w, h); y += dy;
   //sliderShiftX  ->setBounds(x, y, w, h); y += dy;
   //sliderShiftY  ->setBounds(x, y, w, h); y += dy;
+  sliderScanFreq  ->setBounds(x, y, w, h); y += dy;
+  button1D         ->setBounds(x, y, w/2, h); y += dy;
+
 
   // preliminary:
   y += 8;

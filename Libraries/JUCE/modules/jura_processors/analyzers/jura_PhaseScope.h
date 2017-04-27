@@ -40,7 +40,10 @@ public:
   //void setShiftX(double newShift);
   //void setShiftY(double newShift);
   void setOneDimensionalMode(bool shouldBe1D);
-    // comment out shear and shift - it makes not much sense here
+  void setScanningFrequency(double newFrequency);
+    // todo: maybe have the function bodies here in the header file - they are all trivial 
+    // delegations
+   
 
   // inquiry functions:
   inline double getFrameRate() { return phaseScopeBuffer->getFrameRate(); }
@@ -81,7 +84,6 @@ protected:
   int repaintCounter;
 
   bool bypassPixelDecay;        // not needed anymore - Elan wanted this at some point
-  //bool oneDimensional = false;  // 1D mode
 
   // this object is reponsible for drawing the incoming data onto a virtual screen:
   //RAPT::PhaseScopeBuffer<double, float, double> phaseScopeBuffer;
@@ -160,10 +162,14 @@ protected:
   RSlider *sliderBrightness, *sliderAfterglow, *sliderPixelSpread, *sliderPixelScale, 
     *sliderLineDensity, *sliderDotLimit, *sliderFrameRate;
 
-  RButton *buttonAntiAlias;
+  RButton *buttonAntiAlias, *button1D;
 
   AutomatableSlider *sliderScaleX, *sliderScaleY, *sliderShearX, *sliderShearY,
-    *sliderRotation, *sliderShiftX, *sliderShiftY;
+    *sliderRotation, *sliderShiftX, *sliderShiftY,
+    *sliderScanFreq;
+  // use regular (non-automatable) sliders
+
+
 
   ColorMapLoader *colorMapLoader;
 

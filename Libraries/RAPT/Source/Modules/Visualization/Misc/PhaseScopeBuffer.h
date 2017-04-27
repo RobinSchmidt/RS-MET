@@ -161,6 +161,9 @@ protected:
   /** Updates the increment for x-axis scanning. */
   void updateScanIncrement();
 
+  /** Returns the value of the screen scanner sawtooth wave used in 1D mode. */
+  TSig getScannerSaw();
+
   TPar sampleRate;
   TPar scanFreq;       // x-scanning frequency in 1D mode
   TPar scanInc;        // x-scanning increment
