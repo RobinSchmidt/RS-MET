@@ -62,7 +62,7 @@ integrating it into the Chainer.
 #include "math/rosic_PrimeNumbers.cpp"
 #include "math/rosic_Transformations.cpp"
 
-// transforms:
+// transforms
 #include "transforms/rosic_FourierTransformerRadix2.cpp"
 #include "transforms/rosic_FourierTransformerBluestein.cpp"
 #include "transforms/rosic_WaveletTransforms.cpp"
@@ -119,7 +119,7 @@ integrating it into the Chainer.
 #include "filters/rosic_WarpedBiquadMonoDF1.cpp"            // empty
 #include "filters/rosic_WhiteToPinkFilter.cpp"
 
-// rendering:
+// rendering
 //#include "rendering/rosic_AdditveWaveformRenderer.cpp"    // obsolete?
 #include "rendering/rosic_AlgorithmicWaveformRenderer.cpp"
 #include "rendering/rosic_MultiSegmentWaveformRenderer.cpp"
@@ -128,7 +128,7 @@ integrating it into the Chainer.
 #include "rendering/rosic_WaveformBuffer.cpp"
 #include "rendering/rosic_WaveformRenderer.cpp"
 
-// generators:
+// generators
 #include "generators/rosic_MipMappedWaveTable.cpp"
 #include "generators/rosic_MipMappedWaveTableOld.cpp"       // can this be removed?
 #include "generators/rosic_MipMappedWaveTableStereo.cpp"
@@ -149,7 +149,7 @@ integrating it into the Chainer.
 #include "generators/rosic_TestGenerator.cpp"
 #include "generators/rosic_WaveTable.cpp"
 
-// modulators:
+// modulators
 //#include "modulators/MagicCarpetModulator.cpp" // needs MagicCarpetDefinitions.h - where is this?
 #include "modulators/rosic_AmpEnvRc.cpp"
 #include "modulators/rosic_AnalogEnvelope.cpp"
@@ -168,7 +168,7 @@ integrating it into the Chainer.
 #include "modulators/rosic_SampleModulator.cpp"
 #include "modulators/rosic_Modulator.cpp"              // needs SampleModulator
 
-// others:
+// others
 #include "others/rosic_DemoVersionNoiseEmitter.cpp"    // may not be needed
 #include "others/rosic_RandomNumberGenerator01.cpp"
 #include "others/rosic_RandomNumberGenerator02.cpp"
@@ -184,7 +184,7 @@ integrating it into the Chainer.
 #include "others/rosic_TuningTable.cpp"
 #include "others/rosic_VectorMixer.cpp"  
 
-// analysis:
+// analysis
 #include "analysis/rosic_CyclicAutoCorrelator.cpp" 
 #include "analysis/rosic_EnvelopeFollower.cpp"    // needs SlewRateLimiter
 #include "analysis/rosic_LinearPredictor.cpp"
@@ -198,6 +198,24 @@ integrating it into the Chainer.
 #include "analysis/rosic_SpectrumAnalyzer.cpp"
 #include "analysis/rosic_TrackMeter.cpp"
 #include "analysis/rosic_WaveformDisplayBuffer.cpp"
+
+// delaylines
+#include "delaylines/rosic_BasicIntegerDelayLine.cpp"
+#include "delaylines/rosic_IntegerDelayLine.cpp"
+#include "delaylines/rosic_AllpassDiffusor.cpp"
+#include "delaylines/rosic_DelayLineStereo.cpp"
+#include "delaylines/rosic_EchoLabDelayLine.cpp"
+#include "delaylines/rosic_FractionalDelayLine.cpp"
+#include "delaylines/rosic_FractionalDelayLineStereo.cpp"
+#include "delaylines/rosic_ModulatedDelayLine.cpp"
+#include "delaylines/rosic_PingPongEcho.cpp"
+
+
+
+// dynamics
+
+
+// effects
 
 
 
