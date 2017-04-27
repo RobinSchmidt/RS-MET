@@ -81,7 +81,7 @@ void RandomNumberGenerator01::setStateFromString(char *theString)
   if( theString != NULL )
   {
     // caculate an intermediate number based on the characters in the string and use it as seed:
-    int length = strlen(theString);
+    int length = (int) strlen(theString);
     unsigned long long tmp = 1; // can hold numbers in the range 0...(2^64)-1
     for(int i=0; i<=length; i++)
       tmp += (unsigned long long) (i+1) * abs(theString[i]); // accumulation

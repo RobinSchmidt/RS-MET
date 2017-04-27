@@ -206,12 +206,12 @@ bool PiecewiseFunction::modifyBreakpoint(int index, double newX, double newY)
 
 int PiecewiseFunction::getNumBreakpoints() const
 {
-  return breakpoints.size();
+  return (int) breakpoints.size();
 }
 
 int PiecewiseFunction::lastBreakpointIndex() const
 {
-  return breakpoints.size()-1;
+  return (int) breakpoints.size()-1;
 }
 
 double PiecewiseFunction::getMinX()
@@ -431,7 +431,7 @@ void PiecewiseFunction::calculateCubicCoefficients()
     delete[] b;
     delete[] c;
     delete[] d;
-    numSegments = breakpoints.size()-1;
+    numSegments = (int) breakpoints.size()-1;
     a = new double[numSegments+1];  // +1 for a_N = f_N
     b = new double[numSegments];
     c = new double[numSegments+1];  // +1 for c_N = 0
@@ -458,7 +458,7 @@ void PiecewiseFunction::calculateCubicCoefficients()
 
   // solve the system (resulting in our c-coefficients) and set c[0] and c[N-1] zero for
   // a 'natural' cubic spline (with zero second derivative at the endpoints):
-  solveTriDiagonalSystem(&h[1], md, &h[1], &rhs[1], &c[1], breakpoints.size()-2); // Eq.19.240
+  solveTriDiagonalSystem(&h[1], md, &h[1], &rhs[1], &c[1], (int) breakpoints.size()-2); // Eq.19.240
   c[0]                    = 0;
   c[breakpoints.size()-1] = 0;
 

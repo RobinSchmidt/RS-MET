@@ -171,14 +171,26 @@ integrating it into the Chainer.
 #include "modulators/rosic_SampleModulator.cpp"
 #include "modulators/rosic_Modulator.cpp"              // needs SampleModulator
 
-
-
-//#include "generators/rosic_VectorSamplePlayer.cpp"    // needs LowFrequencyOscillator (in modulators)
-                                                        // and VectorMixer
-
-
 // others:
-//#include "others/rosic_DemoVersionNoiseEmitter.cpp" // may not be needed - needs AmpEnvRc
+#include "others/rosic_DemoVersionNoiseEmitter.cpp"    // may not be needed
+#include "others/rosic_RandomNumberGenerator01.cpp"
+#include "others/rosic_RandomNumberGenerator02.cpp"
+#include "others/rosic_KeyGenerator.cpp"               // remove...or keep only the "Validator" part
+#include "others/rosic_OverlapAddProcessor.cpp"
+#include "others/rosic_PiecewiseFunction.cpp"
+//#include "others/rosic_Plotter.cpp"                  // obsolete?
+#include "others/rosic_ProcessorCycleCounter.cpp"
+//#include "others/rosic_RoutingMatrix.cpp"
+
+
+#include "others/rosic_VectorMixer.cpp"  
+
+// a bit out of order:
+#include "generators/rosic_VectorSamplePlayer.cpp"    // needs LowFrequencyOscillator (in modulators)
+                                                      // and VectorMixer
+
+
+
 
 // analysis:
 #include "analysis/rosic_CyclicAutoCorrelator.cpp" 
