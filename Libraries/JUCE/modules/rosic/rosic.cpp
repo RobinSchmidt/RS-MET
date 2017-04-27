@@ -262,13 +262,45 @@ integrating it into the Chainer.
 #include "effects/rosic_WahWah.cpp"
 #include "effects/rosic_WaveShaper.cpp"
 
+// infrastructure
+#include "infrastructure/rosic_Module.cpp"
+#include "infrastructure/rosic_EffectModules.h"
+#include "infrastructure/rosic_GeneratorModules.cpp"
+#include "infrastructure/rosic_ModulatorModules.cpp"
+#include "infrastructure/rosic_File.cpp"
+#include "infrastructure/rosic_FileInputOutput.cpp"
+#include "infrastructure/rosic_MemoryUser.cpp"        // where is this used?
+#include "infrastructure/rosic_MidiNoteEvent.cpp"
+#include "infrastructure/rosic_PolyphonicInstrument.cpp"
+#include "infrastructure/rosic_PolyphonicInstrumentVoice.cpp"
+
+
+
+
+// numerical (maybe move to math)
+
+
+// neural
+
+
+// sequencing
+
+
+// scripting
+
+
+// instruments
+
+
+
+
+
 
 
 // these do not really fit into the directory order - they are kind-of higher-level classes, maybe 
 // they should be in the instruments section...or something:
 
-//#include "effects/rosic_Quadrifex.cpp"  // needs the effects wrapped into "Module" subclasses
-#include "infrastructure/rosic_Module.cpp"            // needed by Quadrigen
+#include "effects/rosic_Quadrifex.cpp"  // needs the effects wrapped into "Module" subclasses
 #include "generators/rosic_Quadrigen.cpp"             // needs Module, RoutingMatrix
 #include "generators/rosic_VectorSamplePlayer.cpp"    // needs LowFrequencyOscillator (in modulators)
                                                       // and VectorMixer

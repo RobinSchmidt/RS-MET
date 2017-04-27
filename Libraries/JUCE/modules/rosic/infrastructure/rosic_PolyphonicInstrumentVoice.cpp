@@ -260,7 +260,7 @@ void PolyphonicInstrumentVoice::noteOff(int newKey)
   }
   else
     glideToNote(noteList.front().getKey(), noteList.front().getVelocity(), 
-    noteList.front().getDetune());
+      (int) noteList.front().getDetune());
 
   mutex.unlock();
 }

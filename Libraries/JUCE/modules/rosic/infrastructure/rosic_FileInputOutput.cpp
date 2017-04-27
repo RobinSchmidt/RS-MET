@@ -1,6 +1,8 @@
 #include "rosic_FileInputOutput.h"
 using namespace rosic;
 
+#include "../_third_party/soundtouch/WavFile.cpp"
+
 void rosic::writeToMonoWaveFile(const char* path, float *signal, int numFrames, int sampleRate, 
                                 int numBits)
 {
@@ -71,7 +73,7 @@ double** rosic::readFromWaveFile(const char* path, int& numChannels, int& numFra
 
 void rosic::writeStringToFile(const char* path, const char* stringToWrite)
 {
-  int length = strlen(stringToWrite);
+  int length = (int) strlen(stringToWrite);
   FILE *f = fopen(path, "w");
   if( f != NULL )
   {
@@ -191,7 +193,7 @@ void rosic::writeDataToFile(const char* path, double *data, int pixelWidth, int 
   {
     // number of x-rows:
     float tmp = (float) pixelWidth;
-    pos += fwrite(&tmp, sizeof(float), 1, f);
+    pos += (int) fwrite(&tmp, sizeof(float), 1, f);
 
     // the x-axis:
     for(int ix=0; ix<pixelWidth; ix++)
@@ -200,7 +202,7 @@ void rosic::writeDataToFile(const char* path, double *data, int pixelWidth, int 
 
       rassert(tmp<10);
 
-      pos += fwrite(&tmp, sizeof(float), 1, f);
+      pos += (int) fwrite(&tmp, sizeof(float), 1, f);
     }
 
     // the matix-data:
@@ -208,13 +210,13 @@ void rosic::writeDataToFile(const char* path, double *data, int pixelWidth, int 
     {
       tmp = (float) yAxis[iy];
       rassert(tmp<10);
-      pos += fwrite(&tmp, sizeof(float), 1, f);
+      pos += (int) fwrite(&tmp, sizeof(float), 1, f);
       for(int ix=0; ix<pixelWidth; ix++)
       {
         float z  = (float) data[pixelWidth*iy+ix];
         zDbg[ix][iy] = z;
         rassert(z<10);
-        pos += fwrite(&z, sizeof(float), 1, f);
+        pos += (int) fwrite(&z, sizeof(float), 1, f);
       }
     }
     fclose(f);
