@@ -30,11 +30,6 @@ PhaseScope::PhaseScope(CriticalSection *lockToUse) : AudioModule(lockToUse)
   //g.addColour(0.8, Colour(255, 255,   0));
   //g.addColour(1.0, Colour(255,   0,   0)); // maybe add magenta as last
   //colorMap.setFromColourGradient(g);
-
-  //juce::ColourGradient g;
-  //g.addColour(0.0, Colour(  0,   0,   0));
-  //g.addColour(1.0, Colour(255, 255, 255));
-  //colorMap.setFromColourGradient(g);
 }
 
 PhaseScope::~PhaseScope()
@@ -80,6 +75,37 @@ void PhaseScope::createParameters()
   p = new Parameter(lock, "AntiAlias", 0.0, 1.0, 0.0, 1.0, Parameter::BOOLEAN);
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setAntiAlias);
   addObservedParameter(p);
+
+
+  // the geometric trafo parameters are of a different type because they were copy/pasted from
+  // PrettyScope - eventually, they should all be the same type:
+
+  typedef MetaControlledParameter Param; // shortcut for convenience
+  //Param* p;
+
+  // geometric transforms:
+  p = new Param("ScaleX", -8.0, 8.0, 1.0, Parameter::LINEAR);
+  p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setScaleX);
+  addObservedParameter(p);
+  p = new Param("ScaleY", -8.0, 8.0, 1.0, Parameter::LINEAR);
+  p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setScaleY);
+  addObservedParameter(p);
+  p = new Param("ShearX", -8.0, 8.0, 0.0, Parameter::LINEAR);
+  p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setShearX);
+  addObservedParameter(p);
+  p = new Param("ShearY", -8.0, 8.0, 0.0, Parameter::LINEAR);
+  p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setShearY);
+  addObservedParameter(p);
+  p = new Param("Rotation", -1800, 1800, 0.0, Parameter::LINEAR);
+  p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setRotation);
+  addObservedParameter(p);
+  p = new Param("ShiftX", -1.0, 1.0, 0.0, Parameter::LINEAR);
+  p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setShiftX);
+  addObservedParameter(p);
+  p = new Param("ShiftY", -1.0, 1.0, 0.0, Parameter::LINEAR);
+  p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setShiftY);
+  addObservedParameter(p);
+
 }
 
 void PhaseScope::setDisplayPixelSize(int width, int height)
@@ -128,6 +154,35 @@ void PhaseScope::setFrameRate(double newRate)
 {
   phaseScopeBuffer->setFrameRate(newRate);
   updateRepaintInterval();
+}
+
+void PhaseScope::setScaleX(double newScale)
+{
+  phaseScopeBuffer->setScaleX(newScale);
+}
+void PhaseScope::setScaleY(double newScale)
+{
+  phaseScopeBuffer->setScaleY(newScale);
+}
+void PhaseScope::setShearX(double newShear)
+{
+  phaseScopeBuffer->setShearX(newShear);
+}
+void PhaseScope::setShearY(double newShear)
+{
+  phaseScopeBuffer->setShearY(newShear);
+}
+void PhaseScope::setRotation(double degrees)
+{
+  phaseScopeBuffer->setRotation(degrees);
+}
+void PhaseScope::setShiftX(double newShift)
+{
+  phaseScopeBuffer->setShiftX(newShift);
+}
+void PhaseScope::setShiftY(double newShift)
+{
+  phaseScopeBuffer->setShiftY(newShift);
 }
 
 AudioModuleEditor* PhaseScope::createEditor()

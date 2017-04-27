@@ -41,7 +41,9 @@ protected:
 
 //=================================================================================================
 
-/** This class is the base class for all audio modules. */
+/** This class is the base class for all audio modules. 
+\todo: maybe move this class into the jura_framework juce-module
+*/
 
 class JUCE_API AudioModule : public ParameterManager, public StateFileManager
 {

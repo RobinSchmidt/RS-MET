@@ -92,6 +92,53 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::setPixelSpread(TPar newSpread)
 }
 
 template<class TSig, class TPix, class TPar>
+void PhaseScopeBuffer<TSig, TPix, TPar>::setScaleX(TSig newScale)
+{
+  scaleX = newScale;
+  updateTransformCoeffs();
+}
+
+template<class TSig, class TPix, class TPar>
+void PhaseScopeBuffer<TSig, TPix, TPar>::setScaleY(TSig newScale)
+{
+  scaleY = newScale;
+  updateTransformCoeffs();
+}
+
+template<class TSig, class TPix, class TPar>
+void PhaseScopeBuffer<TSig, TPix, TPar>::setShearX(TSig newShear)
+{
+  shearX = newShear;
+  updateTransformCoeffs();
+}
+
+template<class TSig, class TPix, class TPar>
+void PhaseScopeBuffer<TSig, TPix, TPar>::setShearY(TSig newShear)
+{
+  shearY = newShear;
+  updateTransformCoeffs();
+}
+
+template<class TSig, class TPix, class TPar>
+void PhaseScopeBuffer<TSig, TPix, TPar>::setRotation(TSig degrees)
+{
+  rotation = PI * degrees / 180.0;
+  updateTransformCoeffs();
+}
+
+template<class TSig, class TPix, class TPar>
+void PhaseScopeBuffer<TSig, TPix, TPar>::setShiftX(TSig newShift)
+{
+  shiftX = newShift;
+}
+
+template<class TSig, class TPix, class TPar>
+void PhaseScopeBuffer<TSig, TPix, TPar>::setShiftY(TSig newShift)
+{
+  shiftY = newShift;
+}
+
+template<class TSig, class TPix, class TPar>
 void PhaseScopeBuffer<TSig, TPix, TPar>::toPixelCoordinates(TSig &x, TSig &y)
 {
   x  = TSig(0.5) * (x+1);  // convert -1..+1 into 0..1
@@ -180,6 +227,17 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::updateInsertFactor()
   // The factor is totally ad-hoc - maybe come up with some more meaningful factor.
   // However, the proportionality to the birghtness parameter and inverse proportionality to
   // the sample rate seems to make sense.
+}
+
+template<class TSig, class TPix, class TPar>
+void PhaseScopeBuffer<TSig, TPix, TPar>::updateTransformCoeffs()
+{
+  TSig s = sin(rotation);
+  TSig c = cos(rotation);
+  Axx = c*scaleX + s*shearY;
+  Axy = s*scaleY + c*shearX;
+  Ayx = c*shearY - s*scaleX;
+  Ayy = c*scaleY - s*shearX;
 }
 
 //-------------------------------------------------------------------------------------------------

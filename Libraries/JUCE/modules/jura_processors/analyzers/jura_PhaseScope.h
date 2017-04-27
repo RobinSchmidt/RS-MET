@@ -32,6 +32,14 @@ public:
   void setPixelScale(double newFactor);
   void setAntiAlias(bool shouldAntiAlias);
   void setFrameRate(double newRate);
+  void setScaleX(double newScale);
+  void setScaleY(double newScale);
+  void setShearX(double newShear);
+  void setShearY(double newShear);
+  void setRotation(double degrees);
+  void setShiftX(double newShift);
+  void setShiftY(double newShift);
+    // comment out shear and shift - it makes not much sense here
 
   // inquiry functions:
   inline double getFrameRate() { return phaseScopeBuffer->getFrameRate(); }

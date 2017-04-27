@@ -12,6 +12,9 @@ public:
   /** Constructor. */
   PhaseScopeBuffer();
 
+
+  /** \name Setup */
+
   /** Sets the sample rate. */
   void setSampleRate(TPar newSampleRate);
 
@@ -70,20 +73,17 @@ public:
   void setPixelSpread(TPar newSpread);
   // maybe rename to setDotSpread
 
-  /** Converts the raw left- and right signal amplitude values to the matrix indices, where the 
-  data should be written. This is the xy-pixel coordinates (kept still as real numbers), where the 
-  display is to be illuminated in response to the given amplitude values. */
-  void toPixelCoordinates(TSig &x, TSig &y);
+  // geometric transformations:
+  void setScaleX(TSig newScale);
+  void setScaleY(TSig newScale);
+  void setShearX(TSig newShear);
+  void setShearY(TSig newShear);
+  void setRotation(TSig degrees);
+  void setShiftX(TSig newShift);
+  void setShiftY(TSig newShift);
 
-  /** Accepts one input sample frame for buffering. */
-  void processSampleFrame(TSig left, TSig right);
 
-  /** Applies our pixel decay-factor to the matrix of buffered values. This assumed to be called at 
-  the frame rate. */
-  virtual void applyPixelDecay();
-
-  /** Resets the internal buffer to all zeros. */
-  void reset();
+  /** \name Inquiry */
 
   /** Returns a pointer to our image that we use as buffer. */
   ImageResizable<TPix> *getImage() { return &image; }
@@ -99,6 +99,26 @@ public:
 
   /** Returns the height in pixels. */
   inline int getHeight() { return image.getHeight(); }
+
+
+  /** \name Processing */
+
+  /** Converts the raw left- and right signal amplitude values to the matrix indices, where the 
+  data should be written. This is the xy-pixel coordinates (kept still as real numbers), where the 
+  display is to be illuminated in response to the given amplitude values. */
+  void toPixelCoordinates(TSig &x, TSig &y);
+
+  /** Accepts one input sample frame for buffering. */
+  void processSampleFrame(TSig left, TSig right);
+
+  /** Applies our pixel decay-factor to the matrix of buffered values. This assumed to be called at 
+  the frame rate. */
+  virtual void applyPixelDecay();
+
+  /** Resets the internal buffer to all zeros. */
+  void reset();
+
+
 
 protected:
 
@@ -126,6 +146,9 @@ protected:
   they get added in according to the settings of sample rate and brightness parameter. */
   void updateInsertFactor();
 
+  /** Updates the coefficients for the geometric transform that is applied to the input. */
+  void updateTransformCoeffs();
+
 
   TPar sampleRate;
   TPar frameRate;
@@ -141,6 +164,13 @@ protected:
 
   TSig xOld, yOld;     // pixel coordinates of old datapoint (one sample ago)
   TPix cOld;           // old line end color
+
+  // geometric transform parameters:
+  TSig scaleX = 1, scaleY = 1;
+  TSig shearX = 0, shearY = 0;
+  TSig rotation = 0;
+  TSig shiftX = 0, shiftY = 0;
+  TSig Axx, Axy, Ayx, Ayy;       // matrix coefficients
 
   bool useGradient;    // use color gradient to seamlessly join line segments
 

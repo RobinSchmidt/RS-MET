@@ -278,6 +278,8 @@ rosic: rs_dsp (this should never depend on any juce class/module)
 #include "infrastructure/rosic_MidiNoteEvent.cpp"
 #include "infrastructure/rosic_PolyphonicInstrument.cpp"
 #include "infrastructure/rosic_PolyphonicInstrumentVoice.cpp"
+// copy MonoSynth baseclass from ChaosGenerator here ...but maybe PolyphonicInstrumentVoice has 
+// already the required functionality and more?
 
 // numerical (maybe move to math)
 #include "numerical/rosic_FunctionObjects.cpp"
@@ -291,6 +293,10 @@ rosic: rs_dsp (this should never depend on any juce class/module)
 // sequencing
 #include "sequencing/rosic_AcidPattern.cpp"
 #include "sequencing/rosic_AcidSequencer.cpp"
+
+// offline 
+// ...include code from RSLib for offline processes (Resampler, PitchFlattener, etc.) here...
+// ...also the BeatDetector stuff
 
 // scripting
 //#include "scripting/rosic_AngelScriptInterpreter.cpp"      // not yet used anywhere
