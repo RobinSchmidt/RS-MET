@@ -84,27 +84,30 @@ void PhaseScope::createParameters()
   //Param* p;
 
   // geometric transforms:
-  p = new Param("ScaleX", -8.0, 8.0, 1.0, Parameter::LINEAR);
+  p = new Param("ScaleX", 0.1, 10.0, 1.0, Parameter::EXPONENTIAL);
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setScaleX);
   addObservedParameter(p);
-  p = new Param("ScaleY", -8.0, 8.0, 1.0, Parameter::LINEAR);
+  p = new Param("ScaleY", 0.1, 10.0, 1.0, Parameter::EXPONENTIAL);
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setScaleY);
   addObservedParameter(p);
-  p = new Param("ShearX", -8.0, 8.0, 0.0, Parameter::LINEAR);
-  p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setShearX);
-  addObservedParameter(p);
-  p = new Param("ShearY", -8.0, 8.0, 0.0, Parameter::LINEAR);
-  p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setShearY);
-  addObservedParameter(p);
-  p = new Param("Rotation", -1800, 1800, 0.0, Parameter::LINEAR);
+
+  //p = new Param("ShearX", -8.0, 8.0, 0.0, Parameter::LINEAR);
+  //p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setShearX);
+  //addObservedParameter(p);
+  //p = new Param("ShearY", -8.0, 8.0, 0.0, Parameter::LINEAR);
+  //p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setShearY);
+  //addObservedParameter(p);
+
+  p = new Param("Rotation", -180, 180, 0.0, Parameter::LINEAR);
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setRotation);
   addObservedParameter(p);
-  p = new Param("ShiftX", -1.0, 1.0, 0.0, Parameter::LINEAR);
-  p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setShiftX);
-  addObservedParameter(p);
-  p = new Param("ShiftY", -1.0, 1.0, 0.0, Parameter::LINEAR);
-  p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setShiftY);
-  addObservedParameter(p);
+
+  //p = new Param("ShiftX", -1.0, 1.0, 0.0, Parameter::LINEAR);
+  //p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setShiftX);
+  //addObservedParameter(p);
+  //p = new Param("ShiftY", -1.0, 1.0, 0.0, Parameter::LINEAR);
+  //p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setShiftY);
+  //addObservedParameter(p);
 
 }
 
@@ -164,26 +167,26 @@ void PhaseScope::setScaleY(double newScale)
 {
   phaseScopeBuffer->setScaleY(newScale);
 }
-void PhaseScope::setShearX(double newShear)
-{
-  phaseScopeBuffer->setShearX(newShear);
-}
-void PhaseScope::setShearY(double newShear)
-{
-  phaseScopeBuffer->setShearY(newShear);
-}
+//void PhaseScope::setShearX(double newShear)
+//{
+//  phaseScopeBuffer->setShearX(newShear);
+//}
+//void PhaseScope::setShearY(double newShear)
+//{
+//  phaseScopeBuffer->setShearY(newShear);
+//}
 void PhaseScope::setRotation(double degrees)
 {
   phaseScopeBuffer->setRotation(degrees);
 }
-void PhaseScope::setShiftX(double newShift)
-{
-  phaseScopeBuffer->setShiftX(newShift);
-}
-void PhaseScope::setShiftY(double newShift)
-{
-  phaseScopeBuffer->setShiftY(newShift);
-}
+//void PhaseScope::setShiftX(double newShift)
+//{
+//  phaseScopeBuffer->setShiftX(newShift);
+//}
+//void PhaseScope::setShiftY(double newShift)
+//{
+//  phaseScopeBuffer->setShiftY(newShift);
+//}
 
 AudioModuleEditor* PhaseScope::createEditor()
 {
@@ -412,19 +415,19 @@ void PhaseScopeEditor::createWidgets()
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
 
-  addWidget(s = sliderShearX = new AutomatableSlider);
-  s->assignParameter(scope->getParameterByName("ShearX"));
-  s->setSliderName("ShearX");
-  s->setDescription("Shearing along x-direction");
-  s->setDescriptionField(infoField);
-  s->setStringConversionFunction(&valueToString3);
+  //addWidget(s = sliderShearX = new AutomatableSlider);
+  //s->assignParameter(scope->getParameterByName("ShearX"));
+  //s->setSliderName("ShearX");
+  //s->setDescription("Shearing along x-direction");
+  //s->setDescriptionField(infoField);
+  //s->setStringConversionFunction(&valueToString3);
 
-  addWidget(s = sliderShearY = new AutomatableSlider);
-  s->assignParameter(scope->getParameterByName("ShearY"));
-  s->setSliderName("ShearY");
-  s->setDescription("Shearing along y-direction");
-  s->setDescriptionField(infoField);
-  s->setStringConversionFunction(&valueToString3);
+  //addWidget(s = sliderShearY = new AutomatableSlider);
+  //s->assignParameter(scope->getParameterByName("ShearY"));
+  //s->setSliderName("ShearY");
+  //s->setDescription("Shearing along y-direction");
+  //s->setDescriptionField(infoField);
+  //s->setStringConversionFunction(&valueToString3);
 
   addWidget(s = sliderRotation = new AutomatableSlider);
   s->assignParameter(scope->getParameterByName("Rotation"));
@@ -433,19 +436,19 @@ void PhaseScopeEditor::createWidgets()
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&degreesToStringWithUnit0);
 
-  addWidget(s = sliderShiftX = new AutomatableSlider);
-  s->assignParameter(scope->getParameterByName("ShiftX"));
-  s->setSliderName("ShiftX");
-  s->setDescription("Shifting along x-direction");
-  s->setDescriptionField(infoField);
-  s->setStringConversionFunction(&valueToString3);
+  //addWidget(s = sliderShiftX = new AutomatableSlider);
+  //s->assignParameter(scope->getParameterByName("ShiftX"));
+  //s->setSliderName("ShiftX");
+  //s->setDescription("Shifting along x-direction");
+  //s->setDescriptionField(infoField);
+  //s->setStringConversionFunction(&valueToString3);
 
-  addWidget(s = sliderShiftY = new AutomatableSlider);
-  s->assignParameter(scope->getParameterByName("ShiftY"));
-  s->setSliderName("ShiftY");
-  s->setDescription("Shifting along y-direction");
-  s->setDescriptionField(infoField);
-  s->setStringConversionFunction(&valueToString3);
+  //addWidget(s = sliderShiftY = new AutomatableSlider);
+  //s->assignParameter(scope->getParameterByName("ShiftY"));
+  //s->setSliderName("ShiftY");
+  //s->setDescription("Shifting along y-direction");
+  //s->setDescriptionField(infoField);
+  //s->setStringConversionFunction(&valueToString3);
 
 
   colorMapLoader = new ColorMapLoader(scope->getColorMapPointer());
@@ -485,11 +488,11 @@ void PhaseScopeEditor::resized()
   y += 8;
   sliderScaleX  ->setBounds(x, y, w, h); y += dy;
   sliderScaleY  ->setBounds(x, y, w, h); y += dy;
-  sliderShearX  ->setBounds(x, y, w, h); y += dy;
-  sliderShearY  ->setBounds(x, y, w, h); y += dy;
+  //sliderShearX  ->setBounds(x, y, w, h); y += dy;
+  //sliderShearY  ->setBounds(x, y, w, h); y += dy;
   sliderRotation->setBounds(x, y, w, h); y += dy;
-  sliderShiftX  ->setBounds(x, y, w, h); y += dy;
-  sliderShiftY  ->setBounds(x, y, w, h); y += dy;
+  //sliderShiftX  ->setBounds(x, y, w, h); y += dy;
+  //sliderShiftY  ->setBounds(x, y, w, h); y += dy;
 
   // preliminary:
   y += 8;

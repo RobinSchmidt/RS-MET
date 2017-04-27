@@ -152,8 +152,14 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::toPixelCoordinates(TSig &x, TSig &y)
 template<class TSig, class TPix, class TPar>
 void PhaseScopeBuffer<TSig, TPix, TPar>::processSampleFrame(TSig x, TSig y)
 {
-  toPixelCoordinates(x, y);
-  addLineTo(x, y);
+  // apply affine transformation in normalized coordinates:
+  TSig xt = Axx * x + Axy * y + shiftX;
+  TSig yt = Ayx * x + Ayy * y + shiftY;
+
+  // transform to pixel coordinates (todo: collapse these 2 trafos into 1)
+  toPixelCoordinates(xt, yt);
+
+  addLineTo(xt, yt);
 }
 
 template<class TSig, class TPix, class TPar>
