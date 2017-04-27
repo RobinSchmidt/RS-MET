@@ -26,6 +26,9 @@ integrating it into the Chainer.
 rosic: rs_dsp (this should never depend on any juce class/module)
  -..or maybe not - maybe it's good to be in its own namespace because we have a Module class here
   and also an AudioModule class in jura...maybe keep it named rosic for the time being
+ -or maybe we use the rs prefix everywhere
+ -maybe call this modules rs_dsp_realtime and make another rs_dsp_offline (which depends on the
+  realtime module)
 */
 
 // basics (but we needed to intersperse some stuff from other folders)
