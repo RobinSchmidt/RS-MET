@@ -123,7 +123,7 @@ namespace rosic
   /**< Calculates a single filtered output-sample via Normalized Ladder Form
        in pole-before-zero configuration. */
 
-  INLINE double getSampleLadder2(double in);
+  //INLINE double getSampleLadder2(double in);
   /**< Calculates a single filtered output-sample via Normalized Ladder Form
        in zero-before-pole configuration. */
 
@@ -501,22 +501,22 @@ namespace rosic
   return y;
  }
 
- INLINE double CookbookFilter::getSampleLadder2(double in)
- {
-  static doubleA x, y;
-  static intA    i;  // for the loop through the stages
+ //INLINE double CookbookFilter::getSampleLadder2(double in)
+ //{
+ // static doubleA x, y;
+ // static intA    i;  // for the loop through the stages
 
-  x = in;
+ // x = in;
 
-  // calculate current output-sample (y[n]) of all the Ladder-stages
-  // (the output of one stage is the input for the next stage):
-  for (i=0; i<numStages; i++)
-  {
+ // // calculate current output-sample (y[n]) of all the Ladder-stages
+ // // (the output of one stage is the input for the next stage):
+ // for (i=0; i<numStages; i++)
+ // {
 
-  }
+ // }
 
-  return y;
- }
+ // return y;
+ //}
 
  INLINE double CookbookFilter::getSampleAutoChoose(double in)
  {

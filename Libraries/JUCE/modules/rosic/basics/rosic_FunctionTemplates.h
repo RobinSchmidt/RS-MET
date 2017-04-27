@@ -4,6 +4,7 @@
 #include "GlobalDefinitions.h"
 #include "GlobalFunctions.h"
 #include "rosic_NumberManipulations.h"
+#include "rosic_HelperFunctions.h"
 #include <algorithm>
 
 namespace rosic

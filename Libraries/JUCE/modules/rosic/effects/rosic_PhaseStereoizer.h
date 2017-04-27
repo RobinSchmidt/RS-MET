@@ -10,7 +10,7 @@ namespace rosic
 
   /**
 
-  This is pseudo stereo creator based on a qudrature network to create left and right channel 
+  This is pseudo stereo creator based on a qudrature network to create left and right channel
   signals that are 90 degrees out of phase with respect to one another.
 
   todo: maybe perform dry/wet mixing on M/S representation rather than L/R
@@ -26,10 +26,10 @@ namespace rosic
     // construction/destruction:
 
     /** Constructor. */
-    PhaseStereoizer();   
+    PhaseStereoizer();
 
     /** Destructor. */
-    ~PhaseStereoizer(); 
+    ~PhaseStereoizer();
 
     //---------------------------------------------------------------------------------------------
     // parameter settings:
@@ -41,20 +41,20 @@ namespace rosic
     void setPhaseOffset(double newPhaseOffset);
 
     /** Sets the ratio between dry and wet between 0...1. */
-    void setDryWetRatio(double newDryWet) 
+    void setDryWetRatio(double newDryWet)
     { dryWetRatio = newDryWet; equalPowerGainFactors(dryWetRatio, &dry, &wet, 0.0, 1.0);  }
 
-    /** Adjusts the ratio between the mid and side signal where 0.0 means mid only and 1.0 means 
+    /** Adjusts the ratio between the mid and side signal where 0.0 means mid only and 1.0 means
     side only. */
-    void setMidSideRatio(double newRatio) 
+    void setMidSideRatio(double newRatio)
     { equalPowerGainFactors(newRatio, &mid, &side, 0.0, 1.0); }
 
     /** Sets the cutoff frequency of a lowpass filter for the wet side signal. */
-    void setLowpassCutoff(double newCutoff) 
+    void setLowpassCutoff(double newCutoff)
     { filterM.setLowpassCutoff(newCutoff); filterS.setLowpassCutoff(newCutoff); }
 
     /** Sets the cutoff frequency of a highpass filter for the wet side signal. */
-    void setHighpassCutoff(double newCutoff) 
+    void setHighpassCutoff(double newCutoff)
     { filterM.setHighpassCutoff(newCutoff); filterS.setHighpassCutoff(newCutoff); }
 
     /** Switches the channels of the wet signal */
@@ -98,7 +98,7 @@ namespace rosic
   };
 
   //-----------------------------------------------------------------------------------------------
-  // from here: definitions of the functions to be inlined, i.e. all functions which are supposed 
+  // from here: definitions of the functions to be inlined, i.e. all functions which are supposed
   // to be called at audio-rate (they can't be put into the .cpp file):
 
   INLINE void PhaseStereoizer::getSampleFrameStereo(double* inOutL,  double* inOutR)
@@ -125,7 +125,7 @@ namespace rosic
     //*inOutL = wetL;
     //*inOutR = wetR;
 
-    double inM  = ONE_OVER_SQRT2 * (*inOutL + *inOutR);
+    //double inM  = ONE_OVER_SQRT2 * (*inOutL + *inOutR);
     double inS  = ONE_OVER_SQRT2 * (*inOutL - *inOutR);
     double outM = wetM;
     double outS = dry*inS + wet*wetS;

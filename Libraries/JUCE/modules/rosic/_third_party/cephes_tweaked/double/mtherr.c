@@ -18,7 +18,7 @@
  *
  * This routine may be called to report one of the following
  * error conditions (in the include file mconf.h).
- *  
+ *
  *   Mnemonic        Value          Significance
  *
  *    DOMAIN            1       argument domain error
@@ -63,7 +63,7 @@ int merror = 0;
  * messages is bound to the error codes defined
  * in mconf.h.
  */
-static char *ermsg[7] = {
+static const char *ermsg[7] = {
 "unknown",      /* error code 0 */
 "domain",       /* error code 1 */
 "singularity",  /* et seq.      */
@@ -74,9 +74,7 @@ static char *ermsg[7] = {
 };
 
 
-int mtherr(char*  name, int code)
-//char *name;
-//int code;
+int mtherr(const char* name, int code)
 {
 
 /* Display string passed by calling program,

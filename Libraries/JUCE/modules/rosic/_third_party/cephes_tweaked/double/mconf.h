@@ -19,7 +19,7 @@
  * The file also includes a conditional assembly definition
  * for the type of computer arithmetic (IEEE, DEC, Motorola
  * IEEE, or UNKnown).
- * 
+ *
  * For Digital Equipment PDP-11 and VAX computers, certain
  * IBM systems, and others that use numbers with a 56-bit
  * significand, the symbol DEC should be defined.  In this
@@ -90,7 +90,7 @@ Copyright 1984, 1987, 1989, 1995 by Stephen L. Moshier
 /* Version number of package */
 #define VERSION "2.7"
 
-/* Constant definitions for math error conditions 
+/* Constant definitions for math error conditions
 defined in math.h, guarded by #if !__STDC__ */
 #if __STDC__
   #define DOMAIN		1	/* argument domain error */
@@ -144,11 +144,15 @@ typedef struct
 #define UNK 1
 
 /* If you define UNK, then be sure to set BIGENDIAN properly. */
+#ifndef BIGENDIAN
 #ifdef FLOAT_WORDS_BIGENDIAN
 #define BIGENDIAN 1
 #else
 #define BIGENDIAN 0
 #endif
+#endif // BIGENDIAN
+
+
 /* Define this `volatile' if your compiler thinks
  * that floating point arithmetic obeys the associative
  * and distributive laws.  It will defeat some optimizations
