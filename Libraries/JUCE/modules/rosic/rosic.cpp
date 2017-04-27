@@ -109,6 +109,7 @@ integrating it into the Chainer.
 #include "filters/rosic_LowpassHighpass.cpp"
 #include "filters/rosic_LowpassHighpassStereo.cpp"
 #include "filters/rosic_LpfHpfApf.cpp"
+#include "filters/rosic_MultiModeFilter.cpp"
 #include "filters/rosic_NyquistBlocker.cpp"
 #include "filters/rosic_QuadratureNetwork.cpp"
 #include "filters/rosic_SlopeFilter.cpp"
@@ -193,7 +194,7 @@ integrating it into the Chainer.
 #include "analysis/rosic_InstantaneousEnvelopeDetector.cpp"
 #include "analysis/rosic_LevelDetector.cpp"
 #include "analysis/rosic_OscilloscopeBufferOld.cpp"
-#include "analysis/rosic_PitchDetector.cpp"
+#include "analysis/rosic_PitchDetector.cpp"  // there may be a bug - compare RSLib version
 #include "analysis/rosic_SignalMeasures.cpp"
 #include "analysis/rosic_SpectrumAnalyzer.cpp"
 #include "analysis/rosic_TrackMeter.cpp"
@@ -240,14 +241,34 @@ integrating it into the Chainer.
 #include "effects/rosic_DelayPhaser.cpp"
 #include "effects/rosic_Distortion.cpp"
 #include "effects/rosic_EchoLab.cpp"
+#include "effects/rosic_Flanger.cpp"
+#include "effects/rosic_FormantShifter.cpp"
+#include "effects/rosic_FrequencyShifter.cpp"
+#include "effects/rosic_FuncShaper.cpp"
+#include "effects/rosic_Harmonics.cpp"
+#include "effects/rosic_ModulatedAllpass.cpp"
+#include "effects/rosic_Moduluxury.cpp"
+#include "effects/rosic_Noisifier.cpp"
+#include "effects/rosic_PhaseStereoizer.cpp"
+#include "effects/rosic_PitchShifter.cpp"
+#include "effects/rosic_PitchShifterGrainAdaptive.cpp"
+#include "effects/rosic_Reverb.cpp"
+#include "effects/rosic_RingModulator.cpp"
+#include "effects/rosic_SingleSidebandModulator.cpp"
+#include "effects/rosic_StereoDelay.cpp"
+#include "effects/rosic_StereoPan.cpp"
+#include "effects/rosic_StereoWidth.cpp"
+#include "effects/rosic_Tremolo.cpp"
+#include "effects/rosic_WahWah.cpp"
+#include "effects/rosic_WaveShaper.cpp"
 
 
 
+// these do not really fit into the directory order - they are kind-of higher-level classes, maybe 
+// they should be in the instruments section...or something:
 
-// a bit out of order - these are kind-of higher-level generators, maybe they should be in the
-// instruments section...or something:
+//#include "effects/rosic_Quadrifex.cpp"  // needs the effects wrapped into "Module" subclasses
 #include "infrastructure/rosic_Module.cpp"            // needed by Quadrigen
-//#include "others/rosic_RoutingMatrix.cpp"           // needed by Quadrigen
 #include "generators/rosic_Quadrigen.cpp"             // needs Module, RoutingMatrix
 #include "generators/rosic_VectorSamplePlayer.cpp"    // needs LowFrequencyOscillator (in modulators)
                                                       // and VectorMixer
