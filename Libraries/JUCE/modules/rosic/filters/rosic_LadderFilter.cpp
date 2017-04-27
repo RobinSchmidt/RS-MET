@@ -154,11 +154,7 @@ c4 = [ 1 -1  1 -1  1];
     c4 = 1.0;
   }
 
-
   // todo: try a polynomial between the breakpoints for more natural transition
-
-
-  int dummy = 0;
 }
 
 //-------------------------------------------------------------------------------------------------

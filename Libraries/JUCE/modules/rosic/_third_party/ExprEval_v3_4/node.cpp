@@ -378,7 +378,7 @@ void MultiNode::Parse(Parser &parser, Parser::size_type start, Parser::size_type
   if(start >= end)
     throw(SyntaxException());
 
-// Look
+  // Look
   last = start;
   for(pos = start; pos <= end; pos++)
   {
@@ -413,7 +413,8 @@ void MultiNode::Parse(Parser &parser, Parser::size_type start, Parser::size_type
         if(pos > last)
         {
         // Everything from last to pos - 1
-          auto_ptr<Node> n(parser.ParseRegion(last, pos - 1));
+          //auto_ptr<Node> n(parser.ParseRegion(last, pos - 1)); // auto_ptr deprecated, use unique_ptr
+          unique_ptr<Node> n(parser.ParseRegion(last, pos - 1));
           m_nodes.push_back(n.get());
           n.release();
         }
@@ -431,6 +432,9 @@ void MultiNode::Parse(Parser &parser, Parser::size_type start, Parser::size_type
 
       break;
     }
+
+    default: break;
+
     }
   }
 
@@ -447,7 +451,7 @@ void MultiNode::Parse(Parser &parser, Parser::size_type start, Parser::size_type
 // If the end was not a semicolon, test it as well
   if(last < end + 1)
   {
-    auto_ptr<Node> n(parser.ParseRegion(last, end));
+    unique_ptr<Node> n(parser.ParseRegion(last, end));
     m_nodes.push_back(n.get());
     n.release();
   }
@@ -532,7 +536,7 @@ void AssignNode::Parse(Parser &parser, Parser::size_type start, Parser::size_typ
   }
 
 // Parse the node (will throw if it can not parse)
-  auto_ptr<Node> n(parser.ParseRegion(v1 + 1, end));
+  unique_ptr<Node> n(parser.ParseRegion(v1 + 1, end));
 
   // Set data
   m_var = vaddr;
@@ -577,8 +581,8 @@ void AddNode::Parse(Parser &parser, Parser::size_type start, Parser::size_type e
   }
 
 // Parse sides
-  auto_ptr<Node> left(parser.ParseRegion(start, v1 - 1));
-  auto_ptr<Node> right(parser.ParseRegion(v1 + 1, end));
+  unique_ptr<Node> left(parser.ParseRegion(start, v1 - 1));
+  unique_ptr<Node> right(parser.ParseRegion(v1 + 1, end));
 
   m_lhs = left.release();
   m_rhs = right.release();
@@ -621,8 +625,8 @@ void SubtractNode::Parse(Parser &parser, Parser::size_type start, Parser::size_t
   }
 
 // Parse sides
-  auto_ptr<Node> left(parser.ParseRegion(start, v1 - 1));
-  auto_ptr<Node> right(parser.ParseRegion(v1 + 1, end));
+  unique_ptr<Node> left(parser.ParseRegion(start, v1 - 1));
+  unique_ptr<Node> right(parser.ParseRegion(v1 + 1, end));
 
   m_lhs = left.release();
   m_rhs = right.release();
@@ -665,8 +669,8 @@ void MultiplyNode::Parse(Parser &parser, Parser::size_type start, Parser::size_t
   }
 
 // Parse sides
-  auto_ptr<Node> left(parser.ParseRegion(start, v1 - 1));
-  auto_ptr<Node> right(parser.ParseRegion(v1 + 1, end));
+  unique_ptr<Node> left(parser.ParseRegion(start, v1 - 1));
+  unique_ptr<Node> right(parser.ParseRegion(v1 + 1, end));
 
   m_lhs = left.release();
   m_rhs = right.release();
@@ -718,8 +722,8 @@ void DivideNode::Parse(Parser &parser, Parser::size_type start, Parser::size_typ
   }
 
 // Parse sides
-  auto_ptr<Node> left(parser.ParseRegion(start, v1 - 1));
-  auto_ptr<Node> right(parser.ParseRegion(v1 + 1, end));
+  unique_ptr<Node> left(parser.ParseRegion(start, v1 - 1));
+  unique_ptr<Node> right(parser.ParseRegion(v1 + 1, end));
 
   m_lhs = left.release();
   m_rhs = right.release();
@@ -761,7 +765,7 @@ void NegateNode::Parse(Parser &parser, Parser::size_type start, Parser::size_typ
   }
 
 // Parse sides
-  auto_ptr<Node> right(parser.ParseRegion(v1 + 1, end));
+  unique_ptr<Node> right(parser.ParseRegion(v1 + 1, end));
 
   m_rhs = right.release();
 }
@@ -810,8 +814,8 @@ void ExponentNode::Parse(Parser &parser, Parser::size_type start, Parser::size_t
   }
 
 // Parse sides
-  auto_ptr<Node> left(parser.ParseRegion(start, v1 - 1));
-  auto_ptr<Node> right(parser.ParseRegion(v1 + 1, end));
+  unique_ptr<Node> left(parser.ParseRegion(start, v1 - 1));
+  unique_ptr<Node> right(parser.ParseRegion(v1 + 1, end));
 
   m_lhs = left.release();
   m_rhs = right.release();

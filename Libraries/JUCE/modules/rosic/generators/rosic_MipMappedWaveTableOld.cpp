@@ -645,7 +645,7 @@ void MipMappedWaveTableOld::fillWithNoiseCycle(int noiseColor)
     // pass the table through the filter once, to overcome the transient
     // response of the filter
     for (i=0; i<tableLength; i++)
-      dummy = white2pink.getSample(prototypeTable[i]);
+      white2pink.getSample(prototypeTable[i]);
 
     // the output of the second pass is written back intto the table:
     for (i=0; i<tableLength; i++)

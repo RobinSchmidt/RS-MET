@@ -10,9 +10,9 @@ void FilterCoefficientConverter::directFormToLatticeFir(double *directFormCoeffs
   double  scaler;
   int     i, m;
 
-  // the recursion assumes the leading FIR coefficient to be unity, so we normalize the FIR-vector by its leading coefficient and remember 
+  // the recursion assumes the leading FIR coefficient to be unity, so we normalize the FIR-vector by its leading coefficient and remember
   // it as overall gain-factor:
-  double  gain = directFormCoeffs[0]; 
+  double  gain = directFormCoeffs[0];
 
   // copy the sign inverted, gain normalized direct-form coefficients into an internal array (Eq 6.50):
   scaler  = 1.0 / gain;
@@ -44,7 +44,7 @@ void FilterCoefficientConverter::directFormToLatticeFir(double *directFormCoeffs
   // invert the sign of the reflection coeffs to follow the MatLab convention (but leave the additional gain factor in k[0] as is):
   for(i=1; i<=N; i++)
     k[i] = -k[i];
-  
+
   delete[] a;
   delete[] aOld;
 }
@@ -74,7 +74,7 @@ void FilterCoefficientConverterlatticeToDirectFormFir(double *reflectionCoeffs, 
       aOld[m] = a[m];
   }
 
-  // in the first element of the reflection coefficient vector is the overall gain-factor - we need to scale the FIR vector with this 
+  // in the first element of the reflection coefficient vector is the overall gain-factor - we need to scale the FIR vector with this
   // factor and also use it as leading coefficient, we also need to invert the sign:
   for(i=1; i<=N; i++)
     a[i] = -a[i] * k[0];
@@ -83,8 +83,8 @@ void FilterCoefficientConverterlatticeToDirectFormFir(double *reflectionCoeffs, 
   delete[] aOld;
 }
 
-void FilterCoefficientConverter::polesAndZerosToBiquadCascade(Complex *poles, int numPoles, Complex *zeros, int numZeros, 
-                                                              double *b0, double *b1, double *b2, double *a1, double *a2,                                   
+void FilterCoefficientConverter::polesAndZerosToBiquadCascade(Complex *poles, int numPoles, Complex *zeros, int numZeros,
+                                                              double *b0, double *b1, double *b2, double *a1, double *a2,
                                                               bool lastStageIsFirstOrder)
 {
   int order = 2*rmax(numPoles, numZeros);
@@ -117,7 +117,7 @@ void FilterCoefficientConverter::polesAndZerosToBiquadCascade(Complex *poles, in
   }
 }
 
-void FilterCoefficientConverter::polesAndZerosToBiquadCascade(Complex *poles, Complex *zeros, int order, 
+void FilterCoefficientConverter::polesAndZerosToBiquadCascade(Complex *poles, Complex *zeros, int order,
                                                               double *b0, double *b1, double *b2, double *a1, double *a2)
 {
   int numBiquads;
@@ -136,16 +136,12 @@ void FilterCoefficientConverter::polesAndZerosToBiquadCascade(Complex *poles, Co
     a1[b] = -(poles[2*b]+poles[2*b+1]).re;
     a2[b] =  (poles[2*b]*poles[2*b+1]).re;
 
-    int dummy = 0;
-
     /*
     b1[b] = -2.0 * zeros[2*b].re;
     b2[b] = zeros[2*b].re * zeros[2*b].re + zeros[2*b].im * zeros[2*b].im;
     a1[b] = -2.0 * poles[2*b].re;
     a2[b] = poles[2*b].re * poles[2*b].re + poles[2*b].im * poles[2*b].im;
     */
-
-    dummy = 1;
   }
 
   // overwrite the coefficients of the last stage, when it must be a first order stage:
@@ -159,7 +155,7 @@ void FilterCoefficientConverter::polesAndZerosToBiquadCascade(Complex *poles, Co
   }
 }
 
-void FilterCoefficientConverter::biquadCascadeToDirectForm(int numBiquads, double *b0, double *b1, double *b2, 
+void FilterCoefficientConverter::biquadCascadeToDirectForm(int numBiquads, double *b0, double *b1, double *b2,
                                                            double *a1, double *a2, double *b, double *a)
 {
   // aquire and initialize memory for intermediate results and accumulation:
@@ -178,7 +174,7 @@ void FilterCoefficientConverter::biquadCascadeToDirectForm(int numBiquads, doubl
   aAccu[0] = 1.0;
   bAccu[0] = 1.0;
 
-  // calculate the direct form coefficients by recursively applying convolution to the result of the previous convolution with the new 
+  // calculate the direct form coefficients by recursively applying convolution to the result of the previous convolution with the new
   // quadratic factor:
   for(i=0; i<numBiquads; i++)
   {
@@ -222,7 +218,7 @@ double FilterCoefficientConverter::getBiquadMagnitudeAt(double b0, double b1, do
   return sqrt(num/den);
 }
 
-void FilterCoefficientConverter::normalizeBiquadStages(double *b0, double *b1, double *b2, double *a1, double *a2, 
+void FilterCoefficientConverter::normalizeBiquadStages(double *b0, double *b1, double *b2, double *a1, double *a2,
                                                        double omega, int numStages, double gainFactor)
 {
   double m; // magnitude of current stage
