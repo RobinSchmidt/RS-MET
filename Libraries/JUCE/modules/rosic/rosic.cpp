@@ -184,6 +184,21 @@ integrating it into the Chainer.
 #include "others/rosic_TuningTable.cpp"
 #include "others/rosic_VectorMixer.cpp"  
 
+// analysis:
+#include "analysis/rosic_CyclicAutoCorrelator.cpp" 
+#include "analysis/rosic_EnvelopeFollower.cpp"    // needs SlewRateLimiter
+#include "analysis/rosic_LinearPredictor.cpp"
+#include "analysis/rosic_FormantRemover.cpp"
+#include "analysis/rosic_FormantPreserver.cpp"
+#include "analysis/rosic_InstantaneousEnvelopeDetector.cpp"
+#include "analysis/rosic_LevelDetector.cpp"
+#include "analysis/rosic_OscilloscopeBufferOld.cpp"
+#include "analysis/rosic_PitchDetector.cpp"
+#include "analysis/rosic_SignalMeasures.cpp"
+#include "analysis/rosic_SpectrumAnalyzer.cpp"
+#include "analysis/rosic_TrackMeter.cpp"
+#include "analysis/rosic_WaveformDisplayBuffer.cpp"
+
 
 
 
@@ -198,14 +213,6 @@ integrating it into the Chainer.
 
 
 
-// analysis:
-#include "analysis/rosic_CyclicAutoCorrelator.cpp" 
-//#include "analysis/rosic_EnvelopeFollower.cpp"    // needs SlewRateLimiter
-#include "analysis/rosic_LinearPredictor.cpp"
-#include "analysis/rosic_FormantRemover.cpp"
-#include "analysis/rosic_FormantPreserver.cpp"
 
-//#include "analysis/rosic_InstantaneousEnvelopeDetector.cpp"
-//#include "analysis/rosic_LevelDetector.cpp"
 
 
