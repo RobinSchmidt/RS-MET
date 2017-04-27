@@ -396,10 +396,60 @@ void PhaseScopeEditor::createWidgets()
   b->setDescriptionField(infoField);
   //b->setButtonPainter(&buttonPainter); // temporary, for test
 
+
+  // geometric transforms:
+  addWidget(s = sliderScaleX = new AutomatableSlider);
+  s->assignParameter(scope->getParameterByName("ScaleX"));
+  s->setSliderName("ScaleX");
+  s->setDescription("Scaling along x-direction");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString3);
+
+  addWidget(s = sliderScaleY = new AutomatableSlider);
+  s->assignParameter(scope->getParameterByName("ScaleY"));
+  s->setSliderName("ScaleY");
+  s->setDescription("Scaling along y-direction");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString3);
+
+  addWidget(s = sliderShearX = new AutomatableSlider);
+  s->assignParameter(scope->getParameterByName("ShearX"));
+  s->setSliderName("ShearX");
+  s->setDescription("Shearing along x-direction");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString3);
+
+  addWidget(s = sliderShearY = new AutomatableSlider);
+  s->assignParameter(scope->getParameterByName("ShearY"));
+  s->setSliderName("ShearY");
+  s->setDescription("Shearing along y-direction");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString3);
+
+  addWidget(s = sliderRotation = new AutomatableSlider);
+  s->assignParameter(scope->getParameterByName("Rotation"));
+  s->setSliderName("Rotation");
+  s->setDescription("Rotation around origin");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&degreesToStringWithUnit0);
+
+  addWidget(s = sliderShiftX = new AutomatableSlider);
+  s->assignParameter(scope->getParameterByName("ShiftX"));
+  s->setSliderName("ShiftX");
+  s->setDescription("Shifting along x-direction");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString3);
+
+  addWidget(s = sliderShiftY = new AutomatableSlider);
+  s->assignParameter(scope->getParameterByName("ShiftY"));
+  s->setSliderName("ShiftY");
+  s->setDescription("Shifting along y-direction");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString3);
+
+
   colorMapLoader = new ColorMapLoader(scope->getColorMapPointer());
   addWidgetSet(colorMapLoader);
-
-  int dummy = 0;
 }
 
 void PhaseScopeEditor::resized()
@@ -431,8 +481,18 @@ void PhaseScopeEditor::resized()
   sliderFrameRate  ->setBounds(x, y, w,   h); y += dy;
   buttonAntiAlias  ->setBounds(x, y, w/2, h); y += dy;
 
+  // transform controls:
+  y += 8;
+  sliderScaleX  ->setBounds(x, y, w, h); y += dy;
+  sliderScaleY  ->setBounds(x, y, w, h); y += dy;
+  sliderShearX  ->setBounds(x, y, w, h); y += dy;
+  sliderShearY  ->setBounds(x, y, w, h); y += dy;
+  sliderRotation->setBounds(x, y, w, h); y += dy;
+  sliderShiftX  ->setBounds(x, y, w, h); y += dy;
+  sliderShiftY  ->setBounds(x, y, w, h); y += dy;
+
   // preliminary:
-  y += 16;
+  y += 8;
   colorMapLoader->setBounds(x, y, w, 48);
 }
 //

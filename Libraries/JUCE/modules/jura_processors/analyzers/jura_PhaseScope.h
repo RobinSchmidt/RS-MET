@@ -160,6 +160,9 @@ protected:
 
   RButton *buttonAntiAlias;
 
+  AutomatableSlider *sliderScaleX, *sliderScaleY, *sliderShearX, *sliderShearY,
+    *sliderRotation, *sliderShiftX, *sliderShiftY;
+
   ColorMapLoader *colorMapLoader;
 
   //RButtonPainter3D buttonPainter; // only temporary, experimental
