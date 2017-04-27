@@ -3,6 +3,7 @@
 
 #include "GlobalDefinitions.h"
 #include "GlobalFunctions.h"
+#include "rosic_NumberManipulations.h"
 #include <algorithm>
 
 namespace rosic

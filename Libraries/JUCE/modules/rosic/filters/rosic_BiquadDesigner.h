@@ -26,7 +26,7 @@ namespace rosic
 
   public:
 
-    /** \name Coefficient calculation:
+    /** \name Coefficient calculation: */
 
     /** Assigns the coefficients so as to realize a neutral filter. */
     static INLINE void makeBypassBiquad(double& b0, double& b1, double& b2, double& a1, double& a2);
@@ -41,14 +41,14 @@ namespace rosic
     static INLINE void calculateFirstOrderLowpassCoeffs(double& b0, double& b1, double& b2,
       double& a1, double& a2, const double& oneOverSampleRate, const double& frequency);
 
-    /** Calculates the coefficients for a one-pole lowpass filter by the bilinear transform 
+    /** Calculates the coefficients for a one-pole lowpass filter by the bilinear transform
     method. */
     static INLINE void calculateFirstOrderLowpassCoeffsBilinear(double& b0, double& b1, double& b2,
       double& a1, double& a2, const double& oneOverSampleRate, const double& frequency);
 
-    /** Calculates coefficients for a 1st order lowpass with a gain at the Nyquist frequency that 
+    /** Calculates coefficients for a 1st order lowpass with a gain at the Nyquist frequency that
     matches the gain of the corresponding analog prototype filter at that Nyquist frequency. */
-    static void calculateFirstOrderLowpassCoeffsPrescribedNyquist(double &b0, double &b1, 
+    static void calculateFirstOrderLowpassCoeffsPrescribedNyquist(double &b0, double &b1,
       double &b2, double &a1, double &a2, const double &sampleRate, const double &frequency);
 
     /** Calculates the coefficients for a two-pole lowpass type of filter according to Robert
@@ -62,18 +62,18 @@ namespace rosic
     static INLINE void calculateFirstOrderHighpassCoeffs(double& b0, double& b1, double& b2,
       double& a1, double& a2, const double& oneOverSampleRate, const double& frequency);
 
-    /** Calculates the coefficients for a one-pole highpass filter by the bilinear transform 
+    /** Calculates the coefficients for a one-pole highpass filter by the bilinear transform
     method. */
-    static INLINE void calculateFirstOrderHighpassCoeffsBilinear(double& b0, double& b1, 
-      double& b2, double& a1, double& a2, const double& oneOverSampleRate, 
+    static INLINE void calculateFirstOrderHighpassCoeffsBilinear(double& b0, double& b1,
+      double& b2, double& a1, double& a2, const double& oneOverSampleRate,
       const double& frequency);
 
-    /** Calculates coefficients for a 1st order highpass with a gain at the Nyquist frequency that 
+    /** Calculates coefficients for a 1st order highpass with a gain at the Nyquist frequency that
     matches the gain of the corresponding analog prototype filter at that Nyquist frequency. */
-    static void calculateFirstOrderHighpassCoeffsPrescribedNyquist(double &b0, double &b1, 
+    static void calculateFirstOrderHighpassCoeffsPrescribedNyquist(double &b0, double &b1,
       double &b2, double &a1, double &a2, const double &sampleRate, const double &frequency);
 
-    /** Calculates the coefficients for a two-pole highpass type of filter according to Robert 
+    /** Calculates the coefficients for a two-pole highpass type of filter according to Robert
     Bristow Johnson's Cookbook formula. */
     static INLINE void calculateCookbookHighpassCoeffs(double& b0, double& b1, double& b2,
       double& a1, double& a2, const double& oneOverSampleRate, const double& frequency,
@@ -87,7 +87,7 @@ namespace rosic
 
     /** Calculates the coefficients for a two-pole bandpass type of filter with constant skirt
     gain according to Robert Bristow Johnson's Cookbook formula. */
-    static INLINE void calculateCookbookBandpassConstSkirtCoeffsViaBandwidth(double& b0, 
+    static INLINE void calculateCookbookBandpassConstSkirtCoeffsViaBandwidth(double& b0,
       double& b1, double& b2, double& a1, double& a2, const double& oneOverSampleRate,
       const double& frequency, const double& bandwidth);
 
@@ -121,10 +121,10 @@ namespace rosic
       double& a1, double& a2, const double& oneOverSampleRate, const double& frequency,
       const double& q, const double& gainFactor);
 
-    /** Calculates coefficients for a 1st order low-shelving with a gain at the Nyquist frequency 
+    /** Calculates coefficients for a 1st order low-shelving with a gain at the Nyquist frequency
     that matches the gain of the corresponding analog prototype filter at that Nyquist frequency. */
-    static void calculateFirstOrderLowShelvCoeffsPrescribedNyQuist(double& b0, double& b1, 
-      double& b2, double& a1, double& a2, const double& sampleRate, const double& frequency, 
+    static void calculateFirstOrderLowShelvCoeffsPrescribedNyQuist(double& b0, double& b1,
+      double& b2, double& a1, double& a2, const double& sampleRate, const double& frequency,
       const double& gainFactor);
 
     /** Calculates the coefficients for a first order high shelving type of filter (according to
@@ -139,13 +139,13 @@ namespace rosic
       double& a1, double& a2, const double& oneOverSampleRate, const double& frequency,
       const double& q, const double& gainFactor);
 
-    /** Calculates coefficients for a 1st order high-shelving with a gain at the Nyquist frequency 
+    /** Calculates coefficients for a 1st order high-shelving with a gain at the Nyquist frequency
     that matches the gain of the corresponding analog prototype filter at that Nyquist frequency. */
-    static void calculateFirstOrderHighShelvCoeffsPrescribedNyQuist(double& b0, double& b1, 
-      double& b2, double& a1, double& a2, const double& sampleRate, const double& frequency, 
+    static void calculateFirstOrderHighShelvCoeffsPrescribedNyQuist(double& b0, double& b1,
+      double& b2, double& a1, double& a2, const double& sampleRate, const double& frequency,
       const double& gainFactor);
 
-    /** Calculates the coefficients for a first order allpass filter (according to the formula from 
+    /** Calculates the coefficients for a first order allpass filter (according to the formula from
     DAFX?). */
     static INLINE void calculateFirstOrderAllpassCoeffs(double& b0, double& b1, double& b2,
       double& a1, double& a2, const double& oneOverSampleRate, const double& frequency);
@@ -186,13 +186,13 @@ namespace rosic
     static INLINE void calculateOneZeroCoeffs(double& b0, double& b1, double& b2,
       double& a1, double& a2, const double& zero);
 
-    /** Calculates the coefficients for a two-pole filter where the poles form a complex conjugate 
-    pair with the given radius and angle (the radius should be less than 1 in magnitude for stable 
+    /** Calculates the coefficients for a two-pole filter where the poles form a complex conjugate
+    pair with the given radius and angle (the radius should be less than 1 in magnitude for stable
     filters). */
     static INLINE void calculatePolePairCoeffs(double& b0, double& b1, double& b2,
       double& a1, double& a2, const double& poleRadius, const double& poleAngle);
 
-    /** Calculates the coefficients for a two-zero filter where the zeros form a complex conjugate 
+    /** Calculates the coefficients for a two-zero filter where the zeros form a complex conjugate
     pair with the given radius and angle. */
     static INLINE void calculateZeroPairCoeffs(double& b0, double& b1, double& b2,
       double& a1, double& a2, const double& zeroRadius, const double& zeroAngle);
@@ -242,21 +242,21 @@ namespace rosic
     b2 = 0.0;
   }
 
-  INLINE void BiquadDesigner::calculateFirstOrderLowpassCoeffsBilinear(double &b0, double &b1, 
+  INLINE void BiquadDesigner::calculateFirstOrderLowpassCoeffsBilinear(double &b0, double &b1,
     double &b2, double &a1, double &a2, const double &oneOverSampleRate, const double &frequency)
   {
     double omegaPreWarped = tan(PI * frequency * oneOverSampleRate);
     double pAnalog        = -omegaPreWarped;
-    a1                    = (1.0+pAnalog)/(1.0-pAnalog);  
+    a1                    = (1.0+pAnalog)/(1.0-pAnalog);
     a2                    = 0.0;
     double g              = 0.5*sqrt(1.0+a1*a1-2.0*a1); // gain-factor for normalization at DC
     b0                    = g;
-    b1                    = g;  
+    b1                    = g;
     b2                    = 0.0;
   }
 
   /*
-  INLINE void BiquadDesigner::calculateFirstOrderLowpassCoeffsPrescribedNyquist(double &b0, double &b1, 
+  INLINE void BiquadDesigner::calculateFirstOrderLowpassCoeffsPrescribedNyquist(double &b0, double &b1,
     double &b2, double &a1, double &a2, const double &sampleRate, const double &frequency)
   {
     double wc  = 2.0*PI*frequency/sampleRate;
@@ -280,7 +280,7 @@ namespace rosic
     b0 =  rD * (g0+B);
     b1 =  rD * (g0-B);
     b2 =  0.0;
-    a1 = -rD * (1 -A); 
+    a1 = -rD * (1 -A);
     a2 =  0.0;
   }
   */
@@ -314,16 +314,16 @@ namespace rosic
     b2 = 0.0;
   }
 
-  INLINE void BiquadDesigner::calculateFirstOrderHighpassCoeffsBilinear(double &b0, double &b1, 
+  INLINE void BiquadDesigner::calculateFirstOrderHighpassCoeffsBilinear(double &b0, double &b1,
     double &b2, double &a1, double &a2, const double &oneOverSampleRate, const double &frequency)
   {
     double omegaPreWarped = tan(PI * frequency * oneOverSampleRate);
     double pAnalog        = -omegaPreWarped;
-    a1                    = (1.0+pAnalog)/(1.0-pAnalog);  
+    a1                    = (1.0+pAnalog)/(1.0-pAnalog);
     a2                    = 0.0;
     double g              = 0.5*sqrt(1.0+a1*a1+2.0*a1); // gain-factor for normalization at DC
     b0                    = g;
-    b1                    = -g;  
+    b1                    = -g;
     b2                    = 0.0;
   }
 
@@ -366,7 +366,7 @@ namespace rosic
     // to avoid divison by zero:
     double f = rmax(0.0001, frequency);
     double b = rmax(0.0001, bandwidth);
-    
+
     double sine, cosine;
     calculateSineAndCosine(sine, cosine, f, oneOverSampleRate);
 
@@ -568,7 +568,7 @@ namespace rosic
     b1 = (-2.0*cosine) * a0Rec;
     b2 = (1.0+alpha)   * a0Rec;
   }
-    
+
   INLINE void calculateLowHighpassChainCoeffs(double& b0, double& b1, double& b2,
     double& a1, double& a2, const double& oneOverSampleRate, const double& highpassCutoff,
     const double& lowpassCutoff)
@@ -589,7 +589,7 @@ namespace rosic
     }
     else
     {
-      x = exp( -2.0 * PI * lowpassCutoff * oneOverSampleRate); 
+      x = exp( -2.0 * PI * lowpassCutoff * oneOverSampleRate);
 
       b0Lpf = 1-x;
       b1Lpf = 0.0;
@@ -680,9 +680,9 @@ namespace rosic
       preGain *= preGain;
   }
 
-  INLINE void BiquadDesigner::calculatePrescribedNyquistGainEqCoeffs(double& b0, 
-    double& b1, double& b2, double& a1, double& a2, const double& oneOverSampleRate, 
-    const double& frequency, const double& bandwidthInOctaves, const double& gainFactor, 
+  INLINE void BiquadDesigner::calculatePrescribedNyquistGainEqCoeffs(double& b0,
+    double& b1, double& b2, double& a1, double& a2, const double& oneOverSampleRate,
+    const double& frequency, const double& bandwidthInOctaves, const double& gainFactor,
     const double& referenceGain)
   {
     if( fabs( amp2dB(gainFactor/referenceGain) ) < 0.001 )
@@ -722,7 +722,7 @@ namespace rosic
       // redefine bandedge gain to enforce InEq.37 to hold:
       GB = sqrt(G1*G);
 
-      // re-calculate bandwidth from the new GB definition as the width where an analog equalizer 
+      // re-calculate bandwidth from the new GB definition as the width where an analog equalizer
       // would have the redefined bandedge gain:
       Delta  = sqrt( ASq*(G*G-GB*GB) / (GB*GB-G0*G0) );
       Dw     = Delta*oneOverSampleRate;
@@ -741,7 +741,7 @@ namespace rosic
     double F01 = fabs(GB*GB - G0*G1);
     double F11 = fabs(GB*GB - G1*G1);
     double ta  = tan(w0/2);
-    double W2  = sqrt(G11 / G00) * ta*ta;              
+    double W2  = sqrt(G11 / G00) * ta*ta;
     double DW  = (1 + sqrt(F00 / F11) * W2) * tan(Dw/2);
     double C   = F11 * DW*DW - 2 * W2 * (F01 - sqrt(F00 * F11));
     double D   = 2 * W2 * (G01 - sqrt(G00 * G11));
@@ -756,7 +756,7 @@ namespace rosic
     a2         = -(1 + W2 - A)       * s;
   }
 
-  INLINE void BiquadDesigner::calculateOnePoleCoeffs(double& b0, double& b1, double& b2,  
+  INLINE void BiquadDesigner::calculateOnePoleCoeffs(double& b0, double& b1, double& b2,
     double& a1, double& a2, const double& pole)
   {
     b0 = 1.0;
@@ -766,7 +766,7 @@ namespace rosic
     a2 = 0.0;
   }
 
-  INLINE void BiquadDesigner::calculateOneZeroCoeffs(double& b0, double& b1, double& b2,  
+  INLINE void BiquadDesigner::calculateOneZeroCoeffs(double& b0, double& b1, double& b2,
     double& a1, double& a2, const double& zero)
   {
     b0 = 1.0;
@@ -776,7 +776,7 @@ namespace rosic
     a2 = 0.0;
   }
 
-  INLINE void BiquadDesigner::calculatePolePairCoeffs(double& b0, double& b1, double& b2,   
+  INLINE void BiquadDesigner::calculatePolePairCoeffs(double& b0, double& b1, double& b2,
     double& a1, double& a2, const double& poleRadius, const double& poleAngle)
   {
     b0 = 1.0;
@@ -786,7 +786,7 @@ namespace rosic
     a2 = -poleRadius*poleRadius;
   }
 
-  INLINE void BiquadDesigner::calculateZeroPairCoeffs(double& b0, double& b1, double& b2,   
+  INLINE void BiquadDesigner::calculateZeroPairCoeffs(double& b0, double& b1, double& b2,
     double& a1, double& a2, const double& zeroRadius, const double& zeroAngle)
   {
     b0 = 1.0;
