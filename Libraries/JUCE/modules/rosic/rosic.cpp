@@ -141,9 +141,6 @@ integrating it into the Chainer.
 #include "generators/rosic_OscillatorBank.cpp"
 #include "generators/rosic_OscillatorStereo.cpp"
 #include "generators/rosic_FourOscSection.cpp"
-#include "infrastructure/rosic_Module.cpp"                  // needed by Quadrigen
-#include "others/rosic_RoutingMatrix.cpp"                   // needed by Quadrigen
-#include "generators/rosic_Quadrigen.cpp"                   // needs Module, RoutingMatrix
 #include "generators/rosic_SampleOscillator.cpp"
 #include "generators/rosic_SamplePlayer.cpp"
 #include "generators/rosic_SineOscillator.cpp"
@@ -178,14 +175,23 @@ integrating it into the Chainer.
 #include "others/rosic_KeyGenerator.cpp"               // remove...or keep only the "Validator" part
 #include "others/rosic_OverlapAddProcessor.cpp"
 #include "others/rosic_PiecewiseFunction.cpp"
-//#include "others/rosic_Plotter.cpp"                  // obsolete?
+//#include "others/rosic_Plotter.cpp"                  // obsolete? needs writeDataToFile
 #include "others/rosic_ProcessorCycleCounter.cpp"
-//#include "others/rosic_RoutingMatrix.cpp"
-
-
+#include "others/rosic_RoutingMatrix.cpp"
+#include "others/rosic_SpectralProcessor.cpp"
+#include "others/rosic_SpectralEnvelopeProcessor.cpp"
+#include "others/rosic_SpectralFilter.cpp"
+//#include "others/rosic_TuningTable.cpp"  // deosn't work - needs 3rd party code?
 #include "others/rosic_VectorMixer.cpp"  
 
-// a bit out of order:
+
+
+
+// a bit out of order - these are kind-of higher-level generators, maybe they should be in the
+// instruments section...or something:
+#include "infrastructure/rosic_Module.cpp"            // needed by Quadrigen
+//#include "others/rosic_RoutingMatrix.cpp"           // needed by Quadrigen
+#include "generators/rosic_Quadrigen.cpp"             // needs Module, RoutingMatrix
 #include "generators/rosic_VectorSamplePlayer.cpp"    // needs LowFrequencyOscillator (in modulators)
                                                       // and VectorMixer
 
