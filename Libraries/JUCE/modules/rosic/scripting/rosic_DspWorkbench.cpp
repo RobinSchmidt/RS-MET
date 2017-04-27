@@ -103,7 +103,7 @@ void DspWorkbench::setParameterName(int index, char* newName)
   }
   if( newName != NULL )
   {
-    int newLength         = strlen(newName);
+    int newLength = (int) strlen(newName);
     parameterClearTextNames[index] = new char[newLength+1];
     for(int c=0; c<=newLength; c++) // the <= is valid here, because we have one more cell allocated
       parameterClearTextNames[index][c] = newName[c];
@@ -193,7 +193,7 @@ void DspWorkbench::setParameterInternalName(int index, char* newName)
   }
   if( newName != NULL )
   {
-    int newLength         = strlen(newName);
+    int newLength = (int) strlen(newName);
     parameterInternalNames[index] = new char[newLength+1];
     for(int c=0; c<=newLength; c++) // the <= is valid here, because we have one more cell allocated
       parameterInternalNames[index][c] = newName[c];

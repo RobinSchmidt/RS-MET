@@ -284,9 +284,14 @@ integrating it into the Chainer.
 #include "neural/rosic_MultiLayerPerceptronTrainer.cpp"
 
 // sequencing
-
+#include "sequencing/rosic_AcidPattern.cpp"
+#include "sequencing/rosic_AcidSequencer.cpp"
 
 // scripting
+//#include "scripting/rosic_AngelScriptInterpreter.cpp"      // not yet used anywhere
+#include "scripting/rosic_DspScriptInterpreter.cpp"
+#include "scripting/rosic_DspWorkbench.cpp"
+
 
 
 // instruments
