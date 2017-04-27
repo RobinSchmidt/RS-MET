@@ -181,7 +181,7 @@ integrating it into the Chainer.
 #include "others/rosic_SpectralProcessor.cpp"
 #include "others/rosic_SpectralEnvelopeProcessor.cpp"
 #include "others/rosic_SpectralFilter.cpp"
-//#include "others/rosic_TuningTable.cpp"  // deosn't work - needs 3rd party code?
+#include "others/rosic_TuningTable.cpp"
 #include "others/rosic_VectorMixer.cpp"  
 
 

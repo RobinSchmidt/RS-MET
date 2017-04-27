@@ -1,6 +1,8 @@
 #include "rosic_TuningTable.h"
 using namespace rosic;
 
+#include "../_third_party/MarkHenning/TuningMap.cpp"
+
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
@@ -29,7 +31,7 @@ void TuningTable::setName(char *newName)
   }
   if( newName != NULL )
   {
-    int newLength = strlen(newName);
+    int newLength = (int) strlen(newName);
     name          = new char[newLength+1];
     for(int c=0; c<=newLength; c++) // the <= is valid here, because we have one more cell allocated
       name[c] = newName[c];

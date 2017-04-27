@@ -431,6 +431,9 @@
     <Filter Include="Juce Modules\rosic\_third_party\kiss_fft_v1_2_6\tools">
       <UniqueIdentifier>{ED02845E-C3E1-EC3D-D416-0C91635DF64E}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Juce Modules\rosic\_third_party\MarkHenning">
+      <UniqueIdentifier>{362F87A1-F361-B3C7-AABD-2D75ED751125}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Juce Modules\rosic\_third_party\ooura_fft">
       <UniqueIdentifier>{078EF113-87E3-B4FE-4E43-0461DCD0FA98}</UniqueIdentifier>
     </Filter>
@@ -442,6 +445,9 @@
     </Filter>
     <Filter Include="Juce Modules\rosic\_third_party\soundtouch">
       <UniqueIdentifier>{447B93E0-F603-5EE1-ABE6-6139F4C1F1C1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rosic\_third_party\tnt">
+      <UniqueIdentifier>{C4BE953C-C662-76BD-46BE-1DF0C975DBBC}</UniqueIdentifier>
     </Filter>
     <Filter Include="Juce Modules\rosic\analysis">
       <UniqueIdentifier>{276694CF-CD98-9FDB-C58E-EF512A34BEE0}</UniqueIdentifier>
@@ -2592,6 +2598,12 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\kiss_fft.c">
       <Filter>Juce Modules\rosic\_third_party\kiss_fft_v1_2_6</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\MarkHenning\TuningMap.cpp">
+      <Filter>Juce Modules\rosic\_third_party\MarkHenning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\MarkHenning\TuningMapOriginal.cpp">
+      <Filter>Juce Modules\rosic\_third_party\MarkHenning</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ooura_fft\sample1\testxg.c">
       <Filter>Juce Modules\rosic\_third_party\ooura_fft\sample1</Filter>
@@ -5868,8 +5880,92 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\kiss_fft_v1_2_6\kiss_fft.h">
       <Filter>Juce Modules\rosic\_third_party\kiss_fft_v1_2_6</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\MarkHenning\TuningMap.h">
+      <Filter>Juce Modules\rosic\_third_party\MarkHenning</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\MarkHenning\TuningMapOriginal.h">
+      <Filter>Juce Modules\rosic\_third_party\MarkHenning</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\soundtouch\WavFile.h">
       <Filter>Juce Modules\rosic\_third_party\soundtouch</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\jama_cholesky.h">
+      <Filter>Juce Modules\rosic\_third_party\tnt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\jama_eig.h">
+      <Filter>Juce Modules\rosic\_third_party\tnt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\jama_lu.h">
+      <Filter>Juce Modules\rosic\_third_party\tnt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\jama_qr.h">
+      <Filter>Juce Modules\rosic\_third_party\tnt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\jama_svd.h">
+      <Filter>Juce Modules\rosic\_third_party\tnt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\tnt.h">
+      <Filter>Juce Modules\rosic\_third_party\tnt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\tnt_array1d.h">
+      <Filter>Juce Modules\rosic\_third_party\tnt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\tnt_array1d_utils.h">
+      <Filter>Juce Modules\rosic\_third_party\tnt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\tnt_array2d.h">
+      <Filter>Juce Modules\rosic\_third_party\tnt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\tnt_array2d_utils.h">
+      <Filter>Juce Modules\rosic\_third_party\tnt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\tnt_array3d.h">
+      <Filter>Juce Modules\rosic\_third_party\tnt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\tnt_array3d_utils.h">
+      <Filter>Juce Modules\rosic\_third_party\tnt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\tnt_cmat.h">
+      <Filter>Juce Modules\rosic\_third_party\tnt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\tnt_fortran_array1d.h">
+      <Filter>Juce Modules\rosic\_third_party\tnt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\tnt_fortran_array1d_utils.h">
+      <Filter>Juce Modules\rosic\_third_party\tnt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\tnt_fortran_array2d.h">
+      <Filter>Juce Modules\rosic\_third_party\tnt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\tnt_fortran_array2d_utils.h">
+      <Filter>Juce Modules\rosic\_third_party\tnt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\tnt_fortran_array3d.h">
+      <Filter>Juce Modules\rosic\_third_party\tnt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\tnt_fortran_array3d_utils.h">
+      <Filter>Juce Modules\rosic\_third_party\tnt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\tnt_i_refvec.h">
+      <Filter>Juce Modules\rosic\_third_party\tnt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\tnt_math_utils.h">
+      <Filter>Juce Modules\rosic\_third_party\tnt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\tnt_sparse_matrix_csr.h">
+      <Filter>Juce Modules\rosic\_third_party\tnt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\tnt_stopwatch.h">
+      <Filter>Juce Modules\rosic\_third_party\tnt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\tnt_subscript.h">
+      <Filter>Juce Modules\rosic\_third_party\tnt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\tnt_vec.h">
+      <Filter>Juce Modules\rosic\_third_party\tnt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\tnt_version.h">
+      <Filter>Juce Modules\rosic\_third_party\tnt</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_Analysis.h">
       <Filter>Juce Modules\rosic\analysis</Filter>
