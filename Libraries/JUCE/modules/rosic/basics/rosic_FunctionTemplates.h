@@ -6,29 +6,30 @@
 #include "rosic_NumberManipulations.h"
 #include "rosic_HelperFunctions.h"
 #include <algorithm>
+#include <cstring>      // for memcpy on linux/gcc
 
 namespace rosic
 {
-  // todo write functions for element-wise multiply, divide, negate, max, min, absMax, createCopy, filter, impulseResponse, 
+  // todo write functions for element-wise multiply, divide, negate, max, min, absMax, createCopy, filter, impulseResponse,
   // impulseResponseLength, fillWith(double value = 0.0), circularShift, resample,
   // maybe introduce a range (start....end) to which the process is to be applied
 
-  /** Returns the absolute value of the input argument for types that define the comparison operators: '<', '>', the unary operator '-' and 
+  /** Returns the absolute value of the input argument for types that define the comparison operators: '<', '>', the unary operator '-' and
   a constructor that takes an int and initializes to zero when 0 is passed.  */
   template <class T>
   T absT(T x);
 
-  /** Adds the elements of 'buffer1' and 'buffer2' - type must define operator '+'. The 'result' buffer may be the same as 'buffer1' or 
+  /** Adds the elements of 'buffer1' and 'buffer2' - type must define operator '+'. The 'result' buffer may be the same as 'buffer1' or
   'buffer2'. */
   template <class T>
-  void add(T *buffer1, T *buffer2, T *result, int length); 
+  void add(T *buffer1, T *buffer2, T *result, int length);
 
-  /** Adds the scalar 'valueToAdd' to the elements of 'buffer' - the type must define operator '+'. The 'result' buffer may be the same as 
+  /** Adds the scalar 'valueToAdd' to the elements of 'buffer' - the type must define operator '+'. The 'result' buffer may be the same as
   'buffer'. */
   template <class T>
-  void add(T *buffer, T valueToAdd, T *result, int length); 
+  void add(T *buffer, T valueToAdd, T *result, int length);
 
-  /** Adds a weighted, circularly shifted copy of the buffer to itself - the shift-offest may be non-integer in which case linear 
+  /** Adds a weighted, circularly shifted copy of the buffer to itself - the shift-offest may be non-integer in which case linear
   interpolation will be used. */
   template <class T>
   void addCircularShiftedCopy(T *buffer, int length, double offset, T weight);
@@ -41,44 +42,44 @@ namespace rosic
   template <class T>
   bool areBuffersEqual(T *buffer1, T *buffer2, int length);
 
-  /** Circularly shifts the content of the buffer by 'numPositions' to the right - for leftward shifts use negative values for 
-  numPositions. If the absolute value of 'numPositions' is greater than the length of the buffer, it will use numPositions modulo the 
+  /** Circularly shifts the content of the buffer by 'numPositions' to the right - for leftward shifts use negative values for
+  numPositions. If the absolute value of 'numPositions' is greater than the length of the buffer, it will use numPositions modulo the
   length - so if the length is 6 and numPositions is 8, it will whift by 2 positions. */
   template<class T>
-  void circularShift(T *buffer, int length, int numPositions); 
+  void circularShift(T *buffer, int length, int numPositions);
 
-  /** Circularly shifts the content of the buffer by 'numPositions' to the right - for leftward shifts use negative values for 
-  numPositions. The function behaves analogous to circularShift(T*, int, int) but allows for non-integer shifts by using linear 
+  /** Circularly shifts the content of the buffer by 'numPositions' to the right - for leftward shifts use negative values for
+  numPositions. The function behaves analogous to circularShift(T*, int, int) but allows for non-integer shifts by using linear
   interpolation of the buffer. */
   template <class T>
   void circularShiftInterpolated(T *buffer, int length, double numPositions);
 
   /** Restricts the values in the buffer to the range between min and max for types that define the operators '<' and '>'. */
   template <class T>
-  void clipBuffer(T *buffer, int length, T min, T max); 
+  void clipBuffer(T *buffer, int length, T min, T max);
 
-  /** Convolves an array x (seen as input signal) with another array h (seen as impulse response) and stores the result in the array y. The 
-  type must define the operators: *, += and a constructor that takes an int and initializes to zero when 0 is passed. The y array must be 
+  /** Convolves an array x (seen as input signal) with another array h (seen as impulse response) and stores the result in the array y. The
+  type must define the operators: *, += and a constructor that takes an int and initializes to zero when 0 is passed. The y array must be
   distinct form x and h and have a length of at least xLength+hLength-1. */
   template <class T>
-  void convolve(T *x, int xLength, T *h, int hLength, T *y); 
+  void convolve(T *x, int xLength, T *h, int hLength, T *y);
 
   /** Copies the data of one array into another one and converts the type if necessary. */
   template <class T1, class T2>
   void convertBuffer(T1 *source, T2 *destination, int length);
 
-  /** Convolves x with h and stored the result in x. The xLength parameter denotes the number of values in the x-array that will be 
+  /** Convolves x with h and stored the result in x. The xLength parameter denotes the number of values in the x-array that will be
   considered as input signal. The actual array must be longer than that (namely xLength+hLength-1) to store the appended values. */
   template <class T>
-  void convolveInPlace(T *x, int xLength, T *h, int hLength); 
+  void convolveInPlace(T *x, int xLength, T *h, int hLength);
 
   /** Copies the data of one array into another one. */
   template <class T>
   void copyBuffer(T *source, T *destination, int length);
 
-  /** Copies the data of one array into another one where the lengths of the source- and target-arrays may be different - in this case, the 
-  target array will be filled by linearly interpolating the values in the source array. The type T must define a multiplication operator 
-  with a left operand of type double and an addition operator with both operands of type T. At the right border of the source buffer, a 
+  /** Copies the data of one array into another one where the lengths of the source- and target-arrays may be different - in this case, the
+  target array will be filled by linearly interpolating the values in the source array. The type T must define a multiplication operator
+  with a left operand of type double and an addition operator with both operands of type T. At the right border of the source buffer, a
   periodicity assumption is made. */
   template <class T>
   void copyBufferWithLinearInterpolation(T *source, int sourceLength, T *destination, int destinationLength);
@@ -87,10 +88,10 @@ namespace rosic
   template <class T>
   void cumulativeSum(T *buffer, int length, int order = 1, bool periodic = false);
 
-  /** Computes the difference y[n] = x[n] - x[n-1] of some signal. The initial condition x[-1] is determined from the 'periodic' 
-  parameter - if true, the signal is assumed as periodic and the x[-1] sample will be assigned to he same value as the last in the 
-  buffer - otherwise, it will be assigned to zero. When multiplying the result with the interval between successive samples, this 
-  function can be used for numeric differentiation. If the order is greater than 1, the operation will be performed iteratively on the 
+  /** Computes the difference y[n] = x[n] - x[n-1] of some signal. The initial condition x[-1] is determined from the 'periodic'
+  parameter - if true, the signal is assumed as periodic and the x[-1] sample will be assigned to he same value as the last in the
+  buffer - otherwise, it will be assigned to zero. When multiplying the result with the interval between successive samples, this
+  function can be used for numeric differentiation. If the order is greater than 1, the operation will be performed iteratively on the
   respective result of the previous pass.  */
   template <class T>
   void difference(T *buffer, int length, int order = 1, bool periodic = false);
@@ -101,34 +102,34 @@ namespace rosic
 
   /** Fills the passed array with a unit impulse. */
   template <class T>
-  void fillWithImpulse(T *buffer, int length); 
+  void fillWithImpulse(T *buffer, int length);
 
-  /** Fills the passed array with the values of the indices - the type T must have a constructor that takes an int and performs appropriate 
+  /** Fills the passed array with the values of the indices - the type T must have a constructor that takes an int and performs appropriate
   conversion. */
   template <class T>
-  void fillWithIndex(T *buffer, int length); 
+  void fillWithIndex(T *buffer, int length);
 
   /** Fills the buffer with values ranging from min to max (both end-values inclusive). */
   template <class T>
-  void fillWithRangeLinear(T *buffer, int length, double min, double max); 
+  void fillWithRangeLinear(T *buffer, int length, double min, double max);
 
   /** Fills the passed array with one value at all indices. */
   template <class T>
-  void fillWithValue(T *buffer, int length, T value); 
+  void fillWithValue(T *buffer, int length, T value);
 
-  /** Fills the passed array with all zeros - the type must have a constructor that takes an int and initializes to the zero element when 0 
+  /** Fills the passed array with all zeros - the type must have a constructor that takes an int and initializes to the zero element when 0
   is passed. */
   template <class T>
-  void fillWithZeros(T *buffer, int length); 
+  void fillWithZeros(T *buffer, int length);
 
-  /** Filters the signal in input buffer x and stores the result in output buffer y. The filter realizes the difference equation: 
-  y[n] = b[0]*x[n] + b[1]*x[n-1] + b[2]*x[n-2] + ... + b[bOrder]*x[n-bOrder] 
+  /** Filters the signal in input buffer x and stores the result in output buffer y. The filter realizes the difference equation:
+  y[n] = b[0]*x[n] + b[1]*x[n-1] + b[2]*x[n-2] + ... + b[bOrder]*x[n-bOrder]
                    - a[1]*y[n-1] - a[2]*y[n-2] - ... - a[aOrder]*y[n-aOrder]
-  so the arrays of coefficients must have a length of their order + 1. The output buffer may have a different length than the input buffer. 
-  If it is longer, it will be assumed that the missing samples in the input buffer are zero. The input and output buffers may also be 
+  so the arrays of coefficients must have a length of their order + 1. The output buffer may have a different length than the input buffer.
+  If it is longer, it will be assumed that the missing samples in the input buffer are zero. The input and output buffers may also be
   identical (i.e. point to the same location), in which case the filtering will be done in place. */
   template <class T>
-  void filter(T *x, int xLength, T *y, int yLength, T *b, int bOrder, T *a, int aOrder); 
+  void filter(T *x, int xLength, T *y, int yLength, T *b, int bOrder, T *a, int aOrder);
 
   /** Returns the index of the first value that matches the elementToFind, return -1 when no matching elemenet is found. */
   template <class T>
@@ -139,16 +140,16 @@ namespace rosic
   int findMaxAbs(T *buffer, int length);
 
   template <class T>
-  void filterBiDirectional(T *x, int xLength, T *y, int yLength, T *b, int bOrder, T *a, 
-    int aOrder, int numRingOutSamples = 10000); 
+  void filterBiDirectional(T *x, int xLength, T *y, int yLength, T *b, int bOrder, T *a,
+    int aOrder, int numRingOutSamples = 10000);
 
   /** Scales and offsets the passed buffer such that the minimum value hits 'min' and the maximum value hits 'max'. */
   template <class T>
-  void fitIntoRange(T *buffer, int length, T min, T max); 
+  void fitIntoRange(T *buffer, int length, T min, T max);
 
 
   template <class T>
-  void impulseResponse(T *h, int hLength, T *b, int bOrder, T *a, int aOrder); 
+  void impulseResponse(T *h, int hLength, T *b, int bOrder, T *a, int aOrder);
 
   /** Interleaves a buffer of non-interleaved data. */
   template <class T>
@@ -160,7 +161,7 @@ namespace rosic
 
   /** Finds and returns the maximum absolute value of the buffer. */
   template <class T>
-  T maxAbs(T *buffer, int length);  
+  T maxAbs(T *buffer, int length);
 
   /** Returns the index of maximum value of the buffer (">"-operator must be defined). */
   template <class T>
@@ -170,10 +171,10 @@ namespace rosic
   template <class T>
   INLINE T maxValue(T *buffer, int length);
 
-  /** Returns the maximum value of the element-wise difference of two buffers (the maximum is determined from the absolute value of the 
+  /** Returns the maximum value of the element-wise difference of two buffers (the maximum is determined from the absolute value of the
   differences, but the actual returned value will have the proper sign where buffer2 is subtracted from buffer1). */
   template <class T>
-  INLINE T maxError(T *buffer1, T *buffer2, int length); 
+  INLINE T maxError(T *buffer1, T *buffer2, int length);
 
   /** Returns the index of minimum value of the buffer ("<"-operator must be defined). */
   template <class T>
@@ -183,49 +184,49 @@ namespace rosic
   template <class T>
   INLINE T minValue(T *buffer, int length);
 
-  /** Computes the mean (i.e. the DC-component) from the passed buffer. The type must define operators: +=, / and a constructor which takes 
+  /** Computes the mean (i.e. the DC-component) from the passed buffer. The type must define operators: +=, / and a constructor which takes
   an int and initializes to zero when 0 is passed and a typecast from int. */
   template <class T>
-  T mean(T *buffer, int length);  
+  T mean(T *buffer, int length);
 
   /** Returns the median of the passed buffer. */
   template <class T>
-  T median(T *buffer, int length); 
+  T median(T *buffer, int length);
 
-  /** Multiplies the elements of 'buffer1' and 'buffer2' - type must define operator '*'. The 'result' buffer may be the same as 'buffer1' 
+  /** Multiplies the elements of 'buffer1' and 'buffer2' - type must define operator '*'. The 'result' buffer may be the same as 'buffer1'
   or 'buffer2'. */
   template <class T>
-  void multiply(T *buffer1, T *buffer2, T *result, int length); 
+  void multiply(T *buffer1, T *buffer2, T *result, int length);
 
-  /** Normalizes the maximum value of the passed array. The type must define: >, *=, / and a constructor that takes an int and initializes 
+  /** Normalizes the maximum value of the passed array. The type must define: >, *=, / and a constructor that takes an int and initializes
   to 0 when 0 is passed. Additionaly, it must be suitable for absT - that additionaly requires definition of unary '-' and '<'. */
   template <class T>
-  void normalize(T *buffer, int length, T maximum);  
+  void normalize(T *buffer, int length, T maximum);
 
-  /** Rearranges/permutes and array of class T into bit-reversed order (in place). The 'length' MUST be the 'numBits' th power of two (this 
+  /** Rearranges/permutes and array of class T into bit-reversed order (in place). The 'length' MUST be the 'numBits' th power of two (this
   is not checked for). */
   //template <class T>
   //INLINE void orderBitReversedInPlace(T* buffer, int length, int numStages);
 
-  /** Rearranges/permutes and array of type T into bit-reversed order. The 'length' MUST be the 'numBits' th power of two (this is not 
+  /** Rearranges/permutes and array of type T into bit-reversed order. The 'length' MUST be the 'numBits' th power of two (this is not
   checked for). */
   template <class T>
   INLINE void orderBitReversedOutOfPlace(T *inBuffer, T *outBuffer, int length, int numBits);
 
-  /** Returns the product of the elements in the buffer for types which define the multiplication operator (the *= version thereof) and a 
-  constructor which can take an int paramater as argument and initializes to the multiplicative neutral element of that class when 1 is 
+  /** Returns the product of the elements in the buffer for types which define the multiplication operator (the *= version thereof) and a
+  constructor which can take an int paramater as argument and initializes to the multiplicative neutral element of that class when 1 is
   passed . */
   template <class T>
   INLINE T product(T *buffer, int length);
 
-  /** Removes mean (i.e. the DC-component) from the passed buffer. The type must define operators: +=, -=, / and a constructor which takes 
+  /** Removes mean (i.e. the DC-component) from the passed buffer. The type must define operators: +=, -=, / and a constructor which takes
   an int and initializes to zero when 0 is passed and a typecast from int. */
   template <class T>
-  void removeMean(T *buffer, int length);  
+  void removeMean(T *buffer, int length);
 
   /** Reverses the order of the elements the passed array. */
   template <class T>
-  void reverse(T *buffer, int length);  
+  void reverse(T *buffer, int length);
 
   /** The maximum of two objects on which the ">"-operator is defined. */
   template <class T>
@@ -245,15 +246,15 @@ namespace rosic
 
   /** Scales the buffer by a constant factor. */
   template <class T>
-  void scale(T *buffer, T *result, int length, T scaleFactor);  
-  //void scale(T *buffer, int length, T scaleFactor);  
+  void scale(T *buffer, T *result, int length, T scaleFactor);
+  //void scale(T *buffer, int length, T scaleFactor);
 
-  /** Subtracts the elements of 'buffer2' from 'buffer1' - type must define operator '-'. The 'result' buffer may be the same as 'buffer1' 
+  /** Subtracts the elements of 'buffer2' from 'buffer1' - type must define operator '-'. The 'result' buffer may be the same as 'buffer1'
   or 'buffer2'. */
   template <class T>
-  void subtract(T *buffer1, T *buffer2, T *result, int length); 
+  void subtract(T *buffer1, T *buffer2, T *result, int length);
 
-  /** Returns the sum of the elements in the buffer for types which define the addition operator (the += version thereof) and a constructor 
+  /** Returns the sum of the elements in the buffer for types which define the addition operator (the += version thereof) and a constructor
   which can take an int paramater as argument and initializes to the additive neutral element of that class when 0 is passed . */
   template <class T>
   INLINE T sum(T *buffer, int length);
@@ -343,20 +344,20 @@ namespace rosic
     else if( numPositions > 0 )
     {
       memcpy(  tmp,        &buffer[length-na],          na*sizeof(T));
-      memmove(&buffer[na],  buffer,            (length-na)*sizeof(T));   
+      memmove(&buffer[na],  buffer,            (length-na)*sizeof(T));
       memcpy(  buffer,      tmp,                        na*sizeof(T));
     }
   }
 
 
   // for some reason, circularShiftInterpolated can't use the overloaded wrapAround function above
-  // ...it would use the integer version there, if we don't specifically call a differently named 
+  // ...it would use the integer version there, if we don't specifically call a differently named
   // version there - the compiler gives a warning about convering double-to-int ...which is not what
   // we want there . so, having this function is a workaround:
   INLINE double wrapAroundDbl(double numberToWrap, double length)
   {
     while( numberToWrap < 0.0 )
-      numberToWrap += length;  
+      numberToWrap += length;
     return fmod(numberToWrap, length);
   }
 
@@ -365,7 +366,7 @@ namespace rosic
   {
     double read = wrapAroundDbl(numPositions, (double) length);
     int    w    = 0;                       // write position
-    int    r    = floorInt(read);          // integer part of read position     
+    int    r    = floorInt(read);          // integer part of read position
     double f    = read-r;                  // fractional part of read position
     double f2   = 1.0-f;
     T *tmp      = new T[length];
@@ -375,7 +376,7 @@ namespace rosic
       buffer[w] = f2*tmp[r] + f*tmp[r+1];
       r++;
       w++;
-    } 
+    }
     buffer[w] = f2*tmp[r] + f*tmp[0];
     r=0;
     w++;
@@ -414,7 +415,7 @@ namespace rosic
     int n, k;                        // indices
 
     // init the result-buffer with the default constructor of class T (this should create an all-zeros sequence):
-    for(n=0; n<yLength; n++) 
+    for(n=0; n<yLength; n++)
       y[n] = T(0);
 
     // do the convolution:
@@ -422,7 +423,7 @@ namespace rosic
     {
       for(k=0; k<hLength; k++)
       {
-        if( (n-k) >= 0 && (n-k) < xLength )  
+        if( (n-k) >= 0 && (n-k) < xLength )
           y[n] += h[k] * x[n-k];
       }
     }
@@ -450,10 +451,10 @@ namespace rosic
   }
 
   template <class T>
-  void copyBufferWithLinearInterpolation(T *source, int sourceLength, T *destination, 
+  void copyBufferWithLinearInterpolation(T *source, int sourceLength, T *destination,
     int destinationLength)
   {
-    double increment    = (double) sourceLength / (double) destinationLength; 
+    double increment    = (double) sourceLength / (double) destinationLength;
     double readPosition = 0.0;
     for(int n=0; n<destinationLength; n++)
     {
@@ -546,7 +547,7 @@ namespace rosic
     }
     delete tmp;
   }
- 
+
   template <class T>
   void fillWithImpulse(T *buffer, int length)
   {
@@ -637,7 +638,7 @@ namespace rosic
 
 
   template <class T>
-  void filterBiDirectional(T *x, int xLength, T *y, int yLength, T *b, int bOrder, T *a, 
+  void filterBiDirectional(T *x, int xLength, T *y, int yLength, T *b, int bOrder, T *a,
     int aOrder, int numRingOutSamples)
   {
     // allocate and intitialize memory for the filters internal state:
@@ -775,8 +776,8 @@ namespace rosic
   void fitIntoRange(T *buffer, int length, T min, T max)
   {
     T range        = max-min;
-    T currentMin   = minValue(buffer, length); 
-    T currentMax   = maxValue(buffer, length); 
+    T currentMin   = minValue(buffer, length);
+    T currentMax   = maxValue(buffer, length);
     T currentRange = currentMax - currentMin;
     if( currentRange == T(0) )
       return; // avoid divide-by-zero
@@ -897,7 +898,7 @@ namespace rosic
     if( isOdd(length) )
       med = tmpBuffer[(length-1)/2];
     else
-      med = (T) ( 0.5 * ( tmpBuffer[length/2] + tmpBuffer[length/2-1] ) ); 
+      med = (T) ( 0.5 * ( tmpBuffer[length/2] + tmpBuffer[length/2-1] ) );
 
     delete[] tmpBuffer;
     return med;
@@ -1015,7 +1016,7 @@ namespace rosic
   {
     T tmp = in1;
     in1   = in2;
-    in2   = tmp;   
+    in2   = tmp;
   }
 
   template <class T>
