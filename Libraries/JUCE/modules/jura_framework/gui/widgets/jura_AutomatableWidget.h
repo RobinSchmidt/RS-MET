@@ -56,6 +56,8 @@ protected:
   /** Opens the PopupMenu that appears on right clicks. */
   virtual void openRightClickPopupMenu();
 
+  virtual void closePopUp();
+
   /** Tries to cast the Parameter that is underlying the wrapped widget into an 
   AutomatableParameter and returns the pointer to it. Note that this may return a nullptr, when 
   the Parameter is not of type AutomatableParameter. */
@@ -65,9 +67,9 @@ protected:
   MetaControlledParameter* getMetaControlledParameter();
 
 
-
   RPopUpMenu *rightClickPopUp = nullptr; // object created when it's needed for the 1st time
   RWidget *wrappedWidget;                // widget that is being made automatable
+  bool popUpIsOpen = false;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomatableWidget)
 };

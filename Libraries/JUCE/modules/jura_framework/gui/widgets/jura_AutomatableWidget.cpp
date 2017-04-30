@@ -10,10 +10,20 @@ AutomatableWidget::~AutomatableWidget()
 
 bool AutomatableWidget::isPopUpOpen()
 {
-  if(rightClickPopUp == nullptr)
-    return false;
-  else
-    return rightClickPopUp->isOpen();
+  return popUpIsOpen;
+
+  // The code below doesn't work because apparently, when the user clicks on a widget while the
+  // popup is open, the popup gets closed first and only after that, the mouseDown callback of the 
+  // widget is received, so isPopUpOpen would always return false in the mouseDown callback. The 
+  // desired behavior is that one right-click on the widget opens the popup and a second click 
+  // closes it. This behavior now requires thag we maintain a popUpIsOpen flag here and that flag 
+  // should be set in the mouseDown method of the widget. Without that, a second right-click would
+  // make the menu disappear for a fraction of a second and immediately reappear.
+
+  //if(rightClickPopUp == nullptr)
+  //  return false;
+  //else
+  //  return rightClickPopUp->isOpen();
 }
 
 void AutomatableWidget::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
@@ -135,6 +145,15 @@ void AutomatableWidget::openRightClickPopupMenu()
   // after opening (so it appears as if it doesn't open at all). We could avoid it by calling
   // setDismissOnFocusLoss(false) in our constructor, but then it will stay open all the time
   // until we choose some option.
+
+  popUpIsOpen = true;
+}
+
+void AutomatableWidget::closePopUp()
+{
+  if(rightClickPopUp != nullptr)
+    rightClickPopUp->dismiss();
+  popUpIsOpen = false;
 }
 
 AutomatableParameter* AutomatableWidget::getAutomatableParameter()
@@ -157,10 +176,23 @@ AutomatableSlider::AutomatableSlider()
 
 void AutomatableSlider::mouseDown(const MouseEvent& e)
 {
-  if( e.mods.isRightButtonDown() )
-    openRightClickPopupMenu();
+  if(e.mods.isRightButtonDown())
+  {
+    if(!isPopUpOpen())
+      openRightClickPopupMenu();
+    else
+      closePopUp();
+  }
   else
+  {
     RSlider::mouseDown(e);
+
+    // doesn't work:
+    //if(!isPopUpOpen())
+    //  RSlider::mouseDown(e);
+    //else
+    //  closePopUp();
+  }
 }
 
 void AutomatableSlider::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
