@@ -1,7 +1,6 @@
 #include "rosic_EngineersFilter.h"
 using namespace rosic;
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:
 
 EngineersFilter::EngineersFilter() : BiquadCascadeStereo(25)
@@ -10,7 +9,6 @@ EngineersFilter::EngineersFilter() : BiquadCascadeStereo(25)
   sampleRate = 44100.0;
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
 // parameter settings:
 
 void EngineersFilter::setSampleRate(double newSampleRate)
@@ -71,10 +69,10 @@ void EngineersFilter::setStopbandRejection(double newStopbandRejection)
   updateCoefficients();
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
 // inquiry:
 
-void EngineersFilter::getMagnitudeResponse(double *frequencies, double *magnitudes, int numBins, bool inDecibels, bool accumulate)
+void EngineersFilter::getMagnitudeResponse(double *frequencies, double *magnitudes, int numBins, 
+  bool inDecibels, bool accumulate)
 {
   double *w = new double[numBins];
   for(int k = 0; k < numBins; k++)
@@ -88,7 +86,6 @@ void EngineersFilter::getMagnitudeResponse(double *frequencies, double *magnitud
   delete[] w;
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
 // internal functions:
 
 void EngineersFilter::updateCoefficients()
