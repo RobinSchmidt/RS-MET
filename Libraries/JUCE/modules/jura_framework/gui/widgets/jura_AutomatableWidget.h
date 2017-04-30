@@ -17,6 +17,9 @@ public:
 
   virtual ~AutomatableWidget();
 
+  /** Returns true if the popup menu is currently open, false otherwise. */
+  bool isPopUpOpen();
+
   virtual void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged) override;
 
 protected:

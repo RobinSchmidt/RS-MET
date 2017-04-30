@@ -8,6 +8,14 @@ AutomatableWidget::~AutomatableWidget()
   delete rightClickPopUp;
 }
 
+bool AutomatableWidget::isPopUpOpen()
+{
+  if(rightClickPopUp == nullptr)
+    return false;
+  else
+    return rightClickPopUp->isOpen();
+}
+
 void AutomatableWidget::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
 {
   if(menuThatHasChanged != rightClickPopUp)
