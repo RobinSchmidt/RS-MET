@@ -246,7 +246,12 @@ AutomatableComboBox::AutomatableComboBox()
 void AutomatableComboBox::mouseDown(const MouseEvent& e)
 {
   if( e.mods.isRightButtonDown() )
-    openRightClickPopupMenu();
+  {
+    if(!isPopUpOpen())
+      openRightClickPopupMenu();
+    else
+      AutomatableWidget::closePopUp();
+  }
   else
     RComboBox::mouseDown(e);
 }
@@ -270,7 +275,12 @@ AutomatableButton::AutomatableButton(const juce::String& buttonText)
 void AutomatableButton::mouseDown(const MouseEvent& e)
 {
   if( e.mods.isRightButtonDown() )
-    openRightClickPopupMenu();
+  {
+    if(!isPopUpOpen())
+      openRightClickPopupMenu();
+    else
+      closePopUp();
+  }
   else
     RButton::mouseDown(e);
 }
