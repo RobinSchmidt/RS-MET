@@ -26,7 +26,7 @@ AudioPlugin::AudioPlugin(int numParameters)
 }
 
 AudioPlugin::~AudioPlugin()
-{    
+{
   ScopedLock sl(plugInLock);
   if( wrappedAudioModule != nullptr )  // not necessary? it's actually safe to delete a nullptr
   {
@@ -39,7 +39,7 @@ void AudioPlugin::setAudioModuleToWrap(AudioModule* moduleToWrap)
 {
   jassert(moduleToWrap != nullptr); // you must pass a valid object here
   wrappedAudioModule = moduleToWrap;
-  wrappedAudioModule->setMetaParameterManager(&metaParaManager); 
+  wrappedAudioModule->setMetaParameterManager(&metaParaManager);
 }
 
 void AudioPlugin::autoAttachMetaParameters()
@@ -54,14 +54,14 @@ void AudioPlugin::autoAttachMetaParameters()
       metaParaManager.setMetaValue(metaIndex, mcp->getProportionalValue());
       metaParaManager.setMetaName( metaIndex, mcp->getName());
       mcp->attachToMetaParameter(metaIndex);
-      metaIndex++; 
+      metaIndex++;
     }
   }
 }
 
 // mandatory overrides for juce::AudioProcessor:
 
-void AudioPlugin::prepareToPlay(double sampleRate, int maximumExpectedSamplesPerBlock) 
+void AudioPlugin::prepareToPlay(double sampleRate, int maximumExpectedSamplesPerBlock)
 {
   ScopedLock sl(plugInLock);
 
@@ -77,9 +77,9 @@ void AudioPlugin::prepareToPlay(double sampleRate, int maximumExpectedSamplesPer
   }
   else
   {
-    // The host will call the double precision version of the processBlock callback, so we don't 
+    // The host will call the double precision version of the processBlock callback, so we don't
     // need an internal conversion buffer. We don't want to waste memory, so we request the
-    // internal buffer to allocate a zero-sized memory block (i hope, this works - ToDo: check in 
+    // internal buffer to allocate a zero-sized memory block (i hope, this works - ToDo: check in
     // the debugger):
     internalAudioBuffer.setSize(0, 0, false, false, false);
   }
@@ -96,7 +96,7 @@ void convertAudioBuffer(const AudioBuffer<SourceType>& source, AudioBuffer<Targe
 
   int numChannels = jmin(source.getNumChannels(), target.getNumChannels());
   int numSamples  = jmin(source.getNumSamples(),  target.getNumSamples());
-  const SourceType *sourcePointer;    
+  const SourceType *sourcePointer;
   TargetType *targetPointer;
   for(int channel = 0; channel < numChannels; channel++)
   {
@@ -115,17 +115,17 @@ void AudioPlugin::processBlock(AudioBuffer<float>& buffer, MidiBuffer& midiMessa
   convertAudioBuffer(internalAudioBuffer, buffer);  // double -> float
 }
 
-//bool AudioPlugin::acceptsMidi() const 
-//{ 
+//bool AudioPlugin::acceptsMidi() const
+//{
 //  if(dynamic_cast<AudioModuleWithMidiIn*>(underlyingAudioModule) != nullptr)
 //    return true;
 //  return false;
-//  // \todo at some point (when we want to write MIDI processors, i.e. plugins that modify or 
+//  // \todo at some point (when we want to write MIDI processors, i.e. plugins that modify or
 //  // produce MIDI data, we should handle the producesMidi function in a similar way
-//} 
+//}
 
-AudioProcessorEditor* AudioPlugin::createEditor() 
-{ 
+AudioProcessorEditor* AudioPlugin::createEditor()
+{
   if(wrappedAudioModule == nullptr)
     return nullptr;
   ParameterObserver::guiAutomationSwitch = false;   // don't automate widgets during creation
@@ -172,10 +172,10 @@ void AudioPlugin::setStateInformation(const void* data, int sizeInBytes)
     delete xml;
 
     // some hosts (Tracktion) seem to keep and re-use an open GUI when a new project is loaded, so
-    // we must make sure, that this re-used GUI is updated according to the new recalled state - we 
+    // we must make sure, that this re-used GUI is updated according to the new recalled state - we
     // do this by broadcasting a changeMessage which will be picked up by AudioPlugInEditor
     //sendChangeMessage();
-    // (this comment is old and refers to the old way of doing it ...but i want to verify this in 
+    // (this comment is old and refers to the old way of doing it ...but i want to verify this in
     // Tracktion someday)
   }
 }
@@ -192,7 +192,7 @@ void AudioPlugin::processBlock(AudioBuffer<double> &buffer, MidiBuffer &midiMess
     int numSamples  = buffer.getNumSamples();
     double **inOutBuffer = buffer.getArrayOfWritePointers();
 
-    // later, we have to add the MIDI processing here...(and call 
+    // later, we have to add the MIDI processing here...(and call
     // underlyingAudioModule->handleMidiMessage accordingly) ...but maybe we should do that in
     // a subclass AudioPluginWithMidiIn
 
@@ -202,12 +202,12 @@ void AudioPlugin::processBlock(AudioBuffer<double> &buffer, MidiBuffer &midiMess
     buffer.clear();
 }
 
-bool AudioPlugin::setPreferredBusArrangement(bool isInput, int bus, 
+bool AudioPlugin::setPreferredBusArrangement(bool isInput, int bus,
   const AudioChannelSet& preferredSet)
 {
-  // I don't really know, if it's necessarry to override this, but i did hit a breakpoint related 
-  // to this one day and overriding this made it go away. But it might have been something else to 
-  // blame (some things have changed since then). We need some testing/debugging with and without 
+  // I don't really know, if it's necessarry to override this, but i did hit a breakpoint related
+  // to this one day and overriding this made it go away. But it might have been something else to
+  // blame (some things have changed since then). We need some testing/debugging with and without
   // this override...
 
   // Reject any bus arrangements that are not compatible with your plugin
@@ -233,7 +233,7 @@ void AudioPlugin::createHostAutomatableParameters(int numParameters)
 
 void AudioPluginWithMidiIn::processBlock(AudioBuffer<double> &buffer, MidiBuffer &midiMessages)
 {
-  //AudioPlugin::processBlock(buffer, midiMessages); 
+  //AudioPlugin::processBlock(buffer, midiMessages);
   //// preliminary - later we need to handle the midiMessages here....
 
   ScopedLock sl(plugInLock);
@@ -254,7 +254,7 @@ void AudioPluginWithMidiIn::processBlock(AudioBuffer<double> &buffer, MidiBuffer
 //#endif
 // this crashes reaper
 
-  // request time-info from host and update the bpm-values for the modulators accordingly, if they 
+  // request time-info from host and update the bpm-values for the modulators accordingly, if they
   // are in sync mode (maybe this should be moved up into the baseclass AudioModule):
   int timeToNextTriggerInSamples = -1;
   if( wrappedAudioModule->wantsTempoSyncInfo )
@@ -264,18 +264,18 @@ void AudioPluginWithMidiIn::processBlock(AudioBuffer<double> &buffer, MidiBuffer
     {
       if( info.bpm <= 0.0 )
         info.bpm = 120.0;  // fallback value when nothing meaningful is passed
-      wrappedAudioModule->setBeatsPerMinute(info.bpm); 
+      wrappedAudioModule->setBeatsPerMinute(info.bpm);
     }
 
     if( wrappedAudioModule->getTriggerInterval() != 0.0 )
     {
-      double timeInBeats = secondsToBeats(info.timeInSeconds, info.bpm); 
+      double timeInBeats = secondsToBeats(info.timeInSeconds, info.bpm);
       // kludge - will probably not work when tempo changes - use ppqPosition here later....
 
-      double timeToNextTriggerInBeats = wrappedAudioModule->getTriggerInterval()                                 
+      double timeToNextTriggerInBeats = wrappedAudioModule->getTriggerInterval()
         - fmod(timeInBeats, wrappedAudioModule->getTriggerInterval());
 
-      timeToNextTriggerInSamples = 
+      timeToNextTriggerInSamples =
         RAPT::roundToInt(getSampleRate()*beatsToSeconds(timeToNextTriggerInBeats, info.bpm));
 
       if( timeToNextTriggerInSamples >= buffer.getNumSamples() )
@@ -286,7 +286,7 @@ void AudioPluginWithMidiIn::processBlock(AudioBuffer<double> &buffer, MidiBuffer
   if(midiMessages.isEmpty() && timeToNextTriggerInSamples == -1)
   {
     //underlyingAudioModule->processBlock(buffer, 0, buffer.getNumSamples()); // old
-    AudioPlugin::processBlock(buffer, midiMessages); 
+    AudioPlugin::processBlock(buffer, midiMessages);
     // no messages to process - baseclass method can handle this
   }
   else
@@ -306,10 +306,10 @@ void AudioPluginWithMidiIn::processBlock(AudioBuffer<double> &buffer, MidiBuffer
       currentMidiMessageOffset = -1; // may be set to another value by function on next line
       aMidiMessageWasRetrieved = midiBufferIterator.getNextEvent(
         currentMidiMessage, currentMidiMessageOffset);
-      while( aMidiMessageWasRetrieved && currentMidiMessageOffset == i ) 
+      while( aMidiMessageWasRetrieved && currentMidiMessageOffset == i )
       {
         handleMidiMessage(currentMidiMessage); // respond to the midi-message
-        aMidiMessageWasRetrieved = midiBufferIterator.getNextEvent(currentMidiMessage, 
+        aMidiMessageWasRetrieved = midiBufferIterator.getNextEvent(currentMidiMessage,
           currentMidiMessageOffset);           // get the next message at this sample
       }
 
@@ -319,36 +319,34 @@ void AudioPluginWithMidiIn::processBlock(AudioBuffer<double> &buffer, MidiBuffer
         wrappedAudioModule->trigger();
 
         // update the time to the next trigger:
-        timeToNextTriggerInSamples = -1;  
+        timeToNextTriggerInSamples = -1;
         // preliminary - assumes that the next trigger is not inside this buffer (which is assured
         // only when buffersize is much smaller than the retrigger interval - which is probably
         // true in realtime situations but maybe not in rendering)
-
-        int dummy = 0;
       }
 
-      // all messages at this time instant have been processed - now determine the time-offset to 
-      // the next event and compute the number of samples that can be processed without 
-      // interrupting events (subLength):    
-      if( aMidiMessageWasRetrieved ) 
+      // all messages at this time instant have been processed - now determine the time-offset to
+      // the next event and compute the number of samples that can be processed without
+      // interrupting events (subLength):
+      if( aMidiMessageWasRetrieved )
       {
         // ignore clock messages:
         while( aMidiMessageWasRetrieved && currentMidiMessage.isMidiClock() )
         {
           aMidiMessageWasRetrieved = midiBufferIterator.getNextEvent(
-            currentMidiMessage, currentMidiMessageOffset);      
+            currentMidiMessage, currentMidiMessageOffset);
         }
         if( aMidiMessageWasRetrieved )
-          subLength = currentMidiMessageOffset - start; 
+          subLength = currentMidiMessageOffset - start;
         else
           subLength = buffer.getNumSamples() - start;
       }
       else if( timeToNextTriggerInSamples != -1 )
-        subLength = timeToNextTriggerInSamples - start; 
+        subLength = timeToNextTriggerInSamples - start;
       else
         subLength = buffer.getNumSamples() - start;
 
-      // process the block of sample-frames before the occurrence of the next event:  
+      // process the block of sample-frames before the occurrence of the next event:
       //underlyingAudioModule->processBlock(buffer, start, subLength); // old
       double* channelPointers[2];   // we assume 2 channels
       channelPointers[0] = buffer.getWritePointer(0) + start;
@@ -380,6 +378,6 @@ void AudioPluginWithMidiIn::setAudioModuleToWrap(AudioModule* moduleToWrap)
 {
   AudioPlugin::setAudioModuleToWrap(moduleToWrap);
   wrappedModuleWithMidiIn = dynamic_cast<AudioModuleWithMidiIn*>(moduleToWrap);
-  jassert(wrappedModuleWithMidiIn != nullptr); // trying to wrap a non-midi-enabled AudioModule 
+  jassert(wrappedModuleWithMidiIn != nullptr); // trying to wrap a non-midi-enabled AudioModule
                                                // into a midi-enabled AudioPlugin?
 }

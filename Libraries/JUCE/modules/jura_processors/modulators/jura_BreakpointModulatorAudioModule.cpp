@@ -1,8 +1,8 @@
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-BreakpointModulatorAudioModule::BreakpointModulatorAudioModule(CriticalSection *newPlugInLock,                                                          
-  RAPT::rsBreakpointModulator<double> *newBreakpointModulatorToWrap)                                                              
+BreakpointModulatorAudioModule::BreakpointModulatorAudioModule(CriticalSection *newPlugInLock,
+  RAPT::rsBreakpointModulator<double> *newBreakpointModulatorToWrap)
   : AudioModule(newPlugInLock)
 {
   jassert( newBreakpointModulatorToWrap != NULL ); // you must pass a valid object to the constructor
@@ -30,7 +30,7 @@ void BreakpointModulatorAudioModule::parameterChanged(Parameter* parameterThatHa
   case  3: wrappedBreakpointModulator->setDepth(         value); break;
   case  4: wrappedBreakpointModulator->setDepthByKey(    value); break;
   case  5: wrappedBreakpointModulator->setDepthByVel(    value); break;
-  } // end of switch( parameterIndex )  
+  } // end of switch( parameterIndex )
   markStateAsDirty();
 }
 
@@ -67,7 +67,7 @@ const juce::String modBreakpointShapeIndexToString(int shapeIndex)
   else                                   return juce::String::empty;
 }
 
-XmlElement* BreakpointModulatorAudioModule::getStateAsXml(const juce::String& stateName,                                                         
+XmlElement* BreakpointModulatorAudioModule::getStateAsXml(const juce::String& stateName,
   bool markAsClean)
 {
   // store the inherited controller mappings:
@@ -77,9 +77,9 @@ XmlElement* BreakpointModulatorAudioModule::getStateAsXml(const juce::String& st
   //if( wrappedBreakpointModulator != NULL )
   //  xmlState = breakpointModulatorStateToXml(wrappedBreakpointModulator, xmlState);
 
-  double doubleValue = 0.0;
-  int    intValue    = 0;
-  bool   boolValue   = false;
+  //double doubleValue = 0.0;
+  //int    intValue    = 0;
+  //bool   boolValue   = false;
   juce::String stringValue = juce::String::empty;
 
   // add some attributes:
@@ -117,7 +117,7 @@ XmlElement* BreakpointModulatorAudioModule::getStateAsXml(const juce::String& st
   return xmlState;
 }
 
-void BreakpointModulatorAudioModule::setStateFromXml(const XmlElement& xmlState,                                                    
+void BreakpointModulatorAudioModule::setStateFromXml(const XmlElement& xmlState,
   const juce::String& stateName, bool markAsClean)
 {
   // restore the inherited controller mappings:
@@ -127,7 +127,7 @@ void BreakpointModulatorAudioModule::setStateFromXml(const XmlElement& xmlState,
   //if( wrappedBreakpointModulator != NULL )
   //  breakpointModulatorStateFromXml(wrappedBreakpointModulator, xmlState);
 
-  bool success = true;  // get rid
+  //bool success = true;  // get rid
 
   rsBreakpointModulator<double> *modulator = wrappedBreakpointModulator; // use a shorter name here...
 
@@ -143,7 +143,7 @@ void BreakpointModulatorAudioModule::setStateFromXml(const XmlElement& xmlState,
 
   juce::String stringValue; // for temporary storage
 
-  // check if there are at least two child elements corresponding to two breakpoints (this is the 
+  // check if there are at least two child elements corresponding to two breakpoints (this is the
   // minimum allowed number):
   if( xmlState.getNumChildElements() < 2 )
     jassertfalse;
@@ -184,7 +184,7 @@ void BreakpointModulatorAudioModule::setStateFromXml(const XmlElement& xmlState,
   if( breakpointState->hasAttribute("Time")        &&
     breakpointState->hasAttribute(  "Level")       &&
     breakpointState->hasAttribute(  "Shape")       &&
-    breakpointState->hasAttribute(  "ShapeAmount") ) 
+    breakpointState->hasAttribute(  "ShapeAmount") )
   {
     time        = breakpointState->getDoubleAttribute("Time",        1.0);
     level       = breakpointState->getDoubleAttribute("Level",       0.0);
@@ -204,7 +204,7 @@ void BreakpointModulatorAudioModule::setStateFromXml(const XmlElement& xmlState,
     if( breakpointState->hasAttribute("Time")        &&
       breakpointState->hasAttribute(  "Level")       &&
       breakpointState->hasAttribute(  "Shape")       &&
-      breakpointState->hasAttribute(  "ShapeAmount")     ) 
+      breakpointState->hasAttribute(  "ShapeAmount")     )
     {
       time        = breakpointState->getDoubleAttribute("Time", 1.0);
       level       = breakpointState->getDoubleAttribute("Level", 0.0);
@@ -256,7 +256,7 @@ void BreakpointModulatorAudioModule::setStateFromXml(const XmlElement& xmlState,
 }
 
 void BreakpointModulatorAudioModule::setStateToDefaults()
-{  
+{
   if( wrappedBreakpointModulator != NULL )
     wrappedBreakpointModulator->initialize();
 }

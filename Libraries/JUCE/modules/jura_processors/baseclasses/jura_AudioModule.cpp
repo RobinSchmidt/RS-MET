@@ -11,7 +11,7 @@ void AudioModuleDeletionWatcher::addWatchedAudioModule(AudioModule *moduleToBeWa
     watchedAudioModules.addIfNotAlreadyThere(moduleToBeWatched); }
 }
 
-void AudioModuleDeletionWatcher::removeWatchedAudioModule(AudioModule 
+void AudioModuleDeletionWatcher::removeWatchedAudioModule(AudioModule
   *moduleNotToBeWatchedAnymore)
 {
   if( moduleNotToBeWatchedAnymore != nullptr ) {
@@ -60,14 +60,14 @@ AudioModule::~AudioModule()
 void AudioModule::setSampleRate(double newSampleRate)
 {
   ScopedLock scopedLock(*lock);
-  for(int i=0; i<childModules.size(); i++)
+  for(int i = 0; i < (int)childModules.size(); i++)
     childModules[i]->setSampleRate(newSampleRate);
 }
 
 void AudioModule::setBeatsPerMinute(double newBpm)
 {
   ScopedLock scopedLock(*lock);
-  for(int i=0; i<childModules.size(); i++)
+  for(int i = 0; i < (int)childModules.size(); i++)
     childModules[i]->setBeatsPerMinute(newBpm);
 }
 
@@ -82,7 +82,7 @@ void AudioModule::setModuleNameAppendix(const juce::String& newAppendix)
 }
 
 void AudioModule::addChildAudioModule(AudioModule* moduleToAdd)
-{ 
+{
   ScopedLock scopedLock(*lock);
   appendIfNotAlreadyThere(childModules, moduleToAdd);
   moduleToAdd->setMetaParameterManager(metaParamManager);
@@ -90,11 +90,11 @@ void AudioModule::addChildAudioModule(AudioModule* moduleToAdd)
 }
 
 void AudioModule::removeChildAudioModule(AudioModule* moduleToRemove, bool deleteObject)
-{ 
+{
   ScopedLock scopedLock(*lock);
   int index = find(childModules, moduleToRemove);
   jassert( index != -1 ); // trying to remove a module which is not a child of this one?
-  if( index != -1 ) { 
+  if( index != -1 ) {
     remove(childModules, index);
     removeChildStateManager(moduleToRemove);
     moduleToRemove->setMetaParameterManager(nullptr);
@@ -130,7 +130,7 @@ void AudioModule::assignMidiController(const String& nameOfParameter, int contro
 
 void AudioModule::setMidiController(int controllerNumber, float controllerValue)
 {
-  // loop through all the observed parameters and pass the controller value to them - the 
+  // loop through all the observed parameters and pass the controller value to them - the
   // parameters themselves will take care to respond only to controller-numbers which are assigned
   // to them:
   ScopedLock scopedLock(*lock);
@@ -169,7 +169,7 @@ int AudioModule::getIndexAmongNameSakes(AudioModule *child)
   ScopedLock scopedLock(*lock);
   juce::String name = child->getModuleName();
   int index = -1;
-  for(int c = 0; c < childModules.size(); c++) {
+  for(int c = 0; c < (int)childModules.size(); c++) {
     if( childModules[c]->getModuleName() == name ) {
       index++;
       if( childModules[c] == child )
@@ -244,9 +244,9 @@ void AudioModule::metaValuesToXml(XmlElement* xmlState)
         allMetasAtDefault = false;
         xmlValues->setAttribute("M" + String(i), value); }}
     if( !allMetasAtDefault ) // no child xml needs to be stored
-      xmlState->addChildElement(xmlValues); 
+      xmlState->addChildElement(xmlValues);
     else
-      delete xmlValues; 
+      delete xmlValues;
   }
 }
 
@@ -258,13 +258,13 @@ XmlElement* AudioModule::getStateAsXml(const juce::String& stateName, bool markA
     return nullptr;
 
   // the XmlElement which stores all the relevant state-information:
-  XmlElement* xmlState = new XmlElement(moduleName); 
+  XmlElement* xmlState = new XmlElement(moduleName);
 
   // store a patch format version (useful when patch-formats change later):
   xmlState->setAttribute("PatchFormat", patchFormatIndex);
 
   // store midi and/or meta mappings (if any):
-  midiMappingToXml(xmlState);  
+  midiMappingToXml(xmlState);
   metaMappingToXml(xmlState);
   metaValuesToXml(xmlState);
 
@@ -281,7 +281,7 @@ XmlElement* AudioModule::getStateAsXml(const juce::String& stateName, bool markA
           xmlState->setAttribute(p->getName(), juce::String(p->getValue()) ); }}}
 
   // save the states of all childModules in child-XmlElements:
-  for(int c = 0; c < childModules.size(); c++) {
+  for(int c = 0; c < (int)childModules.size(); c++) {
     if( childModules[c]->wantsSaveAndRecallState() ) {
       XmlElement* childState = childModules[c]->getStateAsXml(
         childModules[c]->getStateName(), false);
@@ -300,7 +300,7 @@ void AudioModule::midiMappingFromXml(const XmlElement &xmlState)
   forEachXmlChildElement(*xmlMapping, xmlParamSetup) {
     Parameter* p = getParameterByName(xmlParamSetup->getTagName());
     AutomatableParameter *ap = dynamic_cast<AutomatableParameter*>(p);
-    if( ap != nullptr ) { 
+    if( ap != nullptr ) {
       ap->assignMidiController(   xmlParamSetup->getIntAttribute("MidiCC", -1));
       ap->setLowerAutomationLimit(xmlParamSetup->getDoubleAttribute("Min", ap->getMinValue()));
       ap->setUpperAutomationLimit(xmlParamSetup->getDoubleAttribute("Max", ap->getMaxValue())); }}
@@ -308,7 +308,7 @@ void AudioModule::midiMappingFromXml(const XmlElement &xmlState)
 
 void AudioModule::metaMappingFromXml(const XmlElement &xmlState)
 {
-  detachMetaParameters(); 
+  detachMetaParameters();
   XmlElement* xmlMapping = xmlState.getChildByName("MetaMapping");
   if( xmlMapping == nullptr )
     return; // no mapping stored, nothing to do
@@ -326,7 +326,7 @@ void AudioModule::metaValuesFromXml(const XmlElement &xmlState)
     metaParamManager->resetAllToDefaults();
     XmlElement* xmlValues = xmlState.getChildByName("MetaParameterValues");
     if(xmlValues == nullptr)
-      return; 
+      return;
     for(int i = 0; i < xmlValues->getNumAttributes(); i++) {
       String tmp = xmlValues->getAttributeName(i);
       tmp = tmp.fromLastOccurrenceOf("M", false, false);
@@ -336,7 +336,7 @@ void AudioModule::metaValuesFromXml(const XmlElement &xmlState)
       metaParamManager->setMetaValue(metaIndex, metaValue); }}
 }
 
-void AudioModule::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 
+void AudioModule::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
   bool markAsClean)
 {
   ScopedLock scopedLock(*lock);
@@ -364,7 +364,7 @@ void AudioModule::setStateFromXml(const XmlElement& xmlState, const juce::String
 
   // if we have child-modules, we try to restore their states by looking for corresponding
   // child XmlElements in the xmlState:
-  for(int c = 0; c < childModules.size(); c++)
+  for(int c = 0; c < (int)childModules.size(); c++)
   {
     childModules[c]->setStateToDefaults();
     int indexAmongNameSakes = getIndexAmongNameSakes(childModules[c]);
@@ -377,9 +377,9 @@ void AudioModule::setStateFromXml(const XmlElement& xmlState, const juce::String
     }
   }
 
-  // this call we need for setting our parent dirty when some embedded sub-module loads a state 
-  // - when the call was due to the outer parent loading its state, the subsequent call to 
-  // setStateName may set it back to 'clean'  
+  // this call we need for setting our parent dirty when some embedded sub-module loads a state
+  // - when the call was due to the outer parent loading its state, the subsequent call to
+  // setStateName may set it back to 'clean'
   if( parent != NULL )
     parent->markStateAsDirty();
 
@@ -391,9 +391,9 @@ XmlElement AudioModule::convertXmlStateIfNecessary(const XmlElement& xmlState)
   ScopedLock scopedLock(*lock);
 
   int xmlPatchFormatIndex = xmlState.getIntAttribute("PatchFormat", 1);
-  jassert( xmlPatchFormatIndex == this->patchFormatIndex ); 
+  jassert( xmlPatchFormatIndex == this->patchFormatIndex );
   // You should override the state conversion in your subclass - the idea is that when the stored
-  // patch format number in the xml differs from our patchFormatIndex member variable here, a 
+  // patch format number in the xml differs from our patchFormatIndex member variable here, a
   // conversion may be necessary. That way, new versions of the plugin that may use a different
   // patch format can still load patches that were stored by older versions.
 
@@ -413,24 +413,24 @@ void AudioModule::setMetaParameterManager(MetaParameterManager* managerToUse)
   metaParamManager = managerToUse;
   int i;
 
-  for(i = 0; i < childModules.size(); i++)
+  for(i = 0; i < (int)childModules.size(); i++)
     childModules[i]->setMetaParameterManager(metaParamManager);
 
   // maybe factor out - we may need to do this in other places as well:
-  for(i = 0; i < parameters.size(); i++)
+  for(i = 0; i < (int)parameters.size(); i++)
   {
     MetaControlledParameter* mcp = dynamic_cast<MetaControlledParameter*>(parameters[i]);
     if(mcp != nullptr)
       mcp->setMetaParameterManager(metaParamManager);
   }
 }
-    
+
 void AudioModule::registerDeletionWatcher(AudioModuleDeletionWatcher *watcher)
 {
   ScopedLock scopedLock(*lock);
   deletionWatchers.addIfNotAlreadyThere(watcher);
 }
-           
+
 void AudioModule::deRegisterDeletionWatcher(AudioModuleDeletionWatcher *watcher)
 {
   ScopedLock scopedLock(*lock);
@@ -444,7 +444,7 @@ void AudioModule::updateCoreObjectAccordingToParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  // make a call to parameterChanged for each parameter in order to set up the DSP-core to reflect 
+  // make a call to parameterChanged for each parameter in order to set up the DSP-core to reflect
   // the values the automatable parameters:
   for(int i=0; i < (int) parameters.size(); i++ )
     parameterChanged(parameters[i]);
@@ -454,10 +454,10 @@ void AudioModule::callParameterCallbacks(bool recursivelyForChildModules)
 {
   //ScopedLock scopedLock(*lock); // wasn't there but should be?
   int i;
-  for(i = 0; i < parameters.size(); i++)
+  for(i = 0; i < (int)parameters.size(); i++)
     parameters[i]->callValueChangeCallbacks();
   if(recursivelyForChildModules)
-    for(i = 0; i < childModules.size(); i++)
+    for(i = 0; i < (int)childModules.size(); i++)
       childModules[i]->callParameterCallbacks(true);
 }
 
@@ -465,10 +465,10 @@ void AudioModule::notifyParameterObservers(bool recursivelyForChildModules)
 {
   //ScopedLock scopedLock(*lock); // wasn't there but should be?
   int i;
-  for(i = 0; i < parameters.size(); i++)
+  for(i = 0; i < (int)parameters.size(); i++)
     parameters[i]->notifyObservers();
   if(recursivelyForChildModules)
-    for(i = 0; i < childModules.size(); i++)
+    for(i = 0; i < (int)childModules.size(); i++)
       childModules[i]->notifyParameterObservers(true);
 }
 
@@ -516,7 +516,7 @@ void AudioModuleWithMidiIn::setMidiController(int controllerNumber, float contro
 {
   ScopedLock scopedLock(*lock);
   AudioModule::setMidiController(controllerNumber, controllerValue);
-  for(int c = 0; c < childModules.size(); c++)
+  for(int c = 0; c < (int)childModules.size(); c++)
     childModules[c]->setMidiController(controllerNumber, controllerValue);
 }
 
@@ -547,7 +547,7 @@ AudioModuleEditor::AudioModuleEditor(CriticalSection* pluginLockToUse)
   init();
 
   //jassertfalse;
-  // we need to factor out all the initialization code from the other constructor above (that 
+  // we need to factor out all the initialization code from the other constructor above (that
   // takes a pointer to the AudioModule and call this init-function it from there and from here...
   // -> done -> test it
 }
@@ -567,7 +567,7 @@ void AudioModuleEditor::init()
   infoField->setDescription(juce::String("Description of GUI elements will appear here"));
   setDescriptionField(infoField, true);
 
-  addWidget( webLink = 
+  addWidget( webLink =
     new RHyperlinkButton("www.rs-met.com", URL("http://www.rs-met.com")) );
   webLink->setNoBackgroundAndOutline(true);
   webLink->setDescription(juce::String("Visit www.rs-met.com in the web"));
@@ -710,9 +710,9 @@ void AudioModuleEditor::resized()
     setupButton->setVisible(false);
     infoField->setVisible(false);
 
-    infoField->setBounds(0, getHeight(), getWidth(), 16); 
-    // despite being invisible, it needs well-defined bounds anyway because some subclasses 
-    // use them to arrange their widgets - we postion the infoField just below the actual 
+    infoField->setBounds(0, getHeight(), getWidth(), 16);
+    // despite being invisible, it needs well-defined bounds anyway because some subclasses
+    // use them to arrange their widgets - we postion the infoField just below the actual
     // component in this case
 
     webLink->setVisible(false);
@@ -757,11 +757,11 @@ void AudioModuleEditor::openPreferencesDialog()
 
 void AudioModuleEditor::loadPreferencesFromFile()
 {
-  XmlElement *xmlPreferences = getXmlFromFile( getPreferencesFileName() );    
-  if( xmlPreferences == NULL ) 
+  XmlElement *xmlPreferences = getXmlFromFile( getPreferencesFileName() );
+  if( xmlPreferences == NULL )
     return;
   XmlElement *xmlColors = xmlPreferences->getChildByName(juce::String("ColorScheme"));
-  if( xmlColors == NULL ) 
+  if( xmlColors == NULL )
     return;
   setColourSchemeFromXml(*xmlColors);
   delete xmlPreferences;
@@ -787,7 +787,7 @@ juce::String AudioModuleEditor::getPreferencesTagName()
 
 juce::String AudioModuleEditor::getPreferencesFileName()
 {
-  return getApplicationDirectory() + File::separatorString + getPreferencesTagName() 
+  return getApplicationDirectory() + File::separatorString + getPreferencesTagName()
     + juce::String(".xml");
 }
 
@@ -858,7 +858,7 @@ void GenericAudioModuleEditor::resized()
   int x  = 0;
   int y  = getPresetSectionBottom() + 4;
   int w  = getWidth();
-  int h  = getHeight();
+  //int h  = getHeight();
   for(int i = 0; i < parameterWidgets.size(); i++)
   {
     parameterWidgets[i]->setBounds(x+4, y, w-8, widgetHeight);

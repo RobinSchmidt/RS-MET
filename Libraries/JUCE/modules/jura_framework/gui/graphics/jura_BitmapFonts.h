@@ -55,16 +55,17 @@ public:
   points to a member-variable of this class, so don't delete it. */
   virtual const Image* getGlyphImage(const char charOrAsciiCode, const Colour& colour) const
   {
-    if(charOrAsciiCode >= numGlyphs)
+    int i = charOrAsciiCode; // using the char directly gives a warning in gcc/win
+    if(i >= numGlyphs)
     {
       jassertfalse;  // no glyph available for this character
       return NULL;
     }
 
-    if(glyphBitmaps[charOrAsciiCode] != NULL)
+    if(glyphBitmaps[i] != NULL)
     {
-      glyphBitmaps[charOrAsciiCode]->setColour(colour);
-      return glyphBitmaps[charOrAsciiCode];
+      glyphBitmaps[i]->setColour(colour);
+      return glyphBitmaps[i];
     }
     else
     {

@@ -1,8 +1,8 @@
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-BreakpointModulatorGlobalEditor::BreakpointModulatorGlobalEditor(CriticalSection *newPlugInLock,                                                                
-  BreakpointModulatorAudioModule* newModulatorToEdit) 
+BreakpointModulatorGlobalEditor::BreakpointModulatorGlobalEditor(CriticalSection *newPlugInLock,
+  BreakpointModulatorAudioModule* newModulatorToEdit)
   : AudioModuleEditor(newModulatorToEdit)
   //: AudioModuleEditor(newPlugInLock, newModulatorToEdit)
 {
@@ -118,9 +118,9 @@ void BreakpointModulatorGlobalEditor::rButtonClicked(RButton *buttonThatWasClick
     return;
 
   if( buttonThatWasClicked == loopButton )
-    modulatorToEdit->wrappedBreakpointModulator->setLoopMode( loopButton->getToggleState() );  
+    modulatorToEdit->wrappedBreakpointModulator->setLoopMode( loopButton->getToggleState() );
   else if( buttonThatWasClicked == syncButton )
-    modulatorToEdit->wrappedBreakpointModulator->setSyncMode( syncButton->getToggleState() );  
+    modulatorToEdit->wrappedBreakpointModulator->setSyncMode( syncButton->getToggleState() );
 
   moduleToEdit->markStateAsDirty();
 }
@@ -372,7 +372,7 @@ void BreakpointParameterEditor::selectBreakpoint(int index)
 void BreakpointParameterEditor::deSelectBreakpoint()
 {
   selectedBreakpointIndex = -1;
-  indexLabel->setVisible(false);  
+  indexLabel->setVisible(false);
   indexValueLabel->setVisible(false);
   timeSlider->setVisible(false);
   levelSlider->setVisible(false);
@@ -436,7 +436,7 @@ void BreakpointParameterEditor::rComboBoxChanged(RComboBox *rComboBoxThatHasChan
     }
   }
 
-  modulatorToEdit->markStateAsDirty(); 
+  modulatorToEdit->markStateAsDirty();
   sendChangeMessage();
 }
 
@@ -464,7 +464,7 @@ void BreakpointParameterEditor::rSliderValueChanged(RSlider *sliderThatHasChange
     }
   }
 
-  modulatorToEdit->markStateAsDirty();  
+  modulatorToEdit->markStateAsDirty();
   sendChangeMessage();
 }
 
@@ -496,7 +496,7 @@ void BreakpointParameterEditor::updateWidgetsAccordingToState()
 
   RAPT::rsBreakpointModulator<double>* m = modulatorToEdit->wrappedBreakpointModulator;
 
-  indexValueLabel->setText(valueToString0(selectedBreakpointIndex+1) + juce::String("/") 
+  indexValueLabel->setText(valueToString0(selectedBreakpointIndex+1) + juce::String("/")
     + valueToString0(m->getNumBreakpoints()));
 
   double minTime = m->getBreakpointMinTime(selectedBreakpointIndex);
@@ -506,27 +506,27 @@ void BreakpointParameterEditor::updateWidgetsAccordingToState()
   timeSlider->setRange(minTime, maxTime, 0.001, 0.0, false);
   timeSlider->setValue(m->getBreakpointTime(selectedBreakpointIndex), false);
 
-  double minLevel = jmin(0.0, m->getMinLevel());
-  double maxLevel = m->getMaxLevel();
+  //double minLevel = jmin(0.0, m->getMinLevel());
+  //double maxLevel = m->getMaxLevel();
   //levelSlider->setRange(minLevel, maxLevel, 0.001, 1.0, false);
   levelSlider->setValue(m->getBreakpointLevel(selectedBreakpointIndex), false);
 
   shapeSlider->setValue(m->getBreakpointShapeAmount(selectedBreakpointIndex),  false);
-  //int shapeIndex = rmax(m->getBreakpointShape(selectedBreakpointIndex), 
+  //int shapeIndex = rmax(m->getBreakpointShape(selectedBreakpointIndex),
   //  (int) rsModBreakpoint::STAIRSTEP);
-  int shapeIndex = jmax(m->getBreakpointShape(selectedBreakpointIndex), 
+  int shapeIndex = jmax(m->getBreakpointShape(selectedBreakpointIndex),
     (int) rsModBreakpoint<double>::STAIRSTEP);
   shapeComboBox->selectItemByIndex(shapeIndex, false);
   shapeSlider->setEnabled(false);
-  if( shapeIndex >= 3 && shapeIndex <= 6 ) 
+  if( shapeIndex >= 3 && shapeIndex <= 6 )
     shapeSlider->setEnabled(true);
 }
 
 //=================================================================================================
 // class BreakpointModulatorEditor:
 
-BreakpointModulatorEditor::BreakpointModulatorEditor(CriticalSection *newPlugInLock, 
-  BreakpointModulatorAudioModule* newBreakpointModulatorAudioModule)                                                    
+BreakpointModulatorEditor::BreakpointModulatorEditor(CriticalSection *newPlugInLock,
+  BreakpointModulatorAudioModule* newBreakpointModulatorAudioModule)
 : AudioModuleEditor(newBreakpointModulatorAudioModule)
 //  : AudioModuleEditor(newPlugInLock, newBreakpointModulatorAudioModule)
 {
@@ -552,7 +552,7 @@ BreakpointModulatorEditor::BreakpointModulatorEditor(CriticalSection *newPlugInL
   breakpointZoomer->setCoordinateSystem(breakpointEditor);
 
   globalEditor = new BreakpointModulatorGlobalEditor(lock, newBreakpointModulatorAudioModule);
-  globalEditor->loopButton->addRButtonListener(this); 
+  globalEditor->loopButton->addRButtonListener(this);
   addChildEditor( globalEditor );
 
   breakpointParameterEditor = new BreakpointParameterEditor(lock);
@@ -694,7 +694,7 @@ void BreakpointModulatorEditor::changeListenerCallback(ChangeBroadcaster *object
 
   if( objectThatHasChanged == stateWidgetSet )
   {
-    AudioModuleEditor::changeListenerCallback(objectThatHasChanged);  
+    AudioModuleEditor::changeListenerCallback(objectThatHasChanged);
     sendChangeMessage();
     return;
   }
@@ -791,7 +791,7 @@ void BreakpointModulatorEditor::paint(Graphics &g)
   int w = breakpointGroupRectangle.getWidth();
   int h = breakpointGroupRectangle.getHeight();
   fillRectWithBilinearGradient(g, x, y, jmax(1,w), jmax(1,h),
-    editorColourScheme.topLeft, editorColourScheme.topRight, 
+    editorColourScheme.topLeft, editorColourScheme.topRight,
     editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
   g.setColour(editorColourScheme.outline);
   //g.drawRect(x, y, w, h);
@@ -801,7 +801,7 @@ void BreakpointModulatorEditor::paint(Graphics &g)
   w = timeAndDepthGroupRectangle.getWidth();
   h = timeAndDepthGroupRectangle.getHeight();
   fillRectWithBilinearGradient(g, x, y, jmax(1,w), jmax(1,h),
-    editorColourScheme.topLeft, editorColourScheme.topRight, 
+    editorColourScheme.topLeft, editorColourScheme.topRight,
     editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
   g.setColour(editorColourScheme.outline);
   //g.drawRect(x, y, w, h);
@@ -828,7 +828,7 @@ void BreakpointModulatorEditor::resized()
   int h = getHeight()-y-bottomSectionHeight;
 
   breakpointGroupRectangle.setBounds(x, y, w, h+lineWidth);
-  timeAndDepthGroupRectangle.setBounds(0, getHeight()-bottomSectionHeight, 
+  timeAndDepthGroupRectangle.setBounds(0, getHeight()-bottomSectionHeight,
     getWidth()-rightSectionWidth+lineWidth, bottomSectionHeight);
 
   //x = 4; // old
@@ -836,8 +836,8 @@ void BreakpointModulatorEditor::resized()
   y = getHeadlineBottom()+4;
   w = breakpointGroupRectangle.getX()-x   + 4;  // why do we need the +4 here?
   h = timeAndDepthGroupRectangle.getY()-y + 4;  // ..and here?
-  breakpointEditor->setBounds(x, y, 
-    w-breakpointZoomer->getZoomerSize(), 
+  breakpointEditor->setBounds(x, y,
+    w-breakpointZoomer->getZoomerSize(),
     h-breakpointZoomer->getZoomerSize());
   breakpointZoomer->alignWidgetsToCoordinateSystem();
 
@@ -1006,8 +1006,8 @@ int BreakpointModulatorEditor::indexFromTimeInterval(double interval)
 
 // construction/destruction:
 
-BreakpointModulatorEditorCompact::BreakpointModulatorEditorCompact(CriticalSection *newPlugInLock,                                                                  
-  BreakpointModulatorAudioModule* newModulatorToEdit) 
+BreakpointModulatorEditorCompact::BreakpointModulatorEditorCompact(CriticalSection *newPlugInLock,
+  BreakpointModulatorAudioModule* newModulatorToEdit)
 : AudioModuleEditor(newModulatorToEdit)
 //: AudioModuleEditor(newPlugInLock, newModulatorToEdit)
 {
@@ -1050,7 +1050,7 @@ BreakpointModulatorEditorCompact::BreakpointModulatorEditorCompact(CriticalSecti
 
   layout = STANDARD;
   layout = COMPACT;   // for test only
-    
+
   updateWidgetsAccordingToState();
 }
 
@@ -1125,7 +1125,7 @@ void BreakpointModulatorEditorCompact::changeListenerCallback(
     return;
   if( objectThatHasChanged == popUpEditor )
   {
-    moduleToEdit->markStateAsDirty();  
+    moduleToEdit->markStateAsDirty();
     updatePlot();
   }
   else
@@ -1154,7 +1154,7 @@ void BreakpointModulatorEditorCompact::updatePlot()
   double yRange  = yMax-yMin;
   double xMargin = 0.025;
   double yMargin = 0.1;
-  plot->setMaximumRange(xMin-xMargin*xRange, xMax+xMargin*xRange, 
+  plot->setMaximumRange(xMin-xMargin*xRange, xMax+xMargin*xRange,
     yMin-yMargin*yRange, yMax+yMargin*yRange);
   plot->setCurrentRange(plot->getMaximumRange());
   for(int n=0; n<numSamplesInPlot; n++)
