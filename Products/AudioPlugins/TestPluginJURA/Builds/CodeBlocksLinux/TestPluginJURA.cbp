@@ -7861,22 +7861,6 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/rosic/legacy/KeyGenerator.cpp">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/rosic/legacy/KeyGenerator.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/rosic/legacy/KeyValidator.cpp">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/rosic/legacy/KeyValidator.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/rosic/legacy/Kopie von BreakpointModulator.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -8526,14 +8510,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/rosic/others/rosic_DemoVersionNoiseEmitter.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/rosic/others/rosic_KeyGenerator.cpp">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/rosic/others/rosic_KeyGenerator.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>

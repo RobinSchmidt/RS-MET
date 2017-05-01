@@ -3304,12 +3304,6 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\Interpolator.cpp">
       <Filter>Juce Modules\rosic\legacy</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\KeyGenerator.cpp">
-      <Filter>Juce Modules\rosic\legacy</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\KeyValidator.cpp">
-      <Filter>Juce Modules\rosic\legacy</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\Kopie von BreakpointModulator.cpp">
       <Filter>Juce Modules\rosic\legacy</Filter>
     </ClCompile>
@@ -3533,9 +3527,6 @@
       <Filter>Juce Modules\rosic\numerical</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_DemoVersionNoiseEmitter.cpp">
-      <Filter>Juce Modules\rosic\others</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_KeyGenerator.cpp">
       <Filter>Juce Modules\rosic\others</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_OverlapAddProcessor.cpp">
@@ -6675,12 +6666,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\Interpolator.h">
       <Filter>Juce Modules\rosic\legacy</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\KeyGenerator.h">
-      <Filter>Juce Modules\rosic\legacy</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\KeyValidator.h">
-      <Filter>Juce Modules\rosic\legacy</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\Kopie von BreakpointModulator.h">
       <Filter>Juce Modules\rosic\legacy</Filter>
     </ClInclude>
@@ -6937,9 +6922,6 @@
       <Filter>Juce Modules\rosic\numerical</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_DemoVersionNoiseEmitter.h">
-      <Filter>Juce Modules\rosic\others</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_KeyGenerator.h">
       <Filter>Juce Modules\rosic\others</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_Others.h">

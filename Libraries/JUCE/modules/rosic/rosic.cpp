@@ -181,7 +181,7 @@ rosic: rs_dsp (this should never depend on any juce class/module)
 #include "others/rosic_DemoVersionNoiseEmitter.cpp"    // may not be needed
 #include "others/rosic_RandomNumberGenerator01.cpp"
 #include "others/rosic_RandomNumberGenerator02.cpp"
-#include "others/rosic_KeyGenerator.cpp"               // remove...or keep only the "Validator" part
+//#include "others/rosic_KeyGenerator.cpp"               // remove...or keep only the "Validator" part
 #include "others/rosic_OverlapAddProcessor.cpp"
 #include "others/rosic_PiecewiseFunction.cpp"
 //#include "others/rosic_Plotter.cpp"                  // obsolete? needs writeDataToFile

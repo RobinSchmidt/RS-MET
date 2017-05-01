@@ -2786,12 +2786,6 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\Interpolator.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\KeyGenerator.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\KeyValidator.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\Kopie von BreakpointModulator.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -3015,9 +3009,6 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_DemoVersionNoiseEmitter.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_KeyGenerator.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_OverlapAddProcessor.cpp">
@@ -4135,8 +4126,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\IirDesignerOlder.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\IirFilter.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\Interpolator.h"/>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\KeyGenerator.h"/>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\KeyValidator.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\Kopie von BreakpointModulator.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\Kopie von MagicCarpetOscillator.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\legacy\LowpassHighpass.h"/>
@@ -4223,7 +4212,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\numerical\rosic_GradientBasedMinimizer.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\numerical\rosic_Numerical.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_DemoVersionNoiseEmitter.h"/>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_KeyGenerator.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_Others.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_OverlapAddProcessor.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_PiecewiseFunction.h"/>

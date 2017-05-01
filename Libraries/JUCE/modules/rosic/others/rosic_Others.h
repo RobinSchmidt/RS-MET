@@ -9,7 +9,7 @@ classified into one of the special categories.
 #define rosic_Others_h
 
 #include "rosic_DemoVersionNoiseEmitter.h"
-#include "rosic_KeyGenerator.h"
+//#include "rosic_KeyGenerator.h"
 //#include "rosic_NonRealtimeProcesses.h"
 //#include "rosic_OverlapAddProcessor.h"
 #include "rosic_Plotter.h"
