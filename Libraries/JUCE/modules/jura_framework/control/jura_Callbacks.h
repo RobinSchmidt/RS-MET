@@ -29,15 +29,19 @@ class JUCE_API GenericMemberFunctionCallback1
 
 public:
 
-/** This is the function to actually invoke the callback. Inside your client-code, the invocation 
-code should look like this:
-\code
-myReturnValue = myCallback.call(myArgument);
-\endcode
-This will then call the assigned member-function on the assigned object with argument 'myArgument' 
-and store the return-value of the invoked member-function in 'myReturnValue'. It is still purely 
-virtual here in this basclass and overriden in the subclass-template 
-SpecificMemberFunctionCallback1 to actually invoke some member-function of some specific class. */
+  /** Virtual destructor */
+  virtual ~GenericMemberFunctionCallback1() {}
+
+
+  /** This is the function to actually invoke the callback. Inside your client-code, the invocation 
+  code should look like this:
+  \code
+  myReturnValue = myCallback.call(myArgument);
+  \endcode
+  This will then call the assigned member-function on the assigned object with argument 'myArgument' 
+  and store the return-value of the invoked member-function in 'myReturnValue'. It is still purely 
+  virtual here in this basclass and overriden in the subclass-template 
+  SpecificMemberFunctionCallback1 to actually invoke some member-function of some specific class. */
   virtual ReturnType call(const ArgumentType argument) = 0;
 
 };
