@@ -21,7 +21,7 @@ public:
   // mandatory AudioProcessorParameter overrides:
   virtual float getValue() const override { return (float) metaValue; }
   virtual void setValue(float newValue) override;
-  virtual float getDefaultValue() const override { return 0.f; }
+  virtual float getDefaultValue() const override { return 0.5f; }
   virtual String getName(int maximumStringLength) const override { return name; }
   virtual String getLabel() const override { return String::empty; }
   virtual float getValueForText(const String &text) const override { return text.getFloatValue(); }
