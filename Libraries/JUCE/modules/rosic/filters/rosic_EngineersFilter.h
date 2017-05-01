@@ -39,7 +39,7 @@ namespace rosic
 
     /** Sets the characteristic frequency of the filter. For lowpass and highpass filters, this is 
     the cutoff frequency, for bandpass, bandreject and peak filters the center frequency and for 
-    Butterworth low-shelving and high shelving filters the half-gain frequency (for the 
+    Butterworth low-shelving and high shelving filters the half-gain frequency (for the other
     approximation methods, the ripple settings define the gain at that frequency). */
     void setFrequency(double newFrequency);
 
@@ -62,7 +62,7 @@ namespace rosic
     of the peak gain. */
     void setRipple(double newPassbandRipple);
 
-    /** Sets the rejection in the stopband for lowpass designs in decibels. */
+    /** Sets the rejection in the stopband for pass-filters in decibels. */
     void setStopbandRejection(double newStopbandRejection);
 
     /** Selects the lower cutoff-/corner frequency for bandpass, bandreject and peaking filters or 
