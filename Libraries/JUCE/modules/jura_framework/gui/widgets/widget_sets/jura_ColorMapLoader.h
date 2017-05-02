@@ -4,16 +4,20 @@
 /** A componenent to preview a ColorMap as a rectangle showing the color gradient from lowest
 to highest value. If the component is wider than high, the gradient will be shown horizontally 
 (suitable for the loader widget set), otherwise vertically (suitable for a color bar next to a 
-plot). */
+plot). It derives from ChangeListener in order to receive changeListenerCallback calls whenever
+the previewed ColorMap object has changed. */
 
-class JUCE_API ColorMapPreviewer : public Component
+class JUCE_API ColorMapPreviewer : public Component, public ChangeListener
 {
 
 public:
 
   ColorMapPreviewer(ColorMap *mapToPreview);
+  virtual ~ColorMapPreviewer();
 
   virtual void paint(Graphics& g) override;
+  virtual void changeListenerCallback(ChangeBroadcaster* source) override;
+
 
 protected:
 

@@ -17,7 +17,8 @@ void ColorMap::setFromColourGradient(const ColourGradient &g)
 {
   gradient = g;
   updateArray();
-  defaultMapIndex = -1; // this is, in general, not a predefined map
+  defaultMapIndex = -1;  // this is, in general, not a predefined map
+  sendChangeMessage();   
 }
 
 void ColorMap::setDefaultMap(int index)

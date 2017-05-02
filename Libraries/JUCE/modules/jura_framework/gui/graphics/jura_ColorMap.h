@@ -4,9 +4,13 @@
 /** A class for representing a colormap that is used for visualizing 2D data. It is based on a 
 juce::ColourGradient object, but allows for (much!) faster access of the individual colors in the
 gradient by creating an internal array of pre-interpolated colors. So, basically, it's a lookup 
-table for a ColourGradient object. 
+table for a ColourGradient object. It derives from ChangeBroadcaster and sends out a 
+changeListenerCallback whenever it has changed, so objects that need to keep track of such changes
+can derive from ChangeListener and register themselves to receive callbacks.
 
-\todo: provide methods for conversion from/to xml
+\todo: maybe get rid of specifying default-colormaps that are not based on a juce::ColourGradient
+or: make an own ColorGradientAHSL class based on ColorAHSL and in the xml sve/load function make a
+distinction - maybe the xml format must specify the color-format (ARGB, AHSL, maybe others)
 
 References:
 http://www.research.ibm.com/people/l/lloydt/color/color.HTM
@@ -14,7 +18,7 @@ https://www.mathworks.com/tagteam/81137_92238v00_RainbowColorMap_57312.pdf
 http://davidjohnstone.net/pages/lch-lab-colour-gradient-picker
 */
 
-class JUCE_API ColorMap
+class JUCE_API ColorMap : public ChangeBroadcaster
 {
 
 public:

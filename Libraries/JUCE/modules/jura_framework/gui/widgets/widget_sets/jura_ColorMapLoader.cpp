@@ -1,6 +1,12 @@
 ColorMapPreviewer::ColorMapPreviewer(ColorMap *mapToPreview)
 {
   colorMap = mapToPreview;
+  colorMap->addChangeListener(this);
+}
+
+ColorMapPreviewer::~ColorMapPreviewer()
+{
+  colorMap->removeChangeListener(this);
 }
 
 void ColorMapPreviewer::paint(Graphics& g)
@@ -17,6 +23,12 @@ void ColorMapPreviewer::paint(Graphics& g)
     grad.point2 = Point<float>(0, 0); }
   g.setGradientFill(grad);
   g.fillAll();
+}
+
+void ColorMapPreviewer::changeListenerCallback(ChangeBroadcaster* source)
+{
+  if(source == colorMap)
+    repaint();
 }
 
 //=================================================================================================
