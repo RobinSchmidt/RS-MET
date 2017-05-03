@@ -5691,9 +5691,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\misc\jura_AudioModuleChain.h">
       <Filter>Juce Modules\jura_processors\misc</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\misc\jura_PluginCreation.h">
-      <Filter>Juce Modules\jura_processors\misc</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\jura_BreakpointModulatorAudioModule.h">
       <Filter>Juce Modules\jura_processors\modulators</Filter>
     </ClInclude>

@@ -3801,7 +3801,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_LadderFilter.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_PhasorFilter.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\misc\jura_AudioModuleChain.h"/>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\misc\jura_PluginCreation.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\jura_BreakpointModulatorAudioModule.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\jura_BreakpointModulatorEditor.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\jura_BreakpointModulatorEditorMulti.h"/>

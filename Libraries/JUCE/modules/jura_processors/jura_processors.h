@@ -49,7 +49,7 @@ using namespace RAPT;
 namespace jura
 {
 
-#include "baseclasses/jura_AudioModule.h"
+#include "baseclasses/jura_AudioModule.h"  // move these baseclasses into jura_framework
 #include "baseclasses/jura_AudioPlugin.h"
 
 #include "analyzers/jura_PhaseScope.h"
@@ -67,7 +67,6 @@ namespace jura
 #include "effects/jura_Enveloper.h"
 
 #include "misc/jura_AudioModuleChain.h"
-#include "misc/jura_PluginCreation.h"
 
 }
 

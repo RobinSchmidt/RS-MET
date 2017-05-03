@@ -5329,10 +5329,6 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/misc/jura_PluginCreation.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/modulators/jura_BreakpointModulatorAudioModule.cpp">
       <Option compile="0"/>
       <Option link="0"/>
