@@ -2392,6 +2392,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_Enveloper.cpp">
       <Filter>Juce Modules\jura_processors\effects</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_EngineersFilter.cpp">
+      <Filter>Juce Modules\jura_processors\filters</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_LadderFilter.cpp">
       <Filter>Juce Modules\jura_processors\filters</Filter>
     </ClCompile>
@@ -5681,6 +5684,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_Enveloper.h">
       <Filter>Juce Modules\jura_processors\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_EngineersFilter.h">
+      <Filter>Juce Modules\jura_processors\filters</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_LadderFilter.h">
       <Filter>Juce Modules\jura_processors\filters</Filter>

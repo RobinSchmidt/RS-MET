@@ -97,7 +97,7 @@ protected:
   juce::Array<BreakpointModulatorAudioModule*, CriticalSection> modulatorModules;
   int editedModulatorIndex; // -1, if none
   //Rectangle leftSectionRectangle;
-  juce::OwnedArray<Rectangle<int> > leftSectionRectangles;
+  juce::OwnedArray<juce::Rectangle<int> > leftSectionRectangles;
 
   //juce::Array<BreakpointModulatorWidgetSet*> widgetSets;
 

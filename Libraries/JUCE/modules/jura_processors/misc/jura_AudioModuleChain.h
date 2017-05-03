@@ -39,11 +39,11 @@ public:
   /** Creates and returns a pointer to an object of some subclass of AudioModule. Which subclass it 
   is, is determined by the passed String parameter. You must also pass the mutex lock object that 
   should be used by the AudioModule. */
-  static AudioModule* createModule(const String& type, CriticalSection *lockToUse);
+  static AudioModule* createModule(const juce::String& type, CriticalSection *lockToUse);
 
   /** Given a pointer to an object of some subclass of AudioModule, this function returns the
   string that is used to identify the subclass. */
-  static String getModuleType(AudioModule *module);
+  static juce::String getModuleType(AudioModule *module);
 
   /** Returns an array of strings with all the available types of AudioModules that can be 
   created. */
@@ -125,7 +125,7 @@ public:
   void addEmptySlot();
 
   /** Adds a module of the given type at the end of the chain. */
-  void addModule(const String& type);
+  void addModule(const juce::String& type);
 
   /** Deletes the module at the given index. */
   void deleteModule(int index);
@@ -136,11 +136,11 @@ public:
   /** Replaces the module at the given with a new module of given type unless the given type 
   matches that of the module which is already there at this position in which case nothing 
   happens. Returns true, if the module was replaced, false otherwise. */
-  void replaceModule(int index, const String& type);
+  void replaceModule(int index, const juce::String& type);
 
   /** Returns true if the module at the given index matches the type specified by the type 
   string. */
-  bool isModuleOfType(int index, const String& type);
+  bool isModuleOfType(int index, const juce::String& type);
 
   /** Returns the moduel in the chain at the given index. If the index is out of range, it will 
   return a nullptr. */
@@ -232,7 +232,7 @@ public:
 
   /** Replaces the module at the given with a new module of given type, if necessary and also 
   replaces the corresponding editor. */
-  void replaceModule(int index, const String& type);
+  void replaceModule(int index, const juce::String& type);
 
   /** Updates our array of selector-widgets (comboboxes) to select the module for each slot. */
   void updateSelectorArray();

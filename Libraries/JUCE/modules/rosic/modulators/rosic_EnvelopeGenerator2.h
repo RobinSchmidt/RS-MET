@@ -19,6 +19,8 @@ namespace rosic
   the filter reaches 63.2% of the end value (for an incoming step-function). This time constant can 
   be scaled to re-define the ramp time to other values than 63.2%.
 
+  \todo: maybe rename to ExponentialAdsr
+
   */
 
   class EnvelopeGenerator2

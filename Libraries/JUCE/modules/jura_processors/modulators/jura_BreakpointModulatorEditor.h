@@ -218,7 +218,7 @@ protected:
   RAPT::rsBreakpointModulator<double>* modulatorToEdit;
 
   // some rectangles to define functional groups:
-  Rectangle<int> breakpointGroupRectangle, timeAndDepthGroupRectangle, snapRectangle;
+  juce::Rectangle<int> breakpointGroupRectangle, timeAndDepthGroupRectangle, snapRectangle;
 
   // sub-editors:
   BreakpointModulatorGlobalEditor* globalEditor;
