@@ -54,6 +54,7 @@ ModulationTarget:
  all additive sources, then multiply in all multiplicative sources - keep 2 lists
 -can regulate the amount of the influence of each source
 -maybe can apply different response curves to each source
+-hmm...maybe 4 the last 2 points, we need an additional class: ModulationConnection
 
 ModulationManager:
 -allows ModulationsTargets to de/register themselves to ModulationSources
@@ -65,6 +66,13 @@ differences to MetaParameters:
 -each modulation target can be connected to any number of modulation sources (many-to-many instead 
  of one-to-many)
 -uses pull rather than push mechanism to update the dependent parameter
+
+feedback:
+-it is desirable to be able for (parameters of) ModulationsSources themselves be modulated by 
+ other ModulationSources or even by their own output
+-maybe the parameters of a ModulationSource (like an LFO freq) should be subclasses of 
+ ModulationTarget ...or just BE a ModulationTarget object - or maybe we'll need a class
+ ModulatableParameter
 
 */
 
