@@ -10,7 +10,13 @@ is being edited
 
 hmm.. - maybe, we don't need that. The documentation of the 
 AudioProcessorEditor* AudioProcessor::createEditor() function says:
-"It's safe to assume that an editor will be deleted before its filter." */
+"It's safe to assume that an editor will be deleted before its filter." 
+
+\todo: maybe move these classes down into jura_framework - some plugins may want to use these 
+baseclasses without needing any of the dsp-stuff here - for example PrettyScope wouldn't need a 
+dependency on jura_processors anymore
+
+*/
 
 class JUCE_API AudioModuleDeletionWatcher
 {

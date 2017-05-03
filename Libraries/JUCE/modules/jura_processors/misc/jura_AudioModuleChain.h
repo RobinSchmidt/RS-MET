@@ -21,7 +21,14 @@ public:
 
 /** A class for creating objects of various subclasses of AudioModule based on a type string. It 
 can also translate back from a given subclass-pointer to the corresponding string and create a list
-of all available types. */
+of all available types. 
+
+\todo: maybe make this an abstract factory - that way, the AudioModuleChain could be parameterized
+with a factory object and could propagated up into jura_framework (together with AudioModule/
+AudioPlugin). The actual Chainer plugin would then somehow need to get an object of a  subclass of 
+AudioModuleFactory passed - and only that subclass woul know all the different kinds of modules 
+defined in jura_processors. the general chaining-logic could be made independent from the concrete 
+set of AudioModule types that can be created. */
 
 class JUCE_API AudioModuleFactory
 {
