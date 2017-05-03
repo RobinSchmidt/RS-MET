@@ -1,3 +1,19 @@
+Make old plugins available:
+-turn rapt into a juce module (with no dependencies)
+-let rosic depend on rapt
+-let jura_processors depend on rosic (done)
+-drag over all old plugin code and make it work in the Chainer
+-maybe rename rosic to rs_dsp
+-templatize rosic classes and move templates to rapt
+-in rapt: use omega instead of freq/sampleRate (avoid data redundancy)
+-avoid name clashes by using rs-prefix (perhaps on all rosic classes, at least on those which 
+ clash with juce classes of the same name)
+-maybe rename RSlider, etc into rsSlider too - for consistency
+-maybe we should generally use the rs prefix to be safe against later additions to juce
+ -clients don't want to have to deal with name clashes when the incorporate my modules, so...
+  yeah...prefix everything with rs - makes it also easier later to drag in code from RSLib
+
+
 Bugs:
 -on "Undo" in Reaper (to undo a parameter change), the widgets are not updated
  -Reaper's "Undo" calls AudioPlugin::setStateInformation, there is the line
