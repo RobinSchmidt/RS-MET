@@ -276,7 +276,7 @@ void AudioPluginWithMidiIn::processBlock(AudioBuffer<double> &buffer, MidiBuffer
         - fmod(timeInBeats, wrappedAudioModule->getTriggerInterval());
 
       timeToNextTriggerInSamples =
-        RAPT::roundToInt(getSampleRate()*beatsToSeconds(timeToNextTriggerInBeats, info.bpm));
+        roundToInt(getSampleRate()*beatsToSeconds(timeToNextTriggerInBeats, info.bpm));
 
       if( timeToNextTriggerInSamples >= buffer.getNumSamples() )
         timeToNextTriggerInSamples = -1; // indicates that we don't need to trigger in this block

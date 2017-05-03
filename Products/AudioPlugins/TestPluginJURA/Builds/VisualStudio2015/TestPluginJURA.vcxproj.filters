@@ -344,6 +344,9 @@
     <Filter Include="Juce Modules\jura_framework">
       <UniqueIdentifier>{B2644A46-6FC7-32E1-4A7F-AC59F3D9AC31}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Juce Modules\jura_framework\audio">
+      <UniqueIdentifier>{E66AB5CD-79BD-5B25-FCE7-2091947542D4}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Juce Modules\jura_framework\control">
       <UniqueIdentifier>{8713B029-BE4F-CE11-7CAF-8907923D177E}</UniqueIdentifier>
     </Filter>
@@ -382,9 +385,6 @@
     </Filter>
     <Filter Include="Juce Modules\jura_processors\analyzers">
       <UniqueIdentifier>{884A90C2-9EA1-7ED2-F91E-5FCB2882A445}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Juce Modules\jura_processors\baseclasses">
-      <UniqueIdentifier>{8681808D-EC9F-D5BE-C5B8-120304278235}</UniqueIdentifier>
     </Filter>
     <Filter Include="Juce Modules\jura_processors\effects">
       <UniqueIdentifier>{6CC0048E-A940-03F3-8E84-D3DE12A99950}</UniqueIdentifier>
@@ -2224,6 +2224,12 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_gui_extra\juce_gui_extra.mm">
       <Filter>Juce Modules\juce_gui_extra</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\audio\jura_AudioModule.cpp">
+      <Filter>Juce Modules\jura_framework\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\audio\jura_AudioPlugin.cpp">
+      <Filter>Juce Modules\jura_framework\audio</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_AutomatableParameter.cpp">
       <Filter>Juce Modules\jura_framework\control</Filter>
     </ClCompile>
@@ -2382,12 +2388,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_PhaseScopeMultiColor.cpp">
       <Filter>Juce Modules\jura_processors\analyzers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\baseclasses\jura_AudioModule.cpp">
-      <Filter>Juce Modules\jura_processors\baseclasses</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\baseclasses\jura_AudioPlugin.cpp">
-      <Filter>Juce Modules\jura_processors\baseclasses</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_Enveloper.cpp">
       <Filter>Juce Modules\jura_processors\effects</Filter>
@@ -5508,6 +5508,12 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_gui_extra\juce_gui_extra.h">
       <Filter>Juce Modules\juce_gui_extra</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\audio\jura_AudioModule.h">
+      <Filter>Juce Modules\jura_framework\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\audio\jura_AudioPlugin.h">
+      <Filter>Juce Modules\jura_framework\audio</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_AutomatableParameter.h">
       <Filter>Juce Modules\jura_framework\control</Filter>
     </ClInclude>
@@ -5672,12 +5678,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_PhaseScopeMultiColor.h">
       <Filter>Juce Modules\jura_processors\analyzers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\baseclasses\jura_AudioModule.h">
-      <Filter>Juce Modules\jura_processors\baseclasses</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\baseclasses\jura_AudioPlugin.h">
-      <Filter>Juce Modules\jura_processors\baseclasses</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_Enveloper.h">
       <Filter>Juce Modules\jura_processors\effects</Filter>

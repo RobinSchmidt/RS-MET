@@ -71,4 +71,7 @@ namespace jura
 
 #include "gui/editors/jura_Editor.cpp"
 
+#include "audio/jura_AudioModule.cpp"
+#include "audio/jura_AudioPlugin.cpp"
+
 }

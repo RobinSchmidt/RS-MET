@@ -108,6 +108,10 @@ namespace jura
 #include "gui/dialogs/jura_RMessageBox.h"
 #include "gui/dialogs/jura_ColourSchemeSetupDialog.h"
 
+
+#include "audio/jura_AudioModule.h" 
+#include "audio/jura_AudioPlugin.h"
+
 }
 
 #endif   // JURA_FRAMEWORK_H_INCLUDED

@@ -48,9 +48,6 @@ template class RAPT::LadderFilter<double, double>;
 namespace jura
 {
 
-#include "baseclasses/jura_AudioModule.cpp"
-#include "baseclasses/jura_AudioPlugin.cpp"
-
 #include "analyzers/jura_PhaseScope.cpp"
 //#include "analyzers/jura_PhaseScopeMultiColor.cpp"
 
