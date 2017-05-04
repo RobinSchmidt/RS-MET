@@ -1,5 +1,3 @@
-#include "rojue_PanelRange.h"
-using namespace rojue;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

@@ -1,5 +1,3 @@
-#include "rojue_Panel.h"
-using namespace rojue;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction and static member initialization:

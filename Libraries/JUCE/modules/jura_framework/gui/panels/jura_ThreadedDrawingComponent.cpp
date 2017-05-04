@@ -1,5 +1,3 @@
-#include "rojue_ThreadedDrawingComponent.h"
-using namespace rojue;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
@@ -101,19 +99,20 @@ void ThreadedDrawingComponent::paint(Graphics &g)
   }
 }
 
-bool ThreadedDrawingComponent::useTimeSlice()
+int ThreadedDrawingComponent::useTimeSlice()
 {
   //ScopedLock scopedLock(clientAreaImageLock);
   if( clientAreaImageIsDirty )
   {
     renderClientAreaImageInternal();
-    return true;             // indicate that the thread is currently very busy
+    //return true;             // indicate that the thread is currently very busy - old
   }
   else
   {
-    return true;
+    //return true;
     //return false;            // indicate that the thread is currently not too busy
   }
+  return 20; // number of milliseconds after this thread shall be called again - maybe we need to tweak
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -185,8 +184,8 @@ bool ThreadedDrawingComponent::allocateClientAreaImage(int desiredWidth, int des
 
     if( clientAreaImage == NULL )
     {
-      showMemoryAllocationErrorBox( 
-        String(T("ThreadedDrawingComponent::allocateClientAreaImage")) );
+      jassertfalse;
+      //showMemoryAllocationErrorBox(String("ThreadedDrawingComponent::allocateClientAreaImage")); // re-activate
       return false;  
     }
     else
@@ -209,8 +208,8 @@ bool ThreadedDrawingComponent::allocateClientAreaImage(int desiredWidth, int des
 
     if( clientAreaImage == NULL )
     {
-      showMemoryAllocationErrorBox( 
-        String(T("ThreadedDrawingComponent::allocateClientAreaImage")) );
+      //showMemoryAllocationErrorBox(String("ThreadedDrawingComponent::allocateClientAreaImage")); re-activate
+      jassertfalse;
       return false; 
     }
   }

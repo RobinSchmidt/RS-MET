@@ -1,9 +1,7 @@
-#include "rojue_DrawingThread.h"
-using namespace rojue;
 
 DrawingThread* DrawingThread::soleInstance = NULL;
 
-DrawingThread::DrawingThread() : TimeSliceThread(String(T("DrawingThread")))
+DrawingThread::DrawingThread() : TimeSliceThread(String("DrawingThread"))
 {
   startThread(1);
 }
@@ -15,9 +13,6 @@ DrawingThread* DrawingThread::getInstance()
   return soleInstance;
 }
 
-
-
-
 /*
 DrawingThread drawingThread;
 
@@ -26,11 +21,3 @@ DrawingThread::DrawingThread() : TimeSliceThread(String(T("DrawingThread")))
   startThread(1);
 }
 */
-
-
-
-
-
-
-
-

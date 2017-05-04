@@ -65,6 +65,12 @@ namespace jura
 #include "gui/plots/jura_CurveFamilyPlotOld.cpp" 
 #include "gui/plots/jura_SpectrumDisplayOld.cpp"
 
+#include "gui/panels/jura_PanelRange.cpp"
+#include "gui/panels/jura_Panel.cpp"
+#include "gui/panels/jura_DrawingThread.cpp"
+#include "gui/panels/jura_ThreadedDrawingComponent.cpp"
+#include "gui/panels/jura_ThreadedDrawingPanel.cpp"
+
 #include "gui/dialogs/jura_RDialogBox.cpp"
 #include "gui/dialogs/jura_RMessageBox.cpp"
 #include "gui/dialogs/jura_ColourSchemeSetupDialog.cpp"

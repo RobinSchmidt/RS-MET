@@ -1,5 +1,3 @@
-#include "rojue_ThreadedDrawingPanel.h"
-using namespace rojue;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

@@ -90,7 +90,6 @@ namespace jura
 #include "gui/widgets/widget_sets/jura_StateLoadSaveWidgetSet.h"
 #include "gui/widgets/widget_sets/jura_ColorMapLoader.h"
 
-
 // these should be renamed - get rid of the "Old" (but only when we have dragged over all other
 // subclasses):
 #include "gui/plots/jura_CoordinateSystemOld.h"
@@ -98,9 +97,20 @@ namespace jura
 #include "gui/plots/jura_CoordinateSystemZoomerOld.h"
 #include "gui/plots/jura_CurveFamilyPlotOld.h"
 #include "gui/plots/jura_SpectrumDisplayOld.h"
-
 // after the plots, we may add some further plot-based widgets, such as XY-Pads, frequency-response
 // editors, etc.
+
+// the "panel" stuff more or less parallels the "plot" stuff but the implementation is 
+// different (using a background thread for drawing). at some point, we should settle for one or 
+// the other version...or somehow merge the code...maybe even make a totally different version 
+// based on OpenGL - currently, it's a bit messy:
+#include "gui/panels/jura_PanelRange.h"
+#include "gui/panels/jura_Panel.h"
+#include "gui/panels/jura_DrawingThread.h"
+#include "gui/panels/jura_ThreadedDrawingComponent.h"
+#include "gui/panels/jura_ThreadedDrawingPanel.h"
+
+
 
 #include "gui/editors/jura_Editor.h"
 
