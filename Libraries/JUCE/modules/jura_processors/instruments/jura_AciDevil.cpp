@@ -36,6 +36,11 @@ AciDevilAudioModule::~AciDevilAudioModule()
     delete wrappedAciDevil;
 }
 
+AudioModuleEditor* AciDevilAudioModule::createEditor()
+{
+  return new jura::AciDevilModuleEditor(lock, this); // get rid of passing the lock
+}
+
 // automation:
 
 void AciDevilAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
@@ -377,6 +382,8 @@ AciDevilModuleEditor::AciDevilModuleEditor(CriticalSection *newPlugInLock, AciDe
 
   // set up the widgets:
   updateWidgetsAccordingToState();
+
+  setSize(800, 400);
 }
 
 //-------------------------------------------------------------------------------------------------

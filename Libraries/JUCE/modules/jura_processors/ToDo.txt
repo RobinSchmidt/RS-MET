@@ -1,4 +1,5 @@
 -EngineersFilter editor: remove additional space/infoline
+-AciDevilEditor: needs other initial size, maybe should not be resizable
 
 make old plugins available in chainer:
 -drag over all old plugin code and make it work in the Chainer
