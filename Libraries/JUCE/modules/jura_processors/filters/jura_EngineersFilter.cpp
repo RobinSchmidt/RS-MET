@@ -9,9 +9,29 @@ EngineersFilterAudioModule::EngineersFilterAudioModule(CriticalSection *newPlugI
 {
   jassert(sciFilterToWrap != NULL); // you must pass a valid rosic-object to the constructor
   wrappedEngineersFilter = sciFilterToWrap;
+
   moduleName = juce::String("EngineersFilter");
   setActiveDirectory(getApplicationDirectory() + juce::String("/EngineersFilterPresets") );
   initializeAutomatableParameters();
+}
+
+EngineersFilterAudioModule::EngineersFilterAudioModule(CriticalSection *newPlugInLock)
+  : AudioModule(newPlugInLock)
+{
+  wrappedEngineersFilter = new rosic::EngineersFilter;
+  wrappedEngineersFilterIsOwned = true;
+
+  // todo: factor out this code (duplicated from the other constuctor) into an init() function that 
+  // can be called from both constructors:
+  moduleName = juce::String("EngineersFilter");
+  setActiveDirectory(getApplicationDirectory() + juce::String("/EngineersFilterPresets") );
+  initializeAutomatableParameters();
+}
+
+EngineersFilterAudioModule::~EngineersFilterAudioModule()
+{
+  if(wrappedEngineersFilterIsOwned)
+    delete wrappedEngineersFilter;
 }
 
 // automation:

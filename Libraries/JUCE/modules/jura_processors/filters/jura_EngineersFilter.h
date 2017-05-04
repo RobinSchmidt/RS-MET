@@ -12,8 +12,22 @@ class EngineersFilterAudioModule : public AudioModule
 
 public:
 
-  EngineersFilterAudioModule(CriticalSection *newPlugInLock, 
-    rosic::EngineersFilter *sciFilterToWrap);
+  /** Constructor to use when you want to wrap an existing rosic::EngineersFilter object without 
+  this AudioModule taking ownership (suitable, if the object already exists a smember of some 
+  higher level dsp object). */
+  EngineersFilterAudioModule(CriticalSection *newPlugInLock, rosic::EngineersFilter *sciFilterToWrap);
+
+  /** Constructor to use ehen there's no existing rosic::EngineersFilter object to be wrapped. in 
+  this case, we'll create one here and take over ownership  (i.e. will also delete it in our 
+  destructor). */
+  EngineersFilterAudioModule(CriticalSection *newPlugInLock);
+
+  virtual ~EngineersFilterAudioModule();
+
+
+
+
+
 
   virtual void parameterChanged(Parameter* parameterThatHasChanged);
 
@@ -22,9 +36,10 @@ public:
     wrappedEngineersFilter->setSampleRate(newSampleRate);
   }
 
+  // obsolete?
   virtual void processBlockStereo(float *left, float *right, int numSamples)
   {
-    for(int n=0; n<numSamples; n++)
+    for(int n = 0; n < numSamples; n++)
     {
       double dL = left[n];
       double dR = right[n];
@@ -32,6 +47,12 @@ public:
       left[n]  = (float)dL;
       right[n] = (float)dR;
     }
+  }
+
+  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
+  {
+    for(int n = 0; n < numSamples; n++)
+      wrappedEngineersFilter->getSampleFrameDirect1(&inOutBuffer[0][n], &inOutBuffer[1][n]);
   }
 
   virtual void reset()
@@ -45,6 +66,8 @@ protected:
   void initializeAutomatableParameters();
 
   rosic::EngineersFilter *wrappedEngineersFilter;
+
+  bool wrappedEngineersFilterIsOwned = false;
 
   juce_UseDebuggingNewOperator;
 };

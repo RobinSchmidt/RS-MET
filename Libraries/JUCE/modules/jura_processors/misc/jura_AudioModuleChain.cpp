@@ -1,4 +1,3 @@
-
 AudioModule* AudioModuleFactory::createModule(const juce::String& type, CriticalSection *lock)
 {
   if(type == "None")         return new DummyModule( lock);
@@ -9,7 +8,7 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
   // filters: 
   if(type == "Ladder")          return new Ladder(         lock);
   if(type == "PhasorFilter")    return new PhasorFilter(   lock);
-  //if(type == "EngineersFilter") return new EngineersFilterAudioModule(lock);
+  if(type == "EngineersFilter") return new EngineersFilterAudioModule(lock);
 
   jassertfalse;  // unknown module type requested
   return nullptr;
@@ -21,9 +20,11 @@ juce::String AudioModuleFactory::getModuleType(AudioModule *m)
   //if(dynamic_cast<PhaseScope2*>  (m))             return "PhaseScope2"; // always check subclasses before...
   if(dynamic_cast<PhaseScope*>   (m))               return "PhaseScope";  // ...their superclasses
   if(dynamic_cast<Enveloper*>    (m))               return "Enveloper";
+
+  // filters:
   if(dynamic_cast<Ladder*>       (m))               return "Ladder";
   if(dynamic_cast<PhasorFilter*> (m))               return "PhasorFilter";
-  //if(dynamic_cast<EngineersFilterAudioModule*> (m)) return "EngineersFilter";
+  if(dynamic_cast<EngineersFilterAudioModule*> (m)) return "EngineersFilter";
 
 
   jassertfalse;  // unknown module type was passed
@@ -41,7 +42,7 @@ StringArray AudioModuleFactory::getAvailableModuleTypes()
   // filters:
   a.add("Ladder");
   a.add("PhasorFilter");
-  //a.add("EngineersFilter");
+  a.add("EngineersFilter");
 
   return a;
 }
