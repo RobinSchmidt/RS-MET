@@ -16,6 +16,18 @@ static const unsigned char temp_binary_data_0[] =
 "On my machine, the path is:\r\n"
 "\r\n"
 "E:\\Programming\\C++\\RS-MET\\Products\\AudioApplications\\PluginHost\\Builds\\VisualStudio2015\\x64\\Debug\\Plugin Host.exe\r\n"
+"\r\n"
+"\r\n"
+"to build a release version with the linux makefile, open a terminal in the \r\n"
+"folder containing the makefile and call:\r\n"
+"\r\n"
+"make CONFIG=Release\r\n"
+"\r\n"
+"just calling:\r\n"
+"\r\n"
+"make\r\n"
+"\r\n"
+"will build a debug version\r\n"
 "\r\n";
 
 const char* DebugNotes_txt = (const char*) temp_binary_data_0;
@@ -37,7 +49,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes) throw
 
     switch (hash)
     {
-        case 0x4358baff:  numBytes = 453; return DebugNotes_txt;
+        case 0x4358baff:  numBytes = 654; return DebugNotes_txt;
         case 0x80091737:  numBytes = 0; return ToDo_txt;
         default: break;
     }

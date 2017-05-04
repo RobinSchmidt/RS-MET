@@ -1,4 +1,4 @@
--EngineersFilter editor: additional space/infoline
+-EngineersFilter editor: remove additional space/infoline
 
 make old plugins available in chainer:
 -drag over all old plugin code and make it work in the Chainer

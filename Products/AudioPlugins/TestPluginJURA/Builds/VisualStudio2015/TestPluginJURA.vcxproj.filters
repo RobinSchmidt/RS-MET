@@ -392,6 +392,9 @@
     <Filter Include="Juce Modules\jura_processors\filters">
       <UniqueIdentifier>{9ADA914B-D4D5-2886-1EA5-949A51D4755A}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Juce Modules\jura_processors\instruments">
+      <UniqueIdentifier>{0AD919EB-ACF8-CCBD-34DB-05D31AE677FF}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Juce Modules\jura_processors\misc">
       <UniqueIdentifier>{AA0F22B8-16DF-6DAA-8215-0231E2570B2C}</UniqueIdentifier>
     </Filter>
@@ -2400,6 +2403,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_PhasorFilter.cpp">
       <Filter>Juce Modules\jura_processors\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_AcidSequencer.cpp">
+      <Filter>Juce Modules\jura_processors\instruments</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\misc\jura_AudioModuleChain.cpp">
       <Filter>Juce Modules\jura_processors\misc</Filter>
@@ -5693,6 +5699,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_PhasorFilter.h">
       <Filter>Juce Modules\jura_processors\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_AcidSequencer.h">
+      <Filter>Juce Modules\jura_processors\instruments</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\misc\jura_AudioModuleChain.h">
       <Filter>Juce Modules\jura_processors\misc</Filter>
