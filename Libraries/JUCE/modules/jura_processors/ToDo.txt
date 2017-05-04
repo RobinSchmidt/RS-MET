@@ -13,7 +13,7 @@ make old plugins available in chainer:
  -EngineersFilter (done)
  -FuncShaper
  -KeyShot
- -Liberty (later)
+ -Liberty (later - it needs the "romos" folder)
  -MagicCarpet
  -MidiMonitor
  -Moduluxury

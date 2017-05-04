@@ -65,8 +65,9 @@ namespace jura
 #include "modulators/jura_BreakpointModulatorEditorMulti.h"
 
 #include "effects/jura_Enveloper.h"
+#include "effects/jura_FuncShaper.h"
 
-#include "instruments/jura_AcidSequencer.h"
+#include "instruments/jura_AcidSequencer.h"  // maybe move to a "sequencers" folder someday
 #include "instruments/jura_AciDevil.h"
 
 #include "misc/jura_AudioModuleChain.h"

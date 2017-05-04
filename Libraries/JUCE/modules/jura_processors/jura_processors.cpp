@@ -63,6 +63,7 @@ namespace jura
 #include "modulators/jura_BreakpointModulatorEditorMulti.cpp"
 
 #include "effects/jura_Enveloper.cpp"
+#include "effects/jura_FuncShaper.cpp"
 
 #include "instruments/jura_AcidSequencer.cpp"
 #include "instruments/jura_AciDevil.cpp"
