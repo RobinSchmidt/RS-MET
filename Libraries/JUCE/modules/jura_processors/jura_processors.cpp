@@ -64,7 +64,7 @@ namespace jura
 
 #include "effects/jura_Enveloper.cpp"
 
-//#include "instruments/jura_AcidSequencer.cpp"
+#include "instruments/jura_AcidSequencer.cpp"
 //#include "instruments/jura_AciDevil.cpp"
 
 #include "misc/jura_AudioModuleChain.cpp"

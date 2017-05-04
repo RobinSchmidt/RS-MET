@@ -311,13 +311,23 @@ void AcidPatternEditor::paint(juce::Graphics &g)
   float s = (float) rowHeight;
   float thickness = 2.f;
 
-  drawBitmapFontText(g, (int)x+3, (int)y+3, juce::String("Gate:"), &boldFont10px, textColour);
+
+  drawBitmapFontText(g, (int)x+3, (int)y+3, juce::String("Gate:"), &BitmapFontRoundedBoldA10D0::instance, textColour);
   y += topLaneHeight;
-  drawBitmapFontText(g, (int)x+3, (int)y+3, juce::String("Accent:"), &boldFont10px, textColour);
+  drawBitmapFontText(g, (int)x+3, (int)y+3, juce::String("Accent:"), &BitmapFontRoundedBoldA10D0::instance, textColour);
   y += topLaneHeight;
-  drawBitmapFontText(g, (int)x+3, (int)y+3, juce::String("Slide:"), &boldFont10px, textColour);
+  drawBitmapFontText(g, (int)x+3, (int)y+3, juce::String("Slide:"), &BitmapFontRoundedBoldA10D0::instance, textColour);
   y += topLaneHeight;
-  drawBitmapFontText(g, (int)x+3, (int)y+3, juce::String("Octave:"), &boldFont10px, textColour);
+  drawBitmapFontText(g, (int)x+3, (int)y+3, juce::String("Octave:"), &BitmapFontRoundedBoldA10D0::instance, textColour);
+
+  // old - delete, when new version above has been tested:
+  //drawBitmapFontText(g, (int)x+3, (int)y+3, juce::String("Gate:"), &boldFont10px, textColour);
+  //y += topLaneHeight;
+  //drawBitmapFontText(g, (int)x+3, (int)y+3, juce::String("Accent:"), &boldFont10px, textColour);
+  //y += topLaneHeight;
+  //drawBitmapFontText(g, (int)x+3, (int)y+3, juce::String("Slide:"), &boldFont10px, textColour);
+  //y += topLaneHeight;
+  //drawBitmapFontText(g, (int)x+3, (int)y+3, juce::String("Octave:"), &boldFont10px, textColour);
 
   w = keyLength;
 
@@ -472,8 +482,12 @@ void AcidPatternEditor::paint(juce::Graphics &g)
       y += topLaneHeight;
       juce::String octString = valueToStringWithSign0( patternToEdit->getOctave(i) );
 
-      drawBitmapFontText(g, (int)(x+dx), (int)(y+dy), octString, &boldFont10px, textColour, -1, 
-        Justification::centred);
+      drawBitmapFontText(g, (int)(x+dx), (int)(y+dy), octString, 
+        &BitmapFontRoundedBoldA10D0::instance, textColour, -1, Justification::centred);
+
+      // old:
+      //drawBitmapFontText(g, (int)(x+dx), (int)(y+dy), octString, &boldFont10px, textColour, -1, 
+      //  Justification::centred);
 
       y = keyboardY + 12*rowHeight;
       if( patternToEdit->getGate(i) == true )
@@ -504,7 +518,7 @@ void AcidPatternEditor::paint(juce::Graphics &g)
 // construction/destruction:
 
 AcidSequencerModuleEditor::AcidSequencerModuleEditor(CriticalSection *newPlugInLock, AcidSequencerAudioModule* newAcidSequencerAudioModule) 
-  : AudioModuleEditor(newPlugInLock, newAcidSequencerAudioModule)
+  : AudioModuleEditor(newAcidSequencerAudioModule)
 {
   setHeadlineStyle(SUB_HEADLINE);
   setLinkPosition(INVISIBLE);

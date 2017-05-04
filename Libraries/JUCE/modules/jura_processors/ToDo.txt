@@ -40,6 +40,9 @@ make old plugins available in chainer:
  -clients don't want to have to deal with name clashes when the incorporate my modules, so...
   yeah...prefix everything with rs - makes it also easier later to drag in code from RSLib
 
+-make repaintOnMessageThread() work, use it for updating displays, widgets etc. when midi events 
+ are received (they are received on the audio thread, but should update the GUI, too)
+
 
 Bugs:
 -on "Undo" in Reaper (to undo a parameter change), the widgets are not updated
@@ -49,6 +52,7 @@ Bugs:
   and that's why the widgets don't update. i'm sure, what's the best way to 
   fix that ...why do we switch that off anyway...is was to solve some other 
   issue...figure out...
+
 
 
 AudioPlugin:  
