@@ -1,6 +1,3 @@
-#include "rojue_CoordinateSystem.h"
-#include "../dialogs/rojue_ImageSavingDialog.h"
-using namespace rojue;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
@@ -24,8 +21,8 @@ CoordinateSystem::CoordinateSystem(const String &newDescription) : RWidget(newDe
   axisValuesPositionX           =  BELOW_AXIS;
   axisValuesPositionY           =  LEFT_TO_AXIS;
 
-  axisLabelX                    =  String(T("x"));
-  axisLabelY                    =  String(T("y"));
+  axisLabelX                    =  String("x");
+  axisLabelY                    =  String("y");
 
   horizontalCoarseGridIsVisible =  false;
   horizontalFineGridIsVisible	  =  false;
@@ -85,7 +82,7 @@ CoordinateSystem::CoordinateSystem(const String &newDescription) : RWidget(newDe
   setMouseCursor(currentMouseCursor);
 
   // the Label for inspecting the current frequency ane level:
-  inspectionField = new TextEditor( String(T("inspectionField")) );
+  inspectionField = new TextEditor( String("inspectionField") );
   inspectionField->setBounds(4, 4, 120, 40);
   inspectionField->setColour(TextEditor::backgroundColourId, Colours::white.withAlpha(0.7f) );
   inspectionField->setColour(TextEditor::outlineColourId,    Colours::black );
@@ -135,8 +132,8 @@ void CoordinateSystem::mouseMove(const MouseEvent &e)
     transformFromComponentsCoordinates(x, y);
 
     // pass the strings to the inspectionLabel:
-    inspectionField->setText(String(T("x=")) + String(x) + String::charToString(T('\n')) +
-      String(T("y=")) + String(y), false);
+    inspectionField->setText(String("x=") + String(x) + String::charToString('\n') +
+      String("y=") + String(y), false);
   }
 }
 
@@ -161,10 +158,11 @@ void CoordinateSystem::mouseDoubleClick(const MouseEvent &e)
   Component::mouseDoubleClick(e);
 }
 
-void CoordinateSystem::mouseWheelMove(const MouseEvent &e, float wheelIncrementX, 
-                                      float wheelIncrementY)
+//void CoordinateSystem::mouseWheelMove(const MouseEvent &e, float wheelIncrementX, float wheelIncrementY)
+void CoordinateSystem::mouseWheelMove(const MouseEvent& ev, const MouseWheelDetails& wheel)
 {
-  Component::mouseWheelMove(e, wheelIncrementX, wheelIncrementY);
+  Component::mouseWheelMove(ev, wheel);
+  //Component::mouseWheelMove(e, wheelIncrementX, wheelIncrementY);
 }
 
 
@@ -721,10 +719,10 @@ void CoordinateSystem::setupAxisX(double newMin, double newMax, bool shouldBeLog
   double newLogBase, int newAxisPosition, double newCoarseGridInterval, double newFineGridInterval)
 {
   // axis settings seem not to make sense
-  jassert( newMin < newMax )
-  jassert( newMin > 0.0 || shouldBeLogScaled == false )
-  jassert( shouldBeLogScaled == false || 
-           (newCoarseGridInterval > 1.000001 && newFineGridInterval > 1.000001) )
+  jassert(newMin < newMax);
+  jassert(newMin > 0.0 || shouldBeLogScaled == false);
+  jassert(shouldBeLogScaled == false ||
+    (newCoarseGridInterval > 1.000001 && newFineGridInterval > 1.000001));
   if( newMin >= newMax )
     return;
   if( newMin < 0.0 && shouldBeLogScaled == true )
@@ -754,11 +752,10 @@ void CoordinateSystem::setupAxisY(double newMin, double newMax, bool shouldBeLog
   double newFineGridInterval)
 {
   // axis settings seem not to make sense
-  jassert( newMin < newMax )
-  jassert( newMin > 0.0 || shouldBeLogScaled == false )
-  jassert( shouldBeLogScaled == false || 
-           (newCoarseGridInterval > 1.000001 && 
-            newFineGridInterval > 1.000001      )  )
+  jassert(newMin < newMax);
+  jassert(newMin > 0.0 || shouldBeLogScaled == false);
+  jassert(shouldBeLogScaled == false || (newCoarseGridInterval > 1.000001 &&
+      newFineGridInterval > 1.000001));
   if( newMin >= newMax )
     return;
   if( newMin < 0.0 && shouldBeLogScaled == true )
@@ -850,57 +847,56 @@ void CoordinateSystem::openRightClickPopupMenu()
   else if (result == 1)
   {
     // user picked the Export item - open the export dialog window:
-    openExportDialog(getWidth(), getHeight(), String(T("png")), File::nonexistent);
+    openExportDialog(getWidth(), getHeight(), String("png"), File::nonexistent);
   }
 }
 
-void CoordinateSystem::addLineToSvgDrawing(XmlElement* theSVG, 
-                                           float x1, float y1, float x2, float y2, float thickness, 
-                                           Colour colour, bool withArrowHead)
+void CoordinateSystem::addLineToSvgDrawing(XmlElement* theSVG, float x1, float y1, float x2, 
+  float y2, float thickness, Colour colour, bool withArrowHead)
 {
   if( theSVG == NULL )
     return;
 
-  XmlElement* line = new XmlElement(String(T("line")));
-  line->setAttribute(String(T("x1")), x1);
-  line->setAttribute(String(T("y1")), y1);
+  XmlElement* line = new XmlElement(String("line"));
+  line->setAttribute(String("x1"), x1);
+  line->setAttribute(String("y1"), y1);
   if( withArrowHead == true && y1 == y2 )
-    line->setAttribute(String(T("x2")), x2-8);
+    line->setAttribute(String("x2"), x2-8);
   else
-    line->setAttribute(String(T("x2")), x2);
+    line->setAttribute(String("x2"), x2);
 
   if( withArrowHead == true && x1 == x2 )
-    line->setAttribute(String(T("y2")), y2+8);
+    line->setAttribute(String("y2"), y2+8);
   else
-    line->setAttribute(String(T("y2")), y2);
+    line->setAttribute(String("y2"), y2);
 
-  line->setAttribute(String(T("style")), String(T("stroke-width: ")) + String(thickness) + 
-    String(T("; stroke: #")) + colour.toString().substring(2) + String(T(";")) );
+  line->setAttribute(String("style"), String("stroke-width: ") + String(thickness) + 
+    String("; stroke: #") + colour.toString().substring(2) + String(";") );
   theSVG->addChildElement(line);
 
   if( withArrowHead == true )
   {
-    XmlElement* triangle = new XmlElement(String(T("path")));
+    XmlElement* triangle = new XmlElement(String("path"));
 
     if( y1 == y2 ) // this is a horizontal rightward arrow 
     {
-      triangle->setAttribute(String(T("d")), 
-        String(T("M "))   + String(x2-8) + String(T(" ")) + String(y2-4) + 
-        String(T(", L ")) + String(x2-8) + String(T(" ")) + String(y2+4) + 
-        String(T(", L ")) + String(x2)   + String(T(" ")) + String(y2)   + 
-        String(T(", Z")) );
-      triangle->setAttribute(String(T("style")), String(T("stroke: none, fill: #")) 
-        + colour.toString().substring(2) + String(T(";")) );
+      triangle->setAttribute(String("d"), 
+        String("M ")   + String(x2-8) + String(" ") + String(y2-4) + 
+        String(", L ") + String(x2-8) + String(" ") + String(y2+4) + 
+        String(", L ") + String(x2)   + String(" ") + String(y2)   + 
+        String(", Z") );
+      triangle->setAttribute(String("style"), String("stroke: none, fill: #") 
+        + colour.toString().substring(2) + String(";") );
     }
     else if( x1 == x2 ) // this is an upward verzical rightward arrow 
     {
-      triangle->setAttribute(String(T("d")), 
-        String(T("M "))   + String(x2-4) + String(T(" ")) + String(y2+8) + 
-        String(T(", L ")) + String(x2+4) + String(T(" ")) + String(y2+8) + 
-        String(T(", L ")) + String(x2)   + String(T(" ")) + String(y2)   + 
-        String(T(", Z")) );
-      triangle->setAttribute(String(T("style")), String(T("stroke: none, fill: #")) 
-        + colour.toString().substring(2) + String(T(";")) );
+      triangle->setAttribute(String("d"), 
+        String("M ")   + String(x2-4) + String(" ") + String(y2+8) + 
+        String(", L ") + String(x2+4) + String(" ") + String(y2+8) + 
+        String(", L ") + String(x2)   + String(" ") + String(y2)   + 
+        String(", Z") );
+      triangle->setAttribute(String("style"), String("stroke: none, fill: #") 
+        + colour.toString().substring(2) + String(";") );
     }
 
     theSVG->addChildElement(triangle);
@@ -913,22 +909,22 @@ void CoordinateSystem::addTextToSvgDrawing(XmlElement* theSVG, String theText, f
   if( theSVG == NULL )
     return;
 
-  XmlElement* textContainer = new XmlElement(String(T("text")));
+  XmlElement* textContainer = new XmlElement(String("text"));
   XmlElement* text          = XmlElement::createTextElement(theText);
 
   String jString = String::empty;
   if( justification.getFlags() == Justification::centredLeft )
-    jString = String(T("start"));
+    jString = String("start");
   else if( justification.getFlags() == Justification::centred )
-    jString = String(T("middle"));
+    jString = String("middle");
   else if( justification.getFlags() == Justification::centredRight )
-    jString = String(T("end"));
+    jString = String("end");
 
-  textContainer->setAttribute(String(T("x")), x);
-  textContainer->setAttribute(String(T("y")), y);
-  textContainer->setAttribute(String(T("style")), String(T("font-family: sans-serif;")) +  
-    String(T(" font-size: 12px;")) + String(T(" stroke: none;")) + String(T(" fill: black;")) +
-    String(T(" text-anchor: ")) + jString + String(T(";")) );
+  textContainer->setAttribute(String("x"), x);
+  textContainer->setAttribute(String("y"), y);
+  textContainer->setAttribute(String("style"), String("font-family: sans-serif;") +  
+    String(" font-size: 12px;") + String(" stroke: none;") + String(" fill: black;") +
+    String(" text-anchor: ") + jString + String(";") );
   textContainer->addChildElement(text);
   theSVG->addChildElement(textContainer);
 }
@@ -968,10 +964,10 @@ void CoordinateSystem::drawBitmapText(Graphics &g, const String &text, double x,
 
 Image* CoordinateSystem::getPlotAsImage(int width, int height)
 {
-  jassert( width  >= 1 )
-    jassert( height >= 1)
-    if( width < 1 || height < 1)
-      return NULL;
+  jassert(width  >= 1);
+  jassert(height >= 1);    
+  if( width < 1 || height < 1)
+    return NULL;
 
   Image* thePlotImage = new Image(Image::RGB, width, height, true);
 
@@ -986,10 +982,10 @@ Image* CoordinateSystem::getPlotAsImage(int width, int height)
 
 XmlElement* CoordinateSystem::getPlotAsSVG(int width, int height)
 {
-  jassert( width  >= 1 )
-    jassert( height >= 1)
-    if( width < 1 || height < 1)
-      return NULL;
+  jassert(width  >= 1);
+  jassert(height >= 1);    
+  if( width < 1 || height < 1)
+    return NULL;
 
   // create an image object as dummy:
   Image* thePlotImage = new Image(Image::RGB, width, height, true);
@@ -999,9 +995,9 @@ XmlElement* CoordinateSystem::getPlotAsSVG(int width, int height)
   Graphics g(*thePlotImage);
 
   // create an XmlElement to be used for the SVG drawing:
-  XmlElement* theSVG = new XmlElement(String(T("svg")));
-  theSVG->setAttribute(String(T("width")), width);
-  theSVG->setAttribute(String(T("height")), height);
+  XmlElement* theSVG = new XmlElement(String("svg"));
+  theSVG->setAttribute(String("width"),  width);
+  theSVG->setAttribute(String("height"), height);
 
   // draw on the SVG:
   drawCoordinateSystem(g, thePlotImage, theSVG);
@@ -1322,7 +1318,7 @@ void CoordinateSystem::drawCaption(Graphics &g, Image* targetImage, XmlElement *
   float w = (float) bounds.getWidth();
 
   g.setColour(colourScheme.axes);
-
+  BitmapFont font = BitmapFontRoundedBoldA10D0::instance;
   switch( captionPosition )
   {
   case NO_CAPTION: return;
@@ -1330,7 +1326,7 @@ void CoordinateSystem::drawCaption(Graphics &g, Image* targetImage, XmlElement *
     {
       //caption.drawAt(g, 0.5f*getWidth()-0.5f*w, 16);  
       drawBitmapText(g, captionString, 0.5f*getWidth()-0.5f*w, 16, getWidth(), 16,         
-        &boldFont10px, Justification::centred);
+        &font, Justification::centred);
 
       if( targetSVG != NULL )
       {
@@ -1349,9 +1345,9 @@ void CoordinateSystem::drawCaption(Graphics &g, Image* targetImage, XmlElement *
 
       x  = (float)getWidth()/2.f;
       y  = (float)getHeight()/2.f;
-      x -= boldFont10px.getTextPixelWidth(captionString, boldFont10px.getDefaultKerning())/2;
-      y -= boldFont10px.getFontAscent()/2;
-      drawBitmapText(g, captionString, x, y, getWidth(), 16, &boldFont10px, Justification::topLeft);
+      x -= font.getTextPixelWidth(captionString, font.getDefaultKerning())/2;
+      y -= font.getFontAscent()/2;
+      drawBitmapText(g, captionString, x, y, getWidth(), 16, &font, Justification::topLeft);
 
       //drawText(g, captionString, 0.5f*getWidth()-0.5f*w, 0.5f*getHeight()-0.5f*h+8.f, 
       //  getWidth(), 16, Justification::centred);
@@ -1986,7 +1982,8 @@ void CoordinateSystem::drawAxisLabelX(juce::Graphics &g, Image* targetImage, Xml
   else if( axisPositionX == BOTTOM || axisLabelPositionX == ABOVE_AXIS )
     posY -= 28;
 
-  drawBitmapText(g, axisLabelX, (int)posX-100, (int)posY, 96, 16, &boldFont10px, 
+  BitmapFont font = BitmapFontRoundedBoldA10D0::instance;
+  drawBitmapText(g, axisLabelX, (int)posX-100, (int)posY, 96, 16, &font, 
     Justification::centredRight);
 
   //drawTextAt(g, axisLabelX
@@ -2025,13 +2022,14 @@ void CoordinateSystem::drawAxisLabelY(juce::Graphics &g, Image* targetImage, Xml
   else
     transformToImageCoordinates(posX, posY, targetImage);
 
-  // include some margin for axes at the left and right:
+  BitmapFont font = BitmapFontRoundedBoldA10D0::instance;
 
+  // include some margin for axes at the left and right:
   if( axisPositionY == LEFT || axisLabelPositionY == RIGHT_TO_AXIS )
   {
     posX += 8;
     posY += 4;
-    drawBitmapText(g, axisLabelY, (int) posX, (int) posY, 512, 16, &boldFont10px,
+    drawBitmapText(g, axisLabelY, (int) posX, (int) posY, 512, 16, &font,
       Justification::topLeft);
 
     //g.drawText(axisLabelY, (int) posX, (int) posY, 512, 16, 
@@ -2053,7 +2051,7 @@ void CoordinateSystem::drawAxisLabelY(juce::Graphics &g, Image* targetImage, Xml
 
     //g.drawText(axisLabelY, (int) posX, (int) posY, 512, 16, 
     //  Justification::centredRight, false);
-    drawBitmapFontText(g, (int)posX, (int)posY+8, axisLabelY, &boldFont10px, colourScheme.axes);
+    drawBitmapFontText(g, (int)posX, (int)posY+8, axisLabelY, &font, colourScheme.axes);
     posX += 512;
     if( targetSVG != NULL )
       addTextToSvgDrawing(targetSVG, axisLabelY, 

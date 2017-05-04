@@ -1,5 +1,5 @@
-#ifndef jura_CoordinateSystem_h
-#define jura_CoordinateSystem_h 
+#ifndef jura_CoordinateSystemOld_h
+#define jura_CoordinateSystemOld_h 
 
 
 // is this really the right file from the old codebase?
