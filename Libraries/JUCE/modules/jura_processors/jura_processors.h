@@ -35,12 +35,12 @@
 #include <juce_graphics/juce_graphics.h> 
 #include <juce_gui_basics/juce_gui_basics.h> 
 #include <jura_framework/jura_framework.h> 
-//#include <rosic/rosic.h> // it complains - we should include the RAPT stuff in rosic
+#include <rosic/rosic.h> // it complains - we should include the RAPT stuff in rosic
 using namespace juce;
 // do we actually need all these includes? - most of them are included by jura_framework already
 
-#include "../../RAPT/Source/Modules/RAPT.h"
-using namespace RAPT;
+//#include "../../RAPT/Source/Modules/RAPT.h" // get rid of that
+//using namespace RAPT;
 
 // disable warnings related to "inherits ... via dominance", todo: try to get rid of virtual 
 // inheritance and reactivate the warning

@@ -23,6 +23,8 @@ namespace rosic
   characters, maintain usedLength and allocatedLength as members, don't use the C-string
   functions anymore, provide conversion functions from and to c-strings
 
+  \rename thsi class to rsString
+
   */
 
   class String

@@ -1,6 +1,10 @@
 #include "rosic_LadderFilter.h"
 using namespace rosic;
 
+namespace rosic // temporary - for as long as there's a RAPT::LadderFilter class, too
+{               // maybe at some point, rename this class into rsLadderFilterDD as template 
+                // instantiation of RAPT::rsLadderFilter<double, double>
+
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
@@ -35,7 +39,7 @@ LadderFilter::LadderFilter()
 
 LadderFilter::~LadderFilter()
 {
-  if( isMaster && parameters != NULL )
+  if(isMaster && parameters != NULL)
     delete parameters;
 }
 
@@ -44,7 +48,7 @@ LadderFilter::~LadderFilter()
 
 void LadderFilter::setSampleRate(double newSampleRate)
 {
-  if( newSampleRate > 0.0 )
+  if(newSampleRate > 0.0)
     parameters->sampleRate = newSampleRate;
   allpass.setSampleRate(parameters->sampleRate);
 
@@ -65,7 +69,7 @@ void LadderFilter::setMakeUp(double newMakeUp, bool updateCoefficients)
 {
   parameters->makeUp = newMakeUp;
 
-  if( updateCoefficients == true )
+  if(updateCoefficients == true)
   {
     calculateCoefficients();
     for(unsigned int s=0; s<slaves.size(); s++)
@@ -85,7 +89,7 @@ void LadderFilter::setDcOffset(double newDcOffset)
 
 void LadderFilter::setOutputStage(int newOutputStage)
 {
-  if( newOutputStage >= 0 && newOutputStage <= 4 )
+  if(newOutputStage >= 0 && newOutputStage <= 4)
     parameters->outputStage = newOutputStage;
   else
     DEBUG_BREAK; // ouput stage must be in 0...4
@@ -93,7 +97,7 @@ void LadderFilter::setOutputStage(int newOutputStage)
 
 void LadderFilter::setMode(int newMode)
 {
-  if( newMode >= 0 && newMode < LadderFilterParameters::NUM_MODES )
+  if(newMode >= 0 && newMode < LadderFilterParameters::NUM_MODES)
     parameters->mode = newMode;
 }
 
@@ -111,40 +115,40 @@ c4 = [ 1 -1  1 -1  1];
 
   // may be streamlined
   double m = newMorph;
-  if( m < 0.25 )
+  if(m < 0.25)
   {
-    c0 =  1.0 + 4.0*m* ( 0.0 -  1.0);
-    c1 = -4.0 + 4.0*m* ( 1.0 - -4.0);
+    c0 =  1.0 + 4.0*m* (0.0 -  1.0);
+    c1 = -4.0 + 4.0*m* (1.0 - -4.0);
     c2 =  6.0 + 4.0*m* (-3.0 -  6.0);
-    c3 = -4.0 + 4.0*m* ( 3.0 - -4.0);
+    c3 = -4.0 + 4.0*m* (3.0 - -4.0);
     c4 =  1.0 + 4.0*m* (-1.0 -  1.0);
   }
-  else if( m < 0.5 )
+  else if(m < 0.5)
   {
     m  -= 0.25;
-    c0  =  0.0 + 4.0*m* ( 0.0 -  0.0);
-    c1  =  1.0 + 4.0*m* ( 0.0 -  1.0);
-    c2  = -3.0 + 4.0*m* ( 1.0 - -3.0);
+    c0  =  0.0 + 4.0*m* (0.0 -  0.0);
+    c1  =  1.0 + 4.0*m* (0.0 -  1.0);
+    c2  = -3.0 + 4.0*m* (1.0 - -3.0);
     c3  =  3.0 + 4.0*m* (-2.0 -  3.0);
-    c4  = -1.0 + 4.0*m* ( 1.0 - -1.0);
+    c4  = -1.0 + 4.0*m* (1.0 - -1.0);
   }
-  else if( m < 0.75 )
+  else if(m < 0.75)
   {
     m  -= 0.5;
-    c0  =  0.0 + 4.0*m* ( 0.0 -  0.0);
-    c1  =  0.0 + 4.0*m* ( 0.0 -  0.0);
-    c2  =  1.0 + 4.0*m* ( 0.0 -  1.0);
-    c3  = -2.0 + 4.0*m* ( 1.0 - -2.0);
+    c0  =  0.0 + 4.0*m* (0.0 -  0.0);
+    c1  =  0.0 + 4.0*m* (0.0 -  0.0);
+    c2  =  1.0 + 4.0*m* (0.0 -  1.0);
+    c3  = -2.0 + 4.0*m* (1.0 - -2.0);
     c4  =  1.0 + 4.0*m* (-1.0 -  1.0);
   }
-  else if( m < 1.0 )
+  else if(m < 1.0)
   {
     m  -= 0.75;
-    c0  =  0.0 + 4.0*m* ( 0.0 -  0.0);
-    c1  =  0.0 + 4.0*m* ( 0.0 -  0.0);
-    c2  =  0.0 + 4.0*m* ( 0.0 -  0.0);
-    c3  =  1.0 + 4.0*m* ( 0.0 -  1.0);
-    c4  = -1.0 + 4.0*m* ( 1.0 - -1.0);
+    c0  =  0.0 + 4.0*m* (0.0 -  0.0);
+    c1  =  0.0 + 4.0*m* (0.0 -  0.0);
+    c2  =  0.0 + 4.0*m* (0.0 -  0.0);
+    c3  =  1.0 + 4.0*m* (0.0 -  1.0);
+    c4  = -1.0 + 4.0*m* (1.0 - -1.0);
   }
   else
   {
@@ -159,13 +163,13 @@ c4 = [ 1 -1  1 -1  1];
 // inquiry:
 
 Complex LadderFilter::getTransferFunctionAt(Complex z, bool withFeedback, bool withMakeUpBoost,
-                                           bool withMakeUpGain, int stage)
+  bool withMakeUpGain, int stage)
 {
   Complex G1, G4, G, H;
 
   G1 = b0 / (1 + a1*(1/z));             // G1: response of one stage
   G4 = G1*G1*G1*G1;                     // G4: response of four stages (without feedback)
-  switch( stage )
+  switch(stage)
   {
   case 0: G = 1.0;       break;
   case 1: G = G1;        break;
@@ -174,7 +178,7 @@ Complex LadderFilter::getTransferFunctionAt(Complex z, bool withFeedback, bool w
   case 4: G = G4;        break;
   }                                     // G: response of the requested stage (without feedback)
 
-  if( withFeedback == true )
+  if(withFeedback == true)
     H  = G / (1 + k*(1/z)*G4);         // response of four stages with feedback
   else
     H = G;
@@ -182,14 +186,14 @@ Complex LadderFilter::getTransferFunctionAt(Complex z, bool withFeedback, bool w
   //if( withMakeUpBoost == true )
   //  H *= lowBooster.getTransferFunctionAt(z);
 
-  if( withMakeUpGain == true )
+  if(withMakeUpGain == true)
     H *= makeupGain;
 
   return H;
 }
 
 double LadderFilter::getMagnitudeAt(double frequency, bool withFeedback, bool withMakeUpBoost,
-                                   bool withMakeUpGain, int stage)
+  bool withMakeUpGain, int stage)
 {
   double omega = 2*PI*frequency / parameters->sampleRate;
 
@@ -200,13 +204,13 @@ double LadderFilter::getMagnitudeAt(double frequency, bool withFeedback, bool wi
 }
 
 void LadderFilter::getMagnitudeResponse(double *frequencies, double *magnitudes, int numBins,
-                                       bool inDecibels, bool accumulate)
+  bool inDecibels, bool accumulate)
 {
   int k;
   int s = parameters->outputStage;
-  if( inDecibels == false )
+  if(inDecibels == false)
   {
-    if( accumulate == false )
+    if(accumulate == false)
     {
       for(k=0; k<numBins; k++)
         magnitudes[k] = getMagnitudeAt(frequencies[k], true, true, true, s);
@@ -219,7 +223,7 @@ void LadderFilter::getMagnitudeResponse(double *frequencies, double *magnitudes,
   }
   else
   {
-    if( accumulate == false )
+    if(accumulate == false)
     {
       for(k=0; k<numBins; k++)
         magnitudes[k] = amp2dBWithCheck(getMagnitudeAt(frequencies[k], true, true, true, s));
@@ -272,7 +276,7 @@ void LadderFilter::addSlave(LadderFilter* newSlave)
 
   // delete the original parameter-set of the new slave and redirect it to ours (with some safety
   // checks):
-  if( newSlave->parameters != NULL && newSlave->parameters != this->parameters )
+  if(newSlave->parameters != NULL && newSlave->parameters != this->parameters)
   {
     delete newSlave->parameters;
     newSlave->parameters = this->parameters;
@@ -323,7 +327,7 @@ double LadderFilter::getSampleTest(double in)
   //double y0L = in;
 
 
-  if( a1 != a1Old )
+  if(a1 != a1Old)
   {
     //double b0Old = 1.0+a1Old;
 
@@ -400,3 +404,6 @@ double LadderFilter::getSampleTest(double in)
   //return y1L;  // preliminary
   return y4L;
 }
+
+
+} // end namespace rosic

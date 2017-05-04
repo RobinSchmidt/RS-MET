@@ -34,6 +34,9 @@
 #include <malloc.h>  // for alloca - try to get rid..
 //#include <math.h>
 
+#include "../../RAPT/Source/Modules/RAPT.h"
+using namespace RAPT;
+
 #include "analysis/rosic_Analysis.h"
 #include "basics/rosic_Basics.h"
 #include "datastructures/rosic_DataStructures.h"

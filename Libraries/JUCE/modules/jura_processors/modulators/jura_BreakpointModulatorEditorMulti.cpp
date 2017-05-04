@@ -381,7 +381,7 @@ void BreakpointModulatorEditorMulti::resized()
   y = getHeight() - h - 2;
   for(int i=numModulators-1; i>=0; i--) 
   {
-    Rectangle<int> *r = new Rectangle<int>(x, y, w, h);
+    juce::Rectangle<int> *r = new juce::Rectangle<int>(x, y, w, h);
     leftSectionRectangles.add(r);
     globalEditors[i]->setBounds(*r);
     //y -= h-2;

@@ -8,6 +8,49 @@ header files that the compiler may be using. */
 
 #include "rosic.h"
 
+// the implementation's of the rapt-templates on which (some of) the rosic classes are based:
+
+#include "../../RAPT/Source/Modules/RAPT.cpp"
+// i think, in order to safely avoid "multiple definition" linker errors, this here needs to be the
+// one and only place where RAPT.cpp gets included
+
+// We request some explicit instantiations here - later, when we add modules to the jura framework
+// which use these classes, they may be deleted. At the moment, they are needed for Elan's
+// Chaosfly but are nowhere instantiatied within jura. It's not a very elegant solution, but it's
+// supposed to be temporary anyway:
+
+template class RAPT::rsParametricBellFunction<double>;
+template class RAPT::rsPositiveBellFunctions<double>;
+template class RAPT::NormalizedSigmoids<double>;
+template class RAPT::ScaledAndShiftedSigmoid<double>;
+
+template class RAPT::StateVariableFilter<double, double>;
+
+template class RAPT::AlphaMask<float>;
+template class RAPT::ImagePainter<float, float, float>;
+
+// for PhaseScope:
+template class RAPT::AlphaMask<double>;
+template class RAPT::PhaseScopeBuffer<double, float, double>;
+template class RAPT::PhaseScopeBuffer2<double, float, double>;
+
+
+// needed for the release build of ChaosFly on Linux - withou them, apparently the compiler
+// generates the classes only partially - some member functions are missing probably they called
+// from nowhere inside JURA:
+template double RAPT::rsAbs(double x);
+template class RAPT::rsBreakpointModulator<double>;
+template class RAPT::LadderFilter<double, double>;
+template class RAPT::PhasorFilter<double, double>;
+template class RAPT::PhasorStateMapper<double>;
+// ..i really should copy over the rosic code and only use actual rosic classes in products (not
+// class templates) - these classes can themselves, one-by-one, be made instantiations of
+// templates -  i propagate up the code intio RAPT - which them becomes
+// Rob's Audio Processing Templates
+
+
+//=================================================================================================
+
 /** The cpp files are included in the order in which they depend on each other. The only folder 
 from which we have not included the .cpp files is the legacy folder.
 

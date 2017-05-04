@@ -145,7 +145,7 @@ void PhaseScope::setLineDensity(double newDensity)
 }
 void PhaseScope::setDotLimit(double newLimit)
 {
-  phaseScopeBuffer->setLineDensityLimit((int)round(newLimit));
+  phaseScopeBuffer->setLineDensityLimit((int) ::round(newLimit));
 }
 void PhaseScope::setPixelSpread(double newSpread)
 {
@@ -260,8 +260,8 @@ XmlElement* PhaseScope::getStateAsXml(const juce::String& stateName, bool markAs
 void PhaseScope::updateBufferSize()
 {
   ScopedLock scopedLock(*lock);
-  int w = (int) round(displayWidth  / pixelScale);
-  int h = (int) round(displayHeight / pixelScale);
+  int w = (int) ::round(displayWidth  / pixelScale);
+  int h = (int) ::round(displayHeight / pixelScale);
   w = jmax(w, 1);
   h = jmax(h, 1);
 
@@ -282,7 +282,7 @@ void PhaseScope::updateScopeImage()
 void PhaseScope::updateRepaintInterval()
 {
   repaintIntervalInSamples = 
-    (int) round(phaseScopeBuffer->getSampleRate() / phaseScopeBuffer->getFrameRate());
+    (int) ::round(phaseScopeBuffer->getSampleRate() / phaseScopeBuffer->getFrameRate());
   repaintCounter = 0;
 }
 
@@ -312,7 +312,7 @@ void PhaseScopeDisplay::paint(Graphics &g)
   g.setImageResamplingQuality(Graphics::lowResamplingQuality);
   //g.setImageResamplingQuality(Graphics::mediumResamplingQuality);
   //g.setImageResamplingQuality(Graphics::highResamplingQuality);
-  g.drawImage(phaseScope->image, Rectangle<float>(0.f, 0.f, (float) getWidth(), 
+  g.drawImage(phaseScope->image, juce::Rectangle<float>(0.f, 0.f, (float) getWidth(), 
     (float) getHeight()));
 }
 

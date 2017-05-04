@@ -64,14 +64,14 @@ void ImagePainter<TPix, TWgt, TCor>::paintDot(TCor x, TCor y, TPix color)
     if(antiAlias)
       paintDotViaMask(x, y, color);
     else
-      paintDotViaMask((int) round(x), (int) round(y), color);
+      paintDotViaMask((int) ::round(x), (int) ::round(y), color);
   }
   else
   {
     if(antiAlias)
       paintDot3x3(x, y, color, straightNeighbourWeight, diagonalNeighbourWeight);
     else
-      paintDot3x3((int) round(x), (int) round(y), color, 
+      paintDot3x3((int) ::round(x), (int) ::round(y), color, 
         straightNeighbourWeight, diagonalNeighbourWeight);
   }
 }
@@ -587,7 +587,7 @@ template<class T> inline T          fpart(T x) { return x - ipart(x);    }
 template<class T> inline T         rfpart(T x) { return 1 - fpart(x);    }
 template<class T> inline int   roundToInt(T x) { return ipart(x + 0.5f); }
 template<class T> inline void swap(T& x, T& y) { T t = x; x = y; y = t;  }
-template<class T> inline float   min(T x, T y) { return x < y ? x : y;   }
+//template<class T> inline float   min(T x, T y) { return x < y ? x : y;   }
  
 // Wu line drawing algorithm translated from
 // https://en.wikipedia.org/wiki/Xiaolin_Wu's_line_algorithm with a few obvious optimizations:

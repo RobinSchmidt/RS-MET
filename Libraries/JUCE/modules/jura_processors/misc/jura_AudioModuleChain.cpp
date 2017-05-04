@@ -1,5 +1,5 @@
 
-AudioModule* AudioModuleFactory::createModule(const String& type, CriticalSection *lock)
+AudioModule* AudioModuleFactory::createModule(const juce::String& type, CriticalSection *lock)
 {
   if(type == "None")         return new DummyModule( lock);
   if(type == "PhaseScope")   return new PhaseScope(  lock);
@@ -12,7 +12,7 @@ AudioModule* AudioModuleFactory::createModule(const String& type, CriticalSectio
   return nullptr;
 }
 
-String AudioModuleFactory::getModuleType(AudioModule *m)
+juce::String AudioModuleFactory::getModuleType(AudioModule *m)
 {
   if(dynamic_cast<DummyModule*>  (m)) return "None";
   //if(dynamic_cast<PhaseScope2*>  (m)) return "PhaseScope2"; // always check subclasses before...
@@ -72,7 +72,7 @@ void AudioModuleChain::addEmptySlot()
   addModule("None");
 }
 
-void AudioModuleChain::addModule(const String& type)
+void AudioModuleChain::addModule(const juce::String& type)
 {
   ScopedLock scopedLock(*lock);
   AudioModule *m = AudioModuleFactory::createModule(type, lock);
@@ -98,7 +98,7 @@ void AudioModuleChain::deleteLastModule()
   deleteModule(size(modules) - 1);
 }
 
-void AudioModuleChain::replaceModule(int index, const String& type)
+void AudioModuleChain::replaceModule(int index, const juce::String& type)
 {
   ScopedLock scopedLock(*lock);
   jassert(index >= 0 && index < modules.size()); // index out of range
@@ -114,7 +114,7 @@ void AudioModuleChain::replaceModule(int index, const String& type)
   }
 }
 
-bool AudioModuleChain::isModuleOfType(int index, const String& type)
+bool AudioModuleChain::isModuleOfType(int index, const juce::String& type)
 {
   ScopedLock scopedLock(*lock);
   jassert(index >= 0 && index < modules.size()); // index out of range
@@ -253,7 +253,7 @@ XmlElement* AudioModuleChain::getStateAsXml(const juce::String& stateName, bool 
   XmlElement *xml = AudioModule::getStateAsXml(stateName, markAsClean);
   xml->setAttribute("ActiveSlot", activeSlot+1);
   for(int i = 0; i < size(modules); i++){
-    String typeString = AudioModuleFactory::getModuleType(modules[i]);
+    juce::String typeString = AudioModuleFactory::getModuleType(modules[i]);
     XmlElement *child = new XmlElement("Slot");
     child->setAttribute("Type", typeString);
     //child->setAttribute("Bypass", isSlotBypassed(i)); // add later
@@ -273,7 +273,7 @@ void AudioModuleChain::setStateFromXml(const XmlElement& xmlState, const juce::S
   clearModulesArray();
   int i = 0;
   forEachXmlChildElementWithTagName(xmlState, slotState, "Slot"){
-    String type = slotState->getStringAttribute("Type");
+    juce::String type = slotState->getStringAttribute("Type");
     if(i == tmpActiveSlot)        // hack: we set it before adding the module, so the editor
       activeSlot = tmpActiveSlot; // retrieves the correct value in the moduleAdded callback
     addModule(type);
@@ -324,7 +324,7 @@ AudioModuleEditor* AudioModuleChainEditor::getEditorForSlot(int index)
   return editors[index];
 }
 
-void AudioModuleChainEditor::replaceModule(int index, const String& type)
+void AudioModuleChainEditor::replaceModule(int index, const juce::String& type)
 {
   ScopedLock scopedLock(*lock);
   jassert(index >= 0 && index < editors.size());  // index out of range
@@ -418,7 +418,7 @@ void AudioModuleChainEditor::mouseDown(const MouseEvent &e)
 {
   //ScopedLock scopedLock(*lock); // blocks audio when popup is open
   int i = chain->activeSlot;
-  Rectangle<int> rect = selectors[i]->getBounds();
+  juce::Rectangle<int> rect = selectors[i]->getBounds();
   if(rect.contains(e.x, e.y)){ 
     // click was on active slot selector - pass event through:
     selectors[i]->mouseDown(e.getEventRelativeTo(selectors[i]));
@@ -501,7 +501,7 @@ void AudioModuleChainEditor::paintOverChildren(Graphics& g)
   g.setColour(Colours::black);
   //g.setColour(Colours::darkred);
   //g.setColour(selectors[chain->activeSlot]->getSpecialColour1());
-  Rectangle<int> rect = selectors[chain->activeSlot]->getBounds();
+  juce::Rectangle<int> rect = selectors[chain->activeSlot]->getBounds();
   g.drawRect(rect, 2);  // 2nd param: thickness
 }
 
