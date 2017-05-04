@@ -43,6 +43,12 @@ public:
 
   virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean);
 
+
+  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
+  {
+    // empty, only to satisfy compiler
+  }
+
   //---------------------------------------------------------------------------------------------
   // others:
 
