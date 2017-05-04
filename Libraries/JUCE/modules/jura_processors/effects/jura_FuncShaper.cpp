@@ -1,18 +1,42 @@
 
 // construction/destruction:
 
-FuncShaperAudioModule::FuncShaperAudioModule(CriticalSection *newPlugInLock, rosic::FuncShaper *funcShaperToWrap)
- : AudioModule(newPlugInLock)
+FuncShaperAudioModule::FuncShaperAudioModule(CriticalSection *newPlugInLock, 
+  rosic::FuncShaper *funcShaperToWrap) : AudioModule(newPlugInLock)
 {
   jassert(funcShaperToWrap != NULL); // you must pass a valid rosic-object to the constructor
   wrappedFuncShaper = funcShaperToWrap;
-  moduleName        = juce::String("FuncShaper");
+
+
+  moduleName  = juce::String("FuncShaper");
   setActiveDirectory(getApplicationDirectory() + juce::String("/FuncShaperPresets") );
   initializeAutomatableParameters();
 
-  // use initial values for "a" that are different from the default values:
-  setFormulaParameterMaxValue("aMax", 4.0);
+  // use initial value for "a" that is different from the default value:
+  setFormulaParameterMaxValue("aMax", 4.0);  
   getParameterByName("a")->setValue(2.0, true, true);
+}
+
+FuncShaperAudioModule::FuncShaperAudioModule(CriticalSection *newPlugInLock) 
+  : AudioModule(newPlugInLock)
+{
+  wrappedFuncShaper = new rosic::FuncShaper;
+  wrappedFuncShaperIsOwned = true;
+
+  // move to init function, shaer with other cosntructor:
+  moduleName  = juce::String("FuncShaper");
+  setActiveDirectory(getApplicationDirectory() + juce::String("/FuncShaperPresets") );
+  initializeAutomatableParameters();
+
+  // use initial value for "a" that is different from the default value:
+  setFormulaParameterMaxValue("aMax", 4.0);  
+  getParameterByName("a")->setValue(2.0, true, true);
+}
+
+FuncShaperAudioModule::~FuncShaperAudioModule()
+{
+  if(wrappedFuncShaperIsOwned)
+    delete wrappedFuncShaper;
 }
 
 // state management:

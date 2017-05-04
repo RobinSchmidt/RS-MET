@@ -1,18 +1,22 @@
 AudioModule* AudioModuleFactory::createModule(const juce::String& type, CriticalSection *lock)
 {
   if(type == "None")         return new DummyModule( lock);
+
+  // analysis:
   if(type == "PhaseScope")   return new PhaseScope(  lock);
   //if(type == "PhaseScope2")  return new PhaseScope2( lock);
-  if(type == "Enveloper")    return new Enveloper(   lock);
 
   // filters: 
   if(type == "Ladder")          return new Ladder(         lock);
   if(type == "PhasorFilter")    return new PhasorFilter(   lock);
   if(type == "EngineersFilter") return new EngineersFilterAudioModule(lock);
 
+  // effects:
+  if(type == "Enveloper")    return new Enveloper(   lock);
+  if(type == "FuncShaper")   return new FuncShaperAudioModule(lock);
+
   // instruments:
   if(type == "AciDevil") return new AciDevilAudioModule(lock);
-
 
   jassertfalse;  // unknown module type requested
   return nullptr;
@@ -21,19 +25,22 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
 juce::String AudioModuleFactory::getModuleType(AudioModule *m)
 {
   if(dynamic_cast<DummyModule*>  (m))               return "None";
+
+  // analysis:
   //if(dynamic_cast<PhaseScope2*>  (m))             return "PhaseScope2"; // always check subclasses before...
   if(dynamic_cast<PhaseScope*>   (m))               return "PhaseScope";  // ...their superclasses
-  if(dynamic_cast<Enveloper*>    (m))               return "Enveloper";
 
   // filters:
   if(dynamic_cast<Ladder*>       (m))               return "Ladder";
   if(dynamic_cast<PhasorFilter*> (m))               return "PhasorFilter";
   if(dynamic_cast<EngineersFilterAudioModule*> (m)) return "EngineersFilter";
 
+  // effects:
+  if(dynamic_cast<Enveloper*>    (m))               return "Enveloper";
+  if(dynamic_cast<FuncShaperAudioModule*>(m))       return "FuncShaper";
+
   // instruments:
   if(dynamic_cast<AciDevilAudioModule*> (m)) return "AciDevil";
-
-
 
   jassertfalse;  // unknown module type was passed
   return "UnknownType";
@@ -43,14 +50,19 @@ StringArray AudioModuleFactory::getAvailableModuleTypes()
 {
   StringArray a;
   a.add("None");        // maybe use "Empty" instead of "None"
+
+  // analysis:
   a.add("PhaseScope");
   //a.add("PhaseScope2");
-  a.add("Enveloper");
 
   // filters:
   a.add("Ladder");
   a.add("PhasorFilter");
   a.add("EngineersFilter");
+
+  // effects:
+  a.add("Enveloper");
+  a.add("FuncShaper");
 
   // instruments:
   a.add("AciDevil");

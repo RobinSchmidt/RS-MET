@@ -10,10 +10,16 @@ class FuncShaperAudioModule : public AudioModule
 
 public:
 
-  //---------------------------------------------------------------------------------------------
   // construction/destruction:
 
   FuncShaperAudioModule(CriticalSection *newPlugInLock, rosic::FuncShaper *funcShaperToWrap);
+
+  FuncShaperAudioModule(CriticalSection *newPlugInLock);
+
+  virtual ~FuncShaperAudioModule();
+
+
+
 
   //---------------------------------------------------------------------------------------------
   // automation and state management:
@@ -43,7 +49,7 @@ public:
 
   virtual void processBlockStereo(float *left, float *right, int numSamples)
   {
-    for(int n=0; n<numSamples; n++)
+    for(int n = 0; n < numSamples; n++)
     {
       double dL = left[n];
       double dR = right[n];
@@ -51,6 +57,16 @@ public:
       left[n] = (float)dL;
       right[n] = (float)dR;
     }
+  }
+
+  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
+  {
+    for(int n = 0; n < numSamples; n++)
+      wrappedFuncShaper->getSampleFrameStereo(
+        &inOutBuffer[0][n], &inOutBuffer[1][n],   // inputs
+        &inOutBuffer[0][n], &inOutBuffer[1][n]);  // outputs
+    // provide a function that we cann call like:
+    // wrappedFuncShaper->processBlockStereo(inOutBuffer[0], inOutBuffer[1], numSamples);
   }
 
 
@@ -63,6 +79,7 @@ protected:
   void setFormulaParameterRange(const juce::String& augmentedName, double newMinValue, double newMaxValue);
 
   rosic::FuncShaper *wrappedFuncShaper;
+  bool wrappedFuncShaperIsOwned = false;
 
   juce_UseDebuggingNewOperator;
 
@@ -70,8 +87,8 @@ protected:
 
 //=================================================================================================
 
-class FuncShaperModuleEditor : public AudioModuleEditor, public RTextEntryFieldObserver, public ParameterObserver
-  //public RSliderListener, 
+class FuncShaperModuleEditor : public AudioModuleEditor, public RTextEntryFieldObserver, 
+  public ParameterObserver //public RSliderListener, 
 {
 
 public:

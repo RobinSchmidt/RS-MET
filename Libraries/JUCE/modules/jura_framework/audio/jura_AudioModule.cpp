@@ -872,13 +872,13 @@ void GenericAudioModuleEditor::createWidgets()
   jassert(moduleToEdit != nullptr);
 
   // for each of the module's parameter, create an appropriate widget and add it to this editor
-  // using the inherited addWidget method (this will add the widget to out inherited widgets
+  // using the inherited addWidget method (this will add the widget to our inherited widgets
   // array)
 
   Parameter *p;
   RSlider   *s;
   RComboBox *c;
-  //RButton   *b;
+  RButton   *b;
   for(int i = 0; i < moduleToEdit->getNumParameters(); i++)
   {
     p = moduleToEdit->getParameterByIndex(i);
@@ -887,7 +887,11 @@ void GenericAudioModuleEditor::createWidgets()
     if(p->getScaling() == Parameter::BOOLEAN)
     {
       // on/off parameter - create button:
-      jassertfalse; // not yet implemented
+      b = new RButton(name + "Button");
+      b->assignParameter(p);
+      b->setDescriptionField(infoField);
+      addWidget(b);
+      parameterWidgets.add(b);
     }
     else if(p->getScaling() == Parameter::STRING)
     {
