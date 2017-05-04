@@ -1,11 +1,33 @@
-Make old plugins available:
--let rosic depend on rapt (done)
--let jura_processors depend on rosic (done)
--make EngineersFilter available in the chainer (done)
--make EngineersFilter use its custom editor
+-EngineersFilter editor: additional space/infoline
+
+make old plugins available in chainer:
+-drag over all old plugin code and make it work in the Chainer
+ -AciDevil
+ -AlgoVerb
+ -ChannelMatrix2x2
+ -CrossOver
+ -DspWorkbench
+ -EasyQ
+ -EchoLab
+ -EngineersFilter (done)
+ -FuncShaper
+ -KeyShot
+ -Liberty (later)
+ -MagicCarpet
+ -MidiMonitor
+ -Moduluxury
+ -PitchShifter
+ -Quadrifex
+ -Quadriga
+ -SignalAnalyzer
+ -SimpleSampler
+ -StereoDelay
+ -Straightliner
+ -TrackMeter
+ -Workhorse
+ 
 -turn rapt into a juce module (with no dependencies)
 -make rapt and rosic test/demo projects
--drag over all old plugin code and make it work in the Chainer
 -maybe rename rosic to rs_dsp
 -templatize rosic classes and move templates to rapt
 -in rapt: use omega instead of freq/sampleRate (avoid data redundancy)

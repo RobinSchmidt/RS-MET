@@ -516,6 +516,8 @@ EngineersFilterModuleEditor::EngineersFilterModuleEditor(CriticalSection *newPlu
 
   // set up the widgets:
   updateWidgetsAccordingToState();
+
+  setSize(640, 300);  
 }
 
 // callbacks:
