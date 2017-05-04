@@ -39,6 +39,11 @@ FuncShaperAudioModule::~FuncShaperAudioModule()
     delete wrappedFuncShaper;
 }
 
+AudioModuleEditor* FuncShaperAudioModule::createEditor()
+{
+  return new jura::FuncShaperModuleEditor(lock, this); // get rid of passing the lock
+}
+
 // state management:
 
 XmlElement* FuncShaperAudioModule::getStateAsXml(const juce::String& stateName, bool markAsClean)
@@ -409,6 +414,8 @@ FuncShaperModuleEditor::FuncShaperModuleEditor(CriticalSection *newPlugInLock,
 
   // set up the widgets:
   updateWidgetsAccordingToState();
+
+  setSize(400, 300); // not yet optimal
 }
 
 FuncShaperModuleEditor::~FuncShaperModuleEditor()

@@ -18,6 +18,8 @@ public:
 
   virtual ~FuncShaperAudioModule();
 
+  AudioModuleEditor* createEditor() override;
+
 
 
 
