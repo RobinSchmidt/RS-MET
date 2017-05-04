@@ -877,7 +877,7 @@ void GenericAudioModuleEditor::createWidgets()
 
   Parameter *p;
   RSlider   *s;
-  //RComboBox *c;
+  RComboBox *c;
   //RButton   *b;
   for(int i = 0; i < moduleToEdit->getNumParameters(); i++)
   {
@@ -892,7 +892,11 @@ void GenericAudioModuleEditor::createWidgets()
     else if(p->getScaling() == Parameter::STRING)
     {
       // multiple-choice parameter - create combobox:
-      jassertfalse; // not yet implemented
+      c = new RComboBox(name + "Menu");
+      c->assignParameter(p);
+      c->setDescriptionField(infoField);
+      addWidget(c);
+      parameterWidgets.add(c);
     }
     else
     {
