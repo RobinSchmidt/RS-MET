@@ -4,7 +4,7 @@
 
 /** This class wraps rosic::AciDevil into a rosof::AudioModule to facilitate its use as plugIn. */
 
-class AciDevilAudioModule : public AudioModule
+class AciDevilAudioModule : public AudioModuleWithMidiIn
 {
 
   friend class AciDevilModuleEditor;
@@ -69,19 +69,19 @@ public:
   //---------------------------------------------------------------------------------------------
   // others:
 
-  virtual void noteOn(int noteNumber, int velocity)
+  virtual void noteOn(int noteNumber, int velocity) override
   {
     wrappedAciDevil->noteOn(noteNumber, velocity, 0.0);
   }
 
-  virtual void noteOff(int noteNumber)
+  virtual void noteOff(int noteNumber) override
   {
     wrappedAciDevil->noteOn(noteNumber, 0, 0.0);
   }
 
 //virtual void allNotesOff();
 
-  virtual void setPitchBend(int pitchBendValue)
+  virtual void setPitchBend(int pitchBendValue) override
   {
     wrappedAciDevil->setPitchBend(pitchBendValue);
   }

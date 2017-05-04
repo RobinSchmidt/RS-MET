@@ -2,7 +2,7 @@
 // construction/destruction:
 
 AciDevilAudioModule::AciDevilAudioModule(CriticalSection *newPlugInLock, 
-  rosic::AciDevil *aciDevilToWrap) : AudioModule(newPlugInLock) 
+  rosic::AciDevil *aciDevilToWrap) : AudioModuleWithMidiIn(newPlugInLock) 
 {
   jassert(aciDevilToWrap != NULL); // you must pass a valid rosic-object to the constructor
   wrappedAciDevil = aciDevilToWrap;
@@ -16,7 +16,8 @@ AciDevilAudioModule::AciDevilAudioModule(CriticalSection *newPlugInLock,
   addChildAudioModule(sequencerModule);
 }
 
-AciDevilAudioModule::AciDevilAudioModule(CriticalSection *newPlugInLock) : AudioModule(newPlugInLock) 
+AciDevilAudioModule::AciDevilAudioModule(CriticalSection *newPlugInLock) 
+  : AudioModuleWithMidiIn(newPlugInLock) 
 {
   wrappedAciDevil = new rosic::AciDevil;
   wrappedAciDevilIsOwned = true;
