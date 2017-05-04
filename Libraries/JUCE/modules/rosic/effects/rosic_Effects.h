@@ -7,6 +7,7 @@ This file includes all relevant rosic effects header files.
 #ifndef rosic_Effects_h
 #define rosic_Effects_h
 
+#include "rosic_AlgoVerb.h"
 #include "rosic_AudioToMidi.h"
 #include "rosic_BitCrusher.h"
 #include "rosic_CombStereoizer.h"

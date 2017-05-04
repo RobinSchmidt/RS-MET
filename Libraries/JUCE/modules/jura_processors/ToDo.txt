@@ -4,14 +4,14 @@
 make old plugins available in chainer:
 -drag over all old plugin code and make it work in the Chainer
  -AciDevil (done)
- -AlgoVerb
+ -AlgoVerb (i already started with this - continue next)
  -ChannelMatrix2x2
- -CrossOver
+ -CrossOver (take care - this has 8 output channels)
  -DspWorkbench
  -EasyQ
  -EchoLab
  -EngineersFilter (done)
- -FuncShaper
+ -FuncShaper (done)
  -KeyShot
  -Liberty (later - it needs the "romos" folder)
  -MagicCarpet
@@ -30,6 +30,7 @@ make old plugins available in chainer:
 -turn rapt into a juce module (with no dependencies)
 -make rapt and rosic test/demo projects
 -maybe rename rosic to rs_dsp
+-get rid of "using namespace" in headers - lorcan says, this is something to be avoided
 -templatize rosic classes and move templates to rapt
 -in rapt: use omega instead of freq/sampleRate (avoid data redundancy)
 -avoid name clashes with juce classes by using rs-prefix (perhaps on all rosic classes, at least on 
