@@ -6,3 +6,15 @@ On my machine, the path is:
 
 E:\Programming\C++\RS-MET\Products\AudioApplications\PluginHost\Builds\VisualStudio2015\x64\Debug\Plugin Host.exe
 
+
+to build a release version with the linux makefile, open a terminal in the 
+folder containing the makefile and call:
+
+make CONFIG=Release
+
+just calling:
+
+make
+
+will build a debug version
+
