@@ -10,6 +10,10 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
   if(type == "PhasorFilter")    return new PhasorFilter(   lock);
   if(type == "EngineersFilter") return new EngineersFilterAudioModule(lock);
 
+  // instruments:
+  if(type == "AciDevil") return new AciDevilAudioModule(lock);
+
+
   jassertfalse;  // unknown module type requested
   return nullptr;
 }
@@ -25,6 +29,10 @@ juce::String AudioModuleFactory::getModuleType(AudioModule *m)
   if(dynamic_cast<Ladder*>       (m))               return "Ladder";
   if(dynamic_cast<PhasorFilter*> (m))               return "PhasorFilter";
   if(dynamic_cast<EngineersFilterAudioModule*> (m)) return "EngineersFilter";
+
+  // instruments:
+  if(dynamic_cast<AciDevilAudioModule*> (m)) return "AciDevil";
+
 
 
   jassertfalse;  // unknown module type was passed
@@ -43,6 +51,9 @@ StringArray AudioModuleFactory::getAvailableModuleTypes()
   a.add("Ladder");
   a.add("PhasorFilter");
   a.add("EngineersFilter");
+
+  // instruments:
+  a.add("AciDevil");
 
   return a;
 }

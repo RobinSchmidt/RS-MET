@@ -6,13 +6,34 @@ AciDevilAudioModule::AciDevilAudioModule(CriticalSection *newPlugInLock,
 {
   jassert(aciDevilToWrap != NULL); // you must pass a valid rosic-object to the constructor
   wrappedAciDevil = aciDevilToWrap;
+
+  // factor out common code of both construtors into init function:
   setModuleName(juce::String("AciDevil"));
   setActiveDirectory(getApplicationDirectory() + juce::String("/AciDevilPresets") );
   initializeAutomatableParameters();
-
   sequencerModule = new AcidSequencerAudioModule(lock, &wrappedAciDevil->sequencer);
   sequencerModule->setModuleName(juce::String("Sequencer"));
   addChildAudioModule(sequencerModule);
+}
+
+AciDevilAudioModule::AciDevilAudioModule(CriticalSection *newPlugInLock) : AudioModule(newPlugInLock) 
+{
+  wrappedAciDevil = new rosic::AciDevil;
+  wrappedAciDevilIsOwned = true;
+
+  // factor out common code of both construtors into init function:
+  setModuleName(juce::String("AciDevil"));
+  setActiveDirectory(getApplicationDirectory() + juce::String("/AciDevilPresets") );
+  initializeAutomatableParameters();
+  sequencerModule = new AcidSequencerAudioModule(lock, &wrappedAciDevil->sequencer);
+  sequencerModule->setModuleName(juce::String("Sequencer"));
+  addChildAudioModule(sequencerModule);
+}
+
+AciDevilAudioModule::~AciDevilAudioModule()
+{
+  if(wrappedAciDevilIsOwned)
+    delete wrappedAciDevil;
 }
 
 // automation:

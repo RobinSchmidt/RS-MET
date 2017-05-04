@@ -14,8 +14,15 @@ public:
   //---------------------------------------------------------------------------------------------
   // construction/destruction:
 
-  /** Constructor. */
+  /** Constructor for wrapping an existing rosic::AciDevil object. */
   AciDevilAudioModule(CriticalSection *newPlugInLock, rosic::AciDevil *aciDevilToWrap);
+
+  /** Constructor that creates our own owned rosic::AciDevil object. */
+  AciDevilAudioModule(CriticalSection *newPlugInLock);
+
+  virtual ~AciDevilAudioModule();
+
+
 
   //---------------------------------------------------------------------------------------------
   // parameter settings:
@@ -44,11 +51,18 @@ public:
   {
     *inOutL = *inOutR = wrappedAciDevil->getSample();
   }
-
   virtual void processBlockStereo(float *left, float *right, int numSamples)
   {
     for(int n=0; n<numSamples; n++)
       left[n] = right[n] = (float)wrappedAciDevil->getSample();
+  }
+  // maybe the two functions above are obsolote now
+
+
+  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
+  {
+    for(int n = 0; n < numSamples; n++)
+      inOutBuffer[0][n] = inOutBuffer[1][n] = wrappedAciDevil->getSample();
   }
 
   //---------------------------------------------------------------------------------------------
@@ -84,7 +98,7 @@ protected:
 
   /** Pointer to the underlying rosic object which is wrapped. */
   rosic::AciDevil *wrappedAciDevil;
-
+  bool wrappedAciDevilIsOwned = false;
 
   juce_UseDebuggingNewOperator;
 };

@@ -2,7 +2,7 @@
 
 make old plugins available in chainer:
 -drag over all old plugin code and make it work in the Chainer
- -AciDevil
+ -AciDevil (done)
  -AlgoVerb
  -ChannelMatrix2x2
  -CrossOver
