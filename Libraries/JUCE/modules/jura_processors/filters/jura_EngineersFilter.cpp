@@ -34,6 +34,11 @@ EngineersFilterAudioModule::~EngineersFilterAudioModule()
     delete wrappedEngineersFilter;
 }
 
+AudioModuleEditor* EngineersFilterAudioModule::createEditor()
+{
+  return new jura::EngineersFilterModuleEditor(lock, this); // get rid of passing the lock
+}
+
 // automation:
 
 void EngineersFilterAudioModule::parameterChanged(Parameter* parameterThatHasChanged)

@@ -24,12 +24,12 @@ public:
 
   virtual ~EngineersFilterAudioModule();
 
-
-
-
-
+  AudioModuleEditor* createEditor() override;
 
   virtual void parameterChanged(Parameter* parameterThatHasChanged);
+    // get rid of this - use the other callback mechanism
+
+
 
   virtual void setSampleRate(double newSampleRate)
   {
@@ -203,6 +203,7 @@ public:
 
   EngineersFilterModuleEditor(CriticalSection *newPlugInLock, 
     EngineersFilterAudioModule* newEngineersFilterAudioModule);
+  // todo: get rid of newPlugInLock parameter
 
   //---------------------------------------------------------------------------------------------
   // callbacks:
