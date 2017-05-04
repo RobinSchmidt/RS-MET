@@ -35,7 +35,7 @@
 #include <juce_graphics/juce_graphics.h> 
 #include <juce_gui_basics/juce_gui_basics.h> 
 #include <jura_framework/jura_framework.h> 
-#include <rosic/rosic.h> // it complains - we should include the RAPT stuff in rosic
+#include <rosic/rosic.h>
 using namespace juce;
 // do we actually need all these includes? - most of them are included by jura_framework already
 
@@ -55,7 +55,7 @@ namespace jura
 
 #include "filters/jura_LadderFilter.h"
 #include "filters/jura_PhasorFilter.h"
-//#include "filters/jura_EngineersFilter.h"
+#include "filters/jura_EngineersFilter.h"
 
 
 #include "modulators/jura_BreakpointModulatorAudioModule.h"

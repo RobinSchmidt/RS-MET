@@ -9,6 +9,7 @@
 
 #include "jura_processors.h"
 
+// obsolete - moved to rosic module:
 //#include "../../RAPT/Source/Modules/RAPT.cpp"
 //// i think, in order to safely avoid "multiple definition" linker errors, this here needs to be the
 //// one and only place where RAPT.cpp gets included
@@ -53,7 +54,7 @@ namespace jura
 
 #include "filters/jura_LadderFilter.cpp"
 #include "filters/jura_PhasorFilter.cpp"
-//#include "filters/jura_EngineersFilter.cpp"
+#include "filters/jura_EngineersFilter.cpp"
 
 #include "modulators/jura_BreakpointModulatorAudioModule.cpp"
 #include "modulators/jura_ModulatorCurveEditor.cpp"
