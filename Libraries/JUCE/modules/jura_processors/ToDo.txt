@@ -1,6 +1,7 @@
 Make old plugins available:
--turn rapt into a juce module (with no dependencies)
 -let rosic depend on rapt
+-turn rapt into a juce module (with no dependencies)
+-make rapt and rosic test/demo projects
 -let jura_processors depend on rosic (done)
 -drag over all old plugin code and make it work in the Chainer
 -maybe rename rosic to rs_dsp
