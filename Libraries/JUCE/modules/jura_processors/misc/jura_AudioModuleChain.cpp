@@ -5,8 +5,11 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
   if(type == "PhaseScope")   return new PhaseScope(  lock);
   //if(type == "PhaseScope2")  return new PhaseScope2( lock);
   if(type == "Enveloper")    return new Enveloper(   lock);
-  if(type == "Ladder")       return new Ladder(      lock);
-  if(type == "PhasorFilter") return new PhasorFilter(lock);
+
+  // filters: 
+  if(type == "Ladder")          return new Ladder(         lock);
+  if(type == "PhasorFilter")    return new PhasorFilter(   lock);
+  //if(type == "EngineersFilter") return new EngineersFilterAudioModule(lock);
 
   jassertfalse;  // unknown module type requested
   return nullptr;
@@ -14,12 +17,14 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
 
 juce::String AudioModuleFactory::getModuleType(AudioModule *m)
 {
-  if(dynamic_cast<DummyModule*>  (m)) return "None";
-  //if(dynamic_cast<PhaseScope2*>  (m)) return "PhaseScope2"; // always check subclasses before...
-  if(dynamic_cast<PhaseScope*>   (m)) return "PhaseScope";  // ...their superclasses
-  if(dynamic_cast<Enveloper*>    (m)) return "Enveloper";
-  if(dynamic_cast<Ladder*>       (m)) return "Ladder";
-  if(dynamic_cast<PhasorFilter*> (m)) return "PhasorFilter";
+  if(dynamic_cast<DummyModule*>  (m))               return "None";
+  //if(dynamic_cast<PhaseScope2*>  (m))             return "PhaseScope2"; // always check subclasses before...
+  if(dynamic_cast<PhaseScope*>   (m))               return "PhaseScope";  // ...their superclasses
+  if(dynamic_cast<Enveloper*>    (m))               return "Enveloper";
+  if(dynamic_cast<Ladder*>       (m))               return "Ladder";
+  if(dynamic_cast<PhasorFilter*> (m))               return "PhasorFilter";
+  //if(dynamic_cast<EngineersFilterAudioModule*> (m)) return "EngineersFilter";
+
 
   jassertfalse;  // unknown module type was passed
   return "UnknownType";
@@ -32,8 +37,12 @@ StringArray AudioModuleFactory::getAvailableModuleTypes()
   a.add("PhaseScope");
   //a.add("PhaseScope2");
   a.add("Enveloper");
+
+  // filters:
   a.add("Ladder");
   a.add("PhasorFilter");
+  //a.add("EngineersFilter");
+
   return a;
 }
 
