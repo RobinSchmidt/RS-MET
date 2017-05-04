@@ -1,7 +1,8 @@
 Make old plugins available:
 -let rosic depend on rapt (done)
 -let jura_processors depend on rosic (done)
--make EngineersFilter available in the chainer
+-make EngineersFilter available in the chainer (done)
+-make EngineersFilter use its custom editor
 -turn rapt into a juce module (with no dependencies)
 -make rapt and rosic test/demo projects
 -drag over all old plugin code and make it work in the Chainer
