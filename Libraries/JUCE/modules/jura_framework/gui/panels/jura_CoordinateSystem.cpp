@@ -1415,10 +1415,10 @@ void CoordinateSystem::drawHorizontalGrid(Graphics &g, double interval,
       // add the line to the path which will be added to the SVG drawing:
       if( targetSVG != NULL )
       {
-        gridPathDataString += String(T("M ")) + String(startX) + String(T(" ")) 
-          + String(startY) + String(T(" "));
-        gridPathDataString += String(T("L ")) + String(endX) + String(T(" "))   
-          + String(endY) + String(T(" "));
+        gridPathDataString += String("M ") + String(startX) + String(" ") 
+          + String(startY) + String(" ");
+        gridPathDataString += String("L ") + String(endX) + String(" ")   
+          + String(endY) + String(" ");
       }
 
       accumulator *= interval;
@@ -1453,10 +1453,10 @@ void CoordinateSystem::drawHorizontalGrid(Graphics &g, double interval,
       // add the line to the path which will be added to the SVG drawing member:
       if( targetSVG != NULL )
       {
-        gridPathDataString += String(T("M ")) + String(startX) + String(T(" ")) 
-          + String(startY) + String(T(" "));
-        gridPathDataString += String(T("L ")) + String(endX) + String(T(" "))   
-          + String(endY) + String(T(" "));
+        gridPathDataString += String("M ") + String(startX) + String(" ") 
+          + String(startY) + String(" ");
+        gridPathDataString += String("L ") + String(endX) + String(" ")   
+          + String(endY) + String(" ");
       }
 
       i++;
@@ -1488,10 +1488,10 @@ void CoordinateSystem::drawHorizontalGrid(Graphics &g, double interval,
       // add the line to the path which will be added to the SVG drawing member:
       if( targetSVG != NULL )
       {
-        gridPathDataString += String(T("M ")) + String(startX) + String(T(" ")) 
-          + String(startY) + String(T(" "));
-        gridPathDataString += String(T("L ")) + String(endX) + String(T(" "))   
-          + String(endY) + String(T(" "));
+        gridPathDataString += String("M ") + String(startX) + String(" ") 
+          + String(startY) + String(" ");
+        gridPathDataString += String("L ") + String(endX) + String(" ")   
+          + String(endY) + String(" ");
       }
 
       i++;
@@ -1501,10 +1501,10 @@ void CoordinateSystem::drawHorizontalGrid(Graphics &g, double interval,
 
   if( targetSVG != NULL )
   {
-    XmlElement* gridPath = new XmlElement(String(T("path")));
-    gridPath->setAttribute(String(T("d")), gridPathDataString);
-    gridPath->setAttribute(String(T("style")), String(T("stroke-width: ")) + String(lineThickness) + 
-      String(T("; stroke: #")) + gridColour.toString().substring(2) + String(T(";")) );
+    XmlElement* gridPath = new XmlElement(String("path"));
+    gridPath->setAttribute(String("d"), gridPathDataString);
+    gridPath->setAttribute(String("style"), String("stroke-width: ") + String(lineThickness) + 
+      String("; stroke: #") + gridColour.toString().substring(2) + String(";") );
     targetSVG->addChildElement(gridPath);
   }
 }
@@ -1567,10 +1567,10 @@ void CoordinateSystem::drawVerticalGrid(Graphics &g, double interval,
       // add the line to the path which will be added to the SVG drawing:
       if( targetSVG != NULL )
       {
-        gridPathDataString += String(T("M ")) + String(startX) + String(T(" ")) 
-          + String(startY) + String(T(" "));
-        gridPathDataString += String(T("L ")) + String(endX) + String(T(" "))   
-          + String(endY) + String(T(" "));
+        gridPathDataString += String("M ") + String(startX) + String(" ") 
+          + String(startY) + String(" ");
+        gridPathDataString += String("L ") + String(endX) + String(" ")   
+          + String(endY) + String(" ");
       }
 
       accumulator *= interval;
@@ -1605,10 +1605,10 @@ void CoordinateSystem::drawVerticalGrid(Graphics &g, double interval,
 
       // add the line to the path which will be added to the SVG drawing:
       {
-        gridPathDataString += String(T("M ")) + String(startX) + String(T(" ")) 
-          + String(startY) + String(T(" "));
-        gridPathDataString += String(T("L ")) + String(endX) + String(T(" "))   
-          + String(endY) + String(T(" "));
+        gridPathDataString += String("M ") + String(startX) + String(" ") 
+          + String(startY) + String(" ");
+        gridPathDataString += String("L ") + String(endX) + String(" ")   
+          + String(endY) + String(" ");
       }
 
       i++;
@@ -1640,10 +1640,10 @@ void CoordinateSystem::drawVerticalGrid(Graphics &g, double interval,
       // add the line to the path which will be added to the SVG drawing:
       if( targetSVG != NULL )
       {
-        gridPathDataString += String(T("M ")) + String(startX) + String(T(" ")) 
-          + String(startY) + String(T(" "));
-        gridPathDataString += String(T("L ")) + String(endX) + String(T(" "))   
-          + String(endY) + String(T(" "));
+        gridPathDataString += String("M ") + String(startX) + String(" ") 
+          + String(startY) + String(" ");
+        gridPathDataString += String("L ") + String(endX) + String(" ")   
+          + String(endY) + String(" ");
       }
 
       i++;
@@ -1652,10 +1652,10 @@ void CoordinateSystem::drawVerticalGrid(Graphics &g, double interval,
 
   if( targetSVG != NULL )
   {
-    XmlElement* gridPath = new XmlElement(String(T("path")));
-    gridPath->setAttribute(String(T("d")), gridPathDataString);
-    gridPath->setAttribute(String(T("style")), String(T("stroke-width: ")) + String(lineThickness) 
-      + String(T("; stroke: #")) + gridColour.toString().substring(2) + String(T(";")) );
+    XmlElement* gridPath = new XmlElement(String("path"));
+    gridPath->setAttribute(String("d"), gridPathDataString);
+    gridPath->setAttribute(String("style"), String("stroke-width: ") + String(lineThickness) 
+      + String("; stroke: #") + gridColour.toString().substring(2) + String(";") );
     targetSVG->addChildElement(gridPath);
   }
 }
@@ -1724,15 +1724,15 @@ void CoordinateSystem::drawRadialGrid(Graphics &g, double interval,
     // add the circle to the svg-drawing:
     if( targetSVG != NULL )
     {
-      XmlElement* ellipse = new XmlElement(String(T("ellipse")));
-      ellipse->setAttribute(String(T("cx")), centerX);
-      ellipse->setAttribute(String(T("cy")), centerY);
-      ellipse->setAttribute(String(T("rx")), xScaler*radius);
-      ellipse->setAttribute(String(T("ry")), yScaler*radius);
-      ellipse->setAttribute(String(T("style")), 
-        String(T("stroke-width: ")) + String(lineThickness) + 
-        String(T("; stroke: #")) + gridColour.toString().substring(2) + String(T(";")) + 
-        String(T("fill: none;")) );
+      XmlElement* ellipse = new XmlElement(String("ellipse"));
+      ellipse->setAttribute(String("cx"), centerX);
+      ellipse->setAttribute(String("cy"), centerY);
+      ellipse->setAttribute(String("rx"), xScaler*radius);
+      ellipse->setAttribute(String("ry"), yScaler*radius);
+      ellipse->setAttribute(String("style"), 
+        String("stroke-width: ") + String(lineThickness) + 
+        String("; stroke: #") + gridColour.toString().substring(2) + String(";") + 
+        String("fill: none;") );
       targetSVG->addChildElement(ellipse);
     }
 
@@ -1792,10 +1792,10 @@ void CoordinateSystem::drawAngularGrid(Graphics &g, double interval,
     {
 
       // add the line to the path which will be added to the SVG drawing member:
-      gridPathDataString += String(T("M ")) + String(startX) + String(T(" ")) 
-        + String(startY) + String(T(" "));
-      gridPathDataString += String(T("L ")) + String(endX) + String(T(" "))   
-        + String(endY) + String(T(" "));
+      gridPathDataString += String("M ") + String(startX) + String(" ") 
+        + String(startY) + String(" ");
+      gridPathDataString += String("L ") + String(endX) + String(" ")   
+        + String(endY) + String(" ");
     }
 
     i++;
@@ -1804,10 +1804,10 @@ void CoordinateSystem::drawAngularGrid(Graphics &g, double interval,
 
   if( targetSVG != NULL )
   {
-    XmlElement* gridPath = new XmlElement(String(T("path")));
-    gridPath->setAttribute(String(T("d")), gridPathDataString);
-    gridPath->setAttribute(String(T("style")), String(T("stroke-width: ")) + String(lineThickness) 
-      + String(T("; stroke: #")) + gridColour.toString().substring(2) + String(T(";")) );
+    XmlElement* gridPath = new XmlElement(String("path"));
+    gridPath->setAttribute(String("d"), gridPathDataString);
+    gridPath->setAttribute(String("style"), String("stroke-width: ") + String(lineThickness) 
+      + String("; stroke: #") + gridColour.toString().substring(2) + String(";") );
     targetSVG->addChildElement(gridPath);
   }
 }
@@ -2482,7 +2482,7 @@ void CoordinateSystem::updateScaleFactors()
   // scaling factor for linear plots
   else
   {
-    jassert( ((currentRange.getMaxX()/currentRange.getMinX()) > 0.0) )
+    jassert(((currentRange.getMaxX()/currentRange.getMinX()) > 0.0));
       // caught a logarithm of a non-positive number, make sure that the 
       // minimum and the maximum for the x-coordinate are both strictly positive
       // for logarithmic axis-scaling
@@ -2499,7 +2499,7 @@ void CoordinateSystem::updateScaleFactors()
     scaleY = getHeight() / (currentRange.getMaxY()-currentRange.getMinY());
   else
   {
-    jassert( ((currentRange.getMaxY()/currentRange.getMinY()) > 0.0) )
+    jassert(((currentRange.getMaxY()/currentRange.getMinY()) > 0.0));
       // caught a logarithm of a non-positive number, make sure that the 
       // minimum and the maximum for the y-coordinate are both strictly positive
       // for logarithmic axis-scaling
@@ -2536,26 +2536,26 @@ XmlElement* CoordinateSystem::getStateAsXml(const String& stateName) const
   XmlElement* xmlState = new XmlElement(stateName); 
   // the XmlElement which stores all the releveant state-information
 
-  xmlState->setAttribute(String(T("MinX")), currentRange.getMinX());
-  xmlState->setAttribute(String(T("MaxX")), currentRange.getMaxX());
-  xmlState->setAttribute(String(T("MinY")), currentRange.getMinY());
-  xmlState->setAttribute(String(T("MaxY")), currentRange.getMaxY());
+  xmlState->setAttribute(String("MinX"), currentRange.getMinX());
+  xmlState->setAttribute(String("MaxX"), currentRange.getMaxX());
+  xmlState->setAttribute(String("MinY"), currentRange.getMinY());
+  xmlState->setAttribute(String("MaxY"), currentRange.getMaxY());
 
-  xmlState->setAttribute(String(T("HorizontalCoarseGridIsVisible")),    
+  xmlState->setAttribute(String("HorizontalCoarseGridIsVisible"),    
     horizontalCoarseGridIsVisible);
-  xmlState->setAttribute(String(T("HorizontalCoarseGridInterval")),
+  xmlState->setAttribute(String("HorizontalCoarseGridInterval"),
     horizontalCoarseGridInterval);
-  xmlState->setAttribute(String(T("HorizontalFineGridIsVisible")),      
+  xmlState->setAttribute(String("HorizontalFineGridIsVisible"),      
     horizontalFineGridIsVisible);
-  xmlState->setAttribute(String(T("HorizontalFineGridInterval")),  
+  xmlState->setAttribute(String("HorizontalFineGridInterval"),  
     horizontalFineGridInterval); 
-  xmlState->setAttribute(String(T("VerticalCoarseGridIsVisible")),    
+  xmlState->setAttribute(String("VerticalCoarseGridIsVisible"),    
     verticalCoarseGridIsVisible);
-  xmlState->setAttribute(String(T("VerticalCoarseGridInterval")),
+  xmlState->setAttribute(String("VerticalCoarseGridInterval"),
     verticalCoarseGridInterval);
-  xmlState->setAttribute(String(T("VerticalFineGridIsVisible")),      
+  xmlState->setAttribute(String("VerticalFineGridIsVisible"),      
     verticalFineGridIsVisible);
-  xmlState->setAttribute(String(T("VerticalFineGridInterval")),  
+  xmlState->setAttribute(String("VerticalFineGridInterval"),  
     verticalFineGridInterval);
 
   return xmlState;
@@ -2565,27 +2565,27 @@ bool CoordinateSystem::setStateFromXml(const XmlElement &xmlState)
 {
   bool success = true; // should report about success, not used yet
 
-  currentRange.setMinX( xmlState.getDoubleAttribute(String(T("MinX")),getCurrentRangeMinX()) );
-  currentRange.setMaxX( xmlState.getDoubleAttribute(String(T("MaxX")),getCurrentRangeMaxX()) );
-  currentRange.setMinY( xmlState.getDoubleAttribute(String(T("MinY")),getCurrentRangeMinY()) );
-  currentRange.setMaxY( xmlState.getDoubleAttribute(String(T("MaxY")),getCurrentRangeMaxY()) );
+  currentRange.setMinX( xmlState.getDoubleAttribute(String("MinX"),getCurrentRangeMinX()) );
+  currentRange.setMaxX( xmlState.getDoubleAttribute(String("MaxX"),getCurrentRangeMaxX()) );
+  currentRange.setMinY( xmlState.getDoubleAttribute(String("MinY"),getCurrentRangeMinY()) );
+  currentRange.setMaxY( xmlState.getDoubleAttribute(String("MaxY"),getCurrentRangeMaxY()) );
 
   horizontalCoarseGridIsVisible = xmlState.getBoolAttribute(
-    String(T("HorizontalCoarseGridIsVisible")), isHorizontalCoarseGridVisible());
+    String("HorizontalCoarseGridIsVisible"), isHorizontalCoarseGridVisible());
   horizontalCoarseGridInterval = xmlState.getDoubleAttribute(
-    String(T("HorizontalCoarseGridInterval")), getHorizontalCoarseGridInterval());
+    String("HorizontalCoarseGridInterval"), getHorizontalCoarseGridInterval());
   horizontalFineGridIsVisible = xmlState.getBoolAttribute(
-    String(T("HorizontalFineGridIsVisible")), isHorizontalFineGridVisible());
+    String("HorizontalFineGridIsVisible"), isHorizontalFineGridVisible());
   horizontalFineGridInterval = xmlState.getDoubleAttribute(
-    String(T("HorizontalFineGridInterval")), getHorizontalFineGridInterval());
+    String("HorizontalFineGridInterval"), getHorizontalFineGridInterval());
   verticalCoarseGridIsVisible = xmlState.getBoolAttribute(
-    String(T("VerticalCoarseGridIsVisible")), isVerticalCoarseGridVisible());
+    String("VerticalCoarseGridIsVisible"), isVerticalCoarseGridVisible());
   verticalCoarseGridInterval = xmlState.getDoubleAttribute(
-    String(T("VerticalCoarseGridInterval")), getVerticalCoarseGridInterval());
+    String("VerticalCoarseGridInterval"), getVerticalCoarseGridInterval());
   verticalFineGridIsVisible = xmlState.getBoolAttribute(
-    String(T("VerticalFineGridIsVisible")), isVerticalFineGridVisible());
+    String("VerticalFineGridIsVisible"), isVerticalFineGridVisible());
   verticalFineGridInterval = xmlState.getDoubleAttribute(
-    String(T("VerticalFineGridInterval")), getVerticalFineGridInterval());
+    String("VerticalFineGridInterval"), getVerticalFineGridInterval());
 
   //updateBackgroundImage();
   return success;
