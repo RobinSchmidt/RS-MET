@@ -1,15 +1,18 @@
 Make old plugins available:
--let rosic depend on rapt
+-let rosic depend on rapt (done)
+-let jura_processors depend on rosic (done)
+-make EngineersFilter available in the chainer
 -turn rapt into a juce module (with no dependencies)
 -make rapt and rosic test/demo projects
--let jura_processors depend on rosic (done)
 -drag over all old plugin code and make it work in the Chainer
 -maybe rename rosic to rs_dsp
 -templatize rosic classes and move templates to rapt
 -in rapt: use omega instead of freq/sampleRate (avoid data redundancy)
--avoid name clashes by using rs-prefix (perhaps on all rosic classes, at least on those which 
- clash with juce classes of the same name)
--maybe rename RSlider, etc into rsSlider too - for consistency
+-avoid name clashes with juce classes by using rs-prefix (perhaps on all rosic classes, at least on 
+ those which clash with juce classes of the same name - but perhaps better for all for consistency)
+-maybe rename RSlider, etc into rsSlider too - for consistency (it's important to that only after
+ all old plugin code has been dragged over, otherwise compiler errors will be overwhelming
+ when dragging over a new class)
 -maybe we should generally use the rs prefix to be safe against later additions to juce
  -clients don't want to have to deal with name clashes when the incorporate my modules, so...
   yeah...prefix everything with rs - makes it also easier later to drag in code from RSLib
