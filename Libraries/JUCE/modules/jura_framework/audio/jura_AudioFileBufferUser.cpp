@@ -1,5 +1,3 @@
-#include "rojue_AudioFileBufferUser.h"
-using namespace rojue;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

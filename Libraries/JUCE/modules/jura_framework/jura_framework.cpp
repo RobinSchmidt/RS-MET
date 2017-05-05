@@ -67,7 +67,7 @@ namespace jura
 
 // AudioBufferUser stuff (needed by waveform display)
 #include "audio/jura_AudioFileBuffer.cpp"  
-//#include "audio/jura_AudioFileBufferUser.cpp"  // activate after message boxes are available
+#include "audio/jura_AudioFileBufferUser.cpp" 
 
 #include "gui/panels/jura_PanelRange.cpp"
 #include "gui/panels/jura_Panel.cpp"
