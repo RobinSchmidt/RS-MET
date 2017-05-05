@@ -101,9 +101,8 @@ namespace jura
 // editors, etc.
 
 // AudioBufferUser stuff (needed by waveform display)
-//#include "audio/jura_AudioFileInfo.h"
-//#include "audio/jura_AudioFileBuffer.h"
-//#include "audio/jura_AudioFileBufferUser.h"
+#include "audio/jura_AudioFileBuffer.h"
+#include "audio/jura_AudioFileBufferUser.h"
 
 // the "panel" stuff more or less parallels the "plot" stuff but the implementation is 
 // different (using a background thread for drawing). at some point, we should settle for one or 

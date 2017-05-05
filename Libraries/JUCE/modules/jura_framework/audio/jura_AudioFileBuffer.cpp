@@ -1,6 +1,3 @@
-#include "rojue_AudioFileBuffer.h"
-#include "rojue_AudioFileBufferUser.h"
-using namespace rojue;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
@@ -92,7 +89,7 @@ void AudioFileBuffer::copyTo(const int destChannel, const int destStartSample,
 
 float* AudioFileBuffer::getSampleData(const int channelNumber, const int sampleOffset)
 {
-  return AudioSampleBuffer::getSampleData(channelNumber, sampleOffset);
+  return AudioSampleBuffer::getWritePointer(channelNumber, sampleOffset);
 }
 
 //-------------------------------------------------------------------------------------------------
