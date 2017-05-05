@@ -118,7 +118,7 @@ namespace jura
 #include "gui/panels/jura_CurveFamilyPlot.h"
 #include "gui/panels/jura_CoordinateSystemZoomer.h"
 #include "gui/panels/jura_InteractiveCoordinateSystem.h"
-//#include "gui/panels/jura_WaveformDisplay.h"  // needs AudioFileBufferUser
+#include "gui/panels/jura_WaveformDisplay.h"
 //#include "gui/panels/jura_DualWaveformDisplay.h"
 
 #include "gui/editors/jura_Editor.h"

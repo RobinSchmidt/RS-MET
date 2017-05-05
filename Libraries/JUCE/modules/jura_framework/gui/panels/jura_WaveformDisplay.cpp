@@ -3,11 +3,11 @@
 // construction/destruction:
 
 WaveformDisplay::WaveformDisplay(AudioFileBuffer *newBuffer) 
-: InteractiveCoordinateSystem(String(T("WaveformDisplay"))), AudioFileBufferUser(newBuffer)
+: InteractiveCoordinateSystem("WaveformDisplay"), AudioFileBufferUser(newBuffer)
 {
   ScopedLock pointerLock(audioFileBufferPointerLock);
 
-  Component::setName(String(T("WaveformDisplay")));
+  Component::setName(String("WaveformDisplay"));
   firstChannelToPlot = 0;
   lastChannelToPlot  = 7; // restrict plot to 8 channels by default
   //setValueFieldPopup(false);
