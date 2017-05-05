@@ -1,5 +1,3 @@
-#include "rojue_CurveFamilyPlot.h"
-using namespace rojue;
 
 CurveFamilyPlot::CurveFamilyPlot(const String& name)
 : CoordinateSystem(name)
@@ -174,10 +172,10 @@ void CurveFamilyPlot::updateBackgroundImage()
 
 XmlElement* CurveFamilyPlot::getPlotAsSVG(int width, int height)
 {
-  jassert( width  >= 1 )
-    jassert( height >= 1)
-    if( width < 1 || height < 1)
-      return NULL;
+  jassert(width  >= 1);
+  jassert(height >= 1);
+  if( width < 1 || height < 1)  
+    return NULL;
 
   Image* thePlot = new Image(Image::RGB, width, height, true);
 
@@ -186,9 +184,9 @@ XmlElement* CurveFamilyPlot::getPlotAsSVG(int width, int height)
   Graphics g(*thePlot);
 
   // create an XmlElement to be used for the SVG drawing:
-  XmlElement* theSVG = new XmlElement(String(T("svg")));
-  theSVG->setAttribute(String(T("width")), width);
-  theSVG->setAttribute(String(T("height")), height);
+  XmlElement* theSVG = new XmlElement(String("svg"));
+  theSVG->setAttribute(String("width"), width);
+  theSVG->setAttribute(String("height"), height);
 
   // fill the background:
   //g.fillAll(colourScheme.backgroundColour);
@@ -243,10 +241,10 @@ XmlElement* CurveFamilyPlot::getPlotAsSVG(int width, int height)
 
 Image* CurveFamilyPlot::getPlotAsImage(int width, int height)
 {
-  jassert( width  >= 1 )
-    jassert( height >= 1)
-    if( width < 1 || height < 1)
-      return NULL;
+  jassert(width  >= 1);
+  jassert(height >= 1);
+  if( width < 1 || height < 1)  
+    return NULL;
 
   Image* thePlot = new Image(Image::RGB, width, height, true);
 
@@ -360,7 +358,7 @@ void CurveFamilyPlot::plotCurve(Graphics &g, Image* targetImage, XmlElement *tar
 
   // move the 'pen' for the svg-drawing to the start-position:
   if( targetSVG != NULL )
-    curvePathDataString += String(x) + String(T(" ")) + String(y) + String(T(", "));
+    curvePathDataString += String(x) + String(" ") + String(y) + String(", ");
 
   for(i=1; i<numValues; i++)
   {
@@ -379,7 +377,7 @@ void CurveFamilyPlot::plotCurve(Graphics &g, Image* targetImage, XmlElement *tar
 
     // add the line-segment the svg-drawing also:
     if( targetSVG != NULL )
-      curvePathDataString += String(x) + String(T(" ")) + String(y) + String(T(", "));
+      curvePathDataString += String(x) + String(" ") + String(y) + String(", ");
   }
 
   // set the colour for the current curve:
@@ -427,11 +425,11 @@ void CurveFamilyPlot::plotCurve(Graphics &g, Image* targetImage, XmlElement *tar
     if( targetSVG != NULL )
     {
       // create a XmlElement for the path, setup its attributes and add it ot the svg-drawing:
-      XmlElement* curvePath = new XmlElement(String(T("polyline")));
-      curvePath->setAttribute(String(T("points")), curvePathDataString);
-      curvePath->setAttribute(String(T("style")), String(T("stroke-width: ")) + String(1.0) + 
-        String(T("; stroke: #")) + graphColour.toString().substring(2) + 
-        String(T("; fill: none;")) );
+      XmlElement* curvePath = new XmlElement(String("polyline"));
+      curvePath->setAttribute(String("points"), curvePathDataString);
+      curvePath->setAttribute(String("style"), String("stroke-width: ") + String(1.0) + 
+        String("; stroke: #") + graphColour.toString().substring(2) + 
+        String("; fill: none;") );
       targetSVG->addChildElement(curvePath);
     }
   }

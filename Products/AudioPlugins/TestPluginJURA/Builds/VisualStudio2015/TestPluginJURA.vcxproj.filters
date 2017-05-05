@@ -2184,9 +2184,6 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\misc\jura_RectangleComponent.cpp">
       <Filter>Juce Modules\jura_framework\gui\misc</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\rojue_CurveFamilyPlot.cpp">
-      <Filter>Juce Modules\jura_framework\gui\panels</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\rojue_DualWaveformDisplay.cpp">
       <Filter>Juce Modules\jura_framework\gui\panels</Filter>
     </ClCompile>
@@ -3598,6 +3595,9 @@
       <Filter>Juce Modules\jura_framework\gui\panels</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_CoordinateSystemZoomer.cpp">
+      <Filter>Juce Modules\jura_framework\gui\panels</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_CurveFamilyPlot.cpp">
       <Filter>Juce Modules\jura_framework\gui\panels</Filter>
     </ClCompile>
   </ItemGroup>
@@ -5516,9 +5516,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\misc\jura_RectangleComponent.h">
       <Filter>Juce Modules\jura_framework\gui\misc</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\rojue_CurveFamilyPlot.h">
-      <Filter>Juce Modules\jura_framework\gui\panels</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\rojue_DualWaveformDisplay.h">
       <Filter>Juce Modules\jura_framework\gui\panels</Filter>
     </ClInclude>
@@ -7057,6 +7054,9 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\jura_processors.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rosic.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_CoordinateSystemZoomer.h">
+      <Filter>Juce Modules\jura_framework\gui\panels</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_CurveFamilyPlot.h">
       <Filter>Juce Modules\jura_framework\gui\panels</Filter>
     </ClInclude>
   </ItemGroup>
