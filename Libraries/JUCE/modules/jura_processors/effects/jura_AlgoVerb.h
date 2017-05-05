@@ -16,6 +16,10 @@ public:
 
   AlgoVerbAudioModule(CriticalSection *newPlugInLock, rosic::AlgoVerb *algoVerbToWrap);
 
+  AlgoVerbAudioModule(CriticalSection *newPlugInLock);
+
+  virtual ~AlgoVerbAudioModule();
+
   //-----------------------------------------------------------------------------------------------
   // automation and state management:
 
@@ -37,6 +41,12 @@ public:
     wrappedAlgoVerb->getSampleFrameStereo(inOutL, inOutR);
   }
 
+  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
+  {
+    for(int n = 0; n < numSamples; n++)
+      wrappedAlgoVerb->getSampleFrameStereo(&inOutBuffer[0][n], &inOutBuffer[1][n]);
+  }
+
   //---------------------------------------------------------------------------------------------
   // event processing:
 
@@ -50,6 +60,8 @@ protected:
   void initializeAutomatableParameters();
 
   rosic::AlgoVerb *wrappedAlgoVerb;
+  bool wrappedAlgoVerbIsOwned = false;
+
 
   juce_UseDebuggingNewOperator;
 };

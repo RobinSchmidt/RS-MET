@@ -6,9 +6,27 @@ AlgoVerbAudioModule::AlgoVerbAudioModule(CriticalSection *newPlugInLock, rosic::
 {
   jassert(algoVerbToWrap != NULL); // you must pass a valid rosic-object to the constructor
   wrappedAlgoVerb = algoVerbToWrap;
+
   moduleName = juce::String("AlgoVerb");
   setActiveDirectory(getApplicationDirectory() + juce::String("/AlgoVerbPresets") );
   initializeAutomatableParameters();
+}
+
+AlgoVerbAudioModule::AlgoVerbAudioModule(CriticalSection *newPlugInLock) : AudioModule(newPlugInLock)
+{
+  wrappedAlgoVerb = new rosic::AlgoVerb;
+  wrappedAlgoVerbIsOwned = true;
+
+  // get rid of duplication - make init function
+  moduleName = juce::String("AlgoVerb");
+  setActiveDirectory(getApplicationDirectory() + juce::String("/AlgoVerbPresets") );
+  initializeAutomatableParameters();
+}
+
+AlgoVerbAudioModule::~AlgoVerbAudioModule()
+{
+  if(wrappedAlgoVerbIsOwned)
+    delete wrappedAlgoVerb;
 }
 
 //-------------------------------------------------------------------------------------------------
