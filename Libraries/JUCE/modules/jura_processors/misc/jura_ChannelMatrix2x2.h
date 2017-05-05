@@ -1,5 +1,5 @@
-#ifndef jura_ChannelMatrix2x2AudioModule_h
-#define jura_ChannelMatrix2x2AudioModule_h
+#ifndef jura_ChannelMatrix2x2_h
+#define jura_ChannelMatrix2x2_h
 
 class ChannelMatrix2x2AudioModule : public AudioModule
 {

@@ -2,7 +2,7 @@
 -drag over all old plugin code and make it compile:
  -AciDevil (done)
  -AlgoVerb (done)
- -ChannelMatrix2x2
+ -ChannelMatrix2x2 (done)
  -CrossOver (take care - this has 8 output channels)
  -DspWorkbench
  -EasyQ
