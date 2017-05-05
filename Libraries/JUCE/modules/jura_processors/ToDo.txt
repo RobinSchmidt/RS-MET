@@ -4,11 +4,12 @@
  -AlgoVerb (done)
  -ChannelMatrix2x2 (done)
  -CrossOver (done)
- -DspWorkbench
- -EasyQ
- -EchoLab
+ -EasyQ (done)
  -EngineersFilter (done)
  -FuncShaper (done)
+
+ -DspWorkbench
+ -EchoLab
  -KeyShot
  -Liberty (later - it needs the "romos" folder)
  -MagicCarpet
