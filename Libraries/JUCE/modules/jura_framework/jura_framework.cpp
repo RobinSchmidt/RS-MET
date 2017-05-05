@@ -58,12 +58,16 @@ namespace jura
 #include "gui/widgets/widget_sets/jura_StateLoadSaveWidgetSet.cpp"
 #include "gui/widgets/widget_sets/jura_ColorMapLoader.cpp"
 
-
 #include "gui/plots/jura_CoordinateSystemOld.cpp"
 #include "gui/plots/jura_InteractiveCoordinateSystemOld.cpp" 
 #include "gui/plots/jura_CoordinateSystemZoomerOld.cpp"
 #include "gui/plots/jura_CurveFamilyPlotOld.cpp" 
 #include "gui/plots/jura_SpectrumDisplayOld.cpp"
+
+// AudioBufferUser stuff (needed by waveform display)
+//#include "audio/jura_AudioFileInfo.cpp"
+//#include "audio/jura_AudioFileBuffer.cpp"
+//#include "audio/jura_AudioFileBufferUser.cpp"
 
 #include "gui/panels/jura_PanelRange.cpp"
 #include "gui/panels/jura_Panel.cpp"
@@ -83,7 +87,11 @@ namespace jura
 
 #include "gui/editors/jura_Editor.cpp"
 
-#include "audio/jura_AudioModule.cpp"
+//#include "audio/jura_AudioSampleBufferFunctions.cpp"
+//#include "audio/jura_ImmediatePlaybackAudioSource.cpp"
+#include "audio/jura_AudioModule.cpp" // needs editor stuff
 #include "audio/jura_AudioPlugin.cpp"
+
+
 
 }

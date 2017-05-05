@@ -4841,6 +4841,46 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/audio/rojue_AudioFileBuffer.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/audio/rojue_AudioFileBuffer.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/audio/rojue_AudioFileBufferUser.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/audio/rojue_AudioFileBufferUser.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/audio/rojue_AudioFileInfo.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/audio/rojue_AudioFileInfo.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/audio/rojue_AudioSampleBufferFunctions.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/audio/rojue_AudioSampleBufferFunctions.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/audio/rojue_ImmediatePlaybackAudioSource.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/audio/rojue_ImmediatePlaybackAudioSource.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/control/jura_AutomatableParameter.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -5053,91 +5093,91 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/rojue_CoordinateSystem.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/jura_CoordinateSystem.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/rojue_CoordinateSystem.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/jura_CoordinateSystem.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/rojue_CoordinateSystemZoomer.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/jura_CoordinateSystemZoomer.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/rojue_CoordinateSystemZoomer.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/jura_CoordinateSystemZoomer.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/rojue_CurveFamilyPlot.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/jura_CurveFamilyPlot.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/rojue_CurveFamilyPlot.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/jura_CurveFamilyPlot.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/rojue_DrawingThread.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/jura_DrawingThread.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/rojue_DrawingThread.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/jura_DrawingThread.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/rojue_DualWaveformDisplay.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/jura_DualWaveformDisplay.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/rojue_DualWaveformDisplay.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/jura_DualWaveformDisplay.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/rojue_InteractiveCoordinateSystem.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/jura_InteractiveCoordinateSystem.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/rojue_InteractiveCoordinateSystem.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/jura_InteractiveCoordinateSystem.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/rojue_Panel.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/jura_Panel.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/rojue_Panel.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/jura_Panel.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/rojue_PanelRange.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/jura_PanelRange.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/rojue_PanelRange.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/jura_PanelRange.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/rojue_ThreadedDrawingComponent.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/jura_ThreadedDrawingComponent.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/rojue_ThreadedDrawingComponent.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/jura_ThreadedDrawingComponent.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/rojue_ThreadedDrawingPanel.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/jura_ThreadedDrawingPanel.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/rojue_ThreadedDrawingPanel.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/jura_ThreadedDrawingPanel.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/rojue_WaveformDisplay.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/jura_WaveformDisplay.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/rojue_WaveformDisplay.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/panels/jura_WaveformDisplay.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>

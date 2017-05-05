@@ -100,6 +100,11 @@ namespace jura
 // after the plots, we may add some further plot-based widgets, such as XY-Pads, frequency-response
 // editors, etc.
 
+// AudioBufferUser stuff (needed by waveform display)
+//#include "audio/jura_AudioFileInfo.h"
+//#include "audio/jura_AudioFileBuffer.h"
+//#include "audio/jura_AudioFileBufferUser.h"
+
 // the "panel" stuff more or less parallels the "plot" stuff but the implementation is 
 // different (using a background thread for drawing). at some point, we should settle for one or 
 // the other version...or somehow merge the code...maybe even make a totally different version 
@@ -116,17 +121,17 @@ namespace jura
 //#include "gui/panels/jura_WaveformDisplay.h"  // needs AudioFileBufferUser
 //#include "gui/panels/jura_DualWaveformDisplay.h"
 
-
-
 #include "gui/editors/jura_Editor.h"
 
 #include "gui/dialogs/jura_RDialogBox.h"
 #include "gui/dialogs/jura_RMessageBox.h"
 #include "gui/dialogs/jura_ColourSchemeSetupDialog.h"
 
-
+//#include "audio/jura_AudioSampleBufferFunctions.h"
+//#include "audio/jura_ImmediatePlaybackAudioSource.h"
 #include "audio/jura_AudioModule.h" 
 #include "audio/jura_AudioPlugin.h"
+
 
 }
 
