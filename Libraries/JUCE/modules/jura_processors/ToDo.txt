@@ -3,7 +3,7 @@
  -AciDevil (done)
  -AlgoVerb (done)
  -ChannelMatrix2x2 (done)
- -CrossOver (take care - this has 8 output channels)
+ -CrossOver (done)
  -DspWorkbench
  -EasyQ
  -EchoLab

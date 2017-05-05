@@ -479,6 +479,9 @@ class ParameterSetObserver
 
 public:
 
+
+  ParameterSetObserver() {}
+
   //-----------------------------------------------------------------------------------------------
   // callbacks:
 
@@ -494,6 +497,8 @@ class ParameterSetHolder
 {
 
 public:
+
+  ParameterSetHolder() {}
 
   //-----------------------------------------------------------------------------------------------
   // de-/registering and notification:

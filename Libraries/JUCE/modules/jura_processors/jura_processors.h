@@ -57,6 +57,7 @@ namespace jura
 #include "filters/jura_PhasorFilter.h"
 #include "filters/jura_EngineersFilter.h"
 #include "filters/jura_CrossOver.h"
+#include "filters/jura_Equalizer.h"
 
 
 #include "modulators/jura_BreakpointModulatorAudioModule.h"

@@ -2322,6 +2322,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_FuncShaper.cpp">
       <Filter>Juce Modules\jura_processors\effects</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_CrossOver.cpp">
+      <Filter>Juce Modules\jura_processors\filters</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_EngineersFilter.cpp">
       <Filter>Juce Modules\jura_processors\filters</Filter>
     </ClCompile>
@@ -2331,10 +2334,10 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_PhasorFilter.cpp">
       <Filter>Juce Modules\jura_processors\filters</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\rosof_CrossOverModuleEditor.cpp">
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\rosof_EqualizerModuleEditor.cpp">
       <Filter>Juce Modules\jura_processors\filters</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\rosof_CrossOverPlotEditor.cpp">
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\rosof_EqualizerPlotEditor.cpp">
       <Filter>Juce Modules\jura_processors\filters</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_AciDevil.cpp">
@@ -3624,7 +3627,7 @@
     <ClCompile Include="..\..\JuceLibraryCode\rosic.cpp">
       <Filter>Juce Library Code</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_CrossOver.cpp">
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_Equalizer.cpp">
       <Filter>Juce Modules\jura_processors\filters</Filter>
     </ClCompile>
   </ItemGroup>
@@ -5684,6 +5687,9 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_FuncShaper.h">
       <Filter>Juce Modules\jura_processors\effects</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_CrossOver.h">
+      <Filter>Juce Modules\jura_processors\filters</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_EngineersFilter.h">
       <Filter>Juce Modules\jura_processors\filters</Filter>
     </ClInclude>
@@ -5693,10 +5699,10 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_PhasorFilter.h">
       <Filter>Juce Modules\jura_processors\filters</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\rosof_CrossOverModuleEditor.h">
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\rosof_EqualizerModuleEditor.h">
       <Filter>Juce Modules\jura_processors\filters</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\rosof_CrossOverPlotEditor.h">
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\rosof_EqualizerPlotEditor.h">
       <Filter>Juce Modules\jura_processors\filters</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_AciDevil.h">
@@ -7096,7 +7102,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\jura_framework.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\jura_processors.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rosic.h" />
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_CrossOver.h">
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_Equalizer.h">
       <Filter>Juce Modules\jura_processors\filters</Filter>
     </ClInclude>
   </ItemGroup>

@@ -5433,6 +5433,14 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/filters/jura_CrossOver.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/filters/jura_CrossOver.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/filters/jura_EngineersFilter.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -5457,27 +5465,27 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/filters/rosof_CrossOverAudioModule.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/filters/rosof_EqualizerAudioModule.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/filters/rosof_CrossOverAudioModule.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/filters/rosof_EqualizerAudioModule.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/filters/rosof_CrossOverModuleEditor.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/filters/rosof_EqualizerModuleEditor.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/filters/rosof_CrossOverModuleEditor.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/filters/rosof_EqualizerModuleEditor.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/filters/rosof_CrossOverPlotEditor.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/filters/rosof_EqualizerPlotEditor.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/filters/rosof_CrossOverPlotEditor.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/filters/rosof_EqualizerPlotEditor.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
