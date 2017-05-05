@@ -131,22 +131,6 @@ void showSettingsFileIsInvalidBox()
 
 // OK/Cancel boxes:
 
-//
-//static bool JUCE_CALLTYPE showOkCancelBox (AlertIconType iconType,
-//  const String& title,
-//  const String& message,
-//#if JUCE_MODAL_LOOPS_PERMITTED
-//  const String& button1Text = String(),
-//  const String& button2Text = String(),
-//  Component* associatedComponent = nullptr,
-//  ModalComponentManager::Callback* callback = nullptr);
-//#else
-//  const String& button1Text,
-//  const String& button2Text,
-//  Component* associatedComponent,
-//  ModalComponentManager::Callback* callback);
-//#endif
-
 bool JUCE_CALLTYPE showOkCancelWarningBox(const String& title, const String& message) // rename to showWarningBox
 {
   return AlertWindow::showOkCancelBox(AlertWindow::WarningIcon, title, message, "OK", "Cancel");

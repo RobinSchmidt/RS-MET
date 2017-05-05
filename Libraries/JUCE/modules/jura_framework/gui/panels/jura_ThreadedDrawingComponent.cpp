@@ -185,7 +185,7 @@ bool ThreadedDrawingComponent::allocateClientAreaImage(int desiredWidth, int des
     if( clientAreaImage == NULL )
     {
       jassertfalse;
-      //showMemoryAllocationErrorBox(String("ThreadedDrawingComponent::allocateClientAreaImage")); // re-activate
+      showMemoryAllocationErrorBox(String("ThreadedDrawingComponent::allocateClientAreaImage"));
       return false;  
     }
     else
@@ -208,7 +208,7 @@ bool ThreadedDrawingComponent::allocateClientAreaImage(int desiredWidth, int des
 
     if( clientAreaImage == NULL )
     {
-      //showMemoryAllocationErrorBox(String("ThreadedDrawingComponent::allocateClientAreaImage")); re-activate
+      showMemoryAllocationErrorBox(String("ThreadedDrawingComponent::allocateClientAreaImage"));
       jassertfalse;
       return false; 
     }
