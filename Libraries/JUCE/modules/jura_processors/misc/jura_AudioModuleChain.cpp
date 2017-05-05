@@ -66,7 +66,7 @@ StringArray AudioModuleFactory::getAvailableModuleTypes()
   // effects:
   a.add("Enveloper");
   a.add("FuncShaper");
-  a.add("AlgoVerb");
+  //a.add("AlgoVerb");  // currently inactive - not yet complete
 
   // instruments:
   a.add("AciDevil");

@@ -29,6 +29,12 @@ AlgoVerbAudioModule::~AlgoVerbAudioModule()
     delete wrappedAlgoVerb;
 }
 
+//AudioModuleEditor* AlgoVerbAudioModule::createEditor()
+//{
+//  return new jura::AlgoVerbModuleEditor(lock, this); // get rid of passing the lock
+//}
+
+
 //-------------------------------------------------------------------------------------------------
 // automation:
 
@@ -47,16 +53,6 @@ void AlgoVerbAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
   case   4: wrappedAlgoVerb->fdn.setFeedbackMatrix(      (int) value );   break;
   case   5: wrappedAlgoVerb->fdn.setOutputVector(        (int) value );   break;
   case   6: wrappedAlgoVerb->fdn.setAllpassMode(         value>=0.5  );   break;
-
-
-  /*
-  case   2: wrappedAlgoVerb->setGrainLengthInMilliseconds(value         );   break;
-  case   3: wrappedAlgoVerb->setGrainLengthInPitchCycles( value         );   break;
-  case   4: wrappedAlgoVerb->setGrainLengthInBeats(       value         );   break;
-  case   5: wrappedAlgoVerb->setGrainLengthUnit(    (int) value         );   break;
-  case   6: wrappedAlgoVerb->setFeedback(                 value         );   break;
-  case   7: wrappedAlgoVerb->setDryWet(                   value         );   break;
-  */
   } // end of switch( parameterIndex )
   markStateAsDirty();
 }
@@ -149,7 +145,7 @@ AlgoVerbModuleEditor::AlgoVerbModuleEditor(CriticalSection *newPlugInLock,
   dryWetSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( pingButton = new RButton(juce::String("Ping")) );
-  pingButton->assignParameter( algoVerbModuleToEdit->getParameterByName("Ping") );
+  //pingButton->assignParameter( algoVerbModuleToEdit->getParameterByName("Ping") ); // there's no "Ping" Parameter
   pingButton->setDescription(juce::String("Feed an impulse into the reverberator to audition the impulse response"));
   pingButton->setDescriptionField(infoField);
   pingButton->setClickingTogglesState(true);
@@ -234,6 +230,7 @@ AlgoVerbModuleEditor::AlgoVerbModuleEditor(CriticalSection *newPlugInLock,
   latePreDelaySlider->setDescription(juce::String("Pre-delay for the late reverberation"));
   latePreDelaySlider->setDescriptionField(infoField);
   latePreDelaySlider->setStringConversionFunction(secondsToStringWithUnitTotal4);
+
 
   /*
   addWidget( densitySlider = new RSlider (T("DensitySlider")) );

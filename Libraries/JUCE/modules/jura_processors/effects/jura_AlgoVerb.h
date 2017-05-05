@@ -20,6 +20,10 @@ public:
 
   virtual ~AlgoVerbAudioModule();
 
+  //AudioModuleEditor* createEditor() override;
+  // still commneted out/preliminary because the AudioModule doesn't have all the parameters that
+  // the custom editor expects - fix that
+
   //-----------------------------------------------------------------------------------------------
   // automation and state management:
 

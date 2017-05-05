@@ -3,6 +3,9 @@
 -AciDevilEditor: needs other initial size, maybe should not be resizable
 
 make old plugins available in chainer:
+we mostly need to provide a 2nd constructor that doesn't wrap an existing core-object but creates 
+its own, provide a flag, whether or not the wrpeed object is owned and write a destructor that 
+deletes the object conditionally, also an override of processBlock and createEditor is needed
 -drag over all old plugin code and make it work in the Chainer
  -AciDevil (done)
  -AlgoVerb (i already started with this - continue next)
