@@ -144,7 +144,7 @@ bool AudioFileBuffer::loadAudioDataFromFile(const File &fileToLoadFrom, bool sho
     if( intDataBuffer == NULL )
     {
       if( showAlertBoxOnFail )
-        showMemoryAllocationErrorBox(String(T("AudioFileBuffer::loadAudioDataFromFile")));
+        showMemoryAllocationErrorBox("AudioFileBuffer::loadAudioDataFromFile");
       delete reader;
       return false;
     }
@@ -153,7 +153,7 @@ bool AudioFileBuffer::loadAudioDataFromFile(const File &fileToLoadFrom, bool sho
     if( intChannelPointers == NULL )
     {
       if( showAlertBoxOnFail )
-        showMemoryAllocationErrorBox(String(T("AudioFileBuffer::loadAudioDataFromFile")));
+        showMemoryAllocationErrorBox("AudioFileBuffer::loadAudioDataFromFile");
       delete[] intDataBuffer;
       delete   reader;
       return false;
@@ -178,7 +178,7 @@ bool AudioFileBuffer::loadAudioDataFromFile(const File &fileToLoadFrom, bool sho
     float *writePointer;
     for(c=0; c<reader->numChannels; c++)
     {
-      writePointer = AudioSampleBuffer::getSampleData(c, 0);
+      writePointer = AudioSampleBuffer::getWritePointer(c, 0);
       for(n=0; n<reader->lengthInSamples; n++)
         writePointer[n] = (float) (normalizer * (double) (intChannelPointers[c][n]));
     }
@@ -212,6 +212,6 @@ void AudioFileBuffer::deRegisterUser(AudioFileBufferUser *userToDeRegister)
 {
   //ScopedWriteLock scopedLock(audioDataReadWriteLock); // unnecesarry and causes dealock on dropping a clip onto the arrangement
   users.getLock().enter();
-  users.removeValue(userToDeRegister);
+  users.removeFirstMatchingValue(userToDeRegister);
   users.getLock().exit();
 }
