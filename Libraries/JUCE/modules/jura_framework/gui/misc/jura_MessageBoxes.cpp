@@ -47,7 +47,7 @@ void showEnterNameErrorBox()
 void showFileCouldNotBeCopiedBox(const String& fileName, const String& attemptedDirectoryName)
 {
   showWarningBox("File could not be copied", 
-    "The file: " + fileName + " could not be copied into the directory") + attemptedDirectoryName);
+    "The file: " + fileName + " could not be copied into the directory" + attemptedDirectoryName);
 }
 
 void showFileCouldNotBeDeletedBox(const String& fileName)
@@ -62,83 +62,72 @@ void showFileCouldNotBeMovedBox(const String& fileName, const String& attemptedD
     "The file: " + fileName + " could not be moved into the directory" + attemptedDirectoryName);
 }
 
-void showWarningBox(const File& file)
+void showFileIsNoDirectoryErrorBox(const File& file)
 {
-  showWarningBox(AlertWindow::WarningIcon, String(T("Not a directory")), 
-    String(T("The chosen file: ")) + file.getFileName() 
-    + String(T(" is not a directory")), String(T("OK")) );
+  showWarningBox("Not a directory", "The chosen file: " + file.getFileName() + " is not a directory");
 }
 
-void showWarningBox(const String& fileName)
+void showFileNotFoundOrInvalidAudioFileBox(const String& fileName)
 {
-  showMessageBox(AlertWindow::WarningIcon, String(T("File not found or invalid")), 
-    String(T("The file: ")) + fileName
-    + String(T(" was not found or is not a valid audiofile - clips using this file will be omitted")), 
-    String(T("OK")) );
+  showWarningBox("File not found or invalid", 
+    "The file: " + fileName
+    + " was not found or is not a valid audiofile - clips using this file will be omitted");
 }
 
-void showWarningBox(const String& theInvalidName)
+void showInvalidPathNameErrorBox(const String& theInvalidName)
 {
-  showMessageBox(AlertWindow::WarningIcon, String(T("Invalid path name")), 
-    String(T("The chosen project directory name: ")) + theInvalidName 
-    + String(T(" is not a valid name for a directory. Please enter another name.")), String(T("OK")) );
+  showWarningBox("Invalid path name", "The chosen project directory name: " + theInvalidName 
+    + " is not a valid name for a directory. Please enter another name." );
 }
-
 
 void showPleaseSelectProjectFileBox()
 {
-  showMessageBox(AlertWindow::WarningIcon, String(T("Please select a project file")), 
-    String(T("Please select a valid Mixsonic project file to load.")), String(T("OK")) );
+  showWarningBox("Please select a project file", 
+    "Please select a valid Mixsonic project file to load.");
 }
 
 void showProjectCouldNotBeCreatedBox(const String& projectName)
 {
-  showMessageBox(AlertWindow::WarningIcon, String(T("Project could not be created")), 
-    String(T("The project: ")) +projectName + String(T(" could not be created")), String(T("OK")));
+  showWarningBox("Project could not be created", 
+    "The project: " + projectName + " could not be created");
 }
 
 void showProjectDirectoryAlreadyExistsErrorBox(File existingProjectDirectory)
 {
-  showMessageBox(AlertWindow::WarningIcon, String(T("Directory already exists")), 
-    String(T("The chosen project directory: ")) + existingProjectDirectory.getFullPathName() 
-    + String(T(" already exists. Please enter another name.")), String(T("OK")) );
+  showWarningBox("Directory already exists", 
+    "The chosen project directory: " + existingProjectDirectory.getFullPathName() 
+    + " already exists. Please enter another name.");
 }
 
 void showProjectsParentDirectoryInvalidBox(const String& pathString)
 {
-  showMessageBox(AlertWindow::WarningIcon, String(T("Invalid path for projects")), 
-    String(T("The parent directory for the projects: ")) + pathString 
-    + String(T(" does not exist or is invalid.")), String(T("OK")) );
+  showWarningBox("Invalid path for projects", 
+    "The parent directory for the projects: " + pathString + " does not exist or is invalid.");
 }
 
 void showSampleContentPathInvalidBox(const String& pathString)
 {
-  showMessageBox(AlertWindow::WarningIcon, String(T("Invalid sample content path")), 
-    String(T("The path: ")) + pathString 
-    + String(T(" for the sample content does not exist or is invalid.")), String(T("OK")) );
+  showWarningBox("Invalid sample content path", 
+    "The path: " + pathString + " for the sample content does not exist or is invalid.");
 }
 
 void showSettingsFileIsMissingBox()
 {
-  showMessageBox(AlertWindow::WarningIcon, String(T("Settings file missing")), 
-    String(T("The global application settings file: MixsonicSettings.xml was not found in the application directory - Mixsonic will use fallback settings, which are likely to be meaningless. Please re-install to resolve this issue.")), 
-    String(T("OK")) );
+  showWarningBox("Settings file missing", 
+    "The global application settings file: MixsonicSettings.xml was not found in the \
+    application directory - Mixsonic will use fallback settings, which are likely to \
+be meaningless. Please re-install to resolve this issue." );
 }
 
 void showSettingsFileIsInvalidBox()
 {
-  showMessageBox(AlertWindow::WarningIcon, String(T("Settings file missing")), 
-    String(T("The global application settings file: MixsonicSettings.xml is corrupted - Mixsonic will use fallback settings, which are likely to be meaningless. Please re-install to resolve this issue.")), 
-    String(T("OK")) );
+  showWarningBox("Settings file missing", 
+    "The global application settings file: MixsonicSettings.xml is corrupted - Mixsonic will\
+ use fallback settings, which are likely to be meaningless. Please re-install to resolve\
+ this issue.");
 }
 
-void showTargetFileAlreadyExistsBox(const String& fileName, const String& attemptedDirectoryName)
-{
-  showMessageBox(AlertWindow::WarningIcon, String(T("File could not be moved")), 
-    String(T("The file: ")) + fileName + String(T(" could not be moved into the directory")) 
-    + attemptedDirectoryName 
-    + String(T(" because there already exists a file with the same name.")), String(T("OK")) );
-}
+// some of them are app-specific - move them into appropriate place
 
 
 // OK/Cancel boxes:
