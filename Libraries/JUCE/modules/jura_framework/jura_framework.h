@@ -72,6 +72,7 @@ namespace jura
 #include "gui/misc/jura_DescribedComponent.h"
 #include "gui/misc/jura_ColourSchemeComponent.h"
 #include "gui/misc/jura_RectangleComponent.h"
+#include "gui/misc/jura_MessageBoxes.h"
 
 #include "gui/widgets/jura_RWidget.h"
 #include "gui/widgets/jura_RTextField.h"

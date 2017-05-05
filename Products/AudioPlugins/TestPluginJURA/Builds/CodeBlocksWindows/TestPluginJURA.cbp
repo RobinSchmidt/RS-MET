@@ -4841,6 +4841,22 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/audio/jura_AudioFileBuffer.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/audio/jura_AudioFileBuffer.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/audio/jura_AudioFileBufferUser.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/audio/jura_AudioFileBufferUser.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/audio/jura_AudioModule.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -4857,43 +4873,19 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/audio/rojue_AudioFileBuffer.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/audio/jura_AudioSampleBufferFunctions.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/audio/rojue_AudioFileBuffer.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/audio/jura_AudioSampleBufferFunctions.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/audio/rojue_AudioFileBufferUser.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/audio/jura_ImmediatePlaybackAudioSource.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/audio/rojue_AudioFileBufferUser.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/audio/rojue_AudioFileInfo.cpp">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/audio/rojue_AudioFileInfo.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/audio/rojue_AudioSampleBufferFunctions.cpp">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/audio/rojue_AudioSampleBufferFunctions.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/audio/rojue_ImmediatePlaybackAudioSource.cpp">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/audio/rojue_ImmediatePlaybackAudioSource.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/audio/jura_ImmediatePlaybackAudioSource.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
@@ -5098,6 +5090,14 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/misc/jura_DescribedComponent.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/misc/jura_MessageBoxes.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/misc/jura_MessageBoxes.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
