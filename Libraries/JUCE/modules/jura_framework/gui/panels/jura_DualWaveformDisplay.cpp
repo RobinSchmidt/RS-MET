@@ -1,11 +1,8 @@
-#include "rojue_DualWaveformDisplay.h"
-using namespace rojue;
-
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
 DualWaveformDisplay::DualWaveformDisplay(AudioFileBuffer* newBuffer) 
-: Component(String(T("DualWaveformDisplay"))), AudioFileBufferUser(newBuffer)
+: Component("DualWaveformDisplay"), AudioFileBufferUser(newBuffer)
 {
   //ScopedLock pointerLock(audioFileBufferPointerLock);
   //lockUsedBufferPointer();

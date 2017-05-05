@@ -79,7 +79,7 @@ namespace jura
 #include "gui/panels/jura_CoordinateSystemZoomer.cpp"
 #include "gui/panels/jura_InteractiveCoordinateSystem.cpp"
 #include "gui/panels/jura_WaveformDisplay.cpp"
-//#include "gui/panels/jura_DualWaveformDisplay.cpp"
+#include "gui/panels/jura_DualWaveformDisplay.cpp"
 
 #include "gui/dialogs/jura_RDialogBox.cpp"
 #include "gui/dialogs/jura_RMessageBox.cpp"
