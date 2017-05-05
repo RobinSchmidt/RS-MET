@@ -72,6 +72,7 @@ namespace jura
 #include "instruments/jura_AciDevil.h"
 
 #include "misc/jura_AudioModuleChain.h"
+#include "misc/jura_ChannelMatrix2x2.h"
 
 }
 
