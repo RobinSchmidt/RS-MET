@@ -129,43 +129,59 @@ void showSettingsFileIsInvalidBox()
 
 // some of them are app-specific - move them into appropriate place
 
-
 // OK/Cancel boxes:
+
+//
+//static bool JUCE_CALLTYPE showOkCancelBox (AlertIconType iconType,
+//  const String& title,
+//  const String& message,
+//#if JUCE_MODAL_LOOPS_PERMITTED
+//  const String& button1Text = String(),
+//  const String& button2Text = String(),
+//  Component* associatedComponent = nullptr,
+//  ModalComponentManager::Callback* callback = nullptr);
+//#else
+//  const String& button1Text,
+//  const String& button2Text,
+//  Component* associatedComponent,
+//  ModalComponentManager::Callback* callback);
+//#endif
+
+bool JUCE_CALLTYPE showOkCancelWarningBox(const String& title, const String& message) // rename to showWarningBox
+{
+  return AlertWindow::showOkCancelBox(AlertWindow::WarningIcon, title, message, "OK", "Cancel");
+}
 
 bool showDirectoryDeleteWarningBox(String directoryName)
 {
-  return AlertWindow::showOkCancelBox(AlertWindow::WarningIcon, String(T("Delete directory?")), 
-    String(T("The directory: ")) + directoryName 
-    + String(T(" will be deleted from the project directory and all clips using a sample from this directory will be removed - proceed?")), 
-    String(T("OK")), String(T("Cancel")) );
+  return showOkCancelWarningBox("Delete directory?", 
+    "The directory: " + directoryName +
+    " will be deleted from the project directory and all clips using a sample from this\
+ directory will be removed - proceed?");
 }
 
 bool showOverwriteAudioFileWarningBox(String fileName)
 {
-  showOkCancelBox(AlertWindow::WarningIcon, String(T("Overwrite audio file?")), 
-    String(T("The audio-file: ")) + fileName 
-    + String(T(" will be overwritten - proceed?")), String(T("OK")), String(T("Cancel")) );
+  return showOkCancelWarningBox("Overwrite audio file?", 
+    "The audio-file: " + fileName + " will be overwritten - proceed?");
 }
 
 bool showOverwriteSongFileWarningBox(String fileName)
 {
-  return AlertWindow::showOkCancelBox(AlertWindow::WarningIcon, String(T("Overwrite song file?")), 
-    String(T("The song-file: ")) + fileName 
-    + String(T(" will be overwritten - proceed?")), String(T("OK")), String(T("Cancel")) );
+  return showOkCancelWarningBox("Overwrite song file?", 
+    "The song-file: " + fileName + " will be overwritten - proceed?");
 }
 
 bool showSampleDeleteWarningBox(String fileName)
 {
-  return AlertWindow::showOkCancelBox(AlertWindow::WarningIcon, String(T("Delete sample?")), 
-    String(T("The sample file: ")) + fileName 
-    + String(T(" will be deleted from the project directory and all clips using that sample will be removed - proceed?")), 
-    String(T("OK")), String(T("Cancel")) );
+  return showOkCancelWarningBox("Delete sample?", 
+    "The sample file: " + fileName 
+    + " will be deleted from the project directory and all clips using that sample will be removed - proceed?");
 }
 
 bool showSongUnsavedWarningBox()
 {
-  return AlertWindow::showOkCancelBox(AlertWindow::WarningIcon, String(T("Song not saved!")), 
-    String(T("The current song is not saved and will be discarded - proceed?")), 
-    String(T("OK")), String(T("Cancel")) );
+  return showOkCancelWarningBox("Song not saved!", 
+    "The current song is not saved and will be discarded - proceed?");
 }
 
