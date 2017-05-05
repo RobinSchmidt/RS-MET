@@ -1,68 +1,55 @@
-#ifndef ImmediatePlaybackAudioSource_h
-#define ImmediatePlaybackAudioSource_h
+#ifndef jura_ImmediatePlaybackAudioSource_h
+#define jura_ImmediatePlaybackAudioSource_h
 
-#include "rojue_AudioFileBuffer.h"
+/** This class can be used to play an AudioSampleBuffer or an AudioFileBuffer immediately. */
 
-namespace rojue
+class ImmediatePlaybackAudioSource : public AudioSource
 {
 
-  /**
+public:
 
-  This class can be used to play an AudioSampleBuffer or an AudioFileBuffer immediately. 
+  //---------------------------------------------------------------------------------------------
+  // construction/destruction:
 
-  */
+  /** Constructor. */
+  ImmediatePlaybackAudioSource();
 
-  class ImmediatePlaybackAudioSource : public AudioSource
-  {  
+  /** Destructor. */
+  virtual ~ImmediatePlaybackAudioSource();
 
-  public:
+  //---------------------------------------------------------------------------------------------
+  // overrides for subclasses AudioSource:
 
-    //---------------------------------------------------------------------------------------------
-    // construction/destruction:
+  /** Tells the source to prepare for playing. */
+  virtual void prepareToPlay(int samplesPerBlockExpected, double sampleRate);
 
-    /** Constructor. */
-    ImmediatePlaybackAudioSource();  
+  /** Allows the source to release anything it no longer needs after playback has stopped. */
+  virtual void releaseResources();
 
-    /** Destructor. */
-    virtual ~ImmediatePlaybackAudioSource();                             
+  /** Called repeatedly to fetch subsequent blocks of audio data. */
+  virtual void getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill);
 
-    //---------------------------------------------------------------------------------------------
-    // overrides for subclasses AudioSource:
+  //---------------------------------------------------------------------------------------------
+  // others:
 
-    /** Tells the source to prepare for playing. */
-    virtual void prepareToPlay(int samplesPerBlockExpected, double sampleRate);
+  /** Passes an AudioSampleBuffer for immediate playback. */
+  virtual void startPlayback(AudioSampleBuffer* newBufferToPlay);
 
-    /** Allows the source to release anything it no longer needs after playback has stopped. */
-    virtual void releaseResources();
+  /** Pauses the playback for later continuation (maybe also used to releasr the pause state by
+  passing false. */
+  virtual void pausePlayback(bool shouldBePaused = true);
 
-    /** Called repeatedly to fetch subsequent blocks of audio data. */
-    virtual void getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill);
+  /** Resumes playbabck from the position where it currently is. */
+  virtual void resumePlayback();
 
-    //---------------------------------------------------------------------------------------------
-    // others:
+protected:
 
-    /** Passes an AudioSampleBuffer for immediate playback. */
-    virtual void startPlayback(AudioSampleBuffer* newBufferToPlay);
+  AudioSampleBuffer audioSampleBuffer;
+  int               playPosition;
+  CriticalSection   lock;
+  bool              isPaused;
 
-    /** Pauses the playback for later continuation (maybe also used to releasr the pause state by 
-    passing false. */
-    virtual void pausePlayback(bool shouldBePaused = true);
-
-    /** Resumes playbabck from the position where it currently is. */
-    virtual void resumePlayback();
-
-    //=============================================================================================
-    juce_UseDebuggingNewOperator;
-
-  protected:
-
-    AudioSampleBuffer audioSampleBuffer;
-    int               playPosition;
-    CriticalSection   lock;
-    bool              isPaused;
-
-  };
-
-}
+  juce_UseDebuggingNewOperator;
+};
 
 #endif  

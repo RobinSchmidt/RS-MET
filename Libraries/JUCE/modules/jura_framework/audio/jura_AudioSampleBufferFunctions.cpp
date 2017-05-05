@@ -1,14 +1,13 @@
-#include "rojue_AudioSampleBufferFunctions.h"
 
-void rojue::copyAudioSampleBufferContents(AudioSampleBuffer source, AudioSampleBuffer destination)
+void copyAudioSampleBufferContents(AudioSampleBuffer source, AudioSampleBuffer destination)
 {
   destination.setSize(source.getNumChannels(), source.getNumSamples(), false, true, false);
   for(int c=0; c<source.getNumChannels(); c++)
     destination.copyFrom(c, 0, source, c, 0, source.getNumSamples());
 }
 
-AudioSampleBuffer* rojue::resampleBuffer(AudioSampleBuffer* inBuffer, double inSampleRate, 
-                                  double outSampleRate)
+AudioSampleBuffer* resampleBuffer(AudioSampleBuffer* inBuffer, double inSampleRate, 
+  double outSampleRate)
 {
   // calculate increment by which we step through the inBuffer:
   double increment = inSampleRate / outSampleRate;
@@ -25,8 +24,8 @@ AudioSampleBuffer* rojue::resampleBuffer(AudioSampleBuffer* inBuffer, double inS
   for(int c=0; c<numChannels; c++)
   {
     // obtain pointers to the in- and out-buffers for the current channel
-    float* readBuf   = inBuffer->getSampleData(c, 0);
-    float* writeBuf  = outBuffer->getSampleData(c, 0);
+    const float* readBuf  = inBuffer->getReadPointer(  c, 0);
+    float*       writeBuf = outBuffer->getWritePointer(c, 0);
 
     // initializations:
     double nRead     = 0.0;
@@ -57,9 +56,9 @@ AudioSampleBuffer* rojue::resampleBuffer(AudioSampleBuffer* inBuffer, double inS
   return outBuffer;
 }
 
-void rojue::saveAudioSampleBufferToFile(AudioSampleBuffer* bufferToSave, File fileToSaveTo,                                 
-                                        double sampleRateToUse, int bitsPerSample, 
-                                        bool warnIfFileExists)
+void saveAudioSampleBufferToFile(AudioSampleBuffer* bufferToSave, File fileToSaveTo,                                 
+                                 double sampleRateToUse, int bitsPerSample, 
+                                 bool warnIfFileExists)
 {
   if( warnIfFileExists )
   {
@@ -81,11 +80,11 @@ void rojue::saveAudioSampleBufferToFile(AudioSampleBuffer* bufferToSave, File fi
   }
 
   AudioFormat *audioFormat = NULL;
-  if( fileToSaveTo.hasFileExtension(String(T("wav"))) )
+  if( fileToSaveTo.hasFileExtension(String("wav")) )
     audioFormat = new WavAudioFormat();
-  else if( fileToSaveTo.hasFileExtension(String(T("flac"))) )
+  else if( fileToSaveTo.hasFileExtension(String("flac")) )
     audioFormat = new FlacAudioFormat();
-  else if( fileToSaveTo.hasFileExtension(String(T("aiff"))) )
+  else if( fileToSaveTo.hasFileExtension(String("aiff")) )
     audioFormat = new AiffAudioFormat();
   else
     return;
