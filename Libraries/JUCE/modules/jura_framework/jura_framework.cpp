@@ -92,6 +92,4 @@ namespace jura
 #include "audio/jura_AudioModule.cpp" // needs editor stuff
 #include "audio/jura_AudioPlugin.cpp"
 
-
-
 }

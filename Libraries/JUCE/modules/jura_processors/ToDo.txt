@@ -1,4 +1,4 @@
--drag over all the "panel" stuff into the framework
+-make AlgoVerb.cpp compile -> integrate into Chainer
 -EngineersFilter editor: remove additional space/infoline
 -AciDevilEditor: needs other initial size, maybe should not be resizable
 

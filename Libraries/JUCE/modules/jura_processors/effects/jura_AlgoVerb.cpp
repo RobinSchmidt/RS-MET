@@ -1,6 +1,3 @@
-#include "rosof_AlgoVerbAudioModule.h"
-using namespace rosof;
-
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
