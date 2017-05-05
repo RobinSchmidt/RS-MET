@@ -1,5 +1,3 @@
-#include "rojue_CoordinateSystemZoomer.h"
-using namespace rojue;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
@@ -27,17 +25,17 @@ CoordinateSystemZoomer::CoordinateSystemZoomer()
   // create the horizontal zoom-buttons and ScrollBar:
   addWidget( zoomInButtonX = new RButton(RButton::PLUS) );
   zoomInButtonX->addRButtonListener(this);
-  zoomInButtonX->setDescription(String(T("Zoom in horizontally")));
+  zoomInButtonX->setDescription("Zoom in horizontally");
   zoomInButtonX->setClickingTogglesState(false);
 
   addWidget( zoomToAllButtonX = new RButton(String("h")) );
   zoomToAllButtonX->addRButtonListener(this);
-  zoomToAllButtonX->setDescription(String(T("Zoom maximally out horizontally")));
+  zoomToAllButtonX->setDescription(String("Zoom maximally out horizontally"));
   zoomToAllButtonX->setClickingTogglesState(false);
 
   addWidget( zoomOutButtonX = new RButton(RButton::MINUS) );
   zoomOutButtonX->addRButtonListener(this);
-  zoomOutButtonX->setDescription(String(T("Zoom out horizontally")));
+  zoomOutButtonX->setDescription(String("Zoom out horizontally"));
   zoomOutButtonX->setClickingTogglesState(false);
   //zoomOutButtonX->setConnectedEdges(15);
 
@@ -50,17 +48,17 @@ CoordinateSystemZoomer::CoordinateSystemZoomer()
   // create the vertical zoom-buttons and ScrollBar:
   addWidget( zoomInButtonY = new RButton(RButton::PLUS) );
   zoomInButtonY->addRButtonListener(this);
-  zoomInButtonY->setDescription(String(T("Zoom in vertically")));
+  zoomInButtonY->setDescription(String("Zoom in vertically"));
   zoomInButtonY->setClickingTogglesState(false);
 
   addWidget( zoomToAllButtonY = new RButton(String("v")) );
   zoomToAllButtonY->addRButtonListener(this);
-  zoomToAllButtonY->setDescription(String(T("Zoom maximally out vertically")));
+  zoomToAllButtonY->setDescription(String("Zoom maximally out vertically"));
   zoomToAllButtonY->setClickingTogglesState(false);
 
   addWidget( zoomOutButtonY = new RButton(RButton::MINUS) );
   zoomOutButtonY->addRButtonListener(this);
-  zoomOutButtonY->setDescription(String(T("Zoom out vertically")));
+  zoomOutButtonY->setDescription(String("Zoom out vertically"));
   zoomOutButtonY->setClickingTogglesState(false);
 
   scrollBarY = new RScrollBar(true);
@@ -72,7 +70,7 @@ CoordinateSystemZoomer::CoordinateSystemZoomer()
   // create the zoom-to-all button for X- and Y:
   addWidget( zoomToAllButtonXY = new RButton(String("a")) );
   zoomToAllButtonXY->addRButtonListener(this);
-  zoomToAllButtonXY->setDescription(String(T("Zoom maximally out both axes")));
+  zoomToAllButtonXY->setDescription(String("Zoom maximally out both axes"));
   zoomToAllButtonXY->setClickingTogglesState(false);
 }
 
@@ -120,11 +118,11 @@ void CoordinateSystemZoomer::setVerticalMouseWheelMode(int newMode)
 void CoordinateSystemZoomer::setRelativeMargins(double newRelativeMarginLeft,                                        
   double newRelativeMarginRight, double newRelativeMarginTop, double newRelativeMarginBottom)
 {
-  jassert( newRelativeMarginLeft   >= 0.0 )
-    jassert( newRelativeMarginRight  >= 0.0 )
-    jassert( newRelativeMarginTop    >= 0.0 )
-    jassert( newRelativeMarginBottom >= 0.0 )
-    if( newRelativeMarginLeft >= 0.0 )
+  jassert(newRelativeMarginLeft   >= 0.0);
+  jassert(newRelativeMarginRight  >= 0.0);
+  jassert(newRelativeMarginTop    >= 0.0);
+  jassert(newRelativeMarginBottom >= 0.0);  
+  if( newRelativeMarginLeft >= 0.0 )
       relativeMarginLeft = newRelativeMarginLeft;
   if( newRelativeMarginRight >= 0.0 )
     relativeMarginRight = newRelativeMarginRight;
@@ -187,9 +185,7 @@ void CoordinateSystemZoomer::scrollBarMoved(RScrollBar *scrollBarThatHasMoved, c
   }
 }
 
-void CoordinateSystemZoomer::mouseWheelMove(const MouseEvent& e, 
-                                            float wheelIncrementX, 
-                                            float wheelIncrementY)
+void CoordinateSystemZoomer::mouseWheelMove(const MouseEvent& e, const MouseWheelDetails &wheel)
 {
   // ToDo: the mouseEvent class has also such a thing as horizontal mouse-wheel events - someday
   // we may want to respond to those also...
@@ -199,7 +195,7 @@ void CoordinateSystemZoomer::mouseWheelMove(const MouseEvent& e,
   else if( verticalMouseWheelMode == forwardToCoordinateSystem )
   {
     if( theCoordinateSystem != NULL )
-      theCoordinateSystem->mouseWheelMove(e, wheelIncrementX, wheelIncrementY);
+      theCoordinateSystem->mouseWheelMove(e, wheel);
     return;
   }
 
@@ -208,7 +204,7 @@ void CoordinateSystemZoomer::mouseWheelMove(const MouseEvent& e,
   relativeX = jlimit(0.01, 0.99, relativeX);
   relativeY = jlimit(0.01, 0.99, relativeY);
 
-  if( wheelIncrementY >= 0.f )
+  if( wheel.deltaY >= 0.f )
   {
     switch( verticalMouseWheelMode )
     {
@@ -223,7 +219,7 @@ void CoordinateSystemZoomer::mouseWheelMove(const MouseEvent& e,
       } break;
     } // end of switch( verticalMouseWheelMode )
   } // end of  if( wheelIncrementY > 0.f )
-  else if( wheelIncrementY < 0.f )
+  else if( wheel.deltaY < 0.f )
   {
     switch( verticalMouseWheelMode )
     {

@@ -71,6 +71,7 @@ namespace jura
 #include "gui/panels/jura_ThreadedDrawingComponent.cpp"
 #include "gui/panels/jura_ThreadedDrawingPanel.cpp"
 #include "gui/panels/jura_CoordinateSystem.cpp"
+#include "gui/panels/jura_CoordinateSystemZoomer.cpp"
 
 #include "gui/dialogs/jura_RDialogBox.cpp"
 #include "gui/dialogs/jura_RMessageBox.cpp"

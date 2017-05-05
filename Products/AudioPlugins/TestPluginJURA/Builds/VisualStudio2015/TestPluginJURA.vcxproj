@@ -1794,7 +1794,7 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_CoordinateSystem.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\rojue_CoordinateSystemZoomer.cpp">
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_CoordinateSystemZoomer.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\rojue_CurveFamilyPlot.cpp">
@@ -3816,7 +3816,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\misc\jura_DescribedComponent.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\misc\jura_RectangleComponent.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_CoordinateSystem.h" />
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\rojue_CoordinateSystemZoomer.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_CoordinateSystemZoomer.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\rojue_CurveFamilyPlot.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_DrawingThread.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\rojue_DualWaveformDisplay.h" />

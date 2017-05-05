@@ -110,6 +110,7 @@ namespace jura
 #include "gui/panels/jura_ThreadedDrawingComponent.h"
 #include "gui/panels/jura_ThreadedDrawingPanel.h"
 #include "gui/panels/jura_CoordinateSystem.h"
+#include "gui/panels/jura_CoordinateSystemZoomer.h"
 
 
 
