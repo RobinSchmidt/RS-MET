@@ -1,5 +1,3 @@
-#include "rojue_WaveformDisplay.h"
-using namespace rojue;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

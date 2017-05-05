@@ -1803,10 +1803,10 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_DrawingThread.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\rojue_DualWaveformDisplay.cpp">
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_DualWaveformDisplay.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\rojue_InteractiveCoordinateSystem.cpp">
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_InteractiveCoordinateSystem.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_Panel.cpp">
@@ -1821,7 +1821,7 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_ThreadedDrawingPanel.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\rojue_WaveformDisplay.cpp">
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_WaveformDisplay.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_CoordinateSystemOld.cpp">
@@ -3819,13 +3819,13 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_CoordinateSystemZoomer.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_CurveFamilyPlot.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_DrawingThread.h" />
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\rojue_DualWaveformDisplay.h" />
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\rojue_InteractiveCoordinateSystem.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_DualWaveformDisplay.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_InteractiveCoordinateSystem.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_Panel.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_PanelRange.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_ThreadedDrawingComponent.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_ThreadedDrawingPanel.h" />
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\rojue_WaveformDisplay.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_WaveformDisplay.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_CoordinateSystemOld.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_CoordinateSystemZoomerOld.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_CurveFamilyPlotOld.h" />

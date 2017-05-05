@@ -2184,15 +2184,6 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\misc\jura_RectangleComponent.cpp">
       <Filter>Juce Modules\jura_framework\gui\misc</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\rojue_DualWaveformDisplay.cpp">
-      <Filter>Juce Modules\jura_framework\gui\panels</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\rojue_InteractiveCoordinateSystem.cpp">
-      <Filter>Juce Modules\jura_framework\gui\panels</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\rojue_WaveformDisplay.cpp">
-      <Filter>Juce Modules\jura_framework\gui\panels</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_CoordinateSystemOld.cpp">
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClCompile>
@@ -3598,6 +3589,15 @@
       <Filter>Juce Modules\jura_framework\gui\panels</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_CurveFamilyPlot.cpp">
+      <Filter>Juce Modules\jura_framework\gui\panels</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_InteractiveCoordinateSystem.cpp">
+      <Filter>Juce Modules\jura_framework\gui\panels</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_DualWaveformDisplay.cpp">
+      <Filter>Juce Modules\jura_framework\gui\panels</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_WaveformDisplay.cpp">
       <Filter>Juce Modules\jura_framework\gui\panels</Filter>
     </ClCompile>
   </ItemGroup>
@@ -5516,15 +5516,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\misc\jura_RectangleComponent.h">
       <Filter>Juce Modules\jura_framework\gui\misc</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\rojue_DualWaveformDisplay.h">
-      <Filter>Juce Modules\jura_framework\gui\panels</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\rojue_InteractiveCoordinateSystem.h">
-      <Filter>Juce Modules\jura_framework\gui\panels</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\rojue_WaveformDisplay.h">
-      <Filter>Juce Modules\jura_framework\gui\panels</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_CoordinateSystemOld.h">
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClInclude>
@@ -7057,6 +7048,15 @@
       <Filter>Juce Modules\jura_framework\gui\panels</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_CurveFamilyPlot.h">
+      <Filter>Juce Modules\jura_framework\gui\panels</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_InteractiveCoordinateSystem.h">
+      <Filter>Juce Modules\jura_framework\gui\panels</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_DualWaveformDisplay.h">
+      <Filter>Juce Modules\jura_framework\gui\panels</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_WaveformDisplay.h">
       <Filter>Juce Modules\jura_framework\gui\panels</Filter>
     </ClInclude>
   </ItemGroup>

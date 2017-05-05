@@ -1,5 +1,3 @@
-#include "rojue_InteractiveCoordinateSystem.h"
-using namespace rojue;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
@@ -18,7 +16,7 @@ InteractiveCoordinateSystem::InteractiveCoordinateSystem(const String& name)
   matchedLoopConnectorColour   = Colour(0x0000ff00);
   unmatchedLoopConnectorColour = Colour(0xffff0000);
 
-  setDescription(T("Some coordinate system widget."));
+  setDescription("Some coordinate system widget.");
 }
 
 InteractiveCoordinateSystem::~InteractiveCoordinateSystem()
@@ -162,10 +160,10 @@ const
   XmlElement* xmlState = CoordinateSystem::getStateAsXml(stateName);
 
   // add parameters which are specific to this subclass:
-  xmlState->setAttribute(String(T("SnapToCoarseGridX")), snapToCoarseGridX);
-  xmlState->setAttribute(String(T("SnapToCoarseGridY")), snapToCoarseGridY);
-  xmlState->setAttribute(String(T("SnapToFineGridX")),   snapToFineGridX);
-  xmlState->setAttribute(String(T("SnapToFineGridY")),   snapToFineGridY);
+  xmlState->setAttribute(String("SnapToCoarseGridX"), snapToCoarseGridX);
+  xmlState->setAttribute(String("SnapToCoarseGridY"), snapToCoarseGridY);
+  xmlState->setAttribute(String("SnapToFineGridX"),   snapToFineGridX);
+  xmlState->setAttribute(String("SnapToFineGridY"),   snapToFineGridY);
 
   return xmlState;
 }
@@ -177,10 +175,10 @@ bool InteractiveCoordinateSystem::setStateFromXml(const XmlElement &xmlState)
   bool success = CoordinateSystem::setStateFromXml(xmlState); 
 
   // restore all the relevant parameters which are specific to this subclass:
-  snapToCoarseGridX = xmlState.getBoolAttribute(String(T("SnapToCoarseGridX")), false);
-  snapToCoarseGridY = xmlState.getBoolAttribute(String(T("SnapToCoarseGridY")), false);
-  snapToFineGridX   = xmlState.getBoolAttribute(String(T("SnapToFineGridX")),   false);
-  snapToFineGridY   = xmlState.getBoolAttribute(String(T("SnapToFineGridY")),   false);
+  snapToCoarseGridX = xmlState.getBoolAttribute(String("SnapToCoarseGridX"), false);
+  snapToCoarseGridY = xmlState.getBoolAttribute(String("SnapToCoarseGridY"), false);
+  snapToFineGridX   = xmlState.getBoolAttribute(String("SnapToFineGridX"),   false);
+  snapToFineGridY   = xmlState.getBoolAttribute(String("SnapToFineGridY"),   false);
 
   return success; // if everything worked well, this flag is still true
 }
@@ -195,7 +193,7 @@ void InteractiveCoordinateSystem::openRightClickPopupMenu()
   menu = new PopupMenu();
 
   int index = 1; 
-  menu->addItem(index, String(T("Export Image")));
+  menu->addItem(index, String("Export Image"));
   index++;
 
   int xSnapIntervalIndicesMin = index;
@@ -207,7 +205,7 @@ void InteractiveCoordinateSystem::openRightClickPopupMenu()
       xSnapSubMenu->addItem(index, String(xSnapIntervals[i]));
       index++;
     }
-    menu->addSubMenu(String(T("Vertical Grid")), *xSnapSubMenu);
+    menu->addSubMenu(String("Vertical Grid"), *xSnapSubMenu);
   }
   int xSnapIntervalIndicesMax = jmax(xSnapIntervalIndicesMin, index-1);
 
@@ -221,7 +219,7 @@ void InteractiveCoordinateSystem::openRightClickPopupMenu()
       ySnapSubMenu->addItem(index, String(ySnapIntervals[i]));
       index++;
     }
-    menu->addSubMenu(String(T("Horizontal Grid")), *ySnapSubMenu);
+    menu->addSubMenu(String("Horizontal Grid"), *ySnapSubMenu);
   }
   int ySnapIntervalIndicesMax = jmax(ySnapIntervalIndicesMin, index-1);
 
@@ -248,7 +246,7 @@ void InteractiveCoordinateSystem::openRightClickPopupMenu()
 
   // do some action according to the chosen item:
   if(result == 1)
-    openExportDialog(getWidth(), getHeight(), String(T("png")), File::nonexistent);
+    openExportDialog(getWidth(), getHeight(), String("png"), File::nonexistent);
   else if( result <= xSnapIntervalIndicesMax )
   {
     int xSnapIntervalIndex = result - xSnapIntervalIndicesMin;
