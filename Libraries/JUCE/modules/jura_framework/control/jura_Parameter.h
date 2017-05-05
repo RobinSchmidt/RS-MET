@@ -1,6 +1,8 @@
 #ifndef jura_Parameter_h
 #define jura_Parameter_h
 
+#include <functional>
+
 class Parameter; // forward declaration
 
 //=================================================================================================
@@ -391,10 +393,18 @@ public:
       new SpecificMemberFunctionCallback1<CalleeClass, void, bool>(calleeObject, memberToCall);
   }
 
+  void setValueChangeCallback(std::function<void(double)> cb)
+  {
+	  ScopedPointerLock spl(mutex);
+	  valueChangeCallbackFunction = cb;
+  }
+
   /** Clears our valueChangeCallbacks, so they will call back nothing. */
   void clearValueChangeCallbacks()
   {
     ScopedPointerLock spl(mutex);
+
+	valueChangeCallbackFunction = [](double) {};
 
     delete valueChangeCallbackDouble;
     delete valueChangeCallbackInt;
@@ -443,7 +453,7 @@ protected:
   GenericMemberFunctionCallback1<void, double> *valueChangeCallbackDouble = nullptr;
   GenericMemberFunctionCallback1<void, int>    *valueChangeCallbackInt    = nullptr;
   GenericMemberFunctionCallback1<void, bool>   *valueChangeCallbackBool   = nullptr;
-
+  std::function<void(double)> valueChangeCallbackFunction;
   std::vector<ParameterObserver*> parameterObservers;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Parameter)

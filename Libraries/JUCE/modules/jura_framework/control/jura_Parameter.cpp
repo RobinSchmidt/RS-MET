@@ -324,6 +324,8 @@ void Parameter::notifyObservers()
 void Parameter::callValueChangeCallbacks()
 {
   ScopedPointerLock spl(mutex);
+  if (valueChangeCallbackFunction)
+	  valueChangeCallbackFunction(value);
   if( valueChangeCallbackDouble != nullptr )
     valueChangeCallbackDouble->call(value);
   if( valueChangeCallbackInt != nullptr )
