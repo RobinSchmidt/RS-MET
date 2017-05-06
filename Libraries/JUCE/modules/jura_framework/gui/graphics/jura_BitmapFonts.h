@@ -154,10 +154,14 @@ class BitmapFontRoundedBoldA16D0 : public BitmapFont
 {
 public:
   BitmapFontRoundedBoldA16D0();
+  static const BitmapFontRoundedBoldA10D0 instance;
 protected:
   virtual void createGlyphBitmaps();
   juce_UseDebuggingNewOperator;
 };
 //static const BitmapFontRoundedBoldA16D0 boldFont16px;
+// this is still defined in the .cpp file - but we should use the "instance" member instead 
+// everywhere - such that it can be used from dependent library modules, too - then delete
+// the definition in the .cpp file
 
 #endif

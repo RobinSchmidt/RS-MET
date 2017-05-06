@@ -23,6 +23,9 @@ class JUCE_API AudioModuleDeletionWatcher
 
 public:
 
+  /** Constructor. */
+  AudioModuleDeletionWatcher() {}
+
   /** Destructor. */
   virtual ~AudioModuleDeletionWatcher();
 

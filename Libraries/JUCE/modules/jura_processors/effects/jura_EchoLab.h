@@ -58,4 +58,54 @@ protected:
 
 //=================================================================================================
 
+class EchoLabDelayLineModuleEditor : public AudioModuleEditor, public ChangeBroadcaster, 
+  public AudioModuleDeletionWatcher
+{
+
+public:
+
+  //-----------------------------------------------------------------------------------------------
+  // construction/destruction:
+
+  EchoLabDelayLineModuleEditor(CriticalSection *newPlugInLock, 
+    EchoLabDelayLineAudioModule* newEchoLabDelayLineAudioModule);
+
+  //-----------------------------------------------------------------------------------------------
+  // setup:
+
+
+  virtual void setDelayLineModuleToEdit(EchoLabDelayLineAudioModule* newEchoLabDelayLineModuleToEdit);
+  virtual void setHueOffsetForFilterEditors(float hueOffset);
+
+  //-----------------------------------------------------------------------------------------------
+  // callbacks:
+
+  /** Implements the purely virtual callback function inherited from AudioModuleDeletionWatcher 
+  in order to invalidate our pointer-member "delayLineModuleToEdit" when the delayline will be 
+  deleted. */
+  virtual void audioModuleWillBeDeleted(AudioModule *moduleToBeDeleted);
+
+  virtual void paint(Graphics &g);
+  virtual void resized();
+  virtual void updateWidgetsAccordingToState();
+
+protected:
+
+  virtual void updateWidgetVisibility();
+
+
+  EchoLabDelayLineAudioModule* delayLineModuleToEdit;
+
+  EqualizerModuleEditor *inputEqualizerEditor, *feedbackEqualizerEditor;
+
+  juce::Rectangle<int> middleRectangle;
+  RSlider *timeSlider, *gainSlider, *feedbackSlider, *panSlider;
+  RButton *pingPongButton, *muteButton, *soloButton, *flushButton;
+
+  
+  juce_UseDebuggingNewOperator;
+};
+
+//=================================================================================================
+
 #endif 
