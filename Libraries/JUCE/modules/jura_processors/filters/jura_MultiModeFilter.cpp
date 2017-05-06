@@ -382,3 +382,481 @@ void MultiModeFilterAudioModule::initializeAutomatableParameters()
     parameterChanged(parameters[i]);
 }
 
+//=================================================================================================
+
+
+MultiModeFreqResponseEditor::MultiModeFreqResponseEditor(const juce::String& name) 
+  : SpectrumDisplayOld(name)
+{
+  setDescription("Drag around the node to adjust the filter's frequency and resonance, Q or gain");
+
+  ParameterObserver::isGuiElement = true;
+  filterToEdit = NULL;
+
+  // set up the plot range:
+  setMaximumRange(15.625, 32000.0, -60.0, 30.0);
+  setCurrentRange(15.625, 32000.0, -60.0, 30.0);
+  setHorizontalCoarseGrid(12.0, false);
+  setHorizontalFineGrid(   3.0, false);
+  setVerticalCoarseGridVisible( false);
+  setVerticalFineGridVisible(   false);
+
+  plotColourScheme.setCurveColouringStrategy(PlotColourScheme::UNIFORM);
+
+  currentMouseCursor = MouseCursor(MouseCursor::NormalCursor);
+  setMouseCursor(currentMouseCursor);
+
+  dotRadius = 5.f;
+
+  freqParameter  = NULL;
+  resoParameter  = NULL;
+  qParameter     = NULL;
+  gainParameter  = NULL;
+  morphParameter = NULL;
+
+  // this stuff will be (re-) allocated in resized():
+  numBins     = 0;
+  frequencies = NULL;
+  magnitudes  = NULL;
+
+  // activate automation for this ParameterObserver:
+  ParameterObserver::localAutomationSwitch = true;
+}
+
+MultiModeFreqResponseEditor::~MultiModeFreqResponseEditor(void)
+{
+  // remove ourselves as listeners from the Parameter objects, such that they do not try to notify a nonexistent listener:
+  ParameterObserver::localAutomationSwitch = false;
+  if( freqParameter != NULL )
+    freqParameter->deRegisterParameterObserver(this);
+  if( resoParameter != NULL )
+    resoParameter->deRegisterParameterObserver(this);
+  if( qParameter != NULL )
+    qParameter->deRegisterParameterObserver(this);
+  if( gainParameter != NULL )
+    gainParameter->deRegisterParameterObserver(this);
+  if( morphParameter != NULL )
+    morphParameter->deRegisterParameterObserver(this);
+
+  deleteAndZero(frequencies);
+  deleteAndZero(magnitudes);
+}
+
+//-----------------------------------------------------------------------------------------------------------------------------------------
+// parameter-settings:
+
+void MultiModeFreqResponseEditor::setFilterToEdit(rosic::MultiModeFilter* newFilterToEdit)
+{
+  filterToEdit = newFilterToEdit;
+}
+
+void MultiModeFreqResponseEditor::assignParameterFreq(Parameter *parameterToAssign)
+{
+  freqParameter = parameterToAssign;
+  if( freqParameter != NULL )
+    freqParameter->registerParameterObserver(this);
+}
+
+void MultiModeFreqResponseEditor::assignParameterReso(Parameter *parameterToAssign)
+{
+  resoParameter = parameterToAssign;
+  if( resoParameter != NULL )
+    resoParameter->registerParameterObserver(this);
+}
+
+void MultiModeFreqResponseEditor::assignParameterQ(Parameter *parameterToAssign)
+{
+  qParameter = parameterToAssign;
+  if( qParameter != NULL )
+    qParameter->registerParameterObserver(this);
+}
+
+void MultiModeFreqResponseEditor::assignParameterGain(Parameter *parameterToAssign)
+{
+  gainParameter = parameterToAssign;
+  if( gainParameter != NULL )
+    gainParameter->registerParameterObserver(this);
+}
+
+void MultiModeFreqResponseEditor::assignParameterMorph(Parameter *parameterToAssign)
+{
+  morphParameter = parameterToAssign;
+  if( morphParameter != NULL )
+    morphParameter->registerParameterObserver(this);
+}
+
+void MultiModeFreqResponseEditor::unAssignParameterFreq()
+{
+  if( freqParameter != NULL )
+    freqParameter->deRegisterParameterObserver(this);
+  freqParameter = NULL;
+}
+
+void MultiModeFreqResponseEditor::unAssignParameterReso()
+{
+  if( resoParameter != NULL )
+    resoParameter->deRegisterParameterObserver(this);
+  resoParameter = NULL;
+}
+
+void MultiModeFreqResponseEditor::unAssignParameterQ()
+{
+  if( qParameter != NULL )
+    qParameter->deRegisterParameterObserver(this);
+  qParameter = NULL;
+}
+
+void MultiModeFreqResponseEditor::unAssignParameterGain()
+{
+  if( gainParameter != NULL )
+    gainParameter->deRegisterParameterObserver(this);
+  gainParameter = NULL;
+}
+
+void MultiModeFreqResponseEditor::unAssignParameterMorph()
+{
+  if( morphParameter != NULL )
+    morphParameter->deRegisterParameterObserver(this);
+  morphParameter = NULL;
+}
+
+void MultiModeFreqResponseEditor::parameterChanged(Parameter* parameterThatHasChanged)
+{
+  // send out a change-message: 
+  sendChangeMessage();
+  //updatePlot();
+}
+
+void MultiModeFreqResponseEditor::parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted)
+{
+
+  // clear reference to parameter that will be deleted
+
+}
+
+void MultiModeFreqResponseEditor::updateWidgetFromAssignedParameter(bool sendMessage)
+{
+  updatePlot();
+  if( sendMessage == true )
+    sendChangeMessage();
+}
+
+//-----------------------------------------------------------------------------------------------------------------------------------------
+// callbacks:
+
+void MultiModeFreqResponseEditor::changeListenerCallback(ChangeBroadcaster *objectThatHasChanged)
+{
+  // temporarily switch the wantsAutomationNotification flag from the ParameterObserver base 
+  // class off to avoid circular notifications and updates:
+  localAutomationSwitch = false;
+
+  // call the method which updates the widget:
+  updatePlot();
+  //updateWidgetFromAssignedParameter(false);
+
+
+  // switch the wantsAutomationNotification flag on again:  
+  localAutomationSwitch = true;
+}
+
+void MultiModeFreqResponseEditor::mouseDown(const MouseEvent &e)
+{
+
+  if( filterToEdit == NULL )
+    return;
+
+  // preliminray: do not open the MIDI-learn menu on right-button - show the image export menu 
+  // instead (inherited behaviour from CoordinateSytem):
+  if( e.mods.isRightButtonDown() )
+    CoordinateSystemOld::mouseDown(e);
+  else
+  {
+    // get the position of the event in components coordinates
+    double x = e.getMouseDownX();
+    double y = e.getMouseDownY();
+
+    setupFilterAccordingToMousePosition(x, y);
+
+    // send out a change-message:
+    sendChangeMessage();
+  }
+
+  /*
+  if( e.mods.isRightButtonDown() && xParameter != NULL && yParameter != NULL )
+  {
+  // prepare some strings for the popup menu:
+  int freqCC = xParameter->getAssignedMidiController();
+  juce::String freqjuce::String;
+  if( freqCC > -1 )
+  freqjuce::String = juce::String(T("(currently CC#")) + juce::String(freqCC) + juce::String(T(")"));
+  else
+  freqjuce::String = juce::String(T("(currently none)")); 
+  juce::String minFreqjuce::String = hertzToStringWithUnitTotal5(xParameter->getLowerAutomationLimit());
+  juce::String maxFreqjuce::String = hertzToStringWithUnitTotal5(xParameter->getUpperAutomationLimit());
+
+  int resoCC = yParameter->getAssignedMidiController();
+  juce::String resojuce::String;
+  if( resoCC > -1 )
+  resojuce::String = juce::String(T("(currently CC#")) + juce::String(resoCC) + juce::String(T(")"));
+  else
+  resojuce::String = juce::String(T("(currently none)")); 
+
+  // ToDo: different cases - y can be reso, q or gain
+  juce::String minResojuce::String = percentToStringWithUnit1(yParameter->getLowerAutomationLimit());
+  juce::String maxResojuce::String = percentToStringWithUnit1(yParameter->getUpperAutomationLimit());
+
+  // create a context menu to allow for MIDI learn and setting up min and max automation values:
+  PopupMenu menu;
+  menu.addItem(1, juce::String(T("MIDI learn frequency ") + freqjuce::String)  );
+  menu.addItem(2, juce::String(T("MIDI learn resonance ") + resojuce::String)  );
+  menu.addItem(3, juce::String(T("use current values as lower limits"))  );
+  menu.addItem(4, juce::String(T("use current values as upper limits"))  );
+  menu.addItem(5, juce::String(T("revert to defaults"))                  );
+
+  const int result = menu.show();
+
+  // retrieve current characteristic frequency and resonance:
+  double freq = filterToEdit->getFrequencyNominal(); // frequency
+  double reso = filterToEdit->getResonance();        // resonance
+
+  if (result == 0)
+  {
+  // user dismissed the menu without picking anything - do nothing
+  }
+  else if (result == 1)
+  {
+  // user picked the frequency learn item:
+  xParameter->switchIntoMidiLearnMode();
+  }
+  else if (result == 2)
+  {
+  // user picked the resonance learn item:
+  yParameter->switchIntoMidiLearnMode();
+  }
+  else if (result == 3)
+  {
+  // user picked the lower-limit item:
+  xParameter->setLowerAutomationLimit(freq);
+  yParameter->setLowerAutomationLimit(reso);
+  }
+  else if (result == 4)
+  {
+  // user picked the upper-limit item:
+  xParameter->setUpperAutomationLimit(freq);
+  yParameter->setUpperAutomationLimit(reso);
+  }
+  else if (result == 5)
+  {
+  // user picked the revert to defaults item:
+  xParameter->revertToDefaults();
+  yParameter->revertToDefaults();
+  }
+  } // end of  if( e.mods.isRightButtonDown() )
+  */
+}
+
+void MultiModeFreqResponseEditor::mouseDrag(const juce::MouseEvent &e)
+{
+  if( filterToEdit == NULL )
+    return;
+
+  /*
+  if( e.mods.isRightButtonDown() && xParameter != NULL && yParameter != NULL )
+  {
+  // ignore mouse drags whne the right button is down and we have assigned automatable 
+  // parameters because in that case, the right click is used for opening the MIDI-learn popup
+  }
+  else...
+  */
+
+  // get the position of the event in components coordinates
+  double x = e.getMouseDownX() + e.getDistanceFromDragStartX();
+  double y = e.getMouseDownY() + e.getDistanceFromDragStartY();
+
+  setupFilterAccordingToMousePosition(x, y);
+
+  // send out a change-message:
+  sendChangeMessage();
+}
+
+void MultiModeFreqResponseEditor::setupFilterAccordingToMousePosition(double mouseX, 
+  double mouseY)
+{
+  if( filterToEdit == NULL )
+    return;
+
+  // get the position of the event in components coordinates
+  double x = mouseX;
+  double y = mouseY;
+
+  // convert them into a frequency and resonance/q/gain value:
+  double gain = y;
+  transformFromComponentsCoordinates(x, gain);
+  gain = clip(gain, -60.0, 30.0);
+  double freq = x;
+  double reso = yToReso(y);
+  double q    = yToQ(y);
+
+  // restrict ranges (ToDo: actually the filter should take care of the itself....):
+  freq = clip(freq, 20.0, 20000.0);
+  reso = clip(reso, 0.0, 100.0);
+  q    = clip(q, 0.5, 50.0);
+
+  // set up the filter and raise automation events to update other widgets that represent the
+  // parameters:
+  filterToEdit->setFrequencyNominal(freq);
+  if( freqParameter != NULL )
+    freqParameter->setValue(freq, true, true);
+  if( filterToEdit->getMode() == MultiModeFilterParameters::MOOGISH_LOWPASS )
+  {
+    filterToEdit->setResonance(reso);
+    if( resoParameter != NULL )
+      resoParameter->setValue(reso, true, true);
+  }
+  else if( filterToEdit->currentModeSupportsGain() )
+  {
+    filterToEdit->setGain(gain);
+    if( gainParameter != NULL )
+      gainParameter->setValue(gain, true, true);
+  }
+  else
+  {
+    filterToEdit->setQ(q);
+    if( qParameter != NULL )
+      qParameter->setValue(q, true, true);
+  }
+}
+
+//-----------------------------------------------------------------------------------------------------------------------------------------
+// drawing:
+
+void MultiModeFreqResponseEditor::resized()
+{
+  SpectrumDisplayOld::resized();
+
+  // (re) allocate and fill the arrays for the magnitude plot
+  numBins = getWidth();
+  if( frequencies == NULL )
+    delete[] frequencies;
+  if( magnitudes == NULL )
+    delete[] magnitudes;
+  frequencies = new double[numBins];
+  magnitudes  = new double[numBins];
+  getDisplayedFrequencies(frequencies, numBins);
+  for(int i=0; i<numBins; i++)
+    magnitudes[i]  = 0.0;
+  updatePlot();
+}
+
+void MultiModeFreqResponseEditor::updatePlot()
+{
+  if( filterToEdit == NULL )
+    return;
+
+  // fill the magnitude array with the magnitudes:
+  filterToEdit->setFrequencyInstantaneous(filterToEdit->getFrequencyNominal(), true);
+  filterToEdit->getMagnitudeResponse(frequencies, magnitudes, numBins, true, false);
+  clipBuffer(magnitudes, numBins, -120.0, 120.0);
+
+  // overwrite the magnitude value at the bin closest to the cutoff-frequency with the magnitude at 
+  // the exact cutoff frequency:
+  double freq  = filterToEdit->getFrequencyNominal();
+  double level = amp2dBWithCheck(filterToEdit->getMagnitudeAt(freq), 0.000001);
+  level        = clip(level, -120.0, +120.0);
+
+  for(int bin=0; bin < (numBins-1); bin++)
+  {
+    if( frequencies[bin] < freq && frequencies[bin+1] > freq )
+    {
+      if( fabs(frequencies[bin]-freq) <= fabs(frequencies[bin+1]-freq) ) // lower bin is closer
+        magnitudes[bin]   = level;
+      else                                                               // upper bin is closer
+        magnitudes[bin+1] = level;
+    }
+  }
+
+  setSpectrum(numBins, frequencies, magnitudes);
+  //repaint();
+}
+
+void MultiModeFreqResponseEditor::plotCurveFamily(Graphics &g, juce::Image* targetImage, 
+  XmlElement *targetSVG)
+{
+  if( filterToEdit == NULL )
+    return;
+
+  CurveFamilyPlotOld::plotCurveFamily(g, targetImage, targetSVG);
+
+
+  //Colour graphColour = colourScheme.curves; // preliminary
+  //if( colourScheme.plotColours.size() > 0 )
+  //  graphColour = colourScheme.plotColours[0];
+  Colour graphColour = plotColourScheme.getCurveColour(0);  
+  //g.setColour(graphColour); 
+
+  //double freq = filterToEdit->getFrequencyNominal(); // frequency
+  //double reso = filterToEdit->getResonance();        // resonance
+
+  // retrieve characteristic frequency and gain in order to draw the handle (y = gain will be used 
+  // only if the mode dictates that - otherwise it will serve as dummy and the actual y-value will
+  // be calculated seperately:
+  double x = filterToEdit->getFrequencyNominal();
+  double y = filterToEdit->getGain();  
+
+  // determine the coordinates of the handle into image component coordinates (for export) or 
+  // components coordinates for plot:
+  if( targetImage == NULL )
+    transformToComponentsCoordinates(x, y);
+  else
+    transformToImageCoordinates(x, y, targetImage);
+
+  // y is now the gain in component's coordinates - if we do not have a peaking or shelving type,
+  // we need to re-assign it to some value related to resonance or Q:
+  if( filterToEdit->getMode() == MultiModeFilterParameters::MOOGISH_LOWPASS )
+    y = (float) resoToY( filterToEdit->getResonance(), targetImage );
+  else if( filterToEdit->currentModeSupportsGain() ) 
+  {
+    // keep y to be the transformed gain
+  }
+  else if( filterToEdit->currentModeSupportsQ() ) 
+    y = (float) qToY( filterToEdit->getQ(), targetImage );
+  else  
+    y = (1.0/3.0) * getPlotHeight(targetImage);
+
+  // draw the handle and a crosshair:
+  g.fillEllipse((float) (x-dotRadius), (float) (y-dotRadius), 
+    (float) (2*dotRadius), (float) (2*dotRadius) );
+  g.setColour(graphColour.withAlpha(0.4f));
+  float w = (float) getPlotWidth(targetImage);
+  float h = (float) getPlotHeight(targetImage);
+  g.drawLine(       0,(float)y,        w, (float)y, 1.f);  // horizontal
+  g.drawLine((float)x,       0, (float)x,        h, 1.f);  // vertical
+}
+
+//-----------------------------------------------------------------------------------------------------------------------------------------
+// internal functions:
+
+double MultiModeFreqResponseEditor::resoToY(double reso, juce::Image *targetImage)
+{
+  return (1.0-0.01*reso) * getPlotHeight(targetImage);
+  //return dotRadius + (1.0-0.01*reso) * (getHeight()-2.f*dotRadius);
+}
+
+double MultiModeFreqResponseEditor::yToReso(double y, juce::Image *targetImage)
+{
+  return 100.0 * ( 1.0 - y/getPlotHeight(targetImage) );
+  //return 100.0 * ( 1.0 + (dotRadius-y) / (getHeight()-2.0*dotRadius) );
+}
+
+double MultiModeFreqResponseEditor::qToY(double q, juce::Image *targetImage)
+{
+  return -expToLin(q, 0.5, 50.0, -getPlotHeight(targetImage), 0.0);
+  //return 100.0;
+}
+
+double MultiModeFreqResponseEditor::yToQ(double y, juce::Image *targetImage)
+{
+  return linToExp(-y, -getPlotHeight(targetImage), 0.0, 0.5, 50.0);
+}
+
+
