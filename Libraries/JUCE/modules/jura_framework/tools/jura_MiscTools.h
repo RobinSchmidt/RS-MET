@@ -129,6 +129,13 @@ inline int arrayMinIndex(float* doubleArray, int numValues)
   return minIndex;
 }
 
+inline bool isCloseTo(double x, double targetValue, double tolerance)
+{
+  if(fabs(x-targetValue) <= tolerance)
+    return true;
+  else
+    return false;
+}
 
 // some little helper/convenience functions to deal with std::vectors (move to RAPT):
 
