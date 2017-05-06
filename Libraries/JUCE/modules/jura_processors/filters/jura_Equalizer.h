@@ -110,6 +110,12 @@ public:
     wrappedEqualizerStereo->processBlock(left, right, numSamples);
   }
 
+  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
+  {
+    for(int n = 0; n < numSamples; n++)
+      wrappedEqualizerStereo->getSampleFrameStereo(&inOutBuffer[0][n], &inOutBuffer[1][n]);
+  }
+
   //-------------------------------------------------------------------------------------------------------------------------------------
   // others:
 

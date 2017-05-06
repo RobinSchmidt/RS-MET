@@ -2136,9 +2136,6 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_StateManager.cpp">
       <Filter>Juce Modules\jura_framework\control</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\rojue_PreDefinedParameters.cpp">
-      <Filter>Juce Modules\jura_framework\control</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\files\jura_AudioFileInfo.cpp">
       <Filter>Juce Modules\jura_framework\files</Filter>
     </ClCompile>
@@ -2247,7 +2244,13 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_InteractiveCoordinateSystemOld.cpp">
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_MessengingCoordinateSystemOld.cpp">
+      <Filter>Juce Modules\jura_framework\gui\plots</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_SpectrumDisplayOld.cpp">
+      <Filter>Juce Modules\jura_framework\gui\plots</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_WaveformDisplayOld.cpp">
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\widget_sets\jura_ColorMapLoader.cpp">
@@ -2313,15 +2316,6 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_PhaseScopeMultiColor.cpp">
       <Filter>Juce Modules\jura_processors\analyzers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\rosof_MultiAnalyzerModuleEditor.cpp">
-      <Filter>Juce Modules\jura_processors\analyzers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\rosof_OscilloscopeDisplay.cpp">
-      <Filter>Juce Modules\jura_processors\analyzers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\rosof_SpectrumAnalyzerDisplay.cpp">
-      <Filter>Juce Modules\jura_processors\analyzers</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_AlgoVerb.cpp">
       <Filter>Juce Modules\jura_processors\effects</Filter>
     </ClCompile>
@@ -2329,6 +2323,18 @@
       <Filter>Juce Modules\jura_processors\effects</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_FuncShaper.cpp">
+      <Filter>Juce Modules\jura_processors\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\rosof_EchoLabAudioModule.cpp">
+      <Filter>Juce Modules\jura_processors\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\rosof_EchoLabDelayLineModuleEditor.cpp">
+      <Filter>Juce Modules\jura_processors\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\rosof_EchoLabModuleEditor.cpp">
+      <Filter>Juce Modules\jura_processors\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\rosof_EchoLabPlotEditor.cpp">
       <Filter>Juce Modules\jura_processors\effects</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_CrossOver.cpp">
@@ -3639,11 +3645,8 @@
     <ClCompile Include="..\..\JuceLibraryCode\rosic.cpp">
       <Filter>Juce Library Code</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_MessengingCoordinateSystemOld.cpp">
-      <Filter>Juce Modules\jura_framework\gui\plots</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_WaveformDisplayOld.cpp">
-      <Filter>Juce Modules\jura_framework\gui\plots</Filter>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_EchoLab.cpp">
+      <Filter>Juce Modules\jura_processors\effects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5507,6 +5510,9 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_ParameterManager.h">
       <Filter>Juce Modules\jura_framework\control</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_PreDefinedParameters.h">
+      <Filter>Juce Modules\jura_framework\control</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_ScopedPointerLock.h">
       <Filter>Juce Modules\jura_framework\control</Filter>
     </ClInclude>
@@ -5621,7 +5627,13 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_InteractiveCoordinateSystemOld.h">
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_MessengingCoordinateSystemOld.h">
+      <Filter>Juce Modules\jura_framework\gui\plots</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_SpectrumDisplayOld.h">
+      <Filter>Juce Modules\jura_framework\gui\plots</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_WaveformDisplayOld.h">
       <Filter>Juce Modules\jura_framework\gui\plots</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\widget_sets\jura_ColorMapLoader.h">
@@ -5690,15 +5702,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_PhaseScopeMultiColor.h">
       <Filter>Juce Modules\jura_processors\analyzers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\rosof_MultiAnalyzerModuleEditor.h">
-      <Filter>Juce Modules\jura_processors\analyzers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\rosof_OscilloscopeDisplay.h">
-      <Filter>Juce Modules\jura_processors\analyzers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\rosof_SpectrumAnalyzerDisplay.h">
-      <Filter>Juce Modules\jura_processors\analyzers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_AlgoVerb.h">
       <Filter>Juce Modules\jura_processors\effects</Filter>
     </ClInclude>
@@ -5706,6 +5709,18 @@
       <Filter>Juce Modules\jura_processors\effects</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_FuncShaper.h">
+      <Filter>Juce Modules\jura_processors\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\rosof_EchoLabAudioModule.h">
+      <Filter>Juce Modules\jura_processors\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\rosof_EchoLabDelayLineModuleEditor.h">
+      <Filter>Juce Modules\jura_processors\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\rosof_EchoLabModuleEditor.h">
+      <Filter>Juce Modules\jura_processors\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\rosof_EchoLabPlotEditor.h">
       <Filter>Juce Modules\jura_processors\effects</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_CrossOver.h">
@@ -7126,14 +7141,8 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\jura_framework.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\jura_processors.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rosic.h" />
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_PreDefinedParameters.h">
-      <Filter>Juce Modules\jura_framework\control</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_MessengingCoordinateSystemOld.h">
-      <Filter>Juce Modules\jura_framework\gui\plots</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\plots\jura_WaveformDisplayOld.h">
-      <Filter>Juce Modules\jura_framework\gui\plots</Filter>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_EchoLab.h">
+      <Filter>Juce Modules\jura_processors\effects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

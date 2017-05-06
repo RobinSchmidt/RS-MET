@@ -8,10 +8,10 @@
  -EngineersFilter (done)
  -FuncShaper (done)
  -DspWorkbench (done)
+ -SignalAnalyzer (now MultiAnalyzer) (done)
 
- -SignalAnalyzer (now MultiAnalyzer)
+ -EchoLab (..in progress)
 
- -EchoLab
  -KeyShot
  -Liberty (later - it needs the "romos" folder)
  -MagicCarpet

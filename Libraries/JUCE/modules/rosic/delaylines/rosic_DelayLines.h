@@ -11,6 +11,7 @@ This file includes all relevant rosic delayline header files.
 #include "rosic_FractionalDelayLineStereo.h"
 #include "rosic_ModulatedDelayLine.h"
 #include "rosic_PingPongEcho.h"
+#include "rosic_EchoLabDelayLine.h"
 
 #endif // end of #ifndef rosic_DelayLines_h
 

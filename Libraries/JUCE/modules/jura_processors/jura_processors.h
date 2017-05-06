@@ -70,6 +70,7 @@ namespace jura
 #include "effects/jura_Enveloper.h"
 #include "effects/jura_FuncShaper.h"
 #include "effects/jura_AlgoVerb.h"
+#include "effects/jura_EchoLab.h"
 
 #include "instruments/jura_AcidSequencer.h"  // maybe move to a "sequencers" folder someday
 #include "instruments/jura_AciDevil.h"
