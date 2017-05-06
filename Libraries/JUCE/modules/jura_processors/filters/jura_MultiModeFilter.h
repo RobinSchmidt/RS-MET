@@ -30,6 +30,11 @@ public:
     wrappedMultiModeFilter->getSampleFrameStereo(inOutL, inOutR);
   }
 
+  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
+  {
+    jassertfalse; // not yet implemented
+  }
+
 protected:
 
   /** Fills the array of automatable parameters. */

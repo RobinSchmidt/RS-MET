@@ -40,12 +40,22 @@ public:
     //  wrappedFourOscSection->getSampleFrameStereo(inOutL, inOutR); 
   }
 
+  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
+  {
+    jassertfalse; // no code yet dragged over - maybe we should accumulate the outputs of
+    // our embedded OscillatorStereoAudioModule objects - i.e. clear the buffer and let
+    // OscillatorStereoAudioModule have a function:
+    // accumulateIntoBlock(double **inOutBuffer, int numChannels, int numSamples)
+    // and call that here...hmm...but how is that supposed to work when rosic::Straightliner
+    // has a rosic::FourOscSection object - or maybe it hasn't? check that out....
+  }
+
 protected:
 
   /** Pointer to the underlying rosic object which is wrapped. */
   rosic::FourOscSection *wrappedFourOscSection;
 
-  // we maintain wrappped versions (into rosof::AudioModules) of the synth's bzuilding blocks 
+  // we maintain wrappped versions (into rosof::AudioModules) of the synth's building blocks 
   // here in order to make them automatable:
   OscillatorStereoAudioModule *osc1Module, *osc2Module, *osc3Module, *osc4Module;
 

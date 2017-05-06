@@ -16,7 +16,8 @@ public:
   // construction/destruction:
 
   /** Constructor. */
-  StraightlinerAudioModule(CriticalSection *newPlugInLock, rosic::Straightliner *straightlinerToWrap);
+  StraightlinerAudioModule(CriticalSection *newPlugInLock, 
+    rosic::Straightliner *straightlinerToWrap);
 
   //---------------------------------------------------------------------------------------------
   // parameter settings:

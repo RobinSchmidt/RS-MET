@@ -2,7 +2,8 @@
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-StraightlinerAudioModule::StraightlinerAudioModule(CriticalSection *newPlugInLock, rosic::Straightliner *straightlinerToWrap)
+StraightlinerAudioModule::StraightlinerAudioModule(CriticalSection *newPlugInLock, 
+  rosic::Straightliner *straightlinerToWrap)
 : PolyphonicInstrumentAudioModule(newPlugInLock, straightlinerToWrap)
 {
   jassert(straightlinerToWrap != NULL); // you must pass a valid rosic-object to the constructor
@@ -12,28 +13,34 @@ StraightlinerAudioModule::StraightlinerAudioModule(CriticalSection *newPlugInLoc
   setActiveDirectory(getApplicationDirectory() + juce::String("/StraightlinerPresets") );
   //oscSectionEditor->setActiveDirectory(pluginDir + juce::String(T("/StraightlinerPresets/OscSectionPresets")) );
 
-  oscSectionModule = new FourOscSectionAudioModule(lock, &wrappedStraightliner->voiceArray[0].oscSection);
+  oscSectionModule = new FourOscSectionAudioModule(lock, 
+    &wrappedStraightliner->voiceArray[0].oscSection);
   oscSectionModule->setModuleName(juce::String("OscSection"));
   addChildAudioModule(oscSectionModule);
 
-  filterModule = new MultiModeFilterAudioModule(lock, &wrappedStraightliner->voiceArray[0].filter);
+  filterModule = new MultiModeFilterAudioModule(lock, 
+    &wrappedStraightliner->voiceArray[0].filter);
   filterModule->setModuleName(juce::String("Filter"));
   addChildAudioModule(filterModule);
 
-  pitchEnvModule = new BreakpointModulatorAudioModule(lock, &wrappedStraightliner->voiceArray[0].pitchEnv);
+  pitchEnvModule = new BreakpointModulatorAudioModule(lock, 
+    &wrappedStraightliner->voiceArray[0].pitchEnv);
   pitchEnvModule->setModuleName(juce::String("PitchEnvelope"));
   addChildAudioModule(pitchEnvModule);
 
-  filterEnvModule = new BreakpointModulatorAudioModule(lock, &wrappedStraightliner->voiceArray[0].filterEnv);
+  filterEnvModule = new BreakpointModulatorAudioModule(lock, 
+    &wrappedStraightliner->voiceArray[0].filterEnv);
   filterEnvModule->setModuleName(juce::String("FilterEnvelope"));
   addChildAudioModule(filterEnvModule);
 
-  ampEnvModule = new BreakpointModulatorAudioModule(lock, &wrappedStraightliner->voiceArray[0].ampEnv);
+  ampEnvModule = new BreakpointModulatorAudioModule(lock, 
+    &wrappedStraightliner->voiceArray[0].ampEnv);
   ampEnvModule->setModuleName(juce::String("AmpEnvelope"));
   addChildAudioModule(ampEnvModule);
 }
 
-void StraightlinerAudioModule::setStateFromXml(const XmlElement &xmlState, const juce::String &stateName, bool markAsClean)
+void StraightlinerAudioModule::setStateFromXml(const XmlElement &xmlState, 
+  const juce::String &stateName, bool markAsClean)
 {
   // retrieve the patch format of the xml-file to enable different interpretations of the patch for 
   // backwards compatibility:
@@ -45,19 +52,19 @@ void StraightlinerAudioModule::setStateFromXml(const XmlElement &xmlState, const
   {
     // in the old versions, we has the 4 oscillators each as child AudioModule, whereas in newer 
     // versions we have the whole oscillatro-section as one child module ....
-    XmlElement* oscState = xmlState.getChildByName(T("Osc1"));
+    XmlElement* oscState = xmlState.getChildByName("Osc1");
     if( oscState != NULL )
       oscSectionModule->osc1Module->setStateFromXml(*oscState, juce::String::empty, markAsClean);
 
-    oscState = xmlState.getChildByName(T("Osc2"));
+    oscState = xmlState.getChildByName("Osc2");
     if( oscState != NULL )
       oscSectionModule->osc2Module->setStateFromXml(*oscState, juce::String::empty, markAsClean);
 
-    oscState = xmlState.getChildByName(T("Osc3"));
+    oscState = xmlState.getChildByName("Osc3");
     if( oscState != NULL )
       oscSectionModule->osc3Module->setStateFromXml(*oscState, juce::String::empty, markAsClean);
 
-    oscState = xmlState.getChildByName(T("Osc4"));
+    oscState = xmlState.getChildByName("Osc4");
     if( oscState != NULL )
       oscSectionModule->osc4Module->setStateFromXml(*oscState, juce::String::empty, markAsClean);
 
