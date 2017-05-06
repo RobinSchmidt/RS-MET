@@ -12,18 +12,21 @@
  -EchoLab (done)
  -Straightliner (done)
 
+ -SimpleSampler
+  -SamplePlayer
+
  -KeyShot
- -Liberty (later - it needs the "romos" folder)
  -MagicCarpet
  -MidiMonitor
  -Moduluxury
  -PitchShifter
  -Quadrifex
  -Quadriga
- -SimpleSampler
+
  -StereoDelay
  -TrackMeter
  -Workhorse
+ -Liberty (later - it needs the "romos" folder)
 
 
 make old plugins available in chainer:

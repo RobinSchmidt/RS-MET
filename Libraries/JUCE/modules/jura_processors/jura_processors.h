@@ -69,6 +69,7 @@ namespace jura
 
 #include "generators/jura_OscillatorStereo.h"
 #include "generators/jura_FourOscSection.h"
+#include "generators/jura_SamplePlayer.h"
 
 #include "modulators/jura_BreakpointModulatorAudioModule.h"
 #include "modulators/jura_ModulatorCurveEditor.h"
