@@ -5453,27 +5453,27 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/custom_widgets/rosof_ComboBoxes.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/custom_widgets/jura_CustomComboBoxes.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/custom_widgets/rosof_ComboBoxes.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/custom_widgets/jura_CustomComboBoxes.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/custom_widgets/rosof_EffectSelectionPopup.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/custom_widgets/jura_CustomSliders.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/custom_widgets/rosof_EffectSelectionPopup.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/custom_widgets/jura_CustomSliders.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/custom_widgets/rosof_TuningSlider.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/custom_widgets/jura_EffectSelectionPopup.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/custom_widgets/rosof_TuningSlider.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/custom_widgets/jura_EffectSelectionPopup.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
@@ -5565,11 +5565,19 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/generators/rosof_OscillatorStereoEditor.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/generators/rosof_FourOscSectionAudioModule.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/generators/rosof_OscillatorStereoEditor.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/generators/rosof_FourOscSectionAudioModule.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/generators/rosof_FourOscSectionModuleEditor.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/generators/rosof_FourOscSectionModuleEditor.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>

@@ -28,6 +28,7 @@ namespace jura
 #include "filters/jura_MultiModeFilter.cpp"
 
 #include "generators/jura_OscillatorStereo.cpp"
+#include "generators/jura_FourOscSection.cpp"
 
 #include "modulators/jura_BreakpointModulatorAudioModule.cpp"
 #include "modulators/jura_ModulatorCurveEditor.cpp"

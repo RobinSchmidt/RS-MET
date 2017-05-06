@@ -38,6 +38,12 @@ public:
     wrappedOscillatorStereo->getSampleFrameStereo(inOutL, inOutR);
   }
 
+  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples)
+  {
+    for(int n = 0; n < numSamples; n++)
+      wrappedOscillatorStereo->getSampleFrameStereo(&inOutBuffer[0][n], &inOutBuffer[1][n]);
+  }
+
 protected:
 
   /** Fills the array of automatable parameters. */
