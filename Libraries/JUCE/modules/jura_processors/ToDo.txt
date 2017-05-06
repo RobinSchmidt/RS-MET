@@ -9,8 +9,11 @@
  -FuncShaper (done)
  -DspWorkbench (done)
  -SignalAnalyzer (now MultiAnalyzer) (done)
-
- -EchoLab (..in progress)
+ -EchoLab (done)
+ 
+ -Straightliner
+  -OscillatorStereo
+  -FourOscSection
 
  -KeyShot
  -Liberty (later - it needs the "romos" folder)
@@ -22,7 +25,6 @@
  -Quadriga
  -SimpleSampler
  -StereoDelay
- -Straightliner
  -TrackMeter
  -Workhorse
 

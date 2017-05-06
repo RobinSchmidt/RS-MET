@@ -394,6 +394,9 @@
     <Filter Include="Juce Modules\jura_processors\filters">
       <UniqueIdentifier>{9ADA914B-D4D5-2886-1EA5-949A51D4755A}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Juce Modules\jura_processors\generators">
+      <UniqueIdentifier>{CAB03D27-DEC1-1A2D-A036-4BC33E3DBCCD}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Juce Modules\jura_processors\instruments">
       <UniqueIdentifier>{0AD919EB-ACF8-CCBD-34DB-05D31AE677FF}</UniqueIdentifier>
     </Filter>
@@ -2283,10 +2286,16 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_RSlider.cpp">
       <Filter>Juce Modules\jura_framework\gui\widgets</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_RSyncIntervalComboBox.cpp">
+      <Filter>Juce Modules\jura_framework\gui\widgets</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_RTextEditor.cpp">
       <Filter>Juce Modules\jura_framework\gui\widgets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_RTextField.cpp">
+      <Filter>Juce Modules\jura_framework\gui\widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_RTimeGridComboBox.cpp">
       <Filter>Juce Modules\jura_framework\gui\widgets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_RTreeView.cpp">
@@ -2328,18 +2337,6 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_FuncShaper.cpp">
       <Filter>Juce Modules\jura_processors\effects</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\rosof_EchoLabAudioModule.cpp">
-      <Filter>Juce Modules\jura_processors\effects</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\rosof_EchoLabDelayLineModuleEditor.cpp">
-      <Filter>Juce Modules\jura_processors\effects</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\rosof_EchoLabModuleEditor.cpp">
-      <Filter>Juce Modules\jura_processors\effects</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\rosof_EchoLabPlotEditor.cpp">
-      <Filter>Juce Modules\jura_processors\effects</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_CrossOver.cpp">
       <Filter>Juce Modules\jura_processors\filters</Filter>
     </ClCompile>
@@ -2357,6 +2354,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_PhasorFilter.cpp">
       <Filter>Juce Modules\jura_processors\filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\rosof_OscillatorStereoEditor.cpp">
+      <Filter>Juce Modules\jura_processors\generators</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_AciDevil.cpp">
       <Filter>Juce Modules\jura_processors\instruments</Filter>
@@ -3648,11 +3648,8 @@
     <ClCompile Include="..\..\JuceLibraryCode\rosic.cpp">
       <Filter>Juce Library Code</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_RTimeGridComboBox.cpp">
-      <Filter>Juce Modules\jura_framework\gui\widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_RSyncIntervalComboBox.cpp">
-      <Filter>Juce Modules\jura_framework\gui\widgets</Filter>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_OscillatorStereo.cpp">
+      <Filter>Juce Modules\jura_processors\generators</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5672,10 +5669,16 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_RSlider.h">
       <Filter>Juce Modules\jura_framework\gui\widgets</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_RSyncIntervalComboBox.h">
+      <Filter>Juce Modules\jura_framework\gui\widgets</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_RTextEditor.h">
       <Filter>Juce Modules\jura_framework\gui\widgets</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_RTextField.h">
+      <Filter>Juce Modules\jura_framework\gui\widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_RTimeGridComboBox.h">
       <Filter>Juce Modules\jura_framework\gui\widgets</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_RTreeView.h">
@@ -5720,18 +5723,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_FuncShaper.h">
       <Filter>Juce Modules\jura_processors\effects</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\rosof_EchoLabAudioModule.h">
-      <Filter>Juce Modules\jura_processors\effects</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\rosof_EchoLabDelayLineModuleEditor.h">
-      <Filter>Juce Modules\jura_processors\effects</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\rosof_EchoLabModuleEditor.h">
-      <Filter>Juce Modules\jura_processors\effects</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\rosof_EchoLabPlotEditor.h">
-      <Filter>Juce Modules\jura_processors\effects</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_CrossOver.h">
       <Filter>Juce Modules\jura_processors\filters</Filter>
     </ClInclude>
@@ -5749,6 +5740,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_PhasorFilter.h">
       <Filter>Juce Modules\jura_processors\filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\rosof_OscillatorStereoEditor.h">
+      <Filter>Juce Modules\jura_processors\generators</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_AciDevil.h">
       <Filter>Juce Modules\jura_processors\instruments</Filter>
@@ -7150,11 +7144,8 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\jura_framework.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\jura_processors.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rosic.h" />
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_RTimeGridComboBox.h">
-      <Filter>Juce Modules\jura_framework\gui\widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_RSyncIntervalComboBox.h">
-      <Filter>Juce Modules\jura_framework\gui\widgets</Filter>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_OscillatorStereo.h">
+      <Filter>Juce Modules\jura_processors\generators</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
