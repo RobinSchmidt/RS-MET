@@ -13,7 +13,7 @@
  -Straightliner (done)
 
  -SimpleSampler
-  -SamplePlayer
+  -SamplePlayer (done)
 
  -KeyShot
  -MagicCarpet
