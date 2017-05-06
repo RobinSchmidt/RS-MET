@@ -86,6 +86,7 @@ namespace jura
 #include "instruments/jura_AciDevil.h"
 #include "instruments/jura_PolyphonicInstrument.h"
 #include "instruments/jura_Straightliner.h"
+#include "instruments/jura_SimpleSampler.h"
 
 #include "misc/jura_AudioModuleChain.h"
 #include "misc/jura_ChannelMatrix2x2.h"
