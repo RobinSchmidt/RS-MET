@@ -859,4 +859,473 @@ double MultiModeFreqResponseEditor::yToQ(double y, juce::Image *targetImage)
   return linToExp(-y, -getPlotHeight(targetImage), 0.0, 0.5, 50.0);
 }
 
+//=================================================================================================
 
+
+MultiModeFilterModuleEditor::MultiModeFilterModuleEditor(CriticalSection *newPlugInLock, 
+  MultiModeFilterAudioModule* newMultiModeFilterAudioModule) 
+  : AudioModuleEditor(newMultiModeFilterAudioModule)
+{
+  jassert(newMultiModeFilterAudioModule != NULL ); // you must pass a valid module here
+  filterToEdit = newMultiModeFilterAudioModule->wrappedMultiModeFilter;
+
+  setHeadlineText(juce::String("Filter"));
+
+  stateWidgetSet->stateLabel->setVisible(false);
+  webLink->setVisible(false);
+  infoField->setVisible(false);
+
+  /*
+  addWidget( modeLabel = new RLabel(juce::String(T("ModeLabel")), juce::String(T("Type:"))) );
+  modeLabel->setColour(Label::backgroundColourId, Colours::transparentWhite);
+  modeLabel->setColour(Label::outlineColourId, Colours::transparentWhite);
+  modeLabel->setDescription(T("Type/Mode of the filter."));
+  */
+
+  addWidget( modeComboBox = new RNamedComboBox(juce::String("ModeComboBox"), juce::String("Type:")) );
+  modeComboBox->registerComboBoxObserver(this);
+  modeComboBox->setDescription("Type/Mode of the filter.");
+  modeComboBox->addItem( 0, "Bypass"               );  // \todo: use the values from the enum MultiModeFilterModes instead of magic numbers
+  modeComboBox->addItem( 1, "Moogish Lowpass"      );
+  modeComboBox->addItem( 2, "Lowpass 6 dB/oct"     );
+  modeComboBox->addItem( 3, "Lowpass 12 dB/oct"    );
+  modeComboBox->addItem( 4, "Highpass 6 dB/oct"    );
+  modeComboBox->addItem( 5, "Highpass 12 dB/oct"   );
+  modeComboBox->addItem( 6, "Bandpass 2*6 dB/oct"  );
+  modeComboBox->addItem( 7, "Bandstop 2*6 dB/oct"  );
+  modeComboBox->addItem( 8, "Peak/Dip"             );
+  modeComboBox->addItem( 9, "Low Shelv 1st order"  );
+  modeComboBox->addItem(10, "Low Shelv 2nd order"  );
+  modeComboBox->addItem(11, "High Shelv 1st order" );
+  modeComboBox->addItem(12, "High Shelv 2nd order" );
+  modeComboBox->addItem(13, "Allpass 1st order"    );
+  modeComboBox->addItem(14, "Allpass 2nd order"    );
+  modeComboBox->addItem(15, "Morph Low/Peak/High"  );
+  //modeComboBox->addItem(juce::String(T("Morph Low/Band/High")),      17);
+  modeComboBox->selectItemByIndex(1, false);
+
+  addWidget( twoStagesButton = new RButton(juce::String("2 Stages")) );
+  twoStagesButton->addRButtonListener(this);
+  twoStagesButton->setDescription(juce::String("Switch second filter stage on/off"));
+  twoStagesButton->setClickingTogglesState(true);
+
+  addWidget( freqSlider = new RSlider("FrequencySlider") );
+  freqSlider->assignParameter(moduleToEdit->getParameterByName("Frequency"));
+  freqSlider->setDescription("Characteristic frequency of the filter");
+  freqSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
+
+  addWidget( freqByKeySlider = new RSlider("FrequencyByKeySlider") );
+  freqByKeySlider->assignParameter(moduleToEdit->getParameterByName("FrequencyByKey"));
+  freqByKeySlider->setSliderName("Key");
+  freqByKeySlider->setDescription("Key tracking of the filter's frequency");
+  freqByKeySlider->setStringConversionFunction(&percentToStringWithUnit1);
+
+  addWidget( freqByVelSlider = new RSlider("FrequencyByVelSlider") );
+  freqByVelSlider->assignParameter(moduleToEdit->getParameterByName("FrequencyByVel"));
+  freqByVelSlider->setSliderName("Vel");
+  freqByVelSlider->setDescription("Velocity tracking of the filter's frequency");
+  freqByVelSlider->setStringConversionFunction(&percentToStringWithUnit1);
+
+  addWidget( resoSlider = new RSlider("ResonanceSlider") );
+  resoSlider->assignParameter(moduleToEdit->getParameterByName("Resonance"));
+  resoSlider->setDescription("Resonance amount of the filter");
+  resoSlider->setStringConversionFunction(&percentToStringWithUnit1);
+
+  addWidget( qSlider = new RSlider("QSlider") );
+  qSlider->assignParameter(moduleToEdit->getParameterByName("Q"));
+  qSlider->setSliderName("Q");
+  qSlider->setDescription("Quality factor of the filter");
+  qSlider->setStringConversionFunction(&valueToString3);
+
+  addWidget( driveSlider = new RSlider("DriveSlider") );
+  driveSlider->assignParameter(moduleToEdit->getParameterByName("Drive"));
+  driveSlider->setDescription("Drives the filter into distortion");
+  driveSlider->setStringConversionFunction(&decibelsToStringWithUnit2);
+
+  addWidget( orderSlider = new RSlider("OrderSlider") );
+  orderSlider->assignParameter(moduleToEdit->getParameterByName("Order"));
+  orderSlider->setDescription(
+    "Selects the order of the filter - this affects the slope");
+  orderSlider->setStringConversionFunction(&valueToString0);
+  orderSlider->addListener(this);
+
+  addWidget( gainSlider = new RSlider("GainSlider") );
+  gainSlider->assignParameter(moduleToEdit->getParameterByName("Gain"));
+  gainSlider->setSliderName("Gain");
+  gainSlider->setDescription("Gain for peak and shelving filter types");
+  gainSlider->setStringConversionFunction(&decibelsToStringWithUnit2);
+
+  addWidget( morphSlider = new RSlider("MorphSlider") );
+  morphSlider->assignParameter(moduleToEdit->getParameterByName("Morph") );
+  morphSlider->setDescription("Morph between filter types");
+  morphSlider->setStringConversionFunction(&valueToString2);
+  //morphSlider->setRange(-0.99, 0.99, 0.01, -0.99);
+  //morphSlider->setScaling(Parameter::LINEAR_BIPOLAR);
+  //automatableSliders.addIfNotAlreadyThere(morphSlider);
+  //morphSlider->addListener(this);
+
+  addWidget( transitionSlider = new RSlider("TransitionSlider") );
+  transitionSlider->assignParameter(moduleToEdit->getParameterByName("Transition") );
+  transitionSlider->setSliderName("Transition");
+  transitionSlider->setDescription("Determines the transition when morphing between filter types");
+  transitionSlider->setStringConversionFunction(&valueToString3);
+
+  addWidget( preAllpassSlider = new RSlider("PreAllpassSlider") );
+  preAllpassSlider->assignParameter(moduleToEdit->getParameterByName("PreAllpass") );
+  preAllpassSlider->setSliderName("Allpass");
+  preAllpassSlider->setDescription(
+    "Applies a first order allpass before the actual filter to pre-shape the waveform");
+  preAllpassSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
+
+  addWidget( makeUpSlider = new RSlider("MakeUpSlider") );
+  makeUpSlider->assignParameter(moduleToEdit->getParameterByName("MakeUp") );
+  makeUpSlider->setDescription(
+    "Compensates the low frequency losses at high resonance via a gain factor");
+  makeUpSlider->setStringConversionFunction(&percentToStringWithUnit0);
+  makeUpSlider->addListener(this);
+
+  //automatableSliders.addIfNotAlreadyThere(makeUpSlider);
+  /*
+  addWidget( freq2ScaleSlider = new RSlider(T("Freq2ScaleSlider")) );
+  freq2ScaleSlider->addListener(this);
+  freq2ScaleSlider->setSliderName(T("Freq2 Scale"));
+  freq2ScaleSlider->setDescription(T("Scale factor of the second frequency with respect to the first"));
+  freq2ScaleSlider->setStringConversionFunction(&valueToString3);
+  freq2ScaleSlider->setRange(0.125, 8.0, 0.001, 2.0);
+  freq2ScaleSlider->setScaling(Parameter::EXPONENTIAL);
+
+  addWidget( freq2OffsetSlider = new RSlider(T("Freq2OffsetSlider")) );
+  freq2OffsetSlider->addListener(this);
+  freq2OffsetSlider->setSliderName(T("Freq2 Offset"));
+  freq2OffsetSlider->setDescription(T("Offset (in Hz) of the second frequency with respect to the first"));
+  freq2OffsetSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
+  freq2OffsetSlider->setRange(-2000.0, 2000.0, 0.01, 0.0);
+  freq2OffsetSlider->setScaling(Parameter::LINEAR_BIPOLAR);
+
+  addWidget( q2ScaleSlider = new RSlider(T("Q2ScaleSlider")) );
+  q2ScaleSlider->addListener(this);
+  q2ScaleSlider->setSliderName(T("Q2 Scale"));
+  q2ScaleSlider->setDescription(T("Scale factor of the second q-factor with respect to the first"));
+  q2ScaleSlider->setStringConversionFunction(&valueToString3);
+  q2ScaleSlider->setRange(0.125, 8.0, 0.001, 2.0);
+  q2ScaleSlider->setScaling(Parameter::EXPONENTIAL);
+
+  addWidget( gain2ScaleSlider = new RSlider(T("Freq2ScaleSlider")) );
+  gain2ScaleSlider->addListener(this);
+  gain2ScaleSlider->setSliderName(T("Gain2 Scale"));
+  gain2ScaleSlider->setDescription(T("Scale factor of the second gain with respect to the first"));
+  gain2ScaleSlider->setStringConversionFunction(&valueToString3);
+  gain2ScaleSlider->setRange(0.125, 8.0, 0.001, 2.0);
+  gain2ScaleSlider->setScaling(Parameter::EXPONENTIAL);
+  */
+
+  frequencyResponseDisplay = new MultiModeFreqResponseEditor(juce::String("SpectrumEditor"));
+  frequencyResponseDisplay->setFilterToEdit(filterToEdit);
+  frequencyResponseDisplay->addChangeListener(this);
+  frequencyResponseDisplay->assignParameterFreq( moduleToEdit->getParameterByName("Frequency"));
+  frequencyResponseDisplay->assignParameterReso( moduleToEdit->getParameterByName("Resonance"));
+  frequencyResponseDisplay->assignParameterQ(    moduleToEdit->getParameterByName("Q"));
+  frequencyResponseDisplay->assignParameterGain( moduleToEdit->getParameterByName("Gain"));
+  frequencyResponseDisplay->assignParameterMorph(moduleToEdit->getParameterByName("Morph") );
+  addPlot( frequencyResponseDisplay );
+
+  // customize the descriptions for the load/save buttons:
+  stateWidgetSet->stateLoadButton->setDescription(   juce::String("Load filter settings from file"));
+  stateWidgetSet->stateSaveButton->setDescription(   juce::String("Save filter settings to file"));
+  stateWidgetSet->statePlusButton->setDescription(   juce::String("Skip to next filter settings file in current directory"));
+  stateWidgetSet->stateMinusButton->setDescription(  juce::String("Skip to previous filter settings file in current directory"));
+  stateWidgetSet->stateFileNameLabel->setDescription(juce::String("Name of current preset for the filter section (if any)"));
+
+  isTopLevelEditor = false;
+
+  updateWidgetsAccordingToState();
+}
+
+//-----------------------------------------------------------------------------------------------------------------------------------------
+// callbacks:
+
+void MultiModeFilterModuleEditor::rButtonClicked(RButton *buttonThatWasClicked)
+{
+  if( filterToEdit == NULL )
+    return;
+  if( buttonThatWasClicked == twoStagesButton )
+  {
+    filterToEdit->useTwoStages(twoStagesButton->getToggleState());
+    frequencyResponseDisplay->updatePlot();
+  }
+  moduleToEdit->markStateAsDirty();
+  //sendChangeMessage();
+}
+
+void MultiModeFilterModuleEditor::rComboBoxChanged(RComboBox *rComboBoxThatHasChanged)
+{
+  if( filterToEdit == NULL )
+    return;
+
+  if( rComboBoxThatHasChanged == modeComboBox )
+  {
+    //filterToEdit->setMode(modeComboBox->getSelectedId());
+    filterToEdit->setMode( stringToFilterModeIndex(modeComboBox->getText()) );
+    updateWidgetArrangement();
+    updateWidgetsAccordingToState();  
+  }
+
+  moduleToEdit->markStateAsDirty();
+  //setPresetDirty();
+  //frequencyResponseDisplay->updatePlot(); // already called from  updateWidgetsAccordingToState()
+  //sendChangeMessage();
+}
+
+void MultiModeFilterModuleEditor::rSliderValueChanged(RSlider *sliderThatHasChanged)
+{
+  // there are some sliders for parameters which are not observed by the plot itself - when one of 
+  // these changes, we do the update here:
+  if(  sliderThatHasChanged == orderSlider || sliderThatHasChanged == makeUpSlider )
+    frequencyResponseDisplay->updatePlot(); 
+}
+
+
+void MultiModeFilterModuleEditor::resized()
+{
+  linkPosition = INVISIBLE;
+  AudioModuleEditor::resized();
+  int x = 0;
+  int y = 0;
+  int w = getWidth();
+  int h = getHeight();
+
+  y = getPresetSectionBottom();
+  frequencyResponseDisplay->setBounds(x, y+4, w, h-92);
+  y = frequencyResponseDisplay->getBottom();
+
+  modeComboBox->setBounds(x+4,  y+4, w/2-4, 20);
+
+  y = modeComboBox->getBottom();
+  freqSlider->setBounds(modeComboBox->getX(), y+4, w/2-4 , 16);
+
+  y = freqSlider->getBottom()-2;
+  w = freqSlider->getWidth();
+  freqByKeySlider->setBounds(freqSlider->getX(),           y, w/2-2, 16);
+  freqByVelSlider->setBounds(freqSlider->getX() + w/2 + 2, y, w/2-2, 16);
+
+  y = modeComboBox->getY();
+  w = getWidth();
+  x = w/2;
+  resoSlider->setBounds(x+4, y, w/2-8, 16);
+  qSlider->setBounds(resoSlider->getBounds());
+
+  y = resoSlider->getBottom();
+
+  preAllpassSlider->setBounds(x+4,     y+4, w/4-4, 16);
+  orderSlider->setBounds(     x+w/4+4, y+4, w/4-8, 16);
+  twoStagesButton->setBounds(orderSlider->getBounds());
+
+  gainSlider->setBounds(x+4, y+4, w/2-8, 16);
+  morphSlider->setBounds(x+4, y+4, w/2-8, 16);
+
+  y += 20;
+
+  driveSlider->setBounds( x+4,     y+4, w/4-4, 16);
+  makeUpSlider->setBounds(x+w/4+4, y+4, w/4-8, 16);
+}
+
+void MultiModeFilterModuleEditor::updateWidgetsAccordingToState()
+{
+  if( filterToEdit == NULL )
+    return;
+
+  //modeComboBox->setText(filterModeIndexToString(filterToEdit->getMode()), true); //old
+
+  modeComboBox->selectItemFromText(filterModeIndexToString(filterToEdit->getMode()), false);
+
+  // something to do here...?
+
+  freqSlider->setValue(filterToEdit->getFrequencyNominal(),               false, false);
+  freqByKeySlider->setValue(filterToEdit->getFrequencyByKey(),            false, false);
+  freqByVelSlider->setValue(filterToEdit->getFrequencyByVel(),            false, false);
+  resoSlider->setValue(filterToEdit->getResonance(),                      false, false);
+  qSlider->setValue(filterToEdit->getQ(),                                 false, false);
+  gainSlider->setValue(filterToEdit->getGain(),                           false, false);
+  driveSlider->setValue(filterToEdit->getDrive(),                         false, false);
+  morphSlider->setValue(filterToEdit->getMorph(),                         false, false);
+  /*
+  freq2ScaleSlider->setValue(
+  filterToEdit->twoStageBiquad.getSecondFrequencyScaleFactor(),         false, false);
+  freq2OffsetSlider->setValue(
+  filterToEdit->twoStageBiquad.getSecondFrequencyOffset(),              false, false);
+  q2ScaleSlider->setValue(
+  filterToEdit->twoStageBiquad.getSecondQScaleFactor(),                 false, false);
+  gain2ScaleSlider->setValue(
+  filterToEdit->twoStageBiquad.getSecondGainScaleFactor(),              false, false);
+  */
+  orderSlider->setValue(filterToEdit->getOrder(),                         false, false);
+  twoStagesButton->setToggleState(filterToEdit->usesTwoStages(),          false);
+  preAllpassSlider->setValue(filterToEdit->getAllpassFreq(),              false, false);
+  makeUpSlider->setValue(filterToEdit->getMakeUp(),                       false, false);
+
+  updateWidgetArrangement();
+  frequencyResponseDisplay->updatePlot();
+
+  stateWidgetSet->updateStateNameField();
+}
+
+void MultiModeFilterModuleEditor::updateWidgetArrangement()
+{
+  if( filterToEdit == NULL )
+    return;
+
+  //int x, y, w, h;
+
+  setWidgetsVisible(false);
+  modeComboBox->setVisible(true);
+
+  int mode = filterToEdit->getMode();
+
+
+  // in bypass-mode, we dont need any widgets so we return:
+  if( mode == rosic::MultiModeFilterParameters::BYPASS )
+    return;
+
+  // the frequency related sliders must be visible for all modes:
+  freqSlider->setVisible(true);
+  freqByKeySlider->setVisible(true);
+  freqByVelSlider->setVisible(true);
+
+  if( mode == rosic::MultiModeFilterParameters::MOOGISH_LOWPASS )
+  {
+    arrangeWidgetsForMoogishLowpassMode();
+  }
+  else  // twoStageBiquad
+  {
+    // all types of the TwoStageBiquad support the two-stages switch, so make the button visible:
+    twoStagesButton->setVisible(true);
+
+    if(    mode == rosic::MultiModeFilterParameters::LOWPASS_6 
+      || mode == rosic::MultiModeFilterParameters::HIGHPASS_6 
+      || mode == rosic::MultiModeFilterParameters::ALLPASS_1ST )
+    {
+      arrangeWidgetsForFirstOrderWithoutGain();
+    }
+    else if(    mode == rosic::MultiModeFilterParameters::LOWPASS_RBJ
+      || mode == rosic::MultiModeFilterParameters::HIGHPASS_RBJ
+      || mode == rosic::MultiModeFilterParameters::BANDPASS_RBJ
+      || mode == rosic::MultiModeFilterParameters::BANDREJECT_RBJ
+      || mode == rosic::MultiModeFilterParameters::ALLPASS_RBJ )
+    {
+      arrangeWidgetsForSecondOrderWithoutGain();
+    }
+    else if(    mode == rosic::MultiModeFilterParameters::LOW_SHELV_1ST
+      || mode == rosic::MultiModeFilterParameters::HIGH_SHELV_1ST )
+    {
+      arrangeWidgetsForFirstOrderWithGain();
+    }
+    else if(    mode == rosic::MultiModeFilterParameters::LOW_SHELV_RBJ
+      || mode == rosic::MultiModeFilterParameters::HIGH_SHELV_RBJ
+      || mode == rosic::MultiModeFilterParameters::PEAK_OR_DIP_RBJ )
+    {
+      arrangeWidgetsForSecondOrderWithGain();
+    }
+    else if(    mode == rosic::MultiModeFilterParameters::MORPH_LP_PK_HP )
+    {
+      arrangeWidgetsForMorphableMode();
+    }
+
+    /*
+    // the first order types don't support 'Q', for the others we must make the slider visible:
+    if(    filterToEdit->getMode() != rosic::MultiModeFilterParameters::LOWPASS_6 
+    && filterToEdit->getMode() != rosic::MultiModeFilterParameters::HIGHPASS_6 
+    && filterToEdit->getMode() != rosic::MultiModeFilterParameters::LOW_SHELV_1ST 
+    && filterToEdit->getMode() != rosic::MultiModeFilterParameters::HIGH_SHELV_1ST
+    && filterToEdit->getMode() != rosic::MultiModeFilterParameters::ALLPASS_1ST )
+    {
+    qSlider->setVisible(true);
+    }
+    // the peak and shelving types support the gain parameter:
+    if(    filterToEdit->getMode() == rosic::MultiModeFilterParameters::PEAK_OR_DIP_RBJ 
+    || filterToEdit->getMode() == rosic::MultiModeFilterParameters::LOW_SHELV_1ST
+    || filterToEdit->getMode() == rosic::MultiModeFilterParameters::LOW_SHELV_RBJ
+    || filterToEdit->getMode() == rosic::MultiModeFilterParameters::HIGH_SHELV_1ST
+    || filterToEdit->getMode() == rosic::MultiModeFilterParameters::HIGH_SHELV_RBJ   )
+    {
+    gainSlider->setVisible(true);
+    }
+
+    if(    filterToEdit->getMode() == rosic::MultiModeFilterParameters::MORPH_LP_BP_HP
+    || filterToEdit->getMode() == rosic::MultiModeFilterParameters::MORPH_LP_PK_HP )
+    {
+    morphSlider->setVisible(true);
+    //twoStagesButton->setVisible(true);
+    //transitionSlider->setVisible(true);
+    y = morphSlider->getBottom();
+    x = morphSlider->getRight()-64;
+    w = 64;
+    h = 16;
+    twoStagesButton->setBounds(x, y+4, w, h);
+    int dummy = 0;
+    }
+    */
+
+  }
+
+}
+
+
+
+/*
+void MultiModeFilterEditor::arrangeCommonWidgets()
+{
+
+}
+*/
+
+void MultiModeFilterModuleEditor::arrangeWidgetsForMoogishLowpassMode()
+{
+  resoSlider->setVisible(true);
+  driveSlider->setVisible(true);
+  orderSlider->setVisible(true);
+  preAllpassSlider->setVisible(true);
+  makeUpSlider->setVisible(true);
+}
+
+void MultiModeFilterModuleEditor::arrangeWidgetsForFirstOrderWithoutGain()
+{
+  int x = modeComboBox->getRight()+4;
+  int y = modeComboBox->getY();
+  twoStagesButton->setVisible(true);
+  twoStagesButton->setBounds(x+4, y, 80, 16);
+}
+
+void MultiModeFilterModuleEditor::arrangeWidgetsForSecondOrderWithoutGain()
+{
+  int x = modeComboBox->getRight()+4;
+  int y = modeComboBox->getY();
+  int w = freqSlider->getWidth();
+
+  twoStagesButton->setVisible(true);
+  twoStagesButton->setBounds(x+4, y, 80, 16);
+  y += 20;
+  w  = getWidth()-x;
+  qSlider->setVisible(true);
+  qSlider->setBounds(x+4, y, w-8, 16);
+}
+
+void MultiModeFilterModuleEditor::arrangeWidgetsForFirstOrderWithGain()
+{
+  arrangeWidgetsForFirstOrderWithoutGain();
+  gainSlider->setVisible(true);
+  gainSlider->setBounds(qSlider->getX(), qSlider->getY(), qSlider->getWidth(), 16);
+}
+
+void MultiModeFilterModuleEditor::arrangeWidgetsForSecondOrderWithGain()
+{
+  arrangeWidgetsForSecondOrderWithoutGain();
+  gainSlider->setVisible(true);
+  gainSlider->setBounds(qSlider->getX(), qSlider->getY()+20, qSlider->getWidth(), 16);
+}
+
+void MultiModeFilterModuleEditor::arrangeWidgetsForMorphableMode()
+{
+  arrangeWidgetsForSecondOrderWithoutGain();
+  morphSlider->setVisible(true);
+  morphSlider->setBounds(qSlider->getX(), qSlider->getY()+20, qSlider->getWidth(), 16);
+}

@@ -173,4 +173,89 @@ protected:
 
 //=================================================================================================
 
+class MultiModeFilterModuleEditor : public AudioModuleEditor, public RComboBoxObserver, 
+  public RSliderListener
+{
+
+public:
+
+  //-----------------------------------------------------------------------------------------------
+  // construction/destruction:
+
+  /** Constructor. */
+  MultiModeFilterModuleEditor(CriticalSection *newPlugInLock, 
+    MultiModeFilterAudioModule* newMultiModeFilterAudioModule);
+
+  //---------------------------------------------------------------------------------------------
+  // setup:
+
+  /** Passes a pointer the the actual rosic::MoogyFilter object which is to be edited. Make 
+  sure to call this function again with a NULL-pointer when the object get deleted for some 
+  reason. */
+  //virtual void setFilterToEdit(rosic::MultiModeFilter* newFilterToEdit);
+
+  //---------------------------------------------------------------------------------------------
+  // callbacks:
+
+  virtual void rButtonClicked(RButton *buttonThatWasClicked);
+  //virtual void changeListenerCallback(ChangeBroadcaster *objectThatHasChanged);
+  virtual void rComboBoxChanged(RComboBox *rComboBoxThatHasChanged);
+  virtual void rSliderValueChanged(RSlider *sliderThatHasChanged);
+  virtual void resized();
+  virtual void updateWidgetsAccordingToState();
+
+  //---------------------------------------------------------------------------------------------
+  // public data members:  \todo: move to protected
+
+  // the widgets:
+  RSlider *freqSlider, *freqByKeySlider, *freqByVelSlider, *resoSlider, *qSlider, 
+    *driveSlider, *orderSlider, *gainSlider, *morphSlider, *transitionSlider, 
+    *preAllpassSlider, *makeUpSlider;
+  //*freq2ScaleSlider, *freq2OffsetSlider, *q2ScaleSlider, *gain2ScaleSlider;
+
+  //RLabel*    modeLabel;
+  //RComboBox* modeComboBox;
+  RNamedComboBox *modeComboBox;
+  RButton        *twoStagesButton;
+
+  MultiModeFreqResponseEditor *frequencyResponseDisplay;
+
+protected:
+
+  /** Updates the arrangement of the widgets according to the chosen filter mode. */
+  virtual void updateWidgetArrangement();
+
+  /** Arranges the widgets that are common for all filter types (i.e. the mode-combo-box, 
+  the frequency slider and it's key- and vel-slider. */
+  //virtual void arrangeCommonWidgets();
+
+  /** Arranges the widgets for Moogish Lowpass mode. */
+  virtual void arrangeWidgetsForMoogishLowpassMode();
+
+  /** Arranges the widgets for the first order filter modes which don't have a gain parameter, 
+  these are: Lowpass 6 dB/oct, Highpass 6 dB/oct, Allpass 1st order. */
+  virtual void arrangeWidgetsForFirstOrderWithoutGain();
+
+  /** Arranges the widgets for the second order filter modes which don't have a gain parameter, 
+  these are: Lowpass 12 dB/oct, Highpass 12 dB/oct, Bandpass 2*6 dB/oct, Bandstop 2*6 dB/oct, 
+  Allpass 2nd order. */
+  virtual void arrangeWidgetsForSecondOrderWithoutGain();
+
+  /** Arranges the widgets for the first order filter modes which have a gain parameter, 
+  these are: Low Shelv 1st order, High Shelv 1st order. */
+  virtual void arrangeWidgetsForFirstOrderWithGain();
+
+  /** Arranges the widgets for the second order filter modes which have a gain parameter, 
+  these are: Low Shelv 2nd order, High Shelv 2nd order, Peak/Dip. */
+  virtual void arrangeWidgetsForSecondOrderWithGain();
+
+  /** Arranges the widgets for morphable modes mode. */
+  virtual void arrangeWidgetsForMorphableMode();
+
+  /** Pointer to the actual rosic::MultiModeFilter object which is being edited. */
+  rosic::MultiModeFilter* filterToEdit;
+
+  juce_UseDebuggingNewOperator;
+};
+
 #endif 
