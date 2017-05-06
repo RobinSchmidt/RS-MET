@@ -1,4 +1,5 @@
-
+needs to be completed next:
+-FileSelectionBox (framework, widgets)
 -WaveTable
 -LowFrequencyOscillator
 -move VectorMixetr to basics?

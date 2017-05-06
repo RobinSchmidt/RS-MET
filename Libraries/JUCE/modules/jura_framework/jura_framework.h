@@ -88,6 +88,7 @@ namespace jura
 #include "gui/widgets/jura_RTimeGridComboBox.h"
 #include "gui/widgets/jura_RSyncIntervalComboBox.h"
 #include "gui/widgets/jura_AutomatableWidget.h"
+//#include "gui/widgets/jura_FileSelectionBox.h"
 // there are still some special widgets missing - copy them over soon...
 
 #include "gui/widgets/widget_sets/jura_WidgetSet.h"

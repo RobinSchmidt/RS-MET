@@ -1908,6 +1908,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_RWidget.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_FileSelectionBox.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\tools\jura_MiscTools.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -1930,9 +1933,6 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_WaveTable.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\rosof_WaveTableModuleEditor.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\custom_widgets\jura_CustomComboBoxes.cpp">
@@ -3945,6 +3945,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_RTimeGridComboBox.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_RTreeView.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_RWidget.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_FileSelectionBox.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\tools\jura_MiscTools.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\tools\jura_StringTools.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\tools\jura_XmlTools.h" />
@@ -3954,7 +3955,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_PhaseScope.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_PhaseScopeMultiColor.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_WaveTable.h" />
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\rosof_WaveTableModuleEditor.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\custom_widgets\jura_CustomComboBoxes.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\custom_widgets\jura_CustomSliders.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\custom_widgets\jura_EffectSelectionPopup.h" />

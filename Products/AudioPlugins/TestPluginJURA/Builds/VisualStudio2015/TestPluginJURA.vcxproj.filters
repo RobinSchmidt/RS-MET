@@ -2334,7 +2334,7 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_PhaseScopeMultiColor.cpp">
       <Filter>Juce Modules\jura_processors\analyzers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\rosof_WaveTableModuleEditor.cpp">
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_WaveTable.cpp">
       <Filter>Juce Modules\jura_processors\basics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\custom_widgets\jura_CustomComboBoxes.cpp">
@@ -3699,8 +3699,8 @@
     <ClCompile Include="..\..\JuceLibraryCode\rosic.cpp">
       <Filter>Juce Library Code</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_WaveTable.cpp">
-      <Filter>Juce Modules\jura_processors\basics</Filter>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_FileSelectionBox.cpp">
+      <Filter>Juce Modules\jura_framework\gui\widgets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5762,7 +5762,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_PhaseScopeMultiColor.h">
       <Filter>Juce Modules\jura_processors\analyzers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\rosof_WaveTableModuleEditor.h">
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_WaveTable.h">
       <Filter>Juce Modules\jura_processors\basics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\custom_widgets\jura_CustomComboBoxes.h">
@@ -7237,8 +7237,8 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\jura_framework.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\jura_processors.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rosic.h" />
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_WaveTable.h">
-      <Filter>Juce Modules\jura_processors\basics</Filter>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_FileSelectionBox.h">
+      <Filter>Juce Modules\jura_framework\gui\widgets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

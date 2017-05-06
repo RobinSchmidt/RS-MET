@@ -5385,6 +5385,14 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/widgets/rojue_FileSelectionBox.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/widgets/rojue_FileSelectionBox.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/tools/jura_MiscTools.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -5453,19 +5461,11 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/basics/rosof_WaveTableAudioModule.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/basics/jura_WaveTable.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/basics/rosof_WaveTableAudioModule.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/basics/rosof_WaveTableModuleEditor.cpp">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/basics/rosof_WaveTableModuleEditor.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/basics/jura_WaveTable.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
