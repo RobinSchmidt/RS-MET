@@ -61,8 +61,6 @@ public:
       underlyingRosicInstrument->getSampleFrameStereo(outL, outR);
   }
 
-
-
 protected:
 
   /** Fills the array of automatable parameters. */
@@ -72,6 +70,10 @@ protected:
 
   juce_UseDebuggingNewOperator;
 };
+
+//=================================================================================================
+
+
 
 
 #endif

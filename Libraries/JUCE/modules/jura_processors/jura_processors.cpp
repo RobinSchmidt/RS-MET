@@ -12,6 +12,8 @@
 namespace jura
 {
 
+#include "tools/jura_TuningFileManager.cpp"
+
 #include "custom_widgets/jura_CustomComboBoxes.cpp"
 #include "custom_widgets/jura_CustomSliders.cpp"
 #include "custom_widgets/jura_EffectSelectionPopup.cpp"

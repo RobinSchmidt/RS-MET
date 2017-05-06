@@ -5589,11 +5589,11 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/instruments/rosof_PolyphonicInstrumentAudioModule.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/instruments/jura_PolyphonicInstrument.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/instruments/rosof_PolyphonicInstrumentAudioModule.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/instruments/jura_PolyphonicInstrument.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
@@ -5682,6 +5682,14 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/modulators/jura_ModulatorCurveEditorMulti.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/tools/rosof_TuningFileManager.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/tools/rosof_TuningFileManager.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>

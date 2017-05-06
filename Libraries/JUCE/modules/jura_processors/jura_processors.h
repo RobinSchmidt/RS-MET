@@ -50,6 +50,8 @@ using namespace juce;
 namespace jura
 {
 
+#include "tools/jura_TuningFileManager.h"
+
 #include "custom_widgets/jura_CustomComboBoxes.h"
 #include "custom_widgets/jura_CustomSliders.h"
 #include "custom_widgets/jura_EffectSelectionPopup.h"
