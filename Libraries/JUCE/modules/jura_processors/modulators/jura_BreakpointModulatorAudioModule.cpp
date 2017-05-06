@@ -2,7 +2,7 @@
 // construction/destruction:
 
 BreakpointModulatorAudioModule::BreakpointModulatorAudioModule(CriticalSection *newPlugInLock,
-  RAPT::rsBreakpointModulator<double> *newBreakpointModulatorToWrap)
+  rosic::BreakpointModulator *newBreakpointModulatorToWrap)
   : AudioModule(newPlugInLock)
 {
   jassert( newBreakpointModulatorToWrap != NULL ); // you must pass a valid object to the constructor
@@ -129,7 +129,7 @@ void BreakpointModulatorAudioModule::setStateFromXml(const XmlElement& xmlState,
 
   //bool success = true;  // get rid
 
-  rsBreakpointModulator<double> *modulator = wrappedBreakpointModulator; // use a shorter name here...
+  rosic::BreakpointModulator *modulator = wrappedBreakpointModulator; // use a shorter name here...
 
   // restore the settings:
   modulator->setScaleFactor(xmlState.getDoubleAttribute(   "ScaleFactor",    1.0));

@@ -235,7 +235,7 @@ void BreakpointModulatorGlobalEditor::updateWidgetsAccordingToState()
   if( modulatorToEdit->wrappedBreakpointModulator == NULL )
     return;
 
-  RAPT::rsBreakpointModulator<double>* m = modulatorToEdit->wrappedBreakpointModulator;
+  rosic::BreakpointModulator* m = modulatorToEdit->wrappedBreakpointModulator;
 
   // restore the slider settings:
   timeScaleSlider->setValue(     m->getTimeScale(),        false);
@@ -347,7 +347,7 @@ void BreakpointParameterEditor::selectBreakpoint(int index)
   if( modulatorToEdit->wrappedBreakpointModulator == NULL )
     return;
 
-  RAPT::rsBreakpointModulator<double>* m = modulatorToEdit->wrappedBreakpointModulator;
+  rosic::BreakpointModulator* m = modulatorToEdit->wrappedBreakpointModulator;
 
   if( index == -1 )
     deSelectBreakpoint();
@@ -391,7 +391,7 @@ void BreakpointParameterEditor::rButtonClicked(RButton *buttonThatWasClicked)
   if( modulatorToEdit->wrappedBreakpointModulator == NULL )
     return;
 
-  RAPT::rsBreakpointModulator<double>* m = modulatorToEdit->wrappedBreakpointModulator;
+  rosic::BreakpointModulator* m = modulatorToEdit->wrappedBreakpointModulator;
 
   if( buttonThatWasClicked == shapeToAllButton )
   {
@@ -416,7 +416,7 @@ void BreakpointParameterEditor::rComboBoxChanged(RComboBox *rComboBoxThatHasChan
   if( modulatorToEdit->wrappedBreakpointModulator == NULL )
     return;
 
-  RAPT::rsBreakpointModulator<double>* m = modulatorToEdit->wrappedBreakpointModulator;
+  rosic::BreakpointModulator* m = modulatorToEdit->wrappedBreakpointModulator;
 
   if( rComboBoxThatHasChanged == shapeComboBox )
   {
@@ -447,7 +447,7 @@ void BreakpointParameterEditor::rSliderValueChanged(RSlider *sliderThatHasChange
   if( modulatorToEdit->wrappedBreakpointModulator == NULL )
     return;
 
-  RAPT::rsBreakpointModulator<double>* m = modulatorToEdit->wrappedBreakpointModulator;
+  rosic::BreakpointModulator* m = modulatorToEdit->wrappedBreakpointModulator;
 
   if( sliderThatHasChanged == timeSlider )
     m->setBreakpointTime(selectedBreakpointIndex, timeSlider->getValue());
@@ -494,7 +494,7 @@ void BreakpointParameterEditor::updateWidgetsAccordingToState()
   if( modulatorToEdit->wrappedBreakpointModulator == NULL )
     return;
 
-  RAPT::rsBreakpointModulator<double>* m = modulatorToEdit->wrappedBreakpointModulator;
+  rosic::BreakpointModulator* m = modulatorToEdit->wrappedBreakpointModulator;
 
   indexValueLabel->setText(valueToString0(selectedBreakpointIndex+1) + juce::String("/")
     + valueToString0(m->getNumBreakpoints()));
@@ -618,7 +618,7 @@ BreakpointModulatorEditor::BreakpointModulatorEditor(CriticalSection *newPlugInL
 //-------------------------------------------------------------------------------------------------
 // parameter-settings:
 
-void BreakpointModulatorEditor::setModulatorToEdit(RAPT::rsBreakpointModulator<double>* newModulatorToEdit)
+void BreakpointModulatorEditor::setModulatorToEdit(rosic::BreakpointModulator* newModulatorToEdit)
 {
   modulatorToEdit = newModulatorToEdit;
   //setPresetRemembererToEdit( modulatorToEdit );
@@ -1143,7 +1143,7 @@ void BreakpointModulatorEditorCompact::updatePlot()
 {
   if( modulatorModuleToEdit == NULL || modulatorToEdit == NULL )
     return;
-  RAPT::rsBreakpointModulator<double> tmpModulator;
+  rosic::BreakpointModulator tmpModulator;
   tmpModulator.copyDataFrom(*modulatorToEdit);
   tmpModulator.fillBufferWithEnvelope(yValues, numSamplesInPlot, false);
   double xMin    = tmpModulator.getStartTime();

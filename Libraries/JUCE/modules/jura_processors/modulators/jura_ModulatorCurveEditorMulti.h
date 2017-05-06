@@ -26,7 +26,7 @@ public:
   // setup:
 
   /** Adds a rosic::Breakpointmodulator object to the array of edited modulators. */
-  virtual void addModulatorToEdit(RAPT::rsBreakpointModulator<double>* newModulatorToEdit);
+  virtual void addModulatorToEdit(rosic::BreakpointModulator* newModulatorToEdit);
 
   /** Selects one of the rosic::Breakpointmodulator objects for editing. */
   virtual void selectModulatorToEdit(int index);
@@ -83,7 +83,7 @@ protected:
   virtual void plotCurveFamily(Graphics &g, juce::Image *targetImage = NULL, 
     XmlElement *targetSVG = NULL);
 
-  juce::Array<RAPT::rsBreakpointModulator<double>*, CriticalSection> modulators;
+  juce::Array<rosic::BreakpointModulator*, CriticalSection> modulators;
   juce::OwnedArray<WidgetColourScheme*, CriticalSection> widgetColourSchemes;
 
   juce::Array<ColourAHSL> curveColours;

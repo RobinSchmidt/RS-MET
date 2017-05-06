@@ -20,7 +20,7 @@ public:
 
   /** Constructor. */
   BreakpointModulatorAudioModule(CriticalSection *newPlugInLock, 
-    RAPT::rsBreakpointModulator<double> *newBreakpointModulatorToWrap);
+    rosic::BreakpointModulator *newBreakpointModulatorToWrap);
 
   //---------------------------------------------------------------------------------------------
   // overrides:
@@ -51,7 +51,8 @@ protected:
   virtual void initializeAutomatableParameters();
 
   /** Pointer to the underlying RAPT object which is wrapped. */
-  RAPT::rsBreakpointModulator<double> *wrappedBreakpointModulator;
+  //RAPT::rsBreakpointModulator<double> *wrappedBreakpointModulator;
+  rosic::BreakpointModulator *wrappedBreakpointModulator;
 
 
   juce_UseDebuggingNewOperator;

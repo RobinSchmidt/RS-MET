@@ -27,7 +27,7 @@ public:
 
 protected:
 
-  RAPT::rsBreakpointModulator<double> envGen;
+  rosic::BreakpointModulator envGen;
   //jura::BreakpointModulatorAudioModule envGenWrapper; // rename to envGenModule
   jura::BreakpointModulatorAudioModule* envGenWrapper;
 

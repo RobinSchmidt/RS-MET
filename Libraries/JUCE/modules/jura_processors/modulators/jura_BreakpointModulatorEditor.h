@@ -165,7 +165,7 @@ public:
 
   /** Passes a pointer the the actual rosic::Modulator object which is to be edited. Make sure to 
   call this function again with a NULL-pointer when the object get deleted for some reason. */
-  virtual void setModulatorToEdit(RAPT::rsBreakpointModulator<double>* newModulatorToEdit);
+  virtual void setModulatorToEdit(rosic::BreakpointModulator* newModulatorToEdit);
 
   /** Sets the juce::Label in which the descriptions for the widgets will appear. */
   //virtual void setDescriptionField(RLabel* newDescriptionField);
@@ -215,7 +215,7 @@ protected:
   virtual void autoAdjustPlotRangeY();
 
   // pointer to the actual Modulator object which is being edited:
-  RAPT::rsBreakpointModulator<double>* modulatorToEdit;
+  rosic::BreakpointModulator* modulatorToEdit;
 
   // some rectangles to define functional groups:
   juce::Rectangle<int> breakpointGroupRectangle, timeAndDepthGroupRectangle, snapRectangle;
@@ -285,7 +285,7 @@ public:
 protected:
 
   // pointers to the edited objects (wrapped and non-wrapped):
-  RAPT::rsBreakpointModulator<double> *modulatorToEdit;
+  rosic::BreakpointModulator *modulatorToEdit;
   BreakpointModulatorAudioModule *modulatorModuleToEdit;
 
   // big editor that opens when clicking on the 'More' button:

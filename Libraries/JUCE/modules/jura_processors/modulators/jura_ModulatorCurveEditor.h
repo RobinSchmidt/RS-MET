@@ -46,7 +46,7 @@ public:
 
   /** Passes a pointer the the actual rosic::Modulator object which is to be edited. Make sure to 
   call this function again with a NULL-pointer when the object get deleted for some reason. */
-  virtual void setModulatorToEdit(RAPT::rsBreakpointModulator<double>* newModulatorToEdit);
+  virtual void setModulatorToEdit(rosic::BreakpointModulator* newModulatorToEdit);
 
   /** Switches loop on or off. */
   //virtual void setLoopMode(bool shouldBeLooped);
@@ -166,7 +166,7 @@ public:
 
   /** Fills the plotDataX and plotDataY arrays with new data according to the current state of
   the modulator that is passed. */
-  virtual void updatePlotCurveData(int curveIndex, RAPT::rsBreakpointModulator<double>* modulator,
+  virtual void updatePlotCurveData(int curveIndex, rosic::BreakpointModulator* modulator,
     bool updateGUI);
 
   /** Calls updatePlotCurveData(int, BreakpointModulator*, bool) with arguments
@@ -186,17 +186,17 @@ protected:
 
   /** Plots the breakpoints as dots of some modulator. */
   virtual void plotBreakpoints(Graphics &g, juce::Image *targetImage, 
-    RAPT::rsBreakpointModulator<double>* modulator, const Colour& dotColour);
+    rosic::BreakpointModulator* modulator, const Colour& dotColour);
 
   /** Plots the loop locators of some modulator. If fullHeight is false, it will draw only
   small locators which are more suitable for unfocused curves when there are more curves in one
   plot. */
   virtual void plotLoopLocators(Graphics &g, juce::Image *targetImage, 
-    RAPT::rsBreakpointModulator<double>* modulator, const Colour& locatorColour, bool fullHeight = true);
+    rosic::BreakpointModulator* modulator, const Colour& locatorColour, bool fullHeight = true);
 
 
   /** Pointer to the actual Modulator object which is being edited. */
-  RAPT::rsBreakpointModulator<double>* modulatorToEdit;
+  rosic::BreakpointModulator* modulatorToEdit;
 
   int   locatorBeingDragged; // index of the locator which is being dragged 
   // (see enum above)
