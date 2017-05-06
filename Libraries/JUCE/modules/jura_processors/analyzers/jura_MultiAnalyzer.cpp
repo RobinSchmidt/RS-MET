@@ -83,7 +83,7 @@ void SpectrumAnalyzerAudioModule::parameterChanged(Parameter* parameterThatHasCh
 
 void SpectrumAnalyzerAudioModule::initializeAutomatableParameters()
 {
-  addObservedParameter( new ParameterPowersOfTwo(plugInLock, "FFTSize", 256.0, 32768.0, 0.0, 1024.0) );
+  addObservedParameter( new ParameterPowersOfTwo(lock, "FFTSize", 256.0, 32768.0, 0.0, 1024.0) );
 
   addObservedParameter( new Parameter(lock, "MidSideMode",        0.0,       1.0, 1.0,     0.0,   Parameter::BOOLEAN)      );
   addObservedParameter( new Parameter(lock, "LinearFrequency",    0.0,       1.0, 1.0,     0.0,   Parameter::BOOLEAN)      );
@@ -143,8 +143,8 @@ void MultiAnalyzerAudioModule::initializeAutomatableParameters()
 
   //addObservedParameter( new Parameter("FrameRate",  10.0,  50.0, 1.0,  25.0, Parameter::LINEAR)  );
 
-  for(int i=0; i < (int) observedParameters.size(); i++ )
-    parameterChanged(observedParameters[i]);
+  for(int i=0; i < (int) parameters.size(); i++ )
+    parameterChanged(parameters[i]);
 }
 
 

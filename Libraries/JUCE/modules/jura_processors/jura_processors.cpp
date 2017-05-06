@@ -14,7 +14,7 @@ namespace jura
 
 #include "analyzers/jura_PhaseScope.cpp"
 //#include "analyzers/jura_PhaseScopeMultiColor.cpp"
-//#include "analyzers/jura_MultiAnalyzer.cpp"
+#include "analyzers/jura_MultiAnalyzer.cpp"
 
 #include "filters/jura_LadderFilter.cpp"
 #include "filters/jura_PhasorFilter.cpp"
