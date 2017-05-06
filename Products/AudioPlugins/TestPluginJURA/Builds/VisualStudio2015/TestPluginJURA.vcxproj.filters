@@ -2136,6 +2136,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_StateManager.cpp">
       <Filter>Juce Modules\jura_framework\control</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\rojue_PreDefinedParameters.cpp">
+      <Filter>Juce Modules\jura_framework\control</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\files\jura_AudioFileInfo.cpp">
       <Filter>Juce Modules\jura_framework\files</Filter>
     </ClCompile>
@@ -2306,6 +2309,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\jura_framework.cpp">
       <Filter>Juce Modules\jura_framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_MultiAnalyzer.cpp">
+      <Filter>Juce Modules\jura_processors\analyzers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_PhaseScope.cpp">
       <Filter>Juce Modules\jura_processors\analyzers</Filter>
@@ -3638,9 +3644,6 @@
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\rosic.cpp">
       <Filter>Juce Library Code</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_MultiAnalyzer.cpp">
-      <Filter>Juce Modules\jura_processors\analyzers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5684,6 +5687,9 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\jura_framework.h">
       <Filter>Juce Modules\jura_framework</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_MultiAnalyzer.h">
+      <Filter>Juce Modules\jura_processors\analyzers</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_PhaseScope.h">
       <Filter>Juce Modules\jura_processors\analyzers</Filter>
     </ClInclude>
@@ -7126,8 +7132,8 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\jura_framework.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\jura_processors.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rosic.h" />
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_MultiAnalyzer.h">
-      <Filter>Juce Modules\jura_processors\analyzers</Filter>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_PreDefinedParameters.h">
+      <Filter>Juce Modules\jura_framework\control</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

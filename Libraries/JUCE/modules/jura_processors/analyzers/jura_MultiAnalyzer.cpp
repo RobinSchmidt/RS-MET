@@ -9,8 +9,8 @@ OscilloscopeAudioModule::OscilloscopeAudioModule(CriticalSection *newPlugInLock,
 {
   jassert(displayBufferToUse != NULL); // you must pass a valid rosic-object to the constructor
   waveformDisplayBuffer = displayBufferToUse;
-  moduleName          = juce::String(T("Oscilloscope"));
-  setActiveDirectory(getApplicationDirectory() + juce::String(T("/OscilloscopePresets")) );
+  moduleName = juce::String("Oscilloscope");
+  setActiveDirectory(getApplicationDirectory() + juce::String("/OscilloscopePresets") );
   initializeAutomatableParameters();
   displayIsFrozen = false;
 }
@@ -34,20 +34,20 @@ void OscilloscopeAudioModule::parameterChanged(Parameter* parameterThatHasChange
 
 void OscilloscopeAudioModule::initializeAutomatableParameters()
 {
-  Parameter *p = new Parameter(plugInLock, "SyncMode", 0.0, 1.0, 1.0, 1.0, Parameter::STRING);
-  p->addStringValue(juce::String(T("Free Running")));
-  p->addStringValue(juce::String(T("Lowpass Zeros")));
+  Parameter *p = new Parameter(lock, "SyncMode", 0.0, 1.0, 1.0, 1.0, Parameter::STRING);
+  p->addStringValue(juce::String("Free Running"));
+  p->addStringValue(juce::String("Lowpass Zeros"));
   //p->setValue(1.0);
   addObservedParameter(p);
-  addObservedParameter( new Parameter(plugInLock, "MidSideMode",       0.0,   1.0, 1.0,    0.0,  Parameter::BOOLEAN) );
-  addObservedParameter( new Parameter(plugInLock, "TimeWindowLength",  0.001, 1.5, 0.001,  0.1,  Parameter::LINEAR)  );
-  addObservedParameter( new Parameter(plugInLock, "MinAmplitude",     -2.0,  +2.0, 0.1,   -1.5,  Parameter::LINEAR)  );
-  addObservedParameter( new Parameter(plugInLock, "MaxAmplitude",     -2.0,  +2.0, 0.1,    1.5,  Parameter::LINEAR)  );
-  addObservedParameter( new Parameter(plugInLock, "FrameRate",        10.0,  50.0, 1.0,   15.0,  Parameter::LINEAR)  );
-  addObservedParameter( new Parameter(plugInLock, "Freeze",            0.0,   1.0, 1.0,    1.0,  Parameter::BOOLEAN) );
+  addObservedParameter( new Parameter(lock, "MidSideMode",       0.0,   1.0, 1.0,    0.0,  Parameter::BOOLEAN) );
+  addObservedParameter( new Parameter(lock, "TimeWindowLength",  0.001, 1.5, 0.001,  0.1,  Parameter::LINEAR)  );
+  addObservedParameter( new Parameter(lock, "MinAmplitude",     -2.0,  +2.0, 0.1,   -1.5,  Parameter::LINEAR)  );
+  addObservedParameter( new Parameter(lock, "MaxAmplitude",     -2.0,  +2.0, 0.1,    1.5,  Parameter::LINEAR)  );
+  addObservedParameter( new Parameter(lock, "FrameRate",        10.0,  50.0, 1.0,   15.0,  Parameter::LINEAR)  );
+  addObservedParameter( new Parameter(lock, "Freeze",            0.0,   1.0, 1.0,    1.0,  Parameter::BOOLEAN) );
 
-  for(int i=0; i < (int) observedParameters.size(); i++ )
-    parameterChanged(observedParameters[i]);
+  for(int i=0; i < (int) parameters.size(); i++ )
+    parameterChanged(parameters[i]);
 }
 
 //=================================================================================================
@@ -58,8 +58,8 @@ SpectrumAnalyzerAudioModule::SpectrumAnalyzerAudioModule(CriticalSection *newPlu
 {
   jassert(spectrumAnalyzerToWrap != NULL); // you must pass a valid rosic-object to the constructor
   wrappedSpectrumAnalyzer = spectrumAnalyzerToWrap;
-  moduleName              = juce::String(T("SpectrumAnalyzer"));
-  setActiveDirectory(getApplicationDirectory() + juce::String(T("/SpectrumAnalyzerPresets")) );
+  moduleName = juce::String("SpectrumAnalyzer");
+  setActiveDirectory(getApplicationDirectory() + juce::String("/SpectrumAnalyzerPresets") );
   initializeAutomatableParameters();
   displayIsFrozen  =  false;
 }
@@ -85,17 +85,17 @@ void SpectrumAnalyzerAudioModule::initializeAutomatableParameters()
 {
   addObservedParameter( new ParameterPowersOfTwo(plugInLock, "FFTSize", 256.0, 32768.0, 0.0, 1024.0) );
 
-  addObservedParameter( new Parameter(plugInLock, "MidSideMode",        0.0,       1.0, 1.0,     0.0,   Parameter::BOOLEAN)      );
-  addObservedParameter( new Parameter(plugInLock, "LinearFrequency",    0.0,       1.0, 1.0,     0.0,   Parameter::BOOLEAN)      );
-  addObservedParameter( new Parameter(plugInLock, "MinFrequency",      15.625, 32000.0, 0.0,    15.625, Parameter::EXPONENTIAL)  );
-  addObservedParameter( new Parameter(plugInLock, "MaxFrequency",      15.625, 32000.0, 0.0, 32000.0,   Parameter::EXPONENTIAL)  );
-  addObservedParameter( new Parameter(plugInLock, "MinLevel",        -100.0,      10.0, 0.0,  -100.0,   Parameter::LINEAR)       );
-  addObservedParameter( new Parameter(plugInLock, "MaxLevel",        -100.0,      10.0, 0.0,    10.0,   Parameter::LINEAR)       );
-  addObservedParameter( new Parameter(plugInLock, "FrameRate",        10.0,       50.0, 1.0,   15.0,    Parameter::LINEAR)       );
-  addObservedParameter( new Parameter(plugInLock, "Freeze",            0.0,        1.0, 1.0,    1.0,    Parameter::BOOLEAN)      );
+  addObservedParameter( new Parameter(lock, "MidSideMode",        0.0,       1.0, 1.0,     0.0,   Parameter::BOOLEAN)      );
+  addObservedParameter( new Parameter(lock, "LinearFrequency",    0.0,       1.0, 1.0,     0.0,   Parameter::BOOLEAN)      );
+  addObservedParameter( new Parameter(lock, "MinFrequency",      15.625, 32000.0, 0.0,    15.625, Parameter::EXPONENTIAL)  );
+  addObservedParameter( new Parameter(lock, "MaxFrequency",      15.625, 32000.0, 0.0, 32000.0,   Parameter::EXPONENTIAL)  );
+  addObservedParameter( new Parameter(lock, "MinLevel",        -100.0,      10.0, 0.0,  -100.0,   Parameter::LINEAR)       );
+  addObservedParameter( new Parameter(lock, "MaxLevel",        -100.0,      10.0, 0.0,    10.0,   Parameter::LINEAR)       );
+  addObservedParameter( new Parameter(lock, "FrameRate",        10.0,       50.0, 1.0,   15.0,    Parameter::LINEAR)       );
+  addObservedParameter( new Parameter(lock, "Freeze",            0.0,        1.0, 1.0,    1.0,    Parameter::BOOLEAN)      );
 
-  for(int i=0; i < (int) observedParameters.size(); i++ )
-    parameterChanged(observedParameters[i]);
+  for(int i=0; i < (int) parameters.size(); i++ )
+    parameterChanged(parameters[i]);
 }
 
 //=================================================================================================
@@ -115,8 +115,8 @@ MultiAnalyzerAudioModule::MultiAnalyzerAudioModule(CriticalSection *newPlugInLoc
   addChildAudioModule(oscilloscopeModule);
   addChildAudioModule(spectrumAnalyzerModule);
 
-  moduleName = juce::String(T("MultiAnalyzer"));
-  setActiveDirectory(getApplicationDirectory() + juce::String(T("/MultiAnalyzerPresets")) );
+  moduleName = juce::String("MultiAnalyzer");
+  setActiveDirectory(getApplicationDirectory() + juce::String("/MultiAnalyzerPresets") );
 
   initializeAutomatableParameters();
 }
@@ -135,9 +135,9 @@ void MultiAnalyzerAudioModule::parameterChanged(Parameter* parameterThatHasChang
 
 void MultiAnalyzerAudioModule::initializeAutomatableParameters()
 {
-  Parameter *p = new Parameter(plugInLock, "Mode", 0.0, 1.0, 1.0, 1.0, Parameter::STRING);
-  p->addStringValue(juce::String(T("Oscilloscope")));
-  p->addStringValue(juce::String(T("SpectrumAnalyzer")));
+  Parameter *p = new Parameter(lock, "Mode", 0.0, 1.0, 1.0, 1.0, Parameter::STRING);
+  p->addStringValue(juce::String("Oscilloscope"));
+  p->addStringValue(juce::String("SpectrumAnalyzer"));
   p->setValue(1.0, false, false);
   addObservedParameter(p);
 

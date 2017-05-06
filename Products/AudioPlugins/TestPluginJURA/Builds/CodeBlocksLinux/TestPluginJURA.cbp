@@ -4925,6 +4925,14 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/control/rojue_PreDefinedParameters.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/control/rojue_PreDefinedParameters.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/files/jura_AudioFileInfo.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -5393,6 +5401,14 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/analyzers/jura_MultiAnalyzer.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/analyzers/jura_MultiAnalyzer.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/analyzers/jura_PhaseScope.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -5406,14 +5422,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/analyzers/jura_PhaseScopeMultiColor.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/analyzers/rosof_MultiAnalyzerAudioModule.cpp">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/analyzers/rosof_MultiAnalyzerAudioModule.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
