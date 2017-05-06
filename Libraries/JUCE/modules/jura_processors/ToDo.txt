@@ -7,8 +7,10 @@
  -EasyQ (done)
  -EngineersFilter (done)
  -FuncShaper (done)
+ -DspWorkbench (done)
 
- -DspWorkbench
+ -SignalAnalyzer (now MultiAnalyzer)
+
  -EchoLab
  -KeyShot
  -Liberty (later - it needs the "romos" folder)
@@ -18,7 +20,6 @@
  -PitchShifter
  -Quadrifex
  -Quadriga
- -SignalAnalyzer
  -SimpleSampler
  -StereoDelay
  -Straightliner

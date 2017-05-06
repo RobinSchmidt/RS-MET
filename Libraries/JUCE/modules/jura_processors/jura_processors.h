@@ -52,6 +52,7 @@ namespace jura
 
 #include "analyzers/jura_PhaseScope.h"
 //#include "analyzers/jura_PhaseScopeMultiColor.h"
+#include "analyzers/jura_MultiAnalyzer.h"
 
 #include "filters/jura_LadderFilter.h"
 #include "filters/jura_PhasorFilter.h"
