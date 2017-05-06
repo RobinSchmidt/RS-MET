@@ -24,12 +24,6 @@ This file includes all relevant rosic effects header files.
 #include "rosic_StereoDelay.h"
 #include "rosic_StereoPan.h"
 #include "rosic_StereoWidth.h"
+#include "rosic_EchoLab.h"
 
 #endif // end of #ifndef rosic_Effects_h
-
-
-
-
-
-
-

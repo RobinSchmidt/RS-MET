@@ -33,6 +33,15 @@ public:
   //virtual void getSampleFrameStereo(double* inOutL, double* inOutR);
   //virtual void processBlock(AudioSampleBuffer& buffer, MidiBuffer& midiMessages);
 
+  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples)
+  {
+    for(int n = 0; n < numSamples; n++)
+    {
+      wrappedEchoLabDelayLine->getSampleFrameStereo(&inOutBuffer[0][n], &inOutBuffer[1][n],
+        &inOutBuffer[0][n], &inOutBuffer[1][n], true);
+    }
+  }
+
   //-----------------------------------------------------------------------------------------------
   // others:
 
@@ -107,5 +116,67 @@ protected:
 };
 
 //=================================================================================================
+
+class EchoLabAudioModule : public AudioModule
+{
+
+  friend class EchoLabModuleEditor;
+  friend class EchoLabPlotEditor;
+
+public:
+
+  EchoLabAudioModule(CriticalSection *newPlugInLock, rosic::EchoLab *delayDesignerToWrap);   
+
+  virtual void parameterChanged(Parameter* parameterThatHasChanged);
+
+  virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 
+    bool markAsClean);
+  virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean);
+
+  //virtual XmlElement EchoLabAudioModule::convertXmlStateIfNecessary(const XmlElement& xmlState);
+
+  // delegations to rosic::EchoLab withh added thread-safety and possible additional actions:
+  virtual void setSampleRate(double newSampleRate);
+  virtual void setBeatsPerMinute(double newBpm);
+  int addDelayLine(double newDelayTime, double newGainFactor);
+
+  bool removeDelayLine(int index);
+
+  void removeAllDelayLines();
+
+  /** Returns a pointer to the delayline audiomodule with given index. */
+  EchoLabDelayLineAudioModule* getDelayLineModule(int index) const;
+
+  virtual void getSampleFrameStereo(double* inOutL, double* inOutR);
+  virtual void processBlock(AudioSampleBuffer& buffer, MidiBuffer& midiMessages);
+
+  virtual void reset();
+
+protected:
+
+  virtual void initializeAutomatableParameters();
+
+  //CriticalSection wrappedEchoLabLock;
+
+  rosic::EchoLab              *wrappedEchoLab;
+
+  juce::Array<EchoLabDelayLineAudioModule*> delayLineModules;
+
+  //EchoLabDelayLineAudioModule               *selectedDelayLineModule;
+
+  //EqualizerAudioModule *inputEqualizerModule;
+  //EqualizerAudioModule *feedbackEqualizerModule;
+  //...nah -> goes to EchoLabDelayLineAudioModule
+
+  //juce::Array<EqualizerAudioModule*> inputEqualizerModules;
+  //juce::Array<EqualizerAudioModule*> feedbackEqualizerModules;
+
+  //juce::Array<EchoLabDelayLineAudioModule*> echoLabDelayLineModules;
+
+  juce_UseDebuggingNewOperator;
+};
+
+//=================================================================================================
+
 
 #endif 

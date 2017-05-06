@@ -365,3 +365,361 @@ void EchoLabDelayLineModuleEditor::updateWidgetVisibility()
   flushButton   ->setVisible(visible);
 }
 
+//=================================================================================================
+
+// construction/destruction:
+
+EchoLabAudioModule::EchoLabAudioModule(CriticalSection *newPlugInLock, rosic::EchoLab *delayDesignerToWrap)
+  : AudioModule(newPlugInLock)
+{
+  jassert(delayDesignerToWrap != NULL); // you must pass a valid rosic-object to the constructor
+  wrappedEchoLab = delayDesignerToWrap;
+  moduleName = juce::String("EchoLab");
+  setActiveDirectory(getApplicationDirectory() + juce::String("/EchoLabPresets") );
+
+  //inputFilterModule = new EqualizerAudioModule(NULL);
+  //inputFilterModule->setModuleName(juce::String(T("InputFilter")));
+
+  //feedbackFilterModule = new EqualizerAudioModule(NULL);
+  //feedbackFilterModule->setModuleName(juce::String(T("FeedbackFilter")));
+
+  initializeAutomatableParameters();
+}
+
+// setup:
+
+void EchoLabAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
+{
+  ScopedLock scopedLock(*lock);
+  //if( wrappedEchoLab == NULL )
+  //  return;
+
+  double value = parameterThatHasChanged->getValue();
+  switch( getIndexOfParameter(parameterThatHasChanged) )
+  {
+  case   0: wrappedEchoLab->setDryWet(  value); break;
+  case   1: wrappedEchoLab->setWetLevel(value); break;
+  } // end of switch( parameterIndex )
+}
+
+XmlElement* equalizerStateToXml(Equalizer* equalizer, XmlElement* xmlElementToStartFrom)
+{
+  // the XmlElement which stores all the releveant state-information:
+  XmlElement* xmlState;
+  if( xmlElementToStartFrom == NULL )
+    xmlState = new XmlElement(juce::String("Equalizer")); 
+  else
+    xmlState = xmlElementToStartFrom;
+
+  xmlState->setAttribute("GlobalGain", equalizer->getGlobalGain());
+
+  // create an XmlElement for each band and add it as child-XmlElement:
+  for(int i=0; i<equalizer->getNumBands(); i++)
+  {
+    XmlElement* bandState = new XmlElement(juce::String("Band"));
+
+    bandState->setAttribute(juce::String("Frequency"), equalizer->getBandFrequency(i));
+    bandState->setAttribute(juce::String("Gain"),      equalizer->getBandGain(i));
+    bandState->setAttribute(juce::String("Bandwidth"), equalizer->getBandBandwidth(i));
+
+    juce::String modeString;
+    int mode = equalizer->getBandMode(i);
+    switch( mode )
+    {
+    case TwoPoleFilter::PEAK:       modeString = juce::String("Peak/Dip");           break;
+    case TwoPoleFilter::LOW_SHELF:  modeString = juce::String("Low Shelving");       break;
+    case TwoPoleFilter::HIGH_SHELF: modeString = juce::String("High Shelving");      break;
+    case TwoPoleFilter::LOWPASS6:   modeString = juce::String("Lowpass 6 dB/oct");   break;
+    case TwoPoleFilter::LOWPASS12:  modeString = juce::String("Lowpass 12 dB/oct");  break;
+    case TwoPoleFilter::HIGHPASS6:  modeString = juce::String("Highpass 6 dB/oct");  break;
+    case TwoPoleFilter::HIGHPASS12: modeString = juce::String("Highpass 12 dB/oct"); break;
+    case TwoPoleFilter::BANDREJECT: modeString = juce::String("Notch 2*6 dB/oct");   break;
+    }
+    bandState->setAttribute("Mode", modeString);
+
+    xmlState->addChildElement(bandState);
+  } 
+
+  return xmlState;
+}
+
+XmlElement* echoLabDelayLineStateToXml(EchoLabDelayLine* delayLine, XmlElement* xmlElementToStartFrom)
+{
+  XmlElement* xmlState;
+  if( xmlElementToStartFrom == NULL )
+    xmlState = new XmlElement(juce::String("DelayLine")); 
+  else
+    xmlState = xmlElementToStartFrom;
+
+  // todo: store value only if different from default values (save space)
+  xmlState->setAttribute("DelayTime", delayLine->getDelayTime()              );
+  xmlState->setAttribute("Amplitude", delayLine->getGlobalGainFactor()       );
+  xmlState->setAttribute("Feedback",  delayLine->getFeedbackInPercent()      );
+  xmlState->setAttribute("Pan",       delayLine->getPan()                    );
+  xmlState->setAttribute("PingPong",  delayLine->isInPingPongMode()          );
+  xmlState->setAttribute("Mute",      delayLine->isMuted()                   );
+
+  // store the embedded equalizer's state as child element (unless it's neutral):
+  if( delayLine->feedbackEqualizer.getNumBands(0) > 0 || delayLine->feedbackEqualizer.getGlobalGain() != 0.0 )
+  {
+    XmlElement* feedbackEqState = new XmlElement(juce::String("FeedbackFilter"));
+    feedbackEqState             = equalizerStateToXml(&(delayLine->feedbackEqualizer.equalizers[0]), feedbackEqState);
+    xmlState->addChildElement(feedbackEqState);
+  }
+  if( delayLine->inputEqualizer.getNumBands(0) > 0 || delayLine->inputEqualizer.getGlobalGain() != 0.0 )
+  {
+    XmlElement* inputEqState = new XmlElement(juce::String("InputFilter"));
+    inputEqState             = equalizerStateToXml(&(delayLine->inputEqualizer.equalizers[0]), inputEqState);
+    xmlState->addChildElement(inputEqState);
+  }
+
+  return xmlState;
+}
+
+XmlElement* echoLabStateToXml(EchoLab *echoLab, XmlElement* xmlElementToStartFrom)
+{
+  XmlElement* xmlState;
+  if( xmlElementToStartFrom == NULL )
+    xmlState = new XmlElement(juce::String("EchoLabState")); 
+  else
+    xmlState = xmlElementToStartFrom;
+
+  // create an XmlElement for each delayline and add it as child-XmlElement:
+  echoLab->acquireLock();
+  xmlState->setAttribute("SyncDelayTimes", echoLab->isDelayTimeSynced());
+  xmlState->setAttribute("DryWet",         echoLab->getDryWet() );
+  xmlState->setAttribute("WetLevel",       echoLab->getWetLevel() );
+  xmlState->setAttribute("Solo",           echoLab->getSoloedDelayLineIndex() );
+  for(int i=0; i<echoLab->getNumDelayLines(); i++)
+  {
+    rosic::EchoLabDelayLine* delayLine = echoLab->getDelayLine(i);
+    XmlElement* delayLineState = echoLabDelayLineStateToXml(delayLine, NULL);
+    xmlState->addChildElement(delayLineState);
+  } 
+  echoLab->releaseLock();
+
+  return xmlState;
+}
+
+XmlElement* EchoLabAudioModule::getStateAsXml(const juce::String& stateName, bool markAsClean)
+{
+  ScopedLock scopedLock(*lock);
+  XmlElement *xmlState = AudioModule::getStateAsXml(stateName, markAsClean);
+  if( wrappedEchoLab != NULL )
+  {
+    wrappedEchoLab->acquireLock();
+    xmlState = echoLabStateToXml(wrappedEchoLab, xmlState);
+    wrappedEchoLab->releaseLock();
+  }
+
+  // mmm...actually, we may get away with the baseclass implementation, i think
+
+  return xmlState;
+}
+
+void EchoLabAudioModule::setStateFromXml(const XmlElement& xmlState, 
+  const juce::String& stateName, bool markAsClean)
+{
+  jassertfalse;
+
+  // this function must be re-implemented
+  // we have to do more here - we need to create and set up all the required child-modules
+  // ahh - and quite possibly we need legacy-preset conversion (but maybe not)
+
+  // perhaps we just need to look at echoLabStateFromXml, define the right static parameters 
+  // inside EchoLsbDelayLineAudioModule, create the child-modules here and then rely on the 
+  // recursion to recall all the parameters for the individual delaylines
+
+  // we perhaps need to drag over the EchoLabStateFromXml function from the old codebase 
+  // first
+
+  ScopedLock scopedLock(*lock);
+
+  removeAllDelayLines();
+
+  // create the audiomodules for the delaylines:
+  for(int i = 0; i < xmlState.getNumChildElements(); i++)
+  {
+    if( xmlState.getChildElement(i)->hasTagName(juce::String("DelayLine")) )
+    {
+      juce::XmlElement *delayLineState = xmlState.getChildElement(i);
+      double delayTime = delayLineState->getDoubleAttribute(juce::String("DelayTime"), 1.0);
+      double amplitude = delayLineState->getDoubleAttribute(juce::String("Amplitude"), 0.5);
+      addDelayLine(delayTime, amplitude);
+    }
+  }
+
+  // at this point, the delaytimes are still correct
+
+  AudioModule::setStateFromXml(xmlState, stateName, markAsClean);
+  // should set up the internal states of the individual delaylines (which are now child-modules)
+  // -> we must perhaps override setStateFromXml in EchoLabDelayLineAudioModule
+  // ...this seems not yet to work....
+
+
+
+  /*
+  // this is the old implementation:
+  ScopedLock scopedLock(*plugInLock);
+  AudioModule::setStateFromXml(xmlState, stateName, markAsClean);
+  if( wrappedEchoLab != NULL )
+  {
+  wrappedEchoLab->acquireLock();
+  echoLabStateFromXml(wrappedEchoLab, xmlState);
+  wrappedEchoLab->releaseLock();
+  }
+  */
+}
+
+/*
+XmlElement EchoLabAudioModule::convertXmlStateIfNecessary(const XmlElement& xmlState)
+{
+ScopedLock scopedLock(*plugInLock);
+
+DEBUG_BREAK; 
+// \todo: implement this function - should take care of updating the sub-states for the two filters (the new EqualizerAudioModule
+// admits 2 channels
+// hmmmm....may it's better to just define a mono version and stereo version of EqualizerAudioModule
+// ...or maybe we can adapt the state save/recall in the EqualizerAudioModule so as to admit for both versions
+// one with and one without the "Channel" child element
+
+int xmlPatchFormatIndex = xmlState.getIntAttribute(T("PatchFormat"), patchFormatIndex);
+
+return AudioModule::convertXmlStateIfNecessary(xmlState);
+}
+*/
+
+void EchoLabAudioModule::setSampleRate(double newSampleRate)   
+{ 
+  ScopedLock scopedLock(*lock);
+  wrappedEchoLab->setSampleRate(newSampleRate); 
+}
+
+void EchoLabAudioModule::setBeatsPerMinute(double newBpm)   
+{ 
+  ScopedLock scopedLock(*lock);
+  wrappedEchoLab->setTempoInBPM(newBpm); 
+}
+
+int EchoLabAudioModule::addDelayLine(double newDelayTime, double newGainFactor)
+{
+  ScopedLock scopedLock(*lock);
+
+  int index = wrappedEchoLab->addDelayLine(newDelayTime, newGainFactor);
+
+  if( index != -1 )
+  {
+    EchoLabDelayLineAudioModule *newDelayLineModule 
+      = new EchoLabDelayLineAudioModule(lock, wrappedEchoLab->getDelayLine(index));
+    newDelayLineModule->getParameterByName(
+      juce::String("DelayTime"))->setValue(newDelayTime,  true, true);
+    newDelayLineModule->getParameterByName(
+      juce::String("Amplitude"))->setValue(newGainFactor, true, true);
+    delayLineModules.add(newDelayLineModule);
+    addChildAudioModule(newDelayLineModule);
+  }
+
+  return index;
+}
+
+bool EchoLabAudioModule::removeDelayLine(int index)
+{
+  ScopedLock scopedLock(*lock);
+
+  bool success = false;
+
+  //if( index < 0 || index >= delayLineModules.size() )  // huh? shouldn't it be index >= 0 && index < size?
+  if( index >= 0 && index < delayLineModules.size() )
+  {
+    EchoLabDelayLineAudioModule *delayLineModule = delayLineModules[index];
+    delayLineModules.remove(index);
+    removeChildAudioModule(delayLineModule, true);
+
+    success = wrappedEchoLab->removeDelayLine(index);
+    jassert( success  == true   ); 
+    // we successfully removed the EqualizerAudioModules but not the underlying rosic-delayline object - something must have gone wrong
+  }
+  else
+    jassertfalse; // invalid index
+
+  return success;
+}
+
+void EchoLabAudioModule::removeAllDelayLines()
+{
+  ScopedLock scopedLock(*lock);
+  while( delayLineModules.size() > 0 )
+    removeDelayLine(delayLineModules.size()-1);
+}
+
+// inquiry:
+
+EchoLabDelayLineAudioModule* EchoLabAudioModule::getDelayLineModule(int index) const
+{
+  jassert( index >= 0  && index < delayLineModules.size() );
+  return delayLineModules[index];
+}
+
+// audio processing:
+
+void EchoLabAudioModule::getSampleFrameStereo(double* inOutL, double* inOutR)
+{ 
+  jassertfalse; // nor good idea to use this function - performance hog
+  ScopedLock scopedLock(*lock);
+  wrappedEchoLab->getSampleFrameStereo(inOutL, inOutR); 
+}
+
+void EchoLabAudioModule::processBlock(AudioSampleBuffer& buffer, MidiBuffer& midiMessages) 
+{ 
+  ScopedLock scopedLock(*lock);
+
+  if( wrappedEchoLab == NULL || buffer.getNumChannels() < 1 )
+  {
+    jassertfalse;
+    return;
+  }
+
+  float *left, *right;  
+  left  = buffer.getWritePointer(0, 0);
+  if( buffer.getNumChannels() < 2 )
+    right = buffer.getWritePointer(0, 0);
+  else
+    right = buffer.getWritePointer(1, 0);
+  wrappedEchoLab->processBlock(left, right, buffer.getNumSamples());
+} 
+
+// others:
+
+void EchoLabAudioModule::reset() 
+{ 
+  ScopedLock scopedLock(*lock);
+  wrappedEchoLab->resetDelayLines(); 
+}
+
+void EchoLabAudioModule::initializeAutomatableParameters()
+{
+  ScopedLock scopedLock(*lock);
+
+  // create the automatable parameters and add them to the list - note that the order of the adds
+  // is important because in parameterChanged(), the index (position in the array) will be used to
+  // identify which particlua parameter has changed.
+
+  juce::Array<double> defaultValues;
+
+  // this pointer will be used to temporarily store the addresses of the created Parameter-objects:
+  AutomatableParameter* p;
+
+  // #00:
+  p = new AutomatableParameter(lock, "DryWet", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR); 
+  addObservedParameter(p);
+
+  // #01:
+  p = new AutomatableParameter(lock, "WetLevel", -36.0, 6.0, 0.01, 0.0, Parameter::LINEAR); 
+  addObservedParameter(p);
+
+  // make a call to setValue for each parameter in order to set up all the slave voices:
+  for(int i=0; i < (int) parameters.size(); i++ )
+    parameterChanged(parameters[i]);
+}
+
+
