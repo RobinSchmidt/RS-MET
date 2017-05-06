@@ -12,7 +12,7 @@
  -EchoLab (done)
  
  -Straightliner
-  -OscillatorStereo
+  -OscillatorStereo (done)
   -FourOscSection
 
  -KeyShot

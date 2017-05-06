@@ -465,3 +465,790 @@ void OscillatorStereoAudioModule::initializeAutomatableParameters()
     parameterChanged(parameters[i]);
 }
 
+//=================================================================================================
+
+// construction/destruction:
+
+OscillatorStereoEditorContextMenu::OscillatorStereoEditorContextMenu(
+  OscillatorStereoAudioModule* newOscillatorModuleToEdit, Component* componentToAttachTo) 
+  //: ComponentMovementWatcher(componentToAttachTo)
+{
+  // init the pointer to the oscillatoror to be edited:
+  //jassert( newOscillatorToEdit != NULL )
+  oscillatorModuleToEdit = newOscillatorModuleToEdit;
+
+  addWidget( ampHeadline = new RTextField("Amplitude:") );
+  ampHeadline->setNoBackgroundAndOutline(true);
+  ampHeadline->setDescription(juce::String("Manipulations of the amplitude"));
+
+  addWidget( tuningHeadline = new RTextField( "Tuning:") );
+  tuningHeadline->setNoBackgroundAndOutline(true);
+  tuningHeadline->setDescription(juce::String("Manipulations of the tuning/detuning of the oscillator"));
+
+  addWidget( timeHeadline = new RTextField("Time:") );
+  timeHeadline->setNoBackgroundAndOutline(true);
+  timeHeadline->setDescription(juce::String("Time domain manipulations of the waveform"));
+
+  addWidget( magSpectrumHeadline = new RTextField("Magnitude Spectrum:") );
+  magSpectrumHeadline->setNoBackgroundAndOutline(true);
+  magSpectrumHeadline->setDescription(juce::String("Manipulations of the magnitude spectrum"));
+
+  addWidget( phaseSpectrumHeadline = new RTextField("Phase Spectrum:") );
+  phaseSpectrumHeadline->setNoBackgroundAndOutline(true);
+  phaseSpectrumHeadline->setDescription(juce::String("Manipulations of the phase spectrum"));
+
+  // sliders for amplitude related parameters:
+
+  addWidget( levelSlider = new RSlider("LevelSlider") );
+  levelSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("Level") );
+  levelSlider->setDescription(juce::String("Output level of the oscillator"));
+  levelSlider->setStringConversionFunction(&decibelsToStringWithUnit2);
+  levelSlider->addListener(this); // to send out the change-message for display update
+
+  addWidget( levelByKeySlider = new RSlider("LevelByKeySlider") );
+  levelByKeySlider->assignParameter( oscillatorModuleToEdit->getParameterByName("LevelByKey") );
+  levelByKeySlider->setSliderName(juce::String("Key"));
+  levelByKeySlider->setDescription(juce::String("Key dependence of oscillator's output level"));
+  levelByKeySlider->setStringConversionFunction(&decibelsToStringWithUnit2);
+
+  addWidget( levelByVelSlider = new RSlider("LevelVelSlider") );
+  levelByVelSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("LevelByVel") );
+  levelByVelSlider->setSliderName(juce::String("Vel"));
+  levelByVelSlider->setDescription(juce::String("Velocity dependence of oscillator's output level"));
+  levelByVelSlider->setStringConversionFunction(&decibelsToStringWithUnit2);
+
+  addWidget( midSideSlider = new RSlider("MidSideSlider") );
+  midSideSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("MidSide") );
+  midSideSlider->setSliderName(juce::String("Mid/Side"));
+  midSideSlider->setDescription("Mid/side adjustment for stereo(ized) waveforms");
+  midSideSlider->setStringConversionFunction(&ratioToString0);
+  midSideSlider->addListener(this);
+
+  addWidget( panSlider = new RSlider("PanSlider") );
+  panSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("Pan") );
+  panSlider->setSliderName(juce::String("Pan"));
+  panSlider->setDescription("Panorama position of the oscillator");
+  panSlider->setStringConversionFunction(&valueToString2);
+  panSlider->addListener(this);
+
+  // sliders for tuning related parameters:
+
+  addWidget( tuneSlider = new TuningSlider("TuneSlider") );
+  tuneSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("Tune") );
+  tuneSlider->setDescription(juce::String("Tuning of the oscillator in semitones"));
+  tuneSlider->setStringConversionFunction(&semitonesToStringWithUnit2);
+
+  addWidget( detuneHzSlider = new RSlider("DetuneSlider") );
+  detuneHzSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("DetuneHz") );
+  detuneHzSlider->setSliderName(juce::String("Detune Hz"));
+  detuneHzSlider->setDescription(juce::String("Detuning of the oscillator in Hz"));
+  detuneHzSlider->setStringConversionFunction(&hertzToStringWithUnit2);
+
+  addWidget( stereoDetuneSlider = new RSlider("StereoDetuneHzSlider") );
+  stereoDetuneSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("StereoDetune") );
+  stereoDetuneSlider->setSliderName(juce::String("Stereo Detune"));
+  stereoDetuneSlider->setDescription(juce::String("Detuning between left and right channel in semitones"));
+  stereoDetuneSlider->setStringConversionFunction(&semitonesToStringWithUnit2);
+
+  addWidget( stereoDetuneHzSlider = new RSlider("StereoDetuneHzSlider") );
+  stereoDetuneHzSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("StereoDetuneHz") );
+  stereoDetuneHzSlider->setSliderName(juce::String("Stereo Detune Hz"));
+  stereoDetuneHzSlider->setDescription(juce::String("Detuning between left and right channel in Hz"));
+  stereoDetuneHzSlider->setStringConversionFunction(&hertzToStringWithUnit2);
+
+  // sliders for time domain related parameters:
+
+  addWidget( startPhaseSlider = new RSlider("StartPhaseSlider") );
+  startPhaseSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("StartPhase") );
+  startPhaseSlider->setSliderName(juce::String("Start Phase"));
+  startPhaseSlider->setDescription("Start phase of the oscillator");
+  startPhaseSlider->setStringConversionFunction(&degreesToStringWithUnit0);
+  startPhaseSlider->addListener(this);
+
+  addWidget( fullWavePhaseWarpSlider = new RSlider("FullWavePhaseWarpSlider") );
+  fullWavePhaseWarpSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("FullWaveWarp") );
+  fullWavePhaseWarpSlider->setSliderName(juce::String("Full Wave Warp"));
+  fullWavePhaseWarpSlider->setDescription("Applies phase warping to the entire waveform");
+  fullWavePhaseWarpSlider->setStringConversionFunction(&degreesToStringWithUnit0);
+  fullWavePhaseWarpSlider->addListener(this);
+
+  addWidget( halfWavePhaseWarpSlider = new RSlider("HalfWavePhaseWarpSlider") );
+  halfWavePhaseWarpSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("HalfWaveWarp") );
+  halfWavePhaseWarpSlider->setSliderName(juce::String("Half Wave Warp"));
+  halfWavePhaseWarpSlider->setDescription("Applies phase warping both half cycles of the waveform");
+  halfWavePhaseWarpSlider->setStringConversionFunction(&degreesToStringWithUnit0);
+  halfWavePhaseWarpSlider->addListener(this);
+
+  addWidget( combHarmonicSlider = new RSlider("CombHarmonicSlider") );
+  combHarmonicSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("CombHarmonic") );
+  combHarmonicSlider->setSliderName(juce::String("Comb Harmonic"));
+  combHarmonicSlider->setDescription("Harmonic on which the comb filter acts");
+  combHarmonicSlider->setStringConversionFunction(&degreesToStringWithUnit0);
+  combHarmonicSlider->addListener(this);
+  //combHarmonicSlider->setVisible(false); // not yet meaningfully implemented
+
+  addWidget( combAmountSlider = new RSlider("CombAmountSlider") );
+  combAmountSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("CombAmount") );
+  combAmountSlider->setSliderName(juce::String("Comb Amount"));
+  combAmountSlider->setDescription("Amount of comb filtering");
+  combAmountSlider->setStringConversionFunction(percentToStringWithUnit1);
+  combAmountSlider->addListener(this);
+  //combAmountSlider->setVisible(false); // not yet meaningfully implemented
+
+  addWidget( reverseButton = new RButton(juce::String("Reverse")) );
+  reverseButton->addRButtonListener(this);
+  reverseButton->setDescription(juce::String("Time reverses the oscillator's waveform"));
+  reverseButton->setClickingTogglesState(true);
+
+  addWidget( invertButton = new RButton(juce::String("Invert")) );
+  invertButton->addRButtonListener(this);
+  invertButton->setDescription(juce::String("Inverts polarity of the oscillator's ouput"));
+  invertButton->setClickingTogglesState(true);
+
+  // sliders for magnitude spectrum related parameters:
+
+  addWidget( spectralContrastSlider = new RSlider("SpectralContrastSlider") );
+  spectralContrastSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("SpectralContrast") );
+  spectralContrastSlider->setSliderName(juce::String("Contrast"));
+  spectralContrastSlider->setDescription("Spectral contrast acting as exponent on the harmonic's magnitude");
+  spectralContrastSlider->setStringConversionFunction(&valueToString2);
+  spectralContrastSlider->addListener(this);
+
+  addWidget( spectralSlopeSlider = new RSlider("SpectralSlopeSlider") );
+  spectralSlopeSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("SpectralSlope") );
+  spectralSlopeSlider->setSliderName(juce::String("Slope"));
+  spectralSlopeSlider->setDescription("Spectral slope applied to the waveform in dB/oct");
+  spectralSlopeSlider->setStringConversionFunction(&decibelsPerOctaveToString2);
+  spectralSlopeSlider->addListener(this);
+
+  addWidget( highestHarmonicSlider = new RSlider("LowpassSlider") );
+  highestHarmonicSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("HighestHarmonic") );
+  highestHarmonicSlider->setSliderName(juce::String("Highest Harmonic"));
+  highestHarmonicSlider->setDescription("Highest harmonic in the waveform");
+  highestHarmonicSlider->setStringConversionFunction(&valueToString0);
+  highestHarmonicSlider->addListener(this);
+
+  addWidget( lowestHarmonicSlider = new RSlider("HighpassSlider") );
+  lowestHarmonicSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("LowestHarmonic") );
+  lowestHarmonicSlider->setSliderName(juce::String("Lowest Harmonic"));
+  lowestHarmonicSlider->setDescription("Lowest harmonic in the waveform");
+  lowestHarmonicSlider->setStringConversionFunction(&valueToString0);
+  lowestHarmonicSlider->addListener(this);
+
+  addWidget( evenOddSlider = new RSlider("EvenOddSlider") );
+  evenOddSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("EvenOddRatio") );
+  evenOddSlider->setSliderName(juce::String("Even/Odd"));
+  evenOddSlider->setDescription("Ratio of even and odd harmonics");
+  evenOddSlider->setStringConversionFunction(&ratioBothFullAtCenterToString0);
+  evenOddSlider->addListener(this);
+
+  // sliders for phase spectrum related parameters:
+
+  addWidget( evenOddPhaseShiftSlider = new RSlider("EvenOddPhaseShiftSlider") );
+  evenOddPhaseShiftSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("EvenOddPhaseShift") );
+  evenOddPhaseShiftSlider->setSliderName(juce::String("Even/Odd Shift:"));
+  evenOddPhaseShiftSlider->setDescription("Applies a phase shift between even and odd harmonics");
+  evenOddPhaseShiftSlider->setStringConversionFunction(&degreesToStringWithUnit0);
+  evenOddPhaseShiftSlider->addListener(this);
+
+  addWidget( phaseScaleSlider = new RSlider("PhaseScaleSlider") );
+  phaseScaleSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("PhaseScale") );
+  phaseScaleSlider->setSliderName(juce::String("Scale:"));
+  phaseScaleSlider->setDescription("Scales the phase of each harmonic ");
+  phaseScaleSlider->setStringConversionFunction(&degreesToStringWithUnit0);
+  phaseScaleSlider->addListener(this);
+
+  addWidget( phaseShiftSlider = new RSlider("PhaseShiftSlider") );
+  phaseShiftSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("PhaseShift") );
+  phaseShiftSlider->setSliderName(juce::String("Shift:"));
+  phaseShiftSlider->setDescription("Shifts the phase of each harmonic by a constant");
+  phaseShiftSlider->setStringConversionFunction(&degreesToStringWithUnit0);
+  phaseShiftSlider->addListener(this);
+
+  addWidget( stereoPhaseShiftSlider = new RSlider("StereoPhaseShiftSlider") );
+  stereoPhaseShiftSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("StereoPhaseShift") );
+  stereoPhaseShiftSlider->setSliderName(juce::String("Stereo Shift:"));
+  stereoPhaseShiftSlider->setDescription("Applies stereoization via phase-shifting of harmonics");
+  stereoPhaseShiftSlider->setStringConversionFunction(&degreesToStringWithUnit0);
+  stereoPhaseShiftSlider->addListener(this);
+
+  addWidget( evenOddStereoPhaseShiftSlider = new RSlider("EvenOddPhaseShiftSlider") );
+  evenOddStereoPhaseShiftSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("EvenOddStereoPhaseShift") );
+  evenOddStereoPhaseShiftSlider->setSliderName(juce::String("Even/Odd Stereo Shift:"));
+  evenOddStereoPhaseShiftSlider->setDescription("Phase shift between even/odd harmonics, applied with opposite signs to left/right channels");
+  evenOddStereoPhaseShiftSlider->setStringConversionFunction(&degreesToStringWithUnit0);
+  evenOddStereoPhaseShiftSlider->addListener(this);
+
+  addWidget( closeButton = new RButton(RButton::CLOSE) );
+  closeButton->setDescription(juce::String("Closes the oscillator context menu"));
+  closeButton->setClickingTogglesState(false);
+  // we don't listen to this button ourselves - this is the job of the outlying editor object
+
+  updateWidgetsAccordingToState();
+  setSize(180, 488);
+}
+
+OscillatorStereoEditorContextMenu::~OscillatorStereoEditorContextMenu()
+{
+  deleteAllChildren();
+}
+
+//-------------------------------------------------------------------------------------------------
+// callbacks:
+
+void OscillatorStereoEditorContextMenu::rButtonClicked(RButton *buttonThatWasClicked)
+{
+  if( oscillatorModuleToEdit == NULL )
+    return;
+  if( oscillatorModuleToEdit->wrappedOscillatorStereo == NULL )
+    return;
+
+  rosic::OscillatorStereo* o = oscillatorModuleToEdit->wrappedOscillatorStereo;
+
+  if( buttonThatWasClicked == reverseButton )
+    o->setTimeReverse( reverseButton->getToggleState() );
+  if( buttonThatWasClicked == invertButton )
+    o->setPolarityInversion( invertButton->getToggleState() );
+
+  sendChangeMessage();
+}
+
+void OscillatorStereoEditorContextMenu::rSliderValueChanged(RSlider *sliderThatHasChanged)
+{
+  if( oscillatorModuleToEdit == NULL )
+    return;
+  if( oscillatorModuleToEdit->wrappedOscillatorStereo == NULL )
+    return;
+  rosic::OscillatorStereo* o = oscillatorModuleToEdit->wrappedOscillatorStereo;
+
+  sendChangeMessage();
+}
+
+void OscillatorStereoEditorContextMenu::updateWidgetsAccordingToState()
+{
+  if( oscillatorModuleToEdit == NULL )
+    return;
+  if( oscillatorModuleToEdit->wrappedOscillatorStereo == NULL )
+    return;
+  rosic::OscillatorStereo* o         = oscillatorModuleToEdit->wrappedOscillatorStereo;
+  rosic::MipMappedWaveTableStereo* w = o->waveTable;
+
+  // update the widgets: 
+  levelSlider->setValue(                  o->getLevel(),                   false);
+  levelByKeySlider->setValue(             o->getLevelByKey(),              false);
+  levelByVelSlider->setValue(             o->getLevelByVel(),              false);
+  panSlider->setValue(                    o->getPan(),                     false);
+  midSideSlider->setValue(                o->getMidSide(),                 false);
+  startPhaseSlider->setValue(             o->getStartPhase(),              false);
+  fullWavePhaseWarpSlider->setValue(      w->getFullWavePhaseWarp(),       false);
+  halfWavePhaseWarpSlider->setValue(      w->getHalfWavePhaseWarp(),       false);
+  combHarmonicSlider->setValue(           w->getCombHarmonic(),            false);
+  combAmountSlider->setValue(             w->getCombAmount(),              false);
+  tuneSlider->setValue(                   o->getDetuneSemitones(),         false);
+  detuneHzSlider->setValue(               o->getDetuneHz(),                false);
+  stereoDetuneSlider->setValue(           o->getStereoDetuneSemitones(),   false);
+  stereoDetuneHzSlider->setValue(         o->getStereoDetuneHz(),          false);
+  spectralContrastSlider->setValue(       w->getSpectralContrast(),        false);
+  spectralSlopeSlider->setValue(          w->getSpectralSlope(),           false);
+  highestHarmonicSlider->setValue(        w->getHighestHarmonicToKeep(),   false);
+  lowestHarmonicSlider->setValue(         w->getLowestHarmonicToKeep(),    false);
+  evenOddSlider->setValue(                w->getEvenOddRatio(),            false);
+  phaseScaleSlider->setValue(             w->getPhaseScale(),              false);
+  phaseShiftSlider->setValue(             w->getPhaseShift(),              false);
+  stereoPhaseShiftSlider->setValue(       w->getStereoPhaseShift(),        false);
+  evenOddPhaseShiftSlider->setValue(      w->getEvenOddPhaseShift(),       false);
+  evenOddStereoPhaseShiftSlider->setValue(w->getEvenOddStereoPhaseShift(), false);
+  reverseButton->setToggleState(          w->isTimeReversed(),             false);
+  invertButton->setToggleState(           w->isPolarityInverted(),         false);
+}
+
+void OscillatorStereoEditorContextMenu::resized()
+{
+  Component::resized();
+  int x  = 0;
+  int y  = 0;
+  int w  = getWidth();
+  int w2 = w/2;
+  int h  = getHeight();
+
+  closeButton->setBounds(w-16, 0, 16, 16);
+
+  int sh   = 16;    // slider height
+  int inc  = sh+4;
+  int inc2 = inc+8;
+
+  ampHeadline->setBounds(x+4, y+4, w-8-16, sh);
+  y += inc;
+  levelSlider->setBounds(x+4, y+4, w-8, sh);
+  y += sh-2;
+  levelByKeySlider->setBounds(x+4,  y+4, w2-8, sh);
+  levelByVelSlider->setBounds(w2+4, y+4, w2-8, sh);
+  y += inc;
+  midSideSlider->setBounds(x+4, y+4, w-8, sh);
+  y += sh-2;
+  panSlider->setBounds(x+4, y+4, w-8, sh);
+  y += inc;
+
+  tuningHeadline->setBounds(x+4, y+4, w-8, sh);
+  y += inc;
+  tuneSlider->setBounds(x+4, y+4, w-8, sh);
+  y += sh-2;
+  detuneHzSlider->setBounds(x+4, y+4, w-8, sh);
+  y += sh-2;
+  stereoDetuneSlider->setBounds(x+4, y+4, w-8, sh);
+  y += sh-2;
+  stereoDetuneHzSlider->setBounds(x+4, y+4, w-8, sh);
+  y += inc;
+  timeHeadline->setBounds(x+4, y+4, w-8, sh);
+  y += inc;
+  startPhaseSlider->setBounds(x+4, y+4, w-8, sh);
+  y += sh-2;
+  combHarmonicSlider->setBounds(x+4, y+4, w-8, sh);
+  y += sh-2;
+  combAmountSlider->setBounds(x+4, y+4, w-8, sh);
+  y += sh-2;
+  fullWavePhaseWarpSlider->setBounds(x+4, y+4, w-8, sh);
+  y += sh-2;
+  halfWavePhaseWarpSlider->setBounds(x+4, y+4, w-8, sh);
+
+  //y += sh;
+  //startPhaseByKeySlider->setBounds(x+4,  y+4, w2-8, sh);
+  //startPhaseByVelSlider->setBounds(w2+4, y+4, w2-8, sh);
+  y += inc;
+  reverseButton->setBounds(x+4,  y+4, w2-8, sh);
+  invertButton->setBounds( w2+4, y+4, w2-8, sh);
+  y += inc;
+
+  magSpectrumHeadline->setBounds(x+4, y+4, w-8, sh);
+  y += inc;
+  spectralContrastSlider->setBounds(x+4, y+4, w-8, sh);
+  y += sh-2;
+  spectralSlopeSlider->setBounds(x+4, y+4, w-8, sh);
+  y += sh-2;
+  highestHarmonicSlider->setBounds(x+4, y+4, w-8, sh);
+  y += sh-2;
+  lowestHarmonicSlider->setBounds(x+4, y+4, w-8, sh);
+  y += sh-2;
+  evenOddSlider->setBounds(x+4, y+4, w-8, sh);
+  y += inc;
+
+
+  phaseSpectrumHeadline->setBounds(x+4, y+4, w-8, sh);
+  y += inc;
+  phaseScaleSlider->setBounds(x+4, y+4, w-8, sh);
+  y += sh-2;
+  phaseShiftSlider->setBounds(x+4, y+4, w-8, sh);
+  y += sh-2;
+  evenOddPhaseShiftSlider->setBounds(x+4, y+4, w-8, sh);
+  y += sh-2;
+  stereoPhaseShiftSlider->setBounds(x+4, y+4, w-8, sh);
+  y += sh-2;
+  evenOddStereoPhaseShiftSlider->setBounds(x+4, y+4, w-8, sh);
+}
+
+/*
+void OscillatorStereoEditorContextMenu::componentMovedOrResized(bool wasMoved, bool wasResized)
+{
+int dummy = 0;
+}
+
+void OscillatorStereoEditorContextMenu::componentPeerChanged()
+{
+int dummy = 0;
+}
+*/
+
+//=================================================================================================
+// class OscillatorStereoEditor:
+
+//-------------------------------------------------------------------------------------------------
+// construction/destruction:
+
+OscillatorStereoEditor::OscillatorStereoEditor(CriticalSection *newPlugInLock, 
+  OscillatorStereoAudioModule* newOscillatorStereoAudioModule) 
+  : AudioModuleEditor(newOscillatorStereoAudioModule)
+{
+  // init the pointer to the modulator to be edited to NULL:
+  oscillatorToEdit = NULL;
+  jassert( newOscillatorStereoAudioModule != NULL );
+
+
+
+  addPlot( waveformDisplay = new WaveformDisplayOld() );
+  waveformDisplay->setAutoReRendering(false);
+  waveformDisplay->setDescription(juce::String("Click on the display to switch oscillator on/off"));
+  waveformDisplay->setAxisPositionX(CoordinateSystemOld::INVISIBLE);
+  waveformDisplay->setAxisPositionY(CoordinateSystemOld::INVISIBLE);
+  waveformDisplay->setCurrentRangeY(-1.2, 1.2);
+  waveformDisplay->setSampleRate(1.0);    
+  waveformDisplay->addMouseListener(this, true);
+  waveformDisplay->setAutoReRendering(true);
+
+  addPlot( emptyDisplay = new CoordinateSystemOld() );
+  emptyDisplay->setAutoReRendering(false);
+  emptyDisplay->setDescription(waveformDisplay->getDescription());
+  emptyDisplay->setAxisPositionX(CoordinateSystemOld::INVISIBLE);
+  emptyDisplay->setAxisPositionY(CoordinateSystemOld::INVISIBLE);
+  emptyDisplay->setCaption(juce::String("Off"), CoordinateSystemOld::CENTER);
+  emptyDisplay->addMouseListener(this, true);
+  emptyDisplay->setAutoReRendering(true);
+
+  contextMenu = new OscillatorStereoEditorContextMenu(newOscillatorStereoAudioModule, this);
+  contextMenu->addChangeListener(this);
+  contextMenu->setAlwaysOnTop(true);
+  contextMenu->setOpaque(true);
+  contextMenu->closeButton->addRButtonListener(this);
+  addChildColourSchemeComponent(contextMenu, false, false);
+  //contextMenu->setSize(200, 200);
+
+  /*
+  contextMenuViewport = new Viewport(juce::String(T("OscillatorStereoSliderViewport")));
+  contextMenuViewport->setViewedComponent(contextMenu);
+  contextMenuViewport->setScrollBarThickness(12);
+  contextMenuViewport->setScrollBarsShown(true, false);
+  addAndMakeVisible(contextMenuViewport);
+  */
+
+  addWidget( waveFileLabel = new RTextField() );
+  waveFileLabel->setNoBackgroundAndOutline(true);
+  waveFileLabel->setJustification(Justification::centredBottom);
+  waveFileLabel->setDescription(juce::String("Name of the currently loaded single cycle audiofile"));
+
+  addWidget( waveLoadButton = new RButton(juce::String("Load")) );
+  waveLoadButton->addRButtonListener(this);
+  waveLoadButton->setDescription(juce::String("Load a waveform"));
+  waveLoadButton->setClickingTogglesState(false);
+
+  addWidget( wavePlusButton = new RButton(RButton::ARROW_RIGHT) );
+  wavePlusButton->addRButtonListener(this);
+  wavePlusButton->setDescription(juce::String("Next waveform in current directory"));
+  wavePlusButton->setClickingTogglesState(false);
+
+  addWidget( waveMinusButton = new RButton(RButton::ARROW_LEFT) );
+  waveMinusButton->addRButtonListener(this);
+  waveMinusButton->setDescription(juce::String("Previous waveform in current directory"));
+  waveMinusButton->setClickingTogglesState(false);
+
+  addWidget( moreButton = new RButton(juce::String("More")) );
+  moreButton->addRButtonListener(this);
+  moreButton->setDescription(juce::String("Open/close context menu with more options"));
+  moreButton->setClickingTogglesState(true);
+
+  addWidget( levelSlider = new RSlider("VolumeSlider") );
+  levelSlider->assignParameter( moduleToEdit->getParameterByName("Level") );
+  levelSlider->setSliderName(juce::String("Level"));
+  levelSlider->setDescription(juce::String("Output level of the oscillator"));
+  levelSlider->setStringConversionFunction(&decibelsToStringWithUnit2);
+  levelSlider->setLayout(RSlider::NAME_ABOVE);
+  levelSlider->addListener(this); // only to update the plot
+
+  addWidget( tuneSlider = new TuningSlider("TuneSlider") );
+  tuneSlider->assignParameter( moduleToEdit->getParameterByName("Tune") );
+  tuneSlider->setSliderName(juce::String("Tune"));
+  tuneSlider->setDescription(juce::String("Tuning of the oscillator in semitones"));
+  tuneSlider->setStringConversionFunction(&semitonesToStringWithUnit2);
+  tuneSlider->setLayout(RSlider::NAME_ABOVE);
+
+  addWidget( pitchModulationSlider = new RSlider("PitchModulationSlider") );
+  pitchModulationSlider->assignParameter( moduleToEdit->getParameterByName("PitchModulationDepth") );
+  pitchModulationSlider->setSliderName(juce::String("Mod"));
+  pitchModulationSlider->setDescription("Modulation depth for the pitch modulator");
+  pitchModulationSlider->setStringConversionFunction(&valueToString2);
+
+  numSamplesInPlot    = 0;
+  waveformBuffer      = NULL;
+  waveformPointers    = new double*[2];
+  waveformPointers[0] = NULL;
+  waveformPointers[1] = NULL;
+
+  isTopLevelEditor = false;
+  setHeadlineStyle(NO_HEADLINE);
+
+  // initialize the current directory for waveform loading and saving:
+  juce::String appDir = getApplicationDirectory();
+  AudioFileManager::setActiveDirectory(appDir + juce::String("/Samples/SingleCycle/Classic") );
+
+  //setOscillatorToEdit(newOscillatorStereoAudioModule->wrappedOscillatorStereo);
+  // this will also set up the widgets according to the state of the oscillator
+
+  oscillatorToEdit = newOscillatorStereoAudioModule->wrappedOscillatorStereo; // get rid of this...
+  updateWidgetsAccordingToState();
+
+  // widget arrangement is optimized for this size:
+  //setSize(232, 136);
+}
+
+OscillatorStereoEditor::~OscillatorStereoEditor()
+{
+  delete contextMenu; // this is not a child component -> must be deleted separately (later, when we use a viewport, we don't need this anymore)
+
+  if( waveformBuffer != NULL )
+    delete[] waveformBuffer;
+  if( waveformPointers != NULL )
+    delete[] waveformPointers;
+}
+
+//-----------------------------------------------------------------------------------------------------------------------------------------
+// callbacks:
+
+void OscillatorStereoEditor::rButtonClicked(RButton *buttonThatWasClicked)
+{
+  if( oscillatorToEdit == NULL )
+    return;
+
+  if( buttonThatWasClicked == wavePlusButton )
+    AudioFileManager::loadNextFile();
+  else if( buttonThatWasClicked == waveMinusButton )
+    AudioFileManager::loadPreviousFile();
+  else if( buttonThatWasClicked == waveLoadButton )
+    AudioFileManager::openLoadingDialog();
+  else if( buttonThatWasClicked == moreButton )
+  {
+    if( moreButton->getToggleState() == true )
+    {
+      int x = getScreenX() + getWidth();
+      int y = getScreenY() - 102; // this is a kludgy thing here with the context menu positioning
+      contextMenu->setTopLeftPosition(x, y);
+      contextMenu->addToDesktop(
+        ComponentPeer::windowHasDropShadow | ComponentPeer::windowIsTemporary);
+      contextMenu->setVisible(true);
+      contextMenu->toFront(true);
+
+      //contextMenuViewport->setVisible(true);
+    }
+    else
+    {
+      contextMenu->setVisible(false);
+      //contextMenuViewport->setVisible(false);
+    }
+    return;
+  }
+  else if( buttonThatWasClicked == contextMenu->closeButton )
+  {
+    moreButton->setToggleState(false, true);
+    return;
+  }
+
+
+  moduleToEdit->markStateAsDirty();
+  //sendChangeMessage();
+}
+
+void OscillatorStereoEditor::changeListenerCallback(ChangeBroadcaster *objectThatHasChanged)
+{
+  /*
+  updateWidgetsAccordingToState();
+  sendChangeMessage();
+  */
+  if( oscillatorToEdit == NULL )
+    return;
+
+  if( objectThatHasChanged == contextMenu )
+  {
+    moduleToEdit->markStateAsDirty();  
+    updatePlot();
+  }
+  else
+    AudioModuleEditor::changeListenerCallback(objectThatHasChanged);
+}
+
+void OscillatorStereoEditor::rSliderValueChanged(RSlider *sliderThatHasChanged)
+{
+  if( oscillatorToEdit == NULL )
+    return;
+
+  moduleToEdit->markStateAsDirty();
+  contextMenu->updateWidgetsAccordingToState();
+
+  // although certain sliders would not require an update, most will, so we do the update in any 
+  // case:
+  updatePlot();
+}
+
+//-------------------------------------------------------------------------------------------------
+// 
+
+void OscillatorStereoEditor::updateWidgetsAccordingToState()
+{
+  if( oscillatorToEdit == NULL )
+    return;
+
+  // update the widgets: 
+  levelSlider->setValue(oscillatorToEdit->getLevel(),                                      false);
+  tuneSlider->setValue(oscillatorToEdit->getDetuneSemitones(),                             false);
+  pitchModulationSlider->setValue(oscillatorToEdit->getPitchEnvelopeDepth(),               false);
+
+  // update the waveform display plot:
+  updatePlot();
+  updateWidgetVisibility();
+
+  // update tzhe widgets of the context menu, too:
+  contextMenu->updateWidgetsAccordingToState();
+}
+
+void OscillatorStereoEditor::mouseDown(const MouseEvent &e)
+{
+  if( oscillatorToEdit == NULL )
+    return;
+
+  MouseEvent e2 = e.getEventRelativeTo(waveformDisplay);
+  if( waveformDisplay->contains(Point<int>(e2.x, e2.y)) )
+  {
+    oscillatorToEdit->setMute( !oscillatorToEdit->isMuted() );
+    updateWidgetVisibility();
+  }
+}
+
+void OscillatorStereoEditor::resized()
+{
+  Editor::resized();
+  int x = 0;
+  int y = 0;
+  int w = getWidth();
+  int h = getHeight();
+
+  x = 0;
+  w = getWidth()-x;
+  y += 16;
+  x = getWidth()-20;
+  wavePlusButton->setBounds( x, y, 16, 16);
+  x -= 14;
+  waveMinusButton->setBounds(x, y, 16, 16);
+  x = waveMinusButton->getX()-40+2;
+  waveLoadButton->setBounds( x, y, 40, 16);
+
+  x = 0;
+  y = waveLoadButton->getY();
+  w = waveLoadButton->getX();
+  h = getHeight() - y;
+  waveformDisplay->setBounds(x, y, w-4, h);
+  //waveformDisplay->setBounds(x, y, 160, h);  // for debug test
+  emptyDisplay->setBounds(waveformDisplay->getBounds());
+  waveFileLabel->setBounds(0, waveformDisplay->getY()-16+2, w-4, 16);
+
+
+  /*
+  contextMenuViewport->setBounds(waveformDisplay->getBounds());
+  contextMenu->setSize(
+  contextMenuViewport->getWidth()-contextMenuViewport->getScrollBarThickness(), 
+  contextMenu->getHeight());
+  */
+
+  x = waveformDisplay->getRight();
+  w = getWidth()-x;
+  y = waveLoadButton->getBottom()-4;
+  levelSlider->setBounds(x+4, y+4, w-8, 32);
+  y += 32;
+  tuneSlider->setBounds(x+4, y+4, w-8, 32);
+  y += 34;
+  pitchModulationSlider->setBounds(x+4, y+4, w-8, 16);
+
+
+  moreButton->setBounds(getWidth()-40-4, getHeight()-16-4, 40, 16);
+
+  // (re-)allocate memory for the waveform buffer and initialize content of the array:
+  if( 2*waveformDisplay->getWidth() != numSamplesInPlot )
+  {
+    numSamplesInPlot = 2*waveformDisplay->getWidth(); // 2x oversampling of the plot to avoid jaggedness
+    if( waveformBuffer != NULL )
+      delete[] waveformBuffer;
+    waveformBuffer = new double[2*numSamplesInPlot];
+    for(int n=0; n<2*numSamplesInPlot; n++)
+      waveformBuffer[n] = 0.0;
+    waveformPointers[0] = &(waveformBuffer[0]);
+    waveformPointers[1] = &(waveformBuffer[numSamplesInPlot]);
+    if( oscillatorToEdit != NULL )
+      oscillatorToEdit->getWaveformForDisplay(waveformPointers, numSamplesInPlot);
+    waveformDisplay->setWaveform(waveformPointers, numSamplesInPlot, 2);
+  }
+
+  // we must update the plot which has also a new size now:
+  updatePlot();
+}
+
+/*
+void OscillatorStereoEditor::moved()
+{
+//int x = getScreenX() + getWidth();
+//int y = getScreenY();
+//contextMenu->setTopLeftPosition(x, y);
+contextMenu->setVisible(false);
+}
+*/
+
+void OscillatorStereoEditor::updatePlot()
+{
+  if( oscillatorToEdit == NULL )
+    return;
+
+  // update the waveform display:
+  //int numSamples = oscillatorToEdit->waveTable->getPrototypeNumSamples();
+  if( numSamplesInPlot > 0 )
+  {
+    // retrieve the filename (the full path), cut it down to the filename only and display it in 
+    // the filename field:
+    juce::String fileName = juce::String(oscillatorToEdit->waveTable->getSampleName());
+    if( fileName.contains("\\") )
+      fileName = fileName.fromLastOccurrenceOf("\\", false, false);
+    if( fileName.contains("/") )
+      fileName = fileName.fromLastOccurrenceOf("/", false, false);
+    waveFileLabel->setText(fileName);
+
+
+    // ToDo: include a setActiveDirectory method in the FileManager class....
+    //AudioFileManager::setActiveDirectory...
+
+
+    // update the waveform display:
+    waveformDisplay->setAutoReRendering(false);
+    waveformDisplay->setMaximumRangeX(0.0, numSamplesInPlot);
+    waveformDisplay->setCurrentRangeX(0.0, numSamplesInPlot);
+    oscillatorToEdit->getWaveformForDisplay(waveformPointers, numSamplesInPlot);
+    waveformDisplay->setWaveform(waveformPointers, numSamplesInPlot, 2);
+    waveformDisplay->updatePlotImage();    
+    waveformDisplay->setAutoReRendering(true);
+  }
+
+  waveformDisplay->setVisible( !oscillatorToEdit->isMuted() );
+  emptyDisplay->setVisible(     oscillatorToEdit->isMuted() );
+}
+
+void OscillatorStereoEditor::updateWidgetVisibility()
+{
+  if( oscillatorToEdit == NULL )
+    return;    
+
+  waveLoadButton->setVisible(        !oscillatorToEdit->isMuted() );
+  wavePlusButton->setVisible(        !oscillatorToEdit->isMuted() );
+  waveMinusButton->setVisible(       !oscillatorToEdit->isMuted() );
+  moreButton->setVisible(            !oscillatorToEdit->isMuted() );
+  levelSlider->setVisible(           !oscillatorToEdit->isMuted() );
+  tuneSlider->setVisible(            !oscillatorToEdit->isMuted() );
+  pitchModulationSlider->setVisible( !oscillatorToEdit->isMuted() );
+  waveFileLabel->setVisible(         !oscillatorToEdit->isMuted() );
+  waveformDisplay->setVisible(       !oscillatorToEdit->isMuted() );
+  emptyDisplay->setVisible(           oscillatorToEdit->isMuted() );
+}
+
+bool OscillatorStereoEditor::setAudioData(AudioSampleBuffer* newBuffer, 
+  const juce::File& underlyingFile, bool markAsClean)
+{
+  if( newBuffer != NULL && newBuffer->getNumChannels() > 0 && newBuffer->getNumSamples() > 0 )
+  {
+    float* channelPointers[2];
+    channelPointers[0] = newBuffer->getWritePointer(0, 0);
+    if( newBuffer->getNumChannels() >= 2 )
+      channelPointers[1] = newBuffer->getWritePointer(1, 0);
+    else
+      channelPointers[1] = newBuffer->getWritePointer(0, 0);
+    oscillatorToEdit->waveTable->setWaveform(channelPointers, newBuffer->getNumSamples());
+    juce::String relativePath = underlyingFile.getRelativePathFrom(rootDirectory);
+    char* fileNameC           = toZeroTerminatedString(relativePath);
+    oscillatorToEdit->waveTable->setSampleName(fileNameC);
+    delete[] fileNameC;
+    waveFileLabel->setText(underlyingFile.getFileName());
+    updatePlot();
+    return true;
+  }
+  return false;
+}
