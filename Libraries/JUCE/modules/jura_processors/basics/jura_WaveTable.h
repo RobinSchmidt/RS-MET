@@ -139,4 +139,176 @@ protected:
 
 };
 
+//=================================================================================================
+
+//===============================================================================================
+// class StandardWaveformEditor:
+
+class StandardWaveformEditor : public AudioModuleEditor, public ChangeBroadcaster, public RComboBoxObserver
+{
+public:
+  StandardWaveformEditor(CriticalSection *newPlugInLock, StandardWaveformRendererAudioModule* newRendererModuleToEdit); 
+  virtual void rComboBoxChanged(RComboBox *rComboBoxChanged);
+  virtual void resized();
+  juce_UseDebuggingNewOperator;
+protected:
+  RNamedComboBox *shapeComboBox;
+};
+
+
+//===============================================================================================
+// class WaveformBufferEditor:
+
+class WaveformBufferEditor : public AudioModuleEditor, public ChangeBroadcaster
+{
+public:
+  WaveformBufferEditor(CriticalSection *newPlugInLock, WaveformBufferAudioModule* newWaveformBufferModuleToEdit); 
+  virtual void changeListenerCallback(ChangeBroadcaster *objectThatHasChanged);
+  virtual void resized();
+  juce_UseDebuggingNewOperator;
+protected:
+  FileSelectionBox          *fileSelectionBox;
+  WaveformBufferAudioModule *waveformBufferModuleToEdit;
+};
+
+
+//===============================================================================================
+// class WaveformRendererEditor:
+
+class WaveformRendererEditor : public AudioModuleEditor, public ChangeBroadcaster, public RComboBoxObserver
+{
+public:
+  WaveformRendererEditor(CriticalSection *newPlugInLock, WaveformRendererAudioModule* newWaveformRendererModuleToEdit); 
+  virtual void rComboBoxChanged(RComboBox *rComboBoxChanged);
+  virtual void changeListenerCallback(ChangeBroadcaster *objectThatHasChanged);
+  virtual void resized();
+  virtual void updateWidgetsAccordingToState();
+  virtual void updateWidgetVisibility();
+  juce_UseDebuggingNewOperator;
+protected:
+  RComboBox               *modeComboBox;
+  StandardWaveformEditor  *standardEditor;
+  WaveformBufferEditor    *bufferEditor;
+  rosic::WaveformRenderer *renderer;
+};
+
+
+//===============================================================================================
+// class WaveTableModuleEditor:
+
+class WaveTableModuleEditorPopUp : public AudioModuleEditor, public ChangeBroadcaster, public RComboBoxObserver
+{
+
+  friend class WaveTableModuleEditorCompact;
+
+public:
+
+  //---------------------------------------------------------------------------------------------
+  // construction/destruction:
+
+  WaveTableModuleEditorPopUp(CriticalSection *newPlugInLock, WaveTableAudioModule* newWaveTableModuleToEdit); 
+  virtual ~WaveTableModuleEditorPopUp();
+
+  //---------------------------------------------------------------------------------------------
+  // callbacks:
+
+  virtual void rComboBoxChanged(RComboBox *rComboBoxChanged);
+  virtual void changeListenerCallback(ChangeBroadcaster *objectThatHasChanged);
+  virtual void resized();
+  virtual void updateWidgetsAccordingToState();
+  virtual void updatePlot();
+
+  //=============================================================================================
+  juce_UseDebuggingNewOperator;
+
+protected:
+
+  // pointers to the edited objects (wrapped and non-wrapped):
+  rosic::WaveTable     *waveTableToEdit;
+  WaveTableAudioModule *waveTableModuleToEdit;
+
+  // sub-editor for the waveform-renderer:
+  WaveformRendererEditor *rendererEditor;
+
+  // plot and related stuff:
+  CurveFamilyPlotOld  *waveformDisplay;
+  CoordinateSystemOld *emptyDisplay;
+  double *xValues, *yValuesL, *yValuesR;
+  int    numSamplesInPlot;
+
+  // widgets:
+  // all the manipulation widgets come here.....or we make an extra class for them
+
+  // other ideas: stereo-shift, invert left and right separately
+
+};
+
+
+//===============================================================================================
+// class WaveTableModuleEditorCompact
+
+class WaveTableModuleEditorCompact : public AudioModuleEditor
+{
+
+public:
+
+  //---------------------------------------------------------------------------------------------
+  // construction/destruction:
+
+  WaveTableModuleEditorCompact(CriticalSection *newPlugInLock, WaveTableAudioModule* newWaveTableModuleToEdit);  
+  virtual ~WaveTableModuleEditorCompact();  
+
+  //---------------------------------------------------------------------------------------------
+  // setup:
+
+  /** Sets up the bounds of the popup editor relative to the top-left position of the 
+  edit-button. */
+  virtual void setPopUpEditorBounds(int x, int y, int w, int h);
+
+  /** Sets the headline text for both, the compact editor and the embedded popup editor. */
+  virtual void setHeadlineText(const juce::String& newHeadlineText);
+
+  //---------------------------------------------------------------------------------------------
+  // inquiry:
+
+  /** Returns the bounds of the edit-button. */
+  //virtual Rectangle getEditButtonBounds() const { return editButton->getBounds(); }
+
+  //---------------------------------------------------------------------------------------------
+  // callbacks:
+
+  virtual void rButtonClicked(RButton *buttonThatWasClicked);
+  virtual void changeListenerCallback(ChangeBroadcaster *objectThatHasChanged);
+  virtual void resized();
+  virtual void updateWidgetsAccordingToState();
+  virtual void updatePlot();
+
+  //=============================================================================================
+  juce_UseDebuggingNewOperator;
+
+protected:
+
+  // pointers to the edited objects (wrapped and non-wrapped):
+  rosic::WaveTable     *waveTableToEdit;
+  WaveTableAudioModule *waveTableModuleToEdit;
+
+  // the popup editor that opens when clicking on the 'Edit' button:
+  WaveTableModuleEditorPopUp *popUpEditor;
+
+  // widgets:
+  RTextField *waveformLabel;
+  RButton    *editButton;
+
+  // plot and related stuff:
+  CurveFamilyPlotOld  *waveformDisplay;
+  CoordinateSystemOld *emptyDisplay;
+  double *xValues, *yValuesL, *yValuesR;
+  int    numSamplesInPlot;
+
+  // bounds of the big editor relative to the top-left position of the edit-button:
+  int popUpEditorX, popUpEditorY, popUpEditorW, popUpEditorH; 
+
+};
+
+
 #endif 
