@@ -585,3 +585,481 @@ void OscilloscopeDisplay::adjustGrid()
 }
 
 
+//=========================================================================================================================================
+// class AudioModuleEditorAnimated:
+
+AudioModuleEditorAnimated::AudioModuleEditorAnimated(CriticalSection *newPlugInLock, AudioModule* newAudioModuleToEdit) 
+  : AudioModuleEditor(newAudioModuleToEdit)
+{
+  addWidget( frameRateSlider = new RSlider("FrameRateSlider") );
+  frameRateSlider->assignParameter( moduleToEdit->getParameterByName("FrameRate") );
+
+  frameRateSlider->setSliderName(juce::String("FPS"));
+  frameRateSlider->setDescription(juce::String("Number of frames per second"));
+  frameRateSlider->setDescriptionField(infoField);
+  frameRateSlider->addListener(this);
+  frameRateSlider->setStringConversionFunction(valueToString0); // \todo: fpsToString
+
+  addWidget( freezeButton = new RButton(juce::String("Freeze")) );
+  freezeButton->assignParameter( moduleToEdit->getParameterByName("Freeze") );
+  freezeButton->setDescription(juce::String("Freeze the display"));
+  freezeButton->setDescriptionField(infoField);
+  freezeButton->setClickingTogglesState(true);
+  freezeButton->addRButtonListener(this);
+  freezeButton->setToggleState(false, false);
+
+  updateWidgetsAccordingToState();
+}
+
+void AudioModuleEditorAnimated::rButtonClicked(RButton *buttonThatWasClicked)
+{
+  if( buttonThatWasClicked == freezeButton )
+    setFreeze(freezeButton->getToggleState());
+  else
+    AudioModuleEditor::rButtonClicked(buttonThatWasClicked);
+}
+
+void AudioModuleEditorAnimated::rSliderValueChanged(RSlider *sliderThatHasChanged)
+{
+  if( sliderThatHasChanged == frameRateSlider )
+    setFrameRate(frameRateSlider->getValue());
+}
+
+void AudioModuleEditorAnimated::setFrameRate(double newFrameRate)
+{
+  frameRateSlider->setValue(newFrameRate, false, false);
+  updateTimerSettings();
+}
+
+void AudioModuleEditorAnimated::setFreeze(bool shouldBeFrozen)
+{
+  freezeButton->setToggleState(shouldBeFrozen, false);
+  updateTimerSettings();
+}
+
+void AudioModuleEditorAnimated::timerCallback()
+{
+  if( freezeButton->getToggleState() != true )
+    updateEditorContent();
+}
+
+void AudioModuleEditorAnimated::setVisible(bool shouldBeVisible)
+{
+  AudioModuleEditor::setVisible(shouldBeVisible);
+  updateTimerSettings();
+}
+
+void AudioModuleEditorAnimated::updateWidgetsAccordingToState()
+{
+  AudioModuleEditor::updateWidgetsAccordingToState();
+  updateTimerSettings();
+}
+
+void AudioModuleEditorAnimated::updateTimerSettings()
+{
+  if( isVisible() && freezeButton->getToggleState() == false )
+    startTimer( roundToInt(1000.0 / frameRateSlider->getValue()) );
+  else
+    stopTimer();
+}
+
+void AudioModuleEditorAnimated::resized()
+{
+  freezeButton->setBounds(getWidth()-52-4, getHeight()-20, 52, 16);
+  frameRateSlider->setBounds(freezeButton->getX()-80-4, getHeight()-20, 80, 16);
+}
+
+//=========================================================================================================================================
+// class OscilloscopeModuleEditor:
+
+OscilloscopeModuleEditor::OscilloscopeModuleEditor(CriticalSection *newPlugInLock, OscilloscopeAudioModule* newOscilloscopeAudioModule) 
+  : AudioModuleEditorAnimated(newPlugInLock, newOscilloscopeAudioModule)
+{
+  setHeadlineStyle(Editor::NO_HEADLINE);
+
+  jassert(newOscilloscopeAudioModule != NULL ); // you must pass a valid module here
+  oscilloscopeAudioModule = newOscilloscopeAudioModule;
+
+  addWidget( midSideButton = new RButton(juce::String("Mid/Side")) );
+  midSideButton->setDescription(juce::String("Switch to Mid/Side mode"));
+  midSideButton->assignParameter( moduleToEdit->getParameterByName("MidSideMode") );  
+  midSideButton->setClickingTogglesState(true);
+  midSideButton->setToggleState(false, false);
+  midSideButton->addRButtonListener(this);
+
+  addWidget( syncModeComboBox = new RNamedComboBox(juce::String("SyncModeComboBox"), juce::String("Sync:")) );
+  syncModeComboBox->setDescription(juce::String("Selects the syncronization mode"));
+  syncModeComboBox->assignParameter( moduleToEdit->getParameterByName("SyncMode") );  
+  syncModeComboBox->setDescriptionField(infoField);
+  //syncModeComboBox->addListener(this);
+
+  addPlot( oscilloscopeDisplay = new OscilloscopeDisplay(juce::String("OscilloscopeDisplay")) );
+  oscilloscopeDisplay->addCoordinateSystemOldObserver(this);
+
+  addChildColourSchemeComponent( oscilloscopeZoomer = new CoordinateSystemZoomerOld() );
+  oscilloscopeZoomer->setZoomerSize(16);
+  oscilloscopeZoomer->setCoordinateSystem(oscilloscopeDisplay);
+  oscilloscopeZoomer->hideScrollBarX(true);
+  oscilloscopeZoomer->setVerticalMouseWheelMode(CoordinateSystemZoomerOld::horizontalZoomViaVerticalMouseWheel);
+
+  timeAxis = NULL;
+  xL       = NULL;
+  xR       = NULL;
+  px       = new float*[2];
+  px[0]    = xL;
+  px[1]    = xR;
+
+  updateWidgetsAccordingToState();
+}
+
+OscilloscopeModuleEditor::~OscilloscopeModuleEditor()
+{
+  delete[] timeAxis;
+  delete[] xL; 
+  delete[] xR;
+  delete[] px;
+}
+
+void OscilloscopeModuleEditor::coordinateSystemChanged(MessengingCoordinateSystemOld *coordinateSystemThatHasChanged)
+{
+  if( oscilloscopeAudioModule == NULL )
+    return;
+
+  if( coordinateSystemThatHasChanged == oscilloscopeDisplay )
+  {
+    moduleToEdit->getParameterByName("TimeWindowLength")->setValue( oscilloscopeDisplay->getCurrentRangeMaxX(), true, true );
+    moduleToEdit->getParameterByName("MinAmplitude")->setValue(     oscilloscopeDisplay->getCurrentRangeMinY(), true, true );
+    moduleToEdit->getParameterByName("MaxAmplitude")->setValue(     oscilloscopeDisplay->getCurrentRangeMaxY(), true, true );
+
+
+    //oscilloscopeAudioModule->wrappedOscilloscope->setTimeWindowLength(oscilloscopeDisplay->getCurrentRangeMaxX());
+  }
+}
+
+void OscilloscopeModuleEditor::updateWidgetsAccordingToState()
+{
+  AudioModuleEditor::updateWidgetsAccordingToState();
+  double maxX = moduleToEdit->getParameterByName("TimeWindowLength")->getValue();
+  double minY = moduleToEdit->getParameterByName("MinAmplitude")->getValue();
+  double maxY = moduleToEdit->getParameterByName("MaxAmplitude")->getValue();
+
+  oscilloscopeAudioModule->setIgnoreDirtification(true);       // prevents the subsequent call from spawning a state dirtification
+  oscilloscopeDisplay->setCurrentRange(0.0, maxX, minY, maxY); // 1st argument irrelevant
+  oscilloscopeZoomer->updateScrollbars();
+  oscilloscopeAudioModule->setIgnoreDirtification(false);
+}
+
+void OscilloscopeModuleEditor::resized()
+{
+  AudioModuleEditorAnimated::resized();
+
+  int x = 0;
+  int y = 0;
+  int w = getWidth();
+  int h = getHeight();
+
+  y = h - 24;
+
+  midSideButton->setBounds(4, y, 60, 20);
+  syncModeComboBox->setBounds(midSideButton->getRight()+4, y, 140, 20);
+
+  y = getHeadlineBottom();
+  h = midSideButton->getY()-y;
+  oscilloscopeDisplay->setBounds(x, y, w-16, h-16);
+  oscilloscopeDisplay->setWaveformData(0, 0, NULL, NULL);
+  oscilloscopeZoomer->alignWidgetsToCoordinateSystem();
+
+
+  // later - take stereo into account - maybe wrap this stuff into a function
+  int N = oscilloscopeAudioModule->waveformDisplayBuffer->getDisplayBufferLength();
+  delete[] timeAxis;
+  delete[] xL; 
+  delete[] xR;
+  timeAxis = new double[N];
+  xL       = new float[N];
+  xR       = new float[N];
+  px[0]    = xL;
+  px[1]    = xR;
+  convertBuffer(oscilloscopeAudioModule->waveformDisplayBuffer->getTimeAxis(),      timeAxis, N);
+  convertBuffer(oscilloscopeAudioModule->waveformDisplayBuffer->getDisplayBuffer(), xL,       N);
+  convertBuffer(oscilloscopeAudioModule->waveformDisplayBuffer->getDisplayBuffer(), xR,       N);
+  oscilloscopeDisplay->setWaveformData(N, 1, px, timeAxis); // 1 only for debug/optimize - later: 2
+}
+
+void OscilloscopeModuleEditor::updateEditorContent()
+{
+  // todo: let the display buffer directly store float arrays - avoid the copy/conversion
+  int N = oscilloscopeAudioModule->waveformDisplayBuffer->getDisplayBufferLength();
+  convertBuffer(oscilloscopeAudioModule->waveformDisplayBuffer->getTimeAxis(),      timeAxis, N);
+  convertBuffer(oscilloscopeAudioModule->waveformDisplayBuffer->getDisplayBuffer(), xL,       N);
+  convertBuffer(oscilloscopeAudioModule->waveformDisplayBuffer->getDisplayBuffer(), xR,       N);
+  oscilloscopeDisplay->setWaveformData(N, 2, px, timeAxis); 
+}
+
+
+//=========================================================================================================================================
+// class SpectrumAnalyzerModuleEditor:
+
+SpectrumAnalyzerModuleEditor::SpectrumAnalyzerModuleEditor(CriticalSection *newPlugInLock, 
+  SpectrumAnalyzerAudioModule* newSpectrumAnalyzerAudioModule) 
+  : AudioModuleEditorAnimated(newPlugInLock, newSpectrumAnalyzerAudioModule)
+{
+  setHeadlineStyle(Editor::NO_HEADLINE);
+
+  jassert(newSpectrumAnalyzerAudioModule != NULL ); // you must pass a valid module here
+  spectrumAnalyzerAudioModule = newSpectrumAnalyzerAudioModule;
+
+  addWidget( midSideButton = new RButton(juce::String("Mid/Side")) );
+  midSideButton->assignParameter( moduleToEdit->getParameterByName("MidSideMode") );
+  midSideButton->setDescription(juce::String("Switch to Mid/Side mode"));
+  midSideButton->setClickingTogglesState(true);
+  midSideButton->setToggleState(false, false);
+  midSideButton->addRButtonListener(this);
+
+  addWidget( fftSizeComboBox = new RNamedComboBox(juce::String("fftSizeComboBox"), juce::String("Size:")) );
+  fftSizeComboBox->assignParameter( moduleToEdit->getParameterByName("FFTSize") );
+  fftSizeComboBox->setDescription(juce::String("Selects the FFT-Size."));
+  fftSizeComboBox->setDescriptionField(infoField);
+
+  addWidget( linearFrequencyAxisButton = new RButton(juce::String("Linear")) );
+  linearFrequencyAxisButton->assignParameter( moduleToEdit->getParameterByName("LinearFrequency") );
+  linearFrequencyAxisButton->setDescription(juce::String("Toggle linear scaling of the frequency axis"));
+  linearFrequencyAxisButton->setClickingTogglesState(true);
+  linearFrequencyAxisButton->setToggleState(true, false);
+  linearFrequencyAxisButton->addRButtonListener(this);
+
+  addPlot( spectrumDisplay = new SpectrumAnalyzerDisplay(juce::String("SpectrumDisplay")) );
+  spectrumDisplay->addCoordinateSystemOldObserver(this);
+  double minX = moduleToEdit->getParameterByName("MinFrequency")->getMinValue();
+  double maxX = moduleToEdit->getParameterByName("MaxFrequency")->getMaxValue();
+  double minY = moduleToEdit->getParameterByName("MinLevel")->getMinValue();
+  double maxY = moduleToEdit->getParameterByName("MaxLevel")->getMaxValue();
+  spectrumDisplay->setMaximumRange(minX, maxX, minY, maxY);
+  minX = moduleToEdit->getParameterByName("MinFrequency")->getValue();
+  maxX = moduleToEdit->getParameterByName("MaxFrequency")->getValue();
+  minY = moduleToEdit->getParameterByName("MinLevel")->getValue();
+  maxY = moduleToEdit->getParameterByName("MaxLevel")->getValue();
+  spectrumDisplay->setCurrentRange(minX, maxX, minY, maxY);
+
+  addChildColourSchemeComponent( spectrumZoomer = new CoordinateSystemZoomerOld() );
+  spectrumZoomer->setZoomerSize(16);
+  spectrumZoomer->setCoordinateSystem(spectrumDisplay);
+  spectrumZoomer->setVerticalMouseWheelMode(CoordinateSystemZoomerOld::horizontalZoomViaVerticalMouseWheel);
+
+  updateWidgetsAccordingToState();
+}
+
+void SpectrumAnalyzerModuleEditor::rButtonClicked(RButton *buttonThatWasClicked)
+{
+  if( buttonThatWasClicked == linearFrequencyAxisButton )
+  {
+    spectrumDisplay->useLogarithmicScaleX( !linearFrequencyAxisButton->getToggleState());
+    spectrumZoomer->zoomToAllXY();
+  }
+  else
+    AudioModuleEditorAnimated::rButtonClicked(buttonThatWasClicked);    
+}
+
+void SpectrumAnalyzerModuleEditor::coordinateSystemChanged(MessengingCoordinateSystemOld *coordinateSystemThatHasChanged)
+{
+  if( spectrumAnalyzerAudioModule == NULL )
+    return;
+
+  if( coordinateSystemThatHasChanged == spectrumDisplay )
+  {
+    // here seems to be a bug - the pointer has a differentv address than spectrumDisplay when the message was send
+    // from the spectrumDisplay - maybe something about the address of the inherited MessengingCoordinateSystem?
+    moduleToEdit->getParameterByName("MinFrequency")->setValue( spectrumDisplay->getCurrentRangeMinX(), true, true );
+    moduleToEdit->getParameterByName("MaxFrequency")->setValue( spectrumDisplay->getCurrentRangeMaxX(), true, true );
+    moduleToEdit->getParameterByName("MinLevel")->setValue(     spectrumDisplay->getCurrentRangeMinY(), true, true );
+    moduleToEdit->getParameterByName("MaxLevel")->setValue(     spectrumDisplay->getCurrentRangeMaxY(), true, true );
+  }
+}
+
+void SpectrumAnalyzerModuleEditor::updateWidgetsAccordingToState()
+{
+  AudioModuleEditor::updateWidgetsAccordingToState();
+  double minX = moduleToEdit->getParameterByName("MinFrequency")->getValue();
+  double maxX = moduleToEdit->getParameterByName("MaxFrequency")->getValue();
+  double minY = moduleToEdit->getParameterByName("MinLevel")->getValue();
+  double maxY = moduleToEdit->getParameterByName("MaxLevel")->getValue();
+
+  spectrumAnalyzerAudioModule->setIgnoreDirtification(true);       // prevents the subsequent call from spawning a state dirtification
+  spectrumDisplay->setCurrentRange(minX, maxX, minY, maxY);
+  spectrumZoomer->updateScrollbars();
+  spectrumAnalyzerAudioModule->setIgnoreDirtification(false);       
+}
+
+void SpectrumAnalyzerModuleEditor::resized()
+{
+  AudioModuleEditorAnimated::resized();
+
+  int x = 0;
+  int y = 0;
+  int w = getWidth();
+  int h = getHeight();
+
+  y = h - 24;
+
+  midSideButton->setBounds(4, y, 60, 20);
+  fftSizeComboBox->setBounds(midSideButton->getRight()+4, y, 80, 20);
+  // methodComboBox...
+  linearFrequencyAxisButton->setBounds(fftSizeComboBox->getRight()+4, y, 48, 20);
+
+  y = getHeadlineBottom();
+  h = midSideButton->getY()-y;
+  spectrumDisplay->setBounds(x, y, w-16+RWidget::outlineThickness, h-16); // 16: zoomerSize
+  spectrumZoomer->alignWidgetsToCoordinateSystem();
+}
+
+
+void SpectrumAnalyzerModuleEditor::updateEditorContent()
+{
+  if( spectrumAnalyzerAudioModule == NULL )
+    return;
+  if( spectrumAnalyzerAudioModule->wrappedSpectrumAnalyzer == NULL )
+    return;
+
+  // trigger an update of the display-buffers:
+  if( !spectrumAnalyzerAudioModule->displayIsFrozen )
+    spectrumAnalyzerAudioModule->wrappedSpectrumAnalyzer->updateDisplayBuffers();
+
+  // retrieve the data from the analyzer and pass it to the display:
+  spectrumDisplay->setSpectra(
+    spectrumAnalyzerAudioModule->wrappedSpectrumAnalyzer->getNumNonRedundantBins(), 
+    spectrumAnalyzerAudioModule->wrappedSpectrumAnalyzer->getNumChannels(), 
+    spectrumAnalyzerAudioModule->wrappedSpectrumAnalyzer->getBinFrequencies(),
+    spectrumAnalyzerAudioModule->wrappedSpectrumAnalyzer->getCurrentSpectra() );
+}
+
+//=========================================================================================================================================
+// class MultiAnalyzerModuleEditor:
+
+MultiAnalyzerModuleEditor::MultiAnalyzerModuleEditor(CriticalSection *newPlugInLock, MultiAnalyzerAudioModule* newMultiAnalyzerAudioModule) 
+  : AudioModuleEditor(newMultiAnalyzerAudioModule)
+{
+  jassert(newMultiAnalyzerAudioModule != NULL ); // you must pass a valid module here
+  multiAnalyzerAudioModule = newMultiAnalyzerAudioModule;
+
+  /*
+  addWidget( frameRateSlider = new RSlider (T("FrameRateSlider")) );
+  frameRateSlider->assignParameter( moduleToEdit->getParameterByName(T("FrameRate")) );
+  frameRateSlider->setSliderName(juce::String(T("FPS")));
+  frameRateSlider->setDescription(juce::String(T("Number of frames per second")));
+  frameRateSlider->setDescriptionField(infoField);
+  frameRateSlider->setStringConversionFunction(&rojue::valueToString0); // \todo: fpsToString
+
+  // pull Freeze button into this class also...
+
+  addWidget( freezeButton = new RButton(juce::String(T("Freeze"))) );
+  freezeButton->setDescription(juce::String(T("Freeze the display")));
+  freezeButton->setDescriptionField(infoField);
+  freezeButton->setClickingTogglesState(true);
+  freezeButton->addRButtonListener(this);
+  freezeButton->setToggleState(false, false);
+  //spectrumAnalyzerAudioModule->displayIsFrozen = false;
+  */
+
+  // embedded sub-editors:
+  oscilloscopeEditor = new OscilloscopeModuleEditor(lock, multiAnalyzerAudioModule->oscilloscopeModule);
+  oscilloscopeEditor->setDescriptionField(infoField, true);
+  addChildEditor(oscilloscopeEditor, true, false);
+
+  spectrumAnalyzerEditor = new SpectrumAnalyzerModuleEditor(lock, multiAnalyzerAudioModule->spectrumAnalyzerModule);
+  spectrumAnalyzerEditor->setDescriptionField(infoField, true);
+  addChildEditor(spectrumAnalyzerEditor, true, false);
+
+  // buttons for tabbing between the subeditors:
+  addWidget( oscilloscopeButton = new RButton(juce::String("Scope")) );
+  oscilloscopeButton->setDescription(juce::String("Switch to oscilloscope mode"));
+  oscilloscopeButton->setDescriptionField(infoField);
+  oscilloscopeButton->addRButtonListener(this);
+
+  addWidget( spectrumAnalyzerButton = new RButton(juce::String("Spectrum")) );
+  spectrumAnalyzerButton->setDescription(juce::String("Switch to spectrum analyzer mode"));
+  spectrumAnalyzerButton->setDescriptionField(infoField);
+  spectrumAnalyzerButton->addRButtonListener(this);
+
+  loadPreferencesFromFile();
+  updateWidgetsAccordingToState();
+}
+
+void MultiAnalyzerModuleEditor::rButtonClicked(RButton *buttonThatWasClicked)
+{
+  if( multiAnalyzerAudioModule == NULL )
+    return;
+
+  if( buttonThatWasClicked == oscilloscopeButton ) 
+    multiAnalyzerAudioModule->setMode(MultiAnalyzerAudioModule::OSCILLOSCOPE);
+  else if( buttonThatWasClicked == spectrumAnalyzerButton )
+    multiAnalyzerAudioModule->setMode(MultiAnalyzerAudioModule::SPECTRUM_ANALYZER);
+  else
+    AudioModuleEditor::rButtonClicked(buttonThatWasClicked);
+
+  updateSubEditorVisibilitiesAndTabButtonStates();
+}
+
+void MultiAnalyzerModuleEditor::resized()
+{
+  AudioModuleEditor::resized();
+
+  int w, h;
+  int x = 0;
+  int y = getPresetSectionBottom();
+
+  spectrumAnalyzerButton->setBounds(x+4, y+4, 64, 20);
+  x = spectrumAnalyzerButton->getRight();
+  oscilloscopeButton->setBounds(x+4, y+4, 48, 20);
+
+  /*
+  x = getWidth() - 52 - 4;
+  freezeButton->setBounds(x, y+4, 52, 16);
+  x = freezeButton->getX() - 80 - 4;
+  frameRateSlider->setBounds(x, y+4, 80, 16);
+  */
+
+  x = 4;
+  y = spectrumAnalyzerButton->getBottom() - RWidget::outlineThickness;
+  w = getWidth()-8;
+  h = infoField->getY()-y;
+  oscilloscopeEditor->setBounds(x, y, w, h);
+  spectrumAnalyzerEditor->setBounds(x, y, w, h);
+}
+
+void MultiAnalyzerModuleEditor::updateWidgetsAccordingToState()
+{
+  AudioModuleEditor::updateWidgetsAccordingToState();
+
+  multiAnalyzerAudioModule->setIgnoreDirtification(true);  
+  oscilloscopeEditor->updateWidgetsAccordingToState();
+  spectrumAnalyzerEditor->updateWidgetsAccordingToState();
+  updateSubEditorVisibilitiesAndTabButtonStates();
+  multiAnalyzerAudioModule->setIgnoreDirtification(false);  
+}
+
+void MultiAnalyzerModuleEditor::updateSubEditorVisibilitiesAndTabButtonStates()
+{
+  oscilloscopeButton->setToggleState(false, false);
+  spectrumAnalyzerButton->setToggleState(false, false);
+
+  oscilloscopeEditor->setVisible(false);
+  spectrumAnalyzerEditor->setVisible(false);
+
+  int mode = multiAnalyzerAudioModule->getMode();
+  switch( mode )
+  {
+  case MultiAnalyzerAudioModule::OSCILLOSCOPE:
+  {
+    oscilloscopeButton->setToggleState(true, false);
+    oscilloscopeEditor->setVisible(true);
+  }
+  break;
+  case MultiAnalyzerAudioModule::SPECTRUM_ANALYZER:
+  {
+    spectrumAnalyzerButton->setToggleState(true, false);
+    spectrumAnalyzerEditor->setVisible(true);
+  }
+  break;
+  }
+}
+

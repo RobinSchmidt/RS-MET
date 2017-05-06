@@ -289,6 +289,146 @@ protected:
   juce_UseDebuggingNewOperator;
 };
 
+//=================================================================================================
 
+// todo - maybe move this class to another file - might be useful for EQ with spectrum display later also
+class AudioModuleEditorAnimated : public AudioModuleEditor, public Timer, public RSliderListener
+{
+
+public:
+
+  AudioModuleEditorAnimated(CriticalSection *newPlugInLock, AudioModule* newAudioModuleToEdit);
+
+  // overrides:
+  virtual void rButtonClicked(RButton *buttonThatWasClicked);
+  virtual void rSliderValueChanged(RSlider *sliderThatHasChamged);
+  virtual void timerCallback();
+  virtual void setVisible(bool  shouldBeVisible);
+  virtual void resized();
+  virtual void updateWidgetsAccordingToState();
+
+  /** Sets the number of frames per second. */
+  virtual void setFrameRate(double newFrameRate);
+
+  /** Freezes the display. */
+  virtual void setFreeze(bool shouldBeFrozen);
+
+  juce_UseDebuggingNewOperator;
+
+protected:
+
+  /** This is the method you must override in order to update the content of the editor when a new frame should be rendered. */
+  virtual void updateEditorContent() = 0;
+
+  /** Updates the time settings according to the state of frameRateSlider, freezeButton and the Component's visibility. */
+  virtual void updateTimerSettings();
+
+  RSlider *frameRateSlider;
+  RButton *freezeButton; 
+
+};
+
+//=======================================================================================================================================
+
+/** GUI editor for the Oscilloscope */
+
+class OscilloscopeModuleEditor : public AudioModuleEditorAnimated, public CoordinateSystemOldObserver //, public RComboBoxObserver
+{
+
+public:
+
+  OscilloscopeModuleEditor(CriticalSection *newPlugInLock, OscilloscopeAudioModule* newOscilloscopeAudioModule);
+
+  virtual ~OscilloscopeModuleEditor();
+
+
+  virtual void coordinateSystemChanged(MessengingCoordinateSystemOld *coordinateSystemThatHasChanged);
+  virtual void resized();
+  virtual void updateWidgetsAccordingToState();
+
+  juce_UseDebuggingNewOperator;
+
+protected:
+
+  virtual void updateEditorContent();
+
+  OscilloscopeAudioModule *oscilloscopeAudioModule;
+
+  RButton        *midSideButton;
+  RNamedComboBox *syncModeComboBox;
+
+  OscilloscopeDisplay       *oscilloscopeDisplay;
+  CoordinateSystemZoomerOld *oscilloscopeZoomer;
+
+  // signal buffers for display:
+  double *timeAxis;
+  float  *xL, *xR;
+  float  **px;  // not used yet, later - use it like: px[0] = xL, px[1] = xR
+
+};
+
+
+//=======================================================================================================================================
+
+/** GUI editor for the SpectrumAnalyzer */
+
+class SpectrumAnalyzerModuleEditor : public AudioModuleEditorAnimated, public CoordinateSystemOldObserver
+{
+
+public:
+
+  SpectrumAnalyzerModuleEditor(CriticalSection *newPlugInLock, SpectrumAnalyzerAudioModule* newSpectrumAnalyzerAudioModule);
+
+  virtual void rButtonClicked(RButton *buttonThatWasClicked);
+  virtual void coordinateSystemChanged(MessengingCoordinateSystemOld *coordinateSystemThatHasChanged);
+  virtual void resized();
+  virtual void updateWidgetsAccordingToState();
+
+  juce_UseDebuggingNewOperator;
+
+protected:
+
+  virtual void updateEditorContent();
+
+  SpectrumAnalyzerAudioModule *spectrumAnalyzerAudioModule;
+
+  RButton        *midSideButton, *linearFrequencyAxisButton;
+  RNamedComboBox *fftSizeComboBox;
+
+  SpectrumAnalyzerDisplay   *spectrumDisplay;
+  CoordinateSystemZoomerOld *spectrumZoomer;
+
+};
+
+
+//=======================================================================================================================================
+
+/** GUI editor for the MultiAnalyzer */
+
+class MultiAnalyzerModuleEditor : virtual public AudioModuleEditor 
+{
+
+public:
+
+  MultiAnalyzerModuleEditor(CriticalSection *newPlugInLock, MultiAnalyzerAudioModule* newMultiAnalyzerAudioModule);
+
+  virtual void rButtonClicked(RButton *buttonThatWasClicked);
+  virtual void resized();
+  virtual void updateWidgetsAccordingToState();
+
+  juce_UseDebuggingNewOperator;
+
+protected:
+
+  virtual void updateSubEditorVisibilitiesAndTabButtonStates();
+
+  MultiAnalyzerAudioModule     *multiAnalyzerAudioModule;
+
+  OscilloscopeModuleEditor     *oscilloscopeEditor;
+  SpectrumAnalyzerModuleEditor *spectrumAnalyzerEditor;
+
+  RButton *oscilloscopeButton, *spectrumAnalyzerButton;
+
+};
 
 #endif 
