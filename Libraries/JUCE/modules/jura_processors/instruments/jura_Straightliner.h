@@ -95,5 +95,49 @@ protected:
 
 //=================================================================================================
 
+class StraightlinerModuleEditor : public PolyphonicInstrumentEditor
+{
+
+public:
+
+  enum defaultColourSchemes
+  {
+    INHERITED_DEFAULTS = 0,
+    RED_BLUE_PURPLE_DARK_BRIGHT_DARK,
+    RED_BLUE_PURPLE_DARK_DARK_DARK,
+    RED_BLUE_PURPLE_BRIGHT_BRIGHT_BRIGHT
+  };
+
+  /** Constructor. */
+  StraightlinerModuleEditor(CriticalSection *newPlugInLock, 
+    StraightlinerAudioModule* newStraightlinerAudioModule);
+
+  // setup:
+
+  //virtual void loadPreferencesFromFile();
+  //virtual void setColourSchemeFromXml(const XmlElement& xmlColorScheme);
+
+  /** Sets up the color-schemes for the embedded sub-editors according to the colour-scheme of 
+  this editor. */
+  virtual void updateSubEditorColourSchemes();
+
+  // callbacks:
+  virtual void copyColourSettingsFrom(const ColourSchemeComponent *componentToCopyFrom);
+  virtual void updateWidgetsAccordingToState();
+  virtual void paint(Graphics &g); 
+  virtual void resized();
+
+protected:
+
+  /** This is the actual plugin engine which does all the dsp and automation handling. */
+  StraightlinerAudioModule *straightlinerAudioModule;
+
+  // the sub-editors:
+  FourOscSectionModuleEditor     *oscSectionEditor;
+  MultiModeFilterModuleEditor    *filterEditor;
+  BreakpointModulatorEditorMulti *envelopeEditor;
+
+  juce_UseDebuggingNewOperator;
+};
 
 #endif

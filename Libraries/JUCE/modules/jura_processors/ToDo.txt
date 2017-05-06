@@ -10,11 +10,7 @@
  -DspWorkbench (done)
  -SignalAnalyzer (now MultiAnalyzer) (done)
  -EchoLab (done)
- 
- -Straightliner
-  -OscillatorStereo (done)
-  -FourOscSection (done)
-  -PolyphonicInstrument (done)
+ -Straightliner (done)
 
  -KeyShot
  -Liberty (later - it needs the "romos" folder)
