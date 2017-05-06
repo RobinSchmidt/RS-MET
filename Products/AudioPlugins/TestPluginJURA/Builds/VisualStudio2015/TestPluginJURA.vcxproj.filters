@@ -2328,16 +2328,13 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_EngineersFilter.cpp">
       <Filter>Juce Modules\jura_processors\filters</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_Equalizer.cpp">
+      <Filter>Juce Modules\jura_processors\filters</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_LadderFilter.cpp">
       <Filter>Juce Modules\jura_processors\filters</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_PhasorFilter.cpp">
-      <Filter>Juce Modules\jura_processors\filters</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\rosof_EqualizerModuleEditor.cpp">
-      <Filter>Juce Modules\jura_processors\filters</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\rosof_EqualizerPlotEditor.cpp">
       <Filter>Juce Modules\jura_processors\filters</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_AciDevil.cpp">
@@ -2350,6 +2347,9 @@
       <Filter>Juce Modules\jura_processors\misc</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\misc\jura_ChannelMatrix2x2.cpp">
+      <Filter>Juce Modules\jura_processors\misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\misc\rosof_DspWorkbenchModuleEditor.cpp">
       <Filter>Juce Modules\jura_processors\misc</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\jura_BreakpointModulatorAudioModule.cpp">
@@ -3627,8 +3627,8 @@
     <ClCompile Include="..\..\JuceLibraryCode\rosic.cpp">
       <Filter>Juce Library Code</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_Equalizer.cpp">
-      <Filter>Juce Modules\jura_processors\filters</Filter>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\misc\jura_DspWorkbench.cpp">
+      <Filter>Juce Modules\jura_processors\misc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5693,16 +5693,13 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_EngineersFilter.h">
       <Filter>Juce Modules\jura_processors\filters</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_Equalizer.h">
+      <Filter>Juce Modules\jura_processors\filters</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_LadderFilter.h">
       <Filter>Juce Modules\jura_processors\filters</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_PhasorFilter.h">
-      <Filter>Juce Modules\jura_processors\filters</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\rosof_EqualizerModuleEditor.h">
-      <Filter>Juce Modules\jura_processors\filters</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\rosof_EqualizerPlotEditor.h">
       <Filter>Juce Modules\jura_processors\filters</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_AciDevil.h">
@@ -5715,6 +5712,9 @@
       <Filter>Juce Modules\jura_processors\misc</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\misc\jura_ChannelMatrix2x2.h">
+      <Filter>Juce Modules\jura_processors\misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\misc\rosof_DspWorkbenchModuleEditor.h">
       <Filter>Juce Modules\jura_processors\misc</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\jura_BreakpointModulatorAudioModule.h">
@@ -7102,8 +7102,8 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\jura_framework.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\jura_processors.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rosic.h" />
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_Equalizer.h">
-      <Filter>Juce Modules\jura_processors\filters</Filter>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\misc\jura_DspWorkbench.h">
+      <Filter>Juce Modules\jura_processors\misc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

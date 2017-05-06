@@ -36,5 +36,6 @@ namespace jura
 
 #include "misc/jura_AudioModuleChain.cpp"
 #include "misc/jura_ChannelMatrix2x2.cpp"
+//#include "misc/jura_DspWorkbench.cpp"  // needs MultiModeFilterEditor
 
 }
