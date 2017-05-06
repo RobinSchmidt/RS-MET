@@ -388,6 +388,9 @@
     <Filter Include="Juce Modules\jura_processors\analyzers">
       <UniqueIdentifier>{884A90C2-9EA1-7ED2-F91E-5FCB2882A445}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Juce Modules\jura_processors\custom_widgets">
+      <UniqueIdentifier>{EE919AB8-05E4-27D0-04C4-ED5EAA52CDD3}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Juce Modules\jura_processors\effects">
       <UniqueIdentifier>{6CC0048E-A940-03F3-8E84-D3DE12A99950}</UniqueIdentifier>
     </Filter>
@@ -2355,6 +2358,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_PhasorFilter.cpp">
       <Filter>Juce Modules\jura_processors\filters</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_OscillatorStereo.cpp">
+      <Filter>Juce Modules\jura_processors\generators</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\rosof_OscillatorStereoEditor.cpp">
       <Filter>Juce Modules\jura_processors\generators</Filter>
     </ClCompile>
@@ -3648,8 +3654,14 @@
     <ClCompile Include="..\..\JuceLibraryCode\rosic.cpp">
       <Filter>Juce Library Code</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_OscillatorStereo.cpp">
-      <Filter>Juce Modules\jura_processors\generators</Filter>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\custom_widgets\jura_CustomComboBoxes.cpp">
+      <Filter>Juce Modules\jura_processors\custom_widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\custom_widgets\jura_CustomSliders.cpp">
+      <Filter>Juce Modules\jura_processors\custom_widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\custom_widgets\jura_EffectSelectionPopup.cpp">
+      <Filter>Juce Modules\jura_processors\custom_widgets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5741,6 +5753,9 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_PhasorFilter.h">
       <Filter>Juce Modules\jura_processors\filters</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_OscillatorStereo.h">
+      <Filter>Juce Modules\jura_processors\generators</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\rosof_OscillatorStereoEditor.h">
       <Filter>Juce Modules\jura_processors\generators</Filter>
     </ClInclude>
@@ -7144,8 +7159,14 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\jura_framework.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\jura_processors.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rosic.h" />
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_OscillatorStereo.h">
-      <Filter>Juce Modules\jura_processors\generators</Filter>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\custom_widgets\jura_CustomComboBoxes.h">
+      <Filter>Juce Modules\jura_processors\custom_widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\custom_widgets\jura_CustomSliders.h">
+      <Filter>Juce Modules\jura_processors\custom_widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\custom_widgets\jura_EffectSelectionPopup.h">
+      <Filter>Juce Modules\jura_processors\custom_widgets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

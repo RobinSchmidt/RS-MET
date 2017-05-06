@@ -5437,6 +5437,30 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/custom_widgets/rosof_ComboBoxes.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/custom_widgets/rosof_ComboBoxes.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/custom_widgets/rosof_EffectSelectionPopup.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/custom_widgets/rosof_EffectSelectionPopup.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/custom_widgets/rosof_TuningSlider.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/custom_widgets/rosof_TuningSlider.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/jura_AlgoVerb.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -5517,11 +5541,11 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/generators/rosof_OscillatorStereoAudioModule.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/generators/jura_OscillatorStereo.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/generators/rosof_OscillatorStereoAudioModule.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/generators/jura_OscillatorStereo.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>

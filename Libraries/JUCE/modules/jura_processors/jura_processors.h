@@ -50,6 +50,10 @@ using namespace juce;
 namespace jura
 {
 
+#include "custom_widgets/jura_CustomComboBoxes.h"
+#include "custom_widgets/jura_CustomSliders.h"
+#include "custom_widgets/jura_EffectSelectionPopup.h"
+
 #include "analyzers/jura_PhaseScope.h"
 //#include "analyzers/jura_PhaseScopeMultiColor.h"
 #include "analyzers/jura_MultiAnalyzer.h"

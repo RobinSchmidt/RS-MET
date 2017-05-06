@@ -12,6 +12,10 @@
 namespace jura
 {
 
+#include "custom_widgets/jura_CustomComboBoxes.cpp"
+#include "custom_widgets/jura_CustomSliders.cpp"
+#include "custom_widgets/jura_EffectSelectionPopup.cpp"
+
 #include "analyzers/jura_PhaseScope.cpp"
 //#include "analyzers/jura_PhaseScopeMultiColor.cpp"
 #include "analyzers/jura_MultiAnalyzer.cpp"
