@@ -208,47 +208,87 @@ protected:
 
 //=================================================================================================
 
-//class SpectrumAnalyzerDisplay	: virtual public MessengingCoordinateSystemOld, 
-//  virtual public SpectrumDisplayOld
-//{
-//
-//public:
-//
-//  SpectrumAnalyzerDisplay(const juce::String& name = juce::String(T("SpectrumAnalyzerDisplay")));   
-//  /**< Constructor. */
-//
-//  virtual ~SpectrumAnalyzerDisplay(); 
-//  /**< Destructor. */
-//
-//  virtual void useLogarithmicScaleX(bool shouldBeLogScaledX, double newLogBase = 2.0);
-//  /**< Overrides the inherited function from CoordinateSystem in order to adjust the 
-//  grid-spacing. */
-//
-//  virtual void paint(Graphics &g);
-//  /**< Overrides the paint-function of the base-classes. */
-//
-//  virtual void updateBackgroundImage();
-//  /**< Overrides the inherited method from the CoordinateSystem base-class. */
-//
-//
-//protected:
-//
-//  virtual void plotCurveFamily(Graphics &g, Image* targetImage = NULL, XmlElement *targetSVG = NULL);
-//  /**< Overrides the plotCurveFamily()-function of the CurveFamilyPlot base-class. */
-//
-//  virtual bool getRepresentingBins(double lowFreq, double highFreq, int k, 
-//    int &minBin, int &maxBin);
-//  /**< Returns true and stores the index of the bins which best represent a range of frequencies
-//  between lowFreq and highFreq in minBin and maxBin.  If there is no bin satisfying the constraint 
-//  of being (strictly) lower than highFreq and higher or equal to lowFreq, it will return false. If 
-//  there are several bins between lowFreq and highFreq which satisfy this constraint, it will 
-//  return the bins with the largest and smallest magnitude. */
-//
-//
-//  juce_UseDebuggingNewOperator;
-//};
+class SpectrumAnalyzerDisplay	: virtual public MessengingCoordinateSystemOld, 
+  virtual public SpectrumDisplayOld
+{
+
+public:
+
+  SpectrumAnalyzerDisplay(const juce::String& name = juce::String("SpectrumAnalyzerDisplay"));   
+  /**< Constructor. */
+
+  virtual ~SpectrumAnalyzerDisplay(); 
+  /**< Destructor. */
+
+  virtual void useLogarithmicScaleX(bool shouldBeLogScaledX, double newLogBase = 2.0);
+  /**< Overrides the inherited function from CoordinateSystem in order to adjust the 
+  grid-spacing. */
+
+  virtual void paint(Graphics &g);
+  /**< Overrides the paint-function of the base-classes. */
+
+  virtual void updateBackgroundImage();
+  /**< Overrides the inherited method from the CoordinateSystem base-class. */
+
+
+protected:
+
+  virtual void plotCurveFamily(Graphics &g, juce::Image* targetImage = NULL, 
+    XmlElement *targetSVG = NULL);
+  /**< Overrides the plotCurveFamily()-function of the CurveFamilyPlot base-class. */
+
+  virtual bool getRepresentingBins(double lowFreq, double highFreq, int k, 
+    int &minBin, int &maxBin);
+  /**< Returns true and stores the index of the bins which best represent a range of frequencies
+  between lowFreq and highFreq in minBin and maxBin.  If there is no bin satisfying the constraint 
+  of being (strictly) lower than highFreq and higher or equal to lowFreq, it will return false. If 
+  there are several bins between lowFreq and highFreq which satisfy this constraint, it will 
+  return the bins with the largest and smallest magnitude. */
+
+
+  juce_UseDebuggingNewOperator;
+};
 
 //===============================================================================================
+
+class OscilloscopeDisplay	: virtual public MessengingCoordinateSystemOld, 
+  virtual public CurveFamilyPlotOld
+{
+
+public:
+
+  /** Constructor. */
+  OscilloscopeDisplay(const juce::String& name = juce::String("OscilloscopeDisplay"));   
+
+  /** Accepts values for a family (i.e. several channels) of waveform data.  */
+  virtual void setWaveformData(int newNumSamples, int newNumChannels, float** newData, 
+    double* newTimeAxis);
+
+  /** Override, to fix the currentMinX to zero when zooming in. */
+  virtual void setCurrentRangeX(double newMinX, double newMaxX);
+
+  /** Override, to trigger re-rendering. */
+  virtual void setCurrentRangeY(double newMinY, double newMaxY);
+
+  /** Override, to fix the currentMinX to zero when zooming in. */
+  virtual void setCurrentRange(double newMinX, double newMaxX, double newMinY, double newMaxY);
+
+
+protected:
+
+  /** Overrides the plotCurveFamily()-function of the CurveFamilyPlot base-class. */
+  virtual void plotCurveFamily(Graphics &g, juce::Image* targetImage = NULL, 
+    XmlElement *targetSVG = NULL);
+
+  /** Adjusts the grid-settings acording to the zoom-factor. */
+  virtual void adjustGrid();
+
+  double* timeAxis;
+  float** peakData;
+
+  juce_UseDebuggingNewOperator;
+};
+
 
 
 #endif 
