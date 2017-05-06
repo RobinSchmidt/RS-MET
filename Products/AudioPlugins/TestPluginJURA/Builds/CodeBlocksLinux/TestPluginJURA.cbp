@@ -5557,11 +5557,19 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/generators/rosof_SamplePlayerAudioModule.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/generators/jura_SamplePlayer.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/generators/rosof_SamplePlayerAudioModule.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/generators/jura_SamplePlayer.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/generators/rosof_SamplePlayerEditorDisplay.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/generators/rosof_SamplePlayerEditorDisplay.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
