@@ -49,6 +49,7 @@ namespace jura
 #include "instruments/jura_PolyphonicInstrument.cpp"
 #include "instruments/jura_Straightliner.cpp"
 #include "instruments/jura_SimpleSampler.cpp"
+#include "instruments/jura_KeyShot.cpp"
 
 #include "misc/jura_AudioModuleChain.cpp"
 #include "misc/jura_ChannelMatrix2x2.cpp"

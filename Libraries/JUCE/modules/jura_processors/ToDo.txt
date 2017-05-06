@@ -11,18 +11,16 @@
  -SignalAnalyzer (now MultiAnalyzer) (done)
  -EchoLab (done)
  -Straightliner (done)
-
- -SimpleSampler
-  -SamplePlayer (done)
+ -SimpleSampler (done)
 
  -KeyShot
+
  -MagicCarpet
  -MidiMonitor
  -Moduluxury
  -PitchShifter
  -Quadrifex
  -Quadriga
-
  -StereoDelay
  -TrackMeter
  -Workhorse
@@ -40,6 +38,7 @@ deletes the object conditionally, also an override of processBlock and createEdi
 -turn rapt into a juce module (with no dependencies)
 -make rapt and rosic test/demo projects
 -maybe rename rosic to rs_dsp - or maybe raps (Rob's Audio Processing Suite) - jura needs no rename
+ or: stay with rapt as rob's audio processing toolkit and have a rapt and a rapt_templates module
 -get rid of "using namespace" in headers - lorcan says, this is something to be avoided
 -templatize rosic classes and move templates to rapt
 -in rapt: use omega instead of freq/sampleRate (avoid data redundancy)
