@@ -722,4 +722,550 @@ void EchoLabAudioModule::initializeAutomatableParameters()
     parameterChanged(parameters[i]);
 }
 
+//=================================================================================================
+
+
+EchoLabPlotEditor::EchoLabPlotEditor(CriticalSection *newPlugInLock, EchoLabAudioModule* newEchoLabModuleToEdit) 
+  : CurveFamilyPlotOld(juce::String("EchoLabPlot")), InteractiveCoordinateSystemOld(juce::String("EchoLabPlot"))
+{
+  setDescription("Left: insert or grab band-handle, right: remove band");
+
+  //ParameterObserver::isGuiElement = true;
+
+  jassert( newEchoLabModuleToEdit != NULL ); // you must pass a valid pointer here
+
+  plugInLock          = newPlugInLock;
+  echoLabModuleToEdit = newEchoLabModuleToEdit;
+
+  // set up the plot range:
+  setAutoReRendering(false);
+  setMaximumRange(-0.125, 4.25, -1.5, 1.5);
+  setCurrentRange(-0.125, 4.25, -1.5, 1.5);
+  setHorizontalFineGrid(1.0,   true);
+  setVerticalFineGrid(  0.125, false);
+  setAxisLabelX(juce::String("t"));
+  setAxisLabelY(juce::String(""));
+  //setHorizontalFineGrid(  1.0, false);
+  //setVerticalCoarseGridVisible( true);
+  //setVerticalFineGridVisible(   false);
+  //CoordinateSystem::setAxisValuesPositionX(CoordinateSystem::ABOVE_AXIS);
+  //CoordinateSystem::setAxisValuesPositionY(CoordinateSystem::RIGHT_TO_AXIS);
+  //setSnapToFineGridX(true);
+  //setSnapToFineGridY(true);
+  setAutoReRendering(true);
+
+
+  currentMouseCursor = MouseCursor(MouseCursor::NormalCursor);
+  setMouseCursor(currentMouseCursor);
+
+  // this stuff will be (re-) assigned in resized():
+  numSamplesInPlot = 0;
+  timeAxis         = NULL;
+  impulseResponse  = NULL;
+
+  selectedIndex          = -1;
+  selectedDelayLine      = NULL;
+  currentlyDraggedHandle = NONE;
+  delayLineEditor        = NULL;
+
+  ParameterObserver::localAutomationSwitch = true;
+}
+
+EchoLabPlotEditor::~EchoLabPlotEditor(void)
+{
+  deRegisterFromObservedParameters();
+  deleteAndZero(timeAxis);
+  deleteAndZero(impulseResponse);
+}
+
+//-----------------------------------------------------------------------------------------------------------------------------------------
+// parameter-settings:
+
+void EchoLabPlotEditor::setDelayLineModuleEditor(EchoLabDelayLineModuleEditor *delayLineEditorToUse)
+{
+  deSelectDelayLine();
+  delayLineEditor = delayLineEditorToUse;
+  //selectDelayLine(selectedIndex);
+}
+
+bool EchoLabPlotEditor::selectDelayLine(int indexToSelect)
+{
+  ScopedLock scopedLock(*plugInLock);
+
+  removeWatchedAudioModule(selectedDelayLine);
+  deRegisterFromObservedParameters();
+
+  if( indexToSelect < 0 || indexToSelect >= echoLabModuleToEdit->wrappedEchoLab->getNumDelayLines() )
+  {
+    selectedIndex = -1;
+    selectedDelayLine = NULL;
+    if( delayLineEditor != NULL )
+      delayLineEditor->setDelayLineModuleToEdit(NULL);
+    return false;
+  }
+
+  selectedIndex     = indexToSelect;
+  selectedDelayLine = echoLabModuleToEdit->getDelayLineModule(indexToSelect);
+  if( selectedDelayLine != NULL )
+  {
+    addWatchedAudioModule(selectedDelayLine);
+    selectedDelayLine->getParameterByName("DelayTime")->registerParameterObserver(this);
+    selectedDelayLine->getParameterByName("Amplitude")->registerParameterObserver(this);
+    selectedDelayLine->getParameterByName("Feedback") ->registerParameterObserver(this);
+    selectedDelayLine->getParameterByName("Pan")      ->registerParameterObserver(this);
+    selectedDelayLine->getParameterByName("PingPong") ->registerParameterObserver(this);
+    selectedDelayLine->getParameterByName("Mute")     ->registerParameterObserver(this);
+  }
+
+  // switch always the currently selected delayline to solo, if solo is desired:
+  if( echoLabModuleToEdit->wrappedEchoLab->getSoloedDelayLineIndex() != -1 )
+    echoLabModuleToEdit->wrappedEchoLab->setDelayLineSolo(selectedIndex);  
+
+  updatePlot();
+
+  if( delayLineEditor != NULL )
+    delayLineEditor->setDelayLineModuleToEdit(selectedDelayLine);
+
+  sendChangeMessage();
+  return true;
+}
+
+void EchoLabPlotEditor::deSelectDelayLine()
+{
+  selectDelayLine(-1);
+}
+
+bool EchoLabPlotEditor::removeDelayLine(int indexToRemove)
+{
+  ScopedLock scopedLock(*plugInLock);
+
+  if( indexToRemove < 0 || indexToRemove >= echoLabModuleToEdit->wrappedEchoLab->getNumDelayLines() )
+    return false;
+
+  // new:
+  deSelectDelayLine();
+  echoLabModuleToEdit->removeDelayLine(indexToRemove);
+  updatePlot();  // perhaps superfluous - check that
+  return true;
+
+
+  /*
+  // old:
+  if( delayLineEditor != NULL )
+  delayLineEditor->setDelayLineModuleToEdit(NULL);
+
+  echoLabModuleToEdit->removeDelayLine(indexToRemove);
+  selectedIndex = -1;
+  updatePlot();
+
+  return true;
+  */
+}
+
+//-----------------------------------------------------------------------------------------------------------------------------------------
+// inquiry:
+
+int EchoLabPlotEditor::getIndexAtPixelPosition(int x, int y)
+{
+  ScopedLock scopedLock(*plugInLock);
+
+  double dotRadius = 5.0;
+  double xd = (double) x;
+  double yd = (double) y;
+  for(int i=0; i<echoLabModuleToEdit->wrappedEchoLab->getNumDelayLines(); i++)
+  {
+    double xi = echoLabModuleToEdit->wrappedEchoLab->getDelayTime(i);
+    double yi = echoLabModuleToEdit->wrappedEchoLab->getGainFactor(i);
+    transformToComponentsCoordinates(xi, yi);
+    double d = sqrt( (xi-xd)*(xi-xd) + (yi-yd)*(yi-yd) );
+    if( d <= dotRadius )
+      return i;
+  }
+
+  return -1;
+}
+
+//-----------------------------------------------------------------------------------------------------------------------------------------
+// callbacks:
+
+void EchoLabPlotEditor::audioModuleWillBeDeleted(AudioModule *moduleToBeDeleted)
+{  
+  ScopedLock scopedLock(*plugInLock);
+  if( moduleToBeDeleted == selectedDelayLine && selectedDelayLine != NULL )
+    selectDelayLine(-1);
+}
+
+void EchoLabPlotEditor::parameterChanged(Parameter* parameterThatHasChanged)
+{
+
+  ScopedLock scopedLock(*plugInLock);
+  updatePlot();
+}
+
+void EchoLabPlotEditor::mouseMove(const MouseEvent &e)
+{
+  ScopedLock scopedLock(*plugInLock);
+
+  int index = getIndexAtPixelPosition(e.x, e.y);
+  if( index != -1 )
+  {
+    double t    = echoLabModuleToEdit->wrappedEchoLab->getDelayTime(index);
+    double g    = echoLabModuleToEdit->wrappedEchoLab->getGainFactor(index);
+    juce::String tStr = juce::String("Time: ");
+    if( !echoLabModuleToEdit->wrappedEchoLab->isDelayTimeSynced() )
+      tStr += secondsToStringWithUnitTotal4(t) + juce::String(", ");
+    else
+      tStr += beatsToStringWithUnit4(t) + juce::String(", ");
+
+    juce::String gStr = juce::String("Gain: ") + valueToString3(g);
+    // maybe display some more parameters .....
+    setDescription(tStr + gStr);
+  }
+  else
+    setDescription(juce::String("Left: insert new delayline or grab handle, right: remove delayline"));
+
+  int dragHandle = getDragHandleAt(e.x, e.y);
+  if( dragHandle == NONE )
+  {
+    CoordinateSystemOld::currentMouseCursor = MouseCursor::NormalCursor; // in case there is a zoomer
+    setMouseCursor(MouseCursor::NormalCursor);
+  }
+  else if( dragHandle == TIME_AND_GAIN )
+  {
+    CoordinateSystemOld::currentMouseCursor = MouseCursor::PointingHandCursor; 
+    setMouseCursor(MouseCursor::PointingHandCursor);
+  }
+  //else if( dragHandle == BANDWIDTH_AND_GAIN_LEFT || dragHandle == BANDWIDTH_AND_GAIN_RIGHT )
+  //  setMouseCursor(MouseCursor::LeftRightResizeCursor);
+}
+
+void EchoLabPlotEditor::mouseDown(const MouseEvent &e)
+{
+  ScopedLock scopedLock(*plugInLock);
+
+  int tmpIndex = getIndexAtPixelPosition(e.x, e.y);
+  if( tmpIndex == -1 )
+  {
+    if( e.mods.isLeftButtonDown() )
+    {
+      // create a new delayline and mark it selected:
+      double t = e.x;
+      double g = e.y;
+      transformFromComponentsCoordinates(t, g);
+      echoLabModuleToEdit->addDelayLine(t, g);
+      selectDelayLine(echoLabModuleToEdit->wrappedEchoLab->getNumDelayLines()-1);
+      currentlyDraggedHandle = TIME_AND_GAIN;
+    }
+  }
+  else
+  {
+    if( e.mods.isRightButtonDown() )
+    {
+      removeDelayLine(tmpIndex);
+      currentlyDraggedHandle = NONE;
+    }
+    else
+    {
+      selectDelayLine(tmpIndex);
+      currentlyDraggedHandle = TIME_AND_GAIN;
+    }
+  }
+
+  sendChangeMessage();
+}
+
+void EchoLabPlotEditor::mouseDrag(const juce::MouseEvent &e)
+{
+  if( e.mods.isRightButtonDown() || e.mouseWasClicked() )
+    return;   // ignore right-drags because the band was just removed
+
+  ScopedLock scopedLock(*plugInLock);
+
+  // get the position of the event in components coordinates:
+  double x = e.getMouseDownX() + e.getDistanceFromDragStartX();
+  double y = e.getMouseDownY() + e.getDistanceFromDragStartY();
+
+  x = rosic::clip(x, 0.0, (double) getWidth());
+  y = rosic::clip(y, 0.0, (double) getHeight());      
+  transformFromComponentsCoordinates(x, y);
+
+  snapToGrid(x,y); // will snap only when activated
+
+  if( currentlyDraggedHandle == TIME_AND_GAIN )
+  {
+    if( !e.mods.isCtrlDown() )
+    {
+      y = clip(y, -1.0, 1.0);
+      selectedDelayLine->getParameterByName(juce::String("DelayTime"))->setValue(x, true, true);
+      selectedDelayLine->getParameterByName(juce::String("Amplitude"))->setValue(y, true, true);
+    }
+    else
+    {
+      x = clip( 0.02*e.getDistanceFromDragStartX(),  -1.0,  1.0);
+      y = clip(-2.0 *e.getDistanceFromDragStartY(), -99.0, 99.0);
+      selectedDelayLine->getParameterByName(juce::String("Pan"))     ->setValue(x, true, true);
+      selectedDelayLine->getParameterByName(juce::String("Feedback"))->setValue(y, true, true);
+    }
+  }
+
+  mouseMove(e);
+  updatePlot();
+
+  sendChangeMessage();
+}
+
+void EchoLabPlotEditor::mouseUp(const juce::MouseEvent &e)
+{
+  currentlyDraggedHandle = NONE;
+}
+
+void EchoLabPlotEditor::mouseWheelMove(const MouseEvent& e, const MouseWheelDetails& wheel)
+{
+  ScopedLock scopedLock(*plugInLock);
+
+  int index = getIndexAtPixelPosition(e.x, e.y);
+  if( index != -1 )
+  {
+    double g = echoLabModuleToEdit->wrappedEchoLab->getGainFactor(index);
+    //g  = linToLin(g, -24.0, 0.0, 0.0, 1.0);
+    g += 0.0625*wheel.deltaY;
+    //g  = linToLin(g, 0.0, 1.0, -24.0, 0.0);
+    echoLabModuleToEdit->wrappedEchoLab->setGainFactor(index, g);
+    updatePlot();
+    sendChangeMessage();
+  }
+
+}
+
+int EchoLabPlotEditor::getDragHandleAt(int x, int y)
+{
+  ScopedLock scopedLock(*plugInLock);
+
+  double xd = (double) x;
+  double yd = (double) y;
+  double xt, yt;             // target coordinates for matching
+
+                             // check if x,y is over the time/gain handle of some delayline:
+  for(int i=0; i<echoLabModuleToEdit->wrappedEchoLab->getNumDelayLines(); i++)
+  {
+    xt = echoLabModuleToEdit->wrappedEchoLab->getDelayTime(i);
+    yt = echoLabModuleToEdit->wrappedEchoLab->getGainFactor(i);
+    transformToComponentsCoordinates(xt, yt);
+    if( euclideanDistance(xt, yt, xd, yd) < 4.0 )
+      return TIME_AND_GAIN;
+  }
+
+  return NONE;
+}
+
+//-----------------------------------------------------------------------------------------------------------------------------------------
+// drawing:
+
+void EchoLabPlotEditor::resized()
+{
+  CurveFamilyPlotOld::resized();
+
+  // (re) allocate and fill the arrays for the impulse-response plot
+  numSamplesInPlot = getWidth();
+  if( timeAxis == NULL )
+    delete[] timeAxis;
+  if( impulseResponse == NULL )
+    delete[] impulseResponse;
+  timeAxis        = new double[numSamplesInPlot];
+  impulseResponse = new double[numSamplesInPlot];
+
+  int k;
+  for(k=0; k<numSamplesInPlot; k++)
+  {
+    timeAxis[k]        = 0.01 * k;
+    impulseResponse[k] = 0.0;
+  }
+
+  // preliminary - actually the time-axis does not need to be passed - this can be handled
+  // by the default x-axis drawing of CoordinateSystem
+
+  updatePlot();
+
+
+  /*
+  if( echoLabModuleToEdit != NULL )
+  { 
+  delayDesignerForPlot.acquireLock();
+  //delayDesignerForPlot.getImpulseResponse(timeAxis, impulseResponse, numSamplesInPlot);  
+  delayDesignerForPlot.releaseLock();
+  // \todo: setup sample-rate and stuff ....see BreakpointModulatorEditor....
+  }
+  */
+  //setCurveValues(numSamplesInPlot, timeAxis, impulseResponse); 
+}
+
+void EchoLabPlotEditor::updatePlot()
+{
+  ScopedLock scopedLock(*plugInLock);
+
+  // \todo: setup sample-rate and stuff ....see BreakpointModulatorEditor....
+  /*
+  double plotRange      = getCurrentRangeMaxX(); - getCurrentRangeMinX();
+  double plotSampleRate = (double) numSamplesInPlot / plotRange;
+  delayDesingerForPlot.setSampleRate(plotSampleRate);
+  delayDesignerForPlot.getImpulseResponseLeft(impulseResponse, numSamplesInPlot);  
+  */
+
+  // we probably need a switch here whether to retrieve the left or right channel impulse
+  // response
+
+  setCurveValues(numSamplesInPlot, timeAxis, impulseResponse); 
+}
+
+void EchoLabPlotEditor::plotCurveFamily(Graphics &g, juce::Image* targetImage, XmlElement *targetSVG)
+{
+  /*
+  Colour defaultColour  = Colours::black;
+  //Colour selectedColour = CurveFamilyPlotOld::colourScheme.plotColours[0];
+  //Colour selectedColour = CurveFamilyPlotOld::colourScheme.curves; // preliminary
+  Colour selectedColour = Colours::red;
+  //Colour graphColour = colourScheme.getCurveColour(index);  
+  //g.setColour(graphColour); 
+  */
+
+  ScopedLock scopedLock(*plugInLock);
+
+  Colour defaultColour  = plotColourScheme.getCurveColour(0);
+  Colour selectedColour = plotColourScheme.getCurveColour(1);
+
+  float  dotRadius = 4.f;
+  for(int i=0; i<echoLabModuleToEdit->wrappedEchoLab->getNumDelayLines(); i++)
+  {
+    Colour currentColour;
+    if( i == selectedIndex )
+      currentColour = selectedColour;
+    else
+      currentColour = defaultColour;
+    g.setColour(currentColour);
+
+    double fb = echoLabModuleToEdit->wrappedEchoLab->getDelayLineParameterThreadSafe(rosic::EchoLab::FEEDBACK_FACTOR, i);
+    double gn = echoLabModuleToEdit->wrappedEchoLab->getDelayLineParameterThreadSafe(rosic::EchoLab::GAIN_FACTOR, i);
+    double dt = echoLabModuleToEdit->wrappedEchoLab->getDelayTime(i);
+    double pn = echoLabModuleToEdit->wrappedEchoLab->getDelayLineParameterThreadSafe(rosic::EchoLab::PAN, i);
+    bool   pp = echoLabModuleToEdit->wrappedEchoLab->getDelayLineParameterThreadSafe(rosic::EchoLab::PING_PONG, i) != 0.0;
+    double signChanger = 1.0;
+    if( pp == true )
+      signChanger = -1.0;
+
+    double x = echoLabModuleToEdit->wrappedEchoLab->getDelayTime(i);
+    double y = echoLabModuleToEdit->wrappedEchoLab->getGainFactor(i);
+    transformToImageCoordinates(x, y, targetImage);
+
+    if( !echoLabModuleToEdit->wrappedEchoLab->isDelayLineActive(i) )
+    {
+      // draw cross:
+      g.drawLine((float)x-4.f, (float)y-4.f, (float)x+4.f, (float)y+4.f, 2.f);
+      g.drawLine((float)x-4.f, (float)y+4.f, (float)x+4.f, (float)y-4.f, 2.f);
+
+      x  = echoLabModuleToEdit->wrappedEchoLab->getDelayTime(i);
+      double y0 = 0.0;
+      transformToImageCoordinates(x, y0, targetImage);
+      g.drawLine((float) x, (float) y, (float) x, (float) y0, 2.f);
+    }
+    else
+    {
+      g.setColour(currentColour.withMultipliedAlpha(0.5f));
+
+      double panIndicatorSize = 32.0;
+      double gL, gR;
+      rosic::equalPowerGainFactors(pn, &gL, &gR, -1.0, 1.0);
+      float  topLength        = (float) (fabs(gn)*gL*panIndicatorSize);
+      float  bottomLength     = (float) (fabs(gn)*gR*panIndicatorSize);
+      g.drawLine((float) x, 0.f,                (float) x, topLength,                         2.f);
+      g.drawLine((float) x, (float)getHeight(), (float) x, (float)(getHeight()-bottomLength), 2.f);
+
+      g.setColour(currentColour);
+      x  = echoLabModuleToEdit->wrappedEchoLab->getDelayTime(i);
+      double y0 = 0.0;
+      transformToImageCoordinates(x, y0, targetImage);
+      g.drawLine((float) x, (float) y, (float) x, (float) y0, 2.f);
+
+      //g.setColour( curveColour );
+      g.fillEllipse((float) (x-dotRadius), (float) (y-dotRadius), 
+        (float) (2*dotRadius), (float) (2*dotRadius) );
+      //g.drawLine((float)x, (float)y, (float)(x+pn*20.f), (float)y, 2.f);
+
+      // draw the feedback delays:
+      double x2, y2, x0;
+      double alternator = signChanger;
+      double xAccu = 2*dt;
+      double yAccu = fb*gn;
+      x2           = xAccu;  
+      y2           = yAccu;
+      while( xAccu <= getCurrentRangeMaxX() && fabs(yAccu) > 0.000001 )
+      {
+        x2 = xAccu;
+        y2 = yAccu;
+        y0 = 0.0;
+        x0 = x2; 
+        transformToImageCoordinates(x2, y2, targetImage);
+        transformToImageCoordinates(x0, y0, targetImage);
+
+        g.setColour(currentColour.withMultipliedAlpha(0.75f));
+
+        double pn2 = alternator * pn;
+        rosic::equalPowerGainFactors(pn2, &gL, &gR, -1.0, 1.0);
+
+        panIndicatorSize = 40.0;
+        topLength        = (float) (fabs(yAccu)*gL*panIndicatorSize);
+        bottomLength     = (float) (fabs(yAccu)*gR*panIndicatorSize);
+        g.drawLine((float) x0, 0.f,                (float) x0, topLength,                         2.f);
+        g.drawLine((float) x0, (float)getHeight(), (float) x0, (float)(getHeight()-bottomLength), 2.f);
+
+        g.setColour(currentColour);
+        g.drawLine((float) x2, (float) y2, (float) x0, (float) y0, 2.f);          
+
+        alternator *= signChanger; // changes sign - or not
+        xAccu      += dt;
+        yAccu      *= fb;
+      }
+    }
+
+    if( i == selectedIndex )
+    {
+      g.setColour(currentColour.withMultipliedAlpha(0.5f));
+      g.drawLine((float) x,        0.f, (float)          x, (float) getHeight(), 1.f);
+      g.drawLine(      0.f,  (float) y, (float) getWidth(), (float) y          , 1.f);
+      g.fillEllipse((float) (x-dotRadius-2), (float) (y-dotRadius-2), 
+        (float) (2*dotRadius+4), (float) (2*dotRadius+4) );
+    }
+  }
+}
+
+void EchoLabPlotEditor::deRegisterFromObservedParameters()
+{
+  if( selectedDelayLine != NULL )
+  {
+    selectedDelayLine->getParameterByName("DelayTime")->deRegisterParameterObserver(this);
+    selectedDelayLine->getParameterByName("Amplitude")->deRegisterParameterObserver(this);
+    selectedDelayLine->getParameterByName("Feedback") ->deRegisterParameterObserver(this);
+    selectedDelayLine->getParameterByName("Pan")      ->deRegisterParameterObserver(this);
+    selectedDelayLine->getParameterByName("PingPong") ->deRegisterParameterObserver(this);
+    selectedDelayLine->getParameterByName("Mute")     ->deRegisterParameterObserver(this);
+  }
+}
+
+void EchoLabPlotEditor::refreshCompletely()
+{
+  // this function is called on total recall
+
+  ScopedLock scopedLock(*plugInLock);
+
+  /*
+  // old:
+  selectedIndex = -1;  
+  if( delayLineEditor != NULL )
+  delayLineEditor->setDelayLineModuleToEdit(NULL);
+  */
+
+  deSelectDelayLine();
+
+  updatePlot();
+}
+
 
