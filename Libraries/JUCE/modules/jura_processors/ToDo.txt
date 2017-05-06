@@ -13,7 +13,7 @@
  
  -Straightliner
   -OscillatorStereo (done)
-  -FourOscSection
+  -FourOscSection (done)
   -PolyphonicInstrument(Editor)
 
  -KeyShot
