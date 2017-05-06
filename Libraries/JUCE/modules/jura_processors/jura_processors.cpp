@@ -20,6 +20,7 @@ namespace jura
 #include "filters/jura_EngineersFilter.cpp"
 #include "filters/jura_CrossOver.cpp"
 #include "filters/jura_Equalizer.cpp"
+#include "filters/jura_MultiModeFilter.cpp"
 
 #include "modulators/jura_BreakpointModulatorAudioModule.cpp"
 #include "modulators/jura_ModulatorCurveEditor.cpp"

@@ -5481,11 +5481,35 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/filters/jura_MultiModeFilter.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/filters/jura_MultiModeFilter.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/filters/jura_PhasorFilter.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/filters/jura_PhasorFilter.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/filters/rosof_MultiModeFilterModuleEditor.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/filters/rosof_MultiModeFilterModuleEditor.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/filters/rosof_MultiModeFreqResponseEditor.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/filters/rosof_MultiModeFreqResponseEditor.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
@@ -5521,19 +5545,11 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/misc/rosof_DspWorkbenchAudioModule.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/misc/jura_DspWorkbench.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/misc/rosof_DspWorkbenchAudioModule.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/misc/rosof_DspWorkbenchModuleEditor.cpp">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/misc/rosof_DspWorkbenchModuleEditor.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/misc/jura_DspWorkbench.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
