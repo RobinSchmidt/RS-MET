@@ -55,6 +55,27 @@ protected:
 
 //=============================================================================================
 
+/** An editor for a section of 4 oscillators. */
 
+class FourOscSectionModuleEditor : public AudioModuleEditor 
+{
+
+public:
+  
+  /** Constructor. You must pass 4 valid pointers to OscillatorStereoAudioModule objects. */
+  FourOscSectionModuleEditor(CriticalSection *newPlugInLock, 
+    FourOscSectionAudioModule *newFourOscSectionToEdit);
+
+  // callbacks:
+  virtual void resized();
+  virtual void updateWidgetsAccordingToState();
+
+protected:
+
+  // the 4 sub-editors for the 4 oscillators:
+  OscillatorStereoEditor *osc1Editor, *osc2Editor, *osc3Editor, *osc4Editor;
+
+  juce_UseDebuggingNewOperator;
+};
 
 #endif
