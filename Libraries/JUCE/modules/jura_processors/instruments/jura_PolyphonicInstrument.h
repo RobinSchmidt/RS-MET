@@ -68,12 +68,67 @@ protected:
 
   rosic::PolyphonicInstrument *underlyingRosicInstrument;
 
+  friend class PolyphonicInstrumentEditor;
+
   juce_UseDebuggingNewOperator;
 };
 
 //=================================================================================================
 
+class PolyphonicInstrumentEditor : public AudioModuleEditor, public ChangeBroadcaster, 
+  public RSliderListener, public TuningFileManager
+{
 
+public:
+
+  //---------------------------------------------------------------------------------------------
+  // construction/destruction:
+
+  /** Constructor. */
+  PolyphonicInstrumentEditor(CriticalSection *newPlugInLock, 
+    PolyphonicInstrumentAudioModule* newInstrumentToEdit);
+
+  //---------------------------------------------------------------------------------------------
+  // setup:
+
+  /** Sets the colours for the preset section widgets. */
+  virtual void setPresetSectionColourScheme(const WidgetColourScheme& newColourScheme);
+
+  /** Sets the colours for the tuning section widgets. */
+  virtual void setTuningSectionColourScheme(const WidgetColourScheme& newColourScheme);
+
+  /** Sets the text colour for the info field. */
+  virtual void setInfoFieldTextColour(const Colour newColour);
+
+  /** Attaches this editor to the actual plugin which is to be edited. */
+  virtual void setInstrumentToEdit(rosic::PolyphonicInstrument* newInstrumentToEdit);
+
+  //---------------------------------------------------------------------------------------------
+  // callbacks:
+
+  virtual void rButtonClicked(RButton *buttonThatWasClicked);
+  //virtual void changeListenerCallback(ChangeBroadcaster *objectThatHasChanged);
+  //virtual void  rLabelTextChanged(RLabel *rLabelThatHasChanged);
+  virtual void rSliderValueChanged(RSlider *sliderThatHasChanged);
+  virtual void updateWidgetsAccordingToState();
+  virtual void resized();
+
+protected:
+
+  rosic::PolyphonicInstrument* instrumentEngine; // the underlying rosic::PolyphonicInstrument object, we acquire the plugInLock whenever
+                                                 
+  // this object or the inherited moduleToEdit is accessed
+
+  // the widgets for the global instrument parameters:
+  RSlider *levelSlider, *levelByKeySlider, *levelByVelSlider, *midSideRatioSlider, 
+    *numVoicesSlider, *compSlider, *masterTuneSlider, *wheelRangeSlider, *glideTimeSlider;
+  RButton *tuningMinusButton, *tuningPlusButton, *tuningLoadButton, *glideButton;
+
+  // use a FileSelectionBox instead of these:
+  RTextField  *tuningLabel, *tuningFileNameLabel;
+
+  juce_UseDebuggingNewOperator;
+};
 
 
 #endif
