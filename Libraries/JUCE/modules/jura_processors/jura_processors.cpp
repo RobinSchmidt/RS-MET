@@ -46,6 +46,7 @@ namespace jura
 #include "instruments/jura_AcidSequencer.cpp"
 #include "instruments/jura_AciDevil.cpp"
 #include "instruments/jura_PolyphonicInstrument.cpp"
+//#include "instruments/jura_Straightliner.cpp"
 
 #include "misc/jura_AudioModuleChain.cpp"
 #include "misc/jura_ChannelMatrix2x2.cpp"

@@ -84,6 +84,7 @@ namespace jura
 #include "instruments/jura_AcidSequencer.h"  // maybe move to a "sequencers" folder someday
 #include "instruments/jura_AciDevil.h"
 #include "instruments/jura_PolyphonicInstrument.h"
+#include "instruments/jura_Straightliner.h"
 
 #include "misc/jura_AudioModuleChain.h"
 #include "misc/jura_ChannelMatrix2x2.h"

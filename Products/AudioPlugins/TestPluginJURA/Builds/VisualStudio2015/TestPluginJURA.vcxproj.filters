@@ -2388,9 +2388,6 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\rosof_PolyphonicInstrumentEditor.cpp">
       <Filter>Juce Modules\jura_processors\instruments</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\rosof_StraightlinerAudioModule.cpp">
-      <Filter>Juce Modules\jura_processors\instruments</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\rosof_StraightlinerModuleEditor.cpp">
       <Filter>Juce Modules\jura_processors\instruments</Filter>
     </ClCompile>
@@ -3680,6 +3677,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\tools\jura_TuningFileManager.cpp">
       <Filter>Juce Modules\jura_processors\tools</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_Straightliner.cpp">
+      <Filter>Juce Modules\jura_processors\instruments</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5798,9 +5798,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\rosof_PolyphonicInstrumentEditor.h">
       <Filter>Juce Modules\jura_processors\instruments</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\rosof_StraightlinerAudioModule.h">
-      <Filter>Juce Modules\jura_processors\instruments</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\rosof_StraightlinerModuleEditor.h">
       <Filter>Juce Modules\jura_processors\instruments</Filter>
     </ClInclude>
@@ -7200,6 +7197,9 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rosic.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\tools\jura_TuningFileManager.h">
       <Filter>Juce Modules\jura_processors\tools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_Straightliner.h">
+      <Filter>Juce Modules\jura_processors\instruments</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

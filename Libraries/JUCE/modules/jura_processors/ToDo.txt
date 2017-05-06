@@ -14,7 +14,7 @@
  -Straightliner
   -OscillatorStereo (done)
   -FourOscSection (done)
-  -PolyphonicInstrument(Editor)
+  -PolyphonicInstrument (done)
 
  -KeyShot
  -Liberty (later - it needs the "romos" folder)
