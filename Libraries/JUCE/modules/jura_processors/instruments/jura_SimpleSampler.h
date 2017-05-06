@@ -58,5 +58,60 @@ protected:
 
 //=================================================================================================
 
+class SimpleSamplerModuleEditor : public PolyphonicInstrumentEditor
+{
+
+public:
+
+  //---------------------------------------------------------------------------------------------
+  // construction/destruction:
+
+  /** Constructor. */
+  SimpleSamplerModuleEditor(CriticalSection *newPlugInLock, 
+    SimpleSamplerAudioModule* newSimpleSamplerAudioModule);
+
+  /** Destructor. */
+  //virtual ~SimpleSamplerModuleEditor();
+
+  //---------------------------------------------------------------------------------------------
+  // callbacks:
+
+  /** Implements the purely virtual rButtonClicked()-method of the ButtonListener base-class. */
+  //virtual void rButtonClicked(RButton *buttonThatWasClicked);
+
+  /** Overrides changeListenerCallback() in order to start or stop the timers in the embedded
+  module editors when the user selects another tab.*/
+  virtual void changeListenerCallback(ChangeBroadcaster* objectThatHasChanged);
+
+  //---------------------------------------------------------------------------------------------
+  // others:
+
+  /** Overrides the resized-method. */
+  virtual void resized();
+
+protected:
+
+  /** Overrides the method inherited from AudioModuleEditor. */
+  virtual void updateWidgetsAccordingToState();
+
+  /** This is the actual plugin engine which does all the dsp and automation handling. */
+  SimpleSamplerAudioModule *simpleSamplerAudioModule;
+
+  // the sub-editors:
+  SamplePlayerModuleEditor    *samplePlayerEditor;
+  MultiModeFilterModuleEditor *filterEditor;
+  BreakpointModulatorEditor   *pitchEnvEditor, *filterEnvEditor, *ampEnvEditor;
+
+  // the tabber to choose which of the embedded module editors is shown:
+  TabbedButtonBar* moduleEditorTabButtonBar;
+
+
+  // the file-browser stuff:
+  WildcardFileFilter*   fileFilter;
+  //FilePreviewComponent* filePreviewer;
+  //FileBrowserComponent* browser;
+
+  juce_UseDebuggingNewOperator;
+};
 
 #endif 
