@@ -12,10 +12,11 @@
  -EchoLab (done)
  -Straightliner (done)
  -SimpleSampler (done)
-
- -KeyShot
+ -KeyShot (done)
 
  -MagicCarpet
+  -VectorSamplePlayer
+
  -MidiMonitor
  -Moduluxury
  -PitchShifter

@@ -32,6 +32,7 @@ namespace jura
 #include "generators/jura_OscillatorStereo.cpp"
 #include "generators/jura_FourOscSection.cpp"
 #include "generators/jura_SamplePlayer.cpp"
+#include "generators/jura_VectorMixer.cpp"
 
 #include "modulators/jura_BreakpointModulatorAudioModule.cpp"
 #include "modulators/jura_ModulatorCurveEditor.cpp"
