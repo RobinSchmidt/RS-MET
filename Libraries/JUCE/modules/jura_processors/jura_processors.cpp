@@ -18,6 +18,8 @@ namespace jura
 #include "custom_widgets/jura_CustomSliders.cpp"
 #include "custom_widgets/jura_EffectSelectionPopup.cpp"
 
+#include "basics/jura_WaveTable.cpp"
+
 #include "analyzers/jura_PhaseScope.cpp"
 //#include "analyzers/jura_PhaseScopeMultiColor.cpp"
 #include "analyzers/jura_MultiAnalyzer.cpp"
@@ -29,16 +31,16 @@ namespace jura
 #include "filters/jura_Equalizer.cpp"
 #include "filters/jura_MultiModeFilter.cpp"
 
-#include "generators/jura_OscillatorStereo.cpp"
-#include "generators/jura_FourOscSection.cpp"
-#include "generators/jura_SamplePlayer.cpp"
-#include "generators/jura_VectorMixer.cpp"
-
 #include "modulators/jura_BreakpointModulatorAudioModule.cpp"
 #include "modulators/jura_ModulatorCurveEditor.cpp"
 #include "modulators/jura_BreakpointModulatorEditor.cpp"
 #include "modulators/jura_ModulatorCurveEditorMulti.cpp"
 #include "modulators/jura_BreakpointModulatorEditorMulti.cpp"
+
+#include "generators/jura_OscillatorStereo.cpp"
+#include "generators/jura_FourOscSection.cpp"
+#include "generators/jura_SamplePlayer.cpp"
+#include "generators/jura_VectorMixer.cpp"
 
 #include "effects/jura_Enveloper.cpp"
 #include "effects/jura_FuncShaper.cpp"

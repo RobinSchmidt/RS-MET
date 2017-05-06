@@ -216,7 +216,8 @@ public:
   // Audio processing:
 
   /** This is the audio callback that your subclass needs to override. */
-  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) = 0;
+  //virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) = 0;
+  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) {}
 
   //-----------------------------------------------------------------------------------------------
   // Misc:

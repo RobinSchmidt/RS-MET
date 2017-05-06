@@ -1,4 +1,8 @@
 
+-WaveTable
+-LowFrequencyOscillator
+-move VectorMixetr to basics?
+
 -drag over all old plugin code and make it compile:
  -AciDevil (done)
  -AlgoVerb (done)

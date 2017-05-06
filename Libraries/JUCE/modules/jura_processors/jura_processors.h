@@ -56,6 +56,8 @@ namespace jura
 #include "custom_widgets/jura_CustomSliders.h"
 #include "custom_widgets/jura_EffectSelectionPopup.h"
 
+#include "basics/jura_WaveTable.h"
+
 #include "analyzers/jura_PhaseScope.h"
 //#include "analyzers/jura_PhaseScopeMultiColor.h"
 #include "analyzers/jura_MultiAnalyzer.h"
@@ -67,16 +69,18 @@ namespace jura
 #include "filters/jura_Equalizer.h"
 #include "filters/jura_MultiModeFilter.h"
 
-#include "generators/jura_OscillatorStereo.h"
-#include "generators/jura_FourOscSection.h"
-#include "generators/jura_SamplePlayer.h"
-#include "generators/jura_VectorMixer.h"
-
 #include "modulators/jura_BreakpointModulatorAudioModule.h"
 #include "modulators/jura_ModulatorCurveEditor.h"
 #include "modulators/jura_BreakpointModulatorEditor.h"
 #include "modulators/jura_ModulatorCurveEditorMulti.h"
 #include "modulators/jura_BreakpointModulatorEditorMulti.h"
+
+#include "generators/jura_OscillatorStereo.h"
+#include "generators/jura_FourOscSection.h"
+#include "generators/jura_SamplePlayer.h"
+#include "generators/jura_VectorMixer.h"
+
+
 
 #include "effects/jura_Enveloper.h"
 #include "effects/jura_FuncShaper.h"

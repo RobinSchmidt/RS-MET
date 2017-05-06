@@ -388,6 +388,9 @@
     <Filter Include="Juce Modules\jura_processors\analyzers">
       <UniqueIdentifier>{884A90C2-9EA1-7ED2-F91E-5FCB2882A445}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Juce Modules\jura_processors\basics">
+      <UniqueIdentifier>{8E6597BF-1C24-3D72-DBDA-CF0B60D782B7}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Juce Modules\jura_processors\custom_widgets">
       <UniqueIdentifier>{EE919AB8-05E4-27D0-04C4-ED5EAA52CDD3}</UniqueIdentifier>
     </Filter>
@@ -2331,6 +2334,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_PhaseScopeMultiColor.cpp">
       <Filter>Juce Modules\jura_processors\analyzers</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\rosof_WaveTableModuleEditor.cpp">
+      <Filter>Juce Modules\jura_processors\basics</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\custom_widgets\jura_CustomComboBoxes.cpp">
       <Filter>Juce Modules\jura_processors\custom_widgets</Filter>
     </ClCompile>
@@ -2379,7 +2385,7 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_SamplePlayer.cpp">
       <Filter>Juce Modules\jura_processors\generators</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\rosof_VectorMixerModuleEditor.cpp">
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_VectorMixer.cpp">
       <Filter>Juce Modules\jura_processors\generators</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\rosof_VectorSamplePlayerAudioModule.cpp">
@@ -3693,8 +3699,8 @@
     <ClCompile Include="..\..\JuceLibraryCode\rosic.cpp">
       <Filter>Juce Library Code</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_VectorMixer.cpp">
-      <Filter>Juce Modules\jura_processors\generators</Filter>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_WaveTable.cpp">
+      <Filter>Juce Modules\jura_processors\basics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5756,6 +5762,9 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_PhaseScopeMultiColor.h">
       <Filter>Juce Modules\jura_processors\analyzers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\rosof_WaveTableModuleEditor.h">
+      <Filter>Juce Modules\jura_processors\basics</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\custom_widgets\jura_CustomComboBoxes.h">
       <Filter>Juce Modules\jura_processors\custom_widgets</Filter>
     </ClInclude>
@@ -5804,7 +5813,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_SamplePlayer.h">
       <Filter>Juce Modules\jura_processors\generators</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\rosof_VectorMixerModuleEditor.h">
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_VectorMixer.h">
       <Filter>Juce Modules\jura_processors\generators</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\rosof_VectorSamplePlayerAudioModule.h">
@@ -7228,8 +7237,8 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\jura_framework.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\jura_processors.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rosic.h" />
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_VectorMixer.h">
-      <Filter>Juce Modules\jura_processors\generators</Filter>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_WaveTable.h">
+      <Filter>Juce Modules\jura_processors\basics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
