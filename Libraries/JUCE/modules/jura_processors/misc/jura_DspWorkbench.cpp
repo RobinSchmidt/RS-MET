@@ -211,10 +211,10 @@ void DspWorkbenchAudioModule::initializeAutomatableParameters()
 // construction/destruction:
 
 DspWorkbenchModuleEditor::DspWorkbenchModuleEditor(CriticalSection *newPlugInLock, DspWorkbenchAudioModule* newDspWorkbenchAudioModule) 
-  : AudioModuleEditor(newPlugInLock, newDspWorkbenchAudioModule)
+  : AudioModuleEditor(newDspWorkbenchAudioModule)
 {
   // set the plugIn-headline:
-  setHeadlineText( juce::String(T("DSP Workbench")) );
+  setHeadlineText( juce::String("DSP Workbench") );
 
   // assign the pointer to the rosic::DspWorkbench object to be used as aduio engine:
   jassert(dspWorkbenchAudioModule != NULL ); // you must pass a valid module here
@@ -227,43 +227,44 @@ DspWorkbenchModuleEditor::DspWorkbenchModuleEditor(CriticalSection *newPlugInLoc
 
   for(int p=0; p<rosic::DspWorkbench::numParameters; p++)
   {
-    addAndMakeVisible( parameterLabels[p] = new RTextEntryField( juce::String(T("Par"))+juce::String(p)+juce::String(T(":"))) );
-    parameterLabels[p]->setDescription(juce::String(T("User parameter ")) + juce::String(T("p")));
+    addAndMakeVisible( parameterLabels[p] = new RTextEntryField( 
+      juce::String("Par")+juce::String(p)+juce::String(":")) );
+    parameterLabels[p]->setDescription(juce::String("User parameter ") + juce::String("p"));
 
-    addAndMakeVisible( parameterExpButtons[p] = new RButton(juce::String(T("Exp"))) );
-    parameterExpButtons[p]->setDescription(juce::String(T("Use exponential scaling for this parameter.")));
+    addAndMakeVisible( parameterExpButtons[p] = new RButton(juce::String("Exp")) );
+    parameterExpButtons[p]->setDescription(juce::String("Use exponential scaling for this parameter."));
     parameterExpButtons[p]->addRButtonListener(this);
 
-    addAndMakeVisible( parameterSliders[p] = new RSlider(T("parameterSlider")) );
+    addAndMakeVisible( parameterSliders[p] = new RSlider("parameterSlider") );
     parameterSliders[p]->addListener(this);
     parameterSliders[p]->setRange(0.0, 1.0, 0.0, 0.5);
     parameterSliders[p]->assignParameter(dspWorkbenchAudioModule->getParameterByIndex(p));
     parameterSliders[p]->setSliderName(juce::String::empty);
-    parameterSliders[p]->setDescription(juce::String(T("Adjusts the value of the parameter")));
+    parameterSliders[p]->setDescription(juce::String("Adjusts the value of the parameter"));
     parameterSliders[p]->setStringConversionFunction(&valueToString3);
 
-    addAndMakeVisible( parameterMinFields[p] = new RTextEntryField( juce::String(T("0.0"))) );
+    addAndMakeVisible( parameterMinFields[p] = new RTextEntryField( juce::String("0.0")) );
     parameterMinFields[p]->registerTextEntryFieldObserver(this);
-    parameterMinFields[p]->setDescription(T("Enter minimum value for the parameter"));
+    parameterMinFields[p]->setDescription("Enter minimum value for the parameter");
     parameterMinFields[p]->setDescriptionField(infoField);
 
-    addAndMakeVisible( parameterMaxFields[p] = new RTextEntryField( juce::String(T("1.0"))) );
+    addAndMakeVisible( parameterMaxFields[p] = new RTextEntryField( juce::String("1.0")) );
     parameterMaxFields[p]->registerTextEntryFieldObserver(this);
-    parameterMaxFields[p]->setDescription(T("Enter maximum value for the parameter"));
+    parameterMaxFields[p]->setDescription("Enter maximum value for the parameter");
     parameterMaxFields[p]->setDescriptionField(infoField);
 
-    addAndMakeVisible( parameterDefaultFields[p] = new RTextEntryField( juce::String(T("0.5"))) );
+    addAndMakeVisible( parameterDefaultFields[p] = new RTextEntryField( juce::String("0.5")) );
     parameterDefaultFields[p]->registerTextEntryFieldObserver(this);
-    parameterDefaultFields[p]->setDescription(T("Enter default value for the parameter"));
+    parameterDefaultFields[p]->setDescription("Enter default value for the parameter");
     parameterDefaultFields[p]->setDescriptionField(infoField);
 
-    addAndMakeVisible( parameterNameFields[p] = new RTextEntryField( juce::String(T("Par01"))) );
+    addAndMakeVisible( parameterNameFields[p] = new RTextEntryField( juce::String("Par01")) );
     parameterNameFields[p]->registerTextEntryFieldObserver(this);
-    parameterNameFields[p]->setDescription(T("Enter name value for the parameter"));
+    parameterNameFields[p]->setDescription("Enter name value for the parameter");
     parameterNameFields[p]->setDescriptionField(infoField);
   }
 
-  addAndMakeVisible( codeEditor = new RTextEditor(juce::String(T("CodeEditor"))) );
+  addAndMakeVisible( codeEditor = new RTextEditor(juce::String("CodeEditor")) );
   codeEditor->addListener(this);
   codeEditor->setMultiLine(true, false);
   codeEditor->setReturnKeyStartsNewLine(true);
@@ -273,7 +274,7 @@ DspWorkbenchModuleEditor::DspWorkbenchModuleEditor(CriticalSection *newPlugInLoc
 
   // create the BreakpointModulatorEditor:
   //breakpointModulatorEditor = new BreakpointModulatorEditor( &dspWorkbenchAudioModule->wrappedDspWorkbench->modulators[0] );
-  breakpointModulatorEditor = new BreakpointModulatorEditor(plugInLock, NULL);
+  breakpointModulatorEditor = new BreakpointModulatorEditor(lock, NULL);
   breakpointModulatorEditor->addChangeListener(this);
   addAndMakeVisible(breakpointModulatorEditor);
 
@@ -288,7 +289,7 @@ DspWorkbenchModuleEditor::DspWorkbenchModuleEditor(CriticalSection *newPlugInLoc
   // create and setup the filter-section editor:
 
   //filterEditor = new MultiModeFilterModuleEditor(juce::String(T("FilterEditor")));
-  filterEditor = new MultiModeFilterModuleEditor(plugInLock, NULL);
+  filterEditor = new MultiModeFilterModuleEditor(lock, NULL);
   //filterEditor->addChangeListener(this);
   //filterEditor->setFilterToEdit( &(dspWorkbenchAudioModule->wrappedDspWorkbench->filters[0]) );
   filterEditor->setDescriptionField(infoField, true);
