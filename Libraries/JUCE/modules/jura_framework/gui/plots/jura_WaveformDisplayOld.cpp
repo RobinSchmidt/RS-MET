@@ -1,6 +1,3 @@
-#include "rojue_WaveformDisplayOld.h"
-using namespace rojue;
-
 WaveformDisplayOld::WaveformDisplayOld(const String& name) 
 : CurveFamilyPlotOld(name)
 {
@@ -101,8 +98,8 @@ bool WaveformDisplayOld::setWaveform(double** newWaveformData, int newNumSampleF
   // catch memory allocation errors:
   if( peakData == NULL )
   {
-    AlertWindow::showMessageBox(AlertWindow::WarningIcon, String(T("Memory Allocation Failed")),
-      String(T("Memory allocation failed in WaveformDisplayOld::setWaveform")), String(T("OK")) );
+    AlertWindow::showMessageBox(AlertWindow::WarningIcon, String("Memory Allocation Failed"),
+      String("Memory allocation failed in WaveformDisplayOld::setWaveform"), String("OK") );
     numSampleFrames = 0;
     numChannels     = 0;
     return false;
@@ -144,8 +141,8 @@ bool WaveformDisplayOld::setWaveform(float** newWaveformData, int newNumSampleFr
   peakData = new float[numChannels*peakArraySize];
   if( peakData == NULL )
   {
-    AlertWindow::showMessageBox(AlertWindow::WarningIcon, String(T("Memory Allocation Failed")),
-      String(T("Memory allocation failed in WaveformDisplayOld::setWaveform")), String(T("OK")) );
+    AlertWindow::showMessageBox(AlertWindow::WarningIcon, String("Memory Allocation Failed"),
+      String("Memory allocation failed in WaveformDisplayOld::setWaveform"), String("OK") );
     numSampleFrames = 0;
     numChannels     = 0;
     return false;
@@ -183,10 +180,10 @@ bool WaveformDisplayOld::setWaveform(const AudioSampleBuffer& newWaveformBuffer)
 
   // copy (and cast) the undecimated data inot the first sub-array:
   int c, n;           // channel and sample-number
-  float* readPointer;
+  const float* readPointer;
   for(c=0; c<numChannels; c++)
   {
-    readPointer = newWaveformBuffer.getSampleData(c);
+    readPointer = newWaveformBuffer.getReadPointer(c);
 
     for(n=0; n<numSampleFrames; n++)
       peakData[c*peakArraySize+n] = (float) readPointer[n]; 
@@ -197,7 +194,7 @@ bool WaveformDisplayOld::setWaveform(const AudioSampleBuffer& newWaveformBuffer)
   // rendering of ridiciously long lines):
   for(c=0; c<numChannels; c++)
   {
-    readPointer = newWaveformBuffer.getSampleData(c);
+    readPointer = newWaveformBuffer.getReadPointer(c);
     for(n=numSampleFrames; n<peakArraySize; n++)
       peakData[c*peakArraySize+n] = readPointer[numSampleFrames-1]; 
   }

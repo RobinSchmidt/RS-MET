@@ -99,6 +99,36 @@ inline void fillWithZeros(double *arrayToFill, int length)
     arrayToFill[i] = 0.0;
 }
 
+inline int arrayMaxIndex(float* doubleArray, int numValues)
+{
+  int    maxIndex = 0;
+  double maxValue = doubleArray[0];
+  for(int i=0; i<numValues; i++)
+  {
+    if( doubleArray[i] > maxValue )
+    {
+      maxValue = doubleArray[i];
+      maxIndex = i;
+    }
+  }
+  return maxIndex;
+}
+
+inline int arrayMinIndex(float* doubleArray, int numValues)
+{
+  int    minIndex = 0;
+  double minValue = doubleArray[0];
+  for(int i=0; i<numValues; i++)
+  {
+    if( doubleArray[i] < minValue )
+    {
+      minValue = doubleArray[i];
+      minIndex = i;
+    }
+  }
+  return minIndex;
+}
+
 
 // some little helper/convenience functions to deal with std::vectors (move to RAPT):
 

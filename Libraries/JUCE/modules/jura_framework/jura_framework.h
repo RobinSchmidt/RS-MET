@@ -96,9 +96,11 @@ namespace jura
 // subclasses):
 #include "gui/plots/jura_CoordinateSystemOld.h"
 #include "gui/plots/jura_InteractiveCoordinateSystemOld.h"
+#include "gui/plots/jura_MessengingCoordinateSystemOld.h"
 #include "gui/plots/jura_CoordinateSystemZoomerOld.h"
 #include "gui/plots/jura_CurveFamilyPlotOld.h"
 #include "gui/plots/jura_SpectrumDisplayOld.h"
+#include "gui/plots/jura_WaveformDisplayOld.h"
 // after the plots, we may add some further plot-based widgets, such as XY-Pads, frequency-response
 // editors, etc.
 

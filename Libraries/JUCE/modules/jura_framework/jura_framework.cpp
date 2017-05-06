@@ -61,9 +61,11 @@ namespace jura
 
 #include "gui/plots/jura_CoordinateSystemOld.cpp"
 #include "gui/plots/jura_InteractiveCoordinateSystemOld.cpp" 
+#include "gui/plots/jura_MessengingCoordinateSystemOld.cpp"
 #include "gui/plots/jura_CoordinateSystemZoomerOld.cpp"
 #include "gui/plots/jura_CurveFamilyPlotOld.cpp" 
 #include "gui/plots/jura_SpectrumDisplayOld.cpp"
+#include "gui/plots/jura_WaveformDisplayOld.cpp"
 
 // AudioBufferUser stuff (needed by waveform display)
 #include "audio/jura_AudioFileBuffer.cpp"  

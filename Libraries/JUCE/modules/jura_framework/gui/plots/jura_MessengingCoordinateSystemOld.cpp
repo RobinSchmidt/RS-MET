@@ -1,5 +1,4 @@
-#include "rojue_MessengingCoordinateSystemOld.h"
-using namespace rojue;
+
 
 MessengingCoordinateSystemOld::MessengingCoordinateSystemOld(const String &name) 
 : CoordinateSystemOld(name)
@@ -232,7 +231,7 @@ void MessengingCoordinateSystemOld::addCoordinateSystemOldObserver(CoordinateSys
 void MessengingCoordinateSystemOld::removeCoordinateSystemOldObserver(CoordinateSystemOldObserver* observerToRemove)
 {
   observers.getLock().enter();
-  observers.removeValue(observerToRemove);
+  observers.removeFirstMatchingValue(observerToRemove);
   observers.getLock().exit();
 }
 
