@@ -1,8 +1,8 @@
 
 // construction/destruction:
 
-EchoLabDelayLineAudioModule::EchoLabDelayLineAudioModule(CriticalSection *newPlugInLock, rosic::EchoLabDelayLine *echoLabDelayLineToWrap)
-: AudioModule(newPlugInLock)
+EchoLabDelayLineAudioModule::EchoLabDelayLineAudioModule(CriticalSection *newPlugInLock, 
+  rosic::EchoLabDelayLine *echoLabDelayLineToWrap) : AudioModule(newPlugInLock)
 {
   jassert( echoLabDelayLineToWrap != NULL ); // you must pass a valid rosic-object to the constructor
   wrappedEchoLabDelayLine = echoLabDelayLineToWrap;
@@ -1269,3 +1269,199 @@ void EchoLabPlotEditor::refreshCompletely()
 }
 
 //=================================================================================================
+
+
+EchoLabModuleEditor::EchoLabModuleEditor(CriticalSection *newPlugInLock, EchoLabAudioModule* newEchoLabAudioModule) 
+  : AudioModuleEditor(newEchoLabAudioModule)
+{
+  setHeadlineStyle(MAIN_HEADLINE);
+
+  jassert( newEchoLabAudioModule != NULL ); // you must pass a valid module here
+  echoLabModuleToEdit = newEchoLabAudioModule;
+
+  addWidget( dryWetSlider = new RSlider("DryWetSlider") );
+  dryWetSlider->setSliderName(juce::String("Dry/Wet"));
+  dryWetSlider->assignParameter( echoLabModuleToEdit->getParameterByName("DryWet") );
+  dryWetSlider->setSliderName(juce::String("Dry/Wet"));
+  dryWetSlider->setDefaultValue(0.5);
+  dryWetSlider->setDescription( juce::String("Ratio between dry and wet signal") );
+  dryWetSlider->setDescriptionField(infoField);
+  dryWetSlider->setStringConversionFunction(&ratioToString0);
+
+  addWidget( wetLevelSlider = new RSlider("WetLevelSlider") );
+  wetLevelSlider->assignParameter( echoLabModuleToEdit->getParameterByName("WetLevel") );
+  wetLevelSlider->setDescription( juce::String("Level of the wet signal in dB") );
+  wetLevelSlider->setSliderName(juce::String("Wet Level"));
+  wetLevelSlider->setDescriptionField(infoField);
+  wetLevelSlider->setStringConversionFunction(decibelsToStringWithUnit2);
+
+  addWidget( delaySyncButton = new RButton(juce::String("Sync")) );
+  delaySyncButton->setDescription(
+    juce::String("Toggle sync for delaytime on/off. Time unit is beats in sync-mode, seconds otherwise"));
+  delaySyncButton->setDescriptionField(infoField);
+  delaySyncButton->addRButtonListener(this);
+
+  addWidget( snapToTimeGridButton = new RButton(juce::String("Snap:")) );
+  snapToTimeGridButton->setDescription(juce::String("Toggle magnetic time-grid on/off."));
+  snapToTimeGridButton->setDescriptionField(infoField);
+  snapToTimeGridButton->addRButtonListener(this);
+
+  addWidget( timeGridComboBox = new RTimeGridComboBox(juce::String("TimeGridComboBox")) );
+  timeGridComboBox->setDescriptionField(infoField);
+  timeGridComboBox->registerComboBoxObserver(this);
+
+  delayPlotEditor = new EchoLabPlotEditor(lock, echoLabModuleToEdit);
+  delayPlotEditor->setDescriptionField(infoField);
+  delayPlotEditor->addChangeListener(this);
+  addPlot(delayPlotEditor);
+
+  snapToTimeGridButton->setToggleState(delayPlotEditor->isSnappingToFineGridX(), false);
+
+  delayPlotZoomer = new CoordinateSystemZoomerOld();
+  //delayPlotZoomer->setRelativeMargins(5.0, 5.0, 10.0, 10.0);
+  delayPlotZoomer->setDescriptionField(infoField, true);
+  delayPlotZoomer->setVerticalMouseWheelMode(CoordinateSystemZoomerOld::horizontalZoomViaVerticalMouseWheel);
+  addChildColourSchemeComponent(delayPlotZoomer);
+  delayPlotZoomer->setCoordinateSystem(delayPlotEditor);
+
+  delayLineModuleEditor = new EchoLabDelayLineModuleEditor(newPlugInLock, NULL);  
+  delayLineModuleEditor->setDescriptionField(infoField, true);
+  addChildEditor(delayLineModuleEditor);
+
+  delayPlotEditor->setDelayLineModuleEditor(delayLineModuleEditor);
+
+  isTopLevelEditor = true;
+
+  numHueOffsets = 1; // for filter-sections
+
+  initializeColourScheme();
+  updateWidgetsAccordingToState();
+}
+
+
+//-----------------------------------------------------------------------------------------------------------------------------------------
+// setup:
+
+void EchoLabModuleEditor::initializeColourScheme()
+{
+  updateSubEditorColourSchemes();
+}
+
+void EchoLabModuleEditor::updateSubEditorColourSchemes()
+{
+  ScopedLock scopedLock(*lock);
+  delayLineModuleEditor->copyColourSettingsFrom(this);
+  delayLineModuleEditor->setHueOffsetForFilterEditors(editorColourScheme.getHueOffset(0));
+}
+
+//-----------------------------------------------------------------------------------------------------------------------------------------
+// callbacks:
+
+void EchoLabModuleEditor::copyColourSettingsFrom(const ColourSchemeComponent *componentToCopyFrom)
+{
+  AudioModuleEditor::copyColourSettingsFrom(componentToCopyFrom);
+  delayLineModuleEditor->setHueOffsetForFilterEditors(editorColourScheme.getHueOffset(0));
+}
+
+void EchoLabModuleEditor::rButtonClicked(RButton *buttonThatWasClicked)
+{
+  ScopedLock scopedLock(*lock);
+
+  if( buttonThatWasClicked == snapToTimeGridButton )
+  {
+    echoLabModuleToEdit->wrappedEchoLab->setSnapToTimeGrid( 
+      snapToTimeGridButton->getToggleState() );
+    delayPlotEditor->setSnapToFineGridX( snapToTimeGridButton->getToggleState() );
+    delayPlotEditor->setVerticalFineGridVisible(snapToTimeGridButton->getToggleState());
+    return; // shall not trigger markStateAsDirty()
+  }
+  else if( buttonThatWasClicked == delaySyncButton )
+  {
+    echoLabModuleToEdit->wrappedEchoLab->setSyncForDelayTimes(delaySyncButton->getToggleState());
+    delayLineModuleEditor->updateWidgetsAccordingToState();
+  }    
+  else
+    AudioModuleEditor::rButtonClicked(buttonThatWasClicked);
+
+
+  echoLabModuleToEdit->markStateAsDirty();  // hmmm - -do we need this?
+}
+
+void EchoLabModuleEditor::rComboBoxChanged(RComboBox *rComboBoxThatHasChanged)
+{
+  if( rComboBoxThatHasChanged == timeGridComboBox )
+    delayPlotEditor->setVerticalFineGridInterval(timeGridComboBox->getValue());
+}
+
+void EchoLabModuleEditor::changeListenerCallback(ChangeBroadcaster *objectThatHasChanged)
+{
+  if( objectThatHasChanged == delayPlotEditor )
+  {
+    if( echoLabModuleToEdit != NULL )
+      echoLabModuleToEdit->markStateAsDirty();
+
+    //equalizerEditor->setEqualizerCoreToEdit(delayPlotEditor->getSelectedDelayLineEqualizer());
+    //echoLabModuleToEdit->inputFilterModule->setEqualizerToWrap(
+  }
+  else
+  {
+    // the call must have been due to preset recall - deselect band in this case:
+    //delayPlotEditor->deSelectDelayLine();
+    delayPlotEditor->refreshCompletely();
+    AudioModuleEditor::changeListenerCallback(objectThatHasChanged);
+  }
+}
+
+void EchoLabModuleEditor::updateWidgetsAccordingToState()
+{
+  if( echoLabModuleToEdit == NULL )
+    return;
+  if( echoLabModuleToEdit->wrappedEchoLab == NULL )
+    return;
+
+  AudioModuleEditor::updateWidgetsAccordingToState();
+  delayPlotEditor->updatePlot();
+
+  delaySyncButton->setToggleState(echoLabModuleToEdit->wrappedEchoLab->isDelayTimeSynced(), false);
+
+  bool snap = echoLabModuleToEdit->wrappedEchoLab->isSnappingToTimeGrid();
+  snapToTimeGridButton->setToggleState(snap, false );
+  delayPlotEditor->setSnapToFineGridX( snap );
+  delayPlotEditor->setVerticalFineGridVisible(snap);
+}
+
+void EchoLabModuleEditor::resized()
+{
+  AudioModuleEditor::resized();
+  int x = 0;
+  int y = getHeadlineBottom();
+  int w = getWidth();
+  int h = getHeight();
+
+  stateWidgetSet->setBounds(x, y+4, stateWidgetSet->getWidth()/2, stateWidgetSet->getHeight());
+
+  int equalizerHeight = 220;
+
+  y = getPresetSectionBottom();
+  h = infoField->getY()-y-equalizerHeight;
+  delayPlotEditor->setBounds(4, y+4, w-delayPlotZoomer->getZoomerSize()-8+RWidget::outlineThickness, h-delayPlotZoomer->getZoomerSize()-4);
+  delayPlotZoomer->alignWidgetsToCoordinateSystem();
+
+  x = w - 44;
+  y = delayPlotZoomer->getY() - 16 + RWidget::outlineThickness;
+  snapToTimeGridButton->setBounds(x-48, y, 44, 16);
+  timeGridComboBox->setBounds(    x,    y, 40, 16);
+  delaySyncButton->setBounds(snapToTimeGridButton->getX()-48,  y, 40, 16);
+
+  x = stateWidgetSet->getRight();
+  y = stateWidgetSet->getY();
+  w = delaySyncButton->getX()-x;
+  dryWetSlider->setBounds(x+4,       y, w/2-8, 16);
+  wetLevelSlider->setBounds(x+w/2+4, y, w/2-8, 16);
+
+  x = 4; 
+  y = delayPlotZoomer->getBottom() - RWidget::outlineThickness;
+  w = getWidth() - 8;
+  h = infoField->getY() - y; 
+  delayLineModuleEditor->setBounds(x, y, w, h);
+}

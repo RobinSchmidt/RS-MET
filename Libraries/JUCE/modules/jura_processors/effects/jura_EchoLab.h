@@ -300,5 +300,63 @@ protected:
 
 //=================================================================================================
 
+class EchoLabModuleEditor : public AudioModuleEditor, public RComboBoxObserver
+{
+
+public:
+
+  //-----------------------------------------------------------------------------------------------
+  // construction/destruction:
+
+  EchoLabModuleEditor(CriticalSection *newPlugInLock, EchoLabAudioModule* newEchoLabAudioModule);
+
+  //-----------------------------------------------------------------------------------------------
+  // setup:
+
+  virtual void initializeColourScheme();
+  virtual void updateSubEditorColourSchemes();
+
+  //-----------------------------------------------------------------------------------------------
+  // callbacks:
+
+  virtual void copyColourSettingsFrom(const ColourSchemeComponent *componentToCopyFrom);
+  virtual void rButtonClicked(RButton  *buttonThatWasClicked);
+  virtual void rComboBoxChanged(RComboBox  *rComboBoxThatHasChanged);
+  virtual void changeListenerCallback(ChangeBroadcaster *objectThatHasChanged);
+  virtual void resized();
+  virtual void updateWidgetsAccordingToState();
+
+protected:
+
+  EchoLabAudioModule *echoLabModuleToEdit;
+
+  EchoLabPlotEditor         *delayPlotEditor;
+  CoordinateSystemZoomerOld *delayPlotZoomer;
+
+  RSlider           *dryWetSlider, *wetLevelSlider;
+  RButton           *snapToTimeGridButton, *delaySyncButton;
+  RTimeGridComboBox *timeGridComboBox;
+
+  EchoLabDelayLineModuleEditor *delayLineModuleEditor;
+
+  /*
+  //Rectangle leftRectangle1, leftRectangle2, leftRectangle3, eqBandParamRectangle;
+  Rectangle middleRectangle, feedbackEqBandParamRectangle, outputEqBandParamRectangle;
+
+
+  RLabel *delayModLabel, *ampModLabel, *globalLabel;
+
+  RSlider *dryWetSlider, *wetLevelSlider, *timeSlider, *gainSlider, *panSlider, *feedbackSlider, 
+  *delayModCycleSlider, *delayModDepthSlider, *delayModPhaseLeftSlider, 
+  *delayModPhaseRightSlider, *ampModCycleSlider, *ampModDepthSlider, *ampModPhaseLeftSlider, 
+  *ampModPhaseRightSlider;
+
+  RButton *showFeedbackButton, *snapToTimeGridButton, *delaySyncButton, *delayModSyncButton, 
+  *ampModSyncButton, *delayModTriggerButton, *ampModTriggerButton, *muteButton, *soloButton, 
+  *pingPongButton, *flushButton;
+  */
+
+  juce_UseDebuggingNewOperator;
+};
 
 #endif 
