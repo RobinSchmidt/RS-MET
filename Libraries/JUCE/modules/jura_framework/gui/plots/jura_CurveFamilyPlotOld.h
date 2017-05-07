@@ -79,7 +79,7 @@ protected:
   /** Plots the curve with index 'index'. */
   virtual void plotCurve(Graphics &g, juce::Image *targetImage, XmlElement *targetSV, int index);
 
-  virtual void plotFamilyValuesAsDots(Graphics &g, Image* targetImage = NULL,
+  virtual void plotFamilyValuesAsDots(Graphics &g, juce::Image* targetImage = NULL,
     XmlElement *targetSVG = NULL);
 
   //OwnedArray<Colour> curveColours;	  // array which holds the colurs for the graphs

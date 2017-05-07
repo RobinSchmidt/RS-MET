@@ -116,7 +116,7 @@ protected:
 
   /** Draws a right locator (for marking an end position inside a sample etc.). */
   virtual void drawRightLocator(Graphics &g, float x, int arrowPosition = ARROW_AT_TOP,
-    const Colour& locatorColour = Colours::darkviolet, Image *targetImage = NULL);
+    const Colour& locatorColour = Colours::darkviolet, juce::Image *targetImage = NULL);
 
   /** Draws a position locator (just a vertical line). */
   virtual void drawCurrentPositionLocator(Graphics &g, float x, int arrowPosition = NO_ARROW,
