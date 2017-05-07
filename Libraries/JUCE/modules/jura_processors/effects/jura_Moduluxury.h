@@ -1,6 +1,9 @@
 #ifndef jura_Moduluxury_h
 #define jura_Moduluxury_h
 
+/** This is supposed to be come a luxurious modulation plugin  - with freely adjustable modulations
+for filters, phasers, flangers, panning, volume, etc. - maybe with routable modulation 
+generators... */
 
 class ModuluxuryAudioModule : public AudioModule
 {
@@ -37,9 +40,5 @@ protected:
 
   juce_UseDebuggingNewOperator;
 };
-
-//=================================================================================================
-
-
 
 #endif 
