@@ -1,8 +1,3 @@
-#include "rosof_WorkhorseAudioModule.h"
-using namespace rosof;
-
-//-------------------------------------------------------------------------------------------------
-// construction/destruction:
 
 WorkhorseAudioModule::WorkhorseAudioModule(CriticalSection *newPlugInLock, rosic::Workhorse *workhorseToWrap)
 : PolyphonicInstrumentAudioModule(newPlugInLock, workhorseToWrap)
@@ -10,48 +5,53 @@ WorkhorseAudioModule::WorkhorseAudioModule(CriticalSection *newPlugInLock, rosic
   jassert(workhorseToWrap != NULL); // you must pass a valid rosic-object to the constructor
   wrappedWorkhorse        = workhorseToWrap;
   underlyingRosicInstrument = workhorseToWrap;
-  moduleName                = juce::String(T("Workhorse"));
+  moduleName                = juce::String(("Workhorse"));
 
   // initialize the current directory for preset loading and saving:
-  setActiveDirectory(getApplicationDirectory() + juce::String(T("/WorkhorsePresets")) );
+  setActiveDirectory(getApplicationDirectory() + juce::String(("/WorkhorsePresets")) );
 
-  vectorMixerModule = new VectorMixerAudioModule(plugInLock, &wrappedWorkhorse->vectorMixer);
-  vectorMixerModule->setModuleName(juce::String(T("VectorMixer")));
+  vectorMixerModule = new VectorMixerAudioModule(lock, &wrappedWorkhorse->vectorMixer);
+  vectorMixerModule->setModuleName(juce::String(("VectorMixer")));
   addChildAudioModule(vectorMixerModule);
 
-  samplePlayerTopLeftModule = new SamplePlayerAudioModule(plugInLock, 
+  samplePlayerTopLeftModule = new SamplePlayerAudioModule(lock, 
     &wrappedWorkhorse->voiceArray[0].oscSection.samplePlayerTopLeft);
-  samplePlayerTopLeftModule->setModuleName(juce::String(T("SamplePlayerTopLeft")));
+  samplePlayerTopLeftModule->setModuleName(juce::String(("SamplePlayerTopLeft")));
   addChildAudioModule(samplePlayerTopLeftModule);
 
-  samplePlayerTopRightModule = new SamplePlayerAudioModule(plugInLock, 
+  samplePlayerTopRightModule = new SamplePlayerAudioModule(lock, 
     &wrappedWorkhorse->voiceArray[0].oscSection.samplePlayerTopRight);
-  samplePlayerTopRightModule->setModuleName(juce::String(T("SamplePlayerTopRight")));
+  samplePlayerTopRightModule->setModuleName(juce::String(("SamplePlayerTopRight")));
   addChildAudioModule(samplePlayerTopRightModule);
 
-  samplePlayerBottomLeftModule = new SamplePlayerAudioModule(plugInLock, 
+  samplePlayerBottomLeftModule = new SamplePlayerAudioModule(lock, 
     &wrappedWorkhorse->voiceArray[0].oscSection.samplePlayerBottomLeft);
-  samplePlayerBottomLeftModule->setModuleName(juce::String(T("SamplePlayerBottomLeft")));
+  samplePlayerBottomLeftModule->setModuleName(juce::String(("SamplePlayerBottomLeft")));
   addChildAudioModule(samplePlayerBottomLeftModule);
 
-  samplePlayerBottomRightModule = new SamplePlayerAudioModule(plugInLock, 
+  samplePlayerBottomRightModule = new SamplePlayerAudioModule(lock, 
     &wrappedWorkhorse->voiceArray[0].oscSection.samplePlayerBottomRight);
-  samplePlayerBottomRightModule->setModuleName(juce::String(T("SamplePlayerBottomRight")));
+  samplePlayerBottomRightModule->setModuleName(juce::String(("SamplePlayerBottomRight")));
   addChildAudioModule(samplePlayerBottomRightModule);
 
-  filterModule = new MultiModeFilterAudioModule(plugInLock, &wrappedWorkhorse->voiceArray[0].filter);
-  filterModule->setModuleName(juce::String(T("Filter")));
+  filterModule = new MultiModeFilterAudioModule(lock, 
+    &wrappedWorkhorse->voiceArray[0].filter);
+  filterModule->setModuleName(juce::String(("Filter")));
   addChildAudioModule(filterModule);
 
-  pitchEnvModule = new BreakpointModulatorAudioModule(plugInLock, &wrappedWorkhorse->voiceArray[0].pitchEnv);
-  pitchEnvModule->setModuleName(juce::String(T("PitchEnvelope")));
+  pitchEnvModule = new BreakpointModulatorAudioModule(lock, 
+    &wrappedWorkhorse->voiceArray[0].pitchEnv);
+  pitchEnvModule->setModuleName(juce::String(("PitchEnvelope")));
   addChildAudioModule(pitchEnvModule);
 
-  filterEnvModule = new BreakpointModulatorAudioModule(plugInLock, &wrappedWorkhorse->voiceArray[0].filterEnv);
-  filterEnvModule->setModuleName(juce::String(T("FilterEnvelope")));
+  filterEnvModule = new BreakpointModulatorAudioModule(lock, 
+    &wrappedWorkhorse->voiceArray[0].filterEnv);
+  filterEnvModule->setModuleName(juce::String(("FilterEnvelope")));
   addChildAudioModule(filterEnvModule);
 
-  ampEnvModule = new BreakpointModulatorAudioModule(plugInLock, &wrappedWorkhorse->voiceArray[0].ampEnv);
-  ampEnvModule->setModuleName(juce::String(T("AmpEnvelope")));
+  ampEnvModule = new BreakpointModulatorAudioModule(lock, 
+    &wrappedWorkhorse->voiceArray[0].ampEnv);
+  ampEnvModule->setModuleName(juce::String(("AmpEnvelope")));
   addChildAudioModule(ampEnvModule);
 }
+
