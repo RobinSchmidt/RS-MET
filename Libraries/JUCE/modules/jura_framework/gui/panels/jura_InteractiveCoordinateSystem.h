@@ -112,7 +112,7 @@ protected:
 
   /** Draws a left locator (for marking a start position inside a sample etc.). */
   virtual void drawLeftLocator(Graphics &g, float x, int arrowPosition = ARROW_AT_TOP,
-    const Colour& locatorColour = Colours::darkviolet, Image *targetImage = NULL);
+    const Colour& locatorColour = Colours::darkviolet, juce::Image *targetImage = NULL);
 
   /** Draws a right locator (for marking an end position inside a sample etc.). */
   virtual void drawRightLocator(Graphics &g, float x, int arrowPosition = ARROW_AT_TOP,
@@ -120,7 +120,7 @@ protected:
 
   /** Draws a position locator (just a vertical line). */
   virtual void drawCurrentPositionLocator(Graphics &g, float x, int arrowPosition = NO_ARROW,
-    const Colour& locatorColour = Colours::red, Image *targetImage = NULL);
+    const Colour& locatorColour = Colours::red, juce::Image *targetImage = NULL);
 
   bool   snapToCoarseGridX, snapToCoarseGridY, snapToFineGridX, snapToFineGridY;
   int    mouseX, mouseY;

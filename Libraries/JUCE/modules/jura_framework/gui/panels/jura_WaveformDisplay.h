@@ -58,10 +58,10 @@ protected:
 
   /** Overrides drawComponent inherited from ThreadedDrawingComponent in order to do the actual
   drawing operations. */
-  virtual void drawComponent(Image* imageToDrawOnto);
+  virtual void drawComponent(juce::Image* imageToDrawOnto);
 
   /** Plots the actual waveform data onto an image that is passed. */
-  virtual void plotWaveform(Image *targetImage = NULL);
+  virtual void plotWaveform(juce::Image *targetImage = NULL);
 
   /** When this component has bounds which extend beyond the parent's bounds, a part of the
   waveform may be invisible - this function will find out the minimum and maximum time instants

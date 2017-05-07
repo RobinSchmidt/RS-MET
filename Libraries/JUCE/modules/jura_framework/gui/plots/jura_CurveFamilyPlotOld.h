@@ -58,7 +58,7 @@ public:
 
   /** Renders the plot to an image object of given width and height. The caller must take
   care to delete the image when it's not needed anymore. */
-  virtual Image* getPlotAsImage(int width, int height);
+  virtual juce::Image* getPlotAsImage(int width, int height);
 
   /** Overrides the inherited method from the CoordinateSystem base-class. */
   virtual void updatePlotImage(bool redrawBackground = false);
@@ -73,11 +73,11 @@ public:
 protected:
 
   /** Plots the curve family either on a graphics drawing canvas or an image. */
-  virtual void plotCurveFamily(Graphics &g, Image *targetImage = NULL,
+  virtual void plotCurveFamily(Graphics &g, juce::Image *targetImage = NULL,
     XmlElement *targetSVG = NULL);
 
   /** Plots the curve with index 'index'. */
-  virtual void plotCurve(Graphics &g, Image *targetImage, XmlElement *targetSV, int index);
+  virtual void plotCurve(Graphics &g, juce::Image *targetImage, XmlElement *targetSV, int index);
 
   virtual void plotFamilyValuesAsDots(Graphics &g, Image* targetImage = NULL,
     XmlElement *targetSVG = NULL);
@@ -105,7 +105,7 @@ protected:
   bool	  fillAreaUnderFunction;   // good for spectra
   bool    isFunctionFamily;
   int     highlightedCurve;
-  Image*  plotImage;
+  juce::Image*  plotImage;
 
   juce_UseDebuggingNewOperator;
 };

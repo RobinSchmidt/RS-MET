@@ -41,7 +41,7 @@ void BitCrusherAudioModule::createStaticParameters()
 }
 
 BitCrusherModuleEditor::BitCrusherModuleEditor(CriticalSection *newPlugInLock, BitCrusherAudioModule* newBitCrusherAudioModule) 
-: AudioModuleEditor(newPlugInLock, newBitCrusherAudioModule)
+: AudioModuleEditor(newBitCrusherAudioModule)
 {
   ScopedLock scopedLock(*lock);
 
@@ -121,7 +121,7 @@ void ModulatedAllpassAudioModule::createStaticParameters()
 
 ModulatedAllpassModuleEditor::ModulatedAllpassModuleEditor(CriticalSection *newPlugInLock, 
                                                            ModulatedAllpassAudioModule* newModulatedAllpassAudioModule) 
-: AudioModuleEditor(newPlugInLock, newModulatedAllpassAudioModule)
+: AudioModuleEditor(newModulatedAllpassAudioModule)
 {
   ScopedLock scopedLock(*lock);
 
@@ -194,7 +194,7 @@ void SlewRateLimiterAudioModule::createStaticParameters()
 
 SlewRateLimiterModuleEditor::SlewRateLimiterModuleEditor(CriticalSection *newPlugInLock, 
                                                          SlewRateLimiterAudioModule* newSlewRateLimiterAudioModule) 
-: AudioModuleEditor(newPlugInLock, newSlewRateLimiterAudioModule)
+: AudioModuleEditor(newSlewRateLimiterAudioModule)
 {
   ScopedLock scopedLock(*lock);
 
@@ -342,7 +342,7 @@ void HarmonicsAudioModule::createStaticParameters()
 }
 
 HarmonicsModuleEditor::HarmonicsModuleEditor(CriticalSection *newPlugInLock, HarmonicsAudioModule* newHarmonicsAudioModule) 
-: AudioModuleEditor(newPlugInLock, newHarmonicsAudioModule)
+: AudioModuleEditor(newHarmonicsAudioModule)
 {
   ScopedLock scopedLock(*lock);
 
@@ -617,7 +617,7 @@ void WaveShaperAudioModule::createStaticParameters()
 }
 
 WaveShaperModuleEditor::WaveShaperModuleEditor(CriticalSection *newPlugInLock, WaveShaperAudioModule* newWaveShaperAudioModule) 
-: AudioModuleEditor(newPlugInLock, newWaveShaperAudioModule)
+: AudioModuleEditor(newWaveShaperAudioModule)
 {
   ScopedLock scopedLock(*lock);
 
@@ -751,7 +751,7 @@ void WaveShaperModuleEditor::rComboBoxChanged(RComboBox *rComboBoxThatHasChanged
   updatePlot();
 }
 
-void WaveShaperModuleEditor::rSliderValueChanged(rojue::RSlider *rSliderThatHasChanged)
+void WaveShaperModuleEditor::rSliderValueChanged(RSlider *rSliderThatHasChanged)
 {
   ScopedLock scopedLock(*lock);
   updatePlot();
@@ -839,7 +839,7 @@ void CompShaperAudioModule::createStaticParameters()
 }
 
 CompShaperModuleEditor::CompShaperModuleEditor(CriticalSection *newPlugInLock, CompShaperAudioModule* newCompShaperAudioModule) 
-: AudioModuleEditor(newPlugInLock, newCompShaperAudioModule)
+: AudioModuleEditor(newCompShaperAudioModule)
 {
   ScopedLock scopedLock(*lock);
 
@@ -1045,7 +1045,7 @@ void CompressorAudioModule::createStaticParameters()
 // CompressorModuleEditor:
 
 CompressorModuleEditor::CompressorModuleEditor(CriticalSection *newPlugInLock, CompressorAudioModule* newCompressorAudioModule) 
-: AudioModuleEditor(newPlugInLock, newCompressorAudioModule)
+: AudioModuleEditor(newCompressorAudioModule)
 {
   ScopedLock scopedLock(*lock);
 
@@ -1270,7 +1270,7 @@ void ExpanderAudioModule::createStaticParameters()
 }
 
 ExpanderModuleEditor::ExpanderModuleEditor(CriticalSection *newPlugInLock, ExpanderAudioModule* newExpanderAudioModule) 
-: AudioModuleEditor(newPlugInLock, newExpanderAudioModule)
+: AudioModuleEditor(newExpanderAudioModule)
 {
   ScopedLock scopedLock(*lock);
 
@@ -1470,7 +1470,7 @@ void LimiterAudioModule::createStaticParameters()
 }
 
 LimiterModuleEditor::LimiterModuleEditor(CriticalSection *newPlugInLock, LimiterAudioModule* newLimiterAudioModule) 
-: AudioModuleEditor(newPlugInLock, newLimiterAudioModule)
+: AudioModuleEditor(newLimiterAudioModule)
 {
   ScopedLock scopedLock(*lock);
 
@@ -1653,7 +1653,7 @@ void NoiseGateAudioModule::createStaticParameters()
 }
 
 NoiseGateModuleEditor::NoiseGateModuleEditor(CriticalSection *newPlugInLock, NoiseGateAudioModule* newNoiseGateAudioModule) 
-: AudioModuleEditor(newPlugInLock, newNoiseGateAudioModule)
+: AudioModuleEditor(newNoiseGateAudioModule)
 {
   ScopedLock scopedLock(*lock);
 
@@ -1867,7 +1867,7 @@ void CombBankAudioModule::createStaticParameters()
 }
 
 CombBankModuleEditor::CombBankModuleEditor(CriticalSection *newPlugInLock, CombBankAudioModule* newCombBankAudioModule) 
-: AudioModuleEditor(newPlugInLock, newCombBankAudioModule)
+: AudioModuleEditor(newCombBankAudioModule)
 {
   ScopedLock scopedLock(*lock);
 
@@ -2098,7 +2098,7 @@ void CombResonatorAudioModule::createStaticParameters()
 }
 
 CombResonatorModuleEditor::CombResonatorModuleEditor(CriticalSection *newPlugInLock, CombResonatorAudioModule* newCombResonatorAudioModule) 
-: AudioModuleEditor(newPlugInLock, newCombResonatorAudioModule)
+: AudioModuleEditor(newCombResonatorAudioModule)
 {
   ScopedLock scopedLock(*lock);
 
@@ -2331,7 +2331,7 @@ void DualTwoPoleFilterAudioModule::createStaticParameters()
 
 DualTwoPoleFilterModuleEditor::DualTwoPoleFilterModuleEditor(CriticalSection *newPlugInLock, 
                                                              DualTwoPoleFilterAudioModule* newDualTwoPoleFilterAudioModule) 
-: AudioModuleEditor(newPlugInLock, newDualTwoPoleFilterAudioModule)
+: AudioModuleEditor(newDualTwoPoleFilterAudioModule)
 {
   ScopedLock scopedLock(*lock);
 
@@ -2566,7 +2566,7 @@ void FourPoleFilterAudioModule::createStaticParameters()
 
 FourPoleFilterModuleEditor::FourPoleFilterModuleEditor(CriticalSection *newPlugInLock, 
                                                        FourPoleFilterAudioModule* newFourPoleFilterAudioModule) 
-: AudioModuleEditor(newPlugInLock, newFourPoleFilterAudioModule)
+: AudioModuleEditor(newFourPoleFilterAudioModule)
 {
   ScopedLock scopedLock(*lock);
 
@@ -2711,7 +2711,7 @@ void LadderFilterAudioModule::createStaticParameters()
 }
 
 LadderFilterModuleEditor::LadderFilterModuleEditor(CriticalSection *newPlugInLock, LadderFilterAudioModule* newLadderFilterAudioModule) 
-: AudioModuleEditor(newPlugInLock, newLadderFilterAudioModule)
+: AudioModuleEditor(newLadderFilterAudioModule)
 {
   ScopedLock scopedLock(*lock);
 
@@ -2848,7 +2848,7 @@ void SlopeFilterAudioModule::createStaticParameters()
 }
 
 SlopeFilterModuleEditor::SlopeFilterModuleEditor(CriticalSection *newPlugInLock, SlopeFilterAudioModule* newSlopeFilterAudioModule) 
-: AudioModuleEditor(newPlugInLock, newSlopeFilterAudioModule)
+: AudioModuleEditor(newSlopeFilterAudioModule)
 {
   ScopedLock scopedLock(*lock);
 
@@ -2924,7 +2924,7 @@ void TwoPoleFilterAudioModule::createStaticParameters()
 }
 
 TwoPoleFilterModuleEditor::TwoPoleFilterModuleEditor(CriticalSection *newPlugInLock, TwoPoleFilterAudioModule* newTwoPoleFilterAudioModule) 
-: AudioModuleEditor(newPlugInLock, newTwoPoleFilterAudioModule)
+: AudioModuleEditor(newTwoPoleFilterAudioModule)
 {
   ScopedLock scopedLock(*lock);
 
@@ -3081,7 +3081,7 @@ void PingPongEchoAudioModule::createStaticParameters()
 }
 
 PingPongEchoModuleEditor::PingPongEchoModuleEditor(CriticalSection *newPlugInLock, PingPongEchoAudioModule* newPingPongEchoAudioModule) 
-: AudioModuleEditor(newPlugInLock, newPingPongEchoAudioModule)
+: AudioModuleEditor(newPingPongEchoAudioModule)
 {
   ScopedLock scopedLock(*lock);
 
@@ -3253,7 +3253,7 @@ void ReverbAudioModule::createStaticParameters()
 }
 
 ReverbModuleEditor::ReverbModuleEditor(CriticalSection *newPlugInLock, ReverbAudioModule* newReverbAudioModule) 
-: AudioModuleEditor(newPlugInLock, newReverbAudioModule)
+: AudioModuleEditor(newReverbAudioModule)
 {
   ScopedLock scopedLock(*lock);
 
@@ -3393,7 +3393,7 @@ void SimpleDelayAudioModule::createStaticParameters()
 }
 
 SimpleDelayModuleEditor::SimpleDelayModuleEditor(CriticalSection *newPlugInLock, SimpleDelayAudioModule* newSimpleDelayAudioModule) 
-: AudioModuleEditor(newPlugInLock, newSimpleDelayAudioModule)
+: AudioModuleEditor(newSimpleDelayAudioModule)
 {
   ScopedLock scopedLock(*lock);
 
@@ -3445,7 +3445,7 @@ ModulationEffectAudioModule::ModulationEffectAudioModule(CriticalSection *newPlu
 
 ModulationEffectModuleEditor::ModulationEffectModuleEditor(CriticalSection *newPlugInLock, 
                                                            ModulationEffectAudioModule* newModulationEffectAudioModule) 
-: AudioModuleEditor(newPlugInLock, newModulationEffectAudioModule)
+: AudioModuleEditor(newModulationEffectAudioModule)
 {
   ScopedLock scopedLock(*lock);
 
@@ -4135,7 +4135,7 @@ void FormantShifterAudioModule::createStaticParameters()
 
 FormantShifterModuleEditor::FormantShifterModuleEditor(CriticalSection *newPlugInLock, 
                                                        FormantShifterAudioModule* newFormantShifterAudioModule) 
-: AudioModuleEditor(newPlugInLock, newFormantShifterAudioModule)
+: AudioModuleEditor(newFormantShifterAudioModule)
 {
   ScopedLock scopedLock(*lock);
 
@@ -4321,7 +4321,7 @@ void ChorusAudioModule::createStaticParameters()
 }
 
 ChorusModuleEditor::ChorusModuleEditor(CriticalSection *newPlugInLock, ChorusAudioModule* newChorusAudioModule) 
-: AudioModuleEditor(newPlugInLock, newChorusAudioModule)
+: AudioModuleEditor(newChorusAudioModule)
 {
   ScopedLock scopedLock(*lock);
 
@@ -4641,7 +4641,7 @@ void FrequencyShifterAudioModule::createStaticParameters()
 
 FrequencyShifterModuleEditor::FrequencyShifterModuleEditor(CriticalSection *newPlugInLock, 
                                                            FrequencyShifterAudioModule* newFrequencyShifterAudioModule) 
-: AudioModuleEditor(newPlugInLock, newFrequencyShifterAudioModule)
+: AudioModuleEditor(newFrequencyShifterAudioModule)
 {
   ScopedLock scopedLock(*lock);
 
@@ -4754,7 +4754,7 @@ void PhaseStereoizerAudioModule::createStaticParameters()
 
 PhaseStereoizerModuleEditor::PhaseStereoizerModuleEditor(CriticalSection *newPlugInLock, 
                                                          PhaseStereoizerAudioModule* newPhaseStereoizerAudioModule) 
-: AudioModuleEditor(newPlugInLock, newPhaseStereoizerAudioModule)
+: AudioModuleEditor(newPhaseStereoizerAudioModule)
 {
   ScopedLock scopedLock(*lock);
 
@@ -4876,7 +4876,7 @@ void RingModulatorAudioModule::createStaticParameters()
 }
 
 RingModulatorModuleEditor::RingModulatorModuleEditor(CriticalSection *newPlugInLock, RingModulatorAudioModule* newRingModulatorAudioModule) 
-: AudioModuleEditor(newPlugInLock, newRingModulatorAudioModule)
+: AudioModuleEditor(newRingModulatorAudioModule)
 {
   ScopedLock scopedLock(*lock);
 
@@ -4995,7 +4995,7 @@ void SingleSidebandModulatorAudioModule::createStaticParameters()
 
 SingleSidebandModulatorModuleEditor::SingleSidebandModulatorModuleEditor(CriticalSection *newPlugInLock, 
                                                                          SingleSidebandModulatorAudioModule* newSingleSidebandModulatorAudioModule) 
-: AudioModuleEditor(newPlugInLock, newSingleSidebandModulatorAudioModule)
+: AudioModuleEditor(newSingleSidebandModulatorAudioModule)
 {
   ScopedLock scopedLock(*lock);
 
@@ -5122,7 +5122,7 @@ void StereoPanAudioModule::createStaticParameters()
 }
 
 StereoPanModuleEditor::StereoPanModuleEditor(CriticalSection *newPlugInLock, StereoPanAudioModule* newStereoPanAudioModule) 
-: AudioModuleEditor(newPlugInLock, newStereoPanAudioModule)
+: AudioModuleEditor(newStereoPanAudioModule)
 {
   ScopedLock scopedLock(*lock);
 
@@ -5228,7 +5228,7 @@ void StereoWidthAudioModule::createStaticParameters()
 }
 
 StereoWidthModuleEditor::StereoWidthModuleEditor(CriticalSection *newPlugInLock, StereoWidthAudioModule* newStereoWidthAudioModule) 
-: AudioModuleEditor(newPlugInLock, newStereoWidthAudioModule)
+: AudioModuleEditor(newStereoWidthAudioModule)
 {
   ScopedLock scopedLock(*lock);
 
@@ -5301,7 +5301,7 @@ void SineOscillatorAudioModule::createStaticParameters()
 
 SineOscillatorModuleEditor::SineOscillatorModuleEditor(CriticalSection *newPlugInLock, 
                                                        SineOscillatorAudioModule* newSineOscillatorAudioModule) 
-: AudioModuleEditor(newPlugInLock, newSineOscillatorAudioModule)
+: AudioModuleEditor(newSineOscillatorAudioModule)
 {
   ScopedLock scopedLock(*lock);
 
@@ -5377,7 +5377,7 @@ void NoisifierAudioModule::createStaticParameters()
 }
 
 NoisifierModuleEditor::NoisifierModuleEditor(CriticalSection *newPlugInLock, NoisifierAudioModule* newNoisifierAudioModule) 
-: AudioModuleEditor(newPlugInLock, newNoisifierAudioModule)
+: AudioModuleEditor(newNoisifierAudioModule)
 {
   ScopedLock scopedLock(*lock);
 
