@@ -2340,9 +2340,6 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_WaveTable.cpp">
       <Filter>Juce Modules\jura_processors\basics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\rosof_RoutingMatrixAudioModule.cpp">
-      <Filter>Juce Modules\jura_processors\basics</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\rosof_RoutingMatrixModuleEditor.cpp">
       <Filter>Juce Modules\jura_processors\basics</Filter>
     </ClCompile>
@@ -3725,6 +3722,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_RDraggableNumber.cpp">
       <Filter>Juce Modules\jura_framework\gui\widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_RoutingMatrix.cpp">
+      <Filter>Juce Modules\jura_processors\basics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5792,9 +5792,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_WaveTable.h">
       <Filter>Juce Modules\jura_processors\basics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\rosof_RoutingMatrixAudioModule.h">
-      <Filter>Juce Modules\jura_processors\basics</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\rosof_RoutingMatrixModuleEditor.h">
       <Filter>Juce Modules\jura_processors\basics</Filter>
     </ClInclude>
@@ -7287,6 +7284,9 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rosic.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_RDraggableNumber.h">
       <Filter>Juce Modules\jura_framework\gui\widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_RoutingMatrix.h">
+      <Filter>Juce Modules\jura_processors\basics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

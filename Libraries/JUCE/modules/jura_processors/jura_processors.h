@@ -57,6 +57,7 @@ namespace jura
 #include "custom_widgets/jura_EffectSelectionPopup.h"
 
 #include "basics/jura_WaveTable.h"
+#include "basics/jura_RoutingMatrix.h"
 
 #include "analyzers/jura_PhaseScope.h"
 //#include "analyzers/jura_PhaseScopeMultiColor.h"

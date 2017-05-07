@@ -1,4 +1,4 @@
-needs to be completed next: RDraggableNumber, RoutingMatrix, Quadrifex
+needs to be completed next: RoutingMatrix, Quadrifex
 
 
 -drag over all old plugin code and make it compile:
