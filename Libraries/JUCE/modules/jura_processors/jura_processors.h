@@ -100,7 +100,7 @@ namespace jura
 #include "instruments/jura_SimpleSampler.h"
 #include "instruments/jura_KeyShot.h"
 #include "instruments/jura_MagicCarpet.h"
-#include "instruments/jura_Quadrigen.h"  // move to generators, requires split relevant parts out of jura_VariousModules 
+#include "instruments/jura_Quadrigen.h"  // move to generators, requires to split relevant parts out of jura_VariousModules 
 #include "instruments/jura_Quadriga.h"
 #include "instruments/jura_Workhorse.h"
 
