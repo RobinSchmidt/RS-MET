@@ -48,7 +48,48 @@ protected:
 
 //=================================================================================================
 
+/** This is a class for a context menu that can be opened to show and edit a comprehensive set of
+parameters for a stereo-oscillator. It is used by LowFrequencyOscillatorEditor by clicking on the 
+'More' button. */
 
+class LowFrequencyOscillatorEditor : public AudioModuleEditor, public ChangeBroadcaster
+{
+
+public:
+
+  //---------------------------------------------------------------------------------------------
+  // construction/destruction:
+
+  LowFrequencyOscillatorEditor(CriticalSection *newPlugInLock, 
+    LowFrequencyOscillatorAudioModule* newOscillatorModuleToEdit); 
+
+  //---------------------------------------------------------------------------------------------
+  // setup:
+
+  /** Sets up the bounds of the popup editor relative to the top-left position of the 
+  edit-button. */
+  virtual void setPopUpEditorBounds(int x, int y, int w, int h)
+  { waveTableEditor->setPopUpEditorBounds(x, y, w, h); }
+
+  //---------------------------------------------------------------------------------------------
+  // callbacks:
+  virtual void rSliderValueChanged(RSlider *sliderThatHasChanged);
+  virtual void resized();
+  virtual void updateWidgetsAccordingToState();
+
+protected:
+
+  // pointers to the edited objects (wrapped and non-wrapped):
+  rosic::LowFrequencyOscillator     *oscillatorToEdit;
+  LowFrequencyOscillatorAudioModule *oscillatorModuleToEdit;
+
+  WaveTableModuleEditorCompact      *waveTableEditor;
+
+  RSlider *cycleLengthSlider, *depthSlider;
+  RButton *tempoSyncButton; 
+
+  juce_UseDebuggingNewOperator;
+};
 
 
 

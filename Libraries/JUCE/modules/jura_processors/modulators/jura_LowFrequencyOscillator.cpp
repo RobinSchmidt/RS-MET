@@ -280,3 +280,90 @@ void LowFrequencyOscillatorAudioModule::initializeAutomatableParameters()
     */
 }
 
+//=================================================================================================
+
+LowFrequencyOscillatorEditor::LowFrequencyOscillatorEditor(CriticalSection *newPlugInLock, 
+  LowFrequencyOscillatorAudioModule* newOscillatorModuleToEdit)                                                       
+  : AudioModuleEditor(newOscillatorModuleToEdit)
+{
+  jassert(newOscillatorModuleToEdit != NULL);  
+  oscillatorModuleToEdit = newOscillatorModuleToEdit;
+  oscillatorToEdit       = oscillatorModuleToEdit->wrappedLowFrequencyOscillator;
+  setLinkPosition(INVISIBLE);
+  setPresetSectionPosition(BELOW_HEADLINE);
+  stateWidgetSet->setLayout(StateLoadSaveWidgetSet::LABEL_AND_BUTTONS_ABOVE);
+  stateWidgetSet->setPresetLabelVisible(false);
+
+  addWidget( cycleLengthSlider = new RSlider("CycleLengthSlider") );
+  cycleLengthSlider->assignParameter( moduleToEdit->getParameterByName("CycleLength") );
+  cycleLengthSlider->setSliderName(juce::String("Cycle"));
+  cycleLengthSlider->setDescription(juce::String("Length of one cycle (in seconds or beats)"));
+  cycleLengthSlider->setDescriptionField(infoField);
+  cycleLengthSlider->setStringConversionFunction(beatsToStringWithUnit4);
+
+  addWidget( depthSlider = new RSlider("DepthSlider") );
+  depthSlider->assignParameter( moduleToEdit->getParameterByName("Depth") );
+  depthSlider->setDescription(juce::String("Depth of the LFO modulation (in percent)"));
+  depthSlider->setStringConversionFunction(percentToStringWithUnit1);
+
+  addWidget( tempoSyncButton = new RButton(juce::String("TempoSync")) );
+  tempoSyncButton->assignParameter( moduleToEdit->getParameterByName("TempoSync") );
+  tempoSyncButton->setButtonText(juce::String("Sync"));
+  tempoSyncButton->setDescription(juce::String("Toggle tempo synchronization on/off"));
+  tempoSyncButton->setDescriptionField(infoField);
+  tempoSyncButton->setClickingTogglesState(true);
+  tempoSyncButton->addRButtonListener(this);
+
+  waveTableEditor = new WaveTableModuleEditorCompact(lock, 
+    oscillatorModuleToEdit->waveTableModule);
+  //waveTableEditor->addChangeListener(this);
+  addChildEditor(waveTableEditor);
+
+  updateWidgetsAccordingToState();
+}
+
+//-------------------------------------------------------------------------------------------------
+// callbacks:
+
+void LowFrequencyOscillatorEditor::rSliderValueChanged(RSlider *sliderThatHasChanged)
+{
+
+  /*
+  if( oscillatorModuleToEdit == NULL )
+  return;
+  if( oscillatorModuleToEdit->wrappedLowFrequencyOscillator == NULL )
+  return;
+  rosic::LowFrequencyOscillator* o = oscillatorModuleToEdit->wrappedLowFrequencyOscillator;
+
+  sendChangeMessage();
+  */
+
+}
+
+void LowFrequencyOscillatorEditor::updateWidgetsAccordingToState()
+{
+  AudioModuleEditor::updateWidgetsAccordingToState();
+  waveTableEditor->updateWidgetsAccordingToState();
+}
+
+void LowFrequencyOscillatorEditor::resized()
+{
+  AudioModuleEditor::resized();
+
+  stateWidgetSet->setBounds(4, 8, getWidth()-8, 32);
+
+  int x  = 0;
+  int y  = getPresetSectionBottom();
+  int h  = getHeight();
+  int w  = getWidth();
+
+  cycleLengthSlider->setBounds(x+4, y, w-8, 16);
+  y += 14;
+  tempoSyncButton->setBounds(cycleLengthSlider->getRight()-40, y, 40, 16);
+  y = tempoSyncButton->getBottom();
+
+  y = tempoSyncButton->getBottom()+4;
+  //depthSlider->setBounds(x+4, y+4, w-8, 16);
+  //y = depthSlider->getBottom()+4;
+  waveTableEditor->setBounds(x, y, w, h-y);
+}
