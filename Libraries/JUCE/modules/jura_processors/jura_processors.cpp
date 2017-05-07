@@ -48,6 +48,7 @@ namespace jura
 #include "effects/jura_FuncShaper.cpp"
 #include "effects/jura_AlgoVerb.cpp"
 #include "effects/jura_EchoLab.cpp"
+//#include "effects/jura_PitchShifter.cpp"
 
 #include "instruments/jura_AcidSequencer.cpp"
 #include "instruments/jura_AciDevil.cpp"

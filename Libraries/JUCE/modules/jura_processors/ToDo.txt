@@ -16,13 +16,19 @@ needs to be completed next:
  -SimpleSampler (done)
  -KeyShot (done)
 
+ -PitchShifter
+
+ -Quadrifex
+  -CombStereoizer
+  -RoutingMatrix
+
  -MagicCarpet
-  -VectorSamplePlayer
+  -VectorSamplePlayer (done)
 
  -MidiMonitor
  -Moduluxury
- -PitchShifter
- -Quadrifex
+
+
  -Quadriga
  -StereoDelay
  -TrackMeter
