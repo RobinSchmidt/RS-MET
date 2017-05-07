@@ -20,10 +20,10 @@ needs to be completed next:
  -Quadriga (done)
  -Workhorse (done)
  -Moduluxury (done)
-
- -TrackMeter
+ -TrackMeter (done)
 
  -MidiMonitor
+
  -StereoDelay
 
  -Liberty (later - it needs the "romos" folder - maybe make a subfolder modular somewhere in the 

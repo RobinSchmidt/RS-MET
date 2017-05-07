@@ -5461,19 +5461,35 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/analyzers/rosof_TrackMeterAudioModule.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/analyzers/jura_TrackMeter.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/analyzers/rosof_TrackMeterAudioModule.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/analyzers/jura_TrackMeter.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/analyzers/rosof_TrackMeterModuleEditor.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/analyzers/rojue_MidiMessageFilter.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/analyzers/rosof_TrackMeterModuleEditor.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/analyzers/rojue_MidiMessageFilter.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/analyzers/rosof_MidiMonitorAudioModule.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/analyzers/rosof_MidiMonitorAudioModule.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/analyzers/rosof_MidiMonitorModuleEditor.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/analyzers/rosof_MidiMonitorModuleEditor.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
@@ -5517,11 +5533,11 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/custom_widgets/rojue_MeteringDisplay.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/custom_widgets/jura_MeteringDisplay.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/custom_widgets/rojue_MeteringDisplay.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/custom_widgets/jura_MeteringDisplay.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>

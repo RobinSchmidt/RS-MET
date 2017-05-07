@@ -60,6 +60,8 @@ namespace jura
 #include "basics/jura_WaveTable.h"
 #include "basics/jura_RoutingMatrix.h"
 
+#include "analyzers/jura_MidiMessageFilter.h"  // maybe move to basics
+#include "analyzers/jura_MidiMonitor.h"
 #include "analyzers/jura_TrackMeter.h"
 #include "analyzers/jura_PhaseScope.h"
 //#include "analyzers/jura_PhaseScopeMultiColor.h"

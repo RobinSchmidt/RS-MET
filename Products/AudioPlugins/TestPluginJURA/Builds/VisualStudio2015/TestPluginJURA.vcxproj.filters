@@ -2343,7 +2343,10 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_PhaseScopeMultiColor.cpp">
       <Filter>Juce Modules\jura_processors\analyzers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\rosof_TrackMeterModuleEditor.cpp">
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_TrackMeter.cpp">
+      <Filter>Juce Modules\jura_processors\analyzers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\rosof_MidiMonitorModuleEditor.cpp">
       <Filter>Juce Modules\jura_processors\analyzers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_RoutingMatrix.cpp">
@@ -2359,6 +2362,9 @@
       <Filter>Juce Modules\jura_processors\custom_widgets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\custom_widgets\jura_EffectSelectionPopup.cpp">
+      <Filter>Juce Modules\jura_processors\custom_widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\custom_widgets\jura_MeteringDisplay.cpp">
       <Filter>Juce Modules\jura_processors\custom_widgets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_AlgoVerb.cpp">
@@ -3744,10 +3750,10 @@
     <ClCompile Include="..\..\JuceLibraryCode\rosic.cpp">
       <Filter>Juce Library Code</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\custom_widgets\jura_MeteringDisplay.cpp">
-      <Filter>Juce Modules\jura_processors\custom_widgets</Filter>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_MidiMessageFilter.cpp">
+      <Filter>Juce Modules\jura_processors\analyzers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_TrackMeter.cpp">
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_MidiMonitor.cpp">
       <Filter>Juce Modules\jura_processors\analyzers</Filter>
     </ClCompile>
   </ItemGroup>
@@ -5819,7 +5825,10 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_PhaseScopeMultiColor.h">
       <Filter>Juce Modules\jura_processors\analyzers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\rosof_TrackMeterModuleEditor.h">
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_TrackMeter.h">
+      <Filter>Juce Modules\jura_processors\analyzers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\rosof_MidiMonitorModuleEditor.h">
       <Filter>Juce Modules\jura_processors\analyzers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_RoutingMatrix.h">
@@ -5835,6 +5844,9 @@
       <Filter>Juce Modules\jura_processors\custom_widgets</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\custom_widgets\jura_EffectSelectionPopup.h">
+      <Filter>Juce Modules\jura_processors\custom_widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\custom_widgets\jura_MeteringDisplay.h">
       <Filter>Juce Modules\jura_processors\custom_widgets</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_AlgoVerb.h">
@@ -7330,10 +7342,10 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\jura_framework.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\jura_processors.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rosic.h" />
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\custom_widgets\jura_MeteringDisplay.h">
-      <Filter>Juce Modules\jura_processors\custom_widgets</Filter>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_MidiMessageFilter.h">
+      <Filter>Juce Modules\jura_processors\analyzers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_TrackMeter.h">
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_MidiMonitor.h">
       <Filter>Juce Modules\jura_processors\analyzers</Filter>
     </ClInclude>
   </ItemGroup>

@@ -22,6 +22,8 @@ namespace jura
 #include "basics/jura_WaveTable.cpp"
 #include "basics/jura_RoutingMatrix.cpp"
 
+#include "analyzers/jura_MidiMessageFilter.cpp"  // maybe move to basics
+#include "analyzers/jura_MidiMonitor.cpp"
 #include "analyzers/jura_TrackMeter.cpp"
 #include "analyzers/jura_PhaseScope.cpp"
 //#include "analyzers/jura_PhaseScopeMultiColor.cpp"
