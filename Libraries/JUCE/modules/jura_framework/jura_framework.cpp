@@ -59,7 +59,7 @@ namespace jura
 
 #include "gui/widgets/widget_sets/jura_WidgetSet.cpp"
 #include "gui/widgets/widget_sets/jura_StateLoadSaveWidgetSet.cpp"
-//#include "gui/widgets/widget_sets/jura_FileSelectionBox.cpp" 
+#include "gui/widgets/widget_sets/jura_FileSelectionBox.cpp" 
 #include "gui/widgets/widget_sets/jura_ColorMapLoader.cpp"
 
 #include "gui/plots/jura_CoordinateSystemOld.cpp"

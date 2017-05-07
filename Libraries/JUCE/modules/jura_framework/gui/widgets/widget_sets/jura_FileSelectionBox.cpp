@@ -1,44 +1,41 @@
-#include "rojue_FileSelectionBox.h"
-using namespace rojue;
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:
 
 FileSelectionBox::FileSelectionBox(const String& componentName, FileManager *fileManagerToUse)
 {
-  jassert( fileManagerToUse != NULL )
+  jassert(fileManagerToUse != NULL);
   fileManager = fileManagerToUse;
   fileManager->addFileManagerListener(this);
 
-  addWidget( fileLabel = new RTextField( T("File:")) );
-  fileLabel->setDescription(T("Currently active file"));
+  addWidget( fileLabel = new RTextField("File:") );
+  fileLabel->setDescription("Currently active file");
   fileLabel->setNoBackgroundAndOutline(true);
 
   addWidget( fileNameBox = new RTextField(String::empty) );
   fileNameBox->setDescription( fileLabel->getDescription() );
   fileNameBox->setNoBackgroundAndOutline(false);
 
-  addWidget( loadButton = new RButton(String("Load")) );
+  addWidget( loadButton = new RButton("Load") );
   loadButton->addRButtonListener(this);
-  loadButton->setDescription(String(T("Load new file")));
+  loadButton->setDescription(String("Load new file"));
   loadButton->setClickingTogglesState(false);
   loadButton->setToggleState(false, false);
 
   addWidget( saveButton = new RButton(String("Save")) );
   saveButton->addRButtonListener(this);
-  saveButton->setDescription(String(T("Save to file (save as)")));
+  saveButton->setDescription(String("Save to file (save as)"));
   saveButton->setClickingTogglesState(false);
   saveButton->setToggleState(false, false);
 
   addWidget( minusButton = new RButton(RButton::MINUS) );
   minusButton->addRButtonListener(this);
-  minusButton->setDescription(String(T("Skip to previous file in current directory")));
+  minusButton->setDescription(String("Skip to previous file in current directory"));
   minusButton->setClickingTogglesState(false);
   minusButton->setToggleState(false, false);
 
   addWidget( plusButton = new RButton(RButton::PLUS) );
   plusButton->addRButtonListener(this);
-  plusButton->setDescription(String(T("Skip to next file in current directory")));
+  plusButton->setDescription(String("Skip to next file in current directory"));
   plusButton->setClickingTogglesState(false);
   plusButton->setToggleState(false, false);
 
@@ -77,8 +74,8 @@ void FileSelectionBox::activeFileChanged(FileManager *fileManagerThatHasChanged)
 void FileSelectionBox::resized()
 {
   int boxX, boxY, boxWidth, buttonsY;
-  int labelWidth = rojue::boldFont10px.getTextPixelWidth(fileLabel->getText(), 
-    rojue::boldFont10px.getDefaultKerning()) + 4;
+  int labelWidth = BitmapFontRoundedBoldA10D0::instance.getTextPixelWidth(fileLabel->getText(), 
+    BitmapFontRoundedBoldA10D0::instance.getDefaultKerning()) + 4;
   int buttonsWidth = 2*boxHeight + 40 - 4;
   if( saveButton->isVisible() )
     buttonsWidth += (40-2);

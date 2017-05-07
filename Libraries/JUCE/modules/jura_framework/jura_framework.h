@@ -92,7 +92,7 @@ namespace jura
 
 #include "gui/widgets/widget_sets/jura_WidgetSet.h"
 #include "gui/widgets/widget_sets/jura_StateLoadSaveWidgetSet.h"
-//#include "gui/widgets/widget_sets/jura_FileSelectionBox.h" // move to widget_sets folder
+#include "gui/widgets/widget_sets/jura_FileSelectionBox.h" // move to widget_sets folder
 #include "gui/widgets/widget_sets/jura_ColorMapLoader.h"
 
 
