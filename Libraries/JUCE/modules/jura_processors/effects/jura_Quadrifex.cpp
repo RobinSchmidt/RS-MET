@@ -916,6 +916,8 @@ juce::String QuadrifexAudioModule::slotRoutingIndexToString(int index)
 {
   ScopedLock scopedLock(*lock);
 
+  // this is kinda stupid - we should use an associative container like std::map
+
   switch( index )
   {
   case rosic::Quadrifex::R_BYPASS:            return juce::String(("Bypass"));
@@ -957,6 +959,8 @@ int QuadrifexAudioModule::stringToSlotRoutingIndex(const juce::String &routingSt
 juce::String QuadrifexAudioModule::effectAlgorithmIndexToString(int index)
 {
   ScopedLock scopedLock(*lock);
+
+  // \todo use std::map
 
   switch( index )
   {
@@ -1052,3 +1056,623 @@ int QuadrifexAudioModule::stringToEffectAlgorithmIndex(const juce::String &algoS
 
   return rosic::Quadrifex::MUTE;
 }
+
+//=================================================================================================
+
+
+QuadrifexRoutingDiagram::QuadrifexRoutingDiagram(CriticalSection *newPlugInLock) //: RectangleComponent()
+{
+  plugInLock = newPlugInLock;
+  ScopedLock scopedLock(*plugInLock);
+
+  slotRouting = rosic::Quadrifex::R_1TO2TO3TO4;
+  for(int i=0; i<rosic::Quadrifex::numEffectSlots; i++ )
+    oldAlgorithmIndices[i] = algorithmIndices[i] = rosic::Quadrifex::BYPASS;
+
+  CoordinateSystemOld::setAxisPositionX(CoordinateSystemOld::INVISIBLE);
+  CoordinateSystemOld::setAxisPositionY(CoordinateSystemOld::INVISIBLE);
+  CoordinateSystemOld::setAxisValuesPositionX(CoordinateSystemOld::INVISIBLE);
+  CoordinateSystemOld::setAxisValuesPositionY(CoordinateSystemOld::INVISIBLE);
+}
+
+QuadrifexRoutingDiagram::~QuadrifexRoutingDiagram()
+{
+  ScopedLock scopedLock(*plugInLock);
+}
+
+//-------------------------------------------------------------------------------------------------
+// setup:
+
+void QuadrifexRoutingDiagram::setAlgorithmIndex(int slotIndex, int newAlgorithmIndex)
+{
+  ScopedLock scopedLock(*plugInLock);
+  if( slotIndex >= 0 && slotIndex < rosic::Quadrifex::numEffectSlots )
+  {
+    if( newAlgorithmIndex >= rosic::Quadrifex::MUTE &&
+      newAlgorithmIndex < rosic::Quadrifex::NUM_EFFECT_ALGORITHMS )
+    {
+      algorithmIndices[slotIndex] = newAlgorithmIndex;
+    }
+    else
+    {
+      algorithmIndices[slotIndex] = rosic::Quadrifex::BYPASS;
+      jassertfalse; // newAlgorithmIndex out of range
+    }
+  }
+  else
+    jassertfalse; // slotIndex out of range
+}
+
+void QuadrifexRoutingDiagram::setSlotRouting(int newRouting)
+{
+  ScopedLock scopedLock(*plugInLock);
+  slotRouting = newRouting;
+  repaint();
+}
+
+//-------------------------------------------------------------------------------------------------
+// callbacks:
+
+void QuadrifexRoutingDiagram::mouseEnter(const MouseEvent &e)
+{
+
+  //RWidget::mouseEnter(e);
+}
+
+void QuadrifexRoutingDiagram::mouseExit(const MouseEvent &e)
+{
+  //RWidget::mouseExit(e);
+}
+
+void QuadrifexRoutingDiagram::mouseDown(const MouseEvent &e)
+{
+  ScopedLock scopedLock(*plugInLock);
+  int slotIndex = getSlotIndexAtPixelPosition(e.x, e.y);
+  if( slotIndex != -1 )
+  {
+    if( e.mods.isLeftButtonDown() )
+    {
+      // preliminary - handle it the same way as right-clicks:
+      QuadrifexModuleEditor *qme = static_cast<QuadrifexModuleEditor*> (getParentComponent());
+      qme->openEffectSelectionMenuForSlot(slotIndex, Point<int>(getX()+e.x, getY()+e.y));
+
+      /*
+      // toggle between mute, bypass and some effect:
+      if( algorithmIndices[slotIndex] == rosic::Quadrifex::MUTE )
+      algorithmIndices[slotIndex] = rosic::Quadrifex::BYPASS;
+      else if( algorithmIndices[slotIndex] == rosic::Quadrifex::BYPASS )
+      algorithmIndices[slotIndex] = oldAlgorithmIndices[slotIndex];
+      else
+      {
+      oldAlgorithmIndices[slotIndex] = algorithmIndices[slotIndex];
+      algorithmIndices[slotIndex]    = rosic::Quadrifex::MUTE;
+      }
+      repaint();
+      */
+    }
+    else if( e.mods.isRightButtonDown() )
+    {
+      QuadrifexModuleEditor *qme = static_cast<QuadrifexModuleEditor*> (getParentComponent());
+      qme->openEffectSelectionMenuForSlot(slotIndex, Point<int>(getX()+e.x, getY()+e.y));
+
+      /*
+      EffectSelectionPopup menu(this);
+      menu.show(false, ROwnedPopUpComponent::BELOW);
+      int dummy = 0;
+      //DEBUG_BREAK;
+      */
+
+      // code below needs to be updated to take into account that RPopUpMenu has become the new baseclass of EffectSelectionPopup
+      // instead of RPopUpMenuOld
+      // old:
+      /*
+      EffectSelectionPopup menu;
+      int algoIndex = menu.show()-1;
+      if( algoIndex > -1 )
+      algorithmIndices[slotIndex] = algoIndex;
+      */
+    }
+    sendChangeMessage();
+  }
+}
+
+void QuadrifexRoutingDiagram::mouseDrag(const juce::MouseEvent &e)
+{
+
+}
+
+//-------------------------------------------------------------------------------------------------
+// intenal helper functions:
+
+int QuadrifexRoutingDiagram::getSlotIndexAtPixelPosition(int x, int y)
+{
+  ScopedLock scopedLock(*plugInLock);
+  for(int i = 0; i < rosic::Quadrifex::numEffectSlots; i++ )
+  {
+    if( slotBoxes[i].contains(x, y) == true )
+      return i;
+  }
+  return -1;
+}
+
+//-------------------------------------------------------------------------------------------------
+// drawing:
+
+void QuadrifexRoutingDiagram::paint(Graphics &g)
+{
+  ScopedLock scopedLock(*plugInLock);
+
+  //RectangleComponent::paint(g);
+
+  CoordinateSystemOld::paint(g);
+  drawRoutingDiagram(g);
+}
+
+void QuadrifexRoutingDiagram::drawRoutingDiagram(Graphics &g)
+{
+  ScopedLock scopedLock(*plugInLock);
+  //int routing = quadrifexToEdit->getSlotRouting();
+
+  //g.setColour(Colours::red); // test
+
+  g.setColour(plotColourScheme.getCurveColour(0));
+
+  // for nice drawing, me may have to make sure that w, h are divisible by 4...
+  float w  = (float) getWidth();
+  float w2 = w/2;
+  float h  = (float) getHeight();
+  float h2 = h/2;
+  float x  = 4; 
+  float y  = h2;
+  float s  = 20;        // side length of blocks
+  float s2 = s/2;
+  float s4 = s/4;
+  float cx = 0;
+  float cy = 0;
+  float d  = sqrt((float)s2);  // diagonal distance of arrowhead from circle for adders with arrows at 45°
+
+                               //Colour colour = Colours::black;
+
+  if( slotRouting == rosic::Quadrifex::R_1TO2TO3TO4 )
+  {
+    x = w2-4*s-s2;
+
+    g.drawArrow(Line<float>(x, y, x+s, y), 2.f, 6.f, 6.f);
+    x += s;
+    drawSlotBox(g, x, y-s2, s, s, 0, algorithmIndices[0]);
+    x += s;
+    g.drawArrow(Line<float>(x, y, x+s, y), 2.f, 6.f, 6.f);
+    x += s;
+    drawSlotBox(g, x, y-s2, s, s, 1, algorithmIndices[1]);
+    x += s;
+    g.drawArrow(Line<float>(x, y, x+s, y), 2.f, 6.f, 6.f);
+    x += s;
+    drawSlotBox(g, x, y-s2, s, s, 2, algorithmIndices[2]);
+    x += s;
+    g.drawArrow(Line<float>(x, y, x+s, y), 2.f, 6.f, 6.f);
+    x += s;
+    drawSlotBox(g, x, y-s2, s, s, 3, algorithmIndices[3]);
+    x += s;
+    g.drawArrow(Line<float>(x, y, x+s, y), 2.f, 6.f, 6.f);
+  }
+  else if( slotRouting == rosic::Quadrifex::R_1TO2TO3_PLUS4 )
+  {
+    x = w2-4.5f*s-2;
+
+    g.drawLine(x, y, x+s, y, 2.f);
+    x += s;
+    g.drawLine(x, y-s, x, y+s, 2.f);
+    y -= s;
+    g.drawArrow(Line<float>(x, y, x+s, y), 2.f, 6.f, 6.f);
+    x += s;
+    drawSlotBox(g, x, y-s2, s, s, 0, algorithmIndices[0]);
+    x += s;
+    g.drawArrow(Line<float>(x, y, x+s, y), 2.f, 6.f, 6.f);
+    x += s;
+    drawSlotBox(g, x, y-s2,     s, s, 1, algorithmIndices[1]);
+    drawSlotBox(g, x, y-s2+2*s, s, s, 3, algorithmIndices[3]);
+    x += s;
+    g.drawArrow(Line<float>(x, y, x+s, y), 2.f, 6.f, 6.f);
+    x += s;
+    drawSlotBox(g, x, y-s2, s, s, 2, algorithmIndices[2]);
+    x += s;
+    g.drawLine(x, y, x+s, y, 2.f);
+    x += s;
+
+    cx = x;
+    cy = h2;
+    g.drawArrow(Line<float>(x, y,     x, cy-s4), 2.f, 6.f, 6.f);
+    g.drawArrow(Line<float>(x, y+2*s, x, cy+s4), 2.f, 6.f, 6.f);
+    y = h2;
+    drawBlockDiagramPlus(g, x-s4, y-s4, s2, s2, 2.f);
+
+    y = h2+s;
+    x = slotBoxes[0].getX()-s;
+    g.drawArrow(Line<float>(x, y, x+3*s, y), 2.f, 6.f, 6.f);
+    x += 4*s;
+    g.drawLine(x, y, x+3*s, y, 2.f);
+
+    g.drawArrow(Line<float>(cx+s4, cy, cx+s4+s, cy), 2.f, 6.f, 6.f);
+  }
+  else if( slotRouting == rosic::Quadrifex::R_1TO2_PLUS_3TO4 )
+  {
+    x = w2-3.5f*s;
+
+    g.drawLine(x, y, x+s, y, 2.f);
+    x += s;
+    g.drawLine(x, y-s, x, y+s, 2.f);
+    y -= s;
+    g.drawArrow(Line<float>(x, y,     x+s, y),     2.f, 6.f, 6.f);
+    g.drawArrow(Line<float>(x, y+2*s, x+s, y+2*s), 2.f, 6.f, 6.f);
+    x += s;
+    drawSlotBox(g, x, y-s2,     s, s, 0, algorithmIndices[0]);
+    drawSlotBox(g, x, y-s2+2*s, s, s, 2, algorithmIndices[2]);
+    x += s;
+    g.drawArrow(Line<float>(x, y,     x+s, y),     2.f, 6.f, 6.f);
+    g.drawArrow(Line<float>(x, y+2*s, x+s, y+2*s), 2.f, 6.f, 6.f);
+    x += s;
+    drawSlotBox(g, x, y-s2,     s, s, 1, algorithmIndices[1]);
+    drawSlotBox(g, x, y-s2+2*s, s, s, 3, algorithmIndices[3]);
+    x += s;
+    g.drawLine(x, y,     x+s, y,     2.f);
+    g.drawLine(x, y+2*s, x+s, y+2*s, 2.f);
+    x += s;
+
+    cx = x;
+    cy = h2;
+    g.drawArrow(Line<float>(x, y,     x, cy-s4), 2.f, 6.f, 6.f);
+    g.drawArrow(Line<float>(x, y+2*s, x, cy+s4), 2.f, 6.f, 6.f);
+    y = h2;
+    drawBlockDiagramPlus(g, x-s4, y-s4, s2, s2, 2.f);
+
+    g.drawArrow(Line<float>(cx+s4, cy, cx+s4+s, cy), 2.f, 6.f, 6.f);
+  }
+  else if( slotRouting == rosic::Quadrifex::R_1PLUS2PLUS3PLUS4 )
+  {
+    x = w2 - (3*s);
+
+    g.drawLine(x, y, x+s, y, 2.f);
+    x += s;
+    g.drawLine(x, y-3*s, x, y+3*s, 2.f); // vertical line
+    y = h2-3*s;
+    g.drawArrow(Line<float>(x, y, x+s, y), 2.f, 6.f, 6.f);
+    y += 2*s;
+    g.drawArrow(Line<float>(x, y, x+s, y), 2.f, 6.f, 6.f);
+    y += 2*s;
+    g.drawArrow(Line<float>(x, y, x+s, y), 2.f, 6.f, 6.f);
+    y += 2*s;
+    g.drawArrow(Line<float>(x, y, x+s, y), 2.f, 6.f, 6.f);
+    y += 2*s;
+
+    x += s;
+    y = h2-3*s;
+    cx = x+2*s;
+    cy = h2;
+    drawSlotBox(g, x, y-s2, s, s, 0, algorithmIndices[0]);
+    g.drawLine(x+s, y, x+2*s, y, 2.f);
+    g.drawArrow(Line<float>(x+2*s, y, x+2*s, cy-s4), 2.f, 6.f, 6.f);
+    y += 2*s;
+    drawSlotBox(g, x, y-s2, s, s, 1, algorithmIndices[1]);
+    y += 2*s;
+    drawSlotBox(g, x, y-s2, s, s, 2, algorithmIndices[2]);
+    y += 2*s;
+    drawSlotBox(g, x, y-s2, s, s, 3, algorithmIndices[3]);
+    g.drawLine(x+s, y, x+2*s, y, 2.f);
+    g.drawArrow(Line<float>(x+2*s, y, x+2*s, cy+s4), 2.f, 6.f, 6.f);
+    y += 2*s;
+
+    x  = (float) slotBoxes[1].getRight();
+    y  = (float) slotBoxes[1].getY()+s2;
+    g.drawArrow(Line<float>(x, y, cx-d, cy-d), 2.f, 6.f, 6.f);
+
+    x  = (float) slotBoxes[2].getRight();
+    y  = (float) slotBoxes[2].getY()+s2;
+    g.drawArrow(Line<float>(x, y, cx-d, cy+d), 2.f, 6.f, 6.f);
+
+    x = slotBoxes[0].getRight()+s;
+    y = h2;
+    drawBlockDiagramPlus(g, x-s4, y-s4, s2, s2, 2.f);
+
+    x = cx+s4;
+    g.drawArrow(Line<float>(x, cy, x+s, cy), 2.f, 6.f, 6.f);
+  }
+  else if( slotRouting == rosic::Quadrifex::R_1PLUS2PLUS3_TO_4 )
+  {
+    x = w2 - (3.5f*s);
+
+    g.drawLine(x, y, x+s, y, 2.f);
+    x += s;
+    g.drawLine(x, y-2*s, x, y+2*s, 2.f); // vertical line
+    y = h2-2*s;
+    g.drawArrow(Line<float>(x, y, x+s, y), 2.f, 6.f, 6.f);
+    y += 2*s;
+    g.drawArrow(Line<float>(x, y, x+s, y), 2.f, 6.f, 6.f);
+    y += 2*s;
+    g.drawArrow(Line<float>(x, y, x+s, y), 2.f, 6.f, 6.f);
+
+    x += s;
+    y = h2-2*s;
+    drawSlotBox(g, x, y-s2, s, s, 0, algorithmIndices[0]);
+    y += 2*s;
+    drawSlotBox(g, x, y-s2, s, s, 1, algorithmIndices[1]);
+    y += 2*s;
+    drawSlotBox(g, x, y-s2, s, s, 2, algorithmIndices[2]);
+
+    cx = x+2*s;
+    cy = h2;
+    drawBlockDiagramPlus(g, cx-s4, cy-s4, s2, s2, 2.f);
+
+    x += s;
+    y = h2-2*s;
+    g.drawLine( x,   y, x+s,   y,        2.f);
+    g.drawArrow(Line<float>(x+s, y, x+s,   y+2*s-s4), 2.f, 6.f, 6.f);
+    y += 2*s;
+    g.drawArrow(Line<float>(x, y, x+s-s4, y), 2.f, 6.f, 6.f);
+    y += 2*s;
+    g.drawLine(x, y, x+s, y, 2.f);
+    g.drawArrow(Line<float>(x+s, y, x+s,   y-2*s+s4), 2.f, 6.f, 6.f);
+
+    x += s;
+    y = h2;
+    g.drawArrow(Line<float>(x+s4, y, x+s, y), 2.f, 6.f, 6.f);
+    x += s;
+    drawSlotBox(g, x, y-s2, s, s, 3, algorithmIndices[3]);
+    x += s;
+    g.drawArrow(Line<float>(x, y, x+s, y), 2.f, 6.f, 6.f);
+  }
+  else if( slotRouting == rosic::Quadrifex::R_1_TO_2PLUS3_TO_4 )
+  {
+    x = w2 - (4.5f*s);
+
+    g.drawArrow(Line<float>(x, y, x+s, y), 2.f, 6.f, 6.f);
+    x += s;
+    drawSlotBox(g, x, y-s2, s, s, 0, algorithmIndices[0]);
+    x += s;
+    g.drawLine(Line<float>(x, y, x+s, y), 2.f);
+    x += s;
+    g.drawLine(x, y-s, x, y+s, 2.f); // vertical line
+    y = h2-s;
+    g.drawArrow(Line<float>(x, y, x+s, y), 2.f, 6.f, 6.f);
+    y += 2*s;
+    g.drawArrow(Line<float>(x, y, x+s, y), 2.f, 6.f, 6.f);
+
+    x += s;
+    drawSlotBox(g, x, y-s2, s, s, 2, algorithmIndices[2]);
+    y -= 2*s;
+    drawSlotBox(g, x, y-s2, s, s, 1, algorithmIndices[1]);
+
+    x += s;
+    g.drawLine(Line<float>(x, y,     x+s, y),     2.f);
+    g.drawLine(Line<float>(x, y+2*s, x+s, y+2*s), 2.f);
+    x += s;
+    g.drawArrow(Line<float>(x, y,     x,   y+s-s4),   2.f, 6.f, 6.f);
+    g.drawArrow(Line<float>(x, y+2*s, x,   y+s+s4), 2.f, 6.f, 6.f);
+
+    cx = x;
+    cy = h2;
+    drawBlockDiagramPlus(g, cx-s4, cy-s4, s2, s2, 2.f);
+
+    y = h2;
+    g.drawArrow(Line<float>(x, y, x+s, y), 2.f, 6.f, 6.f);
+    x += s;
+    drawSlotBox(g, x, y-s2, s, s, 3, algorithmIndices[3]);
+    x += s;
+    g.drawArrow(Line<float>(x, y, x+s, y), 2.f, 6.f, 6.f);
+  }
+  else if( slotRouting == rosic::Quadrifex::R_1PLUS2_TO_3TO4 )
+  {
+    x = w2-4.5f*s-2;
+
+    g.drawLine(x, y, x+s, y, 2.f);
+    x += s;
+    g.drawLine(x, y-s, x, y+s, 2.f);
+    y -= s;
+    g.drawArrow(Line<float>(x, y,     x+s, y),     2.f, 6.f, 6.f);
+    g.drawArrow(Line<float>(x, y+2*s, x+s, y+2*s), 2.f, 6.f, 6.f);
+    x += s;
+    drawSlotBox(g, x, y-s2,     s, s, 0, algorithmIndices[0]);
+    drawSlotBox(g, x, y-s2+2*s, s, s, 1, algorithmIndices[1]);
+
+    x += s;
+    g.drawLine(x, y,     x+s, y,     2.f);
+    g.drawLine(x, y+2*s, x+s, y+2*s, 2.f);
+    x += s;
+    cx = x;
+    cy = h2;
+    g.drawArrow(Line<float>(x, y,     x, cy-s4), 2.f, 6.f, 6.f);
+    g.drawArrow(Line<float>(x, y+2*s, x, cy+s4), 2.f, 6.f, 6.f);
+    y = h2;
+    drawBlockDiagramPlus(g, x-s4, y-s4, s2, s2, 2.f);
+
+    g.drawArrow(Line<float>(x, y,     x+s, y),     2.f, 6.f, 6.f);
+    x += s;
+    drawSlotBox(g, x, y-s2, s, s, 2, algorithmIndices[2]);
+    x += s;
+    g.drawArrow(Line<float>(x, y, x+s, y), 2.f, 6.f, 6.f);
+    x += s;
+    drawSlotBox(g, x, y-s2, s, s, 3, algorithmIndices[3]);
+    x += s;
+    g.drawArrow(Line<float>(x, y, x+s, y), 2.f, 6.f, 6.f);
+  }
+  else if( slotRouting == rosic::Quadrifex::R_1TO2_TO_3PLUS4 )
+  {
+    x = w2-4.5f*s-2;
+
+    g.drawArrow(Line<float>(x, y, x+s, y), 2.f, 6.f, 6.f);
+    x += s;
+    drawSlotBox(g, x, y-s2, s, s, 0, algorithmIndices[0]);
+    x += s;
+    g.drawArrow(Line<float>(x, y, x+s, y), 2.f, 6.f, 6.f);
+    x += s;
+    drawSlotBox(g, x, y-s2, s, s, 1, algorithmIndices[1]);
+    x += s;
+    g.drawLine(Line<float>(x, y, x+s, y), 2.f);
+
+    x += s;
+    g.drawLine(x, y-s, x, y+s, 2.f);
+    y -= s;
+    g.drawArrow(Line<float>(x, y,     x+s, y),     2.f, 6.f, 6.f);
+    g.drawArrow(Line<float>(x, y+2*s, x+s, y+2*s), 2.f, 6.f, 6.f);
+    x += s;
+    drawSlotBox(g, x, y-s2,     s, s, 2, algorithmIndices[2]);
+    drawSlotBox(g, x, y-s2+2*s, s, s, 3, algorithmIndices[3]);
+
+    x += s;
+    g.drawLine(Line<float>(x, y,     x+s, y),     2.f);
+    g.drawLine(Line<float>(x, y+2*s, x+s, y+2*s), 2.f);
+    x += s;
+    cx = x;
+    cy = h2;
+    g.drawArrow(Line<float>(x, y,     x, cy-s4), 2.f, 6.f, 6.f);
+    g.drawArrow(Line<float>(x, y+2*s, x, cy+s4), 2.f, 6.f, 6.f);
+    y = h2;
+    drawBlockDiagramPlus(g, x-s4, y-s4, s2, s2, 2.f);
+
+    g.drawArrow(Line<float>(cx+s4, cy, cx+s4+s, cy), 2.f, 6.f, 6.f);
+  }
+  else if( slotRouting == rosic::Quadrifex::R_1PLUS2_TO_3PLUS4 )
+  {
+    x = w2-4*s-s2;
+
+    g.drawLine(x, y, x+s, y, 2.f);
+    x += s;
+    g.drawLine(x, y-s, x, y+s, 2.f);
+    y -= s;
+    g.drawArrow(Line<float>(x, y,     x+s, y),     2.f, 6.f, 6.f);
+    g.drawArrow(Line<float>(x, y+2*s, x+s, y+2*s), 2.f, 6.f, 6.f);
+    x += s;
+    drawSlotBox(g, x, y-s2,     s, s, 0, algorithmIndices[0]);
+    drawSlotBox(g, x, y-s2+2*s, s, s, 1, algorithmIndices[1]);
+
+    x += s;
+    g.drawLine(Line<float>(x, y,     x+s, y),     2.f);
+    g.drawLine(Line<float>(x, y+2*s, x+s, y+2*s), 2.f);
+    x += s;
+    cx = x;
+    cy = h2;
+    g.drawArrow(Line<float>(x, y,     x, cy-s4), 2.f, 6.f, 6.f);
+    g.drawArrow(Line<float>(x, y+2*s, x, cy+s4), 2.f, 6.f, 6.f);
+    y = h2;
+    drawBlockDiagramPlus(g, x-s4, y-s4, s2, s2, 2.f);
+
+    g.drawLine(x, y, x+s, y, 2.f);
+    x += s;
+    g.drawLine(x, y-s, x, y+s, 2.f);
+    y -= s;
+    g.drawArrow(Line<float>(x, y,     x+s, y),     2.f, 6.f, 6.f);
+    g.drawArrow(Line<float>(x, y+2*s, x+s, y+2*s), 2.f, 6.f, 6.f);
+    x += s;
+    drawSlotBox(g, x, y-s2,     s, s, 2, algorithmIndices[2]);
+    drawSlotBox(g, x, y-s2+2*s, s, s, 3, algorithmIndices[3]);
+
+    x += s;
+    g.drawLine(Line<float>(x, y,     x+s, y),     2.f);
+    g.drawLine(Line<float>(x, y+2*s, x+s, y+2*s), 2.f);
+    x += s;
+    cx = x;
+    cy = h2;
+    g.drawArrow(Line<float>(x, y,     x, cy-s4), 2.f, 6.f, 6.f);
+    g.drawArrow(Line<float>(x, y+2*s, x, cy+s4), 2.f, 6.f, 6.f);
+    y = h2;
+    drawBlockDiagramPlus(g, x-s4, y-s4, s2, s2, 2.f);
+
+    g.drawArrow(Line<float>(cx+s4, cy, cx+s4+s, cy), 2.f, 6.f, 6.f);
+  }
+  else if( slotRouting == rosic::Quadrifex::R_1_TO_2PLUS3PLUS4 )
+  {
+    x = w2 - (4.0f*s);
+
+    g.drawArrow(Line<float>(x, y, x+s, y), 2.f, 6.f, 6.f);
+    x += s;
+    drawSlotBox(g, x, y-s2, s, s, 0, algorithmIndices[0]);
+    x += s;
+
+    g.drawLine(x, y, x+s, y, 2.f);
+    x += s;
+    g.drawLine(x, y-2*s, x, y+2*s, 2.f); // vertical line
+    y = h2-2*s;
+    g.drawArrow(Line<float>(x, y, x+s, y), 2.f, 6.f, 6.f);
+    y += 2*s;
+    g.drawArrow(Line<float>(x, y, x+s, y), 2.f, 6.f, 6.f);
+    y += 2*s;
+    g.drawArrow(Line<float>(x, y, x+s, y), 2.f, 6.f, 6.f);
+
+    x += s;
+    y = h2-2*s;
+    drawSlotBox(g, x, y-s2, s, s, 1, algorithmIndices[1]);
+    y += 2*s;
+    drawSlotBox(g, x, y-s2, s, s, 2, algorithmIndices[2]);
+    y += 2*s;
+    drawSlotBox(g, x, y-s2, s, s, 3, algorithmIndices[3]);
+
+    cx = x+2*s;
+    cy = h2;
+    drawBlockDiagramPlus(g, cx-s4, cy-s4, s2, s2, 2.f);
+
+    x += s;
+    y = h2-2*s;
+    g.drawLine( x,   y, x+s,   y,        2.f);
+    g.drawArrow(Line<float>(x+s, y, x+s,   y+2*s-s4), 2.f, 6.f, 6.f);
+    y += 2*s;
+    g.drawArrow(Line<float>(x, y, x+s-s4, y), 2.f, 6.f, 6.f);
+    y += 2*s;
+    g.drawLine(x, y, x+s, y, 2.f);
+    g.drawArrow(Line<float>(x+s, y, x+s,   y-2*s+s4), 2.f, 6.f, 6.f);
+    x += s;
+    y = h2;
+    g.drawArrow(Line<float>(x+s4, y, x+2*s-s4, y), 2.f, 6.f, 6.f);
+  }
+}
+
+void QuadrifexRoutingDiagram::drawSlotBox(Graphics &g, float x, float y, float w, float h, 
+  int slotIndex, int algoIndex)
+{ 
+  ScopedLock scopedLock(*plugInLock);
+
+  //Colour oldColour = g.getCurrentColour();
+
+  const BitmapFontRoundedBoldA10D0* font = &BitmapFontRoundedBoldA10D0::instance;
+
+  slotBoxes[slotIndex].setBounds((int)x, (int)y, (int)w, (int)h);
+
+  //Colour diagramColour = Colours::black;
+  Colour diagramColour = plotColourScheme.getCurveColour(0);
+
+  if( algoIndex == rosic::Quadrifex::MUTE )
+  {
+    g.setColour(diagramColour);
+    g.drawRect(x, y, w, h, 2.f);
+
+    g.setColour(Colours::red.darker(0.5f));
+    g.drawLine(x,   y, x+w, y+h, 2.f);
+    g.drawLine(x+w, y, x,   y+h, 2.f);
+
+    drawBitmapFontText(g, (int)(x+0.5f*w), (int)(y+0.5f*h), juce::String(slotIndex+1), 
+      font, diagramColour, -1, 
+      Justification::centred);
+  }
+  else if( algoIndex == rosic::Quadrifex::BYPASS )
+  {
+    g.setColour(diagramColour.withMultipliedAlpha(0.25f));
+    g.drawRect(x, y, w, h, 2.f);
+
+    drawBitmapFontText(g, (int)(x+0.5f*w), (int)(y+0.5f*h), juce::String(slotIndex+1), 
+      font, diagramColour.withMultipliedAlpha(0.5f), -1, 
+      Justification::centred);
+
+    g.setColour(diagramColour);
+    g.drawArrow(Line<float>(x, y+0.5f*h, x+w, y+0.5f*h), 2.f, 6.f, 6.f);
+  }
+  else
+  {
+    g.setColour(diagramColour);
+    g.drawRect(x, y, w, h, 2.f);
+
+    drawBitmapFontText(g, (int)(x+0.5f*w), (int)(y+0.5f*h), juce::String(slotIndex+1), 
+      font, diagramColour, -1, Justification::centred);
+  }
+
+  //g.setColour(oldColour);
+}
+
+//=================================================================================================
