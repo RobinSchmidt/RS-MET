@@ -16,12 +16,14 @@ needs to be completed next:
  -KeyShot (done)
  -PitchShifter (done)
 
-
- -Quadrifex
-  -CombStereoizer
-  -RoutingMatrix
  -MagicCarpet
   -VectorSamplePlayer (done)
+  -VariousModulesAndEditors
+
+
+ -Quadrifex
+  -RoutingMatrix
+
  -MidiMonitor
  -Moduluxury
  -Quadriga

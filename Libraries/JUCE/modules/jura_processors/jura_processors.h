@@ -88,6 +88,7 @@ namespace jura
 #include "effects/jura_EchoLab.h"
 #include "effects/jura_PitchShifter.h"
 #include "effects/jura_CombStereoizer.h"
+#include "effects/jura_StereoPanPlotEditor.h"
 
 #include "instruments/jura_AcidSequencer.h"  // maybe move to a "sequencers" folder someday
 #include "instruments/jura_AciDevil.h"

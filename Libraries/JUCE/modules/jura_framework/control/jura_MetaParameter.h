@@ -13,7 +13,13 @@ MetaControlledParameter:
 -todo: provide smoothing (maybe by an intermediate subclass SmoothedParameter:
  i.e. Parameter <- SmoothedParameter <- MetaControlledParameter)...or maybe just integrate it
  directly .. and at some stage, we may need non-smoothed meta-controlled or non-meta-controlled
- smoothed parameters - then we can factor out the more basic class
+ smoothed parameters - then we can factor out the more basic class 
+ or: use the decorator pattern: make an abstract ParameterBase baseclass with an interface like
+ getValue, setValue, etc - then Parameter, MetaControlledParameter and SmoothedParameter can all 
+ derive from ParameterBase, and SmoothedParameter and MetaControlledParameter do not derive from 
+ Parameter but instead keep a reference to a ParameterBase object and forward requests to it....or 
+ something
+  
 
 MetaParameter:
 -maintains a list of dependent MetaControlledParameters and updates all of them when its
