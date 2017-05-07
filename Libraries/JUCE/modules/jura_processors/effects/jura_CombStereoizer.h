@@ -37,5 +37,32 @@ protected:
 
 //=================================================================================================
 
+class CombStereoizerModuleEditor : public AudioModuleEditor
+{
+
+public:
+
+  CombStereoizerModuleEditor(CriticalSection *newPlugInLock, 
+    CombStereoizerAudioModule* newCombStereoizerAudioModule);
+  //virtual ~CombStereoizerModuleEditor();
+
+  // callbacks:
+  virtual void rButtonClicked(RButton *buttonThatWasClicked);
+  virtual void comboBoxChanged(ComboBox *comboBoxThatHasChanged);
+  virtual void rSliderValueChanged(RSlider *sliderThatHasChanged);
+  virtual void updateWidgetsAccordingToState();
+  virtual void resized();
+;
+
+protected:
+
+  /** This is the actual plugin engine which does all the dsp and automation handling. */
+  CombStereoizerAudioModule *stereoizerAudioModule;
+
+  // the widgets:
+  RSlider *dryWetSlider, *delaySlider, *wetLowpassSlider, *wetHighpassSlider, *wetAllpassSlider;
+  RButton *swapChannelsButton;
+  juce_UseDebuggingNewOperator
+};
 
 #endif 
