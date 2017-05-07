@@ -19,7 +19,7 @@ needs to be completed next:
  -Quadrifex (done)
 
  -Quadriga
-  -Quadrigen
+  -Quadrigen (done)
 
  -MidiMonitor
  -Moduluxury

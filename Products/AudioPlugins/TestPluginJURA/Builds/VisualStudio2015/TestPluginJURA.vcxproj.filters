@@ -2436,9 +2436,6 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_Straightliner.cpp">
       <Filter>Juce Modules\jura_processors\instruments</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\rosof_QuadrigaAudioModule.cpp">
-      <Filter>Juce Modules\jura_processors\instruments</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\rosof_QuadrigaModuleEditor.cpp">
       <Filter>Juce Modules\jura_processors\instruments</Filter>
     </ClCompile>
@@ -3736,6 +3733,9 @@
       <Filter>Juce Library Code</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_Quadrigen.cpp">
+      <Filter>Juce Modules\jura_processors\instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_Quadriga.cpp">
       <Filter>Juce Modules\jura_processors\instruments</Filter>
     </ClCompile>
   </ItemGroup>
@@ -5900,9 +5900,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_Straightliner.h">
       <Filter>Juce Modules\jura_processors\instruments</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\rosof_QuadrigaAudioModule.h">
-      <Filter>Juce Modules\jura_processors\instruments</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\rosof_QuadrigaModuleEditor.h">
       <Filter>Juce Modules\jura_processors\instruments</Filter>
     </ClInclude>
@@ -7310,6 +7307,9 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\jura_processors.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rosic.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_Quadrigen.h">
+      <Filter>Juce Modules\jura_processors\instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_Quadriga.h">
       <Filter>Juce Modules\jura_processors\instruments</Filter>
     </ClInclude>
   </ItemGroup>

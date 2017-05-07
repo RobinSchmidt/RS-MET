@@ -17,6 +17,7 @@ This file includes all relevant rosic instrument header files.
 #include "rosic_Straightliner.h"
 //#include "rosic_Workhorse.h"
 #include "rosic_KeyShot.h"
+#include "rosic_Quadriga.h"
 
 #endif // end of #ifndef rosic_Instruments_h
 

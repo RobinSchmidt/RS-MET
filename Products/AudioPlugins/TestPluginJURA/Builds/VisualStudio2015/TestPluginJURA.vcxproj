@@ -2031,7 +2031,7 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_Straightliner.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\rosof_QuadrigaAudioModule.cpp">
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_Quadriga.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\rosof_QuadrigaModuleEditor.cpp">
@@ -4023,7 +4023,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_PolyphonicInstrument.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_SimpleSampler.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_Straightliner.h" />
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\rosof_QuadrigaAudioModule.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_Quadriga.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\rosof_QuadrigaModuleEditor.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_Quadrigen.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\rosof_QuadrigenModuleEditor.h" />
