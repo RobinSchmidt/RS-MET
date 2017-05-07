@@ -1,6 +1,3 @@
-//#include "rosof_QuadrigenAudioModule.h"
-#include "rosof_QuadrigenModuleEditor.h"
-using namespace rosof;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
@@ -11,11 +8,11 @@ QuadrigenAudioModule::QuadrigenAudioModule(CriticalSection *newPlugInLock, rosic
   jassert(quadrigenToWrap != NULL); // you must pass a valid rosic-object to the constructor
   wrappedQuadrigen = quadrigenToWrap;
   editor           = NULL;
-  moduleName       = juce::String(T("Quadrigen"));
-  setActiveDirectory(getApplicationDirectory() + juce::String(T("/QuadrigenPresets")) );
+  moduleName       = juce::String("Quadrigen");
+  setActiveDirectory(getApplicationDirectory() + juce::String("/QuadrigenPresets"));
 
-  matrixModule = new RoutingMatrixAudioModule(plugInLock, &wrappedQuadrigen->mixMatrix);
-  matrixModule->setModuleName(juce::String(T("RoutingMatrix")));
+  matrixModule = new RoutingMatrixAudioModule(lock, &wrappedQuadrigen->mixMatrix);
+  matrixModule->setModuleName(juce::String("RoutingMatrix"));
   addChildAudioModule(matrixModule);
 
   acquireLock();
@@ -25,12 +22,12 @@ QuadrigenAudioModule::QuadrigenAudioModule(CriticalSection *newPlugInLock, rosic
     // create a bypass-module for each slot:
     rosic::BypassModule* bypassCoreModule = 
       static_cast<rosic::BypassModule*> (wrappedQuadrigen->getGeneratorModule(i)); // this dynamic_cast causes bugs in the release version
-    rosof::BypassAudioModule *audioModule = new rosof::BypassAudioModule(plugInLock, bypassCoreModule);
+    jura::BypassAudioModule *audioModule = new jura::BypassAudioModule(lock, bypassCoreModule);
     generatorModules[i] = audioModule;
     addChildAudioModule(generatorModules[i]);
 
     // allocate memory to store the states internally:
-    oscillatorStereoStates[i]        = new XmlElement(juce::String(T("OscillatorStereo")));
+    oscillatorStereoStates[i]        = new XmlElement(juce::String("OscillatorStereo"));
   }
 
   initializeAutomatableParameters();
@@ -80,8 +77,8 @@ void QuadrigenAudioModule::setGeneratorAlgorithm(int slotIndex, int newAlgorithm
   {
   case rosic::Quadrigen::OSCILLATOR_STEREO: 
     {
-      rosof::OscillatorStereoAudioModule *audioModule = 
-        static_cast<rosof::OscillatorStereoAudioModule*> (generatorModules[slotIndex]);
+      jura::OscillatorStereoAudioModule *audioModule = 
+        static_cast<jura::OscillatorStereoAudioModule*> (generatorModules[slotIndex]);
       delete oscillatorStereoStates[slotIndex];
       oscillatorStereoStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
     } break;
@@ -104,8 +101,8 @@ void QuadrigenAudioModule::setGeneratorAlgorithm(int slotIndex, int newAlgorithm
     {
       rosic::OscillatorStereoModule *core = 
         static_cast<rosic::OscillatorStereoModule*> (wrappedQuadrigen->getGeneratorModule(slotIndex));
-      rosof::OscillatorStereoAudioModule *audioModule = new rosof::OscillatorStereoAudioModule(plugInLock, core);
-      audioModule->setModuleName(juce::String(T("OscillatorStereo")) + juce::String(slotIndex+1));
+      jura::OscillatorStereoAudioModule *audioModule = new jura::OscillatorStereoAudioModule(lock, core);
+      audioModule->setModuleName(juce::String("OscillatorStereo") + juce::String(slotIndex+1));
       audioModule->setStateFromXml(*oscillatorStereoStates[slotIndex], juce::String::empty, true);
       generatorModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
@@ -115,7 +112,7 @@ void QuadrigenAudioModule::setGeneratorAlgorithm(int slotIndex, int newAlgorithm
     {
       rosic::BypassModule *core = 
         static_cast<rosic::BypassModule*> (wrappedQuadrigen->getGeneratorModule(slotIndex));
-      rosof::BypassAudioModule *audioModule = new rosof::BypassAudioModule(plugInLock, core);
+      jura::BypassAudioModule *audioModule = new jura::BypassAudioModule(lock, core);
       generatorModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
     } break;
@@ -165,7 +162,7 @@ XmlElement* QuadrigenAudioModule::getStateAsXml(const juce::String& stateName, b
     // store the slot-generator assignments:
     for(int i=0; i<rosic::Quadrigen::numGeneratorSlots; i++)
     {
-      xmlState->setAttribute(juce::String(T("Slot"))+juce::String(i+1), 
+      xmlState->setAttribute(juce::String("Slot")+juce::String(i+1), 
         generatorAlgorithmIndexToString(wrappedQuadrigen->getGeneratorAlgorithmIndex(i)) );
     }
   }
@@ -183,7 +180,7 @@ void QuadrigenAudioModule::setStateFromXml(const XmlElement& xmlState, const juc
     for(int i=0; i<rosic::Quadrigen::numGeneratorSlots; i++)
     {
       setGeneratorAlgorithm(i, stringToGeneratorAlgorithmIndex( 
-        xmlState.getStringAttribute( juce::String(T("Slot"))+juce::String(i+1), T("Mute"))));
+        xmlState.getStringAttribute( juce::String("Slot")+juce::String(i+1), "Mute")));
     }
   }
   AudioModule::setStateFromXml(xmlState, stateName, markAsClean);
@@ -207,15 +204,15 @@ void QuadrigenAudioModule::initializeAutomatableParameters()
   Parameter* p;
 
   // #00:
-  p = new Parameter(plugInLock, "DryWet", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR); 
+  p = new Parameter(lock, "DryWet", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR); 
   addObservedParameter(p);
 
   // #01:
-  p = new Parameter(plugInLock, "WetLevel", -36.0, 6.0, 0.01, 0.0, Parameter::LINEAR); 
+  p = new Parameter(lock, "WetLevel", -36.0, 6.0, 0.01, 0.0, Parameter::LINEAR); 
   addObservedParameter(p);
 
   // #02:
-  p = new Parameter(plugInLock, "TriggerInterval", 0.0, 64.0, 1.0, 8.0, Parameter::LINEAR);
+  p = new Parameter(lock, "TriggerInterval", 0.0, 64.0, 1.0, 8.0, Parameter::LINEAR);
   addObservedParameter(p);
 
   // make a call to setValue for each parameter in order to set up all the slave voices:
@@ -229,17 +226,17 @@ juce::String QuadrigenAudioModule::generatorAlgorithmIndexToString(int index)
 {
   switch( index )
   {
-  case rosic::Quadrigen::MUTE:                 return juce::String(T("Mute"));
-  case rosic::Quadrigen::OSCILLATOR_STEREO:    return juce::String(T("OscillatorStereo"));
+  case rosic::Quadrigen::MUTE:                 return juce::String("Mute");
+  case rosic::Quadrigen::OSCILLATOR_STEREO:    return juce::String("OscillatorStereo");
 
-  default:                                     return juce::String(T("Mute"));
+  default:                                     return juce::String("Mute");
   }
 }
 
 int QuadrigenAudioModule::stringToGeneratorAlgorithmIndex(const juce::String &algoString)
 {
-  if( algoString == juce::String(T("Mute"))   )            return rosic::Quadrigen::MUTE;
-  if( algoString == juce::String(T("OscillatorStereo")) )  return rosic::Quadrigen::OSCILLATOR_STEREO;
+  if( algoString == juce::String("Mute")   )            return rosic::Quadrigen::MUTE;
+  if( algoString == juce::String("OscillatorStereo") )  return rosic::Quadrigen::OSCILLATOR_STEREO;
 
   return rosic::Quadrigen::MUTE;
 }
