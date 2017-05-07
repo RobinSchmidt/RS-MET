@@ -2391,9 +2391,6 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_VectorMixer.cpp">
       <Filter>Juce Modules\jura_processors\generators</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\rosof_VectorSamplePlayerAudioModule.cpp">
-      <Filter>Juce Modules\jura_processors\generators</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\rosof_VectorSamplePlayerEditor.cpp">
       <Filter>Juce Modules\jura_processors\generators</Filter>
     </ClCompile>
@@ -2433,13 +2430,13 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\jura_BreakpointModulatorEditorMulti.cpp">
       <Filter>Juce Modules\jura_processors\modulators</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\jura_LowFrequencyOscillator.cpp">
+      <Filter>Juce Modules\jura_processors\modulators</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\jura_ModulatorCurveEditor.cpp">
       <Filter>Juce Modules\jura_processors\modulators</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\jura_ModulatorCurveEditorMulti.cpp">
-      <Filter>Juce Modules\jura_processors\modulators</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\rosof_LowFrequencyOscillatorEditor.cpp">
       <Filter>Juce Modules\jura_processors\modulators</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\tools\jura_TuningFileManager.cpp">
@@ -3705,8 +3702,8 @@
     <ClCompile Include="..\..\JuceLibraryCode\rosic.cpp">
       <Filter>Juce Library Code</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\jura_LowFrequencyOscillator.cpp">
-      <Filter>Juce Modules\jura_processors\modulators</Filter>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_VectorSamplePlayer.cpp">
+      <Filter>Juce Modules\jura_processors\generators</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5825,9 +5822,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_VectorMixer.h">
       <Filter>Juce Modules\jura_processors\generators</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\rosof_VectorSamplePlayerAudioModule.h">
-      <Filter>Juce Modules\jura_processors\generators</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\rosof_VectorSamplePlayerEditor.h">
       <Filter>Juce Modules\jura_processors\generators</Filter>
     </ClInclude>
@@ -5867,13 +5861,13 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\jura_BreakpointModulatorEditorMulti.h">
       <Filter>Juce Modules\jura_processors\modulators</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\jura_LowFrequencyOscillator.h">
+      <Filter>Juce Modules\jura_processors\modulators</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\jura_ModulatorCurveEditor.h">
       <Filter>Juce Modules\jura_processors\modulators</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\jura_ModulatorCurveEditorMulti.h">
-      <Filter>Juce Modules\jura_processors\modulators</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\rosof_LowFrequencyOscillatorEditor.h">
       <Filter>Juce Modules\jura_processors\modulators</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\tools\jura_TuningFileManager.h">
@@ -7249,8 +7243,8 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\jura_framework.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\jura_processors.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rosic.h" />
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\jura_LowFrequencyOscillator.h">
-      <Filter>Juce Modules\jura_processors\modulators</Filter>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_VectorSamplePlayer.h">
+      <Filter>Juce Modules\jura_processors\generators</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

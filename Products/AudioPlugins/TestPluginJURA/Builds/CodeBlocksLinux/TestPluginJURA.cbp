@@ -5701,6 +5701,14 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/modulators/jura_LowFrequencyOscillator.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/modulators/jura_LowFrequencyOscillator.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/modulators/jura_ModulatorCurveEditor.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -5714,22 +5722,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/modulators/jura_ModulatorCurveEditorMulti.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/modulators/rosof_LowFrequencyOscillatorAudioModule.cpp">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/modulators/rosof_LowFrequencyOscillatorAudioModule.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/modulators/rosof_LowFrequencyOscillatorEditor.cpp">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/modulators/rosof_LowFrequencyOscillatorEditor.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>

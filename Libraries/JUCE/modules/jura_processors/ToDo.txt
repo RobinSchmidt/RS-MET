@@ -1,6 +1,5 @@
 needs to be completed next:
--LowFrequencyOscillator
--move VectorMixetr to basics?
+
 
 -drag over all old plugin code and make it compile:
  -AciDevil (done)
@@ -30,6 +29,8 @@ needs to be completed next:
  -Workhorse
  -Liberty (later - it needs the "romos" folder)
 
+
+-maybe move VectorMixetr to basics?
 
 make old plugins available in chainer:
 we mostly need to provide a 2nd constructor that doesn't wrap an existing core-object but creates 

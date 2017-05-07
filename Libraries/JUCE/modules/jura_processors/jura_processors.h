@@ -79,8 +79,8 @@ namespace jura
 #include "generators/jura_OscillatorStereo.h"
 #include "generators/jura_FourOscSection.h"
 #include "generators/jura_SamplePlayer.h"
-#include "generators/jura_VectorMixer.h"
-
+#include "generators/jura_VectorMixer.h"  // maybe move to basics
+#include "generators/jura_VectorSamplePlayer.h"
 
 
 #include "effects/jura_Enveloper.h"
