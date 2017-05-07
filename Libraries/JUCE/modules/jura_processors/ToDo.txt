@@ -1,6 +1,5 @@
 needs to be completed next:
 
-
 -drag over all old plugin code and make it compile:
  -AciDevil (done)
  -AlgoVerb (done)
@@ -15,20 +14,16 @@ needs to be completed next:
  -Straightliner (done)
  -SimpleSampler (done)
  -KeyShot (done)
+ -PitchShifter (done)
 
- -PitchShifter
 
  -Quadrifex
   -CombStereoizer
   -RoutingMatrix
-
  -MagicCarpet
   -VectorSamplePlayer (done)
-
  -MidiMonitor
  -Moduluxury
-
-
  -Quadriga
  -StereoDelay
  -TrackMeter

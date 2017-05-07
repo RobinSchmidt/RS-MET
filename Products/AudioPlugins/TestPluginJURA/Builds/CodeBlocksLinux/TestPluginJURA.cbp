@@ -5509,19 +5509,27 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/rosof_PitchShifterAudioModule.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/jura_PitchShifter.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/rosof_PitchShifterAudioModule.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/jura_PitchShifter.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/rosof_PitchShifterModuleEditor.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/rosof_CombStereoizerAudioModule.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/rosof_PitchShifterModuleEditor.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/rosof_CombStereoizerAudioModule.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/rosof_CombStereoizerModuleEditor.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/rosof_CombStereoizerModuleEditor.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
