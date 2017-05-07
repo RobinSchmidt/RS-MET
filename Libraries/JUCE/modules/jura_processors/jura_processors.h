@@ -74,6 +74,7 @@ namespace jura
 #include "modulators/jura_BreakpointModulatorEditor.h"
 #include "modulators/jura_ModulatorCurveEditorMulti.h"
 #include "modulators/jura_BreakpointModulatorEditorMulti.h"
+#include "modulators/jura_LowFrequencyOscillator.h"
 
 #include "generators/jura_OscillatorStereo.h"
 #include "generators/jura_FourOscSection.h"

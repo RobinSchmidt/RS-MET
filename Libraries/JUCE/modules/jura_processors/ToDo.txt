@@ -1,5 +1,4 @@
 needs to be completed next:
--WaveTable
 -LowFrequencyOscillator
 -move VectorMixetr to basics?
 
