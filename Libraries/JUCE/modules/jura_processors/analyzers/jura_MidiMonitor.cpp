@@ -133,3 +133,232 @@ void MidiMonitorAudioModule::initializeAutomatableParameters()
 }
 
 //=================================================================================================
+
+// construction/destruction:
+
+MidiMonitorModuleEditor::MidiMonitorModuleEditor(CriticalSection *newPlugInLock, MidiMonitorAudioModule* newMidiMonitorAudioModule) 
+  : AudioModuleEditor(newMidiMonitorAudioModule)
+{
+  // set the plugIn-headline:
+  setHeadlineText( juce::String(("MidiMonitor")) );
+
+  // assign the pointer to the rosic::MidiMonitor object to be used as aduio engine:
+  jassert(newMidiMonitorAudioModule != NULL ); // you must pass a valid module here
+  midiMonitorModuleToEdit = newMidiMonitorAudioModule;
+  midiMonitorModuleToEdit->addChangeListener(this);
+
+  outputDisplay = new RTextEditor( juce::String(("OutputDisplay")) );
+  outputDisplay->setMultiLine(true, true); 
+  outputDisplay->setReadOnly(true);
+  outputDisplay->setScrollbarsShown(false);
+  addAndMakeVisible( outputDisplay );
+
+  addWidget( eventFilterLabel = new RTextField( juce::String(("Event Filter"))) );
+  eventFilterLabel->setDescription(juce::String(("Choose, which types of events you want to see")));
+  eventFilterLabel->setDescriptionField(infoField);
+  eventFilterLabel->setJustification(Justification::centred);
+
+  addWidget( noteButton = new RButton(juce::String(("Notes"))) );
+  noteButton->assignParameter( midiMonitorModuleToEdit->getParameterByName(("Notes")) );
+  noteButton->setDescription(juce::String(("Show note-on/-off events")));
+  noteButton->setDescriptionField(infoField);
+  noteButton->setClickingTogglesState(true);
+
+  addWidget( controllerButton = new RButton(juce::String(("Controllers"))) );
+  controllerButton->assignParameter( midiMonitorModuleToEdit->getParameterByName(("Controllers")) );
+  controllerButton->setDescription(juce::String(("Show control-change events")));
+  controllerButton->setDescriptionField(infoField);
+  controllerButton->setClickingTogglesState(true);
+
+  addWidget( pitchWheelButton = new RButton(juce::String(("Pitch Wheel"))) );
+  pitchWheelButton->assignParameter( midiMonitorModuleToEdit->getParameterByName(("PitchWheel")) );
+  pitchWheelButton->setDescription(juce::String(("Show pitch-wheel events")));
+  pitchWheelButton->setDescriptionField(infoField);
+  pitchWheelButton->setClickingTogglesState(true);
+
+  addWidget( programChangeButton = new RButton(juce::String(("Program Changes"))) );
+  programChangeButton->assignParameter( midiMonitorModuleToEdit->getParameterByName(("ProgramChange")) );
+  programChangeButton->setDescription(juce::String(("Show program-change events")));
+  programChangeButton->setDescriptionField(infoField);
+  programChangeButton->setClickingTogglesState(true);
+
+  addWidget( aftertouchButton = new RButton(juce::String(("Aftertouch"))) );
+  aftertouchButton->assignParameter( midiMonitorModuleToEdit->getParameterByName(("Aftertouch")) );
+  aftertouchButton->setDescription(juce::String(("Show aftertouch events")));
+  aftertouchButton->setDescriptionField(infoField);
+  aftertouchButton->setClickingTogglesState(true);
+
+  addWidget( channelPressureButton = new RButton(juce::String(("Channel Pressure"))) );
+  channelPressureButton->assignParameter( midiMonitorModuleToEdit->getParameterByName(("ChannelPressure")) );
+  channelPressureButton->setDescription(juce::String(("Show channel pressure events")));
+  channelPressureButton->setDescriptionField(infoField);
+  channelPressureButton->setClickingTogglesState(true);
+
+  addWidget( sysExButton = new RButton(juce::String(("System Exclusive"))) );
+  sysExButton->assignParameter( midiMonitorModuleToEdit->getParameterByName(("SystemExclusive")) );
+  sysExButton->setDescription(juce::String(("Show system exclusive events")));
+  sysExButton->setDescriptionField(infoField);
+  sysExButton->setClickingTogglesState(true);
+
+  addWidget( metaEventButton = new RButton(juce::String(("Meta Events"))) );
+  metaEventButton->assignParameter( midiMonitorModuleToEdit->getParameterByName(("MetaEvents")) );
+  metaEventButton->setDescription(juce::String(("Show meta events")));
+  metaEventButton->setDescriptionField(infoField);
+  metaEventButton->setClickingTogglesState(true);
+
+  addWidget( transportButton = new RButton(juce::String(("Transport"))) );
+  transportButton->assignParameter( midiMonitorModuleToEdit->getParameterByName(("Transport")) );
+  transportButton->setDescription(juce::String(("Show transport control events")));
+  transportButton->setDescriptionField(infoField);
+  transportButton->setClickingTogglesState(true);
+
+  addWidget( songPositionButton = new RButton(juce::String(("Song Position"))) );
+  songPositionButton->assignParameter( midiMonitorModuleToEdit->getParameterByName(("SongPosition")) );
+  songPositionButton->setDescription(juce::String(("Show song position events")));
+  songPositionButton->setDescriptionField(infoField);
+  songPositionButton->setClickingTogglesState(true);
+
+  addWidget( machineControlButton = new RButton(juce::String(("Machine Control"))) );
+  machineControlButton->assignParameter( midiMonitorModuleToEdit->getParameterByName(("MachineControl")) );
+  machineControlButton->setDescription(juce::String(("Show machine control events")));
+  machineControlButton->setDescriptionField(infoField);
+  machineControlButton->setClickingTogglesState(true);
+
+  addWidget( activeSenseButton = new RButton(juce::String(("Active Sense"))) );
+  activeSenseButton->assignParameter( midiMonitorModuleToEdit->getParameterByName(("ActiveSense")) );
+  activeSenseButton->setDescription(juce::String(("Show active sense events")));
+  activeSenseButton->setDescriptionField(infoField);
+  activeSenseButton->setClickingTogglesState(true);
+
+  addWidget( clockButton = new RButton(juce::String(("Clock"))) );
+  clockButton->assignParameter( midiMonitorModuleToEdit->getParameterByName(("Clock")) );
+  clockButton->setDescription(juce::String(("Show clock events")));
+  clockButton->setDescriptionField(infoField);
+  clockButton->setClickingTogglesState(true);
+
+  addWidget( otherButton = new RButton(juce::String(("Others"))) );
+  otherButton->assignParameter( midiMonitorModuleToEdit->getParameterByName(("Others")) );
+  otherButton->setDescription(juce::String(("Show other events")));
+  otherButton->setDescriptionField(infoField);
+  otherButton->setClickingTogglesState(true);
+
+  addWidget( clearButton = new RButton(juce::String(("Clear"))) );
+  clearButton->assignParameter( midiMonitorModuleToEdit->getParameterByName(("Clear")) );
+  clearButton->setDescription(juce::String(("Clear screen")));
+  clearButton->setDescriptionField(infoField);
+  clearButton->setClickingTogglesState(false);
+  clearButton->addRButtonListener(this);
+
+  // set up the widgets:
+  updateWidgetsAccordingToState();
+  updateScreen();
+}
+
+MidiMonitorModuleEditor::~MidiMonitorModuleEditor()
+{
+  midiMonitorModuleToEdit->removeChangeListener(this);
+}
+
+//-------------------------------------------------------------------------------------------------
+// callbacks:
+
+void MidiMonitorModuleEditor::rButtonClicked(RButton *buttonThatWasClicked)
+{
+  if( buttonThatWasClicked == clearButton )
+    clearScreen(true);
+}
+
+void MidiMonitorModuleEditor::changeListenerCallback(ChangeBroadcaster *objectThatHasChanged)
+{
+  if( objectThatHasChanged == midiMonitorModuleToEdit )
+    updateScreen();
+}
+
+void MidiMonitorModuleEditor::resized()
+{
+  presetSectionPosition = INVISIBLE;
+  AudioModuleEditor::resized();
+  int x = 0;
+  int y = getHeadlineBottom();
+  int w = getWidth()-136;
+  int h = infoField->getY()-y;
+
+  outputDisplay->setBounds(x+4, y+4, w-8, h-4);
+
+  x = outputDisplay->getRight();
+  w = getWidth()-x;
+
+  eventFilterLabel->setBounds(x+4, y+4, w-8, 16);
+  y += 24;
+  noteButton->setBounds(x+4, y+4, w-8, 16);
+  y += 24;
+  controllerButton->setBounds(x+4, y+4, w-8, 16);
+  y += 24;
+  pitchWheelButton->setBounds(x+4, y+4, w-8, 16);
+  y += 24;
+  programChangeButton->setBounds(x+4, y+4, w-8, 16);
+  y += 24;
+  aftertouchButton->setBounds(x+4, y+4, w-8, 16);
+  y += 24;
+  channelPressureButton->setBounds(x+4, y+4, w-8, 16);
+  y += 24;
+  sysExButton->setBounds(x+4, y+4, w-8, 16);
+  y += 24;
+  metaEventButton->setBounds(x+4, y+4, w-8, 16);
+  y += 24;
+  transportButton->setBounds(x+4, y+4, w-8, 16);
+  y += 24;
+  songPositionButton->setBounds(x+4, y+4, w-8, 16);
+  y += 24;
+  machineControlButton->setBounds(x+4, y+4, w-8, 16);
+  y += 24;
+  activeSenseButton->setBounds(x+4, y+4, w-8, 16);
+  y += 24;
+  clockButton->setBounds(x+4, y+4, w-8, 16);
+  y += 24;
+  otherButton->setBounds(x+4, y+4, w-8, 16);
+
+  y = outputDisplay->getBottom();
+  w = w/2;
+  x = outputDisplay->getRight() + w;
+  clearButton->setBounds(x-32, y-32, 64, 24);
+
+  updateScreen(); // wihtout that, re-opening of the GUI will have a wrong caret-position when 
+                  // the screen is full (in VSTHost)
+}
+
+//-------------------------------------------------------------------------------------------------
+// internal functions:
+
+void MidiMonitorModuleEditor::clearScreen(bool clearAlsoMessageString)
+{
+  outputDisplay->setText(juce::String::empty, false);
+  if( clearAlsoMessageString == true && midiMonitorModuleToEdit != NULL)
+  {
+    midiMonitorModuleToEdit->messageStringLock.enter();
+    midiMonitorModuleToEdit->midiMessageString = juce::String::empty;
+    midiMonitorModuleToEdit->messageStringLock.exit();
+  }
+}
+
+void MidiMonitorModuleEditor::updateScreen()
+{
+  if( midiMonitorModuleToEdit == NULL )
+    return;
+
+  midiMonitorModuleToEdit->messageStringLock.enter();
+
+  // use a local string to pass to the editor because the editor's setText() method will update
+  // the text asynchronously (albeit in the same thread as this) - so we cannot be sure that this 
+  // thread still has the lock inside setText()...and we need the lock because the AudioModule is   
+  // constantly messing with its messageString:
+  juce::String localString = midiMonitorModuleToEdit->midiMessageString;
+
+  int length = localString.length();
+  outputDisplay->setText(localString, false);
+  outputDisplay->setCaretPosition(length);
+
+  midiMonitorModuleToEdit->messageStringLock.exit();
+}
+
+
