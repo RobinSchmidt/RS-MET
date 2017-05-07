@@ -1676,3 +1676,751 @@ void QuadrifexRoutingDiagram::drawSlotBox(Graphics &g, float x, float y, float w
 }
 
 //=================================================================================================
+
+QuadrifexModuleEditor::QuadrifexModuleEditor(CriticalSection *newPlugInLock, 
+  QuadrifexAudioModule* newQuadrifexAudioModule) : AudioModuleEditor(newQuadrifexAudioModule)
+{
+
+  ScopedLock scopedLock(*lock);
+  // if we don't acquire it here, it hangs on opening the GUI ...why?
+
+  isTopLevelEditor = true;
+
+  setHeadlineStyle(MAIN_HEADLINE);
+  jassert(newQuadrifexAudioModule != NULL ); // you must pass a valid module here
+  quadrifexModuleToEdit = newQuadrifexAudioModule;
+
+  // remember for toggling:
+  for(int i=0; i<rosic::Quadrifex::numEffectSlots; i++ )
+  {
+    if( quadrifexModuleToEdit == NULL && quadrifexModuleToEdit->wrappedQuadrifex == NULL )
+      oldAlgorithmIndices[i] = quadrifexModuleToEdit->wrappedQuadrifex->getEffectAlgorithmIndex(i);
+    else
+      oldAlgorithmIndices[i] = rosic::Quadrifex::MUTE;
+  }
+
+  addWidget( routingLabel = new RTextField( juce::String(("Routing:"))) );
+  routingLabel->setDescription(juce::String(("Choose the routing of the 4 effect slots")));
+  routingLabel->setDescriptionField(infoField);
+
+  addWidget( routingComboBox = new RComboBox(juce::String(("RoutingComboBox"))) );
+  routingComboBox->setDescription(routingLabel->getDescription());
+  routingComboBox->setDescriptionField(infoField);
+  routingComboBox->registerComboBoxObserver(this);
+  routingComboBox->addItem(Quadrifex::R_BYPASS,           ("Bypass")      );
+  routingComboBox->addItem(Quadrifex::R_1TO2TO3TO4,       ("1>2>3>4")     );
+  routingComboBox->addItem(Quadrifex::R_1TO2TO3_PLUS4,    ("(1>2>3)+4")   );
+  routingComboBox->addItem(Quadrifex::R_1TO2_PLUS_3TO4,   ("(1>2)+(3>4)") );
+  routingComboBox->addItem(Quadrifex::R_1PLUS2PLUS3PLUS4, ("1+2+3+4")     );
+  routingComboBox->addItem(Quadrifex::R_1PLUS2PLUS3_TO_4, ("(1+2+3)>4")   );
+  routingComboBox->addItem(Quadrifex::R_1_TO_2PLUS3_TO_4, ("1>(2+3)>4")   );
+  routingComboBox->addItem(Quadrifex::R_1PLUS2_TO_3TO4,   ("(1+2)>3>4")   );
+  routingComboBox->addItem(Quadrifex::R_1TO2_TO_3PLUS4,   ("1>2>(3+4)")   );
+  routingComboBox->addItem(Quadrifex::R_1PLUS2_TO_3PLUS4, ("(1+2)>(3+4)") );
+  routingComboBox->addItem(Quadrifex::R_1_TO_2PLUS3PLUS4, ("1>(2+3+4)")   );
+  routingComboBox->addItem(Quadrifex::MATRIX,             ("Matrix")      );
+
+  routingDiagram = new QuadrifexRoutingDiagram(lock);
+  routingDiagram->addChangeListener(this);
+  addPlot(routingDiagram, true, true);
+  //addAndMakeVisible(routingDiagram); 
+
+  matrixEditor = new RoutingMatrixModuleEditor(lock, quadrifexModuleToEdit->matrixModule);
+  matrixEditor->setHeadlineStyle(AudioModuleEditor::NO_HEADLINE);
+  addChildEditor(matrixEditor);
+
+  addWidget( dryWetSlider = new RSlider (("DryWetSlider")) );
+  dryWetSlider->setSliderName(juce::String(("Dry/Wet")));
+  dryWetSlider->assignParameter( quadrifexModuleToEdit->getParameterByName("DryWet") );
+  dryWetSlider->setDefaultValue(0.5);
+  dryWetSlider->setDescription( juce::String(("Ratio between dry and wet signal")) );
+  dryWetSlider->setDescriptionField(infoField);
+  dryWetSlider->setStringConversionFunction(&ratioToString0);
+
+  addWidget( wetLevelSlider = new RSlider (("WetLevelSlider")) );
+  wetLevelSlider->setSliderName(juce::String(("Wet Level")));
+  wetLevelSlider->assignParameter( quadrifexModuleToEdit->getParameterByName("WetLevel") );
+  wetLevelSlider->setDescription( juce::String(("Level of the wet signal in dB")) );
+  wetLevelSlider->setDescriptionField(infoField);
+  wetLevelSlider->setStringConversionFunction(&jura::decibelsToStringWithUnit2);
+
+  // initialize the sub-editor pointers:
+  for(int i=0; i<rosic::Quadrifex::numEffectSlots; i++)
+    moduleEditors[i] = NULL;
+
+  // create the popup menu to select an effect algorithm:
+  effectSelectionPopup = new EffectSelectionPopup(this);
+  effectSelectionPopup->registerPopUpMenuObserver(this);
+  slotForWhichMenuIsOpen = -1;
+
+
+
+  // attach to the underlying audiomodule to be edited:
+  quadrifexModuleToEdit->setEditor(this);
+
+  initializeColourScheme();
+  updateWidgetsAccordingToState();
+}
+
+QuadrifexModuleEditor::~QuadrifexModuleEditor()
+{
+  ScopedLock scopedLock(*lock);
+
+
+  delete effectSelectionPopup;
+
+  // detach from the underlying audiomodule to be edited:
+  quadrifexModuleToEdit->setEditor(NULL);
+}
+
+//-------------------------------------------------------------------------------------------------
+// setup:
+
+void QuadrifexModuleEditor::initializeColourScheme()
+{
+
+}
+
+//-------------------------------------------------------------------------------------------------
+// callbacks:
+
+/*
+void QuadrifexModuleEditor::rButtonClicked(RButton *buttonThatWasClicked)
+{
+ScopedLock scopedLock(*lock);
+
+if( quadrifexModuleToEdit == NULL )
+return;
+if( quadrifexModuleToEdit->wrappedQuadrifex == NULL )
+return;
+
+//...
+
+quadrifexModuleToEdit->markStateAsDirty();
+}
+*/
+
+void QuadrifexModuleEditor::rComboBoxChanged(jura::RComboBox *rComboBoxThatHasChanged)
+{
+  ScopedLock scopedLock(*lock);
+  if( quadrifexModuleToEdit == NULL )
+    return;
+  if( quadrifexModuleToEdit->wrappedQuadrifex == NULL )
+    return;
+
+  rosic::Quadrifex* core = quadrifexModuleToEdit->wrappedQuadrifex;
+
+  if( rComboBoxThatHasChanged == routingComboBox )
+  {
+    int id = routingComboBox->getSelectedItemIdentifier();
+    routingDiagram->setSlotRouting(id);
+    core->setSlotRouting(id);
+    if( id ==  rosic::Quadrifex::MATRIX )
+      matrixEditor->setVisible(true);
+    else
+      matrixEditor->setVisible(false);
+  }
+
+  if( quadrifexModuleToEdit != NULL )
+    quadrifexModuleToEdit->markStateAsDirty();
+}
+
+void QuadrifexModuleEditor::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
+{
+  ScopedLock scopedLock(*lock);
+  if( quadrifexModuleToEdit == NULL )
+    return;
+  if( quadrifexModuleToEdit->wrappedQuadrifex == NULL )
+    return;
+
+  if( menuThatHasChanged == effectSelectionPopup )
+  {
+    RTreeViewNode* selectedNode = effectSelectionPopup->getSelectedItem();
+    if( selectedNode != NULL )
+    {
+      int algoIndex = selectedNode->getNodeIdentifier();
+      if( algoIndex > -1 )
+        setEffectAlgorithm(slotForWhichMenuIsOpen, algoIndex);
+    }
+  }
+
+  if( quadrifexModuleToEdit != NULL )
+    quadrifexModuleToEdit->markStateAsDirty();
+}
+
+void QuadrifexModuleEditor::rSliderValueChanged(RSlider *rSliderThatHasChanged)
+{
+  ScopedLock scopedLock(*lock);
+  if( quadrifexModuleToEdit != NULL )
+    quadrifexModuleToEdit->markStateAsDirty();
+}
+
+
+void QuadrifexModuleEditor::changeListenerCallback(ChangeBroadcaster *objectThatHasChanged)
+{
+  ScopedLock scopedLock(*lock);
+  if( objectThatHasChanged == routingDiagram )
+  {
+    for(int i=0; i<rosic::Quadrifex::numEffectSlots; i++)
+      setEffectAlgorithm(i, routingDiagram->getAlgorithmIndex(i));
+    updateWidgetsAccordingToState();
+  }
+  else
+    AudioModuleEditor::changeListenerCallback(objectThatHasChanged);
+}
+
+void QuadrifexModuleEditor::mouseDown(const MouseEvent &e)
+{
+  ScopedLock scopedLock(*lock);
+  int slotIndex = getSlotIndexAtPixelPosition(e.x, e.y);
+  if( slotIndex != -1 )
+  {
+    if( e.mods.isRightButtonDown() )
+      openEffectSelectionMenuForSlot(slotIndex, Point<int>(e.x, e.y));
+    else if( e.mods.isLeftButtonDown() )
+    {
+      /*
+      // on left-click, toggle between mute, bypass and the most recent actual effect - seems not yet to work:
+      rosic::Quadrifex *core = quadrifexModuleToEdit->wrappedQuadrifex;
+      if( core->getEffectAlgorithmIndex(slotIndex) == rosic::Quadrifex::MUTE )
+      core->setEffectAlgorithm(slotIndex, rosic::Quadrifex::BYPASS);
+      else if( core->getEffectAlgorithmIndex(slotIndex) == rosic::Quadrifex::BYPASS )
+      core->setEffectAlgorithm(slotIndex, oldAlgorithmIndices[slotIndex]);
+      else
+      {
+      oldAlgorithmIndices[slotIndex] = core->getEffectAlgorithmIndex(slotIndex);
+      core->setEffectAlgorithm(slotIndex, rosic::Quadrifex::MUTE);
+      }
+      updateWidgetsAccordingToState();
+      */
+    }
+  }
+}
+
+void QuadrifexModuleEditor::updateWidgetsAccordingToState()
+{
+  ScopedLock scopedLock(*lock);
+  if( quadrifexModuleToEdit == NULL )
+    return;
+  if( quadrifexModuleToEdit->wrappedQuadrifex == NULL )
+    return;
+
+  AudioModuleEditor::updateWidgetsAccordingToState();
+
+  int routingIndex = quadrifexModuleToEdit->wrappedQuadrifex->getSlotRouting();
+  routingComboBox->selectItemByIndex(routingIndex, false);
+  routingDiagram->setSlotRouting(routingIndex);
+  if( routingIndex ==  rosic::Quadrifex::MATRIX )
+    matrixEditor->setVisible(true);
+  else
+    matrixEditor->setVisible(false);
+  for(int i=0; i<rosic::Quadrifex::numEffectSlots; i++)
+  {
+    routingDiagram->setAlgorithmIndex(i, 
+      quadrifexModuleToEdit->wrappedQuadrifex->getEffectAlgorithmIndex(i));
+  }
+
+  // delete old and create new editors:
+  removeChildEditors();
+  for(int i=0; i<rosic::Quadrifex::numEffectSlots; i++)
+    createEditorForSlot(i, quadrifexModuleToEdit->wrappedQuadrifex->getEffectAlgorithmIndex(i));
+}
+
+void QuadrifexModuleEditor::paint(Graphics &g)
+{
+  ScopedLock scopedLock(*lock);
+  AudioModuleEditor::paint(g);
+
+  fillRectWithBilinearGradient(g, globalRectangle, editorColourScheme.topLeft, 
+    editorColourScheme.topRight, editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
+
+  g.setColour(editorColourScheme.outline);
+  g.drawRect(globalRectangle, 2);
+
+  int x = globalRectangle.getX(); // + middleRectangle.getWidth()/2;
+  int y = globalRectangle.getY();
+  //drawBitmapFontText(g, x+4, y+4, juce::String(("Global Settings")), BigFont::getInstance(), 
+  //  editorColourScheme.labelTextColour);
+
+  if( quadrifexModuleToEdit == NULL )
+    return;
+  if( quadrifexModuleToEdit->wrappedQuadrifex == NULL )
+    return;
+
+  rosic::Quadrifex* core = quadrifexModuleToEdit->wrappedQuadrifex;
+  for(int i=0; i<rosic::Quadrifex::numEffectSlots; i++)
+  {
+    fillRectWithBilinearGradient(g, slotRectangles[i], editorColourScheme.topLeft, 
+      editorColourScheme.topRight, editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
+    g.drawRect(slotRectangles[i], 2);
+
+    x = slotRectangles[i].getX(); 
+    y = slotRectangles[i].getY();
+    juce::String headlineString = juce::String(i+1) + juce::String((" - ")) + 
+      quadrifexModuleToEdit->effectAlgorithmIndexToString(core->getEffectAlgorithmIndex(i));
+    drawBitmapFontText(g, x+4, y+4, headlineString, &BitmapFontRoundedBoldA10D0::instance, 
+      editorColourScheme.headline);
+  }
+}
+
+void QuadrifexModuleEditor::resized()
+{
+  ScopedLock scopedLock(*lock);
+
+  AudioModuleEditor::resized();
+  int x = 0;
+  int y = getHeadlineBottom();
+  int w = getWidth();
+  int h = getHeight();
+
+  int leftWidth = 200;
+  h = infoField->getY()-y-2;
+  globalRectangle.setBounds(4, y+4, leftWidth, h);
+
+  x = globalRectangle.getX();
+  y = globalRectangle.getY();
+
+  stateWidgetSet->setLayout(StateLoadSaveWidgetSet::LABEL_AND_BUTTONS_ABOVE);
+  stateWidgetSet->setBounds(x+4, y+4, globalRectangle.getWidth()-8, 40);
+  y = stateWidgetSet->getBottom();
+
+  //int w2 = 100;
+  routingLabel->setBounds(x+4, y+4, 52, 16);
+  x = routingLabel->getRight();
+  w = globalRectangle.getRight()-x;
+  routingComboBox->setBounds(x, y+4, w-4, 16);
+  y = routingComboBox->getBottom() - RWidget::outlineThickness;
+  routingDiagram->setBounds(globalRectangle.getX()+4, y, leftWidth-8, leftWidth-8);
+  matrixEditor->setBounds(routingDiagram->getBounds());
+
+  /*
+  int w3 = globalRectangle.getWidth()-routingComboBox->getRight();
+  */
+
+  x = globalRectangle.getX();
+  y = routingDiagram->getBottom();
+  w = globalRectangle.getWidth();
+  dryWetSlider->setBounds(x+4, y+8, w-8, 16);
+
+  // setup the sizes of the child editors:
+  x = globalRectangle.getRight()-RWidget::outlineThickness;
+  y = globalRectangle.getY();
+  w = (getWidth()-x-RWidget::outlineThickness)/2;
+  h = globalRectangle.getHeight()/2 + RWidget::outlineThickness/2;
+  for(int i=0; i<rosic::Quadrifex::numEffectSlots; i++)
+  {
+    int x2 = x;
+    if( i == 1 || i == 3 )
+      x2 += w-RWidget::outlineThickness;
+
+    int y2 = y;
+    if( i >=2 )
+      y2 += h-RWidget::outlineThickness;
+
+    slotRectangles[i].setBounds(x2, y2,    w, h);
+    if( moduleEditors[i] != NULL )
+      moduleEditors[i]->setBounds(x2, y2+24, w, h-24);
+  }
+}
+
+//-------------------------------------------------------------------------------------------------
+// intenal helper functions:
+
+void QuadrifexModuleEditor::openEffectSelectionMenuForSlot(int slotIndex, juce::Point<int> menuPosition)
+{
+  ScopedLock scopedLock(*lock);
+  if( slotIndex < 0 || slotIndex > 3 )
+    return;
+
+  // set up the menu to highlight the currently selected algorithm:
+  int selectedIndex = quadrifexModuleToEdit->wrappedQuadrifex->getEffectAlgorithmIndex(slotIndex);
+  effectSelectionPopup->selectItemByIdentifier(selectedIndex, false);
+  //effectSelectionPopup->openNodeOfSelectedItem();  // \todo: implement openNodeOfSelectedItem in RTreeView
+
+  // keep track of the slot for which the menu is open:
+  slotForWhichMenuIsOpen = slotIndex;
+
+  // show the menu:
+  Point<int> thisPosistion = getScreenPosition();
+  int x = thisPosistion.getX() + menuPosition.getX();
+  int y = thisPosistion.getY() + menuPosition.getY();
+  effectSelectionPopup->showAt(false, x, y, 200, 400);
+}
+
+int QuadrifexModuleEditor::getSlotIndexAtPixelPosition(int x, int y)
+{
+  ScopedLock scopedLock(*lock);
+  for(int i = 0; i < rosic::Quadrifex::numEffectSlots; i++ )
+  {
+    if( slotRectangles[i].contains(x, y) == true )
+      return i;
+  }
+  return -1;
+}
+
+void QuadrifexModuleEditor::setEffectAlgorithm(int slotIndex, int newAlgorithmIndex)
+{
+  ScopedLock scopedLock(*lock);
+  if( slotIndex < 0 || slotIndex >= rosic::Quadrifex::numEffectSlots )
+  {
+    jassertfalse;
+    return;
+  }
+
+  if( quadrifexModuleToEdit == NULL )
+    return;
+  else if( quadrifexModuleToEdit->wrappedQuadrifex->getEffectAlgorithmIndex(slotIndex) 
+    == newAlgorithmIndex )
+  {
+    return; // nothing to do
+  }
+
+  quadrifexModuleToEdit->setEffectAlgorithm(slotIndex, newAlgorithmIndex);
+  // the quadrifexModuleToEdit has a pointer to 'this' editor and will take care of updating
+  // the GUI (deleting and creating the appropriate child-editor)
+
+  //algorithmIndices[slotIndex] = newAlgorithmIndex;  // maybe later
+}
+
+/*
+void QuadrifexModuleEditor::createEditorsIfNeeded()
+{
+ScopedLock scopedLock(*lock);
+for(int i=0; i<rosic::Quadrifex::numEffectSlots; i++)
+createEditorForSlotIfNeeded(i);
+}
+
+void QuadrifexModuleEditor::createEditorForSlotIfNeeded(int slotIndex)
+{
+
+}
+*/
+
+void QuadrifexModuleEditor::removeChildEditors()
+{
+  ScopedLock scopedLock(*lock);
+  for(int i=0; i<rosic::Quadrifex::numEffectSlots; i++)
+    removeChildEditorInSlot(i);
+}
+
+void QuadrifexModuleEditor::removeChildEditorInSlot(int slotIndex)
+{
+  ScopedLock scopedLock(*lock);
+  int i = slotIndex;
+  if( slotIndex >= 0 && slotIndex < rosic::Quadrifex::numEffectSlots 
+    && moduleEditors[i] != NULL  )
+  {
+    moduleEditors[i]->invalidateModulePointer();  // so it doesn't dereference it in the destructor
+    removeChildEditor(moduleEditors[i], true);    // deletes the object also
+    moduleEditors[i] = NULL;
+  }
+}
+
+void QuadrifexModuleEditor::createEditorForSlot(int slotIndex, int algorithmIndex)
+{
+  ScopedLock scopedLock(*lock);
+  if( quadrifexModuleToEdit == NULL )
+    return;
+  if( quadrifexModuleToEdit->wrappedQuadrifex == NULL )
+    return;
+
+  jassert( moduleEditors[slotIndex] == NULL ); 
+  // you should delete the old editor and null the pointer before creating a new one
+
+  switch( algorithmIndex )
+  {
+  case rosic::Quadrifex::BIT_CRUSHER:
+  {
+    jura::BitCrusherAudioModule *audioModule = static_cast<jura::BitCrusherAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new BitCrusherModuleEditor(lock, audioModule); 
+  } break;
+  case rosic::Quadrifex::CHORUS:
+  {
+    jura::ChorusAudioModule *audioModule = static_cast<jura::ChorusAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new ChorusModuleEditor(lock, audioModule); 
+  } break;
+  case rosic::Quadrifex::COMB_BANK:
+  {
+    jura::CombBankAudioModule *audioModule = static_cast<jura::CombBankAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new CombBankModuleEditor(lock, audioModule); 
+  } break;
+  case rosic::Quadrifex::COMB_RESONATOR:
+  {
+    jura::CombResonatorAudioModule *audioModule = static_cast<jura::CombResonatorAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new CombResonatorModuleEditor(lock, audioModule); 
+  } break;
+  case rosic::Quadrifex::COMB_STEREOIZER:
+  {
+    jura::CombStereoizerAudioModule *audioModule = static_cast<jura::CombStereoizerAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new CombStereoizerModuleEditor(lock, audioModule); 
+  } break;
+  case rosic::Quadrifex::COMPRESSOR:
+  {
+    jura::CompressorAudioModule *audioModule = static_cast<jura::CompressorAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new CompressorModuleEditor(lock, audioModule); 
+  } break;
+  case rosic::Quadrifex::DUAL_TWO_POLE_FILTER:
+  {
+    jura::DualTwoPoleFilterAudioModule *audioModule = static_cast<jura::DualTwoPoleFilterAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new DualTwoPoleFilterModuleEditor(lock, audioModule); 
+  } break;
+  case rosic::Quadrifex::EQUALIZER:
+  {
+    jura::EqualizerAudioModule *audioModule = static_cast<jura::EqualizerAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    EqualizerModuleEditor *editor = new EqualizerModuleEditor(lock, audioModule); 
+    editor->setLayout(EqualizerModuleEditor::SLIDERS_BELOW);
+    editor->setUseShortSliderNames(true);
+    editor->setUseSmallComboBox(true);
+    moduleEditors[slotIndex] = editor; 
+  } break;
+  case rosic::Quadrifex::EXPANDER:
+  {
+    jura::ExpanderAudioModule *audioModule = static_cast<jura::ExpanderAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    ExpanderModuleEditor *editor = new ExpanderModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = editor; 
+  } break;
+  case rosic::Quadrifex::FLANGER:
+  {
+    jura::FlangerAudioModule *audioModule = static_cast<jura::FlangerAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new FlangerModuleEditor(lock, audioModule); 
+  } break;
+  case rosic::Quadrifex::FORMANT_SHIFTER:
+  {
+    jura::FormantShifterAudioModule *audioModule = static_cast<jura::FormantShifterAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new FormantShifterModuleEditor(lock, audioModule); 
+  } break;
+  case rosic::Quadrifex::FOUR_POLE_FILTER:
+  {
+    jura::FourPoleFilterAudioModule *audioModule = static_cast<jura::FourPoleFilterAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new FourPoleFilterModuleEditor(lock, audioModule); 
+  } break;
+  case rosic::Quadrifex::FREQUENCY_SHIFTER:
+  {
+    jura::FrequencyShifterAudioModule *audioModule = static_cast<jura::FrequencyShifterAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new FrequencyShifterModuleEditor(lock, audioModule); 
+  } break;
+  case rosic::Quadrifex::HARMONICS:
+  {
+    jura::HarmonicsAudioModule *audioModule = static_cast<jura::HarmonicsAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new HarmonicsModuleEditor(lock, audioModule); 
+  } break;
+  case rosic::Quadrifex::LADDER_FILTER:
+  {
+    jura::LadderFilterAudioModule *audioModule = static_cast<jura::LadderFilterAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new LadderFilterModuleEditor(lock, audioModule); 
+  } break;
+  case rosic::Quadrifex::LIMITER:
+  {
+    jura::LimiterAudioModule *audioModule = static_cast<jura::LimiterAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new LimiterModuleEditor(lock, audioModule); 
+  } break;
+  case rosic::Quadrifex::MODULATED_ALLPASS:
+  {
+    jura::ModulatedAllpassAudioModule *audioModule = static_cast<jura::ModulatedAllpassAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new ModulatedAllpassModuleEditor(lock, audioModule); 
+  } break;
+  case rosic::Quadrifex::NOISE_GATE:
+  {
+    jura::NoiseGateAudioModule *audioModule = static_cast<jura::NoiseGateAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new NoiseGateModuleEditor(lock, audioModule); 
+  } break;
+  case rosic::Quadrifex::NOISIFIER:
+  {
+    jura::NoisifierAudioModule *audioModule = static_cast<jura::NoisifierAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new NoisifierModuleEditor(lock, audioModule); 
+  } break;
+  case rosic::Quadrifex::PHASER:
+  {
+    jura::PhaserAudioModule *audioModule = static_cast<jura::PhaserAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new PhaserModuleEditor(lock, audioModule); 
+  } break;
+  case rosic::Quadrifex::PHASE_STEREOIZER:
+  {
+    jura::PhaseStereoizerAudioModule *audioModule = static_cast<jura::PhaseStereoizerAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new PhaseStereoizerModuleEditor(lock, audioModule); 
+  } break;
+  case rosic::Quadrifex::PINGPONG_ECHO:
+  {
+    jura::PingPongEchoAudioModule *audioModule = static_cast<jura::PingPongEchoAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new PingPongEchoModuleEditor(lock, audioModule); 
+  } break;
+  case rosic::Quadrifex::PITCH_SHIFTER:
+  {
+    jura::PitchShifterAudioModule *audioModule = static_cast<jura::PitchShifterAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new PitchShifterModuleEditor(lock, audioModule); 
+  } break;
+  case rosic::Quadrifex::REVERB:
+  {
+    jura::ReverbAudioModule *audioModule = static_cast<jura::ReverbAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new ReverbModuleEditor(lock, audioModule); 
+  } break;
+  case rosic::Quadrifex::RINGMODULATOR:
+  {
+    jura::RingModulatorAudioModule *audioModule = static_cast<jura::RingModulatorAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new RingModulatorModuleEditor(lock, audioModule); 
+  } break;
+  case rosic::Quadrifex::SIMPLE_DELAY:
+  {
+    jura::SimpleDelayAudioModule *audioModule = static_cast<jura::SimpleDelayAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new SimpleDelayModuleEditor(lock, audioModule); 
+  } break;
+  case rosic::Quadrifex::SINE_OSCILLATOR:
+  {
+    jura::SineOscillatorAudioModule *audioModule = static_cast<jura::SineOscillatorAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new SineOscillatorModuleEditor(lock, audioModule); 
+  } break;
+  case rosic::Quadrifex::SSB_MODULATOR:
+  {
+    jura::SingleSidebandModulatorAudioModule *audioModule = static_cast<jura::SingleSidebandModulatorAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new SingleSidebandModulatorModuleEditor(lock, audioModule); 
+  } break;
+  case rosic::Quadrifex::SLEWRATE_LIMITER:
+  {
+    jura::SlewRateLimiterAudioModule *audioModule = static_cast<jura::SlewRateLimiterAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new SlewRateLimiterModuleEditor(lock, audioModule); 
+  } break;
+  case rosic::Quadrifex::SLOPE_FILTER:
+  {
+    jura::SlopeFilterAudioModule *audioModule = static_cast<jura::SlopeFilterAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new SlopeFilterModuleEditor(lock, audioModule); 
+  } break;
+  case rosic::Quadrifex::STEREO_PAN:
+  {
+    jura::StereoPanAudioModule *audioModule = static_cast<jura::StereoPanAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new StereoPanModuleEditor(lock, audioModule); 
+  } break;
+  case rosic::Quadrifex::STEREO_WIDTH:
+  {
+    jura::StereoWidthAudioModule *audioModule = static_cast<jura::StereoWidthAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new StereoWidthModuleEditor(lock, audioModule); 
+  } break;
+  case rosic::Quadrifex::TREMOLO:
+  {
+    jura::TremoloAudioModule *audioModule = static_cast<jura::TremoloAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new TremoloModuleEditor(lock, audioModule); 
+  } break;
+  case rosic::Quadrifex::TWO_POLE_FILTER:
+  {
+    jura::TwoPoleFilterAudioModule *audioModule = static_cast<jura::TwoPoleFilterAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new TwoPoleFilterModuleEditor(lock, audioModule); 
+  } break;
+  case rosic::Quadrifex::VIBRATO:
+  {
+    jura::VibratoAudioModule *audioModule = static_cast<jura::VibratoAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new VibratoModuleEditor(lock, audioModule); 
+  } break;
+  case rosic::Quadrifex::WAH_WAH:
+  {
+    jura::WahWahAudioModule *audioModule = static_cast<jura::WahWahAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new WahWahModuleEditor(lock, audioModule); 
+  } break;
+  case rosic::Quadrifex::WAVESHAPER:
+  {
+    jura::WaveShaperAudioModule *audioModule = static_cast<jura::WaveShaperAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new WaveShaperModuleEditor(lock, audioModule); 
+  } break;
+
+
+  // ------> INSERT NEW CASE-MARK HERE WHEN ADDING A NEW ALGORITHM <------
+
+
+  case rosic::Quadrifex::MUTE:
+  {
+    jura::MuteAudioModule *audioModule = static_cast<jura::MuteAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new MuteModuleEditor(lock, audioModule); 
+  } break;
+  default:
+  {
+    jura::BypassAudioModule *audioModule = static_cast<jura::BypassAudioModule*>
+      (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new BypassModuleEditor(lock, audioModule); 
+  }
+  }
+
+  routingDiagram->setAlgorithmIndex(slotIndex, algorithmIndex);
+  moduleEditors[slotIndex]->setHeadlineStyle(Editor::NO_HEADLINE);    
+  moduleEditors[slotIndex]->setLinkPosition(AudioModuleEditor::INVISIBLE);
+  moduleEditors[slotIndex]->setDescriptionField(infoField, true);
+  addChildEditor(moduleEditors[slotIndex]);
+  moduleEditors[slotIndex]->copyColourSettingsFrom(this);
+  resized();  // to adjust the bounds of the new editor
+  repaint();  // to redraw to headline
+  moduleEditors[slotIndex]->updateWidgetsAccordingToState();
+  setupPopupEditors(slotIndex);
+
+  if( setupDialog != NULL )
+    setupDialog->toFront(false);
+
+}
+
+void QuadrifexModuleEditor::setupPopupEditors(int slotIndex)
+{
+  ScopedLock scopedLock(*lock);
+  AudioModuleEditor *editor = moduleEditors[slotIndex];
+  if( editor == NULL )
+    return;
+
+  ModulationEffectModuleEditor* modulationEditor 
+    = dynamic_cast<ModulationEffectModuleEditor*> (editor);
+  if( modulationEditor != NULL )
+  {
+
+    //Rectangle r = modulationEditor->lfoEditor->editButton->getBounds();
+
+
+    int x, y;
+    switch( slotIndex )
+    {
+    case 0: { x = -240; y = 16;   } break;
+    case 1: { x = -240; y = 16;   } break;
+    case 2: { x = -240; y = -200; } break;
+    case 3: { x = -240; y = -200; } break;
+    }
+    int w = 400;
+    int h = 200;
+
+
+    //modulationEditor->lfoEditor->setPopupEditorBounds(...)
+    modulationEditor->setLfoPopUpEditorBounds(x, y, w, h);
+    int dummy = 0;
+  }
+
+}

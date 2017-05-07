@@ -250,6 +250,7 @@ protected:
   int oldAlgorithmIndices[rosic::Quadrifex::numEffectSlots];
 
   CriticalSection *plugInLock; // mutex to access the edited AudioModule object 
+                               // maybe rename this to "lock"
 
   juce_UseDebuggingNewOperator;
 };

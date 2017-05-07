@@ -16,8 +16,7 @@ needs to be completed next:
  -KeyShot (done)
  -PitchShifter (done)
  -MagicCarpet (done)
-
- -Quadrifex
+ -Quadrifex (done)
   
  -MidiMonitor
  -Moduluxury
