@@ -1,4 +1,4 @@
-needs to be completed next:
+needs to be completed next: VariousModulesAndEditors
 
 -drag over all old plugin code and make it compile:
  -AciDevil (done)

@@ -5525,11 +5525,19 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/rosof_StereoPanPlotEditor.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/jura_StereoPanPlotEditor.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/rosof_StereoPanPlotEditor.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/jura_StereoPanPlotEditor.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/rosof_VariousModulesAndEditors.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/rosof_VariousModulesAndEditors.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>

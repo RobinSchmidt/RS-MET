@@ -1,0 +1,1057 @@
+#ifndef rosof_VariousModulesAndEditors_h
+#define rosof_VariousModulesAndEditors_h
+
+/** This file defines a bunch of smaller AudioModules and their editors.
+
+mmm... lots of boilerplate code here - is it perhaps possible to avoid some of it by using 
+templates (maybe with explicit specializations)?
+-maybe we can avoid the verbose constructors of the editors by having a means of auto-generating 
+ widgets -> Parameter class needs description- and stringConversionFunction member (refactored 
+ from RWidget/RSlider)
+-maybe introduce some class ParameterGroup which corresponds to the labels that we have in some 
+ classes (like curveLabel, timeLabel, ...) */
+
+//=================================================================================================
+// Trivial 'Effects':
+
+//-------------------------------------------------------------------------------------------------
+// Bypass:
+
+class BypassAudioModule : public AudioModule
+{
+public:
+  BypassAudioModule(CriticalSection *newPlugInLock, rosic::BypassModule *newBypassToWrap) 
+    : AudioModule(newPlugInLock) {}
+  juce_UseDebuggingNewOperator;
+};
+
+class BypassModuleEditor : public AudioModuleEditor
+{
+public:
+  BypassModuleEditor(CriticalSection *newPlugInLock, BypassAudioModule* newBypassAudioModule)
+    :AudioModuleEditor(newBypassAudioModule)
+  { }
+  juce_UseDebuggingNewOperator;
+};
+
+//-----------------------------------------------------------------------------------------------
+// Mute:
+
+class MuteAudioModule : public AudioModule
+{
+public:
+  MuteAudioModule(CriticalSection *newPlugInLock, rosic::MuteModule *newMuteToWrap) 
+    : AudioModule(newPlugInLock)  {}
+  virtual void getSampleFrameStereo(double* inOutL, double* inOutR)
+  {
+    *inOutL = *inOutR = 0.0;
+  }
+  juce_UseDebuggingNewOperator;
+};
+
+class MuteModuleEditor : public AudioModuleEditor
+{
+public:
+  MuteModuleEditor(CriticalSection *newPlugInLock, MuteAudioModule* newMuteAudioModule)
+    :AudioModuleEditor(newMuteAudioModule)
+  { }
+  juce_UseDebuggingNewOperator;
+};
+
+//===============================================================================================
+// Distortion Effects:
+
+//-----------------------------------------------------------------------------------------------
+// BitCrusher:
+
+class BitCrusherAudioModule : public AudioModule
+{
+public:
+  BitCrusherAudioModule(CriticalSection *newPlugInLock, rosic::BitCrusher *newBitCrusherToWrap);
+  juce_UseDebuggingNewOperator;
+protected:
+  virtual void createStaticParameters();
+  rosic::BitCrusher *wrappedBitCrusher;
+};
+
+class BitCrusherModuleEditor : public AudioModuleEditor
+{
+public:
+  BitCrusherModuleEditor(CriticalSection *newPlugInLock, 
+    BitCrusherAudioModule* newBitCrusherAudioModule);
+  virtual void resized();
+  juce_UseDebuggingNewOperator;
+protected:
+  RSlider *decimationSlider, *quantizationSlider, *amountSlider;
+};
+
+//-----------------------------------------------------------------------------------------------
+// Harmonics:
+
+class HarmonicsAudioModule : public AudioModule
+{
+public:
+  HarmonicsAudioModule(CriticalSection *newPlugInLock, rosic::Harmonics *newHarmonicsToWrap);
+  virtual void parameterChanged(Parameter* parameterThatHasChanged); // maybe to be deprecated
+  juce_UseDebuggingNewOperator;
+protected:
+  virtual void createStaticParameters();
+  rosic::Harmonics *wrappedHarmonics;
+};
+
+class HarmonicsModuleEditor : public AudioModuleEditor
+{
+public:
+  HarmonicsModuleEditor(CriticalSection *newPlugInLock, 
+    HarmonicsAudioModule* newHarmonicsAudioModule);
+  virtual void resized();
+  juce_UseDebuggingNewOperator;
+protected:
+  juce::Rectangle<int> globalRect, harmonicsRect;
+  RTextField *globalLabel, *harmonicsLabel, *inFilterLabel, *outFilterLabel;
+  RSlider    *driveSlider, *dryWetSlider, *inHighpassSlider, *inLowpassSlider,
+    *outHighpassSlider, *outLowpassSlider;
+  RSlider    *h02Slider, *h03Slider, *h04Slider, *h05Slider, *h06Slider, *h07Slider, *h08Slider,
+    *h09Slider, *h10Slider, *h11Slider, *h12Slider;
+
+};
+
+//-----------------------------------------------------------------------------------------------
+// ModulatedAllpass:
+
+class ModulatedAllpassAudioModule : public AudioModule
+{
+public:
+  ModulatedAllpassAudioModule(CriticalSection *newPlugInLock, rosic::ModulatedAllpass *newModulatedAllpassToWrap);
+  juce_UseDebuggingNewOperator;
+protected:
+  virtual void createStaticParameters();
+  rosic::ModulatedAllpass *wrappedModulatedAllpass;
+};
+
+class ModulatedAllpassModuleEditor : public AudioModuleEditor
+{
+public:
+  ModulatedAllpassModuleEditor(CriticalSection *newPlugInLock, ModulatedAllpassAudioModule* newModulatedAllpassAudioModule);
+  virtual void resized();
+  juce_UseDebuggingNewOperator;
+protected:
+  RSlider *factorSlider, *offsetSlider;
+};
+
+//-----------------------------------------------------------------------------------------------
+// SlewRateLimiter:
+
+class SlewRateLimiterAudioModule : public AudioModule
+{
+public:
+  SlewRateLimiterAudioModule(CriticalSection *newPlugInLock, rosic::SlewRateLimiterStereo *newSlewRateLimiterToWrap);
+  juce_UseDebuggingNewOperator;
+protected:
+  virtual void createStaticParameters();
+  rosic::SlewRateLimiterStereo *wrappedSlewRateLimiter;
+};
+
+class SlewRateLimiterModuleEditor : public AudioModuleEditor
+{
+public:
+  SlewRateLimiterModuleEditor(CriticalSection *newPlugInLock, SlewRateLimiterAudioModule* newSlewRateLimiterAudioModule);
+  virtual void resized();
+  juce_UseDebuggingNewOperator;
+protected:
+  RSlider *attackSlider, *releaseSlider;
+};
+
+//-----------------------------------------------------------------------------------------------
+// WaveShaper:
+
+class WaveShaperAudioModule : public AudioModule
+{
+  friend class WaveShaperModuleEditor;
+public:
+  WaveShaperAudioModule(CriticalSection *newPlugInLock, rosic::WaveShaper *newWaveShaperToWrap);
+  juce_UseDebuggingNewOperator;
+protected:
+  virtual void createStaticParameters();
+  rosic::WaveShaper *wrappedWaveShaper;
+};
+
+class WaveShaperModuleEditor : public AudioModuleEditor, public RSliderListener, public RComboBoxObserver
+{
+public:
+  WaveShaperModuleEditor(CriticalSection *newPlugInLock, WaveShaperAudioModule* newWaveShaperAudioModule);
+  virtual ~WaveShaperModuleEditor();
+  virtual void resized();
+  virtual void rComboBoxChanged(RComboBox *rComboBoxThatHasChanged);
+  virtual void rSliderValueChanged(RSlider *rSliderThatHasChanged);
+  virtual void updateWidgetsAccordingToState();
+  virtual void updateWidgetEnablement();
+  virtual void updatePlot();
+  juce_UseDebuggingNewOperator;
+protected:
+  WaveShaperAudioModule *waveShaperModuleToEdit;
+  RComboBox *curveComboBox;
+  RSlider   *driveSlider, *dcSlider, *amountSlider, *outputLevelSlider,
+    *oversamplingSlider, *slopeSlider, *interceptSlider;
+  CurveFamilyPlotOld *plot;
+  double *xValues, *yValues;
+  int    numValues;
+};
+
+//-----------------------------------------------------------------------------------------------
+// CompShaper:
+
+class CompShaperAudioModule : public AudioModule
+{
+public:
+  CompShaperAudioModule(CriticalSection *newPlugInLock, rosic::CompShaper *newCompShaperToWrap);
+  juce_UseDebuggingNewOperator;
+protected:
+  virtual void createStaticParameters();
+  rosic::CompShaper *wrappedCompShaper;
+};
+
+class CompShaperModuleEditor : public AudioModuleEditor
+{
+public:
+  CompShaperModuleEditor(CriticalSection *newPlugInLock, CompShaperAudioModule* newCompShaperAudioModule);
+  virtual void resized();
+  juce_UseDebuggingNewOperator;
+protected:
+  juce::Rectangle<int> curveParametersRect, timeParametersRect, otherParametersRect;
+  RTextField *curveLabel, *timeLabel, *othersLabel;
+  RSlider    *driveSlider, *outLevelSlider, *amountSlider, *thresholdSlider, *ratioSlider, *kneeSlider;
+  RButton    *clipButton;
+};
+
+//===============================================================================================
+// Dynamics:
+
+//-----------------------------------------------------------------------------------------------
+// Compressor:
+
+class CompressorAudioModule : public AudioModule
+{
+public:
+  CompressorAudioModule(CriticalSection *newPlugInLock, rosic::SoftKneeCompressor *newCompressorToWrap);
+  juce_UseDebuggingNewOperator;
+protected:
+  virtual void createStaticParameters();
+  rosic::SoftKneeCompressor *wrappedCompressor;
+};
+
+class CompressorModuleEditor : public AudioModuleEditor
+{
+public:
+  CompressorModuleEditor(CriticalSection *newPlugInLock, CompressorAudioModule* newCompressorAudioModule);
+  virtual void resized();
+  juce_UseDebuggingNewOperator;
+protected:
+  juce::Rectangle<int> curveParametersRect, timeParametersRect, otherParametersRect;
+  RTextField *curveLabel, *timeLabel, *othersLabel;
+  RSlider    *attackSlider, *releaseSlider, *lookAheadSlider, *inLevelSlider, *outLevelSlider, *dryWetSlider, *thresholdSlider,
+    *ratioSlider, *kneeSlider;
+  RButton    *autoGainButton, *limitButton, *antiAliasButton;
+};
+
+//-----------------------------------------------------------------------------------------------
+// Expander:
+
+class ExpanderAudioModule : public AudioModule
+{
+public:
+  ExpanderAudioModule(CriticalSection *newPlugInLock, rosic::SoftKneeExpander *newExpanderToWrap);
+  juce_UseDebuggingNewOperator;
+protected:
+  virtual void createStaticParameters();
+  rosic::SoftKneeExpander *wrappedExpander;
+};
+
+class ExpanderModuleEditor : public AudioModuleEditor
+{
+public:
+  ExpanderModuleEditor(CriticalSection *newPlugInLock, ExpanderAudioModule* newExpanderAudioModule);
+  virtual void resized();
+  juce_UseDebuggingNewOperator;
+protected:
+  juce::Rectangle<int> curveParametersRect, timeParametersRect, otherParametersRect;
+  RTextField *curveLabel, *timeLabel, *othersLabel;
+  RSlider    *attackSlider, *releaseSlider, *lookAheadSlider, *inLevelSlider, *outLevelSlider,
+    *dryWetSlider, *thresholdSlider, *ratioSlider, *kneeSlider;
+  RButton    *gateButton;
+};
+
+//-----------------------------------------------------------------------------------------------
+// Limiter:
+
+class LimiterAudioModule : public AudioModule
+{
+public:
+  LimiterAudioModule(CriticalSection *newPlugInLock, rosic::Limiter *newLimiterToWrap);
+  juce_UseDebuggingNewOperator;
+protected:
+  virtual void createStaticParameters();
+  rosic::Limiter *wrappedLimiter;
+};
+
+class LimiterModuleEditor : public AudioModuleEditor
+{
+public:
+  LimiterModuleEditor(CriticalSection *newPlugInLock, LimiterAudioModule* newLimiterAudioModule);
+  virtual void resized();
+  juce_UseDebuggingNewOperator;
+protected:
+  juce::Rectangle<int> curveParametersRect, timeParametersRect, otherParametersRect;
+  RTextField *curveLabel, *timeLabel, *othersLabel;
+  RSlider    *attackSlider, *releaseSlider, *lookAheadSlider, *inLevelSlider, *outLevelSlider, *dryWetSlider, *limitSlider;
+};
+
+//-----------------------------------------------------------------------------------------------
+// NoiseGate:
+
+class NoiseGateAudioModule : public AudioModule
+{
+public:
+  NoiseGateAudioModule(CriticalSection *newPlugInLock, rosic::NoiseGate *newNoiseGateToWrap);
+  juce_UseDebuggingNewOperator;
+protected:
+  virtual void createStaticParameters();
+  rosic::NoiseGate *wrappedNoiseGate;
+};
+
+class NoiseGateModuleEditor : public AudioModuleEditor
+{
+public:
+  NoiseGateModuleEditor(CriticalSection *newPlugInLock, NoiseGateAudioModule* newNoiseGateAudioModule);
+  virtual void resized();
+  juce_UseDebuggingNewOperator;
+protected:
+  juce::Rectangle<int> curveParametersRect, timeParametersRect, otherParametersRect;
+  RTextField *curveLabel, *timeLabel, *othersLabel;
+  RSlider    *attackSlider, *holdSlider, *releaseSlider, *lookAheadSlider, *inLevelSlider, *outLevelSlider, *dryWetSlider,
+    *thresholdSlider, *hysteresisSlider;
+};
+
+
+//===============================================================================================
+// Filters:
+
+//-----------------------------------------------------------------------------------------------
+// CombBank:
+
+class CombBankAudioModule : public AudioModule
+{
+public:
+  CombBankAudioModule(CriticalSection *newPlugInLock, rosic::CombBank *newCombBankToWrap);
+  juce_UseDebuggingNewOperator;
+protected:
+  virtual void createStaticParameters();
+  rosic::CombBank *wrappedCombBank;
+};
+
+class CombBankModuleEditor : public AudioModuleEditor
+{
+public:
+  CombBankModuleEditor(CriticalSection *newPlugInLock, CombBankAudioModule* newCombBankAudioModule);
+  virtual void resized();
+  juce_UseDebuggingNewOperator;
+protected:
+  juce::Rectangle<int> toneParametersRect, decayParametersRect; //, otherParametersRect;
+  RTextField *toneLabel, *decayLabel; //, *othersLabel;
+  RSlider    *dryWetSlider, *levelSlider, *frequencySlider, *detuneSlider, *pan1Slider, *pan2Slider, *decayTimeSlider,
+    *highDecayScaleSlider, *lowDecayScaleSlider, *highFreqSlider, *lowFreqSlider;
+  RButton    *oddOnlyButton;
+};
+
+//-----------------------------------------------------------------------------------------------
+// CombResonator:
+
+class CombResonatorAudioModule : public AudioModule
+{
+public:
+  CombResonatorAudioModule(CriticalSection *newPlugInLock, rosic::CombResonatorStereo *newCombResonatorToWrap);
+  juce_UseDebuggingNewOperator;
+protected:
+  virtual void createStaticParameters();
+  rosic::CombResonatorStereo *wrappedCombResonator;
+};
+
+class CombResonatorModuleEditor : public AudioModuleEditor
+{
+public:
+  CombResonatorModuleEditor(CriticalSection *newPlugInLock, CombResonatorAudioModule* newCombResonatorAudioModule);
+  virtual void resized();
+  juce_UseDebuggingNewOperator;
+protected:
+  juce::Rectangle<int> toneParametersRect, decayParametersRect; //, otherParametersRect;
+  RTextField *toneLabel, *decayLabel; //, *othersLabel;
+  RSlider    *dryWetSlider, *levelSlider, *frequencySlider, *detuneSlider, *pan1Slider, *pan2Slider, *decayTimeSlider,
+    *highDecayScaleSlider, *lowDecayScaleSlider, *highFreqSlider, *lowFreqSlider;
+  RButton    *oddOnlyButton;
+};
+
+//-----------------------------------------------------------------------------------------------
+// DualTwoPoleFilter:
+
+class DualTwoPoleFilterAudioModule : public AudioModule
+{
+  friend class DualTwoPoleFilterModuleEditor;
+public:
+  DualTwoPoleFilterAudioModule(CriticalSection *newPlugInLock, rosic::DualTwoPoleFilter *newDualTwoPoleFilterToWrap);
+  juce_UseDebuggingNewOperator;
+protected:
+  virtual void createStaticParameters();
+  rosic::DualTwoPoleFilter *wrappedDualTwoPoleFilter;
+};
+
+class DualTwoPoleFilterModuleEditor : public AudioModuleEditor, public RComboBoxObserver
+{
+public:
+  DualTwoPoleFilterModuleEditor(CriticalSection *newPlugInLock, DualTwoPoleFilterAudioModule* newDualTwoPoleFilterAudioModule);
+  virtual void resized();
+  virtual void rComboBoxChanged(RComboBox *rComboBoxThatHasChanged);
+  virtual void updateWidgetEnablement();
+  juce_UseDebuggingNewOperator;
+protected:
+  DualTwoPoleFilterAudioModule *twoPoleFilterModuleToEdit;
+  juce::Rectangle<int> globalRect, filter1Rect, filter2Rect;
+  RTextField *globalLabel, *filter1Label, *filter2Label;
+  RComboBox  *modeComboBox1, *modeComboBox2;
+  RSlider    *frequencySlider1, *gainSlider1, *bandwidthSlider1, *frequencySlider2, *gainSlider2, *bandwidthSlider2,
+    *serialParallelBlendSlider, *frequencyScaleSlider, *gainScaleSlider, *bandwidthScaleSlider;
+};
+
+//-----------------------------------------------------------------------------------------------
+// FourPoleFilter:
+
+class FourPoleFilterAudioModule : public AudioModule
+{
+  friend class FourPoleFilterModuleEditor;
+public:
+  FourPoleFilterAudioModule(CriticalSection *newPlugInLock, rosic::FourPoleFilter *newFourPoleFilterToWrap);
+  juce_UseDebuggingNewOperator;
+protected:
+  virtual void createStaticParameters();
+  rosic::FourPoleFilter *wrappedFourPoleFilter;
+};
+
+class FourPoleFilterModuleEditor : public AudioModuleEditor, public RComboBoxObserver
+{
+public:
+  FourPoleFilterModuleEditor(CriticalSection *newPlugInLock, FourPoleFilterAudioModule* newFourPoleFilterAudioModule);
+  virtual void resized();
+  virtual void rComboBoxChanged(RComboBox *rComboBoxThatHasChanged);
+  virtual void updateWidgetEnablement();
+  juce_UseDebuggingNewOperator;
+protected:
+  FourPoleFilterAudioModule *fourPoleFilterModuleToEdit;
+  //RComboBox *modeComboBox;
+  FourPoleFilterModeComboBox *modeComboBox;
+  RSlider   *frequencySlider, *gainSlider, *bandwidthSlider;
+};
+
+//-----------------------------------------------------------------------------------------------
+// LadderFilter:
+
+class LadderFilterAudioModule : public AudioModule
+{
+  friend class LadderFilterModuleEditor;
+public:
+  LadderFilterAudioModule(CriticalSection *newPlugInLock, rosic::LadderFilter *newLadderFilterToWrap);
+  juce_UseDebuggingNewOperator;
+protected:
+  virtual void createStaticParameters();
+  rosic::LadderFilter *wrappedLadderFilter;
+};
+
+class LadderFilterModuleEditor : public AudioModuleEditor, public RComboBoxObserver
+{
+public:
+  LadderFilterModuleEditor(CriticalSection *newPlugInLock, LadderFilterAudioModule* newLadderFilterAudioModule);
+  virtual void resized();
+  virtual void rComboBoxChanged(RComboBox *rComboBoxThatHasChanged);
+  virtual void updateWidgetEnablement();
+  juce_UseDebuggingNewOperator;
+protected:
+  LadderFilterAudioModule *ladderFilterModuleToEdit;
+  RComboBox *modeComboBox;
+  RSlider   *frequencySlider, *resonanceSlider, *makeUpSlider, *driveSlider, *orderSlider,
+    *morphSlider;
+};
+
+//-----------------------------------------------------------------------------------------------
+// SlopeFilter:
+
+class SlopeFilterAudioModule : public AudioModule
+{
+  friend class SlopeFilterModuleEditor;
+public:
+  SlopeFilterAudioModule(CriticalSection *newPlugInLock, rosic::SlopeFilter *newSlopeFilterToWrap);
+  juce_UseDebuggingNewOperator;
+protected:
+  virtual void createStaticParameters();
+  rosic::SlopeFilter *wrappedSlopeFilter;
+};
+
+class SlopeFilterModuleEditor : public AudioModuleEditor
+{
+public:
+  SlopeFilterModuleEditor(CriticalSection *newPlugInLock, SlopeFilterAudioModule* newSlopeFilterAudioModule);
+  virtual void resized();
+  juce_UseDebuggingNewOperator;
+protected:
+  SlopeFilterAudioModule *slopeFilterModuleToEdit;
+  RSlider *slopeSlider;
+};
+
+//-----------------------------------------------------------------------------------------------
+// TwoPoleFilter:
+
+class TwoPoleFilterAudioModule : public AudioModule
+{
+  friend class TwoPoleFilterModuleEditor;
+public:
+  TwoPoleFilterAudioModule(CriticalSection *newPlugInLock, rosic::TwoPoleFilter *newTwoPoleFilterToWrap);
+  juce_UseDebuggingNewOperator;
+protected:
+  virtual void createStaticParameters();
+  rosic::TwoPoleFilter *wrappedTwoPoleFilter;
+};
+
+class TwoPoleFilterModuleEditor : public AudioModuleEditor, public RComboBoxObserver
+{
+public:
+  TwoPoleFilterModuleEditor(CriticalSection *newPlugInLock, TwoPoleFilterAudioModule* newTwoPoleFilterAudioModule);
+  virtual void resized();
+  virtual void rComboBoxChanged(RComboBox *rComboBoxThatHasChanged);
+  virtual void updateWidgetEnablement();
+  juce_UseDebuggingNewOperator;
+protected:
+  TwoPoleFilterAudioModule *twoPoleFilterModuleToEdit;
+  RComboBox *modeComboBox;
+  RSlider   *frequencySlider, *gainSlider, *bandwidthSlider, *radiusSlider;
+};
+
+//===============================================================================================
+// Delay Effects:
+
+//-----------------------------------------------------------------------------------------------
+// PingPongEcho:
+
+class PingPongEchoAudioModule : public AudioModule
+{
+public:
+  PingPongEchoAudioModule(CriticalSection *newPlugInLock, rosic::PingPongEcho *newPingPongEchoToWrap);
+  virtual void setBeatsPerMinute(double newBpm)
+  {
+    ScopedLock scopedLock(*lock);
+    if(wrappedPingPongEcho != NULL)
+      wrappedPingPongEcho->setTempoInBPM((float)newBpm);
+  }
+  juce_UseDebuggingNewOperator;
+protected:
+  virtual void createStaticParameters();
+  rosic::PingPongEcho *wrappedPingPongEcho;
+};
+
+class PingPongEchoModuleEditor : public AudioModuleEditor
+{
+public:
+  PingPongEchoModuleEditor(CriticalSection *newPlugInLock, PingPongEchoAudioModule* newPingPongEchoAudioModule);
+  virtual void rButtonClicked(RButton *buttonThatWasClicked);
+  virtual void resized();
+  juce_UseDebuggingNewOperator;
+protected:
+  RSlider *delayTimeSlider, *dryWetSlider, *feedbackSlider, *panSlider, *highDampSlider,
+    *lowDampSlider;
+  RButton *pingPongButton, *tempoSyncButton, *trueStereoButton;
+};
+
+//-----------------------------------------------------------------------------------------------
+// Reverb:
+
+class ReverbAudioModule : public AudioModule
+{
+public:
+  ReverbAudioModule(CriticalSection *newPlugInLock, rosic::Reverb *newReverbToWrap);
+  juce_UseDebuggingNewOperator;
+protected:
+  virtual void createStaticParameters();
+  rosic::Reverb *wrappedReverb;
+};
+
+class ReverbModuleEditor : public AudioModuleEditor
+{
+public:
+  ReverbModuleEditor(CriticalSection *newPlugInLock, ReverbAudioModule* newReverbAudioModule);
+  virtual void resized();
+  juce_UseDebuggingNewOperator;
+protected:
+  RSlider *dryWetSlider, *firstEchoSlider, *preDelaySlider, *decayTimeSlider,
+    *highDecayScaleSlider, *lowDecayScaleSlider, *highFreqSlider, *lowFreqSlider;
+  RButton *pinkButton, *stereoSwapButton;
+};
+
+//-----------------------------------------------------------------------------------------------
+// SimpleDelay:
+
+class SimpleDelayAudioModule : public AudioModule
+{
+public:
+  SimpleDelayAudioModule(CriticalSection *newPlugInLock, rosic::FractionalDelayLineStereo *newSimpleDelayToWrap);
+  juce_UseDebuggingNewOperator;
+protected:
+  virtual void createStaticParameters();
+  rosic::FractionalDelayLineStereo *wrappedSimpleDelay;
+};
+
+class SimpleDelayModuleEditor : public AudioModuleEditor
+{
+public:
+  SimpleDelayModuleEditor(CriticalSection *newPlugInLock, SimpleDelayAudioModule* newSimpleDelayAudioModule);
+  virtual void resized();
+  juce_UseDebuggingNewOperator;
+protected:
+  RSlider *delaySlider;
+};
+
+
+//===============================================================================================
+// Modulation Effects:
+
+//-----------------------------------------------------------------------------------------------
+// ModulationEffect baseclass:
+
+class ModulationEffectAudioModule : public AudioModule //, public AudioFileManager //, public StateFileManager
+{
+  friend class ModulationEffectModuleEditor;
+public:
+  ModulationEffectAudioModule(CriticalSection *newPlugInLock, rosic::ModulationEffect *newModulationEffectToWrap);
+  juce_UseDebuggingNewOperator;
+protected:
+  LowFrequencyOscillatorAudioModule *lfoModule;
+  rosic::ModulationEffect *wrappedModulationEffect;
+};
+
+class ModulationEffectModuleEditor : public AudioModuleEditor
+{
+public:
+  ModulationEffectModuleEditor(CriticalSection *newPlugInLock, ModulationEffectAudioModule* newModulationEffectAudioModule);
+  virtual void setLfoPopUpEditorBounds(int x, int y, int w, int h)
+  {
+    ScopedLock scopedLock(*lock);
+    lfoEditor->setPopUpEditorBounds(x, y, w, h);
+  }
+  virtual void resized();
+  virtual void updateWidgetsAccordingToState();
+  juce_UseDebuggingNewOperator;
+protected:
+  LowFrequencyOscillatorEditor *lfoEditor;
+  ModulationEffectAudioModule *modulationEffectModuleToEdit;
+  juce::Rectangle<int> lfoRect, effectRect;
+  RTextField *lfoLabel, *effectLabel;
+};
+
+//-----------------------------------------------------------------------------------------------
+// Flanger:
+
+class FlangerAudioModule : public ModulationEffectAudioModule
+{
+  friend class FlangerModuleEditor;
+public:
+  FlangerAudioModule(CriticalSection *newPlugInLock, rosic::Flanger *newFlangerToWrap);
+  juce_UseDebuggingNewOperator;
+protected:
+  virtual void createStaticParameters();
+  rosic::Flanger *wrappedFlanger;
+};
+
+class FlangerModuleEditor : public ModulationEffectModuleEditor
+{
+public:
+  FlangerModuleEditor(CriticalSection *newPlugInLock, FlangerAudioModule* newFlangerAudioModule);
+  virtual void resized();
+  juce_UseDebuggingNewOperator;
+protected:
+  FlangerAudioModule *flangerModuleToEdit;
+  RSlider *depthSlider, *dryWetSlider, *frequencySlider, *feedbackSlider;
+  RButton *invertButton;
+};
+
+//-----------------------------------------------------------------------------------------------
+// Phaser:
+
+class PhaserAudioModule : public ModulationEffectAudioModule
+{
+  friend class PhaserModuleEditor;
+public:
+  PhaserAudioModule(CriticalSection *newPlugInLock, rosic::Phaser *newPhaserToWrap);
+  juce_UseDebuggingNewOperator;
+protected:
+  virtual void createStaticParameters();
+  rosic::Phaser *wrappedPhaser;
+};
+
+class PhaserModuleEditor : public ModulationEffectModuleEditor, public RComboBoxObserver
+{
+public:
+  PhaserModuleEditor(CriticalSection *newPlugInLock, PhaserAudioModule* newPhaserAudioModule);
+  virtual void resized();
+  virtual void rComboBoxChanged(RComboBox *rComboBoxThatHasChanged);
+  virtual void updateWidgetEnablement();
+  juce_UseDebuggingNewOperator;
+protected:
+  PhaserAudioModule *phaserModuleToEdit;
+  RTextField *filterLabel;
+  RSlider    *depthSlider, *dryWetSlider, *frequencySlider, *qSlider, *feedbackSlider, *stagesSlider;
+  RComboBox  *modeComboBox;
+};
+
+//-----------------------------------------------------------------------------------------------
+// Tremolo:
+
+class TremoloAudioModule : public ModulationEffectAudioModule
+{
+  friend class TremoloModuleEditor;
+public:
+  TremoloAudioModule(CriticalSection *newPlugInLock, rosic::Tremolo *newTremoloToWrap);
+  juce_UseDebuggingNewOperator;
+protected:
+  virtual void createStaticParameters();
+  rosic::Tremolo *wrappedTremolo;
+};
+
+class TremoloModuleEditor : public ModulationEffectModuleEditor
+{
+public:
+  TremoloModuleEditor(CriticalSection *newPlugInLock, TremoloAudioModule* newTremoloAudioModule);
+  virtual void resized();
+  juce_UseDebuggingNewOperator;
+protected:
+  TremoloAudioModule *tremoloModuleToEdit;
+  RSlider *depthSlider;
+};
+
+//-----------------------------------------------------------------------------------------------
+// Vibrato:
+
+class VibratoAudioModule : public ModulationEffectAudioModule
+{
+  friend class VibratoModuleEditor;
+public:
+  VibratoAudioModule(CriticalSection *newPlugInLock, rosic::Vibrato *newVibratoToWrap);
+  juce_UseDebuggingNewOperator;
+protected:
+  virtual void createStaticParameters();
+  rosic::Vibrato *wrappedVibrato;
+};
+
+class VibratoModuleEditor : public ModulationEffectModuleEditor
+{
+public:
+  VibratoModuleEditor(CriticalSection *newPlugInLock, VibratoAudioModule* newVibratoAudioModule);
+  virtual void resized();
+  juce_UseDebuggingNewOperator;
+protected:
+  VibratoAudioModule *vibratoModuleToEdit;
+  RSlider *depthSlider, *dryWetSlider;
+};
+
+//-----------------------------------------------------------------------------------------------
+// WahWah:
+
+class WahWahAudioModule : public ModulationEffectAudioModule
+{
+  friend class WahWahModuleEditor;
+public:
+  WahWahAudioModule(CriticalSection *newPlugInLock, rosic::WahWah *newWahWahToWrap);
+  juce_UseDebuggingNewOperator;
+protected:
+  virtual void createStaticParameters();
+  rosic::WahWah *wrappedWahWah;
+};
+
+class WahWahModuleEditor : public ModulationEffectModuleEditor, public RComboBoxObserver
+{
+public:
+  WahWahModuleEditor(CriticalSection *newPlugInLock, WahWahAudioModule* newWahWahAudioModule);
+  virtual void resized();
+  virtual void rComboBoxChanged(RComboBox *rComboBoxThatHasChanged);
+  virtual void updateWidgetEnablement();
+  juce_UseDebuggingNewOperator;
+protected:
+  WahWahAudioModule *wahWahModuleToEdit;
+  RTextField *filterLabel;
+  RSlider    *depthSlider, *dryWetSlider, *frequencySlider, *gainSlider, *bandwidthSlider;
+  RComboBox  *modeComboBox;
+};
+
+//===============================================================================================
+// Spectral Effects:
+
+//-----------------------------------------------------------------------------------------------
+// FormantShifter:
+
+class FormantShifterAudioModule : public AudioModule
+{
+public:
+  FormantShifterAudioModule(CriticalSection *newPlugInLock, rosic::FormantShifterStereo *newFormantShifterToWrap);
+  juce_UseDebuggingNewOperator;
+protected:
+  virtual void createStaticParameters();
+  rosic::FormantShifterStereo *wrappedFormantShifter;
+};
+
+class FormantShifterModuleEditor : public AudioModuleEditor
+{
+public:
+  FormantShifterModuleEditor(CriticalSection *newPlugInLock, FormantShifterAudioModule* newFormantShifterAudioModule);
+  virtual void resized();
+  juce_UseDebuggingNewOperator;
+protected:
+  RSlider *formantScaleSlider, *formantOffsetSlider, *dryWetSlider;
+  // blockSizeComboBox/Slider
+};
+
+
+//===============================================================================================
+// Other Effects:
+
+//-----------------------------------------------------------------------------------------------
+// Chorus:
+
+class ChorusAudioModule : public AudioModule
+{
+public:
+  ChorusAudioModule(CriticalSection *newPlugInLock, rosic::Chorus *newChorusToWrap);
+  virtual void parameterChanged(Parameter* parameterThatHasChanged); // remnant because of two-parametric callbacks
+  juce_UseDebuggingNewOperator;
+protected:
+  virtual void createStaticParameters();
+  rosic::Chorus *wrappedChorus;
+};
+
+class ChorusModuleEditor : public AudioModuleEditor
+{
+public:
+  ChorusModuleEditor(CriticalSection *newPlugInLock, ChorusAudioModule* newChorusAudioModule);
+  virtual void resized();
+  // todo: update per-voice slider enablement on switchin voices on/off
+  juce_UseDebuggingNewOperator;
+protected:
+  juce::Rectangle<int> globalRect, voice1Rect, voice2Rect, voice3Rect, voice4Rect;
+  RTextField *globalLabel;
+  RButton    *voice1Button, *voice2Button, *voice3Button, *voice4Button;
+  RSlider    *delaySlider, *cycleLengthSlider, *depthSlider, *globalFeedbackSlider, *crossMixSlider,
+    *feedback2Slider, *dryWetSlider, *stereoPhaseSlider;
+  RSlider    *voice1DelaySlider, *voice1DepthSlider, *voice1AmpSlider,
+    *voice2DelaySlider, *voice2DepthSlider, *voice2AmpSlider,
+    *voice3DelaySlider, *voice3DepthSlider, *voice3AmpSlider,
+    *voice4DelaySlider, *voice4DepthSlider, *voice4AmpSlider;
+};
+
+//-----------------------------------------------------------------------------------------------
+// FrequencyShifter:
+
+class FrequencyShifterAudioModule : public AudioModule
+{
+public:
+  FrequencyShifterAudioModule(CriticalSection *newPlugInLock, rosic::FrequencyShifterStereo *newFrequencyShifterToWrap);
+  juce_UseDebuggingNewOperator;
+protected:
+  virtual void createStaticParameters();
+  rosic::FrequencyShifterStereo *wrappedFrequencyShifter;
+};
+
+class FrequencyShifterModuleEditor : public AudioModuleEditor
+{
+public:
+  FrequencyShifterModuleEditor(CriticalSection *newPlugInLock, FrequencyShifterAudioModule* newFrequencyShifterAudioModule);
+  virtual void resized();
+  juce_UseDebuggingNewOperator;
+protected:
+  RSlider *shiftSlider, *feedbackSlider, *stereoOffsetSlider, *dryWetSlider, *midSideSlider;
+};
+
+//-----------------------------------------------------------------------------------------------
+// PhaseStereoizer:
+
+class PhaseStereoizerAudioModule : public AudioModule
+{
+public:
+  PhaseStereoizerAudioModule(CriticalSection *newPlugInLock, rosic::PhaseStereoizer *newPhaseStereoizerToWrap);
+  juce_UseDebuggingNewOperator;
+protected:
+  virtual void createStaticParameters();
+  rosic::PhaseStereoizer *wrappedPhaseStereoizer;
+};
+
+class PhaseStereoizerModuleEditor : public AudioModuleEditor
+{
+public:
+  PhaseStereoizerModuleEditor(CriticalSection *newPlugInLock, PhaseStereoizerAudioModule* newPhaseStereoizerAudioModule);
+  virtual void resized();
+  juce_UseDebuggingNewOperator;
+protected:
+  RSlider *phaseOffsetSlider, *dryWetRatioSlider, *sideLowpassSlider, *sideHighpassSlider,
+    *midSideRatioSlider, *gainSlider;
+
+  RButton *channelSwapButton;
+};
+
+//-----------------------------------------------------------------------------------------------
+// RingModulator:
+
+class RingModulatorAudioModule : public AudioModule
+{
+public:
+  RingModulatorAudioModule(CriticalSection *newPlugInLock, rosic::RingModulatorStereo *newRingModulatorToWrap);
+  juce_UseDebuggingNewOperator;
+protected:
+  virtual void createStaticParameters();
+  rosic::RingModulatorStereo *wrappedRingModulator;
+};
+
+class RingModulatorModuleEditor : public AudioModuleEditor
+{
+public:
+  RingModulatorModuleEditor(CriticalSection *newPlugInLock, RingModulatorAudioModule* newRingModulatorAudioModule);
+  virtual void resized();
+  juce_UseDebuggingNewOperator;
+protected:
+  RSlider *frequencySlider, *feedbackSlider, *stereoOffsetSlider, *dryWetSlider;
+  RButton *antiAliasButton;
+};
+
+//-----------------------------------------------------------------------------------------------
+// SingleSidebandModulator:
+
+class SingleSidebandModulatorAudioModule : public AudioModule
+{
+public:
+  SingleSidebandModulatorAudioModule(CriticalSection *newPlugInLock,
+    rosic::SingleSidebandModulatorStereo *newSingleSidebandModulatorToWrap);
+  juce_UseDebuggingNewOperator;
+protected:
+  virtual void createStaticParameters();
+  rosic::SingleSidebandModulatorStereo *wrappedSingleSidebandModulator;
+};
+
+class SingleSidebandModulatorModuleEditor : public AudioModuleEditor
+{
+public:
+  SingleSidebandModulatorModuleEditor(CriticalSection *newPlugInLock,
+    SingleSidebandModulatorAudioModule* newSingleSidebandModulatorAudioModule);
+  virtual void resized();
+  juce_UseDebuggingNewOperator;
+protected:
+  RSlider *frequencySlider, *feedbackSlider, *stereoOffsetSlider, *upperSidebandLevelSlider,
+    *lowerSidebandLevelSlider, *dryWetSlider;
+  RButton *antiAliasButton;
+};
+
+//-----------------------------------------------------------------------------------------------
+// StereoPan:
+
+class StereoPanAudioModule : public AudioModule
+{
+  friend class StereoPanModuleEditor;
+public:
+  StereoPanAudioModule(CriticalSection *newPlugInLock, rosic::StereoPan *newStereoPanToWrap);
+  juce_UseDebuggingNewOperator;
+protected:
+  virtual void createStaticParameters();
+  rosic::StereoPan *wrappedStereoPan;
+};
+
+class StereoPanModuleEditor : public AudioModuleEditor //, public RSliderListener, public RComboBoxObserver
+{
+public:
+  StereoPanModuleEditor(CriticalSection *newPlugInLock, StereoPanAudioModule* newStereoPanAudioModule);
+  virtual ~StereoPanModuleEditor();
+  virtual void resized();
+  juce_UseDebuggingNewOperator;
+protected:
+  StereoPanAudioModule *stereoPanModuleToEdit;
+  RTextField           *panLawLabel;
+  RComboBox            *panLawComboBox;
+  RSlider              *panSlider, *gainSlider;
+  StereoPanPlotEditor  *plot;
+  double *xValues, *yValues;
+  int    numValues;
+};
+
+//-----------------------------------------------------------------------------------------------
+// StereoWidth:
+
+class StereoWidthAudioModule : public AudioModule
+{
+public:
+  StereoWidthAudioModule(CriticalSection *newPlugInLock, rosic::StereoWidth *newStereoWidthToWrap);
+  juce_UseDebuggingNewOperator;
+protected:
+  virtual void createStaticParameters();
+  rosic::StereoWidth *wrappedStereoWidth;
+};
+
+class StereoWidthModuleEditor : public AudioModuleEditor
+{
+public:
+  StereoWidthModuleEditor(CriticalSection *newPlugInLock, StereoWidthAudioModule* newStereoWidthAudioModule);
+  virtual void resized();
+  juce_UseDebuggingNewOperator;
+protected:
+  RSlider *midSideRatioSlider, *gainSlider; // maybe include a correlation meter?
+};
+
+//===============================================================================================
+// Signal Generators:
+
+//-----------------------------------------------------------------------------------------------
+// SineOscillator:
+
+class SineOscillatorAudioModule : public AudioModule
+{
+public:
+  SineOscillatorAudioModule(CriticalSection *newPlugInLock, rosic::SineOscillator *newSineOscillatorToWrap);
+  juce_UseDebuggingNewOperator;
+protected:
+  virtual void createStaticParameters();
+  rosic::SineOscillator *wrappedSineOscillator;
+};
+
+class SineOscillatorModuleEditor : public AudioModuleEditor
+{
+public:
+  SineOscillatorModuleEditor(CriticalSection *newPlugInLock, SineOscillatorAudioModule* newSineOscillatorAudioModule);
+  virtual void resized();
+  juce_UseDebuggingNewOperator;
+protected:
+  RSlider *frequencySlider, *levelSlider;
+};
+
+//-----------------------------------------------------------------------------------------------
+// Noisifier:
+
+class NoisifierAudioModule : public AudioModule
+{
+public:
+  NoisifierAudioModule(CriticalSection *newPlugInLock, rosic::Noisifier *newNoisifierToWrap);
+  juce_UseDebuggingNewOperator;
+protected:
+  virtual void createStaticParameters();
+  rosic::Noisifier *wrappedNoisifier;
+};
+
+class NoisifierModuleEditor : public AudioModuleEditor
+{
+public:
+  NoisifierModuleEditor(CriticalSection *newPlugInLock, NoisifierAudioModule* newNoisifierAudioModule);
+  virtual void resized();
+  juce_UseDebuggingNewOperator;
+protected:
+  RSlider *passLevelSlider, *noiseLevelSlider, *spectralSlopeSlider, *lowestFreqSlider,
+    *highestFreqSlider;
+};
+
+#endif 
