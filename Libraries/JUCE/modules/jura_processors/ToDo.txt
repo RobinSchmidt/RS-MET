@@ -17,15 +17,15 @@ needs to be completed next:
  -PitchShifter (done)
  -MagicCarpet (done)
  -Quadrifex (done)
+ -Quadriga (done)
 
- -Quadriga
-  -Quadrigen (done)
+ -Workhorse
 
  -MidiMonitor
  -Moduluxury
  -StereoDelay
  -TrackMeter
- -Workhorse
+
  -Liberty (later - it needs the "romos" folder - maybe make a subfolder modular somewhere in the 
   jura_processors module - or make romos a module in its own right)
 

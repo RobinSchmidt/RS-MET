@@ -15,7 +15,7 @@ This file includes all relevant rosic instrument header files.
 //#include "rosic_SampleLauncher.h"
 #include "rosic_SimpleSampler.h"
 #include "rosic_Straightliner.h"
-//#include "rosic_Workhorse.h"
+#include "rosic_Workhorse.h"
 #include "rosic_KeyShot.h"
 #include "rosic_Quadriga.h"
 
