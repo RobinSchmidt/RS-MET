@@ -2334,6 +2334,12 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\jura_framework.cpp">
       <Filter>Juce Modules\jura_framework</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_MidiMessageFilter.cpp">
+      <Filter>Juce Modules\jura_processors\analyzers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_MidiMonitor.cpp">
+      <Filter>Juce Modules\jura_processors\analyzers</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_MultiAnalyzer.cpp">
       <Filter>Juce Modules\jura_processors\analyzers</Filter>
     </ClCompile>
@@ -2344,9 +2350,6 @@
       <Filter>Juce Modules\jura_processors\analyzers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_TrackMeter.cpp">
-      <Filter>Juce Modules\jura_processors\analyzers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\rosof_MidiMonitorModuleEditor.cpp">
       <Filter>Juce Modules\jura_processors\analyzers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_RoutingMatrix.cpp">
@@ -2395,6 +2398,9 @@
       <Filter>Juce Modules\jura_processors\effects</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_VariousModules.cpp">
+      <Filter>Juce Modules\jura_processors\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\rosof_StereoDelayModuleEditor.cpp">
       <Filter>Juce Modules\jura_processors\effects</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_CrossOver.cpp">
@@ -3750,11 +3756,8 @@
     <ClCompile Include="..\..\JuceLibraryCode\rosic.cpp">
       <Filter>Juce Library Code</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_MidiMessageFilter.cpp">
-      <Filter>Juce Modules\jura_processors\analyzers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_MidiMonitor.cpp">
-      <Filter>Juce Modules\jura_processors\analyzers</Filter>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_StereoDelay.cpp">
+      <Filter>Juce Modules\jura_processors\effects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5816,6 +5819,12 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\jura_framework.h">
       <Filter>Juce Modules\jura_framework</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_MidiMessageFilter.h">
+      <Filter>Juce Modules\jura_processors\analyzers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_MidiMonitor.h">
+      <Filter>Juce Modules\jura_processors\analyzers</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_MultiAnalyzer.h">
       <Filter>Juce Modules\jura_processors\analyzers</Filter>
     </ClInclude>
@@ -5826,9 +5835,6 @@
       <Filter>Juce Modules\jura_processors\analyzers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_TrackMeter.h">
-      <Filter>Juce Modules\jura_processors\analyzers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\rosof_MidiMonitorModuleEditor.h">
       <Filter>Juce Modules\jura_processors\analyzers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_RoutingMatrix.h">
@@ -5877,6 +5883,9 @@
       <Filter>Juce Modules\jura_processors\effects</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_VariousModules.h">
+      <Filter>Juce Modules\jura_processors\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\rosof_StereoDelayModuleEditor.h">
       <Filter>Juce Modules\jura_processors\effects</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_CrossOver.h">
@@ -7342,11 +7351,8 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\jura_framework.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\jura_processors.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rosic.h" />
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_MidiMessageFilter.h">
-      <Filter>Juce Modules\jura_processors\analyzers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_MidiMonitor.h">
-      <Filter>Juce Modules\jura_processors\analyzers</Filter>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_StereoDelay.h">
+      <Filter>Juce Modules\jura_processors\effects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

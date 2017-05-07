@@ -1929,6 +1929,12 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\jura_framework.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_MidiMessageFilter.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_MidiMonitor.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_MultiAnalyzer.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -1939,15 +1945,6 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_TrackMeter.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_MidiMessageFilter.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_MidiMonitor.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\rosof_MidiMonitorModuleEditor.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_RoutingMatrix.cpp">
@@ -1996,6 +1993,12 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_VariousModules.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_StereoDelay.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\rosof_StereoDelayModuleEditor.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_CrossOver.cpp">
@@ -4007,13 +4010,12 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\tools\jura_XmlTools.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\jura_framework.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\jura_framework.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_MidiMessageFilter.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_MidiMonitor.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_MultiAnalyzer.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_PhaseScope.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_PhaseScopeMultiColor.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_TrackMeter.h" />
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_MidiMessageFilter.h" />
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_MidiMonitor.h" />
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\rosof_MidiMonitorModuleEditor.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_RoutingMatrix.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_WaveTable.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\custom_widgets\jura_CustomComboBoxes.h" />
@@ -4030,6 +4032,8 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_Quadrifex.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_StereoPanPlotEditor.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_VariousModules.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_StereoDelay.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\rosof_StereoDelayModuleEditor.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_CrossOver.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_EngineersFilter.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_Equalizer.h" />
