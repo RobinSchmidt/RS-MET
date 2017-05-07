@@ -5613,6 +5613,14 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/jura_StereoDelay.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/jura_StereoDelay.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/jura_StereoPanPlotEditor.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -5626,22 +5634,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/jura_VariousModules.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/rosof_StereoDelayAudioModule.cpp">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/rosof_StereoDelayAudioModule.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/rosof_StereoDelayModuleEditor.cpp">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/rosof_StereoDelayModuleEditor.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
@@ -9046,6 +9038,10 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/rosic/others/rosic_DemoVersionNoiseEmitter.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/rosic/others/rosic_ExponentialSmoother.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>

@@ -24,6 +24,7 @@ classified into one of the special categories.
 //#include "rosic_SpectralProcessor.h"
 #include "rosic_TuningTable.h"
 #include "rosic_VectorMixer.h"
+#include "rosic_ExponentialSmoother.h"
 
 #endif // end of #ifndef rosic_Others_h
 
