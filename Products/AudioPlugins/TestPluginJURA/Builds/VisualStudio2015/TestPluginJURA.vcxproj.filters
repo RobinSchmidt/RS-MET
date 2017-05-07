@@ -2286,6 +2286,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_RComboBox.cpp">
       <Filter>Juce Modules\jura_framework\gui\widgets</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_RDraggableNumber.cpp">
+      <Filter>Juce Modules\jura_framework\gui\widgets</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_RPopUpComponent.cpp">
       <Filter>Juce Modules\jura_framework\gui\widgets</Filter>
     </ClCompile>
@@ -2337,10 +2340,10 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_PhaseScopeMultiColor.cpp">
       <Filter>Juce Modules\jura_processors\analyzers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_WaveTable.cpp">
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_RoutingMatrix.cpp">
       <Filter>Juce Modules\jura_processors\basics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\rosof_RoutingMatrixModuleEditor.cpp">
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_WaveTable.cpp">
       <Filter>Juce Modules\jura_processors\basics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\custom_widgets\jura_CustomComboBoxes.cpp">
@@ -2374,6 +2377,12 @@
       <Filter>Juce Modules\jura_processors\effects</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_VariousModules.cpp">
+      <Filter>Juce Modules\jura_processors\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\rosof_QuadrifexModuleEditor.cpp">
+      <Filter>Juce Modules\jura_processors\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\rosof_QuadrifexRoutingDiagram.cpp">
       <Filter>Juce Modules\jura_processors\effects</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_CrossOver.cpp">
@@ -3720,11 +3729,8 @@
     <ClCompile Include="..\..\JuceLibraryCode\rosic.cpp">
       <Filter>Juce Library Code</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_RDraggableNumber.cpp">
-      <Filter>Juce Modules\jura_framework\gui\widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_RoutingMatrix.cpp">
-      <Filter>Juce Modules\jura_processors\basics</Filter>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_Quadrifex.cpp">
+      <Filter>Juce Modules\jura_processors\effects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5735,6 +5741,9 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_RComboBox.h">
       <Filter>Juce Modules\jura_framework\gui\widgets</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_RDraggableNumber.h">
+      <Filter>Juce Modules\jura_framework\gui\widgets</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_RPopUpComponent.h">
       <Filter>Juce Modules\jura_framework\gui\widgets</Filter>
     </ClInclude>
@@ -5789,10 +5798,10 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\analyzers\jura_PhaseScopeMultiColor.h">
       <Filter>Juce Modules\jura_processors\analyzers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_WaveTable.h">
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_RoutingMatrix.h">
       <Filter>Juce Modules\jura_processors\basics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\rosof_RoutingMatrixModuleEditor.h">
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_WaveTable.h">
       <Filter>Juce Modules\jura_processors\basics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\custom_widgets\jura_CustomComboBoxes.h">
@@ -5826,6 +5835,12 @@
       <Filter>Juce Modules\jura_processors\effects</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_VariousModules.h">
+      <Filter>Juce Modules\jura_processors\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\rosof_QuadrifexModuleEditor.h">
+      <Filter>Juce Modules\jura_processors\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\rosof_QuadrifexRoutingDiagram.h">
       <Filter>Juce Modules\jura_processors\effects</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_CrossOver.h">
@@ -7282,11 +7297,8 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\jura_framework.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\jura_processors.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rosic.h" />
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_RDraggableNumber.h">
-      <Filter>Juce Modules\jura_framework\gui\widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_RoutingMatrix.h">
-      <Filter>Juce Modules\jura_processors\basics</Filter>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_Quadrifex.h">
+      <Filter>Juce Modules\jura_processors\effects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

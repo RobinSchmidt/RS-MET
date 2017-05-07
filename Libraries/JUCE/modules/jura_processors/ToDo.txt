@@ -1,5 +1,4 @@
-needs to be completed next: RoutingMatrix, Quadrifex
-
+needs to be completed next:
 
 -drag over all old plugin code and make it compile:
  -AciDevil (done)
@@ -19,8 +18,7 @@ needs to be completed next: RoutingMatrix, Quadrifex
  -MagicCarpet (done)
 
  -Quadrifex
-  -RoutingMatrix
-
+  
  -MidiMonitor
  -Moduluxury
  -Quadriga
