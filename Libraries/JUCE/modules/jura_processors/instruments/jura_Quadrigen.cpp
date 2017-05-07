@@ -240,3 +240,370 @@ int QuadrigenAudioModule::stringToGeneratorAlgorithmIndex(const juce::String &al
 
   return rosic::Quadrigen::MUTE;
 }
+
+//=================================================================================================
+
+QuadrigenModuleEditor::QuadrigenModuleEditor(CriticalSection *newPlugInLock, 
+  QuadrigenAudioModule* newQuadrigenAudioModule) 
+  : AudioModuleEditor(newQuadrigenAudioModule)
+{
+  setHeadlineStyle(MAIN_HEADLINE);
+  jassert(newQuadrigenAudioModule != NULL ); // you must pass a valid module here
+  quadrigenModuleToEdit = newQuadrigenAudioModule;
+
+  acquireLock();
+
+  // remember for toggling:
+  for(int i=0; i<rosic::Quadrigen::numGeneratorSlots; i++ )
+  {
+    if( quadrigenModuleToEdit == NULL && quadrigenModuleToEdit->wrappedQuadrigen == NULL )
+      oldAlgorithmIndices[i] = quadrigenModuleToEdit->wrappedQuadrigen->getGeneratorAlgorithmIndex(i);
+    else
+      oldAlgorithmIndices[i] = rosic::Quadrigen::MUTE;
+  }
+
+  matrixEditor = new RoutingMatrixModuleEditor(lock, quadrigenModuleToEdit->matrixModule);
+  matrixEditor->setHeadlineStyle(AudioModuleEditor::NO_HEADLINE);
+  addChildEditor(matrixEditor);
+
+  // create the sub-editors:
+  for(int i=0; i<rosic::Quadrigen::numGeneratorSlots; i++)
+    moduleEditors[i] = NULL;
+
+  // attach to the underlying audiomodule to be edited:
+  quadrigenModuleToEdit->setEditor(this);
+
+  initializeColourScheme();
+  updateWidgetsAccordingToState();
+
+  releaseLock();
+}
+
+QuadrigenModuleEditor::~QuadrigenModuleEditor()
+{
+  // detach from the underlying audiomodule to be edited:
+  acquireLock();
+  quadrigenModuleToEdit->setEditor(NULL);
+  releaseLock();
+}
+
+//-------------------------------------------------------------------------------------------------
+// setup:
+
+void QuadrigenModuleEditor::initializeColourScheme()
+{
+
+}
+
+//-------------------------------------------------------------------------------------------------
+// callbacks:
+
+void QuadrigenModuleEditor::rButtonClicked(RButton *buttonThatWasClicked)
+{
+  acquireLock();
+  if( quadrigenModuleToEdit == NULL )
+  {
+    releaseLock();
+    return;
+  }
+  if( quadrigenModuleToEdit->wrappedQuadrigen == NULL )
+  {
+    releaseLock();
+    return;
+  }
+
+  //...
+
+  quadrigenModuleToEdit->markStateAsDirty();
+  releaseLock();
+}
+
+void QuadrigenModuleEditor::rComboBoxChanged(RComboBox *rComboBoxThatHasChanged)
+{
+  acquireLock();
+  if( quadrigenModuleToEdit == NULL )
+  {
+    releaseLock();
+    return;
+  }
+  if( quadrigenModuleToEdit->wrappedQuadrigen == NULL )
+  {
+    releaseLock();
+    return;
+  }
+
+  rosic::Quadrigen* core = quadrigenModuleToEdit->wrappedQuadrigen;
+
+  //....
+
+  if( quadrigenModuleToEdit != NULL )
+    quadrigenModuleToEdit->markStateAsDirty();
+
+  releaseLock();
+}
+
+void QuadrigenModuleEditor::rSliderValueChanged(RSlider *rSliderThatHasChanged)
+{
+  //...
+
+  if( quadrigenModuleToEdit != NULL )
+    quadrigenModuleToEdit->markStateAsDirty();
+}
+
+
+void QuadrigenModuleEditor::changeListenerCallback(ChangeBroadcaster *objectThatHasChanged)
+{
+  AudioModuleEditor::changeListenerCallback(objectThatHasChanged);
+}
+
+void QuadrigenModuleEditor::mouseDown(const MouseEvent &e)
+{
+
+}
+
+void QuadrigenModuleEditor::updateWidgetsAccordingToState()
+{
+  acquireLock();
+  if( quadrigenModuleToEdit == NULL )
+  {
+    releaseLock();
+    return;
+  }
+  if( quadrigenModuleToEdit->wrappedQuadrigen == NULL )
+  {
+    releaseLock();
+    return;
+  }
+
+  AudioModuleEditor::updateWidgetsAccordingToState();
+
+  // delete old and create new editors:
+  removeChildEditors();
+  for(int i=0; i<rosic::Quadrigen::numGeneratorSlots; i++)
+    createEditorForSlot(i, quadrigenModuleToEdit->wrappedQuadrigen->getGeneratorAlgorithmIndex(i));
+
+  releaseLock();
+}
+
+void QuadrigenModuleEditor::paint(Graphics &g)
+{
+  AudioModuleEditor::paint(g);
+
+  fillRectWithBilinearGradient(g, globalRectangle, editorColourScheme.topLeft, 
+    editorColourScheme.topRight, editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
+
+  g.setColour(editorColourScheme.outline);
+  g.drawRect(globalRectangle, 2);
+
+  int x = globalRectangle.getX(); // + middleRectangle.getWidth()/2;
+  int y = globalRectangle.getY();
+  //drawBitmapFontText(g, x+4, y+4, juce::String(T("Global Settings")), BigFont::getInstance(), 
+  //  editorColourScheme.labelTextColour);
+
+  acquireLock();
+  if( quadrigenModuleToEdit == NULL )
+  {
+    releaseLock();
+    return;
+  }
+  if( quadrigenModuleToEdit->wrappedQuadrigen == NULL )
+  {
+    releaseLock();
+    return;
+  }
+
+  rosic::Quadrigen* core = quadrigenModuleToEdit->wrappedQuadrigen;
+  for(int i=0; i<rosic::Quadrigen::numGeneratorSlots; i++)
+  {
+    fillRectWithBilinearGradient(g, slotRectangles[i], editorColourScheme.topLeft, editorColourScheme.topRight, 
+      editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
+    g.drawRect(slotRectangles[i], 2);
+
+    x = slotRectangles[i].getX(); 
+    y = slotRectangles[i].getY();
+    juce::String headlineString = juce::String(i+1) + juce::String(" - ") + 
+      quadrigenModuleToEdit->generatorAlgorithmIndexToString(core->getGeneratorAlgorithmIndex(i));
+
+    //drawBitmapFontText(g, x+4, y+4, headlineString, &boldFont16px, 
+    //  editorColourScheme.headline);
+    // old version
+
+    jassertfalse; // something doesn't work with accessing the 16px font instance here
+                  // -> check out why
+    drawBitmapFontText(g, x+4, y+4, headlineString, &BitmapFontRoundedBoldA10D0::instance, 
+      editorColourScheme.headline); 
+    // this works (with 10px font) - but we want a big font here ...figure that out...
+
+    //drawBitmapFontText(g, x+4, y+4, headlineString, &BitmapFontRoundedBoldA16D0::instance, 
+    //  editorColourScheme.headline);
+    // why does this not work? (linker error)
+
+    //drawBitmapFontText(g, x+4, y+4, headlineString, &boldFont16px, editorColourScheme.headline);
+    // undeclare identifier
+
+  }
+
+  releaseLock();
+}
+
+void QuadrigenModuleEditor::resized()
+{
+  acquireLock();
+
+  AudioModuleEditor::resized();
+  int x = 0;
+  int y = getHeadlineBottom();
+  int w = getWidth();
+  int h = getHeight();
+
+  // setup the sizes of the child editors:
+  x = globalRectangle.getRight();
+  y = globalRectangle.getY();
+  w = (getWidth()-x-4)/2;
+  h = globalRectangle.getHeight()/2;
+  for(int i=0; i<rosic::Quadrigen::numGeneratorSlots; i++)
+  {
+    int x2 = x;
+    if( i == 1 || i == 3 )
+      x2 += w;
+
+    int y2 = y;
+    if( i >=2 )
+      y2 += h;
+
+    slotRectangles[i].setBounds(x2, y2,    w, h);
+    if( moduleEditors[i] != NULL )
+      moduleEditors[i]->setBounds(x2, y2+24, w, h-24);
+  }
+
+  releaseLock();
+}
+
+//-------------------------------------------------------------------------------------------------
+// intenal helper functions:
+
+int QuadrigenModuleEditor::getSlotIndexAtPixelPosition(int x, int y)
+{
+  for(int i = 0; i < rosic::Quadrigen::numGeneratorSlots; i++ )
+  {
+    if( slotRectangles[i].contains(x, y) == true )
+      return i;
+  }
+  return -1;
+}
+
+void QuadrigenModuleEditor::setGeneratorAlgorithm(int slotIndex, int newAlgorithmIndex)
+{
+  if( slotIndex < 0 || slotIndex >= rosic::Quadrigen::numGeneratorSlots )
+  {
+    jassertfalse;
+    return;
+  }
+
+  acquireLock();
+  if( quadrigenModuleToEdit == NULL )
+  {
+    releaseLock();
+    return;
+  }
+
+  quadrigenModuleToEdit->setGeneratorAlgorithm(slotIndex, newAlgorithmIndex);
+  // the quadrigenModuleToEdit has a pointer to 'this' editor and will take care of updating
+  // the GUI (deleting and creating the appropriate child-editor)
+
+  releaseLock();
+}
+
+/*
+void QuadrigenModuleEditor::createEditorsIfNeeded()
+{
+acquireLock();
+for(int i=0; i<rosic::Quadrigen::numGeneratorSlots; i++)
+createEditorForSlotIfNeeded(i);
+releaseLock();
+}
+
+void QuadrigenModuleEditor::createEditorForSlotIfNeeded(int slotIndex)
+{
+
+}
+*/
+
+void QuadrigenModuleEditor::removeChildEditors()
+{
+  acquireLock();
+  for(int i=0; i<rosic::Quadrigen::numGeneratorSlots; i++)
+    removeChildEditorInSlot(i);
+  releaseLock();
+}
+
+void QuadrigenModuleEditor::removeChildEditorInSlot(int slotIndex)
+{
+  acquireLock();
+  int i = slotIndex;
+  if( slotIndex >= 0 && slotIndex < rosic::Quadrigen::numGeneratorSlots 
+    && moduleEditors[i] != NULL  )
+  {
+    moduleEditors[i]->invalidateModulePointer();  // so it doesn't dereference it in the destructor
+    removeChildEditor(moduleEditors[i], true);    // deletes the object also
+    moduleEditors[i] = NULL;
+  }
+  releaseLock();
+}
+
+void QuadrigenModuleEditor::createEditorForSlot(int slotIndex, int algorithmIndex)
+{
+  acquireLock();
+  if( quadrigenModuleToEdit == NULL )
+  {
+    releaseLock();
+    return;
+  }
+  if( quadrigenModuleToEdit->wrappedQuadrigen == NULL )
+  {
+    releaseLock();
+    return;
+  }
+
+  jassert( moduleEditors[slotIndex] == NULL ); 
+  // you should delete the old editor and null the pointer before creating a new one
+
+  switch( algorithmIndex )
+  {
+  case rosic::Quadrigen::OSCILLATOR_STEREO:
+  {
+    OscillatorStereoAudioModule *audioModule = static_cast<OscillatorStereoAudioModule*>
+      (quadrigenModuleToEdit->getGeneratorAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new OscillatorStereoEditor(lock, audioModule); // mmm..should it be OscillatorStereoModuleEditor?
+                                                                              // uncomment again later
+  } break;
+
+
+  // ------> INSERT NEW CASE-MARK HERE WHEN ADDING A NEW ALGORITHM <------
+
+
+  case rosic::Quadrigen::MUTE:
+  {
+    MuteAudioModule *audioModule = static_cast<MuteAudioModule*>
+      (quadrigenModuleToEdit->getGeneratorAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new MuteModuleEditor(lock, audioModule); 
+  } break;
+  default:
+  {
+    BypassAudioModule *audioModule = static_cast<BypassAudioModule*>
+      (quadrigenModuleToEdit->getGeneratorAudioModule(slotIndex));
+    moduleEditors[slotIndex] = new BypassModuleEditor(lock, audioModule); 
+  }
+  }
+
+  moduleEditors[slotIndex]->setHeadlineStyle(Editor::NO_HEADLINE);    
+  moduleEditors[slotIndex]->setLinkPosition(AudioModuleEditor::INVISIBLE);
+  moduleEditors[slotIndex]->setDescriptionField(infoField, true);
+  addChildEditor(moduleEditors[slotIndex]);
+  resized();  // to adjust the bounds of the new editor
+  repaint();  // to redraw to headline
+  moduleEditors[slotIndex]->updateWidgetsAccordingToState();
+
+
+  releaseLock();
+}
