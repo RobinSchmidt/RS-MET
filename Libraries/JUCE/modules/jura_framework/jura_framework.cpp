@@ -52,6 +52,7 @@ namespace jura
 #include "gui/widgets/jura_RPopUpComponent.cpp"
 #include "gui/widgets/jura_RPopUpMenu.cpp"
 #include "gui/widgets/jura_RSlider.cpp"
+#include "gui/widgets/jura_RDraggableNumber.cpp"
 #include "gui/widgets/jura_RComboBox.cpp"
 #include "gui/widgets/jura_RTimeGridComboBox.cpp"
 #include "gui/widgets/jura_RSyncIntervalComboBox.cpp"
