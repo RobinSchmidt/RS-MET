@@ -78,8 +78,31 @@ protected:
 
 //=================================================================================================
 
+class PitchShifterModuleEditor : public AudioModuleEditor, public RComboBoxObserver
+{
 
+public:
 
+  PitchShifterModuleEditor(CriticalSection *newPlugInLock, 
+    PitchShifterAudioModule* newPitchShifterAudioModule);
 
+  virtual void rComboBoxChanged(RComboBox *rComboBoxThatHasChanged);
+  virtual void resized();
+  virtual void updateWidgetsAccordingToState();
+
+protected:
+
+  /** Makes currently required widgets visible and currently not required widgets invisible. */
+  virtual void updateWidgetVisibility();
+
+  PitchShifterAudioModule *pitchShifterModuleToEdit;
+
+  RSlider *coarseSlider, *fineSlider, *grainLengthInMillisecondsSlider, *grainLengthInCyclesSlider,
+    *grainLengthInBeatsSlider, *feedbackSlider, *dryWetSlider;
+  RComboBox *grainLengthUnitComboBox;
+  RButton *invertButton, *reverseButton, *antiAliasButton; // *formantPreserveButton, *monoButton;
+
+  juce_UseDebuggingNewOperator;
+};
 
 #endif 
