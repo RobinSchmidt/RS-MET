@@ -347,23 +347,20 @@ void WaveTableAudioModule::initializeAutomatableParameters()
 }
 
 //=================================================================================================
-
-
-//=================================================================================================
 // class StandardWaveformEditor:
 
 StandardWaveformEditor::StandardWaveformEditor(CriticalSection *newPlugInLock, 
   StandardWaveformRendererAudioModule* newRendererModuleToEdit)  
-  : AudioModuleEditor(newPlugInLock, newRendererModuleToEdit)
+  : AudioModuleEditor(newRendererModuleToEdit)
 {
-  jassert( newRendererModuleToEdit != NULL )
-    setLinkPosition(INVISIBLE);
+  jassert(newRendererModuleToEdit != NULL);  
+  setLinkPosition(INVISIBLE);
   setPresetSectionPosition(INVISIBLE);
   setHeadlineStyle(NO_HEADLINE);
 
-  addWidget( shapeComboBox = new RNamedComboBox(T("ShapeComboBox"), T("Shape:")) );
-  shapeComboBox->setDescription(T("Select one of the standard waveforms"));
-  shapeComboBox->assignParameter(moduleToEdit->getParameterByName(T("Shape")));
+  addWidget( shapeComboBox = new RNamedComboBox("ShapeComboBox", "Shape:") );
+  shapeComboBox->setDescription("Select one of the standard waveforms");
+  shapeComboBox->assignParameter(moduleToEdit->getParameterByName("Shape"));
   shapeComboBox->registerComboBoxObserver(this);
 
   updateWidgetsAccordingToState();
@@ -384,7 +381,7 @@ void StandardWaveformEditor::resized()
 // class WaveformBufferEditor:
 
 WaveformBufferEditor::WaveformBufferEditor(CriticalSection *newPlugInLock, WaveformBufferAudioModule* newWaveformBufferModuleToEdit)  
-  : AudioModuleEditor(newPlugInLock, newWaveformBufferModuleToEdit)
+  : AudioModuleEditor(newWaveformBufferModuleToEdit)
 {
   jassert( newWaveformBufferModuleToEdit != NULL );
   waveformBufferModuleToEdit = newWaveformBufferModuleToEdit;
@@ -392,9 +389,9 @@ WaveformBufferEditor::WaveformBufferEditor(CriticalSection *newPlugInLock, Wavef
   setPresetSectionPosition(INVISIBLE);
   setHeadlineStyle(NO_HEADLINE);
 
-  fileSelectionBox = new FileSelectionBox(T("FileComboBox"), waveformBufferModuleToEdit);
+  fileSelectionBox = new FileSelectionBox("FileComboBox", waveformBufferModuleToEdit);
   addWidgetSet(fileSelectionBox);
-  fileSelectionBox->setDescription(T("Load a custom single-cycle audiofile"));
+  fileSelectionBox->setDescription("Load a custom single-cycle audiofile");
   fileSelectionBox->setSaveButtonVisible(false);
   fileSelectionBox->setLabelPosition(FileSelectionBox::LABEL_ABOVE);
   fileSelectionBox->setButtonsPosition(FileSelectionBox::BUTTONS_ABOVE);
@@ -422,24 +419,26 @@ void WaveformBufferEditor::resized()
 
 WaveformRendererEditor::WaveformRendererEditor(CriticalSection *newPlugInLock, 
   WaveformRendererAudioModule* newWaveformRendererModuleToEdit)  
-  : AudioModuleEditor(newPlugInLock, newWaveformRendererModuleToEdit)
+  : AudioModuleEditor(newWaveformRendererModuleToEdit)
 {
-  jassert( newWaveformRendererModuleToEdit != NULL )
-    renderer = newWaveformRendererModuleToEdit->wrappedWaveformRenderer; 
+  jassert(newWaveformRendererModuleToEdit != NULL);  
+  renderer = newWaveformRendererModuleToEdit->wrappedWaveformRenderer; 
   setLinkPosition(INVISIBLE);
   setPresetSectionPosition(INVISIBLE);
   setHeadlineStyle(NO_HEADLINE);
 
-  addWidget( modeComboBox = new RNamedComboBox(T("ModeComboBox"), T("Mode:")) );
-  modeComboBox->setDescription(T("Select the mode for raw waveform creation"));
-  modeComboBox->assignParameter(moduleToEdit->getParameterByName(T("Mode")));
+  addWidget( modeComboBox = new RNamedComboBox("ModeComboBox", "Mode:") );
+  modeComboBox->setDescription("Select the mode for raw waveform creation");
+  modeComboBox->assignParameter(moduleToEdit->getParameterByName("Mode"));
   modeComboBox->registerComboBoxObserver(this);
 
-  standardEditor = new StandardWaveformEditor(plugInLock, newWaveformRendererModuleToEdit->standardRendererModule);
+  standardEditor = new StandardWaveformEditor(lock, 
+    newWaveformRendererModuleToEdit->standardRendererModule);
   standardEditor->addChangeListener(this);
   addChildEditor(standardEditor);
 
-  bufferEditor = new WaveformBufferEditor(plugInLock, newWaveformRendererModuleToEdit->waveformBufferModule);
+  bufferEditor = new WaveformBufferEditor(lock, 
+    newWaveformRendererModuleToEdit->waveformBufferModule);
   bufferEditor->addChangeListener(this);
   addChildEditor(bufferEditor);
 
@@ -489,22 +488,19 @@ void WaveformRendererEditor::updateWidgetVisibility()
   }
 }
 
-
 //=================================================================================================
 // class WaveTableModuleEditorPopUp:
 
-//-------------------------------------------------------------------------------------------------
-// construction/destruction:
-
-WaveTableModuleEditorPopUp::WaveTableModuleEditorPopUp(CriticalSection *newPlugInLock, WaveTableAudioModule* newWaveTableModuleToEdit)  
-  : AudioModuleEditor(newPlugInLock, newWaveTableModuleToEdit)
+WaveTableModuleEditorPopUp::WaveTableModuleEditorPopUp(CriticalSection *newPlugInLock, 
+  WaveTableAudioModule* newWaveTableModuleToEdit)  
+  : AudioModuleEditor(newWaveTableModuleToEdit)
 {
-  jassert( newWaveTableModuleToEdit != NULL )
-    waveTableModuleToEdit = newWaveTableModuleToEdit;
+  jassert(newWaveTableModuleToEdit != NULL);  
+  waveTableModuleToEdit = newWaveTableModuleToEdit;
   waveTableToEdit       = newWaveTableModuleToEdit->wrappedWaveTable;
   setLinkPosition(INVISIBLE);
 
-  rendererEditor = new WaveformRendererEditor(plugInLock, newWaveTableModuleToEdit->rendererModule);
+  rendererEditor = new WaveformRendererEditor(lock, newWaveTableModuleToEdit->rendererModule);
   rendererEditor->addChangeListener(this);
   addChildEditor(rendererEditor);
 
@@ -512,9 +508,9 @@ WaveTableModuleEditorPopUp::WaveTableModuleEditorPopUp(CriticalSection *newPlugI
   xValues          = NULL;
   yValuesL         = NULL;
   yValuesR         = NULL;
-  waveformDisplay = new CurveFamilyPlotOld(juce::String(T("Plot")));
-  waveformDisplay->setDescription(juce::String(T("Waveform")));
-  waveformDisplay->setAxisLabels(juce::String(T("")), juce::String(T("")));
+  waveformDisplay = new CurveFamilyPlotOld(juce::String("Plot"));
+  waveformDisplay->setDescription(juce::String("Waveform"));
+  waveformDisplay->setAxisLabels(juce::String(""), juce::String(""));
   waveformDisplay->setVerticalCoarseGrid(1.0, false);
   waveformDisplay->setHorizontalCoarseGrid(1.0, false);
   waveformDisplay->setAxisPositionX(CoordinateSystemOld::INVISIBLE);
@@ -522,7 +518,7 @@ WaveTableModuleEditorPopUp::WaveTableModuleEditorPopUp(CriticalSection *newPlugI
   addPlot(waveformDisplay);
 
   addWidget( closeButton = new RButton(RButton::CLOSE) );
-  closeButton->setDescription(juce::String(T("Closes the LFO popup editor")));
+  closeButton->setDescription(juce::String("Closes the LFO popup editor"));
   closeButton->setClickingTogglesState(false);
   // we don't listen to this button ourselves - this is the job of the outlying editor object
 
@@ -620,20 +616,19 @@ void WaveTableModuleEditorPopUp::resized()
 //=================================================================================================
 // class WaveTableModuleEditorCompact:
 
-//-------------------------------------------------------------------------------------------------
-// construction/destruction:
 
-WaveTableModuleEditorCompact::WaveTableModuleEditorCompact(CriticalSection *newPlugInLock, WaveTableAudioModule* newWaveTableModuleToEdit) 
-  : AudioModuleEditor(newPlugInLock, newWaveTableModuleToEdit)
+WaveTableModuleEditorCompact::WaveTableModuleEditorCompact(CriticalSection *newPlugInLock, 
+  WaveTableAudioModule* newWaveTableModuleToEdit) 
+  : AudioModuleEditor(newWaveTableModuleToEdit)
 {
-  jassert( newWaveTableModuleToEdit != NULL )
-    waveTableModuleToEdit = newWaveTableModuleToEdit;
+  jassert(newWaveTableModuleToEdit != NULL);  
+  waveTableModuleToEdit = newWaveTableModuleToEdit;
   waveTableToEdit       = newWaveTableModuleToEdit->wrappedWaveTable;
   setLinkPosition(INVISIBLE);
   setPresetSectionPosition(INVISIBLE);
   setHeadlineStyle(NO_HEADLINE);
 
-  popUpEditor = new WaveTableModuleEditorPopUp(plugInLock, newWaveTableModuleToEdit);
+  popUpEditor = new WaveTableModuleEditorPopUp(lock, newWaveTableModuleToEdit);
   popUpEditor->addChangeListener(this);
   popUpEditor->setAlwaysOnTop(true);
   popUpEditor->setOpaque(true);
@@ -644,25 +639,25 @@ WaveTableModuleEditorCompact::WaveTableModuleEditorCompact(CriticalSection *newP
   popUpEditorY =  16;
   popUpEditorH =  200;
 
-  waveformLabel = new RTextField(T("Waveform:"));
+  waveformLabel = new RTextField("Waveform:");
   addAndMakeVisible(waveformLabel);
 
   numSamplesInPlot = 0;
   xValues          = NULL;
   yValuesL         = NULL;
   yValuesR         = NULL;
-  waveformDisplay = new CurveFamilyPlotOld(juce::String(T("Plot")));
-  waveformDisplay->setDescription(juce::String(T("Waveform")));
-  waveformDisplay->setAxisLabels(juce::String(T("")), juce::String(T("")));
+  waveformDisplay = new CurveFamilyPlotOld(juce::String("Plot"));
+  waveformDisplay->setDescription(juce::String("Waveform"));
+  waveformDisplay->setAxisLabels(juce::String(""), juce::String(""));
   waveformDisplay->setVerticalCoarseGrid(1.0, false);
   waveformDisplay->setHorizontalCoarseGrid(1.0, false);
   waveformDisplay->setAxisPositionX(CoordinateSystemOld::INVISIBLE);
   waveformDisplay->setAxisPositionY(CoordinateSystemOld::INVISIBLE);
   addPlot(waveformDisplay);
 
-  addWidget( editButton = new RButton(juce::String(T("Edit"))) );
+  addWidget( editButton = new RButton(juce::String("Edit")) );
   editButton->addRButtonListener(this);
-  editButton->setDescription(juce::String(T("Open/close editor for the wavetable")));
+  editButton->setDescription(juce::String("Open/close editor for the wavetable"));
   editButton->setClickingTogglesState(true);
 
   updateWidgetsAccordingToState();

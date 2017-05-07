@@ -121,9 +121,6 @@ public:
     *inOutL = *inOutR = 0.0;
   }
 
-//=============================================================================================
-  juce_UseDebuggingNewOperator;
-
 protected:
 
   /** Fills the array of automatable parameters. */
@@ -137,17 +134,18 @@ protected:
 
   //FileManager audioFileManager;  // keep only temporarily
 
+  juce_UseDebuggingNewOperator;
 };
 
 //=================================================================================================
-
-//===============================================================================================
 // class StandardWaveformEditor:
 
-class StandardWaveformEditor : public AudioModuleEditor, public ChangeBroadcaster, public RComboBoxObserver
+class StandardWaveformEditor : public AudioModuleEditor, public ChangeBroadcaster, 
+  public RComboBoxObserver
 {
 public:
-  StandardWaveformEditor(CriticalSection *newPlugInLock, StandardWaveformRendererAudioModule* newRendererModuleToEdit); 
+  StandardWaveformEditor(CriticalSection *newPlugInLock, 
+    StandardWaveformRendererAudioModule* newRendererModuleToEdit); 
   virtual void rComboBoxChanged(RComboBox *rComboBoxChanged);
   virtual void resized();
   juce_UseDebuggingNewOperator;
@@ -156,13 +154,14 @@ protected:
 };
 
 
-//===============================================================================================
+//=================================================================================================
 // class WaveformBufferEditor:
 
 class WaveformBufferEditor : public AudioModuleEditor, public ChangeBroadcaster
 {
 public:
-  WaveformBufferEditor(CriticalSection *newPlugInLock, WaveformBufferAudioModule* newWaveformBufferModuleToEdit); 
+  WaveformBufferEditor(CriticalSection *newPlugInLock, 
+    WaveformBufferAudioModule* newWaveformBufferModuleToEdit); 
   virtual void changeListenerCallback(ChangeBroadcaster *objectThatHasChanged);
   virtual void resized();
   juce_UseDebuggingNewOperator;
@@ -172,13 +171,15 @@ protected:
 };
 
 
-//===============================================================================================
+//=================================================================================================
 // class WaveformRendererEditor:
 
-class WaveformRendererEditor : public AudioModuleEditor, public ChangeBroadcaster, public RComboBoxObserver
+class WaveformRendererEditor : public AudioModuleEditor, public ChangeBroadcaster, 
+  public RComboBoxObserver
 {
 public:
-  WaveformRendererEditor(CriticalSection *newPlugInLock, WaveformRendererAudioModule* newWaveformRendererModuleToEdit); 
+  WaveformRendererEditor(CriticalSection *newPlugInLock, 
+    WaveformRendererAudioModule* newWaveformRendererModuleToEdit); 
   virtual void rComboBoxChanged(RComboBox *rComboBoxChanged);
   virtual void changeListenerCallback(ChangeBroadcaster *objectThatHasChanged);
   virtual void resized();
@@ -193,10 +194,11 @@ protected:
 };
 
 
-//===============================================================================================
+//=================================================================================================
 // class WaveTableModuleEditor:
 
-class WaveTableModuleEditorPopUp : public AudioModuleEditor, public ChangeBroadcaster, public RComboBoxObserver
+class WaveTableModuleEditorPopUp : public AudioModuleEditor, public ChangeBroadcaster, 
+  public RComboBoxObserver
 {
 
   friend class WaveTableModuleEditorCompact;
@@ -206,7 +208,8 @@ public:
   //---------------------------------------------------------------------------------------------
   // construction/destruction:
 
-  WaveTableModuleEditorPopUp(CriticalSection *newPlugInLock, WaveTableAudioModule* newWaveTableModuleToEdit); 
+  WaveTableModuleEditorPopUp(CriticalSection *newPlugInLock, 
+    WaveTableAudioModule* newWaveTableModuleToEdit); 
   virtual ~WaveTableModuleEditorPopUp();
 
   //---------------------------------------------------------------------------------------------
@@ -217,9 +220,6 @@ public:
   virtual void resized();
   virtual void updateWidgetsAccordingToState();
   virtual void updatePlot();
-
-  //=============================================================================================
-  juce_UseDebuggingNewOperator;
 
 protected:
 
@@ -241,10 +241,10 @@ protected:
 
   // other ideas: stereo-shift, invert left and right separately
 
+  juce_UseDebuggingNewOperator;
 };
 
-
-//===============================================================================================
+//=================================================================================================
 // class WaveTableModuleEditorCompact
 
 class WaveTableModuleEditorCompact : public AudioModuleEditor
@@ -255,7 +255,9 @@ public:
   //---------------------------------------------------------------------------------------------
   // construction/destruction:
 
-  WaveTableModuleEditorCompact(CriticalSection *newPlugInLock, WaveTableAudioModule* newWaveTableModuleToEdit);  
+  WaveTableModuleEditorCompact(CriticalSection *newPlugInLock, 
+    WaveTableAudioModule* newWaveTableModuleToEdit);  
+
   virtual ~WaveTableModuleEditorCompact();  
 
   //---------------------------------------------------------------------------------------------
@@ -283,9 +285,6 @@ public:
   virtual void updateWidgetsAccordingToState();
   virtual void updatePlot();
 
-  //=============================================================================================
-  juce_UseDebuggingNewOperator;
-
 protected:
 
   // pointers to the edited objects (wrapped and non-wrapped):
@@ -308,7 +307,7 @@ protected:
   // bounds of the big editor relative to the top-left position of the edit-button:
   int popUpEditorX, popUpEditorY, popUpEditorW, popUpEditorH; 
 
+  juce_UseDebuggingNewOperator;
 };
-
 
 #endif 
