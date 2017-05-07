@@ -54,6 +54,7 @@ namespace jura
 #include "effects/jura_StereoPanPlotEditor.cpp"
 #include "effects/jura_VariousModules.cpp"
 #include "effects/jura_Quadrifex.cpp"
+#include "effects/jura_Moduluxury.cpp"
 
 #include "instruments/jura_AcidSequencer.cpp"
 #include "instruments/jura_AciDevil.cpp"

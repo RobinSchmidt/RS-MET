@@ -9,7 +9,7 @@ needs to be completed next:
  -EngineersFilter (done)
  -FuncShaper (done)
  -DspWorkbench (done)
- -SignalAnalyzer (now MultiAnalyzer) (done)
+ -SignalAnalyzer (done) (now MultiAnalyzer)
  -EchoLab (done)
  -Straightliner (done)
  -SimpleSampler (done)
@@ -18,11 +18,11 @@ needs to be completed next:
  -MagicCarpet (done)
  -Quadrifex (done)
  -Quadriga (done)
+ -Workhorse (done)
 
- -Workhorse
+ -Moduluxury
 
  -MidiMonitor
- -Moduluxury
  -StereoDelay
  -TrackMeter
 

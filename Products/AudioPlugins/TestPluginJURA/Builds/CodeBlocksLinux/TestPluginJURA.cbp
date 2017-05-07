@@ -5281,6 +5281,14 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/widgets/jura_PlotPreviewButton.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/widgets/jura_PlotPreviewButton.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/widgets/jura_RButton.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -5382,14 +5390,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/widgets/jura_RWidget.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/widgets/rojue_PlotPreviewButton.cpp">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/widgets/rojue_PlotPreviewButton.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
@@ -5541,6 +5541,14 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/jura_Moduluxury.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/jura_Moduluxury.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/jura_PitchShifter.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -5570,6 +5578,14 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/jura_VariousModules.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/rosof_ModuluxuryModuleEditor.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/rosof_ModuluxuryModuleEditor.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
@@ -5738,14 +5754,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/instruments/jura_Workhorse.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/instruments/rosof_WorkhorseModuleEditor.cpp">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/instruments/rosof_WorkhorseModuleEditor.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
