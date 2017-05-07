@@ -1,7 +1,3 @@
-#include "rosof_VariousModulesAndEditors.h"
-using namespace rosof;
-
-
 //=================================================================================================
 // Distortion Effects:
 
@@ -11,43 +7,43 @@ using namespace rosof;
 BitCrusherAudioModule::BitCrusherAudioModule(CriticalSection *newPlugInLock, rosic::BitCrusher *newBitCrusherToWrap) 
 : AudioModule(newPlugInLock)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   jassert( newBitCrusherToWrap != NULL ); // you must pass a valid rosic-object 
   wrappedBitCrusher = newBitCrusherToWrap;
   moduleName = juce::String(T("BitCrusher"));
 
   // maybe these 2 calls can be absorbed into 1 initialize() call or something:
   //setActiveDirectory(getApplicationDirectory() + File::separatorString + juce::String(T("BitCrusherPresets")) );
-  setActiveDirectory(getApplicationDirectory() + File::separatorString + moduleName + juce::String(T("Presets")) );
+  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString + moduleName + juce::String(T("Presets")) );
   createStaticParameters();
 }
 
 void BitCrusherAudioModule::createStaticParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AutomatableParameter* p;
 
-  p = new AutomatableParameter(plugInLock, "Decimation", 1.0, 128.0, 1.0, 1.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "Decimation", 1.0, 128.0, 1.0, 1.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedBitCrusher, &BitCrusher::setDecimationFactor);
 
-  p = new AutomatableParameter(plugInLock, "Quantization", 0.001, 1.0, 0.0, 0.00001, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "Quantization", 0.001, 1.0, 0.0, 0.00001, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedBitCrusher, &BitCrusher::setQuantizationInterval);
 
-  p = new AutomatableParameter(plugInLock, "Amount", -200.0, 200.0, 1.0, 100.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "Amount", -200.0, 200.0, 1.0, 100.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedBitCrusher, &BitCrusher::setAmount); 
 
-  for(int i=0; i < (int) observedParameters.size(); i++ )
-    observedParameters[i]->resetToDefaultValue(true, true);
+  for(int i=0; i < (int) parameters.size(); i++ )
+    parameters[i]->resetToDefaultValue(true, true);
 }
 
 BitCrusherModuleEditor::BitCrusherModuleEditor(CriticalSection *newPlugInLock, BitCrusherAudioModule* newBitCrusherAudioModule) 
 : AudioModuleEditor(newPlugInLock, newBitCrusherAudioModule)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert(newBitCrusherAudioModule != NULL ); // you must pass a valid module here
 
@@ -55,26 +51,26 @@ BitCrusherModuleEditor::BitCrusherModuleEditor(CriticalSection *newPlugInLock, B
   decimationSlider->assignParameter( moduleToEdit->getParameterByName("Decimation") );
   decimationSlider->setDescription(juce::String(T("Decimation factor for the sample-rate")));
   decimationSlider->setDescriptionField(infoField);
-  decimationSlider->setStringConversionFunction(&rojue::valueToString0);
+  decimationSlider->setStringConversionFunction(&valueToString0);
 
   addWidget( quantizationSlider = new RSlider (T("QuantizationSlider")) );
   quantizationSlider->assignParameter( moduleToEdit->getParameterByName("Quantization") );
   quantizationSlider->setDescription(juce::String(T("Quantization interval for the amplitude")));
   quantizationSlider->setDescriptionField(infoField);
-  quantizationSlider->setStringConversionFunction(&rojue::valueToString4);
+  quantizationSlider->setStringConversionFunction(&valueToString4);
 
   addWidget( amountSlider = new RSlider (T("AmountSlider")) );
   amountSlider->assignParameter( moduleToEdit->getParameterByName("Amount") );
   amountSlider->setDescription(juce::String(T("Amount of the effect in percent")));
   amountSlider->setDescriptionField(infoField);
-  amountSlider->setStringConversionFunction(&rojue::percentToStringWithUnit0);
+  amountSlider->setStringConversionFunction(&percentToStringWithUnit0);
 
   updateWidgetsAccordingToState();
 }
 
 void BitCrusherModuleEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AudioModuleEditor::resized();
   int x = 0;
@@ -96,38 +92,38 @@ ModulatedAllpassAudioModule::ModulatedAllpassAudioModule(CriticalSection *newPlu
                                                          rosic::ModulatedAllpass *newModulatedAllpassToWrap)
                                                           : AudioModule(newPlugInLock)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   jassert( newModulatedAllpassToWrap != NULL ); // you must pass a valid rosic-object 
   wrappedModulatedAllpass = newModulatedAllpassToWrap;
   moduleName  = juce::String(T("ModulatedAllpass"));
 
-  setActiveDirectory(getApplicationDirectory() + File::separatorString + juce::String(T("ModulatedAllpassPresets")) );
+  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString + juce::String(T("ModulatedAllpassPresets")) );
   createStaticParameters();
 }
 
 void ModulatedAllpassAudioModule::createStaticParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AutomatableParameter* p;
 
-  p = new AutomatableParameter(plugInLock, "Factor", -10.0, 10.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "Factor", -10.0, 10.0, 0.01, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedModulatedAllpass, &ModulatedAllpass::setFactor);
 
-  p = new AutomatableParameter(plugInLock, "Offset", -1.0, 1.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "Offset", -1.0, 1.0, 0.01, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedModulatedAllpass, &ModulatedAllpass::setOffset);
 
-  for(int i=0; i < (int) observedParameters.size(); i++ )
-    observedParameters[i]->resetToDefaultValue(true, true);
+  for(int i=0; i < (int) parameters.size(); i++ )
+    parameters[i]->resetToDefaultValue(true, true);
 }
 
 ModulatedAllpassModuleEditor::ModulatedAllpassModuleEditor(CriticalSection *newPlugInLock, 
                                                            ModulatedAllpassAudioModule* newModulatedAllpassAudioModule) 
 : AudioModuleEditor(newPlugInLock, newModulatedAllpassAudioModule)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert(newModulatedAllpassAudioModule != NULL ); // you must pass a valid module here
 
@@ -135,20 +131,20 @@ ModulatedAllpassModuleEditor::ModulatedAllpassModuleEditor(CriticalSection *newP
   factorSlider->assignParameter( moduleToEdit->getParameterByName("Factor") );
   factorSlider->setDescription(juce::String(T("Factor for the modulating signal")));
   factorSlider->setDescriptionField(infoField);
-  factorSlider->setStringConversionFunction(&rojue::valueToString2);
+  factorSlider->setStringConversionFunction(&valueToString2);
 
   addWidget( offsetSlider = new RSlider (T("OffsetSlider")) );
   offsetSlider->assignParameter( moduleToEdit->getParameterByName("Offset") );
   offsetSlider->setDescription(juce::String(T("Offset for the modulating signal")));
   offsetSlider->setDescriptionField(infoField);
-  offsetSlider->setStringConversionFunction(&rojue::valueToString2);
+  offsetSlider->setStringConversionFunction(&valueToString2);
 
   updateWidgetsAccordingToState();
 }
 
 void ModulatedAllpassModuleEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AudioModuleEditor::resized();
   int x = 0;
@@ -168,39 +164,39 @@ SlewRateLimiterAudioModule::SlewRateLimiterAudioModule(CriticalSection *newPlugI
                                                        rosic::SlewRateLimiterStereo *newSlewRateLimiterToWrap)
                                                         : AudioModule(newPlugInLock)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert( newSlewRateLimiterToWrap != NULL ); // you must pass a valid rosic-object 
   wrappedSlewRateLimiter = newSlewRateLimiterToWrap;
   moduleName  = juce::String(T("SlewRateLimiter"));
-  setActiveDirectory(getApplicationDirectory() + File::separatorString 
+  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString 
     + juce::String(T("SlewRateLimiterPresets")) );
   createStaticParameters();
 }
 
 void SlewRateLimiterAudioModule::createStaticParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AutomatableParameter* p;
 
-  p = new AutomatableParameter(plugInLock, "Attack",  0.0, 10.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "Attack",  0.0, 10.0, 0.01, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedSlewRateLimiter, &SlewRateLimiterStereo::setAttackTime);
 
-  p = new AutomatableParameter(plugInLock, "Release", 0.0, 10.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "Release", 0.0, 10.0, 0.01, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedSlewRateLimiter, &SlewRateLimiterStereo::setReleaseTime);
 
-  for(int i=0; i < (int) observedParameters.size(); i++ )
-    observedParameters[i]->resetToDefaultValue(true, true);
+  for(int i=0; i < (int) parameters.size(); i++ )
+    parameters[i]->resetToDefaultValue(true, true);
 }
 
 SlewRateLimiterModuleEditor::SlewRateLimiterModuleEditor(CriticalSection *newPlugInLock, 
                                                          SlewRateLimiterAudioModule* newSlewRateLimiterAudioModule) 
 : AudioModuleEditor(newPlugInLock, newSlewRateLimiterAudioModule)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert(newSlewRateLimiterAudioModule != NULL ); // you must pass a valid module here
 
@@ -208,20 +204,20 @@ SlewRateLimiterModuleEditor::SlewRateLimiterModuleEditor(CriticalSection *newPlu
   attackSlider->assignParameter( moduleToEdit->getParameterByName("Attack") );
   attackSlider->setDescription(juce::String(T("Slew rate for upward jumps")));
   attackSlider->setDescriptionField(infoField);
-  attackSlider->setStringConversionFunction(&rojue::millisecondsToStringWithUnit2);
+  attackSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( releaseSlider = new RSlider (T("ReleaseSlider")) );
   releaseSlider->assignParameter( moduleToEdit->getParameterByName("Release") );
   releaseSlider->setDescription(juce::String(T("Slew rate for dwonward jumps")));
   releaseSlider->setDescriptionField(infoField);
-  releaseSlider->setStringConversionFunction(&rojue::millisecondsToStringWithUnit2);
+  releaseSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   updateWidgetsAccordingToState();
 }
 
 void SlewRateLimiterModuleEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AudioModuleEditor::resized();
   int x = 0;
@@ -240,19 +236,19 @@ void SlewRateLimiterModuleEditor::resized()
 HarmonicsAudioModule::HarmonicsAudioModule(CriticalSection *newPlugInLock, rosic::Harmonics *newHarmonicsToWrap)
  : AudioModule(newPlugInLock)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert( newHarmonicsToWrap != NULL ); // you must pass a valid rosic-object 
   wrappedHarmonics = newHarmonicsToWrap;
   moduleName  = juce::String(T("Harmonics"));
-  setActiveDirectory(getApplicationDirectory() + File::separatorString 
+  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString 
     + juce::String(T("HarmonicsPresets")) );
   createStaticParameters();
 }
 
 void HarmonicsAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   // \todo get rid of this function and implement the new callback mechanism - maybe we need a class IndexedParameter or something
 
@@ -283,72 +279,72 @@ void HarmonicsAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
 
 void HarmonicsAudioModule::createStaticParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AutomatableParameter* p;
 
   // ...here we either need a callback with two parameters, or we must stick to the old callback mechansim - for now, we'll do the latter
 
-  p = new AutomatableParameter(plugInLock, juce::String(T("Drive")), -24.0, 24.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, juce::String(T("Drive")), -24.0, 24.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedHarmonics, &Harmonics::setDrive);
 
-  p = new AutomatableParameter(plugInLock, juce::String(T("DryWetRatio")), 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, juce::String(T("DryWetRatio")), 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedHarmonics, &Harmonics::setDryWetRatio);
 
-  p = new AutomatableParameter(plugInLock, juce::String(T("InputHighpass")), 20.0, 20000.0, 0.0, 20.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, juce::String(T("InputHighpass")), 20.0, 20000.0, 0.0, 20.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedHarmonics, &Harmonics::setInputHighpassCutoff);
 
-  p = new AutomatableParameter(plugInLock, juce::String(T("InputLowpass")), 20.0, 20000.0, 0.0, 20000.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, juce::String(T("InputLowpass")), 20.0, 20000.0, 0.0, 20000.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedHarmonics, &Harmonics::setInputLowpassCutoff);
 
-  p = new AutomatableParameter(plugInLock, juce::String(T("OutputHighpass")), 20.0, 20000.0, 0.0, 20.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, juce::String(T("OutputHighpass")), 20.0, 20000.0, 0.0, 20.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedHarmonics, &Harmonics::setOutputHighpassCutoff);
 
-  p = new AutomatableParameter(plugInLock, juce::String(T("OutputLowpass")), 20.0, 20000.0, 0.0, 20000.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, juce::String(T("OutputLowpass")), 20.0, 20000.0, 0.0, 20000.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedHarmonics, &Harmonics::setOutputLowpassCutoff);
 
   // these parameters are still used with the old callback mechanism (because they invoke two-parametric functions) - we may do something
   // better here later:
-  p = new AutomatableParameter(plugInLock, juce::String(T("H02")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, juce::String(T("H02")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
-  p = new AutomatableParameter(plugInLock, juce::String(T("H03")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, juce::String(T("H03")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
-  p = new AutomatableParameter(plugInLock, juce::String(T("H04")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, juce::String(T("H04")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
-  p = new AutomatableParameter(plugInLock, juce::String(T("H05")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, juce::String(T("H05")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
-  p = new AutomatableParameter(plugInLock, juce::String(T("H06")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, juce::String(T("H06")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
-  p = new AutomatableParameter(plugInLock, juce::String(T("H07")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, juce::String(T("H07")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
-  p = new AutomatableParameter(plugInLock, juce::String(T("H08")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, juce::String(T("H08")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
-  p = new AutomatableParameter(plugInLock, juce::String(T("H09")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, juce::String(T("H09")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
-  p = new AutomatableParameter(plugInLock, juce::String(T("H10")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, juce::String(T("H10")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
-  p = new AutomatableParameter(plugInLock, juce::String(T("H11")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, juce::String(T("H11")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
-  p = new AutomatableParameter(plugInLock, juce::String(T("H12")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, juce::String(T("H12")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
 
-  for(int i=0; i < (int) observedParameters.size(); i++ )
+  for(int i=0; i < (int) parameters.size(); i++ )
   {   
-    parameterChanged(observedParameters[i]); // because some parameters use the old callback mechanism
-    observedParameters[i]->resetToDefaultValue(true, true);
+    parameterChanged(parameters[i]); // because some parameters use the old callback mechanism
+    parameters[i]->resetToDefaultValue(true, true);
   }
 }
 
 HarmonicsModuleEditor::HarmonicsModuleEditor(CriticalSection *newPlugInLock, HarmonicsAudioModule* newHarmonicsAudioModule) 
 : AudioModuleEditor(newPlugInLock, newHarmonicsAudioModule)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert(newHarmonicsAudioModule != NULL ); // you must pass a valid module here
 
@@ -376,14 +372,14 @@ HarmonicsModuleEditor::HarmonicsModuleEditor(CriticalSection *newPlugInLock, Har
   driveSlider->assignParameter( moduleToEdit->getParameterByName("Drive") );
   driveSlider->setDescription(juce::String(T("Gain for the input signal (pre waveshaper)")));
   driveSlider->setDescriptionField(infoField);
-  driveSlider->setStringConversionFunction(&rojue::decibelsToStringWithUnit1);
+  driveSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( dryWetSlider = new RSlider (T("DryWetSlider")) );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName("DryWetRatio") );
   dryWetSlider->setSliderName(juce::String(T("Dry/Wet")));
   dryWetSlider->setDescription(juce::String(T("Ratio between dry and wet signal")));
   dryWetSlider->setDescriptionField(infoField);
-  dryWetSlider->setStringConversionFunction(&rojue::ratioToString0);
+  dryWetSlider->setStringConversionFunction(&ratioToString0);
 
 
   addWidget( inHighpassSlider = new RSlider (T("InHighpassSlider")) );
@@ -391,101 +387,101 @@ HarmonicsModuleEditor::HarmonicsModuleEditor(CriticalSection *newPlugInLock, Har
   inHighpassSlider->setSliderName(juce::String(T("Highpass")));
   inHighpassSlider->setDescription(juce::String(T("Cutoff frequency of the input highpass filter")));
   inHighpassSlider->setDescriptionField(infoField);
-  inHighpassSlider->setStringConversionFunction(&rojue::hertzToStringWithUnitTotal5);
+  inHighpassSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( inLowpassSlider = new RSlider (T("InLowpassSlider")) );
   inLowpassSlider->assignParameter( moduleToEdit->getParameterByName("InputLowpass") );
   inLowpassSlider->setSliderName(juce::String(T("Lowpass")));
   inLowpassSlider->setDescription(juce::String(T("Cutoff frequency of the input lowpass filter")));
   inLowpassSlider->setDescriptionField(infoField);
-  inLowpassSlider->setStringConversionFunction(&rojue::hertzToStringWithUnitTotal5);
+  inLowpassSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( outHighpassSlider = new RSlider (T("OutHighpassSlider")) );
   outHighpassSlider->assignParameter( moduleToEdit->getParameterByName("OutputHighpass") );
   outHighpassSlider->setSliderName(juce::String(T("Highpass")));
   outHighpassSlider->setDescription(juce::String(T("Cutoff frequency of the output highpass filter")));
   outHighpassSlider->setDescriptionField(infoField);
-  outHighpassSlider->setStringConversionFunction(&rojue::hertzToStringWithUnitTotal5);
+  outHighpassSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( outLowpassSlider = new RSlider (T("OutLowpassSlider")) );
   outLowpassSlider->assignParameter( moduleToEdit->getParameterByName("OutputLowpass") );
   outLowpassSlider->setSliderName(juce::String(T("Lowpass")));
   outLowpassSlider->setDescription(juce::String(T("Cutoff frequency of the output lowpass filter")));
   outLowpassSlider->setDescriptionField(infoField);
-  outLowpassSlider->setStringConversionFunction(&rojue::hertzToStringWithUnitTotal5);
+  outLowpassSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( h02Slider = new RSlider (T("H02Slider")) );
   h02Slider->assignParameter( moduleToEdit->getParameterByName("H02") );
   h02Slider->setDescription(juce::String(T("Gain (in percent) for the 2nd harmonic")));
   h02Slider->setDescriptionField(infoField);
-  h02Slider->setStringConversionFunction(&rojue::percentToStringWithUnit1);
+  h02Slider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( h03Slider = new RSlider (T("H03Slider")) );
   h03Slider->assignParameter( moduleToEdit->getParameterByName("H03") );
   h03Slider->setDescription(juce::String(T("Gain (in percent) for the 3rd harmonic")));
   h03Slider->setDescriptionField(infoField);
-  h03Slider->setStringConversionFunction(&rojue::percentToStringWithUnit1);
+  h03Slider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( h04Slider = new RSlider (T("H04Slider")) );
   h04Slider->assignParameter( moduleToEdit->getParameterByName("H04") );
   h04Slider->setDescription(juce::String(T("Gain (in percent) for the 4th harmonic")));
   h04Slider->setDescriptionField(infoField);
-  h04Slider->setStringConversionFunction(&rojue::percentToStringWithUnit1);
+  h04Slider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( h05Slider = new RSlider (T("H05Slider")) );
   h05Slider->assignParameter( moduleToEdit->getParameterByName("H05") );
   h05Slider->setDescription(juce::String(T("Gain (in percent) for the 5th harmonic")));
   h05Slider->setDescriptionField(infoField);
-  h05Slider->setStringConversionFunction(&rojue::percentToStringWithUnit1);
+  h05Slider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( h06Slider = new RSlider (T("H06Slider")) );
   h06Slider->assignParameter( moduleToEdit->getParameterByName("H06") );
   h06Slider->setDescription(juce::String(T("Gain (in percent) for the 6th harmonic")));
   h06Slider->setDescriptionField(infoField);
-  h06Slider->setStringConversionFunction(&rojue::percentToStringWithUnit1);
+  h06Slider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( h07Slider = new RSlider (T("H07Slider")) );
   h07Slider->assignParameter( moduleToEdit->getParameterByName("H07") );
   h07Slider->setDescription(juce::String(T("Gain (in percent) for the 7th harmonic")));
   h07Slider->setDescriptionField(infoField);
-  h07Slider->setStringConversionFunction(&rojue::percentToStringWithUnit1);
+  h07Slider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( h08Slider = new RSlider (T("H08Slider")) );
   h08Slider->assignParameter( moduleToEdit->getParameterByName("H08") );
   h08Slider->setDescription(juce::String(T("Gain (in percent) for the 8th harmonic")));
   h08Slider->setDescriptionField(infoField);
-  h08Slider->setStringConversionFunction(&rojue::percentToStringWithUnit1);
+  h08Slider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( h09Slider = new RSlider (T("H09Slider")) );
   h09Slider->assignParameter( moduleToEdit->getParameterByName("H09") );
   h09Slider->setDescription(juce::String(T("Gain (in percent) for the 9th harmonic")));
   h09Slider->setDescriptionField(infoField);
-  h09Slider->setStringConversionFunction(&rojue::percentToStringWithUnit1);
+  h09Slider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( h10Slider = new RSlider (T("H10Slider")) );
   h10Slider->assignParameter( moduleToEdit->getParameterByName("H10") );
   h10Slider->setDescription(juce::String(T("Gain (in percent) for the 10th harmonic")));
   h10Slider->setDescriptionField(infoField);
-  h10Slider->setStringConversionFunction(&rojue::percentToStringWithUnit1);
+  h10Slider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( h11Slider = new RSlider (T("H11Slider")) );
   h11Slider->assignParameter( moduleToEdit->getParameterByName("H11") );
   h11Slider->setDescription(juce::String(T("Gain (in percent) for the 11th harmonic")));
   h11Slider->setDescriptionField(infoField);
-  h11Slider->setStringConversionFunction(&rojue::percentToStringWithUnit1);
+  h11Slider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( h12Slider = new RSlider (T("H12Slider")) );
   h12Slider->assignParameter( moduleToEdit->getParameterByName("H12") );
   h12Slider->setDescription(juce::String(T("Gain (in percent) for the 12th harmonic")));
   h12Slider->setDescriptionField(infoField);
-  h12Slider->setStringConversionFunction(&rojue::percentToStringWithUnit1);
+  h12Slider->setStringConversionFunction(&percentToStringWithUnit1);
 
   updateWidgetsAccordingToState();
 }
 
 void HarmonicsModuleEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AudioModuleEditor::resized();
   int x = 0;
@@ -560,7 +556,7 @@ void HarmonicsModuleEditor::resized()
 WaveShaperAudioModule::WaveShaperAudioModule(CriticalSection *newPlugInLock, rosic::WaveShaper *newWaveShaperToWrap)
  : AudioModule(newPlugInLock)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert( newWaveShaperToWrap != NULL ); // you must pass a valid rosic-object 
   wrappedWaveShaper = newWaveShaperToWrap;
@@ -572,11 +568,11 @@ WaveShaperAudioModule::WaveShaperAudioModule(CriticalSection *newPlugInLock, ros
 
 void WaveShaperAudioModule::createStaticParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AutomatableParameter* p;
 
-  p = new AutomatableParameter(plugInLock, juce::String(T("CurveType")), 0.0, 3.0, 1.0, 1.0, Parameter::STRING);
+  p = new AutomatableParameter(lock, juce::String(T("CurveType")), 0.0, 3.0, 1.0, 1.0, Parameter::STRING);
   p->addStringValue(juce::String(T("Linear")));
   p->addStringValue(juce::String(T("Tanh")));
   p->addStringValue(juce::String(T("Hardclip")));
@@ -588,42 +584,42 @@ void WaveShaperAudioModule::createStaticParameters()
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setTransferFunction);
 
-  p = new AutomatableParameter(plugInLock, "Drive", -24.0, 48.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "Drive", -24.0, 48.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setDrive);
 
-  p = new AutomatableParameter(plugInLock, "DC", -5.0, 5.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "DC", -5.0, 5.0, 0.01, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setDcOffset);
 
-  p = new AutomatableParameter(plugInLock, "Amount", -200.0, 200.0, 1.0, 100.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "Amount", -200.0, 200.0, 1.0, 100.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setAmount);
 
-  p = new AutomatableParameter(plugInLock, "OutputLevel", -48.0, 6.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "OutputLevel", -48.0, 6.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setOutputLevel);
 
-  p = new AutomatableParameter(plugInLock, "Oversampling", 1.0, 16.0, 1.0, 4.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "Oversampling", 1.0, 16.0, 1.0, 4.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setOversampling);
 
-  p = new AutomatableParameter(plugInLock, "InterceptY", -0.5, 0.5, 0.01, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "InterceptY", -0.5, 0.5, 0.01, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setPenticInterceptY);
 
-  p = new AutomatableParameter(plugInLock, "Slope", -1.0, 3.0, 0.01, 1.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "Slope", -1.0, 3.0, 0.01, 1.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setPenticSlopeAtZero);
 
-  for(int i=0; i < (int) observedParameters.size(); i++)
-    observedParameters[i]->resetToDefaultValue(true, true);
+  for(int i=0; i < (int) parameters.size(); i++)
+    parameters[i]->resetToDefaultValue(true, true);
 }
 
 WaveShaperModuleEditor::WaveShaperModuleEditor(CriticalSection *newPlugInLock, WaveShaperAudioModule* newWaveShaperAudioModule) 
 : AudioModuleEditor(newPlugInLock, newWaveShaperAudioModule)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert(newWaveShaperAudioModule != NULL ); // you must pass a valid module here
   waveShaperModuleToEdit = newWaveShaperAudioModule;
@@ -638,21 +634,21 @@ WaveShaperModuleEditor::WaveShaperModuleEditor(CriticalSection *newPlugInLock, W
   driveSlider->assignParameter( moduleToEdit->getParameterByName("Drive") );
   driveSlider->setDescription(juce::String(T("Gain of the input signal before the waveshaper")));
   driveSlider->setDescriptionField(infoField);
-  driveSlider->setStringConversionFunction(&rojue::decibelsToStringWithUnit1);
+  driveSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
   driveSlider->addListener(this); // to update the plot
 
   addWidget( dcSlider = new RSlider (T("DCSlider")) );
   dcSlider->assignParameter( moduleToEdit->getParameterByName("DC") );
   dcSlider->setDescription(juce::String(T("DC offset for the input signal (after drive, before waveshaper)")));
   dcSlider->setDescriptionField(infoField);
-  dcSlider->setStringConversionFunction(&rojue::valueToString2);
+  dcSlider->setStringConversionFunction(&valueToString2);
   dcSlider->addListener(this); // to update the plot
 
   addWidget( amountSlider = new RSlider (T("AmountSlider")) );
   amountSlider->assignParameter( moduleToEdit->getParameterByName("Amount") );
   amountSlider->setDescription(juce::String(T("Amount of the effect in percent")));
   amountSlider->setDescriptionField(infoField);
-  amountSlider->setStringConversionFunction(&rojue::percentToStringWithUnit0);
+  amountSlider->setStringConversionFunction(&percentToStringWithUnit0);
   amountSlider->addListener(this); // to update the plot
 
   addWidget( outputLevelSlider = new RSlider (T("OutputLevelSlider")) );
@@ -660,19 +656,19 @@ WaveShaperModuleEditor::WaveShaperModuleEditor(CriticalSection *newPlugInLock, W
   outputLevelSlider->setSliderName(juce::String(T("Level")));
   outputLevelSlider->setDescription(juce::String(T("Overall level of the output signal")));
   outputLevelSlider->setDescriptionField(infoField);
-  outputLevelSlider->setStringConversionFunction(&rojue::decibelsToStringWithUnit1);
+  outputLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( oversamplingSlider = new RSlider (T("OversamplingSlider")) );
   oversamplingSlider->assignParameter( moduleToEdit->getParameterByName("Oversampling") );
   oversamplingSlider->setDescription(juce::String(T("Oversampling factor (to avoid aliasing)")));
   oversamplingSlider->setDescriptionField(infoField);
-  oversamplingSlider->setStringConversionFunction(&rojue::valueToString0);
+  oversamplingSlider->setStringConversionFunction(&valueToString0);
 
   addWidget( slopeSlider = new RSlider (T("SlopeSlider")) );
   slopeSlider->assignParameter( moduleToEdit->getParameterByName("Slope") );
   slopeSlider->setDescription(juce::String(T("Slope of the transfer function at point x=0")));
   slopeSlider->setDescriptionField(infoField);
-  slopeSlider->setStringConversionFunction(&rojue::valueToString2);
+  slopeSlider->setStringConversionFunction(&valueToString2);
   slopeSlider->addListener(this); // to update the plot
 
   addWidget( interceptSlider = new RSlider (T("InterceptSlider")) );
@@ -680,7 +676,7 @@ WaveShaperModuleEditor::WaveShaperModuleEditor(CriticalSection *newPlugInLock, W
   interceptSlider->setSliderName(juce::String(T("y-Intercept")));
   interceptSlider->setDescription(juce::String(T("Interception of the y-axis (function value at x=0)")));
   interceptSlider->setDescriptionField(infoField);
-  interceptSlider->setStringConversionFunction(&rojue::valueToString2);
+  interceptSlider->setStringConversionFunction(&valueToString2);
   interceptSlider->addListener(this); // to update the plot
 
   numValues = 0;
@@ -699,14 +695,14 @@ WaveShaperModuleEditor::WaveShaperModuleEditor(CriticalSection *newPlugInLock, W
 
 WaveShaperModuleEditor::~WaveShaperModuleEditor()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   if( xValues != NULL ) { delete[] xValues; xValues = NULL; }
   if( yValues != NULL ) { delete[] yValues; yValues = NULL; }
 }
 
 void WaveShaperModuleEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AudioModuleEditor::resized();
   int x = 0;
@@ -750,27 +746,27 @@ void WaveShaperModuleEditor::resized()
 
 void WaveShaperModuleEditor::rComboBoxChanged(RComboBox *rComboBoxThatHasChanged)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   updateWidgetEnablement();
   updatePlot();
 }
 
 void WaveShaperModuleEditor::rSliderValueChanged(rojue::RSlider *rSliderThatHasChanged)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   updatePlot();
 }
 
 void WaveShaperModuleEditor::updateWidgetsAccordingToState()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   AudioModuleEditor::updateWidgetsAccordingToState();
   updatePlot();
 }
 
 void WaveShaperModuleEditor::updateWidgetEnablement()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   if( waveShaperModuleToEdit == NULL )
     return;
   if( waveShaperModuleToEdit->wrappedWaveShaper == NULL )
@@ -783,7 +779,7 @@ void WaveShaperModuleEditor::updateWidgetEnablement()
 
 void WaveShaperModuleEditor::updatePlot()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   if( waveShaperModuleToEdit == NULL )
     return;
   if( waveShaperModuleToEdit->wrappedWaveShaper == NULL )
@@ -807,7 +803,7 @@ void WaveShaperModuleEditor::updatePlot()
 CompShaperAudioModule::CompShaperAudioModule(CriticalSection *newPlugInLock, rosic::CompShaper *newCompShaperToWrap)
  : AudioModule(newPlugInLock)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   jassert( newCompShaperToWrap != NULL ); // you must pass a valid rosic-object 
   wrappedCompShaper = newCompShaperToWrap;
   moduleName  = juce::String(T("CompShaper"));
@@ -818,34 +814,34 @@ CompShaperAudioModule::CompShaperAudioModule(CriticalSection *newPlugInLock, ros
 
 void CompShaperAudioModule::createStaticParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AutomatableParameter* p;
 
-  p = new AutomatableParameter(plugInLock, "Threshold", -48.0, 12.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "Threshold", -48.0, 12.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedCompShaper, &CompShaper::setThreshold);
 
-  p = new AutomatableParameter(plugInLock, "Ratio", 1.0, 40.0, 0.01, 1.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "Ratio", 1.0, 40.0, 0.01, 1.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedCompShaper, &CompShaper::setRatio);
 
-  p = new AutomatableParameter(plugInLock, "KneeWidth", 0.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "KneeWidth", 0.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedCompShaper, &CompShaper::setKneeWidth);
 
-  p = new AutomatableParameter(plugInLock, "Clip", 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
+  p = new AutomatableParameter(lock, "Clip", 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedCompShaper, &CompShaper::setToClipperMode);
 
-  for(int i=0; i < (int) observedParameters.size(); i++)
-    observedParameters[i]->resetToDefaultValue(true, true);
+  for(int i=0; i < (int) parameters.size(); i++)
+    parameters[i]->resetToDefaultValue(true, true);
 }
 
 CompShaperModuleEditor::CompShaperModuleEditor(CriticalSection *newPlugInLock, CompShaperAudioModule* newCompShaperAudioModule) 
 : AudioModuleEditor(newPlugInLock, newCompShaperAudioModule)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert(newCompShaperAudioModule != NULL ); // you must pass a valid module here
 
@@ -868,19 +864,19 @@ CompShaperModuleEditor::CompShaperModuleEditor(CriticalSection *newPlugInLock, C
   thresholdSlider->assignParameter( moduleToEdit->getParameterByName("Threshold") );
   thresholdSlider->setDescription(juce::String(T("Threshold above which the signal will be attenuated")));
   thresholdSlider->setDescriptionField(infoField);
-  thresholdSlider->setStringConversionFunction(&rojue::decibelsToStringWithUnit1);
+  thresholdSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( ratioSlider = new RSlider (T("RatioSlider")) );
   ratioSlider->assignParameter( moduleToEdit->getParameterByName("Ratio") );
   ratioSlider->setDescription(juce::String(T("Ratio .....find a good short explanation")));
   ratioSlider->setDescriptionField(infoField);
-  ratioSlider->setStringConversionFunction(&rojue::valueToString2);
+  ratioSlider->setStringConversionFunction(&valueToString2);
 
   addWidget( kneeSlider = new RSlider (T("KneeSlider")) );
   kneeSlider->assignParameter( moduleToEdit->getParameterByName("KneeWidth") );
   kneeSlider->setDescription(juce::String(T("Transition width between the two slopes")));
   kneeSlider->setDescriptionField(infoField);
-  kneeSlider->setStringConversionFunction(&rojue::percentToStringWithUnit1);
+  kneeSlider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( clipButton = new RButton(juce::String(T("Clip"))) );
   clipButton->assignParameter( moduleToEdit->getParameterByName(T("Clip")) );
@@ -892,20 +888,20 @@ CompShaperModuleEditor::CompShaperModuleEditor(CriticalSection *newPlugInLock, C
   driveSlider->assignParameter( moduleToEdit->getParameterByName("Drive") );
   driveSlider->setDescription(juce::String(T("Gain for the input signal (pre waveshaper)")));
   driveSlider->setDescriptionField(infoField);
-  driveSlider->setStringConversionFunction(&rojue::decibelsToStringWithUnit1);
+  driveSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( outLevelSlider = new RSlider (T("OutLevelSlider")) );
   outLevelSlider->assignParameter( moduleToEdit->getParameterByName("OutLevel") );
   outLevelSlider->setDescription(juce::String(T("Gain for the output signal (post waveshaper)")));
   outLevelSlider->setDescriptionField(infoField);
-  outLevelSlider->setStringConversionFunction(&rojue::decibelsToStringWithUnit1);
+  outLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   updateWidgetsAccordingToState();
 }
 
 void CompShaperModuleEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AudioModuleEditor::resized();
   int x = 0;
@@ -976,7 +972,7 @@ void CompShaperModuleEditor::resized()
 CompressorAudioModule::CompressorAudioModule(CriticalSection *newPlugInLock, rosic::SoftKneeCompressor *newCompressorToWrap)
  : AudioModule(newPlugInLock)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert( newCompressorToWrap != NULL ); // you must pass a valid rosic-object 
   wrappedCompressor = newCompressorToWrap;
@@ -988,61 +984,61 @@ CompressorAudioModule::CompressorAudioModule(CriticalSection *newPlugInLock, ros
 
 void CompressorAudioModule::createStaticParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AutomatableParameter* p;
 
-  p = new AutomatableParameter(plugInLock, T("Attack"), 1.0, 1000.0, 0.01, 10.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, T("Attack"), 1.0, 1000.0, 0.01, 10.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback<SoftKneeCompressor>(wrappedCompressor, &SoftKneeCompressor::setAttackTime);
 
-  p = new AutomatableParameter(plugInLock, T("Release"), 10.0, 1000.0, 0.1, 100.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, T("Release"), 10.0, 1000.0, 0.1, 100.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback<SoftKneeCompressor>(wrappedCompressor, &SoftKneeCompressor::setReleaseTime);
 
-  p = new AutomatableParameter(plugInLock, T("LookAhead"), 0.0, 50.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, T("LookAhead"), 0.0, 50.0, 0.01, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback<SoftKneeCompressor>(wrappedCompressor, &SoftKneeCompressor::setLookAheadTime);
 
-  p = new AutomatableParameter(plugInLock, T("InLevel"), -24.0, 24.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, T("InLevel"), -24.0, 24.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback<SoftKneeCompressor>(wrappedCompressor, &SoftKneeCompressor::setInputGain);
 
-  p = new AutomatableParameter(plugInLock, T("OutLevel"), -24.0, 48.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, T("OutLevel"), -24.0, 48.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback<SoftKneeCompressor>(wrappedCompressor, &SoftKneeCompressor::setOutputGain);
 
-  p = new AutomatableParameter(plugInLock, T("DryWetRatio"), 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, T("DryWetRatio"), 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback<SoftKneeCompressor>(wrappedCompressor, &SoftKneeCompressor::setDryWetRatio);
 
-  p = new AutomatableParameter(plugInLock, T("Threshold"), -48.0, 12.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, T("Threshold"), -48.0, 12.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback<SoftKneeCompressor>(wrappedCompressor, &SoftKneeCompressor::setThreshold);
 
-  p = new AutomatableParameter(plugInLock, T("Ratio"), 1.0, 40.0, 0.01, 1.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, T("Ratio"), 1.0, 40.0, 0.01, 1.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback<SoftKneeCompressor>(wrappedCompressor, &SoftKneeCompressor::setRatio);
 
-  p = new AutomatableParameter(plugInLock, T("KneeWidth"), 0.0, 48.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, T("KneeWidth"), 0.0, 48.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback<SoftKneeCompressor>(wrappedCompressor, &SoftKneeCompressor::setKneeWidth);
 
-  p = new AutomatableParameter(plugInLock, T("Limit"), 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
+  p = new AutomatableParameter(lock, T("Limit"), 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
   addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeCompressor>(wrappedCompressor, &SoftKneeCompressor::setLimiterMode);
 
-  p = new AutomatableParameter(plugInLock, T("AutoGain"), 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
+  p = new AutomatableParameter(lock, T("AutoGain"), 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
   addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeCompressor>(wrappedCompressor, &SoftKneeCompressor::setAutoGain);
 
-  //p = new AutomatableParameter(plugInLock, T("AntiAlias"), 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
+  //p = new AutomatableParameter(lock, T("AntiAlias"), 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
   //addObservedParameter(p);
   //p->setValueChangeCallback(wrappedCompressor, &SoftKneeCompressor::setAntiAlias);
   // only for test - usually on
 
-  for(int i=0; i < (int) observedParameters.size(); i++)
-    observedParameters[i]->resetToDefaultValue(true, true);
+  for(int i=0; i < (int) parameters.size(); i++)
+    parameters[i]->resetToDefaultValue(true, true);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1051,7 +1047,7 @@ void CompressorAudioModule::createStaticParameters()
 CompressorModuleEditor::CompressorModuleEditor(CriticalSection *newPlugInLock, CompressorAudioModule* newCompressorAudioModule) 
 : AudioModuleEditor(newPlugInLock, newCompressorAudioModule)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert(newCompressorAudioModule != NULL ); // you must pass a valid module here
 
@@ -1074,57 +1070,57 @@ CompressorModuleEditor::CompressorModuleEditor(CriticalSection *newPlugInLock, C
   attackSlider->assignParameter( moduleToEdit->getParameterByName("Attack") );
   attackSlider->setDescription(juce::String(T("Attack time for the envelope detector")));
   attackSlider->setDescriptionField(infoField);
-  attackSlider->setStringConversionFunction(&rojue::millisecondsToStringWithUnit2);
+  attackSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( releaseSlider = new RSlider (T("ReleaseSlider")) );
   releaseSlider->assignParameter( moduleToEdit->getParameterByName("Release") );
   releaseSlider->setDescription(juce::String(T("Release time for the envelope detector")));
   releaseSlider->setDescriptionField(infoField);
-  releaseSlider->setStringConversionFunction(&rojue::millisecondsToStringWithUnit2);
+  releaseSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( lookAheadSlider = new RSlider (T("LookAheadSlider")) );
   lookAheadSlider->assignParameter( moduleToEdit->getParameterByName("LookAhead") );
   lookAheadSlider->setDescription(juce::String(T("LookAhead time for the envelope detector")));
   lookAheadSlider->setDescriptionField(infoField);
-  lookAheadSlider->setStringConversionFunction(&rojue::millisecondsToStringWithUnit2);
+  lookAheadSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( inLevelSlider = new RSlider (T("InLevelSlider")) );
   inLevelSlider->assignParameter( moduleToEdit->getParameterByName("InLevel") );
   inLevelSlider->setDescription(juce::String(T("Gain for the input signal (pre compression)")));
   inLevelSlider->setDescriptionField(infoField);
-  inLevelSlider->setStringConversionFunction(&rojue::decibelsToStringWithUnit1);
+  inLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( outLevelSlider = new RSlider (T("OutLevelSlider")) );
   outLevelSlider->assignParameter( moduleToEdit->getParameterByName("OutLevel") );
   outLevelSlider->setDescription(juce::String(T("Gain for the output signal (post compression)")));
   outLevelSlider->setDescriptionField(infoField);
-  outLevelSlider->setStringConversionFunction(&rojue::decibelsToStringWithUnit1);
+  outLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( dryWetSlider = new RSlider (T("DryWetSlider")) );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName("DryWetRatio") );
   dryWetSlider->setSliderName(juce::String(T("Dry/Wet")));
   dryWetSlider->setDescription(juce::String(T("Mix ratio between original and compressed signal")));
   dryWetSlider->setDescriptionField(infoField);
-  dryWetSlider->setStringConversionFunction(&rojue::ratioToString0);
+  dryWetSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( thresholdSlider = new RSlider (T("ThresholdSlider")) );
   thresholdSlider->assignParameter( moduleToEdit->getParameterByName("Threshold") );
   thresholdSlider->setDescription(juce::String(T("Threshold above which the signal will be attenuated")));
   thresholdSlider->setDescriptionField(infoField);
-  thresholdSlider->setStringConversionFunction(&rojue::decibelsToStringWithUnit1);
+  thresholdSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( ratioSlider = new RSlider (T("RatioSlider")) );
   ratioSlider->assignParameter( moduleToEdit->getParameterByName("Ratio") );
   ratioSlider->setDescription(juce::String(T("Ratio .....find a good short explanation")));
   ratioSlider->setDescriptionField(infoField);
-  ratioSlider->setStringConversionFunction(&rojue::valueToString2);
+  ratioSlider->setStringConversionFunction(&valueToString2);
 
   addWidget( kneeSlider = new RSlider (T("KneeSlider")) );
   kneeSlider->assignParameter( moduleToEdit->getParameterByName("KneeWidth") );
   kneeSlider->setSliderName(juce::String(T("Knee")));
   kneeSlider->setDescription(juce::String(T("Transition width between the two slopes")));
   kneeSlider->setDescriptionField(infoField);
-  kneeSlider->setStringConversionFunction(&rojue::decibelsToStringWithUnit1);
+  kneeSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( autoGainButton = new RButton(juce::String(T("AutoGain"))) );
   autoGainButton->assignParameter( moduleToEdit->getParameterByName(T("AutoGain")) );
@@ -1149,7 +1145,7 @@ CompressorModuleEditor::CompressorModuleEditor(CriticalSection *newPlugInLock, C
 
 void CompressorModuleEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AudioModuleEditor::resized();
   int x = 0;
@@ -1214,7 +1210,7 @@ void CompressorModuleEditor::resized()
 ExpanderAudioModule::ExpanderAudioModule(CriticalSection *newPlugInLock, rosic::SoftKneeExpander *newExpanderToWrap)
  : AudioModule(newPlugInLock)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert( newExpanderToWrap != NULL ); // you must pass a valid rosic-object 
   wrappedExpander = newExpanderToWrap;
@@ -1226,57 +1222,57 @@ ExpanderAudioModule::ExpanderAudioModule(CriticalSection *newPlugInLock, rosic::
 
 void ExpanderAudioModule::createStaticParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AutomatableParameter* p;
 
-  p = new AutomatableParameter(plugInLock, T("Attack"), 1.0, 1000.0, 0.01, 10.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, T("Attack"), 1.0, 1000.0, 0.01, 10.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback<SoftKneeExpander>(wrappedExpander, &SoftKneeExpander::setAttackTime);
 
-  p = new AutomatableParameter(plugInLock, T("Release"), 10.0, 1000.0, 0.1, 100.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, T("Release"), 10.0, 1000.0, 0.1, 100.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback<SoftKneeExpander>(wrappedExpander, &SoftKneeExpander::setReleaseTime);
 
-  p = new AutomatableParameter(plugInLock, T("LookAhead"), 0.0, 50.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, T("LookAhead"), 0.0, 50.0, 0.01, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback<SoftKneeExpander>(wrappedExpander, &SoftKneeExpander::setLookAheadTime);
 
-  p = new AutomatableParameter(plugInLock, T("InLevel"), -24.0, 24.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, T("InLevel"), -24.0, 24.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback<SoftKneeExpander>(wrappedExpander, &SoftKneeExpander::setInputGain);
 
-  p = new AutomatableParameter(plugInLock, T("OutLevel"), -24.0, 48.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, T("OutLevel"), -24.0, 48.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback<SoftKneeExpander>(wrappedExpander, &SoftKneeExpander::setOutputGain);
 
-  p = new AutomatableParameter(plugInLock, T("DryWetRatio"), 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, T("DryWetRatio"), 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback<SoftKneeExpander>(wrappedExpander, &SoftKneeExpander::setDryWetRatio);
 
-  p = new AutomatableParameter(plugInLock, T("Threshold"), -48.0, 12.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, T("Threshold"), -48.0, 12.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback<SoftKneeExpander>(wrappedExpander, &SoftKneeExpander::setThreshold);
 
-  p = new AutomatableParameter(plugInLock, T("Ratio"), 1.0, 40.0, 0.01, 1.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, T("Ratio"), 1.0, 40.0, 0.01, 1.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback<SoftKneeExpander>(wrappedExpander, &SoftKneeExpander::setRatio);
 
-  p = new AutomatableParameter(plugInLock, T("KneeWidth"), 0.0, 48.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, T("KneeWidth"), 0.0, 48.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback<SoftKneeExpander>(wrappedExpander, &SoftKneeExpander::setKneeWidth);
 
   //p = new Parameter("Gate", 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
   //addObservedParameter(p);
 
-  for(int i=0; i < (int) observedParameters.size(); i++)
-    observedParameters[i]->resetToDefaultValue(true, true);
+  for(int i=0; i < (int) parameters.size(); i++)
+    parameters[i]->resetToDefaultValue(true, true);
 }
 
 ExpanderModuleEditor::ExpanderModuleEditor(CriticalSection *newPlugInLock, ExpanderAudioModule* newExpanderAudioModule) 
 : AudioModuleEditor(newPlugInLock, newExpanderAudioModule)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert(newExpanderAudioModule != NULL ); // you must pass a valid module here
 
@@ -1299,57 +1295,57 @@ ExpanderModuleEditor::ExpanderModuleEditor(CriticalSection *newPlugInLock, Expan
   attackSlider->assignParameter( moduleToEdit->getParameterByName("Attack") );
   attackSlider->setDescription(juce::String(T("Attack time for the envelope detector")));
   attackSlider->setDescriptionField(infoField);
-  attackSlider->setStringConversionFunction(&rojue::millisecondsToStringWithUnit2);
+  attackSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( releaseSlider = new RSlider (T("ReleaseSlider")) );
   releaseSlider->assignParameter( moduleToEdit->getParameterByName("Release") );
   releaseSlider->setDescription(juce::String(T("Release time for the envelope detector")));
   releaseSlider->setDescriptionField(infoField);
-  releaseSlider->setStringConversionFunction(&rojue::millisecondsToStringWithUnit2);
+  releaseSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( lookAheadSlider = new RSlider (T("LookAheadSlider")) );
   lookAheadSlider->assignParameter( moduleToEdit->getParameterByName("LookAhead") );
   lookAheadSlider->setDescription(juce::String(T("LookAhead time for the envelope detector")));
   lookAheadSlider->setDescriptionField(infoField);
-  lookAheadSlider->setStringConversionFunction(&rojue::millisecondsToStringWithUnit2);
+  lookAheadSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( inLevelSlider = new RSlider (T("InLevelSlider")) );
   inLevelSlider->assignParameter( moduleToEdit->getParameterByName("InLevel") );
   inLevelSlider->setDescription(juce::String(T("Gain for the input signal (pre compression)")));
   inLevelSlider->setDescriptionField(infoField);
-  inLevelSlider->setStringConversionFunction(&rojue::decibelsToStringWithUnit1);
+  inLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( outLevelSlider = new RSlider (T("OutLevelSlider")) );
   outLevelSlider->assignParameter( moduleToEdit->getParameterByName("OutLevel") );
   outLevelSlider->setDescription(juce::String(T("Gain for the output signal (post compression)")));
   outLevelSlider->setDescriptionField(infoField);
-  outLevelSlider->setStringConversionFunction(&rojue::decibelsToStringWithUnit1);
+  outLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( dryWetSlider = new RSlider (T("DryWetSlider")) );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName("DryWetRatio") );
   dryWetSlider->setSliderName(juce::String(T("Dry/Wet")));
   dryWetSlider->setDescription(juce::String(T("Mix ratio between original and compressed signal")));
   dryWetSlider->setDescriptionField(infoField);
-  dryWetSlider->setStringConversionFunction(&rojue::ratioToString0);
+  dryWetSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( thresholdSlider = new RSlider (T("ThresholdSlider")) );
   thresholdSlider->assignParameter( moduleToEdit->getParameterByName("Threshold") );
   thresholdSlider->setDescription(juce::String(T("Threshold above which the signal will be attenuated")));
   thresholdSlider->setDescriptionField(infoField);
-  thresholdSlider->setStringConversionFunction(&rojue::decibelsToStringWithUnit1);
+  thresholdSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( ratioSlider = new RSlider (T("RatioSlider")) );
   ratioSlider->assignParameter( moduleToEdit->getParameterByName("Ratio") );
   ratioSlider->setDescription(juce::String(T("Ratio .....find a good short explanation")));
   ratioSlider->setDescriptionField(infoField);
-  ratioSlider->setStringConversionFunction(&rojue::valueToString2);
+  ratioSlider->setStringConversionFunction(&valueToString2);
 
   addWidget( kneeSlider = new RSlider (T("KneeSlider")) );
   kneeSlider->assignParameter( moduleToEdit->getParameterByName("KneeWidth") );
   kneeSlider->setSliderName(juce::String(T("Knee")));
   kneeSlider->setDescription(juce::String(T("Transition width between the two slopes")));
   kneeSlider->setDescriptionField(infoField);
-  kneeSlider->setStringConversionFunction(&rojue::decibelsToStringWithUnit1);
+  kneeSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( gateButton = new RButton(juce::String(T("Gate"))), true, false); // not used
   gateButton->assignParameter( moduleToEdit->getParameterByName(T("Gate")) );
@@ -1362,7 +1358,7 @@ ExpanderModuleEditor::ExpanderModuleEditor(CriticalSection *newPlugInLock, Expan
 
 void ExpanderModuleEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AudioModuleEditor::resized();
   int x = 0;
@@ -1425,7 +1421,7 @@ void ExpanderModuleEditor::resized()
 LimiterAudioModule::LimiterAudioModule(CriticalSection *newPlugInLock, rosic::Limiter *newLimiterToWrap)
  : AudioModule(newPlugInLock)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert( newLimiterToWrap != NULL ); // you must pass a valid rosic-object 
   wrappedLimiter = newLimiterToWrap;
@@ -1437,46 +1433,46 @@ LimiterAudioModule::LimiterAudioModule(CriticalSection *newPlugInLock, rosic::Li
 
 void LimiterAudioModule::createStaticParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AutomatableParameter* p;
 
-  p = new AutomatableParameter(plugInLock, T("Attack"), 0.0, 10.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, T("Attack"), 0.0, 10.0, 0.01, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback<Limiter>(wrappedLimiter, &Limiter::setAttackTime);
 
-  p = new AutomatableParameter(plugInLock, T("Release"), 10.0, 1000.0, 0.1, 100.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, T("Release"), 10.0, 1000.0, 0.1, 100.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback<Limiter>(wrappedLimiter, &Limiter::setReleaseTime);
 
-  p = new AutomatableParameter(plugInLock, T("LookAhead"), 0.0, 50.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, T("LookAhead"), 0.0, 50.0, 0.01, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback<Limiter>(wrappedLimiter, &Limiter::setLookAheadTime);
 
-  p = new AutomatableParameter(plugInLock, T("InLevel"), -24.0, 24.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, T("InLevel"), -24.0, 24.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback<Limiter>(wrappedLimiter, &Limiter::setInputGain);
 
-  p = new AutomatableParameter(plugInLock, T("OutLevel"), -24.0, 48.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, T("OutLevel"), -24.0, 48.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback<Limiter>(wrappedLimiter, &Limiter::setOutputGain);
 
-  p = new AutomatableParameter(plugInLock, T("DryWetRatio"), 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, T("DryWetRatio"), 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback<Limiter>(wrappedLimiter, &Limiter::setDryWetRatio);
 
-  p = new AutomatableParameter(plugInLock, T("Limit"), -48.0, 12.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, T("Limit"), -48.0, 12.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback<Limiter>(wrappedLimiter, &Limiter::setLimit);
 
-  for(int i=0; i < (int) observedParameters.size(); i++)
-    observedParameters[i]->resetToDefaultValue(true, true);
+  for(int i=0; i < (int) parameters.size(); i++)
+    parameters[i]->resetToDefaultValue(true, true);
 }
 
 LimiterModuleEditor::LimiterModuleEditor(CriticalSection *newPlugInLock, LimiterAudioModule* newLimiterAudioModule) 
 : AudioModuleEditor(newPlugInLock, newLimiterAudioModule)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert(newLimiterAudioModule != NULL ); // you must pass a valid module here
 
@@ -1499,51 +1495,51 @@ LimiterModuleEditor::LimiterModuleEditor(CriticalSection *newPlugInLock, Limiter
   attackSlider->assignParameter( moduleToEdit->getParameterByName(T("Attack")) );
   attackSlider->setDescription(juce::String(T("Attack time for the envelope detector")));
   attackSlider->setDescriptionField(infoField);
-  attackSlider->setStringConversionFunction(&rojue::millisecondsToStringWithUnit2);
+  attackSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( releaseSlider = new RSlider(T("ReleaseSlider")) );
   releaseSlider->assignParameter( moduleToEdit->getParameterByName(T("Release")) );
   releaseSlider->setDescription(juce::String(T("Release time for the envelope detector")));
   releaseSlider->setDescriptionField(infoField);
-  releaseSlider->setStringConversionFunction(&rojue::millisecondsToStringWithUnit2);
+  releaseSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( lookAheadSlider = new RSlider(T("LookAheadSlider")) );
   lookAheadSlider->assignParameter( moduleToEdit->getParameterByName(T("LookAhead")) );
   lookAheadSlider->setDescription(juce::String(T("LookAhead time for the envelope detector")));
   lookAheadSlider->setDescriptionField(infoField);
-  lookAheadSlider->setStringConversionFunction(&rojue::millisecondsToStringWithUnit2);
+  lookAheadSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( inLevelSlider = new RSlider(T("InLevelSlider")) );
   inLevelSlider->assignParameter( moduleToEdit->getParameterByName(T("InLevel")) );
   inLevelSlider->setDescription(juce::String(T("Gain for the input signal (pre compression)")));
   inLevelSlider->setDescriptionField(infoField);
-  inLevelSlider->setStringConversionFunction(&rojue::decibelsToStringWithUnit1);
+  inLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( outLevelSlider = new RSlider(T("OutLevelSlider")) );
   outLevelSlider->assignParameter( moduleToEdit->getParameterByName(T("OutLevel")) );
   outLevelSlider->setDescription(juce::String(T("Gain for the output signal (post compression)")));
   outLevelSlider->setDescriptionField(infoField);
-  outLevelSlider->setStringConversionFunction(&rojue::decibelsToStringWithUnit1);
+  outLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( dryWetSlider = new RSlider(T("DryWetSlider")) );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName(T("DryWetRatio")) );
   dryWetSlider->setSliderName(juce::String(T("Dry/Wet")));
   dryWetSlider->setDescription(juce::String(T("Mix ratio between original and compressed signal")));
   dryWetSlider->setDescriptionField(infoField);
-  dryWetSlider->setStringConversionFunction(&rojue::ratioToString0);
+  dryWetSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( limitSlider = new RSlider(T("LimitSlider")) );
   limitSlider->assignParameter( moduleToEdit->getParameterByName(T("Limit")) );
   limitSlider->setDescription(juce::String(T("Limit above which the signal will be attenuated")));
   limitSlider->setDescriptionField(infoField);
-  limitSlider->setStringConversionFunction(&rojue::decibelsToStringWithUnit1);
+  limitSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   updateWidgetsAccordingToState();
 }
 
 void LimiterModuleEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AudioModuleEditor::resized();
   int x = 0;
@@ -1600,7 +1596,7 @@ void LimiterModuleEditor::resized()
 NoiseGateAudioModule::NoiseGateAudioModule(CriticalSection *newPlugInLock, rosic::NoiseGate *newNoiseGateToWrap)
  : AudioModule(newPlugInLock)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert( newNoiseGateToWrap != NULL ); // you must pass a valid rosic-object 
   wrappedNoiseGate = newNoiseGateToWrap;
@@ -1612,54 +1608,54 @@ NoiseGateAudioModule::NoiseGateAudioModule(CriticalSection *newPlugInLock, rosic
 
 void NoiseGateAudioModule::createStaticParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AutomatableParameter* p;
 
-  p = new AutomatableParameter(plugInLock, T("Attack"), 0.1, 10.0, 0.01, 1.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, T("Attack"), 0.1, 10.0, 0.01, 1.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback<NoiseGate>(wrappedNoiseGate, &NoiseGate::setAttackTime);
 
-  p = new AutomatableParameter(plugInLock, T("Hold"), 0.1, 100.0, 0.01, 10.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, T("Hold"), 0.1, 100.0, 0.01, 10.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback<NoiseGate>(wrappedNoiseGate, &NoiseGate::setHoldTime);
 
-  p = new AutomatableParameter(plugInLock, T("Release"), 1.0, 1000.0, 1.0, 10.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, T("Release"), 1.0, 1000.0, 1.0, 10.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback<NoiseGate>(wrappedNoiseGate, &NoiseGate::setReleaseTime);
 
-  p = new AutomatableParameter(plugInLock, T("LookAhead"), 0.0, 50.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, T("LookAhead"), 0.0, 50.0, 0.01, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback<NoiseGate>(wrappedNoiseGate, &NoiseGate::setLookAheadTime);
 
-  p = new AutomatableParameter(plugInLock, T("InLevel"), -24.0, 24.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, T("InLevel"), -24.0, 24.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback<NoiseGate>(wrappedNoiseGate, &NoiseGate::setInputGain);
 
-  p = new AutomatableParameter(plugInLock, T("OutLevel"), -24.0, 48.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, T("OutLevel"), -24.0, 48.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback<NoiseGate>(wrappedNoiseGate, &NoiseGate::setOutputGain);
 
-  p = new AutomatableParameter(plugInLock, T("DryWetRatio"), 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, T("DryWetRatio"), 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback<NoiseGate>(wrappedNoiseGate, &NoiseGate::setDryWetRatio);
 
-  p = new AutomatableParameter(plugInLock, T("Threshold"), -48.0, 12.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, T("Threshold"), -48.0, 12.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<NoiseGate>(wrappedNoiseGate, &NoiseGate::setThreshold);
 
-  p = new AutomatableParameter(plugInLock, T("Hysteresis"), 0.0, 12.0, 0.1, 3.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, T("Hysteresis"), 0.0, 12.0, 0.1, 3.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<NoiseGate>(wrappedNoiseGate, &NoiseGate::setHysteresis);
 
-  for(int i=0; i < (int) observedParameters.size(); i++)
-    observedParameters[i]->resetToDefaultValue(true, true);
+  for(int i=0; i < (int) parameters.size(); i++)
+    parameters[i]->resetToDefaultValue(true, true);
 }
 
 NoiseGateModuleEditor::NoiseGateModuleEditor(CriticalSection *newPlugInLock, NoiseGateAudioModule* newNoiseGateAudioModule) 
 : AudioModuleEditor(newPlugInLock, newNoiseGateAudioModule)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert(newNoiseGateAudioModule != NULL ); // you must pass a valid module here
 
@@ -1682,63 +1678,63 @@ NoiseGateModuleEditor::NoiseGateModuleEditor(CriticalSection *newPlugInLock, Noi
   attackSlider->assignParameter( moduleToEdit->getParameterByName("Attack") );
   attackSlider->setDescription(juce::String(T("Time for the gate to open")));
   attackSlider->setDescriptionField(infoField);
-  attackSlider->setStringConversionFunction(&rojue::millisecondsToStringWithUnit2);
+  attackSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( holdSlider = new RSlider (T("HoldSlider")) );
   holdSlider->assignParameter( moduleToEdit->getParameterByName("Hold") );
   holdSlider->setDescription(juce::String(T("Time for the gate to stay open after close threshold was undercut")));
   holdSlider->setDescriptionField(infoField);
-  holdSlider->setStringConversionFunction(&rojue::millisecondsToStringWithUnit2);
+  holdSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( releaseSlider = new RSlider (T("ReleaseSlider")) );
   releaseSlider->assignParameter( moduleToEdit->getParameterByName("Release") );
   releaseSlider->setDescription(juce::String(T("Release time for the envelope detector")));
   releaseSlider->setDescriptionField(infoField);
-  releaseSlider->setStringConversionFunction(&rojue::millisecondsToStringWithUnit2);
+  releaseSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( lookAheadSlider = new RSlider (T("LookAheadSlider")) );
   lookAheadSlider->assignParameter( moduleToEdit->getParameterByName("LookAhead") );
   lookAheadSlider->setDescription(juce::String(T("LookAhead time for the envelope detector")));
   lookAheadSlider->setDescriptionField(infoField);
-  lookAheadSlider->setStringConversionFunction(&rojue::millisecondsToStringWithUnit2);
+  lookAheadSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( inLevelSlider = new RSlider (T("InLevelSlider")) );
   inLevelSlider->assignParameter( moduleToEdit->getParameterByName("InLevel") );
   inLevelSlider->setDescription(juce::String(T("Gain for the input signal (pre compression)")));
   inLevelSlider->setDescriptionField(infoField);
-  inLevelSlider->setStringConversionFunction(&rojue::decibelsToStringWithUnit1);
+  inLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( outLevelSlider = new RSlider (T("OutLevelSlider")) );
   outLevelSlider->assignParameter( moduleToEdit->getParameterByName("OutLevel") );
   outLevelSlider->setDescription(juce::String(T("Gain for the output signal (post compression)")));
   outLevelSlider->setDescriptionField(infoField);
-  outLevelSlider->setStringConversionFunction(&rojue::decibelsToStringWithUnit1);
+  outLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( dryWetSlider = new RSlider (T("DryWetSlider")) );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName("DryWetRatio") );
   dryWetSlider->setSliderName(juce::String(T("Dry/Wet")));
   dryWetSlider->setDescription(juce::String(T("Mix ratio between original and compressed signal")));
   dryWetSlider->setDescriptionField(infoField);
-  dryWetSlider->setStringConversionFunction(&rojue::ratioToString0);
+  dryWetSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( thresholdSlider = new RSlider (T("ThresholdSlider")) );
   thresholdSlider->assignParameter( moduleToEdit->getParameterByName("Threshold") );
   thresholdSlider->setDescription(juce::String(T("Threshold for the gate to open")));
   thresholdSlider->setDescriptionField(infoField);
-  thresholdSlider->setStringConversionFunction(&rojue::decibelsToStringWithUnit1);
+  thresholdSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( hysteresisSlider = new RSlider (T("HysteresisSlider")) );
   hysteresisSlider->assignParameter( moduleToEdit->getParameterByName("Hysteresis") );
   hysteresisSlider->setDescription(juce::String(T("Difference between opening and closing threshold")));
   hysteresisSlider->setDescriptionField(infoField);
-  hysteresisSlider->setStringConversionFunction(&rojue::decibelsToStringWithUnit1);
+  hysteresisSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   updateWidgetsAccordingToState();
 }
 
 void NoiseGateModuleEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AudioModuleEditor::resized();
   int x = 0;
@@ -1802,7 +1798,7 @@ void NoiseGateModuleEditor::resized()
 CombBankAudioModule::CombBankAudioModule(CriticalSection *newPlugInLock, rosic::CombBank *newCombBankToWrap)
  : AudioModule(newPlugInLock)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert( newCombBankToWrap != NULL ); // you must pass a valid rosic-object 
   wrappedCombBank = newCombBankToWrap;
@@ -1814,66 +1810,66 @@ CombBankAudioModule::CombBankAudioModule(CriticalSection *newPlugInLock, rosic::
 
 void CombBankAudioModule::createStaticParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AutomatableParameter* p;
 
-  p = new AutomatableParameter(plugInLock, "DryWetRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "DryWetRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedCombBank, &CombBank::setDryWetRatio);
 
-  p = new AutomatableParameter(plugInLock, "Level", -48.0, 6.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "Level", -48.0, 6.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedCombBank, &CombBank::setLevel);
 
-  p = new AutomatableParameter(plugInLock, "Frequency", 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "Frequency", 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedCombBank, &CombBank::setReferenceFrequency);
 
-  p = new AutomatableParameter(plugInLock, "Detune", -1.0, 1.0, 0.0, 0.0, Parameter::LINEAR_BIPOLAR);
+  p = new AutomatableParameter(lock, "Detune", -1.0, 1.0, 0.0, 0.0, Parameter::LINEAR_BIPOLAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedCombBank, &CombBank::setDetune);
 
-  p = new AutomatableParameter(plugInLock, "Pan1", -1.0, 1.0, 0.0, 0.0, Parameter::LINEAR_BIPOLAR);
+  p = new AutomatableParameter(lock, "Pan1", -1.0, 1.0, 0.0, 0.0, Parameter::LINEAR_BIPOLAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedCombBank, &CombBank::setPan1);
 
-  p = new AutomatableParameter(plugInLock, "Pan2", -1.0, 1.0, 0.0, 0.0, Parameter::LINEAR_BIPOLAR);
+  p = new AutomatableParameter(lock, "Pan2", -1.0, 1.0, 0.0, 0.0, Parameter::LINEAR_BIPOLAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedCombBank, &CombBank::setPan2);
 
-  p = new AutomatableParameter(plugInLock, "OddOnly", 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
+  p = new AutomatableParameter(lock, "OddOnly", 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombBank, &CombBank::setOddOnlyMode);
 
-  p = new AutomatableParameter(plugInLock, "DecayTime", 0.1, 10.0, 0.1, 3.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "DecayTime", 0.1, 10.0, 0.1, 3.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedCombBank, &CombBank::setDecayTime);
 
-  p = new AutomatableParameter(plugInLock, "HighDecayScale", 0.1, 10.0, 0.01, 0.3, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "HighDecayScale", 0.1, 10.0, 0.01, 0.3, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedCombBank, &CombBank::setHighDecayScale);
 
-  p = new AutomatableParameter(plugInLock, "LowDecayScale", 0.1, 10.0, 0.01, 1.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "LowDecayScale", 0.1, 10.0, 0.01, 1.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedCombBank, &CombBank::setLowDecayScale);
 
-  p = new AutomatableParameter(plugInLock, "HighCrossoverFrequency", 20.0, 20000.0, 0.0, 4000.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "HighCrossoverFrequency", 20.0, 20000.0, 0.0, 4000.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedCombBank, &CombBank::setHighCrossoverFreq);
 
-  p = new AutomatableParameter(plugInLock, "LowCrossoverFrequency", 20.0, 20000.0, 0.0, 250.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "LowCrossoverFrequency", 20.0, 20000.0, 0.0, 250.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedCombBank, &CombBank::setLowCrossoverFreq);
 
-  for(int i=0; i < (int) observedParameters.size(); i++)
-    observedParameters[i]->resetToDefaultValue(true, true);
+  for(int i=0; i < (int) parameters.size(); i++)
+    parameters[i]->resetToDefaultValue(true, true);
 }
 
 CombBankModuleEditor::CombBankModuleEditor(CriticalSection *newPlugInLock, CombBankAudioModule* newCombBankAudioModule) 
 : AudioModuleEditor(newPlugInLock, newCombBankAudioModule)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert(newCombBankAudioModule != NULL ); // you must pass a valid module here
 
@@ -1899,69 +1895,69 @@ CombBankModuleEditor::CombBankModuleEditor(CriticalSection *newPlugInLock, CombB
   dryWetSlider->setSliderName(juce::String(T("Dry/Wet")));
   dryWetSlider->setDescription(juce::String(T("Ratio between dry and wet signal")));
   dryWetSlider->setDescriptionField(infoField);
-  dryWetSlider->setStringConversionFunction(&rojue::ratioToString0);
+  dryWetSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( frequencySlider = new RSlider (T("FrequencySlider")) );
   frequencySlider->assignParameter( moduleToEdit->getParameterByName("Frequency") );
   frequencySlider->setDescription(juce::String(T("Fundamental frequency of the resonator")));
   frequencySlider->setDescriptionField(infoField);
-  frequencySlider->setStringConversionFunction(&rojue::hertzToStringWithUnitTotal5);
+  frequencySlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( levelSlider = new RSlider (T("LevelSlider")) );
   levelSlider->assignParameter( moduleToEdit->getParameterByName("Level") );
   levelSlider->setDescription(juce::String(T("Overall output level")));
   levelSlider->setDescriptionField(infoField);
-  levelSlider->setStringConversionFunction(&rojue::decibelsToStringWithUnit1);
+  levelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( detuneSlider = new RSlider (T("DetuneSlider")) );
   detuneSlider->assignParameter( moduleToEdit->getParameterByName("Detune") );
   detuneSlider->setDescription(juce::String(T("Detuning between the two resonators")));
   detuneSlider->setDescriptionField(infoField);
-  detuneSlider->setStringConversionFunction(&rojue::semitonesToStringWithUnit2);
+  detuneSlider->setStringConversionFunction(&semitonesToStringWithUnit2);
 
   addWidget( pan1Slider = new RSlider (T("Pan1Slider")) );
   pan1Slider->assignParameter( moduleToEdit->getParameterByName("Pan1") );
   pan1Slider->setDescription(juce::String(T("Panorama position of resonator 1")));
   pan1Slider->setDescriptionField(infoField);
-  pan1Slider->setStringConversionFunction(&rojue::valueToString2);
+  pan1Slider->setStringConversionFunction(&valueToString2);
 
   addWidget( pan2Slider = new RSlider (T("Pan2Slider")) );
   pan2Slider->assignParameter( moduleToEdit->getParameterByName("Pan2") );
   pan2Slider->setDescription(juce::String(T("Panorama position of resonator 2")));
   pan2Slider->setDescriptionField(infoField);
-  pan2Slider->setStringConversionFunction(&rojue::valueToString2);
+  pan2Slider->setStringConversionFunction(&valueToString2);
 
   addWidget( decayTimeSlider = new RSlider (T("DecayTimeSlider")) );
   decayTimeSlider->assignParameter( moduleToEdit->getParameterByName("DecayTime") );
   decayTimeSlider->setDescription(juce::String(T("Time for the tail to decay to -60 dB")));
   decayTimeSlider->setDescriptionField(infoField);
-  decayTimeSlider->setStringConversionFunction(&rojue::secondsToStringWithUnit3);
+  decayTimeSlider->setStringConversionFunction(&secondsToStringWithUnit3);
 
   addWidget( highDecayScaleSlider = new RSlider (T("HighDecayScaleSlider")) );
   highDecayScaleSlider->assignParameter( moduleToEdit->getParameterByName("HighDecayScale") );
   highDecayScaleSlider->setDescription(juce::String(T("Scaler for the decay-time at high frequencies")));
   highDecayScaleSlider->setDescriptionField(infoField);
-  highDecayScaleSlider->setStringConversionFunction(&rojue::valueToString2);
+  highDecayScaleSlider->setStringConversionFunction(&valueToString2);
 
   addWidget( lowDecayScaleSlider = new RSlider (T("LowDecayScaleSlider")) );
   lowDecayScaleSlider->assignParameter( moduleToEdit->getParameterByName("LowDecayScale") );
   lowDecayScaleSlider->setDescription(juce::String(T("Scaler for the decay-time at low frequencies")));
   lowDecayScaleSlider->setDescriptionField(infoField);
-  lowDecayScaleSlider->setStringConversionFunction(&rojue::valueToString2);
+  lowDecayScaleSlider->setStringConversionFunction(&valueToString2);
 
   addWidget( highFreqSlider = new RSlider (T("HighFreqSlider")) );
   highFreqSlider->assignParameter( moduleToEdit->getParameterByName("HighCrossoverFrequency") );
   highFreqSlider->setDescription(juce::String(T("Crossover frequency between mid and high frequencies")));
   highFreqSlider->setSliderName(juce::String(T("HighFreq")));
   highFreqSlider->setDescriptionField(infoField);
-  highFreqSlider->setStringConversionFunction(&rojue::hertzToStringWithUnitTotal5);
+  highFreqSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( lowFreqSlider = new RSlider (T("LowFreqSlider")) );
   lowFreqSlider->assignParameter( moduleToEdit->getParameterByName("LowCrossoverFrequency") );
   lowFreqSlider->setSliderName(juce::String(T("LowFreq")));
   lowFreqSlider->setDescription(juce::String(T("Crossover frequency between low and mid frequencies")));
   lowFreqSlider->setDescriptionField(infoField);
-  lowFreqSlider->setStringConversionFunction(&rojue::hertzToStringWithUnitTotal5);
+  lowFreqSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( oddOnlyButton = new RButton(juce::String(T("OddOnly"))) );
   oddOnlyButton->assignParameter( moduleToEdit->getParameterByName(T("OddOnly")) );
@@ -1974,7 +1970,7 @@ CombBankModuleEditor::CombBankModuleEditor(CriticalSection *newPlugInLock, CombB
 
 void CombBankModuleEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AudioModuleEditor::resized();
   int x = 0;
@@ -2033,7 +2029,7 @@ void CombBankModuleEditor::resized()
 CombResonatorAudioModule::CombResonatorAudioModule(CriticalSection *newPlugInLock, rosic::CombResonatorStereo *newCombResonatorToWrap)
  : AudioModule(newPlugInLock)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert( newCombResonatorToWrap != NULL ); // you must pass a valid rosic-object 
   wrappedCombResonator = newCombResonatorToWrap;
@@ -2045,66 +2041,66 @@ CombResonatorAudioModule::CombResonatorAudioModule(CriticalSection *newPlugInLoc
 
 void CombResonatorAudioModule::createStaticParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AutomatableParameter* p;
 
-  p = new AutomatableParameter(plugInLock, "DryWetRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "DryWetRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedCombResonator, &CombResonatorStereo::setDryWetRatio);
 
-  p = new AutomatableParameter(plugInLock, "Level", -48.0, 6.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "Level", -48.0, 6.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedCombResonator, &CombResonatorStereo::setLevel);
 
-  p = new AutomatableParameter(plugInLock, "Frequency", 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "Frequency", 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedCombResonator, &CombResonatorStereo::setFrequency);
 
-  p = new AutomatableParameter(plugInLock, "Detune", -1.0, 1.0, 0.0, 0.0, Parameter::LINEAR_BIPOLAR);
+  p = new AutomatableParameter(lock, "Detune", -1.0, 1.0, 0.0, 0.0, Parameter::LINEAR_BIPOLAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedCombResonator, &CombResonatorStereo::setDetune);
 
-  p = new AutomatableParameter(plugInLock, "Pan1", -1.0, 1.0, 0.0, 0.0, Parameter::LINEAR_BIPOLAR);
+  p = new AutomatableParameter(lock, "Pan1", -1.0, 1.0, 0.0, 0.0, Parameter::LINEAR_BIPOLAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedCombResonator, &CombResonatorStereo::setPan1);
 
-  p = new AutomatableParameter(plugInLock, "Pan2", -1.0, 1.0, 0.0, 0.0, Parameter::LINEAR_BIPOLAR);
+  p = new AutomatableParameter(lock, "Pan2", -1.0, 1.0, 0.0, 0.0, Parameter::LINEAR_BIPOLAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedCombResonator, &CombResonatorStereo::setPan2);
 
-  p = new AutomatableParameter(plugInLock, "OddOnly", 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
+  p = new AutomatableParameter(lock, "OddOnly", 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombResonator, &CombResonatorStereo::setOddOnlyMode);
 
-  p = new AutomatableParameter(plugInLock, "DecayTime", 0.1, 10.0, 0.1, 3.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "DecayTime", 0.1, 10.0, 0.1, 3.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedCombResonator, &CombResonatorStereo::setDecayTime);
 
-  p = new AutomatableParameter(plugInLock, "HighDecayScale", 0.1, 10.0, 0.01, 0.3, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "HighDecayScale", 0.1, 10.0, 0.01, 0.3, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedCombResonator, &CombResonatorStereo::setHighDecayScale);
 
-  p = new AutomatableParameter(plugInLock, "LowDecayScale", 0.1, 10.0, 0.01, 1.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "LowDecayScale", 0.1, 10.0, 0.01, 1.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedCombResonator, &CombResonatorStereo::setLowDecayScale);
 
-  p = new AutomatableParameter(plugInLock, "HighCrossoverFrequency", 20.0, 20000.0, 0.0, 4000.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "HighCrossoverFrequency", 20.0, 20000.0, 0.0, 4000.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedCombResonator, &CombResonatorStereo::setHighCrossoverFreq);
 
-  p = new AutomatableParameter(plugInLock, "LowCrossoverFrequency", 20.0, 20000.0, 0.0, 250.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "LowCrossoverFrequency", 20.0, 20000.0, 0.0, 250.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedCombResonator, &CombResonatorStereo::setLowCrossoverFreq);
 
-  for(int i=0; i < (int) observedParameters.size(); i++)
-    observedParameters[i]->resetToDefaultValue(true, true);
+  for(int i=0; i < (int) parameters.size(); i++)
+    parameters[i]->resetToDefaultValue(true, true);
 }
 
 CombResonatorModuleEditor::CombResonatorModuleEditor(CriticalSection *newPlugInLock, CombResonatorAudioModule* newCombResonatorAudioModule) 
 : AudioModuleEditor(newPlugInLock, newCombResonatorAudioModule)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert(newCombResonatorAudioModule != NULL ); // you must pass a valid module here
 
@@ -2130,69 +2126,69 @@ CombResonatorModuleEditor::CombResonatorModuleEditor(CriticalSection *newPlugInL
   dryWetSlider->setSliderName(juce::String(T("Dry/Wet")));
   dryWetSlider->setDescription(juce::String(T("Ratio between dry and wet signal")));
   dryWetSlider->setDescriptionField(infoField);
-  dryWetSlider->setStringConversionFunction(&rojue::ratioToString0);
+  dryWetSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( frequencySlider = new RSlider (T("FrequencySlider")) );
   frequencySlider->assignParameter( moduleToEdit->getParameterByName("Frequency") );
   frequencySlider->setDescription(juce::String(T("Fundamental frequency of the resonator")));
   frequencySlider->setDescriptionField(infoField);
-  frequencySlider->setStringConversionFunction(&rojue::hertzToStringWithUnitTotal5);
+  frequencySlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( levelSlider = new RSlider (T("LevelSlider")) );
   levelSlider->assignParameter( moduleToEdit->getParameterByName("Level") );
   levelSlider->setDescription(juce::String(T("Overall output level")));
   levelSlider->setDescriptionField(infoField);
-  levelSlider->setStringConversionFunction(&rojue::decibelsToStringWithUnit1);
+  levelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( detuneSlider = new RSlider (T("DetuneSlider")) );
   detuneSlider->assignParameter( moduleToEdit->getParameterByName("Detune") );
   detuneSlider->setDescription(juce::String(T("Detuning between the two resonators")));
   detuneSlider->setDescriptionField(infoField);
-  detuneSlider->setStringConversionFunction(&rojue::semitonesToStringWithUnit2);
+  detuneSlider->setStringConversionFunction(&semitonesToStringWithUnit2);
 
   addWidget( pan1Slider = new RSlider (T("Pan1Slider")) );
   pan1Slider->assignParameter( moduleToEdit->getParameterByName("Pan1") );
   pan1Slider->setDescription(juce::String(T("Panorama position of resonator 1")));
   pan1Slider->setDescriptionField(infoField);
-  pan1Slider->setStringConversionFunction(&rojue::valueToString2);
+  pan1Slider->setStringConversionFunction(&valueToString2);
 
   addWidget( pan2Slider = new RSlider (T("Pan2Slider")) );
   pan2Slider->assignParameter( moduleToEdit->getParameterByName("Pan2") );
   pan2Slider->setDescription(juce::String(T("Panorama position of resonator 2")));
   pan2Slider->setDescriptionField(infoField);
-  pan2Slider->setStringConversionFunction(&rojue::valueToString2);
+  pan2Slider->setStringConversionFunction(&valueToString2);
 
   addWidget( decayTimeSlider = new RSlider (T("DecayTimeSlider")) );
   decayTimeSlider->assignParameter( moduleToEdit->getParameterByName("DecayTime") );
   decayTimeSlider->setDescription(juce::String(T("Time for the tail to decay to -60 dB")));
   decayTimeSlider->setDescriptionField(infoField);
-  decayTimeSlider->setStringConversionFunction(&rojue::secondsToStringWithUnit3);
+  decayTimeSlider->setStringConversionFunction(&secondsToStringWithUnit3);
 
   addWidget( highDecayScaleSlider = new RSlider (T("HighDecayScaleSlider")) );
   highDecayScaleSlider->assignParameter( moduleToEdit->getParameterByName("HighDecayScale") );
   highDecayScaleSlider->setDescription(juce::String(T("Scaler for the decay-time at high frequencies")));
   highDecayScaleSlider->setDescriptionField(infoField);
-  highDecayScaleSlider->setStringConversionFunction(&rojue::valueToString2);
+  highDecayScaleSlider->setStringConversionFunction(&valueToString2);
 
   addWidget( lowDecayScaleSlider = new RSlider (T("LowDecayScaleSlider")) );
   lowDecayScaleSlider->assignParameter( moduleToEdit->getParameterByName("LowDecayScale") );
   lowDecayScaleSlider->setDescription(juce::String(T("Scaler for the decay-time at low frequencies")));
   lowDecayScaleSlider->setDescriptionField(infoField);
-  lowDecayScaleSlider->setStringConversionFunction(&rojue::valueToString2);
+  lowDecayScaleSlider->setStringConversionFunction(&valueToString2);
 
   addWidget( highFreqSlider = new RSlider (T("HighFreqSlider")) );
   highFreqSlider->assignParameter( moduleToEdit->getParameterByName("HighCrossoverFrequency") );
   highFreqSlider->setDescription(juce::String(T("Crossover frequency between mid and high frequencies")));
   highFreqSlider->setSliderName(juce::String(T("HighFreq")));
   highFreqSlider->setDescriptionField(infoField);
-  highFreqSlider->setStringConversionFunction(&rojue::hertzToStringWithUnitTotal5);
+  highFreqSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( lowFreqSlider = new RSlider(T("LowFreqSlider")) );
   lowFreqSlider->assignParameter( moduleToEdit->getParameterByName("LowCrossoverFrequency") );
   lowFreqSlider->setSliderName(juce::String(T("LowFreq")));
   lowFreqSlider->setDescription(juce::String(T("Crossover frequency between low and mid frequencies")));
   lowFreqSlider->setDescriptionField(infoField);
-  lowFreqSlider->setStringConversionFunction(&rojue::hertzToStringWithUnitTotal5);
+  lowFreqSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( oddOnlyButton = new RButton(juce::String(T("OddOnly"))) );
   oddOnlyButton->assignParameter( moduleToEdit->getParameterByName(T("OddOnly")) );
@@ -2205,7 +2201,7 @@ CombResonatorModuleEditor::CombResonatorModuleEditor(CriticalSection *newPlugInL
 
 void CombResonatorModuleEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AudioModuleEditor::resized();
   int x = 0;
@@ -2265,7 +2261,7 @@ DualTwoPoleFilterAudioModule::DualTwoPoleFilterAudioModule(CriticalSection *newP
                                                            rosic::DualTwoPoleFilter *newDualTwoPoleFilterToWrap)
                                                             : AudioModule(newPlugInLock)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert( newDualTwoPoleFilterToWrap != NULL ); // you must pass a valid rosic-object 
   wrappedDualTwoPoleFilter = newDualTwoPoleFilterToWrap;
@@ -2277,67 +2273,67 @@ DualTwoPoleFilterAudioModule::DualTwoPoleFilterAudioModule(CriticalSection *newP
 
 void DualTwoPoleFilterAudioModule::createStaticParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AutomatableParameter* p;
 
-  p = new ParameterTwoPoleFilterMode(plugInLock, juce::String(T("Mode1")));
+  p = new ParameterTwoPoleFilterMode(lock, juce::String(T("Mode1")));
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedDualTwoPoleFilter, &DualTwoPoleFilter::setMode1);
 
-  p = new AutomatableParameter(plugInLock, "Frequency1", 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "Frequency1", 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedDualTwoPoleFilter, &DualTwoPoleFilter::setFrequency1);
 
-  p = new AutomatableParameter(plugInLock, "Gain1", -48, 48.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "Gain1", -48, 48.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedDualTwoPoleFilter, &DualTwoPoleFilter::setGain1);
 
-  p = new AutomatableParameter(plugInLock, "Bandwidth1", 0.2, 6.0, 0.01, 1.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "Bandwidth1", 0.2, 6.0, 0.01, 1.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedDualTwoPoleFilter, &DualTwoPoleFilter::setBandwidth1);
 
-  p = new ParameterTwoPoleFilterMode(plugInLock, juce::String(T("Mode2")));
+  p = new ParameterTwoPoleFilterMode(lock, juce::String(T("Mode2")));
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedDualTwoPoleFilter, &DualTwoPoleFilter::setMode2);
 
-  p = new AutomatableParameter(plugInLock, "Frequency2", 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "Frequency2", 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedDualTwoPoleFilter, &DualTwoPoleFilter::setFrequency2);
 
-  p = new AutomatableParameter(plugInLock, "Gain2", -48, 48.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "Gain2", -48, 48.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedDualTwoPoleFilter, &DualTwoPoleFilter::setGain2);
 
-  p = new AutomatableParameter(plugInLock, "Bandwidth2", 0.2, 6.0, 0.01, 1.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "Bandwidth2", 0.2, 6.0, 0.01, 1.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedDualTwoPoleFilter, &DualTwoPoleFilter::setBandwidth2);
 
-  p = new AutomatableParameter(plugInLock, "SerialParallelBlend", 0.0, 1.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "SerialParallelBlend", 0.0, 1.0, 0.01, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedDualTwoPoleFilter, &DualTwoPoleFilter::setSerialParallelBlend);
 
-  p = new AutomatableParameter(plugInLock, "FrequencyScale", 0.125, 8.0, 0.001, 1.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "FrequencyScale", 0.125, 8.0, 0.001, 1.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedDualTwoPoleFilter, &DualTwoPoleFilter::setFrequencyScale);
 
-  p = new AutomatableParameter(plugInLock, "GainScale", 0.125, 8.0, 0.001, 1.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "GainScale", 0.125, 8.0, 0.001, 1.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedDualTwoPoleFilter, &DualTwoPoleFilter::setGainScale);
 
-  p = new AutomatableParameter(plugInLock, "BandwidthScale", 0.125, 8.0, 0.001, 1.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "BandwidthScale", 0.125, 8.0, 0.001, 1.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedDualTwoPoleFilter, &DualTwoPoleFilter::setBandwidthScale);
 
-  for(int i=0; i < (int) observedParameters.size(); i++)
-    observedParameters[i]->resetToDefaultValue(true, true);
+  for(int i=0; i < (int) parameters.size(); i++)
+    parameters[i]->resetToDefaultValue(true, true);
 }
 
 DualTwoPoleFilterModuleEditor::DualTwoPoleFilterModuleEditor(CriticalSection *newPlugInLock, 
                                                              DualTwoPoleFilterAudioModule* newDualTwoPoleFilterAudioModule) 
 : AudioModuleEditor(newPlugInLock, newDualTwoPoleFilterAudioModule)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert(newDualTwoPoleFilterAudioModule != NULL ); // you must pass a valid module here
   twoPoleFilterModuleToEdit = newDualTwoPoleFilterAudioModule;
@@ -2367,19 +2363,19 @@ DualTwoPoleFilterModuleEditor::DualTwoPoleFilterModuleEditor(CriticalSection *ne
   frequencySlider1->assignParameter( moduleToEdit->getParameterByName("Frequency1") );
   frequencySlider1->setDescription(juce::String(T("Characteristic frequency of the first filter")));
   frequencySlider1->setDescriptionField(infoField);
-  frequencySlider1->setStringConversionFunction(&rojue::hertzToStringWithUnitTotal5);
+  frequencySlider1->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( gainSlider1 = new RSlider (T("GainSlider1")) );
   gainSlider1->assignParameter( moduleToEdit->getParameterByName("Gain1") );
   gainSlider1->setDescription(juce::String(T("Gain of the first filter")));
   gainSlider1->setDescriptionField(infoField);
-  gainSlider1->setStringConversionFunction(&rojue::decibelsToStringWithUnit1);
+  gainSlider1->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( bandwidthSlider1 = new RSlider (T("BandwidthSlider1")) );
   bandwidthSlider1->assignParameter( moduleToEdit->getParameterByName("Bandwidth1") );
   bandwidthSlider1->setDescription(juce::String(T("Bandwidth of the first filter")));
   bandwidthSlider1->setDescriptionField(infoField);
-  bandwidthSlider1->setStringConversionFunction(&rojue::octavesToStringWithUnit2);
+  bandwidthSlider1->setStringConversionFunction(&octavesToStringWithUnit2);
 
   addWidget( modeComboBox2 = new RComboBox(juce::String(T("ModeComboBox2"))) );
   modeComboBox2->assignParameter( moduleToEdit->getParameterByName(T("Mode2")) );
@@ -2391,46 +2387,46 @@ DualTwoPoleFilterModuleEditor::DualTwoPoleFilterModuleEditor(CriticalSection *ne
   frequencySlider2->assignParameter( moduleToEdit->getParameterByName("Frequency2") );
   frequencySlider2->setDescription(juce::String(T("Characteristic frequency of the second filter")));
   frequencySlider2->setDescriptionField(infoField);
-  frequencySlider2->setStringConversionFunction(&rojue::hertzToStringWithUnitTotal5);
+  frequencySlider2->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( gainSlider2 = new RSlider (T("GainSlider2")) );
   gainSlider2->assignParameter( moduleToEdit->getParameterByName("Gain2") );
   gainSlider2->setDescription(juce::String(T("Gain of the second filter")));
   gainSlider2->setDescriptionField(infoField);
-  gainSlider2->setStringConversionFunction(&rojue::decibelsToStringWithUnit1);
+  gainSlider2->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( bandwidthSlider2 = new RSlider (T("BandwidthSlider2")) );
   bandwidthSlider2->assignParameter( moduleToEdit->getParameterByName("Bandwidth2") );
   bandwidthSlider2->setDescription(juce::String(T("Bandwidth of the second filter")));
   bandwidthSlider2->setDescriptionField(infoField);
-  bandwidthSlider2->setStringConversionFunction(&rojue::octavesToStringWithUnit2);
+  bandwidthSlider2->setStringConversionFunction(&octavesToStringWithUnit2);
 
   addWidget( serialParallelBlendSlider = new RSlider (T("SerialParallelBlendSlider")) );
   serialParallelBlendSlider->assignParameter( moduleToEdit->getParameterByName("SerialParallelBlend") );
   serialParallelBlendSlider->setSliderName(juce::String(T("S/P")));
   serialParallelBlendSlider->setDescription(juce::String(T("Varies smoothly between serial and parallel connection")));
   serialParallelBlendSlider->setDescriptionField(infoField);
-  serialParallelBlendSlider->setStringConversionFunction(&rojue::ratioToString0);
+  serialParallelBlendSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( frequencyScaleSlider = new RSlider (T("FrequencyScaleSlider")) );
   frequencyScaleSlider->assignParameter( moduleToEdit->getParameterByName("FrequencyScale") );
   frequencyScaleSlider->setDescription(juce::String(T("Scales the frequency of both filters")));
   frequencyScaleSlider->setDescriptionField(infoField);
-  frequencyScaleSlider->setStringConversionFunction(&rojue::valueToString3);
+  frequencyScaleSlider->setStringConversionFunction(&valueToString3);
 
   addWidget( gainScaleSlider = new RSlider (T("GainScaleSlider")) );
   gainScaleSlider->assignParameter( moduleToEdit->getParameterByName("GainScale") );
   gainScaleSlider->setSliderName(juce::String(T("GnScl")));
   gainScaleSlider->setDescription(juce::String(T("Scales the gain of both filters")));
   gainScaleSlider->setDescriptionField(infoField);
-  gainScaleSlider->setStringConversionFunction(&rojue::valueToString3);
+  gainScaleSlider->setStringConversionFunction(&valueToString3);
 
   addWidget( bandwidthScaleSlider = new RSlider (T("BandwidthScaleSlider")) );
   bandwidthScaleSlider->assignParameter( moduleToEdit->getParameterByName("BandwidthScale") );
   bandwidthScaleSlider->setSliderName(juce::String(T("BwScl")));
   bandwidthScaleSlider->setDescription(juce::String(T("Scales the bandwidth of both filters")));
   bandwidthScaleSlider->setDescriptionField(infoField);
-  bandwidthScaleSlider->setStringConversionFunction(&rojue::valueToString3);
+  bandwidthScaleSlider->setStringConversionFunction(&valueToString3);
 
   updateWidgetsAccordingToState();
   updateWidgetEnablement();
@@ -2438,7 +2434,7 @@ DualTwoPoleFilterModuleEditor::DualTwoPoleFilterModuleEditor(CriticalSection *ne
 
 void DualTwoPoleFilterModuleEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AudioModuleEditor::resized();
   int x = 0;
@@ -2502,13 +2498,13 @@ void DualTwoPoleFilterModuleEditor::resized()
 
 void DualTwoPoleFilterModuleEditor::rComboBoxChanged(RComboBox *rComboBoxThatHasChanged)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   updateWidgetEnablement();
 }
 
 void DualTwoPoleFilterModuleEditor::updateWidgetEnablement()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   if( twoPoleFilterModuleToEdit == NULL )
     return;
@@ -2531,7 +2527,7 @@ void DualTwoPoleFilterModuleEditor::updateWidgetEnablement()
 FourPoleFilterAudioModule::FourPoleFilterAudioModule(CriticalSection *newPlugInLock, rosic::FourPoleFilter *newFourPoleFilterToWrap)
  : AudioModule(newPlugInLock)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert( newFourPoleFilterToWrap != NULL ); // you must pass a valid rosic-object 
   wrappedFourPoleFilter = newFourPoleFilterToWrap;
@@ -2543,36 +2539,36 @@ FourPoleFilterAudioModule::FourPoleFilterAudioModule(CriticalSection *newPlugInL
 
 void FourPoleFilterAudioModule::createStaticParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AutomatableParameter* p;
 
-  p = new ParameterFourPoleFilterMode(plugInLock);
+  p = new ParameterFourPoleFilterMode(lock);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedFourPoleFilter, &FourPoleFilter::setMode);
 
-  p = new AutomatableParameter(plugInLock, "Frequency", 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "Frequency", 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedFourPoleFilter, &FourPoleFilter::setFrequency);
 
-  p = new AutomatableParameter(plugInLock, "Gain", -48, 48.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "Gain", -48, 48.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedFourPoleFilter, &FourPoleFilter::setGain);
 
   // not yet used:
-  //p = new AutomatableParameter(plugInLock, "Bandwidth", 0.2, 6.0, 0.01, 1.0, Parameter::EXPONENTIAL);
+  //p = new AutomatableParameter(lock, "Bandwidth", 0.2, 6.0, 0.01, 1.0, Parameter::EXPONENTIAL);
   //addObservedParameter(p); 
   //p->setValueChangeCallback(wrappedFourPoleFilter, &FourPoleFilter::setBandwidth);
 
-  for(int i=0; i < (int) observedParameters.size(); i++)
-    observedParameters[i]->resetToDefaultValue(true, true);
+  for(int i=0; i < (int) parameters.size(); i++)
+    parameters[i]->resetToDefaultValue(true, true);
 }
 
 FourPoleFilterModuleEditor::FourPoleFilterModuleEditor(CriticalSection *newPlugInLock, 
                                                        FourPoleFilterAudioModule* newFourPoleFilterAudioModule) 
 : AudioModuleEditor(newPlugInLock, newFourPoleFilterAudioModule)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert(newFourPoleFilterAudioModule != NULL ); // you must pass a valid module here
   fourPoleFilterModuleToEdit = newFourPoleFilterAudioModule;
@@ -2587,19 +2583,19 @@ FourPoleFilterModuleEditor::FourPoleFilterModuleEditor(CriticalSection *newPlugI
   frequencySlider->assignParameter( moduleToEdit->getParameterByName("Frequency") );
   frequencySlider->setDescription(juce::String(T("Characteristic frequency of the filter")));
   frequencySlider->setDescriptionField(infoField);
-  frequencySlider->setStringConversionFunction(&rojue::hertzToStringWithUnitTotal5);
+  frequencySlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( gainSlider = new RSlider (T("GainSlider")) );
   gainSlider->assignParameter( moduleToEdit->getParameterByName("Gain") );
   gainSlider->setDescription(juce::String(T("Gain of the filter")));
   gainSlider->setDescriptionField(infoField);
-  gainSlider->setStringConversionFunction(&rojue::decibelsToStringWithUnit1);
+  gainSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( bandwidthSlider = new RSlider (T("BandwidthSlider")) );
   bandwidthSlider->assignParameter( moduleToEdit->getParameterByName("Bandwidth") );
   bandwidthSlider->setDescription(juce::String(T("Bandwidth of the filter")));
   bandwidthSlider->setDescriptionField(infoField);
-  bandwidthSlider->setStringConversionFunction(&rojue::octavesToStringWithUnit2);
+  bandwidthSlider->setStringConversionFunction(&octavesToStringWithUnit2);
 
   updateWidgetsAccordingToState();
   updateWidgetEnablement();
@@ -2607,7 +2603,7 @@ FourPoleFilterModuleEditor::FourPoleFilterModuleEditor(CriticalSection *newPlugI
 
 void FourPoleFilterModuleEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AudioModuleEditor::resized();
   int x = 0;
@@ -2626,13 +2622,13 @@ void FourPoleFilterModuleEditor::resized()
 
 void FourPoleFilterModuleEditor::rComboBoxChanged(RComboBox *rComboBoxThatHasChanged)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   updateWidgetEnablement();
 }
 
 void FourPoleFilterModuleEditor::updateWidgetEnablement()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   if( fourPoleFilterModuleToEdit == NULL )
     return;
@@ -2651,7 +2647,7 @@ void FourPoleFilterModuleEditor::updateWidgetEnablement()
 LadderFilterAudioModule::LadderFilterAudioModule(CriticalSection *newPlugInLock, rosic::LadderFilter *newLadderFilterToWrap)
  : AudioModule(newPlugInLock)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert( newLadderFilterToWrap != NULL ); // you must pass a valid rosic-object 
   wrappedLadderFilter = newLadderFilterToWrap;
@@ -2663,11 +2659,11 @@ LadderFilterAudioModule::LadderFilterAudioModule(CriticalSection *newPlugInLock,
 
 void LadderFilterAudioModule::createStaticParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AutomatableParameter* p;
 
-  p = new AutomatableParameter(plugInLock, juce::String(T("Mode")), 0.0, 1.0, 1.0, 0.0, Parameter::STRING);
+  p = new AutomatableParameter(lock, juce::String(T("Mode")), 0.0, 1.0, 1.0, 0.0, Parameter::STRING);
   p->addStringValue(juce::String(T("Lowpass")));
   p->addStringValue(juce::String(T("Highpass")));
   p->addStringValue(juce::String(T("Bandpass 6+12")));
@@ -2679,27 +2675,27 @@ void LadderFilterAudioModule::createStaticParameters()
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedLadderFilter, &LadderFilter::setMode);
 
-  p = new AutomatableParameter(plugInLock, juce::String(T("Frequency")), 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, juce::String(T("Frequency")), 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedLadderFilter, &LadderFilter::setCutoff);
 
-  p = new AutomatableParameter(plugInLock, juce::String(T("Resonance")), 0.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, juce::String(T("Resonance")), 0.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedLadderFilter, &LadderFilter::setResonanceInPercent);
 
-  p = new AutomatableParameter(plugInLock, juce::String(T("MakeUp")), 0.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, juce::String(T("MakeUp")), 0.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedLadderFilter, &LadderFilter::setMakeUp);
 
-  p = new AutomatableParameter(plugInLock, juce::String(T("Drive")), -24.0, 48.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, juce::String(T("Drive")), -24.0, 48.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedLadderFilter, &LadderFilter::setDrive);
 
-  p = new AutomatableParameter(plugInLock, juce::String(T("Order")), 0.0, 4.0, 1.0, 4.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, juce::String(T("Order")), 0.0, 4.0, 1.0, 4.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedLadderFilter, &LadderFilter::setOutputStage);
 
-  p = new AutomatableParameter(plugInLock, juce::String(T("Morph")), 0.0, 1.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, juce::String(T("Morph")), 0.0, 1.0, 0.01, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedLadderFilter, &LadderFilter::setMorph);
 
@@ -2710,14 +2706,14 @@ void LadderFilterAudioModule::createStaticParameters()
   addObservedParameter(p); 
   */
 
-  for(int i=0; i < (int) observedParameters.size(); i++)
-    observedParameters[i]->resetToDefaultValue(true, true);
+  for(int i=0; i < (int) parameters.size(); i++)
+    parameters[i]->resetToDefaultValue(true, true);
 }
 
 LadderFilterModuleEditor::LadderFilterModuleEditor(CriticalSection *newPlugInLock, LadderFilterAudioModule* newLadderFilterAudioModule) 
 : AudioModuleEditor(newPlugInLock, newLadderFilterAudioModule)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert(newLadderFilterAudioModule != NULL ); // you must pass a valid module here
   ladderFilterModuleToEdit = newLadderFilterAudioModule;
@@ -2732,45 +2728,45 @@ LadderFilterModuleEditor::LadderFilterModuleEditor(CriticalSection *newPlugInLoc
   frequencySlider->assignParameter( moduleToEdit->getParameterByName("Frequency") );
   frequencySlider->setDescription(juce::String(T("Characteristic frequency of the filter")));
   frequencySlider->setDescriptionField(infoField);
-  frequencySlider->setStringConversionFunction(&rojue::hertzToStringWithUnitTotal5);
+  frequencySlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( resonanceSlider = new RSlider (T("ResonanceSlider")) );
   resonanceSlider->assignParameter( moduleToEdit->getParameterByName("Resonance") );
   resonanceSlider->setDescription(juce::String(T("Resonance of the filter")));
   resonanceSlider->setDescriptionField(infoField);
-  resonanceSlider->setStringConversionFunction(&rojue::percentToStringWithUnit1);
+  resonanceSlider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( makeUpSlider = new RSlider (T("MakeUpSlider")) );
   makeUpSlider->assignParameter( moduleToEdit->getParameterByName("MakeUp") );
   makeUpSlider->setDescription(juce::String(T("Make-up gain to compensate low frequency loss at high resonance")));
   makeUpSlider->setDescriptionField(infoField);
-  makeUpSlider->setStringConversionFunction(&rojue::percentToStringWithUnit1);
+  makeUpSlider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( driveSlider = new RSlider (T("DriveSlider")) );
   driveSlider->assignParameter( moduleToEdit->getParameterByName("Drive") );
   driveSlider->setDescription(juce::String(T("Drive the filter into distortion")));
   driveSlider->setDescriptionField(infoField);
-  driveSlider->setStringConversionFunction(&rojue::decibelsToStringWithUnit1);
+  driveSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( orderSlider = new RSlider (T("OrderSlider")) );
   orderSlider->assignParameter( moduleToEdit->getParameterByName("Order") );
   orderSlider->setDescription(juce::String(T("Order of the filter")));
   orderSlider->setDescriptionField(infoField);
-  orderSlider->setStringConversionFunction(&rojue::valueToString0);
+  orderSlider->setStringConversionFunction(&valueToString0);
 
 
   addWidget( morphSlider = new RSlider (T("MorphSlider")) );
   morphSlider->assignParameter( moduleToEdit->getParameterByName("Morph") );
   morphSlider->setDescription(juce::String(T("Morph between highpass through bandpass to lowpass")));
   morphSlider->setDescriptionField(infoField);
-  morphSlider->setStringConversionFunction(&rojue::valueToString2);
+  morphSlider->setStringConversionFunction(&valueToString2);
 
   /*
   addWidget( bandwidthSlider = new RSlider (T("BandwidthSlider")) );
   bandwidthSlider->assignParameter( moduleToEdit->getParameterByName("Bandwidth") );
   bandwidthSlider->setDescription(juce::String(T("Bandwidth of the filter")));
   bandwidthSlider->setDescriptionField(infoField);
-  bandwidthSlider->setStringConversionFunction(&rojue::octavesToStringWithUnit2);
+  bandwidthSlider->setStringConversionFunction(&octavesToStringWithUnit2);
   */
 
   updateWidgetsAccordingToState();
@@ -2779,7 +2775,7 @@ LadderFilterModuleEditor::LadderFilterModuleEditor(CriticalSection *newPlugInLoc
 
 void LadderFilterModuleEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AudioModuleEditor::resized();
   int x = 0;
@@ -2804,13 +2800,13 @@ void LadderFilterModuleEditor::resized()
 
 void LadderFilterModuleEditor::rComboBoxChanged(RComboBox *rComboBoxThatHasChanged)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   updateWidgetEnablement();
 }
 
 void LadderFilterModuleEditor::updateWidgetEnablement()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   if( ladderFilterModuleToEdit == NULL )
     return;
   if( ladderFilterModuleToEdit->wrappedLadderFilter == NULL )
@@ -2829,7 +2825,7 @@ void LadderFilterModuleEditor::updateWidgetEnablement()
 SlopeFilterAudioModule::SlopeFilterAudioModule(CriticalSection *newPlugInLock, rosic::SlopeFilter *newSlopeFilterToWrap)
  : AudioModule(newPlugInLock)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   jassert( newSlopeFilterToWrap != NULL ); // you must pass a valid rosic-object 
   wrappedSlopeFilter = newSlopeFilterToWrap;
   moduleName  = juce::String(T("SlopeFilter"));
@@ -2839,22 +2835,22 @@ SlopeFilterAudioModule::SlopeFilterAudioModule(CriticalSection *newPlugInLock, r
 
 void SlopeFilterAudioModule::createStaticParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AutomatableParameter* p;
 
-  p = new AutomatableParameter(plugInLock, "Slope", -12.0, 12.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "Slope", -12.0, 12.0, 0.01, 0.0, Parameter::LINEAR);
   p->setValueChangeCallback(wrappedSlopeFilter, &SlopeFilter::setSlope);
   addObservedParameter(p); 
 
-  for(int i=0; i < (int) observedParameters.size(); i++)
-    observedParameters[i]->resetToDefaultValue(true, true);
+  for(int i=0; i < (int) parameters.size(); i++)
+    parameters[i]->resetToDefaultValue(true, true);
 }
 
 SlopeFilterModuleEditor::SlopeFilterModuleEditor(CriticalSection *newPlugInLock, SlopeFilterAudioModule* newSlopeFilterAudioModule) 
 : AudioModuleEditor(newPlugInLock, newSlopeFilterAudioModule)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert(newSlopeFilterAudioModule != NULL ); // you must pass a valid module here
   slopeFilterModuleToEdit = newSlopeFilterAudioModule;
@@ -2863,14 +2859,14 @@ SlopeFilterModuleEditor::SlopeFilterModuleEditor(CriticalSection *newPlugInLock,
   slopeSlider->assignParameter( moduleToEdit->getParameterByName("Slope") );
   slopeSlider->setDescription(juce::String(T("Slope of the filter")));
   slopeSlider->setDescriptionField(infoField);
-  slopeSlider->setStringConversionFunction(&rojue::decibelsPerOctaveToString2);
+  slopeSlider->setStringConversionFunction(&decibelsPerOctaveToString2);
 
   updateWidgetsAccordingToState();
 }
 
 void SlopeFilterModuleEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AudioModuleEditor::resized();
   int x = 0;
@@ -2887,7 +2883,7 @@ void SlopeFilterModuleEditor::resized()
 TwoPoleFilterAudioModule::TwoPoleFilterAudioModule(CriticalSection *newPlugInLock, rosic::TwoPoleFilter *newTwoPoleFilterToWrap)
  : AudioModule(newPlugInLock)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert( newTwoPoleFilterToWrap != NULL ); // you must pass a valid rosic-object 
   wrappedTwoPoleFilter = newTwoPoleFilterToWrap;
@@ -2899,38 +2895,38 @@ TwoPoleFilterAudioModule::TwoPoleFilterAudioModule(CriticalSection *newPlugInLoc
 
 void TwoPoleFilterAudioModule::createStaticParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AutomatableParameter* p;
 
-  p = new ParameterTwoPoleFilterMode(plugInLock);
+  p = new ParameterTwoPoleFilterMode(lock);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedTwoPoleFilter, &TwoPoleFilter::setMode);
 
-  p = new AutomatableParameter(plugInLock, "Frequency", 2.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "Frequency", 2.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedTwoPoleFilter, &TwoPoleFilter::setFrequency);
 
-  p = new AutomatableParameter(plugInLock, "Gain", -48, 48.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "Gain", -48, 48.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedTwoPoleFilter, &TwoPoleFilter::setGain);
 
-  p = new AutomatableParameter(plugInLock, "Bandwidth", 0.2, 6.0, 0.01, 1.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "Bandwidth", 0.2, 6.0, 0.01, 1.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedTwoPoleFilter, &TwoPoleFilter::setBandwidth);
 
-  p = new AutomatableParameter(plugInLock, "Radius", -4.0, 4.0, 0.00001, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "Radius", -4.0, 4.0, 0.00001, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedTwoPoleFilter, &TwoPoleFilter::setRadius);
 
-  for(int i=0; i < (int) observedParameters.size(); i++)
-    observedParameters[i]->resetToDefaultValue(true, true);
+  for(int i=0; i < (int) parameters.size(); i++)
+    parameters[i]->resetToDefaultValue(true, true);
 }
 
 TwoPoleFilterModuleEditor::TwoPoleFilterModuleEditor(CriticalSection *newPlugInLock, TwoPoleFilterAudioModule* newTwoPoleFilterAudioModule) 
 : AudioModuleEditor(newPlugInLock, newTwoPoleFilterAudioModule)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert(newTwoPoleFilterAudioModule != NULL ); // you must pass a valid module here
   twoPoleFilterModuleToEdit = newTwoPoleFilterAudioModule;
@@ -2945,25 +2941,25 @@ TwoPoleFilterModuleEditor::TwoPoleFilterModuleEditor(CriticalSection *newPlugInL
   frequencySlider->assignParameter( moduleToEdit->getParameterByName("Frequency") );
   frequencySlider->setDescription(juce::String(T("Characteristic frequency of the filter")));
   frequencySlider->setDescriptionField(infoField);
-  frequencySlider->setStringConversionFunction(&rojue::hertzToStringWithUnitTotal5);
+  frequencySlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( gainSlider = new RSlider (T("GainSlider")) );
   gainSlider->assignParameter( moduleToEdit->getParameterByName("Gain") );
   gainSlider->setDescription(juce::String(T("Gain of the filter")));
   gainSlider->setDescriptionField(infoField);
-  gainSlider->setStringConversionFunction(&rojue::decibelsToStringWithUnit1);
+  gainSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( bandwidthSlider = new RSlider (T("BandwidthSlider")) );
   bandwidthSlider->assignParameter( moduleToEdit->getParameterByName("Bandwidth") );
   bandwidthSlider->setDescription(juce::String(T("Bandwidth of the filter")));
   bandwidthSlider->setDescriptionField(infoField);
-  bandwidthSlider->setStringConversionFunction(&rojue::octavesToStringWithUnit2);
+  bandwidthSlider->setStringConversionFunction(&octavesToStringWithUnit2);
 
   addWidget( radiusSlider = new RSlider (T("RadiusSlider")) );
   radiusSlider->assignParameter( moduleToEdit->getParameterByName("Radius") );
   radiusSlider->setDescription(juce::String(T("Radius of the pole or zero")));
   radiusSlider->setDescriptionField(infoField);
-  radiusSlider->setStringConversionFunction(&rojue::valueToString5);
+  radiusSlider->setStringConversionFunction(&valueToString5);
   radiusSlider->setVisible(false);
 
   updateWidgetsAccordingToState();
@@ -2972,7 +2968,7 @@ TwoPoleFilterModuleEditor::TwoPoleFilterModuleEditor(CriticalSection *newPlugInL
 
 void TwoPoleFilterModuleEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AudioModuleEditor::resized();
   int x = 0;
@@ -2992,13 +2988,13 @@ void TwoPoleFilterModuleEditor::resized()
 
 void TwoPoleFilterModuleEditor::rComboBoxChanged(RComboBox *rComboBoxThatHasChanged)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   updateWidgetEnablement();
 }
 
 void TwoPoleFilterModuleEditor::updateWidgetEnablement()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   if( twoPoleFilterModuleToEdit == NULL )
     return;
@@ -3024,7 +3020,7 @@ void TwoPoleFilterModuleEditor::updateWidgetEnablement()
 PingPongEchoAudioModule::PingPongEchoAudioModule(CriticalSection *newPlugInLock, rosic::PingPongEcho *newPingPongEchoToWrap)
  : AudioModule(newPlugInLock)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert( newPingPongEchoToWrap != NULL ); // you must pass a valid rosic-object 
   wrappedPingPongEcho = newPingPongEchoToWrap;
@@ -3036,58 +3032,58 @@ PingPongEchoAudioModule::PingPongEchoAudioModule(CriticalSection *newPlugInLock,
 
 void PingPongEchoAudioModule::createStaticParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AutomatableParameter* p;
 
-  p = new AutomatableParameter(plugInLock, "DelayTime", 0.125, 1.0, 0.0125, 0.5, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "DelayTime", 0.125, 1.0, 0.0125, 0.5, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedPingPongEcho, &PingPongEcho::setDelayTime);
 
-  p = new AutomatableParameter(plugInLock, "DryWetRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "DryWetRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedPingPongEcho, &PingPongEcho::setDryWetRatio);
 
-  p = new AutomatableParameter(plugInLock, "Feedback", -100.0, 100.0, 0.1, 50.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "Feedback", -100.0, 100.0, 0.1, 50.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedPingPongEcho, &PingPongEcho::setFeedbackInPercent);
 
-  p = new AutomatableParameter(plugInLock, "Pan", -1.0, 1.0, 0.01, -0.4, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "Pan", -1.0, 1.0, 0.01, -0.4, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedPingPongEcho, &PingPongEcho::setPan);
 
-  p = new AutomatableParameter(plugInLock, "HighDamp", 20.0, 20000.0, 0.0, 4000.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "HighDamp", 20.0, 20000.0, 0.0, 4000.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedPingPongEcho, &PingPongEcho::setHighDamp);
 
-  p = new AutomatableParameter(plugInLock, "LowDamp", 20.0, 20000.0, 0.0, 250.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "LowDamp", 20.0, 20000.0, 0.0, 250.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedPingPongEcho, &PingPongEcho::setLowDamp);
 
-  p = new AutomatableParameter(plugInLock, "PingPong", 0.0, 1.0, 1.0, 1.0, Parameter::BOOLEAN);
+  p = new AutomatableParameter(lock, "PingPong", 0.0, 1.0, 1.0, 1.0, Parameter::BOOLEAN);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedPingPongEcho, &PingPongEcho::setPingPongMode);
 
-  p = new AutomatableParameter(plugInLock, "TrueStereo", 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
+  p = new AutomatableParameter(lock, "TrueStereo", 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedPingPongEcho, &PingPongEcho::setTrueStereoMode);
 
-  p = new AutomatableParameter(plugInLock, "TempoSync", 0.0, 1.0, 1.0, 1.0, Parameter::BOOLEAN);
+  p = new AutomatableParameter(lock, "TempoSync", 0.0, 1.0, 1.0, 1.0, Parameter::BOOLEAN);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedPingPongEcho, &PingPongEcho::setSyncMode);
 
-  p = new AutomatableParameter(plugInLock, "Activated", 0.0, 1.0, 1.0, 1.0, Parameter::BOOLEAN);
+  p = new AutomatableParameter(lock, "Activated", 0.0, 1.0, 1.0, 1.0, Parameter::BOOLEAN);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedPingPongEcho, &PingPongEcho::setActive);
 
-  for(int i=0; i < (int) observedParameters.size(); i++)
-    observedParameters[i]->resetToDefaultValue(true, true);
+  for(int i=0; i < (int) parameters.size(); i++)
+    parameters[i]->resetToDefaultValue(true, true);
 }
 
 PingPongEchoModuleEditor::PingPongEchoModuleEditor(CriticalSection *newPlugInLock, PingPongEchoAudioModule* newPingPongEchoAudioModule) 
 : AudioModuleEditor(newPlugInLock, newPingPongEchoAudioModule)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert(newPingPongEchoAudioModule != NULL ); // you must pass a valid module here
 
@@ -3095,38 +3091,38 @@ PingPongEchoModuleEditor::PingPongEchoModuleEditor(CriticalSection *newPlugInLoc
   delayTimeSlider->assignParameter( moduleToEdit->getParameterByName("DelayTime") );
   delayTimeSlider->setDescription(juce::String(T("Delay time in beats")));
   delayTimeSlider->setDescriptionField(infoField);
-  delayTimeSlider->setStringConversionFunction(&rojue::beatsToStringWithUnit4);
+  delayTimeSlider->setStringConversionFunction(&beatsToStringWithUnit4);
 
   addWidget( dryWetSlider = new RSlider (T("DryWetSlider")) );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName("DryWetRatio") );
   dryWetSlider->setSliderName(juce::String(T("Dry/Wet")));
   dryWetSlider->setDescription(juce::String(T("Ratio between dry and wet signal")));
   dryWetSlider->setDescriptionField(infoField);
-  dryWetSlider->setStringConversionFunction(&rojue::ratioToString0);
+  dryWetSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( feedbackSlider = new RSlider (T("FeedbackSlider")) );
   feedbackSlider->assignParameter( moduleToEdit->getParameterByName("Feedback") );
   feedbackSlider->setDescription(juce::String(T("Amount of feedback in percent")));
   feedbackSlider->setDescriptionField(infoField);
-  feedbackSlider->setStringConversionFunction(&rojue::percentToStringWithUnit1);
+  feedbackSlider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( panSlider = new RSlider (T("PanSlider")) );
   panSlider->assignParameter( moduleToEdit->getParameterByName("Pan") );
   panSlider->setDescription(juce::String(T("Panorama position of the first echo")));
   panSlider->setDescriptionField(infoField);
-  panSlider->setStringConversionFunction(&rojue::valueToString2);
+  panSlider->setStringConversionFunction(&valueToString2);
 
   addWidget( highDampSlider = new RSlider (T("HighDampSlider")) );
   highDampSlider->assignParameter( moduleToEdit->getParameterByName("HighDamp") );
   highDampSlider->setDescription(juce::String(T("Cutoff frequency for the high damping (lowpass) filter")));
   highDampSlider->setDescriptionField(infoField);
-  highDampSlider->setStringConversionFunction(&rojue::hertzToStringWithUnitTotal5);
+  highDampSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( lowDampSlider = new RSlider (T("LowDampSlider")) );
   lowDampSlider->assignParameter( moduleToEdit->getParameterByName("LowDamp") );
   lowDampSlider->setDescription(juce::String(T("Cutoff frequency for the low damping (highpass) filter")));
   lowDampSlider->setDescriptionField(infoField);
-  lowDampSlider->setStringConversionFunction(&rojue::hertzToStringWithUnitTotal5);
+  lowDampSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( pingPongButton = new RButton(juce::String(T("PingPong"))) );
   pingPongButton->assignParameter( moduleToEdit->getParameterByName(T("PingPong")) );
@@ -3153,19 +3149,19 @@ PingPongEchoModuleEditor::PingPongEchoModuleEditor(CriticalSection *newPlugInLoc
 
 void PingPongEchoModuleEditor::rButtonClicked(RButton *buttonThatWasClicked)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   if( buttonThatWasClicked == tempoSyncButton )
   {
     if( tempoSyncButton->getToggleState() == true )
-      delayTimeSlider->setStringConversionFunction(&rojue::beatsToStringWithUnit4);
+      delayTimeSlider->setStringConversionFunction(&beatsToStringWithUnit4);
     else
-      delayTimeSlider->setStringConversionFunction(&rojue::secondsToStringWithUnit4);
+      delayTimeSlider->setStringConversionFunction(&secondsToStringWithUnit4);
   }
 }
 
 void PingPongEchoModuleEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   AudioModuleEditor::resized();
   int x = 0;
   int y = 0;
@@ -3196,7 +3192,7 @@ void PingPongEchoModuleEditor::resized()
 ReverbAudioModule::ReverbAudioModule(CriticalSection *newPlugInLock, rosic::Reverb *newReverbToWrap)
  : AudioModule(newPlugInLock)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert( newReverbToWrap != NULL ); // you must pass a valid rosic-object 
   wrappedReverb = newReverbToWrap;
@@ -3208,58 +3204,58 @@ ReverbAudioModule::ReverbAudioModule(CriticalSection *newPlugInLock, rosic::Reve
 
 void ReverbAudioModule::createStaticParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AutomatableParameter* p;
 
-  p = new AutomatableParameter(plugInLock, "DryWetRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "DryWetRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedReverb, &Reverb::setDryWetRatio);
 
-  p = new AutomatableParameter(plugInLock, "FirstEcho", 10.0, 200.0, 0.1, 50.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "FirstEcho", 10.0, 200.0, 0.1, 50.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedReverb, &Reverb::setReferenceDelayTime);
 
-  p = new AutomatableParameter(plugInLock, "PreDelay", 0.0, 250.0, 1.0, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "PreDelay", 0.0, 250.0, 1.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedReverb, &Reverb::setPreDelay);
 
-  p = new AutomatableParameter(plugInLock, "DecayTime", 0.1, 10.0, 0.01, 3.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "DecayTime", 0.1, 10.0, 0.01, 3.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedReverb, &Reverb::setMidReverbTime);
 
-  p = new AutomatableParameter(plugInLock, "HighDecayScale", 0.1, 10.0, 0.01, 0.3, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "HighDecayScale", 0.1, 10.0, 0.01, 0.3, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedReverb, &Reverb::setHighReverbTimeScale);
 
-  p = new AutomatableParameter(plugInLock, "LowDecayScale", 0.1, 10.0, 0.01, 1.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "LowDecayScale", 0.1, 10.0, 0.01, 1.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedReverb, &Reverb::setLowReverbTimeScale);
 
-  p = new AutomatableParameter(plugInLock, "HighCrossoverFrequency", 20.0, 20000.0, 0.0, 4000.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "HighCrossoverFrequency", 20.0, 20000.0, 0.0, 4000.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedReverb, &Reverb::setHighCrossoverFreq);
 
-  p = new AutomatableParameter(plugInLock, "LowCrossoverFrequency", 20.0, 20000.0, 0.0, 250.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "LowCrossoverFrequency", 20.0, 20000.0, 0.0, 250.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedReverb, &Reverb::setLowCrossoverFreq);
 
-  p = new AutomatableParameter(plugInLock, "Pinking", 0.0, 1.0, 1.0, 1.0, Parameter::BOOLEAN);
+  p = new AutomatableParameter(lock, "Pinking", 0.0, 1.0, 1.0, 1.0, Parameter::BOOLEAN);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedReverb, &Reverb::setWetPinkingSwitch);
 
-  p = new AutomatableParameter(plugInLock, "StereoSwap", 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
+  p = new AutomatableParameter(lock, "StereoSwap", 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedReverb, &Reverb::setStereoSwapSwitch);
 
-  for(int i=0; i < (int) observedParameters.size(); i++)
-    observedParameters[i]->resetToDefaultValue(true, true);
+  for(int i=0; i < (int) parameters.size(); i++)
+    parameters[i]->resetToDefaultValue(true, true);
 }
 
 ReverbModuleEditor::ReverbModuleEditor(CriticalSection *newPlugInLock, ReverbAudioModule* newReverbAudioModule) 
 : AudioModuleEditor(newPlugInLock, newReverbAudioModule)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert(newReverbAudioModule != NULL ); // you must pass a valid module here
 
@@ -3268,51 +3264,51 @@ ReverbModuleEditor::ReverbModuleEditor(CriticalSection *newPlugInLock, ReverbAud
   dryWetSlider->setSliderName(juce::String(T("Dry/Wet")));
   dryWetSlider->setDescription(juce::String(T("Ratio between dry and wet signal")));
   dryWetSlider->setDescriptionField(infoField);
-  dryWetSlider->setStringConversionFunction(&rojue::ratioToString0);
+  dryWetSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( firstEchoSlider = new RSlider (T("FirstEchoSlider")) );
   firstEchoSlider->assignParameter( moduleToEdit->getParameterByName("FirstEcho") );
   firstEchoSlider->setDescription(juce::String(T("Arrival time of the first reflection in seconds")));
   firstEchoSlider->setDescriptionField(infoField);
-  firstEchoSlider->setStringConversionFunction(&rojue::millisecondsToStringWithUnit2);
+  firstEchoSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( preDelaySlider = new RSlider (T("PreDelaySlider")) );
   preDelaySlider->assignParameter( moduleToEdit->getParameterByName("PreDelay") );
   preDelaySlider->setDescription(juce::String(T("Initial delay for the reverberation.")));
   preDelaySlider->setDescriptionField(infoField);
-  preDelaySlider->setStringConversionFunction(&rojue::millisecondsToStringWithUnit2);
+  preDelaySlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( decayTimeSlider = new RSlider (T("DecayTimeSlider")) );
   decayTimeSlider->assignParameter( moduleToEdit->getParameterByName("DecayTime") );
   decayTimeSlider->setDescription(juce::String(T("Time for the tail to decay to -60 dB")));
   decayTimeSlider->setDescriptionField(infoField);
-  decayTimeSlider->setStringConversionFunction(&rojue::secondsToStringWithUnit2);
+  decayTimeSlider->setStringConversionFunction(&secondsToStringWithUnit2);
 
   addWidget( highDecayScaleSlider = new RSlider (T("HighDecayScaleSlider")) );
   highDecayScaleSlider->assignParameter( moduleToEdit->getParameterByName("HighDecayScale") );
   highDecayScaleSlider->setDescription(juce::String(T("Scaler for the decay-time at high frequencies")));
   highDecayScaleSlider->setDescriptionField(infoField);
-  highDecayScaleSlider->setStringConversionFunction(&rojue::valueToString2);
+  highDecayScaleSlider->setStringConversionFunction(&valueToString2);
 
   addWidget( lowDecayScaleSlider = new RSlider (T("LowDecayScaleSlider")) );
   lowDecayScaleSlider->assignParameter( moduleToEdit->getParameterByName("LowDecayScale") );
   lowDecayScaleSlider->setDescription(juce::String(T("Scaler for the decay-time at low frequencies")));
   lowDecayScaleSlider->setDescriptionField(infoField);
-  lowDecayScaleSlider->setStringConversionFunction(&rojue::valueToString2);
+  lowDecayScaleSlider->setStringConversionFunction(&valueToString2);
 
   addWidget( highFreqSlider = new RSlider (T("HighFreqSlider")) );
   highFreqSlider->assignParameter( moduleToEdit->getParameterByName("HighCrossoverFrequency") );
   highFreqSlider->setDescription(juce::String(T("Crossover frequency between mid and high frequencies")));
   highFreqSlider->setSliderName(juce::String(T("HighFreq")));
   highFreqSlider->setDescriptionField(infoField);
-  highFreqSlider->setStringConversionFunction(&rojue::hertzToStringWithUnitTotal5);
+  highFreqSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( lowFreqSlider = new RSlider (T("LowFreqSlider")) );
   lowFreqSlider->assignParameter( moduleToEdit->getParameterByName("LowCrossoverFrequency") );
   lowFreqSlider->setSliderName(juce::String(T("LowFreq")));
   lowFreqSlider->setDescription(juce::String(T("Crossover frequency between low and mid frequencies")));
   lowFreqSlider->setDescriptionField(infoField);
-  lowFreqSlider->setStringConversionFunction(&rojue::hertzToStringWithUnitTotal5);
+  lowFreqSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( pinkButton = new RButton(juce::String(T("Pink"))) );
   pinkButton->assignParameter( moduleToEdit->getParameterByName(T("Pinking")) );
@@ -3332,7 +3328,7 @@ ReverbModuleEditor::ReverbModuleEditor(CriticalSection *newPlugInLock, ReverbAud
 
 void ReverbModuleEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AudioModuleEditor::resized();
   int x = 0;
@@ -3372,7 +3368,7 @@ void ReverbModuleEditor::resized()
 SimpleDelayAudioModule::SimpleDelayAudioModule(CriticalSection *newPlugInLock, rosic::FractionalDelayLineStereo *newSimpleDelayToWrap)
  : AudioModule(newPlugInLock)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert( newSimpleDelayToWrap != NULL ); // you must pass a valid rosic-object 
   wrappedSimpleDelay = newSimpleDelayToWrap;
@@ -3384,22 +3380,22 @@ SimpleDelayAudioModule::SimpleDelayAudioModule(CriticalSection *newPlugInLock, r
 
 void SimpleDelayAudioModule::createStaticParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AutomatableParameter* p;
 
-  p = new AutomatableParameter(plugInLock, "DelayTime", 0.0, 200.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "DelayTime", 0.0, 200.0, 0.01, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedSimpleDelay, &FractionalDelayLineStereo::setDelayTimeInMilliseconds);
 
-  for(int i=0; i < (int) observedParameters.size(); i++)
-    observedParameters[i]->resetToDefaultValue(true, true);
+  for(int i=0; i < (int) parameters.size(); i++)
+    parameters[i]->resetToDefaultValue(true, true);
 }
 
 SimpleDelayModuleEditor::SimpleDelayModuleEditor(CriticalSection *newPlugInLock, SimpleDelayAudioModule* newSimpleDelayAudioModule) 
 : AudioModuleEditor(newPlugInLock, newSimpleDelayAudioModule)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert(newSimpleDelayAudioModule != NULL ); // you must pass a valid module here
 
@@ -3407,14 +3403,14 @@ SimpleDelayModuleEditor::SimpleDelayModuleEditor(CriticalSection *newPlugInLock,
   delaySlider->assignParameter( moduleToEdit->getParameterByName("DelayTime") );
   delaySlider->setDescription(juce::String(T("Delay in milliseconds")));
   delaySlider->setDescriptionField(infoField);
-  delaySlider->setStringConversionFunction(&rojue::millisecondsToStringWithUnit2);
+  delaySlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   updateWidgetsAccordingToState();
 }
 
 void SimpleDelayModuleEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AudioModuleEditor::resized();
   int x = 0;
@@ -3435,7 +3431,7 @@ ModulationEffectAudioModule::ModulationEffectAudioModule(CriticalSection *newPlu
                                                          rosic::ModulationEffect *newModulationEffectToWrap)
                                                           : AudioModule(newPlugInLock)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert( newModulationEffectToWrap != NULL ); // you must pass a valid rosic-object 
   wrappedModulationEffect = newModulationEffectToWrap;
@@ -3451,12 +3447,12 @@ ModulationEffectModuleEditor::ModulationEffectModuleEditor(CriticalSection *newP
                                                            ModulationEffectAudioModule* newModulationEffectAudioModule) 
 : AudioModuleEditor(newPlugInLock, newModulationEffectAudioModule)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert(newModulationEffectAudioModule != NULL ); // you must pass a valid module here
   modulationEffectModuleToEdit = newModulationEffectAudioModule;
 
-  lfoEditor = new LowFrequencyOscillatorEditor(plugInLock, modulationEffectModuleToEdit->lfoModule);
+  lfoEditor = new LowFrequencyOscillatorEditor(lock, modulationEffectModuleToEdit->lfoModule);
   lfoEditor->setHeadlineText(T("LFO"));
   addChildEditor(lfoEditor );
 
@@ -3484,14 +3480,14 @@ Rectangle ModulationEffectModuleEditor::getLfoEditButtonBounds() const
 
 void ModulationEffectModuleEditor::updateWidgetsAccordingToState()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   AudioModuleEditor::updateWidgetsAccordingToState();
   lfoEditor->updateWidgetsAccordingToState();
 }
 
 void ModulationEffectModuleEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AudioModuleEditor::resized();
   int x = 0;
@@ -3520,7 +3516,7 @@ void ModulationEffectModuleEditor::resized()
 FlangerAudioModule::FlangerAudioModule(CriticalSection *newPlugInLock, rosic::Flanger *newFlangerToWrap)
 : ModulationEffectAudioModule(newPlugInLock, newFlangerToWrap)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert( newFlangerToWrap != NULL ); // you must pass a valid rosic-object 
   wrappedFlanger = newFlangerToWrap;
@@ -3532,7 +3528,7 @@ FlangerAudioModule::FlangerAudioModule(CriticalSection *newPlugInLock, rosic::Fl
 
 void FlangerAudioModule::createStaticParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AutomatableParameter* p;
   p = dynamic_cast<AutomatableParameter*> (lfoModule->getParameterByName(T("CycleLength")));
@@ -3540,34 +3536,34 @@ void FlangerAudioModule::createStaticParameters()
   p->setDefaultValue(8.0, true);
   p->setScaling(Parameter::EXPONENTIAL);
 
-  p = new AutomatableParameter(plugInLock, "Depth", 0.0, 48.0, 0.1, 12.0, Parameter::LINEAR);  // #04
+  p = new AutomatableParameter(lock, "Depth", 0.0, 48.0, 0.1, 12.0, Parameter::LINEAR);  // #04
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedFlanger, &Flanger::setDepth);
 
-  p = new AutomatableParameter(plugInLock, "DryWetRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "DryWetRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedFlanger, &Flanger::setDryWetRatio);
 
-  p = new AutomatableParameter(plugInLock, "Frequency", 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "Frequency", 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedFlanger, &Flanger::setFrequency);
 
-  p = new AutomatableParameter(plugInLock, "Feedback", -99.0, 99.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "Feedback", -99.0, 99.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedFlanger, &Flanger::setFeedbackInPercent);
 
-  p = new AutomatableParameter(plugInLock, "Invert", 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
+  p = new AutomatableParameter(lock, "Invert", 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedFlanger, &Flanger::setNegativePolarity);
 
-  for(int i=0; i < (int) observedParameters.size(); i++)
-    observedParameters[i]->resetToDefaultValue(true, true);
+  for(int i=0; i < (int) parameters.size(); i++)
+    parameters[i]->resetToDefaultValue(true, true);
 }
 
 FlangerModuleEditor::FlangerModuleEditor(CriticalSection *newPlugInLock, FlangerAudioModule* newFlangerAudioModule) 
 : ModulationEffectModuleEditor(newPlugInLock, newFlangerAudioModule)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert(newFlangerAudioModule != NULL ); // you must pass a valid module here
   flangerModuleToEdit = newFlangerAudioModule;
@@ -3576,26 +3572,26 @@ FlangerModuleEditor::FlangerModuleEditor(CriticalSection *newPlugInLock, Flanger
   depthSlider->assignParameter( moduleToEdit->getParameterByName("Depth") );
   depthSlider->setDescription(juce::String(T("Modulation depth in semitones")));
   depthSlider->setDescriptionField(infoField);
-  depthSlider->setStringConversionFunction(&rojue::semitonesToStringWithUnit1);
+  depthSlider->setStringConversionFunction(&semitonesToStringWithUnit1);
 
   addWidget( dryWetSlider = new RSlider (T("DryWetSlider")) );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName("DryWetRatio") );
   dryWetSlider->setSliderName(juce::String(T("Dry/Wet")));
   dryWetSlider->setDescription(juce::String(T("Ratio between dry and wet (filtered) signal")));
   dryWetSlider->setDescriptionField(infoField);
-  dryWetSlider->setStringConversionFunction(&rojue::ratioToString0);
+  dryWetSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( frequencySlider = new RSlider (T("FrequencySlider")) );
   frequencySlider->assignParameter( moduleToEdit->getParameterByName("Frequency") );
   frequencySlider->setDescription(juce::String(T("Frequency of first notch or peak in the comb-filter")));
   frequencySlider->setDescriptionField(infoField);
-  frequencySlider->setStringConversionFunction(&rojue::hertzToStringWithUnitTotal5);
+  frequencySlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( feedbackSlider = new RSlider (T("FeedbackSlider")) );
   feedbackSlider->assignParameter( moduleToEdit->getParameterByName("Feedback") );
   feedbackSlider->setDescription(juce::String(T("Feedback around the delayline")));
   feedbackSlider->setDescriptionField(infoField);
-  feedbackSlider->setStringConversionFunction(&rojue::percentToStringWithUnit1);
+  feedbackSlider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( invertButton = new RButton(juce::String(T("Invert"))) );
   invertButton->assignParameter( moduleToEdit->getParameterByName(T("Invert")) );
@@ -3609,7 +3605,7 @@ FlangerModuleEditor::FlangerModuleEditor(CriticalSection *newPlugInLock, Flanger
 
 void FlangerModuleEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   ModulationEffectModuleEditor::resized();
 
@@ -3633,7 +3629,7 @@ void FlangerModuleEditor::resized()
 PhaserAudioModule::PhaserAudioModule(CriticalSection *newPlugInLock, rosic::Phaser *newPhaserToWrap)
 : ModulationEffectAudioModule(newPlugInLock, newPhaserToWrap)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert( newPhaserToWrap != NULL ); // you must pass a valid rosic-object 
   wrappedPhaser = newPhaserToWrap;
@@ -3645,7 +3641,7 @@ PhaserAudioModule::PhaserAudioModule(CriticalSection *newPlugInLock, rosic::Phas
 
 void PhaserAudioModule::createStaticParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AutomatableParameter* p;
 
@@ -3654,15 +3650,15 @@ void PhaserAudioModule::createStaticParameters()
   p->setDefaultValue(8.0, true);
   p->setScaling(Parameter::EXPONENTIAL);
 
-  p = new AutomatableParameter(plugInLock, "Depth", 0.0, 48.0, 0.1, 12.0, Parameter::LINEAR);  // #04
+  p = new AutomatableParameter(lock, "Depth", 0.0, 48.0, 0.1, 12.0, Parameter::LINEAR);  // #04
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedPhaser, &Phaser::setDepth);
 
-  p = new AutomatableParameter(plugInLock, "DryWetRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "DryWetRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedPhaser, &Phaser::setDryWetRatio);
 
-  p = new AutomatableParameter(plugInLock, juce::String(T("FilterMode")), 0.0, 1.0, 1.0, 0.0, Parameter::STRING);
+  p = new AutomatableParameter(lock, juce::String(T("FilterMode")), 0.0, 1.0, 1.0, 0.0, Parameter::STRING);
   //p->addStringValue(juce::String(T("Bypass")));
   p->addStringValue(juce::String(T("Allpass 1st order")));
   p->addStringValue(juce::String(T("Allpass 2nd order")));
@@ -3670,34 +3666,34 @@ void PhaserAudioModule::createStaticParameters()
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedPhaser, &Phaser::setFilterMode);
 
-  p = new AutomatableParameter(plugInLock, "Frequency", 2.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "Frequency", 2.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedPhaser, &Phaser::setFrequency);
 
-  p = new AutomatableParameter(plugInLock, "Q", 0.1, 10.0, 0.01, 1.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "Q", 0.1, 10.0, 0.01, 1.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedPhaser, &Phaser::setQ);
 
-  p = new AutomatableParameter(plugInLock, "Feedback", -99.0, 99.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "Feedback", -99.0, 99.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedPhaser, &Phaser::setFeedbackInPercent);
 
-  p = new AutomatableParameter(plugInLock, "NumStages", 1.0, 24.0, 1.0, 4.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "NumStages", 1.0, 24.0, 1.0, 4.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedPhaser, &Phaser::setNumStages);
 
-  //p = new AutomatableParameter(plugInLock, "Activated", 0.0, 1.0, 1.0, 1.0, Parameter::BOOLEAN);
+  //p = new AutomatableParameter(lock, "Activated", 0.0, 1.0, 1.0, 1.0, Parameter::BOOLEAN);
   //addObservedParameter(p);
   //p->setValueChangeCallback(wrappedPhaser, &Phaser::setActive);
 
-  for(int i=0; i < (int) observedParameters.size(); i++)
-    observedParameters[i]->resetToDefaultValue(true, true);
+  for(int i=0; i < (int) parameters.size(); i++)
+    parameters[i]->resetToDefaultValue(true, true);
 }
 
 PhaserModuleEditor::PhaserModuleEditor(CriticalSection *newPlugInLock, PhaserAudioModule* newPhaserAudioModule) 
 : ModulationEffectModuleEditor(newPlugInLock, newPhaserAudioModule)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert(newPhaserAudioModule != NULL ); // you must pass a valid module here
   phaserModuleToEdit = newPhaserAudioModule;
@@ -3710,14 +3706,14 @@ PhaserModuleEditor::PhaserModuleEditor(CriticalSection *newPlugInLock, PhaserAud
   depthSlider->assignParameter( moduleToEdit->getParameterByName("Depth") );
   depthSlider->setDescription(juce::String(T("Modulation depth in semitones")));
   depthSlider->setDescriptionField(infoField);
-  depthSlider->setStringConversionFunction(&rojue::semitonesToStringWithUnit1);
+  depthSlider->setStringConversionFunction(&semitonesToStringWithUnit1);
 
   addWidget( dryWetSlider = new RSlider (T("DryWetSlider")) );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName("DryWetRatio") );
   dryWetSlider->setSliderName(juce::String(T("Dry/Wet")));
   dryWetSlider->setDescription(juce::String(T("Ratio between dry and wet(filtered) signal")));
   dryWetSlider->setDescriptionField(infoField);
-  dryWetSlider->setStringConversionFunction(&rojue::ratioToString0);
+  dryWetSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( modeComboBox = new RComboBox(juce::String(T("ModeComboBox"))) );
   modeComboBox->assignParameter( moduleToEdit->getParameterByName(T("FilterMode")) );
@@ -3729,26 +3725,26 @@ PhaserModuleEditor::PhaserModuleEditor(CriticalSection *newPlugInLock, PhaserAud
   frequencySlider->assignParameter( moduleToEdit->getParameterByName("Frequency") );
   frequencySlider->setDescription(juce::String(T("Characteristic frequency of the filter")));
   frequencySlider->setDescriptionField(infoField);
-  frequencySlider->setStringConversionFunction(&rojue::hertzToStringWithUnitTotal5);
+  frequencySlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( qSlider = new RSlider (T("QSlider")) );
   qSlider->assignParameter( moduleToEdit->getParameterByName("Q") );
   qSlider->setDescription(juce::String(T("Q of the filter")));
   qSlider->setDescriptionField(infoField);
-  qSlider->setStringConversionFunction(&rojue::valueToString2);
+  qSlider->setStringConversionFunction(&valueToString2);
 
   addWidget( feedbackSlider = new RSlider (T("FeedbackSlider")) );
   feedbackSlider->assignParameter( moduleToEdit->getParameterByName("Feedback") );
   feedbackSlider->setDescription(juce::String(T("Feedback around the allpass chain")));
   feedbackSlider->setDescriptionField(infoField);
-  feedbackSlider->setStringConversionFunction(&rojue::percentToStringWithUnit1);
+  feedbackSlider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( stagesSlider = new RSlider (T("StagesSlider")) );
   stagesSlider->assignParameter( moduleToEdit->getParameterByName("NumStages") );
   stagesSlider->setName(juce::String(T("Stages")));
   stagesSlider->setDescription(juce::String(T("Number of allpass stages in the chain")));
   stagesSlider->setDescriptionField(infoField);
-  stagesSlider->setStringConversionFunction(&rojue::valueToString0);
+  stagesSlider->setStringConversionFunction(&valueToString0);
 
   updateWidgetsAccordingToState();
   updateWidgetEnablement();
@@ -3756,7 +3752,7 @@ PhaserModuleEditor::PhaserModuleEditor(CriticalSection *newPlugInLock, PhaserAud
 
 void PhaserModuleEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   ModulationEffectModuleEditor::resized();
 
@@ -3783,14 +3779,14 @@ void PhaserModuleEditor::resized()
 
 void PhaserModuleEditor::rComboBoxChanged(RComboBox *rComboBoxThatHasChanged)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   if( rComboBoxThatHasChanged == modeComboBox )
     updateWidgetEnablement();
 }
 
 void PhaserModuleEditor::updateWidgetEnablement()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   if( phaserModuleToEdit == NULL )
     return;
   if( phaserModuleToEdit->wrappedPhaser == NULL )
@@ -3805,7 +3801,7 @@ void PhaserModuleEditor::updateWidgetEnablement()
 TremoloAudioModule::TremoloAudioModule(CriticalSection *newPlugInLock, rosic::Tremolo *newTremoloToWrap)
 : ModulationEffectAudioModule(newPlugInLock, newTremoloToWrap)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert( newTremoloToWrap != NULL ); // you must pass a valid rosic-object 
   wrappedTremolo = newTremoloToWrap;
@@ -3817,25 +3813,25 @@ TremoloAudioModule::TremoloAudioModule(CriticalSection *newPlugInLock, rosic::Tr
 
 void TremoloAudioModule::createStaticParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AutomatableParameter* p;
   p = dynamic_cast<AutomatableParameter*> (lfoModule->getParameterByName(T("CycleLength")));
   p->setRange(0.125, 4.0);
   p->setUpperAutomationLimit(4.0);
 
-  p = new AutomatableParameter(plugInLock, "Depth", 0.0, 100.0, 1.0, 50.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "Depth", 0.0, 100.0, 1.0, 50.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback<Tremolo>(wrappedTremolo, &Tremolo::setDepthInPercent);
 
-  for(int i=0; i < (int) observedParameters.size(); i++)
-    observedParameters[i]->resetToDefaultValue(true, true);
+  for(int i=0; i < (int) parameters.size(); i++)
+    parameters[i]->resetToDefaultValue(true, true);
 }
 
 TremoloModuleEditor::TremoloModuleEditor(CriticalSection *newPlugInLock, TremoloAudioModule* newTremoloAudioModule) 
 : ModulationEffectModuleEditor(newPlugInLock, newTremoloAudioModule)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert(newTremoloAudioModule != NULL ); // you must pass a valid module here
   tremoloModuleToEdit = newTremoloAudioModule;
@@ -3844,14 +3840,14 @@ TremoloModuleEditor::TremoloModuleEditor(CriticalSection *newPlugInLock, Tremolo
   depthSlider->assignParameter( moduleToEdit->getParameterByName("Depth") );
   depthSlider->setDescription(juce::String(T("Modulation depth in percent")));
   depthSlider->setDescriptionField(infoField);
-  depthSlider->setStringConversionFunction(&rojue::percentToStringWithUnit0);
+  depthSlider->setStringConversionFunction(&percentToStringWithUnit0);
 
   updateWidgetsAccordingToState();
 }
 
 void TremoloModuleEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   ModulationEffectModuleEditor::resized();
 
@@ -3867,7 +3863,7 @@ void TremoloModuleEditor::resized()
 VibratoAudioModule::VibratoAudioModule(CriticalSection *newPlugInLock, rosic::Vibrato *newVibratoToWrap)
 : ModulationEffectAudioModule(newPlugInLock, newVibratoToWrap)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert( newVibratoToWrap != NULL ); // you must pass a valid rosic-object 
   wrappedVibrato = newVibratoToWrap;
@@ -3879,26 +3875,26 @@ VibratoAudioModule::VibratoAudioModule(CriticalSection *newPlugInLock, rosic::Vi
 
 void VibratoAudioModule::createStaticParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AutomatableParameter* p;
 
-  p = new AutomatableParameter(plugInLock, "Depth", 0.0, 2.0, 0.01, 0.5, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "Depth", 0.0, 2.0, 0.01, 0.5, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback<Vibrato>(wrappedVibrato, &Vibrato::setDepthInPercent);
 
-  p = new AutomatableParameter(plugInLock, "DryWet", 0.0, 1.0, 0.01, 100.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "DryWet", 0.0, 1.0, 0.01, 100.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback<Vibrato>(wrappedVibrato, &Vibrato::setDryWetRatio);
 
-  for(int i=0; i < (int) observedParameters.size(); i++)
-    observedParameters[i]->resetToDefaultValue(true, true);
+  for(int i=0; i < (int) parameters.size(); i++)
+    parameters[i]->resetToDefaultValue(true, true);
 }
 
 VibratoModuleEditor::VibratoModuleEditor(CriticalSection *newPlugInLock, VibratoAudioModule* newVibratoAudioModule) 
 : ModulationEffectModuleEditor(newPlugInLock, newVibratoAudioModule)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert(newVibratoAudioModule != NULL ); // you must pass a valid module here
   vibratoModuleToEdit = newVibratoAudioModule;
@@ -3907,20 +3903,20 @@ VibratoModuleEditor::VibratoModuleEditor(CriticalSection *newPlugInLock, Vibrato
   depthSlider->assignParameter( moduleToEdit->getParameterByName("Depth") );
   depthSlider->setDescription(juce::String(T("Modulation depth in semitones")));
   depthSlider->setDescriptionField(infoField);
-  depthSlider->setStringConversionFunction(&rojue::semitonesToStringWithUnit2);
+  depthSlider->setStringConversionFunction(&semitonesToStringWithUnit2);
 
   addWidget( dryWetSlider = new RSlider (T("DryWetSlider")) );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName("DryWet") );
   dryWetSlider->setDescription(juce::String(T("Mix ratio between original and vibrato'ed signal")));
   dryWetSlider->setDescriptionField(infoField);
-  dryWetSlider->setStringConversionFunction(&rojue::ratioToString0);
+  dryWetSlider->setStringConversionFunction(&ratioToString0);
 
   updateWidgetsAccordingToState();
 }
 
 void VibratoModuleEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   ModulationEffectModuleEditor::resized();
 
@@ -3938,7 +3934,7 @@ void VibratoModuleEditor::resized()
 WahWahAudioModule::WahWahAudioModule(CriticalSection *newPlugInLock, rosic::WahWah *newWahWahToWrap)
 : ModulationEffectAudioModule(newPlugInLock, newWahWahToWrap)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert( newWahWahToWrap != NULL ); // you must pass a valid rosic-object 
   wrappedWahWah = newWahWahToWrap;
@@ -3950,7 +3946,7 @@ WahWahAudioModule::WahWahAudioModule(CriticalSection *newPlugInLock, rosic::WahW
 
 void WahWahAudioModule::createStaticParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AutomatableParameter* p;
 
@@ -3959,39 +3955,39 @@ void WahWahAudioModule::createStaticParameters()
   p->setDefaultValue(0.5, true);
   p->setScaling(Parameter::EXPONENTIAL);
 
-  p = new AutomatableParameter(plugInLock, "Depth", 0.0, 48.0, 0.1, 12.0, Parameter::LINEAR);  // #04
+  p = new AutomatableParameter(lock, "Depth", 0.0, 48.0, 0.1, 12.0, Parameter::LINEAR);  // #04
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedWahWah, &WahWah::setDepth);
 
-  p = new AutomatableParameter(plugInLock, "DryWetRatio", 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "DryWetRatio", 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedWahWah, &WahWah::setDryWetRatio);
 
-  p = new ParameterTwoPoleFilterMode(plugInLock);
+  p = new ParameterTwoPoleFilterMode(lock);
   p->setDefaultValue(rosic::TwoPoleFilter::BANDPASS, true);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedWahWah, &WahWah::setFilterMode);
 
-  p = new AutomatableParameter(plugInLock, "Frequency", 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "Frequency", 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedWahWah, &WahWah::setFrequency);
 
-  p = new AutomatableParameter(plugInLock, "Gain", -48, 48.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "Gain", -48, 48.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedWahWah, &WahWah::setGain);
 
-  p = new AutomatableParameter(plugInLock, "Bandwidth", 0.25, 2.0, 0.01, 1.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "Bandwidth", 0.25, 2.0, 0.01, 1.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedWahWah, &WahWah::setBandwidth);
 
-  for(int i=0; i < (int) observedParameters.size(); i++)
-    observedParameters[i]->resetToDefaultValue(true, true);
+  for(int i=0; i < (int) parameters.size(); i++)
+    parameters[i]->resetToDefaultValue(true, true);
 }
 
 WahWahModuleEditor::WahWahModuleEditor(CriticalSection *newPlugInLock, WahWahAudioModule* newWahWahAudioModule) 
 : ModulationEffectModuleEditor(newPlugInLock, newWahWahAudioModule)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert(newWahWahAudioModule != NULL ); // you must pass a valid module here
   wahWahModuleToEdit = newWahWahAudioModule;
@@ -4004,14 +4000,14 @@ WahWahModuleEditor::WahWahModuleEditor(CriticalSection *newPlugInLock, WahWahAud
   depthSlider->assignParameter( moduleToEdit->getParameterByName("Depth") );
   depthSlider->setDescription(juce::String(T("Modulation depth in semitones")));
   depthSlider->setDescriptionField(infoField);
-  depthSlider->setStringConversionFunction(&rojue::semitonesToStringWithUnit1);
+  depthSlider->setStringConversionFunction(&semitonesToStringWithUnit1);
 
   addWidget( dryWetSlider = new RSlider (T("DryWetSlider")) );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName("DryWetRatio") );
   dryWetSlider->setSliderName(juce::String(T("Dry/Wet")));
   dryWetSlider->setDescription(juce::String(T("Ratio between dry and wet(filtered) signal")));
   dryWetSlider->setDescriptionField(infoField);
-  dryWetSlider->setStringConversionFunction(&rojue::ratioToString0);
+  dryWetSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( modeComboBox = new RComboBox(juce::String(T("ModeComboBox"))) );
   modeComboBox->assignParameter( moduleToEdit->getParameterByName(T("Mode")) );
@@ -4023,19 +4019,19 @@ WahWahModuleEditor::WahWahModuleEditor(CriticalSection *newPlugInLock, WahWahAud
   frequencySlider->assignParameter( moduleToEdit->getParameterByName("Frequency") );
   frequencySlider->setDescription(juce::String(T("Characteristic frequency of the filter")));
   frequencySlider->setDescriptionField(infoField);
-  frequencySlider->setStringConversionFunction(&rojue::hertzToStringWithUnitTotal5);
+  frequencySlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( gainSlider = new RSlider (T("GainSlider")) );
   gainSlider->assignParameter( moduleToEdit->getParameterByName("Gain") );
   gainSlider->setDescription(juce::String(T("Gain of the filter")));
   gainSlider->setDescriptionField(infoField);
-  gainSlider->setStringConversionFunction(&rojue::decibelsToStringWithUnit1);
+  gainSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( bandwidthSlider = new RSlider (T("BandwidthSlider")) );
   bandwidthSlider->assignParameter( moduleToEdit->getParameterByName("Bandwidth") );
   bandwidthSlider->setDescription(juce::String(T("Bandwidth of the filter")));
   bandwidthSlider->setDescriptionField(infoField);
-  bandwidthSlider->setStringConversionFunction(&rojue::octavesToStringWithUnit2);
+  bandwidthSlider->setStringConversionFunction(&octavesToStringWithUnit2);
 
   updateWidgetsAccordingToState();
   updateWidgetEnablement();
@@ -4043,7 +4039,7 @@ WahWahModuleEditor::WahWahModuleEditor(CriticalSection *newPlugInLock, WahWahAud
 
 void WahWahModuleEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   ModulationEffectModuleEditor::resized();
 
@@ -4067,14 +4063,14 @@ void WahWahModuleEditor::resized()
 
 void WahWahModuleEditor::rComboBoxChanged(RComboBox *rComboBoxThatHasChanged)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   if( rComboBoxThatHasChanged == modeComboBox )
     updateWidgetEnablement();
 }
 
 void WahWahModuleEditor::updateWidgetEnablement()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   if( wahWahModuleToEdit == NULL )
     return;
@@ -4097,7 +4093,7 @@ void WahWahModuleEditor::updateWidgetEnablement()
 FormantShifterAudioModule::FormantShifterAudioModule(CriticalSection *newPlugInLock, rosic::FormantShifterStereo *newFormantShifterToWrap)
  : AudioModule(newPlugInLock)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert( newFormantShifterToWrap != NULL ); // you must pass a valid rosic-object 
   wrappedFormantShifter = newFormantShifterToWrap;
@@ -4109,39 +4105,39 @@ FormantShifterAudioModule::FormantShifterAudioModule(CriticalSection *newPlugInL
 
 void FormantShifterAudioModule::createStaticParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AutomatableParameter* p;
 
-  //p = new AutomatableParameter(plugInLock, T("BlockSize"), 32.0, 8192.0, 0.0, 2048.0, Parameter::EXPONENTIAL);
+  //p = new AutomatableParameter(lock, T("BlockSize"), 32.0, 8192.0, 0.0, 2048.0, Parameter::EXPONENTIAL);
   //addObservedParameter(p); 
   //p->setValueChangeCallback(wrappedFormantShifter, &FormantShifterStereo::setBlockSize);
 
-  p = new AutomatableParameter(plugInLock, T("FormantScale"), 0.25, 4.0, 0.01, 1.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, T("FormantScale"), 0.25, 4.0, 0.01, 1.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedFormantShifter, &FormantShifterStereo::setFormantScale);
 
-  p = new AutomatableParameter(plugInLock, T("FormantOffset"), -200.0, 200.0, 1.0, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, T("FormantOffset"), -200.0, 200.0, 1.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedFormantShifter, &FormantShifterStereo::setFormantOffset);
 
-  p = new AutomatableParameter(plugInLock, T("DryWetRatio"), 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, T("DryWetRatio"), 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedFormantShifter, &FormantShifterStereo::setDryWetRatio);
 
-  //p = new AutomatableParameter(plugInLock, T("Mono"), 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
+  //p = new AutomatableParameter(lock, T("Mono"), 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
   //addObservedParameter(p);
   //p->setValueChangeCallback(wrappedFormantShifter, &FormantShifterStereo::setMono);
 
-  for(int i=0; i < (int) observedParameters.size(); i++)
-    observedParameters[i]->resetToDefaultValue(true, true);
+  for(int i=0; i < (int) parameters.size(); i++)
+    parameters[i]->resetToDefaultValue(true, true);
 }
 
 FormantShifterModuleEditor::FormantShifterModuleEditor(CriticalSection *newPlugInLock, 
                                                        FormantShifterAudioModule* newFormantShifterAudioModule) 
 : AudioModuleEditor(newPlugInLock, newFormantShifterAudioModule)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert(newFormantShifterAudioModule != NULL ); // you must pass a valid module here
 
@@ -4149,20 +4145,20 @@ FormantShifterModuleEditor::FormantShifterModuleEditor(CriticalSection *newPlugI
   formantScaleSlider->assignParameter( moduleToEdit->getParameterByName(T("FormantScale")) );
   formantScaleSlider->setDescription(juce::String(T("Formant scale factor")));
   formantScaleSlider->setDescriptionField(infoField);
-  formantScaleSlider->setStringConversionFunction(&rojue::valueToString2);
+  formantScaleSlider->setStringConversionFunction(&valueToString2);
 
   addWidget( formantOffsetSlider = new RSlider (T("FormantOffsetSlider")) );
   formantOffsetSlider->assignParameter( moduleToEdit->getParameterByName(T("FormantOffset")) );
   formantOffsetSlider->setDescription(juce::String(T("Formant offset in Hz")));
   formantOffsetSlider->setDescriptionField(infoField);
-  formantOffsetSlider->setStringConversionFunction(&rojue::hertzToStringWithUnit1);
+  formantOffsetSlider->setStringConversionFunction(&hertzToStringWithUnit1);
 
   addWidget( dryWetSlider = new RSlider (T("DryWetSlider")) );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName(T("DryWetRatio")) );
   dryWetSlider->setSliderName(juce::String(T("Dry/Wet")));
   dryWetSlider->setDescription(juce::String(T("Ratio between dry (original) and wet (ringmodulated) signal")));
   dryWetSlider->setDescriptionField(infoField);
-  dryWetSlider->setStringConversionFunction(&rojue::ratioToString0);
+  dryWetSlider->setStringConversionFunction(&ratioToString0);
 
   /*
   addWidget( monoButton = new RButton(juce::String(T("Mono"))) );
@@ -4177,7 +4173,7 @@ FormantShifterModuleEditor::FormantShifterModuleEditor(CriticalSection *newPlugI
 
 void FormantShifterModuleEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AudioModuleEditor::resized();
   int x = 0;
@@ -4204,7 +4200,7 @@ void FormantShifterModuleEditor::resized()
 ChorusAudioModule::ChorusAudioModule(CriticalSection *newPlugInLock, rosic::Chorus *newChorusToWrap)
  : AudioModule(newPlugInLock)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert( newChorusToWrap != NULL ); // you must pass a valid rosic-object 
   wrappedChorus = newChorusToWrap;
@@ -4216,7 +4212,7 @@ ChorusAudioModule::ChorusAudioModule(CriticalSection *newPlugInLock, rosic::Chor
 
 void ChorusAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   // \todo get rid of this function and implement the new callback mechanism - maybe we need a class IndexedParameter or something
 
@@ -4258,76 +4254,76 @@ void ChorusAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
 
 void ChorusAudioModule::createStaticParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AutomatableParameter* p;
 
   // ...here we either need a callback with two parameters, or we must stick to the old callback mechansim - for now, we'll do the latter
 
-  p = new AutomatableParameter(plugInLock, "Delay", 10.0, 50.0, 1.0, 20.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "Delay", 10.0, 50.0, 1.0, 20.0, Parameter::LINEAR);
   addObservedParameter(p); 
-  p = new AutomatableParameter(plugInLock, "CycleLength", 0.5, 8.0, 0.25, 4.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "CycleLength", 0.5, 8.0, 0.25, 4.0, Parameter::LINEAR);
   addObservedParameter(p); 
-  p = new AutomatableParameter(plugInLock, "Depth", 0.0, 2.0, 0.01, 0.25, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "Depth", 0.0, 2.0, 0.01, 0.25, Parameter::LINEAR);
   addObservedParameter(p); 
-  p = new AutomatableParameter(plugInLock, "StereoPhase", 0.0, 180.0, 1.0, 90.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "StereoPhase", 0.0, 180.0, 1.0, 90.0, Parameter::LINEAR);
   addObservedParameter(p); 
-  p = new AutomatableParameter(plugInLock, "GlobalFeedback", -99.0, 99.0, 1.0, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "GlobalFeedback", -99.0, 99.0, 1.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
-  p = new AutomatableParameter(plugInLock, "CrossMix", -100.0, 100.0, 1.0, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "CrossMix", -100.0, 100.0, 1.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
-  p = new AutomatableParameter(plugInLock, "FeedbackPostCrossMix", -99.0, 99.0, 1.0, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "FeedbackPostCrossMix", -99.0, 99.0, 1.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
-  p = new AutomatableParameter(plugInLock, "DryWetRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "DryWetRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
   addObservedParameter(p); 
 
-  p = new AutomatableParameter(plugInLock, "DelayScaleVoice1", 1.0, 100.0, 1.0, 100.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "DelayScaleVoice1", 1.0, 100.0, 1.0, 100.0, Parameter::LINEAR);
   addObservedParameter(p); 
-  p = new AutomatableParameter(plugInLock, "DepthScaleVoice1", -100.0, 100.0, 1.0, 100.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "DepthScaleVoice1", -100.0, 100.0, 1.0, 100.0, Parameter::LINEAR);
   addObservedParameter(p); 
-  p = new AutomatableParameter(plugInLock, "AmpScaleVoice1", -100.0, 100.0, 1.0, 100.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "AmpScaleVoice1", -100.0, 100.0, 1.0, 100.0, Parameter::LINEAR);
   addObservedParameter(p); 
-  p = new AutomatableParameter(plugInLock, "OnOffVoice1", 0.0, 1.0, 1.0, 1.0, Parameter::BOOLEAN);
+  p = new AutomatableParameter(lock, "OnOffVoice1", 0.0, 1.0, 1.0, 1.0, Parameter::BOOLEAN);
   addObservedParameter(p);
 
-  p = new AutomatableParameter(plugInLock, "DelayScaleVoice2", 1.0, 100.0, 1.0, 83.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "DelayScaleVoice2", 1.0, 100.0, 1.0, 83.0, Parameter::LINEAR);
   addObservedParameter(p); 
-  p = new AutomatableParameter(plugInLock, "DepthScaleVoice2", -100.0, 100.0, 1.0, 100.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "DepthScaleVoice2", -100.0, 100.0, 1.0, 100.0, Parameter::LINEAR);
   addObservedParameter(p); 
-  p = new AutomatableParameter(plugInLock, "AmpScaleVoice2", -100.0, 100.0, 1.0, 100.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "AmpScaleVoice2", -100.0, 100.0, 1.0, 100.0, Parameter::LINEAR);
   addObservedParameter(p); 
-  p = new AutomatableParameter(plugInLock, "OnOffVoice2", 0.0, 1.0, 1.0, 1.0, Parameter::BOOLEAN);
+  p = new AutomatableParameter(lock, "OnOffVoice2", 0.0, 1.0, 1.0, 1.0, Parameter::BOOLEAN);
   addObservedParameter(p);
 
-  p = new AutomatableParameter(plugInLock, "DelayScaleVoice3", 1.0, 100.0, 1.0, 69.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "DelayScaleVoice3", 1.0, 100.0, 1.0, 69.0, Parameter::LINEAR);
   addObservedParameter(p); 
-  p = new AutomatableParameter(plugInLock, "DepthScaleVoice3", -100.0, 100.0, 1.0, 100.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "DepthScaleVoice3", -100.0, 100.0, 1.0, 100.0, Parameter::LINEAR);
   addObservedParameter(p); 
-  p = new AutomatableParameter(plugInLock, "AmpScaleVoice3", -100.0, 100.0, 1.0, 100.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "AmpScaleVoice3", -100.0, 100.0, 1.0, 100.0, Parameter::LINEAR);
   addObservedParameter(p); 
-  p = new AutomatableParameter(plugInLock, "OnOffVoice3", 0.0, 1.0, 1.0, 1.0, Parameter::BOOLEAN);
+  p = new AutomatableParameter(lock, "OnOffVoice3", 0.0, 1.0, 1.0, 1.0, Parameter::BOOLEAN);
   addObservedParameter(p);
 
-  p = new AutomatableParameter(plugInLock, "DelayScaleVoice4", 1.0, 100.0, 1.0, 58.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "DelayScaleVoice4", 1.0, 100.0, 1.0, 58.0, Parameter::LINEAR);
   addObservedParameter(p); 
-  p = new AutomatableParameter(plugInLock, "DepthScaleVoice4", -100.0, 100.0, 1.0, 100.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "DepthScaleVoice4", -100.0, 100.0, 1.0, 100.0, Parameter::LINEAR);
   addObservedParameter(p); 
-  p = new AutomatableParameter(plugInLock, "AmpScaleVoice4", -100.0, 100.0, 1.0, 100.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "AmpScaleVoice4", -100.0, 100.0, 1.0, 100.0, Parameter::LINEAR);
   addObservedParameter(p); 
-  p = new AutomatableParameter(plugInLock, "OnOffVoice4", 0.0, 1.0, 1.0, 1.0, Parameter::BOOLEAN);
+  p = new AutomatableParameter(lock, "OnOffVoice4", 0.0, 1.0, 1.0, 1.0, Parameter::BOOLEAN);
   addObservedParameter(p);
 
-  for(int i=0; i < (int) observedParameters.size(); i++ )
+  for(int i=0; i < (int) parameters.size(); i++ )
   {   
-    parameterChanged(observedParameters[i]); // because some parameters use the old callback mechanism
-    observedParameters[i]->resetToDefaultValue(true, true);
+    parameterChanged(parameters[i]); // because some parameters use the old callback mechanism
+    parameters[i]->resetToDefaultValue(true, true);
   }
 }
 
 ChorusModuleEditor::ChorusModuleEditor(CriticalSection *newPlugInLock, ChorusAudioModule* newChorusAudioModule) 
 : AudioModuleEditor(newPlugInLock, newChorusAudioModule)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert(newChorusAudioModule != NULL ); // you must pass a valid module here
 
@@ -4340,51 +4336,51 @@ ChorusModuleEditor::ChorusModuleEditor(CriticalSection *newPlugInLock, ChorusAud
   delaySlider->assignParameter( moduleToEdit->getParameterByName("Delay") );
   delaySlider->setDescription(juce::String(T("Average delay in the delaylines")));
   delaySlider->setDescriptionField(infoField);
-  delaySlider->setStringConversionFunction(&rojue::millisecondsToStringWithUnit2);
+  delaySlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( cycleLengthSlider = new RSlider (T("CycleLengthSlider")) );
   cycleLengthSlider->assignParameter( moduleToEdit->getParameterByName("CycleLength") );
   cycleLengthSlider->setSliderName(juce::String(T("Cycle")));
   cycleLengthSlider->setDescription(juce::String(T("Length of one cycle (in beats)")));
   cycleLengthSlider->setDescriptionField(infoField);
-  cycleLengthSlider->setStringConversionFunction(&rojue::beatsToStringWithUnit4);
+  cycleLengthSlider->setStringConversionFunction(&beatsToStringWithUnit4);
 
   addWidget( depthSlider = new RSlider (T("DepthSlider")) );
   depthSlider->assignParameter( moduleToEdit->getParameterByName("Depth") );
   depthSlider->setDescription(juce::String(T("Depth of the modulation")));
   depthSlider->setDescriptionField(infoField);
-  depthSlider->setStringConversionFunction(&rojue::semitonesToStringWithUnit2);
+  depthSlider->setStringConversionFunction(&semitonesToStringWithUnit2);
 
   addWidget( globalFeedbackSlider = new RSlider (T("GlobalFeedbackSlider")) );
   globalFeedbackSlider->assignParameter( moduleToEdit->getParameterByName("GlobalFeedback") );
   globalFeedbackSlider->setSliderName(juce::String(T("Feedback")));
   globalFeedbackSlider->setDescription(juce::String(T("Feedback around the chorus effect")));
   globalFeedbackSlider->setDescriptionField(infoField);
-  globalFeedbackSlider->setStringConversionFunction(&rojue::percentToStringWithUnit0);
+  globalFeedbackSlider->setStringConversionFunction(&percentToStringWithUnit0);
 
   addWidget( crossMixSlider = new RSlider (T("CrossMixSlider")) );
   crossMixSlider->assignParameter( moduleToEdit->getParameterByName("CrossMix") );
   crossMixSlider->setDescription(juce::String(T("Amount by which left wet signal goes to right channel and vice versa")));
   crossMixSlider->setDescriptionField(infoField);
-  crossMixSlider->setStringConversionFunction(&rojue::percentToStringWithUnit0);
+  crossMixSlider->setStringConversionFunction(&percentToStringWithUnit0);
 
   addWidget( feedback2Slider = new RSlider (T("Feedback2Slider")) );
   feedback2Slider->assignParameter( moduleToEdit->getParameterByName("FeedbackPostCrossMix") );
   feedback2Slider->setDescription(juce::String(T("Feedback around the chorus effect after channel cross-mix")));
   feedback2Slider->setDescriptionField(infoField);
-  feedback2Slider->setStringConversionFunction(&rojue::percentToStringWithUnit0);
+  feedback2Slider->setStringConversionFunction(&percentToStringWithUnit0);
 
   addWidget( stereoPhaseSlider = new RSlider (T("StereoPhaseSlider")) );
   stereoPhaseSlider->assignParameter( moduleToEdit->getParameterByName("StereoPhase") );
   stereoPhaseSlider->setDescription(juce::String(T("Phase offset between LFOs for left and right channel")));
   stereoPhaseSlider->setDescriptionField(infoField);
-  stereoPhaseSlider->setStringConversionFunction(&rojue::degreesToStringWithUnit0);
+  stereoPhaseSlider->setStringConversionFunction(&degreesToStringWithUnit0);
 
   addWidget( dryWetSlider = new RSlider (T("DryWetSlider")) );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName("DryWetRatio") );
   dryWetSlider->setDescription(juce::String(T("Ratio between dry (original) and wet (chorused) signal")));
   dryWetSlider->setDescriptionField(infoField);
-  dryWetSlider->setStringConversionFunction(&rojue::ratioToString0);
+  dryWetSlider->setStringConversionFunction(&ratioToString0);
 
 
   addWidget( voice1Button = new RButton(juce::String(T("Voice 1"))) );
@@ -4398,21 +4394,21 @@ ChorusModuleEditor::ChorusModuleEditor(CriticalSection *newPlugInLock, ChorusAud
   voice1DelaySlider->setSliderName(juce::String(T("Dly")));
   voice1DelaySlider->setDescription(juce::String(T("Scales the delay-time for voice 1")));
   voice1DelaySlider->setDescriptionField(infoField);
-  voice1DelaySlider->setStringConversionFunction(&rojue::percentToStringWithUnit0);
+  voice1DelaySlider->setStringConversionFunction(&percentToStringWithUnit0);
 
   addWidget( voice1DepthSlider = new RSlider (T("Voice1DepthSlider")) );
   voice1DepthSlider->assignParameter( moduleToEdit->getParameterByName("DepthScaleVoice1") );
   voice1DepthSlider->setSliderName(juce::String(T("Dpt")));
   voice1DepthSlider->setDescription(juce::String(T("Scales the modulation depth for voice 1")));
   voice1DepthSlider->setDescriptionField(infoField);
-  voice1DepthSlider->setStringConversionFunction(&rojue::percentToStringWithUnit0);
+  voice1DepthSlider->setStringConversionFunction(&percentToStringWithUnit0);
 
   addWidget( voice1AmpSlider = new RSlider (T("Voice1AmpSlider")) );
   voice1AmpSlider->assignParameter( moduleToEdit->getParameterByName("AmpScaleVoice1") );
   voice1AmpSlider->setSliderName(juce::String(T("Amp")));
   voice1AmpSlider->setDescription(juce::String(T("Scales the amplitude for voice 1")));
   voice1AmpSlider->setDescriptionField(infoField);
-  voice1AmpSlider->setStringConversionFunction(&rojue::percentToStringWithUnit0);
+  voice1AmpSlider->setStringConversionFunction(&percentToStringWithUnit0);
 
 
   addWidget( voice2Button = new RButton(juce::String(T("Voice 2"))) );
@@ -4426,21 +4422,21 @@ ChorusModuleEditor::ChorusModuleEditor(CriticalSection *newPlugInLock, ChorusAud
   voice2DelaySlider->setSliderName(juce::String(T("Dly")));
   voice2DelaySlider->setDescription(juce::String(T("Scales the delay-time for voice 2")));
   voice2DelaySlider->setDescriptionField(infoField);
-  voice2DelaySlider->setStringConversionFunction(&rojue::percentToStringWithUnit0);
+  voice2DelaySlider->setStringConversionFunction(&percentToStringWithUnit0);
 
   addWidget( voice2DepthSlider = new RSlider (T("Voice2DepthSlider")) );
   voice2DepthSlider->assignParameter( moduleToEdit->getParameterByName("DepthScaleVoice2") );
   voice2DepthSlider->setSliderName(juce::String(T("Dpt")));
   voice2DepthSlider->setDescription(juce::String(T("Scales the modulation depth for voice 2")));
   voice2DepthSlider->setDescriptionField(infoField);
-  voice2DepthSlider->setStringConversionFunction(&rojue::percentToStringWithUnit0);
+  voice2DepthSlider->setStringConversionFunction(&percentToStringWithUnit0);
 
   addWidget( voice2AmpSlider = new RSlider (T("Voice2AmpSlider")) );
   voice2AmpSlider->assignParameter( moduleToEdit->getParameterByName("AmpScaleVoice2") );
   voice2AmpSlider->setSliderName(juce::String(T("Amp")));
   voice2AmpSlider->setDescription(juce::String(T("Scales the amplitude for voice 2")));
   voice2AmpSlider->setDescriptionField(infoField);
-  voice2AmpSlider->setStringConversionFunction(&rojue::percentToStringWithUnit0);
+  voice2AmpSlider->setStringConversionFunction(&percentToStringWithUnit0);
 
 
   addWidget( voice3Button = new RButton(juce::String(T("Voice 3"))) );
@@ -4454,21 +4450,21 @@ ChorusModuleEditor::ChorusModuleEditor(CriticalSection *newPlugInLock, ChorusAud
   voice3DelaySlider->setSliderName(juce::String(T("Dly")));
   voice3DelaySlider->setDescription(juce::String(T("Scales the delay-time for voice 3")));
   voice3DelaySlider->setDescriptionField(infoField);
-  voice3DelaySlider->setStringConversionFunction(&rojue::percentToStringWithUnit0);
+  voice3DelaySlider->setStringConversionFunction(&percentToStringWithUnit0);
 
   addWidget( voice3DepthSlider = new RSlider (T("Voice3DepthSlider")) );
   voice3DepthSlider->assignParameter( moduleToEdit->getParameterByName("DepthScaleVoice3") );
   voice3DepthSlider->setSliderName(juce::String(T("Dpt")));
   voice3DepthSlider->setDescription(juce::String(T("Scales the modulation depth for voice 3")));
   voice3DepthSlider->setDescriptionField(infoField);
-  voice3DepthSlider->setStringConversionFunction(&rojue::percentToStringWithUnit0);
+  voice3DepthSlider->setStringConversionFunction(&percentToStringWithUnit0);
 
   addWidget( voice3AmpSlider = new RSlider (T("Voice3AmpSlider")) );
   voice3AmpSlider->assignParameter( moduleToEdit->getParameterByName("AmpScaleVoice3") );
   voice3AmpSlider->setSliderName(juce::String(T("Amp")));
   voice3AmpSlider->setDescription(juce::String(T("Scales the amplitude for voice 3")));
   voice3AmpSlider->setDescriptionField(infoField);
-  voice3AmpSlider->setStringConversionFunction(&rojue::percentToStringWithUnit0);
+  voice3AmpSlider->setStringConversionFunction(&percentToStringWithUnit0);
 
 
   addWidget( voice4Button = new RButton(juce::String(T("Voice 4"))) );
@@ -4482,28 +4478,28 @@ ChorusModuleEditor::ChorusModuleEditor(CriticalSection *newPlugInLock, ChorusAud
   voice4DelaySlider->setSliderName(juce::String(T("Dly")));
   voice4DelaySlider->setDescription(juce::String(T("Scales the delay-time for voice 4")));
   voice4DelaySlider->setDescriptionField(infoField);
-  voice4DelaySlider->setStringConversionFunction(&rojue::percentToStringWithUnit0);
+  voice4DelaySlider->setStringConversionFunction(&percentToStringWithUnit0);
 
   addWidget( voice4DepthSlider = new RSlider (T("Voice4DepthSlider")) );
   voice4DepthSlider->assignParameter( moduleToEdit->getParameterByName("DepthScaleVoice4") );
   voice4DepthSlider->setSliderName(juce::String(T("Dpt")));
   voice4DepthSlider->setDescription(juce::String(T("Scales the modulation depth for voice 4")));
   voice4DepthSlider->setDescriptionField(infoField);
-  voice4DepthSlider->setStringConversionFunction(&rojue::percentToStringWithUnit0);
+  voice4DepthSlider->setStringConversionFunction(&percentToStringWithUnit0);
 
   addWidget( voice4AmpSlider = new RSlider (T("Voice4AmpSlider")) );
   voice4AmpSlider->assignParameter( moduleToEdit->getParameterByName("AmpScaleVoice4") );
   voice4AmpSlider->setSliderName(juce::String(T("Amp")));
   voice4AmpSlider->setDescription(juce::String(T("Scales the amplitude for voice 4")));
   voice4AmpSlider->setDescriptionField(infoField);
-  voice4AmpSlider->setStringConversionFunction(&rojue::percentToStringWithUnit0);
+  voice4AmpSlider->setStringConversionFunction(&percentToStringWithUnit0);
 
   updateWidgetsAccordingToState();
 }
 
 void ChorusModuleEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AudioModuleEditor::resized();
   int x = 0;
@@ -4606,7 +4602,7 @@ FrequencyShifterAudioModule::FrequencyShifterAudioModule(CriticalSection *newPlu
                                                          rosic::FrequencyShifterStereo *newFrequencyShifterToWrap)
                                                           : AudioModule(newPlugInLock)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert( newFrequencyShifterToWrap != NULL ); // you must pass a valid rosic-object 
   wrappedFrequencyShifter = newFrequencyShifterToWrap;
@@ -4618,36 +4614,36 @@ FrequencyShifterAudioModule::FrequencyShifterAudioModule(CriticalSection *newPlu
 
 void FrequencyShifterAudioModule::createStaticParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AutomatableParameter* p;
 
-  p = new AutomatableParameter(plugInLock, "FrequencyShift", -200.0, 200.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "FrequencyShift", -200.0, 200.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedFrequencyShifter, &FrequencyShifterStereo::setFrequencyShift);
 
-  p = new AutomatableParameter(plugInLock, "Feedback", -99.0, 99.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "Feedback", -99.0, 99.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedFrequencyShifter, &FrequencyShifterStereo::setFeedbackInPercent);
 
-  p = new AutomatableParameter(plugInLock, "StereoOffset", -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "StereoOffset", -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedFrequencyShifter, &FrequencyShifterStereo::setStereoOffset);
 
-  //p = new AutomatableParameter(plugInLock, "DryWetRatio", 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
+  //p = new AutomatableParameter(lock, "DryWetRatio", 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
   //addObservedParameter(p); 
-  //p = new AutomatableParameter(plugInLock, "MidSideRatio", 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
+  //p = new AutomatableParameter(lock, "MidSideRatio", 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
   //addObservedParameter(p); 
 
-  for(int i=0; i < (int) observedParameters.size(); i++)
-    observedParameters[i]->resetToDefaultValue(true, true);
+  for(int i=0; i < (int) parameters.size(); i++)
+    parameters[i]->resetToDefaultValue(true, true);
 }
 
 FrequencyShifterModuleEditor::FrequencyShifterModuleEditor(CriticalSection *newPlugInLock, 
                                                            FrequencyShifterAudioModule* newFrequencyShifterAudioModule) 
 : AudioModuleEditor(newPlugInLock, newFrequencyShifterAudioModule)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert(newFrequencyShifterAudioModule != NULL ); // you must pass a valid module here
 
@@ -4655,26 +4651,26 @@ FrequencyShifterModuleEditor::FrequencyShifterModuleEditor(CriticalSection *newP
   shiftSlider->assignParameter( moduleToEdit->getParameterByName("FrequencyShift") );
   shiftSlider->setDescription(juce::String(T("Frequency shift in Hz")));
   shiftSlider->setDescriptionField(infoField);
-  shiftSlider->setStringConversionFunction(&rojue::hertzToStringWithUnit1);
+  shiftSlider->setStringConversionFunction(&hertzToStringWithUnit1);
 
   addWidget( feedbackSlider = new RSlider (T("FeedbackSlider")) );
   feedbackSlider->assignParameter( moduleToEdit->getParameterByName("Feedback") );
   feedbackSlider->setDescription(juce::String(T("Feedback around the shifter")));
   feedbackSlider->setDescriptionField(infoField);
-  feedbackSlider->setStringConversionFunction(&rojue::percentToStringWithUnit1);
+  feedbackSlider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( stereoOffsetSlider = new RSlider (T("StereoOffsetSlider")) );
   stereoOffsetSlider->assignParameter( moduleToEdit->getParameterByName("StereoOffset") );
   stereoOffsetSlider->setDescription(juce::String(T("Stereo offset of the shift between left and right in Hz")));
   stereoOffsetSlider->setDescriptionField(infoField);
-  stereoOffsetSlider->setStringConversionFunction(&rojue::hertzToStringWithUnit1);
+  stereoOffsetSlider->setStringConversionFunction(&hertzToStringWithUnit1);
 
   addWidget( dryWetSlider = new RSlider (T("DryWetSlider")) );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName("DryWetRatio") );
   dryWetSlider->setSliderName(juce::String(T("Dry/Wet")));
   dryWetSlider->setDescription(juce::String(T("Ratio between dry (original) and wet (frequency shifted) signal")));
   dryWetSlider->setDescriptionField(infoField);
-  dryWetSlider->setStringConversionFunction(&rojue::ratioToString0);
+  dryWetSlider->setStringConversionFunction(&ratioToString0);
 
   /*
   addWidget( midSideSlider = new RSlider (T("MidSideSlider")) );
@@ -4682,7 +4678,7 @@ FrequencyShifterModuleEditor::FrequencyShifterModuleEditor(CriticalSection *newP
   midSideSlider->setSliderName(juce::String(T("Mid/Side")));
   midSideSlider->setDescription(juce::String(T("Ratio between mid and side wet signal")));
   midSideSlider->setDescriptionField(infoField);
-  midSideSlider->setStringConversionFunction(&rojue::ratioToString0);
+  midSideSlider->setStringConversionFunction(&ratioToString0);
   */
 
   updateWidgetsAccordingToState();
@@ -4690,7 +4686,7 @@ FrequencyShifterModuleEditor::FrequencyShifterModuleEditor(CriticalSection *newP
 
 void FrequencyShifterModuleEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AudioModuleEditor::resized();
   int x = 0;
@@ -4712,7 +4708,7 @@ void FrequencyShifterModuleEditor::resized()
 PhaseStereoizerAudioModule::PhaseStereoizerAudioModule(CriticalSection *newPlugInLock, rosic::PhaseStereoizer *newPhaseStereoizerToWrap)
  : AudioModule(newPlugInLock)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert( newPhaseStereoizerToWrap != NULL ); // you must pass a valid rosic-object 
   wrappedPhaseStereoizer = newPhaseStereoizerToWrap;
@@ -4724,43 +4720,43 @@ PhaseStereoizerAudioModule::PhaseStereoizerAudioModule(CriticalSection *newPlugI
 
 void PhaseStereoizerAudioModule::createStaticParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AutomatableParameter* p;
 
-  p = new AutomatableParameter(plugInLock, "StereoPhaseOffset", 0.0, 180.0, 1.0, 90.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "StereoPhaseOffset", 0.0, 180.0, 1.0, 90.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedPhaseStereoizer, &PhaseStereoizer::setPhaseOffset);
 
-  p = new AutomatableParameter(plugInLock, "DryWetRatio", 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "DryWetRatio", 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedPhaseStereoizer, &PhaseStereoizer::setDryWetRatio);
 
-  p = new AutomatableParameter(plugInLock, "MidSideRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "MidSideRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedPhaseStereoizer, &PhaseStereoizer::setMidSideRatio);
 
-  //p = new AutomatableParameter(plugInLock, "Gain", -6.0, 24.0, 0.1, 0.0, Parameter::LINEAR);
+  //p = new AutomatableParameter(lock, "Gain", -6.0, 24.0, 0.1, 0.0, Parameter::LINEAR);
   //addObservedParameter(p); 
   //p->setValueChangeCallback(wrappedPhaseStereoizer, &PhaseStereoizer::setGain);
 
-  p = new AutomatableParameter(plugInLock, "Lowpass", 20.0, 20000.0, 0.0, 20000.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "Lowpass", 20.0, 20000.0, 0.0, 20000.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedPhaseStereoizer, &PhaseStereoizer::setLowpassCutoff);
 
-  p = new AutomatableParameter(plugInLock, "Highpass", 20.0, 20000.0, 0.0, 20.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "Highpass", 20.0, 20000.0, 0.0, 20.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedPhaseStereoizer, &PhaseStereoizer::setHighpassCutoff);
 
-  for(int i=0; i < (int) observedParameters.size(); i++)
-    observedParameters[i]->resetToDefaultValue(true, true);
+  for(int i=0; i < (int) parameters.size(); i++)
+    parameters[i]->resetToDefaultValue(true, true);
 }
 
 PhaseStereoizerModuleEditor::PhaseStereoizerModuleEditor(CriticalSection *newPlugInLock, 
                                                          PhaseStereoizerAudioModule* newPhaseStereoizerAudioModule) 
 : AudioModuleEditor(newPlugInLock, newPhaseStereoizerAudioModule)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert(newPhaseStereoizerAudioModule != NULL ); // you must pass a valid module here
 
@@ -4768,40 +4764,40 @@ PhaseStereoizerModuleEditor::PhaseStereoizerModuleEditor(CriticalSection *newPlu
   phaseOffsetSlider->assignParameter( moduleToEdit->getParameterByName("StereoPhaseOffset") );
   phaseOffsetSlider->setDescription(juce::String(T("Phase offset between left and right (wet) signal in degrees")));
   phaseOffsetSlider->setDescriptionField(infoField);
-  phaseOffsetSlider->setStringConversionFunction(&rojue::degreesToStringWithUnit0);
+  phaseOffsetSlider->setStringConversionFunction(&degreesToStringWithUnit0);
 
   addWidget( dryWetRatioSlider = new RSlider (T("DryWetRatioSlider")) );
   dryWetRatioSlider->assignParameter( moduleToEdit->getParameterByName("DryWetRatio") );
   dryWetRatioSlider->setDescription(juce::String(T("Ratio between dry (original) and wet (phase-shifted) signal")));
   dryWetRatioSlider->setDescriptionField(infoField);
-  dryWetRatioSlider->setStringConversionFunction(&rojue::ratioToString0);
+  dryWetRatioSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( sideLowpassSlider = new RSlider (T("SideLowpassSlider")) );
   sideLowpassSlider->assignParameter( moduleToEdit->getParameterByName("Lowpass") );
   sideLowpassSlider->setSliderName(juce::String(T("Lowpass")));
   sideLowpassSlider->setDescription(juce::String(T("Cutoff frequency of the lowpass filter for the wet side signal")));
   sideLowpassSlider->setDescriptionField(infoField);
-  sideLowpassSlider->setStringConversionFunction(&rojue::hertzToStringWithUnitTotal5);
+  sideLowpassSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( sideHighpassSlider = new RSlider (T("SideHighpassSlider")) );
   sideHighpassSlider->assignParameter( moduleToEdit->getParameterByName("Highpass") );
   sideHighpassSlider->setSliderName(juce::String(T("Highpass")));
   sideHighpassSlider->setDescription(juce::String(T("Cutoff frequency of the highpass filter for the wet side signal")));
   sideHighpassSlider->setDescriptionField(infoField);
-  sideHighpassSlider->setStringConversionFunction(&rojue::hertzToStringWithUnitTotal5);
+  sideHighpassSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( midSideRatioSlider = new RSlider (T("MidSideRatioSlider")) );
   midSideRatioSlider->assignParameter( moduleToEdit->getParameterByName("MidSideRatio") );
   midSideRatioSlider->setDescription(juce::String(T("Ratio between mid and side signal (stereo-width)")));
   midSideRatioSlider->setDescriptionField(infoField);
-  midSideRatioSlider->setStringConversionFunction(&rojue::ratioToString0);
+  midSideRatioSlider->setStringConversionFunction(&ratioToString0);
 
   /*
   addWidget( gainSlider = new RSlider (T("GainSlider")) );
   gainSlider->assignParameter( moduleToEdit->getParameterByName("Gain") );
   gainSlider->setDescription(juce::String(T("Global gain for compensation of gain changes")));
   gainSlider->setDescriptionField(infoField);
-  gainSlider->setStringConversionFunction(&rojue::decibelsToStringWithUnit1);
+  gainSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
   */
 
   updateWidgetsAccordingToState();
@@ -4809,7 +4805,7 @@ PhaseStereoizerModuleEditor::PhaseStereoizerModuleEditor(CriticalSection *newPlu
 
 void PhaseStereoizerModuleEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AudioModuleEditor::resized();
   int x = 0;
@@ -4839,7 +4835,7 @@ void PhaseStereoizerModuleEditor::resized()
 RingModulatorAudioModule::RingModulatorAudioModule(CriticalSection *newPlugInLock, rosic::RingModulatorStereo *newRingModulatorToWrap)
  : AudioModule(newPlugInLock)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert( newRingModulatorToWrap != NULL ); // you must pass a valid rosic-object 
   wrappedRingModulator = newRingModulatorToWrap;
@@ -4851,38 +4847,38 @@ RingModulatorAudioModule::RingModulatorAudioModule(CriticalSection *newPlugInLoc
 
 void RingModulatorAudioModule::createStaticParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AutomatableParameter* p;
 
-  p = new AutomatableParameter(plugInLock, T("Frequency"), 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, T("Frequency"), 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedRingModulator, &RingModulatorStereo::setModulatorFrequency);
 
-  p = new AutomatableParameter(plugInLock, T("Feedback"), -99.0, 99.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, T("Feedback"), -99.0, 99.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedRingModulator, &RingModulatorStereo::setFeedbackInPercent);
 
-  p = new AutomatableParameter(plugInLock, T("StereoOffset"), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, T("StereoOffset"), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedRingModulator, &RingModulatorStereo::setStereoOffset);
 
-  p = new AutomatableParameter(plugInLock, T("DryWetRatio"), 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, T("DryWetRatio"), 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedRingModulator, &RingModulatorStereo::setDryWetRatio);
 
-  p = new AutomatableParameter(plugInLock, T("AntiAlias"), 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
+  p = new AutomatableParameter(lock, T("AntiAlias"), 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedRingModulator, &RingModulatorStereo::setAntiAliasing);
 
-  for(int i=0; i < (int) observedParameters.size(); i++)
-    observedParameters[i]->resetToDefaultValue(true, true);
+  for(int i=0; i < (int) parameters.size(); i++)
+    parameters[i]->resetToDefaultValue(true, true);
 }
 
 RingModulatorModuleEditor::RingModulatorModuleEditor(CriticalSection *newPlugInLock, RingModulatorAudioModule* newRingModulatorAudioModule) 
 : AudioModuleEditor(newPlugInLock, newRingModulatorAudioModule)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert(newRingModulatorAudioModule != NULL ); // you must pass a valid module here
 
@@ -4890,26 +4886,26 @@ RingModulatorModuleEditor::RingModulatorModuleEditor(CriticalSection *newPlugInL
   frequencySlider->assignParameter( moduleToEdit->getParameterByName(T("Frequency")) );
   frequencySlider->setDescription(juce::String(T("Frequency in Hz")));
   frequencySlider->setDescriptionField(infoField);
-  frequencySlider->setStringConversionFunction(&rojue::hertzToStringWithUnitTotal5);
+  frequencySlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( feedbackSlider = new RSlider (T("FeedbackSlider")) );
   feedbackSlider->assignParameter( moduleToEdit->getParameterByName(T("Feedback")) );
   feedbackSlider->setDescription(juce::String(T("Feedback around the ringmodulator")));
   feedbackSlider->setDescriptionField(infoField);
-  feedbackSlider->setStringConversionFunction(&rojue::percentToStringWithUnit1);
+  feedbackSlider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( stereoOffsetSlider = new RSlider (T("StereoOffsetSlider")) );
   stereoOffsetSlider->assignParameter( moduleToEdit->getParameterByName(T("StereoOffset")) );
   stereoOffsetSlider->setDescription(juce::String(T("Stereo offset of the frequency between left and right in Hz")));
   stereoOffsetSlider->setDescriptionField(infoField);
-  stereoOffsetSlider->setStringConversionFunction(&rojue::hertzToStringWithUnit1);
+  stereoOffsetSlider->setStringConversionFunction(&hertzToStringWithUnit1);
 
   addWidget( dryWetSlider = new RSlider (T("DryWetSlider")) );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName(T("DryWetRatio")) );
   dryWetSlider->setSliderName(juce::String(T("Dry/Wet")));
   dryWetSlider->setDescription(juce::String(T("Ratio between dry (original) and wet (ringmodulated) signal")));
   dryWetSlider->setDescriptionField(infoField);
-  dryWetSlider->setStringConversionFunction(&rojue::ratioToString0);
+  dryWetSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( antiAliasButton = new RButton(juce::String(T("AntiAlias"))) );
   antiAliasButton->assignParameter( moduleToEdit->getParameterByName(T("AntiAlias")) );
@@ -4922,7 +4918,7 @@ RingModulatorModuleEditor::RingModulatorModuleEditor(CriticalSection *newPlugInL
 
 void RingModulatorModuleEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AudioModuleEditor::resized();
   int x = 0;
@@ -4949,7 +4945,7 @@ SingleSidebandModulatorAudioModule::SingleSidebandModulatorAudioModule(CriticalS
   rosic::SingleSidebandModulatorStereo *newSingleSidebandModulatorToWrap)
    : AudioModule(newPlugInLock)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert( newSingleSidebandModulatorToWrap != NULL ); // you must pass a valid rosic-object 
   wrappedSingleSidebandModulator = newSingleSidebandModulatorToWrap;
@@ -4961,47 +4957,47 @@ SingleSidebandModulatorAudioModule::SingleSidebandModulatorAudioModule(CriticalS
 
 void SingleSidebandModulatorAudioModule::createStaticParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AutomatableParameter* p;
 
-  p = new AutomatableParameter(plugInLock, T("Frequency"), 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, T("Frequency"), 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedSingleSidebandModulator, &SingleSidebandModulatorStereo::setModulatorFrequency);
 
-  p = new AutomatableParameter(plugInLock, T("UpperSidebandLevel"), -60.0, 0.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, T("UpperSidebandLevel"), -60.0, 0.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedSingleSidebandModulator, &SingleSidebandModulatorStereo::setUpperSidebandLevel);
 
-  p = new AutomatableParameter(plugInLock, T("LowerSidebandLevel"), -60.0, 0.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, T("LowerSidebandLevel"), -60.0, 0.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedSingleSidebandModulator, &SingleSidebandModulatorStereo::setLowerSidebandLevel);
 
-  p = new AutomatableParameter(plugInLock, T("Feedback"), -99.0, 99.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, T("Feedback"), -99.0, 99.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedSingleSidebandModulator, &SingleSidebandModulatorStereo::setFeedbackInPercent);
 
-  p = new AutomatableParameter(plugInLock, T("StereoOffset"), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, T("StereoOffset"), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedSingleSidebandModulator, &SingleSidebandModulatorStereo::setStereoOffset);
 
-  p = new AutomatableParameter(plugInLock, T("DryWetRatio"), 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, T("DryWetRatio"), 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedSingleSidebandModulator, &SingleSidebandModulatorStereo::setDryWetRatio);
 
-  p = new AutomatableParameter(plugInLock, T("AntiAlias"), 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
+  p = new AutomatableParameter(lock, T("AntiAlias"), 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedSingleSidebandModulator, &SingleSidebandModulatorStereo::setAntiAliasing);
 
-  for(int i=0; i < (int) observedParameters.size(); i++)
-    observedParameters[i]->resetToDefaultValue(true, true);
+  for(int i=0; i < (int) parameters.size(); i++)
+    parameters[i]->resetToDefaultValue(true, true);
 }
 
 SingleSidebandModulatorModuleEditor::SingleSidebandModulatorModuleEditor(CriticalSection *newPlugInLock, 
                                                                          SingleSidebandModulatorAudioModule* newSingleSidebandModulatorAudioModule) 
 : AudioModuleEditor(newPlugInLock, newSingleSidebandModulatorAudioModule)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert(newSingleSidebandModulatorAudioModule != NULL ); // you must pass a valid module here
 
@@ -5009,38 +5005,38 @@ SingleSidebandModulatorModuleEditor::SingleSidebandModulatorModuleEditor(Critica
   frequencySlider->assignParameter( moduleToEdit->getParameterByName(T("Frequency")) );
   frequencySlider->setDescription(juce::String(T("Frequency in Hz")));
   frequencySlider->setDescriptionField(infoField);
-  frequencySlider->setStringConversionFunction(&rojue::hertzToStringWithUnitTotal5);
+  frequencySlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( upperSidebandLevelSlider = new RSlider (T("UpperSidebandLevelSlider")) );
   upperSidebandLevelSlider->assignParameter( moduleToEdit->getParameterByName(T("UpperSidebandLevel")) );
   upperSidebandLevelSlider->setDescription(juce::String(T("Upper sideband level in dB")));
   upperSidebandLevelSlider->setDescriptionField(infoField);
-  upperSidebandLevelSlider->setStringConversionFunction(&rojue::decibelsToStringWithUnit1);
+  upperSidebandLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( lowerSidebandLevelSlider = new RSlider (T("LowerSidebandLevelSlider")) );
   lowerSidebandLevelSlider->assignParameter( moduleToEdit->getParameterByName(T("LowerSidebandLevel")) );
   lowerSidebandLevelSlider->setDescription(juce::String(T("Lower sideband level in dB")));
   lowerSidebandLevelSlider->setDescriptionField(infoField);
-  lowerSidebandLevelSlider->setStringConversionFunction(&rojue::decibelsToStringWithUnit1);
+  lowerSidebandLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( feedbackSlider = new RSlider (T("FeedbackSlider")) );
   feedbackSlider->assignParameter( moduleToEdit->getParameterByName(T("Feedback")) );
   feedbackSlider->setDescription(juce::String(T("Feedback around the SSB-modulator")));
   feedbackSlider->setDescriptionField(infoField);
-  feedbackSlider->setStringConversionFunction(&rojue::percentToStringWithUnit1);
+  feedbackSlider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( stereoOffsetSlider = new RSlider (T("StereoOffsetSlider")) );
   stereoOffsetSlider->assignParameter( moduleToEdit->getParameterByName(T("StereoOffset")) );
   stereoOffsetSlider->setDescription(juce::String(T("Stereo offset of the frequency between left and right in Hz")));
   stereoOffsetSlider->setDescriptionField(infoField);
-  stereoOffsetSlider->setStringConversionFunction(&rojue::hertzToStringWithUnit1);
+  stereoOffsetSlider->setStringConversionFunction(&hertzToStringWithUnit1);
 
   addWidget( dryWetSlider = new RSlider (T("DryWetSlider")) );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName(T("DryWetRatio")) );
   dryWetSlider->setSliderName(juce::String(T("Dry/Wet")));
   dryWetSlider->setDescription(juce::String(T("Ratio between dry (original) and wet (modulated) signal")));
   dryWetSlider->setDescriptionField(infoField);
-  dryWetSlider->setStringConversionFunction(&rojue::ratioToString0);
+  dryWetSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( antiAliasButton = new RButton(juce::String(T("AntiAlias"))) );
   antiAliasButton->assignParameter( moduleToEdit->getParameterByName(T("AntiAlias")) );
@@ -5053,7 +5049,7 @@ SingleSidebandModulatorModuleEditor::SingleSidebandModulatorModuleEditor(Critica
 
 void SingleSidebandModulatorModuleEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AudioModuleEditor::resized();
   int x = 0;
@@ -5083,7 +5079,7 @@ void SingleSidebandModulatorModuleEditor::resized()
 StereoPanAudioModule::StereoPanAudioModule(CriticalSection *newPlugInLock, rosic::StereoPan *newStereoPanToWrap)
  : AudioModule(newPlugInLock)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert( newStereoPanToWrap != NULL ); // you must pass a valid rosic-object 
   wrappedStereoPan = newStereoPanToWrap;
@@ -5095,11 +5091,11 @@ StereoPanAudioModule::StereoPanAudioModule(CriticalSection *newPlugInLock, rosic
 
 void StereoPanAudioModule::createStaticParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AutomatableParameter* p;
 
-  p = new AutomatableParameter(plugInLock, juce::String(T("PanLaw")), 0.0, 8.0, 1.0, 1.0, Parameter::STRING);
+  p = new AutomatableParameter(lock, juce::String(T("PanLaw")), 0.0, 8.0, 1.0, 1.0, Parameter::STRING);
   p->addStringValue(juce::String(T("Linear")));
   p->addStringValue(juce::String(T("Trigonometric")));
   p->addStringValue(juce::String(T("Square Root")));
@@ -5113,22 +5109,22 @@ void StereoPanAudioModule::createStaticParameters()
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedStereoPan, &StereoPan::setPanLaw);
 
-  p = new AutomatableParameter(plugInLock, "Pan", -1.0, 1.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "Pan", -1.0, 1.0, 0.01, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedStereoPan, &StereoPan::setPanoramaPosition);
 
-  p = new AutomatableParameter(plugInLock, "Gain", -12.0, 12.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "Gain", -12.0, 12.0, 0.01, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedStereoPan, &StereoPan::setGain);
 
-  for(int i=0; i < (int) observedParameters.size(); i++)
-    observedParameters[i]->resetToDefaultValue(true, true);
+  for(int i=0; i < (int) parameters.size(); i++)
+    parameters[i]->resetToDefaultValue(true, true);
 }
 
 StereoPanModuleEditor::StereoPanModuleEditor(CriticalSection *newPlugInLock, StereoPanAudioModule* newStereoPanAudioModule) 
 : AudioModuleEditor(newPlugInLock, newStereoPanAudioModule)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert(newStereoPanAudioModule != NULL ); // you must pass a valid module here
   stereoPanModuleToEdit = newStereoPanAudioModule;
@@ -5147,14 +5143,14 @@ StereoPanModuleEditor::StereoPanModuleEditor(CriticalSection *newPlugInLock, Ste
   panSlider->assignParameter( moduleToEdit->getParameterByName("Pan") );
   panSlider->setDescription(juce::String(T("Panorama position")));
   panSlider->setDescriptionField(infoField);
-  panSlider->setStringConversionFunction(&rojue::valueToString2);
+  panSlider->setStringConversionFunction(&valueToString2);
   //panSlider->addListener(this); // to update the plot
 
   addWidget( gainSlider = new RSlider (T("GainSlider")) );
   gainSlider->assignParameter( moduleToEdit->getParameterByName("Gain") );
   gainSlider->setDescription(juce::String(T("Gain")));
   gainSlider->setDescriptionField(infoField);
-  gainSlider->setStringConversionFunction(&rojue::decibelsToStringWithUnit2);
+  gainSlider->setStringConversionFunction(&decibelsToStringWithUnit2);
 
   numValues = 0;
   xValues   = NULL;
@@ -5170,14 +5166,14 @@ StereoPanModuleEditor::StereoPanModuleEditor(CriticalSection *newPlugInLock, Ste
 
 StereoPanModuleEditor::~StereoPanModuleEditor()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   if( xValues != NULL ) { delete[] xValues; xValues = NULL; }
   if( yValues != NULL ) { delete[] yValues; yValues = NULL; }
 }
 
 void StereoPanModuleEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AudioModuleEditor::resized();
   int x = 0;
@@ -5203,7 +5199,7 @@ void StereoPanModuleEditor::resized()
 StereoWidthAudioModule::StereoWidthAudioModule(CriticalSection *newPlugInLock, rosic::StereoWidth *newStereoWidthToWrap)
  : AudioModule(newPlugInLock)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert( newStereoWidthToWrap != NULL ); // you must pass a valid rosic-object 
   wrappedStereoWidth = newStereoWidthToWrap;
@@ -5215,26 +5211,26 @@ StereoWidthAudioModule::StereoWidthAudioModule(CriticalSection *newPlugInLock, r
 
 void StereoWidthAudioModule::createStaticParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AutomatableParameter* p;
 
-  p = new AutomatableParameter(plugInLock, "MidSideRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "MidSideRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedStereoWidth, &StereoWidth::setMidSideRatio);
 
-  p = new AutomatableParameter(plugInLock, "Gain", -6.0, 24.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "Gain", -6.0, 24.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedStereoWidth, &StereoWidth::setGlobalGain);
 
-  for(int i=0; i < (int) observedParameters.size(); i++)
-    observedParameters[i]->resetToDefaultValue(true, true);
+  for(int i=0; i < (int) parameters.size(); i++)
+    parameters[i]->resetToDefaultValue(true, true);
 }
 
 StereoWidthModuleEditor::StereoWidthModuleEditor(CriticalSection *newPlugInLock, StereoWidthAudioModule* newStereoWidthAudioModule) 
 : AudioModuleEditor(newPlugInLock, newStereoWidthAudioModule)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert(newStereoWidthAudioModule != NULL ); // you must pass a valid module here
 
@@ -5242,20 +5238,20 @@ StereoWidthModuleEditor::StereoWidthModuleEditor(CriticalSection *newPlugInLock,
   midSideRatioSlider->assignParameter( moduleToEdit->getParameterByName("MidSideRatio") );
   midSideRatioSlider->setDescription(juce::String(T("Ratio between mid and side signal (stereo-width)")));
   midSideRatioSlider->setDescriptionField(infoField);
-  midSideRatioSlider->setStringConversionFunction(&rojue::ratioToString0);
+  midSideRatioSlider->setStringConversionFunction(&ratioToString0);
 
   addWidget( gainSlider = new RSlider (T("GainSlider")) );
   gainSlider->assignParameter( moduleToEdit->getParameterByName("Gain") );
   gainSlider->setDescription(juce::String(T("Global gain for compensation of gain changes")));
   gainSlider->setDescriptionField(infoField);
-  gainSlider->setStringConversionFunction(&rojue::decibelsToStringWithUnit1);
+  gainSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   updateWidgetsAccordingToState();
 }
 
 void StereoWidthModuleEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AudioModuleEditor::resized();
   int x = 0;
@@ -5277,7 +5273,7 @@ void StereoWidthModuleEditor::resized()
 SineOscillatorAudioModule::SineOscillatorAudioModule(CriticalSection *newPlugInLock, rosic::SineOscillator *newSineOscillatorToWrap)
  : AudioModule(newPlugInLock)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert( newSineOscillatorToWrap != NULL ); // you must pass a valid rosic-object 
   wrappedSineOscillator = newSineOscillatorToWrap;
@@ -5289,25 +5285,25 @@ SineOscillatorAudioModule::SineOscillatorAudioModule(CriticalSection *newPlugInL
 
 void SineOscillatorAudioModule::createStaticParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AutomatableParameter* p;
 
-  p = new AutomatableParameter(plugInLock, "Frequency", 0.2, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "Frequency", 0.2, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedSineOscillator, &SineOscillator::setFrequency);
 
   // \todo: add gain parameter
 
-  for(int i=0; i < (int) observedParameters.size(); i++)
-    observedParameters[i]->resetToDefaultValue(true, true);
+  for(int i=0; i < (int) parameters.size(); i++)
+    parameters[i]->resetToDefaultValue(true, true);
 }
 
 SineOscillatorModuleEditor::SineOscillatorModuleEditor(CriticalSection *newPlugInLock, 
                                                        SineOscillatorAudioModule* newSineOscillatorAudioModule) 
 : AudioModuleEditor(newPlugInLock, newSineOscillatorAudioModule)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert(newSineOscillatorAudioModule != NULL ); // you must pass a valid module here
 
@@ -5315,14 +5311,14 @@ SineOscillatorModuleEditor::SineOscillatorModuleEditor(CriticalSection *newPlugI
   frequencySlider->assignParameter( moduleToEdit->getParameterByName("Frequency") );
   frequencySlider->setDescription(juce::String(T("Frequency of the sinusoid")));
   frequencySlider->setDescriptionField(infoField);
-  frequencySlider->setStringConversionFunction(&rojue::hertzToStringWithUnitTotal5);
+  frequencySlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   updateWidgetsAccordingToState();
 }
 
 void SineOscillatorModuleEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AudioModuleEditor::resized();
   int x = 0;
@@ -5340,7 +5336,7 @@ void SineOscillatorModuleEditor::resized()
 NoisifierAudioModule::NoisifierAudioModule(CriticalSection *newPlugInLock, rosic::Noisifier *newNoisifierToWrap)
  : AudioModule(newPlugInLock)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert( newNoisifierToWrap != NULL ); // you must pass a valid rosic-object 
   wrappedNoisifier = newNoisifierToWrap;
@@ -5352,38 +5348,38 @@ NoisifierAudioModule::NoisifierAudioModule(CriticalSection *newPlugInLock, rosic
 
 void NoisifierAudioModule::createStaticParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AutomatableParameter* p;
 
-  p = new AutomatableParameter(plugInLock, "PassLevel", -96.0, 6.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "PassLevel", -96.0, 6.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
   p->setValueChangeCallback(wrappedNoisifier, &Noisifier::setPassThroughLevel);
 
-  p = new AutomatableParameter(plugInLock, "NoiseLevel", -96.0, 6.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "NoiseLevel", -96.0, 6.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedNoisifier, &Noisifier::setNoiseLevel);
 
-  p = new AutomatableParameter(plugInLock, "SpectralSlope", -12.0, 12.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter(lock, "SpectralSlope", -12.0, 12.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedNoisifier, &Noisifier::setNoiseSpectralSlope);
 
-  p = new AutomatableParameter(plugInLock, "LowestFrequency", 20.0, 20000.0, 0.0, 20.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "LowestFrequency", 20.0, 20000.0, 0.0, 20.0, Parameter::EXPONENTIAL);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedNoisifier, &Noisifier::setLowestFrequency);
 
-  p = new AutomatableParameter(plugInLock, "HighestFrequency", 20.0, 20000.0, 0.0, 20000.0, Parameter::EXPONENTIAL);
+  p = new AutomatableParameter(lock, "HighestFrequency", 20.0, 20000.0, 0.0, 20000.0, Parameter::EXPONENTIAL);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedNoisifier, &Noisifier::setHighestFrequency);
 
-  for(int i=0; i < (int) observedParameters.size(); i++)
-    observedParameters[i]->resetToDefaultValue(true, true);
+  for(int i=0; i < (int) parameters.size(); i++)
+    parameters[i]->resetToDefaultValue(true, true);
 }
 
 NoisifierModuleEditor::NoisifierModuleEditor(CriticalSection *newPlugInLock, NoisifierAudioModule* newNoisifierAudioModule) 
 : AudioModuleEditor(newPlugInLock, newNoisifierAudioModule)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   jassert(newNoisifierAudioModule != NULL ); // you must pass a valid module here
 
@@ -5391,31 +5387,31 @@ NoisifierModuleEditor::NoisifierModuleEditor(CriticalSection *newPlugInLock, Noi
   passLevelSlider->assignParameter( moduleToEdit->getParameterByName("PassLevel") );
   passLevelSlider->setDescription(juce::String(T("Level with which the input signal is passed through")));
   passLevelSlider->setDescriptionField(infoField);
-  passLevelSlider->setStringConversionFunction(&rojue::decibelsToStringWithUnit1);
+  passLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( noiseLevelSlider = new RSlider (T("NoiseLevelSlider")) );
   noiseLevelSlider->assignParameter( moduleToEdit->getParameterByName("NoiseLevel") );
   noiseLevelSlider->setDescription(juce::String(T("Level with which the generated noise is mixed in")));
   noiseLevelSlider->setDescriptionField(infoField);
-  noiseLevelSlider->setStringConversionFunction(&rojue::decibelsToStringWithUnit1);
+  noiseLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( spectralSlopeSlider = new RSlider (T("SpectralSlopeSlider")) );
   spectralSlopeSlider->assignParameter( moduleToEdit->getParameterByName("SpectralSlope") );
   spectralSlopeSlider->setDescription(juce::String(T("Spectral slope of the generated noise")));
   spectralSlopeSlider->setDescriptionField(infoField);
-  spectralSlopeSlider->setStringConversionFunction(&rojue::decibelsPerOctaveToString2);
+  spectralSlopeSlider->setStringConversionFunction(&decibelsPerOctaveToString2);
 
   addWidget( lowestFreqSlider = new RSlider (T("LowestFreqSlider")) );
   lowestFreqSlider->assignParameter( moduleToEdit->getParameterByName("LowestFrequency") );
   lowestFreqSlider->setDescription(juce::String(T("Lowest frequency present in the noise")));
   lowestFreqSlider->setDescriptionField(infoField);
-  lowestFreqSlider->setStringConversionFunction(&rojue::hertzToStringWithUnitTotal5);
+  lowestFreqSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
   addWidget( highestFreqSlider = new RSlider (T("HighestFreqSlider")) );
   highestFreqSlider->assignParameter( moduleToEdit->getParameterByName("HighestFrequency") );
   highestFreqSlider->setDescription(juce::String(T("Highest frequency present in the noise")));
   highestFreqSlider->setDescriptionField(infoField);
-  highestFreqSlider->setStringConversionFunction(&rojue::hertzToStringWithUnitTotal5);
+  highestFreqSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
 
   updateWidgetsAccordingToState();
@@ -5423,7 +5419,7 @@ NoisifierModuleEditor::NoisifierModuleEditor(CriticalSection *newPlugInLock, Noi
 
 void NoisifierModuleEditor::resized()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
 
   AudioModuleEditor::resized();
   int x = 0;
