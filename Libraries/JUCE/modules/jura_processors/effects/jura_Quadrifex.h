@@ -183,4 +183,167 @@ protected:
 
 //=================================================================================================
 
+/** This class ...  */
+
+class QuadrifexRoutingDiagram : /*public RectangleComponent,*/ public ChangeBroadcaster,
+  public CoordinateSystemOld
+{
+
+public:
+
+  //---------------------------------------------------------------------------------------------
+  // construction/destruction:
+
+  /** Constructor. */
+  QuadrifexRoutingDiagram(CriticalSection *newPlugInLock);
+
+  /** Destructor. */
+  virtual ~QuadrifexRoutingDiagram();
+
+  //---------------------------------------------------------------------------------------------
+  // setup:
+
+  /** Use this function to inform the object about a new selected algorithm. */
+  virtual void setAlgorithmIndex(int slotIndex, int newAlgorithmIndex);
+
+  /** Sets up a new routing and causes a repaint. */
+  virtual void setSlotRouting(int newRouting);
+
+  //---------------------------------------------------------------------------------------------
+  // inquiry:
+
+  /** Returns the internal variable that represents the selected algorithm. Should be used to
+  retrieve the selected algorithm when receiving change-messages form this object (which are send
+  out when the algorithm in one of the slots should be changed from this object. */
+  virtual int getAlgorithmIndex(int slotIndex) const { return algorithmIndices[slotIndex]; }
+
+  //-----------------------------------------------------------------------------------------------
+  // callbacks:
+
+  virtual void mouseEnter(const MouseEvent &e);
+  virtual void mouseExit(const MouseEvent &e);
+  virtual void mouseDown(const MouseEvent& e);
+  virtual void mouseDrag(const MouseEvent& e);
+  virtual void paint(Graphics &g);
+  //virtual void resized();
+
+protected:
+
+  /** Returns the index of the effect slot that corresponds to the drawn slot-box at the given
+  position if any, -1 if none. */
+  virtual int getSlotIndexAtPixelPosition(int x, int y);
+
+
+  virtual void drawRoutingDiagram(Graphics &g);
+
+  virtual void drawSlotBox(Graphics &g, float x, float y, float w, float h, int slotIndex,
+    int algoIndex);
+
+
+
+  juce::Rectangle<int> slotBoxes[rosic::Quadrifex::numEffectSlots];
+
+  int slotRouting;
+
+  // get rid of them - consolidate in parent QuadrifexModuleEditor:
+  int algorithmIndices[rosic::Quadrifex::numEffectSlots];
+  int oldAlgorithmIndices[rosic::Quadrifex::numEffectSlots];
+
+  CriticalSection *plugInLock; // mutex to access the edited AudioModule object 
+
+  juce_UseDebuggingNewOperator;
+};
+
+//=================================================================================================
+
+class QuadrifexModuleEditor : public AudioModuleEditor, public RPopUpMenuObserver,
+  public RComboBoxObserver // obsolete?
+{
+
+  friend class QuadrifexAudioModule;
+  friend class QuadrifexRoutingDiagram;
+
+public:
+
+  // construction/destruction:
+  QuadrifexModuleEditor(CriticalSection *newPlugInLock, 
+    QuadrifexAudioModule* newQuadrifexAudioModule);
+  virtual ~QuadrifexModuleEditor();
+
+  // setup:
+  virtual void initializeColourScheme();
+
+  // callbacks:
+  //virtual void rButtonClicked(RButton  *buttonThatWasClicked);
+  virtual void rComboBoxChanged(RComboBox  *rComboBoxThatHasChanged);
+  virtual void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged);
+  virtual void rSliderValueChanged(RSlider *rSliderThatHasChanged);
+  virtual void changeListenerCallback(ChangeBroadcaster *objectThatHasChanged);
+  virtual void mouseDown(const MouseEvent& e);
+  virtual void paint(Graphics &g);
+  virtual void resized();
+  virtual void updateWidgetsAccordingToState();
+
+
+protected:
+
+  /** Opens the menu to select an effect algorithm for the given effect-slot at the given
+  position (with respect to this Component). */
+  virtual void openEffectSelectionMenuForSlot(int slotIndex, juce::Point<int> menuPosition);
+
+  /** Returns the index of the effect slot that corresponds to the drawn slot-box at the given
+  position if any, -1 if none. */
+  virtual int getSlotIndexAtPixelPosition(int x, int y);
+
+  /** Selects a new effect algorithm for one of the slots. */
+  virtual void setEffectAlgorithm(int slotIndex, int newAlgorithmIndex);
+
+  /** Calls createEditorForSlotIfNeeded() for all slots. */
+  //virtual void createEditorsIfNeeded();
+
+  /** Checks, whether the current editor for the given slot is of the approriate kind and if not,
+  it deletes it and creates the approriate one. It will also update the widgets of the
+  (new or old) editor. */
+  //virtual void createEditorForSlotIfNeeded(int slotIndex);
+
+  /** Removes all the child editors and nulls the pointers. */
+  virtual void removeChildEditors();
+
+  /** Removes the child editor in the given slot and nulls the pointer. */
+  virtual void removeChildEditorInSlot(int slotIndex);
+
+  /** Creates an editor for the given slot (slotIndex) of the given kind (algorithmIndex). It
+  will also try to associate the editor with the corresponding AudiModule and update the widgets
+  according to the state of the AudioModule. */
+  virtual void createEditorForSlot(int slotIndex, int algorithmIndex);
+
+  /** Sets up the position and size of the popup-editor(s) that may (or may not) be present in
+  the editor for the given slot index. */
+  virtual void setupPopupEditors(int slotIndex);
+
+  QuadrifexAudioModule *quadrifexModuleToEdit;
+
+  RTextField *routingLabel, *permutationLabel;
+  RComboBox  *routingComboBox, *permutationComboBox;
+  RSlider    *dryWetSlider, *wetLevelSlider, *feedbackSlider;
+
+  //Rectangle leftRectangle1, leftRectangle2, leftRectangle3, eqBandParamRectangle;
+  juce::Rectangle<int> globalRectangle;
+  juce::Rectangle<int> slotRectangles[rosic::Quadrifex::numEffectSlots];
+  //RComboBox *effectSelectComboBoxes[4];
+
+  QuadrifexRoutingDiagram   *routingDiagram;
+  RoutingMatrixModuleEditor *matrixEditor;
+  AudioModuleEditor         *moduleEditors[rosic::Quadrifex::numEffectSlots];
+  EffectSelectionPopup      *effectSelectionPopup;
+
+  // CriticalSection mutex;
+
+  int oldAlgorithmIndices[rosic::Quadrifex::numEffectSlots];
+
+  int slotForWhichMenuIsOpen;
+
+  juce_UseDebuggingNewOperator;
+};
+
 #endif 
