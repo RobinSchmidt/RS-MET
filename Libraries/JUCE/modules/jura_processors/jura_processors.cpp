@@ -42,7 +42,7 @@ namespace jura
 #include "generators/jura_FourOscSection.cpp"
 #include "generators/jura_SamplePlayer.cpp"
 #include "generators/jura_VectorMixer.cpp"         // maybe move to basics
-//#include "generators/jura_VectorSamplePlayer.cpp"
+#include "generators/jura_VectorSamplePlayer.cpp"
 
 #include "effects/jura_Enveloper.cpp"
 #include "effects/jura_FuncShaper.cpp"
