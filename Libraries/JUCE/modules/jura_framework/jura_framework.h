@@ -79,6 +79,7 @@ namespace jura
 #include "gui/widgets/jura_RTextField.h"
 #include "gui/widgets/jura_RTextEditor.h" // maybe later it should be moved below RScrollBar...
 #include "gui/widgets/jura_RButton.h"     // ..if the texteditor becomes scrollable
+#include "gui/widgets/jura_PlotPreviewButton.h" 
 #include "gui/widgets/jura_RScrollBar.h"
 #include "gui/widgets/jura_RTreeView.h"
 #include "gui/widgets/jura_RPopUpComponent.h"

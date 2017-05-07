@@ -47,6 +47,7 @@ namespace jura
 #include "gui/widgets/jura_RTextField.cpp"
 #include "gui/widgets/jura_RTextEditor.cpp"
 #include "gui/widgets/jura_RButton.cpp"
+#include "gui/widgets/jura_PlotPreviewButton.cpp" 
 #include "gui/widgets/jura_RScrollBar.cpp"
 #include "gui/widgets/jura_RTreeView.cpp"
 #include "gui/widgets/jura_RPopUpComponent.cpp"

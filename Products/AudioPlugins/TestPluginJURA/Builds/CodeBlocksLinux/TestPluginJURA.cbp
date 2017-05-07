@@ -5385,6 +5385,14 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/widgets/rojue_PlotPreviewButton.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/widgets/rojue_PlotPreviewButton.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/tools/jura_MiscTools.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -5725,11 +5733,11 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/instruments/rosof_WorkhorseAudioModule.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/instruments/jura_Workhorse.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/instruments/rosof_WorkhorseAudioModule.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/instruments/jura_Workhorse.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
