@@ -18,8 +18,7 @@ needs to be completed next: VariousModulesAndEditors
 
  -MagicCarpet
   -VectorSamplePlayer (done)
-  -VariousModulesAndEditors
-
+  -VariousModulesAndEditors (done)
 
  -Quadrifex
   -RoutingMatrix
@@ -30,7 +29,8 @@ needs to be completed next: VariousModulesAndEditors
  -StereoDelay
  -TrackMeter
  -Workhorse
- -Liberty (later - it needs the "romos" folder)
+ -Liberty (later - it needs the "romos" folder - maybe make a subfolder modular somewhere in the 
+  jura_processors module - or make romos a module in its own right)
 
 
 -maybe move VectorMixetr to basics?
