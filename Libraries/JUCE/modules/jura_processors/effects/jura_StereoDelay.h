@@ -65,6 +65,86 @@ protected:
 //=================================================================================================
 
 
+class StereoDelayModuleEditor : public AudioModuleEditor, public RComboBoxObserver
+{
+
+public:
+
+  //---------------------------------------------------------------------------------------------
+  // construction/destruction:
+
+  StereoDelayModuleEditor(CriticalSection *newPlugInLock, 
+    StereoDelayAudioModule* newStereoDelayAudioModule);
+  /**< Constructor. */
+
+  //virtual ~StereoDelayModuleEditor();
+  /**< Destructor. */
+
+  //---------------------------------------------------------------------------------------------
+  // callbacks:
+
+  //virtual void rButtonClicked(RButton *buttonThatWasClicked);
+  /**< Implements the purely virtual rButtonClicked()-method of the ButtonListener base-class. */
+
+  virtual void rComboBoxChanged(RComboBox *rComboBoxThatHasChanged);
+  virtual void rSliderValueChanged(RSlider *sliderThatHasChanged);
+
+  //---------------------------------------------------------------------------------------------
+  // others:
+
+  /** Overrides paint(). */   
+  virtual void paint(Graphics &g);
+
+  /** Overrides resized(). */    
+  virtual void resized();
+
+
+protected:
+
+  virtual void updateWidgetsAccordingToState();
+  /**< Overrides the method inherited from RPolyphonicInstrumentEditor. */
+
+  StereoDelayAudioModule *stereoDelayAudioModule;
+  /**< This is the actual plugin engine which does all the dsp and automation handling. */
+
+  juce::Rectangle<int> leftRectangle, rightRectangle;
+  /**< Some rectangles to subdivide the GUI. */
+
+  // global widgets:
+  RSlider *dryWetSlider, *cutoffScaleSlider;
+
+  // left delayline widgets:
+  RTextField *delayLineLabelL, *inputLabelL, *diffusorLabelL, *filterLabelL, 
+    *feedbackLabelL, *outputLabelL;
+  RTextField *delayLineLabelR, *inputLabelR, *diffusorLabelR, *filterLabelR, 
+    *feedbackLabelR, *outputLabelR;
+
+  RSyncIntervalComboBox *delayComboBoxL;
+  RSyncIntervalComboBox *delayComboBoxR;
+
+  RSlider *delayScaleSliderL; 
+  RSlider *inputSliderL2L, *inputSliderR2L;
+  RSlider *diffusorTimeSliderL, *diffusorAmountSliderL;
+  RSlider *lowpassSliderL, *highpassSliderL; 
+  RSlider *feedbackSliderL, *crossFeedbackSliderL;
+  RSlider *outputSliderL2L, *outputSliderL2R, *outDelaySliderL;
+  RSlider *delayScaleSliderR; 
+  RSlider *inputSliderL2R, *inputSliderR2R;
+  RSlider *diffusorTimeSliderR, *diffusorAmountSliderR;
+  RSlider *lowpassSliderR, *highpassSliderR; 
+  RSlider *feedbackSliderR, *crossFeedbackSliderR;
+  RSlider *outputSliderR2L, *outputSliderR2R, *outDelaySliderR;
+
+  /*
+  RSlider *coarseSlider, *fineSlider, *grainLengthInMillisecondsSlider, 
+  *grainLengthInCyclesSlider, *grainLengthInBeatsSlider, *feedbackSlider, *dryWetSlider;
+  RLabel    *grainLengthUnitLabel;
+  RComboBox *grainLengthUnitComboBox;
+  RButton *invertButton, *reverseButton, *formantPreserveButton, *antiAliasButton;
+  */
+
+  juce_UseDebuggingNewOperator;
+};
 
 
 #endif 

@@ -22,8 +22,7 @@ needs to be completed next:
  -Moduluxury (done)
  -TrackMeter (done)
  -MidiMonitor (done)
-
- -StereoDelay
+ -StereoDelay (done)
 
  -Liberty (later - it needs the "romos" folder - maybe make a subfolder modular somewhere in the 
   jura_processors module - or make romos a juce-module in its own right) ...but "Liberty" itself
