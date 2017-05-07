@@ -21,12 +21,14 @@ needs to be completed next:
  -Workhorse (done)
  -Moduluxury (done)
 
- -MidiMonitor
- -StereoDelay
  -TrackMeter
 
+ -MidiMonitor
+ -StereoDelay
+
  -Liberty (later - it needs the "romos" folder - maybe make a subfolder modular somewhere in the 
-  jura_processors module - or make romos a module in its own right)
+  jura_processors module - or make romos a juce-module in its own right) ...but "Liberty" itself
+  should go into instruments
 
 
 -maybe move VectorMixer to basics?
