@@ -1,4 +1,5 @@
-needs to be completed next: VariousModulesAndEditors
+needs to be completed next: RDraggableNumber, RoutingMatrix, Quadrifex
+
 
 -drag over all old plugin code and make it compile:
  -AciDevil (done)
@@ -15,10 +16,7 @@ needs to be completed next: VariousModulesAndEditors
  -SimpleSampler (done)
  -KeyShot (done)
  -PitchShifter (done)
-
- -MagicCarpet
-  -VectorSamplePlayer (done)
-  -VariousModulesAndEditors (done)
+ -MagicCarpet (done)
 
  -Quadrifex
   -RoutingMatrix
@@ -33,7 +31,7 @@ needs to be completed next: VariousModulesAndEditors
   jura_processors module - or make romos a module in its own right)
 
 
--maybe move VectorMixetr to basics?
+-maybe move VectorMixer to basics?
 
 make old plugins available in chainer:
 we mostly need to provide a 2nd constructor that doesn't wrap an existing core-object but creates 

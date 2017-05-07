@@ -84,6 +84,7 @@ namespace jura
 #include "gui/widgets/jura_RPopUpComponent.h"
 #include "gui/widgets/jura_RPopUpMenu.h"
 #include "gui/widgets/jura_RSlider.h"
+#include "gui/widgets/jura_RDraggableNumber.h"
 #include "gui/widgets/jura_RComboBox.h"
 #include "gui/widgets/jura_RTimeGridComboBox.h"
 #include "gui/widgets/jura_RSyncIntervalComboBox.h"
