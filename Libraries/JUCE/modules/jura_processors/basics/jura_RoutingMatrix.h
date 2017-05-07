@@ -29,4 +29,25 @@ protected:
 
 //=================================================================================================
 
+class RoutingMatrixModuleEditor : public AudioModuleEditor
+{
+
+public:
+
+  RoutingMatrixModuleEditor(CriticalSection *newPlugInLock, 
+    RoutingMatrixAudioModule* newRoutingMatrixAudioModule);
+
+  virtual void resized();
+
+protected:
+
+  int numInputs, numOutputs;
+  juce::Array<RDraggableNumber*> matrixFields;
+  juce::Array<RTextField*>       rowLabels;
+  juce::Array<RTextField*>       columnLabels;
+
+  juce_UseDebuggingNewOperator;
+};
+
+
 #endif 
