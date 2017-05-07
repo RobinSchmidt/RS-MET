@@ -88,12 +88,13 @@ namespace jura
 #include "gui/widgets/jura_RTimeGridComboBox.h"
 #include "gui/widgets/jura_RSyncIntervalComboBox.h"
 #include "gui/widgets/jura_AutomatableWidget.h"
-//#include "gui/widgets/jura_FileSelectionBox.h" // move to widget_sets folder
 // there are still some special widgets missing - copy them over soon...
 
 #include "gui/widgets/widget_sets/jura_WidgetSet.h"
 #include "gui/widgets/widget_sets/jura_StateLoadSaveWidgetSet.h"
+//#include "gui/widgets/widget_sets/jura_FileSelectionBox.h" // move to widget_sets folder
 #include "gui/widgets/widget_sets/jura_ColorMapLoader.h"
+
 
 // these should be renamed - get rid of the "Old" (but only when we have dragged over all other
 // subclasses):

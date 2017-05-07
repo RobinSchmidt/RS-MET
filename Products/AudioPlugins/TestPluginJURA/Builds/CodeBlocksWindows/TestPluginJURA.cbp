@@ -5265,6 +5265,14 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/widgets/widget_sets/jura_FileSelectionBox.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/widgets/widget_sets/jura_FileSelectionBox.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/widgets/widget_sets/jura_StateLoadSaveWidgetSet.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -5382,14 +5390,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/widgets/jura_RWidget.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/widgets/rojue_FileSelectionBox.cpp">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/widgets/rojue_FileSelectionBox.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
