@@ -45,5 +45,42 @@ protected:
 
 //=================================================================================================
 
+class QuadrigaModuleEditor : public PolyphonicInstrumentEditor
+{
+
+public:
+
+  QuadrigaModuleEditor(CriticalSection *newPlugInLock, QuadrigaAudioModule* newQuadrigaAudioModule);
+
+  // callbacks:
+  virtual void rButtonClicked(RButton *buttonThatWasClicked);
+
+  /** Overrides changeListenerCallback() in order to start or stop the timers in the embedded
+  module editors when the user selects another tab.*/
+  virtual void changeListenerCallback(ChangeBroadcaster* objectThatHasChanged);
+
+  virtual void resized();
+
+protected:
+
+  /** Overrides the method inherited from AudioModuleEditor. */
+  virtual void updateWidgetsAccordingToState();
+
+  /** Updates the visibilities of the sub-editors based on which button is down. */
+  virtual void updateSubEditorVisibility();
+
+  /** This is the actual plugin engine which does all the dsp and automation handling. */
+  QuadrigaAudioModule *quadrigaAudioModule;
+
+  // buttons to switch between the pages:
+  RButton *performanceButton, *generatorsButton, *filtersButton, *modulatorsButton, 
+    *effectsButton;
+
+  // the sub-editors:
+  QuadrigenModuleEditor *quadrigenEditor;
+  QuadrifexModuleEditor *quadrifexEditor;
+
+  juce_UseDebuggingNewOperator;
+};
 
 #endif 

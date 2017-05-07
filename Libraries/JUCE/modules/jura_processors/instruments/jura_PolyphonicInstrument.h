@@ -85,7 +85,7 @@ public:
   // construction/destruction:
 
   /** Constructor. */
-  PolyphonicInstrumentEditor(CriticalSection *newPlugInLock, 
+  PolyphonicInstrumentEditor(CriticalSection *newPlugInLock,   // get rid of the lock parameter
     PolyphonicInstrumentAudioModule* newInstrumentToEdit);
 
   //---------------------------------------------------------------------------------------------

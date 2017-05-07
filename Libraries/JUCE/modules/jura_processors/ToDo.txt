@@ -35,6 +35,9 @@ needs to be completed next:
  instruments to generators (it currently depends on VariousModules but would then only depend
  on VariousGenerators which may be included before)
 
+-get rid of the lock parameter in constructor of PolyphonicInstrumentEditor (it's sufficient to pass
+ the module - the editor can retrieve the lock from there)
+
 make old plugins available in chainer:
 we mostly need to provide a 2nd constructor that doesn't wrap an existing core-object but creates 
 its own, provide a flag, whether or not the wrpeed object is owned and write a destructor that 
