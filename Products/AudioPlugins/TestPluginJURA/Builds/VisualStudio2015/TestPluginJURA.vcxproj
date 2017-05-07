@@ -1968,19 +1968,13 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_PitchShifter.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_Quadrifex.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_StereoPanPlotEditor.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_VariousModules.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_Quadrifex.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\rosof_QuadrifexModuleEditor.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\rosof_QuadrifexRoutingDiagram.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_CrossOver.cpp">
@@ -2035,6 +2029,18 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_Straightliner.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\rosof_QuadrigaAudioModule.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\rosof_QuadrigaModuleEditor.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_Quadrigen.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\rosof_QuadrigenModuleEditor.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\misc\jura_AudioModuleChain.cpp">
@@ -3996,11 +4002,9 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_Enveloper.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_FuncShaper.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_PitchShifter.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_Quadrifex.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_StereoPanPlotEditor.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_VariousModules.h" />
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_Quadrifex.h" />
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\rosof_QuadrifexModuleEditor.h" />
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\rosof_QuadrifexRoutingDiagram.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_CrossOver.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_EngineersFilter.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\filters\jura_Equalizer.h" />
@@ -4019,6 +4023,10 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_PolyphonicInstrument.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_SimpleSampler.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_Straightliner.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\rosof_QuadrigaAudioModule.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\rosof_QuadrigaModuleEditor.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_Quadrigen.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\rosof_QuadrigenModuleEditor.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\misc\jura_AudioModuleChain.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\misc\jura_ChannelMatrix2x2.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\misc\jura_DspWorkbench.h" />

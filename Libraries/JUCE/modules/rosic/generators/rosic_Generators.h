@@ -16,6 +16,7 @@ This file includes all relevant rosic generator header files.
 #include "rosic_SineOscillatorStereo.h"
 #include "rosic_OscillatorStereo.h"
 #include "rosic_SuperOscillator.h"
+#include "rosic_Quadrigen.h"
 
 #endif // end of #ifndef rosic_Generators_h
 

@@ -5541,6 +5541,14 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/jura_Quadrifex.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/jura_Quadrifex.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/jura_StereoPanPlotEditor.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -5554,30 +5562,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/jura_VariousModules.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/rosof_QuadrifexAudioModule.cpp">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/rosof_QuadrifexAudioModule.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/rosof_QuadrifexModuleEditor.cpp">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/rosof_QuadrifexModuleEditor.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/rosof_QuadrifexRoutingDiagram.cpp">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/rosof_QuadrifexRoutingDiagram.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
@@ -5722,6 +5706,38 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/instruments/jura_Straightliner.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/instruments/rosof_QuadrigaAudioModule.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/instruments/rosof_QuadrigaAudioModule.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/instruments/rosof_QuadrigaModuleEditor.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/instruments/rosof_QuadrigaModuleEditor.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/instruments/rosof_QuadrigenAudioModule.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/instruments/rosof_QuadrigenAudioModule.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/instruments/rosof_QuadrigenModuleEditor.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/instruments/rosof_QuadrigenModuleEditor.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
