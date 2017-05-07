@@ -2673,31 +2673,31 @@ void LadderFilterAudioModule::createStaticParameters()
   p->addStringValue(juce::String(("Bandpass 12+6")));
   p->addStringValue(juce::String(("Morph Low/Band/High")));
   addObservedParameter(p);
-  p->setValueChangeCallback(wrappedLadderFilter, &LadderFilter::setMode);
+  p->setValueChangeCallback(wrappedLadderFilter, &rosic::LadderFilter::setMode);
 
   p = new AutomatableParameter(lock, juce::String(("Frequency")), 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
-  p->setValueChangeCallback(wrappedLadderFilter, &LadderFilter::setCutoff);
+  p->setValueChangeCallback(wrappedLadderFilter, &rosic::LadderFilter::setCutoff);
 
   p = new AutomatableParameter(lock, juce::String(("Resonance")), 0.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
-  p->setValueChangeCallback(wrappedLadderFilter, &LadderFilter::setResonanceInPercent);
+  p->setValueChangeCallback(wrappedLadderFilter, &rosic::LadderFilter::setResonanceInPercent);
 
   p = new AutomatableParameter(lock, juce::String(("MakeUp")), 0.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
-  p->setValueChangeCallback(wrappedLadderFilter, &LadderFilter::setMakeUp);
+  p->setValueChangeCallback(wrappedLadderFilter, &rosic::LadderFilter::setMakeUp);
 
   p = new AutomatableParameter(lock, juce::String(("Drive")), -24.0, 48.0, 0.1, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
-  p->setValueChangeCallback(wrappedLadderFilter, &LadderFilter::setDrive);
+  p->setValueChangeCallback(wrappedLadderFilter, &rosic::LadderFilter::setDrive);
 
   p = new AutomatableParameter(lock, juce::String(("Order")), 0.0, 4.0, 1.0, 4.0, Parameter::LINEAR);
   addObservedParameter(p); 
-  p->setValueChangeCallback(wrappedLadderFilter, &LadderFilter::setOutputStage);
+  p->setValueChangeCallback(wrappedLadderFilter, &rosic::LadderFilter::setOutputStage);
 
   p = new AutomatableParameter(lock, juce::String(("Morph")), 0.0, 1.0, 0.01, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
-  p->setValueChangeCallback(wrappedLadderFilter, &LadderFilter::setMorph);
+  p->setValueChangeCallback(wrappedLadderFilter, &rosic::LadderFilter::setMorph);
 
   /*
   p = new Parameter("Gain", -48, 48.0, 0.1, 0.0, Parameter::LINEAR);
@@ -3210,43 +3210,43 @@ void ReverbAudioModule::createStaticParameters()
 
   p = new AutomatableParameter(lock, "DryWetRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
   addObservedParameter(p); 
-  p->setValueChangeCallback(wrappedReverb, &Reverb::setDryWetRatio);
+  p->setValueChangeCallback(wrappedReverb, &rosic::Reverb::setDryWetRatio);
 
   p = new AutomatableParameter(lock, "FirstEcho", 10.0, 200.0, 0.1, 50.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
-  p->setValueChangeCallback(wrappedReverb, &Reverb::setReferenceDelayTime);
+  p->setValueChangeCallback(wrappedReverb, &rosic::Reverb::setReferenceDelayTime);
 
   p = new AutomatableParameter(lock, "PreDelay", 0.0, 250.0, 1.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
-  p->setValueChangeCallback(wrappedReverb, &Reverb::setPreDelay);
+  p->setValueChangeCallback(wrappedReverb, &rosic::Reverb::setPreDelay);
 
   p = new AutomatableParameter(lock, "DecayTime", 0.1, 10.0, 0.01, 3.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
-  p->setValueChangeCallback(wrappedReverb, &Reverb::setMidReverbTime);
+  p->setValueChangeCallback(wrappedReverb, &rosic::Reverb::setMidReverbTime);
 
   p = new AutomatableParameter(lock, "HighDecayScale", 0.1, 10.0, 0.01, 0.3, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
-  p->setValueChangeCallback(wrappedReverb, &Reverb::setHighReverbTimeScale);
+  p->setValueChangeCallback(wrappedReverb, &rosic::Reverb::setHighReverbTimeScale);
 
   p = new AutomatableParameter(lock, "LowDecayScale", 0.1, 10.0, 0.01, 1.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
-  p->setValueChangeCallback(wrappedReverb, &Reverb::setLowReverbTimeScale);
+  p->setValueChangeCallback(wrappedReverb, &rosic::Reverb::setLowReverbTimeScale);
 
   p = new AutomatableParameter(lock, "HighCrossoverFrequency", 20.0, 20000.0, 0.0, 4000.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
-  p->setValueChangeCallback(wrappedReverb, &Reverb::setHighCrossoverFreq);
+  p->setValueChangeCallback(wrappedReverb, &rosic::Reverb::setHighCrossoverFreq);
 
   p = new AutomatableParameter(lock, "LowCrossoverFrequency", 20.0, 20000.0, 0.0, 250.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
-  p->setValueChangeCallback(wrappedReverb, &Reverb::setLowCrossoverFreq);
+  p->setValueChangeCallback(wrappedReverb, &rosic::Reverb::setLowCrossoverFreq);
 
   p = new AutomatableParameter(lock, "Pinking", 0.0, 1.0, 1.0, 1.0, Parameter::BOOLEAN);
   addObservedParameter(p);
-  p->setValueChangeCallback(wrappedReverb, &Reverb::setWetPinkingSwitch);
+  p->setValueChangeCallback(wrappedReverb, &rosic::Reverb::setWetPinkingSwitch);
 
   p = new AutomatableParameter(lock, "StereoSwap", 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
   addObservedParameter(p);
-  p->setValueChangeCallback(wrappedReverb, &Reverb::setStereoSwapSwitch);
+  p->setValueChangeCallback(wrappedReverb, &rosic::Reverb::setStereoSwapSwitch);
 
   for(int i=0; i < (int) parameters.size(); i++)
     parameters[i]->resetToDefaultValue(true, true);

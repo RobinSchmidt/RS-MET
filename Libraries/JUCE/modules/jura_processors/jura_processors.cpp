@@ -51,7 +51,7 @@ namespace jura
 #include "effects/jura_PitchShifter.cpp"
 #include "effects/jura_CombStereoizer.cpp"
 #include "effects/jura_StereoPanPlotEditor.cpp"
-//#include "effects/jura_VariousModules.cpp"
+#include "effects/jura_VariousModules.cpp"
 
 #include "instruments/jura_AcidSequencer.cpp"
 #include "instruments/jura_AciDevil.cpp"
