@@ -523,5 +523,55 @@ protected:
   juce_UseDebuggingNewOperator;
 };
 
+//=================================================================================================
+
+/** This class is used to visually represent a modular patch as tree and provides facilities for 
+selection of modules. */
+
+class ModularStructureTreeView : public LibertyInterfaceComponent, public RTreeView
+{
+
+public:
+
+  /** Constructor.  */  
+  ModularStructureTreeView(LibertyInterfaceMediator *interfaceMediatorToUse);
+
+  /** Destructor.  */  
+  virtual ~ModularStructureTreeView();
+
+  /** Callback that is called from the mediator when another GUI component has changed something 
+  that might be interest here. */
+  virtual void mediatorHasSentNotification(MediatedColleague *originatingColleague, 
+    int messageCode = 0);
+
+  /** Overriden from RTreeView to .... */
+  virtual void nodeClicked(RTreeViewNode *nodeThatWasClicked, const MouseEvent &mouseEvent, 
+    int clickPosition);
+
+protected:
+
+  /** Returns a pointer to the module that is at the passed x-position or NULL if none. */
+  //virtual romos::ModuleProperties* getModuleAt(int x) const; // maybe later
+
+  /** Re-builds the whole tree of nodes. */
+  virtual void rebuildTree();
+
+  /** Creates a subtree for the passed moduleToCreateSubTreeFor and hangs it into the passed 
+  parentNodeToUse. */
+  virtual void createAndHangInSubTree(RTreeViewNode *parentNodeToUse, 
+    romos::Module *moduleToCreateSubTreeFor);
+
+  /** Highlights the tree node that is associated with the focused module (and un-highlights all 
+  others). */
+  virtual void updateNodeHighlighting();
+
+  juce_UseDebuggingNewOperator;
+};
+
+
+
+
+
+
 
 #endif
