@@ -31,8 +31,40 @@
 
 #include <rosic/rosic.h> // for dsp algorithms
 
-#include "Modules/romos_ArithmeticModules.h"
+
+#include "Algorithms/romos_FilterDesign.h"
+#include "Algorithms/romos_Interpolation.h"
+
+#include "Framework/romos_AudioConnection.h"
+#include "Framework/romos_Liberty.h"
+#include "Framework/romos_Module.h"
+#include "Framework/romos_ModuleAtomic.h"
+#include "Framework/romos_ModuleContainer.h"
 #include "Framework/romos_ModuleFactory.h"
+#include "Framework/romos_ModuleTypeRegistry.h"
+#include "Framework/romos_NoteEvent.h"
+#include "Framework/romos_ProcessingStatus.h"
+#include "Framework/romos_TopLevelModule.h"
+#include "Framework/romos_VoiceAllocator.h"
+#include "Framework/romos_WorkArea.h"
+
+#include "Modules/romos_ArithmeticModules.h"
+#include "Modules/romos_DelayModules.h"
+#include "Modules/romos_FilterModules.h"
+#include "Modules/romos_FunctionModules.h"
+#include "Modules/romos_InfrastructuralModules.h"
+#include "Modules/romos_ModulationModules.h"
+#include "Modules/romos_SoundGeneratorModules.h"
+
+#include "TestSuite/romos_TestModuleBuilder.h"
+
+
+
+
+//// when only these two are included, Liberty compiles (but doesn't link):
+//#include "Modules/romos_ArithmeticModules.h"
+//#include "Framework/romos_ModuleFactory.h"
+
 
 //#include "TestSuite/romos_ModuleBuildCodeGenerator.h"
 //#include "TestSuite/romos_TestModuleBuilder.h" // not needed anymore when new testsuite is complete

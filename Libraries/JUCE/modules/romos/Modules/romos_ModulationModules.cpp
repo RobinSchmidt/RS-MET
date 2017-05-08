@@ -29,9 +29,9 @@ namespace romos
 
     double sustain   = *in5;
     double timeScale = 1.0;
-    unsigned long attackSamples  = (unsigned long) round(*in1 * timeScale * processingStatus.getSystemSampleRate()); 
-    unsigned long decaySamples   = (unsigned long) round(*in3 * timeScale * processingStatus.getSystemSampleRate());
-    unsigned long releaseSamples = (unsigned long) round(*in6 * timeScale * processingStatus.getSystemSampleRate()); 
+    unsigned long attackSamples  = (unsigned long) rosic::round(*in1 * timeScale * processingStatus.getSystemSampleRate()); 
+    unsigned long decaySamples   = (unsigned long) rosic::round(*in3 * timeScale * processingStatus.getSystemSampleRate());
+    unsigned long releaseSamples = (unsigned long) rosic::round(*in6 * timeScale * processingStatus.getSystemSampleRate()); 
 
       // todo: precompute timeScale * processingStatus.getSystemSampleRate() - or maybe get rid of timeScale
 
@@ -96,8 +96,8 @@ namespace romos
       // we check note-off flag first to ensure that it attacks again when note-on and -off occur simultanously
 
       double timeScale = 1.0; 
-      unsigned long attackSamples  = (unsigned long) round(*in1 * timeScale * processingStatus.getSystemSampleRate()); 
-      unsigned long decaySamples   = (unsigned long) round(*in3 * timeScale * processingStatus.getSystemSampleRate());
+      unsigned long attackSamples  = (unsigned long) ::round(*in1 * timeScale * processingStatus.getSystemSampleRate()); 
+      unsigned long decaySamples   = (unsigned long) ::round(*in3 * timeScale * processingStatus.getSystemSampleRate());
       if( env->counters[voiceIndex] >= attackSamples ) 
         env->startValues[voiceIndex] = *in5; // set it temporarily to the sustain value
 

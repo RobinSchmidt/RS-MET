@@ -11,8 +11,43 @@ header files that the compiler may be using.
 
 //namespace romos { // it'S still all wrapped into a namespace inside the included files
 
+
+// just include all files in alphabetical order - it's impractical to try to include them in 
+// dependency order due to a messy dependency network
+
+#include "Algorithms/romos_FilterDesign.cpp"
+#include "Algorithms/romos_Interpolation.cpp"
+
+#include "Framework/romos_AudioConnection.cpp"
+#include "Framework/romos_Liberty.cpp"
+#include "Framework/romos_Module.cpp"
+#include "Framework/romos_ModuleAtomic.cpp"
+#include "Framework/romos_ModuleContainer.cpp"
+#include "Framework/romos_ModuleFactory.cpp"
 #include "Framework/romos_ModuleTypeRegistry.cpp"
+#include "Framework/romos_NoteEvent.cpp"
 #include "Framework/romos_ProcessingStatus.cpp"
+#include "Framework/romos_TopLevelModule.cpp"
+#include "Framework/romos_VoiceAllocator.cpp"
+#include "Framework/romos_WorkArea.cpp"
+
+#include "Modules/romos_ArithmeticModules.cpp"
+#include "Modules/romos_DelayModules.cpp"
+#include "Modules/romos_FilterModules.cpp"
+#include "Modules/romos_FunctionModules.cpp"
+#include "Modules/romos_InfrastructuralModules.cpp"
+#include "Modules/romos_ModulationModules.cpp"
+#include "Modules/romos_SoundGeneratorModules.cpp"
+
+#include "TestSuite/romos_TestModuleBuilder.cpp" // seems to be needed by ModuleFactory - get rid of this dependency
+
+
+
+
+
+
+//#include "Framework/romos_ModuleTypeRegistry.cpp"
+//#include "Framework/romos_ProcessingStatus.cpp"
 
 //// if everything else is commented, up to here, we get no linker errors when building
 //
