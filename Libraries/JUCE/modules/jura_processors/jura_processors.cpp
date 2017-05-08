@@ -73,7 +73,9 @@ namespace jura
 #include "instruments/jura_Quadriga.cpp"
 #include "instruments/jura_Workhorse.cpp"
 
+#ifdef _MSC_VER
 #include "instruments/jura_Liberty.cpp"
+#endif
 
 #include "misc/jura_AudioModuleChain.cpp"
 #include "misc/jura_ChannelMatrix2x2.cpp"

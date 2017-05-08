@@ -29,6 +29,8 @@
 #ifndef ROMOS_H_INCLUDED
 #define ROMOS_H_INCLUDED
 
+#ifdef _MSC_VER  // it currently doesn't compile on gcc
+
 #include <rosic/rosic.h> // for dsp algorithms
 
 
@@ -57,6 +59,8 @@
 #include "Modules/romos_SoundGeneratorModules.h"
 
 #include "TestSuite/romos_TestModuleBuilder.h"
+
+#endif
 
 
 

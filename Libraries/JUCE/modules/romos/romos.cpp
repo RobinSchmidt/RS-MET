@@ -7,12 +7,14 @@ header files that the compiler may be using.
 #error "Incorrect use of JUCE cpp file"
 #endif
 
+
+#ifdef _MSC_VER
+
 #include "romos.h"
 
 //namespace romos { // it'S still all wrapped into a namespace inside the included files
 
-
-// just include all files in alphabetical order - it's impractical to try to include them in 
+// just include all files in alphabetical order - it's impractical to try to include them in
 // dependency order due to a messy dependency network
 
 #include "Algorithms/romos_FilterDesign.cpp"
@@ -41,6 +43,8 @@ header files that the compiler may be using.
 
 #include "TestSuite/romos_TestModuleBuilder.cpp" // seems to be needed by ModuleFactory - get rid of this dependency
 
+#endif
+
 
 
 
@@ -55,7 +59,7 @@ header files that the compiler may be using.
 //#include "Framework/romos_VoiceAllocator.cpp"
 //#include "Framework/romos_WorkArea.cpp"
 //#include "Framework/romos_Module.cpp"
-//#include "Framework/romos_ModuleContainer.cpp" 
+//#include "Framework/romos_ModuleContainer.cpp"
 //#include "Framework/romos_ModuleAtomic.cpp"
 //
 //#include "Modules/romos_ArithmeticModules.cpp"

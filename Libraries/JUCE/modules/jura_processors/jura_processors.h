@@ -10,16 +10,16 @@
   ID:               jura_processors
   vendor:           RS-MET
   version:          0.0.1
-  name:             JUCE wrappers for RAPT 
+  name:             JUCE wrappers for RAPT
   description:      JUCE wrappers and GUIs for RAPT's audio signal processing algorithms
   website:          http://www.rs-met.com
   license:          GPL/Commercial
 
-  dependencies:     juce_core, juce_audio_basics, juce_graphics, juce_gui_basics, 
-                    juce_audio_formats, juce_audio_processors, jura_framework, 
+  dependencies:     juce_core, juce_audio_basics, juce_graphics, juce_gui_basics,
+                    juce_audio_formats, juce_audio_processors, jura_framework,
 					          rosic, romos
-  OSXFrameworks:    
-  iOSFrameworks:    
+  OSXFrameworks:
+  iOSFrameworks:
 
  END_JUCE_MODULE_DECLARATION
 
@@ -29,25 +29,32 @@
 #ifndef JURA_PROCESSORS_H_INCLUDED
 #define JURA_PROCESSORS_H_INCLUDED
 
-//#include <juce_core/juce_core.h> 
-//#include <juce_audio_basics/juce_audio_basics.h> 
-//#include <juce_audio_formats/juce_audio_formats.h> 
-//#include <juce_audio_processors/juce_audio_processors.h> 
-//#include <juce_graphics/juce_graphics.h> 
-//#include <juce_gui_basics/juce_gui_basics.h> 
-#include <jura_framework/jura_framework.h> 
-//#include <rosic/rosic.h>  // included now by romos.h
+//#include <juce_core/juce_core.h>
+//#include <juce_audio_basics/juce_audio_basics.h>
+//#include <juce_audio_formats/juce_audio_formats.h>
+//#include <juce_audio_processors/juce_audio_processors.h>
+//#include <juce_graphics/juce_graphics.h>
+//#include <juce_gui_basics/juce_gui_basics.h>
+#include <jura_framework/jura_framework.h>
+
+
+#ifdef _MSC_VER
 #include <romos/romos.h>
+#else
+#include <rosic/rosic.h>  // included now by romos.h, but not for gcc bcs romos doesn't compile there
+#endif
+
+
 using namespace juce;
 // do we actually need all these includes? - most of them are included by jura_framework already
 
 //#include "../../RAPT/Source/Modules/RAPT.h" // get rid of that
 //using namespace RAPT;
 
-// disable warnings related to "inherits ... via dominance", todo: try to get rid of virtual 
+// disable warnings related to "inherits ... via dominance", todo: try to get rid of virtual
 // inheritance and reactivate the warning
-#pragma warning (disable : 4250)  
-                                  
+#pragma warning (disable : 4250)
+
 
 namespace jura
 {
@@ -109,11 +116,13 @@ namespace jura
 #include "instruments/jura_SimpleSampler.h"
 #include "instruments/jura_KeyShot.h"
 #include "instruments/jura_MagicCarpet.h"
-#include "instruments/jura_Quadrigen.h"  // move to generators, requires to split relevant parts out of jura_VariousModules 
+#include "instruments/jura_Quadrigen.h"  // move to generators, requires to split relevant parts out of jura_VariousModules
 #include "instruments/jura_Quadriga.h"
 #include "instruments/jura_Workhorse.h"
 
-#include "instruments/jura_Liberty.h"
+#ifdef _MSC_VER
+#include "instruments/jura_Liberty.h"    // romos currently doesn't compile on gcc
+#endif
 
 #include "misc/jura_AudioModuleChain.h"
 #include "misc/jura_ChannelMatrix2x2.h"
