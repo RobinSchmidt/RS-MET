@@ -138,9 +138,7 @@ such as sliders and comboboxes. */
 class BitmapFontRoundedBoldA10D0 : public BitmapFont
 {
 public:
-
   BitmapFontRoundedBoldA10D0();
-
   static const BitmapFontRoundedBoldA10D0 instance;
   // we have one static member of this class as instance variable - this is the global object
   // which we can access from all widgets, editors, etc. - that seems to work - we should use that

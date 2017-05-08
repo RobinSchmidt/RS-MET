@@ -69,6 +69,10 @@ deletes the object conditionally, also an override of processBlock and createEdi
 -make repaintOnMessageThread() work, use it for updating displays, widgets etc. when midi events 
  are received (they are received on the audio thread, but should update the GUI, too)
 
+-clean up the BitmapFont static instance variable vs global object mess. get rid of global objects
+ use the instance variables everywhere (because they can be used also across the dependent library 
+ modules whereas the global objects are invisible
+
 
 Bugs:
 -on "Undo" in Reaper (to undo a parameter change), the widgets are not updated

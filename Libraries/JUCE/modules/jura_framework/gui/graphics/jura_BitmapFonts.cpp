@@ -89,6 +89,8 @@ void BitmapFont::createGlyphBitmaps()
 
 //=================================================================================================
 
+const BitmapFontRoundedA7D0 BitmapFontRoundedA7D0::instance; 
+
 BitmapFontRoundedA7D0::BitmapFontRoundedA7D0()
 {
   ascent  = 7;
@@ -1277,6 +1279,8 @@ void BitmapFontRoundedA7D0::createGlyphBitmaps()
 static const BitmapFontRoundedA7D0 normalFont7px;  // the global object
 
 //=================================================================================================
+
+const BitmapFontRoundedBoldA9D0 BitmapFontRoundedBoldA9D0::instance; 
 
 BitmapFontRoundedBoldA9D0::BitmapFontRoundedBoldA9D0()
 {
