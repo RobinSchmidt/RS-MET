@@ -36,7 +36,8 @@
 //#include <juce_graphics/juce_graphics.h> 
 //#include <juce_gui_basics/juce_gui_basics.h> 
 #include <jura_framework/jura_framework.h> 
-#include <rosic/rosic.h>
+//#include <rosic/rosic.h>  // included now by romos.h
+#include <romos/romos.h>
 using namespace juce;
 // do we actually need all these includes? - most of them are included by jura_framework already
 
