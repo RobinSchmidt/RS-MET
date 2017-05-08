@@ -1,0 +1,13 @@
+for the implementation of output modules, there are the following variants:
+
+1)
+-the parent container allocates the memory for the output signal
+-the container sets up the "audioOutputs" pointer for all its embedded output modules (update on re-alloction)
+-for siblings of the container, the container itself appears as the source module (as in being stored as 
+ sourceModulePointer in the connected target modules)
+-when the container, re-allocates memory, it notifies all direct siblings about that, so they can update their
+ input-signal pointers and stride variables, etc.
+
+implications:
+-the output modules can straightforwardly be extendend to perform downsampling
+-connecting

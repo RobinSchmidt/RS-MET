@@ -1,0 +1,31 @@
+class responsibilities:
+
+Module:
+
+
+
+
+AudioConnection:
+
+
+
+Event:
+
+
+
+EventConnection:
+
+
+
+
+
+
+
+concrete modules:
+arithmetic:
+
+
+delays:
+
+
+filters:
