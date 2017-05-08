@@ -68,10 +68,6 @@ namespace rosic
     /** Sets the end point of the envelope (in semitones). */
     void setEndInSemitones(double newEnd) { setEndLevel(pitchOffsetToFreqFactor(newEnd)); }
 
-    /** Sets the end point of the envelope (in semitones). */
-    void setEndInSemitones(double newEnd) { setEndLevel(pitchOffsetToFreqFactor(newEnd)); }
-
-
     /** Sets the length of attack phase (in seconds). needs test */
     void setAttack(double newAttackTime) { setBreakpointTime(1, newAttackTime); }
 

@@ -4,7 +4,6 @@
 //#include "../../../romos/Source/romos.h"
 //using namespace romos;
 
-
 //=================================================================================================
 
 /** This is a class for keeping track of the state of the user interface of the modular synth 
@@ -171,7 +170,6 @@ public:
     wrappedLiberty->reset();
   }
 
-
 protected:
 
   /** Pointer to the underlying object which is wrapped. */
@@ -184,8 +182,257 @@ protected:
   juce_UseDebuggingNewOperator;
 };
 
+//=================================================================================================
+
+
+/** A mix-in class to mix into the basic rojue widget classes. */
+class LibertyModuleWidget
+{
+
+public:
+
+  LibertyModuleWidget(const juce::String &name) 
+  { 
+    widgetParameterName = name; 
+  }
+
+  juce::String getWidgetParameterName() const   
+  { 
+    return widgetParameterName; 
+  }
+
+  juce_UseDebuggingNewOperator;
+
+protected:
+
+  juce::String widgetParameterName;
+
+};
+
+/** RSlider, augmented by the LibertyModuleWidget mix-in class. */
+class LibertySlider : public RSlider, public LibertyModuleWidget
+{
+public:
+  LibertySlider(const juce::String &name) : LibertyModuleWidget(name), RSlider(name) { }
+  juce_UseDebuggingNewOperator;
+};
+
+/** RComboBox, augmented by the LibertyModuleWidget mix-in class. */
+class LibertyComboBox : public RComboBox, public LibertyModuleWidget
+{
+public:
+  LibertyComboBox(const juce::String &name) : LibertyModuleWidget(name), RComboBox(name) { }
+  juce_UseDebuggingNewOperator;
+};
+
+/** RNamedComboBox, augmented by the LibertyModuleWidget mix-in class. */
+class LibertyNamedComboBox : public RNamedComboBox, public LibertyModuleWidget
+{
+public:
+  LibertyNamedComboBox(const juce::String &name) : LibertyModuleWidget(name), 
+    RNamedComboBox(name, name) { }
+  juce_UseDebuggingNewOperator;
+};
+
+/** RTextEntryField, augmented by the LibertyModuleWidget mix-in class. */
+class LibertyTextEntryField : public RTextEntryField, public LibertyModuleWidget
+{
+public:
+  LibertyTextEntryField(const juce::String &name) 
+    : LibertyModuleWidget(name), RTextEntryField(name) { }
+  juce_UseDebuggingNewOperator;
+};
+
+
+/** RLabeledTextEntryField, augmented by the LibertyModuleWidget mix-in class. */
+class LibertyLabeledTextEntryField : public RLabeledTextEntryField, public LibertyModuleWidget
+{
+public:
+  LibertyLabeledTextEntryField(const juce::String &name) 
+    : LibertyModuleWidget(name), RLabeledTextEntryField(name) 
+  { 
+    removeChildWidget(entryField, true, true);
+    entryField = new LibertyTextEntryField(name);
+    addChildWidget(entryField);
+  }
+
+  juce_UseDebuggingNewOperator;
+};
+
+// todo: make classes LibertyButton, etc.
+// we also need to override setValueFromString in RButton, RComboBox, RTextEntryField, etc. then
 
 //=================================================================================================
+// class ModulePropertiesEditor:
+
+/** This class is used to edit some properties of modules in the modular synthesizer such as the 
+name, the polyphony setting, etc. */
+
+
+class ModulePropertiesEditor : public Editor, public RSliderListener, public RComboBoxObserver, 
+  public RTextEntryFieldObserver, public RButtonListener
+{
+
+public:
+
+  //-----------------------------------------------------------------------------------------------
+  // construction/destruction:
+
+  /** Constructor.  */  
+  ModulePropertiesEditor(CriticalSection *newPlugInLock, romos::Module* newModuleToEdit);
+
+  /** Destructor. */
+  //virtual ~ModulePropertiesEditor();
+
+
+  //-----------------------------------------------------------------------------------------------
+  // callbacks:
+
+  virtual void rSliderValueChanged(RSlider         *rSlider);
+  virtual void rComboBoxChanged(   RComboBox       *comboBoxThatHasChanged);
+  virtual void textChanged(        RTextEntryField *rTextEntryFieldThatHasChanged);
+  virtual void rButtonClicked(     RButton         *buttonThatWasClicked);
+  virtual void resized();
+
+  //-----------------------------------------------------------------------------------------------
+  // others:
+
+  /** Updates the widgets from the moduleToEdit member. */
+  virtual void updateWidgetsFromModuleState();
+
+
+protected:
+
+
+  /** Called internally by the callbacks for the specific widgets rSliderValueChanged, rComboBoxChanged, etc.. The function tries to cast
+  the widget to a LibertyWidget, reads out the parameter-name and sets the parameter with given in the moduleToEdit (provided, that this 
+  moduleToEdit has parameters, which it should when this function is called). */
+  virtual void widgetChanged(RWidget *widgetThatHasChanged);
+
+
+  CriticalSection *plugInLock;   
+  romos::Module   *moduleToEdit;
+
+  RTextField *moduleTypeLabel, *moduleTypeField;
+  RButton    *polyButton;
+
+
+  // preset load/save section
+
+  // non-editable fields (just for info):
+  // String moduleKind;
+  // int x, y;
+  // numAudioInputs, numChildModules, numAudioOutputs, numEventInputs, numEventOutputs
+
+  juce_UseDebuggingNewOperator;
+};
+
+//=================================================================================================
+// subclasses for concrete module types:
+
+class ParameterModuleEditor : public ModulePropertiesEditor 
+{
+public:
+  ParameterModuleEditor(CriticalSection *newPlugInLock, romos::Module* newModuleToEdit); 
+  virtual void rButtonClicked(RButton *buttonThatWasClicked);
+  virtual void resized();
+  virtual void updateWidgetsFromModuleState();
+  juce_UseDebuggingNewOperator;
+protected:
+
+  juce::Rectangle<int> topSectionRect, setupRect, controlSetupRect;
+
+  RTextField *parameterSetupLabel;
+  RTextField *helpTextLabel;
+  LibertyTextEntryField        *helpTextField;
+  RTextField                   *minValueLabel, *maxValueLabel;
+  LibertyTextEntryField        *minValueField, *maxValueField;
+  LibertySlider                *valueSlider;
+  LibertyLabeledTextEntryField *valueField, *defaultField, *unitField;
+  LibertyNamedComboBox         *scalingComboBox; 
+  RClickButton                 *enterValueButton, *setToDefaultButton;
+
+  // current, default, scaling, unit, quantization
+  // ControllerNumber, ControlRangeMin, ControlRangeMax, Smoothing
+
+  /*
+  RTextField            *minValueLabel,  *defaultValueLabel,  *maxValueLabel;
+  LibertyTextEntryField *minValueField,  *defaultValueField,  *maxValueField;
+  RClickButton          *setToMinButton, *setToDefaultButton, *setToMaxButton;
+
+  */
+
+  // mappingBox
+  // metaSilder, metaMinField, metaMaxField
+  // smoothingSlider
+};
+
+class ContainerModuleEditor : public ModulePropertiesEditor 
+{
+public:
+  ContainerModuleEditor(CriticalSection *newPlugInLock, romos::Module* newModuleToEdit); 
+  juce_UseDebuggingNewOperator;
+
+protected:
+
+};
+
+class TopLevelModuleEditor : public ModulePropertiesEditor 
+{
+public:
+  TopLevelModuleEditor(CriticalSection *newPlugInLock, romos::Module* newModuleToEdit); 
+  juce_UseDebuggingNewOperator;
+
+protected:
+
+};
+
+class VoiceKillerModuleEditor : public ModulePropertiesEditor 
+{
+public:
+  VoiceKillerModuleEditor(CriticalSection *newPlugInLock, romos::Module* newModuleToEdit);   
+  virtual void resized();
+  juce_UseDebuggingNewOperator;
+protected:
+  //RLabeledTextEntryField *thresholdField, *timeOutField;
+  LibertySlider *thresholdSlider, *timeOutSlider;
+};
+
+
+class WhiteNoiseModuleEditor : public ModulePropertiesEditor 
+{
+public:
+  WhiteNoiseModuleEditor(CriticalSection *newPlugInLock, romos::Module* newModuleToEdit);   
+  virtual void resized();
+  juce_UseDebuggingNewOperator;
+protected:
+  LibertySlider *seedSlider;
+};
+
+
+class BiquadDesignerModuleEditor : public ModulePropertiesEditor 
+{
+public:
+  BiquadDesignerModuleEditor(CriticalSection *newPlugInLock, romos::Module* newModuleToEdit);   
+  virtual void resized();
+  juce_UseDebuggingNewOperator;
+protected:
+  LibertyNamedComboBox *modeComboBox;
+};
+
+
+class LibertyLadderFilterModuleEditor : public ModulePropertiesEditor 
+{
+public:
+  LibertyLadderFilterModuleEditor(CriticalSection *newPlugInLock, romos::Module* newModuleToEdit);   
+  virtual void resized();
+  juce_UseDebuggingNewOperator;
+protected:
+  LibertyNamedComboBox *filterModeComboBox, *saturationModeComboBox;
+};
+
+
+
 
 
 
