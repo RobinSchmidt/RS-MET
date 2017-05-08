@@ -48,7 +48,7 @@ juce::String AudioModuleFactory::getModuleType(AudioModule *m)
   // instruments:
   if(dynamic_cast<AciDevilAudioModule*> (m)) return "AciDevil";
 #ifdef _MSC_VER
-  if(dynamic_cast<Liberty*> (m)) return "Liberty";
+  if(dynamic_cast<LibertyAudioModule*> (m)) return "Liberty";
 #endif
 
   jassertfalse;  // unknown module type was passed
