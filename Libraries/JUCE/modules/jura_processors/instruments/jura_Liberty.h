@@ -979,6 +979,11 @@ protected:
   // later use a custom component that can assume other shapes (ellipses, etc.) - maybe define 
   // ShapeComponent
 
+  // pointers for coveniently accessing the bitmap fonts:
+  const BitmapFont* bigFont    = &BitmapFontRoundedBoldA10D0::instance;
+  const BitmapFont* normalFont = &BitmapFontRoundedBoldA9D0::instance;
+  const BitmapFont* smallFont  = &BitmapFontRoundedA7D0::instance;
+
   juce_UseDebuggingNewOperator;
 };
 

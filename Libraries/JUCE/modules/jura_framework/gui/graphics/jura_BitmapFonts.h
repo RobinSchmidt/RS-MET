@@ -108,6 +108,7 @@ class BitmapFontRoundedA7D0 : public BitmapFont
 {
 public:
   BitmapFontRoundedA7D0();
+  static const BitmapFontRoundedA7D0 instance;
 protected:
   virtual void createGlyphBitmaps();
   juce_UseDebuggingNewOperator;
@@ -123,6 +124,9 @@ class BitmapFontRoundedBoldA9D0 : public BitmapFont
 {
 public:
   BitmapFontRoundedBoldA9D0();
+
+  static const BitmapFontRoundedBoldA9D0 instance;
+
 protected:
   virtual void createGlyphBitmaps();
   juce_UseDebuggingNewOperator;
