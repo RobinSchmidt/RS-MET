@@ -568,6 +568,50 @@ protected:
   juce_UseDebuggingNewOperator;
 };
 
+//=================================================================================================
+
+/** This class is used to hold the properties editor for the selected module. We need this wrapper 
+because the content component must be created and deleted dynamically according to the selected 
+module. */
+
+class ModulePropertiesEditorHolder : public ColourSchemeComponent, public LibertyInterfaceComponent
+{
+
+public:
+
+  //-----------------------------------------------------------------------------------------------
+  // construction/destruction:
+
+  /** Constructor.  */  
+  ModulePropertiesEditorHolder(LibertyInterfaceMediator *interfaceMediatorToUse);
+
+  /** Destructor.  */  
+  virtual ~ModulePropertiesEditorHolder();
+
+  //-----------------------------------------------------------------------------------------------
+  // callbacks:
+
+  /** Callback that is called from the mediator when another GUI component has changed something 
+  that might be interest here. */
+  virtual void mediatorHasSentNotification(MediatedColleague *originatingColleague, 
+    int messageCode = 0);
+
+  virtual void paint(Graphics &g);
+  virtual void resized();
+
+
+protected:
+
+  /** Creates the properties editor for the currently selected module (or a default top-level 
+  editor, if none is selected). */
+  virtual void createPropertiesEditorForSelectedModule();
+
+  ModulePropertiesEditor *currentEditor;
+
+  juce_UseDebuggingNewOperator;
+};
+
+
 
 
 
