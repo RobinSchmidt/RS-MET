@@ -4,13 +4,13 @@
 LibertyInterfaceState::LibertyInterfaceState()
 {
   activePanel = STRUCTURE_PANEL;
-
 }
 
 //=================================================================================================
 // class LibertyAudioModule:
 
-LibertyAudioModule::LibertyAudioModule(CriticalSection *newPlugInLock, romos::Liberty *modularSynthToWrap)
+LibertyAudioModule::LibertyAudioModule(CriticalSection *newPlugInLock, 
+  romos::Liberty *modularSynthToWrap)
 //: PolyphonicInstrumentAudioModule(newPlugInLock, modularSynthToWrap)
 : AudioModule(newPlugInLock)
 {
@@ -25,30 +25,35 @@ LibertyAudioModule::LibertyAudioModule(CriticalSection *newPlugInLock, romos::Li
 //-------------------------------------------------------------------------------------------------
 // persistence:
 
-void LibertyAudioModule::writeModuleTypeSpecificStateDataToXml(romos::Module *module, XmlElement* xmlState)
+void LibertyAudioModule::writeModuleTypeSpecificStateDataToXml(romos::Module *module, 
+  XmlElement* xmlState)
 {
   romos::ParameterMixIn *m = dynamic_cast<romos::ParameterMixIn*> (module);
   if( m != NULL )
   {
     for(int i = 0; i < m->getNumParameters(); i++)
-      xmlState->setAttribute(rosicToJuce(m->getParameterName(i)), rosicToJuce(m->getParameterValue(i)));
+      xmlState->setAttribute(rosicToJuce(m->getParameterName(i)), 
+        rosicToJuce(m->getParameterValue(i)));
   }
 }
 
-void LibertyAudioModule::restoreModuleTypeSpecificStateDataFromXml(romos::Module *module, const XmlElement& xmlState)
+void LibertyAudioModule::restoreModuleTypeSpecificStateDataFromXml(romos::Module *module, 
+  const XmlElement& xmlState)
 {
   romos::ParameterMixIn *m = dynamic_cast<romos::ParameterMixIn*> (module);
   if( m != NULL )
   {
     if( module->getTypeIdentifier() == ModuleTypeRegistry::PARAMETER )
     {
-      // we need special treatment of the parameter module - minValue/maxValue shlould be set simultaneuously, because otherwise, 
-      // min/max might not be recalled correctly, for example when newMin > oldMax, the module will refuse to use the new minimum, etc.
-      // moreover, min/max must be set up before attempting to set the default and current value:
+      // we need special treatment of the parameter module - minValue/maxValue shlould be set 
+      // simultaneuously, because otherwise, min/max might not be recalled correctly, for example 
+      // when newMin > oldMax, the module will refuse to use the new minimum, etc. moreover, 
+      // min/max must be set up before attempting to set the default and current value:
       double min = xmlState.getDoubleAttribute(juce::String(("MinValue")), 0.0);
       double max = xmlState.getDoubleAttribute(juce::String(("MaxValue")), 1.0);
 
-      juce::String mappingString = xmlState.getStringAttribute(juce::String(("MaxValue")), juce::String(("Linear")));
+      juce::String mappingString = xmlState.getStringAttribute(juce::String(("MaxValue")), 
+        juce::String(("Linear")));
       int mappingIndex = romos::ParameterModule::LINEAR_MAPPING;
       if( mappingString == juce::String(("Exponential")) )
         mappingIndex = romos::ParameterModule::EXPONENTIAL_MAPPING;
@@ -65,7 +70,8 @@ void LibertyAudioModule::restoreModuleTypeSpecificStateDataFromXml(romos::Module
   }
 }
 
-XmlElement* LibertyAudioModule::getModuleStateAsXml(romos::Module *module, bool withExternalConnections)
+XmlElement* LibertyAudioModule::getModuleStateAsXml(romos::Module *module, 
+  bool withExternalConnections)
 {
   //ScopedLock scopedLock(*plugInLock); // this function is static
 
@@ -88,23 +94,23 @@ XmlElement* LibertyAudioModule::getModuleStateAsXml(romos::Module *module, bool 
 
   // store audio connections:
 
-
-  // input modules have invisible "ghost" connections to the source that goes into the respective container - 
-  // we don't want to store these:
+  // input modules have invisible "ghost" connections to the source that goes into the 
+  // respective container - we don't want to store these:
   if( !module->isInputModule() )  
   {
     if( withExternalConnections == true )
     {
       romos::AudioConnection ac; // connection under investigation
       juce::String connectionString;
-      std::vector<romos::AudioConnection> incomingConnections = module->getIncomingAudioConnections();
+      std::vector<romos::AudioConnection> incomingConnections = 
+        module->getIncomingAudioConnections();
       for(i = 0; i < incomingConnections.size(); i++)
       {
         ac  = incomingConnections[i];
         connectionString +=   juce::String(("A_")) 
-          + juce::String(ac.getSourceModule()->getIndexWithinParentModule()) + juce::String(("_")) 
-          + juce::String(ac.getSourceOutputIndex())                          + juce::String(("_")) 
-          + juce::String(ac.getTargetInputIndex())                           + juce::String((", "));
+          + juce::String(ac.getSourceModule()->getIndexWithinParentModule()) + juce::String("_") 
+          + juce::String(ac.getSourceOutputIndex())                          + juce::String("_") 
+          + juce::String(ac.getTargetInputIndex())                           + juce::String(", ");
       }
 
       // \todo add event connections to the string..
@@ -120,7 +126,8 @@ XmlElement* LibertyAudioModule::getModuleStateAsXml(romos::Module *module, bool 
   return xmlState;
 }
 
-void LibertyAudioModule::createAndSetupEmbeddedModulesFromXml(const XmlElement& xmlState, romos::Module *module)
+void LibertyAudioModule::createAndSetupEmbeddedModulesFromXml(const XmlElement& xmlState, 
+  romos::Module *module)
 {
   if( module == NULL )
   {
@@ -128,17 +135,19 @@ void LibertyAudioModule::createAndSetupEmbeddedModulesFromXml(const XmlElement& 
     return;
   }
 
-  module->setModuleName( juceToRosic(xmlState.getStringAttribute(juce::String(("Name")), juce::String(("NoName"))))         );
+  module->setModuleName( juceToRosic(xmlState.getStringAttribute(juce::String(("Name")), 
+    juce::String(("NoName"))))         );
   if( !module->isTopLevelModule() )
     module->setPolyphonic( xmlState.getBoolAttribute(juce::String(("Poly")), false) );
 
-  // this call is needed only to recall the position of the top-level module's I/O modules - the other modules are already inserted at
-  // their right positions inside the recursive call:
+  // this call is needed only to recall the position of the top-level module's I/O modules 
+  // - the other modules are already inserted at their right positions inside the recursive call:
   //module->setPositionXY( xmlState.getIntAttribute(juce::String(("X")), 0), 
   //                       xmlState.getIntAttribute(juce::String(("Y")), 0), false);
   //...mmhh. does not work
 
-  // module->setPositionXY not needed because we assign x, y in the loop and the toplevel module should always reamain at (0,0) 
+  // module->setPositionXY not needed because we assign x, y in the loop and the toplevel module 
+  // should always reamain at (0,0) 
 
   if(  module->getTypeIdentifier() == romos::ModuleTypeRegistry::CONTAINER 
     || module->getTypeIdentifier() == romos::ModuleTypeRegistry::TOP_LEVEL_MODULE )
@@ -146,9 +155,10 @@ void LibertyAudioModule::createAndSetupEmbeddedModulesFromXml(const XmlElement& 
     romos::ModuleContainer *container = dynamic_cast<romos::ModuleContainer*> (module);
     for(int i=0; i<xmlState.getNumChildElements(); i++)
     {
-      XmlElement* childState       = xmlState.getChildElement(i);
+      XmlElement* childState = xmlState.getChildElement(i);
       rosic::String moduleTypeName = juceToRosic(childState->getTagName());
-      int typeIdentifier           = romos::ModuleTypeRegistry::getSoleInstance()->getModuleIdentifierFromTypeString(moduleTypeName);
+      int typeIdentifier = romos::ModuleTypeRegistry::getSoleInstance()
+        ->getModuleIdentifierFromTypeString(moduleTypeName);
 
       if( typeIdentifier != romos::ModuleTypeRegistry::UNKNOWN_MODULE_TYPE )
       {
@@ -159,11 +169,13 @@ void LibertyAudioModule::createAndSetupEmbeddedModulesFromXml(const XmlElement& 
         }
         else
         {
-          rosic::String moduleName = juceToRosic(childState->getStringAttribute(juce::String(("Name"))));
-          int x                    = childState->getIntAttribute(juce::String(("X")), 0);
-          int y                    = childState->getIntAttribute(juce::String(("Y")), 0);
-          bool poly                = childState->getBoolAttribute(juce::String(("Poly")), false);
-          romos::Module *newModule = container->addChildModule(typeIdentifier, moduleName, x, y, poly, false);
+          rosic::String moduleName = juceToRosic(childState
+            ->getStringAttribute(juce::String("Name")));
+          int x = childState->getIntAttribute(juce::String("X"), 0);
+          int y = childState->getIntAttribute(juce::String("Y"), 0);
+          bool poly = childState->getBoolAttribute(juce::String("Poly"), false);
+          romos::Module *newModule = container->addChildModule(typeIdentifier, moduleName, 
+            x, y, poly, false);
           createAndSetupEmbeddedModulesFromXml(*childState, newModule);
         }
       }
@@ -184,7 +196,8 @@ void LibertyAudioModule::createConnectionsFromXml(const XmlElement& xmlState, ro
     return;
   }
 
-  juce::String connectionString = xmlState.getStringAttribute(juce::String(("IncomingConnections")), juce::String::empty);
+  juce::String connectionString = xmlState.getStringAttribute(juce::String("IncomingConnections"), 
+    juce::String::empty);
 
   if( connectionString != juce::String::empty )
   {
@@ -268,7 +281,8 @@ XmlElement* LibertyAudioModule::getStateAsXml(const juce::String &stateName, boo
   return xmlState;
 }
     
-void LibertyAudioModule::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, bool markAsClean)
+void LibertyAudioModule::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 
+  bool markAsClean)
 {
   ScopedLock scopedLock(*lock);
   wrappedLiberty->reset();
@@ -319,7 +333,7 @@ void LibertyAudioModule::restoreTopLevelInOutStates(const XmlElement& xmlState)
   }
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // event handling:
     
 void LibertyAudioModule::noteOn(int noteNumber, int velocity)
