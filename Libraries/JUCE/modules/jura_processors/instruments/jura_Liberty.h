@@ -418,6 +418,50 @@ protected:
 //=================================================================================================
 //=================================================================================================
 
+class LibertyInterfaceMediator;
+
+/** Baseclass for the GUI components of the modular system. These components coordinate with one 
+another through the use of a mediator. */
+
+class LibertyInterfaceComponent : public MediatedColleague
+{
+
+  //friend class LibertyEditor;
+
+public:
+
+  /** Enumeration to be used in the moduleChanged callback. */
+  enum moduleChangeTypeIndices
+  {
+    MODULE_NAME,               // the module's name in the diagram was changed
+    //POSITION,                // the module's position in the diagram was changed
+    NUM_CHILDREN,              // the number of child modules changed due to adding/removing
+    NUM_CONNECTIONS,
+    POLYPHONY,                 // polyphony of one or more of the child-modules changed
+    //NUM_AUDIO_INPUTS,        // the number of audio inputs was changed
+    //NUM_AUDIO_OUTPUTS,       // the number of audio outputs was changed
+    //NUM_EVENT_INPUTS,        // the number of event inputs was changed
+    //NUM_EVENT_OUTPUTS,       // the number of event outputs was changed
+    //CONNECTIVITY,            // the connectivity between any two child modules was changed due to adding/removing wires
+    //SELECTION,               // the set of selected modules has changed
+
+    //EDITED_MODULE_CONTAINER,   // module container shown in the editor changed
+
+    CONTAINER_SHOWN_IN_DIAGRAM,
+    MODULE_TO_SHOW_EDITOR_FOR
+
+
+    //MODULE_FOCUS             // the focused moduled was changed
+  };
+
+  /** Constructor.  */  
+  LibertyInterfaceComponent(LibertyInterfaceMediator *interfaceMediatorToUse);
+
+  LibertyInterfaceMediator* getInterfaceMediator() const;
+
+  juce_UseDebuggingNewOperator;
+};
+
 
 
 

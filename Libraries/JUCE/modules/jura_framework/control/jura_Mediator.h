@@ -4,9 +4,7 @@
 class Mediator;
 
 /** This class represents an object that can communicate with other objects through a mediator 
-as in the Mediator pattern described in GoF - Design Patterns.
-
-*/
+as in the Mediator pattern described in GoF - Design Patterns. */
 
 class MediatedColleague
 {
