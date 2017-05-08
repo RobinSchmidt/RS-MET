@@ -1,4 +1,9 @@
 needs to be completed next:
+ -Liberty (in progress...) 
+  Liberty.h/cpp have been renamed to .x - need to be renamed back, maybe moved into a different 
+  folder because any cpp file in the module root folder gets included into the build by the 
+  projucer
+
 
 -drag over all old plugin code and make it compile:
  -AciDevil (done)
@@ -24,9 +29,7 @@ needs to be completed next:
  -MidiMonitor (done)
  -StereoDelay (done)
 
- -Liberty (later - it needs the "romos" folder - maybe make a subfolder modular somewhere in the 
-  jura_processors module - or make romos a juce-module in its own right) ...but "Liberty" itself
-  should go into instruments
+
 
 
 -maybe move VectorMixer to basics?

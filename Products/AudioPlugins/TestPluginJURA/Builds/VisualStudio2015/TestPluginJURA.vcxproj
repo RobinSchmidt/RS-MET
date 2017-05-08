@@ -2105,6 +2105,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_AudioConnection.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_Liberty.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_Module.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -4201,6 +4204,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Algorithms\romos_FilterDesign.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Algorithms\romos_Interpolation.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_AudioConnection.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_Liberty.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_Module.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleAtomic.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleContainer.h"/>
