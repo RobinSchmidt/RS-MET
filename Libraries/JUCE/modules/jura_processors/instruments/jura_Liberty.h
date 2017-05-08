@@ -53,6 +53,12 @@ public:
   /** Constructor. */
   LibertyAudioModule(CriticalSection *newPlugInLock, romos::Liberty *modularSynthToWrap);
 
+  LibertyAudioModule(CriticalSection *newPlugInLock);
+
+  void init(); // called from constructors, encapsulates their common code
+
+  virtual ~LibertyAudioModule();
+
   //-----------------------------------------------------------------------------------------------
   // parameter settings:
 
@@ -166,6 +172,7 @@ protected:
 
   /** Pointer to the underlying object which is wrapped. */
   romos::Liberty *wrappedLiberty;
+  bool wrappedLibertyIsOwned = false;
 
   LibertyInterfaceState interfaceState; // maintains info about open panels, scroll-positions, etc.
 

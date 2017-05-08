@@ -17,11 +17,29 @@ LibertyAudioModule::LibertyAudioModule(CriticalSection *newPlugInLock,
 : AudioModule(newPlugInLock)
 {
   jassert(modularSynthToWrap != NULL); // you must pass a valid rosic-object to the constructor
-  wrappedLiberty       = modularSynthToWrap;
+  wrappedLiberty = modularSynthToWrap;
   //underlyingRosicInstrument = modularSynthToWrap;
+  init();
+}
+
+LibertyAudioModule::LibertyAudioModule(CriticalSection *newPlugInLock) : AudioModule(newPlugInLock)
+{
+  wrappedLiberty = new romos::Liberty;
+  wrappedLibertyIsOwned = true;
+  init();
+}
+
+void LibertyAudioModule::init()
+{
   setModuleName(juce::String(("Liberty")));
   setActiveDirectory(getApplicationDirectory() + juce::String(("/LibertyPresets")) );
   macroDirectory = getApplicationDirectory() + juce::String(("/LibertyMacros")) ;
+}
+
+LibertyAudioModule::~LibertyAudioModule()
+{
+  if(wrappedLibertyIsOwned)
+    delete wrappedLiberty;
 }
 
 //-------------------------------------------------------------------------------------------------

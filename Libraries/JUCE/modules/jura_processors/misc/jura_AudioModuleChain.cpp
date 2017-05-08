@@ -18,6 +18,9 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
 
   // instruments:
   if(type == "AciDevil") return new AciDevilAudioModule(lock);
+#ifdef _MSC_VER
+  if(type == "Liberty") return new LibertyAudioModule(lock);
+#endif
 
   jassertfalse;  // unknown module type requested
   return nullptr;
@@ -44,6 +47,9 @@ juce::String AudioModuleFactory::getModuleType(AudioModule *m)
 
   // instruments:
   if(dynamic_cast<AciDevilAudioModule*> (m)) return "AciDevil";
+#ifdef _MSC_VER
+  if(dynamic_cast<Liberty*> (m)) return "Liberty";
+#endif
 
   jassertfalse;  // unknown module type was passed
   return "UnknownType";
@@ -70,6 +76,9 @@ StringArray AudioModuleFactory::getAvailableModuleTypes()
 
   // instruments:
   a.add("AciDevil");
+#ifdef _MSC_VER
+  a.add("Liberty"); // not yet available on gcc 
+#endif
 
   return a;
 }
