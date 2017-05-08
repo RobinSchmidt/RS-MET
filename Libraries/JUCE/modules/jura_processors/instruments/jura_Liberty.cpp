@@ -1,7 +1,4 @@
-#include "rosof_LibertyAudioModule.h"
-using namespace rosof;
-
-//=========================================================================================================================================
+//=================================================================================================
 // class LibertyInterfaceState:
 
 LibertyInterfaceState::LibertyInterfaceState()
@@ -10,18 +7,8 @@ LibertyInterfaceState::LibertyInterfaceState()
 
 }
 
-
-
-
-
-
-
-//=========================================================================================================================================
+//=================================================================================================
 // class LibertyAudioModule:
-
-
-//-----------------------------------------------------------------------------------------------------------------------------------------
-// construction/destruction:
 
 LibertyAudioModule::LibertyAudioModule(CriticalSection *newPlugInLock, romos::Liberty *modularSynthToWrap)
 //: PolyphonicInstrumentAudioModule(newPlugInLock, modularSynthToWrap)
@@ -30,12 +17,12 @@ LibertyAudioModule::LibertyAudioModule(CriticalSection *newPlugInLock, romos::Li
   jassert(modularSynthToWrap != NULL); // you must pass a valid rosic-object to the constructor
   wrappedLiberty       = modularSynthToWrap;
   //underlyingRosicInstrument = modularSynthToWrap;
-  setModuleName(juce::String(T("Liberty")));
-  setActiveDirectory(getApplicationDirectory() + juce::String(T("/LibertyPresets")) );
-  macroDirectory = getApplicationDirectory() + juce::String(T("/LibertyMacros")) ;
+  setModuleName(juce::String(("Liberty")));
+  setActiveDirectory(getApplicationDirectory() + juce::String(("/LibertyPresets")) );
+  macroDirectory = getApplicationDirectory() + juce::String(("/LibertyMacros")) ;
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // persistence:
 
 void LibertyAudioModule::writeModuleTypeSpecificStateDataToXml(romos::Module *module, XmlElement* xmlState)
@@ -58,12 +45,12 @@ void LibertyAudioModule::restoreModuleTypeSpecificStateDataFromXml(romos::Module
       // we need special treatment of the parameter module - minValue/maxValue shlould be set simultaneuously, because otherwise, 
       // min/max might not be recalled correctly, for example when newMin > oldMax, the module will refuse to use the new minimum, etc.
       // moreover, min/max must be set up before attempting to set the default and current value:
-      double min = xmlState.getDoubleAttribute(juce::String(T("MinValue")), 0.0);
-      double max = xmlState.getDoubleAttribute(juce::String(T("MaxValue")), 1.0);
+      double min = xmlState.getDoubleAttribute(juce::String(("MinValue")), 0.0);
+      double max = xmlState.getDoubleAttribute(juce::String(("MaxValue")), 1.0);
 
-      juce::String mappingString = xmlState.getStringAttribute(juce::String(T("MaxValue")), juce::String(T("Linear")));
+      juce::String mappingString = xmlState.getStringAttribute(juce::String(("MaxValue")), juce::String(("Linear")));
       int mappingIndex = romos::ParameterModule::LINEAR_MAPPING;
-      if( mappingString == juce::String(T("Exponential")) )
+      if( mappingString == juce::String(("Exponential")) )
         mappingIndex = romos::ParameterModule::EXPONENTIAL_MAPPING;
 
       ((romos::ParameterModule*) m)->setMinMaxAndMapping(min, max, mappingIndex); 
@@ -84,10 +71,10 @@ XmlElement* LibertyAudioModule::getModuleStateAsXml(romos::Module *module, bool 
 
   XmlElement *xmlState = new XmlElement(rosicToJuce(module->getTypeName()));
 
-  xmlState->setAttribute(juce::String(T("Name")), rosicToJuce(module->getName())    );
-  xmlState->setAttribute(juce::String(T("X")),    juce::String(module->getPositionX())  );
-  xmlState->setAttribute(juce::String(T("Y")),    juce::String(module->getPositionY())  );
-  xmlState->setAttribute(juce::String(T("Poly")), juce::String(module->isPolyphonic())  );
+  xmlState->setAttribute(juce::String(("Name")), rosicToJuce(module->getName())    );
+  xmlState->setAttribute(juce::String(("X")),    juce::String(module->getPositionX())  );
+  xmlState->setAttribute(juce::String(("Y")),    juce::String(module->getPositionY())  );
+  xmlState->setAttribute(juce::String(("Poly")), juce::String(module->isPolyphonic())  );
 
   unsigned int i;
   romos::ModuleContainer *container = dynamic_cast<romos::ModuleContainer*> (module);
@@ -114,10 +101,10 @@ XmlElement* LibertyAudioModule::getModuleStateAsXml(romos::Module *module, bool 
       for(i = 0; i < incomingConnections.size(); i++)
       {
         ac  = incomingConnections[i];
-        connectionString +=   juce::String(T("A_")) 
-          + juce::String(ac.getSourceModule()->getIndexWithinParentModule()) + juce::String(T("_")) 
-          + juce::String(ac.getSourceOutputIndex())                          + juce::String(T("_")) 
-          + juce::String(ac.getTargetInputIndex())                           + juce::String(T(", "));
+        connectionString +=   juce::String(("A_")) 
+          + juce::String(ac.getSourceModule()->getIndexWithinParentModule()) + juce::String(("_")) 
+          + juce::String(ac.getSourceOutputIndex())                          + juce::String(("_")) 
+          + juce::String(ac.getTargetInputIndex())                           + juce::String((", "));
       }
 
       // \todo add event connections to the string..
@@ -125,7 +112,7 @@ XmlElement* LibertyAudioModule::getModuleStateAsXml(romos::Module *module, bool 
       if( connectionString != juce::String::empty )
       {
         connectionString = connectionString.trimCharactersAtEnd(juce::String(", "));
-        xmlState->setAttribute(juce::String(T("IncomingConnections")), connectionString);
+        xmlState->setAttribute(juce::String(("IncomingConnections")), connectionString);
       }
     }
   }
@@ -141,14 +128,14 @@ void LibertyAudioModule::createAndSetupEmbeddedModulesFromXml(const XmlElement& 
     return;
   }
 
-  module->setModuleName( juceToRosic(xmlState.getStringAttribute(juce::String(T("Name")), juce::String(T("NoName"))))         );
+  module->setModuleName( juceToRosic(xmlState.getStringAttribute(juce::String(("Name")), juce::String(("NoName"))))         );
   if( !module->isTopLevelModule() )
-    module->setPolyphonic( xmlState.getBoolAttribute(juce::String(T("Poly")), false) );
+    module->setPolyphonic( xmlState.getBoolAttribute(juce::String(("Poly")), false) );
 
   // this call is needed only to recall the position of the top-level module's I/O modules - the other modules are already inserted at
   // their right positions inside the recursive call:
-  //module->setPositionXY( xmlState.getIntAttribute(juce::String(T("X")), 0), 
-  //                       xmlState.getIntAttribute(juce::String(T("Y")), 0), false);
+  //module->setPositionXY( xmlState.getIntAttribute(juce::String(("X")), 0), 
+  //                       xmlState.getIntAttribute(juce::String(("Y")), 0), false);
   //...mmhh. does not work
 
   // module->setPositionXY not needed because we assign x, y in the loop and the toplevel module should always reamain at (0,0) 
@@ -172,10 +159,10 @@ void LibertyAudioModule::createAndSetupEmbeddedModulesFromXml(const XmlElement& 
         }
         else
         {
-          rosic::String moduleName = juceToRosic(childState->getStringAttribute(juce::String(T("Name"))));
-          int x                    = childState->getIntAttribute(juce::String(T("X")), 0);
-          int y                    = childState->getIntAttribute(juce::String(T("Y")), 0);
-          bool poly                = childState->getBoolAttribute(juce::String(T("Poly")), false);
+          rosic::String moduleName = juceToRosic(childState->getStringAttribute(juce::String(("Name"))));
+          int x                    = childState->getIntAttribute(juce::String(("X")), 0);
+          int y                    = childState->getIntAttribute(juce::String(("Y")), 0);
+          bool poly                = childState->getBoolAttribute(juce::String(("Poly")), false);
           romos::Module *newModule = container->addChildModule(typeIdentifier, moduleName, x, y, poly, false);
           createAndSetupEmbeddedModulesFromXml(*childState, newModule);
         }
@@ -197,19 +184,19 @@ void LibertyAudioModule::createConnectionsFromXml(const XmlElement& xmlState, ro
     return;
   }
 
-  juce::String connectionString = xmlState.getStringAttribute(juce::String(T("IncomingConnections")), juce::String::empty);
+  juce::String connectionString = xmlState.getStringAttribute(juce::String(("IncomingConnections")), juce::String::empty);
 
   if( connectionString != juce::String::empty )
   {
-    connectionString = connectionString.removeCharacters(juce::String(T(" ")));
-    juce::String remainingString = connectionString + juce::String(T(","));
+    connectionString = connectionString.removeCharacters(juce::String((" ")));
+    juce::String remainingString = connectionString + juce::String((","));
     juce::String currentString;
     juce::String tmpString1, tmpString2;
     int smi, spi, tpi; // source module- and pin-index, target pin index
     while( remainingString != juce::String::empty )
     {
-      currentString   = remainingString.upToFirstOccurrenceOf(T(","), false, false);
-      remainingString = remainingString.fromFirstOccurrenceOf(T(","), false, false);
+      currentString   = remainingString.upToFirstOccurrenceOf((","), false, false);
+      remainingString = remainingString.fromFirstOccurrenceOf((","), false, false);
       tmpString1      = currentString;
       int connectionKind;
 
@@ -223,14 +210,14 @@ void LibertyAudioModule::createConnectionsFromXml(const XmlElement& xmlState, ro
         connectionKind = romos::AUDIO;
       }
    
-      tmpString1 = tmpString1.fromFirstOccurrenceOf(T("_"), false, false); 
-      tmpString2 = tmpString1.upToFirstOccurrenceOf(T("_"), false, false);
+      tmpString1 = tmpString1.fromFirstOccurrenceOf(("_"), false, false); 
+      tmpString2 = tmpString1.upToFirstOccurrenceOf(("_"), false, false);
       smi        = tmpString2.getIntValue();
-      tmpString1 = tmpString1.fromFirstOccurrenceOf(T("_"), false, false); 
-      tmpString2 = tmpString1.upToFirstOccurrenceOf(T("_"), false, false);
+      tmpString1 = tmpString1.fromFirstOccurrenceOf(("_"), false, false); 
+      tmpString2 = tmpString1.upToFirstOccurrenceOf(("_"), false, false);
       spi        = tmpString2.getIntValue();
-      tmpString1 = tmpString1.fromFirstOccurrenceOf(T("_"), false, false); 
-      tmpString2 = tmpString1.upToFirstOccurrenceOf(T("_"), false, false);
+      tmpString1 = tmpString1.fromFirstOccurrenceOf(("_"), false, false); 
+      tmpString2 = tmpString1.upToFirstOccurrenceOf(("_"), false, false);
       tpi        = tmpString2.getIntValue();
 
       romos::ModuleContainer *parentModule = module->getParentModule();
@@ -273,7 +260,7 @@ void LibertyAudioModule::setModuleStateFromXml(const XmlElement& xmlState, romos
 
 XmlElement* LibertyAudioModule::getStateAsXml(const juce::String &stateName, bool markAsClean)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   //XmlElement* xmlState = PolyphonicInstrumentAudioModule::getStateAsXml(stateName, false);
   XmlElement* xmlState = AudioModule::getStateAsXml(stateName, false);
   romos::Module *topLevelMasterVoice = wrappedLiberty->getTopLevelModule();
@@ -283,14 +270,14 @@ XmlElement* LibertyAudioModule::getStateAsXml(const juce::String &stateName, boo
     
 void LibertyAudioModule::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, bool markAsClean)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   wrappedLiberty->reset();
 
   romos::TopLevelModule *topLevelModule = wrappedLiberty->getTopLevelModule();
   topLevelModule->deleteAllChildModules();       
   topLevelModule->disconnectAudioOutputModules();
 
-  XmlElement* topLevelModuleState = xmlState.getChildByName(juce::String(T("TopLevelModule")));
+  XmlElement* topLevelModuleState = xmlState.getChildByName(juce::String(("TopLevelModule")));
   if( topLevelModuleState != NULL )
     setModuleStateFromXml(*topLevelModuleState, topLevelModule);
   restoreTopLevelInOutStates(*topLevelModuleState);
@@ -300,7 +287,7 @@ void LibertyAudioModule::setStateFromXml(const XmlElement& xmlState, const juce:
 
 void LibertyAudioModule::restoreTopLevelInOutStates(const XmlElement& xmlState)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedLock scopedLock(*lock);
   romos::ModuleContainer *topLevelMasterVoice = wrappedLiberty->getTopLevelModule();
 
   XmlElement *childElement;
@@ -311,20 +298,20 @@ void LibertyAudioModule::restoreTopLevelInOutStates(const XmlElement& xmlState)
   for(int i=0; i<xmlState.getNumChildElements(); i++)
   {
     childElement = xmlState.getChildElement(i);
-    if( childElement->hasTagName(juce::String(T("AudioInput"))) )
+    if( childElement->hasTagName(juce::String(("AudioInput"))) )
     {
-      x = childElement->getIntAttribute(juce::String(T("X")), 2);
-      y = childElement->getIntAttribute(juce::String(T("Y")), 2+2*numInsRestored);
+      x = childElement->getIntAttribute(juce::String(("X")), 2);
+      y = childElement->getIntAttribute(juce::String(("Y")), 2+2*numInsRestored);
       topLevelMasterVoice->getAudioInputModule(numInsRestored)->setPositionXY(
-        childElement->getIntAttribute(juce::String(T("X")), 2), 
-        childElement->getIntAttribute(juce::String(T("Y")), 2+2*numInsRestored), false);
+        childElement->getIntAttribute(juce::String(("X")), 2), 
+        childElement->getIntAttribute(juce::String(("Y")), 2+2*numInsRestored), false);
       numInsRestored++;
     }
-    else if( childElement->hasTagName(juce::String(T("AudioOutput"))) )
+    else if( childElement->hasTagName(juce::String(("AudioOutput"))) )
     {
       topLevelMasterVoice->getAudioOutputModule(numOutsRestored)->setPositionXY(
-        childElement->getIntAttribute(juce::String(T("X")), 2), 
-        childElement->getIntAttribute(juce::String(T("Y")), 2+2*numOutsRestored), false);
+        childElement->getIntAttribute(juce::String(("X")), 2), 
+        childElement->getIntAttribute(juce::String(("Y")), 2+2*numOutsRestored), false);
       numOutsRestored++;
     }
     if( numInsRestored >= 2 && numOutsRestored >= 2 )

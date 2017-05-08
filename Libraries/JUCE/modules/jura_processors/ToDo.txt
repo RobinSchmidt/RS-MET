@@ -1,6 +1,6 @@
 needs to be completed next:
  -Liberty (in progress...) 
-  -include jura_Liberty.h then .cpp
+  -include jura_Liberty.h (done) then .cpp
   -drag in code from rosof_LibertyModuleEditor.h the .cpp
   -drag in code from rosof_LibertyEditor.h then .cpp
   
