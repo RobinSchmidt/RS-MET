@@ -1020,7 +1020,8 @@ void LibertyInterfaceMediator::setModuleToShowEditorFor(romos::Module *module)
     LibertyInterfaceComponent::MODULE_TO_SHOW_EDITOR_FOR);  // NULL is preliminary
 }
 
-//=========================================================================================================================================
+//=================================================================================================
+// class ModularStructureTreeView
 
 ModularStructureTreeView::ModularStructureTreeView(LibertyInterfaceMediator *interfaceMediatorToUse)
   : LibertyInterfaceComponent(interfaceMediatorToUse)
@@ -1151,5 +1152,97 @@ void ModularStructureTreeView::updateNodeHighlighting()
   repaint();
 }
 
+//=================================================================================================
+// class ModulePropertiesEditorHolder:
 
+ModulePropertiesEditorHolder::ModulePropertiesEditorHolder(
+  LibertyInterfaceMediator *interfaceMediatorToUse)
+  : LibertyInterfaceComponent(interfaceMediatorToUse)
+{  
+  ScopedLock scopedLock(*(getInterfaceMediator()->plugInLock)); 
+  // getInterfaceMediator() returns already valid mediator because we pass interfaceMediatorToUse to our basclass constructor
+
+  setMediator(interfaceMediatorToUse); // will register "this" as colleague
+
+
+  currentEditor = NULL; // init to NULL required because the next call first deletes the old pointer
+  createPropertiesEditorForSelectedModule();
+}
+
+ModulePropertiesEditorHolder::~ModulePropertiesEditorHolder()
+{
+  ScopedLock scopedLock(*(getInterfaceMediator()->plugInLock));
+  deleteAllChildren();
+}
+
+//-------------------------------------------------------------------------------------------------
+// callbacks:
+
+void ModulePropertiesEditorHolder::mediatorHasSentNotification(
+  MediatedColleague *originatingColleague, int messageCode)
+{
+  // \todo maybe include a switch on the messageCode later - we may not want to re-create the 
+  // editor on all kinds of messages
+
+  createPropertiesEditorForSelectedModule();
+}
+
+void ModulePropertiesEditorHolder::paint(Graphics &g)
+{
+  // overriden with empty function to avoid painting a gradient that will be invisible anyway
+}
+
+void ModulePropertiesEditorHolder::resized()
+{
+  currentEditor->setBounds(0, 0, getWidth(), getHeight());
+}
+
+//-------------------------------------------------------------------------------------------------
+// others:
+
+void ModulePropertiesEditorHolder::createPropertiesEditorForSelectedModule()
+{
+  ScopedLock scopedLock(*(getInterfaceMediator()->plugInLock));
+
+  romos::Module *moduleToShowEditorFor = getInterfaceMediator()->getModuleToShowEditorFor();
+  if( moduleToShowEditorFor == NULL )
+    moduleToShowEditorFor = getInterfaceMediator()->getContainerShownInDiagram(); // preliminary
+
+  removeChildColourSchemeComponent(currentEditor, true);
+
+  switch( moduleToShowEditorFor->getTypeIdentifier() )
+  {
+  case romos::ModuleTypeRegistry::PARAMETER:
+    currentEditor = new ParameterModuleEditor(getInterfaceMediator()->plugInLock, 
+      moduleToShowEditorFor);    break;
+  case romos::ModuleTypeRegistry::CONTAINER:   
+    currentEditor = new ContainerModuleEditor(getInterfaceMediator()->plugInLock, 
+      moduleToShowEditorFor);    break;
+  case romos::ModuleTypeRegistry::TOP_LEVEL_MODULE:   
+    currentEditor = new TopLevelModuleEditor(getInterfaceMediator()->plugInLock, 
+      moduleToShowEditorFor);    break;
+  case romos::ModuleTypeRegistry::WHITE_NOISE:   
+    currentEditor = new WhiteNoiseModuleEditor(getInterfaceMediator()->plugInLock, 
+      moduleToShowEditorFor);    break;
+  case romos::ModuleTypeRegistry::BIQUAD_DESIGNER:
+    currentEditor = new BiquadDesignerModuleEditor(getInterfaceMediator()->plugInLock, 
+      moduleToShowEditorFor);    break;
+  case romos::ModuleTypeRegistry::LADDER_FILTER:
+    currentEditor = new LibertyLadderFilterModuleEditor(getInterfaceMediator()->plugInLock, 
+      moduleToShowEditorFor);    break;
+  case romos::ModuleTypeRegistry::VOICE_KILLER:   
+    currentEditor = new VoiceKillerModuleEditor(getInterfaceMediator()->plugInLock, 
+      moduleToShowEditorFor);    break;
+  default:
+  {
+    //jassertfalse;  // for every module-type, there should be case
+    currentEditor = new ModulePropertiesEditor(getInterfaceMediator()->plugInLock, 
+      moduleToShowEditorFor);
+  }
+  }
+
+  currentEditor->setDescriptionField(descriptionField, true );
+  addChildColourSchemeComponent(currentEditor, true, true);
+  resized();  // will set the bounds of the child
+}
 
