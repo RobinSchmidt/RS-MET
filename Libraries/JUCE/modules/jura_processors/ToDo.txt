@@ -1,8 +1,4 @@
-needs to be completed next:
- -Liberty (done) 
-  -needs to override createEditor
 
-  
 -drag over all old plugin code and make it compile:
  -AciDevil (done)
  -AlgoVerb (done)
@@ -26,7 +22,10 @@ needs to be completed next:
  -TrackMeter (done)
  -MidiMonitor (done)
  -StereoDelay (done)
+ -Liberty (done) 
 
+introduce subtrees: Instruments, Effects, Filters, Analyzers, etc. for Chainer
+-look into Liberty or Quadrifex how this is done
 
 
 
