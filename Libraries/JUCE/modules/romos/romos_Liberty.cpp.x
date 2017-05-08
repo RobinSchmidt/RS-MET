@@ -1,3 +1,6 @@
+renamed to .x so the Projucer doesn't include it for building into the JuceLibraryCode. has
+eventually to go to jura anyway
+
 #include "romos_Liberty.h"
 #include "framework/romos_ModuleFactory.h"
 using namespace romos;

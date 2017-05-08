@@ -416,6 +416,24 @@
     <Filter Include="Juce Modules\jura_processors\tools">
       <UniqueIdentifier>{DAA66ECA-BEFB-EA83-4B6C-2B113E0B157D}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Juce Modules\romos">
+      <UniqueIdentifier>{68264C9C-83E5-EBB5-CD7E-18EC2D2AC410}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\romos\Algorithms">
+      <UniqueIdentifier>{301A8720-9061-1756-664B-96F24761C629}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\romos\Framework">
+      <UniqueIdentifier>{FA008F8E-7BFA-30F1-352C-F4B1D07FF5BB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\romos\Misc">
+      <UniqueIdentifier>{D497009C-F729-B7FF-F036-5954D83D23AE}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\romos\Modules">
+      <UniqueIdentifier>{2952AF1F-DBCF-2F6A-758A-8C58600CA47E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\romos\TestSuite">
+      <UniqueIdentifier>{FD9A8AA2-0587-D92D-0177-ABE9362D8E7E}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Juce Modules\rosic">
       <UniqueIdentifier>{0624B2DA-7EBA-9F95-A793-0F3B9F53A8DF}</UniqueIdentifier>
     </Filter>
@@ -2629,6 +2647,138 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\jura_processors.cpp">
       <Filter>Juce Modules\jura_processors</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Algorithms\romos_FilterDesign.cpp">
+      <Filter>Juce Modules\romos\Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Algorithms\romos_Interpolation.cpp">
+      <Filter>Juce Modules\romos\Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_AudioConnection.cpp">
+      <Filter>Juce Modules\romos\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_Module.cpp">
+      <Filter>Juce Modules\romos\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleAtomic.cpp">
+      <Filter>Juce Modules\romos\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleContainer.cpp">
+      <Filter>Juce Modules\romos\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleFactory.cpp">
+      <Filter>Juce Modules\romos\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleTypeRegistry.cpp">
+      <Filter>Juce Modules\romos\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_NoteEvent.cpp">
+      <Filter>Juce Modules\romos\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ProcessingStatus.cpp">
+      <Filter>Juce Modules\romos\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_TopLevelModule.cpp">
+      <Filter>Juce Modules\romos\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_VoiceAllocator.cpp">
+      <Filter>Juce Modules\romos\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_WorkArea.cpp">
+      <Filter>Juce Modules\romos\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Misc\romos_TempMacros.cpp">
+      <Filter>Juce Modules\romos\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Modules\romos_ArithmeticModules.cpp">
+      <Filter>Juce Modules\romos\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Modules\romos_DelayModules.cpp">
+      <Filter>Juce Modules\romos\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Modules\romos_FilterModules.cpp">
+      <Filter>Juce Modules\romos\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Modules\romos_FunctionModules.cpp">
+      <Filter>Juce Modules\romos\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Modules\romos_InfrastructuralModules.cpp">
+      <Filter>Juce Modules\romos\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Modules\romos_ModulationModules.cpp">
+      <Filter>Juce Modules\romos\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Modules\romos_SoundGeneratorModules.cpp">
+      <Filter>Juce Modules\romos\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\AutomaticTests.cpp">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\InteractiveTests.cpp">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ConcreteModularSystemTests.cpp">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ConcretePerformanceTests.cpp">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ConcreteProcessingTests.cpp">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ContainerManipulationTests.cpp">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_GenerateDesiredOutput.cpp">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_GlobalFrameworkTests.cpp">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_InteractivePlottingTests.cpp">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_InteractiveTestRunner.cpp">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ModularSystemTest.cpp">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ModuleBuildCodeGenerator.cpp">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_PerformanceTest.cpp">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_PerformanceTestRunner.cpp">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ProcessingTest.cpp">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_TestEventGenerator.cpp">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_TestModuleBuilder.cpp">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_UnitTest.cpp">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_UnitTestRunner.cpp">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\TestFilter.cpp">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\TestHelpers.cpp">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\TestsMain.cpp">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\romos.cpp">
+      <Filter>Juce Modules\romos</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_arrayobject.cpp">
       <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
     </ClCompile>
@@ -3884,6 +4034,9 @@
       <Filter>Juce Library Code</Filter>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\jura_processors.cpp">
+      <Filter>Juce Library Code</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\JuceLibraryCode\romos.cpp">
       <Filter>Juce Library Code</Filter>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\rosic.cpp">
@@ -6117,6 +6270,138 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\jura_processors.h">
       <Filter>Juce Modules\jura_processors</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Algorithms\romos_FilterDesign.h">
+      <Filter>Juce Modules\romos\Algorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Algorithms\romos_Interpolation.h">
+      <Filter>Juce Modules\romos\Algorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_AudioConnection.h">
+      <Filter>Juce Modules\romos\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_Module.h">
+      <Filter>Juce Modules\romos\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleAtomic.h">
+      <Filter>Juce Modules\romos\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleContainer.h">
+      <Filter>Juce Modules\romos\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleFactory.h">
+      <Filter>Juce Modules\romos\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ModuleTypeRegistry.h">
+      <Filter>Juce Modules\romos\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_NoteEvent.h">
+      <Filter>Juce Modules\romos\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_ProcessingStatus.h">
+      <Filter>Juce Modules\romos\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_TopLevelModule.h">
+      <Filter>Juce Modules\romos\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_VoiceAllocator.h">
+      <Filter>Juce Modules\romos\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Framework\romos_WorkArea.h">
+      <Filter>Juce Modules\romos\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Misc\romos_TempMacros.h">
+      <Filter>Juce Modules\romos\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Modules\romos_ArithmeticModules.h">
+      <Filter>Juce Modules\romos\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Modules\romos_DelayModules.h">
+      <Filter>Juce Modules\romos\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Modules\romos_FilterModules.h">
+      <Filter>Juce Modules\romos\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Modules\romos_FunctionModules.h">
+      <Filter>Juce Modules\romos\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Modules\romos_InfrastructuralModules.h">
+      <Filter>Juce Modules\romos\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Modules\romos_ModulationModules.h">
+      <Filter>Juce Modules\romos\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Modules\romos_ModuleDefinitionMacros.h">
+      <Filter>Juce Modules\romos\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Modules\romos_SoundGeneratorModules.h">
+      <Filter>Juce Modules\romos\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\AutomaticTests.h">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\InteractiveTests.h">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ConcreteModularSystemTests.h">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ConcretePerformanceTests.h">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ConcreteProcessingTests.h">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ContainerManipulationTests.h">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_GenerateDesiredOutput.h">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_GlobalFrameworkTests.h">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_InteractivePlottingTests.h">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_InteractiveTestRunner.h">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ModularSystemTest.h">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ModuleBuildCodeGenerator.h">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_PerformanceTest.h">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_PerformanceTestRunner.h">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_ProcessingTest.h">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_TestEventGenerator.h">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_TestModuleBuilder.h">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_UnitTest.h">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\romos_UnitTestRunner.h">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\TestHelpers.h">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\romos.h">
+      <Filter>Juce Modules\romos</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\romos.h">
+      <Filter>Juce Modules\romos</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\angelscript.h">
       <Filter>Juce Modules\rosic\_third_party\angelscript</Filter>
     </ClInclude>
@@ -7507,6 +7792,21 @@
     </None>
     <None Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\ToDo.txt">
       <Filter>Juce Modules\jura_processors</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\InputSequences.txt">
+      <Filter>Juce Modules\romos\TestSuite</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Documentation.txt">
+      <Filter>Juce Modules\romos</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Libraries\JUCE\modules\romos\InOutModules.txt">
+      <Filter>Juce Modules\romos</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Libraries\JUCE\modules\romos\RoMoS.txt">
+      <Filter>Juce Modules\romos</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Libraries\JUCE\modules\romos\ToDo.txt">
+      <Filter>Juce Modules\romos</Filter>
     </None>
     <None Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\cephes_tweaked\TweaksAndNotes.txt">
       <Filter>Juce Modules\rosic\_third_party\cephes_tweaked</Filter>

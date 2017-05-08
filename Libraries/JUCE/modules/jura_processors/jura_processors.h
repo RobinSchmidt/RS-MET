@@ -16,7 +16,8 @@
   license:          GPL/Commercial
 
   dependencies:     juce_core, juce_audio_basics, juce_graphics, juce_gui_basics, 
-                    juce_audio_formats, juce_audio_processors, jura_framework, rosic
+                    juce_audio_formats, juce_audio_processors, jura_framework, 
+					rosic, romos
   OSXFrameworks:    
   iOSFrameworks:    
 
