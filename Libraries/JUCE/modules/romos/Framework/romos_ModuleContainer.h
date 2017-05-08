@@ -186,7 +186,7 @@ namespace romos
 
 
     /** Returns the number of child modules. */
-    virtual unsigned int getNumChildModules() const { return childModules.size(); }
+    virtual unsigned int getNumChildModules() const { return (unsigned int) childModules.size(); }
 
     /** Returns a pointer to one of the child modules. */
     virtual Module* getChildModule(int index) const;
@@ -225,7 +225,7 @@ namespace romos
     /** Overriden here because it does not equal the outFrameStride member variable for containers. */
     virtual unsigned int getNumOutputPins() const 
     { 
-      return getChildModulesWithType(ModuleTypeRegistry::AUDIO_OUTPUT).size();; 
+      return (unsigned int) getChildModulesWithType(ModuleTypeRegistry::AUDIO_OUTPUT).size();
     }
 
     /** Overriden her because for containers, this does not necessarily equal the number of output pins (only in the special case of one
