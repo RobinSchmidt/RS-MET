@@ -611,10 +611,376 @@ protected:
   juce_UseDebuggingNewOperator;
 };
 
+//=================================================================================================
+// class ModularBlockDiagramPanel:
+
+/** This class is used to visually represent a block-diagram for an object of class 
+romos::ModuleContainer.
+
+\todo factor out a class that is applicable to handle plugin-routing, too (like the JUCE plugin 
+host) - decouple it from the romos stuff ...maybe call it FlowchartEditor and move it over to 
+jura framework....maybe also have a class BlockDiagramElement that wraps the romos::Module class
+
+\todo when the focused module gets deleted (from outside, namely in the tree), set the new focus 
+to its parent */
+
+class ModularBlockDiagramPanel : public LibertyInterfaceComponent, public ColourSchemeComponent, 
+  public RTreeViewObserver, public RPopUpMenuObserver, public RTextEntryFieldObserver 
+{
+
+public:
+
+  /** Different styles to draw the grid. */
+  enum gridStyles
+  {
+    NO_GRID,
+    GRID_LINES,
+    DOTTED_GRID
+  };
+
+  /** Enumeration of the different actions that are possible on tne selection. */
+  enum actionsOnSelection
+  {
+    EDIT_NAME,
+    SAVE_CONTAINER,
+    EXPORT_TO_CODE,
+    DELETE_SELECTION,
+    SET_POLYPHONIC,
+    SET_MONOPHONIC,
+    CONTAINERIZE,
+    UNCONTAINERIZE
+    // duplicate, copy, minimize numInputs, ...
+  };
+
+  enum actionsOnFreeArea
+  {
+    LOAD_CONTAINER = romos::ModuleTypeRegistry::NUM_MODULE_TYPES + 1  
+    // preliminary, to avoid clashes between module type-indices and additional possible actions 
+    // which are shown in the same TreeView
+  };
 
 
+  //-----------------------------------------------------------------------------------------------
+  // construction/destruction:
 
+  /** Constructor.  */  
+  //ModularBlockDiagramPanel(CriticalSection *newPlugInLock, LibertyAudioModule* newLibertyModuleToEdit);
+  ModularBlockDiagramPanel(LibertyInterfaceMediator *interfaceMediatorToUse);
 
+  /** Destructor.  */  
+  virtual ~ModularBlockDiagramPanel();
+
+  //-----------------------------------------------------------------------------------------------
+  // setup:
+
+  /** Allows an outlying class to inform this panel about the available screen estate, so we can 
+  adjust the size here to at least fill this available space. */
+  virtual void setAvailabeSizeForCanvas(int w, int h);
+
+  /** Updates the bounds of this component. The passed values are interpreted as minimum required 
+  bounds. The function itself will possibly extend these bounds according to the space needed to 
+  accomodate for all the modules that we must draw. */
+  virtual void updateCanvasBounds(int x, int  y, int w, int h); 
+
+  //-----------------------------------------------------------------------------------------------
+  // inqiury:
+
+  /** Informs whether the passed module is currently selected or not */
+  bool isModuleSelected(romos::Module *module) const 
+  { 
+    return rosic::containsElement(selectedModules, module);
+    //return selectedModules.hasElement(module); 
+  }
+
+  virtual int getMinXInPixels() const;
+  virtual int getMinYInPixels() const;
+  virtual int getMaxXInPixels() const;
+  virtual int getMaxYInPixels() const;
+  //virtual int getMinXInPinDistances() const;
+  //virtual int getMinYInPinDistances() const;
+  //virtual int getMaxXInPinDistances() const;
+  //virtual int getMaxYInPinDistances() const;
+
+  //-----------------------------------------------------------------------------------------------
+  // callbacks:
+
+  virtual void mouseExit(       const MouseEvent &e);
+  virtual void mouseMove(       const MouseEvent &e);
+  virtual void mouseDown(       const MouseEvent &e);
+  //virtual void mouseDoubleClick(const MouseEvent &e);
+  virtual void mouseDrag(       const MouseEvent &e);
+  virtual void mouseUp(         const MouseEvent &e);
+
+  virtual void paint(Graphics &g);
+  virtual void paintOverChildren(Graphics &g);
+
+  //virtual void resized();
+  //virtual void updateDiagram();
+
+  virtual void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged);
+
+  //virtual void rDialogBoxChanged(RDialogBox* dialogBoxThatHasChanged);
+  //virtual void rDialogBoxOKClicked(RDialogBox* dialogBoxThatWantsToAcceptAndLeave);
+  //virtual void rDialogBoxCancelClicked(RDialogBox* dialogBoxThatWantsToBeCanceled);
+
+  virtual void textChanged(RTextEntryField *rTextEntryFieldThatHasChanged);
+
+  virtual void treeNodeClicked(RTreeView *treeView, RTreeViewNode *nodeThatWasClicked, 
+    const MouseEvent &mouseEvent, int clickPosition);
+  virtual void treeNodeChanged(RTreeView *treeView, RTreeViewNode *nodeThatHasChanged);
+  //virtual void drawCoordinateSystem(Graphics &g, Image* targetImage = NULL, XmlElement* targetSVG = NULL);
+
+  /** Callback that is called from the mediator when another GUI component has changed something 
+  that might be interest here. */
+  virtual void mediatorHasSentNotification(MediatedColleague *originatingColleague, 
+    int messageCode = 0);
+
+  //virtual void modulePropertiesChanged(romos::Module* module, int whichProperty);
+
+protected:
+
+  /** Open a popup menu to let the user insert modules. */
+  virtual void openModuleInsertionMenu(int x, int y);
+
+  /** Opens a popup menu to let the user choose an action to perform on the set of currently 
+  selected modules such as deleting, duplicating, copying, containerizing, etc. */
+  virtual void openActOnSelectionMenu(int x, int y);
+
+  /** Opens the dialog for showing and editing the selected module's properties - this should 
+  be called only when a single module is currently selected, otherwise it would be confusing. 
+  However, in any case, it shows the properties of the first module in our array of selected 
+  modules. */
+  //virtual void openPropertiesDialog();
+
+  /** Assuming that a single module is selected, this function opens a text entry field which 
+  allows the user to change the name of the selected module. The field will appear directly on 
+  top of the module. */
+  virtual void openModuleNameEntryField();
+
+  /** Opens the dialog for loading (and iserting) containers that are stored on disk. */
+  virtual void openContainerLoadDialog();
+
+  /** Assuming that a single module is selected and this module is a container, this function 
+  opens a dialog to allow the user to save the container to disk. */
+  virtual void openContainerSaveDialog();
+
+  /** Opens a dialog to export the selected module to a code fragment that can be used to 
+  programmatically create the module. */
+  virtual void openExportToCodeDialog();
+
+  /** Inserts a module of the kind given by the identifier (@see romos::moduleIdentifiers) at the 
+  given coordinates. */
+  virtual void insertModule(int moduleIdentifer, int xInPinDistances, int yInPinDistances);
+
+  /** Adds the passed module to our array of selected modules and takes care to also select all 
+  connections to and from that module. */
+  //virtual void addModuleToSelection(romos::Module *moduleToAdd);
+
+  /** Removes the passed module from our array of selected modules (if present) and takes care to 
+  also de-select all connections to and from that module unless these connections also involve 
+  other modules that remain selected. */
+  //virtual void removeModuleFromSelection(romos::Module *moduleToRemove);
+
+  // make these functions generic so as to work also for the lasso-array...
+
+  /** First, it de-selects all selected modules and connections and then it selects the passed 
+  module (with its connection) only. It also notifies the mediator. */
+  virtual void selectSingleModule(romos::Module *moduleToSelect);
+
+  /** Adds the passed module to the passed array and takes care to also add all connections that 
+  belong to the module to the passed array of connections. */
+  virtual void addModuleWithConnectionsToArray(romos::Module *moduleToAdd, 
+    std::vector<romos::Module*> &moduleArray, 
+    std::vector<romos::AudioConnection> &connectionArray);
+
+  /** Removes the passed module from the passed array (if present) and takes care to also remove 
+  all connections belonging to the module from the passed connection-array unless these connections 
+  also involve other modules that remain in the array. */
+  virtual void removeModuleWithConnectionsFromArray(romos::Module *moduleToRemove, 
+    std::vector<romos::Module*> &moduleArray, std::vector<romos::AudioConnection> &connectionArray);
+
+  /** Sets the polyphony for the selected modules. */
+  virtual void setPolyphonyForSelection(bool shouldBePolyphonic);
+
+  /** Deletes all modules and connections that are currently selected. */
+  virtual void deleteSelection();
+
+  /** Puts all modules that are currently selected into a container module. */
+  virtual void containerizeSelection();
+
+  /** Extracts all container modules that are currently selected and puts their content modules as 
+  direct child-modules of the focused one. */
+  virtual void unContainerizeSelection();
+
+  /** Minimizes the number of input pins of all selected modules by investigating which pins are 
+  superfluos, reconfiguring the connections accordingly and deleting the now obsolete pins. */
+  virtual void minimizeNumberOfInputs();
+
+  /** Fills the availableModulesTreeView with all the available modules. */
+  virtual void fillAvailableModulesTreeView();
+
+  /** Updates our array of audio connections - we maintain them here in an array in order to 
+  deteremine when a mouse is over a connection. */
+  virtual void updateAudioConnectionArray();
+
+  /** Draws a grid to show the alignment positions. */
+  virtual void drawGrid(Graphics &g);
+
+  /** Draws the actual flowchart diagram. */
+  virtual void drawDiagram(Graphics &g);
+
+  /** Draws the graphical representation of the passed module at its proper position on the 
+  Graphics canvas. */
+  virtual void drawModule(Graphics &g, romos::Module *moduleToDraw);
+
+  /** Draws the input pins including their names of the given module. You should also pass the 
+  rectangle into which the module is drawn. */
+  virtual void drawInputPins(Graphics &g, romos::Module *module, 
+    juce::Rectangle<int> moduleRectangle);
+
+  /** Draws the output pins including their names of the given module. */
+  virtual void drawOutputPins(Graphics &g, romos::Module *module, 
+    juce::Rectangle<int> moduleRectangle);
+
+  /** Draws the incoming connections for the passed module. */
+  //virtual void drawIncomingConnectionsForModule(Graphics &g, romos::Module *module, Rectangle<int> moduleRectangle);
+  virtual void drawIncomingConnectionsForModule(Graphics &g, romos::Module *module);
+
+  /** Assigns the passed reference variables to the x, y, coordinates and width and height that 
+  are desired to draw the rectangle for the module on the block diagram. The includingPins flag 
+  indicates whether or not the extended width of the module including the pins should be returned 
+  (the pins stick out a bit). */
+  virtual void getRectangleForModuleInPixels(romos::Module *module, int &x, int &y, int &w, int &h, 
+    bool includingPins) const;
+
+  /** Returns the rectangle for the module on the block diagram. The includingPins flag indicates 
+  whether or not the extended width of the module including the pins should be returned (the pins 
+  stick out a bit). */
+  virtual juce::Rectangle<int> getRectangleForModuleInPixels(romos::Module *module, 
+    bool includingPins) const;
+
+  /** Returns the height of the rectangle in which the title of the module appears - this may vary, 
+  depending on the module - some have no title at all. */
+  virtual int getModuleTitleHeightInPixels(romos::Module *module) const; // { return 2*t + 2*m + hn; }
+
+  /** Returns true if the rendering of the passed module is inside the passed rectangle, false 
+  otherwise. */
+  virtual bool isModuleInsideRectangle(romos::Module *module, juce::Rectangle<int> rectangle, 
+    bool includingPins) const;
+
+  /** Returns the offset by which the module must be shifted upward such that the midpoint of the 
+  first pin exactly aligns with a grid-line. \todo make this depend on the particular module - 
+  some have no titles, etc. */
+  virtual int getOffsetY(romos::Module *module) const 
+  { 
+    return getModuleTitleHeightInPixels(module) + m + (int) floor(0.5*smallFontHeight); 
+  }
+
+  /** Returns the width that is required to properly draw the module. The includingPins flag 
+  indicates whether or not the extended width of the module including the pins should be returned
+  (the pins stick out a bit). */
+  virtual int getRequiredWidthForModuleInPixels(romos::Module *module, bool includingPins) const;
+
+  /** Returns the height that is required to properly draw the module (including title) with all 
+  its input and output pins. */
+  virtual int getRequiredHeightForModuleInPixels(romos::Module *module) const;
+
+  /** Returns the bounds (in pixels) of a pin of some Module. You need to specify the kind of the 
+  pin (AUDIO/EVENT), its direction (INCOMING/OUTGOING), and its index. You also need to pass the 
+  module in question and the rectangle in which it is drawn.  */
+  virtual juce::Rectangle<int> getPinBounds(int kindOfPin, int direction, int pinIndex, 
+    romos::Module *module, juce::Rectangle<int> moduleRectangle) const;
+
+  /** Returns the center coordinates (in pixels) of a pin of some Module. You need to specify the 
+  kind of the pin (AUDIO/EVENT), its direction (INCOMING/OUTGOING), and its index. You also need 
+  to pass the module in question and the rectangle in which it is drawn. The reference parameters 
+  xPin and yPin will then be assigned to the center coordinates of the pin. */
+  virtual void getPinCenterCoordinates(int kindOfPin, int direction, int pinIndex, 
+    romos::Module *module, juce::Rectangle<int> moduleRectangle, int &xPin, int &yPin) const;
+
+  /** Returns a Line object that represents the line to be drawn (in pixels) for the passed 
+  conncetion. */
+  virtual juce::Line<float> getLineForConnection(romos::AudioConnection connection) const;
+
+  /** Returns an array with all modules inside the rectangle (given in in pixels). */
+  virtual std::vector<romos::Module*> getModulesInRectangle(juce::Rectangle<int> rectangle) const;
+
+  /** Returns a pointer to the module that is at the passed position or NULL if none. The 
+  considerPins flag indicates whether or not the extended width of the module including the pins 
+  should be considered (the pins stick out a bit). */
+  virtual romos::Module* getModuleAtPixels(int x, int y, bool considerPins) const;
+
+  /** Returns a pointer to the connection that is at or near the passed position or NULL if none. 
+  \todo factor out baseclass Connection to treat event connections the same way. */
+  virtual romos::AudioConnection getConnectionAtPixels(int x, int y) const;
+
+  /** Assigns the 3 reference variables to the kind, direction (@see romos::connectionKinds and 
+  romos::connectionDirections ) and index identifiers of the pin that is found at the pixel 
+  location given by x, y. The function assumes that the module that sits at the given location and 
+  its rectangle have already been found and are passed via the "module" and moduleRectangle 
+  parameters. If there is no pin to be found at the given pixel location, the reference parameters 
+  will be assigned to -1 and the function will return false, true otherwise. */
+  virtual bool getPinPropertiesAtPixels(int x, int y, romos::Module* module, 
+    juce::Rectangle<int> moduleRectangle, int &kindOfPin, int &directionOfPin, 
+    int &indexOfPin) const;
+
+  /** Converts a coordinate given in pin-distances to the corresponding coordinate in pixels. */
+  virtual int inPixels(int pinDistances) const { return pinDistance * pinDistances; }
+
+  /** Converts a coordinate given in pixels to the corresponding coordinate in pin-distances. */
+  virtual int inPinDistances(int pixels) const 
+  { 
+    return roundDoubleToInt(pixels / (double) pinDistance); 
+  }
+
+  /** Returns a pixel value (x- or y-coordinate) that is at the nearest grid position with respect 
+  to the passed coordinate. */
+  virtual int snapPixelPositionToGrid(int pixelPosition) const 
+  { 
+    return inPixels(inPinDistances(pixelPosition)); 
+  }
+
+  //-----------------------------------------------------------------------------------------------
+  // data members:
+
+  RTreeView               *availableModulesTreeView;
+  RTreeViewNode           *treeRootNode;
+  RPopUpMenu              *actOnSelectionMenu;
+  RTextEntryField         *nameEntryField;
+
+  romos::AudioConnection  tmpAudioConnection;
+  //romos::AudioConnection  *tmpAudioConnection;
+  //romos::EventConnection  *tmpEventConnection;
+
+  std::vector<romos::Module*> selectedModules;
+  std::vector<romos::Module*> modulesInLasso;
+  std::vector<romos::AudioConnection> selectedAudioConnections;
+  std::vector<romos::AudioConnection> audioConnectionsInLasso;
+  std::vector<romos::AudioConnection> allAudioConnections;
+
+  int  mouseDownX, mouseDownY;
+  int  selectionOffsetX, selectionOffsetY; // to draw the selected modules at an offsetted position during drag (in pixels)
+  int  availableWidth, availableHeight;    // we store these to let the canvas always fill this size
+  int  gridStyle;
+
+  int m, t, s, bigFontHeight, normalFontHeight, smallFontHeight; 
+
+  // drawing parameters: margin, thickness, pin stickout, normal height, small height
+  // make them static const - or maybe it's good to have them tweakable at runtime...
+
+  int pinDistance;
+  int arrowLength, arrowHeadLength;  // for the arrows in the I/O modules
+
+  Colour wireColour;
+  Colour highlightColour;  // preliminarily used for selections, etc.
+
+  jura::RectangleComponent *lassoComponent;
+  jura::RectangleComponent *pinHighlighter; 
+  // later use a custom component that can assume other shapes (ellipses, etc.) - maybe define 
+  // ShapeComponent
+
+  juce_UseDebuggingNewOperator;
+};
 
 
 
