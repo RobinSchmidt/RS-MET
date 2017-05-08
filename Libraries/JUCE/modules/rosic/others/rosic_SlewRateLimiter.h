@@ -104,6 +104,8 @@ namespace rosic
   // a template parameter SampleFrame in the class above - if a double is passed as 
   // template-parameter, we would have a mono version, if some kind of "DoublePair" is passed, we 
   // would have stereo and we could even pass multichannel arrays)
+  // the implementation is actually wasteful - all member variables except the y1 are only needed
+  // once ....optimize
 
   class SlewRateLimiterStereo
   {

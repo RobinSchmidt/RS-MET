@@ -6,8 +6,11 @@
 namespace rosic
 {
 
-/** A class to smooth an incoming target value. You set up the taget value via setTargetValue() and
+/** A class to smooth an incoming target value. You set up the target value via setTargetValue() and
 per sample retrieve the smoothed value via getSample(). 
+
+\todo: maybe rename to OnePoleSmoother, maybe let the time-constant be passed in milliseconds
+
 WARNING: class has not yet been tested */
 
 class ExponentialSmoother
@@ -17,7 +20,7 @@ public:
 
   /** Sets the time constant (in seconds) which is the time it takes to reach around 
   1 - 1/e = 63% of the target value when starting from zero. You must also pass the samplerate
-  at which the smoother shoul operate here. */
+  at which the smoother should operate here. */
   void setTimeConstantAndSampleRate(double timeConstant, double sampleRate)
   {
     coeff = exp(-1.0 / (sampleRate * timeConstant));
