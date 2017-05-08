@@ -12,6 +12,7 @@
 namespace jura
 {
 
+#include "tools/jura_ClassConversions.cpp"
 #include "tools/jura_TuningFileManager.cpp"
 
 #include "custom_widgets/jura_CustomComboBoxes.cpp"

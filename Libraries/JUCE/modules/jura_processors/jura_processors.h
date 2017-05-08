@@ -52,6 +52,7 @@ using namespace juce;
 namespace jura
 {
 
+#include "tools/jura_ClassConversions.h"
 #include "tools/jura_TuningFileManager.h"
 
 #include "custom_widgets/jura_CustomComboBoxes.h"

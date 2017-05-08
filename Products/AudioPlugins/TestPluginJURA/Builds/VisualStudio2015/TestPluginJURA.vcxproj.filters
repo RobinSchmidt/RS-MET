@@ -2614,6 +2614,15 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_Workhorse.cpp">
       <Filter>Juce Modules\jura_processors\instruments</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\rosof_LibertyAudioModule.cpp">
+      <Filter>Juce Modules\jura_processors\instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\rosof_LibertyEditor.cpp">
+      <Filter>Juce Modules\jura_processors\instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\rosof_LibertyModuleEditor.cpp">
+      <Filter>Juce Modules\jura_processors\instruments</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\misc\jura_AudioModuleChain.cpp">
       <Filter>Juce Modules\jura_processors\misc</Filter>
     </ClCompile>
@@ -2640,6 +2649,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\jura_ModulatorCurveEditorMulti.cpp">
       <Filter>Juce Modules\jura_processors\modulators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\tools\jura_ClassConversions.cpp">
+      <Filter>Juce Modules\jura_processors\tools</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\tools\jura_TuningFileManager.cpp">
       <Filter>Juce Modules\jura_processors\tools</Filter>
@@ -6237,6 +6249,15 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_Workhorse.h">
       <Filter>Juce Modules\jura_processors\instruments</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\rosof_LibertyAudioModule.h">
+      <Filter>Juce Modules\jura_processors\instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\rosof_LibertyEditor.h">
+      <Filter>Juce Modules\jura_processors\instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\rosof_LibertyModuleEditor.h">
+      <Filter>Juce Modules\jura_processors\instruments</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\misc\jura_AudioModuleChain.h">
       <Filter>Juce Modules\jura_processors\misc</Filter>
     </ClInclude>
@@ -6263,6 +6284,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\modulators\jura_ModulatorCurveEditorMulti.h">
       <Filter>Juce Modules\jura_processors\modulators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\tools\jura_ClassConversions.h">
+      <Filter>Juce Modules\jura_processors\tools</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\tools\jura_TuningFileManager.h">
       <Filter>Juce Modules\jura_processors\tools</Filter>
