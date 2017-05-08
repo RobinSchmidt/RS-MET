@@ -49,6 +49,7 @@ namespace jura
 
 #include "control/jura_ScopedPointerLock.h"
 #include "control/jura_Callbacks.h"
+#include "control/jura_Mediator.h"
 #include "control/jura_Parameter.h"
 #include "control/jura_AutomatableParameter.h"
 #include "control/jura_PreDefinedParameters.h"

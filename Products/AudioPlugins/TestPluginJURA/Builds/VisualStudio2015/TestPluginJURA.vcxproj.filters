@@ -2463,6 +2463,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_KeyShot.cpp">
       <Filter>Juce Modules\jura_processors\instruments</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_Liberty.cpp">
+      <Filter>Juce Modules\jura_processors\instruments</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_MagicCarpet.cpp">
       <Filter>Juce Modules\jura_processors\instruments</Filter>
     </ClCompile>
@@ -2485,9 +2488,6 @@
       <Filter>Juce Modules\jura_processors\instruments</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\rosof_LibertyEditor.cpp">
-      <Filter>Juce Modules\jura_processors\instruments</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\rosof_LibertyModuleEditor.cpp">
       <Filter>Juce Modules\jura_processors\instruments</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\misc\jura_AudioModuleChain.cpp">
@@ -3921,8 +3921,8 @@
     <ClCompile Include="..\..\JuceLibraryCode\rosic.cpp">
       <Filter>Juce Library Code</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_Liberty.cpp">
-      <Filter>Juce Modules\jura_processors\instruments</Filter>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_Mediator.cpp">
+      <Filter>Juce Modules\jura_framework\control</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -6095,6 +6095,9 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_KeyShot.h">
       <Filter>Juce Modules\jura_processors\instruments</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_Liberty.h">
+      <Filter>Juce Modules\jura_processors\instruments</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_MagicCarpet.h">
       <Filter>Juce Modules\jura_processors\instruments</Filter>
     </ClInclude>
@@ -6117,9 +6120,6 @@
       <Filter>Juce Modules\jura_processors\instruments</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\rosof_LibertyEditor.h">
-      <Filter>Juce Modules\jura_processors\instruments</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\rosof_LibertyModuleEditor.h">
       <Filter>Juce Modules\jura_processors\instruments</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\misc\jura_AudioModuleChain.h">
@@ -7664,8 +7664,8 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\jura_processors.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\romos.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rosic.h" />
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\instruments\jura_Liberty.h">
-      <Filter>Juce Modules\jura_processors\instruments</Filter>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_Mediator.h">
+      <Filter>Juce Modules\jura_framework\control</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

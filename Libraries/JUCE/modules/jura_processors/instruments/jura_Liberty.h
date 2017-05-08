@@ -1,9 +1,6 @@
 #ifndef jura_Liberty_h
 #define jura_Liberty_h
 
-//#include "../../../romos/Source/romos.h"
-//using namespace romos;
-
 //=================================================================================================
 
 /** This is a class for keeping track of the state of the user interface of the modular synth 
@@ -146,19 +143,14 @@ public:
     else
     {
       wrappedLiberty->getBlockOfSampleFramesStereo(left, right, numSamples);
-
-
-      /*
-      for(int n = 0; n < numSamples; n++)
-      {
-        double dL = (double) left[n];
-        double dR = (double) right[n];
-        wrappedLiberty->getSampleFrameStereo(&dL, &dR);
-        left[n]  = (float) dL;
-        right[n] = (float) dR;
-      }
-      */
-
+      //for(int n = 0; n < numSamples; n++)
+      //{
+      //  double dL = (double) left[n];
+      //  double dR = (double) right[n];
+      //  wrappedLiberty->getSampleFrameStereo(&dL, &dR);
+      //  left[n]  = (float) dL;
+      //  right[n] = (float) dR;
+      //}
     }
   }
 
@@ -183,7 +175,6 @@ protected:
 };
 
 //=================================================================================================
-
 
 /** A mix-in class to mix into the basic rojue widget classes. */
 class LibertyModuleWidget
@@ -267,7 +258,6 @@ public:
 
 /** This class is used to edit some properties of modules in the modular synthesizer such as the 
 name, the polyphony setting, etc. */
-
 
 class ModulePropertiesEditor : public Editor, public RSliderListener, public RComboBoxObserver, 
   public RTextEntryFieldObserver, public RButtonListener
@@ -355,12 +345,9 @@ protected:
   // current, default, scaling, unit, quantization
   // ControllerNumber, ControlRangeMin, ControlRangeMax, Smoothing
 
-  /*
-  RTextField            *minValueLabel,  *defaultValueLabel,  *maxValueLabel;
-  LibertyTextEntryField *minValueField,  *defaultValueField,  *maxValueField;
-  RClickButton          *setToMinButton, *setToDefaultButton, *setToMaxButton;
-
-  */
+  //RTextField            *minValueLabel,  *defaultValueLabel,  *maxValueLabel;
+  //LibertyTextEntryField *minValueField,  *defaultValueField,  *maxValueField;
+  //RClickButton          *setToMinButton, *setToDefaultButton, *setToMaxButton;
 
   // mappingBox
   // metaSilder, metaMinField, metaMaxField
@@ -398,7 +385,6 @@ protected:
   LibertySlider *thresholdSlider, *timeOutSlider;
 };
 
-
 class WhiteNoiseModuleEditor : public ModulePropertiesEditor 
 {
 public:
@@ -408,7 +394,6 @@ public:
 protected:
   LibertySlider *seedSlider;
 };
-
 
 class BiquadDesignerModuleEditor : public ModulePropertiesEditor 
 {
@@ -420,7 +405,6 @@ protected:
   LibertyNamedComboBox *modeComboBox;
 };
 
-
 class LibertyLadderFilterModuleEditor : public ModulePropertiesEditor 
 {
 public:
@@ -431,7 +415,8 @@ protected:
   LibertyNamedComboBox *filterModeComboBox, *saturationModeComboBox;
 };
 
-
+//=================================================================================================
+//=================================================================================================
 
 
 
