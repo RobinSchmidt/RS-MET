@@ -113,6 +113,8 @@ namespace jura
 #include "instruments/jura_Quadriga.h"
 #include "instruments/jura_Workhorse.h"
 
+#include "instruments/jura_Liberty.h"
+
 #include "misc/jura_AudioModuleChain.h"
 #include "misc/jura_ChannelMatrix2x2.h"
 #include "misc/jura_DspWorkbench.h"
