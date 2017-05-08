@@ -74,7 +74,7 @@ namespace jura
 #include "instruments/jura_Workhorse.cpp"
 
 #ifdef _MSC_VER
-#include "instruments/jura_Liberty.cpp"
+#include "instruments/jura_Liberty.cpp" // not yet available on gcc 
 #endif
 
 #include "misc/jura_AudioModuleChain.cpp"

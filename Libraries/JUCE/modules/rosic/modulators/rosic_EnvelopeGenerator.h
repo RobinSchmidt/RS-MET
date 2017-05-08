@@ -68,17 +68,29 @@ namespace rosic
     /** Sets the end point of the envelope (in semitones). */
     void setEndInSemitones(double newEnd) { setEndLevel(pitchOffsetToFreqFactor(newEnd)); }
 
-    /** Sets the length of attack phase (in seconds). */
-    void setAttack(double newAttackTime);    
+    /** Sets the end point of the envelope (in semitones). */
+    void setEndInSemitones(double newEnd) { setEndLevel(pitchOffsetToFreqFactor(newEnd)); }
 
-    /** Sets the hold time (in seconds). */
+
+    /** Sets the length of attack phase (in seconds). needs test */
+    void setAttack(double newAttackTime) { setBreakpointTime(1, newAttackTime); }
+
+    /** Sets the hold time (in seconds). not yet implemented */
     void setHold(double newHoldTime);      
 
-    /** Sets the length of decay phase (in seconds). */
-    void setDecay(double newDecayTime);     
- 
-    /** Sets the length of release phase (in seconds). */
-    void setRelease(double newReleaseTime);   
+    /** Sets the length of decay phase (in seconds). needs test */
+    void setDecay(double newDecayTime) 
+    { 
+      setBreakpointTime(2, newDecayTime + getBreakpointTime(1)); 
+      setBreakpointTime(3, newDecayTime + getBreakpointTime(2) + 1);
+    }
+
+    /** Sets the length of release phase (in seconds). needs test */
+    void setRelease(double newReleaseTime) 
+    { 
+      setBreakpointTime(4, newReleaseTime 
+        + getBreakpointTime(2) + getBreakpointTime(3)); 
+    }
 
   };
 
