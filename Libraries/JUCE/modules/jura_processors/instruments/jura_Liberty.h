@@ -417,6 +417,7 @@ protected:
 
 //=================================================================================================
 //=================================================================================================
+// from here: the main GUI classes
 
 class LibertyInterfaceMediator;
 
@@ -462,7 +463,65 @@ public:
   juce_UseDebuggingNewOperator;
 };
 
+//=================================================================================================
 
+/** This class coordinates the different components in the user interface for the modular 
+system. */
+
+class LibertyInterfaceMediator : public Mediator
+{
+
+  friend class ModularStructureTreeView;
+  friend class ModulePropertiesEditorHolder;
+  friend class ModularBlockDiagramPanel;
+
+public:
+
+  //-----------------------------------------------------------------------------------------------
+  // construction/destruction:
+
+  /** Constructor.  */  
+  LibertyInterfaceMediator(CriticalSection *newPlugInLock, 
+    LibertyAudioModule* newLibertyModuleToEdit);
+
+  /** Destructor. */
+  virtual ~LibertyInterfaceMediator();
+
+  //-----------------------------------------------------------------------------------------------
+  // setup:
+
+  /** Chooses a new ModuleContainer object to be shown and edited in the block diagram. */
+  void setContainerToShowInDiagram(romos::ModuleContainer* containerToShow);
+  // \todo pass the pointer to the colleague that requests the setEd....in order to pass it through 
+  // to the other colleagues
+
+  /** Sets the module for which the editor will be shown. */
+  void setModuleToShowEditorFor(romos::Module *module);
+
+  //-----------------------------------------------------------------------------------------------
+  // inquiry:
+
+  /** Returns the toplevel module which represents the outermost module that can be edited. */
+  romos::TopLevelModule*  getTopLevelModule() const { return topLevelModule; }
+
+  /** Returns the container that is currently being edited/shown in the diagram editor. */
+  romos::ModuleContainer* getContainerShownInDiagram() const { return containerShownInDiagram; }
+
+  /** Returns the module that is currently marked as selected (might be NULL in case nothing is 
+  selected or also when multiple modules are selected) */
+  romos::Module* getModuleToShowEditorFor() const { return moduleToShowEditorFor; }
+
+
+protected:
+
+  CriticalSection         *plugInLock; 
+  LibertyAudioModule      *modularSynthModuleToEdit;
+  romos::TopLevelModule   *topLevelModule;
+  romos::ModuleContainer  *containerShownInDiagram;
+  romos::Module           *moduleToShowEditorFor;
+
+  juce_UseDebuggingNewOperator;
+};
 
 
 #endif
