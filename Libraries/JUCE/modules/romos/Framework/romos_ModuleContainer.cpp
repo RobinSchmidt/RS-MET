@@ -483,7 +483,7 @@ void ModuleContainer::deleteChildModule(Module *moduleToDelete, bool updateHasDe
 
 void ModuleContainer::deleteAllChildModules()
 {
-  for(int i = childModules.size()-1; i>=0; i--)
+  for(int i = (int) childModules.size()-1; i>=0; i--)
     deleteChildModule(childModules[i], false);
   updateHasDelayedConnectionsFlag();
 
@@ -1355,7 +1355,7 @@ void ModuleContainer::sortModuleArrayByCoordinates(std::vector<romos::Module*> &
 
 void ModuleContainer::removeModulesOfType(std::vector<romos::Module*> &modules, int typeCodeToRemove)
 {
-  int i = modules.size()-1;
+  int i = (int) modules.size()-1;
   while( i >= 0)
   {
     if( modules[i]->getTypeIdentifier() == typeCodeToRemove )

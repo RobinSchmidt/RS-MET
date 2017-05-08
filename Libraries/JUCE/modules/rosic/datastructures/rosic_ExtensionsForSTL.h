@@ -141,7 +141,7 @@ namespace rosic
   template<class ElementType>  
   void removeAllOccurencesOfElement(std::vector<ElementType> &vectorToRemoveElementsFrom, const ElementType &elementToRemove)
   {
-    int i = vectorToRemoveElementsFrom.size() - 1;
+    int i = (int) vectorToRemoveElementsFrom.size() - 1;
     while( i >= 0 )
     {
       if( vectorToRemoveElementsFrom[i] == elementToRemove )

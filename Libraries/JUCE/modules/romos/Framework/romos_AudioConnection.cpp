@@ -181,7 +181,7 @@ bool AudioConnection::areConnectionArraysAlike(std::vector<AudioConnection*> con
   // end of the process, both arrays are empty (i.e. numRemainingConnections == 0 ), then we have found for each connection in array 1 a 
   // match in array 2 and vice versa. We need this nested loop because we can't assume any ordering of the connections in the two arrays. 
 
-  int numRemainingConnections = connections1.size();
+  int numRemainingConnections = (int) connections1.size();
   for(int i = 0; i < numRemainingConnections; i++)
   {
     for(int j = 0; j < numRemainingConnections; j++)
