@@ -1,7 +1,7 @@
 #ifndef romos_ModuleTypeRegistry_h
 #define romos_ModuleTypeRegistry_h
 
-#include "../../../rosic/rosic.h"
+//#include "../../../rosic/rosic.h"
 
 namespace romos
 {

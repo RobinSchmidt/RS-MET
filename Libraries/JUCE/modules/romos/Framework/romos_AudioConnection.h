@@ -2,7 +2,7 @@
 #define romos_AudioConnection_h
 
 //#include "romos_Module.h"
-#include "../../../rosic/rosic.h"
+//#include "../../../rosic/rosic.h"
 
 namespace romos
 {

@@ -1,7 +1,7 @@
 #ifndef romos_FilterDesign_h
 #define romos_FilterDesign_h
 
-#include "../../../rosic/rosic.h"
+//#include "../../../rosic/rosic.h"
 #include "../Framework/romos_ProcessingStatus.h"
 
 namespace romos

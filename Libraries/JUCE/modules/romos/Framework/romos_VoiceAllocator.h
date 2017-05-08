@@ -1,7 +1,7 @@
 #ifndef romos_VoiceAllocator_h
 #define romos_VoiceAllocator_h
 
-#include "../../../rosic/rosic.h"
+//#include "../../../rosic/rosic.h"
 
 namespace romos
 {

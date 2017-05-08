@@ -154,7 +154,7 @@ namespace romos
     // inquiry:
 
     /** Returns the number of parameters that this module has. */
-    int getNumParameters() const { return parameters.size(); }
+    int getNumParameters() const { return (int) parameters.size(); }
 
     /** Returns the name of the parameter with given index. */
     rosic::String getParameterName(int index) const;

@@ -214,7 +214,7 @@ namespace romos
     virtual rosic::String getPinName(int kind, int direction, int pinIndex) const = 0; 
     
     /** Returns the number of audio input pins. */
-    virtual unsigned int getNumInputPins() const { return inputPins.size(); }
+    virtual unsigned int getNumInputPins() const { return (unsigned int) inputPins.size(); }
 
     /** Returns the data for the input pin with given index. */ 
     virtual AudioInputPinData getAudioInputPinData(int pinIndex) const;
