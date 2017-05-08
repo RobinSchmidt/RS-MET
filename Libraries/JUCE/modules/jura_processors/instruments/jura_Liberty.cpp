@@ -345,3 +345,124 @@ void LibertyAudioModule::noteOff(int noteNumber)
 {
   wrappedLiberty->noteOff(noteNumber);
 }
+
+
+//=================================================================================================
+
+//=================================================================================================
+// class ModulePropertiesEditor:
+
+ModulePropertiesEditor::ModulePropertiesEditor(CriticalSection *newPlugInLock, 
+  romos::Module* newModuleToEdit)
+{
+  plugInLock   = newPlugInLock;
+  moduleToEdit = newModuleToEdit;
+  ScopedLock scopedLock(*plugInLock);
+
+  setHeadlineStyle(Editor::SUB_HEADLINE);
+  setHeadlineText(rosicToJuce(moduleToEdit->getName()));
+
+  moduleTypeLabel = new RTextField(juce::String("Type:"));
+  moduleTypeLabel->setDescription(juce::String("Type of the module"));
+  addWidget(moduleTypeLabel, true, true);
+
+  moduleTypeField = new RTextField(rosicToJuce(moduleToEdit->getTypeName()));
+  moduleTypeField->setJustification(Justification::centredLeft);
+  moduleTypeField->setDescription(moduleTypeLabel->getDescription());
+  addWidget(moduleTypeField, true, true);
+
+
+  polyButton = new RButton(juce::String("Poly"));
+  polyButton->setDescription(juce::String("Switch between polyphonic/monophonic mode"));
+  polyButton->setToggleState(moduleToEdit->isPolyphonic(), false);
+  addWidget(polyButton, true, true);
+}
+
+//ModulePropertiesEditor::~ModulePropertiesEditor()
+//{
+//
+//}
+
+void ModulePropertiesEditor::rSliderValueChanged(RSlider* rSlider)
+{
+  ScopedLock scopedLock(*plugInLock);
+  widgetChanged(rSlider);
+}
+
+void ModulePropertiesEditor::rComboBoxChanged(RComboBox* comboBoxThatHasChanged)
+{
+  ScopedLock scopedLock(*plugInLock);
+  widgetChanged(comboBoxThatHasChanged);
+}
+
+void ModulePropertiesEditor::textChanged(RTextEntryField *rTextEntryFieldThatHasChanged)
+{
+  ScopedLock scopedLock(*plugInLock);
+  widgetChanged(rTextEntryFieldThatHasChanged);
+}
+
+void ModulePropertiesEditor::rButtonClicked(RButton *buttonThatWasClicked)
+{  
+  ScopedLock scopedLock(*plugInLock);
+  widgetChanged(buttonThatWasClicked);
+}
+
+void ModulePropertiesEditor::widgetChanged(RWidget *widgetThatHasChanged)
+{  
+  ScopedLock scopedLock(*plugInLock);
+  romos::ParameterMixIn *m = dynamic_cast<romos::ParameterMixIn*> (moduleToEdit);
+  if( m !=  NULL )
+  {
+    LibertyModuleWidget *lmw = dynamic_cast<LibertyModuleWidget*> (widgetThatHasChanged);
+    if( lmw != NULL )
+    {
+      rosic::String name  = juceToRosic(lmw->getWidgetParameterName());
+      rosic::String value = juceToRosic(widgetThatHasChanged->getStateAsString());
+      m->setParameter(name, value);
+    }
+  }
+  updateWidgetsFromModuleState(); // to update the other widgets, implements widget-interdependence
+}
+
+void ModulePropertiesEditor::resized()
+{  
+  ScopedLock scopedLock(*plugInLock);
+  int x, y, w, h;
+
+  x = 0;
+  //y = getHeadlineBottom()+4;
+  y = getHeight()-20;
+  h = 16;
+
+  moduleTypeLabel->setBounds(x, y, 36, 16); 
+  x = moduleTypeLabel->getRight();
+  w = getWidth()-x;
+  moduleTypeField->setBounds(x, y, w, 16);
+
+  w = 32;
+  x = getWidth() - w - 4;
+  polyButton->setBounds(x, y, w, 16);
+
+}
+
+void ModulePropertiesEditor::updateWidgetsFromModuleState()
+{
+  ScopedLock scopedLock(*plugInLock);
+  romos::ParameterMixIn *m = dynamic_cast<romos::ParameterMixIn*> (moduleToEdit);
+  if( m != NULL )
+  {
+    for(int i = 0; i < widgets.size(); i++)
+    {
+      RWidget *widget = widgets[i]; // for debug
+      LibertyModuleWidget *lmw = dynamic_cast<LibertyModuleWidget*> (widgets[i]);
+
+      if( lmw != NULL )
+      {
+        rosic::String name  = juceToRosic(lmw->getWidgetParameterName());
+        juce::String  value = rosicToJuce(m->getParameterValue(name));
+        widgets[i]->setStateFromString(value, false);
+      }
+    }
+  }
+}
+

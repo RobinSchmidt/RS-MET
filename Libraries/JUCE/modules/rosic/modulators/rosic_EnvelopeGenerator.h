@@ -11,6 +11,9 @@ namespace rosic
 
   This class specializes the very general BreakpointModulator into a kind of ADSR envelope.
 
+  \todo: check, if it's in EDIT_WITH_SHIFT mode after construction (i think, that's the correct 
+  mode for ADSR emulation)
+
   */
 
   class EnvelopeGenerator : public BreakpointModulator
