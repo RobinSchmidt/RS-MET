@@ -982,6 +982,54 @@ protected:
   juce_UseDebuggingNewOperator;
 };
 
+// we need ComponentScrollContainer - then uncomment...
 
+//=================================================================================================
+
+/** This is the editor for the whole modular synthesizer. */
+
+class LibertyEditor : public AudioModuleEditor //, public LibertyInterfaceComponent  // public PolyphonicInstrumentEditor
+{
+
+public:
+
+  //-----------------------------------------------------------------------------------------------
+  // construction/destruction:
+
+  /** Constructor. */
+  LibertyEditor(CriticalSection *newPlugInLock, LibertyAudioModule* newLibertyAudioModule);
+
+  /** Denstructor. */
+  virtual ~LibertyEditor();
+
+  //-----------------------------------------------------------------------------------------------
+  // callbacks:
+
+  //virtual void rButtonClicked(RButton *buttonThatWasClicked);
+  virtual void resized();
+  virtual void updateWidgetsAccordingToState();
+
+protected:
+
+  /** Creates the proprties editor for the currently selected module. */
+  //virtual void createPropertiesEditorForSelectedModule();
+
+  /** This is the actual plugin engine which does all the dsp and automation handling. */
+  LibertyAudioModule *modularSynthAudioModule;
+
+  LibertyInterfaceMediator *interfaceMediator;
+
+  ModularStructureTreeView     *structureTreeView;   
+  ModularBlockDiagramPanel     *blockDiagramPanel;
+  ComponentScrollContainer     *diagramScrollContainer;
+  ModulePropertiesEditorHolder *moduleEditorHolder;
+
+  //ModulePropertiesEditor   *modulePropertiesEditor;
+
+  //RRadioButton  *structureButton, *interfaceButton; // *hybridButton;
+  //RRadioButtonGroup radioButtonGroup;
+
+  juce_UseDebuggingNewOperator;
+};
 
 #endif

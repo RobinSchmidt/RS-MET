@@ -1,8 +1,8 @@
 needs to be completed next:
  -Liberty (in progress...) 
   -include jura_Liberty.h (done) then .cpp (done)
-  -drag in code from rosof_LibertyModuleEditor.h (done) then .cpp
-  -drag in code from rosof_LibertyEditor.h then .cpp
+  -drag in code from rosof_LibertyModuleEditor.h (done) then .cpp (done)
+  -drag in code from rosof_LibertyEditor.h (done) then .cpp
   
 -drag over all old plugin code and make it compile:
  -AciDevil (done)

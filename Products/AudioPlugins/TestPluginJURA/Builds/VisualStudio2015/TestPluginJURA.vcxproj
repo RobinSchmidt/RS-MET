@@ -1731,6 +1731,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_Callbacks.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_Mediator.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_MetaParameter.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -1741,9 +1744,6 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_StateManager.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_Mediator.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\files\jura_AudioFileInfo.cpp">
@@ -1807,6 +1807,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\misc\jura_RectangleComponent.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\misc\jura_ComponentScrollContainer.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_CoordinateSystem.cpp">
@@ -4086,13 +4089,13 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\audio\jura_ImmediatePlaybackAudioSource.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_AutomatableParameter.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_Callbacks.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_Mediator.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_MetaParameter.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_Parameter.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_ParameterManager.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_PreDefinedParameters.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_ScopedPointerLock.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_StateManager.h" />
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_Mediator.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\files\jura_AudioFileInfo.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\files\jura_AudioFileManager.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\files\jura_FileManager.h" />
@@ -4114,6 +4117,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\misc\jura_DescribedComponent.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\misc\jura_MessageBoxes.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\misc\jura_RectangleComponent.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\misc\jura_ComponentScrollContainer.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_CoordinateSystem.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_CoordinateSystemZoomer.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\panels\jura_CurveFamilyPlot.h" />

@@ -2154,6 +2154,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_Callbacks.cpp">
       <Filter>Juce Modules\jura_framework\control</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_Mediator.cpp">
+      <Filter>Juce Modules\jura_framework\control</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_MetaParameter.cpp">
       <Filter>Juce Modules\jura_framework\control</Filter>
     </ClCompile>
@@ -3921,8 +3924,8 @@
     <ClCompile Include="..\..\JuceLibraryCode\rosic.cpp">
       <Filter>Juce Library Code</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_Mediator.cpp">
-      <Filter>Juce Modules\jura_framework\control</Filter>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\misc\jura_ComponentScrollContainer.cpp">
+      <Filter>Juce Modules\jura_framework\gui\misc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5775,6 +5778,9 @@
       <Filter>Juce Modules\jura_framework\control</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_Callbacks.h">
+      <Filter>Juce Modules\jura_framework\control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_Mediator.h">
       <Filter>Juce Modules\jura_framework\control</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_MetaParameter.h">
@@ -7664,8 +7670,8 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\jura_processors.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\romos.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rosic.h" />
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_Mediator.h">
-      <Filter>Juce Modules\jura_framework\control</Filter>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\misc\jura_ComponentScrollContainer.h">
+      <Filter>Juce Modules\jura_framework\gui\misc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

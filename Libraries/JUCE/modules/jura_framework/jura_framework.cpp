@@ -58,6 +58,8 @@ namespace jura
 #include "gui/widgets/jura_RSyncIntervalComboBox.cpp"
 #include "gui/widgets/jura_AutomatableWidget.cpp"
 
+#include "gui/misc/jura_ComponentScrollContainer.h"
+
 #include "gui/widgets/widget_sets/jura_WidgetSet.cpp"
 #include "gui/widgets/widget_sets/jura_StateLoadSaveWidgetSet.cpp"
 #include "gui/widgets/widget_sets/jura_FileSelectionBox.cpp" 

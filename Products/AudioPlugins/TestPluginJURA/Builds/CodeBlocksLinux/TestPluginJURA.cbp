@@ -4889,6 +4889,14 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/control/jura_Mediator.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/control/jura_Mediator.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/control/jura_MetaParameter.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -4926,14 +4934,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/control/jura_StateManager.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/control/rojue_Mediator.cpp">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/control/rojue_Mediator.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
@@ -5102,6 +5102,14 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/misc/jura_RectangleComponent.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/misc/rojue_ComponentScrollContainer.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/misc/rojue_ComponentScrollContainer.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
