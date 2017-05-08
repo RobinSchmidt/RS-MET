@@ -43,7 +43,7 @@ void LibertyAudioModule::restoreModuleTypeSpecificStateDataFromXml(romos::Module
   romos::ParameterMixIn *m = dynamic_cast<romos::ParameterMixIn*> (module);
   if( m != NULL )
   {
-    if( module->getTypeIdentifier() == ModuleTypeRegistry::PARAMETER )
+    if( module->getTypeIdentifier() == romos::ModuleTypeRegistry::PARAMETER )
     {
       // we need special treatment of the parameter module - minValue/maxValue shlould be set 
       // simultaneuously, because otherwise, min/max might not be recalled correctly, for example 
