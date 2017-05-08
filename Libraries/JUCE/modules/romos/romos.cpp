@@ -15,4 +15,15 @@ namespace romos
 #include "Framework/romos_ModuleTypeRegistry.cpp"
 
 
+//#include "Framework/romos_AudioConnection.cpp"
+
+//#include "Framework/romos_Module.cpp"
+
+//#include "Framework/romos_ModuleAtomic.cpp"
+
+//#include "Framework/romos_ModuleFactory.cpp"
+//#include "Framework/romos_ModuleContainer.cpp" 
+//#include "Framework/romos_TopLevelModule.cpp"
+
+
 }
