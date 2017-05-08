@@ -969,3 +969,187 @@ void LibertyLadderFilterModuleEditor::resized()
   y += dy;
   saturationModeComboBox->setBounds(x, y, w, h);
 }
+
+//=================================================================================================
+//=================================================================================================
+
+LibertyInterfaceComponent::LibertyInterfaceComponent(
+  LibertyInterfaceMediator *interfaceMediatorToUse)
+{
+  mediator = interfaceMediatorToUse;
+}
+
+LibertyInterfaceMediator* LibertyInterfaceComponent::getInterfaceMediator() const 
+{ 
+  return dynamic_cast<LibertyInterfaceMediator*> (mediator); 
+}
+
+//=================================================================================================
+
+LibertyInterfaceMediator::LibertyInterfaceMediator(CriticalSection *newPlugInLock, 
+  LibertyAudioModule* newLibertyModuleToEdit)
+{
+  plugInLock = newPlugInLock;     
+  ScopedLock scopedLock(*plugInLock);
+  modularSynthModuleToEdit = newLibertyModuleToEdit;
+  topLevelModule           = modularSynthModuleToEdit->wrappedLiberty->getTopLevelModule();
+  containerShownInDiagram  = topLevelModule;
+  moduleToShowEditorFor    = containerShownInDiagram;
+}
+
+LibertyInterfaceMediator::~LibertyInterfaceMediator()
+{
+  //int dummy = 0;
+}
+
+void LibertyInterfaceMediator::setContainerToShowInDiagram(romos::ModuleContainer* containerToShow)
+{
+  ScopedLock scopedLock(*plugInLock);
+  containerShownInDiagram = containerToShow;
+  //moduleToShowEditorFor = containerShownInDiagram; // superfluous?
+  setModuleToShowEditorFor(containerShownInDiagram);
+  Mediator::sendNotificationToColleagues(NULL, 
+    LibertyInterfaceComponent::CONTAINER_SHOWN_IN_DIAGRAM);  // NULL is preliminary
+}
+
+void LibertyInterfaceMediator::setModuleToShowEditorFor(romos::Module *module)
+{
+  ScopedLock scopedLock(*plugInLock);
+  moduleToShowEditorFor = module;
+  Mediator::sendNotificationToColleagues(NULL, 
+    LibertyInterfaceComponent::MODULE_TO_SHOW_EDITOR_FOR);  // NULL is preliminary
+}
+
+//=========================================================================================================================================
+
+ModularStructureTreeView::ModularStructureTreeView(LibertyInterfaceMediator *interfaceMediatorToUse)
+  : LibertyInterfaceComponent(interfaceMediatorToUse)
+{
+  ScopedLock scopedLock(*(getInterfaceMediator()->plugInLock));
+
+  //mediator->registerColleague(this);
+  setMediator(interfaceMediatorToUse); // will register "this" as colleague
+
+  setRootNode( new RTreeViewNode(juce::String("TopLevelModule")) );
+  rootNode->setDeleteChildNodesOnDestruction(true);
+  rootNode->setUserData(getInterfaceMediator()->topLevelModule);
+  rebuildTree();
+}
+
+ModularStructureTreeView::~ModularStructureTreeView()
+{
+  ScopedLock scopedLock(*(getInterfaceMediator()->plugInLock));
+
+  //getInterfaceMediator()->deRegisterInterfaceComponent(this); // should be done in baseclass destructor
+
+  delete rootNode;
+}
+
+//-------------------------------------------------------------------------------------------------
+// callbacks:
+
+void ModularStructureTreeView::mediatorHasSentNotification(
+  MediatedColleague *originatingColleague, int messageCode)
+{
+  ScopedLock scopedLock(*(getInterfaceMediator()->plugInLock));
+
+
+  if( messageCode == NUM_CHILDREN || messageCode == MODULE_NAME 
+    || messageCode == CONTAINER_SHOWN_IN_DIAGRAM ) 
+    // actually, the last one is overkill - we only need to rebuild if the top-level module 
+    // changes - i.e. a patch is loaded
+  {
+    rebuildTree();
+    // \todo often, rebuilding the whole tree is overkill and it may suffice to just add or remove 
+    // a single node - we need to somehow distinguis these cases....
+  }
+
+  if( messageCode == MODULE_TO_SHOW_EDITOR_FOR )
+    updateNodeHighlighting();
+
+}
+
+void ModularStructureTreeView::nodeClicked(RTreeViewNode *nodeThatWasClicked, 
+  const MouseEvent &mouseEvent, int clickPosition)
+{
+  ScopedLock scopedLock(*(getInterfaceMediator()->plugInLock));
+  if( clickPosition == RTreeView::ON_TEXT )
+  {
+    romos::Module *clickedNodeModule =  
+      static_cast<romos::Module*> (nodeThatWasClicked->getUserData());
+    if( dynamic_cast<romos::ModuleContainer*> (clickedNodeModule) != NULL )
+      getInterfaceMediator()->setContainerToShowInDiagram( 
+        static_cast<romos::ModuleContainer*> (nodeThatWasClicked->getUserData()) );
+    else
+    {  
+      getInterfaceMediator()->setContainerToShowInDiagram(clickedNodeModule->getParentModule());
+      if( romos::ModuleTypeRegistry::hasModuleTypeEditor(clickedNodeModule->getTypeIdentifier()) )
+        getInterfaceMediator()->setModuleToShowEditorFor(clickedNodeModule);
+    }
+  }
+  else if( clickPosition == RTreeView::ON_PLUSMINUS )
+    RTreeView::nodeClicked(nodeThatWasClicked, mouseEvent, clickPosition);  // opens/closes the node
+}
+
+//-------------------------------------------------------------------------------------------------
+// others:
+
+void ModularStructureTreeView::rebuildTree()
+{
+  ScopedLock scopedLock(*(getInterfaceMediator()->plugInLock));
+  rootNode->deleteChildNodesRecursively();
+  rootNode->setNodeText(rosicToJuce(getInterfaceMediator()->topLevelModule->getName()));
+  for(unsigned int i=0; i<getInterfaceMediator()->topLevelModule->getNumChildModules(); i++)
+  {
+    // \todo add I/O modules ... or maybe not...
+    createAndHangInSubTree(rootNode, getInterfaceMediator()->topLevelModule->getChildModule(i));
+  }
+  updateScrollBarBoundsAndVisibility();
+  updateNodeHighlighting();
+  repaint();
+}
+
+void ModularStructureTreeView::createAndHangInSubTree(RTreeViewNode *parentNodeToUse, 
+  romos::Module *moduleToCreateSubTreeFor)
+{
+  ScopedLock scopedLock(*(getInterfaceMediator()->plugInLock));
+
+  // check if node is container - if not do nothing and return - we don't want leaf nodes in the tree
+  //romos::ModuleContainer *containerModule = dynamic_cast<romos::ModuleContainer*> (moduleToCreateSubTreeFor);
+  //if( containerModule == NULL )
+  //  return;
+
+  if( romos::ModuleTypeRegistry::hasModuleTypeEditor(moduleToCreateSubTreeFor->getTypeIdentifier()) )
+  {
+    juce::String name = juce::String( moduleToCreateSubTreeFor->getName().getRawString() );
+    RTreeViewNode *newNode = new RTreeViewNode(name);
+    newNode->setUserData(moduleToCreateSubTreeFor);
+    parentNodeToUse->addChildNode(newNode);
+
+
+    // recursion to take care of the new node's child nodes:
+    romos::ModuleContainer *containerModule = 
+      dynamic_cast<romos::ModuleContainer*> (moduleToCreateSubTreeFor);
+    if( containerModule != NULL )
+    {
+      for(unsigned int i=0; i<containerModule->getNumChildModules(); i++) // conatinerModule was already checked for NULL
+        createAndHangInSubTree(newNode, containerModule->getChildModule(i));
+    }
+  }
+}
+
+void ModularStructureTreeView::updateNodeHighlighting()
+{
+  ScopedLock scopedLock(*(getInterfaceMediator()->plugInLock));
+  rootNode->setAllNodesUnticked();
+  //RTreeViewNode *selectedNode = rootNode->findNodeByData(getInterfaceMediator()->getContainerShownInDiagram());
+  RTreeViewNode *selectedNode 
+    = rootNode->findNodeByData(getInterfaceMediator()->getModuleToShowEditorFor());
+  jassert( selectedNode != NULL );  // one module/node should always be focused...
+  if( selectedNode != NULL )
+    selectedNode->setTicked(true);
+  repaint();
+}
+
+
+
