@@ -66,10 +66,12 @@ void RComboBox::selectItemByIndex(int indexToSelect, bool sendNotification)
 
 void RComboBox::selectItemFromText(const juce::String& textToSelect, bool sendNotification)
 {
-  // new - does not yet work
-  //popUpMenu->selectItemByText(textToSelect, sendNotification);
+  //// new - does not yet work
+  //popUpMenu->selectItemByText(textToSelect, false); // the popup should not send notifications
+  //if( sendNotification == true )
+  //  sendComboBoxChangeNotifications();
 
-  // old - worked only for a flat array of options:
+  // old - works only for a flat array of options:
   int numItems = popUpMenu->getNumTopLevelItems(); // for debug
   for(int i=0; i<popUpMenu->getNumTopLevelItems(); i++)
   {
