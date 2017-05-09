@@ -2,24 +2,44 @@
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-EqualizerAudioModule::EqualizerAudioModule(CriticalSection *newPlugInLock, rosic::EqualizerStereo *equalizerStereoToWrap)
-: AudioModule(newPlugInLock)
+EqualizerAudioModule::EqualizerAudioModule(CriticalSection *newPlugInLock, 
+  rosic::EqualizerStereo *equalizerStereoToWrap) : AudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
-
   jassert(equalizerStereoToWrap != NULL); // you must pass a valid rosic-object to the constructor
-
   //  ---nah, this Module admits NULL pointers for use inside EchoLab ...why?
-
   wrappedEqualizerStereo = equalizerStereoToWrap;
+  init();
+}
+
+EqualizerAudioModule::EqualizerAudioModule(CriticalSection *newPlugInLock) 
+  : AudioModule(newPlugInLock)
+{
+  ScopedLock scopedLock(*lock);
+  wrappedEqualizerStereo = new rosic::EqualizerStereo;
+  wrappedEqualizerIsOwned = true;
+  init();
+}
+
+void EqualizerAudioModule::init()
+{
   moduleName = juce::String("Equalizer");
   setActiveDirectory(getApplicationDirectory() + juce::String("/EqualizerPresets") );
-
   selectedChannel  = 0;
   selectedIndex    = -1;
   patchFormatIndex = 2;
-
   createStaticParameters();
+}
+
+EqualizerAudioModule::~EqualizerAudioModule()
+{
+  if(wrappedEqualizerIsOwned)
+    delete wrappedEqualizerStereo;
+}
+
+AudioModuleEditor* EqualizerAudioModule::createEditor()
+{
+  return new EqualizerModuleEditor(lock, this);
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
@@ -128,9 +148,9 @@ void EqualizerAudioModule::setStateFromXml(const XmlElement& xmlState, const juc
     forEachXmlChildElementWithTagName(*channelChild, bandChild, "Band")
     {
       juce::String modeString = bandChild->getStringAttribute("Mode",      "Bypass");
-      f                       = bandChild->getDoubleAttribute("Frequency", 1000.0);
-      g                       = bandChild->getDoubleAttribute("Gain",      0.0);
-      b                       = bandChild->getDoubleAttribute("Bandwidth", 2.0*asinh(1.0/sqrt(2.0))/log(2.0));
+      f = bandChild->getDoubleAttribute("Frequency", 1000.0);
+      g = bandChild->getDoubleAttribute("Gain",      0.0);
+      b = bandChild->getDoubleAttribute("Bandwidth", 2.0*asinh(1.0/sqrt(2.0))/log(2.0));
 
       if( modeString == juce::String("Peak/Dip") )
         m = TwoPoleFilter::PEAK;
@@ -660,8 +680,6 @@ void EqualizerPlotEditor::parameterIsGoingToBeDeleted(Parameter* parameterThatWi
   updatePlot();
 }
 
-
-
 void EqualizerPlotEditor::mouseMove(const MouseEvent &e)
 {
   ScopedLock scopedLock(*plugInLock);
@@ -777,7 +795,6 @@ void EqualizerPlotEditor::mouseDown(const MouseEvent &e)
       // end debug
       */
 
-
       equalizerModuleToEdit->removeBand(equalizerModuleToEdit->selectedChannel, tmpIndex);
       currentlyDraggedHandle = NONE;
     }
@@ -802,7 +819,8 @@ void EqualizerPlotEditor::mouseDrag(const juce::MouseEvent &e)
   if( equalizerModuleToEdit == NULL )
     return;
 
-  if( frequencyParameter == NULL || gainParameter == NULL || bandwidthParameter == NULL || globalGainParameter == NULL )
+  if( frequencyParameter == NULL || gainParameter == NULL || bandwidthParameter == NULL 
+    || globalGainParameter == NULL )
   {
     if( currentlyDraggedHandle != GLOBALGAIN_LINE )
       return;
@@ -825,13 +843,15 @@ void EqualizerPlotEditor::mouseDrag(const juce::MouseEvent &e)
   }
   else if( currentlyDraggedHandle == BANDWIDTH_AND_GAIN_LEFT )
   {
-    double bw = rosic::TwoPoleFilter::lowerBandedgeFrequencyToBandwdith(x, frequencyParameter->getValue());
+    double bw = rosic::TwoPoleFilter::lowerBandedgeFrequencyToBandwdith(x, 
+      frequencyParameter->getValue());
     bandwidthParameter->setValue(bw, true, true);
     gainParameter->setValue(y-globalGain, true, true);
   }
   else if( currentlyDraggedHandle == BANDWIDTH_AND_GAIN_RIGHT )
   {
-    double bw = rosic::TwoPoleFilter::upperBandedgeFrequencyToBandwdith(x, frequencyParameter->getValue());
+    double bw = rosic::TwoPoleFilter::upperBandedgeFrequencyToBandwdith(x, 
+      frequencyParameter->getValue());
     bandwidthParameter->setValue(bw, true, true);
     gainParameter->setValue(y-globalGain, true, true);
   }
@@ -912,8 +932,10 @@ int EqualizerPlotEditor::getDragHandleAt(int x, int y)
   // check if x,y is over the freq/gain handle of some band:
   for(int i=0; i<equalizerModuleToEdit->getNumBands(equalizerModuleToEdit->selectedChannel); i++)
   {
-    xt = equalizerModuleToEdit->wrappedEqualizerStereo->getBandFrequency(equalizerModuleToEdit->selectedChannel, i);
-    yt = equalizerModuleToEdit->wrappedEqualizerStereo->getBandGain(equalizerModuleToEdit->selectedChannel, i) + globalGain;
+    xt = equalizerModuleToEdit->wrappedEqualizerStereo->getBandFrequency(
+      equalizerModuleToEdit->selectedChannel, i);
+    yt = equalizerModuleToEdit->wrappedEqualizerStereo->getBandGain(
+      equalizerModuleToEdit->selectedChannel, i) + globalGain;
     transformToComponentsCoordinates(xt, yt);
     if( euclideanDistance(xt, yt, xd, yd) < 4.0 )
       return FREQUENCY_AND_GAIN;
@@ -1047,12 +1069,16 @@ void EqualizerPlotEditor::plotCurveFamily(Graphics &g, juce::Image* targetImage,
 
       if( equalizerModuleToEdit->wrappedEqualizerStereo->doesModeSupportBandwidth(channel, i) )
       {
-        double x1 = equalizerModuleToEdit->wrappedEqualizerStereo->getLowerBandedgeFrequency(channel, i);
-        double y1 = equalizerModuleToEdit->wrappedEqualizerStereo->getBandGain(channel, i) + globalGain;
+        double x1 = equalizerModuleToEdit->wrappedEqualizerStereo
+          ->getLowerBandedgeFrequency(channel, i);
+        double y1 = equalizerModuleToEdit->wrappedEqualizerStereo
+          ->getBandGain(channel, i) + globalGain;
         transformToImageCoordinates(x1, y1, targetImage);
 
-        double x2 = equalizerModuleToEdit->wrappedEqualizerStereo->getUpperBandedgeFrequency(channel, i);
-        double y2 = equalizerModuleToEdit->wrappedEqualizerStereo->getBandGain(channel, i) + globalGain;
+        double x2 = equalizerModuleToEdit->wrappedEqualizerStereo
+          ->getUpperBandedgeFrequency(channel, i);
+        double y2 = equalizerModuleToEdit->wrappedEqualizerStereo
+          ->getBandGain(channel, i) + globalGain;
         transformToImageCoordinates(x2, y2, targetImage);
 
         g.drawLine((float) x1, (float) y1, (float) x2, (float) y1, 2.0f);
@@ -1133,7 +1159,8 @@ void EqualizerPlotEditor::xyToFrequencyAndGain(double &x, double &y)
 
 // construction/destruction:
 
-EqualizerModuleEditor::EqualizerModuleEditor(CriticalSection *newPlugInLock, EqualizerAudioModule* newEqualizerAudioModule) 
+EqualizerModuleEditor::EqualizerModuleEditor(CriticalSection *newPlugInLock, 
+  EqualizerAudioModule* newEqualizerAudioModule) 
   : AudioModuleEditor(newEqualizerAudioModule)
 {
   // set the plugIn-headline:
@@ -1232,6 +1259,8 @@ EqualizerModuleEditor::EqualizerModuleEditor(CriticalSection *newPlugInLock, Equ
 
   // set up the widgets:
   updateWidgetsAccordingToState();
+
+  setSize(540, 240);
 }
 
 EqualizerModuleEditor::~EqualizerModuleEditor()

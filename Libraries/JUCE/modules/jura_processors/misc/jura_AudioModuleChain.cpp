@@ -7,7 +7,7 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
   //if(type == "PhaseScope2")  return new PhaseScope2( lock);
 
   // filters: 
-  //if(type == "Equalizer")       return new EqualizerAudioModule(      lock);
+  if(type == "Equalizer")       return new EqualizerAudioModule(      lock);
   if(type == "Ladder")          return new Ladder(                    lock);
   if(type == "PhasorFilter")    return new PhasorFilter(              lock);
   if(type == "EngineersFilter") return new EngineersFilterAudioModule(lock);

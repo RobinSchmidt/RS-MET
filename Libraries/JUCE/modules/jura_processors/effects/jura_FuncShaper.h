@@ -10,6 +10,7 @@ class FuncShaperAudioModule : public AudioModule
 
 public:
 
+  //---------------------------------------------------------------------------------------------
   // construction/destruction:
 
   FuncShaperAudioModule(CriticalSection *newPlugInLock, rosic::FuncShaper *funcShaperToWrap);
@@ -19,9 +20,6 @@ public:
   virtual ~FuncShaperAudioModule();
 
   AudioModuleEditor* createEditor() override;
-
-
-
 
   //---------------------------------------------------------------------------------------------
   // automation and state management:

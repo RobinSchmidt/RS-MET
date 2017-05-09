@@ -25,6 +25,15 @@ public:
   EqualizerAudioModule(CriticalSection *newPlugInLock, 
     rosic::EqualizerStereo *equalizerStereoToWrap);
 
+  EqualizerAudioModule(CriticalSection *newPlugInLock);
+
+  void init();
+
+  virtual ~EqualizerAudioModule();
+
+  AudioModuleEditor* createEditor() override;
+
+
   //-----------------------------------------------------------------------------------------------
   // automation and state management:
 
@@ -138,6 +147,8 @@ protected:
   virtual void assignCallbacksForDynamicParameters();
 
   rosic::EqualizerStereo *wrappedEqualizerStereo;
+  bool wrappedEqualizerIsOwned = false;
+
 
   int selectedChannel; // currently selected channel (0 for L or M, 1 for R or S)
   int selectedIndex;   // index of currently selected band (-1 if none)
