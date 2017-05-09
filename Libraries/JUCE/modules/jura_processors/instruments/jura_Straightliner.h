@@ -33,7 +33,9 @@ public:
   //---------------------------------------------------------------------------------------------
   // parameter settings:
 
-  virtual void setSampleRate(double newSampleRate)
+  virtual void loadDefaultPreset() override;
+
+  virtual void setSampleRate(double newSampleRate) override
   {
     if(wrappedStraightliner != NULL)
       wrappedStraightliner->setSampleRate(newSampleRate);

@@ -112,6 +112,10 @@ public:
     saveAndRecallMetas = shouldSaveAndRecall; 
   }
 
+  /** Subclasses may override this in order to load a default patch. Called in the Chainer 
+  immediately after the MetaParameterManger has been assigned. */
+  virtual void loadDefaultPreset() {}
+
   /** Checks, if this is a cracked version and if so, it sets up the appendix for the headline 
   accordingly. Return value informs also whether or not a cracked version was detected. */
   virtual bool checkForCrack();

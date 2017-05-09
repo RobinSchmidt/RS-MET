@@ -1,7 +1,9 @@
 -fix bugs in straightliner:
+ -init patch not loaded
  -tuning file widget set looks weird
  -colors are wrong
  -filter plot doesn't update when dragging around the handle
+
 
 -introduce subtrees: Instruments, Effects, Filters, Analyzers, etc. for Chainer
  -look into Liberty or Quadrifex how this is done - it's in 

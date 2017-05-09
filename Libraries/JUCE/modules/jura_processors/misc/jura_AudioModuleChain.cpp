@@ -183,6 +183,7 @@ void AudioModuleChain::replaceModule(int index, const juce::String& type)
     AudioModule* oldModule = modules[index];
     AudioModule* newModule = AudioModuleFactory::createModule(type, lock);
     newModule->setMetaParameterManager(metaParamManager); 
+    newModule->loadDefaultPreset(); // later: either load default preset or recall a stored state
     newModule->setSampleRate(sampleRate);
     modules[index] = newModule;
     sendAudioModuleWasReplacedNotification(oldModule, newModule, index);
