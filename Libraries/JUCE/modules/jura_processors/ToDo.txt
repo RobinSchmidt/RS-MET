@@ -1,13 +1,4 @@
--fix bugs in straightliner:
- -init patch not loaded
- -tuning file widget set looks weird
- -colors are wrong
- -filter plot doesn't update when dragging around the handle
 
-
--introduce subtrees: Instruments, Effects, Filters, Analyzers, etc. for Chainer
- -look into Liberty or Quadrifex how this is done - it's in 
-  EffectSelectionPopup::EffectSelectionPopup
 
 -make available in Chainer (and let it have a custom editor):
  -AciDevil (done)
@@ -16,10 +7,12 @@
  -Liberty (done) 
  -Straightliner (done - but buggy)
 
+ -EasyQ
+
  -AlgoVerb
  -ChannelMatrix2x2
  -CrossOver
- -EasyQ
+
  -DspWorkbench
  -MultiAnalyzer
  -EchoLab
@@ -34,6 +27,23 @@
  -TrackMeter
  -MidiMonitor
  -StereoDelay
+
+
+
+-fix bugs in straightliner:
+ -tuning file widget set looks weird (the box is missing), also it should not show ".xml"
+ -loading a tuning file doesn't work. apparently we have used illegal xml attribute names 
+  (beginning with a number) - revise the tuning file format, maybe preprend "Key" or just "K"
+  before each key number
+ -colors are wrong
+ -patch AnalogMeetsChipTune: pitch-env is not in stairstep mode
+  -maybe check with enveloper
+ -filter plot doesn't update when dragging around the handle
+
+
+-introduce subtrees: Instruments, Effects, Filters, Analyzers, etc. for Chainer
+ -look into Liberty or Quadrifex how this is done - it's in 
+  EffectSelectionPopup::EffectSelectionPopup
 
 
 

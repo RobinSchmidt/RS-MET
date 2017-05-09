@@ -7,17 +7,18 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
   //if(type == "PhaseScope2")  return new PhaseScope2( lock);
 
   // filters: 
-  if(type == "Ladder")          return new Ladder(         lock);
-  if(type == "PhasorFilter")    return new PhasorFilter(   lock);
+  //if(type == "Equalizer")       return new EqualizerAudioModule(      lock);
+  if(type == "Ladder")          return new Ladder(                    lock);
+  if(type == "PhasorFilter")    return new PhasorFilter(              lock);
   if(type == "EngineersFilter") return new EngineersFilterAudioModule(lock);
 
   // effects:
-  if(type == "Enveloper")    return new Enveloper(   lock);
+  if(type == "Enveloper")    return new Enveloper(            lock);
   if(type == "FuncShaper")   return new FuncShaperAudioModule(lock);
-  if(type == "AlgoVerb")     return new AlgoVerbAudioModule(lock);
+  if(type == "AlgoVerb")     return new AlgoVerbAudioModule(  lock);
 
   // instruments:
-  if(type == "AciDevil")      return new AciDevilAudioModule(lock);
+  if(type == "AciDevil")      return new AciDevilAudioModule(     lock);
   if(type == "Straightliner") return new StraightlinerAudioModule(lock);
 #ifdef _MSC_VER
   if(type == "Liberty") return new LibertyAudioModule(lock);
@@ -29,28 +30,29 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
 
 juce::String AudioModuleFactory::getModuleType(AudioModule *m)
 {
-  if(dynamic_cast<DummyModule*>  (m))               return "None";
+  if(dynamic_cast<DummyModule*>  (m))              return "None";
 
   // analysis:
-  //if(dynamic_cast<PhaseScope2*>  (m))             return "PhaseScope2"; // always check subclasses before...
-  if(dynamic_cast<PhaseScope*>   (m))               return "PhaseScope";  // ...their superclasses
+  //if(dynamic_cast<PhaseScope2*>  (m))            return "PhaseScope2"; // always check subclasses before...
+  if(dynamic_cast<PhaseScope*>   (m))              return "PhaseScope";  // ...their superclasses
 
   // filters:
-  if(dynamic_cast<Ladder*>       (m))               return "Ladder";
-  if(dynamic_cast<PhasorFilter*> (m))               return "PhasorFilter";
-  if(dynamic_cast<EngineersFilterAudioModule*> (m)) return "EngineersFilter";
+  if(dynamic_cast<EqualizerAudioModule*>(m))       return "Equalizer";
+  if(dynamic_cast<Ladder*>(m))                     return "Ladder";
+  if(dynamic_cast<PhasorFilter*>(m))               return "PhasorFilter";
+  if(dynamic_cast<EngineersFilterAudioModule*>(m)) return "EngineersFilter";
 
   // effects:
-  if(dynamic_cast<Enveloper*>    (m))               return "Enveloper";
-  if(dynamic_cast<FuncShaperAudioModule*>(m))       return "FuncShaper";
-  if(dynamic_cast<AlgoVerbAudioModule*>(m))         return "AlgoVerb";
+  if(dynamic_cast<Enveloper*>(m))                  return "Enveloper";
+  if(dynamic_cast<FuncShaperAudioModule*>(m))      return "FuncShaper";
+  if(dynamic_cast<AlgoVerbAudioModule*>(m))        return "AlgoVerb";
 
 
   // instruments:
-  if(dynamic_cast<AciDevilAudioModule*> (m))      return "AciDevil";
-  if(dynamic_cast<StraightlinerAudioModule*> (m)) return "Straightliner";
+  if(dynamic_cast<AciDevilAudioModule*> (m))       return "AciDevil";
+  if(dynamic_cast<StraightlinerAudioModule*> (m))  return "Straightliner";
 #ifdef _MSC_VER
-  if(dynamic_cast<LibertyAudioModule*> (m))       return "Liberty";
+  if(dynamic_cast<LibertyAudioModule*> (m))        return "Liberty";
 #endif
 
   jassertfalse;  // unknown module type was passed
@@ -59,6 +61,9 @@ juce::String AudioModuleFactory::getModuleType(AudioModule *m)
 
 StringArray AudioModuleFactory::getAvailableModuleTypes()
 {
+  // here, we can make certain modules temporarily unavailable by simply commenting the 
+  // corresponding line
+
   StringArray a;
   a.add("None");        // maybe use "Empty" instead of "None"
 
@@ -67,8 +72,9 @@ StringArray AudioModuleFactory::getAvailableModuleTypes()
   //a.add("PhaseScope2");
 
   // filters:
+  a.add("Equalizer");
   a.add("Ladder");
-  a.add("PhasorFilter");
+  //a.add("PhasorFilter");
   a.add("EngineersFilter");
 
   // effects:
@@ -80,7 +86,7 @@ StringArray AudioModuleFactory::getAvailableModuleTypes()
   a.add("AciDevil");
   a.add("Straightliner");
 #ifdef _MSC_VER
-  a.add("Liberty"); // not yet available on gcc 
+  //a.add("Liberty"); // not yet available on gcc 
 #endif
 
   return a;
