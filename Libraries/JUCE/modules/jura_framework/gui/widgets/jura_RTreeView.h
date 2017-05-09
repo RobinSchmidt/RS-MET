@@ -74,6 +74,11 @@ public:
   /** Returns the number of (direct) child nodes. */
   virtual int getNumChildNodes() const { return (int) childNodes.size(); }
 
+  /** Returns the number of leaf nodes in this node. That number is 1, if the node is itself a leaf 
+  node (i.e. has no child nodes), otherwise it will recursively call getNumLeafNodes on all child 
+  nodes and add them up. */
+  virtual int getNumLeafNodes() const;
+
   /** Returns true when this node has one or more child-nodes, false otherwise. */
   virtual bool hasChildNodes() const { return childNodes.size() > 0; }
 

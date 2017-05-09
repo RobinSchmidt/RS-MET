@@ -59,6 +59,16 @@ void RTreeViewNode::deleteChildNodesRecursively()
   childNodes.clear();
 }
 
+int RTreeViewNode::getNumLeafNodes() const
+{
+  if(this->isLeafNode())
+    return 1;
+  int leafs = 0;
+  for(int i = 0; i < (int)childNodes.size(); i++)
+    leafs += childNodes.getNumLeafNodes();
+  return leafs;
+}
+
 bool RTreeViewNode::hasAnyChildNodeChildNodes() const
 {
   for(int i=0; i<childNodes.size(); i++)
