@@ -15,9 +15,20 @@ public:
   //---------------------------------------------------------------------------------------------
   // construction/destruction:
 
+  ///** Constructor. */
+  //StraightlinerAudioModule(CriticalSection *newPlugInLock, 
+  //  rosic::Straightliner *straightlinerToWrap); 
+  // not needed anymore - for full blown isntruments, we don't need facilities to wrap around an
+  // existing rosic object. that is relavant onyl for modules that are supposed to be submodules
+  // like a filter in a synth
+   
   /** Constructor. */
-  StraightlinerAudioModule(CriticalSection *newPlugInLock, 
-    rosic::Straightliner *straightlinerToWrap);
+  StraightlinerAudioModule(CriticalSection *newPlugInLock);
+
+
+  virtual ~StraightlinerAudioModule();
+
+
 
   //---------------------------------------------------------------------------------------------
   // parameter settings:

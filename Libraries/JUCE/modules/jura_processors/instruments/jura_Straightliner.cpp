@@ -2,13 +2,17 @@
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-StraightlinerAudioModule::StraightlinerAudioModule(CriticalSection *newPlugInLock, 
-  rosic::Straightliner *straightlinerToWrap)
-: PolyphonicInstrumentAudioModule(newPlugInLock, straightlinerToWrap)
+StraightlinerAudioModule::StraightlinerAudioModule(CriticalSection *newPlugInLock)
+: PolyphonicInstrumentAudioModule(newPlugInLock)
 {
-  jassert(straightlinerToWrap != NULL); // you must pass a valid rosic-object to the constructor
-  wrappedStraightliner      = straightlinerToWrap;
-  underlyingRosicInstrument = straightlinerToWrap;
+  //jassert(straightlinerToWrap != NULL); // you must pass a valid rosic-object to the constructor
+  //wrappedStraightliner      = straightlinerToWrap;
+
+  wrappedStraightliner = new rosic::Straightliner;
+  //underlyingRosicInstrument = wrappedStraightliner;
+  setInstrumentToWrap(wrappedStraightliner);
+
+
   setModuleName(juce::String("Straightliner"));
   setActiveDirectory(getApplicationDirectory() + juce::String("/StraightlinerPresets") );
   //oscSectionEditor->setActiveDirectory(pluginDir + juce::String(T("/StraightlinerPresets/OscSectionPresets")) );
@@ -38,6 +42,12 @@ StraightlinerAudioModule::StraightlinerAudioModule(CriticalSection *newPlugInLoc
   ampEnvModule->setModuleName(juce::String("AmpEnvelope"));
   addChildAudioModule(ampEnvModule);
 }
+
+StraightlinerAudioModule::~StraightlinerAudioModule()
+{
+  delete wrappedStraightliner; // use a std::unique_ptr
+}
+
 
 void StraightlinerAudioModule::setStateFromXml(const XmlElement &xmlState, 
   const juce::String &stateName, bool markAsClean)

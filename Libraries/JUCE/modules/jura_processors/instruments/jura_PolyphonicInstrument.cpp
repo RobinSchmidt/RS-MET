@@ -2,13 +2,24 @@
 // construction/destruction:
 
 PolyphonicInstrumentAudioModule::PolyphonicInstrumentAudioModule(CriticalSection *newPlugInLock, 
-  rosic::PolyphonicInstrument *instrumentToWrap) : AudioModule(newPlugInLock)
+  rosic::PolyphonicInstrument *instrumentToWrap) : AudioModuleWithMidiIn(newPlugInLock)
 {
   jassert(instrumentToWrap != NULL); // you must pass a valid rosic-object to the constructor
   underlyingRosicInstrument = instrumentToWrap;
 
   // create and initialize the automatable parameters:
   initializeAutomatableParameters();
+}
+
+PolyphonicInstrumentAudioModule::PolyphonicInstrumentAudioModule(CriticalSection *newPlugInLock) 
+  : AudioModuleWithMidiIn(newPlugInLock)
+{
+
+}
+
+void PolyphonicInstrumentAudioModule::setInstrumentToWrap(rosic::PolyphonicInstrument *instrumentToWrap)
+{
+  underlyingRosicInstrument = instrumentToWrap;
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -4,7 +4,7 @@
 /** This class wraps rosic::PolyphonicInstrument into a rosof::AudioModule to facilitate its 
 use as plugIn. */
 
-class PolyphonicInstrumentAudioModule : public AudioModule
+class PolyphonicInstrumentAudioModule : public AudioModuleWithMidiIn
 {
 
   friend class PolyphonicInstrumentModuleEditor;
@@ -17,9 +17,20 @@ public:
   /** Constructor. */
   PolyphonicInstrumentAudioModule(CriticalSection *newPlugInLock, 
     rosic::PolyphonicInstrument *instrumentToWrap);
+  // maybe deprecate this...
+
+  /** Constructor that doesn't need a pointer to a valid rosic::PolyphonicInstrument object to
+  be passed. Instead, use setInstrumentToWrap some time soon after the constructor. */
+  PolyphonicInstrumentAudioModule(CriticalSection *newPlugInLock);
 
   //---------------------------------------------------------------------------------------------
   // automation and state management:
+
+  /** Sometimes, it may not be possible to pass a valid pointer to the underlying instrument 
+  to the constructor because the object will have to be created in the constructor of the 
+  subclass. In this case, use the other constructor that doesn't need a pointer to be passed,
+  create the object in you subclass constructor and then call this function. */
+  void setInstrumentToWrap(rosic::PolyphonicInstrument *instrumentToWrap);
 
   /** Overrides the parameterChanged() method of the indirect AutomationListener base class in
   order to respond to interesting automation events. */
