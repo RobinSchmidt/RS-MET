@@ -34,7 +34,8 @@ public:
 
   /** Overrides the parameterChanged() method of the indirect AutomationListener base class in
   order to respond to interesting automation events. */
-  virtual void parameterChanged(Parameter* parameterThatHasChanged);
+  virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
+    // get rid of this
 
   /** Returns the state (i.e. the settings of all relevant parameters) in form of an
   XmlElement. */
@@ -45,39 +46,51 @@ public:
 
   /** Overriden to call allNotesOff before restoring the state. */
   virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 
-    bool markAsClean);
+    bool markAsClean) override;
 
   //---------------------------------------------------------------------------------------------
   // parameter settings:
 
-  virtual void setSampleRate(double newSampleRate)
+  virtual void setSampleRate(double newSampleRate) override
   {
     if(underlyingRosicInstrument != NULL)
       underlyingRosicInstrument->setSampleRate(newSampleRate);
   }
 
-  virtual void setBeatsPerMinute(double newBpm)
+  virtual void setBeatsPerMinute(double newBpm) override
   {
     if(underlyingRosicInstrument != NULL)
       underlyingRosicInstrument->setBeatsPerMinute(newBpm);
   }
 
-  //---------------------------------------------------------------------------------------------
-  // audio processing:
-
-  /** Calculates a stereo-ouput frame. */
-  virtual void getSampleFrameStereo(double* inL, double* inR, double* outL, double* outR)
+  virtual void noteOn(int noteNumber, int velocity) override
   {
     if(underlyingRosicInstrument != NULL)
-      underlyingRosicInstrument->getSampleFrameStereo(outL, outR);
+      underlyingRosicInstrument->noteOn(noteNumber, velocity, 0);
   }
+
+  virtual void noteOff(int noteNumber) override
+  {
+    if(underlyingRosicInstrument != NULL)
+      underlyingRosicInstrument->noteOn(noteNumber, 0, 0);
+  }
+
+  ////---------------------------------------------------------------------------------------------
+  //// audio processing:
+
+  ///** Calculates a stereo-ouput frame. */
+  //virtual void getSampleFrameStereo(double* inL, double* inR, double* outL, double* outR)
+  //{
+  //  if(underlyingRosicInstrument != NULL)
+  //    underlyingRosicInstrument->getSampleFrameStereo(outL, outR);
+  //}
 
 protected:
 
   /** Fills the array of automatable parameters. */
   void initializeAutomatableParameters();
 
-  rosic::PolyphonicInstrument *underlyingRosicInstrument;
+  rosic::PolyphonicInstrument *underlyingRosicInstrument = nullptr;
 
   friend class PolyphonicInstrumentEditor;
 

@@ -79,12 +79,14 @@ public:
     wrappedAciDevil->noteOn(noteNumber, 0, 0.0);
   }
 
-//virtual void allNotesOff();
-
   virtual void setPitchBend(int pitchBendValue) override
   {
     wrappedAciDevil->setPitchBend(pitchBendValue);
   }
+
+//virtual void allNotesOff();
+
+
 
 /** Overrides setMidiController which is inherited from both base-classes - and we simply we
 pass through the function call to both of them here. */

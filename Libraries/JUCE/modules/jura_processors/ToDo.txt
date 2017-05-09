@@ -1,4 +1,7 @@
-make straightliner work (produce sound)
+-fix bugs in straightliner:
+ -loading a preset triggers breakpoint related to MetaParameters
+ -tuning file widget set looks weird
+ -colors are wrong
 
 -introduce subtrees: Instruments, Effects, Filters, Analyzers, etc. for Chainer
  -look into Liberty or Quadrifex how this is done - it's in 
