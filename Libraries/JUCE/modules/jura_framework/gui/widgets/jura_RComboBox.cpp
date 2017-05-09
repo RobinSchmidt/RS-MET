@@ -66,8 +66,9 @@ void RComboBox::selectItemByIndex(int indexToSelect, bool sendNotification)
 
 void RComboBox::selectItemFromText(const juce::String& textToSelect, bool sendNotification)
 {
-  //// new - does not yet work
+  //// new - needs testing:
   //popUpMenu->selectItemByText(textToSelect, false); // the popup should not send notifications
+  //setText(popUpMenu->getSelectedText());
   //if( sendNotification == true )
   //  sendComboBoxChangeNotifications();
 

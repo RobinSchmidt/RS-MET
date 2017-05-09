@@ -132,6 +132,10 @@ public:
   returned. */
   virtual RTreeViewNode* getSelectedItem() const;
 
+  /** Returns the text of the currently selected item. If nothing is selected, an empty String
+  will be returned. */
+  virtual const juce::String& getSelectedText() const;
+
   //-----------------------------------------------------------------------------------------------
   // callbacks:
 

@@ -126,6 +126,9 @@ public:
   /** Similar to findNodeByData, but searches for a particular text. */
   RTreeViewNode* findNodeByText(const juce::String& textToFind);
 
+  /** Returns the text of this node. */
+  const juce::String& getText() const { return nodeText; }
+
   /** From some given node, it returns the next leaf node in the tree. The second argument decides 
   whether we consider only sibling-nodes which are those nodes that are on the same level and 
   branch of the tree. If false is passed, the function will possibly crawl up and/or down the 

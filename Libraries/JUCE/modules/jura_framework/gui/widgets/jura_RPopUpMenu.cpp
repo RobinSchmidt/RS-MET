@@ -110,6 +110,15 @@ RTreeViewNode* RPopUpMenu::getSelectedItem() const
   return treeView->getSelectedNode();
 }
 
+const juce::String& RPopUpMenu::getSelectedText() const
+{ 
+  RTreeViewNode* selectedNode = getSelectedItem();
+  if(selectedNode != nullptr)
+    return getSelectedItem()->getText();
+  else
+    return String::empty;
+}
+
 void RPopUpMenu::treeNodeClicked(RTreeView *treeView, RTreeViewNode *nodeThatWasClicked, 
   const MouseEvent &mouseEvent, int clickPosition)
 {
