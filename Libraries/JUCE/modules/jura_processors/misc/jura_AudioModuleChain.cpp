@@ -182,6 +182,7 @@ void AudioModuleChain::replaceModule(int index, const juce::String& type)
   if(!isModuleOfType(index, type)){              // replace only, if new type is different
     AudioModule* oldModule = modules[index];
     AudioModule* newModule = AudioModuleFactory::createModule(type, lock);
+    newModule->setMetaParameterManager(metaParamManager); 
     newModule->setSampleRate(sampleRate);
     modules[index] = newModule;
     sendAudioModuleWasReplacedNotification(oldModule, newModule, index);

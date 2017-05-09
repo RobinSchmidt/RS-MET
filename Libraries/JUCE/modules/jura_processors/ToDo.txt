@@ -1,7 +1,13 @@
 -fix bugs in straightliner:
  -loading a preset triggers breakpoint related to MetaParameters
+  -this happens when the BreakpointModulator restores its state
+  ->happens with enveloper, too
+  ->happens also on Meta attach
+  ->metaManager is nullptr
+  ->probably the Chainer doesn't set this up
  -tuning file widget set looks weird
  -colors are wrong
+ -filter plot doesn't update when dragging around the handle
 
 -introduce subtrees: Instruments, Effects, Filters, Analyzers, etc. for Chainer
  -look into Liberty or Quadrifex how this is done - it's in 
@@ -12,7 +18,7 @@
  -FuncShaper (done)
  -EngineersFilter (done)
  -Liberty (done) 
- -Straightliner (done - but doesn't play sound)
+ -Straightliner (done - but buggy)
 
  -AlgoVerb
  -ChannelMatrix2x2

@@ -75,15 +75,15 @@ public:
       underlyingRosicInstrument->noteOn(noteNumber, 0, 0);
   }
 
-  ////---------------------------------------------------------------------------------------------
-  //// audio processing:
+  //---------------------------------------------------------------------------------------------
+  // audio processing:
 
-  ///** Calculates a stereo-ouput frame. */
-  //virtual void getSampleFrameStereo(double* inL, double* inR, double* outL, double* outR)
-  //{
-  //  if(underlyingRosicInstrument != NULL)
-  //    underlyingRosicInstrument->getSampleFrameStereo(outL, outR);
-  //}
+  /** Calculates a stereo-ouput frame. */
+  virtual void getSampleFrameStereo(double* inL, double* inR, double* outL, double* outR)
+  {
+    if(underlyingRosicInstrument != NULL)
+      underlyingRosicInstrument->getSampleFrameStereo(outL, outR);
+  }
 
 protected:
 
