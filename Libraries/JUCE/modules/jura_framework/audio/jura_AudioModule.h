@@ -122,7 +122,7 @@ public:
   virtual void addObservedParameter(Parameter *parameterToAdd) override;
 
   //-----------------------------------------------------------------------------------------------
-  // midi controller and meta parameter stuff:
+  // midi controller and meta parameter stuff (midi should go to subclass AudioModuleWithMidiIn):
 
   /** Assigns a MIDI controller to one of the observed parameters. */
   virtual void assignMidiController(const juce::String& nameOfParameter, int controllerNumber);

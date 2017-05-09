@@ -75,6 +75,13 @@ public:
       underlyingRosicInstrument->noteOn(noteNumber, 0, 0);
   }
 
+  virtual void setPitchBend(int pitchBendValue) override
+  {
+    // seems not to be called..
+    if(underlyingRosicInstrument != NULL)
+      underlyingRosicInstrument->setPitchBend(pitchBendValue);
+  }
+
   //---------------------------------------------------------------------------------------------
   // audio processing:
 

@@ -1,10 +1,7 @@
 -fix bugs in straightliner:
- -loading a preset triggers breakpoint related to MetaParameters
-  -this happens when the BreakpointModulator restores its state
-  ->happens with enveloper, too
-  ->happens also on Meta attach
-  ->metaManager is nullptr
-  ->probably the Chainer doesn't set this up
+ -doesn't respond to pitch-bend
+  see jura_PolyphonicInstruments setPitchBend
+ -it responds to midi controllers - why?
  -tuning file widget set looks weird
  -colors are wrong
  -filter plot doesn't update when dragging around the handle
