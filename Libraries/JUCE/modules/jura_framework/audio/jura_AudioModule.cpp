@@ -102,6 +102,23 @@ void AudioModule::removeChildAudioModule(AudioModule* moduleToRemove, bool delet
       delete moduleToRemove; }
 }
 
+void AudioModule::loadDefaultPreset() 
+{
+  juce::String fileName = getDefaultPresetLocation();
+  juce::File presetFile = juce::File(fileName);
+  if( presetFile.existsAsFile() )
+  {
+    XmlDocument myDocument(presetFile);
+    XmlElement* xmlState = myDocument.getDocumentElement();
+    if( xmlState != nullptr )
+    {
+      setStateFromXml(*xmlState, presetFile.getFileNameWithoutExtension(), true);
+      setActiveFile(presetFile);
+      delete xmlState;
+    }
+  }
+}
+
 bool AudioModule::checkForCrack()
 {
   return false;

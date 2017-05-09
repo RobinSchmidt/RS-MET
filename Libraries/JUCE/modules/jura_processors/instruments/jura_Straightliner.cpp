@@ -35,8 +35,6 @@ StraightlinerAudioModule::StraightlinerAudioModule(CriticalSection *newPlugInLoc
     &wrappedStraightliner->voiceArray[0].ampEnv);
   ampEnvModule->setModuleName(juce::String("AmpEnvelope"));
   addChildAudioModule(ampEnvModule);
-
-
 }
 
 StraightlinerAudioModule::~StraightlinerAudioModule()
@@ -47,27 +45,6 @@ StraightlinerAudioModule::~StraightlinerAudioModule()
 AudioModuleEditor* StraightlinerAudioModule::createEditor()
 {
   return new StraightlinerModuleEditor(lock, this); // get rid of lock parameter
-}
-
-void StraightlinerAudioModule::loadDefaultPreset()
-{
-  // maybe all this logic can be moved into a baseclass, the subclasses only may override a
-  // getDefaultPresetLocation method (which by default returns an empty string in which case
-  // the baseclass method does nothing)
-  juce::String plugInDir  = getApplicationDirectory();
-  juce::String fileName   = plugInDir + juce::String("/StraightlinerPresets/000-InitPatchSawtooth.xml");
-  juce::File   presetFile = juce::File(fileName);
-  if( presetFile.existsAsFile() )
-  {
-    XmlDocument myDocument(presetFile);
-    XmlElement* xmlState = myDocument.getDocumentElement();
-    if( xmlState != nullptr )
-    {
-      setStateFromXml(*xmlState, presetFile.getFileNameWithoutExtension(), true);
-      setActiveFile(presetFile);
-      delete xmlState;
-    }
-  }
 }
 
 void StraightlinerAudioModule::setStateFromXml(const XmlElement &xmlState, 

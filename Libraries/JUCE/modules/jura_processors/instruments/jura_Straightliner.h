@@ -33,7 +33,11 @@ public:
   //---------------------------------------------------------------------------------------------
   // parameter settings:
 
-  virtual void loadDefaultPreset() override;
+  virtual juce::String getDefaultPresetLocation() override 
+  { 
+    return getApplicationDirectory() 
+      + juce::String("/StraightlinerPresets/000-InitPatchSawtooth.xml");
+  }
 
   virtual void setSampleRate(double newSampleRate) override
   {

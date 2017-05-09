@@ -112,9 +112,16 @@ public:
     saveAndRecallMetas = shouldSaveAndRecall; 
   }
 
-  /** Subclasses may override this in order to load a default patch. Called in the Chainer 
-  immediately after the MetaParameterManger has been assigned. */
-  virtual void loadDefaultPreset() {}
+  /** Tries to load the default preset from the location that your subclass can specify by 
+  overriding getDefaultPresetLocation (if you don't oveeride this, this function will have no 
+  effect). It is called in the Chainer immediately after the MetaParameterManger has been 
+  assigned. */
+  virtual void loadDefaultPreset();
+
+  /** Subclasses can override this in order to return a location of a default preset which
+  should be loaded when the module is first plugged in. It will be called inside our 
+  loadDefaultPreset function, which will try to load the preset from the returned location. */
+  virtual juce::String getDefaultPresetLocation() { return juce::String::empty; }
 
   /** Checks, if this is a cracked version and if so, it sets up the appendix for the headline 
   accordingly. Return value informs also whether or not a cracked version was detected. */
