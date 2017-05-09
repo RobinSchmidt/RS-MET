@@ -29,7 +29,7 @@ void PolyphonicInstrumentAudioModule::setInstrumentToWrap(rosic::PolyphonicInstr
 void PolyphonicInstrumentAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
 {
   ScopedLock scopedLock(*lock);
-  AudioModule::parameterRangeChanged(parameterThatHasChanged);
+  AudioModuleWithMidiIn::parameterRangeChanged(parameterThatHasChanged);
 
   if( underlyingRosicInstrument == NULL )
     return;
@@ -67,7 +67,7 @@ void PolyphonicInstrumentAudioModule::setStateFromXml(const XmlElement& xmlState
   const juce::String& stateName, bool markAsClean) 
 {
   underlyingRosicInstrument->allNotesOff();
-  AudioModule::setStateFromXml(xmlState, stateName, markAsClean);
+  AudioModuleWithMidiIn::setStateFromXml(xmlState, stateName, markAsClean);
 }
 
 /*

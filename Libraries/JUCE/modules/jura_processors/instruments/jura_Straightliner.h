@@ -49,29 +49,43 @@ public:
   //---------------------------------------------------------------------------------------------
   // audio processing:
 
-  /** Calculates a stereo-ouput frame. */
-  virtual void getSampleFrameStereo(double* inOutL, double* inOutR)
-  {
-    wrappedStraightliner->getSampleFrameStereo(inOutL, inOutR);
-  }
+  ///** Calculates a stereo-ouput frame. */
+  //virtual void getSampleFrameStereo(double* inOutL, double* inOutR)
+  //{
+  //  wrappedStraightliner->getSampleFrameStereo(inOutL, inOutR);
+  //}
 
-  virtual void processBlockStereo(float *left, float *right, int numSamples)
+  //virtual void processBlockStereo(float *left, float *right, int numSamples)
+  //{
+  //  if(wrappedStraightliner->isSilent())
+  //  {
+  //    rosic::fillWithZeros(left, numSamples);
+  //    rosic::fillWithZeros(right, numSamples);
+  //  }
+  //  else
+  //  {
+  //    for(int n=0; n<numSamples; n++)
+  //    {
+  //      double dL = (double)left[n];
+  //      double dR = (double)right[n];
+  //      wrappedStraightliner->getSampleFrameStereo(&dL, &dR);
+  //      left[n]  = (float)dL;
+  //      right[n] = (float)dR;
+  //    }
+  //  }
+  //}
+
+  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
   {
     if(wrappedStraightliner->isSilent())
     {
-      rosic::fillWithZeros(left, numSamples);
-      rosic::fillWithZeros(right, numSamples);
+      rosic::fillWithZeros(inOutBuffer[0], numSamples);
+      rosic::fillWithZeros(inOutBuffer[1], numSamples);
     }
     else
     {
       for(int n=0; n<numSamples; n++)
-      {
-        double dL = (double)left[n];
-        double dR = (double)right[n];
-        wrappedStraightliner->getSampleFrameStereo(&dL, &dR);
-        left[n]  = (float)dL;
-        right[n] = (float)dR;
-      }
+        wrappedStraightliner->getSampleFrameStereo(&inOutBuffer[0][n], &inOutBuffer[1][n]);
     }
   }
 
