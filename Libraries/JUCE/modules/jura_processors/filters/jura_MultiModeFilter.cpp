@@ -964,11 +964,11 @@ MultiModeFilterModuleEditor::MultiModeFilterModuleEditor(CriticalSection *newPlu
   //automatableSliders.addIfNotAlreadyThere(morphSlider);
   //morphSlider->addListener(this);
 
-  addWidget( transitionSlider = new RSlider("TransitionSlider") );
-  transitionSlider->assignParameter(moduleToEdit->getParameterByName("Transition") );
-  transitionSlider->setSliderName("Transition");
-  transitionSlider->setDescription("Determines the transition when morphing between filter types");
-  transitionSlider->setStringConversionFunction(&valueToString3);
+  //addWidget( transitionSlider = new RSlider("TransitionSlider") );
+  //transitionSlider->assignParameter(moduleToEdit->getParameterByName("Transition") );
+  //transitionSlider->setSliderName("Transition");
+  //transitionSlider->setDescription("Determines the transition when morphing between filter types");
+  //transitionSlider->setStringConversionFunction(&valueToString3);
 
   addWidget( preAllpassSlider = new RSlider("PreAllpassSlider") );
   preAllpassSlider->assignParameter(moduleToEdit->getParameterByName("PreAllpass") );

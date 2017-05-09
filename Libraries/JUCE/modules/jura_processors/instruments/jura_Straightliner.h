@@ -28,7 +28,7 @@ public:
 
   virtual ~StraightlinerAudioModule();
 
-
+  virtual AudioModuleEditor* createEditor() override;
 
   //---------------------------------------------------------------------------------------------
   // parameter settings:

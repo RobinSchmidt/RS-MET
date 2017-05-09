@@ -20,6 +20,7 @@ PolyphonicInstrumentAudioModule::PolyphonicInstrumentAudioModule(CriticalSection
 void PolyphonicInstrumentAudioModule::setInstrumentToWrap(rosic::PolyphonicInstrument *instrumentToWrap)
 {
   underlyingRosicInstrument = instrumentToWrap;
+  initializeAutomatableParameters();
 }
 
 //-------------------------------------------------------------------------------------------------

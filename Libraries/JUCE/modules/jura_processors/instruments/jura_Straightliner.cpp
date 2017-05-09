@@ -48,6 +48,11 @@ StraightlinerAudioModule::~StraightlinerAudioModule()
   delete wrappedStraightliner; // use a std::unique_ptr
 }
 
+AudioModuleEditor* StraightlinerAudioModule::createEditor()
+{
+  return new StraightlinerModuleEditor(lock, this); // get rid of lock parameter
+}
+
 
 void StraightlinerAudioModule::setStateFromXml(const XmlElement &xmlState, 
   const juce::String &stateName, bool markAsClean)
@@ -155,6 +160,8 @@ StraightlinerModuleEditor::StraightlinerModuleEditor(CriticalSection *newPlugInL
                      //loadColourScheme();
   updateSubEditorColourSchemes();
   updateWidgetsAccordingToState();
+
+  setSize(960, 660);
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
@@ -310,12 +317,12 @@ void StraightlinerModuleEditor::paint(Graphics &g)
   fillRectWithBilinearGradient(g, x1, y1, w, h, editorColourScheme.topLeft, editorColourScheme.topRight, 
     gradientColourOsc, gradientColourFlt);  
 
-  // the info-line:
-  y1 = envelopeEditor->getBottom();
-  y2 = getBottom();
-  h  = y2-y1;
-  fillRectWithBilinearGradient(g, x1, y1, w, h, gradientColourEnv, gradientColourEnv, 
-    editorColourScheme.bottomLeft, editorColourScheme.bottomRight);  
+  //// the info-line:
+  //y1 = envelopeEditor->getBottom();
+  //y2 = getBottom();
+  //h  = y2-y1;
+  //fillRectWithBilinearGradient(g, x1, y1, w, h, gradientColourEnv, gradientColourEnv, 
+  //  editorColourScheme.bottomLeft, editorColourScheme.bottomRight);  
 
   Editor::drawHeadline(g);
 }
