@@ -65,7 +65,7 @@ int RTreeViewNode::getNumLeafNodes() const
     return 1;
   int leafs = 0;
   for(int i = 0; i < (int)childNodes.size(); i++)
-    leafs += childNodes.getNumLeafNodes();
+    leafs += childNodes[i]->getNumLeafNodes();
   return leafs;
 }
 
