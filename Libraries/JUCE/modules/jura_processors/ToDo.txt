@@ -1,5 +1,7 @@
 -introduce subtrees: Instruments, Effects, Filters, Analyzers, etc. for Chainer
- -look into Liberty or Quadrifex how this is done
+ -look into Liberty or Quadrifex how this is done - it's in 
+  EffectSelectionPopup::EffectSelectionPopup
+ -Chainer needs redesign: use 
 
 -make available in Chainer (and let it have a custom editor):
  -AciDevil (done)

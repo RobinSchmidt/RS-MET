@@ -75,6 +75,9 @@ QuadrifexAudioModule::~QuadrifexAudioModule()
 {
   ScopedLock scopedLock(*lock);
 
+  // todo: avoid these deletions, using juce::ScopedPointer or std::unique_ptr - we need also get
+  // rid of the deletes in setEffectAlgorithm
+
   for(int i=0; i<rosic::Quadrifex::numEffectSlots; i++)
   {
     delete bitCrusherStates[i]; 

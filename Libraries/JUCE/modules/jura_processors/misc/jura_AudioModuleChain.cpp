@@ -87,13 +87,41 @@ StringArray AudioModuleFactory::getAvailableModuleTypes()
 
 AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector") 
 {
+  // old: linear flat array: 
   setDescription("Select module type");
   StringArray a = AudioModuleFactory::getAvailableModuleTypes();
   for(int i = 0; i < a.size(); i++)
     addItem(i, a[i]); 
+  // ...but we want a tree...
 
-  // maybe later we should use a subclass of TreeView and organize the modules in groups: 
-  // Analysis, Filter, etc.
+
+//  // ...but that does not yet work:
+//  // populate the tree:
+//
+//  RTreeViewNode *node;
+//  int i = 1;           //  the index is actually not used, but we need it as dummy
+//
+//  node = new RTreeViewNode("Analysis", -1, "Analysis");
+//  node->addChildNode(new RTreeViewNode("PhaseScope",      i++));
+//  popUpMenu->addTreeNodeItem(node);
+//
+//  node = new RTreeViewNode("Filters", -1, "Filters");
+//  node->addChildNode(new RTreeViewNode("Ladder",          i++));
+//  node->addChildNode(new RTreeViewNode("PhasorFilter",    i++));
+//  node->addChildNode(new RTreeViewNode("EngineersFilter", i++));
+//  popUpMenu->addTreeNodeItem(node);
+//
+//  node = new RTreeViewNode("Effects", -1, "Effects");
+//  node->addChildNode(new RTreeViewNode("Enveloper",  i++));
+//  node->addChildNode(new RTreeViewNode("FuncShaper", i++));
+//  popUpMenu->addTreeNodeItem(node);
+//
+//  node = new RTreeViewNode("Instruments", -1, "Instruments");
+//  node->addChildNode(new RTreeViewNode("AciDevil", i++));
+//#ifdef _MSC_VER
+//  node->addChildNode(new RTreeViewNode("Liberty",  i++));
+//#endif
+//  popUpMenu->addTreeNodeItem(node);
 }
 
 //=================================================================================================

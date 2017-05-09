@@ -1,7 +1,10 @@
 #ifndef jura_EffectSelectionPopup_h
 #define jura_EffectSelectionPopup_h
 
-/**  This is Popup menu to select an effect-algorithm for Quadrifex. */
+/**  This is Popup menu to select an effect-algorithm for Quadrifex. 
+
+\todo: rename to QuadrifexEffectMenu and maybe move into Quadrifex.h/cpp - it's not used 
+elsewhere. */
 
 class EffectSelectionPopup : public RPopUpMenu
 {
