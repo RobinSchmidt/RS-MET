@@ -1,15 +1,16 @@
+make straightliner work (produce sound)
+
 -introduce subtrees: Instruments, Effects, Filters, Analyzers, etc. for Chainer
  -look into Liberty or Quadrifex how this is done - it's in 
   EffectSelectionPopup::EffectSelectionPopup
- -Chainer needs redesign: use 
 
 -make available in Chainer (and let it have a custom editor):
  -AciDevil (done)
  -FuncShaper (done)
  -EngineersFilter (done)
  -Liberty (done) 
+ -Straightliner (done - but doesn't play sound)
 
- -Straightliner
  -AlgoVerb
  -ChannelMatrix2x2
  -CrossOver

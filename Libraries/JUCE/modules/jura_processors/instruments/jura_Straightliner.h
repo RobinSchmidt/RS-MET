@@ -39,10 +39,6 @@ public:
       wrappedStraightliner->setSampleRate(newSampleRate);
   }
 
-  /** Checks, if this is a cracked version and if so, it sets up the appendix for the headline
-  accordingly. Return value informs also whether or not a cracked version was detected. */
-  virtual bool checkForCrack();
-
   /** Loads the user's custom preferences such as the sample-content path. */
   //virtual void loadPreferences();
 

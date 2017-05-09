@@ -5,14 +5,8 @@
 StraightlinerAudioModule::StraightlinerAudioModule(CriticalSection *newPlugInLock)
 : PolyphonicInstrumentAudioModule(newPlugInLock)
 {
-  //jassert(straightlinerToWrap != NULL); // you must pass a valid rosic-object to the constructor
-  //wrappedStraightliner      = straightlinerToWrap;
-
   wrappedStraightliner = new rosic::Straightliner;
-  //underlyingRosicInstrument = wrappedStraightliner;
   setInstrumentToWrap(wrappedStraightliner);
-
-
   setModuleName(juce::String("Straightliner"));
   setActiveDirectory(getApplicationDirectory() + juce::String("/StraightlinerPresets") );
   //oscSectionEditor->setActiveDirectory(pluginDir + juce::String(T("/StraightlinerPresets/OscSectionPresets")) );
@@ -61,8 +55,8 @@ void StraightlinerAudioModule::setStateFromXml(const XmlElement &xmlState,
   // backwards compatibility:
   int xmlPatchFormat = xmlState.getIntAttribute("PatchFormat", 0);
 
-  // this override is specific to straightliner - in other plugins, we may hopefully rely on the StateManager 
-  // infrastructure...
+  // this override is specific to straightliner - in other plugins, we may hopefully rely on the 
+  // StateManager infrastructure...
   if( xmlPatchFormat == 0 ) // this is an old preset
   {
     // in the old versions, we has the 4 oscillators each as child AudioModule, whereas in newer 
@@ -92,36 +86,6 @@ void StraightlinerAudioModule::setStateFromXml(const XmlElement &xmlState,
     PolyphonicInstrumentAudioModule::setStateFromXml(xmlState, stateName, markAsClean);
 }
 
-bool StraightlinerAudioModule::checkForCrack()
-{
-  /*
-  // when uncommented, this code will result in displaying Straightliner - cracked by ViP 
-  // in the headline:
-  juce::String directoryjuce::String = getApplicationDirectory();
-  File   crackedKeyFile  = File(directoryjuce::String + File::separatorString + juce::String(T("Straightliner.xml")) );
-  if( crackedKeyFile.existsAsFile() )
-  {
-    XmlDocument xmlDoc(crackedKeyFile);
-    XmlElement* xmlKey = xmlDoc.getDocumentElement();
-    if( xmlKey != NULL )
-    {
-      bool result = false;
-      //if( !xmlKey->hasTagName(juce::String(T("Keyfile")))  )
-      if( xmlKey->hasTagName(juce::String(T("Registration")))  )
-      {
-        moduleNameAppendix = juce::String(T(" - cracked by ViP"));
-        result = true;
-      }
-      delete xmlKey;
-      return result;
-    }
-  }
-  \todo: keep strings that deal with copy-protection only in encoded form in memory (maybe not even temporarily) - decode them on-the-fly
-  // while drawing
-  */
-  return false;
-}
-
 //=================================================================================================
 
 StraightlinerModuleEditor::StraightlinerModuleEditor(CriticalSection *newPlugInLock, 
@@ -134,7 +98,8 @@ StraightlinerModuleEditor::StraightlinerModuleEditor(CriticalSection *newPlugInL
   straightlinerAudioModule = newStraightlinerAudioModule;
   stateWidgetSet->setLayout(StateLoadSaveWidgetSet::LABEL_AND_BUTTONS_ABOVE);
 
-  oscSectionEditor = new FourOscSectionModuleEditor(lock, straightlinerAudioModule->oscSectionModule);
+  oscSectionEditor = new FourOscSectionModuleEditor(lock, 
+    straightlinerAudioModule->oscSectionModule);
   addChildEditor( oscSectionEditor );
   oscSectionEditor->setDescriptionField(infoField, true);
 
@@ -142,7 +107,8 @@ StraightlinerModuleEditor::StraightlinerModuleEditor(CriticalSection *newPlugInL
   addChildEditor( filterEditor );
   filterEditor->setDescriptionField(infoField, true);
 
-  envelopeEditor = new BreakpointModulatorEditorMulti(lock, straightlinerAudioModule->pitchEnvModule);
+  envelopeEditor = new BreakpointModulatorEditorMulti(lock, 
+    straightlinerAudioModule->pitchEnvModule);
   envelopeEditor->addModulatorToEdit(straightlinerAudioModule->filterEnvModule);
   envelopeEditor->addModulatorToEdit(straightlinerAudioModule->ampEnvModule);
   envelopeEditor->setModulatorLabel(0, juce::String("Pitch"));
@@ -151,7 +117,8 @@ StraightlinerModuleEditor::StraightlinerModuleEditor(CriticalSection *newPlugInL
   envelopeEditor->selectModulatorToEdit(2); // select amp envelope for editing
   addChildEditor( envelopeEditor );
   envelopeEditor->setHeadlineText(juce::String("Envelopes"));
-  envelopeEditor->setDescription(juce::String("This is the editor for the 3 modulation generators"));
+  envelopeEditor->setDescription(
+    juce::String("This is the editor for the 3 modulation generators"));
   envelopeEditor->addChangeListener(this);
   envelopeEditor->setDescriptionField(infoField, true);
 
@@ -164,14 +131,17 @@ StraightlinerModuleEditor::StraightlinerModuleEditor(CriticalSection *newPlugInL
   setSize(960, 660);
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // callbacks:
 
-void StraightlinerModuleEditor::copyColourSettingsFrom(const ColourSchemeComponent *componentToCopyFrom)
+void StraightlinerModuleEditor::copyColourSettingsFrom(
+  const ColourSchemeComponent *componentToCopyFrom)
 {
   AudioModuleEditor::copyColourSettingsFrom(componentToCopyFrom);
-  oscSectionEditor->setCentralHue(editorColourScheme.getCentralHue() + editorColourScheme.getHueOffset(0));
-  filterEditor->setCentralHue(    editorColourScheme.getCentralHue() + editorColourScheme.getHueOffset(1));
+  oscSectionEditor->setCentralHue(
+    editorColourScheme.getCentralHue() + editorColourScheme.getHueOffset(0));
+  filterEditor->setCentralHue(    
+    editorColourScheme.getCentralHue() + editorColourScheme.getHueOffset(1));
 }
 
 void StraightlinerModuleEditor::updateWidgetsAccordingToState()
@@ -209,8 +179,8 @@ void StraightlinerModuleEditor::paint(Graphics &g)
 {
   if( drawGradientsBasedOnOutlines == false ) 
   {
-    fillRectWithBilinearGradient(g, 0, 0, getWidth(), getHeight(), editorColourScheme.topLeft, editorColourScheme.topRight, 
-      editorColourScheme.bottomLeft, editorColourScheme.bottomRight);  
+    fillRectWithBilinearGradient(g, 0, 0, getWidth(), getHeight(), editorColourScheme.topLeft, 
+      editorColourScheme.topRight, editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
     Editor::drawHeadline(g);
     return;
   }
@@ -274,11 +244,12 @@ void StraightlinerModuleEditor::paint(Graphics &g)
   w2 = w/2;
   w3 = w-w2;
   h  = y2-y1;
-  fillRectWithBilinearGradient(g, x1+w2, y1, w3, h, gradientMidColour, gradientColourOsc, gradientMidColour, gradientColourEnv );
+  fillRectWithBilinearGradient(g, x1+w2, y1, w3, h, gradientMidColour, gradientColourOsc, 
+    gradientMidColour, gradientColourEnv);
 
   mixColour = getMixedColour(gradientColourOsc, gradientColourEnv);
-
-  fillRectWithBilinearGradient(g, x1, y1, w2, h, mixColour, gradientMidColour, mixColour, gradientMidColour );
+  fillRectWithBilinearGradient(g, x1, y1, w2, h, mixColour, gradientMidColour, mixColour, 
+    gradientMidColour );
 
   // the line between filter and filter-env:
   x1 = filterEditor->getX();
@@ -286,11 +257,13 @@ void StraightlinerModuleEditor::paint(Graphics &g)
   w  = x2-x1;
   w2 = w/2;
   w3 = w-w2;
-  fillRectWithBilinearGradient(g, x1, y1, w2, h, gradientColourFlt, gradientMidColour, gradientColourEnv, gradientMidColour);
+  fillRectWithBilinearGradient(g, x1, y1, w2, h, gradientColourFlt, gradientMidColour, 
+    gradientColourEnv, gradientMidColour);
 
   mixColour = getMixedColour(gradientColourFlt, gradientColourEnv);
 
-  fillRectWithBilinearGradient(g, x1+w2, y1, w3, h, gradientMidColour, mixColour, gradientMidColour, mixColour );
+  fillRectWithBilinearGradient(g, x1+w2, y1, w3, h, gradientMidColour, mixColour, 
+    gradientMidColour, mixColour );
 
   // the line left to osc-section and amp-env:
   x1 = 0;
@@ -299,13 +272,15 @@ void StraightlinerModuleEditor::paint(Graphics &g)
   y2 = envelopeEditor->getBottom();
   w  = x2-x1;
   h  = y2-y1;
-  fillRectWithBilinearGradient(g, x1, y1, w, h, gradientColourOsc, gradientColourOsc, gradientColourEnv, gradientColourEnv  );
+  fillRectWithBilinearGradient(g, x1, y1, w, h, gradientColourOsc, gradientColourOsc, 
+    gradientColourEnv, gradientColourEnv  );
 
   // the line right to filter and filter env:
   x1 = filterEditor->getRight();
   x2 = getWidth();
   w  = x2-x1;
-  fillRectWithBilinearGradient(g, x1, y1, w, h, gradientColourFlt, gradientColourFlt, gradientColourEnv, gradientColourEnv  );
+  fillRectWithBilinearGradient(g, x1, y1, w, h, gradientColourFlt, gradientColourFlt, 
+    gradientColourEnv, gradientColourEnv  );
 
   // the global section at the top:
   x1 = 0;
@@ -314,7 +289,8 @@ void StraightlinerModuleEditor::paint(Graphics &g)
   y1 = 0;
   w  = x2-x1;
   h  = y2-y1;
-  fillRectWithBilinearGradient(g, x1, y1, w, h, editorColourScheme.topLeft, editorColourScheme.topRight, 
+  fillRectWithBilinearGradient(g, x1, y1, w, h, editorColourScheme.topLeft, 
+    editorColourScheme.topRight, 
     gradientColourOsc, gradientColourFlt);  
 
   //// the info-line:
@@ -403,25 +379,21 @@ void StraightlinerModuleEditor::resized()
   envelopeEditor->setBounds(x, y, w, h);
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // others:
 
-/*
-void StraightlinerModuleEditor::loadPreferencesFromFile()
-{
-AudioModuleEditor::loadPreferencesFromFile();
-envelopeEditor->copyColourSettingsFrom(this);
-envelopeEditor->repaint();
-}
-*/
-
-/*
-void StraightlinerModuleEditor::setColourSchemeFromXml(const XmlElement& xmlColorScheme)
-{
-PolyphonicInstrumentEditor::setColourSchemeFromXml(xmlColorScheme);
-envelopeEditor->copyColourSettingsFrom(this);
-}
-*/
+//void StraightlinerModuleEditor::loadPreferencesFromFile()
+//{
+//AudioModuleEditor::loadPreferencesFromFile();
+//envelopeEditor->copyColourSettingsFrom(this);
+//envelopeEditor->repaint();
+//}
+//
+//void StraightlinerModuleEditor::setColourSchemeFromXml(const XmlElement& xmlColorScheme)
+//{
+//PolyphonicInstrumentEditor::setColourSchemeFromXml(xmlColorScheme);
+//envelopeEditor->copyColourSettingsFrom(this);
+//}
 
 void StraightlinerModuleEditor::updateSubEditorColourSchemes()
 {
@@ -429,6 +401,8 @@ void StraightlinerModuleEditor::updateSubEditorColourSchemes()
   oscSectionEditor->copyColourSettingsFrom(this);
   filterEditor->copyColourSettingsFrom(this);
 
-  oscSectionEditor->setCentralHue(editorColourScheme.getCentralHue() + editorColourScheme.getHueOffset(0));
-  filterEditor->setCentralHue(    editorColourScheme.getCentralHue() + editorColourScheme.getHueOffset(1));
+  oscSectionEditor->setCentralHue(editorColourScheme.getCentralHue() 
+    + editorColourScheme.getHueOffset(0));
+  filterEditor->setCentralHue(    editorColourScheme.getCentralHue() 
+    + editorColourScheme.getHueOffset(1));
 }
