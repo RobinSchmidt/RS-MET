@@ -47,8 +47,8 @@ void RComboBox::clear(const bool dontSendChangeMessage)
 
 void RComboBox::selectItemByIndex(int indexToSelect, bool sendNotification)
 {
-  jassert( indexToSelect >= 0 && indexToSelect < popUpMenu->getNumItems() );  // index out of range
-  if( indexToSelect < 0 || indexToSelect >= popUpMenu->getNumItems() )
+  jassert( indexToSelect >= 0 && indexToSelect < popUpMenu->getNumTopLevelItems() );  // index out of range
+  if( indexToSelect < 0 || indexToSelect >= popUpMenu->getNumTopLevelItems() )
     return;
 
   popUpMenu->selectItemByIndex(indexToSelect, false);
@@ -66,8 +66,12 @@ void RComboBox::selectItemByIndex(int indexToSelect, bool sendNotification)
 
 void RComboBox::selectItemFromText(const juce::String& textToSelect, bool sendNotification)
 {
-  int numItems = popUpMenu->getNumItems(); // for debug
-  for(int i=0; i<popUpMenu->getNumItems(); i++)
+  // new - does not yet work
+  //popUpMenu->selectItemByText(textToSelect, sendNotification);
+
+  // old - worked only for a flat array of options:
+  int numItems = popUpMenu->getNumTopLevelItems(); // for debug
+  for(int i=0; i<popUpMenu->getNumTopLevelItems(); i++)
   {
     juce::String itemText = getItemText(i); // for debug
     if( getItemText(i) == textToSelect )
@@ -120,8 +124,8 @@ void RComboBox::assignParameter(Parameter* parameterToAssign)
 
 const String RComboBox::getItemText(const int index) const
 {
-  jassert( index >= 0 && index < popUpMenu->getNumItems() );  // index out of range
-  if( index >= 0 && index < popUpMenu->getNumItems() )
+  jassert( index >= 0 && index < popUpMenu->getNumTopLevelItems() );  // index out of range
+  if( index >= 0 && index < popUpMenu->getNumTopLevelItems() )
     return popUpMenu->getItemByIndex(index)->getNodeText();
   else
     return String::empty;

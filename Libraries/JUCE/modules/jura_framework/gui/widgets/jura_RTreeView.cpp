@@ -134,6 +134,27 @@ RTreeViewNode* RTreeViewNode::findNodeByIndentifier(int identifierToFind)
   return NULL;
 }
 
+RTreeViewNode* RTreeViewNode::findNodeByText(const juce::String& textToFind)
+{
+  // the code duplication here really sucks - we have 3 times exactly the same logic - how can
+  // this be avoided?
+  if( nodeText == textToFind )
+    return this;
+  else if( isLeafNode() )
+    return NULL;
+  else
+  {
+    RTreeViewNode *result;
+    for(int i=0; i<childNodes.size(); i++)   
+    {
+      result = childNodes[i]->findNodeByText(textToFind);
+      if( result != NULL )
+        return result;
+    }
+  }
+  return NULL;
+}
+
 RTreeViewNode* RTreeViewNode::getCopy()
 {
   RTreeViewNode *copiedNode = new RTreeViewNode(nodeText, identifier, description, isEnabled, 
@@ -693,6 +714,21 @@ void RTreeLeafNodeSelector::selectNodeByIdentifier(int nodeIdentifierToSelect,
 
   rootNode->setAllNodesUnticked();
   RTreeViewNode *selectedNode = rootNode->findNodeByIndentifier(nodeIdentifierToSelect);
+  if( selectedNode != NULL )
+    selectedNode->setTicked(true);
+
+  if( sendNotification == true )
+    sendNodeChangeNotification(selectedNode);
+}
+
+void RTreeLeafNodeSelector::selectNodeByText(const juce::String& textToSelect, 
+  bool sendNotification)
+{
+  if( rootNode == NULL )
+    return;
+
+  rootNode->setAllNodesUnticked();
+  RTreeViewNode *selectedNode = rootNode->findNodeByText(textToSelect);
   if( selectedNode != NULL )
     selectedNode->setTicked(true);
 

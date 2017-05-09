@@ -77,10 +77,15 @@ public:
   /** Selects the item that has the given index and optionally sends out a notification to our 
   observers. */
   virtual void selectItemByIndex(int itemIndex, bool sendNotification);
+    // is this actually useful? if not, remove...
 
   /** Selects the first item that has the given "itemIdentifier" and optionally sends out a 
   notification to our observers. */
   virtual void selectItemByIdentifier(int itemIdentifier, bool sendNotification);
+
+  /** Selects the first leaf node that matches the given itemText and optionally sends out a 
+  notification to our observers. */
+  virtual void selectItemByText(const juce::String& itemText, bool sendNotification);
 
   /** Sets the item with the given index as ticked (or not). */
   //virtual void setItemTicked(int itemIndex, bool shouldBeTicked);
@@ -108,8 +113,16 @@ public:
     return treeView->getRequiredHeight(ignoreOpenness); 
   }
 
-  /** Returns the number of items in the menu. */
-  virtual int getNumItems() const { return rootNode->getNumChildNodes(); }
+  ///** Returns the number of items in the menu. */
+  //virtual int getNumItems() const { return rootNode->getNumChildNodes(); }
+  // deprecated - too unspecific
+
+  /** Returns the number of top level items in the menu. */
+  virtual int getNumTopLevelItems() const { return rootNode->getNumChildNodes(); }
+
+  /** Returns the number of items in the menu that are actually selectable, i.e. leaf nodes in the
+  tree view. */
+  virtual int getNumSelectableItems() const { return rootNode->getNumLeafNodes(); }
 
   /** Returns a (pointer to) the item with given index (if the index is out of range, a NULL 
   pointer will be returned). */

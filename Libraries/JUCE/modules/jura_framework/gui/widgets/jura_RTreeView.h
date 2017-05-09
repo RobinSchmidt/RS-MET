@@ -123,6 +123,9 @@ public:
   /** Similar to findNodeByData, but searches for a particular identifier. */
   RTreeViewNode* findNodeByIndentifier(int identifierToFind);
 
+  /** Similar to findNodeByData, but searches for a particular text. */
+  RTreeViewNode* findNodeByText(const juce::String& textToFind);
+
   /** From some given node, it returns the next leaf node in the tree. The second argument decides 
   whether we consider only sibling-nodes which are those nodes that are on the same level and 
   branch of the tree. If false is passed, the function will possibly crawl up and/or down the 
@@ -435,10 +438,15 @@ public:
   /** Selects the (direct) child node of this node that has the given index. The second argument 
   decides whether a node-change notification should be sent out to our observers. */
   virtual void selectNodeByIndex(int indexToSelect, bool sendNodeChangeNotification);
+    // maybe delete - doesn't seem to be useful
 
   /** Selects the 1st leaf node that has an identifier that matches the "nodeIdentifierToSelect" 
   parameter. */
   virtual void selectNodeByIdentifier(int nodeIdentifierToSelect, bool sendNodeChangeNotification);
+
+  /** Selects the 1st leaf node that has an identifier that matches the "textToSelect" 
+  parameter. */
+  virtual void selectNodeByText(const juce::String& textToSelect, bool sendNodeChangeNotification);
 
   /** Deselects any node that might be currently selected. If no node is selected, it does 
   nothing. */

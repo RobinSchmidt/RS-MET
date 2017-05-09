@@ -94,12 +94,22 @@ public:
 
   /** Returns the number of items that have been added to the list. Note that this doesn't include 
   headers or separators. */
-  virtual int getNumItems() const { return popUpMenu->getNumItems(); }
+  //virtual int getNumItems() const { return popUpMenu->getNumItems(); }
+  // too unspecific, deprecated in favor of:
+
+  /** Returns the number of items that are in the 1st level of the tree. For a flat array of 
+  choices, this equals the number of possible choices. */
+  virtual int getNumTopLevelItems() const { return popUpMenu->getNumTopLevelItems(); }
+   // this returns the same number that was formerly returned by getNumItems
+
+  /** Returns the number of selectable items, that is the number of leaf nodes in the tree. */
+  virtual int getNumSelectableItems() const { return popUpMenu->getNumSelectableItems(); }
+
 
   /** Returns the text for one of the items in the list. Note that this doesn't include headers or 
   separators. @param index  the item's
   index from 0 to (getNumItems() - 1) */
-  virtual const juce::String getItemText (const int index) const;
+  virtual const juce::String getItemText(const int index) const;
 
   /** Returns the index of the item that is currently active, -1 if none. */
   //virtual int getSelectedItemIndex() const { return currentIndex; }

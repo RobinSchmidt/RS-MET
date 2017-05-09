@@ -51,14 +51,14 @@ void RPopUpMenu::clear()
    
 void RPopUpMenu::setItemText(int index, const juce::String& newText)
 {
-  if( index >= 0 && index < getNumItems() )
-    getItemByIndex(index)->setNodeText(newText);
-  repaint();
+  if( index >= 0 && index < getNumTopLevelItems() ) // maybe we should use an identifier instead
+    getItemByIndex(index)->setNodeText(newText);    // of an index and then do
+  repaint();                                        // getItemByIdentifier(index)->setNodeText(newText)
 }
 
 void RPopUpMenu::setItemEnabled(int index, bool shouldBeEnabled)
 {
-  if( index >= 0 && index < getNumItems() )
+  if( index >= 0 && index < getNumTopLevelItems() )  // see comment i setItemText
     getItemByIndex(index)->setEnabled(shouldBeEnabled);
   repaint();
 }
@@ -73,6 +73,13 @@ void RPopUpMenu::selectItemByIndex(int itemIndex, bool sendNotification)
 void RPopUpMenu::selectItemByIdentifier(int itemIdentifier, bool sendNotification)
 {
   treeView->selectNodeByIdentifier(itemIdentifier, false);
+  if( sendNotification == true )
+    sendPopUpSelectionNotification();
+}
+
+void RPopUpMenu::selectItemByText(const juce::String& itemText, bool sendNotification)
+{
+  treeView->selectNodeByText(itemText, false);
   if( sendNotification == true )
     sendPopUpSelectionNotification();
 }
