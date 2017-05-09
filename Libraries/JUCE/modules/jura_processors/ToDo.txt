@@ -6,20 +6,18 @@
  -EngineersFilter (done)
  -Liberty (done) 
  -Straightliner (done - but buggy)
+ -EasyQ (done)
 
- -EasyQ
+ -MagicCarpet
 
  -AlgoVerb
  -ChannelMatrix2x2
- -CrossOver
-
  -DspWorkbench
  -MultiAnalyzer
  -EchoLab
  -SimpleSampler
  -KeyShot
  -PitchShifter
- -MagicCarpet
  -Quadrifex
  -Quadriga
  -Workhorse
@@ -27,6 +25,7 @@
  -TrackMeter
  -MidiMonitor
  -StereoDelay
+ -CrossOver (does not wor - has 8 outputs)
 
 
 

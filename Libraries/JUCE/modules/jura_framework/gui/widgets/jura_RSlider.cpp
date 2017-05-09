@@ -309,11 +309,15 @@ void RSlider::mouseDrag(const MouseEvent& e)
   if( e.originalComponent != this )
     return; // ignore drag on the label, when it's not 'inside' the actual slider
 
-  double x = e.getMouseDownX() + e.getDistanceFromDragStartX();
+  double scale = 1.0;
+  if(ModifierKeys::getCurrentModifiers().isCtrlDown()) // fine tuning via ctrl
+    scale = 0.0625;
+
+  double x = e.getMouseDownX() + scale * e.getDistanceFromDragStartX();
   double tmpValue;
   if( isEnabled() )
   {
-    if( !e.mods.isRightButtonDown() && !e.mods.isCommandDown() )
+    if( !e.mods.isRightButtonDown() /*&& !e.mods.isCommandDown()*/ )
     {
       tmpValue = proportionOfLengthToValue((double) x / (double) getWidth());
       setValue(constrainAndQuantizeValue(tmpValue), true, false);
@@ -344,7 +348,7 @@ void RSlider::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &w
 
     if( interval > 0.0 )
     {
-      tmpValue = getValue() + scale * s * interval;
+      tmpValue = getValue() + s * interval;
       setValue(constrainAndQuantizeValue(tmpValue), true, false);
     }
     else
@@ -354,6 +358,15 @@ void RSlider::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &w
 
 void RSlider::paint(Graphics& g)
 {
+  // ToDo: allow custom painting by (optionally) delegating it to a painter object :
+  //if(sliderPainter != nullptr)
+  //{
+  //  sliderPainter->paint(this, g);
+  //  return;
+  //}
+  //// ...else the generic rs-met'sh looking slider is painted:
+
+
   int w = getWidth();
   int h = getHeight();
 
