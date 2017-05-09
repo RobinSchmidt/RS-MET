@@ -44,7 +44,8 @@ void RTreeViewNode::setAllNodesWithMatchingIdentifierTicked(int identifierToMatc
 
 void RTreeViewNode::addChildNode(RTreeViewNode *nodeToAdd)
 {
-  childNodes.add(nodeToAdd);
+  //childNodes.add(nodeToAdd);
+  childNodes.push_back(nodeToAdd);
   nodeToAdd->setParentNode(this);
 }
 

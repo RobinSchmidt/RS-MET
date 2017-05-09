@@ -72,7 +72,7 @@ public:
   // inquiry:
 
   /** Returns the number of (direct) child nodes. */
-  virtual int getNumChildNodes() const { return childNodes.size(); }
+  virtual int getNumChildNodes() const { return (int) childNodes.size(); }
 
   /** Returns true when this node has one or more child-nodes, false otherwise. */
   virtual bool hasChildNodes() const { return childNodes.size() > 0; }
@@ -136,16 +136,17 @@ public:
 
 protected:
 
-  // data for maniging the tree-structure:
-  RTreeViewNode               *parentNode;
-  juce::Array<RTreeViewNode*> childNodes;
-  bool deleteChildNodesOnDestruction;
-
   // node-data:
   juce::String nodeText, description;
   int          identifier;  //, level;
   bool         isEnabled, isTicked, isOpen;
   void         *userData; // arbitrary data that is associated with this node
+
+  // data for maniging the tree-structure:
+  RTreeViewNode               *parentNode;
+  //juce::Array<RTreeViewNode*> childNodes;
+  std::vector<RTreeViewNode*> childNodes;
+  bool deleteChildNodesOnDestruction;
 
 private:
 

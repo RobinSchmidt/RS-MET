@@ -66,8 +66,10 @@ void RComboBox::selectItemByIndex(int indexToSelect, bool sendNotification)
 
 void RComboBox::selectItemFromText(const juce::String& textToSelect, bool sendNotification)
 {
+  int numItems = popUpMenu->getNumItems(); // for debug
   for(int i=0; i<popUpMenu->getNumItems(); i++)
   {
+    juce::String itemText = getItemText(i); // for debug
     if( getItemText(i) == textToSelect )
     {
       selectItemByIndex(i, sendNotification);
@@ -75,6 +77,9 @@ void RComboBox::selectItemFromText(const juce::String& textToSelect, bool sendNo
     }
   }
   jassertfalse; // the passed text is not among the items
+  // this function works only when the combobox has a flat array of options - with a tree 
+  // structure, it fails - we need a function getNumLeafNodes instead of getNumItems ...
+  // or something like that
 }
 
 void RComboBox::setStateFromString(const juce::String &stateString, bool sendChangeMessage)
