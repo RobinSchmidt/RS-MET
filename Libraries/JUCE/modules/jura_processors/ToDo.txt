@@ -1,7 +1,4 @@
 -fix bugs in straightliner:
- -doesn't respond to pitch-bend
-  see jura_PolyphonicInstruments setPitchBend
- -it responds to midi controllers - why?
  -tuning file widget set looks weird
  -colors are wrong
  -filter plot doesn't update when dragging around the handle

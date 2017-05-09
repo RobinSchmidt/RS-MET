@@ -45,6 +45,7 @@ public:
   //---------------------------------------------------------------------------------------------
   // audio processing:
 
+  // i think, this code is obsolete now:
   ///** Calculates a stereo-ouput frame. */
   //virtual void getSampleFrameStereo(double* inOutL, double* inOutR)
   //{

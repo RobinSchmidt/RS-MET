@@ -522,6 +522,7 @@ void AudioModuleWithMidiIn::setMidiController(int controllerNumber, float contro
 
 void AudioModuleWithMidiIn::setPitchBend(int pitchBendValue)
 {
+  int dummy = 0;
   //ScopedLock scopedLock(*plugInLock);
   //if( underlyingRosicInstrument != NULL )
   //{

@@ -77,9 +77,11 @@ public:
 
   virtual void setPitchBend(int pitchBendValue) override
   {
-    // seems not to be called..
-    if(underlyingRosicInstrument != NULL)
-      underlyingRosicInstrument->setPitchBend(pitchBendValue);
+    if( underlyingRosicInstrument != NULL )
+    {
+      double wheelValueMapped = (double) (pitchBendValue-8192) / 8192.0; // check this
+      underlyingRosicInstrument->setPitchBend(wheelValueMapped);
+    }
   }
 
   //---------------------------------------------------------------------------------------------

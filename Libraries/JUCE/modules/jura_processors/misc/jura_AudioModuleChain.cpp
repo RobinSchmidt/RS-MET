@@ -318,6 +318,16 @@ void AudioModuleChain::setMidiController(int controllerNumber, float controllerV
   }
 }
 
+void AudioModuleChain::setPitchBend(int pitchBendValue)
+{
+  ScopedLock scopedLock(*lock);
+  for(int i = 0; i < modules.size(); i++){
+    AudioModuleWithMidiIn *m = dynamic_cast<AudioModuleWithMidiIn*> (modules[i]);
+    if(m != nullptr)
+      m->setPitchBend(pitchBendValue);
+  }
+}
+
 void AudioModuleChain::reset()
 {
   ScopedLock scopedLock(*lock);
