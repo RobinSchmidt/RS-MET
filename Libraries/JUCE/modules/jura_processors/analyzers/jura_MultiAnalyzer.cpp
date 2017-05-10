@@ -136,6 +136,11 @@ MultiAnalyzerAudioModule::~MultiAnalyzerAudioModule()
   delete wrappedSpectrumAnalyzer;
 }
 
+AudioModuleEditor* MultiAnalyzerAudioModule::createEditor()
+{
+  return new MultiAnalyzerModuleEditor(lock, this);
+}
+
 
 void MultiAnalyzerAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
 {
@@ -998,6 +1003,8 @@ MultiAnalyzerModuleEditor::MultiAnalyzerModuleEditor(CriticalSection *newPlugInL
 
   loadPreferencesFromFile();
   updateWidgetsAccordingToState();
+
+  setSize(600, 300);
 }
 
 void MultiAnalyzerModuleEditor::rButtonClicked(RButton *buttonThatWasClicked)

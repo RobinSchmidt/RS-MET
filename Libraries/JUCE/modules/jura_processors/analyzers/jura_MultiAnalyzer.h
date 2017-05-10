@@ -135,6 +135,7 @@ public:
 
   virtual ~MultiAnalyzerAudioModule();
 
+  AudioModuleEditor* createEditor() override;
 
   //-----------------------------------------------------------------------------------------------
   // audio-setup and -processing:
