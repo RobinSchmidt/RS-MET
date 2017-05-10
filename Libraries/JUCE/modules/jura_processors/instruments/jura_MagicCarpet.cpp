@@ -61,14 +61,12 @@ void DelayPhaserAudioModule::initializeAutomatableParameters()
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-MagicCarpetAudioModule::MagicCarpetAudioModule(CriticalSection *newPlugInLock, 
-  rosic::MagicCarpet *magicCarpetToWrap)
-: PolyphonicInstrumentAudioModule(newPlugInLock, magicCarpetToWrap)
+MagicCarpetAudioModule::MagicCarpetAudioModule(CriticalSection *newPlugInLock)
+: PolyphonicInstrumentAudioModule(newPlugInLock)
 {
-  jassert(magicCarpetToWrap != NULL); // you must pass a valid rosic-object to the constructor
-  wrappedMagicCarpet        = magicCarpetToWrap;
-  underlyingRosicInstrument = magicCarpetToWrap;
-  moduleName                = juce::String(("MagicCarpet"));
+  wrappedMagicCarpet = new rosic::MagicCarpet;
+  setInstrumentToWrap(wrappedMagicCarpet);
+  moduleName = juce::String(("MagicCarpet"));
 
   // initialize the current directory for preset loading and saving:
   setActiveDirectory(getApplicationDirectory() + juce::String(("/MagicCarpetPresets")) );
@@ -104,8 +102,10 @@ MagicCarpetAudioModule::MagicCarpetAudioModule(CriticalSection *newPlugInLock,
   addChildAudioModule(delayPhaserModule);
 }
 
-//=================================================================================================
-
+MagicCarpetAudioModule::~MagicCarpetAudioModule()
+{
+  delete wrappedMagicCarpet;
+}
 
 //=================================================================================================
 // class MagicCarpetFilterEditor:

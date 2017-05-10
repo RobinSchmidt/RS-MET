@@ -1,3 +1,5 @@
+-remove redundant envelope implementations
+
 take out some stuff that could raise copyright issues:
 -some matrix-stuff - perhaps look into the book, rename variables, add comments
 -references to MatLab prototypes in Orfanidis filters

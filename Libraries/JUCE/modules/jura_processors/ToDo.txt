@@ -44,6 +44,9 @@
  -look into Liberty or Quadrifex how this is done - it's in 
   EffectSelectionPopup::EffectSelectionPopup
 
+-select one plugin where all the repetitive function overrides, i.e. those which are present in
+ all effects/instrumnts are commented, delete the redundant comments elesewhere and refer to
+ the AudiModule where the comments are in the class description.
 
 
 

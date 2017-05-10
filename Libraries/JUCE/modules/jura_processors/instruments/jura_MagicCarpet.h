@@ -29,7 +29,11 @@ class MagicCarpetAudioModule : public PolyphonicInstrumentAudioModule
 public:
 
 
-  MagicCarpetAudioModule(CriticalSection *newPlugInLock, rosic::MagicCarpet *magicCarpetToWrap);
+  MagicCarpetAudioModule(CriticalSection *newPlugInLock);
+
+  virtual ~MagicCarpetAudioModule();
+
+
 
   /** Do we really need to override this ?! */
   virtual void setSampleRate(double newSampleRate)
