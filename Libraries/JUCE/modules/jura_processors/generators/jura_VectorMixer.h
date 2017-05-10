@@ -137,7 +137,7 @@ protected:
   rosic::VectorMixer* vectorMixerToEdit;
 
   /** Radius of the dot-handle to be drawn. */
-  float dotRadius;
+  float dotRadius = 8.f;
 
   Colour dotColour;
 

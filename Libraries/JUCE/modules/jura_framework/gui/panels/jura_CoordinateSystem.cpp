@@ -1318,7 +1318,8 @@ void CoordinateSystem::drawCaption(Graphics &g, Image* targetImage, XmlElement *
   float w = (float) bounds.getWidth();
 
   g.setColour(colourScheme.axes);
-  BitmapFont font = BitmapFontRoundedBoldA10D0::instance;
+  const BitmapFont* font = &BitmapFontRoundedBoldA10D0::instance;
+
   switch( captionPosition )
   {
   case NO_CAPTION: return;
@@ -1326,7 +1327,7 @@ void CoordinateSystem::drawCaption(Graphics &g, Image* targetImage, XmlElement *
     {
       //caption.drawAt(g, 0.5f*getWidth()-0.5f*w, 16);  
       drawBitmapText(g, captionString, 0.5f*getWidth()-0.5f*w, 16, getWidth(), 16,         
-        &font, Justification::centred);
+        font, Justification::centred);
 
       if( targetSVG != NULL )
       {
@@ -1345,9 +1346,9 @@ void CoordinateSystem::drawCaption(Graphics &g, Image* targetImage, XmlElement *
 
       x  = (float)getWidth()/2.f;
       y  = (float)getHeight()/2.f;
-      x -= font.getTextPixelWidth(captionString, font.getDefaultKerning())/2;
-      y -= font.getFontAscent()/2;
-      drawBitmapText(g, captionString, x, y, getWidth(), 16, &font, Justification::topLeft);
+      x -= font->getTextPixelWidth(captionString, font->getDefaultKerning())/2;
+      y -= font->getFontAscent()/2;
+      drawBitmapText(g, captionString, x, y, getWidth(), 16, font, Justification::topLeft);
 
       //drawText(g, captionString, 0.5f*getWidth()-0.5f*w, 0.5f*getHeight()-0.5f*h+8.f, 
       //  getWidth(), 16, Justification::centred);

@@ -215,7 +215,8 @@ public:
   RButton    *loopButton, *muteButton, *soloButton, *phaseRandomizeButton;
   RSlider    *levelSlider, *levelByKeySlider, *levelByVelSlider, *panSlider, *midSideSlider,
     *tuneSlider, *tuneByKeySlider, *tuneByVelSlider, *rootKeySlider, 
-    *startSlider, *startByVelSlider, *loopStartSlider, *loopLengthSlider, 
+    *startSlider, *startByVelSlider,
+    *loopStartSlider, *loopLengthSlider, 
     *lowpassSlider, *highpassSlider,
     *phaseSeedSlider;
   RTextField *ampHeadline, *tuningHeadline, *timeHeadline, *filterHeadline, *miscHeadline;

@@ -862,16 +862,18 @@ SamplePlayerEditorContextMenu::SamplePlayerEditorContextMenu(
   addWidget( timeHeadline = new RTextField( "Time:") );
   timeHeadline->setDescription(juce::String("Time related parameters"));
 
-  addWidget( startSlider = new TuningSlider("StartSlider") );
-  startSlider->assignParameter( samplePlayerModuleToEdit->getParameterByName("Start") );
-  startSlider->setDescription(juce::String("Start point of playback within the sample"));
+  addWidget( startSlider = new TuningSlider("StartSlider") ); // TuningSlider?! surely a bug
+  //startSlider->assignParameter( samplePlayerModuleToEdit->getParameterByName("Start") );
+  //startSlider->setDescription(juce::String("Start point of playback within the sample"));
+  startSlider->setDescription(juce::String("Not yet implemented"));
   startSlider->setStringConversionFunction(&valueToString0);
   //startSlider->addListener(this);
 
   addWidget( startByVelSlider = new RSlider("StartByVelSlider") );
-  startByVelSlider->assignParameter( samplePlayerModuleToEdit->getParameterByName("StartByVel") );
+  //startByVelSlider->assignParameter( samplePlayerModuleToEdit->getParameterByName("StartByVel") );
   startByVelSlider->setSliderName(juce::String("V"));
-  startByVelSlider->setDescription(juce::String("Velocity dependence of the start time"));
+  //startByVelSlider->setDescription(juce::String("Velocity dependence of the start time"));
+  startByVelSlider->setDescription(juce::String("Not yet implemented"));
   startByVelSlider->setStringConversionFunction(&valueToString0);
 
   addWidget( loopButton = new RButton(juce::String("Loop")) );
@@ -914,8 +916,9 @@ SamplePlayerEditorContextMenu::SamplePlayerEditorContextMenu(
   //phaseRandomizeButton->addRButtonListener(this);
 
   addWidget( phaseSeedSlider = new TuningSlider("PhaseRandomizeSeedSlider") );
-  phaseSeedSlider->assignParameter( samplePlayerModuleToEdit->getParameterByName("PhaseSeed") );
-  phaseSeedSlider->setDescription(juce::String("Seed for the random phases"));
+  //phaseSeedSlider->assignParameter( samplePlayerModuleToEdit->getParameterByName("PhaseSeed") );
+  //phaseSeedSlider->setDescription(juce::String("Seed for the random phases"));
+  phaseSeedSlider->setDescription(juce::String("Not yet implemented"));
   phaseSeedSlider->setStringConversionFunction(&valueToString0);
   //phaseSeedSlider->addListener(this);
 

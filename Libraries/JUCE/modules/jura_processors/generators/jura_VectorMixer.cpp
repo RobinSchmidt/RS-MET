@@ -370,10 +370,18 @@ void VectorMixerPad::drawCoordinateSystem(Graphics &g, juce::Image* targetImage,
   g.fillEllipse((float) (x-dotRadius), (float) (y-dotRadius), 
     (float) (2*dotRadius), (float) (2*dotRadius) );
   g.setColour(dotColour.withAlpha(0.4f));
-  float w = (float) getPlotWidth(targetImage);
-  float h = (float) getPlotHeight(targetImage);
+
+  // test this:
+  float w = (float) getWidth();
+  float h = (float) getHeight();
   g.drawLine(       0,(float)y,        w, (float)y, 1.f);  // horizontal
   g.drawLine((float)x,       0, (float)x,        h, 1.f);  // vertical
+
+  //// old, buggy:
+  //float w = (float) getPlotWidth(targetImage);
+  //float h = (float) getPlotHeight(targetImage);
+  //g.drawLine(       0,(float)y,        w, (float)y, 1.f);  // horizontal
+  //g.drawLine((float)x,       0, (float)x,        h, 1.f);  // vertical
 }
 
 //=================================================================================================

@@ -5,10 +5,9 @@
  -FuncShaper (done)
  -EngineersFilter (done)
  -Liberty (done) 
- -Straightliner (done - but buggy)
+ -Straightliner (done)
  -EasyQ (done)
-
- -MagicCarpet
+ -MagicCarpet (done)
 
  -AlgoVerb
  -ChannelMatrix2x2
@@ -29,7 +28,7 @@
 
 
 
--fix bugs in straightliner:
+-Straightliner bugs:
  -tuning file widget set looks weird (the box is missing), also it should not show ".xml"
  -loading a tuning file doesn't work. apparently we have used illegal xml attribute names 
   (beginning with a number) - revise the tuning file format, maybe preprend "Key" or just "K"
@@ -38,6 +37,18 @@
  -patch AnalogMeetsChipTune: pitch-env is not in stairstep mode
   -maybe check with enveloper
  -filter plot doesn't update when dragging around the handle
+-MagicCarpet bugs:
+ -gui messed up
+ -memory leaks on shutdown
+
+
+
+ replace things like:
+ BitmapFont font = BitmapFontRoundedBoldA10D0::instance;
+ with:
+ const BitmapFont* font = &BitmapFontRoundedBoldA10D0::instance;
+ and use the pointer for the text-drawing. otherwise a local object is created which gives rise to
+ access violations on destruction of the local object
 
 
 -introduce subtrees: Instruments, Effects, Filters, Analyzers, etc. for Chainer

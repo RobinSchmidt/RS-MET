@@ -33,6 +33,8 @@ public:
 
   virtual ~MagicCarpetAudioModule();
 
+  AudioModuleEditor* createEditor() override;
+
 
 
   /** Do we really need to override this ?! */

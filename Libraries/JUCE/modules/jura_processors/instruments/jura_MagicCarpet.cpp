@@ -107,6 +107,11 @@ MagicCarpetAudioModule::~MagicCarpetAudioModule()
   delete wrappedMagicCarpet;
 }
 
+AudioModuleEditor* MagicCarpetAudioModule::createEditor()
+{
+  return new MagicCarpetModuleEditor(lock, this);
+}
+
 //=================================================================================================
 // class MagicCarpetFilterEditor:
 
@@ -117,23 +122,28 @@ MagicCarpetFilterEditor::MagicCarpetFilterEditor(CriticalSection *newPlugInLock,
   setPresetSectionPosition(INVISIBLE);
 
   addWidget( frequencyByKeySlider = new RSlider("FrequencyByKeySlider") );
-  frequencyByKeySlider->assignParameter( moduleToEdit->getParameterByName("FrequencyByKey") );
-  frequencyByKeySlider->setDescription(juce::String("Key dependency of the characteristic frequency"));
+  //frequencyByKeySlider->assignParameter( moduleToEdit->getParameterByName("FrequencyByKey") );
+  //frequencyByKeySlider->setDescription(juce::String("Key dependency of the characteristic frequency"));
+  frequencyByKeySlider->setDescription(juce::String("Not yet implemented"));
   frequencyByKeySlider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( frequencyByVelSlider = new RSlider(("FrequencyByVelSlider")));
-  frequencyByVelSlider->assignParameter( moduleToEdit->getParameterByName("FrequencyByVel") );
-  frequencyByVelSlider->setDescription(juce::String(("Velocity dependency of the characteristic frequency")));
+  //frequencyByVelSlider->assignParameter( moduleToEdit->getParameterByName("FrequencyByVel") );
+  //frequencyByVelSlider->setDescription(juce::String(("Velocity dependency of the characteristic frequency")));
+  frequencyByVelSlider->setDescription(juce::String(("Not yet implemented")));
   frequencyByVelSlider->setStringConversionFunction(&percentToStringWithUnit1);
 
   addWidget( gainByKeySlider = new RSlider (("GainByKeySlider")) );
-  gainByKeySlider->assignParameter( moduleToEdit->getParameterByName("GainByKey") );
-  gainByKeySlider->setDescription(juce::String(("Key dependency of the gain")));
+  //gainByKeySlider->assignParameter( moduleToEdit->getParameterByName("GainByKey") );
+  //gainByKeySlider->setDescription(juce::String(("Key dependency of the gain")));
+  gainByKeySlider->setDescription(juce::String(("Not yet implemented")));
   gainByKeySlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
+
   addWidget( gainByVelSlider = new RSlider (("GainByVelSlider")) );
-  gainByVelSlider->assignParameter( moduleToEdit->getParameterByName("GainByVel") );
-  gainByVelSlider->setDescription(juce::String(("Velocity dependency of the gain")));
+  //gainByVelSlider->assignParameter( moduleToEdit->getParameterByName("GainByVel") );
+  //gainByVelSlider->setDescription(juce::String(("Velocity dependency of the gain")));
+  gainByVelSlider->setDescription(juce::String(("Not yet implemented")));
   gainByVelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   bandwidthSlider->setSliderName(juce::String(("BW")));
@@ -185,7 +195,8 @@ PhaserModuleEditorCompact::PhaserModuleEditorCompact(CriticalSection *newPlugInL
   setPresetSectionPosition(AudioModuleEditor::INVISIBLE);
 
   addWidget( onOffButton = new RButton(juce::String(("OnOffButton"))) );
-  onOffButton->assignParameter( moduleToEdit->getParameterByName(("Activated")) );
+  //onOffButton->assignParameter( moduleToEdit->getParameterByName(("Activated")) );
+  onOffButton->setDescription(juce::String(("Not yet implemented")));
   onOffButton->updateWidgetFromAssignedParameter(false); // shouldn't this happen automatically?
 
   addWidget( secondOrderButton = new RButton(juce::String(("SecondOrderButton"))) );
@@ -426,6 +437,8 @@ MagicCarpetModuleEditor::MagicCarpetModuleEditor(CriticalSection *newPlugInLock,
 
   // set up the widgets:
   updateWidgetsAccordingToState();
+
+  setSize(800, 600);
 }
 
 //-------------------------------------------------------------------------------------------------

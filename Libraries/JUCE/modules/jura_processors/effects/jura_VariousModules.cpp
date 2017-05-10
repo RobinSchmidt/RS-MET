@@ -2592,8 +2592,9 @@ FourPoleFilterModuleEditor::FourPoleFilterModuleEditor(CriticalSection *newPlugI
   gainSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
   addWidget( bandwidthSlider = new RSlider (("BandwidthSlider")) );
-  bandwidthSlider->assignParameter( moduleToEdit->getParameterByName("Bandwidth") );
-  bandwidthSlider->setDescription(juce::String(("Bandwidth of the filter")));
+  //bandwidthSlider->assignParameter( moduleToEdit->getParameterByName("Bandwidth") );
+  //bandwidthSlider->setDescription(juce::String(("Bandwidth of the filter")));
+  bandwidthSlider->setDescription(juce::String(("Not yet implemented")));
   bandwidthSlider->setDescriptionField(infoField);
   bandwidthSlider->setStringConversionFunction(&octavesToStringWithUnit2);
 

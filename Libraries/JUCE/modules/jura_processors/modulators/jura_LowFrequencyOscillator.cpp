@@ -302,14 +302,16 @@ LowFrequencyOscillatorEditor::LowFrequencyOscillatorEditor(CriticalSection *newP
   cycleLengthSlider->setStringConversionFunction(beatsToStringWithUnit4);
 
   addWidget( depthSlider = new RSlider("DepthSlider") );
-  depthSlider->assignParameter( moduleToEdit->getParameterByName("Depth") );
-  depthSlider->setDescription(juce::String("Depth of the LFO modulation (in percent)"));
+  //depthSlider->assignParameter( moduleToEdit->getParameterByName("Depth") );
+  //depthSlider->setDescription(juce::String("Depth of the LFO modulation (in percent)"));
+  depthSlider->setDescription(juce::String("Not yet implemented"));
   depthSlider->setStringConversionFunction(percentToStringWithUnit1);
 
   addWidget( tempoSyncButton = new RButton(juce::String("TempoSync")) );
-  tempoSyncButton->assignParameter( moduleToEdit->getParameterByName("TempoSync") );
+  //tempoSyncButton->assignParameter( moduleToEdit->getParameterByName("TempoSync") );
   tempoSyncButton->setButtonText(juce::String("Sync"));
-  tempoSyncButton->setDescription(juce::String("Toggle tempo synchronization on/off"));
+  //tempoSyncButton->setDescription(juce::String("Toggle tempo synchronization on/off"));
+  tempoSyncButton->setDescription(juce::String("Not yet implemented"));
   tempoSyncButton->setDescriptionField(infoField);
   tempoSyncButton->setClickingTogglesState(true);
   tempoSyncButton->addRButtonListener(this);
