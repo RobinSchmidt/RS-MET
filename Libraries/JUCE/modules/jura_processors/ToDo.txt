@@ -11,9 +11,10 @@
  -AlgoVerb (preliminary)
  -EchoLab (preliminary)
 
+ -MultiAnalyzer
+
  -ChannelMatrix2x2
  -DspWorkbench
- -MultiAnalyzer
  -SimpleSampler
  -KeyShot
  -PitchShifter

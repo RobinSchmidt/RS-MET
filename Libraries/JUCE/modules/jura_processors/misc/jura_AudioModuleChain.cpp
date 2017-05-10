@@ -3,8 +3,9 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
   if(type == "None")         return new DummyModule( lock);
 
   // analysis:
-  if(type == "PhaseScope")   return new PhaseScope(  lock);
+  if(type == "PhaseScope")    return new PhaseScope(              lock);
   //if(type == "PhaseScope2")  return new PhaseScope2( lock);
+  if(type == "MultiAnalyzer") return new MultiAnalyzerAudioModule(lock);
 
   // filters: 
   if(type == "Equalizer")       return new EqualizerAudioModule(      lock);
@@ -38,6 +39,7 @@ juce::String AudioModuleFactory::getModuleType(AudioModule *m)
   // analysis:
   //if(dynamic_cast<PhaseScope2*>  (m))            return "PhaseScope2"; // always check subclasses before...
   if(dynamic_cast<PhaseScope*>   (m))              return "PhaseScope";  // ...their superclasses
+  if(dynamic_cast<MultiAnalyzerAudioModule*> (m))  return "MultiAnalyzer"; 
 
   // filters:
   if(dynamic_cast<EqualizerAudioModule*>(m))       return "Equalizer";
@@ -73,6 +75,7 @@ StringArray AudioModuleFactory::getAvailableModuleTypes()
 
   // analysis:
   a.add("PhaseScope");
+  a.add("MultiAnalyzer");
   //a.add("PhaseScope2");
 
   // filters:

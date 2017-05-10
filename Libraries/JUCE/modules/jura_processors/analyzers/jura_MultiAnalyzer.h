@@ -28,9 +28,14 @@ class OscilloscopeAudioModule : public AudioModule
 
 public:
 
-  OscilloscopeAudioModule(CriticalSection *newPlugInLock, rosic::SyncedWaveformDisplayBuffer *displayBufferToUse);
+  OscilloscopeAudioModule(CriticalSection *newPlugInLock, 
+    rosic::SyncedWaveformDisplayBuffer *displayBufferToUse);
+
   virtual void parameterChanged(Parameter* parameterThatHasChanged);
-  virtual void setSampleRate(double newSampleRate) { waveformDisplayBuffer->setSampleRate(newSampleRate); }
+  virtual void setSampleRate(double newSampleRate) override
+  { 
+    waveformDisplayBuffer->setSampleRate(newSampleRate); 
+  }
 
   virtual void processBlockStereo(float *left, float *right, int numSamples)
   {
@@ -51,14 +56,10 @@ protected:
 
 };
 
+//=================================================================================================
 
-//=======================================================================================================================================
-
-/**
-
-This class wraps rosic::SpectrumAnalyzer into a rosof::AudioModule to facilitate its use as plugIn.
-
-*/
+/** This class wraps rosic::SpectrumAnalyzer into a rosof::AudioModule to facilitate its use as 
+plugIn. */
 
 class SpectrumAnalyzerAudioModule : public AudioModule
 {
@@ -69,9 +70,13 @@ class SpectrumAnalyzerAudioModule : public AudioModule
 
 public:
 
-  SpectrumAnalyzerAudioModule(CriticalSection *newPlugInLock, rosic::SpectrumAnalyzer *spectrumAnalyzerToWrap);
+  SpectrumAnalyzerAudioModule(CriticalSection *newPlugInLock, 
+    rosic::SpectrumAnalyzer *spectrumAnalyzerToWrap);
   virtual void parameterChanged(Parameter* parameterThatHasChanged);
-  virtual void setSampleRate(double newSampleRate) { wrappedSpectrumAnalyzer->setSampleRate(newSampleRate); }
+  virtual void setSampleRate(double newSampleRate) override
+  { 
+    wrappedSpectrumAnalyzer->setSampleRate(newSampleRate); 
+  }
   virtual void getSampleFrameStereo(double* inOutL, double* inOutR)
   {
     wrappedSpectrumAnalyzer->measureSampleFrameStereo(inOutL, inOutR);
@@ -99,12 +104,11 @@ protected:
 
 };
 
-//=======================================================================================================================================
+//=================================================================================================
 
-/**
-
-This class is a analyzer with different analysis-modes (currently oscilloscope and spectrum analysis)
-
+/** This class is a analyzer with different analysis-modes (currently oscilloscope and spectrum 
+analysis) 
+todo: add xy-scope, metering, spectrogram, pitch-detection, etc.
 */
 
 class MultiAnalyzerAudioModule : public AudioModule
@@ -120,13 +124,19 @@ public:
     SPECTRUM_ANALYZER
   };
 
-  //-------------------------------------------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
   // construction/destruction:
 
-  MultiAnalyzerAudioModule(CriticalSection *newPlugInLock, OscilloscopeAudioModule *newOscilloscopeModule,
-    SpectrumAnalyzerAudioModule *newSpectrumAnalyzerModule);
+  //MultiAnalyzerAudioModule(CriticalSection *newPlugInLock, 
+  //  OscilloscopeAudioModule *newOscilloscopeModule,
+  //  SpectrumAnalyzerAudioModule *newSpectrumAnalyzerModule);
 
-  //-------------------------------------------------------------------------------------------------------------------------------------
+  MultiAnalyzerAudioModule(CriticalSection *newPlugInLock);
+
+  virtual ~MultiAnalyzerAudioModule();
+
+
+  //-----------------------------------------------------------------------------------------------
   // audio-setup and -processing:
 
   /** Selects one of the analysis modes. @see: modes */
@@ -142,8 +152,8 @@ public:
 
   virtual void setSampleRate(double newSampleRate)
   {
-    // preliminary - implement functions in the classes of the emebedded objects and rely on baseclass implementation to iterate over
-    // child audio modules
+    // preliminary - implement functions in the classes of the emebedded objects and rely on 
+    // baseclass implementation to iterate over child audio modules
     spectrumAnalyzerModule->wrappedSpectrumAnalyzer->setSampleRate(newSampleRate);
     oscilloscopeModule->waveformDisplayBuffer->setSampleRate(newSampleRate);
   }
@@ -197,6 +207,8 @@ protected:
 
   OscilloscopeAudioModule     *oscilloscopeModule;
   SpectrumAnalyzerAudioModule *spectrumAnalyzerModule;
+  rosic::SyncedWaveformDisplayBuffer *wrappedDisplayBuffer;
+  rosic::SpectrumAnalyzer *wrappedSpectrumAnalyzer;
 
   virtual void initializeAutomatableParameters();
 

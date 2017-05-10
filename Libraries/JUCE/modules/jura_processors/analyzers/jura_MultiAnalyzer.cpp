@@ -101,17 +101,22 @@ void SpectrumAnalyzerAudioModule::initializeAutomatableParameters()
 //=================================================================================================
 // class MultiAnalyzerAudioModule:
 
-MultiAnalyzerAudioModule::MultiAnalyzerAudioModule(CriticalSection *newPlugInLock, 
-                                                   OscilloscopeAudioModule *newOscilloscopeModule, 
-                                                   SpectrumAnalyzerAudioModule *newSpectrumAnalyzerModule)
-                                                    : AudioModule(newPlugInLock)
+MultiAnalyzerAudioModule::MultiAnalyzerAudioModule(CriticalSection *newPlugInLock
+  //, OscilloscopeAudioModule *newOscilloscopeModule
+  //, SpectrumAnalyzerAudioModule *newSpectrumAnalyzerModule
+  )                                                  
+  : AudioModule(newPlugInLock)
 {
-  oscilloscopeModule     = newOscilloscopeModule;
-  spectrumAnalyzerModule = newSpectrumAnalyzerModule;
+  //oscilloscopeModule     = newOscilloscopeModule;
+  //spectrumAnalyzerModule = newSpectrumAnalyzerModule;
 
-  jassert( oscilloscopeModule     != NULL );
-  jassert( spectrumAnalyzerModule != NULL );
+  //jassert( oscilloscopeModule     != NULL );
+  //jassert( spectrumAnalyzerModule != NULL );
 
+  wrappedDisplayBuffer    = new rosic::SyncedWaveformDisplayBuffer;
+  wrappedSpectrumAnalyzer = new rosic::SpectrumAnalyzer ;
+  oscilloscopeModule      = new OscilloscopeAudioModule(lock, wrappedDisplayBuffer);
+  spectrumAnalyzerModule  = new SpectrumAnalyzerAudioModule(lock, wrappedSpectrumAnalyzer);
   addChildAudioModule(oscilloscopeModule);
   addChildAudioModule(spectrumAnalyzerModule);
 
@@ -120,6 +125,15 @@ MultiAnalyzerAudioModule::MultiAnalyzerAudioModule(CriticalSection *newPlugInLoc
 
   initializeAutomatableParameters();
 }
+
+MultiAnalyzerAudioModule::~MultiAnalyzerAudioModule()
+{
+  delete oscilloscopeModule;
+  delete spectrumAnalyzerModule;
+  delete wrappedDisplayBuffer;
+  delete wrappedSpectrumAnalyzer;
+}
+
 
 void MultiAnalyzerAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
 {
