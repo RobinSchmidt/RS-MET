@@ -125,7 +125,16 @@ class EchoLabAudioModule : public AudioModule
 
 public:
 
-  EchoLabAudioModule(CriticalSection *newPlugInLock, rosic::EchoLab *delayDesignerToWrap);   
+  EchoLabAudioModule(CriticalSection *newPlugInLock, rosic::EchoLab *echoLabToWrap = nullptr);   
+
+  virtual ~EchoLabAudioModule();
+
+  //AudioModuleEditor* createEditor() override;
+
+
+
+
+
 
   virtual void parameterChanged(Parameter* parameterThatHasChanged);
 
@@ -158,9 +167,10 @@ protected:
 
   //CriticalSection wrappedEchoLabLock;
 
-  rosic::EchoLab              *wrappedEchoLab;
+  rosic::EchoLab *wrappedEchoLab;
+  bool wrappedEchoLabIsOwned = false;
 
-  juce::Array<EchoLabDelayLineAudioModule*> delayLineModules;
+  juce::Array<EchoLabDelayLineAudioModule*> delayLineModules; // use std::vector
 
   //EchoLabDelayLineAudioModule               *selectedDelayLineModule;
 

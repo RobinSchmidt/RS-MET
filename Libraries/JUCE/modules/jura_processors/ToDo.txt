@@ -8,12 +8,12 @@
  -Straightliner (done)
  -EasyQ (done)
  -MagicCarpet (done)
+ -AlgoVerb (preliminary)
+ -EchoLab (preliminary)
 
- -AlgoVerb
  -ChannelMatrix2x2
  -DspWorkbench
  -MultiAnalyzer
- -EchoLab
  -SimpleSampler
  -KeyShot
  -PitchShifter
@@ -24,7 +24,7 @@
  -TrackMeter
  -MidiMonitor
  -StereoDelay
- -CrossOver (does not wor - has 8 outputs)
+ -CrossOver (does not work - has 8 outputs)
 
 
 
@@ -39,7 +39,9 @@
  -filter plot doesn't update when dragging around the handle
 -MagicCarpet bugs:
  -gui messed up
+ -some parameters missing
  -memory leaks on shutdown
+ -probably doesn't produce sound yet (not tested)
 
 
 

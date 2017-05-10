@@ -369,11 +369,19 @@ void EchoLabDelayLineModuleEditor::updateWidgetVisibility()
 
 // construction/destruction:
 
-EchoLabAudioModule::EchoLabAudioModule(CriticalSection *newPlugInLock, rosic::EchoLab *delayDesignerToWrap)
-  : AudioModule(newPlugInLock)
+EchoLabAudioModule::EchoLabAudioModule(CriticalSection *newPlugInLock, 
+  rosic::EchoLab *echoLabToWrap) : AudioModule(newPlugInLock)
 {
-  jassert(delayDesignerToWrap != NULL); // you must pass a valid rosic-object to the constructor
-  wrappedEchoLab = delayDesignerToWrap;
+  //jassert(echoLabToWrap != NULL); // you must pass a valid rosic-object to the constructor
+
+  if(echoLabToWrap != nullptr)
+    wrappedEchoLab = echoLabToWrap;
+  else
+  {
+    wrappedEchoLab = new rosic::EchoLab;
+    wrappedEchoLabIsOwned = true;
+  }
+
   moduleName = juce::String("EchoLab");
   setActiveDirectory(getApplicationDirectory() + juce::String("/EchoLabPresets") );
 
@@ -385,6 +393,17 @@ EchoLabAudioModule::EchoLabAudioModule(CriticalSection *newPlugInLock, rosic::Ec
 
   initializeAutomatableParameters();
 }
+
+EchoLabAudioModule::~EchoLabAudioModule()
+{
+  if(wrappedEchoLabIsOwned)
+    delete wrappedEchoLab;
+}
+
+//AudioModuleEditor* EchoLabAudioModule::createEditor()
+//{
+//  return new jura::EchoLabModuleEditor(lock, this); // get rid of passing the lock
+//}
 
 // setup:
 
@@ -1336,6 +1355,7 @@ EchoLabModuleEditor::EchoLabModuleEditor(CriticalSection *newPlugInLock, EchoLab
 
   initializeColourScheme();
   updateWidgetsAccordingToState();
+  setSize(600, 300);
 }
 
 

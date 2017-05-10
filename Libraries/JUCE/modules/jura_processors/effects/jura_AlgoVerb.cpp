@@ -29,11 +29,10 @@ AlgoVerbAudioModule::~AlgoVerbAudioModule()
     delete wrappedAlgoVerb;
 }
 
-//AudioModuleEditor* AlgoVerbAudioModule::createEditor()
-//{
-//  return new jura::AlgoVerbModuleEditor(lock, this); // get rid of passing the lock
-//}
-
+AudioModuleEditor* AlgoVerbAudioModule::createEditor()
+{
+  return new jura::AlgoVerbModuleEditor(lock, this); // get rid of passing the lock
+}
 
 //-------------------------------------------------------------------------------------------------
 // automation:

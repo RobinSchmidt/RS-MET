@@ -16,6 +16,8 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
   if(type == "Enveloper")    return new Enveloper(            lock);
   if(type == "FuncShaper")   return new FuncShaperAudioModule(lock);
   if(type == "AlgoVerb")     return new AlgoVerbAudioModule(  lock);
+  if(type == "EchoLab")      return new EchoLabAudioModule(   lock);
+
 
   // instruments:
   if(type == "AciDevil")      return new AciDevilAudioModule(     lock);
@@ -47,7 +49,7 @@ juce::String AudioModuleFactory::getModuleType(AudioModule *m)
   if(dynamic_cast<Enveloper*>(m))                  return "Enveloper";
   if(dynamic_cast<FuncShaperAudioModule*>(m))      return "FuncShaper";
   if(dynamic_cast<AlgoVerbAudioModule*>(m))        return "AlgoVerb";
-
+  if(dynamic_cast<EchoLabAudioModule*>(m))         return "EchoLab";
 
   // instruments:
   if(dynamic_cast<AciDevilAudioModule*> (m))       return "AciDevil";
@@ -83,6 +85,7 @@ StringArray AudioModuleFactory::getAvailableModuleTypes()
   a.add("Enveloper");
   a.add("FuncShaper");
   //a.add("AlgoVerb");  // currently inactive - not yet complete
+  a.add("EchoLab");
 
   // instruments:
   a.add("AciDevil");
