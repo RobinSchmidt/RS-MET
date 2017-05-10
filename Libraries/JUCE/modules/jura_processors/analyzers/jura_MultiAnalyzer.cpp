@@ -128,8 +128,10 @@ MultiAnalyzerAudioModule::MultiAnalyzerAudioModule(CriticalSection *newPlugInLoc
 
 MultiAnalyzerAudioModule::~MultiAnalyzerAudioModule()
 {
-  delete oscilloscopeModule;
-  delete spectrumAnalyzerModule;
+  removeChildAudioModule(oscilloscopeModule, true);
+  removeChildAudioModule(spectrumAnalyzerModule, true);
+  //delete oscilloscopeModule;
+  //delete spectrumAnalyzerModule;
   delete wrappedDisplayBuffer;
   delete wrappedSpectrumAnalyzer;
 }
