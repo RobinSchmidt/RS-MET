@@ -5,11 +5,30 @@ StereoDelayAudioModule::StereoDelayAudioModule(CriticalSection *newPlugInLock,
   rosic::StereoDelay *stereoDelayToWrap)
 : AudioModule(newPlugInLock)
 {
-  jassert(stereoDelayToWrap != NULL); // you must pass a valid rosic-object to the constructor
-  wrappedStereoDelay = stereoDelayToWrap;
+  //jassert(stereoDelayToWrap != NULL); // you must pass a valid rosic-object to the constructor
+
+  if( stereoDelayToWrap != nullptr)
+    wrappedStereoDelay = stereoDelayToWrap;
+  else
+  {
+    wrappedStereoDelay = new rosic::StereoDelay;
+    wrappedStereoDelayIsOwned = true;
+  }
   moduleName = juce::String("StereoDelay");
   setActiveDirectory(getApplicationDirectory() + juce::String(("/StereoDelayPresets")) );
   initializeAutomatableParameters();
+}
+
+StereoDelayAudioModule::~StereoDelayAudioModule()
+{
+  if(wrappedStereoDelayIsOwned)
+    delete wrappedStereoDelay;
+}
+
+AudioModuleEditor* StereoDelayAudioModule::createEditor()
+{
+
+  return new StereoDelayModuleEditor(lock, this);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -555,6 +574,8 @@ StereoDelayModuleEditor::StereoDelayModuleEditor(CriticalSection *newPlugInLock,
 
   // set up the widgets:
   updateWidgetsAccordingToState();
+
+  setSize(360, 410);
 }
 
 /*

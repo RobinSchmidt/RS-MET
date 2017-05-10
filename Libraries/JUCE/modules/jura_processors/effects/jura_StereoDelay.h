@@ -11,7 +11,12 @@ public:
   //---------------------------------------------------------------------------------------------
   // construction/destruction:
 
-  StereoDelayAudioModule(CriticalSection *newPlugInLock, rosic::StereoDelay *stereoDelayToWrap);
+  StereoDelayAudioModule(CriticalSection *newPlugInLock, 
+    rosic::StereoDelay *stereoDelayToWrap = nullptr);
+
+  virtual ~StereoDelayAudioModule();
+
+  AudioModuleEditor* createEditor() override;
 
   //---------------------------------------------------------------------------------------------
   // automation and state management:
@@ -58,6 +63,8 @@ protected:
   void initializeAutomatableParameters();
 
   rosic::StereoDelay *wrappedStereoDelay;
+  bool wrappedStereoDelayIsOwned = false;
+
 
   juce_UseDebuggingNewOperator;
 };
