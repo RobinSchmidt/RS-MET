@@ -1,5 +1,4 @@
 
-
 -make available in Chainer (and let it have a custom editor):
  -AciDevil (done)
  -FuncShaper (done)
@@ -11,8 +10,9 @@
  -AlgoVerb (preliminary)
  -EchoLab (preliminary)
  -MultiAnalyzer (done - doesn't show anything, needs to override processBlock)
+ -StereoDelay (done)
 
- -StereoDelay
+ -TrackMeter
 
  -ChannelMatrix2x2
  -DspWorkbench
@@ -23,7 +23,7 @@
  -Quadriga
  -Workhorse
  -Moduluxury
- -TrackMeter
+
  -MidiMonitor
 
  -CrossOver (does not work - has 8 outputs)

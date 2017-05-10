@@ -8,7 +8,12 @@ class TrackMeterAudioModule : public AudioModule
 
 public:
 
-  TrackMeterAudioModule(CriticalSection *newPlugInLock, rosic::TrackMeter *trackMeterToWrap);
+  TrackMeterAudioModule(CriticalSection *newPlugInLock, 
+    rosic::TrackMeter *trackMeterToWrap = nullptr);
+
+  virtual ~TrackMeterAudioModule();
+
+  AudioModuleEditor* createEditor() override;
 
   virtual void parameterChanged(Parameter* parameterThatHasChanged);
 
@@ -28,6 +33,7 @@ protected:
   virtual void initializeAutomatableParameters();
 
   rosic::TrackMeter *wrappedTrackMeter;
+  bool wrappedTrackMeterIsOwned= false;
 
   juce_UseDebuggingNewOperator;
 };

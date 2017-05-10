@@ -1,13 +1,33 @@
 
 
-TrackMeterAudioModule::TrackMeterAudioModule(CriticalSection *newPlugInLock, rosic::TrackMeter *trackMeterToWrap)
+TrackMeterAudioModule::TrackMeterAudioModule(CriticalSection *newPlugInLock, 
+  rosic::TrackMeter *trackMeterToWrap)
 : AudioModule(newPlugInLock)
 {
-  jassert(trackMeterToWrap != NULL); // you must pass a valid rosic-object to the constructor
-  wrappedTrackMeter = trackMeterToWrap;
+  //jassert(trackMeterToWrap != NULL); // you must pass a valid rosic-object to the constructor
+
+  if( trackMeterToWrap != nullptr )
+    wrappedTrackMeter = trackMeterToWrap;
+  else
+  {
+    wrappedTrackMeter = new rosic::TrackMeter;
+    wrappedTrackMeterIsOwned = true;
+  }
   moduleName = juce::String("TrackMeter");
   initializeAutomatableParameters();
 }
+
+TrackMeterAudioModule::~TrackMeterAudioModule()
+{
+  if(wrappedTrackMeterIsOwned)
+    delete wrappedTrackMeter;
+}
+
+AudioModuleEditor* TrackMeterAudioModule::createEditor()
+{
+  return new TrackMeterModuleEditor(lock, this);
+}
+
 
 void TrackMeterAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
 {
@@ -84,14 +104,14 @@ TrackMeterModuleEditor::TrackMeterModuleEditor(CriticalSection *newPlugInLock,
   fallSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
   addWidget( vuButton = new RButton(juce::String(("VU"))) );
-  vuButton->assignParameter( trackMeterModuleToEdit->getParameterByName(("VU")) );
+  //vuButton->assignParameter( trackMeterModuleToEdit->getParameterByName(("VU")) );
   vuButton->setDescription(juce::String(("Set ballistics to VU mode")));
   vuButton->setDescriptionField(infoField);
   vuButton->setClickingTogglesState(false);
   vuButton->addRButtonListener(this);
 
   addWidget( ppmButton = new RButton(juce::String(("PPM"))) );
-  ppmButton->assignParameter( trackMeterModuleToEdit->getParameterByName(("PPM")) );
+  //ppmButton->assignParameter( trackMeterModuleToEdit->getParameterByName(("PPM")) );
   ppmButton->setDescription(juce::String(("Set ballistics to PPM mode")));
   ppmButton->setDescriptionField(infoField);
   ppmButton->setClickingTogglesState(false);
@@ -166,6 +186,9 @@ TrackMeterModuleEditor::TrackMeterModuleEditor(CriticalSection *newPlugInLock,
   updateWidgetsAccordingToState();
 
   startTimer(20);
+
+  //setSize(180, 400); // ha no effect?
+  setSize(180, 400); // ha no effect?
 }
 
 //-------------------------------------------------------------------------------------------------
