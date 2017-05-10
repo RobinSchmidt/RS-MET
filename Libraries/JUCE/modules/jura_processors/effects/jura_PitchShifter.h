@@ -12,7 +12,11 @@ public:
   // construction/destruction:
 
   PitchShifterAudioModule(CriticalSection *newPlugInLock, 
-    rosic::PitchShifterGrainAdaptive *pitchShifterToWrap);
+    rosic::PitchShifterGrainAdaptive *pitchShifterToWrap = nullptr);
+
+  virtual ~PitchShifterAudioModule();
+
+  AudioModuleEditor* createEditor() override;
 
   //-----------------------------------------------------------------------------------------------
   // automation and state management:
@@ -73,6 +77,8 @@ public:
 protected:
 
   rosic::PitchShifterGrainAdaptive *wrappedPitchShifter;
+  bool wrappedPitchShifterIsOwned = false;
+
   juce_UseDebuggingNewOperator;
 };
 

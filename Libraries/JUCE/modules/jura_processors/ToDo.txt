@@ -11,22 +11,20 @@
  -EchoLab (preliminary)
  -MultiAnalyzer (done - doesn't show anything, needs to override processBlock)
  -StereoDelay (done)
+ -TrackMeter (done)
 
- -TrackMeter
+ -PitchShifter
 
  -ChannelMatrix2x2
  -DspWorkbench
  -SimpleSampler
  -KeyShot
- -PitchShifter
  -Quadrifex
  -Quadriga
  -Workhorse
  -Moduluxury
-
  -MidiMonitor
-
- -CrossOver (does not work - has 8 outputs)
+ -CrossOver (but how? it has 8 outputs, Chainer only 2)
 
 
 

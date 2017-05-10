@@ -6,11 +6,30 @@ PitchShifterAudioModule::PitchShifterAudioModule(CriticalSection *newPlugInLock,
   rosic::PitchShifterGrainAdaptive *pitchShifterToWrap) : AudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
-  jassert(pitchShifterToWrap != NULL); // you must pass a valid rosic-object to the constructor
-  wrappedPitchShifter = pitchShifterToWrap;
+  //jassert(pitchShifterToWrap != NULL); // you must pass a valid rosic-object to the constructor
+
+  if(pitchShifterToWrap != nullptr)
+    wrappedPitchShifter = pitchShifterToWrap;
+  else
+  {
+    wrappedPitchShifter = new rosic::PitchShifterGrainAdaptive;
+    wrappedPitchShifterIsOwned = true;
+  }
+
   moduleName = juce::String("PitchShifter");
   setActiveDirectory(getApplicationDirectory() + juce::String("/PitchShifterPresets"));
   createStaticParameters();
+}
+
+PitchShifterAudioModule::~PitchShifterAudioModule()
+{
+  if(wrappedPitchShifterIsOwned)
+    delete wrappedPitchShifter;
+}
+
+AudioModuleEditor* PitchShifterAudioModule::createEditor()
+{
+  return new PitchShifterModuleEditor(lock, this);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -278,6 +297,8 @@ PitchShifterModuleEditor::PitchShifterModuleEditor(CriticalSection *newPlugInLoc
 
   // set up the widgets:
   updateWidgetsAccordingToState();
+
+  setSize(400, 180);
 }
 
 //-------------------------------------------------------------------------------------------------

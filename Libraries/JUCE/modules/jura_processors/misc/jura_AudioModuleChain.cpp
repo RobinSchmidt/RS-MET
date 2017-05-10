@@ -15,11 +15,12 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
   if(type == "EngineersFilter") return new EngineersFilterAudioModule(lock);
 
   // effects:
-  if(type == "Enveloper")    return new Enveloper(             lock);
-  if(type == "FuncShaper")   return new FuncShaperAudioModule( lock);
-  if(type == "AlgoVerb")     return new AlgoVerbAudioModule(   lock);
-  if(type == "EchoLab")      return new EchoLabAudioModule(    lock);
-  if(type == "StereoDelay")  return new StereoDelayAudioModule(lock);
+  if(type == "Enveloper")    return new Enveloper(              lock);
+  if(type == "FuncShaper")   return new FuncShaperAudioModule(  lock);
+  if(type == "AlgoVerb")     return new AlgoVerbAudioModule(    lock);
+  if(type == "EchoLab")      return new EchoLabAudioModule(     lock);
+  if(type == "StereoDelay")  return new StereoDelayAudioModule( lock);
+  if(type == "PitchShifter") return new PitchShifterAudioModule(lock);
 
 
   // instruments:
@@ -57,7 +58,7 @@ juce::String AudioModuleFactory::getModuleType(AudioModule *m)
   if(dynamic_cast<AlgoVerbAudioModule*>(m))        return "AlgoVerb";
   if(dynamic_cast<EchoLabAudioModule*>(m))         return "EchoLab";
   if(dynamic_cast<StereoDelayAudioModule*>(m))     return "StereoDelay";
-
+  if(dynamic_cast<PitchShifterAudioModule*>(m))    return "PitchShifter";
 
   // instruments:
   if(dynamic_cast<AciDevilAudioModule*> (m))       return "AciDevil";
@@ -98,6 +99,7 @@ StringArray AudioModuleFactory::getAvailableModuleTypes()
   //a.add("AlgoVerb");  // currently inactive - not yet complete
   a.add("EchoLab");
   a.add("StereoDelay");
+  a.add("PitchShifter");
 
   // instruments:
   a.add("AciDevil");
