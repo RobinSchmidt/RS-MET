@@ -20,8 +20,8 @@
  -DspWorkbench (done)
  -CrossOver (but how? it has 8 outputs, Chainer only 2)
  -SimpleSampler (done)
+ -KeyShot (done)
 
- -KeyShot
  -Quadriga
  -Workhorse
 
@@ -54,7 +54,7 @@
 -DspWorkbench
  -crashes when opening the editor
  
--SimpleSampler
+-SimpleSampler, KeyShot
  -gui messed up
  -memory leak on shutdown
 

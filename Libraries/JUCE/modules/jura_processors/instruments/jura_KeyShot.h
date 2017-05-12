@@ -8,7 +8,12 @@ class KeyShotAudioModule : public PolyphonicInstrumentAudioModule
 
 public:
 
-  KeyShotAudioModule(CriticalSection *newPlugInLock, rosic::KeyShot *keyShotToWrap);
+  KeyShotAudioModule(CriticalSection *newPlugInLock);
+
+  virtual ~KeyShotAudioModule();
+
+  AudioModuleEditor* createEditor() override;
+
 
   /** Do we really need to override this ?! */
   virtual void setSampleRate(double newSampleRate)

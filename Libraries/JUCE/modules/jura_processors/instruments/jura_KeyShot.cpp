@@ -1,10 +1,10 @@
 
-KeyShotAudioModule::KeyShotAudioModule(CriticalSection *newPlugInLock, rosic::KeyShot *keyShotToWrap)
-: PolyphonicInstrumentAudioModule(newPlugInLock, keyShotToWrap)
+KeyShotAudioModule::KeyShotAudioModule(CriticalSection *newPlugInLock)
+  : PolyphonicInstrumentAudioModule(newPlugInLock)
 {
-  jassert(keyShotToWrap != NULL); // you must pass a valid rosic-object to the constructor
-  wrappedKeyShot = keyShotToWrap;
-  underlyingRosicInstrument = keyShotToWrap;
+  wrappedKeyShot = new rosic::KeyShot;
+  setInstrumentToWrap(wrappedKeyShot);
+
   moduleName = juce::String("KeyShot");
   setActiveDirectory(getApplicationDirectory() + juce::String("/KeyShotPresets") );
 
@@ -17,6 +17,16 @@ KeyShotAudioModule::KeyShotAudioModule(CriticalSection *newPlugInLock, rosic::Ke
     &wrappedKeyShot->voiceArray[0].ampEnv);
   ampEnvModule->setModuleName(juce::String("AmpEnvelope"));
   addChildAudioModule(ampEnvModule);
+}
+
+KeyShotAudioModule::~KeyShotAudioModule()
+{
+  delete wrappedKeyShot;
+}
+
+AudioModuleEditor* KeyShotAudioModule::createEditor()
+{
+  return new KeyShotModuleEditor(lock, this);
 }
 
 //=================================================================================================
@@ -93,6 +103,8 @@ KeyShotModuleEditor::KeyShotModuleEditor(CriticalSection *newPlugInLock,
 
   // set up the widgets:
   updateWidgetsAccordingToState();
+
+  setSize(600, 400);
 }
 
 /*
