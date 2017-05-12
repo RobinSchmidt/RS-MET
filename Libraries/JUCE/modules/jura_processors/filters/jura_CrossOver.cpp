@@ -1,16 +1,35 @@
 
 // construction/destruction:
 
-CrossOverAudioModule::CrossOverAudioModule(CriticalSection *newPlugInLock, rosic::CrossOver4Way *crossOverToWrap)
- : AudioModule(newPlugInLock)
+CrossOverAudioModule::CrossOverAudioModule(CriticalSection *newPlugInLock, 
+  rosic::CrossOver4Way *crossOverToWrap) : AudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
-  jassert(crossOverToWrap != NULL); // you must pass a valid rosic-object to the constructor
-  wrappedCrossOver   = crossOverToWrap;
-  moduleName         = juce::String("CrossOver");
+  //jassert(crossOverToWrap != NULL); // you must pass a valid rosic-object to the constructor
+
+  if(crossOverToWrap != nullptr)
+    wrappedCrossOver   = crossOverToWrap;
+  else
+  {
+    wrappedCrossOver = new rosic::CrossOver4Way;
+    wrappedCrossOverIsOwned = true;
+  }
+
+  moduleName = juce::String("CrossOver");
   wantsTempoSyncInfo = false;  // mmmhh...maybe better set it to false in the baseclass and to true in subclasses that need it
   setActiveDirectory(getApplicationDirectory() + juce::String("/CrossOverPresets") );
   createStaticParameters();
+}
+
+CrossOverAudioModule::~CrossOverAudioModule()
+{
+  if(wrappedCrossOverIsOwned)
+    delete wrappedCrossOver;
+}
+
+AudioModuleEditor* CrossOverAudioModule::createEditor()
+{
+  return new CrossOverModuleEditor(lock, this);
 }
 
 // internal functions:
@@ -663,7 +682,7 @@ CrossOverModuleEditor::CrossOverModuleEditor(CriticalSection *newPlugInLock, Cro
   // set the plugIn-headline:
   setHeadlineText( juce::String("CrossOver") );
 
-  isTopLevelEditor = true;
+  isTopLevelEditor = true;  // ?
 
   // assign the pointer to the rosic::CrossOver object to be used as aduio engine:
   jassert(newCrossOverAudioModule != NULL ); // you must pass a valid module here
@@ -739,6 +758,8 @@ CrossOverModuleEditor::CrossOverModuleEditor(CriticalSection *newPlugInLock, Cro
 
   // set up the widgets:
   updateWidgetsAccordingToState();
+
+  setSize(480, 240);
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------

@@ -14,6 +14,8 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
   if(type == "Ladder")          return new Ladder(                    lock);
   if(type == "PhasorFilter")    return new PhasorFilter(              lock);
   if(type == "EngineersFilter") return new EngineersFilterAudioModule(lock);
+  if(type == "CrossOver")       return new CrossOverAudioModule(      lock);
+
 
   // effects:
   if(type == "Enveloper")        return new Enveloper(                  lock);
@@ -57,6 +59,9 @@ juce::String AudioModuleFactory::getModuleType(AudioModule *m)
   if(dynamic_cast<Ladder*>(m))                     return "Ladder";
   if(dynamic_cast<PhasorFilter*>(m))               return "PhasorFilter";
   if(dynamic_cast<EngineersFilterAudioModule*>(m)) return "EngineersFilter";
+  if(dynamic_cast<CrossOverAudioModule*>(m))       return "CrossOver";
+
+
 
   // effects:
   if(dynamic_cast<Enveloper*>(m))                   return "Enveloper";
@@ -105,6 +110,7 @@ StringArray AudioModuleFactory::getAvailableModuleTypes()
   a.add("Ladder");
   //a.add("PhasorFilter");
   a.add("EngineersFilter");
+  a.add("CrossOver"); // makes actually no sense in 2in/2out plugin - but just for test
 
   // effects:
   a.add("Enveloper");

@@ -11,7 +11,12 @@ class CrossOverAudioModule : public AudioModule
 
 public:
 
-  CrossOverAudioModule(CriticalSection *newPlugInLock, rosic::CrossOver4Way *crossOverToWrap);
+  CrossOverAudioModule(CriticalSection *newPlugInLock, rosic::CrossOver4Way *crossOverToWrap = nullptr);
+
+  virtual ~CrossOverAudioModule();
+
+  AudioModuleEditor* createEditor() override;
+
 
   //virtual void parameterChanged(Parameter* parameterThatHasChanged);
 
@@ -70,6 +75,7 @@ protected:
   void createStaticParameters();
 
   rosic::CrossOver4Way *wrappedCrossOver;
+  bool wrappedCrossOverIsOwned = false;
 
   // adapter functions for the callbacks (boilerplate):
   void setBandActive_0_0(bool shouldBeActive)        { wrappedCrossOver->setBandActive(shouldBeActive, 0, 0); }

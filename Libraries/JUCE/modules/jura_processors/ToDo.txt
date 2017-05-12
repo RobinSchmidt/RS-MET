@@ -19,11 +19,13 @@
  -ChannelMatrix2x2 (done)
  -DspWorkbench (done)
 
+ -CrossOver (but how? it has 8 outputs, Chainer only 2)
+
  -SimpleSampler
  -KeyShot
  -Quadriga
  -Workhorse
- -CrossOver (but how? it has 8 outputs, Chainer only 2)
+
 
 
 
