@@ -9,6 +9,12 @@ MidiMonitorAudioModule::MidiMonitorAudioModule(CriticalSection *newPlugInLock)
   initializeAutomatableParameters();
 }
 
+AudioModuleEditor* MidiMonitorAudioModule::createEditor()
+{
+  return new MidiMonitorModuleEditor(lock, this);
+}
+
+
 //-------------------------------------------------------------------------------------------------
 // event handling:
 
@@ -243,7 +249,7 @@ MidiMonitorModuleEditor::MidiMonitorModuleEditor(CriticalSection *newPlugInLock,
   otherButton->setClickingTogglesState(true);
 
   addWidget( clearButton = new RButton(juce::String(("Clear"))) );
-  clearButton->assignParameter( midiMonitorModuleToEdit->getParameterByName(("Clear")) );
+  //clearButton->assignParameter( midiMonitorModuleToEdit->getParameterByName(("Clear")) );
   clearButton->setDescription(juce::String(("Clear screen")));
   clearButton->setDescriptionField(infoField);
   clearButton->setClickingTogglesState(false);
@@ -252,6 +258,8 @@ MidiMonitorModuleEditor::MidiMonitorModuleEditor(CriticalSection *newPlugInLock,
   // set up the widgets:
   updateWidgetsAccordingToState();
   updateScreen();
+
+  setSize(600, 600);
 }
 
 MidiMonitorModuleEditor::~MidiMonitorModuleEditor()

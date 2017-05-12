@@ -15,8 +15,7 @@
  -PitchShifter (done)
  -Quadrifex (done)
  -Moduluxury (done)
-
- -MidiMonitor
+ -MidiMonitor (done)
 
  -ChannelMatrix2x2
  -DspWorkbench
@@ -44,9 +43,12 @@
  -memory leaks on shutdown
  -probably doesn't produce sound yet (not tested)
 
--Quadrifex bugs
+-Quadrifex:
  -font to small for subeditor headlines
  -doesn't respond to mouse-clicks (we can't open the effect selection popup)
+
+-MidiMonitor:
+ -doesn't show events (maybe we need to override handleMidiMessage...or something)
 
 
 

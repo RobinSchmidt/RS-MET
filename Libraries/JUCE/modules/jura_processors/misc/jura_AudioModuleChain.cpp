@@ -7,6 +7,7 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
   //if(type == "PhaseScope2")  return new PhaseScope2( lock);
   if(type == "MultiAnalyzer") return new MultiAnalyzerAudioModule(lock);
   if(type == "TrackMeter")    return new TrackMeterAudioModule(   lock);
+  if(type == "MidiMonitor")   return new MidiMonitorAudioModule(  lock);
 
   // filters: 
   if(type == "Equalizer")       return new EqualizerAudioModule(      lock);
@@ -47,7 +48,7 @@ juce::String AudioModuleFactory::getModuleType(AudioModule *m)
   if(dynamic_cast<PhaseScope*>   (m))              return "PhaseScope";  // ...their superclasses
   if(dynamic_cast<MultiAnalyzerAudioModule*> (m))  return "MultiAnalyzer"; 
   if(dynamic_cast<TrackMeterAudioModule*> (m))     return "TrackMeter"; 
-
+  if(dynamic_cast<MidiMonitorAudioModule*> (m))    return "MidiMonitor"; 
 
   // filters:
   if(dynamic_cast<EqualizerAudioModule*>(m))       return "Equalizer";
@@ -92,6 +93,7 @@ StringArray AudioModuleFactory::getAvailableModuleTypes()
   //a.add("PhaseScope2");
   a.add("MultiAnalyzer");
   a.add("TrackMeter");
+  a.add("MidiMonitor");
 
 
   // filters:

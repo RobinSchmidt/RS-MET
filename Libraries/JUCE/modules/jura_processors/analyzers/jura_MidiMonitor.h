@@ -10,6 +10,8 @@ public:
 
   MidiMonitorAudioModule(CriticalSection *newPlugInLock);
 
+  AudioModuleEditor* createEditor() override;
+
   virtual void parameterChanged(Parameter* parameterThatHasChanged);
   virtual void handleMidiMessage(MidiMessage message);
 
