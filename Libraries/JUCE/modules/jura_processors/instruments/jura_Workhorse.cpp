@@ -1,11 +1,11 @@
 
-WorkhorseAudioModule::WorkhorseAudioModule(CriticalSection *newPlugInLock, rosic::Workhorse *workhorseToWrap)
-: PolyphonicInstrumentAudioModule(newPlugInLock, workhorseToWrap)
+WorkhorseAudioModule::WorkhorseAudioModule(CriticalSection *newPlugInLock)
+  : PolyphonicInstrumentAudioModule(newPlugInLock)
 {
-  jassert(workhorseToWrap != NULL); // you must pass a valid rosic-object to the constructor
-  wrappedWorkhorse        = workhorseToWrap;
-  underlyingRosicInstrument = workhorseToWrap;
-  moduleName                = juce::String(("Workhorse"));
+  wrappedWorkhorse = new rosic::Workhorse;
+  setInstrumentToWrap(wrappedWorkhorse);
+
+  moduleName = juce::String(("Workhorse"));
 
   // initialize the current directory for preset loading and saving:
   setActiveDirectory(getApplicationDirectory() + juce::String(("/WorkhorsePresets")) );
@@ -53,6 +53,16 @@ WorkhorseAudioModule::WorkhorseAudioModule(CriticalSection *newPlugInLock, rosic
     &wrappedWorkhorse->voiceArray[0].ampEnv);
   ampEnvModule->setModuleName(juce::String(("AmpEnvelope")));
   addChildAudioModule(ampEnvModule);
+}
+
+WorkhorseAudioModule::~WorkhorseAudioModule()
+{
+  delete wrappedWorkhorse;
+}
+
+AudioModuleEditor* WorkhorseAudioModule::createEditor()
+{
+  return new WorkhorseModuleEditor(lock, this);
 }
 
 //=================================================================================================
@@ -279,6 +289,8 @@ WorkhorseModuleEditor::WorkhorseModuleEditor(CriticalSection *newPlugInLock,
 
   // set up the widgets:
   updateWidgetsAccordingToState();
+
+  setSize(800, 600);
 }
 
 /*

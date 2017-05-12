@@ -35,6 +35,7 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
   if(type == "SimpleSampler") return new SimpleSamplerAudioModule(lock);
   if(type == "KeyShot")       return new KeyShotAudioModule(      lock);
   if(type == "Quadriga")      return new QuadrigaAudioModule(     lock);
+  if(type == "Workhorse")     return new WorkhorseAudioModule(    lock);
 #ifdef _MSC_VER
   if(type == "Liberty")       return new LibertyAudioModule(      lock);
 #endif
@@ -80,6 +81,8 @@ juce::String AudioModuleFactory::getModuleType(AudioModule *m)
   if(dynamic_cast<SimpleSamplerAudioModule*> (m))  return "SimpleSampler";
   if(dynamic_cast<KeyShotAudioModule*> (m))        return "KeyShot";
   if(dynamic_cast<QuadrigaAudioModule*> (m))       return "Quadriga";
+  if(dynamic_cast<WorkhorseAudioModule*> (m))      return "Workhorse";
+
 #ifdef _MSC_VER
   if(dynamic_cast<LibertyAudioModule*> (m))        return "Liberty";
 #endif
@@ -130,6 +133,7 @@ StringArray AudioModuleFactory::getAvailableModuleTypes()
   a.add("SimpleSampler");
   a.add("KeyShot");
   a.add("Quadriga");
+  a.add("Workhorse");
 #ifdef _MSC_VER
   //a.add("Liberty"); // not yet available on gcc 
 #endif

@@ -8,7 +8,13 @@ class WorkhorseAudioModule : public PolyphonicInstrumentAudioModule
 
 public:
 
-  WorkhorseAudioModule(CriticalSection *newPlugInLock, rosic::Workhorse *workhorseToWrap);
+  WorkhorseAudioModule(CriticalSection *newPlugInLock);
+
+  virtual ~WorkhorseAudioModule();
+
+  AudioModuleEditor* createEditor() override;
+
+
 
   /** Do we really need to override this ?! */
   virtual void setSampleRate(double newSampleRate)

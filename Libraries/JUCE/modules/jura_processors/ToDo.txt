@@ -22,10 +22,7 @@
  -SimpleSampler (done)
  -KeyShot (done)
  -Quadriga (done)
-
- -Workhorse
-
-
+ -Workhorse (done)
 
 
 -Straightliner bugs:
@@ -54,7 +51,7 @@
 -DspWorkbench
  -crashes when opening the editor
  
--SimpleSampler, KeyShot
+-SimpleSampler, KeyShot, Workhorse
  -gui messed up
  -memory leak on shutdown
 
