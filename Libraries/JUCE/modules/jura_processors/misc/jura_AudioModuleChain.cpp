@@ -25,6 +25,7 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
   if(type == "Quadrifex")        return new QuadrifexAudioModule(       lock);
   if(type == "Moduluxury")       return new ModuluxuryAudioModule(      lock);
   if(type == "ChannelMatrix2x2") return new ChannelMatrix2x2AudioModule(lock);
+  if(type == "DspWorkbench")     return new DspWorkbenchAudioModule(    lock);
 
 
 
@@ -67,6 +68,7 @@ juce::String AudioModuleFactory::getModuleType(AudioModule *m)
   if(dynamic_cast<QuadrifexAudioModule*>(m))        return "Quadrifex";
   if(dynamic_cast<ModuluxuryAudioModule*>(m))       return "Moduluxury";
   if(dynamic_cast<ChannelMatrix2x2AudioModule*>(m)) return "ChannelMatrix2x2";
+  if(dynamic_cast<DspWorkbenchAudioModule*>(m))     return "DspWorkbench";
 
 
 
@@ -114,7 +116,7 @@ StringArray AudioModuleFactory::getAvailableModuleTypes()
   a.add("Quadrifex");
   a.add("Moduluxury");
   a.add("ChannelMatrix2x2");
-
+  a.add("DspWorkbench");
 
   // instruments:
   a.add("AciDevil");

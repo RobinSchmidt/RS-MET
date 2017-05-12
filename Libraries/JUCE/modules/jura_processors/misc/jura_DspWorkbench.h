@@ -11,7 +11,14 @@ public:
   //---------------------------------------------------------------------------------------------
   // construction/destruction:
 
-  DspWorkbenchAudioModule(CriticalSection *newPlugInLock, rosic::DspWorkbench *dspWorkbenchToWrap);
+  DspWorkbenchAudioModule(CriticalSection *newPlugInLock, 
+    rosic::DspWorkbench *dspWorkbenchToWrap = nullptr);
+
+  virtual ~DspWorkbenchAudioModule();
+
+  AudioModuleEditor* createEditor() override;
+
+
 
   //---------------------------------------------------------------------------------------------
   // automation and state management:
@@ -57,6 +64,7 @@ protected:
   juce::String algorithmWithComments, algorithmWithoutComments;
 
   rosic::DspWorkbench *wrappedDspWorkbench;
+  bool wrappedDspWorkbenchIsOwned = false;
 
   juce_UseDebuggingNewOperator;
 };

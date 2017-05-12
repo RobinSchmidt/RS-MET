@@ -6,11 +6,29 @@
 DspWorkbenchAudioModule::DspWorkbenchAudioModule(CriticalSection *newPlugInLock, 
   rosic::DspWorkbench *dspWorkbenchToWrap) : AudioModule(newPlugInLock)
 {
-  jassert(dspWorkbenchToWrap != NULL); // you must pass a valid rosic-object to the constructor
-  wrappedDspWorkbench = dspWorkbenchToWrap;
+  //jassert(dspWorkbenchToWrap != NULL); // you must pass a valid rosic-object to the constructor
+
+  if(dspWorkbenchToWrap != nullptr)
+    wrappedDspWorkbench = dspWorkbenchToWrap;
+  else
+  {
+    wrappedDspWorkbench = new  rosic::DspWorkbench;
+    wrappedDspWorkbenchIsOwned = true;
+  }
   moduleName          = juce::String("DSPWorkbench");
   setActiveDirectory(getApplicationDirectory() + juce::String("/DspWorkbenchPresets") );
   initializeAutomatableParameters();
+}
+
+DspWorkbenchAudioModule::~DspWorkbenchAudioModule()
+{
+  if(wrappedDspWorkbenchIsOwned)
+    delete wrappedDspWorkbench;
+}
+
+AudioModuleEditor* DspWorkbenchAudioModule::createEditor()
+{
+  return new DspWorkbenchModuleEditor(lock, this);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -341,6 +359,8 @@ DspWorkbenchModuleEditor::DspWorkbenchModuleEditor(CriticalSection *newPlugInLoc
 
   // set up the widgets:
   updateWidgetsAccordingToState();
+
+  setSize(600, 600);
 }
 
 /*

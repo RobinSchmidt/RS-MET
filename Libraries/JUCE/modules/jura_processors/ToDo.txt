@@ -16,10 +16,9 @@
  -Quadrifex (done)
  -Moduluxury (done)
  -MidiMonitor (done)
+ -ChannelMatrix2x2 (done)
+ -DspWorkbench (done)
 
- -ChannelMatrix2x2
-
- -DspWorkbench
  -SimpleSampler
  -KeyShot
  -Quadriga
@@ -50,6 +49,9 @@
 
 -MidiMonitor:
  -doesn't show events (maybe we need to override handleMidiMessage...or something)
+
+-DspWorkbench
+ -crashes when opening the editor
 
 
 
