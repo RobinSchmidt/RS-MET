@@ -22,6 +22,7 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
   if(type == "StereoDelay")  return new StereoDelayAudioModule( lock);
   if(type == "PitchShifter") return new PitchShifterAudioModule(lock);
   if(type == "Quadrifex")    return new QuadrifexAudioModule(   lock);
+  if(type == "Moduluxury")   return new ModuluxuryAudioModule(  lock);
 
 
 
@@ -62,6 +63,8 @@ juce::String AudioModuleFactory::getModuleType(AudioModule *m)
   if(dynamic_cast<StereoDelayAudioModule*>(m))     return "StereoDelay";
   if(dynamic_cast<PitchShifterAudioModule*>(m))    return "PitchShifter";
   if(dynamic_cast<QuadrifexAudioModule*>(m))       return "Quadrifex";
+  if(dynamic_cast<ModuluxuryAudioModule*>(m))      return "Moduluxury";
+
 
 
   // instruments:
@@ -105,6 +108,7 @@ StringArray AudioModuleFactory::getAvailableModuleTypes()
   a.add("StereoDelay");
   a.add("PitchShifter");
   a.add("Quadrifex");
+  a.add("Moduluxury");
 
 
   // instruments:

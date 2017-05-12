@@ -12,7 +12,10 @@ class ModuluxuryAudioModule : public AudioModule
 
 public:
 
-  ModuluxuryAudioModule(CriticalSection *newPlugInLock, rosic::Moduluxury *moduluxuryToWrap);
+  ModuluxuryAudioModule(CriticalSection *newPlugInLock, 
+    rosic::Moduluxury *moduluxuryToWrap = nullptr);
+
+  virtual ~ModuluxuryAudioModule();
 
   virtual void parameterChanged(Parameter* parameterThatHasChanged);
 
@@ -37,6 +40,7 @@ protected:
   void initializeAutomatableParameters();
 
   rosic::Moduluxury *wrappedModuluxury;
+  bool wrappedModuluxuryIsOwned = false;
 
   juce_UseDebuggingNewOperator;
 };

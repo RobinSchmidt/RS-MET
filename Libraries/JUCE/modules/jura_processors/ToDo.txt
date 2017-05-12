@@ -14,8 +14,9 @@
  -TrackMeter (done)
  -PitchShifter (done)
  -Quadrifex (done)
+ -Moduluxury (done)
 
- -Moduluxury
+ -MidiMonitor
 
  -ChannelMatrix2x2
  -DspWorkbench
@@ -23,8 +24,6 @@
  -KeyShot
  -Quadriga
  -Workhorse
-
- -MidiMonitor
  -CrossOver (but how? it has 8 outputs, Chainer only 2)
 
 

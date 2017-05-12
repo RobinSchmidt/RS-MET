@@ -6,11 +6,25 @@ ModuluxuryAudioModule::ModuluxuryAudioModule(CriticalSection *newPlugInLock,
   rosic::Moduluxury *moduluxuryToWrap) 
 : AudioModule(newPlugInLock)
 {
-  jassert(moduluxuryToWrap != NULL); // you must pass a valid rosic-object to the constructor
-  wrappedModuluxury = moduluxuryToWrap;
+  //jassert(moduluxuryToWrap != NULL); // you must pass a valid rosic-object to the constructor
+
+  if(moduluxuryToWrap != nullptr)
+    wrappedModuluxury = moduluxuryToWrap;
+  else
+  {
+    wrappedModuluxury = new rosic::Moduluxury;
+    wrappedModuluxuryIsOwned = true;
+  }
+
   moduleName = juce::String("Moduluxury");
   setActiveDirectory(getApplicationDirectory() + juce::String("/ModuluxuryPresets"));
   initializeAutomatableParameters();
+}
+
+ModuluxuryAudioModule::~ModuluxuryAudioModule()
+{
+  if(wrappedModuluxuryIsOwned)
+    delete wrappedModuluxury;
 }
 
 //-------------------------------------------------------------------------------------------------
