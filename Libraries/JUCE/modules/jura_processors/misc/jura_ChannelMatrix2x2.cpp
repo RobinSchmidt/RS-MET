@@ -1,13 +1,30 @@
 // construction/destruction:
 
-ChannelMatrix2x2AudioModule::ChannelMatrix2x2AudioModule(CriticalSection *newPlugInLock, rosic::ChannelMatrix2x2 *channelMatrix2x2ToWrap)
- : AudioModule(newPlugInLock)
+ChannelMatrix2x2AudioModule::ChannelMatrix2x2AudioModule(CriticalSection *newPlugInLock, 
+  rosic::ChannelMatrix2x2 *channelMatrix2x2ToWrap) : AudioModule(newPlugInLock)
 {
-  jassert(channelMatrix2x2ToWrap != NULL); // you must pass a valid rosic-object to the constructor
-  wrappedChannelMatrix2x2 = channelMatrix2x2ToWrap;
-  moduleName              = juce::String("ChannelMatrix2x2");
+  if(channelMatrix2x2ToWrap != nullptr)
+    wrappedChannelMatrix2x2 = channelMatrix2x2ToWrap;
+  else
+  {
+    wrappedChannelMatrix2x2 = new rosic::ChannelMatrix2x2;
+    wrappedChannelMatrix2x2IsOwned = true;
+  }
+
+  moduleName = juce::String("ChannelMatrix2x2");
   setActiveDirectory(getApplicationDirectory() + juce::String("/ChannelMatrix2x2Presets") );
   //initializeAutomatableParameters(); //
+}
+
+ChannelMatrix2x2AudioModule::~ChannelMatrix2x2AudioModule()
+{
+  if(wrappedChannelMatrix2x2IsOwned)
+    delete wrappedChannelMatrix2x2;
+}
+
+AudioModuleEditor* ChannelMatrix2x2AudioModule::createEditor()
+{
+  return new ChannelMatrix2x2ModuleEditor(lock, this);
 }
 
 // state management:
@@ -116,6 +133,9 @@ ChannelMatrix2x2ModuleEditor::ChannelMatrix2x2ModuleEditor(CriticalSection *newP
 
   // set up the widgets:
   updateWidgetsAccordingToState();
+
+
+  setSize(300, 100);
 }
 
 //-------------------------------------------------------------------------------------------------

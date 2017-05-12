@@ -16,14 +16,15 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
   if(type == "EngineersFilter") return new EngineersFilterAudioModule(lock);
 
   // effects:
-  if(type == "Enveloper")    return new Enveloper(              lock);
-  if(type == "FuncShaper")   return new FuncShaperAudioModule(  lock);
-  if(type == "AlgoVerb")     return new AlgoVerbAudioModule(    lock);
-  if(type == "EchoLab")      return new EchoLabAudioModule(     lock);
-  if(type == "StereoDelay")  return new StereoDelayAudioModule( lock);
-  if(type == "PitchShifter") return new PitchShifterAudioModule(lock);
-  if(type == "Quadrifex")    return new QuadrifexAudioModule(   lock);
-  if(type == "Moduluxury")   return new ModuluxuryAudioModule(  lock);
+  if(type == "Enveloper")        return new Enveloper(                  lock);
+  if(type == "FuncShaper")       return new FuncShaperAudioModule(      lock);
+  if(type == "AlgoVerb")         return new AlgoVerbAudioModule(        lock);
+  if(type == "EchoLab")          return new EchoLabAudioModule(         lock);
+  if(type == "StereoDelay")      return new StereoDelayAudioModule(     lock);
+  if(type == "PitchShifter")     return new PitchShifterAudioModule(    lock);
+  if(type == "Quadrifex")        return new QuadrifexAudioModule(       lock);
+  if(type == "Moduluxury")       return new ModuluxuryAudioModule(      lock);
+  if(type == "ChannelMatrix2x2") return new ChannelMatrix2x2AudioModule(lock);
 
 
 
@@ -57,14 +58,15 @@ juce::String AudioModuleFactory::getModuleType(AudioModule *m)
   if(dynamic_cast<EngineersFilterAudioModule*>(m)) return "EngineersFilter";
 
   // effects:
-  if(dynamic_cast<Enveloper*>(m))                  return "Enveloper";
-  if(dynamic_cast<FuncShaperAudioModule*>(m))      return "FuncShaper";
-  if(dynamic_cast<AlgoVerbAudioModule*>(m))        return "AlgoVerb";
-  if(dynamic_cast<EchoLabAudioModule*>(m))         return "EchoLab";
-  if(dynamic_cast<StereoDelayAudioModule*>(m))     return "StereoDelay";
-  if(dynamic_cast<PitchShifterAudioModule*>(m))    return "PitchShifter";
-  if(dynamic_cast<QuadrifexAudioModule*>(m))       return "Quadrifex";
-  if(dynamic_cast<ModuluxuryAudioModule*>(m))      return "Moduluxury";
+  if(dynamic_cast<Enveloper*>(m))                   return "Enveloper";
+  if(dynamic_cast<FuncShaperAudioModule*>(m))       return "FuncShaper";
+  if(dynamic_cast<AlgoVerbAudioModule*>(m))         return "AlgoVerb";
+  if(dynamic_cast<EchoLabAudioModule*>(m))          return "EchoLab";
+  if(dynamic_cast<StereoDelayAudioModule*>(m))      return "StereoDelay";
+  if(dynamic_cast<PitchShifterAudioModule*>(m))     return "PitchShifter";
+  if(dynamic_cast<QuadrifexAudioModule*>(m))        return "Quadrifex";
+  if(dynamic_cast<ModuluxuryAudioModule*>(m))       return "Moduluxury";
+  if(dynamic_cast<ChannelMatrix2x2AudioModule*>(m)) return "ChannelMatrix2x2";
 
 
 
@@ -111,6 +113,7 @@ StringArray AudioModuleFactory::getAvailableModuleTypes()
   a.add("PitchShifter");
   a.add("Quadrifex");
   a.add("Moduluxury");
+  a.add("ChannelMatrix2x2");
 
 
   // instruments:

@@ -9,7 +9,13 @@ class ChannelMatrix2x2AudioModule : public AudioModule
 public:
 
   ChannelMatrix2x2AudioModule(CriticalSection *newPlugInLock, 
-    rosic::ChannelMatrix2x2 *channelMatrix2x2ToWrap);
+    rosic::ChannelMatrix2x2 *channelMatrix2x2ToWrap = nullptr);
+
+  virtual ~ChannelMatrix2x2AudioModule();
+
+  AudioModuleEditor* createEditor() override;
+
+
 
   virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
     bool markAsClean);
@@ -24,6 +30,7 @@ public:
 protected:
 
   rosic::ChannelMatrix2x2 *wrappedChannelMatrix2x2;
+  bool wrappedChannelMatrix2x2IsOwned = false;
 
   juce_UseDebuggingNewOperator;
 };

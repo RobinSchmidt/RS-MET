@@ -18,6 +18,7 @@
  -MidiMonitor (done)
 
  -ChannelMatrix2x2
+
  -DspWorkbench
  -SimpleSampler
  -KeyShot
