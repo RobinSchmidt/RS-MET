@@ -18,10 +18,9 @@
  -MidiMonitor (done)
  -ChannelMatrix2x2 (done)
  -DspWorkbench (done)
-
  -CrossOver (but how? it has 8 outputs, Chainer only 2)
+ -SimpleSampler (done)
 
- -SimpleSampler
  -KeyShot
  -Quadriga
  -Workhorse
@@ -54,6 +53,10 @@
 
 -DspWorkbench
  -crashes when opening the editor
+ 
+-SimpleSampler
+ -gui messed up
+ -memory leak on shutdown
 
 
 

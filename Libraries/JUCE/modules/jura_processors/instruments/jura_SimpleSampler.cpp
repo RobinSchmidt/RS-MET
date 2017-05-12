@@ -2,12 +2,12 @@
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-SimpleSamplerAudioModule::SimpleSamplerAudioModule(CriticalSection *newPlugInLock, rosic::SimpleSampler *simpleSamplerToWrap)
-: PolyphonicInstrumentAudioModule(newPlugInLock, simpleSamplerToWrap)
+SimpleSamplerAudioModule::SimpleSamplerAudioModule(CriticalSection *newPlugInLock)
+: PolyphonicInstrumentAudioModule(newPlugInLock)
 {
-  jassert(simpleSamplerToWrap != NULL); // you must pass a valid rosic-object to the constructor
-  wrappedSimpleSampler      = simpleSamplerToWrap;
-  underlyingRosicInstrument = simpleSamplerToWrap;
+  wrappedSimpleSampler = new rosic::SimpleSampler;
+  setInstrumentToWrap(wrappedSimpleSampler);
+
   moduleName = juce::String("SimpleSampler");
   setActiveDirectory(getApplicationDirectory() + juce::String("/SimpleSamplerPresets") );
 
@@ -35,6 +35,16 @@ SimpleSamplerAudioModule::SimpleSamplerAudioModule(CriticalSection *newPlugInLoc
     &wrappedSimpleSampler->voiceArray[0].ampEnv);
   ampEnvModule->setModuleName(juce::String("AmpEnvelope"));
   addChildAudioModule(ampEnvModule);
+}
+
+SimpleSamplerAudioModule::~SimpleSamplerAudioModule()
+{
+  delete wrappedSimpleSampler;
+}
+
+AudioModuleEditor* SimpleSamplerAudioModule::createEditor()
+{
+  return new SimpleSamplerModuleEditor(lock, this);
 }
 
 //=================================================================================================
@@ -139,6 +149,8 @@ SimpleSamplerModuleEditor::SimpleSamplerModuleEditor(CriticalSection *newPlugInL
 
   // set up the widgets:
   updateWidgetsAccordingToState();
+
+  setSize(600, 400);
 }
 
 /*

@@ -15,8 +15,12 @@ public:
   // construction/destruction:
 
   /** Constructor. */
-  SimpleSamplerAudioModule(CriticalSection *newPlugInLock, 
-    rosic::SimpleSampler *simpleSamplerToWrap);
+  SimpleSamplerAudioModule(CriticalSection *newPlugInLock);
+
+  virtual ~SimpleSamplerAudioModule();
+
+  AudioModuleEditor* createEditor() override;
+
 
   //-----------------------------------------------------------------------------------------------
   // parameter settings:
