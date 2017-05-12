@@ -10,9 +10,12 @@ class QuadrifexAudioModule : public AudioModule
 
 public:
 
-  QuadrifexAudioModule(CriticalSection *newPlugInLock, rosic::Quadrifex *quadrifexToWrap);
+  QuadrifexAudioModule(CriticalSection *newPlugInLock, 
+    rosic::Quadrifex *quadrifexToWrap = nullptr);
 
   virtual ~QuadrifexAudioModule();
+
+  AudioModuleEditor* createEditor() override;
 
   //---------------------------------------------------------------------------------------------
   // setup:
@@ -20,7 +23,10 @@ public:
   /** Sets up the editor which edits this object - call this in the constructor of the editor
   with 'this' and in the destructor with 'NULL' as parameter. We must maintain a pointer to the
   editor here in order to inform it about changes of the assigned effect-algorithms in the slots
-  to make the sub-editors consistent with this AudioModule. */
+  to make the sub-editors consistent with this AudioModule. 
+  \todo get rid of this pointer - use observer pattern, i.e. let editor register itself as 
+  observer
+  */
   void setEditor(QuadrifexModuleEditor *newEditor);
 
   /** Sets up the given slot to the given algorithm. */
@@ -131,8 +137,15 @@ protected:
   /** Converts a string into an index for an effect-algorithm. */
   virtual int stringToEffectAlgorithmIndex(const juce::String& algoString);
 
-  rosic::Quadrifex      *wrappedQuadrifex;
+  rosic::Quadrifex *wrappedQuadrifex;
+  bool wrappedQuadrifexIsOwned = false;
+
+
+
   QuadrifexModuleEditor *editor;
+  //....uuuhhhh....this is dangerous. the juce doc says that we should not keep a pointer to
+  // the editor - we need to get rid of this
+
 
   RoutingMatrixAudioModule *matrixModule;
   AudioModule              *effectModules[rosic::Quadrifex::numEffectSlots];

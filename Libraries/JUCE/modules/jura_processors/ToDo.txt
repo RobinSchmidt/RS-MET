@@ -12,17 +12,18 @@
  -MultiAnalyzer (done - doesn't show anything, needs to override processBlock)
  -StereoDelay (done)
  -TrackMeter (done)
+ -PitchShifter (done)
+ -Quadrifex (done)
 
- -PitchShifter
+ -Moduluxury
 
  -ChannelMatrix2x2
  -DspWorkbench
  -SimpleSampler
  -KeyShot
- -Quadrifex
  -Quadriga
  -Workhorse
- -Moduluxury
+
  -MidiMonitor
  -CrossOver (but how? it has 8 outputs, Chainer only 2)
 
@@ -37,11 +38,16 @@
  -patch AnalogMeetsChipTune: pitch-env is not in stairstep mode
   -maybe check with enveloper
  -filter plot doesn't update when dragging around the handle
+
 -MagicCarpet bugs:
  -gui messed up
  -some parameters missing
  -memory leaks on shutdown
  -probably doesn't produce sound yet (not tested)
+
+-Quadrifex bugs
+ -font to small for subeditor headlines
+ -doesn't respond to mouse-clicks (we can't open the effect selection popup)
 
 
 

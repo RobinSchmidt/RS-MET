@@ -21,6 +21,8 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
   if(type == "EchoLab")      return new EchoLabAudioModule(     lock);
   if(type == "StereoDelay")  return new StereoDelayAudioModule( lock);
   if(type == "PitchShifter") return new PitchShifterAudioModule(lock);
+  if(type == "Quadrifex")    return new QuadrifexAudioModule(   lock);
+
 
 
   // instruments:
@@ -59,6 +61,8 @@ juce::String AudioModuleFactory::getModuleType(AudioModule *m)
   if(dynamic_cast<EchoLabAudioModule*>(m))         return "EchoLab";
   if(dynamic_cast<StereoDelayAudioModule*>(m))     return "StereoDelay";
   if(dynamic_cast<PitchShifterAudioModule*>(m))    return "PitchShifter";
+  if(dynamic_cast<QuadrifexAudioModule*>(m))       return "Quadrifex";
+
 
   // instruments:
   if(dynamic_cast<AciDevilAudioModule*> (m))       return "AciDevil";
@@ -100,6 +104,8 @@ StringArray AudioModuleFactory::getAvailableModuleTypes()
   a.add("EchoLab");
   a.add("StereoDelay");
   a.add("PitchShifter");
+  a.add("Quadrifex");
+
 
   // instruments:
   a.add("AciDevil");

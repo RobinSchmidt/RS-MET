@@ -8,10 +8,18 @@ QuadrifexAudioModule::QuadrifexAudioModule(CriticalSection *newPlugInLock,
 {
   ScopedLock scopedLock(*lock);
 
-  jassert(quadrifexToWrap != NULL); // you must pass a valid rosic-object to the constructor
-  wrappedQuadrifex = quadrifexToWrap;
-  editor           = NULL;
-  moduleName       = juce::String(("Quadrifex"));
+  //jassert(quadrifexToWrap != NULL); // you must pass a valid rosic-object to the constructor
+  if( quadrifexToWrap != nullptr )
+    wrappedQuadrifex = quadrifexToWrap;
+  else
+  {
+    wrappedQuadrifex = new rosic::Quadrifex;
+    wrappedQuadrifexIsOwned = true;
+  }
+
+
+  editor     = NULL;
+  moduleName = juce::String(("Quadrifex"));
   setActiveDirectory(getApplicationDirectory() + juce::String(("/QuadrifexPresets")) );
 
   matrixModule = new RoutingMatrixAudioModule(lock, &wrappedQuadrifex->mixMatrix);
@@ -75,9 +83,11 @@ QuadrifexAudioModule::~QuadrifexAudioModule()
 {
   ScopedLock scopedLock(*lock);
 
+  if(wrappedQuadrifexIsOwned)
+    delete wrappedQuadrifex;
+
   // todo: avoid these deletions, using juce::ScopedPointer or std::unique_ptr - we need also get
   // rid of the deletes in setEffectAlgorithm
-
   for(int i=0; i<rosic::Quadrifex::numEffectSlots; i++)
   {
     delete bitCrusherStates[i]; 
@@ -118,6 +128,11 @@ QuadrifexAudioModule::~QuadrifexAudioModule()
     delete wahWahStates[i];  
     delete waveShaperStates[i];  
   }
+}
+
+AudioModuleEditor* QuadrifexAudioModule::createEditor()
+{
+  return new QuadrifexModuleEditor(lock, this);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1763,6 +1778,8 @@ QuadrifexModuleEditor::QuadrifexModuleEditor(CriticalSection *newPlugInLock,
 
   initializeColourScheme();
   updateWidgetsAccordingToState();
+
+  setSize(840, 540);
 }
 
 QuadrifexModuleEditor::~QuadrifexModuleEditor()
