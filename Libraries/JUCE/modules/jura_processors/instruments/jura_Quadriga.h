@@ -8,7 +8,12 @@ class QuadrigaAudioModule : public PolyphonicInstrumentAudioModule
 
 public:
 
-  QuadrigaAudioModule(CriticalSection *newPlugInLock, rosic::Quadriga *quadrigaToWrap);
+  QuadrigaAudioModule(CriticalSection *newPlugInLock);
+
+  virtual ~QuadrigaAudioModule();
+
+  AudioModuleEditor* createEditor() override;
+
 
   /** Do we really need to override this ?! */
   virtual void setSampleRate(double newSampleRate)

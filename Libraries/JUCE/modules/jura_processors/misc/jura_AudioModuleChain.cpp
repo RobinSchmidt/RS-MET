@@ -16,7 +16,6 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
   if(type == "EngineersFilter") return new EngineersFilterAudioModule(lock);
   if(type == "CrossOver")       return new CrossOverAudioModule(      lock);
 
-
   // effects:
   if(type == "Enveloper")        return new Enveloper(                  lock);
   if(type == "FuncShaper")       return new FuncShaperAudioModule(      lock);
@@ -29,14 +28,13 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
   if(type == "ChannelMatrix2x2") return new ChannelMatrix2x2AudioModule(lock);
   if(type == "DspWorkbench")     return new DspWorkbenchAudioModule(    lock);
 
-
-
   // instruments:
   if(type == "AciDevil")      return new AciDevilAudioModule(     lock);
   if(type == "Straightliner") return new StraightlinerAudioModule(lock);
   if(type == "MagicCarpet")   return new MagicCarpetAudioModule(  lock);
   if(type == "SimpleSampler") return new SimpleSamplerAudioModule(lock);
   if(type == "KeyShot")       return new KeyShotAudioModule(      lock);
+  if(type == "Quadriga")      return new QuadrigaAudioModule(     lock);
 #ifdef _MSC_VER
   if(type == "Liberty")       return new LibertyAudioModule(      lock);
 #endif
@@ -81,6 +79,7 @@ juce::String AudioModuleFactory::getModuleType(AudioModule *m)
   if(dynamic_cast<MagicCarpetAudioModule*> (m))    return "MagicCarpet";
   if(dynamic_cast<SimpleSamplerAudioModule*> (m))  return "SimpleSampler";
   if(dynamic_cast<KeyShotAudioModule*> (m))        return "KeyShot";
+  if(dynamic_cast<QuadrigaAudioModule*> (m))       return "Quadriga";
 #ifdef _MSC_VER
   if(dynamic_cast<LibertyAudioModule*> (m))        return "Liberty";
 #endif
@@ -130,6 +129,7 @@ StringArray AudioModuleFactory::getAvailableModuleTypes()
   a.add("MagicCarpet");
   a.add("SimpleSampler");
   a.add("KeyShot");
+  a.add("Quadriga");
 #ifdef _MSC_VER
   //a.add("Liberty"); // not yet available on gcc 
 #endif

@@ -4266,6 +4266,8 @@ void BitmapFontRoundedBoldA10D0::createGlyphBitmaps()
 
 //=================================================================================================
 
+const BitmapFontRoundedBoldA16D0 BitmapFontRoundedBoldA16D0::instance; 
+
 BitmapFontRoundedBoldA16D0::BitmapFontRoundedBoldA16D0()
 {
   ascent  = 16;

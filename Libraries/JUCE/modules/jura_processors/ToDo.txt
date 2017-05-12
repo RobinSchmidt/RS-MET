@@ -21,8 +21,8 @@
  -CrossOver (but how? it has 8 outputs, Chainer only 2)
  -SimpleSampler (done)
  -KeyShot (done)
+ -Quadriga (done)
 
- -Quadriga
  -Workhorse
 
 
@@ -57,6 +57,9 @@
 -SimpleSampler, KeyShot
  -gui messed up
  -memory leak on shutdown
+
+Quadriga:
+ -gui messed up
 
 
 

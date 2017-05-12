@@ -428,14 +428,14 @@ void QuadrigenModuleEditor::paint(Graphics &g)
     //  editorColourScheme.headline);
     // old version
 
-    jassertfalse; // something doesn't work with accessing the 16px font instance here
+    //jassertfalse; // something doesn't work with accessing the 16px font instance here
                   // -> check out why
-    drawBitmapFontText(g, x+4, y+4, headlineString, &BitmapFontRoundedBoldA10D0::instance, 
-      editorColourScheme.headline); 
+    //drawBitmapFontText(g, x+4, y+4, headlineString, &BitmapFontRoundedBoldA10D0::instance, 
+    //  editorColourScheme.headline); 
     // this works (with 10px font) - but we want a big font here ...figure that out...
 
-    //drawBitmapFontText(g, x+4, y+4, headlineString, &BitmapFontRoundedBoldA16D0::instance, 
-    //  editorColourScheme.headline);
+    drawBitmapFontText(g, x+4, y+4, headlineString, &BitmapFontRoundedBoldA16D0::instance, 
+      editorColourScheme.headline);
     // why does this not work? (linker error)
 
     //drawBitmapFontText(g, x+4, y+4, headlineString, &boldFont16px, editorColourScheme.headline);

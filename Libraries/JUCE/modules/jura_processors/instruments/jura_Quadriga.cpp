@@ -1,11 +1,16 @@
 
-QuadrigaAudioModule::QuadrigaAudioModule(CriticalSection *newPlugInLock, 
-  rosic::Quadriga *quadrigaToWrap)
-: PolyphonicInstrumentAudioModule(newPlugInLock, quadrigaToWrap)
+QuadrigaAudioModule::QuadrigaAudioModule(CriticalSection *newPlugInLock)
+  : PolyphonicInstrumentAudioModule(newPlugInLock)
 {
-  jassert(quadrigaToWrap != NULL); // you must pass a valid rosic-object to the constructor
-  wrappedQuadriga = quadrigaToWrap;
-  underlyingRosicInstrument = quadrigaToWrap;
+  //jassert(quadrigaToWrap != NULL); // you must pass a valid rosic-object to the constructor
+
+  //wrappedQuadriga = quadrigaToWrap;
+  //underlyingRosicInstrument = quadrigaToWrap;
+
+  wrappedQuadriga = new rosic::Quadriga;
+  setInstrumentToWrap(wrappedQuadriga);
+
+
   moduleName = juce::String("Quadriga");
 
   // initialize the current directory for preset loading and saving:
@@ -22,6 +27,16 @@ QuadrigaAudioModule::QuadrigaAudioModule(CriticalSection *newPlugInLock,
   equalizerModule = new EqualizerAudioModule(lock, &wrappedQuadriga->equalizer);
   equalizerModule->setModuleName(juce::String("Equalizer"));
   addChildAudioModule(equalizerModule);
+}
+
+QuadrigaAudioModule::~QuadrigaAudioModule()
+{
+  delete wrappedQuadriga;
+}
+
+AudioModuleEditor* QuadrigaAudioModule::createEditor()
+{
+  return new QuadrigaModuleEditor(lock, this);
 }
 
 //=================================================================================================
@@ -85,6 +100,8 @@ QuadrigaModuleEditor::QuadrigaModuleEditor(CriticalSection *newPlugInLock,
   updateWidgetsAccordingToState();
 
   generatorsButton->setToggleState(true, true);  // \todo: save the currently visible page int the state and recall it on construction
+
+  setSize(800, 600);
 }
 
 //-------------------------------------------------------------------------------------------------
