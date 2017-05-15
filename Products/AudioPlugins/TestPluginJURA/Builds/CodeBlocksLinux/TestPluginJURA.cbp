@@ -5081,6 +5081,14 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/misc/jura_ComponentScrollContainer.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/misc/jura_ComponentScrollContainer.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/misc/jura_DescribedComponent.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -5102,14 +5110,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/misc/jura_RectangleComponent.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/misc/rojue_ComponentScrollContainer.cpp">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/gui/misc/rojue_ComponentScrollContainer.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
@@ -5810,14 +5810,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/instruments/jura_Workhorse.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/instruments/rosof_LibertyEditor.cpp">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/instruments/rosof_LibertyEditor.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
@@ -7026,6 +7018,14 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/rosic/analysis/rosic_PitchDetector.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/rosic/analysis/rosic_ScopeScreenScanner.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/rosic/analysis/rosic_ScopeScreenScanner.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
