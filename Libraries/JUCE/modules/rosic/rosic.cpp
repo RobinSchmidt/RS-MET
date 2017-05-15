@@ -250,6 +250,7 @@ rosic: rs_dsp (this should never depend on any juce class/module)
 #include "analysis/rosic_SpectrumAnalyzer.cpp"
 #include "analysis/rosic_TrackMeter.cpp"
 #include "analysis/rosic_WaveformDisplayBuffer.cpp"
+#include "analysis/rosic_ScopeScreenScanner.cpp"
 
 // delaylines
 #include "delaylines/rosic_BasicIntegerDelayLine.cpp"

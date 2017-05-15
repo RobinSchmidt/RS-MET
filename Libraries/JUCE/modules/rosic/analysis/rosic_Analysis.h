@@ -15,6 +15,7 @@ This file includes all relevant rosic analysis header files.
 #include "rosic_SignalMeasures.h"
 #include "rosic_SpectrumAnalyzer.h"
 #include "rosic_TrackMeter.h"
+#include "rosic_ScopeScreenScanner.h"
 
 #endif // end of #ifndef rosic_Analysis_h
 

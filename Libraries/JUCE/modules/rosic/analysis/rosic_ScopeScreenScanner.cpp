@@ -10,7 +10,6 @@ ScopeScreenScanner::ScopeScreenScanner()
   scanFreq = 5; 
   numCyclesShown = 5;
   sync = false;
-  updateSawIncrement();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -20,7 +19,6 @@ void ScopeScreenScanner::setSampleRate(double newSampleRate)
 {
   sampleRate = newSampleRate;
   pitchDetector.setSampleRate(sampleRate);
-  updateSawIncrement();
 }
 
 void ScopeScreenScanner::setMinFrequency(double newMinFreq)
@@ -36,7 +34,6 @@ void ScopeScreenScanner::setMaxFrequency(double newMaxFreq)
 void ScopeScreenScanner::setSync(bool shouldSync)
 {
   sync = shouldSync;
-  updateSawIncrement();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -45,9 +42,11 @@ void ScopeScreenScanner::setSync(bool shouldSync)
 void ScopeScreenScanner::updateSawIncrement(double in)
 {
   if(sync)
-    pitchDetector.estimateFundamentalFrequency(in) / (sampleRate * numCyclesShown);
+    sawInc = pitchDetector.estimateFundamentalFrequency(in) / (sampleRate * numCyclesShown);
   else
     sawInc = scanFreq / (sampleRate * numCyclesShown);
+
+  // optimize: use a precomputed factor = 1 / (sampleRate * numCyclesShown);
 }
 
 void ScopeScreenScanner::reset()
