@@ -35,6 +35,7 @@
 #define JUCE_MODULE_AVAILABLE_juce_gui_extra                1
 #define JUCE_MODULE_AVAILABLE_jura_framework                1
 #define JUCE_MODULE_AVAILABLE_jura_processors               1
+#define JUCE_MODULE_AVAILABLE_rapt                          1
 #define JUCE_MODULE_AVAILABLE_romos                         1
 #define JUCE_MODULE_AVAILABLE_rosic                         1
 

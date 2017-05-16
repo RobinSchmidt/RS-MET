@@ -416,6 +416,57 @@
     <Filter Include="Juce Modules\jura_processors\tools">
       <UniqueIdentifier>{DAA66ECA-BEFB-EA83-4B6C-2B113E0B157D}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Juce Modules\rapt">
+      <UniqueIdentifier>{2090E735-933D-71FC-4860-22A02F72EA6F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rapt\Basics">
+      <UniqueIdentifier>{9AE84EB0-035E-1970-2F86-4C4FA29240F9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rapt\Data">
+      <UniqueIdentifier>{028E0D2A-C24C-7FAA-804B-C859F7FA2D49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rapt\Data\Simd">
+      <UniqueIdentifier>{FCCD17E3-50FE-BEF2-F7D2-5A8F04CDD0F7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rapt\Filters">
+      <UniqueIdentifier>{D2550018-9274-31CA-8DA0-2337BB81BF59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rapt\Filters\Basic">
+      <UniqueIdentifier>{B6C071A0-AD6B-DD7D-57CD-3C9B57618A26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rapt\Filters\Musical">
+      <UniqueIdentifier>{F476BC58-8E03-665A-31B3-38D8620F18EC}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rapt\Math">
+      <UniqueIdentifier>{3CF66C1C-C57B-EAFA-F6CF-68921702FEE8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rapt\Math\Functions">
+      <UniqueIdentifier>{D7E2DE48-62F9-61E2-AAFD-13BE93A33929}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rapt\Math\Geometry">
+      <UniqueIdentifier>{A92C163B-047A-B8DF-8B62-09F85B7DAD53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rapt\Math\Misc">
+      <UniqueIdentifier>{DEEB57E5-E46E-1D4B-3CE9-8685142BFFC9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rapt\Modulators">
+      <UniqueIdentifier>{D353E128-7658-EE9C-03D4-8FA6D6884FAC}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rapt\Modulators\Envelopes">
+      <UniqueIdentifier>{66F5699C-5B3A-D29E-C4C6-B195C15DBA2F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rapt\Temp">
+      <UniqueIdentifier>{1077C9FE-8734-5D17-6E96-F6DB62A1D921}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rapt\Visualization">
+      <UniqueIdentifier>{A495B1EB-B33C-6A74-A31A-9C489FDD0ED7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rapt\Visualization\Graphics">
+      <UniqueIdentifier>{1418DAD6-D2FB-EA74-B0C3-22CF68E81A1F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rapt\Visualization\Misc">
+      <UniqueIdentifier>{4265743F-CA60-2C0A-41C4-32CD15018C22}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Juce Modules\romos">
       <UniqueIdentifier>{68264C9C-83E5-EBB5-CD7E-18EC2D2AC410}</UniqueIdentifier>
     </Filter>
@@ -2659,6 +2710,96 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\jura_processors.cpp">
       <Filter>Juce Modules\jura_processors</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\Basics.cpp">
+      <Filter>Juce Modules\rapt\Basics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Data\ArrayTools.cpp">
+      <Filter>Juce Modules\rapt\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Data\Data.cpp">
+      <Filter>Juce Modules\rapt\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Data\MatrixTools.cpp">
+      <Filter>Juce Modules\rapt\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Basic\OnePoleFilter.cpp">
+      <Filter>Juce Modules\rapt\Filters\Basic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Musical\LadderFilter.cpp">
+      <Filter>Juce Modules\rapt\Filters\Musical</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Musical\PhasorFilter.cpp">
+      <Filter>Juce Modules\rapt\Filters\Musical</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Musical\StateVariableFilter.cpp">
+      <Filter>Juce Modules\rapt\Filters\Musical</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Filters.cpp">
+      <Filter>Juce Modules\rapt\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\BasicFunctions.cpp">
+      <Filter>Juce Modules\rapt\Math\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\BellFunctions.cpp">
+      <Filter>Juce Modules\rapt\Math\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\Sigmoids.cpp">
+      <Filter>Juce Modules\rapt\Math\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Geometry\Line2D.cpp">
+      <Filter>Juce Modules\rapt\Math\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\Statistics.cpp">
+      <Filter>Juce Modules\rapt\Math\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Math.cpp">
+      <Filter>Juce Modules\rapt\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Modulators\Envelopes\BreakpointModulator.cpp">
+      <Filter>Juce Modules\rapt\Modulators\Envelopes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Modulators\Modulators.cpp">
+      <Filter>Juce Modules\rapt\Modulators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Analysis.cpp">
+      <Filter>Juce Modules\rapt\Temp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Temp\ArrayFunctions.cpp">
+      <Filter>Juce Modules\rapt\Temp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Math.cpp">
+      <Filter>Juce Modules\rapt\Temp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Matrix.cpp">
+      <Filter>Juce Modules\rapt\Temp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Polynomial.cpp">
+      <Filter>Juce Modules\rapt\Temp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Vector.cpp">
+      <Filter>Juce Modules\rapt\Temp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Graphics\AlphaMask.cpp">
+      <Filter>Juce Modules\rapt\Visualization\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Graphics\Image.cpp">
+      <Filter>Juce Modules\rapt\Visualization\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Graphics\ImageDrawer.cpp">
+      <Filter>Juce Modules\rapt\Visualization\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Graphics\ImagePainter.cpp">
+      <Filter>Juce Modules\rapt\Visualization\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Misc\PhaseScopeBuffer.cpp">
+      <Filter>Juce Modules\rapt\Visualization\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Visualization.cpp">
+      <Filter>Juce Modules\rapt\Visualization</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\rapt.cpp">
+      <Filter>Juce Modules\rapt</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Algorithms\romos_FilterDesign.cpp">
       <Filter>Juce Modules\romos\Algorithms</Filter>
     </ClCompile>
@@ -4052,6 +4193,9 @@
       <Filter>Juce Library Code</Filter>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\jura_processors.cpp">
+      <Filter>Juce Library Code</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\JuceLibraryCode\rapt.cpp">
       <Filter>Juce Library Code</Filter>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\romos.cpp">
@@ -6300,6 +6444,114 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\jura_processors.h">
       <Filter>Juce Modules\jura_processors</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\Basics.h">
+      <Filter>Juce Modules\rapt\Basics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\Constants.h">
+      <Filter>Juce Modules\rapt\Basics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\MacroDefinitions.h">
+      <Filter>Juce Modules\rapt\Basics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\TypeDefinitions.h">
+      <Filter>Juce Modules\rapt\Basics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Data\Simd\Float32x4.h">
+      <Filter>Juce Modules\rapt\Data\Simd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Data\ArrayTools.h">
+      <Filter>Juce Modules\rapt\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Data\Data.h">
+      <Filter>Juce Modules\rapt\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Data\MatrixTools.h">
+      <Filter>Juce Modules\rapt\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Basic\OnePoleFilter.h">
+      <Filter>Juce Modules\rapt\Filters\Basic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Musical\LadderFilter.h">
+      <Filter>Juce Modules\rapt\Filters\Musical</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Musical\PhasorFilter.h">
+      <Filter>Juce Modules\rapt\Filters\Musical</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Musical\StateVariableFilter.h">
+      <Filter>Juce Modules\rapt\Filters\Musical</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Filters.h">
+      <Filter>Juce Modules\rapt\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\BasicFunctions.h">
+      <Filter>Juce Modules\rapt\Math\Functions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\BellFunctions.h">
+      <Filter>Juce Modules\rapt\Math\Functions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\FunctionObjects.h">
+      <Filter>Juce Modules\rapt\Math\Functions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\Sigmoids.h">
+      <Filter>Juce Modules\rapt\Math\Functions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Geometry\Line2D.h">
+      <Filter>Juce Modules\rapt\Math\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\Statistics.h">
+      <Filter>Juce Modules\rapt\Math\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Math.h">
+      <Filter>Juce Modules\rapt\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Modulators\Envelopes\BreakpointModulator.h">
+      <Filter>Juce Modules\rapt\Modulators\Envelopes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Modulators\Modulators.h">
+      <Filter>Juce Modules\rapt\Modulators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Analysis.h">
+      <Filter>Juce Modules\rapt\Temp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Temp\ArrayFunctions.h">
+      <Filter>Juce Modules\rapt\Temp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Math.h">
+      <Filter>Juce Modules\rapt\Temp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Matrix.h">
+      <Filter>Juce Modules\rapt\Temp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Polynomial.h">
+      <Filter>Juce Modules\rapt\Temp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Vector.h">
+      <Filter>Juce Modules\rapt\Temp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Graphics\AlphaMask.h">
+      <Filter>Juce Modules\rapt\Visualization\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Graphics\Image.h">
+      <Filter>Juce Modules\rapt\Visualization\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Graphics\ImageDrawer.h">
+      <Filter>Juce Modules\rapt\Visualization\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Graphics\ImagePainter.h">
+      <Filter>Juce Modules\rapt\Visualization\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Misc\PhaseScopeBuffer.h">
+      <Filter>Juce Modules\rapt\Visualization\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Visualization.h">
+      <Filter>Juce Modules\rapt\Visualization</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\rapt.h">
+      <Filter>Juce Modules\rapt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\rapt.h">
+      <Filter>Juce Modules\rapt</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\Algorithms\romos_FilterDesign.h">
       <Filter>Juce Modules\romos\Algorithms</Filter>
     </ClInclude>
@@ -7828,6 +8080,9 @@
     </None>
     <None Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\ToDo.txt">
       <Filter>Juce Modules\jura_processors</Filter>
+    </None>
+    <None Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Modulators\Ideas.txt">
+      <Filter>Juce Modules\rapt\Modulators</Filter>
     </None>
     <None Include="..\..\..\..\..\Libraries\JUCE\modules\romos\TestSuite\InputSequences.txt">
       <Filter>Juce Modules\romos\TestSuite</Filter>

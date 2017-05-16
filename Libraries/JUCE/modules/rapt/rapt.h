@@ -1,3 +1,29 @@
+/*******************************************************************************
+ The block below describes the properties of this module, and is read by
+ the Projucer to automatically generate project code that uses it.
+ For details about the syntax and how to create or use a module, see the
+ JUCE Module Format.txt file.
+
+
+ BEGIN_JUCE_MODULE_DECLARATION
+
+  ID:               rapt
+  vendor:           RS-MET
+  version:          0.0.1
+  name:             Rob's Audio Processing Templates
+  description:      Library of audio DSP algorithms as C++ templates
+  website:          http://www.rs-met.com
+  license:          GPL/Commercial
+
+  dependencies:
+  OSXFrameworks:
+  iOSFrameworks:
+
+ END_JUCE_MODULE_DECLARATION
+
+*******************************************************************************/
+
+
 #ifndef RAPT_H_INCLUDED
 #define RAPT_H_INCLUDED
 
