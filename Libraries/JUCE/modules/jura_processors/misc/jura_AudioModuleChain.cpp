@@ -112,28 +112,28 @@ StringArray AudioModuleFactory::getAvailableModuleTypes()
   a.add("Ladder");
   //a.add("PhasorFilter");
   a.add("EngineersFilter");
-  a.add("CrossOver"); // makes actually no sense in 2in/2out plugin - but just for test
+  //a.add("CrossOver"); // makes actually no sense in 2in/2out plugin - but just for test
 
   // effects:
   a.add("Enveloper");
   a.add("FuncShaper");
   //a.add("AlgoVerb");  // currently inactive - not yet complete
-  a.add("EchoLab");
+  //a.add("EchoLab");
   a.add("StereoDelay");
   a.add("PitchShifter");
-  a.add("Quadrifex");
-  a.add("Moduluxury");
-  a.add("ChannelMatrix2x2");
-  a.add("DspWorkbench");
+  //a.add("Quadrifex");
+  //a.add("Moduluxury");
+  //a.add("ChannelMatrix2x2");
+  //a.add("DspWorkbench");
 
   // instruments:
   a.add("AciDevil");
   a.add("Straightliner");
-  a.add("MagicCarpet");
-  a.add("SimpleSampler");
-  a.add("KeyShot");
-  a.add("Quadriga");
-  a.add("Workhorse");
+  //a.add("MagicCarpet");
+  //a.add("SimpleSampler");
+  //a.add("KeyShot");
+  //a.add("Quadriga");
+  //a.add("Workhorse");
 #ifdef _MSC_VER
   //a.add("Liberty"); // not yet available on gcc 
 #endif
