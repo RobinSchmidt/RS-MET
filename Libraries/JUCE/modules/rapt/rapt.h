@@ -53,4 +53,9 @@ using namespace std;
 // depend on one or more modules that come before it but not vice versa - well, we'll see if that's 
 // possible)
 
+// typedefs for convenience:
+typedef RAPT::LadderFilter<double, double> rsLadderDD;
+
+
+
 #endif

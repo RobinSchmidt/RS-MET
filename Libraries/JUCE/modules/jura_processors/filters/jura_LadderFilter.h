@@ -1,11 +1,6 @@
 #ifndef jura_LadderFilter_h
 #define jura_LadderFilter_h
   
-// We want to use two RAPT::LadderFilter instances that use double precision numbers for the 
-// signal as well as for the parameters/coefficients. For convenience, we make a typedef for the
-// particular template instantiation:
-typedef RAPT::LadderFilter<double, double> RAPTLadder;
-
 //=================================================================================================
 
 /** Wraps two RAPT LadderFilter instances into a single object, for stereo processing. In order to
@@ -67,7 +62,7 @@ protected:
   bool   midSideMode = false;
 
   // embedded core DSP objects from the RAPT library:
-  RAPTLadder ladderL, ladderR;
+  rsLadderDD ladderL, ladderR;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Ladder)
 };
