@@ -6,9 +6,8 @@
  -FuncShaper (done)
  -PitchShifter (done)
  -StereoDelay (done)
-
+ -MultiAnalyzer (done..kind of)
  -EchoLab
- -MultiAnalyzer
  -Straightliner
  -TrackMeter
  -Quadrifex
@@ -54,6 +53,10 @@
 -MidiMonitor:
  -doesn't show events (maybe we need to override handleMidiMessage...or something)
 
+ -MultiAnalyzer
+  -no horizontal scrollbar
+  -extreme cpu load for scope 
+
 -DspWorkbench
  -crashes when opening the editor
  
@@ -66,6 +69,9 @@
 
 Quadriga:
  -gui messed up
+
+Ladder:
+ -freq-response plot doesn't update when using meta parameters
 
 
 

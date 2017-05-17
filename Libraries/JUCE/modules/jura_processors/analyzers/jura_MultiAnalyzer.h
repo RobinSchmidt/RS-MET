@@ -32,16 +32,24 @@ public:
     rosic::SyncedWaveformDisplayBuffer *displayBufferToUse);
 
   virtual void parameterChanged(Parameter* parameterThatHasChanged);
+
   virtual void setSampleRate(double newSampleRate) override
   { 
     waveformDisplayBuffer->setSampleRate(newSampleRate); 
   }
 
-  virtual void processBlockStereo(float *left, float *right, int numSamples)
+  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
   {
-    waveformDisplayBuffer->feedInputBuffer(left, numSamples);
-    // later: feed both signals (left and right) into a stereo version...
+    for(int n = 0; n < numSamples; n++)
+      waveformDisplayBuffer->feedInputBuffer(&inOutBuffer[0][n], numSamples);
+      // preliminary - feeds only left channel into the buffer - make stereo version
   }
+
+  //virtual void processBlockStereo(float *left, float *right, int numSamples)
+  //{
+  //  waveformDisplayBuffer->feedInputBuffer(left, numSamples);
+  //  // later: feed both signals (left and right) into a stereo version...
+  //}
 
   juce_UseDebuggingNewOperator;
 
@@ -73,24 +81,32 @@ public:
   SpectrumAnalyzerAudioModule(CriticalSection *newPlugInLock, 
     rosic::SpectrumAnalyzer *spectrumAnalyzerToWrap);
   virtual void parameterChanged(Parameter* parameterThatHasChanged);
+
   virtual void setSampleRate(double newSampleRate) override
   { 
     wrappedSpectrumAnalyzer->setSampleRate(newSampleRate); 
   }
-  virtual void getSampleFrameStereo(double* inOutL, double* inOutR)
-  {
-    wrappedSpectrumAnalyzer->measureSampleFrameStereo(inOutL, inOutR);
-  }
-  virtual void processBlockStereo(float *left, float *right, int numSamples)
+
+  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
   {
     for(int n = 0; n < numSamples; n++)
-    {
-      // this conversion sucks - fix it
-      double l = left[n];
-      double r = right[n];
-      wrappedSpectrumAnalyzer->measureSampleFrameStereo(&l, &r);
-    }
+      wrappedSpectrumAnalyzer->measureSampleFrameStereo(&inOutBuffer[0][n], &inOutBuffer[1][n]);
   }
+
+  //virtual void getSampleFrameStereo(double* inOutL, double* inOutR)
+  //{
+  //  wrappedSpectrumAnalyzer->measureSampleFrameStereo(inOutL, inOutR);
+  //}
+  //virtual void processBlockStereo(float *left, float *right, int numSamples)
+  //{
+  //  for(int n = 0; n < numSamples; n++)
+  //  {
+  //    // this conversion sucks - fix it
+  //    double l = left[n];
+  //    double r = right[n];
+  //    wrappedSpectrumAnalyzer->measureSampleFrameStereo(&l, &r);
+  //  }
+  //}
 
   juce_UseDebuggingNewOperator;
 
@@ -159,50 +175,38 @@ public:
     oscilloscopeModule->waveformDisplayBuffer->setSampleRate(newSampleRate);
   }
 
-  /*
-  virtual void getSampleFrameStereo(double* inOutL, double* inOutR)
-  {
-    switch( mode )
-    {
-    case OSCILLOSCOPE:
-      oscilloscopeModule->getSampleFrameStereo(inOutL, inOutR);      break;
-    case SPECTRUM_ANALYZER:
-      spectrumAnalyzerModule->getSampleFrameStereo(inOutL, inOutR);  break;
-    }
-  }
-  */
-
-  virtual void processBlockStereo(float *left, float *right, int numSamples)
+  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
   {
     switch(mode)
     {
-    case OSCILLOSCOPE:
-      oscilloscopeModule->processBlockStereo(left, right, numSamples);      break;
+    case OSCILLOSCOPE: 
+      oscilloscopeModule->processBlock(inOutBuffer, numChannels, numSamples);     break;
     case SPECTRUM_ANALYZER:
-      spectrumAnalyzerModule->processBlockStereo(left, right, numSamples);  break;
+      spectrumAnalyzerModule->processBlock(inOutBuffer, numChannels, numSamples); break;
     }
-
-    /*
-    // preliminary - implement processBlockStereo in the OscilloscopeAudioModule and SpectrumAnalyzerAudioModule
-    // classes later
-    for(int n=0; n<numSamples; n++)
-    {
-      double dL = left [n];
-      double dR = right[n];
-
-      //wrappedFuncShaper->getSampleFrameStereo(&dL, &dR, &dL, &dR);
-      switch( mode )
-      {
-      case OSCILLOSCOPE:
-        oscilloscopeModule->getSampleFrameStereo(&dL, &dR);      break;
-      case SPECTRUM_ANALYZER:
-        spectrumAnalyzerModule->getSampleFrameStereo(&dL, &dR);  break;
-      }
-      //left [n] = (float) dL;
-      //right[n] = (float) dR;
-    }
-    */
   }
+
+  //virtual void getSampleFrameStereo(double* inOutL, double* inOutR)
+  //{
+  //  switch( mode )
+  //  {
+  //  case OSCILLOSCOPE:
+  //    oscilloscopeModule->getSampleFrameStereo(inOutL, inOutR);      break;
+  //  case SPECTRUM_ANALYZER:
+  //    spectrumAnalyzerModule->getSampleFrameStereo(inOutL, inOutR);  break;
+  //  }
+  //}
+
+  //virtual void processBlockStereo(float *left, float *right, int numSamples)
+  //{
+  //  switch(mode)
+  //  {
+  //  case OSCILLOSCOPE:
+  //    oscilloscopeModule->processBlockStereo(left, right, numSamples);      break;
+  //  case SPECTRUM_ANALYZER:
+  //    spectrumAnalyzerModule->processBlockStereo(left, right, numSamples);  break;
+  //  }
+  //}
 
 protected:
 
