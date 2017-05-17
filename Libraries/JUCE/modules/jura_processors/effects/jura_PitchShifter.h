@@ -66,6 +66,12 @@ public:
     }
   }
 
+  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
+  {
+    for(int n = 0; n < numSamples; n++)
+      wrappedPitchShifter->getSampleFrameStereo(&inOutBuffer[0][n], &inOutBuffer[1][n]);
+  }
+
   //-----------------------------------------------------------------------------------------------
   // event processing:
 

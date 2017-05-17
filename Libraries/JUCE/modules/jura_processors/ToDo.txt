@@ -1,29 +1,35 @@
 
--make available in Chainer (and let it have a custom editor):
+-make work in Chainer:
  -AciDevil (done)
- -FuncShaper (done)
  -EngineersFilter (done)
- -Liberty (done) 
- -Straightliner (done)
- -EasyQ (done)
- -MagicCarpet (done)
- -AlgoVerb (preliminary)
- -EchoLab (preliminary)
- -MultiAnalyzer (done - doesn't show anything, needs to override processBlock)
- -StereoDelay (done)
- -TrackMeter (done)
+ -Equalizer (done)
+ -FuncShaper (done)
  -PitchShifter (done)
- -Quadrifex (done)
- -Moduluxury (done)
- -MidiMonitor (done)
- -ChannelMatrix2x2 (done)
- -DspWorkbench (done)
- -CrossOver (but how? it has 8 outputs, Chainer only 2)
- -SimpleSampler (done)
- -KeyShot (done)
- -Quadriga (done)
- -Workhorse (done)
+ -StereoDelay (done)
 
+ -EchoLab
+ -MultiAnalyzer
+ -Straightliner
+ -TrackMeter
+ -Quadrifex
+
+
+ -Liberty
+ -MagicCarpet
+ -AlgoVerb
+ -Moduluxury
+ -MidiMonitor
+ -ChannelMatrix2x2
+ -DspWorkbench
+ -CrossOver (but how? it has 8 outputs, Chainer only 2)
+ -SimpleSampler
+ -KeyShot
+ -Quadriga
+ -Workhorse
+
+ Bugs:
+-AcidDevil
+ -strange pitchwheel response
 
 -Straightliner bugs:
  -tuning file widget set looks weird (the box is missing), also it should not show ".xml"
@@ -54,6 +60,9 @@
 -SimpleSampler, KeyShot, Workhorse
  -gui messed up
  -memory leak on shutdown
+
+-StereoDelay
+ -GUI widget vertical distance
 
 Quadriga:
  -gui messed up

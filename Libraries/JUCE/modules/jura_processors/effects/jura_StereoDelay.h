@@ -49,8 +49,14 @@ public:
     wrappedStereoDelay->getSampleFrameStereo(inOutL, inOutL);
   }
 
-//---------------------------------------------------------------------------------------------
-// event processing:
+  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
+  {
+    for(int n = 0; n < numSamples; n++)
+      wrappedStereoDelay->getSampleFrameStereo(&inOutBuffer[0][n], &inOutBuffer[1][n]);
+  }
+
+  //---------------------------------------------------------------------------------------------
+  // event processing:
 
   virtual void reset()
   {

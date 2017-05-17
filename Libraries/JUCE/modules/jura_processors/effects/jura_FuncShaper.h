@@ -39,8 +39,8 @@ public:
     wrappedFuncShaper->setSampleRate(newSampleRate);
   }
 
-//---------------------------------------------------------------------------------------------
-// audio processing:
+  //---------------------------------------------------------------------------------------------
+  // audio processing:
 
   virtual void getSampleFrameStereo(double* inOutL, double* inOutR)
   {
