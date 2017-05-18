@@ -82,6 +82,18 @@
 
 // good, until here
 
+// filters:
+
+// others:
+
+// modulators:
+
+// rendering:
+
+// generators:
+
+// delaylines needs: filters, generators
+
 
 //-------------------------------------------------------------------------------------------------
 // old, de-centralized header includes:
