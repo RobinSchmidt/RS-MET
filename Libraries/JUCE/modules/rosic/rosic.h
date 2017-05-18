@@ -80,6 +80,9 @@
 //#include "math/rosic_PrimeArray.h"                  // not required to include
 #include "math/rosic_Transformations.h"
 
+// transforms:
+
+
 // filters:
 #include "filters/rosic_BiquadDesigner.h"
 #include "filters/rosic_AllpassChain.h"
@@ -93,7 +96,7 @@
 #include "filters/rosic_DampingFilter.h"
 #include "filters/rosic_CombResonator.h"
 #include "filters/rosic_ConvolverBruteForce.h"
-#include "filters/rosic_ConvolverFFT.h"
+#include "filters/rosic_ConvolverFFT.h"          // needs transforms folder
 #include "filters/rosic_ConvolverPartitioned.h"
 #include "filters/rosic_CookbookFilter.h"
 #include "filters/rosic_DirectFormFilter.h"
@@ -132,9 +135,30 @@
 #include "filters/rosic_WarpedBiquadMonoDF1.h"
 #include "filters/rosic_WhiteToPinkFilter.h"
 
+// others:
+//#include "others/rosic_DemoVersionNoiseEmitter.h"  // not needed anymore
+#include "others/rosic_ExponentialSmoother.h"
+#include "others/rosic_OverlapAddProcessor.h"
+#include "others/rosic_PiecewiseFunction.h"
+#include "_third_party/soundtouch/WavFile.h"
+#include "infrastructure/rosic_FileInputOutput.h"
+#include "others/rosic_Plotter.h"
+#include "others/rosic_ProcessorCycleCounter.h"
+#include "others/rosic_RandomNumberGenerator01.h"
+#include "others/rosic_RandomNumberGenerator02.h"
+#include "others/rosic_RoutingMatrix.h"
+#include "others/rosic_RandomNumberGenerator01.h"
+#include "others/rosic_SlewRateLimiter.h"
+#include "others/rosic_SlewRateLimiterLinear.h"
+//#include "others/rosic_SlewRateLimiterOld.h"
+#include "others/rosic_SpectralProcessor.h"
+#include "others/rosic_SpectralEnvelopeProcessor.h"
+#include "others/rosic_SpectralFilter.h"
+#include "others/rosic_TuningTable.h"
+#include "others/rosic_VectorMixer.h"
+
 // ... good, until here
 
-// others:
 
 // modulators:
 
@@ -162,7 +186,7 @@
 #include "modulators/rosic_Modulators.h"
 #include "neural/rosic_Neural.h"
 #include "numerical/rosic_Numerical.h"
-#include "others/rosic_Others.h"
+//#include "others/rosic_Others.h"
 #include "rendering/rosic_Rendering.h"
 #include "scripting/rosic_Scripting.h"
 //#include "plugins/rosic_PlugIns.h"
