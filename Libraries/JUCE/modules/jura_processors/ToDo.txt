@@ -1,8 +1,9 @@
 -get rid of rosic dependency on rapt if possible (done)
--get rid of "using namespace" in headers
- (rapt.h (done), rosic.h, romos.h, jura_*.h)
 -use "rs" prefix for all rosic classes
  (maybe later also rapt and jura)
+-centralize #include directives for rosic header files
+-get rid of "using namespace" in headers
+ (rapt.h (done), rosic.h, romos.h, jura_*.h)
 -fix gcc compiler warnings
 
 
