@@ -1,6 +1,8 @@
 #ifndef rosic_ComplexFunctions_h
 #define rosic_ComplexFunctions_h
 
+// this file can be removed...
+
 // rosic includes:
 #include "rosic_Complex.h" 
 #include "rosic_RealFunctions.h"

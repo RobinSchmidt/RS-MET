@@ -45,9 +45,21 @@
 //#include "basics/rosic_NumberManipulations.h"
 //#include "basics/rosic_FunctionTemplates.h"
 //
-//// we need to intersperse some non-"basics" includes:
-//// MutexLock, ElementaryFunctionsReal, SpecialFunctionsReal, ExpressionEvaluator
+//// we need to intersperse some includes from other directories before we can finish the includes 
+//// from basics (todo: fix the dependency structure/layering):
+//#include "infrastructure/rosic_MutexLock.h"
+//#include "math/rosic_CephesDeclarations.h"
+//#include "math/rosic_RealFunctionEvaluationAlgorithms.h"
+//#include "math/rosic_IntegerFunctions.h"
+//#include "math/rosic_ElementaryFunctionsReal.h"
+//#include "math/rosic_SpecialFunctionsReal.h"
+//#include "math/rosic_Complex.h"
+//#include "math/rosic_ComplexFunctions.h"
+//#include "scripting/rosic_ExpressionEvaluatorFunctions.h"
+//#include "scripting/rosic_ExpressionEvaluatorComplexFunctions.h"
+//#include "scripting/rosic_ExpressionEvaluator.h"
 //
+//// ..now we can finish the includes from "basics":
 //#include "basics/rosic_Interpolator.h"                // needs ElementaryFunctionsReal
 //#include "basics/rosic_SampleBuffer.h"                // needs MutexLock
 //#include "basics/rosic_SamplePlaybackParameters.h"    // needs ElementaryFunctionsReal
