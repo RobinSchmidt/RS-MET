@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="ht4IIg" name="TestsRosicAndRapt" projectType="consoleapp"
+              version="1.0.0" bundleIdentifier="com.yourcompany.TestsRosicAndRapt"
+              includeBinaryInAppConfig="1" jucerVersion="4.2.4" defines="DONT_SET_USING_JUCE_NAMESPACE">
+  <MAINGROUP id="faVDnE" name="TestsRosicAndRapt">
+    <GROUP id="{1E9A4B2E-B083-724B-094D-49D8FBCEF73F}" name="Source">
+      <FILE id="uqYpon" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
+    </GROUP>
+  </MAINGROUP>
+  <EXPORTFORMATS>
+    <VS2015 targetFolder="Builds/VisualStudio2015">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" winWarningLevel="3" generateManifest="1" winArchitecture="x64"
+                       isDebug="1" optimisation="1" targetName="TestsRosicAndRapt"/>
+        <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
+                       isDebug="0" optimisation="3" targetName="TestsRosicAndRapt"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="rapt" path="../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="rosic" path="../../Libraries/JUCE/modules"/>
+      </MODULEPATHS>
+    </VS2015>
+  </EXPORTFORMATS>
+  <MODULES>
+    <MODULE id="rapt" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="rosic" showAllCode="1" useLocalCopy="0"/>
+  </MODULES>
+  <JUCEOPTIONS/>
+  <LIVE_SETTINGS>
+    <WINDOWS/>
+  </LIVE_SETTINGS>
+</JUCERPROJECT>
