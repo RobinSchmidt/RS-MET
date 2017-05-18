@@ -15,7 +15,7 @@
   website:          http://www.rs-met.com
   license:          GPL/Commercial
 
-  dependencies:     rapt
+  dependencies:     
   OSXFrameworks:
   iOSFrameworks:
 
