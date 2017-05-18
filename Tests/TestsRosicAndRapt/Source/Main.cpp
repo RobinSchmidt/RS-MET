@@ -11,7 +11,7 @@ int main (int argc, char* argv[])
   //testRosicFile();
   //testRosicEffects();
   //testRosicGenerators();
-  //testRosicFilter();
+  testRosicFilter();
   //testRosicNumerical();
   //testRosicMath();
   //testRosicNonRealTime();

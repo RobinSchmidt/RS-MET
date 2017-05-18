@@ -64,3 +64,11 @@
 /Products/AudioApplications/PluginHost/Builds/CodeBlocksLinux/Plugin Host.depend
 /Products/AudioApplications/PluginHost/Builds/CodeBlocksLinux/bin/Debug/Plugin Host
 Release
+*.obj
+*.tlog
+/Tests/TestsRosicAndRapt/Builds/VisualStudio2015/x64/Debug/*.log
+*.pdb
+*.exe
+/Tests/TestsRosicAndRapt/Builds/VisualStudio2015/*.sdf
+*.opensdf
+/Tests/TestsRosicAndRapt/Builds/VisualStudio2015/x64/Debug/*.ilk
