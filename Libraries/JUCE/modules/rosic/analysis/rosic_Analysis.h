@@ -18,10 +18,3 @@ This file includes all relevant rosic analysis header files.
 #include "rosic_ScopeScreenScanner.h"
 
 #endif // end of #ifndef rosic_Analysis_h
-
-
-
-
-
-
-

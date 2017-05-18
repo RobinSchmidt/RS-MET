@@ -1,10 +1,13 @@
--get rid of rosic dependency on rapt if possible (done)
+
 -use "rs" prefix for all rosic classes
  (maybe later also rapt and jura)
 -centralize #include directives for rosic header files
+-clean up coding style in rosic
 -get rid of "using namespace" in headers
  (rapt.h (done), rosic.h, romos.h, jura_*.h)
--fix gcc compiler warnings
+-fix gcc compiler warnings for rosic
+-make a testbed project for rapt and rosic
+ should contain unit tests, experiments with plots, performance tests, demos
 
 
 -make work in Chainer:
