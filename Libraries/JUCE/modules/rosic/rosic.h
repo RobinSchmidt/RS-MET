@@ -34,6 +34,33 @@
 #include <malloc.h>  // for alloca - try to get rid..
 //#include <math.h>
 
+//-------------------------------------------------------------------------------------------------
+// new, centralized header includes (when finsihed, delete old ones):
+
+//#include "basics/GlobalDefinitions.h"
+//#include "basics/GlobalFunctions.h"
+//#include "basics/rosic_Constants.h"
+//#include "basics/rosic_ChannelMatrix2x2.h"
+//#include "basics/rosic_HelperFunctions.h"
+//#include "basics/rosic_NumberManipulations.h"
+//#include "basics/rosic_FunctionTemplates.h"
+//
+//// we need to intersperse some non-"basics" includes:
+//// MutexLock, ElementaryFunctionsReal, SpecialFunctionsReal, ExpressionEvaluator
+//
+//#include "basics/rosic_Interpolator.h"                // needs ElementaryFunctionsReal
+//#include "basics/rosic_SampleBuffer.h"                // needs MutexLock
+//#include "basics/rosic_SamplePlaybackParameters.h"    // needs ElementaryFunctionsReal
+//#include "basics/rosic_TabulatedFunction.h"           // needs ExpressionEvaluator, Mutexlock
+//#include "basics/rosic_WarpedAllpassInterpolator.h"   // needs ElementaryFunctionsReal
+//#include "basics/rosic_WindowDesigner.h"              // needs SpecialFunctionsReal
+
+
+
+
+//-------------------------------------------------------------------------------------------------
+// old, de-centralized header includes:
+
 #include "analysis/rosic_Analysis.h"
 #include "basics/rosic_Basics.h"
 #include "datastructures/rosic_DataStructures.h"
