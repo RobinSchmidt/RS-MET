@@ -17,7 +17,7 @@
 
   dependencies:     juce_core, juce_audio_basics, juce_graphics, juce_gui_basics,
                     juce_audio_formats, juce_audio_processors, jura_framework,
-					          rosic, romos
+					          rapt, rosic, romos
   OSXFrameworks:
   iOSFrameworks:
 
@@ -37,6 +37,7 @@
 //#include <juce_gui_basics/juce_gui_basics.h>
 #include <jura_framework/jura_framework.h>
 
+#include <rapt/rapt.h>
 
 #ifdef _MSC_VER
 #include <romos/romos.h>

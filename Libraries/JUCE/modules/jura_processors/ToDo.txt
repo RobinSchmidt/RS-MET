@@ -1,3 +1,10 @@
+-get rid of rosic dependency on rapt if possible (done)
+-get rid of "using namespace" in headers
+ (rapt.h, rosic.h, romos.h, jura_*.h)
+-use "rs" prefix for all rosic classes
+ (maybe later also rapt and jura)
+-fix gcc compiler warnings
+
 
 -make work in Chainer:
  -AciDevil (done)
@@ -6,12 +13,11 @@
  -FuncShaper (done)
  -PitchShifter (done)
  -StereoDelay (done)
- -MultiAnalyzer (done..kind of)
+ -MultiAnalyzer (done...still buggy)
+ -Straightliner (done...still buggy)
  -EchoLab
- -Straightliner
  -TrackMeter
  -Quadrifex
-
 
  -Liberty
  -MagicCarpet

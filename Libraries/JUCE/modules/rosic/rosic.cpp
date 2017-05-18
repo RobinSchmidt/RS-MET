@@ -8,8 +8,6 @@ header files that the compiler may be using. */
 
 #include "rosic.h"
 
-
-
 //=================================================================================================
 
 /** The cpp files are included in the order in which they depend on each other. The only folder 

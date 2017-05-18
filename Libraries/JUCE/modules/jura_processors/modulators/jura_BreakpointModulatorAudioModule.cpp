@@ -39,7 +39,7 @@ void BreakpointModulatorAudioModule::parameterChanged(Parameter* parameterThatHa
 
 int stringToModBreakpointShapeIndex(const juce::String &shapeString)
 {
-  typedef rsModBreakpoint<double> BP;
+  typedef rosic::ModBreakpoint BP;
   if(      shapeString == "Stairstep" )  return BP::STAIRSTEP;
   else if( shapeString == "Linear" )     return BP::LINEAR;
   else if( shapeString == "Smooth" )     return BP::SMOOTH;
@@ -54,7 +54,7 @@ int stringToModBreakpointShapeIndex(const juce::String &shapeString)
 
 const juce::String modBreakpointShapeIndexToString(int shapeIndex)
 {
-  typedef rsModBreakpoint<double> BP;
+  typedef rosic::ModBreakpoint BP;
   if(      shapeIndex == BP::STAIRSTEP ) return "Stairstep";
   else if( shapeIndex == BP::LINEAR )    return "Linear";
   else if( shapeIndex == BP::SMOOTH )    return "Smooth";
@@ -95,7 +95,7 @@ XmlElement* BreakpointModulatorAudioModule::getStateAsXml(const juce::String& st
   xmlState->setAttribute(juce::String("LoopStartIndex"),   wrappedBreakpointModulator->getLoopStartIndex() );
   xmlState->setAttribute(juce::String("LoopEndIndex"),     wrappedBreakpointModulator->getLoopEndIndex() );
 
-  if( wrappedBreakpointModulator->getLoopMode() == rsBreakpointModulator<double>::FORWARD_LOOP )
+  if( wrappedBreakpointModulator->getLoopMode() == rosic::BreakpointModulator::FORWARD_LOOP )
     xmlState->setAttribute(juce::String("LoopMode"), juce::String("Forward") );
   else
     xmlState->setAttribute(juce::String("LoopMode"), juce::String("Off") );
