@@ -1,8 +1,8 @@
 #include "rosic_OthersTests.h"
 using namespace rotes;
 
-
-
+#include "rosic/rosic.h"
+using namespace rosic;
 
 void rotes::testSlewRateLimiterLinear()
 {

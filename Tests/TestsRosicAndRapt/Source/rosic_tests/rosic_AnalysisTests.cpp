@@ -1,6 +1,9 @@
 #include "rosic_AnalysisTests.h"
 using namespace rotes;
 
+#include "rosic/rosic.h"
+using namespace rosic;
+
 void rotes::testOscilloscopeBuffer()
 {
   // test cases: W = 500

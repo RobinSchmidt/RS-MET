@@ -2,7 +2,8 @@
 #define rosic_StringTests_h
 
 //#include "../../../rosic/datastructures/rosic_String.h"
-#include "../../../rosic/rosic.h"
+//#include "../../../rosic/rosic.h"
+#include "rosic/rosic.h"
 
 namespace rotes
 {
@@ -27,8 +28,8 @@ namespace rotes
   //void testStringComparison();...
 
 
-  String createStringWithAllCharacters();
-  String createStringWithAllPrintableCharacters();
+  rosic::String createStringWithAllCharacters();
+  rosic::String createStringWithAllPrintableCharacters();
 }
 
 #endif 

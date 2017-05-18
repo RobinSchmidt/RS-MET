@@ -1,6 +1,9 @@
 #include "rosic_MathTests.h"
 using namespace rotes;
 
+#include "rosic/rosic.h"
+using namespace rosic;
+
 
 bool rotes::testCubicCoeffsTwoPointsAndDerivatives()
 {

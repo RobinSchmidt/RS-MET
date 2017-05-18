@@ -1,22 +1,21 @@
 #ifndef rosic_CorrectnessTests_h
 #define rosic_CorrectnessTests_h
 
-#include "datastructures/rosic_StringTests.h"
-#include "infrastructure/rosic_FileTests.h"
-#include "effects/rosic_EffectsTests.h"
-#include "filters/rosic_FilterTests.h"
-#include "generators/rosic_GeneratorsTests.h"
-#include "modulators/rosic_ModulatorsTests.h"
-#include "analysis/rosic_AnalysisTests.h"
-#include "basics/rosic_BasicsTests.h"
-#include "math/rosic_MathTests.h"
-#include "numerical/rosic_NumericalTests.h"
-#include "nonrealtime/rosic_NonRealtimeTests.h"
-#include "others/rosic_OthersTests.h"
+#include "rosic_StringTests.h"
+#include "rosic_FileTests.h"
+#include "rosic_EffectsTests.h"
+#include "rosic_FilterTests.h"
+#include "rosic_GeneratorsTests.h"
+#include "rosic_ModulatorsTests.h"
+#include "rosic_AnalysisTests.h"
+#include "rosic_BasicsTests.h"
+#include "rosic_MathTests.h"
+#include "rosic_NumericalTests.h"
+#include "rosic_NonRealtimeTests.h"
+#include "rosic_OthersTests.h"
 
 namespace rotes
 {
-
   void testAllRosicClasses();
   void testRosicAnalysis(); 
   void testRosicBasics(); 
@@ -29,7 +28,6 @@ namespace rotes
   void testRosicNumerical(); 
   void testRosicNonRealTime(); 
   void testRosicOthers(); 
-
 }
 
 #endif 

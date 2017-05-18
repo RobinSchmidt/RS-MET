@@ -1,6 +1,9 @@
 #include "rosic_GeneratorsTests.h"
 using namespace rotes;
 
+#include "rosic/rosic.h"
+using namespace rosic;
+
 void rotes::testOscillatorStereo()
 {
   // set up the WaveTable:

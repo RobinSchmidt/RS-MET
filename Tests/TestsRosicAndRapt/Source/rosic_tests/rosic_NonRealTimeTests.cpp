@@ -1,6 +1,9 @@
 #include "rosic_NonRealTimeTests.h"
 using namespace rotes;
 
+#include "rosic/rosic.h"
+using namespace rosic;
+
 bool rotes::testMinimumPhaseReconstruction()
 {
   bool   result = true;

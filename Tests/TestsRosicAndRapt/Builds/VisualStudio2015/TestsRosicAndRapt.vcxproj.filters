@@ -8,6 +8,9 @@
     <Filter Include="TestsRosicAndRapt\Source">
       <UniqueIdentifier>{DE9EB760-698E-4DD8-448C-1D5E2B720FD7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="TestsRosicAndRapt\Source\rosic_tests">
+      <UniqueIdentifier>{7D734073-1DF1-0543-6CD6-E343158C3EBD}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Juce Modules">
       <UniqueIdentifier>{422C46B7-0467-2DB0-BF3C-16DFCAFD69AC}</UniqueIdentifier>
     </Filter>
@@ -181,6 +184,45 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\rosic_tests\rosic_AnalysisTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\rosic_BasicsTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\rosic_CorrectnessTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\rosic_EffectsTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\rosic_FileTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\rosic_FilterTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\rosic_GeneratorsTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\rosic_MathTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\rosic_ModulatorsTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\rosic_NonRealTimeTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\rosic_NumericalTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\rosic_OthersTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rosic_tests\rosic_StringTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Main.cpp">
       <Filter>TestsRosicAndRapt\Source</Filter>
     </ClCompile>
@@ -1497,6 +1539,45 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\rosic_tests\rosic_AnalysisTests.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\rosic_BasicsTests.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\rosic_CorrectnessTests.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\rosic_EffectsTests.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\rosic_FileTests.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\rosic_FilterTests.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\rosic_GeneratorsTests.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\rosic_MathTests.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\rosic_ModulatorsTests.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\rosic_NonRealTimeTests.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\rosic_NumericalTests.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\rosic_OthersTests.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rosic_tests\rosic_StringTests.h">
+      <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\Basics.h">
       <Filter>Juce Modules\rapt\Basics</Filter>
     </ClInclude>

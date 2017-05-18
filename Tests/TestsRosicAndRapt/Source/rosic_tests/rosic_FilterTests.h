@@ -1,7 +1,7 @@
 #ifndef rosic_FilterTests_h
 #define rosic_FilterTests_h
 
-#include "../datastructures/rosic_StringTests.h"
+//#include "../datastructures/rosic_StringTests.h"
 
 namespace rotes
 {

@@ -1,9 +1,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 
-
-//#include "rosic_tests/rosic_CorrectnessTests.h"
-//using namespace rotes;
-
+#include "rosic_tests/rosic_CorrectnessTests.h"
+using namespace rotes;
 
 int main (int argc, char* argv[])
 {

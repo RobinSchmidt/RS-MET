@@ -1,7 +1,8 @@
 #ifndef rosic_BasicsTests_h
 #define rosic_BasicsTests_h
 
-#include "../datastructures/rosic_StringTests.h"
+//#include "../datastructures/rosic_StringTests.h"
+#include "rosic/rosic.h"
 
 namespace rotes
 {

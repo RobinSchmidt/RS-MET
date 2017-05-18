@@ -1,6 +1,9 @@
 #include "rosic_FilterTests.h"
 using namespace rotes;
 
+#include "rosic/rosic.h"
+using namespace rosic;
+
 template<class T>
 void getImpulseResponse(T &module, double *h, int N)
 {
