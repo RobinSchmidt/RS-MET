@@ -113,7 +113,7 @@ namespace rosic
     EnvelopeFollower envFollower;
       // detects the loudness of the signal
 
-    CyclicAutoCorrelator correlator;
+    rsCyclicAutoCorrelator correlator;
       // measures the correlation between successive pitch-cycles
 
     int sampleCounter;

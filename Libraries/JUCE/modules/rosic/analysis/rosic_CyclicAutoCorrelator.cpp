@@ -3,7 +3,7 @@ using namespace rosic;
 
 // Construction/Destruction:
 
-CyclicAutoCorrelator::CyclicAutoCorrelator(int newMaxBufferSize)
+rsCyclicAutoCorrelator::rsCyclicAutoCorrelator(int newMaxBufferSize)
 {
   if( newMaxBufferSize >= 256 )
     maxBufferSize = newMaxBufferSize;
@@ -25,7 +25,7 @@ CyclicAutoCorrelator::CyclicAutoCorrelator(int newMaxBufferSize)
   resetBuffer(); 
 }
 
-CyclicAutoCorrelator::~CyclicAutoCorrelator()
+rsCyclicAutoCorrelator::~rsCyclicAutoCorrelator()
 {
   if( buffer != NULL )
     delete[] buffer;
@@ -33,14 +33,14 @@ CyclicAutoCorrelator::~CyclicAutoCorrelator()
 
 // Miscellaneous:
 
-void CyclicAutoCorrelator::resetAccumulators()
+void rsCyclicAutoCorrelator::resetAccumulators()
 {
   sumOfProducts   = 0.0;
   sumOfSquares    = 0.0;
   sampleCounter   = 0;
 }
 
-void CyclicAutoCorrelator::resetBuffer()
+void rsCyclicAutoCorrelator::resetBuffer()
 {
   for(int i=0; i<maxBufferSize; i++)
     buffer[i] = 0.0;

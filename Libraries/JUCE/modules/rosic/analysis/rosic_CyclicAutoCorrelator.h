@@ -1,5 +1,5 @@
-#ifndef rosic_CyclicAutoCorrelator_h
-#define rosic_CyclicAutoCorrelator_h
+#ifndef rosic_rsCyclicAutoCorrelator_h
+#define rosic_rsCyclicAutoCorrelator_h
 
 // rosic-indcludes:
 #include "../math/rosic_ElementaryFunctionsReal.h"
@@ -18,7 +18,7 @@ namespace rosic
 
   */
 
-  class CyclicAutoCorrelator  
+  class rsCyclicAutoCorrelator  
   {
 
   public:
@@ -26,10 +26,10 @@ namespace rosic
     /** \name Construction/Destruction */
 
     /** Constructor - constructs a delay-line with a given maximum number of samples delay. */
-    CyclicAutoCorrelator(int newMaxBufferSize = 16384);
+    rsCyclicAutoCorrelator(int newMaxBufferSize = 16384);
 
     /** Destructor - frees memory for delayline. */
-    ~CyclicAutoCorrelator();
+    ~rsCyclicAutoCorrelator();
 
 
     /** \name Audio Processing */
@@ -79,7 +79,7 @@ namespace rosic
   //-----------------------------------------------------------------------------------------------
   // inlined functions:
 
-  INLINE void CyclicAutoCorrelator::acceptSample(double in)
+  INLINE void rsCyclicAutoCorrelator::acceptSample(double in)
   {
     if( sampleCounter < maxBufferSize )
     {
@@ -100,7 +100,7 @@ namespace rosic
     }
   }
 
-  INLINE double CyclicAutoCorrelator::getCorrelationAndReset()
+  INLINE double rsCyclicAutoCorrelator::getCorrelationAndReset()
   {
     // determine the number of samples over which we have to average:
     double numSamplesToAverage = (double) rmin(sampleCounter, oldCycleLength);

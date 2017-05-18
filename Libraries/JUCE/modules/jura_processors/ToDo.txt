@@ -1,18 +1,15 @@
--make a testbed project for rapt and rosic
- should contain unit tests, experiments with plots, performance tests, demos
- -integrate code from old
-  -"rotes" folder (contains unit tests for rosic)
-  -rapt testbed
-  -later: RSLib
-
+-centralize #include directives for rosic header files
 
 -use "rs" prefix for all rosic classes
  (maybe later also rapt and jura)
--centralize #include directives for rosic header files
+
 -clean up coding style in rosic
 -get rid of "using namespace" in headers
  (rapt.h (done), rosic.h, romos.h, jura_*.h)
 -fix gcc compiler warnings for rosic
+
+-integrate old rapt test/demo code into testbed
+ -organize into: unit tests, experiments (with plots), performance tests, demos
 
 
 
