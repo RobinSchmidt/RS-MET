@@ -31,7 +31,7 @@
 #include <ctgmath>       // template generic math?
 #include <complex>       // included already by ctgmath ...but not on gcc/windows?
 #include <vector>
-using namespace std;
+//using namespace std;
 
 #include "Basics/Basics.h"               // type definitions, constants, functions, etc.
 #include "Data/Data.h"                   // data structures like arrays, lists, files, etc.

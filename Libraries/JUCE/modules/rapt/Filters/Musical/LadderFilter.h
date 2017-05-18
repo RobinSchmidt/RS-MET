@@ -95,7 +95,7 @@ public:
   void getState(TSig *state);
 
   /** Returns the filter's z-domain transfer function value at the given value of z. */
-  complex<TPar> getTransferFunctionAt(complex<TPar> z);
+  std::complex<TPar> getTransferFunctionAt(std::complex<TPar> z);
 
   /** Returns the filter's magnitude response at the given frequency in Hz. */
   TPar getMagnitudeResponseAt(TPar frequency);

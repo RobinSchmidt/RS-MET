@@ -83,11 +83,11 @@ void LadderFilter<TSig, TPar>::getState(TSig *state)
 }
 
 template<class TSig, class TPar>
-complex<TPar> LadderFilter<TSig, TPar>::getTransferFunctionAt(complex<TPar> z)
+std::complex<TPar> LadderFilter<TSig, TPar>::getTransferFunctionAt(std::complex<TPar> z)
 {
-  complex<TPar> G1, G2, G3, G4; // transfer functions of n-th stage output, n = 1..4
-  complex<TPar> H;              // transfer function with resonance   
-  complex<TPar> one(1, 0);
+  std::complex<TPar> G1, G2, G3, G4; // transfer functions of n-th stage output, n = 1..4
+  std::complex<TPar> H;              // transfer function with resonance   
+  std::complex<TPar> one(1, 0);
 
   G1 = b / (one + a/z);
   G2 = G1*G1;
@@ -102,11 +102,11 @@ template<class TSig, class TPar>
 TPar LadderFilter<TSig, TPar>::getMagnitudeResponseAt(TPar frequency)
 {
   TPar w = 2 * TPar(PI) * frequency/sampleRate;
-  complex<TPar> j(0, 1);                      // imaginary unit
-  complex<TPar> z = exp(j*w);                 // location in the z-plane
-  complex<TPar> H = getTransferFunctionAt(z); // H(z) at our z
-  H *= conj(H);                               // magnitude-squared
-  return sqrt(H.real());                      // imaginary part should be zero anyway
+  std::complex<TPar> j(0, 1);                      // imaginary unit
+  std::complex<TPar> z = exp(j*w);                 // location in the z-plane
+  std::complex<TPar> H = getTransferFunctionAt(z); // H(z) at our z
+  H *= conj(H);                                    // magnitude-squared
+  return sqrt(H.real());                           // imaginary part should be zero anyway
 
   // I wonder, if a simpler formula is possible which avoids going through the complex transfer 
   // function -> computer algebra
