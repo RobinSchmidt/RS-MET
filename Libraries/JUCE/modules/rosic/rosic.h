@@ -160,17 +160,39 @@
 #include "others/rosic_TuningTable.h"
 #include "others/rosic_VectorMixer.h"
 
-// ... good, until here
+// (most) generators:
+#include "generators/rosic_MipMappedWaveTable.h"
+//#include "generators/rosic_MipMappedWaveTableOld.h"
+#include "generators/rosic_MipMappedWaveTableStereo.h"
+#include "generators/rosic_BlendOscillator.h"
+#include "generators/rosic_LorentzSystem.h"
+#include "generators/rosic_ModalSynthesizer.h"
+#include "generators/rosic_NoiseGenerator.h"
+//#include "generators/rosic_NoiseGeneratorOld.h"
+//#include "generators/rosic_Oscillator.h"
+//#include "generators/rosic_OscillatorBank.h"
+#include "generators/rosic_OscillatorStereo.h"
+#include "generators/rosic_FourOscSection.h"
+#include "generators/rosic_SampleOscillator.h"
+#include "generators/rosic_SamplePlayer.h"
+#include "generators/rosic_SineOscillator.h"
+#include "generators/rosic_SineOscillatorStereo.h"
+#include "generators/rosic_SuperOscillator.h"
+#include "generators/rosic_TestGenerator.h"
 
+// ... good, until here
 
 // modulators:
 
 // rendering:
 
-// generators:
-
 // delaylines needs: filters, generators
 
+
+// some more complex generators that need includes from modulators and rendering:
+#include "generators/rosic_Quadrigen.h"             // needs BreakpointModulator, infrastructure/*Modules
+#include "generators/rosic_VectorSamplePlayer.h"    // needs LowFrequencyOscillator
+#include "generators/rosic_WaveTable.h"             // needs WaveformRenderer
 
 //-------------------------------------------------------------------------------------------------
 // old, de-centralized header includes:
@@ -182,7 +204,7 @@
 #include "dynamics/rosic_Dynamics.h"
 #include "effects/rosic_Effects.h"
 //#include "filters/rosic_Filters.h"
-#include "generators/rosic_Generators.h"
+//#include "generators/rosic_Generators.h"
 #include "infrastructure/rosic_Infrastructure.h"
 #include "instruments/rosic_Instruments.h"
 //#include "math/rosic_Math.h"

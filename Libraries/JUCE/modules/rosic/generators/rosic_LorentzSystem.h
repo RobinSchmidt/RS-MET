@@ -2,7 +2,7 @@
 #define rosic_LorentzSystem_h
 
 // rosic-indcludes:
-#include "rosic_SineOscillatorStereo.h"
+//#include "rosic_SineOscillatorStereo.h"
 
 namespace rosic
 {
