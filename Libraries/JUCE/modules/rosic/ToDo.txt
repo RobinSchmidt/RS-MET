@@ -1,3 +1,20 @@
+-centralize #include directives for rosic header files
+
+-use "rs" prefix for all rosic classes
+ (maybe later also rapt and jura)
+
+-clean up coding style in rosic
+-get rid of "using namespace" in headers
+ (rapt.h (done), rosic.h, romos.h, jura_*.h)
+-fix gcc compiler warnings for rosic
+
+-integrate old rapt test/demo code into testbed
+ -organize into: unit tests, experiments (with plots), performance tests, demos
+
+
+
+
+
 -remove redundant envelope implementations
 
 take out some stuff that could raise copyright issues:
@@ -20,7 +37,7 @@ classes to write:
   not terribly relevant, so halfband should be fine - it merely sets a scaling factor for our input arguments)
  -the step response of our elliptic filter serves as our MinBlep
  -when a specific value at some time-instant is required, compute the value by a closed form expression for the
-  step response (still to derive, might involove a partial fraction expansion of the transfer function)
+  step response (still to derive, might involve a partial fraction expansion of the transfer function)
 -write macros to auto-create the full set of comparison operators from the "<" operator using the logical equivalences:
  x>y <-> y<x, x>=y <-> !(x<y), x<=y <-> !(y<x), x==y <-> !(x<y) && !(y<x), x!=y <-> (x<y) || (y<x)
 
