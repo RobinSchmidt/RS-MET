@@ -81,7 +81,10 @@
 #include "math/rosic_Transformations.h"
 
 // transforms:
-
+#include "transforms/rosic_FourierTransformerRadix2.h"
+#include "transforms/rosic_FourierTransformerBluestein.h"
+#include "transforms/rosic_SpectralManipulator.h"
+#include "transforms/rosic_WaveletTransforms.h"
 
 // filters:
 #include "filters/rosic_BiquadDesigner.h"
@@ -190,7 +193,7 @@
 #include "rendering/rosic_Rendering.h"
 #include "scripting/rosic_Scripting.h"
 //#include "plugins/rosic_PlugIns.h"
-#include "transforms/rosic_Transforms.h"
+//#include "transforms/rosic_Transforms.h"
 
 #endif // #ifndef ROSIC_H_INCLUDED
 
