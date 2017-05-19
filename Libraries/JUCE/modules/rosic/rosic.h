@@ -86,6 +86,12 @@
 #include "transforms/rosic_SpectralManipulator.h"
 #include "transforms/rosic_WaveletTransforms.h"
 
+// numerical:
+
+
+// neural:
+
+
 // filters:
 #include "filters/rosic_BiquadDesigner.h"
 #include "filters/rosic_AllpassChain.h"
@@ -180,8 +186,6 @@
 #include "generators/rosic_SuperOscillator.h"
 #include "generators/rosic_TestGenerator.h"
 
-// ... good, until here
-
 // modulators:
 //#include "generators/rosic_MagicCarpetModulator.h"
 #include "modulators/rosic_AmpEnvRc.h"
@@ -205,8 +209,39 @@
 #include "rendering/rosic_WaveformRenderer.h"
 #include "rendering/rosic_NonRealtimeProcesses.h"
 
+// ... good, until here
 
-// delaylines needs: filters, generators
+// delaylines:
+#include "delaylines/rosic_BasicIntegerDelayLine.h"
+#include "delaylines/rosic_IntegerDelayLine.h"
+#include "delaylines/rosic_AllpassDiffusor.h"
+#include "delaylines/rosic_DelayLineStereo.h"
+#include "delaylines/rosic_EchoLabDelayLine.h"
+#include "delaylines/rosic_FractionalDelayLine.h"
+#include "delaylines/rosic_FractionalDelayLineStereo.h"
+#include "delaylines/rosic_ModulatedDelayLine.h"
+
+
+
+
+// dynamics:
+
+
+
+// effects:
+
+
+#include "delaylines/rosic_PingPongEcho.h"  // needs StereoPan - maybe emove to effects
+
+
+
+
+
+
+// anylysis:
+
+
+// infrastructure
 
 
 // some more complex generators that need includes from modulators and rendering:
@@ -216,6 +251,14 @@
 #include "modulators/rosic_LowFrequencyOscillator.h" // needs WaveTable
 #include "modulators/rosic_Modulator.h"              // needs LowFrequencyOscillator
 
+// sequencing:
+
+
+// scripting:
+
+
+// instruments:
+
 
 //-------------------------------------------------------------------------------------------------
 // old, de-centralized header includes:
@@ -223,7 +266,7 @@
 #include "analysis/rosic_Analysis.h"
 //#include "basics/rosic_Basics.h"
 //#include "datastructures/rosic_DataStructures.h"
-#include "delaylines/rosic_DelayLines.h"
+//#include "delaylines/rosic_DelayLines.h"
 #include "dynamics/rosic_Dynamics.h"
 #include "effects/rosic_Effects.h"
 //#include "filters/rosic_Filters.h"
