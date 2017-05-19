@@ -1,5 +1,7 @@
 -centralize #include directives for rosic header files
 
+-get rid of per-file includes
+
 -use "rs" prefix for all rosic classes
  (maybe later also rapt and jura)
 

@@ -313,10 +313,23 @@
 #include "generators/rosic_VectorSamplePlayer.h"     // needs LowFrequencyOscillator
 #include "modulators/rosic_Modulator.h"              // needs LowFrequencyOscillator
 
-// ... good, until here
-
-
 // instruments:
+#include "instruments/rosic_AciDevil.h"
+#include "instruments/rosic_KeyShotVoice.h"
+#include "instruments/rosic_KeyShot.h"
+#include "instruments/rosic_MagicCarpetVoice.h"
+#include "instruments/rosic_MagicCarpet.h"
+#include "instruments/rosic_Open303.h"
+#include "instruments/rosic_QuadrigaVoice.h" 
+#include "instruments/rosic_Quadriga.h" 
+#include "instruments/rosic_SimpleSamplerOscSection.h" 
+#include "instruments/rosic_SimpleSamplerVoice.h" 
+#include "instruments/rosic_SimpleSampler.h" 
+#include "instruments/rosic_StraightlinerVoice.h" 
+#include "instruments/rosic_Straightliner.h" 
+#include "instruments/rosic_WorkhorseOscSection.h" 
+#include "instruments/rosic_WorkhorseVoice.h" 
+#include "instruments/rosic_Workhorse.h" 
 
 
 //-------------------------------------------------------------------------------------------------
@@ -331,7 +344,7 @@
 //#include "filters/rosic_Filters.h"
 //#include "generators/rosic_Generators.h"
 //#include "infrastructure/rosic_Infrastructure.h"
-#include "instruments/rosic_Instruments.h"
+//#include "instruments/rosic_Instruments.h"
 //#include "math/rosic_Math.h"
 //#include "modulators/rosic_Modulators.h"
 #include "neural/rosic_Neural.h"
