@@ -286,22 +286,35 @@
 #include "effects/rosic_WahWah.h"
 #include "effects/rosic_WaveShaper.h"
 
+// infrastructure:
+#include "infrastructure/rosic_Module.h"
+#include "infrastructure/rosic_EffectModules.h"
+#include "infrastructure/rosic_GeneratorModules.h"
+#include "infrastructure/rosic_ModulatorModules.h"
+#include "infrastructure/rosic_File.h"
+#include "infrastructure/rosic_MemoryUser.h"
+#include "infrastructure/rosic_MidiNoteEvent.h"
+#include "infrastructure/rosic_PolyphonicinstrumentVoice.h"
+#include "infrastructure/rosic_Polyphonicinstrument.h"
+
 // ... good, until here
 
-// infrastructure:
-
-// some more complex generators that need includes from modulators and rendering:
-#include "effects/rosic_Quadrifex.h"                 // needs EffectModules
-#include "generators/rosic_Quadrigen.h"              // needs BreakpointModulator, infrastructure/*Modules
-#include "generators/rosic_VectorSamplePlayer.h"     // needs LowFrequencyOscillator
-#include "generators/rosic_WaveTable.h"              // needs WaveformRenderer
-#include "modulators/rosic_LowFrequencyOscillator.h" // needs WaveTable
-#include "modulators/rosic_Modulator.h"              // needs LowFrequencyOscillator
 
 // sequencing:
 
 
 // scripting:
+
+
+// some more complex generators that need includes from modulators and rendering:
+#include "generators/rosic_WaveTable.h"              // needs WaveformRenderer
+#include "modulators/rosic_LowFrequencyOscillator.h" // needs WaveTable
+#include "effects/rosic_Quadrifex.h"                 // needs EffectModules
+#include "generators/rosic_Quadrigen.h"              // needs BreakpointModulator, infrastructure/*Modules
+#include "generators/rosic_VectorSamplePlayer.h"     // needs LowFrequencyOscillator
+#include "modulators/rosic_Modulator.h"              // needs LowFrequencyOscillator
+
+
 
 
 // instruments:
@@ -318,7 +331,7 @@
 //#include "effects/rosic_Effects.h"
 //#include "filters/rosic_Filters.h"
 //#include "generators/rosic_Generators.h"
-#include "infrastructure/rosic_Infrastructure.h"
+//#include "infrastructure/rosic_Infrastructure.h"
 #include "instruments/rosic_Instruments.h"
 //#include "math/rosic_Math.h"
 //#include "modulators/rosic_Modulators.h"
