@@ -209,8 +209,6 @@
 #include "rendering/rosic_WaveformRenderer.h"
 #include "rendering/rosic_NonRealtimeProcesses.h"
 
-// ... good, until here
-
 // delaylines:
 #include "delaylines/rosic_BasicIntegerDelayLine.h"
 #include "delaylines/rosic_IntegerDelayLine.h"
@@ -221,7 +219,23 @@
 #include "delaylines/rosic_FractionalDelayLineStereo.h"
 #include "delaylines/rosic_ModulatedDelayLine.h"
 
+// analysis:
+#include "analysis/rosic_CyclicAutoCorrelator.h"
+#include "analysis/rosic_EnvelopeFollower.h"
+#include "analysis/rosic_LinearPredictor.h"
+#include "analysis/rosic_FormantRemover.h"
+#include "analysis/rosic_FormantPreserver.h"
+#include "analysis/rosic_InstantaneousEnvelopeDetector.h"
+#include "analysis/rosic_LevelDetector.h"
+//#include "analysis/rosic_OscilloscopeBufferOld.h"
+#include "analysis/rosic_PitchDetector.h"
+#include "analysis/rosic_ScopeScreenScanner.h"
+#include "analysis/rosic_SignalMeasures.h"
+#include "analysis/rosic_SpectrumAnalyzer.h"
+#include "analysis/rosic_TrackMeter.h"
+#include "analysis/rosic_WaveformDisplayBuffer.h"
 
+// ... good, until here
 
 
 // dynamics:
@@ -235,10 +249,6 @@
 
 
 
-
-
-
-// anylysis:
 
 
 // infrastructure
@@ -263,7 +273,7 @@
 //-------------------------------------------------------------------------------------------------
 // old, de-centralized header includes:
 
-#include "analysis/rosic_Analysis.h"
+//#include "analysis/rosic_Analysis.h"
 //#include "basics/rosic_Basics.h"
 //#include "datastructures/rosic_DataStructures.h"
 //#include "delaylines/rosic_DelayLines.h"
