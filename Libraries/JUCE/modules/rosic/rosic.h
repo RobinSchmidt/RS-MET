@@ -183,16 +183,39 @@
 // ... good, until here
 
 // modulators:
+//#include "generators/rosic_MagicCarpetModulator.h"
+#include "modulators/rosic_AmpEnvRc.h"
+#include "modulators/rosic_AnalogEnvelope.h"
+#include "modulators/rosic_AnalogEnvelopeScaled.h"
+#include "modulators/rosic_AttackDecayEnvelope.h"
+#include "modulators/rosic_BreakpointModulator.h"
+#include "modulators/rosic_DecayEnvelope.h"
+#include "modulators/rosic_EnvelopeGenerator.h"
+#include "modulators/rosic_EnvelopeGenerator2.h"
+#include "modulators/rosic_ExponentialRamp.h"
+#include "modulators/rosic_PitchEnvRc.h"
+#include "modulators/rosic_SampleModulator.h"  
+// todo: remove redundant envelope generators
 
 // rendering:
+#include "rendering/rosic_AlgorithmicWaveformRenderer.h"
+#include "rendering/rosic_MultiSegmentWaveformRenderer.h"
+#include "rendering/rosic_StandardWaveformRenderer.h"
+#include "rendering/rosic_WaveformBuffer.h"
+#include "rendering/rosic_WaveformRenderer.h"
+#include "rendering/rosic_NonRealtimeProcesses.h"
+
 
 // delaylines needs: filters, generators
 
 
 // some more complex generators that need includes from modulators and rendering:
-#include "generators/rosic_Quadrigen.h"             // needs BreakpointModulator, infrastructure/*Modules
-#include "generators/rosic_VectorSamplePlayer.h"    // needs LowFrequencyOscillator
-#include "generators/rosic_WaveTable.h"             // needs WaveformRenderer
+#include "generators/rosic_Quadrigen.h"              // needs BreakpointModulator, infrastructure/*Modules
+#include "generators/rosic_VectorSamplePlayer.h"     // needs LowFrequencyOscillator
+#include "generators/rosic_WaveTable.h"              // needs WaveformRenderer
+#include "modulators/rosic_LowFrequencyOscillator.h" // needs WaveTable
+#include "modulators/rosic_Modulator.h"              // needs LowFrequencyOscillator
+
 
 //-------------------------------------------------------------------------------------------------
 // old, de-centralized header includes:
@@ -208,11 +231,11 @@
 #include "infrastructure/rosic_Infrastructure.h"
 #include "instruments/rosic_Instruments.h"
 //#include "math/rosic_Math.h"
-#include "modulators/rosic_Modulators.h"
+//#include "modulators/rosic_Modulators.h"
 #include "neural/rosic_Neural.h"
 #include "numerical/rosic_Numerical.h"
 //#include "others/rosic_Others.h"
-#include "rendering/rosic_Rendering.h"
+//#include "rendering/rosic_Rendering.h"
 #include "scripting/rosic_Scripting.h"
 //#include "plugins/rosic_PlugIns.h"
 //#include "transforms/rosic_Transforms.h"
