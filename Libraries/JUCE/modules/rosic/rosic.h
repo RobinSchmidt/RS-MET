@@ -297,14 +297,13 @@
 #include "infrastructure/rosic_PolyphonicinstrumentVoice.h"
 #include "infrastructure/rosic_Polyphonicinstrument.h"
 
-// ... good, until here
-
-
 // sequencing:
-
+#include "sequencing/rosic_AcidPattern.h"
+#include "sequencing/rosic_AcidSequencer.h"
 
 // scripting:
-
+#include "scripting/rosic_DspScriptInterpreter.h"
+#include "scripting/rosic_DspWorkbench.h"
 
 // some more complex generators that need includes from modulators and rendering:
 #include "generators/rosic_WaveTable.h"              // needs WaveformRenderer
@@ -314,7 +313,7 @@
 #include "generators/rosic_VectorSamplePlayer.h"     // needs LowFrequencyOscillator
 #include "modulators/rosic_Modulator.h"              // needs LowFrequencyOscillator
 
-
+// ... good, until here
 
 
 // instruments:
@@ -339,7 +338,7 @@
 #include "numerical/rosic_Numerical.h"
 //#include "others/rosic_Others.h"
 //#include "rendering/rosic_Rendering.h"
-#include "scripting/rosic_Scripting.h"
+//#include "scripting/rosic_Scripting.h"
 //#include "plugins/rosic_PlugIns.h"
 //#include "transforms/rosic_Transforms.h"
 
