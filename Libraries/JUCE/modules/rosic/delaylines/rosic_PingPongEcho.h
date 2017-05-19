@@ -5,7 +5,7 @@
 #include "../infrastructure/rosic_MutexLock.h"
 #include "../filters/rosic_Equalizer.h"
 #include "../filters/rosic_LowpassHighpass.h"
-#include "../effects/rosic_StereoPan.h"
+//#include "../effects/rosic_StereoPan.h"
 #include <stdio.h>
 
 namespace rosic

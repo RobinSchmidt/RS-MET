@@ -218,6 +218,8 @@
 #include "delaylines/rosic_FractionalDelayLine.h"
 #include "delaylines/rosic_FractionalDelayLineStereo.h"
 #include "delaylines/rosic_ModulatedDelayLine.h"
+#include "delaylines/rosic_PingPongEcho.h"             // needs StereoPan...or not?
+
 
 // analysis:
 #include "analysis/rosic_CyclicAutoCorrelator.h"
@@ -245,21 +247,51 @@
 #include "dynamics/rosic_SoftKneeCompressor.h"
 #include "dynamics/rosic_SoftKneeExpander.h"
 
+// effects:
+#include "effects/rosic_FeedbackDelayNetwork.h"
+#include "effects/rosic_FeedbackDelayNetwork8.h"
+#include "effects/rosic_FeedbackDelayNetwork16.h"
+#include "effects/rosic_AlgoVerb.h"
+#include "effects/rosic_AudioToMidi.h"
+#include "effects/rosic_BitCrusher.h"
+#include "effects/rosic_ModulationEffect.h"
+#include "effects/rosic_Vibrato.h"
+#include "effects/rosic_Chorus.h"
+#include "effects/rosic_CombBank.h"
+#include "effects/rosic_CombResonatorStereo.h"
+#include "effects/rosic_CombStereoizer.h"
+#include "effects/rosic_CompShaper.h"
+#include "effects/rosic_Distortion.h"
+#include "effects/rosic_EchoLab.h"
+#include "effects/rosic_Flanger.h"
+#include "effects/rosic_FormantShifter.h"
+#include "effects/rosic_FrequencyShifter.h"
+#include "effects/rosic_FuncShaper.h"
+#include "effects/rosic_Harmonics.h"
+#include "effects/rosic_ModulatedAllpass.h"
+#include "effects/rosic_Moduluxury.h"
+#include "effects/rosic_Noisifier.h"
+#include "effects/rosic_Phaser.h"
+#include "effects/rosic_DelayPhaser.h"           // needs PingPongEcho and Phaser
+#include "effects/rosic_PhaseStereoizer.h"
+#include "effects/rosic_PitchShifter.h"
+#include "effects/rosic_PitchShifterGrainAdaptive.h"
+#include "effects/rosic_Reverb.h"
+#include "effects/rosic_RingModulator.h"
+#include "effects/rosic_SingleSidebandModulator.h"
+#include "effects/rosic_StereoDelay.h"
+#include "effects/rosic_StereoPan.h"
+#include "effects/rosic_StereoWidth.h"
+#include "effects/rosic_Tremolo.h"
+#include "effects/rosic_WahWah.h"
+#include "effects/rosic_WaveShaper.h"
+
 // ... good, until here
 
-// effects:
-
-
-#include "delaylines/rosic_PingPongEcho.h"  // needs StereoPan - move to effects
-
-
-
-
-
-// infrastructure
-
+// infrastructure:
 
 // some more complex generators that need includes from modulators and rendering:
+#include "effects/rosic_Quadrifex.h"                 // needs EffectModules
 #include "generators/rosic_Quadrigen.h"              // needs BreakpointModulator, infrastructure/*Modules
 #include "generators/rosic_VectorSamplePlayer.h"     // needs LowFrequencyOscillator
 #include "generators/rosic_WaveTable.h"              // needs WaveformRenderer
@@ -283,7 +315,7 @@
 //#include "datastructures/rosic_DataStructures.h"
 //#include "delaylines/rosic_DelayLines.h"
 //#include "dynamics/rosic_Dynamics.h"
-#include "effects/rosic_Effects.h"
+//#include "effects/rosic_Effects.h"
 //#include "filters/rosic_Filters.h"
 //#include "generators/rosic_Generators.h"
 #include "infrastructure/rosic_Infrastructure.h"
