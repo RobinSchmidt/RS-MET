@@ -87,10 +87,13 @@
 #include "transforms/rosic_WaveletTransforms.h"
 
 // numerical:
-
+#include "numerical/rosic_FunctionObjects.h"
+#include "numerical/rosic_GradientBasedMinimizer.h"
 
 // neural:
-
+#include "neural/rosic_MultiLayerPerceptron.h"
+#include "neural/rosic_MultiLayerPerceptronErrorFunction.h"
+#include "neural/rosic_MultiLayerPerceptronTrainer.h"
 
 // filters:
 #include "filters/rosic_BiquadDesigner.h"
@@ -347,8 +350,8 @@
 //#include "instruments/rosic_Instruments.h"
 //#include "math/rosic_Math.h"
 //#include "modulators/rosic_Modulators.h"
-#include "neural/rosic_Neural.h"
-#include "numerical/rosic_Numerical.h"
+//#include "neural/rosic_Neural.h"
+//#include "numerical/rosic_Numerical.h"
 //#include "others/rosic_Others.h"
 //#include "rendering/rosic_Rendering.h"
 //#include "scripting/rosic_Scripting.h"
