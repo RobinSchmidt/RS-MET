@@ -235,17 +235,22 @@
 #include "analysis/rosic_TrackMeter.h"
 #include "analysis/rosic_WaveformDisplayBuffer.h"
 
-// ... good, until here
-
-
 // dynamics:
+#include "dynamics/rosic_BesselFilterForGainSignal.h"
+#include "dynamics/rosic_DynamicsProcessorBase.h"
+#include "dynamics/rosic_Compressor.h"
+#include "dynamics/rosic_Expander.h"
+#include "dynamics/rosic_Limiter.h"
+#include "dynamics/rosic_NoiseGate.h"
+#include "dynamics/rosic_SoftKneeCompressor.h"
+#include "dynamics/rosic_SoftKneeExpander.h"
 
-
+// ... good, until here
 
 // effects:
 
 
-#include "delaylines/rosic_PingPongEcho.h"  // needs StereoPan - maybe emove to effects
+#include "delaylines/rosic_PingPongEcho.h"  // needs StereoPan - move to effects
 
 
 
@@ -277,7 +282,7 @@
 //#include "basics/rosic_Basics.h"
 //#include "datastructures/rosic_DataStructures.h"
 //#include "delaylines/rosic_DelayLines.h"
-#include "dynamics/rosic_Dynamics.h"
+//#include "dynamics/rosic_Dynamics.h"
 #include "effects/rosic_Effects.h"
 //#include "filters/rosic_Filters.h"
 //#include "generators/rosic_Generators.h"
