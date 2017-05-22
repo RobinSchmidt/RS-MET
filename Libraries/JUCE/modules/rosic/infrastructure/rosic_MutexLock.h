@@ -1,17 +1,17 @@
 #ifndef rosic_MutexLock_h
 #define rosic_MutexLock_h
 
-#if (defined (_WIN32) || defined (_WIN64))
-#define USE_WINAPI_CRITICAL_SECTION
-#elif (defined (MAC) || defined (LINUX))
-#define USE_PTHREADS_MUTEX
-#endif
-
-#if defined (USE_WINAPI_CRITICAL_SECTION)
-#include <windows.h>
-#elif defined (USE_PTHREADS_MUTEX)
-#include <pthread.h>
-#endif
+//#if (defined (_WIN32) || defined (_WIN64))
+//#define USE_WINAPI_CRITICAL_SECTION
+//#elif (defined (MAC) || defined (LINUX))
+//#define USE_PTHREADS_MUTEX
+//#endif
+//
+//#if defined (USE_WINAPI_CRITICAL_SECTION)
+//#include <windows.h>
+//#elif defined (USE_PTHREADS_MUTEX)
+//#include <pthread.h>
+//#endif
 
 namespace rosic
 {

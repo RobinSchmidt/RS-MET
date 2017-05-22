@@ -1,11 +1,11 @@
 #ifndef rosic_RealFunctionEvaluationAlgorithms_h
 #define rosic_RealFunctionEvaluationAlgorithms_h
 
-// standard includes:
-#include <math.h>
-
-// rosic includes:
-#include "../basics/GlobalDefinitions.h"
+//// standard includes:
+//#include <math.h>
+//
+//// rosic includes:
+//#include "../basics/GlobalDefinitions.h"
 
 namespace rosic
 {

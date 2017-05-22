@@ -1,5 +1,5 @@
-#include "rosic_FunctionTemplates.h"
-using namespace rosic;
+//#include "rosic_FunctionTemplates.h"
+//using namespace rosic;
 
 
 

@@ -1,5 +1,5 @@
-#include "rosic_RealFunctionEvaluationAlgorithms.h"
-using namespace rosic;
+//#include "rosic_RealFunctionEvaluationAlgorithms.h"
+//using namespace rosic;
 
 void rosic::landen(double k, int M, double* v)
 {

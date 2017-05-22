@@ -1,5 +1,5 @@
-#include "rosic_IntegerFunctions.h"
-using namespace rosic;
+//#include "rosic_IntegerFunctions.h"
+//using namespace rosic;
 
 void rosic::getLineOfPascalTriangle(unsigned int *c, unsigned int n)
 {

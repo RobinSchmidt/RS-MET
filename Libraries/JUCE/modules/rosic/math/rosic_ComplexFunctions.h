@@ -1,10 +1,10 @@
 #ifndef rosic_ComplexFunctions_h
 #define rosic_ComplexFunctions_h
 
-// rosic includes:
-#include "../basics/rosic_HelperFunctions.h"
-#include "rosic_Complex.h" 
-#include "rosic_SpecialFunctionsReal.h" // todo - move this to a new file SpecialFunctionsComplex
+//// rosic includes:
+//#include "../basics/rosic_HelperFunctions.h"
+//#include "rosic_Complex.h" 
+//#include "rosic_SpecialFunctionsReal.h" // todo - move this to a new file SpecialFunctionsComplex
 
 
 namespace rosic

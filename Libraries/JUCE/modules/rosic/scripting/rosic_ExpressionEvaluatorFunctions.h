@@ -7,18 +7,21 @@ This file defines custom functions (and mathematical constants) for the Expressi
 
 */
 
-// standard library includes:
-#include <errno.h>
-//extern int errno;  // is set in functions from math.h and can be checked here
+//// standard library includes:
+//#include <errno.h>
+////extern int errno;  // is set in functions from math.h and can be checked here
 
 // third party includes:
-#include "../_third_party/ExprEval_v3_4/expreval.h"
-using namespace ExprEval;
-using namespace std;
+//#include "../_third_party/ExprEval_v3_4/expreval.h"
+//using namespace ExprEval;
+//using namespace std;
 
-// rosic-indcludes:
-#include "../math/rosic_ElementaryFunctionsReal.h"
-using namespace rosic;
+//// rosic-indcludes:
+//#include "../math/rosic_ElementaryFunctionsReal.h"
+//using namespace rosic;
+
+namespace ExprEval
+{
 
 //-------------------------------------------------------------------------------------------------
 // Gaussian (aka normal) distribution:
@@ -27,16 +30,18 @@ class FunctionNodeGauss : public FunctionNode
 {
 public:
   FunctionNodeGauss(ExprEval::Expression *expression) : FunctionNode(expression)
-  { SetArgumentCount(1, 3, 0, 0, 0, 0);  }
+  {
+    SetArgumentCount(1, 3, 0, 0, 0, 0);
+  }
 
   double DoEvaluate()
   {
-    if( m_nodes.size() < 2 )
-      return gauss(m_nodes[0]->Evaluate(), 0.0, 1.0); 
-    else if( m_nodes.size() < 3 )
-      return gauss(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate(), 1.0); 
+    if(m_nodes.size() < 2)
+      return rosic::gauss(m_nodes[0]->Evaluate(), 0.0, 1.0);
+    else if(m_nodes.size() < 3)
+      return rosic::gauss(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate(), 1.0);
     else
-      return gauss(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate(), m_nodes[2]->Evaluate()); 
+      return rosic::gauss(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate(), m_nodes[2]->Evaluate());
   }
 };
 
@@ -44,7 +49,7 @@ class FunctionFactoryGauss : public FunctionFactory
 {
 public:
   std::string GetName() const                    { return "gauss"; }
-  FunctionNode* DoCreate(ExprEval::Expression *expression) { return new FunctionNodeGauss(expression);  }
+  FunctionNode* DoCreate(ExprEval::Expression *expression) { return new FunctionNodeGauss(expression); }
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -54,17 +59,21 @@ class FunctionNodeCheby : public FunctionNode
 {
 public:
   FunctionNodeCheby(ExprEval::Expression *expression) : FunctionNode(expression)
-  { SetArgumentCount(2, 2, 0, 0, 0, 0);  }
+  {
+    SetArgumentCount(2, 2, 0, 0, 0, 0);
+  }
 
   double DoEvaluate()
-  { return cheby(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate()); }
+  {
+    return rosic::cheby(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate());
+  }
 };
 
 class FunctionFactoryCheby : public FunctionFactory
 {
 public:
   std::string GetName() const                    { return "cheby"; }
-  FunctionNode* DoCreate(ExprEval::Expression *expression) { return new FunctionNodeCheby(expression);  }
+  FunctionNode* DoCreate(ExprEval::Expression *expression) { return new FunctionNodeCheby(expression); }
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -74,17 +83,21 @@ class FunctionNodePow : public FunctionNode
 {
 public:
   FunctionNodePow(ExprEval::Expression *expression) : FunctionNode(expression)
-  { SetArgumentCount(2, 2, 0, 0, 0, 0);  }
+  {
+    SetArgumentCount(2, 2, 0, 0, 0, 0);
+  }
 
   double DoEvaluate()
-  { return pow(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate() ); }
+  {
+    return pow(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate());
+  }
 };
 
 class FunctionFactoryPow : public FunctionFactory
 {
 public:
   std::string GetName() const                    { return "pow"; }
-  FunctionNode* DoCreate(ExprEval::Expression *expression) { return new FunctionNodePow(expression);  }
+  FunctionNode* DoCreate(ExprEval::Expression *expression) { return new FunctionNodePow(expression); }
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -94,17 +107,21 @@ class FunctionNodePowBipolar : public FunctionNode
 {
 public:
   FunctionNodePowBipolar(ExprEval::Expression *expression) : FunctionNode(expression)
-  { SetArgumentCount(2, 2, 0, 0, 0, 0);  }
+  {
+    SetArgumentCount(2, 2, 0, 0, 0, 0);
+  }
 
   double DoEvaluate()
-  { return powBipolar(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate() ); }
+  {
+    return rosic::powBipolar(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate());
+  }
 };
 
 class FunctionFactoryPowBipolar : public FunctionFactory
 {
 public:
   std::string GetName() const                    { return "powBipolar"; }
-  FunctionNode* DoCreate(ExprEval::Expression *expression) { return new FunctionNodePowBipolar(expression);  }
+  FunctionNode* DoCreate(ExprEval::Expression *expression) { return new FunctionNodePowBipolar(expression); }
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -114,17 +131,21 @@ class FunctionNodeQuant : public FunctionNode
 {
 public:
   FunctionNodeQuant(ExprEval::Expression *expression) : FunctionNode(expression)
-  { SetArgumentCount(2, 2, 0, 0, 0, 0);  }
+  {
+    SetArgumentCount(2, 2, 0, 0, 0, 0);
+  }
 
   double DoEvaluate()
-  { return quant(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate()); }
+  {
+    return rosic::quant(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate());
+  }
 };
 
 class FunctionFactoryQuant : public FunctionFactory
 {
 public:
   std::string GetName() const                    { return "quant"; }
-  FunctionNode* DoCreate(ExprEval::Expression *expression) { return new FunctionNodeQuant(expression);  }
+  FunctionNode* DoCreate(ExprEval::Expression *expression) { return new FunctionNodeQuant(expression); }
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -134,17 +155,21 @@ class FunctionNodeQuantToBits : public FunctionNode
 {
 public:
   FunctionNodeQuantToBits(ExprEval::Expression *expression) : FunctionNode(expression)
-  { SetArgumentCount(2, 2, 0, 0, 0, 0);  }
+  {
+    SetArgumentCount(2, 2, 0, 0, 0, 0);
+  }
 
   double DoEvaluate()
-  { return quantToBits(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate()); }
+  {
+    return rosic::quantToBits(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate());
+  }
 };
 
 class FunctionFactoryQuantToBits : public FunctionFactory
 {
 public:
   std::string GetName() const                    { return "quantToBits"; }
-  FunctionNode* DoCreate(ExprEval::Expression *expression) { return new FunctionNodeQuantToBits(expression);  }
+  FunctionNode* DoCreate(ExprEval::Expression *expression) { return new FunctionNodeQuantToBits(expression); }
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -169,7 +194,7 @@ public:
 
   double DoEvaluate()
   {
-    return sawWave( m_nodes[0]->Evaluate() );
+    return rosic::sawWave(m_nodes[0]->Evaluate());
   }
 
 };
@@ -178,7 +203,7 @@ class FunctionFactorySaw : public FunctionFactory
 {
 public:
   std::string GetName() const                    { return "saw"; }
-  FunctionNode* DoCreate(ExprEval::Expression *expression) { return new FunctionNodeSaw(expression);  }
+  FunctionNode* DoCreate(ExprEval::Expression *expression) { return new FunctionNodeSaw(expression); }
 };
 
 
@@ -189,17 +214,21 @@ class FunctionNodeSign : public FunctionNode
 {
 public:
   FunctionNodeSign(ExprEval::Expression *expression) : FunctionNode(expression)
-  { SetArgumentCount(1, 1, 0, 0, 0, 0);  }
+  {
+    SetArgumentCount(1, 1, 0, 0, 0, 0);
+  }
 
   double DoEvaluate()
-  { return sign(m_nodes[0]->Evaluate() ); }
+  {
+    return rosic::sign(m_nodes[0]->Evaluate());
+  }
 };
 
 class FunctionFactorySign : public FunctionFactory
 {
 public:
   std::string GetName() const                    { return "sign"; }
-  FunctionNode* DoCreate(ExprEval::Expression *expression) { return new FunctionNodeSign(expression);  }
+  FunctionNode* DoCreate(ExprEval::Expression *expression) { return new FunctionNodeSign(expression); }
 };
 
 
@@ -210,22 +239,24 @@ class FunctionNodeSoftClip : public FunctionNode
 {
 public:
   FunctionNodeSoftClip(ExprEval::Expression *expression) : FunctionNode(expression)
-  { SetArgumentCount(1, 5, 0, 0, 0, 0);  }
+  {
+    SetArgumentCount(1, 5, 0, 0, 0, 0);
+  }
 
   double DoEvaluate()
   {
-    if( m_nodes.size() < 2 )
-      return softClip(m_nodes[0]->Evaluate()); 
-    else if( m_nodes.size() < 3 )
-      return softClip(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate()); 
-    else if( m_nodes.size() < 4 )
-      return softClip(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate(), m_nodes[2]->Evaluate()); 
-    else if( m_nodes.size() < 5 )
-      return softClip(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate(), m_nodes[2]->Evaluate(), 
-                      m_nodes[3]->Evaluate()); 
+    if(m_nodes.size() < 2)
+      return rosic::softClip(m_nodes[0]->Evaluate());
+    else if(m_nodes.size() < 3)
+      return rosic::softClip(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate());
+    else if(m_nodes.size() < 4)
+      return rosic::softClip(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate(), m_nodes[2]->Evaluate());
+    else if(m_nodes.size() < 5)
+      return rosic::softClip(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate(), m_nodes[2]->Evaluate(),
+        m_nodes[3]->Evaluate());
     else
-      return softClip(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate(), m_nodes[2]->Evaluate(), 
-                      m_nodes[3]->Evaluate(), m_nodes[4]->Evaluate()); 
+      return rosic::softClip(m_nodes[0]->Evaluate(), m_nodes[1]->Evaluate(), m_nodes[2]->Evaluate(),
+        m_nodes[3]->Evaluate(), m_nodes[4]->Evaluate());
 
   }
 };
@@ -234,7 +265,7 @@ class FunctionFactorySoftClip : public FunctionFactory
 {
 public:
   std::string GetName() const                    { return "softClip"; }
-  FunctionNode* DoCreate(ExprEval::Expression *expression) { return new FunctionNodeSoftClip(expression);  }
+  FunctionNode* DoCreate(ExprEval::Expression *expression) { return new FunctionNodeSoftClip(expression); }
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -244,20 +275,24 @@ class FunctionNodeStep : public FunctionNode
 {
 public:
   FunctionNodeStep(ExprEval::Expression *expression) : FunctionNode(expression)
-  { SetArgumentCount(1, 1, 0, 0, 0, 0);  }
+  {
+    SetArgumentCount(1, 1, 0, 0, 0, 0);
+  }
 
   double DoEvaluate()
-  { return step(m_nodes[0]->Evaluate() ); }
+  {
+    return rosic::step(m_nodes[0]->Evaluate());
+  }
 };
 
 class FunctionFactoryStep : public FunctionFactory
 {
 public:
   std::string GetName() const                    { return "step"; }
-  FunctionNode* DoCreate(ExprEval::Expression *expression) { return new FunctionNodeStep(expression);  }
+  FunctionNode* DoCreate(ExprEval::Expression *expression) { return new FunctionNodeStep(expression); }
 };
 
-
+} // namespace ExprEval
 
 
 

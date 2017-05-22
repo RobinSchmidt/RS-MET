@@ -1,7 +1,7 @@
-#include <vector>
-
-#include "rosic_ComplexFunctions.h"
-using namespace rosic;
+//#include <vector>
+//
+//#include "rosic_ComplexFunctions.h"
+//using namespace rosic;
 
 Complex rosic::acdC(Complex w, double k)
 {

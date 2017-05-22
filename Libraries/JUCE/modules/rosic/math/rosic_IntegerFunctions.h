@@ -1,7 +1,7 @@
 #ifndef rosic_IntegerFunctions_h
 #define rosic_IntegerFunctions_h
 
-#include "../basics/rosic_FunctionTemplates.h"
+//#include "../basics/rosic_FunctionTemplates.h"
 
 namespace rosic
 {

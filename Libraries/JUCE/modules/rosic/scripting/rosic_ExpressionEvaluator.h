@@ -81,9 +81,9 @@ namespace rosic
     without needing to parse the expression again. The boolean return value indicates if the 
     parsing was successful. Expressions must end with a semicolon. */
 
-    ValueList            valueList;     // list of values (variables and constants
-    FunctionList         functionList;  // list of functions
-    ExprEval::Expression expression;    // the expression object
+    ExprEval::ValueList    valueList;     // list of values (variables and constants
+    ExprEval::FunctionList functionList;  // list of functions
+    ExprEval::Expression   expression;    // the expression object
 
     char* expressionString;     // a c-string containing the expression
 

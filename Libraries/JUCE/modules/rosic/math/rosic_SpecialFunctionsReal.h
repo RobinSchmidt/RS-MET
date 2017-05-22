@@ -1,9 +1,9 @@
 #ifndef rosic_SpecialFunctionsReal_h
 #define rosic_SpecialFunctionsReal_h
 
-// rosic includes:
-
-#include "rosic_ElementaryFunctionsReal.h"
+//// rosic includes:
+//
+//#include "rosic_ElementaryFunctionsReal.h"
 
 namespace rosic
 {

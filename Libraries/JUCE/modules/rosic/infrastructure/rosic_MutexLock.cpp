@@ -1,5 +1,5 @@
-#include "rosic_MutexLock.h"
-using namespace rosic;
+//#include "rosic_MutexLock.h"
+//using namespace rosic;
 
 MutexLock::MutexLock(char* mutexName)
 {

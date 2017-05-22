@@ -31,9 +31,26 @@
 //-------------------------------------------------------------------------------------------------
 // new, centralized header includes (when finsihed, delete old ones):
 
-#include <malloc.h>  // for alloca - try to get rid..
+#include <malloc.h>     // for alloca - try to get rid..
 #include <math.h>
-#include <float.h>
+#include <float.h>      // for DBL_MIN, ..
+#include <algorithm>    // for sort
+#include <cstring>      // for memcpy on linux/gcc
+//#include <stdlib.h>
+//#include <vector>
+//#include <errno.h>
+
+#if (defined (_WIN32) || defined (_WIN64))
+#define USE_WINAPI_CRITICAL_SECTION
+#elif (defined (MAC) || defined (LINUX))
+#define USE_PTHREADS_MUTEX
+#endif
+
+#if defined (USE_WINAPI_CRITICAL_SECTION)
+#include <windows.h>
+#elif defined (USE_PTHREADS_MUTEX)
+#include <pthread.h>
+#endif
 
 #if defined _MSC_VER
 #include <crtdbg.h>
@@ -57,6 +74,7 @@
 #include "math/rosic_SpecialFunctionsReal.h"
 #include "math/rosic_Complex.h"
 #include "math/rosic_ComplexFunctions.h"
+#include "_third_party/ExprEval_v3_4/expreval.h"
 #include "scripting/rosic_ExpressionEvaluatorFunctions.h"
 #include "scripting/rosic_ExpressionEvaluatorComplexFunctions.h"
 #include "scripting/rosic_ExpressionEvaluator.h"

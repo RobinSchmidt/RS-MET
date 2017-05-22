@@ -1,5 +1,5 @@
-#include "rosic_SpecialFunctionsReal.h"
-using namespace rosic;
+//#include "rosic_SpecialFunctionsReal.h"
+//using namespace rosic;
 
 #include "../_third_party/cephes_tweaked/double/mconf.h"
 #include "../_third_party/cephes_tweaked/double/mtherr.c"

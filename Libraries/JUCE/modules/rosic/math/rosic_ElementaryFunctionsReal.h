@@ -1,18 +1,18 @@
 #ifndef rosic_ElementaryFunctionsReal_h
 #define rosic_ElementaryFunctionsReal_h
 
-// standard library includes:
-#include <math.h>
-#include <stdlib.h>
-
-// rosic includes:
-#include "../basics/GlobalFunctions.h"
-#include "../basics/rosic_Constants.h"
-#include "rosic_CephesDeclarations.h"  // move this over to rosic_SpecialFunctionsReal
-#include "rosic_RealFunctionEvaluationAlgorithms.h"
-#include "rosic_IntegerFunctions.h"
-#include "../basics/rosic_FunctionTemplates.h"
-#include "../basics/rosic_NumberManipulations.h"
+//// standard library includes:
+//#include <math.h>
+//#include <stdlib.h>
+//
+//// rosic includes:
+//#include "../basics/GlobalFunctions.h"
+//#include "../basics/rosic_Constants.h"
+//#include "rosic_CephesDeclarations.h"  // move this over to rosic_SpecialFunctionsReal
+//#include "rosic_RealFunctionEvaluationAlgorithms.h"
+//#include "rosic_IntegerFunctions.h"
+//#include "../basics/rosic_FunctionTemplates.h"
+//#include "../basics/rosic_NumberManipulations.h"
 
 namespace rosic
 {
