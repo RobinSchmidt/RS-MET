@@ -1,8 +1,8 @@
 #ifndef rosic_RandomNumberGenerator01_h
 #define rosic_RandomNumberGenerator01_h
 
-#include <string.h>
-#include <math.h>
+//#include <string.h>
+//#include <math.h>
 
 namespace rosic
 {

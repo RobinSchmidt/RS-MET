@@ -1,8 +1,8 @@
 #ifndef rosic_SlewRateLimiter_h
 #define rosic_SlewRateLimiter_h
 
-// rosic-indcludes:
-#include "../math/rosic_RealFunctions.h"
+//// rosic-indcludes:
+//#include "../math/rosic_RealFunctions.h"
 
 namespace rosic
 {

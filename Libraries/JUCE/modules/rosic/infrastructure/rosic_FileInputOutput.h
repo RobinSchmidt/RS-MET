@@ -1,10 +1,10 @@
 #ifndef rosic_FileInputOutput_h
 #define rosic_FileInputOutput_h
 
-// rosic-indcludes:
-#include "../_third_party/soundtouch/WavFile.h"
-#include "../basics/rosic_FunctionTemplates.h"
-#include "../math/rosic_ElementaryFunctionsReal.h"
+//// rosic-indcludes:
+//#include "../_third_party/soundtouch/WavFile.h"
+//#include "../basics/rosic_FunctionTemplates.h"
+//#include "../math/rosic_ElementaryFunctionsReal.h"
 
 namespace rosic
 {

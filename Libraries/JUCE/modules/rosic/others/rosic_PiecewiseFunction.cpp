@@ -1,5 +1,5 @@
-#include "rosic_PiecewiseFunction.h"
-using namespace rosic;
+//#include "rosic_PiecewiseFunction.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

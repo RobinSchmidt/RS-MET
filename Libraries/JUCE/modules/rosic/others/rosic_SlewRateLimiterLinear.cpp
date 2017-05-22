@@ -1,5 +1,5 @@
-#include "rosic_SlewRateLimiterLinear.h"
-using namespace rosic;
+//#include "rosic_SlewRateLimiterLinear.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

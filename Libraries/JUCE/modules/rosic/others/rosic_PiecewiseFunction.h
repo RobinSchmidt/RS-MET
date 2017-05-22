@@ -1,16 +1,16 @@
 #ifndef rosic_PiecewiseFunction_h
 #define rosic_PiecewiseFunction_h
 
-// includes from the STL:
-#include <iterator>
-#include <vector>
-using std::vector;
-
-// rosic-indcludes:
-#include "../math/rosic_ElementaryFunctionsReal.h"
-#include "../math/rosic_Interpolation.h"
-#include "../math/rosic_LinearAlgebra.h"
-#include "../infrastructure/rosic_MutexLock.h"
+//// includes from the STL:
+//#include <iterator>
+//#include <vector>
+//using std::vector;
+//
+//// rosic-indcludes:
+//#include "../math/rosic_ElementaryFunctionsReal.h"
+//#include "../math/rosic_Interpolation.h"
+//#include "../math/rosic_LinearAlgebra.h"
+//#include "../infrastructure/rosic_MutexLock.h"
 
 namespace rosic
 {

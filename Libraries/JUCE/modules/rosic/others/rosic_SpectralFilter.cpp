@@ -1,5 +1,5 @@
-#include "rosic_SpectralFilter.h"
-using namespace rosic;
+//#include "rosic_SpectralFilter.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

@@ -1,8 +1,8 @@
 #ifndef rosic_SpectralFilter_h
 #define rosic_SpectralFilter_h
 
-// rosic-indcludes:
-#include "rosic_SpectralProcessor.h"
+//// rosic-indcludes:
+//#include "rosic_SpectralProcessor.h"
 
 namespace rosic
 {

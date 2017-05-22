@@ -1,8 +1,8 @@
 #ifndef rosic_RoutingMatrix_h
 #define rosic_RoutingMatrix_h
 
-// rosic-indcludes:
-#include "../math/rosic_ElementaryFunctionsReal.h"
+//// rosic-indcludes:
+//#include "../math/rosic_ElementaryFunctionsReal.h"
 
 namespace rosic
 {

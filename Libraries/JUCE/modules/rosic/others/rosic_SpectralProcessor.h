@@ -1,9 +1,9 @@
 #ifndef rosic_SpectralProcessor_h
 #define rosic_SpectralProcessor_h
 
-// rosic-indcludes:
-#include "rosic_OverlapAddProcessor.h"
-#include "../transforms/rosic_FourierTransformerRadix2.h"
+//// rosic-indcludes:
+//#include "rosic_OverlapAddProcessor.h"
+//#include "../transforms/rosic_FourierTransformerRadix2.h"
 
 namespace rosic
 {

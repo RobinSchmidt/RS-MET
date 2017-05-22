@@ -1,11 +1,11 @@
 #ifndef rosic_DemoVersionNoiseEmitter_h
 #define rosic_DemoVersionNoiseEmitter_h
 
-// standard-library indcludes:
-#include <stdlib.h>
-
-// rosic-indcludes:
-#include "../modulators/rosic_AmpEnvRc.h"
+//// standard-library indcludes:
+//#include <stdlib.h>
+//
+//// rosic-indcludes:
+//#include "../modulators/rosic_AmpEnvRc.h"
 
 namespace rosic
 {

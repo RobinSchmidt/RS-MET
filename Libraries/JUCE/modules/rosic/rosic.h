@@ -47,6 +47,7 @@
 //#include <limits>
 //#include <stdio.h>
 //#include <new>
+//#include <iterator>
 
 #if (defined (_WIN32) || defined (_WIN64))
 #define USE_WINAPI_CRITICAL_SECTION
@@ -63,6 +64,7 @@
 #if defined _MSC_VER
 #include <crtdbg.h>
 //#pragma warning( disable : 4996 ) // disables 'strcpy' may be unsafe warning in MSVC-2008
+//#include <intrin.h> // Or #include <ia32intrin.h> etc.
 #endif
 
 // basics:
@@ -191,7 +193,7 @@
 #include "others/rosic_RandomNumberGenerator01.h"
 #include "others/rosic_RandomNumberGenerator02.h"
 #include "others/rosic_RoutingMatrix.h"
-#include "others/rosic_RandomNumberGenerator01.h"
+//#include "others/rosic_RandomNumberGenerator01.h" //??
 #include "others/rosic_SlewRateLimiter.h"
 #include "others/rosic_SlewRateLimiterLinear.h"
 //#include "others/rosic_SlewRateLimiterOld.h"

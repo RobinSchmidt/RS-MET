@@ -180,7 +180,7 @@ rosic: rs_dsp (this should never depend on any juce class/module)
 #include "modulators/rosic_Modulator.cpp"              // needs SampleModulator
 
 // others
-#include "others/rosic_DemoVersionNoiseEmitter.cpp"    // may not be needed
+//#include "others/rosic_DemoVersionNoiseEmitter.cpp"    // may not be needed
 #include "others/rosic_RandomNumberGenerator01.cpp"
 #include "others/rosic_RandomNumberGenerator02.cpp"
 //#include "others/rosic_KeyGenerator.cpp"             // remove...or keep only the "Validator" part

@@ -1,6 +1,6 @@
-#include "rosic_SpectralEnvelopeProcessor.h"
-#include "rosic_Plotter.h"  // for test/debug
-using namespace rosic;
+//#include "rosic_SpectralEnvelopeProcessor.h"
+//#include "rosic_Plotter.h"  // for test/debug
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

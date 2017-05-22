@@ -1,12 +1,12 @@
 #ifndef rosic_ProcessorCycleCounter_h
 #define rosic_ProcessorCycleCounter_h
 
-#ifdef _MSC_VER
-#include <intrin.h> // Or #include <ia32intrin.h> etc.
-#endif
-
-// rosic-indcludes:
-#include "../basics/GlobalDefinitions.h"
+//#ifdef _MSC_VER
+//#include <intrin.h> // Or #include <ia32intrin.h> etc.
+//#endif
+//
+//// rosic-indcludes:
+//#include "../basics/GlobalDefinitions.h"
 
 namespace rosic
 {

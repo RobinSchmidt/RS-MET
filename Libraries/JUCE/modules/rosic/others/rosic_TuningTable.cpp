@@ -1,5 +1,5 @@
-#include "rosic_TuningTable.h"
-using namespace rosic;
+//#include "rosic_TuningTable.h"
+//using namespace rosic;
 
 #include "../_third_party/MarkHenning/TuningMap.cpp"
 

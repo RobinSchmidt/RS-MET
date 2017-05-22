@@ -1,5 +1,5 @@
-#include "rosic_RandomNumberGenerator01.h"
-using namespace rosic;
+//#include "rosic_RandomNumberGenerator01.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

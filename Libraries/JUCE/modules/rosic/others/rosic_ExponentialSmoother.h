@@ -1,7 +1,7 @@
 #ifndef rosic_ExponentialSmooother_h
 #define rosic_ExponentialSmooother_h
 
-#include "../math/rosic_ElementaryFunctionsReal.h"
+//#include "../math/rosic_ElementaryFunctionsReal.h"
 
 namespace rosic
 {

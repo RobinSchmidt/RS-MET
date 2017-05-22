@@ -1,10 +1,10 @@
 #ifndef rosic_Plotter_h
 #define rosic_Plotter_h
 
-// rosic-indcludes:
-#include "../infrastructure/rosic_FileInputOutput.h"
-#include "../math/rosic_ElementaryFunctionsReal.h"
-#include "../math/rosic_Complex.h"
+//// rosic-indcludes:
+//#include "../infrastructure/rosic_FileInputOutput.h"
+//#include "../math/rosic_ElementaryFunctionsReal.h"
+//#include "../math/rosic_Complex.h"
 
 namespace rosic
 {

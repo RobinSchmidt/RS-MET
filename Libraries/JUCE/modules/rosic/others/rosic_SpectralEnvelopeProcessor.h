@@ -1,9 +1,9 @@
 #ifndef rosic_SpectralEnvelopeProcessor_h
 #define rosic_SpectralEnvelopeProcessor_h
 
-// rosic-indcludes:
-#include "rosic_SpectralProcessor.h"
-#include "rosic_SlewRateLimiter.h"
+//// rosic-indcludes:
+//#include "rosic_SpectralProcessor.h"
+//#include "rosic_SlewRateLimiter.h"
 
 namespace rosic
 {
