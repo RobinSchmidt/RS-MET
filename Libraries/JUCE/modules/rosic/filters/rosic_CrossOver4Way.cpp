@@ -1,5 +1,5 @@
-#include "rosic_CrossOver4Way.h"
-using namespace rosic;
+//#include "rosic_CrossOver4Way.h"
+//using namespace rosic;
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:

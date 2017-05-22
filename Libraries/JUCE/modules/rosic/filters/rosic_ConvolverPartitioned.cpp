@@ -1,5 +1,5 @@
-#include "rosic_ConvolverPartitioned.h"
-using namespace rosic;
+//#include "rosic_ConvolverPartitioned.h"
+//using namespace rosic;
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:

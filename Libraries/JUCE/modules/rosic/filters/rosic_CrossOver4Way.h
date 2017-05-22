@@ -1,8 +1,8 @@
 #ifndef rosic_CrossOver4Way_h
 #define rosic_CrossOver4Way_h
 
-// rosic-indcludes:
-#include "rosic_LinkwitzRileyCrossOver.h"
+//// rosic-indcludes:
+//#include "rosic_LinkwitzRileyCrossOver.h"
 
 namespace rosic
 {

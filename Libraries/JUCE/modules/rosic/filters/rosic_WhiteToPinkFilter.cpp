@@ -1,5 +1,5 @@
-#include "rosic_WhiteToPinkFilter.h"
-using namespace rosic;
+//#include "rosic_WhiteToPinkFilter.h"
+//using namespace rosic;
 
 WhiteToPinkFilter::WhiteToPinkFilter()
 {

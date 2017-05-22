@@ -1,5 +1,5 @@
-#include "rosic_BiquadStereoDF2.h"
-using namespace rosic;
+//#include "rosic_BiquadStereoDF2.h"
+//using namespace rosic;
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:

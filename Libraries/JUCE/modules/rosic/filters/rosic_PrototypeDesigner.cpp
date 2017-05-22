@@ -1,7 +1,7 @@
-#include "rosic_PrototypeDesigner.h"
-#include "rosic_PoleZeroMapper.h"  // obsolete?
-#include "rosic_FilterAnalyzer.h"
-using namespace rosic;
+//#include "rosic_PrototypeDesigner.h"
+//#include "rosic_PoleZeroMapper.h"  // obsolete?
+//#include "rosic_FilterAnalyzer.h"
+//using namespace rosic;
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:

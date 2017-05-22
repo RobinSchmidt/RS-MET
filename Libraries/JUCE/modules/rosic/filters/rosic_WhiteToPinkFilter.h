@@ -1,8 +1,8 @@
 #ifndef rosic_WhiteToPinkFilter_h
 #define rosic_WhiteToPinkFilter_h
 
-// rosic-indcludes:
-#include "../basics/GlobalDefinitions.h"
+//// rosic-indcludes:
+//#include "../basics/GlobalDefinitions.h"
 
 namespace rosic
 {

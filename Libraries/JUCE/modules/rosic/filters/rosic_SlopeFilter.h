@@ -1,8 +1,8 @@
 #ifndef rosic_SlopeFilter_h
 #define rosic_SlopeFilter_h
 
-// rosic-indcludes:
-#include "rosic_BiquadDesigner.h"
+//// rosic-indcludes:
+//#include "rosic_BiquadDesigner.h"
 
 namespace rosic
 {

@@ -1,8 +1,8 @@
 #ifndef rosic_QuadratureNetwork_h
 #define rosic_QuadratureNetwork_h
 
-// rosic-indcludes:
-#include "rosic_InfiniteImpulseResponseDesigner.h"
+//// rosic-indcludes:
+//#include "rosic_InfiniteImpulseResponseDesigner.h"
 
 namespace rosic
 {

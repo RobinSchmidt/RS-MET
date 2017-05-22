@@ -1,5 +1,5 @@
-#include "rosic_DampingFilter.h"
-using namespace rosic;
+//#include "rosic_DampingFilter.h"
+//using namespace rosic;
 
 //----------------------------------------------------------------------------
 // construction/destruction:

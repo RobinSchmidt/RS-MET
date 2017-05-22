@@ -1,10 +1,10 @@
 #ifndef rosic_EllipticQuarterBandFilter_h
 #define rosic_EllipticQuarterBandFilter_h
 
-#include <string.h> // for memmove
-
-// rosic-indcludes:
-#include "../basics/GlobalDefinitions.h"
+//#include <string.h> // for memmove
+//
+//// rosic-indcludes:
+//#include "../basics/GlobalDefinitions.h"
 
 namespace rosic
 {

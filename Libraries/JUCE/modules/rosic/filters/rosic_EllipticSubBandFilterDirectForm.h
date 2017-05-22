@@ -1,10 +1,10 @@
 #ifndef rosic_EllipticSubBandFilterDirectForm_h
 #define rosic_EllipticSubBandFilterDirectForm_h
 
-#include <string.h> // for memmove
-
-// rosic-indcludes:
-#include "rosic_EllipticSubBandFilter.h"
+//#include <string.h> // for memmove
+//
+//// rosic-indcludes:
+//#include "rosic_EllipticSubBandFilter.h"
 
 namespace rosic
 {

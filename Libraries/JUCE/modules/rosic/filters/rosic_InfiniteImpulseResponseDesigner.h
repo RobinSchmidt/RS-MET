@@ -1,10 +1,10 @@
 #ifndef rosic_InfiniteImpulseResponseDesigner_h
 #define rosic_InfiniteImpulseResponseDesigner_h
 
-// rosic-indcludes:
-#include "rosic_PrototypeDesigner.h"
-#include "rosic_PoleZeroMapper.h"
-#include "rosic_FilterCoefficientConverter.h"
+//// rosic-indcludes:
+//#include "rosic_PrototypeDesigner.h"
+//#include "rosic_PoleZeroMapper.h"
+//#include "rosic_FilterCoefficientConverter.h"
 
 namespace rosic
 {

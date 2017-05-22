@@ -1,5 +1,5 @@
-#include "rosic_CombResonator.h"
-using namespace rosic;
+//#include "rosic_CombResonator.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

@@ -1,9 +1,9 @@
 #ifndef rosic_DampingFilter_h
 #define rosic_DampingFilter_h
 
-// rosic-indcludes:
-#include "../math/rosic_ElementaryFunctionsReal.h"
-//#include "../infrastructure/rosic_MutexLock.h"
+//// rosic-indcludes:
+//#include "../math/rosic_ElementaryFunctionsReal.h"
+////#include "../infrastructure/rosic_MutexLock.h"
 
 namespace rosic
 {

@@ -1,12 +1,12 @@
 #ifndef rosic_ConvolverBruteForce_h
 #define rosic_ConvolverBruteForce_h
 
-// standard includes
-#include <string.h> // for memmove
-
-// rosic-indcludes:
-#include "../basics/GlobalFunctions.h"
-#include "../infrastructure/rosic_MutexLock.h"
+//// standard includes
+//#include <string.h> // for memmove
+//
+//// rosic-indcludes:
+//#include "../basics/GlobalFunctions.h"
+//#include "../infrastructure/rosic_MutexLock.h"
 
 namespace rosic
 {

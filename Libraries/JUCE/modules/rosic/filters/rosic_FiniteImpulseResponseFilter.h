@@ -1,10 +1,10 @@
 #ifndef rosic_FiniteImpulseResponseFilter_h
 #define rosic_FiniteImpulseResponseFilter_h
 
-// rosic-indcludes:
-#include "rosic_FiniteImpulseResponseDesigner.h"
-#include "rosic_ConvolverPartitioned.h"
-#include "../math/rosic_ComplexFunctions.h"
+//// rosic-indcludes:
+//#include "rosic_FiniteImpulseResponseDesigner.h"
+//#include "rosic_ConvolverPartitioned.h"
+//#include "../math/rosic_ComplexFunctions.h"
 
 namespace rosic
 {

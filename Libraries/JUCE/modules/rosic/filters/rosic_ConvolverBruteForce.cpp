@@ -1,5 +1,5 @@
-#include "rosic_ConvolverBruteForce.h"
-using namespace rosic;
+//#include "rosic_ConvolverBruteForce.h"
+//using namespace rosic;
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:

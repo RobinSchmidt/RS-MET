@@ -1,8 +1,8 @@
 #ifndef rosic_BiquadBase_h
 #define rosic_BiquadBase_h
 
-// rosic-indcludes:
-#include "../basics/GlobalDefinitions.h"
+//// rosic-indcludes:
+//#include "../basics/GlobalDefinitions.h"
 
 namespace rosic
 {

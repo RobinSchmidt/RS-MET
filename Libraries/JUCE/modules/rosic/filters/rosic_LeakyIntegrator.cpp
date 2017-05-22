@@ -1,5 +1,5 @@
-#include "rosic_LeakyIntegrator.h"
-using namespace rosic;
+//#include "rosic_LeakyIntegrator.h"
+//using namespace rosic;
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:

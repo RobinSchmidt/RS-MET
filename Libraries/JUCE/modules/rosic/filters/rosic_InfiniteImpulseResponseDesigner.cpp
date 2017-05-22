@@ -1,5 +1,5 @@
-#include "rosic_InfiniteImpulseResponseDesigner.h"
-using namespace rosic;
+//#include "rosic_InfiniteImpulseResponseDesigner.h"
+//using namespace rosic;
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:

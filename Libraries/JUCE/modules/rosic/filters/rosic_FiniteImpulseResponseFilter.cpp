@@ -1,5 +1,5 @@
-#include "rosic_FiniteImpulseResponseFilter.h"
-using namespace rosic;
+//#include "rosic_FiniteImpulseResponseFilter.h"
+//using namespace rosic;
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:

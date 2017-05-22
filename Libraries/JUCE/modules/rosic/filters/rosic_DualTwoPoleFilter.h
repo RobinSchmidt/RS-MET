@@ -1,8 +1,8 @@
 #ifndef rosic_DualTwoPoleFilter_h
 #define rosic_DualTwoPoleFilter_h
 
-// rosic-indcludes:
-#include "rosic_TwoPoleFilter.h"
+//// rosic-indcludes:
+//#include "rosic_TwoPoleFilter.h"
 
 namespace rosic
 {

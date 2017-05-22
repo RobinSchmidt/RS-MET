@@ -1,5 +1,5 @@
-#include "rosic_LowpassHighpassStereo.h"
-using namespace rosic;
+//#include "rosic_LowpassHighpassStereo.h"
+//using namespace rosic;
 
 //----------------------------------------------------------------------------
 // construction/destruction:

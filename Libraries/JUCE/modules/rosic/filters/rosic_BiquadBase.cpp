@@ -1,5 +1,5 @@
-#include "rosic_BiquadBase.h"
-using namespace rosic;
+//#include "rosic_BiquadBase.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

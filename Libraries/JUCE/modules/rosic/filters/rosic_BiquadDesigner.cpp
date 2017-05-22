@@ -1,5 +1,5 @@
-#include "rosic_BiquadDesigner.h"
-using namespace rosic;
+//#include "rosic_BiquadDesigner.h"
+//using namespace rosic;
 
 double BiquadDesigner::getBiquadMagnitudeAt(const double &b0, const double &b1, const double &b2, 
   const double &a1, const double &a2, const double &frequency, const double &sampleRate)

@@ -1,10 +1,10 @@
 #ifndef rosic_PrototypeDesigner_h
 #define rosic_PrototypeDesigner_h
 
-// rosic-indcludes:
-#include "../math/rosic_ComplexFunctions.h"
-#include "../math/rosic_SpecialFunctionsReal.h"
-#include "../math/rosic_PolynomialAlgorithms.h"
+//// rosic-indcludes:
+//#include "../math/rosic_ComplexFunctions.h"
+//#include "../math/rosic_SpecialFunctionsReal.h"
+//#include "../math/rosic_PolynomialAlgorithms.h"
 
 namespace rosic
 {

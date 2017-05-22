@@ -1,5 +1,5 @@
-#include "rosic_TwoPoleBandpass.h"
-using namespace rosic;
+//#include "rosic_TwoPoleBandpass.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

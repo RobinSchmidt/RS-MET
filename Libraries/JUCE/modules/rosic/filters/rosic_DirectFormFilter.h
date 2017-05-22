@@ -1,11 +1,11 @@
 #ifndef rosic_DirectFormFilter_h
 #define rosic_DirectFormFilter_h
 
-#include <string.h> // for memmove
-//#include <math.h>
-
-//#include "../basics/GlobalDefinitions.h"
-#include "../math/rosic_ElementaryFunctionsReal.h"
+//#include <string.h> // for memmove
+////#include <math.h>
+//
+////#include "../basics/GlobalDefinitions.h"
+//#include "../math/rosic_ElementaryFunctionsReal.h"
 
 namespace rosic
 {

@@ -1,5 +1,5 @@
-#include "rosic_LpfHpfApf.h"
-using namespace rosic;
+//#include "rosic_LpfHpfApf.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

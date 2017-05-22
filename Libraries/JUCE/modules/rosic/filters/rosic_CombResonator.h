@@ -1,9 +1,9 @@
 #ifndef rosic_CombResonator_h
 #define rosic_CombResonator_h
 
-// rosic-indcludes:
-#include "rosic_CombFilter.h"
-#include "rosic_DampingFilter.h"
+//// rosic-indcludes:
+//#include "rosic_CombFilter.h"
+//#include "rosic_DampingFilter.h"
 
 namespace rosic
 {

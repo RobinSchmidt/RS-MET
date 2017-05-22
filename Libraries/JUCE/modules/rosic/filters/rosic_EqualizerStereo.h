@@ -1,8 +1,8 @@
 #ifndef rosic_EqualizerStereo_h
 #define rosic_EqualizerStereo_h
 
-// rosic-indcludes:
-#include "rosic_Equalizer.h"
+//// rosic-indcludes:
+//#include "rosic_Equalizer.h"
 
 namespace rosic
 {

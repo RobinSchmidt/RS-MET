@@ -1,5 +1,5 @@
-#include "rosic_OnePoleFilter.h"
-using namespace rosic;
+//#include "rosic_OnePoleFilter.h"
+//using namespace rosic;
 
 // Construction/Destruction:
 

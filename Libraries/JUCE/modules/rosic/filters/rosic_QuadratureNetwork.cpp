@@ -1,5 +1,5 @@
-#include "rosic_QuadratureNetwork.h"
-using namespace rosic;
+//#include "rosic_QuadratureNetwork.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

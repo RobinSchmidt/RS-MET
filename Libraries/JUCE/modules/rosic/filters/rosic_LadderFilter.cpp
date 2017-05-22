@@ -1,5 +1,5 @@
-#include "rosic_LadderFilter.h"
-using namespace rosic;
+//#include "rosic_LadderFilter.h"
+//using namespace rosic;
 
 namespace rosic // temporary - for as long as there's a RAPT::LadderFilter class, too
 {               // maybe at some point, rename this class into rsLadderFilterDD as template 

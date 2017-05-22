@@ -1,5 +1,5 @@
-#include "rosic_EllipticSubBandFilterDirectForm.h"
-using namespace rosic;
+//#include "rosic_EllipticSubBandFilterDirectForm.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

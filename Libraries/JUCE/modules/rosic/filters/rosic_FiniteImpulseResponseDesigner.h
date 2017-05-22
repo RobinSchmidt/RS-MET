@@ -1,8 +1,8 @@
 #ifndef rosic_FiniteImpulseResponseDesigner_h
 #define rosic_FiniteImpulseResponseDesigner_h
 
-// rosic-indcludes:
-#include "../basics/rosic_WindowDesigner.h"
+//// rosic-indcludes:
+//#include "../basics/rosic_WindowDesigner.h"
 
 namespace rosic
 {

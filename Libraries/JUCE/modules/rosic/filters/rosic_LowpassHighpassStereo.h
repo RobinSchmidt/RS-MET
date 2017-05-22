@@ -1,11 +1,11 @@
 #ifndef rosic_LowpassHighpassStereo_h
 #define rosic_LowpassHighpassStereo_h
 
-// standard-library indcludes:
-#include <math.h>
-
-// rosic-indcludes:
-#include "../basics/GlobalDefinitions.h"
+//// standard-library indcludes:
+//#include <math.h>
+//
+//// rosic-indcludes:
+//#include "../basics/GlobalDefinitions.h"
 
 namespace rosic
 {

@@ -1,5 +1,5 @@
-#include "rosic_EqualizerStereo.h"
-using namespace rosic;
+//#include "rosic_EqualizerStereo.h"
+//using namespace rosic;
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:

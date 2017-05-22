@@ -1,9 +1,9 @@
 #ifndef rosic_VowelFilterStereo_h
 #define rosic_VowelFilterStereo_h
 
-// rosic-indcludes:
-//#include "../basics/rosic_Definitions.h"
-#include "../math/rosic_ElementaryFunctionsReal.h"
+//// rosic-indcludes:
+////#include "../basics/rosic_Definitions.h"
+//#include "../math/rosic_ElementaryFunctionsReal.h"
 
 namespace rosic
 {

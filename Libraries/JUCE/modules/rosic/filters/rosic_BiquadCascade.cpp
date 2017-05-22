@@ -1,5 +1,5 @@
-#include "rosic_BiquadCascade.h"
-using namespace rosic;
+//#include "rosic_BiquadCascade.h"
+//using namespace rosic;
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:

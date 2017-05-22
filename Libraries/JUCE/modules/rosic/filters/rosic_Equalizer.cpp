@@ -1,5 +1,5 @@
-#include "rosic_Equalizer.h"
-using namespace rosic;
+//#include "rosic_Equalizer.h"
+//using namespace rosic;
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:

@@ -1,5 +1,5 @@
-#include "rosic_LowpassHighpass.h"
-using namespace rosic;
+//#include "rosic_LowpassHighpass.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

@@ -1,5 +1,5 @@
-#include "rosic_AllpassChain.h"
-using namespace rosic;
+//#include "rosic_AllpassChain.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

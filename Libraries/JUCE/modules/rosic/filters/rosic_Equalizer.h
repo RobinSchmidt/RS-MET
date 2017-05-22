@@ -1,12 +1,12 @@
 #ifndef rosic_Equalizer_h
 #define rosic_Equalizer_h
 
-// includes from the STL:
-#include <vector>
-using std::vector;
-
-// rosic-indcludes:
-#include "rosic_TwoPoleFilter.h"
+//// includes from the STL:
+//#include <vector>
+//using std::vector;
+//
+//// rosic-indcludes:
+//#include "rosic_TwoPoleFilter.h"
 
 namespace rosic
 {
@@ -140,7 +140,7 @@ namespace rosic
     //-------------------------------------------------------------------------------------------------------------------------------------
     // embedded sub-objects:
 
-    vector<TwoPoleFilter> bands;   // vector of the bands
+    std::vector<TwoPoleFilter> bands;   // vector of the bands
 
     //=====================================================================================================================================
 

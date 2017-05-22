@@ -1,5 +1,5 @@
-#include "rosic_ToneControl.h"
-using namespace rosic;
+//#include "rosic_ToneControl.h"
+//using namespace rosic;
 
 //----------------------------------------------------------------------------
 // construction/destruction:

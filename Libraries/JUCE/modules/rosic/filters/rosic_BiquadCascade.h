@@ -1,8 +1,8 @@
 #ifndef rosic_BiquadCascade_h
 #define rosic_BiquadCascade_h
 
-// rosic-indcludes:
-#include "rosic_FilterAnalyzer.h"
+//// rosic-indcludes:
+//#include "rosic_FilterAnalyzer.h"
 
 namespace rosic
 {

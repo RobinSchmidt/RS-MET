@@ -1,8 +1,8 @@
 #ifndef rosic_BiquadStereoDF2_h
 #define rosic_BiquadStereoDF2_h
 
-// rosic-indcludes:
-#include "rosic_BiquadBase.h"
+//// rosic-indcludes:
+//#include "rosic_BiquadBase.h"
 
 namespace rosic
 {

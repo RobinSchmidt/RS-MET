@@ -1,8 +1,8 @@
 #ifndef rosic_NyquistBlocker_h
 #define rosic_NyquistBlocker_h
 
-// rosic-indcludes:
-#include "../basics/GlobalDefinitions.h"
+//// rosic-indcludes:
+//#include "../basics/GlobalDefinitions.h"
 
 namespace rosic
 {

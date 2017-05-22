@@ -1,9 +1,9 @@
 #ifndef rosic_LowpassHighpass_h
 #define rosic_LowpassHighpass_h
 
-// rosic-indcludes:
-#include "../math/rosic_ElementaryFunctionsReal.h"
-#include "rosic_BiquadMonoDF1.h"
+//// rosic-indcludes:
+//#include "../math/rosic_ElementaryFunctionsReal.h"
+//#include "rosic_BiquadMonoDF1.h"
 
 namespace rosic
 {

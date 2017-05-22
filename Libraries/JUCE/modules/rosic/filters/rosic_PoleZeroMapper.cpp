@@ -1,7 +1,7 @@
-#include "rosic_PoleZeroMapper.h"
-#include "../math/rosic_PolynomialAlgorithms.h"
-#include "rosic_PrototypeDesigner.h"
-using namespace rosic;
+//#include "rosic_PoleZeroMapper.h"
+//#include "../math/rosic_PolynomialAlgorithms.h"
+//#include "rosic_PrototypeDesigner.h"
+//using namespace rosic;
 
 void PoleZeroMapper::sLowpassToLowshelf(Complex *z, Complex *p, double *k, Complex *zNew, Complex *pNew, double *kNew,
                                         int N, double G0, double G)

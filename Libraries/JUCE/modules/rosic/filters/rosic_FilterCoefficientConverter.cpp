@@ -1,5 +1,5 @@
-#include "rosic_FilterCoefficientConverter.h"
-using namespace rosic;
+//#include "rosic_FilterCoefficientConverter.h"
+//using namespace rosic;
 
 void FilterCoefficientConverter::directFormToLatticeFir(double *directFormCoeffs, int order, double *reflectionCoeffs)
 {

@@ -1,8 +1,8 @@
 #ifndef rosic_LpfHpfApf_h
 #define rosic_LpfHpfApf_h
 
-// rosic-indcludes:
-#include "../math/rosic_ElementaryFunctionsReal.h"
+//// rosic-indcludes:
+//#include "../math/rosic_ElementaryFunctionsReal.h"
 
 namespace rosic
 {

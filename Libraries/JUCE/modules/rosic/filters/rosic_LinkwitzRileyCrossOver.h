@@ -1,9 +1,9 @@
 #ifndef rosic_LinkwitzRileyCrossOver_h
 #define rosic_LinkwitzRileyCrossOver_h
 
-// rosic-indcludes:
-#include "rosic_InfiniteImpulseResponseDesigner.h"
-#include "rosic_BiquadCascade.h"
+//// rosic-indcludes:
+//#include "rosic_InfiniteImpulseResponseDesigner.h"
+//#include "rosic_BiquadCascade.h"
 
 namespace rosic
 {

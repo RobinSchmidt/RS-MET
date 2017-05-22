@@ -1,5 +1,5 @@
-#include "rosic_VowelFilterStereo.h"
-using namespace rosic;
+//#include "rosic_VowelFilterStereo.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

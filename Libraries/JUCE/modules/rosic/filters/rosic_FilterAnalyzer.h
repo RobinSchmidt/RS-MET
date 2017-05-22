@@ -1,8 +1,8 @@
 #ifndef rosic_FilterAnalyzer_h
 #define rosic_FilterAnalyzer_h
 
-// rosic-indcludes:
-#include "../math/rosic_ComplexFunctions.h"
+//// rosic-indcludes:
+//#include "../math/rosic_ComplexFunctions.h"
 
 namespace rosic
 {

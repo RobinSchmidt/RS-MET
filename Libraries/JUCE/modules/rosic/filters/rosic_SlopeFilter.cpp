@@ -1,5 +1,5 @@
-#include "rosic_SlopeFilter.h"
-using namespace rosic;
+//#include "rosic_SlopeFilter.h"
+//using namespace rosic;
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:
