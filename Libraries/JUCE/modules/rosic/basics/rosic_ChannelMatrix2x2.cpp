@@ -1,5 +1,5 @@
-#include "rosic_ChannelMatrix2x2.h"
-using namespace rosic;
+//#include "rosic_ChannelMatrix2x2.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

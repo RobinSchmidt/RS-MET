@@ -1,9 +1,9 @@
 #ifndef rosic_NumberManipulations_h
 #define rosic_NumberManipulations_h
 
-// rosic includes:
-#include "GlobalDefinitions.h"
-#include <math.h>
+//// rosic includes:
+//#include "GlobalDefinitions.h"
+//#include <math.h>
 
 namespace rosic
 {

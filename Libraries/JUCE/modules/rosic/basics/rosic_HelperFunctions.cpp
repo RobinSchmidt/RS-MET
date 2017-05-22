@@ -1,5 +1,5 @@
-#include "rosic_HelperFunctions.h"
-using namespace rosic;
+//#include "rosic_HelperFunctions.h"
+//using namespace rosic;
 
 double rosic::findNearestUpwardZeroCrossing(float* buffer, int length, double searchStart)
 {

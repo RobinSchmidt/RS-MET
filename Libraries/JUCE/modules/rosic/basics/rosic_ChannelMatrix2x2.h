@@ -1,8 +1,8 @@
 #ifndef rosic_ChannelMatrix2x2_h
 #define rosic_ChannelMatrix2x2_h
 
-// rosic-indcludes:
-#include "GlobalFunctions.h"
+//// rosic-indcludes:
+//#include "GlobalFunctions.h"
 
 namespace rosic
 {
