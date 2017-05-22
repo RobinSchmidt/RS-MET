@@ -32,7 +32,12 @@
 // new, centralized header includes (when finsihed, delete old ones):
 
 #include <malloc.h>  // for alloca - try to get rid..
-//#include <math.h>
+#include <math.h>
+
+#if defined _MSC_VER
+#include <crtdbg.h>
+#endif
+
 
 // basics:
 #include "basics/GlobalDefinitions.h"

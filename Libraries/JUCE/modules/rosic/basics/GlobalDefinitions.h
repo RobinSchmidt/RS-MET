@@ -1,8 +1,8 @@
 #ifndef GlobalDefinitions_h
 #define GlobalDefinitions_h
 
-#include <float.h>
-#include <xmmintrin.h>
+//#include <float.h>
+//#include <xmmintrin.h>
 
 /** This file contains a bunch of useful macros which are not wrapped into the
 rosic namespace to facilitate their global use. */

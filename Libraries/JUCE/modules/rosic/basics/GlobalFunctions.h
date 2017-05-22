@@ -1,13 +1,13 @@
 #ifndef GlobalFunctions_h
 #define GlobalFunctions_h
 
-#include <math.h>
-#include <stdlib.h>
-#include "GlobalDefinitions.h"
-
-#if defined _MSC_VER
-#include <crtdbg.h>
-#endif
+//#include <math.h>
+//#include <stdlib.h>
+//#include "GlobalDefinitions.h"
+//
+//#if defined _MSC_VER
+//#include <crtdbg.h>
+//#endif
 
 /** Some basic functions */
 
