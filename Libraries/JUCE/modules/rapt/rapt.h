@@ -31,6 +31,8 @@
 #include <ctgmath>       // template generic math?
 #include <complex>       // included already by ctgmath ...but not on gcc/windows?
 #include <vector>
+#include <algorithm>
+#include <cstring>
 //using namespace std;
 
 #include "Basics/Basics.h"               // type definitions, constants, functions, etc.
@@ -50,7 +52,7 @@
 //#include "Instruments/Instruments.h"   // full blown instruments with polyphony, state-recall, etc.
 
 // ...the ordering above should roughly reflect the dependencies (a module later in the chain may
-// depend on one or more modules that come before it but not vice versa - well, we'll see if that's 
+// depend on one or more modules that come before it but not vice versa - well, we'll see if that's
 // possible)
 
 // typedefs for convenience:

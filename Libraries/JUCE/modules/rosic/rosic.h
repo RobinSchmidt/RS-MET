@@ -15,7 +15,7 @@
   website:          http://www.rs-met.com
   license:          GPL/Commercial
 
-  dependencies:     
+  dependencies:
   OSXFrameworks:
   iOSFrameworks:
 
@@ -33,11 +33,11 @@
 
 #include <malloc.h>  // for alloca - try to get rid..
 #include <math.h>
+#include <float.h>
 
 #if defined _MSC_VER
 #include <crtdbg.h>
 #endif
-
 
 // basics:
 #include "basics/GlobalDefinitions.h"
@@ -47,7 +47,7 @@
 #include "basics/rosic_HelperFunctions.h"
 #include "basics/rosic_NumberManipulations.h"
 #include "basics/rosic_FunctionTemplates.h"
-// we need to intersperse some includes from other directories before we can finish the includes 
+// we need to intersperse some includes from other directories before we can finish the includes
 // from basics (todo: fix the dependency structure/layering):
 #include "infrastructure/rosic_MutexLock.h"
 #include "math/rosic_CephesDeclarations.h"
@@ -206,7 +206,7 @@
 #include "modulators/rosic_EnvelopeGenerator2.h"
 #include "modulators/rosic_ExponentialRamp.h"
 #include "modulators/rosic_PitchEnvRc.h"
-#include "modulators/rosic_SampleModulator.h"  
+#include "modulators/rosic_SampleModulator.h"
 // todo: remove redundant envelope generators
 
 // rendering:
@@ -328,16 +328,16 @@
 #include "instruments/rosic_MagicCarpetVoice.h"
 #include "instruments/rosic_MagicCarpet.h"
 #include "instruments/rosic_Open303.h"
-#include "instruments/rosic_QuadrigaVoice.h" 
-#include "instruments/rosic_Quadriga.h" 
-#include "instruments/rosic_SimpleSamplerOscSection.h" 
-#include "instruments/rosic_SimpleSamplerVoice.h" 
-#include "instruments/rosic_SimpleSampler.h" 
-#include "instruments/rosic_StraightlinerVoice.h" 
-#include "instruments/rosic_Straightliner.h" 
-#include "instruments/rosic_WorkhorseOscSection.h" 
-#include "instruments/rosic_WorkhorseVoice.h" 
-#include "instruments/rosic_Workhorse.h" 
+#include "instruments/rosic_QuadrigaVoice.h"
+#include "instruments/rosic_Quadriga.h"
+#include "instruments/rosic_SimpleSamplerOscSection.h"
+#include "instruments/rosic_SimpleSamplerVoice.h"
+#include "instruments/rosic_SimpleSampler.h"
+#include "instruments/rosic_StraightlinerVoice.h"
+#include "instruments/rosic_Straightliner.h"
+#include "instruments/rosic_WorkhorseOscSection.h"
+#include "instruments/rosic_WorkhorseVoice.h"
+#include "instruments/rosic_Workhorse.h"
 
 
 //-------------------------------------------------------------------------------------------------
