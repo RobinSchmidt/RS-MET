@@ -1,6 +1,6 @@
-#include "rosic_ExpressionEvaluator.h"
-#include "rosic_ExpressionEvaluatorFunctions.h"
-using namespace rosic;
+//#include "rosic_ExpressionEvaluator.h"
+//#include "rosic_ExpressionEvaluatorFunctions.h"
+//using namespace rosic;
 
 // We need to include the .cpp files of the ExprEval library here
 //#define M_PI PI // because it's used in the ExprEval code but not defined - replaced there with the literal number

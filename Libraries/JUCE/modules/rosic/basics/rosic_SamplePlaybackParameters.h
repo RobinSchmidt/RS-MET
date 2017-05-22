@@ -1,12 +1,12 @@
 #ifndef rosic_SamplePlaybackParameters_h
 #define rosic_SamplePlaybackParameters_h
 
-// standard includes:
-#include <stdlib.h>
-#include <string>
-
-// rosic-indcludes:
-#include "../math/rosic_ElementaryFunctionsReal.h"
+//// standard includes:
+//#include <stdlib.h>
+//#include <string>
+//
+//// rosic-indcludes:
+//#include "../math/rosic_ElementaryFunctionsReal.h"
 
 namespace rosic
 {

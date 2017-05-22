@@ -21,7 +21,7 @@ addC(z.re, z.im, w.re, w.im, &result.re, &result.im)
 //extern int errno;  // is set in functions from math.h and can be checked here
 
 // third party includes:
-#include "../_third_party/ExprEval_v3_4/expreval.h"
+//#include "../_third_party/ExprEval_v3_4/expreval.h"
 //using namespace ExprEval;
 //using namespace std;
 

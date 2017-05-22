@@ -1,10 +1,10 @@
 #ifndef rosic_SampleBuffer_h
 #define rosic_SampleBuffer_h
 
-// rosic-indcludes:
-#include "rosic_HelperFunctions.h"
-#include "rosic_Interpolator.h"
-#include "../infrastructure/rosic_MutexLock.h"
+//// rosic-indcludes:
+//#include "rosic_HelperFunctions.h"
+//#include "rosic_Interpolator.h"
+//#include "../infrastructure/rosic_MutexLock.h"
 
 namespace rosic
 {

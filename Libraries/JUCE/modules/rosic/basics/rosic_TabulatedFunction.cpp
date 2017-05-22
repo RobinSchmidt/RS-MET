@@ -1,5 +1,5 @@
-#include "rosic_TabulatedFunction.h"
-using namespace rosic;
+//#include "rosic_TabulatedFunction.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

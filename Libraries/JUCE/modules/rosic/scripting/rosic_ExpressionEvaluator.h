@@ -3,11 +3,11 @@
 
 // standard library includes:
 //#include <math.h>
-#include <string.h>
+//#include <string.h>
 
-#include "rosic_ExpressionEvaluatorFunctions.h"
-#include "rosic_ExpressionEvaluatorComplexFunctions.h"
-#include "../infrastructure/rosic_MutexLock.h"
+//#include "rosic_ExpressionEvaluatorFunctions.h"
+//#include "rosic_ExpressionEvaluatorComplexFunctions.h"
+//#include "../infrastructure/rosic_MutexLock.h"
 
 namespace rosic
 {

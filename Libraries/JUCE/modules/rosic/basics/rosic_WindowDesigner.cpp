@@ -1,5 +1,5 @@
-#include "rosic_WindowDesigner.h"
-using namespace rosic;
+//#include "rosic_WindowDesigner.h"
+//using namespace rosic;
 
 void WindowDesigner::getWindow(double *window, int length, int type)
 {

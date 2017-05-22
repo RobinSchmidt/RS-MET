@@ -1,9 +1,9 @@
 #ifndef rosic_TabulatedFunction_h
 #define rosic_TabulatedFunction_h
 
-// rosic-indcludes:
-#include "../scripting/rosic_ExpressionEvaluator.h"
-#include "../infrastructure/rosic_MutexLock.h"
+//// rosic-indcludes:
+//#include "../scripting/rosic_ExpressionEvaluator.h"
+//#include "../infrastructure/rosic_MutexLock.h"
 
 namespace rosic
 {

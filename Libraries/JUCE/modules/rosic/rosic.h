@@ -36,6 +36,7 @@
 #include <float.h>      // for DBL_MIN, ..
 #include <algorithm>    // for sort
 #include <cstring>      // for memcpy on linux/gcc
+//#include <string.h>
 //#include <stdlib.h>
 //#include <vector>
 //#include <errno.h>

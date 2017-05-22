@@ -1,8 +1,8 @@
 #ifndef rosic_WindowDesigner_h
 #define rosic_WindowDesigner_h
 
-// rosic-indcludes:
-#include "../math/rosic_SpecialFunctionsReal.h"
+//// rosic-indcludes:
+//#include "../math/rosic_SpecialFunctionsReal.h"
 
 namespace rosic
 {
