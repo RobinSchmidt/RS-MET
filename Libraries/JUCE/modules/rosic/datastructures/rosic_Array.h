@@ -1,10 +1,10 @@
 #ifndef rosic_Array_h
 #define rosic_Array_h
 
-#include <stddef.h>  // for NULL macro
-#include <vector>
-#include "../basics/rosic_FunctionTemplates.h"
-//#include "../infrastructure/rosic_MutexLock.h"
+//#include <stddef.h>  // for NULL macro
+//#include <vector>
+//#include "../basics/rosic_FunctionTemplates.h"
+////#include "../infrastructure/rosic_MutexLock.h"
 
 namespace rosic
 {

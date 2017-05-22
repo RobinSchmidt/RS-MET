@@ -1,2 +1,2 @@
-#include "rosic_Array.h"
-using namespace rosic;
+//#include "rosic_Array.h"
+//using namespace rosic;

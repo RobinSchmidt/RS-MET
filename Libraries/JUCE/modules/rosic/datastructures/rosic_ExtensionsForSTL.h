@@ -1,8 +1,8 @@
 #ifndef rosic_ExtensionsForSTL_h
 #define rosic_ExtensionsForSTL_h
 
-#include <vector>
-#include "../basics/rosic_FunctionTemplates.h"
+//#include <vector>
+//#include "../basics/rosic_FunctionTemplates.h"
 
 namespace rosic
 {

@@ -1,10 +1,10 @@
 #ifndef rosic_KeyValueMap_h
 #define rosic_KeyValueMap_h
 
-#include <stddef.h>  // for NULL macro
-#include <vector>
-#include <algorithm>
-#include <functional>
+//#include <stddef.h>  // for NULL macro
+//#include <vector>
+//#include <algorithm>
+//#include <functional>
 
 namespace rosic
 {

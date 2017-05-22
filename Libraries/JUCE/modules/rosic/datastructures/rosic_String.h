@@ -1,15 +1,15 @@
 #ifndef rosic_String_h
 #define rosic_String_h
 
-#include <stdlib.h>  // for itoa
-#include <string>
-#include <climits>
-#include "../basics/rosic_FunctionTemplates.h"
-#include "../math/rosic_IntegerFunctions.h"
-
-#ifdef _MSC_VER
-#pragma warning( disable : 4996 ) // disables 'strcpy' may be unsafe warning in MSVC-2008
-#endif
+//#include <stdlib.h>  // for itoa
+//#include <string>
+//#include <climits>
+//#include "../basics/rosic_FunctionTemplates.h"
+//#include "../math/rosic_IntegerFunctions.h"
+//
+//#ifdef _MSC_VER
+//#pragma warning( disable : 4996 ) // disables 'strcpy' may be unsafe warning in MSVC-2008
+//#endif
 
 namespace rosic
 {

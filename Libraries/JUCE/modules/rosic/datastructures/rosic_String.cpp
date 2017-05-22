@@ -1,5 +1,5 @@
-#include "rosic_String.h"
-using namespace rosic;
+//#include "rosic_String.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // static data members:

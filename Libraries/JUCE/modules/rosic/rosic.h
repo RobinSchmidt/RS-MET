@@ -40,6 +40,9 @@
 //#include <stdlib.h>
 //#include <vector>
 //#include <errno.h>
+//#include <stddef.h>  // for NULL macro
+//#include <climits>
+//#include <functional>
 
 #if (defined (_WIN32) || defined (_WIN64))
 #define USE_WINAPI_CRITICAL_SECTION
@@ -55,6 +58,7 @@
 
 #if defined _MSC_VER
 #include <crtdbg.h>
+//#pragma warning( disable : 4996 ) // disables 'strcpy' may be unsafe warning in MSVC-2008
 #endif
 
 // basics:
