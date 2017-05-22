@@ -1,9 +1,9 @@
 #ifndef rosic_MultiLayerPerceptronErrorFunction_h
 #define rosic_MultiLayerPerceptronErrorFunction_h
 
-// rosic-indcludes:
-#include "rosic_MultiLayerPerceptron.h"
-#include "../numerical/rosic_FunctionObjects.h"
+//// rosic-indcludes:
+//#include "rosic_MultiLayerPerceptron.h"
+//#include "../numerical/rosic_FunctionObjects.h"
 
 namespace rosic
 {

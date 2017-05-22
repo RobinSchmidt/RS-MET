@@ -1,5 +1,5 @@
-#include "rosic_MultiLayerPerceptronErrorFunction.h"
-using namespace rosic;
+//#include "rosic_MultiLayerPerceptronErrorFunction.h"
+//using namespace rosic;
 
 double zeroValue(double x)    { return 0.0; }
 

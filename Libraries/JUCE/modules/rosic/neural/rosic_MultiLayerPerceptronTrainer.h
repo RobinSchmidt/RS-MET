@@ -1,8 +1,8 @@
 #ifndef rosic_MultiLayerPerceptronTrainer_h
 #define rosic_MultiLayerPerceptronTrainer_h
 
-// rosic-indcludes:
-#include "rosic_MultiLayerPerceptron.h"
+//// rosic-indcludes:
+//#include "rosic_MultiLayerPerceptron.h"
 
 namespace rosic
 {

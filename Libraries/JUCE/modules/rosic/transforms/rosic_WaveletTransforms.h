@@ -1,9 +1,9 @@
 #ifndef rosic_WaveletTransforms_h
 #define rosic_WaveletTransforms_h
 
-// rosic includes:
-#include "../basics/rosic_HelperFunctions.h"
-#include <algorithm>
+//// rosic includes:
+//#include "../basics/rosic_HelperFunctions.h"
+//#include <algorithm>
 
 namespace rosic
 {

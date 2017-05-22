@@ -1,5 +1,5 @@
-#include "rosic_MultiLayerPerceptron.h"
-using namespace rosic;
+//#include "rosic_MultiLayerPerceptron.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

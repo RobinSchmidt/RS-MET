@@ -1,8 +1,8 @@
 #ifndef rosic_GradientBasedMinimizer_h
 #define rosic_GradientBasedMinimizer_h
 
-// rosic-indcludes:
-#include "rosic_FunctionObjects.h"
+//// rosic-indcludes:
+//#include "rosic_FunctionObjects.h"
 
 namespace rosic
 {

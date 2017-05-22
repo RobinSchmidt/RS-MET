@@ -1,5 +1,5 @@
-#include "rosic_SpectralManipulator.h"
-using namespace rosic;
+//#include "rosic_SpectralManipulator.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

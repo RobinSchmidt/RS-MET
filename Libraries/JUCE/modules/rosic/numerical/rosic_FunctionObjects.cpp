@@ -1,8 +1,8 @@
-#include <limits>
-
-#include "rosic_FunctionObjects.h"
-#include "../math/rosic_PolynomialAlgorithms.h"
-using namespace rosic;
+//#include <limits>
+//
+//#include "rosic_FunctionObjects.h"
+//#include "../math/rosic_PolynomialAlgorithms.h"
+//using namespace rosic;
 
 //=================================================================================================
 // class UnivariateScalarFunction  

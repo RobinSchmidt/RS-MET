@@ -1,5 +1,5 @@
-#include "rosic_GradientBasedMinimizer.h"
-using namespace rosic;
+//#include "rosic_GradientBasedMinimizer.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------    
 // construction/destruction:

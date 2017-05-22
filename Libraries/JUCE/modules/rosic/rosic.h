@@ -45,6 +45,7 @@
 //#include <functional>
 //#include <limits.h>
 //#include <limits>
+//#include <stdio.h>
 
 #if (defined (_WIN32) || defined (_WIN64))
 #define USE_WINAPI_CRITICAL_SECTION

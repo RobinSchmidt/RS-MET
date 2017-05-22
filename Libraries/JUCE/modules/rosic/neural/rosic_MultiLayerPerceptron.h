@@ -1,8 +1,8 @@
 #ifndef rosic_MultiLayerPerceptron_h
 #define rosic_MultiLayerPerceptron_h
 
-// rosic-indcludes:
-#include "../math/rosic_MatrixVectorFunctions.h"
+//// rosic-indcludes:
+//#include "../math/rosic_MatrixVectorFunctions.h"
 
 namespace rosic
 {

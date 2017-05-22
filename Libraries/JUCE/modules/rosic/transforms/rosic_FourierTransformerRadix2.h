@@ -1,12 +1,12 @@
 #ifndef rosic_FourierTransformerRadix2_h
 #define rosic_FourierTransformerRadix2_h
 
-// standard includes:
-#include <stdio.h>
-
-// rosic-indcludes:
-#include "../math/rosic_Complex.h"
-#include "../math/rosic_ElementaryFunctionsReal.h"
+//// standard includes:
+//#include <stdio.h>
+//
+//// rosic-indcludes:
+//#include "../math/rosic_Complex.h"
+//#include "../math/rosic_ElementaryFunctionsReal.h"
 
 namespace rosic
 {

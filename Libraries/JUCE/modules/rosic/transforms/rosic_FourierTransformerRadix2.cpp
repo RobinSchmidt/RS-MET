@@ -1,6 +1,7 @@
-#include "rosic_FourierTransformerRadix2.h"
+//#include "rosic_FourierTransformerRadix2.h"
+//using namespace rosic;
+
 #include "../_third_party/ooura_fft/fft4g.c"
-using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
