@@ -2,8 +2,8 @@
 #include "../_third_party/tnt/tnt.h"
 #include "../_third_party/tnt/jama_svd.h"
 
-#include "rosic_Matrix.h"
-using namespace rosic;
+//#include "rosic_Matrix.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

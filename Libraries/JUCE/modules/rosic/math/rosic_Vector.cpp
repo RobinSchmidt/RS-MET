@@ -1,5 +1,5 @@
-#include "rosic_Vector.h"
-using namespace rosic;
+//#include "rosic_Vector.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

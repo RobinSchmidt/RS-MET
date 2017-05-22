@@ -1,8 +1,8 @@
-#include "rosic_Interpolation.h"
-#include "rosic_LinearAlgebra.h"
-#include "rosic_Matrix.h"
-#include "rosic_PolynomialAlgorithms.h"
-using namespace rosic;
+//#include "rosic_Interpolation.h"
+//#include "rosic_LinearAlgebra.h"
+//#include "rosic_Matrix.h"
+//#include "rosic_PolynomialAlgorithms.h"
+//using namespace rosic;
 
 void rosic::fitCubicWithDerivative(double x1, double x2, double y1, double y2, double yd1,
                                    double yd2, double *a3, double *a2, double *a1, double *a0)

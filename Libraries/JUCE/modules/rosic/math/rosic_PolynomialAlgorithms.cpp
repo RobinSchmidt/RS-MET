@@ -1,7 +1,7 @@
-#include <limits>
-
-#include "rosic_PolynomialAlgorithms.h"
-using namespace rosic;
+//#include <limits>
+//
+//#include "rosic_PolynomialAlgorithms.h"
+//using namespace rosic;
 
 Complex rosic::evaluatePolynomialWithRoots(Complex s, Complex *r, int N)
 {

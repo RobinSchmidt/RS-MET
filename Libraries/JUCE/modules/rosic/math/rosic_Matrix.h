@@ -1,8 +1,8 @@
 #ifndef rosic_Matrix_h
 #define rosic_Matrix_h
 
-// rosic-includes:
-#include "rosic_ElementaryFunctionsReal.h"
+//// rosic-includes:
+//#include "rosic_ElementaryFunctionsReal.h"
 
 namespace rosic
 {

@@ -1,8 +1,8 @@
 #ifndef rosic_Vector_h
 #define rosic_Vector_h
 
-// rosic-indcludes:
-#include "rosic_ElementaryFunctionsReal.h"
+//// rosic-indcludes:
+//#include "rosic_ElementaryFunctionsReal.h"
 
 namespace rosic
 {

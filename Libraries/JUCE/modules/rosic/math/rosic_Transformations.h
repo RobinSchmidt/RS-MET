@@ -1,12 +1,12 @@
 #ifndef rosic_Transformations_h
 #define rosic_Transformations_h
 
-// third party includes:
-#include "../_third_party/kiss_fft_v1_2_6/kiss_fft.h"
+//// third party includes:
+//#include "../_third_party/kiss_fft_v1_2_6/kiss_fft.h"
 
-// rosic includes:
-#include "rosic_Complex.h"
-#include "rosic_ElementaryFunctionsReal.h"
+//// rosic includes:
+//#include "rosic_Complex.h"
+//#include "rosic_ElementaryFunctionsReal.h"
 
 namespace rosic
 {

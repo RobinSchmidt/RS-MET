@@ -1,9 +1,9 @@
 #ifndef rosic_PrimeNumbers_h
 #define rosic_PrimeNumbers_h
 
-// rosic-indcludes:
-#include "../basics/GlobalDefinitions.h"
-#include <math.h>
+//// rosic-indcludes:
+//#include "../basics/GlobalDefinitions.h"
+//#include <math.h>
 
 namespace rosic
 {

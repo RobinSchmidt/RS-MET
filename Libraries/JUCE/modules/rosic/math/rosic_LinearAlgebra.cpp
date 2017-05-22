@@ -1,5 +1,5 @@
-#include "rosic_LinearAlgebra.h"
-using namespace rosic;
+//#include "rosic_LinearAlgebra.h"
+//using namespace rosic;
 
 bool rosic::solveLinearSystem(double** A, double* x, double* b, int N)
 {

@@ -1,9 +1,9 @@
 #ifndef rosic_MatrixVectorFunctions_h
 #define rosic_MatrixVectorFunctions_h
 
-// rosic includes:
-#include "rosic_Vector.h" 
-#include "rosic_Matrix.h"
+//// rosic includes:
+//#include "rosic_Vector.h" 
+//#include "rosic_Matrix.h"
 
 namespace rosic
 {

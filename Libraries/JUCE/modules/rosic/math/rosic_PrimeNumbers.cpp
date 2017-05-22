@@ -1,6 +1,6 @@
-#include "rosic_PrimeNumbers.h"
+//#include "rosic_PrimeNumbers.h"
 #include "rosic_PrimeArray.h"     // this initializes our primeArray-member
-using namespace rosic;
+//using namespace rosic;
 
 PrimeNumbers::PrimeNumbers()
 {

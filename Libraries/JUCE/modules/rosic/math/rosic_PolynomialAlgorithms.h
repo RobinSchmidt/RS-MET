@@ -1,11 +1,11 @@
 #ifndef rosic_PolynomialAlgorithms_h
 #define rosic_PolynomialAlgorithms_h
 
-// rosic-indcludes:
-#include <limits.h>
-#include <float.h>
-#include "rosic_ComplexFunctions.h"
-#include "../datastructures/rosic_Array.h"
+//// rosic-indcludes:
+//#include <limits.h>
+//#include <float.h>
+//#include "rosic_ComplexFunctions.h"
+//#include "../datastructures/rosic_Array.h"
 
 namespace rosic
 {

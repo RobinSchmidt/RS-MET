@@ -43,6 +43,8 @@
 //#include <stddef.h>  // for NULL macro
 //#include <climits>
 //#include <functional>
+//#include <limits.h>
+//#include <limits>
 
 #if (defined (_WIN32) || defined (_WIN64))
 #define USE_WINAPI_CRITICAL_SECTION

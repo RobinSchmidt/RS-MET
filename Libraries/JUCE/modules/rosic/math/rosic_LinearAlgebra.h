@@ -1,8 +1,8 @@
 #ifndef rosic_LinearAlgebra_h
 #define rosic_LinearAlgebra_h
 
-// rosic-indcludes:
-#include "rosic_ElementaryFunctionsReal.h"
+//// rosic-indcludes:
+//#include "rosic_ElementaryFunctionsReal.h"
 
 namespace rosic
 {
