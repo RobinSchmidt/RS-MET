@@ -1,5 +1,5 @@
-#include "rosic_PitchDetector.h"
-using namespace rosic;
+//#include "rosic_PitchDetector.h"
+//using namespace rosic;
 
 // Construction/Destruction:
 

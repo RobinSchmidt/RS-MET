@@ -1,5 +1,5 @@
-#include "rosic_TrackMeter.h"
-using namespace rosic;
+//#include "rosic_TrackMeter.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

@@ -1,10 +1,10 @@
 #ifndef rosic_SpectrumAnalyzer_h
 #define rosic_SpectrumAnalyzer_h
 
-// rosic-indcludes:
-#include "rosic_EnvelopeFollower.h"
-#include "rosic_SignalMeasures.h"
-#include "../transforms/rosic_FourierTransformerRadix2.h"
+//// rosic-indcludes:
+//#include "rosic_EnvelopeFollower.h"
+//#include "rosic_SignalMeasures.h"
+//#include "../transforms/rosic_FourierTransformerRadix2.h"
 
 namespace rosic
 {

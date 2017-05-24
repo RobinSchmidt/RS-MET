@@ -1,8 +1,8 @@
 #ifndef rosic_OscilloscopeBufferOld_h
 #define rosic_OscilloscopeBufferOld_h
 
-// rosic-indcludes:
-#include "../filters/rosic_FourPoleFilter.h"
+//// rosic-indcludes:
+//#include "../filters/rosic_FourPoleFilter.h"
 
 namespace rosic
 {

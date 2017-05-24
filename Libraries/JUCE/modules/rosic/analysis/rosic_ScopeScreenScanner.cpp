@@ -1,5 +1,5 @@
-#include "rosic_ScopeScreenScanner.h"
-using namespace rosic;
+//#include "rosic_ScopeScreenScanner.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

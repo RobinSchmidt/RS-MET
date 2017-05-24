@@ -1,8 +1,8 @@
 #ifndef rosic_FormantRemover_h
 #define rosic_FormantRemover_h
 
-// rosic-indcludes:
-#include "rosic_LinearPredictor.h"
+//// rosic-indcludes:
+//#include "rosic_LinearPredictor.h"
 
 namespace rosic
 {

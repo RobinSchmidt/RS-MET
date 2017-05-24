@@ -1,8 +1,8 @@
 #ifndef rosic_WaveformDisplayBuffer_h
 #define rosic_WaveformDisplayBuffer_h
 
-// rosic-indcludes:
-#include "../filters/rosic_FourPoleFilter.h"
+//// rosic-indcludes:
+//#include "../filters/rosic_FourPoleFilter.h"
 
 namespace rosic
 {

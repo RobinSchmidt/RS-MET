@@ -1,11 +1,11 @@
 #ifndef rosic_LinearPredictor_h
 #define rosic_LinearPredictor_h
 
-#include <string.h> // for memmove
-//#include <string> // for memmove
-
-// rosic-indcludes:
-#include "../math/rosic_ElementaryFunctionsReal.h"
+//#include <string.h> // for memmove
+////#include <string> // for memmove
+//
+//// rosic-indcludes:
+//#include "../math/rosic_ElementaryFunctionsReal.h"
 
 namespace rosic
 {

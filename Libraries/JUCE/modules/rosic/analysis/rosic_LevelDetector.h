@@ -1,10 +1,10 @@
 #ifndef rosic_LevelDetector_h
 #define rosic_LevelDetector_h
 
-// rosic-indcludes:
-#include "../filters/rosic_LeakyIntegrator.h"
-#include "rosic_InstantaneousEnvelopeDetector.h"
-#include "../others/rosic_SlewRateLimiter.h"
+//// rosic-indcludes:
+//#include "../filters/rosic_LeakyIntegrator.h"
+//#include "rosic_InstantaneousEnvelopeDetector.h"
+//#include "../others/rosic_SlewRateLimiter.h"
 
 namespace rosic
 {

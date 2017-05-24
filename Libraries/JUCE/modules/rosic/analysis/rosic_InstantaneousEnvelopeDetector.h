@@ -1,8 +1,8 @@
 #ifndef rosic_InstantaneousEnvelopeDetector_h
 #define rosic_InstantaneousEnvelopeDetector_h
 
-// rosic-indcludes:
-#include "../filters/rosic_QuadratureNetwork.h"
+//// rosic-indcludes:
+//#include "../filters/rosic_QuadratureNetwork.h"
 
 namespace rosic
 {

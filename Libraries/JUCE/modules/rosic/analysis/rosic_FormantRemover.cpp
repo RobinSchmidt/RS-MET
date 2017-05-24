@@ -1,5 +1,5 @@
-#include "rosic_FormantRemover.h"
-using namespace rosic;
+//#include "rosic_FormantRemover.h"
+//using namespace rosic;
 
 FormantRemover::FormantRemover(int newMaxOrder) : LinearPredictor(newMaxOrder)
 {

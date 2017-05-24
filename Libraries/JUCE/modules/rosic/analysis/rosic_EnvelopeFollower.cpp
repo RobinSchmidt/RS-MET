@@ -1,5 +1,5 @@
-#include "rosic_EnvelopeFollower.h"
-using namespace rosic;
+//#include "rosic_EnvelopeFollower.h"
+//using namespace rosic;
 
 // Construction/Destruction:
 

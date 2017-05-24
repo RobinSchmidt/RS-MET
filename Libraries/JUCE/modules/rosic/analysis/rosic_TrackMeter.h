@@ -1,10 +1,10 @@
 #ifndef rosic_TrackMeter_h
 #define rosic_TrackMeter_h
 
-// rosic-indcludes:
-#include "../analysis/rosic_EnvelopeFollower.h"
-#include "../filters/rosic_OnePoleFilter.h"
-#include "rosic_SignalMeasures.h"
+//// rosic-indcludes:
+//#include "../analysis/rosic_EnvelopeFollower.h"
+//#include "../filters/rosic_OnePoleFilter.h"
+//#include "rosic_SignalMeasures.h"
 
 namespace rosic
 {

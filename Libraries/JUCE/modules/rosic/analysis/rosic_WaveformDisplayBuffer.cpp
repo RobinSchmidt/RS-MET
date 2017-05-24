@@ -1,5 +1,5 @@
-#include "rosic_WaveformDisplayBuffer.h"
-using namespace rosic;
+//#include "rosic_WaveformDisplayBuffer.h"
+//using namespace rosic;
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:

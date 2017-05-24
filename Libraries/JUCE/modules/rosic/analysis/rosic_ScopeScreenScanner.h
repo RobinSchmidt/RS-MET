@@ -1,8 +1,8 @@
 #ifndef rosic_ScopeScreenScanner_h
 #define rosic_ScopeScreenScanner_h
 
-// rosic-includes:
-#include "rosic_PitchDetector.h"
+//// rosic-includes:
+//#include "rosic_PitchDetector.h"
 
 namespace rosic
 {

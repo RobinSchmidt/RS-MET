@@ -1,5 +1,5 @@
-#include "rosic_CyclicAutoCorrelator.h"
-using namespace rosic;
+//#include "rosic_CyclicAutoCorrelator.h"
+//using namespace rosic;
 
 // Construction/Destruction:
 

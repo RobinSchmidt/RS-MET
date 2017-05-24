@@ -1,5 +1,5 @@
-#include "rosic_LevelDetector.h"
-using namespace rosic;
+//#include "rosic_LevelDetector.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

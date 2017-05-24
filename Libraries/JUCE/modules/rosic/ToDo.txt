@@ -1,6 +1,6 @@
 -centralize #include directives for rosic header files (done)
 
--get rid of per-file includes (next: analysis)
+-get rid of per-file includes (next: dynamics)
 
 -use "rs" prefix for all rosic classes
  (maybe later also rapt and jura)

@@ -1,8 +1,8 @@
 #ifndef rosic_EnvelopeFollower_h
 #define rosic_EnvelopeFollower_h
 
-// rosic-indcludes:
-#include "../others/rosic_SlewRateLimiter.h"
+//// rosic-indcludes:
+//#include "../others/rosic_SlewRateLimiter.h"
 
 namespace rosic
 {

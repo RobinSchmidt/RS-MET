@@ -1,13 +1,13 @@
 #ifndef rosic_PitchDetector_h
 #define rosic_PitchDetector_h
 
-// rosic-indcludes:
-#include "../filters/rosic_FourPoleFilter.h"
-#include "../filters/rosic_OnePoleFilter.h"
-#include "../math/rosic_PolynomialAlgorithms.h"
-#include "rosic_CyclicAutoCorrelator.h"
-#include "rosic_EnvelopeFollower.h"
-#include "rosic_FormantRemover.h"
+//// rosic-indcludes:
+//#include "../filters/rosic_FourPoleFilter.h"
+//#include "../filters/rosic_OnePoleFilter.h"
+//#include "../math/rosic_PolynomialAlgorithms.h"
+//#include "rosic_CyclicAutoCorrelator.h"
+//#include "rosic_EnvelopeFollower.h"
+//#include "rosic_FormantRemover.h"
 
 namespace rosic
 {

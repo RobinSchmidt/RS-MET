@@ -255,7 +255,7 @@
 #include "delaylines/rosic_FractionalDelayLine.h"
 #include "delaylines/rosic_FractionalDelayLineStereo.h"
 #include "delaylines/rosic_ModulatedDelayLine.h"
-#include "delaylines/rosic_PingPongEcho.h"             // needs StereoPan...or not?
+#include "delaylines/rosic_PingPongEcho.h"
 
 
 // analysis:
@@ -266,7 +266,7 @@
 #include "analysis/rosic_FormantPreserver.h"
 #include "analysis/rosic_InstantaneousEnvelopeDetector.h"
 #include "analysis/rosic_LevelDetector.h"
-//#include "analysis/rosic_OscilloscopeBufferOld.h"
+#include "analysis/rosic_OscilloscopeBufferOld.h"
 #include "analysis/rosic_PitchDetector.h"
 #include "analysis/rosic_ScopeScreenScanner.h"
 #include "analysis/rosic_SignalMeasures.h"

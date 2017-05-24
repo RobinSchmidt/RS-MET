@@ -1,5 +1,5 @@
-#include "rosic_LinearPredictor.h"
-using namespace rosic;
+//#include "rosic_LinearPredictor.h"
+//using namespace rosic;
 
 // Construction/Destruction:
 
