@@ -1,5 +1,5 @@
-#include "rosic_AnalogEnvelope.h"
-using namespace rosic;
+//#include "rosic_AnalogEnvelope.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

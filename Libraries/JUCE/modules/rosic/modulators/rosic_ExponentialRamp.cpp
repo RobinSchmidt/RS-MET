@@ -1,5 +1,5 @@
-#include "rosic_ExponentialRamp.h"
-using namespace rosic;
+//#include "rosic_ExponentialRamp.h"
+//using namespace rosic;
 
 //----------------------------------------------------------------------------
 // construction/destruction:

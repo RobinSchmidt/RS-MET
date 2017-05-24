@@ -1,11 +1,11 @@
 #ifndef rosic_ExponentialRamp_h
 #define rosic_ExponentialRamp_h
 
-// standard library includes:
-#include "math.h"
-
-// rosic-indcludes:
-#include "../basics/GlobalDefinitions.h"
+//// standard library includes:
+//#include "math.h"
+//
+//// rosic-indcludes:
+//#include "../basics/GlobalDefinitions.h"
 
 namespace rosic
 {

@@ -1,8 +1,8 @@
 #ifndef rosic_AnalogEnvelope_h
 #define rosic_AnalogEnvelope_h
 
-// rosic-indcludes:
-#include "../math/rosic_ElementaryFunctionsReal.h"
+//// rosic-indcludes:
+//#include "../math/rosic_ElementaryFunctionsReal.h"
 
 namespace rosic
 {

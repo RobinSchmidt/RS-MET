@@ -1,11 +1,11 @@
 #ifndef MagicCarpetModulator_h
 #define MagicCarpetModulator_h
 
-#include "stdlib.h"          // for the NULL macro
-#include "MagicCarpetDefinitions.h"
-#include "MoreMath.h"
-#include "ExponentialRamp.h"
-#include "SlewRateLimiter.h"
+//#include "stdlib.h"          // for the NULL macro
+//#include "MagicCarpetDefinitions.h"
+//#include "MoreMath.h"
+//#include "ExponentialRamp.h"
+//#include "SlewRateLimiter.h"
 
 /**
 

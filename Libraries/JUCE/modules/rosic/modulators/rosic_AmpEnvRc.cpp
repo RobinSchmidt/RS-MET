@@ -1,5 +1,5 @@
-#include "rosic_AmpEnvRc.h"
-using namespace rosic;
+//#include "rosic_AmpEnvRc.h"
+//using namespace rosic;
 
 //----------------------------------------------------------------------------
 // construction/destruction:

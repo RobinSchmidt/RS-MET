@@ -1,8 +1,8 @@
 #ifndef rosic_EnvelopeGenerator_h
 #define rosic_EnvelopeGenerator_h
 
-// rosic-indcludes:
-#include "rosic_BreakpointModulator.h"
+//// rosic-indcludes:
+//#include "rosic_BreakpointModulator.h"
 
 namespace rosic
 {

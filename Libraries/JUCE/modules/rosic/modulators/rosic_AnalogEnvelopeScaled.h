@@ -1,8 +1,8 @@
 #ifndef rosic_AnalogEnvelopeScaled_h
 #define rosic_AnalogEnvelopeScaled_h
 
-// rosic-indcludes:
-#include "rosic_AnalogEnvelope.h"
+//// rosic-indcludes:
+//#include "rosic_AnalogEnvelope.h"
 
 namespace rosic
 {

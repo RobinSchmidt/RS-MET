@@ -1,5 +1,5 @@
-#include "rosic_EnvelopeGenerator2.h"
-using namespace rosic;
+//#include "rosic_EnvelopeGenerator2.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

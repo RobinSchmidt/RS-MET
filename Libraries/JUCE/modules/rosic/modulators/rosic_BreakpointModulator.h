@@ -1,14 +1,14 @@
 #ifndef rosic_BreakpointModulator_h
 #define rosic_BreakpointModulator_h
 
-// includes from the STL:
-#include <iterator>
-#include <vector>
-using std::vector;
-
-// rosic-indcludes:
-#include "../math/rosic_ElementaryFunctionsReal.h"
-#include "../infrastructure/rosic_MutexLock.h"
+//// includes from the STL:
+//#include <iterator>
+//#include <vector>
+//using std::vector;
+//
+//// rosic-indcludes:
+//#include "../math/rosic_ElementaryFunctionsReal.h"
+//#include "../infrastructure/rosic_MutexLock.h"
 
 namespace rosic
 {
@@ -103,9 +103,8 @@ namespace rosic
     bool syncMode;
     bool endLevelFixedAtZero;
 
-    vector<ModBreakpoint> breakpoints;
-
-    MutexLock             mutex;
+    std::vector<ModBreakpoint> breakpoints;
+    MutexLock mutex;
 
     BreakpointModulatorData()
     {

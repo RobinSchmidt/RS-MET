@@ -1,8 +1,8 @@
 #ifndef rosic_AttackDecayEnvelope_h
 #define rosic_AttackDecayEnvelope_h
 
-// rosic-indcludes:
-#include "../math/rosic_ElementaryFunctionsReal.h"
+//// rosic-indcludes:
+//#include "../math/rosic_ElementaryFunctionsReal.h"
 
 namespace rosic
 {

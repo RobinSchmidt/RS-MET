@@ -1,8 +1,8 @@
 #ifndef rosic_EnvelopeGenerator2_h
 #define rosic_EnvelopeGenerator2_h
 
-// rosic-indcludes:
-#include "../math/rosic_ElementaryFunctionsReal.h"
+//// rosic-indcludes:
+//#include "../math/rosic_ElementaryFunctionsReal.h"
 
 namespace rosic
 {

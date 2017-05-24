@@ -1,12 +1,12 @@
 #ifndef rosic_SampleModulator_h
 #define rosic_SampleModulator_h
 
-// rosic-indcludes:
-//#include "../basics/rosic_BinarySemaphore.h"
-#include "../basics/rosic_Interpolator.h"
-#include "../infrastructure/rosic_MutexLock.h"
-//#include "../_third_party/kvr/aciddose/admutexw32.h"
-//#include "../_third_party/stk/Mutex.h"
+//// rosic-indcludes:
+////#include "../basics/rosic_BinarySemaphore.h"
+//#include "../basics/rosic_Interpolator.h"
+//#include "../infrastructure/rosic_MutexLock.h"
+////#include "../_third_party/kvr/aciddose/admutexw32.h"
+////#include "../_third_party/stk/Mutex.h"
 
 namespace rosic
 {

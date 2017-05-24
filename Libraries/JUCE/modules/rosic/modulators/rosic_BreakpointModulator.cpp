@@ -1,5 +1,5 @@
-#include "rosic_BreakpointModulator.h"
-using namespace rosic;
+//#include "rosic_BreakpointModulator.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

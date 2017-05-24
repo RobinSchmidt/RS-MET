@@ -1,5 +1,5 @@
-#include "rosic_PitchEnvRc.h"
-using namespace rosic;
+//#include "rosic_PitchEnvRc.h"
+//using namespace rosic;
 
 //----------------------------------------------------------------------------
 // construction/destruction:
