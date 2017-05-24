@@ -1,11 +1,11 @@
 #ifndef rosic_ModulatedDelayLine_h
 #define rosic_ModulatedDelayLine_h
 
-// rosic-indcludes:
-#include "rosic_FractionalDelayLine.h"
-#include "../generators/rosic_SineOscillator.h"
-//#include "../filters/rosic_LowpassHighpass.h"
-#include "../filters/rosic_Equalizer.h"
+//// rosic-indcludes:
+//#include "rosic_FractionalDelayLine.h"
+//#include "../generators/rosic_SineOscillator.h"
+////#include "../filters/rosic_LowpassHighpass.h"
+//#include "../filters/rosic_Equalizer.h"
 
 namespace rosic
 {

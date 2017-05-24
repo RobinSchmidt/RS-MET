@@ -1,5 +1,5 @@
-#include "rosic_EchoLabDelayLine.h"
-using namespace rosic;
+//#include "rosic_EchoLabDelayLine.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

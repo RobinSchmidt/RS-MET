@@ -1,5 +1,5 @@
-#include "rosic_BasicIntegerDelayLine.h"
-using namespace rosic;
+//#include "rosic_BasicIntegerDelayLine.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

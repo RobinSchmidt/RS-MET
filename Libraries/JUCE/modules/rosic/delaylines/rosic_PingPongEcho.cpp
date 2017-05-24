@@ -1,5 +1,5 @@
-#include "rosic_PingPongEcho.h"
-using namespace rosic;
+//#include "rosic_PingPongEcho.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

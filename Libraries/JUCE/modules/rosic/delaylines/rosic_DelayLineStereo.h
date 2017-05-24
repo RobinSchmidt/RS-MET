@@ -1,10 +1,10 @@
 #ifndef rosic_DelayLineStereo_h
 #define rosic_DelayLineStereo_h
 
-// rosic-indcludes:
-#include "../math/rosic_ElementaryFunctionsReal.h"
-#include "../basics/rosic_Interpolator.h"
-#include <new>
+//// rosic-indcludes:
+//#include "../math/rosic_ElementaryFunctionsReal.h"
+//#include "../basics/rosic_Interpolator.h"
+//#include <new>
 
 namespace rosic
 {

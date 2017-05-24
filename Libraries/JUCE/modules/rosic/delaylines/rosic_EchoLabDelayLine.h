@@ -1,10 +1,10 @@
 #ifndef rosic_EchoLabDelayLine_h
 #define rosic_EchoLabDelayLine_h
 
-// rosic-indcludes:
-//#include "rosic_FractionalDelayLine.h"
-//#include "../filters/rosic_Equalizer.h"
-#include "../filters/rosic_EqualizerStereo.h"
+//// rosic-indcludes:
+////#include "rosic_FractionalDelayLine.h"
+////#include "../filters/rosic_Equalizer.h"
+//#include "../filters/rosic_EqualizerStereo.h"
 
 namespace rosic
 {

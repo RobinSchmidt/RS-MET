@@ -1,5 +1,5 @@
-#include "rosic_AllpassDiffusor.h"
-using namespace rosic;
+//#include "rosic_AllpassDiffusor.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

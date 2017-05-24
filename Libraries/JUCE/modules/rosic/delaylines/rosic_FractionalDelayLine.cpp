@@ -1,5 +1,5 @@
-#include "rosic_FractionalDelayLine.h"
-using namespace rosic;
+//#include "rosic_FractionalDelayLine.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

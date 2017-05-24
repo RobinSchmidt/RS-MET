@@ -1,5 +1,5 @@
-#include "rosic_DelayLineStereo.h"
-using namespace rosic;
+//#include "rosic_DelayLineStereo.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
