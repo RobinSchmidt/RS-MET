@@ -1,11 +1,11 @@
 #ifndef rosic_DynamicsProcessorBase_h
 #define rosic_DynamicsProcessorBase_h
 
-// rosic-indcludes:
-#include "../infrastructure/rosic_MutexLock.h"
-#include "../others/rosic_SlewRateLimiter.h"
-#include "../analysis/rosic_LevelDetector.h"
-#include <new> 
+//// rosic-indcludes:
+//#include "../infrastructure/rosic_MutexLock.h"
+//#include "../others/rosic_SlewRateLimiter.h"
+//#include "../analysis/rosic_LevelDetector.h"
+//#include <new> 
 
 #define DEFAULT_LOOKAHEAD_SIZE 8192  // default size for the lookahead buffer
 

@@ -1,10 +1,10 @@
 #ifndef rosic_SoftKneeExpander_h
 #define rosic_SoftKneeExpander_h
 
-// rosic-indcludes:
-#include "rosic_Expander.h"
-#include "rosic_BesselFilterForGainSignal.h"
-#include "../math/rosic_Interpolation.h"
+//// rosic-indcludes:
+//#include "rosic_Expander.h"
+//#include "rosic_BesselFilterForGainSignal.h"
+//#include "../math/rosic_Interpolation.h"
 
 namespace rosic
 {

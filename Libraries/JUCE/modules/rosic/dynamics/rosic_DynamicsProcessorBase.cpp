@@ -1,5 +1,5 @@
-#include "rosic_DynamicsProcessorBase.h"
-using namespace rosic;
+//#include "rosic_DynamicsProcessorBase.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

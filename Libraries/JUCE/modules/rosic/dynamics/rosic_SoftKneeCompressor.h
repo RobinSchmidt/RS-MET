@@ -1,10 +1,10 @@
 #ifndef rosic_SoftKneeCompressor_h
 #define rosic_SoftKneeCompressor_h
 
-// rosic-indcludes:
-#include "rosic_Compressor.h"
-#include "rosic_BesselFilterForGainSignal.h"
-#include "../math/rosic_Interpolation.h"
+//// rosic-indcludes:
+//#include "rosic_Compressor.h"
+//#include "rosic_BesselFilterForGainSignal.h"
+//#include "../math/rosic_Interpolation.h"
 
 namespace rosic
 {

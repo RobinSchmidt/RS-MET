@@ -1,8 +1,8 @@
 #ifndef rosic_Compressor_h
 #define rosic_Compressor_h
 
-// rosic-indcludes:
-#include "rosic_DynamicsProcessorBase.h"
+//// rosic-indcludes:
+//#include "rosic_DynamicsProcessorBase.h"
 
 namespace rosic
 {

@@ -1,10 +1,10 @@
 #ifndef rosic_BesselFilterForGainSignal_h
 #define rosic_BesselFilterForGainSignal_h
 
-#include <string.h> // for memmove
-
-// rosic-indcludes:
-#include "../basics/GlobalDefinitions.h"
+//#include <string.h> // for memmove
+//
+//// rosic-indcludes:
+//#include "../basics/GlobalDefinitions.h"
 
 namespace rosic
 {

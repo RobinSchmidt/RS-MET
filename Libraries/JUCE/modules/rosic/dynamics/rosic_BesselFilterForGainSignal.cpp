@@ -1,5 +1,5 @@
-#include "rosic_BesselFilterForGainSignal.h"
-using namespace rosic;
+//#include "rosic_BesselFilterForGainSignal.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

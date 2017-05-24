@@ -1,5 +1,5 @@
-#include "rosic_SoftKneeCompressor.h"
-using namespace rosic;
+//#include "rosic_SoftKneeCompressor.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

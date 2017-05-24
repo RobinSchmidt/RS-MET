@@ -1,8 +1,8 @@
 #ifndef rosic_Expander_h
 #define rosic_Expander_h
 
-// rosic-indcludes:
-#include "rosic_DynamicsProcessorBase.h"
+//// rosic-indcludes:
+//#include "rosic_DynamicsProcessorBase.h"
 
 namespace rosic
 {

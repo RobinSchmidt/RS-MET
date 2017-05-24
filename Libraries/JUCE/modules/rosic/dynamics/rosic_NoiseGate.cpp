@@ -1,5 +1,5 @@
-#include "rosic_NoiseGate.h"
-using namespace rosic;
+//#include "rosic_NoiseGate.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

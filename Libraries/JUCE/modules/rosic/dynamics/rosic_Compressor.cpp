@@ -1,5 +1,5 @@
-#include "rosic_Compressor.h"
-using namespace rosic;
+//#include "rosic_Compressor.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
