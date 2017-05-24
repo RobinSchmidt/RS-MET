@@ -1,12 +1,12 @@
 #ifndef rosic_NoiseGenerator_h
 #define rosic_NoiseGenerator_h
 
-// rosic-indcludes:
-//#include "../math/rosic_ElementaryFunctionsReal.h"
-#include "../infrastructure/rosic_MutexLock.h"
-//#include "../others/rosic_RandomNumberGenerator01.h"
-#include "../transforms/rosic_FourierTransformerBluestein.h"
-#include <new>
+//// rosic-indcludes:
+////#include "../math/rosic_ElementaryFunctionsReal.h"
+//#include "../infrastructure/rosic_MutexLock.h"
+////#include "../others/rosic_RandomNumberGenerator01.h"
+//#include "../transforms/rosic_FourierTransformerBluestein.h"
+//#include <new>
 
 
 namespace rosic

@@ -1,5 +1,5 @@
-#include "rosic_LorentzSystem.h"
-using namespace rosic;
+//#include "rosic_LorentzSystem.h"
+//using namespace rosic;
 
 // Construction/Destruction:
 

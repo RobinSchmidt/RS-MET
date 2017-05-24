@@ -1,8 +1,8 @@
 #ifndef rosic_OscillatorBank_h
 #define rosic_OscillatorBank_h
 
-// rosic-indcludes:
-#include "../math/rosic_ElementaryFunctionsReal.h"
+//// rosic-indcludes:
+//#include "../math/rosic_ElementaryFunctionsReal.h"
 
 namespace rosic
 {

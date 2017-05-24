@@ -1,6 +1,6 @@
-#include <limits>
-#include "rosic_ModalSynthesizer.h"
-using namespace rosic;
+//#include <limits>
+//#include "rosic_ModalSynthesizer.h"
+//using namespace rosic;
 
 //=================================================================================================
 // class ModalFilter:

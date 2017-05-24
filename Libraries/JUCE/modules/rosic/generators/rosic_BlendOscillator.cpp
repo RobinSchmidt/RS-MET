@@ -1,5 +1,5 @@
-#include "rosic_BlendOscillator.h"
-using namespace rosic;
+//#include "rosic_BlendOscillator.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

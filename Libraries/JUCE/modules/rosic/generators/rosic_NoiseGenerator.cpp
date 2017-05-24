@@ -1,5 +1,5 @@
-#include "rosic_NoiseGenerator.h"
-using namespace rosic;
+//#include "rosic_NoiseGenerator.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

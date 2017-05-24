@@ -1,16 +1,16 @@
 #ifndef rosic_OscillatorStereo_h
 #define rosic_OscillatorStereo_h
 
-// standard-library includes:
-#include <stdlib.h>          // for the NULL macro
-
-// includes for the STL:
-#include <vector>
-
-// rosic-indcludes:
-#include "rosic_MipMappedWaveTableStereo.h"
-#include "../filters/rosic_LowpassHighpassStereo.h"
-#include "../math/rosic_ElementaryFunctionsReal.h"
+//// standard-library includes:
+//#include <stdlib.h>          // for the NULL macro
+//
+//// includes for the STL:
+//#include <vector>
+//
+//// rosic-indcludes:
+//#include "rosic_MipMappedWaveTableStereo.h"
+//#include "../filters/rosic_LowpassHighpassStereo.h"
+//#include "../math/rosic_ElementaryFunctionsReal.h"
 
 namespace rosic
 {

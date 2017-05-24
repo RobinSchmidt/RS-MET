@@ -1,5 +1,5 @@
-#include "rosic_OscillatorStereo.h"
-using namespace rosic;
+//#include "rosic_OscillatorStereo.h"
+//using namespace rosic;
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:

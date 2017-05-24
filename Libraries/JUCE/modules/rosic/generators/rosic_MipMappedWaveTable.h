@@ -1,8 +1,8 @@
 #ifndef rosic_MipMappedWaveTable_h
 #define rosic_MipMappedWaveTable_h
 
-// rosic-indcludes:
-#include "../transforms/rosic_FourierTransformerRadix2.h"
+//// rosic-indcludes:
+//#include "../transforms/rosic_FourierTransformerRadix2.h"
 
 namespace rosic
 {

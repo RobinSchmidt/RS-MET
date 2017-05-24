@@ -37,7 +37,7 @@
 #include <algorithm>    // for sort
 #include <cstring>      // for memcpy on linux/gcc
 //#include <string.h>
-//#include <stdlib.h>
+//#include <stdlib.h>     // for std::max
 //#include <vector>
 //#include <errno.h>
 //#include <stddef.h>  // for NULL macro
@@ -205,15 +205,16 @@
 
 // (most) generators:
 #include "generators/rosic_MipMappedWaveTable.h"
-//#include "generators/rosic_MipMappedWaveTableOld.h"
+#include "generators/rosic_MipMappedWaveTableOld.h"   // still needed?
 #include "generators/rosic_MipMappedWaveTableStereo.h"
 #include "generators/rosic_BlendOscillator.h"
 #include "generators/rosic_LorentzSystem.h"
 #include "generators/rosic_ModalSynthesizer.h"
 #include "generators/rosic_NoiseGenerator.h"
-//#include "generators/rosic_NoiseGeneratorOld.h"
-//#include "generators/rosic_Oscillator.h"
-//#include "generators/rosic_OscillatorBank.h"
+#include "generators/rosic_NoiseGeneratorOld.h"
+#include "generators/rosic_Oscillator.h"
+#include "generators/rosic_OscillatorBank.h"
+
 #include "generators/rosic_OscillatorStereo.h"
 #include "generators/rosic_FourOscSection.h"
 #include "generators/rosic_SampleOscillator.h"

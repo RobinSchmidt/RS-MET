@@ -1,5 +1,5 @@
-#include "rosic_Oscillator.h"
-using namespace rosic;
+//#include "rosic_Oscillator.h"
+//using namespace rosic;
 
 #include "rosic_BlepInitialization.h"
 // this initializes our static blep member-variable

@@ -1,5 +1,5 @@
-#include "rosic_MipMappedWaveTableOld.h"
-using namespace rosic;
+//#include "rosic_MipMappedWaveTableOld.h"
+//using namespace rosic;
 
 MipMappedWaveTableOld::MipMappedWaveTableOld()
 {

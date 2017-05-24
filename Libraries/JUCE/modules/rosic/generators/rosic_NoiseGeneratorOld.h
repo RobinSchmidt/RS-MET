@@ -1,12 +1,12 @@
 #ifndef rosic_NoiseGeneratorOld_h
 #define rosic_NoiseGeneratorOld_h
 
-// standard-library indcludes:
-#include <stdlib.h>
-
-// rosic-indcludes:
-//#include "../filters/rosic_IirFilter.h"
-#include "../filters/rosic_FourPoleFilter.h"
+//// standard-library indcludes:
+//#include <stdlib.h>
+//
+//// rosic-indcludes:
+////#include "../filters/rosic_IirFilter.h"
+//#include "../filters/rosic_FourPoleFilter.h"
 
 
 namespace rosic

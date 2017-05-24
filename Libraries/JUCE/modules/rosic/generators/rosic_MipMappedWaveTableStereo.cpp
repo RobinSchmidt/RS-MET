@@ -1,5 +1,5 @@
-#include "rosic_MipMappedWaveTableStereo.h"
-using namespace rosic;
+//#include "rosic_MipMappedWaveTableStereo.h"
+//using namespace rosic;
 
 MipMappedWaveTableStereo::MipMappedWaveTableStereo()
 {

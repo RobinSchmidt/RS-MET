@@ -1,14 +1,14 @@
 #ifndef rosic_MipMappedWaveTableOld_h
 #define rosic_MipMappedWaveTableOld_h
 
-// standard library includes:
-#include "stdlib.h"             // for rand()
-
-// rosic-indcludes:
-#include "../basics/rosic_Interpolator.h"
-#include "../filters/rosic_WhiteToPinkFilter.h"
-#include "../transforms/rosic_FourierTransformerRadix2.h"
-//#include "rosic_Oscillator.h"
+//// standard library includes:
+//#include "stdlib.h"             // for rand()
+//
+//// rosic-indcludes:
+//#include "../basics/rosic_Interpolator.h"
+//#include "../filters/rosic_WhiteToPinkFilter.h"
+//#include "../transforms/rosic_FourierTransformerRadix2.h"
+////#include "rosic_Oscillator.h"
 
 namespace rosic
 {

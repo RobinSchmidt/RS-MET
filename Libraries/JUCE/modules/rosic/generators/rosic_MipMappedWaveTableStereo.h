@@ -1,13 +1,13 @@
 #ifndef rosic_MipMappedWaveTableStereo_h
 #define rosic_MipMappedWaveTableStereo_h
 
-// standard includes:
-#include <string.h>
-
-// rosic-indcludes:
-//#include "../basics/rosic_Interpolator.h"
-#include "../transforms/rosic_FourierTransformerBluestein.h"
-#include "../infrastructure/rosic_MutexLock.h"
+//// standard includes:
+//#include <string.h>
+//
+//// rosic-indcludes:
+////#include "../basics/rosic_Interpolator.h"
+//#include "../transforms/rosic_FourierTransformerBluestein.h"
+//#include "../infrastructure/rosic_MutexLock.h"
 
 namespace rosic
 {

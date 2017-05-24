@@ -1,8 +1,8 @@
 #ifndef rosic_BlendOscillator_h
 #define rosic_BlendOscillator_h
 
-// rosic-indcludes:
-#include "rosic_MipMappedWaveTable.h"
+//// rosic-indcludes:
+//#include "rosic_MipMappedWaveTable.h"
 
 namespace rosic
 {

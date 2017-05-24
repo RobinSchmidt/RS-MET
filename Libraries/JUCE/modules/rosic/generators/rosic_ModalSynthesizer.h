@@ -1,12 +1,12 @@
 #ifndef rosic_ModalSynthesizer_h
 #define rosic_ModalSynthesizer_h
 
-#include<vector>
-
-// rosic-indcludes:
-#include "../math/rosic_Vector.h"
-#include "../math/rosic_Complex.h"
-#include "../math/rosic_SpecialFunctionsReal.h"  // why?
+//#include<vector>
+//
+//// rosic-indcludes:
+//#include "../math/rosic_Vector.h"
+//#include "../math/rosic_Complex.h"
+//#include "../math/rosic_SpecialFunctionsReal.h"  // why?
 
 namespace rosic
 {
