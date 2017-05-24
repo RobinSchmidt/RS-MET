@@ -1,5 +1,5 @@
-#include "rosic_AlgorithmicWaveformRenderer.h"
-using namespace rosic;
+//#include "rosic_AlgorithmicWaveformRenderer.h"
+//using namespace rosic;
 
 UnaryFunctionPointer rosic::getWaveformFunction(int waveformIndex)
 {

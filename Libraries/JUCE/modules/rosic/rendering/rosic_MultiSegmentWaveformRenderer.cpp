@@ -1,5 +1,5 @@
-#include "rosic_MultiSegmentWaveformRenderer.h"
-using namespace rosic;
+//#include "rosic_MultiSegmentWaveformRenderer.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

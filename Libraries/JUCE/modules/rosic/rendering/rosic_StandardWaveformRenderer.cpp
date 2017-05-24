@@ -1,5 +1,5 @@
-#include "rosic_StandardWaveformRenderer.h"
-using namespace rosic;
+//#include "rosic_StandardWaveformRenderer.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

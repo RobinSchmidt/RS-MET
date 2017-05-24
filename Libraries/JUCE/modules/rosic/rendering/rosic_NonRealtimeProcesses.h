@@ -1,15 +1,15 @@
 #ifndef rosic_NonRealtimeProcesses_h
 #define rosic_NonRealtimeProcesses_h
 
-// standard library includes
-#include <vector>
-
-// rosic-indcludes:
-#include "../basics/rosic_FunctionTemplates.h"
-#include "../math/rosic_ElementaryFunctionsReal.h"
-#include "../filters/rosic_EngineersFilter.h"
-#include "../generators/rosic_ModalSynthesizer.h"
-#include "../transforms/rosic_FourierTransformerBluestein.h"
+//// standard library includes
+//#include <vector>
+//
+//// rosic-indcludes:
+//#include "../basics/rosic_FunctionTemplates.h"
+//#include "../math/rosic_ElementaryFunctionsReal.h"
+//#include "../filters/rosic_EngineersFilter.h"
+//#include "../generators/rosic_ModalSynthesizer.h"
+//#include "../transforms/rosic_FourierTransformerBluestein.h"
 
 namespace rosic
 {

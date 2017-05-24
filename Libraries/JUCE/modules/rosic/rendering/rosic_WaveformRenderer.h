@@ -1,11 +1,11 @@
 #ifndef rosic_WaveformRenderer_h
 #define rosic_WaveformRenderer_h
 
-// rosic-indcludes:
-#include "rosic_AlgorithmicWaveformRenderer.h"
-#include "rosic_MultiSegmentWaveformRenderer.h"
-#include "rosic_StandardWaveformRenderer.h"
-#include "rosic_WaveformBuffer.h"
+//// rosic-indcludes:
+//#include "rosic_AlgorithmicWaveformRenderer.h"
+//#include "rosic_MultiSegmentWaveformRenderer.h"
+//#include "rosic_StandardWaveformRenderer.h"
+//#include "rosic_WaveformBuffer.h"
 
 namespace rosic
 {

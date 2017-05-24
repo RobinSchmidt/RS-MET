@@ -1,5 +1,5 @@
-#include "rosic_WaveformGenerator.h"
-using namespace rosic;
+//#include "rosic_WaveformGenerator.h"
+//using namespace rosic;
 
 WaveformGenerator::WaveformGenerator()
 {

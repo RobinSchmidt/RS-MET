@@ -1,8 +1,8 @@
 #ifndef rosic_MultiSegmentWaveformRenderer_h
 #define rosic_MultiSegmentWaveformRenderer_h
 
-// rosic-indcludes:
-#include "../modulators/rosic_BreakpointModulator.h"
+//// rosic-indcludes:
+//#include "../modulators/rosic_BreakpointModulator.h"
 
 namespace rosic
 {

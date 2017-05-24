@@ -1,9 +1,9 @@
 #ifndef rosic_WaveformGenerator_h
 #define rosic_WaveformGenerator_h
 
-// rosic-indcludes:
-#include "../transforms/rosic_FourierTransformerRadix2.h"
-#include "../math/rosic_PrimeNumbers.h"
+//// rosic-indcludes:
+//#include "../transforms/rosic_FourierTransformerRadix2.h"
+//#include "../math/rosic_PrimeNumbers.h"
 
 namespace rosic
 {

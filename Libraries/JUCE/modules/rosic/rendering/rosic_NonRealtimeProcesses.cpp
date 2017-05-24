@@ -1,6 +1,6 @@
-#include "rosic_NonRealtimeProcesses.h"
-#include "../math/rosic_Interpolation.h"
-using namespace rosic;
+//#include "rosic_NonRealtimeProcesses.h"
+//#include "../math/rosic_Interpolation.h"
+//using namespace rosic;
 
 // Synthesis:
 
