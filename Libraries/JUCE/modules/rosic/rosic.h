@@ -214,7 +214,6 @@
 #include "generators/rosic_NoiseGeneratorOld.h"
 #include "generators/rosic_Oscillator.h"
 #include "generators/rosic_OscillatorBank.h"
-
 #include "generators/rosic_OscillatorStereo.h"
 #include "generators/rosic_FourOscSection.h"
 #include "generators/rosic_SampleOscillator.h"

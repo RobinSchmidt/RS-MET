@@ -1,5 +1,5 @@
-#include "rosic_SineOscillator.h"
-using namespace rosic;
+//#include "rosic_SineOscillator.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

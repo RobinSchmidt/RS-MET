@@ -1,9 +1,9 @@
 #ifndef rosic_SuperOscillator_h
 #define rosic_SuperOscillator_h
 
-// rosic-indcludes:
-#include "rosic_Oscillator.h"
-//#include "../filters/rosic_OnePoleFilter.h"
+//// rosic-indcludes:
+//#include "rosic_Oscillator.h"
+////#include "../filters/rosic_OnePoleFilter.h"
 
 namespace rosic
 {

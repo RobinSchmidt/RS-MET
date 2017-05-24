@@ -1,5 +1,5 @@
-#include "rosic_SuperOscillator.h"
-using namespace rosic;
+//#include "rosic_SuperOscillator.h"
+//using namespace rosic;
 
 SuperOscillator::SuperOscillator()
 {

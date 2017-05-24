@@ -1,14 +1,14 @@
 #ifndef rosic_SampleOscillator_h
 #define rosic_SampleOscillator_h
 
-// standard-library includes:
-#include <stdlib.h>          // for the NULL macro
-
-// rosic-indcludes:
-//#include "../basics/rosic_Definitions.h"
-#include "../basics/rosic_Interpolator.h"
-#include "../filters/rosic_LowpassHighpassStereo.h"
-#include "../math/rosic_ElementaryFunctionsReal.h"
+//// standard-library includes:
+//#include <stdlib.h>          // for the NULL macro
+//
+//// rosic-indcludes:
+////#include "../basics/rosic_Definitions.h"
+//#include "../basics/rosic_Interpolator.h"
+//#include "../filters/rosic_LowpassHighpassStereo.h"
+//#include "../math/rosic_ElementaryFunctionsReal.h"
 
 namespace rosic
 {

@@ -1,8 +1,8 @@
 #ifndef rosic_TestGenerator_h
 #define rosic_TestGenerator_h
 
-// rosic-indcludes:
-#include "rosic_SineOscillatorStereo.h"
+//// rosic-indcludes:
+//#include "rosic_SineOscillatorStereo.h"
 
 namespace rosic
 {

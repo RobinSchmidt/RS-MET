@@ -1,12 +1,12 @@
 #ifndef rosic_SamplePlayer_h
 #define rosic_SamplePlayer_h
 
-// rosic-indcludes:
-#include <vector>
-#include "../basics/rosic_HelperFunctions.h"
-#include "../basics/rosic_SampleBuffer.h"
-#include "../basics/rosic_SamplePlaybackParameters.h"
-#include "../filters/rosic_LowpassHighpass.h"
+//// rosic-indcludes:
+//#include <vector>
+//#include "../basics/rosic_HelperFunctions.h"
+//#include "../basics/rosic_SampleBuffer.h"
+//#include "../basics/rosic_SamplePlaybackParameters.h"
+//#include "../filters/rosic_LowpassHighpass.h"
 
 namespace rosic
 {

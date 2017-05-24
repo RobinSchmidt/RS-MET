@@ -1,5 +1,5 @@
-#include "rosic_TestGenerator.h"
-using namespace rosic;
+//#include "rosic_TestGenerator.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

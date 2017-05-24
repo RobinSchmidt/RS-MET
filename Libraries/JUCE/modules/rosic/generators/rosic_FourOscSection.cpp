@@ -1,5 +1,5 @@
-#include "rosic_FourOscSection.h"
-using namespace rosic;
+//#include "rosic_FourOscSection.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

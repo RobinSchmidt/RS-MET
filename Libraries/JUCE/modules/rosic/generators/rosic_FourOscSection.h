@@ -1,9 +1,9 @@
 #ifndef rosic_FourOscSection_h
 #define rosic_FourOscSection_h
 
-// rosic-indcludes:
-//#include "../infrastructure/rosic_PresetRememberer.h"
-#include "rosic_OscillatorStereo.h"
+//// rosic-indcludes:
+////#include "../infrastructure/rosic_PresetRememberer.h"
+//#include "rosic_OscillatorStereo.h"
 
 namespace rosic
 {
