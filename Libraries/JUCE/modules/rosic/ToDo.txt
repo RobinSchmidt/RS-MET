@@ -1,7 +1,8 @@
+-fix gcc compiler warnings for rosic
 
 -use "rs" prefix for all rosic classes and functions (start with those where there's a name-clash with
- juce (String (done), File (done), Reverb (done), Array (done), AudioBuffer?, Expression?, Primes?, 
- Sampler/Voice?, PerformanceCounter)  (maybe later also rapt and jura)
+ juce (String (done), File (done), Reverb (done), Array (done))  
+ (maybe later also rapt and jura)
 -maybe do this in a project where "rosic" is the onyl juce-module (then we can use: "replace all"
  inside the whole project or solution - verify if other projects still compile after each 
  replacement)
@@ -9,11 +10,9 @@
 -clean up coding style in rosic
 -get rid of "using namespace" in headers
  (rapt.h (done), rosic.h, romos.h, jura_*.h)
--fix gcc compiler warnings for rosic
 
 -integrate old rapt test/demo code into testbed
  -organize into: unit tests, experiments (with plots), performance tests, demos
-
 
 -remove redundant envelope implementations
 
