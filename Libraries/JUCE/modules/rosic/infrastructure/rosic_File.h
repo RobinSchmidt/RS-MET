@@ -17,7 +17,7 @@ namespace rosic
 
   */
 
-  class File
+  class rsFile
   {
 
   public:
@@ -27,10 +27,10 @@ namespace rosic
 
     /** Constructor. Creates a file object that is associated with the given absolute path. A file
     with such path may or may not exist. */
-    File(const rsString& absolutePath = rsString());  
+    rsFile(const rsString& absolutePath = rsString());  
 
     /** Destructor. Closes the underlying C file in case it is still open. */
-    ~File();  
+    ~rsFile();  
 
     //---------------------------------------------------------------------------------------------
     // setup:
@@ -96,7 +96,7 @@ namespace rosic
     // static functions and data members:
 
     /** This is an empty string. */
-    static const File nonExistent;
+    static const rsFile nonExistent;
 
     /** If a file with the given path/name already exists, it creates an alternative name for the 
     file by appending a string with some number. If no file with the given name exists, the 

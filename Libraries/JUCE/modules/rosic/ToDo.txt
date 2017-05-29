@@ -1,7 +1,7 @@
 
 -use "rs" prefix for all rosic classes and functions (start with those where there's a name-clash with
- juce (String, File, Biquad, Reverb, Array, AudioBuffer?, Expression?, Primes?, Sampler/Voice?,
- PerformanceCounter)  (maybe later also rapt and jura)
+ juce (String (done), File, Biquad, Reverb, Array (done), AudioBuffer?, Expression?, Primes?, 
+ Sampler/Voice?, PerformanceCounter)  (maybe later also rapt and jura)
 -maybe do this in a project where "rosic" is the onyl juce-module (then we can use: "replace all"
  inside the whole project or solution - verify if other projects still compile after each 
  replacement)

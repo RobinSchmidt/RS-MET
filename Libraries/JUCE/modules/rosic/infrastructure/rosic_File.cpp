@@ -4,17 +4,17 @@
 //-------------------------------------------------------------------------------------------------
 // static data members:
 
-const File File::nonExistent;
+const rsFile rsFile::nonExistent;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-File::File(const rsString& absolutePath)
+rsFile::rsFile(const rsString& absolutePath)
 {
   this->absolutePath = absolutePath;
 }
 
-File::~File()
+rsFile::~rsFile()
 {
 
 }
@@ -32,7 +32,7 @@ File::~File()
 //-------------------------------------------------------------------------------------------------
 // inquiry:
    
-long File::getSizeInBytes() const
+long rsFile::getSizeInBytes() const
 {
   FILE *f = fopen(absolutePath.getRawString(), "r");
   if( f == NULL )
@@ -54,7 +54,7 @@ long File::getSizeInBytes() const
 //-------------------------------------------------------------------------------------------------
 // reading:
 
-rsString File::readFileAsString() const
+rsString rsFile::readFileAsString() const
 {
   long numCharacters;
   char *textRaw = readFileAsZeroTerminatedString(numCharacters);
@@ -70,7 +70,7 @@ rsString File::readFileAsString() const
   }
 }
 
-char* File::readFileAsZeroTerminatedString(long &lengthExludingZero) const
+char* rsFile::readFileAsZeroTerminatedString(long &lengthExludingZero) const
 {
   FILE *f = fopen(absolutePath.getRawString(), "rt");
   if( f == NULL )
@@ -90,7 +90,7 @@ char* File::readFileAsZeroTerminatedString(long &lengthExludingZero) const
 //-------------------------------------------------------------------------------------------------
 // writing:
 
-bool File::appendText(const rosic::rsString &text) const
+bool rsFile::appendText(const rosic::rsString &text) const
 {
   if( text.containsNonPrintableCharacters() )
     return false;
