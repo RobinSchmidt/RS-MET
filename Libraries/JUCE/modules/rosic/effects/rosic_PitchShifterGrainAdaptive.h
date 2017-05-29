@@ -1,10 +1,10 @@
 #ifndef rosic_PitchShifterGrainAdaptive_h
 #define rosic_PitchShifterGrainAdaptive_h
 
-// rosic-indcludes:
-#include "rosic_PitchShifter.h"
-#include "../analysis/rosic_PitchDetector.h"
-#include "../analysis/rosic_FormantPreserver.h"
+//// rosic-indcludes:
+//#include "rosic_PitchShifter.h"
+//#include "../analysis/rosic_PitchDetector.h"
+//#include "../analysis/rosic_FormantPreserver.h"
 
 namespace rosic
 {

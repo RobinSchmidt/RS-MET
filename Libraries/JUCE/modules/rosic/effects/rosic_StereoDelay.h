@@ -1,10 +1,10 @@
 #ifndef rosic_StereoDelay_h
 #define rosic_StereoDelay_h
 
-// rosic-indcludes:
-#include "../math/rosic_ElementaryFunctionsReal.h"
-#include "../delaylines/rosic_AllpassDiffusor.h"
-#include "../filters/rosic_LowpassHighpass.h"
+//// rosic-indcludes:
+//#include "../math/rosic_ElementaryFunctionsReal.h"
+//#include "../delaylines/rosic_AllpassDiffusor.h"
+//#include "../filters/rosic_LowpassHighpass.h"
 
 namespace rosic
 {

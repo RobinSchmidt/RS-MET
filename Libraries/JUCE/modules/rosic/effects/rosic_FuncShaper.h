@@ -1,11 +1,11 @@
 #ifndef rosic_FuncShaper_h
 #define rosic_FuncShaper_h
 
-// rosic-indcludes:
-#include "../basics/rosic_TabulatedFunction.h"
-#include "../filters/rosic_LowpassHighpass.h"
-#include "../filters/rosic_EllipticSubBandFilter.h"
-#include "../filters/rosic_OnePoleFilterStereo.h"
+//// rosic-indcludes:
+//#include "../basics/rosic_TabulatedFunction.h"
+//#include "../filters/rosic_LowpassHighpass.h"
+//#include "../filters/rosic_EllipticSubBandFilter.h"
+//#include "../filters/rosic_OnePoleFilterStereo.h"
 
 namespace rosic
 {

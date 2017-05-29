@@ -1,5 +1,5 @@
-#include "rosic_Harmonics.h"
-using namespace rosic;
+//#include "rosic_Harmonics.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

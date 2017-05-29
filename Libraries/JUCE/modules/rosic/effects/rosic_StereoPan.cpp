@@ -1,5 +1,5 @@
-#include "rosic_StereoPan.h"
-using namespace rosic;
+//#include "rosic_StereoPan.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

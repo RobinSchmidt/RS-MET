@@ -1,5 +1,5 @@
-#include "rosic_FuncShaper.h"
-using namespace rosic;
+//#include "rosic_FuncShaper.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

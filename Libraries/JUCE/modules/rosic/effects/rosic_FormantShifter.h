@@ -1,8 +1,8 @@
 #ifndef rosic_FormantShifter_h
 #define rosic_FormantShifter_h
 
-// rosic-indcludes:
-#include "../others/rosic_SpectralEnvelopeProcessor.h"
+//// rosic-indcludes:
+//#include "../others/rosic_SpectralEnvelopeProcessor.h"
 
 namespace rosic
 {

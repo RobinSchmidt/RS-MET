@@ -1,5 +1,5 @@
-#include "rosic_PhaseStereoizer.h"
-using namespace rosic;
+//#include "rosic_PhaseStereoizer.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

@@ -1,5 +1,5 @@
-#include "rosic_SingleSidebandModulator.h"
-using namespace rosic;
+//#include "rosic_SingleSidebandModulator.h"
+//using namespace rosic;
 
 //=================================================================================================
 // class SingleSidebandModulator:

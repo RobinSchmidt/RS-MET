@@ -1,5 +1,5 @@
-#include "rosic_FrequencyShifter.h"
-using namespace rosic;
+//#include "rosic_FrequencyShifter.h"
+//using namespace rosic;
 
 //=================================================================================================
 // class FreqShifterHalfbandFilter:

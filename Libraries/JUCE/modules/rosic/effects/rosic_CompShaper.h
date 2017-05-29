@@ -1,8 +1,8 @@
 #ifndef rosic_CompShaper_h
 #define rosic_CompShaper_h
 
-// rosic-indcludes:
-#include "../math/rosic_Interpolation.h"
+//// rosic-indcludes:
+//#include "../math/rosic_Interpolation.h"
 
 namespace rosic
 {

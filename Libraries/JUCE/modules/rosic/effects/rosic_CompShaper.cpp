@@ -1,5 +1,5 @@
-#include "rosic_CompShaper.h"
-using namespace rosic;
+//#include "rosic_CompShaper.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

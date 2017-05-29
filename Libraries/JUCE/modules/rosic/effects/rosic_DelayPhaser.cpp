@@ -1,5 +1,5 @@
-#include "rosic_DelayPhaser.h"
-using namespace rosic;
+//#include "rosic_DelayPhaser.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

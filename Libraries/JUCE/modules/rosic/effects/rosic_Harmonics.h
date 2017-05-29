@@ -1,9 +1,9 @@
 #ifndef rosic_Harmonics_h
 #define rosic_Harmonics_h
 
-// rosic-indcludes:
-#include "../filters/rosic_EllipticSubBandFilterDirectForm.h"
-#include "../filters/rosic_LowpassHighpass.h"
+//// rosic-indcludes:
+//#include "../filters/rosic_EllipticSubBandFilterDirectForm.h"
+//#include "../filters/rosic_LowpassHighpass.h"
 
 namespace rosic
 {

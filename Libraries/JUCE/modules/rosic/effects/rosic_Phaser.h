@@ -1,9 +1,9 @@
 #ifndef rosic_Phaser_h
 #define rosic_Phaser_h
 
-// rosic-indcludes:
-#include "rosic_ModulationEffect.h"
-#include "../filters/rosic_AllpassChain.h"
+//// rosic-indcludes:
+//#include "rosic_ModulationEffect.h"
+//#include "../filters/rosic_AllpassChain.h"
 
 namespace rosic
 {

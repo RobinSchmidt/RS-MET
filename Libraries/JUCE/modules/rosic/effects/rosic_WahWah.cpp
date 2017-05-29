@@ -1,5 +1,5 @@
-#include "rosic_WahWah.h"
-using namespace rosic;
+//#include "rosic_WahWah.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

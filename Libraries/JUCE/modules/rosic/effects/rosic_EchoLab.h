@@ -1,14 +1,14 @@
 #ifndef rosic_EchoLab_h
 #define rosic_EchoLab_h
 
-// includes from the STL:
-#include <vector>
-using std::vector;
-
-// rosic-indcludes:
-#include "../delaylines/rosic_EchoLabDelayLine.h"
-//#include "../delaylines/rosic_ModulatedDelayLine.h"
-#include "../infrastructure/rosic_MutexLock.h"
+//// includes from the STL:
+//#include <vector>
+//using std::vector;
+//
+//// rosic-indcludes:
+//#include "../delaylines/rosic_EchoLabDelayLine.h"
+////#include "../delaylines/rosic_ModulatedDelayLine.h"
+//#include "../infrastructure/rosic_MutexLock.h"
 
 namespace rosic
 {
@@ -256,7 +256,7 @@ namespace rosic
     objects. */
     INLINE void getSampleFrameStereoWithoutLocks(double *inOutL, double *inOutR);
 
-    vector<EchoLabDelayLine*> delayLines;   // vector of the delaylines (we use pointers to 
+    std::vector<EchoLabDelayLine*> delayLines;   // vector of the delaylines (we use pointers to 
       // elements because the delayline class does not have a public copy-constructor or 
       // assignement operator - we have to take care about creating and deleting the dlealyline
       // objects ourselves with new and delete

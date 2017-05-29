@@ -1,9 +1,9 @@
 #ifndef rosic_WahWah_h
 #define rosic_WahWah_h
 
-// rosic-indcludes:
-#include "rosic_ModulationEffect.h"
-#include "../filters/rosic_TwoPoleFilter.h"
+//// rosic-indcludes:
+//#include "rosic_ModulationEffect.h"
+//#include "../filters/rosic_TwoPoleFilter.h"
 
 namespace rosic
 {

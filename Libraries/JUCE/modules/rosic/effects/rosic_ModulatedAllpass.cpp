@@ -1,5 +1,5 @@
-#include "rosic_ModulatedAllpass.h"
-using namespace rosic;
+//#include "rosic_ModulatedAllpass.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

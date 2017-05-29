@@ -1,10 +1,10 @@
 #ifndef rosic_PitchShifter_h
 #define rosic_PitchShifter_h
 
-// rosic-indcludes:
-//#include "../math/rosic_RealFunctions.h"
-#include "../filters/rosic_EllipticSubbandFilter.h"
-#include "../basics/rosic_Interpolator.h"
+//// rosic-indcludes:
+////#include "../math/rosic_RealFunctions.h"
+//#include "../filters/rosic_EllipticSubbandFilter.h"
+//#include "../basics/rosic_Interpolator.h"
 
 
 namespace rosic

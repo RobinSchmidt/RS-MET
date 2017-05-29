@@ -1,5 +1,5 @@
-#include "rosic_WaveShaper.h"
-using namespace rosic;
+//#include "rosic_WaveShaper.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

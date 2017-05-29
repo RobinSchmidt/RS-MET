@@ -1,9 +1,9 @@
 #ifndef rosic_PhaseStereoizer_h
 #define rosic_PhaseStereoizer_h
 
-// rosic-indcludes:
-#include "../filters/rosic_LowpassHighpass.h"
-#include "../filters/rosic_QuadratureNetwork.h"
+//// rosic-indcludes:
+//#include "../filters/rosic_LowpassHighpass.h"
+//#include "../filters/rosic_QuadratureNetwork.h"
 
 namespace rosic
 {

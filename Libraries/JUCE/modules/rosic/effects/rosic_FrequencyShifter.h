@@ -1,12 +1,12 @@
 #ifndef rosic_FrequencyShifter_h
 #define rosic_FrequencyShifter_h
 
-// rosic-indcludes:
-#include "../filters/rosic_EngineersFilter.h"
-#include "../filters/rosic_DirectFormFilter.h"
-#include "../filters/rosic_NyquistBlocker.h"
-#include "../generators/rosic_SineOscillator.h"
-#include "../infrastructure/rosic_MutexLock.h"
+//// rosic-indcludes:
+//#include "../filters/rosic_EngineersFilter.h"
+//#include "../filters/rosic_DirectFormFilter.h"
+//#include "../filters/rosic_NyquistBlocker.h"
+//#include "../generators/rosic_SineOscillator.h"
+//#include "../infrastructure/rosic_MutexLock.h"
 
 namespace rosic
 {

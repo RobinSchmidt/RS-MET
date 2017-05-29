@@ -1,9 +1,9 @@
 #ifndef rosic_StereoPan_h
 #define rosic_StereoPan_h
 
-// rosic-indcludes:
-#include "../basics/rosic_ChannelMatrix2x2.h"
-#include "../math/rosic_ElementaryFunctionsReal.h"
+//// rosic-indcludes:
+//#include "../basics/rosic_ChannelMatrix2x2.h"
+//#include "../math/rosic_ElementaryFunctionsReal.h"
 
 namespace rosic
 {

@@ -1,12 +1,12 @@
 #ifndef rosic_SingleSidebandModulator_h
 #define rosic_SingleSidebandModulator_h
 
-// rosic-indcludes:
-#include "../filters/rosic_EllipticSubBandFilterDirectForm.h"
-#include "../filters/rosic_NyquistBlocker.h"
-#include "../filters/rosic_QuadratureNetwork.h"
-#include "../generators/rosic_SineOscillatorStereo.h"
-#include "../infrastructure/rosic_MutexLock.h"
+//// rosic-indcludes:
+//#include "../filters/rosic_EllipticSubBandFilterDirectForm.h"
+//#include "../filters/rosic_NyquistBlocker.h"
+//#include "../filters/rosic_QuadratureNetwork.h"
+//#include "../generators/rosic_SineOscillatorStereo.h"
+//#include "../infrastructure/rosic_MutexLock.h"
 
 namespace rosic
 {

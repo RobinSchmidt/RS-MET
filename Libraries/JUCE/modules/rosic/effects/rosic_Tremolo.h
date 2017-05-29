@@ -1,8 +1,8 @@
 #ifndef rosic_Tremolo_h
 #define rosic_Tremolo_h
 
-// rosic-indcludes:
-#include "rosic_ModulationEffect.h"
+//// rosic-indcludes:
+//#include "rosic_ModulationEffect.h"
 
 namespace rosic
 {

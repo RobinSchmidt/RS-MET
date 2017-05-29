@@ -1,9 +1,9 @@
 #ifndef rosic_DelayPhaser_h
 #define rosic_DelayPhaser_h
 
-// rosic-indcludes:
-#include "rosic_Phaser.h"
-#include "../delaylines/rosic_PingPongEcho.h"
+//// rosic-indcludes:
+//#include "rosic_Phaser.h"
+//#include "../delaylines/rosic_PingPongEcho.h"
 
 namespace rosic
 {

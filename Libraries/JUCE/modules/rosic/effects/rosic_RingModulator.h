@@ -1,11 +1,11 @@
 #ifndef rosic_RingModulator_h
 #define rosic_RingModulator_h
 
-// rosic-indcludes:
-#include "../filters/rosic_EllipticSubBandFilterDirectForm.h"
-#include "../filters/rosic_NyquistBlocker.h"
-#include "../generators/rosic_SineOscillator.h"
-#include "../infrastructure/rosic_MutexLock.h"
+//// rosic-indcludes:
+//#include "../filters/rosic_EllipticSubBandFilterDirectForm.h"
+//#include "../filters/rosic_NyquistBlocker.h"
+//#include "../generators/rosic_SineOscillator.h"
+//#include "../infrastructure/rosic_MutexLock.h"
 
 namespace rosic
 {

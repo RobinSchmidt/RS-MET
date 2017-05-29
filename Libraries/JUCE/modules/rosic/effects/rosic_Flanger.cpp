@@ -1,5 +1,5 @@
-#include "rosic_Flanger.h"
-using namespace rosic;
+//#include "rosic_Flanger.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

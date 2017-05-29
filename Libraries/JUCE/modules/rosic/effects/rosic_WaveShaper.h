@@ -1,9 +1,9 @@
 #ifndef rosic_WaveShaper_h
 #define rosic_WaveShaper_h
 
-// rosic-indcludes:
-#include "../filters/rosic_LowpassHighpass.h"
-#include "../filters/rosic_EllipticSubBandFilterDirectForm.h" 
+//// rosic-indcludes:
+//#include "../filters/rosic_LowpassHighpass.h"
+//#include "../filters/rosic_EllipticSubBandFilterDirectForm.h" 
 
 namespace rosic
 {

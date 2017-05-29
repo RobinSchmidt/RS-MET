@@ -1,10 +1,10 @@
 #ifndef rosic_Noisifier_h
 #define rosic_Noisifier_h
 
-// rosic-indcludes:
-#include "rosic_ModulationEffect.h"
-#include "../generators/rosic_NoiseGenerator.h"
-#include "../analysis/rosic_EnvelopeFollower.h"
+//// rosic-indcludes:
+//#include "rosic_ModulationEffect.h"
+//#include "../generators/rosic_NoiseGenerator.h"
+//#include "../analysis/rosic_EnvelopeFollower.h"
 
 namespace rosic
 {

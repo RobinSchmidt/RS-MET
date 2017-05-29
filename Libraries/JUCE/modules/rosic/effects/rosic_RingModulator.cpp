@@ -1,5 +1,5 @@
-#include "rosic_RingModulator.h"
-using namespace rosic;
+//#include "rosic_RingModulator.h"
+//using namespace rosic;
 
 //=================================================================================================
 // class RingModulator:

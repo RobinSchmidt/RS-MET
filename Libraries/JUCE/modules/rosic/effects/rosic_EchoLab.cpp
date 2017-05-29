@@ -1,5 +1,5 @@
-#include "rosic_EchoLab.h"
-using namespace rosic;
+//#include "rosic_EchoLab.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
