@@ -193,7 +193,6 @@
 #include "others/rosic_RandomNumberGenerator01.h"
 #include "others/rosic_RandomNumberGenerator02.h"
 #include "others/rosic_RoutingMatrix.h"
-//#include "others/rosic_RandomNumberGenerator01.h" //??
 #include "others/rosic_SlewRateLimiter.h"
 #include "others/rosic_SlewRateLimiterLinear.h"
 //#include "others/rosic_SlewRateLimiterOld.h"
@@ -246,6 +245,12 @@
 #include "rendering/rosic_WaveformRenderer.h"
 #include "rendering/rosic_NonRealtimeProcesses.h"
 
+// some more complex generators/modulators that need includes from rendering:
+#include "generators/rosic_WaveTable.h"              // needs WaveformRenderer
+#include "modulators/rosic_LowFrequencyOscillator.h" // needs WaveTable
+#include "generators/rosic_VectorSamplePlayer.h"     // needs LowFrequencyOscillator
+#include "modulators/rosic_Modulator.h"              // needs LowFrequencyOscillator
+
 // delaylines:
 #include "delaylines/rosic_BasicIntegerDelayLine.h"
 #include "delaylines/rosic_IntegerDelayLine.h"
@@ -256,7 +261,6 @@
 #include "delaylines/rosic_FractionalDelayLineStereo.h"
 #include "delaylines/rosic_ModulatedDelayLine.h"
 #include "delaylines/rosic_PingPongEcho.h"
-
 
 // analysis:
 #include "analysis/rosic_CyclicAutoCorrelator.h"
@@ -283,13 +287,6 @@
 #include "dynamics/rosic_NoiseGate.h"
 #include "dynamics/rosic_SoftKneeCompressor.h"
 #include "dynamics/rosic_SoftKneeExpander.h"
-
-
-#include "generators/rosic_WaveTable.h"              // needs WaveformRenderer
-#include "modulators/rosic_LowFrequencyOscillator.h" // needs WaveTable
-
-
-
 
 // effects:
 #include "effects/rosic_FeedbackDelayNetwork.h"
@@ -341,6 +338,10 @@
 #include "infrastructure/rosic_PolyphonicinstrumentVoice.h"
 #include "infrastructure/rosic_Polyphonicinstrument.h"
 
+// higher level generators/effects that neeed includes from infrastructure:
+#include "effects/rosic_Quadrifex.h"           // needs EffectModules
+#include "generators/rosic_Quadrigen.h"        // needs infrastructure/*Modules
+
 // sequencing:
 #include "sequencing/rosic_AcidPattern.h"
 #include "sequencing/rosic_AcidSequencer.h"
@@ -348,13 +349,6 @@
 // scripting:
 #include "scripting/rosic_DspScriptInterpreter.h"
 #include "scripting/rosic_DspWorkbench.h"
-
-// some more complex generators that need includes from modulators and rendering:
-#include "effects/rosic_Quadrifex.h"                 // needs EffectModules
-#include "generators/rosic_Quadrigen.h"              // needs BreakpointModulator, infrastructure/*Modules
-#include "generators/rosic_VectorSamplePlayer.h"     // needs LowFrequencyOscillator
-#include "modulators/rosic_Modulator.h"              // needs LowFrequencyOscillator
-
 
 // instruments:
 #include "instruments/rosic_AciDevil.h"
