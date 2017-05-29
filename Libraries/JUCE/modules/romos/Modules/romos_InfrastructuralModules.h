@@ -201,7 +201,7 @@ namespace romos
 
     int assignedController;
 
-    vector<double> snapshotValues;
+    std::vector<double> snapshotValues;
 
   };
 

@@ -26,12 +26,12 @@ void rotes::testMathFunctions()
 
   //Plotter::plotFunction(besselI0, 0.0, 20.0);
 
-  Array<Complex> roots;
+  rsArray<Complex> roots;
   roots.appendElement(Complex( 2, 0));
   roots.appendElement(Complex( 3, 0));
   roots.appendElement(Complex(-1, 0));
 
-  Array<Complex> coeffs = getPolynomialCoefficientsFromRoots(roots);
+  rsArray<Complex> coeffs = getPolynomialCoefficientsFromRoots(roots);
 
   Complex coeffsDbg[8];
   for(int i=0; i<8; i++)

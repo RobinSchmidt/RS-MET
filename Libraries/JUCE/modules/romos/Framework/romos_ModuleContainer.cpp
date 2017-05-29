@@ -1260,7 +1260,7 @@ void ModuleContainer::sortChildModuleArray()
   // retrieve some stuff before sorting which is needed to re-connect the container's pins in case the order of I/O modules changes:
   std::vector<Module*> oldInputModules  = getChildModulesWithType(ModuleTypeRegistry::AUDIO_INPUT);
   std::vector<Module*> oldOutputModules = getChildModulesWithType(ModuleTypeRegistry::AUDIO_OUTPUT);
-  std::vector<vector<Module*> > oldTargetModuleArrays; // one array for each output pin
+  std::vector<std::vector<Module*> > oldTargetModuleArrays; // one array for each output pin
   for(unsigned int outIndex = 0; outIndex < getNumOutputPins(); outIndex++)
     rosic::appendElement(oldTargetModuleArrays, getConnectedTargetModulesOfPin(outIndex));
 
@@ -1287,7 +1287,7 @@ void ModuleContainer::sortChildModuleArray()
     unsigned int oldIndex = rosic::findElement(oldOutputModules, newOutputModules[newIndex]);
     if(oldIndex != newIndex)
     {
-      vector<Module*> oldTargetsOfPin = oldTargetModuleArrays[oldIndex];
+      std::vector<Module*> oldTargetsOfPin = oldTargetModuleArrays[oldIndex];
       for(unsigned int targetIndex = 0; targetIndex < oldTargetsOfPin.size(); targetIndex++)
       {
         Module *targetModule = oldTargetsOfPin[targetIndex];

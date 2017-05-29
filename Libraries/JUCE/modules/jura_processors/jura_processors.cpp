@@ -9,6 +9,8 @@
 
 #include "jura_processors.h"
 
+using namespace rosic;
+
 namespace jura
 {
 

@@ -16,7 +16,7 @@ namespace rosic
   */
 
   template<class ElementType>
-  class Array
+  class rsArray
   {
 
   public:
@@ -27,7 +27,7 @@ namespace rosic
     /** Constructor. If initialSize is nonzero, memory will be reserved to hold just that number of
     elements and the array will filled with default elements as they are constructed by the default
     constructor of the element class. */
-    Array(const int initialSize = 0)
+    rsArray(const int initialSize = 0)
     {
       elements     = NULL;
       numUsed      = 0;
@@ -42,7 +42,7 @@ namespace rosic
     }
 
     /** Copy-constructor - creates a deep copy of the other array. */
-    Array(const Array<ElementType>& other)
+    rsArray(const rsArray<ElementType>& other)
     {
       elements     = new ElementType[other.numUsed];
       numUsed      = other.numUsed;
@@ -53,7 +53,7 @@ namespace rosic
     }
 
     /** Destructor. */
-    ~Array()
+    ~rsArray()
     {
       if( elements != NULL )
         delete[] elements;
@@ -98,7 +98,7 @@ namespace rosic
     }
 
     /** Appends another array to this one. */
-    void appendArray(const Array<ElementType> &arrayToAppend)
+    void appendArray(const rsArray<ElementType> &arrayToAppend)
     {
       ensureAllocatedSize(numUsed + arrayToAppend.numUsed);
       for(int i=0; i<arrayToAppend.numUsed; i++)
@@ -213,7 +213,7 @@ namespace rosic
     { return elements[index]; }
 
     /** Assignment operator - creates a deep copy of this array and returns it. */
-    Array& operator= (const Array& other)
+    rsArray& operator= (const rsArray& other)
     {
       // catch self-assignment:
       if( this == &other )

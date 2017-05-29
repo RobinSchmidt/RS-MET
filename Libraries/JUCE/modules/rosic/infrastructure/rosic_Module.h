@@ -241,7 +241,7 @@ namespace rosic
     MutexLock mutex;
 
     //std::vector<ModulationConnection> connections;
-    Array<ModulationConnection> connections;
+    rsArray<ModulationConnection> connections;
 
   };
 
@@ -319,7 +319,7 @@ namespace rosic
 
   protected:
 
-    Array<ModulatableParameter> modulatableParameters;
+    rsArray<ModulatableParameter> modulatableParameters;
 
   };
 
