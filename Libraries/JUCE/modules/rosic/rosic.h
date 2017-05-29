@@ -284,6 +284,13 @@
 #include "dynamics/rosic_SoftKneeCompressor.h"
 #include "dynamics/rosic_SoftKneeExpander.h"
 
+
+#include "generators/rosic_WaveTable.h"              // needs WaveformRenderer
+#include "modulators/rosic_LowFrequencyOscillator.h" // needs WaveTable
+
+
+
+
 // effects:
 #include "effects/rosic_FeedbackDelayNetwork.h"
 #include "effects/rosic_FeedbackDelayNetwork8.h"
@@ -343,12 +350,11 @@
 #include "scripting/rosic_DspWorkbench.h"
 
 // some more complex generators that need includes from modulators and rendering:
-#include "generators/rosic_WaveTable.h"              // needs WaveformRenderer
-#include "modulators/rosic_LowFrequencyOscillator.h" // needs WaveTable
 #include "effects/rosic_Quadrifex.h"                 // needs EffectModules
 #include "generators/rosic_Quadrigen.h"              // needs BreakpointModulator, infrastructure/*Modules
 #include "generators/rosic_VectorSamplePlayer.h"     // needs LowFrequencyOscillator
 #include "modulators/rosic_Modulator.h"              // needs LowFrequencyOscillator
+
 
 // instruments:
 #include "instruments/rosic_AciDevil.h"

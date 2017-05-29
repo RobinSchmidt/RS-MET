@@ -1,8 +1,8 @@
 #ifndef rosic_ModulationEffect_h
 #define rosic_ModulationEffect_h
 
-// rosic-indcludes:
-#include "../modulators/rosic_LowFrequencyOscillator.h"
+//// rosic-indcludes:
+//#include "../modulators/rosic_LowFrequencyOscillator.h"
 
 namespace rosic
 {

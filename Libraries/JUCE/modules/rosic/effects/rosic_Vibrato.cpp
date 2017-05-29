@@ -1,5 +1,5 @@
-#include "rosic_Vibrato.h"
-using namespace rosic;
+//#include "rosic_Vibrato.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

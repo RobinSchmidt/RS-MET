@@ -1,8 +1,8 @@
 #ifndef rosic_CombResonatorStereo_h
 #define rosic_CombResonatorStereo_h
 
-// rosic-indcludes:
-#include "../filters/rosic_CombResonator.h"
+//// rosic-indcludes:
+//#include "../filters/rosic_CombResonator.h"
 
 namespace rosic
 {

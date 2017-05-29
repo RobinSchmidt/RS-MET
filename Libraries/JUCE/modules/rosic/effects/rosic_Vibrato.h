@@ -1,9 +1,9 @@
 #ifndef rosic_Vibrato_h
 #define rosic_Vibrato_h
 
-// rosic-indcludes:
-#include "rosic_ModulationEffect.h"
-#include "../delaylines/rosic_DelayLineStereo.h"
+//// rosic-indcludes:
+//#include "rosic_ModulationEffect.h"
+//#include "../delaylines/rosic_DelayLineStereo.h"
 
 namespace rosic
 {

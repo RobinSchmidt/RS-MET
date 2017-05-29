@@ -1,8 +1,8 @@
 #ifndef rosic_AudioToMidi_h
 #define rosic_AudioToMidi_h
 
-// rosic-indcludes:
-#include "../analysis/rosic_PitchDetector.h"
+//// rosic-indcludes:
+//#include "../analysis/rosic_PitchDetector.h"
 
 namespace rosic
 {

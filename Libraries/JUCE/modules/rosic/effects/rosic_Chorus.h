@@ -1,9 +1,9 @@
 #ifndef rosic_Chorus_h
 #define rosic_Chorus_h
 
-// rosic-indcludes:
-#include "rosic_Vibrato.h"
-//#include "../filters/rosic_OnePoleFilter.h"
+//// rosic-indcludes:
+//#include "rosic_Vibrato.h"
+////#include "../filters/rosic_OnePoleFilter.h"
 
 namespace rosic
 {

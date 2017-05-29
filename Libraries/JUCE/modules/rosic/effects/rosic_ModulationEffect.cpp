@@ -1,5 +1,5 @@
-#include "rosic_ModulationEffect.h"
-using namespace rosic;
+//#include "rosic_ModulationEffect.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

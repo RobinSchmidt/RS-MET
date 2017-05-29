@@ -1,5 +1,5 @@
-#include "rosic_AudioToMidi.h"
-using namespace rosic;
+//#include "rosic_AudioToMidi.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
