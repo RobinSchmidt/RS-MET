@@ -1,9 +1,9 @@
 #ifndef rosic_ModulatorModules_h
 #define rosic_ModulatorModules_h
 
-// rosic-indcludes:
-#include "rosic_Module.h"
-#include "../modulators/rosic_BreakpointModulator.h"
+//// rosic-indcludes:
+//#include "rosic_Module.h"
+//#include "../modulators/rosic_BreakpointModulator.h"
 
 namespace rosic
 {

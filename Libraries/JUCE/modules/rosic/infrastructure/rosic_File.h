@@ -1,7 +1,7 @@
 #ifndef rosic_File_h
 #define rosic_File_h
 
-#include "../datastructures/rosic_String.h"
+//#include "../datastructures/rosic_String.h"
 
 namespace rosic
 {

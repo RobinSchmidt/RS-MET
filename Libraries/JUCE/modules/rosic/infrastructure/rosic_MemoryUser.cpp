@@ -1,5 +1,5 @@
-#include "rosic_MemoryUser.h"
-using namespace rosic;
+//#include "rosic_MemoryUser.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

@@ -1,9 +1,9 @@
 #ifndef rosic_GeneratorModules_h
 #define rosic_GeneratorModules_h
 
-// rosic-indcludes:
-#include "rosic_Module.h"
-#include "../generators/rosic_OscillatorStereo.h"
+//// rosic-indcludes:
+//#include "rosic_Module.h"
+//#include "../generators/rosic_OscillatorStereo.h"
 
 namespace rosic
 {

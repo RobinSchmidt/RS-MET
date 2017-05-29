@@ -1,5 +1,5 @@
-#include "rosic_GeneratorModules.h"
-using namespace rosic;
+//#include "rosic_GeneratorModules.h"
+//using namespace rosic;
 
 
 

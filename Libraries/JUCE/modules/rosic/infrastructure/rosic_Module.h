@@ -1,9 +1,9 @@
 #ifndef rosic_Module_h
 #define rosic_Module_h
 
-// rosic-indcludes:
-#include "../datastructures/rosic_Array.h"
-#include "rosic_MutexLock.h"
+//// rosic-indcludes:
+//#include "../datastructures/rosic_Array.h"
+//#include "rosic_MutexLock.h"
 
 namespace rosic
 {

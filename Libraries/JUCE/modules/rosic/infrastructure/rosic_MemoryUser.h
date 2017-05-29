@@ -1,8 +1,8 @@
 #ifndef rosic_MemoryUser_h
 #define rosic_MemoryUser_h
 
-// rosic-indcludes:
-#include "../basics/GlobalFunctions.h"
+//// rosic-indcludes:
+//#include "../basics/GlobalFunctions.h"
 
 namespace rosic
 {

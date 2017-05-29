@@ -1,5 +1,5 @@
-#include "rosic_MidiNoteEvent.h"
-using namespace rosic;
+//#include "rosic_MidiNoteEvent.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

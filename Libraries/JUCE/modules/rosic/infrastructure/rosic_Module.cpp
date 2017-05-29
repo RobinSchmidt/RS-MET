@@ -1,5 +1,5 @@
-#include "rosic_Module.h"
-using namespace rosic;
+//#include "rosic_Module.h"
+//using namespace rosic;
 
 //=================================================================================================
 // class ModulatableParameter:
