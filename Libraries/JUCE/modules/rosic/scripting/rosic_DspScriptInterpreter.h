@@ -1,7 +1,7 @@
 #ifndef rosic_DspScriptInterpreter_h
 #define rosic_DspScriptInterpreter_h
 
-#include "rosic_ExpressionEvaluator.h"
+//#include "rosic_ExpressionEvaluator.h"
 
 namespace rosic
 {

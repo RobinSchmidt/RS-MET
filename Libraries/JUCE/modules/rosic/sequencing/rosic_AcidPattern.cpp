@@ -1,5 +1,5 @@
-#include "rosic_AcidPattern.h"
-using namespace rosic;
+//#include "rosic_AcidPattern.h"
+//using namespace rosic;
 
 AcidPattern::AcidPattern()
 {

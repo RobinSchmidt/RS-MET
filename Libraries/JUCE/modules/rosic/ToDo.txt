@@ -1,6 +1,6 @@
 -centralize #include directives for rosic header files (done)
 
--get rid of per-file includes (next: seq)
+-get rid of per-file includes (next: inst)
 
 -use "rs" prefix for all rosic classes
  (maybe later also rapt and jura)
@@ -14,16 +14,7 @@
  -organize into: unit tests, experiments (with plots), performance tests, demos
 
 
-
-
-
 -remove redundant envelope implementations
-
-take out some stuff that could raise copyright issues:
--some matrix-stuff - perhaps look into the book, rename variables, add comments
--references to MatLab prototypes in Orfanidis filters
--get rid of that angelscript stuff - maybe replace with lua script
-
 
 -implement the frequency warping stuff (maybe make a class WarpedBiquad) and z-plane frequency transformations
 -work out magnitude-matched s-to-z transforms -> use them in EngineersFilter and EasyQ

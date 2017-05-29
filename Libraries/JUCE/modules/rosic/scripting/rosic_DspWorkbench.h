@@ -1,17 +1,17 @@
 #ifndef rosic_DspWorkbench_h
 #define rosic_DspWorkbench_h
 
-// rosic-indcludes:
-//#include "../infrastructure/rosic_PresetRememberer.h"
-//#include "../infrastructure/rosic_MutexLock.h"
-#include "../basics/rosic_TabulatedFunction.h"
-#include "../modulators/rosic_BreakpointModulator.h"
-#include "../filters/rosic_EllipticSubBandFilter.h"
-#include "../filters/rosic_MultiModeFilter.h"
-#include "rosic_DspScriptInterpreter.h" 
-//#include "../math/rosic_ExpressionEvaluator.h"
-//#include "../datastructures/rosic_String.h"
-#include <string>
+//// rosic-indcludes:
+////#include "../infrastructure/rosic_PresetRememberer.h"
+////#include "../infrastructure/rosic_MutexLock.h"
+//#include "../basics/rosic_TabulatedFunction.h"
+//#include "../modulators/rosic_BreakpointModulator.h"
+//#include "../filters/rosic_EllipticSubBandFilter.h"
+//#include "../filters/rosic_MultiModeFilter.h"
+//#include "rosic_DspScriptInterpreter.h" 
+////#include "../math/rosic_ExpressionEvaluator.h"
+////#include "../datastructures/rosic_String.h"
+//#include <string>
 
 namespace rosic
 {

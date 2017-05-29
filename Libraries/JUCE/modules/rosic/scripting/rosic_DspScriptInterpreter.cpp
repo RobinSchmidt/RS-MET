@@ -1,6 +1,6 @@
-#include "rosic_DspScriptInterpreter.h"
+//#include "rosic_DspScriptInterpreter.h"
 #include "rosic_DspModules.h"
-using namespace rosic;
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

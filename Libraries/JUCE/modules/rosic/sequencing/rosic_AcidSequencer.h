@@ -1,8 +1,8 @@
 #ifndef rosic_AcidSequencer_h
 #define rosic_AcidSequencer_h
 
-// rosic-indcludes:
-#include "rosic_AcidPattern.h"
+//// rosic-indcludes:
+//#include "rosic_AcidPattern.h"
 
 namespace rosic
 {

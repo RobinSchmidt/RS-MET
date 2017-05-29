@@ -1,5 +1,5 @@
-#include "rosic_DspWorkbench.h"
-using namespace rosic;
+//#include "rosic_DspWorkbench.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
