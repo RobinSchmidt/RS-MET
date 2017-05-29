@@ -573,11 +573,11 @@ protected:
 class ReverbAudioModule : public AudioModule
 {
 public:
-  ReverbAudioModule(CriticalSection *newPlugInLock, rosic::Reverb *newReverbToWrap);
+  ReverbAudioModule(CriticalSection *newPlugInLock, rosic::rsReverb *newReverbToWrap);
   juce_UseDebuggingNewOperator;
 protected:
   virtual void createStaticParameters();
-  rosic::Reverb *wrappedReverb;
+  rosic::rsReverb *wrappedReverb;
 };
 
 class ReverbModuleEditor : public AudioModuleEditor

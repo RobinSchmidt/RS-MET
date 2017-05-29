@@ -671,8 +671,8 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
     } break;
   case rosic::Quadrifex::REVERB: 
     {
-      rosic::ReverbModule *core = 
-        static_cast<rosic::ReverbModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
+      rosic::rsReverbModule *core = 
+        static_cast<rosic::rsReverbModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::ReverbAudioModule *audioModule = new jura::ReverbAudioModule(lock, core);
       audioModule->setModuleName(juce::String(("Reverb")) + juce::String(slotIndex+1));
       audioModule->setStateFromXml(*reverbStates[slotIndex], juce::String::empty, true);

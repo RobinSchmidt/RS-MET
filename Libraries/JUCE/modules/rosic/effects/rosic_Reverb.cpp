@@ -4,7 +4,7 @@
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-Reverb::Reverb(int delayMemoryInSamplesToAllocate)
+rsReverb::rsReverb(int delayMemoryInSamplesToAllocate)
 {
   maxDelayInSamples = delayMemoryInSamplesToAllocate / numDelayLines;
   for(int d=0; d<numDelayLines; d++)
@@ -37,7 +37,7 @@ Reverb::Reverb(int delayMemoryInSamplesToAllocate)
   reset();         
 }
 
-Reverb::~Reverb()
+rsReverb::~rsReverb()
 {
   for(int d=0; d<numDelayLines; d++)
     delete[] delayLines[d];
@@ -46,7 +46,7 @@ Reverb::~Reverb()
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // parameter settings:
 
-void Reverb::setSampleRate(double newSampleRate)
+void rsReverb::setSampleRate(double newSampleRate)
 {
   if( newSampleRate > 0.0 && newSampleRate != sampleRate )
   {
@@ -67,7 +67,7 @@ void Reverb::setSampleRate(double newSampleRate)
   }
 }
 
-void Reverb::setLowReverbTimeScale(double newLowReverbTimeScale)
+void rsReverb::setLowReverbTimeScale(double newLowReverbTimeScale)
 {
   if( newLowReverbTimeScale > 0.0 && newLowReverbTimeScale != lowReverbTimeScale )
   {
@@ -76,7 +76,7 @@ void Reverb::setLowReverbTimeScale(double newLowReverbTimeScale)
   }
 }
 
-void Reverb::setLowCrossoverFreq(double newLowCrossoverFreq)
+void rsReverb::setLowCrossoverFreq(double newLowCrossoverFreq)
 {
   if(  newLowCrossoverFreq >= 20.0 && newLowCrossoverFreq <= 20000.0 
     && newLowCrossoverFreq != lowCrossoverFreq )
@@ -86,7 +86,7 @@ void Reverb::setLowCrossoverFreq(double newLowCrossoverFreq)
   }
 }
 
-void Reverb::setMidReverbTime(double newMidReverbTime)
+void rsReverb::setMidReverbTime(double newMidReverbTime)
 {
   if( newMidReverbTime > 0.0 && newMidReverbTime != midReverbTime )
   {
@@ -95,7 +95,7 @@ void Reverb::setMidReverbTime(double newMidReverbTime)
   }
 }
 
-void Reverb::setHighReverbTimeScale(double newHighReverbTimeScale)
+void rsReverb::setHighReverbTimeScale(double newHighReverbTimeScale)
 {
   if( newHighReverbTimeScale > 0.0 && newHighReverbTimeScale != highReverbTimeScale )
   {
@@ -104,7 +104,7 @@ void Reverb::setHighReverbTimeScale(double newHighReverbTimeScale)
   }
 }
 
-void Reverb::setHighCrossoverFreq(double newHighCrossoverFreq)
+void rsReverb::setHighCrossoverFreq(double newHighCrossoverFreq)
 {
   if(  newHighCrossoverFreq >= 20.0 && newHighCrossoverFreq <= 20000.0 
     && newHighCrossoverFreq != highCrossoverFreq )
@@ -114,29 +114,29 @@ void Reverb::setHighCrossoverFreq(double newHighCrossoverFreq)
   }
 }
 
-void Reverb::setWetLowpassCutoff(double newCutoff)
+void rsReverb::setWetLowpassCutoff(double newCutoff)
 {
   wetFilterL.setLowpassCutoff(newCutoff);
   wetFilterR.setLowpassCutoff(newCutoff);
 }
 
-void Reverb::setWetHighpassCutoff(double newCutoff)
+void rsReverb::setWetHighpassCutoff(double newCutoff)
 {
   wetFilterL.setHighpassCutoff(newCutoff);
   wetFilterR.setHighpassCutoff(newCutoff);
 }
 
-void Reverb::setStereoSwapSwitch(bool newStereoSwapSwitch)
+void rsReverb::setStereoSwapSwitch(bool newStereoSwapSwitch)
 {
   stereoSwapSwitch = newStereoSwapSwitch;
 }
 
-void Reverb::setWetPinkingSwitch(bool newWetPinkingSwitch)
+void rsReverb::setWetPinkingSwitch(bool newWetPinkingSwitch)
 {
   wetPinking = newWetPinkingSwitch;
 }
 
-void Reverb::setReferenceDelayTime(double newReferenceDelayTime)
+void rsReverb::setReferenceDelayTime(double newReferenceDelayTime)
 {
   if(  newReferenceDelayTime >= 1.0 && newReferenceDelayTime <= 100.0 
     && newReferenceDelayTime != referenceDelayTime )
@@ -149,7 +149,7 @@ void Reverb::setReferenceDelayTime(double newReferenceDelayTime)
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // others:
 
-void Reverb::assignRelativeDelayTimes()
+void rsReverb::assignRelativeDelayTimes()
 {
   relativeDelayTimes[ 0] = 1.0;    
   double dMax            = 2.4;
@@ -171,7 +171,7 @@ void Reverb::assignRelativeDelayTimes()
   adjustDelayTimes();
 }
 
-void Reverb::setupOutputVector()
+void rsReverb::setupOutputVector()
 {
   outputVectorL[ 0] = +1.0;
   outputVectorL[ 1] = +0.5;
@@ -216,14 +216,14 @@ void Reverb::setupOutputVector()
   }
 }
 
-void Reverb::adjustReadPointer(int index)
+void rsReverb::adjustReadPointer(int index)
 {
   tapOuts[index] = tapIn - delaysInSamples[index];
   if( tapOuts[index] < 0 )
     tapOuts[index] += maxDelayInSamples;
 }
 
-void Reverb::adjustDelayTimes()
+void rsReverb::adjustDelayTimes()
 {
   int tmpDelays[numDelayLines];
   bool usePrimes = true;
@@ -247,7 +247,7 @@ void Reverb::adjustDelayTimes()
   reset();
 }
 
-void Reverb::updateDampingAndCorrectionFilters()
+void rsReverb::updateDampingAndCorrectionFilters()
 {
   double T_l, T_lb, T_m, T_hb, T_h;    // desired reverb-times at 5 frequencies
   double g_l_abs, g_m_abs, g_h_abs;    // absolute gain-factors for the 3 bands
@@ -307,7 +307,7 @@ void Reverb::updateDampingAndCorrectionFilters()
   correctionFilterR.setHighCrossoverFreq(highCrossoverFreq);
 }
 
-void Reverb::reset()
+void rsReverb::reset()
 {
   correctionFilterL.reset();
   correctionFilterR.reset();

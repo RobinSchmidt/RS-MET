@@ -23,7 +23,7 @@ namespace rosic
 
   */
 
-  class Reverb
+  class rsReverb
   {
 
   public:
@@ -33,10 +33,10 @@ namespace rosic
 
     /** Constructor - will allocate the given amount of memory (in samples) in total for all 16 delaylines. A value of 1048576 will support 
     maximum delayline lengths of more than 340 ms with samplerates up to 192 kHz. */
-    Reverb(int delayMemoryInSamplesToAllocate = 1048576);   
+    rsReverb(int delayMemoryInSamplesToAllocate = 1048576);   
 
     /** Destructor. */
-    ~Reverb();  
+    ~rsReverb();  
 
     //-------------------------------------------------------------------------------------------------------------------------------------
     // parameter settings:
@@ -173,7 +173,7 @@ namespace rosic
   //---------------------------------------------------------------------------------------------------------------------------------------
   // inlined functions:
 
-  INLINE void Reverb::getSampleFrameStereo(double* inOutL, double* inOutR)
+  INLINE void rsReverb::getSampleFrameStereo(double* inOutL, double* inOutR)
   {
     double tmpL = preDelayLineL.getSample(*inOutL);
     double tmpR = preDelayLineR.getSample(*inOutR);
@@ -222,7 +222,7 @@ namespace rosic
     *inOutR = dryVol*(*inOutR) + wetVol*wetR;
   }
 
-  INLINE void Reverb::applyTheFeedbackMatrix()
+  INLINE void rsReverb::applyTheFeedbackMatrix()
   {
     // apply an 16x16 Hadamard-matrix by means of the fast Hadamard transform:
 

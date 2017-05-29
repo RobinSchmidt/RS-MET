@@ -279,13 +279,13 @@ namespace rosic
     virtual void reset() { PitchShifterGrainAdaptive::reset(); }
   };
 
-  class ReverbModule : public Module, public Reverb
+  class rsReverbModule : public Module, public rsReverb
   {
   public:
-    virtual void setSampleRate(double newSampleRate) { Reverb::setSampleRate(newSampleRate); }
+    virtual void setSampleRate(double newSampleRate) { rsReverb::setSampleRate(newSampleRate); }
     virtual void processSampleFrame(double *inOutL, double *inOutR) 
-    { Reverb::getSampleFrameStereo(inOutL, inOutR);         }
-    virtual void reset()       { Reverb::reset();                 }
+    { rsReverb::getSampleFrameStereo(inOutL, inOutR);         }
+    virtual void reset()       { rsReverb::reset();                 }
   };
 
   class RingModulatorModule : public Module, public RingModulatorStereo

@@ -3190,7 +3190,7 @@ void PingPongEchoModuleEditor::resized()
 //-------------------------------------------------------------------------------------------------
 // Reverb:
 
-ReverbAudioModule::ReverbAudioModule(CriticalSection *newPlugInLock, rosic::Reverb *newReverbToWrap)
+ReverbAudioModule::ReverbAudioModule(CriticalSection *newPlugInLock, rosic::rsReverb *newReverbToWrap)
  : AudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
@@ -3211,43 +3211,43 @@ void ReverbAudioModule::createStaticParameters()
 
   p = new AutomatableParameter(lock, "DryWetRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
   addObservedParameter(p); 
-  p->setValueChangeCallback(wrappedReverb, &rosic::Reverb::setDryWetRatio);
+  p->setValueChangeCallback(wrappedReverb, &rosic::rsReverb::setDryWetRatio);
 
   p = new AutomatableParameter(lock, "FirstEcho", 10.0, 200.0, 0.1, 50.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
-  p->setValueChangeCallback(wrappedReverb, &rosic::Reverb::setReferenceDelayTime);
+  p->setValueChangeCallback(wrappedReverb, &rosic::rsReverb::setReferenceDelayTime);
 
   p = new AutomatableParameter(lock, "PreDelay", 0.0, 250.0, 1.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p); 
-  p->setValueChangeCallback(wrappedReverb, &rosic::Reverb::setPreDelay);
+  p->setValueChangeCallback(wrappedReverb, &rosic::rsReverb::setPreDelay);
 
   p = new AutomatableParameter(lock, "DecayTime", 0.1, 10.0, 0.01, 3.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
-  p->setValueChangeCallback(wrappedReverb, &rosic::Reverb::setMidReverbTime);
+  p->setValueChangeCallback(wrappedReverb, &rosic::rsReverb::setMidReverbTime);
 
   p = new AutomatableParameter(lock, "HighDecayScale", 0.1, 10.0, 0.01, 0.3, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
-  p->setValueChangeCallback(wrappedReverb, &rosic::Reverb::setHighReverbTimeScale);
+  p->setValueChangeCallback(wrappedReverb, &rosic::rsReverb::setHighReverbTimeScale);
 
   p = new AutomatableParameter(lock, "LowDecayScale", 0.1, 10.0, 0.01, 1.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
-  p->setValueChangeCallback(wrappedReverb, &rosic::Reverb::setLowReverbTimeScale);
+  p->setValueChangeCallback(wrappedReverb, &rosic::rsReverb::setLowReverbTimeScale);
 
   p = new AutomatableParameter(lock, "HighCrossoverFrequency", 20.0, 20000.0, 0.0, 4000.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
-  p->setValueChangeCallback(wrappedReverb, &rosic::Reverb::setHighCrossoverFreq);
+  p->setValueChangeCallback(wrappedReverb, &rosic::rsReverb::setHighCrossoverFreq);
 
   p = new AutomatableParameter(lock, "LowCrossoverFrequency", 20.0, 20000.0, 0.0, 250.0, Parameter::EXPONENTIAL);
   addObservedParameter(p); 
-  p->setValueChangeCallback(wrappedReverb, &rosic::Reverb::setLowCrossoverFreq);
+  p->setValueChangeCallback(wrappedReverb, &rosic::rsReverb::setLowCrossoverFreq);
 
   p = new AutomatableParameter(lock, "Pinking", 0.0, 1.0, 1.0, 1.0, Parameter::BOOLEAN);
   addObservedParameter(p);
-  p->setValueChangeCallback(wrappedReverb, &rosic::Reverb::setWetPinkingSwitch);
+  p->setValueChangeCallback(wrappedReverb, &rosic::rsReverb::setWetPinkingSwitch);
 
   p = new AutomatableParameter(lock, "StereoSwap", 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
   addObservedParameter(p);
-  p->setValueChangeCallback(wrappedReverb, &rosic::Reverb::setStereoSwapSwitch);
+  p->setValueChangeCallback(wrappedReverb, &rosic::rsReverb::setStereoSwapSwitch);
 
   for(int i=0; i < (int) parameters.size(); i++)
     parameters[i]->resetToDefaultValue(true, true);
