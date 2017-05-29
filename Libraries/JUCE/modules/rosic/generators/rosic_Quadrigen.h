@@ -1,11 +1,11 @@
 #ifndef rosic_Quadrigen_h
 #define rosic_Quadrigen_h
 
-// rosic-indcludes:
-#include "../infrastructure/rosic_GeneratorModules.h"
-#include "../infrastructure/rosic_EffectModules.h"
-#include "../others/rosic_RoutingMatrix.h" // maybe move to basics
-#include "../modulators/rosic_BreakpointModulator.h"
+//// rosic-indcludes:
+//#include "../infrastructure/rosic_GeneratorModules.h"
+//#include "../infrastructure/rosic_EffectModules.h"
+//#include "../others/rosic_RoutingMatrix.h" // maybe move to basics
+//#include "../modulators/rosic_BreakpointModulator.h"
 
 namespace rosic
 {

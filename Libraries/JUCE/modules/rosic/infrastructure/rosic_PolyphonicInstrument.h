@@ -1,8 +1,8 @@
 #ifndef rosic_PolyphonicInstrument_h
 #define rosic_PolyphonicInstrument_h
 
-// rosic-indcludes:
-#include "rosic_PolyphonicInstrumentVoice.h"
+//// rosic-indcludes:
+//#include "rosic_PolyphonicInstrumentVoice.h"
 
 namespace rosic
 {

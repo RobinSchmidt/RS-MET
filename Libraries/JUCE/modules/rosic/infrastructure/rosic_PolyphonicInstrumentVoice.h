@@ -1,15 +1,15 @@
 #ifndef rosic_PolyphonicInstrumentVoice_h
 #define rosic_PolyphonicInstrumentVoice_h
 
-// includes from the STL:
-#include <iterator>
-#include <list>
-using std::list;   // for the noteList
-
-// rosic-indcludes:
-#include "../others/rosic_TuningTable.h"
-#include "rosic_MidiNoteEvent.h"
-#include "rosic_MutexLock.h"
+//// includes from the STL:
+//#include <iterator>
+//#include <list>
+//using std::list;   // for the noteList
+//
+//// rosic-indcludes:
+//#include "../others/rosic_TuningTable.h"
+//#include "rosic_MidiNoteEvent.h"
+//#include "rosic_MutexLock.h"
 
 namespace rosic
 {
@@ -243,7 +243,7 @@ namespace rosic
 
     /** A list of MIDI note events - we keep track of more than one event in order to implement glides which can go back and forth 
     (a typical feature of monophonic synthesizers). */
-    list<MidiNoteEvent> noteList;
+    std::list<MidiNoteEvent> noteList;
 
     /** A mutex-lock to avoid threading problems with accesees to the noteList. */
     MutexLock mutex;

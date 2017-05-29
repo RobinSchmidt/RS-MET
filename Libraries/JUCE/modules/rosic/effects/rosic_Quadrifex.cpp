@@ -1,5 +1,5 @@
-#include "rosic_Quadrifex.h"
-using namespace rosic;
+//#include "rosic_Quadrifex.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

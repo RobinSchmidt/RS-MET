@@ -1,5 +1,5 @@
-#include "rosic_Quadrigen.h"
-using namespace rosic;
+//#include "rosic_Quadrigen.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
