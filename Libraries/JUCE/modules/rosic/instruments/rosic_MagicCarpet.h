@@ -1,16 +1,16 @@
 #ifndef rosic_MagicCarpet_h
 #define rosic_MagicCarpet_h
 
-// rosic-indcludes:
-//#include "../infrastructure/rosic_PresetRememberer.h"
-#include "../infrastructure/rosic_PolyphonicInstrument.h"
-//#include "../modulators/rosic_LowFrequencyOscillator.h"
-#include "rosic_MagicCarpetVoice.h"
-#include "../filters/rosic_EllipticSubBandFilter.h"
-//#include "../filters/rosic_Equalizer.h"
-#include "../filters/rosic_EqualizerStereo.h"
-//#include "../others/rosic_VectorMixer.h"
-#include "../effects/rosic_DelayPhaser.h"
+//// rosic-indcludes:
+////#include "../infrastructure/rosic_PresetRememberer.h"
+//#include "../infrastructure/rosic_PolyphonicInstrument.h"
+////#include "../modulators/rosic_LowFrequencyOscillator.h"
+//#include "rosic_MagicCarpetVoice.h"
+//#include "../filters/rosic_EllipticSubBandFilter.h"
+////#include "../filters/rosic_Equalizer.h"
+//#include "../filters/rosic_EqualizerStereo.h"
+////#include "../others/rosic_VectorMixer.h"
+//#include "../effects/rosic_DelayPhaser.h"
 
 namespace rosic
 {

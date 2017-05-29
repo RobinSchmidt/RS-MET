@@ -1,5 +1,5 @@
-#include "rosic_KeyShot.h"
-using namespace rosic;
+//#include "rosic_KeyShot.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

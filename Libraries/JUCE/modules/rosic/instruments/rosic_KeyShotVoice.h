@@ -1,12 +1,12 @@
 #ifndef rosic_KeyShotVoice_h
 #define rosic_KeyShotVoice_h
 
-// rosic-indcludes:
-#include "../infrastructure/rosic_PolyphonicInstrumentVoice.h"
-//#include "rosic_KeyShotOscSection.h"
-#include "../generators/rosic_SamplePlayer.h"
-#include "../filters/rosic_MultiModeFilter.h"
-#include "../modulators/rosic_BreakpointModulator.h"
+//// rosic-indcludes:
+//#include "../infrastructure/rosic_PolyphonicInstrumentVoice.h"
+////#include "rosic_KeyShotOscSection.h"
+//#include "../generators/rosic_SamplePlayer.h"
+//#include "../filters/rosic_MultiModeFilter.h"
+//#include "../modulators/rosic_BreakpointModulator.h"
 
 namespace rosic
 {

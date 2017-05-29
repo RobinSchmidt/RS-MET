@@ -1,11 +1,11 @@
 #ifndef rosic_MagicCarpetVoice_h
 #define rosic_MagicCarpetVoice_h
 
-// rosic-indcludes:
-#include "../infrastructure/rosic_PolyphonicInstrumentVoice.h"
-#include "../generators/rosic_VectorSamplePlayer.h"
-#include "../filters/rosic_FourPoleFilter.h"
-#include "../modulators/rosic_EnvelopeGenerator.h"
+//// rosic-indcludes:
+//#include "../infrastructure/rosic_PolyphonicInstrumentVoice.h"
+//#include "../generators/rosic_VectorSamplePlayer.h"
+//#include "../filters/rosic_FourPoleFilter.h"
+//#include "../modulators/rosic_EnvelopeGenerator.h"
 
 namespace rosic
 {

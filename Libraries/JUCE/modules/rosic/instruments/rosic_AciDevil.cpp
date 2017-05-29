@@ -1,5 +1,5 @@
-#include "rosic_AciDevil.h"
-using namespace rosic;
+//#include "rosic_AciDevil.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

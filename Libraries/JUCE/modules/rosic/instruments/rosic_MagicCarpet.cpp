@@ -1,5 +1,5 @@
-#include "rosic_MagicCarpet.h"
-using namespace rosic;
+//#include "rosic_MagicCarpet.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

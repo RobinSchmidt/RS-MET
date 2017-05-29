@@ -1,17 +1,17 @@
 #ifndef rosic_Open303_h
 #define rosic_Open303_h
 
-#include "../infrastructure/rosic_MidiNoteEvent.h"
-#include "../generators/rosic_BlendOscillator.h"
-#include "../filters/rosic_TeeBeeFilter.h"
-#include "../modulators/rosic_AnalogEnvelope.h"
-#include "../modulators/rosic_DecayEnvelope.h"
-#include "../filters/rosic_LeakyIntegrator.h"
-#include "../filters/rosic_EllipticQuarterBandFilter.h"
-#include "../sequencing/rosic_AcidSequencer.h"
-
-#include <list>
-using namespace std; // for the noteList
+//#include "../infrastructure/rosic_MidiNoteEvent.h"
+//#include "../generators/rosic_BlendOscillator.h"
+//#include "../filters/rosic_TeeBeeFilter.h"
+//#include "../modulators/rosic_AnalogEnvelope.h"
+//#include "../modulators/rosic_DecayEnvelope.h"
+//#include "../filters/rosic_LeakyIntegrator.h"
+//#include "../filters/rosic_EllipticQuarterBandFilter.h"
+//#include "../sequencing/rosic_AcidSequencer.h"
+//
+//#include <list>
+//using namespace std; // for the noteList
 
 namespace rosic
 {
@@ -270,7 +270,7 @@ namespace rosic
     bool   slideToNextNote;  // indicate that we need to slide to the next note in sequencer mode
     bool   idle;             // flag to indicate that we have currently nothing to do in getSample
 
-    list<MidiNoteEvent> noteList;
+    std::list<MidiNoteEvent> noteList;
 
   };
 

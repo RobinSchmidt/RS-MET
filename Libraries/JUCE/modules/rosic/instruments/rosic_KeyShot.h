@@ -1,11 +1,11 @@
 #ifndef rosic_KeyShot_h
 #define rosic_KeyShot_h
 
-// rosic-indcludes:
-//#include "../infrastructure/rosic_PresetRememberer.h"
-#include "../infrastructure/rosic_PolyphonicInstrument.h"
-#include "rosic_KeyShotVoice.h"
-#include "../filters/rosic_EllipticSubBandFilter.h"
+//// rosic-indcludes:
+////#include "../infrastructure/rosic_PresetRememberer.h"
+//#include "../infrastructure/rosic_PolyphonicInstrument.h"
+//#include "rosic_KeyShotVoice.h"
+//#include "../filters/rosic_EllipticSubBandFilter.h"
 
 namespace rosic
 {

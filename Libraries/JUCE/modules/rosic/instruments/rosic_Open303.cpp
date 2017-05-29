@@ -1,5 +1,5 @@
-#include "rosic_Open303.h"
-using namespace rosic;
+//#include "rosic_Open303.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
