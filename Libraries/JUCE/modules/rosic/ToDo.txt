@@ -1,9 +1,10 @@
--centralize #include directives for rosic header files (done)
 
--get rid of per-file includes (next: inst)
-
--use "rs" prefix for all rosic classes
- (maybe later also rapt and jura)
+-use "rs" prefix for all rosic classes and functions (start with those where there's a name-clash with
+ juce (String, File, Biquad, Reverb, Array, AudioBuffer?, Expression?, Primes?, Sampler/Voice?,
+ PerformanceCounter)  (maybe later also rapt and jura)
+-maybe do this in a project where "rosic" is the onyl juce-module (then we can use: "replace all"
+ inside the whole project or solution - verify if other projects still compile after each 
+ replacement)
 
 -clean up coding style in rosic
 -get rid of "using namespace" in headers
