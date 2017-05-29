@@ -181,7 +181,7 @@ void LibertyAudioModule::createAndSetupEmbeddedModulesFromXml(const XmlElement& 
     for(int i=0; i<xmlState.getNumChildElements(); i++)
     {
       XmlElement* childState = xmlState.getChildElement(i);
-      rosic::String moduleTypeName = juceToRosic(childState->getTagName());
+      rosic::rsString moduleTypeName = juceToRosic(childState->getTagName());
       int typeIdentifier = romos::ModuleTypeRegistry::getSoleInstance()
         ->getModuleIdentifierFromTypeString(moduleTypeName);
 
@@ -194,7 +194,7 @@ void LibertyAudioModule::createAndSetupEmbeddedModulesFromXml(const XmlElement& 
         }
         else
         {
-          rosic::String moduleName = juceToRosic(childState
+          rosic::rsString moduleName = juceToRosic(childState
             ->getStringAttribute(juce::String("Name")));
           int x = childState->getIntAttribute(juce::String("X"), 0);
           int y = childState->getIntAttribute(juce::String("Y"), 0);
@@ -441,8 +441,8 @@ void ModulePropertiesEditor::widgetChanged(RWidget *widgetThatHasChanged)
     LibertyModuleWidget *lmw = dynamic_cast<LibertyModuleWidget*> (widgetThatHasChanged);
     if( lmw != NULL )
     {
-      rosic::String name  = juceToRosic(lmw->getWidgetParameterName());
-      rosic::String value = juceToRosic(widgetThatHasChanged->getStateAsString());
+      rosic::rsString name  = juceToRosic(lmw->getWidgetParameterName());
+      rosic::rsString value = juceToRosic(widgetThatHasChanged->getStateAsString());
       m->setParameter(name, value);
     }
   }
@@ -483,7 +483,7 @@ void ModulePropertiesEditor::updateWidgetsFromModuleState()
 
       if( lmw != NULL )
       {
-        rosic::String name  = juceToRosic(lmw->getWidgetParameterName());
+        rosic::rsString name  = juceToRosic(lmw->getWidgetParameterName());
         juce::String  value = rosicToJuce(m->getParameterValue(name));
         widgets[i]->setStateFromString(value, false);
       }
@@ -1817,7 +1817,7 @@ void ModularBlockDiagramPanel::textChanged(RTextEntryField *rTextEntryFieldThatH
   if( selectedModules.size() == 1 )
   {
     char* newName = toZeroTerminatedString(nameEntryField->getText());
-    selectedModules[0]->setModuleName(rosic::String(newName));
+    selectedModules[0]->setModuleName(rosic::rsString(newName));
     nameEntryField->setVisible(false);
     grabKeyboardFocus(); // to move it away from the entry field
     delete newName;
@@ -2042,7 +2042,7 @@ void ModularBlockDiagramPanel::insertModule(int moduleIdentifer, int xInPinDista
 {
   ScopedLock scopedLock(*(getInterfaceMediator()->plugInLock));
   getInterfaceMediator()->getContainerShownInDiagram()->addChildModule(moduleIdentifer, 
-    rosic::String(),                                               // will fall back to a default name based on the module-type
+    rosic::rsString(),                                               // will fall back to a default name based on the module-type
     xInPinDistances, yInPinDistances, 
     getInterfaceMediator()->getContainerShownInDiagram()->isPolyphonic()  // use same polyphony as the outlying container 
     );

@@ -59,19 +59,19 @@ namespace romos
 
     /** Adds an audio input to this module. A name for the pin (and module) can optionally be passed - if empty, the function will assign a
     default name. The return value is a pointer to the added module. */
-    virtual Module* addAudioInputModule(rosic::String name = rosic::String(), int x = 1, int y = 1,
+    virtual Module* addAudioInputModule(rosic::rsString name = rosic::rsString(), int x = 1, int y = 1,
                                         bool sortModuleArrayAfterInsertion = true);
 
     /** Adds an audio input to this module. A name for the pin can optionally be passed. */
-    //void addAudioInput(const rosic::String &pinName = rosic::String());
+    //void addAudioInput(const rosic::rsString &pinName = rosic::rsString());
 
     /** Adds an audio output to this module. A name for the pin (and module) can optionally be passed - if empty, the function will assign a
     default name. The return value is a pointer to the added module. */
-    virtual Module* addAudioOutputModule(rosic::String name = rosic::String(), int x = 1, int y = 1,
+    virtual Module* addAudioOutputModule(rosic::rsString name = rosic::rsString(), int x = 1, int y = 1,
                                          bool sortModuleArrayAfterInsertion = true);
 
 
-    //virtual Module* addChildModule(NULL, ModuleTypeRegistry::ADD,      rosic::String(""),  10,  2, false);
+    //virtual Module* addChildModule(NULL, ModuleTypeRegistry::ADD,      rosic::rsString(""),  10,  2, false);
 
 
 
@@ -84,7 +84,7 @@ namespace romos
 
     /** Adds a child- or I/O module of the kind given by the identifier (@see romos::moduleIdentifiers) at the given coordinates.
     @see addChildModule(Module*, bool, bool). The return value is a pointer to the added module. */
-    virtual Module* addChildModule(int moduleIdentifier, rosic::String name = rosic::String(), int x = 0, int y = 0,
+    virtual Module* addChildModule(int moduleIdentifier, rosic::rsString name = rosic::rsString(), int x = 0, int y = 0,
                                    bool polyphonic = false, bool sortChildModulesAfterInsertion = true);
 
     /** Deletes a child-module from this one. */
@@ -248,7 +248,7 @@ namespace romos
     }
 
     /** Returns the name of one of our pins. Overriden from Module in order to retrun the name of one of our I/O modules. */
-    virtual rosic::String getPinName(int kind, int direction, int pinIndex) const;
+    virtual rosic::rsString getPinName(int kind, int direction, int pinIndex) const;
 
 
     /** Assuming that the passed module is one of our input- or output modules, the function assigns the passed reference variables to the
@@ -365,7 +365,7 @@ namespace romos
     virtual void updateHasDelayedConnectionsFlag();
 
     /** Constructor. */
-    ModuleContainer(const rosic::String &name = rosic::String(), int x = 0, int y = 0, bool polyphonic = false);
+    ModuleContainer(const rosic::rsString &name = rosic::rsString(), int x = 0, int y = 0, bool polyphonic = false);
 
     /** Destructor. Deletes all sub modules as well. */
     virtual ~ModuleContainer();

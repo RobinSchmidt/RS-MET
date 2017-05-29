@@ -143,7 +143,7 @@ void writeInputSequencesToFile()
   int numVoices   = rmin(3,  maxNumVoices);
   int numChannels = rmin(4,  maxNumIns);
 
-  rosic::String s;
+  rosic::rsString s;
   char tmp[8];
 
   for(int n = 0; n < numFrames; n++)
@@ -153,12 +153,12 @@ void writeInputSequencesToFile()
       for(int c = 0; c < numChannels; c++)
       {
         sprintf(tmp, "%+6.3f", x[v][c][n]);
-        s += rosic::String(tmp) + rosic::String(" ");
-        //s += rosic::String(x[v][c][n]) + rosic::String(" ");
+        s += rosic::rsString(tmp) + rosic::rsString(" ");
+        //s += rosic::rsString(x[v][c][n]) + rosic::rsString(" ");
       }
-      s += rosic::String("  ");
+      s += rosic::rsString("  ");
     }
-    s += rosic::String("\n");
+    s += rosic::rsString("\n");
   }
 
   FILE *file = fopen("c:\\tmp\\InputSequences.txt", "w");

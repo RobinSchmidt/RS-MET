@@ -5,8 +5,8 @@ namespace romos
 
   void ClipperModule::initialize()
   { 
-    initInputPins( 3, rosic::String("In"), rosic::String("Min"), rosic::String("Max"));
-    initOutputPins(1, rosic::String("Out"));
+    initInputPins( 3, rosic::rsString("In"), rosic::rsString("Min"), rosic::rsString("Max"));
+    initOutputPins(1, rosic::rsString("Out"));
   }
   INLINE void ClipperModule::process(Module *module, double *in1, double *in2, double *in3, double *out, int voiceIndex)
   {
@@ -17,8 +17,8 @@ namespace romos
 
   void SinCosModule::initialize()
   { 
-    initInputPins( 1, rosic::String("In"));
-    initOutputPins(2, rosic::String("Sin"), rosic::String("Cos"));
+    initInputPins( 1, rosic::rsString("In"));
+    initOutputPins(2, rosic::rsString("Sin"), rosic::rsString("Cos"));
   }
   INLINE void SinCosModule::process(Module *module, double *in, double *out, int voiceIndex)
   {

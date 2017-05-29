@@ -24,9 +24,9 @@ bool PerformanceTest::runTest()
   return false;
 }
 
-rosic::String PerformanceTest::runTestsAndGetReport()
+rosic::rsString PerformanceTest::runTestsAndGetReport()
 {
-  rosic::String report = name;
+  rosic::rsString report = name;
   report.padToLength(nameLength, padCharacter);
 
   // \todo set inputs to random values....
@@ -59,7 +59,7 @@ void PerformanceTest::setTestPolyphonic(bool shouldBePolyphonic)
     moduleToTest->setPolyphonic(shouldBePolyphonic);
 }
 
-rosic::String PerformanceTest::runFrameWiseTestAndGetReport()
+rosic::rsString PerformanceTest::runFrameWiseTestAndGetReport()
 {
   double minCyclesPerFrame = pow(10.0, 100.0);
   for(int runIndex = 1; runIndex <= numRuns; runIndex++)
@@ -76,12 +76,12 @@ rosic::String PerformanceTest::runFrameWiseTestAndGetReport()
     minCyclesPerFrame /= voiceAllocator.getNumPlayingVoices();
   char charBuffer[32];
   sprintf(charBuffer, "%.2f", minCyclesPerFrame);
-  rosic::String cyclesString = rosic::String(charBuffer);
+  rosic::rsString cyclesString = rosic::rsString(charBuffer);
   cyclesString.prePadToLength(numberLength, padCharacter);
   return cyclesString;
 }
 
-rosic::String PerformanceTest::runBlockWiseTestAndGetReport()
+rosic::rsString PerformanceTest::runBlockWiseTestAndGetReport()
 {
   int blockSize       = processingStatus.getBufferSize();
   int numBlocksPerRun = numFramesPerRun / blockSize;
@@ -103,7 +103,7 @@ rosic::String PerformanceTest::runBlockWiseTestAndGetReport()
     minCyclesPerFrame /= voiceAllocator.getNumPlayingVoices();
   char charBuffer[32];
   sprintf(charBuffer, "%.2f", minCyclesPerFrame);
-  rosic::String cyclesString = rosic::String(charBuffer);
+  rosic::rsString cyclesString = rosic::rsString(charBuffer);
   cyclesString.prePadToLength(numberLength, padCharacter);  
   return cyclesString;
 }

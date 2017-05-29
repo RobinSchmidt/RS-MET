@@ -19,14 +19,14 @@ WaveformBuffer::~WaveformBuffer()
 //-------------------------------------------------------------------------------------------------
 // setup:
 
-void WaveformBuffer::setWaveform(double* newWaveForm, int newLength, String newName)
+void WaveformBuffer::setWaveform(double* newWaveForm, int newLength, rsString newName)
 {
   allocateMemory(newLength);
   copyBuffer(newWaveForm, buffer, numSamples);
   name = newName;
 }
 
-void WaveformBuffer::setWaveform(float* newWaveForm, int newLength, String newName)
+void WaveformBuffer::setWaveform(float* newWaveForm, int newLength, rsString newName)
 {
   double* tmpBuffer = new double[newLength];
   for(int i=0; i<newLength; i++)
@@ -35,7 +35,7 @@ void WaveformBuffer::setWaveform(float* newWaveForm, int newLength, String newNa
   delete[] tmpBuffer;
 }
     
-void WaveformBuffer::initWaveform(int newLength, String newName)
+void WaveformBuffer::initWaveform(int newLength, rsString newName)
 {
   allocateMemory(newLength);
   fillWithZeros(buffer, numSamples);

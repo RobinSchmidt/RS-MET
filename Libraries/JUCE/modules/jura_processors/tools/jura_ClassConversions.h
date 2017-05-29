@@ -3,14 +3,14 @@
 
 /** This file contains functions to convert between corresponding datatypes in different class 
 libraries. 
-todo: maybe get rid of rosic::String - use std::string instead
+todo: maybe get rid of rosic::rsString - use std::string instead
 */
 
-/** Converts a rosic::String into a juce::String. */
-juce::String rosicToJuce(const rosic::String &stringToConvert);
+/** Converts a rosic::rsString into a juce::String. */
+juce::String rosicToJuce(const rosic::rsString &stringToConvert);
 
-/** Converts a juce::String into a rosic::String. */
-rosic::String juceToRosic(const juce::String &stringToConvert);
+/** Converts a juce::String into a rosic::rsString. */
+rosic::rsString juceToRosic(const juce::String &stringToConvert);
 
 
 #endif

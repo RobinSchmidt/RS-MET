@@ -9,8 +9,8 @@ namespace romos
 
   void FirstOrderLowpass::initialize()
   { 
-    initInputPins( 2, rosic::String("In"), rosic::String("Cutoff"));
-    initOutputPins(1, rosic::String("Out"));
+    initInputPins( 2, rosic::rsString("In"), rosic::rsString("Cutoff"));
+    initOutputPins(1, rosic::rsString("Out"));
   }
   INLINE void FirstOrderLowpass::process(Module *module, double *in1, double *in2, double *out, int voiceIndex)
   {
@@ -64,8 +64,8 @@ namespace romos
 
   void FirstOrderFilter::initialize()
   { 
-    initInputPins( 4, rosic::String("In"),  rosic::String("b0"), rosic::String("b1"), rosic::String("a1"));
-    initOutputPins(1, rosic::String("Out"));
+    initInputPins( 4, rosic::rsString("In"),  rosic::rsString("b0"), rosic::rsString("b1"), rosic::rsString("a1"));
+    initOutputPins(1, rosic::rsString("Out"));
   }
   INLINE void FirstOrderFilter::process(Module *module, double *in1, double *in2, double *in3, double *in4, 
                                         double *out, int voiceIndex)
@@ -98,9 +98,9 @@ namespace romos
 
   void Biquad::initialize()
   { 
-    initInputPins(6, rosic::String("In"), rosic::String("b0"), rosic::String("b1"), rosic::String("b2"), 
-                     rosic::String("a1"), rosic::String("a2"));
-    initOutputPins(1, rosic::String("Out"));
+    initInputPins(6, rosic::rsString("In"), rosic::rsString("b0"), rosic::rsString("b1"), rosic::rsString("b2"), 
+                     rosic::rsString("a1"), rosic::rsString("a2"));
+    initOutputPins(1, rosic::rsString("Out"));
   }
   INLINE void Biquad::process(Module *module, double *in1, double *in2, double *in3, double *in4, double *in5,
                                         double *in6, double *out, int voiceIndex)
@@ -135,9 +135,9 @@ namespace romos
 
   void BiquadDesigner::initialize()
   { 
-    initInputPins( 3, rosic::String("Freq"), rosic::String("Q"), rosic::String("Gain"));
-    initOutputPins(5, rosic::String("b0"), rosic::String("b1"), rosic::String("b2"), rosic::String("a1"), rosic::String("a2") );
-    addParameter(rosic::String("Mode"), "Bypass");
+    initInputPins( 3, rosic::rsString("Freq"), rosic::rsString("Q"), rosic::rsString("Gain"));
+    initOutputPins(5, rosic::rsString("b0"), rosic::rsString("b1"), rosic::rsString("b2"), rosic::rsString("a1"), rosic::rsString("a2") );
+    addParameter(rosic::rsString("Mode"), "Bypass");
     //parameterChanged(0); // nah - it calls resetStateForAllVoices() - which is not allowed before memory is allocated by the factory
     mode = BYPASS;
   }
@@ -191,7 +191,7 @@ namespace romos
   }
   void BiquadDesigner::parameterChanged(int index)
   {
-    rosic::String m = parameters[0].value;
+    rosic::rsString m = parameters[0].value;
 
     if(      m == "Lowpass, 6 dB/oct, BLT"     )  mode = LOWPASS_6_BILINEAR;      
     else if( m == "Highpass, 6 dB/oct, BLT"    )  mode = HIGHPASS_6_BILINEAR;
@@ -243,8 +243,8 @@ namespace romos
 
   void LadderFilter::initialize()
   { 
-    initInputPins( 4, rosic::String("In"), rosic::String("Freq"), rosic::String("Reso"), rosic::String("AutoGain"));
-    initOutputPins(1, rosic::String("Out"));
+    initInputPins( 4, rosic::rsString("In"), rosic::rsString("Freq"), rosic::rsString("Reso"), rosic::rsString("AutoGain"));
+    initOutputPins(1, rosic::rsString("Out"));
     addParameter("Mode",           "Lowpass, 24 dB/oct");
     addParameter("SaturationMode", "No Saturation");
     filterMode     = LP_24;
@@ -323,7 +323,7 @@ namespace romos
   }
   void LadderFilter::parameterChanged(int index)
   {
-    rosic::String m = parameters[0].value;
+    rosic::rsString m = parameters[0].value;
     if(      m == "Lowpass, 6 dB/oct"     )  filterMode = LP_6;      
     else if( m == "Lowpass, 12 dB/oct"    )  filterMode = LP_12;      
     else if( m == "Lowpass, 18 dB/oct"    )  filterMode = LP_18;  

@@ -140,13 +140,13 @@ namespace romos
     // inquiry:
 
     /** Given a module's numeric type identifier, this function returns the corresponding type-name string. */
-    rosic::String getModuleTypeStringFromIdentifier(int identifier);
+    rosic::rsString getModuleTypeStringFromIdentifier(int identifier);
  
     // \todo getModuleTypeDescription(int identifier) - maybe store these in a "OneWayAssociator" template class
 
 
     /** Given a module's type-name as string, this function returns the corresponding numeric identifier. */
-    int getModuleIdentifierFromTypeString(rosic::String typeString);
+    int getModuleIdentifierFromTypeString(rosic::rsString typeString);
 
     /** Returns true when the passed identifier indicates an input- or output module (audio or event). */
     static bool isIdentifierInputOrOutput(int typeIdentifier);
@@ -186,7 +186,7 @@ namespace romos
     ModuleTypeRegistry::~ModuleTypeRegistry();
 
 
-    rosic::KeyValueMap<int, rosic::String> identifierNameMap;
+    rosic::KeyValueMap<int, rosic::rsString> identifierNameMap;
 
   private:
 
@@ -195,7 +195,7 @@ namespace romos
   };
 
   /** Shorthand function for romos::ModuleTypeRegistry::getSoleInstance()->getModuleIdentifierFromTypeString(typeString); */
-  int getTypeId(rosic::String typeString);
+  int getTypeId(rosic::rsString typeString);
 
   /*
   Module-Types to do:

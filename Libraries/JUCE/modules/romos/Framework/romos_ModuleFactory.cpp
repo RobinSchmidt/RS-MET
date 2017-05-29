@@ -4,7 +4,7 @@ using namespace romos;
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // module creation:
     
-romos::Module* ModuleFactory::createModule(int typeIdentifier, rosic::String name, int x, int y, bool polyphonic)
+romos::Module* ModuleFactory::createModule(int typeIdentifier, rosic::rsString name, int x, int y, bool polyphonic)
 {
   // use default-names, if the name parameter is empty:
   if( name.isEmpty() )

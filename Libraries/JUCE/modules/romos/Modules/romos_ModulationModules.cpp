@@ -9,9 +9,9 @@ namespace romos
 
   void EnvelopeADSR::initialize()
   { 
-    initInputPins( 7, rosic::String("Att"), rosic::String("AtSh"), rosic::String("Dec"), rosic::String("DcSh"), rosic::String("Sus"), 
-                      rosic::String("Rel"), rosic::String("RlSh"));
-    initOutputPins(1, rosic::String("Env"));
+    initInputPins( 7, rosic::rsString("Att"), rosic::rsString("AtSh"), rosic::rsString("Dec"), rosic::rsString("DcSh"), rosic::rsString("Sus"), 
+                      rosic::rsString("Rel"), rosic::rsString("RlSh"));
+    initOutputPins(1, rosic::rsString("Env"));
 
     // wrap this into a function setPinDefaultValue(int pinIndex, double newDefaultValue):
     //inputPins[4].setDefaultValue(1.0); // otherwise, the TimeScale pin is 0 when disconnected leading to an all zero output

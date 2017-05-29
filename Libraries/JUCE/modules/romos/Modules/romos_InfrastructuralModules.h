@@ -140,8 +140,8 @@ namespace romos
 
     virtual void parameterChanged(int index);
 
-    // re-overriden to fall back to Module::setModuleName(rosic::String(value)); - we don't want to set the value here
-    virtual void setModuleName(const rosic::String& newName);
+    // re-overriden to fall back to Module::setModuleName(rosic::rsString(value)); - we don't want to set the value here
+    virtual void setModuleName(const rosic::rsString& newName);
 
     /** Sets the minimum- and maximum-values and the mapping function simultaneously. We have this function because min, max and mapping
     must satisfy certain contraints (for example min <= max, min > 0 for exponential mapping, etc.) and the ParameterModule class may 

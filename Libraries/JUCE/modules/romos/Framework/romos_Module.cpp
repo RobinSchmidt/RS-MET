@@ -59,7 +59,7 @@ void AudioInputPinData::copyDataFrom(const AudioInputPinData &other)
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-romos::Module::Module(const rosic::String &_name, int _x, int _y, bool _polyphonic)
+romos::Module::Module(const rosic::rsString &_name, int _x, int _y, bool _polyphonic)
 {
   parentModule         = NULL;
   processFrame         = NULL;
@@ -89,7 +89,7 @@ void romos::Module::cleanUp()
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // setup::
 
-void romos::Module::setModuleName(const String& newName)
+void romos::Module::setModuleName(const rsString& newName)
 {
   // \todo this function seems to be called twice when entering a new name - find out why, fix it
   if( name != newName )

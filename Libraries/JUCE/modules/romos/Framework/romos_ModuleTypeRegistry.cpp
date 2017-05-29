@@ -19,17 +19,17 @@ void ModuleTypeRegistry::deleteSoleInstance()
   }
 }
  
-rosic::String ModuleTypeRegistry::getModuleTypeStringFromIdentifier(int identifier)
+rosic::rsString ModuleTypeRegistry::getModuleTypeStringFromIdentifier(int identifier)
 {
   bool wasFound;
-  rosic::String result = identifierNameMap.getValueForKey(identifier, wasFound);
+  rosic::rsString result = identifierNameMap.getValueForKey(identifier, wasFound);
   if( wasFound )
     return result;
   else
-    return rosic::String("UnknownModuleType");
+    return rosic::rsString("UnknownModuleType");
 }
 
-int ModuleTypeRegistry::getModuleIdentifierFromTypeString(rosic::String typeString)
+int ModuleTypeRegistry::getModuleIdentifierFromTypeString(rosic::rsString typeString)
 {
   bool wasFound;
   int result = identifierNameMap.getKeyForValue(typeString, wasFound);
@@ -85,99 +85,99 @@ bool ModuleTypeRegistry::hasModuleTypeEditor(int typeCode)
 ModuleTypeRegistry::ModuleTypeRegistry()
 {
   // Infrastructural:
-  identifierNameMap.insertKeyValuePair(CONTAINER,                 rosic::String("Container"));
-  identifierNameMap.insertKeyValuePair(TOP_LEVEL_MODULE,          rosic::String("TopLevelModule"));
-  identifierNameMap.insertKeyValuePair(AUDIO_INPUT,               rosic::String("AudioInput"));
-  identifierNameMap.insertKeyValuePair(AUDIO_OUTPUT,              rosic::String("AudioOutput"));
-  identifierNameMap.insertKeyValuePair(EVENT_INPUT,               rosic::String("EventInput"));
-  identifierNameMap.insertKeyValuePair(EVENT_OUTPUT,              rosic::String("EventOutput"));
-  identifierNameMap.insertKeyValuePair(PARAMETER,                 rosic::String("Parameter"));
-  identifierNameMap.insertKeyValuePair(SYSTEM_SAMPLE_RATE,        rosic::String("SystemSampleRate"));
+  identifierNameMap.insertKeyValuePair(CONTAINER,                 rosic::rsString("Container"));
+  identifierNameMap.insertKeyValuePair(TOP_LEVEL_MODULE,          rosic::rsString("TopLevelModule"));
+  identifierNameMap.insertKeyValuePair(AUDIO_INPUT,               rosic::rsString("AudioInput"));
+  identifierNameMap.insertKeyValuePair(AUDIO_OUTPUT,              rosic::rsString("AudioOutput"));
+  identifierNameMap.insertKeyValuePair(EVENT_INPUT,               rosic::rsString("EventInput"));
+  identifierNameMap.insertKeyValuePair(EVENT_OUTPUT,              rosic::rsString("EventOutput"));
+  identifierNameMap.insertKeyValuePair(PARAMETER,                 rosic::rsString("Parameter"));
+  identifierNameMap.insertKeyValuePair(SYSTEM_SAMPLE_RATE,        rosic::rsString("SystemSampleRate"));
 
 
-  identifierNameMap.insertKeyValuePair(NOTE_GATE,                 rosic::String("NoteGate"));
-  identifierNameMap.insertKeyValuePair(NOTE_ON_TRIGGER,           rosic::String("NoteOnTrigger"));
-  identifierNameMap.insertKeyValuePair(NOTE_OFF_TRIGGER,          rosic::String("NoteOffTrigger"));
-  identifierNameMap.insertKeyValuePair(VOICE_KILLER,              rosic::String("VoiceKiller"));
-  identifierNameMap.insertKeyValuePair(VOICE_COMBINER,            rosic::String("VoiceCombiner"));
-  identifierNameMap.insertKeyValuePair(NOTE_FREQUENCY,            rosic::String("NoteFrequency"));
-  identifierNameMap.insertKeyValuePair(NOTE_VELOCITY,             rosic::String("NoteVelocity"));
+  identifierNameMap.insertKeyValuePair(NOTE_GATE,                 rosic::rsString("NoteGate"));
+  identifierNameMap.insertKeyValuePair(NOTE_ON_TRIGGER,           rosic::rsString("NoteOnTrigger"));
+  identifierNameMap.insertKeyValuePair(NOTE_OFF_TRIGGER,          rosic::rsString("NoteOffTrigger"));
+  identifierNameMap.insertKeyValuePair(VOICE_KILLER,              rosic::rsString("VoiceKiller"));
+  identifierNameMap.insertKeyValuePair(VOICE_COMBINER,            rosic::rsString("VoiceCombiner"));
+  identifierNameMap.insertKeyValuePair(NOTE_FREQUENCY,            rosic::rsString("NoteFrequency"));
+  identifierNameMap.insertKeyValuePair(NOTE_VELOCITY,             rosic::rsString("NoteVelocity"));
 
   // Arithmetic:
 
-  identifierNameMap.insertKeyValuePair(CONSTANT,                  rosic::String("Constant"));
-  identifierNameMap.insertKeyValuePair(IDENTITY,                  rosic::String("Identity"));
-  identifierNameMap.insertKeyValuePair(UNARY_MINUS,               rosic::String("UnaryMinus"));
-  identifierNameMap.insertKeyValuePair(RECIPROCAL,                rosic::String("Reciprocal"));
-  identifierNameMap.insertKeyValuePair(ADDER,                     rosic::String("Adder"));
-  identifierNameMap.insertKeyValuePair(SUBTRACTOR,                rosic::String("Subtractor"));
-  identifierNameMap.insertKeyValuePair(MULTIPLIER,                rosic::String("Multiplier"));
-  identifierNameMap.insertKeyValuePair(DIVIDER,                   rosic::String("Divider"));
-  identifierNameMap.insertKeyValuePair(ADDER_3,                   rosic::String("Adder3"));
-  identifierNameMap.insertKeyValuePair(ADDER_4,                   rosic::String("Adder4"));
-  identifierNameMap.insertKeyValuePair(ADDER_5,                   rosic::String("Adder5"));
-  identifierNameMap.insertKeyValuePair(ADDER_N,                   rosic::String("AdderN"));
-  identifierNameMap.insertKeyValuePair(PRODUCT,                   rosic::String("Product"));  // MultiplierN
-  identifierNameMap.insertKeyValuePair(MATRIX,                    rosic::String("Matrix"));
+  identifierNameMap.insertKeyValuePair(CONSTANT,                  rosic::rsString("Constant"));
+  identifierNameMap.insertKeyValuePair(IDENTITY,                  rosic::rsString("Identity"));
+  identifierNameMap.insertKeyValuePair(UNARY_MINUS,               rosic::rsString("UnaryMinus"));
+  identifierNameMap.insertKeyValuePair(RECIPROCAL,                rosic::rsString("Reciprocal"));
+  identifierNameMap.insertKeyValuePair(ADDER,                     rosic::rsString("Adder"));
+  identifierNameMap.insertKeyValuePair(SUBTRACTOR,                rosic::rsString("Subtractor"));
+  identifierNameMap.insertKeyValuePair(MULTIPLIER,                rosic::rsString("Multiplier"));
+  identifierNameMap.insertKeyValuePair(DIVIDER,                   rosic::rsString("Divider"));
+  identifierNameMap.insertKeyValuePair(ADDER_3,                   rosic::rsString("Adder3"));
+  identifierNameMap.insertKeyValuePair(ADDER_4,                   rosic::rsString("Adder4"));
+  identifierNameMap.insertKeyValuePair(ADDER_5,                   rosic::rsString("Adder5"));
+  identifierNameMap.insertKeyValuePair(ADDER_N,                   rosic::rsString("AdderN"));
+  identifierNameMap.insertKeyValuePair(PRODUCT,                   rosic::rsString("Product"));  // MultiplierN
+  identifierNameMap.insertKeyValuePair(MATRIX,                    rosic::rsString("Matrix"));
 
   // Functions:
-  identifierNameMap.insertKeyValuePair(CLIPPER,                   rosic::String("Clipper"));
-  identifierNameMap.insertKeyValuePair(SIN_COS,                   rosic::String("SinCos"));
-  identifierNameMap.insertKeyValuePair(FORMULA,                   rosic::String("Formula"));
+  identifierNameMap.insertKeyValuePair(CLIPPER,                   rosic::rsString("Clipper"));
+  identifierNameMap.insertKeyValuePair(SIN_COS,                   rosic::rsString("SinCos"));
+  identifierNameMap.insertKeyValuePair(FORMULA,                   rosic::rsString("Formula"));
 
   // Delays:
-  identifierNameMap.insertKeyValuePair(UNIT_DELAY,                 rosic::String("UnitDelay"));
-  identifierNameMap.insertKeyValuePair(DELAY_ROUNDING,             rosic::String("DelayRounding"));
-  identifierNameMap.insertKeyValuePair(DELAY_LINEAR,               rosic::String("DelayLinear"));  
-  identifierNameMap.insertKeyValuePair(MULTI_TAP_DELAY_ROUNDING,   rosic::String("MultiTapDelayRounding"));
-  identifierNameMap.insertKeyValuePair(MULTI_TAP_DELAY_LINEAR,     rosic::String("MultiTapDelayLinear"));
+  identifierNameMap.insertKeyValuePair(UNIT_DELAY,                 rosic::rsString("UnitDelay"));
+  identifierNameMap.insertKeyValuePair(DELAY_ROUNDING,             rosic::rsString("DelayRounding"));
+  identifierNameMap.insertKeyValuePair(DELAY_LINEAR,               rosic::rsString("DelayLinear"));  
+  identifierNameMap.insertKeyValuePair(MULTI_TAP_DELAY_ROUNDING,   rosic::rsString("MultiTapDelayRounding"));
+  identifierNameMap.insertKeyValuePair(MULTI_TAP_DELAY_LINEAR,     rosic::rsString("MultiTapDelayLinear"));
 
   // Filters:
-  identifierNameMap.insertKeyValuePair(FIRST_ORDER_LOWPASS,        rosic::String("FirstOrderLowpass"));
-  identifierNameMap.insertKeyValuePair(FIRST_ORDER_FILTER,         rosic::String("FirstOrderFilter"));
-  identifierNameMap.insertKeyValuePair(BIQUAD,                     rosic::String("Biquad"));
-  identifierNameMap.insertKeyValuePair(BIQUAD_DESIGNER,            rosic::String("BiquadDesigner"));
-  identifierNameMap.insertKeyValuePair(LADDER_FILTER,              rosic::String("LadderFilter"));
+  identifierNameMap.insertKeyValuePair(FIRST_ORDER_LOWPASS,        rosic::rsString("FirstOrderLowpass"));
+  identifierNameMap.insertKeyValuePair(FIRST_ORDER_FILTER,         rosic::rsString("FirstOrderFilter"));
+  identifierNameMap.insertKeyValuePair(BIQUAD,                     rosic::rsString("Biquad"));
+  identifierNameMap.insertKeyValuePair(BIQUAD_DESIGNER,            rosic::rsString("BiquadDesigner"));
+  identifierNameMap.insertKeyValuePair(LADDER_FILTER,              rosic::rsString("LadderFilter"));
 
 
   // Generators:
-  identifierNameMap.insertKeyValuePair(PERIODIC_LINEAR_RAMP,      rosic::String("PeriodicLinearRamp"));
-  identifierNameMap.insertKeyValuePair(WHITE_NOISE,               rosic::String("WhiteNoise"));
-  identifierNameMap.insertKeyValuePair(BANDLIMITED_IMPULSE_TRAIN, rosic::String("BandlimitedImpulseTrain"));
-  identifierNameMap.insertKeyValuePair(BLIT_SAW_OSCILLATOR,       rosic::String("BlitSaw"));
-  identifierNameMap.insertKeyValuePair(DUAL_BLIT_SAW_OSCILLATOR,  rosic::String("DualBlitSaw"));
+  identifierNameMap.insertKeyValuePair(PERIODIC_LINEAR_RAMP,      rosic::rsString("PeriodicLinearRamp"));
+  identifierNameMap.insertKeyValuePair(WHITE_NOISE,               rosic::rsString("WhiteNoise"));
+  identifierNameMap.insertKeyValuePair(BANDLIMITED_IMPULSE_TRAIN, rosic::rsString("BandlimitedImpulseTrain"));
+  identifierNameMap.insertKeyValuePair(BLIT_SAW_OSCILLATOR,       rosic::rsString("BlitSaw"));
+  identifierNameMap.insertKeyValuePair(DUAL_BLIT_SAW_OSCILLATOR,  rosic::rsString("DualBlitSaw"));
 
 
   // Modulators:
-  identifierNameMap.insertKeyValuePair(ENVELOPE_ADSR,             rosic::String("EnvelopeADSR"));
+  identifierNameMap.insertKeyValuePair(ENVELOPE_ADSR,             rosic::rsString("EnvelopeADSR"));
 
   // Testmodules:
-  identifierNameMap.insertKeyValuePair(TEST_GAIN,             rosic::String("Gain"));
-  identifierNameMap.insertKeyValuePair(TEST_SUM_DIFF,         rosic::String("SumDiff"));
-  identifierNameMap.insertKeyValuePair(TEST_WRAPPED_SUM_DIFF, rosic::String("WrappedSumDiff"));
-  identifierNameMap.insertKeyValuePair(TEST_SUMMED_DIFFS,     rosic::String("SummedDiffs"));
-  identifierNameMap.insertKeyValuePair(TEST_MOVING_AVERAGE,   rosic::String("MovingAverage"));
-  identifierNameMap.insertKeyValuePair(TEST_LEAKY_INTEGRATOR, rosic::String("LeakyIntegrator"));
-  identifierNameMap.insertKeyValuePair(TEST_FILTER1,          rosic::String("TestFilter1"));
-  identifierNameMap.insertKeyValuePair(TEST_BIQUAD,           rosic::String("BiquadMacro"));
-  identifierNameMap.insertKeyValuePair(TEST_ADDED_CONSTANTS,  rosic::String("AddedConstants"));
-  identifierNameMap.insertKeyValuePair(TEST_PIN_SORTING,      rosic::String("PinSorting"));
-  identifierNameMap.insertKeyValuePair(TEST_BLIP,             rosic::String("TestBlip"));
-  identifierNameMap.insertKeyValuePair(TEST_POLY_BLIP_STEREO, rosic::String("PolyBlipStereo"));
-  identifierNameMap.insertKeyValuePair(TEST_NOISE_FLUTE,      rosic::String("NoiseFlute"));
+  identifierNameMap.insertKeyValuePair(TEST_GAIN,             rosic::rsString("Gain"));
+  identifierNameMap.insertKeyValuePair(TEST_SUM_DIFF,         rosic::rsString("SumDiff"));
+  identifierNameMap.insertKeyValuePair(TEST_WRAPPED_SUM_DIFF, rosic::rsString("WrappedSumDiff"));
+  identifierNameMap.insertKeyValuePair(TEST_SUMMED_DIFFS,     rosic::rsString("SummedDiffs"));
+  identifierNameMap.insertKeyValuePair(TEST_MOVING_AVERAGE,   rosic::rsString("MovingAverage"));
+  identifierNameMap.insertKeyValuePair(TEST_LEAKY_INTEGRATOR, rosic::rsString("LeakyIntegrator"));
+  identifierNameMap.insertKeyValuePair(TEST_FILTER1,          rosic::rsString("TestFilter1"));
+  identifierNameMap.insertKeyValuePair(TEST_BIQUAD,           rosic::rsString("BiquadMacro"));
+  identifierNameMap.insertKeyValuePair(TEST_ADDED_CONSTANTS,  rosic::rsString("AddedConstants"));
+  identifierNameMap.insertKeyValuePair(TEST_PIN_SORTING,      rosic::rsString("PinSorting"));
+  identifierNameMap.insertKeyValuePair(TEST_BLIP,             rosic::rsString("TestBlip"));
+  identifierNameMap.insertKeyValuePair(TEST_POLY_BLIP_STEREO, rosic::rsString("PolyBlipStereo"));
+  identifierNameMap.insertKeyValuePair(TEST_NOISE_FLUTE,      rosic::rsString("NoiseFlute"));
 
 
-  //identifierNameMap.insertKeyValuePair(EXAMPLE_MOOG_FILTER,       rosic::String("ExampleMoogFilter"));
-  //identifierNameMap.insertKeyValuePair(TEST_CONTAINERIZE,         rosic::String("TestContainerize"));
-  //identifierNameMap.insertKeyValuePair(TEST_UNCONTAINERIZE,       rosic::String("TestUncontainerize"));
-  //identifierNameMap.insertKeyValuePair(TEST_MINIMIZE_INS1,        rosic::String("TestMinimizeIns1"));
+  //identifierNameMap.insertKeyValuePair(EXAMPLE_MOOG_FILTER,       rosic::rsString("ExampleMoogFilter"));
+  //identifierNameMap.insertKeyValuePair(TEST_CONTAINERIZE,         rosic::rsString("TestContainerize"));
+  //identifierNameMap.insertKeyValuePair(TEST_UNCONTAINERIZE,       rosic::rsString("TestUncontainerize"));
+  //identifierNameMap.insertKeyValuePair(TEST_MINIMIZE_INS1,        rosic::rsString("TestMinimizeIns1"));
 
 
 
 
-  //identifierNameMap.insertKeyValuePair(FORMULA_ARRAY,             rosic::String("FormulaArray")); // wassat?
-  //identifierNameMap.insertKeyValuePair(MULTI_IN_FORMULA,          rosic::String("MultiInFormula"));  
-  //identifierNameMap.insertKeyValuePair(UNARY_FORMULA,             rosic::String("UnaryFormula"));
+  //identifierNameMap.insertKeyValuePair(FORMULA_ARRAY,             rosic::rsString("FormulaArray")); // wassat?
+  //identifierNameMap.insertKeyValuePair(MULTI_IN_FORMULA,          rosic::rsString("MultiInFormula"));  
+  //identifierNameMap.insertKeyValuePair(UNARY_FORMULA,             rosic::rsString("UnaryFormula"));
 }
 
 ModuleTypeRegistry::~ModuleTypeRegistry()
@@ -185,7 +185,7 @@ ModuleTypeRegistry::~ModuleTypeRegistry()
 
 }
 
-int romos::getTypeId(rosic::String typeString)
+int romos::getTypeId(rosic::rsString typeString)
 {
   return romos::ModuleTypeRegistry::getSoleInstance()->getModuleIdentifierFromTypeString(typeString);
 }

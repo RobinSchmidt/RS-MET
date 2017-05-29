@@ -47,14 +47,14 @@ namespace romos
     }
 
     /** Overriden to avoid adding of audio inputs to the toplevel module. */
-    virtual Module* addAudioInputModule(rosic::String name = rosic::String(), int x = 1, int y = 1, 
+    virtual Module* addAudioInputModule(rosic::rsString name = rosic::rsString(), int x = 1, int y = 1, 
                                         bool sortModuleArrayAfterInsertion = true)
     {
       return NULL;
     }
 
     /** Overriden to avoid adding of audio outputs to the toplevel module. */
-    virtual Module* addAudioOutputModule(rosic::String name = rosic::String(), int x = 1, int y = 1,
+    virtual Module* addAudioOutputModule(rosic::rsString name = rosic::rsString(), int x = 1, int y = 1,
                                          bool sortModuleArrayAfterInsertion = true)
     {
       return NULL;

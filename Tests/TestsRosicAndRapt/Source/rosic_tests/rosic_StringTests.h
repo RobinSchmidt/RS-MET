@@ -28,8 +28,8 @@ namespace rotes
   //void testStringComparison();...
 
 
-  rosic::String createStringWithAllCharacters();
-  rosic::String createStringWithAllPrintableCharacters();
+  rosic::rsString createStringWithAllCharacters();
+  rosic::rsString createStringWithAllPrintableCharacters();
 }
 
 #endif 

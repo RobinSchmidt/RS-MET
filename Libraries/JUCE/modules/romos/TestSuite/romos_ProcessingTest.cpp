@@ -26,12 +26,12 @@ ProcessingTest::ProcessingTest(const char *testName)
   for(i = 0; i < maxNumInputs; i++)
   {
     inputFeederModules[i] = ModuleFactory::createModule(ModuleTypeRegistry::IDENTITY, 
-                                                        rosic::String("In") + rosic::String(i+1), 0, i, true);
+                                                        rosic::rsString("In") + rosic::rsString(i+1), 0, i, true);
   }
   for(i = 0; i < maxNumOutputs; i++)
   {
     outputRetrieverModules[i] = ModuleFactory::createModule(ModuleTypeRegistry::IDENTITY, 
-                                                            rosic::String("Out") + rosic::String(i+1), 0, i, true);
+                                                            rosic::rsString("Out") + rosic::rsString(i+1), 0, i, true);
   }
 }
 

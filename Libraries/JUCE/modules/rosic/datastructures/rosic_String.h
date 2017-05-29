@@ -1,16 +1,6 @@
 #ifndef rosic_String_h
 #define rosic_String_h
 
-//#include <stdlib.h>  // for itoa
-//#include <string>
-//#include <climits>
-//#include "../basics/rosic_FunctionTemplates.h"
-//#include "../math/rosic_IntegerFunctions.h"
-//
-//#ifdef _MSC_VER
-//#pragma warning( disable : 4996 ) // disables 'strcpy' may be unsafe warning in MSVC-2008
-//#endif
-
 namespace rosic
 {
 
@@ -27,7 +17,7 @@ namespace rosic
 
   */
 
-  class String
+  class rsString
   {
 
   public:
@@ -36,30 +26,30 @@ namespace rosic
     // construction/destruction:
 
     /** Standard constructor. Creates an empty string. */
-    String();
+    rsString();
 
     /** Constructor. Creates a string from a zero-terminated c-string. Note that when you pass the
-    NULL macro, actually the constructor String(int) will be called with 0 as argument. */
-    String(const char *initialString);
+    NULL macro, actually the constructor rsString(int) will be called with 0 as argument. */
+    rsString(const char *initialString);
 
     /** Copy constructor. Creates a (deep) copy of another string. */
-    String(const String &other);
+    rsString(const rsString &other);
 
     /** Constructor. Creates a string from an integer number. */
-    String(const int intValue);
+    rsString(const int intValue);
 
     /** Constructor. Creates a string from an integer number. */
-    String(const unsigned int uintValue);
+    rsString(const unsigned int uintValue);
 
     /** Constructor. Creates a string from a single precision floating point number. */
-    String(const float floatValue);
+    rsString(const float floatValue);
 
     /** Constructor. Creates a string from a double precision floating point number.
     \todo: maybe include a flag 'forceExponentialNotation' with default value false. */
-    String(const double doubleValue);
+    rsString(const double doubleValue);
 
     /** Destructor. */
-    ~String();
+    ~rsString();
 
     //---------------------------------------------------------------------------------------------
     // setup:
@@ -101,7 +91,7 @@ namespace rosic
     // operators:
 
     /** Assigns one string with another one. */
-    String& operator=(const String& s2)
+    rsString& operator=(const rsString& s2)
     {
       if( reservedSize != s2.reservedSize )
       {
@@ -117,7 +107,7 @@ namespace rosic
     /** Compares two strings of equality. Two strings are considered equal if they have the same
     length and match character by character. The reserved memory size is irrelevant for this
     comparison.  */
-    bool operator==(const String& s2) const
+    bool operator==(const rsString& s2) const
     {
       if( length != s2.length )
         return false;
@@ -133,20 +123,20 @@ namespace rosic
     }
 
     /** Compares two strings of inequality. */
-    bool operator!=(const String& s2) const
+    bool operator!=(const rsString& s2) const
     {
       return !(*this == s2);
     }
 
     /** Checks whether the left operand is less than the right operand (using strcmp). */
-    bool operator<(const String& s2) const
+    bool operator<(const rsString& s2) const
     {
       int result = strcmp(cString, s2.cString); // use compareBuffers
       return (result<0);
     }
 
     /** Checks whether the left operand is greater than the right operand (using strcmp). */
-    bool operator>(const String& s2) const
+    bool operator>(const rsString& s2) const
     {
       int result = strcmp(cString, s2.cString); // use compareBuffers
       return (result>0);
@@ -154,7 +144,7 @@ namespace rosic
 
     /** Checks whether the left operand is less than or equal to the right operand (using
     strcmp). */
-    bool operator<=(const String& s2) const
+    bool operator<=(const rsString& s2) const
     {
       int result = strcmp(cString, s2.cString);
       return (result<=0);
@@ -162,14 +152,14 @@ namespace rosic
 
     /** Checks whether the left operand is greater than or equal to the right operand (using
     strcmp). */
-    bool operator>=(const String& s2) const
+    bool operator>=(const rsString& s2) const
     {
       int result = strcmp(cString, s2.cString);
       return (result>=0);
     }
 
     /** Adds another string to this string by appending it and returns the result. */
-    String& operator+=(const String &s2)
+    rsString& operator+=(const rsString &s2)
     {
       reserveSize(length + s2.length);
       strcat(cString, s2.cString);
@@ -178,9 +168,9 @@ namespace rosic
     }
 
     /** Adds two strings by concatenating them and returns the result. */
-    String operator+(const String &s2)
+    rsString operator+(const rsString &s2)
     {
-      String result;
+      rsString result;
       result.reserveSize(length+s2.length);
       strcpy(result.cString, cString);
       strcat(result.cString, s2.cString);
@@ -205,11 +195,11 @@ namespace rosic
 
     /** Returns a string where all chareacters between start and end (both inclusive) have been
     converted to lowercase. */
-    String toLowerCase(int start, int end) const;
+    rsString toLowerCase(int start, int end) const;
 
     /** Returns a string where all chareacters between start and end (both inclusive) have been
     converted to uppecase. */
-    String toUpperCase(int start, int end) const;
+    rsString toUpperCase(int start, int end) const;
 
    //---------------------------------------------------------------------------------------------
     // others:
@@ -235,7 +225,7 @@ namespace rosic
     static int numberOfRequiredCharacters(int number);
 
     /** This is an empty string. - causes memory leaks? */
-    //static const String empty;
+    //static const rsString empty;
 
     /** Lexicographically compares the two char-arrays and returns -1 if left < right,
     0 if left == right and +1 if left > right using the compareCharacters functions on the
@@ -262,17 +252,17 @@ namespace rosic
     whitespaces, if necessary. This is useful for alignment of strings representing numbers. It
     may also optionally include a plus sign for positive numbers to make them look more similar
     to negative numbers. \todo: test this function thouroughly */
-    static String fromIntWithLeadingSpaces(int value, int minNumCharacters,
+    static rsString fromIntWithLeadingSpaces(int value, int minNumCharacters,
                                            bool prependPlusForPositiveNumbers = false);
 
     /** Creates a string from a double precision float number. */
-    static String fromDouble(double value);
+    static rsString fromDouble(double value);
 
     /** Creates a string with the given number of whitespace characters. */
-    static String createWhiteSpace(int length);
+    static rsString createWhiteSpace(int length);
 
     /** Creates span of repititions of the given character. */
-    static String createSpanOfCharacters(char character, int length);
+    static rsString createSpanOfCharacters(char character, int length);
 
     //=============================================================================================
 
@@ -296,7 +286,7 @@ namespace rosic
   private:
 
     void initFromDoubleValue(double doubleValue);
-      // used only internally by the constructors String(double) and String(float)
+      // used only internally by the constructors rsString(double) and rsString(float)
 
     /** Given the c-string "s" that represents a double precision floating point number, this
     function removes garbage characters as in .... and returns the new length of the c-string

@@ -37,7 +37,7 @@ namespace romos
     // inquiry about pins:
 
     /** Returns the name of one of our pins. */
-    virtual rosic::String getPinName(int kind, int direction, int pinIndex) const; 
+    virtual rosic::rsString getPinName(int kind, int direction, int pinIndex) const; 
 
 
     // these two are already defined in Module:
@@ -71,10 +71,10 @@ namespace romos
     virtual void initOutputPins(int numberOfPins, ...);
 
     /** Adds an audio input. A name for the pin can optionally be passed. */
-    virtual void addAudioInput(const rosic::String &pinName = rosic::String());
+    virtual void addAudioInput(const rosic::rsString &pinName = rosic::rsString());
 
     /** Adds an audio output. A name for the pin can optionally be passed. */
-    virtual void addAudioOutput(const rosic::String &pinName = rosic::String());
+    virtual void addAudioOutput(const rosic::rsString &pinName = rosic::rsString());
 
     /** Deletes the audio input with the given index. */
     virtual void deleteAudioInput(int index);
@@ -83,7 +83,7 @@ namespace romos
     virtual void deleteAudioOutput(int index);
 
     /** Constructor. Protected because instances should be created only through the ModuleFactory. */
-    ModuleAtomic(const rosic::String &name = rosic::String(), int x = 0, int y = 0, bool polyphonic = false);
+    ModuleAtomic(const rosic::rsString &name = rosic::rsString(), int x = 0, int y = 0, bool polyphonic = false);
 
     /** Destructor. Protected because instances should be deleted only through the ModuleFactory. */
     virtual ~ModuleAtomic();
@@ -91,8 +91,8 @@ namespace romos
     //-------------------------------------------------------------------------------------------------------------------------------------
     // data members:
  
-    std::vector<rosic::String> audioInputNames;
-    std::vector<rosic::String> audioOutputNames;
+    std::vector<rosic::rsString> audioInputNames;
+    std::vector<rosic::rsString> audioOutputNames;
 
   private:
 
@@ -134,17 +134,17 @@ namespace romos
 
     /** Sets the parameter with given name to the given new value. If no parameter with the given name is found, it returns false, 
     otherwise true. */
-    bool setParameter(const rosic::String &parameterName, const rosic::String &newValue, bool callInternalCallback = true);
+    bool setParameter(const rosic::rsString &parameterName, const rosic::rsString &newValue, bool callInternalCallback = true);
 
     /** Sets the parameter with given index to the given new value. When the "callInternalCallback" parameter is true, it will call 
     the virtual parameterChanged() callback function after setting the value. You may override this function in order to do any internal 
     variable updates that may be necessary when a parameter changes. Normally, you want this but in certain circumstances it may be necessary
     to supress the callback by passing false to avoid endless (indirect) recursions. */
-    void setParameter(int index, const rosic::String &newValue, bool callInternalCallback = true);
+    void setParameter(int index, const rosic::rsString &newValue, bool callInternalCallback = true);
 
     /** Appends a parameter with given name and default value to this module - the current value will also be initialized with
     the default value. */
-    void addParameter(const rosic::String &parameterName, const rosic::String &defaultValue);
+    void addParameter(const rosic::rsString &parameterName, const rosic::rsString &defaultValue);
 
     /** Internal callback that is triggered from setParameter - you may override it when you need to re-compute some internal variables 
     when a parameter was changed. */
@@ -157,19 +157,19 @@ namespace romos
     int getNumParameters() const { return (int) parameters.size(); }
 
     /** Returns the name of the parameter with given index. */
-    rosic::String getParameterName(int index) const;
+    rosic::rsString getParameterName(int index) const;
 
     /** Returns the value of the parameter with given index. */
-    rosic::String getParameterValue(int index) const;
+    rosic::rsString getParameterValue(int index) const;
 
     /** Returns the value of the parameter with the given name. If no parameter with the given name is found, it return 0.0. */
-    rosic::String getParameterValue(const rosic::String &parameterName) const;
+    rosic::rsString getParameterValue(const rosic::rsString &parameterName) const;
 
     /** Returns the default value of the parameter with given index. */
-    rosic::String getParameterDefaultValue(int index) const;
+    rosic::rsString getParameterDefaultValue(int index) const;
 
     /** Returns the index of the parameter with given name. Returns -1, if no matching name is found. */
-    int findIndexOfParameterWithName(const rosic::String &nameToFind) const;
+    int findIndexOfParameterWithName(const rosic::rsString &nameToFind) const;
 
     //=====================================================================================================================================
 
@@ -178,9 +178,9 @@ namespace romos
     // data:
     struct Parameter
     {
-      rosic::String name;
-      rosic::String value;         
-      rosic::String defaultValue; 
+      rosic::rsString name;
+      rosic::rsString value;         
+      rosic::rsString defaultValue; 
     };
 
     std::vector<Parameter> parameters;
@@ -210,7 +210,7 @@ namespace romos
 
   protected:
 
-    ModuleWithParameters(const rosic::String &name = rosic::String(), int x = 0, int y = 0, bool polyphonic = false)
+    ModuleWithParameters(const rosic::rsString &name = rosic::rsString(), int x = 0, int y = 0, bool polyphonic = false)
       : ModuleAtomic(name, x, y, polyphonic)
     {
 
@@ -277,7 +277,7 @@ namespace romos
   protected:
 
         
-    ModuleProxy(const rosic::String &name = rosic::String(), int x = 0, int y = 0, bool polyphonic = false);
+    ModuleProxy(const rosic::rsString &name = rosic::rsString(), int x = 0, int y = 0, bool polyphonic = false);
     virtual ~ModuleProxy();
 
 

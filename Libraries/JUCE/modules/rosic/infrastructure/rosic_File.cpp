@@ -9,7 +9,7 @@ const File File::nonExistent;
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-File::File(const String& absolutePath)
+File::File(const rsString& absolutePath)
 {
   this->absolutePath = absolutePath;
 }
@@ -54,15 +54,15 @@ long File::getSizeInBytes() const
 //-------------------------------------------------------------------------------------------------
 // reading:
 
-String File::readFileAsString() const
+rsString File::readFileAsString() const
 {
   long numCharacters;
   char *textRaw = readFileAsZeroTerminatedString(numCharacters);
   if( textRaw == NULL )
-    return String();
+    return rsString();
   else
   {
-    String textAsString;
+    rsString textAsString;
     textAsString.reserveSize(numCharacters);
     textAsString = textRaw; // this can be optimized by a method String::copyFromCharArray - avoids one String constructor call
     delete[] textRaw;
@@ -90,7 +90,7 @@ char* File::readFileAsZeroTerminatedString(long &lengthExludingZero) const
 //-------------------------------------------------------------------------------------------------
 // writing:
 
-bool File::appendText(const rosic::String &text) const
+bool File::appendText(const rosic::rsString &text) const
 {
   if( text.containsNonPrintableCharacters() )
     return false;

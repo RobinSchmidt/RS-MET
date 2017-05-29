@@ -20,7 +20,7 @@ namespace romos
     virtual void clearVoiceBuffer(int voiceIndex);
     virtual void allocateMemory(); 
     virtual void freeMemory();
-    virtual void setModuleName(const rosic::String& newName);
+    virtual void setModuleName(const rosic::rsString& newName);
     virtual unsigned int getNumOutputPins() const { return 1; }
     virtual double getValue() const { return value; }
   protected:

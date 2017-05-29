@@ -4,12 +4,12 @@
 //-------------------------------------------------------------------------------------------------
 // static data members:
 
-//const String String::empty;
+//const rsString rsString::empty;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-String::String()
+rsString::rsString()
 {
   length       = 0;
   reservedSize = 1;                      // for the terminating zero
@@ -17,7 +17,7 @@ String::String()
   strcpy(cString, "");                   // init as empty c-string
 }
 
-String::String(const char *initialString)
+rsString::rsString(const char *initialString)
 {
   if( initialString != NULL )
   {
@@ -35,7 +35,7 @@ String::String(const char *initialString)
   }
 }
 
-String::String(const String &other)
+rsString::rsString(const rsString &other)
 {
   length       = other.length;
   reservedSize = other.reservedSize;
@@ -43,7 +43,7 @@ String::String(const String &other)
   strcpy(cString, other.cString);
 }
 
-String::String(const int intValue)
+rsString::rsString(const int intValue)
 {
   length       = numberOfRequiredCharacters(intValue);
   reservedSize = length+1;
@@ -51,7 +51,7 @@ String::String(const int intValue)
   sprintf(cString, "%d", intValue);      // old: itoa(intValue, cString, 10);
 }
 
-String::String(const unsigned int uintValue)
+rsString::rsString(const unsigned int uintValue)
 {
   length       = numberOfRequiredCharacters(uintValue);
   reservedSize = length+1;
@@ -59,17 +59,17 @@ String::String(const unsigned int uintValue)
   sprintf(cString, "%d", uintValue);     // old: itoa(uintValue, cString, 10);
 }
 
-String::String(const float floatValue)
+rsString::rsString(const float floatValue)
 {
   initFromDoubleValue((double) floatValue);
 }
 
-String::String(const double doubleValue)
+rsString::rsString(const double doubleValue)
 {
   initFromDoubleValue(doubleValue);
 }
 
-String::~String()
+rsString::~rsString()
 {
   delete[] cString;
 }
@@ -77,7 +77,7 @@ String::~String()
 //-------------------------------------------------------------------------------------------------
 // static member functions:
 
-int String::numberOfRequiredCharacters(int number)
+int rsString::numberOfRequiredCharacters(int number)
 {
   if( number == 0 )
     return 1;
@@ -94,7 +94,7 @@ int String::numberOfRequiredCharacters(int number)
   return numChars;
 }
 
-int String::compareCharacterArrays(char *left, int leftLength, char *right, int rightLength)
+int rsString::compareCharacterArrays(char *left, int leftLength, char *right, int rightLength)
 {
   int minLength = rmin(leftLength, rightLength);
   for(int i=0; i<minLength; i++)
@@ -112,7 +112,7 @@ int String::compareCharacterArrays(char *left, int leftLength, char *right, int 
     return 0;
 }
 
-int String::compareCharacters(char left, char right)
+int rsString::compareCharacters(char left, char right)
 {
   if( left == right )
     return 0;
@@ -137,7 +137,7 @@ int String::compareCharacters(char left, char right)
   }
 }
 
-char String::toUpperCase(char c)
+char rsString::toUpperCase(char c)
 {
   if( islower(c) )
     return c-32;
@@ -145,7 +145,7 @@ char String::toUpperCase(char c)
     return c;
 }
 
-String String::fromIntWithLeadingSpaces(int value, int minNumCharacters, bool prependPlusForPositiveNumbers)
+rsString rsString::fromIntWithLeadingSpaces(int value, int minNumCharacters, bool prependPlusForPositiveNumbers)
 {
   int absVal     = abs(value);
   int numSpaces  = 0;
@@ -158,42 +158,42 @@ String String::fromIntWithLeadingSpaces(int value, int minNumCharacters, bool pr
   }
 
   if( value < 0 )
-    return createWhiteSpace(numSpaces) + String("-") + String(absVal);
+    return createWhiteSpace(numSpaces) + rsString("-") + rsString(absVal);
   else if( value > 0)
   {
     if( prependPlusForPositiveNumbers == true )
-      return createWhiteSpace(numSpaces) + String("+") + String(absVal);
+      return createWhiteSpace(numSpaces) + rsString("+") + rsString(absVal);
     else
-      return createWhiteSpace(numSpaces) + String(absVal);
+      return createWhiteSpace(numSpaces) + rsString(absVal);
   }
   else
   {
     if( prependPlusForPositiveNumbers == true )
-      return createWhiteSpace(numSpaces+1) + String(absVal);
+      return createWhiteSpace(numSpaces+1) + rsString(absVal);
     else
-      return createWhiteSpace(numSpaces) + String(absVal);
+      return createWhiteSpace(numSpaces) + rsString(absVal);
   }
 }
 
-String String::fromDouble(double value)
+rsString rsString::fromDouble(double value)
 {
   char tmpString[64];
   sprintf(tmpString, "%lg", value);
-  return String(tmpString);
+  return rsString(tmpString);
 }
 
-String String::createWhiteSpace(int length)
+rsString rsString::createWhiteSpace(int length)
 {
   return createSpanOfCharacters(' ', length);
 }
 
-String String::createSpanOfCharacters(char character, int length)
+rsString rsString::createSpanOfCharacters(char character, int length)
 {
   char *cString = new char[length+1];
   for(int i=0; i<length; i++)
     cString[i] = character;
   cString[length] = '\0';
-  rosic::String result = rosic::String(cString);
+  rosic::rsString result = rosic::rsString(cString);
   delete[] cString;
   return result;
 }
@@ -202,19 +202,19 @@ String String::createSpanOfCharacters(char character, int length)
 //-------------------------------------------------------------------------------------------------
 // setup:
 
-void String::padToLength(int desiredLength, char paddingCharacter)
+void rsString::padToLength(int desiredLength, char paddingCharacter)
 {
   int missingLength = rmax(desiredLength - getLength(), 0);
   *this += createSpanOfCharacters(paddingCharacter, missingLength);
 }
 
-void String::prePadToLength(int desiredLength, char paddingCharacter)
+void rsString::prePadToLength(int desiredLength, char paddingCharacter)
 {
   int missingLength = rmax(desiredLength - getLength(), 0);
   *this = createSpanOfCharacters(paddingCharacter, missingLength) + *this;
 }
 
-void String::reserveSize(int numCharactersToReserve)
+void rsString::reserveSize(int numCharactersToReserve)
 {
   int requiredMemory = numCharactersToReserve + 1;
   if( reservedSize < requiredMemory )
@@ -227,20 +227,20 @@ void String::reserveSize(int numCharactersToReserve)
   }
 }
 
-double String::asDouble() const
+double rsString::asDouble() const
 {
-  if( *this == String("INF") )
+  if( *this == rsString("INF") )
     return INF;
-  else if( *this == String("-INF") )
+  else if( *this == rsString("-INF") )
     return -INF;
-  else if( *this == String("NaN") )
+  else if( *this == rsString("NaN") )
     return NAN;
   return atof(cString);
 }
 
-String String::toLowerCase(int start, int end) const
+rsString rsString::toLowerCase(int start, int end) const
 {
-  String result = *this;
+  rsString result = *this;
   start = rmax(start, 0);
   end   = rmin(end, result.getLength()-1);
   for(int i=start; i<=end; i++)
@@ -248,9 +248,9 @@ String String::toLowerCase(int start, int end) const
   return result;
 }
 
-String String::toUpperCase(int start, int end) const
+rsString rsString::toUpperCase(int start, int end) const
 {
-  String result = *this;
+  rsString result = *this;
   start = rmax(start, 0);
   end   = rmin(end, result.getLength()-1);
   for(int i=start; i<=end; i++)
@@ -261,7 +261,7 @@ String String::toUpperCase(int start, int end) const
 //-------------------------------------------------------------------------------------------------
 // inquiry:
 
-bool String::containsNonPrintableCharacters() const
+bool rsString::containsNonPrintableCharacters() const
 {
   for(int i=0; i<length; i++)
   {
@@ -274,19 +274,19 @@ bool String::containsNonPrintableCharacters() const
 //-------------------------------------------------------------------------------------------------
 // others:
 
-void String::printToStandardOutput() const
+void rsString::printToStandardOutput() const
 {
   printf("%s", getRawString());
 }
 
-void String::readFromBuffer(char *sourceBuffer)
+void rsString::readFromBuffer(char *sourceBuffer)
 {
   int sourceLength = (int) strlen(sourceBuffer);
   allocateMemory(sourceLength);
   strcpy(cString, sourceBuffer);
 }
 
-void String::writeIntoBuffer(char *targetBuffer, int maxNumCharactersToWrite) const
+void rsString::writeIntoBuffer(char *targetBuffer, int maxNumCharactersToWrite) const
 {
   int upperLimit = rmin(length+1, maxNumCharactersToWrite);
   for(int i=0; i<upperLimit; i++)
@@ -296,7 +296,7 @@ void String::writeIntoBuffer(char *targetBuffer, int maxNumCharactersToWrite) co
 //-------------------------------------------------------------------------------------------------
 // internal functions:
 
-void String::allocateMemory(int numCharactersToAllocateExcludingZero)
+void rsString::allocateMemory(int numCharactersToAllocateExcludingZero)
 {
   if( reservedSize-1 != numCharactersToAllocateExcludingZero )
   {
@@ -307,24 +307,24 @@ void String::allocateMemory(int numCharactersToAllocateExcludingZero)
   }
 }
 
-void String::initFromDoubleValue(double doubleValue)
+void rsString::initFromDoubleValue(double doubleValue)
 {
   length       = 0;
   reservedSize = 0;
   cString      = NULL;
   if( doubleValue == INF )
   {
-    *this = String("INF");
+    *this = rsString("INF");
     return;
   }
   else if( doubleValue == -INF )
   {
-    *this = String("-INF");
+    *this = rsString("-INF");
     return;
   }
   else if( isNaN(doubleValue) )
   {
-    *this = String("NaN");
+    *this = rsString("NaN");
     return;
   }
 
@@ -345,7 +345,7 @@ void String::initFromDoubleValue(double doubleValue)
   cString[length] = '\0';
 }
 
-int String::removeGarbageFromDoubleString(char *s, int length)
+int rsString::removeGarbageFromDoubleString(char *s, int length)
 {
   //int dummy;
 

@@ -42,7 +42,7 @@ namespace romos
 
 
 
-    virtual rosic::String runTestsAndGetReport();
+    virtual rosic::rsString runTestsAndGetReport();
 
 
     // data for formatting the report string:
@@ -62,11 +62,11 @@ namespace romos
     pass/fail here.  ...nahh not needed - but we must implement it anyway because it's purely virtual in the baseclass */
     virtual bool runTest();
 
-    virtual rosic::String runFrameWiseTestAndGetReport();
+    virtual rosic::rsString runFrameWiseTestAndGetReport();
 
 
 
-    virtual rosic::String runBlockWiseTestAndGetReport();
+    virtual rosic::rsString runBlockWiseTestAndGetReport();
 
 
 

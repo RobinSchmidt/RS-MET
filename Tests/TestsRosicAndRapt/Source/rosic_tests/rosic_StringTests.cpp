@@ -19,20 +19,20 @@ void rotes::testCharacterComparisons()
   char B = 'B';
   char a = 'a';
   char b = 'b';
-  rassert( String::compareCharacters(n, A) == -1 );
-  rassert( String::compareCharacters(n, a) == -1 );
-  rassert( String::compareCharacters(A, A) ==  0 );
-  rassert( String::compareCharacters(A, a) == -1 );
-  rassert( String::compareCharacters(a, A) == +1 );
-  rassert( String::compareCharacters(a, a) ==  0 );
-  rassert( String::compareCharacters(A, B) == -1 );
-  rassert( String::compareCharacters(A, b) == -1 );
-  rassert( String::compareCharacters(a, B) == -1 );
-  rassert( String::compareCharacters(a, b) == -1 );
-  rassert( String::compareCharacters(B, A) == +1 );
-  rassert( String::compareCharacters(B, a) == +1 );
-  rassert( String::compareCharacters(b, A) == +1 );
-  rassert( String::compareCharacters(b, a) == +1 );
+  rassert( rsString::compareCharacters(n, A) == -1 );
+  rassert( rsString::compareCharacters(n, a) == -1 );
+  rassert( rsString::compareCharacters(A, A) ==  0 );
+  rassert( rsString::compareCharacters(A, a) == -1 );
+  rassert( rsString::compareCharacters(a, A) == +1 );
+  rassert( rsString::compareCharacters(a, a) ==  0 );
+  rassert( rsString::compareCharacters(A, B) == -1 );
+  rassert( rsString::compareCharacters(A, b) == -1 );
+  rassert( rsString::compareCharacters(a, B) == -1 );
+  rassert( rsString::compareCharacters(a, b) == -1 );
+  rassert( rsString::compareCharacters(B, A) == +1 );
+  rassert( rsString::compareCharacters(B, a) == +1 );
+  rassert( rsString::compareCharacters(b, A) == +1 );
+  rassert( rsString::compareCharacters(b, a) == +1 );
 }
 
 void rotes::testStringBufferCopying()
@@ -44,7 +44,7 @@ void rotes::testStringBufferCopying()
   rosic::fillWithValue(charBufferReconstructed, charBufferLength, 'X');
   strcpy(charBufferOriginal, "0123456789");
 
-  String string;
+  rsString string;
   string.readFromBuffer(charBufferOriginal);
   string.writeIntoBuffer(charBufferReconstructed, 11);
 
@@ -55,7 +55,7 @@ void rotes::testStringBufferCopying()
 void rotes::testStringIntConversions(int numIterations)
 {
   int    numberOriginal, numberReconstructed;
-  String numString;
+  rsString numString;
   for(int i=0; i<numIterations; i++)
   {
     numberOriginal      = randomUniform(INT_MIN, INT_MAX);
@@ -76,7 +76,7 @@ void rotes::testStringDoubleConversions()
 void rotes::testStringDoubleConversionsRandom(int numIterations)
 {
   double numberOriginal, numberReconstructed;
-  String numString;
+  rsString numString;
   for(int i=0; i<numIterations; i++)
   {
     numberOriginal      = randomUniform(-1000000.0, 1000000.0);
@@ -89,7 +89,7 @@ void rotes::testStringDoubleConversionsRandom(int numIterations)
 void rotes::testStringDoubleConversionsSpecialValues()
 {
   double numberOriginal      = INF;
-  String numString           = numberOriginal;
+  rsString numString           = numberOriginal;
   double numberReconstructed = numString.asDouble();
   rassert( numberReconstructed == numberOriginal );
 
@@ -125,7 +125,7 @@ void rotes::testStringDoubleConversionsLarge()
 void rotes::testStringDoubleConversionsGeometricProgression(double start, double factor)
 {
   double numberOriginal      = start;
-  String numString           = numberOriginal;
+  rsString numString           = numberOriginal;
   double numberReconstructed = numString.asDouble();
   int    iteration           = 0;
 
@@ -150,15 +150,15 @@ void rotes::testStringDoubleConversionsGeometricProgression(double start, double
   }
 }
 
-String rotes::createStringWithAllCharacters()
+rsString rotes::createStringWithAllCharacters()
 {
   char cString[256];
   for(int i=0; i<256; i++)
     cString[256-i-1] = i;  // backwards for compliance with C strings
-  return String(cString);
+  return rsString(cString);
 }
 
-String rotes::createStringWithAllPrintableCharacters()
+rsString rotes::createStringWithAllPrintableCharacters()
 {
   static const int firstPrintableIndex = 32;   // whitespace ' '
   static const int lastPrintableIndex  = 127;  // tilde '~'
@@ -168,5 +168,5 @@ String rotes::createStringWithAllPrintableCharacters()
   for(int i=0; i<numPrintables; i++)
     cString[i] = i+firstPrintableIndex; 
   cString[numPrintables] = '\0';
-  return String(cString);
+  return rsString(cString);
 }

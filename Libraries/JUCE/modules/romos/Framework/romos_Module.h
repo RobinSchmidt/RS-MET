@@ -112,10 +112,10 @@ namespace romos
     // setup:
 
     /** Sets the name of the module. */
-    virtual void setModuleName(const rosic::String& newName);
+    virtual void setModuleName(const rosic::rsString& newName);
 
     /** Changes the name of one of the input- or output pins. */
-    //virtual void setPinName(int kind, int direction, int pinIndex, const rosic::String &newName);
+    //virtual void setPinName(int kind, int direction, int pinIndex, const rosic::rsString &newName);
 
     /** Sets the x- and y-coordinates where the module appears on the screen/GUI. The optional boolean parameter sortSiblingsAfterMove decides
     whether or not the array of siblings of "this" module (that is, the array of child modules of "this" module's parent module) should be
@@ -127,7 +127,7 @@ namespace romos
     virtual void setPolyphonic(bool shouldBePolyphonic);
 
     /** Adds a number of pins where the 1st argument specifies the kind, the second the direction, the 3rd the number of pins to add and
-    then follows a variable argument list of type rosic::String that define the names of the pins to be created. */
+    then follows a variable argument list of type rosic::rsString that define the names of the pins to be created. */
     //void addPins(int kind, int direction, int number, ...);
 
     /** Connects the input pin of this Module with given inputPinIndex to the output pin of some source-module with the given output
@@ -176,14 +176,14 @@ namespace romos
     virtual bool hasHeader() const { return hasHeaderFlag; }
 
     /** Returns the name. */
-    virtual rosic::String getName() const { return name; }
+    virtual rosic::rsString getName() const { return name; }
 
     /** Returns the identifier of the module class. This is one of the values defined in the moduleIdentifiers enumeration and can be used
     to infer the kind of the module at runtime (aka runtime type information (RTTI)). Knowing the concrete module (sub)class is necessary
     for typecasts and total recall. */
     INLINE int getTypeIdentifier() const { return moduleTypeIdentifier; }
 
-    virtual rosic::String getTypeName() const
+    virtual rosic::rsString getTypeName() const
     {
       return ModuleTypeRegistry::getSoleInstance()->getModuleTypeStringFromIdentifier(getTypeIdentifier());
     }
@@ -216,7 +216,7 @@ namespace romos
     virtual int getContainerNestingDepth() const { return 0; }  // get rid of that in the baseclass
 
     /** Returns the name of one of our pins. */
-    virtual rosic::String getPinName(int kind, int direction, int pinIndex) const = 0;
+    virtual rosic::rsString getPinName(int kind, int direction, int pinIndex) const = 0;
 
     /** Returns the number of audio input pins. */
     virtual unsigned int getNumInputPins() const { return (unsigned int) inputPins.size(); }
@@ -458,7 +458,7 @@ namespace romos
     virtual void allocateAudioOutputs();
 
     /** Constructor. Protected because instances should be created only through the ModuleFactory. */
-    Module(const rosic::String &name = rosic::String(), int x = 0, int y = 0, bool polyphonic = false);
+    Module(const rosic::rsString &name = rosic::rsString(), int x = 0, int y = 0, bool polyphonic = false);
 
     /** Destructor. Protected because instances should be deleted only through the ModuleFactory. */
     virtual ~Module();
@@ -479,7 +479,7 @@ namespace romos
     bool polyphonic;           // flag to indicate that this module is polyphonic
     int  x, y;                 // position on the GUI block-diagram
 
-    rosic::String name;
+    rosic::rsString name;
 
     bool  hasHeaderFlag;
       // determines, if the visual rendering needs a header - actually a GUI-thing that does not really belong here - maybe write a

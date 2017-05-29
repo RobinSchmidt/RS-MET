@@ -6,7 +6,7 @@ namespace romos
   /*
   void AudioInputModule::initialize() 
   { 
-    initOutputPins(1, rosic::String());
+    initOutputPins(1, rosic::rsString());
     hasHeaderFlag = false;
   }   
   void AudioInputModule::allocateMemory()
@@ -40,7 +40,7 @@ namespace romos
   /*
   void AudioOutputModule::initialize() 
   { 
-    initInputPins(1, rosic::String());
+    initInputPins(1, rosic::rsString());
     hasHeaderFlag = false;
   }   
   */
@@ -63,7 +63,7 @@ namespace romos
 
   void SystemSampleRateModule::initialize()
   { 
-    initOutputPins(1, rosic::String("SampleRate"));
+    initOutputPins(1, rosic::rsString("SampleRate"));
   }
   INLINE void SystemSampleRateModule::process(Module *module, double *out, int voiceIndex)
   { 
@@ -74,7 +74,7 @@ namespace romos
 
   void SystemSamplePeriodModule::initialize()
   { 
-    initOutputPins(1, rosic::String("SamplePeriod"));
+    initOutputPins(1, rosic::rsString("SamplePeriod"));
   }
   INLINE void SystemSamplePeriodModule::process(Module *module, double *out, int voiceIndex)
   { 
@@ -85,7 +85,7 @@ namespace romos
 
   void NoteGateModule::initialize()
   { 
-    initOutputPins(1, rosic::String(""));
+    initOutputPins(1, rosic::rsString(""));
     hasHeaderFlag = false;
   }
   INLINE void NoteGateModule::process(Module *module, double *out, int voiceIndex)
@@ -97,7 +97,7 @@ namespace romos
 
   void NoteOnTriggerModule::initialize()
   { 
-    initOutputPins(1, rosic::String(""));
+    initOutputPins(1, rosic::rsString(""));
     hasHeaderFlag = false;
   }
   INLINE void NoteOnTriggerModule::process(Module *module, double *out, int voiceIndex)
@@ -109,7 +109,7 @@ namespace romos
 
   void NoteOffTriggerModule::initialize()
   { 
-    initOutputPins(1, rosic::String(""));
+    initOutputPins(1, rosic::rsString(""));
     hasHeaderFlag = false;
   }
   INLINE void NoteOffTriggerModule::process(Module *module, double *out, int voiceIndex)
@@ -122,9 +122,9 @@ namespace romos
 
   void VoiceKillerModule::initialize() 
   { 
-    initInputPins(1, rosic::String("In"));
-    addParameter(rosic::String("Threshold"), "-100.0" );
-    addParameter(rosic::String("TimeOut"),      "0.01");
+    initInputPins(1, rosic::rsString("In"));
+    addParameter(rosic::rsString("Threshold"), "-100.0" );
+    addParameter(rosic::rsString("TimeOut"),      "0.01");
     parameterChanged(0);   // to init internal variables threshold, timeOut
   }
   INLINE void VoiceKillerModule::process(Module *module, double *in, double *out, int voiceIndex)
@@ -173,8 +173,8 @@ namespace romos
 
   void VoiceCombinerModule::initialize() 
   { 
-    initInputPins( 1, rosic::String(""));
-    initOutputPins(1, rosic::String(""));
+    initInputPins( 1, rosic::rsString(""));
+    initOutputPins(1, rosic::rsString(""));
     hasHeaderFlag = false;
   }
   INLINE void VoiceCombinerModule::process(Module *module, double *ins, double *outs, int voiceIndex)
@@ -272,7 +272,7 @@ namespace romos
 
   void NoteFrequencyModule::initialize()
   { 
-    initOutputPins(1, rosic::String(""));
+    initOutputPins(1, rosic::rsString(""));
     hasHeaderFlag = false;
   }
   INLINE void NoteFrequencyModule::process(Module *module, double *out, int voiceIndex)
@@ -284,7 +284,7 @@ namespace romos
 
   void NoteVelocityModule::initialize()
   { 
-    initOutputPins(1, rosic::String(""));
+    initOutputPins(1, rosic::rsString(""));
     hasHeaderFlag = false;
   }
   INLINE void NoteVelocityModule::process(Module *module, double *out, int voiceIndex)
@@ -337,7 +337,7 @@ namespace romos
     case 0: 
       {
         value = clip(parameters[0].value.asDouble(), minValue, maxValue); 
-        setParameter(0, rosic::String(value), false); // make the string reflect the possibly modified value
+        setParameter(0, rosic::rsString(value), false); // make the string reflect the possibly modified value
       }
       break;
     case 1:
@@ -345,9 +345,9 @@ namespace romos
         minValue     = rmin(parameters[1].value.asDouble(), maxValue);
         value        = clip(value,        minValue, maxValue);
         defaultValue = clip(defaultValue, minValue, maxValue);
-        setParameter(1, rosic::String(minValue),     false);
-        setParameter(0, rosic::String(value),        false);
-        setParameter(3, rosic::String(defaultValue), false);
+        setParameter(1, rosic::rsString(minValue),     false);
+        setParameter(0, rosic::rsString(value),        false);
+        setParameter(3, rosic::rsString(defaultValue), false);
       }
       break;
     case 2:
@@ -355,15 +355,15 @@ namespace romos
         maxValue     = rmax(parameters[2].value.asDouble(), minValue);
         value        = clip(value,        minValue, maxValue);
         defaultValue = clip(defaultValue, minValue, maxValue);
-        setParameter(2, rosic::String(maxValue),     false);
-        setParameter(0, rosic::String(value),        false);
-        setParameter(3, rosic::String(defaultValue), false);
+        setParameter(2, rosic::rsString(maxValue),     false);
+        setParameter(0, rosic::rsString(value),        false);
+        setParameter(3, rosic::rsString(defaultValue), false);
       }
       break;
     case 3: 
       {
         defaultValue = clip(parameters[3].value.asDouble(), minValue, maxValue); 
-        setParameter(3, rosic::String(defaultValue), false);
+        setParameter(3, rosic::rsString(defaultValue), false);
       }
       break;
     case 4: 
@@ -384,7 +384,7 @@ namespace romos
 
     int dummy = 0;
   }
-  void ParameterModule::setModuleName(const rosic::String& newName)
+  void ParameterModule::setModuleName(const rosic::rsString& newName)
   {
     // overriden to avoid setting the value according to the name (which the ConstantModule baseclass would do)
     ModuleAtomic::setModuleName(newName);
@@ -395,7 +395,7 @@ namespace romos
   void ParameterModule::setValue(double newValue)
   {
     value = clip(newValue, minValue, maxValue);
-    setParameter(0, rosic::String(value), false);  // maybe make this optional - bool parameter to the function
+    setParameter(0, rosic::rsString(value), false);  // maybe make this optional - bool parameter to the function
   } 
   void ParameterModule::setMinValue(double newMinValue)
   {
@@ -438,10 +438,10 @@ namespace romos
     value        = clip(value,        minValue, maxValue);
     defaultValue = clip(defaultValue, minValue, maxValue);
 
-    setParameter(0, rosic::String(value),        false);       
-    setParameter(1, rosic::String(minValue),     false);
-    setParameter(2, rosic::String(maxValue),     false);
-    setParameter(3, rosic::String(defaultValue), false);
+    setParameter(0, rosic::rsString(value),        false);       
+    setParameter(1, rosic::rsString(minValue),     false);
+    setParameter(2, rosic::rsString(maxValue),     false);
+    setParameter(3, rosic::rsString(defaultValue), false);
     if( mappingFunction == EXPONENTIAL_MAPPING )
       setParameter(4, "Exponential", false);
     else
@@ -470,10 +470,10 @@ namespace romos
     /*
     // ... we also need to quantize the value when interval != 0.0
     // update the parameter value strings, too:
-    setParameter(0, rosic::String(value),        false);
-    setParameter(1, rosic::String(minValue),     false);
-    setParameter(2, rosic::String(maxValue),     false);
-    setParameter(3, rosic::String(defaultValue), false);
+    setParameter(0, rosic::rsString(value),        false);
+    setParameter(1, rosic::rsString(minValue),     false);
+    setParameter(2, rosic::rsString(maxValue),     false);
+    setParameter(3, rosic::rsString(defaultValue), false);
     */
   }
 

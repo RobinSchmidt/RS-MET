@@ -8,9 +8,9 @@ PerformanceTestRunner::PerformanceTestRunner()
 
 void PerformanceTestRunner::runAllTestsAndPrintResultsToConsole(bool createLogFile)
 {
-  rosic::String report;
+  rosic::rsString report;
 
-  rosic::String header  = "RoMoS performance tests\n";
+  rosic::rsString header  = "RoMoS performance tests\n";
   header               += "CPU cycles required to compute one sample-frame for one voice:\n";
   header               += "Processing function used:         mono/frame  mono/block  poly/frame  poly/block\n";
   header.printToStandardOutput();
@@ -25,12 +25,12 @@ void PerformanceTestRunner::runAllTestsAndPrintResultsToConsole(bool createLogFi
 }
 
 
-rosic::String PerformanceTestRunner::runFrameworkPerformanceTests()
+rosic::rsString PerformanceTestRunner::runFrameworkPerformanceTests()
 {
-  rosic::String report;
+  rosic::rsString report;
   PerformanceTest *test; 
   
-  rosic::String header = "Framework:\n";
+  rosic::rsString header = "Framework:\n";
   header.printToStandardOutput();
   report += header;
 
@@ -45,12 +45,12 @@ rosic::String PerformanceTestRunner::runFrameworkPerformanceTests()
   return report;
 }
 
-rosic::String PerformanceTestRunner::runAtomicModulePerformanceTests()
+rosic::rsString PerformanceTestRunner::runAtomicModulePerformanceTests()
 {
-  rosic::String report;
+  rosic::rsString report;
   PerformanceTest *test; 
 
-  rosic::String header = "Atomic Modules:\n";
+  rosic::rsString header = "Atomic Modules:\n";
   header.printToStandardOutput();
   report += header;
 
@@ -95,11 +95,11 @@ double rHypot(double x, double y)
 
 
 
-rosic::String PerformanceTestRunner::runInternalFunctionPerformanceTests()
+rosic::rsString PerformanceTestRunner::runInternalFunctionPerformanceTests()
 {
-  rosic::String report;
+  rosic::rsString report;
 
-  rosic::String header = "Internal Functions:\n";
+  rosic::rsString header = "Internal Functions:\n";
   header.printToStandardOutput();
   report += header;
 

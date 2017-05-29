@@ -42,13 +42,13 @@ namespace rosic
     storage/recall of the waveform - for example the relative path of an audio-file. It will be 
     returned by getWaveformName when a custom waveform is used. This function is mainly for 
     conveniently handling preset management. */
-    void setWaveform(double* newWaveform, int newLength, String newName);
+    void setWaveform(double* newWaveform, int newLength, rsString newName);
 
     /** Similar to setWaveform(float*, int), just fo single precision buffers. */
-    void setWaveform(float* newWaveform, int newLength, String newName);
+    void setWaveform(float* newWaveform, int newLength, rsString newName);
 
     /** Initializes the internal buffer with all zeros. */
-    void initWaveform(int newLength = 2048, String newName = String("Empty"));
+    void initWaveform(int newLength = 2048, rsString newName = rsString("Empty"));
 
     //---------------------------------------------------------------------------------------------
     // waveform retrieval:
@@ -73,7 +73,7 @@ namespace rosic
     double *buffer;
     int    numSamples;
     int    numChannels;
-    String name;
+    rsString name;
 
   };
 

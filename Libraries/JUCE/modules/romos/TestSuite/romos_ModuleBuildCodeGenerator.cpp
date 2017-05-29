@@ -4,27 +4,27 @@ using namespace romos;
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // code generation:
 
-#define S(x) rosic::String(x)
+#define S(x) rosic::rsString(x)
 
-rosic::String ModuleBuildCodeGenerator::getCodeForModule(romos::Module *module)
+rosic::rsString ModuleBuildCodeGenerator::getCodeForModule(romos::Module *module)
 {
   // catch some special conditions:
   if( module == NULL )
-    return rosic::String();
+    return rosic::rsString();
   if( !module->isContainerModule() )
-    return rosic::String("Atomic module - nothing to do");
+    return rosic::rsString("Atomic module - nothing to do");
 
   // declare some local variables fo later use:
   romos::ModuleContainer *container = dynamic_cast<romos::ModuleContainer*> (module);
   romos::Module *child;
-  rosic::String code;
-  rosic::String indent = S("  ");
-  rosic::String tmp, padding, padding2;
+  rosic::rsString code;
+  rosic::rsString indent = S("  ");
+  rosic::rsString tmp, padding, padding2;
 
   // get variable names maximum name lengths (for alingment):
-  rosic::Array<rosic::String> variableNames  = createVariableNames(container);
-  rosic::Array<rosic::String> moduleNames    = createModuleNames(container);
-  rosic::Array<rosic::String> typeRetrievals = createTypeRetrievalStrings(container);
+  rosic::Array<rosic::rsString> variableNames  = createVariableNames(container);
+  rosic::Array<rosic::rsString> moduleNames    = createModuleNames(container);
+  rosic::Array<rosic::rsString> typeRetrievals = createTypeRetrievalStrings(container);
   int maxAtomicVariableNameLength, maxAtomicModuleNameLength, maxContainerVariableNameLength, maxContainerModuleNameLength, 
     maxVariableNameLength;
   getMaxNameLengths(variableNames, container, maxAtomicVariableNameLength, maxContainerVariableNameLength);
@@ -33,7 +33,7 @@ rosic::String ModuleBuildCodeGenerator::getCodeForModule(romos::Module *module)
 
   // create the function entry code:
   code += S("romos::Module* TestModuleBuilder::create") + S(module->getName()) + 
-          S("(const rosic::String &name, int x, int y, bool polyphonic)\n");
+          S("(const rosic::rsString &name, int x, int y, bool polyphonic)\n");
   code += S("{\n");
   code += indent + S("ModuleContainer *module = (ModuleContainer*) ")
                  + S("ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);\n");
@@ -50,11 +50,11 @@ rosic::String ModuleBuildCodeGenerator::getCodeForModule(romos::Module *module)
     padding  = createPadding(variableNames[i], maxAtomicVariableNameLength);
     code    += S("romos::Module *") + variableNames[i] + padding + S(" = module->addChildModule(") + typeRetrievals[i] + S(" ");
     padding  = createPadding(moduleNames[i], maxAtomicModuleNameLength);
-    code    += moduleNames[i] + rosic::String(", ") + padding;
-    code    += rosic::String::fromIntWithLeadingSpaces(child->getPositionX(), 2) + S(", "); 
-    code    += rosic::String::fromIntWithLeadingSpaces(child->getPositionY(), 2) + S(", ");  
+    code    += moduleNames[i] + rosic::rsString(", ") + padding;
+    code    += rosic::rsString::fromIntWithLeadingSpaces(child->getPositionX(), 2) + S(", "); 
+    code    += rosic::rsString::fromIntWithLeadingSpaces(child->getPositionY(), 2) + S(", ");  
     code    += createTrueFalseStringWithCommaAndSpace(child->isPolyphonic());
-    code    += rosic::String("false);");
+    code    += rosic::rsString("false);");
     code    += S("\n");
   }    
   code += S("\n");
@@ -67,17 +67,17 @@ rosic::String ModuleBuildCodeGenerator::getCodeForModule(romos::Module *module)
     if( child->isContainerModule() )
     {
       // call this function recursively and prepend the result: 
-      rosic::String childCreationCode = getCodeForModule(child);
+      rosic::rsString childCreationCode = getCodeForModule(child);
       code = childCreationCode + code;
 
       // generate code that invokes the just prepended child-creation function:
       code += indent;
-      rosic::String name = variableNames[i].toUpperCase(0, 0);
+      rosic::rsString name = variableNames[i].toUpperCase(0, 0);
       padding = createPadding(name, maxContainerVariableNameLength);
       code += S("romos::Module *") + variableNames[i] + padding + S(" = module->addChildModule(create") + name + S("(") + padding;
       code += S("\"") + name + S("\"") + S(", ") + padding;
-      code += rosic::String::fromIntWithLeadingSpaces(child->getPositionX(), 2) + S(", "); 
-      code += rosic::String::fromIntWithLeadingSpaces(child->getPositionY(), 2) + S(", ");
+      code += rosic::rsString::fromIntWithLeadingSpaces(child->getPositionX(), 2) + S(", "); 
+      code += rosic::rsString::fromIntWithLeadingSpaces(child->getPositionY(), 2) + S(", ");
       code += createTrueFalseString(child->isPolyphonic()) + S("));");  ;
       code += S("\n");
       hasChildContainers = true;
@@ -128,9 +128,9 @@ rosic::String ModuleBuildCodeGenerator::getCodeForModule(romos::Module *module)
   return code;
 }
 
-rosic::String ModuleBuildCodeGenerator::makeModuleVariableName(romos::Module *module)
+rosic::rsString ModuleBuildCodeGenerator::makeModuleVariableName(romos::Module *module)
 {
-  rosic::String name;
+  rosic::rsString name;
   if( module->isContainerModule() )
     name = module->getName();
   else
@@ -165,33 +165,33 @@ int ModuleBuildCodeGenerator::getNumOfSameModulesBefore(romos::Module *module)
   }
 }
 
-rosic::Array<rosic::String> ModuleBuildCodeGenerator::createVariableNames(romos::ModuleContainer *container)
+rosic::Array<rosic::rsString> ModuleBuildCodeGenerator::createVariableNames(romos::ModuleContainer *container)
 {
-  rosic::Array<rosic::String> varNames;
+  rosic::Array<rosic::rsString> varNames;
   for(unsigned int i = 0; i < container->getNumChildModules(); i++)
     varNames.appendElement(makeModuleVariableName(container->getChildModule(i)));
   return varNames;
 }
 
-rosic::Array<rosic::String> ModuleBuildCodeGenerator::createModuleNames(romos::ModuleContainer *container)
+rosic::Array<rosic::rsString> ModuleBuildCodeGenerator::createModuleNames(romos::ModuleContainer *container)
 {
-  rosic::Array<rosic::String> names;
-  rosic::String name;
+  rosic::Array<rosic::rsString> names;
+  rosic::rsString name;
   for(unsigned int i = 0; i < container->getNumChildModules(); i++)
   {
-    name = rosic::String("\"") + container->getChildModule(i)->getName() + rosic::String("\"");
+    name = rosic::rsString("\"") + container->getChildModule(i)->getName() + rosic::rsString("\"");
     names.appendElement(name);
   }
   return names;
 }
    
-rosic::Array<rosic::String> ModuleBuildCodeGenerator::createTypeRetrievalStrings(romos::ModuleContainer *container)
+rosic::Array<rosic::rsString> ModuleBuildCodeGenerator::createTypeRetrievalStrings(romos::ModuleContainer *container)
 {
-  rosic::Array<rosic::String> typeRetrievalStrings;
+  rosic::Array<rosic::rsString> typeRetrievalStrings;
   for(unsigned int i = 0; i < container->getNumChildModules(); i++)
   {
     romos::Module *child = container->getChildModule(i);
-    rosic::String tmp = ModuleTypeRegistry::getSoleInstance()->getModuleTypeStringFromIdentifier(child->getTypeIdentifier());
+    rosic::rsString tmp = ModuleTypeRegistry::getSoleInstance()->getModuleTypeStringFromIdentifier(child->getTypeIdentifier());
     tmp = S("getTypeId(\"") + S(tmp) + S("\"),");
     typeRetrievalStrings.appendElement(tmp);
   }
@@ -199,7 +199,7 @@ rosic::Array<rosic::String> ModuleBuildCodeGenerator::createTypeRetrievalStrings
   return typeRetrievalStrings;
 }
 
-void ModuleBuildCodeGenerator::padShortStringsWithSpace(rosic::Array<rosic::String> &stringsToPad)
+void ModuleBuildCodeGenerator::padShortStringsWithSpace(rosic::Array<rosic::rsString> &stringsToPad)
 {
   int maxLength = 0;
 
@@ -212,11 +212,11 @@ void ModuleBuildCodeGenerator::padShortStringsWithSpace(rosic::Array<rosic::Stri
   for(int i=0; i<stringsToPad.getNumElements(); i++)
   {
     if( stringsToPad[i].getLength() < maxLength )
-      stringsToPad[i] = stringsToPad[i] + rosic::String::createWhiteSpace(maxLength-stringsToPad[i].getLength());
+      stringsToPad[i] = stringsToPad[i] + rosic::rsString::createWhiteSpace(maxLength-stringsToPad[i].getLength());
   }
 }
   
-void ModuleBuildCodeGenerator::getMaxNameLengths(rosic::Array<rosic::String> &names, romos::ModuleContainer *container, 
+void ModuleBuildCodeGenerator::getMaxNameLengths(rosic::Array<rosic::rsString> &names, romos::ModuleContainer *container, 
                        int &maxAtomicNameLength, int &maxContainerNameLength)
 {
   maxAtomicNameLength    = 0;
@@ -231,25 +231,25 @@ void ModuleBuildCodeGenerator::getMaxNameLengths(rosic::Array<rosic::String> &na
   }
 }
 
-rosic::String ModuleBuildCodeGenerator::createPadding(rosic::String stringToPad, int desiredLength)
+rosic::rsString ModuleBuildCodeGenerator::createPadding(rosic::rsString stringToPad, int desiredLength)
 {
   rassert( stringToPad.getLength() <= desiredLength );
   int missingLength = rmax(desiredLength-stringToPad.getLength(), 0);
-  return rosic::String::createWhiteSpace(missingLength);
+  return rosic::rsString::createWhiteSpace(missingLength);
 }
 
-rosic::String ModuleBuildCodeGenerator::createTrueFalseString(bool trueOrFalse)
+rosic::rsString ModuleBuildCodeGenerator::createTrueFalseString(bool trueOrFalse)
 {
   if( trueOrFalse == true )
-    return rosic::String("true ");
+    return rosic::rsString("true ");
   else
-    return rosic::String("false");
+    return rosic::rsString("false");
 }
 
-rosic::String ModuleBuildCodeGenerator::createTrueFalseStringWithCommaAndSpace(bool trueOrFalse)
+rosic::rsString ModuleBuildCodeGenerator::createTrueFalseStringWithCommaAndSpace(bool trueOrFalse)
 {
   if( trueOrFalse == true )
-    return rosic::String("true,  ");
+    return rosic::rsString("true,  ");
   else
-    return rosic::String("false, ");
+    return rosic::rsString("false, ");
 }

@@ -7,9 +7,9 @@ using namespace rosic;
 void rotes::testFileTextReadWrite()
 {
   rosic::File testTextFile("d:\\TmpData\\testTextFile.txt");
-  String stringOriginal = createStringWithAllPrintableCharacters();
+  rsString stringOriginal = createStringWithAllPrintableCharacters();
   testTextFile.appendText(stringOriginal);
-  String stringReconstructed = testTextFile.readFileAsString();
+  rsString stringReconstructed = testTextFile.readFileAsString();
   rassert( stringOriginal == stringReconstructed );
 }
 

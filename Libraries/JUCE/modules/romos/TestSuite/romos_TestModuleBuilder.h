@@ -21,59 +21,59 @@ namespace romos
 
     // todo: pass the string as 1st argument, update the CodeGenerator accordingly:
 
-    static romos::Module* createWrappedAdder(      const rosic::String &name, int x, int y, bool polyphonic);
-    static romos::Module* createGain(              const rosic::String &name, int x, int y, bool polyphonic);  // simple gain
-    static romos::Module* createSumDiff(           const rosic::String &name, int x, int y, bool polyphonic);  // sum and difference
-    static romos::Module* createWrappedSumDiff(    const rosic::String &name, int x, int y, bool polyphonic);  // sum and difference, wrapped into container
-    static romos::Module* createSumDiffProd(       const rosic::String &name, int x, int y, bool polyphonic);
-    static romos::Module* createWrappedSumDiffProd(const rosic::String &name, int x, int y, bool polyphonic);
-    static romos::Module* createWrappedAdderN(     const rosic::String &name, int x, int y, bool polyphonic);
-    static romos::Module* createDifferences(       const rosic::String &name, int x, int y, bool polyphonic);  // some differences of inputs
-    static romos::Module* createSummedDiffs(       const rosic::String &name, int x, int y, bool polyphonic);  // some sums of differences
-    static romos::Module* createMovingAverage(     const rosic::String &name, int x, int y, bool polyphonic);  // simple, two-point moving average filter
-    static romos::Module* createDelayedConnection( const rosic::String &name, int x, int y, bool polyphonic); 
-    static romos::Module* createLeakyIntegrator(   const rosic::String &name, int x, int y, bool polyphonic);  // leaky integrator filter
-    static romos::Module* createTestFilter1(       const rosic::String &name, int x, int y, bool polyphonic);  // some arithmetic combinations of MA and LI
-    static romos::Module* createBiquadMacro(       const rosic::String &name, int x, int y, bool polyphonic);
-    static romos::Module* createPinSortingInner(   const rosic::String &name, int x, int y, bool polyphonic);
-    static romos::Module* createPinSortTest(       const rosic::String &name, int x, int y, bool polyphonic);
-    static romos::Module* createDifferencer(       const rosic::String &name, int x, int y, bool polyphonic);
-    static romos::Module* createImpulse(           const rosic::String &name, int x, int y, bool polyphonic);
-    static romos::Module* createBlip(              const rosic::String &name, int x, int y, bool polyphonic);
-    static romos::Module* createMonoToPoly(        const rosic::String &name, int x, int y, bool polyphonic);  // monophonic constant into polyphonic minus
-    static romos::Module* createVoiceCombiner(     const rosic::String &name, int x, int y, bool polyphonic);  // polyphonic constant into voice combiner
-    static romos::Module* createIn3Out5(           const rosic::String &name, int x, int y, bool polyphonic);  // 3 inputs, 5 outputs, computes some diffs
-    static romos::Module* createGateAndKill(       const rosic::String &name, int x, int y, bool polyphonic);
-    static romos::Module* createTriggerAndKill(    const rosic::String &name, int x, int y, bool polyphonic);
-    static romos::Module* createGatedNoteFrequency(const rosic::String &name, int x, int y, bool polyphonic);
+    static romos::Module* createWrappedAdder(      const rosic::rsString &name, int x, int y, bool polyphonic);
+    static romos::Module* createGain(              const rosic::rsString &name, int x, int y, bool polyphonic);  // simple gain
+    static romos::Module* createSumDiff(           const rosic::rsString &name, int x, int y, bool polyphonic);  // sum and difference
+    static romos::Module* createWrappedSumDiff(    const rosic::rsString &name, int x, int y, bool polyphonic);  // sum and difference, wrapped into container
+    static romos::Module* createSumDiffProd(       const rosic::rsString &name, int x, int y, bool polyphonic);
+    static romos::Module* createWrappedSumDiffProd(const rosic::rsString &name, int x, int y, bool polyphonic);
+    static romos::Module* createWrappedAdderN(     const rosic::rsString &name, int x, int y, bool polyphonic);
+    static romos::Module* createDifferences(       const rosic::rsString &name, int x, int y, bool polyphonic);  // some differences of inputs
+    static romos::Module* createSummedDiffs(       const rosic::rsString &name, int x, int y, bool polyphonic);  // some sums of differences
+    static romos::Module* createMovingAverage(     const rosic::rsString &name, int x, int y, bool polyphonic);  // simple, two-point moving average filter
+    static romos::Module* createDelayedConnection( const rosic::rsString &name, int x, int y, bool polyphonic); 
+    static romos::Module* createLeakyIntegrator(   const rosic::rsString &name, int x, int y, bool polyphonic);  // leaky integrator filter
+    static romos::Module* createTestFilter1(       const rosic::rsString &name, int x, int y, bool polyphonic);  // some arithmetic combinations of MA and LI
+    static romos::Module* createBiquadMacro(       const rosic::rsString &name, int x, int y, bool polyphonic);
+    static romos::Module* createPinSortingInner(   const rosic::rsString &name, int x, int y, bool polyphonic);
+    static romos::Module* createPinSortTest(       const rosic::rsString &name, int x, int y, bool polyphonic);
+    static romos::Module* createDifferencer(       const rosic::rsString &name, int x, int y, bool polyphonic);
+    static romos::Module* createImpulse(           const rosic::rsString &name, int x, int y, bool polyphonic);
+    static romos::Module* createBlip(              const rosic::rsString &name, int x, int y, bool polyphonic);
+    static romos::Module* createMonoToPoly(        const rosic::rsString &name, int x, int y, bool polyphonic);  // monophonic constant into polyphonic minus
+    static romos::Module* createVoiceCombiner(     const rosic::rsString &name, int x, int y, bool polyphonic);  // polyphonic constant into voice combiner
+    static romos::Module* createIn3Out5(           const rosic::rsString &name, int x, int y, bool polyphonic);  // 3 inputs, 5 outputs, computes some diffs
+    static romos::Module* createGateAndKill(       const rosic::rsString &name, int x, int y, bool polyphonic);
+    static romos::Module* createTriggerAndKill(    const rosic::rsString &name, int x, int y, bool polyphonic);
+    static romos::Module* createGatedNoteFrequency(const rosic::rsString &name, int x, int y, bool polyphonic);
 
 
     // test modules for system tests:
-    static romos::Module* createVoiceKill(         const rosic::String &name, int x, int y, bool polyphonic);
-    static romos::Module* createIn1Out2(           const rosic::String &name, int x, int y, bool polyphonic);
-    static romos::Module* createPolyBlipStereo(    const rosic::String &name, int x, int y, bool polyphonic);
+    static romos::Module* createVoiceKill(         const rosic::rsString &name, int x, int y, bool polyphonic);
+    static romos::Module* createIn1Out2(           const rosic::rsString &name, int x, int y, bool polyphonic);
+    static romos::Module* createPolyBlipStereo(    const rosic::rsString &name, int x, int y, bool polyphonic);
 
-    static romos::Module* createNoteFilter(        const rosic::String &name, int x, int y, bool polyphonic);
-    static romos::Module* createGatedNoise(        const rosic::String &name, int x, int y, bool polyphonic);
-    static romos::Module* createNoiseFlute(        const rosic::String &name, int x, int y, bool polyphonic);
+    static romos::Module* createNoteFilter(        const rosic::rsString &name, int x, int y, bool polyphonic);
+    static romos::Module* createGatedNoise(        const rosic::rsString &name, int x, int y, bool polyphonic);
+    static romos::Module* createNoiseFlute(        const rosic::rsString &name, int x, int y, bool polyphonic);
 
 
 
     // test modules for container manipulations:
 
-    static romos::Module* createContainerize01(const rosic::String &name, int x, int y, bool polyphonic);
-    static romos::Module* createContainerize02(const rosic::String &name, int x, int y, bool polyphonic);
-    static romos::Module* createOneTwoThree(   const rosic::String &name, int x, int y, bool polyphonic);
-    static romos::Module* createOutputDeletion(const rosic::String &name, int x, int y, bool polyphonic);
-    static romos::Module* createAddedConstants(const rosic::String &name, int x, int y, bool polyphonic);  // adds constants to yield the result of 900
+    static romos::Module* createContainerize01(const rosic::rsString &name, int x, int y, bool polyphonic);
+    static romos::Module* createContainerize02(const rosic::rsString &name, int x, int y, bool polyphonic);
+    static romos::Module* createOneTwoThree(   const rosic::rsString &name, int x, int y, bool polyphonic);
+    static romos::Module* createOutputDeletion(const rosic::rsString &name, int x, int y, bool polyphonic);
+    static romos::Module* createAddedConstants(const rosic::rsString &name, int x, int y, bool polyphonic);  // adds constants to yield the result of 900
 
 
 
     // test modules for performance tests:
-    static romos::Module* createIdentityChain(            const rosic::String &name, int x, int y, bool polyphonic);  // 20 chained identity modules in a container
-    static romos::Module* createIdentityChainWithFeedback(const rosic::String &name, int x, int y, bool polyphonic); 
-    static romos::Module* createAdderChain(               const rosic::String &name, int x, int y, bool polyphonic);  // 20 chained adder modules in a container
-    static romos::Module* createAdderChainWithFeedback(   const rosic::String &name, int x, int y, bool polyphonic); 
+    static romos::Module* createIdentityChain(            const rosic::rsString &name, int x, int y, bool polyphonic);  // 20 chained identity modules in a container
+    static romos::Module* createIdentityChainWithFeedback(const rosic::rsString &name, int x, int y, bool polyphonic); 
+    static romos::Module* createAdderChain(               const rosic::rsString &name, int x, int y, bool polyphonic);  // 20 chained adder modules in a container
+    static romos::Module* createAdderChainWithFeedback(   const rosic::rsString &name, int x, int y, bool polyphonic); 
 
 
     // createNestedContainers20 - 

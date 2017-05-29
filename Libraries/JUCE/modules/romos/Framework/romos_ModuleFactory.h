@@ -40,7 +40,7 @@ namespace romos
     After creation, it will call the initialize() method of the module and then do some other calls that allocate memory, reset the state 
     and some other stuff that is common to the initialization of all modules (these additional calls avoid code-duplication in the 
     respective initialize() methods of the module subclass). */
-    static romos::Module* createModule(int typeIdentifier, rosic::String name = rosic::String(), int x = 0, int y = 0, 
+    static romos::Module* createModule(int typeIdentifier, rosic::rsString name = rosic::rsString(), int x = 0, int y = 0, 
       bool polyphonic = false);
 
     /** Deletes the passed module by first calling its cleanUp() method and then using the delete-operator. */

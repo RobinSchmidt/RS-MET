@@ -2,7 +2,7 @@
 #include "../framework/romos_ModuleFactory.h"
 using namespace romos;
 
-romos::Module* TestModuleBuilder::createWrappedAdder(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createWrappedAdder(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -20,7 +20,7 @@ romos::Module* TestModuleBuilder::createWrappedAdder(const rosic::String &name, 
   return module;
 }
 
-romos::Module* TestModuleBuilder::createGain(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createGain(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -36,7 +36,7 @@ romos::Module* TestModuleBuilder::createGain(const rosic::String &name, int x, i
   return module;
 }
 
-romos::Module* TestModuleBuilder::createSumDiff(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createSumDiff(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -57,7 +57,7 @@ romos::Module* TestModuleBuilder::createSumDiff(const rosic::String &name, int x
   return module;
 }
 
-romos::Module* TestModuleBuilder::createWrappedSumDiff(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createWrappedSumDiff(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -78,7 +78,7 @@ romos::Module* TestModuleBuilder::createWrappedSumDiff(const rosic::String &name
   return module;
 }
 
-romos::Module* TestModuleBuilder::createSumDiffProd(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createSumDiffProd(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -106,7 +106,7 @@ romos::Module* TestModuleBuilder::createSumDiffProd(const rosic::String &name, i
   return module;
 }
 
-romos::Module* TestModuleBuilder::createWrappedSumDiffProd(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createWrappedSumDiffProd(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -129,7 +129,7 @@ romos::Module* TestModuleBuilder::createWrappedSumDiffProd(const rosic::String &
   return module;
 }
 
-romos::Module* TestModuleBuilder::createWrappedAdderN(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createWrappedAdderN(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -147,7 +147,7 @@ romos::Module* TestModuleBuilder::createWrappedAdderN(const rosic::String &name,
   return module;
 }
 
-romos::Module* TestModuleBuilder::createDifferences(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createDifferences(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -181,7 +181,7 @@ romos::Module* TestModuleBuilder::createDifferences(const rosic::String &name, i
   return module;
 }
 
-romos::Module* TestModuleBuilder::createSummedDiffs(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createSummedDiffs(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -229,7 +229,7 @@ romos::Module* TestModuleBuilder::createSummedDiffs(const rosic::String &name, i
   return module;
 }
 
-romos::Module* TestModuleBuilder::createMovingAverage(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createMovingAverage(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -254,7 +254,7 @@ romos::Module* TestModuleBuilder::createMovingAverage(const rosic::String &name,
   return module;
 }
 
-romos::Module* TestModuleBuilder::createDelayedConnection( const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createDelayedConnection( const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -272,7 +272,7 @@ romos::Module* TestModuleBuilder::createDelayedConnection( const rosic::String &
   return module;
 }
 
-romos::Module* TestModuleBuilder::createLeakyIntegrator(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createLeakyIntegrator(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -302,7 +302,7 @@ romos::Module* TestModuleBuilder::createLeakyIntegrator(const rosic::String &nam
   return module;
 }
 
-romos::Module* TestModuleBuilder::createTestFilter1(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createTestFilter1(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -340,7 +340,7 @@ romos::Module* TestModuleBuilder::createTestFilter1(const rosic::String &name, i
   return module;
 }
 
-romos::Module* TestModuleBuilder::createBiquadMacro(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createBiquadMacro(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -394,7 +394,7 @@ romos::Module* TestModuleBuilder::createBiquadMacro(const rosic::String &name, i
 
 
 /*
-romos::Module* TestModuleBuilder::createAddedConstants(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createAddedConstants(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
 
@@ -423,7 +423,7 @@ romos::Module* TestModuleBuilder::createAddedConstants(const rosic::String &name
 }
 */
 
-romos::Module* TestModuleBuilder::createPinSortingInner(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createPinSortingInner(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -450,7 +450,7 @@ romos::Module* TestModuleBuilder::createPinSortingInner(const rosic::String &nam
   return module;
 }
 
-romos::Module* TestModuleBuilder::createPinSortTest(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createPinSortTest(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -475,7 +475,7 @@ romos::Module* TestModuleBuilder::createPinSortTest(const rosic::String &name, i
   return module;
 }
 
-romos::Module* TestModuleBuilder::createDifferencer(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createDifferencer(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -493,7 +493,7 @@ romos::Module* TestModuleBuilder::createDifferencer(const rosic::String &name, i
   return module;
 }
 
-romos::Module* TestModuleBuilder::createImpulse(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createImpulse(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -516,7 +516,7 @@ romos::Module* TestModuleBuilder::createImpulse(const rosic::String &name, int x
   return module;
 }
 
-romos::Module* TestModuleBuilder::createBlip(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createBlip(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -545,7 +545,7 @@ romos::Module* TestModuleBuilder::createBlip(const rosic::String &name, int x, i
   return module;
 }
 
-romos::Module* TestModuleBuilder::createMonoToPoly(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createMonoToPoly(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -562,7 +562,7 @@ romos::Module* TestModuleBuilder::createMonoToPoly(const rosic::String &name, in
   return module;
 }
 
-romos::Module* TestModuleBuilder::createVoiceCombiner(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createVoiceCombiner(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -579,7 +579,7 @@ romos::Module* TestModuleBuilder::createVoiceCombiner(const rosic::String &name,
   return module;
 }
 
-romos::Module* TestModuleBuilder::createIn3Out5(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createIn3Out5(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -618,7 +618,7 @@ romos::Module* TestModuleBuilder::createIn3Out5(const rosic::String &name, int x
   return module;
 }
 
-romos::Module* TestModuleBuilder::createGateAndKill(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createGateAndKill(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -639,7 +639,7 @@ romos::Module* TestModuleBuilder::createGateAndKill(const rosic::String &name, i
 }
 
 
-romos::Module* TestModuleBuilder::createTriggerAndKill(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createTriggerAndKill(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -657,7 +657,7 @@ romos::Module* TestModuleBuilder::createTriggerAndKill(const rosic::String &name
   return module;
 }
 
-romos::Module* TestModuleBuilder::createGatedNoteFrequency(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createGatedNoteFrequency(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -677,7 +677,7 @@ romos::Module* TestModuleBuilder::createGatedNoteFrequency(const rosic::String &
 
 
 
-romos::Module* TestModuleBuilder::createVoiceKill(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createVoiceKill(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -695,7 +695,7 @@ romos::Module* TestModuleBuilder::createVoiceKill(const rosic::String &name, int
   return module;
 }
 
-romos::Module* TestModuleBuilder::createIn1Out2(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createIn1Out2(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -711,7 +711,7 @@ romos::Module* TestModuleBuilder::createIn1Out2(const rosic::String &name, int x
   return module;
 }
 
-romos::Module* TestModuleBuilder::createPolyBlipStereo(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createPolyBlipStereo(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -745,7 +745,7 @@ romos::Module* TestModuleBuilder::createPolyBlipStereo(const rosic::String &name
 
 
 
-romos::Module* TestModuleBuilder::createNoteFilter(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createNoteFilter(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -783,7 +783,7 @@ romos::Module* TestModuleBuilder::createNoteFilter(const rosic::String &name, in
   return module;
 }
 
-romos::Module* TestModuleBuilder::createGatedNoise(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createGatedNoise(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -813,7 +813,7 @@ romos::Module* TestModuleBuilder::createGatedNoise(const rosic::String &name, in
   return module;
 }
 
-romos::Module* TestModuleBuilder::createNoiseFlute(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createNoiseFlute(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -854,7 +854,7 @@ romos::Module* TestModuleBuilder::createNoiseFlute(const rosic::String &name, in
 
 
 /*
-romos::Module* TestModuleBuilder::createVoiceKill(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createVoiceKill(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -872,7 +872,7 @@ romos::Module* TestModuleBuilder::createVoiceKill(const rosic::String &name, int
   return module;
 }
 
-romos::Module* TestModuleBuilder::create1In2Out(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::create1In2Out(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -888,7 +888,7 @@ romos::Module* TestModuleBuilder::create1In2Out(const rosic::String &name, int x
   return module;
 }
 
-romos::Module* TestModuleBuilder::createGatedNoise(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createGatedNoise(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -908,7 +908,7 @@ romos::Module* TestModuleBuilder::createGatedNoise(const rosic::String &name, in
   return module;
 }
 
-romos::Module* TestModuleBuilder::createGatedNoiseStereo(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createGatedNoiseStereo(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -945,7 +945,7 @@ romos::Module* TestModuleBuilder::createGatedNoiseStereo(const rosic::String &na
 
 
 // an input connected to a minus connected to two outputs
-romos::Module* TestModuleBuilder::createContainerize01(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createContainerize01(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -963,7 +963,7 @@ romos::Module* TestModuleBuilder::createContainerize01(const rosic::String &name
   return module;
 }
 
-romos::Module* TestModuleBuilder::createContainerize02(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createContainerize02(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -991,7 +991,7 @@ romos::Module* TestModuleBuilder::createContainerize02(const rosic::String &name
   return module;
 }
 
-romos::Module* TestModuleBuilder::createOneTwoThree(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createOneTwoThree(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -1011,7 +1011,7 @@ romos::Module* TestModuleBuilder::createOneTwoThree(const rosic::String &name, i
   return module;
 }
 
-romos::Module* TestModuleBuilder::createOutputDeletion(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createOutputDeletion(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -1035,7 +1035,7 @@ romos::Module* TestModuleBuilder::createOutputDeletion(const rosic::String &name
 
 
 
-romos::Module* TestModuleBuilder::createAddedConstants(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createAddedConstants(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
   
@@ -1086,7 +1086,7 @@ romos::Module* TestModuleBuilder::createAddedConstants(const rosic::String &name
 
 
 
-romos::Module* TestModuleBuilder::createIdentityChain(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createIdentityChain(const rosic::rsString &name, int x, int y, bool polyphonic)
 {  
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
 
@@ -1103,7 +1103,7 @@ romos::Module* TestModuleBuilder::createIdentityChain(const rosic::String &name,
   return module;
 }
 
-romos::Module* TestModuleBuilder::createIdentityChainWithFeedback(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createIdentityChainWithFeedback(const rosic::rsString &name, int x, int y, bool polyphonic)
 {  
   ModuleContainer *module = (ModuleContainer*) createIdentityChain(name, x, y, polyphonic);
 
@@ -1117,7 +1117,7 @@ romos::Module* TestModuleBuilder::createIdentityChainWithFeedback(const rosic::S
 
 
 
-romos::Module* TestModuleBuilder::createAdderChain(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createAdderChain(const rosic::rsString &name, int x, int y, bool polyphonic)
 {  
   ModuleContainer *module = (ModuleContainer*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER, name, x, y, polyphonic);
 
@@ -1135,7 +1135,7 @@ romos::Module* TestModuleBuilder::createAdderChain(const rosic::String &name, in
   return module;
 }
 
-romos::Module* TestModuleBuilder::createAdderChainWithFeedback(const rosic::String &name, int x, int y, bool polyphonic)
+romos::Module* TestModuleBuilder::createAdderChainWithFeedback(const rosic::rsString &name, int x, int y, bool polyphonic)
 {  
   ModuleContainer *module = (ModuleContainer*) createAdderChain(name, x, y, polyphonic);
 
@@ -1156,16 +1156,16 @@ romos::Module* romos::createMoogFilterModule(ModuleProperties *propertiesToUse)
   ModuleContainer *moogFilter = new ModuleContainer(propertiesToUse);  
   moogFilter->setModuleName("MoogFilter");
 
-  moogFilter->addAudioInputModule(rosic::String("In"), 2, 14, false);
+  moogFilter->addAudioInputModule(rosic::rsString("In"), 2, 14, false);
   romos::Module *in  = moogFilter->getAudioInputModule(0);
 
-  moogFilter->addAudioInputModule(rosic::String("c"), 2, 22, false);
+  moogFilter->addAudioInputModule(rosic::rsString("c"), 2, 22, false);
   romos::Module *c  = moogFilter->getAudioInputModule(1);
 
-  moogFilter->addAudioInputModule(rosic::String("k"), 2, 26, false);
+  moogFilter->addAudioInputModule(rosic::rsString("k"), 2, 26, false);
   romos::Module *k  = moogFilter->getAudioInputModule(2);
 
-  moogFilter->addAudioOutputModule(rosic::String("Out"), 54, 4, false);
+  moogFilter->addAudioOutputModule(rosic::rsString("Out"), 54, 4, false);
   romos::Module *out = moogFilter->getAudioOutputModule(0);
 
   AdderModule *adder = new AdderModule(NULL);
@@ -1214,13 +1214,13 @@ romos::Module* TestModuleBuilder::createContainerizeTestModule(ModuleProperties 
 {
   ModuleContainer *testModule = new ModuleContainer("ContainerizeTest");  
 
-  testModule->addAudioInputModule(rosic::String("In1"), 2, 2, false);
+  testModule->addAudioInputModule(rosic::rsString("In1"), 2, 2, false);
   //testModule->getAudioInputModule(0)->setPositionXY(2, 2);  
   romos::Module *in1  = testModule->getAudioInputModule(0);
 
   //...
 
-  testModule->addAudioOutputModule(rosic::String("Out1"), 30, 2, false);
+  testModule->addAudioOutputModule(rosic::rsString("Out1"), 30, 2, false);
   //testModule->getAudioOutputModule(0)->setPositionXY(30, 2);
   romos::Module *out1 = testModule->getAudioOutputModule(0);
 
@@ -1255,19 +1255,19 @@ romos::Module* TestModuleBuilder::createUnContainerizeInnerModule(ModuleProperti
 {
   ModuleContainer *testModule = new ModuleContainer("InnerContainer");  
 
-  testModule->addAudioInputModule(rosic::String("IIn1"), 2, 2, false);
+  testModule->addAudioInputModule(rosic::rsString("IIn1"), 2, 2, false);
   //testModule->getAudioInputModule(0)->setPositionXY(2, 2);  
   romos::Module *in1  = testModule->getAudioInputModule(0);
 
-  testModule->addAudioInputModule(rosic::String("IIn2"), 2, 6, false);
+  testModule->addAudioInputModule(rosic::rsString("IIn2"), 2, 6, false);
   //testModule->getAudioInputModule(1)->setPositionXY(2, 6);  
   romos::Module *in2  = testModule->getAudioInputModule(1);
 
-  testModule->addAudioOutputModule(rosic::String("IOut1"), 30, 2, false);
+  testModule->addAudioOutputModule(rosic::rsString("IOut1"), 30, 2, false);
   //testModule->getAudioOutputModule(0)->setPositionXY(30, 2);
   romos::Module *out1 = testModule->getAudioOutputModule(0);
 
-  testModule->addAudioOutputModule(rosic::String("IOut2"), 30, 6, false);
+  testModule->addAudioOutputModule(rosic::rsString("IOut2"), 30, 6, false);
   //testModule->getAudioOutputModule(1)->setPositionXY(30, 6);
   romos::Module *out2 = testModule->getAudioOutputModule(1);
 
@@ -1307,23 +1307,23 @@ romos::Module* TestModuleBuilder::createUnContainerizeTestModule(ModulePropertie
   ModuleContainer *testModule = new ModuleContainer("OuterContainer");  
 
 
-  testModule->addAudioInputModule(rosic::String("OIn1"), 2, 2, false);
+  testModule->addAudioInputModule(rosic::rsString("OIn1"), 2, 2, false);
   //testModule->getAudioInputModule(0)->setPositionXY(2, 2);  
   romos::Module *in1  = testModule->getAudioInputModule(0);
 
-  testModule->addAudioInputModule(rosic::String("OIn2"), 2, 6, false);
+  testModule->addAudioInputModule(rosic::rsString("OIn2"), 2, 6, false);
   //testModule->getAudioInputModule(1)->setPositionXY(2, 6);  
   romos::Module *in2  = testModule->getAudioInputModule(1);
 
-  testModule->addAudioInputModule(rosic::String("OIn3"), 2, 10, false);
+  testModule->addAudioInputModule(rosic::rsString("OIn3"), 2, 10, false);
   //testModule->getAudioInputModule(2)->setPositionXY(2, 10);  
   romos::Module *in3  = testModule->getAudioInputModule(2);
 
-  testModule->addAudioOutputModule(rosic::String("OOut1"), 35, 2, false);
+  testModule->addAudioOutputModule(rosic::rsString("OOut1"), 35, 2, false);
   //testModule->getAudioOutputModule(0)->setPositionXY(35, 2);
   romos::Module *out1 = testModule->getAudioOutputModule(0);
 
-  testModule->addAudioOutputModule(rosic::String("OOut2"), 35, 6, false);
+  testModule->addAudioOutputModule(rosic::rsString("OOut2"), 35, 6, false);
   //testModule->getAudioOutputModule(1)->setPositionXY(35, 6);
   romos::Module *out2 = testModule->getAudioOutputModule(1);
 
@@ -1351,16 +1351,16 @@ romos::Module* TestModuleBuilder::createMinimizeInputsInnerModule1(ModulePropert
 {
   ModuleContainer *testModule = new ModuleContainer("InnerContainer");  
 
-  testModule->addAudioInputModule(rosic::String("IIn1"), 2, 2, false);
+  testModule->addAudioInputModule(rosic::rsString("IIn1"), 2, 2, false);
   romos::Module *in1  = testModule->getAudioInputModule(0);
 
-  testModule->addAudioInputModule(rosic::String("IIn2"), 2, 6, false);
+  testModule->addAudioInputModule(rosic::rsString("IIn2"), 2, 6, false);
   romos::Module *in2  = testModule->getAudioInputModule(1);
 
-  testModule->addAudioOutputModule(rosic::String("IOut1"), 30, 2, false);
+  testModule->addAudioOutputModule(rosic::rsString("IOut1"), 30, 2, false);
   romos::Module *out1 = testModule->getAudioOutputModule(0);
 
-  testModule->addAudioOutputModule(rosic::String("IOut2"), 30, 6, false);
+  testModule->addAudioOutputModule(rosic::rsString("IOut2"), 30, 6, false);
   romos::Module *out2 = testModule->getAudioOutputModule(1);
 
   UnitDelayModule *d1 = new UnitDelayModule(NULL);
@@ -1386,10 +1386,10 @@ romos::Module* TestModuleBuilder::createMinimizeInputsTestModule1(ModuleProperti
 {
   ModuleContainer *testModule = new ModuleContainer("MinimizeInputs1");  
 
-  testModule->addAudioInputModule(rosic::String("OIn1"), 2, 2, false);
+  testModule->addAudioInputModule(rosic::rsString("OIn1"), 2, 2, false);
   romos::Module *in1  = testModule->getAudioInputModule(0);
 
-  testModule->addAudioInputModule(rosic::String("OIn2"), 2, 6, false);
+  testModule->addAudioInputModule(rosic::rsString("OIn2"), 2, 6, false);
   romos::Module *in2  = testModule->getAudioInputModule(1);
 
   Module *inner = createMinimizeInputsInnerModule1(NULL);
@@ -1409,22 +1409,22 @@ romos::Module* romos::createAudioPinSortingInnerModule(ModuleProperties *propert
   ModuleContainer *testModule = new ModuleContainer(propertiesToUse);  
   testModule->setModuleName("PinSortingInner");
 
-  testModule->addAudioInputModule(rosic::String("1"), 2,  2, false);
+  testModule->addAudioInputModule(rosic::rsString("1"), 2,  2, false);
   romos::Module *in1  = testModule->getAudioInputModule(0);
 
-  testModule->addAudioInputModule(rosic::String("2"), 2,  6, false);
+  testModule->addAudioInputModule(rosic::rsString("2"), 2,  6, false);
   romos::Module *in2  = testModule->getAudioInputModule(1);
 
-  testModule->addAudioInputModule(rosic::String("3"), 2, 11, false);
+  testModule->addAudioInputModule(rosic::rsString("3"), 2, 11, false);
   romos::Module *in3  = testModule->getAudioInputModule(2);
 
-  testModule->addAudioOutputModule(rosic::String("1p2"), 30,  2, false);
+  testModule->addAudioOutputModule(rosic::rsString("1p2"), 30,  2, false);
   romos::Module *out1 = testModule->getAudioOutputModule(0);
 
-  testModule->addAudioOutputModule(rosic::String("1p3"), 30,  6, false);
+  testModule->addAudioOutputModule(rosic::rsString("1p3"), 30,  6, false);
   romos::Module *out2 = testModule->getAudioOutputModule(1);
 
-  testModule->addAudioOutputModule(rosic::String("2p3"), 30, 10, false);
+  testModule->addAudioOutputModule(rosic::rsString("2p3"), 30, 10, false);
   romos::Module *out3 = testModule->getAudioOutputModule(2);
 
   AdderModule *adder1 = new AdderModule(NULL);
@@ -1457,22 +1457,22 @@ romos::Module* romos::createAudioPinSortingTestModule(ModuleProperties *properti
   ModuleContainer *testModule = new ModuleContainer(propertiesToUse);  
   testModule->setModuleName("PinSortTest");
 
-  testModule->addAudioInputModule(rosic::String("1"), 2,  2, false);
+  testModule->addAudioInputModule(rosic::rsString("1"), 2,  2, false);
   romos::Module *in1  = testModule->getAudioInputModule(0);
 
-  testModule->addAudioInputModule(rosic::String("2"), 2,  6, false);
+  testModule->addAudioInputModule(rosic::rsString("2"), 2,  6, false);
   romos::Module *in2  = testModule->getAudioInputModule(1);
 
-  testModule->addAudioInputModule(rosic::String("3"), 2, 10, false);
+  testModule->addAudioInputModule(rosic::rsString("3"), 2, 10, false);
   romos::Module *in3  = testModule->getAudioInputModule(2);
 
-  testModule->addAudioOutputModule(rosic::String("1p2"), 30,  2, false);
+  testModule->addAudioOutputModule(rosic::rsString("1p2"), 30,  2, false);
   romos::Module *out1 = testModule->getAudioOutputModule(0);
 
-  testModule->addAudioOutputModule(rosic::String("1p3"), 30,  6, false);
+  testModule->addAudioOutputModule(rosic::rsString("1p3"), 30,  6, false);
   romos::Module *out2 = testModule->getAudioOutputModule(1);
 
-  testModule->addAudioOutputModule(rosic::String("2p3"), 30, 10, false);
+  testModule->addAudioOutputModule(rosic::rsString("2p3"), 30, 10, false);
   romos::Module *out3 = testModule->getAudioOutputModule(2);
 
   romos::Module *inner = createAudioPinSortingInnerModule(NULL);

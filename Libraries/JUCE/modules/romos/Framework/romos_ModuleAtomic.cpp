@@ -9,7 +9,7 @@ using namespace romos;
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-romos::ModuleAtomic::ModuleAtomic(const rosic::String &name, int x, int y, bool polyphonic) 
+romos::ModuleAtomic::ModuleAtomic(const rosic::rsString &name, int x, int y, bool polyphonic) 
 : Module(name, x, y, polyphonic)
 {
 
@@ -29,7 +29,7 @@ void ModuleAtomic::initInputPins(int numberOfPins, ...)
   va_start(ap, numberOfPins);
   for(int i=1; i<=numberOfPins; i++)
   {
-    rosic::appendElement(audioInputNames, va_arg(ap, rosic::String));
+    rosic::appendElement(audioInputNames, va_arg(ap, rosic::rsString));
     rosic::appendElement(inputPins,       AudioInputPinData());
   }
   numInputs += numberOfPins;
@@ -41,8 +41,8 @@ void ModuleAtomic::initOutputPins(int numberOfPins, ...)
   va_list ap;
   va_start(ap, numberOfPins);
   for(int i=1; i<=numberOfPins; i++)
-    rosic::appendElement(audioOutputNames, va_arg(ap, rosic::String));
-    //audioOutputNames.appendElement( va_arg(ap, rosic::String) );
+    rosic::appendElement(audioOutputNames, va_arg(ap, rosic::rsString));
+    //audioOutputNames.appendElement( va_arg(ap, rosic::rsString) );
   outFrameStride += numberOfPins;
   va_end(ap);
 }
@@ -51,9 +51,9 @@ void ModuleAtomic::initOutputPins(int numberOfPins, ...)
 
 // maybe reactivate later when we implement variable I/O:
 
-void romos::ModuleAtomic::setPinName(int kind, int direction, int pinIndex, const rosic::String &newName)
+void romos::ModuleAtomic::setPinName(int kind, int direction, int pinIndex, const rosic::rsString &newName)
 {
-  rosic::Array<rosic::String>* pinNames = properties->getPinNameArray(kind, direction);
+  rosic::Array<rosic::rsString>* pinNames = properties->getPinNameArray(kind, direction);
   if( pinIndex >= 0 && pinIndex < pinNames->getNumElements() )
     pinNames->replaceElement(pinIndex, newName);
   else
@@ -81,7 +81,7 @@ void romos::ModuleAtomic::setNumAudioOutputs(int newNumber)
 //-----------------------------------------------------------------------------------------------------------------------------------------    
 // inquiry about pins:
 
-rosic::String romos::ModuleAtomic::getPinName(int kind, int direction, int pinIndex) const
+rosic::rsString romos::ModuleAtomic::getPinName(int kind, int direction, int pinIndex) const
 {
   if( direction == romos::INCOMING )
     return audioInputNames.at(pinIndex);
@@ -95,7 +95,7 @@ rosic::String romos::ModuleAtomic::getPinName(int kind, int direction, int pinIn
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // others:
 
-void romos::ModuleAtomic::addAudioInput(const rosic::String &pinName)
+void romos::ModuleAtomic::addAudioInput(const rosic::rsString &pinName)
 {
   rosic::appendElement(audioInputNames, pinName);
   rosic::appendElement(inputPins,       AudioInputPinData());
@@ -104,7 +104,7 @@ void romos::ModuleAtomic::addAudioInput(const rosic::String &pinName)
   updateInputPointersAndInFrameStrides();
 }
 
-void romos::ModuleAtomic::addAudioOutput(const rosic::String &pinName)
+void romos::ModuleAtomic::addAudioOutput(const rosic::rsString &pinName)
 {
   //audioOutputNames.appendElement(pinName);
   rosic::appendElement(audioOutputNames, pinName);
@@ -176,7 +176,7 @@ void romos::ModuleAtomic::deleteAudioOutput(int index)
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // setup:
 
-bool romos::ParameterMixIn::setParameter(const rosic::String &parameterName, const rosic::String &newValue, bool callInternalCallback)
+bool romos::ParameterMixIn::setParameter(const rosic::rsString &parameterName, const rosic::rsString &newValue, bool callInternalCallback)
 {
   int index = findIndexOfParameterWithName(parameterName);
   if( index != -1 )
@@ -188,7 +188,7 @@ bool romos::ParameterMixIn::setParameter(const rosic::String &parameterName, con
     return false;
 }
 
-void romos::ParameterMixIn::setParameter(int index, const rosic::String &newValue, bool callInternalCallback)
+void romos::ParameterMixIn::setParameter(int index, const rosic::rsString &newValue, bool callInternalCallback)
 {
   rassert( index >= 0 && index < getNumParameters() );
   parameters[index].value = newValue;  
@@ -196,7 +196,7 @@ void romos::ParameterMixIn::setParameter(int index, const rosic::String &newValu
     parameterChanged(index);
 }
 
-void romos::ParameterMixIn::addParameter(const rosic::String &parameterName, const rosic::String &defaultValue)
+void romos::ParameterMixIn::addParameter(const rosic::rsString &parameterName, const rosic::rsString &defaultValue)
 {
   Parameter p;
   p.name         = parameterName;
@@ -208,19 +208,19 @@ void romos::ParameterMixIn::addParameter(const rosic::String &parameterName, con
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // inquiry:
 
-rosic::String romos::ParameterMixIn::getParameterName(int index) const
+rosic::rsString romos::ParameterMixIn::getParameterName(int index) const
 {
   rassert( index >= 0 && index < getNumParameters() );
   return parameters[index].name;
 }
     
-rosic::String romos::ParameterMixIn::getParameterValue(int index) const
+rosic::rsString romos::ParameterMixIn::getParameterValue(int index) const
 {
   rassert( index >= 0 && index < getNumParameters() );
   return parameters[index].value;
 }
 
-rosic::String romos::ParameterMixIn::getParameterValue(const rosic::String &parameterName) const
+rosic::rsString romos::ParameterMixIn::getParameterValue(const rosic::rsString &parameterName) const
 {
   int index = findIndexOfParameterWithName(parameterName);
   if( index != -1 )
@@ -229,13 +229,13 @@ rosic::String romos::ParameterMixIn::getParameterValue(const rosic::String &para
     return 0.0;
 }
 
-rosic::String romos::ParameterMixIn::getParameterDefaultValue(int index) const
+rosic::rsString romos::ParameterMixIn::getParameterDefaultValue(int index) const
 {
   rassert( index >= 0 && index < getNumParameters() );
   return parameters[index].defaultValue;
 }
 
-int romos::ParameterMixIn::findIndexOfParameterWithName(const rosic::String &nameToFind) const
+int romos::ParameterMixIn::findIndexOfParameterWithName(const rosic::rsString &nameToFind) const
 {
   for(int i = 0; i < (int) parameters.size(); i++)
   {
@@ -265,7 +265,7 @@ int romos::ParameterMixIn::findIndexOfParameterWithName(const rosic::String &nam
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-romos::ModuleProxy::ModuleProxy(const rosic::String &name, int x, int y, bool polyphonic) 
+romos::ModuleProxy::ModuleProxy(const rosic::rsString &name, int x, int y, bool polyphonic) 
 : ModuleAtomic(name, x, y, polyphonic)
 {
 
@@ -278,8 +278,8 @@ romos::ModuleProxy::~ModuleProxy()
 
 void romos::ModuleProxy::initialize()
 { 
-  initInputPins( 1, rosic::String()); 
-  initOutputPins(1, rosic::String());
+  initInputPins( 1, rosic::rsString()); 
+  initOutputPins(1, rosic::rsString());
   hasHeaderFlag = false;
 }
 

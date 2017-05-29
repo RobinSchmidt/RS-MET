@@ -5,9 +5,9 @@ namespace romos
 
   void WhiteNoise::initialize()
   { 
-    //initInputPins( 1, rosic::String("Seed"));
-    initOutputPins(1, rosic::String("Out"));
-    addParameter(rosic::String("Seed"), 0.0);
+    //initInputPins( 1, rosic::rsString("Seed"));
+    initOutputPins(1, rosic::rsString("Out"));
+    addParameter(rosic::rsString("Seed"), 0.0);
     parameterChanged(0); 
     // add shape, min, max
   }
@@ -45,8 +45,8 @@ namespace romos
 
   void PeriodicLinearRamp::initialize()
   { 
-    initInputPins( 1, rosic::String("Freq")); 
-    initOutputPins(1, rosic::String("Out"));
+    initInputPins( 1, rosic::rsString("Freq")); 
+    initOutputPins(1, rosic::rsString("Out"));
   }
   INLINE void PeriodicLinearRamp::process(Module *module, double *in1, double *out, int voiceIndex)
   { 
@@ -85,8 +85,8 @@ namespace romos
 
   void BandlimitedImpulseTrain::initialize()
   { 
-    initInputPins(2, rosic::String("Freq"), rosic::String("Phase")); 
-    initOutputPins(1, rosic::String("Out"));
+    initInputPins(2, rosic::rsString("Freq"), rosic::rsString("Phase")); 
+    initOutputPins(1, rosic::rsString("Out"));
     fixedPhaseOffset = 0.0;
   }
 
@@ -383,8 +383,8 @@ namespace romos
 
   void DualBlitSaw::initialize()
   { 
-    initInputPins( 4, rosic::String("Freq"), rosic::String("Phase"), rosic::String("Offset"), rosic::String("Mix")); 
-    initOutputPins(1, rosic::String("Out"));
+    initInputPins( 4, rosic::rsString("Freq"), rosic::rsString("Phase"), rosic::rsString("Offset"), rosic::rsString("Mix")); 
+    initOutputPins(1, rosic::rsString("Out"));
     fixedPhaseOffset = 0.5;
   }
   INLINE void DualBlitSaw::process(Module *module, double *in1, double *in2, double *in3, double *in4, double *out, int voiceIndex)

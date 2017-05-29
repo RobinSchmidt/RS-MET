@@ -1,4 +1,4 @@
-romos::Module* romos::createLeakyIntegrator(int x, int y, const rosic::String &name)
+romos::Module* romos::createLeakyIntegrator(int x, int y, const rosic::rsString &name)
 {
   ModuleContainer *module = createModuleContainer(x, y, name);
   
@@ -27,7 +27,7 @@ romos::Module* romos::createLeakyIntegrator(int x, int y, const rosic::String &n
 }
 
 
-romos::Module* romos::createMovingAverage(int x, int y, const rosic::String &name)
+romos::Module* romos::createMovingAverage(int x, int y, const rosic::rsString &name)
 {
   ModuleContainer *module = createModuleContainer(x, y, name);
   
@@ -53,7 +53,7 @@ romos::Module* romos::createMovingAverage(int x, int y, const rosic::String &nam
 }
 
 
-romos::Module* romos::createTestFilter1(int x, int y, const rosic::String &name)
+romos::Module* romos::createTestFilter1(int x, int y, const rosic::rsString &name)
 {
   ModuleContainer *module = createModuleContainer(x, y, name);
   

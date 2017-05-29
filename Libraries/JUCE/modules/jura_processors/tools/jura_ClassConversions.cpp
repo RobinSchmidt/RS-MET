@@ -1,13 +1,13 @@
 
-juce::String rosicToJuce(const rosic::String &stringToConvert)
+juce::String rosicToJuce(const rosic::rsString &stringToConvert)
 {
   return juce::String(stringToConvert.getRawString());
 }
 
-rosic::String juceToRosic(const juce::String &stringToConvert)
+rosic::rsString juceToRosic(const juce::String &stringToConvert)
 {
   char *rawString = jura::toZeroTerminatedString(stringToConvert);
-  rosic::String result(rawString);
+  rosic::rsString result(rawString);
   delete[] rawString;
   return result;
 }

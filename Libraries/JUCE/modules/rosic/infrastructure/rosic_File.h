@@ -27,7 +27,7 @@ namespace rosic
 
     /** Constructor. Creates a file object that is associated with the given absolute path. A file
     with such path may or may not exist. */
-    File(const String& absolutePath = String());  
+    File(const rsString& absolutePath = rsString());  
 
     /** Destructor. Closes the underlying C file in case it is still open. */
     ~File();  
@@ -35,7 +35,7 @@ namespace rosic
     //---------------------------------------------------------------------------------------------
     // setup:
 
-    void setAbsolutePath(const String& newPath) { absolutePath = newPath; }
+    void setAbsolutePath(const rsString& newPath) { absolutePath = newPath; }
 
     // setRelativePathFrom
 
@@ -44,7 +44,7 @@ namespace rosic
     // inquiry:
 
     /** Returns the absolute path of the file. */
-    String getAbsolutePath() const { return absolutePath; }
+    rsString getAbsolutePath() const { return absolutePath; }
 
     /** Returns the size of the file. As the return value is of type 'long' (32-bit integer), the 
     maximum possible value is 2^31-1 = 2147483647 bytes which is roughly 2 gigabytes. For files 
@@ -66,7 +66,7 @@ namespace rosic
 
     /** Reads the entire file as a String and returns it. If something goes wrong, the returned 
     String will be empty. */
-    String readFileAsString() const;
+    rsString readFileAsString() const;
 
 
     /** Reads the entire file as zero-terminated c-string and returns the pointer to the character
@@ -81,7 +81,7 @@ namespace rosic
     /** Appends the passed text at the end of the file and returns whether this was successful. It 
     will fail when the passed string contains non-printable characters or when the file could not
     be openend for writing. */
-    bool appendText(const String& text) const;
+    bool appendText(const rsString& text) const;
 
 
     // openForTextWriting, openForTextReading, openForBinaryWriting, openForBinaryReading, ...
@@ -109,7 +109,7 @@ namespace rosic
 
   protected:
 
-    String absolutePath;
+    rsString absolutePath;
 
   };
 
