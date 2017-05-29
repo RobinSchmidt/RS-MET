@@ -1,5 +1,5 @@
-#include "rosic_WorkhorseVoice.h"
-using namespace rosic;
+//#include "rosic_WorkhorseVoice.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

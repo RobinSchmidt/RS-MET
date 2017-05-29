@@ -1,12 +1,12 @@
 #ifndef rosic_Quadriga_h
 #define rosic_Quadriga_h
 
-// rosic-indcludes:
-#include "../infrastructure/rosic_PolyphonicInstrument.h"
-#include "rosic_QuadrigaVoice.h"
-#include "../filters/rosic_EllipticSubBandFilter.h"
-#include "../effects/rosic_Quadrifex.h"
-#include "../filters/rosic_EqualizerStereo.h"
+//// rosic-indcludes:
+//#include "../infrastructure/rosic_PolyphonicInstrument.h"
+//#include "rosic_QuadrigaVoice.h"
+//#include "../filters/rosic_EllipticSubBandFilter.h"
+//#include "../effects/rosic_Quadrifex.h"
+//#include "../filters/rosic_EqualizerStereo.h"
 
 namespace rosic
 {

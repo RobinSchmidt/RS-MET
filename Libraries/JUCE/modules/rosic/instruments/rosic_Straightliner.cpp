@@ -1,5 +1,5 @@
-#include "rosic_Straightliner.h"
-using namespace rosic;
+//#include "rosic_Straightliner.h"
+//using namespace rosic;
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:

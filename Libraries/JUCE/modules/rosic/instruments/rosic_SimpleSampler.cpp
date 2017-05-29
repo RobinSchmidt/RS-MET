@@ -1,5 +1,5 @@
-#include "rosic_SimpleSampler.h"
-using namespace rosic;
+//#include "rosic_SimpleSampler.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

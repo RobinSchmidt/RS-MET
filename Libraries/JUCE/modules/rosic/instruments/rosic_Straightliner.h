@@ -1,10 +1,10 @@
 #ifndef rosic_Straightliner_h
 #define rosic_Straightliner_h
 
-// rosic-indcludes:
-#include "../infrastructure/rosic_PolyphonicInstrument.h"
-#include "rosic_StraightlinerVoice.h"
-#include "../filters/rosic_EllipticSubBandFilterDirectForm.h"
+//// rosic-indcludes:
+//#include "../infrastructure/rosic_PolyphonicInstrument.h"
+//#include "rosic_StraightlinerVoice.h"
+//#include "../filters/rosic_EllipticSubBandFilterDirectForm.h"
 
 namespace rosic
 {

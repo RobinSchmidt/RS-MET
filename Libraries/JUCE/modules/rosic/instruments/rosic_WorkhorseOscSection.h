@@ -1,9 +1,9 @@
 #ifndef rosic_WorkhorseOscSection_h
 #define rosic_WorkhorseOscSection_h
 
-// rosic-indcludes:
-//#include "../infrastructure/rosic_PresetRememberer.h"
-#include "../generators/rosic_SamplePlayer.h"
+//// rosic-indcludes:
+////#include "../infrastructure/rosic_PresetRememberer.h"
+//#include "../generators/rosic_SamplePlayer.h"
 
 namespace rosic
 {

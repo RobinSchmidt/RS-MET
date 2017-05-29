@@ -1,12 +1,12 @@
 #ifndef rosic_Workhorse_h
 #define rosic_Workhorse_h
 
-// rosic-indcludes:
-//#include "../infrastructure/rosic_PresetRememberer.h"
-#include "../infrastructure/rosic_PolyphonicInstrument.h"
-#include "rosic_WorkhorseVoice.h"
-#include "../filters/rosic_EllipticSubBandFilter.h"
-#include "../others/rosic_VectorMixer.h"
+//// rosic-indcludes:
+////#include "../infrastructure/rosic_PresetRememberer.h"
+//#include "../infrastructure/rosic_PolyphonicInstrument.h"
+//#include "rosic_WorkhorseVoice.h"
+//#include "../filters/rosic_EllipticSubBandFilter.h"
+//#include "../others/rosic_VectorMixer.h"
 
 namespace rosic
 {

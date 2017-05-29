@@ -1,11 +1,11 @@
 #ifndef rosic_SimpleSampler_h
 #define rosic_SimpleSampler_h
 
-// rosic-indcludes:
-//#include "../infrastructure/rosic_PresetRememberer.h"
-#include "../infrastructure/rosic_PolyphonicInstrument.h"
-#include "rosic_SimpleSamplerVoice.h"
-#include "../filters/rosic_EllipticSubBandFilter.h"
+//// rosic-indcludes:
+////#include "../infrastructure/rosic_PresetRememberer.h"
+//#include "../infrastructure/rosic_PolyphonicInstrument.h"
+//#include "rosic_SimpleSamplerVoice.h"
+//#include "../filters/rosic_EllipticSubBandFilter.h"
 
 namespace rosic
 {

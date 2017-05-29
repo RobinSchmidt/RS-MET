@@ -1,11 +1,11 @@
 #ifndef rosic_SimpleSamplerVoice_h
 #define rosic_SimpleSamplerVoice_h
 
-// rosic-indcludes:
-#include "../infrastructure/rosic_PolyphonicInstrumentVoice.h"
-#include "rosic_SimpleSamplerOscSection.h"
-#include "../filters/rosic_MultiModeFilter.h"
-#include "../modulators/rosic_BreakpointModulator.h"
+//// rosic-indcludes:
+//#include "../infrastructure/rosic_PolyphonicInstrumentVoice.h"
+//#include "rosic_SimpleSamplerOscSection.h"
+//#include "../filters/rosic_MultiModeFilter.h"
+//#include "../modulators/rosic_BreakpointModulator.h"
 
 namespace rosic
 {

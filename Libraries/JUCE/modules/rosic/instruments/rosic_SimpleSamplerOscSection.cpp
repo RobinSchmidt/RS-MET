@@ -1,5 +1,5 @@
-#include "rosic_SimpleSamplerOscSection.h"
-using namespace rosic;
+//#include "rosic_SimpleSamplerOscSection.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

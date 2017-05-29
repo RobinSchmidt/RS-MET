@@ -1,5 +1,5 @@
-#include "rosic_WorkhorseOscSection.h"
-using namespace rosic;
+//#include "rosic_WorkhorseOscSection.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

@@ -1,5 +1,5 @@
-#include "rosic_SimpleSamplerVoice.h"
-using namespace rosic;
+//#include "rosic_SimpleSamplerVoice.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:

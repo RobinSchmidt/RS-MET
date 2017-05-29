@@ -1,10 +1,10 @@
 #ifndef rosic_QuadrigaVoice_h
 #define rosic_QuadrigaVoice_h
 
-// rosic-indcludes:
-#include "../infrastructure/rosic_PolyphonicInstrumentVoice.h"
-#include "../modulators/rosic_EnvelopeGenerator.h"
-#include "../generators/rosic_Quadrigen.h"
+//// rosic-indcludes:
+//#include "../infrastructure/rosic_PolyphonicInstrumentVoice.h"
+//#include "../modulators/rosic_EnvelopeGenerator.h"
+//#include "../generators/rosic_Quadrigen.h"
 
 namespace rosic
 {

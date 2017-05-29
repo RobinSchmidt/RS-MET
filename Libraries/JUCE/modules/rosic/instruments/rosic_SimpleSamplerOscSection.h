@@ -1,8 +1,8 @@
 #ifndef rosic_SimpleSamplerOscSection_h
 #define rosic_SimpleSamplerOscSection_h
 
-// rosic-indcludes:
-#include "../generators/rosic_SamplePlayer.h"
+//// rosic-indcludes:
+//#include "../generators/rosic_SamplePlayer.h"
 
 namespace rosic
 {

@@ -1,12 +1,12 @@
 #ifndef rosic_StraightlinerVoice_h
 #define rosic_StraightlinerVoice_h
 
-// rosic-indcludes:
-#include "../infrastructure/rosic_PolyphonicInstrumentVoice.h"
-#include "../generators/rosic_FourOscSection.h"
-#include "../filters/rosic_MultiModeFilter.h"
-#include "../filters/rosic_LeakyIntegrator.h"
-#include "../modulators/rosic_BreakpointModulator.h"
+//// rosic-indcludes:
+//#include "../infrastructure/rosic_PolyphonicInstrumentVoice.h"
+//#include "../generators/rosic_FourOscSection.h"
+//#include "../filters/rosic_MultiModeFilter.h"
+//#include "../filters/rosic_LeakyIntegrator.h"
+//#include "../modulators/rosic_BreakpointModulator.h"
 
 namespace rosic
 {

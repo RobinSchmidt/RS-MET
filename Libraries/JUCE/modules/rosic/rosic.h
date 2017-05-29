@@ -371,7 +371,8 @@
 
 
 //-------------------------------------------------------------------------------------------------
-// old, de-centralized header includes:
+// old, de-centralized header includes (these files can be deleted eventually - they are not used 
+// anymore):
 
 //#include "analysis/rosic_Analysis.h"
 //#include "basics/rosic_Basics.h"
