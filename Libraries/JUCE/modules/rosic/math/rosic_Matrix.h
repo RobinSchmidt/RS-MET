@@ -490,7 +490,7 @@ namespace rosic
   // not necesarrily need to be of class Matrix
 
   /** Adds a scalar and a matrix. */
-  INLINE Matrix operator+(const double &x, const Matrix &m)
+  inline Matrix operator+(const double &x, const Matrix &m)
   { 
     Matrix result(m.numRows, m.numColumns);
     for(int r=0; r<m.numRows; r++)
@@ -503,7 +503,7 @@ namespace rosic
   // check
 
   /** Subtracts a matrix from a scalar. */
-  INLINE Matrix operator-(const double &x, const Matrix &m)
+  inline Matrix operator-(const double &x, const Matrix &m)
   { 
     Matrix result(m.numRows, m.numColumns);
     for(int r=0; r<m.numRows; r++)
@@ -516,7 +516,7 @@ namespace rosic
   // check
 
   /** Multiplies a scalar and a matrix. */
-  INLINE Matrix operator*(const double &x, const Matrix &m)
+  inline Matrix operator*(const double &x, const Matrix &m)
   { 
     Matrix result(m.numRows, m.numColumns);
     for(int r=0; r<m.numRows; r++)
@@ -529,7 +529,7 @@ namespace rosic
   // check
 
   /** Returns matrix A transposed. */
-  INLINE Matrix trans(const Matrix& A)
+  inline Matrix trans(const Matrix& A)
   {
     Matrix B(A.numColumns, A.numRows);
     for(int r=0; r<B.numRows; r++)

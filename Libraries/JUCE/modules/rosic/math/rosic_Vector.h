@@ -310,7 +310,7 @@ namespace rosic
   // not necesarrily need to be of class Vector
 
   /** Adds a scalar and a vector. */
-  INLINE Vector operator+(const double &x, const Vector &v)
+  inline Vector operator+(const double &x, const Vector &v)
   { 
     Vector result(v.dim);
     for(int i=0; i<v.dim; i++)    
@@ -320,7 +320,7 @@ namespace rosic
   // check
 
   /** Subtracts a vector from a scalar. */
-  INLINE Vector operator-(const double &x, const Vector &v)
+  inline Vector operator-(const double &x, const Vector &v)
   { 
     Vector result(v.dim);
     for(int i=0; i<v.dim; i++)    
@@ -330,7 +330,7 @@ namespace rosic
   // check
 
   /** Multiplies a scalar and a vector. */
-  INLINE Vector operator*(const double &x, const Vector &v)
+  inline Vector operator*(const double &x, const Vector &v)
   { 
     Vector result(v.dim);
     for(int i=0; i<v.dim; i++)    
@@ -341,7 +341,7 @@ namespace rosic
 
   /** Computes the inner product between two vectors (which should have the same dimensionality) - 
   the result is a scalar. */
-  INLINE double operator*(const Vector &a, const Vector &b)
+  inline double operator*(const Vector &a, const Vector &b)
   {
     rassert( a.dim == b.dim );   // vectors incopatible
     double result = 0.0;
