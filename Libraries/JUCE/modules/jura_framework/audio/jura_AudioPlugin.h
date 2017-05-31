@@ -4,7 +4,7 @@
 /** Subclass of juce::AudioProcessorParameter to provide the handling of host automation. It also
 derives from jura::MetaParameter in order to provide the "glue" between juce's host automation
 handling and jura's MetaParameter handling. Whenever the setValue method (inherited and overriden
-from AudioProcessorParameter) gets called by the host, we will call MetaParameter's setValue
+from AudioProcessorParameter) gets called by the host, we will call MetaParameter's setMetaValue
 method there which in turn will update all the values of the attached MetaControlledParameters.
 Whenever parameterChanged (overriden from MetaParameter) gets called, which happens when the user
 changes a parameter on the plugin's gui, we retrieve the value and call setValueNotifyingHost
