@@ -189,7 +189,7 @@
 #include "others/rosic_PiecewiseFunction.h"
 #include "_third_party/soundtouch/WavFile.h"
 #include "infrastructure/rosic_FileInputOutput.h"
-#include "others/rosic_Plotter.h"
+//#include "others/rosic_Plotter.h"                  // obsolete - use GNUPlotCPP
 #include "others/rosic_ProcessorCycleCounter.h"
 #include "others/rosic_RandomNumberGenerator01.h"
 #include "others/rosic_RandomNumberGenerator02.h"

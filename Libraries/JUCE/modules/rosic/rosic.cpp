@@ -186,7 +186,7 @@ rosic: rs_dsp (this should never depend on any juce class/module)
 //#include "others/rosic_KeyGenerator.cpp"             // remove...or keep only the "Validator" part
 #include "others/rosic_OverlapAddProcessor.cpp"
 #include "others/rosic_PiecewiseFunction.cpp"
-#include "others/rosic_Plotter.cpp"                    // obsolete - use GNUPlotCPP now
+//#include "others/rosic_Plotter.cpp"                  // obsolete - use GNUPlotCPP now
 #include "others/rosic_ProcessorCycleCounter.cpp"
 #include "others/rosic_RoutingMatrix.cpp"
 #include "others/rosic_SpectralProcessor.cpp"
