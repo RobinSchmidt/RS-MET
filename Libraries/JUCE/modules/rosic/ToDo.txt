@@ -1,4 +1,4 @@
--fix gcc compiler warnings for rosic (done)
+
 
 -use "rs" prefix for all rosic classes and functions (start with those where there's a name-clash with
  juce (String (done), File (done), Reverb (done), Array (done))  
@@ -7,9 +7,13 @@
  inside the whole project or solution - verify if other projects still compile after each 
  replacement)
 
+
+
 -clean up coding style in rosic
 -get rid of "using namespace" in headers
  (rapt.h (done), rosic.h (done), romos.h, jura_*.h)
+-maybe fix Level4 compiler warnings in msvc
+
 
 -integrate old rapt test/demo code into testbed
  -organize into: unit tests, experiments (with plots), performance tests, demos

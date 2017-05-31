@@ -7213,10 +7213,6 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/rosic/analysis/rosic_Analysis.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/rosic/analysis/rosic_CyclicAutoCorrelator.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -7341,10 +7337,6 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/rosic/basics/rosic_Basics.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/rosic/basics/rosic_ChannelMatrix2x2.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -7441,10 +7433,6 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/rosic/datastructures/rosic_DataStructures.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/rosic/datastructures/rosic_ExtensionsForSTL.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -7482,10 +7470,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/rosic/delaylines/rosic_BasicIntegerDelayLine.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/rosic/delaylines/rosic_DelayLines.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
@@ -7558,10 +7542,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/rosic/dynamics/rosic_Compressor.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/rosic/dynamics/rosic_Dynamics.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
@@ -7698,10 +7678,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/rosic/effects/rosic_EchoLab.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/rosic/effects/rosic_Effects.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
@@ -8129,10 +8105,6 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/rosic/filters/rosic_Filters.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/rosic/filters/rosic_FiniteImpulseResponseDesigner.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -8357,10 +8329,6 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/rosic/generators/rosic_Generators.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/rosic/generators/rosic_LorentzSystem.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -8545,10 +8513,6 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/rosic/infrastructure/rosic_Infrastructure.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/rosic/infrastructure/rosic_MemoryUser.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -8622,10 +8586,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/rosic/instruments/rosic_AciDevil.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/rosic/instruments/rosic_Instruments.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
@@ -9473,10 +9433,6 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/rosic/math/rosic_Math.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/rosic/math/rosic_Matrix.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -9645,10 +9601,6 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/rosic/modulators/rosic_Modulators.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/rosic/modulators/rosic_PitchEnvRc.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -9689,10 +9641,6 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/rosic/neural/rosic_Neural.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/rosic/numerical/rosic_FunctionObjects.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -9709,10 +9657,6 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/rosic/numerical/rosic_Numerical.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/rosic/others/rosic_DemoVersionNoiseEmitter.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -9722,10 +9666,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/rosic/others/rosic_ExponentialSmoother.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/rosic/others/rosic_Others.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
@@ -9885,10 +9825,6 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/rosic/rendering/rosic_Rendering.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/rosic/rendering/rosic_StandardWaveformRenderer.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -9965,10 +9901,6 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/rosic/scripting/rosic_Scripting.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/rosic/sequencing/rosic_AcidPattern.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -10006,10 +9938,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/rosic/transforms/rosic_SpectralManipulator.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/rosic/transforms/rosic_Transforms.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
