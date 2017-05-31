@@ -50,8 +50,11 @@ namespace rosic
     facility). */
     virtual int getNumModulatableParameters() { return modulatableParameters.getNumElements(); }
 
-    /** Returns the name of one of the modulatable parameters as a c-string. */
-    virtual char* getModulatableParameterName(int index);
+    ///** Returns the name of one of the modulatable parameters as a c-string. */
+    //virtual char* getModulatableParameterName(int index);
+
+    /** Returns the name of one of the modulatable parameters. */
+    virtual std::string getModulatableParameterName(int index);
 
     //---------------------------------------------------------------------------------------------
     // audio processing:

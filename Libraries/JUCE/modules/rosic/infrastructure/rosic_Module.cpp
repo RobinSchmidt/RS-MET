@@ -1,7 +1,8 @@
 //#include "rosic_Module.h"
 //using namespace rosic;
 
-char* Module::getModulatableParameterName(int index)
+//char* Module::getModulatableParameterName(int index)
+std::string Module::getModulatableParameterName(int index) 
 {
   if( index >= 0 && index < modulatableParameters.getNumElements() )
     return modulatableParameters[index].getName();

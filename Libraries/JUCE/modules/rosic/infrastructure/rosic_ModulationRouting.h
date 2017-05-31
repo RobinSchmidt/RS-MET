@@ -114,15 +114,19 @@ namespace rosic
     /** Returns the instantaneous value of this parameter. */
     double getInstantaneousValue() const { return instantaneousValue; }
 
-    /** Returns the name of this parameter as zero-terminated c-string. */
-    char* getName() const { return name; }
+    /** Returns the name of this parameter */
+    std::string getName() const { return name; }
+
+    ///** Returns the name of this parameter as zero-terminated c-string. */
+    //char* getName() const { return name; }
 
     //=============================================================================================
 
   protected:
 
     double nominalValue, instantaneousValue;
-    char   *name;
+    //char   *name;
+    std::string name;
 
   };
 
