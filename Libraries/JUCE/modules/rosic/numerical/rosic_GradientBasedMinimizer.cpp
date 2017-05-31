@@ -347,7 +347,8 @@ void GradientBasedMinimizer::printEndInfo()
 {
   if( printInfo == true )
   {
-    char *algoString;
+    //char *algoString;
+    std::string algoString; // todo: don't mix cout/printf
     switch( algorithm )
     {
     case GRADIENT_DESCENT:           algoString = "gradient descent";            break;
@@ -360,11 +361,15 @@ void GradientBasedMinimizer::printEndInfo()
       e = functionToMinimize->getValue(p);
       printf("%s %d %s",  "step: ", step, "   ");  
       printf("%s %4f %s", "error: ",   e, " \n");
-      printf("%s %s %d %s", algoString, " algorithm converged at step: ", step, "\n");
+      cout << algoString;
+      printf("%s %d %s", " algorithm converged at step: ", step, "\n");
       printf("%s", "optimized parameters: \n");
       p.print();
     }
     else
-      printf("%s %s %d %s", algoString, " algorithm did not converge and aborted at step: ", step, "\n");
+    {
+      cout << algoString;
+      printf("%s %d %s", " algorithm did not converge and aborted at step: ", step, "\n");
+    }
   }
 }
