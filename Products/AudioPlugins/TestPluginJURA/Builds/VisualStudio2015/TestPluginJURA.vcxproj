@@ -3038,6 +3038,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_MidiNoteEvent.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_ModulationRouting.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_ModulatorModules.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -4647,6 +4650,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_Infrastructure.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_MemoryUser.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_MidiNoteEvent.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_ModulationRouting.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_ModulatorModules.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_Module.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_MutexLock.h"/>

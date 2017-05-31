@@ -274,6 +274,7 @@ rosic: rs_dsp (this should never depend on any juce class/module)
 #include "effects/rosic_WaveShaper.cpp"
 
 // infrastructure
+#include "infrastructure/rosic_ModulationRouting.cpp"
 #include "infrastructure/rosic_Module.cpp"
 #include "infrastructure/rosic_EffectModules.h"
 #include "infrastructure/rosic_GeneratorModules.cpp"

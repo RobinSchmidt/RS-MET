@@ -329,6 +329,7 @@
 #include "effects/rosic_WaveShaper.h"
 
 // infrastructure:
+#include "infrastructure/rosic_ModulationRouting.h"
 #include "infrastructure/rosic_Module.h"
 #include "infrastructure/rosic_EffectModules.h"
 #include "infrastructure/rosic_GeneratorModules.h"
