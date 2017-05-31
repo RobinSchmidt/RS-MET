@@ -66,6 +66,12 @@
 //#include <intrin.h> // Or #include <ia32intrin.h> etc.
 #endif
 
+// in msvc, set warning level to 3:
+#if defined _MSC_VER
+#pragma warning(push, 3)
+#endif
+
+
 // basics:
 #include "basics/GlobalDefinitions.h"
 #include "basics/GlobalFunctions.h"
@@ -367,5 +373,10 @@
 #include "instruments/rosic_WorkhorseOscSection.h"
 #include "instruments/rosic_WorkhorseVoice.h"
 #include "instruments/rosic_Workhorse.h"
+
+// restore warning level in msvc:
+#if defined _MSC_VER
+#pragma warning(pop)
+#endif
 
 #endif // #ifndef ROSIC_H_INCLUDED

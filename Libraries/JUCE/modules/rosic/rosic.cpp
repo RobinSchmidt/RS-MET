@@ -33,6 +33,11 @@ rosic: rs_dsp (this should never depend on any juce class/module)
   realtime module)
 */
 
+// in msvc, set warning level to 3:
+#if defined _MSC_VER
+#pragma warning(push, 3)
+#endif
+
 // basics (but we needed to intersperse some stuff from other folders)
 #include "basics/GlobalFunctions.cpp"
 #include "basics/rosic_ChannelMatrix2x2.cpp"
@@ -334,3 +339,8 @@ rosic: rs_dsp (this should never depend on any juce class/module)
 #include "generators/rosic_Quadrigen.cpp"             // needs Module, RoutingMatrix
 #include "generators/rosic_VectorSamplePlayer.cpp"    // needs LowFrequencyOscillator (in modulators)
                                                       // and VectorMixer
+
+// restore warning level in msvc:
+#if defined _MSC_VER
+#pragma warning(pop)
+#endif
