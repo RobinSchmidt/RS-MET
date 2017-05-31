@@ -13,8 +13,8 @@ Quadrigen::Quadrigen() : mixMatrix(6, 3)
   for(int i=0; i<numGeneratorSlots; i++)
   {
     generatorAlgorithmIndices[i] = MUTE;
-    generatorModules[i]          = new MuteModule(); 
-      // don't change this - the constructor of QuadrigenAudioModule relies on them to be of type 
+    generatorModules[i]          = new MuteModule();
+      // don't change this - the constructor of QuadrigenAudioModule relies on them to be of type
       // MuteModule in the beginning (using static_cast) -  TODO....!!!!
   }
   reset();
@@ -79,12 +79,12 @@ void Quadrigen::setGeneratorAlgorithm(int slotIndex, int newAlgorithmIndex)
 
     //......
 
-  default: 
+  default:
     {
       newModule                            = new MuteModule;
       generatorAlgorithmIndices[slotIndex] = MUTE;
     }
-  } 
+  }
   generatorModules[slotIndex] = newModule;
   generatorModules[slotIndex]->setSampleRate(sampleRate);
   generatorModules[slotIndex]->setTempoInBPM(bpm);
@@ -145,8 +145,8 @@ void Quadrigen::processBlock(float *inOutL, float *inOutR, int numFrames)
   double tmp3R = 0.0;
   double tmp4L = 0.0;
   double tmp4R = 0.0;
-  double inL   = inOutL[0];
-  double inR   = inOutR[0];
+  //double inL   = inOutL[0];
+  //double inR   = inOutR[0];
 
   for(int n=0; n<numFrames; n++)
   {

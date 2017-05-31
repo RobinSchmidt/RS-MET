@@ -28,13 +28,13 @@ void QuadrigaVoice::setMasterTuneA4(double newMasterTuneA4)
 {
   PolyphonicInstrumentVoice::setMasterTuneA4(newMasterTuneA4);
 
-  // update the oscillators frequencies:
-  double noteFreq = 440.0;
-  if( isReleasing )
-    noteFreq = getNoteFrequency(noteBeingReleased);
-  else if( getCurrentNoteKey() != -1 )
-    noteFreq = getNoteFrequency(getCurrentNoteKey());
-  //oscSection.setPlaybackFrequencyNominal(noteFreq);
+//  // update the oscillators frequencies:
+//  double noteFreq = 440.0;
+//  if( isReleasing )
+//    noteFreq = getNoteFrequency(noteBeingReleased);
+//  else if( getCurrentNoteKey() != -1 )
+//    noteFreq = getNoteFrequency(getCurrentNoteKey());
+//  oscSection.setPlaybackFrequencyNominal(noteFreq);
 }
 
 void QuadrigaVoice::setBeatsPerMinute(double newBeatsPerMinute)

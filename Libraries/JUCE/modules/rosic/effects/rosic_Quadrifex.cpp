@@ -16,8 +16,8 @@ Quadrifex::Quadrifex() : mixMatrix(5, 5)
   for(int i=0; i<numEffectSlots; i++)
   {
     effectAlgorithmIndices[i] = BYPASS;
-    effectModules[i]          = new BypassModule(); 
-      // don't change this - the constructor of QuadrifexAudioModule relies on them to be of type 
+    effectModules[i]          = new BypassModule();
+      // don't change this - the constructor of QuadrifexAudioModule relies on them to be of type
       // BypassModule in the beginning (using static_cast)
   }
   reset();
@@ -124,12 +124,12 @@ void Quadrifex::setEffectAlgorithm(int slotIndex, int newAlgorithmIndex)
   case WAH_WAH:              newModule = new WahWahModule;                    break;
   case WAVESHAPER:           newModule = new WaveShaperModule;                break;
 
-  default: 
+  default:
     {
       newModule                         = new BypassModule;
       effectAlgorithmIndices[slotIndex] = BYPASS;
     }
-  } 
+  }
   effectModules[slotIndex] = newModule;
   effectModules[slotIndex]->setSampleRate(sampleRate);
   effectModules[slotIndex]->setTempoInBPM(bpm);
@@ -207,14 +207,13 @@ void Quadrifex::processBlock(float *inOutL, float *inOutR, int numFrames)
   double inL   = inOutL[0];
   double inR   = inOutR[0];
 
-  // some debug stuff:
-  double mixMatrixDebug[5][5];
-  for(int i=0; i<5; i++)
-  {
-    for(int j=0; j<5; j++)
-      mixMatrixDebug[i][j] = mixMatrix.getMatrixEntry(i, j);
-  }
-
+//  // some debug stuff:
+//  double mixMatrixDebug[5][5];
+//  for(int i=0; i<5; i++)
+//  {
+//    for(int j=0; j<5; j++)
+//      mixMatrixDebug[i][j] = mixMatrix.getMatrixEntry(i, j);
+//  }
 
   int n;
   switch( slotRouting )
@@ -407,15 +406,15 @@ void Quadrifex::processBlock(float *inOutL, float *inOutR, int numFrames)
         inR   = inOutR[n];
 
         // establish input for 1st effect unit:
-        tmp1L =   mixMatrix.getMatrixEntryFast(0, 0) * inL        
-                + mixMatrix.getMatrixEntryFast(1, 0) * outputsL[0] 
-                + mixMatrix.getMatrixEntryFast(2, 0) * outputsL[1] 
-                + mixMatrix.getMatrixEntryFast(3, 0) * outputsL[2] 
+        tmp1L =   mixMatrix.getMatrixEntryFast(0, 0) * inL
+                + mixMatrix.getMatrixEntryFast(1, 0) * outputsL[0]
+                + mixMatrix.getMatrixEntryFast(2, 0) * outputsL[1]
+                + mixMatrix.getMatrixEntryFast(3, 0) * outputsL[2]
                 + mixMatrix.getMatrixEntryFast(4, 0) * outputsL[3];
-        tmp1R =   mixMatrix.getMatrixEntryFast(0, 0) * inR        
-                + mixMatrix.getMatrixEntryFast(1, 0) * outputsR[0] 
-                + mixMatrix.getMatrixEntryFast(2, 0) * outputsR[1] 
-                + mixMatrix.getMatrixEntryFast(3, 0) * outputsR[2] 
+        tmp1R =   mixMatrix.getMatrixEntryFast(0, 0) * inR
+                + mixMatrix.getMatrixEntryFast(1, 0) * outputsR[0]
+                + mixMatrix.getMatrixEntryFast(2, 0) * outputsR[1]
+                + mixMatrix.getMatrixEntryFast(3, 0) * outputsR[2]
                 + mixMatrix.getMatrixEntryFast(4, 0) * outputsR[3];
 
         // apply the 1st effect unit:
@@ -426,43 +425,43 @@ void Quadrifex::processBlock(float *inOutL, float *inOutR, int numFrames)
         outputsR[0] = tmp1R;
 
         // ...and so on:
-        tmp1L =   mixMatrix.getMatrixEntryFast(0, 1) * inL        
-                + mixMatrix.getMatrixEntryFast(1, 1) * outputsL[0] 
-                + mixMatrix.getMatrixEntryFast(2, 1) * outputsL[1] 
-                + mixMatrix.getMatrixEntryFast(3, 1) * outputsL[2] 
+        tmp1L =   mixMatrix.getMatrixEntryFast(0, 1) * inL
+                + mixMatrix.getMatrixEntryFast(1, 1) * outputsL[0]
+                + mixMatrix.getMatrixEntryFast(2, 1) * outputsL[1]
+                + mixMatrix.getMatrixEntryFast(3, 1) * outputsL[2]
                 + mixMatrix.getMatrixEntryFast(4, 1) * outputsL[3];
-        tmp1R =   mixMatrix.getMatrixEntryFast(0, 1) * inR        
-                + mixMatrix.getMatrixEntryFast(1, 1) * outputsR[0] 
-                + mixMatrix.getMatrixEntryFast(2, 1) * outputsR[1] 
-                + mixMatrix.getMatrixEntryFast(3, 1) * outputsR[2] 
+        tmp1R =   mixMatrix.getMatrixEntryFast(0, 1) * inR
+                + mixMatrix.getMatrixEntryFast(1, 1) * outputsR[0]
+                + mixMatrix.getMatrixEntryFast(2, 1) * outputsR[1]
+                + mixMatrix.getMatrixEntryFast(3, 1) * outputsR[2]
                 + mixMatrix.getMatrixEntryFast(4, 1) * outputsR[3];
         effectModules[1]->processSampleFrame(&tmp1L, &tmp1R);
         outputsL[1] = tmp1L;
         outputsR[1] = tmp1R;
 
-        tmp1L =   mixMatrix.getMatrixEntryFast(0, 2) * inL        
-                + mixMatrix.getMatrixEntryFast(1, 2) * outputsL[0] 
-                + mixMatrix.getMatrixEntryFast(2, 2) * outputsL[1] 
-                + mixMatrix.getMatrixEntryFast(3, 2) * outputsL[2] 
+        tmp1L =   mixMatrix.getMatrixEntryFast(0, 2) * inL
+                + mixMatrix.getMatrixEntryFast(1, 2) * outputsL[0]
+                + mixMatrix.getMatrixEntryFast(2, 2) * outputsL[1]
+                + mixMatrix.getMatrixEntryFast(3, 2) * outputsL[2]
                 + mixMatrix.getMatrixEntryFast(4, 2) * outputsL[3];
-        tmp1R =   mixMatrix.getMatrixEntryFast(0, 2) * inR        
-                + mixMatrix.getMatrixEntryFast(1, 2) * outputsR[0] 
-                + mixMatrix.getMatrixEntryFast(2, 2) * outputsR[1] 
-                + mixMatrix.getMatrixEntryFast(3, 2) * outputsR[2] 
+        tmp1R =   mixMatrix.getMatrixEntryFast(0, 2) * inR
+                + mixMatrix.getMatrixEntryFast(1, 2) * outputsR[0]
+                + mixMatrix.getMatrixEntryFast(2, 2) * outputsR[1]
+                + mixMatrix.getMatrixEntryFast(3, 2) * outputsR[2]
                 + mixMatrix.getMatrixEntryFast(4, 2) * outputsR[3];
         effectModules[2]->processSampleFrame(&tmp1L, &tmp1R);
         outputsL[2] = tmp1L;
         outputsR[2] = tmp1R;
 
-        tmp1L =   mixMatrix.getMatrixEntryFast(0, 3) * inL        
-                + mixMatrix.getMatrixEntryFast(1, 3) * outputsL[0] 
-                + mixMatrix.getMatrixEntryFast(2, 3) * outputsL[1] 
-                + mixMatrix.getMatrixEntryFast(3, 3) * outputsL[2] 
+        tmp1L =   mixMatrix.getMatrixEntryFast(0, 3) * inL
+                + mixMatrix.getMatrixEntryFast(1, 3) * outputsL[0]
+                + mixMatrix.getMatrixEntryFast(2, 3) * outputsL[1]
+                + mixMatrix.getMatrixEntryFast(3, 3) * outputsL[2]
                 + mixMatrix.getMatrixEntryFast(4, 3) * outputsL[3];
-        tmp1R =   mixMatrix.getMatrixEntryFast(0, 3) * inR        
-                + mixMatrix.getMatrixEntryFast(1, 3) * outputsR[0] 
-                + mixMatrix.getMatrixEntryFast(2, 3) * outputsR[1] 
-                + mixMatrix.getMatrixEntryFast(3, 3) * outputsR[2] 
+        tmp1R =   mixMatrix.getMatrixEntryFast(0, 3) * inR
+                + mixMatrix.getMatrixEntryFast(1, 3) * outputsR[0]
+                + mixMatrix.getMatrixEntryFast(2, 3) * outputsR[1]
+                + mixMatrix.getMatrixEntryFast(3, 3) * outputsR[2]
                 + mixMatrix.getMatrixEntryFast(4, 3) * outputsR[3];
         effectModules[3]->processSampleFrame(&tmp1L, &tmp1R);
         outputsL[3] = tmp1L;
@@ -470,15 +469,15 @@ void Quadrifex::processBlock(float *inOutL, float *inOutR, int numFrames)
 
 
 
-        tmp1L =   mixMatrix.getMatrixEntryFast(0, 4) * inL        
-                + mixMatrix.getMatrixEntryFast(1, 4) * outputsL[0] 
-                + mixMatrix.getMatrixEntryFast(2, 4) * outputsL[1] 
-                + mixMatrix.getMatrixEntryFast(3, 4) * outputsL[2] 
+        tmp1L =   mixMatrix.getMatrixEntryFast(0, 4) * inL
+                + mixMatrix.getMatrixEntryFast(1, 4) * outputsL[0]
+                + mixMatrix.getMatrixEntryFast(2, 4) * outputsL[1]
+                + mixMatrix.getMatrixEntryFast(3, 4) * outputsL[2]
                 + mixMatrix.getMatrixEntryFast(4, 4) * outputsL[3];
-        tmp1R =   mixMatrix.getMatrixEntryFast(0, 4) * inR        
-                + mixMatrix.getMatrixEntryFast(1, 4) * outputsR[0] 
-                + mixMatrix.getMatrixEntryFast(2, 4) * outputsR[1] 
-                + mixMatrix.getMatrixEntryFast(3, 4) * outputsR[2] 
+        tmp1R =   mixMatrix.getMatrixEntryFast(0, 4) * inR
+                + mixMatrix.getMatrixEntryFast(1, 4) * outputsR[0]
+                + mixMatrix.getMatrixEntryFast(2, 4) * outputsR[1]
+                + mixMatrix.getMatrixEntryFast(3, 4) * outputsR[2]
                 + mixMatrix.getMatrixEntryFast(4, 4) * outputsR[3];
 
 
