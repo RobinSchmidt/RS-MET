@@ -95,6 +95,9 @@ void MetaParameter::detachParameter(MetaControlledParameter* p)
 
 void MetaParameter::setMetaValue(double newValue)
 { 
+  if(newValue == metaValue)
+    return; // avoid superfluous updates (some DAWs continuously send constant values)
+
   jassert(newValue >= 0.0 && newValue <= 1.0); // must be a normalized value in the range 0..1
   metaValue = newValue;
   localAutomationSwitch = false; // so we don't call ourselves recursively
