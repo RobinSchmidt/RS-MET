@@ -44,7 +44,7 @@ namespace rosic
     /**< Sets the oversampling factor for the internal signal processing - a factor of one (or 
     lower) will result in no oversampling. */
 
-    bool setAlgorithmString(char* newAlgorithmString);
+    bool setAlgorithmString(const char* newAlgorithmString);
     /**< Sets a new string for the expression evaluator to be parsed - the string represents the 
     DSP algorithm in a syntax suitable for the ExprEval library. */
 

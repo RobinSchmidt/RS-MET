@@ -15,8 +15,12 @@ DspWorkbench::DspWorkbench()
   antiAliasFilterL.setSubDivision(oversamplingFactor);
   antiAliasFilterR.setSubDivision(oversamplingFactor);
 
+  // old - warning on gcc:
+  //algorithm = "outL=inL;\noutR=inR;";
+  //setAlgorithmString("outL=inL;\noutR=inR;");
+
   algorithm = "outL=inL;\noutR=inR;";
-  setAlgorithmString("outL=inL;\noutR=inR;");
+  setAlgorithmString(algorithm.c_str());
 
   // create and initialize variables for input and output and retrieve the addresses where they 
   // are stored:
@@ -65,7 +69,7 @@ void DspWorkbench::setOversamplingFactor(int newOversamplingFactor)
   //markPresetAsDirty();
 }
 
-bool DspWorkbench::setAlgorithmString(char *newAlgorithmString)
+bool DspWorkbench::setAlgorithmString(const char *newAlgorithmString)
 {
 
   // pass the new string to the ExpressionEvaluator object and return the boolean result of this 
