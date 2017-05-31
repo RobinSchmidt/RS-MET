@@ -362,7 +362,7 @@ double EchoLab::getDelayLineParameterThreadSafe(int parameterIndex, int delayLin
     mutex.unlock();
     return 0.0;
   }
-  double result; 
+  double result = 0.0; 
   switch( parameterIndex )
   {
   case DELAY_TIME:         

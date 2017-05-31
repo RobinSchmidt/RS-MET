@@ -189,16 +189,16 @@ void PoleZeroMapper::sLowpassToBandreject(Complex *z,    Complex *p,    double *
 
 
 
-void PoleZeroMapper::prototypeToAnalogLowpass(Complex *poles, int numPoles, Complex *zeros, int numZeros, double *gain,
-                                                 double targetCutoff)
+void PoleZeroMapper::prototypeToAnalogLowpass(Complex *poles, int numPoles, Complex *zeros, 
+  int numZeros, double *gain, double targetCutoff)
 {
   int i;
-  for(i=0; i<numPoles; i++)
+  for(i = 0; i < numPoles; i++)
     poles[i] = poles[i] * targetCutoff;
-  for(i=0; i<numZeros; i++)
+  for(i = 0; i < numZeros; i++)
     zeros[i] = zeros[i] * targetCutoff;
 
-  // \todo adjust gain
+  // \todo adjust gain: *gain /= targetCutoff; ?
 }
 
 void PoleZeroMapper::sPlanePrototypeToLowpass(Complex *prototypePoles, Complex *prototypeZeros, Complex *targetPoles,

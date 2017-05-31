@@ -133,7 +133,7 @@ void AttackDecayEnvelope::calculateCoeffsAndInitValue()
   double aa = -x;
 
   // compute the normalizer:
-  double normalizer, xp;
+  double normalizer = 1, xp;
   if( td == 0 )
   {
     // zero decay time not allowed

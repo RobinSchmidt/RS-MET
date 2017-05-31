@@ -39,11 +39,10 @@ void FourPoleFilter::setMode(int newMode)
   //secondStageIsActive = parameters->twoStageSwitch;
 
   unsigned int s;
-  for(s=0; s<slaves.size(); s++)
+  for(s = 0; s < slaves.size(); s++)
     slaves[s]->secondStageIsActive = this->secondStageIsActive;
-
   updateFilterCoefficients();
-  for(unsigned int s=0; s<slaves.size(); s++)
+  for(s = 0; s < slaves.size(); s++)
     slaves[s]->updateFilterCoefficients();
 }
 

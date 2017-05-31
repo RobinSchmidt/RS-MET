@@ -1,4 +1,4 @@
--fix gcc compiler warnings for rosic
+-fix gcc compiler warnings for rosic (done)
 
 -use "rs" prefix for all rosic classes and functions (start with those where there's a name-clash with
  juce (String (done), File (done), Reverb (done), Array (done))  
