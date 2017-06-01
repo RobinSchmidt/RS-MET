@@ -135,7 +135,7 @@ StringArray AudioModuleFactory::getAvailableModuleTypes()
   //a.add("Quadriga");
   //a.add("Workhorse");
 #ifdef _MSC_VER
-  //a.add("Liberty"); // not yet available on gcc 
+  a.add("Liberty"); // not yet available on gcc 
 #endif
 
   return a;
