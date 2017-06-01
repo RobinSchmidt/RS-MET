@@ -621,7 +621,7 @@ RTreeViewNode* RTreeView::getNodeAtY(int y, int &yStart, RTreeViewNode* nodeToSt
     return nodeToStartWith;
   else if( nodeToStartWith->hasChildNodes() && nodeToStartWith->isOpen )
   {
-    for(int i=0; i<nodeToStartWith->childNodes.size(); i++)
+    for(int i = 0; i<nodeToStartWith->childNodes.size(); i++)
     {
       yStart += getNodeHeight(); // yStart is a reference, so it gets incremented in the recursion, too
       RTreeViewNode* currentNode = getNodeAtY(y, yStart, nodeToStartWith->childNodes[i]);
@@ -631,11 +631,7 @@ RTreeViewNode* RTreeView::getNodeAtY(int y, int &yStart, RTreeViewNode* nodeToSt
     return NULL; 
   }
   else
-  {
     return NULL;
-    // if in a menu with only one tree level (i.e. a linear list of options) one clicks slightly 
-    // above the 1st option, the "isOpen" flag is set to false and the menu stops working
-  }
 }
 
 int RTreeView::getNodeClickPosition(RTreeViewNode *node, int pixelPositionX)

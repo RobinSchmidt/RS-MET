@@ -155,7 +155,6 @@ protected:
 
   // data for maniging the tree-structure:
   RTreeViewNode               *parentNode;
-  //juce::Array<RTreeViewNode*> childNodes;
   std::vector<RTreeViewNode*> childNodes;
   bool deleteChildNodesOnDestruction;
 
@@ -185,8 +184,8 @@ public:
   /** Callback that gets called when the user has clicked a node in an RTreeView. The clickPosition 
   argument is one of the values defined in the RTreeView::nodeClickPositions enumeration and may be 
   used to trigger different actions depending on where exactly the node was clicked. */
-  virtual void treeNodeClicked(RTreeView *treeView, RTreeViewNode *nodeThatWasClicked, const MouseEvent &mouseEvent,
-    int clickPosition) = 0;
+  virtual void treeNodeClicked(RTreeView *treeView, RTreeViewNode *nodeThatWasClicked, 
+    const MouseEvent &mouseEvent, int clickPosition) = 0;
 
 /** Callback that gets called when a node in the tree was changed somehow. */
   virtual void treeNodeChanged(RTreeView *treeView, RTreeViewNode *nodeThatHasChanged) = 0;
