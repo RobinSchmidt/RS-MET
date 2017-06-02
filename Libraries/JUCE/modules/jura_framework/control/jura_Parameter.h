@@ -327,7 +327,11 @@ public:
   /** Returns, whether or not this is a string-based parameter, that is: a parameter which can take
   on a number of named values such as used by comboboxes. */
   virtual bool isStringParameter() const 
-  { ScopedPointerLock spl(mutex); return stringValues.size() != 0; }
+  { 
+    ScopedPointerLock spl(mutex); 
+    return scaling == STRING && stringValues.size() != 0;
+    //return stringValues.size() != 0; 
+  }
 
   //-----------------------------------------------------------------------------------------------
   // functions for the callback-mechanisms:

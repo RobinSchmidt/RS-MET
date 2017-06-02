@@ -1,7 +1,7 @@
 
 void AudioPluginParameter::setValue(float newValue)
 {
-  if(newValue != metaValue)                           // avoid superfluous updates (some DAWs 
+  if((double)newValue != metaValue)                   // avoid superfluous updates (some DAWs 
     MetaParameter::setMetaValue((double)newValue);    // continuously send constant values)
 }
 
