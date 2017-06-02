@@ -39,6 +39,12 @@ public:
     current = newCurrentValue;
   }
 
+  /** Returns the current value without updating the filter state. */
+  INLINE double getCurrentValue()
+  {
+    return current;
+  }
+
   /** Returns a smoothed output sample. */
   INLINE double getSample()
   {
