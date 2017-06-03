@@ -115,7 +115,8 @@ void RComboBox::assignParameter(Parameter* parameterToAssign)
   if( assignedParameter != NULL )
   {
     assignedParameter->registerParameterObserver(this);
-    jassert( assignedParameter->isStringParameter() ); // trying to assign a non-string parameter to a combobox
+    jassert( assignedParameter->isStringParameter() ); // use Parameter::STRING for the scaling 
+                                                       // when you attach a combobox to a parameter
     for(int i=0; i<assignedParameter->getNumStringValues(); i++)
       addItem(i, assignedParameter->getOptionStringAtIndex(i));
     updateWidgetFromAssignedParameter(false);
