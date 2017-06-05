@@ -196,7 +196,7 @@ void GradientBasedMinimizer::minimizeViaScaledConjugateGradient()
   double lambda = 0.1;      // scale factor for the unit matrix
   double delta;             // denominator in equation for alpha - should be > 0
   double Delta;             // comparison parameter between predicted and actual error decrease
-  double norm;              // Euclidean norm of current direction vector
+  double norm = 0;          // Euclidean norm of current direction vector
   bool   success   = true;  // flag to indicate a successful step - if false in some iteration, we 
                             // re-use the gradient and error value from the previous iteration
   g = functionToMinimize->getGradient(p);

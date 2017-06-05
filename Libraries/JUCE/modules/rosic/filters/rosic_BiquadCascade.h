@@ -297,8 +297,8 @@ namespace rosic
   {
     doubleA xL, yL, gL, xR, yR, gR;
 
-    xL = *inOutL + TINY;
-    xR = *inOutR + TINY;
+    yL = xL = *inOutL + TINY;
+    yR = xR = *inOutR + TINY;
 
     for(int i=0; i<numStages; i++)  
     {

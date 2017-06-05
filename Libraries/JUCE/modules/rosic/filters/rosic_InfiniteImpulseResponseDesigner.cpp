@@ -330,8 +330,8 @@ void InfiniteImpulseResponseDesigner::getBiquadCascadeCoefficients(double *b0, d
     prototypeDesigner.setPrototypeMode(PrototypeDesigner::LOWSHELV_PROTOTYPE);
     if( isCloseTo(gain, 0.0, 0.001) || mode == BYPASS ) // gains of zero yield a 'bypass' filter
     {
-      for(int b = 0; b < numBiquads; b++)
-      {
+      for(int b = 0; b < numBiquads; b++) // msvc gives an "unreachable code" warning here - but
+      {                                   // the code is definitely reachable...hmmm
         b0[b] = 1.0;
         b1[b] = 0.0;
         b2[b] = 0.0;
@@ -421,8 +421,8 @@ void InfiniteImpulseResponseDesigner::calculateLowerAndUpperFrequency()
 void InfiniteImpulseResponseDesigner::normalizeGain(double *b0, double *b1, double *b2,
                                                double *a1, double *a2, double wc, int numBiquads)
 {
-  double w;
-  if( mode == LOWPASS || mode == BANDREJECT || mode == HIGH_SHELV || mode == PEAK )
+  double w = 0.0;
+  if( mode == LOWPASS || mode == BANDREJECT || mode == HIGH_SHELV || mode == PEAK ) // redundant
     w = 0.0;           // normalize at DC
   else if( mode == HIGHPASS || mode == LOW_SHELV )
     w = PI;            // normalize at Nyquist frequency

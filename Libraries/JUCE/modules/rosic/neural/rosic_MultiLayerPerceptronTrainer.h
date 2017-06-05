@@ -116,7 +116,7 @@ namespace rosic
 
   double MultiLayerPerceptronTrainer::activationDerivative(double z)
   {
-    double gp;
+    double gp = 0;
     switch( mlp->activationFunctionIndex )
     {
     case MultiLayerPerceptron::LOGISTIC:

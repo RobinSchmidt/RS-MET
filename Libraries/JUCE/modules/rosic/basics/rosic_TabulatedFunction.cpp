@@ -46,6 +46,7 @@ bool TabulatedFunction::setTableSize(int newTableSize)
     {
       tableSize = newTableSize;
       calculateTable();
+      mutex.unlock();
       return true;
     }
     else
@@ -53,11 +54,11 @@ bool TabulatedFunction::setTableSize(int newTableSize)
       // try to allocate memory with the old tableSize and report failure:
       funcTbl = new doubleA[tableSize];
       calculateTable();
+      mutex.unlock();
       return false;
     }
 
   }
-  mutex.unlock();
 }
 
 void TabulatedFunction::setRange(double newLowerLimit, double newUpperLimit)

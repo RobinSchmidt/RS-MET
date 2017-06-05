@@ -82,9 +82,8 @@ INLINE int floorInt(double x)
 
 INLINE int ceilInt(double x)
 {
-  int i;
-
 #if MSC_X86_ASM
+  int i;
   const float round_towards_p_i = -0.5f;
   __asm
   {
@@ -94,11 +93,10 @@ INLINE int ceilInt(double x)
     fistp i;
     sar i, 1;
   }
+  return (-i);
 #else
   return (int)ceil(x);
 #endif
-
-  return (-i);
 }
 
 INLINE int truncateToInt(double x)
