@@ -337,14 +337,21 @@ void Parameter::callValueChangeCallbacks()
 double Parameter::restrictValueToParameterRange(double valueToRestrict)
 {
   ScopedPointerLock spl(mutex);
+
+  // quantize:
+  if( interval > 0 )
+    valueToRestrict = minValue + interval * floor((valueToRestrict - minValue) / interval + 0.5);
   if( scaling == BOOLEAN )
     valueToRestrict = (double) (valueToRestrict >= 0.5);
-  if( scaling == STRING )
+  if( scaling == STRING || scaling == INTEGER )
     valueToRestrict = (double) round(valueToRestrict);
+
+  // clip:
   if( valueToRestrict > maxValue )
     return maxValue;
   if( valueToRestrict < minValue )
     return minValue;
+
   return valueToRestrict;
 }
 
