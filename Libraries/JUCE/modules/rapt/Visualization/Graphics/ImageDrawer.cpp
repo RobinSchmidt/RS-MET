@@ -223,7 +223,7 @@ void LineDrawer<TPix, TWgt, TCor>::drawMiddleSection()
 {
   for(x = xel+1; x <= xsr-1; x++){            // outer loop over x
     yf = a*x + b;                             // ideal y (float)
-    y  = roundToInt(yf);                      // rounded y
+    y  = rsRoundToInt(yf);                    // rounded y
     ys = rsMax(y-dvy, 0);                     // scanline start
     ye = rsMin(y+dvy, yMax);                  // scanline end
     for(y = ys; y <= ye; y++){                // inner loop over y-scanline
@@ -242,7 +242,7 @@ void LineDrawer<TPix, TWgt, TCor>::drawCap(int start, int end, bool joinable)
     js = 0.5;
   for(x = start; x <= end; x++){
     yf = a*x + b;
-    y  = roundToInt(yf);
+    y  = rsRoundToInt(yf);
     ys = rsMax(y-dvy, 0);
     ye = rsMin(y+dvy, yMax);
     for(y = ys; y <= ye; y++){
@@ -272,7 +272,7 @@ void LineDrawer<TPix, TWgt, TCor>::drawCapForJointUniformColor(int start, int en
 {
   for(x = start; x <= end; x++){
     yf = a*x + b;
-    y  = roundToInt(yf);
+    y  = rsRoundToInt(yf);
     ys = rsMax(y-dvy, 0);
     ye = rsMin(y+dvy, yMax);
     for(y = ys; y <= ye; y++){
