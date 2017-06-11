@@ -139,6 +139,10 @@ template<class T>
 inline void rsRangeConversionCoefficients(T inMin, T inMax, T outMin, T outMax, 
   T *scale, T *shift);
 
+/** Rounds the given x to the closest integer. */
+template <class T>
+inline int rsRoundToInt(T x);
+
 /** Returns +1 for x > 0, -1 for x < 0 and 0 for x == 0. */
 template <class T>
 inline T rsSign(T x);

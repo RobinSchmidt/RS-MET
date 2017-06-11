@@ -5,15 +5,15 @@ inline double rsBeatsToSeconds(double beat, double bpm)
 {                                                      
   return (60.0 / bpm)*beat;
 }
-inline int rsRoundToInt(double x)
-{
-  double xFloor = floor(x);
-  double xFrac  = x-xFloor;
-  if( xFrac >= 0.5 )
-    return (int) xFloor + 1;
-  else
-    return (int) xFloor;
-}
+//inline int rsRoundToInt(double x)
+//{
+//  double xFloor = floor(x);
+//  double xFrac  = x-xFloor;
+//  if( xFrac >= 0.5 )
+//    return (int) xFloor + 1;
+//  else
+//    return (int) xFloor;
+//}
 //template <class T> 
 //inline T rsSign(T x)
 //{
