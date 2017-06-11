@@ -97,7 +97,7 @@ protected:
   juce::String headlineText;
   int          headlineStyle, headlinePosition, headlineX, headlineY;
 
-  juce::Array<Rectangle<int> > guiLayoutRectangles;
+  juce::Array<juce::Rectangle<int> > guiLayoutRectangles;
 
   // these are not always needed, therefore nullptr by default:
   RButton *closeButton;               

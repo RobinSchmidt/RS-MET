@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <memory.h>
-#include <malloc.h>
+//#include <malloc.h> // commented by Robin Schmidt - use malloc from stdlib
 
 #ifdef __cplusplus
 extern "C" {
