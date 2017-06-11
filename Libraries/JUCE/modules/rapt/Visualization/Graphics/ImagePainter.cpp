@@ -586,7 +586,7 @@ template<class T> inline int        ipart(T x) { return (int) x;         }
 template<class T> inline T          fpart(T x) { return x - ipart(x);    }
 template<class T> inline T         rfpart(T x) { return 1 - fpart(x);    }
 template<class T> inline int   roundToInt(T x) { return ipart(x + 0.5f); }
-template<class T> inline void swap(T& x, T& y) { T t = x; x = y; y = t;  }
+//template<class T> inline void swap(T& x, T& y) { T t = x; x = y; y = t;  }
 //template<class T> inline float   min(T x, T y) { return x < y ? x : y;   }
  
 // Wu line drawing algorithm translated from
@@ -597,11 +597,11 @@ void ImagePainter<TPix, TWgt, TCor>::drawLineWu(TCor x0, TCor y0, TCor x1, TCor 
   bool steep = abs(y1 - y0) > abs(x1 - x0);
 
   if(steep){
-    swap(x0, y0);
-    swap(x1, y1); }
+    rsSwap(x0, y0);
+    rsSwap(x1, y1); }
   if(x0 > x1){
-    swap(x0, x1);
-    swap(y0, y1); }
+    rsSwap(x0, x1);
+    rsSwap(y0, y1); }
 
   TCor dx = x1 - x0;
   TCor dy = y1 - y0;
