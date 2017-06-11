@@ -27,9 +27,8 @@
 #define ROSIC_H_INCLUDED
 
 //-------------------------------------------------------------------------------------------------
-// new, centralized header includes (when finsihed, delete old ones):
+// new, centralized header includes (when finished, delete old ones):
 
-#include <malloc.h>     // for alloca - try to get rid..
 #include <math.h>
 #include <float.h>      // for DBL_MIN, ..
 #include <algorithm>    // for sort
@@ -48,6 +47,10 @@
 //#include <stdio.h>
 //#include <new>
 //#include <iterator>
+
+#ifndef __APPLE__
+#include <malloc.h>     // for alloca - try to get rid..
+#endif
 
 #if (defined (_WIN32) || defined (_WIN64))
 #define USE_WINAPI_CRITICAL_SECTION
