@@ -36,6 +36,7 @@
 #include <cstring>      // for memcpy on linux/gcc
 #include <list>
 #include <stdlib.h>     // needed on OSX for atoi, atof, rand, abs
+#include <iostream>     // cout is used in GradientBasedMinimizer.cpp (maybe get rid)
 //#include <string.h>
 //#include <vector>
 //#include <errno.h>

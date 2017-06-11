@@ -1,7 +1,3 @@
-// third party includes:
-#include "../_third_party/tnt/tnt.h"
-#include "../_third_party/tnt/jama_svd.h"
-
 //#include "rosic_Matrix.h"
 //using namespace rosic;
 
@@ -72,38 +68,52 @@ rosic::Matrix::~Matrix()
 //-------------------------------------------------------------------------------------------------
 // matrix computations:
 
-// copies the content of a rosic::Matrix into a corresponding object of class TNT::Array2D, the 
-// latter of which must have the correct size (number of rows and columns) beforehand
-void copyRosicMatrixToTntArray2D(const rosic::Matrix &rm, TNT::Array2D<double> &tm)
-{
-  for(int r=0; r<rm.numRows; r++)
-  {
-    for(int c=0; c<rm.numColumns; c++)
-      tm[r][c] = rm.m[r][c];
-  }
-}
+//// third party includes:
+//#include "../_third_party/tnt/tnt.h"
+//#include "../_third_party/tnt/jama_svd.h"
 
-// copies the content of a TNT::Array2D into a corresponding object of class rosic::Matrix, the 
-// size of the rosic::Matrix will be adjusted if it doesn't match
-void copyTntArray2DToRosicMatrix(const TNT::Array2D<double> &tm, rosic::Matrix &rm)
-{
-  rm.setSize(tm.dim1(), tm.dim2());
-  for(int r=0; r<rm.numRows; r++)
-  {
-    for(int c=0; c<rm.numColumns; c++) 
-      rm.m[r][c] = tm[r][c];
-  }
-}
+//// copies the content of a rosic::Matrix into a corresponding object of class TNT::Array2D, the 
+//// latter of which must have the correct size (number of rows and columns) beforehand
+//void copyRosicMatrixToTntArray2D(const rosic::Matrix &rm, TNT::Array2D<double> &tm)
+//{
+//  for(int r=0; r<rm.numRows; r++)
+//  {
+//    for(int c=0; c<rm.numColumns; c++)
+//      tm[r][c] = rm.m[r][c];
+//  }
+//}
+//
+//// copies the content of a TNT::Array2D into a corresponding object of class rosic::Matrix, the 
+//// size of the rosic::Matrix will be adjusted if it doesn't match
+//void copyTntArray2DToRosicMatrix(const TNT::Array2D<double> &tm, rosic::Matrix &rm)
+//{
+//  rm.setSize(tm.dim1(), tm.dim2());
+//  for(int r=0; r<rm.numRows; r++)
+//  {
+//    for(int c=0; c<rm.numColumns; c++) 
+//      rm.m[r][c] = tm[r][c];
+//  }
+//}
 
-void rosic::Matrix::getSingularValueDecomposition(rosic::Matrix *U, rosic::Matrix *S, 
-                                                  rosic::Matrix *V)
-{
-  TNT::Array2D<double> tntA(numRows, numColumns); copyRosicMatrixToTntArray2D(*this, tntA);
-  JAMA::SVD<double> svd(tntA);
-  svd.getU(tntA); copyTntArray2DToRosicMatrix(tntA, *U);
-  svd.getS(tntA); copyTntArray2DToRosicMatrix(tntA, *S);
-  svd.getV(tntA); copyTntArray2DToRosicMatrix(tntA, *V);
-}
+//void rosic::Matrix::getSingularValueDecomposition(rosic::Matrix *U, rosic::Matrix *S, 
+//                                                  rosic::Matrix *V)
+//{
+//  TNT::Array2D<double> tntA(numRows, numColumns); copyRosicMatrixToTntArray2D(*this, tntA);
+//  JAMA::SVD<double> svd(tntA);
+//  svd.getU(tntA); copyTntArray2DToRosicMatrix(tntA, *U);
+//  svd.getS(tntA); copyTntArray2DToRosicMatrix(tntA, *S);
+//  svd.getV(tntA); copyTntArray2DToRosicMatrix(tntA, *V);
+//}
+
+// Has been commented out because it's currently not used anywhere and Elan says, there's 
+// compilation error on OSX in tnt_sparse_matrix_csr.h:
+//template <class T>
+//Sparse_Matrix_CompRow<T>::Sparse_Matrix_CompRow(int M, int N, int nz,
+//  const T *val, const int *r, const int *c) : val_(nz,val), 
+//  rowptr_(M, r), colind_(nz, c), dim1_(M), dim2_(N) {}
+//rowptr_(M, r), colind_(nz, c)
+//should be
+//rowptr_(M, *r), colind_(nz, *c)
 
 //-------------------------------------------------------------------------------------------------    
 // others:

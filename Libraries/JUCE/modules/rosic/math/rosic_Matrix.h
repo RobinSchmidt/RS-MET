@@ -469,11 +469,11 @@ namespace rosic
     //---------------------------------------------------------------------------------------------
     // matrix computations:
 
-    /** Returns the the singular value decomposition of this matrix (lets denote it by A) such that
-    A = U * S * V' where U and V are orthogonal matrices (U' * U = E, V' * V = E) and S is a 
-    diagonal matrix with positive or zero elements (the singular values). The singular values are 
-    ordered such that S[0][0] >= S[1][1] >= ...  */
-    void getSingularValueDecomposition(Matrix *U, Matrix *S, Matrix *V);
+    ///** Returns the the singular value decomposition of this matrix (lets denote it by A) such that
+    //A = U * S * V' where U and V are orthogonal matrices (U' * U = E, V' * V = E) and S is a 
+    //diagonal matrix with positive or zero elements (the singular values). The singular values are 
+    //ordered such that S[0][0] >= S[1][1] >= ...  */
+    //void getSingularValueDecomposition(Matrix *U, Matrix *S, Matrix *V);
 
 
     // getDeterminant, ...
