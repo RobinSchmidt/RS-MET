@@ -7894,6 +7894,22 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\rapt.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\romos.h" />
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rosic.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_basics\juce_audio_basics.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_devices\juce_audio_devices.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_formats\juce_audio_formats.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_plugin_client\juce_audio_plugin_client.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\juce_audio_processors.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_core\juce_core.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_data_structures\juce_data_structures.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_events\juce_events.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_graphics\juce_graphics.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_gui_basics\juce_gui_basics.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_gui_extra\juce_gui_extra.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\jura_framework.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\jura_processors.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\rapt.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\romos\romos.h" />
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\rosic.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\DebugNotes.txt">

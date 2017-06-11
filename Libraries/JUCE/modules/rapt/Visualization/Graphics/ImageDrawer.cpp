@@ -186,14 +186,14 @@ void LineDrawer<TPix, TWgt, TCor>::setupAlgorithmVariables(TCor x0, TCor y0, TCo
   L     = sqrt(dx*dx + dy*dy);         // length of the line
   steep = abs(dy) > abs(dx);
   if(steep){                           // swap roles of x and y for steep lines
-    swap(dx, dy);
-    swap(x0, y0);
-    swap(x1, y1);
-    swap(xMax, yMax); }
+    rsSwap(dx, dy);
+    rsSwap(x0, y0);
+    rsSwap(x1, y1);
+    rsSwap(xMax, yMax); }
   back = x0 > x1;
   if(back){                            // swap roles of start and end for leftward lines
-    swap(x0, x1);
-    swap(y0, y1);
+    rsSwap(x0, x1);
+    rsSwap(y0, y1);
     dx = -dx;
     dy = -dy; }
 

@@ -89,7 +89,7 @@ void Parameter::setValue(double newValue, bool sendNotification, bool callCallba
   ScopedPointerLock spl(mutex);
 
   //// experimental (seems to break total recall for SpiralGenerator):
-  //if(value = newValue)
+  //if(value = newValue)  // hey - that's wrong - it should be if(value == newValue)
   //  return;
 
   value = restrictValueToParameterRange(newValue);
