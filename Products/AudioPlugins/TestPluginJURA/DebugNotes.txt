@@ -18,8 +18,11 @@ make
 
 will build a debug version
 
-the following developer packages have to be installed
-
+the following developer packages have to be installed (via the command 
+line terminal):
 sudo apt-get install libasound2-dev 
 sudo apt-get install libfreetype6-dev
-...more
+sudo apt-get install libx11-dev
+sudo apt-get install libxrandr-dev 
+sudo apt-get install libxinerama-dev
+sudo apt-get install libxcursor-dev
