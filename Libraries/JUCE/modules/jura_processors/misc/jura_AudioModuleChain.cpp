@@ -188,7 +188,17 @@ AudioModuleChain::AudioModuleChain(CriticalSection *lockToUse) : AudioModuleWith
 {
   ScopedLock scopedLock(*lock);
   moduleName = "Chainer";
-  setActiveDirectory(getApplicationDirectory() + "/ChainerPresets");
+
+#ifdef _WIN32
+  juce::String presetPath = getApplicationDirectory() + "/ChainerPresets";
+#elif __APPLE__
+  juce::String presetPath = "/Library/Audio/Presets/"+moduleVendor+"/"+moduleName+"/ChainerPresets";
+#elif __linux__ 
+  juce::String presetPath = getApplicationDirectory() + "/ChainerPresets";
+#endif
+  setActiveDirectory(presetPath);
+  //setActiveDirectory(getApplicationDirectory() + "/ChainerPresets");  // old
+
   addEmptySlot();
 }
 

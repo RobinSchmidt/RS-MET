@@ -101,7 +101,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   // file-management:
 
-  /** Sets some nomilnal root-directory. Relative paths returned by getRelativePath() are with
+  /** Sets some nominal root-directory. Relative paths returned by getRelativePath() are with
   respect to this directory. Optionally we may also move into the root directory (making it the
   active directory. */
   virtual bool setRootDirectory(const juce::File& newRootDirectory, bool gotoRootDirectory);
