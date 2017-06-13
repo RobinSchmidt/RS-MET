@@ -14,7 +14,7 @@ extern "C" double jv(double v, double x);
 //extern "C" int sgngam = 0;
 //extern int sgngam;
 
-#ifndef LINUX // interferes with /usr/include/bits/mathcalls.h on linux -> define linux somewhere in the compiler-settings on linux
+#ifndef __linux__ // interferes with /usr/include/bits/mathcalls.h on linux
 extern "C" int sincos(double x, double *s, double *c, int flg = 0);
 #endif
 

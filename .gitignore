@@ -72,3 +72,4 @@ Release
 /Tests/TestsRosicAndRapt/Builds/VisualStudio2015/*.sdf
 *.opensdf
 /Tests/TestsRosicAndRapt/Builds/VisualStudio2015/x64/Debug/*.ilk
+/Products/AudioPlugins/TestPluginJURA/Builds/LinuxMakefile/build/intermediate/Debug

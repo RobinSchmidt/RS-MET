@@ -36,11 +36,11 @@
 #include <list>
 #include <stdlib.h>     // needed on OSX for atoi, atof, rand, abs
 #include <iostream>     // cout is used in GradientBasedMinimizer.cpp (maybe get rid)
+#include <climits>      // for INT_MAX on linux
 //#include <string.h>
 //#include <vector>
 //#include <errno.h>
 //#include <stddef.h>  // for NULL macro
-//#include <climits>
 //#include <functional>
 //#include <limits.h>
 //#include <limits>
@@ -174,8 +174,8 @@
 #include "filters/rosic_EngineersFilter.h"
 #include "filters/rosic_EllipticSubBandFilter.h"
 #include "filters/rosic_EllipticSubBandFilterDirectForm.h"
-#include "filters/rosic_LinkwitzRileyCrossover.h"
-#include "filters/rosic_Crossover4Way.h"
+#include "filters/rosic_LinkwitzRileyCrossOver.h"
+#include "filters/rosic_CrossOver4Way.h"
 #include "filters/rosic_LowpassHighpass.h"
 #include "filters/rosic_LowpassHighpassStereo.h"
 #include "filters/rosic_LpfHpfApf.h"
@@ -345,8 +345,8 @@
 #include "infrastructure/rosic_File.h"
 #include "infrastructure/rosic_MemoryUser.h"
 #include "infrastructure/rosic_MidiNoteEvent.h"
-#include "infrastructure/rosic_PolyphonicinstrumentVoice.h"
-#include "infrastructure/rosic_Polyphonicinstrument.h"
+#include "infrastructure/rosic_PolyphonicInstrumentVoice.h"
+#include "infrastructure/rosic_PolyphonicInstrument.h"
 
 // higher level generators/effects that neeed includes from infrastructure:
 #include "effects/rosic_Quadrifex.h"           // needs EffectModules

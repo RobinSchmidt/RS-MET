@@ -65,10 +65,9 @@
 //#include "TestSuite/romos_PerformanceTestRunner.h"
 //#include "TestSuite/romos_InteractiveTestRunner.h"
 
-#endif   // #ifdef _MSC_VER 
-
 #include "Framework/romos_Liberty.h"
 
+#endif   // #ifdef _MSC_VER
 #endif   // #ifndef ROMOS_H_INCLUDED
 
 
