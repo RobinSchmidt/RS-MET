@@ -18,3 +18,8 @@ make
 
 will build a debug version
 
+the following developer packages have to be installed
+
+sudo apt-get install libasound2-dev 
+sudo apt-get install libfreetype6-dev
+...more
