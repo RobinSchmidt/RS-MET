@@ -15,16 +15,16 @@ namespace rosic
 {
   /**
 
-  This class is the base class for a single voice for polyphonic instruments (which should be derived from PolyphonicInstrument). These two 
-  classes should be used to handle voice management. A voice can keep track of more than one incoming note in order to facilitate glides 
-  which automatically glide back to their origin. For this reason, a voice keeps a list of notes, the front of this list always represents 
-  the currently playing note. When deriving from this class, make sure to wrap accesses to the noteList in mutex locks because such 
-  accesses can happen from the audio-thread as well as from the GUI-thread (preset-switching may cause calls to reset()). A member 'mutex' 
+  This class is the base class for a single voice for polyphonic instruments (which should be derived from PolyphonicInstrument). These two
+  classes should be used to handle voice management. A voice can keep track of more than one incoming note in order to facilitate glides
+  which automatically glide back to their origin. For this reason, a voice keeps a list of notes, the front of this list always represents
+  the currently playing note. When deriving from this class, make sure to wrap accesses to the noteList in mutex locks because such
+  accesses can happen from the audio-thread as well as from the GUI-thread (preset-switching may cause calls to reset()). A member 'mutex'
   is already in place for this.
 
-  \todo make this last thing with the mutex obsolete by moving thread-sync responsibility to rosof - we need to be verrryy careful to not 
+  \todo make this last thing with the mutex obsolete by moving thread-sync responsibility to rosof - we need to be verrryy careful to not
   miss to insert ScopedLocks everywhere....
-  \todo a lot of the data defined here can be shared among the voices - make a struct InstrumentData or something and let the voices 
+  \todo a lot of the data defined here can be shared among the voices - make a struct InstrumentData or something and let the voices
   maintain pointers to it
 
   */
@@ -47,7 +47,7 @@ namespace rosic
     // parameter settings:
 
     /** Purely virtual - is supposed to set the sample-rate for this voice. */
-    virtual void setSampleRate(double newSampleRate); 
+    virtual void setSampleRate(double newSampleRate);
 
     /** Sets the level of the voice in decibels. */
     virtual void setLevel(double newLevel);
@@ -73,7 +73,7 @@ namespace rosic
     /** This function is empty here in this base-class, you will need to override it in your subclass if you need sync functionality. */
     virtual void setBeatsPerMinute(double newBpm);
 
-    /** Assigns a rosic::TuningTable object to be used for the note-to-frequency conversions, by default, it will use the standard 
+    /** Assigns a rosic::TuningTable object to be used for the note-to-frequency conversions, by default, it will use the standard
     tuning (equally tempered scale). */
     virtual void setTuningTable(TuningTable* newTable);
 
@@ -102,7 +102,7 @@ namespace rosic
     virtual bool isInGlideMode();
 
     /** Informs, whether the voice is currently in a release phase. */
-    ///virtual bool isInReleasePhase(); 
+    ///virtual bool isInReleasePhase();
 
     /** When the voice is in release phase, this function returns the note number beign released, otherwise -1. */
     //virtual bool getNoteBeingReleased();
@@ -119,12 +119,12 @@ namespace rosic
     //-------------------------------------------------------------------------------------------------------------------------------------
     // audio processing:
 
-    /** This function is supposed to calculate the output-samples for both channels and add them at the adresses of *outL and *outR. The 
-    third output tells the current amplitude of the voice (i.e. the output of the amp-envelope.) to enable the PolyphonicInstrument class 
-    to apply automatic volume scaling acording to the number of  playing voices and their loudnesses. The implementation of this function 
-    should generally be done in the respective subclasses - however, this base-class here provides a basic skeleton implementation which 
+    /** This function is supposed to calculate the output-samples for both channels and add them at the adresses of *outL and *outR. The
+    third output tells the current amplitude of the voice (i.e. the output of the amp-envelope.) to enable the PolyphonicInstrument class
+    to apply automatic volume scaling acording to the number of  playing voices and their loudnesses. The implementation of this function
+    should generally be done in the respective subclasses - however, this base-class here provides a basic skeleton implementation which
     takes care of incrementing the 'currentNoteAge' and setting up the 'currentFrequency' member variable. */
-    virtual INLINE void getSampleFrameStereo(double *outL, double *outR, double *voiceAmplitude);   
+    virtual INLINE void getSampleFrameStereo(double *outL, double *outR, double *voiceAmplitude);
 
     //-------------------------------------------------------------------------------------------------------------------------------------
     // event handling:
@@ -159,34 +159,34 @@ namespace rosic
 
   protected:
 
-    /** Returns the frequency of a note with an integer number according to the assigned rosic::TuningTable or according to a standard 
+    /** Returns the frequency of a note with an integer number according to the assigned rosic::TuningTable or according to a standard
     conversion formula when no tuning table is assigned. */
     virtual double getNoteFrequency(int noteNumber);
 
-    /** Returns the frequency of a note with a non-integer number according to the assigned rosic::TuningTable or according to a standard 
+    /** Returns the frequency of a note with a non-integer number according to the assigned rosic::TuningTable or according to a standard
     conversion formula when no tuning table is assigned. */
     virtual double getNoteFrequency(double noteNumber);
 
-    /** Sets up the variables that are responsible for the amplitude glide which takes place along with the pitch glide (mainly to avoid 
-    clicks). When passing true as 3rd argument, the variable currentAmplitude will ramp from its current value to the new target value as 
+    /** Sets up the variables that are responsible for the amplitude glide which takes place along with the pitch glide (mainly to avoid
+    clicks). When passing true as 3rd argument, the variable currentAmplitude will ramp from its current value to the new target value as
     determined from the key and velocity that is being glided to. When passing false, it will be set immediately to the target value. */
     virtual void prepareForAmplitudeRamp(double newKey, double newVel, bool shouldRamp);
 
-    /** This is supposed to trigger a note on this voice - typically this will cause the oscillator frequencies to be set up and retrigger 
+    /** This is supposed to trigger a note on this voice - typically this will cause the oscillator frequencies to be set up and retrigger
     the envelope generators. */
     virtual void triggerNote(int newKey, int newVelocity, int newDetune = 0);
 
-    /** Triggers a glide to a new note on this voice - typically this will not retrigger the envelope generators. You don't need to 
+    /** Triggers a glide to a new note on this voice - typically this will not retrigger the envelope generators. You don't need to
     implement that function when it's not needed - in that case, it will call triggerNote() by default */
     virtual void glideToNote(int newKey, int newVelocity, int newDetune = 0);
 
-    /** Purely virtual - is supposed to trigger the release phase for this voice - typically this will trigger the release phases of all 
+    /** Purely virtual - is supposed to trigger the release phase for this voice - typically this will trigger the release phases of all
     involved envelope-generators. The secosn parameter is the (note-on) velocity of the note to be released - this is needed for setting
-    up the amp-ramp properly when the user tweaks LevelByKey during note releases - don't confuse it with note-off velocity (which is 
+    up the amp-ramp properly when the user tweaks LevelByKey during note releases - don't confuse it with note-off velocity (which is
     currently ignored). */
     virtual void triggerRelease(int noteToBeReleased, int noteToBeReleasedVel);
 
-    /** An overall amplitude factor for this voice, determined by the values of 'level', 'levelByVel', and the velocity of the currently 
+    /** An overall amplitude factor for this voice, determined by the values of 'level', 'levelByVel', and the velocity of the currently
     playing note. */
     //double amplitude;
 
@@ -206,7 +206,7 @@ namespace rosic
     /** The current nominal frequency as determined by the key of the current note. */
     double targetPitch, targetFrequency;
 
-    /** The current nominal frequency as determined by the key of the current note and possibly by a modification due to a glide taking 
+    /** The current nominal frequency as determined by the key of the current note and possibly by a modification due to a glide taking
     place. */
     double currentPitch, currentFrequency;
 
@@ -228,7 +228,7 @@ namespace rosic
     /** The sample-rate in Hz. */
     double sampleRate;
 
-    /** A factor by which the current frequency is to be mutiplied per sample in order to reach the 'targetFrequency' after the specified 
+    /** A factor by which the current frequency is to be mutiplied per sample in order to reach the 'targetFrequency' after the specified
     glideTime. */
     double pitchIncPerSample, freqFactorPerSample;
 
@@ -241,14 +241,14 @@ namespace rosic
     /** A flag to indicate whether glide is active or not. */
     bool glideIsActive;
 
-    /** A list of MIDI note events - we keep track of more than one event in order to implement glides which can go back and forth 
+    /** A list of MIDI note events - we keep track of more than one event in order to implement glides which can go back and forth
     (a typical feature of monophonic synthesizers). */
     std::list<MidiNoteEvent> noteList;
 
     /** A mutex-lock to avoid threading problems with accesees to the noteList. */
     MutexLock mutex;
 
-    /** Pointer to a TuningTable object - will be initialized with NULL and ignored by default. When it is assigned (by an outlying 
+    /** Pointer to a TuningTable object - will be initialized with NULL and ignored by default. When it is assigned (by an outlying
     PolyphonicInstrument object) it will be used for the note-to-frequency conversions instead of the standard conversion. */
     TuningTable* tuningTable;
 
@@ -257,7 +257,7 @@ namespace rosic
   //---------------------------------------------------------------------------------------------------------------------------------------
   // inlined functions :
 
-  INLINE void PolyphonicInstrumentVoice::getSampleFrameStereo(double *outL, double *outR, double *voiceAmplitude)
+  INLINE void PolyphonicInstrumentVoice::getSampleFrameStereo(double* /*outL*/, double* /*outR*/, double* /*voiceAmplitude*/)
   {
     // setup the 'currentFrequency' member variable - this maybe used in subclasses to implement glide:
     if( remainingGlideSamples <= 0 || glideIsActive == false )
@@ -274,7 +274,7 @@ namespace rosic
     currentPitchWithPitchBend     = currentPitch + pitchBend * pitchBendRange;
     currentFrequencyWithPitchBend = currentFrequency * pitchBendFactor;
 
-    // setup the 'currentAmplitude' member variable - this maybe used in subclasses to implement a smooth amplitdue ramping for the case 
+    // setup the 'currentAmplitude' member variable - this maybe used in subclasses to implement a smooth amplitdue ramping for the case
     // that the amplitude changes in between notes played by this voice (due to key/vel dependence of the amplitude):
     if( remainingAmpRampSamples <= 0 )
     {

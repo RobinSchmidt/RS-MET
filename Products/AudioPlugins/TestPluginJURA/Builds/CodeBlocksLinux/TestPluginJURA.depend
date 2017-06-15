@@ -8146,7 +8146,7 @@
 
 1495661380 e:\programming\c++\rs-met\libraries\juce\modules\rosic\delaylines\rosic_echolabdelayline.h
 
-1495661394 e:\programming\c++\rs-met\libraries\juce\modules\rosic\delaylines\rosic_fractionaldelayline.h
+1497559016 e:\programming\c++\rs-met\libraries\juce\modules\rosic\delaylines\rosic_fractionaldelayline.h
 
 1495661407 e:\programming\c++\rs-met\libraries\juce\modules\rosic\delaylines\rosic_fractionaldelaylinestereo.h
 
@@ -8262,7 +8262,7 @@
 
 1496081196 e:\programming\c++\rs-met\libraries\juce\modules\rosic\effects\rosic_stereodelay.h
 
-1496081213 e:\programming\c++\rs-met\libraries\juce\modules\rosic\effects\rosic_stereopan.h
+1497558968 e:\programming\c++\rs-met\libraries\juce\modules\rosic\effects\rosic_stereopan.h
 
 1496081243 e:\programming\c++\rs-met\libraries\juce\modules\rosic\effects\rosic_stereowidth.h
 
@@ -8272,11 +8272,11 @@
 
 1496081291 e:\programming\c++\rs-met\libraries\juce\modules\rosic\effects\rosic_waveshaper.h
 
-1496254217 e:\programming\c++\rs-met\libraries\juce\modules\rosic\infrastructure\rosic_modulationrouting.h
+1497558959 e:\programming\c++\rs-met\libraries\juce\modules\rosic\infrastructure\rosic_modulationrouting.h
 
-1496254440 e:\programming\c++\rs-met\libraries\juce\modules\rosic\infrastructure\rosic_module.h
+1497558991 e:\programming\c++\rs-met\libraries\juce\modules\rosic\infrastructure\rosic_module.h
 
-1496087072 e:\programming\c++\rs-met\libraries\juce\modules\rosic\infrastructure\rosic_effectmodules.h
+1497559136 e:\programming\c++\rs-met\libraries\juce\modules\rosic\infrastructure\rosic_effectmodules.h
 
 1496081505 e:\programming\c++\rs-met\libraries\juce\modules\rosic\infrastructure\rosic_generatormodules.h
 
@@ -8288,7 +8288,7 @@
 
 1271964693 e:\programming\c++\rs-met\libraries\juce\modules\rosic\infrastructure\rosic_midinoteevent.h
 
-1496081712 e:\programming\c++\rs-met\libraries\juce\modules\rosic\infrastructure\rosic_polyphonicinstrumentvoice.h
+1497559165 e:\programming\c++\rs-met\libraries\juce\modules\rosic\infrastructure\rosic_polyphonicinstrumentvoice.h
 
 1496081791 e:\programming\c++\rs-met\libraries\juce\modules\rosic\infrastructure\rosic_polyphonicinstrument.h
 
@@ -8862,7 +8862,7 @@
 
 1496081013 e:\programming\c++\rs-met\libraries\juce\modules\rosic\effects\rosic_phasestereoizer.cpp
 
-1496081027 e:\programming\c++\rs-met\libraries\juce\modules\rosic\effects\rosic_pitchshifter.cpp
+1497558868 e:\programming\c++\rs-met\libraries\juce\modules\rosic\effects\rosic_pitchshifter.cpp
 
 1496081069 e:\programming\c++\rs-met\libraries\juce\modules\rosic\effects\rosic_pitchshiftergrainadaptive.cpp
 
@@ -8897,7 +8897,7 @@
 1495492326 e:\programming\c++\rs-met\libraries\juce\modules\rosic\infrastructure\rosic_fileinputoutput.cpp
 	"../_third_party/soundtouch/WavFile.cpp"
 
-1493267753 e:\programming\c++\rs-met\libraries\juce\modules\rosic\_third_party\soundtouch\wavfile.cpp
+1497558868 e:\programming\c++\rs-met\libraries\juce\modules\rosic\_third_party\soundtouch\wavfile.cpp
 	<stdio.h>
 	<stdexcept>
 	<string>

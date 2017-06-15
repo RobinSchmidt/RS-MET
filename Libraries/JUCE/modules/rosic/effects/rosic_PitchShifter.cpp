@@ -51,7 +51,7 @@ PitchShifter::~PitchShifter()
 //-------------------------------------------------------------------------------------------------
 // parameter settings:
 
-void PitchShifter::setSampleRate(double newSampleRate)
+void PitchShifter::setSampleRate(double /*newSampleRate*/)
 {
   //antiAliasFilterL.setSampleRate(newSampleRate);
   //antiAliasFilterR.setSampleRate(newSampleRate);

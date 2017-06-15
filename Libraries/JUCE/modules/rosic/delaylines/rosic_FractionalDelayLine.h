@@ -78,7 +78,7 @@ namespace rosic
     /** Wraps an integer (read/write) position into the permitted range (0...length-1). */
     INLINE int wrapAround(int position);
 
-    /** Sets up the delay-time in samples according to the chosen delayTime, sync-mode and 
+    /** Sets up the delay-time in samples according to the chosen delayTime, sync-mode and
     sample-rate user parameters. */
     void setupDelayInSamples();
 
@@ -94,7 +94,7 @@ namespace rosic
 
     double *delayBuffer;
 
-    int    length;  
+    int    length;
       // nominal length (excluding the interpolator margin, maximum delay will be length-1
 
     double frac;
@@ -112,10 +112,10 @@ namespace rosic
 
   private:
 
-    // make assignment operator and copy constructor unavailable because this class contains 
+    // make assignment operator and copy constructor unavailable because this class contains
     // pointer members:
-    FractionalDelayLine& operator=(const FractionalDelayLine &other) { return *this; }
-    FractionalDelayLine(const FractionalDelayLine& other) { }
+    FractionalDelayLine& operator=(const FractionalDelayLine& /*other*/) { return *this; }
+    FractionalDelayLine(const FractionalDelayLine& /*other*/) { }
 
   };
 
@@ -128,7 +128,7 @@ namespace rosic
     while( position >= length )
       position =- length;
     while( position < 0 )
-      position += length;   
+      position += length;
     return position;
   }
 

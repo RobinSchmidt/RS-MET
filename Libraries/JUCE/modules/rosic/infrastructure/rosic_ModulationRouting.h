@@ -10,7 +10,7 @@ namespace rosic
   /**
 
   This class serves as baseclass for various (routable) modulation sources such as envelopes, LFOs,
-  etc. It is meant to be used in conjunction with classes ModulatableParameter and 
+  etc. It is meant to be used in conjunction with classes ModulatableParameter and
   ModulationRouter.
 
   the design doesn't seem quite right yet
@@ -26,10 +26,10 @@ namespace rosic
     // construction/destruction:
 
     /** Constructor. */
-    ModulationSource() {}   
+    ModulationSource() {}
 
     /** Destructor. */
-    virtual ~ModulationSource() {} 
+    virtual ~ModulationSource() {}
 
     //---------------------------------------------------------------------------------------------
     // setup:
@@ -38,10 +38,7 @@ namespace rosic
     virtual void setSampleRate(double newSampleRate) = 0;
 
     /** Override this to set up the tempo, if your effect needs this. */
-    virtual void setTempoInBPM(double newTempo) 
-    { 
-      newTempo = 0.f;  // to avoid unreferenced parameter warning
-    }
+    virtual void setTempoInBPM(double /*newTempo*/) {}
 
     //---------------------------------------------------------------------------------------------
     // inquiry:
@@ -71,7 +68,7 @@ namespace rosic
 
   /**
 
-  This class serves as baseclass for (routable) parameters. It is meant to be used in conjunction 
+  This class serves as baseclass for (routable) parameters. It is meant to be used in conjunction
   with classes ModulationSource and ModulationRouter.
 
   */
@@ -96,11 +93,11 @@ namespace rosic
     /** Sets the nominal value of the parameter (without any modulators applied). */
     void setNominalValue(double newValue) { nominalValue = newValue; }
 
-    /** Initializes the instantaneous value with the nominal value. It is supposed to be called 
+    /** Initializes the instantaneous value with the nominal value. It is supposed to be called
     before subsequent calls to addModulationSignal. */
     void initInstantaneousValue() { instantaneousValue = nominalValue; }
 
-    /** Adds a modulation signal to the (instantaneous) value of this parameter. This function is 
+    /** Adds a modulation signal to the (instantaneous) value of this parameter. This function is
     supposed to be used to accumulate all the modulation signals after the instantaneous value has
     been initialized via to its nominal value initInstantaneousValue. */
     void addModulationSignal(double valueToAdd) { instantaneousValue += valueToAdd; }
@@ -136,7 +133,7 @@ namespace rosic
 
   /**
 
-  This class establishes a connection with adjustable strength between an ModulationSource object 
+  This class establishes a connection with adjustable strength between an ModulationSource object
   and a ModulatableParameter object.
 
   */
@@ -145,14 +142,14 @@ namespace rosic
   {
 
     friend class ModulationRouter;
-  
+
   public:
 
     //---------------------------------------------------------------------------------------------
     // construction/destruction:
 
     /** Constructor. */
-    ModulationConnection(ModulationSource *sourceToConnect = NULL, 
+    ModulationConnection(ModulationSource *sourceToConnect = NULL,
       ModulatableParameter *parameterToConnect = NULL, double connectionStrength = 0.0)
     {
       source    = sourceToConnect;
@@ -167,7 +164,7 @@ namespace rosic
     void setSource(ModulationSource *newSourceToConnect) { source = newSourceToConnect; }
 
     /** Sets the modulation-target parameter for this connection. */
-    void setSource(ModulatableParameter *newParameterToConnect) 
+    void setSource(ModulatableParameter *newParameterToConnect)
     { parameter = newParameterToConnect; }
 
     /** Sets the strength for this modulation connection. */
@@ -187,7 +184,7 @@ namespace rosic
 
   /**
 
-  This class is to be used to connect an arbitrary number of ModulationSource objects to an 
+  This class is to be used to connect an arbitrary number of ModulationSource objects to an
   arbirary number of ModulatableParameter objects.
 
   */
@@ -209,9 +206,9 @@ namespace rosic
     //---------------------------------------------------------------------------------------------
     // setup:
 
-    /** Establishes a new connection between a ModualtionSource and a ModulatableParameter with the given 
+    /** Establishes a new connection between a ModualtionSource and a ModulatableParameter with the given
     (initial) strength. */
-    void establishNewConnection(ModulationSource *sourceToConnect, 
+    void establishNewConnection(ModulationSource *sourceToConnect,
       ModulatableParameter *parameterToConnect, double connectionStrength = 0.0);
 
     /** Removes the modulation connection with the given index. */
@@ -226,10 +223,10 @@ namespace rosic
     //---------------------------------------------------------------------------------------------
     // others:
 
-    /** Iterates through all the modulation connections and applies the modulation-signals to their 
-    respective target parameters, optionally initializing the parameter with its nominal value 
+    /** Iterates through all the modulation connections and applies the modulation-signals to their
+    respective target parameters, optionally initializing the parameter with its nominal value
     before (this is usually what you want, unless you are using more than one ModulationRouter that
-    can address the parameter in question). When the function returns, all parameters will have 
+    can address the parameter in question). When the function returns, all parameters will have
     their instantantaneous values set up. */
     void applyModulations(bool initWithNominalValue = true);
 
