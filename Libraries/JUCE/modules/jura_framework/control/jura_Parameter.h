@@ -504,7 +504,7 @@ class ParameterSetHolder
 public:
 
   ParameterSetHolder() {}
-  virtual ParameterSetHolder() {}
+  virtual ~ParameterSetHolder() {}
 
   //-----------------------------------------------------------------------------------------------
   // de-/registering and notification:
