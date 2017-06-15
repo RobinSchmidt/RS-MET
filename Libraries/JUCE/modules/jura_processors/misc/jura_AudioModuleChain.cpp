@@ -192,7 +192,7 @@ AudioModuleChain::AudioModuleChain(CriticalSection *lockToUse) : AudioModuleWith
 #ifdef _WIN32
   juce::String presetPath = getApplicationDirectory() + "/ChainerPresets";
 #elif __APPLE__
-  juce::String presetPath = "/Library/Audio/Presets/"+moduleVendor+"/"+moduleName+"/ChainerPresets";
+  juce::String presetPath = "/Library/Audio/Presets/RS-MET/Chainer/ChainerPresets";
 #elif __linux__ 
   juce::String presetPath = getApplicationDirectory() + "/ChainerPresets";
 #endif
