@@ -485,6 +485,7 @@ public:
 
 
   ParameterSetObserver() {}
+  virtual ~ParameterSetObserver() {}
 
   //-----------------------------------------------------------------------------------------------
   // callbacks:
@@ -503,6 +504,7 @@ class ParameterSetHolder
 public:
 
   ParameterSetHolder() {}
+  virtual ParameterSetHolder() {}
 
   //-----------------------------------------------------------------------------------------------
   // de-/registering and notification:
