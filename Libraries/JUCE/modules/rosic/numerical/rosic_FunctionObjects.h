@@ -346,7 +346,7 @@ namespace rosic
     MultivariateVectorFunction(int numInputs, int numOutputs);
 
     /** Destructor. */
-    virtual ~MultivariateVectorFunction();
+    virtual ~MultivariateVectorFunction() {}
 
     //---------------------------------------------------------------------------------------------
     // inquiry:
