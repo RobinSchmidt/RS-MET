@@ -8,7 +8,7 @@ SampleOscillator::SampleOscillator()
 {
  // init the pointers to the table with a NULL-pointer:
  tableL = NULL;
- tableR = NULL;    
+ tableR = NULL;
 
  double phaseIncrement;
 
@@ -23,7 +23,7 @@ SampleOscillator::SampleOscillator()
  bitMask               = tableLength-1;
  //tableLengthDiv2    = tableLength/2 ;
  //tableLengthDbl     = (double) tableLength;
- fundamentalFreq       = 110.0; 
+ fundamentalFreq       = 110.0;
  fundamentalFreqRec    = 1.0/fundamentalFreq;
  detuneFactor          = 1.0;
  transpositionFactor   = 1.0;
@@ -44,7 +44,7 @@ SampleOscillator::SampleOscillator()
  //positionR          = (double) tableLength/2;
 
  // init embedded modules:
- filter.setSampleRate(sampleRate); 
+ filter.setSampleRate(sampleRate);
  //filterR.setSampleRate(sampleRate);
 }
 
@@ -127,7 +127,7 @@ void SampleOscillator::setMute(bool shouldBeMuted)
  mute = shouldBeMuted;
 }
 
-void SampleOscillator::setTableAddresses(double* newTableAddressL, 
+void SampleOscillator::setTableAddresses(double* newTableAddressL,
                                               double* newTableAddressR)
 {
  tableL = newTableAddressL;
@@ -148,7 +148,7 @@ void SampleOscillator::setTableLength(int newTableLength)
  setFrequency(freq);
 }
 
-void SampleOscillator::setOffsetBetweenLeftAndRight(int newOffset)
+void SampleOscillator::setOffsetBetweenLeftAndRight(int /*newOffset*/)
 {
 
 }
@@ -178,7 +178,7 @@ void SampleOscillator::setLpfCutoff(double newLpfCutoff)
 void SampleOscillator::reset()
 {
  positionL = 0.0;
- 
+
  filterL.resetBuffers();
  filterR.resetBuffers();
 }

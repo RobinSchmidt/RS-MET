@@ -9,27 +9,27 @@ AnalogEnvelopeScaled::AnalogEnvelopeScaled()
   mu             = 0.001;
   shape          = 1.0;
   sampleCounter  = 0;
-  
+
   holdSamples    = 0;
 
-  attackSamples  = 0;   
+  attackSamples  = 0;
   attackAccuMin  = 0.0;
   attackAccuMax  = 1.0;
   attackAccu     = 1.0;
   attackCoeff    = 0.0;
 
-  decaySamples   = 0;   
+  decaySamples   = 0;
   decayAccuMin   = 0.0;
   decayAccuMax   = 1.0;
   decayAccu      = 1.0;
   decayCoeff     = 0.0;
 
-  releaseSamples = 0;   
+  releaseSamples = 0;
   releaseAccuMin = 0.0;
   releaseAccuMax = 1.0;
   releaseAccu    = 1.0;
   releaseCoeff   = 0.0;
-  
+
 
   setAttack( 10.0);
   setDecay(  50.0);
@@ -47,7 +47,7 @@ void AnalogEnvelopeScaled::setAttack(double newAttackTime)
   if( newAttackTime > 0.0 )
   {
     attackTime    = newAttackTime;
-    attackSamples = roundToInt(0.001*attackTime*sampleRate*timeScale); 
+    attackSamples = roundToInt(0.001*attackTime*sampleRate*timeScale);
     attackAccuMin = mu;
     attackAccuMax = pow(attackAccuMin, (1.0/(attackSamples+1)));
     attackCoeff   = (peakScale*peakLevel-startLevel) / (attackAccuMax-attackAccuMin);  // scaleFactor
@@ -66,10 +66,10 @@ void AnalogEnvelopeScaled::setAttack(double newAttackTime)
 
 void AnalogEnvelopeScaled::setHold(double newHoldTime)
 {
-  if( newHoldTime >= 0 ) 
+  if( newHoldTime >= 0 )
   {
     holdTime    = newHoldTime;
-    holdSamples = roundToInt(0.001*holdTime*sampleRate*timeScale); 
+    holdSamples = roundToInt(0.001*holdTime*sampleRate*timeScale);
   }
 }
 
@@ -78,7 +78,7 @@ void AnalogEnvelopeScaled::setDecay(double newDecayTime)
   if( newDecayTime > 0.0 )
   {
     decayTime    = newDecayTime;
-    decaySamples = roundToInt(0.001*decayTime*sampleRate*timeScale); 
+    decaySamples = roundToInt(0.001*decayTime*sampleRate*timeScale);
     decayAccuMin = mu;
     decayAccuMax = pow(decayAccuMin, (1.0/(decaySamples+1)));
     decayCoeff   = (sustainLevel-peakScale*peakLevel) / (decayAccuMax-decayAccuMin);  // scaleFactor
@@ -100,7 +100,7 @@ void AnalogEnvelopeScaled::setRelease(double newReleaseTime)
   if( newReleaseTime > 0.0 )
   {
     releaseTime    = newReleaseTime;
-    releaseSamples = roundToInt(0.001*releaseTime*sampleRate*timeScale); 
+    releaseSamples = roundToInt(0.001*releaseTime*sampleRate*timeScale);
     releaseAccuMin = mu;
     releaseAccuMax = pow(releaseAccuMin, (1.0/(releaseSamples+1)));
     releaseCoeff   = (endLevel-sustainLevel) / (releaseAccuMax-releaseAccuMin);  // scaleFactor
@@ -149,7 +149,7 @@ void AnalogEnvelopeScaled::reset()
   sampleCounter = 0;
 }
 
-void AnalogEnvelopeScaled::noteOn(bool startFromCurrentLevel, int newKey, int newVel)
+void AnalogEnvelopeScaled::noteOn(bool startFromCurrentLevel, int /*newKey*/, int /*newVel*/)
 {
   // \todo: if( !startFromCurrentLevel ) ...
   // \todo: calculate key and velocity scale factors for duration and peak-value...
@@ -157,28 +157,28 @@ void AnalogEnvelopeScaled::noteOn(bool startFromCurrentLevel, int newKey, int ne
   if( startFromCurrentLevel == true )
   {
     //leftLevel   = previousOutput;
-    attackCoeff = (peakScale*peakLevel-previousOutput) / (attackAccuMax-attackAccuMin); 
+    attackCoeff = (peakScale*peakLevel-previousOutput) / (attackAccuMax-attackAccuMin);
   }
   else
   {
     //leftLevel   = startLevel;
-    attackCoeff = (peakScale*peakLevel-startLevel) / (attackAccuMax-attackAccuMin);  
+    attackCoeff = (peakScale*peakLevel-startLevel) / (attackAccuMax-attackAccuMin);
   }
 
 
   // reset time for the new note:
   sampleCounter = 0;
-  time          = 0.0;   
+  time          = 0.0;
   noteIsOn      = true;
   outputIsZero  = false;
 }
 
 void AnalogEnvelopeScaled::noteOff()
 {
-  noteIsOn = false; 
+  noteIsOn = false;
 
   //leftLevel    = previousOutput;
-  releaseCoeff = (endLevel-previousOutput) / (releaseAccuMax-releaseAccuMin); 
+  releaseCoeff = (endLevel-previousOutput) / (releaseAccuMax-releaseAccuMin);
 
 
   // advance time to the beginnig of the release phase:

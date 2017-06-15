@@ -7932,7 +7932,7 @@
 
 1495491104 e:\programming\c++\rs-met\libraries\juce\modules\rosic\filters\rosic_dampingfilter.h
 
-1495491120 e:\programming\c++\rs-met\libraries\juce\modules\rosic\filters\rosic_combresonator.h
+1497563187 e:\programming\c++\rs-met\libraries\juce\modules\rosic\filters\rosic_combresonator.h
 
 1495491139 e:\programming\c++\rs-met\libraries\juce\modules\rosic\filters\rosic_convolverbruteforce.h
 
@@ -8582,7 +8582,7 @@
 
 1495491704 e:\programming\c++\rs-met\libraries\juce\modules\rosic\filters\rosic_ellipticsubbandfilterdirectform.cpp
 
-1497562332 e:\programming\c++\rs-met\libraries\juce\modules\rosic\filters\rosic_equalizer.cpp
+1497562668 e:\programming\c++\rs-met\libraries\juce\modules\rosic\filters\rosic_equalizer.cpp
 
 1495491364 e:\programming\c++\rs-met\libraries\juce\modules\rosic\filters\rosic_equalizerstereo.cpp
 
@@ -8596,7 +8596,7 @@
 
 1495491509 e:\programming\c++\rs-met\libraries\juce\modules\rosic\filters\rosic_onepolefilterstereo.cpp
 
-1495491539 e:\programming\c++\rs-met\libraries\juce\modules\rosic\filters\rosic_ladderfilter.cpp
+1497562728 e:\programming\c++\rs-met\libraries\juce\modules\rosic\filters\rosic_ladderfilter.cpp
 
 1495491587 e:\programming\c++\rs-met\libraries\juce\modules\rosic\filters\rosic_leakyintegrator.cpp
 
@@ -8630,7 +8630,7 @@
 
 1495661165 e:\programming\c++\rs-met\libraries\juce\modules\rosic\rendering\rosic_multisegmentwaveformrenderer.cpp
 
-1495661194 e:\programming\c++\rs-met\libraries\juce\modules\rosic\rendering\rosic_nonrealtimeprocesses.cpp
+1497562728 e:\programming\c++\rs-met\libraries\juce\modules\rosic\rendering\rosic_nonrealtimeprocesses.cpp
 
 1495661087 e:\programming\c++\rs-met\libraries\juce\modules\rosic\rendering\rosic_standardwaveformrenderer.cpp
 
@@ -8665,7 +8665,7 @@
 
 1495660257 e:\programming\c++\rs-met\libraries\juce\modules\rosic\generators\rosic_fouroscsection.cpp
 
-1495660277 e:\programming\c++\rs-met\libraries\juce\modules\rosic\generators\rosic_sampleoscillator.cpp
+1497562817 e:\programming\c++\rs-met\libraries\juce\modules\rosic\generators\rosic_sampleoscillator.cpp
 
 1495660301 e:\programming\c++\rs-met\libraries\juce\modules\rosic\generators\rosic_sampleplayer.cpp
 
@@ -8682,9 +8682,9 @@
 
 1495660527 e:\programming\c++\rs-met\libraries\juce\modules\rosic\modulators\rosic_ampenvrc.cpp
 
-1495660547 e:\programming\c++\rs-met\libraries\juce\modules\rosic\modulators\rosic_analogenvelope.cpp
+1497562817 e:\programming\c++\rs-met\libraries\juce\modules\rosic\modulators\rosic_analogenvelope.cpp
 
-1495660561 e:\programming\c++\rs-met\libraries\juce\modules\rosic\modulators\rosic_analogenvelopescaled.cpp
+1497562817 e:\programming\c++\rs-met\libraries\juce\modules\rosic\modulators\rosic_analogenvelopescaled.cpp
 
 1496256983 e:\programming\c++\rs-met\libraries\juce\modules\rosic\modulators\rosic_attackdecayenvelope.cpp
 
@@ -8812,13 +8812,13 @@
 
 1496079600 e:\programming\c++\rs-met\libraries\juce\modules\rosic\effects\rosic_feedbackdelaynetwork.cpp
 
-1496079623 e:\programming\c++\rs-met\libraries\juce\modules\rosic\effects\rosic_feedbackdelaynetwork8.cpp
+1497562857 e:\programming\c++\rs-met\libraries\juce\modules\rosic\effects\rosic_feedbackdelaynetwork8.cpp
 
-1496079641 e:\programming\c++\rs-met\libraries\juce\modules\rosic\effects\rosic_feedbackdelaynetwork16.cpp
+1497562857 e:\programming\c++\rs-met\libraries\juce\modules\rosic\effects\rosic_feedbackdelaynetwork16.cpp
 
 1496079793 e:\programming\c++\rs-met\libraries\juce\modules\rosic\effects\rosic_algoverb.cpp
 
-1496079809 e:\programming\c++\rs-met\libraries\juce\modules\rosic\effects\rosic_audiotomidi.cpp
+1497562889 e:\programming\c++\rs-met\libraries\juce\modules\rosic\effects\rosic_audiotomidi.cpp
 
 1496079824 e:\programming\c++\rs-met\libraries\juce\modules\rosic\effects\rosic_bitcrusher.cpp
 
@@ -8854,7 +8854,7 @@
 
 1496080884 e:\programming\c++\rs-met\libraries\juce\modules\rosic\effects\rosic_harmonics.cpp
 
-1496080901 e:\programming\c++\rs-met\libraries\juce\modules\rosic\effects\rosic_modulatedallpass.cpp
+1497562912 e:\programming\c++\rs-met\libraries\juce\modules\rosic\effects\rosic_modulatedallpass.cpp
 
 1496080922 e:\programming\c++\rs-met\libraries\juce\modules\rosic\effects\rosic_moduluxury.cpp
 
@@ -8912,17 +8912,17 @@
 
 1496081791 e:\programming\c++\rs-met\libraries\juce\modules\rosic\infrastructure\rosic_polyphonicinstrument.cpp
 
-1496081684 e:\programming\c++\rs-met\libraries\juce\modules\rosic\infrastructure\rosic_polyphonicinstrumentvoice.cpp
+1497562925 e:\programming\c++\rs-met\libraries\juce\modules\rosic\infrastructure\rosic_polyphonicinstrumentvoice.cpp
 
 1495490692 e:\programming\c++\rs-met\libraries\juce\modules\rosic\numerical\rosic_functionobjects.cpp
 
 1496690218 e:\programming\c++\rs-met\libraries\juce\modules\rosic\numerical\rosic_gradientbasedminimizer.cpp
 
-1495490740 e:\programming\c++\rs-met\libraries\juce\modules\rosic\neural\rosic_multilayerperceptron.cpp
+1497562948 e:\programming\c++\rs-met\libraries\juce\modules\rosic\neural\rosic_multilayerperceptron.cpp
 
-1495490758 e:\programming\c++\rs-met\libraries\juce\modules\rosic\neural\rosic_multilayerperceptronerrorfunction.cpp
+1497562964 e:\programming\c++\rs-met\libraries\juce\modules\rosic\neural\rosic_multilayerperceptronerrorfunction.cpp
 
-1495490773 e:\programming\c++\rs-met\libraries\juce\modules\rosic\neural\rosic_multilayerperceptrontrainer.cpp
+1497563018 e:\programming\c++\rs-met\libraries\juce\modules\rosic\neural\rosic_multilayerperceptrontrainer.cpp
 
 1496081982 e:\programming\c++\rs-met\libraries\juce\modules\rosic\sequencing\rosic_acidpattern.cpp
 
@@ -8939,7 +8939,7 @@
 
 1496256560 e:\programming\c++\rs-met\libraries\juce\modules\rosic\scripting\rosic_dspworkbench.cpp
 
-1496082293 e:\programming\c++\rs-met\libraries\juce\modules\rosic\instruments\rosic_acidevil.cpp
+1497563053 e:\programming\c++\rs-met\libraries\juce\modules\rosic\instruments\rosic_acidevil.cpp
 
 1496082367 e:\programming\c++\rs-met\libraries\juce\modules\rosic\instruments\rosic_keyshotvoice.cpp
 
@@ -8949,7 +8949,7 @@
 
 1496082420 e:\programming\c++\rs-met\libraries\juce\modules\rosic\instruments\rosic_magiccarpet.cpp
 
-1496082449 e:\programming\c++\rs-met\libraries\juce\modules\rosic\instruments\rosic_open303.cpp
+1497563053 e:\programming\c++\rs-met\libraries\juce\modules\rosic\instruments\rosic_open303.cpp
 
 1496254761 e:\programming\c++\rs-met\libraries\juce\modules\rosic\instruments\rosic_quadrigavoice.cpp
 

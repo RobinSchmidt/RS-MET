@@ -23,8 +23,8 @@ AudioToMidi::~AudioToMidi()
 
 void AudioToMidi::setSampleRate(double newSampleRate)
 {
+  sampleRate = newSampleRate;
   pitchDetector.setSampleRate(sampleRate);
-
 }
 
 void AudioToMidi::setMinFrequency(double newMinFrequency)

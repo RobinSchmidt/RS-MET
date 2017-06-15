@@ -2,7 +2,7 @@
 //using namespace rosic;
 
 namespace rosic // temporary - for as long as there's a RAPT::LadderFilter class, too
-{               // maybe at some point, rename this class into rsLadderFilterDD as template 
+{               // maybe at some point, rename this class into rsLadderFilterDD as template
                 // instantiation of RAPT::rsLadderFilter<double, double>
 
 //-------------------------------------------------------------------------------------------------
@@ -162,7 +162,7 @@ c4 = [ 1 -1  1 -1  1];
 //-------------------------------------------------------------------------------------------------
 // inquiry:
 
-Complex LadderFilter::getTransferFunctionAt(Complex z, bool withFeedback, bool withMakeUpBoost,
+Complex LadderFilter::getTransferFunctionAt(Complex z, bool withFeedback, bool /*withMakeUpBoost*/,
   bool withMakeUpGain, int stage)
 {
   Complex G1, G4, G, H;

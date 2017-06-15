@@ -812,7 +812,8 @@ void FeedbackDelayNetwork16::setOutputVector(int newOutputVectorIndex)
 //-------------------------------------------------------------------------------------------------
 // inquiry:
 
-void FeedbackDelayNetwork16::getImpulseResponse(double *bufferL, double *bufferR, int length)
+void FeedbackDelayNetwork16::getImpulseResponse(double* /*bufferL*/, double* /*bufferR*/,
+                                                int /*length*/)
 {
 
 }

@@ -27,7 +27,7 @@ PolyphonicInstrumentVoice::~PolyphonicInstrumentVoice()
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
-// parameter settings: 
+// parameter settings:
 
 void PolyphonicInstrumentVoice::setSampleRate(double newSampleRate)
 {
@@ -103,9 +103,9 @@ void PolyphonicInstrumentVoice::setGlideMode(bool shouldGlide)
   glideIsActive = shouldGlide;
 }
 
-void PolyphonicInstrumentVoice::setBeatsPerMinute(double newBeatsPerMinute)
+void PolyphonicInstrumentVoice::setBeatsPerMinute(double /*newBeatsPerMinute*/)
 {
-  // this function here is empty and serves only as dummy for the PolyphonicInstrument class which may call this - if you need 
+  // this function here is empty and serves only as dummy for the PolyphonicInstrument class which may call this - if you need
   // sync-functionality you will need to override this in your subclass.
 }
 
@@ -115,7 +115,7 @@ void PolyphonicInstrumentVoice::setTuningTable(rosic::TuningTable *newTable)
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
-// inquiry: 
+// inquiry:
 
 double PolyphonicInstrumentVoice::getLevel()
 {
@@ -219,7 +219,7 @@ void PolyphonicInstrumentVoice::noteOn(int newKey, int newVelocity, int newDetun
     // check if the note-list is empty - if so, trigger a new note. if not, glide to the new note:
     if( noteList.empty() || glideIsActive == false )
       triggerNote(newKey, newVelocity, newDetune);
-    else 
+    else
       glideToNote(newKey, newVelocity, newDetune);
 
     // add the new note to our list:
@@ -239,27 +239,27 @@ void PolyphonicInstrumentVoice::noteOff(int newKey)
 {
   mutex.lock();
 
-  // when the list is already empty on note-off, we are already in a relase phase - nothing more 
+  // when the list is already empty on note-off, we are already in a relase phase - nothing more
   // to do here:
   if( noteList.empty() )
   {
     mutex.unlock();
-    return; 
+    return;
   }
 
   MidiNoteEvent releasedNote(newKey, 0);
-  noteList.remove(releasedNote); 
-  // this removal relies on the operator '==' defined in MidiNoteEvent which equates two 
+  noteList.remove(releasedNote);
+  // this removal relies on the operator '==' defined in MidiNoteEvent which equates two
   // instances when they have the same value for their 'key' member
 
-  // Check if the note-list is empty now. If so, trigger a release, otherwise slide to the note 
+  // Check if the note-list is empty now. If so, trigger a release, otherwise slide to the note
   // at the beginning of the list (this is the most recent one which is still in the list):
   if( noteList.empty() )
   {
     triggerRelease(releasedNote.getKey(), releasedNote.getVelocity());
   }
   else
-    glideToNote(noteList.front().getKey(), noteList.front().getVelocity(), 
+    glideToNote(noteList.front().getKey(), noteList.front().getVelocity(),
       (int) noteList.front().getDetune());
 
   mutex.unlock();
@@ -272,7 +272,7 @@ void PolyphonicInstrumentVoice::allNotesOff()
   while( !noteList.empty() )
   {
     MidiNoteEvent releasedNote = noteList.back();
-    noteList.remove(releasedNote); 
+    noteList.remove(releasedNote);
     triggerRelease(releasedNote.getKey(), releasedNote.getVelocity());
   }
 
@@ -312,7 +312,7 @@ void PolyphonicInstrumentVoice::triggerNote(int newKey, int newVelocity, int new
 
 void PolyphonicInstrumentVoice::glideToNote(int newKey, int newVelocity, int newDetune)
 {
-  // \todo: wrap this stuff in a member function prepareForPitchGlide similar to 
+  // \todo: wrap this stuff in a member function prepareForPitchGlide similar to
   // prepareForAmplitudeRamp
 
   targetPitch   = (double) newKey + 0.01 * (double) newDetune;
@@ -328,18 +328,18 @@ void PolyphonicInstrumentVoice::glideToNote(int newKey, int newVelocity, int new
   targetFrequency         = getNoteFrequency(targetPitch);
   remainingGlideSamples   = roundToInt(0.001*glideTime*sampleRate);
 
-  if( remainingGlideSamples < 1 )  
+  if( remainingGlideSamples < 1 )
   {
     // immediate glide:
     currentFrequency    = targetFrequency;
     freqFactorPerSample = 1.0;
   }
-  else                
+  else
   {
     // calculate frequency multiplier per sample (multiplication is done in getSample)
     pitchIncPerSample   = pitchDelta / (double) remainingGlideSamples;
     freqFactorPerSample = pitchOffsetToFreqFactor(pitchIncPerSample);
-  }  
+  }
 
   isReleasing           = false;
   noteBeingReleased     = -1;
@@ -372,7 +372,7 @@ void PolyphonicInstrumentVoice::reset()
   targetLevel                   = 0.0;
   targetAmplitude               = 1.0;
   currentLevel                  = 0.0;
-  currentAmplitude              = 1.0; 
+  currentAmplitude              = 1.0;
   levelIncPerSample             = 0.0;
   ampFactorPerSample            = 1.0;
   remainingAmpRampSamples       = 0;
@@ -388,7 +388,7 @@ void PolyphonicInstrumentVoice::reset()
   pitchBend                     = 0.0;
   pitchBendFactor               = 1.0;
   currentPitchWithPitchBend     = 69.0;
-  currentFrequencyWithPitchBend = 440.0; 
+  currentFrequencyWithPitchBend = 440.0;
 
   currentNoteAge                = 0;
   noteBeingReleased             = -1;
@@ -421,7 +421,7 @@ void PolyphonicInstrumentVoice::prepareForAmplitudeRamp(double newKey, double ne
   if( newKey < 0 || newVel <= 0 )
     shouldRamp = false; // function was called while no note was being played
 
-  targetLevel     = level + levelByVel*(newVel-64.0)/63.0 + levelByKey*(newKey-64.0)/63.0;  
+  targetLevel     = level + levelByVel*(newVel-64.0)/63.0 + levelByKey*(newKey-64.0)/63.0;
   targetAmplitude = dB2amp(targetLevel);
 
 
@@ -437,7 +437,7 @@ void PolyphonicInstrumentVoice::prepareForAmplitudeRamp(double newKey, double ne
   }
   else
   {
-    // calculate level increment and amplitude multiplier per sample - multiplication and update 
+    // calculate level increment and amplitude multiplier per sample - multiplication and update
     // of members currentLevel and currentAmplitude is then done in getSample:
     remainingAmpRampSamples = roundToInt(0.001*ampRampTime*sampleRate);
     //double levelDelta  = targetLevel - currentLevel;

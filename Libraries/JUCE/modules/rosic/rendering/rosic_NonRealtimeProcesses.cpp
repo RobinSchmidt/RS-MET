@@ -468,8 +468,8 @@ void rosic::crossCorrelation(double *x, int xLength, double *y, int yLength, dou
   delete[] Y;
 }
 
-double rosic::estimateFundamental(double *x, int N, double sampleRate,
-                                  double minExpected, double maxExpected)
+double rosic::estimateFundamental(double* /*x*/, int /*N*/, double /*sampleRate*/,
+                                  double /*minExpected*/, double /*maxExpected*/)
 {
 //  int minLag = (int) floor(sampleRate / maxExpected);
 //  int maxLag = (int) ceil(sampleRate  / minExpected);
@@ -478,7 +478,6 @@ double rosic::estimateFundamental(double *x, int N, double sampleRate,
 //  minLag = maxLag;
 //  N = 1;
 //  x = 0;
-
 
   return 0.0;  // preliminary
 }

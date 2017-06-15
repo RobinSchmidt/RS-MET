@@ -82,12 +82,12 @@ void MultiLayerPerceptron::setWeightVector(const rosic::Vector &newWeightVector)
   }
 }
 
-void MultiLayerPerceptron::saveStateToFile(char *fileName)
+void MultiLayerPerceptron::saveStateToFile(char* /*fileName*/)
 {
   //....
 }
 
-void MultiLayerPerceptron::loadStateFromFile(char *fileName)
+void MultiLayerPerceptron::loadStateFromFile(char* /*fileName*/)
 {
   //....
 }

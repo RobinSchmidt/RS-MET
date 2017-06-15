@@ -4,7 +4,7 @@
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-ModulatedAllpass::ModulatedAllpass() 
+ModulatedAllpass::ModulatedAllpass()
 {
   factor = 0.0;
   offset = 0.0;
@@ -19,7 +19,7 @@ ModulatedAllpass::~ModulatedAllpass()
 //-------------------------------------------------------------------------------------------------
 // parameter settings:
 
-void ModulatedAllpass::setSampleRate(double newSampleRate)
+void ModulatedAllpass::setSampleRate(double /*newSampleRate*/)
 {
 
 }

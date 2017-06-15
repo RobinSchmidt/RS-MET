@@ -1,7 +1,7 @@
 //#include "rosic_MultiLayerPerceptronErrorFunction.h"
 //using namespace rosic;
 
-double zeroValue(double x)    { return 0.0; }
+double zeroValue(double)    { return 0.0; }
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
@@ -10,7 +10,7 @@ MultiLayerPerceptronErrorFunction::MultiLayerPerceptronErrorFunction(MultiLayerP
 {
   mlp = mlpToTrain;
 
-  deltas = new Vector[mlp->numWeightLayers]; 
+  deltas = new Vector[mlp->numWeightLayers];
   for(int i=0; i < mlp->numWeightLayers; i++)
     deltas[i] = Vector(mlp->z[i+1].dim);
 
@@ -37,7 +37,7 @@ MultiLayerPerceptronErrorFunction::~MultiLayerPerceptronErrorFunction()
 //-------------------------------------------------------------------------------------------------
 // setup:
 
-void MultiLayerPerceptronErrorFunction::setTrainingData(rosic::Vector *inputs, 
+void MultiLayerPerceptronErrorFunction::setTrainingData(rosic::Vector *inputs,
   rosic::Vector *targets, int numPatterns)
 {
   xTrain = inputs;
@@ -61,14 +61,14 @@ rosic::Vector MultiLayerPerceptronErrorFunction::getGradient(rosic::Vector p)
 {
   // set passed weight vector (remember current state for restoring it afterwards):
   Vector pTmp = mlp->getWeightsAsVector();
-  mlp->setWeightVector(p);   
+  mlp->setWeightVector(p);
 
   // compute gradient of the (batch-) error function
   Vector g(mlp->numWeights);
   g.initWithZeros();
   for(int i=0; i<nTrain; i++)
   {
-    mlp->setInput(xTrain[i]); 
+    mlp->setInput(xTrain[i]);
     mlp->forwardPropagate();
     computePatternGradient(yTrain[i]);
     g += getPatternGradient();
@@ -76,7 +76,7 @@ rosic::Vector MultiLayerPerceptronErrorFunction::getGradient(rosic::Vector p)
   g /= nTrain;
 
   // restore old weight vector and return computed gradient
-  mlp->setWeightVector(pTmp); 
+  mlp->setWeightVector(pTmp);
   return g;
 }
 
@@ -134,7 +134,7 @@ void MultiLayerPerceptronErrorFunction::computePatternGradient(const rosic::Vect
     Vector *d   = &(deltas[layer]);          // current layer of deltas
     Matrix *dw1 = &(   dwn[layer]);          // current matrix of weight derivatives
     for(int j=0; j<dw1->numRows; j++)        // j is the output node index
-    { 
+    {
       for(int i=0; i<dw1->numColumns; i++)   // i is the input node index
         dw1->m[j][i] = d->v[j] * z->v[i];
     }
@@ -152,21 +152,21 @@ void MultiLayerPerceptronErrorFunction::computeDeltas(const rosic::Vector& yTarg
 
   // compute deltas for the (linear) output-layer:
   layer      = mlp->numWeightLayers-1; // -1, because there are no deltas for the input nodes
-  dc         = &deltas[layer];         // we now compute deltas for the output layer 
+  dc         = &deltas[layer];         // we now compute deltas for the output layer
   numNeurons = dc->dim - 1;            // -1, because the 0th node is a (dummy) bias-node
   dc->v[0]   = 0.0;                    // delta for a bias node is zero
-  for(k=0; k<numNeurons; k++)  
+  for(k=0; k<numNeurons; k++)
   {
     dc->v[k+1] = mlp->y.v[k] - yTarget.v[k];     // (1),Eq.4.41
-      // this has to be modified for nonlinear output units and/or different error functions - the 
+      // this has to be modified for nonlinear output units and/or different error functions - the
       // general expression would be (1),Eq.4.30: dE/dy[k] * g'(a[k])
   }
 
-  // recursively compute the deltas for the hidden layers by means of back-propagating the deltas 
-  // of the layer right to the layer in question - the delta for one unit with index j in some 
-  // layer is the weighted sum over all deltas (indexed by k) in the subsequent layer multiplied 
-  // by the derivative of the activation of unit j - the weights are given by the synaptic 
-  // connections between the source neuron with index j and the target neuron with index k - this 
+  // recursively compute the deltas for the hidden layers by means of back-propagating the deltas
+  // of the layer right to the layer in question - the delta for one unit with index j in some
+  // layer is the weighted sum over all deltas (indexed by k) in the subsequent layer multiplied
+  // by the derivative of the activation of unit j - the weights are given by the synaptic
+  // connections between the source neuron with index j and the target neuron with index k - this
   // is the element w[k][j] in the weight-matrix between the successive layers
   int numSourceNodes, numTargetNodes;
   while( layer > 0 )
@@ -179,17 +179,17 @@ void MultiLayerPerceptronErrorFunction::computeDeltas(const rosic::Vector& yTarg
     numSourceNodes = dc->dim;             // number of nodes for which to compute the delta
     numTargetNodes = da->dim;             // number of deltas to sum over
     dc->v[0]       = 0.0;                 // delta for a bias node is zero
-    for(j=1; j<numSourceNodes; j++)  
+    for(j=1; j<numSourceNodes; j++)
     {
-      // form the weighted sum, k runs over targets nodes, start at k=1 because 
+      // form the weighted sum, k runs over targets nodes, start at k=1 because
       // da->v[k]==0 for k==0:
       double sum = 0.0;
-      for(k=1; k<numTargetNodes; k++) 
+      for(k=1; k<numTargetNodes; k++)
         sum += w->m[k][j] * da->v[k];
 
-      // multiply the sum by the derivative of the activation to obtain the delta, 
+      // multiply the sum by the derivative of the activation to obtain the delta,
       // this implements (1),Eq.4.36:
-      dc->v[j] = activationDerivative(z->v[j]) * sum;   
+      dc->v[j] = activationDerivative(z->v[j]) * sum;
     }
   }
 }
@@ -205,7 +205,7 @@ double MultiLayerPerceptronErrorFunction::getTrainingError()
   double sum = 0.0;
   for(int p=0; p<nTrain; p++)
   {
-    mlp->setInput(xTrain[p]); 
+    mlp->setInput(xTrain[p]);
     mlp->forwardPropagate();
     sum += getPatternError(yTrain[p]);
   }

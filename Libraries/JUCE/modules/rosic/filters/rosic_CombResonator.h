@@ -11,10 +11,10 @@ namespace rosic
   /**
 
   This class extends the CombFilter class by incorporating a biquadratic low-/high- shelving filter
-  into the feedback loop which allows the user to set up decay times for mid, low and high 
+  into the feedback loop which allows the user to set up decay times for mid, low and high
   fequencies seperately. These decay-times provide a more musical parametrization of the feedback
   gain. Moreover, it will be possible to set the comb into a mode in which it only generates odd
-  harmonics - this supersedes the negative feedback option of the baseclass (which also went an 
+  harmonics - this supersedes the negative feedback option of the baseclass (which also went an
   octave lower on negative feedback, which we avoid here).
 
   */
@@ -76,11 +76,11 @@ namespace rosic
 
   protected:
 
-    /** Sets up the delay-time in samples according to the chosen frequency and sample-rate user 
+    /** Sets up the delay-time in samples according to the chosen frequency and sample-rate user
     parameters. */
     void setupDelayInSamples();
 
-    /** Sets up the feedback- and correction filter such as to obtain the desired frequency 
+    /** Sets up the feedback- and correction filter such as to obtain the desired frequency
     dependent decay characteristic. */
     void setupFilters();
 
@@ -91,10 +91,10 @@ namespace rosic
 
   private:
 
-    // make assignment operator and copy constructor unavailable because this class contains 
+    // make assignment operator and copy constructor unavailable because this class contains
     // pointer members:
-    CombResonator& operator=(const CombResonator &other) { return *this = other; }
-    CombResonator(const CombResonator& other)            {        *this = other; }
+    CombResonator& operator=(const CombResonator &other) { return  *this = other; }
+    CombResonator(const CombResonator& other)            {         *this = other; }
 
   };
 

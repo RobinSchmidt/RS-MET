@@ -49,7 +49,7 @@ FeedbackDelayNetwork8::FeedbackDelayNetwork8()
 
  // reset the content of the delaylines samples to zero and trigger a reset
  // in the embedded modules:
- resetBuffers();         
+ resetBuffers();
 }
 
 FeedbackDelayNetwork8::~FeedbackDelayNetwork8()
@@ -118,7 +118,7 @@ void FeedbackDelayNetwork8::setHighCrossoverFreq(double newHighCrossoverFreq)
  updateDampingAndCorrectionFilters();
 }
 
-void FeedbackDelayNetwork8::setDensity(int newDensity)
+void FeedbackDelayNetwork8::setDensity(int /*newDensity*/)
 {
 
 }
@@ -162,8 +162,8 @@ void FeedbackDelayNetwork8::setWetPinkingSwitch(bool newWetPinkingSwitch)
 
 void FeedbackDelayNetwork8::setMinDelayTime(double newMinDelayTime)
 {
- if( newMinDelayTime >= 0.1 && 
-     newMinDelayTime <= 2000.0  && 
+ if( newMinDelayTime >= 0.1 &&
+     newMinDelayTime <= 2000.0  &&
      newMinDelayTime <  maxDelayTime-1.0 ) // should be at least 1 millisecond
                                            // shorter than the maximum
   minDelayTime = newMinDelayTime;
@@ -173,8 +173,8 @@ void FeedbackDelayNetwork8::setMinDelayTime(double newMinDelayTime)
 
 void FeedbackDelayNetwork8::setMaxDelayTime(double newMaxDelayTime)
 {
- if( newMaxDelayTime >= 0.1 && 
-     newMaxDelayTime <= 2000.0  && 
+ if( newMaxDelayTime >= 0.1 &&
+     newMaxDelayTime <= 2000.0  &&
      newMaxDelayTime >  minDelayTime+1.0 ) // should be at least 1 millisecond
                                            // longer than the minimum
   maxDelayTime = newMaxDelayTime;
@@ -214,7 +214,7 @@ void FeedbackDelayNetwork8::setDelayOrdering(int newDelayOrdering)
 
 void FeedbackDelayNetwork8::setInjectionVector(int newInjectionVectorIndex)
 {
- if( newInjectionVectorIndex >= 0 && 
+ if( newInjectionVectorIndex >= 0 &&
      newInjectionVectorIndex <  NUM_INJECTION_VECTORS )
  {
   injectionVectorIndex = newInjectionVectorIndex;
@@ -255,15 +255,15 @@ void FeedbackDelayNetwork8::setInjectionVector(int newInjectionVectorIndex)
  } // end of switch
 
  // normalize the input gains with respect to the delayline-lengths in order
- // to ensure that the height of the modes of the individual combs start at 
+ // to ensure that the height of the modes of the individual combs start at
  // the same initial level:
  double normalizer;
  double maxDelayInSamplesDbl = (0.001*maxDelayTime*sampleRate);
- int    maxDelayInSamples    
+ int    maxDelayInSamples
          = primeNumbers.findClosestLowerPrime((int) maxDelayInSamplesDbl);
  for(d=0; d<numDelayLines; d++)
  {
-  normalizer = (double) delaysInSamples[d] / (double) maxDelayInSamples; 
+  normalizer = (double) delaysInSamples[d] / (double) maxDelayInSamples;
 
   injectionVectorL[d] *= normalizer;
   injectionVectorR[d] *= normalizer;
@@ -272,7 +272,7 @@ void FeedbackDelayNetwork8::setInjectionVector(int newInjectionVectorIndex)
 
 void FeedbackDelayNetwork8::setFeedbackMatrix(int newFeedbackMatrixIndex)
 {
- if( newFeedbackMatrixIndex >= 0 && 
+ if( newFeedbackMatrixIndex >= 0 &&
      newFeedbackMatrixIndex <  NUM_FEEDBACK_MATRICES )
  {
   feedbackMatrixIndex = newFeedbackMatrixIndex;
@@ -281,7 +281,7 @@ void FeedbackDelayNetwork8::setFeedbackMatrix(int newFeedbackMatrixIndex)
 
 void FeedbackDelayNetwork8::setOutputVector(int newOutputVectorIndex)
 {
- if( newOutputVectorIndex >= 0 && 
+ if( newOutputVectorIndex >= 0 &&
      newOutputVectorIndex <  NUM_OUTPUT_VECTORS )
  {
   outputVectorIndex = newOutputVectorIndex;
@@ -409,8 +409,8 @@ void FeedbackDelayNetwork8::setOutputVector(int newOutputVectorIndex)
 
  // the input gains are normalized with respect to the delayline-lengths in
  // order to ensure that the height of the modes of the individual combs
- // start at the same initial level. to compensate for the undesired side 
- // effect on the impulse-response we apply reciprocal factors in the 
+ // start at the same initial level. to compensate for the undesired side
+ // effect on the impulse-response we apply reciprocal factors in the
  // output-vector:
 
  //double c = 1.0/sqrt((double)numDelayLines);
@@ -421,11 +421,11 @@ void FeedbackDelayNetwork8::setOutputVector(int newOutputVectorIndex)
 
  double normalizer;
  double maxDelayInSamplesDbl = (0.001*maxDelayTime*sampleRate);
- int    maxDelayInSamples    
+ int    maxDelayInSamples
          = primeNumbers.findClosestLowerPrime((int) maxDelayInSamplesDbl);
  for(d=0; d<numDelayLines; d++)
  {
-  normalizer = c * (double) maxDelayInSamples / (double) delaysInSamples[d]; 
+  normalizer = c * (double) maxDelayInSamples / (double) delaysInSamples[d];
 
   outputVectorL[d] *= normalizer;
   outputVectorR[d] *= normalizer;
@@ -441,7 +441,7 @@ void FeedbackDelayNetwork8::adjustReadPointer(int index)
  // samples behind the write-pointer:
  tapOuts[index] = tapIns[index] - delaysInSamples[index];
 
- // now we must take care, that the read-pointer is not below zero, that is, 
+ // now we must take care, that the read-pointer is not below zero, that is,
  // we need to do a forward-wraparound:
  while( tapOuts[index] < 0 )
   tapOuts[index] += maxDelayInSamples;
@@ -453,7 +453,7 @@ void FeedbackDelayNetwork8::adjustDelayTimes()
  // yet 'rounded' to the next lower prime integer:
  double desiredDelays[maxNumDelayLines];
 
- // calculate the shortest and the longest delayline-length in samples from 
+ // calculate the shortest and the longest delayline-length in samples from
  // the specified minimum and maximum delay-time in milliseconds:
  desiredDelays[0]               = (0.001*minDelayTime*sampleRate);
  desiredDelays[numDelayLines-1] = (0.001*maxDelayTime*sampleRate);
@@ -464,7 +464,7 @@ void FeedbackDelayNetwork8::adjustDelayTimes()
  {
  case LINEAR:
   {
-   double offset = (desiredDelays[numDelayLines-1]-desiredDelays[0]) / 
+   double offset = (desiredDelays[numDelayLines-1]-desiredDelays[0]) /
                    (double) (numDelayLines-1);
 
    for(i=1; i <= numDelayLines-2; i++)
@@ -476,13 +476,13 @@ void FeedbackDelayNetwork8::adjustDelayTimes()
    double ratio = maxDelayTime/minDelayTime;
 
    for(i=1; i <= numDelayLines-2; i++)
-    desiredDelays[i] = desiredDelays[0] * 
+    desiredDelays[i] = desiredDelays[0] *
                        pow(ratio, (double) i / (double) (numDelayLines-1) );
   }
   break;
  case DIVISION_ALGO_1:
   {
-   // this algorithm assigns the delay-times with some kind of 
+   // this algorithm assigns the delay-times with some kind of
    // recursive subdivision-algorithm
 
    double c = delayDistributionForm;
@@ -535,10 +535,10 @@ void FeedbackDelayNetwork8::adjustDelayTimes()
   }
   break;
 
- } // end of switch( delayDistributionIndex ) 
+ } // end of switch( delayDistributionIndex )
 
  // the desired delay-times have been calculated as double-values in ascending
- // order. now we determine the actual integer delay-times as the closest 
+ // order. now we determine the actual integer delay-times as the closest
  // lower primes below these values, thereby we also re-order the delay-times
  // to the desired ordering:
  switch( delayOrdering )
@@ -546,41 +546,41 @@ void FeedbackDelayNetwork8::adjustDelayTimes()
  case ASCENDING:
   {
    for(i=0; i<numDelayLines; i++)
-    delaysInSamples[i] 
+    delaysInSamples[i]
      = primeNumbers.findClosestLowerPrime((int) desiredDelays[i]);
   }
   break;
  case DESCENDING:
   {
    for(i=0; i<numDelayLines; i++)
-    delaysInSamples[i] 
+    delaysInSamples[i]
      = primeNumbers.findClosestLowerPrime
        (
-        (int) desiredDelays[numDelayLines-i-1] 
+        (int) desiredDelays[numDelayLines-i-1]
        );
   }
   break;
  case ALTERNATING:
   {
-   delaysInSamples[0] 
+   delaysInSamples[0]
     = primeNumbers.findClosestLowerPrime((int) desiredDelays[0]);
-   delaysInSamples[1] 
+   delaysInSamples[1]
     = primeNumbers.findClosestLowerPrime((int) desiredDelays[7]);
-   delaysInSamples[2] 
+   delaysInSamples[2]
     = primeNumbers.findClosestLowerPrime((int) desiredDelays[1]);
-   delaysInSamples[3] 
+   delaysInSamples[3]
     = primeNumbers.findClosestLowerPrime((int) desiredDelays[6]);
-   delaysInSamples[4] 
+   delaysInSamples[4]
     = primeNumbers.findClosestLowerPrime((int) desiredDelays[2]);
-   delaysInSamples[5] 
+   delaysInSamples[5]
     = primeNumbers.findClosestLowerPrime((int) desiredDelays[5]);
-   delaysInSamples[6] 
+   delaysInSamples[6]
     = primeNumbers.findClosestLowerPrime((int) desiredDelays[3]);
-   delaysInSamples[7] 
+   delaysInSamples[7]
     = primeNumbers.findClosestLowerPrime((int) desiredDelays[4]);
   }
   break;
- } // end of switch( delayOrdering ) 
+ } // end of switch( delayOrdering )
 
  // the new delay-times have been calculated (in samples), we now need to
  // update the relative positions of the read-pointers
@@ -592,7 +592,7 @@ void FeedbackDelayNetwork8::adjustDelayTimes()
  setInjectionVector(injectionVectorIndex);
  setOutputVector(outputVectorIndex);
 
- // changing the lengths of the delay-lines also affects the overall 
+ // changing the lengths of the delay-lines also affects the overall
  // reverberation time, so we need to update the damping-filters to compensate
  // this:
  updateDampingAndCorrectionFilters();
@@ -600,20 +600,20 @@ void FeedbackDelayNetwork8::adjustDelayTimes()
 
 void FeedbackDelayNetwork8::updateDampingAndCorrectionFilters()
 {
- double T_l, T_lb, T_m, T_hb, T_h;             
+ double T_l, T_lb, T_m, T_hb, T_h;
   // the desired reverb-times at 5 frequencies
 
- double g_l_abs, g_m_abs, g_h_abs;  
+ double g_l_abs, g_m_abs, g_h_abs;
   // absolute gain-factors for the 3 bands
 
- double g_lb_abs, g_hb_abs;     
-  // absolute gains at which the bandwidths are measured (using the 
+ double g_lb_abs, g_hb_abs;
+  // absolute gains at which the bandwidths are measured (using the
   // terminology from the Orfanidis-papaer)
 
- double g_l_rel, g_h_rel;       
+ double g_l_rel, g_h_rel;
   // gains for low and high band relative to the mid-band
 
- double g_lb_rel, g_hb_rel;     
+ double g_lb_rel, g_hb_rel;
   // relative gains at the bandwidth measurement frequencies
 
  // assign our local reverb-time T-variables for 5 frequencies:
@@ -632,9 +632,9 @@ void FeedbackDelayNetwork8::updateDampingAndCorrectionFilters()
   g_hb_abs = pow(10.0, -3.0*delaysInSamples[d]/(T_hb*sampleRate) );
   g_h_abs  = pow(10.0, -3.0*delaysInSamples[d]/(T_h* sampleRate) );
 
-  // the desired absolute gains will be approximately realized by a low- and 
-  // high-shelving filter and a global gain, where the global gain is equal 
-  // to the desired mid-frequency gain and the shelves are set up to account 
+  // the desired absolute gains will be approximately realized by a low- and
+  // high-shelving filter and a global gain, where the global gain is equal
+  // to the desired mid-frequency gain and the shelves are set up to account
   // for the relative gain-deviation:
   g_l_rel  = g_l_abs  / g_m_abs;
   g_lb_rel = g_lb_abs / g_m_abs;

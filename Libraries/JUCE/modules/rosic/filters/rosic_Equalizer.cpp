@@ -66,7 +66,7 @@ bool Equalizer::removeAllBands()
 
 bool Equalizer::modifyBand(unsigned int index, int newMode, double newFrequency, double newGain, double newBandwidth)
 {
-  if( index < 0 || index >= bands.size() )
+  if( /*index < 0 ||*/ index >= bands.size() )
   {
     DEBUG_BREAK;
     return false;
@@ -97,7 +97,7 @@ bool Equalizer::setBandBandwidth(int index, double newBandwidth)
 
 bool Equalizer::setLowerBandedgeFrequency(unsigned int index, double newLowerBandedgeFrequency)
 {
-  if( index < 0 || index >= bands.size() )
+  if( /*index < 0 ||*/ index >= bands.size() )
   {
     DEBUG_BREAK;
     return false;
@@ -108,7 +108,7 @@ bool Equalizer::setLowerBandedgeFrequency(unsigned int index, double newLowerBan
 
 bool Equalizer::setUpperBandedgeFrequency(unsigned int index, double newUpperBandedgeFrequency)
 {
-  if( index < 0 || index >= bands.size() )
+  if( /*index < 0 ||*/ index >= bands.size() )
   {
     DEBUG_BREAK;
     return false;
@@ -127,7 +127,7 @@ int Equalizer::getNumBands()
 
 int Equalizer::getBandMode(unsigned int index)
 {
-  if( index < 0 || index >= bands.size() )
+  if( /*index < 0 ||*/ index >= bands.size() )
   {
     DEBUG_BREAK;
     return 0;
@@ -137,7 +137,7 @@ int Equalizer::getBandMode(unsigned int index)
 
 double Equalizer::getBandFrequency(unsigned int index)
 {
-  if( index < 0 || index >= bands.size() )
+  if( /*index < 0 ||*/ index >= bands.size() )
   {
     DEBUG_BREAK;
     return 0.0;
@@ -147,7 +147,7 @@ double Equalizer::getBandFrequency(unsigned int index)
 
 double Equalizer::getBandGain(unsigned int index)
 {
-  if( index < 0 || index >= bands.size() )
+  if( /*index < 0 ||*/ index >= bands.size() )
   {
     DEBUG_BREAK;
     return 0.0;
@@ -157,7 +157,7 @@ double Equalizer::getBandGain(unsigned int index)
 
 double Equalizer::getBandBandwidth(unsigned int index)
 {
-  if( index < 0 || index >= bands.size() )
+  if( /*index < 0 ||*/ index >= bands.size() )
   {
     DEBUG_BREAK;
     return 0.0;
@@ -167,7 +167,7 @@ double Equalizer::getBandBandwidth(unsigned int index)
 
 double Equalizer::getLowerBandedgeFrequency(unsigned int index)
 {
-  if( index < 0 || index >= bands.size() )
+  if( /*index < 0 ||*/ index >= bands.size() )
   {
     DEBUG_BREAK;
     return 0.0;
@@ -177,7 +177,7 @@ double Equalizer::getLowerBandedgeFrequency(unsigned int index)
 
 double Equalizer::getUpperBandedgeFrequency(unsigned int index)
 {
-  if( index < 0 || index >= bands.size() )
+  if( /*index < 0 ||*/ index >= bands.size() )
   {
     DEBUG_BREAK;
     return 0.0;
@@ -187,7 +187,7 @@ double Equalizer::getUpperBandedgeFrequency(unsigned int index)
 
 bool Equalizer::doesModeSupportBandwidth(unsigned int index)
 {
-  if( index < 0 || index >= bands.size() )
+  if( /*index < 0 ||*/ index >= bands.size() )
   {
     DEBUG_BREAK;
     return 0.0;
@@ -197,7 +197,7 @@ bool Equalizer::doesModeSupportBandwidth(unsigned int index)
 
 bool Equalizer::doesModeSupportGain(unsigned int index)
 {
-  if( index < 0 || index >= bands.size() )
+  if( /*index < 0 ||*/ index >= bands.size() )
   {
     DEBUG_BREAK;
     return 0.0;
@@ -207,7 +207,7 @@ bool Equalizer::doesModeSupportGain(unsigned int index)
 
 void Equalizer::getMagnitudeResponse(double *frequencies, double *magnitudes, int numBins)
 {
-  for(int k=0; k<numBins; k++)
+  for(int k = 0; k < numBins; k++)
   {
     magnitudes[k] = globalGainFactor;
     if( frequencies[k] < 0.5*sampleRate )
