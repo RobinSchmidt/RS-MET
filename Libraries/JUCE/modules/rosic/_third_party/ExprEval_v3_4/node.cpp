@@ -84,7 +84,7 @@ void FunctionNode::SetArgumentCount(long argMin, long argMax, long refMin, long 
 
 // Parse expression
 void FunctionNode::Parse(Parser &parser, Parser::size_type start, Parser::size_type end,
-  Parser::size_type v1)
+  Parser::size_type /*v1*/)
 {
   Parser::size_type pos, last;
   int plevel = 0; // parentheses level?
@@ -369,7 +369,7 @@ double MultiNode::DoEvaluate()
 
 // Parse
 void MultiNode::Parse(Parser &parser, Parser::size_type start, Parser::size_type end,
-  Parser::size_type v1)
+  Parser::size_type /*v1*/)
 {
   Parser::size_type pos, last;
   int plevel = 0;
@@ -842,7 +842,7 @@ double VariableNode::DoEvaluate()
 
 // Parse
 void VariableNode::Parse(Parser &parser, Parser::size_type start, Parser::size_type end,
-  Parser::size_type v1)
+  Parser::size_type /*v1*/)
 {
 // Check some basic syntax
   if(start != end)
@@ -912,7 +912,7 @@ double ValueNode::DoEvaluate()
 
 // Parse
 void ValueNode::Parse(Parser &parser, Parser::size_type start, Parser::size_type end,
-  Parser::size_type v1)
+  Parser::size_type /*v1*/)
 {
 // Check basic syntax
   if(start != end)

@@ -39,7 +39,7 @@ void FourierTransformerRadix2::setBlockSize(int newBlockSize)
   // check new blocksize for validity:
   if( newBlockSize >= 2 && isPowerOfTwo(newBlockSize) )
   {
-    // check, if the new blocksize is actually different from the old one in order to avoid 
+    // check, if the new blocksize is actually different from the old one in order to avoid
     // unnecesarry re-allocations and re-computations:
     if( newBlockSize != N )
     {
@@ -69,7 +69,7 @@ void FourierTransformerRadix2::setDirection(int newDirection)
 {
   if( newDirection >= FORWARD && newDirection <= INVERSE )
   {
-    // only when the new direction is actually different form the old one, we have to conjugate 
+    // only when the new direction is actually different form the old one, we have to conjugate
     // all the twiddle-factors, otherwise everything must stay as is:
     if( newDirection != direction )
     {
@@ -83,7 +83,7 @@ void FourierTransformerRadix2::setDirection(int newDirection)
 
 void FourierTransformerRadix2::setNormalizationMode(int newNormalizationMode)
 {
-  if( newNormalizationMode >= NORMALIZE_ON_FORWARD_TRAFO && 
+  if( newNormalizationMode >= NORMALIZE_ON_FORWARD_TRAFO &&
       newNormalizationMode <= ORTHONORMAL_TRAFO )
   {
     normalizationMode = newNormalizationMode;
@@ -93,7 +93,7 @@ void FourierTransformerRadix2::setNormalizationMode(int newNormalizationMode)
     DEBUG_BREAK; // passed int-parameter does not correspond to any meaningful enum-field
 }
 
-void FourierTransformerRadix2::setRealSignalMode(bool willBeUsedForRealSignals)
+void FourierTransformerRadix2::setRealSignalMode(bool /*willBeUsedForRealSignals*/)
 {
   ip[0] = 0; // retriggers twiddle-factor computation
 }
@@ -103,7 +103,7 @@ void FourierTransformerRadix2::setRealSignalMode(bool willBeUsedForRealSignals)
 
 void FourierTransformerRadix2::transformComplexBufferInPlace(Complex *buffer)
 {
-  // retrieve the adresses of the real part of the first array entries in order to treat the 
+  // retrieve the adresses of the real part of the first array entries in order to treat the
   // Complex arrays as arrays of two successive double-numbers:
   double* d_buffer = &(buffer[0].re);
 
@@ -125,7 +125,7 @@ void FourierTransformerRadix2::transformComplexBufferInPlace(Complex *buffer)
 
 void FourierTransformerRadix2::transformComplexBuffer(Complex *inBuffer, Complex *outBuffer)
 {
-  // retrieve the adresses of the real part of the first array entries in order to treat the 
+  // retrieve the adresses of the real part of the first array entries in order to treat the
   // Complex arrays as arrays of two successive double-numbers:
   double* d_inBuffer  = &(inBuffer[0].re);
   double* d_outBuffer = &(outBuffer[0].re);
@@ -179,7 +179,7 @@ void FourierTransformerRadix2::transformRealSignal(double *inSignal, Complex *ou
   // use Ooura's routine:
   rdft(N, 1, d_outBuffer, ip, w);
 
-  // for some reason, this routine returns the second half of the spectrum (the complex conjugate 
+  // for some reason, this routine returns the second half of the spectrum (the complex conjugate
   // values of the desired first half), so we need to take the complex conjugates:
   for(n=3; n<N; n+=2) // start at n=3 (imaginary part of the first bin after DC)
     d_outBuffer[n] = -d_outBuffer[n];
@@ -192,12 +192,12 @@ void FourierTransformerRadix2::transformRealSignal(double *signal, double *reAnd
 }
 
 
-void FourierTransformerRadix2::getRealSignalMagnitudesAndPhases(double *signal, 
+void FourierTransformerRadix2::getRealSignalMagnitudesAndPhases(double *signal,
                                                                 double *magnitudes, double *phases)
 {
   transformRealSignal(signal, tmpBuffer);
 
-  // store the two purely real transform values at DC and Nyquist-frequency in the first fields of 
+  // store the two purely real transform values at DC and Nyquist-frequency in the first fields of
   // the magnitude- and phase- arrays respectively:
   magnitudes[0] = tmpBuffer[0].re;
   phases[0]     = tmpBuffer[0].im;
@@ -255,7 +255,7 @@ void FourierTransformerRadix2::transformSymmetricSpectrum(Complex *inSpectrum, d
       outSignal[n] = 2.0 * d_inBuffer[n];
   }
 
-  // for some reason, the subsequent routine expects the second half of the spectrum (the complex 
+  // for some reason, the subsequent routine expects the second half of the spectrum (the complex
   // conjugate values of the first half), so we need to take the complex conjugates:
   for(n=3; n<N; n+=2) // start at n=3 (imaginary part of the first bin after DC)
     outSignal[n] = -outSignal[n];
@@ -270,8 +270,8 @@ void FourierTransformerRadix2::transformSymmetricSpectrum(double *reAndIm, doubl
   transformSymmetricSpectrum(c_reAndIm, signal);
 }
 
-void FourierTransformerRadix2::getRealSignalFromMagnitudesAndPhases(double *magnitudes, 
-                                                                    double *phases, 
+void FourierTransformerRadix2::getRealSignalFromMagnitudesAndPhases(double *magnitudes,
+                                                                    double *phases,
                                                                     double *signal)
 {
   tmpBuffer[0].re = magnitudes[0];

@@ -25,7 +25,7 @@ SampleBuffer::~SampleBuffer()
 //-------------------------------------------------------------------------------------------------
 // setup:
 
-bool SampleBuffer::setSampleData(float **newSampleData, int newNumSamples, int newNumChannels, 
+bool SampleBuffer::setSampleData(float **newSampleData, int newNumSamples, int newNumChannels,
                                  float newSampleRate)
 {
   if( newSampleData == NULL || newNumSamples == 0 || newNumChannels == 0 )
@@ -35,14 +35,14 @@ bool SampleBuffer::setSampleData(float **newSampleData, int newNumSamples, int n
   }
   sampleRate = newSampleRate;
 
-    
+
   mutex.lock();
   bool success = reAllocateMemoryIfNecessary(newNumSamples, newNumChannels);
   int  c, n;
   if( success == true )
   {
-    // pointers have been sucesfully assigned to memory and members numSamples and numChannels have 
-    // been updated - we now do the actual copying work, thereby repeat the first few samples at 
+    // pointers have been sucesfully assigned to memory and members numSamples and numChannels have
+    // been updated - we now do the actual copying work, thereby repeat the first few samples at
     // the end of each channel buffer for the interpolator:
     for(c=0; c<numChannels; c++)
     {
@@ -59,10 +59,10 @@ bool SampleBuffer::setSampleData(float **newSampleData, int newNumSamples, int n
   return success;
 }
 
-void SampleBuffer::copyDataFrom(const SampleBuffer &source)
+void SampleBuffer::copyDataFrom(const SampleBuffer& /*source*/)
 {
   /*
-  // create deep copies of the member arrays (WARNING: this will create memory leaks when this 
+  // create deep copies of the member arrays (WARNING: this will create memory leaks when this
   // object already has it's pointers assigned - i.e. the copyDataFrom was not called immediately
   // after construction):
   if( source.sampleName != NULL )
@@ -140,7 +140,7 @@ bool SampleBuffer::reAllocateMemoryIfNecessary(int newNumSamples, int newNumChan
 
   // free old and allocate new memory:
   freeMemory();
-  sampleData = new float[newNumChannels*(newNumSamples+interpolatorMargin)]; 
+  sampleData = new float[newNumChannels*(newNumSamples+interpolatorMargin)];
   if( sampleData == NULL )
   {
     mutex.unlock();
@@ -160,7 +160,7 @@ bool SampleBuffer::reAllocateMemoryIfNecessary(int newNumSamples, int newNumChan
     channelPointers[c] = &( sampleData[c*(numSamples+interpolatorMargin)] );
   fillWithZeros();
 
-  // memory allocation successfully done:   
+  // memory allocation successfully done:
   mutex.unlock();
   return true;
 }

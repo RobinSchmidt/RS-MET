@@ -8290,7 +8290,7 @@
 
 1497559165 e:\programming\c++\rs-met\libraries\juce\modules\rosic\infrastructure\rosic_polyphonicinstrumentvoice.h
 
-1496081791 e:\programming\c++\rs-met\libraries\juce\modules\rosic\infrastructure\rosic_polyphonicinstrument.h
+1497560406 e:\programming\c++\rs-met\libraries\juce\modules\rosic\infrastructure\rosic_polyphonicinstrument.h
 
 1496081846 e:\programming\c++\rs-met\libraries\juce\modules\rosic\effects\rosic_quadrifex.h
 
@@ -8310,29 +8310,29 @@
 
 1496082380 e:\programming\c++\rs-met\libraries\juce\modules\rosic\instruments\rosic_keyshot.h
 
-1496082408 e:\programming\c++\rs-met\libraries\juce\modules\rosic\instruments\rosic_magiccarpetvoice.h
+1497560441 e:\programming\c++\rs-met\libraries\juce\modules\rosic\instruments\rosic_magiccarpetvoice.h
 
 1496082420 e:\programming\c++\rs-met\libraries\juce\modules\rosic\instruments\rosic_magiccarpet.h
 
 1496082468 e:\programming\c++\rs-met\libraries\juce\modules\rosic\instruments\rosic_open303.h
 
-1496082582 e:\programming\c++\rs-met\libraries\juce\modules\rosic\instruments\rosic_quadrigavoice.h
+1497560463 e:\programming\c++\rs-met\libraries\juce\modules\rosic\instruments\rosic_quadrigavoice.h
 
 1496082594 e:\programming\c++\rs-met\libraries\juce\modules\rosic\instruments\rosic_quadriga.h
 
 1496082624 e:\programming\c++\rs-met\libraries\juce\modules\rosic\instruments\rosic_simplesampleroscsection.h
 
-1496082639 e:\programming\c++\rs-met\libraries\juce\modules\rosic\instruments\rosic_simplesamplervoice.h
+1497560479 e:\programming\c++\rs-met\libraries\juce\modules\rosic\instruments\rosic_simplesamplervoice.h
 
 1496082650 e:\programming\c++\rs-met\libraries\juce\modules\rosic\instruments\rosic_simplesampler.h
 
-1496082675 e:\programming\c++\rs-met\libraries\juce\modules\rosic\instruments\rosic_straightlinervoice.h
+1497560500 e:\programming\c++\rs-met\libraries\juce\modules\rosic\instruments\rosic_straightlinervoice.h
 
 1496082689 e:\programming\c++\rs-met\libraries\juce\modules\rosic\instruments\rosic_straightliner.h
 
 1496082706 e:\programming\c++\rs-met\libraries\juce\modules\rosic\instruments\rosic_workhorseoscsection.h
 
-1496082718 e:\programming\c++\rs-met\libraries\juce\modules\rosic\instruments\rosic_workhorsevoice.h
+1497560523 e:\programming\c++\rs-met\libraries\juce\modules\rosic\instruments\rosic_workhorsevoice.h
 
 1496082730 e:\programming\c++\rs-met\libraries\juce\modules\rosic\instruments\rosic_workhorse.h
 
@@ -8354,7 +8354,7 @@
 
 1495478798 e:\programming\c++\rs-met\libraries\juce\modules\rosic\infrastructure\rosic_mutexlock.cpp
 
-1495480717 e:\programming\c++\rs-met\libraries\juce\modules\rosic\basics\rosic_samplebuffer.cpp
+1497560665 e:\programming\c++\rs-met\libraries\juce\modules\rosic\basics\rosic_samplebuffer.cpp
 
 1495480750 e:\programming\c++\rs-met\libraries\juce\modules\rosic\basics\rosic_sampleplaybackparameters.cpp
 
@@ -8383,7 +8383,7 @@
 
 1495479314 e:\programming\c++\rs-met\libraries\juce\modules\rosic\math\rosic_complex.cpp
 
-1199877946 e:\programming\c++\rs-met\libraries\juce\modules\rosic\math\rosic_complexfunctionsalgorithms.cpp
+1497560665 e:\programming\c++\rs-met\libraries\juce\modules\rosic\math\rosic_complexfunctionsalgorithms.cpp
 	"rosic_Complex.h"
 
 1495479353 e:\programming\c++\rs-met\libraries\juce\modules\rosic\math\rosic_complexfunctions.cpp
@@ -8435,7 +8435,7 @@
 	"except.h"
 	"node.h"
 
-1493334195 e:\programming\c++\rs-met\libraries\juce\modules\rosic\_third_party\expreval_v3_4\node.cpp
+1497560666 e:\programming\c++\rs-met\libraries\juce\modules\rosic\_third_party\expreval_v3_4\node.cpp
 	<new>
 	<memory>
 	<cmath>
@@ -8514,7 +8514,7 @@
 	<xmmintrin.h>
 	<sys/types.h>
 
-1495490573 e:\programming\c++\rs-met\libraries\juce\modules\rosic\transforms\rosic_fouriertransformerradix2.cpp
+1497560681 e:\programming\c++\rs-met\libraries\juce\modules\rosic\transforms\rosic_fouriertransformerradix2.cpp
 	"../_third_party/ooura_fft/fft4g.c"
 
 940812300 e:\programming\c++\rs-met\libraries\juce\modules\rosic\_third_party\ooura_fft\fft4g.c
@@ -8524,7 +8524,7 @@
 
 1495490627 e:\programming\c++\rs-met\libraries\juce\modules\rosic\transforms\rosic_wavelettransforms.cpp
 
-1495490611 e:\programming\c++\rs-met\libraries\juce\modules\rosic\transforms\rosic_spectralmanipulator.cpp
+1497561067 e:\programming\c++\rs-met\libraries\juce\modules\rosic\transforms\rosic_spectralmanipulator.cpp
 
 1495490885 e:\programming\c++\rs-met\libraries\juce\modules\rosic\filters\rosic_allpasschain.cpp
 
@@ -8556,9 +8556,9 @@
 
 1495491194 e:\programming\c++\rs-met\libraries\juce\modules\rosic\filters\rosic_cookbookfilter.cpp
 
-1495491605 e:\programming\c++\rs-met\libraries\juce\modules\rosic\filters\rosic_prototypedesigner.cpp
+1497560873 e:\programming\c++\rs-met\libraries\juce\modules\rosic\filters\rosic_prototypedesigner.cpp
 
-1496257169 e:\programming\c++\rs-met\libraries\juce\modules\rosic\filters\rosic_polezeromapper.cpp
+1497562186 e:\programming\c++\rs-met\libraries\juce\modules\rosic\filters\rosic_polezeromapper.cpp
 
 1495491386 e:\programming\c++\rs-met\libraries\juce\modules\rosic\filters\rosic_filtercoefficientconverter.cpp
 
@@ -8572,7 +8572,7 @@
 
 1495491209 e:\programming\c++\rs-met\libraries\juce\modules\rosic\filters\rosic_directformfilter.cpp
 
-1495491229 e:\programming\c++\rs-met\libraries\juce\modules\rosic\filters\rosic_twopolefilter.cpp
+1497562241 e:\programming\c++\rs-met\libraries\juce\modules\rosic\filters\rosic_twopolefilter.cpp
 
 1495491246 e:\programming\c++\rs-met\libraries\juce\modules\rosic\filters\rosic_dualtwopolefilter.cpp
 
@@ -8582,7 +8582,7 @@
 
 1495491704 e:\programming\c++\rs-met\libraries\juce\modules\rosic\filters\rosic_ellipticsubbandfilterdirectform.cpp
 
-1495491293 e:\programming\c++\rs-met\libraries\juce\modules\rosic\filters\rosic_equalizer.cpp
+1497562332 e:\programming\c++\rs-met\libraries\juce\modules\rosic\filters\rosic_equalizer.cpp
 
 1495491364 e:\programming\c++\rs-met\libraries\juce\modules\rosic\filters\rosic_equalizerstereo.cpp
 

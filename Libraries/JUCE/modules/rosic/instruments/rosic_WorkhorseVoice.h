@@ -33,16 +33,16 @@ namespace rosic
     // parameter settings:
 
     /** Sets the sample-rate for this voice. */
-    virtual void setSampleRate(double newSampleRate); 
+    virtual void setSampleRate(double newSampleRate);
 
-    /** Sets up the waveform for one of the oscillator (1-3). This is expected to be a stereo 
+    /** Sets up the waveform for one of the oscillator (1-3). This is expected to be a stereo
     sample with the first index indicating the channel and the second the sample number. */
     //virtual void setWaveform(double **newWaveform, int newLength, int whichOscillator);
 
     /** Overrides PolyphonicInstrumentVoice::setMasterTuneA4. */
     virtual void setMasterTuneA4(double newTuneA4);
 
-    /** Overrides PolyphonicInstrumentVoice::setBeatsPerMinute() in order to set up the 
+    /** Overrides PolyphonicInstrumentVoice::setBeatsPerMinute() in order to set up the
     modulation generators. */
     virtual void setBeatsPerMinute(double newBpm);
 
@@ -55,21 +55,21 @@ namespace rosic
     //---------------------------------------------------------------------------------------------
     // audio processing:
 
-    /** This is not to be used - we need to formally implement it in order to make this class 
+    /** This is not to be used - we need to formally implement it in order to make this class
     non-abtract. */
-    virtual void getSampleFrameStereo(double *outL, double *outR, double *voiceAmplitude);  
+    virtual void getSampleFrameStereo(double *outL, double *outR, double *voiceAmplitude);
 
-    /** Calculates the output-samples for both channels at an oversampled rate by factor 2. The 
-    *outL1 and outL2 slots represent two subsequent (oversampled) samples for the left channel, 
-    likewise the *outR1, *outR2 slots for the right channel. The decimation to the target 
-    sample-rate is to be done by the outlying class in order to do that only once after all voices 
-    have been added (instead of doing it per voice). Note that the outputs do not overwrite the 
-    slots, but add the voice's output to what is already there. The fifth output tells the current 
-    amplitude of the voice (i.e. the output of the amp-envelope.) to enable the 
-    PolyphonicInstrument class to apply automatic volume scaling acording to the number of  playing 
+    /** Calculates the output-samples for both channels at an oversampled rate by factor 2. The
+    *outL1 and outL2 slots represent two subsequent (oversampled) samples for the left channel,
+    likewise the *outR1, *outR2 slots for the right channel. The decimation to the target
+    sample-rate is to be done by the outlying class in order to do that only once after all voices
+    have been added (instead of doing it per voice). Note that the outputs do not overwrite the
+    slots, but add the voice's output to what is already there. The fifth output tells the current
+    amplitude of the voice (i.e. the output of the amp-envelope.) to enable the
+    PolyphonicInstrument class to apply automatic volume scaling acording to the number of  playing
     voices and their loudnesses. */
-    virtual void getSampleFrameStereo(double *outL1, double *outR1, double *outL2, double *outR2, 
-      double *voiceAmplitude);   
+    virtual void getSampleFrameStereo(double *outL1, double *outR1, double *outL2, double *outR2,
+      double *voiceAmplitude);
 
     //---------------------------------------------------------------------------------------------
     // event processing:
@@ -102,8 +102,8 @@ namespace rosic
   // which are supposed to be called at audio-rate (they can't be put into
   // the .cpp file):
 
-  INLINE void WorkhorseVoice::getSampleFrameStereo(double *outL, double *outR, 
-    double *voiceAmplitude)
+  INLINE void WorkhorseVoice::getSampleFrameStereo(double* outL, double* outR,
+    double* /*voiceAmplitude*/)
   {
     *outL = 0.0;
     *outR = 0.0;
@@ -127,7 +127,7 @@ namespace rosic
     double freq = filter.getFrequencyWithKeyAndVel();
     freq        = freq * fltEnvOut;
     filter.setFrequencyInstantaneous(freq);
-    
+
     // set up the playback frequency of the sample player (nominal means without detuning here):
     oscSection.setPlaybackFrequencyNominal(pitchEnvOut*currentFrequencyWithPitchBend);
 

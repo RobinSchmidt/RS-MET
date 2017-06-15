@@ -280,8 +280,8 @@ namespace rosic
     *outR = accuR;
   }
 
-  INLINE void PolyphonicInstrument::getSampleFrameStereo(double *inL, double *inR,
-    double *outL, double *outR)
+  INLINE void PolyphonicInstrument::getSampleFrameStereo(double* /*inL*/, double* /*inR*/,
+    double* outL, double* outR)
   {
     getSampleFrameStereo(outL, outR);
   }

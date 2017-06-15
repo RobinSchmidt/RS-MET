@@ -65,13 +65,15 @@ void TwoPoleFilter::setGain(double newGain)
   updateCoeffs();
 }
 
-void TwoPoleFilter::setParameters(int newMode, double newFrequency, double newGain, double newBandwidth, bool updateCoefficients)
+void TwoPoleFilter::setParameters(int newMode, double newFrequency, double newGain,
+                                  double newBandwidth, bool /*updateCoefficients*/)
 {
   if( newMode >= BYPASS && newMode < NUM_FILTER_MODES )
     mode = newMode;
   frequency = clip(newFrequency, 2.0, 20000.0);
   gain = newGain;
   bandwidth = clip(newBandwidth, 0.25, 6.0);
+  updateCoeffs();
 }
 
 void TwoPoleFilter::setLowerBandedgeFrequency(double newLowerBandedgeFrequency)
@@ -91,19 +93,19 @@ void TwoPoleFilter::setUpperBandedgeFrequency(double newUpperBandedgeFrequency)
 
 bool TwoPoleFilter::doesModeSupportBandwidth() const
 {
-  if(  mode == PEAK || mode == BANDREJECT || mode == LOW_SHELF || mode == HIGH_SHELF 
+  if(  mode == PEAK || mode == BANDREJECT || mode == LOW_SHELF || mode == HIGH_SHELF
     || mode == BANDPASS )
     return true;
-  else 
+  else
     return false;
 }
 
 bool TwoPoleFilter::doesModeSupportGain() const
 {
-  if(  mode == PEAK || mode == LOW_SHELF || mode == HIGH_SHELF 
+  if(  mode == PEAK || mode == LOW_SHELF || mode == HIGH_SHELF
     || mode == LOWPASS12  || mode == HIGHPASS12)
     return true;
-  else 
+  else
     return false;
 }
 
@@ -111,7 +113,7 @@ bool TwoPoleFilter::doesModeSupportRadius() const
 {
   if( mode == REAL_POLE || mode == REAL_ZERO || mode == POLE_PAIR || mode == ZERO_PAIR )
     return true;
-  else 
+  else
     return false;
 }
 
@@ -163,7 +165,7 @@ void TwoPoleFilter::updateCoeffs()
     }
     break;
   case LOWPASS12:
-    BiquadDesigner::calculateCookbookLowpassCoeffs(b0, b1, b2, a1, a2, 1.0/sampleRate, frequency, dB2amp(gain));    
+    BiquadDesigner::calculateCookbookLowpassCoeffs(b0, b1, b2, a1, a2, 1.0/sampleRate, frequency, dB2amp(gain));
     break;
   case HIGHPASS6:
     //BiquadDesigner::calculateFirstOrderHighpassCoeffsBilinear(b0, b1, b2, a1, a2, 1.0/sampleRate, frequency);
@@ -173,34 +175,34 @@ void TwoPoleFilter::updateCoeffs()
     BiquadDesigner::calculateCookbookHighpassCoeffs(b0, b1, b2, a1, a2, 1.0/sampleRate, frequency, dB2amp(gain));
     break;
   case BANDREJECT:
-    BiquadDesigner::calculateCookbookBandrejectCoeffsViaBandwidth(b0, b1, b2, a1, a2, 1.0/sampleRate, frequency, bandwidth); 
+    BiquadDesigner::calculateCookbookBandrejectCoeffsViaBandwidth(b0, b1, b2, a1, a2, 1.0/sampleRate, frequency, bandwidth);
     break;
   case BANDPASS:
-    BiquadDesigner::calculateCookbookBandpassConstSkirtCoeffsViaBandwidth(b0, b1, b2, a1, a2, 1.0/sampleRate, frequency, bandwidth); 
+    BiquadDesigner::calculateCookbookBandpassConstSkirtCoeffsViaBandwidth(b0, b1, b2, a1, a2, 1.0/sampleRate, frequency, bandwidth);
     break;
       /*
-  case LOWHIGH_PASS_CHAIN: 
+  case LOWHIGH_PASS_CHAIN:
     {
 
     }
     break;
     */
   case REAL_POLE:
-    BiquadDesigner::calculateOnePoleCoeffs(b0, b1, b2, a1, a2, radius);   
+    BiquadDesigner::calculateOnePoleCoeffs(b0, b1, b2, a1, a2, radius);
     break;
   case REAL_ZERO:
-    BiquadDesigner::calculateOneZeroCoeffs(b0, b1, b2, a1, a2, radius);   
+    BiquadDesigner::calculateOneZeroCoeffs(b0, b1, b2, a1, a2, radius);
     break;
   case POLE_PAIR:
     {
       double tmpRadius = radius;
       if( fabs(radius) > 0.999999 )
         tmpRadius = sign(radius) * 0.999999;
-      BiquadDesigner::calculatePolePairCoeffs(b0, b1, b2, a1, a2, tmpRadius, 2*PI*frequency/sampleRate);   
+      BiquadDesigner::calculatePolePairCoeffs(b0, b1, b2, a1, a2, tmpRadius, 2*PI*frequency/sampleRate);
     }
     break;
   case ZERO_PAIR:
-    BiquadDesigner::calculateZeroPairCoeffs(b0, b1, b2, a1, a2, radius, 2*PI*frequency/sampleRate);   
+    BiquadDesigner::calculateZeroPairCoeffs(b0, b1, b2, a1, a2, radius, 2*PI*frequency/sampleRate);
     break;
   default:
     BiquadDesigner::calculatePrescribedNyquistGainEqCoeffs(b0, b1, b2, a1, a2, 1.0/sampleRate, frequency, bandwidth, dB2amp(gain), 1.0);

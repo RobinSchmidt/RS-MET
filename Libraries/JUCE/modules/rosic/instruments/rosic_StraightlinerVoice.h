@@ -34,9 +34,9 @@ namespace rosic
     // parameter settings:
 
     /** Sets the sample-rate for this voice. */
-    virtual void setSampleRate(double newSampleRate); 
+    virtual void setSampleRate(double newSampleRate);
 
-    /** Sets up the waveform for one of the oscillator (1-3). This is expected to be a stereo sample with the first index indicating the 
+    /** Sets up the waveform for one of the oscillator (1-3). This is expected to be a stereo sample with the first index indicating the
     channel and the second the sample number. */
     //virtual void setWaveform(double **newWaveform, int newLength, int whichOscillator);
 
@@ -59,15 +59,15 @@ namespace rosic
     INLINE void setOscillatorFrequencyWithEnv(OscillatorStereo& osc, const double& envOut);
 
     /** This is not to be used - we need to formally implement it in order to make this class non-abtract. */
-    virtual void getSampleFrameStereo(double *outL, double *outR, double *voiceAmplitude);  
+    virtual void getSampleFrameStereo(double *outL, double *outR, double *voiceAmplitude);
 
-    /** Calculates the output-samples for both channels at an oversampled rate by factor 2. The *outL1 and outL2 slots represent two 
-    subsequent (oversampled) samples for the left channel, likewise the *outR1, *outR2 slots for the right channel. The decimation to the 
-    target sample-rate is to be done by the outlying class in order to do that only once after all voices have been added (instead of doing 
-    it per voice). Note that the outputs do not overwrite the slots, but add the voice's output to what is already there. The fifth output 
-    tells the current amplitude of the voice (i.e. the output of the amp-envelope.) to enable the PolyphonicInstrument class to apply 
+    /** Calculates the output-samples for both channels at an oversampled rate by factor 2. The *outL1 and outL2 slots represent two
+    subsequent (oversampled) samples for the left channel, likewise the *outR1, *outR2 slots for the right channel. The decimation to the
+    target sample-rate is to be done by the outlying class in order to do that only once after all voices have been added (instead of doing
+    it per voice). Note that the outputs do not overwrite the slots, but add the voice's output to what is already there. The fifth output
+    tells the current amplitude of the voice (i.e. the output of the amp-envelope.) to enable the PolyphonicInstrument class to apply
     automatic volume scaling acording to the number of  playing voices and their loudnesses. */
-    virtual void getSampleFrameStereo(double *outL1, double *outR1, double *outL2, double *outR2, double *voiceAmplitude);   
+    virtual void getSampleFrameStereo(double *outL1, double *outR1, double *outL2, double *outR2, double *voiceAmplitude);
 
     //-------------------------------------------------------------------------------------------------------------------------------------
     // event processing:
@@ -112,7 +112,7 @@ namespace rosic
         osc.setFrequencyNominal(currentFrequencyWithPitchBend*envOut);
       else if( depth == -1.0 )
         osc.setFrequencyNominal(currentFrequencyWithPitchBend/envOut);
-      else 
+      else
         osc.setFrequencyNominal(currentFrequencyWithPitchBend*pow(envOut, depth));
     }
     else
@@ -124,7 +124,8 @@ namespace rosic
     }
   }
 
-  INLINE void StraightlinerVoice::getSampleFrameStereo(double *outL, double *outR, double *voiceAmplitude)
+  INLINE void StraightlinerVoice::getSampleFrameStereo(double* outL, double* outR,
+                                                       double* /*voiceAmplitude*/)
   {
     *outL = 0.0;
     *outR = 0.0;
@@ -148,10 +149,10 @@ namespace rosic
     // set up the filter:
     if( glideIsActive && remainingGlideSamples >= 0)
       filter.setKey(currentPitchWithPitchBend);
-    double freq = cutoffSmoother.getSample(filter.getFrequencyWithKeyAndVel());  
+    double freq = cutoffSmoother.getSample(filter.getFrequencyWithKeyAndVel());
     freq        = freq * fltEnvOut;
     filter.setFrequencyInstantaneous(freq);
-    
+
     double osc1L, osc1R, osc2L, osc2R, osc3L, osc3R, osc4L, osc4R, tmpL, tmpR;
 
     //-----------------------------------------------------

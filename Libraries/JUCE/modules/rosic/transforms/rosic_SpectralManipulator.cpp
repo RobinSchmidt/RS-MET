@@ -34,7 +34,7 @@ void SpectralManipulator::applyContrast(double *magnitudes, int length, double p
 }
 
 void SpectralManipulator::applySlope(double *magnitudes, int length, double slope /*,int cutoffBin*/)
-{  
+{
   // this normalizer is good for waveforms with 1/n falloff of the harmonics:
   double normalizer = 1.0;
   if( slope > 0.0 )
@@ -44,14 +44,14 @@ void SpectralManipulator::applySlope(double *magnitudes, int length, double slop
     magnitudes[k] *= normalizer * dB2amp(slope*log2(k));
 }
 
-void SpectralManipulator::applyBrickwallLowpass(double *magnitudes, int length, 
+void SpectralManipulator::applyBrickwallLowpass(double *magnitudes, int length,
                                                 int highestBinToKeep)
 {
   for(int k=highestBinToKeep+1; k<length; k++)
     magnitudes[k] = 0.0;
 }
 
-void SpectralManipulator::applyBrickwallHighpass(double *magnitudes, int length, 
+void SpectralManipulator::applyBrickwallHighpass(double *magnitudes, int length,
                                                  int lowestBinToKeep)
 {
   if(lowestBinToKeep > length)
@@ -77,18 +77,18 @@ void SpectralManipulator::applyEvenOddBalance(double *magnitudes, int length, do
   int k;
   for(k=1; k<length; k+=2)
     magnitudes[k] *= oddAmp;
-  for(k=2; k<length; k+=2) 
+  for(k=2; k<length; k+=2)
     magnitudes[k] *= evenAmp;
 
-  // starting at k=2 for the even harmonics leaves DC alone - this is particularly desirable for 
+  // starting at k=2 for the even harmonics leaves DC alone - this is particularly desirable for
   // very short blocklengths where the (moving) DC represents low frequency content
 }
 
-void SpectralManipulator::applyMagnitudeRandomization(double *magnitudes, int length, 
-                                                      double amount, int seed)
+void SpectralManipulator::applyMagnitudeRandomization(double* /*magnitudes*/, int /*length*/,
+                                                      double /*amount*/, int seed)
 {
-  randomUniform(0.0, 1.0, seed); 
-  // \todo: write a class for this PNRG and create an instance on the stack here to make it 
+  randomUniform(0.0, 1.0, seed);
+  // \todo: write a class for this PNRG and create an instance on the stack here to make it
   // thread-safe (i.e. avoid that other threads spoil the state of PNRG during we are using it. */
 
   //....
@@ -107,7 +107,7 @@ void SpectralManipulator::applyEvenOddPhaseShift(double *phases, int length, dou
     phases[k] -= phi;
 }
 
-void SpectralManipulator::applyStereoPhaseShift(double *phasesL, double *phasesR, int length, 
+void SpectralManipulator::applyStereoPhaseShift(double *phasesL, double *phasesR, int length,
                                                 double shiftInDegrees)
 {
   double phi = degreeToRadiant(0.5*shiftInDegrees);
@@ -119,7 +119,7 @@ void SpectralManipulator::applyStereoPhaseShift(double *phasesL, double *phasesR
   }
 }
 
-void SpectralManipulator::applyEvenOddStereoPhaseShift(double *phasesL, double *phasesR, 
+void SpectralManipulator::applyEvenOddStereoPhaseShift(double *phasesL, double *phasesR,
                                                        int length, double shiftInDegrees)
 {
   double phi = degreeToRadiant(0.5*shiftInDegrees);

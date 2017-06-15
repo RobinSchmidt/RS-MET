@@ -346,8 +346,11 @@ void PrototypeDesigner::scaleToMatchGainAtUnity(Complex *z, Complex *p, double *
   *kNew  = *k / pow(wc, N-nz);
 }
 
-void PrototypeDesigner::getInverseFilter(Complex *z, Complex *p, double *k, Complex *zNew, Complex *pNew, double *kNew, int N)
+void PrototypeDesigner::getInverseFilter(Complex* z, Complex* p, double* k, Complex* /*zNew*/, Complex* /*pNew*/, double* kNew, int N)
 {
+  rassert(false); // something seems wrong about this - we should write the inverted poles, zeros
+                  // and gain zeros into zNew, pNew, kNew
+
   Complex *zTmp = new Complex[N];
   copyBuffer(z,    zTmp, N);
   copyBuffer(p,    z,    N);

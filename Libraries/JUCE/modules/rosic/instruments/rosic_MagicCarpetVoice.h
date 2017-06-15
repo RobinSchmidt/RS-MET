@@ -101,15 +101,15 @@ namespace rosic
   // which are supposed to be called at audio-rate (they can't be put into
   // the .cpp file):
 
-  INLINE void MagicCarpetVoice::getSampleFrameStereo(double *outL, double *outR,
-    double *voiceAmplitude)
+  INLINE void MagicCarpetVoice::getSampleFrameStereo(double* outL, double* outR,
+    double* /*voiceAmplitude*/)
   {
     *outL = 0.0;
     *outR = 0.0;
   }
 
-  INLINE void MagicCarpetVoice::getSampleFrameStereo(double *outL1, double *outR1,
-    double *outL2, double *outR2, double *voiceAmplitude)
+  INLINE void MagicCarpetVoice::getSampleFrameStereo(double* outL1, double* outR1,
+    double* /*outL2*/, double* /*outR2*/, double* voiceAmplitude)
   {
     // this call just sets up our currentFrequencyWithPitchBend and currentNoteAge members:
     PolyphonicInstrumentVoice::getSampleFrameStereo(outL1, outR1, voiceAmplitude);

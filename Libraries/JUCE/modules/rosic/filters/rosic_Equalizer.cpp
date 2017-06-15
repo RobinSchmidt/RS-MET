@@ -48,9 +48,9 @@ int Equalizer::addBand(int newMode, double newFrequency, double newGain, double 
 
 bool Equalizer::removeBand(unsigned int index)
 {
-  if( index < 0 || index >= bands.size() )
+  if( /*index < 0 ||*/ index >= bands.size() )
   {
-    DEBUG_BREAK;
+    DEBUG_BREAK;   // index out of range
     return false;
   }
   bands.erase(bands.begin()+index);
