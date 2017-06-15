@@ -1,13 +1,13 @@
 #ifndef jura_ColourScheme_h
 #define jura_ColourScheme_h
 
-/** This is a baseclass fo ColourSchemes for various GUI objects - like, for example, widgets, plots, 
-editors, etc. The basclass defines some macro-parameters that can be applied to all these objects 
-such as the gnereal look (bright-on-dark vs. dark on bright), a hue offset, a saturation multiplier, 
-etc. Whe the user changes one of these macro parameters, a call to updateColours() will be 
+/** This is a baseclass fo ColourSchemes for various GUI objects - like, for example, widgets, plots,
+editors, etc. The basclass defines some macro-parameters that can be applied to all these objects
+such as the gnereal look (bright-on-dark vs. dark on bright), a hue offset, a saturation multiplier,
+etc. Whe the user changes one of these macro parameters, a call to updateColours() will be
 triggered - you need to override this function in your subclass to compute the actual colours.
 
-  
+
 default:
 sky: dark-on-bright, hue= 0.65, saturation=0.60
 coffee: b-o-d, h=0.09, s=0.40
@@ -56,6 +56,9 @@ public:
     brightnessGamma      = 1.f;
   }
 
+  /** Destructor. */
+  virtual ~ColourScheme() {}
+
   //-----------------------------------------------------------------------------------------------
   // setup:
 
@@ -69,10 +72,10 @@ public:
   virtual void setCentralHue(float newHue) { centralHue = newHue; updateColours(); }
 
   /** Sets a global multiplier for all saturations. */
-  virtual void setSaturationMultiplier(float newMultiplier) 
-  { 
-    saturationMultiplier = newMultiplier; 
-    updateColours(); 
+  virtual void setSaturationMultiplier(float newMultiplier)
+  {
+    saturationMultiplier = newMultiplier;
+    updateColours();
   }
 
   /** Sets a gamma value for all luminances. */
@@ -81,12 +84,12 @@ public:
   /** Clears the array of hue-offsets. */
   virtual void clearHueOffsets() { hueOffsets.clear(); }
 
-  /** Appends a hue-offset into our array of hue-offsets (which are used for various parts of the 
+  /** Appends a hue-offset into our array of hue-offsets (which are used for various parts of the
   editor). */
   virtual void appendHueOffset(float offsetToAppend) { hueOffsets.add(offsetToAppend); }
 
-  /** Sets up one of the hue-offsets with the given index. If the given index does not yet exist in 
-  our array, the new offset will be appended, possibly filling up with zeros at indices in between 
+  /** Sets up one of the hue-offsets with the given index. If the given index does not yet exist in
+  our array, the new offset will be appended, possibly filling up with zeros at indices in between
   the current max-index and the new index. */
   virtual void setHueOffset(int index, float newOffset)
   {
@@ -120,11 +123,11 @@ public:
   /** Returns the gamma value for all luminances. @see setBrightnessGamma */
   virtual float getBrightnessGamma() const { return brightnessGamma; }
 
-  /** Returns the number of defined hue-offsets. These offsets may be used for various parts of 
+  /** Returns the number of defined hue-offsets. These offsets may be used for various parts of
   the editor or sub-editors. */
   virtual int getNumHueOffsets() const { return hueOffsets.size(); }
 
-  /** Returns the hue-offset at the given index. These offsets may be used for various parts of 
+  /** Returns the hue-offset at the given index. These offsets may be used for various parts of
   the editor or sub-editors. */
   virtual float getHueOffset(int index) const
   {
@@ -138,7 +141,7 @@ public:
 
 protected:
 
-  /** Method that will be called when the user has changed one of our macro-parameters - subclasses 
+  /** Method that will be called when the user has changed one of our macro-parameters - subclasses
   should update their colours then accordingly. */
   virtual void updateColours() = 0;
 
@@ -212,7 +215,7 @@ public:
     updateColours();
   }
 
-  /** Selects one of the strategies to colour multiple curves in the plot. This will determine what 
+  /** Selects one of the strategies to colour multiple curves in the plot. This will determine what
   Colour will be returned by subsequent call to getCurveColour @see curveColouringStrategies */
   void setCurveColouringStrategy(int newStrategy)
   {
@@ -242,4 +245,4 @@ protected:
 
 };
 
-#endif  
+#endif

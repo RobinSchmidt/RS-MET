@@ -2,17 +2,17 @@
 #define jura_FileManager_h
 
 
-/** Returns the directory of the current application (or .dll) as String. */ 
+/** Returns the directory of the current application (or .dll) as String. */
 JUCE_API juce::String getApplicationDirectory();
 
-/** Returns a file object if the file with the path given by 'path' exists and is a valid 
+/** Returns a file object if the file with the path given by 'path' exists and is a valid
 audio file, otherwise it returns File::nonexistent. */
 JUCE_API juce::File getAudioFileFromPath(const juce::String& path);
- 
-/** Checks whether a directory or any of its subdirectories (if any) has files in it and returns 
+
+/** Checks whether a directory or any of its subdirectories (if any) has files in it and returns
 true, if so and false otherwise. */
 JUCE_API bool hasDirectoryFiles(const juce::File& directoryToCheck);
- 
+
 // maybe factor out into a file FileTools - put also the XmlTools into this file (they are also
 // related to load/save xml files
 
@@ -43,7 +43,7 @@ class FileManager;
 
 //=================================================================================================
 
-/** This class can be used to keep track of the currently active file in some FileManager object. 
+/** This class can be used to keep track of the currently active file in some FileManager object.
 The FileManager will invoke the virtual method activeFileChanged in any of its attached listeners
 whenever the currently active file was changed. */
 
@@ -51,6 +51,8 @@ class JUCE_API FileManagerListener
 {
 
 public:
+
+  virtual ~FileManagerListener() {}
 
   /** The callback that is called when the currently active file was changed in some FileManager
   to which we have registered as listener. */
@@ -89,9 +91,9 @@ public:
   virtual void setPermissibleWildcardPatterns(const juce::String& newPatterns)
   {
     wildcardPatterns = newPatterns; updateFileList();
-  } 
+  }
 
-  /** Selects, whether or not subdirectories should be scanned recursively when updating the 
+  /** Selects, whether or not subdirectories should be scanned recursively when updating the
   fileList. */
   virtual void setRecurseSubDirectories(bool shouldRecurse)
   {
@@ -228,4 +230,4 @@ protected:
 
 
 
-#endif  
+#endif

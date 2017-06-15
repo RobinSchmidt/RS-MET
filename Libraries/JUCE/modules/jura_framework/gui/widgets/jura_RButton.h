@@ -12,13 +12,15 @@ class JUCE_API RButtonListener
 
 public:
 
+  virtual ~RButtonListener() {}
+
   /** Called when the button is clicked. */
   virtual void rButtonClicked(RButton* button) = 0;
 
 };
 
 
-/** Baseclass for custom painting of buttons. In a concrete subclass, you overrided the 
+/** Baseclass for custom painting of buttons. In a concrete subclass, you overrided the
 paintButton method to actually paint the button. To assign a custom painter to a button, you would
 call myButton->setPainter(myButtonPainter) where myButtonPainter is asumed to be an object of your
 RButtonPainter subclass. */
@@ -27,6 +29,8 @@ class JUCE_API RButtonPainter
 {
 
 public:
+
+  virtual ~RButtonPainter() {}
 
   /** Called, when a button wants to paint itself. */
   virtual void paintButton(Graphics& g, RButton *button) = 0;
@@ -90,12 +94,12 @@ public:
   /** Decides, whether or not this button should change its on/off state when clicked. */
   void setClickingTogglesState(const bool shouldToggle);
 
-  /** A button has an on/off state associated with it, and this changes that. By default buttons 
-  are 'off' and for simple buttons that you click to perform an action you won't change this. Toggle 
+  /** A button has an on/off state associated with it, and this changes that. By default buttons
+  are 'off' and for simple buttons that you click to perform an action you won't change this. Toggle
   buttons, however will want to change their state when turned on or off. */
   void setToggleState(const bool shouldBeOn, const bool sendChangeNotification);
 
-  /** Overriden from RWidget - sets the toggle-state to "off" when the string-as-integer is 0 and 
+  /** Overriden from RWidget - sets the toggle-state to "off" when the string-as-integer is 0 and
   sets it to "on" when the
   string-as-integer is != 0 (presumably "1"). */
   virtual void setStateFromString(const juce::String &stateString, bool sendChangeMessage = true);
@@ -138,7 +142,7 @@ protected:
   /** Sends out a message to our listeners that this button has been clicked. */
   void sendClickMessage();
 
-  /** Overrides the inherited clicked callback in order to update an assigned Parameter 
+  /** Overrides the inherited clicked callback in order to update an assigned Parameter
   (if any). */
   virtual void clicked();
 
@@ -164,9 +168,9 @@ private:
 
 
 //=================================================================================================
-// class RClickButton: 
+// class RClickButton:
 
-/** This class implements a button that paints as active when mouse is down, and switches back into 
+/** This class implements a button that paints as active when mouse is down, and switches back into
 inactive state when the mouse is up again. maybe rename to RBangButton */
 
 class JUCE_API RClickButton : public RButton
@@ -182,15 +186,15 @@ public:
 
   virtual void mouseUp(const MouseEvent& e);
 
-  
+
   juce_UseDebuggingNewOperator;
 };
 
 //=================================================================================================
-// class RClickButtonNotifyOnMouseUp: 
+// class RClickButtonNotifyOnMouseUp:
 
-/** This class is like an RClickButton but it sends out a click message only on mouse-up events. 
-Moreover, these mouse-up events must occur inside this button after a mouse-down event occured. 
+/** This class is like an RClickButton but it sends out a click message only on mouse-up events.
+Moreover, these mouse-up events must occur inside this button after a mouse-down event occured.
 This behaviour is desirable for OK/Cancel buttons on dialog boxes, for example. */
 
 class JUCE_API RClickButtonNotifyOnMouseUp : public RClickButton
@@ -205,14 +209,14 @@ public:
   virtual void mouseDown(const MouseEvent& e);
 
   virtual void mouseUp(const MouseEvent& e);
-  
+
   juce_UseDebuggingNewOperator;
 };
 
 //=================================================================================================
-// class RClickButtonWithAutoRepeat 
+// class RClickButtonWithAutoRepeat
 
-/** This class is like an RClickButton but it sends out click messages repeatedly as long as it is 
+/** This class is like an RClickButton but it sends out click messages repeatedly as long as it is
 clicked. */
 
 class JUCE_API RClickButtonWithAutoRepeat : public RClickButton, public Timer
@@ -238,12 +242,12 @@ protected:
 };
 
 //=================================================================================================
-// class RRadioButton and RRadioButtonGroup: 
+// class RRadioButton and RRadioButtonGroup:
 
 class RRadioButtonGroup;
 
-/** This class implements a button that can be used in a group of mutually exclusively pressed 
-buttons. That means, only one at a time canbe in 'pressed' state (this kind of behavior is also 
+/** This class implements a button that can be used in a group of mutually exclusively pressed
+buttons. That means, only one at a time canbe in 'pressed' state (this kind of behavior is also
 known as "radio-button"). */
 
 class JUCE_API RRadioButton : public RButton
@@ -260,11 +264,11 @@ public:
   /** Sets the radio-group of which this button should become a member. */
   virtual void addToRadioButtonGroup(RRadioButtonGroup *newGroupToUse);
 
-  /** Overriden clicked to make sure that all other buttons in the same radio-group are going to be 
+  /** Overriden clicked to make sure that all other buttons in the same radio-group are going to be
   siwtched off. */
   virtual void clicked();
 
-  /** Overriden to make sure that all other buttons in the same radio-group are going to be 
+  /** Overriden to make sure that all other buttons in the same radio-group are going to be
   switched off. */
   void setToggleState(const bool shouldBeOn, const bool sendChangeNotification);
 
@@ -280,11 +284,13 @@ class JUCE_API RRadioButtonGroup
 
 public:
 
+  virtual ~RRadioButtonGroup() {}
+
   virtual void addButtonToRadioGroup(RRadioButton *buttonToAdd);
 
   virtual void removeButtonFromRadioGroup(RRadioButton *buttonToRemove);
 
-  /** Toggles the passed button (which is assumed to be a member of this group) on and toggles all 
+  /** Toggles the passed button (which is assumed to be a member of this group) on and toggles all
   other buttons in the group off. */
   virtual void toggleRadioButtonOn(RRadioButton *buttonToToggleOn, bool sendNotifications);
 
@@ -336,7 +342,7 @@ private:
 
 //=================================================================================================
 
-/** A button painter class that gives the button a pseudo 3D'ish look. 
+/** A button painter class that gives the button a pseudo 3D'ish look.
 todo: test it... */
 
 class JUCE_API RButtonPainter3D : public RButtonPainter
@@ -347,7 +353,7 @@ public:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RButtonPainter3D)
 };
 
-// todo: make a class RButtonImageSet with members for up to 4 images: up, down, upMouseOver, 
+// todo: make a class RButtonImageSet with members for up to 4 images: up, down, upMouseOver,
 // downMouseOver
 
-#endif  
+#endif

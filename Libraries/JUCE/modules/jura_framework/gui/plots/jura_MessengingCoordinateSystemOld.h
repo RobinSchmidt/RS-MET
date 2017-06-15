@@ -15,6 +15,8 @@ class CoordinateSystemOldObserver
 
 public:
 
+  virtual ~CoordinateSystemOldObserver() {}
+
   /** This is the callback, you must override in order to respond to any changes in the observed MessengingCoordinateSystemOld
   object(s). */
   virtual void coordinateSystemChanged(MessengingCoordinateSystemOld *coordinateSystemThatHasChanged) = 0;
@@ -101,4 +103,4 @@ protected:
 
 };
 
-#endif  
+#endif
