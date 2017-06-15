@@ -24,7 +24,7 @@ RComboBox::~RComboBox()
 //-------------------------------------------------------------------------------------------------
 // setup:
 
-void RComboBox::addItem(int itemResultId, const juce::String& itemText, bool isEnabled, 
+void RComboBox::addItem(int itemResultId, const juce::String& itemText, bool isEnabled,
   bool isTicked)
 {
   popUpMenu->addItem(itemResultId, itemText, isEnabled, isTicked);
@@ -61,7 +61,7 @@ void RComboBox::selectItemByIndex(int indexToSelect, bool sendNotification)
   if( sendNotification == true )
     sendComboBoxChangeNotifications();
 
-  repaint(); 
+  repaint();
 }
 
 void RComboBox::selectItemFromText(const juce::String& textToSelect, bool sendNotification)
@@ -73,10 +73,10 @@ void RComboBox::selectItemFromText(const juce::String& textToSelect, bool sendNo
   //  sendComboBoxChangeNotifications();
 
   // old - works only for a flat array of options:
-  int numItems = popUpMenu->getNumTopLevelItems(); // for debug
+  //int numItems = popUpMenu->getNumTopLevelItems(); // for debug
   for(int i=0; i<popUpMenu->getNumTopLevelItems(); i++)
   {
-    juce::String itemText = getItemText(i); // for debug
+    //juce::String itemText = getItemText(i); // for debug
     if( getItemText(i) == textToSelect )
     {
       selectItemByIndex(i, sendNotification);
@@ -84,7 +84,7 @@ void RComboBox::selectItemFromText(const juce::String& textToSelect, bool sendNo
     }
   }
   jassertfalse; // the passed text is not among the items
-  // this function works only when the combobox has a flat array of options - with a tree 
+  // this function works only when the combobox has a flat array of options - with a tree
   // structure, it fails - we need a function getNumLeafNodes instead of getNumItems ...
   // or something like that
 }
@@ -110,12 +110,12 @@ void RComboBox::assignParameter(Parameter* parameterToAssign)
   if( assignedParameter != NULL )
     assignedParameter->deRegisterParameterObserver(this);
   assignedParameter = NULL;
-  clear(true); 
+  clear(true);
   assignedParameter = parameterToAssign;
   if( assignedParameter != NULL )
   {
     assignedParameter->registerParameterObserver(this);
-    jassert( assignedParameter->isStringParameter() ); // use Parameter::STRING for the scaling 
+    jassert( assignedParameter->isStringParameter() ); // use Parameter::STRING for the scaling
                                                        // when you attach a combobox to a parameter
     for(int i=0; i<assignedParameter->getNumStringValues(); i++)
       addItem(i, assignedParameter->getOptionStringAtIndex(i));
@@ -199,8 +199,8 @@ void RComboBox::paint(Graphics& g)
   g.setColour(getOutlineColour());
   g.drawRect(0, 0, getWidth(), getHeight(), 2);
 
-  int x = 4;  
-  int y = getHeight()/2 - font->getFontAscent()/2;  
+  int x = 4;
+  int y = getHeight()/2 - font->getFontAscent()/2;
 
   drawBitmapFontText(g, x, y, getSelectedItemText(), font, getTextColour());
 
@@ -218,7 +218,7 @@ void RComboBox::sendComboBoxChangeNotifications()
 
 void RComboBox::openPopUp()
 {
-  popUpMenu->setSize(getWidth(), popUpMenu->getRequiredHeight(true));  
+  popUpMenu->setSize(getWidth(), popUpMenu->getRequiredHeight(true));
     // maybe introduce a max-height or something - it's strange but if don't set the size here, the popup appears black
   //popUpMenu->showAttachedTo(this, true, RPopUpComponent::BELOW, getWidth(), popUpMenu->getRequiredHeight(), 0, -outlineThickness);
   popUpMenu->show(true, RPopUpComponent::BELOW, getWidth(), popUpMenu->getRequiredHeight(true), 0, -outlineThickness);
@@ -286,13 +286,13 @@ void RNamedComboBox::paint(Graphics &g)
 
   if( nameLabelPosition == LEFT_TO_BOX )
   {
-    x = nameLabel->getRight()+4; 
-    y = getHeight()/2 - font->getFontAscent()/2;  
+    x = nameLabel->getRight()+4;
+    y = getHeight()/2 - font->getFontAscent()/2;
   }
   else
   {
     x = 4;
-    y = 3*getHeight()/4 - font->getFontAscent()/2;  
+    y = 3*getHeight()/4 - font->getFontAscent()/2;
   }
 
   drawBitmapFontText(g, x, y, getSelectedItemText(), font, getTextColour());
@@ -323,11 +323,11 @@ void RNamedComboBox::openPopUp()
     x += nameLabelWidth+4;
     w -= nameLabelWidth+4;
   }
-  popUpMenu->setSize(w, h);  
+  popUpMenu->setSize(w, h);
 
   //popUpMenu->show(false, RPopUpComponent::BELOW, w, h, x, -outlineThickness);
-  popUpMenu->show(true, RPopUpComponent::BELOW, w, h, x, -outlineThickness); 
-    // true for the 1st argument (showModally) causes problems - why? reproduce: in EngineersFilter 
-    // open/close the same combobox twice ...but with false, the boxes for the color-setup don't 
+  popUpMenu->show(true, RPopUpComponent::BELOW, w, h, x, -outlineThickness);
+    // true for the 1st argument (showModally) causes problems - why? reproduce: in EngineersFilter
+    // open/close the same combobox twice ...but with false, the boxes for the color-setup don't
     // respond...
 }

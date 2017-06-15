@@ -47,9 +47,9 @@ Parameter::Parameter(const juce::String& newName, double newMin, double newMax,
   value        = defaultValue;
 }
 
-Parameter::Parameter(CriticalSection *criticalSectionToUse, const String& newName, 
-  double newMinValue, double newMaxValue, double newInterval, double newDefaultValue, 
-  int newScaling) 
+Parameter::Parameter(CriticalSection *criticalSectionToUse, const String& newName,
+  double newMinValue, double newMaxValue, double newInterval, double newDefaultValue,
+  int newScaling)
 {
   jassert(!(newMinValue >= newMaxValue));                      // that would result in a zero or negative range
   jassert(!(newMinValue <= 0.0 && newScaling == EXPONENTIAL)); // exponential scaling requires strictly positive minimum value
@@ -76,7 +76,7 @@ Parameter::~Parameter()
     o->parameterIsGoingToBeDeleted(this);
     deRegisterParameterObserver(o);
   }
-  // remark: we use a while-loop to account for the possibility that the observer de-registers 
+  // remark: we use a while-loop to account for the possibility that the observer de-registers
   // itself in the callback to parameterIsGoingToBeDeleted in which case the array-size shrinks
   // inside the iteration which would make a for-loop ...mmm...a bug
 }
@@ -112,7 +112,7 @@ void Parameter::resetToDefaultValue(bool sendNotification, bool callCallbacks)
   setValue(defaultValue, sendNotification, callCallbacks);
 }
 
-void Parameter::setStringValue(const juce::String &newString, bool sendNotification, 
+void Parameter::setStringValue(const juce::String &newString, bool sendNotification,
   bool callCallbacks)
 {
   ScopedPointerLock spl(mutex);
@@ -124,7 +124,7 @@ void Parameter::setStringValue(const juce::String &newString, bool sendNotificat
       return;
     }
   }
-  setValue(defaultValue, sendNotification, callCallbacks);  
+  setValue(defaultValue, sendNotification, callCallbacks);
   // use the default option when the string was not found
 }
 
@@ -210,7 +210,7 @@ double Parameter::valueToProportion(double value)
     return 0.0;
   switch( scaling )
   {
-  case Parameter::EXPONENTIAL: 
+  case Parameter::EXPONENTIAL:
   {
     if( minValue > 0.0 )
       return jlimit(0.0, 1.0, log(value/minValue) / (log(maxValue/minValue)) );
@@ -320,7 +320,7 @@ void Parameter::notifyObservers()
   ScopedPointerLock spl(mutex);
   for(int i = 0; i < (int) parameterObservers.size(); i++)
   {
-    ParameterObserver *observer = parameterObservers[i];
+    //ParameterObserver *observer = parameterObservers[i];
     if( parameterObservers[i]->wantsAutomationNotification() )
       parameterObservers[i]->parameterChanged(this);
   }

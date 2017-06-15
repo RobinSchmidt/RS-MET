@@ -5,7 +5,7 @@ void ColourScheme::setAppearanceFromString(const juce::String& newAppearanceStri
 {
   if( newAppearanceString == String("DarkOnBright") )
     setAppearance(DARK_ON_BRIGHT);
-  else if( newAppearanceString == String("BrightOnDark") ) 
+  else if( newAppearanceString == String("BrightOnDark") )
     setAppearance(BRIGHT_ON_DARK);
   else
     jassertfalse;  // invalid string
@@ -37,8 +37,8 @@ void EditorColourScheme::updateColours()
       //bottomLeftAHSL.setLuminance(     0.75);
       bottomRightAHSL.setLuminance(    1.0);
       outlineAHSL.setLuminance(        0.5);
-      headlineAHSL.setLuminance(       0.3125);    
-      headlineOutlineAHSL.setLuminance(1.0);    
+      headlineAHSL.setLuminance(       0.3125);
+      headlineOutlineAHSL.setLuminance(1.0);
     }
     break;
   case BRIGHT_ON_DARK:
@@ -50,8 +50,8 @@ void EditorColourScheme::updateColours()
       bottomLeftAHSL.setLuminance(     0.1875);
       bottomRightAHSL.setLuminance(    0.375);
       outlineAHSL.setLuminance(        0.5);
-      headlineAHSL.setLuminance(       0.8125);    
-      headlineOutlineAHSL.setLuminance(0.0);    
+      headlineAHSL.setLuminance(       0.8125);
+      headlineOutlineAHSL.setLuminance(0.0);
     }
     break;
   }
@@ -62,11 +62,11 @@ void EditorColourScheme::updateColours()
   bottomLeftAHSL.setSaturation(     1.0);
   bottomRightAHSL.setSaturation(    1.0);
   outlineAHSL.setSaturation(        1.0);
-  headlineAHSL.setSaturation(       1.0);    
-  headlineOutlineAHSL.setSaturation(1.0);   
+  headlineAHSL.setSaturation(       1.0);
+  headlineOutlineAHSL.setSaturation(1.0);
 
   // apply global modifiers (macro parameters):
-  float ch = centralHue; 
+  float ch = centralHue;
   float sm = saturationMultiplier;
   float bg = brightnessGamma;
   topLeftAHSL         = topLeftAHSL.withModifiersApplied(        ch, sm, bg);
@@ -127,7 +127,7 @@ void WidgetColourScheme::updateColours()
   textAHSL.setSaturation(      1.0);
   specialAHSL.setSaturation(   1.0);
 
-  float ch = centralHue; 
+  float ch = centralHue;
   float sm = saturationMultiplier;
   float bg = brightnessGamma;
   backgroundAHSL = backgroundAHSL.withModifiersApplied(ch, sm, bg);
@@ -144,8 +144,8 @@ void WidgetColourScheme::updateColours()
 }
 
 void PlotColourScheme::updateColours()
-{    
-  ColourAHSL topLeftAHSL, topRightAHSL, bottomLeftAHSL, bottomRightAHSL, outlineAHSL, textAHSL, 
+{
+  ColourAHSL topLeftAHSL, topRightAHSL, bottomLeftAHSL, bottomRightAHSL, outlineAHSL, textAHSL,
     axesAHSL, coarseGridAHSL, fineGridAHSL; //, curvesAHSL;
 
   switch( appearance )
@@ -208,7 +208,7 @@ void PlotColourScheme::updateColours()
 
   curvesAHSL.setHue(0.f); // needs to be done because this is a member
 
-  float ch = centralHue; 
+  float ch = centralHue;
   float sm = saturationMultiplier;
   float bg = brightnessGamma;
   topLeftAHSL     = topLeftAHSL.withModifiersApplied(    ch, sm, bg);
@@ -232,8 +232,6 @@ void PlotColourScheme::updateColours()
   coarseGrid  = coarseGridAHSL.getAsJuceColour();
   fineGrid    = fineGridAHSL.getAsJuceColour();
   //curves      = curvesAHSL.getAsJuceColour();
-
-  int dummy = 0;
 }
 
 Colour PlotColourScheme::getCurveColour(int index) const
@@ -243,7 +241,7 @@ Colour PlotColourScheme::getCurveColour(int index) const
   case UNIFORM:     return getCurveColourUniform(index);
   case ALTERNATING: return getCurveColourAlternating(index);
 
-  default: 
+  default:
     {
       jassertfalse;
       return Colours::red;
@@ -260,9 +258,7 @@ Colour PlotColourScheme::getCurveColourAlternating(int index) const
 {
   float sign   = pow(-1.f, index);
   float factor = (float) (index/2 + 1);
-
-  float hue = curvesAHSL.getHue() + sign*factor*curveHueSpread;
-  ColourAHSL tmpColourAHSL = curvesAHSL.withHueOffset(sign*factor*curveHueSpread);
-
+  //float hue = curvesAHSL.getHue() + sign*factor*curveHueSpread;
+  //ColourAHSL tmpColourAHSL = curvesAHSL.withHueOffset(sign*factor*curveHueSpread);
   return curvesAHSL.withHueOffset(sign*factor*curveHueSpread).getAsJuceColour();
 }

@@ -1,7 +1,7 @@
 
-StateWatcher::StateWatcher()    
+StateWatcher::StateWatcher()
 {
-  watchedStateManager = NULL; 
+  watchedStateManager = NULL;
 }
 
 StateWatcher::~StateWatcher()
@@ -94,7 +94,7 @@ void StateManager::removeAllChildStateManagers()
   children.getLock().enter();
   for(int i=0; i<children.size(); i++)
   {
-    StateManager* child = children[i];
+    //StateManager* child = children[i];
     children[i]->parent = NULL;
   }
   children.getLock().exit();
@@ -110,7 +110,7 @@ void StateManager::addStateWatcher(StateWatcher *watcherToAdd)
 }
 
 bool StateManager::removeStateWatcher(StateWatcher *watcherToRemove)
-{  
+{
   watchers.getLock().enter();
   bool result = watchers.indexOf(watcherToRemove) != -1;
   jassert( result == true ); // trying to remove a watcher that is not watching this object?

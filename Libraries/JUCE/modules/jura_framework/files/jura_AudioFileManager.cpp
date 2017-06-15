@@ -19,28 +19,28 @@ AudioFileManager::~AudioFileManager()
 //-------------------------------------------------------------------------------------------------
 // static member functions:
 
-AudioSampleBuffer* AudioFileManager::createAudioSampleBufferFromFile(const File& theAudioFile, 
+AudioSampleBuffer* AudioFileManager::createAudioSampleBufferFromFile(const File& theAudioFile,
                                                                      bool showAlertBoxWhenFailed)
 {
   WavAudioFormat     wavAudioFormat;
   FlacAudioFormat    flacAudioFormat;
   bool               fileIsReadable = false;
-  bool               success        = false;
+  //bool               success        = false;
   AudioFormatReader* reader         = NULL;
 
   if( !theAudioFile.existsAsFile() )
   {
     if( showAlertBoxWhenFailed == true )
     {
-      AlertWindow::showMessageBox(AlertWindow::WarningIcon, 
-        String("Alert"), 
-        String("Audio-File: " + theAudioFile.getFullPathName() + " not found."), 
+      AlertWindow::showMessageBox(AlertWindow::WarningIcon,
+        String("Alert"),
+        String("Audio-File: " + theAudioFile.getFullPathName() + " not found."),
         String("OK") );
     }
     return NULL;
   }
 
-  // check whether the file is a flac-encoded spectrum (.spec), these have to 
+  // check whether the file is a flac-encoded spectrum (.spec), these have to
   // treated a bit differently:
   bool fileContainsSpectrum = false;
   if( theAudioFile.hasFileExtension(String("spec")) )  // maybe get rid of this..
@@ -52,9 +52,9 @@ AudioSampleBuffer* AudioFileManager::createAudioSampleBufferFromFile(const File&
   {
     if( showAlertBoxWhenFailed == true )
     {
-      AlertWindow::showMessageBox(AlertWindow::WarningIcon, 
-        String("Alert"), 
-        String("Audio-File: " + theAudioFile.getFullPathName() + " could not be opened."), 
+      AlertWindow::showMessageBox(AlertWindow::WarningIcon,
+        String("Alert"),
+        String("Audio-File: " + theAudioFile.getFullPathName() + " could not be opened."),
         String("OK") );
     }
     return NULL;
@@ -83,9 +83,9 @@ AudioSampleBuffer* AudioFileManager::createAudioSampleBufferFromFile(const File&
   {
     if( showAlertBoxWhenFailed == true )
     {
-      AlertWindow::showMessageBox(AlertWindow::WarningIcon, 
-        String("Alert"), 
-        String("Audio-File: " + theAudioFile.getFullPathName() + " is not readable."), 
+      AlertWindow::showMessageBox(AlertWindow::WarningIcon,
+        String("Alert"),
+        String("Audio-File: " + theAudioFile.getFullPathName() + " is not readable."),
         String("OK") );
     }
     return NULL;
@@ -109,9 +109,9 @@ AudioSampleBuffer* AudioFileManager::createAudioSampleBufferFromFile(const File&
   {
     if( showAlertBoxWhenFailed == true )
     {
-      AlertWindow::showMessageBox(AlertWindow::WarningIcon, 
-        String("Alert"), 
-        String("Audio-File: " + theAudioFile.getFullPathName() + " is not supported (wrong format)."), 
+      AlertWindow::showMessageBox(AlertWindow::WarningIcon,
+        String("Alert"),
+        String("Audio-File: " + theAudioFile.getFullPathName() + " is not supported (wrong format)."),
         String("OK") );
     }
     delete reader;
@@ -119,7 +119,7 @@ AudioSampleBuffer* AudioFileManager::createAudioSampleBufferFromFile(const File&
   }
 }
 
-AudioSampleBuffer* AudioFileManager::createAudioSampleBufferFromFile(const String& filePath, 
+AudioSampleBuffer* AudioFileManager::createAudioSampleBufferFromFile(const String& filePath,
   bool pathIsRelativeToCurrentExecutable, bool showAlertBoxWhenFailed)
 {
   String fullPath;
@@ -146,10 +146,10 @@ AudioSampleBuffer* AudioFileManager::createAudioSampleBufferFromFile(const Strin
 // FileManager overrides:
 
 bool AudioFileManager::loadFile(const File& fileToLoad)
-{ 
+{
   bool success = loadAudioFile(fileToLoad);
-  if( success == true ) 
-    markFileAsClean(true);    
+  if( success == true )
+    markFileAsClean(true);
   notifyListeners();
   return success;
 }
@@ -175,8 +175,8 @@ bool AudioFileManager::loadAudioFile(const File& fileToLoad)
   return success;
 }
 
-bool AudioFileManager::saveAudioFile(const juce::File &fileToSaveTo, 
-                                     const juce::AudioSampleBuffer &bufferToSave, int sampleRate, 
+bool AudioFileManager::saveAudioFile(const juce::File &fileToSaveTo,
+                                     const juce::AudioSampleBuffer &bufferToSave, int sampleRate,
                                      int numBits, const juce::String &format)
 {
   jassertfalse;
@@ -188,7 +188,7 @@ bool AudioFileManager::saveAudioFile(const juce::File &fileToSaveTo,
 /*
 AudioSampleBuffer* AudioFileManager::loadAudioFile(const File& fileToLoadFrom)
 {
-// check whether the file is a flac-encoded spectrum (.spec), these have to 
+// check whether the file is a flac-encoded spectrum (.spec), these have to
 // treated a bit differently:
 bool fileContainsSpectrum = false;
 if( fileToLoadFrom.hasFileExtension(String(T("spec"))) )
@@ -235,7 +235,7 @@ buffer->readFromAudioReader(reader, 0, numSampleFrames, 0, true, true);
 
 // remember where we are:
 currentFileFullPath = fileToLoadFrom.getFullPathName();
-currentDirectory    = fileToLoadFrom.getParentDirectory().getFullPathName(); 
+currentDirectory    = fileToLoadFrom.getParentDirectory().getFullPathName();
 
 // update the preset-field on the GUI
 currentFileName         = fileToLoadFrom.getFileName();

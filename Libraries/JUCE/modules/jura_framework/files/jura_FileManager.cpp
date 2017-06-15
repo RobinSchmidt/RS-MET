@@ -5,7 +5,7 @@ String getApplicationDirectory()
   File thisDirectoryAsFile = thisExeAsFile.getParentDirectory();
 
   // debug code due to problem on mac:
-  bool isDir = thisDirectoryAsFile.isDirectory();
+  //bool isDir = thisDirectoryAsFile.isDirectory();
   if( !thisDirectoryAsFile.isDirectory() )
   {
     jassertfalse;
@@ -33,7 +33,7 @@ bool hasDirectoryFiles(const File& directoryToCheck)
 {
   // when the passed file is not a directory, we consider it as having itself as file:
   if( !directoryToCheck.isDirectory() )
-    return true; 
+    return true;
 
   //OwnedArray<File> foundFiles;
   //directoryToCheck.findChildFiles(foundFiles, File::findFiles, true);

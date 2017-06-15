@@ -11,7 +11,7 @@ ParameterManager::~ParameterManager()
   ScopedLock scopedLock(*lock);
   removeAllObservedParameters(true);
 }
-    
+
 
 
 //-------------------------------------------------------------------------------------------------
@@ -47,7 +47,7 @@ int ParameterManager::getIndexOfParameter(Parameter* parameterToRetrieveIndexOf)
   {
     if( parameterToRetrieveIndexOf == parameters[i] )
       parameterIndex = i;
-  }  
+  }
   return parameterIndex;
 }
 
@@ -72,9 +72,9 @@ void ParameterManager::removeObservedParameter(Parameter *parameterToRemove, boo
 {
   ScopedLock scopedLock(*lock);
   int i=0;
-  while( i < (int) parameters.size() ) 
+  while( i < (int) parameters.size() )
   {
-    if( parameters[i] == parameterToRemove ) 
+    if( parameters[i] == parameterToRemove )
     {
       parameterToRemove->deRegisterParameterObserver(this);
       parameterToRemove->setMutexToUse(nullptr);
@@ -98,7 +98,7 @@ void ParameterManager::removeAllObservedParameters(bool deleteObjects)
     removee->setMutexToUse(nullptr);
     remove(parameters, 0);
     if( deleteObjects == true )
-      delete removee;   
+      delete removee;
   }
 }
 
@@ -116,7 +116,7 @@ void ParameterManager::parameterIsGoingToBeDeleted(Parameter* parameterThatWillB
 int ParameterManager::getParameterIndex(Parameter *parameterToLookFor)
 {
   ScopedLock scopedLock(*lock);
-  int result = -1;
+  //int result = -1;
   for(int i=0; i < (int) parameters.size(); i++) {
     if( parameters[i] == parameterToLookFor )
       return i; }
