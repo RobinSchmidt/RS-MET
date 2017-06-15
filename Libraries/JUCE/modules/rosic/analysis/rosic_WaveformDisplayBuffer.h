@@ -9,7 +9,7 @@ namespace rosic
 
   /**
 
-  This is a class for temporarily storing sample values and retrieving buffers of sample-values for display on a scrolling realtime 
+  This is a class for temporarily storing sample values and retrieving buffers of sample-values for display on a scrolling realtime
   waveform display.
 
   \todo introduce a flag to suspend processing - use this when the GUI is closed
@@ -26,10 +26,10 @@ namespace rosic
     // construction/destruction:
 
     /** Constructor. */
-    WaveformDisplayBuffer();   
+    WaveformDisplayBuffer();
 
     /** Destructor. */
-    ~WaveformDisplayBuffer();  
+    virtual ~WaveformDisplayBuffer();
 
     //-------------------------------------------------------------------------------------------------------------------------------------
     // parameter settings:
@@ -43,8 +43,8 @@ namespace rosic
     /** Sets the length of the time window to be displayed (in seconds). */
     void setTimeWindowLength(double newTimeWindowLength);
 
-    /** Sets the width of the display on which the waveform will be displayed (in pixels). This 
-    information is required in order to determine the correct decimation factor for the peak-data 
+    /** Sets the width of the display on which the waveform will be displayed (in pixels). This
+    information is required in order to determine the correct decimation factor for the peak-data
     to be displayed. */
     void setDisplayWidth(int newDisplayWidth);
 
@@ -59,7 +59,7 @@ namespace rosic
     /** Returns a pointer to the current buffers (decimated or interpolated for viewing). */
     virtual double* getDisplayBuffer();
 
-    /** Returns a pointer to an array which holds the values for the time-axis (in seconds) which 
+    /** Returns a pointer to an array which holds the values for the time-axis (in seconds) which
     correspond to the current peak-values. */
     double* getTimeAxis() const { return timeAxisValues; }
 
@@ -108,11 +108,11 @@ namespace rosic
 
     // factor into a stereo-version that embedds two mono ones:
     //int     numChannels;
-    //bool    midSideMode;  
+    //bool    midSideMode;
 
     double  xMin, xMax, xOld;
     double  dw;
-    int     nMin, nMax;  
+    int     nMin, nMax;
     int     n;   // sample counter inside the current chunk
     int     w;   // counter in the input buffer
     double  inc; // per-sample increment for index in the display buffer
@@ -145,10 +145,10 @@ namespace rosic
     // construction/destruction:
 
     /** Constructor. */
-    SyncedWaveformDisplayBuffer();   
+    SyncedWaveformDisplayBuffer();
 
     /** Destructor. */
-    ~SyncedWaveformDisplayBuffer();  
+    virtual ~SyncedWaveformDisplayBuffer();
 
     //-------------------------------------------------------------------------------------------------------------------------------------
     // setup:
@@ -156,11 +156,11 @@ namespace rosic
     /** Chooses a mode for the syncronization of the display to the signal. @see: syncModes */
     void setSyncMode(int newSyncMode);
 
-    /** Sets a maximum time-window length above which synchronization will be deactivated - it doesn't seem to make sense to sync 
+    /** Sets a maximum time-window length above which synchronization will be deactivated - it doesn't seem to make sense to sync
     arbitrarily long windows. */
     void setSyncThreshold(double newSyncThreshold) { syncThreshold = newSyncThreshold; }
 
-    /** When passing "true" to this, the display-buffer will be synced in a way to make the last pixel fall on a sync-point (i.e. a 
+    /** When passing "true" to this, the display-buffer will be synced in a way to make the last pixel fall on a sync-point (i.e. a
     zero-crossing). If false (the default), the first pixel will fall on a sync-point. */
     void setSyncBackward(bool shouldSyncBackward) { syncBackward = shouldSyncBackward; }
 
@@ -174,21 +174,21 @@ namespace rosic
     the time-window must be below some threshold (in seconds). */
     bool isSyncing() { return (syncMode != FREE_RUNNING) && (timeWindowLength <= syncThreshold); }
 
-    /** Overriden to avoid the internal updateDisplayBuffer() call in case of a synced display (in which case the updateDisplayBuffer() 
+    /** Overriden to avoid the internal updateDisplayBuffer() call in case of a synced display (in which case the updateDisplayBuffer()
     function is called from feedInputSample() instead). */
     virtual double* getDisplayBuffer();
 
     //=====================================================================================================================================
 
   protected:
-    
+
     /** Overriden to incorporate the sync-functionality. */
     virtual void feedInputSample(double in);
 
     /** Accepts an input sample and syncs the display to another signal that is supposedly somehow related to the input-signal. */
     void feedInputSampleWithSync(double in, double syncSignal);
 
-    /** Returns true when the next index inside the input buffer is beyond the end of the buffer. Used internally to check, if the input 
+    /** Returns true when the next index inside the input buffer is beyond the end of the buffer. Used internally to check, if the input
     buffer is already filled completely. */
     bool isNextIndexBehindBufferEnd();
 
@@ -199,7 +199,7 @@ namespace rosic
     double xOld2;
     double yOld;            // previous sample of the signal to sync to
     double syncThreshold;   // threshold (in seconds) above which sync is deactivated
-    int    syncMode;    
+    int    syncMode;
     bool   bufferFull;      // flag to indicate the input buffer is completely filled
     bool   syncBackward;
 
@@ -207,4 +207,4 @@ namespace rosic
 
 } // end namespace rosic
 
-#endif 
+#endif

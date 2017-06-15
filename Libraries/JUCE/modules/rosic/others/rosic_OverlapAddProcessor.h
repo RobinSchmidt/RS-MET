@@ -35,7 +35,7 @@ namespace rosic
     OverlapAddProcessor(int maxBlockSize, int maxOverlapFactor = 4, int maxPaddingFactor = 4);
 
     /** Destructor. */
-    ~OverlapAddProcessor();
+    virtual ~OverlapAddProcessor();
 
     //---------------------------------------------------------------------------------------------
     // parameter settings:
@@ -90,7 +90,7 @@ namespace rosic
 
     /** This function is the one, you should override in your subclass to do the actual processing.
     The baseclass implementation does nothing. \todo: make it purely virtual */
-    virtual void processBlock(double *block, int blockSize) {}
+    virtual void processBlock(double* /*block*/, int /*blockSize*/) {}
 
     /** Prepares the 'tmp' member variable such that is contains the (possibly windowed and padded)
     block to be processed. */
@@ -102,7 +102,7 @@ namespace rosic
     void postProcessBlock();
 
     /** Initializes the internal state (clears buffer, resets read/write pointers, generates
-    window, etc.) - all the stuff that is necesarry when the blockSize, overlap or zero-padding
+    window, etc.) - all the stuff that is necessary when the blockSize, overlap or zero-padding
     setting changes. */
     void initInternalState();
 

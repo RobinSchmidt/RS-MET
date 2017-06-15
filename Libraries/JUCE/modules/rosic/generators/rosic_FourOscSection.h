@@ -9,7 +9,7 @@ namespace rosic
 {
   /**
 
-  This class implements the section of four oscillators (of class OscillatorStereo). Its purpose is 
+  This class implements the section of four oscillators (of class OscillatorStereo). Its purpose is
   mainly to keep track of the osc-section preset.
 
   */
@@ -26,18 +26,18 @@ namespace rosic
     FourOscSection();
 
     /** Destructor. */
-    ~FourOscSection();
+    virtual ~FourOscSection();
 
     //---------------------------------------------------------------------------------------------
     // parameter settings:
 
     /** Sets the sample-rate for this voice. */
-    virtual void setSampleRate(double newSampleRate); 
+    virtual void setSampleRate(double newSampleRate);
 
     //---------------------------------------------------------------------------------------------
     // audio processing:
 
-    //virtual void getSampleFrameStereo(double *outL, double *outR);  
+    //virtual void getSampleFrameStereo(double *outL, double *outR);
     /**< Calculates a stereo output sample pair at a time. */
 
     //---------------------------------------------------------------------------------------------

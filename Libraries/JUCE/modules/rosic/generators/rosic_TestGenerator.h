@@ -9,7 +9,7 @@ namespace rosic
 
   /**
 
-  This is a digital TestGenerator/distortion unit with sample rate decimation and 
+  This is a digital TestGenerator/distortion unit with sample rate decimation and
   re-quantization (the latter is better known as bitcrushing).
 
   */
@@ -60,8 +60,8 @@ namespace rosic
   // which are supposed to be called at audio-rate (they can't be put into
   // the .cpp file):
 
-  INLINE void TestGenerator::getSampleFrameStereo(double* inL,  double* inR, 
-                                                  double* outL, double* outR)
+  INLINE void TestGenerator::getSampleFrameStereo(double* /*inL*/,  double* /*inR*/,
+                                                  double* outL,     double* outR)
   {
     sineOscillator.getSampleFrameStereo(outL, outR);
   }

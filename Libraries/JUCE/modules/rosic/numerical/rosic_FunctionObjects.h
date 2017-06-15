@@ -9,12 +9,12 @@ namespace rosic
 
   /**
 
-  This class serves as baseclass for univariate scalar functions - that is, functions that take a 
+  This class serves as baseclass for univariate scalar functions - that is, functions that take a
   scalar as input and produce a scalar at the output.
 
   */
 
-  class UnivariateScalarFunction  
+  class UnivariateScalarFunction
   {
 
   public:
@@ -31,12 +31,12 @@ namespace rosic
     //---------------------------------------------------------------------------------------------
     // evaluation:
 
-    /** You must override this in your subclass to produce an output value for a given input value 
+    /** You must override this in your subclass to produce an output value for a given input value
     x. */
     virtual double getValueAt(double x) = 0;
 
-    /** You may override this in your subclass to produce an output value of the first derivative 
-    of the function for a given input value x. If you don't override it, the baseclass 
+    /** You may override this in your subclass to produce an output value of the first derivative
+    of the function for a given input value x. If you don't override it, the baseclass
     implementation will invoke approximateDerivative. */
     virtual double getFirstDerivativeAt(double x);
 
@@ -50,10 +50,10 @@ namespace rosic
 
     // later put these into a protected or private section:
 
-    /** Approximates the derivative of given order by using a finite difference approximation of 
-    the type: f'(x) ~ (f(x+eps) - f(x-eps)) / (2*eps). For higher derivatives, it uses the same 
-    approach recursively such that: f''(x) ~ (f'(x+eps) - f'(x-eps)) / (2*eps) where f' is 
-    approximated by an recursive call to this very function, likewise for higher derivatives. 
+    /** Approximates the derivative of given order by using a finite difference approximation of
+    the type: f'(x) ~ (f(x+eps) - f(x-eps)) / (2*eps). For higher derivatives, it uses the same
+    approach recursively such that: f''(x) ~ (f'(x+eps) - f'(x-eps)) / (2*eps) where f' is
+    approximated by an recursive call to this very function, likewise for higher derivatives.
     Note that the approximation becomes progressively worse for higher derivatives. */
     double approximateDerivativeAt(double x, int order, double eps);
 
@@ -62,18 +62,18 @@ namespace rosic
 
     double findRootViaRidders(double xMin, double xMax);
 
-    /** Finds a root of this function object, that is, a value x* for which (x) = 0 via a Newton 
+    /** Finds a root of this function object, that is, a value x* for which (x) = 0 via a Newton
     iteration method. */
     double findRootViaNewtonNonRobust(double x0);
 
-    /** Finds a root of this function object, that is, a value x* for which (x) = 0 via a 
+    /** Finds a root of this function object, that is, a value x* for which (x) = 0 via a
     Chebychev iteration method. */
     double findRootViaChebychevNonRobust(double x0);
 
 
 
-    // todo (maybe): implement functions like getDerivative(), 
-    // getAntiDerivative(double integrationConstant = 0.0) that return another object of class 
+    // todo (maybe): implement functions like getDerivative(),
+    // getAntiDerivative(double integrationConstant = 0.0) that return another object of class
     // UnivariateScalarFunction ...mmm...maybe not
 
   };
@@ -83,15 +83,15 @@ namespace rosic
 
 
 
-  class UnivariateScalarFunctionViaPointer : public UnivariateScalarFunction  
+  class UnivariateScalarFunctionViaPointer : public UnivariateScalarFunction
   {
 
     //---------------------------------------------------------------------------------------------
-    // construction/destruction: 
+    // construction/destruction:
 
     /** Constructor. */
-    UnivariateScalarFunctionViaPointer(double (*functionToUse)   (double), 
-                                       double (*derivativeToUse) (double) = NULL);  
+    UnivariateScalarFunctionViaPointer(double (*functionToUse)   (double),
+                                       double (*derivativeToUse) (double) = NULL);
 
     //---------------------------------------------------------------------------------------------
     // evaluation:
@@ -104,7 +104,7 @@ namespace rosic
   protected:
 
     // pointers to facilitate the use of simple c-style functions by wrapping them into an object:
-    double (*functionPointer)   (double x);  
+    double (*functionPointer)   (double x);
     double (*derivativePointer) (double x);
 
   };
@@ -119,16 +119,16 @@ namespace rosic
 
   */
 
-  class Polynomial : public UnivariateScalarFunction  
+  class Polynomial : public UnivariateScalarFunction
   {
 
   public:
 
-    Polynomial(const unsigned int order = 0, const double* const coeffs = NULL);  
+    Polynomial(const unsigned int order = 0, const double* const coeffs = NULL);
 
 
 
-    virtual ~Polynomial();  
+    virtual ~Polynomial();
 
 
 
@@ -139,8 +139,8 @@ namespace rosic
     /** Sets all coefficients to zero. */
     void zeroCoefficients();
 
-    /** Sets all coefficients to the values passed in the array pointed to by "newCoeffs" - this 
-    array should have a length of (at least) order+1, where order is the currently set order of 
+    /** Sets all coefficients to the values passed in the array pointed to by "newCoeffs" - this
+    array should have a length of (at least) order+1, where order is the currently set order of
     this object. */
     void setCoefficients(const double* const newCoeffs);
 
@@ -155,7 +155,7 @@ namespace rosic
 
 
 
-    //\todo: define operators for: multiplication, division, addition, subtraction, 
+    //\todo: define operators for: multiplication, division, addition, subtraction,
     //       (in)equality, etc.
 
 
@@ -182,7 +182,7 @@ namespace rosic
 
   */
 
-  class MultivariateScalarFunction  
+  class MultivariateScalarFunction
   {
 
   public:
@@ -191,22 +191,22 @@ namespace rosic
     // construction/destruction:
 
     /** Constructor. */
-    MultivariateScalarFunction(int numInputs);  
+    MultivariateScalarFunction(int numInputs);
 
     /** Destructor. */
-    ~MultivariateScalarFunction();
+    virtual ~MultivariateScalarFunction();
 
     //---------------------------------------------------------------------------------------------
     // inquiry:
 
     /** Informs, whether or not the function supports the evaluation of the gradient. The baseclass
-    implmentation will return false. If you return true here in your subclass, you must also 
+    implmentation will return false. If you return true here in your subclass, you must also
     override getGradient. */
     virtual bool supportsGradient() { return false; }
 
     /** Returns the number of inputs of the function (the dimensionality of the input vector). */
     virtual int getNumInputs() { return numInputs; }
-      
+
     //---------------------------------------------------------------------------------------------
     // evaluation:
 
@@ -217,8 +217,8 @@ namespace rosic
     /** Computes an output number from a given input Vector. */
     virtual double getValue() = 0;
 
-    /** Returns the local gradient at the given input vector x, that is, the vector of partial 
-    derivatives with respect to the elements of x. You should override this in your subclass if you 
+    /** Returns the local gradient at the given input vector x, that is, the vector of partial
+    derivatives with respect to the elements of x. You should override this in your subclass if you
     return true in supportsGradient - the baseclass implementation will only return an empty dummy
     vector. */
     virtual Vector getGradient() { return Vector(); }
@@ -239,7 +239,7 @@ namespace rosic
 
   */
 
-  class MultivariateErrorFunction  
+  class MultivariateErrorFunction
   {
 
   public:
@@ -248,35 +248,35 @@ namespace rosic
     // construction/destruction:
 
     /** Constructor. */
-    MultivariateErrorFunction();  
+    MultivariateErrorFunction();
 
     /** Destructor. */
-    ~MultivariateErrorFunction();
-      
+    virtual ~MultivariateErrorFunction();
+
     //---------------------------------------------------------------------------------------------
     // evaluation:
 
-    /** Sets the parameter vector - all subsequent evaluations of the function value and gradient 
+    /** Sets the parameter vector - all subsequent evaluations of the function value and gradient
     are with respect to this input vector. */
-    //virtual void setParameterVector(Vector newParameters) = 0; 
+    //virtual void setParameterVector(Vector newParameters) = 0;
 
     /** Computes an output number from a given input Vector. */
     virtual double getValue(Vector p) = 0;
 
-    /** Returns the local gradient at the given input vector p, that is, the vector of partial 
+    /** Returns the local gradient at the given input vector p, that is, the vector of partial
     derivatives with respect to the elements of p. The baseclass implementation will approximate
-    the gradient by a central difference which perturbs each element individually and evaluates 
-    the function itself via getValue - this requires 2*N evaluations of the function with N being 
-    the dimensionality of the parameter vector. See (1), page 147 for more details. This is 
-    expensive, so you really should override this function in your subclass if you have some better 
+    the gradient by a central difference which perturbs each element individually and evaluates
+    the function itself via getValue - this requires 2*N evaluations of the function with N being
+    the dimensionality of the parameter vector. See (1), page 147 for more details. This is
+    expensive, so you really should override this function in your subclass if you have some better
     algorithm to compute the gradient for the problem at hand.  */
     virtual Vector getGradient(Vector p);
 
-    /** Approximates the product v^T * H at the point p in parameter space where H denotes the 
+    /** Approximates the product v^T * H at the point p in parameter space where H denotes the
     local Hessian matrix. The approximation is based on a central difference of two local gradients
     at p + eps*v and p - eps*v, where eps is some small constant. Thus, the function will call
-    getGradient two times. Note that in optimization algorithms like conjugate gradient, one of 
-    these two calls can be avoided when the central difference is replaced by a one-sided 
+    getGradient two times. Note that in optimization algorithms like conjugate gradient, one of
+    these two calls can be avoided when the central difference is replaced by a one-sided
     difference. See (1), page 158 for more details. */
     virtual Vector getVectorTimesHessianApproximate(Vector p, Vector v);
 
@@ -285,9 +285,9 @@ namespace rosic
 
   /**
 
-  This class realizes a simple bivariate quadratic error function of the form 
+  This class realizes a simple bivariate quadratic error function of the form
   E = (1/2) * p^T * A * p - b^T * p + c  with p denoting the parameter vector to be optimized and
-  the constants c (scalar), b (vector) and A (matrix). This function object is intended to be used 
+  the constants c (scalar), b (vector) and A (matrix). This function object is intended to be used
   as a test error function for testing optimization algorithms.
 
   */
@@ -301,10 +301,10 @@ namespace rosic
     // construction/destruction:
 
     /** Constructor. */
-    QuadraticTestErrorFunction();  
+    QuadraticTestErrorFunction();
 
     /** Destructor. */
-    ~QuadraticTestErrorFunction();
+    virtual ~QuadraticTestErrorFunction();
 
     //---------------------------------------------------------------------------------------------
     // evaluation:
@@ -334,7 +334,7 @@ namespace rosic
 
   */
 
-  class MultivariateVectorFunction  
+  class MultivariateVectorFunction
   {
 
   public:
@@ -343,10 +343,10 @@ namespace rosic
     // construction/destruction:
 
     /** Constructor. */
-    MultivariateVectorFunction(int numInputs, int numOutputs);  
+    MultivariateVectorFunction(int numInputs, int numOutputs);
 
     /** Destructor. */
-    ~MultivariateVectorFunction();
+    virtual ~MultivariateVectorFunction();
 
     //---------------------------------------------------------------------------------------------
     // inquiry:
@@ -377,4 +377,4 @@ namespace rosic
 
 } // end namespace rosic
 
-#endif 
+#endif

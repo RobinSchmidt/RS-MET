@@ -14,10 +14,10 @@ namespace rosic
 
   /**
 
-  This class implements a colored noise generator based on specifying a magnitude spectrum in terms 
+  This class implements a colored noise generator based on specifying a magnitude spectrum in terms
   of a slope, randomizing the phases and generating a sample from that.
 
-  \todo: 
+  \todo:
   -generate stereo outputs by using another read-pointer with distance of half the buffersize
   -seems to be slow on construction (Quadrifex)
   -random number generator seems to be not so random
@@ -26,7 +26,7 @@ namespace rosic
 
   */
 
-  class NoiseGenerator  
+  class NoiseGenerator
   {
 
   public:
@@ -34,13 +34,13 @@ namespace rosic
     //---------------------------------------------------------------------------------------------
     // construction/destruction:
 
-    /** Constructor - the parameter determines how much memory will be allocated for the sample to 
+    /** Constructor - the parameter determines how much memory will be allocated for the sample to
     be played. If you pass 0 here, you may later make the gerator use shared memory by means of
     setSharedMemoryAreaToUse(). */
-    NoiseGenerator(int bufferLengthToAllocate = 262144);   
+    NoiseGenerator(int bufferLengthToAllocate = 262144);
 
     /** Destructor */
-    ~NoiseGenerator();  
+    ~NoiseGenerator();
 
     //---------------------------------------------------------------------------------------------
     // parameter settings:
@@ -55,12 +55,12 @@ namespace rosic
     void setSpectralSlope(double newSlope);
 
     /** Sets the lowest frequency to be generated (in Hz) - the actual cutoff frequency will be the
-    frequency of the FFT-bin associated with a frequency strictly lower than the value passed 
+    frequency of the FFT-bin associated with a frequency strictly lower than the value passed
     here. */
     void setLowestFrequency(double newLowestFrequency);
 
     /** Sets the highest frequency to be generated (in Hz) - the actual cutoff frequency will be the
-    frequency of the FFT-bin associated with a frequency strictly higher than the value passed 
+    frequency of the FFT-bin associated with a frequency strictly higher than the value passed
     here. */
     void setHighestFrequency(double newHighestFrequency);
 
@@ -83,13 +83,13 @@ namespace rosic
     // audio processing:
 
     /** Calculates one output stereo sample-frame at a time with aquiring the mutex lock for the
-    possibly shared memory. Should be used when the app potentially (re)allocates memory during the 
+    possibly shared memory. Should be used when the app potentially (re)allocates memory during the
     lifetime of this object. */
     INLINE double getSampleThreadSafe();
 
     /** Calculates one output stereo sample-frame at a time without aquiring the mutex lock for the
-    possibly shared memory. If you are potentially doing memory (re)allocations during the lifetime 
-    of this object (via setSharedMemoryAreaToUse), either wrap calls to this function into 
+    possibly shared memory. If you are potentially doing memory (re)allocations during the lifetime
+    of this object (via setSharedMemoryAreaToUse), either wrap calls to this function into
     acquireLock()/releaseLock() or use getSampleFrameStereoThreadSafe(). */
     INLINE double getSample();
 
@@ -120,15 +120,15 @@ namespace rosic
 
   private:
 
-    // make assignment operator and copy constructor unavailable because this class contains 
+    // make assignment operator and copy constructor unavailable because this class contains
     // pointer members:
-    NoiseGenerator& operator=(const NoiseGenerator &other) { return *this; }
-    NoiseGenerator(const NoiseGenerator& other) { }
+    NoiseGenerator& operator=(const NoiseGenerator& /*other*/) { return *this; }
+    NoiseGenerator(const NoiseGenerator& /*other*/) { }
 
   };
 
   //-----------------------------------------------------------------------------------------------
-  // from here: definitions of the functions to be inlined, i.e. all functions which are supposed 
+  // from here: definitions of the functions to be inlined, i.e. all functions which are supposed
   // to be called at audio-rate (they can't be put into the .cpp file):
 
   double NoiseGenerator::getSampleThreadSafe()

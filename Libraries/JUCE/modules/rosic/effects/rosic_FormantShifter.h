@@ -25,11 +25,14 @@ namespace rosic
     //---------------------------------------------------------------------------------------------
     // construction/destruction:
 
-    /** Constructor. You must pass the maximum blocksize here and may optionally pass a maximum 
-    overlap- and zero-padding factor. For spectral processing with a cosine^2 window on the input, 
+    /** Constructor. You must pass the maximum blocksize here and may optionally pass a maximum
+    overlap- and zero-padding factor. For spectral processing with a cosine^2 window on the input,
     an overlap and zero-padding of 2 is usually a good choice. */
-    FormantShifter(int maxBlockSize, int maxOverlapFactor = 2, 
-      int maxPaddingFactor = 2); 
+    FormantShifter(int maxBlockSize, int maxOverlapFactor = 2,
+      int maxPaddingFactor = 2);
+
+    /** Destructor */
+    virtual ~FormantShifter() {}
 
     //---------------------------------------------------------------------------------------------
     // parameter settings:
@@ -68,30 +71,30 @@ namespace rosic
 
     //-----------------------------------------------------------------------------------------------
     // construction/destruction:
- 
+
     /** Constructor. */
-    FormantShifterStereo(int maxBlockSize, int maxOverlapFactor = 2, int maxPaddingFactor = 2); 
+    FormantShifterStereo(int maxBlockSize, int maxOverlapFactor = 2, int maxPaddingFactor = 2);
 
     /** Destructor. */
-    ~FormantShifterStereo(); 
+    ~FormantShifterStereo();
 
     //---------------------------------------------------------------------------------------------
     // parameter settings:
 
     /** Sets the sample-rate. */
-    void setSampleRate(double newSampleRate) 
+    void setSampleRate(double newSampleRate)
     { shifterL.setSampleRate(newSampleRate); shifterR.setSampleRate(newSampleRate); }
 
     /** Sets a scale factor for the formant frequencies. */
-    void setFormantScale(double newScale) 
+    void setFormantScale(double newScale)
     { shifterL.setFormantScale(newScale); shifterR.setFormantScale(newScale); }
 
     /** Sets a frequency offset (in Hz) for the formant frequencies. */
-    void setFormantOffset(double newOffset) 
+    void setFormantOffset(double newOffset)
     { shifterL.setFormantOffset(newOffset);  shifterR.setFormantOffset(newOffset); }
 
     /** Sets the ratio between dry and wet between 0...1. */
-    void setDryWetRatio(double newDryWet) 
+    void setDryWetRatio(double newDryWet)
     { equalPowerGainFactors(newDryWet, &dry, &wet, 0.0, 1.0); }
 
     // setBlockSize, setMono
@@ -121,7 +124,7 @@ namespace rosic
   // definitions of inlined functions:
 
   INLINE void FormantShifterStereo::getSampleFrameStereo(double* inOutL, double* inOutR)
-  { 
+  {
     double tmpL = shifterL.getSample(*inOutL);
     double tmpR = shifterR.getSample(*inOutR);
     *inOutL     = dry*(*inOutL) + wet*tmpL;

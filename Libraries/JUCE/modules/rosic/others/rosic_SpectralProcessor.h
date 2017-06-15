@@ -22,13 +22,13 @@ namespace rosic
     //---------------------------------------------------------------------------------------------
     // construction/destruction:
 
-    /** Constructor. You must pass the maximum blocksize here and may optionally pass a maximum 
-    overlap- and zero-padding factor. For spectral processing with a cosine^2 window on the input, 
+    /** Constructor. You must pass the maximum blocksize here and may optionally pass a maximum
+    overlap- and zero-padding factor. For spectral processing with a cosine^2 window on the input,
     an overlap and zero-padding of 2 is usually a good choice. */
-    SpectralProcessor(int maxBlockSize, int maxOverlapFactor = 4, int maxPaddingFactor = 4); 
+    SpectralProcessor(int maxBlockSize, int maxOverlapFactor = 4, int maxPaddingFactor = 4);
 
     /** Destructor. */
-    ~SpectralProcessor();  
+    ~SpectralProcessor();
 
     //=============================================================================================
 
@@ -38,12 +38,12 @@ namespace rosic
     The baseclass implementation does nothing. */
     virtual void processBlock(double *block, int blockSize);
 
-    /** This function is to be overriden by your subclass to process the spectrum in some way. The 
-    passed 'spectrumSize' will be N/2 where N is the FFT-size - thus, the passed spectrum contains 
-    only the non-redundant (positive) frequencies with bin-indices 0...N/2-1. The purely real 
-    coefficients for DC and the Nyquist-frequency will be contained in the real and imaginary parts 
+    /** This function is to be overriden by your subclass to process the spectrum in some way. The
+    passed 'spectrumSize' will be N/2 where N is the FFT-size - thus, the passed spectrum contains
+    only the non-redundant (positive) frequencies with bin-indices 0...N/2-1. The purely real
+    coefficients for DC and the Nyquist-frequency will be contained in the real and imaginary parts
     of spectrum[0] respectively. */
-    virtual void processSpectrum(Complex *spectrum, int spectrumSize) {}
+    virtual void processSpectrum(Complex* /*spectrum*/, int /*spectrumSize*/) {}
 
     FourierTransformerRadix2 transformer;
 

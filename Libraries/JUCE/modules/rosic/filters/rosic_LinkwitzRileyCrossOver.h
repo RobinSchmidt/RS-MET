@@ -11,13 +11,13 @@ namespace rosic
   /**
 
   This class implements a pair of filters to split an incoming signal into a low an high band. The filters used here are of Linkwitz/Riley
-  type which ensures a flat magnitude response of the recombined (summed) output. However, the recombined output signal will not 
-  reconstruct the input signal exactly. Instead, the recombined signal will be an allpass-filtered version of the input. Linkwitz/Riley 
-  filters are made from a series connection of two identical Butterworth filters which implies that the magnitude-response is that of a 
-  Butterworth filter squared. In particular, the gain at the cutoff/crossover frequency is -6.02 dB because the Butterworth filter has a 
+  type which ensures a flat magnitude response of the recombined (summed) output. However, the recombined output signal will not
+  reconstruct the input signal exactly. Instead, the recombined signal will be an allpass-filtered version of the input. Linkwitz/Riley
+  filters are made from a series connection of two identical Butterworth filters which implies that the magnitude-response is that of a
+  Butterworth filter squared. In particular, the gain at the cutoff/crossover frequency is -6.02 dB because the Butterworth filter has a
   gain of -3.01 dB there.
 
-  Stability: it has been stability-tested (with highest slope of 96 dB/oct) for crossover-frequencies down to 20 Hz with sample-rates up 
+  Stability: it has been stability-tested (with highest slope of 96 dB/oct) for crossover-frequencies down to 20 Hz with sample-rates up
   to 800 kHz - beyond that (either higher sample-rate or lower crossover-frequency (or both), filters may become numerically unstable).
 
   */
@@ -33,14 +33,14 @@ namespace rosic
     // construction/destruction:
 
     /** Constructor. newMaxButterworthOrder should be even. */
-    LinkwitzRileyCrossOver(int newMaxButterworthOrder = 8);   
+    LinkwitzRileyCrossOver(int newMaxButterworthOrder = 8);
 
     /** Destructor. */
-    ~LinkwitzRileyCrossOver();  
+    ~LinkwitzRileyCrossOver();
 
     //-------------------------------------------------------------------------------------------------------------------------------------
     // parameter settings:
-      
+
     /** Sets up the sample rate for this filter. */
     void setSampleRate(double newSampleRate);
 
@@ -57,38 +57,38 @@ namespace rosic
     // inquiry:
 
     /** Returns the samplerate. */
-    double getSampleRate() const 
-    { 
-      return sampleRate; 
+    double getSampleRate() const
+    {
+      return sampleRate;
     }
 
     /** Returns the crossover frequency. */
-    double getCrossoverFrequency() const 
-    { 
-      return crossoverFrequency; 
+    double getCrossoverFrequency() const
+    {
+      return crossoverFrequency;
     }
 
     /** Returns the slope of the filter pair. */
-    int getSlope() const 
-    { 
-      return 12*butterworthOrder; 
+    int getSlope() const
+    {
+      return 12*butterworthOrder;
     }
 
-    /** Fills the 'magnitudes' array with the magnitude response of the lowpass filter evaluated at the frequencies passed in the 
+    /** Fills the 'magnitudes' array with the magnitude response of the lowpass filter evaluated at the frequencies passed in the
     'frequencies' array. Both arrays are assumed to be numBins long. */
-    void getLowpassMagnitudeResponse(double* frequencies, double* magnitudes, int numBins, bool inDecibels = false, 
+    void getLowpassMagnitudeResponse(double* frequencies, double* magnitudes, int numBins, bool inDecibels = false,
       bool accumulate = false);
 
-    /** Fills the 'H' array with the complex freqiuency response of the lowpass filter evaluated at the frequencies passed in the 
+    /** Fills the 'H' array with the complex freqiuency response of the lowpass filter evaluated at the frequencies passed in the
     'frequencies' array. Both arrays are assumed to be numBins long. */
     void getLowpassFrequencyResponse(double* frequencies, Complex* H, int numBins, bool accumulate = false);
 
-    /** Fills the 'magnitudes' array with the magnitude response of the highpass filter evaluated at the frequencies passed in the 
+    /** Fills the 'magnitudes' array with the magnitude response of the highpass filter evaluated at the frequencies passed in the
     'frequencies' array. Both arrays are assumed to be numBins long. */
-    void getHighpassMagnitudeResponse(double* frequencies, double* magnitudes, int numBins, bool inDecibels = false, 
+    void getHighpassMagnitudeResponse(double* frequencies, double* magnitudes, int numBins, bool inDecibels = false,
       bool accumulate = false);
 
-    /** Fills the 'H' array with the complex freqiuency response of the highpass filter evaluated at the frequencies passed in the 
+    /** Fills the 'H' array with the complex freqiuency response of the highpass filter evaluated at the frequencies passed in the
     'frequencies' array. Both arrays are assumed to be numBins long. */
     void getHighpassFrequencyResponse(double* frequencies, Complex* H, int numBins, bool accumulate = false);
 
@@ -122,8 +122,8 @@ namespace rosic
 
     double sampleRate;
     double crossoverFrequency;
-    int    butterworthOrder;     // order of the Butterworth filters 
-    int    maxButterworthOrder;  // maximum order of the Butterworth filters 
+    int    butterworthOrder;     // order of the Butterworth filters
+    int    maxButterworthOrder;  // maximum order of the Butterworth filters
 
   };
 
@@ -134,7 +134,7 @@ namespace rosic
   {
     double tmp  = *in;
     *outLow     = lowpass2.getSampleDirect2(lowpass1.getSampleDirect2(tmp));
-    *outHigh    = sumAllpass.getSampleDirect2(tmp) - *outLow; 
+    *outHigh    = sumAllpass.getSampleDirect2(tmp) - *outLow;
   }
 
   INLINE void LinkwitzRileyCrossOver::getSamplePair(float *in, float *outLow, float *outHigh)
@@ -185,7 +185,7 @@ namespace rosic
     // construction/destruction:
 
     /** Constructor. */
-    LinkwitzRileyCrossOverStereo(int newMaxButterworthOrder = 8)
+    LinkwitzRileyCrossOverStereo(/*int newMaxButterworthOrder = 8*/)
     {
       active = true;
       mono   = false;
@@ -193,7 +193,7 @@ namespace rosic
 
     //-------------------------------------------------------------------------------------------------------------------------------------
     // setup:
-      
+
     /** Sets up the sample rate for this filter. */
     void setSampleRate(double newSampleRate)
     {
@@ -232,40 +232,40 @@ namespace rosic
     // inquiry:
 
     /** Returns the samplerate. */
-    double getSampleRate() const 
-    { 
-      return crossoverL.getSampleRate(); 
+    double getSampleRate() const
+    {
+      return crossoverL.getSampleRate();
     }
 
     /** Informs, whether the crossover is active or not. */
-    bool isActive() const 
-    { 
+    bool isActive() const
+    {
       return active; // todo: drag this flag into class LinkwitzReileyCrossover
     }
 
     /** Returns the crossover frequency. */
-    double getCrossoverFrequency() const 
-    { 
-      return crossoverL.getCrossoverFrequency(); 
+    double getCrossoverFrequency() const
+    {
+      return crossoverL.getCrossoverFrequency();
     }
 
     /** Returns the slope of the filter pair. */
-    int getSlope() const 
-    { 
-      return crossoverL.getSlope(); 
+    int getSlope() const
+    {
+      return crossoverL.getSlope();
     }
 
-    /** Fills the 'magnitudes' array with the magnitude response of the lowpass filter evaluated at the frequencies passed in the 
+    /** Fills the 'magnitudes' array with the magnitude response of the lowpass filter evaluated at the frequencies passed in the
     'frequencies' array. Both arrays are assumed to be numBins long. */
-    void getLowpassMagnitudeResponse(double* frequencies, double* magnitudes, int numBins, bool inDecibels = false, 
+    void getLowpassMagnitudeResponse(double* frequencies, double* magnitudes, int numBins, bool inDecibels = false,
       bool accumulate = false)
     {
       crossoverL.getLowpassMagnitudeResponse(frequencies, magnitudes, numBins, inDecibels, accumulate);
     }
 
-    /** Fills the 'magnitudes' array with the magnitude response of the highpass filter evaluated at the frequencies passed in the 
+    /** Fills the 'magnitudes' array with the magnitude response of the highpass filter evaluated at the frequencies passed in the
     'frequencies' array. Both arrays are assumed to be numBins long. */
-    void getHighpassMagnitudeResponse(double* frequencies, double* magnitudes, int numBins, bool inDecibels = false, 
+    void getHighpassMagnitudeResponse(double* frequencies, double* magnitudes, int numBins, bool inDecibels = false,
       bool accumulate = false)
     {
       crossoverL.getHighpassMagnitudeResponse(frequencies, magnitudes, numBins, inDecibels, accumulate);
@@ -286,7 +286,7 @@ namespace rosic
     // others:
 
     /** Resets the internal buffers of the filters to all zeros. */
-    void resetBuffers() 
+    void resetBuffers()
     {
       crossoverL.resetBuffers();
       crossoverR.resetBuffers();
@@ -305,7 +305,7 @@ namespace rosic
   //---------------------------------------------------------------------------------------------------------------------------------------
   // inlined functions:
 
-  INLINE void LinkwitzRileyCrossOverStereo::getSampleFrame(double *inL, double *inR, double *outLowL, double *outLowR, 
+  INLINE void LinkwitzRileyCrossOverStereo::getSampleFrame(double *inL, double *inR, double *outLowL, double *outLowR,
                                                            double *outHighL, double *outHighR)
   {
     if( !active )
@@ -313,7 +313,7 @@ namespace rosic
       *outLowL  = *inL;
       *outLowR  = *inR;
       *outHighL = 0.0;
-      *outHighR = 0.0; 
+      *outHighR = 0.0;
     }
 
     crossoverL.getSamplePair(inL, outLowL, outHighL);
@@ -326,7 +326,7 @@ namespace rosic
       crossoverR.getSamplePair(inR, outLowR, outHighR);
   }
 
-  INLINE void LinkwitzRileyCrossOverStereo::getSampleFrame(float *inL, float *inR, float *outLowL, float *outLowR, 
+  INLINE void LinkwitzRileyCrossOverStereo::getSampleFrame(float *inL, float *inR, float *outLowL, float *outLowR,
                                                            float *outHighL, float *outHighR)
   {
     if( !active )
@@ -334,7 +334,7 @@ namespace rosic
       *outLowL  = *inL;
       *outLowR  = *inR;
       *outHighL = 0.0;
-      *outHighR = 0.0; 
+      *outHighR = 0.0;
     }
 
     crossoverL.getSamplePair(inL, outLowL, outHighL);
@@ -347,7 +347,7 @@ namespace rosic
       crossoverR.getSamplePair(inR, outLowR, outHighR);
   }
 
-  INLINE void LinkwitzRileyCrossOverStereo::processBuffer(double *inL, double *inR, double *outLowL, double *outLowR, 
+  INLINE void LinkwitzRileyCrossOverStereo::processBuffer(double *inL, double *inR, double *outLowL, double *outLowR,
                                                           double *outHighL, double *outHighR, int length)
   {
     if( !active )
@@ -368,7 +368,7 @@ namespace rosic
       crossoverR.processBuffer(inR, outLowR, outHighR, length);
   }
 
-  INLINE void LinkwitzRileyCrossOverStereo::processBuffer(float *inL, float *inR, float *outLowL, float *outLowR, 
+  INLINE void LinkwitzRileyCrossOverStereo::processBuffer(float *inL, float *inR, float *outLowL, float *outLowR,
                                                           float *outHighL, float *outHighR, int length)
   {
     if( !active )
@@ -389,9 +389,9 @@ namespace rosic
       crossoverR.processBuffer(inR, outLowR, outHighR, length);
   }
 
-} 
+}
 
-#endif 
+#endif
 
 
 /**
@@ -399,14 +399,14 @@ namespace rosic
 
 yL1 = LP1(x);   yH1 =       (x  -  yL1);  // x: input, yL1: 1st lowpass output, yH1: 1st highpass output, LP1: 1st lowpass filter
 yL2 = LP2(yL1); yH2 = yH1 + (yL1 - yL2);  // yL2: 2nd lowpass output. yH2: 2nd highpass output
-yL3 = LP3(yL2); yH3 = yH2 + (yL2 - yL3);  
+yL3 = LP3(yL2); yH3 = yH2 + (yL2 - yL3);
 ...etc.
 the lowpass of the current stage is always applied the lowpass-output of the previous stage and the difference between the current lowpass-input
 and current lowpass-output is added to the highpass-output of the previous stage to form the highpass output of the current stage
 if we assume that x = yL1+yH1, then it follows that x = yL2+yH2 = yL3+yL3 = ...
 this ensures that after any number of stages, the lowpass and highpass signals sum up to the original signal x
 however, the crossover frequency of the N-th order crossover will be different from the cutoff frequency of the individual 1st order stages
-->we must adjust this -> find a cutoff scaler in terms of the total order N, we may also have to choose different cutoff frequencies for each 
+->we must adjust this -> find a cutoff scaler in terms of the total order N, we may also have to choose different cutoff frequencies for each
   stage -> this requires some research (find the 3-dB point of the N-th lowpass stage, scale the cutoff, etc...)
 
 for an arbitrary N-th order crossover, the general algorithm may be stated as:
