@@ -102,7 +102,7 @@ void AudioModule::removeChildAudioModule(AudioModule* moduleToRemove, bool delet
       delete moduleToRemove; }
 }
 
-void AudioModule::loadDefaultPreset() 
+void AudioModule::loadDefaultPreset()
 {
   juce::String fileName = getDefaultPresetLocation();
   juce::File presetFile = juce::File(fileName);
@@ -539,7 +539,7 @@ void AudioModuleWithMidiIn::setMidiController(int controllerNumber, float contro
 
 void AudioModuleWithMidiIn::setPitchBend(int pitchBendValue)
 {
-  int dummy = 0;
+  //int dummy = 0;
   //ScopedLock scopedLock(*plugInLock);
   //if( underlyingRosicInstrument != NULL )
   //{

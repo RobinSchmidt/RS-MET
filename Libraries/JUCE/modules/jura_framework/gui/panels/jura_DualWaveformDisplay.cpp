@@ -1,7 +1,7 @@
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-DualWaveformDisplay::DualWaveformDisplay(AudioFileBuffer* newBuffer) 
+DualWaveformDisplay::DualWaveformDisplay(AudioFileBuffer* newBuffer)
 : Component("DualWaveformDisplay"), AudioFileBufferUser(newBuffer)
 {
   //ScopedLock pointerLock(audioFileBufferPointerLock);
@@ -9,12 +9,12 @@ DualWaveformDisplay::DualWaveformDisplay(AudioFileBuffer* newBuffer)
 
   addAndMakeVisible( waveDisplayL = new WaveformDisplay(newBuffer) );
   //waveDisplayL->setAxisPositionX(CoordinateSystem::INVISIBLE);
-  //waveDisplayL->setAxisPositionY(CoordinateSystem::INVISIBLE);  
+  //waveDisplayL->setAxisPositionY(CoordinateSystem::INVISIBLE);
   waveDisplayL->plotOnlyOneChannel(0);
 
   addAndMakeVisible( waveDisplayR = new WaveformDisplay(newBuffer) );
   //waveDisplayR->setAxisPositionX(CoordinateSystem::INVISIBLE);
-  //waveDisplayR->setAxisPositionY(CoordinateSystem::INVISIBLE);  
+  //waveDisplayR->setAxisPositionY(CoordinateSystem::INVISIBLE);
   waveDisplayR->plotOnlyOneChannel(1);
 
   //unlockUsedBufferPointer();
@@ -50,7 +50,7 @@ void DualWaveformDisplay::resized()
   //ScopedLock pointerLock(audioFileBufferPointerLock);
   lockUsedBufferPointer();
 
-  int x = 0;
+  //int x = 0;
   int w = getWidth();
   int h = getHeight();
 
@@ -109,7 +109,7 @@ double DualWaveformDisplay::getCurrentRangeMaxX() const
   return waveDisplayL->getCurrentRangeMaxX();
 }
 
-void DualWaveformDisplay::setMaximumRange(double newMinX, double newMaxX, 
+void DualWaveformDisplay::setMaximumRange(double newMinX, double newMaxX,
                                           double newMinY, double newMaxY)
 {
   //ScopedLock pointerLock(audioFileBufferPointerLock);
@@ -131,7 +131,7 @@ void DualWaveformDisplay::setMaximumRangeY(double newMinY, double newMaxY)
   waveDisplayR->setMaximumRangeY(newMinY, newMaxY);
 }
 
-void DualWaveformDisplay::setCurrentRange(double newMinX, double newMaxX,                                               
+void DualWaveformDisplay::setCurrentRange(double newMinX, double newMaxX,
                                           double newMinY, double newMaxY)
 {
   //ScopedLock pointerLock(audioFileBufferPointerLock);
@@ -173,7 +173,7 @@ void DualWaveformDisplay::setDrawingThread(TimeSliceThread* newDrawingThread)
   waveDisplayR->setDrawingThread(newDrawingThread);
 }
 
-void DualWaveformDisplay::setVisibleTimeRange(double newMinTimeInSeconds, 
+void DualWaveformDisplay::setVisibleTimeRange(double newMinTimeInSeconds,
                                               double newMaxTimeInSeconds)
 {
   //ScopedLock pointerLock(audioFileBufferPointerLock);

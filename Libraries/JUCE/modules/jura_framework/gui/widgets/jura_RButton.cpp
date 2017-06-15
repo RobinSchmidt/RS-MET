@@ -141,10 +141,10 @@ void RButton::paint(Graphics &g)
     return;
   }
 
-  int x = 0;
-  int y = 0;
-  int w = getWidth();
-  int h = getHeight();
+  //int x = 0;
+  //int y = 0;
+  //int w = getWidth();
+  //int h = getHeight();
 
   // draw background and outline (flat 2D looking):
   if( getToggleState() ) // || isDown() )
@@ -159,7 +159,7 @@ void RButton::paint(Graphics &g)
   g.setColour(getTextColour());
   if( symbolIndex <= 0 || symbolIndex > NUM_SYMBOLS )
   {
-    int x = getWidth()/2  
+    int x = getWidth()/2
       - font->getTextPixelWidth(getButtonText(), font->getDefaultKerning()) / 2;
     int y = getHeight()/2 - font->getFontAscent()/2;
     drawBitmapFontText(g, x, y, getButtonText(), font, getTextColour());
@@ -175,7 +175,7 @@ void RButton::paint(Graphics &g)
 void RButton::drawSymbol(Graphics &g) const
 {
   float w = (float) getWidth();
-  float h = (float) getHeight(); 
+  float h = (float) getHeight();
   float m = 4.f;  // margin in pixels
 
   if( h >= 20.f )
@@ -310,13 +310,13 @@ void RClickButton::mouseUp(const MouseEvent& e)
 //=================================================================================================
 // class RClickButtonNotifyOnMouseUp:
 
-RClickButtonNotifyOnMouseUp::RClickButtonNotifyOnMouseUp(int newSymbolIndex) 
+RClickButtonNotifyOnMouseUp::RClickButtonNotifyOnMouseUp(int newSymbolIndex)
   : RClickButton(newSymbolIndex)
 {
 
 }
 
-RClickButtonNotifyOnMouseUp::RClickButtonNotifyOnMouseUp(const juce::String& buttonText) 
+RClickButtonNotifyOnMouseUp::RClickButtonNotifyOnMouseUp(const juce::String& buttonText)
   : RClickButton(buttonText)
 {
 
@@ -340,14 +340,14 @@ void RClickButtonNotifyOnMouseUp::mouseUp(const MouseEvent& e)
 //=================================================================================================
 // class RClickButtonWithAutoRepeat:
 
-RClickButtonWithAutoRepeat::RClickButtonWithAutoRepeat(int newSymbolIndex) 
+RClickButtonWithAutoRepeat::RClickButtonWithAutoRepeat(int newSymbolIndex)
   : RClickButton(newSymbolIndex)
 {
   initialDelay = 200;
   timeInterval = 50;
 }
 
-RClickButtonWithAutoRepeat::RClickButtonWithAutoRepeat(const juce::String& buttonText) 
+RClickButtonWithAutoRepeat::RClickButtonWithAutoRepeat(const juce::String& buttonText)
   : RClickButton(buttonText)
 {
 
@@ -480,7 +480,7 @@ void RHyperlinkButton::paint(Graphics& g)
 
 void RButtonPainter3D::paintButton(Graphics& g, RButton *button)
 {
-  // experimental 
+  // experimental
 
   // todo - use w,h variables for width and height
 

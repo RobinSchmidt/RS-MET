@@ -20,7 +20,7 @@ AudioFileBuffer::~AudioFileBuffer() throw()
   jassert( users.size() == 0 );
   while( users.size() > 0 )
   {
-    AudioFileBufferUser* user = users[0];
+    //AudioFileBufferUser* user = users[0];
     users[0]->assignAudioFileBuffer(NULL);
   }
 
@@ -78,12 +78,12 @@ const String AudioFileBuffer::getFileNameWithoutExtension() const
   return getUnderlyingFile().getFileNameWithoutExtension();
 }
 
-void AudioFileBuffer::copyTo(const int destChannel, const int destStartSample, 
-                             AudioSampleBuffer &destBuffer, const int sourceChannel, 
+void AudioFileBuffer::copyTo(const int destChannel, const int destStartSample,
+                             AudioSampleBuffer &destBuffer, const int sourceChannel,
                              const int sourceStartSample, int numSamples)
 {
   ScopedReadLock scopedLock(audioDataReadWriteLock);
-  destBuffer.copyFrom(destChannel, destStartSample, *this, sourceChannel, sourceStartSample, 
+  destBuffer.copyFrom(destChannel, destStartSample, *this, sourceChannel, sourceStartSample,
     numSamples);
 }
 
@@ -126,10 +126,10 @@ bool AudioFileBuffer::loadAudioDataFromFile(const File &fileToLoadFrom, bool sho
   info = AudioFileInfo(fileToLoadFrom);
   if( !info.isValidAudioFile )
   {
-    if( showAlertBoxOnFail ) 
+    if( showAlertBoxOnFail )
       showAudioFileInvalidErrorBox(fileToLoadFrom.getFileName());
     theAudioFile = File::nonexistent;
-    return false; 
+    return false;
   }
 
   // file is valid, read it in:
@@ -138,8 +138,8 @@ bool AudioFileBuffer::loadAudioDataFromFile(const File &fileToLoadFrom, bool sho
   AudioFormatReader* reader = formatManager.createReaderFor(fileToLoadFrom);
   if( reader != NULL )
   {
-    // we need some temporary int arrays because JUCE's AudioFormatReader reads the data only 
-    // into such arrays: 
+    // we need some temporary int arrays because JUCE's AudioFormatReader reads the data only
+    // into such arrays:
     int*  intDataBuffer = new int[(int) (reader->numChannels * reader->lengthInSamples)];
     if( intDataBuffer == NULL )
     {
@@ -159,7 +159,7 @@ bool AudioFileBuffer::loadAudioDataFromFile(const File &fileToLoadFrom, bool sho
       return false;
     }
 
-    // assign the pointer-pointers to their targets, and zero-terminate the array of channel 
+    // assign the pointer-pointers to their targets, and zero-terminate the array of channel
     // pointers:
     unsigned int c;
     for(c=0; c<reader->numChannels; c++)
@@ -202,7 +202,7 @@ void AudioFileBuffer::filePathChanged(const File &newFilePath)
 
 void AudioFileBuffer::registerUser(AudioFileBufferUser *userToRegister)
 {
-  //ScopedWriteLock scopedLock(audioDataReadWriteLock); 
+  //ScopedWriteLock scopedLock(audioDataReadWriteLock);
   users.getLock().enter();
   users.addIfNotAlreadyThere(userToRegister);
   users.getLock().exit();

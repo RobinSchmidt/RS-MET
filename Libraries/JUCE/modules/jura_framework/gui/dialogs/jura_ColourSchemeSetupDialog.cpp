@@ -8,7 +8,7 @@ ColourSchemeSetupDialog::ColourSchemeSetupDialog(ColourSchemeComponent *owner, i
   okButton->setDescription(String("Apply settings and return"));
   cancelButton->setDescription(String("Return without applying new settings"));
 
-  addWidget( editorAppearanceComboBox = 
+  addWidget( editorAppearanceComboBox =
     new RNamedComboBox(juce::String("Editors"), juce::String("Editors:")) );
   editorAppearanceComboBox->setDescription(
     juce::String("Selects the general appearance of the editors"));
@@ -17,7 +17,7 @@ ColourSchemeSetupDialog::ColourSchemeSetupDialog(ColourSchemeComponent *owner, i
   editorAppearanceComboBox->selectItemByIndex(0, false);
   editorAppearanceComboBox->registerComboBoxObserver(this);
 
-  addWidget( widgetAppearanceComboBox = 
+  addWidget( widgetAppearanceComboBox =
     new RNamedComboBox(juce::String("Widgets"), juce::String("Widgets:")) );
   widgetAppearanceComboBox->setDescription(
     juce::String("Selects the general appearance of the widgets"));
@@ -26,7 +26,7 @@ ColourSchemeSetupDialog::ColourSchemeSetupDialog(ColourSchemeComponent *owner, i
   widgetAppearanceComboBox->selectItemByIndex(0, false);
   widgetAppearanceComboBox->registerComboBoxObserver(this);
 
-  addWidget( plotAppearanceComboBox = 
+  addWidget( plotAppearanceComboBox =
     new RNamedComboBox(juce::String("Plots"), juce::String("Plots:")) );
   plotAppearanceComboBox->setDescription(
     juce::String("Selects the general appearance of the plots"));
@@ -77,7 +77,7 @@ ColourSchemeSetupDialog::ColourSchemeSetupDialog(ColourSchemeComponent *owner, i
     height += 14;
   }
 
-  StateFileManager::setActiveDirectory( 
+  StateFileManager::setActiveDirectory(
     getApplicationDirectory() + File::separatorString + String("ColorSchemes") );
 
   ownerComponent     = owner;
@@ -142,9 +142,9 @@ void ColourSchemeSetupDialog::resized()
   EditorWithStateFile::resized();
 
   int x = 0;
-  int y = stateWidgetSet->getBottom();; 
+  int y = stateWidgetSet->getBottom();;
   int w = getWidth();
-  int h = getHeight();
+  //int h = getHeight();
 
   editorAppearanceComboBox->setBounds(x+4, y+4, w-8, 16);
   y += 20;
@@ -166,7 +166,7 @@ void ColourSchemeSetupDialog::resized()
   }
 
   // make all the name-label widths in the comboboxes equal (using the maximum):
-  w = jmax(editorAppearanceComboBox->getNameLabelWidth(), 
+  w = jmax(editorAppearanceComboBox->getNameLabelWidth(),
     widgetAppearanceComboBox->getNameLabelWidth());
   w = jmax(w, plotAppearanceComboBox->getNameLabelWidth() );
   editorAppearanceComboBox->setNameLabelWidth(w);
@@ -201,7 +201,7 @@ void ColourSchemeSetupDialog::changeListenerCallback(juce::ChangeBroadcaster *ob
 void ColourSchemeSetupDialog::updateWidgetsAccordingToState()
 {
   editorAppearanceComboBox->selectItemByIndex(getEditorColourScheme().getAppearance(), false);
-  widgetAppearanceComboBox->selectItemByIndex(getWidgetColourScheme().getAppearance(), false);  
+  widgetAppearanceComboBox->selectItemByIndex(getWidgetColourScheme().getAppearance(), false);
   plotAppearanceComboBox->selectItemByIndex(  getPlotColourScheme().getAppearance(),   false);
 
   saturationSlider->setValue(getEditorColourScheme().getSaturationMultiplier(), false);
@@ -212,12 +212,12 @@ void ColourSchemeSetupDialog::updateWidgetsAccordingToState()
     hueOffsetSliders[i]->setValue(getEditorColourScheme().getHueOffset(i), false);
 }
 
-void ColourSchemeSetupDialog::setStateFromXml(const XmlElement& xmlState, 
+void ColourSchemeSetupDialog::setStateFromXml(const XmlElement& xmlState,
   const juce::String& stateName, bool markAsClean)
 {
   ColourSchemeComponent::setColourSchemeFromXml(xmlState);
 }
-   
+
 XmlElement* ColourSchemeSetupDialog::getStateAsXml(const juce::String& stateName, bool markAsClean)
 {
   return ColourSchemeComponent::getColourSchemeAsXml();

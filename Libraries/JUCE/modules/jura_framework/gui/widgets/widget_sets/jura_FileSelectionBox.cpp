@@ -74,39 +74,39 @@ void FileSelectionBox::activeFileChanged(FileManager *fileManagerThatHasChanged)
 void FileSelectionBox::resized()
 {
   int boxX, boxY, boxWidth, buttonsY;
-  int labelWidth = BitmapFontRoundedBoldA10D0::instance.getTextPixelWidth(fileLabel->getText(), 
+  int labelWidth = BitmapFontRoundedBoldA10D0::instance.getTextPixelWidth(fileLabel->getText(),
     BitmapFontRoundedBoldA10D0::instance.getDefaultKerning()) + 4;
   int buttonsWidth = 2*boxHeight + 40 - 4;
   if( saveButton->isVisible() )
     buttonsWidth += (40-2);
 
-  if( labelPosition = LABEL_ABOVE && buttonsPosition == BUTTONS_BELOW )
+  if( labelPosition == LABEL_ABOVE && buttonsPosition == BUTTONS_BELOW )
   {
     boxX     = 0;
     boxY     = boxHeight-2;
     boxWidth = getWidth();
     buttonsY = boxY+boxHeight-2;
   }
-  else if( labelPosition = LABEL_ABOVE && buttonsPosition == BUTTONS_ABOVE)
+  else if( labelPosition == LABEL_ABOVE && buttonsPosition == BUTTONS_ABOVE)
   {
     boxX     = 0;
     boxY     = boxHeight-2;
     boxWidth = getWidth();
-    buttonsY = 0;    
+    buttonsY = 0;
   }
-  else if( labelPosition = LABEL_ABOVE && buttonsPosition == BUTTONS_RIGHT)
+  else if( labelPosition == LABEL_ABOVE && buttonsPosition == BUTTONS_RIGHT)
   {
     boxX     = 0;
     boxY     = boxHeight-2;
     boxWidth = getWidth()-buttonsWidth-2;
-    buttonsY = boxY;  
+    buttonsY = boxY;
   }
   else
   {
     jassertfalse;  // for the selected combination of positions is no implementation available
-    boxX = boxY = boxWidth = buttonsY = 0; 
+    boxX = boxY = boxWidth = buttonsY = 0;
   }
-  
+
   fileLabel->setBounds(0, 0, labelWidth, boxHeight);
   fileNameBox->setBounds(boxX, boxY, boxWidth, boxHeight);
 

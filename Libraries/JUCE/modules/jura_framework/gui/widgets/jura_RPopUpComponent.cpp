@@ -3,12 +3,12 @@
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
-   
-RPopUpComponent::RPopUpComponent() 
+
+RPopUpComponent::RPopUpComponent()
 {
   //componentAttachedTo = NULL;
   setWantsKeyboardFocus(true);
-  contentComponent    = NULL;  
+  contentComponent    = NULL;
   open                = false;
   dismissOnFocusLoss  = true;
 }
@@ -73,13 +73,12 @@ void RPopUpComponent::mouseExit(const MouseEvent &e)
 
 void RPopUpComponent::mouseDown(const MouseEvent &e)
 {
-
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 /*
 void RPopUpComponent::mouseMove(const MouseEvent &e)
-{  
+{
 
 }
 
@@ -143,12 +142,12 @@ void RPopUpComponent::dismiss()
 //=================================================================================================
 // class ROwnedPopUpComponent:
 
-ROwnedPopUpComponent::ROwnedPopUpComponent(Component *ownerComponent) 
+ROwnedPopUpComponent::ROwnedPopUpComponent(Component *ownerComponent)
   : ComponentMovementWatcher(ownerComponent)
 {
   this->ownerComponent = ownerComponent;
 }
-    
+
 void ROwnedPopUpComponent::focusLost(FocusChangeType cause)
 {
   if( dismissOnFocusLoss == true )
@@ -162,17 +161,17 @@ void ROwnedPopUpComponent::focusLost(FocusChangeType cause)
 
 void ROwnedPopUpComponent::componentMovedOrResized(bool wasMoved, bool wasResized)
 {
-  int dummy = 0;
+  //int dummy = 0;
 }
- 
+
 void ROwnedPopUpComponent::componentPeerChanged()
 {
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 void ROwnedPopUpComponent::componentVisibilityChanged()
 {
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 bool ROwnedPopUpComponent::canModalEventBeSentToComponent(const Component* targetComponent)
@@ -183,14 +182,14 @@ bool ROwnedPopUpComponent::canModalEventBeSentToComponent(const Component* targe
     return RPopUpComponent::canModalEventBeSentToComponent(targetComponent);
 }
 
-void ROwnedPopUpComponent::show(bool showModally, int attachPosition, int width, int height, 
+void ROwnedPopUpComponent::show(bool showModally, int attachPosition, int width, int height,
   int xOffset, int yOffset)
 {
   Rectangle<int> ownerBounds = ownerComponent->getScreenBounds();
   switch( attachPosition )
   {
   case BELOW:
-    showAt(showModally, ownerBounds.getX()+xOffset, 
+    showAt(showModally, ownerBounds.getX()+xOffset,
       ownerBounds.getY()+ownerBounds.getHeight()+yOffset, width, height);
     break;
     // \todo: implement the other attachPositions

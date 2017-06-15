@@ -1,4 +1,4 @@
-WaveformDisplayOld::WaveformDisplayOld(const String& name) 
+WaveformDisplayOld::WaveformDisplayOld(const String& name)
 : CurveFamilyPlotOld(name)
 {
   sampleRate               = 44100.0;
@@ -9,7 +9,7 @@ WaveformDisplayOld::WaveformDisplayOld(const String& name)
 
   // initialize the range - time-window: 1 ms, amplitude: -1.1...+1.1
   setMaximumRange(0.0, 0.001, -1.2, +1.2);
-  setCurrentRange(0.0, 0.001, -1.0, +1.0); 
+  setCurrentRange(0.0, 0.001, -1.0, +1.0);
 
   // intialize the peakData with some dummy-data:
   double dummyWave[4];
@@ -34,7 +34,7 @@ WaveformDisplayOld::~WaveformDisplayOld(void)
 }
 
 CoordinateSystemRangeOld WaveformDisplayOld::getMaximumMeaningfulRange(
-  double relativeMarginLeft, double relativeMarginRight, 
+  double relativeMarginLeft, double relativeMarginRight,
   double relativeMarginTop,  double relativeMarginBottom)
 {
   // require at least 1.0% margin:
@@ -51,7 +51,7 @@ CoordinateSystemRangeOld WaveformDisplayOld::getMaximumMeaningfulRange(
   if( relativeMarginBottom < 0.0 )
     relativeMarginBottom = 0.0;
 
-  CoordinateSystemRangeOld r = getMaximumRange(); 
+  CoordinateSystemRangeOld r = getMaximumRange();
 
   double minX   = 0.0;
   double maxX   = jmax(0.001, (double) (numSampleFrames-1) / sampleRate);
@@ -78,7 +78,7 @@ void WaveformDisplayOld::setSampleRate(double newSampleRate)
   repaint();
 }
 
-bool WaveformDisplayOld::setWaveform(double** newWaveformData, int newNumSampleFrames, 
+bool WaveformDisplayOld::setWaveform(double** newWaveformData, int newNumSampleFrames,
                                   int newNumChannels)
 {
   // copy the pointers into member variables:
@@ -88,7 +88,7 @@ bool WaveformDisplayOld::setWaveform(double** newWaveformData, int newNumSampleF
   if( numSampleFrames <= 0 || numChannels <= 0 )
     return false;
 
-  // create the decimated (peak) data, which is to be displayed when the display-width 
+  // create the decimated (peak) data, which is to be displayed when the display-width
   // in pixels is smaller than the number of data-points:
   int peakArraySize = 2*nextPowerOfTwo(newNumSampleFrames);
   if( peakData != NULL )
@@ -110,16 +110,16 @@ bool WaveformDisplayOld::setWaveform(double** newWaveformData, int newNumSampleF
   for(c=0; c<newNumChannels; c++)
   {
     for(n=0; n<numSampleFrames; n++)
-      peakData[c*peakArraySize+n] = (float) newWaveformData[c][n]; 
+      peakData[c*peakArraySize+n] = (float) newWaveformData[c][n];
   }
 
   // for the rest of the array copy the last value in order to have a well defined value which does
-  // not confuse or corrupt the min/max calculation (leaving these values undefined may result in 
+  // not confuse or corrupt the min/max calculation (leaving these values undefined may result in
   // rendering of ridiciously long lines):
   for(c=0; c<newNumChannels; c++)
   {
     for(n=numSampleFrames; n<peakArraySize; n++)
-      peakData[c*peakArraySize+n] = (float) newWaveformData[c][numSampleFrames-1]; 
+      peakData[c*peakArraySize+n] = (float) newWaveformData[c][numSampleFrames-1];
   }
 
   // create the decimated versionds of the data and report sucess:
@@ -127,7 +127,7 @@ bool WaveformDisplayOld::setWaveform(double** newWaveformData, int newNumSampleF
   return true;
 }
 
-bool WaveformDisplayOld::setWaveform(float** newWaveformData, int newNumSampleFrames, 
+bool WaveformDisplayOld::setWaveform(float** newWaveformData, int newNumSampleFrames,
                                   int newNumChannels)
 {
   // same procedure as the corresponding function for doubles:
@@ -147,16 +147,16 @@ bool WaveformDisplayOld::setWaveform(float** newWaveformData, int newNumSampleFr
     numChannels     = 0;
     return false;
   }
-  int c, n; 
+  int c, n;
   for(c=0; c<newNumChannels; c++)
   {
     for(n=0; n<numSampleFrames; n++)
-      peakData[c*peakArraySize+n] = (float) newWaveformData[c][n]; 
+      peakData[c*peakArraySize+n] = (float) newWaveformData[c][n];
   }
   for(c=0; c<newNumChannels; c++)
   {
     for(n=numSampleFrames; n<peakArraySize; n++)
-      peakData[c*peakArraySize+n] = newWaveformData[c][numSampleFrames-1]; 
+      peakData[c*peakArraySize+n] = newWaveformData[c][numSampleFrames-1];
   }
   createDecimatedData();
   return true;
@@ -171,7 +171,7 @@ bool WaveformDisplayOld::setWaveform(const AudioSampleBuffer& newWaveformBuffer)
   if( numSampleFrames <= 0 || numChannels <= 0 )
     return false;
 
-  // create the decimated (peak) data, which is to be displayed when the display-width 
+  // create the decimated (peak) data, which is to be displayed when the display-width
   // in pixels is smaller than the number of data-points:
   int peakArraySize = 2*nextPowerOfTwo(numSampleFrames);
   if( peakData != NULL )
@@ -186,17 +186,17 @@ bool WaveformDisplayOld::setWaveform(const AudioSampleBuffer& newWaveformBuffer)
     readPointer = newWaveformBuffer.getReadPointer(c);
 
     for(n=0; n<numSampleFrames; n++)
-      peakData[c*peakArraySize+n] = (float) readPointer[n]; 
+      peakData[c*peakArraySize+n] = (float) readPointer[n];
   }
 
   // for the rest of the array copy the last value in order to have a well defined value which does
-  // not confuse or corrupt the min/max calculation (leaving these values undefined may result in 
+  // not confuse or corrupt the min/max calculation (leaving these values undefined may result in
   // rendering of ridiciously long lines):
   for(c=0; c<numChannels; c++)
   {
     readPointer = newWaveformBuffer.getReadPointer(c);
     for(n=numSampleFrames; n<peakArraySize; n++)
-      peakData[c*peakArraySize+n] = readPointer[numSampleFrames-1]; 
+      peakData[c*peakArraySize+n] = readPointer[numSampleFrames-1];
   }
 
   createDecimatedData();
@@ -214,8 +214,8 @@ void WaveformDisplayOld::createDecimatedData()
     int   readOffset       = c*peakArraySize;               // here starts the sub-array from which we read
     int   writeOffset      = readOffset + peakArraySize/2;  // here we start to write the next sub-array
     int   nextSubArraySize = peakArraySize/4;
-    int   nRead            = readOffset;           
-    int   nWrite           = writeOffset; 
+    int   nRead            = readOffset;
+    int   nWrite           = writeOffset;
     int   minIndex, maxIndex;
     float minValue, maxValue;
 
@@ -281,14 +281,14 @@ void WaveformDisplayOld::plotWaveform(Graphics &g, Image *targetImage, XmlElemen
   int subArrayIndex     = (int) floor(log2(decimationFactor));
   decimationFactor      = (int) pow(2.0, (double) subArrayIndex);
   int peakArraySize     = 2*nextPowerOfTwo(numSampleFrames);
-  int subArraySize      = peakArraySize/(2*decimationFactor);
+  //int subArraySize      = peakArraySize/(2*decimationFactor);
 
 
   //Colour graphColour    = Colours::blue;
   bool  drawDots        = numVisibleFrames <= 0.1 * getWidth();
   float dotRadius       = 3.f;
 
-  // adjust the pointer at which we want to read out from the array, i.e. skip 
+  // adjust the pointer at which we want to read out from the array, i.e. skip
   // forward to the appropriate sub-array:
   int readOffset  = 0;
   int offsetToAdd = peakArraySize/2;
@@ -303,7 +303,7 @@ void WaveformDisplayOld::plotWaveform(Graphics &g, Image *targetImage, XmlElemen
   {
     // set the colour for the current channel:
     Colour graphColour = plotColourScheme.getCurveColour(c);
-    g.setColour(graphColour); 
+    g.setColour(graphColour);
 
     // calculate the range for sample-index n in order to draw only the actually visible range:
     int nMin = (int) floor((double) firstVisibleFrame / (double) decimationFactor);
@@ -330,7 +330,7 @@ void WaveformDisplayOld::plotWaveform(Graphics &g, Image *targetImage, XmlElemen
       g.drawLine((float)x1, (float)y1, (float)x2, (float)y2, 2.f);
       if( drawDots == true )
       {
-         g.fillEllipse((float) (x1-dotRadius), (float) (y1-dotRadius), 
+         g.fillEllipse((float) (x1-dotRadius), (float) (y1-dotRadius),
            (float) (2*dotRadius), (float) (2*dotRadius) );
       }
     }

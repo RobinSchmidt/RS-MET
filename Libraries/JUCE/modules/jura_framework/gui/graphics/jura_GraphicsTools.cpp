@@ -1,5 +1,5 @@
 
-// some of these functions need to be updated - setPixelData is not available anymore in the 
+// some of these functions need to be updated - setPixelData is not available anymore in the
 // juce::Image class. maybe, we have to somehow use Image::BimapData::getPixelPointer or something
 
 void copyImage(juce::Image *sourceImage, juce::Image *targetImage)
@@ -11,7 +11,7 @@ void copyImage(juce::Image *sourceImage, juce::Image *targetImage)
   Graphics g(*targetImage);
   g.fillAll(Colours::red);
   g.setColour(Colours::black);
-  g.drawText("jura_GraphicsTools.cpp copyImage() needs to be updated", 0, 0, w, h, 
+  g.drawText("jura_GraphicsTools.cpp copyImage() needs to be updated", 0, 0, w, h,
     Justification::centred, false);
   return;
 
@@ -46,10 +46,10 @@ void normalizedDataToImage(float *data, juce::Image &image, const jura::ColorMap
   uint32 *p = reinterpret_cast<uint32*>(p8);
   for(int i = 0; i < bitmap.height * bitmap.width; i++)
   {
-    // for debug:
-    float tmp = data[i];
-    jassert(data[i] >= 0); 
-    jassert(data[i] <= 1); 
+    //// for debug:
+    //float tmp = data[i];
+    jassert(data[i] >= 0);
+    jassert(data[i] <= 1);
 
     p[i] = colorMap.getColorAsUint32(data[i]);
   }
@@ -69,7 +69,7 @@ void normalizedDataToImage(float *data, juce::Image &image)
   {
     //// for debug:
     //float tmp = data[i];
-    //jassert(data[i] <= 1); 
+    //jassert(data[i] <= 1);
 
     p[ri] = p[gi] = p[bi] = (uint8)(255 * data[i]);
     p[ai] = 255;  // full opacity
@@ -93,7 +93,7 @@ void dataMatrixToPixelBrightnessGray(float **data, uint8 *pixels, int width, int
   }
   // maybe templatize so it can be used for double also
 }
-void dataMatrixToPixelBrightness(float **data, uint8 *pixels, int width, int height, 
+void dataMatrixToPixelBrightness(float **data, uint8 *pixels, int width, int height,
   uint8 red, uint8 green, uint8 blue)
 {
   uint8 *p = pixels;
@@ -113,7 +113,7 @@ void dataMatrixToPixelBrightness(float **data, uint8 *pixels, int width, int hei
 }
 void dataMatrixToImage(float **data, juce::Image &image, uint8 red, uint8 green, uint8 blue)
 {
-  // We assume here that the size of the image (width and height) matches the dimensions of the 
+  // We assume here that the size of the image (width and height) matches the dimensions of the
   // data matrix)
   juce::Image::BitmapData bitmap(image, juce::Image::BitmapData::writeOnly);
   jassert(bitmap.pixelStride == 4);
@@ -124,7 +124,7 @@ void dataMatrixToImage(float **data, juce::Image &image, uint8 red, uint8 green,
     dataMatrixToPixelBrightness(data, pixelPointer, bitmap.width, bitmap.height, red, green, blue);
 }
 
-int drawBitmapFontText(Graphics &g, int x, int y, const String& textToDraw, 
+int drawBitmapFontText(Graphics &g, int x, int y, const String& textToDraw,
   const BitmapFont* fontToUse, const Colour& colourToUse, int kerning, Justification justification)
 {
   //jassert(colourToUse != Colours::yellow); // for test only
@@ -149,7 +149,7 @@ int drawBitmapFontText(Graphics &g, int x, int y, const String& textToDraw,
 
   // make sure that g's opacity is set up right, otherwise glyph-images may be drawn transparent
   // regardless of their own opacity values:
-  g.setColour(colourToUse); 
+  g.setColour(colourToUse);
 
   for(int i=0; i<textToDraw.length(); i++)
   {
@@ -168,12 +168,12 @@ int drawBitmapFontText(Graphics &g, int x, int y, const String& textToDraw,
 
 void colorComponentIndices(juce::Image& image, int &ri, int &gi, int &bi, int &ai)
 {
-  // preliminary, seems valid on PC - todo: figure these out in a platform specific way from the 
+  // preliminary, seems valid on PC - todo: figure these out in a platform specific way from the
   // passed image:
   ai = 3;
   ri = 2;
   gi = 1;
-  bi = 0; 
+  bi = 0;
 }
 
 void dataToImageOpaqueFloat32x4(float *data, juce::Image &image)
@@ -217,7 +217,7 @@ Colour getMixedColour(const Colour colour1, const Colour colour2, double weight1
   return Colour(r, g, b, a);
 }
 
-void fillRectWithBilinearGradientSlow(Graphics &graphics, int x, int y, int w, int h,      
+void fillRectWithBilinearGradientSlow(Graphics &graphics, int x, int y, int w, int h,
   Colour topLeftColour, Colour topRightColour, Colour bottomLeftColour, Colour bottomRightColour)
 {
   // require at least 2 pixels width and height:
@@ -225,51 +225,51 @@ void fillRectWithBilinearGradientSlow(Graphics &graphics, int x, int y, int w, i
     return;
 
   // check, if all four colours are equal, if so just fill the graphics object with that colour:
-  if( topLeftColour == topRightColour 
+  if( topLeftColour == topRightColour
     && topRightColour == bottomLeftColour
     && bottomLeftColour == bottomRightColour )
   {
     graphics.fillAll(topLeftColour);
   }
 
-  // ToDo: use the alpha-channels of the colours as well..., conditional compilation for Mac/Win with 
+  // ToDo: use the alpha-channels of the colours as well..., conditional compilation for Mac/Win with
   // different byte orderings for the a,r,g,b values
 
-  // allocate an empty image-object: 
+  // allocate an empty image-object:
   Image *background = new Image(juce::Image::RGB, w, h, false);
 
-  // allocate memory for the raw pixel-data (h lines, each line has w colums, 
+  // allocate memory for the raw pixel-data (h lines, each line has w colums,
   // each pixel has 3 bytes for blue, green and red (in that order)):
   uint8 *pixelData  = new uint8[h*w*3];
 
-  int baseAddress;    
+  int baseAddress;
   // address for a blue-value (is followed by addresses for green and red)
 
-  int baseAddressInc = 3*w; 
-  // increment for the baseAddress per iteration of the inner loop 
+  int baseAddressInc = 3*w;
+  // increment for the baseAddress per iteration of the inner loop
 
   // get the colour-components of the 4 edges as float-values:
   // top-left (abbreviated as t_l):
   uint8 t_l_r = topLeftColour.getRed();
-  uint8 t_l_g = topLeftColour.getGreen(); 
-  uint8 t_l_b = topLeftColour.getBlue(); 
+  uint8 t_l_g = topLeftColour.getGreen();
+  uint8 t_l_b = topLeftColour.getBlue();
   // top-right (abbreviated as t_r):
   uint8 t_r_r = topRightColour.getRed();
-  uint8 t_r_g = topRightColour.getGreen(); 
-  uint8 t_r_b = topRightColour.getBlue(); 
+  uint8 t_r_g = topRightColour.getGreen();
+  uint8 t_r_b = topRightColour.getBlue();
   // bottom-left (abbreviated as b_l):
   uint8 b_l_r = bottomLeftColour.getRed();
-  uint8 b_l_g = bottomLeftColour.getGreen(); 
-  uint8 b_l_b = bottomLeftColour.getBlue(); 
+  uint8 b_l_g = bottomLeftColour.getGreen();
+  uint8 b_l_b = bottomLeftColour.getBlue();
   // bottom-right (abbreviated as b_r):
   uint8 b_r_r = bottomRightColour.getRed();
-  uint8 b_r_g = bottomRightColour.getGreen(); 
-  uint8 b_r_b = bottomRightColour.getBlue(); 
+  uint8 b_r_g = bottomRightColour.getGreen();
+  uint8 b_r_b = bottomRightColour.getBlue();
 
   // declare variables for the top and bottom line colour-components:
   uint8 t_r, t_g, t_b, b_r, b_g, b_b;
 
-  // declare variables for the colour components at the current pixel (in 
+  // declare variables for the colour components at the current pixel (in
   // double and int format:
   uint8   r, g, b;
 
@@ -298,17 +298,17 @@ void fillRectWithBilinearGradientSlow(Graphics &graphics, int x, int y, int w, i
 
     // draw the current bottom-line pixel:
     baseAddress = 3*i+w*(h-1)*3;
-    pixelData[baseAddress+0] = b_b; 
+    pixelData[baseAddress+0] = b_b;
     pixelData[baseAddress+1] = b_g;
     pixelData[baseAddress+2] = b_r;
 
     // increment the x-position:
-    p++; 
+    p++;
 
     // fill the column between 'top' and 'bottom':
     baseAddress = 3*i;
     q = 1; // ? -> 1?
-    for(int j=1; j<(h-1); j++) 
+    for(int j=1; j<(h-1); j++)
     {
       r = t_r + (q*(b_r-t_r))/hm1;
       g = t_g + (q*(b_g-t_g))/hm1;
@@ -321,7 +321,7 @@ void fillRectWithBilinearGradientSlow(Graphics &graphics, int x, int y, int w, i
       pixelData[baseAddress+2] = r;  // the red-value
 
       // increment the y-position:
-      q++; 
+      q++;
     }
   }
 
@@ -337,7 +337,7 @@ void fillRectWithBilinearGradientSlow(Graphics &graphics, int x, int y, int w, i
   delete[] pixelData;
 }
 
-void fillRectWithBilinearGradient(Graphics &graphics, int x, int y, int w, int h,               
+void fillRectWithBilinearGradient(Graphics &graphics, int x, int y, int w, int h,
   Colour topLeftColour, Colour topRightColour, Colour bottomLeftColour, Colour bottomRightColour)
 {
   // We create a 2x2 pixel image with the given 4 colors and scale it up. The interpolation will
@@ -351,9 +351,9 @@ void fillRectWithBilinearGradient(Graphics &graphics, int x, int y, int w, int h
   graphics.drawImage(img, x, y, w, h, 0, 0, 2, 2, Graphics::lowResamplingQuality);
   return;
 
-  // The code below doesn't work anymore because we can't set the pixel data directly this way 
-  // anymore - there may be a different way but for now, the above trick is OK (even though i 
-  // think it looks not as good as what the old code below produces - we leave it there, just in 
+  // The code below doesn't work anymore because we can't set the pixel data directly this way
+  // anymore - there may be a different way but for now, the above trick is OK (even though i
+  // think it looks not as good as what the old code below produces - we leave it there, just in
   // case it should be re-activated someday.
 
   // require at least 2 pixels width and height:
@@ -361,7 +361,7 @@ void fillRectWithBilinearGradient(Graphics &graphics, int x, int y, int w, int h
     return;
 
   // check, if all four colours are equal, if so just fill the graphics object with that colour:
-  if( topLeftColour == topRightColour 
+  if( topLeftColour == topRightColour
     && topRightColour == bottomLeftColour
     && bottomLeftColour == bottomRightColour )
   {
@@ -370,41 +370,41 @@ void fillRectWithBilinearGradient(Graphics &graphics, int x, int y, int w, int h
 
   // ToDo: use the alpha-channels of the colours as well...
 
-  // allocate an empty image-object: 
+  // allocate an empty image-object:
   Image *background = new Image(juce::Image::RGB, w, h, false);
 
-  // allocate memory for the raw pixel-data (h lines, each line has w colums, 
+  // allocate memory for the raw pixel-data (h lines, each line has w colums,
   // each pixel has 3 bytes for blue, green and red (in that order)):
   uint8 *pixelData  = new uint8[h*w*3];
 
-  int    baseAddress;    
+  int    baseAddress;
   // address for a blue-value (is followed by addresses for green and red)
 
-  int    baseAddressInc = 3*w; 
-  // increment for the baseAddress per iteration of the inner loop 
+  int    baseAddressInc = 3*w;
+  // increment for the baseAddress per iteration of the inner loop
 
   // get the colour-components of the 4 edges as float-values:
   // top-left (abbreviated as t_l):
   double t_l_r = topLeftColour.getFloatRed();
-  double t_l_g = topLeftColour.getFloatGreen(); 
-  double t_l_b = topLeftColour.getFloatBlue(); 
+  double t_l_g = topLeftColour.getFloatGreen();
+  double t_l_b = topLeftColour.getFloatBlue();
   // top-right (abbreviated as t_r):
   double t_r_r = topRightColour.getFloatRed();
-  double t_r_g = topRightColour.getFloatGreen(); 
-  double t_r_b = topRightColour.getFloatBlue(); 
+  double t_r_g = topRightColour.getFloatGreen();
+  double t_r_b = topRightColour.getFloatBlue();
   // bottom-left (abbreviated as b_l):
   double b_l_r = bottomLeftColour.getFloatRed();
-  double b_l_g = bottomLeftColour.getFloatGreen(); 
-  double b_l_b = bottomLeftColour.getFloatBlue(); 
+  double b_l_g = bottomLeftColour.getFloatGreen();
+  double b_l_b = bottomLeftColour.getFloatBlue();
   // bottom-right (abbreviated as b_r):
   double b_r_r = bottomRightColour.getFloatRed();
-  double b_r_g = bottomRightColour.getFloatGreen(); 
-  double b_r_b = bottomRightColour.getFloatBlue(); 
+  double b_r_g = bottomRightColour.getFloatGreen();
+  double b_r_b = bottomRightColour.getFloatBlue();
 
   // declare variables for the top and bottom line colour-components:
   double t_r, t_g, t_b, b_r, b_g, b_b;
 
-  // declare variables for the colour components at the current pixel (in 
+  // declare variables for the colour components at the current pixel (in
   // double and int format:
   double r, g, b;
   uint8  r_int, g_int, b_int;
@@ -432,9 +432,9 @@ void fillRectWithBilinearGradient(Graphics &graphics, int x, int y, int w, int h
     g_int = (uint8) (255 * t_g);
     b_int = (uint8) (255 * t_b);
 #ifndef _MSC_VER   // #ifdef JUCE_LITTLE_ENDIAN seems to not solve the wrong-color thing
-    pixelData[baseAddress+0] = r_int; 
-    pixelData[baseAddress+1] = g_int;  
-    pixelData[baseAddress+2] = b_int;  		
+    pixelData[baseAddress+0] = r_int;
+    pixelData[baseAddress+1] = g_int;
+    pixelData[baseAddress+2] = b_int;
 #else
     pixelData[baseAddress+0] = b_int;  // blue comes first,
     pixelData[baseAddress+1] = g_int;  // green comes second,
@@ -447,9 +447,9 @@ void fillRectWithBilinearGradient(Graphics &graphics, int x, int y, int w, int h
     g_int = (uint8) (255 * b_g);
     b_int = (uint8) (255 * b_b);
 #ifndef _MSC_VER
-    pixelData[baseAddress+0] = r_int; 
-    pixelData[baseAddress+1] = g_int;  
-    pixelData[baseAddress+2] = b_int;  		
+    pixelData[baseAddress+0] = r_int;
+    pixelData[baseAddress+1] = g_int;
+    pixelData[baseAddress+2] = b_int;
 #else
     pixelData[baseAddress+0] = b_int;  // blue comes first,
     pixelData[baseAddress+1] = g_int;  // green comes second,
@@ -457,12 +457,12 @@ void fillRectWithBilinearGradient(Graphics &graphics, int x, int y, int w, int h
 #endif
 
     // increment the relative x-position:
-    p += pInc; 
+    p += pInc;
 
     // fill the column between 'top' and 'bottom':
     baseAddress = 3*i;
     q = 0.0;
-    for(int j=1; j<(h-1); j++) 
+    for(int j=1; j<(h-1); j++)
     {
       r = (1.0-q)*t_r + q*b_r;
       g = (1.0-q)*t_g + q*b_g;
@@ -471,19 +471,19 @@ void fillRectWithBilinearGradient(Graphics &graphics, int x, int y, int w, int h
       r_int = (uint8) (255 * r);
       g_int = (uint8) (255 * g);
       b_int = (uint8) (255 * b);
-			
+
       baseAddress += baseAddressInc;
 
 #ifndef _MSC_VER
       pixelData[baseAddress+0] = r_int;
       pixelData[baseAddress+1] = g_int;
-      pixelData[baseAddress+2] = b_int;						
+      pixelData[baseAddress+2] = b_int;
 #else
       pixelData[baseAddress+0] = b_int;  // the blue-value
       pixelData[baseAddress+1] = g_int;  // the green-value
-      pixelData[baseAddress+2] = r_int;  // the red-value			
+      pixelData[baseAddress+2] = r_int;  // the red-value
 #endif
-			
+
       q += qInc; // increment the relative y-position:
     }
   }
@@ -491,7 +491,7 @@ void fillRectWithBilinearGradient(Graphics &graphics, int x, int y, int w, int h
   // copy the generated pixel-data into the image-object:
   //background->setPixelData(0, 0, w, h, pixelData, 3*w);  // this needs to be updated there's no
   // setPixelData anymore...
-  
+
 
   // draw the image into the graphics-object:
   graphics.drawImageAt(*background, x, y);
@@ -504,29 +504,29 @@ void fillRectWithBilinearGradient(Graphics &graphics, int x, int y, int w, int h
   delete[] pixelData;
 }
 
-void fillRectWithBilinearGradient(Graphics &graphics, Rectangle<int> r,  Colour topLeftColour, 
+void fillRectWithBilinearGradient(Graphics &graphics, Rectangle<int> r,  Colour topLeftColour,
   Colour topRightColour, Colour bottomLeftColour, Colour bottomRightColour)
 {
-  fillRectWithBilinearGradient(graphics, 
+  fillRectWithBilinearGradient(graphics,
     r.getX(), r.getY(), r.getWidth(), r.getHeight(),
     topLeftColour, topRightColour, bottomLeftColour, bottomRightColour);
 }
 
-void fillRectWithBilinearGrayScaleGradient(Graphics &graphics, int x, int y, int w, int h,                                
+void fillRectWithBilinearGrayScaleGradient(Graphics &graphics, int x, int y, int w, int h,
   float topLeftWhite, float topRightWhite, float bottomLeftWhite, float bottomRightWhite)
 {
-  // allocate an empty image-object: 
+  // allocate an empty image-object:
   Image *background = new Image(juce::Image::RGB, w, h, false);
 
-  // allocate memory for the raw pixel-data (h lines, each line has w colums, 
+  // allocate memory for the raw pixel-data (h lines, each line has w colums,
   // each pixel has 3 bytes for blue, green and red (in that order)):
   uint8 *pixelData  = new uint8[h*w*3];
 
-  int    baseAddress;    
+  int    baseAddress;
   // address for a blue-value (is followed by addresses for green and red)
 
-  int    baseAddressInc = 3*w; 
-  // increment for the baseAddress per iteration of the inner loop 
+  int    baseAddressInc = 3*w;
+  // increment for the baseAddress per iteration of the inner loop
 
   // get the white values of the 4 edges as float-values:
   double t_l_w = topLeftWhite;
@@ -538,7 +538,7 @@ void fillRectWithBilinearGrayScaleGradient(Graphics &graphics, int x, int y, int
   // declare variables for the top and bottom line white-values:
   double t_w, b_w;
 
-  // declare variables for the colour components at the current pixel (in 
+  // declare variables for the colour components at the current pixel (in
   // double and int format:
   double white;
   uint8  white_int;
@@ -566,17 +566,17 @@ void fillRectWithBilinearGrayScaleGradient(Graphics &graphics, int x, int y, int
     // draw the current bottom-line pixel:
     baseAddress = 3*i+w*(h-1)*3;
     white_int = (uint8) (255 * b_w);
-    pixelData[baseAddress+0] = white_int; 
+    pixelData[baseAddress+0] = white_int;
     pixelData[baseAddress+1] = white_int;
     pixelData[baseAddress+2] = white_int;
 
     // increment the relative x-position:
-    p += pInc; 
+    p += pInc;
 
     // fill the column between 'top' and 'bottom':
     baseAddress = 3*i;
     q = 0.0;
-    for(int j=1; j<(h-1); j++) 
+    for(int j=1; j<(h-1); j++)
     {
       white     = (1.0-q)*t_w + q*b_w;
       white_int = (uint8) (255 * white);
@@ -605,7 +605,7 @@ void fillRectWithBilinearGrayScaleGradient(Graphics &graphics, int x, int y, int
 
 void fillRectWithDefaultBackground(Graphics &g, int x, int y, int w, int h)
 {
-  fillRectWithBilinearGradient(g, x, y, w, h, 
+  fillRectWithBilinearGradient(g, x, y, w, h,
     Colours::white, Colour(190,200,225), Colour(190,200,225), Colours::white);
 }
 
@@ -614,7 +614,7 @@ void fillRectWithDefaultBackground(Graphics &g, Rectangle<int> r)
   fillRectWithDefaultBackground(g, r.getX(), r.getY(), r.getWidth(), r.getHeight());
 }
 
-void drawTriangle(Graphics &g, float x1, float y1, float x2, float y2, float x3, float y3, 
+void drawTriangle(Graphics &g, float x1, float y1, float x2, float y2, float x3, float y3,
   bool fill)
 {
   // make a path from the 3 given points:
@@ -638,7 +638,7 @@ void drawBlockDiagramPlus(Graphics &g, float x, float y, float w, float h, float
   g.drawLine(x+0.5f*w, y, x+0.5f*w, y+h, thickness);
 }
 
-void fitLineToRectangle(double &x1, double &y1, double &x2, double &y2, double xMin, double yMin, 
+void fitLineToRectangle(double &x1, double &y1, double &x2, double &y2, double xMin, double yMin,
   double xMax, double yMax)
 {
   // catch some special cases:
@@ -665,24 +665,24 @@ void fitLineToRectangle(double &x1, double &y1, double &x2, double &y2, double x
   double xAtMinY = (yMin-b)/a;
   double xAtMaxY = (yMax-b)/a;
 
-  if( yAtMinX > yMin && yAtMinX < yMax )    
+  if( yAtMinX > yMin && yAtMinX < yMax )
     // line intercepts left boundary
   {
-    x1 = xMin;    
+    x1 = xMin;
     y1 = a*xMin+b;
-    if( xAtMaxY > xMin && xAtMaxY < xMax )      
+    if( xAtMaxY > xMin && xAtMaxY < xMax )
       // line intercepts left and top boundary (chops off the top-left corner)
     {
       x2 = (yMax-b)/a;
       y2 = yMax;
     }
-    else if( xAtMinY > xMin && xAtMinY < xMax ) 
+    else if( xAtMinY > xMin && xAtMinY < xMax )
       // line intercepts left and bottom boundary (chops off the bottom-left corner)
     {
       x2 = (yMin-b)/a;
       y2 = yMin;
     }
-    else 
+    else
       // line intercepts right boundary (divides the rectangle into top and bottom)
     {
       x2 = xMax;
@@ -718,7 +718,7 @@ void fitLineToRectangle(double &x1, double &y1, double &x2, double &y2, double x
 
 }
 
-void clipLineToRectangle(double &x1, double &y1, double &x2, double &y2, double xMin, double yMin, 
+void clipLineToRectangle(double &x1, double &y1, double &x2, double &y2, double xMin, double yMin,
   double xMax, double yMax)
 {
   bool   firstIsInside  = false;
@@ -746,7 +746,7 @@ void clipLineToRectangle(double &x1, double &y1, double &x2, double &y2, double 
     yOut = y2;
   }
   else if( secondIsInside && firstIsInside == false )
-  {    
+  {
     xIn  = x2;
     yIn  = y2;
     xOut = x1;
@@ -767,7 +767,7 @@ void clipLineToRectangle(double &x1, double &y1, double &x2, double &y2, double 
         return;
       }
       else if( secondIsInside && firstIsInside == false )
-      {    
+      {
         y1 = yOut;
         return;
       }
@@ -781,7 +781,7 @@ void clipLineToRectangle(double &x1, double &y1, double &x2, double &y2, double 
         return;
       }
       else if( secondIsInside && firstIsInside == false )
-      {    
+      {
         y1 = yOut;
         return;
       }
@@ -840,12 +840,12 @@ void clipLineToRectangle(double &x1, double &y1, double &x2, double &y2, double 
   }
   else if( yOut > yMax ) // line intercepts top boundary
   {
-    xOut = xAtMaxY;    
+    xOut = xAtMaxY;
     yOut = yMax;
   }
   else if( yOut > yMax ) // line intercepts bottom boundary
   {
-    xOut = xAtMinY;    
+    xOut = xAtMinY;
     yOut = yMin;
   }
 
@@ -856,7 +856,7 @@ void clipLineToRectangle(double &x1, double &y1, double &x2, double &y2, double 
     y2 = yOut;
   }
   else if( secondIsInside && firstIsInside == false )
-  {    
+  {
     x1 = xOut;
     y1 = yOut;
   }

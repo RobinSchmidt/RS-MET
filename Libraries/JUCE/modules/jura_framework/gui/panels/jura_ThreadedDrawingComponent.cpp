@@ -2,7 +2,7 @@
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-ThreadedDrawingComponent::ThreadedDrawingComponent(TimeSliceThread* newThreadToUse) 
+ThreadedDrawingComponent::ThreadedDrawingComponent(TimeSliceThread* newThreadToUse)
 {
   ScopedLock scopedLock(clientAreaImageLock);
   clientAreaImage            = NULL;
@@ -14,7 +14,7 @@ ThreadedDrawingComponent::ThreadedDrawingComponent(TimeSliceThread* newThreadToU
     threadToUse = newThreadToUse;
   else
     threadToUse = DrawingThread::getInstance();
-    
+
   threadToUse->addTimeSliceClient(this);
 }
 
@@ -66,7 +66,7 @@ void ThreadedDrawingComponent::paint(Graphics &g)
 		Component::paint(g);
 		return;
 	}
-		
+
   if( clientAreaImageIsDirty )
   {
     //g.fillAll(Colours::white);
@@ -74,16 +74,16 @@ void ThreadedDrawingComponent::paint(Graphics &g)
   }
 
   bool lockAquired = clientAreaImageLock.tryEnter();
-  if( lockAquired )  
+  if( lockAquired )
   {
     if( clientAreaImage != NULL )
       g.drawImageAt(*clientAreaImage, 0, 0, false);
     else
       g.fillAll(Colours::red);
 
-    // could be that we have just drawn a dirty image, so stop the timer only when the image just 
+    // could be that we have just drawn a dirty image, so stop the timer only when the image just
     // drawn is not dirty:
-    if( !clientAreaImageIsDirty ) 
+    if( !clientAreaImageIsDirty )
       //stopTimer();
       startTimer(1000);
 
@@ -92,7 +92,7 @@ void ThreadedDrawingComponent::paint(Graphics &g)
   else
   {
     // we could not aquire the mutex-lock for the image to be drawn - it is probably currently
-    // held by the drawing thread - we draw a white background and spawn a new (asynchronous) 
+    // held by the drawing thread - we draw a white background and spawn a new (asynchronous)
     // call to this function:
     //g.fillAll(Colours::white);
     startTimer(repaintDelayInMilliseconds);
@@ -131,8 +131,8 @@ void ThreadedDrawingComponent::setDirty(bool shouldSetToDirty)
 void ThreadedDrawingComponent::drawComponent(Image *imageToDrawOnto)
 {
   Graphics g(*imageToDrawOnto);
-  int w = imageToDrawOnto->getWidth();
-  int h = imageToDrawOnto->getHeight();
+  //int w = imageToDrawOnto->getWidth();
+  //int h = imageToDrawOnto->getHeight();
   g.setColour(Colours::black);
   //g.drawFittedText(String(T("ThreadedDrawingComponent")), 0, 0, w, h, Justification::centred, 1);
 	  // triggers a JUCE-breakpoint when called early on app-startup
@@ -148,7 +148,7 @@ void ThreadedDrawingComponent::renderClientAreaImageInternal()
     return;
   }
 
-  if(  clientAreaImage->getWidth()  != getWidth() 
+  if(  clientAreaImage->getWidth()  != getWidth()
     || clientAreaImage->getHeight() != getHeight() )
   {
     allocateClientAreaImage(getWidth(), getHeight());
@@ -161,7 +161,7 @@ void ThreadedDrawingComponent::renderClientAreaImageInternal()
 
   // call the actual drawing rutine (hich is supposed to be overriden by subclasses):
   drawComponent(clientAreaImage);
- 
+
   // when the drawComponent-function returns, we assume that the clientArwaImage has been drawn, so
   // we set our dirty flag flase and trigger a (delayed) repaint:
   clientAreaImageIsDirty = false;
@@ -186,15 +186,15 @@ bool ThreadedDrawingComponent::allocateClientAreaImage(int desiredWidth, int des
     {
       jassertfalse;
       showMemoryAllocationErrorBox(String("ThreadedDrawingComponent::allocateClientAreaImage"));
-      return false;  
+      return false;
     }
     else
       result = true;
   }
 
-  // reallocate memory, if necessary (i.e. the deired size differs from the current size of the 
+  // reallocate memory, if necessary (i.e. the deired size differs from the current size of the
   // image):
-  if(    clientAreaImage->getWidth()  != desiredWidth  
+  if(    clientAreaImage->getWidth()  != desiredWidth
       || clientAreaImage->getHeight() != desiredHeight  )
   {
     // delete the old and create a new Image-object:
@@ -210,13 +210,13 @@ bool ThreadedDrawingComponent::allocateClientAreaImage(int desiredWidth, int des
     {
       showMemoryAllocationErrorBox(String("ThreadedDrawingComponent::allocateClientAreaImage"));
       jassertfalse;
-      return false; 
+      return false;
     }
   }
 
-  // when we indeed have allocated new memory, the image associated with this new memory is 
+  // when we indeed have allocated new memory, the image associated with this new memory is
   // certainly not what we want to see:
-  if( result = true )
+  if( result == true ) // was formerly if( result = true ) - so it was always excuted -> test
   {
     clientAreaImageIsDirty = true;
     Graphics g(*clientAreaImage);
