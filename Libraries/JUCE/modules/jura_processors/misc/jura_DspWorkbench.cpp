@@ -3,7 +3,7 @@
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-DspWorkbenchAudioModule::DspWorkbenchAudioModule(CriticalSection *newPlugInLock, 
+DspWorkbenchAudioModule::DspWorkbenchAudioModule(CriticalSection *newPlugInLock,
   rosic::DspWorkbench *dspWorkbenchToWrap) : AudioModule(newPlugInLock)
 {
   //jassert(dspWorkbenchToWrap != NULL); // you must pass a valid rosic-object to the constructor
@@ -51,19 +51,19 @@ XmlElement* DspWorkbenchAudioModule::getStateAsXml(const juce::String& stateName
   for(int p=0; p<rosic::DspWorkbench::numParameters; p++)
   {
     xmlParameterSettings = new XmlElement(juce::String("Par") + juce::String(p));
-    xmlParameterSettings->setAttribute("Name", 
+    xmlParameterSettings->setAttribute("Name",
       juce::String(wrappedDspWorkbench->getParameterName(p)));
-    xmlParameterSettings->setAttribute("Value", 
+    xmlParameterSettings->setAttribute("Value",
       juce::String(wrappedDspWorkbench->getParameter(p)));
     /*
-    xmlParameterSettings->setAttribute(T("Min"), 
+    xmlParameterSettings->setAttribute(T("Min"),
       juce::String(wrappedDspWorkbench->getParameterMinimum(p)));
-    xmlParameterSettings->setAttribute(T("Max"), 
+    xmlParameterSettings->setAttribute(T("Max"),
       juce::String(wrappedDspWorkbench->getParameterMaximum(p)));
     */
     xmlParameterSettings->setAttribute("Min", juce::String(getParameterByIndex(p)->getMinValue()));
     xmlParameterSettings->setAttribute("Max", juce::String(getParameterByIndex(p)->getMaxValue()));
-    xmlParameterSettings->setAttribute("Default", 
+    xmlParameterSettings->setAttribute("Default",
       juce::String(getParameterByIndex(p)->getDefaultValue()));
     xmlParameterSettings->setAttribute("Scaling", getParameterByIndex(p)->getScalingString());
     xmlParameters->addChildElement(xmlParameterSettings);
@@ -80,7 +80,7 @@ XmlElement* DspWorkbenchAudioModule::getStateAsXml(const juce::String& stateName
     xmlState->addChildElement(childState);
   }
   */
-    
+
   return xmlState;
 }
 
@@ -93,7 +93,7 @@ void DspWorkbenchAudioModule::setStateFromXml(const XmlElement& xmlState,
   if( wrappedDspWorkbench == NULL )
     return;
 
-  // restore the values of the non-automatable parameters (the automatable ones are already taken 
+  // restore the values of the non-automatable parameters (the automatable ones are already taken
   // care of by automatableModuleStateFromXml():
   //wrappedDspWorkbench->setSwitchWetLeftForRight(xmlState.getBoolAttribute(T("ChannelSwitch"), false));
 
@@ -120,7 +120,7 @@ void DspWorkbenchAudioModule::setStateFromXml(const XmlElement& xmlState,
       xmlParameterSettings = xmlParameters->getChildByName(juce::String("Par") + juce::String(p));
       if( xmlParameterSettings != NULL )
       {
-        nameString = 
+        nameString =
           xmlParameterSettings->getStringAttribute("Name", juce::String("Par")+juce::String(p));
         nameStringC = toZeroTerminatedString(nameString);
         if( nameStringC != NULL ) // should not go wrong actually, however
@@ -181,14 +181,13 @@ void DspWorkbenchAudioModule::parameterChanged(Parameter* parameterThatHasChange
   // find out the index in the vector of the parameter that has been changed:
   int parameterIndex = getIndexOfParameter(parameterThatHasChanged);
 
-  // parameterIndex now contains the index in the array of the parameter that has changed now set 
+  // parameterIndex now contains the index in the array of the parameter that has changed now set
   // up the signal processing:
   double value = parameterThatHasChanged->getValue();
 
-
   wrappedDspWorkbench->setParameter(parameterIndex, value);
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -200,7 +199,7 @@ void DspWorkbenchAudioModule::initializeAutomatableParameters()
   // is important because in parameterChanged(), the index (position in the array) will be used to
   // identify which particlua parameter has changed.
 
-  // this pointer will be used to temporarily store the addresses of the created 
+  // this pointer will be used to temporarily store the addresses of the created
   // Parameter-objects:
   AutomatableParameter* parameter;
 
@@ -209,15 +208,15 @@ void DspWorkbenchAudioModule::initializeAutomatableParameters()
   for(p=0; p<rosic::DspWorkbench::numParameters; p++)
   {
     /*
-    parameter = new Parameter(b->getParameterName(p), b->getParameterMinimum(p), 
+    parameter = new Parameter(b->getParameterName(p), b->getParameterMinimum(p),
       b->getParameterMaximum(p), 0.0, b->getParameterDefault(p) ); //, b->getParameterScaling(), b->getParameterController(), true);
       */
-    parameter = new AutomatableParameter(lock, b->getParameterName(p), 0.0, 1.0, 0.0, 0.5, 
+    parameter = new AutomatableParameter(lock, b->getParameterName(p), 0.0, 1.0, 0.0, 0.5,
       Parameter::LINEAR, p);
     addObservedParameter(parameter);
   }
 
-  // make a call to parameterChanged for each parameter in order to set up the DSP-core to reflect 
+  // make a call to parameterChanged for each parameter in order to set up the DSP-core to reflect
   // the values the automatable parameters:
   for(p=0; p < (int) parameters.size(); p++ )
     parameterChanged(parameters[p]);
@@ -228,7 +227,7 @@ void DspWorkbenchAudioModule::initializeAutomatableParameters()
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-DspWorkbenchModuleEditor::DspWorkbenchModuleEditor(CriticalSection *newPlugInLock, DspWorkbenchAudioModule* newDspWorkbenchAudioModule) 
+DspWorkbenchModuleEditor::DspWorkbenchModuleEditor(CriticalSection *newPlugInLock, DspWorkbenchAudioModule* newDspWorkbenchAudioModule)
   : AudioModuleEditor(newDspWorkbenchAudioModule)
 {
   // set the plugIn-headline:
@@ -245,7 +244,7 @@ DspWorkbenchModuleEditor::DspWorkbenchModuleEditor(CriticalSection *newPlugInLoc
 
   for(int p=0; p<rosic::DspWorkbench::numParameters; p++)
   {
-    addAndMakeVisible( parameterLabels[p] = new RTextEntryField( 
+    addAndMakeVisible( parameterLabels[p] = new RTextEntryField(
       juce::String("Par")+juce::String(p)+juce::String(":")) );
     parameterLabels[p]->setDescription(juce::String("User parameter ") + juce::String("p"));
 
@@ -312,41 +311,41 @@ DspWorkbenchModuleEditor::DspWorkbenchModuleEditor(CriticalSection *newPlugInLoc
   //filterEditor->setFilterToEdit( &(dspWorkbenchAudioModule->wrappedDspWorkbench->filters[0]) );
   filterEditor->setDescriptionField(infoField, true);
   /*
-  filterEditor->freqSlider->assignParameter( 
+  filterEditor->freqSlider->assignParameter(
   dspWorkbenchAudioModule->getParameterByName("FilterFrequency") );
-  filterEditor->freqKeyTrackSlider->assignParameter( 
+  filterEditor->freqKeyTrackSlider->assignParameter(
   dspWorkbenchAudioModule->getParameterByName("FilterFrequencyByKey") );
-  filterEditor->freqVelTrackSlider->assignParameter( 
+  filterEditor->freqVelTrackSlider->assignParameter(
   dspWorkbenchAudioModule->getParameterByName("FilterFrequencyByVel") );
-  filterEditor->resoSlider->assignParameter( 
+  filterEditor->resoSlider->assignParameter(
   dspWorkbenchAudioModule->getParameterByName("FilterResonance") );
-  filterEditor->qSlider->assignParameter( 
+  filterEditor->qSlider->assignParameter(
   dspWorkbenchAudioModule->getParameterByName("FilterQ") );
-  filterEditor->preAllpassSlider->assignParameter( 
+  filterEditor->preAllpassSlider->assignParameter(
   dspWorkbenchAudioModule->getParameterByName("FilterPreAllpass") );
-  filterEditor->makeUpSlider->assignParameter( 
+  filterEditor->makeUpSlider->assignParameter(
   dspWorkbenchAudioModule->getParameterByName("FilterMakeUp") );
-  filterEditor->gainSlider->assignParameter( 
+  filterEditor->gainSlider->assignParameter(
   dspWorkbenchAudioModule->getParameterByName("FilterGain") );
-  filterEditor->driveSlider->assignParameter( 
+  filterEditor->driveSlider->assignParameter(
   dspWorkbenchAudioModule->getParameterByName("FilterDrive") );
-  filterEditor->morphSlider->assignParameter( 
+  filterEditor->morphSlider->assignParameter(
   dspWorkbenchAudioModule->getParameterByName("FilterMorph") );
-  filterEditor->frequencyResponseDisplay->assignParameterFreq( 
+  filterEditor->frequencyResponseDisplay->assignParameterFreq(
   dspWorkbenchAudioModule->getParameterByName("FilterFrequency") );
-  filterEditor->frequencyResponseDisplay->assignParameterReso( 
+  filterEditor->frequencyResponseDisplay->assignParameterReso(
   dspWorkbenchAudioModule->getParameterByName("FilterResonance") );
-  filterEditor->frequencyResponseDisplay->assignParameterQ( 
+  filterEditor->frequencyResponseDisplay->assignParameterQ(
   dspWorkbenchAudioModule->getParameterByName("FilterQ") );
-  filterEditor->frequencyResponseDisplay->assignParameterGain( 
+  filterEditor->frequencyResponseDisplay->assignParameterGain(
   dspWorkbenchAudioModule->getParameterByName("FilterGain") );
-  filterEditor->frequencyResponseDisplay->assignParameterMorph( 
+  filterEditor->frequencyResponseDisplay->assignParameterMorph(
   dspWorkbenchAudioModule->getParameterByName("FilterMorph") );
   */
   addAndMakeVisible( filterEditor );
 
   /*
-  addAndMakeVisible( sourceComboBox 
+  addAndMakeVisible( sourceComboBox
   = new RComboBox(juce::String(T("ModulationSourceComboBox"))) );
   sourceComboBox->addItem(juce::String(T("Off")),               1);
   sourceComboBox->addItem(juce::String(T("Breakpoints")),       2);
@@ -430,7 +429,7 @@ void DspWorkbenchModuleEditor::rTextFieldChanged(RTextField *textFieldThatHasCha
   double min, max, value, defaultValue;
   for(int p=0; p<rosic::DspWorkbench::numParameters; p++)
   {
-    if( textFieldThatHasChanged == parameterMinFields[p] 
+    if( textFieldThatHasChanged == parameterMinFields[p]
       ||  textFieldThatHasChanged == parameterMaxFields[p] )
     {
       // set up the parameter to the new range:
@@ -438,7 +437,7 @@ void DspWorkbenchModuleEditor::rTextFieldChanged(RTextField *textFieldThatHasCha
       max = parameterMaxFields[p]->getText().getDoubleValue();
       dspWorkbenchAudioModule->getParameterByIndex(p)->setRange(min, max);
 
-      // re-retrieve the values because changing the range may also change the default- and 
+      // re-retrieve the values because changing the range may also change the default- and
       // current value, also min or max may have been invalid and rejected therefore:
       min          = dspWorkbenchAudioModule->getParameterByIndex(p)->getMinValue();
       max          = dspWorkbenchAudioModule->getParameterByIndex(p)->getMaxValue();
@@ -560,11 +559,11 @@ void DspWorkbenchModuleEditor::updateWidgetsAccordingToState()
   for(int p=0; p<rosic::DspWorkbench::numParameters; p++)
   {
     // parameterExpButtons...
-    min          = dspWorkbenchAudioModule->getParameterByIndex(p)->getMinValue();   
+    min          = dspWorkbenchAudioModule->getParameterByIndex(p)->getMinValue();
     max          = dspWorkbenchAudioModule->getParameterByIndex(p)->getMaxValue();
     value        = dspWorkbenchAudioModule->getParameterByIndex(p)->getValue();
     defaultValue = dspWorkbenchAudioModule->getParameterByIndex(p)->getDefaultValue();
-    parameterNameFields[p]->setText(   juce::String(dspWorkbench->getParameterName(p)));     
+    parameterNameFields[p]->setText(   juce::String(dspWorkbench->getParameterName(p)));
     parameterMinFields[p]->setText(    juce::String(min));
     parameterMaxFields[p]->setText(    juce::String(max));
     parameterDefaultFields[p]->setText(juce::String(defaultValue));
@@ -572,7 +571,7 @@ void DspWorkbenchModuleEditor::updateWidgetsAccordingToState()
     parameterSliders[p]->setRange(min, max, 0.0, defaultValue, false);
     parameterSliders[p]->setValue(            value,         false, false);
 
-    bool expScaling 
+    bool expScaling
       = dspWorkbenchAudioModule->getParameterByIndex(p)->getScaling() == Parameter::EXPONENTIAL;
     parameterExpButtons[p]->setToggleState(expScaling, false);
     if( expScaling == true )
@@ -603,13 +602,13 @@ void DspWorkbenchModuleEditor::showOrHideTargetSpecificWidgets()
 
 void DspWorkbenchModuleEditor::paint(Graphics &g)
 {
-  fillRectWithBilinearGradient(g, topLeftRectangle, editorColourScheme.topLeft,  editorColourScheme.topRight, 
+  fillRectWithBilinearGradient(g, topLeftRectangle, editorColourScheme.topLeft,  editorColourScheme.topRight,
     editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
-  fillRectWithBilinearGradient(g, topRightRectangle, editorColourScheme.topLeft, editorColourScheme.topRight, 
+  fillRectWithBilinearGradient(g, topRightRectangle, editorColourScheme.topLeft, editorColourScheme.topRight,
     editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
-  fillRectWithBilinearGradient(g, bottomLeftRectangle, editorColourScheme.topLeft, editorColourScheme.topRight, 
+  fillRectWithBilinearGradient(g, bottomLeftRectangle, editorColourScheme.topLeft, editorColourScheme.topRight,
     editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
-  fillRectWithBilinearGradient(g, bottomRightRectangle, editorColourScheme.topLeft, editorColourScheme.topRight, 
+  fillRectWithBilinearGradient(g, bottomRightRectangle, editorColourScheme.topLeft, editorColourScheme.topRight,
     editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
 
   g.setColour(editorColourScheme.outline);
@@ -669,7 +668,7 @@ void DspWorkbenchModuleEditor::resized()
     parameterSliders[p]->setBounds(                                     x+4,      y+16, w-8,  16);
     parameterLabels[p]->setBounds(       parameterSliders[p]->getX(),                y, 56,   16);
     parameterExpButtons[p]->setBounds(   parameterSliders[p]->getRight()-32,      y+32, 32,   16);
-    parameterNameFields[p]->setBounds(   parameterLabels[p]->getRight(), y, 
+    parameterNameFields[p]->setBounds(   parameterLabels[p]->getRight(), y,
       parameterSliders[p]->getRight()-parameterLabels[p]->getRight(), 16);
     parameterMinFields[p]->setBounds(    parameterSliders[p]->getX(),             y+32, w2-4, 16);
     parameterDefaultFields[p]->setBounds(parameterMinFields[p]->getRight()+4,     y+32, w2-4, 16);

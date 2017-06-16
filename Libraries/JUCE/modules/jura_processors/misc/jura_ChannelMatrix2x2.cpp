@@ -1,6 +1,6 @@
 // construction/destruction:
 
-ChannelMatrix2x2AudioModule::ChannelMatrix2x2AudioModule(CriticalSection *newPlugInLock, 
+ChannelMatrix2x2AudioModule::ChannelMatrix2x2AudioModule(CriticalSection *newPlugInLock,
   rosic::ChannelMatrix2x2 *channelMatrix2x2ToWrap) : AudioModule(newPlugInLock)
 {
   if(channelMatrix2x2ToWrap != nullptr)
@@ -78,8 +78,8 @@ void ChannelMatrix2x2AudioModule::setStateFromXml(const XmlElement& xmlState,
 
 //=================================================================================================
 
-ChannelMatrix2x2ModuleEditor::ChannelMatrix2x2ModuleEditor(CriticalSection *newPlugInLock, 
-  ChannelMatrix2x2AudioModule* newChannelMatrix2x2AudioModule) 
+ChannelMatrix2x2ModuleEditor::ChannelMatrix2x2ModuleEditor(CriticalSection *newPlugInLock,
+  ChannelMatrix2x2AudioModule* newChannelMatrix2x2AudioModule)
   : AudioModuleEditor(newChannelMatrix2x2AudioModule)
 {
   // set the plugIn-headline:
@@ -194,10 +194,10 @@ void ChannelMatrix2x2ModuleEditor::resized()
   linkPosition          = RIGHT_TO_HEADLINE;
   presetSectionPosition = BELOW_HEADLINE;
   AudioModuleEditor::resized();
-  int x = 0;
+  //int x = 0;
   int y = getPresetSectionBottom()+8;
   int w = getWidth();
-  int h = getHeight();
+  //int h = getHeight();
 
   labelLeftToLeft->setBounds(4, y, 48, 20);
   editLabelLeftToLeft->setBounds(labelLeftToLeft->getRight(), y, w/2-labelLeftToLeft->getWidth()-8, 20);
