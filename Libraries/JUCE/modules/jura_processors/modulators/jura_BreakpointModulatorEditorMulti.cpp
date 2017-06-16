@@ -3,8 +3,8 @@
 
 BreakpointModulatorEditorMulti::BreakpointModulatorEditorMulti(CriticalSection *newPlugInLock,
   BreakpointModulatorAudioModule* newBreakpointModulatorAudioModule)
- : BreakpointModulatorEditor(newPlugInLock, newBreakpointModulatorAudioModule)
- , AudioModuleEditor(newBreakpointModulatorAudioModule)
+ : AudioModuleEditor(newBreakpointModulatorAudioModule)
+ , BreakpointModulatorEditor(newPlugInLock, newBreakpointModulatorAudioModule)
 {
   // init the pointer to the modulator to be edited to NULL:
   modulatorToEdit = NULL;

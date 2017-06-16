@@ -1,5 +1,5 @@
 
-VectorSamplePlayerAudioModule::VectorSamplePlayerAudioModule(CriticalSection *newPlugInLock,      
+VectorSamplePlayerAudioModule::VectorSamplePlayerAudioModule(CriticalSection *newPlugInLock,
   rosic::VectorSamplePlayer *vectorSamplePlayerToWrap)  : AudioModule(newPlugInLock)
 {
   jassert(vectorSamplePlayerToWrap != NULL); // you must pass a valid rosic-object to the constructor
@@ -13,22 +13,22 @@ VectorSamplePlayerAudioModule::VectorSamplePlayerAudioModule(CriticalSection *ne
   vectorMixerModule->setModuleName(juce::String("VectorMixer"));
   addChildAudioModule(vectorMixerModule);
 
-  samplePlayerTopLeftModule = new SamplePlayerAudioModule(lock, 
+  samplePlayerTopLeftModule = new SamplePlayerAudioModule(lock,
     &wrappedVectorSamplePlayer->samplePlayerTopLeft);
   samplePlayerTopLeftModule->setModuleName(juce::String("SamplePlayerTopLeft"));
   addChildAudioModule(samplePlayerTopLeftModule);
 
-  samplePlayerTopRightModule = new SamplePlayerAudioModule(lock, 
+  samplePlayerTopRightModule = new SamplePlayerAudioModule(lock,
     &wrappedVectorSamplePlayer->samplePlayerTopRight);
   samplePlayerTopRightModule->setModuleName(juce::String("SamplePlayerTopRight"));
   addChildAudioModule(samplePlayerTopRightModule);
 
-  samplePlayerBottomLeftModule = new SamplePlayerAudioModule(lock, 
+  samplePlayerBottomLeftModule = new SamplePlayerAudioModule(lock,
     &wrappedVectorSamplePlayer->samplePlayerBottomLeft);
   samplePlayerBottomLeftModule->setModuleName(juce::String("SamplePlayerBottomLeft"));
   addChildAudioModule(samplePlayerBottomLeftModule);
 
-  samplePlayerBottomRightModule = new SamplePlayerAudioModule(lock, 
+  samplePlayerBottomRightModule = new SamplePlayerAudioModule(lock,
     &wrappedVectorSamplePlayer->samplePlayerBottomRight);
   samplePlayerBottomRightModule->setModuleName(juce::String("SamplePlayerBottomRight"));
   addChildAudioModule(samplePlayerBottomRightModule);
@@ -44,11 +44,11 @@ VectorSamplePlayerAudioModule::VectorSamplePlayerAudioModule(CriticalSection *ne
 
 //=================================================================================================
 
-VectorSamplePlayerSampleEditor::VectorSamplePlayerSampleEditor(CriticalSection *newPlugInLock,                                                              
+VectorSamplePlayerSampleEditor::VectorSamplePlayerSampleEditor(CriticalSection *newPlugInLock,
   SamplePlayerAudioModule* newSamplePlayerAudioModule)
-  : SamplePlayerModuleEditor(newPlugInLock, newSamplePlayerAudioModule)
-  , AudioModuleEditor( newSamplePlayerAudioModule)
-{ 
+  : AudioModuleEditor( newSamplePlayerAudioModule)
+  , SamplePlayerModuleEditor(newPlugInLock, newSamplePlayerAudioModule)
+{
   setLinkPosition(INVISIBLE);
   setPresetSectionPosition(INVISIBLE);
   sampleDisplayZoomer->setVisible(false);
@@ -56,9 +56,9 @@ VectorSamplePlayerSampleEditor::VectorSamplePlayerSampleEditor(CriticalSection *
   headlineWidth = 48;
 }
 
-void VectorSamplePlayerSampleEditor::setLayout(int newLayout) 
-{ 
-  layout = newLayout; 
+void VectorSamplePlayerSampleEditor::setLayout(int newLayout)
+{
+  layout = newLayout;
   switch( layout )
   {
   case TOP_LEFT:     Editor::setHeadlinePosition(Editor::BOTTOM_LEFT);  break;
@@ -66,7 +66,7 @@ void VectorSamplePlayerSampleEditor::setLayout(int newLayout)
   case BOTTOM_LEFT:  Editor::setHeadlinePosition(Editor::TOP_LEFT);     break;
   case BOTTOM_RIGHT: Editor::setHeadlinePosition(Editor::TOP_RIGHT);    break;
   }
-  resized(); 
+  resized();
 }
 
 void VectorSamplePlayerSampleEditor::resized()
@@ -211,10 +211,10 @@ void VectorSamplePlayerSampleEditor::resized()
 //=================================================================================================
 // class VectorSamplePlayerLfoEditor:
 
-VectorSamplePlayerLfoEditor::VectorSamplePlayerLfoEditor(CriticalSection *newPlugInLock, 
+VectorSamplePlayerLfoEditor::VectorSamplePlayerLfoEditor(CriticalSection *newPlugInLock,
   LowFrequencyOscillatorAudioModule* newLowFrequencyOscillatorAudioModule)
   : LowFrequencyOscillatorEditor(newPlugInLock, newLowFrequencyOscillatorAudioModule)
-{ 
+{
   setLinkPosition(INVISIBLE);
   setPresetSectionPosition(INVISIBLE);
   layout        = 0;
@@ -223,9 +223,9 @@ VectorSamplePlayerLfoEditor::VectorSamplePlayerLfoEditor(CriticalSection *newPlu
   cycleLengthSlider->setStringConversionFunction(valueToString3);
 }
 
-void VectorSamplePlayerLfoEditor::setLayout(int newLayout) 
-{ 
-  layout = newLayout; 
+void VectorSamplePlayerLfoEditor::setLayout(int newLayout)
+{
+  layout = newLayout;
 }
 
 void VectorSamplePlayerLfoEditor::paint(Graphics &g)
@@ -251,11 +251,11 @@ void VectorSamplePlayerLfoEditor::paint(Graphics &g)
   y2 = (float) waveformDisplay->getBottom();
   x3 = (float) 0;
   y3 = (float) (y1+y2)/2;
-  }  
+  }
 
-  g.setColour(Colours::white); 
+  g.setColour(Colours::white);
   rojue::drawTriangle(g, x1, y1, x2, y2, x3, y3, true);
-  g.setColour(Colours::lavender); 
+  g.setColour(Colours::lavender);
   rojue::drawTriangle(g, x1, y1, x2, y2, x3, y3, false);
   */
 
@@ -353,8 +353,8 @@ void VectorSamplePlayerLfoEditor::resized()
 //=================================================================================================
 // class VectorSamplePlayerModuleEditor:
 
-VectorSamplePlayerEditor::VectorSamplePlayerEditor(CriticalSection *newPlugInLock, 
-  VectorSamplePlayerAudioModule* newVectorSamplePlayerAudioModule) 
+VectorSamplePlayerEditor::VectorSamplePlayerEditor(CriticalSection *newPlugInLock,
+  VectorSamplePlayerAudioModule* newVectorSamplePlayerAudioModule)
   : AudioModuleEditor(newVectorSamplePlayerAudioModule)
 {
   //setHeadlineStyle(MAIN_HEADLINE);
@@ -371,7 +371,7 @@ VectorSamplePlayerEditor::VectorSamplePlayerEditor(CriticalSection *newPlugInLoc
   //---------------------------------------------------------------------------
   // create and setup the sub-module editors:
 
-  samplePlayerTopLeftEditor = new VectorSamplePlayerSampleEditor(lock, 
+  samplePlayerTopLeftEditor = new VectorSamplePlayerSampleEditor(lock,
     vectorSamplePlayerAudioModule->samplePlayerTopLeftModule);
   samplePlayerTopLeftEditor->setLayout(VectorSamplePlayerSampleEditor::TOP_LEFT);
   samplePlayerTopLeftEditor->setHeadlineText(juce::String("Osc1"));
@@ -379,7 +379,7 @@ VectorSamplePlayerEditor::VectorSamplePlayerEditor(CriticalSection *newPlugInLoc
   samplePlayerTopLeftEditor->addChangeListener(this);
   samplePlayerTopLeftEditor->setDescriptionField(infoField, true);
 
-  samplePlayerTopRightEditor = new VectorSamplePlayerSampleEditor(lock, 
+  samplePlayerTopRightEditor = new VectorSamplePlayerSampleEditor(lock,
     vectorSamplePlayerAudioModule->samplePlayerTopRightModule);
   samplePlayerTopRightEditor->setLayout(VectorSamplePlayerSampleEditor::TOP_RIGHT);
   samplePlayerTopRightEditor->setHeadlineText(juce::String("Osc2"));
@@ -387,7 +387,7 @@ VectorSamplePlayerEditor::VectorSamplePlayerEditor(CriticalSection *newPlugInLoc
   samplePlayerTopRightEditor->addChangeListener(this);
   samplePlayerTopRightEditor->setDescriptionField(infoField, true);
 
-  samplePlayerBottomLeftEditor = new VectorSamplePlayerSampleEditor(lock, 
+  samplePlayerBottomLeftEditor = new VectorSamplePlayerSampleEditor(lock,
     vectorSamplePlayerAudioModule->samplePlayerBottomLeftModule);
   samplePlayerBottomLeftEditor->setLayout(VectorSamplePlayerSampleEditor::BOTTOM_LEFT);
   samplePlayerBottomLeftEditor->setHeadlineText(juce::String("Osc3"));
@@ -395,7 +395,7 @@ VectorSamplePlayerEditor::VectorSamplePlayerEditor(CriticalSection *newPlugInLoc
   samplePlayerBottomLeftEditor->addChangeListener(this);
   samplePlayerBottomLeftEditor->setDescriptionField(infoField, true);
 
-  samplePlayerBottomRightEditor = new VectorSamplePlayerSampleEditor(lock, 
+  samplePlayerBottomRightEditor = new VectorSamplePlayerSampleEditor(lock,
     vectorSamplePlayerAudioModule->samplePlayerBottomRightModule);
   samplePlayerBottomRightEditor->setLayout(VectorSamplePlayerSampleEditor::BOTTOM_RIGHT);
   samplePlayerBottomRightEditor->setHeadlineText(juce::String("Osc4"));
@@ -403,7 +403,7 @@ VectorSamplePlayerEditor::VectorSamplePlayerEditor(CriticalSection *newPlugInLoc
   samplePlayerBottomRightEditor->addChangeListener(this);
   samplePlayerBottomRightEditor->setDescriptionField(infoField, true);
 
-  addAndMakeVisible( vectorMixerPad = new VectorMixerModuleEditor(lock, 
+  addAndMakeVisible( vectorMixerPad = new VectorMixerModuleEditor(lock,
     vectorSamplePlayerAudioModule->vectorMixerModule) );
 
   xLfoEditor = new VectorSamplePlayerLfoEditor(lock, vectorSamplePlayerAudioModule->xLfoModule);
@@ -431,10 +431,10 @@ void VectorSamplePlayerEditor::updateWidgetsAccordingToState()
   if( vectorSamplePlayerAudioModule->wrappedVectorSamplePlayer == NULL )
     return;
 
-  // remember if the preset was clean or dirty before making a few calls that may lead to a 
+  // remember if the preset was clean or dirty before making a few calls that may lead to a
   // dirtification of the preset-state:
   bool presetIsDirty = vectorSamplePlayerAudioModule->isStateDirty();
-  const MessageManagerLock mmLock;     
+  const MessageManagerLock mmLock;
   // the event loop will now be locked so it's safe to make a few calls..
 
   // update the global widgets and automatable sliders:
@@ -450,10 +450,10 @@ void VectorSamplePlayerEditor::updateWidgetsAccordingToState()
   yLfoEditor->updateWidgetsAccordingToState();
 
   // preserve the clean/dirty state of the preset regardless of any parameter changes that may take
-  // place that may take place - note that not sending a change notification from the widgets is 
-  // not enough to make that sure because some of the have AutomatableParameters associated with 
+  // place that may take place - note that not sending a change notification from the widgets is
+  // not enough to make that sure because some of the have AutomatableParameters associated with
   // them which themselves may dirtify the preset:
-  if( presetIsDirty )  
+  if( presetIsDirty )
     vectorSamplePlayerAudioModule->markStateAsDirty();
   else
     vectorSamplePlayerAudioModule->markStateAsClean();

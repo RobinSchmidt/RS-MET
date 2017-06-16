@@ -4,8 +4,8 @@
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-ModulatorCurveEditorMulti::ModulatorCurveEditorMulti(const juce::String& name) 
-: ModulatorCurveEditor(name), InteractiveCoordinateSystemOld(name)
+ModulatorCurveEditorMulti::ModulatorCurveEditorMulti(const juce::String& name)
+: InteractiveCoordinateSystemOld(name), ModulatorCurveEditor(name)
 {
   //editedModulatorIndex = -1;
 }
@@ -102,12 +102,12 @@ void ModulatorCurveEditorMulti::resized()
   }
   setCurveFamilyValues(numSamplesInPlot, numModulators, plotDataX, plotDataY);
 
-  updateCurveDataForAllPlots(true, true); 
-   // this is the only line which is different from the basecalss implementation - maybe the 
+  updateCurveDataForAllPlots(true, true);
+   // this is the only line which is different from the basecalss implementation - maybe the
    // other stuff could be factored out into a function (better style)...
 }
 
-void ModulatorCurveEditorMulti::updateCurveDataForAllPlots(bool redrawCurves, 
+void ModulatorCurveEditorMulti::updateCurveDataForAllPlots(bool redrawCurves,
   bool redrawCoordinateSystem)
 {
   modulators.getLock().enter();
@@ -158,7 +158,7 @@ void ModulatorCurveEditorMulti::updateMaximumRange(bool alsoUpdateCurrentRange)
     setMaximumRange(minX-marginX, maxX+marginX, minY-marginY, maxY+marginY);
 }
 
-void ModulatorCurveEditorMulti::plotCurveFamily(Graphics &g, juce::Image *targetImage, 
+void ModulatorCurveEditorMulti::plotCurveFamily(Graphics &g, juce::Image *targetImage,
   XmlElement *targetSVG)
 {
   CurveFamilyPlotOld::plotCurveFamily(g, targetImage, targetSVG); // draws axes, labels, grids, curves
@@ -169,9 +169,9 @@ void ModulatorCurveEditorMulti::plotCurveFamily(Graphics &g, juce::Image *target
   for(m=0; m<modulators.size(); m++)
   {
     Colour locatorColour = getCurveColour(m);
-    g.setColour(locatorColour); 
+    g.setColour(locatorColour);
 
-    //if( colourScheme.plotColours.size() > m )    
+    //if( colourScheme.plotColours.size() > m )
     //  locatorColour = colourScheme.plotColours[m].withMultipliedAlpha(1.0);
 
     if( m == editedModulatorIndex )
@@ -191,7 +191,7 @@ void ModulatorCurveEditorMulti::plotCurveFamily(Graphics &g, juce::Image *target
 
   /*
   Colour locatorColour = Colours::yellow;
-  if( colourScheme.plotColours.size() > m )    
+  if( colourScheme.plotColours.size() > m )
     locatorColour = colourScheme.plotColours[m].withMultipliedAlpha(0.75);
   plotLoopLocators(g, targetImage, modulators[m], locatorColour);
   */
