@@ -4,11 +4,11 @@
 //-------------------------------------------------------------------------------------------------
 // BitCrusher:
 
-BitCrusherAudioModule::BitCrusherAudioModule(CriticalSection *newPlugInLock, rosic::BitCrusher *newBitCrusherToWrap) 
+BitCrusherAudioModule::BitCrusherAudioModule(CriticalSection *newPlugInLock, rosic::BitCrusher *newBitCrusherToWrap)
 : AudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
-  jassert( newBitCrusherToWrap != NULL ); // you must pass a valid rosic-object 
+  jassert( newBitCrusherToWrap != NULL ); // you must pass a valid rosic-object
   wrappedBitCrusher = newBitCrusherToWrap;
   moduleName = juce::String(("BitCrusher"));
 
@@ -25,22 +25,22 @@ void BitCrusherAudioModule::createStaticParameters()
   AutomatableParameter* p;
 
   p = new AutomatableParameter(lock, "Decimation", 1.0, 128.0, 1.0, 1.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedBitCrusher, &BitCrusher::setDecimationFactor);
 
   p = new AutomatableParameter(lock, "Quantization", 0.001, 1.0, 0.0, 0.00001, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedBitCrusher, &BitCrusher::setQuantizationInterval);
 
   p = new AutomatableParameter(lock, "Amount", -200.0, 200.0, 1.0, 100.0, Parameter::LINEAR);
-  addObservedParameter(p); 
-  p->setValueChangeCallback(wrappedBitCrusher, &BitCrusher::setAmount); 
+  addObservedParameter(p);
+  p->setValueChangeCallback(wrappedBitCrusher, &BitCrusher::setAmount);
 
   for(int i=0; i < (int) parameters.size(); i++ )
     parameters[i]->resetToDefaultValue(true, true);
 }
 
-BitCrusherModuleEditor::BitCrusherModuleEditor(CriticalSection *newPlugInLock, BitCrusherAudioModule* newBitCrusherAudioModule) 
+BitCrusherModuleEditor::BitCrusherModuleEditor(CriticalSection *newPlugInLock, BitCrusherAudioModule* newBitCrusherAudioModule)
 : AudioModuleEditor(newBitCrusherAudioModule)
 {
   ScopedLock scopedLock(*lock);
@@ -76,24 +76,24 @@ void BitCrusherModuleEditor::resized()
   int x = 0;
   int y = 0;
   int w = getWidth();
-  int h = getHeight();
+  //int h = getHeight();
   y = getPresetSectionBottom();
   decimationSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   quantizationSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   amountSlider->setBounds(x+4, y+4, w-8, 16);
 }
 
 //-------------------------------------------------------------------------------------------------
 // ModulatedAllpass:
 
-ModulatedAllpassAudioModule::ModulatedAllpassAudioModule(CriticalSection *newPlugInLock, 
+ModulatedAllpassAudioModule::ModulatedAllpassAudioModule(CriticalSection *newPlugInLock,
                                                          rosic::ModulatedAllpass *newModulatedAllpassToWrap)
                                                           : AudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
-  jassert( newModulatedAllpassToWrap != NULL ); // you must pass a valid rosic-object 
+  jassert( newModulatedAllpassToWrap != NULL ); // you must pass a valid rosic-object
   wrappedModulatedAllpass = newModulatedAllpassToWrap;
   moduleName  = juce::String(("ModulatedAllpass"));
 
@@ -108,19 +108,19 @@ void ModulatedAllpassAudioModule::createStaticParameters()
   AutomatableParameter* p;
 
   p = new AutomatableParameter(lock, "Factor", -10.0, 10.0, 0.01, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedModulatedAllpass, &ModulatedAllpass::setFactor);
 
   p = new AutomatableParameter(lock, "Offset", -1.0, 1.0, 0.01, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedModulatedAllpass, &ModulatedAllpass::setOffset);
 
   for(int i=0; i < (int) parameters.size(); i++ )
     parameters[i]->resetToDefaultValue(true, true);
 }
 
-ModulatedAllpassModuleEditor::ModulatedAllpassModuleEditor(CriticalSection *newPlugInLock, 
-                                                           ModulatedAllpassAudioModule* newModulatedAllpassAudioModule) 
+ModulatedAllpassModuleEditor::ModulatedAllpassModuleEditor(CriticalSection *newPlugInLock,
+                                                           ModulatedAllpassAudioModule* newModulatedAllpassAudioModule)
 : AudioModuleEditor(newModulatedAllpassAudioModule)
 {
   ScopedLock scopedLock(*lock);
@@ -150,26 +150,26 @@ void ModulatedAllpassModuleEditor::resized()
   int x = 0;
   int y = 0;
   int w = getWidth();
-  int h = getHeight();
+  //int h = getHeight();
   y = getPresetSectionBottom();
   factorSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   offsetSlider->setBounds(x+4, y+4, w-8, 16);
 }
 
 //-------------------------------------------------------------------------------------------------
 // SlewRateLimiter:
 
-SlewRateLimiterAudioModule::SlewRateLimiterAudioModule(CriticalSection *newPlugInLock, 
+SlewRateLimiterAudioModule::SlewRateLimiterAudioModule(CriticalSection *newPlugInLock,
                                                        rosic::SlewRateLimiterStereo *newSlewRateLimiterToWrap)
                                                         : AudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
 
-  jassert( newSlewRateLimiterToWrap != NULL ); // you must pass a valid rosic-object 
+  jassert( newSlewRateLimiterToWrap != NULL ); // you must pass a valid rosic-object
   wrappedSlewRateLimiter = newSlewRateLimiterToWrap;
   moduleName  = juce::String(("SlewRateLimiter"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString 
+  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
     + juce::String(("SlewRateLimiterPresets")) );
   createStaticParameters();
 }
@@ -181,19 +181,19 @@ void SlewRateLimiterAudioModule::createStaticParameters()
   AutomatableParameter* p;
 
   p = new AutomatableParameter(lock, "Attack",  0.0, 10.0, 0.01, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedSlewRateLimiter, &SlewRateLimiterStereo::setAttackTime);
 
   p = new AutomatableParameter(lock, "Release", 0.0, 10.0, 0.01, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedSlewRateLimiter, &SlewRateLimiterStereo::setReleaseTime);
 
   for(int i=0; i < (int) parameters.size(); i++ )
     parameters[i]->resetToDefaultValue(true, true);
 }
 
-SlewRateLimiterModuleEditor::SlewRateLimiterModuleEditor(CriticalSection *newPlugInLock, 
-                                                         SlewRateLimiterAudioModule* newSlewRateLimiterAudioModule) 
+SlewRateLimiterModuleEditor::SlewRateLimiterModuleEditor(CriticalSection *newPlugInLock,
+                                                         SlewRateLimiterAudioModule* newSlewRateLimiterAudioModule)
 : AudioModuleEditor(newSlewRateLimiterAudioModule)
 {
   ScopedLock scopedLock(*lock);
@@ -223,10 +223,10 @@ void SlewRateLimiterModuleEditor::resized()
   int x = 0;
   int y = 0;
   int w = getWidth();
-  int h = getHeight();
+  //int h = getHeight();
   y = getPresetSectionBottom();
   attackSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   releaseSlider->setBounds(x+4, y+4, w-8, 16);
 }
 
@@ -238,10 +238,10 @@ HarmonicsAudioModule::HarmonicsAudioModule(CriticalSection *newPlugInLock, rosic
 {
   ScopedLock scopedLock(*lock);
 
-  jassert( newHarmonicsToWrap != NULL ); // you must pass a valid rosic-object 
+  jassert( newHarmonicsToWrap != NULL ); // you must pass a valid rosic-object
   wrappedHarmonics = newHarmonicsToWrap;
   moduleName  = juce::String(("Harmonics"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString 
+  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
     + juce::String(("HarmonicsPresets")) );
   createStaticParameters();
 }
@@ -274,7 +274,7 @@ void HarmonicsAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
   case 14: wrappedHarmonics->setHarmonicGainFactor(10,  0.01*value);   break;
   case 15: wrappedHarmonics->setHarmonicGainFactor(11,  0.01*value);   break;
   case 16: wrappedHarmonics->setHarmonicGainFactor(12,  0.01*value);   break;
-  } 
+  }
 }
 
 void HarmonicsAudioModule::createStaticParameters()
@@ -290,23 +290,23 @@ void HarmonicsAudioModule::createStaticParameters()
   p->setValueChangeCallback(wrappedHarmonics, &Harmonics::setDrive);
 
   p = new AutomatableParameter(lock, juce::String(("DryWetRatio")), 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedHarmonics, &Harmonics::setDryWetRatio);
 
   p = new AutomatableParameter(lock, juce::String(("InputHighpass")), 20.0, 20000.0, 0.0, 20.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedHarmonics, &Harmonics::setInputHighpassCutoff);
 
   p = new AutomatableParameter(lock, juce::String(("InputLowpass")), 20.0, 20000.0, 0.0, 20000.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedHarmonics, &Harmonics::setInputLowpassCutoff);
 
   p = new AutomatableParameter(lock, juce::String(("OutputHighpass")), 20.0, 20000.0, 0.0, 20.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedHarmonics, &Harmonics::setOutputHighpassCutoff);
 
   p = new AutomatableParameter(lock, juce::String(("OutputLowpass")), 20.0, 20000.0, 0.0, 20000.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedHarmonics, &Harmonics::setOutputLowpassCutoff);
 
   // these parameters are still used with the old callback mechanism (because they invoke two-parametric functions) - we may do something
@@ -335,13 +335,13 @@ void HarmonicsAudioModule::createStaticParameters()
   addObservedParameter(p);
 
   for(int i=0; i < (int) parameters.size(); i++ )
-  {   
+  {
     parameterChanged(parameters[i]); // because some parameters use the old callback mechanism
     parameters[i]->resetToDefaultValue(true, true);
   }
 }
 
-HarmonicsModuleEditor::HarmonicsModuleEditor(CriticalSection *newPlugInLock, HarmonicsAudioModule* newHarmonicsAudioModule) 
+HarmonicsModuleEditor::HarmonicsModuleEditor(CriticalSection *newPlugInLock, HarmonicsAudioModule* newHarmonicsAudioModule)
 : AudioModuleEditor(newHarmonicsAudioModule)
 {
   ScopedLock scopedLock(*lock);
@@ -501,52 +501,52 @@ void HarmonicsModuleEditor::resized()
   w = globalRect.getWidth();
   h = globalRect.getHeight();
   globalLabel->setBounds(x+4, y+2, w-8, 16);
-  y = globalLabel->getBottom(); 
+  y = globalLabel->getBottom();
   driveSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   dryWetSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   inFilterLabel->setBounds(x+4, y+4, w-8, 16);
-  y += 16;  
+  y += 16;
   inHighpassSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   inLowpassSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   outFilterLabel->setBounds(x+4, y+4, w-8, 16);
-  y += 16;  
+  y += 16;
   outHighpassSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   outLowpassSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20; 
+  y += 20;
 
   x = harmonicsRect.getX();
   y = harmonicsRect.getY();
   w = harmonicsRect.getWidth();
   h = harmonicsRect.getHeight();
   harmonicsLabel->setBounds(x+4, y+2, w-8, 16);
-  y = harmonicsLabel->getBottom()-4; 
+  y = harmonicsLabel->getBottom()-4;
   h02Slider->setBounds(x+4, y+4, w-8, 16);
-  y += 14;  
+  y += 14;
   h03Slider->setBounds(x+4, y+4, w-8, 16);
-  y += 14;  
+  y += 14;
   h04Slider->setBounds(x+4, y+4, w-8, 16);
-  y += 14;  
+  y += 14;
   h05Slider->setBounds(x+4, y+4, w-8, 16);
-  y += 14;  
+  y += 14;
   h06Slider->setBounds(x+4, y+4, w-8, 16);
-  y += 14;  
+  y += 14;
   h07Slider->setBounds(x+4, y+4, w-8, 16);
-  y += 14;  
+  y += 14;
   h08Slider->setBounds(x+4, y+4, w-8, 16);
-  y += 14;  
+  y += 14;
   h09Slider->setBounds(x+4, y+4, w-8, 16);
-  y += 14;  
+  y += 14;
   h10Slider->setBounds(x+4, y+4, w-8, 16);
-  y += 14;  
+  y += 14;
   h11Slider->setBounds(x+4, y+4, w-8, 16);
-  y += 14;  
+  y += 14;
   h12Slider->setBounds(x+4, y+4, w-8, 16);
-  y += 14;  
+  y += 14;
 
 }
 
@@ -558,10 +558,10 @@ WaveShaperAudioModule::WaveShaperAudioModule(CriticalSection *newPlugInLock, ros
 {
   ScopedLock scopedLock(*lock);
 
-  jassert( newWaveShaperToWrap != NULL ); // you must pass a valid rosic-object 
+  jassert( newWaveShaperToWrap != NULL ); // you must pass a valid rosic-object
   wrappedWaveShaper = newWaveShaperToWrap;
   moduleName  = juce::String(("WaveShaper"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString 
+  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
     + juce::String(("WaveShaperPresets")) );
   createStaticParameters();
 }
@@ -585,38 +585,38 @@ void WaveShaperAudioModule::createStaticParameters()
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setTransferFunction);
 
   p = new AutomatableParameter(lock, "Drive", -24.0, 48.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setDrive);
 
   p = new AutomatableParameter(lock, "DC", -5.0, 5.0, 0.01, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setDcOffset);
 
   p = new AutomatableParameter(lock, "Amount", -200.0, 200.0, 1.0, 100.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setAmount);
 
   p = new AutomatableParameter(lock, "OutputLevel", -48.0, 6.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setOutputLevel);
 
   p = new AutomatableParameter(lock, "Oversampling", 1.0, 16.0, 1.0, 4.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setOversampling);
 
   p = new AutomatableParameter(lock, "InterceptY", -0.5, 0.5, 0.01, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setPenticInterceptY);
 
   p = new AutomatableParameter(lock, "Slope", -1.0, 3.0, 0.01, 1.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setPenticSlopeAtZero);
 
   for(int i=0; i < (int) parameters.size(); i++)
     parameters[i]->resetToDefaultValue(true, true);
 }
 
-WaveShaperModuleEditor::WaveShaperModuleEditor(CriticalSection *newPlugInLock, WaveShaperAudioModule* newWaveShaperAudioModule) 
+WaveShaperModuleEditor::WaveShaperModuleEditor(CriticalSection *newPlugInLock, WaveShaperAudioModule* newWaveShaperAudioModule)
 : AudioModuleEditor(newWaveShaperAudioModule)
 {
   ScopedLock scopedLock(*lock);
@@ -708,24 +708,24 @@ void WaveShaperModuleEditor::resized()
   int x = 0;
   int y = 0;
   int w = 2*getWidth()/5;
-  int h = getHeight();
+  //int h = getHeight();
   y = getPresetSectionBottom();
   curveComboBox->setBounds(x+4, y+4, w-8, 16);
-  y += 24; 
+  y += 24;
 
   driveSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 14;  
+  y += 14;
   dcSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 14;  
+  y += 14;
   amountSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 14;  
+  y += 14;
   outputLevelSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 24;  
+  y += 24;
 
   slopeSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 14;  
+  y += 14;
   interceptSlider->setBounds(x+4, y+4, w-8, 16);
-  //y += 28;  
+  //y += 28;
 
   y = getHeight() - 16 - 8;
   oversamplingSlider->setBounds(x+4, y, w-8, 16);
@@ -784,7 +784,7 @@ void WaveShaperModuleEditor::updatePlot()
     return;
   if( waveShaperModuleToEdit->wrappedWaveShaper == NULL )
     return;
-  rosic::WaveShaper* core = waveShaperModuleToEdit->wrappedWaveShaper;
+  //rosic::WaveShaper* core = waveShaperModuleToEdit->wrappedWaveShaper;
 
   double xMin  = plot->getCurrentRangeMinX();
   double xMax  = plot->getCurrentRangeMaxX();
@@ -804,10 +804,10 @@ CompShaperAudioModule::CompShaperAudioModule(CriticalSection *newPlugInLock, ros
  : AudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
-  jassert( newCompShaperToWrap != NULL ); // you must pass a valid rosic-object 
+  jassert( newCompShaperToWrap != NULL ); // you must pass a valid rosic-object
   wrappedCompShaper = newCompShaperToWrap;
   moduleName  = juce::String(("CompShaper"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString 
+  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
     + juce::String(("CompShaperPresets")) );
   createStaticParameters();
 }
@@ -819,15 +819,15 @@ void CompShaperAudioModule::createStaticParameters()
   AutomatableParameter* p;
 
   p = new AutomatableParameter(lock, "Threshold", -48.0, 12.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedCompShaper, &CompShaper::setThreshold);
 
   p = new AutomatableParameter(lock, "Ratio", 1.0, 40.0, 0.01, 1.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedCompShaper, &CompShaper::setRatio);
 
   p = new AutomatableParameter(lock, "KneeWidth", 0.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedCompShaper, &CompShaper::setKneeWidth);
 
   p = new AutomatableParameter(lock, "Clip", 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
@@ -838,7 +838,7 @@ void CompShaperAudioModule::createStaticParameters()
     parameters[i]->resetToDefaultValue(true, true);
 }
 
-CompShaperModuleEditor::CompShaperModuleEditor(CriticalSection *newPlugInLock, CompShaperAudioModule* newCompShaperAudioModule) 
+CompShaperModuleEditor::CompShaperModuleEditor(CriticalSection *newPlugInLock, CompShaperAudioModule* newCompShaperAudioModule)
 : AudioModuleEditor(newCompShaperAudioModule)
 {
   ScopedLock scopedLock(*lock);
@@ -917,7 +917,7 @@ void CompShaperModuleEditor::resized()
   otherParametersRect.setBounds(x, y, w, h3);
   guiLayoutRectangles.clear();
   guiLayoutRectangles.add(curveParametersRect);
-  guiLayoutRectangles.add(timeParametersRect); 
+  guiLayoutRectangles.add(timeParametersRect);
   guiLayoutRectangles.add(otherParametersRect);
 
   x = curveParametersRect.getX();
@@ -925,15 +925,15 @@ void CompShaperModuleEditor::resized()
   w = curveParametersRect.getWidth();
   h = curveParametersRect.getHeight();
   curveLabel->setBounds(x+4, y+2, w-8, 16);
-  y += 16; 
+  y += 16;
   thresholdSlider->setBounds(x+4, y+4, 2*w/3-8, 16);
-  y += 20;  
+  y += 20;
   ratioSlider->setBounds(x+4, y+4, 2*w/3-8, 16);
-  y -= 20;  
+  y -= 20;
   x = thresholdSlider->getRight();
   w = w-x;
   kneeSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   clipButton->setBounds(x+4+16, y+4, w-8-32, 16);
 
   /*
@@ -942,10 +942,10 @@ void CompShaperModuleEditor::resized()
   w = timeParametersRect.getWidth();
   h = timeParametersRect.getHeight();
   timeLabel->setBounds(x+4, y+2, w-8, 16);
-  y += 16; 
+  y += 16;
   attackSlider->setBounds(x+4, y+4, w/2-8, 16);
   releaseSlider->setBounds(x+w/2+4, y+4, w/2-8, 16);
-  y += 20; 
+  y += 20;
   x  = w/2 - w/4;
   lookAheadSlider->setBounds(x+4, y+4, w/2-8, 16);
   */
@@ -955,10 +955,10 @@ void CompShaperModuleEditor::resized()
   w = otherParametersRect.getWidth();
   h = otherParametersRect.getHeight();
   othersLabel->setBounds(x+4, y+2, w-8, 16);
-  y += 16; 
+  y += 16;
   driveSlider->setBounds(x+4, y+4, w/2-8, 16);
   outLevelSlider->setBounds(x+w/2+4, y+4, w/2-8, 16);
-  y += 20; 
+  y += 20;
   //amountSlider->setBounds(x+4, y+4, w/2-8, 16);
   //autoGainButton->setBounds(x+w/2+4+32, y+4, w/2-8-64, 16);
 }
@@ -974,10 +974,10 @@ CompressorAudioModule::CompressorAudioModule(CriticalSection *newPlugInLock, ros
 {
   ScopedLock scopedLock(*lock);
 
-  jassert( newCompressorToWrap != NULL ); // you must pass a valid rosic-object 
+  jassert( newCompressorToWrap != NULL ); // you must pass a valid rosic-object
   wrappedCompressor = newCompressorToWrap;
   moduleName  = juce::String(("Compressor"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString 
+  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
     + juce::String(("CompressorPresets")) );
   createStaticParameters();
 }
@@ -989,39 +989,39 @@ void CompressorAudioModule::createStaticParameters()
   AutomatableParameter* p;
 
   p = new AutomatableParameter(lock, ("Attack"), 1.0, 1000.0, 0.01, 10.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeCompressor>(wrappedCompressor, &SoftKneeCompressor::setAttackTime);
 
   p = new AutomatableParameter(lock, ("Release"), 10.0, 1000.0, 0.1, 100.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeCompressor>(wrappedCompressor, &SoftKneeCompressor::setReleaseTime);
 
   p = new AutomatableParameter(lock, ("LookAhead"), 0.0, 50.0, 0.01, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeCompressor>(wrappedCompressor, &SoftKneeCompressor::setLookAheadTime);
 
   p = new AutomatableParameter(lock, ("InLevel"), -24.0, 24.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeCompressor>(wrappedCompressor, &SoftKneeCompressor::setInputGain);
 
   p = new AutomatableParameter(lock, ("OutLevel"), -24.0, 48.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeCompressor>(wrappedCompressor, &SoftKneeCompressor::setOutputGain);
 
   p = new AutomatableParameter(lock, ("DryWetRatio"), 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeCompressor>(wrappedCompressor, &SoftKneeCompressor::setDryWetRatio);
 
   p = new AutomatableParameter(lock, ("Threshold"), -48.0, 12.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeCompressor>(wrappedCompressor, &SoftKneeCompressor::setThreshold);
 
   p = new AutomatableParameter(lock, ("Ratio"), 1.0, 40.0, 0.01, 1.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeCompressor>(wrappedCompressor, &SoftKneeCompressor::setRatio);
 
   p = new AutomatableParameter(lock, ("KneeWidth"), 0.0, 48.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeCompressor>(wrappedCompressor, &SoftKneeCompressor::setKneeWidth);
 
   p = new AutomatableParameter(lock, ("Limit"), 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
@@ -1044,7 +1044,7 @@ void CompressorAudioModule::createStaticParameters()
 //-------------------------------------------------------------------------------------------------
 // CompressorModuleEditor:
 
-CompressorModuleEditor::CompressorModuleEditor(CriticalSection *newPlugInLock, CompressorAudioModule* newCompressorAudioModule) 
+CompressorModuleEditor::CompressorModuleEditor(CriticalSection *newPlugInLock, CompressorAudioModule* newCompressorAudioModule)
 : AudioModuleEditor(newCompressorAudioModule)
 {
   ScopedLock scopedLock(*lock);
@@ -1161,7 +1161,7 @@ void CompressorModuleEditor::resized()
 
   guiLayoutRectangles.clear();
   guiLayoutRectangles.add(curveParametersRect);
-  guiLayoutRectangles.add(timeParametersRect); 
+  guiLayoutRectangles.add(timeParametersRect);
   guiLayoutRectangles.add(otherParametersRect);
 
   x = curveParametersRect.getX();
@@ -1169,13 +1169,13 @@ void CompressorModuleEditor::resized()
   w = curveParametersRect.getWidth();
   h = curveParametersRect.getHeight();
   curveLabel->setBounds(x+4, y+2, w-8, 16);
-  y += 20; 
+  y += 20;
   thresholdSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   ratioSlider->setBounds(    x+4, y+4, w-8, 16);
-  y += 28;  
+  y += 28;
   kneeSlider->setBounds(     x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   limitButton->setBounds(x+4+32, y+4, w-8-64, 16);
 
   x = timeParametersRect.getX();
@@ -1183,11 +1183,11 @@ void CompressorModuleEditor::resized()
   w = timeParametersRect.getWidth();
   h = timeParametersRect.getHeight();
   timeLabel->setBounds(      x+4, y+2, w-8, 16);
-  y += 20; 
+  y += 20;
   attackSlider->setBounds(   x+4, y+4, w-8, 16);
-  y += 20; 
+  y += 20;
   releaseSlider->setBounds(  x+4, y+4, w-8, 16);
-  y += 28; 
+  y += 28;
   lookAheadSlider->setBounds(x+4, y+4, w-8, 16);
 
   x = otherParametersRect.getX();
@@ -1195,10 +1195,10 @@ void CompressorModuleEditor::resized()
   w = otherParametersRect.getWidth();
   h = otherParametersRect.getHeight();
   othersLabel->setBounds(x+4, y+2, w-8, 16);
-  y += 16; 
+  y += 16;
   inLevelSlider->setBounds(x+4, y+4, w/2-8, 16);
   outLevelSlider->setBounds(x+w/2+4, y+4, w/2-8, 16);
-  y += 20; 
+  y += 20;
   dryWetSlider->setBounds(x+4, y+4, w/2-8, 16);
   autoGainButton->setBounds(x+w/2+4+32, y+4, w/2-8-64, 16);
   //antiAliasButton->setBounds(0, 0, 40, 16);
@@ -1212,10 +1212,10 @@ ExpanderAudioModule::ExpanderAudioModule(CriticalSection *newPlugInLock, rosic::
 {
   ScopedLock scopedLock(*lock);
 
-  jassert( newExpanderToWrap != NULL ); // you must pass a valid rosic-object 
+  jassert( newExpanderToWrap != NULL ); // you must pass a valid rosic-object
   wrappedExpander = newExpanderToWrap;
   moduleName  = juce::String(("Expander"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString 
+  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
     + juce::String(("ExpanderPresets")) );
   createStaticParameters();
 }
@@ -1227,39 +1227,39 @@ void ExpanderAudioModule::createStaticParameters()
   AutomatableParameter* p;
 
   p = new AutomatableParameter(lock, ("Attack"), 1.0, 1000.0, 0.01, 10.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeExpander>(wrappedExpander, &SoftKneeExpander::setAttackTime);
 
   p = new AutomatableParameter(lock, ("Release"), 10.0, 1000.0, 0.1, 100.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeExpander>(wrappedExpander, &SoftKneeExpander::setReleaseTime);
 
   p = new AutomatableParameter(lock, ("LookAhead"), 0.0, 50.0, 0.01, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeExpander>(wrappedExpander, &SoftKneeExpander::setLookAheadTime);
 
   p = new AutomatableParameter(lock, ("InLevel"), -24.0, 24.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeExpander>(wrappedExpander, &SoftKneeExpander::setInputGain);
 
   p = new AutomatableParameter(lock, ("OutLevel"), -24.0, 48.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeExpander>(wrappedExpander, &SoftKneeExpander::setOutputGain);
 
   p = new AutomatableParameter(lock, ("DryWetRatio"), 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeExpander>(wrappedExpander, &SoftKneeExpander::setDryWetRatio);
 
   p = new AutomatableParameter(lock, ("Threshold"), -48.0, 12.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeExpander>(wrappedExpander, &SoftKneeExpander::setThreshold);
 
   p = new AutomatableParameter(lock, ("Ratio"), 1.0, 40.0, 0.01, 1.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeExpander>(wrappedExpander, &SoftKneeExpander::setRatio);
 
   p = new AutomatableParameter(lock, ("KneeWidth"), 0.0, 48.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeExpander>(wrappedExpander, &SoftKneeExpander::setKneeWidth);
 
   //p = new Parameter("Gate", 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
@@ -1269,7 +1269,7 @@ void ExpanderAudioModule::createStaticParameters()
     parameters[i]->resetToDefaultValue(true, true);
 }
 
-ExpanderModuleEditor::ExpanderModuleEditor(CriticalSection *newPlugInLock, ExpanderAudioModule* newExpanderAudioModule) 
+ExpanderModuleEditor::ExpanderModuleEditor(CriticalSection *newPlugInLock, ExpanderAudioModule* newExpanderAudioModule)
 : AudioModuleEditor(newExpanderAudioModule)
 {
   ScopedLock scopedLock(*lock);
@@ -1374,7 +1374,7 @@ void ExpanderModuleEditor::resized()
 
   guiLayoutRectangles.clear();
   guiLayoutRectangles.add(curveParametersRect);
-  guiLayoutRectangles.add(timeParametersRect); 
+  guiLayoutRectangles.add(timeParametersRect);
   guiLayoutRectangles.add(otherParametersRect);
 
   x = curveParametersRect.getX();
@@ -1382,13 +1382,13 @@ void ExpanderModuleEditor::resized()
   w = curveParametersRect.getWidth();
   h = curveParametersRect.getHeight();
   curveLabel->setBounds(x+4, y+2, w-8, 16);
-  y += 20; 
+  y += 20;
   thresholdSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   ratioSlider->setBounds(    x+4, y+4, w-8, 16);
-  y += 28;  
+  y += 28;
   kneeSlider->setBounds(     x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   gateButton->setBounds(x+4+32, y+4, w-8-64, 16);
 
   x = timeParametersRect.getX();
@@ -1396,11 +1396,11 @@ void ExpanderModuleEditor::resized()
   w = timeParametersRect.getWidth();
   h = timeParametersRect.getHeight();
   timeLabel->setBounds(      x+4, y+2, w-8, 16);
-  y += 20; 
+  y += 20;
   attackSlider->setBounds(   x+4, y+4, w-8, 16);
-  y += 20; 
+  y += 20;
   releaseSlider->setBounds(  x+4, y+4, w-8, 16);
-  y += 28; 
+  y += 28;
   lookAheadSlider->setBounds(x+4, y+4, w-8, 16);
 
   x = otherParametersRect.getX();
@@ -1408,10 +1408,10 @@ void ExpanderModuleEditor::resized()
   w = otherParametersRect.getWidth();
   h = otherParametersRect.getHeight();
   othersLabel->setBounds(x+4, y+2, w-8, 16);
-  y += 16; 
+  y += 16;
   inLevelSlider->setBounds(x+4, y+4, w/2-8, 16);
   outLevelSlider->setBounds(x+w/2+4, y+4, w/2-8, 16);
-  y += 20; 
+  y += 20;
   dryWetSlider->setBounds(x+4, y+4, w/2-8, 16);
 }
 
@@ -1423,10 +1423,10 @@ LimiterAudioModule::LimiterAudioModule(CriticalSection *newPlugInLock, rosic::Li
 {
   ScopedLock scopedLock(*lock);
 
-  jassert( newLimiterToWrap != NULL ); // you must pass a valid rosic-object 
+  jassert( newLimiterToWrap != NULL ); // you must pass a valid rosic-object
   wrappedLimiter = newLimiterToWrap;
   moduleName  = juce::String(("Limiter"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString 
+  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
     + juce::String(("LimiterPresets")) );
   createStaticParameters();
 }
@@ -1438,38 +1438,38 @@ void LimiterAudioModule::createStaticParameters()
   AutomatableParameter* p;
 
   p = new AutomatableParameter(lock, ("Attack"), 0.0, 10.0, 0.01, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback<Limiter>(wrappedLimiter, &Limiter::setAttackTime);
 
   p = new AutomatableParameter(lock, ("Release"), 10.0, 1000.0, 0.1, 100.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback<Limiter>(wrappedLimiter, &Limiter::setReleaseTime);
 
   p = new AutomatableParameter(lock, ("LookAhead"), 0.0, 50.0, 0.01, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback<Limiter>(wrappedLimiter, &Limiter::setLookAheadTime);
 
   p = new AutomatableParameter(lock, ("InLevel"), -24.0, 24.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback<Limiter>(wrappedLimiter, &Limiter::setInputGain);
 
   p = new AutomatableParameter(lock, ("OutLevel"), -24.0, 48.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback<Limiter>(wrappedLimiter, &Limiter::setOutputGain);
 
   p = new AutomatableParameter(lock, ("DryWetRatio"), 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback<Limiter>(wrappedLimiter, &Limiter::setDryWetRatio);
 
   p = new AutomatableParameter(lock, ("Limit"), -48.0, 12.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback<Limiter>(wrappedLimiter, &Limiter::setLimit);
 
   for(int i=0; i < (int) parameters.size(); i++)
     parameters[i]->resetToDefaultValue(true, true);
 }
 
-LimiterModuleEditor::LimiterModuleEditor(CriticalSection *newPlugInLock, LimiterAudioModule* newLimiterAudioModule) 
+LimiterModuleEditor::LimiterModuleEditor(CriticalSection *newPlugInLock, LimiterAudioModule* newLimiterAudioModule)
 : AudioModuleEditor(newLimiterAudioModule)
 {
   ScopedLock scopedLock(*lock);
@@ -1555,7 +1555,7 @@ void LimiterModuleEditor::resized()
 
   guiLayoutRectangles.clear();
   guiLayoutRectangles.add(curveParametersRect);
-  guiLayoutRectangles.add(timeParametersRect); 
+  guiLayoutRectangles.add(timeParametersRect);
   guiLayoutRectangles.add(otherParametersRect);
 
   x = curveParametersRect.getX();
@@ -1563,7 +1563,7 @@ void LimiterModuleEditor::resized()
   w = curveParametersRect.getWidth();
   h = curveParametersRect.getHeight();
   curveLabel->setBounds(x+4, y+2, w-8, 16);
-  y += 20; 
+  y += 20;
   limitSlider->setBounds(x+4, y+4, w-8, 16);
 
   x = timeParametersRect.getX();
@@ -1571,11 +1571,11 @@ void LimiterModuleEditor::resized()
   w = timeParametersRect.getWidth();
   h = timeParametersRect.getHeight();
   timeLabel->setBounds(      x+4, y+2, w-8, 16);
-  y += 20; 
+  y += 20;
   attackSlider->setBounds(   x+4, y+4, w-8, 16);
-  y += 20; 
+  y += 20;
   releaseSlider->setBounds(  x+4, y+4, w-8, 16);
-  y += 28; 
+  y += 28;
   lookAheadSlider->setBounds(x+4, y+4, w-8, 16);
 
   x = otherParametersRect.getX();
@@ -1583,10 +1583,10 @@ void LimiterModuleEditor::resized()
   w = otherParametersRect.getWidth();
   h = otherParametersRect.getHeight();
   othersLabel->setBounds(x+4, y+2, w-8, 16);
-  y += 16; 
+  y += 16;
   inLevelSlider->setBounds(x+4, y+4, w/2-8, 16);
   outLevelSlider->setBounds(x+w/2+4, y+4, w/2-8, 16);
-  y += 20; 
+  y += 20;
   dryWetSlider->setBounds(x+4, y+4, w/2-8, 16);
 }
 
@@ -1598,10 +1598,10 @@ NoiseGateAudioModule::NoiseGateAudioModule(CriticalSection *newPlugInLock, rosic
 {
   ScopedLock scopedLock(*lock);
 
-  jassert( newNoiseGateToWrap != NULL ); // you must pass a valid rosic-object 
+  jassert( newNoiseGateToWrap != NULL ); // you must pass a valid rosic-object
   wrappedNoiseGate = newNoiseGateToWrap;
   moduleName  = juce::String(("NoiseGate"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString 
+  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
     + juce::String(("NoiseGatePresets")) );
   createStaticParameters();
 }
@@ -1613,31 +1613,31 @@ void NoiseGateAudioModule::createStaticParameters()
   AutomatableParameter* p;
 
   p = new AutomatableParameter(lock, ("Attack"), 0.1, 10.0, 0.01, 1.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback<NoiseGate>(wrappedNoiseGate, &NoiseGate::setAttackTime);
 
   p = new AutomatableParameter(lock, ("Hold"), 0.1, 100.0, 0.01, 10.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback<NoiseGate>(wrappedNoiseGate, &NoiseGate::setHoldTime);
 
   p = new AutomatableParameter(lock, ("Release"), 1.0, 1000.0, 1.0, 10.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback<NoiseGate>(wrappedNoiseGate, &NoiseGate::setReleaseTime);
 
   p = new AutomatableParameter(lock, ("LookAhead"), 0.0, 50.0, 0.01, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback<NoiseGate>(wrappedNoiseGate, &NoiseGate::setLookAheadTime);
 
   p = new AutomatableParameter(lock, ("InLevel"), -24.0, 24.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback<NoiseGate>(wrappedNoiseGate, &NoiseGate::setInputGain);
 
   p = new AutomatableParameter(lock, ("OutLevel"), -24.0, 48.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback<NoiseGate>(wrappedNoiseGate, &NoiseGate::setOutputGain);
 
   p = new AutomatableParameter(lock, ("DryWetRatio"), 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback<NoiseGate>(wrappedNoiseGate, &NoiseGate::setDryWetRatio);
 
   p = new AutomatableParameter(lock, ("Threshold"), -48.0, 12.0, 0.1, 0.0, Parameter::LINEAR);
@@ -1652,7 +1652,7 @@ void NoiseGateAudioModule::createStaticParameters()
     parameters[i]->resetToDefaultValue(true, true);
 }
 
-NoiseGateModuleEditor::NoiseGateModuleEditor(CriticalSection *newPlugInLock, NoiseGateAudioModule* newNoiseGateAudioModule) 
+NoiseGateModuleEditor::NoiseGateModuleEditor(CriticalSection *newPlugInLock, NoiseGateAudioModule* newNoiseGateAudioModule)
 : AudioModuleEditor(newNoiseGateAudioModule)
 {
   ScopedLock scopedLock(*lock);
@@ -1750,7 +1750,7 @@ void NoiseGateModuleEditor::resized()
 
   guiLayoutRectangles.clear();
   guiLayoutRectangles.add(curveParametersRect);
-  guiLayoutRectangles.add(timeParametersRect); 
+  guiLayoutRectangles.add(timeParametersRect);
   guiLayoutRectangles.add(otherParametersRect);
 
   x = curveParametersRect.getX();
@@ -1758,9 +1758,9 @@ void NoiseGateModuleEditor::resized()
   w = curveParametersRect.getWidth();
   h = curveParametersRect.getHeight();
   curveLabel->setBounds(x+4, y+2, w-8, 16);
-  y += 20; 
+  y += 20;
   thresholdSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   hysteresisSlider->setBounds(    x+4, y+4, w-8, 16);
 
   x = timeParametersRect.getX();
@@ -1768,13 +1768,13 @@ void NoiseGateModuleEditor::resized()
   w = timeParametersRect.getWidth();
   h = timeParametersRect.getHeight();
   timeLabel->setBounds(      x+4, y+2, w-8, 16);
-  y += 20; 
+  y += 20;
   attackSlider->setBounds(   x+4, y+4, w-8, 16);
-  y += 20; 
+  y += 20;
   holdSlider->setBounds(   x+4, y+4, w-8, 16);
-  y += 20; 
+  y += 20;
   releaseSlider->setBounds(  x+4, y+4, w-8, 16);
-  y += 28; 
+  y += 28;
   lookAheadSlider->setBounds(x+4, y+4, w-8, 16);
 
   x = otherParametersRect.getX();
@@ -1782,10 +1782,10 @@ void NoiseGateModuleEditor::resized()
   w = otherParametersRect.getWidth();
   h = otherParametersRect.getHeight();
   othersLabel->setBounds(x+4, y+2, w-8, 16);
-  y += 16; 
+  y += 16;
   inLevelSlider->setBounds(x+4, y+4, w/2-8, 16);
   outLevelSlider->setBounds(x+w/2+4, y+4, w/2-8, 16);
-  y += 20; 
+  y += 20;
   dryWetSlider->setBounds(x+4, y+4, w/2-8, 16);
 }
 
@@ -1800,10 +1800,10 @@ CombBankAudioModule::CombBankAudioModule(CriticalSection *newPlugInLock, rosic::
 {
   ScopedLock scopedLock(*lock);
 
-  jassert( newCombBankToWrap != NULL ); // you must pass a valid rosic-object 
+  jassert( newCombBankToWrap != NULL ); // you must pass a valid rosic-object
   wrappedCombBank = newCombBankToWrap;
   moduleName  = juce::String(("CombBank"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString 
+  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
     + juce::String(("CombBankPresets")) );
   createStaticParameters();
 }
@@ -1815,27 +1815,27 @@ void CombBankAudioModule::createStaticParameters()
   AutomatableParameter* p;
 
   p = new AutomatableParameter(lock, "DryWetRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombBank, &CombBank::setDryWetRatio);
 
   p = new AutomatableParameter(lock, "Level", -48.0, 6.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombBank, &CombBank::setLevel);
 
   p = new AutomatableParameter(lock, "Frequency", 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombBank, &CombBank::setReferenceFrequency);
 
   p = new AutomatableParameter(lock, "Detune", -1.0, 1.0, 0.0, 0.0, Parameter::LINEAR_BIPOLAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombBank, &CombBank::setDetune);
 
   p = new AutomatableParameter(lock, "Pan1", -1.0, 1.0, 0.0, 0.0, Parameter::LINEAR_BIPOLAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombBank, &CombBank::setPan1);
 
   p = new AutomatableParameter(lock, "Pan2", -1.0, 1.0, 0.0, 0.0, Parameter::LINEAR_BIPOLAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombBank, &CombBank::setPan2);
 
   p = new AutomatableParameter(lock, "OddOnly", 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
@@ -1843,30 +1843,30 @@ void CombBankAudioModule::createStaticParameters()
   p->setValueChangeCallback(wrappedCombBank, &CombBank::setOddOnlyMode);
 
   p = new AutomatableParameter(lock, "DecayTime", 0.1, 10.0, 0.1, 3.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombBank, &CombBank::setDecayTime);
 
   p = new AutomatableParameter(lock, "HighDecayScale", 0.1, 10.0, 0.01, 0.3, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombBank, &CombBank::setHighDecayScale);
 
   p = new AutomatableParameter(lock, "LowDecayScale", 0.1, 10.0, 0.01, 1.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombBank, &CombBank::setLowDecayScale);
 
   p = new AutomatableParameter(lock, "HighCrossoverFrequency", 20.0, 20000.0, 0.0, 4000.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombBank, &CombBank::setHighCrossoverFreq);
 
   p = new AutomatableParameter(lock, "LowCrossoverFrequency", 20.0, 20000.0, 0.0, 250.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombBank, &CombBank::setLowCrossoverFreq);
 
   for(int i=0; i < (int) parameters.size(); i++)
     parameters[i]->resetToDefaultValue(true, true);
 }
 
-CombBankModuleEditor::CombBankModuleEditor(CriticalSection *newPlugInLock, CombBankAudioModule* newCombBankAudioModule) 
+CombBankModuleEditor::CombBankModuleEditor(CriticalSection *newPlugInLock, CombBankAudioModule* newCombBankAudioModule)
 : AudioModuleEditor(newCombBankAudioModule)
 {
   ScopedLock scopedLock(*lock);
@@ -1988,22 +1988,22 @@ void CombBankModuleEditor::resized()
   decayParametersRect.setBounds(x+w/2, y, w/2, h);
   guiLayoutRectangles.clear();
   guiLayoutRectangles.add(toneParametersRect);
-  guiLayoutRectangles.add(decayParametersRect); 
+  guiLayoutRectangles.add(decayParametersRect);
 
   x = toneParametersRect.getX();
   y = toneParametersRect.getY();
   w = toneParametersRect.getWidth();
   h = toneParametersRect.getHeight();
   toneLabel->setBounds(x+4, y+2, w-8, 16);
-  y += 20; 
+  y += 20;
   frequencySlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   detuneSlider->setBounds(    x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   pan1Slider->setBounds(     x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   pan2Slider->setBounds(     x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   oddOnlyButton->setBounds(x+4+32, y+4, w-8-64, 16);
 
   x = decayParametersRect.getX();
@@ -2011,15 +2011,15 @@ void CombBankModuleEditor::resized()
   w = decayParametersRect.getWidth();
   h = decayParametersRect.getHeight();
   decayLabel->setBounds(x+4, y+2, w-8, 16);
-  y += 20; 
+  y += 20;
   decayTimeSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 28;  
+  y += 28;
   highDecayScaleSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   lowDecayScaleSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 28;  
+  y += 28;
   highFreqSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   lowFreqSlider->setBounds(x+4, y+4, w-8, 16);
 }
 
@@ -2031,10 +2031,10 @@ CombResonatorAudioModule::CombResonatorAudioModule(CriticalSection *newPlugInLoc
 {
   ScopedLock scopedLock(*lock);
 
-  jassert( newCombResonatorToWrap != NULL ); // you must pass a valid rosic-object 
+  jassert( newCombResonatorToWrap != NULL ); // you must pass a valid rosic-object
   wrappedCombResonator = newCombResonatorToWrap;
   moduleName  = juce::String(("CombResonator"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString 
+  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
     + juce::String(("CombResonatorPresets")) );
   createStaticParameters();
 }
@@ -2046,27 +2046,27 @@ void CombResonatorAudioModule::createStaticParameters()
   AutomatableParameter* p;
 
   p = new AutomatableParameter(lock, "DryWetRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombResonator, &CombResonatorStereo::setDryWetRatio);
 
   p = new AutomatableParameter(lock, "Level", -48.0, 6.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombResonator, &CombResonatorStereo::setLevel);
 
   p = new AutomatableParameter(lock, "Frequency", 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombResonator, &CombResonatorStereo::setFrequency);
 
   p = new AutomatableParameter(lock, "Detune", -1.0, 1.0, 0.0, 0.0, Parameter::LINEAR_BIPOLAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombResonator, &CombResonatorStereo::setDetune);
 
   p = new AutomatableParameter(lock, "Pan1", -1.0, 1.0, 0.0, 0.0, Parameter::LINEAR_BIPOLAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombResonator, &CombResonatorStereo::setPan1);
 
   p = new AutomatableParameter(lock, "Pan2", -1.0, 1.0, 0.0, 0.0, Parameter::LINEAR_BIPOLAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombResonator, &CombResonatorStereo::setPan2);
 
   p = new AutomatableParameter(lock, "OddOnly", 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
@@ -2074,30 +2074,30 @@ void CombResonatorAudioModule::createStaticParameters()
   p->setValueChangeCallback(wrappedCombResonator, &CombResonatorStereo::setOddOnlyMode);
 
   p = new AutomatableParameter(lock, "DecayTime", 0.1, 10.0, 0.1, 3.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombResonator, &CombResonatorStereo::setDecayTime);
 
   p = new AutomatableParameter(lock, "HighDecayScale", 0.1, 10.0, 0.01, 0.3, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombResonator, &CombResonatorStereo::setHighDecayScale);
 
   p = new AutomatableParameter(lock, "LowDecayScale", 0.1, 10.0, 0.01, 1.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombResonator, &CombResonatorStereo::setLowDecayScale);
 
   p = new AutomatableParameter(lock, "HighCrossoverFrequency", 20.0, 20000.0, 0.0, 4000.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombResonator, &CombResonatorStereo::setHighCrossoverFreq);
 
   p = new AutomatableParameter(lock, "LowCrossoverFrequency", 20.0, 20000.0, 0.0, 250.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombResonator, &CombResonatorStereo::setLowCrossoverFreq);
 
   for(int i=0; i < (int) parameters.size(); i++)
     parameters[i]->resetToDefaultValue(true, true);
 }
 
-CombResonatorModuleEditor::CombResonatorModuleEditor(CriticalSection *newPlugInLock, CombResonatorAudioModule* newCombResonatorAudioModule) 
+CombResonatorModuleEditor::CombResonatorModuleEditor(CriticalSection *newPlugInLock, CombResonatorAudioModule* newCombResonatorAudioModule)
 : AudioModuleEditor(newCombResonatorAudioModule)
 {
   ScopedLock scopedLock(*lock);
@@ -2219,22 +2219,22 @@ void CombResonatorModuleEditor::resized()
   decayParametersRect.setBounds(x+w/2, y, w/2, h);
   guiLayoutRectangles.clear();
   guiLayoutRectangles.add(toneParametersRect);
-  guiLayoutRectangles.add(decayParametersRect); 
+  guiLayoutRectangles.add(decayParametersRect);
 
   x = toneParametersRect.getX();
   y = toneParametersRect.getY();
   w = toneParametersRect.getWidth();
   h = toneParametersRect.getHeight();
   toneLabel->setBounds(x+4, y+2, w-8, 16);
-  y += 20; 
+  y += 20;
   frequencySlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   detuneSlider->setBounds(    x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   pan1Slider->setBounds(     x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   pan2Slider->setBounds(     x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   oddOnlyButton->setBounds(x+4+32, y+4, w-8-64, 16);
 
   x = decayParametersRect.getX();
@@ -2242,31 +2242,31 @@ void CombResonatorModuleEditor::resized()
   w = decayParametersRect.getWidth();
   h = decayParametersRect.getHeight();
   decayLabel->setBounds(x+4, y+2, w-8, 16);
-  y += 20; 
+  y += 20;
   decayTimeSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 28;  
+  y += 28;
   highDecayScaleSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   lowDecayScaleSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 28;  
+  y += 28;
   highFreqSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   lowFreqSlider->setBounds(x+4, y+4, w-8, 16);
 }
 
 //-------------------------------------------------------------------------------------------------
 // DualTwoPoleFilter:
 
-DualTwoPoleFilterAudioModule::DualTwoPoleFilterAudioModule(CriticalSection *newPlugInLock, 
+DualTwoPoleFilterAudioModule::DualTwoPoleFilterAudioModule(CriticalSection *newPlugInLock,
                                                            rosic::DualTwoPoleFilter *newDualTwoPoleFilterToWrap)
                                                             : AudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
 
-  jassert( newDualTwoPoleFilterToWrap != NULL ); // you must pass a valid rosic-object 
+  jassert( newDualTwoPoleFilterToWrap != NULL ); // you must pass a valid rosic-object
   wrappedDualTwoPoleFilter = newDualTwoPoleFilterToWrap;
   moduleName  = juce::String(("DualTwoPoleFilter"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString 
+  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
     + juce::String(("DualTwoPoleFilterPresets")) );
   createStaticParameters();
 }
@@ -2282,15 +2282,15 @@ void DualTwoPoleFilterAudioModule::createStaticParameters()
   p->setValueChangeCallback(wrappedDualTwoPoleFilter, &DualTwoPoleFilter::setMode1);
 
   p = new AutomatableParameter(lock, "Frequency1", 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedDualTwoPoleFilter, &DualTwoPoleFilter::setFrequency1);
 
   p = new AutomatableParameter(lock, "Gain1", -48, 48.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedDualTwoPoleFilter, &DualTwoPoleFilter::setGain1);
 
   p = new AutomatableParameter(lock, "Bandwidth1", 0.2, 6.0, 0.01, 1.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedDualTwoPoleFilter, &DualTwoPoleFilter::setBandwidth1);
 
   p = new ParameterTwoPoleFilterMode(lock, juce::String(("Mode2")));
@@ -2298,39 +2298,39 @@ void DualTwoPoleFilterAudioModule::createStaticParameters()
   p->setValueChangeCallback(wrappedDualTwoPoleFilter, &DualTwoPoleFilter::setMode2);
 
   p = new AutomatableParameter(lock, "Frequency2", 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedDualTwoPoleFilter, &DualTwoPoleFilter::setFrequency2);
 
   p = new AutomatableParameter(lock, "Gain2", -48, 48.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedDualTwoPoleFilter, &DualTwoPoleFilter::setGain2);
 
   p = new AutomatableParameter(lock, "Bandwidth2", 0.2, 6.0, 0.01, 1.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedDualTwoPoleFilter, &DualTwoPoleFilter::setBandwidth2);
 
   p = new AutomatableParameter(lock, "SerialParallelBlend", 0.0, 1.0, 0.01, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedDualTwoPoleFilter, &DualTwoPoleFilter::setSerialParallelBlend);
 
   p = new AutomatableParameter(lock, "FrequencyScale", 0.125, 8.0, 0.001, 1.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedDualTwoPoleFilter, &DualTwoPoleFilter::setFrequencyScale);
 
   p = new AutomatableParameter(lock, "GainScale", 0.125, 8.0, 0.001, 1.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedDualTwoPoleFilter, &DualTwoPoleFilter::setGainScale);
 
   p = new AutomatableParameter(lock, "BandwidthScale", 0.125, 8.0, 0.001, 1.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedDualTwoPoleFilter, &DualTwoPoleFilter::setBandwidthScale);
 
   for(int i=0; i < (int) parameters.size(); i++)
     parameters[i]->resetToDefaultValue(true, true);
 }
 
-DualTwoPoleFilterModuleEditor::DualTwoPoleFilterModuleEditor(CriticalSection *newPlugInLock, 
-                                                             DualTwoPoleFilterAudioModule* newDualTwoPoleFilterAudioModule) 
+DualTwoPoleFilterModuleEditor::DualTwoPoleFilterModuleEditor(CriticalSection *newPlugInLock,
+                                                             DualTwoPoleFilterAudioModule* newDualTwoPoleFilterAudioModule)
 : AudioModuleEditor(newDualTwoPoleFilterAudioModule)
 {
   ScopedLock scopedLock(*lock);
@@ -2474,11 +2474,11 @@ void DualTwoPoleFilterModuleEditor::resized()
   filter1Label->setBounds(x+4, y+2, w-8, 16);
   y = filter1Label->getBottom();
   modeComboBox1->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   frequencySlider1->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   gainSlider1->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   bandwidthSlider1->setBounds(x+4, y+4, w-8, 16);
 
   x = filter2Rect.getX();
@@ -2488,11 +2488,11 @@ void DualTwoPoleFilterModuleEditor::resized()
   filter2Label->setBounds(x+4, y+2, w-8, 16);
   y = filter2Label->getBottom();
   modeComboBox2->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   frequencySlider2->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   gainSlider2->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   bandwidthSlider2->setBounds(x+4, y+4, w-8, 16);
 }
 
@@ -2529,10 +2529,10 @@ FourPoleFilterAudioModule::FourPoleFilterAudioModule(CriticalSection *newPlugInL
 {
   ScopedLock scopedLock(*lock);
 
-  jassert( newFourPoleFilterToWrap != NULL ); // you must pass a valid rosic-object 
+  jassert( newFourPoleFilterToWrap != NULL ); // you must pass a valid rosic-object
   wrappedFourPoleFilter = newFourPoleFilterToWrap;
   moduleName  = juce::String(("FourPoleFilter"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString 
+  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
     + juce::String(("FourPoleFilterPresets")) );
   createStaticParameters();
 }
@@ -2548,24 +2548,24 @@ void FourPoleFilterAudioModule::createStaticParameters()
   p->setValueChangeCallback(wrappedFourPoleFilter, &FourPoleFilter::setMode);
 
   p = new AutomatableParameter(lock, "Frequency", 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedFourPoleFilter, &FourPoleFilter::setFrequency);
 
   p = new AutomatableParameter(lock, "Gain", -48, 48.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedFourPoleFilter, &FourPoleFilter::setGain);
 
   // not yet used:
   //p = new AutomatableParameter(lock, "Bandwidth", 0.2, 6.0, 0.01, 1.0, Parameter::EXPONENTIAL);
-  //addObservedParameter(p); 
+  //addObservedParameter(p);
   //p->setValueChangeCallback(wrappedFourPoleFilter, &FourPoleFilter::setBandwidth);
 
   for(int i=0; i < (int) parameters.size(); i++)
     parameters[i]->resetToDefaultValue(true, true);
 }
 
-FourPoleFilterModuleEditor::FourPoleFilterModuleEditor(CriticalSection *newPlugInLock, 
-                                                       FourPoleFilterAudioModule* newFourPoleFilterAudioModule) 
+FourPoleFilterModuleEditor::FourPoleFilterModuleEditor(CriticalSection *newPlugInLock,
+                                                       FourPoleFilterAudioModule* newFourPoleFilterAudioModule)
 : AudioModuleEditor(newFourPoleFilterAudioModule)
 {
   ScopedLock scopedLock(*lock);
@@ -2610,14 +2610,14 @@ void FourPoleFilterModuleEditor::resized()
   int x = 0;
   int y = 0;
   int w = getWidth();
-  int h = getHeight();
+  //int h = getHeight();
   y = getPresetSectionBottom();
   modeComboBox->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   frequencySlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   gainSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   bandwidthSlider->setBounds(x+4, y+4, w-8, 16);
 }
 
@@ -2635,7 +2635,7 @@ void FourPoleFilterModuleEditor::updateWidgetEnablement()
     return;
   if( fourPoleFilterModuleToEdit->wrappedFourPoleFilter == NULL )
     return;
-  rosic::FourPoleFilter* core = fourPoleFilterModuleToEdit->wrappedFourPoleFilter;
+  //rosic::FourPoleFilter* core = fourPoleFilterModuleToEdit->wrappedFourPoleFilter;
 
   //frequencySlider->setEnabled(core->doesModeSupportFrequency());
   //gainSlider->setEnabled(     core->doesModeSupportGain());
@@ -2650,10 +2650,10 @@ LadderFilterAudioModule::LadderFilterAudioModule(CriticalSection *newPlugInLock,
 {
   ScopedLock scopedLock(*lock);
 
-  jassert( newLadderFilterToWrap != NULL ); // you must pass a valid rosic-object 
+  jassert( newLadderFilterToWrap != NULL ); // you must pass a valid rosic-object
   wrappedLadderFilter = newLadderFilterToWrap;
   moduleName  = juce::String(("LadderFilter"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString 
+  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
     + juce::String(("LadderFilterPresets")) );
   createStaticParameters();
 }
@@ -2677,41 +2677,41 @@ void LadderFilterAudioModule::createStaticParameters()
   p->setValueChangeCallback(wrappedLadderFilter, &rosic::LadderFilter::setMode);
 
   p = new AutomatableParameter(lock, juce::String(("Frequency")), 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedLadderFilter, &rosic::LadderFilter::setCutoff);
 
   p = new AutomatableParameter(lock, juce::String(("Resonance")), 0.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedLadderFilter, &rosic::LadderFilter::setResonanceInPercent);
 
   p = new AutomatableParameter(lock, juce::String(("MakeUp")), 0.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedLadderFilter, &rosic::LadderFilter::setMakeUp);
 
   p = new AutomatableParameter(lock, juce::String(("Drive")), -24.0, 48.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedLadderFilter, &rosic::LadderFilter::setDrive);
 
   p = new AutomatableParameter(lock, juce::String(("Order")), 0.0, 4.0, 1.0, 4.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedLadderFilter, &rosic::LadderFilter::setOutputStage);
 
   p = new AutomatableParameter(lock, juce::String(("Morph")), 0.0, 1.0, 0.01, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedLadderFilter, &rosic::LadderFilter::setMorph);
 
   /*
   p = new Parameter("Gain", -48, 48.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p = new Parameter("Bandwidth", 0.2, 6.0, 0.01, 1.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   */
 
   for(int i=0; i < (int) parameters.size(); i++)
     parameters[i]->resetToDefaultValue(true, true);
 }
 
-LadderFilterModuleEditor::LadderFilterModuleEditor(CriticalSection *newPlugInLock, LadderFilterAudioModule* newLadderFilterAudioModule) 
+LadderFilterModuleEditor::LadderFilterModuleEditor(CriticalSection *newPlugInLock, LadderFilterAudioModule* newLadderFilterAudioModule)
 : AudioModuleEditor(newLadderFilterAudioModule)
 {
   ScopedLock scopedLock(*lock);
@@ -2782,20 +2782,20 @@ void LadderFilterModuleEditor::resized()
   int x = 0;
   int y = 0;
   int w = getWidth();
-  int h = getHeight();
+  //int h = getHeight();
   y = getPresetSectionBottom();
   modeComboBox->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   frequencySlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   resonanceSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   makeUpSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   driveSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   orderSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   morphSlider->setBounds(x+4, y+4, w-8, 16);
 }
 
@@ -2812,7 +2812,7 @@ void LadderFilterModuleEditor::updateWidgetEnablement()
     return;
   if( ladderFilterModuleToEdit->wrappedLadderFilter == NULL )
     return;
-  rosic::LadderFilter* core = ladderFilterModuleToEdit->wrappedLadderFilter;
+  //rosic::LadderFilter* core = ladderFilterModuleToEdit->wrappedLadderFilter;
 
 
   //frequencySlider->setEnabled(core->doesModeSupportFrequency());
@@ -2827,7 +2827,7 @@ SlopeFilterAudioModule::SlopeFilterAudioModule(CriticalSection *newPlugInLock, r
  : AudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
-  jassert( newSlopeFilterToWrap != NULL ); // you must pass a valid rosic-object 
+  jassert( newSlopeFilterToWrap != NULL ); // you must pass a valid rosic-object
   wrappedSlopeFilter = newSlopeFilterToWrap;
   moduleName  = juce::String(("SlopeFilter"));
   setActiveDirectory(getApplicationDirectory() + juce::File::separatorString + juce::String(("SlopeFilterPresets")) );
@@ -2842,13 +2842,13 @@ void SlopeFilterAudioModule::createStaticParameters()
 
   p = new AutomatableParameter(lock, "Slope", -12.0, 12.0, 0.01, 0.0, Parameter::LINEAR);
   p->setValueChangeCallback(wrappedSlopeFilter, &SlopeFilter::setSlope);
-  addObservedParameter(p); 
+  addObservedParameter(p);
 
   for(int i=0; i < (int) parameters.size(); i++)
     parameters[i]->resetToDefaultValue(true, true);
 }
 
-SlopeFilterModuleEditor::SlopeFilterModuleEditor(CriticalSection *newPlugInLock, SlopeFilterAudioModule* newSlopeFilterAudioModule) 
+SlopeFilterModuleEditor::SlopeFilterModuleEditor(CriticalSection *newPlugInLock, SlopeFilterAudioModule* newSlopeFilterAudioModule)
 : AudioModuleEditor(newSlopeFilterAudioModule)
 {
   ScopedLock scopedLock(*lock);
@@ -2873,8 +2873,8 @@ void SlopeFilterModuleEditor::resized()
   int x = 0;
   int y = 0;
   int w = getWidth();
-  int h = getHeight();
-  y = getPresetSectionBottom(); 
+  //int h = getHeight();
+  y = getPresetSectionBottom();
   slopeSlider->setBounds(x+4, y+4, w-8, 16);
 }
 
@@ -2886,10 +2886,10 @@ TwoPoleFilterAudioModule::TwoPoleFilterAudioModule(CriticalSection *newPlugInLoc
 {
   ScopedLock scopedLock(*lock);
 
-  jassert( newTwoPoleFilterToWrap != NULL ); // you must pass a valid rosic-object 
+  jassert( newTwoPoleFilterToWrap != NULL ); // you must pass a valid rosic-object
   wrappedTwoPoleFilter = newTwoPoleFilterToWrap;
   moduleName  = juce::String(("TwoPoleFilter"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString 
+  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
     + juce::String(("TwoPoleFilterPresets")) );
   createStaticParameters();
 }
@@ -2905,26 +2905,26 @@ void TwoPoleFilterAudioModule::createStaticParameters()
   p->setValueChangeCallback(wrappedTwoPoleFilter, &TwoPoleFilter::setMode);
 
   p = new AutomatableParameter(lock, "Frequency", 2.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedTwoPoleFilter, &TwoPoleFilter::setFrequency);
 
   p = new AutomatableParameter(lock, "Gain", -48, 48.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedTwoPoleFilter, &TwoPoleFilter::setGain);
 
   p = new AutomatableParameter(lock, "Bandwidth", 0.2, 6.0, 0.01, 1.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedTwoPoleFilter, &TwoPoleFilter::setBandwidth);
 
   p = new AutomatableParameter(lock, "Radius", -4.0, 4.0, 0.00001, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedTwoPoleFilter, &TwoPoleFilter::setRadius);
 
   for(int i=0; i < (int) parameters.size(); i++)
     parameters[i]->resetToDefaultValue(true, true);
 }
 
-TwoPoleFilterModuleEditor::TwoPoleFilterModuleEditor(CriticalSection *newPlugInLock, TwoPoleFilterAudioModule* newTwoPoleFilterAudioModule) 
+TwoPoleFilterModuleEditor::TwoPoleFilterModuleEditor(CriticalSection *newPlugInLock, TwoPoleFilterAudioModule* newTwoPoleFilterAudioModule)
 : AudioModuleEditor(newTwoPoleFilterAudioModule)
 {
   ScopedLock scopedLock(*lock);
@@ -2975,14 +2975,14 @@ void TwoPoleFilterModuleEditor::resized()
   int x = 0;
   int y = 0;
   int w = getWidth();
-  int h = getHeight();
+  //int h = getHeight();
   y = getPresetSectionBottom();
   modeComboBox->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   frequencySlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   gainSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   bandwidthSlider->setBounds(x+4, y+4, w-8, 16);
   radiusSlider->setBounds(x+4, y+4, w-8, 16);
 }
@@ -3023,10 +3023,10 @@ PingPongEchoAudioModule::PingPongEchoAudioModule(CriticalSection *newPlugInLock,
 {
   ScopedLock scopedLock(*lock);
 
-  jassert( newPingPongEchoToWrap != NULL ); // you must pass a valid rosic-object 
+  jassert( newPingPongEchoToWrap != NULL ); // you must pass a valid rosic-object
   wrappedPingPongEcho = newPingPongEchoToWrap;
   moduleName  = juce::String(("PingPongEcho"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString 
+  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
     + juce::String(("PingPongEchoPresets")) );
   createStaticParameters();
 }
@@ -3038,27 +3038,27 @@ void PingPongEchoAudioModule::createStaticParameters()
   AutomatableParameter* p;
 
   p = new AutomatableParameter(lock, "DelayTime", 0.125, 1.0, 0.0125, 0.5, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedPingPongEcho, &PingPongEcho::setDelayTime);
 
   p = new AutomatableParameter(lock, "DryWetRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedPingPongEcho, &PingPongEcho::setDryWetRatio);
 
   p = new AutomatableParameter(lock, "Feedback", -100.0, 100.0, 0.1, 50.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedPingPongEcho, &PingPongEcho::setFeedbackInPercent);
 
   p = new AutomatableParameter(lock, "Pan", -1.0, 1.0, 0.01, -0.4, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedPingPongEcho, &PingPongEcho::setPan);
 
   p = new AutomatableParameter(lock, "HighDamp", 20.0, 20000.0, 0.0, 4000.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedPingPongEcho, &PingPongEcho::setHighDamp);
 
   p = new AutomatableParameter(lock, "LowDamp", 20.0, 20000.0, 0.0, 250.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedPingPongEcho, &PingPongEcho::setLowDamp);
 
   p = new AutomatableParameter(lock, "PingPong", 0.0, 1.0, 1.0, 1.0, Parameter::BOOLEAN);
@@ -3081,7 +3081,7 @@ void PingPongEchoAudioModule::createStaticParameters()
     parameters[i]->resetToDefaultValue(true, true);
 }
 
-PingPongEchoModuleEditor::PingPongEchoModuleEditor(CriticalSection *newPlugInLock, PingPongEchoAudioModule* newPingPongEchoAudioModule) 
+PingPongEchoModuleEditor::PingPongEchoModuleEditor(CriticalSection *newPlugInLock, PingPongEchoAudioModule* newPingPongEchoAudioModule)
 : AudioModuleEditor(newPingPongEchoAudioModule)
 {
   ScopedLock scopedLock(*lock);
@@ -3167,21 +3167,21 @@ void PingPongEchoModuleEditor::resized()
   int x = 0;
   int y = 0;
   int w = getWidth()/2;
-  int h = getHeight();
+  //int h = getHeight();
   y = getPresetSectionBottom();
   delayTimeSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   feedbackSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   lowDampSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   highDampSlider->setBounds(x+4, y+4, w-8, 16);
 
   y = getPresetSectionBottom();
   dryWetSlider->setBounds(x+w+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   panSlider->setBounds(x+w+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   pingPongButton->setBounds(x+w+4, y+4, 64, 16);
   x = pingPongButton->getRight();
   trueStereoButton->setBounds(x+4, y+4, 72, 16);
@@ -3195,10 +3195,10 @@ ReverbAudioModule::ReverbAudioModule(CriticalSection *newPlugInLock, rosic::rsRe
 {
   ScopedLock scopedLock(*lock);
 
-  jassert( newReverbToWrap != NULL ); // you must pass a valid rosic-object 
+  jassert( newReverbToWrap != NULL ); // you must pass a valid rosic-object
   wrappedReverb = newReverbToWrap;
   moduleName  = juce::String(("Reverb"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString 
+  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
     + juce::String(("ReverbPresets")) );
   createStaticParameters();
 }
@@ -3210,35 +3210,35 @@ void ReverbAudioModule::createStaticParameters()
   AutomatableParameter* p;
 
   p = new AutomatableParameter(lock, "DryWetRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedReverb, &rosic::rsReverb::setDryWetRatio);
 
   p = new AutomatableParameter(lock, "FirstEcho", 10.0, 200.0, 0.1, 50.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedReverb, &rosic::rsReverb::setReferenceDelayTime);
 
   p = new AutomatableParameter(lock, "PreDelay", 0.0, 250.0, 1.0, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedReverb, &rosic::rsReverb::setPreDelay);
 
   p = new AutomatableParameter(lock, "DecayTime", 0.1, 10.0, 0.01, 3.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedReverb, &rosic::rsReverb::setMidReverbTime);
 
   p = new AutomatableParameter(lock, "HighDecayScale", 0.1, 10.0, 0.01, 0.3, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedReverb, &rosic::rsReverb::setHighReverbTimeScale);
 
   p = new AutomatableParameter(lock, "LowDecayScale", 0.1, 10.0, 0.01, 1.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedReverb, &rosic::rsReverb::setLowReverbTimeScale);
 
   p = new AutomatableParameter(lock, "HighCrossoverFrequency", 20.0, 20000.0, 0.0, 4000.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedReverb, &rosic::rsReverb::setHighCrossoverFreq);
 
   p = new AutomatableParameter(lock, "LowCrossoverFrequency", 20.0, 20000.0, 0.0, 250.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedReverb, &rosic::rsReverb::setLowCrossoverFreq);
 
   p = new AutomatableParameter(lock, "Pinking", 0.0, 1.0, 1.0, 1.0, Parameter::BOOLEAN);
@@ -3253,7 +3253,7 @@ void ReverbAudioModule::createStaticParameters()
     parameters[i]->resetToDefaultValue(true, true);
 }
 
-ReverbModuleEditor::ReverbModuleEditor(CriticalSection *newPlugInLock, ReverbAudioModule* newReverbAudioModule) 
+ReverbModuleEditor::ReverbModuleEditor(CriticalSection *newPlugInLock, ReverbAudioModule* newReverbAudioModule)
 : AudioModuleEditor(newReverbAudioModule)
 {
   ScopedLock scopedLock(*lock);
@@ -3335,31 +3335,31 @@ void ReverbModuleEditor::resized()
   int x = 0;
   int y = 0;
   int w = getWidth()/2;
-  int h = getHeight();
+  //int h = getHeight();
   y = getPresetSectionBottom();
 
   dryWetSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   firstEchoSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   preDelaySlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   decayTimeSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   highDecayScaleSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   lowDecayScaleSlider->setBounds(x+4, y+4, w-8, 16);
 
   y  = getPresetSectionBottom();
   x += w;
   pinkButton->setBounds(      x+4,     y+4, w/2-8, 16);
   stereoSwapButton->setBounds(x+w/2+4, y+4, w/2-8, 16);
-  y += 20;  
+  y += 20;
 
-  y += 20;  
-  y += 20;  
+  y += 20;
+  y += 20;
   highFreqSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   lowFreqSlider->setBounds(x+4, y+4, w-8, 16);
 }
 
@@ -3371,10 +3371,10 @@ SimpleDelayAudioModule::SimpleDelayAudioModule(CriticalSection *newPlugInLock, r
 {
   ScopedLock scopedLock(*lock);
 
-  jassert( newSimpleDelayToWrap != NULL ); // you must pass a valid rosic-object 
+  jassert( newSimpleDelayToWrap != NULL ); // you must pass a valid rosic-object
   wrappedSimpleDelay = newSimpleDelayToWrap;
   moduleName  = juce::String(("SimpleDelay"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString 
+  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
     + juce::String(("SimpleDelayPresets")) );
   createStaticParameters();
 }
@@ -3386,14 +3386,14 @@ void SimpleDelayAudioModule::createStaticParameters()
   AutomatableParameter* p;
 
   p = new AutomatableParameter(lock, "DelayTime", 0.0, 200.0, 0.01, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedSimpleDelay, &FractionalDelayLineStereo::setDelayTimeInMilliseconds);
 
   for(int i=0; i < (int) parameters.size(); i++)
     parameters[i]->resetToDefaultValue(true, true);
 }
 
-SimpleDelayModuleEditor::SimpleDelayModuleEditor(CriticalSection *newPlugInLock, SimpleDelayAudioModule* newSimpleDelayAudioModule) 
+SimpleDelayModuleEditor::SimpleDelayModuleEditor(CriticalSection *newPlugInLock, SimpleDelayAudioModule* newSimpleDelayAudioModule)
 : AudioModuleEditor(newSimpleDelayAudioModule)
 {
   ScopedLock scopedLock(*lock);
@@ -3417,7 +3417,7 @@ void SimpleDelayModuleEditor::resized()
   int x = 0;
   int y = 0;
   int w = getWidth();
-  int h = getHeight();
+  //int h = getHeight();
   y = getPresetSectionBottom();
   delaySlider->setBounds(x+4, y+4, w-8, 16);
 }
@@ -3428,24 +3428,24 @@ void SimpleDelayModuleEditor::resized()
 //-------------------------------------------------------------------------------------------------
 // ModulationEffect baseclass:
 
-ModulationEffectAudioModule::ModulationEffectAudioModule(CriticalSection *newPlugInLock, 
+ModulationEffectAudioModule::ModulationEffectAudioModule(CriticalSection *newPlugInLock,
                                                          rosic::ModulationEffect *newModulationEffectToWrap)
                                                           : AudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
 
-  jassert( newModulationEffectToWrap != NULL ); // you must pass a valid rosic-object 
+  jassert( newModulationEffectToWrap != NULL ); // you must pass a valid rosic-object
   wrappedModulationEffect = newModulationEffectToWrap;
   moduleName  = juce::String(("ModulationEffect"));
-  setActiveDirectory(getApplicationDirectory() 
+  setActiveDirectory(getApplicationDirectory()
     + juce::File::separatorString + juce::String(("ModulationEffectPresets")) );
   lfoModule = new LowFrequencyOscillatorAudioModule(newPlugInLock, &wrappedModulationEffect->lfo);
   lfoModule->setModuleName(juce::String(("LowFrequencyOscillator")));
   addChildAudioModule(lfoModule);
 }
 
-ModulationEffectModuleEditor::ModulationEffectModuleEditor(CriticalSection *newPlugInLock, 
-                                                           ModulationEffectAudioModule* newModulationEffectAudioModule) 
+ModulationEffectModuleEditor::ModulationEffectModuleEditor(CriticalSection *newPlugInLock,
+                                                           ModulationEffectAudioModule* newModulationEffectAudioModule)
 : AudioModuleEditor(newModulationEffectAudioModule)
 {
   ScopedLock scopedLock(*lock);
@@ -3519,10 +3519,10 @@ FlangerAudioModule::FlangerAudioModule(CriticalSection *newPlugInLock, rosic::Fl
 {
   ScopedLock scopedLock(*lock);
 
-  jassert( newFlangerToWrap != NULL ); // you must pass a valid rosic-object 
+  jassert( newFlangerToWrap != NULL ); // you must pass a valid rosic-object
   wrappedFlanger = newFlangerToWrap;
   moduleName  = juce::String(("Flanger"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString 
+  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
     + juce::String(("FlangerPresets")) );
   createStaticParameters();
 }
@@ -3538,19 +3538,19 @@ void FlangerAudioModule::createStaticParameters()
   p->setScaling(Parameter::EXPONENTIAL);
 
   p = new AutomatableParameter(lock, "Depth", 0.0, 48.0, 0.1, 12.0, Parameter::LINEAR);  // #04
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedFlanger, &Flanger::setDepth);
 
   p = new AutomatableParameter(lock, "DryWetRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedFlanger, &Flanger::setDryWetRatio);
 
   p = new AutomatableParameter(lock, "Frequency", 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedFlanger, &Flanger::setFrequency);
 
   p = new AutomatableParameter(lock, "Feedback", -99.0, 99.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedFlanger, &Flanger::setFeedbackInPercent);
 
   p = new AutomatableParameter(lock, "Invert", 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
@@ -3561,7 +3561,7 @@ void FlangerAudioModule::createStaticParameters()
     parameters[i]->resetToDefaultValue(true, true);
 }
 
-FlangerModuleEditor::FlangerModuleEditor(CriticalSection *newPlugInLock, FlangerAudioModule* newFlangerAudioModule) 
+FlangerModuleEditor::FlangerModuleEditor(CriticalSection *newPlugInLock, FlangerAudioModule* newFlangerAudioModule)
 : ModulationEffectModuleEditor(newPlugInLock, newFlangerAudioModule)
 {
   ScopedLock scopedLock(*lock);
@@ -3620,7 +3620,7 @@ void FlangerModuleEditor::resized()
   invertButton->setBounds(x+w-64, y+4,   60, 16);
   y += 28;
   frequencySlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   feedbackSlider->setBounds(x+4, y+4, w-8, 16);
 }
 
@@ -3632,10 +3632,10 @@ PhaserAudioModule::PhaserAudioModule(CriticalSection *newPlugInLock, rosic::Phas
 {
   ScopedLock scopedLock(*lock);
 
-  jassert( newPhaserToWrap != NULL ); // you must pass a valid rosic-object 
+  jassert( newPhaserToWrap != NULL ); // you must pass a valid rosic-object
   wrappedPhaser = newPhaserToWrap;
   moduleName  = juce::String(("Phaser"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString 
+  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
     + juce::String(("PhaserPresets")) );
   createStaticParameters();
 }
@@ -3652,11 +3652,11 @@ void PhaserAudioModule::createStaticParameters()
   p->setScaling(Parameter::EXPONENTIAL);
 
   p = new AutomatableParameter(lock, "Depth", 0.0, 48.0, 0.1, 12.0, Parameter::LINEAR);  // #04
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedPhaser, &Phaser::setDepth);
 
   p = new AutomatableParameter(lock, "DryWetRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedPhaser, &Phaser::setDryWetRatio);
 
   p = new AutomatableParameter(lock, juce::String(("FilterMode")), 0.0, 1.0, 1.0, 0.0, Parameter::STRING);
@@ -3668,19 +3668,19 @@ void PhaserAudioModule::createStaticParameters()
   p->setValueChangeCallback(wrappedPhaser, &Phaser::setFilterMode);
 
   p = new AutomatableParameter(lock, "Frequency", 2.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedPhaser, &Phaser::setFrequency);
 
   p = new AutomatableParameter(lock, "Q", 0.1, 10.0, 0.01, 1.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedPhaser, &Phaser::setQ);
 
   p = new AutomatableParameter(lock, "Feedback", -99.0, 99.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedPhaser, &Phaser::setFeedbackInPercent);
 
   p = new AutomatableParameter(lock, "NumStages", 1.0, 24.0, 1.0, 4.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedPhaser, &Phaser::setNumStages);
 
   //p = new AutomatableParameter(lock, "Activated", 0.0, 1.0, 1.0, 1.0, Parameter::BOOLEAN);
@@ -3691,7 +3691,7 @@ void PhaserAudioModule::createStaticParameters()
     parameters[i]->resetToDefaultValue(true, true);
 }
 
-PhaserModuleEditor::PhaserModuleEditor(CriticalSection *newPlugInLock, PhaserAudioModule* newPhaserAudioModule) 
+PhaserModuleEditor::PhaserModuleEditor(CriticalSection *newPlugInLock, PhaserAudioModule* newPhaserAudioModule)
 : ModulationEffectModuleEditor(newPlugInLock, newPhaserAudioModule)
 {
   ScopedLock scopedLock(*lock);
@@ -3763,18 +3763,18 @@ void PhaserModuleEditor::resized()
   depthSlider->setBounds(x+4, y+4, w-8, 16);
   y += 14;
   dryWetSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 14;  
+  y += 14;
   feedbackSlider->setBounds(x+4, y+4, w-8, 16);
   y += 24;
 
   filterLabel->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   modeComboBox->setBounds(x+4, y+4, w-8, 16);
-  y += 14;  
+  y += 14;
   stagesSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 14; 
+  y += 14;
   frequencySlider->setBounds(x+4, y+4, w-8, 16);
-  y += 14;  
+  y += 14;
   qSlider->setBounds(x+4, y+4, w-8, 16);
 }
 
@@ -3804,10 +3804,10 @@ TremoloAudioModule::TremoloAudioModule(CriticalSection *newPlugInLock, rosic::Tr
 {
   ScopedLock scopedLock(*lock);
 
-  jassert( newTremoloToWrap != NULL ); // you must pass a valid rosic-object 
+  jassert( newTremoloToWrap != NULL ); // you must pass a valid rosic-object
   wrappedTremolo = newTremoloToWrap;
   moduleName  = juce::String(("Tremolo"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString 
+  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
     + juce::String(("TremoloPresets")) );
   createStaticParameters();
 }
@@ -3822,14 +3822,14 @@ void TremoloAudioModule::createStaticParameters()
   p->setUpperAutomationLimit(4.0);
 
   p = new AutomatableParameter(lock, "Depth", 0.0, 100.0, 1.0, 50.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback<Tremolo>(wrappedTremolo, &Tremolo::setDepthInPercent);
 
   for(int i=0; i < (int) parameters.size(); i++)
     parameters[i]->resetToDefaultValue(true, true);
 }
 
-TremoloModuleEditor::TremoloModuleEditor(CriticalSection *newPlugInLock, TremoloAudioModule* newTremoloAudioModule) 
+TremoloModuleEditor::TremoloModuleEditor(CriticalSection *newPlugInLock, TremoloAudioModule* newTremoloAudioModule)
 : ModulationEffectModuleEditor(newPlugInLock, newTremoloAudioModule)
 {
   ScopedLock scopedLock(*lock);
@@ -3866,10 +3866,10 @@ VibratoAudioModule::VibratoAudioModule(CriticalSection *newPlugInLock, rosic::Vi
 {
   ScopedLock scopedLock(*lock);
 
-  jassert( newVibratoToWrap != NULL ); // you must pass a valid rosic-object 
+  jassert( newVibratoToWrap != NULL ); // you must pass a valid rosic-object
   wrappedVibrato = newVibratoToWrap;
   moduleName  = juce::String(("Vibrato"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString 
+  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
     + juce::String(("VibratoPresets")) );
   createStaticParameters();
 }
@@ -3881,18 +3881,18 @@ void VibratoAudioModule::createStaticParameters()
   AutomatableParameter* p;
 
   p = new AutomatableParameter(lock, "Depth", 0.0, 2.0, 0.01, 0.5, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback<Vibrato>(wrappedVibrato, &Vibrato::setDepthInPercent);
 
   p = new AutomatableParameter(lock, "DryWet", 0.0, 1.0, 0.01, 100.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback<Vibrato>(wrappedVibrato, &Vibrato::setDryWetRatio);
 
   for(int i=0; i < (int) parameters.size(); i++)
     parameters[i]->resetToDefaultValue(true, true);
 }
 
-VibratoModuleEditor::VibratoModuleEditor(CriticalSection *newPlugInLock, VibratoAudioModule* newVibratoAudioModule) 
+VibratoModuleEditor::VibratoModuleEditor(CriticalSection *newPlugInLock, VibratoAudioModule* newVibratoAudioModule)
 : ModulationEffectModuleEditor(newPlugInLock, newVibratoAudioModule)
 {
   ScopedLock scopedLock(*lock);
@@ -3937,10 +3937,10 @@ WahWahAudioModule::WahWahAudioModule(CriticalSection *newPlugInLock, rosic::WahW
 {
   ScopedLock scopedLock(*lock);
 
-  jassert( newWahWahToWrap != NULL ); // you must pass a valid rosic-object 
+  jassert( newWahWahToWrap != NULL ); // you must pass a valid rosic-object
   wrappedWahWah = newWahWahToWrap;
   moduleName  = juce::String(("WahWah"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString 
+  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
     + juce::String(("WahWahPresets")) );
   createStaticParameters();
 }
@@ -3957,11 +3957,11 @@ void WahWahAudioModule::createStaticParameters()
   p->setScaling(Parameter::EXPONENTIAL);
 
   p = new AutomatableParameter(lock, "Depth", 0.0, 48.0, 0.1, 12.0, Parameter::LINEAR);  // #04
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedWahWah, &WahWah::setDepth);
 
   p = new AutomatableParameter(lock, "DryWetRatio", 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedWahWah, &WahWah::setDryWetRatio);
 
   p = new ParameterTwoPoleFilterMode(lock);
@@ -3970,22 +3970,22 @@ void WahWahAudioModule::createStaticParameters()
   p->setValueChangeCallback(wrappedWahWah, &WahWah::setFilterMode);
 
   p = new AutomatableParameter(lock, "Frequency", 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedWahWah, &WahWah::setFrequency);
 
   p = new AutomatableParameter(lock, "Gain", -48, 48.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedWahWah, &WahWah::setGain);
 
   p = new AutomatableParameter(lock, "Bandwidth", 0.25, 2.0, 0.01, 1.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedWahWah, &WahWah::setBandwidth);
 
   for(int i=0; i < (int) parameters.size(); i++)
     parameters[i]->resetToDefaultValue(true, true);
 }
 
-WahWahModuleEditor::WahWahModuleEditor(CriticalSection *newPlugInLock, WahWahAudioModule* newWahWahAudioModule) 
+WahWahModuleEditor::WahWahModuleEditor(CriticalSection *newPlugInLock, WahWahAudioModule* newWahWahAudioModule)
 : ModulationEffectModuleEditor(newPlugInLock, newWahWahAudioModule)
 {
   ScopedLock scopedLock(*lock);
@@ -4052,13 +4052,13 @@ void WahWahModuleEditor::resized()
   dryWetSlider->setBounds(x+4, y+4, w-8, 16);
   y += 28;
   filterLabel->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   modeComboBox->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   frequencySlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   gainSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   bandwidthSlider->setBounds(x+4, y+4, w-8, 16);
 }
 
@@ -4096,10 +4096,10 @@ FormantShifterAudioModule::FormantShifterAudioModule(CriticalSection *newPlugInL
 {
   ScopedLock scopedLock(*lock);
 
-  jassert( newFormantShifterToWrap != NULL ); // you must pass a valid rosic-object 
+  jassert( newFormantShifterToWrap != NULL ); // you must pass a valid rosic-object
   wrappedFormantShifter = newFormantShifterToWrap;
   moduleName  = juce::String(("FormantShifter"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString 
+  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
     + juce::String(("FormantShifterPresets")) );
   createStaticParameters();
 }
@@ -4111,19 +4111,19 @@ void FormantShifterAudioModule::createStaticParameters()
   AutomatableParameter* p;
 
   //p = new AutomatableParameter(lock, ("BlockSize"), 32.0, 8192.0, 0.0, 2048.0, Parameter::EXPONENTIAL);
-  //addObservedParameter(p); 
+  //addObservedParameter(p);
   //p->setValueChangeCallback(wrappedFormantShifter, &FormantShifterStereo::setBlockSize);
 
   p = new AutomatableParameter(lock, ("FormantScale"), 0.25, 4.0, 0.01, 1.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedFormantShifter, &FormantShifterStereo::setFormantScale);
 
   p = new AutomatableParameter(lock, ("FormantOffset"), -200.0, 200.0, 1.0, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedFormantShifter, &FormantShifterStereo::setFormantOffset);
 
   p = new AutomatableParameter(lock, ("DryWetRatio"), 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedFormantShifter, &FormantShifterStereo::setDryWetRatio);
 
   //p = new AutomatableParameter(lock, ("Mono"), 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
@@ -4134,8 +4134,8 @@ void FormantShifterAudioModule::createStaticParameters()
     parameters[i]->resetToDefaultValue(true, true);
 }
 
-FormantShifterModuleEditor::FormantShifterModuleEditor(CriticalSection *newPlugInLock, 
-                                                       FormantShifterAudioModule* newFormantShifterAudioModule) 
+FormantShifterModuleEditor::FormantShifterModuleEditor(CriticalSection *newPlugInLock,
+                                                       FormantShifterAudioModule* newFormantShifterAudioModule)
 : AudioModuleEditor(newFormantShifterAudioModule)
 {
   ScopedLock scopedLock(*lock);
@@ -4180,16 +4180,16 @@ void FormantShifterModuleEditor::resized()
   int x = 0;
   int y = getPresetSectionBottom();
   int w = getWidth();
-  int h = getHeight();
+  //int h = getHeight();
 
   formantScaleSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   formantOffsetSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   dryWetSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   //antiAliasButton->setBounds(x+4, y+4, 60, 16);
-  //y += 20;  
+  //y += 20;
 }
 
 //=================================================================================================
@@ -4203,10 +4203,10 @@ ChorusAudioModule::ChorusAudioModule(CriticalSection *newPlugInLock, rosic::Chor
 {
   ScopedLock scopedLock(*lock);
 
-  jassert( newChorusToWrap != NULL ); // you must pass a valid rosic-object 
+  jassert( newChorusToWrap != NULL ); // you must pass a valid rosic-object
   wrappedChorus = newChorusToWrap;
   moduleName  = juce::String(("Chorus"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString 
+  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
     + juce::String(("ChorusPresets")) );
   createStaticParameters();
 }
@@ -4250,7 +4250,7 @@ void ChorusAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
   case  21: wrappedChorus->setVoiceDepthScale(3,         0.01*value);  break;
   case  22: wrappedChorus->setVoiceAmpScale(  3,         0.01*value);  break;
   case  23: wrappedChorus->activateVoice(     3,      value >= 0.5f);  break;
-  } 
+  }
 }
 
 void ChorusAudioModule::createStaticParameters()
@@ -4262,66 +4262,66 @@ void ChorusAudioModule::createStaticParameters()
   // ...here we either need a callback with two parameters, or we must stick to the old callback mechansim - for now, we'll do the latter
 
   p = new AutomatableParameter(lock, "Delay", 10.0, 50.0, 1.0, 20.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p = new AutomatableParameter(lock, "CycleLength", 0.5, 8.0, 0.25, 4.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p = new AutomatableParameter(lock, "Depth", 0.0, 2.0, 0.01, 0.25, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p = new AutomatableParameter(lock, "StereoPhase", 0.0, 180.0, 1.0, 90.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p = new AutomatableParameter(lock, "GlobalFeedback", -99.0, 99.0, 1.0, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p = new AutomatableParameter(lock, "CrossMix", -100.0, 100.0, 1.0, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p = new AutomatableParameter(lock, "FeedbackPostCrossMix", -99.0, 99.0, 1.0, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p = new AutomatableParameter(lock, "DryWetRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
 
   p = new AutomatableParameter(lock, "DelayScaleVoice1", 1.0, 100.0, 1.0, 100.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p = new AutomatableParameter(lock, "DepthScaleVoice1", -100.0, 100.0, 1.0, 100.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p = new AutomatableParameter(lock, "AmpScaleVoice1", -100.0, 100.0, 1.0, 100.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p = new AutomatableParameter(lock, "OnOffVoice1", 0.0, 1.0, 1.0, 1.0, Parameter::BOOLEAN);
   addObservedParameter(p);
 
   p = new AutomatableParameter(lock, "DelayScaleVoice2", 1.0, 100.0, 1.0, 83.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p = new AutomatableParameter(lock, "DepthScaleVoice2", -100.0, 100.0, 1.0, 100.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p = new AutomatableParameter(lock, "AmpScaleVoice2", -100.0, 100.0, 1.0, 100.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p = new AutomatableParameter(lock, "OnOffVoice2", 0.0, 1.0, 1.0, 1.0, Parameter::BOOLEAN);
   addObservedParameter(p);
 
   p = new AutomatableParameter(lock, "DelayScaleVoice3", 1.0, 100.0, 1.0, 69.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p = new AutomatableParameter(lock, "DepthScaleVoice3", -100.0, 100.0, 1.0, 100.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p = new AutomatableParameter(lock, "AmpScaleVoice3", -100.0, 100.0, 1.0, 100.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p = new AutomatableParameter(lock, "OnOffVoice3", 0.0, 1.0, 1.0, 1.0, Parameter::BOOLEAN);
   addObservedParameter(p);
 
   p = new AutomatableParameter(lock, "DelayScaleVoice4", 1.0, 100.0, 1.0, 58.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p = new AutomatableParameter(lock, "DepthScaleVoice4", -100.0, 100.0, 1.0, 100.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p = new AutomatableParameter(lock, "AmpScaleVoice4", -100.0, 100.0, 1.0, 100.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p = new AutomatableParameter(lock, "OnOffVoice4", 0.0, 1.0, 1.0, 1.0, Parameter::BOOLEAN);
   addObservedParameter(p);
 
   for(int i=0; i < (int) parameters.size(); i++ )
-  {   
+  {
     parameterChanged(parameters[i]); // because some parameters use the old callback mechanism
     parameters[i]->resetToDefaultValue(true, true);
   }
 }
 
-ChorusModuleEditor::ChorusModuleEditor(CriticalSection *newPlugInLock, ChorusAudioModule* newChorusAudioModule) 
+ChorusModuleEditor::ChorusModuleEditor(CriticalSection *newPlugInLock, ChorusAudioModule* newChorusAudioModule)
 : AudioModuleEditor(newChorusAudioModule)
 {
   ScopedLock scopedLock(*lock);
@@ -4524,7 +4524,7 @@ void ChorusModuleEditor::resized()
   guiLayoutRectangles.add(voice4Rect);
 
   x = globalRect.getX();
-  y = globalRect.getY(); 
+  y = globalRect.getY();
   w = globalRect.getWidth();
   h = globalRect.getHeight();
   globalLabel->setBounds(x+4, y+4, w-8, 16);
@@ -4534,21 +4534,21 @@ void ChorusModuleEditor::resized()
   delaySlider->setBounds(x+4, y+4, w-8, 16);
   y += 20;
   cycleLengthSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   depthSlider->setBounds(x+4, y+4, w-8, 16);
-  //y += 20;  
+  //y += 20;
   //globalFeedbackSlider->setBounds(x+4, y+4, w-8, 16);
-  //y += 20;  
+  //y += 20;
   //crossMixSlider->setBounds(x+4, y+4, w-8, 16);
-  //y += 20;  
+  //y += 20;
   //feedback2Slider->setBounds(x+4, y+4, w-8, 16);
-  //y += 20;  
+  //y += 20;
   //stereoPhaseSlider->setBounds(x+4, y+4, w-8, 16);
-  //y += 20;  
+  //y += 20;
 
 
   x = voice1Rect.getX();
-  y = voice1Rect.getY(); 
+  y = voice1Rect.getY();
   w = voice1Rect.getWidth();
   h = voice1Rect.getHeight();
   voice1Button->setBounds(x+12, y+4, w-24, 16);
@@ -4560,7 +4560,7 @@ void ChorusModuleEditor::resized()
   voice1AmpSlider->setBounds(x+4, y+4, w-8, 16);
 
   x = voice2Rect.getX();
-  y = voice2Rect.getY(); 
+  y = voice2Rect.getY();
   w = voice2Rect.getWidth();
   h = voice2Rect.getHeight();
   voice2Button->setBounds(x+12, y+4, w-24, 16);
@@ -4572,7 +4572,7 @@ void ChorusModuleEditor::resized()
   voice2AmpSlider->setBounds(x+4, y+4, w-8, 16);
 
   x = voice3Rect.getX();
-  y = voice3Rect.getY(); 
+  y = voice3Rect.getY();
   w = voice3Rect.getWidth();
   h = voice3Rect.getHeight();
   voice3Button->setBounds(x+12, y+4, w-24, 16);
@@ -4584,7 +4584,7 @@ void ChorusModuleEditor::resized()
   voice3AmpSlider->setBounds(x+4, y+4, w-8, 16);
 
   x = voice4Rect.getX();
-  y = voice4Rect.getY(); 
+  y = voice4Rect.getY();
   w = voice4Rect.getWidth();
   h = voice4Rect.getHeight();
   voice4Button->setBounds(x+12, y+4, w-24, 16);
@@ -4599,16 +4599,16 @@ void ChorusModuleEditor::resized()
 //-------------------------------------------------------------------------------------------------
 // FrequencyShifter:
 
-FrequencyShifterAudioModule::FrequencyShifterAudioModule(CriticalSection *newPlugInLock, 
+FrequencyShifterAudioModule::FrequencyShifterAudioModule(CriticalSection *newPlugInLock,
                                                          rosic::FrequencyShifterStereo *newFrequencyShifterToWrap)
                                                           : AudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
 
-  jassert( newFrequencyShifterToWrap != NULL ); // you must pass a valid rosic-object 
+  jassert( newFrequencyShifterToWrap != NULL ); // you must pass a valid rosic-object
   wrappedFrequencyShifter = newFrequencyShifterToWrap;
   moduleName  = juce::String(("FrequencyShifter"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString 
+  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
     + juce::String(("FrequencyShifterPresets")) );
   createStaticParameters();
 }
@@ -4620,28 +4620,28 @@ void FrequencyShifterAudioModule::createStaticParameters()
   AutomatableParameter* p;
 
   p = new AutomatableParameter(lock, "FrequencyShift", -200.0, 200.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedFrequencyShifter, &FrequencyShifterStereo::setFrequencyShift);
 
   p = new AutomatableParameter(lock, "Feedback", -99.0, 99.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedFrequencyShifter, &FrequencyShifterStereo::setFeedbackInPercent);
 
   p = new AutomatableParameter(lock, "StereoOffset", -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedFrequencyShifter, &FrequencyShifterStereo::setStereoOffset);
 
   //p = new AutomatableParameter(lock, "DryWetRatio", 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
-  //addObservedParameter(p); 
+  //addObservedParameter(p);
   //p = new AutomatableParameter(lock, "MidSideRatio", 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
-  //addObservedParameter(p); 
+  //addObservedParameter(p);
 
   for(int i=0; i < (int) parameters.size(); i++)
     parameters[i]->resetToDefaultValue(true, true);
 }
 
-FrequencyShifterModuleEditor::FrequencyShifterModuleEditor(CriticalSection *newPlugInLock, 
-                                                           FrequencyShifterAudioModule* newFrequencyShifterAudioModule) 
+FrequencyShifterModuleEditor::FrequencyShifterModuleEditor(CriticalSection *newPlugInLock,
+                                                           FrequencyShifterAudioModule* newFrequencyShifterAudioModule)
 : AudioModuleEditor(newFrequencyShifterAudioModule)
 {
   ScopedLock scopedLock(*lock);
@@ -4693,14 +4693,14 @@ void FrequencyShifterModuleEditor::resized()
   int x = 0;
   int y = getPresetSectionBottom();
   int w = getWidth();
-  int h = getHeight();
+  //int h = getHeight();
 
   shiftSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   feedbackSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   stereoOffsetSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -4711,10 +4711,10 @@ PhaseStereoizerAudioModule::PhaseStereoizerAudioModule(CriticalSection *newPlugI
 {
   ScopedLock scopedLock(*lock);
 
-  jassert( newPhaseStereoizerToWrap != NULL ); // you must pass a valid rosic-object 
+  jassert( newPhaseStereoizerToWrap != NULL ); // you must pass a valid rosic-object
   wrappedPhaseStereoizer = newPhaseStereoizerToWrap;
   moduleName  = juce::String(("PhaseStereoizer"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString 
+  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
     + juce::String(("PhaseStereoizerPresets")) );
   createStaticParameters();
 }
@@ -4726,35 +4726,35 @@ void PhaseStereoizerAudioModule::createStaticParameters()
   AutomatableParameter* p;
 
   p = new AutomatableParameter(lock, "StereoPhaseOffset", 0.0, 180.0, 1.0, 90.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedPhaseStereoizer, &PhaseStereoizer::setPhaseOffset);
 
   p = new AutomatableParameter(lock, "DryWetRatio", 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedPhaseStereoizer, &PhaseStereoizer::setDryWetRatio);
 
   p = new AutomatableParameter(lock, "MidSideRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedPhaseStereoizer, &PhaseStereoizer::setMidSideRatio);
 
   //p = new AutomatableParameter(lock, "Gain", -6.0, 24.0, 0.1, 0.0, Parameter::LINEAR);
-  //addObservedParameter(p); 
+  //addObservedParameter(p);
   //p->setValueChangeCallback(wrappedPhaseStereoizer, &PhaseStereoizer::setGain);
 
   p = new AutomatableParameter(lock, "Lowpass", 20.0, 20000.0, 0.0, 20000.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedPhaseStereoizer, &PhaseStereoizer::setLowpassCutoff);
 
   p = new AutomatableParameter(lock, "Highpass", 20.0, 20000.0, 0.0, 20.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedPhaseStereoizer, &PhaseStereoizer::setHighpassCutoff);
 
   for(int i=0; i < (int) parameters.size(); i++)
     parameters[i]->resetToDefaultValue(true, true);
 }
 
-PhaseStereoizerModuleEditor::PhaseStereoizerModuleEditor(CriticalSection *newPlugInLock, 
-                                                         PhaseStereoizerAudioModule* newPhaseStereoizerAudioModule) 
+PhaseStereoizerModuleEditor::PhaseStereoizerModuleEditor(CriticalSection *newPlugInLock,
+                                                         PhaseStereoizerAudioModule* newPhaseStereoizerAudioModule)
 : AudioModuleEditor(newPhaseStereoizerAudioModule)
 {
   ScopedLock scopedLock(*lock);
@@ -4812,20 +4812,20 @@ void PhaseStereoizerModuleEditor::resized()
   int x = 0;
   int y = 0;
   int w = getWidth()/2;
-  int h = getHeight();
+  //int h = getHeight();
   y = getPresetSectionBottom();
 
   phaseOffsetSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20; 
+  y += 20;
   midSideRatioSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20; 
+  y += 20;
   dryWetRatioSlider->setBounds(x+4, y+4, w-8, 16);
 
 
   x += w;
   y  = getPresetSectionBottom();
   sideHighpassSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   sideLowpassSlider->setBounds(x+4, y+4, w-8, 16);
   //gainSlider->setBounds(x+4, y+4, w-8, 16);
 }
@@ -4838,10 +4838,10 @@ RingModulatorAudioModule::RingModulatorAudioModule(CriticalSection *newPlugInLoc
 {
   ScopedLock scopedLock(*lock);
 
-  jassert( newRingModulatorToWrap != NULL ); // you must pass a valid rosic-object 
+  jassert( newRingModulatorToWrap != NULL ); // you must pass a valid rosic-object
   wrappedRingModulator = newRingModulatorToWrap;
   moduleName  = juce::String(("RingModulator"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString 
+  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
     + juce::String(("RingModulatorPresets")) );
   createStaticParameters();
 }
@@ -4853,19 +4853,19 @@ void RingModulatorAudioModule::createStaticParameters()
   AutomatableParameter* p;
 
   p = new AutomatableParameter(lock, ("Frequency"), 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedRingModulator, &RingModulatorStereo::setModulatorFrequency);
 
   p = new AutomatableParameter(lock, ("Feedback"), -99.0, 99.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedRingModulator, &RingModulatorStereo::setFeedbackInPercent);
 
   p = new AutomatableParameter(lock, ("StereoOffset"), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedRingModulator, &RingModulatorStereo::setStereoOffset);
 
   p = new AutomatableParameter(lock, ("DryWetRatio"), 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedRingModulator, &RingModulatorStereo::setDryWetRatio);
 
   p = new AutomatableParameter(lock, ("AntiAlias"), 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
@@ -4876,7 +4876,7 @@ void RingModulatorAudioModule::createStaticParameters()
     parameters[i]->resetToDefaultValue(true, true);
 }
 
-RingModulatorModuleEditor::RingModulatorModuleEditor(CriticalSection *newPlugInLock, RingModulatorAudioModule* newRingModulatorAudioModule) 
+RingModulatorModuleEditor::RingModulatorModuleEditor(CriticalSection *newPlugInLock, RingModulatorAudioModule* newRingModulatorAudioModule)
 : AudioModuleEditor(newRingModulatorAudioModule)
 {
   ScopedLock scopedLock(*lock);
@@ -4925,33 +4925,33 @@ void RingModulatorModuleEditor::resized()
   int x = 0;
   int y = getPresetSectionBottom();
   int w = getWidth();
-  int h = getHeight();
+  //int h = getHeight();
 
   frequencySlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   feedbackSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   stereoOffsetSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   dryWetSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   antiAliasButton->setBounds(x+4, y+4, 60, 16);
-  y += 20;  
+  y += 20;
 }
 
 //-------------------------------------------------------------------------------------------------
 // SingleSidebandModulator:
 
-SingleSidebandModulatorAudioModule::SingleSidebandModulatorAudioModule(CriticalSection *newPlugInLock, 
+SingleSidebandModulatorAudioModule::SingleSidebandModulatorAudioModule(CriticalSection *newPlugInLock,
   rosic::SingleSidebandModulatorStereo *newSingleSidebandModulatorToWrap)
    : AudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
 
-  jassert( newSingleSidebandModulatorToWrap != NULL ); // you must pass a valid rosic-object 
+  jassert( newSingleSidebandModulatorToWrap != NULL ); // you must pass a valid rosic-object
   wrappedSingleSidebandModulator = newSingleSidebandModulatorToWrap;
   moduleName  = juce::String(("SingleSidebandModulator"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString 
+  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
     + juce::String(("SingleSidebandModulatorPresets")) );
   createStaticParameters();
 }
@@ -4963,15 +4963,15 @@ void SingleSidebandModulatorAudioModule::createStaticParameters()
   AutomatableParameter* p;
 
   p = new AutomatableParameter(lock, ("Frequency"), 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedSingleSidebandModulator, &SingleSidebandModulatorStereo::setModulatorFrequency);
 
   p = new AutomatableParameter(lock, ("UpperSidebandLevel"), -60.0, 0.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedSingleSidebandModulator, &SingleSidebandModulatorStereo::setUpperSidebandLevel);
 
   p = new AutomatableParameter(lock, ("LowerSidebandLevel"), -60.0, 0.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedSingleSidebandModulator, &SingleSidebandModulatorStereo::setLowerSidebandLevel);
 
   p = new AutomatableParameter(lock, ("Feedback"), -99.0, 99.0, 0.1, 0.0, Parameter::LINEAR);
@@ -4979,11 +4979,11 @@ void SingleSidebandModulatorAudioModule::createStaticParameters()
   p->setValueChangeCallback(wrappedSingleSidebandModulator, &SingleSidebandModulatorStereo::setFeedbackInPercent);
 
   p = new AutomatableParameter(lock, ("StereoOffset"), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedSingleSidebandModulator, &SingleSidebandModulatorStereo::setStereoOffset);
 
   p = new AutomatableParameter(lock, ("DryWetRatio"), 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedSingleSidebandModulator, &SingleSidebandModulatorStereo::setDryWetRatio);
 
   p = new AutomatableParameter(lock, ("AntiAlias"), 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
@@ -4994,8 +4994,8 @@ void SingleSidebandModulatorAudioModule::createStaticParameters()
     parameters[i]->resetToDefaultValue(true, true);
 }
 
-SingleSidebandModulatorModuleEditor::SingleSidebandModulatorModuleEditor(CriticalSection *newPlugInLock, 
-                                                                         SingleSidebandModulatorAudioModule* newSingleSidebandModulatorAudioModule) 
+SingleSidebandModulatorModuleEditor::SingleSidebandModulatorModuleEditor(CriticalSection *newPlugInLock,
+                                                                         SingleSidebandModulatorAudioModule* newSingleSidebandModulatorAudioModule)
 : AudioModuleEditor(newSingleSidebandModulatorAudioModule)
 {
   ScopedLock scopedLock(*lock);
@@ -5056,22 +5056,22 @@ void SingleSidebandModulatorModuleEditor::resized()
   int x = 0;
   int y = getPresetSectionBottom();
   int w = getWidth();
-  int h = getHeight();
+  //int h = getHeight();
 
   frequencySlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   upperSidebandLevelSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   lowerSidebandLevelSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   feedbackSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   stereoOffsetSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   dryWetSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   antiAliasButton->setBounds(x+4, y+4, 60, 16);
-  y += 20;  
+  y += 20;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -5082,10 +5082,10 @@ StereoPanAudioModule::StereoPanAudioModule(CriticalSection *newPlugInLock, rosic
 {
   ScopedLock scopedLock(*lock);
 
-  jassert( newStereoPanToWrap != NULL ); // you must pass a valid rosic-object 
+  jassert( newStereoPanToWrap != NULL ); // you must pass a valid rosic-object
   wrappedStereoPan = newStereoPanToWrap;
   moduleName  = juce::String(("StereoPan"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString 
+  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
     + juce::String(("StereoPanPresets")) );
   createStaticParameters();
 }
@@ -5111,18 +5111,18 @@ void StereoPanAudioModule::createStaticParameters()
   p->setValueChangeCallback(wrappedStereoPan, &StereoPan::setPanLaw);
 
   p = new AutomatableParameter(lock, "Pan", -1.0, 1.0, 0.01, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedStereoPan, &StereoPan::setPanoramaPosition);
 
   p = new AutomatableParameter(lock, "Gain", -12.0, 12.0, 0.01, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedStereoPan, &StereoPan::setGain);
 
   for(int i=0; i < (int) parameters.size(); i++)
     parameters[i]->resetToDefaultValue(true, true);
 }
 
-StereoPanModuleEditor::StereoPanModuleEditor(CriticalSection *newPlugInLock, StereoPanAudioModule* newStereoPanAudioModule) 
+StereoPanModuleEditor::StereoPanModuleEditor(CriticalSection *newPlugInLock, StereoPanAudioModule* newStereoPanAudioModule)
 : AudioModuleEditor(newStereoPanAudioModule)
 {
   ScopedLock scopedLock(*lock);
@@ -5186,9 +5186,9 @@ void StereoPanModuleEditor::resized()
 
   y = plot->getBottom();
   w = w/2;
-  panLawLabel->setBounds(x+4, y+4, 56, 16); 
+  panLawLabel->setBounds(x+4, y+4, 56, 16);
   panLawComboBox->setBounds(panLawLabel->getRight()+4, y+4, 180, 16);
-  y += 20;  
+  y += 20;
   panSlider->setBounds( x+4,   y+4, w-8, 16);
   gainSlider->setBounds(x+w+4, y+4, w-8, 16);
   // maybe add an routing-diagram....
@@ -5202,10 +5202,10 @@ StereoWidthAudioModule::StereoWidthAudioModule(CriticalSection *newPlugInLock, r
 {
   ScopedLock scopedLock(*lock);
 
-  jassert( newStereoWidthToWrap != NULL ); // you must pass a valid rosic-object 
+  jassert( newStereoWidthToWrap != NULL ); // you must pass a valid rosic-object
   wrappedStereoWidth = newStereoWidthToWrap;
   moduleName  = juce::String(("StereoWidth"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString 
+  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
     + juce::String(("StereoWidthPresets")) );
   createStaticParameters();
 }
@@ -5217,18 +5217,18 @@ void StereoWidthAudioModule::createStaticParameters()
   AutomatableParameter* p;
 
   p = new AutomatableParameter(lock, "MidSideRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedStereoWidth, &StereoWidth::setMidSideRatio);
 
   p = new AutomatableParameter(lock, "Gain", -6.0, 24.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedStereoWidth, &StereoWidth::setGlobalGain);
 
   for(int i=0; i < (int) parameters.size(); i++)
     parameters[i]->resetToDefaultValue(true, true);
 }
 
-StereoWidthModuleEditor::StereoWidthModuleEditor(CriticalSection *newPlugInLock, StereoWidthAudioModule* newStereoWidthAudioModule) 
+StereoWidthModuleEditor::StereoWidthModuleEditor(CriticalSection *newPlugInLock, StereoWidthAudioModule* newStereoWidthAudioModule)
 : AudioModuleEditor(newStereoWidthAudioModule)
 {
   ScopedLock scopedLock(*lock);
@@ -5258,10 +5258,10 @@ void StereoWidthModuleEditor::resized()
   int x = 0;
   int y = 0;
   int w = getWidth();
-  int h = getHeight();
+  //int h = getHeight();
   y = getPresetSectionBottom();
   midSideRatioSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
   gainSlider->setBounds(x+4, y+4, w-8, 16);
 }
 
@@ -5276,10 +5276,10 @@ SineOscillatorAudioModule::SineOscillatorAudioModule(CriticalSection *newPlugInL
 {
   ScopedLock scopedLock(*lock);
 
-  jassert( newSineOscillatorToWrap != NULL ); // you must pass a valid rosic-object 
+  jassert( newSineOscillatorToWrap != NULL ); // you must pass a valid rosic-object
   wrappedSineOscillator = newSineOscillatorToWrap;
   moduleName  = juce::String(("SineOscillator"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString 
+  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
     + juce::String(("SineOscillatorPresets")) );
   createStaticParameters();
 }
@@ -5291,7 +5291,7 @@ void SineOscillatorAudioModule::createStaticParameters()
   AutomatableParameter* p;
 
   p = new AutomatableParameter(lock, "Frequency", 0.2, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedSineOscillator, &SineOscillator::setFrequency);
 
   // \todo: add gain parameter
@@ -5300,8 +5300,8 @@ void SineOscillatorAudioModule::createStaticParameters()
     parameters[i]->resetToDefaultValue(true, true);
 }
 
-SineOscillatorModuleEditor::SineOscillatorModuleEditor(CriticalSection *newPlugInLock, 
-                                                       SineOscillatorAudioModule* newSineOscillatorAudioModule) 
+SineOscillatorModuleEditor::SineOscillatorModuleEditor(CriticalSection *newPlugInLock,
+                                                       SineOscillatorAudioModule* newSineOscillatorAudioModule)
 : AudioModuleEditor(newSineOscillatorAudioModule)
 {
   ScopedLock scopedLock(*lock);
@@ -5325,10 +5325,10 @@ void SineOscillatorModuleEditor::resized()
   int x = 0;
   int y = 0;
   int w = getWidth();
-  int h = getHeight();
+  //int h = getHeight();
   y = getPresetSectionBottom();
   frequencySlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;  
+  y += 20;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -5339,10 +5339,10 @@ NoisifierAudioModule::NoisifierAudioModule(CriticalSection *newPlugInLock, rosic
 {
   ScopedLock scopedLock(*lock);
 
-  jassert( newNoisifierToWrap != NULL ); // you must pass a valid rosic-object 
+  jassert( newNoisifierToWrap != NULL ); // you must pass a valid rosic-object
   wrappedNoisifier = newNoisifierToWrap;
   moduleName       = juce::String(("Noisifier"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString 
+  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
     + juce::String(("NoisifierPresets")) );
   createStaticParameters();
 }
@@ -5354,7 +5354,7 @@ void NoisifierAudioModule::createStaticParameters()
   AutomatableParameter* p;
 
   p = new AutomatableParameter(lock, "PassLevel", -96.0, 6.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p->setValueChangeCallback(wrappedNoisifier, &Noisifier::setPassThroughLevel);
 
   p = new AutomatableParameter(lock, "NoiseLevel", -96.0, 6.0, 0.1, 0.0, Parameter::LINEAR);
@@ -5377,7 +5377,7 @@ void NoisifierAudioModule::createStaticParameters()
     parameters[i]->resetToDefaultValue(true, true);
 }
 
-NoisifierModuleEditor::NoisifierModuleEditor(CriticalSection *newPlugInLock, NoisifierAudioModule* newNoisifierAudioModule) 
+NoisifierModuleEditor::NoisifierModuleEditor(CriticalSection *newPlugInLock, NoisifierAudioModule* newNoisifierAudioModule)
 : AudioModuleEditor(newNoisifierAudioModule)
 {
   ScopedLock scopedLock(*lock);
@@ -5426,17 +5426,17 @@ void NoisifierModuleEditor::resized()
   int x = 0;
   int y = 0;
   int w = getWidth();
-  int h = getHeight();
+  //int h = getHeight();
   y = getPresetSectionBottom();
 
   passLevelSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20; 
+  y += 20;
   noiseLevelSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20; 
+  y += 20;
   spectralSlopeSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20; 
+  y += 20;
   lowestFreqSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20; 
+  y += 20;
   highestFreqSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20; 
+  y += 20;
 }

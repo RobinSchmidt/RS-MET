@@ -1,8 +1,8 @@
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-BreakpointModulatorEditorMulti::BreakpointModulatorEditorMulti(CriticalSection *newPlugInLock,                                                             
-  BreakpointModulatorAudioModule* newBreakpointModulatorAudioModule) 
+BreakpointModulatorEditorMulti::BreakpointModulatorEditorMulti(CriticalSection *newPlugInLock,
+  BreakpointModulatorAudioModule* newBreakpointModulatorAudioModule)
  : BreakpointModulatorEditor(newPlugInLock, newBreakpointModulatorAudioModule)
  , AudioModuleEditor(newBreakpointModulatorAudioModule)
 {
@@ -17,7 +17,7 @@ BreakpointModulatorEditorMulti::BreakpointModulatorEditorMulti(CriticalSection *
   setHeadlineText("Modulators");
   setDescription("This is an editor for multi-breakpoint modulation generators");
 
-  // create the breakpoint-editor for multiple modulators, make the inherited single-modulator 
+  // create the breakpoint-editor for multiple modulators, make the inherited single-modulator
   // editor invisible and re-assign the zoomer:
   breakpointEditor->setVisible(false);
   breakpointEditorMulti = new ModulatorCurveEditorMulti("PlotEditor");
@@ -99,7 +99,7 @@ void BreakpointModulatorEditorMulti::selectModulatorToEdit(int index)
   widgetColourScheme = globalEditors[index]->widgetColourScheme;
   plotColourScheme   = globalEditors[index]->plotColourScheme;
   for(int i=0; i<widgets.size(); i++)
-    widgets[i]->setColourScheme(widgetColourScheme);  
+    widgets[i]->setColourScheme(widgetColourScheme);
 
 
   repaint();
@@ -141,11 +141,11 @@ void BreakpointModulatorEditorMulti::setModulatorLabel(int index, const juce::St
   stateWidgetSets.getLock().exit();
   */
 }
-   
-void BreakpointModulatorEditorMulti::setChildColourScheme(int index, 
+
+void BreakpointModulatorEditorMulti::setChildColourScheme(int index,
   const EditorColourScheme& newEditorColourScheme, const WidgetColourScheme& newWidgetColourScheme)
 {
-  int dummy = 0;
+  //int dummy = 0;
 
   /*
   globalEditors.getLock().enter();
@@ -157,7 +157,7 @@ void BreakpointModulatorEditorMulti::setChildColourScheme(int index,
   }
   globalEditors.getLock().exit();
   */
-    
+
   // \ todo: call setHue
 }
 
@@ -191,7 +191,7 @@ void BreakpointModulatorEditorMulti::rButtonClicked(RButton *buttonThatWasClicke
   {
     if( buttonThatWasClicked == globalEditors[i]->editButton )
     {
-      selectModulatorToEdit(i);      
+      selectModulatorToEdit(i);
       globalEditors.getLock().exit();
       //breakpointEditorMulti->updatePlotImage();
       return;
@@ -206,7 +206,7 @@ void BreakpointModulatorEditorMulti::rButtonClicked(RButton *buttonThatWasClicke
         {
           if( modulatorModules[i]->wrappedBreakpointModulator != NULL )
           {
-            modulatorModules[i]->wrappedBreakpointModulator->setLoopMode( 
+            modulatorModules[i]->wrappedBreakpointModulator->setLoopMode(
               globalEditors[i]->loopButton->getToggleState() );
             modulatorModules[i]->markStateAsDirty();
           }
@@ -282,14 +282,14 @@ void BreakpointModulatorEditorMulti::rComboBoxChanged(RComboBox *rComboBoxThatHa
   else if( rComboBoxThatHasChanged == snapXComboBox )
   {
     int newGridIntervalIndex = snapXComboBox->getSelectedItemIdentifier();
-    breakpointEditorMulti->setVerticalFineGrid(gridIntervalFromIndex(newGridIntervalIndex), 
+    breakpointEditorMulti->setVerticalFineGrid(gridIntervalFromIndex(newGridIntervalIndex),
       snapXButton->getToggleState());
     breakpointEditorMulti->repaint();
   }
   else if( rComboBoxThatHasChanged == snapYComboBox )
   {
     int newGridIntervalIndex = snapYComboBox->getSelectedItemIdentifier();
-    breakpointEditorMulti->setHorizontalFineGrid(gridIntervalFromIndex(newGridIntervalIndex), 
+    breakpointEditorMulti->setHorizontalFineGrid(gridIntervalFromIndex(newGridIntervalIndex),
       snapYButton->getToggleState());
     breakpointEditorMulti->repaint();
   }
@@ -319,7 +319,7 @@ void BreakpointModulatorEditorMulti::paint(Graphics &g)
 {
   Editor::paint(g);
 
-  fillRectWithBilinearGradient(g, snapRectangle, editorColourScheme.topLeft, 
+  fillRectWithBilinearGradient(g, snapRectangle, editorColourScheme.topLeft,
     editorColourScheme.topRight, editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
 
   Editor::drawHeadline(g);
@@ -345,26 +345,26 @@ void BreakpointModulatorEditorMulti::resized()
   // the right section:
   breakpointGroupRectangle.setBounds(x, y, w, h);
   breakpointParameterEditor->setBounds(x-2, y, w+2, h);
-  snapRectangle.setBounds(x, breakpointGroupRectangle.getBottom(), w, 
+  snapRectangle.setBounds(x, breakpointGroupRectangle.getBottom(), w,
     getHeight() - breakpointGroupRectangle.getBottom() );
 
   x = snapRectangle.getX();
   y = snapRectangle.getY();
   snapXButton->setBounds(x+4, y+4, 32, 16);
   x = snapXButton->getRight();
-  snapXComboBox->setBounds(x+4, y+4, snapRectangle.getRight()-x-8, 16); 
+  snapXComboBox->setBounds(x+4, y+4, snapRectangle.getRight()-x-8, 16);
   x = snapRectangle.getX();
   y = snapXButton->getBottom();
   snapYButton->setBounds(x+4, y+4, 32, 16);
   x = snapXButton->getRight();
-  snapYComboBox->setBounds(x+4, y+4, snapRectangle.getRight()-x-8, 16); 
+  snapYComboBox->setBounds(x+4, y+4, snapRectangle.getRight()-x-8, 16);
 
   // the middle section (the curve editor):
   x = leftSectionWidth;
   y = 0;
   w = breakpointGroupRectangle.getX()-x+2;
   h = getHeight()-y+2;
-  breakpointEditorMulti->setBounds(x, y, w-breakpointZoomer->getZoomerSize(), 
+  breakpointEditorMulti->setBounds(x, y, w-breakpointZoomer->getZoomerSize(),
     h-breakpointZoomer->getZoomerSize());
   breakpointZoomer->alignWidgetsToCoordinateSystem();
 
@@ -372,14 +372,14 @@ void BreakpointModulatorEditorMulti::resized()
   globalEditors.getLock().enter();
   int numModulators = globalEditors.size();
   leftSectionRectangles.clear();
-  //x = 0;  
+  //x = 0;
   x = 2;
   //w = leftSectionWidth+2;
   w = leftSectionWidth-2;
   h = 78;
   //y = getHeight() - h;
   y = getHeight() - h - 2;
-  for(int i=numModulators-1; i>=0; i--) 
+  for(int i=numModulators-1; i>=0; i--)
   {
     juce::Rectangle<int> *r = new juce::Rectangle<int>(x, y, w, h);
     leftSectionRectangles.add(r);
@@ -431,10 +431,10 @@ void BreakpointModulatorEditorMulti::updateWidgetsAccordingToState()
 void BreakpointModulatorEditorMulti::createWidgetsForNewModulator(
   BreakpointModulatorAudioModule *newModulator)
 {
-  BreakpointModulatorGlobalEditor* tmpEditor = 
+  BreakpointModulatorGlobalEditor* tmpEditor =
     new BreakpointModulatorGlobalEditor(lock, newModulator);
 
-  //addWidgetSet(tmpWidgetSet); // this makes the encapsulated widgets child-components and 
+  //addWidgetSet(tmpWidgetSet); // this makes the encapsulated widgets child-components and
                                 // registers this object as listener to the widgets
   //automatableSliders.addIfNotAlreadyThere(tmpWidgetSet->timeScaleSlider);
   //automatableSliders.addIfNotAlreadyThere(tmpWidgetSet->depthSlider);

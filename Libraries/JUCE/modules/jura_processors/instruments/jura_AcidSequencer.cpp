@@ -4,7 +4,7 @@
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-AcidSequencerAudioModule::AcidSequencerAudioModule(CriticalSection *newPlugInLock, 
+AcidSequencerAudioModule::AcidSequencerAudioModule(CriticalSection *newPlugInLock,
   rosic::AcidSequencer *acidSequencerToWrap) : AudioModule(newPlugInLock)
 {
   jassert(acidSequencerToWrap != NULL); // you must pass a valid rosic-object to the constructor
@@ -36,7 +36,7 @@ void AcidSequencerAudioModule::parameterChanged(Parameter* parameterThatHasChang
 
 }
 
-void AcidSequencerAudioModule::setStateFromXml(const XmlElement &xmlState, 
+void AcidSequencerAudioModule::setStateFromXml(const XmlElement &xmlState,
                                                const juce::String &stateName, bool markAsClean)
 {
   if( wrappedAcidSequencer != NULL )
@@ -128,7 +128,7 @@ void AcidSequencerAudioModule::initializeAutomatableParameters()
   p->setValue(0.0, false, false);
   addObservedParameter(p);
 
-  // make a call to parameterChanged for each parameter in order to set up the DSP-core to reflect 
+  // make a call to parameterChanged for each parameter in order to set up the DSP-core to reflect
   // the values the automatable parameters:
   for(int i=0; i < (int) parameters.size(); i++ )
     parameterChanged(parameters[i]);
@@ -137,19 +137,19 @@ void AcidSequencerAudioModule::initializeAutomatableParameters()
 //=================================================================================================
 
 
-AcidPatternEditor::AcidPatternEditor(rosic::AcidSequencer *sequencerToEdit) 
+AcidPatternEditor::AcidPatternEditor(rosic::AcidSequencer *sequencerToEdit)
   : Component(juce::String("AcidPatternEditor"))
 {
   patternToEdit         = NULL;
   this->sequencerToEdit = sequencerToEdit;
 
-  whiteKeyColour           = Colours::white; 
+  whiteKeyColour           = Colours::white;
   blackKeyColour           = Colours::black;
   backgroundColourWhiteKey = Colours::white;
   backgroundColourBlackKey = Colours::lightgrey;
   noteHandleColour         = Colours::blue;
-  accentHandleColour       = Colours::blue; 
-  slideHandleColour        = Colours::blue; 
+  accentHandleColour       = Colours::blue;
+  slideHandleColour        = Colours::blue;
   gateHandleColour         = Colours::blue;
   textColour               = Colours::black;
   lineColour               = Colours::black;
@@ -308,7 +308,7 @@ void AcidPatternEditor::paint(juce::Graphics &g)
   float y = 0.f;
   float w = (float) getWidth();
   float h = (float) getHeight();
-  float s = (float) rowHeight;
+  //float s = (float) rowHeight;
   float thickness = 2.f;
 
 
@@ -454,14 +454,14 @@ void AcidPatternEditor::paint(juce::Graphics &g)
   // draw the pattern data:
   if( patternToEdit != NULL )
   {
-    x            = keyLength; 
+    x            = keyLength;
     w            = columnWidth;
     h            = topLaneHeight;
-    float dx     = columnWidth   / 2.f;    
+    float dx     = columnWidth   / 2.f;
     float dy     = topLaneHeight / 2.f;
     int numSteps = patternToEdit->getNumSteps();
     for(int i=0; i<patternToEdit->getMaxNumSteps(); i++)
-    {  
+    {
       bool slide = patternToEdit->getSlide(i) && patternToEdit->getGate((i+1)%numSteps);
       y = 0;
       if( patternToEdit->getGate(i) == true )
@@ -482,11 +482,11 @@ void AcidPatternEditor::paint(juce::Graphics &g)
       y += topLaneHeight;
       juce::String octString = valueToStringWithSign0( patternToEdit->getOctave(i) );
 
-      drawBitmapFontText(g, (int)(x+dx), (int)(y+dy), octString, 
+      drawBitmapFontText(g, (int)(x+dx), (int)(y+dy), octString,
         &BitmapFontRoundedBoldA10D0::instance, textColour, -1, Justification::centred);
 
       // old:
-      //drawBitmapFontText(g, (int)(x+dx), (int)(y+dy), octString, &boldFont10px, textColour, -1, 
+      //drawBitmapFontText(g, (int)(x+dx), (int)(y+dy), octString, &boldFont10px, textColour, -1,
       //  Justification::centred);
 
       y = keyboardY + 12*rowHeight;
@@ -501,8 +501,8 @@ void AcidPatternEditor::paint(juce::Graphics &g)
           g.drawLine(x2, y+dy, x2, y2+dy, 3.f);
           w2 = 1.f;
         }
-        g.fillRect(x, y, w2*columnWidth, rowHeight); 
-      } 
+        g.fillRect(x, y, w2*columnWidth, rowHeight);
+      }
       x += columnWidth;
     }
   }
@@ -517,7 +517,7 @@ void AcidPatternEditor::paint(juce::Graphics &g)
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-AcidSequencerModuleEditor::AcidSequencerModuleEditor(CriticalSection *newPlugInLock, AcidSequencerAudioModule* newAcidSequencerAudioModule) 
+AcidSequencerModuleEditor::AcidSequencerModuleEditor(CriticalSection *newPlugInLock, AcidSequencerAudioModule* newAcidSequencerAudioModule)
   : AudioModuleEditor(newAcidSequencerAudioModule)
 {
   setHeadlineStyle(SUB_HEADLINE);
@@ -617,7 +617,7 @@ void AcidSequencerModuleEditor::resized()
   int x = 0;
   int y = 0;
   int w = getWidth();
-  int h = getHeight();
+  //int h = getHeight();
 
   y = getPresetSectionBottom()+4;
   x = 4;

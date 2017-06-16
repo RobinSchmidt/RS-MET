@@ -2,7 +2,7 @@
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-QuadrifexAudioModule::QuadrifexAudioModule(CriticalSection *newPlugInLock, 
+QuadrifexAudioModule::QuadrifexAudioModule(CriticalSection *newPlugInLock,
   rosic::Quadrifex *quadrifexToWrap)
 : AudioModule(newPlugInLock)
 {
@@ -29,9 +29,9 @@ QuadrifexAudioModule::QuadrifexAudioModule(CriticalSection *newPlugInLock,
   for(int i=0; i<rosic::Quadrifex::numEffectSlots; i++)
   {
     // create a bypass-module for each slot:
-    rosic::BypassModule* bypassCoreModule = 
+    rosic::BypassModule* bypassCoreModule =
       static_cast<rosic::BypassModule*> (wrappedQuadrifex->getEffectModule(i)); // this dynamic_cast causes bugs in the release version
-    jura::BypassAudioModule *audioModule = new jura::BypassAudioModule(lock, 
+    jura::BypassAudioModule *audioModule = new jura::BypassAudioModule(lock,
       bypassCoreModule);
     effectModules[i] = audioModule;
     addChildAudioModule(effectModules[i]);
@@ -90,43 +90,43 @@ QuadrifexAudioModule::~QuadrifexAudioModule()
   // rid of the deletes in setEffectAlgorithm
   for(int i=0; i<rosic::Quadrifex::numEffectSlots; i++)
   {
-    delete bitCrusherStates[i]; 
-    delete chorusStates[i];    
-    delete combBankStates[i];   
-    delete combResonatorStates[i];    
-    delete combStereoizerStates[i];    
-    delete compressorStates[i];  
-    delete dualTwoPoleFilterStates[i];  
-    delete equalizerStates[i];  
-    delete expanderStates[i]; 
-    delete flangerStates[i];  
-    delete formantShifterStates[i];  
-    delete fourPoleFilterStates[i];  
-    delete frequencyShifterStates[i];  
-    delete harmonicsStates[i];  
-    delete ladderFilterStates[i];  
-    delete limiterStates[i];  
-    delete modulatedAllpassStates[i];  
-    delete noiseGateStates[i];  
-    delete noisifierStates[i];  
-    delete phaserStates[i];  
-    delete phaseStereoizerStates[i];  
-    delete pingPongEchoStates[i];  
-    delete pitchShifterStates[i];  
-    delete reverbStates[i];  
-    delete ringModulatorStates[i];  
-    delete simpleDelayStates[i]; 
-    delete sineOscillatorStates[i];  
-    delete singleSidebandModulatorStates[i];  
-    delete slewRateLimiterStates[i];  
-    delete slopeFilterStates[i];  
-    delete stereoPanStates[i];  
-    delete stereoWidthStates[i];  
-    delete tremoloStates[i];  
-    delete twoPoleFilterStates[i];  
-    delete vibratoStates[i];  
-    delete wahWahStates[i];  
-    delete waveShaperStates[i];  
+    delete bitCrusherStates[i];
+    delete chorusStates[i];
+    delete combBankStates[i];
+    delete combResonatorStates[i];
+    delete combStereoizerStates[i];
+    delete compressorStates[i];
+    delete dualTwoPoleFilterStates[i];
+    delete equalizerStates[i];
+    delete expanderStates[i];
+    delete flangerStates[i];
+    delete formantShifterStates[i];
+    delete fourPoleFilterStates[i];
+    delete frequencyShifterStates[i];
+    delete harmonicsStates[i];
+    delete ladderFilterStates[i];
+    delete limiterStates[i];
+    delete modulatedAllpassStates[i];
+    delete noiseGateStates[i];
+    delete noisifierStates[i];
+    delete phaserStates[i];
+    delete phaseStereoizerStates[i];
+    delete pingPongEchoStates[i];
+    delete pitchShifterStates[i];
+    delete reverbStates[i];
+    delete ringModulatorStates[i];
+    delete simpleDelayStates[i];
+    delete sineOscillatorStates[i];
+    delete singleSidebandModulatorStates[i];
+    delete slewRateLimiterStates[i];
+    delete slopeFilterStates[i];
+    delete stereoPanStates[i];
+    delete stereoWidthStates[i];
+    delete tremoloStates[i];
+    delete twoPoleFilterStates[i];
+    delete vibratoStates[i];
+    delete wahWahStates[i];
+    delete waveShaperStates[i];
   }
 }
 
@@ -158,261 +158,261 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
   int oldAlgorithmIndex = wrappedQuadrifex->getEffectAlgorithmIndex(slotIndex);
   switch( oldAlgorithmIndex )
   {
-  case rosic::Quadrifex::BIT_CRUSHER: 
+  case rosic::Quadrifex::BIT_CRUSHER:
     {
-      jura::BitCrusherAudioModule *audioModule = 
+      jura::BitCrusherAudioModule *audioModule =
         static_cast<jura::BitCrusherAudioModule*> (effectModules[slotIndex]);
       delete bitCrusherStates[slotIndex];
       bitCrusherStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
     } break;
-  case rosic::Quadrifex::CHORUS: 
+  case rosic::Quadrifex::CHORUS:
     {
-      jura::ChorusAudioModule *audioModule = 
+      jura::ChorusAudioModule *audioModule =
         static_cast<jura::ChorusAudioModule*> (effectModules[slotIndex]);
       delete chorusStates[slotIndex];
       chorusStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
     } break;
-  case rosic::Quadrifex::COMB_BANK: 
+  case rosic::Quadrifex::COMB_BANK:
     {
-      jura::CombBankAudioModule *audioModule = 
+      jura::CombBankAudioModule *audioModule =
         static_cast<jura::CombBankAudioModule*> (effectModules[slotIndex]);
       delete combBankStates[slotIndex];
       combBankStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
     } break;
-  case rosic::Quadrifex::COMB_RESONATOR: 
+  case rosic::Quadrifex::COMB_RESONATOR:
     {
-      jura::CombResonatorAudioModule *audioModule = 
+      jura::CombResonatorAudioModule *audioModule =
         static_cast<jura::CombResonatorAudioModule*> (effectModules[slotIndex]);
       delete combResonatorStates[slotIndex];
       combResonatorStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
     } break;
-  case rosic::Quadrifex::COMB_STEREOIZER: 
+  case rosic::Quadrifex::COMB_STEREOIZER:
     {
-      jura::CombStereoizerAudioModule *audioModule = 
+      jura::CombStereoizerAudioModule *audioModule =
         static_cast<jura::CombStereoizerAudioModule*> (effectModules[slotIndex]);
       delete combStereoizerStates[slotIndex];
       combStereoizerStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
     } break;
-  case rosic::Quadrifex::COMPRESSOR: 
+  case rosic::Quadrifex::COMPRESSOR:
     {
-      jura::CompressorAudioModule *audioModule = 
+      jura::CompressorAudioModule *audioModule =
         static_cast<jura::CompressorAudioModule*> (effectModules[slotIndex]);
       delete compressorStates[slotIndex];
       compressorStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
     } break;
-  case rosic::Quadrifex::DUAL_TWO_POLE_FILTER: 
+  case rosic::Quadrifex::DUAL_TWO_POLE_FILTER:
     {
-      jura::DualTwoPoleFilterAudioModule *audioModule = 
+      jura::DualTwoPoleFilterAudioModule *audioModule =
         static_cast<jura::DualTwoPoleFilterAudioModule*> (effectModules[slotIndex]);
       delete dualTwoPoleFilterStates[slotIndex];
       dualTwoPoleFilterStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
     } break;
-  case rosic::Quadrifex::EQUALIZER: 
+  case rosic::Quadrifex::EQUALIZER:
     {
-      jura::EqualizerAudioModule *audioModule = 
+      jura::EqualizerAudioModule *audioModule =
         static_cast<jura::EqualizerAudioModule*> (effectModules[slotIndex]);
       delete equalizerStates[slotIndex];
       equalizerStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
     } break;
-  case rosic::Quadrifex::EXPANDER: 
+  case rosic::Quadrifex::EXPANDER:
     {
-      jura::ExpanderAudioModule *audioModule = 
+      jura::ExpanderAudioModule *audioModule =
         static_cast<jura::ExpanderAudioModule*> (effectModules[slotIndex]);
       delete expanderStates[slotIndex];
       expanderStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
     } break;
-  case rosic::Quadrifex::FLANGER: 
+  case rosic::Quadrifex::FLANGER:
     {
-      jura::FlangerAudioModule *audioModule = 
+      jura::FlangerAudioModule *audioModule =
         static_cast<jura::FlangerAudioModule*> (effectModules[slotIndex]);
       delete flangerStates[slotIndex];
       flangerStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
     } break;
-  case rosic::Quadrifex::FORMANT_SHIFTER: 
+  case rosic::Quadrifex::FORMANT_SHIFTER:
     {
-      jura::FormantShifterAudioModule *audioModule = 
+      jura::FormantShifterAudioModule *audioModule =
         static_cast<jura::FormantShifterAudioModule*> (effectModules[slotIndex]);
       delete formantShifterStates[slotIndex];
       formantShifterStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
     } break;
-  case rosic::Quadrifex::FOUR_POLE_FILTER: 
+  case rosic::Quadrifex::FOUR_POLE_FILTER:
     {
-      jura::FourPoleFilterAudioModule *audioModule = 
+      jura::FourPoleFilterAudioModule *audioModule =
         static_cast<jura::FourPoleFilterAudioModule*> (effectModules[slotIndex]);
       delete fourPoleFilterStates[slotIndex];
       fourPoleFilterStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
     } break;
-  case rosic::Quadrifex::FREQUENCY_SHIFTER: 
+  case rosic::Quadrifex::FREQUENCY_SHIFTER:
     {
-      jura::FrequencyShifterAudioModule *audioModule = 
+      jura::FrequencyShifterAudioModule *audioModule =
         static_cast<jura::FrequencyShifterAudioModule*> (effectModules[slotIndex]);
       delete frequencyShifterStates[slotIndex];
       frequencyShifterStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
     } break;
-  case rosic::Quadrifex::HARMONICS: 
+  case rosic::Quadrifex::HARMONICS:
     {
-      jura::HarmonicsAudioModule *audioModule = 
+      jura::HarmonicsAudioModule *audioModule =
         static_cast<jura::HarmonicsAudioModule*> (effectModules[slotIndex]);
       delete harmonicsStates[slotIndex];
       harmonicsStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
     } break;
-  case rosic::Quadrifex::LADDER_FILTER: 
+  case rosic::Quadrifex::LADDER_FILTER:
     {
-      jura::LadderFilterAudioModule *audioModule = 
+      jura::LadderFilterAudioModule *audioModule =
         static_cast<jura::LadderFilterAudioModule*> (effectModules[slotIndex]);
       delete ladderFilterStates[slotIndex];
       ladderFilterStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
     } break;
-  case rosic::Quadrifex::LIMITER: 
+  case rosic::Quadrifex::LIMITER:
     {
-      jura::LimiterAudioModule *audioModule = 
+      jura::LimiterAudioModule *audioModule =
         static_cast<jura::LimiterAudioModule*> (effectModules[slotIndex]);
       delete limiterStates[slotIndex];
       limiterStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
     } break;
-  case rosic::Quadrifex::MODULATED_ALLPASS: 
+  case rosic::Quadrifex::MODULATED_ALLPASS:
     {
-      jura::ModulatedAllpassAudioModule *audioModule = 
+      jura::ModulatedAllpassAudioModule *audioModule =
         static_cast<jura::ModulatedAllpassAudioModule*> (effectModules[slotIndex]);
       delete modulatedAllpassStates[slotIndex];
       modulatedAllpassStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
     } break;
-  case rosic::Quadrifex::NOISE_GATE: 
+  case rosic::Quadrifex::NOISE_GATE:
     {
-      jura::NoiseGateAudioModule *audioModule = 
+      jura::NoiseGateAudioModule *audioModule =
         static_cast<jura::NoiseGateAudioModule*> (effectModules[slotIndex]);
       delete noiseGateStates[slotIndex];
       noiseGateStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
     } break;
-  case rosic::Quadrifex::NOISIFIER: 
+  case rosic::Quadrifex::NOISIFIER:
     {
-      jura::NoisifierAudioModule *audioModule = 
+      jura::NoisifierAudioModule *audioModule =
         static_cast<jura::NoisifierAudioModule*> (effectModules[slotIndex]);
       delete noisifierStates[slotIndex];
       noisifierStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
     } break;
-  case rosic::Quadrifex::PHASER: 
+  case rosic::Quadrifex::PHASER:
     {
-      jura::PhaserAudioModule *audioModule = 
+      jura::PhaserAudioModule *audioModule =
         static_cast<jura::PhaserAudioModule*> (effectModules[slotIndex]);
       delete phaserStates[slotIndex];
       phaserStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
     } break;
-  case rosic::Quadrifex::PHASE_STEREOIZER: 
+  case rosic::Quadrifex::PHASE_STEREOIZER:
     {
-      jura::PhaseStereoizerAudioModule *audioModule = 
+      jura::PhaseStereoizerAudioModule *audioModule =
         static_cast<jura::PhaseStereoizerAudioModule*> (effectModules[slotIndex]);
       delete phaseStereoizerStates[slotIndex];
       phaseStereoizerStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
     } break;
-  case rosic::Quadrifex::PINGPONG_ECHO: 
+  case rosic::Quadrifex::PINGPONG_ECHO:
     {
-      jura::PingPongEchoAudioModule *audioModule = 
+      jura::PingPongEchoAudioModule *audioModule =
         static_cast<jura::PingPongEchoAudioModule*> (effectModules[slotIndex]);
       delete pingPongEchoStates[slotIndex];
       pingPongEchoStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
     } break;
-  case rosic::Quadrifex::PITCH_SHIFTER: 
+  case rosic::Quadrifex::PITCH_SHIFTER:
     {
-      jura::PitchShifterAudioModule *audioModule = 
+      jura::PitchShifterAudioModule *audioModule =
         static_cast<jura::PitchShifterAudioModule*> (effectModules[slotIndex]);
       delete pitchShifterStates[slotIndex];
       pitchShifterStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
     } break;
-  case rosic::Quadrifex::REVERB: 
+  case rosic::Quadrifex::REVERB:
     {
-      jura::ReverbAudioModule *audioModule = 
+      jura::ReverbAudioModule *audioModule =
         static_cast<jura::ReverbAudioModule*> (effectModules[slotIndex]);
       delete reverbStates[slotIndex];
       reverbStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
     } break;
-  case rosic::Quadrifex::RINGMODULATOR: 
+  case rosic::Quadrifex::RINGMODULATOR:
     {
-      jura::RingModulatorAudioModule *audioModule = 
+      jura::RingModulatorAudioModule *audioModule =
         static_cast<jura::RingModulatorAudioModule*> (effectModules[slotIndex]);
       delete ringModulatorStates[slotIndex];
       ringModulatorStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
     } break;
-  case rosic::Quadrifex::SIMPLE_DELAY: 
+  case rosic::Quadrifex::SIMPLE_DELAY:
     {
-      jura::SimpleDelayAudioModule *audioModule = 
+      jura::SimpleDelayAudioModule *audioModule =
         static_cast<jura::SimpleDelayAudioModule*> (effectModules[slotIndex]);
       delete simpleDelayStates[slotIndex];
       simpleDelayStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
     } break;
-  case rosic::Quadrifex::SINE_OSCILLATOR: 
+  case rosic::Quadrifex::SINE_OSCILLATOR:
     {
-      jura::SineOscillatorAudioModule *audioModule = 
+      jura::SineOscillatorAudioModule *audioModule =
         static_cast<jura::SineOscillatorAudioModule*> (effectModules[slotIndex]);
       delete sineOscillatorStates[slotIndex];
       sineOscillatorStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
     } break;
-  case rosic::Quadrifex::SLOPE_FILTER: 
+  case rosic::Quadrifex::SLOPE_FILTER:
     {
-      jura::SlopeFilterAudioModule *audioModule = 
+      jura::SlopeFilterAudioModule *audioModule =
         static_cast<jura::SlopeFilterAudioModule*> (effectModules[slotIndex]);
       delete slopeFilterStates[slotIndex];
       slopeFilterStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
     } break;
-  case rosic::Quadrifex::SSB_MODULATOR: 
+  case rosic::Quadrifex::SSB_MODULATOR:
     {
-      jura::SingleSidebandModulatorAudioModule *audioModule = 
+      jura::SingleSidebandModulatorAudioModule *audioModule =
         static_cast<jura::SingleSidebandModulatorAudioModule*> (effectModules[slotIndex]);
       delete singleSidebandModulatorStates[slotIndex];
       singleSidebandModulatorStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
     } break;
-  case rosic::Quadrifex::SLEWRATE_LIMITER: 
+  case rosic::Quadrifex::SLEWRATE_LIMITER:
     {
-      jura::SlewRateLimiterAudioModule *audioModule = 
+      jura::SlewRateLimiterAudioModule *audioModule =
         static_cast<jura::SlewRateLimiterAudioModule*> (effectModules[slotIndex]);
       delete slewRateLimiterStates[slotIndex];
       slewRateLimiterStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
     } break;
-  case rosic::Quadrifex::STEREO_PAN: 
+  case rosic::Quadrifex::STEREO_PAN:
     {
-      jura::StereoPanAudioModule *audioModule = 
+      jura::StereoPanAudioModule *audioModule =
         static_cast<jura::StereoPanAudioModule*> (effectModules[slotIndex]);
       delete stereoPanStates[slotIndex];
       stereoPanStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
     } break;
-  case rosic::Quadrifex::STEREO_WIDTH: 
+  case rosic::Quadrifex::STEREO_WIDTH:
     {
-      jura::StereoWidthAudioModule *audioModule = 
+      jura::StereoWidthAudioModule *audioModule =
         static_cast<jura::StereoWidthAudioModule*> (effectModules[slotIndex]);
       delete stereoWidthStates[slotIndex];
       stereoWidthStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
     } break;
-  case rosic::Quadrifex::TREMOLO: 
+  case rosic::Quadrifex::TREMOLO:
     {
-      jura::TremoloAudioModule *audioModule = 
+      jura::TremoloAudioModule *audioModule =
         static_cast<jura::TremoloAudioModule*> (effectModules[slotIndex]);
       delete tremoloStates[slotIndex];
       tremoloStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
     } break;
-  case rosic::Quadrifex::TWO_POLE_FILTER: 
+  case rosic::Quadrifex::TWO_POLE_FILTER:
     {
-      jura::TwoPoleFilterAudioModule *audioModule = 
+      jura::TwoPoleFilterAudioModule *audioModule =
         static_cast<jura::TwoPoleFilterAudioModule*> (effectModules[slotIndex]);
       delete twoPoleFilterStates[slotIndex];
       twoPoleFilterStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
     } break;
-  case rosic::Quadrifex::VIBRATO: 
+  case rosic::Quadrifex::VIBRATO:
     {
-      jura::VibratoAudioModule *audioModule = 
+      jura::VibratoAudioModule *audioModule =
         static_cast<jura::VibratoAudioModule*> (effectModules[slotIndex]);
       delete vibratoStates[slotIndex];
       vibratoStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
     } break;
-  case rosic::Quadrifex::WAH_WAH: 
+  case rosic::Quadrifex::WAH_WAH:
     {
-      jura::WahWahAudioModule *audioModule = 
+      jura::WahWahAudioModule *audioModule =
         static_cast<jura::WahWahAudioModule*> (effectModules[slotIndex]);
       delete wahWahStates[slotIndex];
       wahWahStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
     } break;
-  case rosic::Quadrifex::WAVESHAPER: 
+  case rosic::Quadrifex::WAVESHAPER:
     {
-      jura::WaveShaperAudioModule *audioModule = 
+      jura::WaveShaperAudioModule *audioModule =
         static_cast<jura::WaveShaperAudioModule*> (effectModules[slotIndex]);
       delete waveShaperStates[slotIndex];
       waveShaperStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
@@ -426,7 +426,7 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
   // delete the old effect (and its (sub)editor, if present):
   if( editor != NULL )
     editor->removeChildEditorInSlot(slotIndex);
-  effectModules[slotIndex]->removeAllStateWatchers();  
+  effectModules[slotIndex]->removeAllStateWatchers();
 
 
   // hangs on plugging in a Reverb...
@@ -439,9 +439,9 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
   // create the new effect and restore its state from any previous use:
   switch( newAlgorithmIndex )
   {
-  case rosic::Quadrifex::BIT_CRUSHER: 
+  case rosic::Quadrifex::BIT_CRUSHER:
     {
-      rosic::BitCrusherModule *core = 
+      rosic::BitCrusherModule *core =
         static_cast<rosic::BitCrusherModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::BitCrusherAudioModule *audioModule = new jura::BitCrusherAudioModule(lock, core);
       audioModule->setModuleName(juce::String(("BitCrusher")) + juce::String(slotIndex+1));
@@ -449,9 +449,9 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
       effectModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
     } break;
-  case rosic::Quadrifex::CHORUS: 
+  case rosic::Quadrifex::CHORUS:
     {
-      rosic::ChorusModule *core = 
+      rosic::ChorusModule *core =
         static_cast<rosic::ChorusModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::ChorusAudioModule *audioModule = new jura::ChorusAudioModule(lock, core);
       audioModule->setModuleName(juce::String(("Chorus")) + juce::String(slotIndex+1));
@@ -459,9 +459,9 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
       effectModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
     } break;
-  case rosic::Quadrifex::COMB_BANK: 
+  case rosic::Quadrifex::COMB_BANK:
     {
-      rosic::CombBankModule *core = 
+      rosic::CombBankModule *core =
         static_cast<rosic::CombBankModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::CombBankAudioModule *audioModule = new jura::CombBankAudioModule(lock, core);
       audioModule->setModuleName(juce::String(("CombBank")) + juce::String(slotIndex+1));
@@ -469,9 +469,9 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
       effectModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
     } break;
-  case rosic::Quadrifex::COMB_RESONATOR: 
+  case rosic::Quadrifex::COMB_RESONATOR:
     {
-      rosic::CombResonatorStereoModule *core = 
+      rosic::CombResonatorStereoModule *core =
         static_cast<rosic::CombResonatorStereoModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::CombResonatorAudioModule *audioModule = new jura::CombResonatorAudioModule(lock, core);
       audioModule->setModuleName(juce::String(("CombResonator")) + juce::String(slotIndex+1));
@@ -479,9 +479,9 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
       effectModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
     } break;
-  case rosic::Quadrifex::COMB_STEREOIZER: 
+  case rosic::Quadrifex::COMB_STEREOIZER:
     {
-      rosic::CombStereoizerModule *core = 
+      rosic::CombStereoizerModule *core =
         static_cast<rosic::CombStereoizerModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::CombStereoizerAudioModule *audioModule = new jura::CombStereoizerAudioModule(lock, core);
       audioModule->setModuleName(juce::String(("CombStereoizer")) + juce::String(slotIndex+1));
@@ -489,9 +489,9 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
       effectModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
     } break;
-  case rosic::Quadrifex::COMPRESSOR: 
+  case rosic::Quadrifex::COMPRESSOR:
     {
-      rosic::SoftKneeCompressorModule *core = 
+      rosic::SoftKneeCompressorModule *core =
         static_cast<rosic::SoftKneeCompressorModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::CompressorAudioModule *audioModule = new jura::CompressorAudioModule(lock, core);
       audioModule->setModuleName(juce::String(("Compressor")) + juce::String(slotIndex+1));
@@ -499,9 +499,9 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
       effectModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
     } break;
-  case rosic::Quadrifex::DUAL_TWO_POLE_FILTER: 
+  case rosic::Quadrifex::DUAL_TWO_POLE_FILTER:
     {
-      rosic::DualTwoPoleFilterModule *core = 
+      rosic::DualTwoPoleFilterModule *core =
         static_cast<rosic::DualTwoPoleFilterModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::DualTwoPoleFilterAudioModule *audioModule = new jura::DualTwoPoleFilterAudioModule(lock, core);
       audioModule->setModuleName(juce::String(("DualTwoPoleFilter")) + juce::String(slotIndex+1));
@@ -509,9 +509,9 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
       effectModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
     } break;
-  case rosic::Quadrifex::EQUALIZER: 
+  case rosic::Quadrifex::EQUALIZER:
     {
-      rosic::EqualizerModule *core = 
+      rosic::EqualizerModule *core =
         static_cast<rosic::EqualizerModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::EqualizerAudioModule *audioModule = new jura::EqualizerAudioModule(lock, core);
       audioModule->setModuleName(juce::String(("Equalizer")) + juce::String(slotIndex+1));
@@ -519,9 +519,9 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
       effectModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
     } break;
-  case rosic::Quadrifex::EXPANDER: 
+  case rosic::Quadrifex::EXPANDER:
     {
-      rosic::SoftKneeExpanderModule *core = 
+      rosic::SoftKneeExpanderModule *core =
         static_cast<rosic::SoftKneeExpanderModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::ExpanderAudioModule *audioModule = new jura::ExpanderAudioModule(lock, core);
       audioModule->setModuleName(juce::String(("Expander")) + juce::String(slotIndex+1));
@@ -529,9 +529,9 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
       effectModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
     } break;
-  case rosic::Quadrifex::FLANGER: 
+  case rosic::Quadrifex::FLANGER:
     {
-      rosic::FlangerModule *core = 
+      rosic::FlangerModule *core =
         static_cast<rosic::FlangerModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::FlangerAudioModule *audioModule = new jura::FlangerAudioModule(lock, core);
       audioModule->setModuleName(juce::String(("Flanger")) + juce::String(slotIndex+1));
@@ -539,9 +539,9 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
       effectModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
     } break;
-  case rosic::Quadrifex::FORMANT_SHIFTER: 
+  case rosic::Quadrifex::FORMANT_SHIFTER:
     {
-      rosic::FormantShifterModule *core = 
+      rosic::FormantShifterModule *core =
         static_cast<rosic::FormantShifterModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::FormantShifterAudioModule *audioModule = new jura::FormantShifterAudioModule(lock, core);
       audioModule->setModuleName(juce::String(("FormantShifter")) + juce::String(slotIndex+1));
@@ -549,9 +549,9 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
       effectModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
     } break;
-  case rosic::Quadrifex::FOUR_POLE_FILTER: 
+  case rosic::Quadrifex::FOUR_POLE_FILTER:
     {
-      rosic::FourPoleFilterModule *core = 
+      rosic::FourPoleFilterModule *core =
         static_cast<rosic::FourPoleFilterModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::FourPoleFilterAudioModule *audioModule = new jura::FourPoleFilterAudioModule(lock, core);
       audioModule->setModuleName(juce::String(("FourPoleFilter")) + juce::String(slotIndex+1));
@@ -559,9 +559,9 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
       effectModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
     } break;
-  case rosic::Quadrifex::FREQUENCY_SHIFTER: 
+  case rosic::Quadrifex::FREQUENCY_SHIFTER:
     {
-      rosic::FrequencyShifterStereoModule *core = 
+      rosic::FrequencyShifterStereoModule *core =
         static_cast<rosic::FrequencyShifterStereoModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::FrequencyShifterAudioModule *audioModule = new jura::FrequencyShifterAudioModule(lock, core);
       audioModule->setModuleName(juce::String(("FrequencyShifter")) + juce::String(slotIndex+1));
@@ -569,9 +569,9 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
       effectModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
     } break;
-  case rosic::Quadrifex::HARMONICS: 
+  case rosic::Quadrifex::HARMONICS:
     {
-      rosic::HarmonicsModule *core = 
+      rosic::HarmonicsModule *core =
         static_cast<rosic::HarmonicsModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::HarmonicsAudioModule *audioModule = new jura::HarmonicsAudioModule(lock, core);
       audioModule->setModuleName(juce::String(("Harmonics")) + juce::String(slotIndex+1));
@@ -579,9 +579,9 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
       effectModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
     } break;
-  case rosic::Quadrifex::LADDER_FILTER: 
+  case rosic::Quadrifex::LADDER_FILTER:
     {
-      rosic::LadderFilterModule *core = 
+      rosic::LadderFilterModule *core =
         static_cast<rosic::LadderFilterModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::LadderFilterAudioModule *audioModule = new jura::LadderFilterAudioModule(lock, core);
       audioModule->setModuleName(juce::String(("LadderFilter")) + juce::String(slotIndex+1));
@@ -589,9 +589,9 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
       effectModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
     } break;
-  case rosic::Quadrifex::LIMITER: 
+  case rosic::Quadrifex::LIMITER:
     {
-      rosic::LimiterModule *core = 
+      rosic::LimiterModule *core =
         static_cast<rosic::LimiterModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::LimiterAudioModule *audioModule = new jura::LimiterAudioModule(lock, core);
       audioModule->setModuleName(juce::String(("Limiter")) + juce::String(slotIndex+1));
@@ -599,9 +599,9 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
       effectModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
     } break;
-  case rosic::Quadrifex::MODULATED_ALLPASS: 
+  case rosic::Quadrifex::MODULATED_ALLPASS:
     {
-      rosic::ModulatedAllpassModule *core = 
+      rosic::ModulatedAllpassModule *core =
         static_cast<rosic::ModulatedAllpassModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::ModulatedAllpassAudioModule *audioModule = new jura::ModulatedAllpassAudioModule(lock, core);
       audioModule->setModuleName(juce::String(("ModulatedAllpass")) + juce::String(slotIndex+1));
@@ -609,9 +609,9 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
       effectModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
     } break;
-  case rosic::Quadrifex::NOISE_GATE: 
+  case rosic::Quadrifex::NOISE_GATE:
     {
-      rosic::NoiseGateModule *core = 
+      rosic::NoiseGateModule *core =
         static_cast<rosic::NoiseGateModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::NoiseGateAudioModule *audioModule = new jura::NoiseGateAudioModule(lock, core);
       audioModule->setModuleName(juce::String(("NoiseGate")) + juce::String(slotIndex+1));
@@ -619,9 +619,9 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
       effectModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
     } break;
-  case rosic::Quadrifex::NOISIFIER: 
+  case rosic::Quadrifex::NOISIFIER:
     {
-      rosic::NoisifierModule *core = 
+      rosic::NoisifierModule *core =
         static_cast<rosic::NoisifierModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::NoisifierAudioModule *audioModule = new jura::NoisifierAudioModule(lock, core);
       audioModule->setModuleName(juce::String(("Noisifier")) + juce::String(slotIndex+1));
@@ -629,9 +629,9 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
       effectModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
     } break;
-  case rosic::Quadrifex::PHASER: 
+  case rosic::Quadrifex::PHASER:
     {
-      rosic::PhaserModule *core = 
+      rosic::PhaserModule *core =
         static_cast<rosic::PhaserModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::PhaserAudioModule *audioModule = new jura::PhaserAudioModule(lock, core);
       audioModule->setModuleName(juce::String(("Phaser")) + juce::String(slotIndex+1));
@@ -639,9 +639,9 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
       effectModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
     } break;
-  case rosic::Quadrifex::PHASE_STEREOIZER: 
+  case rosic::Quadrifex::PHASE_STEREOIZER:
     {
-      rosic::PhaseStereoizerModule *core = 
+      rosic::PhaseStereoizerModule *core =
         static_cast<rosic::PhaseStereoizerModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::PhaseStereoizerAudioModule *audioModule = new jura::PhaseStereoizerAudioModule(lock, core);
       audioModule->setModuleName(juce::String(("PhaseStereoizer")) + juce::String(slotIndex+1));
@@ -649,9 +649,9 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
       effectModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
     } break;
-  case rosic::Quadrifex::PINGPONG_ECHO: 
+  case rosic::Quadrifex::PINGPONG_ECHO:
     {
-      rosic::PingPongEchoModule *core = 
+      rosic::PingPongEchoModule *core =
         static_cast<rosic::PingPongEchoModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::PingPongEchoAudioModule *audioModule = new jura::PingPongEchoAudioModule(lock, core);
       audioModule->setModuleName(juce::String(("PingPongEcho")) + juce::String(slotIndex+1));
@@ -659,9 +659,9 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
       effectModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
     } break;
-  case rosic::Quadrifex::PITCH_SHIFTER: 
+  case rosic::Quadrifex::PITCH_SHIFTER:
     {
-      rosic::PitchShifterModule *core = 
+      rosic::PitchShifterModule *core =
         static_cast<rosic::PitchShifterModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::PitchShifterAudioModule *audioModule = new jura::PitchShifterAudioModule(lock, core);
       audioModule->setModuleName(juce::String(("PitchShifter")) + juce::String(slotIndex+1));
@@ -669,9 +669,9 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
       effectModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
     } break;
-  case rosic::Quadrifex::REVERB: 
+  case rosic::Quadrifex::REVERB:
     {
-      rosic::rsReverbModule *core = 
+      rosic::rsReverbModule *core =
         static_cast<rosic::rsReverbModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::ReverbAudioModule *audioModule = new jura::ReverbAudioModule(lock, core);
       audioModule->setModuleName(juce::String(("Reverb")) + juce::String(slotIndex+1));
@@ -679,9 +679,9 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
       effectModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
     } break;
-  case rosic::Quadrifex::RINGMODULATOR: 
+  case rosic::Quadrifex::RINGMODULATOR:
     {
-      rosic::RingModulatorModule *core = 
+      rosic::RingModulatorModule *core =
         static_cast<rosic::RingModulatorModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::RingModulatorAudioModule *audioModule = new jura::RingModulatorAudioModule(lock, core);
       audioModule->setModuleName(juce::String(("RingModulator")) + juce::String(slotIndex+1));
@@ -689,9 +689,9 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
       effectModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
     } break;
-  case rosic::Quadrifex::SIMPLE_DELAY: 
+  case rosic::Quadrifex::SIMPLE_DELAY:
     {
-      rosic::SimpleDelayModule *core = 
+      rosic::SimpleDelayModule *core =
         static_cast<rosic::SimpleDelayModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::SimpleDelayAudioModule *audioModule = new jura::SimpleDelayAudioModule(lock, core);
       audioModule->setModuleName(juce::String(("SimpleDelay")) + juce::String(slotIndex+1));
@@ -699,9 +699,9 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
       effectModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
     } break;
-  case rosic::Quadrifex::SINE_OSCILLATOR: 
+  case rosic::Quadrifex::SINE_OSCILLATOR:
     {
-      rosic::SineOscillatorModule *core = 
+      rosic::SineOscillatorModule *core =
         static_cast<rosic::SineOscillatorModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::SineOscillatorAudioModule *audioModule = new jura::SineOscillatorAudioModule(lock, core);
       audioModule->setModuleName(juce::String(("SineOscillator")) + juce::String(slotIndex+1));
@@ -709,9 +709,9 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
       effectModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
     } break;
-  case rosic::Quadrifex::SLOPE_FILTER: 
+  case rosic::Quadrifex::SLOPE_FILTER:
     {
-      rosic::SlopeFilterModule *core = 
+      rosic::SlopeFilterModule *core =
         static_cast<rosic::SlopeFilterModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::SlopeFilterAudioModule *audioModule = new jura::SlopeFilterAudioModule(lock, core);
       audioModule->setModuleName(juce::String(("SlopeFilter")) + juce::String(slotIndex+1));
@@ -719,9 +719,9 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
       effectModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
     } break;
-  case rosic::Quadrifex::SSB_MODULATOR: 
+  case rosic::Quadrifex::SSB_MODULATOR:
     {
-      rosic::SingleSidebandModulatorModule *core = 
+      rosic::SingleSidebandModulatorModule *core =
         static_cast<rosic::SingleSidebandModulatorModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::SingleSidebandModulatorAudioModule *audioModule = new jura::SingleSidebandModulatorAudioModule(lock, core);
       audioModule->setModuleName(juce::String(("SingleSidebandModulator")) + juce::String(slotIndex+1));
@@ -729,9 +729,9 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
       effectModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
     } break;
-  case rosic::Quadrifex::SLEWRATE_LIMITER: 
+  case rosic::Quadrifex::SLEWRATE_LIMITER:
     {
-      rosic::SlewRateLimiterStereoModule *core = 
+      rosic::SlewRateLimiterStereoModule *core =
         static_cast<rosic::SlewRateLimiterStereoModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::SlewRateLimiterAudioModule *audioModule = new jura::SlewRateLimiterAudioModule(lock, core);
       audioModule->setModuleName(juce::String(("SlewRateLimiter")) + juce::String(slotIndex+1));
@@ -739,9 +739,9 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
       effectModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
     } break;
-  case rosic::Quadrifex::STEREO_PAN: 
+  case rosic::Quadrifex::STEREO_PAN:
     {
-      rosic::StereoPanModule *core = 
+      rosic::StereoPanModule *core =
         static_cast<rosic::StereoPanModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::StereoPanAudioModule *audioModule = new jura::StereoPanAudioModule(lock, core);
       audioModule->setModuleName(juce::String(("StereoPan")) + juce::String(slotIndex+1));
@@ -749,9 +749,9 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
       effectModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
     } break;
-  case rosic::Quadrifex::STEREO_WIDTH: 
+  case rosic::Quadrifex::STEREO_WIDTH:
     {
-      rosic::StereoWidthModule *core = 
+      rosic::StereoWidthModule *core =
         static_cast<rosic::StereoWidthModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::StereoWidthAudioModule *audioModule = new jura::StereoWidthAudioModule(lock, core);
       audioModule->setModuleName(juce::String(("StereoWidth")) + juce::String(slotIndex+1));
@@ -759,9 +759,9 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
       effectModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
     } break;
-  case rosic::Quadrifex::TREMOLO: 
+  case rosic::Quadrifex::TREMOLO:
     {
-      rosic::TremoloModule *core = 
+      rosic::TremoloModule *core =
         static_cast<rosic::TremoloModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::TremoloAudioModule *audioModule = new jura::TremoloAudioModule(lock, core);
       audioModule->setModuleName(juce::String(("Tremolo")) + juce::String(slotIndex+1));
@@ -769,9 +769,9 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
       effectModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
     } break;
-  case rosic::Quadrifex::TWO_POLE_FILTER: 
+  case rosic::Quadrifex::TWO_POLE_FILTER:
     {
-      rosic::TwoPoleFilterModule *core = 
+      rosic::TwoPoleFilterModule *core =
         static_cast<rosic::TwoPoleFilterModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::TwoPoleFilterAudioModule *audioModule = new jura::TwoPoleFilterAudioModule(lock, core);
       audioModule->setModuleName(juce::String(("TwoPoleFilter")) + juce::String(slotIndex+1));
@@ -779,9 +779,9 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
       effectModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
     } break;
-  case rosic::Quadrifex::VIBRATO: 
+  case rosic::Quadrifex::VIBRATO:
     {
-      rosic::VibratoModule *core = 
+      rosic::VibratoModule *core =
         static_cast<rosic::VibratoModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::VibratoAudioModule *audioModule = new jura::VibratoAudioModule(lock, core);
       audioModule->setModuleName(juce::String(("Vibrato")) + juce::String(slotIndex+1));
@@ -789,9 +789,9 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
       effectModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
     } break;
-  case rosic::Quadrifex::WAH_WAH: 
+  case rosic::Quadrifex::WAH_WAH:
     {
-      rosic::WahWahModule *core = 
+      rosic::WahWahModule *core =
         static_cast<rosic::WahWahModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::WahWahAudioModule *audioModule = new jura::WahWahAudioModule(lock, core);
       audioModule->setModuleName(juce::String(("WahWah")) + juce::String(slotIndex+1));
@@ -799,9 +799,9 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
       effectModules[slotIndex] = audioModule;
       addChildAudioModule(audioModule);
     } break;
-  case rosic::Quadrifex::WAVESHAPER: 
+  case rosic::Quadrifex::WAVESHAPER:
     {
-      rosic::WaveShaperModule *core = 
+      rosic::WaveShaperModule *core =
         static_cast<rosic::WaveShaperModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::WaveShaperAudioModule *audioModule = new jura::WaveShaperAudioModule(lock, core);
       audioModule->setModuleName(juce::String(("WaveShaper")) + juce::String(slotIndex+1));
@@ -812,9 +812,9 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
 
 
     // special trivial cases:
-  case rosic::Quadrifex::MUTE: 
+  case rosic::Quadrifex::MUTE:
     {
-      rosic::MuteModule *core = 
+      rosic::MuteModule *core =
         static_cast<rosic::MuteModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::MuteAudioModule *audioModule = new jura::MuteAudioModule(lock, core);
       effectModules[slotIndex] = audioModule;
@@ -822,7 +822,7 @@ void QuadrifexAudioModule::setEffectAlgorithm(int slotIndex, int newAlgorithmInd
     } break;
   default: // bypass by default (i.e. value out of range)
     {
-      rosic::BypassModule *core = 
+      rosic::BypassModule *core =
         static_cast<rosic::BypassModule*> (wrappedQuadrifex->getEffectModule(slotIndex));
       jura::BypassAudioModule *audioModule = new jura::BypassAudioModule(lock, core);
       effectModules[slotIndex] = audioModule;
@@ -866,18 +866,18 @@ XmlElement* QuadrifexAudioModule::getStateAsXml(const juce::String& stateName, b
   if( wrappedQuadrifex != NULL )
   {
     // store the routing and slot-effect assignments:
-    xmlState->setAttribute(("Routing"), 
+    xmlState->setAttribute(("Routing"),
       slotRoutingIndexToString(wrappedQuadrifex->getSlotRouting()));
     for(int i=0; i<rosic::Quadrifex::numEffectSlots; i++)
     {
-      xmlState->setAttribute(juce::String(("Slot"))+juce::String(i+1), 
+      xmlState->setAttribute(juce::String(("Slot"))+juce::String(i+1),
         effectAlgorithmIndexToString(wrappedQuadrifex->getEffectAlgorithmIndex(i)) );
     }
   }
   return xmlState;
 }
 
-void QuadrifexAudioModule::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 
+void QuadrifexAudioModule::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
                                                bool markAsClean)
 {
   ScopedLock scopedLock(*lock);
@@ -889,7 +889,7 @@ void QuadrifexAudioModule::setStateFromXml(const XmlElement& xmlState, const juc
       stringToSlotRoutingIndex( xmlState.getStringAttribute(("Routing"), ("1>2>3>4")) ) );
     for(int i=0; i<rosic::Quadrifex::numEffectSlots; i++)
     {
-      setEffectAlgorithm(i, stringToEffectAlgorithmIndex( 
+      setEffectAlgorithm(i, stringToEffectAlgorithmIndex(
         xmlState.getStringAttribute( juce::String(("Slot"))+juce::String(i+1), ("Mute"))));
     }
   }
@@ -914,11 +914,11 @@ void QuadrifexAudioModule::initializeAutomatableParameters()
   AutomatableParameter* p;
 
   // #00:
-  p = new AutomatableParameter(lock, "DryWet", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR); 
+  p = new AutomatableParameter(lock, "DryWet", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
   addObservedParameter(p);
 
   // #01:
-  p = new AutomatableParameter(lock, "WetLevel", -36.0, 6.0, 0.01, 0.0, Parameter::LINEAR); 
+  p = new AutomatableParameter(lock, "WetLevel", -36.0, 6.0, 0.01, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
 
   // #02:
@@ -1006,8 +1006,8 @@ juce::String QuadrifexAudioModule::effectAlgorithmIndexToString(int index)
   case rosic::Quadrifex::NOISIFIER:            return juce::String(("Noisifier"));
   case rosic::Quadrifex::PHASER:               return juce::String(("Phaser"));
   case rosic::Quadrifex::PHASE_STEREOIZER:     return juce::String(("PhaseStereoizer"));
-  case rosic::Quadrifex::PINGPONG_ECHO:        return juce::String(("PingPongEcho")); 
-  case rosic::Quadrifex::PITCH_SHIFTER:        return juce::String(("PitchShifter")); 
+  case rosic::Quadrifex::PINGPONG_ECHO:        return juce::String(("PingPongEcho"));
+  case rosic::Quadrifex::PITCH_SHIFTER:        return juce::String(("PitchShifter"));
   case rosic::Quadrifex::REVERB:               return juce::String(("Reverb"));
   case rosic::Quadrifex::RINGMODULATOR:        return juce::String(("RingModulator"));
   case rosic::Quadrifex::SIMPLE_DELAY:         return juce::String(("SimpleDelay"));
@@ -1240,7 +1240,7 @@ void QuadrifexRoutingDiagram::drawRoutingDiagram(Graphics &g)
   float w2 = w/2;
   float h  = (float) getHeight();
   float h2 = h/2;
-  float x  = 4; 
+  float x  = 4;
   float y  = h2;
   float s  = 20;        // side length of blocks
   float s2 = s/2;
@@ -1642,9 +1642,9 @@ void QuadrifexRoutingDiagram::drawRoutingDiagram(Graphics &g)
   }
 }
 
-void QuadrifexRoutingDiagram::drawSlotBox(Graphics &g, float x, float y, float w, float h, 
+void QuadrifexRoutingDiagram::drawSlotBox(Graphics &g, float x, float y, float w, float h,
   int slotIndex, int algoIndex)
-{ 
+{
   ScopedLock scopedLock(*plugInLock);
 
   //Colour oldColour = g.getCurrentColour();
@@ -1665,8 +1665,8 @@ void QuadrifexRoutingDiagram::drawSlotBox(Graphics &g, float x, float y, float w
     g.drawLine(x,   y, x+w, y+h, 2.f);
     g.drawLine(x+w, y, x,   y+h, 2.f);
 
-    drawBitmapFontText(g, (int)(x+0.5f*w), (int)(y+0.5f*h), juce::String(slotIndex+1), 
-      font, diagramColour, -1, 
+    drawBitmapFontText(g, (int)(x+0.5f*w), (int)(y+0.5f*h), juce::String(slotIndex+1),
+      font, diagramColour, -1,
       Justification::centred);
   }
   else if( algoIndex == rosic::Quadrifex::BYPASS )
@@ -1674,8 +1674,8 @@ void QuadrifexRoutingDiagram::drawSlotBox(Graphics &g, float x, float y, float w
     g.setColour(diagramColour.withMultipliedAlpha(0.25f));
     g.drawRect(x, y, w, h, 2.f);
 
-    drawBitmapFontText(g, (int)(x+0.5f*w), (int)(y+0.5f*h), juce::String(slotIndex+1), 
-      font, diagramColour.withMultipliedAlpha(0.5f), -1, 
+    drawBitmapFontText(g, (int)(x+0.5f*w), (int)(y+0.5f*h), juce::String(slotIndex+1),
+      font, diagramColour.withMultipliedAlpha(0.5f), -1,
       Justification::centred);
 
     g.setColour(diagramColour);
@@ -1686,7 +1686,7 @@ void QuadrifexRoutingDiagram::drawSlotBox(Graphics &g, float x, float y, float w
     g.setColour(diagramColour);
     g.drawRect(x, y, w, h, 2.f);
 
-    drawBitmapFontText(g, (int)(x+0.5f*w), (int)(y+0.5f*h), juce::String(slotIndex+1), 
+    drawBitmapFontText(g, (int)(x+0.5f*w), (int)(y+0.5f*h), juce::String(slotIndex+1),
       font, diagramColour, -1, Justification::centred);
   }
 
@@ -1695,7 +1695,7 @@ void QuadrifexRoutingDiagram::drawSlotBox(Graphics &g, float x, float y, float w
 
 //=================================================================================================
 
-QuadrifexModuleEditor::QuadrifexModuleEditor(CriticalSection *newPlugInLock, 
+QuadrifexModuleEditor::QuadrifexModuleEditor(CriticalSection *newPlugInLock,
   QuadrifexAudioModule* newQuadrifexAudioModule) : AudioModuleEditor(newQuadrifexAudioModule)
 {
 
@@ -1741,7 +1741,7 @@ QuadrifexModuleEditor::QuadrifexModuleEditor(CriticalSection *newPlugInLock,
   routingDiagram = new QuadrifexRoutingDiagram(lock);
   routingDiagram->addChangeListener(this);
   addPlot(routingDiagram, true, true);
-  //addAndMakeVisible(routingDiagram); 
+  //addAndMakeVisible(routingDiagram);
 
   matrixEditor = new RoutingMatrixModuleEditor(lock, quadrifexModuleToEdit->matrixModule);
   matrixEditor->setHeadlineStyle(AudioModuleEditor::NO_HEADLINE);
@@ -1936,7 +1936,7 @@ void QuadrifexModuleEditor::updateWidgetsAccordingToState()
     matrixEditor->setVisible(false);
   for(int i=0; i<rosic::Quadrifex::numEffectSlots; i++)
   {
-    routingDiagram->setAlgorithmIndex(i, 
+    routingDiagram->setAlgorithmIndex(i,
       quadrifexModuleToEdit->wrappedQuadrifex->getEffectAlgorithmIndex(i));
   }
 
@@ -1951,7 +1951,7 @@ void QuadrifexModuleEditor::paint(Graphics &g)
   ScopedLock scopedLock(*lock);
   AudioModuleEditor::paint(g);
 
-  fillRectWithBilinearGradient(g, globalRectangle, editorColourScheme.topLeft, 
+  fillRectWithBilinearGradient(g, globalRectangle, editorColourScheme.topLeft,
     editorColourScheme.topRight, editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
 
   g.setColour(editorColourScheme.outline);
@@ -1959,7 +1959,7 @@ void QuadrifexModuleEditor::paint(Graphics &g)
 
   int x = globalRectangle.getX(); // + middleRectangle.getWidth()/2;
   int y = globalRectangle.getY();
-  //drawBitmapFontText(g, x+4, y+4, juce::String(("Global Settings")), BigFont::getInstance(), 
+  //drawBitmapFontText(g, x+4, y+4, juce::String(("Global Settings")), BigFont::getInstance(),
   //  editorColourScheme.labelTextColour);
 
   if( quadrifexModuleToEdit == NULL )
@@ -1970,15 +1970,15 @@ void QuadrifexModuleEditor::paint(Graphics &g)
   rosic::Quadrifex* core = quadrifexModuleToEdit->wrappedQuadrifex;
   for(int i=0; i<rosic::Quadrifex::numEffectSlots; i++)
   {
-    fillRectWithBilinearGradient(g, slotRectangles[i], editorColourScheme.topLeft, 
+    fillRectWithBilinearGradient(g, slotRectangles[i], editorColourScheme.topLeft,
       editorColourScheme.topRight, editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
     g.drawRect(slotRectangles[i], 2);
 
-    x = slotRectangles[i].getX(); 
+    x = slotRectangles[i].getX();
     y = slotRectangles[i].getY();
-    juce::String headlineString = juce::String(i+1) + juce::String((" - ")) + 
+    juce::String headlineString = juce::String(i+1) + juce::String((" - ")) +
       quadrifexModuleToEdit->effectAlgorithmIndexToString(core->getEffectAlgorithmIndex(i));
-    drawBitmapFontText(g, x+4, y+4, headlineString, &BitmapFontRoundedBoldA10D0::instance, 
+    drawBitmapFontText(g, x+4, y+4, headlineString, &BitmapFontRoundedBoldA10D0::instance,
       editorColourScheme.headline);
   }
 }
@@ -2089,7 +2089,7 @@ void QuadrifexModuleEditor::setEffectAlgorithm(int slotIndex, int newAlgorithmIn
 
   if( quadrifexModuleToEdit == NULL )
     return;
-  else if( quadrifexModuleToEdit->wrappedQuadrifex->getEffectAlgorithmIndex(slotIndex) 
+  else if( quadrifexModuleToEdit->wrappedQuadrifex->getEffectAlgorithmIndex(slotIndex)
     == newAlgorithmIndex )
   {
     return; // nothing to do
@@ -2127,7 +2127,7 @@ void QuadrifexModuleEditor::removeChildEditorInSlot(int slotIndex)
 {
   ScopedLock scopedLock(*lock);
   int i = slotIndex;
-  if( slotIndex >= 0 && slotIndex < rosic::Quadrifex::numEffectSlots 
+  if( slotIndex >= 0 && slotIndex < rosic::Quadrifex::numEffectSlots
     && moduleEditors[i] != NULL  )
   {
     moduleEditors[i]->invalidateModulePointer();  // so it doesn't dereference it in the destructor
@@ -2144,7 +2144,7 @@ void QuadrifexModuleEditor::createEditorForSlot(int slotIndex, int algorithmInde
   if( quadrifexModuleToEdit->wrappedQuadrifex == NULL )
     return;
 
-  jassert( moduleEditors[slotIndex] == NULL ); 
+  jassert( moduleEditors[slotIndex] == NULL );
   // you should delete the old editor and null the pointer before creating a new one
 
   switch( algorithmIndex )
@@ -2153,228 +2153,228 @@ void QuadrifexModuleEditor::createEditorForSlot(int slotIndex, int algorithmInde
   {
     jura::BitCrusherAudioModule *audioModule = static_cast<jura::BitCrusherAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new BitCrusherModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new BitCrusherModuleEditor(lock, audioModule);
   } break;
   case rosic::Quadrifex::CHORUS:
   {
     jura::ChorusAudioModule *audioModule = static_cast<jura::ChorusAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new ChorusModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new ChorusModuleEditor(lock, audioModule);
   } break;
   case rosic::Quadrifex::COMB_BANK:
   {
     jura::CombBankAudioModule *audioModule = static_cast<jura::CombBankAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new CombBankModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new CombBankModuleEditor(lock, audioModule);
   } break;
   case rosic::Quadrifex::COMB_RESONATOR:
   {
     jura::CombResonatorAudioModule *audioModule = static_cast<jura::CombResonatorAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new CombResonatorModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new CombResonatorModuleEditor(lock, audioModule);
   } break;
   case rosic::Quadrifex::COMB_STEREOIZER:
   {
     jura::CombStereoizerAudioModule *audioModule = static_cast<jura::CombStereoizerAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new CombStereoizerModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new CombStereoizerModuleEditor(lock, audioModule);
   } break;
   case rosic::Quadrifex::COMPRESSOR:
   {
     jura::CompressorAudioModule *audioModule = static_cast<jura::CompressorAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new CompressorModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new CompressorModuleEditor(lock, audioModule);
   } break;
   case rosic::Quadrifex::DUAL_TWO_POLE_FILTER:
   {
     jura::DualTwoPoleFilterAudioModule *audioModule = static_cast<jura::DualTwoPoleFilterAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new DualTwoPoleFilterModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new DualTwoPoleFilterModuleEditor(lock, audioModule);
   } break;
   case rosic::Quadrifex::EQUALIZER:
   {
     jura::EqualizerAudioModule *audioModule = static_cast<jura::EqualizerAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    EqualizerModuleEditor *editor = new EqualizerModuleEditor(lock, audioModule); 
+    EqualizerModuleEditor *editor = new EqualizerModuleEditor(lock, audioModule);
     editor->setLayout(EqualizerModuleEditor::SLIDERS_BELOW);
     editor->setUseShortSliderNames(true);
     editor->setUseSmallComboBox(true);
-    moduleEditors[slotIndex] = editor; 
+    moduleEditors[slotIndex] = editor;
   } break;
   case rosic::Quadrifex::EXPANDER:
   {
     jura::ExpanderAudioModule *audioModule = static_cast<jura::ExpanderAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    ExpanderModuleEditor *editor = new ExpanderModuleEditor(lock, audioModule); 
-    moduleEditors[slotIndex] = editor; 
+    ExpanderModuleEditor *editor = new ExpanderModuleEditor(lock, audioModule);
+    moduleEditors[slotIndex] = editor;
   } break;
   case rosic::Quadrifex::FLANGER:
   {
     jura::FlangerAudioModule *audioModule = static_cast<jura::FlangerAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new FlangerModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new FlangerModuleEditor(lock, audioModule);
   } break;
   case rosic::Quadrifex::FORMANT_SHIFTER:
   {
     jura::FormantShifterAudioModule *audioModule = static_cast<jura::FormantShifterAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new FormantShifterModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new FormantShifterModuleEditor(lock, audioModule);
   } break;
   case rosic::Quadrifex::FOUR_POLE_FILTER:
   {
     jura::FourPoleFilterAudioModule *audioModule = static_cast<jura::FourPoleFilterAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new FourPoleFilterModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new FourPoleFilterModuleEditor(lock, audioModule);
   } break;
   case rosic::Quadrifex::FREQUENCY_SHIFTER:
   {
     jura::FrequencyShifterAudioModule *audioModule = static_cast<jura::FrequencyShifterAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new FrequencyShifterModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new FrequencyShifterModuleEditor(lock, audioModule);
   } break;
   case rosic::Quadrifex::HARMONICS:
   {
     jura::HarmonicsAudioModule *audioModule = static_cast<jura::HarmonicsAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new HarmonicsModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new HarmonicsModuleEditor(lock, audioModule);
   } break;
   case rosic::Quadrifex::LADDER_FILTER:
   {
     jura::LadderFilterAudioModule *audioModule = static_cast<jura::LadderFilterAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new LadderFilterModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new LadderFilterModuleEditor(lock, audioModule);
   } break;
   case rosic::Quadrifex::LIMITER:
   {
     jura::LimiterAudioModule *audioModule = static_cast<jura::LimiterAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new LimiterModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new LimiterModuleEditor(lock, audioModule);
   } break;
   case rosic::Quadrifex::MODULATED_ALLPASS:
   {
     jura::ModulatedAllpassAudioModule *audioModule = static_cast<jura::ModulatedAllpassAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new ModulatedAllpassModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new ModulatedAllpassModuleEditor(lock, audioModule);
   } break;
   case rosic::Quadrifex::NOISE_GATE:
   {
     jura::NoiseGateAudioModule *audioModule = static_cast<jura::NoiseGateAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new NoiseGateModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new NoiseGateModuleEditor(lock, audioModule);
   } break;
   case rosic::Quadrifex::NOISIFIER:
   {
     jura::NoisifierAudioModule *audioModule = static_cast<jura::NoisifierAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new NoisifierModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new NoisifierModuleEditor(lock, audioModule);
   } break;
   case rosic::Quadrifex::PHASER:
   {
     jura::PhaserAudioModule *audioModule = static_cast<jura::PhaserAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new PhaserModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new PhaserModuleEditor(lock, audioModule);
   } break;
   case rosic::Quadrifex::PHASE_STEREOIZER:
   {
     jura::PhaseStereoizerAudioModule *audioModule = static_cast<jura::PhaseStereoizerAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new PhaseStereoizerModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new PhaseStereoizerModuleEditor(lock, audioModule);
   } break;
   case rosic::Quadrifex::PINGPONG_ECHO:
   {
     jura::PingPongEchoAudioModule *audioModule = static_cast<jura::PingPongEchoAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new PingPongEchoModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new PingPongEchoModuleEditor(lock, audioModule);
   } break;
   case rosic::Quadrifex::PITCH_SHIFTER:
   {
     jura::PitchShifterAudioModule *audioModule = static_cast<jura::PitchShifterAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new PitchShifterModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new PitchShifterModuleEditor(lock, audioModule);
   } break;
   case rosic::Quadrifex::REVERB:
   {
     jura::ReverbAudioModule *audioModule = static_cast<jura::ReverbAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new ReverbModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new ReverbModuleEditor(lock, audioModule);
   } break;
   case rosic::Quadrifex::RINGMODULATOR:
   {
     jura::RingModulatorAudioModule *audioModule = static_cast<jura::RingModulatorAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new RingModulatorModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new RingModulatorModuleEditor(lock, audioModule);
   } break;
   case rosic::Quadrifex::SIMPLE_DELAY:
   {
     jura::SimpleDelayAudioModule *audioModule = static_cast<jura::SimpleDelayAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new SimpleDelayModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new SimpleDelayModuleEditor(lock, audioModule);
   } break;
   case rosic::Quadrifex::SINE_OSCILLATOR:
   {
     jura::SineOscillatorAudioModule *audioModule = static_cast<jura::SineOscillatorAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new SineOscillatorModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new SineOscillatorModuleEditor(lock, audioModule);
   } break;
   case rosic::Quadrifex::SSB_MODULATOR:
   {
     jura::SingleSidebandModulatorAudioModule *audioModule = static_cast<jura::SingleSidebandModulatorAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new SingleSidebandModulatorModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new SingleSidebandModulatorModuleEditor(lock, audioModule);
   } break;
   case rosic::Quadrifex::SLEWRATE_LIMITER:
   {
     jura::SlewRateLimiterAudioModule *audioModule = static_cast<jura::SlewRateLimiterAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new SlewRateLimiterModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new SlewRateLimiterModuleEditor(lock, audioModule);
   } break;
   case rosic::Quadrifex::SLOPE_FILTER:
   {
     jura::SlopeFilterAudioModule *audioModule = static_cast<jura::SlopeFilterAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new SlopeFilterModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new SlopeFilterModuleEditor(lock, audioModule);
   } break;
   case rosic::Quadrifex::STEREO_PAN:
   {
     jura::StereoPanAudioModule *audioModule = static_cast<jura::StereoPanAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new StereoPanModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new StereoPanModuleEditor(lock, audioModule);
   } break;
   case rosic::Quadrifex::STEREO_WIDTH:
   {
     jura::StereoWidthAudioModule *audioModule = static_cast<jura::StereoWidthAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new StereoWidthModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new StereoWidthModuleEditor(lock, audioModule);
   } break;
   case rosic::Quadrifex::TREMOLO:
   {
     jura::TremoloAudioModule *audioModule = static_cast<jura::TremoloAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new TremoloModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new TremoloModuleEditor(lock, audioModule);
   } break;
   case rosic::Quadrifex::TWO_POLE_FILTER:
   {
     jura::TwoPoleFilterAudioModule *audioModule = static_cast<jura::TwoPoleFilterAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new TwoPoleFilterModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new TwoPoleFilterModuleEditor(lock, audioModule);
   } break;
   case rosic::Quadrifex::VIBRATO:
   {
     jura::VibratoAudioModule *audioModule = static_cast<jura::VibratoAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new VibratoModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new VibratoModuleEditor(lock, audioModule);
   } break;
   case rosic::Quadrifex::WAH_WAH:
   {
     jura::WahWahAudioModule *audioModule = static_cast<jura::WahWahAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new WahWahModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new WahWahModuleEditor(lock, audioModule);
   } break;
   case rosic::Quadrifex::WAVESHAPER:
   {
     jura::WaveShaperAudioModule *audioModule = static_cast<jura::WaveShaperAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new WaveShaperModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new WaveShaperModuleEditor(lock, audioModule);
   } break;
 
 
@@ -2385,18 +2385,18 @@ void QuadrifexModuleEditor::createEditorForSlot(int slotIndex, int algorithmInde
   {
     jura::MuteAudioModule *audioModule = static_cast<jura::MuteAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new MuteModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new MuteModuleEditor(lock, audioModule);
   } break;
   default:
   {
     jura::BypassAudioModule *audioModule = static_cast<jura::BypassAudioModule*>
       (quadrifexModuleToEdit->getEffectAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new BypassModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new BypassModuleEditor(lock, audioModule);
   }
   }
 
   routingDiagram->setAlgorithmIndex(slotIndex, algorithmIndex);
-  moduleEditors[slotIndex]->setHeadlineStyle(Editor::NO_HEADLINE);    
+  moduleEditors[slotIndex]->setHeadlineStyle(Editor::NO_HEADLINE);
   moduleEditors[slotIndex]->setLinkPosition(AudioModuleEditor::INVISIBLE);
   moduleEditors[slotIndex]->setDescriptionField(infoField, true);
   addChildEditor(moduleEditors[slotIndex]);
@@ -2418,7 +2418,7 @@ void QuadrifexModuleEditor::setupPopupEditors(int slotIndex)
   if( editor == NULL )
     return;
 
-  ModulationEffectModuleEditor* modulationEditor 
+  ModulationEffectModuleEditor* modulationEditor
     = dynamic_cast<ModulationEffectModuleEditor*> (editor);
   if( modulationEditor != NULL )
   {
@@ -2440,7 +2440,7 @@ void QuadrifexModuleEditor::setupPopupEditors(int slotIndex)
 
     //modulationEditor->lfoEditor->setPopupEditorBounds(...)
     modulationEditor->setLfoPopUpEditorBounds(x, y, w, h);
-    int dummy = 0;
+    //int dummy = 0;
   }
 
 }

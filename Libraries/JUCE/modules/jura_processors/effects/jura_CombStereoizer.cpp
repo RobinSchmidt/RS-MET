@@ -2,7 +2,7 @@
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-CombStereoizerAudioModule::CombStereoizerAudioModule(CriticalSection *newPlugInLock, 
+CombStereoizerAudioModule::CombStereoizerAudioModule(CriticalSection *newPlugInLock,
   rosic::CombStereoizer *stereoizerToWrap) : AudioModule(newPlugInLock)
 {
   jassert(stereoizerToWrap != NULL); // you must pass a valid rosic-object to the constructor
@@ -15,7 +15,7 @@ CombStereoizerAudioModule::CombStereoizerAudioModule(CriticalSection *newPlugInL
 //-------------------------------------------------------------------------------------------------
 // state management:
 
-XmlElement* CombStereoizerAudioModule::getStateAsXml(const juce::String& stateName, 
+XmlElement* CombStereoizerAudioModule::getStateAsXml(const juce::String& stateName,
   bool markAsClean)
 {
   // store the inherited controller mappings:
@@ -31,7 +31,7 @@ XmlElement* CombStereoizerAudioModule::getStateAsXml(const juce::String& stateNa
   return xmlState;
 }
 
-void CombStereoizerAudioModule::setStateFromXml(const XmlElement& xmlState,                                      
+void CombStereoizerAudioModule::setStateFromXml(const XmlElement& xmlState,
   const juce::String& stateName, bool markAsClean)
 {
   // restore the inherited controller mappings:
@@ -40,7 +40,7 @@ void CombStereoizerAudioModule::setStateFromXml(const XmlElement& xmlState,
   if( wrappedCombStereoizer == NULL )
     return;
 
-  // restore the values of the non-automatable parameters (the automatable ones are already taken 
+  // restore the values of the non-automatable parameters (the automatable ones are already taken
   // care of by automatableModuleStateFromXml():
   wrappedCombStereoizer->setSwitchWetLeftForRight(
     xmlState.getBoolAttribute("ChannelSwitch", false));
@@ -74,7 +74,7 @@ void CombStereoizerAudioModule::initializeAutomatableParameters()
   // is important because in parameterChanged(), the index (position in the array) will be used to
   // identify which particlua parameter has changed.
 
-  // this pointer will be used to temporarily store the addresses of the created 
+  // this pointer will be used to temporarily store the addresses of the created
   // Parameter-objects:
   AutomatableParameter* p;
 
@@ -83,27 +83,27 @@ void CombStereoizerAudioModule::initializeAutomatableParameters()
   addObservedParameter(p);
 
   // #001:
-  p = new AutomatableParameter(lock, "DelayInMilliseconds", 1.0, 100.0, 0.0, 10.0, 
+  p = new AutomatableParameter(lock, "DelayInMilliseconds", 1.0, 100.0, 0.0, 10.0,
     Parameter::EXPONENTIAL);
   addObservedParameter(p);
 
   // #002:
-  p = new AutomatableParameter(lock, "WetLowpass", 20.0, 20000.0, 0.0, 20000.0, 
+  p = new AutomatableParameter(lock, "WetLowpass", 20.0, 20000.0, 0.0, 20000.0,
     Parameter::EXPONENTIAL);
   addObservedParameter(p);
 
   // #003:
-  p = new AutomatableParameter(lock, "WetHighpass", 20.0, 20000.0, 0.0, 20.0, 
+  p = new AutomatableParameter(lock, "WetHighpass", 20.0, 20000.0, 0.0, 20.0,
     Parameter::EXPONENTIAL);
   addObservedParameter(p);
 
   // #004:
-  p = new AutomatableParameter(lock, "WetAllpass", 20.0, 20000.0, 0.0, 20000.0, 
+  p = new AutomatableParameter(lock, "WetAllpass", 20.0, 20000.0, 0.0, 20000.0,
     Parameter::EXPONENTIAL);
   addObservedParameter(p);
 
 
-  // make a call to parameterChanged for each parameter in order to set up the DSP-core to reflect 
+  // make a call to parameterChanged for each parameter in order to set up the DSP-core to reflect
   // the values the automatable parameters:
   for(int i=0; i < (int) parameters.size(); i++ )
     parameterChanged(parameters[i]);
@@ -111,8 +111,8 @@ void CombStereoizerAudioModule::initializeAutomatableParameters()
 
 //=================================================================================================
 
-CombStereoizerModuleEditor::CombStereoizerModuleEditor(CriticalSection *newPlugInLock, 
-  CombStereoizerAudioModule* newCombStereoizerAudioModule) 
+CombStereoizerModuleEditor::CombStereoizerModuleEditor(CriticalSection *newPlugInLock,
+  CombStereoizerAudioModule* newCombStereoizerAudioModule)
   : AudioModuleEditor(newCombStereoizerAudioModule)
 {
   // set the plugIn-headline:
@@ -254,23 +254,23 @@ void CombStereoizerModuleEditor::resized()
   int x = 0;
   int y = getPresetSectionBottom();
   int w = getWidth()/2;
-  int h = getHeight();
+  //int h = getHeight();
 
   delaySlider->setBounds(x+4, y+4, w-8, 16);
 
-  y = delaySlider->getBottom();  
+  y = delaySlider->getBottom();
   dryWetSlider->setBounds(x+4, y+4, w-8, 16);
 
-  y = dryWetSlider->getBottom(); 
+  y = dryWetSlider->getBottom();
   swapChannelsButton->setBounds(x+w/2+4, y+4, w/2-8, 16);
 
   x = w;
   y = getPresetSectionBottom();
 
   wetLowpassSlider->setBounds(x+4, y+4, w-8, 16);
-  y = wetLowpassSlider->getBottom();  
+  y = wetLowpassSlider->getBottom();
   wetHighpassSlider->setBounds(x+4, y+4, w-8, 16);
-  y = wetHighpassSlider->getBottom();  
+  y = wetHighpassSlider->getBottom();
   wetAllpassSlider->setBounds(x+4, y+4, w-8, 16);
 }
 

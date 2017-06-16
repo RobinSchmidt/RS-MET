@@ -59,8 +59,6 @@ public:
       for(int c=0; c<8; c++)
         pointers[c] = buffer.getWritePointer(c, startSample);
       wrappedCrossOver->processBuffer(pointers, length);
-
-      int dummy = 0;
     }
   }
 
@@ -98,8 +96,8 @@ protected:
 
 /**
 
-This class plots the frequency responses of a rosic::CrossOver object and allows for 
-editing parameters like the cutoff frequencies. 
+This class plots the frequency responses of a rosic::CrossOver object and allows for
+editing parameters like the cutoff frequencies.
 
 */
 
@@ -121,15 +119,15 @@ public:
   // construction/destruction:
 
   /** Constructor. */
-  //CrossOverPlotEditor(const juce::String& name = juce::String(T("CrossOverPlotEditor")));   
+  //CrossOverPlotEditor(const juce::String& name = juce::String(T("CrossOverPlotEditor")));
   CrossOverPlotEditor(CriticalSection *newPlugInLock, CrossOverAudioModule* newCrossOverModuleToEdit);
 
   /** Destructor. */
-  virtual ~CrossOverPlotEditor(); 
+  virtual ~CrossOverPlotEditor();
 
   //-------------------------------------------------------------------------------------------------------------------------------------
-  // parameter handling: \todo: should we ever use this class when dynamically assigning CrossOverAudioModule objects to this editor, 
-  // the functions below will need more sophisticated implementations - we must take care of always checking against NULL and stuff - see 
+  // parameter handling: \todo: should we ever use this class when dynamically assigning CrossOverAudioModule objects to this editor,
+  // the functions below will need more sophisticated implementations - we must take care of always checking against NULL and stuff - see
   // EqualizerPlotEditor for reference
 
   /** Passes a pointer the the actual rosic::CrossOver object which is to be edited. */
@@ -150,16 +148,16 @@ public:
   //-------------------------------------------------------------------------------------------------------------------------------------
   // inquiry:
 
-  /** Returns the currently selected crossover via it's level inside the tree and its index inside the tree-level. Each level (start 
-  counting at 0) has 2^level indices, so the 1st level has only 1 index, the 2nd has 2, the 3rd has 4, etc. (remark: currently only 2 
-  levels are present but it makes sense to already use this structure to support later extensions). It will assign the 
+  /** Returns the currently selected crossover via it's level inside the tree and its index inside the tree-level. Each level (start
+  counting at 0) has 2^level indices, so the 1st level has only 1 index, the 2nd has 2, the 3rd has 4, etc. (remark: currently only 2
+  levels are present but it makes sense to already use this structure to support later extensions). It will assign the
   reference-parameters to -1 if none is selected. */
   virtual void getSelectedTreeLevelAndIndex(int &treeLevel, int &indexInLevel);
 
   //-------------------------------------------------------------------------------------------------------------------------------------
   // callbacks:
 
-  /** This method is called when one of the assigned rosic::AutomatableParameters has been changed - we override it here in the subclass 
+  /** This method is called when one of the assigned rosic::AutomatableParameters has been changed - we override it here in the subclass
   to do the actual GUI update. */
   virtual void updateWidgetFromAssignedParameter(bool sendMessage = false);
 
@@ -203,11 +201,11 @@ protected:
   /** Draws the indicator that marks one of the crossovers as selected. */
   virtual void drawSelectionIndicator(Graphics &g, juce::Image *targetImage);
 
-  /** Draws a vertical line (which serves as handle to adjust one of the crossover frequencies) at the given frequency. If the 'active' 
+  /** Draws a vertical line (which serves as handle to adjust one of the crossover frequencies) at the given frequency. If the 'active'
   flag is false, the line will be drawn dashed to indicate that the respective crossover is turned off. */
   virtual void drawVerticalLineAtFrequency(Graphics &g, juce::Image* targetImage, double frequency, int treeLevel, bool active);
 
-  /** Draws a triangle (which serves as handle to switch one of the crossovers on/off) at the given frequency. If the 'active' flag is 
+  /** Draws a triangle (which serves as handle to switch one of the crossovers on/off) at the given frequency. If the 'active' flag is
   false, the triangle will be drawn non-filled to indicate that the respective crossover is turned off. */
   virtual void drawTriangleSwitchAtFrequency(Graphics &g, juce::Image* targetImage, double frequency, int treeLevel, bool active);
 
@@ -225,11 +223,11 @@ protected:
   virtual Colour getHighBandColour();      ///< @see getLowBandColour
 
 
-  CriticalSection      *plugInLock;              // mutex to access the edited AudioModule object 
+  CriticalSection      *plugInLock;              // mutex to access the edited AudioModule object
   CrossOverAudioModule *crossOverModuleToEdit;   // the edited AudioModule object
 
   // the parameters which wil cause re-plotting and therefore must be listened to:
-  Parameter *onOff21Parameter, *onOff22Parameter, *freq11Parameter, *freq21Parameter, *freq22Parameter, 
+  Parameter *onOff21Parameter, *onOff22Parameter, *freq11Parameter, *freq21Parameter, *freq22Parameter,
     *slope11Parameter, *slope21Parameter, *slope22Parameter;
 
   // magnitude response display stuff:
@@ -240,7 +238,7 @@ protected:
   int selectedLevel, selectedIndex;
   int currentlyDraggedHandle;
 
-  
+
   juce_UseDebuggingNewOperator;
 };
 
@@ -265,9 +263,9 @@ protected:
   CrossOverAudioModule *crossOverModuleToEdit;
   CrossOverPlotEditor  *plotEditor;
 
-  // 1st index: level in tree, 2nd index: index within level. 4 bands -> 3 crossover-frequencies, will later become 7 (for 8 bands) 
+  // 1st index: level in tree, 2nd index: index within level. 4 bands -> 3 crossover-frequencies, will later become 7 (for 8 bands)
   // ...we may want to use a Tree class then.
-  RSlider *frequency11Slider, *frequency21Slider, *frequency22Slider; 
+  RSlider *frequency11Slider, *frequency21Slider, *frequency22Slider;
   RSlider *slope11Slider, *slope21Slider, *slope22Slider;
   RButton *monoButton;
 
@@ -275,4 +273,4 @@ protected:
   juce_UseDebuggingNewOperator;
 };
 
-#endif 
+#endif

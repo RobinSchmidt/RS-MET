@@ -2,8 +2,8 @@
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-ModuluxuryAudioModule::ModuluxuryAudioModule(CriticalSection *newPlugInLock, 
-  rosic::Moduluxury *moduluxuryToWrap) 
+ModuluxuryAudioModule::ModuluxuryAudioModule(CriticalSection *newPlugInLock,
+  rosic::Moduluxury *moduluxuryToWrap)
 : AudioModule(newPlugInLock)
 {
   //jassert(moduluxuryToWrap != NULL); // you must pass a valid rosic-object to the constructor
@@ -35,7 +35,7 @@ void ModuluxuryAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
   if( wrappedModuluxury == NULL )
     return;
 
-  double value = parameterThatHasChanged->getValue();
+  //double value = parameterThatHasChanged->getValue();
 
   /*
   switch( getIndexOfParameter(parameterThatHasChanged) )
@@ -100,7 +100,7 @@ void ModuluxuryAudioModule::initializeAutomatableParameters()
   addObservedParameter(p);
   */
 
-  // make a call to parameterChanged for each parameter in order to set up the DSP-core to reflect 
+  // make a call to parameterChanged for each parameter in order to set up the DSP-core to reflect
   // the values the automatable parameters:
   for(int i=0; i < (int) parameters.size(); i++ )
     parameterChanged(parameters[i]);

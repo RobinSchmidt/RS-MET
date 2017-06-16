@@ -2,7 +2,7 @@
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-OscillatorStereoAudioModule::OscillatorStereoAudioModule(CriticalSection *newPlugInLock,     
+OscillatorStereoAudioModule::OscillatorStereoAudioModule(CriticalSection *newPlugInLock,
   rosic::OscillatorStereo *newOscillatorStereoToWrap) : AudioModule(newPlugInLock)
 {
   jassert( newOscillatorStereoToWrap != NULL ); // you must pass a valid rosic-object to the constructor
@@ -58,7 +58,7 @@ void OscillatorStereoAudioModule::parameterChanged(Parameter* parameterThatHasCh
 //-------------------------------------------------------------------------------------------------
 // state saving and recall:
 
-XmlElement* oscillatorStereoStateToXml(OscillatorStereo* osc, 
+XmlElement* oscillatorStereoStateToXml(OscillatorStereo* osc,
   XmlElement* xmlElementToStartFrom)
 {
   // the XmlElement which stores all the releveant state-information:
@@ -108,7 +108,7 @@ bool oscillatorStereoStateFromXml(OscillatorStereo* osc, const XmlElement &xmlSt
 {
   bool success = true;
 
-  // temporarily switch off the automatic re-rendering of the mip-map, to multiple rendering (one for each 
+  // temporarily switch off the automatic re-rendering of the mip-map, to multiple rendering (one for each
   // parameter):
   bool oldAutoReRenderState = osc->waveTable->isMipMapAutoReRenderingActive();
   osc->waveTable->setAutomaticMipMapReRendering(false);
@@ -166,7 +166,7 @@ bool oscillatorStereoStateFromXml(OscillatorStereo* osc, const XmlElement &xmlSt
     // pass the path as c-string:
     /*
     long  length    = samplePath.length();
-    char* fileNameC = new char[length+1];  
+    char* fileNameC = new char[length+1];
     samplePath.copyToBuffer(fileNameC, length);
     osc->waveTable->setSampleName(fileNameC);
     */
@@ -177,13 +177,13 @@ bool oscillatorStereoStateFromXml(OscillatorStereo* osc, const XmlElement &xmlSt
     delete buffer;
     success = true;
   }
-  else 
+  else
   {
     juce::String errorString = samplePath + juce::String(" !error!");
 
     /*
     long  length    = errorString.length();
-    char* fileNameC = new char[length+1];  
+    char* fileNameC = new char[length+1];
     errorString.copyToBuffer(fileNameC, length);
     */
     char* fileNameC = toZeroTerminatedString(errorString);
@@ -194,7 +194,7 @@ bool oscillatorStereoStateFromXml(OscillatorStereo* osc, const XmlElement &xmlSt
     success = false;
   }
 
-  // let the (wavetable inside the) oscillator render the mip map and restore the old state of the 
+  // let the (wavetable inside the) oscillator render the mip map and restore the old state of the
   // automatic re-rendering:
   osc->waveTable->renderMipMap();
   osc->waveTable->setAutomaticMipMapReRendering(oldAutoReRenderState);
@@ -236,7 +236,7 @@ void OscillatorStereoAudioModule::initializeAutomatableParameters()
 
   std::vector<double> defaultValues;
 
-  // this pointer will be used to temporarily store the addresses of the created 
+  // this pointer will be used to temporarily store the addresses of the created
   //AutomatableParameter* p;
   Parameter* p;
 
@@ -247,7 +247,7 @@ void OscillatorStereoAudioModule::initializeAutomatableParameters()
   defaultValues.push_back(-3.01029996);   // compensation gain for  2 uncorrelated sources
   defaultValues.push_back(-4.77121255);   // compensation gain for  3 uncorrelated sources
   defaultValues.push_back(-6.02059991);   // compensation gain for  4 uncorrelated or 2 in-phase sources
-  defaultValues.push_back(-9.03089987);   // compensation gain for  8 uncorrelated 
+  defaultValues.push_back(-9.03089987);   // compensation gain for  8 uncorrelated
   defaultValues.push_back(-12.0411998);   // compensation gain for 16 uncorrelated or 4 in-phase sources
   p->setDefaultValues(defaultValues);
   addObservedParameter(p);
@@ -470,7 +470,7 @@ void OscillatorStereoAudioModule::initializeAutomatableParameters()
 // construction/destruction:
 
 OscillatorStereoEditorContextMenu::OscillatorStereoEditorContextMenu(
-  OscillatorStereoAudioModule* newOscillatorModuleToEdit, Component* componentToAttachTo) 
+  OscillatorStereoAudioModule* newOscillatorModuleToEdit, Component* componentToAttachTo)
   //: ComponentMovementWatcher(componentToAttachTo)
 {
   // init the pointer to the oscillatoror to be edited:
@@ -719,8 +719,7 @@ void OscillatorStereoEditorContextMenu::rSliderValueChanged(RSlider *sliderThatH
     return;
   if( oscillatorModuleToEdit->wrappedOscillatorStereo == NULL )
     return;
-  rosic::OscillatorStereo* o = oscillatorModuleToEdit->wrappedOscillatorStereo;
-
+  //rosic::OscillatorStereo* o = oscillatorModuleToEdit->wrappedOscillatorStereo;
   sendChangeMessage();
 }
 
@@ -733,7 +732,7 @@ void OscillatorStereoEditorContextMenu::updateWidgetsAccordingToState()
   rosic::OscillatorStereo* o         = oscillatorModuleToEdit->wrappedOscillatorStereo;
   rosic::MipMappedWaveTableStereo* w = o->waveTable;
 
-  // update the widgets: 
+  // update the widgets:
   levelSlider->setValue(                  o->getLevel(),                   false);
   levelByKeySlider->setValue(             o->getLevelByKey(),              false);
   levelByVelSlider->setValue(             o->getLevelByVel(),              false);
@@ -769,13 +768,13 @@ void OscillatorStereoEditorContextMenu::resized()
   int y  = 0;
   int w  = getWidth();
   int w2 = w/2;
-  int h  = getHeight();
+  //int h  = getHeight();
 
   closeButton->setBounds(w-16, 0, 16, 16);
 
   int sh   = 16;    // slider height
   int inc  = sh+4;
-  int inc2 = inc+8;
+  //int inc2 = inc+8;
 
   ampHeadline->setBounds(x+4, y+4, w-8-16, sh);
   y += inc;
@@ -864,8 +863,8 @@ int dummy = 0;
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-OscillatorStereoEditor::OscillatorStereoEditor(CriticalSection *newPlugInLock, 
-  OscillatorStereoAudioModule* newOscillatorStereoAudioModule) 
+OscillatorStereoEditor::OscillatorStereoEditor(CriticalSection *newPlugInLock,
+  OscillatorStereoAudioModule* newOscillatorStereoAudioModule)
   : AudioModuleEditor(newOscillatorStereoAudioModule)
 {
   // init the pointer to the modulator to be edited to NULL:
@@ -880,7 +879,7 @@ OscillatorStereoEditor::OscillatorStereoEditor(CriticalSection *newPlugInLock,
   waveformDisplay->setAxisPositionX(CoordinateSystemOld::INVISIBLE);
   waveformDisplay->setAxisPositionY(CoordinateSystemOld::INVISIBLE);
   waveformDisplay->setCurrentRangeY(-1.2, 1.2);
-  waveformDisplay->setSampleRate(1.0);    
+  waveformDisplay->setSampleRate(1.0);
   waveformDisplay->addMouseListener(this, true);
   waveformDisplay->setAutoReRendering(true);
 
@@ -1045,7 +1044,7 @@ void OscillatorStereoEditor::changeListenerCallback(ChangeBroadcaster *objectTha
 
   if( objectThatHasChanged == contextMenu )
   {
-    moduleToEdit->markStateAsDirty();  
+    moduleToEdit->markStateAsDirty();
     updatePlot();
   }
   else
@@ -1060,20 +1059,20 @@ void OscillatorStereoEditor::rSliderValueChanged(RSlider *sliderThatHasChanged)
   moduleToEdit->markStateAsDirty();
   contextMenu->updateWidgetsAccordingToState();
 
-  // although certain sliders would not require an update, most will, so we do the update in any 
+  // although certain sliders would not require an update, most will, so we do the update in any
   // case:
   updatePlot();
 }
 
 //-------------------------------------------------------------------------------------------------
-// 
+//
 
 void OscillatorStereoEditor::updateWidgetsAccordingToState()
 {
   if( oscillatorToEdit == NULL )
     return;
 
-  // update the widgets: 
+  // update the widgets:
   levelSlider->setValue(oscillatorToEdit->getLevel(),                                      false);
   tuneSlider->setValue(oscillatorToEdit->getDetuneSemitones(),                             false);
   pitchModulationSlider->setValue(oscillatorToEdit->getPitchEnvelopeDepth(),               false);
@@ -1130,7 +1129,7 @@ void OscillatorStereoEditor::resized()
   /*
   contextMenuViewport->setBounds(waveformDisplay->getBounds());
   contextMenu->setSize(
-  contextMenuViewport->getWidth()-contextMenuViewport->getScrollBarThickness(), 
+  contextMenuViewport->getWidth()-contextMenuViewport->getScrollBarThickness(),
   contextMenu->getHeight());
   */
 
@@ -1185,7 +1184,7 @@ void OscillatorStereoEditor::updatePlot()
   //int numSamples = oscillatorToEdit->waveTable->getPrototypeNumSamples();
   if( numSamplesInPlot > 0 )
   {
-    // retrieve the filename (the full path), cut it down to the filename only and display it in 
+    // retrieve the filename (the full path), cut it down to the filename only and display it in
     // the filename field:
     juce::String fileName = juce::String(oscillatorToEdit->waveTable->getSampleName());
     if( fileName.contains("\\") )
@@ -1205,7 +1204,7 @@ void OscillatorStereoEditor::updatePlot()
     waveformDisplay->setCurrentRangeX(0.0, numSamplesInPlot);
     oscillatorToEdit->getWaveformForDisplay(waveformPointers, numSamplesInPlot);
     waveformDisplay->setWaveform(waveformPointers, numSamplesInPlot, 2);
-    waveformDisplay->updatePlotImage();    
+    waveformDisplay->updatePlotImage();
     waveformDisplay->setAutoReRendering(true);
   }
 
@@ -1216,7 +1215,7 @@ void OscillatorStereoEditor::updatePlot()
 void OscillatorStereoEditor::updateWidgetVisibility()
 {
   if( oscillatorToEdit == NULL )
-    return;    
+    return;
 
   waveLoadButton->setVisible(        !oscillatorToEdit->isMuted() );
   wavePlusButton->setVisible(        !oscillatorToEdit->isMuted() );
@@ -1230,7 +1229,7 @@ void OscillatorStereoEditor::updateWidgetVisibility()
   emptyDisplay->setVisible(           oscillatorToEdit->isMuted() );
 }
 
-bool OscillatorStereoEditor::setAudioData(AudioSampleBuffer* newBuffer, 
+bool OscillatorStereoEditor::setAudioData(AudioSampleBuffer* newBuffer,
   const juce::File& underlyingFile, bool markAsClean)
 {
   if( newBuffer != NULL && newBuffer->getNumChannels() > 0 && newBuffer->getNumSamples() > 0 )

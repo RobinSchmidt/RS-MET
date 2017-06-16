@@ -52,13 +52,13 @@ void SamplePlayerAudioModule::parameterChanged(Parameter* parameterThatHasChange
 //-------------------------------------------------------------------------------------------------
 // state saving and recall:
 
-XmlElement* samplePlaybackParametersToXml(SamplePlaybackParameters* parameters, 
+XmlElement* samplePlaybackParametersToXml(SamplePlaybackParameters* parameters,
   XmlElement* xmlElementToStartFrom)
 {
   // the XmlElement which stores all the releveant state-information:
   XmlElement* xmlState;
   if( xmlElementToStartFrom == NULL )
-    xmlState = new XmlElement(juce::String("PlaybackParameters")); 
+    xmlState = new XmlElement(juce::String("PlaybackParameters"));
   else
     xmlState = xmlElementToStartFrom;
 
@@ -101,10 +101,10 @@ XmlElement* samplePlaybackParametersToXml(SamplePlaybackParameters* parameters,
   return xmlState;
 }
 
-bool samplePlaybackParametersFromXml(SamplePlaybackParameters* parameters, 
+bool samplePlaybackParametersFromXml(SamplePlaybackParameters* parameters,
   const XmlElement &xmlState)
 {
-  bool success = true;
+  //bool success = true;
 
   // set up the audio-file name:
   //juce::String samplePath = xmlState.getStringAttribute(T("AudioFileRelativePath"), juce::String::empty);
@@ -123,7 +123,7 @@ bool samplePlaybackParametersFromXml(SamplePlaybackParameters* parameters,
     parameters->setLoopMode( rosic::SamplePlaybackParameters::NO_LOOP );
   parameters->setLoopStart(xmlState.getDoubleAttribute("LoopStart",    0.0)   );
   parameters->setLoopEnd(  xmlState.getDoubleAttribute("LoopEnd",      0.0)   );
-  parameters->setNumPitchCyclesInLoop(  
+  parameters->setNumPitchCyclesInLoop(
     xmlState.getDoubleAttribute("PitchCyclesInLoop", 1.0)   );
 
   // key-/vel mapping parameters:
@@ -142,7 +142,7 @@ XmlElement* samplePlayerStateToXml(SamplePlayer* player, XmlElement* xmlElementT
 
   XmlElement* xmlState;
   if( xmlElementToStartFrom == NULL )
-    xmlState = new XmlElement(juce::String("SamplePlayer")); 
+    xmlState = new XmlElement(juce::String("SamplePlayer"));
   else
     xmlState = xmlElementToStartFrom;
 
@@ -226,8 +226,8 @@ void SamplePlayerAudioModule::setRootKeyFromLoop()
     return;
 
   // get the length of the loop in seconds:
-  double loopLength = wrappedSamplePlayer->parameters->getLoopLength() / 
-    wrappedSamplePlayer->parameters->getRecordingSampleRate() ; 
+  double loopLength = wrappedSamplePlayer->parameters->getLoopLength() /
+    wrappedSamplePlayer->parameters->getRecordingSampleRate() ;
 
   // get the corresponding frequency:
   if( wrappedSamplePlayer->parameters->getNumPitchCyclesInLoop() < 1.0 )
@@ -244,7 +244,7 @@ bool SamplePlayerAudioModule::setSampleFromFile(const juce::File &fileToLoadFrom
   if( wrappedSamplePlayer == NULL )
     return false;
 
-  AudioSampleBuffer* buffer 
+  AudioSampleBuffer* buffer
     = AudioFileManager::createAudioSampleBufferFromFile(fileToLoadFrom, false);
 
   if( buffer == NULL )
@@ -355,7 +355,7 @@ void SamplePlayerAudioModule::initializeAutomatableParameters()
 
 //=================================================================================================
 
-SamplePlayerEditorDisplay::SamplePlayerEditorDisplay(AudioFileBuffer *newBufferToUse) 
+SamplePlayerEditorDisplay::SamplePlayerEditorDisplay(AudioFileBuffer *newBufferToUse)
   : WaveformDisplay(newBufferToUse) //, InteractiveCoordinateSystem(juce::String(T("SampleDisplay")))
 {
 
@@ -392,11 +392,11 @@ SamplePlayerEditorDisplay::~SamplePlayerEditorDisplay()
 
 
 //-------------------------------------------------------------------------------------------------
-// 
+//
 
 /*
 CoordinateSystemRangeOld SamplePlayerEditorDisplay::getMaximumMeaningfulRange(
-double relativeMarginLeft, double relativeMarginRight, 
+double relativeMarginLeft, double relativeMarginRight,
 double relativeMarginTop,  double relativeMarginBottom)
 {
 return WaveformDisplayOld::getMaximumMeaningfulRange(relativeMarginLeft, relativeMarginRight,
@@ -413,7 +413,7 @@ void SamplePlayerEditorDisplay::setSamplePlayerToEdit(rosic::SamplePlayer *newPl
 
   // update the waveform display:
   int numSamples  = samplePlayerToEdit->getNumSamples();
-  int numChannels = samplePlayerToEdit->getNumChannels();
+  //int numChannels = samplePlayerToEdit->getNumChannels();
   setMaximumRange(0.0, jmax((double)numSamples,1.0), -1.1, 1.1);
   setCurrentRange(0.0, jmax((double)numSamples,1.0), -1.1, 1.1);
 
@@ -424,7 +424,7 @@ void SamplePlayerEditorDisplay::setSamplePlayerToEdit(rosic::SamplePlayer *newPl
   lockUsedBufferPointer();
   if( bufferToUse != NULL )
   {
-  juce::String audioFile = getApplicationDirectory() + File::separatorString 
+  juce::String audioFile = getApplicationDirectory() + File::separatorString
   + juce::String(samplePlayerToEdit->getSampleName());
   bufferToUse->loadAudioDataFromFile(audioFile, true);
   WaveformDisplay::setDirty();
@@ -434,7 +434,7 @@ void SamplePlayerEditorDisplay::setSamplePlayerToEdit(rosic::SamplePlayer *newPl
   */
 
 
-  juce::String audioFile = getApplicationDirectory() + juce::File::separatorString   
+  juce::String audioFile = getApplicationDirectory() + juce::File::separatorString
     + juce::String(samplePlayerToEdit->getSampleName());
   setAudioFileToUse(juce::File(audioFile));
 
@@ -454,7 +454,7 @@ bool SamplePlayerEditorDisplay::setAudioFileToUse(const juce::File &newFileToUse
     {
       bufferToUse->acquireReadLock();
 
-      // todo: retrieve the pointers to the channels and pass it to the rosic-object, this might 
+      // todo: retrieve the pointers to the channels and pass it to the rosic-object, this might
       // also be the place to render samples from modal models etc.
 
       //bufferToUse->getSampleData(0, 0);
@@ -485,7 +485,7 @@ playbackParametersToEdit = newParametersToEdit;
 */
 
 /*
-bool SamplePlayerEditorDisplay::setWaveform(double** newWaveformData, int newNumSampleFrames, 
+bool SamplePlayerEditorDisplay::setWaveform(double** newWaveformData, int newNumSampleFrames,
 int newNumChannels)
 {
 bool success = false;
@@ -493,14 +493,14 @@ bool success = false;
 if( modulatorToEdit == NULL )
 return false;
 
-// call the setWavefrom-function from the WavefromDisplay base-class - this will result in a 
-// copying of the passed data into the (inherited) member 'peakData' 
+// call the setWavefrom-function from the WavefromDisplay base-class - this will result in a
+// copying of the passed data into the (inherited) member 'peakData'
 // (which is pointer to float):
 success = WaveformDisplay::setWaveform(newWaveformData, newNumSampleFrames, newNumChannels);
 
-// the float* peakData member now contains the data (plus possibly some padding and decimated 
-// data but thsi additional stuff will come later in the array and can therefore be ignored) 
-// - we can use this pointer to further pass the data through to the rosic::SampleModulator 
+// the float* peakData member now contains the data (plus possibly some padding and decimated
+// data but thsi additional stuff will come later in the array and can therefore be ignored)
+// - we can use this pointer to further pass the data through to the rosic::SampleModulator
 // object which accepts a pointer to float:
 if( success == true )
 modulatorToEdit->sampleModulator.setSampleData(peakData, newNumSampleFrames);
@@ -548,7 +548,7 @@ void SamplePlayerEditorDisplay::updatePlot(bool resetZoomFactor)
   // setup stuff:
   //sampleDisplay->setCaption(fileName);
   //setWaveform(samplePlayerToEdit->getSampleData(), numSamples, numChannels );
-  juce::String audioFile = getApplicationDirectory() + File::separatorString 
+  juce::String audioFile = getApplicationDirectory() + File::separatorString
   + juce::String(samplePlayerToEdit->getSampleName());
   bufferToUse->loadAudioDataFromFile(audioFile, true);
   setMaximumRange(0.0, numSamples, -1.1, 1.1);
@@ -562,7 +562,7 @@ void SamplePlayerEditorDisplay::updatePlot(bool resetZoomFactor)
 
 
   /*
-  // aquire mutex-locked access to the sample-data (such that no other thread corrupts them while 
+  // aquire mutex-locked access to the sample-data (such that no other thread corrupts them while
   // we are reading them out):
   modulatorToEdit->sampleModulator.suspendAudioProcessing();
   modulatorToEdit->sampleModulator.lockSampleData();
@@ -600,7 +600,7 @@ void SamplePlayerEditorDisplay::paint(juce::Graphics &g)
   double factor    = 1.0 / samplePlayerToEdit->parameters->getRecordingSampleRate();
   double start     = factor * samplePlayerToEdit->parameters->getPlaybackStart();
   double end       = factor * samplePlayerToEdit->parameters->getPlaybackEnd();
-  double loopStart = factor * samplePlayerToEdit->parameters->getLoopStart();  
+  double loopStart = factor * samplePlayerToEdit->parameters->getLoopStart();
   double loopEnd   = factor * samplePlayerToEdit->parameters->getLoopEnd();
   double xGrayL    = start;
   double xGrayR    = end;
@@ -636,11 +636,11 @@ int SamplePlayerEditorDisplay::whatIsUnderTheMouseCursor(const MouseEvent &e)
   mouseY = e.getMouseDownY();
 
   // a margin for the breakpoint-dots
-  double marginInPixels = dotRadius;
+  //double marginInPixels = dotRadius;
 
   // retrieve the scale and offset variables form the Modulator-object
-  double scale  = 1.0;
-  double offset = 0.0;
+  //double scale  = 1.0;
+  //double offset = 0.0;
 
   double factor = 1.0 / samplePlayerToEdit->parameters->getRecordingSampleRate();
   double x1 = factor * samplePlayerToEdit->parameters->getPlaybackStart() ;
@@ -657,7 +657,7 @@ int SamplePlayerEditorDisplay::whatIsUnderTheMouseCursor(const MouseEvent &e)
   transformToComponentsCoordinates(x4, y4);
 
 
-  if( abs(x3+2-mouseX) <= 4.0 && 
+  if( abs(x3+2-mouseX) <= 4.0 &&
     samplePlayerToEdit->parameters->getLoopMode() != rosic::SamplePlaybackParameters::NO_LOOP )
   {
     return LOOP_START_LOCATOR;
@@ -695,7 +695,7 @@ void SamplePlayerEditorDisplay::mouseDown(const MouseEvent &e)
     locatorBeingDragged = whatIsUnderTheMouseCursor(e);
 
     // don't grab loop-locators when not in loop-mode:
-    if( samplePlayerToEdit->parameters->getLoopMode() 
+    if( samplePlayerToEdit->parameters->getLoopMode()
       == rosic::SamplePlaybackParameters::NO_LOOP )
     {
       if( locatorBeingDragged == LOOP_START_LOCATOR ||
@@ -753,20 +753,20 @@ void SamplePlayerEditorDisplay::mouseMove(const MouseEvent &e)
 {
   switch( whatIsUnderTheMouseCursor(e) )
   {
-  case NO_OBJECT:       
-    currentMouseCursor = MouseCursor(MouseCursor::NormalCursor);          
+  case NO_OBJECT:
+    currentMouseCursor = MouseCursor(MouseCursor::NormalCursor);
     break;
-  case START_LOCATOR:    
-    currentMouseCursor = MouseCursor(MouseCursor::LeftRightResizeCursor); 
+  case START_LOCATOR:
+    currentMouseCursor = MouseCursor(MouseCursor::LeftRightResizeCursor);
     break;
-  case END_LOCATOR:    
-    currentMouseCursor = MouseCursor(MouseCursor::LeftRightResizeCursor); 
+  case END_LOCATOR:
+    currentMouseCursor = MouseCursor(MouseCursor::LeftRightResizeCursor);
     break;
-  case LOOP_START_LOCATOR:    
-    currentMouseCursor = MouseCursor(MouseCursor::LeftRightResizeCursor); 
+  case LOOP_START_LOCATOR:
+    currentMouseCursor = MouseCursor(MouseCursor::LeftRightResizeCursor);
     break;
-  case LOOP_END_LOCATOR:    
-    currentMouseCursor = MouseCursor(MouseCursor::LeftRightResizeCursor); 
+  case LOOP_END_LOCATOR:
+    currentMouseCursor = MouseCursor(MouseCursor::LeftRightResizeCursor);
     break;
   }
 }
@@ -793,7 +793,7 @@ bool SamplePlayerEditorDisplay::setStateFromXml(const XmlElement &xmlState)
 
 
 SamplePlayerEditorContextMenu::SamplePlayerEditorContextMenu(
-  SamplePlayerAudioModule* newSamplePlayerModuleToEdit, Component* componentToAttachTo) 
+  SamplePlayerAudioModule* newSamplePlayerModuleToEdit, Component* componentToAttachTo)
   //: ComponentMovementWatcher(componentToAttachTo)
 {
   // init the pointer to the samplePlayeror to be edited:
@@ -877,7 +877,7 @@ SamplePlayerEditorContextMenu::SamplePlayerEditorContextMenu(
   startByVelSlider->setStringConversionFunction(&valueToString0);
 
   addWidget( loopButton = new RButton(juce::String("Loop")) );
-  loopButton->assignParameter( samplePlayerModuleToEdit->getParameterByName("Loop") ); 
+  loopButton->assignParameter( samplePlayerModuleToEdit->getParameterByName("Loop") );
   loopButton->setDescription(juce::String("Switch loop on/off"));
   //loopButton->setClickingTogglesState(true);
   //loopButton->addRButtonListener(this);
@@ -911,7 +911,7 @@ SamplePlayerEditorContextMenu::SamplePlayerEditorContextMenu(
   miscHeadline->setDescription(juce::String("Miscellaneous sample manipulations"));
 
   addWidget( phaseRandomizeButton = new RButton(juce::String("PhaseRandomize")) );
-  phaseRandomizeButton->assignParameter( samplePlayerModuleToEdit->getParameterByName("PhaseRandomize") ); 
+  phaseRandomizeButton->assignParameter( samplePlayerModuleToEdit->getParameterByName("PhaseRandomize") );
   phaseRandomizeButton->setDescription(juce::String("Switch phase-randomization on/off"));
   //phaseRandomizeButton->addRButtonListener(this);
 
@@ -978,7 +978,7 @@ return;
 rosic::SamplePlayer* sp = samplePlayerModuleToEdit->wrappedSamplePlayer;
 rosic::SamplePlaybackParameters* params = sp->parameters;
 
-// update the widgets: 
+// update the widgets:
 levelSlider->setValue(                  params->getLevel(),       false);
 levelByKeySlider->setValue(             params->getLevelByKey(),  false);
 levelByVelSlider->setValue(             params->getLevelByVel(),  false);
@@ -1006,7 +1006,7 @@ void SamplePlayerEditorContextMenu::resized()
   int y  = 0;
   int w  = getWidth();
   int w2 = w/2;
-  int h  = getHeight();
+  //int h  = getHeight();
 
   closeButton->setBounds(w-16, 0, 16, 16);
 
@@ -1073,15 +1073,15 @@ void SamplePlayerEditorContextMenu::resized()
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-SamplePlayerModuleEditor::SamplePlayerModuleEditor(CriticalSection *newPlugInLock, 
-  SamplePlayerAudioModule* newSamplePlayerModuleToEdit) 
+SamplePlayerModuleEditor::SamplePlayerModuleEditor(CriticalSection *newPlugInLock,
+  SamplePlayerAudioModule* newSamplePlayerModuleToEdit)
   : AudioModuleEditor(newSamplePlayerModuleToEdit)
 {
   //samplePlayerToEdit = NULL;
-  //jassert( newSamplePlayerToEdit != NULL );  
+  //jassert( newSamplePlayerToEdit != NULL );
   //samplePlayerToEdit = newSamplePlayerToEdit->wrappedSamplePlayer;
 
-  jassert( newSamplePlayerModuleToEdit != NULL );  
+  jassert( newSamplePlayerModuleToEdit != NULL );
   samplePlayerModuleToEdit = newSamplePlayerModuleToEdit;
 
   // change the headline from the default "Sub-Editor" to "Osc":
@@ -1141,23 +1141,23 @@ SamplePlayerModuleEditor::SamplePlayerModuleEditor(CriticalSection *newPlugInLoc
   sampleMinusButton->setDescription(juce::String("Previous waveform in current directory."));
   sampleMinusButton->setClickingTogglesState(false);
 
-  addWidget( levelSlider = new RSlider("Level") );  
+  addWidget( levelSlider = new RSlider("Level") );
   levelSlider->assignParameter( moduleToEdit->getParameterByName("Level") );
   levelSlider->setDescription(juce::String("Playback level"));
   levelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
-  addWidget( tuneSlider = new RSlider("Tune") );  
+  addWidget( tuneSlider = new RSlider("Tune") );
   tuneSlider->assignParameter( moduleToEdit->getParameterByName("Tune") );
   tuneSlider->setDescription(juce::String("Tuning"));
   tuneSlider->setStringConversionFunction(&semitonesToStringWithUnit2);
 
-  addWidget( lowpassSlider = new RSlider("Lowpass") );  
+  addWidget( lowpassSlider = new RSlider("Lowpass") );
   lowpassSlider->assignParameter( moduleToEdit->getParameterByName("Lowpass") );
   lowpassSlider->setSliderName(juce::String("LPF"));
   lowpassSlider->setDescription(juce::String("Cutoff of the lowpass filter"));
   lowpassSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
-  addWidget( highpassSlider = new RSlider("Highpass") );  
+  addWidget( highpassSlider = new RSlider("Highpass") );
   highpassSlider->assignParameter( moduleToEdit->getParameterByName("Highpass") );
   highpassSlider->setSliderName(juce::String("HPF"));
   highpassSlider->setDescription(juce::String("Cutoff of the highpass filter"));
@@ -1419,14 +1419,14 @@ void SamplePlayerModuleEditor::rButtonClicked(RButton *buttonThatWasClicked)
   //  // handle click on the load/save/plus/minus buttons:
   //  Editor::rButtonClicked(buttonThatWasClicked);
   //
-  //  // it must have been one of the inherited load/save/plus/minus buttons, so we must update the 
+  //  // it must have been one of the inherited load/save/plus/minus buttons, so we must update the
   //  // preset field:
-  //  updateWidgetsAccordingToState(true);  
+  //  updateWidgetsAccordingToState(true);
   //  //updatePresetField();
   //}
 
 
-  updateWidgetsAccordingToState(true);  
+  updateWidgetsAccordingToState(true);
   sendChangeMessage();
 }
 
@@ -1435,22 +1435,22 @@ void SamplePlayerModuleEditor::changeListenerCallback(ChangeBroadcaster *objectT
   if( samplePlayerModuleToEdit == NULL )
     return;
 
-  //startSlider->setValue(samplePlayerToEdit->parameters->getPlaybackStart(),   false);    
-  //loopStartSlider->setValue(samplePlayerToEdit->parameters->getLoopStart(),   false);    
+  //startSlider->setValue(samplePlayerToEdit->parameters->getPlaybackStart(),   false);
+  //loopStartSlider->setValue(samplePlayerToEdit->parameters->getLoopStart(),   false);
   //loopEndSlider->setValue(samplePlayerToEdit->parameters->getLoopEnd(),       false);
   //loopLengthSlider->setValue(samplePlayerToEdit->parameters->getLoopLength(), false);
 
   if( objectThatHasChanged == contextMenu )
   {
-    moduleToEdit->markStateAsDirty();  
+    moduleToEdit->markStateAsDirty();
     updateWidgetsAccordingToState();
     sendChangeMessage();
   }
   else if( objectThatHasChanged == sampleDisplay )
   {
-    if( fromLoopButton->getToggleState() == true )  
+    if( fromLoopButton->getToggleState() == true )
       samplePlayerModuleToEdit->setRootKeyFromLoop();
-    updateWidgetsAccordingToState(false);  
+    updateWidgetsAccordingToState(false);
     sendChangeMessage();
   }
   else
@@ -1463,7 +1463,7 @@ void SamplePlayerModuleEditor::rSliderValueChanged(RSlider *sliderThatHasChanged
   if( samplePlayerToEdit == NULL )
   return;
 
-  // for sliders, we re-retrieve their value directly after setting up the audio engine because the 
+  // for sliders, we re-retrieve their value directly after setting up the audio engine because the
   // audio engine may refuse to acept the new value due to consistency constraints:
   if( sliderThatHasChanged == startSlider )
   {
@@ -1498,7 +1498,7 @@ void SamplePlayerModuleEditor::rSliderValueChanged(RSlider *sliderThatHasChanged
   else if( sliderThatHasChanged == loopNumCyclesSlider )
   {
   samplePlayerToEdit->parameters->setNumPitchCyclesInLoop(loopNumCyclesSlider->getValue());
-  loopNumCyclesSlider->setValue(samplePlayerToEdit->parameters->getNumPitchCyclesInLoop(), 
+  loopNumCyclesSlider->setValue(samplePlayerToEdit->parameters->getNumPitchCyclesInLoop(),
   false);
   if( fromLoopButton->getToggleState() == true )
   setRootKeyAndRootDetuneFromLoop();
@@ -1518,10 +1518,10 @@ void SamplePlayerModuleEditor::rSliderValueChanged(RSlider *sliderThatHasChanged
   fromLoopButton->setToggleState(false, false);
   }
 
-  // although certain sliders would not require an update, most will, so we do the update in any 
+  // although certain sliders would not require an update, most will, so we do the update in any
   // case:
   //sampleDisplay->updatePlot();
-  //updateWidgetsAccordingToState(true);  
+  //updateWidgetsAccordingToState(true);
   //setPresetDirty();
   sendChangeMessage();
 
@@ -1665,7 +1665,7 @@ void SamplePlayerModuleEditor::resized()
   */
 }
 
-bool SamplePlayerModuleEditor::setAudioData(AudioSampleBuffer* newBuffer,                                          
+bool SamplePlayerModuleEditor::setAudioData(AudioSampleBuffer* newBuffer,
   const juce::File& underlyingFile, bool markAsClean)
 {
   if( samplePlayerModuleToEdit == NULL )
@@ -1740,7 +1740,7 @@ void SamplePlayerModuleEditor::updateWidgetsAccordingToState()
 /*
 bool SamplePlayerModuleEditor::openSampleLoadingDialog()
 {
-AudioFileManager::openLoadingDialog(); 
+AudioFileManager::openLoadingDialog();
 
 // AudioFileManager::currentFileFullPath has now be assigned - so we load the file now:
 return setSampleFromFile(AudioFileManager::getActiveFile());

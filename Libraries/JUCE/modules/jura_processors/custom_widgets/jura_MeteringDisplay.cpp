@@ -62,7 +62,7 @@ void MeteringDisplay::paint(Graphics &g)
   int h = getHeight();
 
   // calculate the positions of the reference- and the current value in component coordinates:
-  double referencePosition = h * (referenceValue-minValue) / (maxValue-minValue);
+  //double referencePosition = h * (referenceValue-minValue) / (maxValue-minValue);
   double currentPosition   = h * (currentValue-minValue) / (maxValue-minValue);
 
   switch( style )
@@ -70,8 +70,8 @@ void MeteringDisplay::paint(Graphics &g)
   case levelMeterStyle:
     {
       // create and paint the gradient:
-      ColourGradient gradient = ColourGradient(Colours::green, (float) w, (float) h, 
-        Colours::magenta, (float) x, (float) y, false); 
+      ColourGradient gradient = ColourGradient(Colours::green, (float) w, (float) h,
+        Colours::magenta, (float) x, (float) y, false);
       gradient.addColour(     (referenceValue-minValue) / (maxValue-minValue), Colours::red);
       gradient.addColour(0.75*(referenceValue-minValue) / (maxValue-minValue), Colours::yellow);
 
@@ -84,15 +84,15 @@ void MeteringDisplay::paint(Graphics &g)
 
       // draw a black rectangle over some part of the gradient:
       g.setColour(Colours::black);
-      g.fillRect((float) x, (float) y, (float) w, 
+      g.fillRect((float) x, (float) y, (float) w,
         jlimit((float) x, (float) h, (float) (h-currentPosition)) );
     }
     break;
   case triangularPointerStyle:
     {
       g.setColour(Colours::blue.brighter(2.0f));
-      drawTriangle(g, (float) x, (float) (h-currentPosition-w/2), 
-                      (float) x, (float) (h-currentPosition+w/2), 
+      drawTriangle(g, (float) x, (float) (h-currentPosition-w/2),
+                      (float) x, (float) (h-currentPosition+w/2),
                       (float) w, (float) (h-currentPosition), true);
 
       g.setColour(Colours::white);

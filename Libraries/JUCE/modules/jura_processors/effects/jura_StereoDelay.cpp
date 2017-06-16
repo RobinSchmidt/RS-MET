@@ -1,7 +1,7 @@
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-StereoDelayAudioModule::StereoDelayAudioModule(CriticalSection *newPlugInLock, 
+StereoDelayAudioModule::StereoDelayAudioModule(CriticalSection *newPlugInLock,
   rosic::StereoDelay *stereoDelayToWrap)
 : AudioModule(newPlugInLock)
 {
@@ -59,7 +59,7 @@ void StereoDelayAudioModule::setStateFromXml(const XmlElement& xmlState,
   if( wrappedStereoDelay == NULL )
     return;
 
-  // restore the values of the non-automatable parameters (the automatable ones are already taken 
+  // restore the values of the non-automatable parameters (the automatable ones are already taken
   // care of by automatableModuleStateFromXml():
   wrappedStereoDelay->setDelayInBeats(
     xmlState.getDoubleAttribute(("DelayInBeatsL"),   1.0), StereoDelay::LEFT  );
@@ -116,7 +116,7 @@ void StereoDelayAudioModule::initializeAutomatableParameters()
   // is important because in parameterChanged(), the index (position in the array) will be used to
   // identify which particlua parameter has changed.
 
-  // this pointer will be used to temporarily store the addresses of the created 
+  // this pointer will be used to temporarily store the addresses of the created
   // Parameter-objects:
   AutomatableParameter* p;
 
@@ -224,7 +224,7 @@ void StereoDelayAudioModule::initializeAutomatableParameters()
   p = new AutomatableParameter(lock, "DryWet", 0.0, 100.0, 0.0, 50.0, Parameter::LINEAR);
   addObservedParameter(p);
 
-  // make a call to parameterChanged for each parameter in order to set up the DSP-core to reflect 
+  // make a call to parameterChanged for each parameter in order to set up the DSP-core to reflect
   // the values the automatable parameters:
   for(int i=0; i < (int) parameters.size(); i++ )
     parameterChanged(parameters[i]);
@@ -234,7 +234,7 @@ void StereoDelayAudioModule::initializeAutomatableParameters()
 
 // construction/destruction:
 
-StereoDelayModuleEditor::StereoDelayModuleEditor(CriticalSection *newPlugInLock, StereoDelayAudioModule* newStereoDelayAudioModule) 
+StereoDelayModuleEditor::StereoDelayModuleEditor(CriticalSection *newPlugInLock, StereoDelayAudioModule* newStereoDelayAudioModule)
   : AudioModuleEditor(newStereoDelayAudioModule)
 {
   // set the plugIn-headline:
@@ -653,9 +653,9 @@ void StereoDelayModuleEditor::updateWidgetsAccordingToState()
 void StereoDelayModuleEditor::paint(Graphics &g)
 {
   AudioModuleEditor::paint(g);
-  fillRectWithBilinearGradient(g, leftRectangle, editorColourScheme.topLeft, editorColourScheme.topRight, 
+  fillRectWithBilinearGradient(g, leftRectangle, editorColourScheme.topLeft, editorColourScheme.topRight,
     editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
-  fillRectWithBilinearGradient(g, rightRectangle, editorColourScheme.topLeft, editorColourScheme.topRight, 
+  fillRectWithBilinearGradient(g, rightRectangle, editorColourScheme.topLeft, editorColourScheme.topRight,
     editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
   g.setColour(editorColourScheme.outline);
   g.drawRect(leftRectangle);
@@ -668,7 +668,7 @@ void StereoDelayModuleEditor::resized()
   int x = 0;
   int y = 0;
   int w = getWidth()/2;
-  int h = getHeight();
+  //int h = getHeight();
 
   y  = getHeadlineBottom();
   dryWetSlider->setBounds(x+4, y+8, w-8, 20);
@@ -684,92 +684,92 @@ void StereoDelayModuleEditor::resized()
 
   delayLineLabelL->setBounds(x+4, y+4, 88, 20);
   delayComboBoxL->setBounds(delayLineLabelL->getRight(), y+4, w-88-8, 20);
-  y = delayLineLabelL->getBottom();  
+  y = delayLineLabelL->getBottom();
   delayScaleSliderL->setBounds(x+4, y+4, w-8, 16);
-  y = delayScaleSliderL->getBottom()+4;  
+  y = delayScaleSliderL->getBottom()+4;
 
   inputLabelL->setBounds(x+4, y, 88, 20);
-  y = inputLabelL->getBottom(); 
+  y = inputLabelL->getBottom();
   inputSliderL2L->setBounds(x+4, y, w-8, 16);
-  y = inputSliderL2L->getBottom(); 
+  y = inputSliderL2L->getBottom();
   inputSliderR2L->setBounds(x+4, y, w-8, 16);
-  y = inputSliderR2L->getBottom()+4; 
+  y = inputSliderR2L->getBottom()+4;
 
   diffusorLabelL->setBounds(x+4, y, 88, 20);
-  y = diffusorLabelL->getBottom(); 
+  y = diffusorLabelL->getBottom();
   diffusorTimeSliderL->setBounds(x+4, y, w-8, 16);
-  y = diffusorTimeSliderL->getBottom();  
+  y = diffusorTimeSliderL->getBottom();
   diffusorAmountSliderL->setBounds(x+4, y, w-8, 16);
-  y = diffusorAmountSliderL->getBottom()+4;  
+  y = diffusorAmountSliderL->getBottom()+4;
 
   filterLabelL->setBounds(x+4, y, 88, 20);
-  y = filterLabelL->getBottom(); 
+  y = filterLabelL->getBottom();
   lowpassSliderL->setBounds(x+4, y, w-8, 16);
-  y = lowpassSliderL->getBottom();  
+  y = lowpassSliderL->getBottom();
   highpassSliderL->setBounds(x+4, y, w-8, 16);
-  y = highpassSliderL->getBottom()+4;  
+  y = highpassSliderL->getBottom()+4;
 
   feedbackLabelL->setBounds(x+4, y, 88, 20);
-  y = feedbackLabelL->getBottom(); 
+  y = feedbackLabelL->getBottom();
   feedbackSliderL->setBounds(x+4, y, w-8, 16);
-  y = feedbackSliderL->getBottom(); 
+  y = feedbackSliderL->getBottom();
   crossFeedbackSliderL->setBounds(x+4, y, w-8, 16);
-  y = crossFeedbackSliderL->getBottom()+4; 
+  y = crossFeedbackSliderL->getBottom()+4;
 
   outputLabelL->setBounds(x+4, y, 88, 20);
-  y = outputLabelL->getBottom(); 
+  y = outputLabelL->getBottom();
   outputSliderL2L->setBounds(x+4, y, w-8, 16);
-  y = outputSliderL2L->getBottom(); 
+  y = outputSliderL2L->getBottom();
   outputSliderL2R->setBounds(x+4, y, w-8, 16);
-  y = outputSliderL2R->getBottom(); 
+  y = outputSliderL2R->getBottom();
   outDelaySliderL->setBounds(x+4, y, w-8, 16);
 
   // the right rectangle:
 
-  rightRectangle.setBounds(leftRectangle.getRight()+8, leftRectangle.getY(), 
+  rightRectangle.setBounds(leftRectangle.getRight()+8, leftRectangle.getY(),
     leftRectangle.getWidth(), leftRectangle.getHeight());
   x = rightRectangle.getX();
   y = rightRectangle.getY();
 
   delayLineLabelR->setBounds(x+4, y+4, 88, 20);
   delayComboBoxR->setBounds(delayLineLabelR->getRight(), y+4, w-88-8, 20);
-  y = delayLineLabelR->getBottom();  
+  y = delayLineLabelR->getBottom();
   delayScaleSliderR->setBounds(x+4, y+4, w-8, 16);
-  y = delayScaleSliderR->getBottom()+4;  
+  y = delayScaleSliderR->getBottom()+4;
 
   inputLabelR->setBounds(x+4, y, 88, 20);
-  y = inputLabelR->getBottom(); 
+  y = inputLabelR->getBottom();
   inputSliderL2R->setBounds(x+4, y, w-8, 16);
-  y = inputSliderL2R->getBottom(); 
+  y = inputSliderL2R->getBottom();
   inputSliderR2R->setBounds(x+4, y, w-8, 16);
-  y = inputSliderR2R->getBottom()+4; 
+  y = inputSliderR2R->getBottom()+4;
 
   diffusorLabelR->setBounds(x+4, y, 88, 20);
-  y = diffusorLabelR->getBottom(); 
+  y = diffusorLabelR->getBottom();
   diffusorTimeSliderR->setBounds(x+4, y, w-8, 16);
-  y = diffusorTimeSliderR->getBottom();  
+  y = diffusorTimeSliderR->getBottom();
   diffusorAmountSliderR->setBounds(x+4, y, w-8, 16);
-  y = diffusorAmountSliderR->getBottom()+4;  
+  y = diffusorAmountSliderR->getBottom()+4;
 
   filterLabelR->setBounds(x+4, y, 88, 20);
-  y = filterLabelR->getBottom(); 
+  y = filterLabelR->getBottom();
   lowpassSliderR->setBounds(x+4, y, w-8, 16);
-  y = lowpassSliderR->getBottom();  
+  y = lowpassSliderR->getBottom();
   highpassSliderR->setBounds(x+4, y, w-8, 16);
-  y = highpassSliderR->getBottom()+4;  
+  y = highpassSliderR->getBottom()+4;
 
   feedbackLabelR->setBounds(x+4, y, 88, 20);
-  y = feedbackLabelR->getBottom(); 
+  y = feedbackLabelR->getBottom();
   feedbackSliderR->setBounds(x+4, y, w-8, 16);
-  y = feedbackSliderR->getBottom(); 
+  y = feedbackSliderR->getBottom();
   crossFeedbackSliderR->setBounds(x+4, y, w-8, 16);
-  y = crossFeedbackSliderR->getBottom()+4; 
+  y = crossFeedbackSliderR->getBottom()+4;
 
   outputLabelR->setBounds(x+4, y, 88, 20);
-  y = outputLabelR->getBottom(); 
+  y = outputLabelR->getBottom();
   outputSliderR2L->setBounds(x+4, y, w-8, 16);
-  y = outputSliderR2L->getBottom(); 
+  y = outputSliderR2L->getBottom();
   outputSliderR2R->setBounds(x+4, y, w-8, 16);
-  y = outputSliderR2R->getBottom(); 
+  y = outputSliderR2R->getBottom();
   outDelaySliderR->setBounds(x+4, y, w-8, 16);
 }

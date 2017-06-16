@@ -2,7 +2,7 @@
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-EqualizerAudioModule::EqualizerAudioModule(CriticalSection *newPlugInLock, 
+EqualizerAudioModule::EqualizerAudioModule(CriticalSection *newPlugInLock,
   rosic::EqualizerStereo *equalizerStereoToWrap) : AudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
@@ -12,7 +12,7 @@ EqualizerAudioModule::EqualizerAudioModule(CriticalSection *newPlugInLock,
   init();
 }
 
-EqualizerAudioModule::EqualizerAudioModule(CriticalSection *newPlugInLock) 
+EqualizerAudioModule::EqualizerAudioModule(CriticalSection *newPlugInLock)
   : AudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
@@ -53,7 +53,7 @@ void EqualizerAudioModule::createStaticParameters()
   std::vector<double> defaultValues;
   AutomatableParameter* p;
 
-  addObservedParameter( p = new AutomatableParameter(lock, "Bypass", 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN) );  
+  addObservedParameter( p = new AutomatableParameter(lock, "Bypass", 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN) );
   p->setValueChangeCallback(wrappedEqualizerStereo, &EqualizerStereo::setBypass);
 
   p = new AutomatableParameter(lock, "StereoMode", 0.0, 3.0, 1.0, 0.0, Parameter::STRING);
@@ -76,15 +76,15 @@ void EqualizerAudioModule::createStaticParameters()
 
   p = new AutomatableParameter(lock, "GlobalGain", -48.0, 48.0, 0.1, 0.0, Parameter::LINEAR_BIPOLAR);
   defaultValues.clear();
-  defaultValues.push_back(-24.0); 
-  defaultValues.push_back(-18.0); 
-  defaultValues.push_back(-12.0); 
-  defaultValues.push_back( -6.0); 
-  defaultValues.push_back(  0.0); 
-  defaultValues.push_back( +6.0); 
-  defaultValues.push_back(+12.0); 
-  defaultValues.push_back(+18.0); 
-  defaultValues.push_back(+24.0); 
+  defaultValues.push_back(-24.0);
+  defaultValues.push_back(-18.0);
+  defaultValues.push_back(-12.0);
+  defaultValues.push_back( -6.0);
+  defaultValues.push_back(  0.0);
+  defaultValues.push_back( +6.0);
+  defaultValues.push_back(+12.0);
+  defaultValues.push_back(+18.0);
+  defaultValues.push_back(+24.0);
   p->setDefaultValues(defaultValues);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedEqualizerStereo, &EqualizerStereo::setGlobalGain);
@@ -111,7 +111,7 @@ XmlElement* EqualizerAudioModule::getStateAsXml(const juce::String& stateName, b
   ScopedLock scopedLock(*lock);
   XmlElement *xmlState = AudioModule::getStateAsXml(stateName, markAsClean);
 
-  if(  wrappedEqualizerStereo->getStereoMode() == rosic::EqualizerStereo::LEFT_RIGHT 
+  if(  wrappedEqualizerStereo->getStereoMode() == rosic::EqualizerStereo::LEFT_RIGHT
     || wrappedEqualizerStereo->getStereoMode() == rosic::EqualizerStereo::MID_SIDE    )
   {
     for(int c = 0; c < 2; c++)
@@ -143,7 +143,7 @@ void EqualizerAudioModule::setStateFromXml(const XmlElement& xmlState, const juc
   int c = 0;
   forEachXmlChildElementWithTagName(convertedState, channelChild, "Channel")
   {
-    int i = 0;
+    //int i = 0;
 
     forEachXmlChildElementWithTagName(*channelChild, bandChild, "Band")
     {
@@ -183,7 +183,7 @@ XmlElement EqualizerAudioModule::convertXmlStateIfNecessary(const XmlElement& xm
 {
   ScopedLock scopedLock(*lock);
 
-  int xmlPatchFormatIndex = xmlState.getIntAttribute("PatchFormat", patchFormatIndex);
+  //int xmlPatchFormatIndex = xmlState.getIntAttribute("PatchFormat", patchFormatIndex);
 
   if( xmlState.getChildByName(juce::String("Channel")) == NULL )
   {
@@ -231,10 +231,10 @@ XmlElement* EqualizerAudioModule::getBandStateAsXml(int c, int b)
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // setup:
 
-void EqualizerAudioModule::setSampleRate(double newSampleRate) 
-{ 
+void EqualizerAudioModule::setSampleRate(double newSampleRate)
+{
   ScopedLock scopedLock(*lock);
-  wrappedEqualizerStereo->setSampleRate((float)newSampleRate); 
+  wrappedEqualizerStereo->setSampleRate((float)newSampleRate);
 }
 
 void EqualizerAudioModule::selectChannel(int channelToSelect)
@@ -264,7 +264,7 @@ void EqualizerAudioModule::deSelectBand()
   sendParameterSetChangeNotification(this);
 }
 
-void EqualizerAudioModule::addBand(int channel, int mode, double frequency, double gain, double bandwidth, 
+void EqualizerAudioModule::addBand(int channel, int mode, double frequency, double gain, double bandwidth,
                                    bool selectNewBand, bool suppressNotification)
 {
   ScopedLock scopedLock(*lock);
@@ -284,22 +284,22 @@ void EqualizerAudioModule::addBand(int channel, int mode, double frequency, doub
   p->addStringValue(juce::String("Highpass 6 dB/oct"));
   p->addStringValue(juce::String("Highpass 12 dB/oct"));
   p->addStringValue(juce::String("Notch 2*6 dB/oct"));
-  p->setValue(mode, false, false);  
+  p->setValue(mode, false, false);
   p->registerParameterObserver(this);
   filterModeParameters[channel].add(p);
 
   p = new Parameter(lock, "Frequency", 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
   defaultValues.clear();
-  defaultValues.push_back(   31.25); 
-  defaultValues.push_back(   62.5); 
-  defaultValues.push_back(  125.0); 
-  defaultValues.push_back(  250.0); 
-  defaultValues.push_back(  500.0); 
-  defaultValues.push_back( 1000.0); 
-  defaultValues.push_back( 2000.0); 
-  defaultValues.push_back( 4000.0); 
-  defaultValues.push_back( 8000.0); 
-  defaultValues.push_back(16000.0); 
+  defaultValues.push_back(   31.25);
+  defaultValues.push_back(   62.5);
+  defaultValues.push_back(  125.0);
+  defaultValues.push_back(  250.0);
+  defaultValues.push_back(  500.0);
+  defaultValues.push_back( 1000.0);
+  defaultValues.push_back( 2000.0);
+  defaultValues.push_back( 4000.0);
+  defaultValues.push_back( 8000.0);
+  defaultValues.push_back(16000.0);
   p->setDefaultValues(defaultValues);
   p->setValue(frequency, false, false);
   p->registerParameterObserver(this);
@@ -307,16 +307,16 @@ void EqualizerAudioModule::addBand(int channel, int mode, double frequency, doub
 
   p = new Parameter(lock, "Gain", -48.0, 48.0, 0.1, 0.0, Parameter::LINEAR_BIPOLAR);
   defaultValues.clear();
-  defaultValues.push_back(-24.0); 
-  defaultValues.push_back(-18.0); 
-  defaultValues.push_back(-12.0); 
-  defaultValues.push_back( -6.0); 
+  defaultValues.push_back(-24.0);
+  defaultValues.push_back(-18.0);
+  defaultValues.push_back(-12.0);
+  defaultValues.push_back( -6.0);
   defaultValues.push_back(  amp2dB(sqrt(0.5))); // -3.01 dB - standard definition for cutoff frequencies
-  defaultValues.push_back(  0.0); 
-  defaultValues.push_back( +6.0); 
-  defaultValues.push_back(+12.0); 
-  defaultValues.push_back(+18.0); 
-  defaultValues.push_back(+24.0); 
+  defaultValues.push_back(  0.0);
+  defaultValues.push_back( +6.0);
+  defaultValues.push_back(+12.0);
+  defaultValues.push_back(+18.0);
+  defaultValues.push_back(+24.0);
   p->setDefaultValues(defaultValues);
   p->setValue(gain, false, false);
   p->registerParameterObserver(this);
@@ -325,13 +325,13 @@ void EqualizerAudioModule::addBand(int channel, int mode, double frequency, doub
   double defaultBandwidth = 2.0*asinh(1.0/sqrt(2.0))/log(2.0);  // ca. 1.9, Q = sqrt(1/2), maximum steepness without overshoot for shelves
   p = new Parameter(lock, "Bandwidth", 0.25, 6.0, 0.01, defaultBandwidth, Parameter::EXPONENTIAL);
   defaultValues.clear();
-  defaultValues.push_back(1.0/3.0); 
-  defaultValues.push_back(0.5); 
-  defaultValues.push_back(1.0); 
-  defaultValues.push_back(defaultBandwidth); 
-  defaultValues.push_back(2.0); 
-  defaultValues.push_back(3.0); 
-  defaultValues.push_back(4.0); 
+  defaultValues.push_back(1.0/3.0);
+  defaultValues.push_back(0.5);
+  defaultValues.push_back(1.0);
+  defaultValues.push_back(defaultBandwidth);
+  defaultValues.push_back(2.0);
+  defaultValues.push_back(3.0);
+  defaultValues.push_back(4.0);
   p->setDefaultValues(defaultValues);
   p->setValue(bandwidth, false, false);
   p->registerParameterObserver(this);
@@ -365,11 +365,11 @@ bool EqualizerAudioModule::removeBand(int channel, int indexToRemove)
   gainParameters[channel].remove(      indexToRemove, true);
   bandwidthParameters[channel].remove( indexToRemove, true);
 
-  // we can now safely remove the band from the wrapped Equalizer object because the parameters wich have held the callback pointers have 
+  // we can now safely remove the band from the wrapped Equalizer object because the parameters wich have held the callback pointers have
   // just been deleted:
   wrappedEqualizerStereo->removeBand(channel, indexToRemove);
 
-  assignCallbacksForDynamicParameters();  
+  assignCallbacksForDynamicParameters();
   selectedIndex = -1;
   sendParameterSetChangeNotification(this);
   return true;
@@ -398,7 +398,7 @@ void EqualizerAudioModule::removeAllBands()
 int EqualizerAudioModule::getNumChannelsToPlot()
 {
   ScopedLock scopedLock(*lock);
-  if(  wrappedEqualizerStereo->getStereoMode() == rosic::EqualizerStereo::STEREO_LINKED 
+  if(  wrappedEqualizerStereo->getStereoMode() == rosic::EqualizerStereo::STEREO_LINKED
     || wrappedEqualizerStereo->getStereoMode() == rosic::EqualizerStereo::MONO )
   {
     return 1;
@@ -416,7 +416,7 @@ int EqualizerAudioModule::getNumBands(int channel)
 
 void EqualizerAudioModule::getMagnitudeResponse(int channel, double *frequencies, double *magnitudes, int numBins)
 {
-  ScopedLock scopedLock(*lock); 
+  ScopedLock scopedLock(*lock);
   wrappedEqualizerStereo->getMagnitudeResponse(channel, frequencies, magnitudes, numBins);
 }
 
@@ -433,7 +433,7 @@ void EqualizerAudioModule::assignCallbacksForDynamicParameters()
 {
   ScopedLock scopedLock(*lock);
   int numChannels = 2;
-  for(int c=0; c<numChannels; c++)  
+  for(int c=0; c<numChannels; c++)
   {
     int numBands = filterModeParameters[c].size();
     for(int i=0; i<numBands; i++)
@@ -453,7 +453,7 @@ void EqualizerAudioModule::assignCallbacksForDynamicParameters()
 
 //=================================================================================================
 
-EqualizerPlotEditor::EqualizerPlotEditor(CriticalSection *newPlugInLock, EqualizerAudioModule* newEqualizerModuleToEdit) 
+EqualizerPlotEditor::EqualizerPlotEditor(CriticalSection *newPlugInLock, EqualizerAudioModule* newEqualizerModuleToEdit)
   : SpectrumDisplayOld(juce::String("EqualizerEditor"))
 {
   setDescription("Left: insert or grab band-handle, right: remove band");
@@ -535,7 +535,7 @@ void EqualizerPlotEditor::setEqualizerModuleToEdit(EqualizerAudioModule* newEqua
   }
 
   assignParametersToSelectedBand();
-  updatePlot();  
+  updatePlot();
 }
 
 void EqualizerPlotEditor::unAssignParameters()
@@ -689,7 +689,7 @@ void EqualizerPlotEditor::mouseMove(const MouseEvent &e)
   int index = getBandIndexAtPixelPosition(e.x, e.y);
   if( index != -1 )
   {
-    int    m    = equalizerModuleToEdit->wrappedEqualizerStereo->getBandMode(     equalizerModuleToEdit->selectedChannel, index);
+    //int    m    = equalizerModuleToEdit->wrappedEqualizerStereo->getBandMode(     equalizerModuleToEdit->selectedChannel, index);
     double f    = equalizerModuleToEdit->wrappedEqualizerStereo->getBandFrequency(equalizerModuleToEdit->selectedChannel, index);
     double g    = equalizerModuleToEdit->wrappedEqualizerStereo->getBandGain(     equalizerModuleToEdit->selectedChannel, index);
     double b    = equalizerModuleToEdit->wrappedEqualizerStereo->getBandBandwidth(equalizerModuleToEdit->selectedChannel, index);
@@ -745,10 +745,10 @@ void EqualizerPlotEditor::mouseDown(const MouseEvent &e)
   if( equalizerModuleToEdit->selectedIndex != -1 )
   {
     // check first, if one of the left/right or up/down handles is grabbed:
-    if(  currentlyDraggedHandle == BANDWIDTH_AND_GAIN_LEFT  || currentlyDraggedHandle == BANDWIDTH_AND_GAIN_RIGHT 
+    if(  currentlyDraggedHandle == BANDWIDTH_AND_GAIN_LEFT  || currentlyDraggedHandle == BANDWIDTH_AND_GAIN_RIGHT
       || currentlyDraggedHandle == FREQUENCY || currentlyDraggedHandle == GAIN   )
     {
-      //sendChangeMessage();  
+      //sendChangeMessage();
       return;
     }
   }
@@ -765,7 +765,7 @@ void EqualizerPlotEditor::mouseDown(const MouseEvent &e)
         double g = e.y;
         xyToFrequencyAndGain(f, g);
         equalizerModuleToEdit->addBand(equalizerModuleToEdit->selectedChannel, rosic::TwoPoleFilter::PEAK, f, g);
-        equalizerModuleToEdit->selectBand(equalizerModuleToEdit->selectedChannel, 
+        equalizerModuleToEdit->selectBand(equalizerModuleToEdit->selectedChannel,
           equalizerModuleToEdit->getNumBands(equalizerModuleToEdit->selectedChannel)-1);
         currentlyDraggedHandle = FREQUENCY_AND_GAIN;
       }
@@ -773,7 +773,7 @@ void EqualizerPlotEditor::mouseDown(const MouseEvent &e)
     // maybe de-select on mouse-click
     /*
     else if( e.mods.isRightButtonDown() )
-    {  
+    {
     currentlyDraggedHandle = NONE;
     openRightClickPopupMenu(e.x, e.y);
     return;
@@ -783,7 +783,7 @@ void EqualizerPlotEditor::mouseDown(const MouseEvent &e)
   else
   {
     if( e.mods.isRightButtonDown() )
-    {  
+    {
       /*
       // this stuff should not be necesarry, but let's try for debugging:
       if( frequencyParameter != NULL )
@@ -819,7 +819,7 @@ void EqualizerPlotEditor::mouseDrag(const juce::MouseEvent &e)
   if( equalizerModuleToEdit == NULL )
     return;
 
-  if( frequencyParameter == NULL || gainParameter == NULL || bandwidthParameter == NULL 
+  if( frequencyParameter == NULL || gainParameter == NULL || bandwidthParameter == NULL
     || globalGainParameter == NULL )
   {
     if( currentlyDraggedHandle != GLOBALGAIN_LINE )
@@ -833,7 +833,7 @@ void EqualizerPlotEditor::mouseDrag(const juce::MouseEvent &e)
   double y = e.getMouseDownY() + e.getDistanceFromDragStartY();
 
   x = rosic::clip(x, 0.0, (double) getWidth());
-  y = rosic::clip(y, 0.0, (double) getHeight());  
+  y = rosic::clip(y, 0.0, (double) getHeight());
   transformFromComponentsCoordinates(x, y);
 
   if( currentlyDraggedHandle == FREQUENCY_AND_GAIN )
@@ -843,20 +843,20 @@ void EqualizerPlotEditor::mouseDrag(const juce::MouseEvent &e)
   }
   else if( currentlyDraggedHandle == BANDWIDTH_AND_GAIN_LEFT )
   {
-    double bw = rosic::TwoPoleFilter::lowerBandedgeFrequencyToBandwdith(x, 
+    double bw = rosic::TwoPoleFilter::lowerBandedgeFrequencyToBandwdith(x,
       frequencyParameter->getValue());
     bandwidthParameter->setValue(bw, true, true);
     gainParameter->setValue(y-globalGain, true, true);
   }
   else if( currentlyDraggedHandle == BANDWIDTH_AND_GAIN_RIGHT )
   {
-    double bw = rosic::TwoPoleFilter::upperBandedgeFrequencyToBandwdith(x, 
+    double bw = rosic::TwoPoleFilter::upperBandedgeFrequencyToBandwdith(x,
       frequencyParameter->getValue());
     bandwidthParameter->setValue(bw, true, true);
     gainParameter->setValue(y-globalGain, true, true);
   }
   else if( currentlyDraggedHandle == FREQUENCY )
-  { 
+  {
     frequencyParameter->setValue(x, true, true);
   }
   else if( currentlyDraggedHandle == GAIN )
@@ -864,7 +864,7 @@ void EqualizerPlotEditor::mouseDrag(const juce::MouseEvent &e)
     gainParameter->setValue(y-globalGain, true, true);
   }
   else if( currentlyDraggedHandle == GLOBALGAIN_LINE )
-  {  
+  {
     globalGainParameter->setValue(y, true, true);
   }
 
@@ -959,9 +959,9 @@ int EqualizerPlotEditor::getDragHandleAt(int x, int y)
 
   // check if y is over the global gain line:
   xt = 1000.0;                            // dummy;
-  yt = equalizerModuleToEdit->wrappedEqualizerStereo->getGlobalGain();  
+  yt = equalizerModuleToEdit->wrappedEqualizerStereo->getGlobalGain();
   transformToComponentsCoordinates(xt, yt);
-  if( fabs(y-yt) < 4.0 ) 
+  if( fabs(y-yt) < 4.0 )
     return GLOBALGAIN_LINE;
 
   return NONE;
@@ -1004,13 +1004,13 @@ void EqualizerPlotEditor::updatePlot()
   }
   else
   {
-    equalizerModuleToEdit->getMagnitudeResponse(0, frequencies, magnitudes1, numBins);  
-    equalizerModuleToEdit->getMagnitudeResponse(1, frequencies, magnitudes2, numBins);  
+    equalizerModuleToEdit->getMagnitudeResponse(0, frequencies, magnitudes1, numBins);
+    equalizerModuleToEdit->getMagnitudeResponse(1, frequencies, magnitudes2, numBins);
   }
   setSpectra(numBins, 2, frequencies, magnitudes);
 }
 
-void EqualizerPlotEditor::plotCurveFamily(Graphics &g, juce::Image* targetImage, 
+void EqualizerPlotEditor::plotCurveFamily(Graphics &g, juce::Image* targetImage,
   XmlElement *targetSVG)
 {
   ScopedLock scopedLock(*plugInLock);
@@ -1024,7 +1024,7 @@ void EqualizerPlotEditor::plotCurveFamily(Graphics &g, juce::Image* targetImage,
 
   // draw the horizontal line for the reference gain:
 
-  Colour curveColour = plotColourScheme.getCurveColourUniform(0); 
+  Colour curveColour = plotColourScheme.getCurveColourUniform(0);
   g.setColour(curveColour);
   y = equalizerModuleToEdit->wrappedEqualizerStereo->getGlobalGain();
   x = 1000.0;
@@ -1048,7 +1048,7 @@ void EqualizerPlotEditor::plotCurveFamily(Graphics &g, juce::Image* targetImage,
     y = equalizerModuleToEdit->wrappedEqualizerStereo->getBandGain(channel, i) + globalGain;
     transformToImageCoordinates(x, y, targetImage);
 
-    g.fillEllipse((float) (x-dotRadius), (float) (y-dotRadius), 
+    g.fillEllipse((float) (x-dotRadius), (float) (y-dotRadius),
       (float) (2*dotRadius), (float) (2*dotRadius) );
 
     if( i == equalizerModuleToEdit->selectedIndex )
@@ -1058,13 +1058,13 @@ void EqualizerPlotEditor::plotCurveFamily(Graphics &g, juce::Image* targetImage,
       g.drawLine((float) x,        0.f, (float)          x, (float) getHeight(), 1.f);
       g.drawLine(      0.f,  (float) y, (float) getWidth(), (float) y          , 1.f);
 
-      g.fillEllipse((float) (x-dotRadius-2), (float) (y-dotRadius-2), 
+      g.fillEllipse((float) (x-dotRadius-2), (float) (y-dotRadius-2),
         (float) (2*dotRadius+4), (float) (2*dotRadius+4) );
 
       g.setColour(curveColour.darker(0.5f));
       //g.setColour(Colour(0xff404090));
 
-      g.fillEllipse((float) (x-dotRadius), (float) (y-dotRadius), 
+      g.fillEllipse((float) (x-dotRadius), (float) (y-dotRadius),
         (float) (2*dotRadius), (float) (2*dotRadius) );
 
       if( equalizerModuleToEdit->wrappedEqualizerStereo->doesModeSupportBandwidth(channel, i) )
@@ -1159,8 +1159,8 @@ void EqualizerPlotEditor::xyToFrequencyAndGain(double &x, double &y)
 
 // construction/destruction:
 
-EqualizerModuleEditor::EqualizerModuleEditor(CriticalSection *newPlugInLock, 
-  EqualizerAudioModule* newEqualizerAudioModule) 
+EqualizerModuleEditor::EqualizerModuleEditor(CriticalSection *newPlugInLock,
+  EqualizerAudioModule* newEqualizerAudioModule)
   : AudioModuleEditor(newEqualizerAudioModule)
 {
   // set the plugIn-headline:
@@ -1178,7 +1178,7 @@ EqualizerModuleEditor::EqualizerModuleEditor(CriticalSection *newPlugInLock,
   addWidget( channelSelectButton1 = new RRadioButton(juce::String("L")) );
   channelSelectButton1->setDescription(juce::String("Edit left channel curve"));
   channelSelectButton1->setDescriptionField(infoField);
-  channelSelectButton1->setClickingTogglesState(true); 
+  channelSelectButton1->setClickingTogglesState(true);
   channelSelectButton1->addRButtonListener(this);
   //channelSelectButton1->setRadioGroupId(1);  // \todo: make this work again
   channelSelectButton1->addToRadioButtonGroup(&channelSelectRadioGroup);
@@ -1187,19 +1187,19 @@ EqualizerModuleEditor::EqualizerModuleEditor(CriticalSection *newPlugInLock,
   addWidget( channelSelectButton2 = new RRadioButton(juce::String("R")) );
   channelSelectButton2->setDescription(juce::String("Edit right channel curve"));
   channelSelectButton2->setDescriptionField(infoField);
-  channelSelectButton2->setClickingTogglesState(true); 
+  channelSelectButton2->setClickingTogglesState(true);
   channelSelectButton2->addRButtonListener(this);
   //channelSelectButton2->setRadioGroupId(1); // \todo: make this work again
   channelSelectButton2->addToRadioButtonGroup(&channelSelectRadioGroup);
   channelSelectButton2->setToggleState(false, false);
 
-  addWidget( stereoModeComboBox = new RNamedComboBox(juce::String("StereoModeComboBox"), 
+  addWidget( stereoModeComboBox = new RNamedComboBox(juce::String("StereoModeComboBox"),
     juce::String("Stereo Mode:")) );
   stereoModeComboBox->setDescription("Select mode for processing stereo signals");
   stereoModeComboBox->setDescriptionField(infoField);
   stereoModeComboBox->registerComboBoxObserver(this);
 
-  addWidget( gainRangeComboBox = new RNamedComboBox(juce::String("RangeComboBox"), 
+  addWidget( gainRangeComboBox = new RNamedComboBox(juce::String("RangeComboBox"),
     juce::String("Range:")) );
   gainRangeComboBox->setDescription("Select the range for the plot");
   gainRangeComboBox->setDescriptionField(infoField);
@@ -1216,7 +1216,7 @@ EqualizerModuleEditor::EqualizerModuleEditor(CriticalSection *newPlugInLock,
   bandParametersLabel->setJustification(Justification::centred);
   bandParametersLabel->setNoBackgroundAndOutline(true);
 
-  addWidget( filterModeComboBox = new RNamedComboBox(juce::String("FilterModeComboBox"), 
+  addWidget( filterModeComboBox = new RNamedComboBox(juce::String("FilterModeComboBox"),
     juce::String("Mode:")) );
   filterModeComboBox->setDescription("Filter mode of selected band");
   filterModeComboBox->setDescriptionField(infoField);
@@ -1307,13 +1307,13 @@ void EqualizerModuleEditor::setEqualizerModuleToEdit(EqualizerAudioModule* newEq
     plotEditor->equalizerModuleToEdit->addStateWatcher(stateWidgetSet);
 
     // assign widgets to parameters of the new equalizer (only static parameters - dynamic parameters will be assigned in updateSliders):
-    bypassButton->assignParameter(      
+    bypassButton->assignParameter(
       plotEditor->equalizerModuleToEdit->getParameterByName("Bypass") );
     stereoModeComboBox->assignParameter(
       plotEditor->equalizerModuleToEdit->getParameterByName("StereoMode") );
-    gainRangeComboBox->assignParameter( 
+    gainRangeComboBox->assignParameter(
       plotEditor->equalizerModuleToEdit->getParameterByName("GainRange") );
-    globalGainSlider->assignParameter(  
+    globalGainSlider->assignParameter(
       plotEditor->equalizerModuleToEdit->getParameterByName("GlobalGain") );
   }
 
@@ -1372,7 +1372,7 @@ void EqualizerModuleEditor::changeListenerCallback(ChangeBroadcaster *objectThat
   if( objectThatHasChanged == plotEditor->equalizerModuleToEdit )
   {
   //plotEditor->equalizerModuleToEdit->markStateAsDirty(); // move this call into EqualizerAudioModule
-  updateWidgetsAccordingToState();  
+  updateWidgetsAccordingToState();
 
   // maybe we can get rid of the branch now that we have parameterSetChanged?
   }
@@ -1392,7 +1392,7 @@ void EqualizerModuleEditor::parameterSetChanged(ParameterSetHolder* parameterSet
     return;
 
   if( parameterSetHolderThatHasChanged == plotEditor->equalizerModuleToEdit )
-    updateWidgetsAccordingToState();  
+    updateWidgetsAccordingToState();
 }
 
 void EqualizerModuleEditor::updateWidgetsAccordingToState()
@@ -1440,9 +1440,9 @@ void EqualizerModuleEditor::paint(Graphics &g)
 {
   AudioModuleEditor::paint(g);
 
-  fillRectWithBilinearGradient(g, rightSectionRectangle, editorColourScheme.topLeft, editorColourScheme.topRight, 
+  fillRectWithBilinearGradient(g, rightSectionRectangle, editorColourScheme.topLeft, editorColourScheme.topRight,
     editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
-  fillRectWithBilinearGradient(g, bottomSectionRectangle, editorColourScheme.topLeft, editorColourScheme.topRight, 
+  fillRectWithBilinearGradient(g, bottomSectionRectangle, editorColourScheme.topLeft, editorColourScheme.topRight,
     editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
 
   g.setColour(editorColourScheme.outline);
@@ -1715,32 +1715,32 @@ void EqualizerModuleEditor::updatePlotRange()
     juce::String("GainRange"))->getValue();
   switch( rangeIndex )
   {
-  case 0: 
+  case 0:
   {
-    plotEditor->setCurrentRangeY( -3.0, +3.0);   
+    plotEditor->setCurrentRangeY( -3.0, +3.0);
     plotEditor->setHorizontalCoarseGrid(1.0, true);
   } break;
-  case 1: 
+  case 1:
   {
-    plotEditor->setCurrentRangeY( -6.0, +6.0);    
+    plotEditor->setCurrentRangeY( -6.0, +6.0);
     plotEditor->setHorizontalCoarseGrid(2.0, true);
   }
   break;
-  case 2: 
+  case 2:
   {
-    plotEditor->setCurrentRangeY(-12.0, +12.0);  
+    plotEditor->setCurrentRangeY(-12.0, +12.0);
     plotEditor->setHorizontalCoarseGrid(3.0, true);
   }
   break;
-  case 3: 
+  case 3:
   {
-    plotEditor->setCurrentRangeY(-24.0, +24.0);   
+    plotEditor->setCurrentRangeY(-24.0, +24.0);
     plotEditor->setHorizontalCoarseGrid(6.0, true);
   }
   break;
-  case 4: 
+  case 4:
   {
-    plotEditor->setCurrentRangeY(-48.0, +48.0);   
+    plotEditor->setCurrentRangeY(-48.0, +48.0);
     plotEditor->setHorizontalCoarseGrid(12.0, true);
   }
   break;

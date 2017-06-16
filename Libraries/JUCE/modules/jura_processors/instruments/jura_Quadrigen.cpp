@@ -20,7 +20,7 @@ QuadrigenAudioModule::QuadrigenAudioModule(CriticalSection *newPlugInLock, rosic
   for(int i=0; i<rosic::Quadrigen::numGeneratorSlots; i++)
   {
     // create a bypass-module for each slot:
-    rosic::BypassModule* bypassCoreModule = 
+    rosic::BypassModule* bypassCoreModule =
       static_cast<rosic::BypassModule*> (wrappedQuadrigen->getGeneratorModule(i)); // this dynamic_cast causes bugs in the release version
     jura::BypassAudioModule *audioModule = new jura::BypassAudioModule(lock, bypassCoreModule);
     generatorModules[i] = audioModule;
@@ -41,7 +41,7 @@ QuadrigenAudioModule::~QuadrigenAudioModule()
   mutex.enter();
   for(int i=0; i<rosic::Quadrigen::numGeneratorSlots; i++)
   {
-    delete oscillatorStereoStates[i]; 
+    delete oscillatorStereoStates[i];
   }
   mutex.exit();
   //releaseLock();
@@ -75,9 +75,9 @@ void QuadrigenAudioModule::setGeneratorAlgorithm(int slotIndex, int newAlgorithm
   int oldAlgorithmIndex = wrappedQuadrigen->getGeneratorAlgorithmIndex(slotIndex);
   switch( oldAlgorithmIndex )
   {
-  case rosic::Quadrigen::OSCILLATOR_STEREO: 
+  case rosic::Quadrigen::OSCILLATOR_STEREO:
     {
-      jura::OscillatorStereoAudioModule *audioModule = 
+      jura::OscillatorStereoAudioModule *audioModule =
         static_cast<jura::OscillatorStereoAudioModule*> (generatorModules[slotIndex]);
       delete oscillatorStereoStates[slotIndex];
       oscillatorStereoStates[slotIndex] = audioModule->getStateAsXml(juce::String::empty, false);
@@ -90,16 +90,16 @@ void QuadrigenAudioModule::setGeneratorAlgorithm(int slotIndex, int newAlgorithm
   // delete the old generator (and its (sub)editor, if present):
   if( editor != NULL )
     editor->removeChildEditorInSlot(slotIndex);
-  generatorModules[slotIndex]->removeAllStateWatchers();  
+  generatorModules[slotIndex]->removeAllStateWatchers();
   removeChildAudioModule(generatorModules[slotIndex], true);
   wrappedQuadrigen->setGeneratorAlgorithm(slotIndex, newAlgorithmIndex);
 
   // create the new generator and restore its state from any previous use:
   switch( newAlgorithmIndex )
   {
-  case rosic::Quadrigen::OSCILLATOR_STEREO: 
+  case rosic::Quadrigen::OSCILLATOR_STEREO:
     {
-      rosic::OscillatorStereoModule *core = 
+      rosic::OscillatorStereoModule *core =
         static_cast<rosic::OscillatorStereoModule*> (wrappedQuadrigen->getGeneratorModule(slotIndex));
       jura::OscillatorStereoAudioModule *audioModule = new jura::OscillatorStereoAudioModule(lock, core);
       audioModule->setModuleName(juce::String("OscillatorStereo") + juce::String(slotIndex+1));
@@ -110,7 +110,7 @@ void QuadrigenAudioModule::setGeneratorAlgorithm(int slotIndex, int newAlgorithm
 
   default: // bypass by default (i.e. value out of range)
     {
-      rosic::BypassModule *core = 
+      rosic::BypassModule *core =
         static_cast<rosic::BypassModule*> (wrappedQuadrigen->getGeneratorModule(slotIndex));
       jura::BypassAudioModule *audioModule = new jura::BypassAudioModule(lock, core);
       generatorModules[slotIndex] = audioModule;
@@ -162,7 +162,7 @@ XmlElement* QuadrigenAudioModule::getStateAsXml(const juce::String& stateName, b
     // store the slot-generator assignments:
     for(int i=0; i<rosic::Quadrigen::numGeneratorSlots; i++)
     {
-      xmlState->setAttribute(juce::String("Slot")+juce::String(i+1), 
+      xmlState->setAttribute(juce::String("Slot")+juce::String(i+1),
         generatorAlgorithmIndexToString(wrappedQuadrigen->getGeneratorAlgorithmIndex(i)) );
     }
   }
@@ -170,7 +170,7 @@ XmlElement* QuadrigenAudioModule::getStateAsXml(const juce::String& stateName, b
   return xmlState;
 }
 
-void QuadrigenAudioModule::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,    
+void QuadrigenAudioModule::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
                                            bool markAsClean)
 {
   acquireLock();
@@ -179,7 +179,7 @@ void QuadrigenAudioModule::setStateFromXml(const XmlElement& xmlState, const juc
     // recall the slot-generator assignments:
     for(int i=0; i<rosic::Quadrigen::numGeneratorSlots; i++)
     {
-      setGeneratorAlgorithm(i, stringToGeneratorAlgorithmIndex( 
+      setGeneratorAlgorithm(i, stringToGeneratorAlgorithmIndex(
         xmlState.getStringAttribute( juce::String("Slot")+juce::String(i+1), "Mute")));
     }
   }
@@ -204,11 +204,11 @@ void QuadrigenAudioModule::initializeAutomatableParameters()
   Parameter* p;
 
   // #00:
-  p = new Parameter(lock, "DryWet", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR); 
+  p = new Parameter(lock, "DryWet", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
   addObservedParameter(p);
 
   // #01:
-  p = new Parameter(lock, "WetLevel", -36.0, 6.0, 0.01, 0.0, Parameter::LINEAR); 
+  p = new Parameter(lock, "WetLevel", -36.0, 6.0, 0.01, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
 
   // #02:
@@ -243,8 +243,8 @@ int QuadrigenAudioModule::stringToGeneratorAlgorithmIndex(const juce::String &al
 
 //=================================================================================================
 
-QuadrigenModuleEditor::QuadrigenModuleEditor(CriticalSection *newPlugInLock, 
-  QuadrigenAudioModule* newQuadrigenAudioModule) 
+QuadrigenModuleEditor::QuadrigenModuleEditor(CriticalSection *newPlugInLock,
+  QuadrigenAudioModule* newQuadrigenAudioModule)
   : AudioModuleEditor(newQuadrigenAudioModule)
 {
   setHeadlineStyle(MAIN_HEADLINE);
@@ -332,7 +332,7 @@ void QuadrigenModuleEditor::rComboBoxChanged(RComboBox *rComboBoxThatHasChanged)
     return;
   }
 
-  rosic::Quadrigen* core = quadrigenModuleToEdit->wrappedQuadrigen;
+  //rosic::Quadrigen* core = quadrigenModuleToEdit->wrappedQuadrigen;
 
   //....
 
@@ -389,7 +389,7 @@ void QuadrigenModuleEditor::paint(Graphics &g)
 {
   AudioModuleEditor::paint(g);
 
-  fillRectWithBilinearGradient(g, globalRectangle, editorColourScheme.topLeft, 
+  fillRectWithBilinearGradient(g, globalRectangle, editorColourScheme.topLeft,
     editorColourScheme.topRight, editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
 
   g.setColour(editorColourScheme.outline);
@@ -397,7 +397,7 @@ void QuadrigenModuleEditor::paint(Graphics &g)
 
   int x = globalRectangle.getX(); // + middleRectangle.getWidth()/2;
   int y = globalRectangle.getY();
-  //drawBitmapFontText(g, x+4, y+4, juce::String(T("Global Settings")), BigFont::getInstance(), 
+  //drawBitmapFontText(g, x+4, y+4, juce::String(T("Global Settings")), BigFont::getInstance(),
   //  editorColourScheme.labelTextColour);
 
   acquireLock();
@@ -415,26 +415,26 @@ void QuadrigenModuleEditor::paint(Graphics &g)
   rosic::Quadrigen* core = quadrigenModuleToEdit->wrappedQuadrigen;
   for(int i=0; i<rosic::Quadrigen::numGeneratorSlots; i++)
   {
-    fillRectWithBilinearGradient(g, slotRectangles[i], editorColourScheme.topLeft, editorColourScheme.topRight, 
+    fillRectWithBilinearGradient(g, slotRectangles[i], editorColourScheme.topLeft, editorColourScheme.topRight,
       editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
     g.drawRect(slotRectangles[i], 2);
 
-    x = slotRectangles[i].getX(); 
+    x = slotRectangles[i].getX();
     y = slotRectangles[i].getY();
-    juce::String headlineString = juce::String(i+1) + juce::String(" - ") + 
+    juce::String headlineString = juce::String(i+1) + juce::String(" - ") +
       quadrigenModuleToEdit->generatorAlgorithmIndexToString(core->getGeneratorAlgorithmIndex(i));
 
-    //drawBitmapFontText(g, x+4, y+4, headlineString, &boldFont16px, 
+    //drawBitmapFontText(g, x+4, y+4, headlineString, &boldFont16px,
     //  editorColourScheme.headline);
     // old version
 
     //jassertfalse; // something doesn't work with accessing the 16px font instance here
                   // -> check out why
-    //drawBitmapFontText(g, x+4, y+4, headlineString, &BitmapFontRoundedBoldA10D0::instance, 
-    //  editorColourScheme.headline); 
+    //drawBitmapFontText(g, x+4, y+4, headlineString, &BitmapFontRoundedBoldA10D0::instance,
+    //  editorColourScheme.headline);
     // this works (with 10px font) - but we want a big font here ...figure that out...
 
-    drawBitmapFontText(g, x+4, y+4, headlineString, &BitmapFontRoundedBoldA16D0::instance, 
+    drawBitmapFontText(g, x+4, y+4, headlineString, &BitmapFontRoundedBoldA16D0::instance,
       editorColourScheme.headline);
     // why does this not work? (linker error)
 
@@ -541,7 +541,7 @@ void QuadrigenModuleEditor::removeChildEditorInSlot(int slotIndex)
 {
   acquireLock();
   int i = slotIndex;
-  if( slotIndex >= 0 && slotIndex < rosic::Quadrigen::numGeneratorSlots 
+  if( slotIndex >= 0 && slotIndex < rosic::Quadrigen::numGeneratorSlots
     && moduleEditors[i] != NULL  )
   {
     moduleEditors[i]->invalidateModulePointer();  // so it doesn't dereference it in the destructor
@@ -565,7 +565,7 @@ void QuadrigenModuleEditor::createEditorForSlot(int slotIndex, int algorithmInde
     return;
   }
 
-  jassert( moduleEditors[slotIndex] == NULL ); 
+  jassert( moduleEditors[slotIndex] == NULL );
   // you should delete the old editor and null the pointer before creating a new one
 
   switch( algorithmIndex )
@@ -586,17 +586,17 @@ void QuadrigenModuleEditor::createEditorForSlot(int slotIndex, int algorithmInde
   {
     MuteAudioModule *audioModule = static_cast<MuteAudioModule*>
       (quadrigenModuleToEdit->getGeneratorAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new MuteModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new MuteModuleEditor(lock, audioModule);
   } break;
   default:
   {
     BypassAudioModule *audioModule = static_cast<BypassAudioModule*>
       (quadrigenModuleToEdit->getGeneratorAudioModule(slotIndex));
-    moduleEditors[slotIndex] = new BypassModuleEditor(lock, audioModule); 
+    moduleEditors[slotIndex] = new BypassModuleEditor(lock, audioModule);
   }
   }
 
-  moduleEditors[slotIndex]->setHeadlineStyle(Editor::NO_HEADLINE);    
+  moduleEditors[slotIndex]->setHeadlineStyle(Editor::NO_HEADLINE);
   moduleEditors[slotIndex]->setLinkPosition(AudioModuleEditor::INVISIBLE);
   moduleEditors[slotIndex]->setDescriptionField(infoField, true);
   addChildEditor(moduleEditors[slotIndex]);

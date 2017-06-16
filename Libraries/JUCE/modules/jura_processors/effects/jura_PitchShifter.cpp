@@ -2,7 +2,7 @@
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-PitchShifterAudioModule::PitchShifterAudioModule(CriticalSection *newPlugInLock, 
+PitchShifterAudioModule::PitchShifterAudioModule(CriticalSection *newPlugInLock,
   rosic::PitchShifterGrainAdaptive *pitchShifterToWrap) : AudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
@@ -42,7 +42,7 @@ void PitchShifterAudioModule::createStaticParameters()
   std::vector<double> defaultValues;
   AutomatableParameter* p;
 
-  p = new AutomatableParameter(lock, "DetuneCoarse", -48.0, 48.0, 0.1, 0.0, 
+  p = new AutomatableParameter(lock, "DetuneCoarse", -48.0, 48.0, 0.1, 0.0,
     Parameter::LINEAR_BIPOLAR, 74);
   defaultValues.clear();
   defaultValues.push_back(2.03910002); // f/f0 =  9/ 8 = 1.125
@@ -56,27 +56,27 @@ void PitchShifterAudioModule::createStaticParameters()
   defaultValues.push_back(12.0);
   p->setDefaultValues(defaultValues);
   addObservedParameter(p);
-  p->setValueChangeCallback<PitchShifterGrainAdaptive>(wrappedPitchShifter, 
+  p->setValueChangeCallback<PitchShifterGrainAdaptive>(wrappedPitchShifter,
     &PitchShifterGrainAdaptive::setDetuneCoarse);
-    // p->setValueChangeCallback(wrappedPitchShifter, &PitchShifterGrainAdaptive::setDetuneCoarse); does not work because the MS compiler 
-    // seems not to be able to infer, that the template argument is "PitchShifterGrainAdaptive" - it ambiguates it with the "PitchShifter" 
+    // p->setValueChangeCallback(wrappedPitchShifter, &PitchShifterGrainAdaptive::setDetuneCoarse); does not work because the MS compiler
+    // seems not to be able to infer, that the template argument is "PitchShifterGrainAdaptive" - it ambiguates it with the "PitchShifter"
     // baseclass - that's why we must pass the template argument here explicitly
 
-  p = new AutomatableParameter(lock, "DetuneFine", -200.0, 200.0, 0.1, 0.0, 
+  p = new AutomatableParameter(lock, "DetuneFine", -200.0, 200.0, 0.1, 0.0,
     Parameter::LINEAR_BIPOLAR);
   addObservedParameter(p);
-  p->setValueChangeCallback<PitchShifterGrainAdaptive>(wrappedPitchShifter, 
+  p->setValueChangeCallback<PitchShifterGrainAdaptive>(wrappedPitchShifter,
     &PitchShifterGrainAdaptive::setDetuneFine);
 
-  p = new AutomatableParameter(lock, "GrainLengthInMilliseconds", 1.0, 2000.0, 0.001, 
+  p = new AutomatableParameter(lock, "GrainLengthInMilliseconds", 1.0, 2000.0, 0.001,
     18.1818181818181818, Parameter::EXPONENTIAL);
-     // a grain length of 18.18... will tune the amplitude modulation artifacts to +-55 Hz with 
+     // a grain length of 18.18... will tune the amplitude modulation artifacts to +-55 Hz with
      // respect to the carrier frequency
   addObservedParameter(p);
-  p->setValueChangeCallback<PitchShifterGrainAdaptive>(wrappedPitchShifter, 
+  p->setValueChangeCallback<PitchShifterGrainAdaptive>(wrappedPitchShifter,
     &PitchShifterGrainAdaptive::setGrainLengthInMilliseconds);
 
-  p = new AutomatableParameter(lock, "GrainLengthInPitchCycles", 0.25, 64.0, 0.01, 4.0, 
+  p = new AutomatableParameter(lock, "GrainLengthInPitchCycles", 0.25, 64.0, 0.01, 4.0,
     Parameter::EXPONENTIAL);
   defaultValues.clear();
   defaultValues.push_back(2.0);
@@ -90,10 +90,10 @@ void PitchShifterAudioModule::createStaticParameters()
   defaultValues.push_back(32.0);
   p->setDefaultValues(defaultValues);
   addObservedParameter(p);
-  p->setValueChangeCallback<PitchShifterGrainAdaptive>(wrappedPitchShifter, 
+  p->setValueChangeCallback<PitchShifterGrainAdaptive>(wrappedPitchShifter,
     &PitchShifterGrainAdaptive::setGrainLengthInPitchCycles);
 
-  p = new AutomatableParameter(lock, "GrainLengthInBeats", 0.125, 4.0, 0.001, 0.5, 
+  p = new AutomatableParameter(lock, "GrainLengthInBeats", 0.125, 4.0, 0.001, 0.5,
     Parameter::EXPONENTIAL);
   defaultValues.clear();
   defaultValues.push_back(0.125);
@@ -106,7 +106,7 @@ void PitchShifterAudioModule::createStaticParameters()
   defaultValues.push_back(4.0);
   p->setDefaultValues(defaultValues);
   addObservedParameter(p);
-  p->setValueChangeCallback<PitchShifterGrainAdaptive>(wrappedPitchShifter, 
+  p->setValueChangeCallback<PitchShifterGrainAdaptive>(wrappedPitchShifter,
     &PitchShifterGrainAdaptive::setGrainLengthInBeats);
 
   p = new AutomatableParameter(lock, "GrainLengthUnit", 0.0, 2.0, 1.0, 0.0, Parameter::STRING);
@@ -114,37 +114,37 @@ void PitchShifterAudioModule::createStaticParameters()
   p->addStringValue(juce::String("cycles"));
   p->addStringValue(juce::String("beats"));
   addObservedParameter(p);
-  p->setValueChangeCallback<PitchShifterGrainAdaptive>(wrappedPitchShifter, 
+  p->setValueChangeCallback<PitchShifterGrainAdaptive>(wrappedPitchShifter,
     &PitchShifterGrainAdaptive::setGrainLengthUnit);
 
   p = new AutomatableParameter(lock, "Feedback", -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR_BIPOLAR);
   addObservedParameter(p);
-  p->setValueChangeCallback<PitchShifterGrainAdaptive>(wrappedPitchShifter, 
+  p->setValueChangeCallback<PitchShifterGrainAdaptive>(wrappedPitchShifter,
     &PitchShifterGrainAdaptive::setFeedback);
 
   p = new AutomatableParameter(lock, "DryWet", 0.0, 100.0, 0.1, 100.0, Parameter::LINEAR);
   addObservedParameter(p);
-  p->setValueChangeCallback<PitchShifterGrainAdaptive>(wrappedPitchShifter, 
+  p->setValueChangeCallback<PitchShifterGrainAdaptive>(wrappedPitchShifter,
     &PitchShifterGrainAdaptive::setDryWet);
 
   p = new AutomatableParameter(lock, "AntiAlias", 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
   addObservedParameter(p);
-  p->setValueChangeCallback<PitchShifterGrainAdaptive>(wrappedPitchShifter, 
+  p->setValueChangeCallback<PitchShifterGrainAdaptive>(wrappedPitchShifter,
     &PitchShifterGrainAdaptive::setAntiAliasing);
 
   p = new AutomatableParameter(lock, "Reverse", 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
   addObservedParameter(p);
-  p->setValueChangeCallback<PitchShifterGrainAdaptive>(wrappedPitchShifter, 
+  p->setValueChangeCallback<PitchShifterGrainAdaptive>(wrappedPitchShifter,
     &PitchShifterGrainAdaptive::setReversePlayback);
 
   p = new AutomatableParameter(lock, "Invert", 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
   addObservedParameter(p);
-  p->setValueChangeCallback<PitchShifterGrainAdaptive>(wrappedPitchShifter, 
+  p->setValueChangeCallback<PitchShifterGrainAdaptive>(wrappedPitchShifter,
     &PitchShifterGrainAdaptive::setNegativePolarity);
 
   p = new AutomatableParameter(lock, "FormantPreserve", 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
   addObservedParameter(p);
-  p->setValueChangeCallback<PitchShifterGrainAdaptive>(wrappedPitchShifter, 
+  p->setValueChangeCallback<PitchShifterGrainAdaptive>(wrappedPitchShifter,
     &PitchShifterGrainAdaptive::setFormantPreserve);
 
   // make sure that the parameters are initially in sync with the audio engine:
@@ -156,14 +156,14 @@ XmlElement PitchShifterAudioModule::convertXmlStateIfNecessary(const XmlElement&
 {
   ScopedLock scopedLock(*lock);
 
-  // retrieve the patch format of the xml-file to enable different interpretations of the patch for 
+  // retrieve the patch format of the xml-file to enable different interpretations of the patch for
   // backwards compatibility:
   int xmlPatchFormat = xmlState.getIntAttribute("PatchFormat", 0);
   if( xmlPatchFormat == 0 ) // this is an old preset
   {
-    // we had formerly only one "GrainLength" parameter which was either interpreted as being in ms 
-    // or in pitch-cycles depending on a boolean flag "GrainLengthAdaption" - now we have 
-    // different parameters for the different units and a string-parameter "GrainLengthUnit" to 
+    // we had formerly only one "GrainLength" parameter which was either interpreted as being in ms
+    // or in pitch-cycles depending on a boolean flag "GrainLengthAdaption" - now we have
+    // different parameters for the different units and a string-parameter "GrainLengthUnit" to
     // select which value is to be used
     XmlElement convertedState = xmlState;
     double d = xmlState.getDoubleAttribute("GrainLength", 8.0);
@@ -187,7 +187,7 @@ XmlElement PitchShifterAudioModule::convertXmlStateIfNecessary(const XmlElement&
 //=================================================================================================
 
 
-PitchShifterModuleEditor::PitchShifterModuleEditor(CriticalSection *newPlugInLock, PitchShifterAudioModule* newPitchShifterAudioModule) 
+PitchShifterModuleEditor::PitchShifterModuleEditor(CriticalSection *newPlugInLock, PitchShifterAudioModule* newPitchShifterAudioModule)
   : AudioModuleEditor(newPitchShifterAudioModule)
 {
   ScopedLock scopedLock(*lock);
@@ -217,7 +217,7 @@ PitchShifterModuleEditor::PitchShifterModuleEditor(CriticalSection *newPlugInLoc
   fineSlider->setStringConversionFunction(&centsToStringWithUnit2);
 
   addWidget( grainLengthInMillisecondsSlider = new RSlider("GrainLengthSlider") );
-  grainLengthInMillisecondsSlider->assignParameter( 
+  grainLengthInMillisecondsSlider->assignParameter(
     pitchShifterModuleToEdit->getParameterByName("GrainLengthInMilliseconds") );
   grainLengthInMillisecondsSlider->setSliderName(juce::String("Grain Length"));
   grainLengthInMillisecondsSlider->setDescription(juce::String("Length of the grains in milliseconds"));
@@ -225,7 +225,7 @@ PitchShifterModuleEditor::PitchShifterModuleEditor(CriticalSection *newPlugInLoc
   grainLengthInMillisecondsSlider->setStringConversionFunction(&valueToStringTotal5);
 
   addWidget( grainLengthInCyclesSlider = new RSlider("CyclesPerGrainSlider"));
-  grainLengthInCyclesSlider->assignParameter( 
+  grainLengthInCyclesSlider->assignParameter(
     pitchShifterModuleToEdit->getParameterByName("GrainLengthInPitchCycles") );
   grainLengthInCyclesSlider->setSliderName(juce::String("Grain Length"));
   grainLengthInCyclesSlider->setDescription(juce::String("Length of the grains in pitch cylces"));
@@ -233,7 +233,7 @@ PitchShifterModuleEditor::PitchShifterModuleEditor(CriticalSection *newPlugInLoc
   grainLengthInCyclesSlider->setStringConversionFunction(&valueToStringTotal5);
 
   addWidget( grainLengthInBeatsSlider = new RSlider("GrainLengthInBeatsSlider"));
-  grainLengthInBeatsSlider->assignParameter( 
+  grainLengthInBeatsSlider->assignParameter(
     pitchShifterModuleToEdit->getParameterByName("GrainLengthInBeats"));
   grainLengthInBeatsSlider->setSliderName(juce::String("Grain Length"));
   grainLengthInBeatsSlider->setDescription(juce::String("Length of the grains in beats"));
@@ -241,7 +241,7 @@ PitchShifterModuleEditor::PitchShifterModuleEditor(CriticalSection *newPlugInLoc
   grainLengthInBeatsSlider->setStringConversionFunction(&valueToStringTotal5);
 
   addWidget( grainLengthUnitComboBox = new RComboBox(juce::String("GrainLengthUnitComboBox")));
-  grainLengthUnitComboBox->assignParameter( 
+  grainLengthUnitComboBox->assignParameter(
     pitchShifterModuleToEdit->getParameterByName("GrainLengthUnit"));
   grainLengthUnitComboBox->setDescription("Choose the unit for the grain length");
   grainLengthUnitComboBox->setDescriptionField(infoField);
@@ -281,7 +281,7 @@ PitchShifterModuleEditor::PitchShifterModuleEditor(CriticalSection *newPlugInLoc
 
   /*
   addWidget( formantPreserveButton = new RButton(juce::String(T("Formant"))) );
-  formantPreserveButton->assignParameter( 
+  formantPreserveButton->assignParameter(
   pitchShifterModuleToEdit->getParameterByName(T("FormantPreserve")) );
   formantPreserveButton->setDescription(juce::String(T("Preserve formants")));
   formantPreserveButton->setDescriptionField(infoField);
@@ -324,7 +324,7 @@ void PitchShifterModuleEditor::resized()
   int x = 0;
   int y = 0;
   int w = getWidth();
-  int h = getHeight();
+  //int h = getHeight();
 
   x  = 0;
   w /= 2;
@@ -332,13 +332,13 @@ void PitchShifterModuleEditor::resized()
 
   coarseSlider->setBounds(x+4, y, w-8, 16);
 
-  y = coarseSlider->getBottom();  
+  y = coarseSlider->getBottom();
   fineSlider->setBounds(x+4, y+4, w-8, 16);
 
-  y = fineSlider->getBottom();  
+  y = fineSlider->getBottom();
   feedbackSlider->setBounds(x+4, y+4, w-8, 16);
 
-  y = feedbackSlider->getBottom();  
+  y = feedbackSlider->getBottom();
   dryWetSlider->setBounds(x+4, y+4, w-8, 16);
 
   x = w;
@@ -347,10 +347,10 @@ void PitchShifterModuleEditor::resized()
   grainLengthInBeatsSlider->setBounds(x+4, y, w-64, 16);
   grainLengthInMillisecondsSlider->setBounds(grainLengthInBeatsSlider->getBounds());
   grainLengthInCyclesSlider->setBounds(grainLengthInBeatsSlider->getBounds());
-  grainLengthUnitComboBox->setBounds(grainLengthInBeatsSlider->getRight()+4, y, 
+  grainLengthUnitComboBox->setBounds(grainLengthInBeatsSlider->getRight()+4, y,
     w-grainLengthInBeatsSlider->getWidth()-12, 16);
 
-  y = grainLengthInMillisecondsSlider->getBottom()+8; 
+  y = grainLengthInMillisecondsSlider->getBottom()+8;
 
   reverseButton->setBounds(x+4,    y, w/2-8, 16);
   invertButton->setBounds(x+w/2+4, y, w/2-8, 16);
@@ -374,7 +374,7 @@ void PitchShifterModuleEditor::updateWidgetVisibility()
     return;
 
   // update the visibility for the 3 grain-length sliders:
-  grainLengthInMillisecondsSlider->setVisible(false);  
+  grainLengthInMillisecondsSlider->setVisible(false);
   grainLengthInCyclesSlider->setVisible(false);
   grainLengthInBeatsSlider->setVisible(false);
   switch( pitchShifterModuleToEdit->wrappedPitchShifter->getGrainLengthUnit() )

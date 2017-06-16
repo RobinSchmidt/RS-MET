@@ -2,14 +2,14 @@
 //=================================================================================================
 // class StandardWaveformRendererAudioModule:
 
-StandardWaveformRendererAudioModule::StandardWaveformRendererAudioModule(CriticalSection *newPlugInLock, 
+StandardWaveformRendererAudioModule::StandardWaveformRendererAudioModule(CriticalSection *newPlugInLock,
   rosic::StandardWaveformRenderer *newStandardWaveformRendererToWrap)
   : AudioModule(newPlugInLock)
 {
   jassert( newStandardWaveformRendererToWrap != NULL ); // you must pass a valid rosic-object
   wrappedStandardWaveformRenderer = newStandardWaveformRendererToWrap;
   moduleName = juce::String("StandardWaveformRenderer");
-  setActiveDirectory(getApplicationDirectory() 
+  setActiveDirectory(getApplicationDirectory()
     + juce::File::separatorString + juce::String("StandardWaveformRendererPresets") );
   initializeAutomatableParameters();
 }
@@ -22,7 +22,7 @@ void StandardWaveformRendererAudioModule::parameterChanged(Parameter* parameterT
   switch( getIndexOfParameter(parameterThatHasChanged) )
   {
   case 0: wrappedStandardWaveformRenderer->setWaveform( (int) value); break;
-  } 
+  }
 
   markStateAsDirty();
 }
@@ -36,7 +36,7 @@ void StandardWaveformRendererAudioModule::initializeAutomatableParameters()
   p->addStringValue("Saw");
   p->addStringValue("Square");
   p->addStringValue("Triangle");
-  addObservedParameter(p); 
+  addObservedParameter(p);
 
   for(int i=0; i < (int) parameters.size(); i++ )
     parameterChanged(parameters[i]);
@@ -52,7 +52,7 @@ WaveformBufferAudioModule::WaveformBufferAudioModule(CriticalSection *newPlugInL
   jassert( newWaveformBufferToWrap != NULL ); // you must pass a valid rosic-object
   wrappedWaveformBuffer = newWaveformBufferToWrap;
   moduleName = juce::String("WaveformBuffer");
-  //setActiveDirectory(getApplicationDirectory() 
+  //setActiveDirectory(getApplicationDirectory()
   //  + File::separatorString + juce::String(T("WaveformBufferPresets")) );
   AudioFileManager::setActiveDirectory(getApplicationDirectory() + juce::File::separatorString +
     juce::String("Samples") );
@@ -71,7 +71,7 @@ XmlElement* WaveformBufferAudioModule::getStateAsXml(const juce::String& stateNa
   return xmlState;
 }
 
-void WaveformBufferAudioModule::setStateFromXml(const XmlElement& xmlState,                                                 
+void WaveformBufferAudioModule::setStateFromXml(const XmlElement& xmlState,
                                                 const juce::String& stateName, bool markAsClean)
 {
   AudioModule::setStateFromXml(xmlState, stateName, markAsClean);
@@ -89,42 +89,42 @@ bool WaveformBufferAudioModule::saveToFile(const juce::File& fileToSaveTo)
   return AudioFileManager::saveToFile(fileToSaveTo);
 }
 
-bool WaveformBufferAudioModule::setAudioData(AudioSampleBuffer* newBuffer, 
-                                             const juce::File& underlyingFile,     
+bool WaveformBufferAudioModule::setAudioData(AudioSampleBuffer* newBuffer,
+                                             const juce::File& underlyingFile,
                                              bool markAsClean)
 {
   juce::String relativePath = underlyingFile.getRelativePathFrom(rootDirectory);
   char* fileNameC = toZeroTerminatedString(relativePath);
-  wrappedWaveformBuffer->setWaveform(newBuffer->getWritePointer(0), newBuffer->getNumSamples(), 
+  wrappedWaveformBuffer->setWaveform(newBuffer->getWritePointer(0), newBuffer->getNumSamples(),
     fileNameC);
   delete[] fileNameC;
   markStateAsDirty();
   return true;
 }
- 
+
 void WaveformBufferAudioModule::setWaveformFromFile(const juce::String &relativePath)
 {
-  juce::File fileToLoad = juce::File(rootDirectory.getFullPathName() + 
+  juce::File fileToLoad = juce::File(rootDirectory.getFullPathName() +
     juce::File::separatorString + relativePath);
   loadFile(fileToLoad);
   /*
   juce::String extension = relativePath.fromLastOccurrenceOf(T("."), false, false);
   if( extension == T("flac") || extension == T("wav") )
   {
-    AudioSampleBuffer* buffer = 
+    AudioSampleBuffer* buffer =
       AudioFileManager::createAudioSampleBufferFromFile(relativePath, true);
     if( buffer != NULL )
     {
       char* fileNameC = rojue::toZeroTerminatedString(relativePath);
-      wrappedWaveformBuffer->setWaveform(buffer->getSampleData(0), 
+      wrappedWaveformBuffer->setWaveform(buffer->getSampleData(0),
         buffer->getNumSamples(), fileNameC);
       delete[] fileNameC;
       delete buffer;
     }
-    else 
+    else
       wrappedWaveformBuffer->initWaveform();
-  }    
-  else 
+  }
+  else
     wrappedWaveformBuffer->initWaveform();
   markStateAsDirty();
   */
@@ -133,14 +133,14 @@ void WaveformBufferAudioModule::setWaveformFromFile(const juce::String &relative
 //=================================================================================================
 // class WaveformRendererAudioModule:
 
-WaveformRendererAudioModule::WaveformRendererAudioModule(CriticalSection *newPlugInLock,                       
-  rosic::WaveformRenderer *newWaveformRendererToWrap)                                        
+WaveformRendererAudioModule::WaveformRendererAudioModule(CriticalSection *newPlugInLock,
+  rosic::WaveformRenderer *newWaveformRendererToWrap)
   : AudioModule(newPlugInLock)
 {
   jassert( newWaveformRendererToWrap != NULL ); // you must pass a valid rosic-object
   wrappedWaveformRenderer = newWaveformRendererToWrap;
   moduleName = juce::String("WaveformRenderer");
-  setActiveDirectory(getApplicationDirectory() 
+  setActiveDirectory(getApplicationDirectory()
     + juce::File::separatorString + juce::String("WaveformRendererPresets") );
 
   // child modules:
@@ -163,7 +163,7 @@ void WaveformRendererAudioModule::parameterChanged(Parameter* parameterThatHasCh
 
   // switch state-save/recall off for inactive child-modules:
   //childModules.getLock().enter();
-  for(int c=0; c<childModules.size(); c++)
+  for(int c = 0; c < size(childModules); c++)
     childModules[c]->setStateSaveAndRecall(false);
   childModules[(int) value]->setStateSaveAndRecall(true);
   //childModules.getLock().exit();
@@ -171,7 +171,7 @@ void WaveformRendererAudioModule::parameterChanged(Parameter* parameterThatHasCh
   switch( index )
   {
   case 0: wrappedWaveformRenderer->setMode((int) value); break;
-  } 
+  }
 
   markStateAsDirty();
 }
@@ -185,7 +185,7 @@ void WaveformRendererAudioModule::initializeAutomatableParameters()
   p->addStringValue("AudioFile");
   p->addStringValue("Algorithm");
   p->addStringValue("MultiSegment");
-  addObservedParameter(p); 
+  addObservedParameter(p);
 
   for(int i=0; i < (int) parameters.size(); i++ )
     parameterChanged(parameters[i]);
@@ -197,22 +197,22 @@ void WaveformRendererAudioModule::initializeAutomatableParameters()
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-WaveTableAudioModule::WaveTableAudioModule(CriticalSection *newPlugInLock, 
+WaveTableAudioModule::WaveTableAudioModule(CriticalSection *newPlugInLock,
   rosic::WaveTable *newWaveTableToWrap)
 : AudioModule(newPlugInLock)
 {
   jassert( newWaveTableToWrap != NULL ); // you must pass a valid rosic-object to the constructor
   wrappedWaveTable = newWaveTableToWrap;
   moduleName = juce::String("WaveTable");
-  setActiveDirectory(getApplicationDirectory() 
+  setActiveDirectory(getApplicationDirectory()
     + juce::File::separatorString + juce::String("WaveTablePresets") );
   initializeAutomatableParameters();
   /*
   audioFileManager.setPermissibleWildcardPatterns(juce::String(T("*.wav;*.flac;")));
-  audioFileManager.setActiveDirectory(getApplicationDirectory() 
-    + File::separatorString + juce::String(T("Samples")) 
+  audioFileManager.setActiveDirectory(getApplicationDirectory()
+    + File::separatorString + juce::String(T("Samples"))
     + File::separatorString + juce::String(T("SingleCycle"))
-    + File::separatorString + juce::String(T("Patterns")) );  
+    + File::separatorString + juce::String(T("Patterns")) );
   */
 
   rendererModule = new WaveformRendererAudioModule(lock, &wrappedWaveTable->waveformRenderer);
@@ -236,7 +236,7 @@ XmlElement* WaveTableAudioModule::getStateAsXml(const juce::String& stateName, b
   return xmlState;
 }
 
-void WaveTableAudioModule::setStateFromXml(const XmlElement& xmlState,      
+void WaveTableAudioModule::setStateFromXml(const XmlElement& xmlState,
                                            const juce::String& stateName, bool markAsClean)
 {
   wrappedWaveTable->setAutoUpdateOnParameterChange(false);
@@ -257,8 +257,8 @@ void WaveTableAudioModule::setStateFromXml(const XmlElement& xmlState,
     wrappedWaveTable->setWaveform(rosic::WaveTable::SQUARE);
   else if( name == T("Saw") )
     wrappedWaveTable->setWaveform(rosic::WaveTable::SAW);
-  else // ...it must be a custom waveform from a file 
-    setWaveformFromFile(name); 
+  else // ...it must be a custom waveform from a file
+    setWaveformFromFile(name);
   */
 }
 
@@ -268,17 +268,17 @@ void WaveTableAudioModule::setWaveformFromFile(const juce::String &relativePath)
   juce::String extension = relativePath.fromLastOccurrenceOf(T("."), false, false);
   if( extension == T("flac") || extension == T("wav") )
   {
-    AudioSampleBuffer* buffer = 
+    AudioSampleBuffer* buffer =
       AudioFileManager::createAudioSampleBufferFromFile(relativePath, true);
     if( buffer != NULL )
     {
       char* fileNameC = rojue::toZeroTerminatedString(relativePath);
-      wrappedWaveTable->setWaveform(buffer->getSampleData(0), 
+      wrappedWaveTable->setWaveform(buffer->getSampleData(0),
         buffer->getNumSamples(), fileNameC);
       delete[] fileNameC;
       delete buffer;
     }
-    else 
+    else
       wrappedWaveTable->setWaveform(rosic::WaveTable::SILENCE);
   }
   else if( extension == T("xml") )
@@ -302,7 +302,7 @@ void WaveTableAudioModule::setWaveformFromFile(const juce::String &relativePath)
     wrappedWaveTable->setWaveform(rosic::WaveTable::SILENCE);
    */
 }
- 
+
 void WaveTableAudioModule::markStateAsDirty()
 {
   wrappedWaveTable->updateBuffers();
@@ -322,7 +322,7 @@ void WaveTableAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
   case 0: wrappedWaveTable->setSmoothAttack(            value); break;
   case 1: wrappedWaveTable->setSmoothRelease(           value); break;
     // more to come, order to change...
-  } 
+  }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -334,9 +334,9 @@ void WaveTableAudioModule::initializeAutomatableParameters()
   juce::Array<double> defaultValues;
 
   p = new Parameter(lock, "SmoothAttack", 0.0, 100.0, 1.0, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p = new Parameter(lock, "SmoothRelease", 0.0, 100.0, 1.0, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
 
 
   wrappedWaveTable->setAutoUpdateOnParameterChange(false);
@@ -349,11 +349,11 @@ void WaveTableAudioModule::initializeAutomatableParameters()
 //=================================================================================================
 // class StandardWaveformEditor:
 
-StandardWaveformEditor::StandardWaveformEditor(CriticalSection *newPlugInLock, 
-  StandardWaveformRendererAudioModule* newRendererModuleToEdit)  
+StandardWaveformEditor::StandardWaveformEditor(CriticalSection *newPlugInLock,
+  StandardWaveformRendererAudioModule* newRendererModuleToEdit)
   : AudioModuleEditor(newRendererModuleToEdit)
 {
-  jassert(newRendererModuleToEdit != NULL);  
+  jassert(newRendererModuleToEdit != NULL);
   setLinkPosition(INVISIBLE);
   setPresetSectionPosition(INVISIBLE);
   setHeadlineStyle(NO_HEADLINE);
@@ -380,7 +380,7 @@ void StandardWaveformEditor::resized()
 //=================================================================================================
 // class WaveformBufferEditor:
 
-WaveformBufferEditor::WaveformBufferEditor(CriticalSection *newPlugInLock, WaveformBufferAudioModule* newWaveformBufferModuleToEdit)  
+WaveformBufferEditor::WaveformBufferEditor(CriticalSection *newPlugInLock, WaveformBufferAudioModule* newWaveformBufferModuleToEdit)
   : AudioModuleEditor(newWaveformBufferModuleToEdit)
 {
   jassert( newWaveformBufferModuleToEdit != NULL );
@@ -417,12 +417,12 @@ void WaveformBufferEditor::resized()
 //=================================================================================================
 // class WaveformRendererEditor:
 
-WaveformRendererEditor::WaveformRendererEditor(CriticalSection *newPlugInLock, 
-  WaveformRendererAudioModule* newWaveformRendererModuleToEdit)  
+WaveformRendererEditor::WaveformRendererEditor(CriticalSection *newPlugInLock,
+  WaveformRendererAudioModule* newWaveformRendererModuleToEdit)
   : AudioModuleEditor(newWaveformRendererModuleToEdit)
 {
-  jassert(newWaveformRendererModuleToEdit != NULL);  
-  renderer = newWaveformRendererModuleToEdit->wrappedWaveformRenderer; 
+  jassert(newWaveformRendererModuleToEdit != NULL);
+  renderer = newWaveformRendererModuleToEdit->wrappedWaveformRenderer;
   setLinkPosition(INVISIBLE);
   setPresetSectionPosition(INVISIBLE);
   setHeadlineStyle(NO_HEADLINE);
@@ -432,12 +432,12 @@ WaveformRendererEditor::WaveformRendererEditor(CriticalSection *newPlugInLock,
   modeComboBox->assignParameter(moduleToEdit->getParameterByName("Mode"));
   modeComboBox->registerComboBoxObserver(this);
 
-  standardEditor = new StandardWaveformEditor(lock, 
+  standardEditor = new StandardWaveformEditor(lock,
     newWaveformRendererModuleToEdit->standardRendererModule);
   standardEditor->addChangeListener(this);
   addChildEditor(standardEditor);
 
-  bufferEditor = new WaveformBufferEditor(lock, 
+  bufferEditor = new WaveformBufferEditor(lock,
     newWaveformRendererModuleToEdit->waveformBufferModule);
   bufferEditor->addChangeListener(this);
   addChildEditor(bufferEditor);
@@ -491,11 +491,11 @@ void WaveformRendererEditor::updateWidgetVisibility()
 //=================================================================================================
 // class WaveTableModuleEditorPopUp:
 
-WaveTableModuleEditorPopUp::WaveTableModuleEditorPopUp(CriticalSection *newPlugInLock, 
-  WaveTableAudioModule* newWaveTableModuleToEdit)  
+WaveTableModuleEditorPopUp::WaveTableModuleEditorPopUp(CriticalSection *newPlugInLock,
+  WaveTableAudioModule* newWaveTableModuleToEdit)
   : AudioModuleEditor(newWaveTableModuleToEdit)
 {
-  jassert(newWaveTableModuleToEdit != NULL);  
+  jassert(newWaveTableModuleToEdit != NULL);
   waveTableModuleToEdit = newWaveTableModuleToEdit;
   waveTableToEdit       = newWaveTableModuleToEdit->wrappedWaveTable;
   setLinkPosition(INVISIBLE);
@@ -514,7 +514,7 @@ WaveTableModuleEditorPopUp::WaveTableModuleEditorPopUp(CriticalSection *newPlugI
   waveformDisplay->setVerticalCoarseGrid(1.0, false);
   waveformDisplay->setHorizontalCoarseGrid(1.0, false);
   waveformDisplay->setAxisPositionX(CoordinateSystemOld::INVISIBLE);
-  waveformDisplay->setAxisPositionY(CoordinateSystemOld::INVISIBLE); 
+  waveformDisplay->setAxisPositionY(CoordinateSystemOld::INVISIBLE);
   addPlot(waveformDisplay);
 
   addWidget( closeButton = new RButton(RButton::CLOSE) );
@@ -537,7 +537,7 @@ WaveTableModuleEditorPopUp::~WaveTableModuleEditorPopUp()
 // callbacks:
 
 void WaveTableModuleEditorPopUp::changeListenerCallback(ChangeBroadcaster *objectThatHasChanged)
-{  
+{
   //if( waveTableModuleToEdit != NULL && waveTableToEdit != NULL )
   //  waveTableToEdit->renderWaveform();  // it's not very clean to do this here
 
@@ -617,11 +617,11 @@ void WaveTableModuleEditorPopUp::resized()
 // class WaveTableModuleEditorCompact:
 
 
-WaveTableModuleEditorCompact::WaveTableModuleEditorCompact(CriticalSection *newPlugInLock, 
-  WaveTableAudioModule* newWaveTableModuleToEdit) 
+WaveTableModuleEditorCompact::WaveTableModuleEditorCompact(CriticalSection *newPlugInLock,
+  WaveTableAudioModule* newWaveTableModuleToEdit)
   : AudioModuleEditor(newWaveTableModuleToEdit)
 {
-  jassert(newWaveTableModuleToEdit != NULL);  
+  jassert(newWaveTableModuleToEdit != NULL);
   waveTableModuleToEdit = newWaveTableModuleToEdit;
   waveTableToEdit       = newWaveTableModuleToEdit->wrappedWaveTable;
   setLinkPosition(INVISIBLE);
@@ -727,7 +727,7 @@ void WaveTableModuleEditorCompact::changeListenerCallback(ChangeBroadcaster *obj
     return;
   if( objectThatHasChanged == popUpEditor )
   {
-    moduleToEdit->markStateAsDirty();  
+    moduleToEdit->markStateAsDirty();
     updatePlot();
   }
   else
@@ -792,13 +792,13 @@ void WaveTableModuleEditorCompact::resized()
   x  = 0;
   y += 16;
   cycleLengthSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 14;  
+  y += 14;
   tempoSyncButton->setBounds(x+4, y+4, 32, 16);
   triggerButton->setBounds(tempoSyncButton->getRight()+4, y+4, 52, 16);
-  y += 24; 
+  y += 24;
   startPhaseSlider->setBounds(x+4, y+4, w/2-8, 16);
   upSlider->setBounds(x+w/2+4, y+4, w/2-8, 16);
-  y += 14; 
+  y += 14;
   stereoPhaseSlider->setBounds(x+4, y+4, w/2-8, 16);
   downSlider->setBounds(x+w/2+4, y+4, w/2-8, 16);
   */

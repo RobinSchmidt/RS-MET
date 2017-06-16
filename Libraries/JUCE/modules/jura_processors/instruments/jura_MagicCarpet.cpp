@@ -1,13 +1,13 @@
 //=================================================================================================
 // class DelayPhaserAudioModule
 
-DelayPhaserAudioModule::DelayPhaserAudioModule(CriticalSection *newPlugInLock, 
+DelayPhaserAudioModule::DelayPhaserAudioModule(CriticalSection *newPlugInLock,
   rosic::DelayPhaser *newDelayPhaserToWrap) : AudioModule(newPlugInLock)
 {
-  jassert( newDelayPhaserToWrap != NULL ); // you must pass a valid rosic-object 
+  jassert( newDelayPhaserToWrap != NULL ); // you must pass a valid rosic-object
   wrappedDelayPhaser = newDelayPhaserToWrap;
   moduleName = juce::String("DelayPhaser");
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString 
+  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
     + juce::String(("DelayPhaserPresets")) );
   initializeAutomatableParameters();
 
@@ -35,7 +35,7 @@ void DelayPhaserAudioModule::parameterChanged(Parameter* parameterThatHasChanged
   case  1: wrappedDelayPhaser->setFeedback1(   0.01*value); break;
   case  2: wrappedDelayPhaser->setFeedback2(   0.01*value); break;
   case  3: wrappedDelayPhaser->setFeedback3(   0.01*value); break;
-  } 
+  }
 }
 
 void DelayPhaserAudioModule::initializeAutomatableParameters()
@@ -43,13 +43,13 @@ void DelayPhaserAudioModule::initializeAutomatableParameters()
   AutomatableParameter* p;
 
   p = new AutomatableParameter(lock, "DryWetRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p = new AutomatableParameter(lock, "FeedbackPhaser1Delay", -99.0, 99.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p = new AutomatableParameter(lock, "FeedbackDelayPhaser2", -99.0, 99.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
   p = new AutomatableParameter(lock, "FeedbackGlobal",       -99.0, 99.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p); 
+  addObservedParameter(p);
 
   for(int i=0; i < (int) parameters.size(); i++ )
     parameterChanged(parameters[i]);
@@ -71,32 +71,32 @@ MagicCarpetAudioModule::MagicCarpetAudioModule(CriticalSection *newPlugInLock)
   // initialize the current directory for preset loading and saving:
   setActiveDirectory(getApplicationDirectory() + juce::String(("/MagicCarpetPresets")) );
 
-  oscSectionModule = new VectorSamplePlayerAudioModule(lock, 
+  oscSectionModule = new VectorSamplePlayerAudioModule(lock,
     &wrappedMagicCarpet->voiceArray[0].oscSection);
   oscSectionModule->setModuleName(juce::String(("Oscillators")));
   addChildAudioModule(oscSectionModule);
 
-  filterModule = new FourPoleFilterAudioModule(lock, 
+  filterModule = new FourPoleFilterAudioModule(lock,
     &wrappedMagicCarpet->voiceArray[0].filter);
   filterModule->setModuleName(juce::String(("Filter")));
   addChildAudioModule(filterModule);
 
-  filterEnvModule = new BreakpointModulatorAudioModule(lock, 
+  filterEnvModule = new BreakpointModulatorAudioModule(lock,
     &wrappedMagicCarpet->voiceArray[0].filterEnv);
   filterEnvModule->setModuleName(juce::String(("FilterEnvelope")));
   addChildAudioModule(filterEnvModule);
 
-  ampEnvModule = new BreakpointModulatorAudioModule(lock, 
+  ampEnvModule = new BreakpointModulatorAudioModule(lock,
     &wrappedMagicCarpet->voiceArray[0].ampEnv);
   ampEnvModule->setModuleName(juce::String(("AmpEnvelope")));
   addChildAudioModule(ampEnvModule);
 
-  equalizerModule = new EqualizerAudioModule(lock, 
+  equalizerModule = new EqualizerAudioModule(lock,
     &wrappedMagicCarpet->equalizer);
   equalizerModule->setModuleName(juce::String(("Equalizer")));
   addChildAudioModule(equalizerModule);
 
-  delayPhaserModule = new DelayPhaserAudioModule(lock, 
+  delayPhaserModule = new DelayPhaserAudioModule(lock,
     &wrappedMagicCarpet->delayPhaser);
   delayPhaserModule->setModuleName(juce::String(("DelayPhaser")));
   addChildAudioModule(delayPhaserModule);
@@ -115,9 +115,9 @@ AudioModuleEditor* MagicCarpetAudioModule::createEditor()
 //=================================================================================================
 // class MagicCarpetFilterEditor:
 
-MagicCarpetFilterEditor::MagicCarpetFilterEditor(CriticalSection *newPlugInLock, FourPoleFilterAudioModule* newFourPoleFilterAudioModule)      
-  : FourPoleFilterModuleEditor(newPlugInLock, newFourPoleFilterAudioModule)     
-{ 
+MagicCarpetFilterEditor::MagicCarpetFilterEditor(CriticalSection *newPlugInLock, FourPoleFilterAudioModule* newFourPoleFilterAudioModule)
+  : FourPoleFilterModuleEditor(newPlugInLock, newFourPoleFilterAudioModule)
+{
   setLinkPosition(INVISIBLE);
   setPresetSectionPosition(INVISIBLE);
 
@@ -156,7 +156,7 @@ void MagicCarpetFilterEditor::resized()
   int x = getHeadlineRight();
   int y = 0;
   int w = getWidth()-x;
-  int h = 16;
+  //int h = 16;
 
   modeComboBox->setBounds(x+4, y+4, w-8, 16);
 
@@ -211,14 +211,14 @@ void PhaserModuleEditorCompact::resized()
   int x = 0;
   int y = 0;
   int w = getWidth();
-  int h = getHeight();
+  //int h = getHeight();
   onOffButton->setBounds( x+4,     y+4, 60,    16);
   dryWetSlider->setBounds(x+w/2+4, y+4, w/2-8, 16);
 
   // something to do here....
 
   /*
-  y += 20;  
+  y += 20;
   cycleLengthSlider->setBounds( x+4,     y+4, w/2-8, 16);
   tempoSyncButton->setBounds(cycleLengthSlider->getRight()-40, y+4-14, 40, 16);
   y += 14;
@@ -232,7 +232,7 @@ void PhaserModuleEditorCompact::resized()
   frequencySlider->setBounds(x+w/2+4, y+4, w/2-8, 16);
   y += 14;
   feedbackSlider->setBounds(x+w/2+4, y+4, w/2-8, 16);
-  y += 14;  
+  y += 14;
   stagesSlider->setBounds(x+w/2+4, y+4, w/2-8-44, 16);
   y += 14;
   qSlider->setBounds(x+w/2+4, y+4, w/2-8, 16);
@@ -243,7 +243,7 @@ void PhaserModuleEditorCompact::resized()
 //=================================================================================================
 // class PingPongEchoModuleEditorCompact
 
-PingPongEchoModuleEditorCompact::PingPongEchoModuleEditorCompact(CriticalSection *newPlugInLock, 
+PingPongEchoModuleEditorCompact::PingPongEchoModuleEditorCompact(CriticalSection *newPlugInLock,
   PingPongEchoAudioModule* newPingPongEchoAudioModule)
   : PingPongEchoModuleEditor(newPlugInLock, newPingPongEchoAudioModule)
 {
@@ -264,10 +264,10 @@ void PingPongEchoModuleEditorCompact::resized()
   int x = 0;
   int y = 0;
   int w = getWidth();
-  int h = getHeight();
+  //int h = getHeight();
   onOffButton->setBounds( x+4,     y+4, 60,    16);
   dryWetSlider->setBounds(x+w/2+4, y+4, w/2-8, 16);
-  y += 20;  
+  y += 20;
 
   delayTimeSlider->setBounds( x+4,     y+4, w/2-8, 16);
   tempoSyncButton->setBounds(delayTimeSlider->getRight()-40, y+4-14, 40, 16);
@@ -280,15 +280,15 @@ void PingPongEchoModuleEditorCompact::resized()
   feedbackSlider->setBounds(x+w/2+4, y+4, w/2-8, 16);
   y += 14;
   highDampSlider->setBounds(x+w/2+4, y+4, w/2-8, 16);
-  y += 14;  
+  y += 14;
   lowDampSlider->setBounds(x+w/2+4, y+4, w/2-8, 16);
 }
 
 //=================================================================================================
 // class DelayPhaserModuleEditor
 
-DelayPhaserModuleEditor::DelayPhaserModuleEditor(CriticalSection *newPlugInLock, 
-  DelayPhaserAudioModule* newDelayPhaserAudioModule) 
+DelayPhaserModuleEditor::DelayPhaserModuleEditor(CriticalSection *newPlugInLock,
+  DelayPhaserAudioModule* newDelayPhaserAudioModule)
   : AudioModuleEditor(newDelayPhaserAudioModule)
 {
   jassert(newDelayPhaserAudioModule != NULL ); // you must pass a valid module here
@@ -351,7 +351,7 @@ void DelayPhaserModuleEditor::resized()
   int x = 0;
   int y = 0;
   int w = getWidth();
-  int h = getHeight();
+  //int h = getHeight();
   y = getPresetSectionBottom()+4;
 
   dryWetSlider->setBounds(140, 4, getWidth()-140-4, 16);
@@ -369,7 +369,7 @@ void DelayPhaserModuleEditor::resized()
   y = phaser2Editor->getBottom();
   feedbackLabel->setBounds(  x    +4, y+4, w/2-8, 16);
   feedback1Slider->setBounds(x+w/2+4, y+4, w/2-8, 16);
-  y += 20; 
+  y += 20;
   feedback3Slider->setBounds(x    +4, y+4, w/2-8, 16);
   feedback2Slider->setBounds(x+w/2+4, y+4, w/2-8, 16);
 }
@@ -380,7 +380,7 @@ void DelayPhaserModuleEditor::resized()
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-MagicCarpetModuleEditor::MagicCarpetModuleEditor(CriticalSection *newPlugInLock, MagicCarpetAudioModule* newMagicCarpetAudioModule) 
+MagicCarpetModuleEditor::MagicCarpetModuleEditor(CriticalSection *newPlugInLock, MagicCarpetAudioModule* newMagicCarpetAudioModule)
   : PolyphonicInstrumentEditor(newPlugInLock, newMagicCarpetAudioModule)
 {
   setHeadlineStyle(MAIN_HEADLINE);
@@ -461,10 +461,10 @@ void MagicCarpetModuleEditor::updateWidgetsAccordingToState()
   if( magicCarpetAudioModule->wrappedMagicCarpet == NULL )
     return;
 
-  // remember if the preset was clean or dirty before making a few calls that may lead to a 
+  // remember if the preset was clean or dirty before making a few calls that may lead to a
   // dirtification of the preset-state:
   bool presetIsDirty = magicCarpetAudioModule->isStateDirty();
-  const MessageManagerLock mmLock;     
+  const MessageManagerLock mmLock;
   // the event loop will now be locked so it's safe to make a few calls..
 
   // update the global widgets and automatable sliders:
@@ -479,10 +479,10 @@ void MagicCarpetModuleEditor::updateWidgetsAccordingToState()
   delayPhaserEditor->updateWidgetsAccordingToState();
 
   // preserve the clean/dirty state of the preset regardless of any parameter changes that may take
-  // place that may take place - note that not sending a change notification from the widgets is 
-  // not enough to make that sure because some of the have AutomatableParameters associated with 
+  // place that may take place - note that not sending a change notification from the widgets is
+  // not enough to make that sure because some of the have AutomatableParameters associated with
   // them which themselves may dirtify the preset:
-  if( presetIsDirty )  
+  if( presetIsDirty )
     magicCarpetAudioModule->markStateAsDirty();
   else
     magicCarpetAudioModule->markStateAsClean();

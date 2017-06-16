@@ -54,7 +54,9 @@ using namespace juce;
 
 // disable warnings related to "inherits ... via dominance", todo: try to get rid of virtual
 // inheritance and reactivate the warning
+#if defined _MSC_VER
 #pragma warning (disable : 4250)
+#endif
 
 
 namespace jura

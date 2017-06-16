@@ -3,7 +3,7 @@
 //=================================================================================================
 // class OscilloscopeAudioModule:
 
-OscilloscopeAudioModule::OscilloscopeAudioModule(CriticalSection *newPlugInLock, 
+OscilloscopeAudioModule::OscilloscopeAudioModule(CriticalSection *newPlugInLock,
   rosic::SyncedWaveformDisplayBuffer *displayBufferToUse)
  : AudioModule(newPlugInLock)
 {
@@ -26,9 +26,9 @@ void OscilloscopeAudioModule::parameterChanged(Parameter* parameterThatHasChange
   case 0: waveformDisplayBuffer->setSyncMode(         (int) value  );  break;
   //case 1: waveformDisplayBuffer->setMidSideMode(      value != 0.0 );  break;
   case 2: waveformDisplayBuffer->setTimeWindowLength( value        );  break;
-  } 
+  }
 
-  markStateAsDirty(); // this feature is de-activated because the state will be marked as dirty immediately after preset-load which 
+  markStateAsDirty(); // this feature is de-activated because the state will be marked as dirty immediately after preset-load which
                         // renders it meaningless - fix this!
 }
 
@@ -75,9 +75,9 @@ void SpectrumAnalyzerAudioModule::parameterChanged(Parameter* parameterThatHasCh
   case 0: wrappedSpectrumAnalyzer->setBlockSize(   (int) pow(2.0, value+8)     );  break;
   case 1: wrappedSpectrumAnalyzer->setMidSideMode(                value != 0.0 );  break;
 
-  } 
+  }
 
-  markStateAsDirty(); // this feature is de-activated because the state will be marked as dirty immediately after preset-load which 
+  markStateAsDirty(); // this feature is de-activated because the state will be marked as dirty immediately after preset-load which
                         // renders it meaningless - fix this!
 }
 
@@ -104,7 +104,7 @@ void SpectrumAnalyzerAudioModule::initializeAutomatableParameters()
 MultiAnalyzerAudioModule::MultiAnalyzerAudioModule(CriticalSection *newPlugInLock
   //, OscilloscopeAudioModule *newOscilloscopeModule
   //, SpectrumAnalyzerAudioModule *newSpectrumAnalyzerModule
-  )                                                  
+  )
   : AudioModule(newPlugInLock)
 {
   //oscilloscopeModule     = newOscilloscopeModule;
@@ -148,7 +148,7 @@ void MultiAnalyzerAudioModule::parameterChanged(Parameter* parameterThatHasChang
   switch( getIndexOfParameter(parameterThatHasChanged) )
   {
   case 0: mode = (int) value;  break;
-  } 
+  }
 
   markStateAsDirty(); // this feature is de-activated because the state will be marked as dirty immediately after preset-load due to some
   // async scrollBarMove callback - this renders the feature meaningless - fix this!
@@ -176,7 +176,7 @@ SpectrumAnalyzerDisplay::SpectrumAnalyzerDisplay(const juce::String& name) : Spe
   setCurrentRange(15.625, 32000.0, -100.0, 10.0);
   showPositionAsDescription = true;
   // we must set this here to make the MultiAnalyzer intialize its range correctly because the inherited (lower) values would trigger a
-  // callback to SpectrumAnalyzerModuleEditor::coordinateSystemChanged in the constructor 
+  // callback to SpectrumAnalyzerModuleEditor::coordinateSystemChanged in the constructor
   // (due to spectrumDisplay->setMaximumRange(minX, maxX, minY, maxY)) which will will there be misinterpreted as a result of
   // spectrumDisplay->setCurrentRange(minX, maxX, minY, maxY)
   // mmm...this smells bad...i need to clean this up
@@ -217,15 +217,15 @@ void SpectrumAnalyzerDisplay::plotCurveFamily(Graphics &g, juce::Image* targetIm
   int    minBin, maxBin;
 
 
-  //Colour graphColour = colourScheme.curves; 
-  Colour graphColour = plotColourScheme.getCurveColour(0);  
+  //Colour graphColour = colourScheme.curves;
+  Colour graphColour = plotColourScheme.getCurveColour(0);
 
   for(k=0; k<numCurves; k++)
   {
     juce::String curvePathDataString = juce::String::empty;
 
-    graphColour = plotColourScheme.getCurveColour(k);  
-    g.setColour(graphColour); 
+    graphColour = plotColourScheme.getCurveColour(k);
+    g.setColour(graphColour);
 
     // just for dbug:
     //int y = (k+1)*100;
@@ -277,7 +277,7 @@ void SpectrumAnalyzerDisplay::plotCurveFamily(Graphics &g, juce::Image* targetIm
         highFreq = x2;
       }
 
-      // get the x,y- values of the bin representing the range between the lower and upper 
+      // get the x,y- values of the bin representing the range between the lower and upper
       // frequency and transfrom this to components coordinates
       getRepresentingBins(lowFreq, highFreq, k, minBin, maxBin);
 
@@ -332,47 +332,47 @@ void SpectrumAnalyzerDisplay::plotCurveFamily(Graphics &g, juce::Image* targetIm
       //Colour currentGraphColour = graphColour;
       //if( curveColours.size() != 0 )
       //  currentGraphColour = *curveColours[k % curveColours.size()];
-      curvePath->setAttribute(juce::String("style"), juce::String("stroke-width: ") + juce::String(1.0) + 
-        juce::String("; stroke: #") + graphColour.toString().substring(2) + 
+      curvePath->setAttribute(juce::String("style"), juce::String("stroke-width: ") + juce::String(1.0) +
+        juce::String("; stroke: #") + graphColour.toString().substring(2) +
         juce::String("; fill: none;") );
       targetSVG->addChildElement(curvePath);
     }
   }
 }
 
-bool SpectrumAnalyzerDisplay::getRepresentingBins(double lowFreq, double highFreq, int k, 
+bool SpectrumAnalyzerDisplay::getRepresentingBins(double lowFreq, double highFreq, int k,
   int &minBin, int &maxBin)
 {
   int    lowBin  = numValues/2;
   int    highBin = numValues/2;
   int    offset  = lowBin/2;
-  double lowBinFreq, highBinFreq;
+  //double lowBinFreq, highBinFreq;
   while( offset >= 1 )
   {
     if( familyValuesX[0][lowBin] < lowFreq  )
       lowBin += offset;
-    else if( familyValuesX[0][lowBin] > lowFreq  ) 
+    else if( familyValuesX[0][lowBin] > lowFreq  )
       lowBin -= offset;
-    lowBinFreq = familyValuesX[0][lowBin];
+    //lowBinFreq = familyValuesX[0][lowBin];
 
     if( familyValuesX[0][highBin] < highFreq  )
       highBin += offset;
-    else if( familyValuesX[0][highBin] > highFreq  ) 
+    else if( familyValuesX[0][highBin] > highFreq  )
       highBin -= offset;
-    highBinFreq = familyValuesX[0][highBin];
+    //highBinFreq = familyValuesX[0][highBin];
 
     offset /= 2;
   }
 
   while( familyValuesX[0][lowBin] < lowFreq && lowBin <= numValues-1 )
-    lowBin++;  
+    lowBin++;
   while( familyValuesX[0][highBin] >= highFreq && highBin >= 0)
     highBin--;
 
-  lowBinFreq  = familyValuesX[0][lowBin];
-  highBinFreq = familyValuesX[0][highBin];
+  //lowBinFreq  = familyValuesX[0][lowBin];
+  //highBinFreq = familyValuesX[0][highBin];
 
-  // determine the bin with the maximum magnitude in between (and including) the range 
+  // determine the bin with the maximum magnitude in between (and including) the range
   // lowBin...highBin and return the index of this bin:
   if( highBin < lowBin )
   {
@@ -408,11 +408,11 @@ bool SpectrumAnalyzerDisplay::getRepresentingBins(double lowFreq, double highFre
 //=================================================================================================
 
 
-OscilloscopeDisplay::OscilloscopeDisplay(const juce::String& name) 
+OscilloscopeDisplay::OscilloscopeDisplay(const juce::String& name)
   : CurveFamilyPlotOld(name)
 {
-  setAutoReRendering(false); 
-  // we want to manually trigger the re-rendering of the background-image inside this class to avoid unnecesarry calls because we need to 
+  setAutoReRendering(false);
+  // we want to manually trigger the re-rendering of the background-image inside this class to avoid unnecesarry calls because we need to
   // perform some extra actions before rendering here
 
   // initialize the appearance settings:
@@ -492,14 +492,14 @@ void OscilloscopeDisplay::plotCurveFamily(Graphics &g, juce::Image* targetImage,
 
 
   /*
-  if( peakData == NULL ) 
+  if( peakData == NULL )
   return;
 
-  double x1, y1, x2, y2;  
+  double x1, y1, x2, y2;
   for(int c=0; c<numCurves; c++)
   {
-  g.setColour(plotColourScheme.getCurveColour(c)); 
-  for(int n=0; n<numValues-1; n++)  
+  g.setColour(plotColourScheme.getCurveColour(c));
+  for(int n=0; n<numValues-1; n++)
   {
   x1 = timeAxis[n];
   y1 = peakData[c][n];
@@ -507,7 +507,7 @@ void OscilloscopeDisplay::plotCurveFamily(Graphics &g, juce::Image* targetImage,
   y2 = peakData[c][n+1];
   transformToImageCoordinates(x1, y1, targetImage);
   transformToImageCoordinates(x2, y2, targetImage);
-  g.drawLine((float) x1, (float) y1, (float) x2, (float) y2, 1.f); 
+  g.drawLine((float) x1, (float) y1, (float) x2, (float) y2, 1.f);
   // uses a lot of CPU - try using a juce::Path - nah, Path uses even more
   }
   }
@@ -516,23 +516,23 @@ void OscilloscopeDisplay::plotCurveFamily(Graphics &g, juce::Image* targetImage,
 
 
   /*
-  double x, y;  
+  double x, y;
   juce::Path path;
   for(int c = 0; c < numCurves; c++)
   {
   path.clear();
   x = timeAxis[0];
-  y = peakData[c][0];  
-  transformToImageCoordinates(x, y, targetImage); 
+  y = peakData[c][0];
+  transformToImageCoordinates(x, y, targetImage);
   path.startNewSubPath((float) x, (float) y);
-  for(int n = 1; n < numValues; n++)  
+  for(int n = 1; n < numValues; n++)
   {
   x = timeAxis[n];
   y = peakData[c][n];
-  transformToImageCoordinates(x, y, targetImage); 
+  transformToImageCoordinates(x, y, targetImage);
   path.lineTo((float) x, (float) y);
   }
-  g.setColour(plotColourScheme.getCurveColour(c)); 
+  g.setColour(plotColourScheme.getCurveColour(c));
   g.strokePath(path, PathStrokeType(1.f));
   }
   */
@@ -609,7 +609,7 @@ void OscilloscopeDisplay::adjustGrid()
 //=========================================================================================================================================
 // class AudioModuleEditorAnimated:
 
-AudioModuleEditorAnimated::AudioModuleEditorAnimated(CriticalSection *newPlugInLock, AudioModule* newAudioModuleToEdit) 
+AudioModuleEditorAnimated::AudioModuleEditorAnimated(CriticalSection *newPlugInLock, AudioModule* newAudioModuleToEdit)
   : AudioModuleEditor(newAudioModuleToEdit)
 {
   addWidget( frameRateSlider = new RSlider("FrameRateSlider") );
@@ -693,7 +693,7 @@ void AudioModuleEditorAnimated::resized()
 //=========================================================================================================================================
 // class OscilloscopeModuleEditor:
 
-OscilloscopeModuleEditor::OscilloscopeModuleEditor(CriticalSection *newPlugInLock, OscilloscopeAudioModule* newOscilloscopeAudioModule) 
+OscilloscopeModuleEditor::OscilloscopeModuleEditor(CriticalSection *newPlugInLock, OscilloscopeAudioModule* newOscilloscopeAudioModule)
   : AudioModuleEditorAnimated(newPlugInLock, newOscilloscopeAudioModule)
 {
   setHeadlineStyle(Editor::NO_HEADLINE);
@@ -703,14 +703,14 @@ OscilloscopeModuleEditor::OscilloscopeModuleEditor(CriticalSection *newPlugInLoc
 
   addWidget( midSideButton = new RButton(juce::String("Mid/Side")) );
   midSideButton->setDescription(juce::String("Switch to Mid/Side mode"));
-  midSideButton->assignParameter( moduleToEdit->getParameterByName("MidSideMode") );  
+  midSideButton->assignParameter( moduleToEdit->getParameterByName("MidSideMode") );
   midSideButton->setClickingTogglesState(true);
   midSideButton->setToggleState(false, false);
   midSideButton->addRButtonListener(this);
 
   addWidget( syncModeComboBox = new RNamedComboBox(juce::String("SyncModeComboBox"), juce::String("Sync:")) );
   syncModeComboBox->setDescription(juce::String("Selects the syncronization mode"));
-  syncModeComboBox->assignParameter( moduleToEdit->getParameterByName("SyncMode") );  
+  syncModeComboBox->assignParameter( moduleToEdit->getParameterByName("SyncMode") );
   syncModeComboBox->setDescriptionField(infoField);
   //syncModeComboBox->addListener(this);
 
@@ -736,7 +736,7 @@ OscilloscopeModuleEditor::OscilloscopeModuleEditor(CriticalSection *newPlugInLoc
 OscilloscopeModuleEditor::~OscilloscopeModuleEditor()
 {
   delete[] timeAxis;
-  delete[] xL; 
+  delete[] xL;
   delete[] xR;
   delete[] px;
 }
@@ -794,7 +794,7 @@ void OscilloscopeModuleEditor::resized()
   // later - take stereo into account - maybe wrap this stuff into a function
   int N = oscilloscopeAudioModule->waveformDisplayBuffer->getDisplayBufferLength();
   delete[] timeAxis;
-  delete[] xL; 
+  delete[] xL;
   delete[] xR;
   timeAxis = new double[N];
   xL       = new float[N];
@@ -814,15 +814,15 @@ void OscilloscopeModuleEditor::updateEditorContent()
   convertBuffer(oscilloscopeAudioModule->waveformDisplayBuffer->getTimeAxis(),      timeAxis, N);
   convertBuffer(oscilloscopeAudioModule->waveformDisplayBuffer->getDisplayBuffer(), xL,       N);
   convertBuffer(oscilloscopeAudioModule->waveformDisplayBuffer->getDisplayBuffer(), xR,       N);
-  oscilloscopeDisplay->setWaveformData(N, 2, px, timeAxis); 
+  oscilloscopeDisplay->setWaveformData(N, 2, px, timeAxis);
 }
 
 
 //=========================================================================================================================================
 // class SpectrumAnalyzerModuleEditor:
 
-SpectrumAnalyzerModuleEditor::SpectrumAnalyzerModuleEditor(CriticalSection *newPlugInLock, 
-  SpectrumAnalyzerAudioModule* newSpectrumAnalyzerAudioModule) 
+SpectrumAnalyzerModuleEditor::SpectrumAnalyzerModuleEditor(CriticalSection *newPlugInLock,
+  SpectrumAnalyzerAudioModule* newSpectrumAnalyzerAudioModule)
   : AudioModuleEditorAnimated(newPlugInLock, newSpectrumAnalyzerAudioModule)
 {
   setHeadlineStyle(Editor::NO_HEADLINE);
@@ -878,7 +878,7 @@ void SpectrumAnalyzerModuleEditor::rButtonClicked(RButton *buttonThatWasClicked)
     spectrumZoomer->zoomToAllXY();
   }
   else
-    AudioModuleEditorAnimated::rButtonClicked(buttonThatWasClicked);    
+    AudioModuleEditorAnimated::rButtonClicked(buttonThatWasClicked);
 }
 
 void SpectrumAnalyzerModuleEditor::coordinateSystemChanged(MessengingCoordinateSystemOld *coordinateSystemThatHasChanged)
@@ -908,7 +908,7 @@ void SpectrumAnalyzerModuleEditor::updateWidgetsAccordingToState()
   spectrumAnalyzerAudioModule->setIgnoreDirtification(true);       // prevents the subsequent call from spawning a state dirtification
   spectrumDisplay->setCurrentRange(minX, maxX, minY, maxY);
   spectrumZoomer->updateScrollbars();
-  spectrumAnalyzerAudioModule->setIgnoreDirtification(false);       
+  spectrumAnalyzerAudioModule->setIgnoreDirtification(false);
 }
 
 void SpectrumAnalyzerModuleEditor::resized()
@@ -947,8 +947,8 @@ void SpectrumAnalyzerModuleEditor::updateEditorContent()
 
   // retrieve the data from the analyzer and pass it to the display:
   spectrumDisplay->setSpectra(
-    spectrumAnalyzerAudioModule->wrappedSpectrumAnalyzer->getNumNonRedundantBins(), 
-    spectrumAnalyzerAudioModule->wrappedSpectrumAnalyzer->getNumChannels(), 
+    spectrumAnalyzerAudioModule->wrappedSpectrumAnalyzer->getNumNonRedundantBins(),
+    spectrumAnalyzerAudioModule->wrappedSpectrumAnalyzer->getNumChannels(),
     spectrumAnalyzerAudioModule->wrappedSpectrumAnalyzer->getBinFrequencies(),
     spectrumAnalyzerAudioModule->wrappedSpectrumAnalyzer->getCurrentSpectra() );
 }
@@ -956,7 +956,7 @@ void SpectrumAnalyzerModuleEditor::updateEditorContent()
 //=========================================================================================================================================
 // class MultiAnalyzerModuleEditor:
 
-MultiAnalyzerModuleEditor::MultiAnalyzerModuleEditor(CriticalSection *newPlugInLock, MultiAnalyzerAudioModule* newMultiAnalyzerAudioModule) 
+MultiAnalyzerModuleEditor::MultiAnalyzerModuleEditor(CriticalSection *newPlugInLock, MultiAnalyzerAudioModule* newMultiAnalyzerAudioModule)
   : AudioModuleEditor(newMultiAnalyzerAudioModule)
 {
   jassert(newMultiAnalyzerAudioModule != NULL ); // you must pass a valid module here
@@ -1012,7 +1012,7 @@ void MultiAnalyzerModuleEditor::rButtonClicked(RButton *buttonThatWasClicked)
   if( multiAnalyzerAudioModule == NULL )
     return;
 
-  if( buttonThatWasClicked == oscilloscopeButton ) 
+  if( buttonThatWasClicked == oscilloscopeButton )
     multiAnalyzerAudioModule->setMode(MultiAnalyzerAudioModule::OSCILLOSCOPE);
   else if( buttonThatWasClicked == spectrumAnalyzerButton )
     multiAnalyzerAudioModule->setMode(MultiAnalyzerAudioModule::SPECTRUM_ANALYZER);
@@ -1053,11 +1053,11 @@ void MultiAnalyzerModuleEditor::updateWidgetsAccordingToState()
 {
   AudioModuleEditor::updateWidgetsAccordingToState();
 
-  multiAnalyzerAudioModule->setIgnoreDirtification(true);  
+  multiAnalyzerAudioModule->setIgnoreDirtification(true);
   oscilloscopeEditor->updateWidgetsAccordingToState();
   spectrumAnalyzerEditor->updateWidgetsAccordingToState();
   updateSubEditorVisibilitiesAndTabButtonStates();
-  multiAnalyzerAudioModule->setIgnoreDirtification(false);  
+  multiAnalyzerAudioModule->setIgnoreDirtification(false);
 }
 
 void MultiAnalyzerModuleEditor::updateSubEditorVisibilitiesAndTabButtonStates()

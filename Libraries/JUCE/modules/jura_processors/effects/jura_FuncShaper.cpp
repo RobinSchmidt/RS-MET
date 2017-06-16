@@ -1,7 +1,7 @@
 
 // construction/destruction:
 
-FuncShaperAudioModule::FuncShaperAudioModule(CriticalSection *newPlugInLock, 
+FuncShaperAudioModule::FuncShaperAudioModule(CriticalSection *newPlugInLock,
   rosic::FuncShaper *funcShaperToWrap) : AudioModule(newPlugInLock)
 {
   jassert(funcShaperToWrap != NULL); // you must pass a valid rosic-object to the constructor
@@ -13,11 +13,11 @@ FuncShaperAudioModule::FuncShaperAudioModule(CriticalSection *newPlugInLock,
   initializeAutomatableParameters();
 
   // use initial value for "a" that is different from the default value:
-  setFormulaParameterMaxValue("aMax", 4.0);  
+  setFormulaParameterMaxValue("aMax", 4.0);
   getParameterByName("a")->setValue(2.0, true, true);
 }
 
-FuncShaperAudioModule::FuncShaperAudioModule(CriticalSection *newPlugInLock) 
+FuncShaperAudioModule::FuncShaperAudioModule(CriticalSection *newPlugInLock)
   : AudioModule(newPlugInLock)
 {
   wrappedFuncShaper = new rosic::FuncShaper;
@@ -29,7 +29,7 @@ FuncShaperAudioModule::FuncShaperAudioModule(CriticalSection *newPlugInLock)
   initializeAutomatableParameters();
 
   // use initial value for "a" that is different from the default value:
-  setFormulaParameterMaxValue("aMax", 4.0);  
+  setFormulaParameterMaxValue("aMax", 4.0);
   getParameterByName("a")->setValue(2.0, true, true);
 }
 
@@ -65,7 +65,7 @@ void FuncShaperAudioModule::setStateFromXml(const XmlElement& xmlState,
   // restore the function-string:
   juce::String functionString = xmlState.getStringAttribute("FunctionString");
   char* functionStringC = toZeroTerminatedString(functionString);
-  bool stringIsValid = wrappedFuncShaper->setFunctionString(functionStringC, false);
+  //bool stringIsValid = wrappedFuncShaper->setFunctionString(functionStringC, false);
   if(functionStringC)
     delete functionStringC;
 
@@ -118,7 +118,7 @@ void FuncShaperAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
   markStateAsDirty();
 }
 
-    
+
 void FuncShaperAudioModule::setFormulaParameterMinValue(const juce::String& augmentedName, double newMinValue)
 {
   getParameterByName(augmentedName)->setValue(newMinValue, false, false);
@@ -182,7 +182,7 @@ void FuncShaperAudioModule::initializeAutomatableParameters()
   addObservedParameter(new Parameter(lock, "cMax", -INF, INF, 0.0, 1.0, Parameter::LINEAR));
   addObservedParameter(new Parameter(lock, "dMax", -INF, INF, 0.0, 1.0, Parameter::LINEAR));
 
-  // make a call to parameterChanged for each parameter in order to set up the DSP-core to reflect 
+  // make a call to parameterChanged for each parameter in order to set up the DSP-core to reflect
   // the values the automatable parameters:
   for(int i=0; i < (int) parameters.size(); i++ )
     parameterChanged(parameters[i]);
@@ -192,8 +192,8 @@ void FuncShaperAudioModule::initializeAutomatableParameters()
 
 // construction/destruction:
 
-FuncShaperModuleEditor::FuncShaperModuleEditor(CriticalSection *newPlugInLock, 
-  FuncShaperAudioModule* newFuncShaperAudioModule) 
+FuncShaperModuleEditor::FuncShaperModuleEditor(CriticalSection *newPlugInLock,
+  FuncShaperAudioModule* newFuncShaperAudioModule)
   : AudioModuleEditor(newFuncShaperAudioModule)
 {
   // set the plugIn-headline:
@@ -302,7 +302,7 @@ FuncShaperModuleEditor::FuncShaperModuleEditor(CriticalSection *newPlugInLock,
   addWidget( inLowpassSlider = new RSlider("InLowpassSlider") );
   inLowpassSlider->setRange(20.0, 20000.0, 0.001, 20000.0);
   inLowpassSlider->setScaling(Parameter::EXPONENTIAL);
-  inLowpassSlider->assignParameter( 
+  inLowpassSlider->assignParameter(
     funcShaperAudioModule->getParameterByName("InputLowpass") );
   inLowpassSlider->setSliderName(juce::String("LPF"));
   inLowpassSlider->setDescription(juce::String("Lowpass cutoff for input signal"));
@@ -346,7 +346,7 @@ FuncShaperModuleEditor::FuncShaperModuleEditor(CriticalSection *newPlugInLock,
   addWidget( outHighpassSlider = new RSlider("OutHighpassSlider") );
   outHighpassSlider->setRange(20.0, 20000.0, 0.001, 20.0);
   outHighpassSlider->setScaling(Parameter::EXPONENTIAL);
-  outHighpassSlider->assignParameter( 
+  outHighpassSlider->assignParameter(
     funcShaperAudioModule->getParameterByName("OutputHighpass") );
   outHighpassSlider->setSliderName(juce::String("HPF"));
   outHighpassSlider->setDescription(juce::String("Highpass cutoff for output signal"));
@@ -356,7 +356,7 @@ FuncShaperModuleEditor::FuncShaperModuleEditor(CriticalSection *newPlugInLock,
   addWidget( outLowpassSlider = new RSlider("OutLowpassSlider") );
   outLowpassSlider->setRange(20.0, 20000.0, 0.001, 20000.0);
   outLowpassSlider->setScaling(Parameter::EXPONENTIAL);
-  outLowpassSlider->assignParameter( 
+  outLowpassSlider->assignParameter(
     funcShaperAudioModule->getParameterByName("OutputLowpass") );
   outLowpassSlider->setSliderName(juce::String("LPF"));
   outLowpassSlider->setDescription(juce::String("Lowpass cutoff for output signal"));
@@ -472,25 +472,25 @@ void FuncShaperModuleEditor::textChanged(RTextEntryField *rTextEntryFieldThatHas
     shaperPlot->updatePlotImage();
   }
 
-  funcShaperAudioModule->markStateAsDirty(); 
+  funcShaperAudioModule->markStateAsDirty();
 }
 
 void FuncShaperModuleEditor::updateWidgetsAccordingToState()
 {
   AudioModuleEditor::updateWidgetsAccordingToState();
   formulaField->setText(juce::String(funcShaperAudioModule->wrappedFuncShaper->getFunctionString()));
-  shaperPlot->updatePlotImage();  
+  shaperPlot->updatePlotImage();
 }
 
 void FuncShaperModuleEditor::paint(Graphics &g)
 {
   AudioModuleEditor::paint(g);
 
-  fillRectWithBilinearGradient(g, formulaRectangle, editorColourScheme.topLeft, editorColourScheme.topRight, 
+  fillRectWithBilinearGradient(g, formulaRectangle, editorColourScheme.topLeft, editorColourScheme.topRight,
     editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
-  fillRectWithBilinearGradient(g, inputRectangle, editorColourScheme.topLeft, 
+  fillRectWithBilinearGradient(g, inputRectangle, editorColourScheme.topLeft,
     editorColourScheme.topRight, editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
-  fillRectWithBilinearGradient(g, outputRectangle, editorColourScheme.topLeft, editorColourScheme.topRight, 
+  fillRectWithBilinearGradient(g, outputRectangle, editorColourScheme.topLeft, editorColourScheme.topRight,
     editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
 
   g.setColour(editorColourScheme.outline);
@@ -572,7 +572,7 @@ void FuncShaperModuleEditor::resized()
 
   // the right rectangle:
 
-  outputRectangle.setBounds(shaperPlot->getRight(), shaperPlot->getY() ,  
+  outputRectangle.setBounds(shaperPlot->getRight(), shaperPlot->getY() ,
     shaperPlot->getX()-4, shaperPlot->getHeight() );
 
   x = outputRectangle.getX();

@@ -1,7 +1,7 @@
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-PolyphonicInstrumentAudioModule::PolyphonicInstrumentAudioModule(CriticalSection *newPlugInLock, 
+PolyphonicInstrumentAudioModule::PolyphonicInstrumentAudioModule(CriticalSection *newPlugInLock,
   rosic::PolyphonicInstrument *instrumentToWrap) : AudioModuleWithMidiIn(newPlugInLock)
 {
   jassert(instrumentToWrap != NULL); // you must pass a valid rosic-object to the constructor
@@ -11,7 +11,7 @@ PolyphonicInstrumentAudioModule::PolyphonicInstrumentAudioModule(CriticalSection
   initializeAutomatableParameters();
 }
 
-PolyphonicInstrumentAudioModule::PolyphonicInstrumentAudioModule(CriticalSection *newPlugInLock) 
+PolyphonicInstrumentAudioModule::PolyphonicInstrumentAudioModule(CriticalSection *newPlugInLock)
   : AudioModuleWithMidiIn(newPlugInLock)
 {
 
@@ -37,7 +37,7 @@ void PolyphonicInstrumentAudioModule::parameterChanged(Parameter* parameterThatH
   // find out the index in the vector of the parameter that has been changed:
   int parameterIndex = getIndexOfParameter(parameterThatHasChanged);
 
-  // parameterIndex now contains the index in the array of the parameter that has changed now set 
+  // parameterIndex now contains the index in the array of the parameter that has changed now set
   // up the signal processing:
 
   // \todo replace this dispatching switch statement by the new callback-system
@@ -63,8 +63,8 @@ void PolyphonicInstrumentAudioModule::parameterChanged(Parameter* parameterThatH
 
 }
 
-void PolyphonicInstrumentAudioModule::setStateFromXml(const XmlElement& xmlState, 
-  const juce::String& stateName, bool markAsClean) 
+void PolyphonicInstrumentAudioModule::setStateFromXml(const XmlElement& xmlState,
+  const juce::String& stateName, bool markAsClean)
 {
   underlyingRosicInstrument->allNotesOff();
   AudioModuleWithMidiIn::setStateFromXml(xmlState, stateName, markAsClean);
@@ -78,7 +78,7 @@ XmlElement* PolyphonicInstrumentAudioModule::getStateAsXml(XmlElement* xmlElemen
 
   XmlElement* xmlState;
   if( xmlElementToStartFrom == NULL )
-    xmlState = new XmlElement(juce::String(T("InstrumentState"))); 
+    xmlState = new XmlElement(juce::String(T("InstrumentState")));
   else
     xmlState = xmlElementToStartFrom;
 
@@ -93,7 +93,7 @@ void PolyphonicInstrumentAudioModule::setStateFromXml(const XmlElement &xmlState
   if( underlyingRosicInstrument == NULL )
     return;
 
-  // we want to preserve the clean state but when we set automatable parameters it will be set to 
+  // we want to preserve the clean state but when we set automatable parameters it will be set to
   // dirty - so we remember if it was clean and restore it after setting the parameters:
   bool presetIsClean = !underlyingRosicInstrument->isPresetDirty();
 
@@ -114,7 +114,7 @@ void PolyphonicInstrumentAudioModule::initializeAutomatableParameters()
   // is important because in parameterChanged(), the index (position in the array) will be used to
   // identify which particular parameter has changed.
 
-  // this pointer will be used to temporarily store the addresses of the created 
+  // this pointer will be used to temporarily store the addresses of the created
   // Parameter-objects:
   AutomatableParameter* p;
 
@@ -162,7 +162,7 @@ void PolyphonicInstrumentAudioModule::initializeAutomatableParameters()
 //=================================================================================================
 
 
-PolyphonicInstrumentEditor::PolyphonicInstrumentEditor(CriticalSection *newPlugInLock, 
+PolyphonicInstrumentEditor::PolyphonicInstrumentEditor(CriticalSection *newPlugInLock,
   PolyphonicInstrumentAudioModule* newInstrumentToEdit) : AudioModuleEditor(newInstrumentToEdit)
 {
   ScopedLock scopedLock(*lock);
@@ -224,7 +224,7 @@ PolyphonicInstrumentEditor::PolyphonicInstrumentEditor(CriticalSection *newPlugI
   tuningLabel->setDescriptionField(infoField);
   tuningLabel->setNoBackgroundAndOutline(true);
 
-  addWidget( tuningFileNameLabel = new RTextField() );  
+  addWidget( tuningFileNameLabel = new RTextField() );
   tuningFileNameLabel->setDescription(juce::String("Name of current tuning file (if any)"));
   tuningFileNameLabel->setDescriptionField(infoField);
 
@@ -374,7 +374,7 @@ void PolyphonicInstrumentEditor::updateWidgetsAccordingToState()
   AudioModuleEditor::updateWidgetsAccordingToState();
 
   // update tuning widgets:
-  masterTuneSlider->setValue( instrumentEngine->getMasterTuneA4(),        false, false);    
+  masterTuneSlider->setValue( instrumentEngine->getMasterTuneA4(),        false, false);
   tuningFileNameLabel->setText(juce::String(instrumentEngine->tuningTable.getName()));
 
   // update global widgets:
@@ -389,7 +389,7 @@ void PolyphonicInstrumentEditor::updateWidgetsAccordingToState()
   glideButton->setToggleState( instrumentEngine->isInGlideMode(),          false);
 
   stateWidgetSet->stateFileNameLabel->setText(moduleToEdit->getStateNameWithStarIfDirty());
-  // maybe this call is redundant because it is also called in 
+  // maybe this call is redundant because it is also called in
   // AudioModuleEditor::updateWidgetsAccordingToState();
 }
 
@@ -404,7 +404,7 @@ void PolyphonicInstrumentEditor::resized()
   int x = 0;
   int y = 0;
   int w = getWidth();
-  int h = getHeight();
+  //int h = getHeight();
 
   x = 0;
   y = getHeadlineBottom();

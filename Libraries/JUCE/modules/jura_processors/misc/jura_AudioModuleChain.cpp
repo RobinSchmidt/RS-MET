@@ -9,7 +9,7 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
   if(type == "TrackMeter")    return new TrackMeterAudioModule(   lock);
   if(type == "MidiMonitor")   return new MidiMonitorAudioModule(  lock);
 
-  // filters: 
+  // filters:
   if(type == "Equalizer")       return new EqualizerAudioModule(      lock);
   if(type == "Ladder")          return new Ladder(                    lock);
   if(type == "PhasorFilter")    return new PhasorFilter(              lock);
@@ -51,9 +51,9 @@ juce::String AudioModuleFactory::getModuleType(AudioModule *m)
   // analysis:
   //if(dynamic_cast<PhaseScope2*>  (m))            return "PhaseScope2"; // always check subclasses before...
   if(dynamic_cast<PhaseScope*>   (m))              return "PhaseScope";  // ...their superclasses
-  if(dynamic_cast<MultiAnalyzerAudioModule*> (m))  return "MultiAnalyzer"; 
-  if(dynamic_cast<TrackMeterAudioModule*> (m))     return "TrackMeter"; 
-  if(dynamic_cast<MidiMonitorAudioModule*> (m))    return "MidiMonitor"; 
+  if(dynamic_cast<MultiAnalyzerAudioModule*> (m))  return "MultiAnalyzer";
+  if(dynamic_cast<TrackMeterAudioModule*> (m))     return "TrackMeter";
+  if(dynamic_cast<MidiMonitorAudioModule*> (m))    return "MidiMonitor";
 
   // filters:
   if(dynamic_cast<EqualizerAudioModule*>(m))       return "Equalizer";
@@ -93,7 +93,7 @@ juce::String AudioModuleFactory::getModuleType(AudioModule *m)
 
 StringArray AudioModuleFactory::getAvailableModuleTypes()
 {
-  // here, we can make certain modules temporarily unavailable by simply commenting the 
+  // here, we can make certain modules temporarily unavailable by simply commenting the
   // corresponding line
 
   StringArray a;
@@ -135,7 +135,7 @@ StringArray AudioModuleFactory::getAvailableModuleTypes()
   //a.add("Quadriga");
   //a.add("Workhorse");
 #ifdef _MSC_VER
-  a.add("Liberty"); // not yet available on gcc 
+  a.add("Liberty"); // not yet available on gcc
 #endif
 
   return a;
@@ -143,13 +143,13 @@ StringArray AudioModuleFactory::getAvailableModuleTypes()
 
 //=================================================================================================
 
-AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector") 
+AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
 {
-  // old: linear flat array: 
+  // old: linear flat array:
   setDescription("Select module type");
   StringArray a = AudioModuleFactory::getAvailableModuleTypes();
   for(int i = 0; i < a.size(); i++)
-    addItem(i, a[i]); 
+    addItem(i, a[i]);
   // ...but we want a tree...
 
 
@@ -193,7 +193,7 @@ AudioModuleChain::AudioModuleChain(CriticalSection *lockToUse) : AudioModuleWith
   juce::String presetPath = getApplicationDirectory() + "/ChainerPresets";
 #elif __APPLE__
   juce::String presetPath = "/Library/Audio/Presets/RS-MET/Chainer/ChainerPresets";
-#elif __linux__ 
+#elif __linux__
   juce::String presetPath = getApplicationDirectory() + "/ChainerPresets";
 #endif
   setActiveDirectory(presetPath);
@@ -205,7 +205,7 @@ AudioModuleChain::AudioModuleChain(CriticalSection *lockToUse) : AudioModuleWith
 AudioModuleChain::~AudioModuleChain()
 {
   ScopedLock scopedLock(*lock);
-  for(int i = 0; i < modules.size(); i++)
+  for(int i = 0; i < size(modules); i++)
     delete modules[i];
 }
 
@@ -247,7 +247,7 @@ void AudioModuleChain::replaceModule(int index, const juce::String& type)
   if(!isModuleOfType(index, type)){              // replace only, if new type is different
     AudioModule* oldModule = modules[index];
     AudioModule* newModule = AudioModuleFactory::createModule(type, lock);
-    newModule->setMetaParameterManager(metaParamManager); 
+    newModule->setMetaParameterManager(metaParamManager);
     newModule->loadDefaultPreset(); // later: either load default preset or recall a stored state
     newModule->setSampleRate(sampleRate);
     modules[index] = newModule;
@@ -281,7 +281,7 @@ void AudioModuleChain::ensureOneEmptySlotAtEnd()
     addEmptySlot();
 
   // remove superfluous empty slots at end:
-  while(modules.size() > 1 && isModuleOfType(size(modules)-1, "None") 
+  while(modules.size() > 1 && isModuleOfType(size(modules)-1, "None")
                            && isModuleOfType(size(modules)-2, "None"))
   { // if the last two slots are empty, remove the last
     deleteLastModule();
@@ -314,7 +314,7 @@ void AudioModuleChain::sendAudioModuleWillBeDeletedNotification(AudioModule *mod
     observers[i]->audioModuleWillBeDeleted(this, module, index);
 }
 
-void AudioModuleChain::sendAudioModuleWasReplacedNotification(AudioModule *oldModule, 
+void AudioModuleChain::sendAudioModuleWasReplacedNotification(AudioModule *oldModule,
   AudioModule *newModule, int index)
 {
   ScopedLock scopedLock(*lock);
@@ -357,7 +357,7 @@ void AudioModuleChain::noteOn(int noteNumber, int velocity)
   // and/or don't override the noteOn/etc. functions here but rather let the MIDI events also
   // pass through the modules in series. most modules just pass them through, but we can also
   // have MIDI effects such as appregiators and sequencers which modify the sequence and pass
-  // the modified sequence to the next module - we could have an appregiator in front of a 
+  // the modified sequence to the next module - we could have an appregiator in front of a
   // synth, for example
 
   // all synthesizer modules should pass through the incoming audio and add their own signal
@@ -471,10 +471,10 @@ AudioModuleEditor* AudioModuleChainEditor::getEditorForSlot(int index)
 {
   ScopedLock scopedLock(*lock);
   if(size(editors) == 0 || index < 0)            // may happen during xml state recall
-    return nullptr; 
+    return nullptr;
   jassert(index >= 0 && index < editors.size()); // index out of range
   if(editors[index] == nullptr)
-    editors[index] = chain->modules[index]->createEditor();  
+    editors[index] = chain->modules[index]->createEditor();
   return editors[index];
 }
 
@@ -563,7 +563,7 @@ void AudioModuleChainEditor::updateActiveEditor()
     int h = max(180, activeEditor->getHeight());
     activeEditor->setBounds(leftColumnWidth, 0, w, h);
     setSize(w + leftColumnWidth, h + bottomRowHeight);
-    resized(); // setSize will call resized only if the size actually changes but we need to make 
+    resized(); // setSize will call resized only if the size actually changes but we need to make
                // sure that it always gets called to arrange the selectors
   }
 }
@@ -573,14 +573,14 @@ void AudioModuleChainEditor::mouseDown(const MouseEvent &e)
   //ScopedLock scopedLock(*lock); // blocks audio when popup is open
   int i = chain->activeSlot;
   juce::Rectangle<int> rect = selectors[i]->getBounds();
-  if(rect.contains(e.x, e.y)){ 
+  if(rect.contains(e.x, e.y)){
     // click was on active slot selector - pass event through:
     selectors[i]->mouseDown(e.getEventRelativeTo(selectors[i]));
   }
   else{
     for(i = 0; i < size(selectors); i++){
       rect = selectors[i]->getBounds();
-      if(rect.contains(e.x, e.y)){ 
+      if(rect.contains(e.x, e.y)){
         // click was on inactive slot selector - activate:
         chain->activeSlot = i;
         updateActiveEditor();
@@ -631,15 +631,15 @@ void AudioModuleChainEditor::resized()
   w = getWidth() - x - margin;
   webLink->setBounds(x, y+3, w, bottomRowHeight);
 
-  //// color setup doesn't work properly yet - the active selector rectangle is drawn on top of it 
-  //// and when doing other stuff while it's open there can be access violations - so the button 
-  //// setup code is commented out: 
+  //// color setup doesn't work properly yet - the active selector rectangle is drawn on top of it
+  //// and when doing other stuff while it's open there can be access violations - so the button
+  //// setup code is commented out:
   //int buttonWidth = 40;
   //x = leftColumnWidth - buttonWidth - margin;
   //y = margin;
   //setupButton->setBounds(x, y, buttonWidth, 16);
 
-  // If this is a AudioModuleChain wrapped into an AudioPlugIn, we want to resize the whole parent 
+  // If this is a AudioModuleChain wrapped into an AudioPlugIn, we want to resize the whole parent
   // window as well:
   Component *parent =	getParentComponent();
   if(dynamic_cast<AudioPluginEditor*>(parent))
@@ -707,7 +707,7 @@ void AudioModuleChainEditor::audioModuleWasReplaced(AudioModuleChain *chain,
 
 void AudioModuleChainEditor::scheduleSelectorArrayUpdate()
 {
-  sendChangeMessage(); 
+  sendChangeMessage();
   // we will receive the message ourselves which causes a call to updateSelectorArray()
 }
 
