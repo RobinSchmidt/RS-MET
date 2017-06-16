@@ -9,8 +9,8 @@ char* toZeroTerminatedString(String stringToConvert)
   char* stringC = new char[length+1];
   //stringToConvert.copyToBuffer(stringC, length);
   //stringToConvert.copyToCString(stringC, length);
-  size_t numWritten = stringToConvert.copyToUTF8(stringC, length+1); // was formerly legth - how could that ever work?
-  jassert(numWritten == length+1);
+  size_t numWritten = stringToConvert.copyToUTF8(stringC, length+1);
+  jassert((int) numWritten == length+1);
   return stringC;
 }
 
@@ -38,9 +38,9 @@ String createAudioFileInfoString(File fileToCreateStringFrom)
   int    bitDepth    = 0;
   String formatString;
 
-  if( fileToCreateStringFrom.hasFileExtension(String("wav")) ) 
+  if( fileToCreateStringFrom.hasFileExtension(String("wav")) )
   {
-    WavAudioFormat wavAudioFormat; 
+    WavAudioFormat wavAudioFormat;
     fileIsReadable = wavAudioFormat.canHandleFile(fileToCreateStringFrom);
     formatString = String("wav");
     if( fileIsReadable )
@@ -65,11 +65,11 @@ String createAudioFileInfoString(File fileToCreateStringFrom)
   }
   else if( fileToCreateStringFrom.hasFileExtension(String("flac")) )
   {
-    FlacAudioFormat flacAudioFormat; 
+    FlacAudioFormat flacAudioFormat;
     fileIsReadable = flacAudioFormat.canHandleFile(fileToCreateStringFrom);
     formatString = String("flac");
     if( fileIsReadable )
-    { 
+    {
       AudioFormatReader* flacReader = flacAudioFormat.createReaderFor(fileInputStream, true);
       if( flacReader != NULL )
       {
@@ -101,7 +101,7 @@ String createAudioFileInfoString(File fileToCreateStringFrom)
   else
     channelString = String(numChannels) + String(" channels");
 
-  String infoString = formatString + String(", ") + String(sampleRate) + String(" Hz, ") 
+  String infoString = formatString + String(", ") + String(sampleRate) + String(" Hz, ")
     + String(bitDepth) + String(" Bit, ") + String(numSamples) + String(" frames, ")
     + channelString;
 
@@ -117,7 +117,7 @@ String amplitudeRawAndInDecibels(double amplitudeRaw)
 {
   amplitudeRaw = fabs(amplitudeRaw);
   if( amplitudeRaw > 0.0 )
-    return valueToStringTotal5(amplitudeRaw) + String(", ") 
+    return valueToStringTotal5(amplitudeRaw) + String(", ")
     + decibelsToStringWithUnit2(rsAmp2dB(amplitudeRaw));
   else
     return valueToStringTotal5(amplitudeRaw) + String(", -Inf dB");
@@ -312,46 +312,46 @@ String midiMessageToString(MidiMessage message, bool addNewLine)
     }
     else if( message.isTimeSignatureMetaEvent() )
     {
-      int num, den; 
+      int num, den;
       message.getTimeSignatureInfo(num, den);
       messageString += String("time signature: ") + String(num) + String("/") + String(den);
     }
     else if( message.isKeySignatureMetaEvent() )
     {
-      messageString += String("key signature: ") 
+      messageString += String("key signature: ")
         + String(message.getKeySignatureNumberOfSharpsOrFlats()) + String(" sharps");
     }
     else if( message.isMidiChannelMetaEvent() )
     {
-      messageString += String("midi channel: ") 
+      messageString += String("midi channel: ")
         + String(message.getMidiChannelMetaEventChannel());
     }
   }
-  else if( message.isMidiStart() )    
+  else if( message.isMidiStart() )
     messageString += String("Start");
-  else if( message.isMidiStop() )    
+  else if( message.isMidiStop() )
     messageString += String("Stop");
-  else if( message.isMidiContinue() )    
+  else if( message.isMidiContinue() )
     messageString += String("Continue");
-  else if( message.isMidiClock() )    
+  else if( message.isMidiClock() )
     messageString += String("Clock");
-  else if( message.isSongPositionPointer() )    
+  else if( message.isSongPositionPointer() )
   {
     messageString += String("Song position: ") + String(message.getSongPositionPointerMidiBeat()/4)
       + String(" quarter notes");
   }
-  else if( message.isQuarterFrame() )    
+  else if( message.isQuarterFrame() )
   {
-    messageString += String("MIDI Time Code (MTC), quarter frame - sequence number: ") 
-      + String(message.getQuarterFrameSequenceNumber()) + String(", value: ") 
+    messageString += String("MIDI Time Code (MTC), quarter frame - sequence number: ")
+      + String(message.getQuarterFrameSequenceNumber()) + String(", value: ")
       + String(message.getQuarterFrameValue() );
   }
-  else if( message.isFullFrame() )    
-  {  
+  else if( message.isFullFrame() )
+  {
     MidiMessage::SmpteTimecodeType timecodeType;
     message.getFullFrameParameters(hours, minutes, seconds, frames, timecodeType);
 
-    String timeCodeString = String(hours) + String(":") + String(minutes) + String(":") 
+    String timeCodeString = String(hours) + String(":") + String(minutes) + String(":")
       + String(seconds) + String(":") + String(frames);
 
     String typeString;
@@ -364,10 +364,10 @@ String midiMessageToString(MidiMessage message, bool addNewLine)
     default: typeString = String("unknown");
     }
 
-    messageString += String("MIDI Time Code (MTC), full frame: ") + timeCodeString 
+    messageString += String("MIDI Time Code (MTC), full frame: ") + timeCodeString
       + String(" at framerate: ") + typeString;
   }
-  else if( message.isMidiMachineControlMessage ()  )    
+  else if( message.isMidiMachineControlMessage ()  )
   {
     messageString += String("MIDI Machine Control (MMC): ");
     MidiMessage::MidiMachineControlCommand  mmc = message.getMidiMachineControlCommand();
@@ -388,7 +388,7 @@ String midiMessageToString(MidiMessage message, bool addNewLine)
     else if( mmc == MidiMessage::mmc_pause )
       messageString += String("pause");
   }
-  else if( message.isMidiMachineControlGoto(hours, minutes, seconds, frames) ) 
+  else if( message.isMidiMachineControlGoto(hours, minutes, seconds, frames) )
   {
     messageString += String("MIDI Machine Control (MMC) goto: ");
     messageString += String(hours) + String(":") + String(minutes) + String(":") +
@@ -586,7 +586,7 @@ String midiNoteToString(double midiNoteNumber)
   case  21: return String("A0");
   case  22: return String("A#0");
   case  23: return String("B0");
-  
+
   case  24: return String("C1");
   case  25: return String("C#1");
   case  26: return String("D1");
@@ -814,7 +814,7 @@ String secondsToStringWithUnitTotal4(double value)
   else if( value >= 0.0001 )
     return String(1000*value, 3) + String(" ms");
   else
-    return String(1000*value, 3) + String(" ms"); 
+    return String(1000*value, 3) + String(" ms");
 }
 
 String semitonesToStringWithUnit2(double value)
@@ -827,7 +827,7 @@ String semitonesToStringWithUnit1(double value)
   return String(value, 1) + String(" st");
 }
 
-String valueToStringWithTotalNumDigits(double value, int totalNumDigits, 
+String valueToStringWithTotalNumDigits(double value, int totalNumDigits,
                                               const String& suffix)
 {
   if( totalNumDigits <= 0 )
@@ -898,7 +898,7 @@ String valueToStringTotal5(double value)
   else if( value >= 1.0 )
     return String(value, 4);
   else
-    return String(value, 5);	
+    return String(value, 5);
 }
 
 String valueToStringWithSign0(double value)

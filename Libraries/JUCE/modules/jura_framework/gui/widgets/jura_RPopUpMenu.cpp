@@ -27,7 +27,7 @@ RPopUpMenu::~RPopUpMenu()
   delete rootNode;
 }
 
-void RPopUpMenu::addItem(int itemResultId, const juce::String& itemText, bool isEnabled, 
+void RPopUpMenu::addItem(int itemResultId, const juce::String& itemText, bool isEnabled,
   bool isTicked)
 {
   addTreeNodeItem( new RTreeViewNode(itemText, itemResultId,
@@ -50,7 +50,7 @@ void RPopUpMenu::clear()
   treeView->deSelectNode();
   rootNode->deleteChildNodesRecursively();
 }
-   
+
 void RPopUpMenu::setItemText(int index, const juce::String& newText)
 {
   if( index >= 0 && index < getNumTopLevelItems() ) // maybe we should use an identifier instead
@@ -98,7 +98,7 @@ void RPopUpMenu::deRegisterPopUpMenuObserver(RPopUpMenuObserver* const observerT
 
 RTreeViewNode* RPopUpMenu::getItemByIndex(int index) const
 {
-  if( index < 0 || index >= treeView->rootNode->childNodes.size() || treeView->rootNode == NULL )
+  if( index < 0 || index >= size(treeView->rootNode->childNodes) || treeView->rootNode == NULL )
   {
     jassertfalse;  // index out of range
     return NULL;
@@ -113,7 +113,7 @@ RTreeViewNode* RPopUpMenu::getSelectedItem() const
 }
 
 const juce::String& RPopUpMenu::getSelectedText() const
-{ 
+{
   RTreeViewNode* selectedNode = getSelectedItem();
   if(selectedNode != nullptr)
     return getSelectedItem()->getText();
@@ -121,7 +121,7 @@ const juce::String& RPopUpMenu::getSelectedText() const
     return String::empty;
 }
 
-void RPopUpMenu::treeNodeClicked(RTreeView *treeView, RTreeViewNode *nodeThatWasClicked, 
+void RPopUpMenu::treeNodeClicked(RTreeView *treeView, RTreeViewNode *nodeThatWasClicked,
   const MouseEvent &mouseEvent, int clickPosition)
 {
   if( nodeThatWasClicked->isLeafNode() )

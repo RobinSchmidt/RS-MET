@@ -155,7 +155,7 @@ void RButton::paint(Graphics &g)
   g.drawRect(0, 0, getWidth(), getHeight(), 2);
 
   // draw the text or symbol:
-  int y = getHeight()/2 - 3;
+  //int y = getHeight()/2 - 3;
   g.setColour(getTextColour());
   if( symbolIndex <= 0 || symbolIndex > NUM_SYMBOLS )
   {

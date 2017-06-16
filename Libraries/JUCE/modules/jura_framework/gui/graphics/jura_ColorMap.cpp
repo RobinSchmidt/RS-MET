@@ -18,7 +18,7 @@ void ColorMap::setFromColourGradient(const ColourGradient &g)
   gradient = g;
   updateArray();
   defaultMapIndex = -1;  // this is, in general, not a predefined map
-  sendChangeMessage();   
+  sendChangeMessage();
 }
 
 void ColorMap::setDefaultMap(int index)
@@ -32,26 +32,26 @@ void ColorMap::setDefaultMap(int index)
   {
   case gray:
   {
-    for(int i = 0; i < colors.size(); i++)
+    for(int i = 0; i < size(colors); i++)
       colors[i] = Colour::greyLevel(float(i*scaler)).getARGB();
   } break;
 
   case fire:
   {
-    for(int i = 0; i < colors.size(); i++)
+    for(int i = 0; i < size(colors); i++)
       colors[i] = ColourAHSL(
         -0.1f + float(0.4f*i*scaler), 1.f, float(i*scaler), 1.f).getAsJuceColour().getARGB();
   } break;
   case ice:
   {
-    for(int i = 0; i < colors.size(); i++)
+    for(int i = 0; i < size(colors); i++)
       colors[i] = ColourAHSL(
         -0.2f - float(0.5f*i*scaler), 1.f, float(i*scaler), 1.f).getAsJuceColour().getARGB();
   } break;
   case rainbow:
   {
-    for(int i = 0; i < colors.size(); i++)
-      colors[i] = ColourAHSL(0.7f - float(2.0f*i*scaler), 1.f, 
+    for(int i = 0; i < size(colors); i++)
+      colors[i] = ColourAHSL(0.7f - float(2.0f*i*scaler), 1.f,
         0.0f + float(1.0f*i*scaler), 1.f).getAsJuceColour().getARGB();
   } break;
   }
@@ -68,7 +68,7 @@ void ColorMap::setFromXml(const XmlElement& xml)
 {
   //jassert(xml.getTagName() == "ColorMap");  // seems to be the wrong type of XML element
   if(xml.getTagName() != "ColorMap")
-    return; 
+    return;
 
   String s = xml.getStringAttribute("Predefined", String::empty);
   if(s != String::empty)
@@ -91,9 +91,9 @@ void ColorMap::setFromXml(const XmlElement& xml)
 
 XmlElement* ColorMap::getAsXml()
 {
-  XmlElement* xml = new XmlElement("ColorMap"); 
+  XmlElement* xml = new XmlElement("ColorMap");
 
-  // \todo: allow the user to define colormaps in terms of HSL breakpoints - the xml-element 
+  // \todo: allow the user to define colormaps in terms of HSL breakpoints - the xml-element
   // should have and attribute "Type" which can be RGBA, HLSA or maybe some other color space
 
   if(defaultMapIndex != -1)
@@ -148,7 +148,7 @@ ColourGradient ColorMap::getDefaultGradient(int index)
   }
   }
 
-  // todo: maybe define the default color maps in terms of HSL parameters. L goes from 0 to 1, 
+  // todo: maybe define the default color maps in terms of HSL parameters. L goes from 0 to 1,
   // H goes between two fixed values and S is a constant. For example, the fire colormap should go
   // from some red tone to a yellow, ice from purpleish blue to cyanish green..
 
@@ -166,6 +166,6 @@ void ColorMap::fillDefaultMapNameArray()
 void ColorMap::updateArray()
 {
   double scaler = 1.0 / lastIndex;
-  for(int i = 0; i < colors.size(); i++)
+  for(int i = 0; i < size(colors); i++)
     colors[i] = gradient.getColourAtPosition(scaler*i).getARGB();
 }

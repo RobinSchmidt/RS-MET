@@ -389,6 +389,6 @@ void ParameterSetHolder::deRegisterParameterSetObserver(ParameterSetObserver *ob
 void ParameterSetHolder::sendParameterSetChangeNotification(
   ParameterSetHolder* parameterSetHolderThatHasChanged)
 {
-  for(int i = 0; i < parameterSetObservers.size(); i++)
+  for(int i = 0; i < size(parameterSetObservers); i++)
     parameterSetObservers[i]->parameterSetChanged(parameterSetHolderThatHasChanged);
 }

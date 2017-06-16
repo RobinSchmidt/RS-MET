@@ -13,10 +13,10 @@ bool AutomatableWidget::isPopUpOpen()
   return popUpIsOpen;
 
   // The code below doesn't work because apparently, when the user clicks on a widget while the
-  // popup is open, the popup gets closed first and only after that, the mouseDown callback of the 
-  // widget is received, so isPopUpOpen would always return false in the mouseDown callback. The 
-  // desired behavior is that one right-click on the widget opens the popup and a second click 
-  // closes it. This behavior now requires thag we maintain a popUpIsOpen flag here and that flag 
+  // popup is open, the popup gets closed first and only after that, the mouseDown callback of the
+  // widget is received, so isPopUpOpen would always return false in the mouseDown callback. The
+  // desired behavior is that one right-click on the widget opens the popup and a second click
+  // closes it. This behavior now requires thag we maintain a popUpIsOpen flag here and that flag
   // should be set in the mouseDown method of the widget. Without that, a second right-click would
   // make the menu disappear for a fraction of a second and immediately reappear.
 
@@ -40,12 +40,12 @@ void AutomatableWidget::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
   {
     switch(selectedIdentifier)
     {
-    case META_ATTACH: mcp->attachToMetaParameter( 
+    case META_ATTACH: mcp->attachToMetaParameter(
       (int)wrappedWidget->openModalNumberEntryField(mcp->getMetaParameterIndex()) ); break;
     case META_DETACH: mcp->detachFromMetaParameter();    break;
     }
   }
-   
+
   AutomatableParameter* ap = getAutomatableParameter();
   if(ap != nullptr)
   {
@@ -73,7 +73,7 @@ void AutomatableWidget::updatePopUpMenu()
   {
     // popup used the 1st time - we need to create it:
     rightClickPopUp = new RPopUpMenu(wrappedWidget);
-    rightClickPopUp->registerPopUpMenuObserver(this);  
+    rightClickPopUp->registerPopUpMenuObserver(this);
     rightClickPopUp->setDismissOnFocusLoss(true);
     wrappedWidget->addChildWidget(rightClickPopUp, false, false);
   }
@@ -168,7 +168,7 @@ MetaControlledParameter* AutomatableWidget::getMetaControlledParameter()
 
 //=================================================================================================
 
-AutomatableSlider::AutomatableSlider() 
+AutomatableSlider::AutomatableSlider()
   : AutomatableWidget(this)
 {
 
@@ -223,13 +223,13 @@ void AutomatableSlider::addPopUpEnterValueItem()
 {
   rightClickPopUp->addItem(ENTER_VALUE, "Enter Value");
 }
- 
+
 void AutomatableSlider::addPopUpDefaultValueItems()
 {
   if( defaultValues.size() > 0 )
   {
     RTreeViewNode *defaultValuesNode = new RTreeViewNode("Default Values");
-    for(int i = 0; i < defaultValues.size(); i++)
+    for(int i = 0; i < size(defaultValues); i++)
       defaultValuesNode->addChildNode(new RTreeViewNode(String(defaultValues[i]), DEFAULT_VALUE));
     rightClickPopUp->addTreeNodeItem(defaultValuesNode);
   }
@@ -258,7 +258,7 @@ void AutomatableComboBox::mouseDown(const MouseEvent& e)
 
 void AutomatableComboBox::parameterChanged(Parameter* p)
 {
-  RWidget::parameterChanged(p); 
+  RWidget::parameterChanged(p);
   // not sure, why that's needed - isn't it supposed to be called anyway, i.e. if we don't override
   // parameterChanged, the RWidget baseclass method would be called? but somehow, it doesn't seem
   // to work
@@ -287,5 +287,5 @@ void AutomatableButton::mouseDown(const MouseEvent& e)
 
 void AutomatableButton::parameterChanged(Parameter* p)
 {
-  RWidget::parameterChanged(p); 
+  RWidget::parameterChanged(p);
 }

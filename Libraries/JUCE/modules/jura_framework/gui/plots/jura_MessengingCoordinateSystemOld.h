@@ -1,7 +1,9 @@
 #ifndef jura_MessengingCoordinateSystemOld_h
 #define jura_MessengingCoordinateSystemOld_h
 
+#if defined _MSC_VER
 #pragma warning(disable : 4250) // disable dominance warning in MSVC
+#endif
 
 
 

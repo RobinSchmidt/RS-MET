@@ -42,9 +42,9 @@ AudioSampleBuffer* AudioFileManager::createAudioSampleBufferFromFile(const File&
 
   // check whether the file is a flac-encoded spectrum (.spec), these have to
   // treated a bit differently:
-  bool fileContainsSpectrum = false;
-  if( theAudioFile.hasFileExtension(String("spec")) )  // maybe get rid of this..
-    fileContainsSpectrum = true;
+  //bool fileContainsSpectrum = false;
+  //if( theAudioFile.hasFileExtension(String("spec")) )  // maybe get rid of this..
+  //  fileContainsSpectrum = true;
 
 
   FileInputStream* inputStream = new FileInputStream(theAudioFile);

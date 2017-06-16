@@ -1,8 +1,8 @@
 //#include "rojue_RTreeView.h"
 //using namespace rojue;
 
-RTreeViewNode::RTreeViewNode(const juce::String& _nodeText, int _identifier, 
-  const juce::String& _description, bool _isEnabled, bool _isTicked, bool _isOpen, 
+RTreeViewNode::RTreeViewNode(const juce::String& _nodeText, int _identifier,
+  const juce::String& _description, bool _isEnabled, bool _isTicked, bool _isOpen,
   RTreeViewNode *_parentNode)
 {
   this->identifier  = _identifier;
@@ -25,7 +25,7 @@ RTreeViewNode::~RTreeViewNode()
 void RTreeViewNode::setAllNodesUnticked()
 {
   isTicked = false;
-  for(int i=0; i<childNodes.size(); i++)
+  for(int i = 0; i < size(childNodes); i++)
     childNodes[i]->setAllNodesUnticked();
 }
 
@@ -51,7 +51,7 @@ void RTreeViewNode::addChildNode(RTreeViewNode *nodeToAdd)
 
 void RTreeViewNode::deleteChildNodesRecursively()
 {
-  for(int i=0; i<childNodes.size(); i++)
+  for(int i = 0; i < size(childNodes); i++)
   {
     childNodes[i]->deleteChildNodesRecursively();
     delete childNodes[i];
@@ -64,14 +64,14 @@ int RTreeViewNode::getNumLeafNodes() const
   if(this->isLeafNode())
     return 1;
   int leafs = 0;
-  for(int i = 0; i < (int)childNodes.size(); i++)
+  for(int i = 0; i < size(childNodes); i++)
     leafs += childNodes[i]->getNumLeafNodes();
   return leafs;
 }
 
 bool RTreeViewNode::hasAnyChildNodeChildNodes() const
 {
-  for(int i=0; i<childNodes.size(); i++)
+  for(int i = 0; i < size(childNodes); i++)
   {
     if( childNodes[i]->hasChildNodes() )
       return true;
@@ -88,7 +88,7 @@ int RTreeViewNode::getLevel() const
 
 int RTreeViewNode::findIndexForIdentifier(int identifierToFind) const
 {
-  for(int i=0; i<childNodes.size(); i++)
+  for(int i=0; i < size(childNodes); i++)
   {
     if( identifierToFind == childNodes[i]->identifier )
       return i;
@@ -105,7 +105,7 @@ RTreeViewNode* RTreeViewNode::findNodeByData(void *dataPointerToFind)
   else
   {
     RTreeViewNode *result;
-    for(int i=0; i<childNodes.size(); i++)   
+    for(int i = 0; i < size(childNodes); i++)
     {
       result = childNodes[i]->findNodeByData(dataPointerToFind);
       if( result != NULL )
@@ -124,7 +124,7 @@ RTreeViewNode* RTreeViewNode::findNodeByIndentifier(int identifierToFind)
   else
   {
     RTreeViewNode *result;
-    for(int i=0; i<childNodes.size(); i++)   
+    for(int i = 0; i < size(childNodes); i++)
     {
       result = childNodes[i]->findNodeByIndentifier(identifierToFind);
       if( result != NULL )
@@ -145,7 +145,7 @@ RTreeViewNode* RTreeViewNode::findNodeByText(const juce::String& textToFind)
   else
   {
     RTreeViewNode *result;
-    for(int i=0; i<childNodes.size(); i++)   
+    for(int i = 0; i < size(childNodes); i++)
     {
       result = childNodes[i]->findNodeByText(textToFind);
       if( result != NULL )
@@ -157,9 +157,9 @@ RTreeViewNode* RTreeViewNode::findNodeByText(const juce::String& textToFind)
 
 RTreeViewNode* RTreeViewNode::getCopy()
 {
-  RTreeViewNode *copiedNode = new RTreeViewNode(nodeText, identifier, description, isEnabled, 
+  RTreeViewNode *copiedNode = new RTreeViewNode(nodeText, identifier, description, isEnabled,
     isTicked, isOpen, parentNode);
-  for(int i=0; i<childNodes.size(); i++)   
+  for(int i = 0; i < size(childNodes); i++)
   {
     RTreeViewNode *copiedChild = childNodes[i]->getCopy();
     copiedNode->addChildNode(copiedChild);
@@ -169,7 +169,7 @@ RTreeViewNode* RTreeViewNode::getCopy()
 
 //=================================================================================================
 // class RTreeView:
-   
+
 RTreeView::RTreeView()
 {
   rootNode                = NULL;
@@ -233,9 +233,9 @@ int RTreeView::getRequiredWidth(bool ignoreOpenness) const
   {
     result -= (textMargin + plusMinusSize);
     if( !rootNode->hasAnyChildNodeChildNodes() )
-      result -= (textMargin + plusMinusSize + 2);  
-      // the +2 is still somewhat arbitrary (it comes from the fact that our text-margin here is 2 
-      // pixels less than inside a combobox) 
+      result -= (textMargin + plusMinusSize + 2);
+      // the +2 is still somewhat arbitrary (it comes from the fact that our text-margin here is 2
+      // pixels less than inside a combobox)
       // \todo: clean this up
   }
   return result;
@@ -261,8 +261,8 @@ int RTreeView::getRootNodeX() const
 
   if( drawRootNode == false && !rootNode->hasAnyChildNodeChildNodes() )
     result -= (plusMinusSize + textMargin + 2);
-    // the +2 is still somewhat arbitrary (it comes from the fact that our text-margin here is 2 
-    // pixels less than inside a combobox) 
+    // the +2 is still somewhat arbitrary (it comes from the fact that our text-margin here is 2
+    // pixels less than inside a combobox)
     // \todo: clean this up
 
   return result;
@@ -276,11 +276,11 @@ int RTreeView::getRootNodeY() const
 int RTreeView::getNodeWidth(const RTreeViewNode *node, bool ignoreOpenness) const
 {
   int textWidth = font->getTextPixelWidth(node->nodeText, font->getDefaultKerning());
-  int childWidth = 0;  
+  int childWidth = 0;
   int maxChildWidth = 0;
   if( node->hasChildNodes() && (node->isOpen || ignoreOpenness) )
   {
-    for(int i=0; i<node->childNodes.size(); i++)
+    for(int i = 0; i < size(node->childNodes); i++)
     {
       childWidth = getNodeWidth(node->childNodes[i], ignoreOpenness);
       if( childWidth > maxChildWidth )
@@ -300,15 +300,15 @@ int RTreeView::getNodeHeight(const RTreeViewNode *node, bool ignoreOpenness) con
   int result = getNodeHeight();
   if( node->isOpen || ignoreOpenness )
   {
-    for(int i=0; i<node->childNodes.size(); i++)
+    for(int i = 0; i < size(node->childNodes); i++)
       result += getNodeHeight(node->childNodes[i], ignoreOpenness);
   }
   return result;
 }
-   
+
 bool RTreeView::isPointClickable(int x, int y) const
 {
-  if( x < outlineThickness || y < outlineThickness || 
+  if( x < outlineThickness || y < outlineThickness ||
     x > getWidth()-outlineThickness || y > getHeight()-outlineThickness )
     return false;
 
@@ -385,7 +385,7 @@ void RTreeView::mouseDown(const MouseEvent &e)
 }
 
 void RTreeView::mouseMove(const MouseEvent &e)
-{ 
+{
   repaint();
 }
 
@@ -412,17 +412,17 @@ void RTreeView::paint(Graphics &g)
   int x = getRootNodeX();
   int y = getRootNodeY();
   if( drawRootNode == true )
-    y = drawNode(g, x - plusMinusSize, y, rootNode); 
+    y = drawNode(g, x - plusMinusSize, y, rootNode);
   else
   {
     for(int i=0; i<rootNode->getNumChildNodes(); i++)
-      y = drawNode(g, x - plusMinusSize, y, rootNode->childNodes[i]); 
+      y = drawNode(g, x - plusMinusSize, y, rootNode->childNodes[i]);
   }
-  
+
   // hide area that leaks through the scrollbar bottom-right corner:
   if( upDownScrollBar->isVisible() && leftRightScrollBar->isVisible() )
   {
-    Rectangle<int> r(leftRightScrollBar->getRight()-outlineThickness, 
+    Rectangle<int> r(leftRightScrollBar->getRight()-outlineThickness,
       upDownScrollBar->getBottom()-outlineThickness, scrollBarThickness, scrollBarThickness);
     g.setColour(getBackgroundColour());
     g.fillRect(r);
@@ -467,8 +467,8 @@ void RTreeView::dismissIfModal()
 
 void RTreeView::updateScrollBarBoundsAndVisibility()
 {
-  // the logic to determine the available width/height and necessity for scrollbars are 
-  // interrelated in a somewhat messy way - maybe someday we should factor that stuff out into a 
+  // the logic to determine the available width/height and necessity for scrollbars are
+  // interrelated in a somewhat messy way - maybe someday we should factor that stuff out into a
   // class Scrollable or a function getAvailableWidthAndHeight(int&, int&) or something:
   int availableHeight = getHeight();
   int requiredHeight  = getRequiredHeight(false);
@@ -506,7 +506,7 @@ void RTreeView::updateScrollBarBoundsAndVisibility()
   if( upDownBarNeeded )
   {
     upDownScrollBar->setVisible(true);
-    upDownScrollBar->setBounds(getWidth()-scrollBarThickness, 0, scrollBarThickness, 
+    upDownScrollBar->setBounds(getWidth()-scrollBarThickness, 0, scrollBarThickness,
       availableHeight);
     upDownScrollBar->setRangeLimits(0.0, requiredHeight);
     upDownScrollBar->setCurrentRange(-yOffset, availableHeight);
@@ -520,7 +520,7 @@ void RTreeView::updateScrollBarBoundsAndVisibility()
   if( leftRightBarNeeded )
   {
     leftRightScrollBar->setVisible(true);
-    leftRightScrollBar->setBounds(0, getHeight()-scrollBarThickness, availableWidth, 
+    leftRightScrollBar->setBounds(0, getHeight()-scrollBarThickness, availableWidth,
       scrollBarThickness);
     leftRightScrollBar->setRangeLimits(0.0, requiredWidth);
     leftRightScrollBar->setCurrentRange(-xOffset, availableWidth);
@@ -533,9 +533,9 @@ void RTreeView::updateScrollBarBoundsAndVisibility()
 
   if( upDownBarNeeded && leftRightBarNeeded )
   {
-    upDownScrollBar->setBounds(getWidth()-scrollBarThickness, 0, scrollBarThickness, 
+    upDownScrollBar->setBounds(getWidth()-scrollBarThickness, 0, scrollBarThickness,
       availableHeight+outlineThickness);
-    leftRightScrollBar->setBounds(0, getHeight()-scrollBarThickness, 
+    leftRightScrollBar->setBounds(0, getHeight()-scrollBarThickness,
       availableWidth+outlineThickness, scrollBarThickness);
   }
 }
@@ -551,8 +551,8 @@ int RTreeView::drawNode(Graphics &g, int x, int y, const RTreeViewNode *nodeToDr
 
   // semi-highlight background for nodes where the mouse is over:
   Point<int> mousePosition = getMouseXYRelative();
-  if( contains(mousePosition) 
-    && mousePosition.getY() >= y-lineSpacing/2 
+  if( contains(mousePosition)
+    && mousePosition.getY() >= y-lineSpacing/2
     && mousePosition.getY() <  y+getNodeHeight()-lineSpacing/2
     && nodeToDraw->isEnabled )
   {
@@ -584,12 +584,12 @@ int RTreeView::drawNode(Graphics &g, int x, int y, const RTreeViewNode *nodeToDr
   Colour textColour = getTextColour();
   if( !nodeToDraw->isEnabled )
     textColour = textColour.withMultipliedAlpha(0.625f);
-  drawBitmapFontText(g, x, y, nodeToDraw->nodeText, font, textColour, 
+  drawBitmapFontText(g, x, y, nodeToDraw->nodeText, font, textColour,
     font->getDefaultKerning(), Justification::topLeft);
 
   // draw child nodes recursively:
   if( nodeToDraw->hasChildNodes() && nodeToDraw->isOpen )
-  {  
+  {
     y += getNodeHeight();
     for(int i=0; i<nodeToDraw->getNumChildNodes(); i++)
       y = drawNode(g, x, y, nodeToDraw->childNodes[i]);
@@ -621,14 +621,14 @@ RTreeViewNode* RTreeView::getNodeAtY(int y, int &yStart, RTreeViewNode* nodeToSt
     return nodeToStartWith;
   else if( nodeToStartWith->hasChildNodes() && nodeToStartWith->isOpen )
   {
-    for(int i = 0; i<nodeToStartWith->childNodes.size(); i++)
+    for(int i = 0; i < size(nodeToStartWith->childNodes); i++)
     {
       yStart += getNodeHeight(); // yStart is a reference, so it gets incremented in the recursion, too
       RTreeViewNode* currentNode = getNodeAtY(y, yStart, nodeToStartWith->childNodes[i]);
       if( currentNode != NULL )
         return currentNode;
     }
-    return NULL; 
+    return NULL;
   }
   else
     return NULL;
@@ -649,9 +649,9 @@ int RTreeView::getNodeClickPosition(RTreeViewNode *node, int pixelPositionX)
     return ON_TEXT;
 }
 
-void RTreeView::nodeClicked(RTreeViewNode *nodeThatWasClicked, const MouseEvent &mouseEvent, 
+void RTreeView::nodeClicked(RTreeViewNode *nodeThatWasClicked, const MouseEvent &mouseEvent,
   int clickPosition)
-{    
+{
   sendNodeClickNotification(nodeThatWasClicked, mouseEvent, clickPosition);
   if( openOrCloseNodesOnClick == true )
   {
@@ -662,7 +662,7 @@ void RTreeView::nodeClicked(RTreeViewNode *nodeThatWasClicked, const MouseEvent 
   }
 }
 
-void RTreeView::sendNodeClickNotification(RTreeViewNode *nodeThatWasClicked, 
+void RTreeView::sendNodeClickNotification(RTreeViewNode *nodeThatWasClicked,
   const MouseEvent &mouseEvent, int clickPosition)
 {
   for(int i=0; i<treeViewObservers.size(); i++)
@@ -706,7 +706,7 @@ void RTreeLeafNodeSelector::selectNodeByIndex(int indexToSelect, bool sendNotifi
     sendNodeChangeNotification(rootNode->childNodes[indexToSelect]);
 }
 
-void RTreeLeafNodeSelector::selectNodeByIdentifier(int nodeIdentifierToSelect, 
+void RTreeLeafNodeSelector::selectNodeByIdentifier(int nodeIdentifierToSelect,
   bool sendNotification)
 {
   if( rootNode == NULL )
@@ -721,7 +721,7 @@ void RTreeLeafNodeSelector::selectNodeByIdentifier(int nodeIdentifierToSelect,
     sendNodeChangeNotification(selectedNode);
 }
 
-void RTreeLeafNodeSelector::selectNodeByText(const juce::String& textToSelect, 
+void RTreeLeafNodeSelector::selectNodeByText(const juce::String& textToSelect,
   bool sendNotification)
 {
   if( rootNode == NULL )
@@ -736,9 +736,9 @@ void RTreeLeafNodeSelector::selectNodeByText(const juce::String& textToSelect,
     sendNodeChangeNotification(selectedNode);
 }
 
-void RTreeLeafNodeSelector::nodeClicked(RTreeViewNode *nodeThatWasClicked, 
+void RTreeLeafNodeSelector::nodeClicked(RTreeViewNode *nodeThatWasClicked,
   const MouseEvent &mouseEvent, int clickPosition)
-{  
+{
   if( rootNode == NULL )
     return;
 

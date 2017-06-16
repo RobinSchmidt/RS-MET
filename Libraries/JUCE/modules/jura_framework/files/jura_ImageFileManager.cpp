@@ -2,7 +2,7 @@
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-ImageFileManager::ImageFileManager() 
+ImageFileManager::ImageFileManager()
 {
   imageIsUnsaved               = false;
   currentImageFileName         = String::empty;
@@ -48,9 +48,8 @@ void ImageFileManager::saveImageToFile(const File& fileToSaveTo, const Image* im
   // create the file output stream:
   FileOutputStream fileStream(fileToSaveTo);
 
-  bool success = false;
-  success = pngFormat.writeImageToStream(*imageToSave, fileStream);
-
+  //bool success = false;
+  //bool success = pngFormat.writeImageToStream(*imageToSave, fileStream);
   imageIsUnsaved = false;
 }
 
@@ -66,18 +65,18 @@ File fileToLoad = chooser.getResult();
 loadImageFromFile(fileToLoad);
 
 // remember where (in what directory) we are:
-currentImageDirectory = fileToLoad.getParentDirectory().getFullPathName(); 
+currentImageDirectory = fileToLoad.getParentDirectory().getFullPathName();
 
 // update the image-field on the GUI
 currentImageFileName         = fileToLoad.getFileNameWithoutExtension();
 currentImageFileNameWithStar = currentImageFileName + String(T("*"));
 
-// update the array with the images which are in the current 
+// update the array with the images which are in the current
 // image-directory (which is needed for image increment/decrement):
 imagesInCurrentImageDirectory.clear();
-File(currentImageDirectory).findChildFiles(imagesInCurrentImageDirectory, 
-File::findFiles, 
-false, 
+File(currentImageDirectory).findChildFiles(imagesInCurrentImageDirectory,
+File::findFiles,
+false,
 JUCE_T("*.png"));
 numImagesInCurrentImageDirectory = imagesInCurrentImageDirectory.size();
 imagesInCurrentImageDirectory.sort(fileComparator);
@@ -86,7 +85,7 @@ imagesInCurrentImageDirectory.sort(fileComparator);
 currentImageIndex = 0;
 for(int i=0; i<numImagesInCurrentImageDirectory; i++)
 {
-if(imagesInCurrentImageDirectory[i]->getFileNameWithoutExtension() 
+if(imagesInCurrentImageDirectory[i]->getFileNameWithoutExtension()
 == currentImageFileName)
 {
 currentImageIndex = i;
@@ -119,13 +118,13 @@ void ImageFileManager::openImageSavingDialog(const Image* imageToSave)
     currentImageFileName         = fileToSaveTo.getFileNameWithoutExtension();
     currentImageFileNameWithStar = currentImageFileName + String("*");
 
-    // update the array with the images which are in the current 
+    // update the array with the images which are in the current
     // image-directory (which is needed for image increment/decrement):
     /*
     imagesInCurrentImageDirectory.clear();
-    File(currentImageDirectory).findChildFiles(imagesInCurrentImageDirectory, 
-      File::findFiles, 
-      false, 
+    File(currentImageDirectory).findChildFiles(imagesInCurrentImageDirectory,
+      File::findFiles,
+      false,
       JUCE_T("*.png"));
     numImagesInCurrentImageDirectory = imagesInCurrentImageDirectory.size();
     imagesInCurrentImageDirectory.sort(fileComparator);
