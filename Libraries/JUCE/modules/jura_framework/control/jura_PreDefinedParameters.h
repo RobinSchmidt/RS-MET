@@ -2,7 +2,7 @@
 #define jura_PreDefinedParameters_h
 
 /** This file contains a couple of frequently used parameters such that one doesn't have to
-intialize all the values, default values etc. everytime one needs a parameter of the kind. 
+intialize all the values, default values etc. everytime one needs a parameter of the kind.
 
 todo: get rid of these - instead make initialization functions for various kinds of parameters
 such that they work with all subclasses of Parameter
@@ -42,16 +42,17 @@ public:
 class ParameterTwoPoleFilterMode : public AutomatableParameter
 {
 public:
-  ParameterTwoPoleFilterMode(CriticalSection *criticalSectionToUse, 
+  ParameterTwoPoleFilterMode(CriticalSection *criticalSectionToUse,
     const juce::String& newName  = juce::String("Mode"),
     double newLowerLimit         = 0.0,
     double newUpperLimit         = 9.0,
     double newInterval           = 1.0,
     double newDefaultValue       = 0.0,
     int newScaling               = STRING,
-    int newDefaultMidiController = -1,
-    bool newSaveAndRecall        = true)
-    : AutomatableParameter(criticalSectionToUse, newName, newLowerLimit, newUpperLimit, newInterval, newDefaultValue, newScaling)
+    int /*newDefaultMidiController*/ = -1,
+    bool /*newSaveAndRecall*/        = true)
+    : AutomatableParameter(criticalSectionToUse, newName, newLowerLimit, newUpperLimit,
+    newInterval, newDefaultValue, newScaling)
   {
     addStringValue("Bypass");
     addStringValue("Peak/Dip");
@@ -76,16 +77,17 @@ public:
 class ParameterFourPoleFilterMode : public AutomatableParameter
 {
 public:
-  ParameterFourPoleFilterMode(CriticalSection *criticalSectionToUse, 
+  ParameterFourPoleFilterMode(CriticalSection *criticalSectionToUse,
     const juce::String& newName  = juce::String("Mode"),
     double newLowerLimit         = 0.0,
     double newUpperLimit         = 9.0,
     double newInterval           = 1.0,
     double newDefaultValue       = 0.0,
     int newScaling               = STRING,
-    int newDefaultMidiController = -1,
-    bool newSaveAndRecall        = true)
-    : AutomatableParameter(criticalSectionToUse, newName, newLowerLimit, newUpperLimit, newInterval, newDefaultValue, newScaling)
+    int /*newDefaultMidiController*/ = -1,
+    bool /*newSaveAndRecall*/        = true)
+    : AutomatableParameter(criticalSectionToUse, newName, newLowerLimit, newUpperLimit,
+    newInterval, newDefaultValue, newScaling)
   {
     addStringValue("Bypass");
     addStringValue("Lowpass 6 dB/oct");
@@ -130,4 +132,4 @@ public:
 };
 
 
-#endif  
+#endif

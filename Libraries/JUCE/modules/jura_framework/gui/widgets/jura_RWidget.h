@@ -1,7 +1,7 @@
 #ifndef jura_RWidget_h
 #define jura_RWidget_h
 
-/** This class serves as base class for various GUI widgets. 
+/** This class serves as base class for various GUI widgets.
 
 \todo: maybe make a class RWidgetObserver and get rid of all the custom observer/listener classes
 */
@@ -35,26 +35,26 @@ public:
   virtual void setColourSchemeFromXml(const XmlElement& xml);
 
   /** Adds a child-widget to this one. */
-  virtual void addChildWidget(RWidget *newChild, bool addAsChildComponent = true, 
+  virtual void addChildWidget(RWidget *newChild, bool addAsChildComponent = true,
     bool makeVisible = true);
 
-  /** Removes the widget from our childWidgets array and optinally also removes it as 
+  /** Removes the widget from our childWidgets array and optinally also removes it as
   child-component and deletes it the object. */
-  virtual void removeChildWidget(RWidget* widgetToRemove, bool removeAsChildComponent, 
+  virtual void removeChildWidget(RWidget* widgetToRemove, bool removeAsChildComponent,
     bool deleteObject);
 
-  /** Returns a pointer the ColourSchemeComponent that contains this RLabel (if any). This works 
-  also recursively in the sense that when the parent is not a ColourSchemeComponent, it will 
-  investigate the grand-parent and possibly return it (if it is a ColourSchemeComponent) ...and so 
-  on. If it reaches the root of the component embedding hierarchy and still has not found a 
+  /** Returns a pointer the ColourSchemeComponent that contains this RLabel (if any). This works
+  also recursively in the sense that when the parent is not a ColourSchemeComponent, it will
+  investigate the grand-parent and possibly return it (if it is a ColourSchemeComponent) ...and so
+  on. If it reaches the root of the component embedding hierarchy and still has not found a
   ColourSchemeComponent, it will return NULL. */
   virtual ColourSchemeComponent* getOutlyingColourSchemeComponent();
 
-  /** Tell the widget that it should display itself without an outline or background - that is, it 
+  /** Tell the widget that it should display itself without an outline or background - that is, it
   just draws its text on whatever background is already there. */
   virtual void setNoBackgroundAndOutline(bool shouldBeWithout);
 
-  /** Overrides Component::enablementChanged() in order to update our alphaMultiplier and trigger a 
+  /** Overrides Component::enablementChanged() in order to update our alphaMultiplier and trigger a
   repaint. */
   virtual void enablementChanged();
 
@@ -74,7 +74,7 @@ public:
   virtual WidgetColourScheme getColourScheme() const { return colourScheme; }
 
   /** Returns the state of the widget as a string. Subclasses may override this in order to create
-  a string from theri internal variables. They should the also override setValueFromString to restore 
+  a string from theri internal variables. They should the also override setValueFromString to restore
   their internal variables from a string by parsing it. */
   //virtual juce::String getStateAsString() const = 0;
   virtual juce::String getStateAsString() const { return juce::String::empty; }
@@ -88,29 +88,30 @@ public:
   /** Overrides the virtual parameterRangeChanged() method inherited from ParameterObserver. */
   virtual void parameterRangeChanged(Parameter* parameterThatHasChanged);
 
-  /** Overrides the purely virtual method of the ParameterObserver base class in order to 
+  /** Overrides the purely virtual method of the ParameterObserver base class in order to
   invalidate our pointer-member
   'assignedParameter'. */
   virtual void parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted);
 
-  /** Overrides the changeListenerCallback in order to receive messages which this object sends to 
+  /** Overrides the changeListenerCallback in order to receive messages which this object sends to
   itself. */
   //virtual void changeListenerCallback (void *objectThatHasChanged);
 
   /** Overrides handleAsyncUpdate to call updateWidgetFromAssignedParameter from there. */
   virtual void handleAsyncUpdate();
 
-  /** This method is called when the assigned Parameter has been changed - override it in the 
+  /** This method is called when the assigned Parameter has been changed - override it in the
   subclasses to do the actual GUI update. */
   virtual void updateWidgetFromAssignedParameter(bool sendChangeMessage = false);
 
-  /** Sets the state of the widget from the passed string. Subclasses may override this in order to 
+  /** Sets the state of the widget from the passed string. Subclasses may override this in order to
   interpret the string in different ways (in buttons as bool, in sliders as double, etc.). */
   //virtual void setStateFromString(const juce::String &valueString, bool sendChangeMessage = true) = 0;
-  virtual void setStateFromString(const juce::String &valueString, bool sendChangeMessage = true) {}
+  virtual void setStateFromString(const juce::String& /*valueString*/,
+  bool sendChangeMessage = true) {}
     // maybe make purely virtual
 
-  /** Paints the widget. The baseclass implementations just fills a rectangle with the background 
+  /** Paints the widget. The baseclass implementations just fills a rectangle with the background
   color and draw an outline with the outline color. */
   virtual void paint(Graphics& g);
 
@@ -143,11 +144,11 @@ private:
 
   // colours for various aspects of the widget:
   WidgetColourScheme colourScheme;
-    // \TODO (IMPORTANT): use a pointer such that a number of widget can share the colour-scheme 
-    // - if NULL we may use a global default colorscheme object 
+    // \TODO (IMPORTANT): use a pointer such that a number of widget can share the colour-scheme
+    // - if NULL we may use a global default colorscheme object
 
   friend class AutomatableWidget;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RWidget)
 };
 
-#endif 
+#endif
