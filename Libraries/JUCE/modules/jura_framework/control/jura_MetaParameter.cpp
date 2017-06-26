@@ -8,7 +8,12 @@ MetaControlledParameter::MetaControlledParameter(const juce::String& name, doubl
 void MetaControlledParameter::setFromMetaValue(double newMetaValue, bool sendNotification, 
   bool callCallbacks)
 {
-  setProportionalValue(newMetaValue, sendNotification, callCallbacks);
+  if(mapper == nullptr)
+    setProportionalValue(newMetaValue, sendNotification, callCallbacks);
+  else
+    setProportionalValue(mapper->map(newMetaValue), sendNotification, callCallbacks);
+
+  //setProportionalValue(newMetaValue, sendNotification, callCallbacks);
 
   // Later, we can introduce a nonlinear mapping function of the range 0..1 to itself here before
   // calling setProportionalValue. Maybe we can use an object some kind of ParameterMapper class
@@ -24,6 +29,18 @@ void MetaControlledParameter::setFromMetaValue(double newMetaValue, bool sendNot
 void MetaControlledParameter::setMetaParameterManager(MetaParameterManager *newManager)
 {
   metaParaManager = newManager;
+}
+
+void MetaControlledParameter::setParameterMapper(NormalizedParameterMapper *newMapper)
+{
+  mapper = newMapper;
+
+  // maybe we should call something like 
+  // setFromMetaValue(getMetaValue());
+  // here, so a user could re-configure this object at runtime with a new mapper object and have 
+  // that reconfiguration immediately reflected by the parameter values. getMetaValue would be 
+  // implemented by (somehow) quering the metaParaManager (if not null) or use the proportional 
+  // value of this Parameter (if metaParaManager null) 
 }
 
 void MetaControlledParameter::attachToMetaParameter(int index)

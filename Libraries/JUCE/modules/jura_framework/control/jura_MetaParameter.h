@@ -82,6 +82,30 @@ feedback:
 
 */
 
+
+/** This is an abstract baseclass for classes that are supposed to map an input value (which is 
+normalized to the range 0..1) to an output value in the same range. It may (optionally) be used
+in a MetaControlledParameter to realize arbitrary mappings from the MetaParameter to the target 
+Parameter. To this end, you would have to define a subclass of NormalizedParameterMapper and 
+configure the respective MetaControlledParameter object with an object of your subclass
+(using MetaControlledParameter::setParameterMapper). */
+
+class JUCE_API NormalizedParameterMapper
+{
+public:
+  virtual ~NormalizedParameterMapper(){};
+
+  /** Override this function in your subclass to map a normalized input value (in the range 0..1) 
+  to the corresponding output value (in the same range). You may map different input values to the 
+  same output value, i.e. your mapping function does not need to be injective/invertible, but it 
+  should have the property that any value between 0..1 (ends inclusive) is a valid input and the 
+  output values should be restricted to that same range. */
+  virtual double map(double input) = 0;
+
+};
+
+//=================================================================================================
+
 class MetaParameterManager;
 
 /** A subclass of Parameter that can be controlled via a MetaParameter. To do so, it maintains a
@@ -109,6 +133,14 @@ public:
   valid for the whole lifetime of this object. */
   virtual void setMetaParameterManager(MetaParameterManager *newManager);
 
+  /** Sets the mapper object that maps between the MetaParameter value at the input side and the
+  proportional value of the target parameter on the output side. Such a mapper is optional, if you 
+  pass none, an identity mapping will be used by default. The mapper object should be valid for the
+  entire lifetime of this MetaControlledParameter. To reset it, you can use this function with a 
+  nullptr argument. */
+  virtual void setParameterMapper(NormalizedParameterMapper *newMapper);
+    // feature is not yet tested
+
   /** Attaches this parameter to the MetaParameter with the given index (in the
   MetaParameterManager). */
   virtual void attachToMetaParameter(int metaParameterIndex);
@@ -127,6 +159,7 @@ protected:
 
   int metaIndex = -1;
   MetaParameterManager* metaParaManager = nullptr;
+  NormalizedParameterMapper* mapper = nullptr;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MetaControlledParameter)
 };
