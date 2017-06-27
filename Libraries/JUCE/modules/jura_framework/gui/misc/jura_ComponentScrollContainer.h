@@ -23,6 +23,14 @@ public:
   /** Denstructor. */
   virtual ~ComponentScrollContainer();
 
+
+  //-----------------------------------------------------------------------------------------------
+  // setup:
+
+  /** Sets the size of the to-be-scrolled content component (and updates the scrollbars). */
+  virtual void setScrolleeSize(int width, int height);
+
+
   //-----------------------------------------------------------------------------------------------
   // inquiry:
 

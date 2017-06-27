@@ -37,6 +37,17 @@ ComponentScrollContainer::~ComponentScrollContainer()
   deleteAllChildren();
 }
 
+// setup:
+
+void ComponentScrollContainer::setScrolleeSize(int width, int height)
+{
+  if(contentComponent != nullptr)
+  {
+    contentComponent->setSize(width, height);
+    updateScrollBarBoundsAndVisibility();
+  }
+}
+
 //-------------------------------------------------------------------------------------------------
 // callbacks:
 
