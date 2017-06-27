@@ -14,8 +14,9 @@ public:
   // construction/destruction:
 
   /** Constructor. The passed component will be considered as a child of "this" component and will
-  be deleted with "this". */
-  ComponentScrollContainer(Component *contentComponentToScroll);
+  be deleted with "this" if the optional 2nd boolean parameter is true. */
+  ComponentScrollContainer(Component *contentComponentToScroll, 
+    bool deleteScrolleeInDestructor = true);
 
   // override the constructor to take a ColourSchemeComponent....
 
@@ -44,6 +45,8 @@ protected:
   RWidget    *bottomRightCoverage;  // when  both scrollbars are visible, we typically want to cover the bottom right corner
   int scrollBarThickness;
   int xOffset, yOffset;  // offset for the content component with respect to the (0,0) coordinate of "this" component
+  bool deleteChildInDestructor = true;
+
   //int xView, yView;
 
   juce_UseDebuggingNewOperator;

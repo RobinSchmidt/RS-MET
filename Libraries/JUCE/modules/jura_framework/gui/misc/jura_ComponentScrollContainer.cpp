@@ -1,6 +1,8 @@
 
-ComponentScrollContainer::ComponentScrollContainer(Component *contentComponentToScroll)
+ComponentScrollContainer::ComponentScrollContainer(Component *contentComponentToScroll, 
+  bool deleteScrolleeInDestructor)
 {
+  deleteChildInDestructor = deleteScrolleeInDestructor;
   contentComponent = contentComponentToScroll;
   contentComponent->addComponentListener(this);
   addAndMakeVisible(contentComponent);
@@ -30,7 +32,10 @@ ComponentScrollContainer::ComponentScrollContainer(Component *contentComponentTo
 ComponentScrollContainer::~ComponentScrollContainer()
 {
   contentComponent->removeComponentListener(this);
-  deleteAllChildren();
+  if(deleteChildInDestructor)
+    deleteAllChildren();
+  else
+    removeAllChildren();
 }
 
 //-------------------------------------------------------------------------------------------------
