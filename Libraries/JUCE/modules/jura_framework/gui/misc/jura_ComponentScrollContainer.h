@@ -45,7 +45,7 @@ protected:
   RWidget    *bottomRightCoverage;  // when  both scrollbars are visible, we typically want to cover the bottom right corner
   int scrollBarThickness;
   int xOffset, yOffset;  // offset for the content component with respect to the (0,0) coordinate of "this" component
-  bool deleteChildInDestructor = true;
+  bool autoDeleteScrollee = true;
 
   //int xView, yView;
 
