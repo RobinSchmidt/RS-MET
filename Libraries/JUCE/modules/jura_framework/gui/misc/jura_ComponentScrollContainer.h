@@ -24,7 +24,20 @@ public:
   virtual ~ComponentScrollContainer();
 
   //-----------------------------------------------------------------------------------------------
+  // inquiry:
+
+  /** Returns the thickness of the scrollbars in pixels. */
+  virtual int getScrollBarThickness() { return scrollBarThickness; }
+
+  /** Returns true, when the horizontal scrollbar is currently visible. */
+  virtual bool isHorizontalScrollBarVisible() { return leftRightScrollBar->isVisible(); }
+
+  /** Returns true, when the vertical scrollbar is currently visible. */
+  virtual bool isVerticalScrollBarVisible() { return upDownScrollBar->isVisible(); }
+
+  //-----------------------------------------------------------------------------------------------
   // callbacks:
+
   virtual void scrollBarMoved(RScrollBar* scrollBarThatHasMoved, const double newRangeStart);
   virtual void paint(Graphics &g);
   virtual void paintOverChildren(Graphics &g);
@@ -40,7 +53,7 @@ public:
 
 protected:
 
-  Component  *contentComponent;
+  Component  *contentComponent; // rename to scrollee
   RScrollBar *leftRightScrollBar, *upDownScrollBar;
   RWidget    *bottomRightCoverage;  // when  both scrollbars are visible, we typically want to cover the bottom right corner
   int scrollBarThickness;
