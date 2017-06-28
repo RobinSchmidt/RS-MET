@@ -1,6 +1,7 @@
 #include "rosic_BasicsTests.h"
 using namespace rotes;
 
+#include "../Shared/Plotting/rosic_Plotter.h"
 //#include "rosic/rosic.h"
 using namespace rosic;
 

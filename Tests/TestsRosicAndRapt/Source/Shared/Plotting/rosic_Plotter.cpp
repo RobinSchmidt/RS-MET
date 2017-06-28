@@ -1,7 +1,5 @@
-//#include "rosic_Plotter.h"
-//#include "../filters/rosic_FilterAnalyzer.h"
-//using namespace rosic;
-
+#include "rosic_Plotter.h"
+using namespace rosic;
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 

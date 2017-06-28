@@ -1,18 +1,20 @@
-//#include "rosic_WhiteToPinkFilter.h"
-//using namespace rosic;
+#include "ParticleBouncer.h"
 
-WhiteToPinkFilter::WhiteToPinkFilter()
+
+ParticleBouncer::ParticleBouncer()
 {
  reset();
 }
 
-WhiteToPinkFilter::~WhiteToPinkFilter()
+
+ParticleBouncer::~ParticleBouncer()
 {
 
 }
 
-void WhiteToPinkFilter::reset()
+
+void ParticleBouncer::reset()
 {
- for(int i=0; i<7; i++)
-  b[i] = 0.0;
+
+
 }

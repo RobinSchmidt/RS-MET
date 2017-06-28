@@ -1,7 +1,8 @@
 #include "rosic_ModulatorsTests.h"
 using namespace rotes;
 
-#include "rosic/rosic.h"
+//#include "rosic/rosic.h"
+#include "../Shared/Plotting/rosic_Plotter.h"
 using namespace rosic;
 
 void rotes::testConsecutiveExponentialDecay()
