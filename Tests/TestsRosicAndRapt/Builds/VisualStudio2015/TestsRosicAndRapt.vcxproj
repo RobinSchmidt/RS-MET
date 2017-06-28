@@ -128,6 +128,7 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\Experiments\Experiments.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Plotting\GNUPlotter.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Plotting\Plotting.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Plotting\rosic_Plotter.cpp"/>
@@ -1453,6 +1454,7 @@
     <ClCompile Include="..\..\JuceLibraryCode\rosic.cpp"/>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\Experiments\Experiments.h"/>
     <ClInclude Include="..\..\Source\Shared\Plotting\GNUPlotter.h"/>
     <ClInclude Include="..\..\Source\Shared\Plotting\Plotting.h"/>
     <ClInclude Include="..\..\Source\Shared\Plotting\rosic_Plotter.h"/>

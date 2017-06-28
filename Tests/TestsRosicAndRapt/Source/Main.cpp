@@ -3,6 +3,8 @@
 #include "rosic_tests/rosic_CorrectnessTests.h"
 using namespace rotes;
 
+#include "Experiments/Experiments.h"
+
 int main (int argc, char* argv[])
 {
 
@@ -14,7 +16,7 @@ int main (int argc, char* argv[])
   //testRosicFile();
   //testRosicEffects();
   //testRosicGenerators();
-  testRosicFilter();
+  //testRosicFilter();
   //testRosicNumerical();
   //testRosicMath();
   //testRosicNonRealTime();
@@ -24,7 +26,7 @@ int main (int argc, char* argv[])
   // ...
 
   // Experiments:
-  //particleBouncerExperiment();
+  particleBouncerExperiment();
   // ...
 
   // Demos:

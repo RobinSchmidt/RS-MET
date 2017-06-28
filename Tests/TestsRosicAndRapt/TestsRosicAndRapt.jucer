@@ -5,6 +5,10 @@
               includeBinaryInAppConfig="1" jucerVersion="4.2.4" defines="DONT_SET_USING_JUCE_NAMESPACE">
   <MAINGROUP id="faVDnE" name="TestsRosicAndRapt">
     <GROUP id="{1E9A4B2E-B083-724B-094D-49D8FBCEF73F}" name="Source">
+      <GROUP id="{CDBDEF1D-BB8A-7D2D-D038-9B74B068C290}" name="Experiments">
+        <FILE id="XlUMHK" name="Experiments.cpp" compile="1" resource="0" file="Source/Experiments/Experiments.cpp"/>
+        <FILE id="VKq4cA" name="Experiments.h" compile="0" resource="0" file="Source/Experiments/Experiments.h"/>
+      </GROUP>
       <GROUP id="{169783E3-BC83-EFEE-1179-9541750571ED}" name="Shared">
         <GROUP id="{2FD6D867-5BCE-6EA7-AA7A-0B678FC2D479}" name="Plotting">
           <FILE id="xlYcGO" name="GNUPlotter.cpp" compile="1" resource="0" file="Source/Shared/Plotting/GNUPlotter.cpp"/>

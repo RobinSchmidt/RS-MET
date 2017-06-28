@@ -8,6 +8,9 @@
     <Filter Include="TestsRosicAndRapt\Source">
       <UniqueIdentifier>{DE9EB760-698E-4DD8-448C-1D5E2B720FD7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="TestsRosicAndRapt\Source\Experiments">
+      <UniqueIdentifier>{3633CBBB-4131-891C-C1F4-3ED8BC96C23B}</UniqueIdentifier>
+    </Filter>
     <Filter Include="TestsRosicAndRapt\Source\Shared">
       <UniqueIdentifier>{0F45AEA0-E94D-18ED-0EF6-EDFEF2882D6B}</UniqueIdentifier>
     </Filter>
@@ -193,6 +196,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\Experiments\Experiments.cpp">
+      <Filter>TestsRosicAndRapt\Source\Experiments</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Shared\Plotting\GNUPlotter.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>
     </ClCompile>
@@ -1563,6 +1569,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\Experiments\Experiments.h">
+      <Filter>TestsRosicAndRapt\Source\Experiments</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Shared\Plotting\GNUPlotter.h">
       <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>
     </ClInclude>

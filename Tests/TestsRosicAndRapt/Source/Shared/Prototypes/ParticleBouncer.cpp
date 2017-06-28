@@ -15,8 +15,22 @@ ParticleBouncer::~ParticleBouncer()
 
 void ParticleBouncer::reset()
 {
+  xc = x0; 
+  yc = y0;
+}
 
+void ParticleBouncer::getSampleFrame(double &x, double &y)
+{
+  // preliminary - later, we need to check for intersections with the enclosure and compute 
+  // reflections:
 
+  // update current particle position:
+  xc += dx;
+  yc += dy;
+
+  // assign outputs:
+  x = xc;
+  y = yc;
 }
 
 /*
