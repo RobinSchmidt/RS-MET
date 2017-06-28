@@ -8,6 +8,15 @@
     <Filter Include="TestsRosicAndRapt\Source">
       <UniqueIdentifier>{DE9EB760-698E-4DD8-448C-1D5E2B720FD7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="TestsRosicAndRapt\Source\Shared">
+      <UniqueIdentifier>{0F45AEA0-E94D-18ED-0EF6-EDFEF2882D6B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TestsRosicAndRapt\Source\Shared\Plotting">
+      <UniqueIdentifier>{2CDC542A-DB2E-9525-1B3C-3EF43EFE347F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TestsRosicAndRapt\Source\Shared\Prototypes">
+      <UniqueIdentifier>{1F11B7F2-6C77-FAF9-7328-DDEE1DD2B957}</UniqueIdentifier>
+    </Filter>
     <Filter Include="TestsRosicAndRapt\Source\rosic_tests">
       <UniqueIdentifier>{7D734073-1DF1-0543-6CD6-E343158C3EBD}</UniqueIdentifier>
     </Filter>
@@ -184,6 +193,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\Shared\Plotting\GNUPlotter.cpp">
+      <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Plotting\Plotting.cpp">
+      <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Prototypes\ParticleBouncer.cpp">
+      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\rosic_tests\rosic_AnalysisTests.cpp">
       <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
     </ClCompile>
@@ -1024,6 +1042,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_MidiNoteEvent.cpp">
       <Filter>Juce Modules\rosic\infrastructure</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_ModulationRouting.cpp">
+      <Filter>Juce Modules\rosic\infrastructure</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_ModulatorModules.cpp">
       <Filter>Juce Modules\rosic\infrastructure</Filter>
     </ClCompile>
@@ -1531,6 +1552,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\rosic.cpp">
       <Filter>Juce Modules\rosic</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\JuceLibraryCode\BinaryData.cpp">
+      <Filter>Juce Library Code</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\rapt.cpp">
       <Filter>Juce Library Code</Filter>
     </ClCompile>
@@ -1539,6 +1563,15 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\Shared\Plotting\GNUPlotter.h">
+      <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Shared\Plotting\Plotting.h">
+      <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Shared\Prototypes\ParticleBouncer.h">
+      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\rosic_tests\rosic_AnalysisTests.h">
       <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
     </ClInclude>
@@ -1929,9 +1962,6 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\tnt_version.h">
       <Filter>Juce Modules\rosic\_third_party\tnt</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_Analysis.h">
-      <Filter>Juce Modules\rosic\analysis</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_CyclicAutoCorrelator.h">
       <Filter>Juce Modules\rosic\analysis</Filter>
     </ClInclude>
@@ -1980,9 +2010,6 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\basics\GlobalFunctions.h">
       <Filter>Juce Modules\rosic\basics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_Basics.h">
-      <Filter>Juce Modules\rosic\basics</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\basics\rosic_ChannelMatrix2x2.h">
       <Filter>Juce Modules\rosic\basics</Filter>
     </ClInclude>
@@ -2019,9 +2046,6 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\datastructures\rosic_Array.h">
       <Filter>Juce Modules\rosic\datastructures</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\datastructures\rosic_DataStructures.h">
-      <Filter>Juce Modules\rosic\datastructures</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\datastructures\rosic_ExtensionsForSTL.h">
       <Filter>Juce Modules\rosic\datastructures</Filter>
     </ClInclude>
@@ -2035,9 +2059,6 @@
       <Filter>Juce Modules\rosic\delaylines</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\delaylines\rosic_BasicIntegerDelayLine.h">
-      <Filter>Juce Modules\rosic\delaylines</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\delaylines\rosic_DelayLines.h">
       <Filter>Juce Modules\rosic\delaylines</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\delaylines\rosic_DelayLineStereo.h">
@@ -2065,9 +2086,6 @@
       <Filter>Juce Modules\rosic\dynamics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\dynamics\rosic_Compressor.h">
-      <Filter>Juce Modules\rosic\dynamics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\dynamics\rosic_Dynamics.h">
       <Filter>Juce Modules\rosic\dynamics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\dynamics\rosic_DynamicsProcessorBase.h">
@@ -2119,9 +2137,6 @@
       <Filter>Juce Modules\rosic\effects</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_EchoLab.h">
-      <Filter>Juce Modules\rosic\effects</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_Effects.h">
       <Filter>Juce Modules\rosic\effects</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\effects\rosic_FeedbackDelayNetwork.h">
@@ -2283,9 +2298,6 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_FilterCoefficientConverter.h">
       <Filter>Juce Modules\rosic\filters</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_Filters.h">
-      <Filter>Juce Modules\rosic\filters</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_FiniteImpulseResponseDesigner.h">
       <Filter>Juce Modules\rosic\filters</Filter>
     </ClInclude>
@@ -2370,9 +2382,6 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_FourOscSection.h">
       <Filter>Juce Modules\rosic\generators</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_Generators.h">
-      <Filter>Juce Modules\rosic\generators</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\generators\rosic_LorentzSystem.h">
       <Filter>Juce Modules\rosic\generators</Filter>
     </ClInclude>
@@ -2442,13 +2451,13 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_GeneratorModules.h">
       <Filter>Juce Modules\rosic\infrastructure</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_Infrastructure.h">
-      <Filter>Juce Modules\rosic\infrastructure</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_MemoryUser.h">
       <Filter>Juce Modules\rosic\infrastructure</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_MidiNoteEvent.h">
+      <Filter>Juce Modules\rosic\infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_ModulationRouting.h">
       <Filter>Juce Modules\rosic\infrastructure</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\infrastructure\rosic_ModulatorModules.h">
@@ -2467,9 +2476,6 @@
       <Filter>Juce Modules\rosic\infrastructure</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_AciDevil.h">
-      <Filter>Juce Modules\rosic\instruments</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_Instruments.h">
       <Filter>Juce Modules\rosic\instruments</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\instruments\rosic_KeyShot.h">
@@ -2799,9 +2805,6 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_LinearAlgebra.h">
       <Filter>Juce Modules\rosic\math</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_Math.h">
-      <Filter>Juce Modules\rosic\math</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\math\rosic_Matrix.h">
       <Filter>Juce Modules\rosic\math</Filter>
     </ClInclude>
@@ -2865,9 +2868,6 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_Modulator.h">
       <Filter>Juce Modules\rosic\modulators</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_Modulators.h">
-      <Filter>Juce Modules\rosic\modulators</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\modulators\rosic_PitchEnvRc.h">
       <Filter>Juce Modules\rosic\modulators</Filter>
     </ClInclude>
@@ -2883,25 +2883,16 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\neural\rosic_MultiLayerPerceptronTrainer.h">
       <Filter>Juce Modules\rosic\neural</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\neural\rosic_Neural.h">
-      <Filter>Juce Modules\rosic\neural</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\numerical\rosic_FunctionObjects.h">
       <Filter>Juce Modules\rosic\numerical</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\numerical\rosic_GradientBasedMinimizer.h">
       <Filter>Juce Modules\rosic\numerical</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\numerical\rosic_Numerical.h">
-      <Filter>Juce Modules\rosic\numerical</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_DemoVersionNoiseEmitter.h">
       <Filter>Juce Modules\rosic\others</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_ExponentialSmoother.h">
-      <Filter>Juce Modules\rosic\others</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_Others.h">
       <Filter>Juce Modules\rosic\others</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_OverlapAddProcessor.h">
@@ -2964,9 +2955,6 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_NonRealtimeProcesses.h">
       <Filter>Juce Modules\rosic\rendering</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_Rendering.h">
-      <Filter>Juce Modules\rosic\rendering</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\rendering\rosic_StandardWaveformRenderer.h">
       <Filter>Juce Modules\rosic\rendering</Filter>
     </ClInclude>
@@ -3000,9 +2988,6 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\scripting\rosic_ExpressionEvaluatorFunctions.h">
       <Filter>Juce Modules\rosic\scripting</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\scripting\rosic_Scripting.h">
-      <Filter>Juce Modules\rosic\scripting</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\sequencing\rosic_AcidPattern.h">
       <Filter>Juce Modules\rosic\sequencing</Filter>
     </ClInclude>
@@ -3016,9 +3001,6 @@
       <Filter>Juce Modules\rosic\transforms</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\transforms\rosic_SpectralManipulator.h">
-      <Filter>Juce Modules\rosic\transforms</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\transforms\rosic_Transforms.h">
       <Filter>Juce Modules\rosic\transforms</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\transforms\rosic_WaveletTransforms.h">
@@ -3036,11 +3018,17 @@
     <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h">
       <Filter>Juce Library Code</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\JuceLibraryCode\BinaryData.h">
+      <Filter>Juce Library Code</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h">
       <Filter>Juce Library Code</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\Source\Shared\Prototypes\ReadMe.txt">
+      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
+    </None>
     <None Include="..\..\..\..\Libraries\JUCE\modules\rapt\Modulators\Ideas.txt">
       <Filter>Juce Modules\rapt\Modulators</Filter>
     </None>
