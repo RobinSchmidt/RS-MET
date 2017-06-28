@@ -11,6 +11,9 @@
           <FILE id="iJVniX" name="GNUPlotter.h" compile="0" resource="0" file="Source/Shared/Plotting/GNUPlotter.h"/>
           <FILE id="oLiZ6u" name="Plotting.cpp" compile="1" resource="0" file="Source/Shared/Plotting/Plotting.cpp"/>
           <FILE id="MiC0Zk" name="Plotting.h" compile="0" resource="0" file="Source/Shared/Plotting/Plotting.h"/>
+          <FILE id="HQfys9" name="rosic_Plotter.cpp" compile="1" resource="0"
+                file="Source/Shared/Plotting/rosic_Plotter.cpp"/>
+          <FILE id="pVGgqG" name="rosic_Plotter.h" compile="0" resource="0" file="Source/Shared/Plotting/rosic_Plotter.h"/>
         </GROUP>
         <GROUP id="{809E6B65-DC9E-FA2F-B4F0-C29F9B4AED03}" name="Prototypes">
           <FILE id="kZGzyT" name="ParticleBouncer.cpp" compile="1" resource="0"

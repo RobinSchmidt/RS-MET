@@ -130,6 +130,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\Source\Shared\Plotting\GNUPlotter.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Plotting\Plotting.cpp"/>
+    <ClCompile Include="..\..\Source\Shared\Plotting\rosic_Plotter.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Prototypes\ParticleBouncer.cpp"/>
     <ClCompile Include="..\..\Source\rosic_tests\rosic_AnalysisTests.cpp"/>
     <ClCompile Include="..\..\Source\rosic_tests\rosic_BasicsTests.cpp"/>
@@ -1354,9 +1355,6 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_PiecewiseFunction.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_Plotter.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_ProcessorCycleCounter.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -1457,6 +1455,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\Source\Shared\Plotting\GNUPlotter.h"/>
     <ClInclude Include="..\..\Source\Shared\Plotting\Plotting.h"/>
+    <ClInclude Include="..\..\Source\Shared\Plotting\rosic_Plotter.h"/>
     <ClInclude Include="..\..\Source\Shared\Prototypes\ParticleBouncer.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\rosic_AnalysisTests.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\rosic_BasicsTests.h"/>
@@ -1901,7 +1900,6 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_ExponentialSmoother.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_OverlapAddProcessor.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_PiecewiseFunction.h"/>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_Plotter.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_ProcessorCycleCounter.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_ProductIndices.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_RandomNumberGenerator01.h"/>

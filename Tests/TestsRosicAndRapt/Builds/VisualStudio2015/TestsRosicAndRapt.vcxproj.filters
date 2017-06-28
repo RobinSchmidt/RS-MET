@@ -199,6 +199,9 @@
     <ClCompile Include="..\..\Source\Shared\Plotting\Plotting.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Plotting\rosic_Plotter.cpp">
+      <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Shared\Prototypes\ParticleBouncer.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
     </ClCompile>
@@ -1456,9 +1459,6 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_PiecewiseFunction.cpp">
       <Filter>Juce Modules\rosic\others</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_Plotter.cpp">
-      <Filter>Juce Modules\rosic\others</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_ProcessorCycleCounter.cpp">
       <Filter>Juce Modules\rosic\others</Filter>
     </ClCompile>
@@ -1567,6 +1567,9 @@
       <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Shared\Plotting\Plotting.h">
+      <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Shared\Plotting\rosic_Plotter.h">
       <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Shared\Prototypes\ParticleBouncer.h">
@@ -2899,9 +2902,6 @@
       <Filter>Juce Modules\rosic\others</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_PiecewiseFunction.h">
-      <Filter>Juce Modules\rosic\others</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_Plotter.h">
       <Filter>Juce Modules\rosic\others</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\others\rosic_ProcessorCycleCounter.h">
