@@ -8,15 +8,35 @@ class ParticleBouncer
 
 public:
 
- //------------------------------------------------------------------------------------------------
- // construction/destruction:
+  //-----------------------------------------------------------------------------------------------
+  // construction/destruction:
 
   ParticleBouncer();   ///< Constructor.
 
   ~ParticleBouncer();  ///< Destructor.
 
- //------------------------------------------------------------------------------------------------
- // audio processing:
+  //-----------------------------------------------------------------------------------------------
+  // setup:
+
+  /** Sets the initial position of the particle. */
+  inline void setInitialPosition(double x, double y) { x0 = x; y0 = y; }
+
+  /** Sets the aspect ratio for the enclosing ellipse, i.e. the ratio of its width to its 
+  height. */
+  inline void setEnclosureEllipseAspectRatio(double ratio) { a = ratio; b = 1/a; }
+  // check this
+
+  //-----------------------------------------------------------------------------------------------
+  // inquiry:
+
+  /** Returns "a" parameter of enclosing ellipse. */
+  inline double getEllipseA() const { return a; }
+
+  /** Returns "b" parameter of enclosing ellipse. */
+  inline double getEllipseB() const { return b; }
+
+  //-----------------------------------------------------------------------------------------------
+  // audio processing:
 
   void getSampleFrame(double &x, double &y);
 

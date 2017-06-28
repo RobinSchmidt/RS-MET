@@ -6,12 +6,10 @@ ParticleBouncer::ParticleBouncer()
  reset();
 }
 
-
 ParticleBouncer::~ParticleBouncer()
 {
 
 }
-
 
 void ParticleBouncer::reset()
 {
@@ -19,18 +17,42 @@ void ParticleBouncer::reset()
   yc = y0;
 }
 
+// audio processing:
+
 void ParticleBouncer::getSampleFrame(double &x, double &y)
 {
-  // preliminary - later, we need to check for intersections with the enclosure and compute 
-  // reflections:
-
-  // update current particle position:
-  xc += dx;
-  yc += dy;
-
   // assign outputs:
   x = xc;
   y = yc;
+
+
+  // ...Update current particle position...
+
+  // Compute new (tentative) x,y coordinates:
+  double xn, yn;
+  xn = xc + dx;
+  yn = yc + dy;
+
+  // Check, if new coordinates are inside enclosure by plugging them into the implicit ellipse 
+  // equation x^2/a^2 + y^2/b^2 - 1 = 0. If it's not 0, let's call the right hand side d. This 
+  // is proportional to the signed distance between the particle and the perimeter of the 
+  // ellipse (what's the proportionality constant?):
+  double d = (xn*xn) / (a*a) + (yn*yn) / (b*b) - 1;
+  if(d > 0.0)  
+  {
+    // xn,yn is outside ellipse - we need to reflect...
+
+    // Compute intersection point between current line segment and ellipse:
+    // double xi = ..., yi = ...
+
+    // Compute tangent to the ellipse at intersection point xi, yi:
+    // ...
+  }
+
+
+  // update current coordinates:
+  xc = xn;
+  yc = yn;
 }
 
 /*

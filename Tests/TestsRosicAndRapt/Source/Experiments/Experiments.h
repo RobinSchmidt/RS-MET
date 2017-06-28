@@ -3,6 +3,8 @@
 
 #include "../Shared/Prototypes/ParticleBouncer.h"
 
+#include "../Shared/Plotting/Plotting.h"
+
 void particleBouncerExperiment();
 
 #endif
