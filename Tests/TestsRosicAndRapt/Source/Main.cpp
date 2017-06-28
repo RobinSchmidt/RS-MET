@@ -5,6 +5,9 @@ using namespace rotes;
 
 int main (int argc, char* argv[])
 {
+
+  // Unit tets:
+
   //testAllRosicClasses();
   //testRosicAnalysis();
   //testRosicBasics();
@@ -16,6 +19,22 @@ int main (int argc, char* argv[])
   //testRosicMath();
   //testRosicNonRealTime();
   //testRosicOthers();
+
+  // Performance tests:
+  // ...
+
+  // Experiments:
+  //particleBouncerExperiment();
+  // ...
+
+  // Demos:
+  // ...
+
+  // Rendering:
+  // ...
+
+
+
 
   //DEBUG_HOOK;
 
