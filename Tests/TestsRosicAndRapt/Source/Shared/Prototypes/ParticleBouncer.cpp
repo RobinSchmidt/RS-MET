@@ -22,19 +22,27 @@ void ParticleBouncer::reset()
 double ParticleBouncer::getLineEllipseIntersectionParameter(double x, double y, double dx, 
   double dy, double a2r, double b2r)
 {
-  // Coeffs for the quadratic euqation a*x^2 + b*x + c = 0:
+  // Coeffs for the quadratic equation a*x^2 + b*x + c = 0:
   double a, b, c;
   a =    dx*dx*a2r + dy*dy*b2r;
   b = 2*(x*dx*a2r  + y*dy*b2r);
   c =    x*x*a2r   + y*y*b2r - 1;
 
-  // Solutions: t_1,2 = (-b +- sqrt(b^2-4*a*c)) / (2*a)
-  double d = b*b - 4*a*c;       // discriminant
-  d = sqrt(max(d, 0));          // just in case numerical error leads to negative d
-  double t1 = (-b + d) / (2*a); // the solution we are interested in
+  // Solutions: t_1,2 = (-b +- sqrt(b^2-4*a*c)) / (2*a):
+  double d = b*b - 4*a*c;         // discriminant
+  d = sqrt(max(d, 0));            // max, just in case numerical error leads to negative d
+  double t1 = (-b + d) / (2*a);   // the solution we are interested in
   //double t2 = (-b - d) / (2*a); // the other solution which is irrelevant for us
 
   return t1;
+
+  // The formula was derived by setting :
+  // (1) xi = x + t*dx = a * cos(2*PI*t)   
+  // (2) yi = y + t*dy = b * sin(2*PI*t)  t in 0..1
+  // divide (1) by a, (2) by b, square both equations and add them. That gives a right-hand-side
+  // of sin^2(..) + cos^2(..) = 1 and leads to a quadratic equation for t. We are interested in a
+  // t between 0 and 1. xi, yi are the x,y coordinates of the intersection point given by
+  // xi = x + ti*dx, yi = y + ti*dy where ti is the value of t where the intersection occurs.
 }
 
 void ParticleBouncer::getSampleFrame(double &x, double &y)
@@ -56,8 +64,7 @@ void ParticleBouncer::getSampleFrame(double &x, double &y)
   // ellipse (what's the proportionality constant?):
 
   double a2r = 1 / (a*a), b2r = 1 / (b*b); // maybe make members
-  //double d = (xn*xn) / (a*a) + (yn*yn) / (b*b) - 1;
-  double d = xn*xn*a2r + yn*yn*b2r - 1;
+  double d   = xn*xn*a2r + yn*yn*b2r - 1;
   if(d > 0.0)  
   {
     // xn,yn is outside ellipse - we need to reflect...
@@ -71,9 +78,7 @@ void ParticleBouncer::getSampleFrame(double &x, double &y)
     // for debug - check that xi,yi is indeed on the ellipse:
     //double err = xi*xi*a2r + yi*yi*b2r - 1; // should be 0 up to roundoff
 
-
     int dummy = 0;
-
 
     // Compute tangent to the ellipse at intersection point xi, yi:
     // ...
