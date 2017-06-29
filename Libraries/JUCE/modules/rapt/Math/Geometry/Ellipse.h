@@ -14,11 +14,15 @@ class rsEllipse : public rsConicSection<T>
 
 public:
 
+  /** \name Construction/Destruction */
+
+  /** Constructor. Without any parameters, it creates a unit circle. */
   rsEllipse(T scale = 1, T aspectRatio = 1, T angle = 0, T centerX = 0, T centerY = 0);
 
-  // setup:
 
-  /** Sets all the parameters that determine the ellipses shape, size, orientation and position
+  /** \name Setup */
+
+  /** Sets all the parameters that determine the ellipses size, shape, orientation and position
   at once. */
   void setParameters(T newScale = 1, T newAspectRatio = 1, T newAngle = 0, T newCenterX = 0, 
     T newCenterY = 0);
@@ -29,7 +33,8 @@ public:
   //void setCenterX(T newX);
   //void setCenterY(T newY);
 
-  // inquiry
+
+  /** \name Inquiry */
 
   /** Computes a point on the ellipse corresponding to the given angle parameter. */
   void getPointOnEllipse(T angle, T* x, T* y) const;
@@ -37,11 +42,13 @@ public:
   /** Returns the total area of the ellipse (not yet tested). */
   inline T getArea() const { return sqrt(scale) * T(PI); }
 
-  /** Updates the parametric and implicit equation coefficients according to user parameters. */
-  void updateCoeffs();
-
 
 protected:
+
+  /** \name Misc */
+
+  /** Updates the parametric and implicit equation coefficients according to user parameters. */
+  void updateCoeffs();
 
   T scale = 1, ratio = 1, angle = 0, centerX = 0, centerY = 0;  // user parameters
   T Axc, Axs, Ayc, Ays;                                         // parametric equation coeffs
