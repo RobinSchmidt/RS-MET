@@ -15,8 +15,10 @@ void ParticleBouncer::reset()
 {
   xc = x0; 
   yc = y0;
-  dx = dx0;
-  dy = dy0;
+  dx = speed * cos(angle);
+  dy = speed * sin(angle);
+  //dx = dx0;
+  //dy = dy0;
 }
 
 // audio processing:
@@ -78,8 +80,8 @@ void ParticleBouncer::getSampleFrame(double &x, double &y)
   // ellipse (what's the proportionality constant?):
 
   double a2r = 1 / (a*a), b2r = 1 / (b*b); // maybe make members
-  double d   = xn*xn*a2r + yn*yn*b2r - 1;
-  if(d > 0.0)  
+  double d = xn*xn*a2r + yn*yn*b2r - 1;
+  while(d > 0.0)  
   {
     // xn,yn is outside ellipse - we need to reflect...
 
@@ -97,7 +99,21 @@ void ParticleBouncer::getSampleFrame(double &x, double &y)
     reflectPointInLine(xn, yn, xi*a2r, yi*b2r, -1, &xn, &yn);
 
     // compute new dx, dy:
-    //...
+    dx = xn-xi;
+    dy = yn-yi;
+    double scaler = speed / sqrt(dx*dx + dy*dy);
+    dx *= scaler;
+    dy *= scaler;
+
+    // for this, we need to have user parameters speed, initialAngle - then we must here compute
+    // the difference vector between the new (reflected) point and the intersection point and then
+    // renormalize it such that it has the correct length (given by the desired speed)
+    // dx0, dy0 should then not be set directly by the user - instead, the user sets an initial 
+    // angle and a speed from which we calculate the dx0, dy0.
+
+    // Compute new signed distance to boundary after reflection:
+    d = xn*xn*a2r + yn*yn*b2r - 1;
+
     int dummy = 0;
   }
 

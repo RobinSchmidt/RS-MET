@@ -27,14 +27,19 @@ public:
   height. */
   inline void setEnclosureEllipseAspectRatio(double ratio) { a = sqrt(ratio); b = 1/a; }
 
-  inline void setInitialIncrements(double newDeltaX, double newDeltaY)
-  {
-    dx0 = newDeltaX;
-    dy0 = newDeltaY;
-  }
+  //inline void setInitialIncrements(double newDeltaX, double newDeltaY)
+  //{
+  //  dx0 = newDeltaX;
+  //  dy0 = newDeltaY;
+  //}
 
-  //void setAngle(double newAngle);
-  //void setSpeed(double newSpeed);
+  inline void setAngle(double newAngle) { angle = PI * newAngle / 180; }
+  // maybe rename to setLaunchAngle
+
+  inline void setSpeed(double newSpeed) { speed = newSpeed; }
+  // later replace this with setFrequency, setSampleRate...the speed is then proportional to
+  // frequency/sampleRate
+
   // use dx = speed * cos(angle), dy = speed * sin(angle)
 
 
@@ -85,8 +90,10 @@ protected:
   double xc = 0, yc = 0;        // current
 
   // velocity components of particle (as increment per sample):
-  double dx0 = 0.1, dy0 = 0.2;  // initial
+  //double dx0 = 0.1, dy0 = 0.2;  // initial
   double dx  = 0.1, dy  = 0.2;  // current
+  double speed = 0.2;
+  double angle = 0.0;
 
 };
 

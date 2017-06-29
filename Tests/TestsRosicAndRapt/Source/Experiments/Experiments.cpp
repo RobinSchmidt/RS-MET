@@ -2,14 +2,16 @@
 
 void particleBouncerExperiment()
 {
-  static const int N = 7;   // number of output samples
+  static const int N = 100;   // number of output samples
 
   // create and set up particle bouncer:
   ParticleBouncer bouncer;
   bouncer.setEnclosureEllipseAspectRatio(1.0);
   //bouncer.setInitialPosition(0.2, -0.4);
   bouncer.setInitialPosition(-0.41, 0.8);
-  bouncer.setInitialIncrements(0.2, 0.0);
+  bouncer.setSpeed(0.2);
+  bouncer.setAngle(0.0);
+  //bouncer.setInitialIncrements(0.2, 0.0);
 
 
   // create output sequence:
