@@ -2,14 +2,16 @@
 
 void ellipseLineIntersections()
 {
-  //rsConicSectionF conic;
-  // try these:
-  // x^2    -  y^2 + xy + x   + 2y - 1 = 0    // hyperbola
-  // x^2/2  + 2y^2 + xy + x/4 +  y - 2 = 0    // ellipse
-  // find a nice parabola, too
-
+  // create and set up ellipse:
   rsEllipseF ellipse;
   ellipse.setParameters(1.5f, 3.f, float(PI/4), 0.5f, 1.f); 
+
+  // create line parameters:
+  float x, y, dx, dy;
+  x  = 1.0;
+  y  = 0.5;
+  dx = 0.2;
+  dy = 0.3;
 
   // create data for drawing the ellipse:
   static const int Ne = 100;
@@ -19,6 +21,20 @@ void ellipseLineIntersections()
     float phi = float(2*PI*n) / (Ne-1);
     ellipse.getPointOnEllipse(phi, &xe[n], &ye[n]);
   }
+
+  // create data for drawing the line:
+
+
+
+
+  // find intersection points between line and ellipse:
+  // ...
+
+
+  // find tangent line to intersection point:
+  // ...
+
+
 
   GNUPlotter plt;
   plt.setRange(-1.5, +2.5, -1, +3);

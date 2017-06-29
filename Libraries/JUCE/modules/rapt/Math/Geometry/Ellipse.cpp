@@ -27,6 +27,12 @@ void rsEllipse<T>::getPointOnEllipse(T angle, T* x, T* y) const
 }
 
 template<class T>
+void rsEllipse<T>::getTangentCoeffsAt(T x, T y, T* A, T* B, T* C)
+{
+  // something to do
+}
+
+template<class T>
 void rsEllipse<T>::updateCoeffs()
 {
   // intermediate variables:

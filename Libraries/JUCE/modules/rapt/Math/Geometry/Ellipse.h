@@ -16,8 +16,7 @@ public:
 
   rsEllipse(T scale = 1, T aspectRatio = 1, T angle = 0, T centerX = 0, T centerY = 0);
 
-
-  //// setup:
+  // setup:
 
   /** Sets all the parameters that determine the ellipses shape, size, orientation and position
   at once. */
@@ -30,28 +29,27 @@ public:
   //void setCenterX(T newX);
   //void setCenterY(T newY);
 
-  //// inquiry
+  // inquiry
 
   /** Computes a point on the ellipse corresponding to the given angle parameter. */
   void getPointOnEllipse(T angle, T* x, T* y) const;
 
+  /** Returns the total area of the ellipse (not yet tested). */
+  inline void getArea() const { return sqrt(scale) * T(PI); }
+
+  /** Given coordinates of a point x,y assumed to be on the ellipse, this function returns the 
+  implicit line equation coefficients of a line A*x + B*y + C = 0 that is tangent to the ellipse
+  at this point. */
+  void getTangentCoeffsAt(T x, T y, T* A, T* B, T* C);
+
   /** Updates the parametric and implicit equation coefficients according to user parameters. */
   void updateCoeffs();
-
-  /** User parameters - they are made public, so you can efficiently access them. However, after
-  changing them, you will need to call updateCoeffs() to make the data consistent. This breaks the
-  idea of obejct oriented data encapsulation */
 
 
 protected:
 
-  // user parameters
-  T scale = 1, ratio = 1, angle = 0, centerX = 0, centerY = 0;
-
-  // parametric equation coeffs
-  // x(t) = Axc * cos(p) + Axs * sin(p) + centerX   ...where p is the angle parameter in radians
-  // y(t) = Ayc * cos(p) + Ays * sin(p) + centerY
-  T Axc, Axs, Ayc, Ays;
+  T scale = 1, ratio = 1, angle = 0, centerX = 0, centerY = 0;  // user parameters
+  T Axc, Axs, Ayc, Ays;                                         // parametric equation coeffs
 
 };
 
