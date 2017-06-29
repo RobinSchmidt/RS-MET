@@ -17,8 +17,6 @@ void ParticleBouncer::reset()
   yc = y0;
   dx = speed * cos(angle);
   dy = speed * sin(angle);
-  //dx = dx0;
-  //dy = dy0;
 }
 
 // audio processing:
@@ -28,17 +26,15 @@ double ParticleBouncer::getLineEllipseIntersectionParameter(double x, double y, 
 {
   // Coeffs for the quadratic equation a*x^2 + b*x + c = 0:
   double a, b, c;
-  a =    dx*dx*a2r + dy*dy*b2r;
-  b = 2*(x*dx*a2r  + y*dy*b2r);
-  c =    x*x*a2r   + y*y*b2r - 1;
+  a = (a2r*dx*dx + b2r*dy*dy);
+  b = (a2r*dx*x  + b2r*dy*y ) * 2;
+  c = (a2r*x*x   + b2r*y*y  ) - 1;
 
   // Solutions: t_1,2 = (-b +- sqrt(b^2-4*a*c)) / (2*a):
   double d = b*b - 4*a*c;         // discriminant
   d = sqrt(max(d, 0));            // max, just in case numerical error leads to negative d
-  double t1 = (-b + d) / (2*a);   // the solution we are interested in
-  //double t2 = (-b - d) / (2*a); // the other solution which is irrelevant for us
-
-  return t1;
+  //double t2 = (-b - d) / (2*a); // the solution which is irrelevant for us
+  return (-b + d) / (2*a);        // the solution we are interested in
 
   // The formula was derived by setting:
   // (1) xi = x + t*dx = a * cos(2*PI*t)   
@@ -75,7 +71,7 @@ void ParticleBouncer::getSampleFrame(double &x, double &y)
   // equation x^2/a^2 + y^2/b^2 - 1 = 0. If it's not 0, let's call the right hand side d. This 
   // is proportional to the signed distance between the particle and the perimeter of the 
   // ellipse (what's the proportionality constant?):
-  double a2r = 1 / (a*a), b2r = 1 / (b*b); // maybe make members
+  double a2r = 1 / (a*a), b2r = 1 / (b*b); // maybe make members (optimization)
   double d = xn*xn*a2r + yn*yn*b2r - 1;
   while(d > 0.0)  
   {

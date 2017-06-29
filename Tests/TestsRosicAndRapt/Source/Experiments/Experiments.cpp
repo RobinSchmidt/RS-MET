@@ -10,16 +10,13 @@ void particleBouncerExperiment()
   bouncer.setInitialPosition(0.2, -0.4);
   //bouncer.setInitialPosition(-0.41, 0.8);
   bouncer.setSpeed(0.02);
-  bouncer.setAngle(30.0);
-  //bouncer.setInitialIncrements(0.2, 0.0);
-
+  bouncer.setLaunchAngle(30.0);
 
   // create output sequence:
   double x[N], y[N];
   bouncer.reset();
   for(int n = 0; n < N; n++)
     bouncer.getSampleFrame(x[n], y[n]);
-
 
   // create enclosing ellipse for reference inside the plot:
   static const int Ne = 100;
@@ -33,8 +30,6 @@ void particleBouncerExperiment()
     ye[n] = b * sin(t);
   }
   double areaOverPi = a*b; // actual area is PI*a*b
-
-
 
   // plot sequence:
   GNUPlotter plt;

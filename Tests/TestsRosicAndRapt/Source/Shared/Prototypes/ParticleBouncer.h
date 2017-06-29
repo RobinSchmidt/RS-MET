@@ -27,21 +27,15 @@ public:
   height. */
   inline void setEnclosureEllipseAspectRatio(double ratio) { a = sqrt(ratio); b = 1/a; }
 
-  //inline void setInitialIncrements(double newDeltaX, double newDeltaY)
-  //{
-  //  dx0 = newDeltaX;
-  //  dy0 = newDeltaY;
-  //}
-
-  inline void setAngle(double newAngle) { angle = PI * newAngle / 180; }
+  /** Sets the angle at which our particle is launched from its initial position. */
+  inline void setLaunchAngle(double newAngle) { angle = PI * newAngle / 180; }
   // maybe rename to setLaunchAngle
 
+  /** Sets the speed by which our particle moves around, i.e. the magnitude of the velocity, 
+  which is a vector. */
   inline void setSpeed(double newSpeed) { speed = newSpeed; }
   // later replace this with setFrequency, setSampleRate...the speed is then proportional to
   // frequency/sampleRate
-
-  // use dx = speed * cos(angle), dy = speed * sin(angle)
-
 
   //-----------------------------------------------------------------------------------------------
   // inquiry:
@@ -59,7 +53,7 @@ public:
   y(t) = b * sin(2*PI*t) (t in 0..1)), this function computes parameter t, where the line and the 
   ellipse intersect.  
   WARNING: it is assumed that the caller has already determined that such an intersection exists, 
-  if there's none, you'll get a square-root of a negative number */
+  if there's none, you'll get a wrong result. */
   double getLineEllipseIntersectionParameter(double x, double y, double dx, double dy,
     double a2r, double b2r);
 
@@ -90,13 +84,9 @@ protected:
   double xc = 0, yc = 0;        // current
 
   // velocity components of particle (as increment per sample):
-  //double dx0 = 0.1, dy0 = 0.2;  // initial
   double dx  = 0.1, dy  = 0.2;  // current
   double speed = 0.2;
   double angle = 0.0;
-
 };
-
-
 
 #endif
