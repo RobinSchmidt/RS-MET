@@ -37,11 +37,6 @@ public:
   /** Returns the total area of the ellipse (not yet tested). */
   inline T getArea() const { return sqrt(scale) * T(PI); }
 
-  /** Given coordinates of a point x,y assumed to be on the ellipse, this function returns the 
-  implicit line equation coefficients of a line A*x + B*y + C = 0 that is tangent to the ellipse
-  at this point. */
-  void getTangentCoeffsAt(T x, T y, T* A, T* B, T* C);
-
   /** Updates the parametric and implicit equation coefficients according to user parameters. */
   void updateCoeffs();
 

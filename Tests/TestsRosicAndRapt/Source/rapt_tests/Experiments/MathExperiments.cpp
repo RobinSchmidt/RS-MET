@@ -14,7 +14,7 @@ void ellipseLineIntersections()
   dy = 0.2f;
 
   // create data for drawing the ellipse:
-  static const int Ne = 100;
+  static const int Ne = 500;
   float xe[Ne], ye[Ne];
   float err;
   for(int n = 0; n < Ne; n++)
@@ -42,19 +42,34 @@ void ellipseLineIntersections()
   yi2 = y + ti2*dy;
 
   // find tangent line to intersection point:
-  // ...
+  float A, B, C, a, b;
+  float xt1[2], yt1[2], xt2[2], yt2[2];
+  ellipse.getTangentCoeffs(xi1, yi1, &A, &B, &C); // implicit  A*x + B*y + C = 0
+  a = -A/B;     // explicit y = a*x + b
+  b = -C/B;
+  xt1[0] = 0;   // use points where x=0, x=2 to draw the tangent:
+  yt1[0] = a*xt1[0] + b;   
+  xt1[1] = 2;
+  yt1[1] = a*xt1[1] + b; 
 
+  // same for the 2nd intersection:
+  ellipse.getTangentCoeffs(xi2, yi2, &A, &B, &C);
+  a = -A/B;
+  b = -C/B;
+  xt2[0] = -1.2f;
+  yt2[0] = a*xt2[0] + b;   
+  xt2[1] = -0.5f;
+  yt2[1] = a*xt2[1] + b; 
 
   GNUPlotter plt;
   plt.setRange(-1.5, +2.5, -1, +3);
   plt.setPixelSize(600, 600);
   plt.addCommand("set size square");   // set aspect ratio to 1:1 ..encapsulate in GNUPlotter
-  //plt.addDataArrays(N, x, y);
-  plt.addDataArrays(Ne, xe, ye);
-  plt.addDataArrays(2,  xl, yl);
+  plt.addDataArrays(Ne, xe,  ye);   // ellipse
+  plt.addDataArrays(2,  xl,  yl);   // line
+  plt.addDataArrays(2,  xt1, yt1);  // tangent at 1st intersection
+  plt.addDataArrays(2,  xt2, yt2);  // tangent at 2nd intersection
   plt.plot();
-
-  int dummy = 0;
 }
 
 void linearRegression()

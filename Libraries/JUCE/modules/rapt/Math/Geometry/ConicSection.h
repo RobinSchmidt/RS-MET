@@ -26,6 +26,11 @@ public:
   (question: what's the proportionality constant? can we normalize the coeffs to make it 1?) */
   T evaluate(T x, T y);
 
+  /** Given a point with coordinates x,y assumed to be on the conic, this function computes the
+  coefficients for an implicit line equation A*x + B*y + C = 0 for the line that is tangent to the
+  conic at the given point. */
+  void getTangentCoeffs(T x, T y, T* A, T* B, T* C);
+
 
 protected:
 

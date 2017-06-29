@@ -19,12 +19,21 @@ void rsConicSection<T>::lineIntersectionParameter(T x, T dx, T y, T dy, T* t1, T
   d   = sqrt(d);
   *t1 = (-b+d) / (2*a);        
   *t2 = (-b-d) / (2*a);
-
-  int dummy = 0;
 }
 
 template<class T>
 T rsConicSection<T>::evaluate(T x, T y)
 {
   return A*x*x + B*x*y + C*y*y + D*x + E*y + F;
+}
+
+template<class T>
+void rsConicSection<T>::getTangentCoeffs(T x, T y, T* a, T* b, T* c)
+{
+  *a = 2*A*x + B*y + D;
+  *b = 2*C*y + B*x + E;
+  *c = -(*a * x + *b * y);
+
+  // formula derived from:
+  // https://en.wikipedia.org/wiki/Implicit_curve#Tangent_and_normal_vector
 }
