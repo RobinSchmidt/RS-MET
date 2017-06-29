@@ -89,7 +89,7 @@ template<class TSig, class TPix, class TPar>
 void PhaseScopeBuffer<TSig, TPix, TPar>::setPixelSpread(TPar newSpread)
 {
   thickness = newSpread;
-  painter.setNeighbourWeightsForSimpleDot((TSig)thickness, thickness*thickness);
+  painter.setNeighbourWeightsForSimpleDot((TSig)thickness, TSig(thickness*thickness));
   //painter.setNeighbourWeightsForSimpleDot((TSig)thickness, 0.5f*thickness);
 }
 
@@ -137,7 +137,7 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::setShearY(TSig newShear)
 template<class TSig, class TPix, class TPar>
 void PhaseScopeBuffer<TSig, TPix, TPar>::setRotation(TSig degrees)
 {
-  rotation = PI * degrees / 180.0;
+  rotation = TSig(PI/180) * degrees;
   updateTransformCoeffs();
 }
 
@@ -276,7 +276,7 @@ template<class TSig, class TPix, class TPar>
 TSig PhaseScopeBuffer<TSig, TPix, TPar>::getScannerSaw()
 {
   TSig scanVal = 2*scanPos - 1; 
-  scanPos += scanInc;
+  scanPos += TSig(scanInc);
   if(scanPos > 1)
     scanPos -= 1;
   return scanVal;

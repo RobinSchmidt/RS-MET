@@ -11,7 +11,6 @@ PhaseScopeBufferFFD typedef wouldn't exist. */
 #ifndef RAPT_INSTANTIATIONS_H
 #define RAPT_INSTANTIATIONS_H
 
-//#include "../../../Modules/RAPT.h"
 #include "../../../../../Libraries/JUCE/modules/rapt/rapt.h"
 using namespace RAPT;
 
