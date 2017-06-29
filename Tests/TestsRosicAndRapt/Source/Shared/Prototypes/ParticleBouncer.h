@@ -58,6 +58,13 @@ public:
   double getLineEllipseIntersectionParameter(double x, double y, double dx, double dy,
     double a2r, double b2r);
 
+  /** Given the coordinates of a point (x,y) and the parameters of an implicit line equation
+  A*x + B*y + C = 0, this function computes the coordinates of a point that is reflected about this
+  line and returns them in xr, yr. */
+  static void reflectPointInLine(double x, double y, double A, double B, double C,
+    double *xr, double *yr);
+  // todo: move this function into some geometry class
+
   //-----------------------------------------------------------------------------------------------
   // audio processing:
 

@@ -48,11 +48,9 @@ double ParticleBouncer::getLineEllipseIntersectionParameter(double x, double y, 
 }
 
 
-void reflectPointInLine(double x, double y, double A, double B, double C, double *xr, double *yr)
+void ParticleBouncer::reflectPointInLine(double x, double y, double A, double B, double C, 
+  double *xr, double *yr)
 {
-  //double a2 = a*a, b2 = b*b;
-  //double s = 1 / (a2+b2);
-
   double d = 2*(A*x + B*y + C) / (A*A + B*B);
   *xr = x - A*d;
   *yr = y - B*d;
@@ -94,26 +92,12 @@ void ParticleBouncer::getSampleFrame(double &x, double &y)
     // for debug - check that xi,yi is indeed on the ellipse:
     double err = xi*xi*a2r + yi*yi*b2r - 1; // should be 0 up to roundoff
 
-    // Compute tangent to the ellipse at intersection point xi, yi:
-    double A, B, C; // coeffs of line equation A*x + B*y + C = 0 for tangent at xi, yi
-    A = xi*a2r;
-    B = yi*b2r;
-    C = -1;
-
-    // reflect new point in tangent line:
-    double xr, yr;  // maybe we can re-use xn, yn and don't need these
-    reflectPointInLine(xn, yn, A, B, C, &xr, &yr);
-    xn = xr;
-    yn = yr;
-
-
-
-    // ...
+    // Reflect new point in tangent line to the ellipse at intersection point xi, yi. The equation
+    // of that line is (xi/a^2)*x + (yi/b^2)*y - 1 = 0:
+    reflectPointInLine(xn, yn, xi*a2r, yi*b2r, -1, &xn, &yn);
 
     // compute new dx, dy:
-
-
-
+    //...
     int dummy = 0;
   }
 
