@@ -4,7 +4,7 @@
 /** This is a class for dealing with two dimensional lines. */
 
 template<class T>
-class Line2D
+class rsLine2D
 {
 
 public:
@@ -17,7 +17,7 @@ public:
 
 protected:
 
-  T x0 = 0, y0 = 0, x1 = 1, y1 = 1;
+  //T x0 = 0, y0 = 0, x1 = 1, y1 = 1;
 
 };
 

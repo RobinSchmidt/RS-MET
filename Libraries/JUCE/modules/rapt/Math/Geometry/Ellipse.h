@@ -9,32 +9,44 @@ axis, a rotation angle, and a center point. Coordinates of points on the ellipse
 obtained by passing in a value of angle parameter p between 0 and 2*PI. */
 
 template<class T>
-class rsEllipse : public rsConicSection<T>
+class rsEllipse : protected rsConicSection<T>
 {
 
 public:
 
+  rsEllipse(T scale = 1, T aspectRatio = 1, T angle = 0, T centerX = 0, T centerY = 0);
 
-  // setup:
 
-  void setScaleFactor(T newFactor);
+  //// setup:
 
-  void setAspectRatio(T newRatio);
+  //void setScaleFactor(T newFactor);
 
-  void setRotationAngle(T newAngle); // in radians
+  //void setAspectRatio(T newRatio);
 
-  void setCenterX(T newX);
+  //void setRotationAngle(T newAngle); // in radians
 
-  void setCenterY(T newY);
+  //void setCenterX(T newX);
 
-  // inquiry
+  //void setCenterY(T newY);
+
+  //// inquiry
 
   /** Computes a point on the ellipse corresponding to the given angle parameter. */
   void getPointOnEllipse(T angle, T* x, T* y) const;
 
+
 protected:
 
+  /** Updates the parametric and implicit equation coefficients according to user parameters. */
+  void updateCoeffs();
+
+  // user parameters:
   T scale = 1, ratio = 1, angle = 0, centerX = 0, centerY = 0;
+
+  // parametric equation coeffs
+  // x(t) = Axc * cos(p) + Axs * sin(p) + centerX   ...where p is the angle parameter in radians
+  // y(t) = Ayc * cos(p) + Ays * sin(p) + centerY
+  T Axc, Axs, Ayc, Ays;
 
 };
 

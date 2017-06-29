@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include <complex>
-using namespace std;
+using namespace std; // get rid
 
 /**
 

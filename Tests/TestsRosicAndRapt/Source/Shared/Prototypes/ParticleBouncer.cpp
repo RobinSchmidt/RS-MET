@@ -177,4 +177,9 @@ https://math.stackexchange.com/questions/264446/the-fastest-way-to-obtain-orient
 -we need more general formulas for ellipse/line intersection-point, tangent-to-ellipse at a point
  in getSampleFrame
 
+ other idea: use 3D Lissajous figures with arbitrary waveforms: 
+ x(t)=wave(wx*t), y(t)=wave(wy*t), z(t)=wave(wz*t) and let a camera be looking at the origin where
+ LFOs constantly modulate the camera position along the 2 angles around the sphere and the camera 
+ may also rotate itself (i.e. the "up"-vector)
+
 */

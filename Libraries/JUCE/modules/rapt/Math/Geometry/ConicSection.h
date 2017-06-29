@@ -11,8 +11,9 @@ class rsConicSection
 public:
 
   /** Constructor. Creates a conic section object with the equation 
-  A*x^2 + B*x*y + C*y^2 + D*x + E*y + F = 0. */
-  rsConicSection(T A, T B, T C, T D, T E, T F);
+  A*x^2 + B*x*y + C*y^2 + D*x + E*y + F = 0. If you pass no parameters, it will by default create
+  a unit circle. */
+  rsConicSection(T A = 1, T B = 0, T C = 1, T D = 0, T E = 0, T F = -1);
 
   /** Given a line defined by the parameteric equations: x(t) = x + t*dx, y(t) = y + dy, this
   function computes the two values of t (t1, t2), where the line intersects this conic. If the line
@@ -20,9 +21,8 @@ public:
   negative number). */
   void lineIntersectionParameter(T x, T dx, T y, T dy, T* t1, T* t2);
 
-protected:
-
-  T A = 1, B = 0, C = 1, D = 0, E = 0, F = -1; // init as unit circle
+  /** The coefficients in the equation. */
+  T A, B, C, D, E, F;
 
 };
 

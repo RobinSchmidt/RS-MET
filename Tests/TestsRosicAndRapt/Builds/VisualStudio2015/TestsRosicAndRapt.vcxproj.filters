@@ -1620,6 +1620,9 @@
     <ClInclude Include="..\..\Source\Experiments\Experiments.h">
       <Filter>TestsRosicAndRapt\Source\Experiments</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Shared\Shared.h">
+      <Filter>TestsRosicAndRapt\Source\Shared</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Shared\Utilities\FileWriting.h">
       <Filter>TestsRosicAndRapt\Source\Shared\Utilities</Filter>
     </ClInclude>

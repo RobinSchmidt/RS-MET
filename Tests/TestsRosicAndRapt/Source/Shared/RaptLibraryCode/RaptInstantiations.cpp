@@ -34,6 +34,8 @@ template void RAPT::ArrayTools::rsFillWithRandomValues(double* x, int N, double 
 
 // Math:
 template int RAPT::rsLimit(int x, int min, int max);
+template RAPT::rsConicSection<float>;
+template RAPT::rsEllipse<float>;
 template RAPT::NormalizedSigmoids<float>;
 template RAPT::ParametricSigmoid<float>;
 template RAPT::ScaledAndShiftedSigmoid<float>;

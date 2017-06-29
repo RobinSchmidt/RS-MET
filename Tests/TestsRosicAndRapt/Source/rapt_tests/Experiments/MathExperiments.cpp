@@ -1,5 +1,18 @@
 #include "MathExperiments.h"
 
+void conicLineIntersections()
+{
+  rsConicSectionF conic;
+
+  // try these:
+  // x^2    -  y^2 + xy + x   + 2y - 1 = 0    // hyperbola
+  // x^2/2  + 2y^2 + xy + x/4 +  y - 2 = 0    // ellipse
+  // find a nice parabola, too
+
+  rsEllipseF ellipse;
+
+  int dummy = 0;
+}
 
 void linearRegression()
 {
@@ -52,7 +65,7 @@ double productLog(const double z)
     return 0.0;
 
   double eps = 4.0e-16;
-  double em1 = 0.3678794411714423215955237701614608;
+  double em1 = 0.3678794411714423215955237701614608; // 1/Euler
   double p, e, t, w;
 
   if(z < -em1+1e-4) // series near -em1 in sqrt(q)
@@ -73,8 +86,8 @@ double productLog(const double z)
   // initial approximation for Halley iteration:
   if(z < 1.0)     // series near 0
   { 
-    p = sqrt(2.0*(2.7182818284590452353602874713526625*z+1.0));
-    w = -1.0+p*(1.0+p*(-0.333333333333333333333+p*0.152777777777777777777777)); 
+    p = sqrt(2.0*(2.7182818284590452353602874713526625*z+1.0));                 // euler-number
+    w = -1.0+p*(1.0+p*(-0.333333333333333333333+p*0.152777777777777777777777)); // -1/3, 11/72
   } 
   else 
     w = log(z);   // asymptotic

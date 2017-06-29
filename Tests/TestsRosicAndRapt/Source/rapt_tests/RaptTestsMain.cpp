@@ -1,3 +1,6 @@
+// This file and all the included ones below (and their cpp files) are obsolete - they are still
+// kept here as reference as long as the new files are not complete
+
 #include "Demos/Demos.h"
 #include "Experiments/Experiments.h"
 #include "PerformanceTests/PerformanceTests.h"

@@ -14,6 +14,10 @@ PhaseScopeBufferFFD typedef wouldn't exist. */
 #include "../../../../../Libraries/JUCE/modules/rapt/rapt.h"
 using namespace RAPT;
 
+// Math:
+typedef RAPT::rsConicSection<float> rsConicSectionF;
+typedef RAPT::rsEllipse<float> rsEllipseF;
+
 // Filters:
 typedef RAPT::LadderFilter<float, float> LadderFilterFF;
 typedef RAPT::PhasorFilter<float, float> PhasorFilterFF;

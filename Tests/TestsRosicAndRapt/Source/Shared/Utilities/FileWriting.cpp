@@ -1,8 +1,8 @@
 #include "FileWriting.h" 
 
-#ifdef _MSC_VER
-#define _CRT_SECURE_NO_WARNINGS  // seems to have no effect - we still get the warning
-#endif
+//#ifdef _MSC_VER
+//#define _CRT_SECURE_NO_WARNINGS  // seems to have no effect - we still get the warning
+//#endif
 
 void writeImageToFilePPM(const ImageF& img, const char* path)
 {

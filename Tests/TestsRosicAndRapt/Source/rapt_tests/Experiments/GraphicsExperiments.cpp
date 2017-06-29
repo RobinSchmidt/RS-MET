@@ -737,7 +737,7 @@ void phaseScopeLissajous()
   static const int N = 80;  // number of data points
   float a = 2.f;
   float b = 7.f;
-  float scale = 0.9;
+  float scale = 0.9f;
 
   // create and set up PhaseScopeBuffer object:
   PhaseScopeBufferFFD psb;
@@ -751,7 +751,7 @@ void phaseScopeLissajous()
 
   // create image:
   float x[N], y[N];
-  float s = 2*PI / (N-1);
+  float s = float(2*PI) / (N-1);
   for(int n = 0; n < N; n++)
   {
     x[n] = scale*sin(s*a*n);

@@ -26,6 +26,7 @@
         <FILE id="VKq4cA" name="Experiments.h" compile="0" resource="0" file="Source/Experiments/Experiments.h"/>
       </GROUP>
       <GROUP id="{169783E3-BC83-EFEE-1179-9541750571ED}" name="Shared">
+        <FILE id="jygXVA" name="Shared.h" compile="0" resource="0" file="Source/Shared/Shared.h"/>
         <GROUP id="{201E673D-AA9B-D76E-9C89-E7FCF6FE4A20}" name="Utilities">
           <FILE id="P5YT2S" name="FileWriting.cpp" compile="1" resource="0" file="Source/Shared/Utilities/FileWriting.cpp"/>
           <FILE id="S3nBXy" name="FileWriting.h" compile="0" resource="0" file="Source/Shared/Utilities/FileWriting.h"/>
