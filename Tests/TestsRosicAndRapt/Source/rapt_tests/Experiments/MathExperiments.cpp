@@ -8,32 +8,41 @@ void ellipseLineIntersections()
 
   // create line parameters:
   float x, y, dx, dy;
-  x  = 1.0;
-  y  = 0.5;
-  dx = 0.2;
-  dy = 0.3;
+  x  = 0.5f;
+  y  = 0.5f;
+  dx = 0.5f;
+  dy = 0.2f;
 
   // create data for drawing the ellipse:
   static const int Ne = 100;
   float xe[Ne], ye[Ne];
+  float err;
   for(int n = 0; n < Ne; n++)
   {
     float phi = float(2*PI*n) / (Ne-1);
     ellipse.getPointOnEllipse(phi, &xe[n], &ye[n]);
+    err = ellipse.evaluate(xe[n], ye[n]);
   }
 
   // create data for drawing the line:
-
-
-
+  float tMin = -3.5;
+  float tMax = +3.0;
+  float xl[2], yl[2];
+  xl[0] = x + tMin*dx;
+  xl[1] = x + tMax*dx;
+  yl[0] = y + tMin*dy;
+  yl[1] = y + tMax*dy;
 
   // find intersection points between line and ellipse:
-  // ...
-
+  float ti1, ti2, xi1, yi1, xi2, yi2;
+  ellipse.lineIntersectionParameter(x, dx, y, dy, &ti1, &ti2);
+  xi1 = x + ti1*dx;
+  yi1 = y + ti1*dy;
+  xi2 = x + ti2*dx;
+  yi2 = y + ti2*dy;
 
   // find tangent line to intersection point:
   // ...
-
 
 
   GNUPlotter plt;
@@ -42,6 +51,7 @@ void ellipseLineIntersections()
   plt.addCommand("set size square");   // set aspect ratio to 1:1 ..encapsulate in GNUPlotter
   //plt.addDataArrays(N, x, y);
   plt.addDataArrays(Ne, xe, ye);
+  plt.addDataArrays(2,  xl, yl);
   plt.plot();
 
   int dummy = 0;

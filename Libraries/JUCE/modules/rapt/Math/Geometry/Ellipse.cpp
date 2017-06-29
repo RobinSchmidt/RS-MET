@@ -53,9 +53,10 @@ void rsEllipse<T>::updateCoeffs()
 
   // implicit equation coeffs for conic:
   A = a2*s*s + b2*c*c;
-  B = 2*(b2+a2)*s*c;
+  B = 2*(b2-a2)*s*c;
   C = a2*c*c + b2*s*s;
   D = -2*A*xc - B*yc;
   E = -2*C*yc - B*xc;
   F = A*xc*xc + B*xc*yc + C*yc*yc - a2*b2;
+  // formulas from here: https://en.wikipedia.org/wiki/Ellipse#General_ellipse
 }

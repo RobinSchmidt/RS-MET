@@ -13,5 +13,18 @@ void rsConicSection<T>::lineIntersectionParameter(T x, T dx, T y, T dy, T* t1, T
   T b = 2*A*x*dx + B*(x*dy+y*dx) + 2*C*y*dy + D*dx + E*dy;
   T c = A*x*x + B*x*y + C*y*y + D*x + E*y + F;
   
-  // something to do...solve quadratic...
+  // ...solve quadratic...(factor out and optimize):
+  // Solutions: t_1,2 = (-b +- sqrt(b^2-4*a*c)) / (2*a):
+  T d = b*b - 4*a*c;         // discriminant
+  d   = sqrt(d);
+  *t1 = (-b+d) / (2*a);        
+  *t2 = (-b-d) / (2*a);
+
+  int dummy = 0;
+}
+
+template<class T>
+T rsConicSection<T>::evaluate(T x, T y)
+{
+  return A*x*x + B*x*y + C*y*y + D*x + E*y + F;
 }

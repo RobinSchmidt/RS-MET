@@ -9,7 +9,7 @@ axis, a rotation angle, and a center point. Coordinates of points on the ellipse
 obtained by passing in a value of angle parameter p between 0 and 2*PI. */
 
 template<class T>
-class rsEllipse : protected rsConicSection<T>
+class rsEllipse : public rsConicSection<T>
 {
 
 public:
@@ -35,7 +35,7 @@ public:
   void getPointOnEllipse(T angle, T* x, T* y) const;
 
   /** Returns the total area of the ellipse (not yet tested). */
-  inline void getArea() const { return sqrt(scale) * T(PI); }
+  inline T getArea() const { return sqrt(scale) * T(PI); }
 
   /** Given coordinates of a point x,y assumed to be on the ellipse, this function returns the 
   implicit line equation coefficients of a line A*x + B*y + C = 0 that is tangent to the ellipse

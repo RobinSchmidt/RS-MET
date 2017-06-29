@@ -21,6 +21,14 @@ public:
   negative number). */
   void lineIntersectionParameter(T x, T dx, T y, T dy, T* t1, T* t2);
 
+  /** Evaluates the conic equation A*x^2 + B*x*y + C*y^2 + D*x + E*y + F. On the conic, this value
+  equals zero, otherwise it is proportional to the signed distance of the point from the conic.
+  (question: what's the proportionality constant? can we normalize the coeffs to make it 1?) */
+  T evaluate(T x, T y);
+
+
+protected:
+
   /** The coefficients in the equation. */
   T A, B, C, D, E, F;
 
