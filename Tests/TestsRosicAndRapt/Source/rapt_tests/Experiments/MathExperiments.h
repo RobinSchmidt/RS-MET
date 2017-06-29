@@ -3,7 +3,7 @@
 
 #include "../../Shared/Shared.h"
 
-void conicLineIntersections();
+void ellipseLineIntersections();
 void linearRegression();
 void productLogPlot();
 void expGaussBell();

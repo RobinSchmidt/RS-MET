@@ -1,15 +1,32 @@
 #include "MathExperiments.h"
 
-void conicLineIntersections()
+void ellipseLineIntersections()
 {
-  rsConicSectionF conic;
-
+  //rsConicSectionF conic;
   // try these:
   // x^2    -  y^2 + xy + x   + 2y - 1 = 0    // hyperbola
   // x^2/2  + 2y^2 + xy + x/4 +  y - 2 = 0    // ellipse
   // find a nice parabola, too
 
   rsEllipseF ellipse;
+  ellipse.setParameters(1.5f, 3.f, float(PI/4), 0.5f, 1.f); 
+
+  // create data for drawing the ellipse:
+  static const int Ne = 100;
+  float xe[Ne], ye[Ne];
+  for(int n = 0; n < Ne; n++)
+  {
+    float phi = float(2*PI*n) / (Ne-1);
+    ellipse.getPointOnEllipse(phi, &xe[n], &ye[n]);
+  }
+
+  GNUPlotter plt;
+  plt.setRange(-1.5, +2.5, -1, +3);
+  plt.setPixelSize(600, 600);
+  plt.addCommand("set size square");   // set aspect ratio to 1:1 ..encapsulate in GNUPlotter
+  //plt.addDataArrays(N, x, y);
+  plt.addDataArrays(Ne, xe, ye);
+  plt.plot();
 
   int dummy = 0;
 }

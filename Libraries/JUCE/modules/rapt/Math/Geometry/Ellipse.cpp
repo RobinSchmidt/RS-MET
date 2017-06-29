@@ -6,6 +6,18 @@ rsEllipse<T>::rsEllipse(T _scale, T _aspectRatio, T _angle, T _centerX, T _cente
 }
 
 template<class T>
+void rsEllipse<T>::setParameters(T newScale, T newAspectRatio, T newAngle, 
+  T newCenterX, T newCenterY)
+{
+  scale   = newScale;
+  ratio   = newAspectRatio;
+  angle   = newAngle;
+  centerX = newCenterX;
+  centerY = newCenterY;
+  updateCoeffs();
+}
+
+template<class T>
 void rsEllipse<T>::getPointOnEllipse(T angle, T* x, T* y) const
 {
   T s = sin(angle);
@@ -18,9 +30,8 @@ template<class T>
 void rsEllipse<T>::updateCoeffs()
 {
   // intermediate variables:
-  T sqrtRatio = sqrt(ratio);
-  T a  = scale * sqrtRatio;
-  T b  = scale / sqrtRatio;
+  T a  = sqrt(scale*ratio);
+  T b  = sqrt(scale/ratio);
   T s  = sin(angle);
   T c  = cos(angle);
   T xc = centerX;    // shorthand for convenience

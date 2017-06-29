@@ -19,14 +19,15 @@ public:
 
   //// setup:
 
+  /** Sets all the parameters that determine the ellipses shape, size, orientation and position
+  at once. */
+  void setParameters(T newScale = 1, T newAspectRatio = 1, T newAngle = 0, T newCenterX = 0, 
+    T newCenterY = 0);
+
   //void setScaleFactor(T newFactor);
-
   //void setAspectRatio(T newRatio);
-
   //void setRotationAngle(T newAngle); // in radians
-
   //void setCenterX(T newX);
-
   //void setCenterY(T newY);
 
   //// inquiry
@@ -34,13 +35,17 @@ public:
   /** Computes a point on the ellipse corresponding to the given angle parameter. */
   void getPointOnEllipse(T angle, T* x, T* y) const;
 
-
-protected:
-
   /** Updates the parametric and implicit equation coefficients according to user parameters. */
   void updateCoeffs();
 
-  // user parameters:
+  /** User parameters - they are made public, so you can efficiently access them. However, after
+  changing them, you will need to call updateCoeffs() to make the data consistent. This breaks the
+  idea of obejct oriented data encapsulation */
+
+
+protected:
+
+  // user parameters
   T scale = 1, ratio = 1, angle = 0, centerX = 0, centerY = 0;
 
   // parametric equation coeffs

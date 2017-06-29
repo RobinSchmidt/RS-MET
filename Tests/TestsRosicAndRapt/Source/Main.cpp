@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
   //particleBouncerExperiment();
 
   // Math:
-  conicLineIntersections();
+  ellipseLineIntersections();
   //expGaussBell();
   //linearRegression();
   //productLogPlot();
