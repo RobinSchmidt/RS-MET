@@ -75,7 +75,7 @@ void ParticleBouncer::getSampleFrame(double &x, double &y)
   double d = xn*xn*a2r + yn*yn*b2r - 1;
   while(d > 0.0)  
   {
-    // d >= 0 means (xn,yn) is outside our ellipse - we need to reflect...
+    // d > 0 means (xn,yn) is outside our ellipse - we need to reflect...
 
     // Compute intersection point between current line segment and ellipse:
     double ti, xi, yi;
@@ -86,11 +86,11 @@ void ParticleBouncer::getSampleFrame(double &x, double &y)
     // for debug - check that xi,yi is indeed on the ellipse:
     //double err = xi*xi*a2r + yi*yi*b2r - 1; // should be 0 up to roundoff
 
-    // Reflect new point in tangent line to the ellipse at intersection point xi, yi. The equation
-    // of that line is (xi/a^2)*x + (yi/b^2)*y - 1 = 0:
+    // Reflect new point in a line tangent to the ellipse at intersection point xi, yi. The 
+    // equation of that line is (xi/a^2)*x + (yi/b^2)*y - 1 = 0:
     reflectPointInLine(xn, yn, xi*a2r, yi*b2r, -1, &xn, &yn);
 
-    // Compute new dx, dy by taking the new direction vector (which points from the intersection 
+    // Compute new dx,dy by taking the new direction vector (which points from the intersection 
     // point to the reflected point) and adjusting its length according to the desired speed:
     dx = xn-xi;
     dy = yn-yi;
@@ -114,7 +114,7 @@ General Idea:
 Let a particle bounce around inside an enclosure in 2D space and use its x- and y-coordinates as
 signal (for left and right channel, or mid and side or whatever). The enclosure can be defined 
 geometrically for example as an ellipse or a polygon. Maybe there can be also other shapes inside
-the enclosure that act as obstacles for the particle. The user hase some means to configure the 
+the enclosure that act as obstacles for the particle. The user has some means to configure the 
 shape of the enclosure and obstacles and can give an initial position and velocity for the 
 particle (if the initial position happens to be inside some obstacle, just ignore the collision
 with the obstacle boundary - we imagine these boundaries a semi-permeable: things can get out but 
@@ -125,7 +125,8 @@ At each sample, our virtual particle has a position given by (x,y) and a velocit
 To update the particle, we move it a bit along a line segment, i.e. we compute: x += vx, y += vy.
 However, when the particle hits the boundary of the enclosure (or one of the obstacles), it gets
 bounced back according to the reflection law: the angle of incidence should equal the angle of
-reflection. The absolute value of the velocity (i.e. the speed) should stay the same.
+reflection. The absolute value of the velocity (i.e. the speed) should stay the same after the 
+reflection.
 
 Relevant Equations:
 
@@ -157,6 +158,12 @@ Notes:
  and/or the particle position/velocity before applying the formulas (for line, ellipse, etc.).
  -for this, it may be useful to know that the determinant of the transformation matrix gives the
   (signed) area change for any shape
+
+References:
+
+for ellipses in general orientation:
+https://en.wikipedia.org/wiki/Ellipse#General_ellipse
+https://math.stackexchange.com/questions/264446/the-fastest-way-to-obtain-orientation-%CE%B8-from-this-ellipse-formula
 
 
 */

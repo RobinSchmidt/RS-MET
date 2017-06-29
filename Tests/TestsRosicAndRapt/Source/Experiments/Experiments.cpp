@@ -2,15 +2,27 @@
 
 void particleBouncerExperiment()
 {
-  static const int N = 6000;   // number of output samples
+  static const int N = 8000;   // number of output samples
 
   // create and set up particle bouncer:
   ParticleBouncer bouncer;
   bouncer.setEnclosureEllipseAspectRatio(1.15);
+  //bouncer.setEnclosureEllipseAspectRatio(1.0);
+  //bouncer.setEnclosureEllipseAspectRatio(0.8);
   bouncer.setInitialPosition(0.2, -0.4);
-  //bouncer.setInitialPosition(-0.41, 0.8);
+  //bouncer.setInitialPosition(0.1, -0.2);
+  //bouncer.setInitialPosition(0.0, 0.0);
   bouncer.setSpeed(0.02);
   bouncer.setLaunchAngle(30.0);
+  //bouncer.setLaunchAngle(0.0);
+
+  //// boring, for test:
+  //bouncer.setSpeed(0.03248536741);
+  //bouncer.setInitialPosition(0.0, 0.0);
+  //bouncer.setLaunchAngle(10.0);
+  //bouncer.setSpeed(0.02121315726);
+  ////bouncer.setLaunchAngle(30.0);
+
 
   // create output sequence:
   double x[N], y[N];
@@ -40,4 +52,15 @@ void particleBouncerExperiment()
   plt.addDataArrays(Ne, xe, ye);
   plt.plot();
   //plt.plotFunctionTables(N, x, y);
+
+  // Observations:
+  // -when we use a circle of radius 1 and the speed is some value such that the particle hits the
+  //  boundary at some sample instant (say speed = 0.02), we seem to run into numerical errors - 
+  //  the reflection angles detoriate: try starting at 0.0 with speed 0.02 - it should give a line
+  //  but it doesn't. using some more random value value like 0.02121315726, we see the line as
+  //  expected
+  // -sometimes, the emerging shape is an ellipse, sometimes 2 parabolas
+  //  -parabola: ratio=1.15, pos = (0.1, -0.2), angle = 30.0, speed = 0.02
+  //  -ellipse:  ratio=1.15, pos = (0.2, -0.4), angle = 30.0, speed = 0.02
+  //  -maybe there's a pair of hyperbolas too, for some other values?
 }

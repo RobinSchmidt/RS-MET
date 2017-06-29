@@ -50,12 +50,16 @@ public:
   x(t) = x + t*dx, y(t) = y + t*dy (t in 0..1) and reciprocals of the squares of
   ellipse parameters a2r = 1/a^2, b2r = 1/b^2 in an (implicit) ellipse equation 
   x^2/a^2 + y^2/b^2 - 1 = 0 (corresponding to the parametric equation x(t) = a * cos(2*PI*t),
-  y(t) = b * sin(2*PI*t) (t in 0..1)), this function computes parameter t, where the line and the 
-  ellipse intersect.  
-  WARNING: it is assumed that the caller has already determined that such an intersection exists, 
-  if there's none, you'll get a wrong result. */
+  y(t) = b * sin(2*PI*t) (t in 0..1)), this function computes the parameter value t, for which the 
+  line and the ellipse intersect.  
+  WARNING: It is assumed that the caller has already determined that such an intersection exists, 
+  if there's none, you'll get a wrong result. Also, if there's one intersection, there's typically
+  another one (unless the line just touches the ellipse) - the function returns the one with the
+  larger value. */
   double getLineEllipseIntersectionParameter(double x, double y, double dx, double dy,
     double a2r, double b2r);
+  // todo: maybe make this a protected member function and do not pass a2r, b2r - instead make them
+  // member variables
 
   /** Given the coordinates of a point (x,y) and the parameters of an implicit line equation
   A*x + B*y + C = 0, this function computes the coordinates of a point that is reflected about this
