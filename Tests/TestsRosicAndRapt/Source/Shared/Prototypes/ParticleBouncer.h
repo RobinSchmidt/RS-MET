@@ -25,8 +25,18 @@ public:
 
   /** Sets the aspect ratio for the enclosing ellipse, i.e. the ratio of its width to its 
   height. */
-  inline void setEnclosureEllipseAspectRatio(double ratio) { a = ratio; b = 1/a; }
-  // check this
+  inline void setEnclosureEllipseAspectRatio(double ratio) { a = sqrt(ratio); b = 1/a; }
+
+  inline void setInitialIncrements(double newDeltaX, double newDeltaY)
+  {
+    dx0 = newDeltaX;
+    dy0 = newDeltaY;
+  }
+
+  //void setAngle(double newAngle);
+  //void setSpeed(double newSpeed);
+  // use dx = speed * cos(angle), dy = speed * sin(angle)
+
 
   //-----------------------------------------------------------------------------------------------
   // inquiry:
@@ -60,10 +70,16 @@ public:
 
 protected:
 
-  double a = 1, b = 1;        // parameters of enclosure ellipse
-  double dx = 0.1, dy = 0.2;  // velocity components of particle (as increment per sample)
-  double x0 = 0,   y0 = 0;    // initial particle coordinates
-  double xc = 0,   yc = 0;    // current particle coordinates
+  // parameters of enclosure ellipse:
+  double a = 1, b = 1;          
+
+  // particle coordinates:
+  double x0 = 0, y0 = 0;        // initial
+  double xc = 0, yc = 0;        // current
+
+  // velocity components of particle (as increment per sample):
+  double dx0 = 0.1, dy0 = 0.2;  // initial
+  double dx  = 0.1, dy  = 0.2;  // current
 
 };
 

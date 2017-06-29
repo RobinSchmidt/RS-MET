@@ -15,6 +15,8 @@ void ParticleBouncer::reset()
 {
   xc = x0; 
   yc = y0;
+  dx = dx0;
+  dy = dy0;
 }
 
 // audio processing:
@@ -36,13 +38,27 @@ double ParticleBouncer::getLineEllipseIntersectionParameter(double x, double y, 
 
   return t1;
 
-  // The formula was derived by setting :
+  // The formula was derived by setting:
   // (1) xi = x + t*dx = a * cos(2*PI*t)   
   // (2) yi = y + t*dy = b * sin(2*PI*t)  t in 0..1
   // divide (1) by a, (2) by b, square both equations and add them. That gives a right-hand-side
   // of sin^2(..) + cos^2(..) = 1 and leads to a quadratic equation for t. We are interested in a
   // t between 0 and 1. xi, yi are the x,y coordinates of the intersection point given by
   // xi = x + ti*dx, yi = y + ti*dy where ti is the value of t where the intersection occurs.
+}
+
+
+void reflectPointInLine(double x, double y, double A, double B, double C, double *xr, double *yr)
+{
+  //double a2 = a*a, b2 = b*b;
+  //double s = 1 / (a2+b2);
+
+  double d = 2*(A*x + B*y + C) / (A*A + B*B);
+  *xr = x - A*d;
+  *yr = y - B*d;
+
+  // formula taken from:
+  // https://math.stackexchange.com/questions/1013230/how-to-find-coordinates-of-reflected-point
 }
 
 void ParticleBouncer::getSampleFrame(double &x, double &y)
@@ -76,12 +92,29 @@ void ParticleBouncer::getSampleFrame(double &x, double &y)
     yi = yc + ti*dy;
 
     // for debug - check that xi,yi is indeed on the ellipse:
-    //double err = xi*xi*a2r + yi*yi*b2r - 1; // should be 0 up to roundoff
-
-    int dummy = 0;
+    double err = xi*xi*a2r + yi*yi*b2r - 1; // should be 0 up to roundoff
 
     // Compute tangent to the ellipse at intersection point xi, yi:
+    double A, B, C; // coeffs of line equation A*x + B*y + C = 0 for tangent at xi, yi
+    A = xi*a2r;
+    B = yi*b2r;
+    C = -1;
+
+    // reflect new point in tangent line:
+    double xr, yr;  // maybe we can re-use xn, yn and don't need these
+    reflectPointInLine(xn, yn, A, B, C, &xr, &yr);
+    xn = xr;
+    yn = yr;
+
+
+
     // ...
+
+    // compute new dx, dy:
+
+
+
+    int dummy = 0;
   }
 
 
@@ -109,10 +142,6 @@ However, when the particle hits the boundary of the enclosure (or one of the obs
 bounced back according to the reflection law: the angle of incidence should equal the angle of
 reflection. The absolute value of the velocity (i.e. the speed) should stay the same.
 
-
-Enclosure/Obstacle Shapes:
-
-
 Relevant Equations:
 
 -Line:
@@ -132,6 +161,8 @@ Relevant Equations:
 
 -Polygon:
  ...
+
+Enclosure/Obstacle Shapes:
 
 Notes:
 -I think, the "frequency" of the resulting waveform should be proportional to the particle speed 
