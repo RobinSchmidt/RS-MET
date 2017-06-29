@@ -8,11 +8,23 @@
     <Filter Include="TestsRosicAndRapt\Source">
       <UniqueIdentifier>{DE9EB760-698E-4DD8-448C-1D5E2B720FD7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="TestsRosicAndRapt\Source\rapt_tests">
+      <UniqueIdentifier>{B6E24415-4E14-C484-365C-F7043EDDEED3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TestsRosicAndRapt\Source\rapt_tests\Experiments">
+      <UniqueIdentifier>{8122E470-1FBA-4C57-209D-8B732773F9B6}</UniqueIdentifier>
+    </Filter>
     <Filter Include="TestsRosicAndRapt\Source\Experiments">
       <UniqueIdentifier>{3633CBBB-4131-891C-C1F4-3ED8BC96C23B}</UniqueIdentifier>
     </Filter>
     <Filter Include="TestsRosicAndRapt\Source\Shared">
       <UniqueIdentifier>{0F45AEA0-E94D-18ED-0EF6-EDFEF2882D6B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TestsRosicAndRapt\Source\Shared\Utilities">
+      <UniqueIdentifier>{3F365C0A-AC3F-F4D3-7955-61F9C6B6F87F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TestsRosicAndRapt\Source\Shared\RaptLibraryCode">
+      <UniqueIdentifier>{95070EE3-27AC-09B9-6822-08483E9693C9}</UniqueIdentifier>
     </Filter>
     <Filter Include="TestsRosicAndRapt\Source\Shared\Plotting">
       <UniqueIdentifier>{2CDC542A-DB2E-9525-1B3C-3EF43EFE347F}</UniqueIdentifier>
@@ -196,8 +208,29 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\rapt_tests\Experiments\FilterExperiments.cpp">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\Experiments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\Experiments\GraphicsExperiments.cpp">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\Experiments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\Experiments\MathExperiments.cpp">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\Experiments</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Experiments\Experiments.cpp">
       <Filter>TestsRosicAndRapt\Source\Experiments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Utilities\FileWriting.cpp">
+      <Filter>TestsRosicAndRapt\Source\Shared\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Utilities\PerformanceTestTools.cpp">
+      <Filter>TestsRosicAndRapt\Source\Shared\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Utilities\TestInputCreation.cpp">
+      <Filter>TestsRosicAndRapt\Source\Shared\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\RaptLibraryCode\RaptInstantiations.cpp">
+      <Filter>TestsRosicAndRapt\Source\Shared\RaptLibraryCode</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Shared\Plotting\GNUPlotter.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>
@@ -1575,8 +1608,29 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\rapt_tests\Experiments\FilterExperiments.h">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\Experiments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rapt_tests\Experiments\GraphicsExperiments.h">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\Experiments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\rapt_tests\Experiments\MathExperiments.h">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\Experiments</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Experiments\Experiments.h">
       <Filter>TestsRosicAndRapt\Source\Experiments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Shared\Utilities\FileWriting.h">
+      <Filter>TestsRosicAndRapt\Source\Shared\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Shared\Utilities\PerformanceTestTools.h">
+      <Filter>TestsRosicAndRapt\Source\Shared\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Shared\Utilities\TestInputCreation.h">
+      <Filter>TestsRosicAndRapt\Source\Shared\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Shared\RaptLibraryCode\RaptInstantiations.h">
+      <Filter>TestsRosicAndRapt\Source\Shared\RaptLibraryCode</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Shared\Plotting\GNUPlotter.h">
       <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>

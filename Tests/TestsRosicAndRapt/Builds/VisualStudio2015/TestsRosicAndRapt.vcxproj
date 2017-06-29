@@ -128,7 +128,14 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\rapt_tests\Experiments\FilterExperiments.cpp"/>
+    <ClCompile Include="..\..\Source\rapt_tests\Experiments\GraphicsExperiments.cpp"/>
+    <ClCompile Include="..\..\Source\rapt_tests\Experiments\MathExperiments.cpp"/>
     <ClCompile Include="..\..\Source\Experiments\Experiments.cpp"/>
+    <ClCompile Include="..\..\Source\Shared\Utilities\FileWriting.cpp"/>
+    <ClCompile Include="..\..\Source\Shared\Utilities\PerformanceTestTools.cpp"/>
+    <ClCompile Include="..\..\Source\Shared\Utilities\TestInputCreation.cpp"/>
+    <ClCompile Include="..\..\Source\Shared\RaptLibraryCode\RaptInstantiations.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Plotting\GNUPlotter.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Plotting\Plotting.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Plotting\rosic_Plotter.cpp"/>
@@ -1460,7 +1467,14 @@
     <ClCompile Include="..\..\JuceLibraryCode\rosic.cpp"/>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\rapt_tests\Experiments\FilterExperiments.h"/>
+    <ClInclude Include="..\..\Source\rapt_tests\Experiments\GraphicsExperiments.h"/>
+    <ClInclude Include="..\..\Source\rapt_tests\Experiments\MathExperiments.h"/>
     <ClInclude Include="..\..\Source\Experiments\Experiments.h"/>
+    <ClInclude Include="..\..\Source\Shared\Utilities\FileWriting.h"/>
+    <ClInclude Include="..\..\Source\Shared\Utilities\PerformanceTestTools.h"/>
+    <ClInclude Include="..\..\Source\Shared\Utilities\TestInputCreation.h"/>
+    <ClInclude Include="..\..\Source\Shared\RaptLibraryCode\RaptInstantiations.h"/>
     <ClInclude Include="..\..\Source\Shared\Plotting\GNUPlotter.h"/>
     <ClInclude Include="..\..\Source\Shared\Plotting\Plotting.h"/>
     <ClInclude Include="..\..\Source\Shared\Plotting\rosic_Plotter.h"/>

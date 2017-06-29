@@ -5,11 +5,45 @@
               includeBinaryInAppConfig="1" jucerVersion="4.2.4" defines="DONT_SET_USING_JUCE_NAMESPACE">
   <MAINGROUP id="faVDnE" name="TestsRosicAndRapt">
     <GROUP id="{1E9A4B2E-B083-724B-094D-49D8FBCEF73F}" name="Source">
+      <GROUP id="{86EEC43B-AEDF-BBF9-BF97-B91B0A6A75D6}" name="rapt_tests">
+        <GROUP id="{9B3DF9C6-510B-1467-E9E7-3E8187C592F8}" name="Experiments">
+          <FILE id="jYh9KO" name="FilterExperiments.cpp" compile="1" resource="0"
+                file="Source/rapt_tests/Experiments/FilterExperiments.cpp"/>
+          <FILE id="OTp55x" name="FilterExperiments.h" compile="0" resource="0"
+                file="Source/rapt_tests/Experiments/FilterExperiments.h"/>
+          <FILE id="MpBTt9" name="GraphicsExperiments.cpp" compile="1" resource="0"
+                file="Source/rapt_tests/Experiments/GraphicsExperiments.cpp"/>
+          <FILE id="OhAvkW" name="GraphicsExperiments.h" compile="0" resource="0"
+                file="Source/rapt_tests/Experiments/GraphicsExperiments.h"/>
+          <FILE id="NqLe9c" name="MathExperiments.cpp" compile="1" resource="0"
+                file="Source/rapt_tests/Experiments/MathExperiments.cpp"/>
+          <FILE id="EfK5dG" name="MathExperiments.h" compile="0" resource="0"
+                file="Source/rapt_tests/Experiments/MathExperiments.h"/>
+        </GROUP>
+      </GROUP>
       <GROUP id="{CDBDEF1D-BB8A-7D2D-D038-9B74B068C290}" name="Experiments">
         <FILE id="XlUMHK" name="Experiments.cpp" compile="1" resource="0" file="Source/Experiments/Experiments.cpp"/>
         <FILE id="VKq4cA" name="Experiments.h" compile="0" resource="0" file="Source/Experiments/Experiments.h"/>
       </GROUP>
       <GROUP id="{169783E3-BC83-EFEE-1179-9541750571ED}" name="Shared">
+        <GROUP id="{201E673D-AA9B-D76E-9C89-E7FCF6FE4A20}" name="Utilities">
+          <FILE id="P5YT2S" name="FileWriting.cpp" compile="1" resource="0" file="Source/Shared/Utilities/FileWriting.cpp"/>
+          <FILE id="S3nBXy" name="FileWriting.h" compile="0" resource="0" file="Source/Shared/Utilities/FileWriting.h"/>
+          <FILE id="AC22l8" name="PerformanceTestTools.cpp" compile="1" resource="0"
+                file="Source/Shared/Utilities/PerformanceTestTools.cpp"/>
+          <FILE id="flk1eu" name="PerformanceTestTools.h" compile="0" resource="0"
+                file="Source/Shared/Utilities/PerformanceTestTools.h"/>
+          <FILE id="dTQlI6" name="TestInputCreation.cpp" compile="1" resource="0"
+                file="Source/Shared/Utilities/TestInputCreation.cpp"/>
+          <FILE id="M3MA2g" name="TestInputCreation.h" compile="0" resource="0"
+                file="Source/Shared/Utilities/TestInputCreation.h"/>
+        </GROUP>
+        <GROUP id="{26F3386D-C17C-0FE0-E219-28AD9C050586}" name="RaptLibraryCode">
+          <FILE id="oxwZnF" name="RaptInstantiations.cpp" compile="1" resource="0"
+                file="Source/Shared/RaptLibraryCode/RaptInstantiations.cpp"/>
+          <FILE id="G9J9kL" name="RaptInstantiations.h" compile="0" resource="0"
+                file="Source/Shared/RaptLibraryCode/RaptInstantiations.h"/>
+        </GROUP>
         <GROUP id="{2FD6D867-5BCE-6EA7-AA7A-0B678FC2D479}" name="Plotting">
           <FILE id="xlYcGO" name="GNUPlotter.cpp" compile="1" resource="0" file="Source/Shared/Plotting/GNUPlotter.cpp"/>
           <FILE id="iJVniX" name="GNUPlotter.h" compile="0" resource="0" file="Source/Shared/Plotting/GNUPlotter.h"/>

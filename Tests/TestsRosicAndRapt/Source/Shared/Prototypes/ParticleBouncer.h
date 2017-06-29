@@ -68,7 +68,7 @@ public:
   line and returns them in xr, yr. */
   static void reflectPointInLine(double x, double y, double A, double B, double C,
     double *xr, double *yr);
-  // todo: move this function into some geometry class
+  // todo: move this function into some geometry class (like rapt, Line2D)
 
   //-----------------------------------------------------------------------------------------------
   // audio processing:

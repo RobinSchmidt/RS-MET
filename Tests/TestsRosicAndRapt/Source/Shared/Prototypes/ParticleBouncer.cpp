@@ -84,7 +84,7 @@ void ParticleBouncer::getSampleFrame(double &x, double &y)
     yi = yc + ti*dy;
 
     // for debug - check that xi,yi is indeed on the ellipse:
-    //double err = xi*xi*a2r + yi*yi*b2r - 1; // should be 0 up to roundoff
+    double err = xi*xi*a2r + yi*yi*b2r - 1; // should be 0 up to roundoff
 
     // Reflect new point in a line tangent to the ellipse at intersection point xi, yi. The 
     // equation of that line is (xi/a^2)*x + (yi/b^2)*y - 1 = 0:

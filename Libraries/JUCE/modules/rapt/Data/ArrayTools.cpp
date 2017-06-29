@@ -6,7 +6,7 @@ inline int rsFloorInt(double x)
   return int(x);
 }
 
-unsigned long rsBitReverse(unsigned long number, unsigned long numBits)
+inline unsigned long rsBitReverse(unsigned long number, unsigned long numBits)
 {
   unsigned long result = 0;
   for(unsigned long n=0; n<numBits; n++)
@@ -1117,7 +1117,7 @@ T ArrayTools::rsSumOfSquares(T *x, int N)
   return rsSumOfProducts(x, x, N);
 }
 
-void ArrayTools::rsSwapDataBuffers(void *buffer1, void *buffer2, void *bufferTmp, int sizeInBytes)
+inline void ArrayTools::rsSwapDataBuffers(void *buffer1, void *buffer2, void *bufferTmp, int sizeInBytes)
 {
   memcpy(bufferTmp, buffer1, sizeInBytes);
   memcpy(buffer1, buffer2, sizeInBytes);

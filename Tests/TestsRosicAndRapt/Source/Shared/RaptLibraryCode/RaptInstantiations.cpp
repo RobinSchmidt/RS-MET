@@ -22,7 +22,8 @@ not show all the trunction-warnings that we get for "float").
 instantiates all templates for double. That file can be used by client code by default but client
 code may also define its own instantiation file. */
 
-#include "../../../../Source/Modules/RAPT.cpp"
+//#include "../../../../Source/Modules/RAPT.cpp"
+#include "../../../../../Libraries/JUCE/modules/rapt/rapt.cpp"
 
 // Basics:
 
