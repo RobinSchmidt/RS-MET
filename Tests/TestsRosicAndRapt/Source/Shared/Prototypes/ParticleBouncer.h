@@ -3,7 +3,8 @@
 
 #include "rosic/rosic.h"
 
-/** A sound generator based on the idea of a particle that bounces around inside an enclosure. */
+/** A sound generator based on the idea of a particle that bounces around inside an enclosure. 
+Maybe rename to EllipseBounncer */
 
 class ParticleBouncer
 {
@@ -13,9 +14,11 @@ public:
   //-----------------------------------------------------------------------------------------------
   // construction/destruction:
 
-  ParticleBouncer();   ///< Constructor.
+  /** Constructor. */
+  ParticleBouncer();   
 
-  ~ParticleBouncer();  ///< Destructor.
+  /** Destructor. */
+  ~ParticleBouncer(); 
 
   //-----------------------------------------------------------------------------------------------
   // setup:
@@ -27,9 +30,8 @@ public:
   height. */
   inline void setEnclosureEllipseAspectRatio(double ratio) { a = sqrt(ratio); b = 1/a; }
 
-  /** Sets the angle at which our particle is launched from its initial position. */
+  /** Sets the angle at which our particle is launched from its initial position (in degrees). */
   inline void setLaunchAngle(double newAngle) { angle = PI * newAngle / 180; }
-  // maybe rename to setLaunchAngle
 
   /** Sets the speed by which our particle moves around, i.e. the magnitude of the velocity, 
   which is a vector. */

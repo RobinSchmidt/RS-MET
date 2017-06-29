@@ -9,8 +9,8 @@ void particleBouncerExperiment()
   bouncer.setEnclosureEllipseAspectRatio(1.15);
   //bouncer.setEnclosureEllipseAspectRatio(1.0);
   //bouncer.setEnclosureEllipseAspectRatio(0.8);
-  bouncer.setInitialPosition(0.2, -0.4);
-  //bouncer.setInitialPosition(0.1, -0.2);
+  //bouncer.setInitialPosition(0.2, -0.4);
+  bouncer.setInitialPosition(0.1, -0.2);
   //bouncer.setInitialPosition(0.0, 0.0);
   bouncer.setSpeed(0.02);
   bouncer.setLaunchAngle(30.0);

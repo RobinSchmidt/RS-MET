@@ -161,9 +161,20 @@ Notes:
 
 References:
 
-for ellipses in general orientation:
+for ellipses in general orientation and position:
 https://en.wikipedia.org/wiki/Ellipse#General_ellipse
 https://math.stackexchange.com/questions/264446/the-fastest-way-to-obtain-orientation-%CE%B8-from-this-ellipse-formula
-
+-i think, we need an Ellipse class where the user can set up: 
+ area scale factor (sqrt of scale factor), aspect-ratio, rotation angle, center point
+-aspect-ratio and center coordinates can be LFO modulated by sine, rotation by saw
+-more general ellipse equations are (see links above):
+ -implicit:   A*x^2 + B*x*y + C*y^2 + D*x + E*y + F = 0
+ -parametric: x(t) = a*c*cos(t) - b*s*sin(t) + xc
+              y(t) = a*s*cos(t) + b*c*sin(t) + yc
+ -where (xc,yc): center, s = sin(r), c = cos(r), r: rotation-angle, 
+ A = a^2*s^2+b^2*c^2, B = 2*(b^2-a^2)*s*c, C = a^2*c^2+b^2*s^2, D = -2*A*xc-B*yc,
+ E = -B*xc-2*C*yc, F = A*xc^2 + B*xc*yc + C*yc^2 - a^2*b^2
+-we need more general formulas for ellipse/line intersection-point, tangent-to-ellipse at a point
+ in getSampleFrame
 
 */

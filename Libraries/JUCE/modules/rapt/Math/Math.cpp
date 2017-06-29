@@ -8,6 +8,8 @@ namespace RAPT
 #include "Functions/Sigmoids.cpp"
 
 #include "Geometry/Line2D.cpp"
+#include "Geometry/ConicSection.cpp"
+#include "Geometry/Ellipse.cpp"
 
 #include "Misc/Statistics.cpp"
 

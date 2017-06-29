@@ -289,6 +289,12 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\Sigmoids.cpp">
       <Filter>Juce Modules\rapt\Math\Functions</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Geometry\ConicSection.cpp">
+      <Filter>Juce Modules\rapt\Math\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Geometry\Ellipse.cpp">
+      <Filter>Juce Modules\rapt\Math\Geometry</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Geometry\Line2D.cpp">
       <Filter>Juce Modules\rapt\Math\Geometry</Filter>
     </ClCompile>
@@ -1673,6 +1679,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\Sigmoids.h">
       <Filter>Juce Modules\rapt\Math\Functions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Geometry\ConicSection.h">
+      <Filter>Juce Modules\rapt\Math\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Geometry\Ellipse.h">
+      <Filter>Juce Modules\rapt\Math\Geometry</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Geometry\Line2D.h">
       <Filter>Juce Modules\rapt\Math\Geometry</Filter>

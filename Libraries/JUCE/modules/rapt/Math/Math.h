@@ -12,6 +12,8 @@ namespace RAPT
 #include "Functions/Sigmoids.h"
 
 #include "Geometry/Line2D.h"
+#include "Geometry/ConicSection.h"
+#include "Geometry/Ellipse.h"
 
 #include "Misc/Statistics.h"
 
