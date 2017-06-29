@@ -2,15 +2,15 @@
 
 void particleBouncerExperiment()
 {
-  static const int N = 100;   // number of output samples
+  static const int N = 6000;   // number of output samples
 
   // create and set up particle bouncer:
   ParticleBouncer bouncer;
-  bouncer.setEnclosureEllipseAspectRatio(1.0);
-  //bouncer.setInitialPosition(0.2, -0.4);
-  bouncer.setInitialPosition(-0.41, 0.8);
-  bouncer.setSpeed(0.2);
-  bouncer.setAngle(0.0);
+  bouncer.setEnclosureEllipseAspectRatio(1.15);
+  bouncer.setInitialPosition(0.2, -0.4);
+  //bouncer.setInitialPosition(-0.41, 0.8);
+  bouncer.setSpeed(0.02);
+  bouncer.setAngle(30.0);
   //bouncer.setInitialIncrements(0.2, 0.0);
 
 
@@ -38,6 +38,8 @@ void particleBouncerExperiment()
 
   // plot sequence:
   GNUPlotter plt;
+  plt.setRange(-1.2, +1.2, -1.2, +1.2);
+  plt.setPixelSize(600, 600);
   plt.addCommand("set size square");           // set aspect ratio to 1:1 ..encapsulate in GNUPlotter
   plt.addDataArrays(N, x, y);
   plt.addDataArrays(Ne, xe, ye);

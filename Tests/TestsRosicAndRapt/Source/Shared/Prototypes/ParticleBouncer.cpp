@@ -49,7 +49,6 @@ double ParticleBouncer::getLineEllipseIntersectionParameter(double x, double y, 
   // xi = x + ti*dx, yi = y + ti*dy where ti is the value of t where the intersection occurs.
 }
 
-
 void ParticleBouncer::reflectPointInLine(double x, double y, double A, double B, double C, 
   double *xr, double *yr)
 {
@@ -67,8 +66,6 @@ void ParticleBouncer::getSampleFrame(double &x, double &y)
   x = xc;
   y = yc;
 
-  // ...Update current particle position...
-
   // Compute new (tentative) x,y coordinates:
   double xn, yn;
   xn = xc + dx;
@@ -78,12 +75,11 @@ void ParticleBouncer::getSampleFrame(double &x, double &y)
   // equation x^2/a^2 + y^2/b^2 - 1 = 0. If it's not 0, let's call the right hand side d. This 
   // is proportional to the signed distance between the particle and the perimeter of the 
   // ellipse (what's the proportionality constant?):
-
   double a2r = 1 / (a*a), b2r = 1 / (b*b); // maybe make members
   double d = xn*xn*a2r + yn*yn*b2r - 1;
   while(d > 0.0)  
   {
-    // xn,yn is outside ellipse - we need to reflect...
+    // d >= 0 means (xn,yn) is outside our ellipse - we need to reflect...
 
     // Compute intersection point between current line segment and ellipse:
     double ti, xi, yi;
@@ -92,31 +88,24 @@ void ParticleBouncer::getSampleFrame(double &x, double &y)
     yi = yc + ti*dy;
 
     // for debug - check that xi,yi is indeed on the ellipse:
-    double err = xi*xi*a2r + yi*yi*b2r - 1; // should be 0 up to roundoff
+    //double err = xi*xi*a2r + yi*yi*b2r - 1; // should be 0 up to roundoff
 
     // Reflect new point in tangent line to the ellipse at intersection point xi, yi. The equation
     // of that line is (xi/a^2)*x + (yi/b^2)*y - 1 = 0:
     reflectPointInLine(xn, yn, xi*a2r, yi*b2r, -1, &xn, &yn);
 
-    // compute new dx, dy:
+    // Compute new dx, dy by taking the new direction vector (which points from the intersection 
+    // point to the reflected point) and adjusting its length according to the desired speed:
     dx = xn-xi;
     dy = yn-yi;
     double scaler = speed / sqrt(dx*dx + dy*dy);
     dx *= scaler;
     dy *= scaler;
 
-    // for this, we need to have user parameters speed, initialAngle - then we must here compute
-    // the difference vector between the new (reflected) point and the intersection point and then
-    // renormalize it such that it has the correct length (given by the desired speed)
-    // dx0, dy0 should then not be set directly by the user - instead, the user sets an initial 
-    // angle and a speed from which we calculate the dx0, dy0.
-
-    // Compute new signed distance to boundary after reflection:
+    // Compute new signed distance to boundary after reflection (in case we must reflect more than
+    // once within one sample instant...which is unlikely):
     d = xn*xn*a2r + yn*yn*b2r - 1;
-
-    int dummy = 0;
   }
-
 
   // update current coordinates:
   xc = xn;
