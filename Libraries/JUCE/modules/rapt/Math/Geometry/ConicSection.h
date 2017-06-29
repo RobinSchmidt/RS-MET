@@ -5,12 +5,20 @@
 A*x^2 + B*x*y + C*y^2 + D*x + E*y + F = 0. */
 
 template<class T>
-class ConicSection
+class rsConicSection
 {
 
 public:
 
-  //static void 
+  /** Constructor. Creates a conic section object with the equation 
+  A*x^2 + B*x*y + C*y^2 + D*x + E*y + F = 0. */
+  rsConicSection(T A, T B, T C, T D, T E, T F);
+
+  /** Given a line defined by the parameteric equations: x(t) = x + t*dx, y(t) = y + dy, this
+  function computes the two values of t (t1, t2), where the line intersects this conic. If the line
+  doesn't intersect the conic, t1 and t2 will be NaN (resulting from a (real) square root of a 
+  negative number). */
+  void lineIntersectionParameter(T x, T dx, T y, T dy, T* t1, T* t2);
 
 protected:
 
