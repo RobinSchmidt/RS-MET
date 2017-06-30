@@ -13,8 +13,8 @@ void rsSolveQuadraticEquation(T a, T b, T c, T* x1, T* x2)
   T s = T(1) / (2*a);         // scaler
   T d = b*b - 4*a*c;          // discriminant
   d   = sqrt(rsMax(d, T(0))); // we return the real part of the complex conjugate pair in case of
-  *x1 = (-b+d) * s;           // a negative discriminant 
-  *x2 = (-b-d) * s;
+  *x1 = (-b-d) * s;           // a negative discriminant 
+  *x2 = (-b+d) * s;           // return roots in ascending order
 }
 
 template<class T>

@@ -47,18 +47,18 @@ void ellipseLineIntersections()
   ellipse.getTangentCoeffs(xi1, yi1, &A, &B, &C); // implicit  A*x + B*y + C = 0
   a = -A/B;     // explicit y = a*x + b
   b = -C/B;
-  xt1[0] = 0;   // use points where x=0, x=2 to draw the tangent:
+  xt1[0] = -1.2f;   // use points where x=0, x=2 to draw the tangent:
   yt1[0] = a*xt1[0] + b;   
-  xt1[1] = 2;
+  xt1[1] = -0.5f;
   yt1[1] = a*xt1[1] + b; 
 
   // same for the 2nd intersection:
   ellipse.getTangentCoeffs(xi2, yi2, &A, &B, &C);
   a = -A/B;
   b = -C/B;
-  xt2[0] = -1.2f;
+  xt2[0] = 0;
   yt2[0] = a*xt2[0] + b;   
-  xt2[1] = -0.5f;
+  xt2[1] = 2;
   yt2[1] = a*xt2[1] + b; 
 
   GNUPlotter plt;

@@ -15,6 +15,11 @@ public:
   gives the distance of any point (x,y) from the line. (Not yet tested) */
   static void twoPointToImplicit(T x0, T y0, T x1, T y1, T& A, T& B, T& C);
 
+  /** Given the coordinates of a point (x,y) and the parameters of an implicit line equation
+  A*x + B*y + C = 0, this function computes the coordinates of a point that is reflected about this
+  line and returns them in xr, yr. */
+  static void reflectPointInLine(T x, T y, T A, T B, T C, T *xr, T *yr);
+
 protected:
 
   //T x0 = 0, y0 = 0, x1 = 1, y1 = 1;
