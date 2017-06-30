@@ -25,9 +25,20 @@ public:
   virtual void reset() override;
 
   // target functions for callbacks that are called on parameter changes:
-  void setFrequency(double RayBouncerAudioModule);
+  void setFrequency(double newFrequency);
+  void setEllipseSize(double newSize);
+  void setEllipseAspectRatio(double newRatio);
+  void setEllipseAngleDegrees(double newAngle);
+  void setEllipseCenterX(double newX);
+  void setEllipseCenterY(double newY);
+  void setAutoReset(bool shouldReset);
 
 protected:
+
+  /** Resets the embedded rsRayBouncer object if the flag autoReset is true. to be called from 
+  parameter setters because the sound strongly depends on intial conditions, so it is advisable
+  to automatically reset on parameter change during sound desgin. */
+  void autoResetIfDesired();
 
   // embedded core DSP objects from the RAPT library:
   //RAPT::rsRayBouncerDriver<double> rayBouncer;
@@ -35,6 +46,8 @@ protected:
   //rsRayBouncerDriverD rayBouncer;
 
   double frequency = 100, sampleRate = 44100;
+
+  bool autoReset = false;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RayBouncerAudioModule)
 };

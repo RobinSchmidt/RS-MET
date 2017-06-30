@@ -30,31 +30,31 @@ void RayBouncerAudioModule::createParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<RayBouncerAudioModule>(this, &RayBouncerAudioModule::setFrequency);
 
+  typedef RayBouncerAudioModule RBAM;
 
   p = new Param("Size", 0.25, 1.0, 1.0, Parameter::EXPONENTIAL);
   addObservedParameter(p);
-  p->setValueChangeCallback<rsRayBouncerDriverD>(&rayBouncer, 
-    &rsRayBouncerDriverD::setEllipseSize);
+  p->setValueChangeCallback<RBAM>(this, &RBAM::setEllipseSize);
 
   p = new Param("AspectRatio", 0.5, 2.0, 1.0, Parameter::EXPONENTIAL);
   addObservedParameter(p);
-  p->setValueChangeCallback<rsRayBouncerDriverD>(&rayBouncer, 
-    &rsRayBouncerDriverD::setEllipseAspectRatio);
+  p->setValueChangeCallback<RBAM>(this, &RBAM::setEllipseAspectRatio);
 
   p = new Param("Angle", 0.0, 360.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
-  p->setValueChangeCallback<rsRayBouncerDriverD>(&rayBouncer, 
-    &rsRayBouncerDriverD::setEllipseAngleDegrees);
+  p->setValueChangeCallback<RBAM>(this, &RBAM::setEllipseAngleDegrees);
 
   p = new Param("CenterX", -0.2, 0.2, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
-  p->setValueChangeCallback<rsRayBouncerDriverD>(&rayBouncer, 
-    &rsRayBouncerDriverD::setEllipseCenterX);
+  p->setValueChangeCallback<RBAM>(this, &RBAM::setEllipseCenterX);
 
   p = new Param("CenterY", -0.2, 0.2, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
-  p->setValueChangeCallback<rsRayBouncerDriverD>(&rayBouncer, 
-    &rsRayBouncerDriverD::setEllipseCenterY);
+  p->setValueChangeCallback<RBAM>(this, &RBAM::setEllipseCenterY);
+
+  p = new Param("AutoReset", 0.0, 1.0, 0.0, Parameter::BOOLEAN);
+  addObservedParameter(p);
+  p->setValueChangeCallback<RBAM>(this, &RBAM::setAutoReset);
 
   // maybe we need to call the valueChangeCallback in setValueChangeCallback to make everything
   // initially consistent...
@@ -99,6 +99,42 @@ void RayBouncerAudioModule::setFrequency(double newFrequency)
 {
   frequency = newFrequency;
   rayBouncer.setFrequencyAndSampleRate(frequency, sampleRate);
+}
+void RayBouncerAudioModule::setEllipseSize(double newSize)
+{
+  rayBouncer.setEllipseSize(newSize);
+  autoResetIfDesired();
+}
+void RayBouncerAudioModule::setEllipseAspectRatio(double newRatio)
+{
+  rayBouncer.setEllipseAspectRatio(newRatio);
+  autoResetIfDesired();
+}
+void RayBouncerAudioModule::setEllipseAngleDegrees(double newAngle)
+{
+  rayBouncer.setEllipseAngleDegrees(newAngle);
+  autoResetIfDesired();
+}
+void RayBouncerAudioModule::setEllipseCenterX(double newX)
+{
+  rayBouncer.setEllipseCenterX(newX);
+  autoResetIfDesired();
+}
+void RayBouncerAudioModule::setEllipseCenterY(double newY)
+{
+  rayBouncer.setEllipseCenterY(newY);
+  autoResetIfDesired();
+}
+void RayBouncerAudioModule::setAutoReset(bool shouldReset)
+{
+  autoReset = shouldReset;
+}
+
+
+void RayBouncerAudioModule::autoResetIfDesired()
+{
+  if(autoReset)
+    rayBouncer.reset();
 }
 
 //=================================================================================================
