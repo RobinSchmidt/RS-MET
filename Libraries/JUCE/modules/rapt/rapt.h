@@ -57,7 +57,7 @@
 
 // typedefs for convenience:
 typedef RAPT::LadderFilter<double, double> rsLadderDD;
-
+typedef RAPT::rsRayBouncerDriver<double> rsRayBouncerDriverD;
 
 
 #endif

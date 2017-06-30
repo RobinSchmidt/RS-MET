@@ -3,7 +3,7 @@
   
 //=================================================================================================
 
-/**  */
+/**   */
 
 class JUCE_API RayBouncerAudioModule : public jura::AudioModule
 {
@@ -30,9 +30,13 @@ public:
 protected:
 
   // embedded core DSP objects from the RAPT library:
+  //RAPT::rsRayBouncerDriver<double> rayBouncer;
+  rsRayBouncerDriverD rayBouncer;
   //rsRayBouncerDriverD rayBouncer;
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Ladder)
+  double frequency = 100, sampleRate = 44100;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RayBouncerAudioModule)
 };
 
 //=================================================================================================

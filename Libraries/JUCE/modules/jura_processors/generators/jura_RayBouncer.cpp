@@ -28,7 +28,7 @@ void RayBouncerAudioModule::createParameters()
   defaultValues.push_back(16000.0);
   p->setDefaultValues(defaultValues);
   addObservedParameter(p);
-  p->setValueChangeCallback<Ladder>(this, &Ladder::setCutoff);
+  p->setValueChangeCallback<RayBouncerAudioModule>(this, &RayBouncerAudioModule::setFrequency);
 }
 
 // Editor creation:
@@ -40,30 +40,32 @@ void RayBouncerAudioModule::createParameters()
 
 // audio processing:
 
-void Ladder::processBlock(double **inOutBuffer, int numChannels, int numSamples)
+void RayBouncerAudioModule::processBlock(double **inOutBuffer, int numChannels, int numSamples)
 {
   jassert(numChannels == 2);
-  //double* x = inOutBuffer[0];
-  //double* y = inOutBuffer[1];
-  //for(int n = 0; n < numSamples; n++)
-  //  rayBouncer.getSampleFrame(x[n], y[n]);
+  double* x = inOutBuffer[0];
+  double* y = inOutBuffer[1];
+  for(int n = 0; n < numSamples; n++)
+    rayBouncer.getSampleFrame(x[n], y[n]);
 }
 
 // parameter setters (callback targets for the Parameter objects):
 
 void RayBouncerAudioModule::setSampleRate(double newSampleRate)
 {
-  //rayBouncer.setSampleRate(newSampleRate); 
+  sampleRate = newSampleRate;
+  rayBouncer.setFrequencyAndSampleRate(frequency, sampleRate);
 }
 
 void RayBouncerAudioModule::reset()
 {
-
+  rayBouncer.reset();
 }
 
 void RayBouncerAudioModule::setFrequency(double newFrequency)
 {
-
+  frequency = newFrequency;
+  rayBouncer.setFrequencyAndSampleRate(frequency, sampleRate);
 }
 
 //=================================================================================================

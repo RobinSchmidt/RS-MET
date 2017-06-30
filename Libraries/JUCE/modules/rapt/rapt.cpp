@@ -61,3 +61,9 @@ template class RAPT::PhasorStateMapper<double>;
 // todo: get rid of directly using rapt classes in jura and/or products - create instantiations for
 // double in rosic and use these instantiations only
 
+template class RAPT::rsRayBouncer<double>;
+template class RAPT::rsRayBouncerDriver<double>;
+
+// hmm...it seems, we need all these explicit instantiations anyway - maybe clean up the build
+// system...rename the files to raptJuceModule.h/cpp
+
