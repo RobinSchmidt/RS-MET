@@ -62,10 +62,10 @@ protected:
   x,y about the tangent at that point. */
   inline void reflectInTangentAt(T xt, T yt, T* x, T *y);
 
-  /** Updates dx,dy by taking the the vector that points from the line/ellipse intersection point
-  to the reflected point as new direction and adjusting its length according to the desired 
-  speed. */
-  inline void updateDirectionVector(T xi, T yi, T xn, T yn);
+  /** Updates dx, dy by taking the the vector that points from the given line/ellipse intersection 
+  point xi,yi to the current point as new direction and adjusting its length according to the 
+  desired speed. */
+  inline void updateDirectionVector(T xi, T yi);
 
 
   /** \name Data */

@@ -28,10 +28,10 @@ void rsRayBubble<T>::reflectInTangentAt(T xt, T yt, T* x, T *y)
 }
 
 template<class T>
-void rsRayBubble<T>::updateDirectionVector(T xi, T yi, T xn, T yn)
+void rsRayBubble<T>::updateDirectionVector(T xi, T yi)
 {
-  dx = xn-xi;
-  dy = yn-yi;
+  dx = xc-xi;
+  dy = yc-yi;
   T scaler = speed / sqrt(dx*dx + dy*dy);
   dx *= scaler;
   dy *= scaler;
@@ -45,24 +45,18 @@ void rsRayBubble<T>::getSampleFrame(T &x, T &y)
   y = yc;
 
   // Compute new (tentative) x,y coordinates:
-  T xn, yn;     // do we actually need these temporaries?
-  xn = xc + dx; // can't we use xc, yc directly?
-  yn = yc + dy;
+  xc += dx;
+  yc += dy;
 
   // Reflect, if new coordinates are outside elliptic enclosure:
-  while(ellipse.isPointOutside(xn, yn))  
+  while(ellipse.isPointOutside(xc, yc))  
   {
     T xi, yi;
     getLineEllipseIntersectionPoint(&xi, &yi); // intersection between line segment and ellipse
     //T err = ellipse.evaluate(xi, yi);        // for debug - should be 0 up to roundoff
-    reflectInTangentAt(xi, yi, &xn, &yn);      // reflect new point in tangent at intersection
-    updateDirectionVector(xi, yi, xn, yn);     // new direction points from intersection to 
-                                               // reflected point
+    reflectInTangentAt(xi, yi, &xc, &yc);      // reflect new point in tangent at intersection
+    updateDirectionVector(xi, yi);             // points from intersection to reflected point
   }
-
-  // update current coordinates:
-  xc = xn;
-  yc = yn;
 }
 
 template<class T>
@@ -73,5 +67,3 @@ void rsRayBubble<T>::reset()
   dx = speed * cos(angle);
   dy = speed * sin(angle);
 }
-
-
