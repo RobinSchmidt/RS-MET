@@ -1,14 +1,14 @@
-#ifndef RAPT_RAYBUBBLE_H_INCLUDED
-#define RAPT_RAYBUBBLE_H_INCLUDED
+#ifndef RAPT_RAYBOUNCER_H_INCLUDED
+#define RAPT_RAYBOUNCER_H_INCLUDED
 
 
 /** A sound generator based on the idea of a particle/ray that bounces around inside an elliptic 
 enclosure. 
-maybe rename this to RayBubbleCore
+maybe rename this to RayBouncerCore
 */
 
 template<class T>
-class rsRayBubble
+class rsRayBouncer
 {
 
 public:
@@ -16,7 +16,7 @@ public:
   /** \name Construction/Destruction */
 
   /** Constructor.  */
-  rsRayBubble();
+  rsRayBouncer();
 
 
   /** \name Setup */
@@ -72,14 +72,13 @@ protected:
 
   rsEllipse<T> ellipse; // enclosing ellipse
 
-  // particle coordinates:
-  T x0 = 0, y0 = 0;        // initial
-  T x  = 0, y  = 0;        // current
+  // particle state:
+  T x0 = 0, y0 = 0;     // initial position of particle
+  T x , y, dx, dy;      // current position and velocity (as increment per sample):
 
-  // velocity components of particle (as increment per sample):
-  T dx = T(0.1), dy = T(0.2);  // current
-  T speed = T(0.2);
-  T angle = T(0.0);
+  // user parameters: 
+  T speed = T(0.2);     // speed (i.e. magnitude of velocity)
+  T angle = T(0.0);     // launching angle
 
 };
 

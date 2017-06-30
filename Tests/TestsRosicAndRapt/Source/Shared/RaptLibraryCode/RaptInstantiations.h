@@ -25,7 +25,7 @@ typedef RAPT::PhasorStateMapper<float> PhasorStateMapperF;
 typedef RAPT::StateVariableFilter<float, float> StateVariableFilterFF; 
 
 // Generators:
-typedef RAPT::rsRayBubble<float> rsRayBubbleF;
+typedef RAPT::rsRayBouncer<float> rsRayBouncerF;
 
 // Modulation:
 typedef RAPT::rsBreakpointModulator<float> rsBreakpointModulatorF;

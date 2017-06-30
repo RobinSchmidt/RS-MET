@@ -1,7 +1,7 @@
 template<class T>
-rsRayBubble<T>::rsRayBubble()
+rsRayBouncer<T>::rsRayBouncer()
 {
-
+  reset();
 }
 
 // setup:
@@ -10,7 +10,7 @@ rsRayBubble<T>::rsRayBubble()
 // processing:
 
 template<class T>
-void rsRayBubble<T>::getLineEllipseIntersectionPoint(T* xi, T* yi)
+void rsRayBouncer<T>::getLineEllipseIntersectionPoint(T* xi, T* yi)
 {
   // we use xi,yi temporarily for the two solution for the intersection parameter ti, yi is the
   // relevant solution (the greater value)
@@ -20,7 +20,7 @@ void rsRayBubble<T>::getLineEllipseIntersectionPoint(T* xi, T* yi)
 }
 
 template<class T>
-void rsRayBubble<T>::reflectInTangentAt(T xt, T yt, T* x, T *y)
+void rsRayBouncer<T>::reflectInTangentAt(T xt, T yt, T* x, T *y)
 {
   T A, B, C;
   ellipse.getTangentCoeffs(xt, yt, &A, &B, &C);
@@ -28,7 +28,7 @@ void rsRayBubble<T>::reflectInTangentAt(T xt, T yt, T* x, T *y)
 }
 
 template<class T>
-void rsRayBubble<T>::updateDirectionVector(T xi, T yi)
+void rsRayBouncer<T>::updateDirectionVector(T xi, T yi)
 {
   dx = x-xi;
   dy = y-yi;
@@ -38,7 +38,7 @@ void rsRayBubble<T>::updateDirectionVector(T xi, T yi)
 }
 
 template<class T>
-void rsRayBubble<T>::getSampleFrame(T &xOut, T &yOut)
+void rsRayBouncer<T>::getSampleFrame(T &xOut, T &yOut)
 {
   // assign outputs:
   xOut = x;
@@ -49,8 +49,8 @@ void rsRayBubble<T>::getSampleFrame(T &xOut, T &yOut)
   y += dy;
 
   // Reflect, if new coordinates are outside elliptic enclosure:
-  while(ellipse.isPointOutside(x, y))  
-  {
+  while(ellipse.isPointOutside(x, y))  // maybe include i tiny tolerance, i.e use x-tol, y-tol
+  {                                    // for numerical robustness?
     T xi, yi;
     getLineEllipseIntersectionPoint(&xi, &yi); // intersection between line segment and ellipse
     //T err = ellipse.evaluate(xi, yi);        // for debug - should be 0 up to roundoff
@@ -60,7 +60,7 @@ void rsRayBubble<T>::getSampleFrame(T &xOut, T &yOut)
 }
 
 template<class T>
-void rsRayBubble<T>::reset()
+void rsRayBouncer<T>::reset()
 {
   x  = x0; 
   y  = y0;

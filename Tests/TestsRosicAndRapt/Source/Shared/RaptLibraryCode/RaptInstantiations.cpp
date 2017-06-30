@@ -52,7 +52,7 @@ template RAPT::PhasorStateMapper<float>;
 template RAPT::StateVariableFilter<float, float>; 
 
 // Generators:
-template RAPT::rsRayBubble<float>;
+template RAPT::rsRayBouncer<float>;
 
 // Modulation:
 template RAPT::rsBreakpointModulator<float>;

@@ -40,7 +40,7 @@ public:
   void getPointOnEllipse(T angle, T* x, T* y) const;
 
   /** Returns the total area of the ellipse (not yet tested). */
-  inline T getArea() const { return sqrt(scale) * T(PI); }
+  inline T getArea() const { return sqrt(scale*T(PI)); }
 
   /** Returns true if the point with given x,y coordinates is inside the ellipse. 
   todo: maybe move up to rsConicSection */
