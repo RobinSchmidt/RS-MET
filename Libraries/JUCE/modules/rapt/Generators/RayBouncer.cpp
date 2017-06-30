@@ -4,9 +4,6 @@ rsRayBouncer<T>::rsRayBouncer()
   reset();
 }
 
-// setup:
-
-
 // processing:
 
 template<class T>
@@ -28,7 +25,7 @@ void rsRayBouncer<T>::reflectInTangentAt(T xt, T yt, T* x, T *y)
 }
 
 template<class T>
-void rsRayBouncer<T>::updateDirectionVector(T xi, T yi)
+void rsRayBouncer<T>::updateVelocity(T xi, T yi)
 {
   dx = x-xi;
   dy = y-yi;
@@ -49,13 +46,14 @@ void rsRayBouncer<T>::getSampleFrame(T &xOut, T &yOut)
   y += dy;
 
   // Reflect, if new coordinates are outside elliptic enclosure:
-  while(ellipse.isPointOutside(x, y))  // maybe include i tiny tolerance, i.e use x-tol, y-tol
-  {                                    // for numerical robustness?
+  T tol = T(1.e-8); // to avoid div-by-almost-zero in velocity update
+  while(ellipse.isPointOutside(x-tol, y-tol))
+  {
     T xi, yi;
     getLineEllipseIntersectionPoint(&xi, &yi); // intersection between line segment and ellipse
     //T err = ellipse.evaluate(xi, yi);        // for debug - should be 0 up to roundoff
     reflectInTangentAt(xi, yi, &x, &y);        // reflect new point in tangent at intersection
-    updateDirectionVector(xi, yi);             // points from intersection to reflected point
+    updateVelocity(xi, yi);                    // points from intersection to reflected point
   }
 }
 
@@ -66,4 +64,21 @@ void rsRayBouncer<T>::reset()
   y  = y0;
   dx = speed * cos(angle);
   dy = speed * sin(angle);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+template<class T>
+void rsRayBouncerDriver<T>::setFrequencyAndSampleRate(T newFreq, T newRate)
+{
+  T k = T(1); // proportionality constant - preliminary figure out...
+  T speed = k * newFreq / newRate;
+  rayBouncer.setSpeed(speed);
+}
+
+template<class T>
+void rsRayBouncerDriver<T>::reset()
+{
+  rayBouncer.reset();
+  // todo: reset modulators, when we have some...
 }

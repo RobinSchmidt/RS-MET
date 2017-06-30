@@ -4,10 +4,9 @@ void rayBubble()
 {
   rsRayBouncerF rb;
   rb.setEllipseParameters(1, 2, float(PI/4), 0.1f, 0.2f);
-  //rb.setInitialPosition(0.1, -0.2);
   rb.setInitialPosition(0.2f, -0.4f);
   rb.setSpeed(0.02f);
-  rb.setLaunchAngle(30.f);
+  rb.setLaunchAngle(float(PI) * 30.f / 180.f);
 
   // create output sequence:
   static const int N = 8000;   // number of output samples

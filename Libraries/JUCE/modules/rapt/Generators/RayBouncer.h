@@ -24,8 +24,8 @@ public:
   /** Sets the initial position of the particle. */
   inline void setInitialPosition(T x, T y) { x0 = x; y0 = y; }
 
-  /** Sets the angle at which our particle is launched from its initial position (in degrees). */
-  inline void setLaunchAngle(T newAngle) { angle = T(PI*newAngle/180); }
+  /** Sets the angle at which our particle is launched from its initial position (in radians). */
+  inline void setLaunchAngle(T newAngle) { angle = newAngle; }
 
   /** Sets the speed by which our particle moves around, i.e. the magnitude of the velocity, 
   which is a vector. */
@@ -62,10 +62,10 @@ protected:
   x,y about the tangent at that point. */
   inline void reflectInTangentAt(T xt, T yt, T* x, T *y);
 
-  /** Updates dx, dy by taking the the vector that points from the given line/ellipse intersection 
-  point xi,yi to the current point as new direction and adjusting its length according to the 
-  desired speed. */
-  inline void updateDirectionVector(T xi, T yi);
+  /** Updates dx, dy by taking the direction vector that points from the given line/ellipse 
+  intersection point xi,yi to the current point as new direction and adjusting its length according 
+  to the desired speed. */
+  inline void updateVelocity(T xi, T yi);
 
 
   /** \name Data */
@@ -79,6 +79,43 @@ protected:
   // user parameters: 
   T speed = T(0.2);     // speed (i.e. magnitude of velocity)
   T angle = T(0.0);     // launching angle
+
+};
+
+//=================================================================================================
+
+/** A class that encapsulates an rsRayBouncer object to let the user set it up in terms of musical
+parameters (such as a pseudo frequency, etc.) and also some modulators that animate certain
+parameters of the bouncer such as the parameters of the ellipse, an output transformation, etc. */
+
+template<class T>
+class rsRayBouncerDriver
+{
+
+public:
+
+  /** \name Setup */
+
+  /** Sets the frequency and sample rate in Hz */
+  void setFrequencyAndSampleRate(T newFreq, T newRate);
+
+
+  /** \name Processing */
+
+  /** Computes one x,y-pair of output values at a time. */
+  inline void getSampleFrame(T &x, T &y)
+  {
+    rayBouncer.getSampleFrame(x, y);
+  }
+
+  /** Resets the internal state (position and velocity). */
+  void reset();
+
+
+protected:
+
+  rsRayBouncer<T> rayBouncer;
+
 
 };
 
