@@ -52,6 +52,22 @@ public:
 
 protected:
 
+  /** \name Internal Functions */
+
+  /** Computes the intersection point between the current line segment along 
+  xc + t*dx, yc + t*dy and the ellipse. */
+  inline void getLineEllipseIntersectionPoint(T* xi, T* yi);
+
+  /** Given a point xt,yt assumed to be on the ellipse, this function reflects the point
+  x,y about the tangent at that point. */
+  inline void reflectInTangentAt(T xt, T yt, T* x, T *y);
+
+  /** Updates dx,dy by taking the the vector that points from the line/ellipse intersection point
+  to the reflected point as new direction and adjusting its length according to the desired 
+  speed. */
+  inline void updateDirectionVector(T xi, T yi, T xn, T yn);
+
+
   /** \name Data */
 
   rsEllipse<T> ellipse; // enclosing ellipse
