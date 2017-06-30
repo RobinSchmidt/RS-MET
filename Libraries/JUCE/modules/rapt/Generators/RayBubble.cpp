@@ -25,7 +25,6 @@ void rsRayBubble<T>::getSampleFrame(T &x, T &y)
   // equation. If it's not 0, let's call the right hand side d. This is proportional to the signed
   // distance between the particle and the perimeter of the ellipse (what's the proportionality 
   // constant?):
-
   T d = ellipse.evaluate(xn, yn);
   while(d > 0.0)  
   {
@@ -38,7 +37,7 @@ void rsRayBubble<T>::getSampleFrame(T &x, T &y)
     yi = yc + ti*dy; 
 
     // for debug - check that xi,yi is indeed on the ellipse:
-    T err = ellipse.evaluate(xi, yi);   // should be 0 up to roundoff
+    //T err = ellipse.evaluate(xi, yi);   // should be 0 up to roundoff
 
     // Reflect new point in a line tangent to the ellipse at intersection point xi, yi:
     T A, B, C;

@@ -31,21 +31,30 @@ public:
   which is a vector. */
   inline void setSpeed(T newSpeed) { speed = newSpeed; }
   // later replace this with setFrequency, setSampleRate...the speed is then proportional to
-  // frequency/sampleRate
+  // frequency/sampleRate - but maybe move this to some outside "driver" class
+
+  /** Sets the parameters of the enclosing ellipse. */
+  inline void setEllipseParameters(T newScale = 1, T newAspectRatio = 1, T newAngle = 0,
+    T newCenterX = 0, T newCenterY = 0)
+  {
+    ellipse.setParameters(newScale, newAspectRatio, newAngle, newCenterX, newCenterY);
+  }
 
 
   /** \name Processing */
 
+  /** Computes one x,y-pair of output values at a time. */
   void getSampleFrame(T &x, T &y);
 
+  /** Resets the internal state (position and velocity). */
   void reset();
 
+
+protected:
 
   /** \name Data */
 
   rsEllipse<T> ellipse; // enclosing ellipse
-
-protected:
 
   // particle coordinates:
   T x0 = 0, y0 = 0;        // initial
