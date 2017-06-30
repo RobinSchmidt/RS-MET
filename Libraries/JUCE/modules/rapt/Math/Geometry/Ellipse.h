@@ -42,6 +42,14 @@ public:
   /** Returns the total area of the ellipse (not yet tested). */
   inline T getArea() const { return sqrt(scale) * T(PI); }
 
+  /** Returns true if the point with given x,y coordinates is inside the ellipse. 
+  todo: maybe move up to rsConicSection */
+  inline bool isPointInside(T x, T y) { return evaluate(x, y) < 0; }
+
+  /** Returns true if the point with given x,y coordinates is outside the ellipse. */
+  inline bool isPointOutside(T x, T y) { return evaluate(x, y) > 0; }
+
+
 
 protected:
 
