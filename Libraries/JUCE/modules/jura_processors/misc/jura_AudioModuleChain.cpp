@@ -9,6 +9,9 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
   if(type == "TrackMeter")    return new TrackMeterAudioModule(   lock);
   if(type == "MidiMonitor")   return new MidiMonitorAudioModule(  lock);
 
+  // generators:
+  if(type == "RayBouncer")    return new RayBouncerAudioModule(lock);
+
   // filters:
   if(type == "Equalizer")       return new EqualizerAudioModule(      lock);
   if(type == "Ladder")          return new Ladder(                    lock);
@@ -54,6 +57,9 @@ juce::String AudioModuleFactory::getModuleType(AudioModule *m)
   if(dynamic_cast<MultiAnalyzerAudioModule*> (m))  return "MultiAnalyzer";
   if(dynamic_cast<TrackMeterAudioModule*> (m))     return "TrackMeter";
   if(dynamic_cast<MidiMonitorAudioModule*> (m))    return "MidiMonitor";
+
+  // generators:
+  if(dynamic_cast<RayBouncerAudioModule*>(m))      return "RayBouncer";
 
   // filters:
   if(dynamic_cast<EqualizerAudioModule*>(m))       return "Equalizer";
@@ -106,6 +112,8 @@ StringArray AudioModuleFactory::getAvailableModuleTypes()
   a.add("TrackMeter");
   a.add("MidiMonitor");
 
+  // generators:
+  a.add("RayBouncer");
 
   // filters:
   a.add("Equalizer");
