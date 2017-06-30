@@ -17,8 +17,8 @@ public:
 
   /** Given a line defined by the parameteric equations: x(t) = x + t*dx, y(t) = y + dy, this
   function computes the two values of t (t1, t2), where the line intersects this conic. If the line
-  doesn't intersect the conic, t1 and t2 will be NaN (resulting from a (real) square root of a 
-  negative number). */
+  doesn't intersect the conic, the equation will formally yield two complex conjugate intersection
+  points and the returned t1, t2 will the real part of them. */
   void lineIntersectionParameter(T x, T dx, T y, T dy, T* t1, T* t2);
 
   /** Evaluates the conic equation A*x^2 + B*x*y + C*y^2 + D*x + E*y + F. On the conic, this value
