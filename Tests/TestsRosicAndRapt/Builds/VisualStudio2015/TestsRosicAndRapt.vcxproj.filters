@@ -59,6 +59,9 @@
     <Filter Include="Juce Modules\rapt\Filters\Musical">
       <UniqueIdentifier>{F476BC58-8E03-665A-31B3-38D8620F18EC}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Juce Modules\rapt\Generators">
+      <UniqueIdentifier>{2584BCEB-C557-9A65-E2CF-912962FBE27E}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Juce Modules\rapt\Math">
       <UniqueIdentifier>{3CF66C1C-C57B-EAFA-F6CF-68921702FEE8}</UniqueIdentifier>
     </Filter>
@@ -211,6 +214,9 @@
     <ClCompile Include="..\..\Source\rapt_tests\Experiments\FilterExperiments.cpp">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\Experiments</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\Experiments\GeneratorExperiments.cpp">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\Experiments</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\rapt_tests\Experiments\GraphicsExperiments.cpp">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\Experiments</Filter>
     </ClCompile>
@@ -312,6 +318,12 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Filters.cpp">
       <Filter>Juce Modules\rapt\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\Generators.cpp">
+      <Filter>Juce Modules\rapt\Generators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\RayBubble.cpp">
+      <Filter>Juce Modules\rapt\Generators</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\BasicFunctions.cpp">
       <Filter>Juce Modules\rapt\Math\Functions</Filter>
@@ -1611,6 +1623,9 @@
     <ClInclude Include="..\..\Source\rapt_tests\Experiments\FilterExperiments.h">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\Experiments</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\rapt_tests\Experiments\GeneratorExperiments.h">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\Experiments</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\rapt_tests\Experiments\GraphicsExperiments.h">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\Experiments</Filter>
     </ClInclude>
@@ -1724,6 +1739,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Filters.h">
       <Filter>Juce Modules\rapt\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\Generators.h">
+      <Filter>Juce Modules\rapt\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\RayBubble.h">
+      <Filter>Juce Modules\rapt\Generators</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\BasicFunctions.h">
       <Filter>Juce Modules\rapt\Math\Functions</Filter>

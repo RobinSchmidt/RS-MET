@@ -129,6 +129,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\rapt_tests\Experiments\FilterExperiments.cpp"/>
+    <ClCompile Include="..\..\Source\rapt_tests\Experiments\GeneratorExperiments.cpp"/>
     <ClCompile Include="..\..\Source\rapt_tests\Experiments\GraphicsExperiments.cpp"/>
     <ClCompile Include="..\..\Source\rapt_tests\Experiments\MathExperiments.cpp"/>
     <ClCompile Include="..\..\Source\Experiments\Experiments.cpp"/>
@@ -179,6 +180,12 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Filters.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\Generators.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\RayBubble.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\BasicFunctions.cpp">
@@ -1468,6 +1475,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\rapt_tests\Experiments\FilterExperiments.h"/>
+    <ClInclude Include="..\..\Source\rapt_tests\Experiments\GeneratorExperiments.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\Experiments\GraphicsExperiments.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\Experiments\MathExperiments.h"/>
     <ClInclude Include="..\..\Source\Experiments\Experiments.h"/>
@@ -1506,6 +1514,8 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Musical\PhasorFilter.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Musical\StateVariableFilter.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Filters.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\Generators.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\RayBubble.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\BasicFunctions.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\BellFunctions.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\FunctionObjects.h"/>

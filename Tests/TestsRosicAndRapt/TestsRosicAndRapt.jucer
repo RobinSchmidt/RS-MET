@@ -11,6 +11,10 @@
                 file="Source/rapt_tests/Experiments/FilterExperiments.cpp"/>
           <FILE id="OTp55x" name="FilterExperiments.h" compile="0" resource="0"
                 file="Source/rapt_tests/Experiments/FilterExperiments.h"/>
+          <FILE id="Cau1xx" name="GeneratorExperiments.cpp" compile="1" resource="0"
+                file="Source/rapt_tests/Experiments/GeneratorExperiments.cpp"/>
+          <FILE id="Q19B2r" name="GeneratorExperiments.h" compile="0" resource="0"
+                file="Source/rapt_tests/Experiments/GeneratorExperiments.h"/>
           <FILE id="MpBTt9" name="GraphicsExperiments.cpp" compile="1" resource="0"
                 file="Source/rapt_tests/Experiments/GraphicsExperiments.cpp"/>
           <FILE id="OhAvkW" name="GraphicsExperiments.h" compile="0" resource="0"

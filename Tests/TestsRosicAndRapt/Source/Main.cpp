@@ -5,6 +5,7 @@ using namespace rotes;
 
 #include "rapt_tests/Experiments/MathExperiments.h"
 #include "rapt_tests/Experiments/FilterExperiments.h"
+#include "rapt_tests/Experiments/GeneratorExperiments.h"
 #include "rapt_tests/Experiments/GraphicsExperiments.h"
 
 #include "Experiments/Experiments.h"
@@ -40,7 +41,7 @@ int main(int argc, char* argv[])
   //particleBouncerExperiment();
 
   // Math:
-  ellipseLineIntersections();
+  //ellipseLineIntersections();
   //expGaussBell();
   //linearRegression();
   //productLogPlot();
@@ -48,6 +49,9 @@ int main(int argc, char* argv[])
   // Filter:
   //ladderResonanceManipulation();
   //nonUniformMovingAverage();
+
+  // Generators:
+  rayBubble();
 
   // Graphics:
   //lineDrawing();
