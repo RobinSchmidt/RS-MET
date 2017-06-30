@@ -74,11 +74,10 @@ protected:
 
   // particle coordinates:
   T x0 = 0, y0 = 0;        // initial
-  T xc = 0, yc = 0;        // current, maybe rename to x,y - take care in getSampleFrame to rename
-                           // inputs
+  T x  = 0, y  = 0;        // current
 
   // velocity components of particle (as increment per sample):
-  T dx  = T(0.1), dy = T(0.2);  // current
+  T dx = T(0.1), dy = T(0.2);  // current
   T speed = T(0.2);
   T angle = T(0.0);
 

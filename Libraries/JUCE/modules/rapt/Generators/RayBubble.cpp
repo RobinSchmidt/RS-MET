@@ -14,9 +14,9 @@ void rsRayBubble<T>::getLineEllipseIntersectionPoint(T* xi, T* yi)
 {
   // we use xi,yi temporarily for the two solution for the intersection parameter ti, yi is the
   // relevant solution (the greater value)
-  ellipse.lineIntersectionParameter(xc, dx, yc, dy, xi, yi); // xi <- ti1, yi <- ti2
-  *xi = xc + *yi * dx;  // yi is still ti2
-  *yi = yc + *yi * dy;  // ...now not anymore
+  ellipse.lineIntersectionParameter(x, dx, y, dy, xi, yi); // xi <- ti1, yi <- ti2
+  *xi = x + *yi * dx;  // yi is still ti2
+  *yi = y + *yi * dy;  // ...now not anymore
 }
 
 template<class T>
@@ -30,31 +30,31 @@ void rsRayBubble<T>::reflectInTangentAt(T xt, T yt, T* x, T *y)
 template<class T>
 void rsRayBubble<T>::updateDirectionVector(T xi, T yi)
 {
-  dx = xc-xi;
-  dy = yc-yi;
+  dx = x-xi;
+  dy = y-yi;
   T scaler = speed / sqrt(dx*dx + dy*dy);
   dx *= scaler;
   dy *= scaler;
 }
 
 template<class T>
-void rsRayBubble<T>::getSampleFrame(T &x, T &y)
+void rsRayBubble<T>::getSampleFrame(T &xOut, T &yOut)
 {
   // assign outputs:
-  x = xc;
-  y = yc;
+  xOut = x;
+  yOut = y;
 
   // Compute new (tentative) x,y coordinates:
-  xc += dx;
-  yc += dy;
+  x += dx;
+  y += dy;
 
   // Reflect, if new coordinates are outside elliptic enclosure:
-  while(ellipse.isPointOutside(xc, yc))  
+  while(ellipse.isPointOutside(x, y))  
   {
     T xi, yi;
     getLineEllipseIntersectionPoint(&xi, &yi); // intersection between line segment and ellipse
     //T err = ellipse.evaluate(xi, yi);        // for debug - should be 0 up to roundoff
-    reflectInTangentAt(xi, yi, &xc, &yc);      // reflect new point in tangent at intersection
+    reflectInTangentAt(xi, yi, &x, &y);        // reflect new point in tangent at intersection
     updateDirectionVector(xi, yi);             // points from intersection to reflected point
   }
 }
@@ -62,8 +62,8 @@ void rsRayBubble<T>::getSampleFrame(T &x, T &y)
 template<class T>
 void rsRayBubble<T>::reset()
 {
-  xc = x0; 
-  yc = y0;
+  x  = x0; 
+  y  = y0;
   dx = speed * cos(angle);
   dy = speed * sin(angle);
 }
