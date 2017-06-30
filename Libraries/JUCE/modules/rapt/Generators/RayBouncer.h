@@ -33,7 +33,9 @@ public:
   // later replace this with setFrequency, setSampleRate...the speed is then proportional to
   // frequency/sampleRate - but maybe move this to some outside "driver" class
 
-  /** Sets the parameters of the enclosing ellipse. */
+  /** Sets the parameters of the enclosing ellipse. Note that we do not include a shear 
+  transformation because that would be redundant, because a sheared ellipse is still an ellipse
+  (affine transformations map conic sections into conic sections of the same type) */
   inline void setEllipseParameters(T newScale = 1, T newAspectRatio = 1, T newAngle = 0,
     T newCenterX = 0, T newCenterY = 0)
   {

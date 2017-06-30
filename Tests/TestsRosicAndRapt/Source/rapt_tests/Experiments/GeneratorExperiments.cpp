@@ -22,5 +22,4 @@ void rayBubble()
   plt.addDataArrays(N, x, y);
   //plt.addDataArrays(Ne, xe, ye);
   plt.plot();
-  int dummy = 0;
 }
