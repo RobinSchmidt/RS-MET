@@ -46,8 +46,22 @@ void RayBouncerAudioModule::createParameters()
   p->setValueChangeCallback<rsRayBouncerDriverD>(&rayBouncer, 
     &rsRayBouncerDriverD::setEllipseAngleDegrees);
 
+  p = new Param("CenterX", -0.2, 0.2, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<rsRayBouncerDriverD>(&rayBouncer, 
+    &rsRayBouncerDriverD::setEllipseCenterX);
+
+  p = new Param("CenterY", -0.2, 0.2, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<rsRayBouncerDriverD>(&rayBouncer, 
+    &rsRayBouncerDriverD::setEllipseCenterY);
+
   // maybe we need to call the valueChangeCallback in setValueChangeCallback to make everything
   // initially consistent...
+
+  // add initial condition parameters - the output is very sensitive to the conditions
+  // swicthing presets back and forth always sounds different because of different initial 
+  // conditions
 }
 
 // Editor creation:

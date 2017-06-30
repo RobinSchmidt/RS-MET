@@ -56,6 +56,8 @@ void rsRayBouncer<T>::getSampleFrame(T &xOut, T &yOut)
     reflectInTangentAt(xi, yi, &x, &y);        // reflect new point in tangent at intersection
     updateVelocity(xi, yi);                    // points from intersection to reflected point
   }
+  // in certain conditions we get hung up in this loop - may use an "if" or a maximum number
+  // of iterations..
 }
 
 template<class T>
