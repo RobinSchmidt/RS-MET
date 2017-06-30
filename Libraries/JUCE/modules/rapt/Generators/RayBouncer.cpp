@@ -77,6 +77,24 @@ void rsRayBouncerDriver<T>::setFrequencyAndSampleRate(T newFreq, T newRate)
   rayBouncer.setSpeed(speed);
 }
 
+//template<class T>
+//void rsRayBouncerDriver<T>::setEllipseSize(T newSize)
+//{
+//
+//}
+//
+//template<class T>
+//void rsRayBouncerDriver<T>::setEllipseAspectRatio(T newRatio)
+//{
+//
+//}
+//
+//template<class T>
+//void rsRayBouncerDriver<T>::setEllipseAngle(T newAngle)
+//{
+//
+//}
+
 template<class T>
 void rsRayBouncerDriver<T>::reset()
 {

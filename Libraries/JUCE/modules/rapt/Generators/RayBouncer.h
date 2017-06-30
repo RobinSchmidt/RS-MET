@@ -103,12 +103,23 @@ public:
   /** Sets the frequency and sample rate in Hz */
   void setFrequencyAndSampleRate(T newFreq, T newRate);
 
+  // ellipse parameters:
+  inline void setEllipseSize(        T newSize)  { ellipseSize    = newSize;            }
+  inline void setEllipseAspectRatio( T newRatio) { ellipseRatio   = newRatio;           }
+  inline void setEllipseAngleDegrees(T newAngle) { ellipseAngle   = T(PI/180)*newAngle; } 
+  inline void setEllipseCenterX(     T newX)     { ellipseCenterX = newX;               }
+  inline void setEllipseCenterY(     T newY)     { ellipseCenterX = newY;               }
+
+
+
 
   /** \name Processing */
 
   /** Computes one x,y-pair of output values at a time. */
   inline void getSampleFrame(T &x, T &y)
   {
+    rayBouncer.setEllipseParameters(ellipseSize, ellipseRatio, ellipseAngle, ellipseCenterX,
+      ellipseCenterY);
     rayBouncer.getSampleFrame(x, y);
   }
 
@@ -119,6 +130,8 @@ public:
 protected:
 
   rsRayBouncer<T> rayBouncer;
+
+  T ellipseSize = 1, ellipseRatio = 1, ellipseAngle = 0, ellipseCenterX = 0, ellipseCenterY = 0;
 
   // rsSineOscillator lfoSize, lfoRatio, lfoX, lfoY;
   // rsNaiveSawOscillator lfoAngle;

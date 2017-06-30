@@ -29,6 +29,25 @@ void RayBouncerAudioModule::createParameters()
   p->setDefaultValues(defaultValues);
   addObservedParameter(p);
   p->setValueChangeCallback<RayBouncerAudioModule>(this, &RayBouncerAudioModule::setFrequency);
+
+
+  p = new Param("Size", 0.25, 1.0, 1.0, Parameter::EXPONENTIAL);
+  addObservedParameter(p);
+  p->setValueChangeCallback<rsRayBouncerDriverD>(&rayBouncer, 
+    &rsRayBouncerDriverD::setEllipseSize);
+
+  p = new Param("AspectRatio", 0.5, 2.0, 1.0, Parameter::EXPONENTIAL);
+  addObservedParameter(p);
+  p->setValueChangeCallback<rsRayBouncerDriverD>(&rayBouncer, 
+    &rsRayBouncerDriverD::setEllipseAspectRatio);
+
+  p = new Param("Angle", 0.0, 360.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<rsRayBouncerDriverD>(&rayBouncer, 
+    &rsRayBouncerDriverD::setEllipseAngleDegrees);
+
+  // maybe we need to call the valueChangeCallback in setValueChangeCallback to make everything
+  // initially consistent...
 }
 
 // Editor creation:
