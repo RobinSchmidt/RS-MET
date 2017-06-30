@@ -9,8 +9,8 @@ rsRayBouncer<T>::rsRayBouncer()
 template<class T>
 void rsRayBouncer<T>::getLineEllipseIntersectionPoint(T* xi, T* yi)
 {
-  // we use xi,yi temporarily for the two solution for the intersection parameter ti, yi is the
-  // relevant solution (the greater value)
+  // we use xi,yi temporarily for the two solutions for the intersection parameter ti, yi is the
+  // relevant solution (the greater value):
   ellipse.lineIntersectionParameter(x, dx, y, dy, xi, yi); // xi <- ti1, yi <- ti2
   *xi = x + *yi * dx;  // yi is still ti2
   *yi = y + *yi * dy;  // ...now not anymore

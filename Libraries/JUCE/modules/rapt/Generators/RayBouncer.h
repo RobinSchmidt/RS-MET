@@ -118,6 +118,13 @@ protected:
 
   rsRayBouncer<T> rayBouncer;
 
+  // rsSineOscillator lfoSize, lfoRatio, lfoX, lfoY;
+  // rsNaiveSawOscillator lfoAngle;
+  // maybe, instead of letting the center just x,y bob up and down, move the ellipse center in a 
+  // circle or ellipse as well...or maybe do both...lots of movement in the ellipse should lead
+  // to complex animated shape and sound
+  // maybe when the ellipse size is animated, we should compensate for any frequency change that
+  // is caused by this - or maybe compensate only partially according to a user parameter
 
 };
 

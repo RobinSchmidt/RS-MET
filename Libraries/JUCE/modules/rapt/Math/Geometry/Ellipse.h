@@ -17,15 +17,16 @@ public:
   /** \name Construction/Destruction */
 
   /** Constructor. Without any parameters, it creates a unit circle. */
-  rsEllipse(T scale = 1, T aspectRatio = 1, T angle = 0, T centerX = 0, T centerY = 0);
+  rsEllipse(T areaScaler = 1, T aspectRatio = 1, T rotationAngle = 0, T centerX = 0, 
+    T centerY = 0);
 
 
   /** \name Setup */
 
   /** Sets all the parameters that determine the ellipses size, shape, orientation and position
   at once. */
-  void setParameters(T newScale = 1, T newAspectRatio = 1, T newAngle = 0, T newCenterX = 0, 
-    T newCenterY = 0);
+  void setParameters(T newAreaScale = 1, T newAspectRatio = 1, T newRotationAngle = 0, 
+    T newCenterX = 0, T newCenterY = 0);
 
   //void setScaleFactor(T newFactor);
   //void setAspectRatio(T newRatio);
@@ -40,7 +41,7 @@ public:
   void getPointOnEllipse(T angle, T* x, T* y) const;
 
   /** Returns the total area of the ellipse (not yet tested). */
-  inline T getArea() const { return sqrt(scale*T(PI)); }
+  inline T getArea() const { return scale*T(PI); }
 
   /** Returns true if the point with given x,y coordinates is inside the ellipse. 
   todo: maybe move up to rsConicSection */
@@ -48,7 +49,6 @@ public:
 
   /** Returns true if the point with given x,y coordinates is outside the ellipse. */
   inline bool isPointOutside(T x, T y) { return evaluate(x, y) > 0; }
-
 
 
 protected:
