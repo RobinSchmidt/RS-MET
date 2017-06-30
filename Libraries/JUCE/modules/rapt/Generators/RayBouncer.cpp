@@ -46,7 +46,8 @@ void rsRayBouncer<T>::getSampleFrame(T &xOut, T &yOut)
   y += dy;
 
   // Reflect, if new coordinates are outside elliptic enclosure:
-  T tol = T(1.e-8); // to avoid div-by-almost-zero in velocity update
+  //T tol = T(1.e-8); // to avoid div-by-almost-zero in velocity update
+  T tol = 0; // for debug - maybe that's not such a good idea with the tolerance
   while(ellipse.isPointOutside(x-tol, y-tol))
   {
     T xi, yi;
@@ -71,7 +72,7 @@ void rsRayBouncer<T>::reset()
 template<class T>
 void rsRayBouncerDriver<T>::setFrequencyAndSampleRate(T newFreq, T newRate)
 {
-  T k = T(1); // proportionality constant - preliminary figure out...
+  T k = T(10); // proportionality constant - preliminary figure out...
   T speed = k * newFreq / newRate;
   rayBouncer.setSpeed(speed);
 }

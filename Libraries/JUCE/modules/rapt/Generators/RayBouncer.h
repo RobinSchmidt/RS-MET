@@ -32,6 +32,7 @@ public:
   inline void setSpeed(T newSpeed) { speed = newSpeed; }
   // later replace this with setFrequency, setSampleRate...the speed is then proportional to
   // frequency/sampleRate - but maybe move this to some outside "driver" class
+  // setting the speed variable is not enough - we also need to re-normalize the dx,dy
 
   /** Sets the parameters of the enclosing ellipse. Note that we do not include a shear 
   transformation because that would be redundant, because a sheared ellipse is still an ellipse
@@ -47,6 +48,7 @@ public:
 
   /** Computes one x,y-pair of output values at a time. */
   void getSampleFrame(T &x, T &y);
+  // use pointers for output variables
 
   /** Resets the internal state (position and velocity). */
   void reset();

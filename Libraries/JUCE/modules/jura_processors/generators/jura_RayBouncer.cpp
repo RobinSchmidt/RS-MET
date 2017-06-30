@@ -45,8 +45,8 @@ void RayBouncerAudioModule::processBlock(double **inOutBuffer, int numChannels, 
   jassert(numChannels == 2);
   double* x = inOutBuffer[0];
   double* y = inOutBuffer[1];
-  //for(int n = 0; n < numSamples; n++)
-  //  rayBouncer.getSampleFrame(x[n], y[n]);
+  for(int n = 0; n < numSamples; n++)
+    rayBouncer.getSampleFrame(x[n], y[n]);
 }
 
 // parameter setters (callback targets for the Parameter objects):
