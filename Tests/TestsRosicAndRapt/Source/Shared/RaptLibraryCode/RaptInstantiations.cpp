@@ -51,6 +51,9 @@ template RAPT::PhasorFilter<float, float>;
 template RAPT::PhasorStateMapper<float>;
 template RAPT::StateVariableFilter<float, float>; 
 
+// Generators:
+template RAPT::rsRayBubble<float>;
+
 // Modulation:
 template RAPT::rsBreakpointModulator<float>;
 

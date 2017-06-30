@@ -2,6 +2,7 @@
 
 void rayBubble()
 {
+  rsRayBubbleF rb;
 
   int dummy = 0;
 }
