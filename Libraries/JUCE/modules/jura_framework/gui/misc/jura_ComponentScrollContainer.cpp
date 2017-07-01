@@ -14,14 +14,14 @@ ComponentScrollContainer::ComponentScrollContainer(Component *contentComponentTo
   leftRightScrollBar = new RScrollBar(false);
   leftRightScrollBar->setRangeLimits( 0.0, jmax(contentComponent->getWidth(), 1));
   leftRightScrollBar->setCurrentRange(0.0, jmax(contentComponent->getWidth(), 1));
-  leftRightScrollBar->setSingleStepSize(1.0);
+  //leftRightScrollBar->setSingleStepSize(1.0);
   leftRightScrollBar->addListener(this);
   addWidget(leftRightScrollBar);
 
   upDownScrollBar = new RScrollBar(true);
   upDownScrollBar->setRangeLimits( 0.0, jmax(contentComponent->getHeight(), 1));
   upDownScrollBar->setCurrentRange(0.0, jmax(contentComponent->getHeight(), 1));
-  upDownScrollBar->setSingleStepSize(1.0);
+  //upDownScrollBar->setSingleStepSize(1.0);
   upDownScrollBar->addListener(this);
   addWidget(upDownScrollBar);
 

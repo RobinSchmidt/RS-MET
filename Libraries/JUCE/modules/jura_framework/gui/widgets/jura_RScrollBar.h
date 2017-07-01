@@ -82,7 +82,7 @@ public:
   will move the bar down or to the right, a negative value moves it up or to the left. */
   virtual void moveScrollbarInSteps(const int howManySteps)
   {
-    setCurrentRangeStart(rangeStart + howManySteps * singleStepSize);
+    setCurrentRangeStart(rangeStart + howManySteps*singleStepSize*rangeSize);
   }
 
   /** Moves the scroll bar up or down in pages. This will move the bar by a multiple of its current 

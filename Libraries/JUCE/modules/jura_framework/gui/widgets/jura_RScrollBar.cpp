@@ -228,7 +228,7 @@ void RScrollBar::mouseWheelMove(const MouseEvent &e, const MouseWheelDetails &wh
     increment = jmin(increment * 10.0f, -1.0f);
   else if(increment > 0)
     increment = jmax(increment * 10.0f, 1.0f);
-  setCurrentRangeStart(rangeStart - singleStepSize * increment);
+  setCurrentRangeStart(rangeStart - singleStepSize*rangeSize * increment);
 }
 // old:
 //void RScrollBar::mouseWheelMove(const MouseEvent&, float wheelIncrementX, float wheelIncrementY)
