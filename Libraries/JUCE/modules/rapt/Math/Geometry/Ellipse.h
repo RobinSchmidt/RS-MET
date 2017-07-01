@@ -45,10 +45,11 @@ public:
 
   /** Returns true if the point with given x,y coordinates is inside the ellipse. 
   todo: maybe move up to rsConicSection */
-  inline bool isPointInside(T x, T y) { return evaluate(x, y) < 0; }
+  inline bool isPointInside(T x, T y) { return this->evaluate(x, y) < 0; }
 
   /** Returns true if the point with given x,y coordinates is outside the ellipse. */
-  inline bool isPointOutside(T x, T y) { return evaluate(x, y) > 0; }
+  inline bool isPointOutside(T x, T y) { return this->evaluate(x, y) > 0; }
+   // "this" needed for mac builds - why?
 
 
 protected:
