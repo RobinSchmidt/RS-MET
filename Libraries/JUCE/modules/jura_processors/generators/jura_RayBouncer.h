@@ -23,6 +23,8 @@ public:
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
   virtual void setSampleRate(double newSampleRate) override; 
   virtual void reset() override;
+  virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 
+    bool markAsClean) override;
 
   // target functions for callbacks that are called on parameter changes:
   void setFrequency(double newFrequency);
@@ -31,6 +33,9 @@ public:
   void setEllipseAngleDegrees(double newAngle);
   void setEllipseCenterX(double newX);
   void setEllipseCenterY(double newY);
+  void setStartX(double newX);
+  void setStartY(double newY);
+  void setLaunchAngle(double newAngle);
   void setAutoReset(bool shouldReset);
 
 protected:

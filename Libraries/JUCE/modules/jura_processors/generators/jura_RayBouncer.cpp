@@ -52,6 +52,19 @@ void RayBouncerAudioModule::createParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<RBAM>(this, &RBAM::setEllipseCenterY);
 
+  p = new Param("StartX", -0.2, 0.2, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<RBAM>(this, &RBAM::setStartX);
+
+  p = new Param("StartY", -0.2, 0.2, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<RBAM>(this, &RBAM::setStartY);
+
+  p = new Param("LaunchAngle", 0.0, 360.0, 45.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<RBAM>(this, &RBAM::setLaunchAngle);
+
+
   p = new Param("AutoReset", 0.0, 1.0, 0.0, Parameter::BOOLEAN);
   addObservedParameter(p);
   p->setValueChangeCallback<RBAM>(this, &RBAM::setAutoReset);
@@ -82,8 +95,6 @@ void RayBouncerAudioModule::processBlock(double **inOutBuffer, int numChannels, 
     rayBouncer.getSampleFrame(x[n], y[n]);
 }
 
-// parameter setters (callback targets for the Parameter objects):
-
 void RayBouncerAudioModule::setSampleRate(double newSampleRate)
 {
   sampleRate = newSampleRate;
@@ -94,6 +105,15 @@ void RayBouncerAudioModule::reset()
 {
   rayBouncer.reset();
 }
+
+void RayBouncerAudioModule::setStateFromXml(const XmlElement& xmlState, 
+  const juce::String& stateName, bool markAsClean)
+{
+  AudioModule::setStateFromXml(xmlState, stateName, markAsClean);
+  rayBouncer.reset();
+}
+
+// parameter setters (callback targets for the Parameter objects):
 
 void RayBouncerAudioModule::setFrequency(double newFrequency)
 {
@@ -125,11 +145,28 @@ void RayBouncerAudioModule::setEllipseCenterY(double newY)
   rayBouncer.setEllipseCenterY(newY);
   autoResetIfDesired();
 }
+void RayBouncerAudioModule::setStartX(double newX)
+{
+  rayBouncer.setStartX(newX);
+  autoResetIfDesired();
+}
+void RayBouncerAudioModule::setStartY(double newY)
+{
+  rayBouncer.setStartY(newY);
+  autoResetIfDesired();
+}
+void RayBouncerAudioModule::setLaunchAngle(double newAngle)
+{
+  rayBouncer.setLaunchAngleDegrees(newAngle);
+  autoResetIfDesired();
+}
+
 void RayBouncerAudioModule::setAutoReset(bool shouldReset)
 {
   autoReset = shouldReset;
 }
 
+// misc:
 
 void RayBouncerAudioModule::autoResetIfDesired()
 {

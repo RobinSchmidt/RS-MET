@@ -108,7 +108,14 @@ public:
   inline void setEllipseAspectRatio( T newRatio) { ellipseRatio   = newRatio;           }
   inline void setEllipseAngleDegrees(T newAngle) { ellipseAngle   = T(PI/180)*newAngle; } 
   inline void setEllipseCenterX(     T newX)     { ellipseCenterX = newX;               }
-  inline void setEllipseCenterY(     T newY)     { ellipseCenterX = newY;               }
+  inline void setEllipseCenterY(     T newY)     { ellipseCenterY = newY;               }
+
+  // other parameters:
+  void setStartX(T newX);
+  void setStartY(T newY);
+  inline void setLaunchAngleDegrees(T newAngle) { rayBouncer.setLaunchAngle(T(PI/180)*newAngle); }
+
+
 
 
 
@@ -121,6 +128,19 @@ public:
     rayBouncer.setEllipseParameters(ellipseSize, ellipseRatio, ellipseAngle, ellipseCenterX,
       ellipseCenterY);
     rayBouncer.getSampleFrame(x, y);
+
+    //// test - apply some high frequency texture derived form a nonlinear combination of the 
+    //// outputs:
+    //T k = 0.2;
+    //T tx, ty;
+    ////tx = x*(1-x*y);
+    ////ty = y*(1-x*y);
+    ////tx = y*(x+y);
+    ////ty = x*(x+y);
+    //tx = (1-x*y); tx *= tx; tx *= tx;
+    //ty = tx;
+    //x += k*tx;
+    //y += k*ty;
   }
 
   /** Resets the internal state (position and velocity). */
@@ -132,6 +152,7 @@ protected:
   rsRayBouncer<T> rayBouncer;
 
   T ellipseSize = 1, ellipseRatio = 1, ellipseAngle = 0, ellipseCenterX = 0, ellipseCenterY = 0;
+  T startX = 0, startY = 0;
 
   // rsSineOscillator lfoSize, lfoRatio, lfoX, lfoY;
   // rsNaiveSawOscillator lfoAngle;
