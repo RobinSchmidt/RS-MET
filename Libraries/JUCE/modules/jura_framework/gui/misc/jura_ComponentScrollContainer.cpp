@@ -48,6 +48,13 @@ void ComponentScrollContainer::setScrolleeSize(int width, int height)
   }
 }
 
+void ComponentScrollContainer::fixScrollBars(bool fixHorizontalBar, bool fixVerticalBar)
+{
+  leftRightBarFixed = fixHorizontalBar;
+  upDownBarFixed = fixVerticalBar; 
+  updateScrollBarBoundsAndVisibility();
+}
+
 //-------------------------------------------------------------------------------------------------
 // callbacks:
 
@@ -118,8 +125,8 @@ void ComponentScrollContainer::updateScrollBarBoundsAndVisibility()
   int availableWidth  = getWidth();
   int requiredWidth   = contentComponent->getWidth();
 
-  bool upDownBarNeeded     = requiredHeight > availableHeight;
-  bool leftRightBarNeeded  = requiredWidth  > availableWidth;
+  bool upDownBarNeeded     = (requiredHeight > availableHeight) || upDownBarFixed;
+  bool leftRightBarNeeded  = (requiredWidth  > availableWidth)  || leftRightBarFixed;
   bool leftRightBarNeeded2 = false;
   bool upDownBarNeeded2    = false;
 

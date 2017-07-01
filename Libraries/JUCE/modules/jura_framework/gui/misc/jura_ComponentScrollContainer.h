@@ -30,6 +30,10 @@ public:
   /** Sets the size of the to-be-scrolled content component (and updates the scrollbars). */
   virtual void setScrolleeSize(int width, int height);
 
+  /** Sets one or both of the scrollbars always visible (i.e. they won't automatically 
+  dis/appear according to how much space is available). */
+  virtual void fixScrollBars(bool fixHorizontalBar, bool fixVerticalBar);
+
 
   //-----------------------------------------------------------------------------------------------
   // inquiry:
@@ -63,6 +67,7 @@ protected:
 
   Component  *contentComponent; // rename to scrollee
   RScrollBar *leftRightScrollBar, *upDownScrollBar;
+  bool upDownBarFixed = false, leftRightBarFixed = false;
   RWidget    *bottomRightCoverage;  // when  both scrollbars are visible, we typically want to cover the bottom right corner
   int scrollBarThickness;
   int xOffset, yOffset;  // offset for the content component with respect to the (0,0) coordinate of "this" component
