@@ -20,7 +20,7 @@ template<class T>
 T PositiveSigmoids<T>::cubicRational(T x)
 {
   x *= 1 + x + x*x;    //  x + x^2 + x^3
-  return x / (x+1);    // (x + x^2 + x^3) + (x + x^2 + x^3 + 1)
+  return x / (x+1);    // (x + x^2 + x^3) / (x + x^2 + x^3 + 1)
 }
 
 template<class T>
@@ -230,7 +230,7 @@ void ParametricSigmoid<T>::setPiecewiseBreakpoint(T newBreakpoint)
 template<class T>
 T ParametricSigmoid<T>::coreFunction(T x, T a, T b)
 {
-  T t = x*x;              // t = x^2
+  T t = x*x;                   // t = x^2
   t = x + a*(b*t + (1-b)*t*x); // t = x + a*(b*x^2 + (1-b)*x^3) 
   return t / (t+1);            //    (x + a*(b*x^2 + (1-b)*x^3)) / (x + a*(b*x^2 + (1-b)*x^3) + 1)
 }
@@ -250,8 +250,8 @@ T ParametricSigmoid<T>::getB(T a)
   // The formula: b = 1 / (a+1) is motivated as follows: the 2nd derivative (curvature) of the 
   // core function f at the origin x=0 is given by c = 2*a*b - 2. It would seem desirable to set the 
   // curvature to 0 at x=0 which would result in b = 1/a. However, we need to restrict b to
-  // b <= 1 (otherwise the function becomes unbouded), that's why 1 is added in the denominator (a
-  // may go down to 0) . Another option would be to use b = min(1, 1/a) or to expose the desired 
+  // b <= 1 (otherwise the function becomes unbounded), that's why 1 is added in the denominator (a
+  // may go down to 0). Another option would be to use b = min(1, 1/a) or to expose the desired 
   // curvature at the origin as user parameter and then use b = min(1, (2+c)/(2*a). Maybe this can be
   // explored further at some stage...
 

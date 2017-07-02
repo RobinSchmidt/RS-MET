@@ -49,15 +49,50 @@ void rsRayBouncer<T>::getSampleFrame(T &xOut, T &yOut)
   //T tol = T(1.e-8); // to avoid div-by-almost-zero in velocity update
   T tol = 0; // for debug - maybe that's not such a good idea with the tolerance
   while(ellipse.isPointOutside(x-tol, y-tol))
+  //if(ellipse.isPointOutside(x-tol, y-tol))
   {
     T xi, yi;
     getLineEllipseIntersectionPoint(&xi, &yi); // intersection between line segment and ellipse
     //T err = ellipse.evaluate(xi, yi);        // for debug - should be 0 up to roundoff
     reflectInTangentAt(xi, yi, &x, &y);        // reflect new point in tangent at intersection
-    updateVelocity(xi, yi);                    // points from intersection to reflected point
+    updateVelocity(xi, yi);                    // points from intersection to reflected point now
   }
   // in certain conditions we get hung up in this loop - may use an "if" or a maximum number
-  // of iterations..
+  // of iterations....i guess, it happens when the new point ends up exactly on the ellipse
+  // in this case, the reflected point equals the original point and it never gets from the outside
+  // to the inside...we need some special treatment for such cases...write unit tests....
+
+  // experimental: mess with the velocity vector:
+  T k = 0.0;  // coefficient for nonlinear velocity modification
+  T tx, ty;
+  //tx = x*(1-x*y);   // bad
+  //ty = y*(1-x*y);
+
+  //tx = dy*(dx+dy);  // good
+  //ty = dx*(dx+dy);
+
+  tx = dy*dy;      // also good
+  ty = dx*dx;
+
+  //tx = dy;  // works only with extremely small coeff like 0.0001 - but then it tends to drag
+  //ty = dx;  // the sound towards periodic/harmonic waveform
+
+  //tx = dx*dx;      // also good
+  //ty = dy*dy;
+
+  //tx = ty = dx*dy;   // also good
+
+  // i really think, i should provide user parameters xxToX, xyToX, xyToY, yyToY that scale the 
+  // amounts by which various velocity-products are added to the respective velocity components
+
+  //tx = (1-x*y); tx *= tx; tx *= tx;
+  //ty = tx;
+  dx += k*tx;
+  dy += k*ty;
+  T scaler = speed / sqrt(dx*dx + dy*dy);
+  dx *= scaler;
+  dy *= scaler;
+
 }
 
 template<class T>

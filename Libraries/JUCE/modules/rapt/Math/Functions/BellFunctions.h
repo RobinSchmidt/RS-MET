@@ -1,8 +1,6 @@
 #ifndef RAPT_BELLFUNCTIONS_H_INCLUDED
 #define RAPT_BELLFUNCTIONS_H_INCLUDED
 
-// ToDo: templatize this class
-
 /** This class is a collection of bell shaped functions where we assume that the input is
 nonnegative: x >= 0. If your input value may be negative, you can just pass the absolute value, 
 such that the positive side will be mirrored at the y-axis. The functions don't do that 
