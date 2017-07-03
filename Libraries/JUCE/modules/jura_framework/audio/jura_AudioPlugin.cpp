@@ -156,7 +156,8 @@ void AudioPlugin::getStateInformation(juce::MemoryBlock& destData)
   {
     // todo: store values of the MetaParameters
 
-    XmlElement* xml = wrappedAudioModule->getStateAsXml("StateAsRequestedByHost", false);
+    //XmlElement* xml = wrappedAudioModule->getStateAsXml("StateAsRequestedByHost", false);
+    XmlElement* xml = wrappedAudioModule->getStateAsXml(wrappedAudioModule->getStateName(), false);
     xml->setAttribute("EditorWidth",  editorWidth);
     xml->setAttribute("EditorHeight", editorHeight);
     copyXmlToBinary(*xml, destData);
