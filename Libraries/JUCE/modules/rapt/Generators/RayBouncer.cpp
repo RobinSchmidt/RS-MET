@@ -62,17 +62,32 @@ void rsRayBouncer<T>::getSampleFrame(T &xOut, T &yOut)
   // in this case, the reflected point equals the original point and it never gets from the outside
   // to the inside...we need some special treatment for such cases...write unit tests....
 
+  // apply nonlinear velocity modifications:
+  xyToX = xyToY = 1;
+  nonLinAmount = 0.1;
+
+  T xx = dx*dx;
+  T xy = dx*dy;
+  T yy = dy*dy;
+  dx += nonLinAmount * (xxToX * xx + xyToX * xy + yyToX * yy);
+  dy += nonLinAmount * (xxToY * xx + xyToY * xy + yyToY * yy);
+  // we need some experimenting - maybe it's sufficient to use xy alone to save computational power
+  // ...see if the other terms add something new qualitatively, if not, maybe leave them out
+
   // experimental: mess with the velocity vector:
-  T k = 0.0;  // coefficient for nonlinear velocity modification
-  T tx, ty;
+  //T k = -1.0;  // coefficient for nonlinear velocity modification
+  //T tx, ty;
   //tx = x*(1-x*y);   // bad
   //ty = y*(1-x*y);
 
   //tx = dy*(dx+dy);  // good
   //ty = dx*(dx+dy);
 
-  tx = dy*dy;      // also good
-  ty = dx*dx;
+  //tx = dy*dy;      // also good
+  //ty = dx*dx;
+
+  //tx = dy*dy * rsSign(dx);      // also good
+  //ty = dx*dx * rsSign(dy);
 
   //tx = dy;  // works only with extremely small coeff like 0.0001 - but then it tends to drag
   //ty = dx;  // the sound towards periodic/harmonic waveform
@@ -85,14 +100,19 @@ void rsRayBouncer<T>::getSampleFrame(T &xOut, T &yOut)
   // i really think, i should provide user parameters xxToX, xyToX, xyToY, yyToY that scale the 
   // amounts by which various velocity-products are added to the respective velocity components
 
-  //tx = (1-x*y); tx *= tx; tx *= tx;
-  //ty = tx;
-  dx += k*tx;
-  dy += k*ty;
-  T scaler = speed / sqrt(dx*dx + dy*dy);
-  dx *= scaler;
-  dy *= scaler;
+  // maybe a highpass filter could be interesting. it would disable a constant velocity vector so
+  // it would always want to bend away
 
+  ////tx = (1-x*y); tx *= tx; tx *= tx;
+  ////ty = tx;
+  //dx += k*tx;
+  //dy += k*ty;
+
+  //T scaler = speed / sqrt(dx*dx + dy*dy);
+  //dx *= scaler;
+  //dy *= scaler;
+  // renormalization seems not to be critical - maybe leave it out for efficiency because it's
+  // expensive
 }
 
 template<class T>
@@ -109,7 +129,7 @@ void rsRayBouncer<T>::reset()
 template<class T>
 void rsRayBouncerDriver<T>::setFrequencyAndSampleRate(T newFreq, T newRate)
 {
-  T k = T(10); // proportionality constant - preliminary figure out...
+  T k = T(1); // proportionality constant - preliminary figure out...
   T speed = k * newFreq / newRate;
   rayBouncer.setSpeed(speed);
 }

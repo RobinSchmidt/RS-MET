@@ -77,8 +77,14 @@ protected:
   rsEllipse<T> ellipse; // enclosing ellipse
 
   // particle state:
-  T x0 = 0, y0 = 0;     // initial position of particle
-  T x , y, dx, dy;      // current position and velocity (as increment per sample):
+  T x0 = 0, y0 = 0;      // initial position of particle
+  T x , y, dx, dy;       // current position and velocity (as increment per sample):
+
+  // coefficients to scale products dx*dx, dx*dy, dy*dy to add them to the velocity vetor for
+  // nonlinear effects:
+  T xxToX = 0, xyToX = 0, yyToX = 0;
+  T xxToY = 0, xyToY = 0, yyToY = 0;
+  T nonLinAmount = 0;  // gloable scaler for nonlinear effects
 
   // user parameters: 
   T speed = T(0.2);     // speed (i.e. magnitude of velocity)
