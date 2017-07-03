@@ -64,6 +64,11 @@ void RayBouncerAudioModule::createParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<RBAM>(this, &RBAM::setLaunchAngle);
 
+  p = new Param("NonLin", -1.0, 1.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<rsRayBouncerD>(&rayBouncer.rayBouncer, 
+    &rsRayBouncerD::setNonlinearityAmount);
+
 
   p = new Param("AutoReset", 0.0, 1.0, 0.0, Parameter::BOOLEAN);
   addObservedParameter(p);

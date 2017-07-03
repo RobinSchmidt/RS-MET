@@ -25,6 +25,16 @@ void rsRayBouncer<T>::reflectInTangentAt(T xt, T yt, T* x, T *y)
 }
 
 template<class T>
+void rsRayBouncer<T>::ensurePointIsInEllipse(T* x, T* y)
+{
+  if(ellipse.isPointOutside(*x, *y, tolerance))
+  {
+    *x = x0; 
+    *y = y0;
+  }
+}
+
+template<class T>
 void rsRayBouncer<T>::updateVelocity(T xi, T yi)
 {
   dx = x-xi;
@@ -47,24 +57,36 @@ void rsRayBouncer<T>::getSampleFrame(T &xOut, T &yOut)
 
   // Reflect, if new coordinates are outside elliptic enclosure:
   //T tol = T(1.e-8); // to avoid div-by-almost-zero in velocity update
-  T tol = 0; // for debug - maybe that's not such a good idea with the tolerance
-  while(ellipse.isPointOutside(x-tol, y-tol))
+  //T tol = 0; // for debug - maybe that's not such a good idea with the tolerance
+  //while(ellipse.isPointOutside(x+tol*dx, y+tol*dy))
   //if(ellipse.isPointOutside(x-tol, y-tol))
+  //while(ellipse.isPointOutside(x, y, tol))
+  if(ellipse.isPointOutside(x, y, tolerance))
   {
     T xi, yi;
     getLineEllipseIntersectionPoint(&xi, &yi); // intersection between line segment and ellipse
-    //T err = ellipse.evaluate(xi, yi);        // for debug - should be 0 up to roundoff
+
+    T err = ellipse.evaluate(xi, yi);        // for debug - should be 0 up to roundoff
+    T val = ellipse.evaluate(x, y);            // also for debug
+
     reflectInTangentAt(xi, yi, &x, &y);        // reflect new point in tangent at intersection
+
+    ensurePointIsInEllipse(&x, &y);            // because sometimes, we fail numerically
+
     updateVelocity(xi, yi);                    // points from intersection to reflected point now
   }
   // in certain conditions we get hung up in this loop - may use an "if" or a maximum number
   // of iterations....i guess, it happens when the new point ends up exactly on the ellipse
   // in this case, the reflected point equals the original point and it never gets from the outside
   // to the inside...we need some special treatment for such cases...write unit tests....
+  // ..it happens when we get a negative discriminant in the quadratic equation that has to be 
+  // solved in getLineEllipseIntersectionPoint - this means that the line in question does not
+  // really intersect the ellipse - perhaps the ellipse has moved while the particle was moving
+  // out
 
   // apply nonlinear velocity modifications:
   xyToX = xyToY = 1;
-  nonLinAmount = 0.1;
+  //nonLinAmount = 0.1;
 
   T xx = dx*dx;
   T xy = dx*dy;

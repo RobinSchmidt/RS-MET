@@ -46,10 +46,10 @@ public:
 
   /** Returns true if the point with given x,y coordinates is inside the ellipse. 
   todo: maybe move up to rsConicSection */
-  inline bool isPointInside(T x, T y) const { return this->evaluate(x, y) < 0; }
+  inline bool isPointInside(T x, T y, T tol = 0) const { return this->evaluate(x, y) < -tol; }
 
   /** Returns true if the point with given x,y coordinates is outside the ellipse. */
-  inline bool isPointOutside(T x, T y) const { return this->evaluate(x, y) > 0; }
+  inline bool isPointOutside(T x, T y, T tol = 0) const { return this->evaluate(x, y) > tol; }
    // "this" needed for mac builds - why?
 
 

@@ -43,6 +43,11 @@ public:
     ellipse.setParameters(newScale, newAspectRatio, newAngle, newCenterX, newCenterY);
   }
 
+  /** Sets the overall amount of nonlinear effects on the velocity. This tends to bend the rays
+  and for some reason, it seems to also drag the output to a more periodic waveform (corresponding 
+  to a harmonic spectrum). It can also create chaotic behavior. */
+  inline void setNonlinearityAmount(T newAmount) { nonLinAmount = newAmount; }
+
 
   /** \name Processing */
 
@@ -66,6 +71,8 @@ protected:
   x,y about the tangent at that point. */
   inline void reflectInTangentAt(T xt, T yt, T* x, T *y);
 
+  inline void ensurePointIsInEllipse(T* x, T* y);
+
   /** Updates dx, dy by taking the direction vector that points from the given line/ellipse 
   intersection point xi,yi to the current point as new direction and adjusting its length according 
   to the desired speed. */
@@ -76,6 +83,8 @@ protected:
 
   rsEllipse<T> ellipse; // enclosing ellipse
 
+  T tolerance = 1.e-8;   // numerical tolerance for inside/outside checks
+
   // particle state:
   T x0 = 0, y0 = 0;      // initial position of particle
   T x , y, dx, dy;       // current position and velocity (as increment per sample):
@@ -84,12 +93,13 @@ protected:
   // nonlinear effects:
   T xxToX = 0, xyToX = 0, yyToX = 0;
   T xxToY = 0, xyToY = 0, yyToY = 0;
-  T nonLinAmount = 0;  // gloable scaler for nonlinear effects
+  T nonLinAmount = 0;  // global scaler for nonlinear effects
 
   // user parameters: 
   T speed = T(0.2);     // speed (i.e. magnitude of velocity)
   T angle = T(0.0);     // launching angle
 
+  //friend class rsRayBouncerDriver;
 };
 
 //=================================================================================================
@@ -153,9 +163,9 @@ public:
   void reset();
 
 
-protected:
-
   rsRayBouncer<T> rayBouncer;
+
+protected:
 
   T ellipseSize = 1, ellipseRatio = 1, ellipseAngle = 0, ellipseCenterX = 0, ellipseCenterY = 0;
   T startX = 0, startY = 0;
