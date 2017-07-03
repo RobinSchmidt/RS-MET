@@ -95,8 +95,15 @@ void convertAudioBuffer(const AudioBuffer<SourceType>& source, AudioBuffer<Targe
 {
   // maybe move this helper function somewhere else, for example to jura_framework/tools
 
-  int numChannels = jmin(source.getNumChannels(), target.getNumChannels());
-  int numSamples  = jmin(source.getNumSamples(),  target.getNumSamples());
+  // old:
+  //int numChannels = jmin(source.getNumChannels(), target.getNumChannels());
+  //int numSamples  = jmin(source.getNumSamples(),  target.getNumSamples());
+
+  // new (especially important for FL Studio with its variable buffer sizes):
+  int numChannels = source.getNumChannels();
+  int numSamples  = source.getNumSamples();
+  target.setSize(numChannels, numSamples, true, false, true);
+
   const SourceType *sourcePointer;
   TargetType *targetPointer;
   for(int channel = 0; channel < numChannels; channel++)
@@ -107,6 +114,7 @@ void convertAudioBuffer(const AudioBuffer<SourceType>& source, AudioBuffer<Targe
       targetPointer[sample] = (TargetType)sourcePointer[sample];
   }
 }
+
 void AudioPlugin::processBlock(AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
 {
   //ScopedLock scopedLock(plugInLock);
