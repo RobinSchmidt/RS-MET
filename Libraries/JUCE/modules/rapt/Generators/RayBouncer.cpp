@@ -31,6 +31,9 @@ void rsRayBouncer<T>::ensurePointIsInEllipse(T* x, T* y)
   {
     *x = x0; 
     *y = y0;
+    // this is not ideal - it leads to spurious discontinuities - maybe instead set the point
+    // to somewhere on the line between the current line intersection point xi, yi and the start
+    // point x0, y0
   }
 }
 
@@ -85,11 +88,12 @@ void rsRayBouncer<T>::getSampleFrame(T &xOut, T &yOut)
   // out
 
   // apply velocity modifications (bending):
-  T tx = dx; // temp
+  T tx = speed*dx;
+  T ty = speed*dy;
   T xx = dx*dx;
   T xy = dx*dy;
   T yy = dy*dy;
-  dx += bendAmount * (xxToX * xx + xyToX * xy + yyToX * yy + yToX * dy);
+  dx += bendAmount * (xxToX * xx + xyToX * xy + yyToX * yy + yToX * ty);
   dy += bendAmount * (xxToY * xx + xyToY * xy + yyToY * yy + xToY * tx);
 
   // maybe we should scale the yToY, yToX terms be the speed

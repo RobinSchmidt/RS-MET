@@ -69,11 +69,11 @@ void RayBouncerAudioModule::createParameters()
   p->setValueChangeCallback<RBAM>(this, &RBAM::setBending);
 
 
-  p = new Param("BendX2Y", -0.01, 0.01, 0.0, Parameter::LINEAR);
+  p = new Param("BendX2Y", -4.0, 4.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<RBAM>(this, &RBAM::setBendX2Y);
 
-  p = new Param("BendY2X", -0.01, 0.01, 0.0, Parameter::LINEAR);
+  p = new Param("BendY2X", -4.0, 4.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<RBAM>(this, &RBAM::setBendY2X);
 
