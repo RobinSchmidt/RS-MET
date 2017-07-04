@@ -36,6 +36,19 @@ public:
   void setStartX(double newX);
   void setStartY(double newY);
   void setLaunchAngle(double newAngle);
+
+  void setBending( double newValue);
+  void setBendX2Y( double newValue);
+  void setBendY2X( double newValue);
+  void setBendXX2X(double newValue);
+  void setBendXX2Y(double newValue);
+  void setBendXY2X(double newValue);
+  void setBendXY2Y(double newValue);
+  void setBendYY2X(double newValue);
+  void setBendYY2Y(double newValue);
+
+
+
   void setAutoReset(bool shouldReset);
 
 protected:

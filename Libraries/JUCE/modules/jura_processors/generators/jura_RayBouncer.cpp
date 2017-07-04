@@ -64,10 +64,49 @@ void RayBouncerAudioModule::createParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<RBAM>(this, &RBAM::setLaunchAngle);
 
-  p = new Param("NonLin", -1.0, 1.0, 0.0, Parameter::LINEAR);
+  p = new Param("Bending", -1.0, 1.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
-  p->setValueChangeCallback<rsRayBouncerD>(&rayBouncer.rayBouncer, 
-    &rsRayBouncerD::setNonlinearityAmount);
+  p->setValueChangeCallback<RBAM>(this, &RBAM::setBending);
+
+
+  p = new Param("BendX2Y", -0.01, 0.01, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<RBAM>(this, &RBAM::setBendX2Y);
+
+  p = new Param("BendY2X", -0.01, 0.01, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<RBAM>(this, &RBAM::setBendY2X);
+
+
+  p = new Param("BendXX2X", -2.0, 2.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<RBAM>(this, &RBAM::setBendXX2X);
+
+  p = new Param("BendXX2Y", -2.0, 2.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<RBAM>(this, &RBAM::setBendXX2Y);
+
+
+  p = new Param("BendXY2X", -2.0, 2.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<RBAM>(this, &RBAM::setBendXY2X);
+
+  p = new Param("BendXY2Y", -2.0, 2.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<RBAM>(this, &RBAM::setBendXY2Y);
+
+
+  p = new Param("BendYY2X", -2.0, 2.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<RBAM>(this, &RBAM::setBendYY2X);
+
+  p = new Param("BendYY2Y", -2.0, 2.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<RBAM>(this, &RBAM::setBendYY2Y);
+
+  // maybe eventually we only want to retain xy2x, xy2y and let them be equal for symmetry
+  // but maybe x2y, and y2x make also sense
+
 
 
   p = new Param("AutoReset", 0.0, 1.0, 0.0, Parameter::BOOLEAN);
@@ -165,6 +204,62 @@ void RayBouncerAudioModule::setLaunchAngle(double newAngle)
   rayBouncer.setLaunchAngleDegrees(newAngle);
   autoResetIfDesired();
 }
+void RayBouncerAudioModule::setBending(double newValue)
+{
+  rayBouncer.rayBouncer.setBend(newValue);
+  autoResetIfDesired();
+}
+
+void RayBouncerAudioModule::setBendX2Y(double newValue)
+{
+  rayBouncer.rayBouncer.setBendX2Y(newValue);
+  autoResetIfDesired();
+}
+void RayBouncerAudioModule::setBendY2X(double newValue)
+{
+  rayBouncer.rayBouncer.setBendY2X(newValue);
+  autoResetIfDesired();
+}
+
+void RayBouncerAudioModule::setBendXX2X(double newValue)
+{
+  rayBouncer.rayBouncer.setBendXX2X(newValue);
+  autoResetIfDesired();
+}
+void RayBouncerAudioModule::setBendXX2Y(double newValue)
+{
+  rayBouncer.rayBouncer.setBendXX2Y(newValue);
+  autoResetIfDesired();
+}
+
+void RayBouncerAudioModule::setBendXY2X(double newValue)
+{
+  rayBouncer.rayBouncer.setBendXY2X(newValue);
+  autoResetIfDesired();
+}
+void RayBouncerAudioModule::setBendXY2Y(double newValue)
+{
+  rayBouncer.rayBouncer.setBendXY2Y(newValue);
+  autoResetIfDesired();
+}
+
+void RayBouncerAudioModule::setBendYY2X(double newValue)
+{
+  rayBouncer.rayBouncer.setBendYY2X(newValue);
+  autoResetIfDesired();
+}
+void RayBouncerAudioModule::setBendYY2Y(double newValue)
+{
+  rayBouncer.rayBouncer.setBendYY2Y(newValue);
+  autoResetIfDesired();
+}
+
+//void setBendXX2Y(double newValue);
+//void setBendXY2X(double newValue);
+//void setBendXY2Y(double newValue);
+//void setBendYY2X(double newValue);
+//void setBendYY2Y(double newValue);
+
 
 void RayBouncerAudioModule::setAutoReset(bool shouldReset)
 {

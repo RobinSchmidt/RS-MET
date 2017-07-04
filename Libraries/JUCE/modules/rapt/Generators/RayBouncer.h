@@ -43,10 +43,19 @@ public:
     ellipse.setParameters(newScale, newAspectRatio, newAngle, newCenterX, newCenterY);
   }
 
-  /** Sets the overall amount of nonlinear effects on the velocity. This tends to bend the rays
-  and for some reason, it seems to also drag the output to a more periodic waveform (corresponding 
-  to a harmonic spectrum). It can also create chaotic behavior. */
-  inline void setNonlinearityAmount(T newAmount) { nonLinAmount = newAmount; }
+  /** Sets the overall amount of bending effects on the velocity. This tends to drag the output to
+  a more periodic waveform (corresponding to a harmonic spectrum). It can also create chaotic 
+  behavior. */
+  inline void setBend(    T newAmount) { bendAmount = newAmount; }
+  inline void setBendX2Y( T newValue)  { xToY  = newValue; }
+  inline void setBendY2X( T newValue)  { yToX  = newValue; }
+  inline void setBendXX2X(T newValue)  { xxToX = newValue; }
+  inline void setBendXX2Y(T newValue)  { xxToY = newValue; }
+  inline void setBendXY2X(T newValue)  { xyToX = newValue; }
+  inline void setBendXY2Y(T newValue)  { xyToY = newValue; }
+  inline void setBendYY2X(T newValue)  { yyToX = newValue; }
+  inline void setBendYY2Y(T newValue)  { yyToY = newValue; }
+
 
 
   /** \name Processing */
@@ -91,9 +100,10 @@ protected:
 
   // coefficients to scale products dx*dx, dx*dy, dy*dy to add them to the velocity vetor for
   // nonlinear effects:
+  T xToY = 0, yToX = 0;
   T xxToX = 0, xyToX = 0, yyToX = 0;
   T xxToY = 0, xyToY = 0, yyToY = 0;
-  T nonLinAmount = 0;  // global scaler for nonlinear effects
+  T bendAmount = 0;  // global scaler for bending effects
 
   // user parameters: 
   T speed = T(0.2);     // speed (i.e. magnitude of velocity)
