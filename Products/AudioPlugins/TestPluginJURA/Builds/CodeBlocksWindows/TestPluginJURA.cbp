@@ -6073,6 +6073,14 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/rapt/Math/Functions/SinCosTable.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/rapt/Math/Functions/SinCosTable.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/rapt/Math/Geometry/ConicSection.cpp">
       <Option compile="0"/>
       <Option link="0"/>

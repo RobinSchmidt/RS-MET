@@ -2758,6 +2758,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\Sigmoids.cpp">
       <Filter>Juce Modules\rapt\Math\Functions</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\SinCosTable.cpp">
+      <Filter>Juce Modules\rapt\Math\Functions</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Geometry\ConicSection.cpp">
       <Filter>Juce Modules\rapt\Math\Geometry</Filter>
     </ClCompile>
@@ -6520,6 +6523,9 @@
       <Filter>Juce Modules\rapt\Math\Functions</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\Sigmoids.h">
+      <Filter>Juce Modules\rapt\Math\Functions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\SinCosTable.h">
       <Filter>Juce Modules\rapt\Math\Functions</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Geometry\ConicSection.h">

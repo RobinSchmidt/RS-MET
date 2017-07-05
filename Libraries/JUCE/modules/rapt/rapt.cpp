@@ -38,6 +38,7 @@ think) */
 template class RAPT::rsParametricBellFunction<double>;
 template class RAPT::rsPositiveBellFunctions<double>;
 template class RAPT::NormalizedSigmoids<double>;
+template class RAPT::rsSinCosTable<double>;
 template class RAPT::ScaledAndShiftedSigmoid<double>;
 
 template class RAPT::StateVariableFilter<double, double>;

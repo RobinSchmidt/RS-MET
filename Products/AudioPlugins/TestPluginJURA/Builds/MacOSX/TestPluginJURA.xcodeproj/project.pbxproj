@@ -423,6 +423,7 @@
 		27925EB15B6FCE9D648609E2 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "juce_WavAudioFormat.cpp"; path = "../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/juce_WavAudioFormat.cpp"; sourceTree = "SOURCE_ROOT"; };
 		27C3198A0D3966D4B7EB2B28 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "juce_AudioIODevice.cpp"; path = "../../../../../Libraries/JUCE/modules/juce_audio_devices/audio_io/juce_AudioIODevice.cpp"; sourceTree = "SOURCE_ROOT"; };
 		27D24C040D850257D284175A = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		27D3943BD22D560F3B9B0552 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SinCosTable.cpp; path = ../../../../../Libraries/JUCE/modules/rapt/Math/Functions/SinCosTable.cpp; sourceTree = "SOURCE_ROOT"; };
 		27EAF162E5D1544F34105618 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AudioModule.h; path = ../../../../../Libraries/JUCE/modules/rosic/legacy/AudioModule.h; sourceTree = "SOURCE_ROOT"; };
 		27F919A09C8D7F32D98F6E82 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "juce_PreferencesPanel.cpp"; path = "../../../../../Libraries/JUCE/modules/juce_gui_extra/misc/juce_PreferencesPanel.cpp"; sourceTree = "SOURCE_ROOT"; };
 		27FBA9D6BBFAA99B2D5C32B8 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "rosic_DspWorkbench.h"; path = "../../../../../Libraries/JUCE/modules/rosic/scripting/rosic_DspWorkbench.h"; sourceTree = "SOURCE_ROOT"; };
@@ -1812,6 +1813,7 @@
 		B490FEC9021AAEE2333B3E34 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_MPEMessages.h"; path = "../../../../../Libraries/JUCE/modules/juce_audio_basics/mpe/juce_MPEMessages.h"; sourceTree = "SOURCE_ROOT"; };
 		B4935B72908A300B3F1BB595 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_StatisticsAccumulator.h"; path = "../../../../../Libraries/JUCE/modules/juce_core/maths/juce_StatisticsAccumulator.h"; sourceTree = "SOURCE_ROOT"; };
 		B4ACE16D185BC3AB5F68630E = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_KeyPressMappingSet.h"; path = "../../../../../Libraries/JUCE/modules/juce_gui_basics/commands/juce_KeyPressMappingSet.h"; sourceTree = "SOURCE_ROOT"; };
+		B4B5AF9322FF1B91AA425428 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SinCosTable.h; path = ../../../../../Libraries/JUCE/modules/rapt/Math/Functions/SinCosTable.h; sourceTree = "SOURCE_ROOT"; };
 		B4B5B6AD23864760BFE496E1 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = AUMIDIBase.cpp; path = "../../../../../Libraries/JUCE/modules/juce_audio_plugin_client/AU/CoreAudioUtilityClasses/AUMIDIBase.cpp"; sourceTree = "SOURCE_ROOT"; };
 		B4BECA41DA7B0E7536335F16 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "rosic_TuningTable.cpp"; path = "../../../../../Libraries/JUCE/modules/rosic/others/rosic_TuningTable.cpp"; sourceTree = "SOURCE_ROOT"; };
 		B4DC8980898E51262A52F0DE = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = pngwtran.c; path = "../../../../../Libraries/JUCE/modules/juce_graphics/image_formats/pnglib/pngwtran.c"; sourceTree = "SOURCE_ROOT"; };
@@ -4319,7 +4321,9 @@
 					914435F80F3AE5976B2D01FC,
 					609856C42A724A02AA04D8E2,
 					A3D23B76A035319208B65983,
-					EA52C2D1EFF44479B0951F10, ); name = Functions; sourceTree = "<group>"; };
+					EA52C2D1EFF44479B0951F10,
+					27D3943BD22D560F3B9B0552,
+					B4B5AF9322FF1B91AA425428, ); name = Functions; sourceTree = "<group>"; };
 		2DA517887C2E5AB583E93E8E = {isa = PBXGroup; children = (
 					B188903F0F8E2AD0A3D8443B,
 					6E48DEC12F866A64EBC72115,

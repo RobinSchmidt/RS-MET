@@ -56,6 +56,8 @@
 // possible)
 
 // typedefs for convenience:
+typedef RAPT::rsSinCosTable<double> rsSinCosTableD;
+
 typedef RAPT::LadderFilter<double, double> rsLadderDD;
 
 typedef RAPT::rsRayBouncer<double> rsRayBouncerD;

@@ -2153,6 +2153,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\Sigmoids.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\SinCosTable.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Geometry\ConicSection.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -4346,6 +4349,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\BellFunctions.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\FunctionObjects.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\Sigmoids.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\SinCosTable.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Geometry\ConicSection.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Geometry\Ellipse.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Geometry\Line2D.h"/>
