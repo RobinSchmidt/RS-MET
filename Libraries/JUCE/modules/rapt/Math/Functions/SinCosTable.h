@@ -1,8 +1,8 @@
 #ifndef RAPT_SINCOSTABLE_H_INCLUDED
 #define RAPT_SINCOSTABLE_H_INCLUDED
 
-/** A class for getting approximate values of the sine and cosine of a given angle using linearly 
-interpolating lookup tables. It's meant for optimizing sin/cos calculations. */
+/** A class for getting approximate values of the sine and cosine of a given angle using lookup 
+tables. It's meant for optimizing sin/cos calculations. */
 
 template<class T>
 class rsSinCosTable
@@ -23,7 +23,7 @@ public:
   }
 
   /** Produces a pair of sin/cos values using rounding of the continuous table index. It produces
-  equal less error in the positive and more error in negative range compared to 
+  less error in the positive and more error in negative range compared to 
   getValuesTruncated. */
   inline void getValuesRounded(T x, T* sinValue, T* cosValue)
   {
