@@ -190,12 +190,12 @@ void sinCosTable()
 {
   // A test for the rsSinCosTable class.
 
-  rsSinCosTableF table(32); // table-size = 32
+  rsSinCosTableF table(32); // parameter is the table size 
 
   // create data:
-  int N = 1000;  // number of values to plot
-  float xMin = -1.0;
-  float xMax = +7.0;
+  int N = 2000;  // number of values to plot
+  float xMin = -10.0;
+  float xMax = +15.0;
   vector<float> x(N), ySin(N), yCos(N), ySinTbl(N), yCosTbl(N);
   ArrayTools::rsFillWithRangeLinear(&x[0], N, xMin, xMax);
   for(int n = 0; n < N; n++)
