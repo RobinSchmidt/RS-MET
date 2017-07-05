@@ -1,7 +1,3 @@
-//#include "rosic_BiquadCascade.h"
-//using namespace rosic;
-
-//-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:
 
 BiquadCascade::BiquadCascade(int newMaxNumStages)
@@ -40,7 +36,6 @@ BiquadCascade::~BiquadCascade()
   delete[] y2;
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
 // parameter settings:
 
 void BiquadCascade::setNumStages(int newNumStages)
@@ -105,8 +100,9 @@ void BiquadCascade::turnIntoAllpass()
   // normalize gain of each stage to unity:
   for(int i=0; i<numStages; i++)
   {
-    double num = b0[i]*b0[i] + b1[i]*b1[i] + b2[i]*b2[i] + 2.0*(b0[i]*b1[i] + b1[i]*b2[i]) + 2.0*b0[i]*b2[i];
-    double den = 1.0         + a1[i]*a1[i] + a2[i]*a2[i] + 2.0*(      a1[i] + a1[i]*a2[i]) + 2.0*      a2[i];
+    double num = b0[i]*b0[i] + b1[i]*b1[i] + b2[i]*b2[i] 
+      + 2.0*(b0[i]*b1[i] + b1[i]*b2[i]) + 2.0*b0[i]*b2[i];
+    double den = 1.0 + a1[i]*a1[i] + a2[i]*a2[i] + 2.0*(a1[i] + a1[i]*a2[i]) + 2.0*a2[i];
     double g   = sqrt(den/num);
     b0[i] *= g;
     b1[i] *= g;
@@ -114,27 +110,30 @@ void BiquadCascade::turnIntoAllpass()
   }
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
 // inquiry:
 
 void BiquadCascade::getFrequencyResponse(double *w, Complex *H, int numBins, int accumulationMode)
 {
-  FilterAnalyzer::getBiquadCascadeFrequencyResponse(b0, b1, b2, a1, a2, numStages, w, H, numBins, accumulationMode);
+  FilterAnalyzer::getBiquadCascadeFrequencyResponse(b0, b1, b2, a1, a2, numStages, w, H, numBins, 
+    accumulationMode);
 }
 
-void BiquadCascade::getMagnitudeResponse(double *w, double *magnitudes, int numBins, bool inDecibels, bool accumulate)
+void BiquadCascade::getMagnitudeResponse(double *w, double *magnitudes, int numBins, 
+  bool inDecibels, bool accumulate)
 {
-  FilterAnalyzer::getBiquadCascadeMagnitudeResponse(b0, b1, b2, a1, a2, numStages, w, magnitudes, numBins, inDecibels, accumulate);
+  FilterAnalyzer::getBiquadCascadeMagnitudeResponse(b0, b1, b2, a1, a2, numStages, w, magnitudes, 
+    numBins, inDecibels, accumulate);
 }
 
-void BiquadCascade::getMagnitudeResponse(double *frequencies, double sampleRate, double *magnitudes, int numBins, bool inDecibels,      
+void BiquadCascade::getMagnitudeResponse(double *frequencies, double sampleRate, 
+  double *magnitudes, int numBins, bool inDecibels,      
                                          bool accumulate)
 {
-  FilterAnalyzer::getBiquadCascadeMagnitudeResponse(b0, b1, b2, a1, a2, numStages, frequencies, sampleRate, magnitudes, numBins, 
-    inDecibels, accumulate);
+  FilterAnalyzer::getBiquadCascadeMagnitudeResponse(b0, b1, b2, a1, a2, numStages, frequencies, 
+    sampleRate, magnitudes, numBins, inDecibels, accumulate);
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // others:
 
 void BiquadCascade::initBiquadCoeffs()
@@ -160,8 +159,7 @@ void BiquadCascade::reset()
   }
 }
 
-  
-//=========================================================================================================================================
+//=================================================================================================
 // class BiquadCascadeStereo:
 
 BiquadCascadeStereo::BiquadCascadeStereo(int newMaxNumStages) : BiquadCascade(newMaxNumStages)
