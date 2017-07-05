@@ -10,6 +10,7 @@ namespace RAPT
 #include "Functions/BellFunctions.h"
 #include "Functions/FunctionObjects.h"
 #include "Functions/Sigmoids.h"
+#include "Functions/SinCosTable.h"
 
 #include "Geometry/Line2D.h"
 #include "Geometry/ConicSection.h"

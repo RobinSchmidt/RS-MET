@@ -190,7 +190,7 @@ void sinCosTable()
 {
   // A test for the rsSinCosTable class.
 
-  int tableSize = 32;
+  rsSinCosTableF table(32); // table-size = 32
 
   // create data:
   int N = 1000;  // number of values to plot
@@ -202,11 +202,12 @@ void sinCosTable()
   {
     ySin[n] = sin(x[n]);
     yCos[n] = cos(x[n]);
+    table.getSineAndCosine(x[n], &ySinTbl[n], &yCosTbl[n]);
   }
 
   // plot:
   GNUPlotter plt;
-  plt.addDataArrays(N, &x[0], &ySin[0], &yCos[0]);
+  plt.addDataArrays(N, &x[0], &ySin[0], &yCos[0], &ySinTbl[0], &yCosTbl[0]);
   plt.plot();
 }
 

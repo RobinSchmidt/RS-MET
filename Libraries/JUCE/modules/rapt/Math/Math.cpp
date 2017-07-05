@@ -6,6 +6,7 @@ namespace RAPT
 #include "Functions/BasicFunctions.cpp"
 #include "Functions/BellFunctions.cpp"
 #include "Functions/Sigmoids.cpp"
+#include "Functions/SinCosTable.cpp"
 
 #include "Geometry/Line2D.cpp"
 #include "Geometry/ConicSection.cpp"
