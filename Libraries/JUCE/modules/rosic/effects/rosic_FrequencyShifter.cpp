@@ -13,7 +13,7 @@ FreqShifterHalfbandFilter::FreqShifterHalfbandFilter()
   static const int order = 24;
 
   // design the filter as biquad cascade:
-  EngineersFilter halfbandFilterBiquad;
+  rsEngineersFilter halfbandFilterBiquad;
   halfbandFilterBiquad.setApproximationMethod(PrototypeDesigner::ELLIPTIC);
   halfbandFilterBiquad.setSampleRate(44100.0);
   halfbandFilterBiquad.setFrequency(11025);        // place passband edge exactly at sampleRate/4

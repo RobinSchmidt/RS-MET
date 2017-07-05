@@ -12,7 +12,7 @@ namespace rosic
   Bessel, etc. You can create the standard lowpass, highpass, bandpass, bandreject  versions of
   all the filters and also shelving and peaking versions. */
 
-  class EngineersFilter : public BiquadCascadeStereo
+  class rsEngineersFilter : public BiquadCascadeStereo
   {
 
   public:
@@ -21,7 +21,7 @@ namespace rosic
     // construction/destruction:
 
     /** Constructor. */
-    EngineersFilter();   
+    rsEngineersFilter();   
 
     //---------------------------------------------------------------------------------------------
     // parameter settings:

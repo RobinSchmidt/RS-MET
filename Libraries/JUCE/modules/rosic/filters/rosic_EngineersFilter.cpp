@@ -1,9 +1,6 @@
-//#include "rosic_EngineersFilter.h"
-//using namespace rosic;
-
 // construction/destruction:
 
-EngineersFilter::EngineersFilter() : BiquadCascadeStereo(25)
+rsEngineersFilter::rsEngineersFilter() : BiquadCascadeStereo(25)
 {
   numStages  = 1;
   sampleRate = 44100.0;
@@ -11,7 +8,7 @@ EngineersFilter::EngineersFilter() : BiquadCascadeStereo(25)
 
 // parameter settings:
 
-void EngineersFilter::setSampleRate(double newSampleRate)
+void rsEngineersFilter::setSampleRate(double newSampleRate)
 {
   //BiquadCascade::setSampleRate(newSampleRate);
   sampleRate = newSampleRate;
@@ -19,51 +16,51 @@ void EngineersFilter::setSampleRate(double newSampleRate)
   updateCoefficients();
 }
 
-void EngineersFilter::setMode(int newMode)
+void rsEngineersFilter::setMode(int newMode)
 {
   designer.setMode(newMode);
   BiquadCascade::setNumStages(designer.getNumBiquadStages());
   updateCoefficients();
 }
 
-void EngineersFilter::setApproximationMethod(int newApproximationMethod)
+void rsEngineersFilter::setApproximationMethod(int newApproximationMethod)
 {
   designer.setApproximationMethod(newApproximationMethod);
   updateCoefficients();
 }
 
-void EngineersFilter::setFrequency(double newFrequency)
+void rsEngineersFilter::setFrequency(double newFrequency)
 {
   designer.setFrequency(newFrequency);
   updateCoefficients();
 }
 
-void EngineersFilter::setPrototypeOrder(int newOrder)
+void rsEngineersFilter::setPrototypeOrder(int newOrder)
 {
   designer.setPrototypeOrder(newOrder);
   BiquadCascade::setNumStages(designer.getNumBiquadStages());
   updateCoefficients();
 }
 
-void EngineersFilter::setBandwidth(double newBandwidth)
+void rsEngineersFilter::setBandwidth(double newBandwidth)
 {
   designer.setBandwidth(newBandwidth);
   updateCoefficients();
 }
 
-void EngineersFilter::setGain(double newGain)
+void rsEngineersFilter::setGain(double newGain)
 {
   designer.setGain(newGain);
   updateCoefficients();
 }
 
-void EngineersFilter::setRipple(double newRipple)
+void rsEngineersFilter::setRipple(double newRipple)
 {
   designer.setRipple(newRipple);
   updateCoefficients();
 }
 
-void EngineersFilter::setStopbandRejection(double newStopbandRejection)
+void rsEngineersFilter::setStopbandRejection(double newStopbandRejection)
 {
   designer.setStopbandRejection(newStopbandRejection);
   updateCoefficients();
@@ -71,7 +68,7 @@ void EngineersFilter::setStopbandRejection(double newStopbandRejection)
 
 // inquiry:
 
-void EngineersFilter::getMagnitudeResponse(double *frequencies, double *magnitudes, int numBins, 
+void rsEngineersFilter::getMagnitudeResponse(double *frequencies, double *magnitudes, int numBins, 
   bool inDecibels, bool accumulate)
 {
   double *w = new double[numBins];
@@ -88,7 +85,7 @@ void EngineersFilter::getMagnitudeResponse(double *frequencies, double *magnitud
 
 // internal functions:
 
-void EngineersFilter::updateCoefficients()
+void rsEngineersFilter::updateCoefficients()
 {
   BiquadCascade::initBiquadCoeffs();
   designer.getBiquadCascadeCoefficients(b0, b1, b2, a1, a2);

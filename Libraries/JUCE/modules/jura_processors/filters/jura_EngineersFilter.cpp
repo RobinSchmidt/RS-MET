@@ -4,7 +4,7 @@
 // construction/destruction:
 
 EngineersFilterAudioModule::EngineersFilterAudioModule(CriticalSection *newPlugInLock, 
-  rosic::EngineersFilter *sciFilterToWrap)
+  rosic::rsEngineersFilter *sciFilterToWrap)
  : AudioModule(newPlugInLock)
 {
   jassert(sciFilterToWrap != NULL); // you must pass a valid rosic-object to the constructor
@@ -18,7 +18,7 @@ EngineersFilterAudioModule::EngineersFilterAudioModule(CriticalSection *newPlugI
 EngineersFilterAudioModule::EngineersFilterAudioModule(CriticalSection *newPlugInLock)
   : AudioModule(newPlugInLock)
 {
-  wrappedEngineersFilter = new rosic::EngineersFilter;
+  wrappedEngineersFilter = new rosic::rsEngineersFilter;
   wrappedEngineersFilterIsOwned = true;
 
   // todo: factor out this code (duplicated from the other constuctor) into an init() function that 
@@ -205,7 +205,7 @@ EngineersFilterPlotEditor::~EngineersFilterPlotEditor(void)
 // parameter-settings:
 
 void EngineersFilterPlotEditor::setEngineersFilterToEdit(
-  rosic::EngineersFilter* newEngineersFilterToEdit)
+  rosic::rsEngineersFilter* newEngineersFilterToEdit)
 {
   sciFilterToEdit = newEngineersFilterToEdit;
 }
@@ -581,7 +581,7 @@ void EngineersFilterModuleEditor::updateWidgetVisibility()
   if( sciFilterModuleToEdit->wrappedEngineersFilter == NULL )
     return;
 
-  rosic::EngineersFilter* sf = sciFilterModuleToEdit->wrappedEngineersFilter;
+  rosic::rsEngineersFilter* sf = sciFilterModuleToEdit->wrappedEngineersFilter;
   bandwidthSlider->setEnabled(sf->hasCurrentModeBandwidthParameter());
   gainSlider->setEnabled(     sf->hasCurrentModeGainParameter());
   rippleSlider->setEnabled(   sf->hasCurrentModeRippleParameter());

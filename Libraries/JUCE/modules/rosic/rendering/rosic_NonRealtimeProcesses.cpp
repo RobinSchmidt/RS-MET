@@ -324,7 +324,7 @@ void rosic::upsampleHermiteAsymmetricM(double *in, int inLength, double *out,
 void rosic::filterButterworth(double *x, double *y, int N, double frequency, double sampleRate,
                               int mode, int prototypeOrder, double gain, bool forwardBackward)
 {
-  EngineersFilter filter;
+  rsEngineersFilter filter;
   filter.setFrequency(frequency);
   filter.setSampleRate(sampleRate);
   filter.setMode(mode);
