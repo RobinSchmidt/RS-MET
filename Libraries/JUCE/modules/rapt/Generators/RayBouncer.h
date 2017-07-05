@@ -92,7 +92,7 @@ protected:
 
   rsEllipse<T> ellipse; // enclosing ellipse
 
-  T tolerance = 1.e-8;   // numerical tolerance for inside/outside checks
+  T tolerance = float(1.e-8);   // numerical tolerance for inside/outside checks
 
   // particle state:
   T x0 = 0, y0 = 0;      // initial position of particle

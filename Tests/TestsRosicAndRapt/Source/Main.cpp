@@ -45,13 +45,14 @@ int main(int argc, char* argv[])
   //expGaussBell();
   //linearRegression();
   //productLogPlot();
+  sinCosTable();
 
   // Filter:
   //ladderResonanceManipulation();
   //nonUniformMovingAverage();
 
   // Generators:
-  rayBubble();
+  //rayBubble();
 
   // Graphics:
   //lineDrawing();

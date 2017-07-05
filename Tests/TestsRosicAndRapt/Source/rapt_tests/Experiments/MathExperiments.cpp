@@ -186,6 +186,30 @@ void productLogPlot()
   plt.plot();
 }
 
+void sinCosTable()
+{
+  // A test for the rsSinCosTable class.
+
+  int tableSize = 32;
+
+  // create data:
+  int N = 1000;  // number of values to plot
+  float xMin = -1.0;
+  float xMax = +7.0;
+  vector<float> x(N), ySin(N), yCos(N), ySinTbl(N), yCosTbl(N);
+  ArrayTools::rsFillWithRangeLinear(&x[0], N, xMin, xMax);
+  for(int n = 0; n < N; n++)
+  {
+    ySin[n] = sin(x[n]);
+    yCos[n] = cos(x[n]);
+  }
+
+  // plot:
+  GNUPlotter plt;
+  plt.addDataArrays(N, &x[0], &ySin[0], &yCos[0]);
+  plt.plot();
+}
+
 void expGaussBell()
 {
   // This is still wrong. The idea is to find a,b,c,d parameters for the function

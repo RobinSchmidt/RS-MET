@@ -161,7 +161,7 @@ void rotes::testModalFilter()
   //Plotter::plotData(N, t, h2);
 
 
-  writeImpulseResponseToFile("d:\\TmpData\\ModalImpulseResponse.wav", mf2, fs, fs, 16);
+  writeImpulseResponseToFile("d:\\TmpData\\ModalImpulseResponse.wav", mf2, (int)fs, (int)fs, 16);
 }
 
 void rotes::testModalFilterWithAttack()
@@ -179,7 +179,7 @@ void rotes::testModalFilterWithAttack()
 
   ModalFilterWithAttack mf;
   mf.setModalParameters(f, A, tp, td, phs, fs, df);
-  plotImpulseResponse(mf, fs, fs);
+  plotImpulseResponse(mf, (int)fs, (int)fs);
   //writeImpulseResponseToFile("d:\\TmpData\\ModalImpulseResponse.wav", mf, fs, fs, 16);
 }
 
@@ -981,7 +981,7 @@ void rotes::testEngineersFilter()
   fillWithRangeLinear(timeAxis, numSamples, 0.0, numSamples-1);
 
   // create and set up the filter:
-  EngineersFilter filter;
+  rsEngineersFilter filter;
   filter.setSampleRate(fs);
   filter.setFrequency(fc);
   filter.setBandwidth(bw);
