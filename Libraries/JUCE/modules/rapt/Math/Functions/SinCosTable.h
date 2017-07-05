@@ -13,21 +13,39 @@ public:
   /** Constructor. The tableSize should be a power of two. */
   rsSinCosTable(int tableSize = 1024);
 
-
-  /** Produces a value of the sine and cosine for the given input value x. */
-  inline void getSineAndCosine(T x, T* sinValue, T* cosValue)
-  {
-    //// preliminary - use tables later:
-    //*sinValue = sin(x);
-    //*cosValue = cos(x);
-
-    T pos = scaler * x;  // continuous readout index
-    //int i = ((int)(pos)) & mask; // truncated - equally good/bad in positiv/negative range
-    int i = ((int)(pos+0.5)) & mask; // rounded - better for positive, worse for negative x
-
+  /** Produces a pair of sin/cos values using truncation of the continuous table index. It produces
+  equal errors for the positive and negative range. */
+  inline void getValuesTruncated(T x, T* sinValue, T* cosValue)
+  {    
+    int i = ((int)(scaler*x)) & mask; 
     *sinValue = sinTbl[i];
     *cosValue = cosTbl[i];
   }
+
+  /** Produces a pair of sin/cos values using rounding of the continuous table index. It produces
+  equal less error in the positive and more error in negative range compared to 
+  getValuesTruncated. */
+  inline void getValuesRounded(T x, T* sinValue, T* cosValue)
+  {
+    int i = ((int)(scaler*x+0.5)) & mask;
+    *sinValue = sinTbl[i];
+    *cosValue = cosTbl[i];
+  }
+
+  /** Produces a pair of sin/cos values using linear interpolation. Recommended only for 
+  nonnegative inputs (for negative inputs, the error is large). */
+  inline void getValuesLinear(T x, T* sinValue, T* cosValue)
+  {
+    T pos  = scaler * x;   // continuous readout index     
+    int i  = (int)pos;
+    T frac = pos-i;
+    T wi   = 1-frac;
+    i      =  i    & mask;
+    int i1 = (i+1) & mask;
+    *sinValue = wi * sinTbl[i] + frac * sinTbl[i1];
+    *cosValue = wi * cosTbl[i] + frac * cosTbl[i1];
+  }
+
 
 protected:
 

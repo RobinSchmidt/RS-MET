@@ -190,11 +190,11 @@ void sinCosTable()
 {
   // A test for the rsSinCosTable class.
 
-  rsSinCosTableF table(32); // parameter is the table size 
+  rsSinCosTableF table(16); // parameter is the table size 
 
   // create data:
   int N = 2000;  // number of values to plot
-  float xMin = -10.0;
+  float xMin = -15.0;
   float xMax = +15.0;
   vector<float> x(N), ySin(N), yCos(N), ySinTbl(N), yCosTbl(N);
   ArrayTools::rsFillWithRangeLinear(&x[0], N, xMin, xMax);
@@ -202,7 +202,9 @@ void sinCosTable()
   {
     ySin[n] = sin(x[n]);
     yCos[n] = cos(x[n]);
-    table.getSineAndCosine(x[n], &ySinTbl[n], &yCosTbl[n]);
+    //table.getValuesRounded(x[n], &ySinTbl[n], &yCosTbl[n]);
+    //table.getValuesTruncated(x[n], &ySinTbl[n], &yCosTbl[n]);
+    table.getValuesLinear(x[n], &ySinTbl[n], &yCosTbl[n]);
   }
 
   // plot:
