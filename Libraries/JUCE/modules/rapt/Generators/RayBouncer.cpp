@@ -96,6 +96,14 @@ void rsRayBouncer<T>::getSampleFrame(T &xOut, T &yOut)
   dx += bendAmount * (xxToX * xx + xyToX * xy + yyToX * yy + yToX * ty);
   dy += bendAmount * (xxToY * xx + xyToY * xy + yyToY * yy + xToY * tx);
 
+
+  distance += speed;
+  if(distance > maxDistance)
+  {
+    //reset();
+    resetWithAdvance(distance-maxDistance);
+  }
+
   // maybe we should scale the yToY, yToX terms be the speed
 
   // maybe a highpass filter could be interesting. it would disable a constant velocity vector so
@@ -115,6 +123,21 @@ void rsRayBouncer<T>::reset()
   y  = y0;
   dx = speed * cos(angle);
   dy = speed * sin(angle);
+  distance = 0;
+}
+
+template<class T>
+void rsRayBouncer<T>::resetWithAdvance(T advance)
+{
+  reset();
+  x += advance * dx / speed;
+  y += advance * dy / speed;
+  distance += advance;
+
+  // nope - the speed should not be multiplied in - this was wrong:
+  //x += advance * dx;
+  //y += advance * dy;
+  //distance += advance * speed;
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -47,9 +47,8 @@ public:
   void setBendYY2X(double newValue);
   void setBendYY2Y(double newValue);
 
-
-
   void setAutoReset(bool shouldReset);
+
 
 protected:
 

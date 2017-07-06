@@ -34,6 +34,12 @@ public:
   // frequency/sampleRate - but maybe move this to some outside "driver" class
   // setting the speed variable is not enough - we also need to re-normalize the dx,dy
 
+  /** Sets the maximum distance that the particle can travel before a reset is forced. This helps 
+  to get more tonal sounds. */
+  inline void setMaxDistance(T newMaxDistance) { maxDistance = newMaxDistance; }
+   // maybe this should be set up in terms of cycles so the absolute maxDistance goes down when the
+   // frequency goes up
+
   /** Sets the parameters of the enclosing ellipse. Note that we do not include a shear 
   transformation because that would be redundant, because a sheared ellipse is still an ellipse
   (affine transformations map conic sections into conic sections of the same type) */
@@ -67,6 +73,10 @@ public:
   /** Resets the internal state (position and velocity). */
   void reset();
 
+  /** Resets position and velocity and advances the point a little bit into the direction of the
+  velocity. Used for continuous response the changes of maxDistance. */
+  void resetWithAdvance(T advance);
+
 
 protected:
 
@@ -97,6 +107,7 @@ protected:
   // particle state:
   T x0 = 0, y0 = 0;      // initial position of particle
   T x , y, dx, dy;       // current position and velocity (as increment per sample):
+  T distance = 0;        // total distance travelled
 
   // coefficients to scale products dx*dx, dx*dy, dy*dy to add them to the velocity vetor for
   // nonlinear effects:
@@ -106,8 +117,11 @@ protected:
   T bendAmount = 0;  // global scaler for bending effects
 
   // user parameters: 
-  T speed = T(0.2);     // speed (i.e. magnitude of velocity)
-  T angle = T(0.0);     // launching angle
+  T speed = T(0.2);          // speed (i.e. magnitude of velocity)
+  T angle = T(0.0);          // launching angle
+  T maxDistance = RS_INF(T); // maximum distance before a reset is forced
+
+
 
   // maybe introduce a maximum distance to travel and reset after that. per sample, we would update:
   // distance += speed;

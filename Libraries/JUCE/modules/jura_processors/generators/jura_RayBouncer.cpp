@@ -107,7 +107,10 @@ void RayBouncerAudioModule::createParameters()
   // maybe eventually we only want to retain xy2x, xy2y and let them be equal for symmetry
   // but maybe x2y, and y2x make also sense
 
-
+  p = new Param("MaxDistance", 1.0, 10000.0, 10000.0, Parameter::EXPONENTIAL);
+  addObservedParameter(p);
+  p->setValueChangeCallback<rsRayBouncerD>(&rayBouncer.rayBouncer, 
+    &rsRayBouncerD::setMaxDistance);
 
   p = new Param("AutoReset", 0.0, 1.0, 0.0, Parameter::BOOLEAN);
   addObservedParameter(p);
