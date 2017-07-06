@@ -82,24 +82,34 @@ void sinCosPerformance()
     yCos[n] = cos(x[n]);
   }
   double cycles = (double) counter.getNumCyclesSinceInit();
-  printPerformanceTestResult("Standard library", cycles / N);
+  printPerformanceTestResult("Standard library, float", cycles / N);
 
-  // measure cost of rsSinCosTable using linear interpolation:
-  rsSinCosTableF table(4096);
+  // measure cost of rsSinCosTable<float> using linear interpolation:
+  rsSinCosTableF table(1024);
   counter.init();
   for(n = 0; n < N; n++)
     table.getValuesLinear(x[n], &ySin[n], &yCos[n]);
   cycles = (double) counter.getNumCyclesSinceInit();
-  printPerformanceTestResult("Table, linear", cycles / N);
+  printPerformanceTestResult("Table, linear, float", cycles / N);
 
-  // measure cost of rsSinCosTable using rounding:
+  // measure cost of rsSinCosTable<float> using rounding:
   counter.init();
   for(n = 0; n < N; n++)
     table.getValuesRounded(x[n], &ySin[n], &yCos[n]);
   cycles = (double) counter.getNumCyclesSinceInit();
-  printPerformanceTestResult("Table, rounded", cycles / N);
+  printPerformanceTestResult("Table, rounded, float", cycles / N);
 
 
 
 
+  double xD[N], ySinD[N], yCosD[N];
+  ArrayTools::rsFillWithRandomValues(xD, N, xMin, xMax, 0);
+
+  // measure cost of rsSinCosTable<double> using linear interpolation:
+  rsSinCosTableD tableD(1024);
+  counter.init();
+  for(n = 0; n < N; n++)
+    tableD.getValuesLinear(xD[n], &ySinD[n], &yCosD[n]);
+  cycles = (double) counter.getNumCyclesSinceInit();
+  printPerformanceTestResult("Table, linear, double", cycles / N);
 }

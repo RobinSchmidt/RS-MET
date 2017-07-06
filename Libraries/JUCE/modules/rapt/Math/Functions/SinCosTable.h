@@ -47,6 +47,9 @@ public:
     *cosValue = wi * cosTbl[i] + frac * cosTbl[i1];
   }
 
+  // idea: we could have cubic interpolation by matching the derivatives at the tabulated points.
+  // we don't need any additional trickery to use 4 datapoints - instead use the cos-table as 
+  // derivative-table for the sine and the negative sin-table a derivative table for the cosine
 
 
 

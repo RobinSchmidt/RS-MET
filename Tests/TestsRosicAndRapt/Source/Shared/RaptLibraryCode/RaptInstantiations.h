@@ -18,6 +18,7 @@ using namespace RAPT;
 typedef RAPT::rsConicSection<float> rsConicSectionF;
 typedef RAPT::rsEllipse<float> rsEllipseF;
 typedef RAPT::rsSinCosTable<float> rsSinCosTableF;
+typedef RAPT::rsSinCosTable<double> rsSinCosTableD;
 
 // Filters:
 typedef RAPT::LadderFilter<float, float> LadderFilterFF;

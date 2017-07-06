@@ -11,7 +11,11 @@ void printPerformanceTestResult(const char *testName, double numCyclesPerOperati
 
 /** This class implements a CPU cycle counter which is useful for performance tests. It does not 
 literally count but instead measure the time stamps before and after a sequence of commands. Works 
-only with MSVC at the moment. */
+only with MSVC at the moment. 
+
+hmm...maybe we should update this using QueryPerformanceCounter, etc. - see here:
+https://en.wikipedia.org/wiki/Time_Stamp_Counter
+*/
 
 class ProcessorCycleCounter  
 {
