@@ -40,6 +40,9 @@ namespace rosic
     /** Switches synchronization of the sawtooth to the input signal on/off */
     void setSync(bool shouldSync);
 
+    /** Sets the number of cycles that should be shown in sync mode. */
+    void setNumCyclesShown(double newNumCycles);
+
     //---------------------------------------------------------------------------------------------
     // audio processing:
 
@@ -81,7 +84,6 @@ namespace rosic
     if(sawPhase > 1)
       sawPhase -= 1;
     return result;
-    //return 0.0; // preliminary
   }
 
 } // end namespace rosic
