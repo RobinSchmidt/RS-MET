@@ -1,4 +1,4 @@
-#include "ImagePerformanceTests.h"
+#include "MathPerformanceTests.h"
 
 void matrixAdressingTest()
 {
@@ -61,4 +61,45 @@ void matrixAdressingTest()
   delete[] bf;
   delete[] a;
   delete[] b;
+}
+
+void sinCosPerformance()
+{
+  static const int N = 5000;  // number of values
+  float xMin = 0.f;
+  float xMax = float(2*PI);
+
+  float x[N], ySin[N], yCos[N];
+  ArrayTools::rsFillWithRandomValues(x, N, xMin, xMax, 0);
+  ProcessorCycleCounter counter;
+  int n;
+
+  // measure cost of sin/cos standard library functions:
+  counter.init();
+  for(n = 0; n < N; n++)
+  {
+    ySin[n] = sin(x[n]);
+    yCos[n] = cos(x[n]);
+  }
+  double cycles = (double) counter.getNumCyclesSinceInit();
+  printPerformanceTestResult("Standard library", cycles / N);
+
+  // measure cost of rsSinCosTable using linear interpolation:
+  rsSinCosTableF table(4096);
+  counter.init();
+  for(n = 0; n < N; n++)
+    table.getValuesLinear(x[n], &ySin[n], &yCos[n]);
+  cycles = (double) counter.getNumCyclesSinceInit();
+  printPerformanceTestResult("Table, linear", cycles / N);
+
+  // measure cost of rsSinCosTable using rounding:
+  counter.init();
+  for(n = 0; n < N; n++)
+    table.getValuesRounded(x[n], &ySin[n], &yCos[n]);
+  cycles = (double) counter.getNumCyclesSinceInit();
+  printPerformanceTestResult("Table, rounded", cycles / N);
+
+
+
+
 }

@@ -6,6 +6,12 @@
   <MAINGROUP id="faVDnE" name="TestsRosicAndRapt">
     <GROUP id="{1E9A4B2E-B083-724B-094D-49D8FBCEF73F}" name="Source">
       <GROUP id="{86EEC43B-AEDF-BBF9-BF97-B91B0A6A75D6}" name="rapt_tests">
+        <GROUP id="{47DEF60D-47E1-97D9-4623-845086C6F137}" name="PerformanceTests">
+          <FILE id="QfWR9e" name="MathPerformanceTests.cpp" compile="1" resource="0"
+                file="Source/rapt_tests/PerformanceTests/MathPerformanceTests.cpp"/>
+          <FILE id="hBoBzf" name="MathPerformanceTests.h" compile="0" resource="0"
+                file="Source/rapt_tests/PerformanceTests/MathPerformanceTests.h"/>
+        </GROUP>
         <GROUP id="{9B3DF9C6-510B-1467-E9E7-3E8187C592F8}" name="Experiments">
           <FILE id="jYh9KO" name="FilterExperiments.cpp" compile="1" resource="0"
                 file="Source/rapt_tests/Experiments/FilterExperiments.cpp"/>

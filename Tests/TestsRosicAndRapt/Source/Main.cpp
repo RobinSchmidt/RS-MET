@@ -8,6 +8,10 @@ using namespace rotes;
 #include "rapt_tests/Experiments/GeneratorExperiments.h"
 #include "rapt_tests/Experiments/GraphicsExperiments.h"
 
+#include "rapt_tests/PerformanceTests/MathPerformanceTests.h"
+
+
+
 #include "Experiments/Experiments.h"
 
 
@@ -32,7 +36,10 @@ int main(int argc, char* argv[])
 
   //-----------------------------------------------------------------------------------------------
   // Performance tests:
-  // ...
+
+  //matrixAdressingTest();
+  sinCosPerformance();
+
 
   //-----------------------------------------------------------------------------------------------
   // Experiments:
@@ -45,7 +52,7 @@ int main(int argc, char* argv[])
   //expGaussBell();
   //linearRegression();
   //productLogPlot();
-  sinCosTable();
+  //sinCosTable();
 
   // Filter:
   //ladderResonanceManipulation();

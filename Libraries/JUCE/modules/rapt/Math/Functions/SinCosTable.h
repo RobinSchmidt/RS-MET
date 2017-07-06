@@ -38,6 +38,7 @@ public:
   {
     T pos  = scaler * x;   // continuous readout index     
     int i  = (int)pos;
+    //int i  = (int)floor(pos); // this would work equally well for negative inputs
     T frac = pos-i;
     T wi   = 1-frac;
     i      =  i    & mask;
@@ -45,6 +46,8 @@ public:
     *sinValue = wi * sinTbl[i] + frac * sinTbl[i1];
     *cosValue = wi * cosTbl[i] + frac * cosTbl[i1];
   }
+
+
 
 
 protected:

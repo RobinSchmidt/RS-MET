@@ -109,6 +109,13 @@ protected:
   T speed = T(0.2);     // speed (i.e. magnitude of velocity)
   T angle = T(0.0);     // launching angle
 
+  // maybe introduce a maximum distance to travel and reset after that. per sample, we would update:
+  // distance += speed;
+  // if(distance > maxDistance)
+  //   reset(distance-maxDistance)
+  // the difference distance-maxDistance is used inside reset to advance the particle a little bit
+  // into the initial direction to avoid jitter
+
   //friend class rsRayBouncerDriver;
 };
 

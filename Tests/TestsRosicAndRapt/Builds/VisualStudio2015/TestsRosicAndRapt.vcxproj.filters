@@ -11,6 +11,9 @@
     <Filter Include="TestsRosicAndRapt\Source\rapt_tests">
       <UniqueIdentifier>{B6E24415-4E14-C484-365C-F7043EDDEED3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="TestsRosicAndRapt\Source\rapt_tests\PerformanceTests">
+      <UniqueIdentifier>{1BE9FB85-7E85-78BC-7208-BCF59F21D8CD}</UniqueIdentifier>
+    </Filter>
     <Filter Include="TestsRosicAndRapt\Source\rapt_tests\Experiments">
       <UniqueIdentifier>{8122E470-1FBA-4C57-209D-8B732773F9B6}</UniqueIdentifier>
     </Filter>
@@ -211,6 +214,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\rapt_tests\PerformanceTests\MathPerformanceTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\PerformanceTests</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\rapt_tests\Experiments\FilterExperiments.cpp">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\Experiments</Filter>
     </ClCompile>
@@ -1623,6 +1629,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\rapt_tests\PerformanceTests\MathPerformanceTests.h">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\PerformanceTests</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\rapt_tests\Experiments\FilterExperiments.h">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\Experiments</Filter>
     </ClInclude>
