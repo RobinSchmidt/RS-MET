@@ -28,6 +28,9 @@ namespace rosic
     /** Sets the sample-rate. */
     void setSampleRate(double newSampleRate);
 
+    /** Sets the frequency that shoould be used when we are not in sync mode. */
+    void setScanFreqNoSync(double newFrequency);
+
     /** Sets the minimum expected frequency for the pitch detector. */
     void setMinFrequency(double newMinFreq);
 
@@ -41,7 +44,7 @@ namespace rosic
     // audio processing:
 
     /** Generates one sawtooth output sample at the time. You must pass the input signal value that
-    is used for the pitch analysis. */
+    is used for the pitch analysis. The value is between 0 and 1. */
     INLINE double getSample(double in);
 
     //---------------------------------------------------------------------------------------------
@@ -73,10 +76,12 @@ namespace rosic
   INLINE double ScopeScreenScanner::getSample(double in)
   {
     updateSawIncrement(in);
-
-
-
-    return 0.0; // preliminary
+    double result = sawPhase;
+    sawPhase += sawInc;
+    if(sawPhase > 1)
+      sawPhase -= 1;
+    return result;
+    //return 0.0; // preliminary
   }
 
 } // end namespace rosic

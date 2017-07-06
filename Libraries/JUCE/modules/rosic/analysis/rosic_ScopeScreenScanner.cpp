@@ -21,6 +21,11 @@ void ScopeScreenScanner::setSampleRate(double newSampleRate)
   pitchDetector.setSampleRate(sampleRate);
 }
 
+void ScopeScreenScanner::setScanFreqNoSync(double newFrequency)
+{
+  scanFreq = newFrequency;
+}
+
 void ScopeScreenScanner::setMinFrequency(double newMinFreq)
 {
   pitchDetector.setMinFundamental(newMinFreq);
