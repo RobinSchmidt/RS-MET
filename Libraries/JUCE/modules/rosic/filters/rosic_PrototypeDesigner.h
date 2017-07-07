@@ -186,7 +186,7 @@ namespace rosic
     static void scaleToMatchGainAtUnity(Complex *z, Complex *p, double *k, Complex *zNew, Complex *pNew, double *kNew, int N, double g);
 
     /** Returns zeros, poles and gain in "zNew", "pNew", "kNew" of a filter that is inverse to the filter with zeros, poles and gain of 
-    "z", "p", "k". \todo maybe move to PoleZeroMapper */
+    "z", "p", "k". \todo maybe move to PoleZeroMapper. zNew, pNew may point to the same arrays as z, p. */
     static void getInverseFilter(Complex *z, Complex *p, double *k, Complex *zNew, Complex *pNew, double *kNew, int N);
 
     /** Given an array of "N"+1 cofficients for a polynomial of order "N", this function returns the left halfplane roots in "r" and 

@@ -346,15 +346,18 @@ void PrototypeDesigner::scaleToMatchGainAtUnity(Complex *z, Complex *p, double *
   *kNew  = *k / pow(wc, N-nz);
 }
 
-void PrototypeDesigner::getInverseFilter(Complex* z, Complex* p, double* k, Complex* /*zNew*/, Complex* /*pNew*/, double* kNew, int N)
+void PrototypeDesigner::getInverseFilter(Complex* z, Complex* p, double* k, 
+  Complex* zNew, Complex* pNew, double* kNew, int N)
 {
-  rassert(false); // something seems wrong about this - we should write the inverted poles, zeros
-                  // and gain zeros into zNew, pNew, kNew
+  //rassert(false); // something seems wrong about this - we should write the inverted poles, zeros
+  //                // and gain zeros into zNew, pNew, kNew
 
-  Complex *zTmp = new Complex[N];
+  Complex *zTmp = new Complex[N]; // to make it work, when the new arrays are equal to the old ones
   copyBuffer(z,    zTmp, N);
-  copyBuffer(p,    z,    N);
-  copyBuffer(zTmp, p,    N);
+  //copyBuffer(p,    z,    N);  // yes, this was wrong
+  //copyBuffer(zTmp, p,    N);
+  copyBuffer(p,    zNew,    N);
+  copyBuffer(zTmp, pNew,    N);
   *kNew = 1.0 / *k;
   delete[] zTmp;
 }

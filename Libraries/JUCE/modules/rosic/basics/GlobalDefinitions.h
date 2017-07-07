@@ -130,19 +130,27 @@ typedef unsigned __int32 UINT32;
 //#define INF (*(reinterpret_cast<double *>(&INF_ULL)))
 //#define NEG_INF (*(reinterpret_cast<double *>(&NEG_INF_ULL)))
 
-#ifdef _MSC_VER
-  INLINE double dummyFunction(double x) { return x; }
-  #define INF (1.0/dummyFunction(0.0))
-  #define NEG_INF (-1.0/dummyFunction(0.0))  // get rid of that - use -INF in the code
-  //#ifndef NAN
-  //  #define NAN (dummyFunction(0.0)/dummyFunction(0.0))
-  //#endif
-  #define INDEF (dummyFunction(0.0) / dummyFunction(0.0))
-#else
-  #define INF (1.0/0.0)
-  #define NEG_INF (-1.0/0.0)
-  #define INDEF (0.0/0.0)
-#endif
+//// old:
+//#ifdef _MSC_VER
+//  INLINE double dummyFunction(double x) { return x; }
+//  #define INF (1.0/dummyFunction(0.0))
+//  #define NEG_INF (-1.0/dummyFunction(0.0))  // get rid of that - use -INF in the code
+//  //#ifndef NAN
+//  //  #define NAN (dummyFunction(0.0)/dummyFunction(0.0))
+//  //#endif
+//  #define INDEF (dummyFunction(0.0) / dummyFunction(0.0))
+//#else
+//  #define INF (1.0/0.0)
+//  #define NEG_INF (-1.0/0.0)
+//  #define INDEF (0.0/0.0)
+//#endif
+
+// new:
+static const double INF     =  std::numeric_limits<double>::infinity();
+static const double NEG_INF = -std::numeric_limits<double>::infinity();
+static const double INDEF   =  std::numeric_limits<double>::quiet_NaN();
+
+
 
 
 

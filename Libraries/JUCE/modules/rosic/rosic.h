@@ -43,7 +43,7 @@
 //#include <stddef.h>   // for NULL macro
 //#include <functional>
 //#include <limits.h>
-//#include <limits>
+#include <limits>
 //#include <stdio.h>
 //#include <new>
 //#include <iterator>
