@@ -150,8 +150,10 @@ void MipMappedWaveTableOld::setWaveform(int newWaveform)
 
 void MipMappedWaveTableOld::initPrototypeTable()
 {
-  for(int i=0; i<(tableLength+4); i++)
+  for(int i = 0; i < tableLength; i++)
     prototypeTable[i] = 0.0;
+//  for(int i=0; i<(tableLength+4); i++) // wrong - prototype table has no extra elements
+//    prototypeTable[i] = 0.0;
 }
 
 void MipMappedWaveTableOld::initTableSet()
