@@ -6,7 +6,7 @@ rsEllipse<T>::rsEllipse(T _scale, T _aspectRatio, T _angle, T _centerX, T _cente
 }
 
 template<class T>
-void rsEllipse<T>::setParameters(T newScale, T newAspectRatio, T newAngle, 
+void rsEllipse<T>::setParameters(T newScale, T newAspectRatio, T newAngle,
   T newCenterX, T newCenterY)
 {
   scale   = newScale;
@@ -36,7 +36,7 @@ void rsEllipse<T>::updateCoeffs()
   T c  = cos(angle);
   T xc = centerX;    // shorthand for convenience
   T yc = centerY;
-  T a2 = a*a;  
+  T a2 = a*a;
   T b2 = b*b;
 
   // parametric equation coeffs:
@@ -46,11 +46,15 @@ void rsEllipse<T>::updateCoeffs()
   Ays =  b*c;
 
   // implicit equation coeffs for conic:
-  A = a2*s*s + b2*c*c;
-  B = 2*(b2-a2)*s*c;
-  C = a2*c*c + b2*s*s;
-  D = -2*A*xc - B*yc;
-  E = -2*C*yc - B*xc;
-  F = A*xc*xc + B*xc*yc + C*yc*yc - a2*b2;
+  this->A = a2*s*s + b2*c*c;
+  this->B = 2*(b2-a2)*s*c;
+  this->C = a2*c*c + b2*s*s;
+  this->D = -2*this->A*xc - this->B*yc;
+  this->E = -2*this->C*yc - this->B*xc;
+  this->F = this->A*xc*xc + this->B*xc*yc + this->C*yc*yc - a2*b2;
   // formulas from here: https://en.wikipedia.org/wiki/Ellipse#General_ellipse
+  // for some reason, gcc on linux and mac needs the this-pointers here - why?
+  // here's some info:
+  // https://stackoverflow.com/questions/4643074/why-do-i-have-to-access-template-base-class-members-through-the-this-pointer
+  // this really sucks!
 }

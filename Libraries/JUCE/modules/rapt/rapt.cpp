@@ -12,21 +12,21 @@ header files that the compiler may be using. */
 into one compilation unit, otherwise you may get "symbol already defined" linker errors (i
 think) */
 
-#include "Basics/Basics.cpp" 
+#include "Basics/Basics.cpp"
 #include "Data/Data.cpp"
-#include "Math/Math.cpp" 
-#include "Filters/Filters.cpp" 
-//#include "Analysis/Analysis.cpp" 
+#include "Math/Math.cpp"
+#include "Filters/Filters.cpp"
+//#include "Analysis/Analysis.cpp"
 //#include "Physics/Physics.cpp"
-//#include "Circuits/Circuits.cpp" 
-//#include "Spectral/Spectral.cpp" 
+//#include "Circuits/Circuits.cpp"
+//#include "Spectral/Spectral.cpp"
 #include "Visualization/Visualization.cpp"
-#include "Generators/Generators.cpp" 
-#include "Modulators/Modulators.cpp" 
-//#include "Effects/Effects.cpp" 
+#include "Generators/Generators.cpp"
+#include "Modulators/Modulators.cpp"
+//#include "Effects/Effects.cpp"
 //#include "Framework/Framework.cpp".
-//#include "Music/Music.cpp"  
-//#include "Instruments/Instruments.cpp" 
+//#include "Music/Music.cpp"
+//#include "Instruments/Instruments.cpp"
 
 
 
@@ -41,6 +41,9 @@ template class RAPT::NormalizedSigmoids<double>;
 template class RAPT::rsSinCosTable<double>;
 template class RAPT::ScaledAndShiftedSigmoid<double>;
 
+template class RAPT::rsEllipse<double>;
+
+
 template class RAPT::StateVariableFilter<double, double>;
 
 template class RAPT::AlphaMask<float>;
@@ -52,7 +55,7 @@ template class RAPT::PhaseScopeBuffer<double, float, double>;
 template class RAPT::PhaseScopeBuffer2<double, float, double>;
 
 // needed for the release build of Chaosfly on Linux - without them, apparently the compiler
-// generates the classes only partially - some member functions are missing probably because they 
+// generates the classes only partially - some member functions are missing probably because they
 // not called from anywhere inside jura or rosic:
 template double RAPT::rsAbs(double x);
 template class RAPT::rsBreakpointModulator<double>;

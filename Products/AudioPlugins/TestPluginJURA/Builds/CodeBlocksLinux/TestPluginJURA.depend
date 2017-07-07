@@ -10513,7 +10513,7 @@
 
 1497629947 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_framework/control/jura_PreDefinedParameters.h
 
-1494146433 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_framework/control/jura_MetaParameter.h
+1498508181 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_framework/control/jura_MetaParameter.h
 
 1491861622 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_framework/control/jura_ParameterManager.h
 
@@ -10561,7 +10561,7 @@
 
 1494166875 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_framework/gui/widgets/jura_PlotPreviewButton.h
 
-1478878239 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_framework/gui/widgets/jura_RScrollBar.h
+1498911906 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_framework/gui/widgets/jura_RScrollBar.h
 
 1496325816 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_framework/gui/widgets/jura_RTreeView.h
 
@@ -10581,7 +10581,7 @@
 
 1493582056 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_framework/gui/widgets/jura_AutomatableWidget.h
 
-1496340721 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_framework/gui/misc/jura_ComponentScrollContainer.h
+1498911906 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_framework/gui/misc/jura_ComponentScrollContainer.h
 
 1490800197 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_framework/gui/widgets/widget_sets/jura_WidgetSet.h
 
@@ -10659,7 +10659,7 @@
 
 1491752977 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_framework/control/jura_AutomatableParameter.cpp
 
-1496258894 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_framework/control/jura_MetaParameter.cpp
+1498508482 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_framework/control/jura_MetaParameter.cpp
 
 1497543784 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_framework/control/jura_ParameterManager.cpp
 
@@ -10685,7 +10685,7 @@
 
 1494606200 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_framework/gui/graphics/jura_BitmapFonts.cpp
 
-1497543560 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_framework/gui/graphics/jura_GraphicsTools.cpp
+1497891520 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_framework/gui/graphics/jura_GraphicsTools.cpp
 
 1483556916 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_framework/gui/graphics/jura_ImageUpdater.cpp
 
@@ -10707,7 +10707,7 @@
 
 1494167155 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_framework/gui/widgets/jura_PlotPreviewButton.cpp
 
-1478878238 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_framework/gui/widgets/jura_RScrollBar.cpp
+1498911906 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_framework/gui/widgets/jura_RScrollBar.cpp
 
 1497624969 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_framework/gui/widgets/jura_RTreeView.cpp
 
@@ -10727,7 +10727,7 @@
 
 1497624912 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_framework/gui/widgets/jura_AutomatableWidget.cpp
 
-1494259427 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_framework/gui/misc/jura_ComponentScrollContainer.cpp
+1498911905 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_framework/gui/misc/jura_ComponentScrollContainer.cpp
 
 1478878239 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_framework/gui/widgets/widget_sets/jura_WidgetSet.cpp
 
@@ -10791,7 +10791,7 @@
 
 1497543191 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_framework/audio/jura_AudioModule.cpp
 
-1497367884 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_framework/audio/jura_AudioPlugin.cpp
+1499116577 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_framework/audio/jura_AudioPlugin.cpp
 
 1496250046 source:/media/rob/Internal Datadisk/Programming/C++/RS-MET/Products/AudioPlugins/TestPluginJURA/JuceLibraryCode/rosic.cpp
 	"AppConfig.h"
@@ -15366,7 +15366,7 @@
 	"AppConfig.h"
 	<jura_processors/jura_processors.cpp>
 
-1496081233 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_processors/jura_processors.cpp
+1498831214 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_processors/jura_processors.cpp
 	"jura_processors.h"
 	"tools/jura_ClassConversions.cpp"
 	"tools/jura_TuningFileManager.cpp"
@@ -15398,6 +15398,7 @@
 	"generators/jura_SamplePlayer.cpp"
 	"generators/jura_VectorMixer.cpp"
 	"generators/jura_VectorSamplePlayer.cpp"
+	"generators/jura_RayBouncer.cpp"
 	"effects/jura_Enveloper.cpp"
 	"effects/jura_FuncShaper.cpp"
 	"effects/jura_AlgoVerb.cpp"
@@ -15424,7 +15425,7 @@
 	"misc/jura_ChannelMatrix2x2.cpp"
 	"misc/jura_DspWorkbench.cpp"
 
-1497625874 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_processors/jura_processors.h
+1498831150 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_processors/jura_processors.h
 	<jura_framework/jura_framework.h>
 	<rapt/rapt.h>
 	<romos/romos.h>
@@ -15459,6 +15460,7 @@
 	"generators/jura_SamplePlayer.h"
 	"generators/jura_VectorMixer.h"
 	"generators/jura_VectorSamplePlayer.h"
+	"generators/jura_RayBouncer.h"
 	"effects/jura_Enveloper.h"
 	"effects/jura_FuncShaper.h"
 	"effects/jura_AlgoVerb.h"
@@ -15485,7 +15487,7 @@
 	"misc/jura_ChannelMatrix2x2.h"
 	"misc/jura_DspWorkbench.h"
 
-1495473226 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/rapt.h
+1499291986 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/rapt.h
 	<ctgmath>
 	<complex>
 	<vector>
@@ -15496,6 +15498,7 @@
 	"Math/Math.h"
 	"Filters/Filters.h"
 	"Visualization/Visualization.h"
+	"Generators/Generators.h"
 	"Modulators/Modulators.h"
 
 1480022501 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Basics/Basics.h
@@ -15520,23 +15523,26 @@
 
 1485466231 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Data/Simd/Float32x4.h
 
-1488038800 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Math.h
+1499285250 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Math.h
 	"Functions/BasicFunctions.h"
 	"Functions/BellFunctions.h"
 	"Functions/FunctionObjects.h"
 	"Functions/Sigmoids.h"
+	"Functions/SinCosTable.h"
 	"Geometry/Line2D.h"
+	"Geometry/ConicSection.h"
+	"Geometry/Ellipse.h"
 	"Misc/Statistics.h"
 
 1497218123 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Functions/BasicFunctions.h
 
-1485466774 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Functions/BellFunctions.h
+1498984681 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Functions/BellFunctions.h
 
 1480258624 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Functions/FunctionObjects.h
 
 1481214922 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Functions/Sigmoids.h
 
-1487969708 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Geometry/Line2D.h
+1498985002 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Geometry/Line2D.h
 
 1488044555 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Misc/Statistics.h
 
@@ -15715,7 +15721,7 @@
 
 1480432920 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_processors/filters/jura_PhasorFilter.h
 
-1493903332 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_processors/filters/jura_EngineersFilter.h
+1499274577 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_processors/filters/jura_EngineersFilter.h
 
 1497625874 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_processors/filters/jura_CrossOver.h
 
@@ -15789,7 +15795,7 @@
 
 1494267792 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_processors/instruments/jura_Liberty.h
 
-1494341873 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_processors/misc/jura_AudioModuleChain.h
+1499110344 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_processors/misc/jura_AudioModuleChain.h
 
 1494580863 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_processors/misc/jura_ChannelMatrix2x2.h
 
@@ -15825,7 +15831,7 @@
 
 1492124899 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_processors/filters/jura_PhasorFilter.cpp
 
-1493904157 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_processors/filters/jura_EngineersFilter.cpp
+1499274693 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_processors/filters/jura_EngineersFilter.cpp
 
 1494602057 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_processors/filters/jura_CrossOver.cpp
 
@@ -15899,7 +15905,7 @@
 
 1496082435 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_processors/instruments/jura_Liberty.cpp
 
-1497626792 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_processors/misc/jura_AudioModuleChain.cpp
+1498832176 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_processors/misc/jura_AudioModuleChain.cpp
 
 1497626792 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_processors/misc/jura_ChannelMatrix2x2.cpp
 
@@ -15909,13 +15915,14 @@
 	"AppConfig.h"
 	<rapt/rapt.cpp>
 
-1494948345 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/rapt.cpp
+1499291986 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/rapt.cpp
 	"rapt.h"
 	"Basics/Basics.cpp"
 	"Data/Data.cpp"
 	"Math/Math.cpp"
 	"Filters/Filters.cpp"
 	"Visualization/Visualization.cpp"
+	"Generators/Generators.cpp"
 	"Modulators/Modulators.cpp"
 
 1478878239 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Basics/Basics.cpp
@@ -15926,25 +15933,28 @@
 	"ArrayTools.cpp"
 	"MatrixTools.cpp"
 
-1492538516 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Data/ArrayTools.cpp
+1498756970 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Data/ArrayTools.cpp
 
 1481635977 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Data/MatrixTools.cpp
 
-1488038800 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Math.cpp
+1499285258 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Math.cpp
 	"Math.h"
 	"Functions/BasicFunctions.cpp"
 	"Functions/BellFunctions.cpp"
 	"Functions/Sigmoids.cpp"
+	"Functions/SinCosTable.cpp"
 	"Geometry/Line2D.cpp"
+	"Geometry/ConicSection.cpp"
+	"Geometry/Ellipse.cpp"
 	"Misc/Statistics.cpp"
 
 1497218049 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Functions/BasicFunctions.cpp
 
 1485468879 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Functions/BellFunctions.cpp
 
-1481214835 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Functions/Sigmoids.cpp
+1498984189 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Functions/Sigmoids.cpp
 
-1487951109 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Geometry/Line2D.cpp
+1498790225 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Geometry/Line2D.cpp
 
 1488043874 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Misc/Statistics.cpp
 
@@ -15976,7 +15986,7 @@
 
 1497212832 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Visualization/Graphics/ImagePainter.cpp
 
-1493298780 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Visualization/Misc/PhaseScopeBuffer.cpp
+1498757315 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Visualization/Misc/PhaseScopeBuffer.cpp
 
 1478878239 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Modulators/Modulators.cpp
 	"Modulators.h"
@@ -16116,4 +16126,31 @@
 	"BinaryData.h"
 
 1497542637 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Products/AudioPlugins/TestPluginJURA/JuceLibraryCode/BinaryData.h
+
+1499447047 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Functions/SinCosTable.h
+
+1499002852 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Geometry/ConicSection.h
+
+1499103156 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Geometry/Ellipse.h
+
+1498820422 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Generators/Generators.h
+	"RayBouncer.h"
+
+1499373938 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Generators/RayBouncer.h
+
+1499424707 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Functions/SinCosTable.cpp
+
+1498913276 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Geometry/ConicSection.cpp
+
+1499449534 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Math/Geometry/Ellipse.cpp
+
+1498820422 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Generators/Generators.cpp
+	"Generators.h"
+	"RayBouncer.cpp"
+
+1499374793 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rapt/Generators/RayBouncer.cpp
+
+1499373378 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_processors/generators/jura_RayBouncer.h
+
+1499375255 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_processors/generators/jura_RayBouncer.cpp
 
