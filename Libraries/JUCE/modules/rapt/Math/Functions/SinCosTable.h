@@ -2,7 +2,9 @@
 #define RAPT_SINCOSTABLE_H_INCLUDED
 
 /** A class for getting approximate values of the sine and cosine of a given angle using lookup 
-tables. It's meant for optimizing sin/cos calculations. */
+tables. It's meant for optimizing sin/cos calculations. ..but you should really measure, whether
+or not it gives any better performance than using the standard sin/cos functions. Often, it 
+doesn't seem to be the case. */
 
 template<class T>
 class rsSinCosTable
@@ -49,10 +51,8 @@ public:
     *cosValue = wi * cosTbl[i] + frac * cosTbl[i1];
   }
 
-  // idea: we could have cubic interpolation by matching the derivatives at the tabulated points.
-  // we don't need any additional trickery to use 4 datapoints - instead use the cos-table as 
-  // derivative-table for the sine and the negative sin-table a derivative table for the cosine
-
+  /** Produces a pair of sin/cos values using cubic interpolation. Recommended only for 
+  nonnegative inputs (for negative inputs, the error is large). */
   inline void getValuesCubic(T x, T* sinValue, T* cosValue)
   {
     T pos  = scaler * x;     // continuous readout index     

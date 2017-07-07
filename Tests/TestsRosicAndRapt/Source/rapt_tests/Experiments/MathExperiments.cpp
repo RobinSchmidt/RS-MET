@@ -194,8 +194,8 @@ void sinCosTable()
 
   // create data:
   int N = 2000;  // number of values to plot
-  //float xMin = -15.0;
-  float xMin =   0.0;
+  float xMin = -15.0;
+  //float xMin =   0.0;
   float xMax = +15.0;
   vector<float> x(N), ySin(N), yCos(N), ySinTbl(N), yCosTbl(N);
   ArrayTools::rsFillWithRangeLinear(&x[0], N, xMin, xMax);

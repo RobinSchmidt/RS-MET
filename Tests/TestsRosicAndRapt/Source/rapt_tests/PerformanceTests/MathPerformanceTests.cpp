@@ -65,7 +65,7 @@ void matrixAdressingTest()
 
 void sinCosPerformance()
 {
-  static const int N = 5000;  // number of values
+  static const int N = 10000;  // number of values
   float xMin = 0.f;
   float xMax = float(2*PI);
 
@@ -100,6 +100,13 @@ void sinCosPerformance()
     table.getValuesLinear(x[n], &ySin[n], &yCos[n]);
   cycles = (double) counter.getNumCyclesSinceInit();
   printPerformanceTestResult("Table, linear, float", cycles / N);
+
+  // measure cost of rsSinCosTable<float> using cubic interpolation:
+  counter.init();
+  for(n = 0; n < N; n++)
+    table.getValuesCubic(x[n], &ySin[n], &yCos[n]);
+  cycles = (double) counter.getNumCyclesSinceInit();
+  printPerformanceTestResult("Table, cubic, float", cycles / N);
 
   // measure cost of rsSinCosTable<double> using linear interpolation:
   double xD[N], ySinD[N], yCosD[N];
