@@ -134,7 +134,7 @@
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="3" generateManifest="1" winArchitecture="x64"
                        isDebug="1" optimisation="1" targetName="TestsRosicAndRapt"/>
-        <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
+        <CONFIGURATION name="Release" winWarningLevel="3" generateManifest="1" winArchitecture="x64"
                        isDebug="0" optimisation="3" targetName="TestsRosicAndRapt"/>
       </CONFIGURATIONS>
       <MODULEPATHS>

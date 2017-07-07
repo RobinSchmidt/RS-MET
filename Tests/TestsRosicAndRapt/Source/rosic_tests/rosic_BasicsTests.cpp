@@ -22,7 +22,6 @@ void rotes::testBinomialCoefficients()
 
 void rotes::testMathFunctions()
 {
-
   double y = rosic::besselI0(30.0);
 
   //Plotter::plotFunction(besselI0, 0.0, 20.0);
@@ -39,7 +38,6 @@ void rotes::testMathFunctions()
     coeffsDbg[i] = -1000;
   for(int i=0; i<coeffs.getNumElements(); i++)
     coeffsDbg[i] = coeffs[i];
-
 
   int dummy = 0;
 }

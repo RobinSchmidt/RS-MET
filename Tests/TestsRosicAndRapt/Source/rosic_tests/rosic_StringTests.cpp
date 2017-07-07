@@ -58,7 +58,7 @@ void rotes::testStringIntConversions(int numIterations)
   rsString numString;
   for(int i=0; i<numIterations; i++)
   {
-    numberOriginal      = randomUniform(INT_MIN, INT_MAX);
+    numberOriginal      = (int) randomUniform(INT_MIN, INT_MAX);
     numString           = numberOriginal;
     numberReconstructed = numString.asInt();
     rassert( numberReconstructed == numberOriginal );

@@ -52,7 +52,7 @@ void rotes::testOscilloscopeBuffer()
   //oscBuf.setSyncBackward(true);
 
   // create oscilloscope buffer's relative time axis:
-  double tb[2*W];
+  //double tb[2*W];
   //fillWithRangeLinear(tb, 2*W, 0.0, (double) (2*W-1) / fs);
   //fillWithRangeLinear(tb, 2*W, 0.0, (double) (N-1)); // test - in samples
 

@@ -22,7 +22,7 @@ void rotes::testUnivariateScalarFunction()
 
   double a[5] = {-52, -23, 21, -7, 1};
   Polynomial p(4, a);
-  double f1 = p.approximateDerivativeAt(0.0, 1.0, 1.e-2);
+  double f1 = p.approximateDerivativeAt(0.0, 1, 1.e-2);
     
   double xr;
   //xr = p.findRootViaNewtonNonRobust(0.0);       //  8 iterations
