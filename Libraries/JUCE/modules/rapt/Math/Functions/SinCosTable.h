@@ -55,40 +55,41 @@ public:
 
   inline void getValuesCubic(T x, T* sinValue, T* cosValue)
   {
-    T pos  = scaler * x;   // continuous readout index     
+    T pos  = scaler * x;     // continuous readout index     
     int i  = (int)pos;
-    x = pos-i;             // fractional part (input to polynomial
+    x      = pos-i;          // fractional part (input to polynomial)
+    T x2   = x*x;
+    T x3   = x*x2;
     i      =  i    & mask;
     int i1 = (i+1) & mask;
 
-
-    // to be optimized:
-
+    // use the cosine-table as derivative table for the sine and the negative sine-table as 
+    // derivative table for the cosine:
     T k0, k1;
     T y0, yp0, y1, yp1;
 
     y0  = sinTbl[i];
     y1  = sinTbl[i1];
-    yp0 = cosTbl[i]  / scaler;
-    yp1 = cosTbl[i1] / scaler;
+    yp0 = cosTbl[i]  * scalerInv;
+    yp1 = cosTbl[i1] * scalerInv;
     k0  = y1  - yp0 - y0;
     k1  = yp1 - yp0;
-    *sinValue = y0 + yp0*x + (3*k0-k1)*x*x + (k1-2*k0)*x*x*x;
+    *sinValue = y0 + yp0*x + (3*k0-k1)*x2 + (k1-2*k0)*x3;
 
-    y0  = cosTbl[i];
-    y1  = cosTbl[i1];
-    yp0 = -sinTbl[i]  / scaler;
-    yp1 = -sinTbl[i1] / scaler;
+    y0  =  cosTbl[i];
+    y1  =  cosTbl[i1];
+    yp0 = -sinTbl[i]  * scalerInv;
+    yp1 = -sinTbl[i1] * scalerInv;
     k0  = y1  - yp0 - y0;
     k1  = yp1 - yp0;;
-    *cosValue = y0 + yp0*x + (3*k0-k1)*x*x + (k1-2*k0)*x*x*x;
+    *cosValue = y0 + yp0*x + (3*k0-k1)*x2 + (k1-2*k0)*x3;
   }
 
 
 
 protected:
 
-  T scaler;  
+  T scaler, scalerInv;  
   int mask;
   std::vector<T> sinTbl, cosTbl;
 

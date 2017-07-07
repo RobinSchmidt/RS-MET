@@ -9,6 +9,7 @@ rsSinCosTable<T>::rsSinCosTable(int tableSize)
     sinTbl[n] = sin(x);
     cosTbl[n] = cos(x); 
   }
-  scaler = T(tableSize/(2*PI));
+  scaler    = T(tableSize/(2*PI));
+  scalerInv = T((2*PI)/tableSize);
   mask   = tableSize-1;
 }
