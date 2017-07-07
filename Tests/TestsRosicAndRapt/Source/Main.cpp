@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
   // Performance tests:
 
   //matrixAdressingTest();
-  sinCosPerformance();
+  //sinCosPerformance();
 
 
   //-----------------------------------------------------------------------------------------------
@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
   //expGaussBell();
   //linearRegression();
   //productLogPlot();
-  //sinCosTable();
+  sinCosTable();
 
   // Filter:
   //ladderResonanceManipulation();
