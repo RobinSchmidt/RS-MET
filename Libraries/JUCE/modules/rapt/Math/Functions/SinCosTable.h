@@ -64,32 +64,24 @@ public:
 
     // to be optimized:
 
-    T a0, a1, a2, a3, k0, k1;
+    T k0, k1;
     T y0, yp0, y1, yp1;
 
     y0  = sinTbl[i];
     y1  = sinTbl[i1];
     yp0 = cosTbl[i]  / scaler;
     yp1 = cosTbl[i1] / scaler;
-    a0  = y0;
-    a1  = yp0;
-    k0  = y1  - a1 - a0;
-    k1  = yp1 - a1;
-    a2  = 3*k0-k1;
-    a3  = k1-2*k0;
-    *sinValue = a0 + a1*x + a2*x*x + a3*x*x*x;
+    k0  = y1  - yp0 - y0;
+    k1  = yp1 - yp0;
+    *sinValue = y0 + yp0*x + (3*k0-k1)*x*x + (k1-2*k0)*x*x*x;
 
     y0  = cosTbl[i];
     y1  = cosTbl[i1];
     yp0 = -sinTbl[i]  / scaler;
     yp1 = -sinTbl[i1] / scaler;
-    a0  = y0;
-    a1  = yp0;
-    k0  = y1  - a1 - a0;
-    k1  = yp1 - a1;
-    a2  = 3*k0-k1;
-    a3  = k1-2*k0;
-    *cosValue = a0 + a1*x + a2*x*x + a3*x*x*x;
+    k0  = y1  - yp0 - y0;
+    k1  = yp1 - yp0;;
+    *cosValue = y0 + yp0*x + (3*k0-k1)*x*x + (k1-2*k0)*x*x*x;
   }
 
 
