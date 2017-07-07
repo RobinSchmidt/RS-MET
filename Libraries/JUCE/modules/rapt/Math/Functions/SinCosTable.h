@@ -4,7 +4,12 @@
 /** A class for getting approximate values of the sine and cosine of a given angle using lookup 
 tables. It's meant for optimizing sin/cos calculations. ..but you should really measure, whether
 or not it gives any better performance than using the standard sin/cos functions. Often, it 
-doesn't seem to be the case. */
+doesn't seem to be the case. 
+
+maybe we should also try this:
+http://lab.polygonal.de/2007/07/18/fast-and-accurate-sinecosine-approximation/
+
+*/
 
 template<class T>
 class rsSinCosTable

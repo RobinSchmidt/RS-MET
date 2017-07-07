@@ -63,6 +63,36 @@ void matrixAdressingTest()
   delete[] b;
 }
 
+
+void rsSinCos1(double x, double* s, double* c)
+{
+  // it seems like this code is slower than std::cos/sin
+  // taken from: http://lab.polygonal.de/2007/07/18/fast-and-accurate-sinecosine-approximation/
+  // low precision version:
+
+  // always wrap input angle to -PI..PI:
+  if (x < -3.14159265)
+    x += 6.28318531;
+  else
+    if (x >  3.14159265)
+      x -= 6.28318531;
+
+  // compute sine:
+  if (x < 0)
+    *s = 1.27323954 * x + 0.405284735 * x * x;
+  else
+    *s = 1.27323954 * x - 0.405284735 * x * x;
+
+  // compute cosine: sin(x + PI/2) = cos(x)
+  x += 1.57079632;
+  if (x >  3.14159265)
+    x -= 6.28318531;
+  if(x < 0)
+    *c = 1.27323954 * x + 0.405284735 * x * x;
+  else
+    *c = 1.27323954 * x - 0.405284735 * x * x;
+}
+
 void sinCosPerformance()
 {
   static const int N = 10000;  // number of values
@@ -116,4 +146,15 @@ void sinCosPerformance()
     tableD.getValuesLinear(xD[n], &ySinD[n], &yCosD[n]);
   cycles = (double) counter.getNumCyclesSinceInit();
   printPerformanceTestResult("Table, linear, double", cycles / N);
+
+  // measure cost of rsSinCos1:
+  counter.init();
+  for(n = 0; n < N; n++)
+    rsSinCos1(x[n], &ySinD[n], &yCosD[n]);
+  cycles = (double) counter.getNumCyclesSinceInit();
+  printPerformanceTestResult("rsSinCos1, double", cycles / N);
+
+  // Conclusion:
+  // rsSinCos1 is slower than using std::sin/cos, and the table gives results that can't be real 
+  // (i get values around 0.3 cycles per sin/cos pair). Something must be wrong with the test code.
 }

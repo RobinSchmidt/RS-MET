@@ -9040,7 +9040,7 @@
 	"AppConfig.h"
 	<jura_framework/jura_framework.cpp>
 
-1496255008 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Products/AudioPlugins/TestPluginJURA/JuceLibraryCode/AppConfig.h
+1499292044 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Products/AudioPlugins/TestPluginJURA/JuceLibraryCode/AppConfig.h
 
 1494263043 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/jura_framework/jura_framework.cpp
 	"jura_framework.h"
@@ -11045,7 +11045,7 @@
 	"generators/rosic_Quadrigen.cpp"
 	"generators/rosic_VectorSamplePlayer.cpp"
 
-1497393152 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/rosic.h
+1499426114 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/rosic.h
 	<math.h>
 	<float.h>
 	<algorithm>
@@ -11054,6 +11054,7 @@
 	<stdlib.h>
 	<iostream>
 	<climits>
+	<limits>
 	<malloc.h>
 	<windows.h>
 	<pthread.h>
@@ -11310,7 +11311,7 @@
 	"instruments/rosic_WorkhorseVoice.h"
 	"instruments/rosic_Workhorse.h"
 
-1495472267 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/basics/GlobalDefinitions.h
+1499426528 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/basics/GlobalDefinitions.h
 
 1495472330 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/basics/GlobalFunctions.h
 
@@ -11444,7 +11445,7 @@
 
 1495487324 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/filters/rosic_FilterAnalyzer.h
 
-1496686441 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/filters/rosic_BiquadCascade.h
+1499276819 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/filters/rosic_BiquadCascade.h
 
 1495487365 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/filters/rosic_BiquadMonoDF1.h
 
@@ -11494,13 +11495,13 @@
 
 1495487987 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/filters/rosic_LeakyIntegrator.h
 
-1495488006 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/filters/rosic_PrototypeDesigner.h
+1499427224 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/filters/rosic_PrototypeDesigner.h
 
 1495488025 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/filters/rosic_PoleZeroMapper.h
 
 1495488051 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/filters/rosic_InfiniteImpulseResponseDesigner.h
 
-1495488068 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/filters/rosic_EngineersFilter.h
+1499274967 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/filters/rosic_EngineersFilter.h
 
 1495488089 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/filters/rosic_EllipticSubBandFilter.h
 
@@ -11644,7 +11645,7 @@
 	"../others/rosic_SlewRateLimiter.h"
 	"../transforms/rosic_FourierTransformerRadix2.h"
 
-1495657250 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/modulators/rosic_LowFrequencyOscillator.h
+1499428232 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/modulators/rosic_LowFrequencyOscillator.h
 	"../generators/rosic_WaveTable.h"
 	"../others/rosic_SlewRateLimiter.h"
 
@@ -11696,7 +11697,7 @@
 
 1495658133 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/analysis/rosic_PitchDetector.h
 
-1495658192 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/analysis/rosic_ScopeScreenScanner.h
+1499361080 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/analysis/rosic_ScopeScreenScanner.h
 
 1198410016 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/analysis/rosic_SignalMeasures.h
 
@@ -11756,7 +11757,7 @@
 
 1497554191 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/effects/rosic_FormantShifter.h
 
-1496077247 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/effects/rosic_FrequencyShifter.h
+1499274501 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/effects/rosic_FrequencyShifter.h
 
 1496077271 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/effects/rosic_FuncShaper.h
 
@@ -12056,7 +12057,7 @@
 
 1495487324 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/filters/rosic_FilterAnalyzer.cpp
 
-1495487350 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/filters/rosic_BiquadCascade.cpp
+1499276971 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/filters/rosic_BiquadCascade.cpp
 
 1495487272 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/filters/rosic_BiquadDesigner.cpp
 
@@ -12080,7 +12081,7 @@
 
 1495487594 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/filters/rosic_CookbookFilter.cpp
 
-1497557273 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/filters/rosic_PrototypeDesigner.cpp
+1499427319 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/filters/rosic_PrototypeDesigner.cpp
 
 1497558586 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/filters/rosic_PoleZeroMapper.cpp
 
@@ -12088,7 +12089,7 @@
 
 1496687238 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/filters/rosic_InfiniteImpulseResponseDesigner.cpp
 
-1495488068 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/filters/rosic_EngineersFilter.cpp
+1499274466 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/filters/rosic_EngineersFilter.cpp
 
 1495488124 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/filters/rosic_LinkwitzRileyCrossOver.cpp
 
@@ -12154,7 +12155,7 @@
 
 1495657565 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/rendering/rosic_MultiSegmentWaveformRenderer.cpp
 
-1497559128 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/rendering/rosic_NonRealtimeProcesses.cpp
+1499274666 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/rendering/rosic_NonRealtimeProcesses.cpp
 
 1495657487 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/rendering/rosic_StandardWaveformRenderer.cpp
 
@@ -12162,9 +12163,9 @@
 
 1495657541 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/rendering/rosic_WaveformRenderer.cpp
 
-1495656006 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/generators/rosic_MipMappedWaveTable.cpp
+1499429175 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/generators/rosic_MipMappedWaveTable.cpp
 
-1495656006 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/generators/rosic_MipMappedWaveTableOld.cpp
+1499429264 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/generators/rosic_MipMappedWaveTableOld.cpp
 
 1495656006 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/generators/rosic_MipMappedWaveTableStereo.cpp
 
@@ -12298,7 +12299,7 @@
 
 1495658269 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/analysis/rosic_WaveformDisplayBuffer.cpp
 
-1495658192 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/analysis/rosic_ScopeScreenScanner.cpp
+1499361080 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/analysis/rosic_ScopeScreenScanner.cpp
 
 1495657705 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/delaylines/rosic_BasicIntegerDelayLine.cpp
 
@@ -12372,7 +12373,7 @@
 
 1496077228 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/effects/rosic_FormantShifter.cpp
 
-1496077247 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/effects/rosic_FrequencyShifter.cpp
+1499274666 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/effects/rosic_FrequencyShifter.cpp
 
 1496077271 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/effects/rosic_FuncShaper.cpp
 
@@ -12421,7 +12422,7 @@
 1495488726 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/infrastructure/rosic_FileInputOutput.cpp
 	"../_third_party/soundtouch/WavFile.cpp"
 
-1497555268 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/_third_party/soundtouch/WavFile.cpp
+1499428384 /media/rob/Internal Datadisk/Programming/C++/RS-MET/Libraries/JUCE/modules/rosic/_third_party/soundtouch/WavFile.cpp
 	<stdio.h>
 	<stdexcept>
 	<string>
