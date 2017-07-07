@@ -51,14 +51,14 @@ namespace rosic
 
   /**
 
-  This class implements a low-frequency oscillator which can produce standard and custom waveforms 
-  and apply a couple of waveform manipulations. It also contains a slewrate limiter to smooth out 
+  This class implements a low-frequency oscillator which can produce standard and custom waveforms
+  and apply a couple of waveform manipulations. It also contains a slewrate limiter to smooth out
   the discontinuities in the waveform.
 
   \todo: maybe include a (subsonic) highpass
-  pass a flag to the constructor to indicate whether or not we need to allocate memory for the 
+  pass a flag to the constructor to indicate whether or not we need to allocate memory for the
   table - avoids memory fragmentation on construction of polyphonic instruments (in which otherwise
-  each voice-LFO would allocate its own memory and later de-allocate it and switch to shared 
+  each voice-LFO would allocate its own memory and later de-allocate it and switch to shared
   memory)
 
   */
@@ -111,14 +111,14 @@ namespace rosic
     /** Sets the phase offset between left and right channel in degrees (range: 0...360). */
     void setStereoPhase(double newStereoPhase);
 
-    /** Sets the attack-time (in milliseconds) for the slewrate limiter - this is time which it 
+    /** Sets the attack-time (in milliseconds) for the slewrate limiter - this is time which it
     takes to rise 63% for upward jumps in the waveform. */
-    void setUpwardSlewRate(double newSlewRate) 
+    void setUpwardSlewRate(double newSlewRate)
     { slewRateLimiterL.setAttackTime(newSlewRate);  slewRateLimiterR.setAttackTime(newSlewRate); }
 
-    /** Sets the release-time (in milliseconds) for the slewrate limiter - this is time which it 
+    /** Sets the release-time (in milliseconds) for the slewrate limiter - this is time which it
     takes to fall to 37% for downward jumps in the waveform. */
-    void setDownwardSlewRate(double newSlewRate) 
+    void setDownwardSlewRate(double newSlewRate)
     { slewRateLimiterL.setReleaseTime(newSlewRate); slewRateLimiterR.setReleaseTime(newSlewRate); }
 
     /** Set this to "true" when this instance should be muted. */
@@ -126,15 +126,15 @@ namespace rosic
 
 
     // still to do (currently implemented as dummy functions for the rosof-editors):
-    void setTimeReverse(bool shouldReverse) 
+    void setTimeReverse(bool shouldReverse)
     {
       if( shouldReverse )
       {
         // do stuff
       }
     }
-    void setPolarityInversion(bool shouldInvert) 
-    {   
+    void setPolarityInversion(bool shouldInvert)
+    {
       if( shouldInvert )
       {
         // do stuff
@@ -161,7 +161,7 @@ namespace rosic
     represents the sample-number on the display (which is the x-coordinate in pixels). */
     //void getWaveformForDisplay(double* targetBuffer, int numSamplesToShow);
 
-    /** Returns the name of the waveform as zero-terminated c-string - if an audiofile is used, 
+    /** Returns the name of the waveform as zero-terminated c-string - if an audiofile is used,
     this 'name' will represent the relative path of the file. */
     //char* getWaveformName() const;
 
@@ -194,7 +194,7 @@ namespace rosic
 
     /** This is a pointer to the wavetable object to be used. */
     WaveTable *waveTable;
-    bool      tableIsOwned; // flag to indicate that we use our own memory for the table (as opposed 
+    bool      tableIsOwned; // flag to indicate that we use our own memory for the table (as opposed
                             // to using shared memory
 
     //=============================================================================================
@@ -207,7 +207,7 @@ namespace rosic
     int    incrementInt;
 
     SlewRateLimiter slewRateLimiterL, slewRateLimiterR;
-    // \todo: scrap the embedded object and do the slewrate-limiting directly here - this optimizes 
+    // \todo: scrap the embedded object and do the slewrate-limiting directly here - this optimizes
     // memory occupation for multiple voices as we only the y1 member from the SlewRateLimiter
     // per voice - everything else can be shared
 
@@ -245,7 +245,7 @@ namespace rosic
       positionInt -= waveTable->tableLength;
     while( positionInt < 0 )
       positionInt += waveTable->tableLength;
-    */    
+    */
     positionInt = wrapAround(positionInt, waveTable->tableLength);
     double tmp  = waveTable->getValueAt(positionInt, positionFrac);
 
@@ -268,12 +268,14 @@ namespace rosic
     return tmp;
   }
 
-    
+
   INLINE void LowFrequencyOscillator::getSampleFrameStereo(double *inOutL, double *inOutR)
   {
-
     if( (parameters->mute == true) || (waveTable == NULL) )
+    {
+      *inOutL = *inOutR = 0.0;
       return;
+    }
 
     // wraparound the integer part of the position-pointer if necesarry:
     positionInt = wrapAround(positionInt, waveTable->tableLength);
@@ -284,7 +286,7 @@ namespace rosic
       positionInt += waveTable->tableLength;
       */
 
-    int positionInt2 = positionInt + roundToInt(waveTable->tableLength*parameters->stereoPhase/360.0); 
+    int positionInt2 = positionInt + roundToInt(waveTable->tableLength*parameters->stereoPhase/360.0);
        // to be optimized - integer offset can be precalulated
     positionInt2 = wrapAround(positionInt2, waveTable->tableLength);
 
