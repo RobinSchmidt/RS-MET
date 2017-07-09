@@ -897,9 +897,9 @@ void GenericAudioModuleEditor::createWidgets()
   // array)
 
   Parameter *p;
-  RSlider   *s;
-  RComboBox *c;
-  RButton   *b;
+  AutomatableSlider   *s;
+  AutomatableComboBox *c;
+  AutomatableButton   *b;
   for(int i = 0; i < moduleToEdit->getNumParameters(); i++)
   {
     p = moduleToEdit->getParameterByIndex(i);
@@ -908,9 +908,8 @@ void GenericAudioModuleEditor::createWidgets()
     if(p->getScaling() == Parameter::BOOLEAN)
     {
       // on/off parameter - create button:
-      b = new RButton(name + "Button");
+      b = new AutomatableButton(name);
       b->assignParameter(p);
-      b->setButtonText(name);
       b->setDescriptionField(infoField);
       addWidget(b);
       parameterWidgets.add(b);
@@ -918,7 +917,7 @@ void GenericAudioModuleEditor::createWidgets()
     else if(p->getScaling() == Parameter::STRING)
     {
       // multiple-choice parameter - create combobox:
-      c = new RComboBox(name + "Menu");
+      c = new AutomatableComboBox();
       c->assignParameter(p);
       c->setDescriptionField(infoField);
       addWidget(c);
@@ -927,7 +926,7 @@ void GenericAudioModuleEditor::createWidgets()
     else
     {
       // numeric parameter - create slider:
-      s = new RSlider(name + "Slider");
+      s = new AutomatableSlider();
       s->setRange(p->getMinValue(), p->getMaxValue(), p->getInterval(), p->getDefaultValue());
       s->assignParameter(p);
       s->setSliderName(name);
