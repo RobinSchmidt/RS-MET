@@ -45,7 +45,7 @@ public:
   {
     T pos  = scaler * x;   // continuous readout index     
     int i  = (int)pos;
-    //int i  = (int)floor(pos); // this would work equally well for negative inputs - weird, when
+    //int i  = (int)floor(pos); // this would work equally well for negative inputs - weird: when
                                 // using this, the performance test for the getValuesRounded is 
                                 // affected
     T frac = pos-i;

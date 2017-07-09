@@ -15,6 +15,8 @@ only with MSVC at the moment.
 
 hmm...maybe we should update this using QueryPerformanceCounter, etc. - see here:
 https://en.wikipedia.org/wiki/Time_Stamp_Counter
+https://msdn.microsoft.com/en-us/library/windows/desktop/dn553408(v=vs.85).aspx
+
 */
 
 class ProcessorCycleCounter  

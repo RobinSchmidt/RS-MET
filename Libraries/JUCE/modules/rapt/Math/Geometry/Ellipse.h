@@ -24,7 +24,7 @@ public:
 
   /** \name Setup */
 
-  /** Sets all the parameters that determine the ellipses size, shape, orientation and position
+  /** Sets all the parameters that determine the ellipse's size, shape, orientation and position
   at once. */
   void setParameters(T newAreaScale = 1, T newAspectRatio = 1, T newRotationAngle = 0, 
     T newCenterX = 0, T newCenterY = 0);
@@ -38,7 +38,8 @@ public:
 
   /** \name Inquiry */
 
-  /** Computes a point on the ellipse corresponding to the given angle parameter. */
+  /** Computes a point on the ellipse corresponding to the given angle parameter. 
+  Not yet tested. */
   void getPointOnEllipse(T angle, T* x, T* y) const;
 
   /** Returns the total area of the ellipse (not yet tested). */

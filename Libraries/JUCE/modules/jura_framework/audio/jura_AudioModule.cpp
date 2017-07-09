@@ -377,6 +377,9 @@ void AudioModule::setStateFromXml(const XmlElement& xmlState, const juce::String
   midiMappingFromXml(convertedState);
   metaMappingFromXml(convertedState);
   metaValuesFromXml(convertedState);
+  // maybe this should be done before retrieving the parameter values - because when you change
+  // a parameter range in the code and then load an older preset, a parameter that is connected
+  // to a meta parameter will get the wrong value.
 
 
   // if we have child-modules, we try to restore their states by looking for corresponding
@@ -907,6 +910,7 @@ void GenericAudioModuleEditor::createWidgets()
       // on/off parameter - create button:
       b = new RButton(name + "Button");
       b->assignParameter(p);
+      b->setButtonText(name);
       b->setDescriptionField(infoField);
       addWidget(b);
       parameterWidgets.add(b);

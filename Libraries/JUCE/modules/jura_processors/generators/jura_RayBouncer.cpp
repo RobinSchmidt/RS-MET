@@ -77,32 +77,33 @@ void RayBouncerAudioModule::createParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<RBAM>(this, &RBAM::setBendY2X);
 
-
-  p = new Param("BendXX2X", -2.0, 2.0, 0.0, Parameter::LINEAR);
+  p = new Param("BendXY2XY", -2.0, 2.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
-  p->setValueChangeCallback<RBAM>(this, &RBAM::setBendXX2X);
+  p->setValueChangeCallback<RBAM>(this, &RBAM::setBendXY2XY);
 
-  p = new Param("BendXX2Y", -2.0, 2.0, 0.0, Parameter::LINEAR);
-  addObservedParameter(p);
-  p->setValueChangeCallback<RBAM>(this, &RBAM::setBendXX2Y);
+  //p = new Param("BendXX2X", -2.0, 2.0, 0.0, Parameter::LINEAR);
+  //addObservedParameter(p);
+  //p->setValueChangeCallback<RBAM>(this, &RBAM::setBendXX2X);
 
+  //p = new Param("BendXX2Y", -2.0, 2.0, 0.0, Parameter::LINEAR);
+  //addObservedParameter(p);
+  //p->setValueChangeCallback<RBAM>(this, &RBAM::setBendXX2Y);
 
-  p = new Param("BendXY2X", -2.0, 2.0, 0.0, Parameter::LINEAR);
-  addObservedParameter(p);
-  p->setValueChangeCallback<RBAM>(this, &RBAM::setBendXY2X);
+  //p = new Param("BendXY2X", -2.0, 2.0, 0.0, Parameter::LINEAR);
+  //addObservedParameter(p);
+  //p->setValueChangeCallback<RBAM>(this, &RBAM::setBendXY2X);
 
-  p = new Param("BendXY2Y", -2.0, 2.0, 0.0, Parameter::LINEAR);
-  addObservedParameter(p);
-  p->setValueChangeCallback<RBAM>(this, &RBAM::setBendXY2Y);
+  //p = new Param("BendXY2Y", -2.0, 2.0, 0.0, Parameter::LINEAR);
+  //addObservedParameter(p);
+  //p->setValueChangeCallback<RBAM>(this, &RBAM::setBendXY2Y);
 
+  //p = new Param("BendYY2X", -2.0, 2.0, 0.0, Parameter::LINEAR);
+  //addObservedParameter(p);
+  //p->setValueChangeCallback<RBAM>(this, &RBAM::setBendYY2X);
 
-  p = new Param("BendYY2X", -2.0, 2.0, 0.0, Parameter::LINEAR);
-  addObservedParameter(p);
-  p->setValueChangeCallback<RBAM>(this, &RBAM::setBendYY2X);
-
-  p = new Param("BendYY2Y", -2.0, 2.0, 0.0, Parameter::LINEAR);
-  addObservedParameter(p);
-  p->setValueChangeCallback<RBAM>(this, &RBAM::setBendYY2Y);
+  //p = new Param("BendYY2Y", -2.0, 2.0, 0.0, Parameter::LINEAR);
+  //addObservedParameter(p);
+  //p->setValueChangeCallback<RBAM>(this, &RBAM::setBendYY2Y);
 
   // maybe eventually we only want to retain xy2x, xy2y and let them be equal for symmetry
   // but maybe x2y, and y2x make also sense
@@ -223,46 +224,43 @@ void RayBouncerAudioModule::setBendY2X(double newValue)
   rayBouncer.rayBouncer.setBendY2X(newValue);
   autoResetIfDesired();
 }
-
-void RayBouncerAudioModule::setBendXX2X(double newValue)
-{
-  rayBouncer.rayBouncer.setBendXX2X(newValue);
-  autoResetIfDesired();
-}
-void RayBouncerAudioModule::setBendXX2Y(double newValue)
-{
-  rayBouncer.rayBouncer.setBendXX2Y(newValue);
-  autoResetIfDesired();
-}
-
-void RayBouncerAudioModule::setBendXY2X(double newValue)
+void RayBouncerAudioModule::setBendXY2XY(double newValue)
 {
   rayBouncer.rayBouncer.setBendXY2X(newValue);
-  autoResetIfDesired();
-}
-void RayBouncerAudioModule::setBendXY2Y(double newValue)
-{
   rayBouncer.rayBouncer.setBendXY2Y(newValue);
   autoResetIfDesired();
 }
 
-void RayBouncerAudioModule::setBendYY2X(double newValue)
-{
-  rayBouncer.rayBouncer.setBendYY2X(newValue);
-  autoResetIfDesired();
-}
-void RayBouncerAudioModule::setBendYY2Y(double newValue)
-{
-  rayBouncer.rayBouncer.setBendYY2Y(newValue);
-  autoResetIfDesired();
-}
-
-//void setBendXX2Y(double newValue);
-//void setBendXY2X(double newValue);
-//void setBendXY2Y(double newValue);
-//void setBendYY2X(double newValue);
-//void setBendYY2Y(double newValue);
-
+//void RayBouncerAudioModule::setBendXX2X(double newValue)
+//{
+//  rayBouncer.rayBouncer.setBendXX2X(newValue);
+//  autoResetIfDesired();
+//}
+//void RayBouncerAudioModule::setBendXX2Y(double newValue)
+//{
+//  rayBouncer.rayBouncer.setBendXX2Y(newValue);
+//  autoResetIfDesired();
+//}
+//void RayBouncerAudioModule::setBendXY2X(double newValue)
+//{
+//  rayBouncer.rayBouncer.setBendXY2X(newValue);
+//  autoResetIfDesired();
+//}
+//void RayBouncerAudioModule::setBendXY2Y(double newValue)
+//{
+//  rayBouncer.rayBouncer.setBendXY2Y(newValue);
+//  autoResetIfDesired();
+//}
+//void RayBouncerAudioModule::setBendYY2X(double newValue)
+//{
+//  rayBouncer.rayBouncer.setBendYY2X(newValue);
+//  autoResetIfDesired();
+//}
+//void RayBouncerAudioModule::setBendYY2Y(double newValue)
+//{
+//  rayBouncer.rayBouncer.setBendYY2Y(newValue);
+//  autoResetIfDesired();
+//}
 
 void RayBouncerAudioModule::setAutoReset(bool shouldReset)
 {

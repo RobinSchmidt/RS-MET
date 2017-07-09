@@ -15,14 +15,14 @@ public:
   DummyModule(CriticalSection *lockToUse) : AudioModule(lockToUse) {}
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override 
   {
-    // for debug:
-    std::vector<double> left(numSamples), right(numSamples);
-    for(int n = 0; n < numSamples; n++)
-    {
-      left[n]  = inOutBuffer[0][n];
-      right[n] = inOutBuffer[1][n];
-    }
-    int dummy = 0;
+    //// for debug:
+    //std::vector<double> left(numSamples), right(numSamples);
+    //for(int n = 0; n < numSamples; n++)
+    //{
+    //  left[n]  = inOutBuffer[0][n];
+    //  right[n] = inOutBuffer[1][n];
+    //}
+    //int dummy = 0;
   }
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DummyModule)
 };
