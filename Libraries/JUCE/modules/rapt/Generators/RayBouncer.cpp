@@ -25,12 +25,22 @@ void rsRayBouncer<T>::reflectInTangentAt(T xt, T yt, T* x, T *y)
 }
 
 template<class T>
-void rsRayBouncer<T>::ensurePointIsInEllipse(T* x, T* y)
+void rsRayBouncer<T>::ensurePointIsInEllipse(T xi, T yi)
 {
-  if(ellipse.isPointOutside(*x, *y, tolerance))
+  if(ellipse.isPointOutside(x, y, tolerance))
   {
-    *x = x0; 
-    *y = y0;
+    // new: start at current intersection point and head towards start point:
+    dx = x0-xi;
+    dy = y0-yi;
+    T scaler = speed / sqrt(dx*dx + dy*dy);
+    dx *= scaler;
+    dy *= scaler;
+    x = xi; 
+    y = yi;
+
+    // old: reset to start point (causes pops)
+    //x = x0; 
+    //y = y0;
     // this is not ideal - it leads to spurious discontinuities - maybe instead set the point
     // to somewhere on the line between the current line intersection point xi, yi and the start
     // point x0, y0
@@ -69,14 +79,12 @@ void rsRayBouncer<T>::getSampleFrame(T &xOut, T &yOut)
     T xi, yi;
     getLineEllipseIntersectionPoint(&xi, &yi); // intersection between line segment and ellipse
 
-    T err = ellipse.evaluate(xi, yi);        // for debug - should be 0 up to roundoff
-    T val = ellipse.evaluate(x, y);            // also for debug
+    //T err = ellipse.evaluate(xi, yi);        // for debug - should be 0 up to roundoff
+    //T val = ellipse.evaluate(x, y);            // also for debug
 
     reflectInTangentAt(xi, yi, &x, &y);        // reflect new point in tangent at intersection
-
-    ensurePointIsInEllipse(&x, &y);            // because sometimes, we fail numerically
-
     updateVelocity(xi, yi);                    // points from intersection to reflected point now
+    ensurePointIsInEllipse(xi, yi);            // because sometimes, we fail numerically
   }
   // in certain conditions we get hung up in this loop - may use an "if" or a maximum number
   // of iterations....i guess, it happens when the new point ends up exactly on the ellipse

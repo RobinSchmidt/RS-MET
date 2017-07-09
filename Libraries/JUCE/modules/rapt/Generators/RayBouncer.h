@@ -90,7 +90,7 @@ protected:
   x,y about the tangent at that point. */
   inline void reflectInTangentAt(T xt, T yt, T* x, T *y);
 
-  inline void ensurePointIsInEllipse(T* x, T* y);
+  inline void ensurePointIsInEllipse(T xi, T yi);
 
   /** Updates dx, dy by taking the direction vector that points from the given line/ellipse 
   intersection point xi,yi to the current point as new direction and adjusting its length according 
