@@ -5,7 +5,8 @@
 
 /**   */
 
-class JUCE_API RayBouncerAudioModule : public jura::AudioModule
+class JUCE_API RayBouncerAudioModule 
+  : public jura::AudioModuleWithMidiIn // "WithMidiIn" is just temporary for testing
 {
 
 public:
@@ -25,6 +26,9 @@ public:
   virtual void reset() override;
   virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 
     bool markAsClean) override;
+
+  virtual void noteOn(int noteNumber, int velocity) override;
+
 
   // target functions for callbacks that are called on parameter changes:
   void setFrequency(double newFrequency);
@@ -63,6 +67,8 @@ protected:
   //RAPT::rsRayBouncerDriver<double> rayBouncer;
   rsRayBouncerDriverD rayBouncer;
   //rsRayBouncerDriverD rayBouncer;
+
+  double tune = 0.0; // in semtitones
 
   double frequency = 100, sampleRate = 44100;
 

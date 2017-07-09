@@ -1,5 +1,6 @@
 
-RayBouncerAudioModule::RayBouncerAudioModule(CriticalSection *lockToUse) : AudioModule(lockToUse)
+RayBouncerAudioModule::RayBouncerAudioModule(CriticalSection *lockToUse) 
+  : AudioModuleWithMidiIn(lockToUse)
 {
   ScopedLock scopedLock(*lock);
   moduleName = "RayBouncer";
@@ -16,19 +17,19 @@ void RayBouncerAudioModule::createParameters()
   typedef MetaControlledParameter Param;
   Param* p;
 
-  p = new Param("Frequency", 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL);
-  defaultValues.clear();
-  defaultValues.push_back(125.0);
-  defaultValues.push_back(250.0);
-  defaultValues.push_back(500.0);
-  defaultValues.push_back(1000.0);
-  defaultValues.push_back(2000.0);
-  defaultValues.push_back(4000.0);
-  defaultValues.push_back(8000.0);
-  defaultValues.push_back(16000.0);
-  p->setDefaultValues(defaultValues);
-  addObservedParameter(p);
-  p->setValueChangeCallback<RayBouncerAudioModule>(this, &RayBouncerAudioModule::setFrequency);
+  //p = new Param("Frequency", 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL);
+  //defaultValues.clear();
+  //defaultValues.push_back(125.0);
+  //defaultValues.push_back(250.0);
+  //defaultValues.push_back(500.0);
+  //defaultValues.push_back(1000.0);
+  //defaultValues.push_back(2000.0);
+  //defaultValues.push_back(4000.0);
+  //defaultValues.push_back(8000.0);
+  //defaultValues.push_back(16000.0);
+  //p->setDefaultValues(defaultValues);
+  //addObservedParameter(p);
+  //p->setValueChangeCallback<RayBouncerAudioModule>(this, &RayBouncerAudioModule::setFrequency);
 
   typedef RayBouncerAudioModule RBAM;
 
@@ -158,6 +159,13 @@ void RayBouncerAudioModule::setStateFromXml(const XmlElement& xmlState,
   const juce::String& stateName, bool markAsClean)
 {
   AudioModule::setStateFromXml(xmlState, stateName, markAsClean);
+  rayBouncer.reset();
+}
+
+void RayBouncerAudioModule::noteOn(int noteNumber, int velocity)
+{
+  frequency = pitchToFreq(noteNumber + tune);
+  rayBouncer.setFrequencyAndSampleRate(frequency, sampleRate);
   rayBouncer.reset();
 }
 
