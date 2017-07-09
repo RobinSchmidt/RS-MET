@@ -31,12 +31,15 @@ public:
 
 
   // target functions for callbacks that are called on parameter changes:
-  void setFrequency(double newFrequency);
+  //void setFrequency(double newFrequency);
+  void setTune(double newTune);
+
   void setEllipseSize(double newSize);
   void setEllipseAspectRatio(double newRatio);
   void setEllipseAngleDegrees(double newAngle);
   void setEllipseCenterX(double newX);
   void setEllipseCenterY(double newY);
+
   void setStartX(double newX);
   void setStartY(double newY);
   void setLaunchAngle(double newAngle);
@@ -45,7 +48,6 @@ public:
   void setBendX2Y(  double newValue);
   void setBendY2X(  double newValue);
   void setBendXY2XY(double newValue);
-
   //void setBendXX2X(double newValue);
   //void setBendXX2Y(double newValue);
   //void setBendXY2X(double newValue);
@@ -68,6 +70,7 @@ protected:
   rsRayBouncerDriverD rayBouncer;
   //rsRayBouncerDriverD rayBouncer;
 
+  int currentNote = 64;
   double tune = 0.0; // in semtitones
 
   double frequency = 100, sampleRate = 44100;

@@ -33,6 +33,10 @@ void RayBouncerAudioModule::createParameters()
 
   typedef RayBouncerAudioModule RBAM;
 
+  p = new Param("Tune", -48.0, 48.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<RBAM>(this, &RBAM::setTune);
+
   p = new Param("Size", 0.25, 1.0, 1.0, Parameter::EXPONENTIAL);
   addObservedParameter(p);
   p->setValueChangeCallback<RBAM>(this, &RBAM::setEllipseSize);
@@ -164,18 +168,26 @@ void RayBouncerAudioModule::setStateFromXml(const XmlElement& xmlState,
 
 void RayBouncerAudioModule::noteOn(int noteNumber, int velocity)
 {
-  frequency = pitchToFreq(noteNumber + tune);
+  currentNote = noteNumber;
+  frequency = pitchToFreq(currentNote + tune);
   rayBouncer.setFrequencyAndSampleRate(frequency, sampleRate);
   rayBouncer.reset();
 }
 
 // parameter setters (callback targets for the Parameter objects):
 
-void RayBouncerAudioModule::setFrequency(double newFrequency)
+//void RayBouncerAudioModule::setFrequency(double newFrequency)
+//{
+//  frequency = newFrequency;
+//  rayBouncer.setFrequencyAndSampleRate(frequency, sampleRate);
+//}
+void RayBouncerAudioModule::setTune(double newTune)
 {
-  frequency = newFrequency;
+  tune = newTune;
+  frequency = pitchToFreq(currentNote + tune);
   rayBouncer.setFrequencyAndSampleRate(frequency, sampleRate);
 }
+
 void RayBouncerAudioModule::setEllipseSize(double newSize)
 {
   rayBouncer.setEllipseSize(newSize);
