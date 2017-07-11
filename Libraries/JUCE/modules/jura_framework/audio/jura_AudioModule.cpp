@@ -617,6 +617,8 @@ void AudioModuleEditor::init()
 
   loadPreferencesFromFile();
   updateWidgetsAccordingToState();
+
+  //setWantsKeyboardFocus(true);
 }
 
 AudioModuleEditor::~AudioModuleEditor()
@@ -660,6 +662,13 @@ int AudioModuleEditor::getPresetSectionBottom()
 
 //-------------------------------------------------------------------------------------------------
 // callbacks:
+
+// was meant for copy/paste of the preset but it doesn't work because we don't receive keypresses
+//bool AudioModuleEditor::keyPressed(const KeyPress &key, Component *originatingComponent)
+//{
+//
+//  return true; // true indicates, that the event was consumed
+//}
 
 void AudioModuleEditor::rDialogBoxChanged(RDialogBox* dialogBoxThatHasChanged)
 {

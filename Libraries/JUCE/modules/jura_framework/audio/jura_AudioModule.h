@@ -339,7 +339,7 @@ public:
 /** Baseclass for GUI editors for AudioModule objects. */
 
 class AudioModuleEditor : public jura::Editor, public ChangeListener, public RDialogBoxListener, 
-  public RButtonListener
+  public RButtonListener /*, public KeyListener*/
 {
 
 public:
@@ -404,12 +404,13 @@ public:
   //-----------------------------------------------------------------------------------------------
   // callbacks:
 
-  virtual void rDialogBoxChanged(RDialogBox* dialogBoxThatHasChanged);
-  virtual void rDialogBoxOKClicked(RDialogBox* dialogBoxThatWantsToAcceptAndLeave);
-  virtual void rDialogBoxCancelClicked(RDialogBox* dialogBoxThatWantsToBeCanceled);
-  virtual void rButtonClicked(RButton *buttonThatWasClicked);
-  virtual void changeListenerCallback(juce::ChangeBroadcaster *objectThatHasChanged);
-  virtual void resized();
+  //virtual bool keyPressed(const KeyPress &key, Component *originatingComponent) override;
+  virtual void rDialogBoxChanged(RDialogBox* dialogBoxThatHasChanged) override;
+  virtual void rDialogBoxOKClicked(RDialogBox* dialogBoxThatWantsToAcceptAndLeave) override;
+  virtual void rDialogBoxCancelClicked(RDialogBox* dialogBoxThatWantsToBeCanceled) override;
+  virtual void rButtonClicked(RButton *buttonThatWasClicked) override;
+  virtual void changeListenerCallback(juce::ChangeBroadcaster *objectThatHasChanged) override;
+  virtual void resized() override;
 
   /** Updates the widgets according to the state of the assignedParameter (if any) and updates the 
   state-widget set. calls updateWidgetEnablement(). */
