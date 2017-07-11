@@ -296,8 +296,9 @@ void RSlider::mouseDown(const MouseEvent& e)
       //  setValue(defaultValue);   // these default-values should actually be in sync...
       setValue(defaultValue);
     }
-    else if( e.mods.isLeftButtonDown() )
+    else if( e.mods.isLeftButtonDown() /*&& ModifierKeys::getCurrentModifiers().isAltDown()*/ )
     {
+      // jump to value only when alt is down:
       double tmpValue = proportionOfLengthToValue((double) e.x / (double) getWidth());
       setValue(constrainAndQuantizeValue(tmpValue), true, false);
     }
@@ -310,10 +311,11 @@ void RSlider::mouseDrag(const MouseEvent& e)
     return; // ignore drag on the label, when it's not 'inside' the actual slider
 
   double scale = 1.0;
-  if(ModifierKeys::getCurrentModifiers().isCtrlDown()) // fine tuning via ctrl
+  if(ModifierKeys::getCurrentModifiers().isShiftDown()) // fine tuning via shift
     scale = 0.0625;
 
   double x = e.getMouseDownX() + scale * e.getDistanceFromDragStartX();
+  //double x = scale * e.getDistanceFromDragStartX();
   double tmpValue;
   if( isEnabled() )
   {
@@ -343,7 +345,7 @@ void RSlider::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &w
       s = -1.0;
 
     float scale = 1.0;
-    if(ModifierKeys::getCurrentModifiers().isCtrlDown())
+    if(ModifierKeys::getCurrentModifiers().isShiftDown())
       scale = 0.0125f;
 
     if( interval > 0.0 )
