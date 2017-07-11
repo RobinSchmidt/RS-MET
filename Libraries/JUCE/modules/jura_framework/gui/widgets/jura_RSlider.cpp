@@ -298,9 +298,13 @@ void RSlider::mouseDown(const MouseEvent& e)
     }
     else if( e.mods.isLeftButtonDown() /*&& ModifierKeys::getCurrentModifiers().isAltDown()*/ )
     {
-      // jump to value only when alt is down:
-      double tmpValue = proportionOfLengthToValue((double) e.x / (double) getWidth());
-      setValue(constrainAndQuantizeValue(tmpValue), true, false);
+      if(e.mods.isAltDown())
+      {
+        // jump to value only when alt is down:
+        double tmpValue = proportionOfLengthToValue((double)e.x / (double)getWidth());
+        setValue(constrainAndQuantizeValue(tmpValue), true, false);
+      }
+      valueOnMouseDown = getValue();
     }
   }
 }
@@ -310,19 +314,27 @@ void RSlider::mouseDrag(const MouseEvent& e)
   if( e.originalComponent != this )
     return; // ignore drag on the label, when it's not 'inside' the actual slider
 
-  double scale = 1.0;
+  //double scale = 0.01; // 1% change per pixel
+  double scale = 1.0 / getWidth();
   if(ModifierKeys::getCurrentModifiers().isShiftDown()) // fine tuning via shift
-    scale = 0.0625;
+    scale *= 0.0625;
 
-  double x = e.getMouseDownX() + scale * e.getDistanceFromDragStartX();
+  //double x = e.getMouseDownX() + scale * e.getDistanceFromDragStartX();
   //double x = scale * e.getDistanceFromDragStartX();
-  double tmpValue;
   if( isEnabled() )
   {
     if( !e.mods.isRightButtonDown() /*&& !e.mods.isCommandDown()*/ )
     {
-      tmpValue = proportionOfLengthToValue((double) x / (double) getWidth());
-      setValue(constrainAndQuantizeValue(tmpValue), true, false);
+      //double x = e.getMouseDownX() / (double)getWidth();   // in 0..1
+
+      double x = valueToProportionOfLength(valueOnMouseDown);  // in 0..1
+      x += scale * e.getDistanceFromDragStartX();              // new x
+      x = clip(x, 0, 1);
+      x = proportionOfLengthToValue(x);                        // convert to value
+      setValue(constrainAndQuantizeValue(x), true, false);     // set it
+
+      //tmpValue = proportionOfLengthToValue((double) x / (double) getWidth());
+      //setValue(constrainAndQuantizeValue(tmpValue), true, false);
     }
   }
 }

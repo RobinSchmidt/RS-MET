@@ -188,6 +188,7 @@ protected:
 
   // internal state variables:
   double currentValue, minValue, maxValue, defaultValue, interval;
+  double valueOnMouseDown = 0;
   std::vector<double> defaultValues;
   int    scaling;
   int    layout;
