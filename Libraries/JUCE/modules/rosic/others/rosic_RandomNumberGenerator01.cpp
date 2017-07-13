@@ -1,7 +1,3 @@
-//#include "rosic_RandomNumberGenerator01.h"
-//using namespace rosic;
-
-//-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
 RandomNumberGenerator01::RandomNumberGenerator01()
@@ -21,7 +17,6 @@ RandomNumberGenerator01::~RandomNumberGenerator01()
 
 }
 
-//-------------------------------------------------------------------------------------------------
 // setup:
 
 void RandomNumberGenerator01::setFactor(unsigned long newFactor)
@@ -91,7 +86,6 @@ void RandomNumberGenerator01::setStateFromString(char *theString)
   }
 }
 
-//-------------------------------------------------------------------------------------------------
 // random number generation:
 
 unsigned long RandomNumberGenerator01::getRandomNumber()
