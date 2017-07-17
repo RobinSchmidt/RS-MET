@@ -75,7 +75,7 @@ JUCE_API void fillRectWithBilinearGradientSlow(
 
 /** Fills an rectangle with a 4-point bilinear gradient. */
 JUCE_API void fillRectWithBilinearGradient(
-  Graphics &g, Rectangle<int> r,
+  Graphics &g, juce::Rectangle<int> r,
   Colour topLeftColour     = Colours::red,
   Colour topRightColour    = Colours::green,
   Colour bottomLeftColour  = Colours::blue,
@@ -94,7 +94,7 @@ JUCE_API void fillRectWithBilinearGrayScaleGradient(
 JUCE_API void fillRectWithDefaultBackground(Graphics &g, int x, int y, int w, int h);
 
 /** Fills an rectangle with the default background. */
-JUCE_API void fillRectWithDefaultBackground(Graphics &g, Rectangle<int> r);
+JUCE_API void fillRectWithDefaultBackground(Graphics &g, juce::Rectangle<int> r);
 
 /** Draws a triangle based on 3 points and optionally fills it. */
 JUCE_API void drawTriangle(Graphics &g, float x1, float y1, float x2, float y2,
