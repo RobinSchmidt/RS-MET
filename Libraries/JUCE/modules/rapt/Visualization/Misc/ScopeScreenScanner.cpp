@@ -7,6 +7,9 @@ rsScopeScreenScanner<T>::rsScopeScreenScanner()
   scanFreq = 5; 
   //numCyclesShown = 2;
   sync = false;
+  minZeroDistance = 10;
+  numZerosToReset = 3;
+
   //sync = true;
   reset();
 }
@@ -36,14 +39,11 @@ void rsScopeScreenScanner<T>::setSync(bool shouldSync)
 template<class T>
 void rsScopeScreenScanner<T>::reset()
 {
-  sawPhase = 0.0;
-  samplesSinceReset = 0;
-  samplesSinceLastZero = 0;
-  zeroCrossingCount = 0;
-
   if(sync)
   {
-    sawInc = scanFreq / sampleRate;  
+    sawInc =  (T)samplesSinceReset / sampleRate; // correct?
+
+    //sawInc = scanFreq / sampleRate;  
     // preliminary - todo: use the counted samples and zero-crossings to compute a value that
     // syncs
   }
@@ -51,4 +51,9 @@ void rsScopeScreenScanner<T>::reset()
   {
     sawInc = scanFreq / sampleRate;
   }
+
+  sawPhase = 0.0;
+  samplesSinceReset = 0;
+  samplesSinceLastZero = 0;
+  zeroCrossingCount = 0;
 }

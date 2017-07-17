@@ -4,7 +4,6 @@ PhaseScopeBuffer<TSig, TPix, TPar>::PhaseScopeBuffer()
 {
   painter.setUseAlphaMask(false);
 
-  //scanFreq       = 1.0;
   frameRate      = 25.0;
   decayTime      = 0.5;
   lineDensity    = 0.0f;
@@ -25,7 +24,6 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::setSampleRate(TPar newSampleRate)
   sampleRate = newSampleRate;
   updateInsertFactor();
   screenScanner.setSampleRate(sampleRate);
-  //updateScanIncrement();
 }
 
 template<class TSig, class TPix, class TPar>
@@ -105,8 +103,12 @@ template<class TSig, class TPix, class TPar>
 void PhaseScopeBuffer<TSig, TPix, TPar>::setScanningFrequency(TPar newFrequency)
 {
   screenScanner.setScanFreqNoSync(newFrequency);
-  //scanFreq = newFrequency;
-  //updateScanIncrement();
+}
+
+template<class TSig, class TPix, class TPar>
+void PhaseScopeBuffer<TSig, TPix, TPar>::setSyncMode(bool shouldSync)
+{
+  screenScanner.setSync(shouldSync);
 }
 
 template<class TSig, class TPix, class TPar>

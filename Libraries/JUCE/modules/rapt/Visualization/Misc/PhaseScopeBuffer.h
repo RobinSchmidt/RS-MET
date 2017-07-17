@@ -85,6 +85,10 @@ public:
   /** Sets the frequency by which the beam scans the x-axis in 1D mode. */
   void setScanningFrequency(TPar newFrequency);
 
+  /** Sets the 1D scanning frequency to sync mode. */
+  void setSyncMode(bool shouldSync);
+
+
   // geometric transformations:
   void setScaleX(TSig newScale);
   void setScaleY(TSig newScale);
@@ -161,14 +165,9 @@ protected:
   /** Updates the coefficients for the geometric transform that is applied to the input. */
   void updateTransformCoeffs();
 
-  /** Updates the increment for x-axis scanning. */
-  //void updateScanIncrement();
-
   /** Returns the value of the screen scanner sawtooth wave used in 1D mode. */
   TSig getScannerSaw(TSig x);
 
-  //TPar scanFreq;       // x-scanning frequency in 1D mode
-  //TPar scanInc;        // x-scanning increment
   TPar sampleRate;
   TPar frameRate;
   TPar decayTime;      // pixel illumination time

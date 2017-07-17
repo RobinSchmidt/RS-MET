@@ -41,6 +41,7 @@ public:
   //void setShiftY(double newShift);
   void setOneDimensionalMode(bool shouldBe1D);
   void setScanningFrequency(double newFrequency);
+  void setSyncMode(bool shouldSync);
     // todo: maybe have the function bodies here in the header file - they are all trivial 
     // delegations
    
@@ -162,7 +163,7 @@ protected:
   RSlider *sliderBrightness, *sliderAfterglow, *sliderPixelSpread, *sliderPixelScale, 
     *sliderLineDensity, *sliderDotLimit, *sliderFrameRate;
 
-  RButton *buttonAntiAlias, *button1D;
+  RButton *buttonAntiAlias, *button1D, *buttonSync;
 
   AutomatableSlider *sliderScaleX, *sliderScaleY, *sliderShearX, *sliderShearY,
     *sliderRotation, *sliderShiftX, *sliderShiftY,

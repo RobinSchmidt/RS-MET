@@ -50,7 +50,10 @@ protected:
   T sawPhase, sawInc;  // sawtooth phase and increment
   bool sync;
 
-  int samplesSinceReset, samplesSinceLastZero, zeroCrossingCount;
+  T xOld;
+
+  int samplesSinceReset, samplesSinceLastZero; 
+  int zeroCrossingCount, minZeroDistance, numZerosToReset;
 
 };
 
@@ -62,11 +65,37 @@ inline T rsScopeScreenScanner<T>::getSample(T in)
 {
   T result = sawPhase;
   sawPhase += sawInc;
-  if(sawPhase > 1)
+
+  if(!sync)
   {
-    reset(); // maybe advance by (sawPhase-1) instead of resetting to zero
-    //sawPhase -= 1;
+    if(sawPhase > 1)
+    {
+      //reset(); // maybe advance by (sawPhase-1) instead of resetting to zero
+      sawPhase -= 1;
+      sawInc = scanFreq / sampleRate;
+    }
+    return result;
   }
+
+  // If we are here, we are in sync mode...
+
+  samplesSinceReset++;
+  samplesSinceLastZero++;
+  if(samplesSinceLastZero >= minZeroDistance)
+  {
+    if(xOld < 0 && in >= 0)
+    {
+      zeroCrossingCount++;
+      if(zeroCrossingCount >= numZerosToReset)
+      {
+        reset();
+      }
+    }
+  }
+
+
+
+  xOld = in;
   return result;
 }
 

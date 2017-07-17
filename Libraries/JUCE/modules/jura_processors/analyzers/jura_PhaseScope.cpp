@@ -84,6 +84,12 @@ void PhaseScope::createParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setScanningFrequency);
 
+  p = new Parameter(lock, "Sync", 0.0, 1.0, 0.0, 0.0, Parameter::BOOLEAN);
+  p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setSyncMode);
+  addObservedParameter(p);
+
+
+
 
   // the geometric trafo parameters are of a different type because they were copy/pasted from
   // PrettyScope - eventually, they should all be the same type:
@@ -202,6 +208,11 @@ void PhaseScope::setOneDimensionalMode(bool shouldBe1D)
 void PhaseScope::setScanningFrequency(double newFrequency)
 {
   phaseScopeBuffer->setScanningFrequency(newFrequency);
+}
+
+void PhaseScope::setSyncMode(bool shouldSync)
+{
+  phaseScopeBuffer->setSyncMode(shouldSync);
 }
 
 AudioModuleEditor* PhaseScope::createEditor()
@@ -420,6 +431,10 @@ void PhaseScopeEditor::createWidgets()
   b->setDescription("Replace x-input with sawtooth screen scanner");
   b->setDescriptionField(infoField);
 
+  addWidget( buttonSync = b = new RButton("Sync") );
+  b->assignParameter( scope->getParameterByName("Sync") );
+  b->setDescription("Synchronize 1D scanning frequency to input");
+  b->setDescriptionField(infoField);
 
   addWidget( s = sliderScanFreq = new AutomatableSlider );
   s->assignParameter( scope->getParameterByName("ScanFrequency") );
@@ -524,7 +539,9 @@ void PhaseScopeEditor::resized()
   //sliderShiftX  ->setBounds(x, y, w, h); y += dy;
   //sliderShiftY  ->setBounds(x, y, w, h); y += dy;
   sliderScanFreq  ->setBounds(x, y, w, h); y += dy;
-  button1D         ->setBounds(x, y, w/2, h); y += dy;
+  button1D        ->setBounds(x, y, w/2, h); 
+  buttonSync      ->setBounds(x+w/2, y, w/2, h);
+  y += dy;
 
 
   // preliminary:
