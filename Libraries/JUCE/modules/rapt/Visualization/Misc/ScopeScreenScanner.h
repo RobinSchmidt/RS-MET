@@ -68,25 +68,15 @@ inline T rsScopeScreenScanner<T>::getSample(T in)
   T result = sawPhase;
   sawPhase += sawInc;
 
-
-  if(sawPhase > 1)
-  {
-    //sawPhase = 0;
-    //reset(); // maybe advance by (sawPhase-1) instead of resetting to zero
-    sawPhase -= 1;
-    //sawInc = scanFreq / sampleRate;
-  }
-
   if(!sync)
   {
-    //sawInc = scanFreq / sampleRate; // preliminary - optimize!
+    if(sawPhase > 1)
+      sawPhase -= 1;
     return result;
   }
 
-  // If we are here, we are in sync mode...
-
-  in = lowpass.getSample(in); // doesn't work well
-
+  // If we are here, we are in sync mode:
+  in = lowpass.getSample(in); 
   samplesSinceReset++;
   samplesSinceLastZero++;
   if(samplesSinceLastZero >= minZeroDistance)
@@ -96,14 +86,9 @@ inline T rsScopeScreenScanner<T>::getSample(T in)
       zeroCrossingCount++;
       samplesSinceLastZero = 0;
       if(zeroCrossingCount >= numZerosToReset)
-      {
         reset();
-      }
     }
   }
-
-
-
   xOld = in;
   return result;
 }

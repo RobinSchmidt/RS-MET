@@ -4,16 +4,12 @@ template<class T>
 rsScopeScreenScanner<T>::rsScopeScreenScanner()
 {
   sampleRate = 44100;
-  scanFreq = 5; 
-  //numCyclesShown = 2;
+  scanFreq = 5; ;
   sync = false;
   minZeroDistance = 20; // maybe have a maxFrequency parameter instead
-  numZerosToReset = 2;
-  //sync = true;
-
-  lowpass.setMode(LadderFilter<T,T>::LP_6); // maybe we can use a 1-pole filter
+  numZerosToReset = 2;  // # zeros to be seen before reset occurs (typically number of cycles seen)
+  lowpass.setMode(LadderFilter<T,T>::LP_6); // maybe we can use a 1-pole filter - optimize
   lowpass.setCutoff(20.0);
-
   reset();
 }
 
@@ -46,12 +42,6 @@ void rsScopeScreenScanner<T>::reset()
   sawInc = scanFreq / sampleRate;
   if(sync)
     sawInc = rsMin(T(0.5), rsMax(sawInc, 1 / (T)samplesSinceReset));
-
-  //if(sync)
-  //  sawInc = 1 / (T)samplesSinceReset;
-  //else
-  //  sawInc = scanFreq / sampleRate;
-
   xOld = 0.0;
   sawPhase = 0.0;
   samplesSinceReset = 0;
