@@ -68,11 +68,13 @@ inline T rsScopeScreenScanner<T>::getSample(T in)
 
   if(!sync)
   {
+    sawInc = scanFreq / sampleRate; // preliminary - optimize!
     if(sawPhase > 1)
     {
+      sawPhase = 0;
       //reset(); // maybe advance by (sawPhase-1) instead of resetting to zero
-      sawPhase -= 1;
-      sawInc = scanFreq / sampleRate;
+      //sawPhase -= 1;
+      //sawInc = scanFreq / sampleRate;
     }
     return result;
   }
@@ -83,9 +85,10 @@ inline T rsScopeScreenScanner<T>::getSample(T in)
   samplesSinceLastZero++;
   if(samplesSinceLastZero >= minZeroDistance)
   {
-    if(xOld < 0 && in >= 0)
+    if(xOld < 0 && in >= 0) // new zero detected
     {
       zeroCrossingCount++;
+      samplesSinceLastZero = 0;
       if(zeroCrossingCount >= numZerosToReset)
       {
         reset();
