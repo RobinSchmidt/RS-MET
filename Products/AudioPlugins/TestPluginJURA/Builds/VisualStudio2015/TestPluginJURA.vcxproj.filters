@@ -2815,6 +2815,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Misc\PhaseScopeBuffer.cpp">
       <Filter>Juce Modules\rapt\Visualization\Misc</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Misc\ScopeScreenScanner.cpp">
+      <Filter>Juce Modules\rapt\Visualization\Misc</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Visualization.cpp">
       <Filter>Juce Modules\rapt\Visualization</Filter>
     </ClCompile>
@@ -6580,6 +6583,9 @@
       <Filter>Juce Modules\rapt\Visualization\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Misc\PhaseScopeBuffer.h">
+      <Filter>Juce Modules\rapt\Visualization\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Misc\ScopeScreenScanner.h">
       <Filter>Juce Modules\rapt\Visualization\Misc</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Visualization.h">

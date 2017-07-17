@@ -11,6 +11,7 @@ namespace RAPT
 #include "Graphics/ImageDrawer.h"
 #include "Graphics/ImagePainter.h"
 
+#include "Misc/ScopeScreenScanner.h"
 #include "Misc/PhaseScopeBuffer.h"
 
 }

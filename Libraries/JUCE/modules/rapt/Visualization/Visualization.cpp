@@ -8,6 +8,7 @@ namespace RAPT
 #include "Graphics/ImageDrawer.cpp"
 #include "Graphics/ImagePainter.cpp"
 
+#include "Misc/ScopeScreenScanner.cpp"
 #include "Misc/PhaseScopeBuffer.cpp"
 
 }
