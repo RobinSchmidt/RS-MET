@@ -4,7 +4,7 @@ PhaseScopeBuffer<TSig, TPix, TPar>::PhaseScopeBuffer()
 {
   painter.setUseAlphaMask(false);
 
-  scanFreq       = 1.0;
+  //scanFreq       = 1.0;
   frameRate      = 25.0;
   decayTime      = 0.5;
   lineDensity    = 0.0f;
@@ -13,6 +13,7 @@ PhaseScopeBuffer<TSig, TPix, TPar>::PhaseScopeBuffer()
   brightness     = 1.0;
   useGradient    = false;
   updateDecayFactor();
+  updateTransformCoeffs();
 
   setSampleRate(44100.0);
   reset();
@@ -23,7 +24,8 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::setSampleRate(TPar newSampleRate)
 {
   sampleRate = newSampleRate;
   updateInsertFactor();
-  updateScanIncrement();
+  screenScanner.setSampleRate(sampleRate);
+  //updateScanIncrement();
 }
 
 template<class TSig, class TPix, class TPar>
@@ -102,8 +104,9 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::setOneDimensionalMode(bool shouldBe1D)
 template<class TSig, class TPix, class TPar>
 void PhaseScopeBuffer<TSig, TPix, TPar>::setScanningFrequency(TPar newFrequency)
 {
-  scanFreq = newFrequency;
-  updateScanIncrement();
+  screenScanner.setScanFreqNoSync(newFrequency);
+  //scanFreq = newFrequency;
+  //updateScanIncrement();
 }
 
 template<class TSig, class TPix, class TPar>
@@ -174,7 +177,7 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::processSampleFrame(TSig x, TSig y)
 
   // replace x with sawtooth-scanner in 1D mode:
   if(oneDimensonal == true)
-    x = getScannerSaw();
+    x = getScannerSaw(x+y);
 
   // transform to pixel coordinates and draw line:
   toPixelCoordinates(x, y);
@@ -266,20 +269,23 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::updateTransformCoeffs()
   Ayy = c*scaleY - s*shearX;
 }
 
-template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer<TSig, TPix, TPar>::updateScanIncrement()
-{
-  scanInc = scanFreq / sampleRate;
-}
+//template<class TSig, class TPix, class TPar>
+//void PhaseScopeBuffer<TSig, TPix, TPar>::updateScanIncrement()
+//{
+//  scanInc = scanFreq / sampleRate;
+//}
 
 template<class TSig, class TPix, class TPar>
-TSig PhaseScopeBuffer<TSig, TPix, TPar>::getScannerSaw()
+TSig PhaseScopeBuffer<TSig, TPix, TPar>::getScannerSaw(TSig x)
 {
-  TSig scanVal = 2*scanPos - 1; 
-  scanPos += TSig(scanInc);
-  if(scanPos > 1)
-    scanPos -= 1;
-  return scanVal;
+  return 2*screenScanner.getSample(x) - 1;
+
+  //// replace by usen the ScopeScreenScanner:
+  //TSig scanVal = 2*scanPos - 1; 
+  //scanPos += TSig(scanInc);
+  //if(scanPos > 1)
+  //  scanPos -= 1;
+  //return scanVal;
 }
 
 //-------------------------------------------------------------------------------------------------

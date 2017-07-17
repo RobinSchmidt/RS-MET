@@ -63,7 +63,10 @@ inline T rsScopeScreenScanner<T>::getSample(T in)
   T result = sawPhase;
   sawPhase += sawInc;
   if(sawPhase > 1)
-    sawPhase -= 1;
+  {
+    reset(); // maybe advance by (sawPhase-1) instead of resetting to zero
+    //sawPhase -= 1;
+  }
   return result;
 }
 

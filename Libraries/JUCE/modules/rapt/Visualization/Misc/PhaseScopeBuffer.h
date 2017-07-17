@@ -162,14 +162,14 @@ protected:
   void updateTransformCoeffs();
 
   /** Updates the increment for x-axis scanning. */
-  void updateScanIncrement();
+  //void updateScanIncrement();
 
   /** Returns the value of the screen scanner sawtooth wave used in 1D mode. */
-  TSig getScannerSaw();
+  TSig getScannerSaw(TSig x);
 
+  //TPar scanFreq;       // x-scanning frequency in 1D mode
+  //TPar scanInc;        // x-scanning increment
   TPar sampleRate;
-  TPar scanFreq;       // x-scanning frequency in 1D mode
-  TPar scanInc;        // x-scanning increment
   TPar frameRate;
   TPar decayTime;      // pixel illumination time
   TPar decayFactor;    // factor by which pixels decay (applied at frameRate)
@@ -195,6 +195,8 @@ protected:
 
   bool useGradient;    // use color gradient to seamlessly join line segments
   bool oneDimensonal = false;
+
+  rsScopeScreenScanner<TSig> screenScanner;
 
   // members for actual painting on an image:
   //Image<TPix> image;

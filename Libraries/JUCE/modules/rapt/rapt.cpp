@@ -51,6 +51,7 @@ template class RAPT::ImagePainter<float, float, float>;
 
 // for PhaseScope:
 template class RAPT::AlphaMask<double>;
+template class RAPT::rsScopeScreenScanner<float>;
 template class RAPT::PhaseScopeBuffer<double, float, double>;
 template class RAPT::PhaseScopeBuffer2<double, float, double>;
 
