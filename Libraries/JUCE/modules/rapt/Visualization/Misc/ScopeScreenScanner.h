@@ -69,19 +69,16 @@ inline T rsScopeScreenScanner<T>::getSample(T in)
   sawPhase += sawInc;
 
 
-
+  if(sawPhase > 1)
+  {
+    //sawPhase = 0;
+    //reset(); // maybe advance by (sawPhase-1) instead of resetting to zero
+    sawPhase -= 1;
+    //sawInc = scanFreq / sampleRate;
+  }
 
   if(!sync)
   {
-
-    if(sawPhase > 1)
-    {
-      //sawPhase = 0;
-      reset(); // maybe advance by (sawPhase-1) instead of resetting to zero
-      //sawPhase -= 1;
-      //sawInc = scanFreq / sampleRate;
-    }
-
     //sawInc = scanFreq / sampleRate; // preliminary - optimize!
     return result;
   }
