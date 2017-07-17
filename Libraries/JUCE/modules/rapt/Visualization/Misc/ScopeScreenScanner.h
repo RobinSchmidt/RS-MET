@@ -55,6 +55,8 @@ protected:
   int samplesSinceReset, samplesSinceLastZero; 
   int zeroCrossingCount, minZeroDistance, numZerosToReset;
 
+  LadderFilter<T, T> lowpass;
+
 };
 
 //-----------------------------------------------------------------------------------------------
@@ -66,20 +68,27 @@ inline T rsScopeScreenScanner<T>::getSample(T in)
   T result = sawPhase;
   sawPhase += sawInc;
 
+
+
+
   if(!sync)
   {
-    sawInc = scanFreq / sampleRate; // preliminary - optimize!
+
     if(sawPhase > 1)
     {
-      sawPhase = 0;
-      //reset(); // maybe advance by (sawPhase-1) instead of resetting to zero
+      //sawPhase = 0;
+      reset(); // maybe advance by (sawPhase-1) instead of resetting to zero
       //sawPhase -= 1;
       //sawInc = scanFreq / sampleRate;
     }
+
+    //sawInc = scanFreq / sampleRate; // preliminary - optimize!
     return result;
   }
 
   // If we are here, we are in sync mode...
+
+  in = lowpass.getSample(in); // doesn't work well
 
   samplesSinceReset++;
   samplesSinceLastZero++;
