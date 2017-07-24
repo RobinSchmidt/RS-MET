@@ -5,6 +5,10 @@
 /** A sound generator based on the idea of a particle/ray that bounces around inside an elliptic 
 enclosure. 
 maybe rename this to RayBouncerCore
+
+\todo: inlcude friction parameter -> replace "speed" by "initialSpeed" or "launchSpeed", re-use
+speed variable for a decaying speed: speed -= friction*speed
+
 */
 
 template<class T>
