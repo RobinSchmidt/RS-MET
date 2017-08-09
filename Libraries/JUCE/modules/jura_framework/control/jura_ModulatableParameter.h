@@ -51,9 +51,105 @@ Parameter <- MetaControlledParameter <- ModulatableParameter <- PolyphonicParame
 
 //=================================================================================================
 
-/**   */
+/** Baseclass for modulation sources.  */
 
-class JUCE_API ParameterModulator // : public Modulator - later, we may factor out a Modulator class that has nothing ot do with parameters
+class JUCE_API ModulationSource
+{
+
+public:
+
+  /** Constructor */
+  ModulationSource() {}
+
+  /** Destructor */
+  virtual ~ModulationSource() {}
+
+  /** Returns a pointer to the modulation value. Modulation targets should retrieve this pointer 
+  when they are connected to */
+  double* getValuePointer() { return &value; }
+
+  /** Should be overriden by subclasses to update the "value" member variable per sample. Once it 
+  is updated, connected modulation targets can access it using the pointer-to-double that they have 
+  previously retrieved via getValuePointer. */
+  virtual void updateValue() = 0;
+
+protected:
+
+  double value = 0;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationSource)
+};
+
+//=================================================================================================
+
+/** Baseclass for modulation targets.  */
+
+class JUCE_API ModulationTarget
+{
+
+public:
+
+  /** Constructor */
+  ModulationTarget() {}
+
+  /** Destructor */
+  virtual ~ModulationTarget() {}
+
+  void setUnmodulatedValue(double newValue)
+  {
+    unmodulatedValue = newValue;
+  }
+
+  void addModulationSource(double* valuePointer, double amount = 0)
+  {
+    jassertfalse; // not yet implemented
+  }
+
+  void removeModulationSource(int index)
+  {
+    jassertfalse; // not yet implemented
+  }
+
+  void setModulationAmount(int sourceIndex, double newAmount)
+  {
+    amounts[sourceIndex] = newAmount;
+  }
+
+  void computeModulatedValue()
+  {
+    double tmp = unmodulatedValue;
+
+    // maybe this block can be optimized out of this function, scaler can be made a member and 
+    // assigned elsewhere (in a function that is not called per sample)
+    bool relative = false;  // make user adjustable member variable (switch between absolute and relative modulation)
+    double scaler = 1;      // maybe this too
+    if(relative)
+      scaler = unmodulatedValue;
+
+    for(int i = 0; i < size(sources); i++)
+      tmp += amounts[i] * (*sources[i]) * scaler;
+    modulatedValue = tmp;
+  }
+
+
+
+
+protected:
+
+  double unmodulatedValue = 0;
+  double modulatedValue = 0;
+
+  std::vector<double*> sources;
+  std::vector<double>  amounts;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationTarget)
+};
+
+//=================================================================================================
+
+/** hmmm...maybe we don't need this class...  */
+
+class JUCE_API ParameterModulator : public ModulationSource
 {
 
 public:
@@ -61,6 +157,8 @@ public:
   /** Constructor */
   ParameterModulator() {}
 
+  /** Destructor */
+  virtual ~ParameterModulator() {}
 
 protected:
 
@@ -72,7 +170,7 @@ protected:
 
 /**  */
 
-class JUCE_API ModulatableParameter : public Parameter
+class JUCE_API ModulatableParameter : public Parameter, public ModulationTarget
 {
 
 public:
@@ -81,6 +179,8 @@ public:
   ModulatableParameter(const juce::String& name, double min = 0.0, double max = 1.0,
     double defaultValue = 0.5, int scaling = LINEAR, double interval = 0.0)
     : Parameter(name, min, max, defaultValue, scaling, interval) {}
+
+  // override setValue to call ModulationTarget::setUnmodulatedValue
 
 
 
