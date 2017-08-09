@@ -7,7 +7,11 @@
 \todo:
 -rename to MidiControlledParameter
 -rename get/setAutomationValue in get/setNormalizedValue
--rename get/setMidi... in get/setMeta  */
+-rename get/setMidi... in get/setMeta  
+
+This class is sort of obsolete and is kept only for legacy code compatibility. New products should
+use MetaControlledParameter instead. At some point, we can establish a 1-to-1 correspondence 
+between host exposed MetaParameters and midi-controllers in the AudioPlugin class. */
 
 class JUCE_API AutomatableParameter : public Parameter
 {

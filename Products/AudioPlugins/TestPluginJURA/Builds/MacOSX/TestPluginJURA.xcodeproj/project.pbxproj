@@ -1187,6 +1187,7 @@
 		7571F12A426802A23FC46B2D = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "rosic_QuadratureNetwork.h"; path = "../../../../../Libraries/JUCE/modules/rosic/filters/rosic_QuadratureNetwork.h"; sourceTree = "SOURCE_ROOT"; };
 		759A7C394854F69C2075CEE8 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = EllipticQuarterbandFilter.h; path = ../../../../../Libraries/JUCE/modules/rosic/legacy/EllipticQuarterbandFilter.h; sourceTree = "SOURCE_ROOT"; };
 		76009EF60E6E8BBE32E03CC7 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "rosic_Module.h"; path = "../../../../../Libraries/JUCE/modules/rosic/infrastructure/rosic_Module.h"; sourceTree = "SOURCE_ROOT"; };
+		7602EC640AA406C50BC3AF60 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "jura_ModulatableParameter.h"; path = "../../../../../Libraries/JUCE/modules/jura_framework/control/jura_ModulatableParameter.h"; sourceTree = "SOURCE_ROOT"; };
 		761A2B5A088BB6F3CD6E863C = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_osx_MessageQueue.h"; path = "../../../../../Libraries/JUCE/modules/juce_events/native/juce_osx_MessageQueue.h"; sourceTree = "SOURCE_ROOT"; };
 		765FAC458BC4B9FDADB25A21 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "rosic_SineOscillatorStereo.cpp"; path = "../../../../../Libraries/JUCE/modules/rosic/generators/rosic_SineOscillatorStereo.cpp"; sourceTree = "SOURCE_ROOT"; };
 		766763497516910092CE9926 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_MPENote.h"; path = "../../../../../Libraries/JUCE/modules/juce_audio_basics/mpe/juce_MPENote.h"; sourceTree = "SOURCE_ROOT"; };
@@ -1254,6 +1255,7 @@
 		7BD3B357E9AAA4544F4A18AF = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "rosic_ModulationRouting.cpp"; path = "../../../../../Libraries/JUCE/modules/rosic/infrastructure/rosic_ModulationRouting.cpp"; sourceTree = "SOURCE_ROOT"; };
 		7C196343E7DAE73AC5A4BE55 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "rosic_BasicIntegerDelayLine.cpp"; path = "../../../../../Libraries/JUCE/modules/rosic/delaylines/rosic_BasicIntegerDelayLine.cpp"; sourceTree = "SOURCE_ROOT"; };
 		7C2B7F4C4A4D36DA3CF8AA1D = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = twotonetest.c; path = "../../../../../Libraries/JUCE/modules/rosic/_third_party/kiss_fft_v1_2_6/test/twotonetest.c"; sourceTree = "SOURCE_ROOT"; };
+		7C4EDB3171D993B274B1F64C = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "jura_ModulatableParameter.cpp"; path = "../../../../../Libraries/JUCE/modules/jura_framework/control/jura_ModulatableParameter.cpp"; sourceTree = "SOURCE_ROOT"; };
 		7C51751DB46B14C9CFA1F2AC = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "jura_PhaseScopeMultiColor.cpp"; path = "../../../../../Libraries/JUCE/modules/jura_processors/analyzers/jura_PhaseScopeMultiColor.cpp"; sourceTree = "SOURCE_ROOT"; };
 		7C520CE702A8B3091728AD23 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "as_scriptengine.h"; path = "../../../../../Libraries/JUCE/modules/rosic/_third_party/angelscript/as_scriptengine.h"; sourceTree = "SOURCE_ROOT"; };
 		7C88190AF340E34A108751CC = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "fft8g_h.c"; path = "../../../../../Libraries/JUCE/modules/rosic/_third_party/ooura_fft/fft8g_h.c"; sourceTree = "SOURCE_ROOT"; };
@@ -3979,6 +3981,8 @@
 					671C17C764A5A77DE5F27681,
 					37BE4A5D0883558C4604E8D5,
 					66F158234E7E91BB38225139,
+					7C4EDB3171D993B274B1F64C,
+					7602EC640AA406C50BC3AF60,
 					03E8775E9B0BF37D28641876,
 					ACDE550B14EE0140642A3BF5,
 					CB30E6DD7BC376499B00834C,

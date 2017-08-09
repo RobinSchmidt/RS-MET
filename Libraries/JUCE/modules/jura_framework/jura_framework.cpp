@@ -20,6 +20,7 @@ namespace jura
 #include "control/jura_Parameter.cpp"
 #include "control/jura_AutomatableParameter.cpp"
 #include "control/jura_MetaParameter.cpp"
+#include "control/jura_ModulatableParameter.cpp"
 #include "control/jura_ParameterManager.cpp"
 #include "control/jura_StateManager.cpp"
 
