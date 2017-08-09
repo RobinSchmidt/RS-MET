@@ -49,9 +49,16 @@ Parameter <- MetaControlledParameter <- ModulatableParameter <- PolyphonicParame
 */
 
 
+class ModulationManager; // forward declaration
+
 //=================================================================================================
 
-/** Baseclass for modulation sources.  */
+/** Baseclass for modulation sources.  
+
+-todo
+ -keep track of assigned targets in order to inform them in our destructor about our destruction
+  to avoid dangling pointers in ModulationTarget
+*/
 
 class JUCE_API ModulationSource
 {
@@ -73,9 +80,15 @@ public:
   previously retrieved via getValuePointer. */
   virtual void updateValue() = 0;
 
+  //juce::String getModulationSourceName() = 0;
+
 protected:
 
   double value = 0;
+
+
+
+  //juce::String
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationSource)
 };
@@ -94,6 +107,14 @@ public:
 
   /** Destructor */
   virtual ~ModulationTarget() {}
+
+
+  /** Sets up the ModulationManager that should be used for registering ourselves to the available
+  ModulationSources. Should be called sometime soon after construction. */
+  void setModulationManager(ModulationManager *managerToUse)
+  {
+    modManager = managerToUse;
+  }
 
   void setUnmodulatedValue(double newValue)
   {
@@ -119,6 +140,7 @@ public:
   {
     double tmp = unmodulatedValue;
 
+
     // maybe this block can be optimized out of this function, scaler can be made a member and 
     // assigned elsewhere (in a function that is not called per sample)
     bool relative = false;  // make user adjustable member variable (switch between absolute and relative modulation)
@@ -126,12 +148,11 @@ public:
     if(relative)
       scaler = unmodulatedValue;
 
+
     for(int i = 0; i < size(sources); i++)
       tmp += amounts[i] * (*sources[i]) * scaler;
     modulatedValue = tmp;
   }
-
-
 
 
 protected:
@@ -142,8 +163,35 @@ protected:
   std::vector<double*> sources;
   std::vector<double>  amounts;
 
+  ModulationManager* modManager = nullptr;
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationTarget)
 };
+
+
+//=================================================================================================
+
+/** This class is responsible for keeping a list of all available ModulationSources and making it 
+possible for ModulationTargets to register themselves to any number of these sources. */
+
+class JUCE_API ModulationManager
+{
+
+public:
+
+  /** Constructor */
+  ModulationManager() {}
+
+  /** Destructor */
+  virtual ~ModulationManager() {}
+
+protected:
+
+  std::vector<ModulationSource*> sources;  // array of the available sources
+
+};
+
+
 
 //=================================================================================================
 
@@ -168,7 +216,13 @@ protected:
 
 //=================================================================================================
 
-/**  */
+/** A subclass of Parameter that is suitable as target for modulations by also being a subclass of
+ModulationTarget.
+
+todo:
+-maybe derive from MetaControlledParameter instead of Parameter
+
+*/
 
 class JUCE_API ModulatableParameter : public Parameter, public ModulationTarget
 {
@@ -180,13 +234,26 @@ public:
     double defaultValue = 0.5, int scaling = LINEAR, double interval = 0.0)
     : Parameter(name, min, max, defaultValue, scaling, interval) {}
 
-  // override setValue to call ModulationTarget::setUnmodulatedValue
+
+  virtual void setValue(double newValue, bool sendNotification, bool callCallbacks)
+  {
+    Parameter::setValue(newValue, sendNotification, callCallbacks);
+    ModulationTarget::setUnmodulatedValue(newValue);
+  }
 
 
-
+  /** We suppose that modulatedValue of the ModulationTarget baseclass has already been computed, 
+  i.e. ModulationTarget::computeModulatedValue has been called, such that modulatedValue has a 
+  legitimate value with all modulations applied. Here we pull out this modulated value and call our 
+  valueChangeCallback with it. The function is supposed to be called per sample for each modulated 
+  Parameter. */
+  void callCallbackWithModulatedValue()
+  {
+    if( valueChangeCallbackDouble != nullptr )
+      valueChangeCallbackDouble->call(modulatedValue);
+  }
 
 protected:
-
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulatableParameter)
 };
