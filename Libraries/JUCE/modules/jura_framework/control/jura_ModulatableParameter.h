@@ -49,7 +49,9 @@ Parameter <- MetaControlledParameter <- ModulatableParameter <- PolyphonicParame
 */
 
 
-class ModulationManager; // forward declaration
+// forward declarations:
+class ModulationManager; 
+class ModulationTarget;
 
 //=================================================================================================
 
@@ -69,7 +71,7 @@ public:
   ModulationSource() {}
 
   /** Destructor */
-  virtual ~ModulationSource() {}
+  virtual ~ModulationSource();
 
   /** Returns a pointer to the modulation value. Modulation targets should retrieve this pointer 
   when they are connected to */
@@ -80,12 +82,27 @@ public:
   previously retrieved via getValuePointer. */
   virtual void updateValue() = 0;
 
+  /** Adds a modulation target to our list of attached targets. We keep this list here mainly to 
+  detach the target in the case, the source gets deleted. */
+  void addModulationTarget(ModulationTarget* target)
+  {
+    appendIfNotAlreadyThere(targets, target);
+  }
+
+  /** Removes a modulation target from our list of attached targets. */
+  void removeModulationTarget(ModulationTarget* target)
+  {
+    removeFirstOccurrence(targets, target);
+  }
+
+
   //juce::String getModulationSourceName() = 0;
 
 protected:
 
   double value = 0;
 
+  std::vector<ModulationTarget*> targets;
 
 
   //juce::String
@@ -111,7 +128,7 @@ public:
 
   /** Sets up the ModulationManager that should be used for registering ourselves to the available
   ModulationSources. Should be called sometime soon after construction. */
-  void setModulationManager(ModulationManager *managerToUse)
+  void setModulationManager(ModulationManager* managerToUse)
   {
     modManager = managerToUse;
   }
@@ -121,14 +138,24 @@ public:
     unmodulatedValue = newValue;
   }
 
-  void addModulationSource(double* valuePointer, double amount = 0)
+  void addModulationSource(ModulationSource* source, double amount = 0)
   {
-    jassertfalse; // not yet implemented
+    source->addModulationTarget(this);
+    appendIfNotAlreadyThere(sources,      source);
+    appendIfNotAlreadyThere(sourceValues, source->getValuePointer());
   }
 
   void removeModulationSource(int index)
   {
-    jassertfalse; // not yet implemented
+    sources[index]->removeModulationTarget(this);
+    remove(sources,      index);
+    remove(sourceValues, index);
+  }
+
+  void removeModulationSource(ModulationSource* source)
+  {
+    int index = find(sources, source);
+    removeModulationSource(index);
   }
 
   void setModulationAmount(int sourceIndex, double newAmount)
@@ -149,8 +176,8 @@ public:
       scaler = unmodulatedValue;
 
 
-    for(int i = 0; i < size(sources); i++)
-      tmp += amounts[i] * (*sources[i]) * scaler;
+    for(int i = 0; i < size(sourceValues); i++)
+      tmp += amounts[i] * (*sourceValues[i]) * scaler;
     modulatedValue = tmp;
   }
 
@@ -160,7 +187,9 @@ protected:
   double unmodulatedValue = 0;
   double modulatedValue = 0;
 
-  std::vector<double*> sources;
+
+  std::vector<ModulationSource*> sources;
+  std::vector<double*> sourceValues;
   std::vector<double>  amounts;
 
   ModulationManager* modManager = nullptr;
@@ -189,29 +218,6 @@ protected:
 
   std::vector<ModulationSource*> sources;  // array of the available sources
 
-};
-
-
-
-//=================================================================================================
-
-/** hmmm...maybe we don't need this class...  */
-
-class JUCE_API ParameterModulator : public ModulationSource
-{
-
-public:
-
-  /** Constructor */
-  ParameterModulator() {}
-
-  /** Destructor */
-  virtual ~ParameterModulator() {}
-
-protected:
-
-
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParameterModulator)
 };
 
 //=================================================================================================
@@ -256,6 +262,33 @@ public:
 protected:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulatableParameter)
+};
+
+
+
+
+
+// stuff below may not be needed - we'll see:
+
+//=================================================================================================
+
+/**   */
+
+class JUCE_API ParameterModulator : public ModulationSource
+{
+
+public:
+
+  /** Constructor */
+  ParameterModulator() {}
+
+  /** Destructor */
+  virtual ~ParameterModulator() {}
+
+protected:
+
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParameterModulator)
 };
 
 //=================================================================================================
