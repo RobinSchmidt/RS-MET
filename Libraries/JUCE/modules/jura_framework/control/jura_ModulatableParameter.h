@@ -201,6 +201,10 @@ public:
       tmp += amounts[i] * (*sourceValues[i]) * scaler;
     modulatedValue = tmp;
   }
+  // hmm...maybe it would be more efficient, if we do the gathering of the values in 
+  // ModulationManager which would the keep an array of some kind of ModulationConnection. This 
+  // way, we could perhaps avoid iterating through a lot of zero-sized sourceValues arrays
+
 
 
 protected:
