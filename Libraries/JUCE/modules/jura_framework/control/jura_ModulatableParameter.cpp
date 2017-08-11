@@ -8,3 +8,10 @@ ModulationSource::~ModulationSource()
 }
 
 //-------------------------------------------------------------------------------------------------
+
+const std::vector<ModulationSource*>* ModulationTarget::getAvailableSources() 
+{ 
+  if(modManager != nullptr)
+    return modManager->getAvailableSources();
+  return nullptr;
+}

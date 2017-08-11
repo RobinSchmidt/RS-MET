@@ -9,8 +9,9 @@ ModulationSource:
 -provide interface to pull out a current value
 -subclasses can be fixed values (like gui parameter sliders), envelope generators, low frequency 
  oscillators, step sequencers, midi-note values, etc.
--at each sample, the first thing to do is to compute all current values of all existing modulation 
- sources
+-At each sample, the first thing to do is to compute all current values of all existing modulation 
+ sources. This should be done in a central place in some higher level object (maybe some subclass 
+ of AudioModule)
 
 ModulationTarget:
 -is typically some (lower level) dsp algorithm parameter such as a cutoff frequency of a filter
@@ -67,6 +68,12 @@ public:
 
   /** Destructor */
   virtual ~ModulationSource();
+
+  /** ...  */
+  void setModulationManager(ModulationManager* managerToUse)
+  {
+    modManager = managerToUse;
+  }
 
   /** Returns a pointer to the modulation value. Modulation targets should retrieve this pointer 
   when they are connected to */
@@ -168,6 +175,11 @@ public:
     amounts[sourceIndex] = newAmount;
   }
 
+  /** Returns a pointer to a list of ModulationSources that are available to this ModulationTarget 
+  (via the modManager). Can return a nullptr when there's no ModulationManager set up, i.e. the 
+  modManager member is a nullptr. */
+  const std::vector<ModulationSource*>* getAvailableSources();
+
   /** This function should be called from some central place in outside code to compute/update a 
   modulated value per sample before the value is used. It starts with the unmodulated value and 
   applies all attached ModulationSources to it (with their appropriate amounts) and stores the 
@@ -234,6 +246,9 @@ public:
   {
     removeFirstOccurrence(sources, source);
   }
+
+  /** Returns a pointer to our list of available ModulationSources. */
+  const std::vector<ModulationSource*>* getAvailableSources() { return &sources; }
 
 protected:
 
