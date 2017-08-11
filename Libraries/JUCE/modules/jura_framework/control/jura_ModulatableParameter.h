@@ -55,12 +55,7 @@ class ModulationTarget;
 
 //=================================================================================================
 
-/** Baseclass for modulation sources.  
-
--todo
- -keep track of assigned targets in order to inform them in our destructor about our destruction
-  to avoid dangling pointers in ModulationTarget
-*/
+/** Baseclass for modulation sources. */
 
 class JUCE_API ModulationSource
 {
@@ -105,6 +100,9 @@ protected:
   std::vector<ModulationTarget*> targets;
 
 
+  ModulationManager* modManager = nullptr;
+
+
   //juce::String
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationSource)
@@ -133,11 +131,14 @@ public:
     modManager = managerToUse;
   }
 
+  /** Sets the nominal, unmodulated value. This will be used as reference, when a modulated value 
+  will be computed. */
   void setUnmodulatedValue(double newValue)
   {
     unmodulatedValue = newValue;
   }
 
+  /** Adds a ModulationSource to this ModulationTarget with an optional modulation amount. */
   void addModulationSource(ModulationSource* source, double amount = 0)
   {
     source->addModulationTarget(this);
@@ -145,6 +146,7 @@ public:
     appendIfNotAlreadyThere(sourceValues, source->getValuePointer());
   }
 
+  /** Removes the ModulationSource with given index from this ModulationTarget. */
   void removeModulationSource(int index)
   {
     sources[index]->removeModulationTarget(this);
@@ -152,17 +154,24 @@ public:
     remove(sourceValues, index);
   }
 
+  /** Removes the given ModulationSource from this ModulationTarget. */
   void removeModulationSource(ModulationSource* source)
   {
     int index = find(sources, source);
     removeModulationSource(index);
   }
 
+  /** Sets the amount by which the ModulationSource with given index modulates this 
+  ModulationTarget. */
   void setModulationAmount(int sourceIndex, double newAmount)
   {
     amounts[sourceIndex] = newAmount;
   }
 
+  /** This function should be called from some central place in outside code to compute/update a 
+  modulated value per sample before the value is used. It starts with the unmodulated value and 
+  applies all attached ModulationSources to it (with their appropriate amounts) and stores the 
+  result in modulatedValue. */
   void computeModulatedValue()
   {
     double tmp = unmodulatedValue;
@@ -213,6 +222,18 @@ public:
 
   /** Destructor */
   virtual ~ModulationManager() {}
+
+  /** Registers the given ModulationSource to make it available to ModulationTargets. */
+  void registerModulationSource(ModulationSource* source)
+  {
+    appendIfNotAlreadyThere(sources, source);
+  }
+
+  /** De-registers a modulation source. */
+  void deRegisterModulationSource(ModulationSource* source)
+  {
+    removeFirstOccurrence(sources, source);
+  }
 
 protected:
 
@@ -284,6 +305,8 @@ public:
 
   /** Destructor */
   virtual ~ParameterModulator() {}
+
+
 
 protected:
 
