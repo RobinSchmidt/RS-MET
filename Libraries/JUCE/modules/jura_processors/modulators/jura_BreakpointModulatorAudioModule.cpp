@@ -5,12 +5,22 @@ BreakpointModulatorAudioModule::BreakpointModulatorAudioModule(CriticalSection *
   rosic::BreakpointModulator *newBreakpointModulatorToWrap)
   : AudioModule(newPlugInLock)
 {
-  jassert( newBreakpointModulatorToWrap != NULL ); // you must pass a valid object to the constructor
-
+  //jassert( newBreakpointModulatorToWrap != NULL ); // you must pass a valid object to the constructor
+  if(newBreakpointModulatorToWrap == nullptr)
+  {
+    newBreakpointModulatorToWrap = new rosic::BreakpointModulator;
+    wrappedBreakpointModulatorIsOwned = true;
+  }
   wrappedBreakpointModulator = newBreakpointModulatorToWrap;
   moduleName = juce::String("BreakpointModulator");
   setActiveDirectory(getApplicationDirectory() + juce::String("/BreakpointModulatorPresets") );
   initializeAutomatableParameters();
+}
+
+BreakpointModulatorAudioModule::~BreakpointModulatorAudioModule()
+{
+  if(wrappedBreakpointModulatorIsOwned)
+    delete wrappedBreakpointModulator;
 }
 
 //-------------------------------------------------------------------------------------------------

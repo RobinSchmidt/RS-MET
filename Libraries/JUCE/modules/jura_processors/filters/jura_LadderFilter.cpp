@@ -28,7 +28,10 @@ void Ladder::createStaticParameters()
   defaultValues.push_back(8000.0);
   defaultValues.push_back(16000.0);
   p->setDefaultValues(defaultValues);
-  addObservedParameter(p);
+  addObservedParameter(p); 
+    // maybe we should have a subclass ModulatableAudioModule of AudioModule and a function
+    // addModulatableParameter - this function could register the ModulationTarget for the
+    // passed ModulatableParameter
   p->setValueChangeCallback<Ladder>(this, &Ladder::setCutoff);
 
   p = new Param("Resonance", 0.0, 1.0, 0.2, Parameter::LINEAR, 0.01);

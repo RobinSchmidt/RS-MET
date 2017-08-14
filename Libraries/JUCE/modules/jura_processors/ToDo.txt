@@ -9,6 +9,8 @@ ModulationSystem:
 -implement right-click context menu for sliders for assigning modulators to parameters
 -test modulation with breakpoints/ladder
 
+-fix crash when inserting BreakpointModulator into Chainer
+
 
 
 RayBouncer:

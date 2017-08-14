@@ -2,6 +2,9 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
 {
   if(type == "None")         return new DummyModule( lock);
 
+  // modulators:
+  if(type == "BreakpointModulator") return new BreakpointModulatorAudioModule(lock);
+
   // analysis:
   if(type == "PhaseScope")    return new PhaseScope(              lock);
   //if(type == "PhaseScope2")  return new PhaseScope2( lock);
@@ -50,6 +53,9 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
 juce::String AudioModuleFactory::getModuleType(AudioModule *m)
 {
   if(dynamic_cast<DummyModule*>  (m))              return "None";
+
+  // modulators:
+  if(dynamic_cast<BreakpointModulatorAudioModule*> (m))  return "BreakpointModulator";
 
   // analysis:
   //if(dynamic_cast<PhaseScope2*>  (m))            return "PhaseScope2"; // always check subclasses before...
@@ -104,6 +110,9 @@ StringArray AudioModuleFactory::getAvailableModuleTypes()
 
   StringArray a;
   a.add("None");        // maybe use "Empty" instead of "None"
+
+  // modulators:
+  a.add("BreakpointModulator");
 
   // analysis:
   a.add("PhaseScope");
