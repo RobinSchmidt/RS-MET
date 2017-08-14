@@ -271,6 +271,12 @@ void BreakpointModulatorAudioModule::setStateToDefaults()
     wrappedBreakpointModulator->initialize();
 }
 
+AudioModuleEditor* BreakpointModulatorAudioModule::createEditor()
+{ 
+  return new BreakpointModulatorEditor(lock, this);
+  //return nullptr; 
+}
+
 //-------------------------------------------------------------------------------------------------
 // internal functions:
 

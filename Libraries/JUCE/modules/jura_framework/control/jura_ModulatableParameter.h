@@ -242,17 +242,20 @@ public:
   /** Registers the given ModulationSource to make it available to ModulationTargets. */
   void registerModulationSource(ModulationSource* source)
   {
-    appendIfNotAlreadyThere(sources, source);
+    appendIfNotAlreadyThere(modulationSources, source);
   }
 
   /** De-registers a modulation source. */
   void deRegisterModulationSource(ModulationSource* source)
   {
-    removeFirstOccurrence(sources, source);
+    removeFirstOccurrence(modulationSources, source);
   }
 
   /** Returns a pointer to our list of available ModulationSources. */
-  const std::vector<ModulationSource*>* getAvailableSources() { return &sources; }
+  const std::vector<ModulationSource*>* getAvailableSources() { return &modulationSources; }
+
+
+
 
 
   void applyModulations()
@@ -267,7 +270,7 @@ public:
 
 protected:
 
-  std::vector<ModulationSource*> sources;  // array of the available sources
+  std::vector<ModulationSource*> modulationSources;  // array of the available sources
 
 };
 

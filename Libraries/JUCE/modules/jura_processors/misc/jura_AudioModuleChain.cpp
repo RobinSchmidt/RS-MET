@@ -350,8 +350,24 @@ void AudioModuleChain::processBlock(double **inOutBuffer, int numChannels, int n
 {
   ScopedLock scopedLock(*lock);
   jassert(numChannels == 2);
-  for(int i = 0; i < size(modules); i++)
-    modules[i]->processBlock(inOutBuffer, numChannels, numSamples);
+  if(size(modulationSources) == 0)
+  {
+    for(int i = 0; i < size(modules); i++)
+      modules[i]->processBlock(inOutBuffer, numChannels, numSamples);
+  }
+  else
+  {
+    // we have to iterate through all the samples and for each sample update all the modulators and
+    // then compute a sample-frame from each non-modulator module
+    for(int n = 0; n < numSamples; n++)
+    {
+      ModulationManager::applyModulations();
+      for(int i = 0; i < size(modules); i++)
+      {
+        // compute sample-frame for module i and sample-index n
+      }
+    }
+  }
 }
 
 void AudioModuleChain::setSampleRate(double newSampleRate)

@@ -200,13 +200,15 @@ protected:
   /** Clears the array of AudioModules which means als to delete all objects. */
   void clearModulesArray();
                      
-  vector<AudioModule*> modules;  // std::vector better for debugging than juce::Array
+  std::vector<AudioModule*> modules;  // std::vector better for debugging than juce::Array
     // we should better use the inherited childAudioModules array - but there are errors
+
+  //std::vector<AudioModule*> modulators;
 
   int activeSlot = 0;            // slot for which the editor is currently shown 
   double sampleRate;
 
-  vector<AudioModuleChainObserver*> observers;
+  std::vector<AudioModuleChainObserver*> observers;
 
   friend class AudioModuleChainEditor;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioModuleChain)
