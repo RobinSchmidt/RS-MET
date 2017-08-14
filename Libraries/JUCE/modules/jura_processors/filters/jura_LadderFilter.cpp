@@ -13,7 +13,8 @@ void Ladder::createStaticParameters()
   ScopedLock scopedLock(*lock);
 
   std::vector<double> defaultValues;
-  typedef MetaControlledParameter Param;
+  //typedef MetaControlledParameter Param;
+  typedef ModulatableParameter Param;
   Param* p;
 
   p = new Param("Cutoff", 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL);

@@ -77,12 +77,12 @@ public:
 
   /** Returns a pointer to the modulation value. Modulation targets should retrieve this pointer 
   when they are connected to */
-  double* getValuePointer() { return &value; }
+  double* getModulationValuePointer() { return &modValue; }
 
-  /** Should be overriden by subclasses to update the "value" member variable per sample. Once it 
-  is updated, connected modulation targets can access it using the pointer-to-double that they have 
-  previously retrieved via getValuePointer. */
-  virtual void updateValue() = 0;
+  /** Should be overriden by subclasses to update the "modValue" member variable per sample. Once 
+  it is updated, connected modulation targets can access it using the pointer-to-double that they 
+  have previously retrieved via getValuePointer. */
+  virtual void updateModulationValue() = 0;
 
   /** Adds a modulation target to our list of attached targets. We keep this list here mainly to 
   detach the target in the case, the source gets deleted. */
@@ -102,7 +102,7 @@ public:
 
 protected:
 
-  double value = 0;
+  double modValue = 0;
 
   std::vector<ModulationTarget*> targets;
 
@@ -150,7 +150,7 @@ public:
   {
     source->addModulationTarget(this);
     appendIfNotAlreadyThere(sources,      source);
-    appendIfNotAlreadyThere(sourceValues, source->getValuePointer());
+    appendIfNotAlreadyThere(sourceValues, source->getModulationValuePointer());
   }
 
   /** Removes the ModulationSource with given index from this ModulationTarget. */
@@ -254,6 +254,17 @@ public:
   /** Returns a pointer to our list of available ModulationSources. */
   const std::vector<ModulationSource*>* getAvailableSources() { return &sources; }
 
+
+  void applyModulations()
+  {
+    // todo: this should be the method that should be called once per sample to compute all the
+    // outputs of the ModulationSources and apply them to their attached ModulationTargets. We can
+    // then have a subclass of AudioModule which is also a subclass of ModulationManager and 
+    // override the per-sample callback in order to first call applyModulations and after that, 
+    // proceed with the regular per-sample computations as usual.
+    //...sooo we can perhaps get rid of ModulationTarget::computeModulatedValue
+  }
+
 protected:
 
   std::vector<ModulationSource*> sources;  // array of the available sources
@@ -270,7 +281,7 @@ todo:
 
 */
 
-class JUCE_API ModulatableParameter : public Parameter, public ModulationTarget
+class JUCE_API ModulatableParameter : public MetaControlledParameter, public ModulationTarget
 {
 
 public:
@@ -278,12 +289,12 @@ public:
   /** Constructor */
   ModulatableParameter(const juce::String& name, double min = 0.0, double max = 1.0,
     double defaultValue = 0.5, int scaling = LINEAR, double interval = 0.0)
-    : Parameter(name, min, max, defaultValue, scaling, interval) {}
+    : MetaControlledParameter(name, min, max, defaultValue, scaling, interval) {}
 
 
   virtual void setValue(double newValue, bool sendNotification, bool callCallbacks)
   {
-    Parameter::setValue(newValue, sendNotification, callCallbacks);
+    MetaControlledParameter::setValue(newValue, sendNotification, callCallbacks);
     ModulationTarget::setUnmodulatedValue(newValue);
   }
 

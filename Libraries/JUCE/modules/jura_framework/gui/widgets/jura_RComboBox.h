@@ -27,7 +27,7 @@ A component that lets the user choose from a drop-down list of choices. The comb
 text strings, each with an associated id number, that will be shown in the drop-down list when the 
 user clicks on the component. The currently selected choice is displayed in the combo-box, and this 
 can either be read-only text, or editable. To find out when the user selects a different item or 
-edits the text, you can register a RComboBoxListener to receive callbacks. @see RComboBoxListener
+edits the text, you can register a RComboBoxObserver to receive callbacks. @see RComboBoxObserver
 
 */
 

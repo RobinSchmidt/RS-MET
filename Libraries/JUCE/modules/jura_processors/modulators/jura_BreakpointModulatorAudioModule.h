@@ -4,7 +4,8 @@
 /** This class wraps a RAPT::BreakpointModulator into a jura::AudioModule to facilitate its use as 
 plugIn or sub-module inside a plugIn. */
 
-class JUCE_API BreakpointModulatorAudioModule : public AudioModule
+class JUCE_API BreakpointModulatorAudioModule 
+  : public AudioModule, public ModulationSource
 {
 
   friend class BreakpointModulatorEditor;
@@ -39,6 +40,11 @@ public:
     *inOutR = *inOutL = wrappedBreakpointModulator->getSample();
   }
   // maybe, this function is obsolete now
+
+  virtual void updateModulationValue() override
+  {
+    modValue = wrappedBreakpointModulator->getSample();
+  }
 
   // new overrides (added after dragging the old code over - they are currently only dummies):
   virtual AudioModuleEditor *createEditor() override { return nullptr; }

@@ -123,7 +123,8 @@ AudioModule objects.
 -rename the plugin to RAPTPlug...or just RAPT
  */
 
-class JUCE_API AudioModuleChain : public jura::AudioModuleWithMidiIn
+class JUCE_API AudioModuleChain 
+  : public jura::AudioModuleWithMidiIn, public jura::ModulationManager
 {
 
 public:
