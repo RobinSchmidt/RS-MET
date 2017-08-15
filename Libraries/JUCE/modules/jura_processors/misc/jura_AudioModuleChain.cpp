@@ -362,6 +362,7 @@ void AudioModuleChain::processBlock(double **inOutBuffer, int numChannels, int n
   jassert(numChannels == 2);
   if(size(modulationSources) == 0)
   {
+    // in case of no modulations, we can use a faster loop
     for(int i = 0; i < size(modules); i++)
       modules[i]->processBlock(inOutBuffer, numChannels, numSamples);
   }

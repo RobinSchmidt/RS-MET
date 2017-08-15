@@ -243,18 +243,34 @@ public:
   void registerModulationSource(ModulationSource* source)
   {
     appendIfNotAlreadyThere(modulationSources, source);
+    source->setModulationManager(this);
   }
 
-  /** De-registers a modulation source. */
+  /** De-registers a ModulationSource. */
   void deRegisterModulationSource(ModulationSource* source)
   {
     removeFirstOccurrence(modulationSources, source);
+    source->setModulationManager(nullptr); // maybe we should do this conditionally when the passed
+                                           // source is actually in the array
+  }
+
+  /** Registers the given ModulationTarget. */
+  void registerModulationTarget(ModulationTarget* target)
+  {
+    appendIfNotAlreadyThere(modulationTargets, target);
+    target->setModulationManager(this);
+  }
+
+  /** De-registers a ModulationTarget. */
+  void deRegisterModulationTarget(ModulationTarget* target)
+  {
+    removeFirstOccurrence(modulationTargets, target);
+    target->setModulationManager(nullptr); // maybe we should do this conditionally when the passed
+                                           // target is actually in the array
   }
 
   /** Returns a pointer to our list of available ModulationSources. */
   const std::vector<ModulationSource*>* getAvailableSources() { return &modulationSources; }
-
-
 
 
 
@@ -266,11 +282,23 @@ public:
     // override the per-sample callback in order to first call applyModulations and after that, 
     // proceed with the regular per-sample computations as usual.
     //...sooo we can perhaps get rid of ModulationTarget::computeModulatedValue
+
+    int i;
+
+    for(i = 0; i < size(modulationSources); i++)
+      modulationSources[i]->updateModulationValue();
+
+    for(i = 0; i < size(modulationTargets); i++)
+      modulationTargets[i]->computeModulatedValue();
+      // this loop should be replaced by a loop over ModulationConnections because typically it
+      // will be wasteful to loop over all possible targets (i.e. parameters, many of which may
+      // not be modulated at all)
   }
 
 protected:
 
   std::vector<ModulationSource*> modulationSources;  // array of the available sources
+  std::vector<ModulationTarget*> modulationTargets;
 
 };
 
