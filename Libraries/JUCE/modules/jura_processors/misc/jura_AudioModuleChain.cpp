@@ -237,6 +237,9 @@ void AudioModuleChain::addModule(const juce::String& type)
   AudioModule *m = AudioModuleFactory::createModule(type, lock);
   m->setMetaParameterManager(metaParamManager); // without, we hit jassert(metaParaManager != nullptr) in MetaControlledParameter::attachToMetaParameter
   append(modules, m);
+
+  addToModulatorsIfApplicable(m); // new
+
   sendAudioModuleWasAddedNotification(m, size(modules)-1);
 }
 
@@ -247,6 +250,9 @@ void AudioModuleChain::deleteModule(int index)
   if(activeSlot == index)
     activeSlot--;
   sendAudioModuleWillBeDeletedNotification(modules[index], index);
+
+  removeFromModulatorsIfApplicable(modules[index]); // new
+
   delete modules[index];
   remove(modules, index);
 }
@@ -268,6 +274,10 @@ void AudioModuleChain::replaceModule(int index, const juce::String& type)
     newModule->loadDefaultPreset(); // later: either load default preset or recall a stored state
     newModule->setSampleRate(sampleRate);
     modules[index] = newModule;
+
+    removeFromModulatorsIfApplicable(oldModule); // new
+    addToModulatorsIfApplicable(newModule);      // new
+
     sendAudioModuleWasReplacedNotification(oldModule, newModule, index);
     delete oldModule;
     activeSlot = index;
@@ -468,6 +478,20 @@ void AudioModuleChain::setStateFromXml(const XmlElement& xmlState, const juce::S
     modules[i]->setStateFromXml(*moduleState, "", markAsClean);
     i++;
   }
+}
+
+void AudioModuleChain::addToModulatorsIfApplicable(AudioModule* module)
+{
+  ModulationSource* ms = dynamic_cast<ModulationSource*> (module);
+  if(ms != nullptr)
+    registerModulationSource(ms);
+}
+
+void AudioModuleChain::removeFromModulatorsIfApplicable(AudioModule* module)
+{
+  ModulationSource* ms = dynamic_cast<ModulationSource*> (module);
+  if(ms != nullptr)
+    deRegisterModulationSource(ms);
 }
 
 void AudioModuleChain::clearModulesArray()

@@ -197,6 +197,17 @@ public:
 
 protected:
 
+  /** Checks, if the passed AudioModule can be cast into a ModulationSource and if so, adds it to
+  our array of ModulationSources (inherited from ModulationManager). */
+  void addToModulatorsIfApplicable(AudioModule* module);
+    // maybe factor out into a class ModulatableAudioModule which is subclass of AudioModule and 
+    // ModulationManager
+
+  /** Undoes what addToModulatorsIfApplicable does. */
+  void removeFromModulatorsIfApplicable(AudioModule* module);
+
+
+
   /** Clears the array of AudioModules which means als to delete all objects. */
   void clearModulesArray();
                      
