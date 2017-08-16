@@ -42,7 +42,9 @@ void rsScopeScreenScanner<T>::reset()
 {
   sawInc = scanFreq / sampleRate;
   if(sync)
-    sawInc = rsMin(T(0.5), rsMax(sawInc, 1 / (T)samplesSinceReset));
+    sawInc = rsMin(T(0.5), 1 / (T)samplesSinceReset);
+  //if(sync)
+  //  sawInc = rsMin(T(0.5), rsMax(sawInc, 1 / (T)samplesSinceReset));
   xOld = 0.0;
   sawPhase = 0.0;
   samplesSinceReset = 0;
