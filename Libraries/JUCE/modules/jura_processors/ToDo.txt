@@ -2,6 +2,9 @@ ModulationSystem:
 -make AudioModuleChain subclass of ModulationManager (done)
 -make BreakpointModulatorAudioModule subclass of ModulationSource (done)
 -make parameters of LadderFilterModule subclass of ModulatableParameter (done)
+-make a subclass ModulatableAudioModule of AudioModule - and the Ladder should be a subclass
+ of that. it should have an addModulatedParameter function and it should handle save/recall
+ of the modulation connections
 -have ModulationSource slots in the Chainer...maybe this requires some refactoring so we can use 
  the same slot system for the inserts and modulators - until then, we may just put the modulators
  into the existing slots

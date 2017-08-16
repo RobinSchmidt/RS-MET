@@ -11,9 +11,7 @@ const std::vector<ModulationTarget*>& ModulationParticipant::getAvailableModulat
   return modManager->getAvailableModulationTargets();
 }
 
-
 //-------------------------------------------------------------------------------------------------
-
 
 ModulationSource::~ModulationSource() 
 {
@@ -23,11 +21,3 @@ ModulationSource::~ModulationSource()
     modManager->deRegisterModulationSource(this);
 }
 
-//-------------------------------------------------------------------------------------------------
-
-//const std::vector<ModulationSource*>* ModulationTarget::getAvailableModulationSources() 
-//{ 
-//  if(modManager != nullptr)
-//    return modManager->getAvailableModulationSources();
-//  return nullptr;
-//}

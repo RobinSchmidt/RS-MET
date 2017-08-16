@@ -60,7 +60,7 @@ class JUCE_API AudioModule : public ParameterManager, public StateFileManager
 public:
 
   //-----------------------------------------------------------------------------------------------
-  // construction/destruction:
+  // \name Construction/Destruction:
 
   /** Constructor. The caller must pass a pointer to a critical section object that must exist 
   somewhere outside and will be used here to acquire mutually exclusive access from different 
@@ -73,7 +73,7 @@ public:
   virtual ~AudioModule();
 
   //-----------------------------------------------------------------------------------------------
-  // setup:
+  // \name Setup:
 
   /** Override this to set the sample-rate for this module. */
   virtual void setSampleRate(double newSampleRate);
@@ -133,7 +133,8 @@ public:
   virtual void addObservedParameter(Parameter *parameterToAdd) override;
 
   //-----------------------------------------------------------------------------------------------
-  // midi controller and meta parameter stuff (midi should go to subclass AudioModuleWithMidiIn):
+  // \name midi/meta stuff 
+  // (midi should go to subclass AudioModuleWithMidiIn):
 
   /** Assigns a MIDI controller to one of the observed parameters. */
   virtual void assignMidiController(const juce::String& nameOfParameter, int controllerNumber);
@@ -151,7 +152,7 @@ public:
   virtual void detachMetaParameters();
 
   //-----------------------------------------------------------------------------------------------
-  // inquiry:
+  // \name Inquiry:
 
   /** Returns the name of this module. */
   virtual juce::String getModuleName() const { return moduleName; }
@@ -184,7 +185,7 @@ public:
   virtual AudioModuleEditor* createEditor();
 
   //-----------------------------------------------------------------------------------------------
-  // automation and state management:
+  // \name Automation and state management:
 
   /** Callback to indicate that a parameter has changed - subclasses should override this and
   update their signal processing accordingly. */
@@ -224,14 +225,14 @@ public:
   void setMetaParameterManager(MetaParameterManager* managerToUse);
 
   //-----------------------------------------------------------------------------------------------
-  // Audio processing:
+  // \name Audio processing:
 
   /** This is the audio callback that your subclass needs to override. */
   //virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) = 0;
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) {}
 
   //-----------------------------------------------------------------------------------------------
-  // Misc:
+  // \name Misc:
 
   /** Override this and set triggerInterval to some nonzero value if you need to re-trigger 
   something at regular intervals (like LFOs, for example). This function will be called from the 
@@ -258,10 +259,6 @@ protected:
   void midiMappingFromXml(const XmlElement &xmlState);
   void metaMappingFromXml(const XmlElement &xmlState);
   void metaValuesFromXml(const XmlElement &xmlState);
-
-
-
-
 
   /** Our child modules to which we will distribute MIDI-events and of which we manage the
   states. */
@@ -297,20 +294,45 @@ private:
 
 //=================================================================================================
 
+/** A subclass of AudioModule that can handle modulatable parameters. 
+
+\todo maybe factor this into the regular AudioModule class. */
+
+class JUCE_API AudioModuleWithModulatableParams : public AudioModule, public ModulationParticipant
+{
+
+public:
+
+  AudioModuleWithModulatableParams(CriticalSection *lockToUse) : AudioModule(lockToUse) {}
+
+  virtual ~AudioModuleWithModulatableParams() {}
+
+
+protected:
+
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioModuleWithModulatableParams)
+};
+
+//=================================================================================================
+
 /** A subclass of AudioModule that accepts MIDI input. If you derive your effect or instrument from
 this baseclass and wrap it into a juce::AudioProcessor (via the wrapper class jura::AudioPlugin),
 the plugin will have a MIDI input. Also, you can override the event handler methods in your 
 subclass (noteOn, noteOff, setMidiController, etc.) in order to respond to incoming MIDI events  */
 
-class JUCE_API AudioModuleWithMidiIn : public AudioModule
+class JUCE_API AudioModuleWithMidiIn : public AudioModuleWithModulatableParams //: public AudioModule
 {
 
 public:
 
-  AudioModuleWithMidiIn(CriticalSection *lockToUse) : AudioModule(lockToUse) {}
+  //AudioModuleWithMidiIn(CriticalSection *lockToUse) : AudioModule(lockToUse) {}
+  AudioModuleWithMidiIn(CriticalSection *lockToUse) : AudioModuleWithModulatableParams(lockToUse) {}
+
+  virtual ~AudioModuleWithMidiIn() {}
 
   //-----------------------------------------------------------------------------------------------
-  // Event processing:
+  // \name Event processing:
 
   /** Handles a generic MidiMessage. */
   virtual void handleMidiMessage(MidiMessage message);
@@ -353,7 +375,7 @@ public:
   };
 
   //-----------------------------------------------------------------------------------------------
-  // construction/destruction:
+  // \name Construction/Destruction:
 
   /** Constructor. */
   AudioModuleEditor(AudioModule* newModuleToEdit);
@@ -366,12 +388,11 @@ public:
   stuff that is common to both constructors into one function) */
   void init();
 
-
   /** Destructor. */
   virtual ~AudioModuleEditor();
 
   //-----------------------------------------------------------------------------------------------
-  // setup:
+  // \name Setup:
 
   /** Passes a new AudioModule objcet to be edited. This should be used when the same editor object 
   should be re-used for editing another AudioModule. */
@@ -392,7 +413,7 @@ public:
   virtual void setPresetSectionPosition(int newPosition) { presetSectionPosition = newPosition; }
 
   //-----------------------------------------------------------------------------------------------
-  // inquiry:
+  // \name Inquiry:
 
   /** Returns the bottom (in pixels) of the preset section. */
   virtual int getPresetSectionBottom();
@@ -402,7 +423,7 @@ public:
   const AudioModule* getModuleToEdit() { return moduleToEdit; }
 
   //-----------------------------------------------------------------------------------------------
-  // callbacks:
+  // \name Callbacks:
 
   //virtual bool keyPressed(const KeyPress &key, Component *originatingComponent) override;
   virtual void rDialogBoxChanged(RDialogBox* dialogBoxThatHasChanged) override;
@@ -421,7 +442,7 @@ public:
   virtual void updateWidgetEnablement() {}
 
   //-----------------------------------------------------------------------------------------------
-  // public data members:
+  // \name Public data members:
 
   StateLoadSaveWidgetSet* stateWidgetSet;  // \todo check, why we have this in the public area?
 
