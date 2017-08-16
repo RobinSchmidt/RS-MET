@@ -1,4 +1,20 @@
 
+const std::vector<ModulationSource*>& ModulationParticipant::getAvailableModulationSources()
+{
+  jassert(modManager); // must be assigned before its used
+  return modManager->getAvailableModulationSources();
+}
+
+const std::vector<ModulationTarget*>& ModulationParticipant::getAvailableModulationTargets()
+{
+  jassert(modManager); // must be assigned before its used
+  return modManager->getAvailableModulationTargets();
+}
+
+
+//-------------------------------------------------------------------------------------------------
+
+
 ModulationSource::~ModulationSource() 
 {
   for(int i = 0; i < size(targets); i++)
@@ -9,9 +25,9 @@ ModulationSource::~ModulationSource()
 
 //-------------------------------------------------------------------------------------------------
 
-const std::vector<ModulationSource*>* ModulationTarget::getAvailableSources() 
-{ 
-  if(modManager != nullptr)
-    return modManager->getAvailableSources();
-  return nullptr;
-}
+//const std::vector<ModulationSource*>* ModulationTarget::getAvailableModulationSources() 
+//{ 
+//  if(modManager != nullptr)
+//    return modManager->getAvailableModulationSources();
+//  return nullptr;
+//}

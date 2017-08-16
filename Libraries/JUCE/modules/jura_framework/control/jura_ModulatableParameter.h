@@ -52,13 +52,61 @@ Parameter <- MetaControlledParameter <- ModulatableParameter <- PolyphonicParame
 
 // forward declarations:
 class ModulationManager; 
+class ModulationSource;
 class ModulationTarget;
+
+
+//=================================================================================================
+
+/** Baseclass for participants in the modulation system. Subclasses are ModulationSource and 
+ModulationTarget and this class factors out what they have in common, which is mainly the access 
+functions to the ModulationManager. */
+
+class JUCE_API ModulationParticipant
+{
+
+public:
+
+  /** Constructor */
+  ModulationParticipant() {}
+
+  /** Destructor */
+  virtual ~ModulationParticipant() {}
+
+  /** Sets up the ModulationManager that should be used for registering ModulationSources and 
+  ModulationTargets. Should be called sometime soon after construction. */
+  void setModulationManager(ModulationManager* managerToUse)
+  {
+    modManager = managerToUse;
+  }
+
+  /** Returns a pointer to the ModulationManager object that is used for registering 
+  ModulationSources and ModulationTargets. */
+  ModulationManager* getModulationManager()
+  {
+    return modManager;
+  }
+
+  /** Returns a reference to the array of available ModulationSource objects. */
+  const std::vector<ModulationSource*>& getAvailableModulationSources();
+
+  /** Returns a reference to the array of available ModulationTarget objects. */
+  const std::vector<ModulationTarget*>& getAvailableModulationTargets();
+
+
+protected:
+
+  ModulationManager* modManager = nullptr;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationParticipant)
+};
+
 
 //=================================================================================================
 
 /** Baseclass for modulation sources. */
 
-class JUCE_API ModulationSource
+class JUCE_API ModulationSource : public ModulationParticipant
 {
 
 public:
@@ -69,11 +117,11 @@ public:
   /** Destructor */
   virtual ~ModulationSource();
 
-  /** ...  */
-  void setModulationManager(ModulationManager* managerToUse)
-  {
-    modManager = managerToUse;
-  }
+  ///** ...  */
+  //void setModulationManager(ModulationManager* managerToUse)
+  //{
+  //  modManager = managerToUse;
+  //}
 
   /** Returns a pointer to the modulation value. Modulation targets should retrieve this pointer 
   when they are connected to */
@@ -107,7 +155,7 @@ protected:
   std::vector<ModulationTarget*> targets;
 
 
-  ModulationManager* modManager = nullptr;
+  //ModulationManager* modManager = nullptr;
 
 
   //juce::String
@@ -119,7 +167,7 @@ protected:
 
 /** Baseclass for modulation targets.  */
 
-class JUCE_API ModulationTarget
+class JUCE_API ModulationTarget : public ModulationParticipant
 {
 
 public:
@@ -131,12 +179,12 @@ public:
   virtual ~ModulationTarget() {}
 
 
-  /** Sets up the ModulationManager that should be used for registering ourselves to the available
-  ModulationSources. Should be called sometime soon after construction. */
-  void setModulationManager(ModulationManager* managerToUse)
-  {
-    modManager = managerToUse;
-  }
+  ///** Sets up the ModulationManager that should be used for registering ourselves to the available
+  //ModulationSources. Should be called sometime soon after construction. */
+  //void setModulationManager(ModulationManager* managerToUse)
+  //{
+  //  modManager = managerToUse;
+  //}
 
   /** Sets the nominal, unmodulated value. This will be used as reference, when a modulated value 
   will be computed. */
@@ -175,10 +223,10 @@ public:
     amounts[sourceIndex] = newAmount;
   }
 
-  /** Returns a pointer to a list of ModulationSources that are available to this ModulationTarget 
-  (via the modManager). Can return a nullptr when there's no ModulationManager set up, i.e. the 
-  modManager member is a nullptr. */
-  const std::vector<ModulationSource*>* getAvailableSources();
+  ///** Returns a pointer to a list of ModulationSources that are available to this ModulationTarget 
+  //(via the modManager). Can return a nullptr when there's no ModulationManager set up, i.e. the 
+  //modManager member is a nullptr. */
+  //const std::vector<ModulationSource*>* getAvailableModulationSources();
 
   /** This function should be called from some central place in outside code to compute/update a 
   modulated value per sample before the value is used. It starts with the unmodulated value and 
@@ -217,7 +265,7 @@ protected:
   std::vector<double*> sourceValues;
   std::vector<double>  amounts;
 
-  ModulationManager* modManager = nullptr;
+  //ModulationManager* modManager = nullptr;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationTarget)
 };
@@ -269,10 +317,14 @@ public:
                                            // target is actually in the array
   }
 
-  /** Returns a pointer to our list of available ModulationSources. */
-  const std::vector<ModulationSource*>* getAvailableSources() { return &modulationSources; }
+  ///** Returns a pointer to our list of available ModulationSources. */
+  //const std::vector<ModulationSource*>* getAvailableSources() { return &modulationSources; }
 
+  /** Returns a reference to our list of available ModulationSources. */
+  const std::vector<ModulationSource*>& getAvailableModulationSources() { return modulationSources; }
 
+  /** Returns a reference to our list of available ModulationTargets. */
+  const std::vector<ModulationTarget*>& getAvailableModulationTargets() { return modulationTargets; }
 
   void applyModulations()
   {
@@ -300,6 +352,8 @@ protected:
   std::vector<ModulationSource*> modulationSources;  // array of the available sources
   std::vector<ModulationTarget*> modulationTargets;
 
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationManager)
 };
 
 //=================================================================================================
