@@ -307,6 +307,10 @@ public:
 
   virtual ~AudioModuleWithModulatableParams() {}
 
+  /** Overrides inherited method to additionaly wire the passed Parameter up to the 
+  ModulationManager, in case it is a ModulatableParameter. */
+  virtual void addObservedParameter(Parameter* parameterToAdd) override;
+
 
 protected:
 

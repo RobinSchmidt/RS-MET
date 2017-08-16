@@ -1,14 +1,38 @@
 
 const std::vector<ModulationSource*>& ModulationParticipant::getAvailableModulationSources()
 {
-  jassert(modManager); // must be assigned before its used
+  jassert(modManager);
   return modManager->getAvailableModulationSources();
 }
 
 const std::vector<ModulationTarget*>& ModulationParticipant::getAvailableModulationTargets()
 {
-  jassert(modManager); // must be assigned before its used
+  jassert(modManager);
   return modManager->getAvailableModulationTargets();
+}
+
+void ModulationParticipant::registerModulationSource(ModulationSource* source)
+{
+  jassert(modManager);
+  modManager->registerModulationSource(source);
+}
+
+void ModulationParticipant::deRegisterModulationSource(ModulationSource* source)
+{
+  jassert(modManager);
+  modManager->deRegisterModulationSource(source);
+}
+
+void ModulationParticipant::registerModulationTarget(ModulationTarget* target)
+{
+  jassert(modManager);
+  modManager->registerModulationTarget(target);
+}
+
+void ModulationParticipant::deRegisterModulationTarget(ModulationTarget* target)
+{
+  jassert(modManager);
+  modManager->deRegisterModulationTarget(target);
 }
 
 //-------------------------------------------------------------------------------------------------

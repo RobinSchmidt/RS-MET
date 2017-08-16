@@ -72,6 +72,10 @@ public:
 
   /** Destructor */
   virtual ~ModulationParticipant() {}
+    // maybe in the destructor, we should try to dynamically cast ourselves to ModulationTarget
+    // and ModulationSource and if any of these two casts is successfull, de-register ourselves
+    // from our modManager to avoid dangling pointers there. ...or maybe do it in the two  subclass
+    // destructors to avoid the cast
 
   /** Sets up the ModulationManager that should be used for registering ModulationSources and 
   ModulationTargets. Should be called sometime soon after construction. */
@@ -86,6 +90,18 @@ public:
   {
     return modManager;
   }
+
+  /** Registers the given ModulationSource to make it available to ModulationTargets. */
+  void registerModulationSource(ModulationSource* source);
+
+  /** De-registers a ModulationSource. */
+  void deRegisterModulationSource(ModulationSource* source);
+
+  /** Registers the given ModulationTarget. */
+  void registerModulationTarget(ModulationTarget* target);
+
+  /** De-registers a ModulationTarget. */
+  void deRegisterModulationTarget(ModulationTarget* target);
 
   /** Returns a reference to the array of available ModulationSource objects. */
   const std::vector<ModulationSource*>& getAvailableModulationSources();

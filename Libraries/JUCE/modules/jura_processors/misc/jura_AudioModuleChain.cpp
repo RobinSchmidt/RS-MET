@@ -485,14 +485,14 @@ void AudioModuleChain::addToModulatorsIfApplicable(AudioModule* module)
 {
   ModulationSource* ms = dynamic_cast<ModulationSource*> (module);
   if(ms != nullptr)
-    registerModulationSource(ms);
+    ModulationManager::registerModulationSource(ms);
 }
 
 void AudioModuleChain::removeFromModulatorsIfApplicable(AudioModule* module)
 {
   ModulationSource* ms = dynamic_cast<ModulationSource*> (module);
   if(ms != nullptr)
-    deRegisterModulationSource(ms);
+    ModulationManager::deRegisterModulationSource(ms);
 }
 
 void AudioModuleChain::clearModulesArray()
