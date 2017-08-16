@@ -303,7 +303,12 @@ class JUCE_API AudioModuleWithModulatableParams : public AudioModule, public Mod
 
 public:
 
-  AudioModuleWithModulatableParams(CriticalSection *lockToUse) : AudioModule(lockToUse) {}
+  AudioModuleWithModulatableParams(CriticalSection* lockToUse, 
+    ModulationManager* modManager = nullptr) 
+    : AudioModule(lockToUse), ModulationParticipant(modManager)
+  {
+  
+  }
 
   virtual ~AudioModuleWithModulatableParams() {}
 

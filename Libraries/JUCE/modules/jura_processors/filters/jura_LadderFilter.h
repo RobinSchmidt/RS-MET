@@ -16,12 +16,13 @@ channels to be different by introducing a stereo spread parameter.
  widget) - the mode-combobox then selects between various predefined settings
 */
 
-class JUCE_API Ladder : public jura::AudioModuleWithMidiIn
+class JUCE_API Ladder : public jura::AudioModuleWithModulatableParams
+  // : public jura::AudioModuleWithMidiIn // why WithMidiIn?
 {
 
 public:
 
-  Ladder(CriticalSection *lockToUse);
+  Ladder(CriticalSection *lockToUse, ModulationManager* modManagerToUse = nullptr);
     
   /** Creates the static parameters for this module (i.e. parameters that are not created
   dynamically and are thus always there). */

@@ -1,38 +1,45 @@
 
+std::vector<ModulationSource*> ModulationParticipant::dummySources;
+std::vector<ModulationTarget*> ModulationParticipant::dummyTargets;
+
 const std::vector<ModulationSource*>& ModulationParticipant::getAvailableModulationSources()
 {
-  jassert(modManager);
-  return modManager->getAvailableModulationSources();
+  if(modManager)
+    return modManager->getAvailableModulationSources();
+  else
+    return dummySources;
 }
 
 const std::vector<ModulationTarget*>& ModulationParticipant::getAvailableModulationTargets()
 {
-  jassert(modManager);
-  return modManager->getAvailableModulationTargets();
+  if(modManager)
+    return modManager->getAvailableModulationTargets();
+  else
+    return dummyTargets;
 }
 
 void ModulationParticipant::registerModulationSource(ModulationSource* source)
 {
-  jassert(modManager);
-  modManager->registerModulationSource(source);
+  if(modManager)
+    modManager->registerModulationSource(source);
 }
 
 void ModulationParticipant::deRegisterModulationSource(ModulationSource* source)
 {
-  jassert(modManager);
-  modManager->deRegisterModulationSource(source);
+  if(modManager)
+    modManager->deRegisterModulationSource(source);
 }
 
 void ModulationParticipant::registerModulationTarget(ModulationTarget* target)
 {
-  jassert(modManager);
-  modManager->registerModulationTarget(target);
+  if(modManager)
+    modManager->registerModulationTarget(target);
 }
 
 void ModulationParticipant::deRegisterModulationTarget(ModulationTarget* target)
 {
-  jassert(modManager);
-  modManager->deRegisterModulationTarget(target);
+  if(modManager)
+    modManager->deRegisterModulationTarget(target);
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -1,4 +1,5 @@
-AudioModule* AudioModuleFactory::createModule(const juce::String& type, CriticalSection *lock)
+AudioModule* AudioModuleFactory::createModule(const juce::String& type, CriticalSection *lock, 
+  ModulationManager* modMan)
 {
   if(type == "None")         return new DummyModule( lock);
 
@@ -17,7 +18,7 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
 
   // filters:
   if(type == "Equalizer")       return new EqualizerAudioModule(      lock);
-  if(type == "Ladder")          return new Ladder(                    lock);
+  if(type == "Ladder")          return new Ladder(                    lock, modMan);
   if(type == "PhasorFilter")    return new PhasorFilter(              lock);
   if(type == "EngineersFilter") return new EngineersFilterAudioModule(lock);
   if(type == "CrossOver")       return new CrossOverAudioModule(      lock);
@@ -234,7 +235,7 @@ void AudioModuleChain::addEmptySlot()
 void AudioModuleChain::addModule(const juce::String& type)
 {
   ScopedLock scopedLock(*lock);
-  AudioModule *m = AudioModuleFactory::createModule(type, lock);
+  AudioModule *m = AudioModuleFactory::createModule(type, lock, this);
   m->setMetaParameterManager(metaParamManager); // without, we hit jassert(metaParaManager != nullptr) in MetaControlledParameter::attachToMetaParameter
   append(modules, m);
 
@@ -269,7 +270,7 @@ void AudioModuleChain::replaceModule(int index, const juce::String& type)
   jassert(index >= 0 && index < size(modules)); // index out of range
   if(!isModuleOfType(index, type)){              // replace only, if new type is different
     AudioModule* oldModule = modules[index];
-    AudioModule* newModule = AudioModuleFactory::createModule(type, lock);
+    AudioModule* newModule = AudioModuleFactory::createModule(type, lock, this);
     newModule->setMetaParameterManager(metaParamManager);
     newModule->loadDefaultPreset(); // later: either load default preset or recall a stored state
     newModule->setSampleRate(sampleRate);

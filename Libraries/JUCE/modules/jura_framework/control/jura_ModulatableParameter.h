@@ -68,7 +68,10 @@ class JUCE_API ModulationParticipant
 public:
 
   /** Constructor */
-  ModulationParticipant() {}
+  ModulationParticipant(ModulationManager* managerToUse = nullptr) 
+  {
+    modManager = managerToUse;
+  }
 
   /** Destructor */
   virtual ~ModulationParticipant() {}
@@ -83,6 +86,7 @@ public:
   {
     modManager = managerToUse;
   }
+  // maybe get rid of this and demand it to be passed to the constructor
 
   /** Returns a pointer to the ModulationManager object that is used for registering 
   ModulationSources and ModulationTargets. */
@@ -114,6 +118,14 @@ protected:
 
   ModulationManager* modManager = nullptr;
 
+
+  // these are empty dummy arrays to which references will be returned by 
+  // getAvailableModulationSources/Targets in case our modManager is a nullptr (this is somehow
+  // ugly design, but however):
+  static std::vector<ModulationSource*> dummySources;
+  static std::vector<ModulationTarget*> dummyTargets;
+
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationParticipant)
 };
 
@@ -128,7 +140,8 @@ class JUCE_API ModulationSource : public ModulationParticipant
 public:
 
   /** Constructor */
-  ModulationSource() {}
+  ModulationSource(ModulationManager* managerToUse = nullptr) 
+    : ModulationParticipant(managerToUse) {}
 
   /** Destructor */
   virtual ~ModulationSource();
@@ -177,7 +190,8 @@ class JUCE_API ModulationTarget : public ModulationParticipant
 public:
 
   /** Constructor */
-  ModulationTarget() {}
+  ModulationTarget(ModulationManager* managerToUse = nullptr) 
+    : ModulationParticipant(managerToUse) {}
 
   /** Destructor */
   virtual ~ModulationTarget() {}
