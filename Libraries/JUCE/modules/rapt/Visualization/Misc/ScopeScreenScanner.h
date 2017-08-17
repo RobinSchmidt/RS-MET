@@ -35,6 +35,11 @@ public:
   /** Switches synchronization of the sawtooth to the input signal on/off */
   void setSync(bool shouldSync);
 
+  /** Sets the number of cycles shown in sync mode. */
+  void setNumCyclesShown(int numCycles);
+
+  //void setZoom(double newZoom);
+
 
   //---------------------------------------------------------------------------------------------
   // \name Audio Processing

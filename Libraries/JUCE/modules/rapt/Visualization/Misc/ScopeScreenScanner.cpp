@@ -36,16 +36,25 @@ void rsScopeScreenScanner<T>::setSync(bool shouldSync)
   sync = shouldSync;
 }
 
+template<class T>
+void rsScopeScreenScanner<T>::setNumCyclesShown(int numCycles)
+{
+  numZerosToReset = numCycles;
+}
+
 // misc:
 
 template<class T>
 void rsScopeScreenScanner<T>::reset()
 {
-  sawInc = scanFreq / sampleRate;
   if(sync)
     sawInc = rsMin(T(0.5), 1 / (T)samplesSinceReset);
+  else
+    sawInc = scanFreq / sampleRate;
+
   //if(sync)
   //  sawInc = rsMin(T(0.5), rsMax(sawInc, 1 / (T)samplesSinceReset));
+
   xOld = 0.0;
   sawPhase = 0.0;
   samplesSinceReset = 0;

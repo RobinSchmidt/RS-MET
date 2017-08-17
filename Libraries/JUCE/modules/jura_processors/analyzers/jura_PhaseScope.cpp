@@ -210,6 +210,11 @@ void PhaseScope::setScanningFrequency(double newFrequency)
   phaseScopeBuffer->setScanningFrequency(newFrequency);
 }
 
+void PhaseScope::setNumCyclesShown(int newNumCycles)
+{
+  phaseScopeBuffer->screenScanner.setNumCyclesShown(newNumCycles);
+}
+
 void PhaseScope::setSyncMode(bool shouldSync)
 {
   phaseScopeBuffer->setSyncMode(shouldSync);
@@ -360,10 +365,21 @@ PhaseScopeEditor::PhaseScopeEditor(jura::PhaseScope *newPhaseScopeToEdit)
   int headerMargin = 26;  // this is the height we need for headline and preset-section
   setSize(400+widgetMargin, 400+headerMargin);
 
+
+  localAutomationSwitch = true;
+  isGuiElement = true;
+  scope->getParameterByName("Sync")->registerParameterObserver(this);
+  parameterChanged(scope->getParameterByName("Sync"));
+
   // todo: we should really use a ResizableImage in PhaseScopeBuffer, set up a maximum size and 
   // then set up the ComponentResizeBoundsConstraine accordingly - otherwise, we may get threading
   // problems due to reallocating memory in the gui thread while writing into the same memory
   // in the audio thread
+}
+
+PhaseScopeEditor::~PhaseScopeEditor()
+{
+  scope->getParameterByName("Sync")->deRegisterParameterObserver(this);
 }
 
 void PhaseScopeEditor::createWidgets()
@@ -493,9 +509,6 @@ void PhaseScopeEditor::createWidgets()
   //s->setDescriptionField(infoField);
   //s->setStringConversionFunction(&valueToString3);
 
-
-
-
   colorMapLoader = new ColorMapLoader(scope->getColorMapPointer());
   addWidgetSet(colorMapLoader);
 }
@@ -548,6 +561,22 @@ void PhaseScopeEditor::resized()
   y += 8;
   colorMapLoader->setBounds(x, y, w, 48);
 }
+
+void PhaseScopeEditor::parameterChanged(Parameter* parameterThatHasChanged)
+{
+  bool sync = scope->getParameterByName("Sync")->getValue() >= 0.5;
+  if(sync)
+  {
+    sliderScanFreq->setVisible(false);
+    //sliderNumCycles->setVisible(true);
+  }
+  else
+  {
+    sliderScanFreq->setVisible(true);
+    //sliderNumCycles->setVisible(false);
+  }
+}
+
 //
 //
 ////=================================================================================================

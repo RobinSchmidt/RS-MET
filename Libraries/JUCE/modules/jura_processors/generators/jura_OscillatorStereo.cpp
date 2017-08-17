@@ -1148,7 +1148,7 @@ void OscillatorStereoEditor::resized()
   // (re-)allocate memory for the waveform buffer and initialize content of the array:
   if( 2*waveformDisplay->getWidth() != numSamplesInPlot )
   {
-    numSamplesInPlot = 2*waveformDisplay->getWidth(); // 2x oversampling of the plot to avoid jaggedness
+    numSamplesInPlot = jmax(1, 2*waveformDisplay->getWidth()); // 2x oversampling of the plot to avoid jaggedness
     if( waveformBuffer != NULL )
       delete[] waveformBuffer;
     waveformBuffer = new double[2*numSamplesInPlot];

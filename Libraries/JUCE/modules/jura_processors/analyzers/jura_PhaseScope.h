@@ -40,7 +40,10 @@ public:
   //void setShiftX(double newShift);
   //void setShiftY(double newShift);
   void setOneDimensionalMode(bool shouldBe1D);
+
   void setScanningFrequency(double newFrequency);
+  void setNumCyclesShown(int newNumCycles);
+  //void setZoom(double newZoom);
   void setSyncMode(bool shouldSync);
     // todo: maybe have the function bodies here in the header file - they are all trivial 
     // delegations
@@ -143,15 +146,17 @@ protected:
 
 /** Implements a GUI editor for the XY phase scope. */
 
-class JUCE_API PhaseScopeEditor : public AudioModuleEditor
+class JUCE_API PhaseScopeEditor : public AudioModuleEditor, public ParameterObserver
 {
 
 public:
 
   PhaseScopeEditor(jura::PhaseScope *newPhaseScopeToEdit);
+  virtual ~PhaseScopeEditor();
 
   virtual void createWidgets();
   virtual void resized() override;
+  virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
 
 protected:
 

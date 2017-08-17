@@ -134,7 +134,7 @@ public:
   /** Resets the internal buffer to all zeros. */
   void reset();
 
-
+  rsScopeScreenScanner<TSig> screenScanner;
 
 protected:
 
@@ -194,8 +194,6 @@ protected:
 
   bool useGradient;    // use color gradient to seamlessly join line segments
   bool oneDimensonal = false;
-
-  rsScopeScreenScanner<TSig> screenScanner;
 
   // members for actual painting on an image:
   //Image<TPix> image;
