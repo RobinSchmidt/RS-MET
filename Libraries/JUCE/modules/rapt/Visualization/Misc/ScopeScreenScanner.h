@@ -3,7 +3,13 @@
 
 /** This is a class for generating the sawtooth-shaped waveform used for scanning over the screen
 horizontally in an oscilloscope in 1D mode. It provides synchronization with the incoming waveform 
-by using a zero crossing detector. */
+by using a zero crossing detector. 
+
+\todo:
+-add setNumCyclesShown, setPhaseOffset, setFreqMultiplier (Elan requested that - what should it 
+ do?)
+-how to implement the PhaseOffset - maybe with a delayline?
+*/
 
 template<class T>
 class rsScopeScreenScanner
@@ -23,7 +29,7 @@ public:
   /** Sets the sample-rate. */
   void setSampleRate(T newSampleRate);
 
-  /** Sets the frequency that shoould be used when we are not in sync mode. */
+  /** Sets the frequency that should be used when we are not in sync mode. */
   void setScanFreqNoSync(T newFrequency);
 
   /** Switches synchronization of the sawtooth to the input signal on/off */
@@ -34,7 +40,7 @@ public:
   // \name Audio Processing
 
   /** Generates one sawtooth output sample at the time. You must pass the input signal value that
-  is used for the pitch analysis. The value is between 0 and 1. */
+  is used for the pitch analysis. The output value is between 0 and 1. */
   inline T getSample(T in);
 
   //---------------------------------------------------------------------------------------------

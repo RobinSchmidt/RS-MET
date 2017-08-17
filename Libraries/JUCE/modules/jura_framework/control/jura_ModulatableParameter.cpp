@@ -46,9 +46,30 @@ void ModulationParticipant::deRegisterModulationTarget(ModulationTarget* target)
 
 ModulationSource::~ModulationSource() 
 {
-  for(int i = 0; i < size(targets); i++)
-    targets[i]->removeModulationSource(this);
-  if(modManager != nullptr)
-    modManager->deRegisterModulationSource(this);
+  ModulationParticipant::deRegisterModulationSource(this);
+
+  //for(int i = 0; i < size(targets); i++)
+  //  targets[i]->removeModulationSource(this);
+  //if(modManager != nullptr)
+  //  modManager->deRegisterModulationSource(this);
 }
 
+//-------------------------------------------------------------------------------------------------
+
+ModulationTarget::~ModulationTarget() 
+{
+  ModulationParticipant::deRegisterModulationTarget(this);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+ModulationConnection::ModulationConnection(ModulationSource* _source, ModulationTarget* _target,
+  double _amount, bool _relative)
+{
+  source   = _source; 
+  target   = _target;
+  amount   = _amount;
+  relative = _relative;
+  sourceValue = &(source->modValue);
+  targetValue = &(target->modulatedValue);
+}

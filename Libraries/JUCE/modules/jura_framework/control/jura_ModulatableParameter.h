@@ -149,6 +149,7 @@ public:
   /** Returns a pointer to the modulation value. Modulation targets should retrieve this pointer 
   when they are connected to */
   double* getModulationValuePointer() { return &modValue; }
+   // may be obsolete
 
   /** Should be overriden by subclasses to update the "modValue" member variable per sample. Once 
   it is updated, connected modulation targets can access it using the pointer-to-double that they 
@@ -177,6 +178,7 @@ protected:
 
   std::vector<ModulationTarget*> targets; // do we need this?
 
+  friend class ModulationConnection;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationSource)
 };
 
@@ -194,7 +196,7 @@ public:
     : ModulationParticipant(managerToUse) {}
 
   /** Destructor */
-  virtual ~ModulationTarget() {}
+  virtual ~ModulationTarget();
 
   /** Sets the nominal, unmodulated value. This will be used as reference, when a modulated value 
   will be computed. */
@@ -269,7 +271,45 @@ protected:
   std::vector<double*> sourceValues;
   std::vector<double>  amounts;
 
+
+  friend class ModulationConnection;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationTarget)
+};
+
+
+
+//=================================================================================================
+
+/** This class represents a connection from a ModulationSource to a ModulationTarget with 
+adjustable modulation amount. */
+
+class JUCE_API ModulationConnection
+{
+
+public:
+
+  /** Constructor. You should pass a ModulationSource, a ModulationTarget, an amount and a flag to
+  to indicate whether this amount is absolute or relative (i.e. scaled by the unmodulated 
+  value). */
+  ModulationConnection(ModulationSource* source, ModulationTarget* target, 
+    double amount, bool relative = false);
+
+  void setAmount(double newAmount)
+  {
+    amount = newAmount;
+  }
+
+
+protected:
+
+  ModulationSource* source;
+  ModulationTarget* target;
+  double* sourceValue;
+  double* targetValue;
+  double amount;
+  bool relative;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationConnection)
 };
 
 
@@ -302,6 +342,8 @@ public:
     removeFirstOccurrence(modulationSources, source);
     source->setModulationManager(nullptr); // maybe we should do this conditionally when the passed
                                            // source is actually in the array
+    // we need to loop through the connections and remove all connections that involve the given
+    // source
   }
 
   /** Registers the given ModulationTarget. */
@@ -317,6 +359,8 @@ public:
     removeFirstOccurrence(modulationTargets, target);
     target->setModulationManager(nullptr); // maybe we should do this conditionally when the passed
                                            // target is actually in the array
+    // we need to loop through the connections and remove all connections that involve the given
+    // target
   }
 
   /** Returns a reference to our list of available ModulationSources. */

@@ -27,6 +27,7 @@ template<class T>
 void rsScopeScreenScanner<T>::setScanFreqNoSync(T newFrequency)
 {
   scanFreq = newFrequency;
+  sawInc = scanFreq / sampleRate;
 }
 
 template<class T>
