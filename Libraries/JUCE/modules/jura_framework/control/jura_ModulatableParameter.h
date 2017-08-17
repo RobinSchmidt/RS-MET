@@ -276,8 +276,6 @@ protected:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationTarget)
 };
 
-
-
 //=================================================================================================
 
 /** This class represents a connection from a ModulationSource to a ModulationTarget with 
@@ -311,9 +309,6 @@ public:
   }
 
 
-
-
-
 protected:
 
   ModulationSource* source;
@@ -324,7 +319,7 @@ protected:
   bool relative;
 
   friend class ModulationManager;
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationConnection)
+  //JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationConnection) // no - must be copyable
 };
 
 
@@ -347,17 +342,24 @@ public:
   /** Removes all modulation connections that involve the given source. */
   void removeConnectionsWith(ModulationSource* source)
   {
-    for(int i = 0; i < size(modulationConnections); i++)
-    {
-      if(modulationConnections[i].source == source)
-      {
-        //remove(modulationConnections, i); // doesn't compile - why??!!
-        //i--; // array was shrunken
+    for(int i = 0; i < size(modulationConnections); i++){
+      if(modulationConnections[i].source == source){
+        remove(modulationConnections, i);
+        i--; // array was shrunken
       }
     }
   }
 
-
+  /** Removes all modulation connections that involve the given target. */
+  void removeConnectionsWith(ModulationTarget* target)
+  {
+    for(int i = 0; i < size(modulationConnections); i++){
+      if(modulationConnections[i].target == target){
+        remove(modulationConnections, i);
+        i--; // array was shrunken
+      }
+    }
+  }
 
   /** Registers the given ModulationSource to make it available to ModulationTargets. */
   void registerModulationSource(ModulationSource* source)
@@ -369,11 +371,10 @@ public:
   /** De-registers a ModulationSource. */
   void deRegisterModulationSource(ModulationSource* source)
   {
+    jassert(contains(availableSource, source); // source was never registered
     removeFirstOccurrence(availableSources, source);
-    source->setModulationManager(nullptr); // maybe we should do this conditionally when the passed
-                                           // source is actually in the array
-    // we need to loop through the connections and remove all connections that involve the given
-    // source
+    removeConnectionsWith(source);
+    source->setModulationManager(nullptr); 
   }
 
   /** Registers the given ModulationTarget. */
@@ -386,12 +387,11 @@ public:
   /** De-registers a ModulationTarget. */
   void deRegisterModulationTarget(ModulationTarget* target)
   {
+    jassert(contains(availableTargets, target); // target was never registered
     removeFirstOccurrence(availableTargets, target);
     removeFirstOccurrence(affectedTargets,  target);
-    target->setModulationManager(nullptr); // maybe we should do this conditionally when the passed
-                                           // target is actually in the array
-    // we need to loop through the connections and remove all connections that involve the given
-    // target
+    removeConnectionsWith(target);
+    target->setModulationManager(nullptr);
   }
 
   /** Returns a reference to our list of available ModulationSources. */
