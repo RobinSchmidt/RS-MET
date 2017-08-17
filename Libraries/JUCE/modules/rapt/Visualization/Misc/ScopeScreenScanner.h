@@ -38,6 +38,7 @@ public:
   /** Sets the number of cycles shown in sync mode. */
   void setNumCyclesShown(int numCycles);
 
+  ///** Sets a zoom factor. */
   //void setZoom(double newZoom);
 
 
@@ -57,7 +58,7 @@ public:
 
 protected:
 
-  T sampleRate, scanFreq;
+  T sampleRate, scanFreq, zoom;
   T sawPhase, sawInc;  // sawtooth phase and increment
   bool sync;
 

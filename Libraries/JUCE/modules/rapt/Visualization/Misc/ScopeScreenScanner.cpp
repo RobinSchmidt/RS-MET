@@ -4,7 +4,8 @@ template<class T>
 rsScopeScreenScanner<T>::rsScopeScreenScanner()
 {
   sampleRate = 44100;
-  scanFreq = 5; ;
+  scanFreq = 5; 
+  zoom = 1;
   sync = false;
   minZeroDistance = 20; // maybe have a maxFrequency parameter instead
   numZerosToReset = 2;  // # zeros to be seen before reset occurs (typically number of cycles seen)
@@ -27,7 +28,7 @@ template<class T>
 void rsScopeScreenScanner<T>::setScanFreqNoSync(T newFrequency)
 {
   scanFreq = newFrequency;
-  sawInc = scanFreq / sampleRate;
+  sawInc = zoom * scanFreq / sampleRate;
 }
 
 template<class T>
@@ -42,19 +43,22 @@ void rsScopeScreenScanner<T>::setNumCyclesShown(int numCycles)
   numZerosToReset = numCycles;
 }
 
+//template<class T>
+//void rsScopeScreenScanner<T>::setZoom(double newZoom)
+//{
+//  zoom = (T)newZoom;
+//  sawInc = zoom * scanFreq / sampleRate;
+//}
+
 // misc:
 
 template<class T>
 void rsScopeScreenScanner<T>::reset()
 {
   if(sync)
-    sawInc = rsMin(T(0.5), 1 / (T)samplesSinceReset);
+    sawInc = rsMin(T(0.5), zoom / (T)samplesSinceReset);
   else
-    sawInc = scanFreq / sampleRate;
-
-  //if(sync)
-  //  sawInc = rsMin(T(0.5), rsMax(sawInc, 1 / (T)samplesSinceReset));
-
+    sawInc = zoom * scanFreq / sampleRate;
   xOld = 0.0;
   sawPhase = 0.0;
   samplesSinceReset = 0;

@@ -172,7 +172,7 @@ protected:
 
   AutomatableSlider *sliderScaleX, *sliderScaleY, *sliderShearX, *sliderShearY,
     *sliderRotation, *sliderShiftX, *sliderShiftY,
-    *sliderScanFreq;
+    *sliderScanFreq, *sliderNumCycles; // , *sliderZoom;
   // use regular (non-automatable) sliders
 
 

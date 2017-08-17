@@ -179,7 +179,7 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::processSampleFrame(TSig x, TSig y)
 
   // replace x with sawtooth-scanner in 1D mode:
   if(oneDimensonal == true)
-    x = getScannerSaw(x+y);
+    x = scaleX * getScannerSaw(x+y);
 
   // transform to pixel coordinates and draw line:
   toPixelCoordinates(x, y);

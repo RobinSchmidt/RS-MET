@@ -84,6 +84,15 @@ void PhaseScope::createParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setScanningFrequency);
 
+  //p = new Parameter(lock, "NumCycles", 1.0, 10.0, 1.0, 1.0, Parameter::INTEGER);
+  p = new Parameter(lock, "NumCycles", 1.0, 10.0, 1.0, 1.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setNumCyclesShown);
+
+  //p = new Parameter(lock, "Zoom", 0.1, 10.0, 0.0, 1.0, Parameter::EXPONENTIAL);
+  //addObservedParameter(p);
+  //p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setZoom);
+
   p = new Parameter(lock, "Sync", 0.0, 1.0, 0.0, 0.0, Parameter::BOOLEAN);
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setSyncMode);
   addObservedParameter(p);
@@ -214,6 +223,11 @@ void PhaseScope::setNumCyclesShown(int newNumCycles)
 {
   phaseScopeBuffer->screenScanner.setNumCyclesShown(newNumCycles);
 }
+
+//void PhaseScope::setZoom(double newZoom)
+//{
+//  phaseScopeBuffer->screenScanner.setZoom(newZoom);
+//}
 
 void PhaseScope::setSyncMode(bool shouldSync)
 {
@@ -365,7 +379,7 @@ PhaseScopeEditor::PhaseScopeEditor(jura::PhaseScope *newPhaseScopeToEdit)
   int headerMargin = 26;  // this is the height we need for headline and preset-section
   setSize(400+widgetMargin, 400+headerMargin);
 
-
+  // needs to be done to show/hid sliders depending on whether sync is on or off
   localAutomationSwitch = true;
   isGuiElement = true;
   scope->getParameterByName("Sync")->registerParameterObserver(this);
@@ -459,6 +473,16 @@ void PhaseScopeEditor::createWidgets()
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToString3);
 
+  addWidget( s = sliderNumCycles = new AutomatableSlider );
+  s->assignParameter( scope->getParameterByName("NumCycles") );
+  s->setSliderName("NumCycles");
+  s->setDescription("Number of cycles in synced 1D mode");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString0);
+
+
+
+
   // geometric transforms:
   addWidget(s = sliderScaleX = new AutomatableSlider);
   s->assignParameter(scope->getParameterByName("ScaleX"));
@@ -551,7 +575,8 @@ void PhaseScopeEditor::resized()
   sliderRotation->setBounds(x, y, w, h); y += dy;
   //sliderShiftX  ->setBounds(x, y, w, h); y += dy;
   //sliderShiftY  ->setBounds(x, y, w, h); y += dy;
-  sliderScanFreq  ->setBounds(x, y, w, h); y += dy;
+  sliderScanFreq  ->setBounds(x, y, w, h);
+  sliderNumCycles ->setBounds(x, y, w, h); y += dy;
   button1D        ->setBounds(x, y, w/2, h); 
   buttonSync      ->setBounds(x+w/2, y, w/2, h);
   y += dy;
@@ -568,12 +593,12 @@ void PhaseScopeEditor::parameterChanged(Parameter* parameterThatHasChanged)
   if(sync)
   {
     sliderScanFreq->setVisible(false);
-    //sliderNumCycles->setVisible(true);
+    sliderNumCycles->setVisible(true);
   }
   else
   {
     sliderScanFreq->setVisible(true);
-    //sliderNumCycles->setVisible(false);
+    sliderNumCycles->setVisible(false);
   }
 }
 
