@@ -136,9 +136,7 @@ public:
   /** Destructor */
   virtual ~ModulationSource();
 
-  /** Should be overriden by subclasses to update the "modValue" member variable per sample. Once 
-  it is updated, connected modulation targets can access it using the pointer-to-double that they 
-  have previously retrieved via getValuePointer. */
+  /** Should be overriden by subclasses to update the "modValue" member variable per sample. */
   virtual void updateModulationValue() = 0;
 
   //juce::String getModulationSourceName() = 0;
