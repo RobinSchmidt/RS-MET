@@ -143,7 +143,7 @@ public:
   {
     BOOLEAN = 0,
     STRING,         // rename to CHOICE
-    INTEGER,
+    INTEGER,        // maybe remove, linear should be just as good
     LINEAR,
     EXPONENTIAL,
     LINEAR_BIPOLAR

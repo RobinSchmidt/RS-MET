@@ -84,8 +84,7 @@ void PhaseScope::createParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setScanningFrequency);
 
-  //p = new Parameter(lock, "NumCycles", 1.0, 10.0, 1.0, 1.0, Parameter::INTEGER);
-  p = new Parameter(lock, "NumCycles", 1.0, 10.0, 1.0, 1.0, Parameter::LINEAR);
+  p = new Parameter(lock, "NumCycles", 1.0, 10.0, 1.0, 2.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setNumCyclesShown);
 
