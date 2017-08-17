@@ -43,18 +43,15 @@ feedback:
  ModulationTarget ...or just BE a ModulationTarget object - or maybe we'll need a class
  ModulatableParameter
 
-
 maybe make the class hierarchy like this:
 Parameter <- MetaControlledParameter <- ModulatableParameter <- PolyphonicParameter
 
 */
 
-
 // forward declarations:
 class ModulationManager; 
 class ModulationSource;
 class ModulationTarget;
-
 
 //=================================================================================================
 
@@ -123,7 +120,6 @@ protected:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationParticipant)
 };
 
-
 //=================================================================================================
 
 /** Baseclass for modulation sources. */
@@ -144,20 +140,6 @@ public:
   it is updated, connected modulation targets can access it using the pointer-to-double that they 
   have previously retrieved via getValuePointer. */
   virtual void updateModulationValue() = 0;
-
-  ///** Adds a modulation target to our list of attached targets. We keep this list here mainly to 
-  //detach the target in the case, the source gets deleted. */
-  //void addModulationTarget(ModulationTarget* target)
-  //{
-  //  appendIfNotAlreadyThere(targets, target);
-  //}
-
-  ///** Removes a modulation target from our list of attached targets. */
-  //void removeModulationTarget(ModulationTarget* target)
-  //{
-  //  removeFirstOccurrence(targets, target);
-  //}
-
 
   //juce::String getModulationSourceName() = 0;
 
@@ -228,31 +210,6 @@ public:
   // hmm...index with respect to what array? maybe we should pass a source-pointer instead of an
   // index
 
-  ///** This function should be called from some central place in outside code to compute/update a 
-  //modulated value per sample before the value is used. It starts with the unmodulated value and 
-  //applies all attached ModulationSources to it (with their appropriate amounts) and stores the 
-  //result in modulatedValue. */
-  //void computeModulatedValue()
-  //{
-  //  double tmp = unmodulatedValue;
-
-
-  //  // maybe this block can be optimized out of this function, scaler can be made a member and 
-  //  // assigned elsewhere (in a function that is not called per sample)
-  //  bool relative = false;  // make user adjustable member variable (switch between absolute and relative modulation)
-  //  double scaler = 1;      // maybe this too
-  //  if(relative)
-  //    scaler = unmodulatedValue;
-
-
-  //  for(int i = 0; i < size(sourceValues); i++)
-  //    tmp += amounts[i] * (*sourceValues[i]) * scaler;
-  //  modulatedValue = tmp;
-  //}
-  //// hmm...maybe it would be more efficient, if we do the gathering of the values in 
-  //// ModulationManager which would the keep an array of some kind of ModulationConnection. This 
-  //// way, we could perhaps avoid iterating through a lot of zero-sized sourceValues arrays
-
   /** Initialized the modulated value by setting it to the unmodulated value. */
   inline void initModulatedValue()
   {
@@ -299,7 +256,7 @@ public:
     if(relative)
       scaler = target->unmodulatedValue;
 
-    *targetValue += *sourceValue * amount * scaler;
+    *targetValue += *sourceValue * amount * scaler; // only this line shall remain after optimization
   }
 
 
@@ -315,7 +272,6 @@ protected:
   friend class ModulationManager;
   //JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationConnection) // no - must be copyable
 };
-
 
 //=================================================================================================
 
