@@ -311,6 +311,9 @@ public:
   }
 
 
+
+
+
 protected:
 
   ModulationSource* source;
@@ -320,6 +323,7 @@ protected:
   double amount;
   bool relative;
 
+  friend class ModulationManager;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationConnection)
 };
 
@@ -339,6 +343,21 @@ public:
 
   /** Destructor */
   virtual ~ModulationManager() {}
+
+  /** Removes all modulation connections that involve the given source. */
+  void removeConnectionsWith(ModulationSource* source)
+  {
+    for(int i = 0; i < size(modulationConnections); i++)
+    {
+      if(modulationConnections[i].source == source)
+      {
+        //remove(modulationConnections, i); // doesn't compile - why??!!
+        //i--; // array was shrunken
+      }
+    }
+  }
+
+
 
   /** Registers the given ModulationSource to make it available to ModulationTargets. */
   void registerModulationSource(ModulationSource* source)
