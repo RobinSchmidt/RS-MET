@@ -140,11 +140,6 @@ public:
   /** Destructor */
   virtual ~ModulationSource();
 
-  ///** Returns a pointer to the modulation value. Modulation targets should retrieve this pointer 
-  //when they are connected to */
-  //double* getModulationValuePointer() { return &modValue; }
-  // // may be obsolete
-
   /** Should be overriden by subclasses to update the "modValue" member variable per sample. Once 
   it is updated, connected modulation targets can access it using the pointer-to-double that they 
   have previously retrieved via getValuePointer. */
@@ -170,8 +165,6 @@ protected:
 
   double modValue = 0;
 
-  //std::vector<ModulationTarget*> targets; // do we need this?
-
   friend class ModulationConnection;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationSource)
 };
@@ -191,6 +184,10 @@ public:
 
   /** Destructor */
   virtual ~ModulationTarget();
+
+  /** Must be overriden by subclasses to do whatever they need to do after our modulatedValue has 
+  been computed (typically, call some setter-callback in some dsp algorithm). */
+  virtual void doModulationUpdate() = 0;
 
   /** Sets the nominal, unmodulated value. This will be used as reference, when a modulated value 
   will be computed. */
@@ -268,10 +265,6 @@ protected:
   double unmodulatedValue = 0;
   double modulatedValue = 0;
 
-  //std::vector<ModulationSource*> sources;
-  //std::vector<double*> sourceValues;
-  //std::vector<double>  amounts;
-
   friend class ModulationConnection;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationTarget)
 };
@@ -292,6 +285,7 @@ public:
   ModulationConnection(ModulationSource* source, ModulationTarget* target, 
     double amount = 0, bool relative = false);
 
+  /** Sets the modulation amount for this connection. */
   void setAmount(double newAmount)
   {
     amount = newAmount;
@@ -371,7 +365,7 @@ public:
   /** De-registers a ModulationSource. */
   void deRegisterModulationSource(ModulationSource* source)
   {
-    jassert(contains(availableSource, source); // source was never registered
+    jassert(contains(availableSources, source)); // source was never registered
     removeFirstOccurrence(availableSources, source);
     removeConnectionsWith(source);
     source->setModulationManager(nullptr); 
@@ -387,7 +381,7 @@ public:
   /** De-registers a ModulationTarget. */
   void deRegisterModulationTarget(ModulationTarget* target)
   {
-    jassert(contains(availableTargets, target); // target was never registered
+    jassert(contains(availableTargets, target)); // target was never registered
     removeFirstOccurrence(availableTargets, target);
     removeFirstOccurrence(affectedTargets,  target);
     removeConnectionsWith(target);
@@ -400,30 +394,29 @@ public:
   /** Returns a reference to our list of available ModulationTargets. */
   const std::vector<ModulationTarget*>& getAvailableModulationTargets() { return availableTargets; }
 
-
+  /** Function to do the per-sample updates of all modulation-sources and targets. Should be called
+  from outside code once per sample before the per-sample functions of the actual dsp-algorithms 
+  (oscs, filters, whatever) are called. */
   void applyModulations()
   {
-    // todo: this should be the method that should be called once per sample to compute all the
-    // outputs of the ModulationSources and apply them to their attached ModulationTargets. We can
-    // then have a subclass of AudioModule which is also a subclass of ModulationManager and 
-    // override the per-sample callback in order to first call applyModulations and after that, 
-    // proceed with the regular per-sample computations as usual.
-    //...sooo we can perhaps get rid of ModulationTarget::computeModulatedValue
-
     int i;
+
+    // compute output signals of all modulators:
     for(i = 0; i < size(availableSources); i++)
       availableSources[i]->updateModulationValue();
+
+    // initialize modulation target values with their unmodulated values:
     for(i = 0; i < size(affectedTargets); i++)
       affectedTargets[i]->initModulatedValue();
+
+    // apply all modulations:
     for(i = 0; i < size(modulationConnections); i++)
       modulationConnections[i].apply();
 
-
-    //for(i = 0; i < size(modulationTargets); i++)
-    //  modulationTargets[i]->computeModulatedValue();
-    //  // this loop should be replaced by a loop over ModulationConnections because typically it
-    //  // will be wasteful to loop over all possible targets (i.e. parameters, many of which may
-    //  // not be modulated at all)
+    // let the targets do whatever work they have to do with the modulated value (typically, 
+    // call setter-callbacks):
+    for(i = 0; i < size(affectedTargets); i++)
+      affectedTargets[i]->doModulationUpdate();
   }
 
 protected:
@@ -432,7 +425,6 @@ protected:
   std::vector<ModulationTarget*> availableTargets;
   std::vector<ModulationTarget*> affectedTargets;
   std::vector<ModulationConnection> modulationConnections;
-
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationManager)
 };
@@ -465,62 +457,21 @@ public:
   legitimate value with all modulations applied. Here we pull out this modulated value and call our 
   valueChangeCallback with it. The function is supposed to be called per sample for each modulated 
   Parameter. */
-  void callCallbackWithModulatedValue()
+  inline void callCallbackWithModulatedValue()
   {
     if( valueChangeCallbackDouble != nullptr )
       valueChangeCallbackDouble->call(modulatedValue);
   }
 
+  /** Overriden to call our callback function with the modulated value. */
+  virtual void doModulationUpdate() override
+  {
+    callCallbackWithModulatedValue();
+  }
+
 protected:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulatableParameter)
-};
-
-
-
-
-
-// stuff below may not be needed - we'll see:
-
-//=================================================================================================
-
-/**   */
-
-class JUCE_API ParameterModulator : public ModulationSource
-{
-
-public:
-
-  /** Constructor */
-  ParameterModulator() {}
-
-  /** Destructor */
-  virtual ~ParameterModulator() {}
-
-
-
-protected:
-
-
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParameterModulator)
-};
-
-//=================================================================================================
-
-/**  */
-
-class JUCE_API ParameterModulationManager
-{
-
-public:
-
-  ParameterModulationManager() {};
-
-
-protected:
-
-
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParameterModulationManager)
 };
 
 #endif
