@@ -17,13 +17,6 @@ ModulationTarget:
 -is typically some (lower level) dsp algorithm parameter such as a cutoff frequency of a filter
 -keeps a list of assigned sources
 -keeps a pointer to ModulationManager where it can sign up to receive inputs from sources
--when a sample is produced, pulls out values of all its connected sources and combines them and 
- then sets up the algorithm parameter accordingly
--perhaps combination can additively for some sources and multiplicatively for others: 1st add up 
- all additive sources, then multiply in all multiplicative sources - keep 2 lists
--can regulate the amount of the influence of each source
--maybe can apply different response curves to each source
--hmm...maybe 4 the last 2 points, we need an additional class: ModulationConnection
 
 ModulationManager:
 -allows ModulationsTargets to de/register themselves to ModulationSources
@@ -57,7 +50,9 @@ class ModulationTarget;
 
 /** Baseclass for participants in the modulation system. Subclasses are ModulationSource and 
 ModulationTarget and this class factors out what they have in common, which is mainly the access 
-functions to the ModulationManager. */
+functions to the ModulationManager. There can also be other subclasses that need a convenient 
+access point to a ModulationManager, such as an AudioModule subclass that contains modulatable
+parameters. */
 
 class JUCE_API ModulationParticipant
 {
@@ -136,7 +131,8 @@ public:
   /** Destructor */
   virtual ~ModulationSource();
 
-  /** Should be overriden by subclasses to update the "modValue" member variable per sample. */
+  /** Should be overriden by subclasses to update the "modValue" member variable per sample. It should 
+  assign modValue to the output signal value of the modulator. */
   virtual void updateModulationValue() = 0;
 
   //juce::String getModulationSourceName() = 0;
@@ -166,7 +162,8 @@ public:
   virtual ~ModulationTarget();
 
   /** Must be overriden by subclasses to do whatever they need to do after our modulatedValue has 
-  been computed (typically, call some setter-callback in some dsp algorithm). */
+  been computed (for example, ModulatableParameter invokes the setter-callback which in turn 
+  updates the corresponding value in the core dsp algorithm). */
   virtual void doModulationUpdate() = 0;
 
   /** Sets the nominal, unmodulated value. This will be used as reference, when a modulated value 
