@@ -35,6 +35,13 @@ void AutomatableWidget::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
     return;
   int selectedIdentifier = selectedItem->getNodeIdentifier();
 
+  if(selectedIdentifier == MODULATOR_CONNECT)
+  {
+    // showModulatorsPopUp(); // 2nd level popup with available parameters
+
+    return;
+  }
+
   MetaControlledParameter* mcp = getMetaControlledParameter();
   if(mcp != nullptr)
   {
@@ -85,6 +92,7 @@ void AutomatableWidget::addPopUpMenuItems()
 {
   addPopUpMetaItems();
   addPopUpMidiItems();
+  addPopUpModulationItems();
 }
 
 void AutomatableWidget::addPopUpMidiItems()
@@ -134,6 +142,20 @@ void AutomatableWidget::addPopUpMetaItems()
   }
 }
 
+void AutomatableWidget::addPopUpModulationItems()
+{
+  ModulatableParameter* mp = getModulatableParameter();
+  if(mp != nullptr)
+  {
+    // \todo: add sliders for the already connected sources
+
+    rightClickPopUp->addItem(MODULATOR_CONNECT, "Connect modulator...");
+      // should open a 2nd level popup with the modulators available for connection
+
+    //rightClickPopUp->addItem(META_DETACH, "Modulation setup");
+  }
+}
+
 void AutomatableWidget::openRightClickPopupMenu()
 {
   updatePopUpMenu();
@@ -164,6 +186,11 @@ AutomatableParameter* AutomatableWidget::getAutomatableParameter()
 MetaControlledParameter* AutomatableWidget::getMetaControlledParameter()
 {
   return dynamic_cast<MetaControlledParameter*> (wrappedWidget->assignedParameter);
+}
+
+ModulatableParameter* AutomatableWidget::getModulatableParameter()
+{
+  return dynamic_cast<ModulatableParameter*> (wrappedWidget->assignedParameter);
 }
 
 //=================================================================================================

@@ -1,8 +1,9 @@
 #ifndef jura_RTreeView_h
 #define jura_RTreeView_h
 
-/** 
-This class is used by RTreeView to represent the nodes that appear in the menu. 
+/** This class is used by RTreeView to represent the nodes that appear in the menu. 
+
+\todo: allow not only for text-nodes but also for Component nodes
 
 \todo: maybe factor out a general TreeNode class that can be used for anything that is organized in
 a tree. Maybe a NodeData class must be factored out ...

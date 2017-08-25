@@ -37,7 +37,11 @@ protected:
     MIDI_REVERT,
 
     META_ATTACH,
-    META_DETACH
+    META_DETACH,
+
+    MODULATOR_CONNECT // maybe factor out modualtion related stuff into ModulatableSlider class
+                      // ...hmm but maybe not, because we may wnat to modulate other kinds of 
+                      // widgets like DraggableNumber
   };
 
   /** Clears the popup-menu and then calls createPopUpMenuItems() */
@@ -50,8 +54,11 @@ protected:
   /** Adds the MIDI related items to the popoup menu (if applicable). */
   virtual void addPopUpMidiItems();
 
-  /** Adds the MetaParameter related items to the popoup menu (if applicable). */
+  /** Adds the MetaParameter related items to the popup menu (if applicable). */
   virtual void addPopUpMetaItems();
+
+  /** Adds the Modulation related items to the popup menu (if applicable). */
+  virtual void addPopUpModulationItems();
 
   /** Opens the PopupMenu that appears on right clicks. */
   virtual void openRightClickPopupMenu();
@@ -65,6 +72,12 @@ protected:
 
   /** Similar to @see getAutomatbleParameter. */
   MetaControlledParameter* getMetaControlledParameter();
+
+  /** Similar to @see getAutomatbleParameter. */
+  ModulatableParameter* getModulatableParameter();
+
+
+
 
 
   RPopUpMenu *rightClickPopUp = nullptr; // object created when it's needed for the 1st time

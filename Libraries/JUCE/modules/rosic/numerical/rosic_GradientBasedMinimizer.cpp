@@ -49,7 +49,7 @@ rosic::Vector GradientBasedMinimizer::minimizeFunction(
 
 void GradientBasedMinimizer::minimizeViaGradientDescent()
 {
-  stepsize     = 0.1;                                  
+  stepsize     = 0.1;     // huh? shouldn't we use the stepsize member?                             
   g            = functionToMinimize->getGradient(p);   // gradient
   converged    = false;
   step         = 0;
