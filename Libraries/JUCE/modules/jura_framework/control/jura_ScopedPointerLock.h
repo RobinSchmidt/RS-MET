@@ -1,6 +1,8 @@
 #ifndef jura_ScopedPointerLock_h
 #define jura_ScopedPointerLock_h
 
+// move to misc
+
 /**
 
 This class works analogously to juce::ScopedLock, except that it works with a 

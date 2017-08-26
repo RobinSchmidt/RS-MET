@@ -11,6 +11,7 @@
 
 namespace jura
 {
+#include "misc/jura_DeletionRequester.cpp"
 
 #include "tools/jura_MiscTools.cpp"
 #include "tools/jura_StringTools.cpp"

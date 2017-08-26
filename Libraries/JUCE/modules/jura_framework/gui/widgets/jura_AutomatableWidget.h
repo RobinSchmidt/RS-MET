@@ -1,6 +1,42 @@
 #ifndef jura_AutomatableWidget_h
 #define jura_AutomatableWidget_h
 
+
+
+class JUCE_API rsModulationSetup : public ColourSchemeComponent, public RButtonListener 
+  //,public DeletionRequester
+{
+
+public:
+
+  /** Constructor. */
+  rsModulationSetup(RWidget* widgetToModulate);
+
+  /** Destructor. */
+  virtual ~rsModulationSetup();
+
+
+  // callbacks:
+
+  virtual void resized() override;
+  virtual void rButtonClicked(RButton *button) override;
+
+
+
+
+protected:
+
+  std::vector<RSlider*> amountSliders;
+
+  RButton *addButton, *closeButton;
+
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsModulationSetup)
+};
+
+
+//=================================================================================================
+
 /** RWidget subclass that adds automation facilities either via MIDI or the host automation system 
 using setParameter(). If you want to make a widget automatable, derive it from some widget class 
 and also from this class, for example, like: 

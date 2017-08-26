@@ -14,7 +14,7 @@ public:
   friend class Mediator;
 
   //-----------------------------------------------------------------------------------------------
-  // construction/destruction:
+  // \name Construction/Destruction:
 
   /** Constructor. */
   MediatedColleague();
@@ -23,7 +23,7 @@ public:
   virtual ~MediatedColleague();
 
   //-----------------------------------------------------------------------------------------------
-  // setup/inquiry/mediation:
+  // \name Setup/Inquiry/Mediation:
 
   /** Sets the mediator to be used by this colleague. The function will also take care to register 
   this colleague with the new mediator and perhaps de-register from an old mediator (if any). */
@@ -51,7 +51,7 @@ protected:
 
   Mediator *mediator;
 
-  juce_UseDebuggingNewOperator;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MediatedColleague)
 };
 
 //=================================================================================================
@@ -65,7 +65,7 @@ class Mediator
 public:
 
   //-----------------------------------------------------------------------------------------------
-  // construction/destruction:
+  // \name Construction/Destruction:
 
   /** Constructor. */
   Mediator();
@@ -74,7 +74,7 @@ public:
   virtual ~Mediator();
 
   //-----------------------------------------------------------------------------------------------
-  // mediation management:
+  // \name Mediation management:
 
   /** Registers a colleague that wants to get notified whenever one of the participating colleagues 
   spawns a message. */
@@ -100,7 +100,7 @@ protected:
 
   juce::Array<MediatedColleague*> colleagues; // use std::vector
 
-  juce_UseDebuggingNewOperator;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Mediator)
 };
 
 #endif  

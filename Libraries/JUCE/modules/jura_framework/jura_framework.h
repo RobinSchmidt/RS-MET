@@ -43,6 +43,8 @@ using namespace juce;
 namespace jura
 {
 
+#include "misc/jura_DeletionRequester.h"
+
 #include "tools/jura_MiscTools.h"
 #include "tools/jura_StringTools.h"
 #include "tools/jura_XmlTools.h"

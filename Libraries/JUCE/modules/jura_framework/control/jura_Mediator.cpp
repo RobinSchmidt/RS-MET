@@ -27,7 +27,7 @@ void MediatedColleague::notifyMediator(int messageCode)
     mediator->colleagueHasSentNotification(this, messageCode);
 }
 
-//=========================================================================================================================================
+//=================================================================================================
 // class Mediator:
 
 Mediator::Mediator() 
