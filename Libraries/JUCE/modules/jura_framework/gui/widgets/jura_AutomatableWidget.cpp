@@ -1,3 +1,34 @@
+
+rsModulationSetup::rsModulationSetup(AutomatableWidget* widgetToModulate)
+  : widget(widgetToModulate), rsDeletionRequester(widgetToModulate)
+{
+  // create add and close button...
+
+  setSize(100, 100);  // preliminary
+}
+
+
+void rsModulationSetup::paint(Graphics& g)
+{
+  g.fillAll(Colours::black); // preliminary
+}
+
+void rsModulationSetup::resized()
+{
+  // arrange the widgets...
+}
+
+void rsModulationSetup::rButtonClicked(RButton *button)
+{
+  if(button == closeButton)
+    requestDeletion();
+
+  // more to come - respond to add button - we need to open a popup with the available (not yet
+  // connected) ModulationSources
+}
+
+//=================================================================================================
+
 AutomatableWidget::AutomatableWidget(RWidget *widgetToWrap)
 {
   wrappedWidget = widgetToWrap;
@@ -6,6 +37,7 @@ AutomatableWidget::AutomatableWidget(RWidget *widgetToWrap)
 AutomatableWidget::~AutomatableWidget()
 {
   delete rightClickPopUp;
+  delete modSetup;
 }
 
 bool AutomatableWidget::isPopUpOpen()
@@ -16,7 +48,7 @@ bool AutomatableWidget::isPopUpOpen()
   // popup is open, the popup gets closed first and only after that, the mouseDown callback of the
   // widget is received, so isPopUpOpen would always return false in the mouseDown callback. The
   // desired behavior is that one right-click on the widget opens the popup and a second click
-  // closes it. This behavior now requires thag we maintain a popUpIsOpen flag here and that flag
+  // closes it. This behavior now requires that we maintain a popUpIsOpen flag here and that flag
   // should be set in the mouseDown method of the widget. Without that, a second right-click would
   // make the menu disappear for a fraction of a second and immediately reappear.
 
@@ -37,7 +69,7 @@ void AutomatableWidget::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
 
   if(selectedIdentifier == MODULATION_SETUP)
   {
-    showModulatorSetup();
+    showModulationSetup();
     return;
   }
 
@@ -176,9 +208,29 @@ void AutomatableWidget::closePopUp()
   popUpIsOpen = false;
 }
 
-void AutomatableWidget::showModulatorSetup()
+void AutomatableWidget::showModulationSetup()
 {
-  jassertfalse; // not yet implemented
+  //int ww = wrappedWidget->getWidth();        // widget width
+  int wh = wrappedWidget->getHeight();       // widget height
+  int x  = wrappedWidget->getScreenX();
+  int y  = wrappedWidget->getScreenY() + wh; // preliminary
+
+  modSetup = new rsModulationSetup(this);
+  modSetup->setTopLeftPosition(x, y);
+  modSetup->addToDesktop(ComponentPeer::windowHasDropShadow | ComponentPeer::windowIsTemporary);
+  modSetup->setVisible(true);
+  modSetup->toFront(true);
+
+  //// from OscillatorStereoEditor::rButtonClicked:
+  //int x = getScreenX() + getWidth();
+  //int y = getScreenY() - 102; // this is a kludgy thing here with the context menu positioning
+  //contextMenu->setTopLeftPosition(x, y);
+  //contextMenu->addToDesktop(
+  //  ComponentPeer::windowHasDropShadow | ComponentPeer::windowIsTemporary);
+  //contextMenu->setVisible(true);
+  //contextMenu->toFront(true);
+
+  //jassertfalse; // not yet implemented
   // we need to show a popup window (similar to Straightliner's Osc "More" popup) with sliders for
   // the modulation amounts for connected sources, a facility to add more connections, text-fields
   // for the min/max values of the sliders (should be on left and right sides to the slider) and 

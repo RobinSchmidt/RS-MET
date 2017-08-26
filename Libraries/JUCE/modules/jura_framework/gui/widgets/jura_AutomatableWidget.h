@@ -2,34 +2,37 @@
 #define jura_AutomatableWidget_h
 
 
+class AutomatableWidget;
 
-class JUCE_API rsModulationSetup : public ColourSchemeComponent, public RButtonListener 
-  //,public DeletionRequester
+/** A component for setting up the modulations of some ModulationTarget. */
+
+class JUCE_API rsModulationSetup : public ColourSchemeComponent, public RButtonListener, 
+  public rsDeletionRequester
 {
 
 public:
 
   /** Constructor. */
-  rsModulationSetup(RWidget* widgetToModulate);
+  rsModulationSetup(AutomatableWidget* widgetToModulate);
 
   /** Destructor. */
-  virtual ~rsModulationSetup();
-
+  virtual ~rsModulationSetup() {}
 
   // callbacks:
-
+  virtual void paint(Graphics& g) override;
   virtual void resized() override;
   virtual void rButtonClicked(RButton *button) override;
 
 
-
-
 protected:
 
+  // pointer to our owner:
+  AutomatableWidget* widget;
+
+  // owned widgets:
+  //RLabel* modualtionsLabel;
   std::vector<RSlider*> amountSliders;
-
   RButton *addButton, *closeButton;
-
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsModulationSetup)
 };
@@ -42,9 +45,12 @@ using setParameter(). If you want to make a widget automatable, derive it from s
 and also from this class, for example, like: 
 class JUCE_API AutomatableSlider : public RSlider, public AutomatableWidget
 \todo: maybe move into jura_processors module (it's relevant only for audio plugins). 
+
+maybe rename to something that fits better (we now have also lumped in the modulation stuff)
+
 */
 
-class JUCE_API AutomatableWidget : virtual public RPopUpMenuObserver
+class JUCE_API AutomatableWidget : virtual public RPopUpMenuObserver, public rsDeletor
 {
 
 public:
@@ -105,7 +111,7 @@ protected:
   virtual void closePopUp();
 
 
-  virtual void showModulatorSetup();
+  virtual void showModulationSetup();
 
 
   /** Tries to cast the Parameter that is underlying the wrapped widget into an 
@@ -120,12 +126,10 @@ protected:
   ModulatableParameter* getModulatableParameter();
 
 
-
-
-
-  RPopUpMenu *rightClickPopUp = nullptr; // object created when it's needed for the 1st time
-  RWidget *wrappedWidget;                // widget that is being made automatable
+  RWidget *wrappedWidget;                 // widget that is being made automatable
   bool popUpIsOpen = false;
+  RPopUpMenu *rightClickPopUp = nullptr;  // object created when it's needed for the 1st time
+  rsModulationSetup* modSetup = nullptr;  // ditto for modulation setup
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomatableWidget)
 };
