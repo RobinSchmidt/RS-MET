@@ -131,14 +131,14 @@ public:
   /** Sets up the MetaParameterManager to use. This function should be called once shortly after
   this MetaControlledParameter object has been created and the passed manager object should remain
   valid for the whole lifetime of this object. */
-  virtual void setMetaParameterManager(MetaParameterManager *newManager);
+  virtual void setMetaParameterManager(MetaParameterManager* newManager);
 
   /** Sets the mapper object that maps between the MetaParameter value at the input side and the
   proportional value of the target parameter on the output side. Such a mapper is optional, if you 
   pass none, an identity mapping will be used by default. The mapper object should be valid for the
   entire lifetime of this MetaControlledParameter. To reset it, you can use this function with a 
   nullptr argument. */
-  virtual void setParameterMapper(NormalizedParameterMapper *newMapper);
+  virtual void setParameterMapper(NormalizedParameterMapper* newMapper);
     // feature is not yet tested
 
   /** Attaches this parameter to the MetaParameter with the given index (in the

@@ -35,10 +35,9 @@ void AutomatableWidget::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
     return;
   int selectedIdentifier = selectedItem->getNodeIdentifier();
 
-  if(selectedIdentifier == MODULATOR_CONNECT)
+  if(selectedIdentifier == MODULATION_SETUP)
   {
-    // showModulatorsPopUp(); // 2nd level popup with available parameters
-
+    showModulatorSetup();
     return;
   }
 
@@ -147,12 +146,11 @@ void AutomatableWidget::addPopUpModulationItems()
   ModulatableParameter* mp = getModulatableParameter();
   if(mp != nullptr)
   {
-    // \todo: add sliders for the already connected sources
+    //// \todo: add sliders for the already connected sources
+    //rightClickPopUp->addItem(MODULATOR_CONNECT, "Connect modulator...");
+    //  // should open a 2nd level popup with the modulators available for connection
 
-    rightClickPopUp->addItem(MODULATOR_CONNECT, "Connect modulator...");
-      // should open a 2nd level popup with the modulators available for connection
-
-    //rightClickPopUp->addItem(META_DETACH, "Modulation setup");
+    rightClickPopUp->addItem(MODULATION_SETUP, "Modulation setup");
   }
 }
 
@@ -176,6 +174,16 @@ void AutomatableWidget::closePopUp()
   if(rightClickPopUp != nullptr)
     rightClickPopUp->dismiss();
   popUpIsOpen = false;
+}
+
+void AutomatableWidget::showModulatorSetup()
+{
+  jassertfalse; // not yet implemented
+  // we need to show a popup window (similar to Straightliner's Osc "More" popup) with sliders for
+  // the modulation amounts for connected sources, a facility to add more connections, text-fields
+  // for the min/max values of the sliders (should be on left and right sides to the slider) and 
+  // maybe a button to set relative modulation mode. The window should appear below or next to the
+  // slider...maybe it can somehow frame it to make it more apparent to which slider it applies
 }
 
 AutomatableParameter* AutomatableWidget::getAutomatableParameter()

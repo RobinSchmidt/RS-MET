@@ -20,10 +20,6 @@ can be used for the editors - their painter objects could then be equipped with 
 fonts, etc.
 
 
--drag over the plot subclasses
--implement a freq-response plot editor for the Ladder
--drag over all the remaining widgets
-
 
 
 

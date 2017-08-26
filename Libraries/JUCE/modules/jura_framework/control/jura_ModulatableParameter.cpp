@@ -58,13 +58,24 @@ ModulationTarget::~ModulationTarget()
 
 //-------------------------------------------------------------------------------------------------
 
-ModulationConnection::ModulationConnection(ModulationSource* _source, ModulationTarget* _target,
-  double _amount, bool _relative)
+ModulationConnection::ModulationConnection(ModulationSource* _source, ModulationTarget* _target)
 {
   source   = _source; 
   target   = _target;
-  amount   = _amount;
-  relative = _relative;
+  amount   = 0.0;
+  relative = false;
   sourceValue = &(source->modValue);
   targetValue = &(target->modulatedValue);
+
+  amountParam = new MetaControlledParameter("Amount", -1.0, 1.0, 0.0, Parameter::LINEAR, 0.0);
+
+  //amountParam->setValueChangeCallback(...this, &ModulationConnection::setAmount)
+  //amountParam->setMetaParameterManager(metaManager);
+  // we may need a MetaParameterManager* parameter to the constructor ..or a pointer to the
+  // ModulationManager...which may have to be a subclass of MetaParameterManager
+}
+
+ModulationConnection::~ModulationConnection()
+{
+  delete amountParam;
 }

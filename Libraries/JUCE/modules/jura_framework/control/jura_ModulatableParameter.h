@@ -39,6 +39,12 @@ feedback:
 maybe make the class hierarchy like this:
 Parameter <- MetaControlledParameter <- ModulatableParameter <- PolyphonicParameter
 
+ToDo:
+-i think, the ModulationManager needs an array of MetaControlledParameters that will be used
+ for the modulation-amounts...or maybe each ModulationConnection should have its associated 
+ parameter as member
+
+
 */
 
 // forward declarations:
@@ -211,6 +217,7 @@ public:
     modulatedValue = unmodulatedValue;
   }
 
+  //juce::String getModulationTargetName() = 0;
 
 protected:
 
@@ -234,13 +241,23 @@ public:
   /** Constructor. You should pass a ModulationSource, a ModulationTarget, an amount and a flag to
   to indicate whether this amount is absolute or relative (i.e. scaled by the unmodulated 
   value). */
-  ModulationConnection(ModulationSource* source, ModulationTarget* target, 
-    double amount = 0, bool relative = false);
+  ModulationConnection(ModulationSource* source, ModulationTarget* target);
+
+  /** Destructor. */
+  virtual ~ModulationConnection();
 
   /** Sets the modulation amount for this connection. */
   void setAmount(double newAmount)
   {
     amount = newAmount;
+  }
+
+  /** Sets the parameter to relative mode in which case the output signal of the ModulationSource
+  will be multiplied by the ModulationTarget's unmodulated nominal value before being added to the 
+  target value. */
+  void setRelative(bool shouldBeRelative)
+  {
+    relative = shouldBeRelative;
   }
 
   /** Applies the source-value to the target-value with given amount. */
@@ -263,6 +280,9 @@ protected:
   double* targetValue;
   double amount;
   bool relative;
+
+  MetaControlledParameter* amountParam; // maybe it should be a ModulatableParameter? but that may
+                                        // raise some issues - maybe later...
 
   friend class ModulationManager;
   //JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationConnection) // no - must be copyable

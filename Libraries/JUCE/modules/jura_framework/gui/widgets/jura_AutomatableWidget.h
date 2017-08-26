@@ -39,7 +39,10 @@ protected:
     META_ATTACH,
     META_DETACH,
 
-    MODULATOR_CONNECT // maybe factor out modualtion related stuff into ModulatableSlider class
+    MODULATION_SETUP
+
+
+    //MODULATOR_CONNECT // maybe factor out modulation related stuff into ModulatableSlider class
                       // ...hmm but maybe not, because we may wnat to modulate other kinds of 
                       // widgets like DraggableNumber
   };
@@ -64,6 +67,10 @@ protected:
   virtual void openRightClickPopupMenu();
 
   virtual void closePopUp();
+
+
+  virtual void showModulatorSetup();
+
 
   /** Tries to cast the Parameter that is underlying the wrapped widget into an 
   AutomatableParameter and returns the pointer to it. Note that this may return a nullptr, when 
