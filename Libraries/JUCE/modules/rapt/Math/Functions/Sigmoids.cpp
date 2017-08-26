@@ -330,8 +330,18 @@ void ScaledAndShiftedSigmoid<T>::setPrototypeSigmoid(T (*newSigmoid)(T))
 template<class T>
 void ScaledAndShiftedSigmoid<T>::updateCoeffs()
 {
-  rsRangeConversionCoefficients(center-T(0.5)*width, center+T(0.5)*width, T(-1), T(+1), 
-    &scaleX, &shiftX);
+  //rsRangeConversionCoefficients(center-T(0.5)*width, center+T(0.5)*width, T(-1), T(+1), 
+  //  &scaleX, &shiftX);
+  // This is numerically not good to use rsRangeConversionCoefficients with 
+  // center-T(0.5)*width, center+T(0.5)*width because inside the function, we will subtract
+  // two very close numbers if width is small. this results in precision loss. We should drag
+  // the function body in here and simplify the formulas for better numeric precision..
+
+  //*scale = (outMax-outMin) / (inMax-inMin); // outMax=1, outMin=-1
+  //*shift = outMin - (*scale * inMin);
+
+  scaleX = 2 / width;
+  shiftX = -1 - (scaleX * (center-0.5*width));
   scaleY =  1 / scaleX; 
   shiftY = -shiftX * scaleY;
 }
