@@ -16,15 +16,20 @@ public:
   rsModulationSetup(AutomatableWidget* widgetToModulate);
 
   /** Destructor. */
-  virtual ~rsModulationSetup() {}
+  virtual ~rsModulationSetup();
 
   // callbacks:
   virtual void paint(Graphics& g) override;
   virtual void resized() override;
   virtual void rButtonClicked(RButton *button) override;
 
-
 protected:
+
+  /** Creates the sliders for the modulation amounts. */
+  void createAmountSliders();
+
+  /** Shows the popup menu with the available (and not yet connected) ModulationSources. */
+  void showAvailableSourcesPopUp();
 
   // pointer to our owner:
   AutomatableWidget* widget;
@@ -34,6 +39,7 @@ protected:
   std::vector<RSlider*> amountSliders;
   RButton* addButton;
   RClickButton* closeButton;
+  RPopUpMenu *sourcesPopUp = nullptr; // created when needed the first time
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsModulationSetup)
 };

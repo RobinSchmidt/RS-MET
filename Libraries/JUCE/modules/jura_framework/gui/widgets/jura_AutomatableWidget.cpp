@@ -1,4 +1,3 @@
-
 rsModulationSetup::rsModulationSetup(AutomatableWidget* widgetToModulate)
   : widget(widgetToModulate), rsDeletionRequester(widgetToModulate)
 {
@@ -11,14 +10,20 @@ rsModulationSetup::rsModulationSetup(AutomatableWidget* widgetToModulate)
   closeButton->setClickingTogglesState(false);
   closeButton->addRButtonListener(this);
 
-  // create amount sliders for connected sources...
+  addWidget( addButton = new RButton("Add") );
+  addButton->setDescription(juce::String("Adds a new modulation connection"));
+  addButton->setClickingTogglesState(false);
+  addButton->addRButtonListener(this);
 
-  // create add button...
-
+  createAmountSliders();
 
   setSize(200, 100);  // preliminary - maybe we should use the widget's width...but maybe not
 }
 
+rsModulationSetup::~rsModulationSetup()
+{
+  delete sourcesPopUp;
+}
 
 void rsModulationSetup::paint(Graphics& g)
 {
@@ -27,24 +32,40 @@ void rsModulationSetup::paint(Graphics& g)
 
 void rsModulationSetup::resized()
 {
-  int x  = 0;
-  int y  = 0;
-  int w  = getWidth();
-  int sh   = 16;    // slider height
-  int inc  = sh+4;
+  int x   = 4;
+  int y   = 4;
+  int w   = getWidth();
+  int h   = getHeight();
+  int sh  = 16;           // slider height
+  int inc = sh+4;
 
   closeButton->setBounds(w-16, 0, 16, 16);
+  modulationsLabel->setBounds(x, y, w-8-16, sh); y += inc; 
 
-  modulationsLabel->setBounds(x+4, y+4, w-8-16, sh); y += inc; 
+  y = h - sh - 4;
+  addButton->setBounds(x, y, 40, 16);
 }
 
 void rsModulationSetup::rButtonClicked(RButton *button)
 {
   if(button == closeButton)
     requestDeletion();
+  else if(button == addButton)
+    showAvailableSourcesPopUp();
+}
 
-  // more to come - respond to add button - we need to open a popup with the available (not yet
-  // connected) ModulationSources
+void rsModulationSetup::createAmountSliders()
+{
+  // not yet implemented
+}
+
+void rsModulationSetup::showAvailableSourcesPopUp()
+{
+  if(sourcesPopUp == nullptr)
+  {
+    // ..create the popup menu
+  }
+  // ...show it
 }
 
 //=================================================================================================
