@@ -51,7 +51,7 @@ public:
     // deletees. maybe it should be done in a subclass rsSafeDeletor or something?
   }
 
-  void deleteObject(rsDeletionRequester* objectToDelete)
+  virtual void deleteObject(rsDeletionRequester* objectToDelete)
   {
     delete objectToDelete;
   }

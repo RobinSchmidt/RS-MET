@@ -2,20 +2,40 @@
 rsModulationSetup::rsModulationSetup(AutomatableWidget* widgetToModulate)
   : widget(widgetToModulate), rsDeletionRequester(widgetToModulate)
 {
-  // create add and close button...
+  addWidget( modulationsLabel = new RTextField("Modulations") );
+  modulationsLabel->setNoBackgroundAndOutline(true);
+  modulationsLabel->setDescription(juce::String("Modulation setup"));
 
-  setSize(100, 100);  // preliminary
+  addWidget( closeButton = new RClickButton(RButton::CLOSE) );
+  closeButton->setDescription(juce::String("Closes the modulation setup window"));
+  closeButton->setClickingTogglesState(false);
+  closeButton->addRButtonListener(this);
+
+  // create amount sliders for connected sources...
+
+  // create add button...
+
+
+  setSize(200, 100);  // preliminary - maybe we should use the widget's width...but maybe not
 }
 
 
 void rsModulationSetup::paint(Graphics& g)
 {
-  g.fillAll(Colours::black); // preliminary
+  g.fillAll(Colours::grey); // preliminary
 }
 
 void rsModulationSetup::resized()
 {
-  // arrange the widgets...
+  int x  = 0;
+  int y  = 0;
+  int w  = getWidth();
+  int sh   = 16;    // slider height
+  int inc  = sh+4;
+
+  closeButton->setBounds(w-16, 0, 16, 16);
+
+  modulationsLabel->setBounds(x+4, y+4, w-8-16, sh); y += inc; 
 }
 
 void rsModulationSetup::rButtonClicked(RButton *button)
@@ -215,27 +235,26 @@ void AutomatableWidget::showModulationSetup()
   int x  = wrappedWidget->getScreenX();
   int y  = wrappedWidget->getScreenY() + wh; // preliminary
 
-  modSetup = new rsModulationSetup(this);
+  if(modSetup == nullptr)
+    modSetup = new rsModulationSetup(this);
   modSetup->setTopLeftPosition(x, y);
   modSetup->addToDesktop(ComponentPeer::windowHasDropShadow | ComponentPeer::windowIsTemporary);
   modSetup->setVisible(true);
   modSetup->toFront(true);
 
-  //// from OscillatorStereoEditor::rButtonClicked:
-  //int x = getScreenX() + getWidth();
-  //int y = getScreenY() - 102; // this is a kludgy thing here with the context menu positioning
-  //contextMenu->setTopLeftPosition(x, y);
-  //contextMenu->addToDesktop(
-  //  ComponentPeer::windowHasDropShadow | ComponentPeer::windowIsTemporary);
-  //contextMenu->setVisible(true);
-  //contextMenu->toFront(true);
-
-  //jassertfalse; // not yet implemented
   // we need to show a popup window (similar to Straightliner's Osc "More" popup) with sliders for
   // the modulation amounts for connected sources, a facility to add more connections, text-fields
   // for the min/max values of the sliders (should be on left and right sides to the slider) and 
   // maybe a button to set relative modulation mode. The window should appear below or next to the
   // slider...maybe it can somehow frame it to make it more apparent to which slider it applies
+}
+
+void AutomatableWidget::deleteObject(rsDeletionRequester* objectToDelete)
+{
+  if(objectToDelete == modSetup)
+    modSetup->setVisible(false);
+  else
+    jassertfalse;
 }
 
 AutomatableParameter* AutomatableWidget::getAutomatableParameter()

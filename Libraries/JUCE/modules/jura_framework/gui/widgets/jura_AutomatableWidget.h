@@ -30,9 +30,10 @@ protected:
   AutomatableWidget* widget;
 
   // owned widgets:
-  //RLabel* modualtionsLabel;
+  RTextField* modulationsLabel;
   std::vector<RSlider*> amountSliders;
-  RButton *addButton, *closeButton;
+  RButton* addButton;
+  RClickButton* closeButton;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsModulationSetup)
 };
@@ -108,10 +109,17 @@ protected:
   /** Opens the PopupMenu that appears on right clicks. */
   virtual void openRightClickPopupMenu();
 
+  /** Closes the popup menu. */
   virtual void closePopUp();
 
 
   virtual void showModulationSetup();
+
+  /** This is called from the modulation setup popup window when the user clicks on its 
+  close-button. We don't actually delete the object here, we just make it invisible, so we can 
+  reuse the same object when the modulation setup is opened again. It's deleted in our 
+  destructor. */
+  virtual void deleteObject(rsDeletionRequester* objectToDelete) override;
 
 
   /** Tries to cast the Parameter that is underlying the wrapped widget into an 
