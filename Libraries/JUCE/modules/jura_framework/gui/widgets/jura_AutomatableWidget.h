@@ -3,6 +3,7 @@
 
 
 class AutomatableWidget;
+class AutomatableSlider;
 
 /** A component for setting up the modulations of some ModulationTarget. */
 
@@ -30,18 +31,25 @@ protected:
   the source with given index among the available and not yet connected sources. */
   void addConnection(int index);
 
-  /** Creates the sliders for the modulation amounts. */
-  void createAmountSliders();
+  /** Creates or removes sliders for the modulation amounts according to the existing 
+  connections. */
+  void updateAmountSliderArray();
 
   /** Shows the popup menu with the available (and not yet connected) ModulationSources. */
   void showConnectableSourcesPopUp();
+
+  /** Returns true, if we have a slider associated with the passed parameter. */
+  bool hasSlider(MetaControlledParameter* p);
+
+  /** Adds a slider for the passed parameter to our amountSliders array. */
+  void addSliderFor(MetaControlledParameter* p);
 
   // pointer to our owner:
   AutomatableWidget* widget;
 
   // owned widgets:
   RTextField* modulationsLabel;
-  std::vector<RSlider*> amountSliders;
+  std::vector<AutomatableSlider*> amountSliders;
   RButton* addButton;
   RClickButton* closeButton;
   RPopUpMenu *sourcesPopUp = nullptr; // created when needed the first time

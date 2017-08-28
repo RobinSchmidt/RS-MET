@@ -15,7 +15,7 @@ rsModulationSetup::rsModulationSetup(AutomatableWidget* widgetToModulate)
   addButton->setClickingTogglesState(false);
   addButton->addRButtonListener(this);
 
-  createAmountSliders();
+  updateAmountSliderArray();
 
   setSize(200, 100);  // preliminary - maybe we should use the widget's width...but maybe not
 }
@@ -78,11 +78,28 @@ void rsModulationSetup::addConnection(int index)
     std::vector<ModulationSource*> sources = mp->getDisconnectedSources();
     mp->addModulationSource(sources[index]);
   }
+
+  updateAmountSliderArray(); // actually, it's not necessary here to check in the existing
+                             // slider array if the slider already exist (it doesn't), so we could
+                             // have a function addSliderFor(MetaControlledParameter* p)
 }
 
-void rsModulationSetup::createAmountSliders()
+void rsModulationSetup::updateAmountSliderArray()
 {
-  // not yet implemented
+  // todo: remove all sliders for which there is no connection and create sliders for existing 
+  // connections that do not yet have a slider
+
+  ModulatableParameter* mp = widget->getModulatableParameter();
+  if(mp != nullptr)
+  {
+    std::vector<ModulationConnection*> connections = mp->getConnections();
+    for(int i = 0; i < size(connections); i++)
+    {
+      MetaControlledParameter* param = connections[i]->getAmountParameter();
+      if(!hasSlider(param))
+        addSliderFor(param);
+    }
+  }
 }
 
 void rsModulationSetup::showConnectableSourcesPopUp()
@@ -112,6 +129,22 @@ void rsModulationSetup::showConnectableSourcesPopUp()
   int w = sourcesPopUp->getRequiredWidth(true);
   int h = sourcesPopUp->getRequiredHeight(true);
   sourcesPopUp->show(true, RPopUpComponent::BELOW, w, h); // showModally = true
+}
+
+bool rsModulationSetup::hasSlider(MetaControlledParameter* p)
+{
+  for(int i = 0; i < size(amountSliders); i++)
+  {
+    Parameter* ps = amountSliders[i]->getAssignedParameter();
+    if(ps == p)
+      return true;
+  }
+  return false;
+}
+
+void rsModulationSetup::addSliderFor(MetaControlledParameter* p)
+{
+  // ...
 }
 
 //=================================================================================================

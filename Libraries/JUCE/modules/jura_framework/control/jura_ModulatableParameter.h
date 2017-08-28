@@ -284,6 +284,9 @@ public:
     relative = shouldBeRelative;
   }
 
+  /** Returns the Parameter object that controls the amount of modulation */
+  MetaControlledParameter* getAmountParameter() { return amountParam; }
+
   /** Applies the source-value to the target-value with given amount. */
   inline void apply()
   {
