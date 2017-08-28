@@ -196,6 +196,12 @@ public:
   ModulationTarget. */
   std::vector<ModulationSource*> getDisconnectedSources();
 
+  /** Returns a vector of pointers to ModulationConnections that are incoming into this 
+  ModulationTarget. */
+  std::vector<ModulationConnection*> getConnections();
+
+
+
 
   /** Adds a ModulationSource to this ModulationTarget with an optional modulation amount. */
   //void addModulationSource(ModulationSource* source, double amount = 0)
@@ -302,6 +308,7 @@ protected:
   MetaControlledParameter* amountParam; // maybe it should be a ModulatableParameter? but that may
                                         // raise some issues - maybe later...
 
+  friend class ModulationTarget;
   friend class ModulationManager;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationConnection) 
 };

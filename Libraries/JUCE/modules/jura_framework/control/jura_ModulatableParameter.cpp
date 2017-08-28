@@ -93,6 +93,22 @@ std::vector<ModulationSource*> ModulationTarget::getDisconnectedSources()
   return result;
 }
 
+std::vector<ModulationConnection*> ModulationTarget::getConnections()
+{
+  std::vector<ModulationConnection*> result;
+  if(modManager)
+  {
+    const std::vector<ModulationConnection*>& 
+      allConnections = modManager->getModulationConnections();
+    for(int i = 0; i < size(allConnections); i++)
+    {
+      if(this == allConnections[i]->target)
+        result.push_back(allConnections[i]);
+    }
+  }
+  return result;
+}
+
 //-------------------------------------------------------------------------------------------------
 
 ModulationConnection::ModulationConnection(ModulationSource* _source, ModulationTarget* _target)
