@@ -185,14 +185,16 @@ public:
     unmodulatedValue = newValue;
   }
 
+  /** Adds a ModulationSource to this ModulationTarget. The amount of modulation is initially 0. */
+  void addModulationSource(ModulationSource* source);
+
   /** Returns true, if there's a connection between this ModulationTarget and the given 
   ModulationSource. */
   bool isConnectedTo(ModulationSource* source);
 
-
   /** Returns a vector of pointers to ModulationSources which are not connected to this 
   ModulationTarget. */
-  std::vector<ModulationSource*> getDisconnctedSources();
+  std::vector<ModulationSource*> getDisconnectedSources();
 
 
   /** Adds a ModulationSource to this ModulationTarget with an optional modulation amount. */
@@ -260,7 +262,7 @@ public:
   ModulationConnection(ModulationSource* source, ModulationTarget* target);
 
   /** Destructor. */
-  virtual ~ModulationConnection();
+  virtual ~ModulationConnection(); // make non-virtual
 
   /** Sets the modulation amount for this connection. */
   void setAmount(double newAmount)
@@ -301,7 +303,10 @@ protected:
                                         // raise some issues - maybe later...
 
   friend class ModulationManager;
-  //JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationConnection) // no - must be copyable
+  //JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationConnection) 
+    // no - must be copyable...but doing so makes problems - the amountParam pointer cannot just be 
+    // copied...hmm, i think, we'll have to make it non-copyable and let the ModulationManager 
+    // store an array of pointers
 };
 
 //=================================================================================================
@@ -319,6 +324,9 @@ public:
 
   /** Destructor */
   virtual ~ModulationManager() {}
+
+  /** Adds a connection between the given source and target. */
+  void addConnection(ModulationSource* source, ModulationTarget* target);
 
   /** Removes all modulation connections that involve the given source. */
   void removeConnectionsWith(ModulationSource* source)

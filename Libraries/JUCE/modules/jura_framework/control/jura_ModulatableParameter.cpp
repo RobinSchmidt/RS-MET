@@ -65,6 +65,12 @@ ModulationTarget::~ModulationTarget()
   ModulationParticipant::deRegisterModulationTarget(this);
 }
 
+void ModulationTarget::addModulationSource(ModulationSource* source)
+{
+  if(modManager)
+    modManager->addConnection(source, this);
+}
+
 bool ModulationTarget::isConnectedTo(ModulationSource* source)
 {
   if(modManager)
@@ -72,7 +78,7 @@ bool ModulationTarget::isConnectedTo(ModulationSource* source)
   return false;
 }
 
-std::vector<ModulationSource*> ModulationTarget::getDisconnctedSources()
+std::vector<ModulationSource*> ModulationTarget::getDisconnectedSources()
 {
   std::vector<ModulationSource*> result;
   if(modManager)
@@ -119,4 +125,10 @@ bool ModulationManager::isConnected(ModulationSource* source, ModulationTarget* 
     if(modulationConnections[i].source == source && modulationConnections[i].target == target)
       return true;
   return false;
+}
+
+void ModulationManager::addConnection(ModulationSource* source, ModulationTarget* target)
+{
+  jassert(!isConnected(source, target)); // there is already a connection between source and target
+  modulationConnections.push_back(ModulationConnection(source, target));
 }

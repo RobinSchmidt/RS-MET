@@ -72,7 +72,12 @@ void rsModulationSetup::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
 
 void rsModulationSetup::addConnection(int index)
 {
-  // not yet implemented
+  ModulatableParameter* mp = widget->getModulatableParameter();
+  if(mp != nullptr)
+  {
+    std::vector<ModulationSource*> sources = mp->getDisconnectedSources();
+    mp->addModulationSource(sources[index]);
+  }
 }
 
 void rsModulationSetup::createAmountSliders()
@@ -95,7 +100,7 @@ void rsModulationSetup::showConnectableSourcesPopUp()
   ModulatableParameter* mp = widget->getModulatableParameter();
   if(mp != nullptr)
   {
-    std::vector<ModulationSource*> sources = mp->getDisconnctedSources();
+    std::vector<ModulationSource*> sources = mp->getDisconnectedSources();
     for(int i = 0; i < size(sources); i++)
     {
       juce::String name = "Source " + juce::String(i); // preliminary - todo: retrieve name
