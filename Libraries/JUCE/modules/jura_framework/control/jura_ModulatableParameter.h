@@ -109,7 +109,7 @@ public:
   const std::vector<ModulationTarget*>& getAvailableModulationTargets();
 
   /** Returns a reference to the array of ModulationConnectionTarget objects. */
-  const std::vector<ModulationConnection>& getModulationConnections();
+  const std::vector<ModulationConnection*>& getModulationConnections();
 
 
 protected:
@@ -121,7 +121,7 @@ protected:
   // ugly design, but however):
   static std::vector<ModulationSource*> dummySources;
   static std::vector<ModulationTarget*> dummyTargets;
-  static std::vector<ModulationConnection> dummyConnections;
+  static std::vector<ModulationConnection*> dummyConnections;
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationParticipant)
@@ -303,10 +303,7 @@ protected:
                                         // raise some issues - maybe later...
 
   friend class ModulationManager;
-  //JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationConnection) 
-    // no - must be copyable...but doing so makes problems - the amountParam pointer cannot just be 
-    // copied...hmm, i think, we'll have to make it non-copyable and let the ModulationManager 
-    // store an array of pointers
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationConnection) 
 };
 
 //=================================================================================================
@@ -323,65 +320,34 @@ public:
   ModulationManager() {}
 
   /** Destructor */
-  virtual ~ModulationManager() {}
+  virtual ~ModulationManager();
 
   /** Adds a connection between the given source and target. */
   void addConnection(ModulationSource* source, ModulationTarget* target);
 
+  /** Removes a connection between the given source and target. */
+  void removeConnection(ModulationSource* source, ModulationTarget* target);
+
+  /** Removes all ModulationConnections. */
+  void removeAllConnections();
+
   /** Removes all modulation connections that involve the given source. */
-  void removeConnectionsWith(ModulationSource* source)
-  {
-    for(int i = 0; i < size(modulationConnections); i++){
-      if(modulationConnections[i].source == source){
-        remove(modulationConnections, i);
-        i--; // array was shrunken
-      }
-    }
-  }
+  void removeConnectionsWith(ModulationSource* source);
 
   /** Removes all modulation connections that involve the given target. */
-  void removeConnectionsWith(ModulationTarget* target)
-  {
-    for(int i = 0; i < size(modulationConnections); i++){
-      if(modulationConnections[i].target == target){
-        remove(modulationConnections, i);
-        i--; // array was shrunken
-      }
-    }
-  }
+  void removeConnectionsWith(ModulationTarget* target);
 
   /** Registers the given ModulationSource to make it available to ModulationTargets. */
-  void registerModulationSource(ModulationSource* source)
-  {
-    appendIfNotAlreadyThere(availableSources, source);
-    source->setModulationManager(this);
-  }
+  void registerModulationSource(ModulationSource* source);
 
   /** De-registers a ModulationSource. */
-  void deRegisterModulationSource(ModulationSource* source)
-  {
-    jassert(contains(availableSources, source)); // source was never registered
-    removeFirstOccurrence(availableSources, source);
-    removeConnectionsWith(source);
-    source->setModulationManager(nullptr); 
-  }
+  void deRegisterModulationSource(ModulationSource* source);
 
   /** Registers the given ModulationTarget. */
-  void registerModulationTarget(ModulationTarget* target)
-  {
-    appendIfNotAlreadyThere(availableTargets, target);
-    target->setModulationManager(this);
-  }
+  void registerModulationTarget(ModulationTarget* target);
 
   /** De-registers a ModulationTarget. */
-  void deRegisterModulationTarget(ModulationTarget* target)
-  {
-    jassert(contains(availableTargets, target)); // target was never registered
-    removeFirstOccurrence(availableTargets, target);
-    removeFirstOccurrence(affectedTargets,  target);
-    removeConnectionsWith(target);
-    target->setModulationManager(nullptr);
-  }
+  void deRegisterModulationTarget(ModulationTarget* target);
 
   /** Returns true if there's a connection between the given source and target. */
   bool isConnected(ModulationSource* source, ModulationTarget* target);
@@ -393,40 +359,20 @@ public:
   const std::vector<ModulationTarget*>& getAvailableModulationTargets() { return availableTargets; }
 
   /** Returns a reference to our vector of ModulationConnections. */
-  const std::vector<ModulationConnection>& getModulationConnections()
+  const std::vector<ModulationConnection*>& getModulationConnections()
   { return modulationConnections; }
 
   /** Function to do the per-sample updates of all modulation-sources and targets. Should be called
   from outside code once per sample before the per-sample functions of the actual dsp-algorithms 
   (oscs, filters, whatever) are called. */
-  void applyModulations()
-  {
-    int i;
-
-    // compute output signals of all modulators:
-    for(i = 0; i < size(availableSources); i++)
-      availableSources[i]->updateModulationValue();
-
-    // initialize modulation target values with their unmodulated values:
-    for(i = 0; i < size(affectedTargets); i++)
-      affectedTargets[i]->initModulatedValue();
-
-    // apply all modulations:
-    for(i = 0; i < size(modulationConnections); i++)
-      modulationConnections[i].apply();
-
-    // let the targets do whatever work they have to do with the modulated value (typically, 
-    // call setter-callbacks):
-    for(i = 0; i < size(affectedTargets); i++)
-      affectedTargets[i]->doModulationUpdate();
-  }
+  void applyModulations();
 
 protected:
 
   std::vector<ModulationSource*> availableSources;
   std::vector<ModulationTarget*> availableTargets;
   std::vector<ModulationTarget*> affectedTargets;
-  std::vector<ModulationConnection> modulationConnections;
+  std::vector<ModulationConnection*> modulationConnections;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationManager)
 };

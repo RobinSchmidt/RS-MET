@@ -1,7 +1,7 @@
 
 std::vector<ModulationSource*> ModulationParticipant::dummySources;
 std::vector<ModulationTarget*> ModulationParticipant::dummyTargets;
-std::vector<ModulationConnection> ModulationParticipant::dummyConnections;
+std::vector<ModulationConnection*> ModulationParticipant::dummyConnections;
 
 const std::vector<ModulationSource*>& ModulationParticipant::getAvailableModulationSources()
 {
@@ -19,7 +19,7 @@ const std::vector<ModulationTarget*>& ModulationParticipant::getAvailableModulat
     return dummyTargets;
 }
 
-const std::vector<ModulationConnection>& ModulationParticipant::getModulationConnections()
+const std::vector<ModulationConnection*>& ModulationParticipant::getModulationConnections()
 {
   if(modManager)
     return modManager->getModulationConnections();
@@ -119,16 +119,122 @@ ModulationConnection::~ModulationConnection()
 
 //-------------------------------------------------------------------------------------------------
 
-bool ModulationManager::isConnected(ModulationSource* source, ModulationTarget* target)
+ModulationManager::~ModulationManager() 
 {
-  for(int i = 0; i < size(modulationConnections); i++)
-    if(modulationConnections[i].source == source && modulationConnections[i].target == target)
-      return true;
-  return false;
+  removeAllConnections();
 }
 
 void ModulationManager::addConnection(ModulationSource* source, ModulationTarget* target)
 {
   jassert(!isConnected(source, target)); // there is already a connection between source and target
-  modulationConnections.push_back(ModulationConnection(source, target));
+  modulationConnections.push_back(new ModulationConnection(source, target));
+}
+
+void ModulationManager::removeConnection(ModulationSource* source, ModulationTarget* target)
+{
+  jassert(isConnected(source, target)); // trying to remove no-existent connection
+
+  for(int i = 0; i < size(modulationConnections); i++)
+  {
+    if(modulationConnections[i]->source == source && modulationConnections[i]->target == target)
+    {
+      delete modulationConnections[i];
+      remove(modulationConnections, i);
+    }
+  }
+
+  jassert(!isConnected(source, target)); // there must have been more than one connection between
+                                         // given source and target - that should not happen
+}
+
+void ModulationManager::removeAllConnections()
+{
+  for(int i = 0; i < size(modulationConnections); i++)
+    delete modulationConnections[i];
+  modulationConnections.clear();
+}
+
+void ModulationManager::removeConnectionsWith(ModulationSource* source)
+{
+  for(int i = 0; i < size(modulationConnections); i++)
+  {
+    if(modulationConnections[i]->source == source)
+    {
+      delete modulationConnections[i];
+      remove(modulationConnections, i);
+      i--; // array was shrunken
+    }
+  }
+}
+
+void ModulationManager::removeConnectionsWith(ModulationTarget* target)
+{
+  for(int i = 0; i < size(modulationConnections); i++)
+  {
+    if(modulationConnections[i]->target == target)
+    {
+      delete modulationConnections[i];
+      remove(modulationConnections, i);
+      i--; // array was shrunken
+    }
+  }
+}
+
+void ModulationManager::registerModulationSource(ModulationSource* source)
+{
+  appendIfNotAlreadyThere(availableSources, source);
+  source->setModulationManager(this);
+}
+
+void ModulationManager::deRegisterModulationSource(ModulationSource* source)
+{
+  jassert(contains(availableSources, source)); // source was never registered
+  removeFirstOccurrence(availableSources, source);
+  removeConnectionsWith(source);
+  source->setModulationManager(nullptr); 
+}
+
+void ModulationManager::registerModulationTarget(ModulationTarget* target)
+{
+  appendIfNotAlreadyThere(availableTargets, target);
+  target->setModulationManager(this);
+}
+
+void ModulationManager::deRegisterModulationTarget(ModulationTarget* target)
+{
+  jassert(contains(availableTargets, target)); // target was never registered
+  removeFirstOccurrence(availableTargets, target);
+  removeFirstOccurrence(affectedTargets,  target);
+  removeConnectionsWith(target);
+  target->setModulationManager(nullptr);
+}
+
+bool ModulationManager::isConnected(ModulationSource* source, ModulationTarget* target)
+{
+  for(int i = 0; i < size(modulationConnections); i++)
+    if(modulationConnections[i]->source == source && modulationConnections[i]->target == target)
+      return true;
+  return false;
+}
+
+void ModulationManager::applyModulations()
+{
+  int i;
+
+  // compute output signals of all modulators:
+  for(i = 0; i < size(availableSources); i++)
+    availableSources[i]->updateModulationValue();
+
+  // initialize modulation target values with their unmodulated values:
+  for(i = 0; i < size(affectedTargets); i++)
+    affectedTargets[i]->initModulatedValue();
+
+  // apply all modulations:
+  for(i = 0; i < size(modulationConnections); i++)
+    modulationConnections[i]->apply();
+
+  // let the targets do whatever work they have to do with the modulated value (typically, 
+  // call setter-callbacks):
+  for(i = 0; i < size(affectedTargets); i++)
+    affectedTargets[i]->doModulationUpdate();
 }
