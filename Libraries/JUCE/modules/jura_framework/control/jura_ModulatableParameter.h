@@ -51,6 +51,7 @@ ToDo:
 class ModulationManager; 
 class ModulationSource;
 class ModulationTarget;
+class ModulationConnection;
 
 //=================================================================================================
 
@@ -107,6 +108,9 @@ public:
   /** Returns a reference to the array of available ModulationTarget objects. */
   const std::vector<ModulationTarget*>& getAvailableModulationTargets();
 
+  /** Returns a reference to the array of ModulationConnectionTarget objects. */
+  const std::vector<ModulationConnection>& getModulationConnections();
+
 
 protected:
 
@@ -117,6 +121,8 @@ protected:
   // ugly design, but however):
   static std::vector<ModulationSource*> dummySources;
   static std::vector<ModulationTarget*> dummyTargets;
+  static std::vector<ModulationConnection> dummyConnections;
+
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationParticipant)
 };
@@ -179,35 +185,45 @@ public:
     unmodulatedValue = newValue;
   }
 
+  /** Returns true, if there's a connection between this ModulationTarget and the given 
+  ModulationSource. */
+  bool isConnectedTo(ModulationSource* source);
+
+
+  /** Returns a vector of pointers to ModulationSources which are not connected to this 
+  ModulationTarget. */
+  std::vector<ModulationSource*> getDisconnctedSources();
+
+
   /** Adds a ModulationSource to this ModulationTarget with an optional modulation amount. */
-  void addModulationSource(ModulationSource* source, double amount = 0)
-  {
-    //source->addModulationTarget(this);
-    //appendIfNotAlreadyThere(sources,      source);
-    //appendIfNotAlreadyThere(sourceValues, source->getModulationValuePointer());
-  }
+  //void addModulationSource(ModulationSource* source, double amount = 0)
+  //{
+  //  //source->addModulationTarget(this);
+  //  //appendIfNotAlreadyThere(sources,      source);
+  //  //appendIfNotAlreadyThere(sourceValues, source->getModulationValuePointer());
+  //}
 
   /** Removes the ModulationSource with given index from this ModulationTarget. */
-  void removeModulationSource(int index)
-  {
-    //sources[index]->removeModulationTarget(this);
-    //remove(sources,      index);
-    //remove(sourceValues, index);
-  }
+  //void removeModulationSource(int index)
+  //{
+  //  //sources[index]->removeModulationTarget(this);
+  //  //remove(sources,      index);
+  //  //remove(sourceValues, index);
+  //}
 
   /** Removes the given ModulationSource from this ModulationTarget. */
-  void removeModulationSource(ModulationSource* source)
-  {
-    //int index = find(sources, source);
-    //removeModulationSource(index);
-  }
+  //void removeModulationSource(ModulationSource* source)
+  //{
+  //  //int index = find(sources, source);
+  //  //removeModulationSource(index);
+  //}
 
   /** Sets the amount by which the ModulationSource with given index modulates this 
   ModulationTarget. */
-  void setModulationAmount(int sourceIndex, double newAmount)
-  {
-    //amounts[sourceIndex] = newAmount;
-  }
+  //void setModulationAmount(int sourceIndex, double newAmount)
+  //{
+  //  //amounts[sourceIndex] = newAmount;
+  //}
   // hmm...index with respect to what array? maybe we should pass a source-pointer instead of an
   // index
 
@@ -359,11 +375,18 @@ public:
     target->setModulationManager(nullptr);
   }
 
-  /** Returns a reference to our list of available ModulationSources. */
+  /** Returns true if there's a connection between the given source and target. */
+  bool isConnected(ModulationSource* source, ModulationTarget* target);
+
+  /** Returns a reference to our vector of available ModulationSources. */
   const std::vector<ModulationSource*>& getAvailableModulationSources() { return availableSources; }
 
-  /** Returns a reference to our list of available ModulationTargets. */
+  /** Returns a reference to our vector of available ModulationTargets. */
   const std::vector<ModulationTarget*>& getAvailableModulationTargets() { return availableTargets; }
+
+  /** Returns a reference to our vector of ModulationConnections. */
+  const std::vector<ModulationConnection>& getModulationConnections()
+  { return modulationConnections; }
 
   /** Function to do the per-sample updates of all modulation-sources and targets. Should be called
   from outside code once per sample before the per-sample functions of the actual dsp-algorithms 

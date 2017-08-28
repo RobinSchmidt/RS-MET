@@ -1,6 +1,7 @@
 
 std::vector<ModulationSource*> ModulationParticipant::dummySources;
 std::vector<ModulationTarget*> ModulationParticipant::dummyTargets;
+std::vector<ModulationConnection> ModulationParticipant::dummyConnections;
 
 const std::vector<ModulationSource*>& ModulationParticipant::getAvailableModulationSources()
 {
@@ -16,6 +17,14 @@ const std::vector<ModulationTarget*>& ModulationParticipant::getAvailableModulat
     return modManager->getAvailableModulationTargets();
   else
     return dummyTargets;
+}
+
+const std::vector<ModulationConnection>& ModulationParticipant::getModulationConnections()
+{
+  if(modManager)
+    return modManager->getModulationConnections();
+  else
+    return dummyConnections;
 }
 
 void ModulationParticipant::registerModulationSource(ModulationSource* source)
@@ -56,6 +65,28 @@ ModulationTarget::~ModulationTarget()
   ModulationParticipant::deRegisterModulationTarget(this);
 }
 
+bool ModulationTarget::isConnectedTo(ModulationSource* source)
+{
+  if(modManager)
+    return modManager->isConnected(source, this);
+  return false;
+}
+
+std::vector<ModulationSource*> ModulationTarget::getDisconnctedSources()
+{
+  std::vector<ModulationSource*> result;
+  if(modManager)
+  {
+    const std::vector<ModulationSource*>& allSources = modManager->getAvailableModulationSources();
+    for(int i = 0; i < size(allSources); i++)
+    {
+      if(!this->isConnectedTo(allSources[i]))
+        result.push_back(allSources[i]);
+    }
+  }
+  return result;
+}
+
 //-------------------------------------------------------------------------------------------------
 
 ModulationConnection::ModulationConnection(ModulationSource* _source, ModulationTarget* _target)
@@ -78,4 +109,14 @@ ModulationConnection::ModulationConnection(ModulationSource* _source, Modulation
 ModulationConnection::~ModulationConnection()
 {
   delete amountParam;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool ModulationManager::isConnected(ModulationSource* source, ModulationTarget* target)
+{
+  for(int i = 0; i < size(modulationConnections); i++)
+    if(modulationConnections[i].source == source && modulationConnections[i].target == target)
+      return true;
+  return false;
 }
