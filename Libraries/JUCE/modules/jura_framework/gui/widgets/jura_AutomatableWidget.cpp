@@ -51,7 +51,28 @@ void rsModulationSetup::rButtonClicked(RButton *button)
   if(button == closeButton)
     requestDeletion();
   else if(button == addButton)
-    showAvailableSourcesPopUp();
+    showConnectableSourcesPopUp();
+}
+
+void rsModulationSetup::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
+{
+  jassert(menuThatHasChanged == sourcesPopUp);
+
+  // todo: wrap this into a member function of RPopUpMenu::getSelectedIdentifier (it's used 
+  // multiple times):
+  RTreeViewNode *selectedItem = sourcesPopUp->getSelectedItem();
+  if(selectedItem == nullptr)
+    return;
+  int selectedIdentifier = selectedItem->getNodeIdentifier();
+
+
+  if(selectedIdentifier > 0)
+    addConnection(selectedIdentifier-1);
+}
+
+void rsModulationSetup::addConnection(int index)
+{
+  // not yet implemented
 }
 
 void rsModulationSetup::createAmountSliders()
@@ -59,13 +80,33 @@ void rsModulationSetup::createAmountSliders()
   // not yet implemented
 }
 
-void rsModulationSetup::showAvailableSourcesPopUp()
+void rsModulationSetup::showConnectableSourcesPopUp()
 {
+  // create popup, if necessary:
   if(sourcesPopUp == nullptr)
   {
-    // ..create the popup menu
+    sourcesPopUp = new RPopUpMenu(this); // maybe attach to the addButton instead of this?
+    sourcesPopUp->registerPopUpMenuObserver(this); // uncomment later
+    sourcesPopUp->setDismissOnFocusLoss(true);
   }
-  // ...show it
+
+  // populate it:
+  sourcesPopUp->clear();
+  ModulatableParameter* mp = widget->getModulatableParameter();
+  if(mp != nullptr)
+  {
+    std::vector<ModulationSource*> sources = mp->getDisconnctedSources();
+    for(int i = 0; i < size(sources); i++)
+    {
+      juce::String name = "Source " + juce::String(i); // preliminary - todo: retrieve name
+      sourcesPopUp->addItem(i+1, name);                // +1 bcs 0 is not allowed for the id
+    }
+  }
+
+  // show it:
+  int w = sourcesPopUp->getRequiredWidth(true);
+  int h = sourcesPopUp->getRequiredHeight(true);
+  sourcesPopUp->show(true, RPopUpComponent::BELOW, w, h); // showModally = true
 }
 
 //=================================================================================================

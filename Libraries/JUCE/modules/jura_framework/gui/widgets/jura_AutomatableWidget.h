@@ -7,7 +7,7 @@ class AutomatableWidget;
 /** A component for setting up the modulations of some ModulationTarget. */
 
 class JUCE_API rsModulationSetup : public ColourSchemeComponent, public RButtonListener, 
-  public rsDeletionRequester
+  public rsDeletionRequester, public RPopUpMenuObserver
 {
 
 public:
@@ -22,14 +22,19 @@ public:
   virtual void paint(Graphics& g) override;
   virtual void resized() override;
   virtual void rButtonClicked(RButton *button) override;
+  virtual void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged) override;
 
 protected:
+
+  /** Adds a modulation connection between the ModulationTarget (underlying our widget member) and 
+  the source with given index among the available and not yet connected sources. */
+  void addConnection(int index);
 
   /** Creates the sliders for the modulation amounts. */
   void createAmountSliders();
 
   /** Shows the popup menu with the available (and not yet connected) ModulationSources. */
-  void showAvailableSourcesPopUp();
+  void showConnectableSourcesPopUp();
 
   // pointer to our owner:
   AutomatableWidget* widget;
@@ -69,7 +74,20 @@ public:
   /** Returns true if the popup menu is currently open, false otherwise. */
   bool isPopUpOpen();
 
+  /** Tries to cast the Parameter that is underlying the wrapped widget into an 
+  AutomatableParameter and returns the pointer to it. Note that this may return a nullptr, when 
+  the Parameter is not of type AutomatableParameter. */
+  AutomatableParameter* getAutomatableParameter();
+
+  /** Similar to @see getAutomatbleParameter. */
+  MetaControlledParameter* getMetaControlledParameter();
+
+  /** Similar to @see getAutomatbleParameter. */
+  ModulatableParameter* getModulatableParameter();
+
+  // overrides:
   virtual void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged) override;
+
 
 protected:
 
@@ -126,19 +144,6 @@ protected:
   reuse the same object when the modulation setup is opened again. It's deleted in our 
   destructor. */
   virtual void deleteObject(rsDeletionRequester* objectToDelete) override;
-
-
-  /** Tries to cast the Parameter that is underlying the wrapped widget into an 
-  AutomatableParameter and returns the pointer to it. Note that this may return a nullptr, when 
-  the Parameter is not of type AutomatableParameter. */
-  AutomatableParameter* getAutomatableParameter();
-
-  /** Similar to @see getAutomatbleParameter. */
-  MetaControlledParameter* getMetaControlledParameter();
-
-  /** Similar to @see getAutomatbleParameter. */
-  ModulatableParameter* getModulatableParameter();
-
 
   RWidget *wrappedWidget;                 // widget that is being made automatable
   bool popUpIsOpen = false;
