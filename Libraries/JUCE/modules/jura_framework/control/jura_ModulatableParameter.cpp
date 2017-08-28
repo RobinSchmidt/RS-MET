@@ -116,7 +116,8 @@ ModulationConnection::ModulationConnection(ModulationSource* _source, Modulation
   source   = _source; 
   target   = _target;
   amount   = 0.0;
-  relative = false;
+  //relative = false;
+  relative = true;
   sourceValue = &(source->modValue);
   targetValue = &(target->modulatedValue);
 
@@ -144,6 +145,10 @@ void ModulationManager::addConnection(ModulationSource* source, ModulationTarget
 {
   jassert(!isConnected(source, target)); // there is already a connection between source and target
   modulationConnections.push_back(new ModulationConnection(source, target));
+  appendIfNotAlreadyThere(affectedTargets, target);
+
+  // we also need a function that removes a target from our affectedTargets array in case it has
+  // no incoming connections
 }
 
 void ModulationManager::removeConnection(ModulationSource* source, ModulationTarget* target)

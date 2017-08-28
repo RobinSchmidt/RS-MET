@@ -377,7 +377,8 @@ void AudioModuleChain::processBlock(double **inOutBuffer, int numChannels, int n
       ModulationManager::applyModulations();
       for(int i = 0; i < size(modules); i++)
       {
-        // compute sample-frame for module i and sample-index n
+        jassertfalse;
+        // \todo: compute sample-frame for module i and sample-index n
       }
     }
   }

@@ -380,7 +380,7 @@ public:
 protected:
 
   std::vector<ModulationSource*> availableSources;
-  std::vector<ModulationTarget*> availableTargets;
+  std::vector<ModulationTarget*> availableTargets; // do we need this? if not, remove
   std::vector<ModulationTarget*> affectedTargets;
   std::vector<ModulationConnection*> modulationConnections;
 

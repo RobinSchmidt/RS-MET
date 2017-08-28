@@ -40,6 +40,12 @@ void rsModulationSetup::resized()
   closeButton->setBounds(w-16, 0, 16, 16);
   modulationsLabel->setBounds(x, y, w-8-16, sh); y += inc; 
 
+  for(int i = 0; i < size(amountSliders); i++)
+  {
+    amountSliders[i]->setBounds(x, y, w-8, sh);
+    y += inc;
+  }
+
   y = h - sh - 4;
   addButton->setBounds(x, y, 40, 16);
 }
@@ -151,6 +157,7 @@ void rsModulationSetup::addSliderFor(MetaControlledParameter* p)
   AutomatableSlider* s = new AutomatableSlider();
   amountSliders.push_back(s);
   s->assignParameter(p);
+  // the slider needs a name that reflects the name of the ModulationSource
   addWidget(s);
   updateSize();
 }
