@@ -44,6 +44,9 @@ protected:
   /** Adds a slider for the passed parameter to our amountSliders array. */
   void addSliderFor(MetaControlledParameter* p);
 
+  /** Updates the size in order to provide space for all required widgets. */
+  void updateSize();
+
   // pointer to our owner:
   AutomatableWidget* widget;
 

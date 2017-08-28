@@ -16,8 +16,6 @@ rsModulationSetup::rsModulationSetup(AutomatableWidget* widgetToModulate)
   addButton->addRButtonListener(this);
 
   updateAmountSliderArray();
-
-  setSize(200, 100);  // preliminary - maybe we should use the widget's width...but maybe not
 }
 
 rsModulationSetup::~rsModulationSetup()
@@ -77,6 +75,11 @@ void rsModulationSetup::addConnection(int index)
   {
     std::vector<ModulationSource*> sources = mp->getDisconnectedSources();
     mp->addModulationSource(sources[index]);
+
+    //// nnaaahh - this doesn't work - we need the ModulationConnection object to retrieve the
+    //// amount-parameter
+    //MetaControlledParameter* amountParam = mp->getAmountParameter();
+    //addSliderFor(amountParam);
   }
 
   updateAmountSliderArray(); // actually, it's not necessary here to check in the existing
@@ -100,6 +103,7 @@ void rsModulationSetup::updateAmountSliderArray()
         addSliderFor(param);
     }
   }
+  updateSize();
 }
 
 void rsModulationSetup::showConnectableSourcesPopUp()
@@ -144,7 +148,18 @@ bool rsModulationSetup::hasSlider(MetaControlledParameter* p)
 
 void rsModulationSetup::addSliderFor(MetaControlledParameter* p)
 {
-  // ...
+  AutomatableSlider* s = new AutomatableSlider();
+  amountSliders.push_back(s);
+  s->assignParameter(p);
+  addWidget(s);
+  updateSize();
+}
+
+void rsModulationSetup::updateSize()
+{
+  setSize(200, 100);  // preliminary - maybe we should use the widget's width...but maybe not
+
+  resized(); // needed during development - might be redundant when finished
 }
 
 //=================================================================================================
