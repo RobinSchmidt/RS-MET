@@ -305,9 +305,8 @@ void RSlider::mouseDown(const MouseEvent& e)
         setValue(constrainAndQuantizeValue(tmpValue), true, false);
       }
       valueOnMouseDown = getValue();
-
-      dragDelta = 0;
-      dragValue = 0.0;
+      oldDragDistance  = 0;
+      dragValue        = 0.0;
     }
   }
 }
@@ -330,22 +329,23 @@ void RSlider::mouseDrag(const MouseEvent& e)
     {
       //double x = e.getMouseDownX() / (double)getWidth();   // in 0..1
 
-      //// new experimental stuff - not yet working:
-      //int dragDistance = e.getDistanceFromDragStartX();
-      //dragDelta  = dragDistance - dragDelta; // no that is wrong - we need an oldDragDistance
-      //dragValue += scale*dragDelta;
-      //double x = valueToProportionOfLength(valueOnMouseDown);  // in 0..1
-      //x += dragValue;                                          // new x
-      //x = clip(x, 0, 1);
-      //x = proportionOfLengthToValue(x);                        // convert to value
-      //setValue(constrainAndQuantizeValue(x), true, false);     // set it
-
-      // old, has issues when pressing/releasing shift during drag:
+      // new experimental stuff - not yet working:
+      int newDragDistance = e.getDistanceFromDragStartX();
+      int dragDelta       = newDragDistance - oldDragDistance;
+      oldDragDistance     = newDragDistance;  // update - from now on we only need dragDelta
+      dragValue += scale*dragDelta;
       double x = valueToProportionOfLength(valueOnMouseDown);  // in 0..1
-      x += scale * e.getDistanceFromDragStartX();              // new x
+      x += dragValue;                                          // new x
       x = clip(x, 0, 1);
       x = proportionOfLengthToValue(x);                        // convert to value
       setValue(constrainAndQuantizeValue(x), true, false);     // set it
+
+      //// old, has issues when pressing/releasing shift during drag:
+      //double x = valueToProportionOfLength(valueOnMouseDown);  // in 0..1
+      //x += scale * e.getDistanceFromDragStartX();              // new x
+      //x = clip(x, 0, 1);
+      //x = proportionOfLengthToValue(x);                        // convert to value
+      //setValue(constrainAndQuantizeValue(x), true, false);     // set it
 
       //tmpValue = proportionOfLengthToValue((double) x / (double) getWidth());
       //setValue(constrainAndQuantizeValue(tmpValue), true, false);

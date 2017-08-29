@@ -191,8 +191,8 @@ protected:
 
   double valueOnMouseDown = 0;
 
-  int dragDelta = 0; // experimental
-  double dragValue = 0; // experimental
+  int oldDragDistance;
+  double dragValue = 0;
 
   std::vector<double> defaultValues;
   int    scaling;
