@@ -329,7 +329,7 @@ void RSlider::mouseDrag(const MouseEvent& e)
     {
       //double x = e.getMouseDownX() / (double)getWidth();   // in 0..1
 
-      // new experimental stuff - not yet working:
+      // new, handles press/release of shift during drag correctly:
       int newDragDistance = e.getDistanceFromDragStartX();
       int dragDelta       = newDragDistance - oldDragDistance;
       oldDragDistance     = newDragDistance;  // update - from now on we only need dragDelta
