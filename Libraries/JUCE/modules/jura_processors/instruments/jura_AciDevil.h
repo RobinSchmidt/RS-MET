@@ -47,23 +47,28 @@ public:
   //---------------------------------------------------------------------------------------------
   // audio processing:
 
-  /** Calculates a stereo-ouput frame. */
-  virtual void getSampleFrameStereo(double* inOutL, double* inOutR)
-  {
-    *inOutL = *inOutR = wrappedAciDevil->getSample();
-  }
-  virtual void processBlockStereo(float *left, float *right, int numSamples)
-  {
-    for(int n=0; n<numSamples; n++)
-      left[n] = right[n] = (float)wrappedAciDevil->getSample();
-  }
-  // maybe the two functions above are obsolote now
+  ///** Calculates a stereo-ouput frame. */
+  //virtual void getSampleFrameStereo(double* inOutL, double* inOutR)
+  //{
+  //  *inOutL = *inOutR = wrappedAciDevil->getSample();
+  //}
+  //virtual void processBlockStereo(float *left, float *right, int numSamples)
+  //{
+  //  for(int n=0; n<numSamples; n++)
+  //    left[n] = right[n] = (float)wrappedAciDevil->getSample();
+  //}
+  //// maybe the two functions above are obsolote now
 
 
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
   {
     for(int n = 0; n < numSamples; n++)
       inOutBuffer[0][n] = inOutBuffer[1][n] = wrappedAciDevil->getSample();
+  }
+
+  virtual void processStereoFrame(double *left, double *right) override
+  {
+    *left = *right = wrappedAciDevil->getSample();
   }
 
   //---------------------------------------------------------------------------------------------

@@ -78,7 +78,7 @@ AudioModuleEditor* Ladder::createEditor()
 }
 
 //-------------------------------------------------------------------------------------------------
-// the audio processing callback:
+// the audio processing callbacks:
 
 void Ladder::processBlock(double **inOutBuffer, int numChannels, int numSamples)
 {
@@ -88,6 +88,12 @@ void Ladder::processBlock(double **inOutBuffer, int numChannels, int numSamples)
     inOutBuffer[0][n] = ladderL.getSample(inOutBuffer[0][n]);
     inOutBuffer[1][n] = ladderR.getSample(inOutBuffer[1][n]);
   }
+}
+
+void Ladder::processStereoFrame(double *left, double *right)
+{
+  *left  = ladderL.getSample(*left);
+  *right = ladderR.getSample(*right);
 }
 
 //-------------------------------------------------------------------------------------------------

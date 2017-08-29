@@ -377,8 +377,17 @@ void AudioModuleChain::processBlock(double **inOutBuffer, int numChannels, int n
       ModulationManager::applyModulations();
       for(int i = 0; i < size(modules); i++)
       {
-        jassertfalse;
-        // \todo: compute sample-frame for module i and sample-index n
+        // for debug:
+        double left  = inOutBuffer[0][n];
+        double right = inOutBuffer[1][n];
+        // are 0 - why - maybe Straightliner doesn't override processStereoFrame
+
+
+        modules[i]->processStereoFrame(&inOutBuffer[0][n], &inOutBuffer[1][n]);
+        //jassertfalse;
+        // \todo: compute sample-frame for module i and sample-index n, but only if module i is 
+        // not a ModulationSource...hmm...using dynamic_cast will be inefficient, maybe just leave
+        // overriden processSampleFrame empty in modulation AudioModules
       }
     }
   }

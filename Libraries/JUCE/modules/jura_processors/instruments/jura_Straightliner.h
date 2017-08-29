@@ -92,6 +92,11 @@ public:
     }
   }
 
+  virtual void processStereoFrame(double *left, double *right) override
+  {
+    wrappedStraightliner->getSampleFrameStereo(left, right);
+  }
+
   //---------------------------------------------------------------------------------------------
   // others:
 

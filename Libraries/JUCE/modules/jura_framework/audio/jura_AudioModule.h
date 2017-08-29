@@ -231,6 +231,11 @@ public:
   //virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) = 0;
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) {}
 
+  /** A function to override in case you are producing a stereo-signal and need your module to work
+  with the modulation system (i.e. uses ModulatableParameters). It is supposed to produce one 
+  stereo sample frame at a time and may be called alternatively to processBlock. */
+  virtual void processStereoFrame(double *left, double *right) {}
+
   //-----------------------------------------------------------------------------------------------
   // \name Misc:
 
@@ -347,13 +352,13 @@ public:
   virtual void handleMidiMessage(MidiMessage message);
 
   /** Triggers a note-on event. */
-  virtual void noteOn(int noteNumber, int velocity);
+  virtual void noteOn(int noteNumber, int velocity) {}
 
   /** Triggers a note-off event. */
-  virtual void noteOff(int noteNumber);
+  virtual void noteOff(int noteNumber) {}
 
   /** Triggers an all-notes-off event. */
-  virtual void allNotesOff();
+  virtual void allNotesOff() {}
 
   /** Overrides setMidiController which is inherited from both base-classes - and we simply we pass
   through the function call to both of them here. */

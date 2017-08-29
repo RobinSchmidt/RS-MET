@@ -3,7 +3,7 @@
 
 BreakpointModulatorAudioModule::BreakpointModulatorAudioModule(CriticalSection *newPlugInLock,
   rosic::BreakpointModulator *newBreakpointModulatorToWrap)
-  : AudioModule(newPlugInLock)
+  : /*AudioModule(newPlugInLock)*/ AudioModuleWithMidiIn(newPlugInLock)
 {
   //jassert( newBreakpointModulatorToWrap != NULL ); // you must pass a valid object to the constructor
   if(newBreakpointModulatorToWrap == nullptr)

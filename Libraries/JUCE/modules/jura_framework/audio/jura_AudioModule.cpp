@@ -528,20 +528,20 @@ void AudioModuleWithMidiIn::handleMidiMessage(MidiMessage message)
     setPitchBend(message.getPitchWheelValue());
 }
 
-void AudioModuleWithMidiIn::noteOn(int noteNumber, int velocity)
-{
-
-}
-
-void AudioModuleWithMidiIn::noteOff(int noteNumber)
-{
-
-}
-
-void AudioModuleWithMidiIn::allNotesOff()
-{
-
-}
+//void AudioModuleWithMidiIn::noteOn(int noteNumber, int velocity)
+//{
+//
+//}
+//
+//void AudioModuleWithMidiIn::noteOff(int noteNumber)
+//{
+//
+//}
+//
+//void AudioModuleWithMidiIn::allNotesOff()
+//{
+//
+//}
 
 void AudioModuleWithMidiIn::setMidiController(int controllerNumber, float controllerValue)
 {

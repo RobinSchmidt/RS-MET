@@ -122,8 +122,9 @@ ModulationConnection::ModulationConnection(ModulationSource* _source, Modulation
   targetValue = &(target->modulatedValue);
 
   amountParam = new MetaControlledParameter("Amount", -1.0, 1.0, 0.0, Parameter::LINEAR, 0.0);
+  amountParam->setValueChangeCallback<ModulationConnection>(this, 
+    &ModulationConnection::setAmount);
 
-  //amountParam->setValueChangeCallback(...this, &ModulationConnection::setAmount)
   //amountParam->setMetaParameterManager(metaManager);
   // we may need a MetaParameterManager* parameter to the constructor ..or a pointer to the
   // ModulationManager...which may have to be a subclass of MetaParameterManager

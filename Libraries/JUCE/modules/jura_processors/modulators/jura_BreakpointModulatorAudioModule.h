@@ -5,7 +5,7 @@
 plugIn or sub-module inside a plugIn. */
 
 class JUCE_API BreakpointModulatorAudioModule 
-  : public AudioModule, public ModulationSource
+  : /*public AudioModule*/ public AudioModuleWithMidiIn , public ModulationSource
 {
 
   friend class BreakpointModulatorEditor;
@@ -51,10 +51,22 @@ public:
 
   virtual AudioModuleEditor *createEditor() override;
 
+
   // new overrides (added after dragging the old code over - they are currently only dummies):
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override 
   {
-  
+    // we should do nothing here, the computation is done in updateModulationValue()
+    // actually, the override may be deleted then
+  }
+
+  virtual void noteOn(int noteNumber, int velocity) override 
+  {
+    wrappedBreakpointModulator->noteOn(true, noteNumber, velocity);
+  }
+
+  virtual void noteOff(int noteNumber) override
+  {
+    wrappedBreakpointModulator->noteOff(true);
   }
 
 
