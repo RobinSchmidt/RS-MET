@@ -121,7 +121,9 @@ ModulationConnection::ModulationConnection(ModulationSource* _source, Modulation
   sourceValue = &(source->modValue);
   targetValue = &(target->modulatedValue);
 
-  amountParam = new MetaControlledParameter("Amount", -1.0, 1.0, 0.0, Parameter::LINEAR, 0.0);
+  juce::String name = source->getModulationSourceName();
+  //amountParam = new MetaControlledParameter("Amount", -1.0, 1.0, 0.0, Parameter::LINEAR, 0.0);
+  amountParam = new MetaControlledParameter(name, -1.0, 1.0, 0.0, Parameter::LINEAR, 0.0);
   amountParam->setValueChangeCallback<ModulationConnection>(this, 
     &ModulationConnection::setAmount);
 
@@ -140,6 +142,28 @@ ModulationConnection::~ModulationConnection()
 ModulationManager::~ModulationManager() 
 {
   removeAllConnections();
+}
+
+void ModulationManager::applyModulations()
+{
+  int i;
+
+  // compute output signals of all modulators:
+  for(i = 0; i < size(availableSources); i++)
+    availableSources[i]->updateModulationValue();
+
+  // initialize modulation target values with their unmodulated values:
+  for(i = 0; i < size(affectedTargets); i++)
+    affectedTargets[i]->initModulatedValue();
+
+  // apply all modulations:
+  for(i = 0; i < size(modulationConnections); i++)
+    modulationConnections[i]->apply();
+
+  // let the targets do whatever work they have to do with the modulated value (typically, 
+  // call setter-callbacks):
+  for(i = 0; i < size(affectedTargets); i++)
+    affectedTargets[i]->doModulationUpdate();
 }
 
 void ModulationManager::addConnection(ModulationSource* source, ModulationTarget* target)
@@ -239,24 +263,13 @@ bool ModulationManager::isConnected(ModulationSource* source, ModulationTarget* 
   return false;
 }
 
-void ModulationManager::applyModulations()
+int ModulationManager::numRegisteredSourcesOfType(ModulationSource* source)
 {
-  int i;
-
-  // compute output signals of all modulators:
-  for(i = 0; i < size(availableSources); i++)
-    availableSources[i]->updateModulationValue();
-
-  // initialize modulation target values with their unmodulated values:
-  for(i = 0; i < size(affectedTargets); i++)
-    affectedTargets[i]->initModulatedValue();
-
-  // apply all modulations:
-  for(i = 0; i < size(modulationConnections); i++)
-    modulationConnections[i]->apply();
-
-  // let the targets do whatever work they have to do with the modulated value (typically, 
-  // call setter-callbacks):
-  for(i = 0; i < size(affectedTargets); i++)
-    affectedTargets[i]->doModulationUpdate();
+  int result = 0;
+  for(int i = 0; i < size(availableSources); i++)
+  {
+    if(typeid(*source) == typeid(*availableSources[i]))
+      result++;
+  }
+  return result;
 }

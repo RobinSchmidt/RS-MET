@@ -208,12 +208,15 @@ protected:
   /** Undoes what addToModulatorsIfApplicable does. */
   void removeFromModulatorsIfApplicable(AudioModule* module);
 
-
+  /** Assigns an appropriate name to the passed ModulationSource which will be used to identify it
+  in the modulation setup on the GUI and for state recall. */
+  void assignModulationSourceName(ModulationSource* source);
+    // maybe this can be factored out into ModulationManager
 
   /** Clears the array of AudioModules which means als to delete all objects. */
   void clearModulesArray();
                      
-  std::vector<AudioModule*> modules;  // std::vector better for debugging than juce::Array
+  std::vector<AudioModule*> modules;
     // we should better use the inherited childAudioModules array - but there are errors
 
   //std::vector<AudioModule*> modulators;

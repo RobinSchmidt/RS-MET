@@ -143,15 +143,21 @@ public:
   /** Destructor */
   virtual ~ModulationSource();
 
-  /** Should be overriden by subclasses to update the "modValue" member variable per sample. It should 
-  assign modValue to the output signal value of the modulator. */
+  /** Should be overriden by subclasses to update the "modValue" member variable per sample. It 
+  should assign modValue to the output signal value of the modulator. */
   virtual void updateModulationValue() = 0;
 
-  //juce::String getModulationSourceName() = 0;
+  /** Sets up a name for this ModulationSource. This should be unique among all the available 
+  ModulationSource names, so it can be used to identify the source in state recall. */
+  void setModulationSourceName(const juce::String& newName) { modSourceName = newName; }
+
+  /** Returns the name of this ModulationSource. */
+  juce::String getModulationSourceName() { return modSourceName; }
 
 protected:
 
   double modValue = 0;
+  juce::String modSourceName = "ModulationSource";
 
   friend class ModulationConnection;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationSource)
@@ -332,6 +338,14 @@ public:
   /** Destructor */
   virtual ~ModulationManager();
 
+  /** Function to do the per-sample updates of all modulation-sources and targets. Should be called
+  from outside code once per sample before the per-sample functions of the actual dsp-algorithms 
+  (oscs, filters, whatever) are called. */
+  void applyModulations();
+
+
+  /** \name Connection setup */
+
   /** Adds a connection between the given source and target. */
   void addConnection(ModulationSource* source, ModulationTarget* target);
 
@@ -347,6 +361,9 @@ public:
   /** Removes all modulation connections that involve the given target. */
   void removeConnectionsWith(ModulationTarget* target);
 
+
+  /** \name Registration of sources and targets */
+
   /** Registers the given ModulationSource to make it available to ModulationTargets. */
   void registerModulationSource(ModulationSource* source);
 
@@ -354,10 +371,13 @@ public:
   void deRegisterModulationSource(ModulationSource* source);
 
   /** Registers the given ModulationTarget. */
-  void registerModulationTarget(ModulationTarget* target);
+  void registerModulationTarget(ModulationTarget* target); // may not be needed
 
   /** De-registers a ModulationTarget. */
-  void deRegisterModulationTarget(ModulationTarget* target);
+  void deRegisterModulationTarget(ModulationTarget* target); // may not be needed
+
+
+  /** \name Inquiry */
 
   /** Returns true if there's a connection between the given source and target. */
   bool isConnected(ModulationSource* source, ModulationTarget* target);
@@ -372,10 +392,15 @@ public:
   const std::vector<ModulationConnection*>& getModulationConnections()
   { return modulationConnections; }
 
-  /** Function to do the per-sample updates of all modulation-sources and targets. Should be called
-  from outside code once per sample before the per-sample functions of the actual dsp-algorithms 
-  (oscs, filters, whatever) are called. */
-  void applyModulations();
+  /** Given a pointer to a ModulationSource of some type, this function returns the number of 
+  ModulationSources of the same type that are registered here. This is used to figure out, for 
+  example, how many LFOs, envelopes, etc. already exist in order to assign an appropriate name
+  to the next one to be added, for example in Chainer (the name should include an index/counter for 
+  unique identification of the source). */
+  int numRegisteredSourcesOfType(ModulationSource* source);
+
+
+
 
 protected:
 

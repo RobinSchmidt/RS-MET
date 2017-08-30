@@ -125,7 +125,8 @@ void rsModulationSetup::showConnectableSourcesPopUp()
     std::vector<ModulationSource*> sources = mp->getDisconnectedSources();
     for(int i = 0; i < size(sources); i++)
     {
-      juce::String name = "Source " + juce::String(i); // preliminary - todo: retrieve name
+      //juce::String name = "Source " + juce::String(i); // preliminary - todo: retrieve name
+      juce::String name = sources[i]->getModulationSourceName();
       sourcesPopUp->addItem(i+1, name);                // +1 bcs 0 is not allowed for the id
     }
   }

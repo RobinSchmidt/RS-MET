@@ -497,7 +497,10 @@ void AudioModuleChain::addToModulatorsIfApplicable(AudioModule* module)
 {
   ModulationSource* ms = dynamic_cast<ModulationSource*> (module);
   if(ms != nullptr)
+  {
+    assignModulationSourceName(ms);
     ModulationManager::registerModulationSource(ms);
+  }
 }
 
 void AudioModuleChain::removeFromModulatorsIfApplicable(AudioModule* module)
@@ -505,6 +508,18 @@ void AudioModuleChain::removeFromModulatorsIfApplicable(AudioModule* module)
   ModulationSource* ms = dynamic_cast<ModulationSource*> (module);
   if(ms != nullptr)
     ModulationManager::deRegisterModulationSource(ms);
+}
+
+void AudioModuleChain::assignModulationSourceName(ModulationSource* source)
+{
+  juce::String name;
+  if(dynamic_cast<BreakpointModulatorAudioModule*> (source))
+    name = "BM ";
+  // else if...
+
+
+  name += String(numRegisteredSourcesOfType(source) + 1);
+  source->setModulationSourceName(name);
 }
 
 void AudioModuleChain::clearModulesArray()
