@@ -40,10 +40,13 @@ maybe make the class hierarchy like this:
 Parameter <- MetaControlledParameter <- ModulatableParameter <- PolyphonicParameter
 
 ToDo:
--i think, the ModulationManager needs an array of MetaControlledParameters that will be used
- for the modulation-amounts...or maybe each ModulationConnection should have its associated 
- parameter as member
-
+-make it thread-safe
+-implement state recall
+-let the user set up the min/max amount values
+-let the user select absolute or relative modulation
+-clean up the code
+-optimize, where possible
+-test in practice
 
 */
 

@@ -5,7 +5,11 @@
 class AutomatableWidget;
 class AutomatableSlider;
 
-/** A component for setting up the modulations of some ModulationTarget. */
+/** A component for setting up the modulations of some ModulationTarget. 
+
+todo: think about thread safety - i've seen it crash when removing a source from a target - 
+probably due to threading problems. i think, we need a mutex, maybe in the ModulationManager
+*/
 
 class JUCE_API rsModulationSetup : public ColourSchemeComponent, public RButtonListener, 
   public rsDeletionRequester, public RPopUpMenuObserver
