@@ -136,6 +136,9 @@ public:
   will be returned. */
   virtual const juce::String& getSelectedText() const;
 
+  /** Returns the identifier of the currently selected item. If none is selected, it returns 0. */
+  virtual int getSelectedIdentifier() const;
+
   //-----------------------------------------------------------------------------------------------
   // callbacks:
 

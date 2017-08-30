@@ -66,18 +66,19 @@ void rsModulationSetup::rButtonClicked(RButton *button)
 
 void rsModulationSetup::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
 {
-  jassert(menuThatHasChanged == connectableSourcesPopUp);
-
-  // todo: wrap this into a member function of RPopUpMenu::getSelectedIdentifier (it's used 
-  // multiple times):
-  RTreeViewNode *selectedItem = connectableSourcesPopUp->getSelectedItem();
-  if(selectedItem == nullptr)
-    return;
-  int selectedIdentifier = selectedItem->getNodeIdentifier();
-
-
-  if(selectedIdentifier > 0)
-    addConnection(selectedIdentifier-1);
+  int id;
+  if(menuThatHasChanged == connectableSourcesPopUp)
+  {
+    id = connectableSourcesPopUp->getSelectedIdentifier();
+    if(id > 0)
+      addConnection(id-1);
+  }
+  else if(menuThatHasChanged == removableSourcesPopUp)
+  {
+    id = removableSourcesPopUp->getSelectedIdentifier();
+    if(id > 0)
+      removeConnection(id-1);
+  }
 }
 
 void rsModulationSetup::addConnection(int index)

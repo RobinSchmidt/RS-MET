@@ -121,6 +121,15 @@ const juce::String& RPopUpMenu::getSelectedText() const
     return String::empty;
 }
 
+int RPopUpMenu::getSelectedIdentifier() const
+{
+  RTreeViewNode *selectedItem = getSelectedItem();
+  if(selectedItem == nullptr)
+    return 0;
+  else
+    return selectedItem->getNodeIdentifier();
+}
+
 void RPopUpMenu::treeNodeClicked(RTreeView *treeView, RTreeViewNode *nodeThatWasClicked,
   const MouseEvent &mouseEvent, int clickPosition)
 {

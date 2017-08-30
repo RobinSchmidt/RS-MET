@@ -3,6 +3,8 @@ ModulationSystem:
  -there should be a Modulators section with sliders and and Add... option. right-click on 
   modulation sliders opens a menu where the user can adjust the min/max values of the slider,
   absolute vs relative modulation and delete the modulation connection
+-BUG: add/remove twice -> access violation
+
 -test modulation with breakpoints/ladder
 
 
