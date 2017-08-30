@@ -20,7 +20,7 @@ public:
   virtual ~rsModulationSetup();
 
   // callbacks:
-  virtual void paint(Graphics& g) override;
+  //virtual void paint(Graphics& g) override;
   virtual void resized() override;
   virtual void rButtonClicked(RButton *button) override;
   virtual void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged) override;
@@ -56,6 +56,8 @@ protected:
   RButton* addButton;
   RClickButton* closeButton;
   RPopUpMenu *sourcesPopUp = nullptr; // created when needed the first time
+
+  static const int sliderHeight = 16, sliderDistance = 4;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsModulationSetup)
 };

@@ -340,7 +340,7 @@ void RSlider::mouseDrag(const MouseEvent& e)
       x = proportionOfLengthToValue(x);                        // convert to value
       setValue(constrainAndQuantizeValue(x), true, false);     // set it
 
-      //// old, has issues when pressing/releasing shift during drag:
+      //// old, has value jump issues when pressing/releasing shift during drag:
       //double x = valueToProportionOfLength(valueOnMouseDown);  // in 0..1
       //x += scale * e.getDistanceFromDragStartX();              // new x
       //x = clip(x, 0, 1);

@@ -23,10 +23,10 @@ rsModulationSetup::~rsModulationSetup()
   delete sourcesPopUp;
 }
 
-void rsModulationSetup::paint(Graphics& g)
-{
-  g.fillAll(Colours::grey); // preliminary
-}
+//void rsModulationSetup::paint(Graphics& g)
+//{
+//  ColourSchemeComponent::paint(g);
+//}
 
 void rsModulationSetup::resized()
 {
@@ -34,18 +34,13 @@ void rsModulationSetup::resized()
   int y   = 4;
   int w   = getWidth();
   int h   = getHeight();
-  int sh  = 16;           // slider height
-  int inc = sh+4;
+  int sh  = sliderHeight;
+  int inc = sh+sliderDistance;
 
   closeButton->setBounds(w-16, 0, 16, 16);
   modulationsLabel->setBounds(x, y, w-8-16, sh); y += inc; 
-
-  for(int i = 0; i < size(amountSliders); i++)
-  {
-    amountSliders[i]->setBounds(x, y, w-8, sh);
-    y += inc;
-  }
-
+  for(int i = 0; i < size(amountSliders); i++) {
+    amountSliders[i]->setBounds(x, y, w-8, sh); y += inc; }
   y = h - sh - 4;
   addButton->setBounds(x, y, 40, 16);
 }
@@ -157,15 +152,21 @@ void rsModulationSetup::addSliderFor(MetaControlledParameter* p)
   AutomatableSlider* s = new AutomatableSlider();
   amountSliders.push_back(s);
   s->assignParameter(p);
-  // the slider needs a name that reflects the name of the ModulationSource
+  // the slider needs a name that reflects the name of the ModulationSource ...but first the 
+  // ModulationSource itself needs a proper name - i think, the slider will then use that too
   addWidget(s);
   updateSize();
 }
 
 void rsModulationSetup::updateSize()
 {
-  setSize(200, 100);  // preliminary - maybe we should use the widget's width...but maybe not
+  int width  = 200;  // maybe we should use the widget's width...but maybe not
+  int height = 100;  // preliminary
 
+  height  = (sliderHeight+sliderDistance) * size(amountSliders);
+  height += 44;
+
+  setSize(width, height); 
   resized(); // needed during development - might be redundant when finished
 }
 
