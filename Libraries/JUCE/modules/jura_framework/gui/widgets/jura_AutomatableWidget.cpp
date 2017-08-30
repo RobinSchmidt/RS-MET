@@ -26,6 +26,7 @@ rsModulationSetup::rsModulationSetup(AutomatableWidget* widgetToModulate)
 rsModulationSetup::~rsModulationSetup()
 {
   delete connectableSourcesPopUp;
+  delete removableSourcesPopUp;
 }
 
 //void rsModulationSetup::paint(Graphics& g)
@@ -186,7 +187,9 @@ void rsModulationSetup::addSliderFor(MetaControlledParameter* p)
 
 void rsModulationSetup::clearAmountSliders()
 {
-  // not yet implemented
+  for(int i = 0; i < size(amountSliders); i++)
+    removeWidget(amountSliders[i], true, true);
+  amountSliders.clear();
 }
 
 void rsModulationSetup::updateSize()

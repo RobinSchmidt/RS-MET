@@ -67,6 +67,7 @@ protected:
   RButton *addButton, *removeButton;
   RClickButton* closeButton;
   RPopUpMenu *connectableSourcesPopUp = nullptr; // created when needed the first time
+  RPopUpMenu *removableSourcesPopUp   = nullptr; // ditto
 
   static const int sliderHeight = 16, sliderDistance = 4;
 
