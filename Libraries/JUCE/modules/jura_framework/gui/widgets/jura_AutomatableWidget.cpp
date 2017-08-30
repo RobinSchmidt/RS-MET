@@ -162,7 +162,30 @@ void rsModulationSetup::showConnectableSourcesPopUp()
 
 void rsModulationSetup::showRemovableSourcesPopUp()
 {
-  // not yet implemented
+  // lots of code duplication from showConnectableSourcesPopUp - can this be refactored?
+
+  if(removableSourcesPopUp == nullptr)
+  {
+    removableSourcesPopUp = new RPopUpMenu(this);
+    removableSourcesPopUp->registerPopUpMenuObserver(this);
+    removableSourcesPopUp->setDismissOnFocusLoss(true);
+  }
+
+  removableSourcesPopUp->clear();
+  ModulatableParameter* mp = widget->getModulatableParameter();
+  if(mp != nullptr)
+  {
+    std::vector<ModulationSource*> sources = mp->getConnectedSources();
+    for(int i = 0; i < size(sources); i++)
+    {
+      juce::String name = sources[i]->getModulationSourceName();
+      removableSourcesPopUp->addItem(i+1, name);
+    }
+  }
+
+  int w = removableSourcesPopUp->getRequiredWidth(true);
+  int h = removableSourcesPopUp->getRequiredHeight(true);
+  removableSourcesPopUp->show(true, RPopUpComponent::BELOW, w, h);
 }
 
 bool rsModulationSetup::hasSlider(MetaControlledParameter* p)
