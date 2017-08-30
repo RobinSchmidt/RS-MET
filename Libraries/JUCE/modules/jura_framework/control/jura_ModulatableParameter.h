@@ -194,12 +194,19 @@ public:
   /** Adds a ModulationSource to this ModulationTarget. The amount of modulation is initially 0. */
   void addModulationSource(ModulationSource* source);
 
+  /** Removes a ModulationSource from this ModulationTarget. */
+  void removeModulationSource(ModulationSource* source);
+
   /** Returns true, if there's a connection between this ModulationTarget and the given 
   ModulationSource. */
   bool isConnectedTo(ModulationSource* source);
 
-  /** Returns a vector of pointers to ModulationSources which are not connected to this 
+  /** Returns a vector of pointers to the ModulationSources which are connected to this 
   ModulationTarget. */
+  std::vector<ModulationSource*> getConnectedSources();
+
+  /** Returns a vector of pointers to the available ModulationSources which are not connected to 
+  this ModulationTarget. */
   std::vector<ModulationSource*> getDisconnectedSources();
 
   /** Returns a vector of pointers to ModulationConnections that are incoming into this 

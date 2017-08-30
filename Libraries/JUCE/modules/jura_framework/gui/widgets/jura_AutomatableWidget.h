@@ -31,12 +31,19 @@ protected:
   the source with given index among the available and not yet connected sources. */
   void addConnection(int index);
 
+  /** Removes a modulation connection between the ModulationTarget (underlying our widget member) 
+  and the source with given index among the connected sources. */
+  void removeConnection(int index);
+
   /** Creates or removes sliders for the modulation amounts according to the existing 
   connections. */
   void updateAmountSliderArray();
 
   /** Shows the popup menu with the available (and not yet connected) ModulationSources. */
   void showConnectableSourcesPopUp();
+
+  /** Shows the popup menu with the connected ModulationSources (for removal). */
+  void showConnectedSourcesPopUp();
 
   /** Returns true, if we have a slider associated with the passed parameter. */
   bool hasSlider(MetaControlledParameter* p);
@@ -53,7 +60,7 @@ protected:
   // owned widgets:
   RTextField* modulationsLabel;
   std::vector<AutomatableSlider*> amountSliders;
-  RButton* addButton;
+  RButton *addButton, *removeButton;
   RClickButton* closeButton;
   RPopUpMenu *sourcesPopUp = nullptr; // created when needed the first time
 

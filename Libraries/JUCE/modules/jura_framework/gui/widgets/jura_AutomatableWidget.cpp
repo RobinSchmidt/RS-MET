@@ -15,6 +15,11 @@ rsModulationSetup::rsModulationSetup(AutomatableWidget* widgetToModulate)
   addButton->setClickingTogglesState(false);
   addButton->addRButtonListener(this);
 
+  addWidget( removeButton = new RButton("Remove") );
+  removeButton->setDescription(juce::String("Removes an existing modulation connection"));
+  removeButton->setClickingTogglesState(false);
+  removeButton->addRButtonListener(this);
+
   updateAmountSliderArray();
 }
 
@@ -30,19 +35,22 @@ rsModulationSetup::~rsModulationSetup()
 
 void rsModulationSetup::resized()
 {
-  int x   = 4;
-  int y   = 4;
+  int d   = sliderDistance;
+  int x   = d;
+  int y   = d;
   int w   = getWidth();
   int h   = getHeight();
   int sh  = sliderHeight;
-  int inc = sh+sliderDistance;
+  int inc = sh+d;
 
   closeButton->setBounds(w-16, 0, 16, 16);
   modulationsLabel->setBounds(x, y, w-8-16, sh); y += inc; 
   for(int i = 0; i < size(amountSliders); i++) {
     amountSliders[i]->setBounds(x, y, w-8, sh); y += inc; }
-  y = h - sh - 4;
+  y = h - sh - d;
   addButton->setBounds(x, y, 40, 16);
+  x = addButton->getRight() + d;
+  removeButton->setBounds(x, y, 60, 16);
 }
 
 void rsModulationSetup::rButtonClicked(RButton *button)
@@ -51,6 +59,8 @@ void rsModulationSetup::rButtonClicked(RButton *button)
     requestDeletion();
   else if(button == addButton)
     showConnectableSourcesPopUp();
+  else if(button == removeButton)
+    showConnectedSourcesPopUp();
 }
 
 void rsModulationSetup::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
@@ -86,6 +96,17 @@ void rsModulationSetup::addConnection(int index)
   updateAmountSliderArray(); // actually, it's not necessary here to check in the existing
                              // slider array if the slider already exist (it doesn't), so we could
                              // have a function addSliderFor(MetaControlledParameter* p)
+}
+
+void rsModulationSetup::removeConnection(int index)
+{
+  ModulatableParameter* mp = widget->getModulatableParameter();
+  if(mp != nullptr)
+  {
+    std::vector<ModulationSource*> sources = mp->getConnectedSources();
+    mp->removeModulationSource(sources[index]);
+  }
+  updateAmountSliderArray(); 
 }
 
 void rsModulationSetup::updateAmountSliderArray()
@@ -135,6 +156,11 @@ void rsModulationSetup::showConnectableSourcesPopUp()
   int w = sourcesPopUp->getRequiredWidth(true);
   int h = sourcesPopUp->getRequiredHeight(true);
   sourcesPopUp->show(true, RPopUpComponent::BELOW, w, h); // showModally = true
+}
+
+void rsModulationSetup::showConnectedSourcesPopUp()
+{
+  // not yet implemented
 }
 
 bool rsModulationSetup::hasSlider(MetaControlledParameter* p)

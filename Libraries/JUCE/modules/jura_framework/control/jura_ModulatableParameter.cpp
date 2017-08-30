@@ -71,11 +71,32 @@ void ModulationTarget::addModulationSource(ModulationSource* source)
     modManager->addConnection(source, this);
 }
 
+void ModulationTarget::removeModulationSource(ModulationSource* source)
+{
+  if(modManager)
+    modManager->removeConnection(source, this);
+}
+
 bool ModulationTarget::isConnectedTo(ModulationSource* source)
 {
   if(modManager)
     return modManager->isConnected(source, this);
   return false;
+}
+
+std::vector<ModulationSource*> ModulationTarget::getConnectedSources()
+{
+  std::vector<ModulationSource*> result;
+  if(modManager)
+  {
+    const std::vector<ModulationSource*>& allSources = modManager->getAvailableModulationSources();
+    for(int i = 0; i < size(allSources); i++)
+    {
+      if(this->isConnectedTo(allSources[i]))
+        result.push_back(allSources[i]);
+    }
+  }
+  return result;
 }
 
 std::vector<ModulationSource*> ModulationTarget::getDisconnectedSources()
@@ -86,8 +107,8 @@ std::vector<ModulationSource*> ModulationTarget::getDisconnectedSources()
     const std::vector<ModulationSource*>& allSources = modManager->getAvailableModulationSources();
     for(int i = 0; i < size(allSources); i++)
     {
-      if(!this->isConnectedTo(allSources[i]))
-        result.push_back(allSources[i]);
+      if(!this->isConnectedTo(allSources[i])) // ! is only difference to getConnectedSources, maybe
+        result.push_back(allSources[i]);      // we can refactor to avoid code duplication
     }
   }
   return result;
