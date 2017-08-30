@@ -43,13 +43,17 @@ protected:
   void showConnectableSourcesPopUp();
 
   /** Shows the popup menu with the connected ModulationSources (for removal). */
-  void showConnectedSourcesPopUp();
+  void showRemovableSourcesPopUp();
 
   /** Returns true, if we have a slider associated with the passed parameter. */
   bool hasSlider(MetaControlledParameter* p);
 
   /** Adds a slider for the passed parameter to our amountSliders array. */
-  void addSliderFor(MetaControlledParameter* p);
+  void addSliderFor(MetaControlledParameter* p); 
+   // rename to addAmountSliderFor
+
+  /** Clears the array of amount sliders. */
+  void clearAmountSliders();
 
   /** Updates the size in order to provide space for all required widgets. */
   void updateSize();
@@ -62,7 +66,7 @@ protected:
   std::vector<AutomatableSlider*> amountSliders;
   RButton *addButton, *removeButton;
   RClickButton* closeButton;
-  RPopUpMenu *sourcesPopUp = nullptr; // created when needed the first time
+  RPopUpMenu *connectableSourcesPopUp = nullptr; // created when needed the first time
 
   static const int sliderHeight = 16, sliderDistance = 4;
 

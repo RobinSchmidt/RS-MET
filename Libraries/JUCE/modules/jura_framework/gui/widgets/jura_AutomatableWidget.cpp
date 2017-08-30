@@ -25,7 +25,7 @@ rsModulationSetup::rsModulationSetup(AutomatableWidget* widgetToModulate)
 
 rsModulationSetup::~rsModulationSetup()
 {
-  delete sourcesPopUp;
+  delete connectableSourcesPopUp;
 }
 
 //void rsModulationSetup::paint(Graphics& g)
@@ -60,16 +60,16 @@ void rsModulationSetup::rButtonClicked(RButton *button)
   else if(button == addButton)
     showConnectableSourcesPopUp();
   else if(button == removeButton)
-    showConnectedSourcesPopUp();
+    showRemovableSourcesPopUp();
 }
 
 void rsModulationSetup::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
 {
-  jassert(menuThatHasChanged == sourcesPopUp);
+  jassert(menuThatHasChanged == connectableSourcesPopUp);
 
   // todo: wrap this into a member function of RPopUpMenu::getSelectedIdentifier (it's used 
   // multiple times):
-  RTreeViewNode *selectedItem = sourcesPopUp->getSelectedItem();
+  RTreeViewNode *selectedItem = connectableSourcesPopUp->getSelectedItem();
   if(selectedItem == nullptr)
     return;
   int selectedIdentifier = selectedItem->getNodeIdentifier();
@@ -103,17 +103,19 @@ void rsModulationSetup::removeConnection(int index)
   ModulatableParameter* mp = widget->getModulatableParameter();
   if(mp != nullptr)
   {
+    // removeSliderFor(amountParam)
     std::vector<ModulationSource*> sources = mp->getConnectedSources();
     mp->removeModulationSource(sources[index]);
   }
   updateAmountSliderArray(); 
+
+  // actually, instead of doing this, we could just remove the 1 affected amount-slider before
+  // before removing the source/connection
 }
 
 void rsModulationSetup::updateAmountSliderArray()
 {
-  // todo: remove all sliders for which there is no connection and create sliders for existing 
-  // connections that do not yet have a slider
-
+  clearAmountSliders();
   ModulatableParameter* mp = widget->getModulatableParameter();
   if(mp != nullptr)
   {
@@ -131,34 +133,33 @@ void rsModulationSetup::updateAmountSliderArray()
 void rsModulationSetup::showConnectableSourcesPopUp()
 {
   // create popup, if necessary:
-  if(sourcesPopUp == nullptr)
+  if(connectableSourcesPopUp == nullptr)
   {
-    sourcesPopUp = new RPopUpMenu(this); // maybe attach to the addButton instead of this?
-    sourcesPopUp->registerPopUpMenuObserver(this); // uncomment later
-    sourcesPopUp->setDismissOnFocusLoss(true);
+    connectableSourcesPopUp = new RPopUpMenu(this); // maybe attach to the addButton instead of this?
+    connectableSourcesPopUp->registerPopUpMenuObserver(this);
+    connectableSourcesPopUp->setDismissOnFocusLoss(true);
   }
 
   // populate it:
-  sourcesPopUp->clear();
+  connectableSourcesPopUp->clear();
   ModulatableParameter* mp = widget->getModulatableParameter();
   if(mp != nullptr)
   {
     std::vector<ModulationSource*> sources = mp->getDisconnectedSources();
     for(int i = 0; i < size(sources); i++)
     {
-      //juce::String name = "Source " + juce::String(i); // preliminary - todo: retrieve name
       juce::String name = sources[i]->getModulationSourceName();
-      sourcesPopUp->addItem(i+1, name);                // +1 bcs 0 is not allowed for the id
+      connectableSourcesPopUp->addItem(i+1, name);     // +1 bcs 0 is not allowed for the id
     }
   }
 
   // show it:
-  int w = sourcesPopUp->getRequiredWidth(true);
-  int h = sourcesPopUp->getRequiredHeight(true);
-  sourcesPopUp->show(true, RPopUpComponent::BELOW, w, h); // showModally = true
+  int w = connectableSourcesPopUp->getRequiredWidth(true);
+  int h = connectableSourcesPopUp->getRequiredHeight(true);
+  connectableSourcesPopUp->show(true, RPopUpComponent::BELOW, w, h); // showModally = true
 }
 
-void rsModulationSetup::showConnectedSourcesPopUp()
+void rsModulationSetup::showRemovableSourcesPopUp()
 {
   // not yet implemented
 }
@@ -179,10 +180,13 @@ void rsModulationSetup::addSliderFor(MetaControlledParameter* p)
   AutomatableSlider* s = new AutomatableSlider();
   amountSliders.push_back(s);
   s->assignParameter(p);
-  // the slider needs a name that reflects the name of the ModulationSource ...but first the 
-  // ModulationSource itself needs a proper name - i think, the slider will then use that too
   addWidget(s);
   updateSize();
+}
+
+void rsModulationSetup::clearAmountSliders()
+{
+  // not yet implemented
 }
 
 void rsModulationSetup::updateSize()
