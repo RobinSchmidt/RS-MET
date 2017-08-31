@@ -249,7 +249,7 @@ public:
   ModulationConnection(ModulationSource* source, ModulationTarget* target);
 
   /** Destructor. */
-  virtual ~ModulationConnection(); // make non-virtual
+  virtual ~ModulationConnection(); // maybe make non-virtual
 
   /** Sets the modulation amount for this connection. */
   void setAmount(double newAmount)
@@ -278,6 +278,11 @@ public:
 
     *targetValue += *sourceValue * amount * scaler; // only this line shall remain after optimization
   }
+
+
+  /** Returns a xml element containing the information about this connection (needed for state 
+  save/recall in ModulationManager) */
+  XmlElement* getAsXml();
 
 
 protected:
@@ -384,11 +389,10 @@ public:
   /** \name Misc */
 
   /** Recalls a state (i.e. all the connections and their settings) from an XmlElement. */
-  virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 
-    bool markAsClean);
+  virtual void setStateFromXml(const XmlElement& xmlState);
 
   /** Returns the state (i.e. all the connections and their settings) in form of an XmlElement. */
-  virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean);
+  virtual XmlElement* getStateAsXml();
 
 protected:
 

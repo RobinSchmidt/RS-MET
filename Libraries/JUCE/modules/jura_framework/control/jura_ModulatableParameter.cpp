@@ -158,6 +158,28 @@ ModulationConnection::~ModulationConnection()
   delete amountParam;
 }
 
+XmlElement* ModulationConnection::getAsXml()
+{
+  XmlElement* xml = new XmlElement("Connection");
+
+  xml->setAttribute("Source", source->getModulationSourceName());
+  xml->setAttribute("Target", target->getModulationTargetName());
+  xml->setAttribute("Amount", amount); // maybe use "Depth" instead of "Amount"?
+  juce::String modeString;
+  if(relative)
+    modeString = "Relative";
+  else
+    modeString = "Absolute";
+    // we do it like this in order to be able to define more modes later - like Multiplicative
+    // or whatever
+
+  xml->setAttribute("Mode", modeString);
+  return xml;
+
+  // maybe move this function into ModulationManager as 
+  // getConnectionXml(ModulationConnection *c);
+}
+
 //-------------------------------------------------------------------------------------------------
 
 ModulationManager::ModulationManager(CriticalSection* lockToUse)
@@ -316,15 +338,28 @@ int ModulationManager::numRegisteredSourcesOfType(ModulationSource* source)
   return result;
 }
 
-void ModulationManager::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
-  bool markAsClean)
+void ModulationManager::setStateFromXml(const XmlElement& xmlState)
 {
+  ScopedLock scopedLock(*modLock); 
   jassertfalse; // not yet implemented
 }
 
-XmlElement* ModulationManager::getStateAsXml(const juce::String& stateName, bool markAsClean)
+XmlElement* ModulationManager::getStateAsXml()
 {
-  jassertfalse; // not yet implemented
+  ScopedLock scopedLock(*modLock); 
+  //jassertfalse; // not yet implemented
 
-  return nullptr; // preliminary
+  // maybe we should return a nullptr in case, the modulationConnections array is empty? will this 
+  // work? the desired result is that the xml child-element which would store the modulation 
+  // settings will be absent from the preset file.
+
+  XmlElement* xmlState = new XmlElement("Modulations");
+  ModulationConnection* c;
+  for(int i = 0; i < size(modulationConnections); i++)
+  {
+    c = modulationConnections[i];
+    XmlElement* connectionXml = c->getAsXml();
+    xmlState->addChildElement(connectionXml);
+  }
+  return xmlState; // preliminary
 }
