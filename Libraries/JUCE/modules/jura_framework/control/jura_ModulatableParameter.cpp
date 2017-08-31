@@ -315,3 +315,16 @@ int ModulationManager::numRegisteredSourcesOfType(ModulationSource* source)
   }
   return result;
 }
+
+void ModulationManager::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
+  bool markAsClean)
+{
+  jassertfalse; // not yet implemented
+}
+
+XmlElement* ModulationManager::getStateAsXml(const juce::String& stateName, bool markAsClean)
+{
+  jassertfalse; // not yet implemented
+
+  return nullptr; // preliminary
+}

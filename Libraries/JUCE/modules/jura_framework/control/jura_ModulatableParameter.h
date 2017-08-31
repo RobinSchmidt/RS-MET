@@ -380,6 +380,16 @@ public:
   unique identification of the source). */
   int numRegisteredSourcesOfType(ModulationSource* source);
 
+
+  /** \name Misc */
+
+  /** Recalls a state (i.e. all the connections and their settings) from an XmlElement. */
+  virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 
+    bool markAsClean);
+
+  /** Returns the state (i.e. all the connections and their settings) in form of an XmlElement. */
+  virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean);
+
 protected:
 
   std::vector<ModulationSource*> availableSources;
