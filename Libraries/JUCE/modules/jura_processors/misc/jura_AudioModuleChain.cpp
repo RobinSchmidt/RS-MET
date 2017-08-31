@@ -467,6 +467,7 @@ XmlElement* AudioModuleChain::getStateAsXml(const juce::String& stateName, bool 
     child->addChildElement(modules[i]->getStateAsXml(typeString, markAsClean));
     xml->addChildElement(child);
   }
+  xml->addChildElement(ModulationManager::getStateAsXml());
   return xml;
 }
 

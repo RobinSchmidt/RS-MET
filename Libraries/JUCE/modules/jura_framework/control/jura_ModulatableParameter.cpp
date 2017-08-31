@@ -143,7 +143,6 @@ ModulationConnection::ModulationConnection(ModulationSource* _source, Modulation
   targetValue = &(target->modulatedValue);
 
   juce::String name = source->getModulationSourceName();
-  //amountParam = new MetaControlledParameter("Amount", -1.0, 1.0, 0.0, Parameter::LINEAR, 0.0);
   amountParam = new MetaControlledParameter(name, -1.0, 1.0, 0.0, Parameter::LINEAR, 0.0);
   amountParam->setValueChangeCallback<ModulationConnection>(this, 
     &ModulationConnection::setAmount);
@@ -164,7 +163,7 @@ XmlElement* ModulationConnection::getAsXml()
 
   xml->setAttribute("Source", source->getModulationSourceName());
   xml->setAttribute("Target", target->getModulationTargetName());
-  xml->setAttribute("Amount", amount); // maybe use "Depth" instead of "Amount"?
+  xml->setAttribute("Depth",  amount);
   juce::String modeString;
   if(relative)
     modeString = "Relative";
@@ -347,11 +346,9 @@ void ModulationManager::setStateFromXml(const XmlElement& xmlState)
 XmlElement* ModulationManager::getStateAsXml()
 {
   ScopedLock scopedLock(*modLock); 
-  //jassertfalse; // not yet implemented
 
-  // maybe we should return a nullptr in case, the modulationConnections array is empty? will this 
-  // work? the desired result is that the xml child-element which would store the modulation 
-  // settings will be absent from the preset file.
+  if(size(modulationConnections) == 0)
+    return nullptr; // "Modulations" child-element will be absent from preset file
 
   XmlElement* xmlState = new XmlElement("Modulations");
   ModulationConnection* c;
@@ -360,6 +357,7 @@ XmlElement* ModulationManager::getStateAsXml()
     c = modulationConnections[i];
     XmlElement* connectionXml = c->getAsXml();
     xmlState->addChildElement(connectionXml);
+    // these 3 lines can be almagamated into one
   }
-  return xmlState; // preliminary
+  return xmlState;
 }
