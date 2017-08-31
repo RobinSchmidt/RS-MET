@@ -361,3 +361,23 @@ XmlElement* ModulationManager::getStateAsXml()
   }
   return xmlState;
 }
+
+//-------------------------------------------------------------------------------------------------
+
+juce::String ModulatableParameter::getModulationTargetName()
+{
+  if(ownerModule == nullptr)
+  {
+    jassertfalse; // You need to set the owner via setOwnerAudioModule, so we can use that to 
+                  // generate a unique name.
+    return String::empty;
+  }
+  else
+  {
+    jassertfalse; // not yet implemented
+    return String::empty; // preliminary
+    // We somehow need to figure out the full "path" to this parameter in the tree of AudioModules.
+    // In the Chainer, this should also include the slot number. Such a path could look like:
+    // Slot1/Straightliner/OscSection/Osc3/Tune
+  }
+}

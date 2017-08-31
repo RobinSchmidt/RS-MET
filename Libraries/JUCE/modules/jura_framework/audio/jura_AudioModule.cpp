@@ -500,7 +500,10 @@ void AudioModuleWithModulatableParams::addObservedParameter(Parameter* p)
   AudioModule::addObservedParameter(p);
   ModulatableParameter* mp = dynamic_cast<ModulatableParameter*> (p);
   if(mp != nullptr)
+  {
     registerModulationTarget(mp);
+    mp->setOwnerAudioModule(this);
+  }
 }
 
 //=================================================================================================

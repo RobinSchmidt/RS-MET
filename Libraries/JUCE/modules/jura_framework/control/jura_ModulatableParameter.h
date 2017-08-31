@@ -408,6 +408,8 @@ protected:
 
 //=================================================================================================
 
+class AudioModule; // ModulatableParameter needs a pointer to its owning AudioModule
+
 /** A subclass of Parameter that is suitable as target for modulations by also being a subclass of
 ModulationTarget. */
 
@@ -429,6 +431,9 @@ public:
   }
 
 
+  /** Sets up the pointer to our owner, i.e. the AudioModule that contains this parameter. */
+  void setOwnerAudioModule(AudioModule *newOwner) { ownerModule = newOwner; }
+
   /** We suppose that modulatedValue of the ModulationTarget baseclass has already been computed, 
   i.e. ModulationTarget::computeModulatedValue has been called, such that modulatedValue has a 
   legitimate value with all modulations applied. Here we pull out this modulated value and call our 
@@ -446,13 +451,15 @@ public:
     callCallbackWithModulatedValue();
   }
 
-  virtual juce::String getModulationTargetName() override
-  {
-    jassertfalse; // not yet implemented
-    return String::empty;
-  }
+  /** Returns the unique name of this modulation target that is used to identify it in state 
+  recall. */
+  virtual juce::String getModulationTargetName() override;
 
 protected:
+
+
+  AudioModule* ownerModule = nullptr; // needed to create the unique name for state recall
+  // maybe we could use the ParameterManager baseclass of AudioModule here
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulatableParameter)
 };
