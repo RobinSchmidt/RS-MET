@@ -202,7 +202,8 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
 
 //=================================================================================================
 
-AudioModuleChain::AudioModuleChain(CriticalSection *lockToUse) : AudioModuleWithMidiIn(lockToUse)
+AudioModuleChain::AudioModuleChain(CriticalSection *lockToUse) 
+  : AudioModuleWithMidiIn(lockToUse), ModulationManager(lockToUse)
 {
   ScopedLock scopedLock(*lock);
   moduleName = "Chainer";
@@ -374,20 +375,16 @@ void AudioModuleChain::processBlock(double **inOutBuffer, int numChannels, int n
     // then compute a sample-frame from each non-modulator module
     for(int n = 0; n < numSamples; n++)
     {
-      ModulationManager::applyModulations();
+      ModulationManager::applyModulationsNoLock();
       for(int i = 0; i < size(modules); i++)
       {
-        // for debug:
-        double left  = inOutBuffer[0][n];
-        double right = inOutBuffer[1][n];
-        // are 0 - why - maybe Straightliner doesn't override processStereoFrame
-
+        //// for debug:
+        //double left  = inOutBuffer[0][n];
+        //double right = inOutBuffer[1][n];
 
         modules[i]->processStereoFrame(&inOutBuffer[0][n], &inOutBuffer[1][n]);
-        //jassertfalse;
-        // \todo: compute sample-frame for module i and sample-index n, but only if module i is 
-        // not a ModulationSource...hmm...using dynamic_cast will be inefficient, maybe just leave
-        // overriden processSampleFrame empty in modulation AudioModules
+        // AudioModules that are subclasses of ModulationSource have not overriden this function.
+        // That means, they inherit the empty baseclass method and do nothing in this call.
       }
     }
   }

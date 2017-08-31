@@ -342,8 +342,10 @@ class JUCE_API ModulationManager
 
 public:
 
-  /** Constructor */
-  ModulationManager() {}
+  /** Constructor. You must pass a CriticalSection object that will be used to access our arrays of
+  sources, targets and connections (they are accessed from the gui and audio-thread, so the 
+  accesses have to mutexed). */
+  ModulationManager(CriticalSection *lockToUse);
 
   /** Destructor */
   virtual ~ModulationManager();
@@ -352,6 +354,10 @@ public:
   from outside code once per sample before the per-sample functions of the actual dsp-algorithms 
   (oscs, filters, whatever) are called. */
   void applyModulations();
+
+  /** Same as applyModulations() but it doesn'T acquire the mutex-lock. This should be used in cases 
+  where the caller already has acquired the lock. */
+  void applyModulationsNoLock();
 
 
   /** \name Connection setup */
@@ -418,6 +424,8 @@ protected:
   std::vector<ModulationTarget*> availableTargets; // do we need this? if not, remove
   std::vector<ModulationTarget*> affectedTargets;
   std::vector<ModulationConnection*> modulationConnections;
+
+  CriticalSection *modLock = nullptr; 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationManager)
 };

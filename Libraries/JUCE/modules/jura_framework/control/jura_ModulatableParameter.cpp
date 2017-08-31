@@ -160,12 +160,24 @@ ModulationConnection::~ModulationConnection()
 
 //-------------------------------------------------------------------------------------------------
 
+ModulationManager::ModulationManager(CriticalSection* lockToUse)
+{
+  modLock = lockToUse;
+}
+
 ModulationManager::~ModulationManager() 
 {
+  ScopedLock scopedLock(*modLock);
   removeAllConnections();
 }
 
 void ModulationManager::applyModulations()
+{
+  ScopedLock scopedLock(*modLock); 
+  applyModulationsNoLock();
+}
+
+void ModulationManager::applyModulationsNoLock()
 {
   int i;
 
@@ -189,6 +201,7 @@ void ModulationManager::applyModulations()
 
 void ModulationManager::addConnection(ModulationSource* source, ModulationTarget* target)
 {
+  ScopedLock scopedLock(*modLock); 
   jassert(!isConnected(source, target)); // there is already a connection between source and target
   modulationConnections.push_back(new ModulationConnection(source, target));
   appendIfNotAlreadyThere(affectedTargets, target);
@@ -199,8 +212,8 @@ void ModulationManager::addConnection(ModulationSource* source, ModulationTarget
 
 void ModulationManager::removeConnection(ModulationSource* source, ModulationTarget* target)
 {
+  ScopedLock scopedLock(*modLock); 
   jassert(isConnected(source, target)); // trying to remove no-existent connection
-
   for(int i = 0; i < size(modulationConnections); i++)
   {
     if(modulationConnections[i]->source == source && modulationConnections[i]->target == target)
@@ -209,13 +222,13 @@ void ModulationManager::removeConnection(ModulationSource* source, ModulationTar
       remove(modulationConnections, i);
     }
   }
-
   jassert(!isConnected(source, target)); // there must have been more than one connection between
                                          // given source and target - that should not happen
 }
 
 void ModulationManager::removeAllConnections()
 {
+  ScopedLock scopedLock(*modLock); 
   for(int i = 0; i < size(modulationConnections); i++)
     delete modulationConnections[i];
   modulationConnections.clear();
@@ -223,6 +236,7 @@ void ModulationManager::removeAllConnections()
 
 void ModulationManager::removeConnectionsWith(ModulationSource* source)
 {
+  ScopedLock scopedLock(*modLock); 
   for(int i = 0; i < size(modulationConnections); i++)
   {
     if(modulationConnections[i]->source == source)
@@ -236,6 +250,7 @@ void ModulationManager::removeConnectionsWith(ModulationSource* source)
 
 void ModulationManager::removeConnectionsWith(ModulationTarget* target)
 {
+  ScopedLock scopedLock(*modLock); 
   for(int i = 0; i < size(modulationConnections); i++)
   {
     if(modulationConnections[i]->target == target)
@@ -249,12 +264,14 @@ void ModulationManager::removeConnectionsWith(ModulationTarget* target)
 
 void ModulationManager::registerModulationSource(ModulationSource* source)
 {
+  ScopedLock scopedLock(*modLock); 
   appendIfNotAlreadyThere(availableSources, source);
   source->setModulationManager(this);
 }
 
 void ModulationManager::deRegisterModulationSource(ModulationSource* source)
 {
+  ScopedLock scopedLock(*modLock); 
   jassert(contains(availableSources, source)); // source was never registered
   removeFirstOccurrence(availableSources, source);
   removeConnectionsWith(source);
@@ -263,12 +280,14 @@ void ModulationManager::deRegisterModulationSource(ModulationSource* source)
 
 void ModulationManager::registerModulationTarget(ModulationTarget* target)
 {
+  ScopedLock scopedLock(*modLock); 
   appendIfNotAlreadyThere(availableTargets, target);
   target->setModulationManager(this);
 }
 
 void ModulationManager::deRegisterModulationTarget(ModulationTarget* target)
 {
+  ScopedLock scopedLock(*modLock); 
   jassert(contains(availableTargets, target)); // target was never registered
   removeFirstOccurrence(availableTargets, target);
   removeFirstOccurrence(affectedTargets,  target);
@@ -278,6 +297,7 @@ void ModulationManager::deRegisterModulationTarget(ModulationTarget* target)
 
 bool ModulationManager::isConnected(ModulationSource* source, ModulationTarget* target)
 {
+  ScopedLock scopedLock(*modLock); 
   for(int i = 0; i < size(modulationConnections); i++)
     if(modulationConnections[i]->source == source && modulationConnections[i]->target == target)
       return true;
@@ -286,6 +306,7 @@ bool ModulationManager::isConnected(ModulationSource* source, ModulationTarget* 
 
 int ModulationManager::numRegisteredSourcesOfType(ModulationSource* source)
 {
+  ScopedLock scopedLock(*modLock); 
   int result = 0;
   for(int i = 0; i < size(availableSources); i++)
   {
