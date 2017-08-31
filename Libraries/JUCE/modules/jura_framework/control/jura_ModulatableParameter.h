@@ -40,11 +40,9 @@ maybe make the class hierarchy like this:
 Parameter <- MetaControlledParameter <- ModulatableParameter <- PolyphonicParameter
 
 ToDo:
--make it thread-safe
 -implement state recall
 -let the user set up the min/max amount values
 -let the user select absolute or relative modulation
--clean up the code
 -optimize, where possible
 -test in practice
 
@@ -216,48 +214,15 @@ public:
   ModulationTarget. */
   std::vector<ModulationConnection*> getConnections();
 
-
-
-
-  /** Adds a ModulationSource to this ModulationTarget with an optional modulation amount. */
-  //void addModulationSource(ModulationSource* source, double amount = 0)
-  //{
-  //  //source->addModulationTarget(this);
-  //  //appendIfNotAlreadyThere(sources,      source);
-  //  //appendIfNotAlreadyThere(sourceValues, source->getModulationValuePointer());
-  //}
-
-  /** Removes the ModulationSource with given index from this ModulationTarget. */
-  //void removeModulationSource(int index)
-  //{
-  //  //sources[index]->removeModulationTarget(this);
-  //  //remove(sources,      index);
-  //  //remove(sourceValues, index);
-  //}
-
-  /** Removes the given ModulationSource from this ModulationTarget. */
-  //void removeModulationSource(ModulationSource* source)
-  //{
-  //  //int index = find(sources, source);
-  //  //removeModulationSource(index);
-  //}
-
-  /** Sets the amount by which the ModulationSource with given index modulates this 
-  ModulationTarget. */
-  //void setModulationAmount(int sourceIndex, double newAmount)
-  //{
-  //  //amounts[sourceIndex] = newAmount;
-  //}
-  // hmm...index with respect to what array? maybe we should pass a source-pointer instead of an
-  // index
-
   /** Initialized the modulated value by setting it to the unmodulated value. */
   inline void initModulatedValue()
   {
     modulatedValue = unmodulatedValue;
   }
 
-  //juce::String getModulationTargetName() = 0;
+  /** This function must be overriden by subclasses to return a unique name that can be used to 
+  identify the target in state recall. */
+  virtual juce::String getModulationTargetName() = 0;
 
 protected:
 
@@ -415,13 +380,10 @@ public:
   unique identification of the source). */
   int numRegisteredSourcesOfType(ModulationSource* source);
 
-
-
-
 protected:
 
   std::vector<ModulationSource*> availableSources;
-  std::vector<ModulationTarget*> availableTargets; // do we need this? if not, remove
+  std::vector<ModulationTarget*> availableTargets; // do we need this? maybe for state recall? if not, remove
   std::vector<ModulationTarget*> affectedTargets;
   std::vector<ModulationConnection*> modulationConnections;
 
@@ -468,6 +430,12 @@ public:
   virtual void doModulationUpdate() override
   {
     callCallbackWithModulatedValue();
+  }
+
+  virtual juce::String getModulationTargetName() override
+  {
+    jassertfalse; // not yet implemented
+    return String::empty;
   }
 
 protected:
