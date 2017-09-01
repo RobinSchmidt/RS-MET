@@ -40,12 +40,11 @@ maybe make the class hierarchy like this:
 Parameter <- MetaControlledParameter <- ModulatableParameter <- PolyphonicParameter
 
 ToDo:
--implement state recall
- -i think, we need a similar way to assign unique ModulationSource names as we use for the 
-  ModulationTarget names (the current way doesn't ensure that the indices after the BM or whatever
-  are in the correct order
+-check ModulationManager::removeConnection - if it also correctly removes the affected-target from 
+ the array
 -let the user set up the min/max amount values
 -let the user select absolute or relative modulation
+-let the Amount/Depth parameters be meta-controlled
 -optimize, where possible
 -test in practice
 

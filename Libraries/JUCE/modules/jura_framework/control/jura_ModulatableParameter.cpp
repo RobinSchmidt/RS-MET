@@ -369,23 +369,16 @@ ModulationTarget* ModulationManager::getTargetByName(const juce::String& targetN
 void ModulationManager::setStateFromXml(const XmlElement& xmlState)
 {
   ScopedLock scopedLock(*modLock); 
-  removeAllConnections(); // start with a clean slate
-
-  // iterate through "Connection" child elements and for each, add the appropriate connection:
+  removeAllConnections();
   forEachXmlChildElementWithTagName(xmlState, conXml, "Connection")
   {
-    juce::String sourceName = conXml->getStringAttribute("Source");
-    juce::String targetName = conXml->getStringAttribute("Target");
-    ModulationSource* source = getSourceByName(sourceName);
-    ModulationTarget* target = getTargetByName(targetName);
+    ModulationSource* source = getSourceByName(conXml->getStringAttribute("Source"));
+    ModulationTarget* target = getTargetByName(conXml->getStringAttribute("Target"));
     if(source != nullptr && target != nullptr)
     {
-      double depth  = conXml->getDoubleAttribute("Depth");
-      bool relative = conXml->getStringAttribute("Mode") == "Relative";
-
       ModulationConnection* c = new ModulationConnection(source, target);
-      c->setAmount(depth);      // use conXml->getDoubleAttribute("Depth") directly
-      c->setRelative(relative); // here too
+      c->setAmount(  conXml->getDoubleAttribute("Depth"));
+      c->setRelative(conXml->getStringAttribute("Mode") == "Relative");
       addConnection(c);
     }
     else
@@ -400,15 +393,9 @@ XmlElement* ModulationManager::getStateAsXml()
   if(size(modulationConnections) == 0)
     return nullptr; // "Modulations" child-element will be absent from preset file
 
-  XmlElement* xmlState = new XmlElement("Modulations"); // maybe make the name a function parameter
-  ModulationConnection* c;                              // for consistency with the recall in Chainer
+  XmlElement* xmlState = new XmlElement("Modulations"); // maybe make the name a function parameter for consistency with the recall in Chainer
   for(int i = 0; i < size(modulationConnections); i++)
-  {
-    c = modulationConnections[i];
-    XmlElement* connectionXml = c->getAsXml();
-    xmlState->addChildElement(connectionXml);
-    // these 3 lines can be almagamated into one
-  }
+    xmlState->addChildElement(modulationConnections[i]->getAsXml());
   return xmlState;
 }
 
@@ -423,11 +410,5 @@ juce::String ModulatableParameter::getModulationTargetName()
     return String::empty;
   }
   else
-  {
-    juce::String name = ownerModule->getAudioModulePath() + getName();
-    return name;
-    // We somehow need to figure out the full "path" to this parameter in the tree of AudioModules.
-    // In the Chainer, this should also include the slot number. Such a path could look like:
-    // Slot1/Straightliner/OscSection/Osc3/Tune
-  }
+    return ownerModule->getAudioModulePath() + getName();
 }
