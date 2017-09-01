@@ -227,8 +227,17 @@ void ModulationManager::addConnection(ModulationSource* source, ModulationTarget
   modulationConnections.push_back(new ModulationConnection(source, target));
   appendIfNotAlreadyThere(affectedTargets, target);
 
+  // ToDo:
   // we also need a function that removes a target from our affectedTargets array in case it has
   // no incoming connections
+}
+
+void ModulationManager::addConnection(ModulationConnection* connection)
+{
+  ScopedLock scopedLock(*modLock); 
+  jassert(!isConnected(connection->source, connection->target)); // connection already exists
+  modulationConnections.push_back(connection);
+  appendIfNotAlreadyThere(affectedTargets, connection->target);
 }
 
 void ModulationManager::removeConnection(ModulationSource* source, ModulationTarget* target)
@@ -339,12 +348,22 @@ int ModulationManager::numRegisteredSourcesOfType(ModulationSource* source)
 
 ModulationSource* ModulationManager::getSourceByName(const juce::String& sourceName)
 {
-  return nullptr; // preliminary
+  for(int i = 0; i < size(availableSources); i++)
+  {
+    if(availableSources[i]->getModulationSourceName() == sourceName)
+      return availableSources[i];
+  }
+  return nullptr;
 }
 
 ModulationTarget* ModulationManager::getTargetByName(const juce::String& targetName)
 {
-  return nullptr; // preliminary
+  for(int i = 0; i < size(availableTargets); i++)
+  {
+    if(availableTargets[i]->getModulationTargetName() == targetName)
+      return availableTargets[i];
+  }
+  return nullptr;
 }
 
 void ModulationManager::setStateFromXml(const XmlElement& xmlState)
@@ -361,13 +380,17 @@ void ModulationManager::setStateFromXml(const XmlElement& xmlState)
     ModulationTarget* target = getTargetByName(targetName);
     if(source != nullptr && target != nullptr)
     {
-      // ...
+      double depth  = conXml->getDoubleAttribute("Depth");
+      bool relative = conXml->getStringAttribute("Mode") == "Relative";
+
+      ModulationConnection* c = new ModulationConnection(source, target);
+      c->setAmount(depth);      // use conXml->getDoubleAttribute("Depth") directly
+      c->setRelative(relative); // here too
+      addConnection(c);
     }
     else
       jassertfalse; // source and/or target with given name doesn't exist - patch corrupted?
   }
-
-  jassertfalse; // not yet implemented
 }
 
 XmlElement* ModulationManager::getStateAsXml()

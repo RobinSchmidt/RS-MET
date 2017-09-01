@@ -343,6 +343,9 @@ public:
   /** Adds a connection between the given source and target. */
   void addConnection(ModulationSource* source, ModulationTarget* target);
 
+  /** Adds the passed ModulationConnection to our array. */
+  void addConnection(ModulationConnection* connection);
+
   /** Removes a connection between the given source and target. */
   void removeConnection(ModulationSource* source, ModulationTarget* target);
 
