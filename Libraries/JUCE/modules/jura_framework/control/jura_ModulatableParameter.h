@@ -40,8 +40,6 @@ maybe make the class hierarchy like this:
 Parameter <- MetaControlledParameter <- ModulatableParameter <- PolyphonicParameter
 
 ToDo:
--check ModulationManager::removeConnection - if it also correctly removes the affected-target from 
- the array
 -let the user set up the min/max amount values
 -let the user select absolute or relative modulation
 -let the Amount/Depth parameters be meta-controlled
@@ -412,10 +410,15 @@ public:
   /** Returns the state (i.e. all the connections and their settings) in form of an XmlElement. */
   virtual XmlElement* getStateAsXml();
 
+  /** Updates our affectedTargets array. Called from some of the connection-removal functions in 
+  order to remove the target from the affectedTargets, in case it has no incoming connections 
+  anymore. */
+  void updateAffectedTargetArray();
+
 protected:
 
   std::vector<ModulationSource*> availableSources;
-  std::vector<ModulationTarget*> availableTargets; // do we need this? maybe for state recall? if not, remove
+  std::vector<ModulationTarget*> availableTargets;
   std::vector<ModulationTarget*> affectedTargets;
   std::vector<ModulationConnection*> modulationConnections;
 

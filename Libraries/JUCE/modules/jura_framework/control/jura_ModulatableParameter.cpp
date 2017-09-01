@@ -226,10 +226,6 @@ void ModulationManager::addConnection(ModulationSource* source, ModulationTarget
   jassert(!isConnected(source, target)); // there is already a connection between source and target
   modulationConnections.push_back(new ModulationConnection(source, target));
   appendIfNotAlreadyThere(affectedTargets, target);
-
-  // ToDo:
-  // we also need a function that removes a target from our affectedTargets array in case it has
-  // no incoming connections
 }
 
 void ModulationManager::addConnection(ModulationConnection* connection)
@@ -252,6 +248,7 @@ void ModulationManager::removeConnection(ModulationSource* source, ModulationTar
       remove(modulationConnections, i);
     }
   }
+  updateAffectedTargetArray();
   jassert(!isConnected(source, target)); // there must have been more than one connection between
                                          // given source and target - that should not happen
 }
@@ -262,6 +259,7 @@ void ModulationManager::removeAllConnections()
   for(int i = 0; i < size(modulationConnections); i++)
     delete modulationConnections[i];
   modulationConnections.clear();
+  updateAffectedTargetArray();
 }
 
 void ModulationManager::removeConnectionsWith(ModulationSource* source)
@@ -276,6 +274,7 @@ void ModulationManager::removeConnectionsWith(ModulationSource* source)
       i--; // array was shrunken
     }
   }
+  updateAffectedTargetArray();
 }
 
 void ModulationManager::removeConnectionsWith(ModulationTarget* target)
@@ -290,6 +289,7 @@ void ModulationManager::removeConnectionsWith(ModulationTarget* target)
       i--; // array was shrunken
     }
   }
+  updateAffectedTargetArray();
 }
 
 void ModulationManager::registerModulationSource(ModulationSource* source)
@@ -397,6 +397,15 @@ XmlElement* ModulationManager::getStateAsXml()
   for(int i = 0; i < size(modulationConnections); i++)
     xmlState->addChildElement(modulationConnections[i]->getAsXml());
   return xmlState;
+}
+
+void ModulationManager::updateAffectedTargetArray()
+{
+  ScopedLock scopedLock(*modLock); 
+  affectedTargets.clear();
+  for(int i = 0; i < size(modulationConnections); i++)
+    appendIfNotAlreadyThere(affectedTargets, modulationConnections[i]->target);
+  // not sure, if this is the best (most efficient) way to do it
 }
 
 //-------------------------------------------------------------------------------------------------
