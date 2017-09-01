@@ -485,6 +485,9 @@ void AudioModuleChain::setStateFromXml(const XmlElement& xmlState, const juce::S
     modules[i]->setStateFromXml(*moduleState, "", markAsClean);
     i++;
   }
+  XmlElement* modXml = xmlState.getChildByName("Modulations");
+  if(modXml != nullptr)
+    ModulationManager::setStateFromXml(*modXml);  // recall modulation settings
 }
 
 void AudioModuleChain::addToModulatorsIfApplicable(AudioModule* module)

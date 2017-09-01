@@ -340,6 +340,10 @@ int ModulationManager::numRegisteredSourcesOfType(ModulationSource* source)
 void ModulationManager::setStateFromXml(const XmlElement& xmlState)
 {
   ScopedLock scopedLock(*modLock); 
+
+  // todo: iterate through "Connection" child elements and for each, add the appropriate
+  // connection
+
   jassertfalse; // not yet implemented
 }
 
@@ -350,8 +354,8 @@ XmlElement* ModulationManager::getStateAsXml()
   if(size(modulationConnections) == 0)
     return nullptr; // "Modulations" child-element will be absent from preset file
 
-  XmlElement* xmlState = new XmlElement("Modulations");
-  ModulationConnection* c;
+  XmlElement* xmlState = new XmlElement("Modulations"); // maybe make the name a function parameter
+  ModulationConnection* c;                              // for consistency with the recall in Chainer
   for(int i = 0; i < size(modulationConnections); i++)
   {
     c = modulationConnections[i];
