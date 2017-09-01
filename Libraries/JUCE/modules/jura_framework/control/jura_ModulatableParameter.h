@@ -40,8 +40,6 @@ maybe make the class hierarchy like this:
 Parameter <- MetaControlledParameter <- ModulatableParameter <- PolyphonicParameter
 
 ToDo:
--fix bug: depth-sliders don't show correct value after state recall
- -i think the embedded amountParameter object is not recalled
 -let the user set up the min/max amount values
 -let the user select absolute or relative modulation
 -let the Amount/Depth parameters be meta-controlled

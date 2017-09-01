@@ -377,7 +377,8 @@ void ModulationManager::setStateFromXml(const XmlElement& xmlState)
     if(source != nullptr && target != nullptr)
     {
       ModulationConnection* c = new ModulationConnection(source, target);
-      c->setDepth(   conXml->getDoubleAttribute("Depth"));
+      //c->setDepth(   conXml->getDoubleAttribute("Depth")); // nope: depthParam is not updated
+      c->getDepthParameter()->setValue(conXml->getDoubleAttribute("Depth"), true, true); // yes
       c->setRelative(conXml->getStringAttribute("Mode") == "Relative");
       addConnection(c);
     }
