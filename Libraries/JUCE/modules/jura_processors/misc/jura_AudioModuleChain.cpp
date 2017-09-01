@@ -507,13 +507,23 @@ void AudioModuleChain::removeFromModulatorsIfApplicable(AudioModule* module)
 void AudioModuleChain::assignModulationSourceName(ModulationSource* source)
 {
   juce::String name;
-  if(dynamic_cast<BreakpointModulatorAudioModule*> (source))
-    name = "BM ";
-  // else if...
 
+  //// old - sources may be named in different index order after state recall (not good):
+  //if(dynamic_cast<BreakpointModulatorAudioModule*> (source))
+  //  name = "BM ";
+  //// else if...
+  //name += String(numRegisteredSourcesOfType(source) + 1);
+  //source->setModulationSourceName(name);
 
-  name += String(numRegisteredSourcesOfType(source) + 1);
-  source->setModulationSourceName(name);
+  // new:
+  AudioModule* am = dynamic_cast<AudioModule*> (source);
+  if(am != nullptr)
+  {
+    int slotIndex = find(modules, am);
+    jassert(slotIndex >= 0); // something is wrong - the source is not in the modules array
+    name = "Slot" + String(slotIndex+1) + String("-") + AudioModuleFactory::getModuleType(am);
+    source->setModulationSourceName(name);
+  }
 }
 
 void AudioModuleChain::clearModulesArray()

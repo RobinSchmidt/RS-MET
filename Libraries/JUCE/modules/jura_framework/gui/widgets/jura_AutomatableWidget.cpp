@@ -218,7 +218,7 @@ void rsModulationSetup::clearAmountSliders()
 
 void rsModulationSetup::updateSize()
 {
-  int width  = 200;  // maybe we should use the widget's width...but maybe not
+  int width  = 250;  // maybe we should use the widget's width...but maybe not
   int height = 100;  // preliminary
 
   height  = (sliderHeight+sliderDistance) * size(amountSliders);
