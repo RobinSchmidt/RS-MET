@@ -239,9 +239,8 @@ void AudioModuleChain::addModule(const juce::String& type)
   AudioModule *m = AudioModuleFactory::createModule(type, lock, this);
   m->setMetaParameterManager(metaParamManager); // without, we hit jassert(metaParaManager != nullptr) in MetaControlledParameter::attachToMetaParameter
   append(modules, m);
-
-  addToModulatorsIfApplicable(m); // new
-
+  m->setModuleName("Slot" + String(size(modules)) + "-" + type);
+  addToModulatorsIfApplicable(m);
   sendAudioModuleWasAddedNotification(m, size(modules)-1);
 }
 
@@ -252,9 +251,7 @@ void AudioModuleChain::deleteModule(int index)
   if(activeSlot == index)
     activeSlot--;
   sendAudioModuleWillBeDeletedNotification(modules[index], index);
-
-  removeFromModulatorsIfApplicable(modules[index]); // new
-
+  removeFromModulatorsIfApplicable(modules[index]);
   delete modules[index];
   remove(modules, index);
 }
@@ -272,14 +269,13 @@ void AudioModuleChain::replaceModule(int index, const juce::String& type)
   if(!isModuleOfType(index, type)){              // replace only, if new type is different
     AudioModule* oldModule = modules[index];
     AudioModule* newModule = AudioModuleFactory::createModule(type, lock, this);
+    newModule->setModuleName("Slot" + String(index+1) + "-" + type);
     newModule->setMetaParameterManager(metaParamManager);
     newModule->loadDefaultPreset(); // later: either load default preset or recall a stored state
     newModule->setSampleRate(sampleRate);
     modules[index] = newModule;
-
-    removeFromModulatorsIfApplicable(oldModule); // new
-    addToModulatorsIfApplicable(newModule);      // new
-
+    removeFromModulatorsIfApplicable(oldModule);
+    addToModulatorsIfApplicable(newModule);
     sendAudioModuleWasReplacedNotification(oldModule, newModule, index);
     delete oldModule;
     activeSlot = index;

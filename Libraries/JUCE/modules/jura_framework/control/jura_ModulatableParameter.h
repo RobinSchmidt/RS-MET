@@ -41,6 +41,9 @@ Parameter <- MetaControlledParameter <- ModulatableParameter <- PolyphonicParame
 
 ToDo:
 -implement state recall
+ -i think, we need a similar way to assign unique ModulationSource names as we use for the 
+  ModulationTarget names (the current way doesn't ensure that the indices after the BM or whatever
+  are in the correct order
 -let the user set up the min/max amount values
 -let the user select absolute or relative modulation
 -optimize, where possible
