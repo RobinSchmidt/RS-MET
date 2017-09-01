@@ -209,12 +209,12 @@ AudioModule* AudioModule::getTopLevelModule()
     return parentModule->getTopLevelModule();
 }
 
-juce::String AudioModule::getModulePath()
+juce::String AudioModule::getAudioModulePath()
 {
   if(isTopLevelModule())
     return moduleName + "/";
   else
-    return parentModule->getModulePath() + moduleName + "/";
+    return parentModule->getAudioModulePath() + moduleName + "/";
 }
 
 AudioModuleEditor* AudioModule::createEditor()

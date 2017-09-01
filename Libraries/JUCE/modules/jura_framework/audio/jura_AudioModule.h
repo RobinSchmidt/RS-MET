@@ -188,7 +188,7 @@ public:
 
   /** Returns a string that gives the "path" of the AudioModule, for example a string like
   Straightliner/OscSection/Osc2/ would be returned from the 2nd oscillator of Straightliner. */
-  juce::String getModulePath();
+  juce::String getAudioModulePath();
 
   /** Your subclass may override this to return an object of an appropriate subclass of
   AudioModuleEditor. The baseclass implementation will return a generic editor with sliders, 

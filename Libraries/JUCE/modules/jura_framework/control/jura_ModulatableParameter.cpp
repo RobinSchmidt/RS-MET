@@ -374,10 +374,8 @@ juce::String ModulatableParameter::getModulationTargetName()
   }
   else
   {
-    // return ownerModule->getTopLevelModule->generateParameterIdentifier(this)
-
-    jassertfalse; // not yet implemented
-    return String::empty; // preliminary
+    juce::String name = ownerModule->getAudioModulePath() + getName();
+    return name;
     // We somehow need to figure out the full "path" to this parameter in the tree of AudioModules.
     // In the Chainer, this should also include the slot number. Such a path could look like:
     // Slot1/Straightliner/OscSection/Osc3/Tune
