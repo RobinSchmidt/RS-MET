@@ -43,7 +43,10 @@ ToDo:
 -let the user set up the min/max amount values
 -let the user select absolute or relative modulation
 -let the Amount/Depth parameters be meta-controlled
--optimize, where possible
+-optimize, where possible - maybe the scaler can be multiplied into the depth (maybe use a 
+ scaledDepth member)
+-maybe restrict the modulatedValue to the original parameter range - otherwise modulation may set
+ it to out-of-range values (like a cutoff above fs/2 or below 0) which may cause problems
 -test in practice
 
 */
