@@ -179,6 +179,17 @@ public:
   MetaControlledParameters. */
   MetaParameterManager* getMetaParameterManager() const { return metaParamManager; }
 
+  /** Returns true, if this is a top level AudioModule (i.e. it has no parent module). */
+  bool isTopLevelModule() { return parentModule == nullptr; }
+
+  /** Returns the module that is at the top of the parent/children hierarchy, i.e. the outermost 
+  AudioModule. */
+  AudioModule* getTopLevelModule();
+
+  /** Returns a string that gives the "path" of the AudioModule, for example a string like
+  Straightliner/OscSection/Osc2/ would be returned from the 2nd oscillator of Straightliner. */
+  juce::String getModulePath();
+
   /** Your subclass may override this to return an object of an appropriate subclass of
   AudioModuleEditor. The baseclass implementation will return a generic editor with sliders, 
   comboboxes and button for all the Parameters of this AudioModule. */
@@ -268,6 +279,7 @@ protected:
   /** Our child modules to which we will distribute MIDI-events and of which we manage the
   states. */
   std::vector<AudioModule*> childModules;  // maybe rename to childAudioModules
+  AudioModule* parentModule = nullptr; // new - needed for tree traversal from leaves
 
   MetaParameterManager* metaParamManager = nullptr;
 

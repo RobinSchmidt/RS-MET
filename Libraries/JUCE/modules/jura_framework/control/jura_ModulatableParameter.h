@@ -117,12 +117,17 @@ protected:
 
   ModulationManager* modManager = nullptr;
 
-  // these are empty dummy arrays to which references will be returned by 
-  // getAvailableModulationSources/Targets in case our modManager is a nullptr (this is somehow
-  // ugly design, but however):
+
   static std::vector<ModulationSource*> dummySources;
   static std::vector<ModulationTarget*> dummyTargets;
   static std::vector<ModulationConnection*> dummyConnections;
+  // These are empty dummy arrays to which references will be returned by 
+  // getAvailableModulationSources/Targets in case our modManager is a nullptr.  This is somehow
+  // ugly design, maybe use the "Null Object" pattern instead:
+  // https://sourcemaking.com/design_patterns/null_object)
+  // somewhere, we should have a default "null" ModulationManager object lying around to which
+  // out pointer is initialized
+
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationParticipant)

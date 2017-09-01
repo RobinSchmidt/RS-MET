@@ -85,6 +85,7 @@ void AudioModule::addChildAudioModule(AudioModule* moduleToAdd)
 {
   ScopedLock scopedLock(*lock);
   appendIfNotAlreadyThere(childModules, moduleToAdd);
+  moduleToAdd->parentModule = this;
   moduleToAdd->setMetaParameterManager(metaParamManager);
   addChildStateManager(moduleToAdd);
 }
@@ -97,6 +98,7 @@ void AudioModule::removeChildAudioModule(AudioModule* moduleToRemove, bool delet
   if( index != -1 ) {
     remove(childModules, index);
     removeChildStateManager(moduleToRemove);
+    moduleToRemove->parentModule = nullptr;
     moduleToRemove->setMetaParameterManager(nullptr);
     if( deleteObject == true )
       delete moduleToRemove; }
@@ -197,6 +199,22 @@ int AudioModule::getIndexAmongNameSakes(AudioModule *child)
 juce::String AudioModule::getModuleHeadlineString()
 {
   return moduleName + moduleNameAppendix;
+}
+
+AudioModule* AudioModule::getTopLevelModule()
+{
+  if(isTopLevelModule())
+    return this;
+  else
+    return parentModule->getTopLevelModule();
+}
+
+juce::String AudioModule::getModulePath()
+{
+  if(isTopLevelModule())
+    return moduleName + "/";
+  else
+    return parentModule->getModulePath() + moduleName + "/";
 }
 
 AudioModuleEditor* AudioModule::createEditor()
