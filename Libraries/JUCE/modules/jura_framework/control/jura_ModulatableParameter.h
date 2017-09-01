@@ -40,6 +40,8 @@ maybe make the class hierarchy like this:
 Parameter <- MetaControlledParameter <- ModulatableParameter <- PolyphonicParameter
 
 ToDo:
+-fix bug: depth-sliders don't show correct value after state recall
+ -i think the embedded amountParameter object is not recalled
 -let the user set up the min/max amount values
 -let the user select absolute or relative modulation
 -let the Amount/Depth parameters be meta-controlled
@@ -259,10 +261,11 @@ public:
   /** Destructor. */
   virtual ~ModulationConnection(); // maybe make non-virtual
 
-  /** Sets the modulation amount for this connection. */
-  void setAmount(double newAmount)
+  /** Sets the modulation depth for this connection. Used for the callback in the depthParam. 
+  Should not be used in state-recall because then, the depthParam won't be updated. */
+  void setDepth(double newDepth)
   {
-    amount = newAmount;
+    depth = newDepth;
   }
 
   /** Sets the parameter to relative mode in which case the output signal of the ModulationSource
@@ -274,7 +277,7 @@ public:
   }
 
   /** Returns the Parameter object that controls the amount of modulation */
-  MetaControlledParameter* getAmountParameter() { return amountParam; }
+  MetaControlledParameter* getDepthParameter() { return depthParam; }
 
   /** Applies the source-value to the target-value with given amount. */
   inline void apply()
@@ -284,7 +287,7 @@ public:
     if(relative)
       scaler = target->unmodulatedValue;
 
-    *targetValue += *sourceValue * amount * scaler; // only this line shall remain after optimization
+    *targetValue += *sourceValue * depth * scaler; // only this line shall remain after optimization
   }
 
 
@@ -299,10 +302,10 @@ protected:
   ModulationTarget* target;
   double* sourceValue;
   double* targetValue;
-  double amount;
+  double depth;
   bool relative;
 
-  MetaControlledParameter* amountParam; // maybe it should be a ModulatableParameter? but that may
+  MetaControlledParameter* depthParam; // maybe it should be a ModulatableParameter? but that may
                                         // raise some issues - maybe later...
 
   friend class ModulationTarget;

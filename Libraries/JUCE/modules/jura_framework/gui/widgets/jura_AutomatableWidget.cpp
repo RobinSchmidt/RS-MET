@@ -124,7 +124,7 @@ void rsModulationSetup::updateAmountSliderArray()
     std::vector<ModulationConnection*> connections = mp->getConnections();
     for(int i = 0; i < size(connections); i++)
     {
-      MetaControlledParameter* param = connections[i]->getAmountParameter();
+      MetaControlledParameter* param = connections[i]->getDepthParameter();
       if(!hasSlider(param))
         addSliderFor(param);
     }

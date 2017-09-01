@@ -136,16 +136,16 @@ ModulationConnection::ModulationConnection(ModulationSource* _source, Modulation
 {
   source   = _source; 
   target   = _target;
-  amount   = 0.0;
+  depth    = 0.0;
   //relative = false;
   relative = true;
   sourceValue = &(source->modValue);
   targetValue = &(target->modulatedValue);
 
   juce::String name = source->getModulationSourceName();
-  amountParam = new MetaControlledParameter(name, -1.0, 1.0, 0.0, Parameter::LINEAR, 0.0);
-  amountParam->setValueChangeCallback<ModulationConnection>(this, 
-    &ModulationConnection::setAmount);
+  depthParam = new MetaControlledParameter(name, -1.0, 1.0, 0.0, Parameter::LINEAR, 0.0);
+  depthParam->setValueChangeCallback<ModulationConnection>(this, 
+    &ModulationConnection::setDepth);
 
   //amountParam->setMetaParameterManager(metaManager);
   // we may need a MetaParameterManager* parameter to the constructor ..or a pointer to the
@@ -154,7 +154,7 @@ ModulationConnection::ModulationConnection(ModulationSource* _source, Modulation
 
 ModulationConnection::~ModulationConnection()
 {
-  delete amountParam;
+  delete depthParam;
 }
 
 XmlElement* ModulationConnection::getAsXml()
@@ -163,7 +163,7 @@ XmlElement* ModulationConnection::getAsXml()
 
   xml->setAttribute("Source", source->getModulationSourceName());
   xml->setAttribute("Target", target->getModulationTargetName());
-  xml->setAttribute("Depth",  amount);
+  xml->setAttribute("Depth",  depth);
   juce::String modeString;
   if(relative)
     modeString = "Relative";
@@ -377,7 +377,7 @@ void ModulationManager::setStateFromXml(const XmlElement& xmlState)
     if(source != nullptr && target != nullptr)
     {
       ModulationConnection* c = new ModulationConnection(source, target);
-      c->setAmount(  conXml->getDoubleAttribute("Depth"));
+      c->setDepth(   conXml->getDoubleAttribute("Depth"));
       c->setRelative(conXml->getStringAttribute("Mode") == "Relative");
       addConnection(c);
     }
