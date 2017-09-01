@@ -337,12 +337,35 @@ int ModulationManager::numRegisteredSourcesOfType(ModulationSource* source)
   return result;
 }
 
+ModulationSource* ModulationManager::getSourceByName(const juce::String& sourceName)
+{
+  return nullptr; // preliminary
+}
+
+ModulationTarget* ModulationManager::getTargetByName(const juce::String& targetName)
+{
+  return nullptr; // preliminary
+}
+
 void ModulationManager::setStateFromXml(const XmlElement& xmlState)
 {
   ScopedLock scopedLock(*modLock); 
+  removeAllConnections(); // start with a clean slate
 
-  // todo: iterate through "Connection" child elements and for each, add the appropriate
-  // connection
+  // iterate through "Connection" child elements and for each, add the appropriate connection:
+  forEachXmlChildElementWithTagName(xmlState, conXml, "Connection")
+  {
+    juce::String sourceName = conXml->getStringAttribute("Source");
+    juce::String targetName = conXml->getStringAttribute("Target");
+    ModulationSource* source = getSourceByName(sourceName);
+    ModulationTarget* target = getTargetByName(targetName);
+    if(source != nullptr && target != nullptr)
+    {
+      // ...
+    }
+    else
+      jassertfalse; // source and/or target with given name doesn't exist - patch corrupted?
+  }
 
   jassertfalse; // not yet implemented
 }

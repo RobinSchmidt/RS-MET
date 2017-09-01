@@ -393,6 +393,14 @@ public:
   unique identification of the source). */
   int numRegisteredSourcesOfType(ModulationSource* source);
 
+  /** Returns a pointer to the ModulationSource with given name, if a source with that name exists 
+  in our array of registered sources. Otherwise, it will return a nullptr. */
+  ModulationSource* getSourceByName(const juce::String& sourceName);
+
+  /** Returns a pointer to the ModulationTarget with given name, if a source with that name exists 
+  in our array of registered targets. Otherwise, it will return a nullptr. */
+  ModulationTarget* getTargetByName(const juce::String& targetName);
+
 
   /** \name Misc */
 
