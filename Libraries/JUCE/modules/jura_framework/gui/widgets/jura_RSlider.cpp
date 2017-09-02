@@ -355,7 +355,7 @@ void RSlider::mouseDrag(const MouseEvent& e)
 
 void RSlider::mouseDoubleClick(const MouseEvent& e)
 {
-  if( isEnabled() )
+  if( isEnabled() && e.mods.isLeftButtonDown() )
     setValue(openModalNumberEntryField(getValue()), true, false);
 }
 

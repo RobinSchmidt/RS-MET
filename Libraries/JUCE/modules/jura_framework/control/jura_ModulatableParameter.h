@@ -40,6 +40,7 @@ maybe make the class hierarchy like this:
 Parameter <- MetaControlledParameter <- ModulatableParameter <- PolyphonicParameter
 
 ToDo:
+-update this comment - write an explanation how to use it and how it works internally
 -let the user set up the min/max amount values
 -let the user select absolute or relative modulation
 -let the Amount/Depth parameters be meta-controlled
