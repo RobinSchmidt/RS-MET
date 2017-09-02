@@ -512,9 +512,9 @@ void AudioModule::notifyParameterObservers(bool recursivelyForChildModules)
 }
 
 //=================================================================================================
-// class AudioModuleWithModulatableParams
+// class ModulatableAudioModule
 
-void AudioModuleWithModulatableParams::addObservedParameter(Parameter* p)
+void ModulatableAudioModule::addObservedParameter(Parameter* p)
 {
   AudioModule::addObservedParameter(p);
   ModulatableParameter* mp = dynamic_cast<ModulatableParameter*> (p);

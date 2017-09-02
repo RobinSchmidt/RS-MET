@@ -3,6 +3,55 @@
 
 /*
 
+The Modulation System
+
+
+How to use it:
+
+Client code that wants to use the modulation system for plugin parameters must do the following 
+things:
+
+-derive its AudioModule from ModulatableAudioModule (or from a subclass therof)
+-somewhere have a ModulationManager object lying around, a pointer to that object should be passed
+ to the constructor call of the ModulatableAudioModule baseclass
+-use objects of type ModulatableParameter for its parameters
+-(not yet:) use objects of type ModulatableSlider for the sliders of the to-be-modulated parameters
+-every ModulationSource that should be available must be registered with the ModulationManager
+ object
+-before producing a sample, your AudioModule must call applyModulations on the ModulationManager
+ object
+
+
+How it works:
+
+There are 4 main classes that are relevant for the system: ModulationSource, ModulationTarget, 
+ModulationConnection and ModulationManager. ModulationSource and ModulationTarget have a common 
+baseclass ModulationParticipant for factoring out some common stuff but the client is usually not 
+concerned with this. Sources are things like envelope generators, LFOs, etc. For example, to make 
+an envelope generator available for the modulation system, it would have to be a subclass of 
+ModulationSource. The subclass is then required to implement the purely virtual 
+updateModulationValue() method. There, it is supposed to compute a new output sample of the 
+modulator and assign the "modValue" member variable to that value (that value will later be 
+gathered by the ModulationManager and used for modulating things). ModulationTargets are typically
+parameters of some audio-processing algorithm such as the cutoff frequency of a filter. Typically,
+clients will only use ModulatableParameter which is a subclass of ModulationTarget and Parameter.
+A ModulationTarget subclass is required to implement doModulationUpdate() which is also called per 
+sample. There, they must use the "modulatedValue" member (which was set up by the ModulationManager 
+and now - inside the doModulationUpdate call - it contains the parameter value with all modulations 
+applied. A ModulatableParameter will call its valueChangeCallback (inherited from Parameter), 
+which, for example, may cause a call to setCutoff(modulatedValue) on some core filter object. 
+ModulationConnection represents a connection between a given ModualtionSource and ModulationTarget. 
+It also contains the strength of the connection, i.e. the depth by which some source modulates 
+some target. The ModulationManager maintains arrays of all available sources and targets and, 
+importantly, all the connections. It can also create new and remove existing connections. It 
+is also responsible for calling updateModulationValue on all registered ModulationSources and 
+doModulationUpdate on all affected ModulationTargets - between these sequences of calls, it gathers
+up all the source-outputs, and applies them to their targets - as defined via the connections.
+
+
+
+old:
+
 Idea to extend the same concept of MetaParameters to a modulation system for synthesizers:
 
 ModulationSource:
@@ -157,6 +206,7 @@ public:
   /** Should be overriden by subclasses to update the "modValue" member variable per sample. It 
   should assign modValue to the output signal value of the modulator. */
   virtual void updateModulationValue() = 0;
+    // todo: replace by a double getModulatorOutputSample()
 
   /** Sets up a name for this ModulationSource. This should be unique among all the available 
   ModulationSource names, so it can be used to identify the source in state recall. */

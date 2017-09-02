@@ -315,24 +315,23 @@ private:
 //=================================================================================================
 
 /** A subclass of AudioModule that can handle modulatable parameters. 
-
 \todo maybe factor this into the regular AudioModule class. */
 
-class JUCE_API AudioModuleWithModulatableParams : public AudioModule, public ModulationParticipant
+class JUCE_API ModulatableAudioModule : public AudioModule, public ModulationParticipant
 {
 
 public:
 
-  AudioModuleWithModulatableParams(CriticalSection* lockToUse, 
+  ModulatableAudioModule(CriticalSection* lockToUse, 
     MetaParameterManager* metaManagerToUse = nullptr,
-    ModulationManager* modManager = nullptr) 
-    : AudioModule(lockToUse, metaManagerToUse), ModulationParticipant(modManager)
+    ModulationManager* modManagerToUse = nullptr) 
+    : AudioModule(lockToUse, metaManagerToUse), ModulationParticipant(modManagerToUse)
   {
     if(modManager != nullptr)
       modManager->setMetaParameterManager(metaManagerToUse);
   }
 
-  virtual ~AudioModuleWithModulatableParams() {}
+  virtual ~ModulatableAudioModule() {}
 
   /** Overrides inherited method to additionaly wire the passed Parameter up to the 
   ModulationManager, in case it is a ModulatableParameter. */
@@ -342,7 +341,7 @@ public:
 protected:
 
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioModuleWithModulatableParams)
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulatableAudioModule)
 };
 
 //=================================================================================================
@@ -352,15 +351,16 @@ this baseclass and wrap it into a juce::AudioProcessor (via the wrapper class ju
 the plugin will have a MIDI input. Also, you can override the event handler methods in your 
 subclass (noteOn, noteOff, setMidiController, etc.) in order to respond to incoming MIDI events  */
 
-class JUCE_API AudioModuleWithMidiIn : public AudioModuleWithModulatableParams //: public AudioModule
+class JUCE_API AudioModuleWithMidiIn : public ModulatableAudioModule
 {
 
 public:
 
   //AudioModuleWithMidiIn(CriticalSection *lockToUse) : AudioModule(lockToUse) {}
   AudioModuleWithMidiIn(CriticalSection *lockToUse, 
-    MetaParameterManager* metaManagerToUse = nullptr) 
-    : AudioModuleWithModulatableParams(lockToUse, metaManagerToUse) {}
+    MetaParameterManager* metaManagerToUse = nullptr, 
+    ModulationManager* modManagerToUse = nullptr) 
+    : ModulatableAudioModule(lockToUse, metaManagerToUse, modManagerToUse) {}
 
   virtual ~AudioModuleWithMidiIn() {}
 

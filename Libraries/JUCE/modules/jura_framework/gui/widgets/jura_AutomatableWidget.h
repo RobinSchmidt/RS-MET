@@ -236,4 +236,16 @@ public:
 };
 
 
+//// not yet used:
+//class JUCE_API ModulatableSlider : public AutomatableSlider
+//{
+//
+//public:
+//
+//  AutomatableSlider();
+//
+//  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulatableSlider)
+//}
+
+
 #endif   
