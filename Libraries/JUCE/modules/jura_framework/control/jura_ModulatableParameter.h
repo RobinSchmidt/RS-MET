@@ -389,6 +389,9 @@ public:
   /** Returns true if there's a connection between the given source and target. */
   bool isConnected(ModulationSource* source, ModulationTarget* target);
 
+  /** Returns the number of ModulationConnections. */
+  inline int getNumConnections() { return size(modulationConnections); }
+
   /** Returns a reference to our vector of available ModulationSources. */
   const std::vector<ModulationSource*>& getAvailableModulationSources() { return availableSources; }
 

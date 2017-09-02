@@ -128,7 +128,8 @@ AudioModule objects.
  */
 
 class JUCE_API AudioModuleChain 
-  : public jura::AudioModuleWithMidiIn, public jura::ModulationManager
+  : public jura::AudioModuleWithMidiIn
+  /*, public jura::ModulationManager*/
   // we need to have a ModulationManager member to pass it to the constructor of
   // AudioModuleWithMidiIn
 {
@@ -222,6 +223,8 @@ protected:
                      
   std::vector<AudioModule*> modules;
     // we should better use the inherited childAudioModules array - but there are errors
+
+  ModulationManager modManager;
 
   //std::vector<AudioModule*> modulators;
 

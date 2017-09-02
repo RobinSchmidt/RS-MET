@@ -204,7 +204,8 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
 
 AudioModuleChain::AudioModuleChain(CriticalSection *lockToUse, 
   MetaParameterManager* metaManagerToUse) 
-  : AudioModuleWithMidiIn(lockToUse, metaManagerToUse), ModulationManager(lockToUse)
+  : AudioModuleWithMidiIn(lockToUse, metaManagerToUse)
+  , modManager(lockToUse) // maybe pass the metaManagerToUse to this constructor call
 {
   ScopedLock scopedLock(*lock);
   moduleName = "Chainer";
@@ -237,8 +238,8 @@ void AudioModuleChain::addEmptySlot()
 void AudioModuleChain::addModule(const juce::String& type)
 {
   ScopedLock scopedLock(*lock);
-  AudioModule *m = AudioModuleFactory::createModule(type, lock, this);
-  m->setMetaParameterManager(metaParamManager); // without, we hit jassert(metaParaManager != nullptr) in MetaControlledParameter::attachToMetaParameter
+  AudioModule *m = AudioModuleFactory::createModule(type, lock, &modManager); // todo: pass the metaParamManager too
+  m->setMetaParameterManager(metaParamManager); // without, we hit jassert(metaParaManager != nullptr) in MetaControlledParameter::attachToMetaParameter - after passing metaParamManagerto the constructor, we may delete this
   append(modules, m);
   m->setModuleName("Slot" + String(size(modules)) + "-" + type);
   addToModulatorsIfApplicable(m);
@@ -269,7 +270,7 @@ void AudioModuleChain::replaceModule(int index, const juce::String& type)
   jassert(index >= 0 && index < size(modules)); // index out of range
   if(!isModuleOfType(index, type)){              // replace only, if new type is different
     AudioModule* oldModule = modules[index];
-    AudioModule* newModule = AudioModuleFactory::createModule(type, lock, this);
+    AudioModule* newModule = AudioModuleFactory::createModule(type, lock, &modManager);
     newModule->setModuleName("Slot" + String(index+1) + "-" + type);
     newModule->setMetaParameterManager(metaParamManager);
     newModule->loadDefaultPreset(); // later: either load default preset or recall a stored state
@@ -360,7 +361,8 @@ void AudioModuleChain::processBlock(double **inOutBuffer, int numChannels, int n
   ScopedLock scopedLock(*lock);
   jassert(numChannels == 2);
   //if(size(availableSources) == 0)
-  if(size(modulationConnections) == 0)
+  //if(size(modulationConnections) == 0)
+  if( modManager.getNumConnections() == 0)
   {
     // in case of no modulations, we can use a faster loop
     for(int i = 0; i < size(modules); i++)
@@ -372,7 +374,7 @@ void AudioModuleChain::processBlock(double **inOutBuffer, int numChannels, int n
     // then compute a sample-frame from each non-modulator module
     for(int n = 0; n < numSamples; n++)
     {
-      ModulationManager::applyModulationsNoLock();
+      modManager.applyModulationsNoLock();
       for(int i = 0; i < size(modules); i++)
       {
         //// for debug:
@@ -464,7 +466,7 @@ XmlElement* AudioModuleChain::getStateAsXml(const juce::String& stateName, bool 
     child->addChildElement(modules[i]->getStateAsXml(typeString, markAsClean));
     xml->addChildElement(child);
   }
-  xml->addChildElement(ModulationManager::getStateAsXml());
+  xml->addChildElement(modManager.getStateAsXml());
   return xml;
 }
 
@@ -488,7 +490,7 @@ void AudioModuleChain::setStateFromXml(const XmlElement& xmlState, const juce::S
   }
   XmlElement* modXml = xmlState.getChildByName("Modulations");
   if(modXml != nullptr)
-    ModulationManager::setStateFromXml(*modXml);  // recall modulation settings
+    modManager.setStateFromXml(*modXml);  // recall modulation settings
 }
 
 void AudioModuleChain::addToModulatorsIfApplicable(AudioModule* module)
@@ -497,7 +499,7 @@ void AudioModuleChain::addToModulatorsIfApplicable(AudioModule* module)
   if(ms != nullptr)
   {
     assignModulationSourceName(ms);
-    ModulationManager::registerModulationSource(ms);
+    modManager.registerModulationSource(ms);
   }
 }
 
@@ -505,7 +507,7 @@ void AudioModuleChain::removeFromModulatorsIfApplicable(AudioModule* module)
 {
   ModulationSource* ms = dynamic_cast<ModulationSource*> (module);
   if(ms != nullptr)
-    ModulationManager::deRegisterModulationSource(ms);
+    modManager.deRegisterModulationSource(ms);
 }
 
 void AudioModuleChain::assignModulationSourceName(ModulationSource* source)
