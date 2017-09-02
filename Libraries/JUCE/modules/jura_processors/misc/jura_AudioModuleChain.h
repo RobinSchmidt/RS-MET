@@ -49,7 +49,9 @@ public:
   /** Creates and returns a pointer to an object of some subclass of AudioModule. Which subclass it 
   is, is determined by the passed String parameter. You must also pass the mutex lock object that 
   should be used by the AudioModule. You may also optionally pass a ModulationManager object that 
-  will be used for AudioModules with modulatable parameters */
+  will be used for AudioModules with modulatable parameters. 
+  ToDo: pass an optional MetaParameterManager the same way as the ModulationManager is passed.
+  */
   static AudioModule* createModule(const juce::String& type, CriticalSection* lockToUse, 
     ModulationManager* modManager = nullptr);
 

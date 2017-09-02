@@ -256,7 +256,7 @@ public:
   meta-control for the modulation-depth associated with the connection, you may pass the pointer to
   the MetaParameterManager object that should be used for this. */
   ModulationConnection(ModulationSource* source, ModulationTarget* target, 
-    MetaParameterManager* metaManager = nullptr);
+    MetaParameterManager* metaManager);
     // maybe disallow metaManager to be a nullptr - or handle the case with a null object in 
     // MetaControlledParameter
 
@@ -416,6 +416,10 @@ public:
 
   /** \name Misc */
 
+  /** Sets the MetaParameterManager that should be used to attach meta-parameters to the 
+  depth-parameters of the modulation connections. */
+  virtual void setMetaParameterManager(MetaParameterManager* managerToUse);
+
   /** Recalls a state (i.e. all the connections and their settings) from an XmlElement. */
   virtual void setStateFromXml(const XmlElement& xmlState);
 
@@ -435,6 +439,7 @@ protected:
   std::vector<ModulationConnection*> modulationConnections;
 
   CriticalSection *modLock = nullptr; 
+  MetaParameterManager* metaManager = nullptr; // use a null object instead
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationManager)
 };

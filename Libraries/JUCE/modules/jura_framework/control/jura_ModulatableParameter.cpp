@@ -221,7 +221,7 @@ void ModulationManager::addConnection(ModulationSource* source, ModulationTarget
 {
   ScopedLock scopedLock(*modLock); 
   jassert(!isConnected(source, target)); // there is already a connection between source and target
-  modulationConnections.push_back(new ModulationConnection(source, target));
+  modulationConnections.push_back(new ModulationConnection(source, target, metaManager));
   appendIfNotAlreadyThere(affectedTargets, target);
 }
 
@@ -363,6 +363,12 @@ ModulationTarget* ModulationManager::getTargetByName(const juce::String& targetN
   return nullptr;
 }
 
+void ModulationManager::setMetaParameterManager(MetaParameterManager* managerToUse)
+{
+  metaManager = managerToUse;
+  // todo: set it to the null object, in case a nullptr is passed
+}
+
 void ModulationManager::setStateFromXml(const XmlElement& xmlState)
 {
   ScopedLock scopedLock(*modLock); 
@@ -373,7 +379,7 @@ void ModulationManager::setStateFromXml(const XmlElement& xmlState)
     ModulationTarget* target = getTargetByName(conXml->getStringAttribute("Target"));
     if(source != nullptr && target != nullptr)
     {
-      ModulationConnection* c = new ModulationConnection(source, target);
+      ModulationConnection* c = new ModulationConnection(source, target, metaManager);
       //c->setDepth(   conXml->getDoubleAttribute("Depth")); // nope: depthParam is not updated
       c->getDepthParameter()->setValue(conXml->getDoubleAttribute("Depth"), true, true); // yes
       c->setRelative(conXml->getStringAttribute("Mode") == "Relative");

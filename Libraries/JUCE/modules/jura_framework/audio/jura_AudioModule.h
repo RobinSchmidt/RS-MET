@@ -324,7 +324,8 @@ public:
     ModulationManager* modManager = nullptr) 
     : AudioModule(lockToUse), ModulationParticipant(modManager)
   {
-  
+    if(modManager != nullptr)
+      modManager->setMetaParameterManager(this->getMetaParameterManager());
   }
 
   virtual ~AudioModuleWithModulatableParams() {}
