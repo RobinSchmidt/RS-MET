@@ -24,7 +24,8 @@ void AudioModuleDeletionWatcher::removeWatchedAudioModule(AudioModule
 
 // construction/destruction:
 
-AudioModule::AudioModule(CriticalSection *lockToUse) : ParameterManager(lockToUse)
+AudioModule::AudioModule(CriticalSection *lockToUse, MetaParameterManager* metaManagerToUse) 
+  : ParameterManager(lockToUse), metaParamManager(metaManagerToUse)
 {
   ParameterObserver::localAutomationSwitch = true;  // activate automation for this instance
   moduleName = juce::String("AudioModule");

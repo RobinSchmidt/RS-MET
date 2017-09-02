@@ -114,6 +114,9 @@ public:
   CriticalSection plugInLock;
 
 
+  MetaParameterManager metaParaManager;
+   // needs to be public to be accessible for the AudioModule wrapper functions
+
 protected:
 
   /** Creates the parameters that are reported to the host. Called internally from the
@@ -134,7 +137,6 @@ protected:
 
   // parameter-management:
   std::vector<AudioPluginParameter*> parameters;
-  MetaParameterManager metaParaManager;
 
   juce::String plugInName;  // assign this in the constructor of your subclass
    // maybe get rid of this and let the wrapper return the name of the wrapped AudioModule
@@ -262,7 +264,7 @@ AudioPlugin* JUCE_CALLTYPE createPluginWithoutMidi(AudioModuleType *dummy, int n
   // wraps audio module into plugin without midi input
   /*jura::AudioPlugin *plugIn = new jura::AudioPlugin(nullptr);*/
   jura::AudioPlugin *plugIn = new jura::AudioPlugin(numParameters);
-  AudioModuleType   *module = new AudioModuleType(&plugIn->plugInLock);
+  AudioModuleType   *module = new AudioModuleType(&plugIn->plugInLock, &plugIn->metaParaManager);
   module->setSaveAndRecallMetaParameters(true);
   plugIn->setAudioModuleToWrap(module);
   return plugIn;
@@ -273,7 +275,7 @@ AudioPluginWithMidiIn* JUCE_CALLTYPE createPluginWithMidi(AudioModuleType *dummy
 {
   // wraps audio module into plugin with midi input
   jura::AudioPluginWithMidiIn *plugIn = new jura::AudioPluginWithMidiIn(numParameters);
-  AudioModuleType *module = new AudioModuleType(&plugIn->plugInLock);
+  AudioModuleType *module = new AudioModuleType(&plugIn->plugInLock, &plugIn->metaParaManager);
   module->setSaveAndRecallMetaParameters(true);
   plugIn->setAudioModuleToWrap(module);
   return plugIn;

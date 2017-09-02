@@ -1,6 +1,7 @@
 
-Ladder::Ladder(CriticalSection *lockToUse, ModulationManager* modManagerToUse) 
-  : AudioModuleWithModulatableParams(lockToUse, modManagerToUse)
+Ladder::Ladder(CriticalSection *lockToUse, MetaParameterManager* metaManagerToUse,
+  ModulationManager* modManagerToUse) 
+  : AudioModuleWithModulatableParams(lockToUse, metaManagerToUse, modManagerToUse)
 {
   ScopedLock scopedLock(*lock);
   moduleName = "Ladder";

@@ -66,8 +66,10 @@ public:
   somewhere outside and will be used here to acquire mutually exclusive access from different 
   threads to the underlying dsp object. For example, if the AudioModule is wrapped into a plugin,
   the Criticalsection object could exist on the level of the plugin (an its lifetime be managed 
-  there).  */
-  AudioModule(CriticalSection *lockToUse);
+  there). To enable meta-control, you can also pass
+  
+  */
+  AudioModule(CriticalSection *lockToUse, MetaParameterManager* metaManagerToUse = nullptr);
 
   /** Destructor. */
   virtual ~AudioModule();
@@ -234,6 +236,7 @@ public:
   is typically member of some outlying AudioPlugin and the AudioPlugin will set this up in its 
   constructor. */
   void setMetaParameterManager(MetaParameterManager* managerToUse);
+    // maybe remove - it should be passed to the constructor
 
   //-----------------------------------------------------------------------------------------------
   // \name Audio processing:
@@ -321,11 +324,12 @@ class JUCE_API AudioModuleWithModulatableParams : public AudioModule, public Mod
 public:
 
   AudioModuleWithModulatableParams(CriticalSection* lockToUse, 
+    MetaParameterManager* metaManagerToUse = nullptr,
     ModulationManager* modManager = nullptr) 
-    : AudioModule(lockToUse), ModulationParticipant(modManager)
+    : AudioModule(lockToUse, metaManagerToUse), ModulationParticipant(modManager)
   {
     if(modManager != nullptr)
-      modManager->setMetaParameterManager(this->getMetaParameterManager());
+      modManager->setMetaParameterManager(metaManagerToUse);
   }
 
   virtual ~AudioModuleWithModulatableParams() {}
@@ -354,7 +358,9 @@ class JUCE_API AudioModuleWithMidiIn : public AudioModuleWithModulatableParams /
 public:
 
   //AudioModuleWithMidiIn(CriticalSection *lockToUse) : AudioModule(lockToUse) {}
-  AudioModuleWithMidiIn(CriticalSection *lockToUse) : AudioModuleWithModulatableParams(lockToUse) {}
+  AudioModuleWithMidiIn(CriticalSection *lockToUse, 
+    MetaParameterManager* metaManagerToUse = nullptr) 
+    : AudioModuleWithModulatableParams(lockToUse, metaManagerToUse) {}
 
   virtual ~AudioModuleWithMidiIn() {}
 

@@ -53,7 +53,7 @@ public:
   ToDo: pass an optional MetaParameterManager the same way as the ModulationManager is passed.
   */
   static AudioModule* createModule(const juce::String& type, CriticalSection* lockToUse, 
-    ModulationManager* modManager = nullptr);
+    ModulationManager* modManager = nullptr, MetaParameterManager* metaManager = nullptr);
 
   /** Given a pointer to an object of some subclass of AudioModule, this function returns the
   string that is used to identify the subclass. */
@@ -129,11 +129,13 @@ AudioModule objects.
 
 class JUCE_API AudioModuleChain 
   : public jura::AudioModuleWithMidiIn, public jura::ModulationManager
+  // we need to have a ModulationManager member to pass it to the constructor of
+  // AudioModuleWithMidiIn
 {
 
 public:
 
-  AudioModuleChain(CriticalSection *lockToUse);
+  AudioModuleChain(CriticalSection *lockToUse, MetaParameterManager* metaManagerToUse = nullptr);
   virtual ~AudioModuleChain();
 
   /** Adds an empty slot the end of the chain. */

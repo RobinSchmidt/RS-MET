@@ -1,5 +1,5 @@
 AudioModule* AudioModuleFactory::createModule(const juce::String& type, CriticalSection *lock, 
-  ModulationManager* modMan)
+  ModulationManager* modMan, MetaParameterManager* metaMan)
 {
   if(type == "None")         return new DummyModule( lock);
 
@@ -18,7 +18,7 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
 
   // filters:
   if(type == "Equalizer")       return new EqualizerAudioModule(      lock);
-  if(type == "Ladder")          return new Ladder(                    lock, modMan);
+  if(type == "Ladder")          return new Ladder(                    lock, metaMan, modMan);
   if(type == "PhasorFilter")    return new PhasorFilter(              lock);
   if(type == "EngineersFilter") return new EngineersFilterAudioModule(lock);
   if(type == "CrossOver")       return new CrossOverAudioModule(      lock);
@@ -202,8 +202,9 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
 
 //=================================================================================================
 
-AudioModuleChain::AudioModuleChain(CriticalSection *lockToUse) 
-  : AudioModuleWithMidiIn(lockToUse), ModulationManager(lockToUse)
+AudioModuleChain::AudioModuleChain(CriticalSection *lockToUse, 
+  MetaParameterManager* metaManagerToUse) 
+  : AudioModuleWithMidiIn(lockToUse, metaManagerToUse), ModulationManager(lockToUse)
 {
   ScopedLock scopedLock(*lock);
   moduleName = "Chainer";

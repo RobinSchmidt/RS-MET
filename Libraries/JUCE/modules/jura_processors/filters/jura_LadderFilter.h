@@ -22,7 +22,8 @@ class JUCE_API Ladder : public jura::AudioModuleWithModulatableParams
 
 public:
 
-  Ladder(CriticalSection *lockToUse, ModulationManager* modManagerToUse = nullptr);
+  Ladder(CriticalSection *lockToUse, MetaParameterManager* metaManagerToUse = nullptr,
+    ModulationManager* modManagerToUse = nullptr);
     
   /** Creates the static parameters for this module (i.e. parameters that are not created
   dynamically and are thus always there). */
