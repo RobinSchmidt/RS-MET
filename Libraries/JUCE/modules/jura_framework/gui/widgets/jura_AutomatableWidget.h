@@ -17,8 +17,11 @@ class JUCE_API rsModulationSetup : public ColourSchemeComponent, public RButtonL
 
 public:
 
-  /** Constructor. */
-  rsModulationSetup(AutomatableWidget* widgetToModulate);
+  /** Constructor. You must pass the widget that you want to assign modulations to (actually, they
+  will be assigned to its underlying Parameter assumed to be a ModulatableParameter) and you must 
+  also pass a pointer to the MetaParameterManager object that should be used for attaching a
+  meta-parameter to the modulation-depths of the connections to be made. */
+  rsModulationSetup(AutomatableWidget* widgetToModulate, MetaParameterManager* metaManager);
 
   /** Destructor. */
   virtual ~rsModulationSetup();
@@ -62,8 +65,9 @@ protected:
   /** Updates the size in order to provide space for all required widgets. */
   void updateSize();
 
-  // pointer to our owner:
-  AutomatableWidget* widget;
+
+  AutomatableWidget* widget;         // our owner widget
+  MetaParameterManager* metaManager; // used for meta-controlling modulation amounts
 
   // owned widgets:
   RTextField* modulationsLabel;
@@ -113,6 +117,10 @@ public:
 
   /** Similar to @see getAutomatbleParameter. */
   ModulatableParameter* getModulatableParameter();
+
+  /** Returns a pointer to the MetaParameterManager that is used by the underlying parameter, if 
+  any - a nullptr otherwise. */
+  MetaParameterManager* getMetaParameterManager();
 
   // overrides:
   virtual void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged) override;

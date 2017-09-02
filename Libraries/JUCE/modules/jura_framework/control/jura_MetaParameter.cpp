@@ -1,8 +1,18 @@
+
+// experimental: null objects (as in https://sourcemaking.com/design_patterns/null_object) to be
+// used by default:
+//MetaParameterManager nullMetaParameterManager;
+//NormalizedParameterMapper nullParameterMapper;
+
+
 MetaControlledParameter::MetaControlledParameter(const juce::String& name, double min, double max,
   double defaultValue, int scaling, double interval)
   : Parameter(name, min, max, defaultValue, scaling, interval)
 {
-
+  // todo: initialize the metaParaManager and mapper member to Null Objects
+  // like: 
+  // metaParaManager = nullMetaParameterManager;
+  // mapper = nullNormalizedParameterMapper; // identity mapper
 }
 
 void MetaControlledParameter::setFromMetaValue(double newMetaValue, bool sendNotification, 
@@ -28,7 +38,17 @@ void MetaControlledParameter::setFromMetaValue(double newMetaValue, bool sendNot
 
 void MetaControlledParameter::setMetaParameterManager(MetaParameterManager *newManager)
 {
-  metaParaManager = newManager;
+  if(newManager != nullptr)
+    metaParaManager = newManager;
+  else
+  {
+    metaParaManager = nullptr;  // preliminary
+
+    //jassertfalse;    
+    // todo: if a nullptr is passed, set the metaParaManager to a Null Object, like so:
+    //metaParaManager = &nullMetaParameterManager;
+  }
+
 }
 
 void MetaControlledParameter::setParameterMapper(NormalizedParameterMapper *newMapper)

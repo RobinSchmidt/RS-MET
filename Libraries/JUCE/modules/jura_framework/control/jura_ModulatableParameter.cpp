@@ -132,7 +132,8 @@ std::vector<ModulationConnection*> ModulationTarget::getConnections()
 
 //-------------------------------------------------------------------------------------------------
 
-ModulationConnection::ModulationConnection(ModulationSource* _source, ModulationTarget* _target)
+ModulationConnection::ModulationConnection(ModulationSource* _source, ModulationTarget* _target, 
+  MetaParameterManager* metaManager)
 {
   source   = _source; 
   target   = _target;
@@ -144,12 +145,8 @@ ModulationConnection::ModulationConnection(ModulationSource* _source, Modulation
 
   juce::String name = source->getModulationSourceName();
   depthParam = new MetaControlledParameter(name, -1.0, 1.0, 0.0, Parameter::LINEAR, 0.0);
-  depthParam->setValueChangeCallback<ModulationConnection>(this, 
-    &ModulationConnection::setDepth);
-
-  //amountParam->setMetaParameterManager(metaManager);
-  // we may need a MetaParameterManager* parameter to the constructor ..or a pointer to the
-  // ModulationManager...which may have to be a subclass of MetaParameterManager
+  depthParam->setValueChangeCallback<ModulationConnection>(this, &ModulationConnection::setDepth);
+  depthParam->setMetaParameterManager(metaManager);
 }
 
 ModulationConnection::~ModulationConnection()

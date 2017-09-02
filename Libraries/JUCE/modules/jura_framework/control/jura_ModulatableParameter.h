@@ -252,8 +252,13 @@ class JUCE_API ModulationConnection
 
 public:
 
-  /** Constructor. You should pass a ModulationSource and a ModulationTarget. */
-  ModulationConnection(ModulationSource* source, ModulationTarget* target);
+  /** Constructor. You should pass a ModulationSource and a ModulationTarget. If you want to enable
+  meta-control for the modulation-depth associated with the connection, you may pass the pointer to
+  the MetaParameterManager object that should be used for this. */
+  ModulationConnection(ModulationSource* source, ModulationTarget* target, 
+    MetaParameterManager* metaManager = nullptr);
+    // maybe disallow metaManager to be a nullptr - or handle the case with a null object in 
+    // MetaControlledParameter
 
   /** Destructor. */
   virtual ~ModulationConnection(); // maybe make non-virtual

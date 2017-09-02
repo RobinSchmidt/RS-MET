@@ -1,5 +1,7 @@
-rsModulationSetup::rsModulationSetup(AutomatableWidget* widgetToModulate)
-  : widget(widgetToModulate), rsDeletionRequester(widgetToModulate)
+rsModulationSetup::rsModulationSetup(AutomatableWidget* widgetToModulate, 
+  MetaParameterManager* metaManagerTouse)
+  : widget(widgetToModulate), metaManager(metaManagerTouse)
+  , rsDeletionRequester(widgetToModulate)
 {
   addWidget( modulationsLabel = new RTextField("Modulations") );
   modulationsLabel->setNoBackgroundAndOutline(true);
@@ -417,7 +419,7 @@ void AutomatableWidget::showModulationSetup()
   int y  = wrappedWidget->getScreenY() + wh; // preliminary
 
   if(modSetup == nullptr)
-    modSetup = new rsModulationSetup(this);
+    modSetup = new rsModulationSetup(this, getMetaParameterManager());
   modSetup->setTopLeftPosition(x, y);
   modSetup->addToDesktop(ComponentPeer::windowHasDropShadow | ComponentPeer::windowIsTemporary);
   modSetup->setVisible(true);
@@ -451,6 +453,16 @@ MetaControlledParameter* AutomatableWidget::getMetaControlledParameter()
 ModulatableParameter* AutomatableWidget::getModulatableParameter()
 {
   return dynamic_cast<ModulatableParameter*> (wrappedWidget->assignedParameter);
+}
+
+MetaParameterManager* AutomatableWidget::getMetaParameterManager()
+{
+  MetaControlledParameter* mcp = 
+    dynamic_cast<MetaControlledParameter*> (wrappedWidget->assignedParameter);
+  if(mcp)
+    return mcp->getMetaParameterManager();
+  else
+    return nullptr;
 }
 
 //=================================================================================================
