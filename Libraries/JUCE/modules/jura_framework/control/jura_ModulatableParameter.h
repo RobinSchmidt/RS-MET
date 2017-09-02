@@ -40,10 +40,11 @@ maybe make the class hierarchy like this:
 Parameter <- MetaControlledParameter <- ModulatableParameter <- PolyphonicParameter
 
 ToDo:
+-let the Amount/Depth parameters be meta-controlled
+ -works, but the meta assignment is not recalled (which is not surprsising)
 -update this comment - write an explanation how to use it and how it works internally
 -let the user set up the min/max amount values
 -let the user select absolute or relative modulation
--let the Amount/Depth parameters be meta-controlled
 -optimize, where possible - maybe the scaler can be multiplied into the depth (maybe use a 
  scaledDepth member)
 -maybe restrict the modulatedValue to the original parameter range - otherwise modulation may set

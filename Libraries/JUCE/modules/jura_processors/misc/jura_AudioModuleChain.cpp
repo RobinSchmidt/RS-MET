@@ -238,7 +238,7 @@ void AudioModuleChain::addEmptySlot()
 void AudioModuleChain::addModule(const juce::String& type)
 {
   ScopedLock scopedLock(*lock);
-  AudioModule *m = AudioModuleFactory::createModule(type, lock, &modManager); // todo: pass the metaParamManager too
+  AudioModule *m = AudioModuleFactory::createModule(type, lock, &modManager, metaParamManager); // todo: pass the metaParamManager too
   m->setMetaParameterManager(metaParamManager); // without, we hit jassert(metaParaManager != nullptr) in MetaControlledParameter::attachToMetaParameter - after passing metaParamManagerto the constructor, we may delete this
   append(modules, m);
   m->setModuleName("Slot" + String(size(modules)) + "-" + type);
@@ -270,9 +270,9 @@ void AudioModuleChain::replaceModule(int index, const juce::String& type)
   jassert(index >= 0 && index < size(modules)); // index out of range
   if(!isModuleOfType(index, type)){              // replace only, if new type is different
     AudioModule* oldModule = modules[index];
-    AudioModule* newModule = AudioModuleFactory::createModule(type, lock, &modManager);
+    AudioModule* newModule = AudioModuleFactory::createModule(type, lock, &modManager, metaParamManager);
     newModule->setModuleName("Slot" + String(index+1) + "-" + type);
-    newModule->setMetaParameterManager(metaParamManager);
+    newModule->setMetaParameterManager(metaParamManager); // superfluous now?
     newModule->loadDefaultPreset(); // later: either load default preset or recall a stored state
     newModule->setSampleRate(sampleRate);
     modules[index] = newModule;
