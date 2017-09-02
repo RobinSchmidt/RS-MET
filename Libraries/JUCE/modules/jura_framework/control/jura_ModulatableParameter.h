@@ -252,16 +252,16 @@ class JUCE_API ModulationConnection
 
 public:
 
-  /** Constructor. You should pass a ModulationSource, a ModulationTarget, an amount and a flag to
-  to indicate whether this amount is absolute or relative (i.e. scaled by the unmodulated 
-  value). */
+  /** Constructor. You should pass a ModulationSource and a ModulationTarget. */
   ModulationConnection(ModulationSource* source, ModulationTarget* target);
 
   /** Destructor. */
   virtual ~ModulationConnection(); // maybe make non-virtual
 
   /** Sets the modulation depth for this connection. Used for the callback in the depthParam. 
-  Should not be used in state-recall because then, the depthParam won't be updated. */
+  Should not be used in state-recall because then, the depthParam won't be updated. 
+  ToDo: rename this to setDepthInternal (or something) and provide a setDepth implementation that 
+  *can* be used in state-recall. */
   void setDepth(double newDepth)
   {
     depth = newDepth;
@@ -291,7 +291,7 @@ public:
 
 
   /** Returns a xml element containing the information about this connection (needed for state 
-  save/recall in ModulationManager) */
+  save/recall in ModulationManager - todo: maybe move it to there) */
   XmlElement* getAsXml();
 
 
@@ -314,8 +314,10 @@ protected:
 
 //=================================================================================================
 
-/** This class is responsible for keeping a list of all available ModulationSources and making it 
-possible for ModulationTargets to register themselves to any number of these sources. */
+/** This class is responsible for keeping a list of all available ModulationSources and 
+ModulationTargets and making it possible for ModulationTargets to connect themselves to any number 
+of these sources. It's also responsible for computing all modulated values and updating the targets
+accordingly. */
 
 class JUCE_API ModulationManager
 {
@@ -335,8 +337,9 @@ public:
   (oscs, filters, whatever) are called. */
   void applyModulations();
 
-  /** Same as applyModulations() but it doesn'T acquire the mutex-lock. This should be used in cases 
-  where the caller already has acquired the lock. */
+  /** Same as applyModulations() but it doesn't acquire the mutex-lock. This should be used in cases 
+  where the caller already has acquired the lock (i.e. it already holds the lock for the same 
+  CriticalSection object that was initially passed to our constructor). */
   void applyModulationsNoLock();
 
 
@@ -370,10 +373,10 @@ public:
   void deRegisterModulationSource(ModulationSource* source);
 
   /** Registers the given ModulationTarget. */
-  void registerModulationTarget(ModulationTarget* target); // may not be needed
+  void registerModulationTarget(ModulationTarget* target);
 
   /** De-registers a ModulationTarget. */
-  void deRegisterModulationTarget(ModulationTarget* target); // may not be needed
+  void deRegisterModulationTarget(ModulationTarget* target);
 
 
   /** \name Inquiry */
@@ -394,8 +397,7 @@ public:
   /** Given a pointer to a ModulationSource of some type, this function returns the number of 
   ModulationSources of the same type that are registered here. This is used to figure out, for 
   example, how many LFOs, envelopes, etc. already exist in order to assign an appropriate name
-  to the next one to be added, for example in Chainer (the name should include an index/counter for 
-  unique identification of the source). */
+  to the next one to be added (it's actually not currently used). */
   int numRegisteredSourcesOfType(ModulationSource* source);
 
   /** Returns a pointer to the ModulationSource with given name, if a source with that name exists 
@@ -415,10 +417,10 @@ public:
   /** Returns the state (i.e. all the connections and their settings) in form of an XmlElement. */
   virtual XmlElement* getStateAsXml();
 
-  /** Updates our affectedTargets array. Called from some of the connection-removal functions in 
-  order to remove the target from the affectedTargets, in case it has no incoming connections 
-  anymore. */
-  void updateAffectedTargetArray();
+  /** Updates our affectedTargets array. Called from the connection-removal functions in order to 
+  remove the target from the affectedTargets, in case it has no incoming connections anymore after 
+  connection removal. */
+  void updateAffectedTargetsArray();
 
 protected:
 
@@ -449,22 +451,22 @@ public:
     double defaultValue = 0.5, int scaling = LINEAR, double interval = 0.0)
     : MetaControlledParameter(name, min, max, defaultValue, scaling, interval) {}
 
-
-  virtual void setValue(double newValue, bool sendNotification, bool callCallbacks)
+  /** Overriden in order to also set up unmodulatedValue member inherited from ModulationTarget. */
+  virtual void setValue(double newValue, bool sendNotification, bool callCallbacks) override
   {
     MetaControlledParameter::setValue(newValue, sendNotification, callCallbacks);
     ModulationTarget::setUnmodulatedValue(newValue);
   }
 
-
-  /** Sets up the pointer to our owner, i.e. the AudioModule that contains this parameter. */
+  /** Sets up the pointer to our owner, i.e. the AudioModule that contains this parameter (needed 
+  for unique identification of this parameter in the tree of AudioModules when a state is 
+  recalled). */
   void setOwnerAudioModule(AudioModule *newOwner) { ownerModule = newOwner; }
 
   /** We suppose that modulatedValue of the ModulationTarget baseclass has already been computed, 
-  i.e. ModulationTarget::computeModulatedValue has been called, such that modulatedValue has a 
-  legitimate value with all modulations applied. Here we pull out this modulated value and call our 
-  valueChangeCallback with it. The function is supposed to be called per sample for each modulated 
-  Parameter. */
+  such that modulatedValue has a legitimate value with all modulations applied. Here we pull out 
+  this modulated value and call our valueChangeCallback with it. The function is supposed to be 
+  called per sample for each modulated Parameter. ModulationManager will take care of this. */
   inline void callCallbackWithModulatedValue()
   {
     if( valueChangeCallbackDouble != nullptr )

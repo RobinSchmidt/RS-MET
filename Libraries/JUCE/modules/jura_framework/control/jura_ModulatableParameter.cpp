@@ -248,7 +248,7 @@ void ModulationManager::removeConnection(ModulationSource* source, ModulationTar
       remove(modulationConnections, i);
     }
   }
-  updateAffectedTargetArray();
+  updateAffectedTargetsArray();
   jassert(!isConnected(source, target)); // there must have been more than one connection between
                                          // given source and target - that should not happen
 }
@@ -259,7 +259,7 @@ void ModulationManager::removeAllConnections()
   for(int i = 0; i < size(modulationConnections); i++)
     delete modulationConnections[i];
   modulationConnections.clear();
-  updateAffectedTargetArray();
+  updateAffectedTargetsArray();
 }
 
 void ModulationManager::removeConnectionsWith(ModulationSource* source)
@@ -274,7 +274,7 @@ void ModulationManager::removeConnectionsWith(ModulationSource* source)
       i--; // array was shrunken
     }
   }
-  updateAffectedTargetArray();
+  updateAffectedTargetsArray();
 }
 
 void ModulationManager::removeConnectionsWith(ModulationTarget* target)
@@ -289,7 +289,7 @@ void ModulationManager::removeConnectionsWith(ModulationTarget* target)
       i--; // array was shrunken
     }
   }
-  updateAffectedTargetArray();
+  updateAffectedTargetsArray();
 }
 
 void ModulationManager::registerModulationSource(ModulationSource* source)
@@ -400,7 +400,7 @@ XmlElement* ModulationManager::getStateAsXml()
   return xmlState;
 }
 
-void ModulationManager::updateAffectedTargetArray()
+void ModulationManager::updateAffectedTargetsArray()
 {
   ScopedLock scopedLock(*modLock); 
   affectedTargets.clear();
