@@ -327,7 +327,38 @@ XmlElement* AudioModule::getStateAsXml(const juce::String& stateName, bool markA
   return xmlState;
 }
 
-void AudioModule::midiMappingFromXml(const XmlElement &xmlState)
+void AudioModule::recallParametersFromXml(const XmlElement &xmlState)
+{
+  juce::String name;
+  Parameter* p;
+  for(int i = 0; i < size(parameters); i++) {
+    p = parameters[i];
+    name = p->getName();
+    if(p->shouldBeSavedAndRecalled()) {
+      if(p->isStringParameter())
+        p->setStringValue(xmlState.getStringAttribute(
+          name, p->getDefaultStringValue()), true, true);
+      else
+        p->setValue(xmlState.getDoubleAttribute(name, p->getDefaultValue()), true, true); }}
+}
+
+void AudioModule::recallChildModulesFromXml(const XmlElement &xmlState, bool markAsClean)
+{
+  for(int c = 0; c < (int)childModules.size(); c++)
+  {
+    childModules[c]->setStateToDefaults();
+    int indexAmongNameSakes = getIndexAmongNameSakes(childModules[c]);
+    XmlElement* childState = getChildElementByNameAndIndexAmongNameSakes(
+      xmlState, childModules[c]->moduleName, indexAmongNameSakes);
+    if( childState != NULL )
+    {
+      //childModules[c]->setStateFromXml(*childState, stateName, markAsClean);
+      childModules[c]->setStateFromXml(*childState, juce::String::empty, markAsClean);
+    }
+  }
+}
+
+void AudioModule::recallMidiMappingFromXml(const XmlElement &xmlState)
 {
   revertToDefaultMapping(); // rename to revertToDefaultMidiMapping
   XmlElement* xmlMapping = xmlState.getChildByName("MidiMapping");
@@ -342,7 +373,7 @@ void AudioModule::midiMappingFromXml(const XmlElement &xmlState)
       ap->setUpperAutomationLimit(xmlParamSetup->getDoubleAttribute("Max", ap->getMaxValue())); }}
 }
 
-void AudioModule::metaMappingFromXml(const XmlElement &xmlState)
+void AudioModule::recallMetaMappingFromXml(const XmlElement &xmlState)
 {
   detachMetaParameters();
   XmlElement* xmlMapping = xmlState.getChildByName("MetaMapping");
@@ -356,7 +387,7 @@ void AudioModule::metaMappingFromXml(const XmlElement &xmlState)
       // todo: retrieve mapping function/curve
 }
 
-void AudioModule::metaValuesFromXml(const XmlElement &xmlState)
+void AudioModule::recallMetaValuesFromXml(const XmlElement &xmlState)
 {
   if(saveAndRecallMetas == true && metaParamManager != nullptr) {
     metaParamManager->resetAllToDefaults();
@@ -378,43 +409,15 @@ void AudioModule::setStateFromXml(const XmlElement& xmlState, const juce::String
   ScopedLock scopedLock(*lock);
 
   XmlElement convertedState = convertXmlStateIfNecessary(xmlState);
-
-  // retrieve parameter values:
-  juce::String name;
-  Parameter* p;
-  for(int i = 0; i < size(parameters); i++) {
-    p = parameters[i];
-    name = p->getName();
-    if(p->shouldBeSavedAndRecalled()) {
-      if(p->isStringParameter())
-        p->setStringValue(xmlState.getStringAttribute(
-          name, p->getDefaultStringValue()), true, true);
-      else
-        p->setValue(xmlState.getDoubleAttribute(name, p->getDefaultValue()), true, true); }}
-
-  // retrieve midi- and/or meta mapping:
-  midiMappingFromXml(convertedState);
-  metaMappingFromXml(convertedState);
-  metaValuesFromXml(convertedState);
+  recallParametersFromXml(convertedState);
+  recallMidiMappingFromXml(convertedState);
+  recallMetaMappingFromXml(convertedState);
+  recallMetaValuesFromXml(convertedState);
   // maybe this should be done before retrieving the parameter values - because when you change
   // a parameter range in the code and then load an older preset, a parameter that is connected
   // to a meta parameter will get the wrong value.
 
-
-  // if we have child-modules, we try to restore their states by looking for corresponding
-  // child XmlElements in the xmlState:
-  for(int c = 0; c < (int)childModules.size(); c++)
-  {
-    childModules[c]->setStateToDefaults();
-    int indexAmongNameSakes = getIndexAmongNameSakes(childModules[c]);
-    XmlElement* childState = getChildElementByNameAndIndexAmongNameSakes(
-      convertedState, childModules[c]->moduleName, indexAmongNameSakes);
-    if( childState != NULL )
-    {
-      //childModules[c]->setStateFromXml(*childState, stateName, markAsClean);
-      childModules[c]->setStateFromXml(*childState, juce::String::empty, markAsClean);
-    }
-  }
+  recallChildModulesFromXml(convertedState, markAsClean);
 
   // this call we need for setting our parent dirty when some embedded sub-module loads a state
   // - when the call was due to the outer parent loading its state, the subsequent call to

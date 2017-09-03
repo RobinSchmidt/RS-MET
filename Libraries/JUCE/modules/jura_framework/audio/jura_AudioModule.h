@@ -275,9 +275,11 @@ protected:
   void metaMappingToXml(XmlElement* xmlElementToStartFrom);
   void metaValuesToXml(XmlElement* xmlElementToStartFrom);
 
-  void midiMappingFromXml(const XmlElement &xmlState);
-  void metaMappingFromXml(const XmlElement &xmlState);
-  void metaValuesFromXml(const XmlElement &xmlState);
+  void recallParametersFromXml(  const XmlElement &xmlState);
+  void recallChildModulesFromXml(const XmlElement &xmlState, bool markAsClean);
+  void recallMidiMappingFromXml( const XmlElement &xmlState);
+  void recallMetaMappingFromXml( const XmlElement &xmlState);
+  void recallMetaValuesFromXml(  const XmlElement &xmlState);
 
   /** Our child modules to which we will distribute MIDI-events and of which we manage the
   states. */
