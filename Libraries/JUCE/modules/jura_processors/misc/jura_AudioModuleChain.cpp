@@ -475,6 +475,13 @@ void AudioModuleChain::setStateFromXml(const XmlElement& xmlState, const juce::S
 {
   ScopedLock scopedLock(*lock);
   AudioModule::setStateFromXml(xmlState, stateName, markAsClean); // actually does nothing?
+
+  recallSlotsFromXml(xmlState, markAsClean);
+  recallModulationsFromXml(xmlState);
+}
+
+void AudioModuleChain::recallSlotsFromXml(const XmlElement &xmlState, bool markAsClean)
+{
   activeSlot = -1;  // i think, that's not necessary - should be already -1
   int tmpActiveSlot = xmlState.getIntAttribute("ActiveSlot", 1) - 1;
   clearModulesArray();
@@ -488,6 +495,10 @@ void AudioModuleChain::setStateFromXml(const XmlElement& xmlState, const juce::S
     modules[i]->setStateFromXml(*moduleState, "", markAsClean);
     i++;
   }
+}
+
+void AudioModuleChain::recallModulationsFromXml(const XmlElement &xmlState)
+{
   XmlElement* modXml = xmlState.getChildByName("Modulations");
   if(modXml != nullptr)
     modManager.setStateFromXml(*modXml);  // recall modulation settings
