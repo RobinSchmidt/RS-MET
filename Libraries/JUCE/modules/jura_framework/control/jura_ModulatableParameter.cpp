@@ -161,19 +161,15 @@ XmlElement* ModulationConnection::getAsXml()
 
   xml->setAttribute("Source", source->getModulationSourceName());
   xml->setAttribute("Target", target->getModulationTargetName());
-  xml->setAttribute("Depth",  depth);
 
+  xml->setAttribute("Depth",  depth);
   if(depthParam->getMinValue() != -1)
     xml->setAttribute("DepthMin", depthParam->getMinValue());
   if(depthParam->getMaxValue() != +1)
     xml->setAttribute("DepthMax", depthParam->getMaxValue());
-
   if(depthParam->getMetaParameterIndex() != -1)
-  {
-    // store the meta index and maybe later also the mapping function
-    // look at how metas are stored for regular parameters...maybe that should be factored
-    // into a Parameter->getStateAsXml function, hmmm
-  }
+    xml->setAttribute("DepthMeta", depthParam->getMetaParameterIndex());
+    // later, we may also have to store the mapping function here (if any)
 
   juce::String modeString;
   if(relative)
@@ -394,8 +390,17 @@ void ModulationManager::setStateFromXml(const XmlElement& xmlState)
     if(source != nullptr && target != nullptr)
     {
       ModulationConnection* c = new ModulationConnection(source, target, metaManager);
-      c->setDepth(   conXml->getDoubleAttribute("Depth")); // nope: depthParam is not updated - fixed now
-      //c->getDepthParameter()->setValue(conXml->getDoubleAttribute("Depth"), true, true); // yes
+
+      c->depthParam->detachFromMetaParameter();
+      int meta = conXml->getIntAttribute("DepthMeta", -1);
+      if(meta >= 0)
+        c->depthParam->attachToMetaParameter(meta);
+
+      double min = conXml->getDoubleAttribute("DepthMin", -1.0);
+      double max = conXml->getDoubleAttribute("DepthMax", +1.0);
+      double val = conXml->getDoubleAttribute("Depth",     0.0);
+      c->setDepthRangeAndValue(min, max, val);
+
       c->setRelative(conXml->getStringAttribute("Mode") == "Relative");
       addConnection(c);
     }

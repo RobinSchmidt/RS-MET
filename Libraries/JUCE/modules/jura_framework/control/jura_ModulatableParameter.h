@@ -97,6 +97,9 @@ ToDo:
  and Amplitude, i.e. freq = pitchToFreq(key+pitchbend), amp = vel/127.
 -let the user set up the min/max amount values
 -let the user select absolute or relative modulation
+-figure out what happens if the user changes the range of depthParam - how will this affect the 
+ meta-value, how can we make sure that the depth parameter is always consistent with it attached 
+ metaparameter? how its patch recall affected?
 -optimize, where possible - maybe the scaler can be multiplied into the depth (maybe use a 
  scaledDepth member)
  -maybe the ModulationManager shhould maintain an array usedSources and itereate only over that in
