@@ -89,10 +89,26 @@ void Parameter::setValue(double newValue, bool sendNotification, bool callCallba
   ScopedPointerLock spl(mutex);
 
   //// experimental (seems to break total recall for SpiralGenerator):
-  //if(value = newValue)  // hey - that's wrong - it should be if(value == newValue)
+  //if(value = newValue)  // hey - that's wrong - it should be if(value == newValue), fix and remove comment
   //  return;
 
   value = restrictValueToParameterRange(newValue);
+  if( callCallbacks == true )
+    callValueChangeCallbacks();
+  if( sendNotification == true )
+    notifyObservers();
+}
+
+void Parameter::setRangeAndValue(double newMin, double newMax, double newValue,
+  bool sendNotification, bool callCallbacks)
+{
+  ScopedPointerLock spl(mutex);
+  jassert(newMin <= newValue && newValue <= newMax); // inconsistent values
+
+  minValue = newMin;
+  maxValue = newMax;
+  value = restrictValueToParameterRange(newValue);
+
   if( callCallbacks == true )
     callValueChangeCallbacks();
   if( sendNotification == true )

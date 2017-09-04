@@ -174,6 +174,11 @@ public:
   assigned callback function. */
   virtual void setValue(double newValue, bool sendNotification, bool callCallbacks);
 
+  /** Sets a new range and value as single operation to avoid inconsistencies that may occur when
+  setting these things one after another. */
+  virtual void setRangeAndValue(double newMin, double newMax, double newValue, 
+    bool sendNotification, bool callCallbacks);
+
   /** Sets the value of the parameter where the input argument is assumed to be normalized to the
   range 0...1  .... */
   virtual void setProportionalValue(double newProportionalValue, bool sendNotification,

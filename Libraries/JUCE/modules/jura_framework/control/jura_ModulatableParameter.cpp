@@ -145,7 +145,8 @@ ModulationConnection::ModulationConnection(ModulationSource* _source, Modulation
 
   juce::String name = source->getModulationSourceName();
   depthParam = new MetaControlledParameter(name, -1.0, 1.0, 0.0, Parameter::LINEAR, 0.0);
-  depthParam->setValueChangeCallback<ModulationConnection>(this, &ModulationConnection::setDepth);
+  depthParam->setValueChangeCallback<ModulationConnection>(
+    this, &ModulationConnection::setDepthMember);
   depthParam->setMetaParameterManager(metaManager);
 }
 
@@ -393,8 +394,8 @@ void ModulationManager::setStateFromXml(const XmlElement& xmlState)
     if(source != nullptr && target != nullptr)
     {
       ModulationConnection* c = new ModulationConnection(source, target, metaManager);
-      //c->setDepth(   conXml->getDoubleAttribute("Depth")); // nope: depthParam is not updated
-      c->getDepthParameter()->setValue(conXml->getDoubleAttribute("Depth"), true, true); // yes
+      c->setDepth(   conXml->getDoubleAttribute("Depth")); // nope: depthParam is not updated - fixed now
+      //c->getDepthParameter()->setValue(conXml->getDoubleAttribute("Depth"), true, true); // yes
       c->setRelative(conXml->getStringAttribute("Mode") == "Relative");
       addConnection(c);
     }

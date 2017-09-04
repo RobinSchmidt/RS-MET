@@ -320,13 +320,17 @@ public:
   /** Destructor. */
   virtual ~ModulationConnection(); // maybe make non-virtual
 
-  /** Sets the modulation depth for this connection. Used for the callback in the depthParam. 
-  Should not be used in state-recall because then, the depthParam won't be updated. 
-  ToDo: rename this to setDepthInternal (or something) and provide a setDepth implementation that 
-  *can* be used in state-recall. */
+  /** Sets the modulation depth for this connection. This will acually update the Parameter object 
+  that is associated with the depth. */
   void setDepth(double newDepth)
   {
-    depth = newDepth;
+    depthParam->setValue(newDepth, true, true);
+  }
+
+  /** Sets the parameter range and value of the modulation depths. */
+  void setDepthRangeAndValue(double newMin, double newMax, double newValue)
+  {
+    depthParam->setRangeAndValue(newMin, newMax, newValue, true, true);
   }
 
   /** Sets the parameter to relative mode in which case the output signal of the ModulationSource
@@ -358,6 +362,18 @@ public:
 
 
 protected:
+
+  /** Sets the modulation depth for this connection. Used a target callback in the depthParam. To 
+  keep our "depth" member consistent with the value of the "depthParam" Parameter object, outside
+  code should use setDepth.
+  Should not be used in state-recall because then, the depthParam won't be updated. 
+  ToDo: rename this to setDepthInternal (or something) and provide a setDepth implementation that 
+  *can* be used in state-recall. */
+  void setDepthMember(double newDepth)
+  {
+    depth = newDepth;
+  }
+
 
   ModulationSource* source;
   ModulationTarget* target;
