@@ -89,22 +89,20 @@ maybe make the class hierarchy like this:
 Parameter <- MetaControlledParameter <- ModulatableParameter <- PolyphonicParameter
 
 ToDo:
--let the Amount/Depth parameters be meta-controlled
- -works, but the meta assignment is not recalled (which is not surprsising)
--let the depth be controlled by key and/or velocity - or better, make key and vel available as
- ModulationSource and let Depth-parameters be ModulationTargets (i.e. ModulatableParameters)
- ...or maybe not the midi key/vel values but something more physical, for example Note-Frequency
- and Amplitude, i.e. freq = pitchToFreq(key+pitchbend), amp = vel/127.
 -let the user set up the min/max amount values
 -let the user select absolute or relative modulation
 -figure out what happens if the user changes the range of depthParam - how will this affect the 
- meta-value, how can we make sure that the depth parameter is always consistent with it attached 
+ meta-value, how can we make sure that the depth parameter is always consistent with its attached 
  metaparameter? how its patch recall affected?
 -optimize, where possible - maybe the scaler can be multiplied into the depth (maybe use a 
  scaledDepth member)
  -maybe the ModulationManager shhould maintain an array usedSources and itereate only over that in
   applyModulations (similar to the treatment of affectedTargets - maybe call the arrays 
   connectedTargets and connectedSources to make the parallelism obvious)
+-let the depth be controlled by key and/or velocity - or better, make key and vel available as
+ ModulationSource and let Depth-parameters be ModulationTargets (i.e. ModulatableParameters)
+ ...or maybe not the midi key/vel values but something more physical, for example Note-Frequency
+ and Amplitude, i.e. freq = pitchToFreq(key+pitchbend), amp = vel/127.
 -maybe restrict the modulatedValue to the original parameter range - otherwise modulation may set
  it to out-of-range values (like a cutoff above fs/2 or below 0) which may cause problems
 -test in practice
