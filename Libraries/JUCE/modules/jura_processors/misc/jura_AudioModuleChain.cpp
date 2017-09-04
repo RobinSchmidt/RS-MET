@@ -456,7 +456,7 @@ void AudioModuleChain::reset()
 XmlElement* AudioModuleChain::getStateAsXml(const juce::String& stateName, bool markAsClean)
 {
   ScopedLock scopedLock(*lock);
-  XmlElement *xml = AudioModule::getStateAsXml(stateName, markAsClean);
+  XmlElement *xml = AudioModule::getStateAsXml(stateName, markAsClean); 
   xml->setAttribute("ActiveSlot", activeSlot+1);
   for(int i = 0; i < size(modules); i++){
     juce::String typeString = AudioModuleFactory::getModuleType(modules[i]);
@@ -466,7 +466,14 @@ XmlElement* AudioModuleChain::getStateAsXml(const juce::String& stateName, bool 
     child->addChildElement(modules[i]->getStateAsXml(typeString, markAsClean));
     xml->addChildElement(child);
   }
-  xml->addChildElement(modManager.getStateAsXml());
+
+  xml->addChildElement(modManager.getStateAsXml()); 
+  // do this also in ModulatableAudioModule...wait no - the mod-settings are only stored in the 
+  // top-level module, maybe we should have a ModManagerAudioModule as baseclass which contains the
+  // ModulationManager. then, instead of calling xml = AudioModule::getStateAsXml(stateName, markAsClean); 
+  // we would call it from the ModManagerAudioModule and this would then already include the mod
+  // settings
+
   return xml;
 }
 
@@ -474,10 +481,18 @@ void AudioModuleChain::setStateFromXml(const XmlElement& xmlState, const juce::S
   bool markAsClean)
 {
   ScopedLock scopedLock(*lock);
-  AudioModule::setStateFromXml(xmlState, stateName, markAsClean); // actually does nothing?
+
+  //AudioModule::setStateFromXml(xmlState, stateName, markAsClean); 
+  // the Chainer has no (global) parameters of its own, nor any static child-modules, so we don't
+  // need to call the baseclass method here (it wouldn't do anything)
 
   recallSlotsFromXml(xmlState, markAsClean);
-  recallModulationsFromXml(xmlState);
+  recallModulationsFromXml(xmlState); // this should also recall meta-assignments for mod-depths
+
+  // new:
+  //recallMidiMappingFromXml(xmlState);
+  //recallMetaMappingFromXml(xmlState); // there
+  recallMetaValuesFromXml(xmlState);
 }
 
 void AudioModuleChain::recallSlotsFromXml(const XmlElement &xmlState, bool markAsClean)
@@ -497,6 +512,7 @@ void AudioModuleChain::recallSlotsFromXml(const XmlElement &xmlState, bool markA
   }
 }
 
+// move to ModulatableAudioModule:
 void AudioModuleChain::recallModulationsFromXml(const XmlElement &xmlState)
 {
   XmlElement* modXml = xmlState.getChildByName("Modulations");

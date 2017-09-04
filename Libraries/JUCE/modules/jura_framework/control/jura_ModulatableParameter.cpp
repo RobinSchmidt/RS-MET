@@ -161,6 +161,19 @@ XmlElement* ModulationConnection::getAsXml()
   xml->setAttribute("Source", source->getModulationSourceName());
   xml->setAttribute("Target", target->getModulationTargetName());
   xml->setAttribute("Depth",  depth);
+
+  if(depthParam->getMinValue() != -1)
+    xml->setAttribute("DepthMin", depthParam->getMinValue());
+  if(depthParam->getMaxValue() != +1)
+    xml->setAttribute("DepthMax", depthParam->getMaxValue());
+
+  if(depthParam->getMetaParameterIndex() != -1)
+  {
+    // store the meta index and maybe later also the mapping function
+    // look at how metas are stored for regular parameters...maybe that should be factored
+    // into a Parameter->getStateAsXml function, hmmm
+  }
+
   juce::String modeString;
   if(relative)
     modeString = "Relative";

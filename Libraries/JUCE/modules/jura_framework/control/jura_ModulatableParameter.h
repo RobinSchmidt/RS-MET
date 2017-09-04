@@ -91,11 +91,17 @@ Parameter <- MetaControlledParameter <- ModulatableParameter <- PolyphonicParame
 ToDo:
 -let the Amount/Depth parameters be meta-controlled
  -works, but the meta assignment is not recalled (which is not surprsising)
--update this comment - write an explanation how to use it and how it works internally
+-let the depth be controlled by key and/or velocity - or better, make key and vel available as
+ ModulationSource and let Depth-parameters be ModulationTargets (i.e. ModulatableParameters)
+ ...or maybe not the midi key/vel values but something more physical, for example Note-Frequency
+ and Amplitude, i.e. freq = pitchToFreq(key+pitchbend), amp = vel/127.
 -let the user set up the min/max amount values
 -let the user select absolute or relative modulation
 -optimize, where possible - maybe the scaler can be multiplied into the depth (maybe use a 
  scaledDepth member)
+ -maybe the ModulationManager shhould maintain an array usedSources and itereate only over that in
+  applyModulations (similar to the treatment of affectedTargets - maybe call the arrays 
+  connectedTargets and connectedSources to make the parallelism obvious)
 -maybe restrict the modulatedValue to the original parameter range - otherwise modulation may set
  it to out-of-range values (like a cutoff above fs/2 or below 0) which may cause problems
 -test in practice
@@ -180,7 +186,7 @@ protected:
   // ugly design, maybe use the "Null Object" pattern instead:
   // https://sourcemaking.com/design_patterns/null_object)
   // somewhere, we should have a default "null" ModulationManager object lying around to which
-  // out pointer is initialized
+  // our pointer is initialized
 
 
 
@@ -274,7 +280,7 @@ public:
   ModulationTarget. */
   std::vector<ModulationConnection*> getConnections();
 
-  /** Initialized the modulated value by setting it to the unmodulated value. */
+  /** Initializes the modulated value by setting it to the unmodulated value. */
   inline void initModulatedValue()
   {
     modulatedValue = unmodulatedValue;
