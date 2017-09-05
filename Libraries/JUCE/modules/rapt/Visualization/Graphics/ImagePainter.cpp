@@ -594,7 +594,7 @@ template<class T> inline int   roundToInt(T x) { return ipart(x + 0.5f); }
 template<class TPix, class TWgt, class TCor>
 void ImagePainter<TPix, TWgt, TCor>::drawLineWu(TCor x0, TCor y0, TCor x1, TCor y1, TPix color)
 {
-  bool steep = abs(y1 - y0) > abs(x1 - x0);
+  bool steep = std::abs(y1 - y0) > abs(x1 - x0);
 
   if(steep){
     rsSwap(x0, y0);

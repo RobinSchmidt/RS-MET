@@ -74,7 +74,7 @@ public:
 
   /** Overriden from RWidget - sets the current value of the slider from a string and optionally
   sends out a callback message. */
-  virtual void setStateFromString(const juce::String &stateString, bool sendChangeMessage = true);
+  void setStateFromString(const juce::String &stateString, bool sendChangeMessage = true) override;
 
   /** Sets the value of the slider expressed as proportion of the slider's range, taking into
   account the scaling behaviour. The value is thus between 0...1. */
@@ -95,11 +95,11 @@ public:
 
   /** Overrides a RWidget::assignParameter in order to retrieve some infos from the Parameter (such
   as range, default-value, etc.) and sets up the slider accordingly. */
-  virtual void assignParameter(Parameter* parameterToAssign);
+  void assignParameter(Parameter* parameterToAssign) override;
 
   /** The callback method that will get called when one of our observed parameters has changed its
   range. */
-  virtual void parameterRangeChanged(Parameter* parameterThatHasChangedRange);
+  void parameterRangeChanged(Parameter* parameterThatHasChangedRange) override;
 
   /** Copies the settings (such as the range, scaling etc. but not the assignedParameter) from
   another RSlider into this one.*/
@@ -136,7 +136,7 @@ public:
   virtual double valueToProportionOfLength(double value) const;
 
   /** Overriden from RWidget - returns the state (defined as the current value) as string. */
-  virtual juce::String getStateAsString() const;
+  juce::String getStateAsString() const override;
 
   virtual const juce::String getTextFromValue(double value) const;
 
@@ -163,7 +163,7 @@ public:
   virtual void removeListener(RSliderListener* listener) throw();
 
   /** Overrides the method inherited from RWidget */
-  virtual void updateWidgetFromAssignedParameter(bool sendChangeMessage = false);
+  void updateWidgetFromAssignedParameter(bool sendChangeMessage = false) override;
 
 
 protected:
@@ -180,7 +180,7 @@ protected:
   virtual void valueSanityCheck();
 
   //virtual void enablementChanged();
-  virtual void handleAsyncUpdate();
+  void handleAsyncUpdate() override;
   virtual void triggerChangeMessage(const bool synchronous);
 
   // our listeners:

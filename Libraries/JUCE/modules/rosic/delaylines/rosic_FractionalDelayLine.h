@@ -126,7 +126,7 @@ namespace rosic
   INLINE int FractionalDelayLine::wrapAround(int position)
   {
     while( position >= length )
-      position =- length;
+      position -= length;
     while( position < 0 )
       position += length;
     return position;

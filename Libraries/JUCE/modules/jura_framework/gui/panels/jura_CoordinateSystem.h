@@ -53,28 +53,28 @@ public:
 
   /** Lets a context menu pop up when the right button is clicked to allow export of the content
   as image or svg drawing. */
-  virtual void mouseDown(const MouseEvent& e);
+  void mouseDown(const MouseEvent& e) override;
 
   /** Overrides mouseEnter for displaying the inspection Label. */
-  virtual void mouseEnter(const MouseEvent& e);
+  void mouseEnter(const MouseEvent& e) override;
 
   /** Overrides mouseMove for displaying the inspection Label. */
-  virtual void mouseMove(const MouseEvent& e);
+  void mouseMove(const MouseEvent& e) override;
 
   /** Overrides mouseExit for displaying the inspection Label. */
-  virtual void mouseExit(const MouseEvent& e);
+  void mouseExit(const MouseEvent& e) override;
 
   /**< Overrides mouseDrag to let it be called by a CoordinateSystemZoomer (override it in
   subclasses, if you want to respond to mouseDrag events). */
-  virtual void mouseDrag(const MouseEvent& e);
+  void mouseDrag(const MouseEvent& e) override;
 
   /** Overrides mouseUp to let it be called by a CoordinateSystemZoomer (override it in
   subclasses, if you want to respond to mouseUp events). */
-  virtual void mouseUp(const MouseEvent& e);
+  void mouseUp(const MouseEvent& e) override;
 
   /** Overrides mouseDoubleClick to let it be called by a CoordinateSystemZoomer (override it in
   subclasses, if you want to respond to mouseDoubleClick events). */
-  virtual void mouseDoubleClick(const MouseEvent& e);
+  void mouseDoubleClick(const MouseEvent& e) override;
 
   /** Overrides mouseWheelMove to let it be called by a CoordinateSystemZoomer (override it in
   subclasses, if you want to respond to mouseWheelMove events). */
@@ -84,7 +84,7 @@ public:
 
 
   /** Overrides the resized()-function of the component base-class. */
-  virtual void resized();
+  void resized() override;
 
   /** Overrides the paint-function of the component base-class. */
   virtual void paint(Graphics &g);
@@ -106,7 +106,7 @@ public:
   virtual void setColourScheme(const PlotColourScheme& newColourScheme);
 
   /** Sets up the colour-scheme from an XmlElement. */
-  virtual void setColourSchemeFromXml(const XmlElement& xml);
+  void setColourSchemeFromXml(const XmlElement& xml) override;
 
   /** Changes one of the colours for the graphs if a colour with this index exists (and returns
   true in this case) - if the index is out of range, it does nothing and returns false. */
@@ -133,7 +133,7 @@ public:
   virtual void setHorizontalCoarseGridVisible(bool shouldBeVisible);
 
   /** Sets the interval of the horizontal coarse grid. */
-  virtual void setHorizontalCoarseGridInterval(double newGridInterval);
+  void setHorizontalCoarseGridInterval(double newGridInterval) override;
 
   /** Sets the interval and visibility of the horizontal coarse grid. */
   virtual void setHorizontalCoarseGrid(double newGridInterval, bool shouldBeVisible);
@@ -142,7 +142,7 @@ public:
   virtual void setHorizontalFineGridVisible(bool shouldBeVisible);
 
   /** Sets the interval of the horizontal fine grid. */
-  virtual void setHorizontalFineGridInterval(double newGridInterval);
+  void setHorizontalFineGridInterval(double newGridInterval) override;
 
   /** Sets the interval and visibility of the horizontal fine grid. */
   virtual void setHorizontalFineGrid(double newGridInterval, bool shouldBeVisible);
@@ -151,7 +151,7 @@ public:
   virtual void setVerticalCoarseGridVisible(bool shouldBeVisible);
 
   /** Sets the interval of the vertical coarse grid. */
-  virtual void setVerticalCoarseGridInterval(double newGridInterval);
+  void setVerticalCoarseGridInterval(double newGridInterval) override;
 
   /** Sets the interval and visibility of the vertical coarse grid. */
   virtual void setVerticalCoarseGrid(double newGridInterval, bool shouldBeVisible);
@@ -160,7 +160,7 @@ public:
   virtual void setVerticalFineGridVisible(bool shouldBeVisible);
 
   /** Sets the interval of the vertical fine grid. */
-  virtual void setVerticalFineGridInterval(double newGridInterval);
+  void setVerticalFineGridInterval(double newGridInterval) override;
 
   /** Sets the interval and visibility of the vertical fine grid. */
   virtual void setVerticalFineGrid(double newGridInterval, bool shouldBeVisible);
@@ -350,7 +350,7 @@ protected:
 
   /** Overrides drawComponent inherited from ThreadedDrawingComponent in order to do the actual
   drawing operations. */
-  virtual void drawComponent(Image* imageToDrawOnto);
+  void drawComponent(Image* imageToDrawOnto) override;
 
   /** Opens the PopupMenu that appears on right clicks. */
   void openRightClickPopupMenu();
@@ -415,19 +415,19 @@ protected:
 
   /** Function for converting the x- and y-coordinate values into the corresponding coordinates in
   the component (double precision version).*/
-  virtual void transformToComponentsCoordinates(double &x, double &y) const;
+  void transformToComponentsCoordinates(double &x, double &y) const override;
 
   /** Function for converting the x- and y-coordinate values into the corresponding coordinates in
   the component (single precision version).*/
-  virtual void transformToComponentsCoordinates(float &x, float &y) const;
+  void transformToComponentsCoordinates(float &x, float &y) const override;
 
   /** Function for converting the x- and y-coordinate values measured in the components coordinate
   system to the corresponding coordinates of our plot (double precision version). */
-  virtual void transformFromComponentsCoordinates(double &x, double &y) const;
+  void transformFromComponentsCoordinates(double &x, double &y) const override;
 
   /** Function for converting the x- and y-coordinate values measured in the components coordinate
   system to the corresponding coordinates of our plot (single precision version). */
-  virtual void transformFromComponentsCoordinates(float &x, float &y) const;
+  void transformFromComponentsCoordinates(float &x, float &y) const override;
 
   /** Adds a line to an SVG drawing. */
   virtual void addLineToSvgDrawing(XmlElement* theSVG, float x1, float y1, float x2, float y2,
@@ -448,7 +448,7 @@ protected:
   /** Updates the scale-factors which are needed when transforming from the CoordinateSystem's
   coordinates to Component's coordinates and vice versa. Will be called by setBounds(),
   setRange() and useLogarithmicScale(). */
-  virtual void updateScaleFactors();
+  void updateScaleFactors() override;
 
   /** Returns either the height of this component or the height of the image (if the pointer is
   non-NULL). */
