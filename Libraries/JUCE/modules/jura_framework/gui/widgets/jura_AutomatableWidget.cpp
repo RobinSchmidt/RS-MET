@@ -589,3 +589,21 @@ void AutomatableButton::parameterChanged(Parameter* p)
 {
   RWidget::parameterChanged(p);
 }
+
+//=================================================================================================
+
+void rsModulationDepthSlider::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
+{
+  AutomatableSlider::rPopUpMenuChanged(menuThatHasChanged); // preliminary
+}
+
+void rsModulationDepthSlider::addPopUpMenuItems()
+{
+  AutomatableSlider::addPopUpMenuItems();
+  addPopUpMinMaxAndModeItems();
+}
+
+void rsModulationDepthSlider::addPopUpMinMaxAndModeItems()
+{
+  // something to do...
+}

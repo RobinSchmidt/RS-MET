@@ -254,6 +254,11 @@ public:
   rsModulationDepthSlider() {}
   virtual ~rsModulationDepthSlider() {}
 
+  virtual void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged) override;
+
+  virtual void addPopUpMenuItems() override;
+  virtual void addPopUpMinMaxAndModeItems();
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsModulationDepthSlider)
 };
 
