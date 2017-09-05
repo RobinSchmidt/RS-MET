@@ -204,7 +204,8 @@ bool rsModulationSetup::hasSlider(MetaControlledParameter* p)
 
 void rsModulationSetup::addSliderFor(MetaControlledParameter* p)
 {
-  AutomatableSlider* s = new AutomatableSlider();
+  /*AutomatableSlider* s = new AutomatableSlider();*/
+  rsModulationDepthSlider* s = new rsModulationDepthSlider();
   amountSliders.push_back(s);
   s->assignParameter(p);
   addWidget(s);

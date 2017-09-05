@@ -2,8 +2,10 @@
 #define jura_AutomatableWidget_h
 
 
-class AutomatableWidget;
-class AutomatableSlider;
+class AutomatableWidget;  // are these..
+class AutomatableSlider;  // ..still needed?
+
+class rsModulationDepthSlider;
 
 /** A component for setting up the modulations of some ModulationTarget. 
 
@@ -71,7 +73,10 @@ protected:
 
   // owned widgets:
   RTextField* modulationsLabel;
-  std::vector<AutomatableSlider*> amountSliders;
+
+  //std::vector<AutomatableSlider*> amountSliders; // use a special ModulationAmountSlider class
+  std::vector<rsModulationDepthSlider*> amountSliders; 
+
   RButton *addButton, *removeButton;
   RClickButton* closeButton;
   RPopUpMenu *connectableSourcesPopUp = nullptr; // created when needed the first time
@@ -235,17 +240,22 @@ public:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomatableButton)
 };
 
+//=================================================================================================
 
-//// not yet used:
-//class JUCE_API ModulatableSlider : public AutomatableSlider
-//{
-//
-//public:
-//
-//  AutomatableSlider();
-//
-//  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulatableSlider)
-//}
+/** A special slider subclass specifically for being used for the depth-sliders in a modulation
+setup. They need some special additional options in their popup menu such as facilities to set 
+min/max values and the modulation mode. */
+
+class JUCE_API rsModulationDepthSlider : public AutomatableSlider
+{
+
+public:
+
+  rsModulationDepthSlider() {}
+  virtual ~rsModulationDepthSlider() {}
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsModulationDepthSlider)
+};
 
 
 #endif   
