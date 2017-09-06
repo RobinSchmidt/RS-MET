@@ -245,7 +245,11 @@ class JUCE_API rsModulationDepthSlider : public AutomatableSlider
 
 public:
 
+  /** Constructor. You must pass a pointer to the ModulationConnection object on which this slider
+  operates such that we can use our popup menu to set up the modulation mode (absolute vs 
+  relative), too. */
   rsModulationDepthSlider(ModulationConnection* connection) : modConnection(connection) {}
+
   virtual ~rsModulationDepthSlider() {}
 
   virtual void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged) override;
@@ -261,30 +265,39 @@ protected:
   double getModDepthMax();
   double getModClipMin();
   double getModClipMax();
+
   void setModDepthMin(double newMin);
   void setModDepthMax(double newMax);
   void setModClipMin( double newMin);
   void setModClipMax( double newMax);
-  bool isModeRelative();
-  void setModeRelative(bool shouldBeRelative);
+  // they should go into the mod-popup - they are properties of the target, not the connection
 
+  inline bool isModeRelative()                
+  { 
+    return modConnection->isRelative(); 
+  }
 
-  ModulationConnection* modConnection = nullptr; // needs to be assigned in constructor
-
+  inline void setModeRelative(bool shouldBeRelative) 
+  { 
+    modConnection->setRelative(shouldBeRelative); 
+  }
 
   /** Additional item ids for this subclass. */
   enum popUpIds2
   {
     MOD_DEPTH_MIN = popUpIds::MODULATION_SETUP+1,
     MOD_DEPTH_MAX,
-    MOD_CLIP_MIN, 
+    MOD_CLIP_MIN,   
     MOD_CLIP_MAX,
     MOD_MODE_RELATIVE
   };
   // clipMin, clipMax are values to which the modulated value will be clipped after modulations 
   // have been applied. We need this to make sure that, for example, a cutoff frequency doesn't go 
-  // below 0 or above fs/2
+  // below 0 or above fs/2 ...ahh but these should actually not be properties of the connection but
+  // of the target
 
+
+  ModulationConnection* modConnection = nullptr; // needs to be assigned in constructor
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsModulationDepthSlider)
 };

@@ -339,9 +339,14 @@ public:
   /** Sets the parameter to relative mode in which case the output signal of the ModulationSource
   will be multiplied by the ModulationTarget's unmodulated nominal value before being added to the 
   target value. */
-  void setRelative(bool shouldBeRelative)
+  inline void setRelative(bool shouldBeRelative)
   {
     relative = shouldBeRelative;
+  }
+
+  inline bool isRelative()
+  {
+    return relative;
   }
 
   /** Returns the Parameter object that controls the amount of modulation */

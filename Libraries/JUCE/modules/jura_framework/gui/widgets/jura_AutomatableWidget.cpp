@@ -676,13 +676,3 @@ void rsModulationDepthSlider::setModClipMax(double newMax)
 {
 
 }
-
-bool rsModulationDepthSlider::isModeRelative()
-{
-  return true;
-}
-
-void rsModulationDepthSlider::setModeRelative(bool shouldBeRelative)
-{
-
-}
