@@ -254,6 +254,9 @@ public:
   updates the corresponding value in the core dsp algorithm). */
   virtual void doModulationUpdate() = 0;
 
+
+  /** \name Setup */
+
   /** Sets the nominal, unmodulated value. This will be used as reference, when a modulated value 
   will be computed. */
   void setUnmodulatedValue(double newValue)
@@ -266,6 +269,24 @@ public:
 
   /** Removes a ModulationSource from this ModulationTarget. */
   void removeModulationSource(ModulationSource* source);
+
+  /** Sets the minimum value of the allowed modulation range. These min/max values for the range 
+  are used to clip the final modulated value (after all modulations have been applied) to a sane 
+  range. For example, a cutoff frequency of a filter should perhaps be clipped at 0 and 
+  sampleRate/2, otherwise the filter may go crazy. */
+  inline void setModulationRangeMin(double newMin) { rangeMin = newMin; }
+
+  /** Sets the maximum value of the allowed modulation range.  */
+  inline void setModulationRangeMax(double newMax) { rangeMin = newMax; }
+
+
+  /** \name Inquiry */
+
+  /** Returns the minimum value of the allowed modulation range. */
+  inline double getModulationRangeMin() { return rangeMin; }
+
+  /** Returns the maximum value of the allowed modulation range. */
+  inline double getModulationRangeMax() { return rangeMax; }
 
   /** Returns true, if there's a connection between this ModulationTarget and the given 
   ModulationSource. */
@@ -283,6 +304,13 @@ public:
   ModulationTarget. */
   std::vector<ModulationConnection*> getConnections();
 
+  /** This function must be overriden by subclasses to return a unique name that can be used to 
+  identify the target in state recall. */
+  virtual juce::String getModulationTargetName() = 0;
+
+
+  /** \name Misc */
+
   /** Initializes the modulated value by setting it to the unmodulated value. */
   inline void initModulatedValue()
   {
@@ -298,15 +326,12 @@ public:
     // later: return clip(modulatedValue, clipMin, clipMax);
   }
 
-  /** This function must be overriden by subclasses to return a unique name that can be used to 
-  identify the target in state recall. */
-  virtual juce::String getModulationTargetName() = 0;
 
 protected:
 
   double unmodulatedValue = 0;
   double modulatedValue = 0;
-  //double clipMin, clipMax;
+  double rangeMin = -std::numeric_limits<double>::infinity(), rangeMax = -rangeMin; // +-inf
 
   friend class ModulationConnection;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationTarget)

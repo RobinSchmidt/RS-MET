@@ -10,7 +10,7 @@ class rsModulationDepthSlider;
 /** A component for setting up the modulations of some ModulationTarget. */
 
 class JUCE_API rsModulationSetup : public ColourSchemeComponent, public RButtonListener, 
-  public rsDeletionRequester, public RPopUpMenuObserver
+  public rsDeletionRequester, public RPopUpMenuObserver, public RTextEntryFieldObserver
 {
 
 public:
@@ -29,6 +29,7 @@ public:
   virtual void resized() override;
   virtual void rButtonClicked(RButton *button) override;
   virtual void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged) override;
+  virtual void textChanged(RTextEntryField *rTextEntryFieldThatHasChanged) override;
 
 protected:
 
@@ -64,6 +65,12 @@ protected:
 
   /** Updates the size in order to provide space for all required widgets. */
   void updateSize();
+
+  // functions for getting/setting the clipping limits:
+  void setClipMin(double newMin);
+  void setClipMax(double newMax);
+  double getClipMin();
+  double getClipMax();
 
   AutomatableWidget* widget;         // our owner widget
   MetaParameterManager* metaManager; // used for meta-controlling modulation amounts

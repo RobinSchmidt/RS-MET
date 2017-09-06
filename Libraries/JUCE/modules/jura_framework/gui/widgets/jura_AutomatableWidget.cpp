@@ -23,14 +23,14 @@ rsModulationSetup::rsModulationSetup(AutomatableWidget* widgetToModulate,
   removeButton->addRButtonListener(this);
 
   addWidget( clipMinField = new RLabeledTextEntryField("ClipMin:") );
-  //clipMinField->setEntryFieldText() // current minimum as string
+  clipMinField->setEntryFieldText(String(getClipMin()));
   clipMinField->setDescription(juce::String("Clipping minimum for modulated value"));
-  //clipMinField->getTextEntryField()->registerTextEntryFieldObserver(this);
-
+  clipMinField->getTextEntryField()->registerTextEntryFieldObserver(this);
 
   addWidget( clipMaxField = new RLabeledTextEntryField("ClipMax:") );
+  clipMaxField->setEntryFieldText(String(getClipMax()));
   clipMaxField->setDescription(juce::String("Clipping maximum for modulated value"));
-
+  clipMaxField->getTextEntryField()->registerTextEntryFieldObserver(this);
 
   updateAmountSliderArray();
 }
@@ -98,6 +98,18 @@ void rsModulationSetup::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
     id = removableSourcesPopUp->getSelectedIdentifier();
     if(id > 0)
       removeConnection(id-1);
+  }
+}
+
+void rsModulationSetup::textChanged(RTextEntryField *rTextEntryFieldThatHasChanged)
+{
+  if(rTextEntryFieldThatHasChanged == clipMinField->getTextEntryField())
+  {
+
+  }
+  else if(rTextEntryFieldThatHasChanged == clipMaxField->getTextEntryField())
+  {
+
   }
 }
 
@@ -247,6 +259,26 @@ void rsModulationSetup::updateSize()
 
   setSize(width, height); 
   resized(); // needed during development - might be redundant when finished
+}
+
+void rsModulationSetup::setClipMin(double newMin) 
+{ 
+  widget->getModulatableParameter()->setModulationRangeMin(newMin); 
+}
+
+void rsModulationSetup::setClipMax(double newMax) 
+{ 
+  widget->getModulatableParameter()->setModulationRangeMax(newMax); 
+}
+
+double rsModulationSetup::getClipMin()
+{ 
+  return widget->getModulatableParameter()->getModulationRangeMin(); 
+}
+
+double rsModulationSetup::getClipMax()
+{ 
+  return widget->getModulatableParameter()->getModulationRangeMax(); 
 }
 
 //=================================================================================================
