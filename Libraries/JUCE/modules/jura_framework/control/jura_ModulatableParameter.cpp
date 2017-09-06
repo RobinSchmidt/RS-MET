@@ -435,23 +435,23 @@ XmlElement* ModulationManager::getStateAsXml()
   if(!needsToStoreRangeLimits())
     return xmlState;
 
-
-  // make a "RangeLimits" child xml. it should have the target names as child elements and each 
-  // should have Min and Max attributes
+  XmlElement* xmlLimits = new XmlElement("RangeLimits");
   for(int i = 0; i < size(affectedTargets); i++)
   {
-    double limit = affectedTargets[i]->getModulationRangeMin();
-    if(limit != -INF)
+    double min = affectedTargets[i]->getModulationRangeMin();
+    double max = affectedTargets[i]->getModulationRangeMax();
+    if(min != -INF || max != INF)
     {
-      // store in xml
-    }
-    limit = affectedTargets[i]->getModulationRangeMax();
-    if(limit != INF)
-    {
-      // store in xml
+      //XmlElement* xmlTargetLimits = new XmlElement(affectedTargets[i]->getModulationTargetName());
+      //  // not a valid tag name - maybe because of /
+      //  // maybe we should use . as path separator instead of the slash?
+
+      //if(min != -INF) xmlTargetLimits->setAttribute("Min", min);
+      //if(max !=  INF) xmlTargetLimits->setAttribute("Max", max);
+      //xmlLimits->addChildElement(xmlTargetLimits);
     }
   }
-
+  xmlState->addChildElement(xmlLimits);
   return xmlState;
 }
 
