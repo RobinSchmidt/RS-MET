@@ -134,7 +134,7 @@ public:
 protected:
 
   /** Enumeration of the identifiers to used as return-values for the right-click popup menu. */
-  enum rightClickPopUpItemIdentifiers
+  enum popUpIds
   {
     ENTER_VALUE = 1,  // nope - these two should be available in the slider baseclass already
     DEFAULT_VALUE,    
@@ -149,11 +149,6 @@ protected:
     META_DETACH,
 
     MODULATION_SETUP
-
-
-    //MODULATOR_CONNECT // maybe factor out modulation related stuff into ModulatableSlider class
-                      // ...hmm but maybe not, because we may wnat to modulate other kinds of 
-                      // widgets like DraggableNumber
   };
 
   /** Clears the popup-menu and then calls createPopUpMenuItems() */
@@ -258,6 +253,23 @@ public:
 
   virtual void addPopUpMenuItems() override;
   virtual void addPopUpMinMaxAndModeItems();
+
+protected:
+
+  
+
+  enum popUpIds2
+  {
+    MOD_DEPTH_MIN = popUpIds::MODULATION_SETUP+1,
+    MOD_DEPTH_MAX,
+    MOD_CLIP_MIN, 
+    MOD_CLIP_MAX,
+    MOD_MODE_RELATIVE
+  };
+  // clipMin, clipMax are values to which the modulated value will be clipped after modulations 
+  // have been applied. We need this to make sure that, for example, a cutoff frequency doesn't go 
+  // below 0 or above fs/2
+
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsModulationDepthSlider)
 };

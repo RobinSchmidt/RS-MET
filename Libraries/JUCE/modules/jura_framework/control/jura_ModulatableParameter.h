@@ -105,6 +105,8 @@ ToDo:
  and Amplitude, i.e. freq = pitchToFreq(key+pitchbend), amp = vel/127.
 -maybe restrict the modulatedValue to the original parameter range - otherwise modulation may set
  it to out-of-range values (like a cutoff above fs/2 or below 0) which may cause problems
+ -maybe we should introduce clipMin, clipMax values which default to the min/max settings of the
+  modulated parameter
 -test in practice
 
 */

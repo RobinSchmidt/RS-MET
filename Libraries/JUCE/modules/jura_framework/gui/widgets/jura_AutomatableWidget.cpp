@@ -605,5 +605,9 @@ void rsModulationDepthSlider::addPopUpMenuItems()
 
 void rsModulationDepthSlider::addPopUpMinMaxAndModeItems()
 {
-  // something to do...
+  rightClickPopUp->addItem(MOD_DEPTH_MIN, "Mod depth min");
+  rightClickPopUp->addItem(MOD_DEPTH_MAX, "Mod depth max");
+  //rightClickPopUp->addItem(MOD_CLIP_MIN,  "Mod clip min");
+  //rightClickPopUp->addItem(MOD_CLIP_MAX,  "Mod clip max");
+  //rightClickPopUp->addItem(MOD_MODE_RELATIVE,  "Relative modulation"); // add flag/indicator (or not)
 }
