@@ -531,6 +531,10 @@ public:
   in our array of registered targets. Otherwise, it will return a nullptr. */
   ModulationTarget* getTargetByName(const juce::String& targetName);
 
+  /** Returns true, if any of our affected targets has some range limits set up. If so, we need to
+  store them in a dedicated xml-element when producing a state xml. */
+  bool needsToStoreRangeLimits();
+
 
   /** \name Misc */
 

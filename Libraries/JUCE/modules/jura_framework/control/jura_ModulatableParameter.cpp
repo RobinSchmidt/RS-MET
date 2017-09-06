@@ -373,6 +373,17 @@ ModulationTarget* ModulationManager::getTargetByName(const juce::String& targetN
   return nullptr;
 }
 
+bool ModulationManager::needsToStoreRangeLimits()
+{
+  for(int i = 0; i < size(affectedTargets); i++)
+  {
+    if(  affectedTargets[i]->getModulationRangeMin() != -INF
+      || affectedTargets[i]->getModulationRangeMax() !=  INF)
+      return true;
+  }
+  return false;
+}
+
 void ModulationManager::setMetaParameterManager(MetaParameterManager* managerToUse)
 {
   metaManager = managerToUse;
@@ -417,8 +428,30 @@ XmlElement* ModulationManager::getStateAsXml()
     return nullptr; // "Modulations" child-element will be absent from preset file
 
   XmlElement* xmlState = new XmlElement("Modulations"); // maybe make the name a function parameter for consistency with the recall in Chainer
+
   for(int i = 0; i < size(modulationConnections); i++)
     xmlState->addChildElement(modulationConnections[i]->getAsXml());
+
+  if(!needsToStoreRangeLimits())
+    return xmlState;
+
+
+  // make a "RangeLimits" child xml. it should have the target names as child elements and each 
+  // should have Min and Max attributes
+  for(int i = 0; i < size(affectedTargets); i++)
+  {
+    double limit = affectedTargets[i]->getModulationRangeMin();
+    if(limit != -INF)
+    {
+      // store in xml
+    }
+    limit = affectedTargets[i]->getModulationRangeMax();
+    if(limit != INF)
+    {
+      // store in xml
+    }
+  }
+
   return xmlState;
 }
 
