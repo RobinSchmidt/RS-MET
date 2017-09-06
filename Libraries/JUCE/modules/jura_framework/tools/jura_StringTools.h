@@ -21,6 +21,9 @@ JUCE_API juce::String intToStringWithLeadingZeros(int value, int minNumDigits);
 /** Converts a MidiMessage int a String.  */
 JUCE_API juce::String midiMessageToString(MidiMessage message, bool addNewLine = false);
 
+/** Converts the string to a double value. We need this because String::getDoubleValue() doesn't 
+parse "-inf" correctly (it returns +inf in this case). */
+JUCE_API double toDouble(const juce::String& s);
 
 // functions for converting numeric values representing physical units into strings - an attached
 // number signifies the number of decimal digits after the point to be displayed, 'Total' 

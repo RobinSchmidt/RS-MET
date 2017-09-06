@@ -25,11 +25,13 @@ rsModulationSetup::rsModulationSetup(AutomatableWidget* widgetToModulate,
   addWidget( clipMinField = new RLabeledTextEntryField("ClipMin:") );
   clipMinField->setEntryFieldText(String(getClipMin()));
   clipMinField->setDescription(juce::String("Clipping minimum for modulated value"));
+  clipMinField->setLabelWidth(56);
   clipMinField->getTextEntryField()->registerTextEntryFieldObserver(this);
 
   addWidget( clipMaxField = new RLabeledTextEntryField("ClipMax:") );
   clipMaxField->setEntryFieldText(String(getClipMax()));
   clipMaxField->setDescription(juce::String("Clipping maximum for modulated value"));
+  clipMaxField->setLabelWidth(56);
   clipMaxField->getTextEntryField()->registerTextEntryFieldObserver(this);
 
   updateAmountSliderArray();
@@ -103,14 +105,13 @@ void rsModulationSetup::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
 
 void rsModulationSetup::textChanged(RTextEntryField *rTextEntryFieldThatHasChanged)
 {
+  //jassertfalse;
+  // this doesn't work yet: String::getDoubleValue doesn't parse -inf correctly - it returns inf
+
   if(rTextEntryFieldThatHasChanged == clipMinField->getTextEntryField())
-  {
-
-  }
+    setClipMin(toDouble(clipMinField->getTextEntryField()->getText()));
   else if(rTextEntryFieldThatHasChanged == clipMaxField->getTextEntryField())
-  {
-
-  }
+    setClipMax(toDouble(clipMaxField->getTextEntryField()->getText()));
 }
 
 void rsModulationSetup::addConnection(int index)
@@ -254,7 +255,6 @@ void rsModulationSetup::updateSize()
   int height = 100;  // preliminary
 
   height  = (sliderHeight+sliderDistance) * size(amountSliders);
-  //height += 44;
   height += 68;
 
   setSize(width, height); 
