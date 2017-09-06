@@ -442,13 +442,10 @@ XmlElement* ModulationManager::getStateAsXml()
     double max = affectedTargets[i]->getModulationRangeMax();
     if(min != -INF || max != INF)
     {
-      //XmlElement* xmlTargetLimits = new XmlElement(affectedTargets[i]->getModulationTargetName());
-      //  // not a valid tag name - maybe because of /
-      //  // maybe we should use . as path separator instead of the slash?
-
-      //if(min != -INF) xmlTargetLimits->setAttribute("Min", min);
-      //if(max !=  INF) xmlTargetLimits->setAttribute("Max", max);
-      //xmlLimits->addChildElement(xmlTargetLimits);
+      XmlElement* xmlTargetLimits = new XmlElement(affectedTargets[i]->getModulationTargetName());
+      if(min != -INF) xmlTargetLimits->setAttribute("Min", min);
+      if(max !=  INF) xmlTargetLimits->setAttribute("Max", max);
+      xmlLimits->addChildElement(xmlTargetLimits);
     }
   }
   xmlState->addChildElement(xmlLimits);

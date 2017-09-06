@@ -212,10 +212,12 @@ AudioModule* AudioModule::getTopLevelModule()
 
 juce::String AudioModule::getAudioModulePath()
 {
+  // We use a period "." instead of a slash "/" as path separator because periods are allowed in 
+  // xml tag names whereas slashes are not
   if(isTopLevelModule())
-    return moduleName + "/";
+    return moduleName + ".";
   else
-    return parentModule->getAudioModulePath() + moduleName + "/";
+    return parentModule->getAudioModulePath() + moduleName + ".";
 }
 
 AudioModuleEditor* AudioModule::createEditor()
