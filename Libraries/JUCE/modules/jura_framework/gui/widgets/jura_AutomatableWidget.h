@@ -261,26 +261,20 @@ protected:
 
   // for getting and setting the min/max values of the mod-depth slider and for the clipping of the
   // modulated value and getting/setting relative mode (maybe these should be inlined):
-  double getModDepthMin();
-  double getModDepthMax();
-  double getModClipMin();
-  double getModClipMax();
+  inline double getModDepthMin() { return assignedParameter->getMinValue(); }
+  inline double getModDepthMax() { return assignedParameter->getMaxValue(); }
+  inline bool   isModeRelative() { return modConnection->isRelative();  }
 
-  void setModDepthMin(double newMin);
-  void setModDepthMax(double newMax);
-  void setModClipMin( double newMin);
-  void setModClipMax( double newMax);
-  // they should go into the mod-popup - they are properties of the target, not the connection
+  inline void setModDepthMin(double newMin)  { assignedParameter->setMinValue(newMin); }
+  inline void setModDepthMax(double newMax)  { assignedParameter->setMaxValue(newMax); }
+  inline void setModeRelative(bool relative) { modConnection->setRelative(relative);   }
 
-  inline bool isModeRelative()                
-  { 
-    return modConnection->isRelative(); 
-  }
+  //double getModClipMin();
+  //double getModClipMax();
+  //void setModClipMin( double newMin);
+  //void setModClipMax( double newMax);
+  //// they should go into the mod-popup - they are properties of the target, not the connection
 
-  inline void setModeRelative(bool shouldBeRelative) 
-  { 
-    modConnection->setRelative(shouldBeRelative); 
-  }
 
   /** Additional item ids for this subclass. */
   enum popUpIds2
