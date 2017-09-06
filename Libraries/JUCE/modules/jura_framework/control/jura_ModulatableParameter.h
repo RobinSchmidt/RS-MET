@@ -289,6 +289,15 @@ public:
     modulatedValue = unmodulatedValue;
   }
 
+   /** Function to retrieve the modulated value after all modulations have been applied. This may 
+   also include a clipping function, such that the returned value is restricted to some allowable
+   range. */
+  inline double getModulatedValue()
+  {
+    return modulatedValue;
+    // later: return clip(modulatedValue, clipMin, clipMax);
+  }
+
   /** This function must be overriden by subclasses to return a unique name that can be used to 
   identify the target in state recall. */
   virtual juce::String getModulationTargetName() = 0;
@@ -297,6 +306,7 @@ protected:
 
   double unmodulatedValue = 0;
   double modulatedValue = 0;
+  //double clipMin, clipMax;
 
   friend class ModulationConnection;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationTarget)
@@ -564,7 +574,7 @@ public:
   inline void callCallbackWithModulatedValue()
   {
     if( valueChangeCallbackDouble != nullptr )
-      valueChangeCallbackDouble->call(modulatedValue);
+      valueChangeCallbackDouble->call(getModulatedValue());
   }
 
   /** Overriden to call our callback function with the modulated value. */

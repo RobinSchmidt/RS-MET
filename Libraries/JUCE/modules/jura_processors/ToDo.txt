@@ -3,9 +3,9 @@ ModulationSystem:
  -there should be a Modulators section with sliders and and Add... option. right-click on 
   modulation sliders opens a menu where the user can adjust the min/max values of the slider,
   absolute vs relative modulation and delete the modulation connection
--BUG: add/remove twice -> access violation
+ -there should be min/max clipping values for the modulated parameter. they should default the 
+  min/max values of the underlying parameter maybe like ClipMin = 20, ClipMax = 20000 for a cutoff
 
--test modulation with breakpoints/ladder
 
 
 
