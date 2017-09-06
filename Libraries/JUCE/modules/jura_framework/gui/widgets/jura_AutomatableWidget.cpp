@@ -610,8 +610,7 @@ void rsModulationDepthSlider::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
   //case MOD_CLIP_MIN:  setModClipMin(openModalNumberEntryField(getModClipMin()));   break;
   //case MOD_CLIP_MAX:  setModClipMax(openModalNumberEntryField(getModClipMax()));   break;
 
-  //case MOD_MODE_RELATIVE: setModModeRelativ(/*isCurrentItemHighlighetd*/;   break;
-
+  case MOD_MODE_RELATIVE: setModeRelative(!isModeRelative());   break;
   default: AutomatableWidget::rPopUpMenuChanged(menuThatHasChanged);
   }
 
@@ -629,7 +628,7 @@ void rsModulationDepthSlider::addPopUpMinMaxAndModeItems()
   rightClickPopUp->addItem(MOD_DEPTH_MAX, "Mod depth max");
   //rightClickPopUp->addItem(MOD_CLIP_MIN,  "Mod clip min");
   //rightClickPopUp->addItem(MOD_CLIP_MAX,  "Mod clip max");
-  //rightClickPopUp->addItem(MOD_MODE_RELATIVE,  "Relative modulation"); // add flag/indicator (or not)
+  rightClickPopUp->addItem(MOD_MODE_RELATIVE, "Relative modulation", true, isModeRelative());
 }
 
 // modulation depth and clip min/max stuff:
@@ -650,12 +649,12 @@ double rsModulationDepthSlider::getModClipMin()
   //if(mp == nullptr)
   //  return -1;
 
-  return -1;
+  return -1; // preliminary
 }
 
 double rsModulationDepthSlider::getModClipMax()
 {
-  return +1;
+  return +1; // preliminary
 }
 
 void rsModulationDepthSlider::setModDepthMin(double newMin)
@@ -674,6 +673,16 @@ void rsModulationDepthSlider::setModClipMin(double newMin)
 }
 
 void rsModulationDepthSlider::setModClipMax(double newMax)
+{
+
+}
+
+bool rsModulationDepthSlider::isModeRelative()
+{
+  return true;
+}
+
+void rsModulationDepthSlider::setModeRelative(bool shouldBeRelative)
 {
 
 }

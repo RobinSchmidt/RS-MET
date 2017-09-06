@@ -254,7 +254,7 @@ public:
 protected:
 
   // for getting and setting the min/max values of the mod-depth slider and for the clipping of the
-  // modulated value (maybe these should be inlined):
+  // modulated value and getting/setting relative mode (maybe these should be inlined):
   double getModDepthMin();
   double getModDepthMax();
   double getModClipMin();
@@ -263,6 +263,12 @@ protected:
   void setModDepthMax(double newMax);
   void setModClipMin( double newMin);
   void setModClipMax( double newMax);
+  bool isModeRelative();
+  void setModeRelative(bool shouldBeRelative);
+
+
+  ModulationConnection *modConnection = nullptr; // needs to be assigned in constructor
+
 
   /** Additional item ids for this subclass. */
   enum popUpIds2
