@@ -277,7 +277,7 @@ public:
   inline void setModulationRangeMin(double newMin) { rangeMin = newMin; }
 
   /** Sets the maximum value of the allowed modulation range.  */
-  inline void setModulationRangeMax(double newMax) { rangeMin = newMax; }
+  inline void setModulationRangeMax(double newMax) { rangeMax = newMax; }
 
 
   /** \name Inquiry */
@@ -317,13 +317,12 @@ public:
     modulatedValue = unmodulatedValue;
   }
 
-   /** Function to retrieve the modulated value after all modulations have been applied. This may 
-   also include a clipping function, such that the returned value is restricted to some allowable
-   range. */
+  /** Function to retrieve the modulated value after all modulations have been applied. This may 
+  also include a clipping function, such that the returned value is restricted to some allowable
+  range. */
   inline double getModulatedValue()
   {
-    return modulatedValue;
-    // later: return clip(modulatedValue, clipMin, clipMax);
+    return clip(modulatedValue, rangeMin, rangeMax);
   }
 
 
@@ -331,7 +330,7 @@ protected:
 
   double unmodulatedValue = 0;
   double modulatedValue = 0;
-  double rangeMin = -std::numeric_limits<double>::infinity(), rangeMax = -rangeMin; // +-inf
+  double rangeMin = -INF, rangeMax = INF; 
 
   friend class ModulationConnection;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationTarget)
