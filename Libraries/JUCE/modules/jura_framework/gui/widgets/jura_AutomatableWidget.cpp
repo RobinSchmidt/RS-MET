@@ -636,16 +636,20 @@ void rsModulationDepthSlider::addPopUpMinMaxAndModeItems()
 
 double rsModulationDepthSlider::getModDepthMin()
 {
-  return -1;
+  return assignedParameter->getMinValue();
 }
 
 double rsModulationDepthSlider::getModDepthMax()
 {
-  return +1;
+  return assignedParameter->getMaxValue();
 }
 
 double rsModulationDepthSlider::getModClipMin()
 {
+  //ModulatableParameter* mp = getModulatableParameter();
+  //if(mp == nullptr)
+  //  return -1;
+
   return -1;
 }
 
@@ -656,12 +660,12 @@ double rsModulationDepthSlider::getModClipMax()
 
 void rsModulationDepthSlider::setModDepthMin(double newMin)
 {
-
+  assignedParameter->setMinValue(newMin);
 }
 
 void rsModulationDepthSlider::setModDepthMax(double newMax)
 {
-
+  assignedParameter->setMaxValue(newMax);
 }
 
 void rsModulationDepthSlider::setModClipMin(double newMin)

@@ -254,7 +254,7 @@ public:
 protected:
 
   // for getting and setting the min/max values of the mod-depth slider and for the clipping of the
-  // modulated value:
+  // modulated value (maybe these should be inlined):
   double getModDepthMin();
   double getModDepthMax();
   double getModClipMin();
