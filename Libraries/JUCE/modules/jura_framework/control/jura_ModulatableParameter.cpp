@@ -260,15 +260,6 @@ void ModulationManager::removeConnection(ModulationSource* source, ModulationTar
                                          // given source and target - that should not happen
 }
 
-void ModulationManager::removeAllConnections()
-{
-  ScopedLock scopedLock(*modLock); 
-  for(int i = 0; i < size(modulationConnections); i++)
-    delete modulationConnections[i];
-  modulationConnections.clear();
-  updateAffectedTargetsArray();
-}
-
 void ModulationManager::removeConnectionsWith(ModulationSource* source)
 {
   ScopedLock scopedLock(*modLock); 
@@ -297,6 +288,24 @@ void ModulationManager::removeConnectionsWith(ModulationTarget* target)
     }
   }
   updateAffectedTargetsArray();
+}
+
+void ModulationManager::removeAllConnections()
+{
+  ScopedLock scopedLock(*modLock); 
+  for(int i = 0; i < size(modulationConnections); i++)
+    delete modulationConnections[i];
+  modulationConnections.clear();
+  updateAffectedTargetsArray();
+}
+
+void ModulationManager::resetAllTargetRangeLimits()
+{
+  for(int i = 0; i < size(availableTargets); i++)
+  {
+    availableTargets[i]->setModulationRangeMin(-INF);
+    availableTargets[i]->setModulationRangeMax(+INF);
+  }
 }
 
 void ModulationManager::registerModulationSource(ModulationSource* source)
@@ -393,6 +402,9 @@ void ModulationManager::setMetaParameterManager(MetaParameterManager* managerToU
 void ModulationManager::setStateFromXml(const XmlElement& xmlState)
 {
   ScopedLock scopedLock(*modLock); 
+  jassert(xmlState.hasTagName("Modulations"));  // not the right kind of xml element
+
+  // recall connections:
   removeAllConnections();
   forEachXmlChildElementWithTagName(xmlState, conXml, "Connection")
   {
@@ -417,6 +429,22 @@ void ModulationManager::setStateFromXml(const XmlElement& xmlState)
     }
     else
       jassertfalse; // source and/or target with given name doesn't exist - patch corrupted?
+  }
+
+  // recall range limits:
+  resetAllTargetRangeLimits();
+  XmlElement* xmlLimits = xmlState.getChildByName("RangeLimits");
+  if(xmlLimits != nullptr)
+  {
+    forEachXmlChildElement(*xmlLimits, targetLimitsXml)
+    {
+      ModulationTarget* target = getTargetByName(targetLimitsXml->getTagName());
+      if(target != nullptr)
+      {
+        target->setModulationRangeMin(targetLimitsXml->getDoubleAttribute("Min", -INF));
+        target->setModulationRangeMax(targetLimitsXml->getDoubleAttribute("Max", +INF));
+      }
+    }
   }
 }
 

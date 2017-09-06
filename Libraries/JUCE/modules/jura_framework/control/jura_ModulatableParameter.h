@@ -474,14 +474,17 @@ public:
   /** Removes a connection between the given source and target. */
   void removeConnection(ModulationSource* source, ModulationTarget* target);
 
-  /** Removes all ModulationConnections. */
-  void removeAllConnections();
-
   /** Removes all modulation connections that involve the given source. */
   void removeConnectionsWith(ModulationSource* source);
 
   /** Removes all modulation connections that involve the given target. */
   void removeConnectionsWith(ModulationTarget* target);
+
+  /** Removes all ModulationConnections. */
+  void removeAllConnections();
+
+  /** Resets all the range limits for all registered modulation targets to +-inf. */
+  void resetAllTargetRangeLimits();
 
 
   /** \name Registration of sources and targets */
