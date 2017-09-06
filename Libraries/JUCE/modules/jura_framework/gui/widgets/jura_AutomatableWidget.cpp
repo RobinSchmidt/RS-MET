@@ -128,7 +128,7 @@ void rsModulationSetup::updateAmountSliderArray()
     {
       MetaControlledParameter* param = connections[i]->getDepthParameter();
       if(!hasSlider(param))
-        addSliderFor(param);
+        addSliderFor(param, connections[i]);
     }
   }
   updateSize();
@@ -202,9 +202,9 @@ bool rsModulationSetup::hasSlider(MetaControlledParameter* p)
   return false;
 }
 
-void rsModulationSetup::addSliderFor(MetaControlledParameter* p)
+void rsModulationSetup::addSliderFor(MetaControlledParameter* p, ModulationConnection* c)
 {
-  rsModulationDepthSlider* s = new rsModulationDepthSlider();
+  rsModulationDepthSlider* s = new rsModulationDepthSlider(c);
   amountSliders.push_back(s);
   s->assignParameter(p);
   addWidget(s);

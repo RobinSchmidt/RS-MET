@@ -57,9 +57,11 @@ protected:
   /** Returns true, if we have a slider associated with the passed parameter. */
   bool hasSlider(MetaControlledParameter* p);
 
-  /** Adds a slider for the passed parameter to our amountSliders array. */
-  void addSliderFor(MetaControlledParameter* p); 
-   // rename to addAmountSliderFor
+  /** Adds a slider for the passed parameter to our amountSliders array. You must also pass a 
+  pointer to the ModulationConnection whose depth this parameter controls so the slider's popup
+  menu can access it in order to set up some other aspects of the connection as well. */
+  void addSliderFor(MetaControlledParameter* p, ModulationConnection* c); 
+   // rename to addDepthSliderFor
 
   /** Clears the array of amount sliders. */
   void clearAmountSliders();
@@ -243,7 +245,7 @@ class JUCE_API rsModulationDepthSlider : public AutomatableSlider
 
 public:
 
-  rsModulationDepthSlider() {}
+  rsModulationDepthSlider(ModulationConnection* connection) : modConnection(connection) {}
   virtual ~rsModulationDepthSlider() {}
 
   virtual void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged) override;
@@ -267,7 +269,7 @@ protected:
   void setModeRelative(bool shouldBeRelative);
 
 
-  ModulationConnection *modConnection = nullptr; // needs to be assigned in constructor
+  ModulationConnection* modConnection = nullptr; // needs to be assigned in constructor
 
 
   /** Additional item ids for this subclass. */
