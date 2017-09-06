@@ -67,14 +67,11 @@ protected:
   /** Updates the size in order to provide space for all required widgets. */
   void updateSize();
 
-
   AutomatableWidget* widget;         // our owner widget
   MetaParameterManager* metaManager; // used for meta-controlling modulation amounts
 
   // owned widgets:
   RTextField* modulationsLabel;
-
-  //std::vector<AutomatableSlider*> amountSliders; // use a special ModulationAmountSlider class
   std::vector<rsModulationDepthSlider*> amountSliders; 
 
   RButton *addButton, *removeButton;
@@ -256,8 +253,18 @@ public:
 
 protected:
 
-  
+  // for getting and setting the min/max values of the mod-depth slider and for the clipping of the
+  // modulated value:
+  double getModDepthMin();
+  double getModDepthMax();
+  double getModClipMin();
+  double getModClipMax();
+  void setModDepthMin(double newMin);
+  void setModDepthMax(double newMax);
+  void setModClipMin( double newMin);
+  void setModClipMax( double newMax);
 
+  /** Additional item ids for this subclass. */
   enum popUpIds2
   {
     MOD_DEPTH_MIN = popUpIds::MODULATION_SETUP+1,

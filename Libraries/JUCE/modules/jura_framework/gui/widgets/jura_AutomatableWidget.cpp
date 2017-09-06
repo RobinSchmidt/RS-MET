@@ -204,7 +204,6 @@ bool rsModulationSetup::hasSlider(MetaControlledParameter* p)
 
 void rsModulationSetup::addSliderFor(MetaControlledParameter* p)
 {
-  /*AutomatableSlider* s = new AutomatableSlider();*/
   rsModulationDepthSlider* s = new rsModulationDepthSlider();
   amountSliders.push_back(s);
   s->assignParameter(p);
@@ -266,10 +265,14 @@ void AutomatableWidget::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
 {
   if(menuThatHasChanged != rightClickPopUp)
     return;
-  RTreeViewNode *selectedItem = rightClickPopUp->getSelectedItem();
-  if(selectedItem == nullptr)
-    return;
-  int selectedIdentifier = selectedItem->getNodeIdentifier();
+
+  // obsolete:
+  //RTreeViewNode *selectedItem = rightClickPopUp->getSelectedItem();
+  //if(selectedItem == nullptr)
+  //  return;
+  //int selectedIdentifier = selectedItem->getNodeIdentifier();
+
+  int selectedIdentifier = rightClickPopUp->getSelectedIdentifier();
 
   if(selectedIdentifier == MODULATION_SETUP)
   {
@@ -499,15 +502,17 @@ void AutomatableSlider::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
 {
   if( menuThatHasChanged != rightClickPopUp )
     return;
+
   RTreeViewNode *selectedItem = rightClickPopUp->getSelectedItem();
   if( selectedItem == NULL )
     return;
   int selectedIdentifier = selectedItem->getNodeIdentifier();
+  //int selectedIdentifier = rightClickPopUp->getSelectedIdentifier();
 
   switch( selectedIdentifier )
   {
   case ENTER_VALUE:   setValue(openModalNumberEntryField(getValue()),        true, false); break;
-  case DEFAULT_VALUE: setValue(selectedItem->getNodeText().getDoubleValue(), true, false); break;
+  case DEFAULT_VALUE: setValue(selectedItem->getNodeText().getDoubleValue(), true, false); break; //?
   default: AutomatableWidget::rPopUpMenuChanged(menuThatHasChanged);
   }
 }
@@ -594,7 +599,22 @@ void AutomatableButton::parameterChanged(Parameter* p)
 
 void rsModulationDepthSlider::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
 {
-  AutomatableSlider::rPopUpMenuChanged(menuThatHasChanged); // preliminary
+  //AutomatableSlider::rPopUpMenuChanged(menuThatHasChanged); // preliminary
+
+  int id = rightClickPopUp->getSelectedIdentifier();
+  switch( id )
+  {
+  case MOD_DEPTH_MIN: setModDepthMin(openModalNumberEntryField(getModDepthMin())); break;
+  case MOD_DEPTH_MAX: setModDepthMax(openModalNumberEntryField(getModDepthMax())); break;
+
+  //case MOD_CLIP_MIN:  setModClipMin(openModalNumberEntryField(getModClipMin()));   break;
+  //case MOD_CLIP_MAX:  setModClipMax(openModalNumberEntryField(getModClipMax()));   break;
+
+  //case MOD_MODE_RELATIVE: setModModeRelativ(/*isCurrentItemHighlighetd*/;   break;
+
+  default: AutomatableWidget::rPopUpMenuChanged(menuThatHasChanged);
+  }
+
 }
 
 void rsModulationDepthSlider::addPopUpMenuItems()
@@ -610,4 +630,46 @@ void rsModulationDepthSlider::addPopUpMinMaxAndModeItems()
   //rightClickPopUp->addItem(MOD_CLIP_MIN,  "Mod clip min");
   //rightClickPopUp->addItem(MOD_CLIP_MAX,  "Mod clip max");
   //rightClickPopUp->addItem(MOD_MODE_RELATIVE,  "Relative modulation"); // add flag/indicator (or not)
+}
+
+// modulation depth and clip min/max stuff:
+
+double rsModulationDepthSlider::getModDepthMin()
+{
+  return -1;
+}
+
+double rsModulationDepthSlider::getModDepthMax()
+{
+  return +1;
+}
+
+double rsModulationDepthSlider::getModClipMin()
+{
+  return -1;
+}
+
+double rsModulationDepthSlider::getModClipMax()
+{
+  return +1;
+}
+
+void rsModulationDepthSlider::setModDepthMin(double newMin)
+{
+
+}
+
+void rsModulationDepthSlider::setModDepthMax(double newMax)
+{
+
+}
+
+void rsModulationDepthSlider::setModClipMin(double newMin)
+{
+
+}
+
+void rsModulationDepthSlider::setModClipMax(double newMax)
+{
+
 }
