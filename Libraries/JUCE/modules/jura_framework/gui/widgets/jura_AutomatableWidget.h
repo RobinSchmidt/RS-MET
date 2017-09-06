@@ -7,11 +7,7 @@ class AutomatableSlider;  // ..still needed?
 
 class rsModulationDepthSlider;
 
-/** A component for setting up the modulations of some ModulationTarget. 
-
-todo: think about thread safety - i've seen it crash when removing a source from a target - 
-probably due to threading problems. i think, we need a mutex, maybe in the ModulationManager
-*/
+/** A component for setting up the modulations of some ModulationTarget. */
 
 class JUCE_API rsModulationSetup : public ColourSchemeComponent, public RButtonListener, 
   public rsDeletionRequester, public RPopUpMenuObserver
@@ -78,6 +74,8 @@ protected:
 
   RButton *addButton, *removeButton;
   RClickButton* closeButton;
+  RLabeledTextEntryField *clipMinField, *clipMaxField;
+
   RPopUpMenu *connectableSourcesPopUp = nullptr; // created when needed the first time
   RPopUpMenu *removableSourcesPopUp   = nullptr; // ditto
 

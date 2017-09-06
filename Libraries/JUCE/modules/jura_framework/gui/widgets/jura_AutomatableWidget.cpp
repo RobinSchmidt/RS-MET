@@ -22,6 +22,16 @@ rsModulationSetup::rsModulationSetup(AutomatableWidget* widgetToModulate,
   removeButton->setClickingTogglesState(false);
   removeButton->addRButtonListener(this);
 
+  addWidget( clipMinField = new RLabeledTextEntryField("ClipMin:") );
+  //clipMinField->setEntryFieldText() // current minimum as string
+  clipMinField->setDescription(juce::String("Clipping minimum for modulated value"));
+  //clipMinField->getTextEntryField()->registerTextEntryFieldObserver(this);
+
+
+  addWidget( clipMaxField = new RLabeledTextEntryField("ClipMax:") );
+  clipMaxField->setDescription(juce::String("Clipping maximum for modulated value"));
+
+
   updateAmountSliderArray();
 }
 
@@ -48,12 +58,20 @@ void rsModulationSetup::resized()
 
   closeButton->setBounds(w-16, 0, 16, 16);
   modulationsLabel->setBounds(x, y, w-8-16, sh); y += inc; 
+
   for(int i = 0; i < size(amountSliders); i++) {
     amountSliders[i]->setBounds(x, y, w-8, sh); y += inc; }
+
   y = h - sh - d;
   addButton->setBounds(x, y, 40, 16);
   x = addButton->getRight() + d;
   removeButton->setBounds(x, y, 60, 16);
+
+  y -= inc;
+  x  = 0;
+  clipMinField->setBounds(x+d, y, w/2-2*d, 16);
+  x = w/2;
+  clipMaxField->setBounds(x+d, y, w/2-2*d, 16);
 }
 
 void rsModulationSetup::rButtonClicked(RButton *button)
@@ -224,7 +242,8 @@ void rsModulationSetup::updateSize()
   int height = 100;  // preliminary
 
   height  = (sliderHeight+sliderDistance) * size(amountSliders);
-  height += 44;
+  //height += 44;
+  height += 68;
 
   setSize(width, height); 
   resized(); // needed during development - might be redundant when finished
