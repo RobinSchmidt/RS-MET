@@ -2,8 +2,8 @@
 #define jura_AutomatableWidget_h
 
 
-class AutomatableWidget;  // are these..
-class AutomatableSlider;  // ..still needed?
+//class AutomatableWidget;  // are these..
+//class AutomatableSlider;  // ..still needed?
 
 class rsModulationDepthSlider;
 
@@ -274,27 +274,13 @@ protected:
   inline void setModDepthMax(double newMax)  { assignedParameter->setMaxValue(newMax); }
   inline void setModeRelative(bool relative) { modConnection->setRelative(relative);   }
 
-  //double getModClipMin();
-  //double getModClipMax();
-  //void setModClipMin( double newMin);
-  //void setModClipMax( double newMax);
-  //// they should go into the mod-popup - they are properties of the target, not the connection
-
-
   /** Additional item ids for this subclass. */
   enum popUpIds2
   {
     MOD_DEPTH_MIN = popUpIds::MODULATION_SETUP+1,
     MOD_DEPTH_MAX,
-    MOD_CLIP_MIN,   
-    MOD_CLIP_MAX,
     MOD_MODE_RELATIVE
   };
-  // clipMin, clipMax are values to which the modulated value will be clipped after modulations 
-  // have been applied. We need this to make sure that, for example, a cutoff frequency doesn't go 
-  // below 0 or above fs/2 ...ahh but these should actually not be properties of the connection but
-  // of the target
-
 
   ModulationConnection* modConnection = nullptr; // needs to be assigned in constructor
 

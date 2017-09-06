@@ -89,8 +89,7 @@ maybe make the class hierarchy like this:
 Parameter <- MetaControlledParameter <- ModulatableParameter <- PolyphonicParameter
 
 ToDo:
--let the user set up the min/max amount values
--let the user select absolute or relative modulation
+
 -figure out what happens if the user changes the range of depthParam - how will this affect the 
  meta-value, how can we make sure that the depth parameter is always consistent with its attached 
  metaparameter? how its patch recall affected?
@@ -103,11 +102,6 @@ ToDo:
  ModulationSource and let Depth-parameters be ModulationTargets (i.e. ModulatableParameters)
  ...or maybe not the midi key/vel values but something more physical, for example Note-Frequency
  and Amplitude, i.e. freq = pitchToFreq(key+pitchbend), amp = vel/127.
--maybe restrict the modulatedValue to the original parameter range - otherwise modulation may set
- it to out-of-range values (like a cutoff above fs/2 or below 0) which may cause problems
- -maybe we should introduce clipMin, clipMax values which default to the min/max settings of the
-  modulated parameter
--test in practice
 
 */
 

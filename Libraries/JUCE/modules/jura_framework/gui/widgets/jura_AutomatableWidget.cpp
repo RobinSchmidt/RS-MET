@@ -22,16 +22,16 @@ rsModulationSetup::rsModulationSetup(AutomatableWidget* widgetToModulate,
   removeButton->setClickingTogglesState(false);
   removeButton->addRButtonListener(this);
 
-  addWidget( clipMinField = new RLabeledTextEntryField("ClipMin:") );
+  addWidget( clipMinField = new RLabeledTextEntryField("Min:") );
   clipMinField->setEntryFieldText(String(getClipMin()));
-  clipMinField->setDescription(juce::String("Clipping minimum for modulated value"));
-  clipMinField->setLabelWidth(56);
+  clipMinField->setDescription(juce::String("Range minimum for modulated value"));
+  clipMinField->setLabelWidth(36);
   clipMinField->getTextEntryField()->registerTextEntryFieldObserver(this);
 
-  addWidget( clipMaxField = new RLabeledTextEntryField("ClipMax:") );
+  addWidget( clipMaxField = new RLabeledTextEntryField("Max:") );
   clipMaxField->setEntryFieldText(String(getClipMax()));
-  clipMaxField->setDescription(juce::String("Clipping maximum for modulated value"));
-  clipMaxField->setLabelWidth(56);
+  clipMaxField->setDescription(juce::String("Range maximum for modulated value"));
+  clipMaxField->setLabelWidth(36);
   clipMaxField->getTextEntryField()->registerTextEntryFieldObserver(this);
 
   updateAmountSliderArray();
@@ -435,13 +435,7 @@ void AutomatableWidget::addPopUpModulationItems()
 {
   ModulatableParameter* mp = getModulatableParameter();
   if(mp != nullptr)
-  {
-    //// \todo: add sliders for the already connected sources
-    //rightClickPopUp->addItem(MODULATOR_CONNECT, "Connect modulator...");
-    //  // should open a 2nd level popup with the modulators available for connection
-
     rightClickPopUp->addItem(MODULATION_SETUP, "Modulation setup");
-  }
 }
 
 void AutomatableWidget::openRightClickPopupMenu()
@@ -479,12 +473,6 @@ void AutomatableWidget::showModulationSetup()
   modSetup->addToDesktop(ComponentPeer::windowHasDropShadow | ComponentPeer::windowIsTemporary);
   modSetup->setVisible(true);
   modSetup->toFront(true);
-
-  // we need to show a popup window (similar to Straightliner's Osc "More" popup) with sliders for
-  // the modulation amounts for connected sources, a facility to add more connections, text-fields
-  // for the min/max values of the sliders (should be on left and right sides to the slider) and 
-  // maybe a button to set relative modulation mode. The window should appear below or next to the
-  // slider...maybe it can somehow frame it to make it more apparent to which slider it applies
 }
 
 void AutomatableWidget::deleteObject(rsDeletionRequester* objectToDelete)
@@ -558,7 +546,6 @@ void AutomatableSlider::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
   if( selectedItem == NULL )
     return;
   int selectedIdentifier = selectedItem->getNodeIdentifier();
-  //int selectedIdentifier = rightClickPopUp->getSelectedIdentifier();
 
   switch( selectedIdentifier )
   {
@@ -650,19 +637,13 @@ void AutomatableButton::parameterChanged(Parameter* p)
 
 void rsModulationDepthSlider::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
 {
-  //AutomatableSlider::rPopUpMenuChanged(menuThatHasChanged); // preliminary
-
   int id = rightClickPopUp->getSelectedIdentifier();
   switch( id )
   {
   case MOD_DEPTH_MIN: setModDepthMin(openModalNumberEntryField(getModDepthMin())); break;
   case MOD_DEPTH_MAX: setModDepthMax(openModalNumberEntryField(getModDepthMax())); break;
-
-  //case MOD_CLIP_MIN:  setModClipMin(openModalNumberEntryField(getModClipMin()));   break;
-  //case MOD_CLIP_MAX:  setModClipMax(openModalNumberEntryField(getModClipMax()));   break;
-
   case MOD_MODE_RELATIVE: setModeRelative(!isModeRelative());   break;
-  default: AutomatableWidget::rPopUpMenuChanged(menuThatHasChanged);
+  default: AutomatableSlider::rPopUpMenuChanged(menuThatHasChanged);
   }
 
 }
@@ -677,7 +658,5 @@ void rsModulationDepthSlider::addPopUpMinMaxAndModeItems()
 {
   rightClickPopUp->addItem(MOD_DEPTH_MIN, "Mod depth min");
   rightClickPopUp->addItem(MOD_DEPTH_MAX, "Mod depth max");
-  //rightClickPopUp->addItem(MOD_CLIP_MIN,  "Mod clip min");
-  //rightClickPopUp->addItem(MOD_CLIP_MAX,  "Mod clip max");
   rightClickPopUp->addItem(MOD_MODE_RELATIVE, "Relative modulation", true, isModeRelative());
 }
