@@ -18,6 +18,12 @@ class rsSmoothingFilter
 
 public:
 
+  /** Constructor. */
+  rsSmoothingFilter()
+  {
+    reset();
+  }
+
   /** Sets the time constant (in seconds) which is the time it takes to reach around 
   1 - 1/e = 63% of the target value when starting from zero. You must also pass the samplerate
   at which the smoother should operate here. */
@@ -33,20 +39,26 @@ public:
   /** Sets the order of the filter, i.e. the number of first order lowpass stages. */
   void setOrder(int newOrder)
   {
-    order = newOrder;
+    order = rsMin(newOrder, maxOrder);
     updateCoeff();
   }
 
   /** Returns a smoothed output sample. */
   inline TSig getSample(TSig in)
   {
-    return y1 = in + coeff*(y1-in); // from rosic::LeakyIntegrator
+    //return y1[0] = in + coeff*(y1[0]-in); // preliminary - 1st order only
+
+    y1[0] = in + coeff*(y1[0]-in);
+    for(int i = 1; i < order; i++)
+      y1[i] = y1[i-1] + coeff*(y1[i] - y1[i-1]);
+    return y1[order-1];
   }
 
   /** Resets the internal filter state to 0. */
   inline void reset()
   {
-    y1 = 0;
+    for(int i = 0; i < maxOrder; i++)
+      y1[i] = 0;
   }
 
 protected:
@@ -58,11 +70,14 @@ protected:
     coeff = exp(-1 / scaledDecay);
   }
 
+
+  static const int maxOrder = 10;
+
   // member variables:
-  TSig y1    = 0;  // y[n-1]
-  TPar coeff = 0;  // lowpass filter coefficient
-  TPar decay = 0;  // normalized decay == timeConstant * sampleRate
-  int  order = 1;  // number of lowpass stages
+  TSig y1[maxOrder]; // y[n-1] of the lowpass stages
+  TPar coeff = 0;    // lowpass filter coefficient
+  TPar decay = 0;    // normalized decay == timeConstant * sampleRate
+  int  order = 1;    // number of lowpass stages
 
   // maybe we should instead of "decay" maintain "sampleRate" and "timeConstant" variables and 
   // provide functions to set them separately. That's more convenient for the user. It increases 

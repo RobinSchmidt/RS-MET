@@ -284,10 +284,10 @@ void smoothingFilter()
 {
   // We plot the step responses of the rsSmoothingFilter for various orders.
 
-  static const int maxOrder = 3; // maximum order
-  static const int N = 500;      // number of samples
-  float fs  = 100.f;             // sample rate
-  float tau = 1.f;               // time constant
+  static const int maxOrder = 10; // maximum order
+  static const int N = 2000;       // number of samples
+  float fs  = 100.f;              // sample rate
+  float tau = 1.f;                // time constant
 
   // create and set up the smoother:
   RAPT::rsSmoothingFilter<float, float> smoother;
