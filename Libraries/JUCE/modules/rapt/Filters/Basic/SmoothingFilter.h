@@ -11,7 +11,6 @@ comparable transition times, so the transition time will not depend on the order
 doesn't get more and more sluggish, when increasing the order (which would happen without the 
 automatic downscaling of the time constant). */
 
-// todo: templatize the class
 template<class TSig, class TPar> // signal, parameter types
 class rsSmoothingFilter
 {
@@ -66,8 +65,7 @@ protected:
   /** Updates our filter coefficient according to the setting of decay and order. */
   void updateCoeff()
   {
-    TPar scaledDecay = decay/order; // preliminary - scale according to order
-    coeff = exp(-1 / scaledDecay);
+    coeff = exp(-order/decay); // amounts to divide the time-constant by the order
   }
 
 
