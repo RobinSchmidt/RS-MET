@@ -284,7 +284,7 @@ void smoothingFilter()
 {
   // We plot the step responses of the rsSmoothingFilter for various orders.
 
-  static const int maxOrder = 1; // maximum order
+  static const int maxOrder = 3; // maximum order
   static const int N = 500;      // number of samples
   float fs  = 100.f;             // sample rate
   float tau = 1.f;               // time constant
@@ -293,12 +293,11 @@ void smoothingFilter()
   RAPT::rsSmoothingFilter<float, float> smoother;
   smoother.setTimeConstantAndSampleRate(tau, fs);
 
+  // compute step responses:
   float y[maxOrder][N];
-  //float y1[N], y2[N], y3[N], y4[N]; // outputs for the various orders
-
   for(int i = 0; i < maxOrder; i++)
   {
-    //smoother.setOrder(i+1);
+    smoother.setOrder(i+1);
     smoother.reset();
     for(int n = 0; n < N; n++)
     {
@@ -308,6 +307,10 @@ void smoothingFilter()
 
   // plot:
   GNUPlotter plt;
-  plt.addDataArrays(N, y[0]);
+
+  //plt.addDataArrays(N, y[0]);  
+  for(int i = 0; i < maxOrder; i++)
+    plt.addDataArrays(N, y[i]); 
+
   plt.plot();
 }
