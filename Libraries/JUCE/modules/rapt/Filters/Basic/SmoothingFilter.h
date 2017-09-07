@@ -26,6 +26,9 @@ public:
     decay = sampleRate * timeConstant;
     updateCoeff();
   }
+  // maybe we should use the half-time, i.e. the time, it takes to reach 0.5
+  // setTimeToReachHalf...or something, maybe setHalfLifeTime
+  // https://en.wikipedia.org/wiki/Exponential_decay#Half-life
 
   /** Sets the order of the filter, i.e. the number of first order lowpass stages. */
   void setOrder(int newOrder)
