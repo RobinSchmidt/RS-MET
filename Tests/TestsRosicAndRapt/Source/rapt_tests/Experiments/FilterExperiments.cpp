@@ -167,7 +167,7 @@ void movingAverage(int N, Tx* x, Ty* y, Ty* avg, Tx width, Ty (*weightFunc)(Tx))
       k++; }
     avg[n] = swv / sw; }
 }
-// Weighting functions for nununiform MA. Maybe implement more, see here:
+// Weighting functions for nonuniform MA. Maybe implement more, see here:
 // https://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use
 // actually, for use in movingAverage, the checks against > 1 are superfluous bcs the loops there
 // ensure already that x <= 1. maybe we can wrap all this stuff into a class 
@@ -277,4 +277,13 @@ void nonUniformMovingAverage()
   // ToDo: maybe try to find even better weighting functions. Maybe the smoothness is related to 
   // the area? smaller area -> more width widening -> better smoothing? maybe because the jitter
   // gets averaged out better?
+}
+
+
+void smoothingFilter()
+{
+
+
+  // plot:
+  GNUPlotter plt;
 }
