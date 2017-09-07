@@ -282,8 +282,32 @@ void nonUniformMovingAverage()
 
 void smoothingFilter()
 {
+  // We plot the step responses of the rsSmoothingFilter for various orders.
 
+  static const int maxOrder = 1; // maximum order
+  static const int N = 500;      // number of samples
+  float fs  = 100.f;             // sample rate
+  float tau = 1.f;               // time constant
+
+  // create and set up the smoother:
+  RAPT::rsSmoothingFilter<float, float> smoother;
+  smoother.setTimeConstantAndSampleRate(tau, fs);
+
+  float y[maxOrder][N];
+  //float y1[N], y2[N], y3[N], y4[N]; // outputs for the various orders
+
+  for(int i = 0; i < maxOrder; i++)
+  {
+    //smoother.setOrder(i+1);
+    smoother.reset();
+    for(int n = 0; n < N; n++)
+    {
+      y[i][n] = smoother.getSample(1.f);
+    }
+  }
 
   // plot:
   GNUPlotter plt;
+  plt.addDataArrays(N, y[0]);
+  plt.plot();
 }

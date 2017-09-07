@@ -61,6 +61,7 @@ template class RAPT::PhaseScopeBuffer2<double, float, double>;
 // not called from anywhere inside jura or rosic:
 template double RAPT::rsAbs(double x);
 template class RAPT::rsBreakpointModulator<double>;
+template class RAPT::rsSmoothingFilter<double, double>;
 template class RAPT::LadderFilter<double, double>;
 template class RAPT::PhasorFilter<double, double>;
 template class RAPT::PhasorStateMapper<double>;

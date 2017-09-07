@@ -12,6 +12,7 @@ doesn't get more and more sluggish, when increasing the order (which would happe
 automatic downscaling of the time constant) */
 
 // todo: templatize the class
+template<class TSig, class TPar> // signal, parameter types
 class rsSmoothingFilter
 {
 
@@ -20,23 +21,29 @@ public:
   /** Sets the time constant (in seconds) which is the time it takes to reach around 
   1 - 1/e = 63% of the target value when starting from zero. You must also pass the samplerate
   at which the smoother should operate here. */
-  void setTimeConstantAndSampleRate(double timeConstant, double sampleRate)
+  void setTimeConstantAndSampleRate(TPar timeConstant, TPar sampleRate)
   {
     coeff = exp(-1.0 / (sampleRate * timeConstant));
   }
 
 
   /** Returns a smoothed output sample. */
-  inline double getSample(double in)
+  inline TSig getSample(TSig in)
   {
     return y1 = in + coeff*(y1-in); // from rosic::LeakyIntegrator
+  }
+
+  /** Resets the internal filter state to 0. */
+  inline void reset()
+  {
+    y1 = 0;
   }
 
 protected:
 
   // member variables:
-  double y1    = 0;  // y[n-1]
-  double coeff = 0;
+  TSig y1    = 0;  // y[n-1]
+  TPar coeff = 0;
 
 };
 
