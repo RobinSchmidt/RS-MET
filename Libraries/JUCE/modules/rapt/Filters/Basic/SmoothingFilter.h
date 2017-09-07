@@ -66,7 +66,7 @@ protected:
   /** Updates our filter coefficient according to the setting of decay and order. */
   void updateCoeff()
   {
-    TPar scaledDecay = decay; // preliminary - scale according to order
+    TPar scaledDecay = decay/order; // preliminary - scale according to order
     coeff = exp(-1 / scaledDecay);
   }
 
@@ -74,7 +74,7 @@ protected:
   static const int maxOrder = 10;
 
   // member variables:
-  TSig y1[maxOrder]; // y[n-1] of the lowpass stages
+  TSig y1[maxOrder]; // y[n-1] of the lowpass stages - maybe use a std::vector - gets rid of maxOrder
   TPar coeff = 0;    // lowpass filter coefficient
   TPar decay = 0;    // normalized decay == timeConstant * sampleRate
   int  order = 1;    // number of lowpass stages
