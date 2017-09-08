@@ -301,6 +301,7 @@ void ModulationManager::removeAllConnections()
 
 void ModulationManager::resetAllTargetRangeLimits()
 {
+  ScopedLock scopedLock(*modLock); 
   for(int i = 0; i < size(availableTargets); i++)
   {
     availableTargets[i]->setModulationRangeMin(-INF);
@@ -364,6 +365,7 @@ int ModulationManager::numRegisteredSourcesOfType(ModulationSource* source)
 
 ModulationSource* ModulationManager::getSourceByName(const juce::String& sourceName)
 {
+  ScopedLock scopedLock(*modLock); 
   for(int i = 0; i < size(availableSources); i++)
   {
     if(availableSources[i]->getModulationSourceName() == sourceName)
@@ -374,6 +376,7 @@ ModulationSource* ModulationManager::getSourceByName(const juce::String& sourceN
 
 ModulationTarget* ModulationManager::getTargetByName(const juce::String& targetName)
 {
+  ScopedLock scopedLock(*modLock); 
   for(int i = 0; i < size(availableTargets); i++)
   {
     if(availableTargets[i]->getModulationTargetName() == targetName)
@@ -384,6 +387,7 @@ ModulationTarget* ModulationManager::getTargetByName(const juce::String& targetN
 
 bool ModulationManager::needsToStoreRangeLimits()
 {
+  ScopedLock scopedLock(*modLock); 
   for(int i = 0; i < size(affectedTargets); i++)
   {
     if(  affectedTargets[i]->getModulationRangeMin() != -INF
@@ -395,6 +399,7 @@ bool ModulationManager::needsToStoreRangeLimits()
 
 void ModulationManager::setMetaParameterManager(MetaParameterManager* managerToUse)
 {
+  ScopedLock scopedLock(*modLock); 
   metaManager = managerToUse;
   // todo: set it to the null object, in case a nullptr is passed
 }

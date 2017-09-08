@@ -502,17 +502,32 @@ public:
   bool isConnected(ModulationSource* source, ModulationTarget* target);
 
   /** Returns the number of ModulationConnections. */
-  inline int getNumConnections() { return size(modulationConnections); }
+  inline int getNumConnections() 
+  { 
+    ScopedLock scopedLock(*modLock); 
+    return size(modulationConnections); 
+  }
 
   /** Returns a reference to our vector of available ModulationSources. */
-  const std::vector<ModulationSource*>& getAvailableModulationSources() { return availableSources; }
+  const std::vector<ModulationSource*>& getAvailableModulationSources() 
+  { 
+    ScopedLock scopedLock(*modLock); 
+    return availableSources; 
+  }
 
   /** Returns a reference to our vector of available ModulationTargets. */
-  const std::vector<ModulationTarget*>& getAvailableModulationTargets() { return availableTargets; }
+  const std::vector<ModulationTarget*>& getAvailableModulationTargets() 
+  { 
+    ScopedLock scopedLock(*modLock); 
+    return availableTargets; 
+  }
 
   /** Returns a reference to our vector of ModulationConnections. */
   const std::vector<ModulationConnection*>& getModulationConnections()
-  { return modulationConnections; }
+  { 
+    ScopedLock scopedLock(*modLock); 
+    return modulationConnections; 
+  }
 
   /** Given a pointer to a ModulationSource of some type, this function returns the number of 
   ModulationSources of the same type that are registered here. This is used to figure out, for 
