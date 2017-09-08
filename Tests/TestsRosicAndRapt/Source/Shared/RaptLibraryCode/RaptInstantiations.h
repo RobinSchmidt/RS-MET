@@ -21,6 +21,7 @@ typedef RAPT::rsSinCosTable<float> rsSinCosTableF;
 typedef RAPT::rsSinCosTable<double> rsSinCosTableD;
 
 // Filters:
+typedef RAPT::rsSmoothingFilter<float, float> rsSmoothingFilterFF;
 typedef RAPT::LadderFilter<float, float> LadderFilterFF;
 typedef RAPT::PhasorFilter<float, float> PhasorFilterFF;
 typedef RAPT::PhasorStateMapper<float> PhasorStateMapperF;

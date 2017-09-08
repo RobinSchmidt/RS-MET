@@ -18,34 +18,24 @@ class rsSmoothingFilter
 public:
 
   /** Constructor. */
-  rsSmoothingFilter()
-  {
-    reset();
-  }
+  rsSmoothingFilter();
 
   /** Sets the time constant (in seconds) which is the time it takes to reach around 
   1 - 1/e = 63% of the target value when starting from zero. You must also pass the samplerate
   at which the smoother should operate here. */
-  void setTimeConstantAndSampleRate(TPar timeConstant, TPar sampleRate)
-  {
-    decay = sampleRate * timeConstant;
-    updateCoeff();
-  }
+  void setTimeConstantAndSampleRate(TPar timeConstant, TPar sampleRate);
+
   // maybe we should use the half-time, i.e. the time, it takes to reach 0.5
   // setTimeToReachHalf...or something, maybe setHalfLifeTime
   // https://en.wikipedia.org/wiki/Exponential_decay#Half-life
 
   /** Sets the order of the filter, i.e. the number of first order lowpass stages. */
-  void setOrder(int newOrder)
-  {
-    order = rsMin(newOrder, maxOrder);
-    updateCoeff();
-  }
+  void setOrder(int newOrder);
 
   /** Returns a smoothed output sample. */
   inline TSig getSample(TSig in)
   {
-    //return y1[0] = in + coeff*(y1[0]-in); // preliminary - 1st order only
+    //return y1[0] = in + coeff*(y1[0]-in); // this would be the 1st order leaky integrator
 
     y1[0] = in + coeff*(y1[0]-in);
     for(int i = 1; i < order; i++)
@@ -54,19 +44,12 @@ public:
   }
 
   /** Resets the internal filter state to 0. */
-  inline void reset()
-  {
-    for(int i = 0; i < maxOrder; i++)
-      y1[i] = 0;
-  }
+  void reset();
 
 protected:
 
   /** Updates our filter coefficient according to the setting of decay and order. */
-  void updateCoeff()
-  {
-    coeff = exp(-order/decay); // amounts to divide the time-constant by the order
-  }
+  void updateCoeff();
 
 
   static const int maxOrder = 10;

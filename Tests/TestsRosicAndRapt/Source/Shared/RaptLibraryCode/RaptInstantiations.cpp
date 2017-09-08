@@ -48,6 +48,7 @@ template void RAPT::Statistics::linearRegression(int N, float* x, float* y, floa
 template float RAPT::Statistics::proportionalRegression(int N, float* x, float* y);
 
 // Filters:
+template RAPT::rsSmoothingFilter<float, float>;
 template RAPT::LadderFilter<float, float>;
 template RAPT::PhasorFilter<float, float>;
 template RAPT::PhasorStateMapper<float>;
