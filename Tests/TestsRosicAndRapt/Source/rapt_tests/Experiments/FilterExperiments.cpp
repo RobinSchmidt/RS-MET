@@ -285,7 +285,7 @@ void smoothingFilter()
   // We plot the step responses of the rsSmoothingFilter for various orders.
 
   static const int numOrders = 10;  // number of filters with different orders
-  bool expSpacing = false;           // if true, orders are 1,2,4,8,.. else 1,2,3,4,..
+  bool expSpacing = true;           // if true, orders are 1,2,4,8,.. else 1,2,3,4,..
   static const int N = 300;        // number of samples
   float fs  = 100.f;                // sample rate
   float tau = 1.f;                  // time constant

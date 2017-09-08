@@ -39,7 +39,10 @@ void rsSmoothingFilter<TSig, TPar>::updateCoeff()
   coeff = exp(-order/decay); // amounts to divide the time-constant by the order
 
   //// test:
-  //TPar scaledDecay = decay / (order - 0.36);
+  //TPar scaler = 1;
+  //if(order > 1)
+  //  scaler = 1.0 / (order-1);
+  //TPar scaledDecay = scaler * decay;
   //coeff = exp(-1/scaledDecay);
 
   //coeff = exp(-1/decay); // no scaling for test purposes
@@ -131,4 +134,8 @@ because it doesn't really match the 0.5-crossing of the digital filter
 ...but maybe we should just create a table by reading off the time-instants where the curves cross
 1/2 from the step responses
 
+or maybe we could normalize it in such a way that the inflection point (zero of derivative of 
+hN(t)) is always at the same time instant. The derivative of is:
+hN'(t) = ((N-1)*t^(N-2) * e^-t - t^(N-1) * e^-t) / (N-1)!  ...verify that formula
+       = e^-t * t^(N-2) * (N-1-t) / (N-1)!
 */
