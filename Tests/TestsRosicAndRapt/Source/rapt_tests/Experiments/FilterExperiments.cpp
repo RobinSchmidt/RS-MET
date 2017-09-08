@@ -285,8 +285,8 @@ void smoothingFilter()
   // We plot the step responses of the rsSmoothingFilter for various orders.
 
   static const int numOrders = 10; // number of filters with different orders
-  bool expSpacing = true;          // if true, orders are 1,2,4,8,.. else 1,2,3,4,..
-  static const int N = 300;        // number of samples
+  bool expSpacing = false;          // if true, orders are 1,2,4,8,.. else 1,2,3,4,..
+  static const int N = 1300;        // number of samples
   float fs  = 100.f;               // sample rate
   float tau = 1.f;                 // time constant
 
@@ -294,27 +294,38 @@ void smoothingFilter()
   rsSmoothingFilterFF smoother;
   smoother.setTimeConstantAndSampleRate(tau, fs);
 
+  float a = 0.5;       // level to reach
+  float ta[numOrders]; // time after which a is reached
+
   // compute step responses:
   int order = 1;
   float y[numOrders][N];
   for(int i = 0; i < numOrders; i++)
   {
+    ta[i] = -log(1-pow(a, 1.f/order)); // compute time where step response passes through a
+                                       // ...nope, formula is wrong
+
     smoother.setOrder(order);
     if(expSpacing) // update order for next iteration
       order *= 2;
     else
       order += 1;
+
     smoother.reset();
-    for(int n = 0; n < N; n++)
+    y[i][0] = smoother.getSample(1.f);
+    for(int n = 1; n < N; n++)
     {
-      y[i][n] = smoother.getSample(1.f);
+      y[i][n] = smoother.getSample(0.f);   // impulse response
+      //y[i][n] = smoother.getSample(1.f); // step response
     }
   }
 
   // plot:
+  float t[N];
+  createTimeAxis(N, t, fs);
   GNUPlotter plt;
   for(int i = 0; i < numOrders; i++)
-    plt.addDataArrays(N, y[i]); 
+    plt.addDataArrays(N, t, y[i]); 
   plt.plot();
 
   // Observations:

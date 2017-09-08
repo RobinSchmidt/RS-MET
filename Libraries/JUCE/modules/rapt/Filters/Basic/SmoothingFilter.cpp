@@ -36,7 +36,8 @@ void rsSmoothingFilter<TSig, TPar>::reset()
 template<class TSig, class TPar>
 void rsSmoothingFilter<TSig, TPar>::updateCoeff()
 {
-  coeff = exp(-order/decay); // amounts to divide the time-constant by the order
+  //coeff = exp(-order/decay); // amounts to divide the time-constant by the order
+  coeff = exp(-1/decay); // no scaling for test purposes
 }
 
 
@@ -74,6 +75,42 @@ wrong (why?). should it not be just:
 sN(t) ?= e^(-N t) (e^t - 1)^N
 assuming that is right, we set that expression equal to our target value a = 1/2 and solve for t:
 t = -log(1 - pow(a, 1/N))
-...that should be the time instant, where ste step response goes through a...check that
+...that should be the time instant, where step response goes through a...check that
+
+
+
+FUCK - NO this is all wrong - it has to be:
+
+h1(t) = e^(-t) for t >= 0 and 0 for t < 0
+h2(t) = conv(h1(t), h1(t)) = integrate e^(-(t-T))*e^(-T) dT from T=0 to t 
+h2(t) = t * e^-t
+h3(t) = integrate e^(-(t-T)) * T*e^(-T) dT from T=0 to t 
+h3(t) = t^2/2 * e^-t
+h4(t) = integrate e^(-(t-T)) * (T^2/2)*e^(-T) dT from T=0 to t
+h4(t) = t^3/6 * e^-t
+h5(t) = integrate e^(-(t-T)) * (T^3/6)*e^(-T) dT from T=0 to t
+h5(t) = t^4/24 * e^-t
+h6(t) = integrate e^(-(t-T))*(T^4/24)*e^(-T) dT from T=0 to t
+h6(t) = t^5/120 * e^-t
+the general expression for the impulse response is then:
+
+hN(t) = e^-t * t^(N-1) / (N-1)!
+
+step responses are the running integral (sum) of the impulse responses:
+
+sN(t) = integrate hN(T) dT from T=0 to t
+s1(t) = integrate             e^(-T) dT from T=0 to t = 
+s2(t) = integrate T         * e^(-T) dT from T=0 to t
+s3(t) = integrate (T^2/2)   * e^(-T) dT from T=0 to t
+s4(t) = integrate (T^3/6)   * e^(-T) dT from T=0 to t
+s5(t) = integrate (T^4/24)  * e^(-T) dT from T=0 to t
+s6(t) = integrate (T^5/120) * e^(-T) dT from T=0 to t
+
+sN(t) = 1 - e^-t * ( sum_{k=0}^{N-1} (t^k)/(k!) )
+      = 1 - e^-t * (1 + t + t^2/2 + t^3/6 + t^4/24 + t^5/120 + ... + t^(N-1)/(N-1)! )
+
+...damn! that expression is harder to handle - we need to set it equal to our target value 
+a = 1/2 and solve for t. I think, it's not explicitly soluble for t, so maybe we need a root 
+finder. I think, to do this, we need to drag over the polynomial and root-finder class
 
 */
