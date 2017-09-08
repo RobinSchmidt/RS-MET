@@ -36,8 +36,13 @@ void rsSmoothingFilter<TSig, TPar>::reset()
 template<class TSig, class TPar>
 void rsSmoothingFilter<TSig, TPar>::updateCoeff()
 {
-  //coeff = exp(-order/decay); // amounts to divide the time-constant by the order
-  coeff = exp(-1/decay); // no scaling for test purposes
+  coeff = exp(-order/decay); // amounts to divide the time-constant by the order
+
+  //// test:
+  //TPar scaledDecay = decay / (order - 0.36);
+  //coeff = exp(-1/scaledDecay);
+
+  //coeff = exp(-1/decay); // no scaling for test purposes
 }
 
 
@@ -106,11 +111,24 @@ s4(t) = integrate (T^3/6)   * e^(-T) dT from T=0 to t
 s5(t) = integrate (T^4/24)  * e^(-T) dT from T=0 to t
 s6(t) = integrate (T^5/120) * e^(-T) dT from T=0 to t
 
+
 sN(t) = 1 - e^-t * ( sum_{k=0}^{N-1} (t^k)/(k!) )
       = 1 - e^-t * (1 + t + t^2/2 + t^3/6 + t^4/24 + t^5/120 + ... + t^(N-1)/(N-1)! )
 
 ...damn! that expression is harder to handle - we need to set it equal to our target value 
 a = 1/2 and solve for t. I think, it's not explicitly soluble for t, so maybe we need a root 
 finder. I think, to do this, we need to drag over the polynomial and root-finder class
+
+wolfram alpha can produce numerical results for this equation:
+
+1 - e^-t * (1 + t + t^2/2! + t^3/3! + t^4/4! + t^5/5! + t^6/6! + t^7/7!) = 1/2
+
+maybe when using the result of this computation in the analog domain, a step-invariant digital
+filter approximation should be used - it's explained here:
+http://homes.esat.kuleuven.be/~maapc/Sofia/slides_chapter8.pdf
+because it doesn't really match the 0.5-crossing of the digital filter
+
+...but maybe we should just create a table by reading off the time-instants where the curves cross
+1/2 from the step responses
 
 */

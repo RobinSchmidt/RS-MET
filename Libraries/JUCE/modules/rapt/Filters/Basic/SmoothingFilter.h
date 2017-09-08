@@ -24,7 +24,6 @@ public:
   1 - 1/e = 63% of the target value when starting from zero. You must also pass the samplerate
   at which the smoother should operate here. */
   void setTimeConstantAndSampleRate(TPar timeConstant, TPar sampleRate);
-
   // maybe we should use the half-time, i.e. the time, it takes to reach 0.5
   // setTimeToReachHalf...or something, maybe setHalfLifeTime
   // https://en.wikipedia.org/wiki/Exponential_decay#Half-life
