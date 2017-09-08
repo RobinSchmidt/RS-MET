@@ -51,14 +51,10 @@ protected:
   /** Updates our filter coefficient according to the setting of decay and order. */
   void updateCoeff();
 
-
-  static const int maxOrder = 10;
-
-  // member variables:
-  TSig y1[maxOrder]; // y[n-1] of the lowpass stages - maybe use a std::vector - gets rid of maxOrder
-  TPar coeff = 0;    // lowpass filter coefficient
-  TPar decay = 0;    // normalized decay == timeConstant * sampleRate
-  int  order = 1;    // number of lowpass stages
+  std::vector<TSig> y1; // y[n-1] of the lowpass stages
+  TPar coeff = 0;       // lowpass filter coefficient
+  TPar decay = 0.1;     // normalized decay == timeConstant * sampleRate
+  int  order = 1;       // number of lowpass stages, now redundant with y1.size()
 
   // maybe we should instead of "decay" maintain "sampleRate" and "timeConstant" variables and 
   // provide functions to set them separately. That's more convenient for the user. It increases 
