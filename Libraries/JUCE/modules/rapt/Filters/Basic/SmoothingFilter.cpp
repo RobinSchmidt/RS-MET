@@ -62,7 +62,18 @@ h4(t) = conv(h1(t), h3(t)) = e^(-(t-T)) * e^(-3 t) (-1 + e^t)^2 dT from T=0 to t
 h4(t) = e^(-4 t) (-1 + e^t)^3
 the pattern that emerges is:
 hN(t) = e^(-N t) (-1 + e^t)^(N-1)
-OK - we have a nice formula for the impulse response - now for the step response
-
+OK, we have a nice formula for the impulse response - now for the step response, we must convolve
+the impulse response with the unit step. this just amounts to integrating the impulse response
+from 0 to t (i.e. the step-response is the running sum of the impulse response). Doing the
+integral for N=4 (integrate e^(-4 t) (e^t - 1)^3 dt from t=0 to t) gives:
+s4(t) = 1/4 e^(-4 t) (e^t - 1)^4
+and in general:
+sN(t) = 1/N e^(-N t) (e^t - 1)^N
+...however, when plotting these, they only approach 1/N instead of 1, so this 1/N factor seems 
+wrong (why?). should it not be just: 
+sN(t) ?= e^(-N t) (e^t - 1)^N
+assuming that is right, we set that expression equal to our target value a = 1/2 and solve for t:
+t = -log(1 - pow(a, 1/N))
+...that should be the time instant, where ste step response goes through a...check that
 
 */
