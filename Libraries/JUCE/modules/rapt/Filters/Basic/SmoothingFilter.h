@@ -39,8 +39,17 @@ public:
   /** Sets the order of the filter, i.e. the number of first order lowpass stages. */
   void setOrder(int newOrder);
 
+  /** Chooses the shape of the step-response. See shapes enum. When all first order lowpass stages
+  have the same cutoff frequency, higher order filters will approach a sigmoid shape. This is 
+  sometimes undesirable because it implies a kind of delayed reaction. With FAST_ATTACK, we scale
+  the time-constants of the successive filters which has the effect that the transition is faster
+  initially. */
   void setShape(int newShape);
 
+  /** If some shape other than SIGMOID is chosen, this parameter sets the amount of the shape. If 
+  zero, it reduces to the sigmoid shape (i.e. all stages have same time constant). If 1, the time
+  constants of the stages follow an 1/n rule. The general rule is 1/n^p where p is the parameter
+  set here. */
   void setShapeParameter(TPar newParam);
 
   /** Returns a smoothed output sample. */

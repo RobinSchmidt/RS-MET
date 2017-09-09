@@ -63,6 +63,8 @@ void rsSmoothingFilter<TSig, TPar>::updateCoeffs()
       //  tmp *= (shapeParam+1);
       coeffs[i] = exp(-order/tmp);      // tau[n] = tau[0] / n^p // p == shapeParam
     }
+    // maybe try, if it responds different to modulations of the time-constants are in reverse
+    // order (from short to long instead of long to short)
   }
   else
   {
