@@ -9,7 +9,11 @@ lowpasses.
 (todo: The filter will scale the time constants according to the order so as to maintain
 comparable transition times, so the transition time will not depend on the order. The transition
 doesn't get more and more sluggish, when increasing the order (which would happen without the 
-automatic downscaling of the time constant). */
+automatic downscaling of the time constant). 
+...i should use a table that gets allocated and filled when the first object is created
+
+
+*/
 
 template<class TSig, class TPar> // signal, parameter types
 class rsSmoothingFilter
@@ -40,11 +44,13 @@ public:
   void setOrder(int newOrder);
 
   /** Chooses the shape of the step-response. See shapes enum. When all first order lowpass stages
-  have the same cutoff frequency, higher order filters will approach a sigmoid shape. This is 
-  sometimes undesirable because it implies a kind of delayed reaction. With FAST_ATTACK, we scale
-  the time-constants of the successive filters which has the effect that the transition is faster
-  initially. */
+  have the same cutoff frequency, higher order filters will approach a more or less symmetrical 
+  sigmoid shape. This is sometimes undesirable because it implies a kind of delayed reaction. With 
+  FAST_ATTACK, we scale the time-constants of the successive filters which has the effect that the 
+  transition is faster initially. */
   void setShape(int newShape);
+    // maybe call the parameter asymmetry and get rid of the setShape function - just check
+    // if asymmetry == 0 - if so, use the cheaper computations in updateCoeffs
 
   /** If some shape other than SIGMOID is chosen, this parameter sets the amount of the shape. If 
   zero, it reduces to the sigmoid shape (i.e. all stages have same time constant). If 1, the time
@@ -73,15 +79,25 @@ protected:
 
   std::vector<TSig> y1;     // y[n-1] of the lowpass stages
   std::vector<TPar> coeffs; // lowpass filter coefficients
-  TPar decay = 0.1;     // normalized decay == timeConstant * sampleRate
-  int  order = 1;       // number of lowpass stages, now redundant with y1.size()
+  TPar decay = TPar(0.1);   // normalized decay == timeConstant * sampleRate
+  int  order = 1;           // number of lowpass stages, now redundant with y1.size()
 
-  int shape = 0;
-  TPar shapeParam = 0;
+  int shape = 0;       // remove
+  TPar shapeParam = 0; // rename to asymmetry
 
   // maybe we should instead of "decay" maintain "sampleRate" and "timeConstant" variables and 
   // provide functions to set them separately. That's more convenient for the user. It increases 
   // our data a bit, but the convenience may be worth it.
+
+
+  // variables for the table of the time-constant scalers:
+  static const int  maxOrder = 32;
+  static const int  numAsyms = 32;
+  //static const TPar maxAsym;
+  //static bool tableIsFilled;
+  //static TPar** tauScalers;
+  //void createTauScalerTable();
+
 
 };
 

@@ -1,3 +1,8 @@
+//template<class TSig, class TPar>
+//static rsSmoothingFilter<TSig, TPar>::maxAsym = 2.0;
+
+
+
 template<class TSig, class TPar>
 rsSmoothingFilter<TSig, TPar>::rsSmoothingFilter()
 {
@@ -58,7 +63,7 @@ void rsSmoothingFilter<TSig, TPar>::updateCoeffs()
   {
     for(int i = 0; i < order; i++)
     {
-      tmp  = decay / pow(i+1, shapeParam); // scaled decay time-constant
+      tmp  = decay / (TPar) pow(i+1, shapeParam); // scaled decay time-constant
       //if(i > 0)
       //  tmp *= (shapeParam+1);
       coeffs[i] = exp(-order/tmp);      // tau[n] = tau[0] / n^p // p == shapeParam

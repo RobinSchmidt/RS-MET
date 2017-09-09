@@ -295,19 +295,13 @@ void smoothingFilter()
   rsSmoothingFilterFF smoother;
   smoother.setTimeConstantAndSampleRate(tau, fs);
   smoother.setShape(rsSmoothingFilterFF::FAST_ATTACK);
-  smoother.setShapeParameter(2.0f);
-
-  float a = 0.5;       // level to reach
-  float ta[numOrders]; // time after which a is reached
+  smoother.setShapeParameter(1.0f);
 
   // compute step responses:
   int order = 1;
   float y[numOrders][N];
   for(int i = 0; i < numOrders; i++)
   {
-    ta[i] = -log(1-pow(a, 1.f/order)); // compute time where step response passes through a
-                                       // ...nope, formula is wrong
-
     smoother.setOrder(order);
     if(expSpacing) // update order for next iteration
       order *= 2;
@@ -342,11 +336,13 @@ void smoothingFilter()
   // the various step responses go through 0.5 and then use that value as divider.
 
   // ToDo:
-  // experiment with spreading the poles, i.e. not using the same time-constant for each 
-  // filter but let the time constants follow some rule like tau[i]  = tau / (i^a) or something.
-  // Here, "a" would be another user parameter that would modify the shape - we could perhaps avoid 
-  // the initial "delay" with that. When we use such a rule, we will probably have to account for 
-  // that in the scaling function for the time-constant according to the order
+  // Measure the sample instants where the the step responses pass through 0.5 for some normalized
+  // filter setting and create tables from that. These tables will eventually be used for scaling. 
+  // It should be a 2D table, 1st dimension is the order (say 1..32) and 2nd dimension is the value
+  // of the shape parameter (maybe from 0 to 4 in 32 steps?) the 2nd dimenstion can use linear
+  // interpolation, the 1st dimension doesn't need that because inputs are integers anyway.
+  // The values of the table should be overall scalers for all the time constants.
+
 
   // try higher orders - like 100 - see what kind of shaped is approached for order -> inf
 }

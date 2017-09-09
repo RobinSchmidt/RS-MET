@@ -23,7 +23,7 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::setSampleRate(TPar newSampleRate)
 {
   sampleRate = newSampleRate;
   updateInsertFactor();
-  screenScanner.setSampleRate(sampleRate);
+  screenScanner.setSampleRate(TSig(sampleRate));
 }
 
 template<class TSig, class TPix, class TPar>
@@ -102,7 +102,7 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::setOneDimensionalMode(bool shouldBe1D)
 template<class TSig, class TPix, class TPar>
 void PhaseScopeBuffer<TSig, TPix, TPar>::setScanningFrequency(TPar newFrequency)
 {
-  screenScanner.setScanFreqNoSync(newFrequency);
+  screenScanner.setScanFreqNoSync(TSig(newFrequency));
 }
 
 template<class TSig, class TPix, class TPar>

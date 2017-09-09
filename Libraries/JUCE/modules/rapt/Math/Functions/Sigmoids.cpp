@@ -341,7 +341,7 @@ void ScaledAndShiftedSigmoid<T>::updateCoeffs()
   //*shift = outMin - (*scale * inMin);
 
   scaleX =  2 / width;
-  shiftX = -1 - (scaleX * (center-0.5*width));
+  shiftX = -1 - (scaleX * (center-T(0.5)*width));
   scaleY =  1 / scaleX; 
   shiftY = -shiftX * scaleY;
 }
