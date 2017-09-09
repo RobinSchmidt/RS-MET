@@ -89,7 +89,9 @@ maybe make the class hierarchy like this:
 Parameter <- MetaControlledParameter <- ModulatableParameter <- PolyphonicParameter
 
 ToDo:
-
+-It doesn't work in Elan's SpiralGenerator - why? maybe it has to do with creation order? There,
+ the modulators whould modulate parameters of their parent module, in chainer it's the sibling
+ modules - and no sources or targets are created in the constructor
 -figure out what happens if the user changes the range of depthParam - how will this affect the 
  meta-value, how can we make sure that the depth parameter is always consistent with its attached 
  metaparameter? how its patch recall affected?

@@ -107,13 +107,12 @@ hN(t) = e^-t * t^(N-1) / (N-1)!
 step responses are the running integral (sum) of the impulse responses:
 
 sN(t) = integrate hN(T) dT from T=0 to t
-s1(t) = integrate             e^(-T) dT from T=0 to t = 
+s1(t) = integrate             e^(-T) dT from T=0 to t
 s2(t) = integrate T         * e^(-T) dT from T=0 to t
 s3(t) = integrate (T^2/2)   * e^(-T) dT from T=0 to t
 s4(t) = integrate (T^3/6)   * e^(-T) dT from T=0 to t
 s5(t) = integrate (T^4/24)  * e^(-T) dT from T=0 to t
 s6(t) = integrate (T^5/120) * e^(-T) dT from T=0 to t
-
 
 sN(t) = 1 - e^-t * ( sum_{k=0}^{N-1} (t^k)/(k!) )
       = 1 - e^-t * (1 + t + t^2/2 + t^3/6 + t^4/24 + t^5/120 + ... + t^(N-1)/(N-1)! )
@@ -138,4 +137,23 @@ or maybe we could normalize it in such a way that the inflection point (zero of 
 hN(t)) is always at the same time instant. The derivative of is:
 hN'(t) = ((N-1)*t^(N-2) * e^-t - t^(N-1) * e^-t) / (N-1)!  ...verify that formula
        = e^-t * t^(N-2) * (N-1-t) / (N-1)!
+
+Or try a lowpass chain where each stage has a different cutoff frequency. The individual stages 
+have impulse responses:
+h1(t) = e^(-a_1*t), h2(t) = e^(-a_2*t), h3(t) = e^(-a_3*t), ..., hN(t) = e^(-a_N*t)
+the accumulated impulse reponses after each stage n, say gn, are given by: 
+g1(t) = h1(t), g2(t) = conv(h2(t), g1(t)), g3(t) = conv(h3(t) g2(t)), ....
+so
+g2(t) = integrate e^(-a_2 (t-T)) e^(-a_1 T) dT for T=0 to t
+      = (e^(-a_1*t) - e^(-a_2*t)) / (a_2 - a_1)
+g3(t) = integrate e^(-a_3 (t-T)) (e^(-a_1*T) - e^(-a_2*T)) / (a_2 - a_1) dT for T=0 to t
+...hmm..the expressions seems to get more complicated at an exponential rate (each is twice
+as complicated as the one before)...impractical to work with
+
+...maybe try the bandwidth scaling formula?
+
+...maybe instead of using the convolution integrals for the analog counterpart, we may use the
+convolution sums for the actual digital version? If that works out, it will be even more precise
+
+
 */

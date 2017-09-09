@@ -25,7 +25,7 @@ public:
   at which the smoother should operate here. */
   void setTimeConstantAndSampleRate(TPar timeConstant, TPar sampleRate);
   // maybe we should use the half-time, i.e. the time, it takes to reach 0.5
-  // setTimeToReachHalf...or something, maybe setHalfLifeTime
+  // setTimeToReachHalf, setNumSamplesToReachHalf...or something, maybe setHalfLifeTime
   // https://en.wikipedia.org/wiki/Exponential_decay#Half-life
 
   /** Sets the order of the filter, i.e. the number of first order lowpass stages. */

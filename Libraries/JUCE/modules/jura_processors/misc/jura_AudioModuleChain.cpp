@@ -220,6 +220,8 @@ AudioModuleChain::AudioModuleChain(CriticalSection *lockToUse,
   setActiveDirectory(presetPath);
   //setActiveDirectory(getApplicationDirectory() + "/ChainerPresets");  // old
 
+  createDebugModSourcesAndTargets(); // for debugging the mod-system
+
   addEmptySlot();
 }
 
@@ -564,6 +566,13 @@ void AudioModuleChain::clearModulesArray()
   ScopedLock scopedLock(*lock);
   while(size(modules) > 0)
     deleteLastModule();
+}
+
+void AudioModuleChain::createDebugModSourcesAndTargets()
+{
+
+
+  int dummy = 0;
 }
 
 //=================================================================================================

@@ -223,7 +223,12 @@ protected:
 
   /** Clears the array of AudioModules which means als to delete all objects. */
   void clearModulesArray();
+
+  /** Just some temporary throwaway code to figure out what is going wrong with the mod-system in
+  Elan's SpiralGenerator. */
+  void createDebugModSourcesAndTargets();
                      
+
   std::vector<AudioModule*> modules;
     // we should better use the inherited childAudioModules array - but there are errors
 
