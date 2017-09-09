@@ -2,6 +2,7 @@ template<class TSig, class TPar>
 rsSmoothingFilter<TSig, TPar>::rsSmoothingFilter()
 {
   y1.resize(1);
+  coeffs.resize(1);
   reset();
 }
 
@@ -9,7 +10,7 @@ template<class TSig, class TPar>
 void rsSmoothingFilter<TSig, TPar>::setTimeConstantAndSampleRate(TPar timeConstant, TPar sampleRate)
 {
   decay = sampleRate * timeConstant;
-  updateCoeff();
+  updateCoeffs();
 }
 
 template<class TSig, class TPar>
@@ -18,12 +19,27 @@ void rsSmoothingFilter<TSig, TPar>::setOrder(int newOrder)
   order = rsMax(1, newOrder);
 
   y1.resize(order);
+  coeffs.resize(order);
 
   reset();
   // todo: if newOrder > oldOrder, init only the vector values in y1 above oldOrder-1 to 0
   // not all of them
 
-  updateCoeff();
+  updateCoeffs();
+}
+
+template<class TSig, class TPar>
+void rsSmoothingFilter<TSig, TPar>::setShape(int newShape)
+{
+  shape = newShape;
+  updateCoeffs();
+}
+
+template<class TSig, class TPar>
+void rsSmoothingFilter<TSig, TPar>::setShapeParameter(TPar newParam)
+{
+  shapeParam = newParam;
+  updateCoeffs();
 }
 
 template<class TSig, class TPar>
@@ -34,9 +50,27 @@ void rsSmoothingFilter<TSig, TPar>::reset()
 }
 
 template<class TSig, class TPar>
-void rsSmoothingFilter<TSig, TPar>::updateCoeff()
+void rsSmoothingFilter<TSig, TPar>::updateCoeffs()
 {
-  coeff = exp(-order/decay); // amounts to divide the time-constant by the order
+  TPar tmp;
+
+  if(shape == FAST_ATTACK)
+  {
+    for(int i = 0; i < order; i++)
+    {
+      tmp  = decay / pow(i+1, shapeParam); // scaled decay time-constant
+      //if(i > 0)
+      //  tmp *= (shapeParam+1);
+      coeffs[i] = exp(-order/tmp);      // tau[n] = tau[0] / n^p // p == shapeParam
+    }
+  }
+  else
+  {
+    // all filter stages use the same time-constant
+    tmp = exp(-order/decay); // amounts to divide the time-constant by the order
+    for(int i = 0; i < order; i++)
+      coeffs[i] = tmp;
+  }
 
   //// test:
   //TPar scaler = 1;
