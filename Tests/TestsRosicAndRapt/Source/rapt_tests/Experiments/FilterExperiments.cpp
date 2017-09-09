@@ -285,8 +285,9 @@ void smoothingFilter()
   // We plot the step responses of the rsSmoothingFilter for various orders.
 
   static const int numOrders = 10;  // number of filters with different orders
-  bool expSpacing = true;           // if true, orders are 1,2,4,8,.. else 1,2,3,4,..
-  static const int N = 300;        // number of samples
+  bool expSpacing = false;          // if true, orders are 1,2,4,8,.. else 1,2,3,4,..
+  int orderIncrement = 3;           // or 1,3,5,.. or 1,4,7,...
+  static const int N = 300;         // number of samples
   float fs  = 100.f;                // sample rate
   float tau = 1.f;                  // time constant
 
@@ -309,7 +310,7 @@ void smoothingFilter()
     if(expSpacing) // update order for next iteration
       order *= 2;
     else
-      order += 1;
+      order += orderIncrement;
 
     smoother.reset();
     y[i][0] = smoother.getSample(1.f);

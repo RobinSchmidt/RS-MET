@@ -153,7 +153,32 @@ as complicated as the one before)...impractical to work with
 ...maybe try the bandwidth scaling formula?
 
 ...maybe instead of using the convolution integrals for the analog counterpart, we may use the
-convolution sums for the actual digital version? If that works out, it will be even more precise
+convolution sums for the actual digital version? If that works out, it will be even more precise.
+We take the difference equation:
+y[n] = x[n] + c * (y[n-1] - x[n]) = (1-c) * x[n] + c * y[n-1]
+The impulse response is:
+h[n] = (1-c) * c^n
+We assume not necessarily equal coeffs for each stage, so we index the coeffients c like 
+c1, c2, c3, ..., cN. The impulse responses of the individual stages are then given by:
+h1[n] = (1-c1) * c1^n, h2[n] = (1-c2) * c2^n, ..., hN[n] = (1-cN) * cN^n
+The accumulated impulse response of each m-th stage is given by the convolution sum of the 
+accumulated impulse response of the (m-1)th stage and the impulse reponse of the m-th stage:
+g1[n] = h1[n]
+g2[n] = sum_k=0^n g1[k] * h2[n-k] 
+g3[n] = sum_k=0^n g2[k] * h3[n-k] 
+etc. The step response of the N-th stage is then given by the running sum of its impulse response:
+sN[n] = sum_k=0^n gN[k]
+If we can work out a nice closed form expression for sN[n] which is soluble for n, we are
+done.
 
+pass to wolfram alpha:
+sum (1-c) c^k for k=0 to n (just for test)
+sum (1-c_1) c_1^k (1-c_2) c_2^(n-k) for k=0 to n
+
+g1[n] = (1-c_1) c_1^n
+g2[n] = sum_(k=0)^n (1-c_1) c_1^k (1-c_2) c_2^(n-k) 
+      = ((c_1-1) (c_2-1) (c_1^(n+1) - c_2^(n+1)))/(c_1-c_2)
+g3[n] = sum_(k=0)^n ((c_1-1) (c_2-1) (c_1^(k+1) - c_2^(k+1)))/(c_1-c_2)  (1-c_3) c_3^(n-k)
+      = ...no solution
 
 */
