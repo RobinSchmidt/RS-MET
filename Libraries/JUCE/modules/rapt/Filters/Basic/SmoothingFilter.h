@@ -93,10 +93,10 @@ protected:
   // variables for the table of the time-constant scalers:
   static const int  maxOrder = 32;
   static const int  numAsyms = 32;
-  //static const TPar maxAsym;
-  //static bool tableIsFilled;
+  static const TPar maxAsym;
+  static bool tableIsFilled;
   //static TPar** tauScalers;
-  //void createTauScalerTable();
+  void createTauScalerTable();
 
 
 };
