@@ -219,7 +219,6 @@ protected:
   /** Assigns an appropriate name to the passed ModulationSource which will be used to identify it
   in the modulation setup on the GUI and for state recall. */
   void assignModulationSourceName(ModulationSource* source);
-    // maybe this can be factored out into ModulationManager
 
   /** Clears the array of AudioModules which means als to delete all objects. */
   void clearModulesArray();

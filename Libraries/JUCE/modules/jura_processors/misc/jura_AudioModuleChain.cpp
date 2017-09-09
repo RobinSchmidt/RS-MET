@@ -204,7 +204,7 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
 
 AudioModuleChain::AudioModuleChain(CriticalSection *lockToUse, 
   MetaParameterManager* metaManagerToUse) 
-  : AudioModuleWithMidiIn(lockToUse, metaManagerToUse)
+  : AudioModuleWithMidiIn(lockToUse, metaManagerToUse/*, &modManager*/) // passing modManager causes access violation (not yet constructed)?
   , modManager(lockToUse) // maybe pass the metaManagerToUse to this constructor call
 {
   ScopedLock scopedLock(*lock);
@@ -220,6 +220,7 @@ AudioModuleChain::AudioModuleChain(CriticalSection *lockToUse,
   setActiveDirectory(presetPath);
   //setActiveDirectory(getApplicationDirectory() + "/ChainerPresets");  // old
 
+  setModulationManager(&modManager);
   createDebugModSourcesAndTargets(); // for debugging the mod-system
 
   addEmptySlot();
@@ -583,13 +584,16 @@ void AudioModuleChain::createDebugModSourcesAndTargets()
   ModulatableParameter* p = 
     new ModulatableParameter("Gain", -60.0, -20.0, 0.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
-  //p->setValueChangeCallback<Ladder>(AudioModuleChain, &AudioModuleChain::setGain);
+  //p->setValueChangeCallback<AudioModuleChain>(this, &AudioModuleChain::setGain);
   // try to use a lambda function like Elan does
 
   // 2 bugs:
   // 1: p has no modManager pointer (i.e. null)
+  //    -> solved by calling setModulationManager in constructor
   // 2: on destruction, we hit ModulatableParameter.cpp, line 322:
   //    jassert(contains(availableSources, source)); // source was never registered
+
+  // ...oh...the modManager's metaManager pointer is still null here - why?
 
   int dummy = 0;
 }
