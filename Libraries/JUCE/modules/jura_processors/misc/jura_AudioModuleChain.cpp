@@ -570,7 +570,26 @@ void AudioModuleChain::clearModulesArray()
 
 void AudioModuleChain::createDebugModSourcesAndTargets()
 {
+  // I think, this is the minimal code that triggers the bug that is apparent in Elan's 
+  // SpiralGenerator:
 
+  jura::BreakpointModulatorAudioModule* env = 
+    new jura::BreakpointModulatorAudioModule(lock);
+  env->setModuleName("Envelope1");
+  addChildAudioModule(env);
+
+  modManager.registerModulationSource(env);
+
+  ModulatableParameter* p = 
+    new ModulatableParameter("Gain", -60.0, -20.0, 0.0, Parameter::LINEAR, 0.01);
+  addObservedParameter(p);
+  //p->setValueChangeCallback<Ladder>(AudioModuleChain, &AudioModuleChain::setGain);
+  // try to use a lambda function like Elan does
+
+  // 2 bugs:
+  // 1: p has no modManager pointer (i.e. null)
+  // 2: on destruction, we hit ModulatableParameter.cpp, line 322:
+  //    jassert(contains(availableSources, source)); // source was never registered
 
   int dummy = 0;
 }
