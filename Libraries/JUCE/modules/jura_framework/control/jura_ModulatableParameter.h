@@ -494,11 +494,17 @@ public:
   /** De-registers a ModulationSource. */
   void deRegisterModulationSource(ModulationSource* source);
 
+  /** De-registers all ModulationSources. */
+  void deRegisterAllSources();
+
   /** Registers the given ModulationTarget. */
   void registerModulationTarget(ModulationTarget* target);
 
   /** De-registers a ModulationTarget. */
   void deRegisterModulationTarget(ModulationTarget* target);
+
+  /** De-registers all ModulationTargets. */
+  void deRegisterAllTargets();
 
 
   /** \name Inquiry */

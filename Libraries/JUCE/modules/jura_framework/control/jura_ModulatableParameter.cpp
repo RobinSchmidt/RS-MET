@@ -197,6 +197,8 @@ ModulationManager::~ModulationManager()
 {
   ScopedLock scopedLock(*modLock);
   removeAllConnections();
+  deRegisterAllSources();
+  deRegisterAllTargets();
 }
 
 void ModulationManager::applyModulations()
@@ -325,6 +327,13 @@ void ModulationManager::deRegisterModulationSource(ModulationSource* source)
   source->setModulationManager(nullptr); 
 }
 
+void ModulationManager::deRegisterAllSources()
+{
+  ScopedLock scopedLock(*modLock); 
+  while(size(availableSources) > 0)
+    deRegisterModulationSource(availableSources[size(availableSources)-1]);
+}
+
 void ModulationManager::registerModulationTarget(ModulationTarget* target)
 {
   ScopedLock scopedLock(*modLock); 
@@ -340,6 +349,13 @@ void ModulationManager::deRegisterModulationTarget(ModulationTarget* target)
   removeFirstOccurrence(affectedTargets,  target);
   removeConnectionsWith(target);
   target->setModulationManager(nullptr);
+}
+
+void ModulationManager::deRegisterAllTargets()
+{
+  ScopedLock scopedLock(*modLock); 
+  while(size(availableTargets) > 0)
+    deRegisterModulationTarget(availableTargets[size(availableTargets)-1]);
 }
 
 bool ModulationManager::isConnected(ModulationSource* source, ModulationTarget* target)
