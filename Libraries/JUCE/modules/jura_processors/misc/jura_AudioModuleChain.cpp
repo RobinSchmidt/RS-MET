@@ -220,7 +220,9 @@ AudioModuleChain::AudioModuleChain(CriticalSection *lockToUse,
   setActiveDirectory(presetPath);
   //setActiveDirectory(getApplicationDirectory() + "/ChainerPresets");  // old
 
+  modManager.setMetaParameterManager(metaManagerToUse);
   setModulationManager(&modManager);
+
   createDebugModSourcesAndTargets(); // for debugging the mod-system
 
   addEmptySlot();
@@ -592,8 +594,10 @@ void AudioModuleChain::createDebugModSourcesAndTargets()
   //    -> solved by calling setModulationManager in constructor
   // 2: on destruction, we hit ModulatableParameter.cpp, line 322:
   //    jassert(contains(availableSources, source)); // source was never registered
+  //    -> solved by de-registering all sources (and targets) in dtor of ModulationManager
 
   // ...oh...the modManager's metaManager pointer is still null here - why?
+  // -> solved by calling setMetaParameterManager in the ctor
 
   int dummy = 0;
 }
