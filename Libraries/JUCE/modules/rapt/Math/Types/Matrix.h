@@ -18,7 +18,10 @@ public:
   /** \name Operators */
 
   /** Read and write access to matrix elements. */
-  T& operator()(const int i, const int j);
+  inline T& operator()(const int i, const int j)
+  {
+    return d[M*i+j];
+  }
 
 
 
@@ -27,7 +30,7 @@ protected:
   /** \name Data */
 
   size_t N, M;    // number of rows and columns
-  T *d;           // data pointer - factor out to baseclass
+  T *d;           // data pointer
 
 };
 
@@ -36,7 +39,7 @@ protected:
 /** This is a class for representing matrices and doing mathematical operations with them. */
 
 template<class T>
-class rsMatrix : public rsMatrixView<T> /*, public std::vector<T>*/
+class rsMatrix : public rsMatrixView<T>
 {
 
 public:
@@ -45,18 +48,25 @@ public:
 
 
   /** Standard constructor. You must pass the initial number of rows and columns */
-  rsMatrix(size_t numRows, size_t numColumns);
+  rsMatrix(size_t numRows = 1, size_t numColumns = 1);
  
   /** Copy constructor. */
-  rsMatrix(const rsMatrix& other);
+  //rsMatrix(const rsMatrix& other);
                               
   /** Move constructor. */
-  rsMatrix(const rsMatrix&& other);
+  //rsMatrix(const rsMatrix&& other);
 
 
   /** Destructor. */
-  ~rsMatrix();
+  ~rsMatrix() {}
 
+
+  /** \name Setup */
+
+  /** Sets the number of rows and columns, this matrix should have. ToDo: provide a way to retain 
+  the data (optionally) - what does std::vector's resize do? Does it retain data...but if it does,
+  it would be useless anyway in case the number of columns changed. */
+  void setSize(size_t numRows, size_t numColumns);
 
     
   /** \name Manipulations */

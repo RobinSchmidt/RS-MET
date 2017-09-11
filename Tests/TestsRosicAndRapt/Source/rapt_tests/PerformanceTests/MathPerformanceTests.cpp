@@ -5,12 +5,12 @@ void matrixAdressingTest()
   // Compares two matrix addressing schemes: using a flat array with pointer arithmetic vs. using
   // an pointer-to-pointer array. The test is to copy matrix values from one matrix into another.
 
-  typedef float Data;
-  //typedef double Data;
+  //typedef float Data;
+  typedef double Data;
 
-  int N = 500;     // number of rows
-  int M = 200;     // number of columns
-  int i, j;       // row and column indices
+  size_t N = 8;     // number of rows
+  size_t M = 8;     // number of columns
+  size_t i, j;       // row and column indices
 
   // allocate flat matrices and row-pointers, fill a-matrix with random values:
   Data *af = new Data[N*M];   // a1 matrix as flat array
@@ -21,7 +21,7 @@ void matrixAdressingTest()
     a[i] = &af[i*M];
     b[i] = &bf[i*M];
   }
-  ArrayTools::rsFillWithRandomValues(af, N*M, -1.0, +1.0, 0);
+  ArrayTools::rsFillWithRandomValues(af, int(N*M), -1.0, +1.0, 0);
 
   // measure copying a into b via pointer-to-pointer access:
   ProcessorCycleCounter counter;
@@ -55,6 +55,9 @@ void matrixAdressingTest()
   // is better - both, in terms of speed and storage space. The advantages seem greatest for
   // medium sized matrices (a couple of thousands of elements), but even for smaller and larger
   // matrices, pointer arithmetic beats pointer arrays.
+
+  // Hmm...having done these measurements the other day again, i got different results - now the
+  // pointer-to-pointer version performing better. What now?
 
   //delete[] af, bf, a, b; // nope - gives memory leak - we need to delete them all separately
   delete[] af;

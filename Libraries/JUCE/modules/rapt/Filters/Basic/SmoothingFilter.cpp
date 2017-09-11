@@ -4,6 +4,9 @@ const TPar rsSmoothingFilter<TSig, TPar>::maxAsym = 2.0;
 template<class TSig, class TPar>
 bool rsSmoothingFilter<TSig, TPar>::tableIsFilled = false;
 
+template<class TSig, class TPar>
+rsMatrix<TPar> rsSmoothingFilter<TSig, TPar>::tauScalers; 
+
 
 
 template<class TSig, class TPar>
@@ -11,7 +14,6 @@ rsSmoothingFilter<TSig, TPar>::rsSmoothingFilter()
 {
   if(!tableIsFilled)
     createTauScalerTable();
-
   y1.resize(1);
   coeffs.resize(1);
   reset();
@@ -98,9 +100,16 @@ void rsSmoothingFilter<TSig, TPar>::updateCoeffs()
 template<class TSig, class TPar>
 void rsSmoothingFilter<TSig, TPar>::createTauScalerTable()
 {
+  y1.resize(maxOrder);
+  coeffs.resize(maxOrder);
+  reset();
+  tauScalers.setSize(maxOrder, numAsyms);
 
   // something to do...
 
+  y1.resize(maxOrder);
+  coeffs.resize(maxOrder);
+  setOrder(1);
   tableIsFilled = true;
 }
 
