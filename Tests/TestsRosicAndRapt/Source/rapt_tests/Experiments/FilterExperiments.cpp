@@ -286,10 +286,10 @@ void smoothingFilter()
 
   static const int numOrders = 4;   // number of filters with different orders
   bool expSpacing = false;          // if true, orders are 1,2,4,8,.. else 1,2,3,4,..
-  int orderIncrement = 2;           // or 1,3,5,.. or 1,4,7,...
-  static const int N = 3000;         // number of samples
-  float fs  = 1000.f;                // sample rate
-  float tau = 1.0f;                  // time constant
+  int orderIncrement = 1;           // or 1,3,5,.. or 1,4,7,...
+  static const int N = 500;         // number of samples
+  float fs  = 1.0f;                  // sample rate
+  float tau = 200.0f;                  // time constant
 
   // create and set up the smoother:
   //rsSmoothingFilterFF smoother;

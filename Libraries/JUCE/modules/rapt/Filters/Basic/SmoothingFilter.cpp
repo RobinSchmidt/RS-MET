@@ -75,12 +75,15 @@ void rsSmoothingFilter<TSig, TPar>::updateCoeffs()
   TPar tmp, scaler;
   for(int i = 0; i < order; i++)
   {
-    //tmp  = decay / (TPar) pow(i+1, shapeParam); // scaled decay time-constant
-    tmp  = decay;                               // for test
-    int asymIndex = (int)(shapeParam*(numAsyms-1)); // later: use interpolation
-    scaler = tauScalers(order-1, asymIndex);        // tau[n] = tau[0] / n^p // p == shapeParam
-    //coeffs[i] = exp(-1/tmp); 
+    //tmp  = decay / (TPar) pow(i+1, shapeParam); // scaled decay time-constant      // tau[n] = tau[0] / n^p // p == shapeParam
+    //int asymIndex = (int)(shapeParam*(numAsyms-1)); // later: use interpolation
+
+    tmp  = decay;      // for test
+    int asymIndex = 0; // test
+    scaler = tauScalers(order-1, asymIndex);  
     coeffs[i] = exp(-1/(scaler*tmp));      
+
+    //coeffs[i] = exp(-1/tmp); 
   }
   // maybe try, if it responds different to modulations of the time-constants are in reverse
   // order (from short to long instead of long to short)
@@ -141,7 +144,7 @@ void rsSmoothingFilter<TSig, TPar>::createTauScalerTable()
       tauScalers(i, j) = 1;
       TPar asym  = TPar(j) / TPar(numAsyms-1);
       shapeParam = asym;
-      TPar desiredNumSamples = 1000.0;
+      TPar desiredNumSamples = 20000.0;
       setNumSamplesToReachHalf(desiredNumSamples);
 
       // now measure, how many samples it actually takes:
@@ -153,6 +156,7 @@ void rsSmoothingFilter<TSig, TPar>::createTauScalerTable()
         yNow = getSample(1);
         if(yNow > TSig(0.5))
         {
+          //actualNumSamples = TPar(n); 
           actualNumSamples = TPar(n-1); 
 
           // refine by computing a fractional part by fitting a line and solving for the 0:
@@ -187,7 +191,10 @@ void rsSmoothingFilter<TSig, TPar>::createTauScalerTable()
   // fit an actual exponential curve to samples 0, n-1, n and solve for where this function crosses 
   // .5 ...but no - that would work only for the 1st order case. higher order filters don't follow
   // that curve - maybe we need cubic interpolation? ...or maybe we should pre-compute all the 
-  // tables once using a high precision calculation .
+  // tables once using a high precision calculation.
+
+  // or maybe we should try a filter based on the step-invariant instead of impulse-invariant 
+  // transform? or maybe measure, when the impulse-response goes through 0.5
 }
 
 /*
