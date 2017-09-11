@@ -21,6 +21,7 @@ class rsSmoothingFilter
 
 public:
 
+  /*
   enum shapes
   {
     SIGMOID = 0,
@@ -28,6 +29,8 @@ public:
 
     NUM_SHAPES
   };
+  */
+
 
   /** Constructor. */
   rsSmoothingFilter();
@@ -35,16 +38,11 @@ public:
   /** Sets the time constant (in seconds) which is the time it takes to reach around 
   1 - 1/e = 63% of the target value when starting from zero. You must also pass the samplerate
   at which the smoother should operate here. */
-  //void setTimeConstantAndSampleRate(TPar timeConstant, TPar sampleRate);
-  // maybe we should use the half-time, i.e. the time, it takes to reach 0.5
-  // setTimeToReachHalf, setNumSamplesToReachHalf...or something, maybe setHalfLifeTime
-  // https://en.wikipedia.org/wiki/Exponential_decay#Half-life
-
+  void setTimeConstantAndSampleRate(TPar timeConstant, TPar sampleRate);
 
   /** Sets up the number of samples that it takes for the unit-step response to reach a value
   of 1/2. */
   void setNumSamplesToReachHalf(TPar numSamples);
-
 
   /** Sets the order of the filter, i.e. the number of first order lowpass stages. */
   void setOrder(int newOrder);
@@ -54,7 +52,7 @@ public:
   sigmoid shape. This is sometimes undesirable because it implies a kind of delayed reaction. With 
   FAST_ATTACK, we scale the time-constants of the successive filters which has the effect that the 
   transition is faster initially. */
-  void setShape(int newShape);
+  //void setShape(int newShape);
     // maybe call the parameter asymmetry and get rid of the setShape function - just check
     // if asymmetry == 0 - if so, use the cheaper computations in updateCoeffs
 
@@ -88,7 +86,7 @@ protected:
   TPar decay = TPar(0.1);   // normalized decay == timeConstant * sampleRate ...rename to numSamplesToReachHalf
   int  order = 1;           // number of lowpass stages, now redundant with y1.size()
 
-  int shape = 0;       // remove
+  //int shape = 0;       // remove
   TPar shapeParam = 0; // rename to asymmetry
 
   // maybe we should instead of "decay" maintain "sampleRate" and "timeConstant" variables and 
@@ -97,7 +95,7 @@ protected:
 
 
   // variables for the table of the time-constant scalers:
-  static const int  maxOrder = 8;
+  static const int  maxOrder = 16;
   static const int  numAsyms = 8;
   static const TPar maxAsym;
   static bool tableIsFilled;

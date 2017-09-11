@@ -19,12 +19,12 @@ rsSmoothingFilter<TSig, TPar>::rsSmoothingFilter()
   reset();
 }
 
-//template<class TSig, class TPar>
-//void rsSmoothingFilter<TSig, TPar>::setTimeConstantAndSampleRate(TPar timeConstant, TPar sampleRate)
-//{
-//  decay = sampleRate * timeConstant;
-//  updateCoeffs();
-//}
+template<class TSig, class TPar>
+void rsSmoothingFilter<TSig, TPar>::setTimeConstantAndSampleRate(TPar timeConstant, TPar sampleRate)
+{
+  decay = sampleRate * timeConstant * TPar(LN2_INV);
+  updateCoeffs();
+}
 
 template<class TSig, class TPar>
 void rsSmoothingFilter<TSig, TPar>::setOrder(int newOrder)
@@ -44,16 +44,16 @@ void rsSmoothingFilter<TSig, TPar>::setOrder(int newOrder)
 template<class TSig, class TPar>
 void rsSmoothingFilter<TSig, TPar>::setNumSamplesToReachHalf(TPar numSamples)
 {
-  decay = numSamples;
+  decay = numSamples * TPar(LN2_INV);
   updateCoeffs();
 }
 
-template<class TSig, class TPar>
-void rsSmoothingFilter<TSig, TPar>::setShape(int newShape)
-{
-  shape = newShape;
-  updateCoeffs();
-}
+//template<class TSig, class TPar>
+//void rsSmoothingFilter<TSig, TPar>::setShape(int newShape)
+//{
+//  shape = newShape;
+//  updateCoeffs();
+//}
 
 template<class TSig, class TPar>
 void rsSmoothingFilter<TSig, TPar>::setShapeParameter(TPar newParam)
@@ -72,6 +72,8 @@ void rsSmoothingFilter<TSig, TPar>::reset()
 template<class TSig, class TPar>
 void rsSmoothingFilter<TSig, TPar>::updateCoeffs()
 {
+  /*
+  // under construction - this doesn't work yet:
   TPar tmp, scaler;
   for(int i = 0; i < order; i++)
   {
@@ -86,46 +88,40 @@ void rsSmoothingFilter<TSig, TPar>::updateCoeffs()
 
     //coeffs[i] = exp(-1/tmp); 
   }
-  // maybe try, if it responds different to modulations of the time-constants are in reverse
-  // order (from short to long instead of long to short)
+   maybe try, if it responds different to modulations of the time-constants are in reverse
+   order (from short to long instead of long to short)
 
-  // if shapeParam == 0, we may use an optimized loop (we don't need to compute different coeffs - 
-  // compute one and fill the whole coeffs array with it
+   if shapeParam == 0, we may use an optimized loop (we don't need to compute different coeffs - 
+   compute one and fill the whole coeffs array with it
+   */
 
-
-  //if(shape == FAST_ATTACK)
-  //{
-  //  for(int i = 0; i < order; i++)
-  //  {
-  //    tmp  = decay / (TPar) pow(i+1, shapeParam); // scaled decay time-constant
-  //    //if(i > 0)
-  //    //  tmp *= (shapeParam+1);
-  //    coeffs[i] = exp(-order/tmp);      // tau[n] = tau[0] / n^p // p == shapeParam
-  //  }
-  //  // maybe try, if it responds different to modulations of the time-constants are in reverse
-  //  // order (from short to long instead of long to short)
-  //}
-  //else
-  //{
-  //  // all filter stages use the same time-constant
-  //  tmp = exp(-order/decay); // amounts to divide the time-constant by the order
-  //  for(int i = 0; i < order; i++)
-  //    coeffs[i] = tmp;
-  //}
-
-  //// test:
-  //TPar scaler = 1;
-  //if(order > 1)
-  //  scaler = 1.0 / (order-1);
-  //TPar scaledDecay = scaler * decay;
-  //coeff = exp(-1/scaledDecay);
-
-  //coeff = exp(-1/decay); // no scaling for test purposes
+  TPar tmp;
+  if(shapeParam != 0)
+  {
+    for(int i = 0; i < order; i++)
+    {
+      tmp  = decay / (TPar) pow(i+1, shapeParam);  // tau[n] = tau[0] / n^p // p == shapeParam
+      //if(i > 0)
+      //  tmp *= (shapeParam+1);
+      coeffs[i] = exp(-order/tmp); 
+    }
+    // maybe try, if it responds different to modulations of the time-constants are in reverse
+    // order (from short to long instead of long to short)
+  }
+  else
+  {
+    // all filter stages use the same time-constant
+    tmp = exp(-order/decay); // amounts to divide the time-constant by the order
+    for(int i = 0; i < order; i++)
+      coeffs[i] = tmp;
+  }
 }
 
 template<class TSig, class TPar>
 void rsSmoothingFilter<TSig, TPar>::createTauScalerTable()
 {
+  return; // temporarily deactivated - doesn't work yet
+
   y1.resize(maxOrder);
   coeffs.resize(maxOrder);
   reset();
@@ -137,7 +133,7 @@ void rsSmoothingFilter<TSig, TPar>::createTauScalerTable()
   // combination of order/asymmetry.
   tauScalers.setAllValues(1);
 
-  int numIterations = 14;
+  int numIterations = 3;
   for(int k = 1; k <= numIterations; k++) // test - maybe we need to iterate a few times to converge
   {                                       // yes! that helps a lot - todo: use a convergence criterion
 

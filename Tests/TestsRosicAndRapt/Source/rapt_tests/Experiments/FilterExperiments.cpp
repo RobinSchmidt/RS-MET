@@ -284,19 +284,19 @@ void smoothingFilter()
 {
   // We plot the step responses of the rsSmoothingFilter for various orders.
 
-  static const int numOrders = 4;   // number of filters with different orders
+  static const int numOrders = 8;   // number of filters with different orders
   bool expSpacing = false;          // if true, orders are 1,2,4,8,.. else 1,2,3,4,..
-  int orderIncrement = 1;           // or 1,3,5,.. or 1,4,7,...
-  static const int N = 200;         // number of samples
+  int orderIncrement = 2;           // or 1,3,5,.. or 1,4,7,...
+  static const int N = 300;         // number of samples
   float fs  = 1.0f;                  // sample rate
   float tau = 100.0f;                  // time constant
 
   // create and set up the smoother:
-  rsSmoothingFilterFF smoother;
-  //rsSmoothingFilterDD smoother;
-  //smoother.setTimeConstantAndSampleRate(tau, fs);
+  //rsSmoothingFilterFF smoother;
+  rsSmoothingFilterDD smoother;
+  smoother.setTimeConstantAndSampleRate(tau, fs);
   smoother.setNumSamplesToReachHalf(tau*fs);
-  smoother.setShape(rsSmoothingFilterFF::FAST_ATTACK);
+  //smoother.setShape(rsSmoothingFilterFF::FAST_ATTACK);
   smoother.setShapeParameter(0.5f);
 
   // compute step responses:
