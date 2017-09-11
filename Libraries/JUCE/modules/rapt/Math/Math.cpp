@@ -3,6 +3,8 @@
 namespace RAPT
 {
 
+#include "Types/Matrix.cpp"
+
 #include "Functions/BasicFunctions.cpp"
 #include "Functions/BellFunctions.cpp"
 #include "Functions/Sigmoids.cpp"

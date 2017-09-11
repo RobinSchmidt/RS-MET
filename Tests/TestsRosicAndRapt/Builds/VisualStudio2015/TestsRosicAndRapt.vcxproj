@@ -171,6 +171,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Basic\OnePoleFilter.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Basic\SmoothingFilter - Copy.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Basic\SmoothingFilter.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -216,6 +219,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\Statistics.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Types\Matrix.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Math.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -232,9 +238,6 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Math.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Matrix.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Polynomial.cpp">
@@ -1521,6 +1524,7 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Data\Data.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Data\MatrixTools.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Basic\OnePoleFilter.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Basic\SmoothingFilter - Copy.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Basic\SmoothingFilter.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Musical\LadderFilter.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Musical\PhasorFilter.h"/>
@@ -1537,13 +1541,13 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Geometry\Ellipse.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Geometry\Line2D.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\Statistics.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Types\Matrix.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Math.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Modulators\Envelopes\BreakpointModulator.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Modulators\Modulators.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Analysis.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\ArrayFunctions.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Math.h"/>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Matrix.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Polynomial.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Vector.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Graphics\AlphaMask.h"/>

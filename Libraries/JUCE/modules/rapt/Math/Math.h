@@ -6,6 +6,8 @@ namespace RAPT
   
 // make a nested namespace Math
 
+#include "Types/Matrix.h"
+
 #include "Functions/BasicFunctions.h"
 #include "Functions/BellFunctions.h"
 #include "Functions/FunctionObjects.h"

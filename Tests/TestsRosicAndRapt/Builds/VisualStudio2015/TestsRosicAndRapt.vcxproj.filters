@@ -77,6 +77,9 @@
     <Filter Include="Juce Modules\rapt\Math\Misc">
       <UniqueIdentifier>{DEEB57E5-E46E-1D4B-3CE9-8685142BFFC9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Juce Modules\rapt\Math\Types">
+      <UniqueIdentifier>{B938E14E-1310-4394-37B8-FFACEF07E0CB}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Juce Modules\rapt\Modulators">
       <UniqueIdentifier>{D353E128-7658-EE9C-03D4-8FA6D6884FAC}</UniqueIdentifier>
     </Filter>
@@ -313,6 +316,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Basic\OnePoleFilter.cpp">
       <Filter>Juce Modules\rapt\Filters\Basic</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Basic\SmoothingFilter - Copy.cpp">
+      <Filter>Juce Modules\rapt\Filters\Basic</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Basic\SmoothingFilter.cpp">
       <Filter>Juce Modules\rapt\Filters\Basic</Filter>
     </ClCompile>
@@ -358,6 +364,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\Statistics.cpp">
       <Filter>Juce Modules\rapt\Math\Misc</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Types\Matrix.cpp">
+      <Filter>Juce Modules\rapt\Math\Types</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Math.cpp">
       <Filter>Juce Modules\rapt\Math</Filter>
     </ClCompile>
@@ -374,9 +383,6 @@
       <Filter>Juce Modules\rapt\Temp</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Math.cpp">
-      <Filter>Juce Modules\rapt\Temp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Matrix.cpp">
       <Filter>Juce Modules\rapt\Temp</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Polynomial.cpp">
@@ -1746,6 +1752,9 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Basic\OnePoleFilter.h">
       <Filter>Juce Modules\rapt\Filters\Basic</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Basic\SmoothingFilter - Copy.h">
+      <Filter>Juce Modules\rapt\Filters\Basic</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Basic\SmoothingFilter.h">
       <Filter>Juce Modules\rapt\Filters\Basic</Filter>
     </ClInclude>
@@ -1794,6 +1803,9 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\Statistics.h">
       <Filter>Juce Modules\rapt\Math\Misc</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Types\Matrix.h">
+      <Filter>Juce Modules\rapt\Math\Types</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Math.h">
       <Filter>Juce Modules\rapt\Math</Filter>
     </ClInclude>
@@ -1810,9 +1822,6 @@
       <Filter>Juce Modules\rapt\Temp</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Math.h">
-      <Filter>Juce Modules\rapt\Temp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Matrix.h">
       <Filter>Juce Modules\rapt\Temp</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Polynomial.h">
