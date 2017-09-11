@@ -15,6 +15,17 @@ class rsMatrixView
 public:
 
 
+
+  /** \name Setup */
+
+  inline void setAllValues(T value)
+  {
+    ArrayTools::rsFillWithValue(d, int(N*M), value);
+  }
+
+  // void setToIdentityMatrix(T scaler = 1);
+
+
   /** \name Operators */
 
   /** Read and write access to matrix elements. */

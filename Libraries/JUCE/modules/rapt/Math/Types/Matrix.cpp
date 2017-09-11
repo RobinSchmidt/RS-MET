@@ -12,3 +12,5 @@ void rsMatrix<T>::setSize(size_t numRows, size_t numColumns)
   data.resize(N*M);
   d = &data[0];
 }
+
+// rsFillWithValue

@@ -104,6 +104,7 @@ void rsSmoothingFilter<TSig, TPar>::createTauScalerTable()
   coeffs.resize(maxOrder);
   reset();
   tauScalers.setSize(maxOrder, numAsyms);
+  tauScalers.setAllValues(1);
 
   // something to do...
 
