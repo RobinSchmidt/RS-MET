@@ -287,17 +287,17 @@ void smoothingFilter()
   static const int numOrders = 4;   // number of filters with different orders
   bool expSpacing = false;          // if true, orders are 1,2,4,8,.. else 1,2,3,4,..
   int orderIncrement = 1;           // or 1,3,5,.. or 1,4,7,...
-  static const int N = 500;         // number of samples
+  static const int N = 200;         // number of samples
   float fs  = 1.0f;                  // sample rate
-  float tau = 200.0f;                  // time constant
+  float tau = 100.0f;                  // time constant
 
   // create and set up the smoother:
-  //rsSmoothingFilterFF smoother;
-  rsSmoothingFilterDD smoother;
+  rsSmoothingFilterFF smoother;
+  //rsSmoothingFilterDD smoother;
   //smoother.setTimeConstantAndSampleRate(tau, fs);
   smoother.setNumSamplesToReachHalf(tau*fs);
   smoother.setShape(rsSmoothingFilterFF::FAST_ATTACK);
-  smoother.setShapeParameter(0.0f);
+  smoother.setShapeParameter(0.5f);
 
   // compute step responses:
   int order = 1;

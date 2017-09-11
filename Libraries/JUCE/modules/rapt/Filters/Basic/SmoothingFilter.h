@@ -98,7 +98,7 @@ protected:
 
   // variables for the table of the time-constant scalers:
   static const int  maxOrder = 8;
-  static const int  numAsyms = 2;
+  static const int  numAsyms = 8;
   static const TPar maxAsym;
   static bool tableIsFilled;
   static rsMatrix<TPar> tauScalers; // 2D table

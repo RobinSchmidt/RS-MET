@@ -75,11 +75,12 @@ void rsSmoothingFilter<TSig, TPar>::updateCoeffs()
   TPar tmp, scaler;
   for(int i = 0; i < order; i++)
   {
-    //tmp  = decay / (TPar) pow(i+1, shapeParam); // scaled decay time-constant      // tau[n] = tau[0] / n^p // p == shapeParam
-    //int asymIndex = (int)(shapeParam*(numAsyms-1)); // later: use interpolation
+    tmp  = decay / (TPar) pow(i+1, shapeParam); // scaled decay time-constant      // tau[n] = tau[0] / n^p // p == shapeParam
+    int asymIndex = (int)(shapeParam*(numAsyms-1)); // later: use interpolation
 
-    tmp  = decay;      // for test
-    int asymIndex = 0; // test
+    //tmp  = decay;      // for test
+    //int asymIndex = 0; // test
+
     scaler = tauScalers(order-1, asymIndex);  
     coeffs[i] = exp(-1/(scaler*tmp));      
 
@@ -134,44 +135,51 @@ void rsSmoothingFilter<TSig, TPar>::createTauScalerTable()
   // tentative filter with some desired time to reach 1/2, then measure, how long it actually takes
   // to reach one half and use the ratio of the requested vs the actual time as scaler for that
   // combination of order/asymmetry.
-  //tauScalers.setAllValues(1);
-  for(int i = 0; i < maxOrder; i++)
-  {
-    order = i+1;
-    for(int j = 0; j < numAsyms; j++)
+  tauScalers.setAllValues(1);
+
+  int numIterations = 14;
+  for(int k = 1; k <= numIterations; k++) // test - maybe we need to iterate a few times to converge
+  {                                       // yes! that helps a lot - todo: use a convergence criterion
+
+    for(int i = 0; i < maxOrder; i++)
     {
-      // init scaler to 1 and set up a desired number of samples and asymmetry:
-      tauScalers(i, j) = 1;
-      TPar asym  = TPar(j) / TPar(numAsyms-1);
-      shapeParam = asym;
-      TPar desiredNumSamples = 20000.0;
-      setNumSamplesToReachHalf(desiredNumSamples);
-
-      // now measure, how many samples it actually takes:
-      reset();
-      TPar actualNumSamples;
-      TSig yNow, yOld = 0;
-      for(int n = 0; true; n++)
+      order = i+1;
+      for(int j = 0; j < numAsyms; j++)
       {
-        yNow = getSample(1);
-        if(yNow > TSig(0.5))
+        // init scaler to 1 and set up a desired number of samples and asymmetry:
+        //tauScalers(i, j) = 1;
+        TPar asym  = TPar(j) / TPar(numAsyms-1);
+        shapeParam = asym;
+        TPar desiredNumSamples = 100.0;
+        setNumSamplesToReachHalf(desiredNumSamples);
+
+        // now measure, how many samples it actually takes:
+        reset();
+        TPar actualNumSamples;
+        TSig yNow, yOld = 0;
+        for(int n = 0; true; n++)
         {
-          //actualNumSamples = TPar(n); 
-          actualNumSamples = TPar(n-1); 
+          yNow = getSample(1);
+          if(yNow > TSig(0.5))
+          {
+            //actualNumSamples = TPar(n); 
+            actualNumSamples = TPar(n-1);
 
-          // refine by computing a fractional part by fitting a line and solving for the 0:
-          TPar d0 = yOld - TPar(0.5);
-          TPar d1 = yNow - TPar(0.5);
-          TPar frac = d0 / (d0-d1);
-          actualNumSamples += frac;
+            // refine by computing a fractional part by fitting a line and solving for the 0:
+            TPar d0 = yOld - TPar(0.5);
+            TPar d1 = yNow - TPar(0.5);
+            TPar frac = d0 / (d0-d1);
+            actualNumSamples += frac;
 
-          break;
+            break;
+          }
+          yOld = yNow;
         }
-        yOld = yNow;
+        TPar dbg = desiredNumSamples / actualNumSamples;
+        tauScalers(i, j) *= desiredNumSamples / actualNumSamples;
       }
-      TPar dbg = desiredNumSamples / actualNumSamples;
-      tauScalers(i, j) = desiredNumSamples / actualNumSamples;
     }
+
   }
 
   y1.resize(maxOrder);
