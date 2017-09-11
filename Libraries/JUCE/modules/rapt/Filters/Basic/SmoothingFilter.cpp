@@ -42,6 +42,13 @@ void rsSmoothingFilter<TSig, TPar>::setOrder(int newOrder)
 }
 
 template<class TSig, class TPar>
+void rsSmoothingFilter<TSig, TPar>::setNumSamplesToReachHalf(TPar numSamples)
+{
+  decay = numSamples;
+  updateCoeffs();
+}
+
+template<class TSig, class TPar>
 void rsSmoothingFilter<TSig, TPar>::setShape(int newShape)
 {
   shape = newShape;
@@ -65,27 +72,42 @@ void rsSmoothingFilter<TSig, TPar>::reset()
 template<class TSig, class TPar>
 void rsSmoothingFilter<TSig, TPar>::updateCoeffs()
 {
-  TPar tmp;
+  TPar tmp, scaler;
+  for(int i = 0; i < order; i++)
+  {
+    tmp  = decay / (TPar) pow(i+1, shapeParam); // scaled decay time-constant
+    //tmp  = decay;                               // for test
+    int asymIndex = (int)(shapeParam*(numAsyms-1)); // later: use interpolation
+    scaler = tauScalers(order-1, asymIndex);        // tau[n] = tau[0] / n^p // p == shapeParam
+    //coeffs[i] = exp(-1/tmp); 
+    coeffs[i] = exp(-1/(scaler*tmp));      
+  }
+  // maybe try, if it responds different to modulations of the time-constants are in reverse
+  // order (from short to long instead of long to short)
 
-  if(shape == FAST_ATTACK)
-  {
-    for(int i = 0; i < order; i++)
-    {
-      tmp  = decay / (TPar) pow(i+1, shapeParam); // scaled decay time-constant
-      //if(i > 0)
-      //  tmp *= (shapeParam+1);
-      coeffs[i] = exp(-order/tmp);      // tau[n] = tau[0] / n^p // p == shapeParam
-    }
-    // maybe try, if it responds different to modulations of the time-constants are in reverse
-    // order (from short to long instead of long to short)
-  }
-  else
-  {
-    // all filter stages use the same time-constant
-    tmp = exp(-order/decay); // amounts to divide the time-constant by the order
-    for(int i = 0; i < order; i++)
-      coeffs[i] = tmp;
-  }
+  // if shapeParam == 0, we may use an optimized loop (we don't need to compute different coeffs - 
+  // compute one and fill the whole coeffs array with it
+
+
+  //if(shape == FAST_ATTACK)
+  //{
+  //  for(int i = 0; i < order; i++)
+  //  {
+  //    tmp  = decay / (TPar) pow(i+1, shapeParam); // scaled decay time-constant
+  //    //if(i > 0)
+  //    //  tmp *= (shapeParam+1);
+  //    coeffs[i] = exp(-order/tmp);      // tau[n] = tau[0] / n^p // p == shapeParam
+  //  }
+  //  // maybe try, if it responds different to modulations of the time-constants are in reverse
+  //  // order (from short to long instead of long to short)
+  //}
+  //else
+  //{
+  //  // all filter stages use the same time-constant
+  //  tmp = exp(-order/decay); // amounts to divide the time-constant by the order
+  //  for(int i = 0; i < order; i++)
+  //    coeffs[i] = tmp;
+  //}
 
   //// test:
   //TPar scaler = 1;
@@ -104,9 +126,41 @@ void rsSmoothingFilter<TSig, TPar>::createTauScalerTable()
   coeffs.resize(maxOrder);
   reset();
   tauScalers.setSize(maxOrder, numAsyms);
-  tauScalers.setAllValues(1);
 
-  // something to do...
+  // We initialize all scalers to one, then for each order and asymmetry value, we set up a 
+  // tentative filter with some desired time to reach 1/2, then measure, how long it actually takes
+  // to reach one half and use the ratio of the requested vs the actual time as scaler for that
+  // combination of order/asymmetry.
+  tauScalers.setAllValues(1);
+  for(int i = 0; i < maxOrder; i++)
+  {
+    order = i+1;
+    for(int j = 0; j < numAsyms; j++)
+    {
+      // init scaler to 1 and set up a desired number of samples and asymmetry:
+      tauScalers(i, j) = 1;
+      TPar asym  = TPar(j) / TPar(numAsyms-1);
+      shapeParam = asym;
+      TPar desiredNumSamples = 100.0;
+      setNumSamplesToReachHalf(desiredNumSamples);
+
+      // now measure, how many samples it actually takes:
+      reset();
+      TPar actualNumSamples;
+      TSig yNow, yOld = 0;
+      for(int n = 0; true; n++)
+      {
+        yNow = getSample(1);
+        if(yNow >= TSig(0.5))
+        {
+          actualNumSamples = TPar(n); // todo: refine by computing a fractional part
+          break;
+        }
+        yOld = yNow;
+      }
+      tauScalers(i, j) = desiredNumSamples / actualNumSamples;
+    }
+  }
 
   y1.resize(maxOrder);
   coeffs.resize(maxOrder);

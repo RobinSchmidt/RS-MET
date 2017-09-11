@@ -40,6 +40,12 @@ public:
   // setTimeToReachHalf, setNumSamplesToReachHalf...or something, maybe setHalfLifeTime
   // https://en.wikipedia.org/wiki/Exponential_decay#Half-life
 
+
+  /** Sets up the number of samples that it takes for the unit-step response to reach a value
+  of 1/2. */
+  void setNumSamplesToReachHalf(TPar numSamples);
+
+
   /** Sets the order of the filter, i.e. the number of first order lowpass stages. */
   void setOrder(int newOrder);
 
@@ -79,7 +85,7 @@ protected:
 
   std::vector<TSig> y1;     // y[n-1] of the lowpass stages
   std::vector<TPar> coeffs; // lowpass filter coefficients
-  TPar decay = TPar(0.1);   // normalized decay == timeConstant * sampleRate
+  TPar decay = TPar(0.1);   // normalized decay == timeConstant * sampleRate ...rename to numSamplesToReachHalf
   int  order = 1;           // number of lowpass stages, now redundant with y1.size()
 
   int shape = 0;       // remove
@@ -91,8 +97,8 @@ protected:
 
 
   // variables for the table of the time-constant scalers:
-  static const int  maxOrder = 16;
-  static const int  numAsyms = 32;
+  static const int  maxOrder = 8;
+  static const int  numAsyms = 8;
   static const TPar maxAsym;
   static bool tableIsFilled;
   static rsMatrix<TPar> tauScalers; // 2D table
