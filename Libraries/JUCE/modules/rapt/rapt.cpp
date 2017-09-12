@@ -64,8 +64,8 @@ template double RAPT::rsAbs(double x);
 template class RAPT::rsBreakpointModulator<double>;
 template class RAPT::rsSmoothingFilter<double, double>;
 template class RAPT::LadderFilter<double, double>;
-template class RAPT::PhasorFilter<double, double>;
-template class RAPT::PhasorStateMapper<double>;
+template class RAPT::rsPhasorFilter<double, double>;
+template class RAPT::rsPhasorStateMapper<double>;
 // todo: get rid of directly using rapt classes in jura and/or products - create instantiations for
 // double in rosic and use these instantiations only
 

@@ -1,5 +1,5 @@
 template<class TSig, class TPar>
-PhasorFilter<TSig, TPar>::PhasorFilter()
+rsPhasorFilter<TSig, TPar>::rsPhasorFilter()
 {
   mapper     = nullptr;
   sampleRate = 44100;
@@ -12,28 +12,28 @@ PhasorFilter<TSig, TPar>::PhasorFilter()
 // setup:
 
 template<class TSig, class TPar>
-void PhasorFilter<TSig, TPar>::setSampleRate(TPar newSampleRate)
+void rsPhasorFilter<TSig, TPar>::setSampleRate(TPar newSampleRate)
 {
   sampleRate = newSampleRate;
   updateCoefficients();
 }
 
 template<class TSig, class TPar>
-void PhasorFilter<TSig, TPar>::setFrequency(TPar newFrequency)
+void rsPhasorFilter<TSig, TPar>::setFrequency(TPar newFrequency)
 {
   frequency = newFrequency;
   updateCoefficients();
 }
 
 template<class TSig, class TPar>
-void PhasorFilter<TSig, TPar>::setDecayTime(TPar newDecay)
+void rsPhasorFilter<TSig, TPar>::setDecayTime(TPar newDecay)
 {
   decay = newDecay;
   updateCoefficients();
 }
 
 template<class TSig, class TPar>
-void PhasorFilter<TSig, TPar>::setStateMapper(rsMapper2D<TSig> *newMapper)
+void rsPhasorFilter<TSig, TPar>::setStateMapper(rsMapper2D<TSig> *newMapper)
 {
   mapper = newMapper;
 }
@@ -41,7 +41,7 @@ void PhasorFilter<TSig, TPar>::setStateMapper(rsMapper2D<TSig> *newMapper)
 // audio processing:
 
 template<class TSig, class TPar>
-inline void PhasorFilter<TSig, TPar>::processFrame(TSig *x, TSig *y)
+inline void rsPhasorFilter<TSig, TPar>::processFrame(TSig *x, TSig *y)
 {
   *x  += Axx * xOld  +  Axy * yOld;
   *y  += Ayx * xOld  +  Ayy * yOld;
@@ -58,7 +58,7 @@ inline void PhasorFilter<TSig, TPar>::processFrame(TSig *x, TSig *y)
 }
 
 template<class TSig, class TPar>
-inline TSig PhasorFilter<TSig, TPar>::getSample(TSig in)
+inline TSig rsPhasorFilter<TSig, TPar>::getSample(TSig in)
 {
   TSig x = in;
   //TSig x = 2 * (frequency/sampleRate) * in; // test
@@ -72,13 +72,13 @@ inline TSig PhasorFilter<TSig, TPar>::getSample(TSig in)
 // misc:
 
 template<class TSig, class TPar>
-void PhasorFilter<TSig, TPar>::reset()
+void rsPhasorFilter<TSig, TPar>::reset()
 {
   xOld = yOld = 0;
 }
 
 template<class TSig, class TPar>
-void PhasorFilter<TSig, TPar>::updateCoefficients()
+void rsPhasorFilter<TSig, TPar>::updateCoefficients()
 {
   TPar w = 2 * TPar(PI) * frequency / sampleRate;  // pole angle
   TPar r = exp(-1 / (decay*sampleRate));           // pole radius
@@ -105,7 +105,7 @@ void PhasorFilter<TSig, TPar>::updateCoefficients()
 //=================================================================================================
 
 template<class T>
-PhasorStateMapper<T>::PhasorStateMapper()
+rsPhasorStateMapper<T>::rsPhasorStateMapper()
 {
   same    = 0;   // coeff for same^2
   other   = 0;   // coeff for other^2
@@ -117,49 +117,49 @@ PhasorStateMapper<T>::PhasorStateMapper()
 }
 
 template<class T>
-void PhasorStateMapper<T>::setInputSaturation(T c)
+void rsPhasorStateMapper<T>::setInputSaturation(T c)
 {
   satIn = T(0.25)*c*c;
 }
 
 template<class T>
-void PhasorStateMapper<T>::setSameSquare(T newCoeff)
+void rsPhasorStateMapper<T>::setSameSquare(T newCoeff)
 {
   same = newCoeff;
 }
 
 template<class T>
-void PhasorStateMapper<T>::setOtherSquare(T newCoeff)
+void rsPhasorStateMapper<T>::setOtherSquare(T newCoeff)
 {
   other = newCoeff;
 }
 
 template<class T>
-void PhasorStateMapper<T>::setCrossProduct(T newCoeff)
+void rsPhasorStateMapper<T>::setCrossProduct(T newCoeff)
 {
   cross = newCoeff;
 }
 
 template<class T>
-void PhasorStateMapper<T>::setOffset(T newCoeff)
+void rsPhasorStateMapper<T>::setOffset(T newCoeff)
 {
   offset = newCoeff;
 }
 
 template<class T>
-void PhasorStateMapper<T>::setPreNormalizeSaturation(T c)
+void rsPhasorStateMapper<T>::setPreNormalizeSaturation(T c)
 {
   satPre = T(0.25)*c*c;
 }
 
 template<class T>
-void PhasorStateMapper<T>::setPostNormalizeSaturation(T c)
+void rsPhasorStateMapper<T>::setPostNormalizeSaturation(T c)
 {
   satPost = T(0.25)*c*c;
 }
 
 template<class T>
-void PhasorStateMapper<T>::map(T *xInOut, T *yInOut)
+void rsPhasorStateMapper<T>::map(T *xInOut, T *yInOut)
 {
   T x = *xInOut;
   T y = *yInOut;

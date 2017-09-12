@@ -7,7 +7,7 @@ This class is just a stub - it's still under construction..
 */
 
 template<class TSig, class TPar> // signal, parameter types
-class PhasorFilter
+class rsPhasorFilter
 {
 
 public:
@@ -15,7 +15,7 @@ public:
   /** \name Construction/Destruction */
 
   /** Constructor. */
-  PhasorFilter();
+  rsPhasorFilter();
 
 
   /** \name Setup */
@@ -85,12 +85,12 @@ function of the old phase and the magnitude.
 */
 
 template<class T>
-class PhasorStateMapper : public rsMapper2D<T>
+class rsPhasorStateMapper : public rsMapper2D<T>
 {
 
 public:
 
-  PhasorStateMapper();
+  rsPhasorStateMapper();
 
 
   /** \name Setup */
