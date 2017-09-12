@@ -9,6 +9,7 @@
 //  //#define RS_INLINE __attribute__((always_inline))
 //  #define ASM(x) asm("x");
 //#endif
+#define RS_INLINE inline
 
 #if defined(DEBUG) || defined(_DEBUG)
   #ifdef _MSC_VER
