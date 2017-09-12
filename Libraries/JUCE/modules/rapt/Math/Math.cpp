@@ -4,7 +4,7 @@ namespace RAPT
 {
 
 #include "Types/Matrix.cpp"
-//#include "Types/Polynomial.cpp"
+#include "Types/Polynomial.cpp"
 
 #include "Functions/BasicFunctions.cpp"
 #include "Functions/BellFunctions.cpp"

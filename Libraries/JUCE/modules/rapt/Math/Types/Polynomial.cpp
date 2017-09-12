@@ -3,7 +3,7 @@
 // template function definitions - move to .cpp-file:
 
 template <class T>
-T evaluatePolynomialAt(T x, T *a, int order)
+T rsPolynomial<T>::evaluatePolynomialAt(T x, T *a, int order)
 {
   if(order < 0)
     return T(0);
@@ -14,7 +14,7 @@ T evaluatePolynomialAt(T x, T *a, int order)
 }
 
 template <class T>
-void evaluatePolynomialAndDerivativeAt(T x, T *a, int order, T *y, T *yd)
+void rsPolynomial<T>::evaluatePolynomialAndDerivativeAt(T x, T *a, int order, T *y, T *yd)
 {
   *y  = a[order];
   *yd = 0.0;
@@ -26,7 +26,8 @@ void evaluatePolynomialAndDerivativeAt(T x, T *a, int order, T *y, T *yd)
 }
 
 template <class T>
-void evaluatePolynomialAndDerivativesAt(T x, T *a, int order, T *results, int numDerivatives)
+void rsPolynomial<T>::evaluatePolynomialAndDerivativesAt(T x, T *a, int order, T *results, 
+  int numDerivatives)
 {
   results[0] = a[order];
   rsFillWithZeros(&results[1], numDerivatives);
@@ -41,13 +42,13 @@ void evaluatePolynomialAndDerivativesAt(T x, T *a, int order, T *results, int nu
 }
 
 template <class T>
-void multiplyPolynomials(T *a, int aOrder, T *b, int bOrder, T *result)
+void rsPolynomial<T>::multiplyPolynomials(T *a, int aOrder, T *b, int bOrder, T *result)
 {
   rsConvolve(a, aOrder+1, b, bOrder+1, result);
 }
 
 template <class T>
-void dividePolynomials(T *p, int pOrder, T *d, int dOrder, T *q, T *r)
+void rsPolynomial<T>::dividePolynomials(T *p, int pOrder, T *d, int dOrder, T *q, T *r)
 {
   rsCopyBuffer(p, r, pOrder+1); // init remainder with p
   rsFillWithZeros(q, pOrder+1); // init quotient with zeros
@@ -61,8 +62,8 @@ void dividePolynomials(T *p, int pOrder, T *d, int dOrder, T *q, T *r)
 }
 
 template <class T>
-void dividePolynomialByMonomialInPlace(T *dividendAndResult, int dividendOrder, T x0,
-  T *remainder)
+void rsPolynomial<T>::dividePolynomialByMonomialInPlace(T *dividendAndResult, int dividendOrder, 
+  T x0, T *remainder)
 {
   *remainder = dividendAndResult[dividendOrder];
   dividendAndResult[dividendOrder] = T(0);
@@ -74,10 +75,8 @@ void dividePolynomialByMonomialInPlace(T *dividendAndResult, int dividendOrder, 
   }
 }
 
-
-
 template <class T>
-void polyCoeffsForNegativeArgument(T *a, T *am, int N)
+void rsPolynomial<T>::polyCoeffsForNegativeArgument(T *a, T *am, int N)
 {
   double s = 1.0;
   for(int n = 0; n <= N; n++)
@@ -91,7 +90,7 @@ void polyCoeffsForNegativeArgument(T *a, T *am, int N)
 // it reduces to polyCoeffsForNegativeArgument - this function is superfluous then
 
 template <class T>
-void polyCoeffsForShiftedArgument(T *a, T *as, int N, T x0)
+void rsPolynomial<T>::polyCoeffsForShiftedArgument(T *a, T *as, int N, T x0)
 {
   int numLines = N+1;
   int length   = (numLines*(numLines+1))/2;
@@ -112,14 +111,14 @@ void polyCoeffsForShiftedArgument(T *a, T *as, int N, T x0)
 }
 
 template <class T>
-void polyDerivative(T *a, T *ad, int N)
+void rsPolynomial<T>::polyDerivative(T *a, T *ad, int N)
 {
   for(int n = 1; n <= N; n++)
     ad[n-1] = n * a[n];
 }
 
 template <class T>
-void polyFiniteDifference(T *a, T *ad, int N, int direction, T h)
+void rsPolynomial<T>::polyFiniteDifference(T *a, T *ad, int N, int direction, T h)
 {
   // (possibly alternating) powers of the stepsize h:
   T *hk = new T[N+1];
@@ -149,7 +148,7 @@ void polyFiniteDifference(T *a, T *ad, int N, int direction, T h)
 }
 
 template <class T>
-void polyIntegral(T *a, T *ai, int N, T c)
+void rsPolynomial<T>::polyIntegral(T *a, T *ai, int N, T c)
 {
   for(int n = N+1; n >= 1; n--)
     ai[n] = a[n-1] / n;
@@ -157,7 +156,7 @@ void polyIntegral(T *a, T *ai, int N, T c)
 }
 
 template <class T>
-void createPolynomialPowers(T *a, int N, T **aPowers, int highestPower)
+void rsPolynomial<T>::createPolynomialPowers(T *a, int N, T **aPowers, int highestPower)
 {
   aPowers[0][0] = 1;
   if(highestPower < 1)
@@ -168,7 +167,7 @@ void createPolynomialPowers(T *a, int N, T **aPowers, int highestPower)
 }
 
 template <class T>
-void composePolynomials(T *a, int aN, T *b, int bN, T *c)
+void rsPolynomial<T>::composePolynomials(T *a, int aN, T *b, int bN, T *c)
 {
   int cN = aN*bN;
   T *an  = new T[cN+1];  // array for the successive powers of a[]
@@ -190,7 +189,7 @@ void composePolynomials(T *a, int aN, T *b, int bN, T *c)
 }
 
 template <class T>
-void rsPolynomialRecursion(T *a, T w0, int order, T *a1, T w1, T w1x, T *a2, T w2)
+void rsPolynomial<T>::rsPolynomialRecursion(T *a, T w0, int order, T *a1, T w1, T w1x, T *a2, T w2)
 {
   rsAssert(order >= 2);
   int n = order;
@@ -203,7 +202,7 @@ void rsPolynomialRecursion(T *a, T w0, int order, T *a1, T w1, T w1x, T *a2, T w
 }
 
 template<class T>
-void weightedSumOfPolynomials(T *p, int pN, T wp, T *q, int qN, T wq, T *r)
+void rsPolynomial<T>::weightedSumOfPolynomials(T *p, int pN, T wp, T *q, int qN, T wq, T *r)
 {
   int i;
   if(pN >= qN)
@@ -223,13 +222,14 @@ void weightedSumOfPolynomials(T *p, int pN, T wp, T *q, int qN, T wq, T *r)
 }
 
 template<class T>
-void subtractPolynomials(T *p, int pN, T *q, int qN, T *r)
+void rsPolynomial<T>::subtractPolynomials(T *p, int pN, T *q, int qN, T *r)
 {
   weightedSumOfPolynomials(p, pN, T(1), q, qN, T(-1), r);
 }
 
 template<class T>
-void integratePolynomialWithPolynomialLimits(T *p, int pN, T *a, int aN, T *b, int bN, T *q)
+void rsPolynomial<T>::integratePolynomialWithPolynomialLimits(T *p, int pN, T *a, int aN, T *b, 
+  int bN, T *q)
 {
   int PN = pN+1;
   int AN = aN*PN;
@@ -250,7 +250,7 @@ void integratePolynomialWithPolynomialLimits(T *p, int pN, T *a, int aN, T *b, i
 }
 
 template<class T>
-bool rsPolynomialBaseChange(T **Q, T *a, T **R, T *b, int order)
+bool rsPolynomial<T>::rsPolynomialBaseChange(T **Q, T *a, T **R, T *b, int order)
 {
   return rsChangeOfBasisRowWise(Q, R, a, b, order+1);
 }
@@ -258,11 +258,11 @@ bool rsPolynomialBaseChange(T **Q, T *a, T **R, T *b, int order)
 // end of being moved from .h file
 //-----------------------------------------------------------------------------------------------
 
-
-
-rsComplexDbl RSLib::evaluatePolynomialWithRoots(rsComplexDbl s, rsComplexDbl *r, int N)
+template<class T>
+std::complex<T> rsPolynomial<T>::evaluatePolynomialWithRoots(std::complex<T> s, 
+  std::complex<T> *r, int N)
 {
-  rsComplexDbl result = 1.0;
+  std::complex<T> result = 1.0;
   for(int i = 0; i < N; i++)
   {
     if( !r[i].isInfinite() )
@@ -271,13 +271,14 @@ rsComplexDbl RSLib::evaluatePolynomialWithRoots(rsComplexDbl s, rsComplexDbl *r,
   return result;
 }
 
-// used in convergeToRootViaLaguerre:
-double evaluatePolynomialWithTwoDerivativesAndError(rsComplexDbl *a, int order, rsComplexDbl z, 
-                                                    rsComplexDbl *P)
+// used in convergeToRootViaLaguerre - maybe turn into member function:
+template<class T>
+double evaluatePolynomialWithTwoDerivativesAndError(std::complex<T> *a, int order, 
+  std::complex<T> z, std::complex<T> *P)
 {
   P[0] = a[order];                // P(z)
-  P[1] = rsComplexDbl(0.0, 0.0);  // P'(z)
-  P[2] = rsComplexDbl(0.0, 0.0);  // P''(z)
+  P[1] = std::complex<T>(0.0, 0.0);  // P'(z)
+  P[2] = std::complex<T>(0.0, 0.0);  // P''(z)
   double err = P[0].getRadius();  // estimated roundoff error in evaluation of the polynomial
   double zA  = z.getRadius();     // absolute value of z
   for(int j = order-1; j >= 0; j--) 
@@ -291,8 +292,9 @@ double evaluatePolynomialWithTwoDerivativesAndError(rsComplexDbl *a, int order, 
   return err;
 }
 
-rsComplexDbl RSLib::convergeToRootViaLaguerre(rsComplexDbl *a, int order, 
-                                               rsComplexDbl initialGuess)
+template<class T>
+std::complex<T> rsPolynomial<T>::convergeToRootViaLaguerre(std::complex<T> *a, int order, 
+                                               std::complex<T> initialGuess)
 {
   const double eps = std::numeric_limits<double>::epsilon(); 
 
@@ -304,10 +306,10 @@ rsComplexDbl RSLib::convergeToRootViaLaguerre(rsComplexDbl *a, int order,
   // fractions for taking fractional update steps to break a limit cycles:
   static double fractions[numFractions+1] = {0.0, 0.5, 0.25, 0.75, 0.13, 0.38, 0.62, 0.88, 1.0}; 
        
-  rsComplexDbl r = initialGuess; // the current estimate for the root
+  std::complex<T> r = initialGuess; // the current estimate for the root
   for(int i = 1; i <= maxNumIterations; i++) 
   {
-    rsComplexDbl P[3];    // holds P, P', P'' 
+    std::complex<T> P[3];    // holds P, P', P'' 
     double  err = eps * evaluatePolynomialWithTwoDerivativesAndError(a, order, r, P);
 
     if( P[0].getRadius() <= err ) 
@@ -317,12 +319,12 @@ rsComplexDbl RSLib::convergeToRootViaLaguerre(rsComplexDbl *a, int order,
       // evaluatePolynomialAndDerivativesAt
 
     // Laguerre's formulas:
-    rsComplexDbl G  = P[1]/P[0];       // Eq. 9.5.6
-    rsComplexDbl H  = G*G - P[2]/P[0]; // Eq. 9.5.7
+    std::complex<T> G  = P[1]/P[0];       // Eq. 9.5.6
+    std::complex<T> H  = G*G - P[2]/P[0]; // Eq. 9.5.7
 
-    rsComplexDbl sq = rsSqrtC((order-1.0)*((double)order*H-G*G)); // square-root Eq. 9.5.11
-    rsComplexDbl Gp = G + sq;  // denominator in 9.5.11 with positive sign for square-root
-    rsComplexDbl Gm = G - sq;  // denominator in 9.5.11 with negative sign for square-root
+    std::complex<T> sq = rsSqrtC((order-1.0)*((double)order*H-G*G)); // square-root Eq. 9.5.11
+    std::complex<T> Gp = G + sq;  // denominator in 9.5.11 with positive sign for square-root
+    std::complex<T> Gm = G - sq;  // denominator in 9.5.11 with negative sign for square-root
 
     // choose Gp or Gm according to which has larger magnitude (page 372, bottom), re-use Gp for 
     // the result:
@@ -336,15 +338,15 @@ rsComplexDbl RSLib::convergeToRootViaLaguerre(rsComplexDbl *a, int order,
 
     // compute difference between old and new estimate for the root r (the 'a' variable in 
     // Eq. 9.5.8)
-    rsComplexDbl dr;                       
+    std::complex<T> dr;                       
     if( GpA > 0.0 ) 
-      dr = rsComplexDbl(order, 0.0) / Gp;  // Eq. 9.5.11
+      dr = std::complex<T>(order, 0.0) / Gp;  // Eq. 9.5.11
     else
-      dr = exp(log(1.0+r.getRadius())) * rsComplexDbl(cos((double)i), sin((double)i)); 
+      dr = exp(log(1.0+r.getRadius())) * std::complex<T>(cos((double)i), sin((double)i)); 
         // \todo use sinCos()
 
     // compute new estimate for the root:
-    rsComplexDbl rNew = r - dr;   
+    std::complex<T> rNew = r - dr;   
     if( r == rNew )
       return r;  // converged
 
@@ -361,20 +363,21 @@ rsComplexDbl RSLib::convergeToRootViaLaguerre(rsComplexDbl *a, int order,
   return 0.0;
 }
 
-void RSLib::findPolynomialRoots(rsComplexDbl *a, int order, rsComplexDbl *roots)
+template<class T>
+void rsPolynomial<T>::findPolynomialRoots(std::complex<T> *a, int order, std::complex<T> *roots)
 {
   const double eps = 2.0e-14; // for float, it was 2.0e-6 - use template numeric_limit<T>
 
   // allocate memory for the coefficients of the deflated polynomial and initialize it as 
   // non-deflated polynomial:
-  rsComplexDbl *ad = new rsComplexDbl[order+1];
+  std::complex<T> *ad = new std::complex<T>[order+1];
   rsCopyBuffer(a, ad, order+1);
 
   // loop over the roots:
   for(int j = order; j >= 1; j--) 
   {
     // find a root of the deflated polynomial using the Laguerre-algorithm with 0 as initial guess:
-    rsComplexDbl r = convergeToRootViaLaguerre(ad, j, rsComplexDbl(0.0, 0.0));    
+    std::complex<T> r = convergeToRootViaLaguerre(ad, j, std::complex<T>(0.0, 0.0));    
 
     // polish the root by using the Laguerre method with the undeflated polynomial and the 
     // non-polished root as initial guess: 
@@ -390,7 +393,7 @@ void RSLib::findPolynomialRoots(rsComplexDbl *a, int order, rsComplexDbl *roots)
 
     // deflate the deflated polynomial again by the monomial that corresponds to our most recently 
     // found root:
-    rsComplexDbl rem = ad[j];  // remainder - not used, needed for passing a dummy pointer
+    std::complex<T> rem = ad[j];  // remainder - not used, needed for passing a dummy pointer
     dividePolynomialByMonomialInPlace(ad, j, r, &rem);
   }
 
@@ -398,17 +401,20 @@ void RSLib::findPolynomialRoots(rsComplexDbl *a, int order, rsComplexDbl *roots)
   delete[] ad;
 }
 
-void RSLib::findPolynomialRoots(double *a, int order, rsComplexDbl *roots)
+template<class T>
+void rsPolynomial<T>::findPolynomialRoots(double *a, int order, std::complex<T> *roots)
 {
-  rsComplexDbl *ac = new rsComplexDbl[order+1];
+  std::complex<T> *ac = new std::complex<T>[order+1];
   rsConvertBuffer(a, ac, order+1);
   findPolynomialRoots(ac, order, roots);
   delete[] ac;
 }
 
-rsArray<rsComplexDbl> RSLib::getPolynomialCoefficientsFromRoots(rsArray<rsComplexDbl> roots)
+template<class T>
+std::vector<std::complex<T>> rsPolynomial<T>::getPolynomialCoefficientsFromRoots(
+  std::vector<std::complex<T>> roots)
 {
-  rsArray<rsComplexDbl> coeffs;
+  std::vector<std::complex<T>> coeffs;
 
   coeffs.ensureAllocatedSize(roots.getNumElements()+1);
   coeffs.appendElement(1.0);
@@ -418,7 +424,7 @@ rsArray<rsComplexDbl> RSLib::getPolynomialCoefficientsFromRoots(rsArray<rsComple
 
   for(int i=0; i<roots.getNumElements(); i++)
   {
-    rsComplexDbl z = roots[i];
+    std::complex<T> z = roots[i];
     coeffs.appendElement(coeffs[i]);
     for(int j=i; j>=1; j--)
       coeffs[j] = coeffs[j-1] - z * coeffs[j];
@@ -428,9 +434,10 @@ rsArray<rsComplexDbl> RSLib::getPolynomialCoefficientsFromRoots(rsArray<rsComple
   return coeffs;
 }
 
-void RSLib::rootsToCoeffs(rsComplexDbl *r, rsComplexDbl *a, int N)
+template<class T>
+void rsPolynomial<T>::rootsToCoeffs(std::complex<T> *r, std::complex<T> *a, int N)
 {
-  rsComplexDbl *rF = new rsComplexDbl[N]; // only the finite roots
+  std::complex<T> *rF = new std::complex<T>[N]; // only the finite roots
   int nF = rsCopyFiniteValues(r, rF, N);
   rsFillWithZeros(a, N+1);
   if( nF == 0 )
@@ -442,7 +449,7 @@ void RSLib::rootsToCoeffs(rsComplexDbl *r, rsComplexDbl *a, int N)
     for(int M = 2; M <= nF; M++)
     {
       a[M] = a[M-1];
-      rsComplexDbl rM = rF[M-1];
+      std::complex<T> rM = rF[M-1];
       for(int n = M-1; n >= 1; n--)
         a[n] = a[n-1] - rM*a[n];
       a[0] = -rM*a[0];
@@ -451,16 +458,18 @@ void RSLib::rootsToCoeffs(rsComplexDbl *r, rsComplexDbl *a, int N)
   delete[] rF;
 }
 
-void RSLib::rootsToCoeffs(rsComplexDbl *r, double *a, int N)
+template<class T>
+void rsPolynomial<T>::rootsToCoeffs(std::complex<T> *r, double *a, int N)
 {
-  rsComplexDbl *ac = new rsComplexDbl[N+1];
+  std::complex<T> *ac = new std::complex<T>[N+1];
   rootsToCoeffs(r, ac, N);
   for(int n = 0; n <= N; n++)
     a[n] = ac[n].re;
   delete[] ac;
 }
 
-double RSLib::getRootOfLinearEquation(double a, double b)
+template<class T>
+double rsPolynomial<T>::getRootOfLinearEquation(double a, double b)
 {
   if( a == 0.0 )
   {
@@ -471,17 +480,19 @@ double RSLib::getRootOfLinearEquation(double a, double b)
     return -b/a;
 }
 
-rsArray<rsComplexDbl> RSLib::getRootsOfQuadraticEquation(double a, double b, double c)
+template<class T>
+std::vector<std::complex<T>> rsPolynomial<T>::getRootsOfQuadraticEquation(
+  double a, double b, double c)
 {
   // catch degenerate case with zero leading coefficient:
   if( a == 0.0 )
   {
-    rsArray<rsComplexDbl> roots(1);
+    std::vector<std::complex<T>> roots(1);
     roots[0] = getRootOfLinearEquation(b, c);
     return roots;
   }
 
-  rsArray<rsComplexDbl> roots(2); // array to be returned
+  std::vector<std::complex<T>> roots(2); // array to be returned
   double D      = b*b - 4.0*a*c;  // discriminant
   double factor = 1.0 / (2.0*a);  // common factor that appears everywhere
   if( D > 0.0 )
@@ -494,28 +505,30 @@ rsArray<rsComplexDbl> RSLib::getRootsOfQuadraticEquation(double a, double b, dou
   else if( D == 0.0 )
   {
     // D == 0: a real root with multiplicity 2:
-    roots[1] = roots[0] = rsComplexDbl( -b * factor );
+    roots[1] = roots[0] = std::complex<T>( -b * factor );
   }
   else
   {
     // D < 0: two complex conjugate roots:
     double imag = rsSqrt(-D) * factor;
     double real = -b       * factor;
-    roots[0]    = rsComplexDbl(real,  imag);
-    roots[1]    = rsComplexDbl(real, -imag);
+    roots[0]    = std::complex<T>(real,  imag);
+    roots[1]    = std::complex<T>(real, -imag);
   }
 
   return roots;
 }
 
-rsArray<rsComplexDbl> RSLib::getRootsOfCubicEquation(double a, double b, double c, double d)
+template<class T>
+std::vector<std::complex<T>> rsPolynomial<T>::getRootsOfCubicEquation(
+  double a, double b, double c, double d)
 {
   // catch degenerate cases where the leading coefficient is zero:
   if( a == 0.0 )
     return getRootsOfQuadraticEquation(b, c, d);
 
-  rsArray<rsComplexDbl> y(3);
-  rsArray<rsComplexDbl> roots(3);
+  std::vector<std::complex<T>> y(3);
+  std::vector<std::complex<T>> roots(3);
 
   // compute p,q as in the Bronstein page 40, Eq. 1.154c and the offset for the substitution
   // y = x + b/(3*a):
@@ -543,8 +556,8 @@ rsArray<rsComplexDbl> RSLib::getRootsOfCubicEquation(double a, double b, double 
     else // u < 0.0
     {
       tmp  =  rsSqrt(-u);
-      y[0] =  rsComplexDbl(0.0,  tmp);
-      y[1] =  rsComplexDbl(0.0, -tmp);     // ... two imaginary roots
+      y[0] =  std::complex<T>(0.0,  tmp);
+      y[1] =  std::complex<T>(0.0, -tmp);     // ... two imaginary roots
       // checked with y = (x-4i)*(x+4i)*(x-0) = x^3+16*x
     }
   }
@@ -568,8 +581,8 @@ rsArray<rsComplexDbl> RSLib::getRootsOfCubicEquation(double a, double b, double 
     rsSinCos(phi, &im, &re);
     re  *= tmp;
     im  *= tmp;
-    y[0] = rsComplexDbl(re,  im);
-    y[1] = rsComplexDbl(re, -im);           // ... two complex conjugate roots
+    y[0] = std::complex<T>(re,  im);
+    y[1] = std::complex<T>(re, -im);           // ... two complex conjugate roots
   }
   else // both p and q are nonzero
   {
@@ -578,8 +591,8 @@ rsArray<rsComplexDbl> RSLib::getRootsOfCubicEquation(double a, double b, double 
     {
       phi       = rsAsinh( q/(r*r*r) );
       rsSinhCosh(phi/3.0, &sh, &ch);
-      y[0] = rsComplexDbl(r*sh,  rsSqrt(3.0)*r*ch);
-      y[1] = rsComplexDbl(r*sh, -rsSqrt(3.0)*r*ch);
+      y[0] = std::complex<T>(r*sh,  rsSqrt(3.0)*r*ch);
+      y[1] = std::complex<T>(r*sh, -rsSqrt(3.0)*r*ch);
       y[2] = -2.0*r*sh;
       // checked with y = (x-i)*(x+i)*(x-1) = x^3-x^2+x-1
     }
@@ -590,8 +603,8 @@ rsArray<rsComplexDbl> RSLib::getRootsOfCubicEquation(double a, double b, double 
       {
         phi  = rsAcosh( q/(r*r*r) );
         rsSinhCosh(phi/3.0, &sh, &ch);
-        y[0] = rsComplexDbl(r*ch,  rsSqrt(3.0)*r*sh);
-        y[1] = rsComplexDbl(r*ch, -rsSqrt(3.0)*r*sh);
+        y[0] = std::complex<T>(r*ch,  rsSqrt(3.0)*r*sh);
+        y[1] = std::complex<T>(r*ch, -rsSqrt(3.0)*r*sh);
         y[2] = -2.0*r*ch;
         // checked with y = (x-i)*(x+i)*(x-3) = x^3-3*x^2+x-3
       }
@@ -615,7 +628,8 @@ rsArray<rsComplexDbl> RSLib::getRootsOfCubicEquation(double a, double b, double 
   return roots;
 }
 
-double RSLib::getCubicRootNear(double x, double a, double b, double c, double d,
+template<class T>
+double rsPolynomial<T>::getCubicRootNear(double x, double a, double b, double c, double d,
                                 double min, double max, int maxIterations)
 {
   double f, df, xNew;
@@ -636,7 +650,8 @@ double RSLib::getCubicRootNear(double x, double a, double b, double c, double d,
   return rsClipToRange(xNew, min, max);
 }
 
-double RSLib::getRootNear(double x, double *a, int order, double min, double max,
+template<class T>
+double rsPolynomial<T>::getRootNear(double x, double *a, int order, double min, double max,
                           int maxIterations)
 {
   // Newton/Raphson iteration:
@@ -654,7 +669,8 @@ double RSLib::getRootNear(double x, double *a, int order, double min, double max
   return rsClipToRange(xNew, min, max);
 }
 
-void RSLib::cubicCoeffsTwoPointsAndDerivatives(double *a, double *x, double *y, double *dy)
+template<class T>
+void rsPolynomial<T>::cubicCoeffsTwoPointsAndDerivatives(double *a, double *x, double *y, double *dy)
 {
   // compute intermediate variables:
   double x0_2 = x[0]*x[0]; // x[0]^2
@@ -674,7 +690,8 @@ void RSLib::cubicCoeffsTwoPointsAndDerivatives(double *a, double *x, double *y, 
   a[3] = -s*(x[1]*(dy[1]+dy[0]) + x[0]*(-dy[1]-dy[0]) - 2*y[1] + 2*y[0]);
 }
 
-void RSLib::rsCubicCoeffsTwoPointsAndDerivatives(double *a, double *y, double *dy)
+template<class T>
+void rsPolynomial<T>::rsCubicCoeffsTwoPointsAndDerivatives(double *a, double *y, double *dy)
 {
   a[0] = y[0];
   a[1] = dy[0];
@@ -682,7 +699,8 @@ void RSLib::rsCubicCoeffsTwoPointsAndDerivatives(double *a, double *y, double *d
   a[3] = (1.0/3.0)*(dy[1]-2*a[2]-a[1]);
 }
 
-void RSLib::rsCubicCoeffsFourPoints(double *a, double *y)
+template<class T>
+void rsPolynomial<T>::rsCubicCoeffsFourPoints(double *a, double *y)
 {
   a[0] = y[0];
   a[2] = 0.5*(y[-1]+y[1]-2*a[0]);
@@ -690,7 +708,8 @@ void RSLib::rsCubicCoeffsFourPoints(double *a, double *y)
   a[1] = 0.5*(y[1]-y[-1]-2*a[3]);
 }
 
-double** RSLib::rsVandermondeMatrix(double *x, int N)
+template<class T>
+double** rsPolynomial<T>::rsVandermondeMatrix(double *x, int N)
 {
   double **A; 
   rsAllocateSquareArray2D(A, N);
@@ -707,7 +726,8 @@ double** RSLib::rsVandermondeMatrix(double *x, int N)
   return A;
 }
 
-void RSLib::rsInterpolatingPolynomial(double *a, double *x, double *y, int N)
+template<class T>
+void rsPolynomial<T>::rsInterpolatingPolynomial(double *a, double *x, double *y, int N)
 {
   double **A = rsVandermondeMatrix(x, N);
   rsSolveLinearSystem(A, a, y, N);
@@ -723,7 +743,8 @@ void RSLib::rsInterpolatingPolynomial(double *a, double *x, double *y, int N)
   // a[0] for y-denormalization
 }
 
-void RSLib::rsInterpolatingPolynomial(double *a, double x0, double dx, double *y, int N)
+template<class T>
+void rsPolynomial<T>::rsInterpolatingPolynomial(double *a, double x0, double dx, double *y, int N)
 {
   double *x = new double[N];
   for(int n = 0; n < N; n++)
@@ -732,7 +753,8 @@ void RSLib::rsInterpolatingPolynomial(double *a, double x0, double dx, double *y
   delete[] x;
 }
 
-void RSLib::fitQuadratic(double *a, double *x, double *y)
+template<class T>
+void rsPolynomial<T>::fitQuadratic(double *a, double *x, double *y)
 {
   double k1 = y[1] - y[0];
   double k2 = x[0]*x[0] - x[1]*x[1];
@@ -745,14 +767,16 @@ void RSLib::fitQuadratic(double *a, double *x, double *y)
   a[0] = y[0]-a[2]*x[0]*x[0]-a[1]*x[0];
 }
 
-void RSLib::fitQuadratic_0_1_2(double *a, double *y)
+template<class T>
+void rsPolynomial<T>::fitQuadratic_0_1_2(double *a, double *y)
 {
   a[2] = 0.5*(y[0]+y[2])-y[1];
   a[1] = y[1]-y[0]-a[2];
   a[0] = y[0];
 }
 
-void RSLib::fitQuarticWithDerivatives(double *a, double *y, double s0, double s2)
+template<class T>
+void rsPolynomial<T>::fitQuarticWithDerivatives(double *a, double *y, double s0, double s2)
 {
   a[0] = y[0];
   a[1] = s0;
@@ -761,7 +785,8 @@ void RSLib::fitQuarticWithDerivatives(double *a, double *y, double s0, double s2
   a[4] = -(2*y[2]- 4*y[1]+ 2*y[0]-  s2  +s0)/4;
 }
 
-bool RSLib::areRootsOnOrInsideUnitCircle(double a0, double a1, double a2)
+template<class T>
+bool rsPolynomial<T>::areRootsOnOrInsideUnitCircle(double a0, double a1, double a2)
 {
   // p and q values for p-q formula
   double p = a1/a2;
@@ -789,7 +814,8 @@ bool RSLib::areRootsOnOrInsideUnitCircle(double a0, double a1, double a2)
   }
 }
 
-void RSLib::besselPolynomial(double *a, int order)
+template<class T>
+void rsPolynomial<T>::besselPolynomial(double *a, int order)
 {
   int m, n;
   for(n=0; n<=order; n++)
@@ -832,7 +858,8 @@ void RSLib::besselPolynomial(double *a, int order)
   delete[] b2; 
 }
 
-void RSLib::legendrePolynomial(double *a, int order)
+template<class T>
+void rsPolynomial<T>::legendrePolynomial(double *a, int order)
 {
   if(order == 0) 
   {
@@ -883,7 +910,8 @@ void RSLib::legendrePolynomial(double *a, int order)
   delete [] b2;
 }
 
-void RSLib::rsJacobiPolynomialRecursionCoeffs(int n, double a, double b, double *w0, double *w1,
+template<class T>
+void rsPolynomial<T>::rsJacobiPolynomialRecursionCoeffs(int n, double a, double b, double *w0, double *w1,
   double *w1x, double *w2)
 {
   double k = 2*n+a+b;
@@ -894,7 +922,8 @@ void RSLib::rsJacobiPolynomialRecursionCoeffs(int n, double a, double b, double 
   // from: https://en.wikipedia.org/wiki/Jacobi_polynomials#Recurrence_relation
 }
 
-void RSLib::rsJacobiPolynomialRecursion(double *c, int n, double *c1, double *c2, double a, 
+template<class T>
+void rsPolynomial<T>::rsJacobiPolynomialRecursion(double *c, int n, double *c1, double *c2, double a, 
   double b)
 {
   // initialization:
@@ -916,13 +945,15 @@ void RSLib::rsJacobiPolynomialRecursion(double *c, int n, double *c1, double *c2
   rsPolynomialRecursion(c, w0, n, c1, w1, w1x, c2, w2);
 }
 
-void RSLib::rsJacobiPolynomials(double **c, double a, double b, int maxOrder)
+template<class T>
+void rsPolynomial<T>::rsJacobiPolynomials(double **c, double a, double b, int maxOrder)
 {
   for(int n = 0; n <= maxOrder; n++)
     rsJacobiPolynomialRecursion(c[n], n, c[n-1], c[n-2], a, b);
 }
 
-void RSLib::rsLegendrePolynomialRecursion(double *a, int n, double *a1, double *a2)
+template<class T>
+void rsPolynomial<T>::rsLegendrePolynomialRecursion(double *a, int n, double *a1, double *a2)
 {
   if( n == 0 )
   {
@@ -941,11 +972,12 @@ void RSLib::rsLegendrePolynomialRecursion(double *a, int n, double *a1, double *
   // rsJacobiPolynomialRecursion(a, n, a1, a2, 0.0, 0.0); 
 }
 
-void RSLib::rsPartialFractionExpansion(
-  rsComplexDbl *numerator,   int numeratorOrder,
-  rsComplexDbl *denominator, int denominatorOrder, 
-  rsComplexDbl *poles, int *multiplicities, int numDistinctPoles,
-  rsComplexDbl *pfeCoeffs)
+template<class T>
+void rsPolynomial<T>::rsPartialFractionExpansion(
+  std::complex<T> *numerator,   int numeratorOrder,
+  std::complex<T> *denominator, int denominatorOrder, 
+  std::complex<T> *poles, int *multiplicities, int numDistinctPoles,
+  std::complex<T> *pfeCoeffs)
 {
   // sanity check for inputs:
   rsAssert(numeratorOrder < denominatorOrder);
@@ -956,9 +988,9 @@ void RSLib::rsPartialFractionExpansion(
   rsScale(denominator, denominatorOrder+1, 1.0/denominator[denominatorOrder]);
 
   // establish coefficient matrix:
-  rsComplexDbl **A; rsAllocateSquareArray2D(A, denominatorOrder);
-  rsComplexDbl *tmp = new rsComplexDbl[denominatorOrder+1]; // deflated denominator
-  rsComplexDbl remainder;                                   // always zero
+  std::complex<T> **A; rsAllocateSquareArray2D(A, denominatorOrder);
+  std::complex<T> *tmp = new std::complex<T>[denominatorOrder+1]; // deflated denominator
+  std::complex<T> remainder;                                   // always zero
   for(int i = 0, k = 0; i < numDistinctPoles; i++)
   {
     rsCopyBuffer(denominator, tmp, denominatorOrder+1);
