@@ -194,11 +194,11 @@ namespace RSLib
 
   /** Performs M iterations of the Landen transformation of an elliptic modulus k and returns the
   results in the array v which must be of length M. */
-  RSLib_API void rsLanden(double k, int M, double* v);
+  void rsLanden(double k, int M, double* v);
 
   /** Just returns the input value. The purpose of this function is to be used, when a function 
   pointer is required, but it should behave neutrally. */
-  RSLib_API double rsIdentity(double x);
+  double rsIdentity(double x);
 
   /** Calculates the logistic function with slope parameter b. */
   RS_INLINE double rsLogistic(double x, double b);
@@ -218,7 +218,7 @@ namespace RSLib
   /** Normalized sinc function: nSinc(x) = sin(pi*x)/(pi*x). It has zero crossings at the integers 
   (except at 0 where the value is 1) and the value of the integral from minus to plus infinity 
   equals 1. */
-  RSLib_API double rsNormalizedSinc(double x);
+  double rsNormalizedSinc(double x);
 
   /** Calculates the power of the absolute-value of some number and re-applies its original sign
   afterwards, if base==0, the result will be 0 also. */
@@ -273,7 +273,7 @@ namespace RSLib
   /** Unnormalized sinc function: sinc(x) = sin(x)/x. It has zero crossings at multiples of pi 
   (except at 0*pi where the value is 1) and the value of the integral from minus to plus infinity 
   equals pi. */
-  RSLib_API double rsSinc(double x);
+  double rsSinc(double x);
 
   /** Hyperbolic sine. */
   template<class T>
@@ -287,7 +287,7 @@ namespace RSLib
   RS_INLINE void rsSinCosApprox(double x, double* sinResult, double* cosResult);
 
   /** Computes (an approximation of) the sine-integral of x, that is: y = Si(x) */
-  RSLib_API double rsSineIntegral(double x);
+  double rsSineIntegral(double x);
 
   /** Applies a softclipping with a tanh shaped transtion region between the linear part and the
   clipping value. */
@@ -315,6 +315,11 @@ namespace RSLib
 
   //-----------------------------------------------------------------------------------------------
   // implementation:
+
+  RS_INLINE double rsSqrt(double x)
+  {
+    return sqrt(x);
+  }
 
   RS_INLINE double rsAcosh(double x)
   {
@@ -515,7 +520,7 @@ namespace RSLib
 
   RS_INLINE double rsLog2(double x)
   {
-    return ONE_OVER_LN2 * log(x);
+    return LN2_INV * log(x);
   }
 
   RS_INLINE double rsLogB(double x, double b)

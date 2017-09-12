@@ -8,7 +8,7 @@ namespace RAPT
 
 #include "Functions/BasicFunctions.h"
 #include "Functions/IntegerFunctions.h"
-//#include "Functions/RealFunctions.h"
+#include "Functions/RealFunctions.h"
 //#include "Functions/ComplexFunctions.h"
 //#include "Functions/FunctionIterators.h"
 //#include "Functions/MoebiusTransform.h"
