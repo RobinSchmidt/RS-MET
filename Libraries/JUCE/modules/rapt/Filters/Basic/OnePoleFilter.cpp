@@ -1,6 +1,6 @@
 // Construction/Destruction:
 
-OnePoleFilter::OnePoleFilter()
+rsOnePoleFilter::rsOnePoleFilter()
 {
   shelvingGain = 1.0;
   setSampleRate(44100.0);  // sampleRate = 44100 Hz by default
@@ -11,7 +11,7 @@ OnePoleFilter::OnePoleFilter()
 
 // Setup:
 
-void OnePoleFilter::setSampleRate(double newSampleRate)
+void rsOnePoleFilter::setSampleRate(double newSampleRate)
 {
   if( newSampleRate > 0.0 )
     sampleRate = newSampleRate;
@@ -21,13 +21,13 @@ void OnePoleFilter::setSampleRate(double newSampleRate)
   return;
 }
 
-void OnePoleFilter::setMode(int newMode)
+void rsOnePoleFilter::setMode(int newMode)
 {
   mode = newMode; // 0:bypass, 1:Low Pass, 2:High Pass
   calcCoeffs();
 }
 
-void OnePoleFilter::setCutoff(double newCutoff)
+void rsOnePoleFilter::setCutoff(double newCutoff)
 {
   if( (newCutoff > 0.0) && (newCutoff <= 20000.0) )
     cutoff = newCutoff;
@@ -38,7 +38,7 @@ void OnePoleFilter::setCutoff(double newCutoff)
   return;
 }
 
-void OnePoleFilter::setShelvingGain(double newGain)
+void rsOnePoleFilter::setShelvingGain(double newGain)
 {
   if( newGain > 0.0 )
   {
@@ -49,19 +49,19 @@ void OnePoleFilter::setShelvingGain(double newGain)
     RS_DEBUG_BREAK; // this is a linear gain factor and must be >= 0.0
 }
 
-void OnePoleFilter::setShelvingGainInDecibels(double newGain)
+void rsOnePoleFilter::setShelvingGainInDecibels(double newGain)
 {
   setShelvingGain(rsDB2amp(newGain));
 }
 
-void OnePoleFilter::setCoefficients(double newB0, double newB1, double newA1)
+void rsOnePoleFilter::setCoefficients(double newB0, double newB1, double newA1)
 {
   b0 = newB0;
   b1 = newB1;
   a1 = newA1;
 }
 
-void OnePoleFilter::setInternalState(double newX1, double newY1)
+void rsOnePoleFilter::setInternalState(double newX1, double newY1)
 {
   x1 = newX1;
   y1 = newY1;
@@ -69,7 +69,7 @@ void OnePoleFilter::setInternalState(double newX1, double newY1)
 
 // Inquiry:
 
-double OnePoleFilter::getMagnitudeAt(double f)
+double rsOnePoleFilter::getMagnitudeAt(double f)
 {
   return onePoleMagnitudeAt(b0, b1, -a1, 2*PI*f*sampleRateRec);
     // we use a different sign-convention for the a1 coefficient here ...maybe fix this someday
@@ -77,7 +77,7 @@ double OnePoleFilter::getMagnitudeAt(double f)
 
 // Misc:
 
-void OnePoleFilter::calcCoeffs()
+void rsOnePoleFilter::calcCoeffs()
 {
   switch(mode)
   {
@@ -195,7 +195,7 @@ void OnePoleFilter::calcCoeffs()
   // get rid of these strange names DAFX, etc.
 }
 
-void OnePoleFilter::reset()
+void rsOnePoleFilter::reset()
 {
   x1 = 0.0;
   y1 = 0.0;
