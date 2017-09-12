@@ -6,7 +6,7 @@ input values only. To get a value for a negative input value x, use -f(-x), i.e.
 manually. */
 
 template<class T>
-class PositiveSigmoids
+class rsPositiveSigmoids
 {
 
 public:
@@ -64,7 +64,7 @@ sense that they go through the output range from -1 to +1 as the input x goes fr
 they also have unit slope at the origin. */
 
 template<class T>
-class NormalizedSigmoids
+class rsNormalizedSigmoids
 {
 
 public:
@@ -134,7 +134,7 @@ ToDo:
 */
 
 template<class T>
-class ParametricSigmoid
+class rsParametricSigmoid
 {
 
 public:
@@ -142,7 +142,7 @@ public:
   /** \name Construction/Destruction */
 
   /** Constructor. */
-  ParametricSigmoid();
+  rsParametricSigmoid();
 
 
   /** \name Setup */
@@ -207,14 +207,14 @@ protected:
 // inlined functions:
 
 template<class T>
-inline T ParametricSigmoid<T>::coreFunction(T x)
+inline T rsParametricSigmoid<T>::coreFunction(T x)
 {
   x *= 1 + c2*x + c3*x*x;    // x + c2*x^2 + c3*x^3 = x + a*(b*x^2 + (1-b)*x^3)
   return x / (x+1);          // (x + a*(b*x^2 + (1-b)*x^3)) / (x + a*(b*x^2 + (1-b)*x^3) + 1)
 }
 
 template<class T>
-inline T ParametricSigmoid<T>::getValue(T x)
+inline T rsParametricSigmoid<T>::getValue(T x)
 {
   T t = rsAbs(x);
   if(t < ty)
@@ -231,7 +231,7 @@ width such that the resulting (scaled and shifted) function will be bounded by c
 and center + width/2.  */
 
 template<class T>
-class ScaledAndShiftedSigmoid
+class rsScaledAndShiftedSigmoid
 {
 
 public:
@@ -274,7 +274,7 @@ protected:
 };
 
 template<class T>
-inline T ScaledAndShiftedSigmoid<T>::getValue(T x)
+inline T rsScaledAndShiftedSigmoid<T>::getValue(T x)
 {
   return shiftY + scaleY * sigmoid(scaleX * x + shiftX);
 }

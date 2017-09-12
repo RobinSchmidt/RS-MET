@@ -39,9 +39,9 @@ template class RAPT::rsMatrixView<double>;
 template class RAPT::rsMatrix<double>;
 template class RAPT::rsParametricBellFunction<double>;
 template class RAPT::rsPositiveBellFunctions<double>;
-template class RAPT::NormalizedSigmoids<double>;
+template class RAPT::rsNormalizedSigmoids<double>;
 template class RAPT::rsSinCosTable<double>;
-template class RAPT::ScaledAndShiftedSigmoid<double>;
+template class RAPT::rsScaledAndShiftedSigmoid<double>;
 template class RAPT::rsEllipse<double>;
 
 

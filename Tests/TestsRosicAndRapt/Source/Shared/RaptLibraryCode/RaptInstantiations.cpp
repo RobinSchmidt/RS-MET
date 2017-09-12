@@ -36,16 +36,16 @@ template void RAPT::ArrayTools::rsFillWithRandomValues(double* x, int N, double 
 template int RAPT::rsLimit(int x, int min, int max);
 template RAPT::rsConicSection<float>;
 template RAPT::rsEllipse<float>;
-template RAPT::NormalizedSigmoids<float>;
-template RAPT::ParametricSigmoid<float>;
-template RAPT::ScaledAndShiftedSigmoid<float>;
+template RAPT::rsNormalizedSigmoids<float>;
+template RAPT::rsParametricSigmoid<float>;
+template RAPT::rsScaledAndShiftedSigmoid<float>;
 template RAPT::rsPositiveBellFunctions<float>;    // get rid of rs-prefixes
 template RAPT::rsParametricBellFunction<float>;
 template RAPT::rsSinCosTable<float>;
 template RAPT::rsSinCosTable<double>;
 
-template void RAPT::Statistics::linearRegression(int N, float* x, float* y, float& a, float& b);
-template float RAPT::Statistics::proportionalRegression(int N, float* x, float* y);
+template void RAPT::rsStatistics::linearRegression(int N, float* x, float* y, float& a, float& b);
+template float RAPT::rsStatistics::proportionalRegression(int N, float* x, float* y);
 
 // Filters:
 template RAPT::rsSmoothingFilter<float, float>;

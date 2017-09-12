@@ -10,7 +10,7 @@
 a new location. */
 
 template<class T>
-class Mapper2D
+class rsMapper2D
 {
 
 public:

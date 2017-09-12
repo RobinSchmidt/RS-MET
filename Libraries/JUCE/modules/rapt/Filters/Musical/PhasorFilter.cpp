@@ -33,7 +33,7 @@ void PhasorFilter<TSig, TPar>::setDecayTime(TPar newDecay)
 }
 
 template<class TSig, class TPar>
-void PhasorFilter<TSig, TPar>::setStateMapper(Mapper2D<TSig> *newMapper)
+void PhasorFilter<TSig, TPar>::setStateMapper(rsMapper2D<TSig> *newMapper)
 {
   mapper = newMapper;
 }

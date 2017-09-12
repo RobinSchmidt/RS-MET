@@ -2,7 +2,7 @@
 // positive range saturation functions:
 
 template<class T>
-T PositiveSigmoids<T>::linear(T x)
+T rsPositiveSigmoids<T>::linear(T x)
 {
   if(x > 2.0)
     return 1.0;
@@ -11,20 +11,20 @@ T PositiveSigmoids<T>::linear(T x)
 }
 
 template<class T>
-T PositiveSigmoids<T>::rational(T x)
+T rsPositiveSigmoids<T>::rational(T x)
 {
   return x / (1+x);
 }
 
 template<class T>
-T PositiveSigmoids<T>::cubicRational(T x)
+T rsPositiveSigmoids<T>::cubicRational(T x)
 {
   x *= 1 + x + x*x;    //  x + x^2 + x^3
   return x / (x+1);    // (x + x^2 + x^3) / (x + x^2 + x^3 + 1)
 }
 
 template<class T>
-T PositiveSigmoids<T>::cubic(T x)
+T rsPositiveSigmoids<T>::cubic(T x)
 {
   // The coefficient for the cubic term. If we wanted f'(0)=k, we'd get a3 = -k*(k-3)^2/27 which
   // reduces to -4/27 for k=1:
@@ -37,7 +37,7 @@ T PositiveSigmoids<T>::cubic(T x)
 }
 
 template<class T>
-T PositiveSigmoids<T>::quartic(T x)
+T rsPositiveSigmoids<T>::quartic(T x)
 {
   if(x > 2.0)
     return 1.0;
@@ -46,7 +46,7 @@ T PositiveSigmoids<T>::quartic(T x)
 }
 
 template<class T>
-T PositiveSigmoids<T>::hexic(T x)
+T rsPositiveSigmoids<T>::hexic(T x)
 {
   if(x > 2.0)
     return 1.0;
@@ -59,7 +59,7 @@ T PositiveSigmoids<T>::hexic(T x)
 }
 
 template<class T>
-T PositiveSigmoids<T>::softClipHexic(T x, T t)
+T rsPositiveSigmoids<T>::softClipHexic(T x, T t)
 {
   if(x <= t)
     return x;
@@ -68,7 +68,7 @@ T PositiveSigmoids<T>::softClipHexic(T x, T t)
 }
 
 template<class T>
-T PositiveSigmoids<T>::softClipHexic(T x)
+T rsPositiveSigmoids<T>::softClipHexic(T x)
 {
   if(x <= 0.5)
     return x;
@@ -112,7 +112,7 @@ T PositiveSigmoids<T>::softClipHexic(T x)
 // normalized, symmetric saturation functions:
 
 template<class T>
-T NormalizedSigmoids<T>::clip(T x)
+T rsNormalizedSigmoids<T>::clip(T x)
 {
   if(x < -1.0)
     return -1.0;
@@ -122,13 +122,13 @@ T NormalizedSigmoids<T>::clip(T x)
 }
 
 template<class T>
-T NormalizedSigmoids<T>::atan(T x)
+T rsNormalizedSigmoids<T>::atan(T x)
 {
   return (T) (::atan(0.5*PI*x) / (0.5*PI));  // optimize: precompute PI/2 and 1/(PI/2)
 }
 
 template<class T>
-T NormalizedSigmoids<T>::tanh(T x)
+T rsNormalizedSigmoids<T>::tanh(T x)
 {
   return ::tanh(x);
   //return rsTanh(x); // use the exp-based version later (more efficient), whe the real functions 
@@ -136,7 +136,7 @@ T NormalizedSigmoids<T>::tanh(T x)
 }
 
 template<class T>
-T NormalizedSigmoids<T>::powRatio(T x, T p)
+T rsNormalizedSigmoids<T>::powRatio(T x, T p)
 {
   T tmp = pow(fabs(x), p);
   if(tmp == RS_INF(T))
@@ -148,58 +148,58 @@ T NormalizedSigmoids<T>::powRatio(T x, T p)
 // maybe try rsSign(x) * positiveSigmoid(fabs(x)) - make performance test
 
 template<class T>
-T NormalizedSigmoids<T>::rational(T x)
+T rsNormalizedSigmoids<T>::rational(T x)
 {
   return x / (1+rsAbs(x));
 }
 
 template<class T>
-T NormalizedSigmoids<T>::cubicRational(T x)
+T rsNormalizedSigmoids<T>::cubicRational(T x)
 {
-  return rsSign(x) * PositiveSigmoids<T>::cubicRational(rsAbs(x));
+  return rsSign(x) * rsPositiveSigmoids<T>::cubicRational(rsAbs(x));
 }
 
 template<class T>
-T NormalizedSigmoids<T>::cubic(T x)
+T rsNormalizedSigmoids<T>::cubic(T x)
 {
   if(x >= 0.0)
-    return PositiveSigmoids<T>::cubic(x);
+    return rsPositiveSigmoids<T>::cubic(x);
   else
-    return -PositiveSigmoids<T>::cubic(-x);
+    return -rsPositiveSigmoids<T>::cubic(-x);
 }
 
 template<class T>
-T NormalizedSigmoids<T>::quartic(T x)
+T rsNormalizedSigmoids<T>::quartic(T x)
 {
   if(x >= 0.0)
-    return PositiveSigmoids<T>::quartic(x);
+    return rsPositiveSigmoids<T>::quartic(x);
   else
-    return -PositiveSigmoids<T>::quartic(-x);
+    return -rsPositiveSigmoids<T>::quartic(-x);
 }
 
 template<class T>
-T NormalizedSigmoids<T>::hexic(T x)
+T rsNormalizedSigmoids<T>::hexic(T x)
 {
   if(x >= 0.0)
-    return PositiveSigmoids<T>::hexic(x);
+    return rsPositiveSigmoids<T>::hexic(x);
   else
-    return -PositiveSigmoids<T>::hexic(-x);
+    return -rsPositiveSigmoids<T>::hexic(-x);
 }
 
 template<class T>
-T NormalizedSigmoids<T>::softClipHexic(T x)
+T rsNormalizedSigmoids<T>::softClipHexic(T x)
 {
   if(x >= 0.0)
-    return PositiveSigmoids<T>::softClipHexic(x);
+    return rsPositiveSigmoids<T>::softClipHexic(x);
   else
-    return -PositiveSigmoids<T>::softClipHexic(-x);
+    return -rsPositiveSigmoids<T>::softClipHexic(-x);
 }
 
 //-------------------------------------------------------------------------------------------------
 // class rsParametricSigmoid:
 
 template<class T>
-ParametricSigmoid<T>::ParametricSigmoid()
+rsParametricSigmoid<T>::rsParametricSigmoid()
 {
   y1 = 0.75;         // value y at x=1
   yb = 0.75;         // breakpoint for y1, above which we switch to piecewise function
@@ -207,28 +207,28 @@ ParametricSigmoid<T>::ParametricSigmoid()
 }
 
 template<class T>
-void ParametricSigmoid<T>::setValueAt1(T newValue)
+void rsParametricSigmoid<T>::setValueAt1(T newValue)
 {
   y1 = newValue;
   computeCoeffs();
 }
 
 template<class T>
-void ParametricSigmoid<T>::setThreshold(T newThreshold)
+void rsParametricSigmoid<T>::setThreshold(T newThreshold)
 {
   setValueAt1(newThreshold * (T)0.25 + (T)0.75);
   // nope - formula is wrong
 }
 
 template<class T>
-void ParametricSigmoid<T>::setPiecewiseBreakpoint(T newBreakpoint)
+void rsParametricSigmoid<T>::setPiecewiseBreakpoint(T newBreakpoint)
 {
   yb = newBreakpoint;
   computeCoeffs();
 }
 
 template<class T>
-T ParametricSigmoid<T>::coreFunction(T x, T a, T b)
+T rsParametricSigmoid<T>::coreFunction(T x, T a, T b)
 {
   T t = x*x;                   // t = x^2
   t = x + a*(b*t + (1-b)*t*x); // t = x + a*(b*x^2 + (1-b)*x^3) 
@@ -236,13 +236,13 @@ T ParametricSigmoid<T>::coreFunction(T x, T a, T b)
 }
 
 template<class T>
-T ParametricSigmoid<T>::getA(T y1)
+T rsParametricSigmoid<T>::getA(T y1)
 {
   return (1-2*y1)/(y1-1);
 }
 
 template<class T>
-T ParametricSigmoid<T>::getB(T a)
+T rsParametricSigmoid<T>::getB(T a)
 {
   //return 1 / (a+1);
   return 1 / rsMax((T)1, a);
@@ -279,7 +279,7 @@ T ParametricSigmoid<T>::getB(T a)
 }
 
 template<class T>
-void ParametricSigmoid<T>::computeCoeffs()
+void rsParametricSigmoid<T>::computeCoeffs()
 {
   if(y1 > yb)
   {
@@ -308,27 +308,27 @@ void ParametricSigmoid<T>::computeCoeffs()
 // class ScaledAndShiftedSigmoid:
 
 template<class T>
-void ScaledAndShiftedSigmoid<T>::setCenter(T newCenter)
+void rsScaledAndShiftedSigmoid<T>::setCenter(T newCenter)
 {
   center = newCenter;
   updateCoeffs();
 }
 
 template<class T>
-void ScaledAndShiftedSigmoid<T>::setWidth(T newWidth)
+void rsScaledAndShiftedSigmoid<T>::setWidth(T newWidth)
 {
   width = newWidth;
   updateCoeffs();
 }
 
 template<class T>
-void ScaledAndShiftedSigmoid<T>::setPrototypeSigmoid(T (*newSigmoid)(T))
+void rsScaledAndShiftedSigmoid<T>::setPrototypeSigmoid(T (*newSigmoid)(T))
 {
   sigmoid = newSigmoid;
 }
 
 template<class T>
-void ScaledAndShiftedSigmoid<T>::updateCoeffs()
+void rsScaledAndShiftedSigmoid<T>::updateCoeffs()
 {
   //rsRangeConversionCoefficients(center-T(0.5)*width, center+T(0.5)*width, T(-1), T(+1), 
   //  &scaleX, &shiftX);
