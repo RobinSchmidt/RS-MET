@@ -152,7 +152,8 @@ RS_INLINE double rsDegreeToRadiant(double degrees);
 be assigned to the quarter period K(k) and Kprime will be assigned to the quarter period
 K'(k) = K(k'), k' = sqrt(1-k^2). M is the number of Landen iterations which determines the
 precision of the calculation. */
-void rsEllipticIntegral(double k, double *K, double *Kprime, int M=7);
+template<class T>
+void rsEllipticIntegral(T k, T *K, T *Kprime, int M=7);
 
 /** Computes a sin/cos based equal power crossfade according to the value of x. The gain for the
 first signal will be stored in gain1, the gain for the second signal in gain2. If the range of x
@@ -191,11 +192,13 @@ RS_INLINE double rsGauss(double x, double mu, double sigma);
 
 /** Performs M iterations of the Landen transformation of an elliptic modulus k and returns the
 results in the array v which must be of length M. */
-void rsLanden(double k, int M, double* v);
+template<class T>
+void rsLanden(T k, int M, T* v);
 
 /** Just returns the input value. The purpose of this function is to be used, when a function
 pointer is required, but it should behave neutrally. */
-double rsIdentity(double x);
+template<class T>
+T rsIdentity(T x);
 
 /** Calculates the logistic function with slope parameter b. */
 RS_INLINE double rsLogistic(double x, double b);
@@ -215,7 +218,8 @@ RS_INLINE double rsMinkowski(double x, double mu, double sigma, double k);
 /** Normalized sinc function: nSinc(x) = sin(pi*x)/(pi*x). It has zero crossings at the integers
 (except at 0 where the value is 1) and the value of the integral from minus to plus infinity
 equals 1. */
-double rsNormalizedSinc(double x);
+template<class T>
+T rsNormalizedSinc(T x);
 
 /** Calculates the power of the absolute-value of some number and re-applies its original sign
 afterwards, if base==0, the result will be 0 also. */
@@ -270,7 +274,8 @@ RS_INLINE void rsSinCos(float x, float* sinResult, float* cosResult);
 /** Unnormalized sinc function: sinc(x) = sin(x)/x. It has zero crossings at multiples of pi
 (except at 0*pi where the value is 1) and the value of the integral from minus to plus infinity
 equals pi. */
-double rsSinc(double x);
+template<class T>
+T rsSinc(T x);
 
 /** Hyperbolic sine. */
 template<class T>
@@ -284,7 +289,8 @@ void rsSinhCosh(T x, T *sinhResult, T *coshResult);
 RS_INLINE void rsSinCosApprox(double x, double* sinResult, double* cosResult);
 
 /** Computes (an approximation of) the sine-integral of x, that is: y = Si(x) */
-double rsSineIntegral(double x);
+template<class T>
+T rsSineIntegral(T x);
 
 /** Applies a softclipping with a tanh shaped transtion region between the linear part and the
 clipping value. */
