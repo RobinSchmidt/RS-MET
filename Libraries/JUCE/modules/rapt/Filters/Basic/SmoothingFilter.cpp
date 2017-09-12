@@ -22,7 +22,7 @@ rsSmoothingFilter<TSig, TPar>::rsSmoothingFilter()
 template<class TSig, class TPar>
 void rsSmoothingFilter<TSig, TPar>::setTimeConstantAndSampleRate(TPar timeConstant, TPar sampleRate)
 {
-  decay = sampleRate * timeConstant * TPar(LN2_INV);
+  decay = sampleRate * timeConstant;
   updateCoeffs();
 }
 
@@ -88,12 +88,13 @@ void rsSmoothingFilter<TSig, TPar>::updateCoeffs()
 
     //coeffs[i] = exp(-1/tmp); 
   }
-   maybe try, if it responds different to modulations of the time-constants are in reverse
-   order (from short to long instead of long to short)
+   //maybe try, if it responds different to modulations of the time-constants are in reverse
+   //order (from short to long instead of long to short)
 
-   if shapeParam == 0, we may use an optimized loop (we don't need to compute different coeffs - 
-   compute one and fill the whole coeffs array with it
+   //if shapeParam == 0, we may use an optimized loop (we don't need to compute different coeffs - 
+   //compute one and fill the whole coeffs array with it
    */
+
 
   TPar tmp;
   if(shapeParam != 0)
@@ -133,7 +134,7 @@ void rsSmoothingFilter<TSig, TPar>::createTauScalerTable()
   // combination of order/asymmetry.
   tauScalers.setAllValues(1);
 
-  int numIterations = 3;
+  int numIterations = 4;
   for(int k = 1; k <= numIterations; k++) // test - maybe we need to iterate a few times to converge
   {                                       // yes! that helps a lot - todo: use a convergence criterion
 
@@ -146,7 +147,7 @@ void rsSmoothingFilter<TSig, TPar>::createTauScalerTable()
         //tauScalers(i, j) = 1;
         TPar asym  = TPar(j) / TPar(numAsyms-1);
         shapeParam = asym;
-        TPar desiredNumSamples = 100.0;
+        TPar desiredNumSamples = 101.0;
         setNumSamplesToReachHalf(desiredNumSamples);
 
         // now measure, how many samples it actually takes:
@@ -158,8 +159,8 @@ void rsSmoothingFilter<TSig, TPar>::createTauScalerTable()
           yNow = getSample(1);
           if(yNow > TSig(0.5))
           {
-            //actualNumSamples = TPar(n); 
-            actualNumSamples = TPar(n-1);
+            actualNumSamples = TPar(n); 
+            //actualNumSamples = TPar(n-1);
 
             // refine by computing a fractional part by fitting a line and solving for the 0:
             TPar d0 = yOld - TPar(0.5);

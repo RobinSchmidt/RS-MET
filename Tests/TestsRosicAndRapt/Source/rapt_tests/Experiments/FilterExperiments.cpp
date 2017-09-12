@@ -279,23 +279,22 @@ void nonUniformMovingAverage()
   // gets averaged out better?
 }
 
-
-void smoothingFilter()
+void smoothingFilterOrders()
 {
   // We plot the step responses of the rsSmoothingFilter for various orders.
 
-  static const int numOrders = 8;   // number of filters with different orders
+  static const int numOrders = 4;   // number of filters with different orders
   bool expSpacing = false;          // if true, orders are 1,2,4,8,.. else 1,2,3,4,..
   int orderIncrement = 2;           // or 1,3,5,.. or 1,4,7,...
   static const int N = 300;         // number of samples
   float fs  = 1.0f;                  // sample rate
-  float tau = 100.0f;                  // time constant
+  float tau = 101.0f;                  // time constant
 
   // create and set up the smoother:
   //rsSmoothingFilterFF smoother;
   rsSmoothingFilterDD smoother;
   smoother.setTimeConstantAndSampleRate(tau, fs);
-  smoother.setNumSamplesToReachHalf(tau*fs);
+  //smoother.setNumSamplesToReachHalf(tau*fs);
   //smoother.setShape(rsSmoothingFilterFF::FAST_ATTACK);
   smoother.setShapeParameter(0.5f);
 
@@ -347,4 +346,41 @@ void smoothingFilter()
 
 
   // try higher orders - like 100 - see what kind of shaped is approached for order -> inf
+}
+
+void smoothingFilterTransitionTimes()
+{
+  // We plot the step response for smoothing filters of a given order (and shape/asymmetry) for
+  // different transition time constants. What we should see is time-stretched/compressed versions
+  // of the same response. But the nonworking tuning tables suggest that somthing might be wrong
+  // with that assumption, so we check.
+
+  // user parameters:
+  static const int N = 300;           // number of samples
+  int order = 1;                      // order of the filters
+  float asymmetry = 0.f;              // asymmetry parameters
+  static const int numFilters = 5;    // number of transition times
+  float transitionTimes[numFilters] = { 51.f, 101.f, 151.f, 200.1f, 251.f }; // transition times in samples
+
+
+  // create and set up the smoother:                                                             
+  rsSmoothingFilterFF smoother;
+  smoother.setShapeParameter(asymmetry);
+  smoother.setOrder(order);
+
+  // create the step responses:
+  float y[numFilters][N];
+  for(int i = 0; i < numFilters; i++)
+  {
+    smoother.setNumSamplesToReachHalf(transitionTimes[i]);
+    smoother.reset();
+    for(int n = 0; n < N; n++)
+      y[i][n] = smoother.getSample(1.f);
+  }
+
+  // plot:
+  GNUPlotter plt;
+  for(int i = 0; i < numFilters; i++)
+    plt.addDataArrays(N, y[i]); 
+  plt.plot();
 }

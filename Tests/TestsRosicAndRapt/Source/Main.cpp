@@ -57,7 +57,8 @@ int main(int argc, char* argv[])
   // Filter:
   //ladderResonanceManipulation();
   //nonUniformMovingAverage();
-  smoothingFilter();
+  //smoothingFilterOrders();
+  smoothingFilterTransitionTimes();
 
   // Generators:
   //rayBubble();
