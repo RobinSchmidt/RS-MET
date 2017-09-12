@@ -7,10 +7,10 @@ rsMatrix<T>::rsMatrix(size_t numRows, size_t numColumns)
 template<class T>
 void rsMatrix<T>::setSize(size_t numRows, size_t numColumns)
 {
-  N = numRows; 
-  M = numColumns;
-  data.resize(N*M);
-  d = &data[0];
+  this->N = numRows;
+  this->M = numColumns;
+  data.resize(this->N * this->M);
+  this->d = &data[0];
 }
 
 // rsFillWithValue
