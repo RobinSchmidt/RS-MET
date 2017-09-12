@@ -291,8 +291,8 @@ void smoothingFilterOrders()
   float tau = 101.0f;                  // time constant
 
   // create and set up the smoother:
-  //rsSmoothingFilterFF smoother;
-  rsSmoothingFilterDD smoother;
+  rsSmoothingFilterFF smoother;
+  //rsSmoothingFilterDD smoother;
   smoother.setTimeConstantAndSampleRate(tau, fs);
   //smoother.setNumSamplesToReachHalf(tau*fs);
   //smoother.setShape(rsSmoothingFilterFF::FAST_ATTACK);
@@ -357,7 +357,7 @@ void smoothingFilterTransitionTimes()
 
   // user parameters:
   static const int N = 400;           // number of samples
-  int order = ;                      // order of the filters
+  int order = 5;                      // order of the filters
   float asymmetry = 1.f;              // asymmetry parameter
   static const int numFilters = 5;    // number of transition times
   float transitionTimes[numFilters] = { 51.f, 101.f, 151.f, 200.1f, 251.f }; // transition times in samples

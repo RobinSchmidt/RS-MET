@@ -1,4 +1,264 @@
-using namespace RSLib;
+
+//-----------------------------------------------------------------------------------------------
+// template function definitions - move to .cpp-file:
+
+template <class T>
+T evaluatePolynomialAt(T x, T *a, int order)
+{
+  if(order < 0)
+    return T(0);
+  T y = a[order];
+  for(int i = order-1; i >= 0; i--)
+    y = y*x + a[i];
+  return y;
+}
+
+template <class T>
+void evaluatePolynomialAndDerivativeAt(T x, T *a, int order, T *y, T *yd)
+{
+  *y  = a[order];
+  *yd = 0.0;
+  for(int i = order-1; i >= 0; i--)
+  {
+    *yd = *yd * x + *y;
+    *y  = *y  * x + a[i];
+  }
+}
+
+template <class T>
+void evaluatePolynomialAndDerivativesAt(T x, T *a, int order, T *results, int numDerivatives)
+{
+  results[0] = a[order];
+  rsFillWithZeros(&results[1], numDerivatives);
+  for(int i = order-1; i >= 0; i--)
+  {
+    int n = rsMin(numDerivatives, order-1);
+    for(int j = n; j >= 1; j--)
+      results[j] = results[j]*x + results[j-1];
+    results[0] = results[0]*x + a[i];
+  }
+  rsMultiply(&results[2], &rsFactorials[2], &results[2], numDerivatives-1);
+}
+
+template <class T>
+void multiplyPolynomials(T *a, int aOrder, T *b, int bOrder, T *result)
+{
+  rsConvolve(a, aOrder+1, b, bOrder+1, result);
+}
+
+template <class T>
+void dividePolynomials(T *p, int pOrder, T *d, int dOrder, T *q, T *r)
+{
+  rsCopyBuffer(p, r, pOrder+1); // init remainder with p
+  rsFillWithZeros(q, pOrder+1); // init quotient with zeros
+  for(int k = pOrder-dOrder; k >= 0; k--)
+  {
+    q[k] = r[dOrder+k] / d[dOrder];
+    for(int j = dOrder+k-1; j >= k; j--)
+      r[j] -= q[k] * d[j-k];
+  }
+  rsFillWithZeros(&r[dOrder], pOrder-dOrder+1);
+}
+
+template <class T>
+void dividePolynomialByMonomialInPlace(T *dividendAndResult, int dividendOrder, T x0,
+  T *remainder)
+{
+  *remainder = dividendAndResult[dividendOrder];
+  dividendAndResult[dividendOrder] = T(0);
+  for(int i=dividendOrder-1; i>=0; i--)
+  {
+    T swap               = dividendAndResult[i];
+    dividendAndResult[i] = *remainder;
+    *remainder           = swap + *remainder*x0;
+  }
+}
+
+
+
+template <class T>
+void polyCoeffsForNegativeArgument(T *a, T *am, int N)
+{
+  double s = 1.0;
+  for(int n = 0; n <= N; n++)
+  {
+    am[n]  = s*a[n];
+    s     *= -1.0;
+  }
+}
+
+// todo: polyCoeffsForScaledArgument: aScaled[n] = a[n] * scaler^n - when the scaler equals -1, 
+// it reduces to polyCoeffsForNegativeArgument - this function is superfluous then
+
+template <class T>
+void polyCoeffsForShiftedArgument(T *a, T *as, int N, T x0)
+{
+  int numLines = N+1;
+  int length   = (numLines*(numLines+1))/2;
+  rsUint32 *pt = new rsUint32[length];
+  rsCreatePascalTriangle(pt, numLines);
+  T *x0n = new T[N+1];  // +- x0^n
+  x0n[0] = 1.0;
+  for(int n = 1; n <= N; n++)
+    x0n[n] = -x0 * x0n[n-1];
+  for(int n = 0; n <= N; n++)
+  {
+    as[n] = 0.0;
+    for(int k = n; k <= N; k++)
+      as[n] += rsPascalTriangle(pt, k, k-n) * x0n[k-n] * a[k];
+  }
+  delete[] pt;
+  delete[] x0n;
+}
+
+template <class T>
+void polyDerivative(T *a, T *ad, int N)
+{
+  for(int n = 1; n <= N; n++)
+    ad[n-1] = n * a[n];
+}
+
+template <class T>
+void polyFiniteDifference(T *a, T *ad, int N, int direction, T h)
+{
+  // (possibly alternating) powers of the stepsize h:
+  T *hk = new T[N+1];
+  T hs  = direction*h;
+  hk[0] = T(1);
+  for(int k = 1; k <= N; k++)
+    hk[k] = hk[k-1] * hs;
+
+  // binomial coefficients:
+  int numCoeffs    = N+1;
+  int triangleSize = (numCoeffs*(numCoeffs+1))/2;
+  rsUint32 *binomCoeffs = new rsUint32[triangleSize];
+  rsCreatePascalTriangle(binomCoeffs, numCoeffs);
+
+  // actual coefficient computation for ad:
+  rsFillWithZeros(ad, N);
+  for(int n = 0; n <= N; n++)
+  {
+    for(int k = 1; k <= n; k++)
+      ad[n-k] += a[n] * rsPascalTriangle(binomCoeffs, n, k) * hk[k];
+  }
+  if(direction == -1)
+    rsScale(ad, N, -1);
+
+  delete[] hk;
+  delete[] binomCoeffs;
+}
+
+template <class T>
+void polyIntegral(T *a, T *ai, int N, T c)
+{
+  for(int n = N+1; n >= 1; n--)
+    ai[n] = a[n-1] / n;
+  ai[0] = c;
+}
+
+template <class T>
+void createPolynomialPowers(T *a, int N, T **aPowers, int highestPower)
+{
+  aPowers[0][0] = 1;
+  if(highestPower < 1)
+    return;
+  rsCopyBuffer(a, aPowers[1], N+1);
+  for(int k = 2; k <= highestPower; k++)
+    rsConvolve(aPowers[k-1], (k-1)*N+1, a, N+1, aPowers[k]);
+}
+
+template <class T>
+void composePolynomials(T *a, int aN, T *b, int bN, T *c)
+{
+  int cN = aN*bN;
+  T *an  = new T[cN+1];  // array for the successive powers of a[]
+  an[0]  = T(1);         // initialize to a[]^0
+
+                         // accumulation:
+  rsFillWithZeros(c, cN+1);
+  c[0] = b[0];
+  int K = 1;
+  for(int n = 1; n <= bN; n++)
+  {
+    rsConvolveInPlace(an, K, a, aN+1);
+    K += aN;
+    for(int k = 0; k < K; k++)
+      c[k] += b[n] * an[k];
+  }
+
+  delete[] an;
+}
+
+template <class T>
+void rsPolynomialRecursion(T *a, T w0, int order, T *a1, T w1, T w1x, T *a2, T w2)
+{
+  rsAssert(order >= 2);
+  int n = order;
+  a[n] = (w1x*a1[n-1]) / w0;
+  n--;
+  a[n] = (w1*a1[n] + w1x*a1[n-1]) / w0;
+  for(n = n-1; n > 0; n--)
+    a[n] = (w1*a1[n] + w1x*a1[n-1] + w2*a2[n]) / w0;
+  a[0] = (w1*a1[0] + w2*a2[0]) / w0;
+}
+
+template<class T>
+void weightedSumOfPolynomials(T *p, int pN, T wp, T *q, int qN, T wq, T *r)
+{
+  int i;
+  if(pN >= qN)
+  {
+    for(i = 0; i <= qN; i++)
+      r[i] = wp*p[i] + wq*q[i];
+    for(i = qN+1; i <= pN; i++)
+      r[i] = wp*p[i];
+  }
+  else
+  {
+    for(i = 0; i <= pN; i++)
+      r[i] = wp*p[i] + wq*q[i];
+    for(i = pN+1; i <= qN; i++)
+      r[i] = wq*q[i];
+  }
+}
+
+template<class T>
+void subtractPolynomials(T *p, int pN, T *q, int qN, T *r)
+{
+  weightedSumOfPolynomials(p, pN, T(1), q, qN, T(-1), r);
+}
+
+template<class T>
+void integratePolynomialWithPolynomialLimits(T *p, int pN, T *a, int aN, T *b, int bN, T *q)
+{
+  int PN = pN+1;
+  int AN = aN*PN;
+  int BN = bN*PN;
+
+  T *P = new T[PN+1];
+  T *A = new T[AN+1];
+  T *B = new T[BN+1];
+
+  polyIntegral(p, P, pN);               // P(x) is the antiderivative of p(x)
+  composePolynomials(a, aN, P, PN, A);  // A(x) = P(a(x))
+  composePolynomials(b, bN, P, PN, B);  // B(x) = P(b(x)) 
+  subtractPolynomials(B, BN, A, AN, q); // q(x) = B(x) - A(x)
+
+  delete[] P;
+  delete[] A;
+  delete[] B;
+}
+
+template<class T>
+bool rsPolynomialBaseChange(T **Q, T *a, T **R, T *b, int order)
+{
+  return rsChangeOfBasisRowWise(Q, R, a, b, order+1);
+}
+
+// end of being moved from .h file
+//-----------------------------------------------------------------------------------------------
+
+
 
 rsComplexDbl RSLib::evaluatePolynomialWithRoots(rsComplexDbl s, rsComplexDbl *r, int N)
 {
