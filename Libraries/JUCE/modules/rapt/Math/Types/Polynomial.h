@@ -156,10 +156,10 @@ public:
   /** Finds all complex roots of a polynomial by Laguerre's method and returns them in "roots". */
   static void findPolynomialRoots(std::complex<T> *a, int order, std::complex<T> *roots);
 
-  static void findPolynomialRoots(double *a, int order, std::complex<T> *roots);
+  static void findPolynomialRoots(T *a, int order, std::complex<T> *roots);
 
   /** Same as above but accepts real coefficients. */
-  //void findPolynomialRootsInternal(double *a, int order, Complex *roots, bool polish = true);
+  //void findPolynomialRootsInternal(T *a, int order, Complex *roots, bool polish = true);
 
   //void findPolynomialRootsNew(Complex *a, int order, Complex *roots);
 
@@ -175,27 +175,27 @@ public:
 
   /** Similar to rootsToCoeffs(Complex *r, Complex *a, int N), but assumes that the roots are
   either real or occur in complex conjugate pairs. This means that the polynomial has purely real
-  coefficients, so the type of the coefficient-array is double instead of Complex. You should use
+  coefficients, so the type of the coefficient-array is T instead of Complex. You should use
   this function only if you know in advance that the coefficients will indeed come out as purely
   real */
-  static void rootsToCoeffs(std::complex<T> *r, double *a, int N);
+  static void rootsToCoeffs(std::complex<T> *r, T *a, int N);
 
   /** Computes the root of the linear equation: \f[ a x + b = 0 \f] which is simply given by
   \f[ x_0 = -\frac{b}{a} \f] */
-  static double getRootOfLinearEquation(double a, double b);
+  static T getRootOfLinearEquation(T a, T b);
 
   /** Computes the two roots of the quadratic equation: \f[ a x^2 + b x + c = 0 \f] which are
   given by: \f[ x_{1,2} = \frac{-b \pm \sqrt{b^2-4ac}}{2a} \f] and stores the result in two-element
   array which is returned. When the qudratic is degenerate (i.e, a == 0), it will fall back to the
   getRootsOfLinearEquation() function, and return a one-element array.  */
-  static std::vector<std::complex<T>> getRootsOfQuadraticEquation(double a, double b, double c);
+  static std::vector<std::complex<T>> getRootsOfQuadraticEquation(T a, T b, T c);
 
   /** Computes the three roots of the cubic equation: \f[ a x^3 + b x^2 + c x + d = 0 \f] and
   stores the result in the three-element array which is returned. When the cubic is degenerate
   (i.e, a == 0), it will fall back to the getRootsOfQuadraticEquation() function, and return a
   two-element array (or a one-element array, when b is also zero). */
-  static std::vector<std::complex<T>> getRootsOfCubicEquation(double a, double b, double c, 
-    double d);
+  static std::vector<std::complex<T>> getRootsOfCubicEquation(T a, T b, T c, 
+    T d);
 
   /** Iteratively improves an initial estimate for the root of the cubic equation:
   \f[ a x^3 + b x^2 + c x + d = 0               \f]
@@ -207,8 +207,8 @@ public:
   the arguments min and max give upper and lower bounds for the root (which will be returned in
   cases where the iteration diverges, which the caller should avoid in the first place) and
   maxIterations gives the maximum number of iteration steps. */
-  static double getCubicRootNear(double x, double a, double b, double c, double d, double min,
-    double max, int maxIterations = 10);
+  static T getCubicRootNear(T x, T a, T b, T c, T d, T min,
+    T max, int maxIterations = 10);
 
   /** Iteratively improves an initial estimate for the root of the polynomial equation:
   \f[ a[order] x^order + ... + a[1] x + a[0] = 0   \f]
@@ -217,50 +217,50 @@ public:
   the arguments min and max give upper and lower bounds for the root (which will be returned in
   cases where the iteration diverges, which you should avoid in the first place) and maxIterations
   gives the maximum number of iteration steps. */
-  static double getRootNear(double x, double *a, int order, double min, double max,
+  static T getRootNear(T x, T *a, int order, T min, T max,
     int maxIterations = 32);
 
   /** Computes coefficients a[0], a[1], a[2], a[3] for the cubic polynomial that goes through the
   points (x[0], y[0]) and (x[1], y[1]) and has first derivatives of dy[0] and dy[1] at these points
   respectively. */
-  static void cubicCoeffsTwoPointsAndDerivatives(double *a, double *x, double *y, double *dy);
+  static void cubicCoeffsTwoPointsAndDerivatives(T *a, T *x, T *y, T *dy);
 
   /** Simplified version of
-  cubicCoeffsTwoPointsAndDerivatives(double *a, double *x, double *y, double *dy)
+  cubicCoeffsTwoPointsAndDerivatives(T *a, T *x, T *y, T *dy)
   which assumes that x[0] = 0, x[1] = 1 - so we don't need to actually pass the x-array. */
-  static void rsCubicCoeffsTwoPointsAndDerivatives(double *a, double *y, double *dy);
+  static void rsCubicCoeffsTwoPointsAndDerivatives(T *a, T *y, T *dy);
 
-  // \todo void cubicCoeffsFourPoints(double *a, double *x, double *y);
+  // \todo void cubicCoeffsFourPoints(T *a, T *x, T *y);
 
   /** Computes coefficients a[0], a[1], a[2], a[3] for the cubic polynomial that goes through the
   points (-1, y[-1]), (0, y[0]), (1, y[1]), (2, y[2]). NOTE, that the y-array is accessed at values
   y[-1]...y[2] - the caller should make sure, these values exist. */
-  static void rsCubicCoeffsFourPoints(double *a, double *y);
+  static void rsCubicCoeffsFourPoints(T *a, T *y);
 
   /** Allocates and fills an NxN matrix A wher A[i][j] are given by x[i]^j. The caller is
   responsible for deallocation. So it's used like:
-  double **A = rsVandermondeMatrix(x, N);
+  T **A = rsVandermondeMatrix(x, N);
   // ...do stuff with matrix A
   rsDeAllocateSquareArray2D(A, N);  */
-  static double** rsVandermondeMatrix(double *x, int N);
+  static T** rsVandermondeMatrix(T *x, int N);
 
   /** Computes coefficients a[0],..., a[N-1] for a polynomial of order N-1 that goes through the N
   data points (x[0], y[0]),...,(x[N-1], y[N-1]). */
-  static void rsInterpolatingPolynomial(double *a, double *x, double *y, int N);
+  static void rsInterpolatingPolynomial(T *a, T *x, T *y, int N);
     // maybe move to Interplation
 
-  /** Like rsInterpolatingPolynomial(double *a, double *x, double *y, int N), but instead of
+  /** Like rsInterpolatingPolynomial(T *a, T *x, T *y, int N), but instead of
   passing an x-array, you should pass a start value x0 and an increment dx and it will use x-values
   given by x0, x0+dx, x0+2*dx,...,x0+(N-1)*dx, so this function assumes equidisant abscissa
   values. */
-  static void rsInterpolatingPolynomial(double *a, double x0, double dx, double *y, int N);
+  static void rsInterpolatingPolynomial(T *a, T x0, T dx, T *y, int N);
 
-  // \todo void quinticCoeffsTwoPointsAndDerivatives(double *a, double *x, double *y, double *dy,
-  //                                                 double *d2y);
+  // \todo void quinticCoeffsTwoPointsAndDerivatives(T *a, T *x, T *y, T *dy,
+  //                                                 T *d2y);
 
   /** Fits the quadratic parabola defined by y(x) = a[2]*x^2 + a[1]*x + a[0] to the
   3 points (x[0],y[0]), (x[1],y[1]), (x[2],y[2]). */
-  static void fitQuadratic(double *a, double *x, double *y);
+  static void fitQuadratic(T *a, T *x, T *y);
 
   /** Fits the quadratic parabola defined by y(x) = a[2]*x^2 + a[1]*x + a[0] to the
   3 points (0,y[0]), (1,y[1]), (2,y[2]).
@@ -270,20 +270,20 @@ public:
   a different name [....] - do this as soon a all code from the legacy codebase is copied over.
   ..OK done - renamed to fitQuadratic_0_1_2 - the other one can be named just fitQuadratic
   */
-  static void fitQuadratic_0_1_2(double *a, double *y);
+  static void fitQuadratic_0_1_2(T *a, T *y);
 
   /** Fits the quartic defined by y(x) = a[4]*x^4 + a3*x^3 + a[2]*x^2 + a[1]*x + a[0] to the
   3 points (0,y[0]), (1,y[1]), (2,y[2]) and also matches the derivatives (slopes)
   y'(0) = s0, y'(2) = s2 */
-  static void fitQuarticWithDerivatives(double *a, double *y, double s0, double s2);
+  static void fitQuarticWithDerivatives(T *a, T *y, T s0, T s2);
 
   /** Given coefficients of a polynomial a2*x^2 + a1*x + a0, this function determines whether its
   roots are on or inside the unit circle.
    \todo: write and run a unit-test for this function.
   */
-  static bool areRootsOnOrInsideUnitCircle(double a0, double a1, double a2);
+  static bool areRootsOnOrInsideUnitCircle(T a0, T a1, T a2);
 
-  // \todo fitPolynomial(double *a, int order, double *x, double *y, int numValues);
+  // \todo fitPolynomial(T *a, int order, T *x, T *y, int numValues);
   // order+1 == numValues: exact fit
   // order+1 >  numValues: exact fit, some higher coeffs unused -> maybe via recursive call
   // order+1 <  numValues: least-squares fit
@@ -298,25 +298,25 @@ public:
   static void rsPolynomialRecursion(T *a, T w0, int order, T *a1, T w1, T w1x, T *a2, T w2);
 
   /** Fills the array with coefficients for a Bessel-polynomial of given order. */
-  static void besselPolynomial(double *a, int order);
+  static void besselPolynomial(T *a, int order);
     // todo: maybe use rsPolynomialRecursion inside
 
   /** Fills the array with coefficients for a Legendre-polynomial (of the 1st kind) of given
   order. */
-  static void legendrePolynomial(double *a, int order);
+  static void legendrePolynomial(T *a, int order);
     // todo: maybe use rsPolynomialRecursion - or maybe get rid of the function 
     // (move to prototypes)
 
   /** Computes the recursion coefficients (as used in rsPolynomialRecursion) for the Jacobi
   polynomial of order n (n >= 2) with parameters a and b. */
-  static void rsJacobiPolynomialRecursionCoeffs(int n, double a, double b, double *w0,
-    double *w1, double *w1x, double *w2);
+  static void rsJacobiPolynomialRecursionCoeffs(int n, T a, T b, T *w0,
+    T *w1, T *w1x, T *w2);
 
   /** Given the coefficients of the Jacobi polynomials of orders n-1 and n-2 in c1 and c2, this
   function computes the coefficients of the next Jacobi polynomial of order n by using the 3 term
   recurrence relation with parameters a and b. */
-  static void rsJacobiPolynomialRecursion(double *c, int n, double *c1, double *c2, double a,
-    double b);
+  static void rsJacobiPolynomialRecursion(T *c, int n, T *c1, T *c2, T a,
+    T b);
 
   /** Computes the coefficients of the Jacobi polynomials of orders up to maxOrder with parameters
   a and b (usually alpha and beta in formulas). The 2D array "c" will contain the coefficients on
@@ -325,16 +325,16 @@ public:
   array of length 1 , the 2nd of length 2, etc. where the last one should have length
   maxOrder+1 (same as the outer). You may also use a square matrix for convenience - then unused
   elements will not be touched in this case. */
-  static void rsJacobiPolynomials(double **c, double a, double b, int maxOrder);
+  static void rsJacobiPolynomials(T **c, T a, T b, int maxOrder);
 
   /** Analog to rsJacobiPolynomialRecursion */
-  static void rsLegendrePolynomialRecursion(double *a, int n, double *a1, double *a2);
+  static void rsLegendrePolynomialRecursion(T *a, int n, T *a1, T *a2);
 
-  // todo: void chebychevPolynomial(double *a, int order);
+  // todo: void chebychevPolynomial(T *a, int order);
 
   // \todo for Halpern filters:
-  //void jacobiPolynomial(double *a, int order); // the U-polynomials
-  //void maximallyDivergingMonotonicPolynomial(double *a, int order); // the T-polynomial
+  //void jacobiPolynomial(T *a, int order); // the U-polynomials
+  //void maximallyDivergingMonotonicPolynomial(T *a, int order); // the T-polynomial
 
   // comment this function, maybe use a more efficent algorithm if all
   // poles are simple, (see also Experiments - there's something said about that)
