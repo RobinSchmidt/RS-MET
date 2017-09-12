@@ -26,7 +26,7 @@ void rsPolynomial<T>::evaluatePolynomialAndDerivativeAt(T x, T *a, int order, T 
 }
 
 template <class T>
-void rsPolynomial<T>::evaluatePolynomialAndDerivativesAt(T x, T *a, int order, T *results, 
+void rsPolynomial<T>::evaluatePolynomialAndDerivativesAt(T x, T *a, int order, T *results,
   int numDerivatives)
 {
   results[0] = a[order];
@@ -62,7 +62,7 @@ void rsPolynomial<T>::dividePolynomials(T *p, int pOrder, T *d, int dOrder, T *q
 }
 
 template <class T>
-void rsPolynomial<T>::dividePolynomialByMonomialInPlace(T *dividendAndResult, int dividendOrder, 
+void rsPolynomial<T>::dividePolynomialByMonomialInPlace(T *dividendAndResult, int dividendOrder,
   T x0, T *remainder)
 {
   *remainder = dividendAndResult[dividendOrder];
@@ -86,24 +86,24 @@ void rsPolynomial<T>::polyCoeffsForNegativeArgument(T *a, T *am, int N)
   }
 }
 
-// todo: polyCoeffsForScaledArgument: aScaled[n] = a[n] * scaler^n - when the scaler equals -1, 
+// todo: polyCoeffsForScaledArgument: aScaled[n] = a[n] * scaler^n - when the scaler equals -1,
 // it reduces to polyCoeffsForNegativeArgument - this function is superfluous then
 
 template <class T>
 void rsPolynomial<T>::polyCoeffsForShiftedArgument(T *a, T *as, int N, T x0)
 {
-  int numLines = N+1;
-  int length   = (numLines*(numLines+1))/2;
+  rsUint32 numLines = N+1;
+  rsUint32 length   = (numLines*(numLines+1))/2;
   rsUint32 *pt = new rsUint32[length];
   rsCreatePascalTriangle(pt, numLines);
   T *x0n = new T[N+1];  // +- x0^n
   x0n[0] = 1.0;
-  for(int n = 1; n <= N; n++)
+  for(rsUint32 n = 1; n <= N; n++)
     x0n[n] = -x0 * x0n[n-1];
-  for(int n = 0; n <= N; n++)
+  for(rsUint32 n = 0; n <= N; n++)
   {
     as[n] = 0.0;
-    for(int k = n; k <= N; k++)
+    for(rsUint32 k = n; k <= N; k++)
       as[n] += rsPascalTriangle(pt, k, k-n) * x0n[k-n] * a[k];
   }
   delete[] pt;
@@ -128,16 +128,16 @@ void rsPolynomial<T>::polyFiniteDifference(T *a, T *ad, int N, int direction, T 
     hk[k] = hk[k-1] * hs;
 
   // binomial coefficients:
-  int numCoeffs    = N+1;
-  int triangleSize = (numCoeffs*(numCoeffs+1))/2;
+  rsUint32 numCoeffs    = N+1;
+  rsUint32 triangleSize = (numCoeffs*(numCoeffs+1))/2;
   rsUint32 *binomCoeffs = new rsUint32[triangleSize];
   rsCreatePascalTriangle(binomCoeffs, numCoeffs);
 
   // actual coefficient computation for ad:
   rsFillWithZeros(ad, N);
-  for(int n = 0; n <= N; n++)
+  for(unsigned int n = 0; n <= N; n++)
   {
-    for(int k = 1; k <= n; k++)
+    for(unsigned int k = 1; k <= n; k++)
       ad[n-k] += a[n] * rsPascalTriangle(binomCoeffs, n, k) * hk[k];
   }
   if(direction == -1)
@@ -228,7 +228,7 @@ void rsPolynomial<T>::subtractPolynomials(T *p, int pN, T *q, int qN, T *r)
 }
 
 template<class T>
-void rsPolynomial<T>::integratePolynomialWithPolynomialLimits(T *p, int pN, T *a, int aN, T *b, 
+void rsPolynomial<T>::integratePolynomialWithPolynomialLimits(T *p, int pN, T *a, int aN, T *b,
   int bN, T *q)
 {
   int PN = pN+1;
@@ -241,7 +241,7 @@ void rsPolynomial<T>::integratePolynomialWithPolynomialLimits(T *p, int pN, T *a
 
   polyIntegral(p, P, pN);               // P(x) is the antiderivative of p(x)
   composePolynomials(a, aN, P, PN, A);  // A(x) = P(a(x))
-  composePolynomials(b, bN, P, PN, B);  // B(x) = P(b(x)) 
+  composePolynomials(b, bN, P, PN, B);  // B(x) = P(b(x))
   subtractPolynomials(B, BN, A, AN, q); // q(x) = B(x) - A(x)
 
   delete[] P;
@@ -259,7 +259,7 @@ bool rsPolynomial<T>::rsPolynomialBaseChange(T **Q, T *a, T **R, T *b, int order
 //-----------------------------------------------------------------------------------------------
 
 template<class T>
-std::complex<T> rsPolynomial<T>::evaluatePolynomialWithRoots(std::complex<T> s, 
+std::complex<T> rsPolynomial<T>::evaluatePolynomialWithRoots(std::complex<T> s,
   std::complex<T> *r, int N)
 {
   std::complex<T> result = 1.0;
@@ -273,7 +273,7 @@ std::complex<T> rsPolynomial<T>::evaluatePolynomialWithRoots(std::complex<T> s,
 
 // used in convergeToRootViaLaguerre - maybe turn into member function:
 template<class T>
-T evaluatePolynomialWithTwoDerivativesAndError(std::complex<T> *a, int order, 
+T evaluatePolynomialWithTwoDerivativesAndError(std::complex<T> *a, int order,
   std::complex<T> z, std::complex<T> *P)
 {
   P[0] = a[order];                // P(z)
@@ -281,7 +281,7 @@ T evaluatePolynomialWithTwoDerivativesAndError(std::complex<T> *a, int order,
   P[2] = std::complex<T>(0.0, 0.0);  // P''(z)
   T err = P[0].getRadius();  // estimated roundoff error in evaluation of the polynomial
   T zA  = z.getRadius();     // absolute value of z
-  for(int j = order-1; j >= 0; j--) 
+  for(int j = order-1; j >= 0; j--)
   {
     P[2] = z * P[2] + P[1];
     P[1] = z * P[1] + P[0];
@@ -293,29 +293,29 @@ T evaluatePolynomialWithTwoDerivativesAndError(std::complex<T> *a, int order,
 }
 
 template<class T>
-std::complex<T> rsPolynomial<T>::convergeToRootViaLaguerre(std::complex<T> *a, int order, 
+std::complex<T> rsPolynomial<T>::convergeToRootViaLaguerre(std::complex<T> *a, int order,
                                                std::complex<T> initialGuess)
 {
-  const T eps = std::numeric_limits<T>::epsilon(); 
+  const T eps = std::numeric_limits<T>::epsilon();
 
   static const int numFractions = 8; // number of fractions minus 1 (for breaking limit cycles)
-  static const int itsBeforeFracStep = 10;  // number of iterations after which a fractional step 
+  static const int itsBeforeFracStep = 10;  // number of iterations after which a fractional step
                                             // is taken (to break limit cycles)
-  static const int maxNumIterations = itsBeforeFracStep*numFractions;  
+  static const int maxNumIterations = itsBeforeFracStep*numFractions;
 
   // fractions for taking fractional update steps to break a limit cycles:
-  static T fractions[numFractions+1] = {0.0, 0.5, 0.25, 0.75, 0.13, 0.38, 0.62, 0.88, 1.0}; 
-       
+  static T fractions[numFractions+1] = {0.0, 0.5, 0.25, 0.75, 0.13, 0.38, 0.62, 0.88, 1.0};
+
   std::complex<T> r = initialGuess; // the current estimate for the root
-  for(int i = 1; i <= maxNumIterations; i++) 
+  for(int i = 1; i <= maxNumIterations; i++)
   {
-    std::complex<T> P[3];    // holds P, P', P'' 
+    std::complex<T> P[3];    // holds P, P', P''
     T  err = eps * evaluatePolynomialWithTwoDerivativesAndError(a, order, r, P);
 
-    if( P[0].getRadius() <= err ) 
-      return r;   
+    if( P[0].getRadius() <= err )
+      return r;
       // "simplified stopping criterion due to Adams", referred to on page 373 (?)
-      // can we get rid of this? if so, we might also replace the above loop by 
+      // can we get rid of this? if so, we might also replace the above loop by
       // evaluatePolynomialAndDerivativesAt
 
     // Laguerre's formulas:
@@ -326,39 +326,39 @@ std::complex<T> rsPolynomial<T>::convergeToRootViaLaguerre(std::complex<T> *a, i
     std::complex<T> Gp = G + sq;  // denominator in 9.5.11 with positive sign for square-root
     std::complex<T> Gm = G - sq;  // denominator in 9.5.11 with negative sign for square-root
 
-    // choose Gp or Gm according to which has larger magnitude (page 372, bottom), re-use Gp for 
+    // choose Gp or Gm according to which has larger magnitude (page 372, bottom), re-use Gp for
     // the result:
     T GpA = Gp.getRadius();
     T GmA = Gm.getRadius();
-    if( GpA < GmA ) 
+    if( GpA < GmA )
     {
       Gp  = Gm;
       GpA = GmA;
     }
 
-    // compute difference between old and new estimate for the root r (the 'a' variable in 
+    // compute difference between old and new estimate for the root r (the 'a' variable in
     // Eq. 9.5.8)
-    std::complex<T> dr;                       
-    if( GpA > 0.0 ) 
+    std::complex<T> dr;
+    if( GpA > 0.0 )
       dr = std::complex<T>(order, 0.0) / Gp;  // Eq. 9.5.11
     else
-      dr = exp(log(1.0+r.getRadius())) * std::complex<T>(cos((T)i), sin((T)i)); 
+      dr = exp(log(1.0+r.getRadius())) * std::complex<T>(cos((T)i), sin((T)i));
         // \todo use sinCos()
 
     // compute new estimate for the root:
-    std::complex<T> rNew = r - dr;   
+    std::complex<T> rNew = r - dr;
     if( r == rNew )
       return r;  // converged
 
     // update our r-variable to the new estimate:
-    if( i % itsBeforeFracStep != 0 ) 
+    if( i % itsBeforeFracStep != 0 )
       r = rNew;
-    else 
+    else
       r = r - fractions[i/itsBeforeFracStep]*dr; // fractional step to break limit cycle
   }
 
-  //rsAssert(false);  // error - too many iterations taken, algorithm did not converge
-  rsError("Too many iterations taken, algorithm did not converge.");
+  rsAssert(false);  // error - too many iterations taken, algorithm did not converge
+  //rsError("Too many iterations taken, algorithm did not converge.");
 
   return 0.0;
 }
@@ -368,30 +368,30 @@ void rsPolynomial<T>::findPolynomialRoots(std::complex<T> *a, int order, std::co
 {
   const T eps = 2.0e-14; // for float, it was 2.0e-6 - use template numeric_limit<T>
 
-  // allocate memory for the coefficients of the deflated polynomial and initialize it as 
+  // allocate memory for the coefficients of the deflated polynomial and initialize it as
   // non-deflated polynomial:
   std::complex<T> *ad = new std::complex<T>[order+1];
   rsCopyBuffer(a, ad, order+1);
 
   // loop over the roots:
-  for(int j = order; j >= 1; j--) 
+  for(int j = order; j >= 1; j--)
   {
     // find a root of the deflated polynomial using the Laguerre-algorithm with 0 as initial guess:
-    std::complex<T> r = convergeToRootViaLaguerre(ad, j, std::complex<T>(0.0, 0.0));    
+    std::complex<T> r = convergeToRootViaLaguerre(ad, j, std::complex<T>(0.0, 0.0));
 
-    // polish the root by using the Laguerre method with the undeflated polynomial and the 
-    // non-polished root as initial guess: 
+    // polish the root by using the Laguerre method with the undeflated polynomial and the
+    // non-polished root as initial guess:
     r = convergeToRootViaLaguerre(a, order, r);
 
-    // maybe move into a member function Complex::zeroNegligibleImaginaryPart(T ratio); 
+    // maybe move into a member function Complex::zeroNegligibleImaginaryPart(T ratio);
     // -> ratio = 2*eps (maybe leave this to client code):
-    if( fabs(r.im) <= 2.0*eps*fabs(r.re) ) 
+    if( fabs(r.im) <= 2.0*eps*fabs(r.re) )
       r.im = 0.0;
 
     // store root in output array:
-    roots[j-1] = r; 
+    roots[j-1] = r;
 
-    // deflate the deflated polynomial again by the monomial that corresponds to our most recently 
+    // deflate the deflated polynomial again by the monomial that corresponds to our most recently
     // found root:
     std::complex<T> rem = ad[j];  // remainder - not used, needed for passing a dummy pointer
     dividePolynomialByMonomialInPlace(ad, j, r, &rem);
@@ -419,7 +419,7 @@ std::vector<std::complex<T>> rsPolynomial<T>::getPolynomialCoefficientsFromRoots
   coeffs.ensureAllocatedSize(roots.getNumElements()+1);
   coeffs.appendElement(1.0);
 
-  if( roots.getNumElements() < 1 ) 
+  if( roots.getNumElements() < 1 )
     return coeffs;
 
   for(int i=0; i<roots.getNumElements(); i++)
@@ -685,7 +685,7 @@ void rsPolynomial<T>::cubicCoeffsTwoPointsAndDerivatives(T *a, T *x, T *y, T *dy
   a[0] =  s*(x0_2*(x1_2*k3+k2) + x0_3*(y[1]-x[1]*dy[1]) + x[0]*x1_3*dy[0] + y[0]*(-x1_3+k1));
   a[1] = -s*(x[0]*(x1_2*(2*dy[1]+dy[0])-6*x[1]*y[1]) - x0_3*dy[1] + x0_2*x[1]*(-dy[1]-2*dy[0])
              + x1_3*dy[0] + 6*x[0]*x[1]*y[0]);
-  a[2] =  s*(x[0]*(x[1]*k3-3*y[1]) + x1_2*(dy[1]+2*dy[0]) + x0_2*(-dy[0]-2*dy[1]) + k2 
+  a[2] =  s*(x[0]*(x[1]*k3-3*y[1]) + x1_2*(dy[1]+2*dy[0]) + x0_2*(-dy[0]-2*dy[1]) + k2
              + y[0]*(3*x[1]+3*x[0]));
   a[3] = -s*(x[1]*(dy[1]+dy[0]) + x[0]*(-dy[1]-dy[0]) - 2*y[1] + 2*y[0]);
 }
@@ -711,7 +711,7 @@ void rsPolynomial<T>::rsCubicCoeffsFourPoints(T *a, T *y)
 template<class T>
 T** rsPolynomial<T>::rsVandermondeMatrix(T *x, int N)
 {
-  T **A; 
+  T **A;
   rsAllocateSquareArray2D(A, N);
   for(int i = 0; i < N; i++)
   {
@@ -731,14 +731,14 @@ void rsPolynomial<T>::rsInterpolatingPolynomial(T *a, T *x, T *y, int N)
 {
   T **A = rsVandermondeMatrix(x, N);
   rsSolveLinearSystem(A, a, y, N);
-  rsDeAllocateSquareArray2D(A, N);  
+  rsDeAllocateSquareArray2D(A, N);
 
-  // For higher order polynomials, this simple and direct approach may become numerically ill 
+  // For higher order polynomials, this simple and direct approach may become numerically ill
   // conditioned. In this case, we could first normalize the data, such than xMin = yMin = -1 and
   // xMax = yMax = +1, find coefficients for Chebychev polynomials, such that our normalized
   // interpolant is given by P(x) = b0*T0(x) + b1*T1(x) + ... + (bN-1)*(TN-1)(x) where Tn is the
-  // n-th order Chebychev polynomial. Then, the b-coefficients could be converted back to 
-  // a-coefficients for powers of x and finally, we could denormalize using rsShiftPolynomial, 
+  // n-th order Chebychev polynomial. Then, the b-coefficients could be converted back to
+  // a-coefficients for powers of x and finally, we could denormalize using rsShiftPolynomial,
   // rsStretchPolynomial (for x-denormalization) and scaling the coeffs and adding an offset to
   // a[0] for y-denormalization
 }
@@ -803,7 +803,7 @@ bool rsPolynomial<T>::areRootsOnOrInsideUnitCircle(T a0, T a1, T a2)
   else
   {
     // 2 real roots
-    d = rsSqrt(d); 
+    d = rsSqrt(d);
     rr = -p/2 + d;
     if( fabs(rr) > 1.0 )
       return false;
@@ -832,11 +832,11 @@ void rsPolynomial<T>::besselPolynomial(T *a, int order)
     a[1] = 1.0;
     return;
   }
-   
+
   // the general case is treated by recursion:
   a[0]       = 1.0;
-  T *b1 = new T[order+1]; 
-  T *b2 = new T[order+1]; 
+  T *b1 = new T[order+1];
+  T *b2 = new T[order+1];
   b2[0]      = 1.0;
   b2[1]      = 0.0;
   b1[0]      = 1.0;
@@ -854,19 +854,19 @@ void rsPolynomial<T>::besselPolynomial(T *a, int order)
     for(m=0; m<=n; m++)
       b1[m] = a[m];
   }
-  delete[] b1; 
-  delete[] b2; 
+  delete[] b1;
+  delete[] b2;
 }
 
 template<class T>
 void rsPolynomial<T>::legendrePolynomial(T *a, int order)
 {
-  if(order == 0) 
+  if(order == 0)
   {
     a[0] = 1.0;
     return;
   }
-  if(order == 1) 
+  if(order == 1)
   {
     a[0] = 0.0;
     a[1] = 1.0;
@@ -876,32 +876,32 @@ void rsPolynomial<T>::legendrePolynomial(T *a, int order)
   a[0] = -0.5;
   a[1] =  0.0;
   a[2] =  1.5;
-  if(order == 2) 
+  if(order == 2)
     return;
 
   int i, j;
   T *b1 = new T [order+1];
   T *b2 = new T [order+1];
 
-  for(i = 0; i <= order; i++) 
+  for(i = 0; i <= order; i++)
   {
     b1[i] = b2[i] = 0.0;
   }
   b2[1] = 1.0;
 
-  for(i = 3; i <= order; i++) 
+  for(i = 3; i <= order; i++)
   {
-    for(j = 0; j <= i; j++) 
+    for(j = 0; j <= i; j++)
     {
       b1[j] = b2[j];
       b2[j] = a[j];
       a[j]  = 0.0;
     }
-    for(j = i-2; j >= 0; j-=2) 
+    for(j = i-2; j >= 0; j-=2)
     {
       a[j] -= (i-1)*b1[j]/i;
     }
-    for(j = i-1; j >= 0; j-=2) 
+    for(j = i-1; j >= 0; j-=2)
     {
       a[j+1] += (2*i-1)*b2[j]/i;
     }
@@ -923,7 +923,7 @@ void rsPolynomial<T>::rsJacobiPolynomialRecursionCoeffs(int n, T a, T b, T *w0, 
 }
 
 template<class T>
-void rsPolynomial<T>::rsJacobiPolynomialRecursion(T *c, int n, T *c1, T *c2, T a, 
+void rsPolynomial<T>::rsJacobiPolynomialRecursion(T *c, int n, T *c1, T *c2, T a,
   T b)
 {
   // initialization:
@@ -969,19 +969,19 @@ void rsPolynomial<T>::rsLegendrePolynomialRecursion(T *a, int n, T *a1, T *a2)
   rsPolynomialRecursion(a, T(n), n, a1, 0.0, 2.0*n-1.0, a2, -(n-1.0));
 
   // Legendre polynomials are a special case of Jacobi polynomials, so this would also work:
-  // rsJacobiPolynomialRecursion(a, n, a1, a2, 0.0, 0.0); 
+  // rsJacobiPolynomialRecursion(a, n, a1, a2, 0.0, 0.0);
 }
 
 template<class T>
 void rsPolynomial<T>::rsPartialFractionExpansion(
   std::complex<T> *numerator,   int numeratorOrder,
-  std::complex<T> *denominator, int denominatorOrder, 
+  std::complex<T> *denominator, int denominatorOrder,
   std::complex<T> *poles, int *multiplicities, int numDistinctPoles,
   std::complex<T> *pfeCoeffs)
 {
   // sanity check for inputs:
   rsAssert(numeratorOrder < denominatorOrder);
-  rsAssert(rsSum(multiplicities, numDistinctPoles) == denominatorOrder);
+  rsAssert(ArrayTools::rsSum(multiplicities, numDistinctPoles) == denominatorOrder);
 
   // make denominator monic:
   rsScale(numerator,   numeratorOrder+1,   1.0/denominator[denominatorOrder]);
@@ -1009,18 +1009,18 @@ void rsPolynomial<T>::rsPartialFractionExpansion(
   rsSolveLinearSystem(A, pfeCoeffs, tmp, denominatorOrder);
 
   // clean up:
-  rsDeAllocateSquareArray2D(A, denominatorOrder);  
+  rsDeAllocateSquareArray2D(A, denominatorOrder);
   delete[] tmp;
 }
 
 
 /*
 todo: define the set of rational functions R(x) = P(x)/Q(x) where P, Q are polynomials
--find out, if the set is closed under addition, subtraction, multiplication, division, composition,  
- (maybe) decomposition, differentiation, integration (indefinite and definite with other rational 
+-find out, if the set is closed under addition, subtraction, multiplication, division, composition,
+ (maybe) decomposition, differentiation, integration (indefinite and definite with other rational
  functions as limits)
 -implement all these operations
--note: when there's a direct part added to a proper rational function, the whole thing can be 
+-note: when there's a direct part added to a proper rational function, the whole thing can be
  expressed as improper rational function - so we don't need extra provisions for the direct part
 -maybe it's more convenient to work with pole/zero/gain representations instead of coefficients for
  some operations
@@ -1029,12 +1029,12 @@ composition: let y = R(x) = P(x)/Q(x), z = U(y) = S(y)/T(y) such that
 z = S( P(x)/Q(x) ) / T( P(x)/Q(x) ) is the composition of U with R
 define W(x) = ((P/Q)°S)(x) = S( P(x)/Q(x) ) and
        V(x) = ((P/Q)°T)(x) = T( P(x)/Q(x) )
-we see, that we first need the composition of an (inner) rational function with an (outer) 
+we see, that we first need the composition of an (inner) rational function with an (outer)
 polynomial
 example: let P(x) = x^2 + 2x, Q(x) = 2x^3 - x^2, y = P(x)/Q(x), S(y) = 2y^2 - y + 3, so:
 S(x) = 2((x^2+2x)/(2x^3-x^2))^2 - ((x^2+2x)/(2x^3-x^2))^1 + 3((x^2+2x)/(2x^3-x^2))^0
      = 2((x^2+2x)/(2x^3-x^2))^2 - (x^2+2x)/(2x^3-x^2) + 3
-S = 2*(P/Q)^2 - 1*(P/Q)^1 + 3*(P/Q)^0 
+S = 2*(P/Q)^2 - 1*(P/Q)^1 + 3*(P/Q)^0
   = (2*P^2*Q^0 - 1*P^1*Q^1 + 3*P^0*Q^2) / Q^2
 -> denominator and numerator polynomial can be computed
    order of new denominator = order(S)*order(Q)
@@ -1046,11 +1046,11 @@ S = 2*(P/Q)^2 - 1*(P/Q)^1 + 3*(P/Q)^0
 
 differentiation: use the quotient rule
 
-integration: make use of the partial fraction expansion (and later re-assemble the partial integrals 
+integration: make use of the partial fraction expansion (and later re-assemble the partial integrals
  into a canonical representation)
  -maybe provide a function for summing an array of rational functions
 
-division: can be reduced to multiplication: R = P/Q, U = S/T 
+division: can be reduced to multiplication: R = P/Q, U = S/T
  -> W = R/U = (P/Q) / (S/T) = (P*T)/(Q*S)
  W.num = P*T; W.den = Q*S
  -maybe it can then be reduced to lowest terms - divide out common roots in numerator and denominator

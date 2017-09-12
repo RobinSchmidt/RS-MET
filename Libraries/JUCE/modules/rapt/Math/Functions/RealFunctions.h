@@ -567,7 +567,7 @@ RS_INLINE int rsPowInt(int base, int exponent)
 
 RS_INLINE double rsQuant(double x, double i)
 {
-  if(i <= DBL_MIN)
+  if(i <= RS_MIN(double))
   {
     RS_DEBUG_BREAK;
     return x;
@@ -845,12 +845,12 @@ RS_INLINE double rsSoftClip(double x, double lowClamp, double highClamp,
 
   double highAlpha = highClamp - highThresh;
   if(highAlpha == 0.0)
-    highAlpha += DBL_MIN;
+    highAlpha += RS_MIN(double);
   double highBeta = 1.0/highAlpha;
 
   double lowAlpha = lowClamp - lowThresh;
   if(lowAlpha == 0.0)
-    lowAlpha += DBL_MIN;
+    lowAlpha += RS_MIN(double);
   double lowBeta = 1.0/lowAlpha;
 
   double out;
