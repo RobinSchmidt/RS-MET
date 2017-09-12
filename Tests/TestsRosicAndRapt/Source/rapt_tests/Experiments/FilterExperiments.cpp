@@ -391,4 +391,8 @@ void smoothingFilterTransitionTimes()
   // actually observed step repsonses deviate from that simple rule more and more. 
   // Why is that? Is it because the design formula uses impulse-invariant transform and should use
   // step-invariant? ...or maybe even bilinear?
+
+  // see here: http://web.cecs.pdx.edu/~tymerski/ece452/Chapter4.pdf
+  // http://homes.esat.kuleuven.be/~maapc/Sofia/slides_chapter8.pdf
+  // http://dspcan.homestead.com/files/IIRFilt/zfiltsii.htm
 }
