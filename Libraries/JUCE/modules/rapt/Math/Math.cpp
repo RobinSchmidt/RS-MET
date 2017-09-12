@@ -6,7 +6,7 @@ namespace RAPT
 #include "Functions/BasicFunctions.cpp"
 #include "Functions/IntegerFunctions.cpp"
 #include "Functions/RealFunctions.cpp"
-//#include "Functions/ComplexFunctions.cpp"
+#include "Functions/ComplexFunctions.cpp"
 //#include "Functions/FunctionIterators.cpp"
 //#include "Functions/MoebiusTransform.cpp"
 #include "Functions/BellFunctions.cpp"
