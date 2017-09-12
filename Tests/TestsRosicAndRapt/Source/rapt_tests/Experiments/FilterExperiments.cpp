@@ -356,9 +356,9 @@ void smoothingFilterTransitionTimes()
   // with that assumption, so we check.
 
   // user parameters:
-  static const int N = 300;           // number of samples
-  int order = 1;                      // order of the filters
-  float asymmetry = 0.f;              // asymmetry parameters
+  static const int N = 400;           // number of samples
+  int order = ;                      // order of the filters
+  float asymmetry = 1.f;              // asymmetry parameter
   static const int numFilters = 5;    // number of transition times
   float transitionTimes[numFilters] = { 51.f, 101.f, 151.f, 200.1f, 251.f }; // transition times in samples
 
@@ -383,4 +383,12 @@ void smoothingFilterTransitionTimes()
   for(int i = 0; i < numFilters; i++)
     plt.addDataArrays(N, y[i]); 
   plt.plot();
+
+  // Observations:
+  // The intuitive assumption that scaling all the time constants by the same factor has the effect
+  // of stretching/compressing the step-response by that amount turns out to be false. It seems to
+  // be true for 1st order filters but for higher orders, especially when there's asymmetry, the 
+  // actually observed step repsonses deviate from that simple rule more and more. 
+  // Why is that? Is it because the design formula uses impulse-invariant transform and should use
+  // step-invariant? ...or maybe even bilinear?
 }
