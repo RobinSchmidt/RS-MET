@@ -23,7 +23,7 @@ void ladderResonanceManipulation()
   float fIn =   80;       // input frequency
 
   // create and set up the filters:
-  typedef RAPT::LadderFilter<float, float> LDR;  // for convenience
+  typedef RAPT::rsLadderFilter<float, float> LDR;  // for convenience
 
   LDR withReso;
   withReso.setSampleRate(fs);

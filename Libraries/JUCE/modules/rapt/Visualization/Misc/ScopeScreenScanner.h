@@ -67,7 +67,7 @@ protected:
   int samplesSinceReset, samplesSinceLastZero; 
   int zeroCrossingCount, minZeroDistance, numZerosToReset;
 
-  LadderFilter<T, T> lowpass;
+  rsLadderFilter<T, T> lowpass;
 
 };
 

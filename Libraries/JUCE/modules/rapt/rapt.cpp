@@ -63,7 +63,7 @@ template class RAPT::PhaseScopeBuffer2<double, float, double>;
 template double RAPT::rsAbs(double x);
 template class RAPT::rsBreakpointModulator<double>;
 template class RAPT::rsSmoothingFilter<double, double>;
-template class RAPT::LadderFilter<double, double>;
+template class RAPT::rsLadderFilter<double, double>;
 template class RAPT::rsPhasorFilter<double, double>;
 template class RAPT::rsPhasorStateMapper<double>;
 // todo: get rid of directly using rapt classes in jura and/or products - create instantiations for

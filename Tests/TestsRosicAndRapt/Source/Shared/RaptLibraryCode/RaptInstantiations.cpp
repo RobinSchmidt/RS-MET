@@ -49,7 +49,7 @@ template float RAPT::rsStatistics::proportionalRegression(int N, float* x, float
 
 // Filters:
 template RAPT::rsSmoothingFilter<float, float>;
-template RAPT::LadderFilter<float, float>;
+template RAPT::rsLadderFilter<float, float>;
 template RAPT::rsPhasorFilter<float, float>;
 template RAPT::rsPhasorStateMapper<float>;
 template RAPT::StateVariableFilter<float, float>; 
