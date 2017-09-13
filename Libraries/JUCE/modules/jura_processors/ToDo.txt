@@ -46,7 +46,6 @@ RayBouncer:
  -big font incomplete
 
 -Straightliner bugs:
- -tuning file widget set looks weird (the box is missing), also it should not show ".xml"
  -loading a tuning file doesn't work. apparently we have used illegal xml attribute names 
   (beginning with a number) - revise the tuning file format, maybe preprend "Key" or just "K"
   before each key number
