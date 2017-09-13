@@ -73,8 +73,8 @@ bool tuningTableStateFromXml(TuningTable* tuningTable, const XmlElement &xmlStat
 
   for(int i=0; i<128; i++)
   {
-    if( xmlState.hasAttribute(juce::String(i)) )
-      tuningTable->assignFrequency(i, factor * xmlState.getDoubleAttribute(juce::String(i), 20.0));
+    if( xmlState.hasAttribute("K" + juce::String(i)) )
+      tuningTable->assignFrequency(i, factor * xmlState.getDoubleAttribute("K" + juce::String(i), 20.0));
     else
     {
       // if there is no frequency stored for this note number, we try to extrapolate by octave 
@@ -86,10 +86,10 @@ bool tuningTableStateFromXml(TuningTable* tuningTable, const XmlElement &xmlStat
       // check note-numbers below the current one i:
       while( (i-d) >= 0 )
       {
-        if( xmlState.hasAttribute(juce::String(i-d)) )
+        if( xmlState.hasAttribute("K" + juce::String(i-d)) )
         {
           tuningTable->assignFrequency(i, 
-            pow(basicInterval, j)*factor*xmlState.getDoubleAttribute(juce::String(i-d), 20.0));
+            pow(basicInterval, j)*factor*xmlState.getDoubleAttribute("K" + juce::String(i-d), 20.0));
           equivalentFound = true;
           break;
         }
@@ -105,10 +105,10 @@ bool tuningTableStateFromXml(TuningTable* tuningTable, const XmlElement &xmlStat
       d = j*basicKeyDistance;
       while( (i+d) < 128 )
       {
-        if( xmlState.hasAttribute(juce::String(i+d)) )
+        if( xmlState.hasAttribute("K" + juce::String(i+d)) )
         {
           tuningTable->assignFrequency(i, 
-            pow(basicInterval, -j)*factor*xmlState.getDoubleAttribute(juce::String(i+d), 20.0));
+            pow(basicInterval, -j)*factor*xmlState.getDoubleAttribute("K" + juce::String(i+d), 20.0));
           equivalentFound = true;
           break;
         }

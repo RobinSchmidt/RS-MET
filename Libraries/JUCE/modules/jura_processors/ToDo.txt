@@ -46,12 +46,9 @@ RayBouncer:
  -big font incomplete
 
 -Straightliner bugs:
- -loading a tuning file doesn't work. apparently we have used illegal xml attribute names 
-  (beginning with a number) - revise the tuning file format, maybe preprend "Key" or just "K"
-  before each key number
- -colors are wrong
  -patch AnalogMeetsChipTune: pitch-env is not in stairstep mode
   -maybe check with enveloper
+ -colors are wrong
  -filter plot doesn't update when dragging around the handle
 
 -MagicCarpet bugs:
