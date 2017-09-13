@@ -36,8 +36,8 @@ inline void  swap(float& x, float& y) { float t = x; x = y; y = t;   }
 inline float min(float x, float y)    { return x < y ? x : y; }
 //inline void  plot(ImageF& im, int x, int y, float c){ im(x, y) += c; }
 //inline void  plot(ImageF& im, int x, int y, float c){ im(x,y) = min(1.f, im(x,y)+c); }
-inline void  plot(ImageF& im, int x, int y, float c){ im(x,y) = (im(x,y)+c)/(1+c) ; }
-void drawLineWuPrototype(ImageF& img, float x0, float y0, float x1, float y1, float color)
+inline void  plot(rsImageF& im, int x, int y, float c){ im(x,y) = (im(x,y)+c)/(1+c) ; }
+void drawLineWuPrototype(rsImageF& img, float x0, float y0, float x1, float y1, float color)
 {
   bool steep = abs(y1 - y0) > abs(x1 - x0);
 
@@ -95,7 +95,7 @@ void drawLineWuPrototype(ImageF& img, float x0, float y0, float x1, float y1, fl
 }
 
 // Bresenham line drawing algorithm (integer arithmetic version):
-void drawLineBresenham(ImageF& img, int x0, int y0, int x1, int y1, float color)
+void drawLineBresenham(rsImageF& img, int x0, int y0, int x1, int y1, float color)
 {
   bool steep = abs(y1 - y0) > abs(x1 - x0);
   if(steep){
@@ -146,7 +146,7 @@ void lineDrawing()
   float brightness = 0.5f;
 
   // create objects:
-  ImageF image(imageWidth, imageHeight);
+  rsImageF image(imageWidth, imageHeight);
   ImagePainterFFF painter(&image, nullptr);
   float x0 = margin;
   float y0 = margin;
@@ -184,7 +184,7 @@ void lineDrawing()
 }
 
 
-void drawThickLineViaWu(ImageF& img, float x0, float y0, float x1, float y1, float color, 
+void drawThickLineViaWu(rsImageF& img, float x0, float y0, float x1, float y1, float color, 
   float thickness)
 {
   // This function tries to draw a thick line by drawing several parallel 1 pixel wide Wu lines. It 
@@ -240,7 +240,7 @@ void drawThickLineViaWu(ImageF& img, float x0, float y0, float x1, float y1, flo
     // xs = (x0p-x0m) / (numLines) is different from xs = (x0p-x0m) / (numLines-1) etc.
 }
 
-void plotLineWidth(ImageF& img, int x0, int y0, int x1, int y1, float wd)
+void plotLineWidth(rsImageF& img, int x0, int y0, int x1, int y1, float wd)
 { 
   // Adapted from http://members.chello.at/~easyfilter/bresenham.c. The setPixelColor calls had to
   // be modified, the original code was kept as comment.
@@ -301,14 +301,14 @@ float lineIntensity4(float d, float t2)
   float x = d/t2;
   return rsPositiveBellFunctions<float>::cubic(fabs(x));
 }
-inline void plot(ImageF& img, int x, int y, float color, bool swapXY)
+inline void plot(rsImageF& img, int x, int y, float color, bool swapXY)
 {
   if(swapXY)
     plot(img, y, x, color);
   else
     plot(img, x, y, color);
 }
-void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float color,
+void drawThickLine2(rsImageF& img, float x0, float y0, float x1, float y1, float color,
   float thickness, int endCaps = 0)
 {
   // ...Under construction...
@@ -442,7 +442,7 @@ void drawThickLine2(ImageF& img, float x0, float y0, float x1, float y1, float c
   // https://www.cs.helsinki.fi/group/goa/mallinnus/lines/bresenh.html
 }
 
-void drawThickLine(ImageF& img, float x0, float y0, float x1, float y1, float color,
+void drawThickLine(rsImageF& img, float x0, float y0, float x1, float y1, float color,
   float thickness, bool roundCaps = false)
 {
   float (*lineProfile)(float, float) = lineIntensity1;
@@ -527,7 +527,7 @@ void lineDrawingThick()
   float thickness  = 50.f;
 
   // create objects:
-  ImageF image(imageWidth, imageHeight);
+  rsImageF image(imageWidth, imageHeight);
   LineDrawerFFF drawer(&image);
   drawer.setColor(brightness);
   drawer.setBlendMode(ImageDrawerFFF::BLEND_ADD_SATURATE);
@@ -570,7 +570,7 @@ void lineDrawingThick2()
   float x0 = 10.3f, y0 = 10.6f, x1 = 90.2f, y1 = 40.4f;
   //float x0 = 10, y0 = 10, x1 = 90, y1 = 40;
 
-  ImageF image(imageWidth, imageHeight);
+  rsImageF image(imageWidth, imageHeight);
   //drawThickLine(image, 10, 10, 70, 30, 1.f, 15.f); // dx > dy, x0 < x1, base case
   //drawThickLine(image, 20, 20, 80, 80, 1.f, 15.f); // dx = dy, x0 < x1, 45° diagonal
   //drawThickLine(image, 10, 10, 30, 70, 1.f, 15.f); // dx < dy, x0 < x1, steep case
@@ -600,7 +600,7 @@ void lineJoints()
   float thickness  = 20.f;
 
   // create objects:
-  ImageF image(imageWidth, imageHeight);
+  rsImageF image(imageWidth, imageHeight);
   LineDrawerFFF drawer(&image);
   drawer.setBlendMode(ImageDrawerFFF::BLEND_ADD_SATURATE);
   //drawer.setLineProfile(LineDrawerFFF::PROFILE_LINEAR);
@@ -648,7 +648,7 @@ void lineTo()
   float thickness  = 20.f;
 
   // create objects:
-  ImageF image(size, size);
+  rsImageF image(size, size);
   LineDrawerFFF drawer(&image);
   drawer.setBlendMode(ImageDrawerFFF::BLEND_ADD_SATURATE);
   //drawer.setLineProfile(LineDrawerFFF::PROFILE_LINEAR);
@@ -689,7 +689,7 @@ void polyLineRandom()
   float thickness     = 20.f;
 
   // create objects:
-  ImageF image(imageWidth, imageHeight);
+  rsImageF image(imageWidth, imageHeight);
   LineDrawerFFF drawer(&image);
   //drawer.setBlendMode(ImageDrawerFFF::BLEND_ADD_SATURATE);
   drawer.setBlendMode(ImageDrawerFFF::BLEND_ADD_CLIP);

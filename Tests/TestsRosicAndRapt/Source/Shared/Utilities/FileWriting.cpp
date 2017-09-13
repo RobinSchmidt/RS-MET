@@ -4,7 +4,7 @@
 //#define _CRT_SECURE_NO_WARNINGS  // seems to have no effect - we still get the warning
 //#endif
 
-void writeImageToFilePPM(const ImageF& img, const char* path)
+void writeImageToFilePPM(const rsImageF& img, const char* path)
 {
   int w = img.getWidth();
   int h = img.getHeight();

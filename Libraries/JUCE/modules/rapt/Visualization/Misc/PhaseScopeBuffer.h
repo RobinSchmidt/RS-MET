@@ -102,7 +102,7 @@ public:
   /** \name Inquiry */
 
   /** Returns a pointer to our image that we use as buffer. */
-  ImageResizable<TPix> *getImage() { return &image; }
+  rsImageResizable<TPix> *getImage() { return &image; }
 
   /** Returns the sample rate. */
   inline TPar getSampleRate() { return sampleRate; }
@@ -197,7 +197,7 @@ protected:
 
   // members for actual painting on an image:
   //Image<TPix> image;
-  ImageResizable<TPix> image;
+  rsImageResizable<TPix> image;
   //ImagePainter<TPix, float, TSig> painter; // float: weight-type for alpha mask
   //ImagePainter<TPix, TPar, TSig> painter;  // using TPar for the 2nd TWgt template parameter
   //                                         // might not be ideal

@@ -34,7 +34,7 @@ typedef RAPT::rsRayBouncer<float> rsRayBouncerF;
 typedef RAPT::rsBreakpointModulator<float> rsBreakpointModulatorF;
 
 // Visualization:
-typedef RAPT::Image<float> ImageF;
+typedef RAPT::rsImage<float> rsImageF;
 typedef RAPT::AlphaMask<float> AlphaMaskF;
 typedef RAPT::ImagePainter<float, float, float> ImagePainterFFF;
 typedef RAPT::ImageDrawer<float, float, float> ImageDrawerFFF;

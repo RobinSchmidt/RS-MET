@@ -22,13 +22,13 @@ public:
   /** \name Construction/Destruction */
 
   /** Constructor. */
-  ImagePainter(Image<TPix> *imageToPaintOn = nullptr, AlphaMask<TWgt> *maskToUse = nullptr);
+  ImagePainter(rsImage<TPix> *imageToPaintOn = nullptr, AlphaMask<TWgt> *maskToUse = nullptr);
 
 
   /** \name Setup */
 
   /** Sets the image on which we paint.  */
-  void setImageToPaintOn(Image<TPix> *imageToPaintOn);
+  void setImageToPaintOn(rsImage<TPix> *imageToPaintOn);
 
   /** Sets the alpha mask that we use as prototye "dot". It is basically a matrix of weights. */
   void setAlphaMaskForDot(AlphaMask<TWgt> *maskToUse);
@@ -55,7 +55,7 @@ public:
   /** \name Inquiry */
 
   /** Returns a pointer to the target image onto which we paint. */
-  Image<TPix>* getImage() { return image; }
+  rsImage<TPix>* getImage() { return image; }
 
   /** Returns a pointer to the alpha mask that we use for painting. */
   AlphaMask<TWgt>* getAlphaMask() { return mask; }
@@ -150,7 +150,7 @@ protected:
 
   // data members:
 
-  Image<TPix> *image;
+  rsImage<TPix> *image;
   AlphaMask<TWgt> *mask; // rename to brush...hmm...or well, an actual brush should have its
                          // own colors - this mask here has only weights
 

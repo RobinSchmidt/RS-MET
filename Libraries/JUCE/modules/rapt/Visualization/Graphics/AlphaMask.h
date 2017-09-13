@@ -6,7 +6,7 @@ existing image with new colors. Your pixel type should be a monochromatic type, 
 such as float or double. */
 
 template<class TPix>  // pixel type
-class AlphaMask : public ImageResizable<TPix>
+class AlphaMask : public rsImageResizable<TPix>
 {
 
 public:

@@ -61,7 +61,7 @@ template RAPT::rsRayBouncer<float>;
 template RAPT::rsBreakpointModulator<float>;
 
 // Visualization:
-template RAPT::Image<float>;
+template RAPT::rsImage<float>;
 template RAPT::AlphaMask<float>;
 template RAPT::ImagePainter<float, float, float>;
 template RAPT::LineDrawer<float, float, float>;

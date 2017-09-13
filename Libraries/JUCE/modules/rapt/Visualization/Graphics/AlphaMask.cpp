@@ -11,7 +11,7 @@ template<class TPix>
 void AlphaMask<TPix>::setSize(double newSize)
 {
   int pixelSize = (int)ceil(newSize);
-  ImageResizable<TPix>::setSize(pixelSize, pixelSize);
+  rsImageResizable<TPix>::setSize(pixelSize, pixelSize);
   renderMask();
 }
 
@@ -86,7 +86,7 @@ void AlphaMask<TPix>::renderMask()
       double dy = sy * (y - cy);
       double distance = sqrt(dx*dx + dy*dy);
       TPix alpha = (TPix) abs(getAlphaForDistance(distance));
-      ImageResizable<TPix>::setPixelColor(x, y, alpha);
+      rsImageResizable<TPix>::setPixelColor(x, y, alpha);
     }
   }
   // maybe the code can be generalized to an elliptic mask: divide dx by width and dy by height

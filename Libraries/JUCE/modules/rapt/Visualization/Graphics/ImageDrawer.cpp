@@ -1,5 +1,5 @@
 template<class TPix, class TWgt, class TCor>
-ImageDrawer<TPix, TWgt, TCor>::ImageDrawer(Image<TPix> *imageToDrawOn)
+ImageDrawer<TPix, TWgt, TCor>::ImageDrawer(rsImage<TPix> *imageToDrawOn)
 {
   setImageToDrawOn(imageToDrawOn);
   setColor(TPix(1));  // typically white
@@ -9,7 +9,7 @@ ImageDrawer<TPix, TWgt, TCor>::ImageDrawer(Image<TPix> *imageToDrawOn)
 // setup:
 
 template<class TPix, class TWgt, class TCor>
-void ImageDrawer<TPix, TWgt, TCor>::setImageToDrawOn(Image<TPix> *imageToDrawOn)
+void ImageDrawer<TPix, TWgt, TCor>::setImageToDrawOn(rsImage<TPix> *imageToDrawOn)
 {
   image = imageToDrawOn;
 }
@@ -55,7 +55,7 @@ void ImageDrawer<TPix, TWgt, TCor>::addAndSaturate(TPix &pixel, TPix color, TWgt
 //=================================================================================================
 
 template<class TPix, class TWgt, class TCor>
-LineDrawer<TPix, TWgt, TCor>::LineDrawer(Image<TPix> *imageToDrawOn)
+LineDrawer<TPix, TWgt, TCor>::LineDrawer(rsImage<TPix> *imageToDrawOn)
   : ImageDrawer<TPix, TWgt, TCor>(imageToDrawOn)
 {
   setLineProfile(0);

@@ -1,5 +1,5 @@
 template<class TPix, class TWgt, class TCor>
-ImagePainter<TPix, TWgt, TCor>::ImagePainter(Image<TPix> *imageToPaintOn, AlphaMask<TWgt> *maskToUse)
+ImagePainter<TPix, TWgt, TCor>::ImagePainter(rsImage<TPix> *imageToPaintOn, AlphaMask<TWgt> *maskToUse)
 {
   antiAlias = true;
   useMask = false;
@@ -12,7 +12,7 @@ ImagePainter<TPix, TWgt, TCor>::ImagePainter(Image<TPix> *imageToPaintOn, AlphaM
 // setup
 
 template<class TPix, class TWgt, class TCor>
-void ImagePainter<TPix, TWgt, TCor>::setImageToPaintOn(Image<TPix> *imageToPaintOn)
+void ImagePainter<TPix, TWgt, TCor>::setImageToPaintOn(rsImage<TPix> *imageToPaintOn)
 {
   image = imageToPaintOn;
   //if(image != nullptr)

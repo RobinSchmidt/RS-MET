@@ -11,7 +11,7 @@ move some more functions into cpp file
 implement access operators (x, y), [row][column] */
 
 template<class TPix>  // pixel type
-class Image
+class rsImage
 {
 
 public:
@@ -19,20 +19,20 @@ public:
   /** \name Construction/Destruction */
 
   /** Constructor. Allocates memory for the pixels. */
-  Image(int initialWidth = 1, int initialHeight = 1);
+  rsImage(int initialWidth = 1, int initialHeight = 1);
 
   /** Constructor. Allocates memory for the pixels and initializes pixel values. */
-  Image(int initialWidth, int initialHeight, const TPix &initialPixelColor);
+  rsImage(int initialWidth, int initialHeight, const TPix &initialPixelColor);
 
   /** Constructor. Initializes width and height and copies the image-data from initialData into
   our member data area. */
-  Image(int initialWidth, int initialHeight, const TPix *initialData);
+  rsImage(int initialWidth, int initialHeight, const TPix *initialData);
 
   /** Copy constructor. Creates a deep copy of the pixel data in this image. */
-  Image(const Image& other);
+  rsImage(const rsImage& other);
 
   /** Destructor. Frees dynamically allocated memory. */
-  virtual ~Image();
+  virtual ~rsImage();
 
 
   /** \name Setup */
@@ -158,11 +158,11 @@ protected:
 
 /** A subclass of Image that allows for more efficient resizing. The regular image class does a 
 memory reallocation, everytime you call setSize. This subclass here defines a maximum width and 
-height below which a resizeing operation does not lead to memory reallocation and overrides setSize 
+height below which a resizing operation does not lead to memory reallocation and overrides setSize 
 accordingly. This is useful for images that must be dynamically resized at runtime often. */
 
 template<class TPix>  // pixel type
-class ImageResizable : public Image<TPix>
+class rsImageResizable : public rsImage<TPix>
 {
 
 public:
@@ -170,7 +170,7 @@ public:
   /** \name Construction/Destruction */
 
   /** Constructor. Allocates memory for the pixels. */
-  ImageResizable(int initialWidth = 1, int initialHeight = 1);
+  rsImageResizable(int initialWidth = 1, int initialHeight = 1);
 
 
   /** \name Setup */

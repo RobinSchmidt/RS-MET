@@ -27,13 +27,13 @@ public:
   /** \name Construction/Destruction */
 
   /** Constructor. */
-  ImageDrawer(Image<TPix> *imageToDrawOn);
+  ImageDrawer(rsImage<TPix> *imageToDrawOn);
 
 
   /** \name Setup */
 
   /** Sets the image that we will draw on. */
-  void setImageToDrawOn(Image<TPix> *imageToDrawOn);
+  void setImageToDrawOn(rsImage<TPix> *imageToDrawOn);
 
   /** Sets the color with which we draw on the image. */
   inline void setColor(TPix newColor) { color = newColor; }
@@ -58,7 +58,7 @@ public:
 
 protected:
 
-  Image<TPix> *image;
+  rsImage<TPix> *image;
 
   TPix color;
   int blendMode;
@@ -101,7 +101,7 @@ public:
 
 
   /** Constructor. */
-  LineDrawer(Image<TPix> *imageToDrawOn);
+  LineDrawer(rsImage<TPix> *imageToDrawOn);
 
 
   /** \name Setup */
