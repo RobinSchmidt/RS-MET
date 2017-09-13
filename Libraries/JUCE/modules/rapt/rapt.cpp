@@ -48,7 +48,7 @@ template class RAPT::rsEllipse<double>;
 template class RAPT::rsStateVariableFilter<double, double>;
 
 template class RAPT::rsAlphaMask<float>;
-template class RAPT::ImagePainter<float, float, float>;
+template class RAPT::rsImagePainter<float, float, float>;
 
 // for PhaseScope:
 template class RAPT::rsAlphaMask<double>;

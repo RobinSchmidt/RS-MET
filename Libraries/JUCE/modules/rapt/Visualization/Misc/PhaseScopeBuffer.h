@@ -198,10 +198,10 @@ protected:
   // members for actual painting on an image:
   //Image<TPix> image;
   rsImageResizable<TPix> image;
-  //ImagePainter<TPix, float, TSig> painter; // float: weight-type for alpha mask
-  //ImagePainter<TPix, TPar, TSig> painter;  // using TPar for the 2nd TWgt template parameter
+  //rsImagePainter<TPix, float, TSig> painter; // float: weight-type for alpha mask
+  //rsImagePainter<TPix, TPar, TSig> painter;  // using TPar for the 2nd TWgt template parameter
   //                                         // might not be ideal
-  ImagePainter<TPix, TSig, TSig> painter;  // using TPar for the 2nd TWgt template parameter
+  rsImagePainter<TPix, TSig, TSig> painter;  // using TPar for the 2nd TWgt template parameter
                                            // might not be ideal
 
 };
