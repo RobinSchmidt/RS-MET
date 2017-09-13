@@ -6,7 +6,7 @@ have in common, regardless of what they draw. Subclasses like LineDrawer will do
 and likely define more data and methods. */
 
 template<class TPix, class TWgt, class TCor>  // pixel, weight, coordinate types
-class ImageDrawer
+class rsImageDrawer
 {
 
 public:
@@ -27,7 +27,7 @@ public:
   /** \name Construction/Destruction */
 
   /** Constructor. */
-  ImageDrawer(rsImage<TPix> *imageToDrawOn);
+  rsImageDrawer(rsImage<TPix> *imageToDrawOn);
 
 
   /** \name Setup */
@@ -80,7 +80,7 @@ instead, you can choose one of the line profiles that lets the color vary in dep
 distance of a pixel from the ideal geometric line.  */
 
 template<class TPix, class TWgt, class TCor>  // pixel, weight, coordinate types
-class LineDrawer : public ImageDrawer<TPix, TWgt, TCor>
+class LineDrawer : public rsImageDrawer<TPix, TWgt, TCor>
 {
 
 public:
@@ -175,9 +175,9 @@ private:
   inline void plot(int x, int y, TWgt weight, bool swapXY)
   {
     if(swapXY)
-      ImageDrawer<TPix, TWgt, TCor>::plot(y, x, weight);
+      rsImageDrawer<TPix, TWgt, TCor>::plot(y, x, weight);
     else
-      ImageDrawer<TPix, TWgt, TCor>::plot(x, y, weight);
+      rsImageDrawer<TPix, TWgt, TCor>::plot(x, y, weight);
   }
 
   /** Sets up the internal variables for the line drawing algorithm for the two given

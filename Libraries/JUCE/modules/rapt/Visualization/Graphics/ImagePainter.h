@@ -5,12 +5,12 @@
 prototype "dot". Whenever a dot is painted onto the image at a particular location, the mask will
 be used to blend the existing colors at these pixels with a new target color.  
 
-The difference between rsImagePainter and ImageDrawer is mainly that painter uses algorithms based on
+The difference between rsImagePainter and rsImageDrawer is mainly that painter uses algorithms based on
 a "brush" that is swept over the image whereas the drawer employs line/circle/polygon/etc-drawing
 algorithms from the compute graphics community
 
 \todo
--derive this class from ImageDrawer, get rid of superfluous methods
+-derive this class from rsImageDrawer, get rid of superfluous methods
 -rename this clas into DotDrawer
 -move line drawing functions into LineDrawer
 -rename this "mask" stuff to "brush"

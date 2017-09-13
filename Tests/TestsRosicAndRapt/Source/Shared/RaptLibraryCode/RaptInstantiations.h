@@ -37,7 +37,7 @@ typedef RAPT::rsBreakpointModulator<float> rsBreakpointModulatorF;
 typedef RAPT::rsImage<float> rsImageF;
 typedef RAPT::rsAlphaMask<float> AlphaMaskF;
 typedef RAPT::rsImagePainter<float, float, float> ImagePainterFFF;
-typedef RAPT::ImageDrawer<float, float, float> ImageDrawerFFF;
+typedef RAPT::rsImageDrawer<float, float, float> ImageDrawerFFF;
 typedef RAPT::LineDrawer<float, float, float> LineDrawerFFF;
 typedef RAPT::PhaseScopeBuffer<float, float, double> PhaseScopeBufferFFD;
 

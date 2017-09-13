@@ -1,5 +1,5 @@
 template<class TPix, class TWgt, class TCor>
-ImageDrawer<TPix, TWgt, TCor>::ImageDrawer(rsImage<TPix> *imageToDrawOn)
+rsImageDrawer<TPix, TWgt, TCor>::rsImageDrawer(rsImage<TPix> *imageToDrawOn)
 {
   setImageToDrawOn(imageToDrawOn);
   setColor(TPix(1));  // typically white
@@ -9,13 +9,13 @@ ImageDrawer<TPix, TWgt, TCor>::ImageDrawer(rsImage<TPix> *imageToDrawOn)
 // setup:
 
 template<class TPix, class TWgt, class TCor>
-void ImageDrawer<TPix, TWgt, TCor>::setImageToDrawOn(rsImage<TPix> *imageToDrawOn)
+void rsImageDrawer<TPix, TWgt, TCor>::setImageToDrawOn(rsImage<TPix> *imageToDrawOn)
 {
   image = imageToDrawOn;
 }
 
 template<class TPix, class TWgt, class TCor>
-void ImageDrawer<TPix, TWgt, TCor>::setBlendMode(int newMode)
+void rsImageDrawer<TPix, TWgt, TCor>::setBlendMode(int newMode)
 {
   rsAssert(newMode >= 0);
   rsAssert(newMode < NUM_BLEND_MODES);
@@ -31,19 +31,19 @@ void ImageDrawer<TPix, TWgt, TCor>::setBlendMode(int newMode)
 // blend functions:
 
 template<class TPix, class TWgt, class TCor>
-void ImageDrawer<TPix, TWgt, TCor>::linearBlend(TPix &pixel, TPix color, TWgt blend)
+void rsImageDrawer<TPix, TWgt, TCor>::linearBlend(TPix &pixel, TPix color, TWgt blend)
 {
   pixel = (1-TPix(blend)) * pixel + TPix(blend) * color;
 }
 
 template<class TPix, class TWgt, class TCor>
-void ImageDrawer<TPix, TWgt, TCor>::addAndClip(TPix &pixel, TPix color, TWgt blend)
+void rsImageDrawer<TPix, TWgt, TCor>::addAndClip(TPix &pixel, TPix color, TWgt blend)
 {
   pixel = rsMin(TPix(1), pixel + TPix(blend)*color);
 }
 
 template<class TPix, class TWgt, class TCor>
-void ImageDrawer<TPix, TWgt, TCor>::addAndSaturate(TPix &pixel, TPix color, TWgt blend)
+void rsImageDrawer<TPix, TWgt, TCor>::addAndSaturate(TPix &pixel, TPix color, TWgt blend)
 {
   color *= TPix(blend);
   pixel  = (pixel + color) / (TPix(1) + color);
@@ -56,7 +56,7 @@ void ImageDrawer<TPix, TWgt, TCor>::addAndSaturate(TPix &pixel, TPix color, TWgt
 
 template<class TPix, class TWgt, class TCor>
 LineDrawer<TPix, TWgt, TCor>::LineDrawer(rsImage<TPix> *imageToDrawOn)
-  : ImageDrawer<TPix, TWgt, TCor>(imageToDrawOn)
+  : rsImageDrawer<TPix, TWgt, TCor>(imageToDrawOn)
 {
   setLineProfile(0);
   setLineWidth(1);

@@ -301,7 +301,7 @@ PhaseScopeBuffer2<TSig, TPix, TPar>::PhaseScopeBuffer2()
   dotMask.setSize(5);
   dotMask.setTransitionWidth(0.5);
 
-  lineDrawer.setBlendMode(ImageDrawer<TPix, TSig, TSig>::BLEND_ADD_SATURATE);
+  lineDrawer.setBlendMode(rsImageDrawer<TPix, TSig, TSig>::BLEND_ADD_SATURATE);
   lineDrawer.setRoundCaps(true); // preliminary
 }
 
