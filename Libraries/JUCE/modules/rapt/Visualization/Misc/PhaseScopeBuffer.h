@@ -257,7 +257,7 @@ public:
   /** Alpha mask used for drawing a "dot", a public member, such that we don't need to implement
   lots of delegations here for setting it up (maybe move to protected and provide access
   functions). */
-  AlphaMask<TSig> dotMask;
+  rsAlphaMask<TSig> dotMask;
 
 protected:
 

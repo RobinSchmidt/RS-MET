@@ -1,5 +1,5 @@
 template<class TPix>
-AlphaMask<TPix>::AlphaMask()
+rsAlphaMask<TPix>::rsAlphaMask()
 {
   flat   = 0.0;
   slope0 = 0.0;
@@ -8,7 +8,7 @@ AlphaMask<TPix>::AlphaMask()
 }
 
 template<class TPix>
-void AlphaMask<TPix>::setSize(double newSize)
+void rsAlphaMask<TPix>::setSize(double newSize)
 {
   int pixelSize = (int)ceil(newSize);
   rsImageResizable<TPix>::setSize(pixelSize, pixelSize);
@@ -16,21 +16,21 @@ void AlphaMask<TPix>::setSize(double newSize)
 }
 
 template<class TPix>
-void AlphaMask<TPix>::setTransitionWidth(double newWidth)
+void rsAlphaMask<TPix>::setTransitionWidth(double newWidth)
 {
   flat = 1-newWidth;
   renderMask();
 }
 
 template<class TPix>
-void AlphaMask<TPix>::setInnerSlope(double newSlope)
+void rsAlphaMask<TPix>::setInnerSlope(double newSlope)
 {
   slope0 = newSlope;
   renderMask();
 }
 
 template<class TPix>
-void AlphaMask<TPix>::setOuterSlope(double newSlope)
+void rsAlphaMask<TPix>::setOuterSlope(double newSlope)
 {
   slope1 = newSlope;
   renderMask();
@@ -38,7 +38,7 @@ void AlphaMask<TPix>::setOuterSlope(double newSlope)
 
 template<class TPix>
 template<class T>
-void AlphaMask<TPix>::copyShapeParametersFrom(const AlphaMask<T>& other)
+void rsAlphaMask<TPix>::copyShapeParametersFrom(const rsAlphaMask<T>& other)
 {
   flat   = (TPix)other.getTransitionWidth();
   slope0 = (TPix)other.getInnerSlope();
@@ -47,7 +47,7 @@ void AlphaMask<TPix>::copyShapeParametersFrom(const AlphaMask<T>& other)
 }
 
 template<class TPix>
-double AlphaMask<TPix>::cubicBell(double x, double steepnessAt0, double steepnessAt1)
+double rsAlphaMask<TPix>::cubicBell(double x, double steepnessAt0, double steepnessAt1)
 {
   double s0 = -steepnessAt0;
   double s1 = -steepnessAt1;
@@ -67,7 +67,7 @@ double AlphaMask<TPix>::cubicBell(double x, double steepnessAt0, double steepnes
 }
 
 template<class TPix>
-void AlphaMask<TPix>::renderMask()
+void rsAlphaMask<TPix>::renderMask()
 {
   int w = this->width;
   int h = this->height;
@@ -94,7 +94,7 @@ void AlphaMask<TPix>::renderMask()
 }
 
 template<class TPix>
-double AlphaMask<TPix>::getAlphaForDistance(double d)
+double rsAlphaMask<TPix>::getAlphaForDistance(double d)
 {
   if(d < flat)
     return 1.0;

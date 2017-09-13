@@ -22,7 +22,7 @@ public:
   /** \name Construction/Destruction */
 
   /** Constructor. */
-  ImagePainter(rsImage<TPix> *imageToPaintOn = nullptr, AlphaMask<TWgt> *maskToUse = nullptr);
+  ImagePainter(rsImage<TPix> *imageToPaintOn = nullptr, rsAlphaMask<TWgt> *maskToUse = nullptr);
 
 
   /** \name Setup */
@@ -31,7 +31,7 @@ public:
   void setImageToPaintOn(rsImage<TPix> *imageToPaintOn);
 
   /** Sets the alpha mask that we use as prototye "dot". It is basically a matrix of weights. */
-  void setAlphaMaskForDot(AlphaMask<TWgt> *maskToUse);
+  void setAlphaMaskForDot(rsAlphaMask<TWgt> *maskToUse);
 
   /** Sets the weights that are used in the simple (non alpha mask based) dot drawing mode. */
   void setNeighbourWeightsForSimpleDot(TWgt straight, TWgt diagonal);
@@ -58,7 +58,7 @@ public:
   rsImage<TPix>* getImage() { return image; }
 
   /** Returns a pointer to the alpha mask that we use for painting. */
-  AlphaMask<TWgt>* getAlphaMask() { return mask; }
+  rsAlphaMask<TWgt>* getAlphaMask() { return mask; }
 
 
   /** \name Painting */
@@ -151,8 +151,8 @@ protected:
   // data members:
 
   rsImage<TPix> *image;
-  AlphaMask<TWgt> *mask; // rename to brush...hmm...or well, an actual brush should have its
-                         // own colors - this mask here has only weights
+  rsAlphaMask<TWgt> *mask; // rename to brush...hmm...or well, an actual brush should have its
+                           // own colors - this mask here has only weights
 
   bool antiAlias, useMask;
   TWgt straightNeighbourWeight, diagonalNeighbourWeight;

@@ -47,11 +47,11 @@ template class RAPT::rsEllipse<double>;
 
 template class RAPT::rsStateVariableFilter<double, double>;
 
-template class RAPT::AlphaMask<float>;
+template class RAPT::rsAlphaMask<float>;
 template class RAPT::ImagePainter<float, float, float>;
 
 // for PhaseScope:
-template class RAPT::AlphaMask<double>;
+template class RAPT::rsAlphaMask<double>;
 template class RAPT::rsScopeScreenScanner<float>;  // do we need this?
 template class RAPT::rsScopeScreenScanner<double>;
 template class RAPT::PhaseScopeBuffer<double, float, double>;
