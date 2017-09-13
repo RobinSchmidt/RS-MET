@@ -647,4 +647,17 @@ protected:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulatableParameter)
 };
 
+/** This class is like ModulatebleParameter except that it uses the other std::function based
+callback, so if you use this callbakc mechanism, use thsi class for your parameters */ 
+class JUCE_API ModulatableParameter2 : public ModulatableParameter
+{
+  virtual void doModulationUpdate() override
+  {
+    valueChangeCallbackFunction(getModulatedValue());
+  }
+};
+
+
+
+
 #endif
