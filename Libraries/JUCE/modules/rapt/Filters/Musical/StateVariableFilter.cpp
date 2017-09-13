@@ -1,7 +1,7 @@
 // Construction/Destruction:
 
 template<class TSig, class TPar>
-StateVariableFilter<TSig, TPar>::StateVariableFilter()
+rsStateVariableFilter<TSig, TPar>::rsStateVariableFilter()
 {
   fs   = 44100.0;
   fc   = 1000.0;
@@ -16,42 +16,42 @@ StateVariableFilter<TSig, TPar>::StateVariableFilter()
 // Setup:
 
 template<class TSig, class TPar>
-void StateVariableFilter<TSig, TPar>::setSampleRate(TPar newSampleRate)
+void rsStateVariableFilter<TSig, TPar>::setSampleRate(TPar newSampleRate)
 {
   fs = newSampleRate;
   calcCoeffs();
 }
 
 template<class TSig, class TPar>
-void StateVariableFilter<TSig, TPar>::setMode(int newMode)
+void rsStateVariableFilter<TSig, TPar>::setMode(int newMode)
 {
   mode = newMode;
   calcCoeffs();
 }
 
 template<class TSig, class TPar>
-void StateVariableFilter<TSig, TPar>::setFrequency(TPar newFrequency)
+void rsStateVariableFilter<TSig, TPar>::setFrequency(TPar newFrequency)
 {
   fc = newFrequency;
   calcCoeffs();
 }
  
 template<class TSig, class TPar>
-void StateVariableFilter<TSig, TPar>::setGain(TPar newGain)
+void rsStateVariableFilter<TSig, TPar>::setGain(TPar newGain)
 {
   G = newGain;
   calcCoeffs();
 }
 
 template<class TSig, class TPar>
-void StateVariableFilter<TSig, TPar>::setBandwidth(TPar newBandwidth)
+void rsStateVariableFilter<TSig, TPar>::setBandwidth(TPar newBandwidth)
 {
   B = newBandwidth;
   calcCoeffs();
 }
 
 template<class TSig, class TPar>
-void StateVariableFilter<TSig, TPar>::setMorph(TPar newMorph)
+void rsStateVariableFilter<TSig, TPar>::setMorph(TPar newMorph)
 {
   m = newMorph;
   calcCoeffs();
@@ -60,7 +60,7 @@ void StateVariableFilter<TSig, TPar>::setMorph(TPar newMorph)
 // Misc:
 
 template<class TSig, class TPar>
-void StateVariableFilter<TSig, TPar>::calcCoeffs()
+void rsStateVariableFilter<TSig, TPar>::calcCoeffs()
 {
   // \todo look at this paper - it has simpler formulas and even formulas that work for biquads 
   // with arbitrary coefiicients:
@@ -179,7 +179,7 @@ void StateVariableFilter<TSig, TPar>::calcCoeffs()
 }
 
 template<class TSig, class TPar>
-TPar StateVariableFilter<TSig, TPar>::bandwidthToR(TPar B)
+TPar rsStateVariableFilter<TSig, TPar>::bandwidthToR(TPar B)
 {
   TPar fl = fc*pow(TPar(2), TPar(-B/2)); // lower bandedge frequency (in Hz)
   TPar gl = tan(TPar(PI)*fl/fs);         // warped radian lower bandedge frequency /(2*fs)
@@ -190,7 +190,7 @@ TPar StateVariableFilter<TSig, TPar>::bandwidthToR(TPar B)
 }
 
 template<class TSig, class TPar>
-void StateVariableFilter<TSig, TPar>::reset()
+void rsStateVariableFilter<TSig, TPar>::reset()
 {
   s1 = s2 = 0.0;
 }

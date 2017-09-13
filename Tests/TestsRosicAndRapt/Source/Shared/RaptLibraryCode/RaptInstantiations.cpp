@@ -52,7 +52,7 @@ template RAPT::rsSmoothingFilter<float, float>;
 template RAPT::rsLadderFilter<float, float>;
 template RAPT::rsPhasorFilter<float, float>;
 template RAPT::rsPhasorStateMapper<float>;
-template RAPT::StateVariableFilter<float, float>; 
+template RAPT::rsStateVariableFilter<float, float>; 
 
 // Generators:
 template RAPT::rsRayBouncer<float>;

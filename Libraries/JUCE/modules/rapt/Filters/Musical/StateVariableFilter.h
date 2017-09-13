@@ -8,7 +8,7 @@ combination of the these 3 to obtain a desired filter mode (in addition to the 3
 are also shelvers, a bell, etc.). */
 
 template<class TSig, class TPar> // signal, parameter types
-class StateVariableFilter
+class rsStateVariableFilter
 {
 
 public:
@@ -36,7 +36,7 @@ public:
   /** \name Construction/Destruction */
 
   /** Constructor. */
-  StateVariableFilter();
+  rsStateVariableFilter();
 
 
   /** \name Setup */
@@ -127,7 +127,7 @@ protected:
 // inlined functions:
 
 template<class TSig, class TPar>
-inline void StateVariableFilter<TSig, TPar>::getOutputs(TSig in, TSig &yL, TSig &yB, TSig &yH)
+inline void rsStateVariableFilter<TSig, TPar>::getOutputs(TSig in, TSig &yL, TSig &yB, TSig &yH)
 {
   // compute highpass output via Eq. 5.1:
   yH = (in - R2*s1 - g*s1 - s2) * h;
@@ -151,7 +151,7 @@ inline void StateVariableFilter<TSig, TPar>::getOutputs(TSig in, TSig &yL, TSig 
 }
 
 template<class TSig, class TPar>
-inline TSig StateVariableFilter<TSig, TPar>::getSample(TSig in)
+inline TSig rsStateVariableFilter<TSig, TPar>::getSample(TSig in)
 {
   TSig yL, yB, yH;
   getOutputs(in, yL, yB, yH);

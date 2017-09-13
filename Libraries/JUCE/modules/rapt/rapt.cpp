@@ -45,7 +45,7 @@ template class RAPT::rsScaledAndShiftedSigmoid<double>;
 template class RAPT::rsEllipse<double>;
 
 
-template class RAPT::StateVariableFilter<double, double>;
+template class RAPT::rsStateVariableFilter<double, double>;
 
 template class RAPT::AlphaMask<float>;
 template class RAPT::ImagePainter<float, float, float>;

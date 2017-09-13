@@ -25,7 +25,7 @@ typedef RAPT::rsSmoothingFilter<float, float> rsSmoothingFilterFF;
 typedef RAPT::rsLadderFilter<float, float> rsLadderFilterFF;
 typedef RAPT::rsPhasorFilter<float, float> rsPhasorFilterFF;
 typedef RAPT::rsPhasorStateMapper<float> rsPhasorStateMapperF;
-typedef RAPT::StateVariableFilter<float, float> StateVariableFilterFF; 
+typedef RAPT::rsStateVariableFilter<float, float> rsStateVariableFilterFF; 
 
 // Generators:
 typedef RAPT::rsRayBouncer<float> rsRayBouncerF;
