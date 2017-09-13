@@ -35,10 +35,10 @@ typedef RAPT::rsBreakpointModulator<float> rsBreakpointModulatorF;
 
 // Visualization:
 typedef RAPT::rsImage<float> rsImageF;
-typedef RAPT::rsAlphaMask<float> AlphaMaskF;
-typedef RAPT::rsImagePainter<float, float, float> ImagePainterFFF;
-typedef RAPT::rsImageDrawer<float, float, float> ImageDrawerFFF;
-typedef RAPT::LineDrawer<float, float, float> LineDrawerFFF;
-typedef RAPT::rsPhaseScopeBuffer<float, float, double> PhaseScopeBufferFFD;
+typedef RAPT::rsAlphaMask<float> rsAlphaMaskF;
+typedef RAPT::rsImagePainter<float, float, float> rsImagePainterFFF;
+typedef RAPT::rsImageDrawer<float, float, float> rsImageDrawerFFF;
+typedef RAPT::rsLineDrawer<float, float, float> rsLineDrawerFFF;
+typedef RAPT::rsPhaseScopeBuffer<float, float, double> rsPhaseScopeBufferFFD;
 
 #endif

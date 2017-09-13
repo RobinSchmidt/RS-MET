@@ -64,7 +64,7 @@ template RAPT::rsBreakpointModulator<float>;
 template RAPT::rsImage<float>;
 template RAPT::rsAlphaMask<float>;
 template RAPT::rsImagePainter<float, float, float>;
-template RAPT::LineDrawer<float, float, float>;
+template RAPT::rsLineDrawer<float, float, float>;
 template RAPT::rsPhaseScopeBuffer<float, float, double>;
 
 // Modulators:

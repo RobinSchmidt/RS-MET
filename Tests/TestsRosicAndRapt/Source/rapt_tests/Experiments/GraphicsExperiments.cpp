@@ -147,7 +147,7 @@ void lineDrawing()
 
   // create objects:
   rsImageF image(imageWidth, imageHeight);
-  ImagePainterFFF painter(&image, nullptr);
+  rsImagePainterFFF painter(&image, nullptr);
   float x0 = margin;
   float y0 = margin;
   int i;
@@ -528,11 +528,11 @@ void lineDrawingThick()
 
   // create objects:
   rsImageF image(imageWidth, imageHeight);
-  LineDrawerFFF drawer(&image);
+  rsLineDrawerFFF drawer(&image);
   drawer.setColor(brightness);
-  drawer.setBlendMode(ImageDrawerFFF::BLEND_ADD_SATURATE);
+  drawer.setBlendMode(rsImageDrawerFFF::BLEND_ADD_SATURATE);
   drawer.setLineWidth(thickness);
-  drawer.setLineProfile(LineDrawerFFF::PROFILE_LINEAR);
+  drawer.setLineProfile(rsLineDrawerFFF::PROFILE_LINEAR);
   drawer.setRoundCaps(false);
 
   // create endpoint arrays:
@@ -601,11 +601,11 @@ void lineJoints()
 
   // create objects:
   rsImageF image(imageWidth, imageHeight);
-  LineDrawerFFF drawer(&image);
-  drawer.setBlendMode(ImageDrawerFFF::BLEND_ADD_SATURATE);
-  //drawer.setLineProfile(LineDrawerFFF::PROFILE_LINEAR);
-  drawer.setLineProfile(LineDrawerFFF::PROFILE_FLAT);
-  //drawer.setLineProfile(LineDrawerFFF::PROFILE_CUBIC);
+  rsLineDrawerFFF drawer(&image);
+  drawer.setBlendMode(rsImageDrawerFFF::BLEND_ADD_SATURATE);
+  //drawer.setLineProfile(rsLineDrawerFFF::PROFILE_LINEAR);
+  drawer.setLineProfile(rsLineDrawerFFF::PROFILE_FLAT);
+  //drawer.setLineProfile(rsLineDrawerFFF::PROFILE_CUBIC);
   drawer.setLineWidth(thickness);
   drawer.setColor(brightness);
 
@@ -649,11 +649,11 @@ void lineTo()
 
   // create objects:
   rsImageF image(size, size);
-  LineDrawerFFF drawer(&image);
-  drawer.setBlendMode(ImageDrawerFFF::BLEND_ADD_SATURATE);
-  //drawer.setLineProfile(LineDrawerFFF::PROFILE_LINEAR);
-  drawer.setLineProfile(LineDrawerFFF::PROFILE_FLAT);
-  //drawer.setLineProfile(LineDrawerFFF::PROFILE_CUBIC);
+  rsLineDrawerFFF drawer(&image);
+  drawer.setBlendMode(rsImageDrawerFFF::BLEND_ADD_SATURATE);
+  //drawer.setLineProfile(rsLineDrawerFFF::PROFILE_LINEAR);
+  drawer.setLineProfile(rsLineDrawerFFF::PROFILE_FLAT);
+  //drawer.setLineProfile(rsLineDrawerFFF::PROFILE_CUBIC);
   drawer.setLineWidth(thickness);
   drawer.setColor(brightness);
 
@@ -690,12 +690,12 @@ void polyLineRandom()
 
   // create objects:
   rsImageF image(imageWidth, imageHeight);
-  LineDrawerFFF drawer(&image);
-  //drawer.setBlendMode(ImageDrawerFFF::BLEND_ADD_SATURATE);
-  drawer.setBlendMode(ImageDrawerFFF::BLEND_ADD_CLIP);
-  //drawer.setLineProfile(LineDrawerFFF::PROFILE_LINEAR);
-  drawer.setLineProfile(LineDrawerFFF::PROFILE_FLAT);
-  //drawer.setLineProfile(LineDrawerFFF::PROFILE_CUBIC);
+  rsLineDrawerFFF drawer(&image);
+  //drawer.setBlendMode(rsImageDrawerFFF::BLEND_ADD_SATURATE);
+  drawer.setBlendMode(rsImageDrawerFFF::BLEND_ADD_CLIP);
+  //drawer.setLineProfile(rsLineDrawerFFF::PROFILE_LINEAR);
+  drawer.setLineProfile(rsLineDrawerFFF::PROFILE_FLAT);
+  //drawer.setLineProfile(rsLineDrawerFFF::PROFILE_CUBIC);
   drawer.setLineWidth(thickness);
   //drawer.setColor(brightness);
   drawer.setRoundCaps(true);
@@ -740,7 +740,7 @@ void phaseScopeLissajous()
   float scale = 0.9f;
 
   // create and set up rsPhaseScopeBuffer object:
-  PhaseScopeBufferFFD psb;
+  rsPhaseScopeBufferFFD psb;
   psb.setAntiAlias(true);
   psb.setBrightness(100.f);
   psb.setLineDensity(1.f);

@@ -2,7 +2,7 @@
 #define RAPT_IMAGEDRAWER_H_INCLUDED
 
 /** A baseclass for drawing on images. It consolidates the data and functionality that all drawers
-have in common, regardless of what they draw. Subclasses like LineDrawer will do the actual drawing
+have in common, regardless of what they draw. Subclasses like rsLineDrawer will do the actual drawing
 and likely define more data and methods. */
 
 template<class TPix, class TWgt, class TCor>  // pixel, weight, coordinate types
@@ -80,7 +80,7 @@ instead, you can choose one of the line profiles that lets the color vary in dep
 distance of a pixel from the ideal geometric line.  */
 
 template<class TPix, class TWgt, class TCor>  // pixel, weight, coordinate types
-class LineDrawer : public rsImageDrawer<TPix, TWgt, TCor>
+class rsLineDrawer : public rsImageDrawer<TPix, TWgt, TCor>
 {
 
 public:
@@ -101,7 +101,7 @@ public:
 
 
   /** Constructor. */
-  LineDrawer(rsImage<TPix> *imageToDrawOn);
+  rsLineDrawer(rsImage<TPix> *imageToDrawOn);
 
 
   /** \name Setup */

@@ -242,7 +242,7 @@ public:
   /** Sets the width of the lines in pixels. */
   void setLineWidth(TPar newWidth);
 
-  /** Selects one of the line-profile functions from LineDrawer::lineProfiles. */
+  /** Selects one of the line-profile functions from rsLineDrawer::lineProfiles. */
   void setLineProfile(int newProfile);
 
   /** Switches dot drawing on/off */
@@ -271,7 +271,7 @@ protected:
   bool drawLines = false;
   bool drawDots  = true;
 
-  LineDrawer<TPix, TSig, TSig> lineDrawer;
+  rsLineDrawer<TPix, TSig, TSig> lineDrawer;
 };
 
 #endif

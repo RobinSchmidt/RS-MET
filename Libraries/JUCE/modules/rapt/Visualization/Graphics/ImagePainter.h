@@ -12,7 +12,7 @@ algorithms from the compute graphics community
 \todo
 -derive this class from rsImageDrawer, get rid of superfluous methods
 -rename this clas into DotDrawer
--move line drawing functions into LineDrawer
+-move line drawing functions into rsLineDrawer
 -rename this "mask" stuff to "brush"
 ...these terms are more conventional in the computer graphics literature
 */
