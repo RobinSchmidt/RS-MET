@@ -739,7 +739,7 @@ void phaseScopeLissajous()
   float b = 7.f;
   float scale = 0.9f;
 
-  // create and set up PhaseScopeBuffer object:
+  // create and set up rsPhaseScopeBuffer object:
   PhaseScopeBufferFFD psb;
   psb.setAntiAlias(true);
   psb.setBrightness(100.f);

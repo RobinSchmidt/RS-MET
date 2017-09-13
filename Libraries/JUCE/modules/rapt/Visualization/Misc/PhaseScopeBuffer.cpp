@@ -1,5 +1,5 @@
 template<class TSig, class TPix, class TPar>
-PhaseScopeBuffer<TSig, TPix, TPar>::PhaseScopeBuffer()
+rsPhaseScopeBuffer<TSig, TPix, TPar>::rsPhaseScopeBuffer()
   : painter(&image, nullptr)
 {
   painter.setUseAlphaMask(false);
@@ -19,7 +19,7 @@ PhaseScopeBuffer<TSig, TPix, TPar>::PhaseScopeBuffer()
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer<TSig, TPix, TPar>::setSampleRate(TPar newSampleRate)
+void rsPhaseScopeBuffer<TSig, TPix, TPar>::setSampleRate(TPar newSampleRate)
 {
   sampleRate = newSampleRate;
   updateInsertFactor();
@@ -27,34 +27,34 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::setSampleRate(TPar newSampleRate)
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer<TSig, TPix, TPar>::setFrameRate(TPar newFrameRate)
+void rsPhaseScopeBuffer<TSig, TPix, TPar>::setFrameRate(TPar newFrameRate)
 {
   frameRate = newFrameRate;
   updateDecayFactor();
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer<TSig, TPix, TPar>::setBrightness(TPix newBrightness)
+void rsPhaseScopeBuffer<TSig, TPix, TPar>::setBrightness(TPix newBrightness)
 {
   brightness = newBrightness;
   updateInsertFactor();
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer<TSig, TPix, TPar>::setUseColorGradient(bool shouldUseGradient)
+void rsPhaseScopeBuffer<TSig, TPix, TPar>::setUseColorGradient(bool shouldUseGradient)
 {
   useGradient = shouldUseGradient;
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer<TSig, TPix, TPar>::setDecayTime(TPar newDecayTime)
+void rsPhaseScopeBuffer<TSig, TPix, TPar>::setDecayTime(TPar newDecayTime)
 {
   decayTime = newDecayTime;
   updateDecayFactor();
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer<TSig, TPix, TPar>::setSize(int newWidth, int newHeight)
+void rsPhaseScopeBuffer<TSig, TPix, TPar>::setSize(int newWidth, int newHeight)
 {
   image.setSize(newWidth, newHeight);
   painter.setImageToPaintOn(&image); // so it can update it's internal size variables, too
@@ -62,31 +62,31 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::setSize(int newWidth, int newHeight)
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer<TSig, TPix, TPar>::setAntiAlias(bool shouldAntiAlias)
+void rsPhaseScopeBuffer<TSig, TPix, TPar>::setAntiAlias(bool shouldAntiAlias)
 {
   painter.setAntiAlias(shouldAntiAlias);
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer<TSig, TPix, TPar>::setMaxSizeWithoutReAllocation(int newMaxWidth, int newMaxHeight)
+void rsPhaseScopeBuffer<TSig, TPix, TPar>::setMaxSizeWithoutReAllocation(int newMaxWidth, int newMaxHeight)
 {
   image.setMaxSize(newMaxWidth, newMaxHeight);
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer<TSig, TPix, TPar>::setLineDensity(TPar newDensity)
+void rsPhaseScopeBuffer<TSig, TPix, TPar>::setLineDensity(TPar newDensity)
 {
   lineDensity = newDensity;
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer<TSig, TPix, TPar>::setLineDensityLimit(int newMaxNumDotsPerLine)
+void rsPhaseScopeBuffer<TSig, TPix, TPar>::setLineDensityLimit(int newMaxNumDotsPerLine)
 {
   maxDotsPerLine = newMaxNumDotsPerLine;
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer<TSig, TPix, TPar>::setPixelSpread(TPar newSpread)
+void rsPhaseScopeBuffer<TSig, TPix, TPar>::setPixelSpread(TPar newSpread)
 {
   thickness = newSpread;
   painter.setNeighbourWeightsForSimpleDot((TSig)thickness, TSig(thickness*thickness));
@@ -94,72 +94,72 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::setPixelSpread(TPar newSpread)
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer<TSig, TPix, TPar>::setOneDimensionalMode(bool shouldBe1D)
+void rsPhaseScopeBuffer<TSig, TPix, TPar>::setOneDimensionalMode(bool shouldBe1D)
 {
   oneDimensonal = shouldBe1D;
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer<TSig, TPix, TPar>::setScanningFrequency(TPar newFrequency)
+void rsPhaseScopeBuffer<TSig, TPix, TPar>::setScanningFrequency(TPar newFrequency)
 {
   screenScanner.setScanFreqNoSync(TSig(newFrequency));
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer<TSig, TPix, TPar>::setSyncMode(bool shouldSync)
+void rsPhaseScopeBuffer<TSig, TPix, TPar>::setSyncMode(bool shouldSync)
 {
   screenScanner.setSync(shouldSync);
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer<TSig, TPix, TPar>::setScaleX(TSig newScale)
+void rsPhaseScopeBuffer<TSig, TPix, TPar>::setScaleX(TSig newScale)
 {
   scaleX = newScale;
   updateTransformCoeffs();
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer<TSig, TPix, TPar>::setScaleY(TSig newScale)
+void rsPhaseScopeBuffer<TSig, TPix, TPar>::setScaleY(TSig newScale)
 {
   scaleY = newScale;
   updateTransformCoeffs();
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer<TSig, TPix, TPar>::setShearX(TSig newShear)
+void rsPhaseScopeBuffer<TSig, TPix, TPar>::setShearX(TSig newShear)
 {
   shearX = newShear;
   updateTransformCoeffs();
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer<TSig, TPix, TPar>::setShearY(TSig newShear)
+void rsPhaseScopeBuffer<TSig, TPix, TPar>::setShearY(TSig newShear)
 {
   shearY = newShear;
   updateTransformCoeffs();
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer<TSig, TPix, TPar>::setRotation(TSig degrees)
+void rsPhaseScopeBuffer<TSig, TPix, TPar>::setRotation(TSig degrees)
 {
   rotation = TSig(PI/180) * degrees;
   updateTransformCoeffs();
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer<TSig, TPix, TPar>::setShiftX(TSig newShift)
+void rsPhaseScopeBuffer<TSig, TPix, TPar>::setShiftX(TSig newShift)
 {
   shiftX = newShift;
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer<TSig, TPix, TPar>::setShiftY(TSig newShift)
+void rsPhaseScopeBuffer<TSig, TPix, TPar>::setShiftY(TSig newShift)
 {
   shiftY = newShift;
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer<TSig, TPix, TPar>::toPixelCoordinates(TSig &x, TSig &y)
+void rsPhaseScopeBuffer<TSig, TPix, TPar>::toPixelCoordinates(TSig &x, TSig &y)
 {
   x  = TSig(0.5) * (x+1);  // convert -1..+1 into 0..1
   y  = TSig(0.5) * (y+1);
@@ -170,7 +170,7 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::toPixelCoordinates(TSig &x, TSig &y)
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer<TSig, TPix, TPar>::processSampleFrame(TSig x, TSig y)
+void rsPhaseScopeBuffer<TSig, TPix, TPar>::processSampleFrame(TSig x, TSig y)
 {
   // apply affine transformation in normalized coordinates:
   TSig xt = x;  // temporary
@@ -187,13 +187,13 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::processSampleFrame(TSig x, TSig y)
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer<TSig, TPix, TPar>::applyPixelDecay()
+void rsPhaseScopeBuffer<TSig, TPix, TPar>::applyPixelDecay()
 {
   ArrayTools::rsScale(image.getPixelPointer(0, 0), image.getNumPixels(), decayFactor);
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer<TSig, TPix, TPar>::reset()
+void rsPhaseScopeBuffer<TSig, TPix, TPar>::reset()
 {
   ArrayTools::rsFillWithZeros(image.getPixelPointer(0, 0), image.getNumPixels());
   scanPos = 0.0;
@@ -205,7 +205,7 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::reset()
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer<TSig, TPix, TPar>::addLineTo(TSig x, TSig y)
+void rsPhaseScopeBuffer<TSig, TPix, TPar>::addLineTo(TSig x, TSig y)
 {
   if(lineDensity == 0.f)
     painter.paintDot(x, y, (TPix) insertFactor);
@@ -217,7 +217,7 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::addLineTo(TSig x, TSig y)
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer<TSig, TPix, TPar>::drawDottedLine(TSig x1, TSig y1, TSig x2, 
+void rsPhaseScopeBuffer<TSig, TPix, TPar>::drawDottedLine(TSig x1, TSig y1, TSig x2, 
   TSig y2, TPix color, TPar density, int maxNumDots, bool scaleByNumDots, TPar minDotDistance)
 {
   TSig dx = x2-x1;
@@ -246,13 +246,13 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::drawDottedLine(TSig x1, TSig y1, TSig x
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer<TSig, TPix, TPar>::updateDecayFactor()
+void rsPhaseScopeBuffer<TSig, TPix, TPar>::updateDecayFactor()
 {
   decayFactor = (TPar) exp(-1 / (decayTime*frameRate));
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer<TSig, TPix, TPar>::updateInsertFactor()
+void rsPhaseScopeBuffer<TSig, TPix, TPar>::updateInsertFactor()
 {
   insertFactor = (TPix(10000) * brightness / TPix(sampleRate));
   // The factor is totally ad-hoc - maybe come up with some more meaningful factor.
@@ -261,7 +261,7 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::updateInsertFactor()
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer<TSig, TPix, TPar>::updateTransformCoeffs()
+void rsPhaseScopeBuffer<TSig, TPix, TPar>::updateTransformCoeffs()
 {
   TSig s = sin(rotation);
   TSig c = cos(rotation);
@@ -272,13 +272,13 @@ void PhaseScopeBuffer<TSig, TPix, TPar>::updateTransformCoeffs()
 }
 
 //template<class TSig, class TPix, class TPar>
-//void PhaseScopeBuffer<TSig, TPix, TPar>::updateScanIncrement()
+//void rsPhaseScopeBuffer<TSig, TPix, TPar>::updateScanIncrement()
 //{
 //  scanInc = scanFreq / sampleRate;
 //}
 
 template<class TSig, class TPix, class TPar>
-TSig PhaseScopeBuffer<TSig, TPix, TPar>::getScannerSaw(TSig x)
+TSig rsPhaseScopeBuffer<TSig, TPix, TPar>::getScannerSaw(TSig x)
 {
   return 2*screenScanner.getSample(x) - 1;
 
@@ -293,7 +293,7 @@ TSig PhaseScopeBuffer<TSig, TPix, TPar>::getScannerSaw(TSig x)
 //-------------------------------------------------------------------------------------------------
 
 template<class TSig, class TPix, class TPar>
-PhaseScopeBuffer2<TSig, TPix, TPar>::PhaseScopeBuffer2()
+rsPhaseScopeBuffer2<TSig, TPix, TPar>::rsPhaseScopeBuffer2()
 : lineDrawer(&this->image)
 {
   this->painter.setAlphaMaskForDot(&this->dotMask);
@@ -306,50 +306,50 @@ PhaseScopeBuffer2<TSig, TPix, TPar>::PhaseScopeBuffer2()
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer2<TSig, TPix, TPar>::setUseAlphaMask(bool shouldUseMask)
+void rsPhaseScopeBuffer2<TSig, TPix, TPar>::setUseAlphaMask(bool shouldUseMask)
 {
   this->painter.setUseAlphaMask(shouldUseMask);
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer2<TSig, TPix, TPar>::setPixelDecayByValue(TPar newDecayByValue)
+void rsPhaseScopeBuffer2<TSig, TPix, TPar>::setPixelDecayByValue(TPar newDecayByValue)
 {
   decayByValue = newDecayByValue;
   updateDecayFactor();
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer2<TSig, TPix, TPar>::setPixelDecayByAverage(TPar newDecayByAverage)
+void rsPhaseScopeBuffer2<TSig, TPix, TPar>::setPixelDecayByAverage(TPar newDecayByAverage)
 {
   decayByAverage = newDecayByAverage;
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer2<TSig, TPix, TPar>::setLineBrightness(TPar newBrightness)
+void rsPhaseScopeBuffer2<TSig, TPix, TPar>::setLineBrightness(TPar newBrightness)
 {
   lineBrightness = TPix(newBrightness);
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer2<TSig, TPix, TPar>::setLineWidth(TPar newWidth)
+void rsPhaseScopeBuffer2<TSig, TPix, TPar>::setLineWidth(TPar newWidth)
 {
   lineDrawer.setLineWidth(newWidth);
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer2<TSig, TPix, TPar>::setLineProfile(int newProfile)
+void rsPhaseScopeBuffer2<TSig, TPix, TPar>::setLineProfile(int newProfile)
 {
   lineDrawer.setLineProfile(newProfile);
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer2<TSig, TPix, TPar>::applyPixelDecay()
+void rsPhaseScopeBuffer2<TSig, TPix, TPar>::applyPixelDecay()
 {
   int   N = this->image.getNumPixels();
   TPix *p = this->image.getPixelPointer(0, 0);
 
   if(decayByValue == 0)
-    PhaseScopeBuffer<TSig, TPix, TPar>::applyPixelDecay();
+    rsPhaseScopeBuffer<TSig, TPix, TPar>::applyPixelDecay();
   else
   {
     for(int n = 0; n < N; n++)
@@ -369,7 +369,7 @@ void PhaseScopeBuffer2<TSig, TPix, TPar>::applyPixelDecay()
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer2<TSig, TPix, TPar>::updateDecayFactor()
+void rsPhaseScopeBuffer2<TSig, TPix, TPar>::updateDecayFactor()
 {
   if(decayByValue == 0)
   {
@@ -393,7 +393,7 @@ void PhaseScopeBuffer2<TSig, TPix, TPar>::updateDecayFactor()
 }
 
 template<class TSig, class TPix, class TPar>
-void PhaseScopeBuffer2<TSig, TPix, TPar>::addLineTo(TSig x, TSig y)
+void rsPhaseScopeBuffer2<TSig, TPix, TPar>::addLineTo(TSig x, TSig y)
 {
   if(drawLines){
     TSig dx = x - this->xOld;
@@ -407,7 +407,7 @@ void PhaseScopeBuffer2<TSig, TPix, TPar>::addLineTo(TSig x, TSig y)
     lineDrawer.lineTo(x, y);
   }
   if(drawDots)
-    PhaseScopeBuffer<TSig, TPix, TPar>::addLineTo(x, y); // draws dotted line, updates xOld, yOld
+    rsPhaseScopeBuffer<TSig, TPix, TPar>::addLineTo(x, y); // draws dotted line, updates xOld, yOld
   else {
     this->xOld = x;
     this->yOld = y; }

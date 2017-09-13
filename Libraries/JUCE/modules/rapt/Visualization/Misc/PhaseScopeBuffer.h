@@ -4,16 +4,16 @@
 /** Implements the buffering for a phasescope analyzer. */
 
 template<class TSig, class TPix, class TPar> // signal, pixel, parameter types
-class PhaseScopeBuffer
+class rsPhaseScopeBuffer
 {
 
 public:
 
   /** Constructor. */
-  PhaseScopeBuffer();
+  rsPhaseScopeBuffer();
 
   /** Destructor. */
-  virtual ~PhaseScopeBuffer() {}
+  virtual ~rsPhaseScopeBuffer() {}
 
 
   /** \name Setup */
@@ -208,18 +208,18 @@ protected:
 
 //=================================================================================================
 
-/** Extends the basic PhaseScopeBuffer class with some more artistic features such as an alpha-mask
+/** Extends the basic rsPhaseScopeBuffer class with some more artistic features such as an alpha-mask
 rendered dot, blurring between frames, etc. These features are factored out into a subclass to keep
 the baseclass lean. */
 
 template<class TSig, class TPix, class TPar> // signal, pixel, parameter types
-class PhaseScopeBuffer2 : public PhaseScopeBuffer<TSig, TPix, TPar>
+class rsPhaseScopeBuffer2 : public rsPhaseScopeBuffer<TSig, TPix, TPar>
 {
 
 public:
 
   /** Constructor. */
-  PhaseScopeBuffer2();
+  rsPhaseScopeBuffer2();
 
   /** Switches between simple and alpha-mask based dot drawing. */
   void setUseAlphaMask(bool shouldUseMask);

@@ -92,7 +92,7 @@ protected:
   // this object is reponsible for drawing the incoming data onto a virtual screen:
   //RAPT::PhaseScopeBuffer<double, float, double> phaseScopeBuffer;
   //RAPT::PhaseScopeBuffer2<double, float, double> phaseScopeBuffer;
-  RAPT::PhaseScopeBuffer<double, float, double> *phaseScopeBuffer;
+  RAPT::rsPhaseScopeBuffer<double, float, double> *phaseScopeBuffer;
     // maybe declare a pointer to a PhaseScopeBuffer here and in subclass PhaseScope2 declare a 
     // pointer to PahseScopeBuffer2 and in the constructor re-assign the inherited pointer - so we
     // don't have the overhead of PhaseScopeBuffer2 here.

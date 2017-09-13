@@ -65,7 +65,7 @@ template RAPT::rsImage<float>;
 template RAPT::rsAlphaMask<float>;
 template RAPT::rsImagePainter<float, float, float>;
 template RAPT::LineDrawer<float, float, float>;
-template RAPT::PhaseScopeBuffer<float, float, double>;
+template RAPT::rsPhaseScopeBuffer<float, float, double>;
 
 // Modulators:
 //template RAPT::rsBreakpointModulator<double>; // will be needed, when the class is templatized

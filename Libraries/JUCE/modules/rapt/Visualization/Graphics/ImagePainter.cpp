@@ -516,7 +516,7 @@ void rsImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix colo
 //void rsImagePainter<TPix, TWgt, TCor>::drawDottedLine(TCor x1, TCor y1, TCor x2, TCor y2, TPix color, 
 //  TCor density, int maxNumDots, bool scaleByNumDots, TCor minDotDistance)
 //{
-//  // maybe we should factor out this function into the PhaseScopeBuffer class
+//  // maybe we should factor out this function into the rsPhaseScopeBuffer class
 //
 //  TCor dx = x2-x1;
 //  TCor dy = y2-y1;

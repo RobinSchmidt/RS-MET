@@ -54,8 +54,8 @@ template class RAPT::rsImagePainter<float, float, float>;
 template class RAPT::rsAlphaMask<double>;
 template class RAPT::rsScopeScreenScanner<float>;  // do we need this?
 template class RAPT::rsScopeScreenScanner<double>;
-template class RAPT::PhaseScopeBuffer<double, float, double>;
-template class RAPT::PhaseScopeBuffer2<double, float, double>;
+template class RAPT::rsPhaseScopeBuffer<double, float, double>;
+template class RAPT::rsPhaseScopeBuffer2<double, float, double>;
 
 // needed for the release build of Chaosfly on Linux - without them, apparently the compiler
 // generates the classes only partially - some member functions are missing probably because they
