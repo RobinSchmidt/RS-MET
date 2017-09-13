@@ -86,7 +86,8 @@ public:
 
   virtual void setPitchBend(int pitchBendValue) override
   {
-    wrappedAciDevil->setPitchBend(pitchBendValue);
+    double wheelValueMapped = (double) (pitchBendValue-8192) / 8192.0; // check this
+    wrappedAciDevil->setPitchBend(wheelValueMapped);
   }
 
 //virtual void allNotesOff();

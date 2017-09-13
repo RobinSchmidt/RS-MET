@@ -44,7 +44,7 @@ void OscilloscopeAudioModule::initializeAutomatableParameters()
   addObservedParameter( new Parameter(lock, "MinAmplitude",     -2.0,  +2.0, 0.1,   -1.5,  Parameter::LINEAR)  );
   addObservedParameter( new Parameter(lock, "MaxAmplitude",     -2.0,  +2.0, 0.1,    1.5,  Parameter::LINEAR)  );
   addObservedParameter( new Parameter(lock, "FrameRate",        10.0,  50.0, 1.0,   15.0,  Parameter::LINEAR)  );
-  addObservedParameter( new Parameter(lock, "Freeze",            0.0,   1.0, 1.0,    1.0,  Parameter::BOOLEAN) );
+  addObservedParameter( new Parameter(lock, "Freeze",            0.0,   1.0, 1.0,    0.0,  Parameter::BOOLEAN) );
 
   for(int i=0; i < (int) parameters.size(); i++ )
     parameterChanged(parameters[i]);
@@ -92,7 +92,7 @@ void SpectrumAnalyzerAudioModule::initializeAutomatableParameters()
   addObservedParameter( new Parameter(lock, "MinLevel",        -100.0,      10.0, 0.0,  -100.0,   Parameter::LINEAR)       );
   addObservedParameter( new Parameter(lock, "MaxLevel",        -100.0,      10.0, 0.0,    10.0,   Parameter::LINEAR)       );
   addObservedParameter( new Parameter(lock, "FrameRate",        10.0,       50.0, 1.0,   15.0,    Parameter::LINEAR)       );
-  addObservedParameter( new Parameter(lock, "Freeze",            0.0,        1.0, 1.0,    1.0,    Parameter::BOOLEAN)      );
+  addObservedParameter( new Parameter(lock, "Freeze",            0.0,        1.0, 1.0,    0.0,    Parameter::BOOLEAN)      );
 
   for(int i=0; i < (int) parameters.size(); i++ )
     parameterChanged(parameters[i]);
@@ -489,51 +489,45 @@ void OscilloscopeDisplay::plotCurveFamily(Graphics &g, juce::Image* targetImage,
   // OK - function is called as often as expected
   */
 
-
-
-  /*
-  if( peakData == NULL )
-  return;
+  if(peakData == NULL)
+    return;
 
   double x1, y1, x2, y2;
-  for(int c=0; c<numCurves; c++)
+  for(int c = 0; c < numCurves; c++)
   {
-  g.setColour(plotColourScheme.getCurveColour(c));
-  for(int n=0; n<numValues-1; n++)
-  {
-  x1 = timeAxis[n];
-  y1 = peakData[c][n];
-  x2 = timeAxis[n+1];
-  y2 = peakData[c][n+1];
-  transformToImageCoordinates(x1, y1, targetImage);
-  transformToImageCoordinates(x2, y2, targetImage);
-  g.drawLine((float) x1, (float) y1, (float) x2, (float) y2, 1.f);
-  // uses a lot of CPU - try using a juce::Path - nah, Path uses even more
+    g.setColour(plotColourScheme.getCurveColour(c));
+    for(int n = 0; n < numValues-1; n++)
+    {
+      x1 = timeAxis[n];
+      y1 = peakData[c][n];
+      x2 = timeAxis[n+1];
+      y2 = peakData[c][n+1];
+      transformToImageCoordinates(x1, y1, targetImage);
+      transformToImageCoordinates(x2, y2, targetImage);
+      g.drawLine((float)x1, (float)y1, (float)x2, (float)y2, 1.f);
+      // uses a lot of CPU - try using a juce::Path - nah, Path uses even more
+    }
   }
-  }
-  */
-
-
 
   /*
   double x, y;
   juce::Path path;
   for(int c = 0; c < numCurves; c++)
   {
-  path.clear();
-  x = timeAxis[0];
-  y = peakData[c][0];
-  transformToImageCoordinates(x, y, targetImage);
-  path.startNewSubPath((float) x, (float) y);
-  for(int n = 1; n < numValues; n++)
-  {
-  x = timeAxis[n];
-  y = peakData[c][n];
-  transformToImageCoordinates(x, y, targetImage);
-  path.lineTo((float) x, (float) y);
-  }
-  g.setColour(plotColourScheme.getCurveColour(c));
-  g.strokePath(path, PathStrokeType(1.f));
+    path.clear();
+    x = timeAxis[0];
+    y = peakData[c][0];
+    transformToImageCoordinates(x, y, targetImage);
+    path.startNewSubPath((float)x, (float)y);
+    for(int n = 1; n < numValues; n++)
+    {
+      x = timeAxis[n];
+      y = peakData[c][n];
+      transformToImageCoordinates(x, y, targetImage);
+      path.lineTo((float)x, (float)y);
+    }
+    g.setColour(plotColourScheme.getCurveColour(c));
+    g.strokePath(path, PathStrokeType(1.f));
   }
   */
 }

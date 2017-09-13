@@ -131,6 +131,12 @@ inline TSig rsLadderFilter<TSig, TPar>::getSampleNoGain(TSig in)
   // sigmoid shape (it goes down to zero again) ...but maybe that's not necessarily a bad thing.
   // Maybe try y = b + (x-b) / (1 + a*x^2) with adjustable parameters a and b. "a" adjusts the 
   // amount of signal squasheing whereas "b" introduces asymmetry.
+
+  // maybe try a different update euqation of the form:
+  // y[i] = y[i-1] + coeff * (y[i] - y[i-1]);
+  // as is used in the rsSmoothingFilter. Elan says, this responds better to modulation. i think,
+  // coeff = a or coeff = -a
+
 }
 
 template<class TSig, class TPar>

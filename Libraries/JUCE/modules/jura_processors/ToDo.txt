@@ -1,11 +1,3 @@
-ModulationSystem:
--implement right-click context menu for sliders for assigning modulators to parameters
- -there should be a Modulators section with sliders and and Add... option. right-click on 
-  modulation sliders opens a menu where the user can adjust the min/max values of the slider,
-  absolute vs relative modulation and delete the modulation connection
- -there should be min/max clipping values for the modulated parameter. they should default the 
-  min/max values of the underlying parameter maybe like ClipMin = 20, ClipMax = 20000 for a cutoff
-
 
 
 
@@ -16,7 +8,6 @@ RayBouncer:
 
 
 
-
 -make work in Chainer:
  -AciDevil (done)
  -EngineersFilter (done)
@@ -24,8 +15,8 @@ RayBouncer:
  -FuncShaper (done)
  -PitchShifter (done)
  -StereoDelay (done)
- -MultiAnalyzer (done...still buggy)
  -Straightliner (done...still buggy)
+ -MultiAnalyzer (done...still buggy)
  -EchoLab
  -TrackMeter
  -Quadrifex
@@ -33,7 +24,7 @@ RayBouncer:
  -Liberty
  -MagicCarpet
  -AlgoVerb
- -Moduluxury
+ -Moduluxury (obsolete with the new mod-system)
  -MidiMonitor
  -ChannelMatrix2x2
  -DspWorkbench
@@ -53,9 +44,6 @@ RayBouncer:
                                                // working when clicking above 1st option
   -> fix this
  -big font incomplete
-
--AcidDevil
- -strange pitchwheel response
 
 -Straightliner bugs:
  -tuning file widget set looks weird (the box is missing), also it should not show ".xml"
@@ -83,6 +71,7 @@ RayBouncer:
  -MultiAnalyzer
   -no horizontal scrollbar
   -extreme cpu load for scope 
+  -scope doesn't really show the input
 
 -DspWorkbench
  -crashes when opening the editor

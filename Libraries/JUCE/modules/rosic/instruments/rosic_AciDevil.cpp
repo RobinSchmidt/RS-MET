@@ -25,6 +25,7 @@ AciDevil::AciDevil()
   subOscGain       =     0.0;
   clipperGain      =     1.0;
   clipperDC        =     0.0;
+  pitchWheelRange  =    12.0;
   pitchWheelFactor =     1.0;
   currentNote      =    -1;
   currentVel       =     0;
@@ -131,7 +132,7 @@ void AciDevil::setSampleRate(double newSampleRate)
 
 void AciDevil::setPitchBend(double newPitchBend)
 {
-  pitchWheelFactor = pitchOffsetToFreqFactor(newPitchBend);
+  pitchWheelFactor = pitchOffsetToFreqFactor(pitchWheelRange*newPitchBend);
 }
 
 void AciDevil::setMasterLevel(double newLevel)

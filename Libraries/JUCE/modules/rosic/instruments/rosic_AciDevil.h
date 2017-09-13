@@ -191,7 +191,8 @@ namespace rosic
     /** Turns all possibly running notes off. */
     void allNotesOff();
 
-    /** Sets the pitchbend value in semitones. */ 
+    /** Sets the pitchbend value. Expects a normalized value between -+1. The actual pitch-shift 
+    will then be pitchWheelRange times the passed value. */ 
     void setPitchBend(double newPitchBend);  
 
     //-----------------------------------------------------------------------------------------------
@@ -261,6 +262,7 @@ namespace rosic
     double accentGain;       // between 0.0...1.0 - to scale the 3rd amp-envelope on accents
     double clipperGain;      // gain factor for the input into the clipper
     double clipperDC;        // DC offset for the clipper
+    double pitchWheelRange;  // range of pitch wheen in plus/minus semitones
     double pitchWheelFactor; // scale factor for oscillator frequency from pitch-wheel
     double n1, n2;           // normalizers
 
