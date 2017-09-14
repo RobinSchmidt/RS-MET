@@ -651,6 +651,7 @@ protected:
 callback, so if you use this callbakc mechanism, use thsi class for your parameters */ 
 class JUCE_API ModulatableParameter2 : public ModulatableParameter
 {
+  using ModulatableParameter::ModulatableParameter; // import baseclass constructors
   virtual void doModulationUpdate() override
   {
     valueChangeCallbackFunction(getModulatedValue());
