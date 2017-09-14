@@ -413,7 +413,7 @@ public:
   {
     ScopedPointerLock spl(mutex);
 
-	valueChangeCallbackFunction = [](double) {};
+	  valueChangeCallbackFunction = [](double) {};
 
     delete valueChangeCallbackDouble;
     delete valueChangeCallbackInt;
