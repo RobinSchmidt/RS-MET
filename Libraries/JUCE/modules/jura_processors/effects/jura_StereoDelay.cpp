@@ -575,7 +575,7 @@ StereoDelayModuleEditor::StereoDelayModuleEditor(CriticalSection *newPlugInLock,
   // set up the widgets:
   updateWidgetsAccordingToState();
 
-  setSize(360, 410);
+  setSize(360, 392);
 }
 
 /*
@@ -678,7 +678,7 @@ void StereoDelayModuleEditor::resized()
 
   // the left rectangle:
 
-  leftRectangle.setBounds(x+4, y, w-8, 348);
+  leftRectangle.setBounds(x+4, y, w-8, 332);
   x = leftRectangle.getX();
   w = leftRectangle.getWidth();
 
@@ -691,37 +691,37 @@ void StereoDelayModuleEditor::resized()
   inputLabelL->setBounds(x+4, y, 88, 20);
   y = inputLabelL->getBottom();
   inputSliderL2L->setBounds(x+4, y, w-8, 16);
-  y = inputSliderL2L->getBottom();
+  y = inputSliderL2L->getBottom()-2;
   inputSliderR2L->setBounds(x+4, y, w-8, 16);
   y = inputSliderR2L->getBottom()+4;
 
   diffusorLabelL->setBounds(x+4, y, 88, 20);
   y = diffusorLabelL->getBottom();
   diffusorTimeSliderL->setBounds(x+4, y, w-8, 16);
-  y = diffusorTimeSliderL->getBottom();
+  y = diffusorTimeSliderL->getBottom()-2;
   diffusorAmountSliderL->setBounds(x+4, y, w-8, 16);
   y = diffusorAmountSliderL->getBottom()+4;
 
   filterLabelL->setBounds(x+4, y, 88, 20);
   y = filterLabelL->getBottom();
   lowpassSliderL->setBounds(x+4, y, w-8, 16);
-  y = lowpassSliderL->getBottom();
+  y = lowpassSliderL->getBottom()-2;
   highpassSliderL->setBounds(x+4, y, w-8, 16);
   y = highpassSliderL->getBottom()+4;
 
   feedbackLabelL->setBounds(x+4, y, 88, 20);
   y = feedbackLabelL->getBottom();
   feedbackSliderL->setBounds(x+4, y, w-8, 16);
-  y = feedbackSliderL->getBottom();
+  y = feedbackSliderL->getBottom()-2;
   crossFeedbackSliderL->setBounds(x+4, y, w-8, 16);
   y = crossFeedbackSliderL->getBottom()+4;
 
   outputLabelL->setBounds(x+4, y, 88, 20);
   y = outputLabelL->getBottom();
   outputSliderL2L->setBounds(x+4, y, w-8, 16);
-  y = outputSliderL2L->getBottom();
+  y = outputSliderL2L->getBottom()-2;
   outputSliderL2R->setBounds(x+4, y, w-8, 16);
-  y = outputSliderL2R->getBottom();
+  y = outputSliderL2R->getBottom()-2;
   outDelaySliderL->setBounds(x+4, y, w-8, 16);
 
   // the right rectangle:
@@ -740,36 +740,36 @@ void StereoDelayModuleEditor::resized()
   inputLabelR->setBounds(x+4, y, 88, 20);
   y = inputLabelR->getBottom();
   inputSliderL2R->setBounds(x+4, y, w-8, 16);
-  y = inputSliderL2R->getBottom();
+  y = inputSliderL2R->getBottom()-2;
   inputSliderR2R->setBounds(x+4, y, w-8, 16);
   y = inputSliderR2R->getBottom()+4;
 
   diffusorLabelR->setBounds(x+4, y, 88, 20);
   y = diffusorLabelR->getBottom();
   diffusorTimeSliderR->setBounds(x+4, y, w-8, 16);
-  y = diffusorTimeSliderR->getBottom();
+  y = diffusorTimeSliderR->getBottom()-2;
   diffusorAmountSliderR->setBounds(x+4, y, w-8, 16);
   y = diffusorAmountSliderR->getBottom()+4;
 
   filterLabelR->setBounds(x+4, y, 88, 20);
   y = filterLabelR->getBottom();
   lowpassSliderR->setBounds(x+4, y, w-8, 16);
-  y = lowpassSliderR->getBottom();
+  y = lowpassSliderR->getBottom()-2;
   highpassSliderR->setBounds(x+4, y, w-8, 16);
   y = highpassSliderR->getBottom()+4;
 
   feedbackLabelR->setBounds(x+4, y, 88, 20);
   y = feedbackLabelR->getBottom();
   feedbackSliderR->setBounds(x+4, y, w-8, 16);
-  y = feedbackSliderR->getBottom();
+  y = feedbackSliderR->getBottom()-2;
   crossFeedbackSliderR->setBounds(x+4, y, w-8, 16);
   y = crossFeedbackSliderR->getBottom()+4;
 
   outputLabelR->setBounds(x+4, y, 88, 20);
   y = outputLabelR->getBottom();
   outputSliderR2L->setBounds(x+4, y, w-8, 16);
-  y = outputSliderR2L->getBottom();
+  y = outputSliderR2L->getBottom()-2;
   outputSliderR2R->setBounds(x+4, y, w-8, 16);
-  y = outputSliderR2R->getBottom();
+  y = outputSliderR2R->getBottom()-2;
   outDelaySliderR->setBounds(x+4, y, w-8, 16);
 }

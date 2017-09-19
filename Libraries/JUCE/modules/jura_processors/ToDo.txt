@@ -42,11 +42,10 @@ RayBouncer:
 
 -Straightliner bugs:
  -preset-dirty star is present after loading a preset
+  -test this with other modules, too
+   ->in Ladder, BreakpointModulator it works
+   ->try it with other modules that have child-modules
  -colors are wrong
-
-
--StereoDelay
- -GUI widget vertical distance
 
 -MagicCarpet bugs:
  -gui messed up
