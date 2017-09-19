@@ -522,9 +522,8 @@ void MultiModeFreqResponseEditor::unAssignParameterMorph()
 
 void MultiModeFreqResponseEditor::parameterChanged(Parameter* parameterThatHasChanged)
 {
-  // send out a change-message: 
   sendChangeMessage();
-  //updatePlot();
+  updatePlot();
 }
 
 void MultiModeFreqResponseEditor::parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted)

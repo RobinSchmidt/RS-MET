@@ -14,7 +14,7 @@ RayBouncer:
  -Equalizer (done)
  -FuncShaper (done)
  -PitchShifter (done)
- -StereoDelay (done)
+ -StereoDelay (done - gui buggy)
  -Straightliner (done...still buggy)
  -MultiAnalyzer (done...still buggy)
  -EchoLab
@@ -38,11 +38,15 @@ RayBouncer:
 
  Framework:
  -big font incomplete
+ -default colors are weird/wrong
 
 -Straightliner bugs:
- -colors are wrong
- -filter plot doesn't update when dragging around the handle
  -preset-dirty star is present after loading a preset
+ -colors are wrong
+
+
+-StereoDelay
+ -GUI widget vertical distance
 
 -MagicCarpet bugs:
  -gui messed up
@@ -69,14 +73,12 @@ RayBouncer:
  -gui messed up
  -memory leak on shutdown
 
--StereoDelay
- -GUI widget vertical distance
+
 
 Quadriga:
  -gui messed up
 
-Ladder:
- -freq-response plot doesn't update when using meta parameters
+
 
 
 
