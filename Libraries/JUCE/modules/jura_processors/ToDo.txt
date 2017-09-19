@@ -37,12 +37,6 @@ RayBouncer:
  Bugs:
 
  Framework:
- -default values in tree view for sliders is not closable
-  RTreeView::openOrCloseNodesOnClick is false
-  in the constrcutor of RPopUpMenu we do:
-  treeView->setOpenOrCloseNodesOnClick(false); // otherwise, menus with linear list of options stop
-                                               // working when clicking above 1st option
-  -> fix this
  -big font incomplete
 
 -Straightliner bugs:

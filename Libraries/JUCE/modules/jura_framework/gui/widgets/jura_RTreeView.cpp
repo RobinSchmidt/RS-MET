@@ -308,7 +308,7 @@ int RTreeView::getNodeHeight(const RTreeViewNode *node, bool ignoreOpenness) con
 
 bool RTreeView::isPointClickable(int x, int y) const
 {
-  if( x < outlineThickness || y < outlineThickness ||
+  if( x < outlineThickness || y < outlineThickness+textMargin ||
     x > getWidth()-outlineThickness || y > getHeight()-outlineThickness )
     return false;
 
