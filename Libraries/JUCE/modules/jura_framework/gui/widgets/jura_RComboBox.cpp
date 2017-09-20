@@ -53,7 +53,7 @@ void RComboBox::selectItemByIndex(int indexToSelect, bool sendNotification)
 
   popUpMenu->selectItemByIndex(indexToSelect, false);
 
-  if( assignedParameter != NULL )
+  if( assignedParameter != nullptr )
     assignedParameter->setValue((double) indexToSelect, sendNotification, sendNotification);
 
   setText(getItemText(indexToSelect));
@@ -68,9 +68,17 @@ void RComboBox::selectItemFromText(const juce::String& textToSelect, bool sendNo
 {
   // new - todo: check, if this works correctly in all cases:
   popUpMenu->selectItemByText(textToSelect, false); // the popup should not send notifications
+  //juce::String dbg = popUpMenu->getSelectedText();
   setText(popUpMenu->getSelectedText()); // calls RTextField::setText
   if( sendNotification == true )
     sendComboBoxChangeNotifications();
+
+  // this code is necessarry to make it work with a linear-ist combobox that controls a parameter:
+  if(assignedParameter != nullptr){
+    for(int i = 0; i < popUpMenu->getNumTopLevelItems(); i++){
+      if(getItemText(i) == textToSelect){
+        assignedParameter->setValue((double) i, sendNotification, sendNotification);
+        return; }}}
 
   /*
   // old - works only for a flat array of options:

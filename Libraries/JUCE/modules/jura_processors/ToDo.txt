@@ -43,6 +43,9 @@ RayBouncer:
  -big font incomplete
  -default colors are weird/wrong
 
+-Ladder
+ -freq-response display doesn't repaint when changing mode
+
  -AciDevil: 
   -sequencer doesn't work
   -this is a general problem of the new combobox
