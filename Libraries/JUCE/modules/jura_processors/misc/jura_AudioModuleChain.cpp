@@ -170,21 +170,26 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
     addItem(i, a[i]);
   // ...but we want a tree...
 
+  /*
+  // ...but that does not yet work:
+  // populate the tree:
 
-//  // ...but that does not yet work:
-//  // populate the tree:
-//
-//  RTreeViewNode *node;
-//  int i = 1;           //  the index is actually not used, but we need it as dummy
+  RTreeViewNode *node;
+  int i = 1;           //  the index is actually not used, but we need it as dummy
+
+  popUpMenu->addTreeNodeItem(new RTreeViewNode("None",    i++));
+
+  node = new RTreeViewNode("Filters", -1, "Filters");
+  node->addChildNode(new RTreeViewNode("Ladder",          i++));
+  node->addChildNode(new RTreeViewNode("Equalizer",       i++));
+  //node->addChildNode(new RTreeViewNode("PhasorFilter",    i++));
+  node->addChildNode(new RTreeViewNode("EngineersFilter", i++));
+  popUpMenu->addTreeNodeItem(node);
+  */
+
 //
 //  node = new RTreeViewNode("Analysis", -1, "Analysis");
 //  node->addChildNode(new RTreeViewNode("PhaseScope",      i++));
-//  popUpMenu->addTreeNodeItem(node);
-//
-//  node = new RTreeViewNode("Filters", -1, "Filters");
-//  node->addChildNode(new RTreeViewNode("Ladder",          i++));
-//  node->addChildNode(new RTreeViewNode("PhasorFilter",    i++));
-//  node->addChildNode(new RTreeViewNode("EngineersFilter", i++));
 //  popUpMenu->addTreeNodeItem(node);
 //
 //  node = new RTreeViewNode("Effects", -1, "Effects");
