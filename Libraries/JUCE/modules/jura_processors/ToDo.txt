@@ -38,17 +38,8 @@ RayBouncer:
  Bugs:
 
  Framework:
- -combobox doesn't work anymore since i have made it work with treeviews
-  -check with ladder-mode
  -big font incomplete
  -default colors are weird/wrong
-
--Ladder
- -freq-response display doesn't repaint when changing mode
-
- -AciDevil: 
-  -sequencer doesn't work
-  -this is a general problem of the new combobox
 
  -MultiAnalyzer
   -no horizontal scrollbar
@@ -56,8 +47,6 @@ RayBouncer:
   -this was the case before reverting to using rosic::OscilloscopeBufferOld
    -extreme cpu load for scope 
    -scope doesn't really show the input
-
-
 
 -Straightliner bugs:
  -preset-dirty star is present after loading a preset
