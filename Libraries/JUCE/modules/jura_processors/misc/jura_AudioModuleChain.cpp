@@ -186,6 +186,7 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
 
   node = new RTreeViewNode("Sources", -1, "Sources");
   node->addChildNode(new RTreeViewNode("RayBouncer",      i++));
+  node->setOpen(false);
   popUpMenu->addTreeNodeItem(node);
 
   node = new RTreeViewNode("Filters", -1, "Filters");
@@ -194,10 +195,12 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
   node->addChildNode(new RTreeViewNode("EngineersFilter", i++));
   //node->addChildNode(new RTreeViewNode("PhasorFilter",    i++));
   //node->addChildNode(new RTreeViewNode("CrossOver",       i++));
+  node->setOpen(false);
   popUpMenu->addTreeNodeItem(node);
 
   node = new RTreeViewNode("Modulators", -1, "Modulators");
   node->addChildNode(new RTreeViewNode("BreakpointModulator",  i++));
+  node->setOpen(false);
   popUpMenu->addTreeNodeItem(node);
 
   node = new RTreeViewNode("Effects", -1, "Effects");
@@ -208,6 +211,7 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
   //node->addChildNode(new RTreeViewNode("EchoLab",       i++));
   //node->addChildNode(new RTreeViewNode("Quadrifex",     i++));
   //node->addChildNode(new RTreeViewNode("AlgoVerb",      i++));
+  node->setOpen(false);
   popUpMenu->addTreeNodeItem(node);
 
   node = new RTreeViewNode("Instruments", -1, "Instruments");
@@ -221,6 +225,7 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
   //node->addChildNode(new RTreeViewNode("KeyShot",        i++));
   //node->addChildNode(new RTreeViewNode("Quadriga",       i++));
   //node->addChildNode(new RTreeViewNode("Workhorse",      i++));
+  node->setOpen(false);
   popUpMenu->addTreeNodeItem(node);
 
   node = new RTreeViewNode("Analyzers", -1, "Analyzers");
@@ -229,11 +234,14 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
   node->addChildNode(new RTreeViewNode("MultiAnalyzer", i++));
   node->addChildNode(new RTreeViewNode("TrackMeter",    i++));
   node->addChildNode(new RTreeViewNode("MidiMonitor",   i++));
+  node->setOpen(false);
   popUpMenu->addTreeNodeItem(node);
 
   //selectItemFromText("None", false); 
     // nope - that is wrong. we want the selector to show "None" initially instead of 
     // "nothing selected"
+
+  //setSize(300, 300); // has no effect
 }
 
 //=================================================================================================
