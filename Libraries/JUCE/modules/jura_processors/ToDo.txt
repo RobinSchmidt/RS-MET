@@ -1,21 +1,11 @@
 
 Chainer:
--give it a TreeView instead of a linear list for choice of module
- see EffectSlecetionPopup.cpp
- -seems to work now, but RTreeLeafNodeSelector::selectNodeByText gets called 4 times instead of 1
-  check stack-traces of the 4 calls
- -selector shows: "nothing selected" initially - should be "None" ...or...well...the module that is 
-  actually selected
  -make the size of the selector popup adequate
- -let the group-nodes be intially closed (done)
-
 
 RayBouncer:
 -give it some reference tuning (in default setting (unit circle, etc) the frequency
  should be exactly equal to incoming midi note)
 -give it a resistance parameter that slows the ray down over time
-
-
 
 -make work in Chainer:
  -AciDevil (done)
@@ -25,8 +15,10 @@ RayBouncer:
  -PitchShifter (done)
  -StereoDelay (done)
  -Straightliner (done...still buggy)
- -MultiAnalyzer (done...still buggy)
  -EchoLab
+  -has no custom gui
+  -state recall triggers jassert
+ -MultiAnalyzer (done...still buggy)
  -TrackMeter
  -Quadrifex
 
@@ -44,6 +36,11 @@ RayBouncer:
  -Workhorse
 
  Bugs:
+
+ -MultiAnalyzer
+  -no horizontal scrollbar
+  -extreme cpu load for scope 
+  -scope doesn't really show the input
 
  Framework:
  -big font incomplete
@@ -68,11 +65,6 @@ RayBouncer:
 
 -MidiMonitor:
  -doesn't show events (maybe we need to override handleMidiMessage...or something)
-
- -MultiAnalyzer
-  -no horizontal scrollbar
-  -extreme cpu load for scope 
-  -scope doesn't really show the input
 
 -DspWorkbench
  -crashes when opening the editor

@@ -58,8 +58,8 @@ protected:
   virtual void initializeAutomatableParameters();
 
   //rosic::OscilloscopeBufferOld *wrappedOscilloscope;
-
   rosic::SyncedWaveformDisplayBuffer *waveformDisplayBuffer;
+
   bool displayIsFrozen;
 
 };
