@@ -37,8 +37,15 @@ RayBouncer:
 
  Bugs:
 
+ Framework:
+ -combobox doesn't work anymore since i have made it work with treeviews
+  -check with ladder-mode
+ -big font incomplete
+ -default colors are weird/wrong
+
  -AciDevil: 
   -sequencer doesn't work
+  -this is a general problem of the new combobox
 
  -MultiAnalyzer
   -no horizontal scrollbar
@@ -47,9 +54,7 @@ RayBouncer:
    -extreme cpu load for scope 
    -scope doesn't really show the input
 
- Framework:
- -big font incomplete
- -default colors are weird/wrong
+
 
 -Straightliner bugs:
  -preset-dirty star is present after loading a preset
