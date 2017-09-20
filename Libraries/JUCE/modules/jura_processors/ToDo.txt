@@ -4,6 +4,9 @@ Chainer:
  see EffectSlecetionPopup.cpp
  -seems to work now, but RTreeLeafNodeSelector::selectNodeByText gets called 4 times instead of 1
   check stack-traces of the 4 calls
+ -selector shows: "nothing selected" initially - should be "None"
+ -make the size of the selector popup adequate
+ -let the group-nodes be intially closed
 
 
 RayBouncer:

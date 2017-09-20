@@ -106,6 +106,10 @@ juce::String AudioModuleFactory::getModuleType(AudioModule *m)
 
 StringArray AudioModuleFactory::getAvailableModuleTypes()
 {
+  // this function is obsolete now. we now use the tree in AudioModuleSelector...but this is 
+  // somehow bad design - it would be better, if this function could return some kind of StringTree
+  // which in turn is used to populate the AudioModuleSelector
+
   // here, we can make certain modules temporarily unavailable by simply commenting the
   // corresponding line
 
@@ -163,15 +167,16 @@ StringArray AudioModuleFactory::getAvailableModuleTypes()
 
 AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
 {
+  /*
   // old: linear flat array:
   setDescription("Select module type");
   StringArray a = AudioModuleFactory::getAvailableModuleTypes();
   for(int i = 0; i < a.size(); i++)
     addItem(i, a[i]);
   // ...but we want a tree...
+  */
 
-  /*
-  // ...but that does not yet work:
+  // ...check carefully, if it works:
   // populate the tree:
 
   RTreeViewNode *node;
@@ -179,30 +184,56 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
 
   popUpMenu->addTreeNodeItem(new RTreeViewNode("None",    i++));
 
+  node = new RTreeViewNode("Sources", -1, "Sources");
+  node->addChildNode(new RTreeViewNode("RayBouncer",      i++));
+  popUpMenu->addTreeNodeItem(node);
+
   node = new RTreeViewNode("Filters", -1, "Filters");
   node->addChildNode(new RTreeViewNode("Ladder",          i++));
   node->addChildNode(new RTreeViewNode("Equalizer",       i++));
-  //node->addChildNode(new RTreeViewNode("PhasorFilter",    i++));
   node->addChildNode(new RTreeViewNode("EngineersFilter", i++));
+  //node->addChildNode(new RTreeViewNode("PhasorFilter",    i++));
+  //node->addChildNode(new RTreeViewNode("CrossOver",       i++));
   popUpMenu->addTreeNodeItem(node);
-  */
 
-//
-//  node = new RTreeViewNode("Analysis", -1, "Analysis");
-//  node->addChildNode(new RTreeViewNode("PhaseScope",      i++));
-//  popUpMenu->addTreeNodeItem(node);
-//
-//  node = new RTreeViewNode("Effects", -1, "Effects");
-//  node->addChildNode(new RTreeViewNode("Enveloper",  i++));
-//  node->addChildNode(new RTreeViewNode("FuncShaper", i++));
-//  popUpMenu->addTreeNodeItem(node);
-//
-//  node = new RTreeViewNode("Instruments", -1, "Instruments");
-//  node->addChildNode(new RTreeViewNode("AciDevil", i++));
-//#ifdef _MSC_VER
-//  node->addChildNode(new RTreeViewNode("Liberty",  i++));
-//#endif
-//  popUpMenu->addTreeNodeItem(node);
+  node = new RTreeViewNode("Modulators", -1, "Modulators");
+  node->addChildNode(new RTreeViewNode("BreakpointModulator",  i++));
+  popUpMenu->addTreeNodeItem(node);
+
+  node = new RTreeViewNode("Effects", -1, "Effects");
+  node->addChildNode(new RTreeViewNode("Enveloper",     i++));
+  node->addChildNode(new RTreeViewNode("FuncShaper",    i++));
+  node->addChildNode(new RTreeViewNode("StereoDelay",   i++));
+  node->addChildNode(new RTreeViewNode("PitchShifter",  i++));
+  //node->addChildNode(new RTreeViewNode("EchoLab",       i++));
+  //node->addChildNode(new RTreeViewNode("Quadrifex",     i++));
+  //node->addChildNode(new RTreeViewNode("AlgoVerb",      i++));
+  popUpMenu->addTreeNodeItem(node);
+
+  node = new RTreeViewNode("Instruments", -1, "Instruments");
+  node->addChildNode(new RTreeViewNode("AciDevil",       i++));
+  node->addChildNode(new RTreeViewNode("Straightliner",  i++));
+#ifdef _MSC_VER
+  node->addChildNode(new RTreeViewNode("Liberty",        i++));     // not yet available on gcc
+#endif
+  //node->addChildNode(new RTreeViewNode("MagicCarpet",    i++));
+  //node->addChildNode(new RTreeViewNode("SimpleSampler",  i++));
+  //node->addChildNode(new RTreeViewNode("KeyShot",        i++));
+  //node->addChildNode(new RTreeViewNode("Quadriga",       i++));
+  //node->addChildNode(new RTreeViewNode("Workhorse",      i++));
+  popUpMenu->addTreeNodeItem(node);
+
+  node = new RTreeViewNode("Analyzers", -1, "Analyzers");
+  node->addChildNode(new RTreeViewNode("PhaseScope",    i++));
+  //node->addChildNode(new RTreeViewNode("PhaseScope2",   i++));
+  node->addChildNode(new RTreeViewNode("MultiAnalyzer", i++));
+  node->addChildNode(new RTreeViewNode("TrackMeter",    i++));
+  node->addChildNode(new RTreeViewNode("MidiMonitor",   i++));
+  popUpMenu->addTreeNodeItem(node);
+
+  //selectItemFromText("None", false); 
+    // nope - that is wrong. we want the selector to show "None" initially instead of 
+    // "nothing selected"
 }
 
 //=================================================================================================
@@ -578,6 +609,9 @@ void AudioModuleChain::clearModulesArray()
 
 void AudioModuleChain::createDebugModSourcesAndTargets()
 {
+  // This code was for debugging only and can eventually be thrown away...
+
+
   // I think, this is the minimal code that triggers the bug that is apparent in Elan's 
   // SpiralGenerator:
 
