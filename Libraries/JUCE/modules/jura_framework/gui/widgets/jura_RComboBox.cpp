@@ -68,7 +68,7 @@ void RComboBox::selectItemFromText(const juce::String& textToSelect, bool sendNo
 {
   // new - todo: check, if this works correctly in all cases:
   popUpMenu->selectItemByText(textToSelect, false); // the popup should not send notifications
-  setText(popUpMenu->getSelectedText());
+  setText(popUpMenu->getSelectedText()); // calls RTextField::setText
   if( sendNotification == true )
     sendComboBoxChangeNotifications();
 

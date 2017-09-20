@@ -727,9 +727,15 @@ void AudioModuleChainEditor::updateSelectorArray()
     numSelectors++;
   }
 
-  // without it, the selector for 1st slot is wrong after preset loading:
-  if(numSelectors > 0 )
-    selectors[0]->selectItemFromText(AudioModuleFactory::getModuleType(chain->modules[0]), false);
+
+  //// old:
+  //// without it, the selector for 1st slot is wrong after preset loading:
+  //if(numSelectors > 0 )
+  //  selectors[0]->selectItemFromText(AudioModuleFactory::getModuleType(chain->modules[0]), false);
+
+  // new - let selectors reflect the selected module type:
+  for(int i = 0; i < numSelectors; i++)
+    selectors[i]->selectItemFromText(AudioModuleFactory::getModuleType(chain->modules[i]), false);
 }
 
 void AudioModuleChainEditor::updateEditorArray()
