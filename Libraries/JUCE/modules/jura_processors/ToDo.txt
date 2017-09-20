@@ -37,10 +37,15 @@ RayBouncer:
 
  Bugs:
 
+ -AciDevil: 
+  -sequencer doesn't work
+
  -MultiAnalyzer
   -no horizontal scrollbar
-  -extreme cpu load for scope 
-  -scope doesn't really show the input
+  -oscilloscope doesn't show anything
+  -this was the case before reverting to using rosic::OscilloscopeBufferOld
+   -extreme cpu load for scope 
+   -scope doesn't really show the input
 
  Framework:
  -big font incomplete

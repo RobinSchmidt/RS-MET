@@ -29,25 +29,29 @@ class OscilloscopeAudioModule : public AudioModule
 public:
 
   OscilloscopeAudioModule(CriticalSection *newPlugInLock, 
-    rosic::SyncedWaveformDisplayBuffer *displayBufferToUse);
+    rosic::OscilloscopeBufferOld* displayBufferToUse);
 
   virtual void parameterChanged(Parameter* parameterThatHasChanged);
 
   virtual void setSampleRate(double newSampleRate) override
   { 
-    waveformDisplayBuffer->setSampleRate(newSampleRate); 
+    waveformBuffer->setSampleRate(newSampleRate); 
   }
 
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
   {
     for(int n = 0; n < numSamples; n++)
-      waveformDisplayBuffer->feedInputBuffer(&inOutBuffer[0][n], numSamples);
+    {
+      //waveformBuffer->feedInputBuffer(&inOutBuffer[0][n], numSamples);
       // preliminary - feeds only left channel into the buffer - make stereo version
+
+      waveformBuffer->bufferSampleFrameStereo(&inOutBuffer[0][n], &inOutBuffer[1][n]);
+    }
   }
 
   //virtual void processBlockStereo(float *left, float *right, int numSamples)
   //{
-  //  waveformDisplayBuffer->feedInputBuffer(left, numSamples);
+  //  waveformBuffer->feedInputBuffer(left, numSamples);
   //  // later: feed both signals (left and right) into a stereo version...
   //}
 
@@ -57,8 +61,8 @@ protected:
 
   virtual void initializeAutomatableParameters();
 
-  //rosic::OscilloscopeBufferOld *wrappedOscilloscope;
-  rosic::SyncedWaveformDisplayBuffer *waveformDisplayBuffer;
+  rosic::OscilloscopeBufferOld* waveformBuffer;
+  //rosic::SyncedWaveformDisplayBuffer* waveformDisplayBuffer;
 
   bool displayIsFrozen;
 
@@ -172,7 +176,7 @@ public:
     // preliminary - implement functions in the classes of the emebedded objects and rely on 
     // baseclass implementation to iterate over child audio modules
     spectrumAnalyzerModule->wrappedSpectrumAnalyzer->setSampleRate(newSampleRate);
-    oscilloscopeModule->waveformDisplayBuffer->setSampleRate(newSampleRate);
+    oscilloscopeModule->waveformBuffer->setSampleRate(newSampleRate);
   }
 
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
@@ -210,10 +214,12 @@ public:
 
 protected:
 
-  OscilloscopeAudioModule     *oscilloscopeModule;
-  SpectrumAnalyzerAudioModule *spectrumAnalyzerModule;
-  rosic::SyncedWaveformDisplayBuffer *wrappedDisplayBuffer;
-  rosic::SpectrumAnalyzer *wrappedSpectrumAnalyzer;
+  OscilloscopeAudioModule*     oscilloscopeModule;
+  SpectrumAnalyzerAudioModule* spectrumAnalyzerModule;
+
+  //rosic::SyncedWaveformDisplayBuffer* wrappedDisplayBuffer;
+  rosic::OscilloscopeBufferOld* waveformBuffer;
+  rosic::SpectrumAnalyzer*      wrappedSpectrumAnalyzer; // rename to spectrumBuffer
 
   virtual void initializeAutomatableParameters();
 
@@ -377,10 +383,11 @@ protected:
   OscilloscopeDisplay       *oscilloscopeDisplay;
   CoordinateSystemZoomerOld *oscilloscopeZoomer;
 
-  // signal buffers for display:
-  double *timeAxis;
-  float  *xL, *xR;
-  float  **px;  // not used yet, later - use it like: px[0] = xL, px[1] = xR
+
+  //// signal buffers for display:
+  //double *timeAxis;
+  //float  *xL, *xR;
+  //float  **px;  // not used yet, later - use it like: px[0] = xL, px[1] = xR
 
 };
 
