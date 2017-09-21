@@ -24,7 +24,8 @@ public:
   // inquiry:
 
   virtual EqualizerAudioModule* getInputEqualizerModule()    const { return inputEqualizerModule; }
-  virtual EqualizerAudioModule* getFeedbackEqualizerModule() const { return feedbackEqualizerModule; }
+  virtual EqualizerAudioModule* getFeedbackEqualizerModule() const 
+  { return feedbackEqualizerModule; }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -82,8 +83,8 @@ public:
   //-----------------------------------------------------------------------------------------------
   // setup:
 
-
-  virtual void setDelayLineModuleToEdit(EchoLabDelayLineAudioModule* newEchoLabDelayLineModuleToEdit);
+  virtual void setDelayLineModuleToEdit(
+    EchoLabDelayLineAudioModule* newEchoLabDelayLineModuleToEdit);
   virtual void setHueOffsetForFilterEditors(float hueOffset);
 
   //-----------------------------------------------------------------------------------------------
@@ -131,11 +132,6 @@ public:
 
   //AudioModuleEditor* createEditor() override;
 
-
-
-
-
-
   virtual void parameterChanged(Parameter* parameterThatHasChanged);
 
   virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 
@@ -148,16 +144,16 @@ public:
   virtual void setSampleRate(double newSampleRate);
   virtual void setBeatsPerMinute(double newBpm);
   int addDelayLine(double newDelayTime, double newGainFactor);
-
   bool removeDelayLine(int index);
-
   void removeAllDelayLines();
 
   /** Returns a pointer to the delayline audiomodule with given index. */
   EchoLabDelayLineAudioModule* getDelayLineModule(int index) const;
 
-  virtual void getSampleFrameStereo(double* inOutL, double* inOutR);
-  virtual void processBlock(AudioSampleBuffer& buffer, MidiBuffer& midiMessages);
+  //virtual void getSampleFrameStereo(double* inOutL, double* inOutR);
+  //virtual void processBlock(AudioSampleBuffer& buffer, MidiBuffer& midiMessages);
+
+  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
 
   virtual void reset();
 
@@ -191,7 +187,8 @@ protected:
 /** This class plots a schematic impulse-response of a rosic::EchoLab object and allows for editing 
 parameters like the delay-time and gains. */
 
-class EchoLabPlotEditor	: virtual public CurveFamilyPlotOld, virtual public InteractiveCoordinateSystemOld, public ParameterObserver,
+class EchoLabPlotEditor	: virtual public CurveFamilyPlotOld, 
+  virtual public InteractiveCoordinateSystemOld, public ParameterObserver,
   public ChangeBroadcaster, public AudioModuleDeletionWatcher
 {
 
@@ -204,7 +201,7 @@ class EchoLabPlotEditor	: virtual public CurveFamilyPlotOld, virtual public Inte
 
 public:
 
-  //-------------------------------------------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
   // construction/destruction:
 
   /** Constructor. */
@@ -213,11 +210,12 @@ public:
   /** Destructor. */
   virtual ~EchoLabPlotEditor(); 
 
-  //-------------------------------------------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
   // setup:
 
-  /** This function should be used to pass a pointer to an EchoLabDelayLineModuleEditor object. This pointer will be dereferenced in 
-  order to make sure that the editor always shows the delayline that is currently selected here. */
+  /** This function should be used to pass a pointer to an EchoLabDelayLineModuleEditor object. 
+  This pointer will be dereferenced in order to make sure that the editor always shows the 
+  delayline that is currently selected here. */
   virtual void setDelayLineModuleEditor(EchoLabDelayLineModuleEditor *delayLineEditorToUse);
 
   /** Marks one of the delaylines as selected and returns true when selection was successful. */
@@ -229,35 +227,36 @@ public:
   /** Removes one of the delaylines and returns true when removal was successful. */
   virtual bool removeDelayLine(int indexToRemove);
 
-  //-------------------------------------------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
   // inquiry:
 
   /** Returns the index of the currently selected delayline (or -1, if none is selected). */
   //virtual int getSelectedIndex() { return selectedIndex; }
 
-  /** Returns the index of the delayline the is represented by a dot at the given pixel position. It will return -1 if there isn't any 
-  delayline-handle at the position in question. */
+  /** Returns the index of the delayline the is represented by a dot at the given pixel position. 
+  It will return -1 if there isn't any delayline-handle at the position in question. */
   virtual int getIndexAtPixelPosition(int x, int y);
 
-  //-------------------------------------------------------------------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------------------
   // callbacks:
 
-  /** Implements the purely virtual callback function inherited from AudioModuleDeletionWatcher in order to invalidate our pointer-member 
-  "selectedDelayLine" when the delayline will be deleted. */
+  /** Implements the purely virtual callback function inherited from AudioModuleDeletionWatcher in 
+  order to invalidate our pointer-member "selectedDelayLine" when the delayline will be deleted. */
   virtual void audioModuleWillBeDeleted(AudioModule *moduleToBeDeleted);
 
-  /** Implements the purely virtual callback function inherited from ParameterObserver in order to update the plot when one of our 
-  observed parameters has chenged. */
+  /** Implements the purely virtual callback function inherited from ParameterObserver in order to 
+  update the plot when one of our observed parameters has chenged. */
   virtual void parameterChanged(Parameter* parameterThatHasChanged);
 
-  /** Implements the purely virtual callback function inherited from ParameterObserver - but has nothing to do. */
+  /** Implements the purely virtual callback function inherited from ParameterObserver - but has 
+  nothing to do. */
   virtual void parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted) { }
 
   /** Overrides mouseMove in order to update the cursor according to what is under the mouse. */
   virtual void mouseMove(const MouseEvent &e);
 
-  /** Overrides mouseDown for adjusting the frequency and resonance and lets a context menu pop up when the right button is clicked for 
-  MIDI-learn functionality. */
+  /** Overrides mouseDown for adjusting the frequency and resonance and lets a context menu pop up 
+  when the right button is clicked for MIDI-learn functionality. */
   virtual void mouseDown(const MouseEvent& e);
 
   /** Overrides mouseDrag for adjusting the frequency and resonance. */
@@ -275,18 +274,21 @@ public:
   /** Updates the frequency response plot. */
   virtual void updatePlot();
 
-  /** Refreshes the state internal state delayDesignerForPlot to bring it in sync with the state of echoLabToEdit and updates the plot 
-  accordingly. This should be called called whenever the echoLabToEdit has been modified  without accessing it through this object, for 
-  example, on preset-change. */
+  /** Refreshes the state internal state delayDesignerForPlot to bring it in sync with the state of 
+  echoLabToEdit and updates the plot accordingly. This should be called called whenever the 
+  echoLabToEdit has been modified  without accessing it through this object, for example, on 
+  preset-change. */
   virtual void refreshCompletely();
 
 protected:
 
-  /** Returns the handle for mouse grab/drag under the specified position (in pixels) as one of the values in enum dragHandles. */
+  /** Returns the handle for mouse grab/drag under the specified position (in pixels) as one of the 
+  values in enum dragHandles. */
   virtual int getDragHandleAt(int x, int y);
 
   /** Overrides CurveFamilyPlot::plotCurveFamily in order to additionally draw the handles. */
-  virtual void plotCurveFamily(Graphics &g, juce::Image *targetImage = NULL, XmlElement *targetSVG = NULL);
+  virtual void plotCurveFamily(Graphics &g, juce::Image *targetImage = nullptr, 
+    XmlElement *targetSVG = nullptr);
 
   /** De-registers this object as ParameterObserver from the observed Parameters. */
   virtual void deRegisterFromObservedParameters();
