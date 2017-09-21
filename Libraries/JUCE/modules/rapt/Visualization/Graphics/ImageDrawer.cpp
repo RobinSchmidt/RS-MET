@@ -164,7 +164,7 @@ template<class TPix, class TWgt, class TCor>
 TWgt rsLineDrawer<TPix, TWgt, TCor>::profileParabolic(TCor d, TCor w2)
 {
   TCor x = d/w2;
-  if(abs(x) > 1)
+  if(std::abs(x) > 1)
     return 0;
   return 1 - x*x;
 }
@@ -173,7 +173,7 @@ template<class TPix, class TWgt, class TCor>
 TWgt rsLineDrawer<TPix, TWgt, TCor>::profileCubic(TCor d, TCor w2)
 {
   TCor x = d/w2;
-  return rsPositiveBellFunctions<TCor>::cubic(abs(x));
+  return rsPositiveBellFunctions<TCor>::cubic(std::abs(x));
 }
 
 template<class TPix, class TWgt, class TCor>
@@ -184,7 +184,7 @@ void rsLineDrawer<TPix, TWgt, TCor>::setupAlgorithmVariables(TCor x0, TCor y0, T
   dx    = x1 - x0;                     // x-distance
   dy    = y1 - y0;                     // y-distance
   L     = sqrt(dx*dx + dy*dy);         // length of the line
-  steep = abs(dy) > abs(dx);
+  steep = abs(dy) > std::abs(dx);
   if(steep){                           // swap roles of x and y for steep lines
     rsSwap(dx, dy);
     rsSwap(x0, y0);
@@ -210,7 +210,7 @@ void rsLineDrawer<TPix, TWgt, TCor>::setupAlgorithmVariables(TCor x0, TCor y0, T
   // compute loop limits:
   d = w2;                                     // end-cap extension
   if(!roundCaps)
-    d *= (abs(dx)+abs(dy))/L;
+    d *= (abs(dx)+std::abs(dy))/L;
   xs  = rsLimit((int)floor(x0-d), 0, xMax);   // start of left cap (and overall line)
   xel = rsLimit((int)ceil( x0+d), 0, xMax);   // end of left cap
   xsr = rsLimit((int)floor(x1-d), 0, xMax);   // start of right cap
@@ -227,7 +227,7 @@ void rsLineDrawer<TPix, TWgt, TCor>::drawMiddleSection()
     ys = rsMax(y-dvy, 0);                     // scanline start
     ye = rsMin(y+dvy, yMax);                  // scanline end
     for(y = ys; y <= ye; y++){                // inner loop over y-scanline
-      dp = A * abs(yf-y);                     // perpendicuar pixel distance from line
+      dp = A * std::abs(yf-y);                     // perpendicuar pixel distance from line
       sc = lineProfile(dp, w2);               // intensity/color scaler
       plot(x, y, sc, steep);                  // plot pixel (may swap x,y according to "steep")
     }// for y
@@ -246,7 +246,7 @@ void rsLineDrawer<TPix, TWgt, TCor>::drawCap(int start, int end, bool joinable)
     ys = rsMax(y-dvy, 0);
     ye = rsMin(y+dvy, yMax);
     for(y = ys; y <= ye; y++){
-      dp = A * abs(yf-y);
+      dp = A * std::abs(yf-y);
       sc = lineProfile(dp, w2);
       AxBy = A*x + B*y;
       if((d = -AxBy - C0) > 0.f){             // pixel is left to left trimline (in left cap)
@@ -276,7 +276,7 @@ void rsLineDrawer<TPix, TWgt, TCor>::drawCapForJointUniformColor(int start, int 
     ys = rsMax(y-dvy, 0);
     ye = rsMin(y+dvy, yMax);
     for(y = ys; y <= ye; y++){
-      dp = A * abs(yf-y);
+      dp = A * std::abs(yf-y);
       sc = lineProfile(dp, w2);
       AxBy = A*x + B*y;
 

@@ -147,7 +147,7 @@ void FiniteImpulseResponseDesigner::getBandrejectResponse(double *impulseRespons
   for(int i=0; i<length; i++)
     impulseResponse[i] += tmpHighpass[i];
 
-  delete tmpHighpass;
+  delete[] tmpHighpass;
 }
 
 void FiniteImpulseResponseDesigner::getDifferentiatorResponse(double *impulseResponse, int length, int windowType)

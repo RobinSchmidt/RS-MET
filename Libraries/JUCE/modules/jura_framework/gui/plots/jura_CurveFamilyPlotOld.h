@@ -54,17 +54,17 @@ public:
 
   /** Returns the drawing as SVG compliant XmlElement. The caller must take care to delete the
   pointer to the XmlElement when it's not needed anymore. */
-  virtual XmlElement* getPlotAsSVG(int width, int height);
+  XmlElement* getPlotAsSVG(int width, int height) override;
 
   /** Renders the plot to an image object of given width and height. The caller must take
   care to delete the image when it's not needed anymore. */
-  virtual juce::Image* getPlotAsImage(int width, int height);
+  juce::Image* getPlotAsImage(int width, int height) override;
 
   /** Overrides the inherited method from the CoordinateSystem base-class. */
   virtual void updatePlotImage(bool redrawBackground = false);
 
   /** Overrides the inherited method from the CoordinateSystem base-class. */
-  virtual void updateBackgroundImage();
+  void updateBackgroundImage() override;
 
   /** Returns the colour for one of the curves to be drawn. */
   virtual Colour getCurveColour(int index) const { return plotColourScheme.getCurveColour(index); }

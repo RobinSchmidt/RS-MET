@@ -44,10 +44,10 @@ public:
   itself start the timer when it has finished rendering. We use this indirect way (instead of
   just calling repaint after rendering) because juce doesn't like repaint to be called from
   threads other than the message thread. */
-  virtual void timerCallback();
+  void timerCallback() override;
 
   /** Overrides the resized()-function of the component base-class. */
-  virtual void resized();
+  void resized() override;
 
   /** Implements the purely virtual method of the TimeSliceClient baseclass in order to render
   the clientAreaImage memeber inside this function. This callback will be called from a
@@ -76,7 +76,7 @@ private:
   /** Overrides the paint-function of the component base-class in order to fill the client area
   with our member clientAreaImage. Moved to the private area because subclasses should not
   override this - use drawComponent() instead. */
-  void paint(Graphics &g);
+  void paint(Graphics &g) override;
 
   /** Takes care of memory (re-)allocation for the clientAreaImage and calls drawComponent() in a
   thread-safe manner. */

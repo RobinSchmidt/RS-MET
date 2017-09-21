@@ -85,7 +85,7 @@ void rsAlphaMask<TPix>::renderMask()
       double dx = sx * (x - cx);
       double dy = sy * (y - cy);
       double distance = sqrt(dx*dx + dy*dy);
-      TPix alpha = (TPix) abs(getAlphaForDistance(distance));
+      TPix alpha = (TPix) std::abs(getAlphaForDistance(distance));
       rsImageResizable<TPix>::setPixelColor(x, y, alpha);
     }
   }

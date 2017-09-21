@@ -24,6 +24,7 @@ class rsLadderFilter
 {
 
 public:
+	virtual ~LadderFilter() = default;
 
   /** Enumeration of the available filter modes. */
   enum modes  // rename to LadderMode or just Mode, see  state handling here: 
@@ -108,7 +109,7 @@ public:
 
   /** Returns a single output sample (with gain-compensation such that the DC-gain remains 
   unity, irrespective of the resonance) */
-  inline TSig getSample(TSig in);
+  TSig getSample(TSig in);
 
   /** Processes a buffer of given length. */
   void process(TSig *in, TSig *out, int length);

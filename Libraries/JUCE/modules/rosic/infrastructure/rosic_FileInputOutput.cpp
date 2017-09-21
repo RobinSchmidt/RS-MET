@@ -59,7 +59,7 @@ double** rosic::readFromWaveFile(const char* path, int& numChannels, int& numFra
     for(int c=0; c<numChannels; c++)
       pointers[c] = &dBuffer[c*numFrames];
 
-    delete fBuffer;
+    delete[] fBuffer;
     return pointers;
   }
   catch(...)

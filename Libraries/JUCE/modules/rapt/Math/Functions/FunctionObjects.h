@@ -14,6 +14,7 @@ class rsMapper2D
 {
 
 public:
+	virtual ~Mapper2D() = default;
 
   /** Subclasses must override this function to map the incoming xy-pair to the corresponding 
   outgoing pair. */

@@ -460,7 +460,7 @@ void ArrayTools::rsDeInterleave(T *buffer, int numFrames, int numElementsPerFram
     for(i = 0; i < numFrames; i+=1)
       buffer[k+i] = tmp[numElementsPerFrame*i+j];
   }
-  delete tmp;
+  delete[] tmp;
 }
 
 template <class T>
@@ -725,7 +725,7 @@ void ArrayTools::rsInterleave(T *buffer, int numFrames, int numElementsPerFrame)
     for(i = 0; i < numFrames; i+=1)
       buffer[numElementsPerFrame*i+j] = tmp[k+i];
   }
-  delete tmp;
+  delete[] tmp;
 }
 
 template<class T>
