@@ -405,10 +405,10 @@ EchoLabAudioModule::~EchoLabAudioModule()
     delete wrappedEchoLab;
 }
 
-//AudioModuleEditor* EchoLabAudioModule::createEditor()
-//{
-//  return new jura::EchoLabModuleEditor(lock, this); // get rid of passing the lock
-//}
+AudioModuleEditor* EchoLabAudioModule::createEditor()
+{
+  return new jura::EchoLabModuleEditor(lock, this); // get rid of passing the lock
+}
 
 // setup:
 
@@ -1362,7 +1362,9 @@ EchoLabModuleEditor::EchoLabModuleEditor(CriticalSection *newPlugInLock,
   addChildColourSchemeComponent(delayPlotZoomer);
   delayPlotZoomer->setCoordinateSystem(delayPlotEditor);
 
-  delayLineModuleEditor = new EchoLabDelayLineModuleEditor(newPlugInLock, NULL);  
+  delayLineModuleEditor = new EchoLabDelayLineModuleEditor(newPlugInLock, nullptr);
+    // i think, we really need to pass non-null pointer here. maybe a good place to apply the
+    // Null Object pattern
   delayLineModuleEditor->setDescriptionField(infoField, true);
   addChildEditor(delayLineModuleEditor);
 

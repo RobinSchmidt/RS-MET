@@ -25,7 +25,6 @@ RayBouncer:
  -MagicCarpet
  -AlgoVerb
  -Moduluxury (obsolete with the new mod-system)
-
  -ChannelMatrix2x2
  -DspWorkbench
  -CrossOver (but how? it has 8 outputs, Chainer only 2)

@@ -130,7 +130,7 @@ public:
 
   virtual ~EchoLabAudioModule();
 
-  //AudioModuleEditor* createEditor() override;
+  AudioModuleEditor* createEditor() override;
 
   virtual void parameterChanged(Parameter* parameterThatHasChanged);
 
