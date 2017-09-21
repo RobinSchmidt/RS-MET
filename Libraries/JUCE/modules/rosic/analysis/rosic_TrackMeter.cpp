@@ -101,14 +101,25 @@ SignalMeasures TrackMeter::getCurrentMeasurement(bool reset)
   // reset the accumulating variables:
   if( reset )
   {
-    maxLeftLevel      = 0.0;
-    maxRightLevel     = 0.0;
-    maxMidLevel       = 0.0;
-    maxSideLevel      = 0.0;
-    sumOfSquaresLeft  = 0.0;
-    sumOfSquaresRight = 0.0;
-    sumOfProducts     = 0.0;
     sampleCounter     = 0;
+
+    //// hard reset leads to flashy display...
+    //maxLeftLevel      = 0.0;
+    //maxRightLevel     = 0.0;
+    //maxMidLevel       = 0.0;
+    //maxSideLevel      = 0.0;
+    //sumOfSquaresLeft  = 0.0;
+    //sumOfSquaresRight = 0.0;
+    //sumOfProducts     = 0.0;
+
+    //...do a soft-reset instead:
+    maxLeftLevel      = leftLevelExtractor.getSample(      0.0);
+    maxRightLevel     = rightLevelExtractor.getSample(     0.0);
+    maxMidLevel       = midLevelExtractor.getSample(       0.0);
+    maxSideLevel      = sideLevelExtractor.getSample(      0.0);
+    sumOfSquaresLeft  = meanSquareExtractorLeft.getSample( 0.0);
+    sumOfSquaresRight = meanSquareExtractorRight.getSample(0.0);
+    sumOfProducts     = productLevelExtractor.getSample(   0.0);
   }
 
   return currentMeasures;
