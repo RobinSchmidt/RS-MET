@@ -40,6 +40,8 @@ Framework:
  -default colors are weird/wrong
  -bang/hit buttons don't flash - maybe they should operate on mouse-up an flash on as long as the
   the mouse is down
+ -if you right click on a slider, then click elsewhere, you have to click twice to get the menu 
+  back instead of clicking once
 
 TrachMeter
  -flashy - maybe averaging doesn't work?

@@ -24,7 +24,7 @@ class rsLadderFilter
 {
 
 public:
-	virtual ~LadderFilter() = default;
+	//virtual ~LadderFilter() = default;
 
   /** Enumeration of the available filter modes. */
   enum modes  // rename to LadderMode or just Mode, see  state handling here: 
@@ -154,8 +154,9 @@ protected:
   /** \name Internal Functions */
                         
   /** Calculates the one-pole coefficients, feedback-gain and output gain from the parameters. */
-  virtual void updateCoefficients(); 
-    // why virtual - can we get rid of this?
+  //virtual void updateCoefficients();     // why virtual - can we get rid of this?
+  void updateCoefficients(); 
+
 
   /** \name Data */
 
