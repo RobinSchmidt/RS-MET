@@ -23,10 +23,20 @@ public:
       wrappedTrackMeter->setSampleRate(newSampleRate);
   }
 
+  /*
   virtual void getSampleFrameStereo(double *inOutL, double *inOutR)
   {
     wrappedTrackMeter->measureSampleFrameStereo(inOutL, inOutR);
   }
+  */
+
+  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
+  {
+    jassert(numChannels == 2); if(numChannels != 2) return;
+    for(int n = 0; n < numSamples; n++)
+      wrappedTrackMeter->measureSampleFrameStereo(&inOutBuffer[0][n], &inOutBuffer[1][n]);
+  }
+
 
 protected:
 
