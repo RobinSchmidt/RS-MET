@@ -1,10 +1,6 @@
 #ifndef jura_AutomatableWidget_h
 #define jura_AutomatableWidget_h
 
-
-//class AutomatableWidget;  // are these..
-//class AutomatableSlider;  // ..still needed?
-
 class rsModulationDepthSlider;
 
 /** A component for setting up the modulations of some ModulationTarget. */
