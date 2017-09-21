@@ -19,6 +19,10 @@ public:
   /** Callback that gets called when the user has selected a new item in a popup menu. */
   virtual void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged) = 0;
 
+  /** Callback that gets called when the popup menu was dismissed. */
+  //virtual void rPopUpMenuDismissed(RPopUpMenu* menuThatwasDismissed) {}
+  // to be implemented
+
 };
 
 //=================================================================================================

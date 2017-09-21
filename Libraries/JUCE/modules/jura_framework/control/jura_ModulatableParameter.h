@@ -644,6 +644,12 @@ protected:
   AudioModule* ownerModule = nullptr; // needed to create the unique name for state recall
   // maybe we could use the ParameterManager baseclass of AudioModule here
 
+  // \todo: use these for initializing the range/depth/relative of the connections, provide
+  // accessors for client code, maybe factor out into ModulationTarget
+  double defaultRangeMin = -INF, defaultRangeMax = INF;
+  double defaultDepthMin = -1,   defaultDepthMax = 1;
+  bool   defaultRelative = false;
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulatableParameter)
 };
 

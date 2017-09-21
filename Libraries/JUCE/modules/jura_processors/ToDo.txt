@@ -1,3 +1,11 @@
+ModSystem:
+ -let the min/max, relative, etc. values have meaningful initial values, defined in the
+  ModulatableParameter class (or, maybe ModulationTarget?) ...wait they are already there,
+  we just need accessor functions - they are actually also already there, we just need a
+  wantsRelativeModulation flag and use that to initialize the relative property of the 
+  connections, also 
+  default min/max, relative on/off, mod depth min/max
+
 
 Chainer:
  -make the size of the selector popup adequate
@@ -42,6 +50,11 @@ Framework:
   the mouse is down
  -if you right click on a slider, then click elsewhere, you have to click twice to get the menu 
   back instead of clicking once
+  -when the popup menu gets dismissed by clicking somewhere else, the popUpIsOpen flag will
+   not be set to false
+  -solution: we need a rPopUpMenuDismissed callback in RPopUpMenuObserver, make sure, it gets 
+   properly called when a popup is dismissed, override the callback in AutomatableWidget and set
+   the flag false there
 
 TrachMeter
  -flashy - maybe averaging doesn't work?
