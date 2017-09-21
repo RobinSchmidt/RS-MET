@@ -237,6 +237,7 @@ void MultiModeFilterAudioModule::setStateFromXml(const XmlElement& xmlState,
 {
   // restore the inherited controller mappings:
   AudioModule::setStateFromXml(xmlState, stateName, false);
+  //AudioModule::setStateFromXml(xmlState, stateName, markAsClean);
 
   // restore the parameters of the underlying core object:
   if( wrappedMultiModeFilter != NULL )
@@ -522,9 +523,8 @@ void MultiModeFreqResponseEditor::unAssignParameterMorph()
 
 void MultiModeFreqResponseEditor::parameterChanged(Parameter* parameterThatHasChanged)
 {
-  // send out a change-message: 
   sendChangeMessage();
-  //updatePlot();
+  updatePlot();
 }
 
 void MultiModeFreqResponseEditor::parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted)

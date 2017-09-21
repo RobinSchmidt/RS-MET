@@ -39,6 +39,9 @@ public:
   /** Sets this node as ticked (or not). */
   virtual void setTicked(bool shouldBeTicked) { isTicked = shouldBeTicked; }
 
+  /** Sets this node open (or not). Relevant only for non-leaf nodes. */
+  virtual void setOpen(bool shouldBeOpen) { isOpen = shouldBeOpen; }
+
   /** Associates arbitrary data with this node - its up to the user to interpret this data. When 
   the node is deleted, the data pointed to will not be freed here (\todo make this optionally 
   possible). */

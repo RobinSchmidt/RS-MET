@@ -197,6 +197,8 @@ ModulationManager::~ModulationManager()
 {
   ScopedLock scopedLock(*modLock);
   removeAllConnections();
+  deRegisterAllSources();
+  deRegisterAllTargets();
 }
 
 void ModulationManager::applyModulations()
@@ -260,15 +262,6 @@ void ModulationManager::removeConnection(ModulationSource* source, ModulationTar
                                          // given source and target - that should not happen
 }
 
-void ModulationManager::removeAllConnections()
-{
-  ScopedLock scopedLock(*modLock); 
-  for(int i = 0; i < size(modulationConnections); i++)
-    delete modulationConnections[i];
-  modulationConnections.clear();
-  updateAffectedTargetsArray();
-}
-
 void ModulationManager::removeConnectionsWith(ModulationSource* source)
 {
   ScopedLock scopedLock(*modLock); 
@@ -299,6 +292,25 @@ void ModulationManager::removeConnectionsWith(ModulationTarget* target)
   updateAffectedTargetsArray();
 }
 
+void ModulationManager::removeAllConnections()
+{
+  ScopedLock scopedLock(*modLock); 
+  for(int i = 0; i < size(modulationConnections); i++)
+    delete modulationConnections[i];
+  modulationConnections.clear();
+  updateAffectedTargetsArray();
+}
+
+void ModulationManager::resetAllTargetRangeLimits()
+{
+  ScopedLock scopedLock(*modLock); 
+  for(int i = 0; i < size(availableTargets); i++)
+  {
+    availableTargets[i]->setModulationRangeMin(-INF);
+    availableTargets[i]->setModulationRangeMax(+INF);
+  }
+}
+
 void ModulationManager::registerModulationSource(ModulationSource* source)
 {
   ScopedLock scopedLock(*modLock); 
@@ -313,6 +325,13 @@ void ModulationManager::deRegisterModulationSource(ModulationSource* source)
   removeFirstOccurrence(availableSources, source);
   removeConnectionsWith(source);
   source->setModulationManager(nullptr); 
+}
+
+void ModulationManager::deRegisterAllSources()
+{
+  ScopedLock scopedLock(*modLock); 
+  while(size(availableSources) > 0)
+    deRegisterModulationSource(availableSources[size(availableSources)-1]);
 }
 
 void ModulationManager::registerModulationTarget(ModulationTarget* target)
@@ -330,6 +349,13 @@ void ModulationManager::deRegisterModulationTarget(ModulationTarget* target)
   removeFirstOccurrence(affectedTargets,  target);
   removeConnectionsWith(target);
   target->setModulationManager(nullptr);
+}
+
+void ModulationManager::deRegisterAllTargets()
+{
+  ScopedLock scopedLock(*modLock); 
+  while(size(availableTargets) > 0)
+    deRegisterModulationTarget(availableTargets[size(availableTargets)-1]);
 }
 
 bool ModulationManager::isConnected(ModulationSource* source, ModulationTarget* target)
@@ -355,6 +381,7 @@ int ModulationManager::numRegisteredSourcesOfType(ModulationSource* source)
 
 ModulationSource* ModulationManager::getSourceByName(const juce::String& sourceName)
 {
+  ScopedLock scopedLock(*modLock); 
   for(int i = 0; i < size(availableSources); i++)
   {
     if(availableSources[i]->getModulationSourceName() == sourceName)
@@ -365,6 +392,7 @@ ModulationSource* ModulationManager::getSourceByName(const juce::String& sourceN
 
 ModulationTarget* ModulationManager::getTargetByName(const juce::String& targetName)
 {
+  ScopedLock scopedLock(*modLock); 
   for(int i = 0; i < size(availableTargets); i++)
   {
     if(availableTargets[i]->getModulationTargetName() == targetName)
@@ -373,8 +401,21 @@ ModulationTarget* ModulationManager::getTargetByName(const juce::String& targetN
   return nullptr;
 }
 
+bool ModulationManager::needsToStoreRangeLimits()
+{
+  ScopedLock scopedLock(*modLock); 
+  for(int i = 0; i < size(affectedTargets); i++)
+  {
+    if(  affectedTargets[i]->getModulationRangeMin() != -INF
+      || affectedTargets[i]->getModulationRangeMax() !=  INF)
+      return true;
+  }
+  return false;
+}
+
 void ModulationManager::setMetaParameterManager(MetaParameterManager* managerToUse)
 {
+  ScopedLock scopedLock(*modLock); 
   metaManager = managerToUse;
   // todo: set it to the null object, in case a nullptr is passed
 }
@@ -382,6 +423,9 @@ void ModulationManager::setMetaParameterManager(MetaParameterManager* managerToU
 void ModulationManager::setStateFromXml(const XmlElement& xmlState)
 {
   ScopedLock scopedLock(*modLock); 
+  jassert(xmlState.hasTagName("Modulations"));  // not the right kind of xml element
+
+  // recall connections:
   removeAllConnections();
   forEachXmlChildElementWithTagName(xmlState, conXml, "Connection")
   {
@@ -407,6 +451,22 @@ void ModulationManager::setStateFromXml(const XmlElement& xmlState)
     else
       jassertfalse; // source and/or target with given name doesn't exist - patch corrupted?
   }
+
+  // recall range limits:
+  resetAllTargetRangeLimits();
+  XmlElement* xmlLimits = xmlState.getChildByName("RangeLimits");
+  if(xmlLimits != nullptr)
+  {
+    forEachXmlChildElement(*xmlLimits, targetLimitsXml)
+    {
+      ModulationTarget* target = getTargetByName(targetLimitsXml->getTagName());
+      if(target != nullptr)
+      {
+        target->setModulationRangeMin(targetLimitsXml->getDoubleAttribute("Min", -INF));
+        target->setModulationRangeMax(targetLimitsXml->getDoubleAttribute("Max", +INF));
+      }
+    }
+  }
 }
 
 XmlElement* ModulationManager::getStateAsXml()
@@ -417,8 +477,27 @@ XmlElement* ModulationManager::getStateAsXml()
     return nullptr; // "Modulations" child-element will be absent from preset file
 
   XmlElement* xmlState = new XmlElement("Modulations"); // maybe make the name a function parameter for consistency with the recall in Chainer
+
   for(int i = 0; i < size(modulationConnections); i++)
     xmlState->addChildElement(modulationConnections[i]->getAsXml());
+
+  if(!needsToStoreRangeLimits())
+    return xmlState;
+
+  XmlElement* xmlLimits = new XmlElement("RangeLimits");
+  for(int i = 0; i < size(affectedTargets); i++)
+  {
+    double min = affectedTargets[i]->getModulationRangeMin();
+    double max = affectedTargets[i]->getModulationRangeMax();
+    if(min != -INF || max != INF)
+    {
+      XmlElement* xmlTargetLimits = new XmlElement(affectedTargets[i]->getModulationTargetName());
+      if(min != -INF) xmlTargetLimits->setAttribute("Min", min);
+      if(max !=  INF) xmlTargetLimits->setAttribute("Max", max);
+      xmlLimits->addChildElement(xmlTargetLimits);
+    }
+  }
+  xmlState->addChildElement(xmlLimits);
   return xmlState;
 }
 

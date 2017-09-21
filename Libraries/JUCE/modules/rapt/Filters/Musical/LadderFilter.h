@@ -20,7 +20,7 @@ calculations a lot)
 stages instead of letting them have all the same cutoff frequency */
 
 template<class TSig, class TPar> // signal, parameter types
-class LadderFilter
+class rsLadderFilter
 {
 
 public:
@@ -56,7 +56,7 @@ public:
   /** \name Construction/Destruction */
 
   /** Constructor. */
-  LadderFilter();
+  rsLadderFilter();
 
 
   /** \name Setup */

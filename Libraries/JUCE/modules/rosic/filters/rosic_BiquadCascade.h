@@ -264,6 +264,10 @@ protected:
   doubleA *y1R;
   doubleA *y2R;
 
+  // make copy-constructor and assignment operator unavailable (move this idiom into a macro an 
+  // use the macro everywhere, where an object is not trivially copyable):
+  BiquadCascadeStereo(const BiquadCascadeStereo&) = delete;
+  BiquadCascadeStereo& operator=(const BiquadCascadeStereo&) = delete;
 };
 
 INLINE void BiquadCascadeStereo::getSampleFrameDirect1(double *inOutL, double *inOutR)

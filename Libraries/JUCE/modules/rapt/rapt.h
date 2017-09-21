@@ -45,7 +45,7 @@
 //#include "Circuits/Circuits.h"         // circuit modeling
 //#include "Spectral/Spectral.h"         // phase vocoder, source/filter modeling
 #include "Visualization/Visualization.h" // buffers for scopes, waveform displays etc
-#include "Generators/Generators.h"     // oscillator, sample player, etc.
+#include "Generators/Generators.h"     // oscillator, sample player, etc. - maybe rename to sources
 #include "Modulators/Modulators.h"       // ADSR, LFO, step-sequencer, breakpoint-modulator, etc.
 //#include "Effects/Effects.h"           // reverb, distortion, dynamics, chorus, etc.
 //#include "Framework/Framework.h"       // parameter handling, save/recall, threading, polyphony, etc.
@@ -58,7 +58,8 @@
 // typedefs for convenience:
 typedef RAPT::rsSinCosTable<double> rsSinCosTableD;
 
-typedef RAPT::LadderFilter<double, double> rsLadderDD;
+typedef RAPT::rsSmoothingFilter<double, double> rsSmoothingFilterDD;
+typedef RAPT::rsLadderFilter<double, double> rsLadderDD;
 
 typedef RAPT::rsRayBouncer<double> rsRayBouncerD;
 typedef RAPT::rsRayBouncerDriver<double> rsRayBouncerDriverD;

@@ -106,6 +106,10 @@ juce::String AudioModuleFactory::getModuleType(AudioModule *m)
 
 StringArray AudioModuleFactory::getAvailableModuleTypes()
 {
+  // this function is obsolete now. we now use the tree in AudioModuleSelector...but this is 
+  // somehow bad design - it would be better, if this function could return some kind of StringTree
+  // which in turn is used to populate the AudioModuleSelector
+
   // here, we can make certain modules temporarily unavailable by simply commenting the
   // corresponding line
 
@@ -163,48 +167,96 @@ StringArray AudioModuleFactory::getAvailableModuleTypes()
 
 AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
 {
+  /*
   // old: linear flat array:
   setDescription("Select module type");
   StringArray a = AudioModuleFactory::getAvailableModuleTypes();
   for(int i = 0; i < a.size(); i++)
     addItem(i, a[i]);
   // ...but we want a tree...
+  */
+
+  // ...check carefully, if it works:
+  // populate the tree:
+
+  RTreeViewNode *node;
+  int i = 1;           //  the index is actually not used, but we need it as dummy
+
+  popUpMenu->addTreeNodeItem(new RTreeViewNode("None",    i++));
+
+  node = new RTreeViewNode("Sources", -1, "Sources");
+  node->addChildNode(new RTreeViewNode("RayBouncer",      i++));
+  //node->addChildNode(new RTreeViewNode("WaveOscillator",  i++));
+  //node->addChildNode(new RTreeViewNode("FourOscSection",  i++));
+  //node->addChildNode(new RTreeViewNode("NoiseGenerator",  i++));
+  //node->addChildNode(new RTreeViewNode("SamplePlayer",    i++));
+  node->setOpen(false);
+  popUpMenu->addTreeNodeItem(node);
+
+  node = new RTreeViewNode("Filters", -1, "Filters");
+  node->addChildNode(new RTreeViewNode("Ladder",          i++));
+  node->addChildNode(new RTreeViewNode("Equalizer",       i++));
+  node->addChildNode(new RTreeViewNode("EngineersFilter", i++));
+  //node->addChildNode(new RTreeViewNode("PhasorFilter",    i++));
+  //node->addChildNode(new RTreeViewNode("CrossOver",       i++));
+  node->setOpen(false);
+  popUpMenu->addTreeNodeItem(node);
+
+  node = new RTreeViewNode("Modulators", -1, "Modulators");
+  node->addChildNode(new RTreeViewNode("BreakpointModulator",  i++));
+  //node->addChildNode(new RTreeViewNode("LowFrequencyOscillator",  i++));
+  node->setOpen(false);
+  popUpMenu->addTreeNodeItem(node);
+
+  node = new RTreeViewNode("Effects", -1, "Effects");
+  node->addChildNode(new RTreeViewNode("Enveloper",     i++));
+  node->addChildNode(new RTreeViewNode("FuncShaper",    i++));
+  node->addChildNode(new RTreeViewNode("StereoDelay",   i++));
+  node->addChildNode(new RTreeViewNode("PitchShifter",  i++));
+  //node->addChildNode(new RTreeViewNode("EchoLab",       i++));
+  //node->addChildNode(new RTreeViewNode("Quadrifex",     i++));
+  //node->addChildNode(new RTreeViewNode("AlgoVerb",      i++));
+  node->setOpen(false);
+  popUpMenu->addTreeNodeItem(node);
+
+  node = new RTreeViewNode("Instruments", -1, "Instruments");
+  node->addChildNode(new RTreeViewNode("AciDevil",       i++));
+  node->addChildNode(new RTreeViewNode("Straightliner",  i++));
+  node->setOpen(false);
+  popUpMenu->addTreeNodeItem(node);
+
+  node = new RTreeViewNode("Analyzers", -1, "Analyzers");
+  node->addChildNode(new RTreeViewNode("PhaseScope",    i++));
+  //node->addChildNode(new RTreeViewNode("PhaseScope2",   i++));
+  node->addChildNode(new RTreeViewNode("MultiAnalyzer", i++));
+  node->addChildNode(new RTreeViewNode("TrackMeter",    i++));
+  node->addChildNode(new RTreeViewNode("MidiMonitor",   i++));
+  node->setOpen(false);
+  popUpMenu->addTreeNodeItem(node);
+
+  // ToDo:
+  node = new RTreeViewNode("UnderConstruction", -1, "UnderConstruction");
+#ifdef _MSC_VER
+  node->addChildNode(new RTreeViewNode("Liberty",        i++));     // not yet available on gcc
+#endif
+  //node->addChildNode(new RTreeViewNode("MagicCarpet",    i++));
+  //node->addChildNode(new RTreeViewNode("SimpleSampler",  i++));
+  //node->addChildNode(new RTreeViewNode("KeyShot",        i++));
+  //node->addChildNode(new RTreeViewNode("Quadriga",       i++));
+  //node->addChildNode(new RTreeViewNode("Workhorse",      i++));
+  node->setOpen(false);
+  popUpMenu->addTreeNodeItem(node);
 
 
-//  // ...but that does not yet work:
-//  // populate the tree:
-//
-//  RTreeViewNode *node;
-//  int i = 1;           //  the index is actually not used, but we need it as dummy
-//
-//  node = new RTreeViewNode("Analysis", -1, "Analysis");
-//  node->addChildNode(new RTreeViewNode("PhaseScope",      i++));
-//  popUpMenu->addTreeNodeItem(node);
-//
-//  node = new RTreeViewNode("Filters", -1, "Filters");
-//  node->addChildNode(new RTreeViewNode("Ladder",          i++));
-//  node->addChildNode(new RTreeViewNode("PhasorFilter",    i++));
-//  node->addChildNode(new RTreeViewNode("EngineersFilter", i++));
-//  popUpMenu->addTreeNodeItem(node);
-//
-//  node = new RTreeViewNode("Effects", -1, "Effects");
-//  node->addChildNode(new RTreeViewNode("Enveloper",  i++));
-//  node->addChildNode(new RTreeViewNode("FuncShaper", i++));
-//  popUpMenu->addTreeNodeItem(node);
-//
-//  node = new RTreeViewNode("Instruments", -1, "Instruments");
-//  node->addChildNode(new RTreeViewNode("AciDevil", i++));
-//#ifdef _MSC_VER
-//  node->addChildNode(new RTreeViewNode("Liberty",  i++));
-//#endif
-//  popUpMenu->addTreeNodeItem(node);
+
+  //setSize(300, 300); // has no effect
 }
 
 //=================================================================================================
 
 AudioModuleChain::AudioModuleChain(CriticalSection *lockToUse, 
   MetaParameterManager* metaManagerToUse) 
-  : AudioModuleWithMidiIn(lockToUse, metaManagerToUse)
+  : AudioModuleWithMidiIn(lockToUse, metaManagerToUse/*, &modManager*/) // passing modManager causes access violation (not yet constructed)?
   , modManager(lockToUse) // maybe pass the metaManagerToUse to this constructor call
 {
   ScopedLock scopedLock(*lock);
@@ -219,6 +271,11 @@ AudioModuleChain::AudioModuleChain(CriticalSection *lockToUse,
 #endif
   setActiveDirectory(presetPath);
   //setActiveDirectory(getApplicationDirectory() + "/ChainerPresets");  // old
+
+  modManager.setMetaParameterManager(metaManagerToUse);
+  setModulationManager(&modManager);
+
+  createDebugModSourcesAndTargets(); // for debugging the mod-system
 
   addEmptySlot();
 }
@@ -397,14 +454,14 @@ void AudioModuleChain::setSampleRate(double newSampleRate)
     modules[i]->setSampleRate(sampleRate);
 }
 
-void AudioModuleChain::noteOn(int noteNumber, int velocity)
+void AudioModuleChain::handleMidiMessage(MidiMessage message)
 {
   ScopedLock scopedLock(*lock);
   for(int i = 0; i < size(modules); i++){
     AudioModuleWithMidiIn *m = dynamic_cast<AudioModuleWithMidiIn*> (modules[i]);
     if(m != nullptr)
-      m->noteOn(noteNumber, velocity);
-  }
+      m->handleMidiMessage(message); }
+
   // todo: maybe let different slots receive MIDI on different channels
   // and/or don't override the noteOn/etc. functions here but rather let the MIDI events also
   // pass through the modules in series. most modules just pass them through, but we can also
@@ -414,6 +471,19 @@ void AudioModuleChain::noteOn(int noteNumber, int velocity)
 
   // all synthesizer modules should pass through the incoming audio and add their own signal
   // (unless the use it inside for their own signal processing) -> this allows for layering
+}
+
+/*
+// obsolete, now that we have overriden handleMidiMessage - test if the modulation system works, if
+// so, these can eventually be deleted:
+void AudioModuleChain::noteOn(int noteNumber, int velocity)
+{
+  ScopedLock scopedLock(*lock);
+  for(int i = 0; i < size(modules); i++){
+    AudioModuleWithMidiIn *m = dynamic_cast<AudioModuleWithMidiIn*> (modules[i]);
+    if(m != nullptr)
+      m->noteOn(noteNumber, velocity);
+  }
 }
 
 void AudioModuleChain::noteOff(int noteNumber)
@@ -445,6 +515,7 @@ void AudioModuleChain::setPitchBend(int pitchBendValue)
       m->setPitchBend(pitchBendValue);
   }
 }
+*/
 
 void AudioModuleChain::reset()
 {
@@ -566,6 +637,40 @@ void AudioModuleChain::clearModulesArray()
     deleteLastModule();
 }
 
+void AudioModuleChain::createDebugModSourcesAndTargets()
+{
+  // This code was for debugging only and can eventually be thrown away...
+
+
+  // I think, this is the minimal code that triggers the bug that is apparent in Elan's 
+  // SpiralGenerator:
+
+  jura::BreakpointModulatorAudioModule* env = 
+    new jura::BreakpointModulatorAudioModule(lock);
+  env->setModuleName("Envelope1");
+  addChildAudioModule(env);
+
+  modManager.registerModulationSource(env);
+
+  ModulatableParameter* p = 
+    new ModulatableParameter("Gain", -60.0, -20.0, 0.0, Parameter::LINEAR, 0.01);
+  addObservedParameter(p);
+  //p->setValueChangeCallback<AudioModuleChain>(this, &AudioModuleChain::setGain);
+  // try to use a lambda function like Elan does
+
+  // 2 bugs:
+  // 1: p has no modManager pointer (i.e. null)
+  //    -> solved by calling setModulationManager in constructor
+  // 2: on destruction, we hit ModulatableParameter.cpp, line 322:
+  //    jassert(contains(availableSources, source)); // source was never registered
+  //    -> solved by de-registering all sources (and targets) in dtor of ModulationManager
+
+  // ...oh...the modManager's metaManager pointer is still null here - why?
+  // -> solved by calling setMetaParameterManager in the ctor
+
+  int dummy = 0;
+}
+
 //=================================================================================================
 
 AudioModuleChainEditor::AudioModuleChainEditor(jura::AudioModuleChain *moduleChainToEdit)
@@ -644,9 +749,15 @@ void AudioModuleChainEditor::updateSelectorArray()
     numSelectors++;
   }
 
-  // without it, the selector for 1st slot is wrong after preset loading:
-  if(numSelectors > 0 )
-    selectors[0]->selectItemFromText(AudioModuleFactory::getModuleType(chain->modules[0]), false);
+
+  //// old:
+  //// without it, the selector for 1st slot is wrong after preset loading:
+  //if(numSelectors > 0 )
+  //  selectors[0]->selectItemFromText(AudioModuleFactory::getModuleType(chain->modules[0]), false);
+
+  // new - let selectors reflect the selected module type:
+  for(int i = 0; i < numSelectors; i++)
+    selectors[i]->selectItemFromText(AudioModuleFactory::getModuleType(chain->modules[i]), false);
 }
 
 void AudioModuleChainEditor::updateEditorArray()

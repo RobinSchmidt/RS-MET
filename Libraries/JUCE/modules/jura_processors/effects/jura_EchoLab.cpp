@@ -12,12 +12,14 @@ EchoLabDelayLineAudioModule::EchoLabDelayLineAudioModule(CriticalSection *newPlu
 
   inputEqualizerModule = new EqualizerAudioModule(lock, &echoLabDelayLineToWrap->inputEqualizer);
   inputEqualizerModule->setModuleName(juce::String("InputFilter"));
-  inputEqualizerModule->setActiveDirectory(getApplicationDirectory() + juce::String("/EchoLabPresets/InputFilterPresets") );
+  inputEqualizerModule->setActiveDirectory(getApplicationDirectory() 
+    + juce::String("/EchoLabPresets/InputFilterPresets") );
   addChildAudioModule(inputEqualizerModule);
 
   feedbackEqualizerModule = new EqualizerAudioModule(lock, &echoLabDelayLineToWrap->feedbackEqualizer);
   feedbackEqualizerModule->setModuleName(juce::String("FeedbackFilter"));
-  feedbackEqualizerModule->setActiveDirectory(getApplicationDirectory() + juce::String("/EchoLabPresets/FeedbackFilterPresets") );
+  feedbackEqualizerModule->setActiveDirectory(getApplicationDirectory() 
+    + juce::String("/EchoLabPresets/FeedbackFilterPresets") );
   addChildAudioModule(feedbackEqualizerModule);
 }
 
@@ -206,10 +208,11 @@ EchoLabDelayLineModuleEditor::EchoLabDelayLineModuleEditor(CriticalSection *newP
   updateWidgetsAccordingToState();
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // setup:
 
-void EchoLabDelayLineModuleEditor::setDelayLineModuleToEdit(EchoLabDelayLineAudioModule* newEchoLabDelayLineModuleToEdit)
+void EchoLabDelayLineModuleEditor::setDelayLineModuleToEdit(
+  EchoLabDelayLineAudioModule* newEchoLabDelayLineModuleToEdit)
 {
   ScopedLock scopedLock(*lock);
 
@@ -255,11 +258,13 @@ void EchoLabDelayLineModuleEditor::setDelayLineModuleToEdit(EchoLabDelayLineAudi
 void EchoLabDelayLineModuleEditor::setHueOffsetForFilterEditors(float hueOffset)
 {
   ScopedLock scopedLock(*lock);
-  inputEqualizerEditor->setCentralHue(editorColourScheme.getCentralHue() + editorColourScheme.getHueOffset(0));
-  feedbackEqualizerEditor->setCentralHue(editorColourScheme.getCentralHue() + editorColourScheme.getHueOffset(0));
+  inputEqualizerEditor->setCentralHue(editorColourScheme.getCentralHue() 
+    + editorColourScheme.getHueOffset(0));
+  feedbackEqualizerEditor->setCentralHue(editorColourScheme.getCentralHue() 
+    + editorColourScheme.getHueOffset(0));
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // callbacks:
 
 /*
@@ -400,10 +405,10 @@ EchoLabAudioModule::~EchoLabAudioModule()
     delete wrappedEchoLab;
 }
 
-//AudioModuleEditor* EchoLabAudioModule::createEditor()
-//{
-//  return new jura::EchoLabModuleEditor(lock, this); // get rid of passing the lock
-//}
+AudioModuleEditor* EchoLabAudioModule::createEditor()
+{
+  return new jura::EchoLabModuleEditor(lock, this); // get rid of passing the lock
+}
 
 // setup:
 
@@ -479,16 +484,19 @@ XmlElement* echoLabDelayLineStateToXml(EchoLabDelayLine* delayLine, XmlElement* 
   xmlState->setAttribute("Mute",      delayLine->isMuted()                   );
 
   // store the embedded equalizer's state as child element (unless it's neutral):
-  if( delayLine->feedbackEqualizer.getNumBands(0) > 0 || delayLine->feedbackEqualizer.getGlobalGain() != 0.0 )
+  if( delayLine->feedbackEqualizer.getNumBands(0) > 0 
+    || delayLine->feedbackEqualizer.getGlobalGain() != 0.0 )
   {
     XmlElement* feedbackEqState = new XmlElement(juce::String("FeedbackFilter"));
-    feedbackEqState             = equalizerStateToXml(&(delayLine->feedbackEqualizer.equalizers[0]), feedbackEqState);
+    feedbackEqState 
+      = equalizerStateToXml(&(delayLine->feedbackEqualizer.equalizers[0]), feedbackEqState);
     xmlState->addChildElement(feedbackEqState);
   }
-  if( delayLine->inputEqualizer.getNumBands(0) > 0 || delayLine->inputEqualizer.getGlobalGain() != 0.0 )
+  if( delayLine->inputEqualizer.getNumBands(0) > 0 
+    || delayLine->inputEqualizer.getGlobalGain() != 0.0 )
   {
     XmlElement* inputEqState = new XmlElement(juce::String("InputFilter"));
-    inputEqState             = equalizerStateToXml(&(delayLine->inputEqualizer.equalizers[0]), inputEqState);
+    inputEqState = equalizerStateToXml(&(delayLine->inputEqualizer.equalizers[0]), inputEqState);
     xmlState->addChildElement(inputEqState);
   }
 
@@ -574,7 +582,6 @@ void EchoLabAudioModule::setStateFromXml(const XmlElement& xmlState,
   // should set up the internal states of the individual delaylines (which are now child-modules)
   // -> we must perhaps override setStateFromXml in EchoLabDelayLineAudioModule
   // ...this seems not yet to work....
-
 
 
   /*
@@ -680,7 +687,7 @@ EchoLabDelayLineAudioModule* EchoLabAudioModule::getDelayLineModule(int index) c
 }
 
 // audio processing:
-
+/*
 void EchoLabAudioModule::getSampleFrameStereo(double* inOutL, double* inOutR)
 { 
   jassertfalse; // nor good idea to use this function - performance hog
@@ -706,6 +713,11 @@ void EchoLabAudioModule::processBlock(AudioSampleBuffer& buffer, MidiBuffer& mid
     right = buffer.getWritePointer(1, 0);
   wrappedEchoLab->processBlock(left, right, buffer.getNumSamples());
 } 
+*/
+void EchoLabAudioModule::processBlock(double **inOutBuffer, int numChannels, int numSamples)
+{
+  // something to do...
+}
 
 // others:
 
@@ -744,8 +756,10 @@ void EchoLabAudioModule::initializeAutomatableParameters()
 //=================================================================================================
 
 
-EchoLabPlotEditor::EchoLabPlotEditor(CriticalSection *newPlugInLock, EchoLabAudioModule* newEchoLabModuleToEdit) 
-  : CurveFamilyPlotOld(juce::String("EchoLabPlot")), InteractiveCoordinateSystemOld(juce::String("EchoLabPlot"))
+EchoLabPlotEditor::EchoLabPlotEditor(CriticalSection *newPlugInLock, 
+  EchoLabAudioModule* newEchoLabModuleToEdit) 
+  : CurveFamilyPlotOld(juce::String("EchoLabPlot"))
+  , InteractiveCoordinateSystemOld(juce::String("EchoLabPlot"))
 {
   setDescription("Left: insert or grab band-handle, right: remove band");
 
@@ -797,10 +811,11 @@ EchoLabPlotEditor::~EchoLabPlotEditor(void)
   deleteAndZero(impulseResponse);
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // parameter-settings:
 
-void EchoLabPlotEditor::setDelayLineModuleEditor(EchoLabDelayLineModuleEditor *delayLineEditorToUse)
+void EchoLabPlotEditor::setDelayLineModuleEditor(
+  EchoLabDelayLineModuleEditor *delayLineEditorToUse)
 {
   deSelectDelayLine();
   delayLineEditor = delayLineEditorToUse;
@@ -814,7 +829,8 @@ bool EchoLabPlotEditor::selectDelayLine(int indexToSelect)
   removeWatchedAudioModule(selectedDelayLine);
   deRegisterFromObservedParameters();
 
-  if( indexToSelect < 0 || indexToSelect >= echoLabModuleToEdit->wrappedEchoLab->getNumDelayLines() )
+  if( indexToSelect < 0 
+    || indexToSelect >= echoLabModuleToEdit->wrappedEchoLab->getNumDelayLines() )
   {
     selectedIndex = -1;
     selectedDelayLine = NULL;
@@ -858,7 +874,8 @@ bool EchoLabPlotEditor::removeDelayLine(int indexToRemove)
 {
   ScopedLock scopedLock(*plugInLock);
 
-  if( indexToRemove < 0 || indexToRemove >= echoLabModuleToEdit->wrappedEchoLab->getNumDelayLines() )
+  if( indexToRemove < 0 
+    || indexToRemove >= echoLabModuleToEdit->wrappedEchoLab->getNumDelayLines() )
     return false;
 
   // new:
@@ -881,7 +898,7 @@ bool EchoLabPlotEditor::removeDelayLine(int indexToRemove)
   */
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // inquiry:
 
 int EchoLabPlotEditor::getIndexAtPixelPosition(int x, int y)
@@ -904,7 +921,7 @@ int EchoLabPlotEditor::getIndexAtPixelPosition(int x, int y)
   return -1;
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // callbacks:
 
 void EchoLabPlotEditor::audioModuleWillBeDeleted(AudioModule *moduleToBeDeleted)
@@ -941,7 +958,8 @@ void EchoLabPlotEditor::mouseMove(const MouseEvent &e)
     setDescription(tStr + gStr);
   }
   else
-    setDescription(juce::String("Left: insert new delayline or grab handle, right: remove delayline"));
+    setDescription(juce::String(
+      "Left: insert new delayline or grab handle, right: remove delayline"));
 
   int dragHandle = getDragHandleAt(e.x, e.y);
   if( dragHandle == NONE )
@@ -1077,7 +1095,7 @@ int EchoLabPlotEditor::getDragHandleAt(int x, int y)
   return NONE;
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // drawing:
 
 void EchoLabPlotEditor::resized()
@@ -1290,7 +1308,8 @@ void EchoLabPlotEditor::refreshCompletely()
 //=================================================================================================
 
 
-EchoLabModuleEditor::EchoLabModuleEditor(CriticalSection *newPlugInLock, EchoLabAudioModule* newEchoLabAudioModule) 
+EchoLabModuleEditor::EchoLabModuleEditor(CriticalSection *newPlugInLock, 
+  EchoLabAudioModule* newEchoLabAudioModule) 
   : AudioModuleEditor(newEchoLabAudioModule)
 {
   setHeadlineStyle(MAIN_HEADLINE);
@@ -1343,7 +1362,9 @@ EchoLabModuleEditor::EchoLabModuleEditor(CriticalSection *newPlugInLock, EchoLab
   addChildColourSchemeComponent(delayPlotZoomer);
   delayPlotZoomer->setCoordinateSystem(delayPlotEditor);
 
-  delayLineModuleEditor = new EchoLabDelayLineModuleEditor(newPlugInLock, NULL);  
+  delayLineModuleEditor = new EchoLabDelayLineModuleEditor(newPlugInLock, nullptr);
+    // i think, we really need to pass non-null pointer here. maybe a good place to apply the
+    // Null Object pattern
   delayLineModuleEditor->setDescriptionField(infoField, true);
   addChildEditor(delayLineModuleEditor);
 
@@ -1358,8 +1379,7 @@ EchoLabModuleEditor::EchoLabModuleEditor(CriticalSection *newPlugInLock, EchoLab
   setSize(600, 300);
 }
 
-
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // setup:
 
 void EchoLabModuleEditor::initializeColourScheme()
@@ -1374,7 +1394,7 @@ void EchoLabModuleEditor::updateSubEditorColourSchemes()
   delayLineModuleEditor->setHueOffsetForFilterEditors(editorColourScheme.getHueOffset(0));
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // callbacks:
 
 void EchoLabModuleEditor::copyColourSettingsFrom(const ColourSchemeComponent *componentToCopyFrom)
@@ -1464,7 +1484,9 @@ void EchoLabModuleEditor::resized()
 
   y = getPresetSectionBottom();
   h = infoField->getY()-y-equalizerHeight;
-  delayPlotEditor->setBounds(4, y+4, w-delayPlotZoomer->getZoomerSize()-8+RWidget::outlineThickness, h-delayPlotZoomer->getZoomerSize()-4);
+  delayPlotEditor->setBounds(4, y+4, 
+    w-delayPlotZoomer->getZoomerSize()-8+RWidget::outlineThickness, 
+    h-delayPlotZoomer->getZoomerSize()-4);
   delayPlotZoomer->alignWidgetsToCoordinateSystem();
 
   x = w - 44;

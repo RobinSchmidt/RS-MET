@@ -1,5 +1,5 @@
 template<class TPix, class TWgt, class TCor>
-ImageDrawer<TPix, TWgt, TCor>::ImageDrawer(Image<TPix> *imageToDrawOn)
+rsImageDrawer<TPix, TWgt, TCor>::rsImageDrawer(rsImage<TPix> *imageToDrawOn)
 {
   setImageToDrawOn(imageToDrawOn);
   setColor(TPix(1));  // typically white
@@ -9,13 +9,13 @@ ImageDrawer<TPix, TWgt, TCor>::ImageDrawer(Image<TPix> *imageToDrawOn)
 // setup:
 
 template<class TPix, class TWgt, class TCor>
-void ImageDrawer<TPix, TWgt, TCor>::setImageToDrawOn(Image<TPix> *imageToDrawOn)
+void rsImageDrawer<TPix, TWgt, TCor>::setImageToDrawOn(rsImage<TPix> *imageToDrawOn)
 {
   image = imageToDrawOn;
 }
 
 template<class TPix, class TWgt, class TCor>
-void ImageDrawer<TPix, TWgt, TCor>::setBlendMode(int newMode)
+void rsImageDrawer<TPix, TWgt, TCor>::setBlendMode(int newMode)
 {
   rsAssert(newMode >= 0);
   rsAssert(newMode < NUM_BLEND_MODES);
@@ -31,19 +31,19 @@ void ImageDrawer<TPix, TWgt, TCor>::setBlendMode(int newMode)
 // blend functions:
 
 template<class TPix, class TWgt, class TCor>
-void ImageDrawer<TPix, TWgt, TCor>::linearBlend(TPix &pixel, TPix color, TWgt blend)
+void rsImageDrawer<TPix, TWgt, TCor>::linearBlend(TPix &pixel, TPix color, TWgt blend)
 {
   pixel = (1-TPix(blend)) * pixel + TPix(blend) * color;
 }
 
 template<class TPix, class TWgt, class TCor>
-void ImageDrawer<TPix, TWgt, TCor>::addAndClip(TPix &pixel, TPix color, TWgt blend)
+void rsImageDrawer<TPix, TWgt, TCor>::addAndClip(TPix &pixel, TPix color, TWgt blend)
 {
   pixel = rsMin(TPix(1), pixel + TPix(blend)*color);
 }
 
 template<class TPix, class TWgt, class TCor>
-void ImageDrawer<TPix, TWgt, TCor>::addAndSaturate(TPix &pixel, TPix color, TWgt blend)
+void rsImageDrawer<TPix, TWgt, TCor>::addAndSaturate(TPix &pixel, TPix color, TWgt blend)
 {
   color *= TPix(blend);
   pixel  = (pixel + color) / (TPix(1) + color);
@@ -55,15 +55,15 @@ void ImageDrawer<TPix, TWgt, TCor>::addAndSaturate(TPix &pixel, TPix color, TWgt
 //=================================================================================================
 
 template<class TPix, class TWgt, class TCor>
-LineDrawer<TPix, TWgt, TCor>::LineDrawer(Image<TPix> *imageToDrawOn)
-  : ImageDrawer<TPix, TWgt, TCor>(imageToDrawOn)
+rsLineDrawer<TPix, TWgt, TCor>::rsLineDrawer(rsImage<TPix> *imageToDrawOn)
+  : rsImageDrawer<TPix, TWgt, TCor>(imageToDrawOn)
 {
   setLineProfile(0);
   setLineWidth(1);
 }
 
 template<class TPix, class TWgt, class TCor>
-void LineDrawer<TPix, TWgt, TCor>::setLineProfile(int newProfile)
+void rsLineDrawer<TPix, TWgt, TCor>::setLineProfile(int newProfile)
 {
   rsAssert(newProfile >= 0);
   rsAssert(newProfile < NUM_LINE_PROFILES);
@@ -78,14 +78,14 @@ void LineDrawer<TPix, TWgt, TCor>::setLineProfile(int newProfile)
 }
 
 template<class TPix, class TWgt, class TCor>
-void LineDrawer<TPix, TWgt, TCor>::setLineWidth(TCor newWidth)
+void rsLineDrawer<TPix, TWgt, TCor>::setLineWidth(TCor newWidth)
 {
   rsAssert(newWidth > 0);
   w2 = 0.5f*(newWidth+1);   // +1 is a hack, otherwise lines are 1 pixel too narrow
 }
 
 template<class TPix, class TWgt, class TCor>
-void LineDrawer<TPix, TWgt, TCor>::setRoundCaps(bool shouldBeRound)
+void rsLineDrawer<TPix, TWgt, TCor>::setRoundCaps(bool shouldBeRound)
 {
   roundCaps = shouldBeRound;
 }
@@ -93,7 +93,7 @@ void LineDrawer<TPix, TWgt, TCor>::setRoundCaps(bool shouldBeRound)
 // drawing:
 
 template<class TPix, class TWgt, class TCor>
-void LineDrawer<TPix, TWgt, TCor>::drawLine(TCor x0, TCor y0, TCor x1, TCor y1,
+void rsLineDrawer<TPix, TWgt, TCor>::drawLine(TCor x0, TCor y0, TCor x1, TCor y1,
   bool joinableStart, bool joinableEnd)
 {
   setupAlgorithmVariables(x0, y0, x1, y1);
@@ -113,7 +113,7 @@ void LineDrawer<TPix, TWgt, TCor>::drawLine(TCor x0, TCor y0, TCor x1, TCor y1,
 }
 
 template<class TPix, class TWgt, class TCor>
-void LineDrawer<TPix, TWgt, TCor>::lineTo(TCor x, TCor y, bool uniformColor)
+void rsLineDrawer<TPix, TWgt, TCor>::lineTo(TCor x, TCor y, bool uniformColor)
 {
   if(!uniformColor){
     drawLine(xOld, yOld, x, y, true, true);
@@ -143,7 +143,7 @@ void LineDrawer<TPix, TWgt, TCor>::lineTo(TCor x, TCor y, bool uniformColor)
 // profile functions:
 
 template<class TPix, class TWgt, class TCor>
-TWgt LineDrawer<TPix, TWgt, TCor>::profileFlat(TCor d, TCor w2)
+TWgt rsLineDrawer<TPix, TWgt, TCor>::profileFlat(TCor d, TCor w2)
 {
   if(d <= w2-1)
     return 1;
@@ -153,7 +153,7 @@ TWgt LineDrawer<TPix, TWgt, TCor>::profileFlat(TCor d, TCor w2)
 }
 
 template<class TPix, class TWgt, class TCor>
-TWgt LineDrawer<TPix, TWgt, TCor>::profileLinear(TCor d, TCor w2)
+TWgt rsLineDrawer<TPix, TWgt, TCor>::profileLinear(TCor d, TCor w2)
 {
   if(d > w2)
     return 0;
@@ -161,7 +161,7 @@ TWgt LineDrawer<TPix, TWgt, TCor>::profileLinear(TCor d, TCor w2)
 }
 
 template<class TPix, class TWgt, class TCor>
-TWgt LineDrawer<TPix, TWgt, TCor>::profileParabolic(TCor d, TCor w2)
+TWgt rsLineDrawer<TPix, TWgt, TCor>::profileParabolic(TCor d, TCor w2)
 {
   TCor x = d/w2;
   if(std::abs(x) > 1)
@@ -170,14 +170,14 @@ TWgt LineDrawer<TPix, TWgt, TCor>::profileParabolic(TCor d, TCor w2)
 }
 
 template<class TPix, class TWgt, class TCor>
-TWgt LineDrawer<TPix, TWgt, TCor>::profileCubic(TCor d, TCor w2)
+TWgt rsLineDrawer<TPix, TWgt, TCor>::profileCubic(TCor d, TCor w2)
 {
   TCor x = d/w2;
   return rsPositiveBellFunctions<TCor>::cubic(std::abs(x));
 }
 
 template<class TPix, class TWgt, class TCor>
-void LineDrawer<TPix, TWgt, TCor>::setupAlgorithmVariables(TCor x0, TCor y0, TCor x1, TCor y1)
+void rsLineDrawer<TPix, TWgt, TCor>::setupAlgorithmVariables(TCor x0, TCor y0, TCor x1, TCor y1)
 {
   xMax  = this->image->getWidth()-1;   // guard for x index
   yMax  = this->image->getHeight()-1;  // guard for y index
@@ -219,7 +219,7 @@ void LineDrawer<TPix, TWgt, TCor>::setupAlgorithmVariables(TCor x0, TCor y0, TCo
 }
 
 template<class TPix, class TWgt, class TCor>
-void LineDrawer<TPix, TWgt, TCor>::drawMiddleSection()
+void rsLineDrawer<TPix, TWgt, TCor>::drawMiddleSection()
 {
   for(x = xel+1; x <= xsr-1; x++){            // outer loop over x
     yf = a*x + b;                             // ideal y (float)
@@ -235,7 +235,7 @@ void LineDrawer<TPix, TWgt, TCor>::drawMiddleSection()
 }
 
 template<class TPix, class TWgt, class TCor>
-void LineDrawer<TPix, TWgt, TCor>::drawCap(int start, int end, bool joinable)
+void rsLineDrawer<TPix, TWgt, TCor>::drawCap(int start, int end, bool joinable)
 {
   TWgt js = 1;  // joint scaler
   if(joinable)
@@ -267,7 +267,7 @@ void LineDrawer<TPix, TWgt, TCor>::drawCap(int start, int end, bool joinable)
 }
 
 template<class TPix, class TWgt, class TCor>
-void LineDrawer<TPix, TWgt, TCor>::drawCapForJointUniformColor(int start, int end,
+void rsLineDrawer<TPix, TWgt, TCor>::drawCapForJointUniformColor(int start, int end,
   TCor xj, TCor yj)
 {
   for(x = start; x <= end; x++){

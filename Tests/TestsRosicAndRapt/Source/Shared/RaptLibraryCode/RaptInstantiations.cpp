@@ -36,22 +36,23 @@ template void RAPT::ArrayTools::rsFillWithRandomValues(double* x, int N, double 
 template int RAPT::rsLimit(int x, int min, int max);
 template RAPT::rsConicSection<float>;
 template RAPT::rsEllipse<float>;
-template RAPT::NormalizedSigmoids<float>;
-template RAPT::ParametricSigmoid<float>;
-template RAPT::ScaledAndShiftedSigmoid<float>;
+template RAPT::rsNormalizedSigmoids<float>;
+template RAPT::rsParametricSigmoid<float>;
+template RAPT::rsScaledAndShiftedSigmoid<float>;
 template RAPT::rsPositiveBellFunctions<float>;    // get rid of rs-prefixes
 template RAPT::rsParametricBellFunction<float>;
 template RAPT::rsSinCosTable<float>;
 template RAPT::rsSinCosTable<double>;
 
-template void RAPT::Statistics::linearRegression(int N, float* x, float* y, float& a, float& b);
-template float RAPT::Statistics::proportionalRegression(int N, float* x, float* y);
+template void RAPT::rsStatistics::linearRegression(int N, float* x, float* y, float& a, float& b);
+template float RAPT::rsStatistics::proportionalRegression(int N, float* x, float* y);
 
 // Filters:
-template RAPT::LadderFilter<float, float>;
-template RAPT::PhasorFilter<float, float>;
-template RAPT::PhasorStateMapper<float>;
-template RAPT::StateVariableFilter<float, float>; 
+template RAPT::rsSmoothingFilter<float, float>;
+template RAPT::rsLadderFilter<float, float>;
+template RAPT::rsPhasorFilter<float, float>;
+template RAPT::rsPhasorStateMapper<float>;
+template RAPT::rsStateVariableFilter<float, float>; 
 
 // Generators:
 template RAPT::rsRayBouncer<float>;
@@ -60,11 +61,11 @@ template RAPT::rsRayBouncer<float>;
 template RAPT::rsBreakpointModulator<float>;
 
 // Visualization:
-template RAPT::Image<float>;
-template RAPT::AlphaMask<float>;
-template RAPT::ImagePainter<float, float, float>;
-template RAPT::LineDrawer<float, float, float>;
-template RAPT::PhaseScopeBuffer<float, float, double>;
+template RAPT::rsImage<float>;
+template RAPT::rsAlphaMask<float>;
+template RAPT::rsImagePainter<float, float, float>;
+template RAPT::rsLineDrawer<float, float, float>;
+template RAPT::rsPhaseScopeBuffer<float, float, double>;
 
 // Modulators:
 //template RAPT::rsBreakpointModulator<double>; // will be needed, when the class is templatized

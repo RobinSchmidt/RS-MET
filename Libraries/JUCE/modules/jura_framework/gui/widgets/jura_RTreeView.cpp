@@ -308,7 +308,7 @@ int RTreeView::getNodeHeight(const RTreeViewNode *node, bool ignoreOpenness) con
 
 bool RTreeView::isPointClickable(int x, int y) const
 {
-  if( x < outlineThickness || y < outlineThickness ||
+  if( x < outlineThickness || y < outlineThickness+textMargin ||
     x > getWidth()-outlineThickness || y > getHeight()-outlineThickness )
     return false;
 
@@ -713,7 +713,8 @@ void RTreeLeafNodeSelector::selectNodeByIdentifier(int nodeIdentifierToSelect,
     return;
 
   rootNode->setAllNodesUnticked();
-  RTreeViewNode *selectedNode = rootNode->findNodeByIndentifier(nodeIdentifierToSelect);
+  //RTreeViewNode *selectedNode = rootNode->findNodeByIndentifier(nodeIdentifierToSelect); // old
+  selectedNode = rootNode->findNodeByIndentifier(nodeIdentifierToSelect);                  // new
   if( selectedNode != NULL )
     selectedNode->setTicked(true);
 
@@ -728,7 +729,8 @@ void RTreeLeafNodeSelector::selectNodeByText(const juce::String& textToSelect,
     return;
 
   rootNode->setAllNodesUnticked();
-  RTreeViewNode *selectedNode = rootNode->findNodeByText(textToSelect);
+  //RTreeViewNode *selectedNode = rootNode->findNodeByText(textToSelect); // old
+  selectedNode = rootNode->findNodeByText(textToSelect);                  // new
   if( selectedNode != NULL )
     selectedNode->setTicked(true);
 

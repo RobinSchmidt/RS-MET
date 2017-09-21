@@ -6,7 +6,7 @@ existing image with new colors. Your pixel type should be a monochromatic type, 
 such as float or double. */
 
 template<class TPix>  // pixel type
-class AlphaMask : public ImageResizable<TPix>
+class rsAlphaMask : public rsImageResizable<TPix>
 {
 
 public:
@@ -15,7 +15,7 @@ public:
   /** \name Construction/Destruction */
 
   /** Constructor. */
-  AlphaMask();
+  rsAlphaMask();
 
 
   /** \name Setup */
@@ -42,7 +42,7 @@ public:
   size as the actual mask used for painting. The other mask may use a different template parameter
   for the pixels. */
   template<class T>
-  void copyShapeParametersFrom(const AlphaMask<T>& otherMask);
+  void copyShapeParametersFrom(const rsAlphaMask<T>& otherMask);
 
   /** \name Inquiry */
 

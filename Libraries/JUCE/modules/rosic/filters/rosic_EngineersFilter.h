@@ -108,6 +108,11 @@ protected:
 
   double sampleRate;
 
+
+  // make copy-constructor and assignment operator unavailable (move this idiom into a macro an 
+  // use the macro everywhere, where an object is not trivially copyable):
+  rsEngineersFilter(const rsEngineersFilter&) = delete;
+  rsEngineersFilter& operator=(const rsEngineersFilter&) = delete;
 };
 
 }

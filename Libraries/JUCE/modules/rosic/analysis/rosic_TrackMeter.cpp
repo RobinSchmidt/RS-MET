@@ -74,7 +74,8 @@ void TrackMeter::setReleaseTimeInMilliseconds(double newReleaseTime)
 
 SignalMeasures TrackMeter::getCurrentMeasurement(bool reset)
 {
-  SignalMeasures currentMeasures;
+  if(sampleCounter < 1)
+    return currentMeasures; // if this gets called multiple times during one sample
 
   // assign the measured levels:
   currentMeasures.leftLevel  = rmax( -200.0, amp2dB(sqrt(maxLeftLevel))  );
@@ -83,24 +84,20 @@ SignalMeasures TrackMeter::getCurrentMeasurement(bool reset)
   currentMeasures.sideLevel  = rmax( -200.0, amp2dB(sqrt(maxSideLevel))  );
 
   // calculate and assign the cross-correlation:
-  if( sampleCounter > 0 )
-  {
-    double factor          = 1.0 / (double) sampleCounter;
-    double meanSquareLeft  = factor * sumOfSquaresLeft;
-    double meanSquareRight = factor * sumOfSquaresRight;
-    double meanProduct     = factor * sumOfProducts;
-    double normalizer      = sqrt(meanSquareLeft * meanSquareRight);
-    if( normalizer < dB2amp(-120.0) )
-      currentMeasures.crossCorrelation = 0.0;
-    else
-      currentMeasures.crossCorrelation = meanProduct / normalizer;
-  }
-  else // sampleCounter == 0
+  double factor          = 1.0 / (double)sampleCounter;
+  double meanSquareLeft  = factor * sumOfSquaresLeft;
+  double meanSquareRight = factor * sumOfSquaresRight;
+  double meanProduct     = factor * sumOfProducts;
+  double normalizer      = sqrt(meanSquareLeft * meanSquareRight);
+  if(normalizer < dB2amp(-120.0))
     currentMeasures.crossCorrelation = 0.0;
+  else
+    currentMeasures.crossCorrelation = meanProduct / normalizer;
 
   // reset the accumulating variables:
   if( reset )
   {
+    sampleCounter     = 0;
     maxLeftLevel      = 0.0;
     maxRightLevel     = 0.0;
     maxMidLevel       = 0.0;
@@ -108,7 +105,6 @@ SignalMeasures TrackMeter::getCurrentMeasurement(bool reset)
     sumOfSquaresLeft  = 0.0;
     sumOfSquaresRight = 0.0;
     sumOfProducts     = 0.0;
-    sampleCounter     = 0;
   }
 
   return currentMeasures;

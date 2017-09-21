@@ -22,6 +22,18 @@ rsModulationSetup::rsModulationSetup(AutomatableWidget* widgetToModulate,
   removeButton->setClickingTogglesState(false);
   removeButton->addRButtonListener(this);
 
+  addWidget( clipMinField = new RLabeledTextEntryField("Min:") );
+  clipMinField->setEntryFieldText(String(getClipMin()));
+  clipMinField->setDescription(juce::String("Range minimum for modulated value"));
+  clipMinField->setLabelWidth(36);
+  clipMinField->getTextEntryField()->registerTextEntryFieldObserver(this);
+
+  addWidget( clipMaxField = new RLabeledTextEntryField("Max:") );
+  clipMaxField->setEntryFieldText(String(getClipMax()));
+  clipMaxField->setDescription(juce::String("Range maximum for modulated value"));
+  clipMaxField->setLabelWidth(36);
+  clipMaxField->getTextEntryField()->registerTextEntryFieldObserver(this);
+
   updateAmountSliderArray();
 }
 
@@ -48,12 +60,20 @@ void rsModulationSetup::resized()
 
   closeButton->setBounds(w-16, 0, 16, 16);
   modulationsLabel->setBounds(x, y, w-8-16, sh); y += inc; 
+
   for(int i = 0; i < size(amountSliders); i++) {
     amountSliders[i]->setBounds(x, y, w-8, sh); y += inc; }
+
   y = h - sh - d;
   addButton->setBounds(x, y, 40, 16);
   x = addButton->getRight() + d;
   removeButton->setBounds(x, y, 60, 16);
+
+  y -= inc;
+  x  = 0;
+  clipMinField->setBounds(x+d, y, w/2-2*d, 16);
+  x = w/2;
+  clipMaxField->setBounds(x+d, y, w/2-2*d, 16);
 }
 
 void rsModulationSetup::rButtonClicked(RButton *button)
@@ -81,6 +101,17 @@ void rsModulationSetup::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
     if(id > 0)
       removeConnection(id-1);
   }
+}
+
+void rsModulationSetup::textChanged(RTextEntryField *rTextEntryFieldThatHasChanged)
+{
+  //jassertfalse;
+  // this doesn't work yet: String::getDoubleValue doesn't parse -inf correctly - it returns inf
+
+  if(rTextEntryFieldThatHasChanged == clipMinField->getTextEntryField())
+    setClipMin(toDouble(clipMinField->getTextEntryField()->getText()));
+  else if(rTextEntryFieldThatHasChanged == clipMaxField->getTextEntryField())
+    setClipMax(toDouble(clipMaxField->getTextEntryField()->getText()));
 }
 
 void rsModulationSetup::addConnection(int index)
@@ -128,7 +159,7 @@ void rsModulationSetup::updateAmountSliderArray()
     {
       MetaControlledParameter* param = connections[i]->getDepthParameter();
       if(!hasSlider(param))
-        addSliderFor(param);
+        addSliderFor(param, connections[i]);
     }
   }
   updateSize();
@@ -202,9 +233,9 @@ bool rsModulationSetup::hasSlider(MetaControlledParameter* p)
   return false;
 }
 
-void rsModulationSetup::addSliderFor(MetaControlledParameter* p)
+void rsModulationSetup::addSliderFor(MetaControlledParameter* p, ModulationConnection* c)
 {
-  AutomatableSlider* s = new AutomatableSlider();
+  rsModulationDepthSlider* s = new rsModulationDepthSlider(c);
   amountSliders.push_back(s);
   s->assignParameter(p);
   addWidget(s);
@@ -224,10 +255,30 @@ void rsModulationSetup::updateSize()
   int height = 100;  // preliminary
 
   height  = (sliderHeight+sliderDistance) * size(amountSliders);
-  height += 44;
+  height += 68;
 
   setSize(width, height); 
   resized(); // needed during development - might be redundant when finished
+}
+
+void rsModulationSetup::setClipMin(double newMin) 
+{ 
+  widget->getModulatableParameter()->setModulationRangeMin(newMin); 
+}
+
+void rsModulationSetup::setClipMax(double newMax) 
+{ 
+  widget->getModulatableParameter()->setModulationRangeMax(newMax); 
+}
+
+double rsModulationSetup::getClipMin()
+{ 
+  return widget->getModulatableParameter()->getModulationRangeMin(); 
+}
+
+double rsModulationSetup::getClipMax()
+{ 
+  return widget->getModulatableParameter()->getModulationRangeMax(); 
 }
 
 //=================================================================================================
@@ -265,10 +316,14 @@ void AutomatableWidget::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
 {
   if(menuThatHasChanged != rightClickPopUp)
     return;
-  RTreeViewNode *selectedItem = rightClickPopUp->getSelectedItem();
-  if(selectedItem == nullptr)
-    return;
-  int selectedIdentifier = selectedItem->getNodeIdentifier();
+
+  // obsolete:
+  //RTreeViewNode *selectedItem = rightClickPopUp->getSelectedItem();
+  //if(selectedItem == nullptr)
+  //  return;
+  //int selectedIdentifier = selectedItem->getNodeIdentifier();
+
+  int selectedIdentifier = rightClickPopUp->getSelectedIdentifier();
 
   if(selectedIdentifier == MODULATION_SETUP)
   {
@@ -380,13 +435,7 @@ void AutomatableWidget::addPopUpModulationItems()
 {
   ModulatableParameter* mp = getModulatableParameter();
   if(mp != nullptr)
-  {
-    //// \todo: add sliders for the already connected sources
-    //rightClickPopUp->addItem(MODULATOR_CONNECT, "Connect modulator...");
-    //  // should open a 2nd level popup with the modulators available for connection
-
     rightClickPopUp->addItem(MODULATION_SETUP, "Modulation setup");
-  }
 }
 
 void AutomatableWidget::openRightClickPopupMenu()
@@ -424,12 +473,6 @@ void AutomatableWidget::showModulationSetup()
   modSetup->addToDesktop(ComponentPeer::windowHasDropShadow | ComponentPeer::windowIsTemporary);
   modSetup->setVisible(true);
   modSetup->toFront(true);
-
-  // we need to show a popup window (similar to Straightliner's Osc "More" popup) with sliders for
-  // the modulation amounts for connected sources, a facility to add more connections, text-fields
-  // for the min/max values of the sliders (should be on left and right sides to the slider) and 
-  // maybe a button to set relative modulation mode. The window should appear below or next to the
-  // slider...maybe it can somehow frame it to make it more apparent to which slider it applies
 }
 
 void AutomatableWidget::deleteObject(rsDeletionRequester* objectToDelete)
@@ -498,6 +541,7 @@ void AutomatableSlider::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
 {
   if( menuThatHasChanged != rightClickPopUp )
     return;
+
   RTreeViewNode *selectedItem = rightClickPopUp->getSelectedItem();
   if( selectedItem == NULL )
     return;
@@ -506,7 +550,7 @@ void AutomatableSlider::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
   switch( selectedIdentifier )
   {
   case ENTER_VALUE:   setValue(openModalNumberEntryField(getValue()),        true, false); break;
-  case DEFAULT_VALUE: setValue(selectedItem->getNodeText().getDoubleValue(), true, false); break;
+  case DEFAULT_VALUE: setValue(selectedItem->getNodeText().getDoubleValue(), true, false); break; //?
   default: AutomatableWidget::rPopUpMenuChanged(menuThatHasChanged);
   }
 }
@@ -587,4 +631,32 @@ void AutomatableButton::mouseDown(const MouseEvent& e)
 void AutomatableButton::parameterChanged(Parameter* p)
 {
   RWidget::parameterChanged(p);
+}
+
+//=================================================================================================
+
+void rsModulationDepthSlider::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
+{
+  int id = rightClickPopUp->getSelectedIdentifier();
+  switch( id )
+  {
+  case MOD_DEPTH_MIN: setModDepthMin(openModalNumberEntryField(getModDepthMin())); break;
+  case MOD_DEPTH_MAX: setModDepthMax(openModalNumberEntryField(getModDepthMax())); break;
+  case MOD_MODE_RELATIVE: setModeRelative(!isModeRelative());   break;
+  default: AutomatableSlider::rPopUpMenuChanged(menuThatHasChanged);
+  }
+
+}
+
+void rsModulationDepthSlider::addPopUpMenuItems()
+{
+  AutomatableSlider::addPopUpMenuItems();
+  addPopUpMinMaxAndModeItems();
+}
+
+void rsModulationDepthSlider::addPopUpMinMaxAndModeItems()
+{
+  rightClickPopUp->addItem(MOD_DEPTH_MIN, "Mod depth min");
+  rightClickPopUp->addItem(MOD_DEPTH_MAX, "Mod depth max");
+  rightClickPopUp->addItem(MOD_MODE_RELATIVE, "Relative modulation", true, isModeRelative());
 }

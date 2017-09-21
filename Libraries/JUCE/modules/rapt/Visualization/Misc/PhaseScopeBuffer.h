@@ -4,16 +4,16 @@
 /** Implements the buffering for a phasescope analyzer. */
 
 template<class TSig, class TPix, class TPar> // signal, pixel, parameter types
-class PhaseScopeBuffer
+class rsPhaseScopeBuffer
 {
 
 public:
 
   /** Constructor. */
-  PhaseScopeBuffer();
+  rsPhaseScopeBuffer();
 
   /** Destructor. */
-  virtual ~PhaseScopeBuffer() {}
+  virtual ~rsPhaseScopeBuffer() {}
 
 
   /** \name Setup */
@@ -102,7 +102,7 @@ public:
   /** \name Inquiry */
 
   /** Returns a pointer to our image that we use as buffer. */
-  ImageResizable<TPix> *getImage() { return &image; }
+  rsImageResizable<TPix> *getImage() { return &image; }
 
   /** Returns the sample rate. */
   inline TPar getSampleRate() { return sampleRate; }
@@ -197,29 +197,29 @@ protected:
 
   // members for actual painting on an image:
   //Image<TPix> image;
-  ImageResizable<TPix> image;
-  //ImagePainter<TPix, float, TSig> painter; // float: weight-type for alpha mask
-  //ImagePainter<TPix, TPar, TSig> painter;  // using TPar for the 2nd TWgt template parameter
+  rsImageResizable<TPix> image;
+  //rsImagePainter<TPix, float, TSig> painter; // float: weight-type for alpha mask
+  //rsImagePainter<TPix, TPar, TSig> painter;  // using TPar for the 2nd TWgt template parameter
   //                                         // might not be ideal
-  ImagePainter<TPix, TSig, TSig> painter;  // using TPar for the 2nd TWgt template parameter
+  rsImagePainter<TPix, TSig, TSig> painter;  // using TPar for the 2nd TWgt template parameter
                                            // might not be ideal
 
 };
 
 //=================================================================================================
 
-/** Extends the basic PhaseScopeBuffer class with some more artistic features such as an alpha-mask
+/** Extends the basic rsPhaseScopeBuffer class with some more artistic features such as an alpha-mask
 rendered dot, blurring between frames, etc. These features are factored out into a subclass to keep
 the baseclass lean. */
 
 template<class TSig, class TPix, class TPar> // signal, pixel, parameter types
-class PhaseScopeBuffer2 : public PhaseScopeBuffer<TSig, TPix, TPar>
+class rsPhaseScopeBuffer2 : public rsPhaseScopeBuffer<TSig, TPix, TPar>
 {
 
 public:
 
   /** Constructor. */
-  PhaseScopeBuffer2();
+  rsPhaseScopeBuffer2();
 
   /** Switches between simple and alpha-mask based dot drawing. */
   void setUseAlphaMask(bool shouldUseMask);
@@ -242,7 +242,7 @@ public:
   /** Sets the width of the lines in pixels. */
   void setLineWidth(TPar newWidth);
 
-  /** Selects one of the line-profile functions from LineDrawer::lineProfiles. */
+  /** Selects one of the line-profile functions from rsLineDrawer::lineProfiles. */
   void setLineProfile(int newProfile);
 
   /** Switches dot drawing on/off */
@@ -257,7 +257,7 @@ public:
   /** Alpha mask used for drawing a "dot", a public member, such that we don't need to implement
   lots of delegations here for setting it up (maybe move to protected and provide access
   functions). */
-  AlphaMask<TSig> dotMask;
+  rsAlphaMask<TSig> dotMask;
 
 protected:
 
@@ -271,7 +271,7 @@ protected:
   bool drawLines = false;
   bool drawDots  = true;
 
-  LineDrawer<TPix, TSig, TSig> lineDrawer;
+  rsLineDrawer<TPix, TSig, TSig> lineDrawer;
 };
 
 #endif

@@ -89,8 +89,12 @@ maybe make the class hierarchy like this:
 Parameter <- MetaControlledParameter <- ModulatableParameter <- PolyphonicParameter
 
 ToDo:
--let the user set up the min/max amount values
--let the user select absolute or relative modulation
+-It doesn't work in Elan's SpiralGenerator - why? maybe it has to do with creation order? There,
+ the modulators whould modulate parameters of their parent module, in chainer it's the sibling
+ modules - and no sources or targets are created in the constructor
+ Solution:
+ -call setModulationManager in constructor b4 creating sources and targets
+ -..
 -figure out what happens if the user changes the range of depthParam - how will this affect the 
  meta-value, how can we make sure that the depth parameter is always consistent with its attached 
  metaparameter? how its patch recall affected?
@@ -103,9 +107,6 @@ ToDo:
  ModulationSource and let Depth-parameters be ModulationTargets (i.e. ModulatableParameters)
  ...or maybe not the midi key/vel values but something more physical, for example Note-Frequency
  and Amplitude, i.e. freq = pitchToFreq(key+pitchbend), amp = vel/127.
--maybe restrict the modulatedValue to the original parameter range - otherwise modulation may set
- it to out-of-range values (like a cutoff above fs/2 or below 0) which may cause problems
--test in practice
 
 */
 
@@ -252,6 +253,9 @@ public:
   updates the corresponding value in the core dsp algorithm). */
   virtual void doModulationUpdate() = 0;
 
+
+  /** \name Setup */
+
   /** Sets the nominal, unmodulated value. This will be used as reference, when a modulated value 
   will be computed. */
   void setUnmodulatedValue(double newValue)
@@ -264,6 +268,24 @@ public:
 
   /** Removes a ModulationSource from this ModulationTarget. */
   void removeModulationSource(ModulationSource* source);
+
+  /** Sets the minimum value of the allowed modulation range. These min/max values for the range 
+  are used to clip the final modulated value (after all modulations have been applied) to a sane 
+  range. For example, a cutoff frequency of a filter should perhaps be clipped at 0 and 
+  sampleRate/2, otherwise the filter may go crazy. */
+  inline void setModulationRangeMin(double newMin) { rangeMin = newMin; }
+
+  /** Sets the maximum value of the allowed modulation range.  */
+  inline void setModulationRangeMax(double newMax) { rangeMax = newMax; }
+
+
+  /** \name Inquiry */
+
+  /** Returns the minimum value of the allowed modulation range. */
+  inline double getModulationRangeMin() { return rangeMin; }
+
+  /** Returns the maximum value of the allowed modulation range. */
+  inline double getModulationRangeMax() { return rangeMax; }
 
   /** Returns true, if there's a connection between this ModulationTarget and the given 
   ModulationSource. */
@@ -281,20 +303,33 @@ public:
   ModulationTarget. */
   std::vector<ModulationConnection*> getConnections();
 
+  /** This function must be overriden by subclasses to return a unique name that can be used to 
+  identify the target in state recall. */
+  virtual juce::String getModulationTargetName() = 0;
+
+
+  /** \name Misc */
+
   /** Initializes the modulated value by setting it to the unmodulated value. */
   inline void initModulatedValue()
   {
     modulatedValue = unmodulatedValue;
   }
 
-  /** This function must be overriden by subclasses to return a unique name that can be used to 
-  identify the target in state recall. */
-  virtual juce::String getModulationTargetName() = 0;
+  /** Function to retrieve the modulated value after all modulations have been applied. This may 
+  also include a clipping function, such that the returned value is restricted to some allowable
+  range. */
+  inline double getModulatedValue()
+  {
+    return clip(modulatedValue, rangeMin, rangeMax);
+  }
+
 
 protected:
 
   double unmodulatedValue = 0;
   double modulatedValue = 0;
+  double rangeMin = -INF, rangeMax = INF; 
 
   friend class ModulationConnection;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationTarget)
@@ -337,9 +372,14 @@ public:
   /** Sets the parameter to relative mode in which case the output signal of the ModulationSource
   will be multiplied by the ModulationTarget's unmodulated nominal value before being added to the 
   target value. */
-  void setRelative(bool shouldBeRelative)
+  inline void setRelative(bool shouldBeRelative)
   {
     relative = shouldBeRelative;
+  }
+
+  inline bool isRelative()
+  {
+    return relative;
   }
 
   /** Returns the Parameter object that controls the amount of modulation */
@@ -433,14 +473,17 @@ public:
   /** Removes a connection between the given source and target. */
   void removeConnection(ModulationSource* source, ModulationTarget* target);
 
-  /** Removes all ModulationConnections. */
-  void removeAllConnections();
-
   /** Removes all modulation connections that involve the given source. */
   void removeConnectionsWith(ModulationSource* source);
 
   /** Removes all modulation connections that involve the given target. */
   void removeConnectionsWith(ModulationTarget* target);
+
+  /** Removes all ModulationConnections. */
+  void removeAllConnections();
+
+  /** Resets all the range limits for all registered modulation targets to +-inf. */
+  void resetAllTargetRangeLimits();
 
 
   /** \name Registration of sources and targets */
@@ -451,11 +494,17 @@ public:
   /** De-registers a ModulationSource. */
   void deRegisterModulationSource(ModulationSource* source);
 
+  /** De-registers all ModulationSources. */
+  void deRegisterAllSources();
+
   /** Registers the given ModulationTarget. */
   void registerModulationTarget(ModulationTarget* target);
 
   /** De-registers a ModulationTarget. */
   void deRegisterModulationTarget(ModulationTarget* target);
+
+  /** De-registers all ModulationTargets. */
+  void deRegisterAllTargets();
 
 
   /** \name Inquiry */
@@ -464,17 +513,32 @@ public:
   bool isConnected(ModulationSource* source, ModulationTarget* target);
 
   /** Returns the number of ModulationConnections. */
-  inline int getNumConnections() { return size(modulationConnections); }
+  inline int getNumConnections() 
+  { 
+    ScopedLock scopedLock(*modLock); 
+    return size(modulationConnections); 
+  }
 
   /** Returns a reference to our vector of available ModulationSources. */
-  const std::vector<ModulationSource*>& getAvailableModulationSources() { return availableSources; }
+  const std::vector<ModulationSource*>& getAvailableModulationSources() 
+  { 
+    ScopedLock scopedLock(*modLock); 
+    return availableSources; 
+  }
 
   /** Returns a reference to our vector of available ModulationTargets. */
-  const std::vector<ModulationTarget*>& getAvailableModulationTargets() { return availableTargets; }
+  const std::vector<ModulationTarget*>& getAvailableModulationTargets() 
+  { 
+    ScopedLock scopedLock(*modLock); 
+    return availableTargets; 
+  }
 
   /** Returns a reference to our vector of ModulationConnections. */
   const std::vector<ModulationConnection*>& getModulationConnections()
-  { return modulationConnections; }
+  { 
+    ScopedLock scopedLock(*modLock); 
+    return modulationConnections; 
+  }
 
   /** Given a pointer to a ModulationSource of some type, this function returns the number of 
   ModulationSources of the same type that are registered here. This is used to figure out, for 
@@ -489,6 +553,10 @@ public:
   /** Returns a pointer to the ModulationTarget with given name, if a source with that name exists 
   in our array of registered targets. Otherwise, it will return a nullptr. */
   ModulationTarget* getTargetByName(const juce::String& targetName);
+
+  /** Returns true, if any of our affected targets has some range limits set up. If so, we need to
+  store them in a dedicated xml-element when producing a state xml. */
+  bool needsToStoreRangeLimits();
 
 
   /** \name Misc */
@@ -557,7 +625,7 @@ public:
   inline void callCallbackWithModulatedValue()
   {
     if( valueChangeCallbackDouble != nullptr )
-      valueChangeCallbackDouble->call(modulatedValue);
+      valueChangeCallbackDouble->call(getModulatedValue());
   }
 
   /** Overriden to call our callback function with the modulated value. */
@@ -578,5 +646,19 @@ protected:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulatableParameter)
 };
+
+/** This class is like ModulatebleParameter except that it uses the other std::function based
+callback, so if you use this callbakc mechanism, use thsi class for your parameters */ 
+class JUCE_API ModulatableParameter2 : public ModulatableParameter
+{
+  using ModulatableParameter::ModulatableParameter; // import baseclass constructors
+  virtual void doModulationUpdate() override
+  {
+    valueChangeCallbackFunction(getModulatedValue());
+  }
+};
+
+
+
 
 #endif

@@ -7,7 +7,7 @@ namespace RAPT
 // make a nested namespace Filters or Filter
 
 //#include "Basic/OnePoleFilter.h"
-
+#include "Basic/SmoothingFilter.h"
 //#include "Basic/OnePoleOneZero.h"
 //#include "Basic/TwoPoleOneZero.h"  // decaying sine, etc.
 //#include "Basic/Biquad.h"

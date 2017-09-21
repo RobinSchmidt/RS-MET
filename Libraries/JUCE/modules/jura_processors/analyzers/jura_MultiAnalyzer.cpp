@@ -4,11 +4,11 @@
 // class OscilloscopeAudioModule:
 
 OscilloscopeAudioModule::OscilloscopeAudioModule(CriticalSection *newPlugInLock,
-  rosic::SyncedWaveformDisplayBuffer *displayBufferToUse)
+  rosic::OscilloscopeBufferOld* displayBufferToUse)
  : AudioModule(newPlugInLock)
 {
   jassert(displayBufferToUse != NULL); // you must pass a valid rosic-object to the constructor
-  waveformDisplayBuffer = displayBufferToUse;
+  waveformBuffer = displayBufferToUse;
   moduleName = juce::String("Oscilloscope");
   setActiveDirectory(getApplicationDirectory() + juce::String("/OscilloscopePresets") );
   initializeAutomatableParameters();
@@ -17,15 +17,15 @@ OscilloscopeAudioModule::OscilloscopeAudioModule(CriticalSection *newPlugInLock,
 
 void OscilloscopeAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
 {
-  if( waveformDisplayBuffer == NULL )
+  if( waveformBuffer == NULL )
     return;
 
   double value = parameterThatHasChanged->getValue();
   switch( getIndexOfParameter(parameterThatHasChanged) )
   {
-  case 0: waveformDisplayBuffer->setSyncMode(         (int) value  );  break;
-  //case 1: waveformDisplayBuffer->setMidSideMode(      value != 0.0 );  break;
-  case 2: waveformDisplayBuffer->setTimeWindowLength( value        );  break;
+  case 0: waveformBuffer->setSyncMode(         (int) value  );  break;
+  case 1: waveformBuffer->setMidSideMode(      value != 0.0 );  break;
+  case 2: waveformBuffer->setTimeWindowLength( value        );  break;
   }
 
   markStateAsDirty(); // this feature is de-activated because the state will be marked as dirty immediately after preset-load which
@@ -44,7 +44,7 @@ void OscilloscopeAudioModule::initializeAutomatableParameters()
   addObservedParameter( new Parameter(lock, "MinAmplitude",     -2.0,  +2.0, 0.1,   -1.5,  Parameter::LINEAR)  );
   addObservedParameter( new Parameter(lock, "MaxAmplitude",     -2.0,  +2.0, 0.1,    1.5,  Parameter::LINEAR)  );
   addObservedParameter( new Parameter(lock, "FrameRate",        10.0,  50.0, 1.0,   15.0,  Parameter::LINEAR)  );
-  addObservedParameter( new Parameter(lock, "Freeze",            0.0,   1.0, 1.0,    1.0,  Parameter::BOOLEAN) );
+  addObservedParameter( new Parameter(lock, "Freeze",            0.0,   1.0, 1.0,    0.0,  Parameter::BOOLEAN) );
 
   for(int i=0; i < (int) parameters.size(); i++ )
     parameterChanged(parameters[i]);
@@ -92,7 +92,7 @@ void SpectrumAnalyzerAudioModule::initializeAutomatableParameters()
   addObservedParameter( new Parameter(lock, "MinLevel",        -100.0,      10.0, 0.0,  -100.0,   Parameter::LINEAR)       );
   addObservedParameter( new Parameter(lock, "MaxLevel",        -100.0,      10.0, 0.0,    10.0,   Parameter::LINEAR)       );
   addObservedParameter( new Parameter(lock, "FrameRate",        10.0,       50.0, 1.0,   15.0,    Parameter::LINEAR)       );
-  addObservedParameter( new Parameter(lock, "Freeze",            0.0,        1.0, 1.0,    1.0,    Parameter::BOOLEAN)      );
+  addObservedParameter( new Parameter(lock, "Freeze",            0.0,        1.0, 1.0,    0.0,    Parameter::BOOLEAN)      );
 
   for(int i=0; i < (int) parameters.size(); i++ )
     parameterChanged(parameters[i]);
@@ -113,10 +113,13 @@ MultiAnalyzerAudioModule::MultiAnalyzerAudioModule(CriticalSection *newPlugInLoc
   //jassert( oscilloscopeModule     != NULL );
   //jassert( spectrumAnalyzerModule != NULL );
 
-  wrappedDisplayBuffer    = new rosic::SyncedWaveformDisplayBuffer;
-  wrappedSpectrumAnalyzer = new rosic::SpectrumAnalyzer ;
-  oscilloscopeModule      = new OscilloscopeAudioModule(lock, wrappedDisplayBuffer);
+  //waveformBuffer = new rosic::SyncedWaveformDisplayBuffer;
+  waveformBuffer          = new rosic::OscilloscopeBufferOld(400); // displayWidth must be passed - check value
+  wrappedSpectrumAnalyzer = new rosic::SpectrumAnalyzer;
+
+  oscilloscopeModule      = new OscilloscopeAudioModule(lock, waveformBuffer);
   spectrumAnalyzerModule  = new SpectrumAnalyzerAudioModule(lock, wrappedSpectrumAnalyzer);
+
   addChildAudioModule(oscilloscopeModule);
   addChildAudioModule(spectrumAnalyzerModule);
 
@@ -132,7 +135,7 @@ MultiAnalyzerAudioModule::~MultiAnalyzerAudioModule()
   removeChildAudioModule(spectrumAnalyzerModule, true);
   //delete oscilloscopeModule;
   //delete spectrumAnalyzerModule;
-  delete wrappedDisplayBuffer;
+  delete waveformBuffer;
   delete wrappedSpectrumAnalyzer;
 }
 
@@ -489,51 +492,47 @@ void OscilloscopeDisplay::plotCurveFamily(Graphics &g, juce::Image* targetImage,
   // OK - function is called as often as expected
   */
 
-
-
-  /*
-  if( peakData == NULL )
-  return;
+  if(peakData == NULL)
+    return;
 
   double x1, y1, x2, y2;
-  for(int c=0; c<numCurves; c++)
+  for(int c = 0; c < numCurves; c++)
   {
-  g.setColour(plotColourScheme.getCurveColour(c));
-  for(int n=0; n<numValues-1; n++)
-  {
-  x1 = timeAxis[n];
-  y1 = peakData[c][n];
-  x2 = timeAxis[n+1];
-  y2 = peakData[c][n+1];
-  transformToImageCoordinates(x1, y1, targetImage);
-  transformToImageCoordinates(x2, y2, targetImage);
-  g.drawLine((float) x1, (float) y1, (float) x2, (float) y2, 1.f);
-  // uses a lot of CPU - try using a juce::Path - nah, Path uses even more
-  }
-  }
-  */
+    g.setColour(plotColourScheme.getCurveColour(c));
+    for(int n = 0; n < numValues-1; n++)
+    {
+      x1 = timeAxis[n];
+      y1 = peakData[c][n];
+      x2 = timeAxis[n+1];
+      y2 = peakData[c][n+1];
+      transformToImageCoordinates(x1, y1, targetImage);
+      transformToImageCoordinates(x2, y2, targetImage);
+      g.drawLine((float)x1, (float)y1, (float)x2, (float)y2, 1.f);
+      // uses a lot of CPU - try using a juce::Path - nah, Path uses even more
 
-
+      // y stays always fixed and x seems to be way too small (after transformation)
+    }
+  }
 
   /*
   double x, y;
   juce::Path path;
   for(int c = 0; c < numCurves; c++)
   {
-  path.clear();
-  x = timeAxis[0];
-  y = peakData[c][0];
-  transformToImageCoordinates(x, y, targetImage);
-  path.startNewSubPath((float) x, (float) y);
-  for(int n = 1; n < numValues; n++)
-  {
-  x = timeAxis[n];
-  y = peakData[c][n];
-  transformToImageCoordinates(x, y, targetImage);
-  path.lineTo((float) x, (float) y);
-  }
-  g.setColour(plotColourScheme.getCurveColour(c));
-  g.strokePath(path, PathStrokeType(1.f));
+    path.clear();
+    x = timeAxis[0];
+    y = peakData[c][0];
+    transformToImageCoordinates(x, y, targetImage);
+    path.startNewSubPath((float)x, (float)y);
+    for(int n = 1; n < numValues; n++)
+    {
+      x = timeAxis[n];
+      y = peakData[c][n];
+      transformToImageCoordinates(x, y, targetImage);
+      path.lineTo((float)x, (float)y);
+    }
+    g.setColour(plotColourScheme.getCurveColour(c));
+    g.strokePath(path, PathStrokeType(1.f));
   }
   */
 }
@@ -723,22 +722,26 @@ OscilloscopeModuleEditor::OscilloscopeModuleEditor(CriticalSection *newPlugInLoc
   oscilloscopeZoomer->hideScrollBarX(true);
   oscilloscopeZoomer->setVerticalMouseWheelMode(CoordinateSystemZoomerOld::horizontalZoomViaVerticalMouseWheel);
 
+  /*
   timeAxis = NULL;
   xL       = NULL;
   xR       = NULL;
   px       = new float*[2];
   px[0]    = xL;
   px[1]    = xR;
+  */
 
   updateWidgetsAccordingToState();
 }
 
 OscilloscopeModuleEditor::~OscilloscopeModuleEditor()
 {
+  /*
   delete[] timeAxis;
   delete[] xL;
   delete[] xR;
   delete[] px;
+  */
 }
 
 void OscilloscopeModuleEditor::coordinateSystemChanged(MessengingCoordinateSystemOld *coordinateSystemThatHasChanged)
@@ -790,9 +793,9 @@ void OscilloscopeModuleEditor::resized()
   oscilloscopeDisplay->setWaveformData(0, 0, NULL, NULL);
   oscilloscopeZoomer->alignWidgetsToCoordinateSystem();
 
-
+  /*
   // later - take stereo into account - maybe wrap this stuff into a function
-  int N = oscilloscopeAudioModule->waveformDisplayBuffer->getDisplayBufferLength();
+  int N = oscilloscopeAudioModule->waveformBuffer->getDisplayBufferLength();
   delete[] timeAxis;
   delete[] xL;
   delete[] xR;
@@ -801,20 +804,39 @@ void OscilloscopeModuleEditor::resized()
   xR       = new float[N];
   px[0]    = xL;
   px[1]    = xR;
-  convertBuffer(oscilloscopeAudioModule->waveformDisplayBuffer->getTimeAxis(),      timeAxis, N);
-  convertBuffer(oscilloscopeAudioModule->waveformDisplayBuffer->getDisplayBuffer(), xL,       N);
-  convertBuffer(oscilloscopeAudioModule->waveformDisplayBuffer->getDisplayBuffer(), xR,       N);
+  convertBuffer(oscilloscopeAudioModule->waveformBuffer->getTimeAxis(),      timeAxis, N);
+  convertBuffer(oscilloscopeAudioModule->waveformBuffer->getDisplayBuffer(), xL,       N);
+  convertBuffer(oscilloscopeAudioModule->waveformBuffer->getDisplayBuffer(), xR,       N);
   oscilloscopeDisplay->setWaveformData(N, 1, px, timeAxis); // 1 only for debug/optimize - later: 2
+  */
+
+  updateEditorContent();
+  //int numSamples   = oscilloscopeAudioModule->waveformBuffer->getViewBufferLength();
+  //int numChannels  = oscilloscopeAudioModule->waveformBuffer->getNumChannels();
+  //double* timeAxis = oscilloscopeAudioModule->waveformBuffer->getTimeAxis();
+  //float** values   = oscilloscopeAudioModule->waveformBuffer->getCurrentDisplayBuffers();
+  //oscilloscopeDisplay->setWaveformData(numSamples, numChannels, values, timeAxis);
+  ////jassertfalse; // we need to adapt the commented code above to work with class OscilloscopeBufferOld
+  //// i think, we can just call updateEditorContent()
 }
 
 void OscilloscopeModuleEditor::updateEditorContent()
 {
+  /*
   // todo: let the display buffer directly store float arrays - avoid the copy/conversion
-  int N = oscilloscopeAudioModule->waveformDisplayBuffer->getDisplayBufferLength();
-  convertBuffer(oscilloscopeAudioModule->waveformDisplayBuffer->getTimeAxis(),      timeAxis, N);
-  convertBuffer(oscilloscopeAudioModule->waveformDisplayBuffer->getDisplayBuffer(), xL,       N);
-  convertBuffer(oscilloscopeAudioModule->waveformDisplayBuffer->getDisplayBuffer(), xR,       N);
+  int N = oscilloscopeAudioModule->waveformBuffer->getDisplayBufferLength();
+  convertBuffer(oscilloscopeAudioModule->waveformBuffer->getTimeAxis(),      timeAxis, N);
+  convertBuffer(oscilloscopeAudioModule->waveformBuffer->getDisplayBuffer(), xL,       N);
+  convertBuffer(oscilloscopeAudioModule->waveformBuffer->getDisplayBuffer(), xR,       N);
   oscilloscopeDisplay->setWaveformData(N, 2, px, timeAxis);
+  */
+
+  oscilloscopeAudioModule->waveformBuffer->updateDisplayBuffers();
+  int numSamples   = oscilloscopeAudioModule->waveformBuffer->getViewBufferLength();
+  int numChannels  = oscilloscopeAudioModule->waveformBuffer->getNumChannels();
+  double* timeAxis = oscilloscopeAudioModule->waveformBuffer->getTimeAxis();
+  float** values   = oscilloscopeAudioModule->waveformBuffer->getCurrentDisplayBuffers();
+  oscilloscopeDisplay->setWaveformData(numSamples, numChannels, values, timeAxis);
 }
 
 

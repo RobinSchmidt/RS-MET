@@ -6,7 +6,7 @@
 \todo rename to FirstOrderFilter (it does not only have a pole but also a zero).
 \todo make it possible to set up time constants in terms of dB/sec */
 
-class OnePoleFilter
+class rsOnePoleFilter
 {
 
 public:
@@ -33,7 +33,7 @@ public:
   /** \name Construction/Destruction */
 
   /** Constructor. */
-  OnePoleFilter();
+  rsOnePoleFilter();
 
 
   /** \name Setup */
@@ -110,7 +110,7 @@ protected:
 //-----------------------------------------------------------------------------------------------
 // inlined functions:
 
-inline double OnePoleFilter::getSample(double in)
+inline double rsOnePoleFilter::getSample(double in)
 {
   //y1 = b0*in + b1*x1 + a1*y1 + TINY;
   y1 = b0*in + b1*x1 + a1*y1;

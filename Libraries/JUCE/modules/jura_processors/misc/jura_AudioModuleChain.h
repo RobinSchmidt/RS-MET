@@ -193,10 +193,15 @@ public:
   AudioModuleEditor *createEditor() override;
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
   virtual void setSampleRate(double newSampleRate) override; 
+
+  virtual void handleMidiMessage(MidiMessage message) override;
+  /*
   virtual void noteOn(int noteNumber, int velocity) override;
   virtual void noteOff(int noteNumber) override;
   virtual void setMidiController(int controllerNumber, float controllerValue) override;
   virtual void setPitchBend(int pitchBendValue) override;
+  */
+
   virtual void reset() override;
   virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean) override;
   virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 
@@ -219,11 +224,15 @@ protected:
   /** Assigns an appropriate name to the passed ModulationSource which will be used to identify it
   in the modulation setup on the GUI and for state recall. */
   void assignModulationSourceName(ModulationSource* source);
-    // maybe this can be factored out into ModulationManager
 
   /** Clears the array of AudioModules which means als to delete all objects. */
   void clearModulesArray();
+
+  /** Just some temporary throwaway code to figure out what is going wrong with the mod-system in
+  Elan's SpiralGenerator. */
+  void createDebugModSourcesAndTargets();
                      
+
   std::vector<AudioModule*> modules;
     // we should better use the inherited childAudioModules array - but there are errors
 

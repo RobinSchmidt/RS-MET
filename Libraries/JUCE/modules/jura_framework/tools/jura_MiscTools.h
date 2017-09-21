@@ -33,7 +33,8 @@ JUCE_API void clearLogFile();
 // include RAPT already here, so we need to copy them (that violates the DRY principle, but i 
 // currently don't know, how to do this any better):
 
-#define PI 3.1415926535897932384626433832795
+static const double PI  = 3.1415926535897932384626433832795;
+static const double INF = std::numeric_limits<double>::infinity();
 
 inline double clip(double x, double min, double max)
 {

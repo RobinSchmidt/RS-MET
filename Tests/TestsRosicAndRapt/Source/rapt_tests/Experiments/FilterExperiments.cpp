@@ -23,7 +23,7 @@ void ladderResonanceManipulation()
   float fIn =   80;       // input frequency
 
   // create and set up the filters:
-  typedef RAPT::LadderFilter<float, float> LDR;  // for convenience
+  typedef RAPT::rsLadderFilter<float, float> LDR;  // for convenience
 
   LDR withReso;
   withReso.setSampleRate(fs);
@@ -167,7 +167,7 @@ void movingAverage(int N, Tx* x, Ty* y, Ty* avg, Tx width, Ty (*weightFunc)(Tx))
       k++; }
     avg[n] = swv / sw; }
 }
-// Weighting functions for nununiform MA. Maybe implement more, see here:
+// Weighting functions for nonuniform MA. Maybe implement more, see here:
 // https://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use
 // actually, for use in movingAverage, the checks against > 1 are superfluous bcs the loops there
 // ensure already that x <= 1. maybe we can wrap all this stuff into a class 
@@ -277,4 +277,122 @@ void nonUniformMovingAverage()
   // ToDo: maybe try to find even better weighting functions. Maybe the smoothness is related to 
   // the area? smaller area -> more width widening -> better smoothing? maybe because the jitter
   // gets averaged out better?
+}
+
+void smoothingFilterOrders()
+{
+  // We plot the step responses of the rsSmoothingFilter for various orders.
+
+  static const int numOrders = 4;   // number of filters with different orders
+  bool expSpacing = false;          // if true, orders are 1,2,4,8,.. else 1,2,3,4,..
+  int orderIncrement = 2;           // or 1,3,5,.. or 1,4,7,...
+  static const int N = 300;         // number of samples
+  float fs  = 1.0f;                  // sample rate
+  float tau = 101.0f;                  // time constant
+
+  // create and set up the smoother:
+  rsSmoothingFilterFF smoother;
+  //rsSmoothingFilterDD smoother;
+  smoother.setTimeConstantAndSampleRate(tau, fs);
+  //smoother.setNumSamplesToReachHalf(tau*fs);
+  //smoother.setShape(rsSmoothingFilterFF::FAST_ATTACK);
+  smoother.setShapeParameter(0.5f);
+
+  // compute step responses:
+  int order = 1;
+  float y[numOrders][N];
+  for(int i = 0; i < numOrders; i++)
+  {
+    smoother.setOrder(order);
+    if(expSpacing) // update order for next iteration
+      order *= 2;
+    else
+      order += orderIncrement;
+
+    smoother.reset();
+    y[i][0] = smoother.getSample(1.f);
+    for(int n = 1; n < N; n++)
+    {
+      //y[i][n] = smoother.getSample(0.f);   // impulse response
+      y[i][n] = smoother.getSample(1.f); // step response
+    }
+  }
+
+  // plot:
+  float t[N];
+  createTimeAxis(N, t, fs);
+  GNUPlotter plt;
+  for(int i = 0; i < numOrders; i++)
+    plt.addDataArrays(N, t, y[i]); 
+  plt.plot();
+
+  // Observations:
+  // The step responses of the different orders are comparable in terms of overall transition time.
+  // However, they do not meet in a common point. From a user's perspective, it would perhaps be
+  // most intuitive, if he could just set up the time-instant, where the step-response goes through
+  // 0.5. No matter what the order is, the time instant where it passes through 0.5 should remain 
+  // fixed. To achieve that, i think, we need a closed form expression for the step-response and 
+  // then set that expression equal to 0.5 and solve for the time-constant. If it's too hard to 
+  // find such a formula, we could also create a table by just reading off the time-instants where
+  // the various step responses go through 0.5 and then use that value as divider.
+
+  // ToDo:
+  // Measure the sample instants where the the step responses pass through 0.5 for some normalized
+  // filter setting and create tables from that. These tables will eventually be used for scaling. 
+  // It should be a 2D table, 1st dimension is the order (say 1..32) and 2nd dimension is the value
+  // of the shape parameter (maybe from 0 to 4 in 32 steps?) the 2nd dimenstion can use linear
+  // interpolation, the 1st dimension doesn't need that because inputs are integers anyway.
+  // The values of the table should be overall scalers for all the time constants.
+
+
+  // try higher orders - like 100 - see what kind of shaped is approached for order -> inf
+}
+
+void smoothingFilterTransitionTimes()
+{
+  // We plot the step response for smoothing filters of a given order (and shape/asymmetry) for
+  // different transition time constants. What we should see is time-stretched/compressed versions
+  // of the same response. But the nonworking tuning tables suggest that somthing might be wrong
+  // with that assumption, so we check.
+
+  // user parameters:
+  static const int N = 400;           // number of samples
+  int order = 5;                      // order of the filters
+  float asymmetry = 1.f;              // asymmetry parameter
+  static const int numFilters = 5;    // number of transition times
+  float transitionTimes[numFilters] = { 51.f, 101.f, 151.f, 200.1f, 251.f }; // transition times in samples
+
+
+  // create and set up the smoother:                                                             
+  rsSmoothingFilterFF smoother;
+  smoother.setShapeParameter(asymmetry);
+  smoother.setOrder(order);
+
+  // create the step responses:
+  float y[numFilters][N];
+  for(int i = 0; i < numFilters; i++)
+  {
+    smoother.setNumSamplesToReachHalf(transitionTimes[i]);
+    smoother.reset();
+    for(int n = 0; n < N; n++)
+      y[i][n] = smoother.getSample(1.f);
+  }
+
+  // plot:
+  GNUPlotter plt;
+  for(int i = 0; i < numFilters; i++)
+    plt.addDataArrays(N, y[i]); 
+  plt.plot();
+
+  // Observations:
+  // The intuitive assumption that scaling all the time constants by the same factor has the effect
+  // of stretching/compressing the step-response by that amount turns out to be false. It seems to
+  // be true for 1st order filters but for higher orders, especially when there's asymmetry, the 
+  // actually observed step repsonses deviate from that simple rule more and more. 
+  // Why is that? Is it because the design formula uses impulse-invariant transform and should use
+  // step-invariant? ...or maybe even bilinear?
+
+  // see here: http://web.cecs.pdx.edu/~tymerski/ece452/Chapter4.pdf
+  // http://homes.esat.kuleuven.be/~maapc/Sofia/slides_chapter8.pdf
+  // http://dspcan.homestead.com/files/IIRFilt/zfiltsii.htm
 }

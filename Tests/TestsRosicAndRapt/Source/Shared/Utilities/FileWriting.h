@@ -4,7 +4,7 @@
 #include "../RaptLibraryCode/RaptInstantiations.h"
 
 /** Writes the passed monochrome image into a .ppm file */
-void writeImageToFilePPM(const ImageF& image, const char* path);
+void writeImageToFilePPM(const rsImageF& image, const char* path);
 
 
 

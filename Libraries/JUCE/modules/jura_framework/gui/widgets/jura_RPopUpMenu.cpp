@@ -9,8 +9,7 @@ RPopUpMenu::RPopUpMenu(Component *componentToAttachTo) : ROwnedPopUpComponent(co
   treeView = new RTreeLeafNodeSelector();
   treeView->setRootNode(rootNode);
   treeView->setDrawRootNode(false);
-  treeView->setOpenOrCloseNodesOnClick(false); // otherwise, menus with linear list of options stop
-                                               // working when clicking above 1st option
+     
   //treeView->setDrawRootNode(true);
   treeView->registerTreeViewObserver(this);
   setContentWidget(treeView);

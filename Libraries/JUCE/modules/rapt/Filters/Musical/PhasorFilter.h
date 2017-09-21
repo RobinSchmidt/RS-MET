@@ -7,7 +7,7 @@ This class is just a stub - it's still under construction..
 */
 
 template<class TSig, class TPar> // signal, parameter types
-class PhasorFilter
+class rsPhasorFilter
 {
 
 public:
@@ -15,7 +15,7 @@ public:
   /** \name Construction/Destruction */
 
   /** Constructor. */
-  PhasorFilter();
+  rsPhasorFilter();
 
 
   /** \name Setup */
@@ -33,7 +33,7 @@ public:
   /** Sets the nonlinear mapper object that is used internally to mess with the filter state after
   the linear part of the filter was applied. If you pass a nullptr, the filter will revert to the 
   linear case. */
-  void setStateMapper(Mapper2D<TSig> *newMapper);
+  void setStateMapper(rsMapper2D<TSig> *newMapper);
 
 
   /** \name Audio Processing */
@@ -72,7 +72,7 @@ protected:
   TPar decay;                // decay time constant in seconds
 
   // embedded objects:
-  Mapper2D<TSig> *mapper;
+  rsMapper2D<TSig> *mapper;
 
 };
 
@@ -85,12 +85,12 @@ function of the old phase and the magnitude.
 */
 
 template<class T>
-class PhasorStateMapper : public Mapper2D<T>
+class rsPhasorStateMapper : public rsMapper2D<T>
 {
 
 public:
 
-  PhasorStateMapper();
+  rsPhasorStateMapper();
 
 
   /** \name Setup */

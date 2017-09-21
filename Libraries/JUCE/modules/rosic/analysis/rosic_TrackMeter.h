@@ -67,6 +67,8 @@ namespace rosic
                      sideLevelExtractor;
     OnePoleFilter    meanSquareExtractorLeft, meanSquareExtractorRight, productLevelExtractor;
 
+    SignalMeasures currentMeasures;
+
   };
 
   //-----------------------------------------------------------------------------------------------

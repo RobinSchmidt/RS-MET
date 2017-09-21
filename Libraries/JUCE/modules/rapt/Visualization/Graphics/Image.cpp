@@ -1,12 +1,12 @@
 template<class TPix>
-Image<TPix>::Image(int initialWidth, int initialHeight)
+rsImage<TPix>::rsImage(int initialWidth, int initialHeight)
   : width(initialWidth), height(initialHeight)
 {
   allocateMemory();
 }
 
 template<class TPix>
-Image<TPix>::Image(int initialWidth, int initialHeight, const TPix &initialPixelColor)
+rsImage<TPix>::rsImage(int initialWidth, int initialHeight, const TPix &initialPixelColor)
   : width(initialWidth), height(initialHeight)
 {
   allocateMemory();
@@ -14,7 +14,7 @@ Image<TPix>::Image(int initialWidth, int initialHeight, const TPix &initialPixel
 }
 
 template<class TPix>
-Image<TPix>::Image(int initialWidth, int initialHeight, const TPix *initialData)
+rsImage<TPix>::rsImage(int initialWidth, int initialHeight, const TPix *initialData)
   : width(initialWidth), height(initialHeight)
 {
   allocateMemory();
@@ -22,7 +22,7 @@ Image<TPix>::Image(int initialWidth, int initialHeight, const TPix *initialData)
 }
 
 template<class TPix>
-Image<TPix>::Image(const Image<TPix>& other)
+rsImage<TPix>::rsImage(const rsImage<TPix>& other)
 {
   width  = other.width;
   height = other.height;
@@ -31,7 +31,7 @@ Image<TPix>::Image(const Image<TPix>& other)
 }
 
 template<class TPix>
-Image<TPix>::~Image()
+rsImage<TPix>::~rsImage()
 {
   freeMemory();
 }
@@ -39,7 +39,7 @@ Image<TPix>::~Image()
 // setup:
 
 template<class TPix>
-void Image<TPix>::setSize(int newWidth, int newHeight)
+void rsImage<TPix>::setSize(int newWidth, int newHeight)
 {
   if(width != newWidth || height != newHeight)
   {
@@ -51,7 +51,7 @@ void Image<TPix>::setSize(int newWidth, int newHeight)
 }
 
 template<class TPix>
-void Image<TPix>::fillAll(const TPix &colorToFillWith)
+void rsImage<TPix>::fillAll(const TPix &colorToFillWith)
 {
   for(int y=0; y<getHeight(); y++)
   {
@@ -74,8 +74,8 @@ void Image<TPix>::fillAll(const TPix &colorToFillWith)
 //-------------------------------------------------------------------------------------------------
 
 template<class TPix>
-ImageResizable<TPix>::ImageResizable(int initialWidth, int initialHeight)
-  : Image<TPix>(initialWidth, initialHeight)
+rsImageResizable<TPix>::rsImageResizable(int initialWidth, int initialHeight)
+  : rsImage<TPix>(initialWidth, initialHeight)
 {
   maxWidth  = initialWidth;
   maxHeight = initialHeight;
@@ -84,20 +84,20 @@ ImageResizable<TPix>::ImageResizable(int initialWidth, int initialHeight)
 }
 
 template<class TPix>
-void ImageResizable<TPix>::setSize(int newWidth, int newHeight)
+void rsImageResizable<TPix>::setSize(int newWidth, int newHeight)
 {
   if(newWidth > maxWidth || newHeight > maxHeight)  // memory reallocation, only if necessary
     setMaxSize(rsMax(maxWidth, newWidth), rsMax(maxHeight, newHeight));
 //  width  = newWidth;
 //  height = newHeight;
-  Image<TPix>::width = newWidth;
-  Image<TPix>::height = newHeight;
+  rsImage<TPix>::width = newWidth;
+  rsImage<TPix>::height = newHeight;
 }
 
 template<class TPix>
-void ImageResizable<TPix>::setMaxSize(int newMaxWidth, int newMaxHeight)
+void rsImageResizable<TPix>::setMaxSize(int newMaxWidth, int newMaxHeight)
 {
   maxWidth  = newMaxWidth;
   maxHeight = newMaxHeight;
-  Image<TPix>::setSize(maxWidth, maxHeight); // for memory reallocation
+  rsImage<TPix>::setSize(maxWidth, maxHeight); // for memory reallocation
 }

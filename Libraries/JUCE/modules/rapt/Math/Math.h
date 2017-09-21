@@ -7,10 +7,18 @@ namespace RAPT
 // make a nested namespace Math
 
 #include "Functions/BasicFunctions.h"
+#include "Functions/IntegerFunctions.h"
+#include "Functions/RealFunctions.h"
+#include "Functions/ComplexFunctions.h"
+#include "Functions/FunctionIterators.h"
+#include "Functions/MoebiusTransform.h"
 #include "Functions/BellFunctions.h"
 #include "Functions/FunctionObjects.h"
 #include "Functions/Sigmoids.h"
 #include "Functions/SinCosTable.h"
+
+#include "Types/Matrix.h"
+#include "Types/Polynomial.h"
 
 #include "Geometry/Line2D.h"
 #include "Geometry/ConicSection.h"

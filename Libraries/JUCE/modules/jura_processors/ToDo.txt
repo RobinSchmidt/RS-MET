@@ -1,21 +1,11 @@
-ModulationSystem:
--implement right-click context menu for sliders for assigning modulators to parameters
- -there should be a Modulators section with sliders and and Add... option. right-click on 
-  modulation sliders opens a menu where the user can adjust the min/max values of the slider,
-  absolute vs relative modulation and delete the modulation connection
--BUG: add/remove twice -> access violation
 
--test modulation with breakpoints/ladder
-
-
-
+Chainer:
+ -make the size of the selector popup adequate
 
 RayBouncer:
 -give it some reference tuning (in default setting (unit circle, etc) the frequency
  should be exactly equal to incoming midi note)
-
-
-
+-give it a resistance parameter that slows the ray down over time
 
 -make work in Chainer:
  -AciDevil (done)
@@ -24,17 +14,17 @@ RayBouncer:
  -FuncShaper (done)
  -PitchShifter (done)
  -StereoDelay (done)
- -MultiAnalyzer (done...still buggy)
- -Straightliner (done...still buggy)
- -EchoLab
- -TrackMeter
- -Quadrifex
+ -MultiAnalyzer (done)
+ -MidiMonitor (done)
+ -TrackMeter (done - check gui size/arrangement)
+ -Straightliner (done...still some minor bugs)
 
+ -EchoLab
+ -Quadrifex
  -Liberty
  -MagicCarpet
  -AlgoVerb
- -Moduluxury
- -MidiMonitor
+ -Moduluxury (obsolete with the new mod-system)
  -ChannelMatrix2x2
  -DspWorkbench
  -CrossOver (but how? it has 8 outputs, Chainer only 2)
@@ -43,29 +33,30 @@ RayBouncer:
  -Quadriga
  -Workhorse
 
- Bugs:
+Bugs:
 
- Framework:
- -default values in tree view for sliders is not closable
-  RTreeView::openOrCloseNodesOnClick is false
-  in the constrcutor of RPopUpMenu we do:
-  treeView->setOpenOrCloseNodesOnClick(false); // otherwise, menus with linear list of options stop
-                                               // working when clicking above 1st option
-  -> fix this
+Framework:
  -big font incomplete
+ -default colors are weird/wrong
+ -bang/hit buttons don't flash - maybe they should operate on mouse-up an flash on as long as the
+  the mouse is down
 
--AcidDevil
- -strange pitchwheel response
+TrachMeter
+ -flashy - maybe averaging doesn't work?
+
+EchoLab
+ -has no custom gui
+ -state recall triggers jassert
+
+MultiAnalyzer
+ -no horizontal scrollbar in scope (but might be intentional?)
 
 -Straightliner bugs:
- -tuning file widget set looks weird (the box is missing), also it should not show ".xml"
- -loading a tuning file doesn't work. apparently we have used illegal xml attribute names 
-  (beginning with a number) - revise the tuning file format, maybe preprend "Key" or just "K"
-  before each key number
+ -preset-dirty star is present after loading a preset
+  -test this with other modules, too
+   ->in Ladder, BreakpointModulator it works
+   ->try it with other modules that have child-modules
  -colors are wrong
- -patch AnalogMeetsChipTune: pitch-env is not in stairstep mode
-  -maybe check with enveloper
- -filter plot doesn't update when dragging around the handle
 
 -MagicCarpet bugs:
  -gui messed up
@@ -80,10 +71,6 @@ RayBouncer:
 -MidiMonitor:
  -doesn't show events (maybe we need to override handleMidiMessage...or something)
 
- -MultiAnalyzer
-  -no horizontal scrollbar
-  -extreme cpu load for scope 
-
 -DspWorkbench
  -crashes when opening the editor
  
@@ -91,14 +78,12 @@ RayBouncer:
  -gui messed up
  -memory leak on shutdown
 
--StereoDelay
- -GUI widget vertical distance
+
 
 Quadriga:
  -gui messed up
 
-Ladder:
- -freq-response plot doesn't update when using meta parameters
+
 
 
 

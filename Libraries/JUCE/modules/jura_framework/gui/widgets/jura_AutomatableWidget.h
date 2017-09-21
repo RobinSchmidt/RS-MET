@@ -2,17 +2,15 @@
 #define jura_AutomatableWidget_h
 
 
-class AutomatableWidget;
-class AutomatableSlider;
+//class AutomatableWidget;  // are these..
+//class AutomatableSlider;  // ..still needed?
 
-/** A component for setting up the modulations of some ModulationTarget. 
+class rsModulationDepthSlider;
 
-todo: think about thread safety - i've seen it crash when removing a source from a target - 
-probably due to threading problems. i think, we need a mutex, maybe in the ModulationManager
-*/
+/** A component for setting up the modulations of some ModulationTarget. */
 
 class JUCE_API rsModulationSetup : public ColourSchemeComponent, public RButtonListener, 
-  public rsDeletionRequester, public RPopUpMenuObserver
+  public rsDeletionRequester, public RPopUpMenuObserver, public RTextEntryFieldObserver
 {
 
 public:
@@ -31,6 +29,7 @@ public:
   virtual void resized() override;
   virtual void rButtonClicked(RButton *button) override;
   virtual void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged) override;
+  virtual void textChanged(RTextEntryField *rTextEntryFieldThatHasChanged) override;
 
 protected:
 
@@ -55,9 +54,11 @@ protected:
   /** Returns true, if we have a slider associated with the passed parameter. */
   bool hasSlider(MetaControlledParameter* p);
 
-  /** Adds a slider for the passed parameter to our amountSliders array. */
-  void addSliderFor(MetaControlledParameter* p); 
-   // rename to addAmountSliderFor
+  /** Adds a slider for the passed parameter to our amountSliders array. You must also pass a 
+  pointer to the ModulationConnection whose depth this parameter controls so the slider's popup
+  menu can access it in order to set up some other aspects of the connection as well. */
+  void addSliderFor(MetaControlledParameter* p, ModulationConnection* c); 
+   // rename to addDepthSliderFor
 
   /** Clears the array of amount sliders. */
   void clearAmountSliders();
@@ -65,15 +66,23 @@ protected:
   /** Updates the size in order to provide space for all required widgets. */
   void updateSize();
 
+  // functions for getting/setting the clipping limits:
+  void setClipMin(double newMin);
+  void setClipMax(double newMax);
+  double getClipMin();
+  double getClipMax();
 
   AutomatableWidget* widget;         // our owner widget
   MetaParameterManager* metaManager; // used for meta-controlling modulation amounts
 
   // owned widgets:
   RTextField* modulationsLabel;
-  std::vector<AutomatableSlider*> amountSliders;
+  std::vector<rsModulationDepthSlider*> amountSliders; 
+
   RButton *addButton, *removeButton;
   RClickButton* closeButton;
+  RLabeledTextEntryField *clipMinField, *clipMaxField;
+
   RPopUpMenu *connectableSourcesPopUp = nullptr; // created when needed the first time
   RPopUpMenu *removableSourcesPopUp   = nullptr; // ditto
 
@@ -129,7 +138,7 @@ public:
 protected:
 
   /** Enumeration of the identifiers to used as return-values for the right-click popup menu. */
-  enum rightClickPopUpItemIdentifiers
+  enum popUpIds
   {
     ENTER_VALUE = 1,  // nope - these two should be available in the slider baseclass already
     DEFAULT_VALUE,    
@@ -144,11 +153,6 @@ protected:
     META_DETACH,
 
     MODULATION_SETUP
-
-
-    //MODULATOR_CONNECT // maybe factor out modulation related stuff into ModulatableSlider class
-                      // ...hmm but maybe not, because we may wnat to modulate other kinds of 
-                      // widgets like DraggableNumber
   };
 
   /** Clears the popup-menu and then calls createPopUpMenuItems() */
@@ -235,17 +239,53 @@ public:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomatableButton)
 };
 
+//=================================================================================================
 
-//// not yet used:
-//class JUCE_API ModulatableSlider : public AutomatableSlider
-//{
-//
-//public:
-//
-//  AutomatableSlider();
-//
-//  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulatableSlider)
-//}
+/** A special slider subclass specifically for being used for the depth-sliders in a modulation
+setup. They need some special additional options in their popup menu such as facilities to set 
+min/max values and the modulation mode. */
+
+class JUCE_API rsModulationDepthSlider : public AutomatableSlider
+{
+
+public:
+
+  /** Constructor. You must pass a pointer to the ModulationConnection object on which this slider
+  operates such that we can use our popup menu to set up the modulation mode (absolute vs 
+  relative), too. */
+  rsModulationDepthSlider(ModulationConnection* connection) : modConnection(connection) {}
+
+  virtual ~rsModulationDepthSlider() {}
+
+  virtual void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged) override;
+
+  virtual void addPopUpMenuItems() override;
+  virtual void addPopUpMinMaxAndModeItems();
+
+protected:
+
+  // for getting and setting the min/max values of the mod-depth slider and for the clipping of the
+  // modulated value and getting/setting relative mode (maybe these should be inlined):
+  inline double getModDepthMin() { return assignedParameter->getMinValue(); }
+  inline double getModDepthMax() { return assignedParameter->getMaxValue(); }
+  inline bool   isModeRelative() { return modConnection->isRelative();  }
+
+  inline void setModDepthMin(double newMin)  { assignedParameter->setMinValue(newMin); }
+  inline void setModDepthMax(double newMax)  { assignedParameter->setMaxValue(newMax); }
+  inline void setModeRelative(bool relative) { modConnection->setRelative(relative);   }
+
+  /** Additional item ids for this subclass. */
+  enum popUpIds2
+  {
+    MOD_DEPTH_MIN = popUpIds::MODULATION_SETUP+1,
+    MOD_DEPTH_MAX,
+    MOD_MODE_RELATIVE
+  };
+
+  ModulationConnection* modConnection = nullptr; // needs to be assigned in constructor
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsModulationDepthSlider)
+};
 
 
 #endif   

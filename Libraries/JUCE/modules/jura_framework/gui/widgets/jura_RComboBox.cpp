@@ -53,7 +53,7 @@ void RComboBox::selectItemByIndex(int indexToSelect, bool sendNotification)
 
   popUpMenu->selectItemByIndex(indexToSelect, false);
 
-  if( assignedParameter != NULL )
+  if( assignedParameter != nullptr )
     assignedParameter->setValue((double) indexToSelect, sendNotification, sendNotification);
 
   setText(getItemText(indexToSelect));
@@ -66,12 +66,19 @@ void RComboBox::selectItemByIndex(int indexToSelect, bool sendNotification)
 
 void RComboBox::selectItemFromText(const juce::String& textToSelect, bool sendNotification)
 {
-  //// new - does not yet work:
-  //popUpMenu->selectItemByText(textToSelect, false); // the popup should not send notifications
-  //setText(popUpMenu->getSelectedText());
-  //if( sendNotification == true )
-  //  sendComboBoxChangeNotifications();
+  // new - todo: check, if this works correctly in all cases:
+  popUpMenu->selectItemByText(textToSelect, false); // the popup should not send notifications
+  setText(popUpMenu->getSelectedText());
 
+  if(assignedParameter != nullptr)
+    for(int i = 0; i < popUpMenu->getNumTopLevelItems(); i++)
+      if(getItemText(i) == textToSelect)
+        assignedParameter->setValue((double) i, true, true);
+
+  if( sendNotification == true )
+    sendComboBoxChangeNotifications();
+
+  /*
   // old - works only for a flat array of options:
   //int numItems = popUpMenu->getNumTopLevelItems(); // for debug
   for(int i=0; i<popUpMenu->getNumTopLevelItems(); i++)
@@ -87,6 +94,7 @@ void RComboBox::selectItemFromText(const juce::String& textToSelect, bool sendNo
   // this function works only when the combobox has a flat array of options - with a tree
   // structure, it fails - we need a function getNumLeafNodes instead of getNumItems ...
   // or something like that
+  */
 }
 
 void RComboBox::setStateFromString(const juce::String &stateString, bool sendChangeMessage)

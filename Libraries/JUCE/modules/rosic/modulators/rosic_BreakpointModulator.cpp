@@ -153,14 +153,23 @@ int BreakpointModulator::insertBreakpoint(double newTimeStamp,
         // the new one if no shape and shapeAmount were specified (i.e. when they
         // are equal to their default-arguments which are zero), otherwise use the
         // passed arguments:
-        if( newShape == 0 )
-          newBreakpoint.shape = data->breakpoints[bpIndex].shape;
-        else
-          newBreakpoint.shape = newShape;
-        if( newShapeAmount == 0.0 )
-          newBreakpoint.shapeAmount = data->breakpoints[bpIndex].shapeAmount;
-        else
-          newBreakpoint.shapeAmount = newShapeAmount;
+        //if( newShape == 0 )
+        //  newBreakpoint.shape = data->breakpoints[bpIndex].shape;
+        //else
+        //  newBreakpoint.shape = newShape;
+        //if( newShapeAmount == 0.0 )
+        //  newBreakpoint.shapeAmount = data->breakpoints[bpIndex].shapeAmount;
+        //else
+        //  newBreakpoint.shapeAmount = newShapeAmount;
+
+        // code above has been deactivated - why (and since when) do we do that? - it breaks 
+        // patches that use Staistep shape. use the passed arguments no matter what:
+        newBreakpoint.shape = newShape;
+        newBreakpoint.shapeAmount = newShapeAmount;
+        // maybe the intention was that when the user inserts new breakpoints, the new one gets
+        // the same settings...in this case, maybe we should use -1 as default arguments and check
+        // against these values...or let the enum begin with index 1
+
 
         // ! enter critical section !
         data->mutex.lock();

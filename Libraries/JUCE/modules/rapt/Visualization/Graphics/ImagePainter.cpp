@@ -1,5 +1,5 @@
 template<class TPix, class TWgt, class TCor>
-ImagePainter<TPix, TWgt, TCor>::ImagePainter(Image<TPix> *imageToPaintOn, AlphaMask<TWgt> *maskToUse)
+rsImagePainter<TPix, TWgt, TCor>::rsImagePainter(rsImage<TPix> *imageToPaintOn, rsAlphaMask<TWgt> *maskToUse)
 {
   antiAlias = true;
   useMask = false;
@@ -12,7 +12,7 @@ ImagePainter<TPix, TWgt, TCor>::ImagePainter(Image<TPix> *imageToPaintOn, AlphaM
 // setup
 
 template<class TPix, class TWgt, class TCor>
-void ImagePainter<TPix, TWgt, TCor>::setImageToPaintOn(Image<TPix> *imageToPaintOn)
+void rsImagePainter<TPix, TWgt, TCor>::setImageToPaintOn(rsImage<TPix> *imageToPaintOn)
 {
   image = imageToPaintOn;
   //if(image != nullptr)
@@ -25,7 +25,7 @@ void ImagePainter<TPix, TWgt, TCor>::setImageToPaintOn(Image<TPix> *imageToPaint
 }
 
 template<class TPix, class TWgt, class TCor>
-void ImagePainter<TPix, TWgt, TCor>::setAlphaMaskForDot(AlphaMask<TWgt> *maskToUse)
+void rsImagePainter<TPix, TWgt, TCor>::setAlphaMaskForDot(rsAlphaMask<TWgt> *maskToUse)
 {
   mask = maskToUse;
   //wb = mask->getWidth();
@@ -34,20 +34,20 @@ void ImagePainter<TPix, TWgt, TCor>::setAlphaMaskForDot(AlphaMask<TWgt> *maskToU
 }
 
 template<class TPix, class TWgt, class TCor>
-void ImagePainter<TPix, TWgt, TCor>::setNeighbourWeightsForSimpleDot(TWgt straight, TWgt diagonal)
+void rsImagePainter<TPix, TWgt, TCor>::setNeighbourWeightsForSimpleDot(TWgt straight, TWgt diagonal)
 {
   straightNeighbourWeight = straight;
   diagonalNeighbourWeight = diagonal;
 }
 
 template<class TPix, class TWgt, class TCor>
-void ImagePainter<TPix, TWgt, TCor>::setAntiAlias(bool shouldAntiAlias)
+void rsImagePainter<TPix, TWgt, TCor>::setAntiAlias(bool shouldAntiAlias)
 {
   antiAlias = shouldAntiAlias;
 }
 
 template<class TPix, class TWgt, class TCor>
-void ImagePainter<TPix, TWgt, TCor>::setUseAlphaMask(bool shouldUseMask)
+void rsImagePainter<TPix, TWgt, TCor>::setUseAlphaMask(bool shouldUseMask)
 {
   useMask = shouldUseMask;
 }
@@ -55,7 +55,7 @@ void ImagePainter<TPix, TWgt, TCor>::setUseAlphaMask(bool shouldUseMask)
 // painting
 
 template<class TPix, class TWgt, class TCor>
-void ImagePainter<TPix, TWgt, TCor>::paintDot(TCor x, TCor y, TPix color)
+void rsImagePainter<TPix, TWgt, TCor>::paintDot(TCor x, TCor y, TPix color)
 {
   // todo: get rid of this dispatcher code - use a member function pointer instead.
 
@@ -77,7 +77,7 @@ void ImagePainter<TPix, TWgt, TCor>::paintDot(TCor x, TCor y, TPix color)
 }
 
 template<class TPix, class TWgt, class TCor>
-void ImagePainter<TPix, TWgt, TCor>::paintDot3x3(int x, int y, TPix color, TWgt weightStraight, 
+void rsImagePainter<TPix, TWgt, TCor>::paintDot3x3(int x, int y, TPix color, TWgt weightStraight, 
   TWgt weightDiagonal)
 {
   int wi = image->getWidth();
@@ -108,7 +108,7 @@ void ImagePainter<TPix, TWgt, TCor>::paintDot3x3(int x, int y, TPix color, TWgt 
 }
 
 template<class TPix, class TWgt, class TCor>
-void ImagePainter<TPix, TWgt, TCor>::paintDot3x3(TCor x, TCor y, TPix color, TWgt weightStraight, 
+void rsImagePainter<TPix, TWgt, TCor>::paintDot3x3(TCor x, TCor y, TPix color, TWgt weightStraight, 
   TWgt weightDiagonal)
 {
   int wi = image->getWidth();
@@ -181,7 +181,7 @@ void ImagePainter<TPix, TWgt, TCor>::paintDot3x3(TCor x, TCor y, TPix color, TWg
 }
 
 template<class TPix, class TWgt, class TCor>
-void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(int x, int y, TPix color)
+void rsImagePainter<TPix, TWgt, TCor>::paintDotViaMask(int x, int y, TPix color)
 {
   int wi = image->getWidth();
   int hi = image->getHeight();
@@ -238,7 +238,7 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(int x, int y, TPix color)
 }
 
 //template<class TPix, class TWgt, class TCor>
-//void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
+//void rsImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
 //{
 //  int wi = image->getWidth();
 //  int hi = image->getHeight();
@@ -377,7 +377,7 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(int x, int y, TPix color)
 //}
 
 template<class TPix, class TWgt, class TCor>
-void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
+void rsImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
 {
   // This almost works, but there's still something wrong with the edge code - there's a 1 pixel 
   // wide zone border in the image onto which nothing is drawn
@@ -513,10 +513,10 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
 }
 
 //template<class TPix, class TWgt, class TCor>
-//void ImagePainter<TPix, TWgt, TCor>::drawDottedLine(TCor x1, TCor y1, TCor x2, TCor y2, TPix color, 
+//void rsImagePainter<TPix, TWgt, TCor>::drawDottedLine(TCor x1, TCor y1, TCor x2, TCor y2, TPix color, 
 //  TCor density, int maxNumDots, bool scaleByNumDots, TCor minDotDistance)
 //{
-//  // maybe we should factor out this function into the PhaseScopeBuffer class
+//  // maybe we should factor out this function into the rsPhaseScopeBuffer class
 //
 //  TCor dx = x2-x1;
 //  TCor dy = y2-y1;
@@ -536,7 +536,7 @@ void ImagePainter<TPix, TWgt, TCor>::paintDotViaMask(TCor x, TCor y, TPix color)
 //}
 
 template<class TPix, class TWgt, class TCor>
-void ImagePainter<TPix, TWgt, TCor>::drawLineDotted(TCor x1, TCor y1, TCor x2, TCor y2, 
+void rsImagePainter<TPix, TWgt, TCor>::drawLineDotted(TCor x1, TCor y1, TCor x2, TCor y2, 
   TPix c1, TPix c2, int numDots)
 {
   TCor dx = x2-x1;
@@ -565,7 +565,7 @@ void ImagePainter<TPix, TWgt, TCor>::drawLineDotted(TCor x1, TCor y1, TCor x2, T
 }
 
 template<class TPix, class TWgt, class TCor>
-void ImagePainter<TPix, TWgt, TCor>::drawDottedSpline(TCor x1, TCor x1s, TCor y1, TCor y1s, 
+void rsImagePainter<TPix, TWgt, TCor>::drawDottedSpline(TCor x1, TCor x1s, TCor y1, TCor y1s, 
   TCor x2, TCor x2s, TCor y2, TCor y2s, TPix color, TCor density, int maxNumDots, 
   bool scaleByNumDots)
 {
@@ -592,7 +592,7 @@ template<class T> inline int   roundToInt(T x) { return ipart(x + 0.5f); }
 // Wu line drawing algorithm translated from
 // https://en.wikipedia.org/wiki/Xiaolin_Wu's_line_algorithm with a few obvious optimizations:
 template<class TPix, class TWgt, class TCor>
-void ImagePainter<TPix, TWgt, TCor>::drawLineWu(TCor x0, TCor y0, TCor x1, TCor y1, TPix color)
+void rsImagePainter<TPix, TWgt, TCor>::drawLineWu(TCor x0, TCor y0, TCor x1, TCor y1, TPix color)
 {
   bool steep = std::abs(y1 - y0) > abs(x1 - x0);
 

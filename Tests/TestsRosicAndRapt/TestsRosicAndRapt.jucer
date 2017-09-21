@@ -142,6 +142,16 @@
         <MODULEPATH id="rosic" path="../../Libraries/JUCE/modules"/>
       </MODULEPATHS>
     </VS2015>
+    <CODEBLOCKS_WINDOWS targetFolder="Builds/CodeBlocksWindows">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="TestsRosicAndRapt"/>
+        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="TestsRosicAndRapt"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="rosic" path="../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="rapt" path="../../Libraries/JUCE/modules"/>
+      </MODULEPATHS>
+    </CODEBLOCKS_WINDOWS>
   </EXPORTFORMATS>
   <MODULES>
     <MODULE id="rapt" showAllCode="1" useLocalCopy="0"/>

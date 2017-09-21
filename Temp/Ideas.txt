@@ -1,5 +1,3 @@
-
-
 SmoothedValue:
 -see class juce::LinearSmoothedValue
 -generalize to an update equation: x[n+1] = a*x[n] + b
@@ -30,7 +28,48 @@ CommandQueue:
 -fields for "Command":
  uint32: identifier, std::atomic<uint32> status, void* data
 
+Polyphony:
+-have a Voice baseclass with virtual functions like
+ -noteOn(key, vel), noteOff(key, vel), setPitchBend(amount), etc.
+-have a VoiceManager class that also has noteOn, etc. functions and maintains
+ an array of pointers to Voice objects
+-the VoiceManager is responsible for selecting to which voice the events
+ will be delegated (voice allocation) and for gathering the outputs of the 
+ voices in a getSample and/or processBlock function
+-a dsp object, that should support polyphony, should derive from Voice and 
+ maintain a pointer to its "template" or master dsp object, for example:
+ 
+class LadderVoice : public Voice
+{
+  
+  void noteOn(int key, int vel) override;
+  // etc...
+  
+protected:
 
+  // contains the shared state (sampleRate, cutoff, reso, etc):
+  Ladder* master; 
+  
+  // voice-specific state:
+  double coeff; // may be subject to key/vel scaling of cutoff
+  double y[5]   // each filter voice needs its own state variables
+  //etc.
+  
+};
+
+-the idea is that the voice specific state is typically small and the shared 
+ state may be large for some kinds of objects and should not be stored 
+ redundantly in each voice (can be accessed via the pointer to the
+ template/matser object)
+-to recursively compose Voice objects (a synth voice may contain 2 osc voices, 
+ a filter voice, and 2 envelope voices, for example), the Voice class may 
+ maintain an array of childVoice pointers
+-the Voice baseclass may contain a pointer to a VoiceState object that stores 
+ things like currentNote, currentVelocity, currentPitchBend, etc. - a pointer
+ is used, such that this data is also not stored redundantly among a 
+ SynthVoice's oscVoice, filterVoice, envVoice, etc. objects
+-the overall design goal is to have a framework within which polyphonic 
+ instruments can be built without storing any data redundantly
 
 
  

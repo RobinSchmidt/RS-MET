@@ -19,15 +19,15 @@ inline double rsBeatsToSeconds(double beat, double bpm)
 //{
 //  return T(T(0) < x) - (x < T(0));
 //}
-inline double rsPowBipolar(double base, double exponent)
-{
-  if( base > 0.0 )
-    return pow(base, exponent);
-  else if( base < 0.0 )
-    return rsSign(base) * pow(fabs(base), exponent);
-  else
-    return 0.0;
-}
+//inline double rsPowBipolar(double base, double exponent)
+//{
+//  if( base > 0.0 )
+//    return pow(base, exponent);
+//  else if( base < 0.0 )
+//    return rsSign(base) * pow(fabs(base), exponent);
+//  else
+//    return 0.0;
+//}
 
 
 // construction/destruction:

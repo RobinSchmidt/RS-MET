@@ -1,8 +1,8 @@
 #ifndef jura_PhasorFilter_h
 #define jura_PhasorFilter_h
   
-typedef RAPT::PhasorFilter<double, double> RAPTPhasorFilter;
-typedef RAPT::PhasorStateMapper<double> RAPTPhasorMapper;
+typedef RAPT::rsPhasorFilter<double, double> RAPTPhasorFilter;
+typedef RAPT::rsPhasorStateMapper<double> RAPTPhasorMapper;
 
 /** Wraps a RAPT::PhasorFilter into an AudioModule. */
 

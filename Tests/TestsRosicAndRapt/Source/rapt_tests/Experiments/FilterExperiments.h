@@ -5,5 +5,8 @@
 
 void ladderResonanceManipulation();
 void nonUniformMovingAverage();
+void smoothingFilterOrders();
+void smoothingFilterTransitionTimes();
+
 
 #endif

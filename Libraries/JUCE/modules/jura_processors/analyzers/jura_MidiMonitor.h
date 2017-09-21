@@ -1,7 +1,7 @@
 #ifndef jura_MidiMonitor_h
 #define jura_MidiMonitor_h
 
-class MidiMonitorAudioModule : public AudioModule, public ChangeBroadcaster
+class MidiMonitorAudioModule : public AudioModuleWithMidiIn, public ChangeBroadcaster
 {
 
   friend class MidiMonitorModuleEditor;

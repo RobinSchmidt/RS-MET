@@ -45,6 +45,8 @@ Parameter::Parameter(const juce::String& newName, double newMin, double newMax,
   scaling      = newScaling;
   defaultValue = restrictValueToParameterRange(newDefault);
   value        = defaultValue;
+
+  valueChangeCallbackFunction = [](double) {};
 }
 
 Parameter::Parameter(CriticalSection *criticalSectionToUse, const String& newName,
@@ -62,6 +64,8 @@ Parameter::Parameter(CriticalSection *criticalSectionToUse, const String& newNam
   scaling       = newScaling;  // set this before restrictValueToParameterRange is called
   defaultValue  = restrictValueToParameterRange(newDefaultValue);
   value         = defaultValue;
+
+  valueChangeCallbackFunction = [](double) {};
 }
 
 Parameter::~Parameter()

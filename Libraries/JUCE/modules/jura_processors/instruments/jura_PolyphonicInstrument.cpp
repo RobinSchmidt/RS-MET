@@ -226,6 +226,7 @@ PolyphonicInstrumentEditor::PolyphonicInstrumentEditor(CriticalSection *newPlugI
 
   addWidget( tuningFileNameLabel = new RTextField() );
   tuningFileNameLabel->setDescription(juce::String("Name of current tuning file (if any)"));
+  tuningFileNameLabel->setNoBackgroundAndOutline(false);
   tuningFileNameLabel->setDescriptionField(infoField);
 
   addWidget( tuningLoadButton = new RButton(juce::String("Load")) );

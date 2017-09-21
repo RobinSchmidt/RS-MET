@@ -1,5 +1,5 @@
 template<class TSig, class TPar>
-LadderFilter<TSig, TPar>::LadderFilter()
+rsLadderFilter<TSig, TPar>::rsLadderFilter()
 {
   sampleRate = 44100.0;
   cutoff     = 1000.0;
@@ -10,34 +10,34 @@ LadderFilter<TSig, TPar>::LadderFilter()
 }
 
 template<class TSig, class TPar>
-void LadderFilter<TSig, TPar>::setCutoff(TPar newCutoff)
+void rsLadderFilter<TSig, TPar>::setCutoff(TPar newCutoff)
 {
   cutoff = newCutoff;
   updateCoefficients();
 }
 
 template<class TSig, class TPar>
-void LadderFilter<TSig, TPar>::setSampleRate(TPar newSampleRate)
+void rsLadderFilter<TSig, TPar>::setSampleRate(TPar newSampleRate)
 {
   sampleRate = newSampleRate;
   updateCoefficients();
 }
 
 template<class TSig, class TPar>
-void LadderFilter<TSig, TPar>::setResonance(TPar newResonance)
+void rsLadderFilter<TSig, TPar>::setResonance(TPar newResonance)
 {
   resonance = newResonance;
   updateCoefficients();
 }
 
 template<class TSig, class TPar>
-void  LadderFilter<TSig, TPar>::setMixingCoefficients(TPar c0, TPar c1, TPar c2, TPar c3, TPar c4)
+void  rsLadderFilter<TSig, TPar>::setMixingCoefficients(TPar c0, TPar c1, TPar c2, TPar c3, TPar c4)
 {
   c[0] = c0; c[1] = c1; c[2] = c2; c[3] = c3; c[4] = c4;
 }
 
 template<class TSig, class TPar>
-void LadderFilter<TSig, TPar>::setMode(int newMode)
+void rsLadderFilter<TSig, TPar>::setMode(int newMode)
 {
   if( newMode >= 0 && newMode < NUM_MODES )
   {
@@ -76,14 +76,14 @@ void LadderFilter<TSig, TPar>::setMode(int newMode)
 // inquiry:
 
 template<class TSig, class TPar>
-void LadderFilter<TSig, TPar>::getState(TSig *state)
+void rsLadderFilter<TSig, TPar>::getState(TSig *state)
 {
   for(int i = 0; i < 5; i++) // later use: ArrayFunctions::copy(y, state, 5);
     state[i] = y[i];
 }
 
 template<class TSig, class TPar>
-std::complex<TPar> LadderFilter<TSig, TPar>::getTransferFunctionAt(std::complex<TPar> z)
+std::complex<TPar> rsLadderFilter<TSig, TPar>::getTransferFunctionAt(std::complex<TPar> z)
 {
   std::complex<TPar> G1, G2, G3, G4; // transfer functions of n-th stage output, n = 1..4
   std::complex<TPar> H;              // transfer function with resonance   
@@ -99,7 +99,7 @@ std::complex<TPar> LadderFilter<TSig, TPar>::getTransferFunctionAt(std::complex<
 }
 
 template<class TSig, class TPar>
-TPar LadderFilter<TSig, TPar>::getMagnitudeResponseAt(TPar frequency)
+TPar rsLadderFilter<TSig, TPar>::getMagnitudeResponseAt(TPar frequency)
 {
   TPar w = 2 * TPar(PI) * frequency/sampleRate;
   std::complex<TPar> j(0, 1);                      // imaginary unit
@@ -115,7 +115,7 @@ TPar LadderFilter<TSig, TPar>::getMagnitudeResponseAt(TPar frequency)
 // audio processing:
 
 template<class TSig, class TPar>
-inline TSig LadderFilter<TSig, TPar>::getSampleNoGain(TSig in)
+inline TSig rsLadderFilter<TSig, TPar>::getSampleNoGain(TSig in)
 {
   //y[4] /= 1 + y[4]*y[4];     // (ad hoc) nonlinearity applied to the feedback signal
   y[0]  = in - k*y[4];       // linear
@@ -131,10 +131,16 @@ inline TSig LadderFilter<TSig, TPar>::getSampleNoGain(TSig in)
   // sigmoid shape (it goes down to zero again) ...but maybe that's not necessarily a bad thing.
   // Maybe try y = b + (x-b) / (1 + a*x^2) with adjustable parameters a and b. "a" adjusts the 
   // amount of signal squasheing whereas "b" introduces asymmetry.
+
+  // maybe try a different update euqation of the form:
+  // y[i] = y[i-1] + coeff * (y[i] - y[i-1]);
+  // as is used in the rsSmoothingFilter. Elan says, this responds better to modulation. i think,
+  // coeff = a or coeff = -a
+
 }
 
 template<class TSig, class TPar>
-inline TSig LadderFilter<TSig, TPar>::getSample(TSig in)
+inline TSig rsLadderFilter<TSig, TPar>::getSample(TSig in)
 {
   return getSampleNoGain(g * in);     // apply gain at input
   //return g * getSampleNoGain(in);   // apply gain at output
@@ -146,7 +152,7 @@ inline TSig LadderFilter<TSig, TPar>::getSample(TSig in)
 }
 
 template<class TSig, class TPar>
-void LadderFilter<TSig, TPar>::process(TSig *in, TSig *out, int length)
+void rsLadderFilter<TSig, TPar>::process(TSig *in, TSig *out, int length)
 {
   for(int n = 0; n < length; n++)
     out[n] = getSample(in[n]);
@@ -155,7 +161,7 @@ void LadderFilter<TSig, TPar>::process(TSig *in, TSig *out, int length)
 // misc:
 
 template<class TSig, class TPar>
-void LadderFilter<TSig, TPar>::reset()
+void rsLadderFilter<TSig, TPar>::reset()
 {
   for(int i = 0; i < 5; i++) // later use: ArrayFunctions::clear(y, 5);
     y[i] = 0;
@@ -164,14 +170,14 @@ void LadderFilter<TSig, TPar>::reset()
 // coefficient computations:
 
 template<class TSig, class TPar>
-TPar LadderFilter<TSig, TPar>::computeFeedbackFactor(TPar fb, TPar cosWc, TPar a, TPar b)
+TPar rsLadderFilter<TSig, TPar>::computeFeedbackFactor(TPar fb, TPar cosWc, TPar a, TPar b)
 {
   TPar g2 = b*b / (1 + a*a + 2*a*cosWc);
   return fb / (g2*g2);
 }
 
 template<class TSig, class TPar>
-TPar LadderFilter<TSig, TPar>::resonanceDecayToFeedbackGain(TPar decay, TPar cutoff)
+TPar rsLadderFilter<TSig, TPar>::resonanceDecayToFeedbackGain(TPar decay, TPar cutoff)
 {
   if(decay > 0.0)
     return exp(-1/(decay*cutoff));
@@ -185,7 +191,7 @@ TPar LadderFilter<TSig, TPar>::resonanceDecayToFeedbackGain(TPar decay, TPar cut
 }
 
 template<class TSig, class TPar>
-void LadderFilter<TSig, TPar>::computeCoeffs(TPar wc, TPar fb, TPar *a, TPar *b, TPar *k, 
+void rsLadderFilter<TSig, TPar>::computeCoeffs(TPar wc, TPar fb, TPar *a, TPar *b, TPar *k, 
   TPar *g)
 {
   computeCoeffs(wc, fb, a, b, k);
@@ -193,7 +199,7 @@ void LadderFilter<TSig, TPar>::computeCoeffs(TPar wc, TPar fb, TPar *a, TPar *b,
 }
 
 template<class TSig, class TPar>
-void LadderFilter<TSig, TPar>::computeCoeffs(TPar wc, TPar fb, TPar *a, TPar *b, TPar *k)
+void rsLadderFilter<TSig, TPar>::computeCoeffs(TPar wc, TPar fb, TPar *a, TPar *b, TPar *k)
 {
   TPar s, c, t;                     // sin(wc), cos(wc), tan((wc-PI)/4)
   //rsSinCos(wc, &s, &c);
@@ -222,7 +228,7 @@ void LadderFilter<TSig, TPar>::computeCoeffs(TPar wc, TPar fb, TPar *a, TPar *b,
 // internal functions:
 
 template<class TSig, class TPar>
-void LadderFilter<TSig, TPar>::updateCoefficients()
+void rsLadderFilter<TSig, TPar>::updateCoefficients()
 {
   TPar wc = 2 * (TPar)PI * cutoff / sampleRate;
   computeCoeffs(wc, resonance, &a, &b, &k, &g);

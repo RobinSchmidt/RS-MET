@@ -3,7 +3,7 @@
 
 /** A collection of functions for statistical data analysis. */
 
-class Statistics
+class rsStatistics
 {
 
 public:

@@ -4,7 +4,7 @@ PhaseScope::PhaseScope(CriticalSection *lockToUse) : AudioModule(lockToUse)
   moduleName = "PhaseScope";
   setActiveDirectory(getApplicationDirectory() + "/PhaseScopePresets");
 
-  phaseScopeBuffer = new RAPT::PhaseScopeBuffer<double, float, double>;
+  phaseScopeBuffer = new RAPT::rsPhaseScopeBuffer<double, float, double>;
 
   pixelScale = 1.0;
   displayWidth  = 100;

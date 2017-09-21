@@ -35,35 +35,37 @@ think) */
 // Chaosfly but are nowhere instantiatied within jura. It's not a very elegant solution, but it's
 // supposed to be temporary anyway:
 
+template class RAPT::rsMatrixView<double>;
+template class RAPT::rsMatrix<double>;
 template class RAPT::rsParametricBellFunction<double>;
 template class RAPT::rsPositiveBellFunctions<double>;
-template class RAPT::NormalizedSigmoids<double>;
+template class RAPT::rsNormalizedSigmoids<double>;
 template class RAPT::rsSinCosTable<double>;
-template class RAPT::ScaledAndShiftedSigmoid<double>;
-
+template class RAPT::rsScaledAndShiftedSigmoid<double>;
 template class RAPT::rsEllipse<double>;
 
 
-template class RAPT::StateVariableFilter<double, double>;
+template class RAPT::rsStateVariableFilter<double, double>;
 
-template class RAPT::AlphaMask<float>;
-template class RAPT::ImagePainter<float, float, float>;
+template class RAPT::rsAlphaMask<float>;
+template class RAPT::rsImagePainter<float, float, float>;
 
 // for PhaseScope:
-template class RAPT::AlphaMask<double>;
+template class RAPT::rsAlphaMask<double>;
 template class RAPT::rsScopeScreenScanner<float>;  // do we need this?
 template class RAPT::rsScopeScreenScanner<double>;
-template class RAPT::PhaseScopeBuffer<double, float, double>;
-template class RAPT::PhaseScopeBuffer2<double, float, double>;
+template class RAPT::rsPhaseScopeBuffer<double, float, double>;
+template class RAPT::rsPhaseScopeBuffer2<double, float, double>;
 
 // needed for the release build of Chaosfly on Linux - without them, apparently the compiler
 // generates the classes only partially - some member functions are missing probably because they
 // not called from anywhere inside jura or rosic:
 template double RAPT::rsAbs(double x);
 template class RAPT::rsBreakpointModulator<double>;
-template class RAPT::LadderFilter<double, double>;
-template class RAPT::PhasorFilter<double, double>;
-template class RAPT::PhasorStateMapper<double>;
+template class RAPT::rsSmoothingFilter<double, double>;
+template class RAPT::rsLadderFilter<double, double>;
+template class RAPT::rsPhasorFilter<double, double>;
+template class RAPT::rsPhasorStateMapper<double>;
 // todo: get rid of directly using rapt classes in jura and/or products - create instantiations for
 // double in rosic and use these instantiations only
 

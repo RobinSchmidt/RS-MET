@@ -5,16 +5,20 @@
 prototype "dot". Whenever a dot is painted onto the image at a particular location, the mask will
 be used to blend the existing colors at these pixels with a new target color.  
 
+The difference between rsImagePainter and rsImageDrawer is mainly that painter uses algorithms based on
+a "brush" that is swept over the image whereas the drawer employs line/circle/polygon/etc-drawing
+algorithms from the compute graphics community
+
 \todo
--derive this class from ImageDrawer, get rid of superfluous methods
+-derive this class from rsImageDrawer, get rid of superfluous methods
 -rename this clas into DotDrawer
--move line drawing functions into LineDrawer
+-move line drawing functions into rsLineDrawer
 -rename this "mask" stuff to "brush"
 ...these terms are more conventional in the computer graphics literature
 */
 
 template<class TPix, class TWgt, class TCor>  // pixel, weight, coordinate types
-class ImagePainter
+class rsImagePainter
 {
 
 public:
@@ -22,16 +26,16 @@ public:
   /** \name Construction/Destruction */
 
   /** Constructor. */
-  ImagePainter(Image<TPix> *imageToPaintOn = nullptr, AlphaMask<TWgt> *maskToUse = nullptr);
+  rsImagePainter(rsImage<TPix> *imageToPaintOn = nullptr, rsAlphaMask<TWgt> *maskToUse = nullptr);
 
 
   /** \name Setup */
 
   /** Sets the image on which we paint.  */
-  void setImageToPaintOn(Image<TPix> *imageToPaintOn);
+  void setImageToPaintOn(rsImage<TPix> *imageToPaintOn);
 
   /** Sets the alpha mask that we use as prototye "dot". It is basically a matrix of weights. */
-  void setAlphaMaskForDot(AlphaMask<TWgt> *maskToUse);
+  void setAlphaMaskForDot(rsAlphaMask<TWgt> *maskToUse);
 
   /** Sets the weights that are used in the simple (non alpha mask based) dot drawing mode. */
   void setNeighbourWeightsForSimpleDot(TWgt straight, TWgt diagonal);
@@ -55,10 +59,10 @@ public:
   /** \name Inquiry */
 
   /** Returns a pointer to the target image onto which we paint. */
-  Image<TPix>* getImage() { return image; }
+  rsImage<TPix>* getImage() { return image; }
 
   /** Returns a pointer to the alpha mask that we use for painting. */
-  AlphaMask<TWgt>* getAlphaMask() { return mask; }
+  rsAlphaMask<TWgt>* getAlphaMask() { return mask; }
 
 
   /** \name Painting */
@@ -150,9 +154,9 @@ protected:
 
   // data members:
 
-  Image<TPix> *image;
-  AlphaMask<TWgt> *mask; // rename to brush...hmm...or well, an actual brush should have its
-                         // own colors - this mask here has only weights
+  rsImage<TPix> *image;
+  rsAlphaMask<TWgt> *mask; // rename to brush...hmm...or well, an actual brush should have its
+                           // own colors - this mask here has only weights
 
   bool antiAlias, useMask;
   TWgt straightNeighbourWeight, diagonalNeighbourWeight;

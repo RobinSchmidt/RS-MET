@@ -108,6 +108,14 @@ String createAudioFileInfoString(File fileToCreateStringFrom)
   return infoString;
 }
 
+double toDouble(const juce::String& s)
+{
+  String st = s.trim();
+  if(st == "-inf")
+    return -std::numeric_limits<double>::infinity();
+  return s.getDoubleValue();
+}
+
 inline double rsAmp2dB(double amp)
 {
   // temporary - todo: remove and use function from RAPT instead
