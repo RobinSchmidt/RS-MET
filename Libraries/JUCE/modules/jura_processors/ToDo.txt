@@ -15,12 +15,12 @@ RayBouncer:
  -PitchShifter (done)
  -StereoDelay (done)
  -MultiAnalyzer (done)
- -Straightliner (done...still buggy)
- -TrackMeter
- -MidiMonitor
+ -MidiMonitor (done)
+ -TrackMeter (done - check gui size/arrangement)
+ -Straightliner (done...still some minor bugs)
+
  -EchoLab
  -Quadrifex
-
  -Liberty
  -MagicCarpet
  -AlgoVerb

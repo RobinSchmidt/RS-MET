@@ -454,14 +454,14 @@ void AudioModuleChain::setSampleRate(double newSampleRate)
     modules[i]->setSampleRate(sampleRate);
 }
 
-void AudioModuleChain::noteOn(int noteNumber, int velocity)
+void AudioModuleChain::handleMidiMessage(MidiMessage message)
 {
   ScopedLock scopedLock(*lock);
   for(int i = 0; i < size(modules); i++){
     AudioModuleWithMidiIn *m = dynamic_cast<AudioModuleWithMidiIn*> (modules[i]);
     if(m != nullptr)
-      m->noteOn(noteNumber, velocity);
-  }
+      m->handleMidiMessage(message); }
+
   // todo: maybe let different slots receive MIDI on different channels
   // and/or don't override the noteOn/etc. functions here but rather let the MIDI events also
   // pass through the modules in series. most modules just pass them through, but we can also
@@ -471,6 +471,19 @@ void AudioModuleChain::noteOn(int noteNumber, int velocity)
 
   // all synthesizer modules should pass through the incoming audio and add their own signal
   // (unless the use it inside for their own signal processing) -> this allows for layering
+}
+
+/*
+// obsolete, now that we have overriden handleMidiMessage - test if the modulation system works, if
+// so, these can eventually be deleted:
+void AudioModuleChain::noteOn(int noteNumber, int velocity)
+{
+  ScopedLock scopedLock(*lock);
+  for(int i = 0; i < size(modules); i++){
+    AudioModuleWithMidiIn *m = dynamic_cast<AudioModuleWithMidiIn*> (modules[i]);
+    if(m != nullptr)
+      m->noteOn(noteNumber, velocity);
+  }
 }
 
 void AudioModuleChain::noteOff(int noteNumber)
@@ -502,6 +515,7 @@ void AudioModuleChain::setPitchBend(int pitchBendValue)
       m->setPitchBend(pitchBendValue);
   }
 }
+*/
 
 void AudioModuleChain::reset()
 {

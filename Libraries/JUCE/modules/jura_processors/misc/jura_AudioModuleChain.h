@@ -193,10 +193,15 @@ public:
   AudioModuleEditor *createEditor() override;
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
   virtual void setSampleRate(double newSampleRate) override; 
+
+  virtual void handleMidiMessage(MidiMessage message) override;
+  /*
   virtual void noteOn(int noteNumber, int velocity) override;
   virtual void noteOff(int noteNumber) override;
   virtual void setMidiController(int controllerNumber, float controllerValue) override;
   virtual void setPitchBend(int pitchBendValue) override;
+  */
+
   virtual void reset() override;
   virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean) override;
   virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 

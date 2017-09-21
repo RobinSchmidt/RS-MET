@@ -3,7 +3,7 @@
 // construction/destruction:
 
 MidiMonitorAudioModule::MidiMonitorAudioModule(CriticalSection *newPlugInLock) 
-  : AudioModule(newPlugInLock)
+  : AudioModuleWithMidiIn(newPlugInLock)
 {
   moduleName = juce::String(("MidiMonitor"));
   initializeAutomatableParameters();
