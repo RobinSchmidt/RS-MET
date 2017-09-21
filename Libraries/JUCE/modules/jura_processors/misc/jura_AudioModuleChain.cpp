@@ -186,6 +186,10 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
 
   node = new RTreeViewNode("Sources", -1, "Sources");
   node->addChildNode(new RTreeViewNode("RayBouncer",      i++));
+  //node->addChildNode(new RTreeViewNode("WaveOscillator",  i++));
+  //node->addChildNode(new RTreeViewNode("FourOscSection",  i++));
+  //node->addChildNode(new RTreeViewNode("NoiseGenerator",  i++));
+  //node->addChildNode(new RTreeViewNode("SamplePlayer",    i++));
   node->setOpen(false);
   popUpMenu->addTreeNodeItem(node);
 
@@ -200,6 +204,7 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
 
   node = new RTreeViewNode("Modulators", -1, "Modulators");
   node->addChildNode(new RTreeViewNode("BreakpointModulator",  i++));
+  //node->addChildNode(new RTreeViewNode("LowFrequencyOscillator",  i++));
   node->setOpen(false);
   popUpMenu->addTreeNodeItem(node);
 
@@ -217,14 +222,6 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
   node = new RTreeViewNode("Instruments", -1, "Instruments");
   node->addChildNode(new RTreeViewNode("AciDevil",       i++));
   node->addChildNode(new RTreeViewNode("Straightliner",  i++));
-#ifdef _MSC_VER
-  node->addChildNode(new RTreeViewNode("Liberty",        i++));     // not yet available on gcc
-#endif
-  //node->addChildNode(new RTreeViewNode("MagicCarpet",    i++));
-  //node->addChildNode(new RTreeViewNode("SimpleSampler",  i++));
-  //node->addChildNode(new RTreeViewNode("KeyShot",        i++));
-  //node->addChildNode(new RTreeViewNode("Quadriga",       i++));
-  //node->addChildNode(new RTreeViewNode("Workhorse",      i++));
   node->setOpen(false);
   popUpMenu->addTreeNodeItem(node);
 
@@ -237,9 +234,20 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
   node->setOpen(false);
   popUpMenu->addTreeNodeItem(node);
 
-  //selectItemFromText("None", false); 
-    // nope - that is wrong. we want the selector to show "None" initially instead of 
-    // "nothing selected"
+  // ToDo:
+  node = new RTreeViewNode("UnderConstruction", -1, "UnderConstruction");
+#ifdef _MSC_VER
+  node->addChildNode(new RTreeViewNode("Liberty",        i++));     // not yet available on gcc
+#endif
+  //node->addChildNode(new RTreeViewNode("MagicCarpet",    i++));
+  //node->addChildNode(new RTreeViewNode("SimpleSampler",  i++));
+  //node->addChildNode(new RTreeViewNode("KeyShot",        i++));
+  //node->addChildNode(new RTreeViewNode("Quadriga",       i++));
+  //node->addChildNode(new RTreeViewNode("Workhorse",      i++));
+  node->setOpen(false);
+  popUpMenu->addTreeNodeItem(node);
+
+
 
   //setSize(300, 300); // has no effect
 }

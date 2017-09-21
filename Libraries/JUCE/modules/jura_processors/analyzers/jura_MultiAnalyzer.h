@@ -11,13 +11,10 @@
 //#include "../../../rojue/components/widgets/rojue_PreDefinedParameters.h"
 
 
-  //=======================================================================================================================================
+//=======================================================================================================================================
 
-  /**
-
-  This class wraps rosic::Oscilloscope into a rosof::AudioModule to facilitate its use as plugIn.
-
-  */
+/** This class wraps rosic::Oscilloscope into a rosof::AudioModule to facilitate its use as 
+plugIn. */
 
 class OscilloscopeAudioModule : public AudioModule
 {

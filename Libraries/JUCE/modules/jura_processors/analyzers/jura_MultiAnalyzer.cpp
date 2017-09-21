@@ -509,6 +509,8 @@ void OscilloscopeDisplay::plotCurveFamily(Graphics &g, juce::Image* targetImage,
       transformToImageCoordinates(x2, y2, targetImage);
       g.drawLine((float)x1, (float)y1, (float)x2, (float)y2, 1.f);
       // uses a lot of CPU - try using a juce::Path - nah, Path uses even more
+
+      // y stays always fixed and x seems to be way too small (after transformation)
     }
   }
 
@@ -808,13 +810,14 @@ void OscilloscopeModuleEditor::resized()
   oscilloscopeDisplay->setWaveformData(N, 1, px, timeAxis); // 1 only for debug/optimize - later: 2
   */
 
-  int numSamples   = oscilloscopeAudioModule->waveformBuffer->getViewBufferLength();
-  int numChannels  = oscilloscopeAudioModule->waveformBuffer->getNumChannels();
-  double* timeAxis = oscilloscopeAudioModule->waveformBuffer->getTimeAxis();
-  float** values   = oscilloscopeAudioModule->waveformBuffer->getCurrentDisplayBuffers();
-  oscilloscopeDisplay->setWaveformData(numSamples, numChannels, values, timeAxis);
-  //jassertfalse; // we need to adapt the commented code above to work with class OscilloscopeBufferOld
-  // i think, we can just call updateEditorContent()
+  updateEditorContent();
+  //int numSamples   = oscilloscopeAudioModule->waveformBuffer->getViewBufferLength();
+  //int numChannels  = oscilloscopeAudioModule->waveformBuffer->getNumChannels();
+  //double* timeAxis = oscilloscopeAudioModule->waveformBuffer->getTimeAxis();
+  //float** values   = oscilloscopeAudioModule->waveformBuffer->getCurrentDisplayBuffers();
+  //oscilloscopeDisplay->setWaveformData(numSamples, numChannels, values, timeAxis);
+  ////jassertfalse; // we need to adapt the commented code above to work with class OscilloscopeBufferOld
+  //// i think, we can just call updateEditorContent()
 }
 
 void OscilloscopeModuleEditor::updateEditorContent()
@@ -828,13 +831,12 @@ void OscilloscopeModuleEditor::updateEditorContent()
   oscilloscopeDisplay->setWaveformData(N, 2, px, timeAxis);
   */
 
-  //int N = oscilloscopeAudioModule->waveformBuffer->getViewBufferLength();
+  oscilloscopeAudioModule->waveformBuffer->updateDisplayBuffers();
   int numSamples   = oscilloscopeAudioModule->waveformBuffer->getViewBufferLength();
   int numChannels  = oscilloscopeAudioModule->waveformBuffer->getNumChannels();
   double* timeAxis = oscilloscopeAudioModule->waveformBuffer->getTimeAxis();
   float** values   = oscilloscopeAudioModule->waveformBuffer->getCurrentDisplayBuffers();
   oscilloscopeDisplay->setWaveformData(numSamples, numChannels, values, timeAxis);
-  //jassertfalse; // we need to adapt the commented code above to work with class OscilloscopeBufferOld
 }
 
 
