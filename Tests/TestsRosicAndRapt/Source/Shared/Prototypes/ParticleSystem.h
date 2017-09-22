@@ -70,10 +70,12 @@ public:
   /** Computes the forces that act on each particle and stores them in our "forces" member. */
   void updateForces();
 
-  /** Updates the velocities according to the computed forces. */
+  /** Updates the particle velocities according to the computed forces and the particle masses, 
+  using F = m*a -> a = F/m -> v += a. */
   void updateVelocities();
 
-  /** Updates the positions according to the current velocities. */
+  /** Updates the particle positions according to the current velocities by advancing their 
+  positions one step into direction of the respective velocity. */
   void updatePositions();
 
   /** Updates the state of the system. */

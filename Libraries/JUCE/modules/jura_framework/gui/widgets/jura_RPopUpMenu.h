@@ -20,8 +20,7 @@ public:
   virtual void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged) = 0;
 
   /** Callback that gets called when the popup menu was dismissed. */
-  //virtual void rPopUpMenuDismissed(RPopUpMenu* menuThatwasDismissed) {}
-  // to be implemented
+  virtual void rPopUpMenuDismissed(RPopUpMenu* menuThatwasDismissed) {}
 
 };
 
@@ -160,6 +159,9 @@ public:
 
   /** Overriden to dismiss the menu on focus-loss. */
   //virtual void focusLost(FocusChangeType cause);
+
+  /** Overriden to call rPopUpMenuDismissed on our observers. */
+  void dismiss() override;
 
 protected:
 

@@ -150,6 +150,13 @@ void RPopUpMenu::resized()
   treeView->setBounds(0, 0, getWidth(), getHeight());
 }
 
+void RPopUpMenu::dismiss()
+{
+  ROwnedPopUpComponent::dismiss();
+  for(int i = 0; i < popUpMenuObservers.size(); i++)
+    popUpMenuObservers[i]->rPopUpMenuDismissed(this);
+}
+
 /*
 void RPopUpMenu::paint(Graphics &g)
 {
