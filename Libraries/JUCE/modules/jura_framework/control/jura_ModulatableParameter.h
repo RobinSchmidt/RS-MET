@@ -307,6 +307,9 @@ public:
   identify the target in state recall. */
   virtual juce::String getModulationTargetName() = 0;
 
+  /** Returns true, if this target is connected to at least one ModulationSource. */
+  bool isConnectedToSomeSource();
+
 
   /** \name Misc */
 

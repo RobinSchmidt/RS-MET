@@ -130,6 +130,17 @@ std::vector<ModulationConnection*> ModulationTarget::getConnections()
   return result;
 }
 
+bool ModulationTarget::isConnectedToSomeSource()
+{
+  if(modManager){
+    const std::vector<ModulationConnection*>& 
+      allConnections = modManager->getModulationConnections();
+    for(int i = 0; i < size(allConnections); i++){
+      if(this == allConnections[i]->target)
+        return true; }}
+  return false;
+}
+
 //-------------------------------------------------------------------------------------------------
 
 ModulationConnection::ModulationConnection(ModulationSource* _source, ModulationTarget* _target, 
