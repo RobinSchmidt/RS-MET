@@ -278,6 +278,17 @@ public:
   /** Sets the maximum value of the allowed modulation range.  */
   inline void setModulationRangeMax(double newMax) { rangeMax = newMax; }
 
+  /** Sets the default value for the modulation depth minimum for a new connection. */
+  inline void setDefaultModulationDepthMin(double newMin) { defaultDepthMin = newMin; }
+
+  /** Sets the default value for the modulation depth maximum for a new connection. */
+  inline void setDefaultModulationDepthMax(double newMax) { defaultDepthMax = newMax; }
+
+  /** Sets the default modulation mode for a new connection to relative (or absolute, if false is 
+  passed). */
+  inline void setDefaultModulationModeRelative(bool shouldBeRealtive) 
+  { defaultRelative = shouldBeRealtive; }
+
 
   /** \name Inquiry */
 
@@ -286,6 +297,11 @@ public:
 
   /** Returns the maximum value of the allowed modulation range. */
   inline double getModulationRangeMax() { return rangeMax; }
+
+  // see the corresponding setters for documentation, what these values mean:
+  inline double getDefaultModulationDepthMin()  { return defaultDepthMin; }
+  inline double getDefaultModulationDepthMax()  { return defaultDepthMax; }
+  inline bool   isModulationRelativeByDefault() { return defaultRelative; }
 
   /** Returns true, if there's a connection between this ModulationTarget and the given 
   ModulationSource. */
@@ -311,6 +327,8 @@ public:
   bool hasModulation();
 
 
+
+
   /** \name Misc */
 
   /** Initializes the modulated value by setting it to the unmodulated value. */
@@ -333,6 +351,8 @@ protected:
   double unmodulatedValue = 0;
   double modulatedValue = 0;
   double rangeMin = -INF, rangeMax = INF; 
+  double defaultDepthMin = -1, defaultDepthMax = 1;
+  bool   defaultRelative = false;
 
   friend class ModulationConnection;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationTarget)
@@ -624,31 +644,6 @@ public:
   recalled). */
   void setOwnerAudioModule(AudioModule *newOwner) { ownerModule = newOwner; }
 
-  /** Sets the default value for the minimum value / lower limit for the modulated value. */
-  void setModRangeDefaultMin(double newMin) { defaultRangeMin = newMin; }
-
-  /** Sets the default value for the maximum value / upper limit for the modulated value. */
-  void setModRangeDefaultMax(double newMax) { defaultRangeMax = newMax; }
-
-  /** Sets the default value for the modulation depth minimum. */
-  void setModDepthDefaultMin(double newMin) { defaultDepthMin = newMin; }
-
-  /** Sets the default value for the modulation depth maximum. */
-  void setModDepthDefaultMax(double newMax) { defaultDepthMax = newMax; }
-
-  /** Sets the default modulation mode to relative (or absolute, if false is passed). */
-  void setDefaultModulationModeRelative(bool shouldBeRealtive) 
-  { defaultRelative = shouldBeRealtive; }
-
-
-  /** \name Inquiry */
-
-  // see the corresponding setters for documentation, what these values mean:
-  double getModRangeDefaultMin() { return defaultRangeMin; }
-  double getModRangeDefaultMax() { return defaultRangeMax; }
-  double getModDepthDefaultMin() { return defaultDepthMin; }
-  double getModDepthDefaultMax() { return defaultDepthMax; }
-  bool   isModulationRelativeByDefault() { return defaultRelative; }
 
   /** \name Misc */
 
@@ -674,15 +669,8 @@ public:
 
 protected:
 
-
   AudioModule* ownerModule = nullptr; // needed to create the unique name for state recall
   // maybe we could use the ParameterManager baseclass of AudioModule here
-
-  // \todo: use these for initializing the range/depth/relative of the connections, provide
-  // accessors for client code, maybe factor out into ModulationTarget
-  double defaultRangeMin = -INF, defaultRangeMax = INF;
-  double defaultDepthMin = -1,   defaultDepthMax = 1;
-  bool   defaultRelative = false;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulatableParameter)
 };

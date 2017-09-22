@@ -150,12 +150,20 @@ ModulationConnection::ModulationConnection(ModulationSource* _source, Modulation
   target   = _target;
   depth    = 0.0;
   //relative = false;
-  relative = true;
+  //relative = true;
+  relative    = target->isModulationRelativeByDefault();
   sourceValue = &(source->modValue);
   targetValue = &(target->modulatedValue);
 
+  double depthMin = target->getDefaultModulationDepthMin();
+  double depthMax = target->getDefaultModulationDepthMax();
+  if(depthMin <= 0.0 && depthMax >= 0.0)
+    depth = 0.0;
+  else
+    depth = 0.5 * (depthMin + depthMax);
+
   juce::String name = source->getModulationSourceName();
-  depthParam = new MetaControlledParameter(name, -1.0, 1.0, 0.0, Parameter::LINEAR, 0.0);
+  depthParam = new MetaControlledParameter(name, depthMin, depthMax, depth, Parameter::LINEAR, 0.0);
   depthParam->setValueChangeCallback<ModulationConnection>(
     this, &ModulationConnection::setDepthMember);
   depthParam->setMetaParameterManager(metaManager);
@@ -174,9 +182,9 @@ XmlElement* ModulationConnection::getAsXml()
   xml->setAttribute("Target", target->getModulationTargetName());
 
   xml->setAttribute("Depth",  depth);
-  if(depthParam->getMinValue() != -1)
+  //if(depthParam->getMinValue() != -1)
     xml->setAttribute("DepthMin", depthParam->getMinValue());
-  if(depthParam->getMaxValue() != +1)
+  //if(depthParam->getMaxValue() != +1)
     xml->setAttribute("DepthMax", depthParam->getMaxValue());
   if(depthParam->getMetaParameterIndex() != -1)
     xml->setAttribute("DepthMeta", depthParam->getMetaParameterIndex());
@@ -500,11 +508,13 @@ XmlElement* ModulationManager::getStateAsXml()
   {
     double min = affectedTargets[i]->getModulationRangeMin();
     double max = affectedTargets[i]->getModulationRangeMax();
-    if(min != -INF || max != INF)
+    //if(min != -INF || max != INF)
     {
       XmlElement* xmlTargetLimits = new XmlElement(affectedTargets[i]->getModulationTargetName());
-      if(min != -INF) xmlTargetLimits->setAttribute("Min", min);
-      if(max !=  INF) xmlTargetLimits->setAttribute("Max", max);
+      //if(min != -INF) 
+        xmlTargetLimits->setAttribute("Min", min);
+      //if(max !=  INF) 
+        xmlTargetLimits->setAttribute("Max", max);
       xmlLimits->addChildElement(xmlTargetLimits);
     }
   }

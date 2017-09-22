@@ -20,6 +20,11 @@ void Ladder::createStaticParameters()
   Param* p;
 
   p = new Param("Cutoff", 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL);
+  p->setModulationRangeMin(20.0);
+  p->setModulationRangeMax(20000.0);
+  p->setDefaultModulationDepthMin(-2.0);
+  p->setDefaultModulationDepthMax(+3.0);
+  p->setDefaultModulationModeRelative(true);
   defaultValues.clear();
   defaultValues.push_back(125.0);
   defaultValues.push_back(250.0);
