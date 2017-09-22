@@ -1,10 +1,6 @@
 #ifndef jura_RPopUpMenu_h
 #define jura_RPopUpMenu_h
 
-//#include "rojue_RTreeView.h"
-//#include "rojue_RPopUpComponent.h"
-////#include "../rojue_ComponentDeletionWatcher.h"
-
 class RPopUpMenu;
 
 /** Observer class for RPopUpMenus */

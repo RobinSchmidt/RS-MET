@@ -363,6 +363,11 @@ void AutomatableWidget::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
   }
 }
 
+void AutomatableWidget::rPopUpMenuDismissed(RPopUpMenu* menuThatwasDismissed)
+{
+  popUpIsOpen = false;
+}
+
 void AutomatableWidget::updatePopUpMenu()
 {
   if(rightClickPopUp == nullptr)
@@ -520,10 +525,11 @@ void AutomatableSlider::mouseDown(const MouseEvent& e)
 {
   if(e.mods.isRightButtonDown())
   {
-    if(!isPopUpOpen())
-      openRightClickPopupMenu();
-    else
-      closePopUp();
+    openRightClickPopupMenu();
+    //if(!isPopUpOpen())
+    //  openRightClickPopupMenu();
+    //else
+    //  closePopUp();
   }
   else
   {

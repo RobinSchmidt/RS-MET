@@ -128,7 +128,8 @@ public:
   MetaParameterManager* getMetaParameterManager();
 
   // overrides:
-  virtual void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged) override;
+  void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged) override;
+  void rPopUpMenuDismissed(RPopUpMenu* menuThatwasDismissed) override;
 
 
 protected:
@@ -183,7 +184,7 @@ protected:
   virtual void deleteObject(rsDeletionRequester* objectToDelete) override;
 
   RWidget *wrappedWidget;                 // widget that is being made automatable
-  bool popUpIsOpen = false;
+  bool popUpIsOpen = false;               // maybe we can get rid of this?
   RPopUpMenu *rightClickPopUp = nullptr;  // object created when it's needed for the 1st time
   rsModulationSetup* modSetup = nullptr;  // ditto for modulation setup
 
