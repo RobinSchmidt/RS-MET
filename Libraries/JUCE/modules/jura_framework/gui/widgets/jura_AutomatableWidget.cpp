@@ -84,6 +84,14 @@ void rsModulationSetup::rButtonClicked(RButton *button)
     showConnectableSourcesPopUp();
   else if(button == removeButton)
     showRemovableSourcesPopUp();
+  for(int i = 0; i < size(connectionWidgets); i++){
+    if(button == connectionWidgets[i]->removeButton)
+    {
+      //button->removeRButtonListener(this); // should be done in removeConnection
+
+      removeConnection(i); // causes crash
+    }
+  }
 }
 
 void rsModulationSetup::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
@@ -238,6 +246,7 @@ void rsModulationSetup::addSliderFor(MetaControlledParameter* p, ModulationConne
   rsModulationConnectionWidget* w = new rsModulationConnectionWidget(c);
   connectionWidgets.push_back(w);
   w->depthSlider->assignParameter(p);
+  w->removeButton->addRButtonListener(this);
   addWidget(w);
   updateSize();
 }
@@ -245,7 +254,10 @@ void rsModulationSetup::addSliderFor(MetaControlledParameter* p, ModulationConne
 void rsModulationSetup::clearAmountSliders()
 {
   for(int i = 0; i < size(connectionWidgets); i++)
+  {
+    connectionWidgets[i]->removeButton->removeRButtonListener(this);
     removeWidget(connectionWidgets[i], true, true);
+  }
   connectionWidgets.clear();
 }
 

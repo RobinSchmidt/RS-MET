@@ -1,6 +1,6 @@
 ModSystem:
  -provide remove-buttons next to the depth sliders
-  -done, but not yet functional
+  -done, but crashes
  -maybe implement a notification system when connectiosn are added removed
   ModulationManagerObserverr: connectionWasAdded, connectionWillBeRemoved
  -maybe have a special ModulatableSlider class that shows the modulation-range

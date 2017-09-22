@@ -55,7 +55,7 @@ protected:
   pointer to the ModulationConnection whose depth this parameter controls so the slider's popup
   menu can access it in order to set up some other aspects of the connection as well. */
   void addSliderFor(MetaControlledParameter* p, ModulationConnection* c); 
-   // rename to addDepthSliderFor
+   // rename to addModulationWidgetFor
 
   /** Clears the array of amount sliders. */
   void clearAmountSliders();
