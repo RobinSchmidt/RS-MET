@@ -273,21 +273,32 @@ public:
   are used to clip the final modulated value (after all modulations have been applied) to a sane 
   range. For example, a cutoff frequency of a filter should perhaps be clipped at 0 and 
   sampleRate/2, otherwise the filter may go crazy. */
-  inline void setModulationRangeMin(double newMin) { rangeMin = newMin; }
+  //inline void setModulationRangeMin(double newMin) { rangeMin = newMin; }
 
   /** Sets the maximum value of the allowed modulation range.  */
-  inline void setModulationRangeMax(double newMax) { rangeMax = newMax; }
+  //inline void setModulationRangeMax(double newMax) { rangeMax = newMax; }
 
   /** Sets the default value for the modulation depth minimum for a new connection. */
-  inline void setDefaultModulationDepthMin(double newMin) { defaultDepthMin = newMin; }
+  //inline void setDefaultModulationDepthMin(double newMin) { defaultDepthMin = newMin; }
 
   /** Sets the default value for the modulation depth maximum for a new connection. */
-  inline void setDefaultModulationDepthMax(double newMax) { defaultDepthMax = newMax; }
+  //inline void setDefaultModulationDepthMax(double newMax) { defaultDepthMax = newMax; }
 
   /** Sets the default modulation mode for a new connection to relative (or absolute, if false is 
   passed). */
-  inline void setDefaultModulationModeRelative(bool shouldBeRealtive) 
-  { defaultRelative = shouldBeRealtive; }
+  //inline void setDefaultModulationModeRelative(bool shouldBeRealtive) 
+  //{ defaultRelative = shouldBeRealtive; }
+
+  /** Convenience function to set up all the range/depth/mode parameters at once. */
+  inline void setDefaultModParameters(double newRangeMin, double newRangeMax, 
+    double newDefaultDepthMin, double newDefaultDepthMax, bool shouldBeRelativeByDefault)
+  {
+    rangeMin = newRangeMin;
+    rangeMax = newRangeMax;
+    defaultDepthMin = newDefaultDepthMin;
+    defaultDepthMax = newDefaultDepthMax;
+    defaultRelative = shouldBeRelativeByDefault;
+  }
 
 
   /** \name Inquiry */
