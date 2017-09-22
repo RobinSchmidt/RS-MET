@@ -609,6 +609,9 @@ public:
     double defaultValue = 0.5, int scaling = LINEAR, double interval = 0.0)
     : MetaControlledParameter(name, min, max, defaultValue, scaling, interval) {}
 
+
+  /** \name Setup */
+
   /** Overriden in order to also set up unmodulatedValue member inherited from ModulationTarget. */
   virtual void setValue(double newValue, bool sendNotification, bool callCallbacks) override
   {
@@ -620,6 +623,34 @@ public:
   for unique identification of this parameter in the tree of AudioModules when a state is 
   recalled). */
   void setOwnerAudioModule(AudioModule *newOwner) { ownerModule = newOwner; }
+
+  /** Sets the default value for the minimum value / lower limit for the modulated value. */
+  void setModRangeDefaultMin(double newMin) { defaultRangeMin = newMin; }
+
+  /** Sets the default value for the maximum value / upper limit for the modulated value. */
+  void setModRangeDefaultMax(double newMax) { defaultRangeMax = newMax; }
+
+  /** Sets the default value for the modulation depth minimum. */
+  void setModDepthDefaultMin(double newMin) { defaultDepthMin = newMin; }
+
+  /** Sets the default value for the modulation depth maximum. */
+  void setModDepthDefaultMax(double newMax) { defaultDepthMax = newMax; }
+
+  /** Sets the default modulation mode to relative (or absolute, if false is passed). */
+  void setDefaultModulationModeRelative(bool shouldBeRealtive) 
+  { defaultRelative = shouldBeRealtive; }
+
+
+  /** \name Inquiry */
+
+  // see the corresponding setters for documentation, what these values mean:
+  double getModRangeDefaultMin() { return defaultRangeMin; }
+  double getModRangeDefaultMax() { return defaultRangeMax; }
+  double getModDepthDefaultMin() { return defaultDepthMin; }
+  double getModDepthDefaultMax() { return defaultDepthMax; }
+  bool   isModulationRelativeByDefault() { return defaultRelative; }
+
+  /** \name Misc */
 
   /** We suppose that modulatedValue of the ModulationTarget baseclass has already been computed, 
   such that modulatedValue has a legitimate value with all modulations applied. Here we pull out 
