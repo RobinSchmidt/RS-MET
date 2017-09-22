@@ -273,10 +273,10 @@ public:
   are used to clip the final modulated value (after all modulations have been applied) to a sane 
   range. For example, a cutoff frequency of a filter should perhaps be clipped at 0 and 
   sampleRate/2, otherwise the filter may go crazy. */
-  //inline void setModulationRangeMin(double newMin) { rangeMin = newMin; }
+  inline void setModulationRangeMin(double newMin) { rangeMin = newMin; }
 
   /** Sets the maximum value of the allowed modulation range.  */
-  //inline void setModulationRangeMax(double newMax) { rangeMax = newMax; }
+  inline void setModulationRangeMax(double newMax) { rangeMax = newMax; }
 
   /** Sets the default value for the modulation depth minimum for a new connection. */
   //inline void setDefaultModulationDepthMin(double newMin) { defaultDepthMin = newMin; }
