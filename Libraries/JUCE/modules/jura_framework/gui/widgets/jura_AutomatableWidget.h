@@ -74,6 +74,7 @@ protected:
   // owned widgets:
   RTextField* modulationsLabel;
   std::vector<rsModulationDepthSlider*> amountSliders; 
+    // use a class rsModulationConnectionWidget rename to connectionWidgets
 
   RButton *addButton, *removeButton;
   RClickButton* closeButton;
@@ -282,6 +283,36 @@ protected:
   ModulationConnection* modConnection = nullptr; // needs to be assigned in constructor
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsModulationDepthSlider)
+};
+
+//=================================================================================================
+
+/** A class that encapsulates the depth-slider and remove-button for a ModulationConnection. 
+
+\todo:
+-add an on/off button, maybe also solo - i think, this needs a new member in ModulationConnection
+ isActive ...hmm...but this will cause overhead...we'll see
+*/
+
+class JUCE_API rsModulationConnectionWidget : public Component //: public RWidget maybe later
+{
+
+  friend class rsModulationSetup;
+
+public:
+
+  rsModulationConnectionWidget(ModulationConnection* connection);
+
+  virtual ~rsModulationConnectionWidget() {}
+
+  void resized() override;
+
+protected:
+
+  rsModulationDepthSlider* depthSlider;
+  RClickButton* removeButton;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsModulationConnectionWidget)
 };
 
 

@@ -1,10 +1,9 @@
 ModSystem:
- -let the min/max, relative, etc. values have meaningful initial values, defined in the
-  ModulatableParameter class (or, maybe ModulationTarget?) ...wait they are already there,
-  we just need accessor functions - they are actually also already there, we just need a
-  wantsRelativeModulation flag and use that to initialize the relative property of the 
-  connections, also 
-  default min/max, relative on/off, mod depth min/max
+ -provide remove-buttons next to the depth sliders
+ -maybe implement a notification system when connectiosn are added removed
+  ModulationManagerObserverr: connectionWasAdded, connectionWillBeRemoved
+ -maybe have a special ModulatableSlider class that shows the modulation-range
+ -clean up the files
 
 
 Chainer:

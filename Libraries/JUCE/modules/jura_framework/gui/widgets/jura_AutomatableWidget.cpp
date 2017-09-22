@@ -666,3 +666,21 @@ void rsModulationDepthSlider::addPopUpMinMaxAndModeItems()
   rightClickPopUp->addItem(MOD_DEPTH_MAX, "Mod depth max");
   rightClickPopUp->addItem(MOD_MODE_RELATIVE, "Relative modulation", true, isModeRelative());
 }
+
+//=================================================================================================
+
+rsModulationConnectionWidget::rsModulationConnectionWidget(ModulationConnection* connection)
+{
+  addChildComponent(depthSlider  = new rsModulationDepthSlider(connection));
+  addChildComponent(removeButton = new RClickButton("R")); // later: use a cross
+}
+
+void rsModulationConnectionWidget::resized()
+{
+  int w = getWidth();
+  int h = getHeight();
+  int buttonWidth  = h;
+  int buttonMargin = 4;
+  depthSlider->setBounds(0, 0, w-buttonWidth-buttonMargin, h);
+  removeButton->setBounds(depthSlider->getRight()+buttonMargin, 0, buttonWidth, h);
+}
