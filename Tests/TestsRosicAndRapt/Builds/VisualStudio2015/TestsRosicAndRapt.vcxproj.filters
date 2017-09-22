@@ -259,6 +259,9 @@
     <ClCompile Include="..\..\Source\Shared\Prototypes\ParticleBouncer.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Prototypes\ParticleSystem.cpp">
+      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\rosic_tests\rosic_AnalysisTests.cpp">
       <Filter>TestsRosicAndRapt\Source\rosic_tests</Filter>
     </ClCompile>
@@ -1699,6 +1702,9 @@
       <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Shared\Prototypes\ParticleBouncer.h">
+      <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Shared\Prototypes\ParticleSystem.h">
       <Filter>TestsRosicAndRapt\Source\Shared\Prototypes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\rosic_tests\rosic_AnalysisTests.h">

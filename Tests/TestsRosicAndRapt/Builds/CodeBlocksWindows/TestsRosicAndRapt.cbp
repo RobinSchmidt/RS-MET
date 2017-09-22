@@ -143,6 +143,11 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../Source/Shared/Prototypes/ParticleSystem.cpp"/>
+    <Unit filename="../../Source/Shared/Prototypes/ParticleSystem.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../Source/Shared/Prototypes/ReadMe.txt">
       <Option compile="0"/>
       <Option link="0"/>
