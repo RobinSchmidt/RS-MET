@@ -308,7 +308,7 @@ public:
   virtual juce::String getModulationTargetName() = 0;
 
   /** Returns true, if this target is connected to at least one ModulationSource. */
-  bool isConnectedToSomeSource();
+  bool hasModulation();
 
 
   /** \name Misc */
