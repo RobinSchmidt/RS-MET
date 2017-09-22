@@ -1,7 +1,8 @@
 #ifndef jura_AutomatableWidget_h
 #define jura_AutomatableWidget_h
 
-class rsModulationDepthSlider;
+//class rsModulationDepthSlider;
+class rsModulationConnectionWidget;
 
 /** A component for setting up the modulations of some ModulationTarget. */
 
@@ -73,8 +74,7 @@ protected:
 
   // owned widgets:
   RTextField* modulationsLabel;
-  std::vector<rsModulationDepthSlider*> amountSliders; 
-    // use a class rsModulationConnectionWidget rename to connectionWidgets
+  std::vector<rsModulationConnectionWidget*> connectionWidgets;
 
   RButton *addButton, *removeButton;
   RClickButton* closeButton;
@@ -294,7 +294,7 @@ protected:
  isActive ...hmm...but this will cause overhead...we'll see
 */
 
-class JUCE_API rsModulationConnectionWidget : public Component //: public RWidget maybe later
+class JUCE_API rsModulationConnectionWidget : public RWidget //: public Component
 {
 
   friend class rsModulationSetup;
@@ -306,6 +306,7 @@ public:
   virtual ~rsModulationConnectionWidget() {}
 
   void resized() override;
+  void paint(Graphics& g) override {}
 
 protected:
 

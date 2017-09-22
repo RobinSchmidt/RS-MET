@@ -61,8 +61,8 @@ void rsModulationSetup::resized()
   closeButton->setBounds(w-16, 0, 16, 16);
   modulationsLabel->setBounds(x, y, w-8-16, sh); y += inc; 
 
-  for(int i = 0; i < size(amountSliders); i++) {
-    amountSliders[i]->setBounds(x, y, w-8, sh); y += inc; }
+  for(int i = 0; i < size(connectionWidgets); i++) {
+    connectionWidgets[i]->setBounds(x, y, w-8, sh); y += inc; }
 
   y = h - sh - d;
   addButton->setBounds(x, y, 40, 16);
@@ -224,9 +224,9 @@ void rsModulationSetup::showRemovableSourcesPopUp()
 
 bool rsModulationSetup::hasSlider(MetaControlledParameter* p)
 {
-  for(int i = 0; i < size(amountSliders); i++)
+  for(int i = 0; i < size(connectionWidgets); i++)
   {
-    Parameter* ps = amountSliders[i]->getAssignedParameter();
+    Parameter* ps = connectionWidgets[i]->depthSlider->getAssignedParameter();
     if(ps == p)
       return true;
   }
@@ -235,18 +235,18 @@ bool rsModulationSetup::hasSlider(MetaControlledParameter* p)
 
 void rsModulationSetup::addSliderFor(MetaControlledParameter* p, ModulationConnection* c)
 {
-  rsModulationDepthSlider* s = new rsModulationDepthSlider(c);
-  amountSliders.push_back(s);
-  s->assignParameter(p);
-  addWidget(s);
+  rsModulationConnectionWidget* w = new rsModulationConnectionWidget(c);
+  connectionWidgets.push_back(w);
+  w->depthSlider->assignParameter(p);
+  addWidget(w);
   updateSize();
 }
 
 void rsModulationSetup::clearAmountSliders()
 {
-  for(int i = 0; i < size(amountSliders); i++)
-    removeWidget(amountSliders[i], true, true);
-  amountSliders.clear();
+  for(int i = 0; i < size(connectionWidgets); i++)
+    removeWidget(connectionWidgets[i], true, true);
+  connectionWidgets.clear();
 }
 
 void rsModulationSetup::updateSize()
@@ -254,7 +254,7 @@ void rsModulationSetup::updateSize()
   int width  = 250;  // maybe we should use the widget's width...but maybe not
   int height = 100;  // preliminary
 
-  height  = (sliderHeight+sliderDistance) * size(amountSliders);
+  height  = (sliderHeight+sliderDistance) * size(connectionWidgets);
   height += 68;
 
   setSize(width, height); 
@@ -671,8 +671,8 @@ void rsModulationDepthSlider::addPopUpMinMaxAndModeItems()
 
 rsModulationConnectionWidget::rsModulationConnectionWidget(ModulationConnection* connection)
 {
-  addChildComponent(depthSlider  = new rsModulationDepthSlider(connection));
-  addChildComponent(removeButton = new RClickButton("R")); // later: use a cross
+  addChildWidget(depthSlider  = new rsModulationDepthSlider(connection));
+  addChildWidget(removeButton = new RClickButton(RButton::CLOSE));
 }
 
 void rsModulationConnectionWidget::resized()
@@ -680,7 +680,7 @@ void rsModulationConnectionWidget::resized()
   int w = getWidth();
   int h = getHeight();
   int buttonWidth  = h;
-  int buttonMargin = 4;
+  int buttonMargin = 2;
   depthSlider->setBounds(0, 0, w-buttonWidth-buttonMargin, h);
   removeButton->setBounds(depthSlider->getRight()+buttonMargin, 0, buttonWidth, h);
 }
