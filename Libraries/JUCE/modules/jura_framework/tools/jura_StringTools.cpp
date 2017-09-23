@@ -1,4 +1,4 @@
-//#include "rojue_StringTools.h"
+#include "jura_StringTools.h"
 
 char* toZeroTerminatedString(String stringToConvert)
 {
