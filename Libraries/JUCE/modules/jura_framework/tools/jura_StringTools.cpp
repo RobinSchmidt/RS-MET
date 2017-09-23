@@ -564,170 +564,29 @@ String midiControllerToString(int midiControllerNumber)
 
 String midiNoteToString(double midiNoteNumber)
 {
-  // This is stupid! We should use a StringArray!
-
   int intNoteNumber = (int) midiNoteNumber;
-  switch( intNoteNumber )
+
+  StringArray NoteNames
   {
-  case   0: return String("C-1");
-  case   1: return String("C#-1");
-  case   2: return String("D-1");
-  case   3: return String("D#-1");
-  case   4: return String("E-1");
-  case   5: return String("F-1");
-  case   6: return String("F#-1");
-  case   7: return String("G-1");
-  case   8: return String("G#-1");
-  case   9: return String("A-1");
-  case  10: return String("A#-1");
-  case  11: return String("B-1");
+    "C-1","C#-1","D-1","D#-1","E-1","F-1","F#-1","G-1","G#-1","A-1","A#-1","B-1",
+    "C0","C#0","D0","D#0","E0","F0","F#0","G0","G#0","A0","A#0","B0",
+    "C1","C#1","D1","D#1","E1","F1","F#1","G1","G#1","A1","A#1","B1",
+    "C2","C#2","D2","D#2","E2","F2","F#2","G2","G#2","A2","A#2","B2",
+    "C3","C#3","D3","D#3","E3","F3","F#3","G3","G#3","A3","A#3","B3",
+    "C4","C#4","D4","D#4","E4","F4","F#4","G4","G#4","A4","A#4","B4",
+    "C5","C#5","D5","D#5","E5","F5","F#5","G5","G#5","A5","A#5","B5",
+    "C6","C#6","D6","D#6","E6","F6","F#6","G6","G#6","A6","A#6","B6",
+    "C7","C#7","D7","D#7","E7","F7","F#7","G7","G#7","A7","A#7","B7",
+    "C8","C#8","D8","D#8","E8","F8","F#8","G8","G#8","A8","A#8","B8",
+    "C9","C#9","D9","D#9","E9","F9","F#9","G9",
+    "C10","C#10","D10","D#10","E10","F10","F#10","G10",
+    "C11","C#11","D11","D#11","E11","F11","F#11","G11",
+  };
 
-  case  12: return String("C0");
-  case  13: return String("C#0");
-  case  14: return String("D0");
-  case  15: return String("D#0");
-  case  16: return String("E0");
-  case  17: return String("F0");
-  case  18: return String("F#0");
-  case  19: return String("G0");
-  case  20: return String("G#0");
-  case  21: return String("A0");
-  case  22: return String("A#0");
-  case  23: return String("B0");
-
-  case  24: return String("C1");
-  case  25: return String("C#1");
-  case  26: return String("D1");
-  case  27: return String("D#1");
-  case  28: return String("E1");
-  case  29: return String("F1");
-  case  30: return String("F#1");
-  case  31: return String("G1");
-  case  32: return String("G#1");
-  case  33: return String("A1");
-  case  34: return String("A#1");
-  case  35: return String("B1");
-
-  case  36: return String("C2");
-  case  37: return String("C#2");
-  case  38: return String("D2");
-  case  39: return String("D#2");
-  case  40: return String("E2");
-  case  41: return String("F2");
-  case  42: return String("F#2");
-  case  43: return String("G2");
-  case  44: return String("G#2");
-  case  45: return String("A2");
-  case  46: return String("A#2");
-  case  47: return String("B2");
-
-  case  48: return String("C3");
-  case  49: return String("C#3");
-  case  50: return String("D3");
-  case  51: return String("D#3");
-  case  52: return String("E3");
-  case  53: return String("F3");
-  case  54: return String("F#3");
-  case  55: return String("G3");
-  case  56: return String("G#3");
-  case  57: return String("A3");
-  case  58: return String("A#3");
-  case  59: return String("B3");
-
-  case  60: return String("C4");
-  case  61: return String("C#4");
-  case  62: return String("D4");
-  case  63: return String("D#4");
-  case  64: return String("E4");
-  case  65: return String("F4");
-  case  66: return String("F#4");
-  case  67: return String("G4");
-  case  68: return String("G#4");
-  case  69: return String("A4");
-  case  70: return String("A#4");
-  case  71: return String("B4");
-
-  case  72: return String("C5");
-  case  73: return String("C#5");
-  case  74: return String("D5");
-  case  75: return String("D#5");
-  case  76: return String("E5");
-  case  77: return String("F5");
-  case  78: return String("F#5");
-  case  79: return String("G5");
-  case  80: return String("G#5");
-  case  81: return String("A5");
-  case  82: return String("A#5");
-  case  83: return String("B5");
-
-  case  84: return String("C6");
-  case  85: return String("C#6");
-  case  86: return String("D6");
-  case  87: return String("D#6");
-  case  88: return String("E6");
-  case  89: return String("F6");
-  case  90: return String("F#6");
-  case  91: return String("G6");
-  case  92: return String("G#6");
-  case  93: return String("A6");
-  case  94: return String("A#6");
-  case  95: return String("B6");
-
-  case  96: return String("C7");
-  case  97: return String("C#7");
-  case  98: return String("D7");
-  case  99: return String("D#7");
-  case 100: return String("E7");
-  case 101: return String("F7");
-  case 102: return String("F#7");
-  case 103: return String("G7");
-  case 104: return String("G#7");
-  case 105: return String("A7");
-  case 106: return String("A#7");
-  case 107: return String("B7");
-
-  case 108: return String("C8");
-  case 109: return String("C#8");
-  case 110: return String("D8");
-  case 111: return String("D#8");
-  case 112: return String("E8");
-  case 113: return String("F8");
-  case 114: return String("F#8");
-  case 115: return String("G8");
-  case 116: return String("G#8");
-  case 117: return String("A8");
-  case 118: return String("A#8");
-  case 119: return String("B8");
-
-  case 120: return String("C9");
-  case 121: return String("C#9");
-  case 122: return String("D9");
-  case 123: return String("D#9");
-  case 124: return String("E9");
-  case 125: return String("F9");
-  case 126: return String("F#9");
-  case 127: return String("G9");
-
-  case 128: return String("C10");
-  case 129: return String("C#10");
-  case 130: return String("D10");
-  case 131: return String("D#10");
-  case 132: return String("E10");
-  case 133: return String("F10");
-  case 134: return String("F#10");
-  case 135: return String("G10");
-
-  case 136: return String("C11");
-  case 137: return String("C#11");
-  case 138: return String("D11");
-  case 139: return String("D#11");
-  case 140: return String("E11");
-  case 141: return String("F11");
-  case 142: return String("F#11");
-  case 143: return String("G11");
-
-  default: return String("?");
-  }
+  if (intNoteNumber < 0 || intNoteNumber >= NoteNames.size())
+    return "?";
+  else
+    return NoteNames[intNoteNumber];
 }
 
 String millisecondsToStringWithUnit0(double value)
