@@ -291,13 +291,15 @@ public:
 
   /** Convenience function to set up all the range/depth/mode parameters at once. */
   inline void setDefaultModParameters(double newRangeMin, double newRangeMax, 
-    double newDefaultDepthMin, double newDefaultDepthMax, bool shouldBeRelativeByDefault)
+    double newDefaultDepthMin, double newDefaultDepthMax, bool shouldBeRelativeByDefault, 
+    double initialModDepth = 0.0)
   {
     rangeMin = newRangeMin;
     rangeMax = newRangeMax;
     defaultDepthMin = newDefaultDepthMin;
     defaultDepthMax = newDefaultDepthMax;
     defaultRelative = shouldBeRelativeByDefault;
+    initialDepth    = initialModDepth;
   }
 
 
@@ -309,9 +311,18 @@ public:
   /** Returns the maximum value of the allowed modulation range. */
   inline double getModulationRangeMax() { return rangeMax; }
 
-  // see the corresponding setters for documentation, what these values mean:
+  /** Returns the default value for the modulation depth minimum for a new connection going into 
+  this target. The user can later change that. */
   inline double getDefaultModulationDepthMin()  { return defaultDepthMin; }
+
+  /** Returns the default value for the modulation depth maximum for a new connection. */
   inline double getDefaultModulationDepthMax()  { return defaultDepthMax; }
+
+  /** Returns the initial modulation depth that will be used for new incoming connections. */
+  inline double getInitialModulationDepth()     { return initialDepth;    }
+
+  /** Returns whether or not a new connection into this target should be to relative (it will be 
+  absolute, if false is passed). */
   inline bool   isModulationRelativeByDefault() { return defaultRelative; }
 
   /** Returns true, if there's a connection between this ModulationTarget and the given 
@@ -363,6 +374,7 @@ protected:
   double modulatedValue = 0;
   double rangeMin = -INF, rangeMax = INF; 
   double defaultDepthMin = -1, defaultDepthMax = 1;
+  double initialDepth = 0.0;
   bool   defaultRelative = false;
 
   friend class ModulationConnection;

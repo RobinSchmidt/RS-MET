@@ -1,6 +1,9 @@
 ModSystem:
  -provide remove-buttons next to the depth sliders
   -done, but crashes
+  -RClickButton::mouseDown causes the deletion of itself in sendClickMessage() and then tries
+   to call repaint() on itself, after it has deleted itself...i think, we need some kind of
+   deferred deletion
  -maybe implement a notification system when connectiosn are added removed
   ModulationManagerObserverr: connectionWasAdded, connectionWillBeRemoved
  -maybe have a special ModulatableSlider class that shows the modulation-range
