@@ -148,7 +148,7 @@ ModulationConnection::ModulationConnection(ModulationSource* _source, Modulation
 {
   source   = _source; 
   target   = _target;
-  depth    = 0.0;
+  //depth    = 0.0;
   //relative = false;
   //relative = true;
   relative    = target->isModulationRelativeByDefault();
@@ -157,10 +157,12 @@ ModulationConnection::ModulationConnection(ModulationSource* _source, Modulation
 
   double depthMin = target->getDefaultModulationDepthMin();
   double depthMax = target->getDefaultModulationDepthMax();
-  if(depthMin <= 0.0 && depthMax >= 0.0)
-    depth = 0.0;
-  else
-    depth = 0.5 * (depthMin + depthMax);
+  depth = clip(target->getInitialModulationDepth(), depthMin, depthMax);
+
+  //if(depthMin <= 0.0 && depthMax >= 0.0)
+  //  depth = 0.0;
+  //else
+  //  depth = 0.5 * (depthMin + depthMax);
 
   juce::String name = source->getModulationSourceName();
   depthParam = new MetaControlledParameter(name, depthMin, depthMax, depth, Parameter::LINEAR, 0.0);
