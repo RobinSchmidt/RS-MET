@@ -39,9 +39,9 @@ protected:
   and the source with given index among the connected sources. */
   void removeConnection(int index);
 
-  /** Creates or removes sliders for the modulation amounts according to the existing 
-  connections. */
-  void updateAmountSliderArray();
+  /** Creates or removes widget-sets (depth-sliders, etc.) for the modulation the existing 
+  moduldation connections. */
+  void updateConnectionWidgetsArray();
 
   /** Shows the popup menu with the available (and not yet connected) ModulationSources. */
   void showConnectableSourcesPopUp();
@@ -57,8 +57,8 @@ protected:
   menu can access it in order to set up some other aspects of the connection as well. */
   void addWidgetsForConnection(ModulationConnection* c); 
 
-  /** Clears the array of amount sliders. */
-  void clearAmountSliders();
+  /** Clears the array of connections widgets. */
+  void clearConnectionWidgets();
 
   /** Updates the size in order to provide space for all required widgets. */
   void updateSize();
@@ -75,7 +75,6 @@ protected:
   // owned widgets:
   RTextField* modulationsLabel;
   std::vector<rsModulationConnectionWidget*> connectionWidgets;
-  //rsGarbageCollector trashCan;
 
   RButton *addButton, *removeButton;
   RClickButtonNotifyOnMouseUp* closeButton;

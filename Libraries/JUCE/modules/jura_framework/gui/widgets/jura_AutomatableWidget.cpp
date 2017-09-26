@@ -34,7 +34,7 @@ rsModulationSetup::rsModulationSetup(AutomatableWidget* widgetToModulate,
   clipMaxField->setLabelWidth(36);
   clipMaxField->getTextEntryField()->registerTextEntryFieldObserver(this);
 
-  updateAmountSliderArray();
+  updateConnectionWidgetsArray();
 }
 
 rsModulationSetup::~rsModulationSetup()
@@ -138,15 +138,15 @@ void rsModulationSetup::removeConnection(int index)
     std::vector<ModulationSource*> sources = mp->getConnectedSources();
     mp->removeModulationSource(sources[index]);
   }
-  updateAmountSliderArray(); 
+  updateConnectionWidgetsArray(); 
 
   // actually, instead of doing this, we could just remove the 1 affected amount-slider before
   // before removing the source/connection
 }
 
-void rsModulationSetup::updateAmountSliderArray()
+void rsModulationSetup::updateConnectionWidgetsArray()
 {
-  clearAmountSliders();
+  clearConnectionWidgets();
   ModulatableParameter* mp = widget->getModulatableParameter();
   if(mp != nullptr)
   {
@@ -238,14 +238,12 @@ void rsModulationSetup::addWidgetsForConnection(ModulationConnection* c)
   updateSize();
 }
 
-void rsModulationSetup::clearAmountSliders()
+void rsModulationSetup::clearConnectionWidgets()
 {
   for(int i = 0; i < size(connectionWidgets); i++)
   {
     connectionWidgets[i]->removeButton->removeRButtonListener(this);
-
     //removeWidget(connectionWidgets[i], true, true);  // old - deletes object immediately - crash
-
     deleteObject(connectionWidgets[i]); // mark for later deletion
     removeWidget(connectionWidgets[i], true, false);
   }
