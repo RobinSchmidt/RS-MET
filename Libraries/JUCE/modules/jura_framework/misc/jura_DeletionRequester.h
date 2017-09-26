@@ -51,6 +51,7 @@ public:
     // deletees. maybe it should be done in a subclass rsSafeDeletor or something?
   }
 
+  /** Deletes the passed object (immediately). */
   virtual void deleteObject(rsDeletionRequester* objectToDelete)
   {
     delete objectToDelete;
@@ -68,7 +69,7 @@ public:
 workable because it looses the type-information, such that the correct destructor can't be called or 
 something. */
 
-class JUCE_API rsGarbageCollector : public juce::Timer
+class JUCE_API rsGarbageCollector : public rsDeletor, public juce::Timer
 {
 
 public:
@@ -87,7 +88,7 @@ public:
 
   /** Moves the object to which the passed pointer points into our garbage bin for later 
   deletion. */
-  void disposeOf(void* objectToDisposeOf);
+  void deleteObject(rsDeletionRequester* objectToDelete) override;
 
   /** Overrides the timerCallback in order to epmty our trash can. */
   void timerCallback() override;
@@ -98,8 +99,8 @@ protected:
   /** Actually deletes the garbage in our array. */
   void deleteGarbage();
 
-  std::vector<void*> garbage; // array of pointers to garbage objects
-  int cleanUpInterval = 1000; // in milliseconds
+  std::vector<rsDeletionRequester*> garbage; // array of pointers to garbage objects
+  int cleanUpInterval = 1000;                // in milliseconds
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsGarbageCollector)
 };

@@ -7,7 +7,8 @@ class rsModulationConnectionWidget;
 /** A component for setting up the modulations of some ModulationTarget. */
 
 class JUCE_API rsModulationSetup : public ColourSchemeComponent, public RButtonListener, 
-  public rsDeletionRequester, public RPopUpMenuObserver, public RTextEntryFieldObserver
+  public rsDeletionRequester, public rsGarbageCollector, public RPopUpMenuObserver, 
+  public RTextEntryFieldObserver
 {
 
 public:
@@ -75,10 +76,10 @@ protected:
   // owned widgets:
   RTextField* modulationsLabel;
   std::vector<rsModulationConnectionWidget*> connectionWidgets;
-  rsGarbageCollector trashCan;
+  //rsGarbageCollector trashCan;
 
   RButton *addButton, *removeButton;
-  RClickButton* closeButton;
+  RClickButtonNotifyOnMouseUp* closeButton;
   RLabeledTextEntryField *clipMinField, *clipMaxField;
 
   RPopUpMenu *connectableSourcesPopUp = nullptr; // created when needed the first time
@@ -295,14 +296,14 @@ protected:
  isActive ...hmm...but this will cause overhead...we'll see
 */
 
-class JUCE_API rsModulationConnectionWidget : public RWidget //: public Component
+class JUCE_API rsModulationConnectionWidget : public RWidget, public rsDeletionRequester
 {
 
   friend class rsModulationSetup;
 
 public:
 
-  rsModulationConnectionWidget(ModulationConnection* connection);
+  rsModulationConnectionWidget(ModulationConnection* connection, rsGarbageCollector* deletor);
 
   virtual ~rsModulationConnectionWidget() {}
 

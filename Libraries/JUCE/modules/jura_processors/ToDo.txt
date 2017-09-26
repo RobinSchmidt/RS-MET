@@ -6,6 +6,8 @@ ModSystem:
    deferred deletion
    -hmm..ok..it now crashes later: on mouseUp
    -ok - now the crash is fixed but we have a memory leak - damn! how do i handle this?
+   -ok - it seems to work now - but we really should optimize the code such that it doesn't
+    always remove and recreate all sliders when one is added or removed
  -maybe implement a notification system when connectiosn are added removed
   ModulationManagerObserverr: connectionWasAdded, connectionWillBeRemoved
  -maybe have a special ModulatableSlider class that shows the modulation-range

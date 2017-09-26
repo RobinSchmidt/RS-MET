@@ -7,7 +7,7 @@ rsModulationSetup::rsModulationSetup(AutomatableWidget* widgetToModulate,
   modulationsLabel->setNoBackgroundAndOutline(true);
   modulationsLabel->setDescription(juce::String("Modulation setup"));
 
-  addWidget( closeButton = new RClickButton(RButton::CLOSE) );
+  addWidget( closeButton = new RClickButtonNotifyOnMouseUp(RButton::CLOSE) );
   closeButton->setDescription(juce::String("Closes the modulation setup window"));
   closeButton->setClickingTogglesState(false);
   closeButton->addRButtonListener(this);
@@ -243,7 +243,7 @@ bool rsModulationSetup::hasSlider(MetaControlledParameter* p)
 
 void rsModulationSetup::addSliderFor(MetaControlledParameter* p, ModulationConnection* c)
 {
-  rsModulationConnectionWidget* w = new rsModulationConnectionWidget(c);
+  rsModulationConnectionWidget* w = new rsModulationConnectionWidget(c, this);
   connectionWidgets.push_back(w);
   w->depthSlider->assignParameter(p);
   w->removeButton->addRButtonListener(this);
@@ -259,7 +259,7 @@ void rsModulationSetup::clearAmountSliders()
 
     //removeWidget(connectionWidgets[i], true, true);  // old - deletes object immediately - crash
 
-    trashCan.disposeOf(connectionWidgets[i]); // mark for later deletion
+    deleteObject(connectionWidgets[i]); // mark for later deletion
     removeWidget(connectionWidgets[i], true, false);
   }
   connectionWidgets.clear();
@@ -685,7 +685,9 @@ void rsModulationDepthSlider::addPopUpMinMaxAndModeItems()
 
 //=================================================================================================
 
-rsModulationConnectionWidget::rsModulationConnectionWidget(ModulationConnection* connection)
+rsModulationConnectionWidget::rsModulationConnectionWidget(ModulationConnection* connection,
+  rsGarbageCollector* deletor)
+  : rsDeletionRequester(deletor)
 {
   addChildWidget(depthSlider  = new rsModulationDepthSlider(connection));
   addChildWidget(removeButton = new RClickButtonNotifyOnMouseUp(RButton::CLOSE));

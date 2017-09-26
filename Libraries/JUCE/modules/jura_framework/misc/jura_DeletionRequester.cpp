@@ -23,7 +23,7 @@ void rsGarbageCollector::setCleanUpInterval(int newInterval)
     startTimer(cleanUpInterval);
 }
 
-void rsGarbageCollector::disposeOf(void* objectToDisposeOf)
+void rsGarbageCollector::deleteObject(rsDeletionRequester* objectToDisposeOf)
 {
   garbage.push_back(objectToDisposeOf);
   if(!isTimerRunning())
