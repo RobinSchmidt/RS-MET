@@ -55,8 +55,8 @@ protected:
   /** Adds a slider for the passed parameter to our amountSliders array. You must also pass a 
   pointer to the ModulationConnection whose depth this parameter controls so the slider's popup
   menu can access it in order to set up some other aspects of the connection as well. */
-  void addSliderFor(MetaControlledParameter* p, ModulationConnection* c); 
-   // rename to addModulationWidgetFor
+  void addWidgetsForConnection(MetaControlledParameter* p, ModulationConnection* c); 
+   // remove p-parameter - can be retrieved from c
 
   /** Clears the array of amount sliders. */
   void clearAmountSliders();

@@ -127,7 +127,7 @@ void rsModulationSetup::addConnection(int index)
     mp->addModulationSource(sources[index]);
     ModulationConnection*    c  = mp->getConnectionTo(sources[index]);
     MetaControlledParameter* dp = c->getDepthParameter();
-    addSliderFor(dp, c);
+    addWidgetsForConnection(dp, c);
   }
 
   //updateAmountSliderArray(); // actually, it's not necessary here to check in the existing
@@ -162,7 +162,7 @@ void rsModulationSetup::updateAmountSliderArray()
     {
       MetaControlledParameter* param = connections[i]->getDepthParameter();
       if(!hasSlider(param))
-        addSliderFor(param, connections[i]);
+        addWidgetsForConnection(param, connections[i]);
     }
   }
   updateSize();
@@ -236,7 +236,7 @@ bool rsModulationSetup::hasSlider(MetaControlledParameter* p)
   return false;
 }
 
-void rsModulationSetup::addSliderFor(MetaControlledParameter* p, ModulationConnection* c)
+void rsModulationSetup::addWidgetsForConnection(MetaControlledParameter* p, ModulationConnection* c)
 {
   rsModulationConnectionWidget* w = new rsModulationConnectionWidget(c, this);
   connectionWidgets.push_back(w);

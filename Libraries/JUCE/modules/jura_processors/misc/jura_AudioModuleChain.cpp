@@ -586,6 +586,7 @@ void AudioModuleChain::recallSlotsFromXml(const XmlElement &xmlState, bool markA
 // move to ModulatableAudioModule:
 void AudioModuleChain::recallModulationsFromXml(const XmlElement &xmlState)
 {
+  modManager.removeAllConnections();
   XmlElement* modXml = xmlState.getChildByName("Modulations");
   if(modXml != nullptr)
     modManager.setStateFromXml(*modXml);  // recall modulation settings
