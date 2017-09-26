@@ -134,12 +134,12 @@ void rsModulationSetup::removeConnection(int index)
   ModulatableParameter* mp = widget->getModulatableParameter();
   if(mp != nullptr)
   {
-    // removeWidgetsForConnection(index)
+    //removeWidgetsForConnection(index);
     std::vector<ModulationSource*> sources = mp->getConnectedSources();
     mp->removeModulationSource(sources[index]);
   }
-  updateConnectionWidgetsArray(); 
 
+  updateConnectionWidgetsArray(); 
   // actually, instead of doing this, we could just remove the 1 affected amount-slider before
   // before removing the source/connection
 }
@@ -238,15 +238,17 @@ void rsModulationSetup::addWidgetsForConnection(ModulationConnection* c)
   updateSize();
 }
 
+void rsModulationSetup::removeWidgetsForConnection(int i)
+{
+  connectionWidgets[i]->removeButton->removeRButtonListener(this);
+  deleteObject(connectionWidgets[i]);              // mark for later deletion
+  removeWidget(connectionWidgets[i], true, false); // false, to not delete it immediately
+}
+
 void rsModulationSetup::clearConnectionWidgets()
 {
   for(int i = 0; i < size(connectionWidgets); i++)
-  {
-    connectionWidgets[i]->removeButton->removeRButtonListener(this);
-    //removeWidget(connectionWidgets[i], true, true);  // old - deletes object immediately - crash
-    deleteObject(connectionWidgets[i]); // mark for later deletion
-    removeWidget(connectionWidgets[i], true, false);
-  }
+    removeWidgetsForConnection(i);
   connectionWidgets.clear();
 }
 

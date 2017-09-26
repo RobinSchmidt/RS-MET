@@ -57,6 +57,9 @@ protected:
   menu can access it in order to set up some other aspects of the connection as well. */
   void addWidgetsForConnection(ModulationConnection* c); 
 
+  /** Removes the widgets for the connection with given index. */
+  void removeWidgetsForConnection(int index); 
+
   /** Clears the array of connections widgets. */
   void clearConnectionWidgets();
 
