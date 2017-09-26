@@ -6,7 +6,7 @@ class rsDeletor;
 /** A baseclass for objects that must ultimately request their own deletion from some other object
 which can be considered to be the owner of the to-be-deleted object. */
 
-class rsDeletionRequester
+class JUCE_API rsDeletionRequester
 {
 
 public:
@@ -33,7 +33,7 @@ protected:
 /** A baseclass for objects that can delete other objects (of a subclass of rsDeletionRequester) on
 their request. */
 
-class rsDeletor
+class JUCE_API rsDeletor
 {
 
 public:
@@ -60,11 +60,45 @@ public:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsDeletor)
 };
 
-// todo: Maybe make variations of the Deletor - in particular, a GarbageCollector that doesn't 
-// delete immediately but only marks an object for later deletion and receives a (Timer?) callback 
-// at regular intervals inside of which the actual deletions occur. Maybe rename rsDeletor to 
-// rsImmediateDeletor...or keep rsDeletor as baseclass for rsImmediateDeletor, 
-// rsImmediateDeletorSafe, rsGarbageCollector, etc.. rename this file-pair to 
-// DeferredDeletion.h/cpp
+// todo: Maybe rename this file-pair to DeferredDeletion.h/cpp
+
+//=================================================================================================
+
+class JUCE_API rsGarbageCollector : public juce::Timer
+{
+
+public:
+
+  /** Constructor. You can pass a time-interval in milliseconds at which cleanups (i.e. actual 
+  deletion of the garbage) will occur. */
+  rsGarbageCollector(int cleanUpInterval = 1000);
+
+  /** Destructor. */
+  virtual ~rsGarbageCollector();
+
+  /** Sets the interval (in milliseconds) at which the garbage will actually be deleted. If there 
+  is no garbage to delete, the timerCallback will actually not get called (the time ist started 
+  when garbage is added and stopped after a cleanup). */
+  void setCleanUpInterval(int newInterval);
+
+  /** Moves the object to which the passed pointer points into our garbage bin for later 
+  deletion. */
+  void disposeOf(void* objectToDisposeOf);
+
+  /** Overrides the timerCallback in order to epmty our trash can. */
+  void timerCallback() override;
+
+
+protected:
+
+  /** Actually deletes the garbage in our array. */
+  void deleteGarbage();
+
+  std::vector<void*> garbage; // array of pointers to garbage objects
+  int cleanUpInterval = 1000; // in milliseconds
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsGarbageCollector)
+};
+
 
 #endif  
