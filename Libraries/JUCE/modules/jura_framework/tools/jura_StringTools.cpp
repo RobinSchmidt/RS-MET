@@ -566,7 +566,7 @@ String midiNoteToString(double midiNoteNumber)
 {
   int intNoteNumber = (int) midiNoteNumber;
 
-  StringArray NoteNames
+  StringArray noteNames
   {
     "C-1","C#-1","D-1","D#-1","E-1","F-1","F#-1","G-1","G#-1","A-1","A#-1","B-1",
     "C0","C#0","D0","D#0","E0","F0","F#0","G0","G#0","A0","A#0","B0",
@@ -578,15 +578,15 @@ String midiNoteToString(double midiNoteNumber)
     "C6","C#6","D6","D#6","E6","F6","F#6","G6","G#6","A6","A#6","B6",
     "C7","C#7","D7","D#7","E7","F7","F#7","G7","G#7","A7","A#7","B7",
     "C8","C#8","D8","D#8","E8","F8","F#8","G8","G#8","A8","A#8","B8",
-    "C9","C#9","D9","D#9","E9","F9","F#9","G9",
-    "C10","C#10","D10","D#10","E10","F10","F#10","G10",
-    "C11","C#11","D11","D#11","E11","F11","F#11","G11",
+    "C9","C#9","D9","D#9","E9","F9","F#9","G9","G#9","A9","A#9","B9",
+    "C10","C#10","D10","D#10","E10","F10","F#10","G10","G#10","A10","A#10","B10",
+    "C11","C#11","D11","D#11","E11","F11","F#11","G11","G#11","A11","A#11","B11"
   };
 
-  if (intNoteNumber < 0 || intNoteNumber >= NoteNames.size())
+  if (intNoteNumber < 0 || intNoteNumber >= noteNames.size())
     return "?";
   else
-    return NoteNames[intNoteNumber];
+    return noteNames[intNoteNumber];
 }
 
 String millisecondsToStringWithUnit0(double value)
