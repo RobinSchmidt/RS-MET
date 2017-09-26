@@ -1,7 +1,3 @@
--fix bug in popup-menus - when there's a linear list of options (no tree) and one clicks
- slightly above the 1st option, the menu stops working (when one clicks there again, it works
- again). it's like the invisible tree-node above the list gets closed and opened (the isOpen
- flag is set to false by this click)
 -make the editors skinnable (background image, etc.)
 -make the widgets skinnable (choose colors, fonts, images (.png or .svg), etc.)
 -it should be possible to load skins at runtime or compile them into the binary

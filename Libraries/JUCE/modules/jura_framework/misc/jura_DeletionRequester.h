@@ -64,6 +64,10 @@ public:
 
 //=================================================================================================
 
+/** Hmmm...that class doesn't really work as intended. I suppose suing a pointer-to-void is not 
+workable because it looses the type-information, such that the correct destructor can't be called or 
+something. */
+
 class JUCE_API rsGarbageCollector : public juce::Timer
 {
 

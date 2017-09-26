@@ -133,7 +133,7 @@ void rsModulationSetup::addConnection(int index)
     //// nnaaahh - this doesn't work - we need the ModulationConnection object to retrieve the
     //// amount-parameter
     //MetaControlledParameter* amountParam = mp->getAmountParameter();
-    //addSliderFor(amountParam);
+    //addSliderFor(amountParam); 
   }
 
   updateAmountSliderArray(); // actually, it's not necessary here to check in the existing
@@ -146,7 +146,7 @@ void rsModulationSetup::removeConnection(int index)
   ModulatableParameter* mp = widget->getModulatableParameter();
   if(mp != nullptr)
   {
-    // removeSliderFor(amountParam)
+    // removeWidgetsForConnection(index)
     std::vector<ModulationSource*> sources = mp->getConnectedSources();
     mp->removeModulationSource(sources[index]);
   }
@@ -256,7 +256,11 @@ void rsModulationSetup::clearAmountSliders()
   for(int i = 0; i < size(connectionWidgets); i++)
   {
     connectionWidgets[i]->removeButton->removeRButtonListener(this);
-    removeWidget(connectionWidgets[i], true, true);
+
+    //removeWidget(connectionWidgets[i], true, true);  // old - deletes object immediately - crash
+
+    trashCan.disposeOf(connectionWidgets[i]); // mark for later deletion
+    removeWidget(connectionWidgets[i], true, false);
   }
   connectionWidgets.clear();
 }
@@ -684,7 +688,7 @@ void rsModulationDepthSlider::addPopUpMinMaxAndModeItems()
 rsModulationConnectionWidget::rsModulationConnectionWidget(ModulationConnection* connection)
 {
   addChildWidget(depthSlider  = new rsModulationDepthSlider(connection));
-  addChildWidget(removeButton = new RClickButton(RButton::CLOSE));
+  addChildWidget(removeButton = new RClickButtonNotifyOnMouseUp(RButton::CLOSE));
 }
 
 void rsModulationConnectionWidget::resized()

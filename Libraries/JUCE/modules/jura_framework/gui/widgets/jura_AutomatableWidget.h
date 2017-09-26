@@ -75,6 +75,7 @@ protected:
   // owned widgets:
   RTextField* modulationsLabel;
   std::vector<rsModulationConnectionWidget*> connectionWidgets;
+  rsGarbageCollector trashCan;
 
   RButton *addButton, *removeButton;
   RClickButton* closeButton;
@@ -311,7 +312,7 @@ public:
 protected:
 
   rsModulationDepthSlider* depthSlider;
-  RClickButton* removeButton;
+  RClickButtonNotifyOnMouseUp* removeButton;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsModulationConnectionWidget)
 };
