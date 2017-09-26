@@ -329,6 +329,10 @@ public:
   ModulationSource. */
   bool isConnectedTo(ModulationSource* source);
 
+  /** Returns a pointer to the ModulationConnection object that connects this target to the given 
+  source (if any, nullptr otherwise); */
+  ModulationConnection* getConnectionTo(ModulationSource* source);
+
   /** Returns a vector of pointers to the ModulationSources which are connected to this 
   ModulationTarget. */
   std::vector<ModulationSource*> getConnectedSources();
@@ -557,6 +561,10 @@ public:
 
   /** Returns true if there's a connection between the given source and target. */
   bool isConnected(ModulationSource* source, ModulationTarget* target);
+
+  /** Returns a pointer to a ModulationConnection object between the given source and target, if 
+  such a conncetion exists. Otherwise, it will return a nullptr. */
+  ModulationConnection* getConnectionBetween(ModulationSource* source, ModulationTarget* target);
 
   /** Returns the number of ModulationConnections. */
   inline int getNumConnections() 

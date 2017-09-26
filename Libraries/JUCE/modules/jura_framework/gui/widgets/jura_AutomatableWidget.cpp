@@ -86,11 +86,7 @@ void rsModulationSetup::rButtonClicked(RButton *button)
     showRemovableSourcesPopUp();
   for(int i = 0; i < size(connectionWidgets); i++){
     if(button == connectionWidgets[i]->removeButton)
-    {
-      //button->removeRButtonListener(this); // should be done in removeConnection
-
-      removeConnection(i); // causes crash
-    }
+      removeConnection(i);
   }
 }
 
@@ -129,16 +125,15 @@ void rsModulationSetup::addConnection(int index)
   {
     std::vector<ModulationSource*> sources = mp->getDisconnectedSources();
     mp->addModulationSource(sources[index]);
-
-    //// nnaaahh - this doesn't work - we need the ModulationConnection object to retrieve the
-    //// amount-parameter
-    //MetaControlledParameter* amountParam = mp->getAmountParameter();
-    //addSliderFor(amountParam); 
+    ModulationConnection*    c  = mp->getConnectionTo(sources[index]);
+    MetaControlledParameter* dp = c->getDepthParameter();
+    addSliderFor(dp, c);
   }
 
-  updateAmountSliderArray(); // actually, it's not necessary here to check in the existing
-                             // slider array if the slider already exist (it doesn't), so we could
-                             // have a function addSliderFor(MetaControlledParameter* p)
+  //updateAmountSliderArray(); // actually, it's not necessary here to check in the existing
+     // slider array if the slider already exist (it doesn't), so we could
+     // have a function addSliderFor(MetaControlledParameter* p)
+     // ...done
 }
 
 void rsModulationSetup::removeConnection(int index)

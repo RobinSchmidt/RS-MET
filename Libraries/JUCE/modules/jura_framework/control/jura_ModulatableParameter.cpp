@@ -84,6 +84,13 @@ bool ModulationTarget::isConnectedTo(ModulationSource* source)
   return false;
 }
 
+ModulationConnection* ModulationTarget::getConnectionTo(ModulationSource* source)
+{
+  if(modManager)
+    return modManager->getConnectionBetween(source, this);
+  return nullptr;
+}
+
 std::vector<ModulationSource*> ModulationTarget::getConnectedSources()
 {
   std::vector<ModulationSource*> result;
@@ -382,10 +389,24 @@ void ModulationManager::deRegisterAllTargets()
 bool ModulationManager::isConnected(ModulationSource* source, ModulationTarget* target)
 {
   ScopedLock scopedLock(*modLock); 
+  return getConnectionBetween(source, target) != nullptr;
+
+  /*
   for(int i = 0; i < size(modulationConnections); i++)
     if(modulationConnections[i]->source == source && modulationConnections[i]->target == target)
       return true;
   return false;
+  */
+}
+
+ModulationConnection* ModulationManager::getConnectionBetween(ModulationSource* source, 
+  ModulationTarget* target)
+{
+  ScopedLock scopedLock(*modLock); 
+  for(int i = 0; i < size(modulationConnections); i++)
+    if(modulationConnections[i]->source == source && modulationConnections[i]->target == target)
+      return modulationConnections[i];
+  return nullptr;
 }
 
 int ModulationManager::numRegisteredSourcesOfType(ModulationSource* source)
