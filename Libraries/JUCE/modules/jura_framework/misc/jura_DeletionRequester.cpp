@@ -26,7 +26,7 @@ void rsGarbageCollector::setCleanUpInterval(int newInterval)
 void rsGarbageCollector::deleteObject(rsDeletionRequester* objectToDisposeOf)
 {
   garbage.push_back(objectToDisposeOf);
-  if(!isTimerRunning())
+  if(!isTimerRunning()) // bcs we don't want to reset it, if it is already running
     startTimer(cleanUpInterval);
 }
 

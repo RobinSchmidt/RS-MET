@@ -65,9 +65,13 @@ public:
 
 //=================================================================================================
 
-/** Hmmm...that class doesn't really work as intended. I suppose suing a pointer-to-void is not 
-workable because it looses the type-information, such that the correct destructor can't be called or 
-something. */
+/** A subclass of rsDeleteor that doesn't immediately delete the object that is passed but instead
+moves it into a garbage collector that will get emptied at some later time (using a timer 
+callback). Deferring the deletion to some later time is sometimes necessary when an object wants to 
+delete itself, because after being marked for deletion, it may still receive callbacks. For 
+example, a button that deletes itself (immediately) when clicking on it (on mouseDown), would still 
+receive a mouseUp event after that deletion, leading to an access violation. Such things can be 
+circumvented by deferring the deletion. */
 
 class JUCE_API rsGarbageCollector : public rsDeletor, public juce::Timer
 {
@@ -82,7 +86,7 @@ public:
   virtual ~rsGarbageCollector();
 
   /** Sets the interval (in milliseconds) at which the garbage will actually be deleted. If there 
-  is no garbage to delete, the timerCallback will actually not get called (the time ist started 
+  is no garbage to delete, the timerCallback will actually not get called (the timer is started 
   when garbage is added and stopped after a cleanup). */
   void setCleanUpInterval(int newInterval);
 
