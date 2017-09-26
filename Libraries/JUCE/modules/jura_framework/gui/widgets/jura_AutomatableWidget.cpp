@@ -125,15 +125,8 @@ void rsModulationSetup::addConnection(int index)
   {
     std::vector<ModulationSource*> sources = mp->getDisconnectedSources();
     mp->addModulationSource(sources[index]);
-    ModulationConnection*    c  = mp->getConnectionTo(sources[index]);
-    MetaControlledParameter* dp = c->getDepthParameter();
-    addWidgetsForConnection(dp, c);
+    addWidgetsForConnection(mp->getConnectionTo(sources[index]));
   }
-
-  //updateAmountSliderArray(); // actually, it's not necessary here to check in the existing
-     // slider array if the slider already exist (it doesn't), so we could
-     // have a function addSliderFor(MetaControlledParameter* p)
-     // ...done
 }
 
 void rsModulationSetup::removeConnection(int index)
@@ -160,9 +153,8 @@ void rsModulationSetup::updateAmountSliderArray()
     std::vector<ModulationConnection*> connections = mp->getConnections();
     for(int i = 0; i < size(connections); i++)
     {
-      MetaControlledParameter* param = connections[i]->getDepthParameter();
-      if(!hasSlider(param))
-        addWidgetsForConnection(param, connections[i]);
+      if(!hasSlider(connections[i]->getDepthParameter()))
+        addWidgetsForConnection(connections[i]);
     }
   }
   updateSize();
@@ -236,11 +228,11 @@ bool rsModulationSetup::hasSlider(MetaControlledParameter* p)
   return false;
 }
 
-void rsModulationSetup::addWidgetsForConnection(MetaControlledParameter* p, ModulationConnection* c)
+void rsModulationSetup::addWidgetsForConnection(ModulationConnection* c)
 {
   rsModulationConnectionWidget* w = new rsModulationConnectionWidget(c, this);
   connectionWidgets.push_back(w);
-  w->depthSlider->assignParameter(p);
+  w->depthSlider->assignParameter(c->getDepthParameter());
   w->removeButton->addRButtonListener(this);
   addWidget(w);
   updateSize();

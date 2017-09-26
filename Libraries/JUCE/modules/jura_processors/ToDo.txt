@@ -9,13 +9,14 @@ ModSystem:
    -ok - it seems to work now - but we really should optimize the code such that it doesn't
     always remove and recreate all sliders when one is added or removed
  -maybe implement a notification system when connectiosn are added removed
-  ModulationManagerObserverr: connectionWasAdded, connectionWillBeRemoved
+  ModulationManagerObserver: connectionWasAdded, connectionWillBeRemoved
  -maybe have a special ModulatableSlider class that shows the modulation-range
  -clean up the files
 
 
 Chainer:
  -make the size of the selector popup adequate
+ -clean up code (remove obsolete code)
 
 RayBouncer:
 -give it some reference tuning (in default setting (unit circle, etc) the frequency

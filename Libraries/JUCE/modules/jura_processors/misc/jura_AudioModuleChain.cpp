@@ -275,7 +275,7 @@ AudioModuleChain::AudioModuleChain(CriticalSection *lockToUse,
   modManager.setMetaParameterManager(metaManagerToUse);
   setModulationManager(&modManager);
 
-  createDebugModSourcesAndTargets(); // for debugging the mod-system
+  //createDebugModSourcesAndTargets(); // for debugging the mod-system
 
   addEmptySlot();
 }
