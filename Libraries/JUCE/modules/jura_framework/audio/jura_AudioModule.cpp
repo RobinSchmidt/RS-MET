@@ -553,6 +553,10 @@ void AudioModuleWithMidiIn::handleMidiMessage(MidiMessage message)
     allNotesOff();
   else if( message.isPitchWheel() )
     setPitchBend(message.getPitchWheelValue());
+  else if (message.isAftertouch())
+    setAfterTouch(message.getAfterTouchValue());
+  else if (message.isChannelPressure())
+    setChannelPressure(message.getChannelPressureValue());
 }
 
 //void AudioModuleWithMidiIn::noteOn(int noteNumber, int velocity)
