@@ -1,7 +1,6 @@
 #ifndef jura_AutomatableWidget_h
 #define jura_AutomatableWidget_h
 
-//class rsModulationDepthSlider;
 class rsModulationConnectionWidget;
 
 /** A component for setting up the modulations of some ModulationTarget. */
@@ -39,9 +38,9 @@ protected:
   and the source with given index among the connected sources. */
   void removeConnection(int index);
 
-  /** Creates or removes sliders for the modulation amounts according to the existing 
-  connections. */
-  void updateAmountSliderArray();
+  /** Creates or removes widget-sets (depth-sliders, etc.) for the modulation the existing 
+  moduldation connections. */
+  void updateConnectionWidgetsArray();
 
   /** Shows the popup menu with the available (and not yet connected) ModulationSources. */
   void showConnectableSourcesPopUp();
@@ -55,11 +54,13 @@ protected:
   /** Adds a slider for the passed parameter to our amountSliders array. You must also pass a 
   pointer to the ModulationConnection whose depth this parameter controls so the slider's popup
   menu can access it in order to set up some other aspects of the connection as well. */
-  void addSliderFor(MetaControlledParameter* p, ModulationConnection* c); 
-   // rename to addModulationWidgetFor
+  void addWidgetsForConnection(ModulationConnection* c); 
 
-  /** Clears the array of amount sliders. */
-  void clearAmountSliders();
+  /** Removes the widgets for the connection with given index. */
+  void removeWidgetsForConnection(int index); 
+
+  /** Clears the array of connections widgets. */
+  void clearConnectionWidgets();
 
   /** Updates the size in order to provide space for all required widgets. */
   void updateSize();
@@ -72,11 +73,11 @@ protected:
 
   AutomatableWidget* widget;         // our owner widget
   MetaParameterManager* metaManager; // used for meta-controlling modulation amounts
+  //ModulationManager*    modManager;  // needed for debugging
 
   // owned widgets:
   RTextField* modulationsLabel;
   std::vector<rsModulationConnectionWidget*> connectionWidgets;
-  //rsGarbageCollector trashCan;
 
   RButton *addButton, *removeButton;
   RClickButtonNotifyOnMouseUp* closeButton;

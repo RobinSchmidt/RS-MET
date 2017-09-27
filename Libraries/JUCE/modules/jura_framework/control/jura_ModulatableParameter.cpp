@@ -84,17 +84,31 @@ bool ModulationTarget::isConnectedTo(ModulationSource* source)
   return false;
 }
 
+ModulationConnection* ModulationTarget::getConnectionTo(ModulationSource* source)
+{
+  if(modManager)
+    return modManager->getConnectionBetween(source, this);
+  return nullptr;
+}
+
 std::vector<ModulationSource*> ModulationTarget::getConnectedSources()
 {
   std::vector<ModulationSource*> result;
   if(modManager)
   {
-    const std::vector<ModulationSource*>& allSources = modManager->getAvailableModulationSources();
-    for(int i = 0; i < size(allSources); i++)
-    {
-      if(this->isConnectedTo(allSources[i]))
-        result.push_back(allSources[i]);
-    }
+    //// with this code, the sources in the returned array are ordered in the same way as they were
+    //// registered with the modManager:
+    //const std::vector<ModulationSource*>& allSources = modManager->getAvailableModulationSources();
+    //for(int i = 0; i < size(allSources); i++) {
+    //  if(this->isConnectedTo(allSources[i]))
+    //    result.push_back(allSources[i]); }
+
+    // ...but what we want instead is the connected sources to appear in the order of the 
+    // connections (also, this code is more efficient):
+    const std::vector<ModulationConnection*>& connections = modManager->getModulationConnections();
+    for(int i = 0; i < size(connections); i++){
+      if(connections[i]->target == this)
+        result.push_back(connections[i]->source); }
   }
   return result;
 }
@@ -107,8 +121,8 @@ std::vector<ModulationSource*> ModulationTarget::getDisconnectedSources()
     const std::vector<ModulationSource*>& allSources = modManager->getAvailableModulationSources();
     for(int i = 0; i < size(allSources); i++)
     {
-      if(!this->isConnectedTo(allSources[i])) // ! is only difference to getConnectedSources, maybe
-        result.push_back(allSources[i]);      // we can refactor to avoid code duplication
+      if(!this->isConnectedTo(allSources[i]))
+        result.push_back(allSources[i]);
     }
   }
   return result;
@@ -253,9 +267,14 @@ void ModulationManager::applyModulationsNoLock()
 void ModulationManager::addConnection(ModulationSource* source, ModulationTarget* target)
 {
   ScopedLock scopedLock(*modLock); 
-  jassert(!isConnected(source, target)); // there is already a connection between source and target
-  modulationConnections.push_back(new ModulationConnection(source, target, metaManager));
-  appendIfNotAlreadyThere(affectedTargets, target);
+
+  //// old:
+  //jassert(!isConnected(source, target)); // there is already a connection between source and target
+  //modulationConnections.push_back(new ModulationConnection(source, target, metaManager));
+  //appendIfNotAlreadyThere(affectedTargets, target);
+
+  // new:
+  addConnection(new ModulationConnection(source, target, metaManager));
 }
 
 void ModulationManager::addConnection(ModulationConnection* connection)
@@ -264,6 +283,8 @@ void ModulationManager::addConnection(ModulationConnection* connection)
   jassert(!isConnected(connection->source, connection->target)); // connection already exists
   modulationConnections.push_back(connection);
   appendIfNotAlreadyThere(affectedTargets, connection->target);
+
+  sendModulationChangeNotificationFor(connection->target); // new
 }
 
 void ModulationManager::removeConnection(ModulationSource* source, ModulationTarget* target)
@@ -382,10 +403,24 @@ void ModulationManager::deRegisterAllTargets()
 bool ModulationManager::isConnected(ModulationSource* source, ModulationTarget* target)
 {
   ScopedLock scopedLock(*modLock); 
+  return getConnectionBetween(source, target) != nullptr;
+
+  /*
   for(int i = 0; i < size(modulationConnections); i++)
     if(modulationConnections[i]->source == source && modulationConnections[i]->target == target)
       return true;
   return false;
+  */
+}
+
+ModulationConnection* ModulationManager::getConnectionBetween(ModulationSource* source, 
+  ModulationTarget* target)
+{
+  ScopedLock scopedLock(*modLock); 
+  for(int i = 0; i < size(modulationConnections); i++)
+    if(modulationConnections[i]->source == source && modulationConnections[i]->target == target)
+      return modulationConnections[i];
+  return nullptr;
 }
 
 int ModulationManager::numRegisteredSourcesOfType(ModulationSource* source)
@@ -531,6 +566,13 @@ void ModulationManager::updateAffectedTargetsArray()
   for(int i = 0; i < size(modulationConnections); i++)
     appendIfNotAlreadyThere(affectedTargets, modulationConnections[i]->target);
   // not sure, if this is the best (most efficient) way to do it
+}
+
+void ModulationManager::sendModulationChangeNotificationFor(ModulationTarget* target)
+{
+  ObservableModulationTarget* omt = dynamic_cast<ObservableModulationTarget*> (target);
+  if(omt != nullptr)
+    omt->sendModulationsChangedNotification();
 }
 
 //-------------------------------------------------------------------------------------------------

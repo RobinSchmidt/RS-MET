@@ -278,17 +278,6 @@ public:
   /** Sets the maximum value of the allowed modulation range.  */
   inline void setModulationRangeMax(double newMax) { rangeMax = newMax; }
 
-  /** Sets the default value for the modulation depth minimum for a new connection. */
-  //inline void setDefaultModulationDepthMin(double newMin) { defaultDepthMin = newMin; }
-
-  /** Sets the default value for the modulation depth maximum for a new connection. */
-  //inline void setDefaultModulationDepthMax(double newMax) { defaultDepthMax = newMax; }
-
-  /** Sets the default modulation mode for a new connection to relative (or absolute, if false is 
-  passed). */
-  //inline void setDefaultModulationModeRelative(bool shouldBeRealtive) 
-  //{ defaultRelative = shouldBeRealtive; }
-
   /** Convenience function to set up all the range/depth/mode parameters at once. */
   inline void setDefaultModParameters(double newRangeMin, double newRangeMax, 
     double newDefaultDepthMin, double newDefaultDepthMax, bool shouldBeRelativeByDefault, 
@@ -329,12 +318,17 @@ public:
   ModulationSource. */
   bool isConnectedTo(ModulationSource* source);
 
+  /** Returns a pointer to the ModulationConnection object that connects this target to the given 
+  source (if any, nullptr otherwise); */
+  ModulationConnection* getConnectionTo(ModulationSource* source);
+
   /** Returns a vector of pointers to the ModulationSources which are connected to this 
-  ModulationTarget. */
+  ModulationTarget. They will appear in the order of the connections in the modManager. */
   std::vector<ModulationSource*> getConnectedSources();
 
   /** Returns a vector of pointers to the available ModulationSources which are not connected to 
-  this ModulationTarget. */
+  this ModulationTarget. They will appear in the order in which they were registered with the
+  modManager. */
   std::vector<ModulationSource*> getDisconnectedSources();
 
   /** Returns a vector of pointers to ModulationConnections that are incoming into this 
@@ -347,8 +341,6 @@ public:
 
   /** Returns true, if this target is connected to at least one ModulationSource. */
   bool hasModulation();
-
-
 
 
   /** \name Misc */
@@ -558,6 +550,10 @@ public:
   /** Returns true if there's a connection between the given source and target. */
   bool isConnected(ModulationSource* source, ModulationTarget* target);
 
+  /** Returns a pointer to a ModulationConnection object between the given source and target, if 
+  such a conncetion exists. Otherwise, it will return a nullptr. */
+  ModulationConnection* getConnectionBetween(ModulationSource* source, ModulationTarget* target);
+
   /** Returns the number of ModulationConnections. */
   inline int getNumConnections() 
   { 
@@ -624,6 +620,10 @@ public:
 
 protected:
 
+  /** Tries to cast the passed ModulationTarget into an ObservableModulationTarget and if this is 
+  successful, it sends out the modulation change notifiaction for it. */
+  void sendModulationChangeNotificationFor(ModulationTarget* target);
+
   std::vector<ModulationSource*> availableSources;
   std::vector<ModulationTarget*> availableTargets;
   std::vector<ModulationTarget*> affectedTargets;
@@ -637,12 +637,59 @@ protected:
 
 //=================================================================================================
 
+/** A baseclass for objects that need to observe ModulationTarget objects. */
+
+class JUCE_API ModulationTargetObserver
+{
+
+public:
+
+  virtual ~ModulationTargetObserver() = default;
+
+  /** Subclasses need to override this in order to repond to changes of the modulation settings of 
+  their observed modulation target. */
+  virtual void modulationsChanged() = 0;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationTargetObserver)
+};
+
+/** A subclass of ModulationTarget that allows to be monitored by observer objects, for example,
+a slider on a gui could keept track of whether its underlying parameter has modulations applied to 
+it and if so, change its appearance. */
+
+class JUCE_API ObservableModulationTarget : public ModulationTarget
+{
+
+public:
+
+  /** Constructor */
+  ObservableModulationTarget(ModulationManager* managerToUse = nullptr) 
+    : ModulationTarget(managerToUse) {}
+
+  // add de/registering functions for observers
+
+  void sendModulationsChangedNotification()
+  {
+    for(size_t i = 0; i < modTargetObservers.size(); i++)
+      modTargetObservers[i]->modulationsChanged();
+  }
+
+protected:
+
+  std::vector<ModulationTargetObserver*> modTargetObservers;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ObservableModulationTarget)
+};
+
+//=================================================================================================
+
 class AudioModule; // ModulatableParameter needs a pointer to its owning AudioModule
 
 /** A subclass of Parameter that is suitable as target for modulations by also being a subclass of
 ModulationTarget. */
 
-class JUCE_API ModulatableParameter : public MetaControlledParameter, public ModulationTarget
+class JUCE_API ModulatableParameter : public MetaControlledParameter, 
+  public ObservableModulationTarget
 {
 
 public:
