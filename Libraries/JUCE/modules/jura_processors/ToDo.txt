@@ -12,6 +12,7 @@ ModSystem:
    add A, add B, rem A, add A, rem B -> A gets removed
    ->seems fixed - but needs more testing
    ->NOPE - it just looks like it on the gui
+     ->ok, now it seems fixed
  -maybe implement a notification system when connectiosn are added removed
   ModulationManagerObserver: connectionWasAdded, connectionWillBeRemoved
  -maybe have a special ModulatableSlider class that shows the modulation-range

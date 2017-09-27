@@ -323,11 +323,12 @@ public:
   ModulationConnection* getConnectionTo(ModulationSource* source);
 
   /** Returns a vector of pointers to the ModulationSources which are connected to this 
-  ModulationTarget. */
+  ModulationTarget. They will appear in the order of the connections in the modManager. */
   std::vector<ModulationSource*> getConnectedSources();
 
   /** Returns a vector of pointers to the available ModulationSources which are not connected to 
-  this ModulationTarget. */
+  this ModulationTarget. They will appear in the order in which they were registered with the
+  modManager. */
   std::vector<ModulationSource*> getDisconnectedSources();
 
   /** Returns a vector of pointers to ModulationConnections that are incoming into this 

@@ -96,12 +96,19 @@ std::vector<ModulationSource*> ModulationTarget::getConnectedSources()
   std::vector<ModulationSource*> result;
   if(modManager)
   {
-    const std::vector<ModulationSource*>& allSources = modManager->getAvailableModulationSources();
-    for(int i = 0; i < size(allSources); i++)
-    {
-      if(this->isConnectedTo(allSources[i]))
-        result.push_back(allSources[i]);
-    }
+    //// with this code, the sources in the returned array are ordered in the same way as they were
+    //// registered with the modManager:
+    //const std::vector<ModulationSource*>& allSources = modManager->getAvailableModulationSources();
+    //for(int i = 0; i < size(allSources); i++) {
+    //  if(this->isConnectedTo(allSources[i]))
+    //    result.push_back(allSources[i]); }
+
+    // ...but what we want instead is the connected sources to appear in the order of the 
+    // connections:
+    const std::vector<ModulationConnection*>& connections = modManager->getModulationConnections();
+    for(int i = 0; i < size(connections); i++){
+      if(connections[i]->target == this)
+        result.push_back(connections[i]->source); }
   }
   return result;
 }
@@ -114,8 +121,8 @@ std::vector<ModulationSource*> ModulationTarget::getDisconnectedSources()
     const std::vector<ModulationSource*>& allSources = modManager->getAvailableModulationSources();
     for(int i = 0; i < size(allSources); i++)
     {
-      if(!this->isConnectedTo(allSources[i])) // ! is only difference to getConnectedSources, maybe
-        result.push_back(allSources[i]);      // we can refactor to avoid code duplication
+      if(!this->isConnectedTo(allSources[i]))
+        result.push_back(allSources[i]);
     }
   }
   return result;
