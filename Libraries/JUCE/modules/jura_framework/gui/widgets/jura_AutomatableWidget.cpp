@@ -692,3 +692,33 @@ void rsModulationConnectionWidget::resized()
   depthSlider->setBounds(0, 0, w-buttonWidth-buttonMargin, h);
   removeButton->setBounds(depthSlider->getRight()+buttonMargin, 0, buttonWidth, h);
 }
+
+//=================================================================================================
+
+ModulatableSlider::~ModulatableSlider()
+{
+  ModulatableParameter* mp = dynamic_cast<ModulatableParameter*> (assignedParameter);
+  if(mp)
+    mp->deRegisterModulationTargetObserver(this);
+}
+
+void ModulatableSlider::modulationsChanged()
+{
+  repaint();
+}
+
+void ModulatableSlider::assignParameter(Parameter* p)
+{
+  AutomatableSlider::assignParameter(p);
+  ModulatableParameter* mp = dynamic_cast<ModulatableParameter*> (p);
+  if(mp)
+    mp->registerModulationTargetObserver(this);
+}
+
+void ModulatableSlider::paint(Graphics& g)
+{
+  AutomatableSlider::paint(g);
+  ModulatableParameter* mp = dynamic_cast<ModulatableParameter*> (assignedParameter);
+  if(mp && mp->hasModulation())
+    g.fillAll(Colour::fromFloatRGBA(1.f, 0.f, 0.f, 0.125f)); // preliminary
+}
