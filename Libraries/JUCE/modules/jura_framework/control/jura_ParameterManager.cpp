@@ -26,7 +26,7 @@ Parameter* ParameterManager::getParameterByName(const String& nameOfParameter) c
     if( parameters[i]->hasName(nameOfParameter) )
       result = parameters[i];
   }
-  jassert(result != nullptr);   // parameter with given name doesn't exist
+  //jassert(result != nullptr);   // parameter with given name doesn't exist
   return result;
 }
 
