@@ -278,17 +278,6 @@ public:
   /** Sets the maximum value of the allowed modulation range.  */
   inline void setModulationRangeMax(double newMax) { rangeMax = newMax; }
 
-  /** Sets the default value for the modulation depth minimum for a new connection. */
-  //inline void setDefaultModulationDepthMin(double newMin) { defaultDepthMin = newMin; }
-
-  /** Sets the default value for the modulation depth maximum for a new connection. */
-  //inline void setDefaultModulationDepthMax(double newMax) { defaultDepthMax = newMax; }
-
-  /** Sets the default modulation mode for a new connection to relative (or absolute, if false is 
-  passed). */
-  //inline void setDefaultModulationModeRelative(bool shouldBeRealtive) 
-  //{ defaultRelative = shouldBeRealtive; }
-
   /** Convenience function to set up all the range/depth/mode parameters at once. */
   inline void setDefaultModParameters(double newRangeMin, double newRangeMax, 
     double newDefaultDepthMin, double newDefaultDepthMax, bool shouldBeRelativeByDefault, 
@@ -351,8 +340,6 @@ public:
 
   /** Returns true, if this target is connected to at least one ModulationSource. */
   bool hasModulation();
-
-
 
 
   /** \name Misc */
@@ -632,6 +619,10 @@ public:
 
 protected:
 
+  /** Tries to cast the passed ModulationTarget into an ObservableModulationTarget and if this is 
+  successful, it sends out the modulation change notifiaction for it. */
+  void sendModulationChangeNotificationFor(ModulationTarget* target);
+
   std::vector<ModulationSource*> availableSources;
   std::vector<ModulationTarget*> availableTargets;
   std::vector<ModulationTarget*> affectedTargets;
@@ -642,6 +633,51 @@ protected:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationManager)
 };
+
+//=================================================================================================
+
+/** A baseclass for objects that need to observe ModulationTarget objects. */
+
+class JUCE_API ModulationTargetObserver
+{
+
+public:
+
+  virtual ~ModulationTargetObserver() = default;
+
+  /** Subclasses need to override this in order to repond to changes of the modulation settings of 
+  their observed modulation target. */
+  virtual void modulationsChanged() = 0;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationTargetObserver)
+};
+
+/** A subclass of ModulationTarget that allows to be monitored by observer objects, for example,
+a slider on a gui could keept track of whether its underlying parameter has modulations applied to 
+it and if so, change its appearance. */
+
+class JUCE_API ObservableModulationTarget : public ModulationTarget
+{
+
+public:
+
+  // add de/registering functions for observers
+
+  void sendModulationsChangedNotification()
+  {
+    for(size_t i = 0; i < modTargetObersvers.size(); i++)
+      modTargetObersvers[i]->modulationsChanged();
+  }
+
+protected:
+
+  std::vector<ModulationTargetObserver*> modTargetObersvers;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ObservableModulationTarget)
+};
+
+
+
 
 //=================================================================================================
 

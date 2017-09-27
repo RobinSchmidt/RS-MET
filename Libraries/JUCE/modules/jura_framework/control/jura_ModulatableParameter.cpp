@@ -260,9 +260,14 @@ void ModulationManager::applyModulationsNoLock()
 void ModulationManager::addConnection(ModulationSource* source, ModulationTarget* target)
 {
   ScopedLock scopedLock(*modLock); 
-  jassert(!isConnected(source, target)); // there is already a connection between source and target
-  modulationConnections.push_back(new ModulationConnection(source, target, metaManager));
-  appendIfNotAlreadyThere(affectedTargets, target);
+
+  //// old:
+  //jassert(!isConnected(source, target)); // there is already a connection between source and target
+  //modulationConnections.push_back(new ModulationConnection(source, target, metaManager));
+  //appendIfNotAlreadyThere(affectedTargets, target);
+
+  // new:
+  addConnection(new ModulationConnection(source, target, metaManager));
 }
 
 void ModulationManager::addConnection(ModulationConnection* connection)
@@ -271,6 +276,8 @@ void ModulationManager::addConnection(ModulationConnection* connection)
   jassert(!isConnected(connection->source, connection->target)); // connection already exists
   modulationConnections.push_back(connection);
   appendIfNotAlreadyThere(affectedTargets, connection->target);
+
+  sendModulationChangeNotificationFor(connection->target); // new
 }
 
 void ModulationManager::removeConnection(ModulationSource* source, ModulationTarget* target)
@@ -552,6 +559,13 @@ void ModulationManager::updateAffectedTargetsArray()
   for(int i = 0; i < size(modulationConnections); i++)
     appendIfNotAlreadyThere(affectedTargets, modulationConnections[i]->target);
   // not sure, if this is the best (most efficient) way to do it
+}
+
+void ModulationManager::sendModulationChangeNotificationFor(ModulationTarget* target)
+{
+  ObservableModulationTarget* omt = dynamic_cast<ObservableModulationTarget*> (target);
+  if(omt != nullptr)
+    omt->sendModulationsChangedNotification();
 }
 
 //-------------------------------------------------------------------------------------------------

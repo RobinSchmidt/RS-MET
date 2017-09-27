@@ -1,7 +1,6 @@
 #ifndef jura_AutomatableWidget_h
 #define jura_AutomatableWidget_h
 
-//class rsModulationDepthSlider;
 class rsModulationConnectionWidget;
 
 /** A component for setting up the modulations of some ModulationTarget. */

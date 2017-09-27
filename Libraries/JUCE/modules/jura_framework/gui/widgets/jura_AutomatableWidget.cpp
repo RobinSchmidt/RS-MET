@@ -324,12 +324,6 @@ void AutomatableWidget::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
   if(menuThatHasChanged != rightClickPopUp)
     return;
 
-  // obsolete:
-  //RTreeViewNode *selectedItem = rightClickPopUp->getSelectedItem();
-  //if(selectedItem == nullptr)
-  //  return;
-  //int selectedIdentifier = selectedItem->getNodeIdentifier();
-
   int selectedIdentifier = rightClickPopUp->getSelectedIdentifier();
 
   if(selectedIdentifier == MODULATION_SETUP)

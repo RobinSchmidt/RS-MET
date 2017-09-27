@@ -11,9 +11,17 @@ ModSystem:
   -BUG: sometimes, with the new buttons, the wrong connection gets removed
    add A, add B, rem A, add A, rem B -> A gets removed
    ->seems fixed - but needs more testing
+   ->NOPE - it just looks like it on the gui
  -maybe implement a notification system when connectiosn are added removed
   ModulationManagerObserver: connectionWasAdded, connectionWillBeRemoved
  -maybe have a special ModulatableSlider class that shows the modulation-range
+  -it should override assignParameter, check, if the passed parameter is a ModulatableParameter and 
+   if so, figure out its ModulationManager and register itself as observer
+  -in its destructor, it should deregister itself
+  -it should implement ModulationObsverver methods such as modulationConnectionAdded, 
+   modulationConnectionRemoved
+  -or maybe it should be a ModulationTargetObserver...or ModulatableParameterObserver
+  -maybe a subclass ObservableModulationTarget
  -clean up the files
 
 
