@@ -104,7 +104,7 @@ std::vector<ModulationSource*> ModulationTarget::getConnectedSources()
     //    result.push_back(allSources[i]); }
 
     // ...but what we want instead is the connected sources to appear in the order of the 
-    // connections:
+    // connections (also, this code is more efficient):
     const std::vector<ModulationConnection*>& connections = modManager->getModulationConnections();
     for(int i = 0; i < size(connections); i++){
       if(connections[i]->target == this)

@@ -662,23 +662,24 @@ class JUCE_API ObservableModulationTarget : public ModulationTarget
 
 public:
 
+  /** Constructor */
+  ObservableModulationTarget(ModulationManager* managerToUse = nullptr) 
+    : ModulationTarget(managerToUse) {}
+
   // add de/registering functions for observers
 
   void sendModulationsChangedNotification()
   {
-    for(size_t i = 0; i < modTargetObersvers.size(); i++)
-      modTargetObersvers[i]->modulationsChanged();
+    for(size_t i = 0; i < modTargetObservers.size(); i++)
+      modTargetObservers[i]->modulationsChanged();
   }
 
 protected:
 
-  std::vector<ModulationTargetObserver*> modTargetObersvers;
+  std::vector<ModulationTargetObserver*> modTargetObservers;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ObservableModulationTarget)
 };
-
-
-
 
 //=================================================================================================
 
@@ -687,7 +688,8 @@ class AudioModule; // ModulatableParameter needs a pointer to its owning AudioMo
 /** A subclass of Parameter that is suitable as target for modulations by also being a subclass of
 ModulationTarget. */
 
-class JUCE_API ModulatableParameter : public MetaControlledParameter, public ModulationTarget
+class JUCE_API ModulatableParameter : public MetaControlledParameter, 
+  public ObservableModulationTarget
 {
 
 public:

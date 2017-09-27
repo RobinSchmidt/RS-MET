@@ -36,10 +36,10 @@ rsModulationSetup::rsModulationSetup(AutomatableWidget* widgetToModulate,
 
   updateConnectionWidgetsArray();
 
-  modManager = nullptr;
-  ModulatableParameter* mp = widgetToModulate->getModulatableParameter();
-  if(mp != nullptr)
-    modManager = mp->getModulationManager();
+  //modManager = nullptr;
+  //ModulatableParameter* mp = widgetToModulate->getModulatableParameter();
+  //if(mp != nullptr)
+  //  modManager = mp->getModulationManager();
 }
 
 rsModulationSetup::~rsModulationSetup()
