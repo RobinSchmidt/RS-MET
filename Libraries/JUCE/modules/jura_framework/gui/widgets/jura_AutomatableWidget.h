@@ -73,6 +73,7 @@ protected:
 
   AutomatableWidget* widget;         // our owner widget
   MetaParameterManager* metaManager; // used for meta-controlling modulation amounts
+  ModulationManager*    modManager;  // needed for debugging
 
   // owned widgets:
   RTextField* modulationsLabel;
