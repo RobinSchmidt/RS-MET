@@ -10,6 +10,7 @@ ModSystem:
     always remove and recreate all sliders when one is added or removed
   -BUG: sometimes, with the new buttons, the wrong connection gets removed
    add A, add B, rem A, add A, rem B -> A gets removed
+   ->seems fixed - but needs more testing
  -maybe implement a notification system when connectiosn are added removed
   ModulationManagerObserver: connectionWasAdded, connectionWillBeRemoved
  -maybe have a special ModulatableSlider class that shows the modulation-range
