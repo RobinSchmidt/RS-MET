@@ -319,5 +319,25 @@ protected:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsModulationConnectionWidget)
 };
 
+//=================================================================================================
+
+/** A slider subclass specifically for sliders that have modulatable parameters assigned. It may
+pint itself differently, depending on the modulations that are applied to its underlying 
+parameter. */
+
+class JUCE_API ModulatableSlider : public AutomatableSlider, public ModulationTargetObserver
+{
+
+public:
+
+  ModulatableSlider() {}
+  ~ModulatableSlider();
+  void modulationsChanged() override;
+  void assignParameter(Parameter* parameterToAssign) override;
+  void paint(Graphics& g) override;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulatableSlider)
+};
+
 
 #endif   

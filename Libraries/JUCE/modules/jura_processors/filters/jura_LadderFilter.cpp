@@ -509,21 +509,21 @@ LadderEditor::LadderEditor(jura::Ladder *newLadderToEdit) : AudioModuleEditor(ne
   frequencyResponseDisplay->assignParameterReso( moduleToEdit->getParameterByName("Resonance"));
   addPlot( frequencyResponseDisplay );
 
-  addWidget( cutoffSlider = new AutomatableSlider() );
+  addWidget( cutoffSlider = new ModulatableSlider() );
   cutoffSlider->assignParameter( ladderToEdit->getParameterByName("Cutoff") );
   cutoffSlider->setSliderName("Cutoff");
   cutoffSlider->setDescription("Cutoff frequency in Hz");
   cutoffSlider->setDescriptionField(infoField);
   cutoffSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
-  addWidget( resonanceSlider = new AutomatableSlider() );
+  addWidget( resonanceSlider = new ModulatableSlider() );
   resonanceSlider->assignParameter( ladderToEdit->getParameterByName("Resonance") );
   resonanceSlider->setSliderName("Resonance");
   resonanceSlider->setDescription("Amount of feedback");
   resonanceSlider->setDescriptionField(infoField);
   resonanceSlider->setStringConversionFunction(&valueToStringTotal5);
 
-  addWidget( spreadSlider = new AutomatableSlider() );
+  addWidget( spreadSlider = new ModulatableSlider() );
   spreadSlider->assignParameter( ladderToEdit->getParameterByName("StereoSpread") );
   spreadSlider->setSliderName("Spread");
   spreadSlider->setDescription("Detunes cutoff frequencies of channels");

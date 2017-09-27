@@ -520,6 +520,9 @@ public:
   /** Removes all ModulationConnections. */
   void removeAllConnections();
 
+  /** Removes the connection with given index. */
+  void removeConnection(int index);
+
   /** Resets all the range limits for all registered modulation targets to +-inf. */
   void resetAllTargetRangeLimits();
 
@@ -644,6 +647,7 @@ class JUCE_API ModulationTargetObserver
 
 public:
 
+  ModulationTargetObserver() = default;
   virtual ~ModulationTargetObserver() = default;
 
   /** Subclasses need to override this in order to repond to changes of the modulation settings of 
@@ -666,7 +670,16 @@ public:
   ObservableModulationTarget(ModulationManager* managerToUse = nullptr) 
     : ModulationTarget(managerToUse) {}
 
-  // add de/registering functions for observers
+
+  void registerModulationTargetObserver(ModulationTargetObserver* observer)
+  {
+    appendIfNotAlreadyThere(modTargetObservers, observer);
+  }
+
+  void deRegisterModulationTargetObserver(ModulationTargetObserver* observer)
+  {
+    removeFirstOccurrence(modTargetObservers, observer);
+  }
 
   void sendModulationsChangedNotification()
   {

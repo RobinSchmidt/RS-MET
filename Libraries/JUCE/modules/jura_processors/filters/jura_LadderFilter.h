@@ -190,7 +190,8 @@ protected:
 
   LadderSpectrumEditor *frequencyResponseDisplay; // rename to spectrumEditor
 
-  AutomatableSlider *cutoffSlider, *resonanceSlider, *spreadSlider;
+  //AutomatableSlider *cutoffSlider, *resonanceSlider, *spreadSlider;
+  ModulatableSlider *cutoffSlider, *resonanceSlider, *spreadSlider;
   AutomatableComboBox *modeComboBox;
   //RComboBox *modeComboBox;
   //RButton *invertButton;  

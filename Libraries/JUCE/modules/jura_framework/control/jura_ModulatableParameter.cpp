@@ -294,10 +294,7 @@ void ModulationManager::removeConnection(ModulationSource* source, ModulationTar
   for(int i = 0; i < size(modulationConnections); i++)
   {
     if(modulationConnections[i]->source == source && modulationConnections[i]->target == target)
-    {
-      delete modulationConnections[i];
-      remove(modulationConnections, i);
-    }
+      removeConnection(i);
   }
   updateAffectedTargetsArray();
   jassert(!isConnected(source, target)); // there must have been more than one connection between
@@ -311,8 +308,7 @@ void ModulationManager::removeConnectionsWith(ModulationSource* source)
   {
     if(modulationConnections[i]->source == source)
     {
-      delete modulationConnections[i];
-      remove(modulationConnections, i);
+      removeConnection(i);
       i--; // array was shrunken
     }
   }
@@ -326,8 +322,7 @@ void ModulationManager::removeConnectionsWith(ModulationTarget* target)
   {
     if(modulationConnections[i]->target == target)
     {
-      delete modulationConnections[i];
-      remove(modulationConnections, i);
+      removeConnection(i);
       i--; // array was shrunken
     }
   }
@@ -337,10 +332,19 @@ void ModulationManager::removeConnectionsWith(ModulationTarget* target)
 void ModulationManager::removeAllConnections()
 {
   ScopedLock scopedLock(*modLock); 
-  for(int i = 0; i < size(modulationConnections); i++)
-    delete modulationConnections[i];
-  modulationConnections.clear();
+  while(size(modulationConnections) > 0)
+    removeConnection(size(modulationConnections)-1);
   updateAffectedTargetsArray();
+}
+
+void ModulationManager::removeConnection(int i)
+{
+  ObservableModulationTarget* omt = 
+    dynamic_cast<ObservableModulationTarget*> (modulationConnections[i]->target);
+  delete modulationConnections[i];
+  remove(modulationConnections, i);
+  if(omt)
+    omt->sendModulationsChangedNotification();
 }
 
 void ModulationManager::resetAllTargetRangeLimits()
