@@ -49,6 +49,9 @@ public:
 
   void setNumParticles(int newNumParticles);
 
+  /** Sets the stepsize for updating the state from one iteration to the next. */
+  void setStepSize(T newStepSize) { stepSize = newStepSize; }
+
   /** Sets the constant used to scale all the gravitational forces. */
   void setGravitationalConstant(T newConstant) { cG = newConstant; }
 
