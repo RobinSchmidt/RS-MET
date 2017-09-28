@@ -1,7 +1,7 @@
 #include "GeneratorExperiments.h"
 
 void getTwoParticleTrajectories(rsParticleSystemF& ps, int N, float* x1, float* y1, float* z1,
-  float* x2, float* y2, float* z2)
+  float* x2, float* y2, float* z2, float* Ek, float* Ep, float* Et)
 {
   ps.reset();
   for(int n = 0; n < N; n++)
@@ -13,6 +13,10 @@ void getTwoParticleTrajectories(rsParticleSystemF& ps, int N, float* x1, float* 
     x2[n] = ps.particles[1].pos.x;
     y2[n] = ps.particles[1].pos.y;
     z2[n] = ps.particles[1].pos.z;
+
+    Ek[n] = ps.getKineticEnergy();
+    Ep[n] = ps.getPotentialEnergy();
+    Et[n] = ps.getTotalEnergy();
 
     ps.updateState();
   }
@@ -47,9 +51,10 @@ void particleSystem()
   ps.setStepSize(stepSize);
 
   // record trajectories:
-  float x1[N], y1[N], z1[N], x2[N], y2[N], z2[N]; // maybe record kinetic and potential energy
+  float x1[N], y1[N], z1[N], x2[N], y2[N], z2[N];  // coordinates
+  float Ek[N], Ep[N], Et[N];                       // kinetic, potential, total energy
 
-  getTwoParticleTrajectories(ps, N, x1, y1, z1, x2, y2, z2);
+  getTwoParticleTrajectories(ps, N, x1, y1, z1, x2, y2, z2, Ek, Ep, Et);
 
 
   // they initially approach each other, fly through each other and then drift apart forever
@@ -60,7 +65,8 @@ void particleSystem()
   GNUPlotter plt;
   float t[N];
   createTimeAxis(N, t, 1/stepSize);
-  plt.addDataArrays(N, t, x1, y1, z1, x2, y2, z2);
+  //plt.addDataArrays(N, t, x1, y1, z1, x2, y2, z2);
+  plt.addDataArrays(N, t, Et, Ek, Ep);
   plt.plot();
 }
 
