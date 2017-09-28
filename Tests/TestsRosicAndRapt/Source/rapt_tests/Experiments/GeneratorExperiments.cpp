@@ -65,8 +65,8 @@ void particleSystem()
   GNUPlotter plt;
   float t[N];
   createTimeAxis(N, t, 1/stepSize);
-  //plt.addDataArrays(N, t, x1, y1, z1, x2, y2, z2);
-  plt.addDataArrays(N, t, Et, Ek, Ep);
+  plt.addDataArrays(N, t, x1, y1, z1, x2, y2, z2);
+  //plt.addDataArrays(N, t, Et, Ek, Ep);
   plt.plot();
 }
 

@@ -2,7 +2,8 @@
 #define RAPT_PARTICLESYSTEM_H_INCLUDED
 
 /** Class for representing particles that can move in 3D space. Each particle is characterized at 
-each time-instant by its current position and velocity (time varying) and its mass (constant). */
+each time-instant by its current position and velocity (time varying) and its mass and charge 
+(constant). */
 
 template<class T>
 class rsParticle
