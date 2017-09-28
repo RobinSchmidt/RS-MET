@@ -23,7 +23,7 @@ void particleSystem()
   // behave as physically expected (i.e. to see, if the force euqations ae plausible)
 
   static const int N = 1000; // number of steps in the simulations
-  float stepSize = 0.01;
+  float stepSize = 0.01f;
 
   // create and set up the particle system:
   rsParticleSystemF ps(2);

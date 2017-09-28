@@ -10,6 +10,12 @@ class rsParticle
 
 public:
 
+  /** Returns the kinetic energy of this particle */
+  T getKineticEnergy() { return T(0.5) * mass * vel.getSquaredEuclideanNorm(); }
+
+  /** Returns the momentum of this particle. */
+  rsVector3D<T> getMomentum() { return mass * vel; }
+
   rsVector3D<T> pos;  // position
   rsVector3D<T> vel;  // velocity
   T mass = 1;
@@ -20,6 +26,9 @@ public:
 
 /** A class for simulating a system of particles that interact via gravitational, electric and
 magnetic forces. 
+
+References:
+ -(1) The Feynman Lectures on Physics, Vol. 1, The New Millenium Edition
 
 todo:
 -maybe include a frictional force
@@ -64,7 +73,6 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
-  /*
   T getKineticEnergy();
 
   T getPotentialEnergy();
@@ -73,8 +81,7 @@ public:
 
   rsVector3D<T> getTotalMomentum();
 
-  rsVector3D<T> getTotalAngularMomentum();
-  */
+  //rsVector3D<T> getTotalAngularMomentum();
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */

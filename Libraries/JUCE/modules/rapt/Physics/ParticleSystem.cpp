@@ -4,6 +4,8 @@ rsParticleSystem<T>::rsParticleSystem(int numParticles)
   setNumParticles(numParticles);
 }
 
+// Setup:
+
 template<class T>
 void rsParticleSystem<T>::setNumParticles(int newNumParticles)
 {
@@ -12,6 +14,52 @@ void rsParticleSystem<T>::setNumParticles(int newNumParticles)
   initialPositions.resize(newNumParticles);  
   initialVelocities.resize(newNumParticles);
 }
+
+// Inquiry:
+
+template<class T>
+T rsParticleSystem<T>::getKineticEnergy()
+{
+  T E = 0;
+  for(size_t i = 0; i < particles.size(); i++)
+    E += particles[i].getKineticEnergy();
+  return E;
+}
+
+template<class T>
+T rsParticleSystem<T>::getPotentialEnergy()
+{
+  T E = 0;
+  for(size_t i = 0; i < particles.size(); i++)
+  {
+    for(size_t j = i+1; j < particles.size(); j++)
+    {
+      // use the 2nd term in (1), Eq. 13.14
+      T r = (particles[j].pos - particles[i].pos).getEuclideanNorm(); // r_ij
+
+      // gravitational term:
+      E += -cG * particles[i].mass * particles[j].mass / r;
+
+      // electrical term (verify this - formula just inferred by analogy):
+      E +=  cE * particles[i].charge * particles[j].charge / r;
+
+      // todo: figure out, how the energy changes when we use different force-laws - use
+      // W = F * s
+    }
+  }
+  return E;
+}
+
+template<class T>
+rsVector3D<T> rsParticleSystem<T>::getTotalMomentum()
+{
+  rsVector3D<T> p;
+  for(size_t i = 0; i < particles.size(); i++)
+    p += particles[i].getMomentum();
+  return p;
+}
+
+// Processing:
 
 template<class T>
 rsVector3D<T> rsParticleSystem<T>::getForceBetween(const rsParticle<T>& p1, const rsParticle<T>& p2)
