@@ -78,17 +78,11 @@ rsVector3D<T> rsParticleSystem<T>::getForceBetween(const rsParticle<T>& p1, cons
   rsVector3D<T> r = p2.pos - p1.pos;    // vector pointing from p1 to p2
 
   //// old - physically correct:
-  //T r2  = r.getSquaredEuclideanNorm();  // squared distance between p1 and p2 == |r|^2
-  //T s   = 1 / r2;                       // reciprocal of |r|^2 - used as multiplier in various places
-  //r *= sqrt(s);                         // r is now normalized to unit length (for k=0)
+  //T d = r.getEuclideanNorm();   // distance between p1 and p2 == |r|
+  //T s = 1 / (d*d);              // reciprocal of |r|^2 - used as multiplier in various places
+  //r  /= d;                      // r is now normalized to unit length (for k=0)
 
-  //// new:
-  //T d = r.getEuclideanNorm();      // distance between p1 and p2 == |r|
-  ////T s = 1 / (k + pow(d,p));        // reciprocal of k+|r|^p - used as multiplier in various places
-  //T s = 1 / pow(k+d,p);            // maybe 1 / pow(k+d, p) is better - experiment
-  //r *= 1/(k+d);                    // r is now normalized to unit length (for k=0)
-
-  // newer:
+  // new:
   T d = r.getEuclideanNorm();        // distance between p1 and p2 == |r|
   T s = getForceScalerByDistance(d);
 
@@ -98,6 +92,7 @@ rsVector3D<T> rsParticleSystem<T>::getForceBetween(const rsParticle<T>& p1, cons
   f += s*cG * p1.mass   * p2.mass   * r;                                // gravitational force
   f -= s*cE * p1.charge * p2.charge * r;                                // electric force
   f += s*cM * p1.charge * p2.charge * cross(p1.vel, cross(p2.vel, r));  // magnetic force
+  //f += s*cM * p1.charge * p2.charge * cross(p2.vel, cross(p1.vel, r));  // or should it be this way? - seems to make no difference, but it's not generally the same
   return f;  
 
   // see here for the force equations (especially magnetic):
@@ -201,6 +196,10 @@ Questions:
 -What is a good choice for c?
 -Should c depend on the stepSize?
 -How does the new force law change the potential energy?
+
+ToDo:
+-maybe have different force laws, like Hooke's law F = k*x, where x = d - de
+ where de is the equilibrium distance - all particles try to have the same distance
 
 */
 

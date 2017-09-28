@@ -26,8 +26,8 @@ void particleSystem()
   // We simulate a simple system of two particles with unit mass and unit charge to see, if they
   // behave as physically expected (i.e. to see, if the force euqations ae plausible)
 
-  static const int N = 1000; // number of steps in the simulations
-  float stepSize = 0.01f;
+  static const int N = 5000; // number of steps in the simulations
+  float stepSize = 0.001f;
 
   // create and set up the particle system:
   rsParticleSystemF ps(2);
@@ -41,13 +41,13 @@ void particleSystem()
   // place them at (-1,0,0) and (+1,0,0) with zero velocity initially:
   ps.initialPositions[0]  = rsVector3DF(-1.0, +0.0, +0.0);
   ps.initialPositions[1]  = rsVector3DF(+1.0, -0.0, +0.0);
-  ps.initialVelocities[0] = rsVector3DF( 0.0, +0.0, -0.0);
-  ps.initialVelocities[1] = rsVector3DF( 0.0, -0.0, +0.0);
+  ps.initialVelocities[0] = rsVector3DF( 0.0, +0.2, -0.0);
+  ps.initialVelocities[1] = rsVector3DF( 0.0, +0.2, +0.0);
 
   // in a first run, we only let them interact via gravitation - they should attract each other:
-  ps.setGravitationalConstant(1.0);
+  ps.setGravitationalConstant(0.0);
   ps.setElectricConstant(0.0);
-  ps.setMagneticConstant(0.0);
+  ps.setMagneticConstant(0.5);
   ps.setStepSize(stepSize);
   ps.setForceLawExponent(2.0); // 2: inverse-square law (asymptotic)
   ps.setForceLawOffset(1.0);   // 0: non-asymptotic inverse power law
@@ -64,12 +64,29 @@ void particleSystem()
   // -> infinite force)
 
 
+  // test cross-product formula - move to unit-tests:
+  rsVector3DF test = cross(rsVector3DF(2,3,5), rsVector3DF(7,11,13)); 
+  // bool result = test == rsVector3DF(-16,9,1); // ok - cross-product is correct
+
+
   GNUPlotter plt;
   float t[N];
   createTimeAxis(N, t, 1/stepSize);
   plt.addDataArrays(N, t, x1, y1, z1, x2, y2, z2);
+  //plt.addDataArrays(N, t, x1, x2);
+  //plt.addDataArrays(N, t, y1, y2);
+  //plt.addDataArrays(N, t, z1, z2);
   //plt.addDataArrays(N, t, Et, Ek, Ep);
   plt.plot();
+
+  // Observations:
+  // -when starting at p1=(-1,0.0),p2=(+1,0,0),v1=v2=(0,0.2,0) with only magnetic forces active,
+  //  i would expect the x-coordinates converge (initially) and the y-coordinates just linearly 
+  //  increase for both partcile (and the z-coordinates stay zero) - but something weird happens
+  //  -either the magnetic force computaion is wrong, or the cross-product formula or my 
+  //   expectation is wrong
+  //  -it seems to depend on the stepsize
+  //  -maybe we should apply the stepSize to the velocity update?
 }
 
 void rayBubble()

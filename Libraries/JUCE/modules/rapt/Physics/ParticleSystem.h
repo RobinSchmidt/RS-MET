@@ -87,6 +87,8 @@ public:
   1/d^2 law - but this may lead to divisions by zero. */
   void setForceLawOffset(T newOffset) { c = newOffset; }
 
+  // makeTotalMomentumZero, makeCenterOfMassZero
+
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
@@ -98,6 +100,7 @@ public:
 
   rsVector3D<T> getTotalMomentum();
 
+  //getCenterOfMass, getTotalMass
   //rsVector3D<T> getTotalAngularMomentum();
 
   //-----------------------------------------------------------------------------------------------
