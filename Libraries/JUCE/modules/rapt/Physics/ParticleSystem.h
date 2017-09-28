@@ -103,6 +103,8 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
+  T getForceScalerByDistance(T distance);
+
   /** Computes the force that particle p1 experiences due to the presence of particle p2. */
   rsVector3D<T> getForceBetween(const rsParticle<T>& p1, const rsParticle<T>& p2);
 

@@ -62,31 +62,35 @@ rsVector3D<T> rsParticleSystem<T>::getTotalMomentum()
 // Processing:
 
 template<class T>
+T rsParticleSystem<T>::getForceScalerByDistance(T d)
+{
+  //return 1 / (d*d*d);          // physical law
+
+  return 1 / (c + pow(d,p));     // 1 / (c + d^p) ...seems stable with c=1
+  //return 1 / pow(c+d,p);         // 1 / (c + d)^p
+  //return pow((c+1)/(c+d), p);    // ((c+1)/(c+d))^p
+}
+
+template<class T>
 rsVector3D<T> rsParticleSystem<T>::getForceBetween(const rsParticle<T>& p1, const rsParticle<T>& p2)
 {
-  T k = 0;      // for physical force-law with singularity (which spoils numeric simulation)
-  //k = 20*stepSize; // test - make this a user parameter
-  k = 1.0f;
-  T p = 2.0f; // freq seems to be (roughly) inversely proportional to this
-
-  // instead of the physical inverse square force-law F = k / r^2, we may use F = k / (c+r)^p which
-  // reduces to the physical law for c=0,p=2 - allows to mitigate sigularity effects and gives
-  // more flexibility, maybe c should depend on the stepSize and/or exponent? try to figure 
-  // something out that makes the behavior more or less independent from the stepSize
-
   // precomputations:
   rsVector3D<T> r = p2.pos - p1.pos;    // vector pointing from p1 to p2
 
-  //// old - physically correct for k=0:
+  //// old - physically correct:
   //T r2  = r.getSquaredEuclideanNorm();  // squared distance between p1 and p2 == |r|^2
-  //T s   = 1 / (k + r2);                       // reciprocal of |r|^2 - used as multiplier in various places
+  //T s   = 1 / r2;                       // reciprocal of |r|^2 - used as multiplier in various places
   //r *= sqrt(s);                         // r is now normalized to unit length (for k=0)
 
-  // new:
-  T d = r.getEuclideanNorm();      // distance between p1 and p2 == |r|
-  //T s = 1 / (k + pow(d,p));        // reciprocal of k+|r|^p - used as multiplier in various places
-  T s = 1 / pow(k+d,p);            // maybe 1 / pow(k+d, p) is better - experiment
-  r *= 1/(k+d);                    // r is now normalized to unit length (for k=0)
+  //// new:
+  //T d = r.getEuclideanNorm();      // distance between p1 and p2 == |r|
+  ////T s = 1 / (k + pow(d,p));        // reciprocal of k+|r|^p - used as multiplier in various places
+  //T s = 1 / pow(k+d,p);            // maybe 1 / pow(k+d, p) is better - experiment
+  //r *= 1/(k+d);                    // r is now normalized to unit length (for k=0)
+
+  // newer:
+  T d = r.getEuclideanNorm();        // distance between p1 and p2 == |r|
+  T s = getForceScalerByDistance(d);
 
 
   // compute the 3 forces:

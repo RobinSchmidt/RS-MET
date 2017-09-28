@@ -39,16 +39,18 @@ void particleSystem()
   ps.particles[1].charge = 1.f;
 
   // place them at (-1,0,0) and (+1,0,0) with zero velocity initially:
-  ps.initialPositions[0]  = rsVector3DF(-1, 0, 0);
-  ps.initialPositions[1]  = rsVector3DF(+1, 0, 0);
-  ps.initialVelocities[0] = rsVector3DF( 0, 0, 0);
-  ps.initialVelocities[1] = rsVector3DF( 0, 0, 0);
+  ps.initialPositions[0]  = rsVector3DF(-1.0, +0.0, +0.0);
+  ps.initialPositions[1]  = rsVector3DF(+1.0, -0.0, +0.0);
+  ps.initialVelocities[0] = rsVector3DF( 0.0, +0.0, -0.0);
+  ps.initialVelocities[1] = rsVector3DF( 0.0, -0.0, +0.0);
 
   // in a first run, we only let them interact via gravitation - they should attract each other:
-  ps.setGravitationalConstant(1);
-  ps.setElectricConstant(0);
-  ps.setMagneticConstant(0);
+  ps.setGravitationalConstant(1.0);
+  ps.setElectricConstant(0.0);
+  ps.setMagneticConstant(0.0);
   ps.setStepSize(stepSize);
+  ps.setForceLawExponent(2.0); // 2: inverse-square law (asymptotic)
+  ps.setForceLawOffset(1.0);   // 0: non-asymptotic inverse power law
 
   // record trajectories:
   float x1[N], y1[N], z1[N], x2[N], y2[N], z2[N];  // coordinates
