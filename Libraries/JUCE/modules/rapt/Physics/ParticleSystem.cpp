@@ -167,7 +167,7 @@ where:
 F1:        force on particle 1 due to particle 2 (vector)
 F2:        force on particle 2 due to particle 1 (vector)
 G:         gravitational constant (scalar)
-m1, m2:    masses of the two partciles (scalars)
+m1, m2:    masses of the two particles (scalars)
 p1, p2:    positions of the two particles (vectors)
 r = p2-p1: vector from p1 to p2
 d := |r|:  Euclidean distance between the two particles (scalar)
@@ -179,13 +179,13 @@ F1 = G * m1 * m2 * rn / d^2    | use rn = r/d
 
 The nice thing about writing it like the 2nd line is that all of the distance dependency is now
 given by the 1/d^3 factor. The problem is when the distance d becomes zero. In the 1st line, we 
-wouldhave one division-by-zero when computing rn = r/d and a secodn one when dividing the whole
+would have one division-by-zero when computing rn = r/d and a second one when dividing the whole
 thing by d^2. We have isolated the problem into one single 1/d^3 factor. Now, we can tinker with 
 the function, like:
 
 F1 = G * m1 * m2 * r * f(d)
 
-when f(d) = 1/d^3, we recover the good old physical law. but we can now try different functions 
+when f(d) = 1/d^3, we recover the good old physical law. But we can now try different functions 
 like: f(d) = 1 / (c+d^p), f(d) = 1 / (c+d)^p = (1/(c+d))^p, f(d) = ((c+1)/(c+d))^p, etc.
 for some parameters c,p. If c = 0, p = 3, we get the old law. With c > 0, we can avoid 
 divisions-by-zero and with p != 3, we can have different asymptotic force-dependencies on the 

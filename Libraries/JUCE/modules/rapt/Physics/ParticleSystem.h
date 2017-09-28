@@ -71,12 +71,28 @@ public:
   /** Sets the constant used to scale all the magnetic forces. */
   void setMagneticConstant(T newConstant) { cM = newConstant; }
 
+  /** Sets the exponent, by which the force law (asymptotically) depends inversely on the 
+  distance. For example, with a value of 2, the force between two particles depends on the distance 
+  d between them (asympticically) proportionally to 1/d^2 - this is the physically correct 
+  inverse-square law. The dependence is only asymptotic, because we alos have the offsset set by
+  setForceLawOffset - if this offset is zero, the dependence is not asymptotic but exact. */
+  void setForceLawExponent(T newExponent) { p = newExponent+1; }
+    // +1 because our formulas assume that the distance d appears in the numerator, because
+    // we don't want to use the formula that uses the normalized distance vector (because the
+    // normalization itself can cause a div-by-0)
+
+  /** Sets an offset for the force-law which is mainly intended to avoid divisions-by-zero which
+  would otherwise occur when the distance between two particles becomes zero. The value should be
+  strictly positive. If you pass 0 (and the exponent is 2), you'll have the physically correct
+  1/d^2 law - but this may lead to divisions by zero. */
+  void setForceLawOffset(T newOffset) { c = newOffset; }
+
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
   T getKineticEnergy();
 
-  T getPotentialEnergy();
+  T getPotentialEnergy(); // this does not work yet
 
   T getTotalEnergy() { return getKineticEnergy() + getPotentialEnergy(); }
 
@@ -124,6 +140,9 @@ protected:
   std::vector<rsVector3D<T>> forces;
   T stepSize = T(0.01);
   T cG = 1, cE = 1, cM = 1;
+
+  T c = 0, p = 3;  // force-law parameters
+
 };
 
 #endif
