@@ -17,7 +17,7 @@ think) */
 #include "Math/Math.cpp"
 #include "Filters/Filters.cpp"
 //#include "Analysis/Analysis.cpp"
-//#include "Physics/Physics.cpp"
+#include "Physics/Physics.cpp"
 //#include "Circuits/Circuits.cpp"
 //#include "Spectral/Spectral.cpp"
 #include "Visualization/Visualization.cpp"

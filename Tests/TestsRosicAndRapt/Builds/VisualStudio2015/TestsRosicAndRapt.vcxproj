@@ -250,6 +250,12 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Modulators\Modulators.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Physics\ParticleSystem.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Physics\Physics.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Analysis.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -257,6 +263,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Math.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Misc.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Polynomial.cpp">
@@ -1572,9 +1581,12 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Math.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Modulators\Envelopes\BreakpointModulator.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Modulators\Modulators.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Physics\ParticleSystem.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Physics\Physics.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Analysis.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\ArrayFunctions.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Math.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Misc.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Polynomial.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Vector.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Graphics\AlphaMask.h"/>

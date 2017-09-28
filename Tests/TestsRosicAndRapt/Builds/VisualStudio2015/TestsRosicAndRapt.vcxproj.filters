@@ -86,6 +86,9 @@
     <Filter Include="Juce Modules\rapt\Modulators\Envelopes">
       <UniqueIdentifier>{66F5699C-5B3A-D29E-C4C6-B195C15DBA2F}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Juce Modules\rapt\Physics">
+      <UniqueIdentifier>{784E9D62-B840-9F61-61E7-184AF8312BA7}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Juce Modules\rapt\Temp">
       <UniqueIdentifier>{1077C9FE-8734-5D17-6E96-F6DB62A1D921}</UniqueIdentifier>
     </Filter>
@@ -397,6 +400,12 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Modulators\Modulators.cpp">
       <Filter>Juce Modules\rapt\Modulators</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Physics\ParticleSystem.cpp">
+      <Filter>Juce Modules\rapt\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Physics\Physics.cpp">
+      <Filter>Juce Modules\rapt\Physics</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Analysis.cpp">
       <Filter>Juce Modules\rapt\Temp</Filter>
     </ClCompile>
@@ -404,6 +413,9 @@
       <Filter>Juce Modules\rapt\Temp</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Math.cpp">
+      <Filter>Juce Modules\rapt\Temp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Misc.cpp">
       <Filter>Juce Modules\rapt\Temp</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Polynomial.cpp">
@@ -1860,6 +1872,12 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Modulators\Modulators.h">
       <Filter>Juce Modules\rapt\Modulators</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Physics\ParticleSystem.h">
+      <Filter>Juce Modules\rapt\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Physics\Physics.h">
+      <Filter>Juce Modules\rapt\Physics</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Analysis.h">
       <Filter>Juce Modules\rapt\Temp</Filter>
     </ClInclude>
@@ -1867,6 +1885,9 @@
       <Filter>Juce Modules\rapt\Temp</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Math.h">
+      <Filter>Juce Modules\rapt\Temp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Misc.h">
       <Filter>Juce Modules\rapt\Temp</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Polynomial.h">
