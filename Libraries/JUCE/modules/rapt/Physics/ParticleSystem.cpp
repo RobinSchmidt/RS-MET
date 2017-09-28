@@ -16,13 +16,22 @@ void rsParticleSystem<T>::setNumParticles(int newNumParticles)
 template<class T>
 rsVector3D<T> rsParticleSystem<T>::getForceBetween(const rsParticle<T>& p1, const rsParticle<T>& p2)
 {
+  T k = 0;      // for physical force-law with singularity (which spoils numeric simulation)
+  k = 20*stepSize; // test - make this a user parameter
+  //k = 2.0f;
+
+  // instead of the physical inverse square force-law F = k / r^2, we may use F = k / (c+r)^p which
+  // reduces to the physical law for c=0,p=2 - allows to mitigate sigularity effects and gives
+  // more flexibility, maybe c should depend on the stepSize and/or exponent? try to figure 
+  // something out that makes the behavior more or less independent from the stepSize
+
   // precomputations:
   rsVector3D<T> r = p2.pos - p1.pos;    // vector pointing from p1 to p2
   T r2  = r.getSquaredEuclideanNorm();  // squared distance between p1 and p2 == |r|^2
-  T r2i = 1 / r2;                       // reciprocal of r2 - used as multiplier in various places
+  T r2i = 1 / (k + r2);                       // reciprocal of r2 - used as multiplier in various places
   r *= sqrt(r2i);                       // r is now normalized to unit length
 
-                                        // compute the 3 forces:
+  // compute the 3 forces:
   rsVector3D<T> f;
   f += r2i*cG * p1.mass   * p2.mass   * r;                                // gravitational force
   f -= r2i*cE * p1.charge * p2.charge * r;                                // electric force

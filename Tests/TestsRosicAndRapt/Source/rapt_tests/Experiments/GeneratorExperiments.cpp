@@ -22,7 +22,8 @@ void particleSystem()
   // We simulate a simple system of two particles with unit mass and unit charge to see, if they
   // behave as physically expected (i.e. to see, if the force euqations ae plausible)
 
-  static const int N = 500; // number of steps in the simulations
+  static const int N = 1000; // number of steps in the simulations
+  float stepSize = 0.01;
 
   // create and set up the particle system:
   rsParticleSystemF ps(2);
@@ -43,7 +44,7 @@ void particleSystem()
   ps.setGravitationalConstant(1);
   ps.setElectricConstant(0);
   ps.setMagneticConstant(0);
-  ps.setStepSize(0.01);
+  ps.setStepSize(stepSize);
 
   // record trajectories:
   float x1[N], y1[N], z1[N], x2[N], y2[N], z2[N]; // maybe record kinetic and potential energy
@@ -55,7 +56,12 @@ void particleSystem()
   // i suppose, this is due to the singularity, when they are very close (division by zero
   // -> infinite force)
 
-  int dummy = 0;
+
+  GNUPlotter plt;
+  float t[N];
+  createTimeAxis(N, t, 1/stepSize);
+  plt.addDataArrays(N, t, x1, y1, z1, x2, y2, z2);
+  plt.plot();
 }
 
 void rayBubble()
