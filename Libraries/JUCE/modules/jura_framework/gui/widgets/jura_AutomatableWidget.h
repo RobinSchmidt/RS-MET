@@ -322,7 +322,7 @@ protected:
 //=================================================================================================
 
 /** A slider subclass specifically for sliders that have modulatable parameters assigned. It may
-pint itself differently, depending on the modulations that are applied to its underlying 
+paint itself differently, depending on the modulations that are applied to its underlying 
 parameter. */
 
 class JUCE_API ModulatableSlider : public AutomatableSlider, public ModulationTargetObserver
