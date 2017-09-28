@@ -12,8 +12,8 @@ public:
 
   rsVector3D<T> pos;  // position
   rsVector3D<T> vel;  // velocity
-  T mass;
-  T charge;
+  T mass = 1;
+  T charge = 1;
 };
 
 //=================================================================================================
@@ -39,7 +39,7 @@ public:
   /** \name Construction/Destruction */
 
   /** Constructor. */
-  rsParticleSystem(size_t numParticles);
+  rsParticleSystem(int numParticles);
 
   /** Destructor. */
   //~rsParticleSystem(); 
@@ -101,13 +101,17 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Misc */
 
+  /** Resets the positions and velocities of all particles to their initial values. */
   void reset();
+
+  std::vector<rsVector3D<T>> initialPositions;
+  std::vector<rsVector3D<T>> initialVelocities;
+  std::vector<rsParticle<T>> particles;
 
 protected:
 
-  std::vector<rsParticle<T>> particles;
   std::vector<rsVector3D<T>> forces;
-  T stepSize = 0.01;
+  T stepSize = T(0.01);
   T cG = 1, cE = 1, cM = 1;
 };
 

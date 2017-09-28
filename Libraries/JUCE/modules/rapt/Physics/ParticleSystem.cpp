@@ -1,5 +1,5 @@
 template<class T>
-rsParticleSystem<T>::rsParticleSystem(size_t numParticles)
+rsParticleSystem<T>::rsParticleSystem(int numParticles)
 {
   setNumParticles(numParticles);
 }
@@ -9,6 +9,8 @@ void rsParticleSystem<T>::setNumParticles(int newNumParticles)
 {
   particles.resize(newNumParticles);
   forces.resize(newNumParticles);
+  initialPositions.resize(newNumParticles);  
+  initialVelocities.resize(newNumParticles);
 }
 
 template<class T>
@@ -79,4 +81,12 @@ void rsParticleSystem<T>::updatePositions()
 {
   for(size_t i = 0; i < particles.size(); i++)
     particles[i].pos += stepSize * particles[i].vel;
+}
+
+template<class T>
+void rsParticleSystem<T>::reset()
+{
+  for(size_t i = 0; i < particles.size(); i++) {
+    particles[i].pos = initialPositions[i];
+    particles[i].vel = initialVelocities[i]; }
 }
