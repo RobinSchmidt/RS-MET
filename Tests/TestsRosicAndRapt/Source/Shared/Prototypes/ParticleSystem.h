@@ -24,10 +24,22 @@ public:
   /** Returns the Euclidean norm of this vector. */
   T getEuclideanNorm() { return sqrt(getSquaredEuclideanNorm()); }
 
+  // we need operators +,-,+=,-= that accept vectors and scalars as right operands and
+  // *,/,*=,/= that accept scalars. we also need a * operator that accepts scalars on the
+  // left
+
+
   /** The 3 cartesian coordinate values. */
   T x, y, z;
 
 };
+
+/** Computes the dot-product between two 3D vectors v and w. */
+template<class T>
+T dot(const rsVector3D<T>& v, const rsVector3D<T>& w)
+{
+  return v.x*w.x + v.y*w.y + v.z*w.z;
+}
 
 /** Computes the cross-product between two 3D vectors v and w. Here, v is the left operand. That's 
 important, because the cross-product is not commutative. Instead, we have (v*w) = -(w*v) where the

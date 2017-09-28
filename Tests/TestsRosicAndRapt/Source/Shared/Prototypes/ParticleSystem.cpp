@@ -17,8 +17,8 @@ rsVector3D<T> rsParticleSystem<T>::getForceBetween(const rsParticle<T>& p1, cons
 
   // some precomputations:
   rsVector3D<T> r = p2.pos - p1.pos;    // vector pointing from p1 to p2
-  T r2  = r.getSquaredEuclideanNorm();  // squared distance between p1 and p2
-  T r2i = 1 / r2;                       // reciprocal of r2 - used as multiplier in variosu places
+  T r2  = r.getSquaredEuclideanNorm();  // squared distance between p1 and p2 == |r|^2
+  T r2i = 1 / r2;                       // reciprocal of r2 - used as multiplier in various places
   r *= sqrt(r2i);                       // r is now normalized to unit length
 
   // compute the 3 forces:
@@ -26,12 +26,14 @@ rsVector3D<T> rsParticleSystem<T>::getForceBetween(const rsParticle<T>& p1, cons
   f += r2i*cG * p1.mass   * p2.mass   * r;                                // gravitational force
   f -= r2i*cE * p1.charge * p2.charge * r;                                // electric force
   f += r2i*cM * p1.charge * p2.charge * cross(p1.vel, cross(p2.vel, r));  // magnetic force
-
   return f;  
 
   // see here for the force equations (especially magnetic):
   // https://physics.stackexchange.com/questions/166318/magnetic-force-between-two-charged-particles
   // http://teacher.nsrl.rochester.edu/phy122/Lecture_Notes/Chapter30/chapter30.html
+
+  // todo: we need some precautions for cases when the p1 and p2 are (almost) at the same position
+  // we get division by zero in such cases (because r2 becomes 0)
 }
 
 template<class T>
