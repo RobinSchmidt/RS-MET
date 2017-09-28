@@ -3,6 +3,7 @@
 
 #include "../../Shared/Shared.h"
 
-void rayBubble();
+void particleSystem(); // move to PhysicsExperiments
+void rayBubble();      // rename to rayBouncer
 
 #endif

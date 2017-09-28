@@ -1,5 +1,11 @@
 #include "GeneratorExperiments.h"
 
+void particleSystem()
+{
+
+  int dummy = 0;
+}
+
 void rayBubble()
 {
   rsRayBouncerF rb;
