@@ -2,6 +2,7 @@
 
 void particleSystem()
 {
+  rsParticleSystemF ps(2);
 
   int dummy = 0;
 }
