@@ -2,54 +2,9 @@
 #define ParticleSystem_h
 
 #include "rapt/rapt.h"
+using namespace RAPT;
 
 /** This is just a skeleton/stub/idea for a particle system */
-
-
-
-/** Class for representing 3-dimensional vectors. */
-
-template<class T>
-class rsVector3D
-{
-
-public:
-
-  /** Constructor. Initializes coordinates with the passed values. */
-  rsVector3D(T _x = 0, T _y = 0, T _z = 0) : x(_x), y(_y), z(_z) {}
-
-  /** Returns the squared Euclidean norm of this vector. */
-  T getSquaredEuclideanNorm() { return x*x + y*y + z*z; }
-
-  /** Returns the Euclidean norm of this vector. */
-  T getEuclideanNorm() { return sqrt(getSquaredEuclideanNorm()); }
-
-  // we need operators +,-,+=,-= that accept vectors and scalars as right operands and
-  // *,/,*=,/= that accept scalars. we also need a * operator that accepts scalars on the
-  // left
-
-
-  /** The 3 cartesian coordinate values. */
-  T x, y, z;
-
-};
-
-/** Computes the dot-product between two 3D vectors v and w. */
-template<class T>
-T dot(const rsVector3D<T>& v, const rsVector3D<T>& w)
-{
-  return v.x*w.x + v.y*w.y + v.z*w.z;
-}
-
-/** Computes the cross-product between two 3D vectors v and w. Here, v is the left operand. That's 
-important, because the cross-product is not commutative. Instead, we have (v*w) = -(w*v) where the
-* symbol is used here to denote the cross-product. */
-template<class T>
-rsVector3D<T> cross(const rsVector3D<T>& v, const rsVector3D<T>& w)
-{
-  return rsVector3D<T>(v.y*w.z-v.z*w.y, v.z*w.x-v.x*w.z, v.x*w.y-v.y*w.x); 
-}
-
 
 
 /** A list of physical constants. Physical simulations may keep a pointer to an object of that type
@@ -58,6 +13,10 @@ simulation should keep the constants it actually needs as members.
 
 References:
  -https://physics.nist.gov/cuu/Constants/Table/allascii.txt
+
+todo:
+ -move to rapt library 
+ -add more constants
 */
 
 template<class T>
@@ -111,7 +70,16 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name setup:
 
+  void setNumParticles(int newNumParticles);
 
+  /** Sets the constant used to scale all the gravitational forces. */
+  void setGravitationalConstant(T newConstant) { cG = newConstant; }
+
+  /** Sets the constant used to scale all the electric forces. */
+  void setElectricConstant(T newConstant); { cE = newConstant; }
+
+  /** Sets the constant used to scale all the magnetic forces. */
+  void setMagneticConstant(T newConstant); { cM = newConstant; }
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry:
@@ -131,7 +99,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Processing:
 
-  /** Computes the force between the two particle p1, p2. */
+  /** Computes the force that particle p1 experiences due to the presence of particle p2. */
   rsVector3D<T> getForceBetween(const rsParticle<T>& p1, const rsParticle<T>& p2);
 
   /** Computes the forces that act on each particle and stores them in our "forces" member. */
@@ -166,7 +134,8 @@ protected:
 
   std::vector<rsParticle<T>> particles;
   std::vector<rsVector3D<T>> forces;
-  T stepSize;
+  T stepSize = 0.01;
+  T cG = 1, cE = 1, cM = 1;
 
 
 };

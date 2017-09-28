@@ -9,13 +9,7 @@ rsParticleSystem<T>::rsParticleSystem(size_t numParticles)
 template<class T>
 rsVector3D<T> rsParticleSystem<T>::getForceBetween(const rsParticle<T>& p1, const rsParticle<T>& p2)
 {
-  // gravitational, electric and magnetic constant (force multipliers):
-  const T cG = 1;
-  const T cE = 1;
-  const T cM = 1;
-  // todo: make members and user adjustable
-
-  // some precomputations:
+  // precomputations:
   rsVector3D<T> r = p2.pos - p1.pos;    // vector pointing from p1 to p2
   T r2  = r.getSquaredEuclideanNorm();  // squared distance between p1 and p2 == |r|^2
   T r2i = 1 / r2;                       // reciprocal of r2 - used as multiplier in various places
@@ -34,6 +28,14 @@ rsVector3D<T> rsParticleSystem<T>::getForceBetween(const rsParticle<T>& p1, cons
 
   // todo: we need some precautions for cases when the p1 and p2 are (almost) at the same position
   // we get division by zero in such cases (because r2 becomes 0)
+
+  // todo: check, if the magnetic force law has the correct sign (later in the stackexchange 
+  // discussion, there's a formula that has the cross product in different order)
+  // ...we should really check for all formulas, if we compute the forces on p1 due to p2 (as 
+  // desired) or the other way around (which is the same value with negative sign)
+
+  // maybe allow for (non-physical) general inverse power force laws instead of the usual inverse
+  // square law
 }
 
 template<class T>
@@ -71,5 +73,5 @@ template<class T>
 void rsParticleSystem<T>::updatePositions()
 {
   for(size_t i = 0; i < particles.size(); i++)
-    particles[i].pos += stepSize * partciles[i].vel;
+    particles[i].pos += stepSize * particles[i].vel;
 }

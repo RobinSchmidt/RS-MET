@@ -14,6 +14,7 @@ namespace RAPT
 
 #include "Types/Matrix.cpp"
 #include "Types/Polynomial.cpp"
+#include "Types/Vector.cpp"
 
 #include "Geometry/Line2D.cpp"
 #include "Geometry/ConicSection.cpp"

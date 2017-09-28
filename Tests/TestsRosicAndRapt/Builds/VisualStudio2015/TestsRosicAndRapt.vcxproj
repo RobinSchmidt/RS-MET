@@ -238,6 +238,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Types\Polynomial.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Types\Vector.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Math.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -1565,6 +1568,7 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\Statistics.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Types\Matrix.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Types\Polynomial.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Types\Vector.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Math.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Modulators\Envelopes\BreakpointModulator.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Modulators\Modulators.h"/>
