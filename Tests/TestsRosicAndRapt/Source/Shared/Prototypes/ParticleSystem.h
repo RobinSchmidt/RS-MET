@@ -49,8 +49,18 @@ public:
 
 };
 
+//=================================================================================================
 
-/**  */
+/** A class for simulating a system of particles that interact via gravitational, electric and
+magnetic forces. 
+
+todo:
+ -maybe include a frictional force
+ -maybe, when running the system in an iteration, regularly check the total energy and momentum
+  ->this should remain constant (unless there is friction) - if it isn't, there might either be a 
+  bug or numerical errors. in the 2nd case, re-adjust the speeds such that the initial energy
+  is regained
+*/
 
 template<class T>
 class rsParticleSystem
@@ -76,10 +86,10 @@ public:
   void setGravitationalConstant(T newConstant) { cG = newConstant; }
 
   /** Sets the constant used to scale all the electric forces. */
-  void setElectricConstant(T newConstant); { cE = newConstant; }
+  void setElectricConstant(T newConstant) { cE = newConstant; }
 
   /** Sets the constant used to scale all the magnetic forces. */
-  void setMagneticConstant(T newConstant); { cM = newConstant; }
+  void setMagneticConstant(T newConstant) { cM = newConstant; }
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry:
@@ -91,9 +101,9 @@ public:
 
   T getTotalEnergy() { return getKineticEnergy() + getPotentialEnergy(); }
 
-  T getTotalMomentum();
+  rsVector3D<T> getTotalMomentum();
 
-  T getTotalAngularMomentum();
+  rsVector3D<T> getTotalAngularMomentum();
   */
 
   //-----------------------------------------------------------------------------------------------

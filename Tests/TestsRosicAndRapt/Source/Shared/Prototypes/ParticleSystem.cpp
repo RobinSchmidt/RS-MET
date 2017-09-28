@@ -3,7 +3,14 @@
 template<class T>
 rsParticleSystem<T>::rsParticleSystem(size_t numParticles)
 {
+  setNumParticles(numParticles);
+}
 
+template<class T>
+void rsParticleSystem<T>::setNumParticles(int newNumParticles)
+{
+  particles.resize(newNumParticles);
+  forces.resize(newNumParticles);
 }
 
 template<class T>
