@@ -91,8 +91,15 @@ rsVector3D<T> rsParticleSystem<T>::getForceBetween(const rsParticle<T>& p1, cons
   rsVector3D<T> f;
   f += s*cG * p1.mass   * p2.mass   * r;                                // gravitational force
   f -= s*cE * p1.charge * p2.charge * r;                                // electric force
-  f += s*cM * p1.charge * p2.charge * cross(p1.vel, cross(p2.vel, r));  // magnetic force
+
+  // magnetic force is still experimental:
+  //f += s*cM * p1.charge * p2.charge * cross(p1.vel, cross(p2.vel, r));  // magnetic force
   //f += s*cM * p1.charge * p2.charge * cross(p2.vel, cross(p1.vel, r));  // or should it be this way? - seems to make no difference, but it's not generally the same
+  f -= s*cM * p1.charge * p2.charge * cross(p1.vel, cross(p2.vel, r));  
+    // minus sign gives qualitatively more reasonable results: two particles heading off parallel 
+    // into the same direction which are only subject to the magnetic force, attract each other
+    // as said in "Ein Jahr für die Physik", page 120
+
   return f;  
 
   // see here for the force equations (especially magnetic):
@@ -139,14 +146,14 @@ template<class T>
 void rsParticleSystem<T>::updateVelocities()
 {
   for(size_t i = 0; i < particles.size(); i++)
-    particles[i].vel += forces[i] / particles[i].mass;
+    particles[i].vel += stepSize * forces[i] / particles[i].mass;
 }
 
 template<class T>
 void rsParticleSystem<T>::updatePositions()
 {
   for(size_t i = 0; i < particles.size(); i++)
-    particles[i].pos += stepSize * particles[i].vel;
+    particles[i].pos += particles[i].vel;
 }
 
 template<class T>
