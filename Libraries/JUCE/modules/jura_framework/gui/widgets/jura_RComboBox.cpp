@@ -195,6 +195,12 @@ void RComboBox::mouseDown(const MouseEvent& e)
 {
   if( isEnabled() && e.eventComponent == this )
   {
+    if (assignedParameter != NULL && e.mods.isCommandDown())
+    {
+      selectItemByIndex((int)assignedParameter->getDefaultValue(), true);
+      return;
+    }
+
     if( dontOpenPopUpOnNextMouseClick == false )
       openPopUp();
     dontOpenPopUpOnNextMouseClick = false;
