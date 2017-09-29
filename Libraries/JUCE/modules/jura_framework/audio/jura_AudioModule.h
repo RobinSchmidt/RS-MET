@@ -372,21 +372,27 @@ public:
   /** Handles a generic MidiMessage. */
   virtual void handleMidiMessage(MidiMessage message);
 
-  /** Triggers a note-on event. */
+  /** Triggered by a note-on event. */
   virtual void noteOn(int noteNumber, int velocity) {}
 
-  /** Triggers a note-off event. */
+  /** Triggered by a note-off event. */
   virtual void noteOff(int noteNumber) {}
 
-  /** Triggers an all-notes-off event. */
+  /** Triggered by an all-notes-off event. */
   virtual void allNotesOff() {}
 
   /** Overrides setMidiController which is inherited from both base-classes - and we simply we pass
   through the function call to both of them here. */
   virtual void setMidiController(int controllerNumber, float controllerValue);
 
-  /** Triggers a pitch-bend event. */
+  /** Triggered by a pitch-bend event. */
   virtual void setPitchBend(int pitchBendValue);
+
+  /** Triggered by an aftertouch event. */
+  virtual void setAfterTouch(int afterTouchValue) {}
+
+  /** Triggered by a channel pressure event. */
+  virtual void setChannelPressure(int channelPressureValue) {}
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioModuleWithMidiIn)
 };
