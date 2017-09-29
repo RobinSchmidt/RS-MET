@@ -1,3 +1,26 @@
+
+template<class T>
+rsVector3D<T> rsParticle<T>::getGravitationalFieldAt(rsVector3D<T> p, T cG = 1)
+{
+  rsVector3D<T> r = p - pos;     // vector from this particle to p
+  T d = r.getEuclideanNorm();    // distance
+  r /= d;                        // r is now normalized to unit length
+  return -(cG*mass/(d*d)) * r;   // inverse square law
+  // see https://en.wikipedia.org/wiki/Gravitational_field
+}
+
+template<class T>
+rsVector3D<T> rsParticle<T>::getElecricFieldAt(rsVector3D<T> p, T cE = 1)
+{
+  rsVector3D<T> r = p - pos;    // vector from this particle to p
+  T d = r.getEuclideanNorm();   // distance
+  r /= d;                       // r is now normalized to unit length
+  return (cE*charge/(d*d)) * r; // inverse square law
+  // see (3), page 88, Eq. 7.3
+}
+
+//-------------------------------------------------------------------------------------------------
+
 template<class T>
 rsParticleSystem<T>::rsParticleSystem(int numParticles)
 {
@@ -98,7 +121,13 @@ rsVector3D<T> rsParticleSystem<T>::getForceBetween(const rsParticle<T>& p1, cons
   f -= s*cM * p1.charge * p2.charge * cross(p1.vel, cross(p2.vel, r));  
     // minus sign gives qualitatively more reasonable results: two particles heading off parallel 
     // into the same direction which are only subject to the magnetic force, attract each other
-    // as said in "Ein Jahr für die Physik", page 120
+    // as said in "Ein Jahr für die Physik", page 120 ...nope, the minus sign is alright: the 
+    // formula in the book is for the force on p2 due to p1 (we need the force on p1 due to p2)
+    // ...but the formula also has v2 x (v1 x r) and we do v1 x (v2 x r) ...how can we figure out
+    // if the order of the cross-products is right? (it doesn't seem to make a difference for two
+    // particles heading off in the same direction, but i think, in general, it may make a 
+    // difference
+
 
   return f;  
 
@@ -208,5 +237,19 @@ ToDo:
 -maybe have different force laws, like Hooke's law F = k*x, where x = d - de
  where de is the equilibrium distance - all particles try to have the same distance
 
+Generally, the force on a particle p1 due to another particle p2 is given by:
+
+F1 = m1*G2 + c1*E2 + c1*(v1 x B2)   | x denotes the cross-product
+where:
+F1: force on particle 1 (vector)
+m1: mass of p1 (scalar)
+G2: gravitational field at p1 caused by p2 (vector)
+c1: charge of p1 (scalar)
+E2: electric field at p1 caused by p2 (vector)
+v1: velocity of p1 (vector)
+B2: magnetic field at p1 caused by p2 (vector)
+We should have functions in rsParticle to compute the gravitational, electric and magnetic
+fields at some position vector p. Then, we can compute the forces via the formula above and compare
+to the results in rsParticle system in a unit test.
 */
 

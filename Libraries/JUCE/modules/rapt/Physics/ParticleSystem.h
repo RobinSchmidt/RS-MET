@@ -17,6 +17,15 @@ public:
   /** Returns the momentum of this particle. */
   rsVector3D<T> getMomentum() { return mass * vel; }
 
+  /** Returns the gravitational field at position vector p caused by this particle. */
+  rsVector3D<T> getGravitationalFieldAt(rsVector3D<T> p, T gravitationalConstant = 1);
+
+  /** Returns the electric field at position vector p caused by this particle. */
+  rsVector3D<T> getElecricFieldAt(rsVector3D<T> p, T electricConstant = 1);
+
+  /** Returns the magnetic field at position vector p caused by this particle. */
+  rsVector3D<T> getMagneticFieldAt(rsVector3D<T> p, T magneticConstant = 1);
+
   rsVector3D<T> pos;  // position
   rsVector3D<T> vel;  // velocity
   T mass = 1;
@@ -30,6 +39,8 @@ magnetic forces.
 
 References:
  -(1) The Feynman Lectures on Physics, Vol. 1, The New Millenium Edition
+ -(2) The Feynman Lectures on Physics, Vol. 2, The New Millenium Edition
+ -(3) Ein Jahr für die Physik (Thomsen), 2. Aufl.
 
 todo:
 -maybe include a frictional force
