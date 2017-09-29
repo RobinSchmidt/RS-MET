@@ -20,12 +20,19 @@ typedef RAPT::rsEllipse<float> rsEllipseF;
 typedef RAPT::rsSinCosTable<float> rsSinCosTableF;
 typedef RAPT::rsSinCosTable<double> rsSinCosTableD;
 
+typedef RAPT::rsVector3D<float> rsVector3DF;
+
+
+
 // Filters:
 typedef RAPT::rsSmoothingFilter<float, float> rsSmoothingFilterFF;
 typedef RAPT::rsLadderFilter<float, float> rsLadderFilterFF;
 typedef RAPT::rsPhasorFilter<float, float> rsPhasorFilterFF;
 typedef RAPT::rsPhasorStateMapper<float> rsPhasorStateMapperF;
 typedef RAPT::rsStateVariableFilter<float, float> rsStateVariableFilterFF; 
+
+// Physics:
+typedef RAPT::rsParticleSystem<float> rsParticleSystemF;
 
 // Generators:
 typedef RAPT::rsRayBouncer<float> rsRayBouncerF;

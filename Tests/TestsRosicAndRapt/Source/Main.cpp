@@ -58,7 +58,10 @@ int main(int argc, char* argv[])
   //ladderResonanceManipulation();
   //nonUniformMovingAverage();
   //smoothingFilterOrders();
-  smoothingFilterTransitionTimes();
+  //smoothingFilterTransitionTimes();
+
+  // Physics:
+  particleSystem(); 
 
   // Generators:
   //rayBubble();

@@ -39,10 +39,12 @@ template RAPT::rsEllipse<float>;
 template RAPT::rsNormalizedSigmoids<float>;
 template RAPT::rsParametricSigmoid<float>;
 template RAPT::rsScaledAndShiftedSigmoid<float>;
-template RAPT::rsPositiveBellFunctions<float>;    // get rid of rs-prefixes
+template RAPT::rsPositiveBellFunctions<float>;
 template RAPT::rsParametricBellFunction<float>;
 template RAPT::rsSinCosTable<float>;
 template RAPT::rsSinCosTable<double>;
+template RAPT::rsVector3D<float>;
+
 
 template void RAPT::rsStatistics::linearRegression(int N, float* x, float* y, float& a, float& b);
 template float RAPT::rsStatistics::proportionalRegression(int N, float* x, float* y);
@@ -53,6 +55,9 @@ template RAPT::rsLadderFilter<float, float>;
 template RAPT::rsPhasorFilter<float, float>;
 template RAPT::rsPhasorStateMapper<float>;
 template RAPT::rsStateVariableFilter<float, float>; 
+
+// Physics:
+template RAPT::rsParticleSystem<float>;
 
 // Generators:
 template RAPT::rsRayBouncer<float>;

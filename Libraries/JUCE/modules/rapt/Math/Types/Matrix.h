@@ -104,4 +104,7 @@ public:
 
   // matrix/vector functions:
 
+  // todo: make some special-case classes for 2x2, 3x3 matrices which can use simpler algorithms
+  // for some of the computations
+
 #endif

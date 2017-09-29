@@ -1,0 +1,267 @@
+template<class T>
+rsVector3D<T> rsParticle<T>::getGravitationalFieldAt(rsVector3D<T> p, T cG)
+{
+  rsVector3D<T> r = p - pos;     // vector from this particle to p
+  T d = r.getEuclideanNorm();    // distance
+  r /= d;                        // r is now normalized to unit length
+  return -(cG*mass/(d*d)) * r;   // inverse square law
+  // see https://en.wikipedia.org/wiki/Gravitational_field
+}
+
+template<class T>
+rsVector3D<T> rsParticle<T>::getElecricFieldAt(rsVector3D<T> p, T cE)
+{
+  rsVector3D<T> r = p - pos;    // vector from this particle to p
+  T d = r.getEuclideanNorm();   // distance
+  r /= d;                       // r is now normalized to unit length
+  return (cE*charge/(d*d)) * r; // inverse square law
+  // see (3), page 88, Eq. 7.3
+}
+
+template<class T>
+rsVector3D<T> rsParticle<T>::getMagneticFieldAt(rsVector3D<T> p, T cM)
+{
+  rsVector3D<T> r = p - pos;                // vector from this particle to p
+  T d = r.getEuclideanNorm();               // distance
+  r /= d;                                   // r is now normalized to unit length
+  return (cM*charge/(d*d)) * cross(vel, r); // inverse square law
+  // see http://www.phys.uri.edu/gerhard/PHY204/tsl210.pdf
+}
+
+// a lot of duplicated code among these 3 functions (only the last line is different), maybe 
+// factor out the common code
+
+//-------------------------------------------------------------------------------------------------
+
+template<class T>
+rsParticleSystem<T>::rsParticleSystem(int numParticles)
+{
+  setNumParticles(numParticles);
+}
+
+// Setup:
+
+template<class T>
+void rsParticleSystem<T>::setNumParticles(int newNumParticles)
+{
+  particles.resize(newNumParticles);
+  forces.resize(newNumParticles);
+  initialPositions.resize(newNumParticles);  
+  initialVelocities.resize(newNumParticles);
+}
+
+// Inquiry:
+
+template<class T>
+T rsParticleSystem<T>::getKineticEnergy()
+{
+  T E = 0;
+  for(size_t i = 0; i < particles.size(); i++)
+    E += particles[i].getKineticEnergy();
+  return E;
+}
+
+template<class T>
+T rsParticleSystem<T>::getPotentialEnergy()
+{
+  T E = 0;
+  for(size_t i = 0; i < particles.size(); i++)
+  {
+    for(size_t j = i+1; j < particles.size(); j++)
+    {
+      // use the 2nd term in (1), Eq. 13.14
+      T r = (particles[j].pos - particles[i].pos).getEuclideanNorm(); // r_ij
+
+      // gravitational term:
+      E += -cG * particles[i].mass * particles[j].mass / r;
+
+      // electrical term (verify this - formula just inferred by analogy):
+      E +=  cE * particles[i].charge * particles[j].charge / r;
+
+      // todo: figure out, how the energy changes when we use different force-laws - use
+      // W = F * s
+    }
+  }
+  return E;
+}
+
+template<class T>
+rsVector3D<T> rsParticleSystem<T>::getTotalMomentum()
+{
+  rsVector3D<T> p;
+  for(size_t i = 0; i < particles.size(); i++)
+    p += particles[i].getMomentum();
+  return p;
+}
+
+// Processing:
+
+template<class T>
+T rsParticleSystem<T>::getForceScalerByDistance(T d)
+{
+  //return 1 / (d*d*d);          // physical law
+
+  return 1 / (c + pow(d,p));     // 1 / (c + d^p) ...seems stable with c=1
+  //return 1 / pow(c+d,p);         // 1 / (c + d)^p
+  //return pow((c+1)/(c+d), p);    // ((c+1)/(c+d))^p
+}
+
+template<class T>
+rsVector3D<T> rsParticleSystem<T>::getForceBetween(const rsParticle<T>& p1, const rsParticle<T>& p2)
+{
+  // precomputations:
+  rsVector3D<T> r = p2.pos - p1.pos;    // vector pointing from p1 to p2
+
+  //// old - physically correct:
+  //T d = r.getEuclideanNorm();   // distance between p1 and p2 == |r|
+  //T s = 1 / (d*d);              // reciprocal of |r|^2 - used as multiplier in various places
+  //r  /= d;                      // r is now normalized to unit length (for k=0)
+
+  // new:
+  T d = r.getEuclideanNorm();        // distance between p1 and p2 == |r|
+  T s = getForceScalerByDistance(d);
+
+
+  // compute the 3 forces:
+  rsVector3D<T> f;
+  f += s*cG * p1.mass   * p2.mass   * r;                                // gravitational force
+  f -= s*cE * p1.charge * p2.charge * r;                                // electric force
+
+  // magnetic force is still experimental:
+  //f += s*cM * p1.charge * p2.charge * cross(p1.vel, cross(p2.vel, r));  // magnetic force
+  //f += s*cM * p1.charge * p2.charge * cross(p2.vel, cross(p1.vel, r));  // or should it be this way? - seems to make no difference, but it's not generally the same
+  f -= s*cM * p1.charge * p2.charge * cross(p1.vel, cross(p2.vel, r));  
+    // minus sign gives qualitatively more reasonable results: two particles heading off parallel 
+    // into the same direction which are only subject to the magnetic force, attract each other
+    // as said in "Ein Jahr für die Physik", page 120 ...nope, the minus sign is alright: the 
+    // formula in the book is for the force on p2 due to p1 (we need the force on p1 due to p2)
+    // ...but the formula also has v2 x (v1 x r) and we do v1 x (v2 x r) ...how can we figure out
+    // if the order of the cross-products is right? (it doesn't seem to make a difference for two
+    // particles heading off in the same direction, but i think, in general, it may make a 
+    // difference
+
+
+  return f;  
+
+  // see here for the force equations (especially magnetic):
+  // https://physics.stackexchange.com/questions/166318/magnetic-force-between-two-charged-particles
+  // http://teacher.nsrl.rochester.edu/phy122/Lecture_Notes/Chapter30/chapter30.html
+
+  // todo: we need some precautions for cases when the p1 and p2 are (almost) at the same position
+  // we get division by zero in such cases (because r2 becomes 0)
+
+  // todo: check, if the magnetic force law has the correct sign (later in the stackexchange 
+  // discussion, there's a formula that has the cross product in different order)
+  // ...we should really check for all formulas, if we compute the forces on p1 due to p2 (as 
+  // desired) or the other way around (which is the same value with negative sign)
+
+  // maybe allow for (non-physical) general inverse power force laws instead of the usual inverse
+  // square law
+}
+
+template<class T>
+void rsParticleSystem<T>::updateForces()
+{
+  size_t N = particles.size();
+  size_t i, j;
+
+  for(i = 0; i < N; i++)
+    forces[i] = 0;
+
+  //// naive:
+  //for(i = 0; i < N; i++){
+  //  for(j = 0; j < N; j++){
+  //    if(i != j) forces[i] += getForceBetween(particles[i], particles[j]); }}
+
+  // optimized, using force(j, i) = -force(i, j):
+  for(i = 0; i < N; i++){
+    for(j = i+1; j < N; j++){
+      rsVector3D<T> f = getForceBetween(particles[i], particles[j]);
+      forces[i] += f;
+      forces[j] -= f; }}
+
+  // todo: test, if both loops give same results (up to roundoff error)
+}
+
+template<class T>
+void rsParticleSystem<T>::updateVelocities()
+{
+  for(size_t i = 0; i < particles.size(); i++)
+    particles[i].vel += stepSize * forces[i] / particles[i].mass;
+}
+
+template<class T>
+void rsParticleSystem<T>::updatePositions()
+{
+  for(size_t i = 0; i < particles.size(); i++)
+    particles[i].pos += particles[i].vel;
+}
+
+template<class T>
+void rsParticleSystem<T>::reset()
+{
+  for(size_t i = 0; i < particles.size(); i++) {
+    particles[i].pos = initialPositions[i];
+    particles[i].vel = initialVelocities[i]; }
+}
+
+
+/*
+The gravitational law is often expressed as:
+
+F1 = -F2 = G * m1 * m2 * rn / |r|^2  
+where: 
+F1:        force on particle 1 due to particle 2 (vector)
+F2:        force on particle 2 due to particle 1 (vector)
+G:         gravitational constant (scalar)
+m1, m2:    masses of the two particles (scalars)
+p1, p2:    positions of the two particles (vectors)
+r = p2-p1: vector from p1 to p2
+d := |r|:  Euclidean distance between the two particles (scalar)
+rn = r/d:  normalized (unit length) direction vector from p1 to p2 (vector)
+
+It can now also be written as:
+F1 = G * m1 * m2 * rn / d^2    | use rn = r/d
+   = G * m1 * m2 * r  / d^3 
+
+The nice thing about writing it like the 2nd line is that all of the distance dependency is now
+given by the 1/d^3 factor. The problem is when the distance d becomes zero. In the 1st line, we 
+would have one division-by-zero when computing rn = r/d and a second one when dividing the whole
+thing by d^2. We have isolated the problem into one single 1/d^3 factor. Now, we can tinker with 
+the function, like:
+
+F1 = G * m1 * m2 * r * f(d)
+
+when f(d) = 1/d^3, we recover the good old physical law. But we can now try different functions 
+like: f(d) = 1 / (c+d^p), f(d) = 1 / (c+d)^p = (1/(c+d))^p, f(d) = ((c+1)/(c+d))^p, etc.
+for some parameters c,p. If c = 0, p = 3, we get the old law. With c > 0, we can avoid 
+divisions-by-zero and with p != 3, we can have different asymptotic force-dependencies on the 
+distance. The asymptotic dependence is given by d * f(d) which reduces to d/d^3 = 1/d^2 for
+c = 0, p = 3.
+
+Questions: 
+-Which of the above formulas is best?
+-What is a good choice for c?
+-Should c depend on the stepSize?
+-How does the new force law change the potential energy?
+
+ToDo:
+-maybe have different force laws, like Hooke's law F = k*x, where x = d - de
+ where de is the equilibrium distance - all particles try to have the same distance
+
+Generally, the force on a particle p1 due to another particle p2 is given by:
+
+F1 = m1*G2 + c1*E2 + c1*(v1 x B2)   | x denotes the cross-product
+where:
+F1: force on particle 1 (vector)
+m1: mass of p1 (scalar)
+G2: gravitational field at p1 caused by p2 (vector)
+c1: charge of p1 (scalar)
+E2: electric field at p1 caused by p2 (vector)
+v1: velocity of p1 (vector)
+B2: magnetic field at p1 caused by p2 (vector)
+We should have functions in rsParticle to compute the gravitational, electric and magnetic
+fields at some position vector p. Then, we can compute the forces via the formula above and compare
+to the results in rsParticle system in a unit test.
+*/
+
