@@ -1,6 +1,5 @@
-
 template<class T>
-rsVector3D<T> rsParticle<T>::getGravitationalFieldAt(rsVector3D<T> p, T cG = 1)
+rsVector3D<T> rsParticle<T>::getGravitationalFieldAt(rsVector3D<T> p, T cG)
 {
   rsVector3D<T> r = p - pos;     // vector from this particle to p
   T d = r.getEuclideanNorm();    // distance
@@ -10,7 +9,7 @@ rsVector3D<T> rsParticle<T>::getGravitationalFieldAt(rsVector3D<T> p, T cG = 1)
 }
 
 template<class T>
-rsVector3D<T> rsParticle<T>::getElecricFieldAt(rsVector3D<T> p, T cE = 1)
+rsVector3D<T> rsParticle<T>::getElecricFieldAt(rsVector3D<T> p, T cE)
 {
   rsVector3D<T> r = p - pos;    // vector from this particle to p
   T d = r.getEuclideanNorm();   // distance
@@ -18,6 +17,19 @@ rsVector3D<T> rsParticle<T>::getElecricFieldAt(rsVector3D<T> p, T cE = 1)
   return (cE*charge/(d*d)) * r; // inverse square law
   // see (3), page 88, Eq. 7.3
 }
+
+template<class T>
+rsVector3D<T> rsParticle<T>::getMagneticFieldAt(rsVector3D<T> p, T cM)
+{
+  rsVector3D<T> r = p - pos;                // vector from this particle to p
+  T d = r.getEuclideanNorm();               // distance
+  r /= d;                                   // r is now normalized to unit length
+  return (cM*charge/(d*d)) * cross(vel, r); // inverse square law
+  // see http://www.phys.uri.edu/gerhard/PHY204/tsl210.pdf
+}
+
+// a lot of duplicated code among these 3 functions (only the last line is different), maybe 
+// factor out the common code
 
 //-------------------------------------------------------------------------------------------------
 
