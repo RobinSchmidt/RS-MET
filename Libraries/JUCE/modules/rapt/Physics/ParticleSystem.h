@@ -17,7 +17,9 @@ public:
   /** Returns the momentum of this particle. */
   rsVector3D<T> getMomentum() { return mass * vel; }
 
-  /** Returns the gravitational field at position vector p caused by this particle. */
+  /** Returns the gravitational field at position vector p caused by this particle. Multiplying a 
+  test mass (assumed to be at the given position) with the field gives the force on the test 
+  mass. */
   rsVector3D<T> getGravitationalFieldAt(rsVector3D<T> p, T gravitationalConstant = 1);
 
   /** Returns the electric field at position vector p caused by this particle. */
@@ -25,6 +27,20 @@ public:
 
   /** Returns the magnetic field at position vector p caused by this particle. */
   rsVector3D<T> getMagneticFieldAt(rsVector3D<T> p, T magneticConstant = 1);
+
+  /** Returns the gravitational potential at position vector p due to this particle. The potential 
+  is a scalar field whose negative gradient gives the gravitational (vector-) field. Multiplying 
+  the potential with a test-mass gives the potential energy of the test-mass. */
+  T getGravitationalPotentialAt(rsVector3D<T> p, T gravitationalConstant = 1);
+
+  /** Returns the electric potential at position vector p due to this particle. The potential is
+  a scalar field whose negative gradient gives the electrical field. Multiplying the potential with
+  a test-charge gives the potential energy of the test-charge. */
+  T getElectricPotentialAt(rsVector3D<T> p, T electricConstant = 1);
+
+  // todo: write function for magnetic potential (this is vector valued), figure out, if there's 
+  // something like magnetic potential energy, have functions to compute potential energies of 
+  // test-particles (passed as parameter)
 
   rsVector3D<T> pos;  // position
   rsVector3D<T> vel;  // velocity
@@ -41,6 +57,8 @@ References:
  -(1) The Feynman Lectures on Physics, Vol. 1, The New Millenium Edition
  -(2) The Feynman Lectures on Physics, Vol. 2, The New Millenium Edition
  -(3) Ein Jahr für die Physik (Thomsen), 2. Aufl.
+ -(4) Classical Mechanics - The Theoretical Minimum (Susskind)
+
 
 todo:
 -maybe include a frictional force
@@ -155,9 +173,8 @@ protected:
 
   std::vector<rsVector3D<T>> forces;
   T stepSize = T(0.01);
-  T cG = 1, cE = 1, cM = 1;
-
-  T c = 0, p = 3;  // force-law parameters
+  T cG = 1, cE = 1, cM = 1; // gravitational, electric, magnetic constants
+  T c = 0, p = 3;           // force-by-distance-law parameters
 
 };
 
