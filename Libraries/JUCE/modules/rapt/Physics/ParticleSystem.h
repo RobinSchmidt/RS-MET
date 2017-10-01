@@ -3,7 +3,15 @@
 
 /** Class for representing particles that can move in 3D space. Each particle is characterized at 
 each time-instant by its current position and velocity (time varying) and its mass and charge 
-(constant). */
+(constant). 
+
+References:
+-(1) The Feynman Lectures on Physics, Vol. 1, The New Millenium Edition
+-(2) The Feynman Lectures on Physics, Vol. 2, The New Millenium Edition
+-(3) Ein Jahr für die Physik (Thomsen), 2. Aufl.
+-(4) Classical Mechanics - The Theoretical Minimum (Susskind)
+
+*/
 
 template<class T>
 class rsParticle
@@ -17,7 +25,9 @@ public:
   /** Returns the momentum of this particle. */
   rsVector3D<T> getMomentum() { return mass * vel; }
 
-  /** Returns the gravitational field at position vector p caused by this particle. */
+  /** Returns the gravitational field at position vector p caused by this particle. Multiplying a 
+  test mass (assumed to be at the given position) with the field gives the force on the test 
+  mass. */
   rsVector3D<T> getGravitationalFieldAt(rsVector3D<T> p, T gravitationalConstant = 1);
 
   /** Returns the electric field at position vector p caused by this particle. */
@@ -25,6 +35,26 @@ public:
 
   /** Returns the magnetic field at position vector p caused by this particle. */
   rsVector3D<T> getMagneticFieldAt(rsVector3D<T> p, T magneticConstant = 1);
+
+  /** Returns the gravitational potential at position vector p due to this particle. The potential 
+  is a scalar field whose negative gradient gives the gravitational (vector-) field. Multiplying 
+  the potential with a test-mass (assumed to be at the given position) gives the potential energy 
+  of the test-mass. */
+  T getGravitationalPotentialAt(rsVector3D<T> p, T gravitationalConstant = 1);
+
+  /** Returns the electric potential at position vector p due to this particle. The potential is
+  a scalar field whose negative gradient gives the electrical field. Multiplying the potential with
+  a test-charge (assumed to be at the given position) gives the potential energy of the
+  test-charge. */
+  T getElectricPotentialAt(rsVector3D<T> p, T electricConstant = 1);
+
+  // todo: write function for magnetic potential (this is vector valued), figure out, if there's 
+  // something like magnetic potential energy, have functions to compute potential energies of 
+  // test-particles (passed as parameter)
+  // see https://en.wikipedia.org/wiki/Li%C3%A9nard%E2%80%93Wiechert_potential
+  // or (2), Eq. 15.24 for the magnetic vector potential and Eq. 15.20 for magnetic potential 
+  // energy -> replace current density j in these formulas by charge * vel and the integrals can be 
+  // ignored because we just look at one single particle (?)...stuff to figure out...
 
   rsVector3D<T> pos;  // position
   rsVector3D<T> vel;  // velocity
@@ -36,11 +66,6 @@ public:
 
 /** A class for simulating a system of particles that interact via gravitational, electric and
 magnetic forces. 
-
-References:
- -(1) The Feynman Lectures on Physics, Vol. 1, The New Millenium Edition
- -(2) The Feynman Lectures on Physics, Vol. 2, The New Millenium Edition
- -(3) Ein Jahr für die Physik (Thomsen), 2. Aufl.
 
 todo:
 -maybe include a frictional force
@@ -155,9 +180,8 @@ protected:
 
   std::vector<rsVector3D<T>> forces;
   T stepSize = T(0.01);
-  T cG = 1, cE = 1, cM = 1;
-
-  T c = 0, p = 3;  // force-law parameters
+  T cG = 1, cE = 1, cM = 1; // gravitational, electric, magnetic constants
+  T c = 0, p = 3;           // force-by-distance-law parameters
 
 };
 

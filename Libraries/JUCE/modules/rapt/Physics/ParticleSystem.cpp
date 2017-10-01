@@ -31,6 +31,24 @@ rsVector3D<T> rsParticle<T>::getMagneticFieldAt(rsVector3D<T> p, T cM)
 // a lot of duplicated code among these 3 functions (only the last line is different), maybe 
 // factor out the common code
 
+template<class T>
+T rsParticle<T>::getGravitationalPotentialAt(rsVector3D<T> p, T cG)
+{
+  rsVector3D<T> r = p - pos;
+  T d = r.getEuclideanNorm();
+  return -cG*mass/d;
+  // see https://en.wikipedia.org/wiki/Gravitational_potential#Mathematical_form
+}
+
+template<class T>
+T rsParticle<T>::getElectricPotentialAt(rsVector3D<T> p, T cE)
+{
+  rsVector3D<T> r = p - pos;
+  T d = r.getEuclideanNorm();
+  return cE*charge/d;
+  // see (3), page 96, Eq. 7.19
+}
+
 //-------------------------------------------------------------------------------------------------
 
 template<class T>
@@ -64,6 +82,9 @@ T rsParticleSystem<T>::getKineticEnergy()
 template<class T>
 T rsParticleSystem<T>::getPotentialEnergy()
 {
+  // This ist still incorrect. In particuar, it doesn't take into account our tweaks to the 
+  // force-law. I think, to do so, we have to express potetial energy as integral of the force.
+  // see (4), page 96
   T E = 0;
   for(size_t i = 0; i < particles.size(); i++)
   {
@@ -101,9 +122,9 @@ T rsParticleSystem<T>::getForceScalerByDistance(T d)
 {
   //return 1 / (d*d*d);          // physical law
 
-  return 1 / (c + pow(d,p));     // 1 / (c + d^p) ...seems stable with c=1
-  //return 1 / pow(c+d,p);         // 1 / (c + d)^p
-  //return pow((c+1)/(c+d), p);    // ((c+1)/(c+d))^p
+  return 1 / (c + pow(d,p));     // 1 / (c + d^p) ...seems stable with c=1, limit (d=0): 1/c
+  //return 1 / pow(c+d,p);         // 1 / (c + d)^p, limit: 1/c^p
+  //return pow((c+1)/(c+d), p);    // ((c+1)/(c+d))^p, limit: ((c+1)/c)^p
 }
 
 template<class T>
@@ -207,6 +228,8 @@ void rsParticleSystem<T>::reset()
 
 
 /*
+Physical Background:
+
 The gravitational law is often expressed as:
 
 F1 = -F2 = G * m1 * m2 * rn / |r|^2  
@@ -249,7 +272,7 @@ ToDo:
 -maybe have different force laws, like Hooke's law F = k*x, where x = d - de
  where de is the equilibrium distance - all particles try to have the same distance
 
-Generally, the force on a particle p1 due to another particle p2 is given by:
+Generally, the force on a particle p1 due to another particle p2 can be expressed by fields like:
 
 F1 = m1*G2 + c1*E2 + c1*(v1 x B2)   | x denotes the cross-product
 where:

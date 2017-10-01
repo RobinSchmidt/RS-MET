@@ -455,11 +455,17 @@
     <Filter Include="Juce Modules\rapt\Math\Misc">
       <UniqueIdentifier>{DEEB57E5-E46E-1D4B-3CE9-8685142BFFC9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Juce Modules\rapt\Math\Types">
+      <UniqueIdentifier>{B938E14E-1310-4394-37B8-FFACEF07E0CB}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Juce Modules\rapt\Modulators">
       <UniqueIdentifier>{D353E128-7658-EE9C-03D4-8FA6D6884FAC}</UniqueIdentifier>
     </Filter>
     <Filter Include="Juce Modules\rapt\Modulators\Envelopes">
       <UniqueIdentifier>{66F5699C-5B3A-D29E-C4C6-B195C15DBA2F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\rapt\Physics">
+      <UniqueIdentifier>{784E9D62-B840-9F61-61E7-184AF8312BA7}</UniqueIdentifier>
     </Filter>
     <Filter Include="Juce Modules\rapt\Temp">
       <UniqueIdentifier>{1077C9FE-8734-5D17-6E96-F6DB62A1D921}</UniqueIdentifier>
@@ -2740,6 +2746,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Basic\OnePoleFilter.cpp">
       <Filter>Juce Modules\rapt\Filters\Basic</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Basic\SmoothingFilter - Copy.cpp">
+      <Filter>Juce Modules\rapt\Filters\Basic</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Basic\SmoothingFilter.cpp">
       <Filter>Juce Modules\rapt\Filters\Basic</Filter>
     </ClCompile>
@@ -2767,6 +2776,18 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\BellFunctions.cpp">
       <Filter>Juce Modules\rapt\Math\Functions</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\ComplexFunctions.cpp">
+      <Filter>Juce Modules\rapt\Math\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\FunctionIterators.cpp">
+      <Filter>Juce Modules\rapt\Math\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\IntegerFunctions.cpp">
+      <Filter>Juce Modules\rapt\Math\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\RealFunctions.cpp">
+      <Filter>Juce Modules\rapt\Math\Functions</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\Sigmoids.cpp">
       <Filter>Juce Modules\rapt\Math\Functions</Filter>
     </ClCompile>
@@ -2785,6 +2806,15 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\Statistics.cpp">
       <Filter>Juce Modules\rapt\Math\Misc</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Types\Matrix.cpp">
+      <Filter>Juce Modules\rapt\Math\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Types\Polynomial.cpp">
+      <Filter>Juce Modules\rapt\Math\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Types\Vector.cpp">
+      <Filter>Juce Modules\rapt\Math\Types</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Math.cpp">
       <Filter>Juce Modules\rapt\Math</Filter>
     </ClCompile>
@@ -2793,6 +2823,12 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Modulators\Modulators.cpp">
       <Filter>Juce Modules\rapt\Modulators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Physics\ParticleSystem.cpp">
+      <Filter>Juce Modules\rapt\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Physics\Physics.cpp">
+      <Filter>Juce Modules\rapt\Physics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Analysis.cpp">
       <Filter>Juce Modules\rapt\Temp</Filter>
@@ -2803,7 +2839,7 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Math.cpp">
       <Filter>Juce Modules\rapt\Temp</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Matrix.cpp">
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Misc.cpp">
       <Filter>Juce Modules\rapt\Temp</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Polynomial.cpp">
@@ -6516,6 +6552,9 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Basic\OnePoleFilter.h">
       <Filter>Juce Modules\rapt\Filters\Basic</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Basic\SmoothingFilter - Copy.h">
+      <Filter>Juce Modules\rapt\Filters\Basic</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Basic\SmoothingFilter.h">
       <Filter>Juce Modules\rapt\Filters\Basic</Filter>
     </ClInclude>
@@ -6543,7 +6582,22 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\BellFunctions.h">
       <Filter>Juce Modules\rapt\Math\Functions</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\ComplexFunctions.h">
+      <Filter>Juce Modules\rapt\Math\Functions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\FunctionIterators.h">
+      <Filter>Juce Modules\rapt\Math\Functions</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\FunctionObjects.h">
+      <Filter>Juce Modules\rapt\Math\Functions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\IntegerFunctions.h">
+      <Filter>Juce Modules\rapt\Math\Functions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\MoebiusTransform.h">
+      <Filter>Juce Modules\rapt\Math\Functions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\RealFunctions.h">
       <Filter>Juce Modules\rapt\Math\Functions</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\Sigmoids.h">
@@ -6564,6 +6618,15 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\Statistics.h">
       <Filter>Juce Modules\rapt\Math\Misc</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Types\Matrix.h">
+      <Filter>Juce Modules\rapt\Math\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Types\Polynomial.h">
+      <Filter>Juce Modules\rapt\Math\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Types\Vector.h">
+      <Filter>Juce Modules\rapt\Math\Types</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Math.h">
       <Filter>Juce Modules\rapt\Math</Filter>
     </ClInclude>
@@ -6572,6 +6635,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Modulators\Modulators.h">
       <Filter>Juce Modules\rapt\Modulators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Physics\ParticleSystem.h">
+      <Filter>Juce Modules\rapt\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Physics\Physics.h">
+      <Filter>Juce Modules\rapt\Physics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Analysis.h">
       <Filter>Juce Modules\rapt\Temp</Filter>
@@ -6582,7 +6651,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Math.h">
       <Filter>Juce Modules\rapt\Temp</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Matrix.h">
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Misc.h">
       <Filter>Juce Modules\rapt\Temp</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Polynomial.h">
