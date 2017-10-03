@@ -89,6 +89,12 @@ public:
   are defined in the Parameter. */
   virtual void assignParameter(Parameter* parameterToAssign);
 
+  /** Sets the maximum width and height for the popup menu that appears on clicking. */
+  virtual void setMaxPopUpSize(int newMaxWidth, int newMaxHeight)
+  {
+    maxPopUpWidth = newMaxWidth; maxPopUpHeight = newMaxHeight;
+  }
+
   //-----------------------------------------------------------------------------------------------
   // inquiry:
 
@@ -155,6 +161,8 @@ protected:
   juce::Array<RComboBoxObserver*> comboBoxObservers;
 
   bool dontOpenPopUpOnNextMouseClick;
+
+  int maxPopUpWidth = INT_MAX, maxPopUpHeight = INT_MAX;
 
 private:
 

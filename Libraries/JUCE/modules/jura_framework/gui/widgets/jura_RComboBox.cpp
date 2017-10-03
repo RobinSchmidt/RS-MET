@@ -226,10 +226,13 @@ void RComboBox::sendComboBoxChangeNotifications()
 
 void RComboBox::openPopUp()
 {
-  popUpMenu->setSize(getWidth(), popUpMenu->getRequiredHeight(true));
+  int w = jmin(maxPopUpWidth,  getWidth());
+  int h = jmin(maxPopUpHeight, popUpMenu->getRequiredHeight(true));
+
+  popUpMenu->setSize(w, h);
     // maybe introduce a max-height or something - it's strange but if don't set the size here, the popup appears black
   //popUpMenu->showAttachedTo(this, true, RPopUpComponent::BELOW, getWidth(), popUpMenu->getRequiredHeight(), 0, -outlineThickness);
-  popUpMenu->show(true, RPopUpComponent::BELOW, getWidth(), popUpMenu->getRequiredHeight(true), 0, -outlineThickness);
+  popUpMenu->show(true, RPopUpComponent::BELOW, w, h, 0, -outlineThickness);
 }
 
 void RComboBox::closePopUp()
