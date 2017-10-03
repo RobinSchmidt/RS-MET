@@ -325,7 +325,7 @@ void RSlider::mouseDrag(const MouseEvent& e)
   //double x = scale * e.getDistanceFromDragStartX();
   if( isEnabled() )
   {
-    if( !e.mods.isRightButtonDown() /*&& !e.mods.isCommandDown()*/ )
+    if( !e.mods.isRightButtonDown() && !e.mods.isCommandDown() )
     {
       //double x = e.getMouseDownX() / (double)getWidth();   // in 0..1
 
