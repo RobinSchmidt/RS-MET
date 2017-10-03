@@ -45,8 +45,17 @@ T rsParticle<T>::getElectricPotentialAt(rsVector3D<T> p, T cE)
 {
   rsVector3D<T> r = p - pos;
   T d = r.getEuclideanNorm();
-  return cE*charge/d;
-  // see (3), page 96, Eq. 7.19
+  return cE*charge/d;         
+  // (3), page 96, Eq. 7.19
+}
+
+template<class T>
+rsVector3D<T> rsParticle<T>::getMagneticPotentialAt(rsVector3D<T> p, T cM)
+{
+  rsVector3D<T> r = p - pos;
+  T d = r.getEuclideanNorm();
+  return cM*charge*vel/d; 
+  // (2), page 15.8, Eq. 15.24 (with j = charge*vel, integral can be ignored)
 }
 
 //-------------------------------------------------------------------------------------------------

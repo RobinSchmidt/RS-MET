@@ -39,7 +39,7 @@ public:
   /** Returns the gravitational potential at position vector p due to this particle. The potential 
   is a scalar field whose negative gradient gives the gravitational (vector-) field. Multiplying 
   the potential with a test-mass (assumed to be at the given position) gives the potential energy 
-  of the test-mass. */
+  of the test-mass (...hmm...well...up to a factor of 2 and only in static situations). */
   T getGravitationalPotentialAt(rsVector3D<T> p, T gravitationalConstant = 1);
 
   /** Returns the electric potential at position vector p due to this particle. The potential is
@@ -47,6 +47,20 @@ public:
   a test-charge (assumed to be at the given position) gives the potential energy of the
   test-charge. */
   T getElectricPotentialAt(rsVector3D<T> p, T electricConstant = 1);
+
+  /** Returns the magnetic potential at position vector p due to this particle. The magnetic 
+  potential is a vector field whose curl gives the magnetic field. */
+  rsVector3D<T> getMagneticPotentialAt(rsVector3D<T> p, T magneticConstant = 1);
+
+
+
+  T getGravitationalEnergy(const rsParticle<T>& p);
+
+  T getElectricEnergy(const rsParticle<T>& p);
+
+  T getMagneticEnergy(const rsParticle<T>& p);
+
+
 
   // todo: write function for magnetic potential (this is vector valued), figure out, if there's 
   // something like magnetic potential energy, have functions to compute potential energies of 
