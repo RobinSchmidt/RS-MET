@@ -112,7 +112,8 @@ T rsParticleSystem<T>::getKineticEnergy()
   T E = 0;
   for(size_t i = 0; i < particles.size(); i++)
     E += particles[i].getKineticEnergy();
-  return E;
+  //return E;
+  return E/stepSize; // plots suggest that we need to scale it that way
 }
 
 template<class T>
@@ -142,7 +143,8 @@ T rsParticleSystem<T>::getMagneticPotentialEnergy()
   for(size_t i = 0; i < particles.size(); i++)
     for(size_t j = i+1; j < particles.size(); j++)
       E += particles[i].getMagneticEnergy(particles[j], cM);
-  return E;
+  //return E;
+  return E/stepSize; // plots suggest that we need to scale it that way
 }
 
 template<class T>
