@@ -15,7 +15,7 @@ rsVector3D<T> rsParticle<T>::getElecricFieldAt(rsVector3D<T> p, T cE)
   T d = r.getEuclideanNorm();   // distance
   r /= d;                       // r is now normalized to unit length
   return (cE*charge/(d*d)) * r; // inverse square law
-  // see (3), page 88, Eq. 7.3
+  // see (3), page 88, Eq. 7.3 - true only for static fields
 }
 
 template<class T>
@@ -26,6 +26,7 @@ rsVector3D<T> rsParticle<T>::getMagneticFieldAt(rsVector3D<T> p, T cM)
   r /= d;                                   // r is now normalized to unit length
   return (cM*charge/(d*d)) * cross(vel, r); // inverse square law
   // see http://www.phys.uri.edu/gerhard/PHY204/tsl210.pdf
+  // true only for static fields
 }
 
 // a lot of duplicated code among these 3 functions (only the last line is different), maybe 
@@ -56,6 +57,32 @@ rsVector3D<T> rsParticle<T>::getMagneticPotentialAt(rsVector3D<T> p, T cM)
   T d = r.getEuclideanNorm();
   return cM*charge*vel/d; 
   // (2), page 15.8, Eq. 15.24 (with j = charge*vel, integral can be ignored)
+}
+
+template<class T>
+T rsParticle<T>::getGravitationalEnergy(const rsParticle<T>& p, T cG)
+{
+  T potential = getGravitationalPotentialAt(p.pos, cG);
+  return potential * p.mass; // maybe * 0.5
+  // 0.5, because we assign one half to one particle and the other half to the other
+  // ...naah...we don't use this convention here
+}
+
+template<class T>
+T rsParticle<T>::getElectricEnergy(const rsParticle<T>& p, T cE)
+{
+  T potential = getElectricPotentialAt(p.pos, cE);
+  return potential * p.charge; // (2), page 8.10, Eq. 8.28 or page 15.7, Eq. 15.21
+  // we don't use the 0.5 factor, we assign all energy to passed particle p instead of distributing
+  // it between p and this equally
+}
+
+template<class T>
+T rsParticle<T>::getMagneticEnergy(const rsParticle<T>& p, T cM)
+{
+  rsVector3D<T> potential = getMagneticPotentialAt(p.pos, cM);
+  return p.charge * dot(p.vel, potential); // (2), page 15.6, Eq. 15.20
+  // factor 0.5 left out, see comments above
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -89,8 +116,44 @@ T rsParticleSystem<T>::getKineticEnergy()
 }
 
 template<class T>
+T rsParticleSystem<T>::getGravitationalPotentialEnergy()
+{
+  T E = 0;
+  for(size_t i = 0; i < particles.size(); i++)
+    for(size_t j = i+1; j < particles.size(); j++)
+      E += particles[i].getGravitationalEnergy(particles[j], cG);
+  return E;
+}
+
+template<class T>
+T rsParticleSystem<T>::getElectricPotentialEnergy()
+{
+  T E = 0;
+  for(size_t i = 0; i < particles.size(); i++)
+    for(size_t j = i+1; j < particles.size(); j++)
+      E += particles[i].getElectricEnergy(particles[j], cE);
+  return E;
+}
+
+template<class T>
+T rsParticleSystem<T>::getMagneticPotentialEnergy()
+{
+  T E = 0;
+  for(size_t i = 0; i < particles.size(); i++)
+    for(size_t j = i+1; j < particles.size(); j++)
+      E += particles[i].getMagneticEnergy(particles[j], cM);
+  return E;
+}
+
+template<class T>
 T rsParticleSystem<T>::getPotentialEnergy()
 {
+  return getGravitationalPotentialEnergy() // preliminary - uses 1/d^2 force law
+    + getElectricPotentialEnergy() 
+    + getMagneticPotentialEnergy();
+
+
+  /*
   // This ist still incorrect. In particuar, it doesn't take into account our tweaks to the 
   // force-law. I think, to do so, we have to express potetial energy as integral of the force.
   // see (4), page 96
@@ -109,10 +172,11 @@ T rsParticleSystem<T>::getPotentialEnergy()
       E +=  cE * particles[i].charge * particles[j].charge / r;
 
       // todo: figure out, how the energy changes when we use different force-laws - use
-      // W = F * s
+      // W = F * s ..or W = integral over F ds
     }
   }
   return E;
+  */
 }
 
 template<class T>

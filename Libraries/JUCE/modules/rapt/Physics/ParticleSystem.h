@@ -49,17 +49,28 @@ public:
   T getElectricPotentialAt(rsVector3D<T> p, T electricConstant = 1);
 
   /** Returns the magnetic potential at position vector p due to this particle. The magnetic 
-  potential is a vector field whose curl gives the magnetic field. */
+  potential is a vector field whose curl gives the magnetic field. the vector potential is not 
+  uniquely determined - you can add any vector field with zero curl and still get the same magnetic 
+  field. Curl-free vector fields can be expressed as gradient of some scalar field, so the vector 
+  potential is determined only up to a gradient of a scalar field. Here, we choose the gradient 
+  field to be zero. */
   rsVector3D<T> getMagneticPotentialAt(rsVector3D<T> p, T magneticConstant = 1);
 
 
+  /** Returns the gravitational potential energy of the passed particle p in the field of this 
+  particle. */
+  T getGravitationalEnergy(const rsParticle<T>& p, T gravitationalConstant = 1);
 
-  T getGravitationalEnergy(const rsParticle<T>& p);
+  /** Returns the electrical potential energy of the passed particle p in the field of this 
+  particle. */
+  T getElectricEnergy(const rsParticle<T>& p, T electricConstant = 1);
 
-  T getElectricEnergy(const rsParticle<T>& p);
-
-  T getMagneticEnergy(const rsParticle<T>& p);
-
+  /** Returns the magnetic potential energy of the passed particle p in the field of this 
+  particle. */
+  T getMagneticEnergy(const rsParticle<T>& p, T magneticConstant = 1);
+  // todo: verify these formulas....they are supposed to hold up only in static situations (see 
+  // (2), page 15.7 at the top)...maybe there are also formulas that work for dynmaic situations? 
+  // ..try to .figure out...see (2), page 15.15
 
 
   // todo: write function for magnetic potential (this is vector valued), figure out, if there's 
@@ -146,6 +157,12 @@ public:
   // \name Inquiry
 
   T getKineticEnergy();
+
+  T getGravitationalPotentialEnergy();
+
+  T getElectricPotentialEnergy();
+
+  T getMagneticPotentialEnergy();
 
   T getPotentialEnergy(); // this does not work yet
 
