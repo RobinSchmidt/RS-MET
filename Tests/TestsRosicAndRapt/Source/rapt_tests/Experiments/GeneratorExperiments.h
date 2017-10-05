@@ -3,7 +3,10 @@
 
 #include "../../Shared/Shared.h"
 
-void particleSystem(); // move to PhysicsExperiments
+void particleForceDistanceLaw();
+void particleSystem();            // move to PhysicsExperiments
+
+
 void rayBubble();      // rename to rayBouncer
 
 #endif

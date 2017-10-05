@@ -203,6 +203,12 @@ T rsParticleSystem<T>::getForceScalerByDistance(T d)
 }
 
 template<class T>
+T rsParticleSystem<T>::getForceByDistance(T d)
+{
+  return d * getForceScalerByDistance(d);
+}
+
+template<class T>
 rsVector3D<T> rsParticleSystem<T>::getForceBetween(const rsParticle<T>& p1, const rsParticle<T>& p2)
 {
   // precomputations:

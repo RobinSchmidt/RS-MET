@@ -1,5 +1,35 @@
 #include "GeneratorExperiments.h"
 
+void particleForceDistanceLaw()
+{
+  // Plots the force vs the distance of the rsPartcielSystem class for various choices of the
+  // parameters.
+
+  rsParticleSystemF ps(1);
+  ps.setForceLawExponent(2);
+  ps.setForceLawOffset(0.001);
+
+  static const int N = 1000;
+  static const int numExponents = 7;
+  float exponents[numExponents] = { -3, -2, -1, 0, 1, 2, 3 };
+
+  float dMin = 0;
+  float dMax = 2;
+  float d[N];
+  float f[numExponents][N];
+  ArrayTools::rsFillWithRangeLinear(d, N, dMin, dMax);
+  for(int p = 0; p < numExponents; p++)
+  {
+    ps.setForceLawExponent(exponents[p]);
+    for(int n = 0; n < N; n++)
+      f[p][n] = ps.getForceByDistance(d[n]);
+  }
+
+  GNUPlotter plt;
+  plt.addDataArrays(N, d, f[0], f[1], f[2], f[3], f[4], f[5], f[6]);
+  plt.plot();
+}
+
 void getTwoParticleTrajectories(rsParticleSystemF& ps, int N, float* x1, float* y1, float* z1,
   float* x2, float* y2, float* z2, float* Ek, float* Ep, float* Et, float* Eg, float* Ee, 
   float* Em)

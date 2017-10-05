@@ -176,7 +176,14 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
+  /** Returns a scaler for the force based on the distance d. The complete ditance-to-force law 
+  will be the value returned by that function times the distance itself (this is, so we can use 
+  formulas with unnormalized difference vectors - which have the distance in the numerator, 
+  too). */
   T getForceScalerByDistance(T distance);
+
+  /** Returns the force for a given distance. Mainly meant for making plots. */
+  T getForceByDistance(T distance);
 
   /** Computes the force that particle p1 experiences due to the presence of particle p2. */
   rsVector3D<T> getForceBetween(const rsParticle<T>& p1, const rsParticle<T>& p2);
