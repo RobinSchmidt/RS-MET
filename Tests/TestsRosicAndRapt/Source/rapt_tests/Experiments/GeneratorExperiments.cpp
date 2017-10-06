@@ -7,11 +7,13 @@ void particleForceDistanceLaw()
 
   rsParticleSystemF ps(1);
   ps.setForceLawExponent(2);
-  ps.setForceLawOffset(0.001);
+  //ps.setForceLawOffset(0.1);
 
   static const int N = 1000;
   static const int numExponents = 7;
   float exponents[numExponents] = { -3, -2, -1, 0, 1, 2, 3 };
+  float size1 = 0.01;
+  float size2 = 0.01;
 
   float dMin = 0;
   float dMax = 2;
@@ -22,12 +24,38 @@ void particleForceDistanceLaw()
   {
     ps.setForceLawExponent(exponents[p]);
     for(int n = 0; n < N; n++)
-      f[p][n] = ps.getForceByDistance(d[n]);
+      f[p][n] = ps.getForceByDistance(d[n], size1, size2);
   }
 
   GNUPlotter plt;
   plt.addDataArrays(N, d, f[0], f[1], f[2], f[3], f[4], f[5], f[6]);
   plt.plot();
+
+  // hmm...somehow the force-distance laws currently implemented are not really good. Ideally, we 
+  // would like the law to satisfy:
+  // f(d=0) = y0 (y0: user parameter)
+  // f(d=1) = y1 (a1: another user parameter)
+  // f(d->inf) -> f^p (p: power, also user parameter, asymptote should work also for p < 0)
+  // for y0 = inf, y1 = 1, p = -2, the physically correct (for gravitaion, etc) inverse-square law
+  // should come out
+
+  // try: f(d) = (a+d)^p, 1/(a + d^-p), a / (b + d^-p)
+
+  // or maybe the function f(d) = d / (c + d^-p) that we currently effectively use is not so bad
+  // it may correspond to cloud-like particles that exert no force on each other when they are at
+  // the same location
+
+  // for wolfram: derivative of x / (c + x^p) with respect to x
+  // finds also the location where the derivative is 0, evaluating f(x) at that location gives the
+  // maximum, solving for c gives c in terms of a desired force-limit
+
+  // maybe give each particle a size and then use f = d / (size1 + size2 + d^p) - that corresponds 
+  // to a mental model where each particle is a spherically symmetric cloud of matter, the clouds
+  // can peneterate and fall through each other
+  // for the force of a uniform cloud, see section 5.7 here:
+  // http://www.feynmanlectures.caltech.edu/II_05.html
+  // the function above is qualitatively similar bur more smooth, i think (verify)
+
 }
 
 void getTwoParticleTrajectories(rsParticleSystemF& ps, int N, float* x1, float* y1, float* z1,
@@ -67,11 +95,14 @@ void particleSystem()
   // create and set up the particle system:
   rsParticleSystemF ps(2);
 
-  // both particles have unit mass and unit charge:
+  // both particles have unit mass, charge and size:
   ps.particles[0].mass   = 1.f;
   ps.particles[0].charge = 1.f;
+  ps.particles[0].size   = 1.f;
   ps.particles[1].mass   = 1.f;
   ps.particles[1].charge = 1.f;
+  ps.particles[1].size   = 1.f;
+
 
   // place them at (-1,0,0) and (+1,0,0) with zero velocity initially:
   ps.initialPositions[0]  = rsVector3DF(-0.5, +0.0, +0.0);
@@ -85,7 +116,7 @@ void particleSystem()
   ps.setMagneticConstant(0.2);
   ps.setStepSize(stepSize);
   ps.setForceLawExponent(2.0); // 2: inverse-square law (asymptotic), 0: force distance-independent
-  ps.setForceLawOffset(1.0);   // 0: non-asymptotic inverse power law
+  //ps.setForceLawOffset(1.0);   // 0: non-asymptotic inverse power law
 
   // record trajectories and energies:
   float x1[N], y1[N], z1[N], x2[N], y2[N], z2[N];  // coordinates

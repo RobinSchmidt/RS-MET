@@ -83,8 +83,10 @@ public:
 
   rsVector3D<T> pos;  // position
   rsVector3D<T> vel;  // velocity
-  T mass = 1;
+  T mass   = 1;
   T charge = 1;
+  T size   = 1;       // to avoid force singularities
+  // maybe have some kind of spin / angular-velocity (a vector)
 };
 
 //=================================================================================================
@@ -149,7 +151,7 @@ public:
   would otherwise occur when the distance between two particles becomes zero. The value should be
   strictly positive. If you pass 0 (and the exponent is 2), you'll have the physically correct
   1/d^2 law - but this may lead to divisions by zero. */
-  void setForceLawOffset(T newOffset) { c = newOffset; }
+  //void setForceLawOffset(T newOffset) { c = newOffset; }
 
   // makeTotalMomentumZero, makeCenterOfMassZero
 
@@ -180,10 +182,10 @@ public:
   will be the value returned by that function times the distance itself (this is, so we can use 
   formulas with unnormalized difference vectors - which have the distance in the numerator, 
   too). */
-  T getForceScalerByDistance(T distance);
+  T getForceScalerByDistance(T distance, T size1, T size2);
 
   /** Returns the force for a given distance. Mainly meant for making plots. */
-  T getForceByDistance(T distance);
+  T getForceByDistance(T distance, T size1, T size2);
 
   /** Computes the force that particle p1 experiences due to the presence of particle p2. */
   rsVector3D<T> getForceBetween(const rsParticle<T>& p1, const rsParticle<T>& p2);
@@ -222,7 +224,7 @@ protected:
   std::vector<rsVector3D<T>> forces;
   T stepSize = T(0.01);
   T cG = 1, cE = 1, cM = 1; // gravitational, electric, magnetic constants
-  T c = 0, p = 3;           // force-by-distance-law parameters
+  T p = 3;                  // force-by-distance-law exponent/power
 
 };
 

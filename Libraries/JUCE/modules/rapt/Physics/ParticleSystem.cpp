@@ -193,19 +193,24 @@ rsVector3D<T> rsParticleSystem<T>::getTotalMomentum()
 // Processing:
 
 template<class T>
-T rsParticleSystem<T>::getForceScalerByDistance(T d)
+T rsParticleSystem<T>::getForceScalerByDistance(T d, T size1, T size2)
 {
   //return 1 / (d*d*d);          // physical law
 
-  return 1 / (c + pow(d,p));     // 1 / (c + d^p) ...seems stable with c=1, limit (d=0): 1/c
+  //return 1 / (c + pow(d,p));     // 1 / (c + d^p) ...seems stable with c=1, limit (d=0): 1/c
   //return 1 / pow(c+d,p);         // 1 / (c + d)^p, limit: 1/c^p
   //return pow((c+1)/(c+d), p);    // ((c+1)/(c+d))^p, limit: ((c+1)/c)^p
+
+  return (1 + size1 + size2) / (size1 + size2 + pow(d,p)); 
+  //return 1 / (size1 + size2 + pow(d,p)); 
+  //return 1 / (max(size1 + size2, pow(d,p))); 
+  //return 1 / (max(size1,  size2, pow(d,p))); 
 }
 
 template<class T>
-T rsParticleSystem<T>::getForceByDistance(T d)
+T rsParticleSystem<T>::getForceByDistance(T d, T size1, T size2)
 {
-  return d * getForceScalerByDistance(d);
+  return d * getForceScalerByDistance(d, size1, size2);
 }
 
 template<class T>
@@ -221,7 +226,7 @@ rsVector3D<T> rsParticleSystem<T>::getForceBetween(const rsParticle<T>& p1, cons
 
   // new:
   T d = r.getEuclideanNorm();        // distance between p1 and p2 == |r|
-  T s = getForceScalerByDistance(d);
+  T s = getForceScalerByDistance(d, p1.size, p2.size);
 
 
   // compute the 3 forces:
