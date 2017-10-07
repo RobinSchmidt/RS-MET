@@ -60,7 +60,7 @@ ModulationSource::~ModulationSource()
 
 juce::String ModulationSource::getModulationSourceDisplayName() const
 { 
-  if(displayName != "")
+  if(displayName == "")
     return modSourceName;
   else
     return displayName;
