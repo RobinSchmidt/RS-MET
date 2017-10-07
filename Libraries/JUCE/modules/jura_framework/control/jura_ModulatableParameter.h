@@ -222,7 +222,7 @@ public:
 
   /** Returns the name of this ModulationSource. This is the (supposed to be unique) name that will
   used for identifying the source state recall. */
-  juce::String getModulationSourceName() { return modSourceName; }
+  juce::String getModulationSourceName() const { return modSourceName; }
 
   /** Sets a name that should be used in dropdown list when connecting a mod-source. If you don't
   st this up, the name that was set by setModulationSourceName will be used by default. */
@@ -230,7 +230,7 @@ public:
 
   /** Returns the name that should be used to identify the source in the dropdown menu on the gui.
   This may potentially be different from the name used for state recall. */
-  juce::String getModulationSourceDisplayName();
+  juce::String getModulationSourceDisplayName() const;
 
 protected:
 
@@ -305,28 +305,28 @@ public:
   /** \name Inquiry */
 
   /** Returns the minimum value of the allowed modulation range. */
-  inline double getModulationRangeMin() { return rangeMin; }
+  inline double getModulationRangeMin() const { return rangeMin; }
 
   /** Returns the maximum value of the allowed modulation range. */
-  inline double getModulationRangeMax() { return rangeMax; }
+  inline double getModulationRangeMax() const { return rangeMax; }
 
   /** Returns the default value for the modulation depth minimum for a new connection going into 
   this target. The user can later change that. */
-  inline double getDefaultModulationDepthMin()  { return defaultDepthMin; }
+  inline double getDefaultModulationDepthMin() const { return defaultDepthMin; }
 
   /** Returns the default value for the modulation depth maximum for a new connection. */
-  inline double getDefaultModulationDepthMax()  { return defaultDepthMax; }
+  inline double getDefaultModulationDepthMax() const { return defaultDepthMax; }
 
   /** Returns the initial modulation depth that will be used for new incoming connections. */
-  inline double getInitialModulationDepth()     { return initialDepth;    }
+  inline double getInitialModulationDepth() const { return initialDepth;    }
 
   /** Returns whether or not a new connection into this target should be to relative (it will be 
   absolute, if false is passed). */
-  inline bool   isModulationRelativeByDefault() { return defaultRelative; }
+  inline bool   isModulationRelativeByDefault() const { return defaultRelative; }
 
   /** Returns true, if there's a connection between this ModulationTarget and the given 
   ModulationSource. */
-  bool isConnectedTo(ModulationSource* source);
+  bool isConnectedTo(ModulationSource* source) const;
 
   /** Returns a pointer to the ModulationConnection object that connects this target to the given 
   source (if any, nullptr otherwise); */
@@ -334,23 +334,23 @@ public:
 
   /** Returns a vector of pointers to the ModulationSources which are connected to this 
   ModulationTarget. They will appear in the order of the connections in the modManager. */
-  std::vector<ModulationSource*> getConnectedSources();
+  std::vector<ModulationSource*> getConnectedSources() const;
 
   /** Returns a vector of pointers to the available ModulationSources which are not connected to 
   this ModulationTarget. They will appear in the order in which they were registered with the
   modManager. */
-  std::vector<ModulationSource*> getDisconnectedSources();
+  std::vector<ModulationSource*> getDisconnectedSources() const;
 
   /** Returns a vector of pointers to ModulationConnections that are incoming into this 
   ModulationTarget. */
-  std::vector<ModulationConnection*> getConnections();
+  std::vector<ModulationConnection*> getConnections() const;
 
   /** This function must be overriden by subclasses to return a unique name that can be used to 
   identify the target in state recall. */
   virtual juce::String getModulationTargetName() = 0;
 
   /** Returns true, if this target is connected to at least one ModulationSource. */
-  bool hasModulation();
+  bool hasModulation() const;
 
 
   /** \name Misc */
@@ -364,7 +364,7 @@ public:
   /** Function to retrieve the modulated value after all modulations have been applied. This may 
   also include a clipping function, such that the returned value is restricted to some allowable
   range. */
-  inline double getModulatedValue()
+  inline double getModulatedValue() const
   {
     return clip(modulatedValue, rangeMin, rangeMax);
   }
@@ -425,13 +425,13 @@ public:
     relative = shouldBeRelative;
   }
 
-  inline bool isRelative()
+  inline bool isRelative() const
   {
     return relative;
   }
 
   /** Returns the Parameter object that controls the amount of modulation */
-  MetaControlledParameter* getDepthParameter() { return depthParam; }
+  MetaControlledParameter* getDepthParameter() const { return depthParam; }
 
   /** Applies the source-value to the target-value with given amount. */
   inline void apply()
@@ -447,8 +447,13 @@ public:
 
   /** Returns a xml element containing the information about this connection (needed for state 
   save/recall in ModulationManager - todo: maybe move it to there) */
-  XmlElement* getAsXml();
+  XmlElement* getAsXml(); // should be const
 
+  /** Returns a (const) pointer to the source, so you can inquire something about it. */
+  const ModulationSource* getSource() { return source; }
+
+  /** Returns a (const) pointer to the target, so you can inquire something about it. */
+  const ModulationTarget* getTarget() { return target; }
 
 protected:
 
@@ -561,14 +566,15 @@ public:
   /** \name Inquiry */
 
   /** Returns true if there's a connection between the given source and target. */
-  bool isConnected(ModulationSource* source, ModulationTarget* target);
+  bool isConnected(const ModulationSource* source, const ModulationTarget* target) const;
 
   /** Returns a pointer to a ModulationConnection object between the given source and target, if 
   such a conncetion exists. Otherwise, it will return a nullptr. */
-  ModulationConnection* getConnectionBetween(ModulationSource* source, ModulationTarget* target);
+  ModulationConnection* getConnectionBetween(const ModulationSource* source, 
+    const ModulationTarget* target) const;
 
   /** Returns the number of ModulationConnections. */
-  inline int getNumConnections() 
+  inline int getNumConnections() const
   { 
     ScopedLock scopedLock(*modLock); 
     return size(modulationConnections); 

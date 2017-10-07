@@ -235,6 +235,7 @@ void rsModulationSetup::addWidgetsForConnection(ModulationConnection* c)
   rsModulationConnectionWidget* w = new rsModulationConnectionWidget(c, this);
   connectionWidgets.push_back(w);
   w->depthSlider->assignParameter(c->getDepthParameter());
+  w->depthSlider->setSliderName(c->getSource()->getModulationSourceDisplayName());
   w->removeButton->addRButtonListener(this);
   addWidget(w);
   updateSize();
