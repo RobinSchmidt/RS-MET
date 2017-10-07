@@ -58,6 +58,14 @@ ModulationSource::~ModulationSource()
   ModulationParticipant::deRegisterModulationSource(this);
 }
 
+juce::String ModulationSource::getModulationSourceDisplayName() 
+{ 
+  if(displayName != "")
+    return modSourceName;
+  else
+    return displayName;
+}
+
 //-------------------------------------------------------------------------------------------------
 
 ModulationTarget::~ModulationTarget() 
@@ -162,9 +170,6 @@ ModulationConnection::ModulationConnection(ModulationSource* _source, Modulation
 {
   source   = _source; 
   target   = _target;
-  //depth    = 0.0;
-  //relative = false;
-  //relative = true;
   relative    = target->isModulationRelativeByDefault();
   sourceValue = &(source->modValue);
   targetValue = &(target->modulatedValue);
@@ -178,7 +183,7 @@ ModulationConnection::ModulationConnection(ModulationSource* _source, Modulation
   //else
   //  depth = 0.5 * (depthMin + depthMax);
 
-  juce::String name = source->getModulationSourceName();
+  juce::String name = source->getModulationSourceName(); // should we use the displayName here?
   depthParam = new MetaControlledParameter(name, depthMin, depthMax, depth, Parameter::LINEAR, 0.0);
   depthParam->setValueChangeCallback<ModulationConnection>(
     this, &ModulationConnection::setDepthMember);

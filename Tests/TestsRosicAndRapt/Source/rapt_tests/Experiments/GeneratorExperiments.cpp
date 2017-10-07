@@ -15,6 +15,8 @@ void particleForceDistanceLaw()
   float size1 = 0.01;
   float size2 = 0.01;
 
+  float test = ps.getForceByDistance(1, size1, size2);
+
   float dMin = 0;
   float dMax = 2;
   float d[N];

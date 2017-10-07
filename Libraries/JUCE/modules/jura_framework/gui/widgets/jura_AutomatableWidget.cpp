@@ -180,7 +180,7 @@ void rsModulationSetup::showConnectableSourcesPopUp()
     std::vector<ModulationSource*> sources = mp->getDisconnectedSources();
     for(int i = 0; i < size(sources); i++)
     {
-      juce::String name = sources[i]->getModulationSourceName();
+      juce::String name = sources[i]->getModulationSourceDisplayName();
       connectableSourcesPopUp->addItem(i+1, name);     // +1 bcs 0 is not allowed for the id
     }
   }
@@ -209,7 +209,7 @@ void rsModulationSetup::showRemovableSourcesPopUp()
     std::vector<ModulationSource*> sources = mp->getConnectedSources();
     for(int i = 0; i < size(sources); i++)
     {
-      juce::String name = sources[i]->getModulationSourceName();
+      juce::String name = sources[i]->getModulationSourceDisplayName();
       removableSourcesPopUp->addItem(i+1, name);
     }
   }

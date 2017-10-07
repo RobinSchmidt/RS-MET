@@ -220,13 +220,23 @@ public:
   ModulationSource names, so it can be used to identify the source in state recall. */
   void setModulationSourceName(const juce::String& newName) { modSourceName = newName; }
 
-  /** Returns the name of this ModulationSource. */
+  /** Returns the name of this ModulationSource. This is the (supposed to be unique) name that will
+  used for identifying the source state recall. */
   juce::String getModulationSourceName() { return modSourceName; }
+
+  /** Sets a name that should be used in dropdown list when connecting a mod-source. If you don't
+  st this up, the name that was set by setModulationSourceName will be used by default. */
+  void setModulationSourceDisplayName(const juce::String& newName) { displayName = newName; }
+
+  /** Returns the name that should be used to identify the source in the dropdown menu on the gui.
+  This may potentially be different from the name used for state recall. */
+  juce::String getModulationSourceDisplayName();
 
 protected:
 
   double modValue = 0;
   juce::String modSourceName = "ModulationSource";
+  juce::String displayName   = "";
 
   friend class ModulationConnection;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationSource)
