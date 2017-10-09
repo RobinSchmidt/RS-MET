@@ -69,6 +69,15 @@ public:
   parameters here (up to the minimum of the number of internal and meta parameters.  */
   void autoAttachMetaParameters();
 
+  /** Sets min/max values for the plugin editor width and height. */
+  void setEditorSizeLimits(int minWidth, int minHeight, int maxWidth, int maxHeight)
+  {
+    editorWidthMin  = minWidth;
+    editorHeightMin = minHeight;
+    editorWidthMax  = maxWidth;
+    editorHeightMax = maxHeight;
+  }
+
   //-----------------------------------------------------------------------------------------------
   // mandatory overrides for juce::AudioProcessor baseclass:
 
@@ -141,8 +150,13 @@ protected:
   juce::String plugInName;  // assign this in the constructor of your subclass
    // maybe get rid of this and let the wrapper return the name of the wrapped AudioModule
 
-  int editorWidth  = 0;
-  int editorHeight = 0;
+  int editorWidth     = 0;
+  int editorHeight    = 0;
+  int editorWidthMin  = 1;
+  int editorHeightMin = 1;
+  int editorWidthMax  = INT_MAX;
+  int editorHeightMax = INT_MAX;
+
 
   friend class AudioPluginEditor;
 
@@ -208,7 +222,9 @@ public:
     if(h == 0)
       h = wrappedEditor->getHeight();
 
-    setResizeLimits(200, 100, 6000, 3000); // must be called BEFORE setSize
+    //setResizeLimits(200, 100, 6000, 3000); // must be called BEFORE setSize ...old
+    setResizeLimits(pluginToEdit->editorWidthMin, pluginToEdit->editorHeightMin, 
+      pluginToEdit->editorWidthMax, pluginToEdit->editorHeightMax);// must be called BEFORE setSize
     setSize(w, h);
     addAndMakeVisible(wrappedEditor);
   }
