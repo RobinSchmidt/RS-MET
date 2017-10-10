@@ -377,7 +377,8 @@ protected:
   double rangeMin = -INF, rangeMax = INF; 
   double defaultDepthMin = -1, defaultDepthMax = 1;
   double initialDepth = 0.0;
-  bool   defaultRelative = false;
+  bool   defaultRelative = false; // obsolete soon
+  int defaultMode = 0; // absolute
 
   friend class ModulationConnection;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationTarget)
@@ -392,6 +393,15 @@ class JUCE_API ModulationConnection
 {
 
 public:
+
+  /** Selects one of the modes in which the modulation can be applied. In the formulas below, u is
+  the unmodulated base value, m the modulator output and d the modulation depth. */
+  enum modModes
+  {
+    ABSOLUTE = 0,  // d * m
+    RELATIVE,      // d * m * u
+    EXPONENTIAL    // u * 2^(d*m) - u
+  };
 
   /** Constructor. You should pass a ModulationSource and a ModulationTarget. If you want to enable
   meta-control for the modulation-depth associated with the connection, you may pass the pointer to
@@ -430,17 +440,41 @@ public:
     return relative;
   }
 
+  /** Sets the mode in which this connection should apply the modulation source output value to the
+  modualtion target. @see modModes. */
+  inline void setMode(int newMode) { mode = newMode; }
+
+  /** Returns the modulation mode of this connection. */
+  inline int getMode() { return mode; }
+    
   /** Returns the Parameter object that controls the amount of modulation */
   MetaControlledParameter* getDepthParameter() const { return depthParam; }
 
   /** Applies the source-value to the target-value with given amount. */
   inline void apply()
   {
+    /*
+    // for later - more flexible modulation modes:
+    double m = *sourceValue;
+    double d = depth;
+    double u = target->unmodulatedValue;
+    double z;
+    //mode = EXPONENTIAL; // just for test
+    switch(mode)  // maybe use function pointer instead of switch
+    {
+    case ABSOLUTE:    z = d * m;               break;
+    case RELATIVE:    z = d * m * u;           break;
+    case EXPONENTIAL: z = u * pow(2, d*m) - u; break; // optimize using exp, or maybe pow2(d*m)
+    default:          z = 0;
+    }
+    *targetValue += z;
+    */
+
+    // old:
     // optimize away later:
     double scaler = 1; // make this a member
     if(relative)
       scaler = target->unmodulatedValue;
-
     *targetValue += *sourceValue * depth * scaler; // only this line shall remain after optimization
   }
 
@@ -474,7 +508,8 @@ protected:
   double* sourceValue;
   double* targetValue;
   double depth;
-  bool relative;
+  bool relative; // obsolete soon
+  int mode = ABSOLUTE;
 
   MetaControlledParameter* depthParam; // maybe it should be a ModulatableParameter? but that may
                                         // raise some issues - maybe later...
