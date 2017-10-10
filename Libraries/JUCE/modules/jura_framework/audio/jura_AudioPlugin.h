@@ -77,6 +77,9 @@ public:
     editorWidthMax  = maxWidth;
     editorHeightMax = maxHeight;
   }
+  // todo: perhaps remove/hide the resizer widget, if min == max for w and h
+  // see juce::AudoProcessorEditor::setResizable 
+  // https://www.juce.com/doc/classAudioProcessorEditor#a3d36f7385146270fc752ce17418f115a
 
   //-----------------------------------------------------------------------------------------------
   // mandatory overrides for juce::AudioProcessor baseclass:
