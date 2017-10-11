@@ -170,7 +170,7 @@ ModulationConnection::ModulationConnection(ModulationSource* _source, Modulation
 {
   source   = _source; 
   target   = _target;
-  relative    = target->isModulationRelativeByDefault();
+  mode        = target->getDefaultModulationMode();
   sourceValue = &(source->modValue);
   targetValue = &(target->modulatedValue);
 

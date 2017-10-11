@@ -290,14 +290,14 @@ public:
 
   /** Convenience function to set up all the range/depth/mode parameters at once. */
   inline void setDefaultModParameters(double newRangeMin, double newRangeMax, 
-    double newDefaultDepthMin, double newDefaultDepthMax, bool shouldBeRelativeByDefault, 
+    double newDefaultDepthMin, double newDefaultDepthMax, int defaultMode, 
     double initialModDepth = 0.0)
   {
     rangeMin = newRangeMin;
     rangeMax = newRangeMax;
     defaultDepthMin = newDefaultDepthMin;
     defaultDepthMax = newDefaultDepthMax;
-    defaultRelative = shouldBeRelativeByDefault;
+    defaultModMode  = defaultMode;
     initialDepth    = initialModDepth;
   }
 
@@ -320,9 +320,10 @@ public:
   /** Returns the initial modulation depth that will be used for new incoming connections. */
   inline double getInitialModulationDepth() const { return initialDepth;    }
 
-  /** Returns whether or not a new connection into this target should be to relative (it will be 
-  absolute, if false is passed). */
-  inline bool   isModulationRelativeByDefault() const { return defaultRelative; }
+  /** Returns the default modulation mode which is the mode that a newly connected connection to 
+  this target will have. This can be any of the values defined in 
+  ModulationConnection::modModes. */
+  inline int getDefaultModulationMode() const { return defaultModMode; } 
 
   /** Returns true, if there's a connection between this ModulationTarget and the given 
   ModulationSource. */
@@ -377,8 +378,7 @@ protected:
   double rangeMin = -INF, rangeMax = INF; 
   double defaultDepthMin = -1, defaultDepthMax = 1;
   double initialDepth = 0.0;
-  bool   defaultRelative = false; // obsolete soon
-  int defaultMode = 0; // absolute
+  int    defaultModMode = 0; // absolute
 
   friend class ModulationConnection;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationTarget)
@@ -425,19 +425,6 @@ public:
   void setDepthRangeAndValue(double newMin, double newMax, double newValue)
   {
     depthParam->setRangeAndValue(newMin, newMax, newValue, true, true);
-  }
-
-  /** Sets the parameter to relative mode in which case the output signal of the ModulationSource
-  will be multiplied by the ModulationTarget's unmodulated nominal value before being added to the 
-  target value. */
-  inline void setRelative(bool shouldBeRelative)
-  {
-    relative = shouldBeRelative;
-  }
-
-  inline bool isRelative() const
-  {
-    return relative;
   }
 
   /** Sets the mode in which this connection should apply the modulation source output value to the
@@ -500,17 +487,15 @@ protected:
     depth = newDepth;
   }
 
-
   ModulationSource* source;
   ModulationTarget* target;
   double* sourceValue;
   double* targetValue;
   double depth;
-  bool relative; // obsolete soon
   int mode = ABSOLUTE;
 
   MetaControlledParameter* depthParam; // maybe it should be a ModulatableParameter? but that may
-                                        // raise some issues - maybe later...
+                                       // raise some issues - maybe later...
 
   friend class ModulationTarget;
   friend class ModulationManager;
