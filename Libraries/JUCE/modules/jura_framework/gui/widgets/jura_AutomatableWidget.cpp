@@ -655,10 +655,8 @@ void rsModulationDepthSlider::rPopUpMenuChanged(RPopUpMenu* menu)
   {
   case MOD_DEPTH_MIN: setModDepthMin(openModalNumberEntryField(getModDepthMin())); break;
   case MOD_DEPTH_MAX: setModDepthMax(openModalNumberEntryField(getModDepthMax())); break;
-  //case MOD_MODE_RELATIVE: setModeRelative(!isModeRelative());   break;
   default: AutomatableSlider::rPopUpMenuChanged(menu);
   }
-
   juce::String text = menu->getSelectedText();
   typedef ModulationConnection::modModes MM;
   if(text == "Mode: Absolute")    setModMode(MM::ABSOLUTE);
@@ -676,7 +674,6 @@ void rsModulationDepthSlider::addPopUpMinMaxAndModeItems()
 {
   rightClickPopUp->addItem(MOD_DEPTH_MIN, "Mod depth min");
   rightClickPopUp->addItem(MOD_DEPTH_MAX, "Mod depth max");
-  //rightClickPopUp->addItem(MOD_MODE_RELATIVE, "Relative modulation", true, isModeRelative());
   typedef ModulationConnection::modModes MM;
   int m = getModMode();
   rightClickPopUp->addItem(MOD_MODE_ABSOLUTE,    "Mode: Absolute",    true, m == MM::ABSOLUTE);

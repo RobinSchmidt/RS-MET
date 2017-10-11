@@ -453,13 +453,10 @@ public:
   /** Applies the source-value to the target-value with given amount. */
   inline void apply()
   {
-    /*
-    // for later - more flexible modulation modes:
     double m = *sourceValue;
     double d = depth;
     double u = target->unmodulatedValue;
     double z;
-    //mode = EXPONENTIAL; // just for test
     switch(mode)  // maybe use function pointer instead of switch
     {
     case ABSOLUTE:    z = d * m;               break;
@@ -468,14 +465,15 @@ public:
     default:          z = 0;
     }
     *targetValue += z;
-    */
     
+    /*
     // old:
     // optimize away later:
     double scaler = 1; // make this a member
     if(relative)
       scaler = target->unmodulatedValue;
     *targetValue += *sourceValue * depth * scaler; // only this line shall remain after optimization
+    */
   }
 
 

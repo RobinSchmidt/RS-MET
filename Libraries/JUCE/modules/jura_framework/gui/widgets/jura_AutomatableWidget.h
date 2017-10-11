@@ -269,12 +269,10 @@ protected:
   // modulated value and getting/setting relative mode (maybe these should be inlined):
   inline double getModDepthMin() { return assignedParameter->getMinValue(); }
   inline double getModDepthMax() { return assignedParameter->getMaxValue(); }
-  //inline bool   isModeRelative() { return modConnection->isRelative();  }
   inline int    getModMode()     { return modConnection->getMode(); }
 
   inline void setModDepthMin(double newMin)  { assignedParameter->setMinValue(newMin); }
   inline void setModDepthMax(double newMax)  { assignedParameter->setMaxValue(newMax); }
-  //inline void setModeRelative(bool relative) { modConnection->setRelative(relative);   }
   inline void setModMode(    int    mode)    { modConnection->setMode(mode); }
 
   /** Additional item ids for this subclass. */

@@ -199,27 +199,21 @@ XmlElement* ModulationConnection::getAsXml()
 {
   XmlElement* xml = new XmlElement("Connection");
 
-  xml->setAttribute("Source", source->getModulationSourceName());
-  xml->setAttribute("Target", target->getModulationTargetName());
-
-  xml->setAttribute("Depth",  depth);
-  //if(depthParam->getMinValue() != -1)
-    xml->setAttribute("DepthMin", depthParam->getMinValue());
-  //if(depthParam->getMaxValue() != +1)
-    xml->setAttribute("DepthMax", depthParam->getMaxValue());
+  xml->setAttribute("Source",   source->getModulationSourceName());
+  xml->setAttribute("Target",   target->getModulationTargetName());
+  xml->setAttribute("Depth",    depth);
+  xml->setAttribute("DepthMin", depthParam->getMinValue()); 
+  xml->setAttribute("DepthMax", depthParam->getMaxValue());
   if(depthParam->getMetaParameterIndex() != -1)
     xml->setAttribute("DepthMeta", depthParam->getMetaParameterIndex());
     // later, we may also have to store the mapping function here (if any)
 
-  juce::String modeString;
-  if(relative)
-    modeString = "Relative";
-  else
-    modeString = "Absolute";
-    // we do it like this in order to be able to define more modes later - like Multiplicative
-    // or whatever
-
-  xml->setAttribute("Mode", modeString);
+  switch(mode)
+  {
+  case ABSOLUTE:    xml->setAttribute("Mode", "Absolute");    break;
+  case RELATIVE:    xml->setAttribute("Mode", "Relative");    break;
+  case EXPONENTIAL: xml->setAttribute("Mode", "Exponential"); break;
+  }
   return xml;
 
   // maybe move this function into ModulationManager as 
@@ -511,7 +505,11 @@ void ModulationManager::setStateFromXml(const XmlElement& xmlState)
       double val = conXml->getDoubleAttribute("Depth",     0.0);
       c->setDepthRangeAndValue(min, max, val);
 
-      c->setRelative(conXml->getStringAttribute("Mode") == "Relative");
+      typedef ModulationConnection::modModes MM;
+      juce::String modeStr = conXml->getStringAttribute("Mode");
+      if(modeStr == "Absolute")    c->setMode(MM::ABSOLUTE);
+      if(modeStr == "Relative")    c->setMode(MM::RELATIVE);
+      if(modeStr == "Exponential") c->setMode(MM::EXPONENTIAL);
       addConnection(c);
     }
     else
