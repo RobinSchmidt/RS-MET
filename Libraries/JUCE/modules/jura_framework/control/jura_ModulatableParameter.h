@@ -261,7 +261,13 @@ public:
   /** Must be overriden by subclasses to do whatever they need to do after our modulatedValue has 
   been computed (for example, ModulatableParameter invokes the setter-callback which in turn 
   updates the corresponding value in the core dsp algorithm). */
-  virtual void doModulationUpdate() = 0;
+  //virtual void doModulationUpdate() = 0;
+  virtual void doModulationUpdate()
+  {
+    // we need an empty basclass implementation because in the destructor of a plugin, 
+    // doModulationUpdate would otherwise get called with a null-reference (or something),
+    // in ModulationManager::removeConnection when the modulateble parameter deletes itself
+  }
 
 
   /** \name Setup */

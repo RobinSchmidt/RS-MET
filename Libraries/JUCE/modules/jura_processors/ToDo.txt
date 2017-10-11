@@ -1,5 +1,8 @@
 ModSystem:
  -ModulatableSlider: show the modulation-range
+ -since the fix for getting stuck, we trigger an assertion in the destructor (when ther is a 
+  connection)
+  ->fixed..or worked around...it's still weird
  -clean up the files
 
 Chainer:

@@ -346,9 +346,9 @@ void ModulationManager::removeConnection(int i)
   remove(modulationConnections, i);
   if(omt)
     omt->sendModulationsChangedNotification();
-  if(!t->hasModulation()) {        // avoids getting stuck at modulated value when last 
+  if(!t->hasModulation()) {        // avoids the target getting stuck at modulated value when last 
     t->initModulatedValue();       // modulator was removed
-    t->doModulationUpdate(); }
+    t->doModulationUpdate();  }
 }
 
 void ModulationManager::resetAllTargetRangeLimits()
