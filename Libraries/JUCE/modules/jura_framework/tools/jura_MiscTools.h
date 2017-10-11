@@ -28,6 +28,10 @@ JUCE_API void writeToLogFile(const juce::String& logString);
 /** Clears the log file @see writeToLogFile. */
 JUCE_API void clearLogFile();
 
+/** Returns the available screen space in pixels below the given component (useful for positioning
+dropdown menus. */
+JUCE_API int getAvailableScreenPixelsBelow(const juce::Component* c);
+
 
 // these are copied from RSLib - they also occur in RAPT in the same form - but we don't want to
 // include RAPT already here, so we need to copy them (that violates the DRY principle, but i 

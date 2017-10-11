@@ -21,3 +21,8 @@ void clearLogFile()
   if( logFile.existsAsFile() )
     logFile.deleteFile();
 }
+
+int getAvailableScreenPixelsBelow(const juce::Component* c)
+{
+  return c->getParentMonitorArea().getBottom() - c->getScreenBounds().getBottom();
+}

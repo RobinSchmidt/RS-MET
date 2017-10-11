@@ -189,8 +189,13 @@ void ROwnedPopUpComponent::show(bool showModally, int attachPosition, int width,
   switch( attachPosition )
   {
   case BELOW:
+  {
+    int h = jmin(height, getAvailableScreenPixelsBelow(ownerComponent)); // do we need to include the offset?
+      // maybe we should use a similar formula for width w?
+
     showAt(showModally, ownerBounds.getX()+xOffset,
-      ownerBounds.getY()+ownerBounds.getHeight()+yOffset, width, height);
+      ownerBounds.getY()+ownerBounds.getHeight()+yOffset, width, h);
+  }
     break;
     // \todo: implement the other attachPositions
   }
