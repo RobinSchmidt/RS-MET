@@ -53,7 +53,7 @@ Framework:
    properly called when a popup is dismissed, override the callback in AutomatableWidget and set
    the flag false there
 
-TrachMeter
+TrackMeter
  -flashy - maybe averaging doesn't work?
 
 EchoLab
@@ -78,7 +78,6 @@ MultiAnalyzer
 
 -Quadrifex:
  -font to small for subeditor headlines
- -doesn't respond to mouse-clicks (we can't open the effect selection popup)
 
 -MidiMonitor:
  -doesn't show events (maybe we need to override handleMidiMessage...or something)

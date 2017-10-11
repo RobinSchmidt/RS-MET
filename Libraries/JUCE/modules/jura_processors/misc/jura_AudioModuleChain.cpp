@@ -214,7 +214,7 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
   node->addChildNode(new RTreeViewNode("StereoDelay",   i++));
   node->addChildNode(new RTreeViewNode("PitchShifter",  i++));
   //node->addChildNode(new RTreeViewNode("EchoLab",       i++));
-  //node->addChildNode(new RTreeViewNode("Quadrifex",     i++));
+  node->addChildNode(new RTreeViewNode("Quadrifex",     i++));
   //node->addChildNode(new RTreeViewNode("AlgoVerb",      i++));
   node->setOpen(false);
   popUpMenu->addTreeNodeItem(node);
