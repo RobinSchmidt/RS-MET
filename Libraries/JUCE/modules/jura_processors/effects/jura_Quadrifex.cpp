@@ -1958,8 +1958,9 @@ void QuadrifexModuleEditor::paint(Graphics &g)
 
   int x = globalRectangle.getX(); // + middleRectangle.getWidth()/2;
   int y = globalRectangle.getY();
-  //drawBitmapFontText(g, x+4, y+4, juce::String(("Global Settings")), BigFont::getInstance(),
-  //  editorColourScheme.labelTextColour);
+
+  //drawBitmapFontText(g, x+4, y+4, juce::String(("Global Settings")), 
+  //  &BitmapFontRoundedBoldA16D0::instance, editorColourScheme.headline);
 
   if( quadrifexModuleToEdit == NULL )
     return;
@@ -1977,7 +1978,8 @@ void QuadrifexModuleEditor::paint(Graphics &g)
     y = slotRectangles[i].getY();
     juce::String headlineString = juce::String(i+1) + juce::String((" - ")) +
       quadrifexModuleToEdit->effectAlgorithmIndexToString(core->getEffectAlgorithmIndex(i));
-    drawBitmapFontText(g, x+4, y+4, headlineString, &BitmapFontRoundedBoldA10D0::instance,
+
+    drawBitmapFontText(g, x+4, y+4, headlineString, &BitmapFontRoundedBoldA16D0::instance,
       editorColourScheme.headline);
   }
 }

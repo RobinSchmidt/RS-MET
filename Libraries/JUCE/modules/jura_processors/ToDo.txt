@@ -3,7 +3,6 @@ ModSystem:
  -clean up the files
 
 Chainer:
- -add quadrifex
  -make the size of the selector popup adequate
  -clean up code (remove obsolete code)
 
@@ -23,8 +22,8 @@ RayBouncer:
  -MidiMonitor (done)
  -TrackMeter (done - check gui size/arrangement)
  -Straightliner (done...still some minor bugs)
-
  -Quadrifex
+
  -EchoLab
  -Liberty
  -MagicCarpet
@@ -53,9 +52,6 @@ Framework:
    properly called when a popup is dismissed, override the callback in AutomatableWidget and set
    the flag false there
 
-TrackMeter
- -flashy - maybe averaging doesn't work?
-
 EchoLab
  -has no custom gui
  -state recall triggers jassert
@@ -77,8 +73,7 @@ MultiAnalyzer
  -probably doesn't produce sound yet (not tested)
 
 -Quadrifex:
- -font to small for subeditor headlines
-
+ -many effects incomplete
 
 -MidiMonitor:
  -doesn't show events (maybe we need to override handleMidiMessage...or something)
