@@ -269,18 +269,22 @@ protected:
   // modulated value and getting/setting relative mode (maybe these should be inlined):
   inline double getModDepthMin() { return assignedParameter->getMinValue(); }
   inline double getModDepthMax() { return assignedParameter->getMaxValue(); }
-  inline bool   isModeRelative() { return modConnection->isRelative();  }
+  //inline bool   isModeRelative() { return modConnection->isRelative();  }
+  inline int    getModMode()     { return modConnection->getMode(); }
 
   inline void setModDepthMin(double newMin)  { assignedParameter->setMinValue(newMin); }
   inline void setModDepthMax(double newMax)  { assignedParameter->setMaxValue(newMax); }
-  inline void setModeRelative(bool relative) { modConnection->setRelative(relative);   }
+  //inline void setModeRelative(bool relative) { modConnection->setRelative(relative);   }
+  inline void setModMode(    int    mode)    { modConnection->setMode(mode); }
 
   /** Additional item ids for this subclass. */
   enum popUpIds2
   {
     MOD_DEPTH_MIN = popUpIds::MODULATION_SETUP+1,
     MOD_DEPTH_MAX,
-    MOD_MODE_RELATIVE
+    MOD_MODE_ABSOLUTE,
+    MOD_MODE_RELATIVE,
+    MOD_MODE_EXPONENTIAL
   };
 
   ModulationConnection* modConnection = nullptr; // needs to be assigned in constructor

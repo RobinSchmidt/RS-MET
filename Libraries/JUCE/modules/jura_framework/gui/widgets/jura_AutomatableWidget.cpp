@@ -648,17 +648,22 @@ void AutomatableButton::parameterChanged(Parameter* p)
 
 //=================================================================================================
 
-void rsModulationDepthSlider::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
+void rsModulationDepthSlider::rPopUpMenuChanged(RPopUpMenu* menu)
 {
   int id = rightClickPopUp->getSelectedIdentifier();
   switch( id )
   {
   case MOD_DEPTH_MIN: setModDepthMin(openModalNumberEntryField(getModDepthMin())); break;
   case MOD_DEPTH_MAX: setModDepthMax(openModalNumberEntryField(getModDepthMax())); break;
-  case MOD_MODE_RELATIVE: setModeRelative(!isModeRelative());   break;
-  default: AutomatableSlider::rPopUpMenuChanged(menuThatHasChanged);
+  //case MOD_MODE_RELATIVE: setModeRelative(!isModeRelative());   break;
+  default: AutomatableSlider::rPopUpMenuChanged(menu);
   }
 
+  juce::String text = menu->getSelectedText();
+  typedef ModulationConnection::modModes MM;
+  if(text == "Mode: Absolute")    setModMode(MM::ABSOLUTE);
+  if(text == "Mode: Relative")    setModMode(MM::RELATIVE);
+  if(text == "Mode: Exponential") setModMode(MM::EXPONENTIAL);
 }
 
 void rsModulationDepthSlider::addPopUpMenuItems()
@@ -671,7 +676,12 @@ void rsModulationDepthSlider::addPopUpMinMaxAndModeItems()
 {
   rightClickPopUp->addItem(MOD_DEPTH_MIN, "Mod depth min");
   rightClickPopUp->addItem(MOD_DEPTH_MAX, "Mod depth max");
-  rightClickPopUp->addItem(MOD_MODE_RELATIVE, "Relative modulation", true, isModeRelative());
+  //rightClickPopUp->addItem(MOD_MODE_RELATIVE, "Relative modulation", true, isModeRelative());
+  typedef ModulationConnection::modModes MM;
+  int m = getModMode();
+  rightClickPopUp->addItem(MOD_MODE_ABSOLUTE,    "Mode: Absolute",    true, m == MM::ABSOLUTE);
+  rightClickPopUp->addItem(MOD_MODE_RELATIVE,    "Mode: Relative",    true, m == MM::RELATIVE);
+  rightClickPopUp->addItem(MOD_MODE_EXPONENTIAL, "Mode: Exponential", true, m == MM::EXPONENTIAL);
 }
 
 //=================================================================================================

@@ -469,7 +469,7 @@ public:
     }
     *targetValue += z;
     */
-
+    
     // old:
     // optimize away later:
     double scaler = 1; // make this a member

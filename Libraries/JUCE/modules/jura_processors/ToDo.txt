@@ -1,32 +1,13 @@
 ModSystem:
- -provide remove-buttons next to the depth sliders
-  -done, but crashes
-  -RClickButton::mouseDown causes the deletion of itself in sendClickMessage() and then tries
-   to call repaint() on itself, after it has deleted itself...i think, we need some kind of
-   deferred deletion
-   -hmm..ok..it now crashes later: on mouseUp
-   -ok - now the crash is fixed but we have a memory leak - damn! how do i handle this?
-   -ok - it seems to work now - but we really should optimize the code such that it doesn't
-    always remove and recreate all sliders when one is added or removed
-  -BUG: sometimes, with the new buttons, the wrong connection gets removed
-   add A, add B, rem A, add A, rem B -> A gets removed
-   ->seems fixed - but needs more testing
-   ->NOPE - it just looks like it on the gui
-     ->ok, now it seems fixed
- -maybe implement a notification system when connectiosn are added removed
-  ModulationManagerObserver: connectionWasAdded, connectionWillBeRemoved
- -maybe have a special ModulatableSlider class that shows the modulation-range
-  -it should override assignParameter, check, if the passed parameter is a ModulatableParameter and 
-   if so, figure out its ModulationManager and register itself as observer
-  -in its destructor, it should deregister itself
-  -it should implement ModulationObsverver methods such as modulationConnectionAdded, 
-   modulationConnectionRemoved
-  -or maybe it should be a ModulationTargetObserver...or ModulatableParameterObserver
-  -maybe a subclass ObservableModulationTarget
+ -make new modulation modes:
+  -available on gui 
+  -recallable from state
+  -available as default in ModulationTarget
+ -ModulatableSlider: show the modulation-range
  -clean up the files
 
-
 Chainer:
+ -add quadrifex
  -make the size of the selector popup adequate
  -clean up code (remove obsolete code)
 
@@ -47,8 +28,8 @@ RayBouncer:
  -TrackMeter (done - check gui size/arrangement)
  -Straightliner (done...still some minor bugs)
 
- -EchoLab
  -Quadrifex
+ -EchoLab
  -Liberty
  -MagicCarpet
  -AlgoVerb
