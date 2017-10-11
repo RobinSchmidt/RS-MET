@@ -338,12 +338,17 @@ void ModulationManager::removeAllConnections()
 
 void ModulationManager::removeConnection(int i)
 {
+  ScopedLock scopedLock(*modLock); 
+  ModulationTarget* t = modulationConnections[i]->target;
   ObservableModulationTarget* omt = 
     dynamic_cast<ObservableModulationTarget*> (modulationConnections[i]->target);
   delete modulationConnections[i];
   remove(modulationConnections, i);
   if(omt)
     omt->sendModulationsChangedNotification();
+  if(!t->hasModulation()) {        // avoids getting stuck at modulated value when last 
+    t->initModulatedValue();       // modulator was removed
+    t->doModulationUpdate(); }
 }
 
 void ModulationManager::resetAllTargetRangeLimits()

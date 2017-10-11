@@ -22,12 +22,12 @@ RayBouncer:
  -MidiMonitor (done)
  -TrackMeter (done - check gui size/arrangement)
  -Straightliner (done...still some minor bugs)
- -Quadrifex
+ -Quadrifex (done - many effects still incomplete or buggy)
 
+ -AlgoVerb
  -EchoLab
  -Liberty
  -MagicCarpet
- -AlgoVerb
  -Moduluxury (obsolete with the new mod-system)
  -ChannelMatrix2x2
  -DspWorkbench
