@@ -79,6 +79,7 @@ MultiAnalyzer
 -Quadrifex:
  -font to small for subeditor headlines
 
+
 -MidiMonitor:
  -doesn't show events (maybe we need to override handleMidiMessage...or something)
 

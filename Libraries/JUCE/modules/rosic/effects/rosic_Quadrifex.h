@@ -160,7 +160,7 @@ namespace rosic
     //void getSampleFrameStereo(double *inOutL, double *inOutR);
 
     /** Calculates an entire block of samples at once. */
-    void processBlock(float *inOutL, float *inOutR, int numFrames);
+    void processBlock(double* inOutL, double* inOutR, int numFrames);
 
     //---------------------------------------------------------------------------------------------
     // the embedded modules:
@@ -185,7 +185,8 @@ namespace rosic
       // these integers hold the index of the effect-algorithm  (see enum effectAlgorithms)
       // for each of the four effect slots
 
-    MutexLock mutex; // for accessing the pointer-array 'effectModules'
+    MutexLock mutex; // for accessing the pointer-array 'effectModules' 
+                     // ...obsolete..now handled in jura?
 
   };
 

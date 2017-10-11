@@ -80,6 +80,20 @@ public:
     ScopedLock scopedLock(*lock);
     wrappedQuadrifex->trigger();
   }
+
+  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
+  {
+    ScopedLock scopedLock(*lock);
+    if(numChannels != 2)
+      return;
+    wrappedQuadrifex->processBlock(inOutBuffer[0], inOutBuffer[1], numSamples);
+  }
+
+  //virtual void processStereoFrame(double *left, double *right) override;
+  // needs to be overriden, when we want to use the mod-system
+
+  /*
+  // older (now obsolete) audio callbacks:
   virtual void getSampleFrameStereo(double* inOutL, double* inOutR)
   {
     ScopedLock scopedLock(*lock);
@@ -93,7 +107,6 @@ public:
     wrappedQuadrifex->processBlock(left, right, numSamples);
   }
 
-  /*
   virtual void processBlock(AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
   {
     ScopedLock scopedLock(*plugInLock);

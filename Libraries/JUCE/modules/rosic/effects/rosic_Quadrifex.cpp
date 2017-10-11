@@ -192,7 +192,7 @@ void Quadrifex::reset()
 //-------------------------------------------------------------------------------------------------
 // audio processing:
 
-void Quadrifex::processBlock(float *inOutL, float *inOutR, int numFrames)
+void Quadrifex::processBlock(double* inOutL, double* inOutR, int numFrames)
 {
   mutex.lock();
 
@@ -228,8 +228,8 @@ void Quadrifex::processBlock(float *inOutL, float *inOutR, int numFrames)
         effectModules[1]->processSampleFrame(&tmp1L, &tmp1R);
         effectModules[2]->processSampleFrame(&tmp1L, &tmp1R);
         effectModules[3]->processSampleFrame(&tmp1L, &tmp1R);
-        inOutL[n] = (float) (dryFactor*inL + wetFactor*tmp1L);
-        inOutR[n] = (float) (dryFactor*inR + wetFactor*tmp1R);
+        inOutL[n] = (dryFactor*inL + wetFactor*tmp1L);
+        inOutR[n] = (dryFactor*inR + wetFactor*tmp1R);
       }
     }
     break;
@@ -245,8 +245,8 @@ void Quadrifex::processBlock(float *inOutL, float *inOutR, int numFrames)
         effectModules[3]->processSampleFrame(&tmp4L, &tmp4R);
         tmp1L += tmp4L;
         tmp1R += tmp4R;
-        inOutL[n] = (float) (dryFactor*inL + wetFactor*tmp1L);
-        inOutR[n] = (float) (dryFactor*inR + wetFactor*tmp1R);
+        inOutL[n] = (dryFactor*inL + wetFactor*tmp1L);
+        inOutR[n] = (dryFactor*inR + wetFactor*tmp1R);
       }
     }
     break;
@@ -262,8 +262,8 @@ void Quadrifex::processBlock(float *inOutL, float *inOutR, int numFrames)
         effectModules[3]->processSampleFrame(&tmp3L, &tmp3R);
         tmp1L += tmp3L;
         tmp1R += tmp3R;
-        inOutL[n] = (float) (dryFactor*inL + wetFactor*tmp1L);
-        inOutR[n] = (float) (dryFactor*inR + wetFactor*tmp1R);
+        inOutL[n] = (dryFactor*inL + wetFactor*tmp1L);
+        inOutR[n] = (dryFactor*inR + wetFactor*tmp1R);
       }
     }
     break;
@@ -279,8 +279,8 @@ void Quadrifex::processBlock(float *inOutL, float *inOutR, int numFrames)
         effectModules[3]->processSampleFrame(&tmp4L, &tmp4R);
         tmp1L += tmp2L+tmp3L+tmp4L;
         tmp1R += tmp2R+tmp3R+tmp4R;
-        inOutL[n] = (float) (dryFactor*inL + wetFactor*tmp1L);
-        inOutR[n] = (float) (dryFactor*inR + wetFactor*tmp1R);
+        inOutL[n] = (dryFactor*inL + wetFactor*tmp1L);
+        inOutR[n] = (dryFactor*inR + wetFactor*tmp1R);
       }
     }
     break;
@@ -296,8 +296,8 @@ void Quadrifex::processBlock(float *inOutL, float *inOutR, int numFrames)
         tmp1L += tmp2L+tmp3L;
         tmp1R += tmp2R+tmp3R;
         effectModules[3]->processSampleFrame(&tmp1L, &tmp1R);
-        inOutL[n] = (float) (dryFactor*inL + wetFactor*tmp1L);
-        inOutR[n] = (float) (dryFactor*inR + wetFactor*tmp1R);
+        inOutL[n] = (dryFactor*inL + wetFactor*tmp1L);
+        inOutR[n] = (dryFactor*inR + wetFactor*tmp1R);
       }
     }
     break;
@@ -315,8 +315,8 @@ void Quadrifex::processBlock(float *inOutL, float *inOutR, int numFrames)
         tmp1L += tmp2L+tmp3L;
         tmp1R += tmp2R+tmp3R;
         effectModules[3]->processSampleFrame(&tmp1L, &tmp1R);
-        inOutL[n] = (float) (dryFactor*inL + wetFactor*tmp1L);
-        inOutR[n] = (float) (dryFactor*inR + wetFactor*tmp1R);
+        inOutL[n] = (dryFactor*inL + wetFactor*tmp1L);
+        inOutR[n] = (dryFactor*inR + wetFactor*tmp1R);
       }
     }
     break;
@@ -332,8 +332,8 @@ void Quadrifex::processBlock(float *inOutL, float *inOutR, int numFrames)
         tmp1R += tmp2R;
         effectModules[2]->processSampleFrame(&tmp1L, &tmp1R);
         effectModules[3]->processSampleFrame(&tmp1L, &tmp1R);
-        inOutL[n] = (float) (dryFactor*inL + wetFactor*tmp1L);
-        inOutR[n] = (float) (dryFactor*inR + wetFactor*tmp1R);
+        inOutL[n] = (dryFactor*inL + wetFactor*tmp1L);
+        inOutR[n] = (dryFactor*inR + wetFactor*tmp1R);
       }
 
     }
@@ -352,8 +352,8 @@ void Quadrifex::processBlock(float *inOutL, float *inOutR, int numFrames)
         effectModules[3]->processSampleFrame(&tmp3L, &tmp3R);
         tmp1L += tmp3L;
         tmp1R += tmp3R;
-        inOutL[n] = (float) (dryFactor*inL + wetFactor*tmp1L);
-        inOutR[n] = (float) (dryFactor*inR + wetFactor*tmp1R);
+        inOutL[n] = (dryFactor*inL + wetFactor*tmp1L);
+        inOutR[n] = (dryFactor*inR + wetFactor*tmp1R);
       }
     }
     break;
@@ -373,8 +373,8 @@ void Quadrifex::processBlock(float *inOutL, float *inOutR, int numFrames)
         effectModules[3]->processSampleFrame(&tmp2L, &tmp2R);
         tmp1L += tmp2L;
         tmp1R += tmp2R;
-        inOutL[n] = (float) (dryFactor*inL + wetFactor*tmp1L);
-        inOutR[n] = (float) (dryFactor*inR + wetFactor*tmp1R);
+        inOutL[n] = (dryFactor*inL + wetFactor*tmp1L);
+        inOutR[n] = (dryFactor*inR + wetFactor*tmp1R);
       }
     }
     break;
@@ -392,8 +392,8 @@ void Quadrifex::processBlock(float *inOutL, float *inOutR, int numFrames)
         effectModules[3]->processSampleFrame(&tmp4L, &tmp4R);
         tmp1L = tmp2L+tmp3L+tmp4L;
         tmp1R = tmp2R+tmp3R+tmp4L;
-        inOutL[n] = (float) (dryFactor*inL + wetFactor*tmp1L);
-        inOutR[n] = (float) (dryFactor*inR + wetFactor*tmp1R);
+        inOutL[n] = (dryFactor*inL + wetFactor*tmp1L);
+        inOutR[n] = (dryFactor*inR + wetFactor*tmp1R);
       }
     }
     break;
@@ -481,8 +481,8 @@ void Quadrifex::processBlock(float *inOutL, float *inOutR, int numFrames)
                 + mixMatrix.getMatrixEntryFast(4, 4) * outputsR[3];
 
 
-        inOutL[n] = (float) (dryFactor*inL + wetFactor*tmp1L);
-        inOutR[n] = (float) (dryFactor*inR + wetFactor*tmp1R);
+        inOutL[n] = (dryFactor*inL + wetFactor*tmp1L);
+        inOutR[n] = (dryFactor*inR + wetFactor*tmp1R);
       }
     }
     break;
