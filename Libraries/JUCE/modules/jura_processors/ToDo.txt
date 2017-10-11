@@ -1,8 +1,4 @@
 ModSystem:
- -make new modulation modes:
-  -available on gui (done)
-  -recallable from state (done)
-  -available as default in ModulationTarget (done)
  -ModulatableSlider: show the modulation-range
  -clean up the files
 

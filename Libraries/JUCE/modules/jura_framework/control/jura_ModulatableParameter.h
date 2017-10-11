@@ -446,21 +446,12 @@ public:
     double z;
     switch(mode)  // maybe use function pointer instead of switch
     {
-    case ABSOLUTE:    z = d * m;               break;
-    case RELATIVE:    z = d * m * u;           break;
-    case EXPONENTIAL: z = u * pow(2, d*m) - u; break; // optimize using exp, or maybe pow2(d*m)
+    case ABSOLUTE:    z = d * m;             break;
+    case RELATIVE:    z = d * m * u;         break;
+    case EXPONENTIAL: z = u * exp2(d*m) - u; break; // maybe rename function to pow2
     default:          z = 0;
     }
     *targetValue += z;
-    
-    /*
-    // old:
-    // optimize away later:
-    double scaler = 1; // make this a member
-    if(relative)
-      scaler = target->unmodulatedValue;
-    *targetValue += *sourceValue * depth * scaler; // only this line shall remain after optimization
-    */
   }
 
 
@@ -476,23 +467,17 @@ public:
 
 protected:
 
-  /** Sets the modulation depth for this connection. Used a target callback in the depthParam. To 
-  keep our "depth" member consistent with the value of the "depthParam" Parameter object, outside
-  code should use setDepth.
-  Should not be used in state-recall because then, the depthParam won't be updated. 
-  ToDo: rename this to setDepthInternal (or something) and provide a setDepth implementation that 
-  *can* be used in state-recall. */
-  void setDepthMember(double newDepth)
-  {
-    depth = newDepth;
-  }
+  /** Sets the modulation depth for this connection. Used as target callback in the depthParam. To 
+  keep our "depth" member consistent with the value of the "depthParam" Parameter object. This is 
+  used only internally, client code should use setDepth. */
+  void setDepthMember(double newDepth) { depth = newDepth; }
 
   ModulationSource* source;
   ModulationTarget* target;
-  double* sourceValue;
-  double* targetValue;
-  double depth;
-  int mode = ABSOLUTE;
+  double* sourceValue;       // pointer to modulation source output signal
+  double* targetValue;       // pointer to target value
+  double depth;              // modulation depth
+  int mode = ABSOLUTE;       // application mode for modulation signal
 
   MetaControlledParameter* depthParam; // maybe it should be a ModulatableParameter? but that may
                                        // raise some issues - maybe later...
