@@ -210,9 +210,10 @@ XmlElement* ModulationConnection::getAsXml()
 
   switch(mode)
   {
-  case ABSOLUTE:    xml->setAttribute("Mode", "Absolute");    break;
-  case RELATIVE:    xml->setAttribute("Mode", "Relative");    break;
-  case EXPONENTIAL: xml->setAttribute("Mode", "Exponential"); break;
+  case ABSOLUTE:       xml->setAttribute("Mode", "Absolute");       break;
+  case RELATIVE:       xml->setAttribute("Mode", "Relative");       break;
+  case EXPONENTIAL:    xml->setAttribute("Mode", "Exponential");    break;
+  case MULTIPLICATIVE: xml->setAttribute("Mode", "Multiplicative"); break;
   }
   return xml;
 
@@ -512,9 +513,10 @@ void ModulationManager::setStateFromXml(const XmlElement& xmlState)
 
       typedef ModulationConnection::modModes MM;
       juce::String modeStr = conXml->getStringAttribute("Mode");
-      if(modeStr == "Absolute")    c->setMode(MM::ABSOLUTE);
-      if(modeStr == "Relative")    c->setMode(MM::RELATIVE);
-      if(modeStr == "Exponential") c->setMode(MM::EXPONENTIAL);
+      if(modeStr == "Absolute")       c->setMode(MM::ABSOLUTE);
+      if(modeStr == "Relative")       c->setMode(MM::RELATIVE);
+      if(modeStr == "Exponential")    c->setMode(MM::EXPONENTIAL);
+      if(modeStr == "Multiplicative") c->setMode(MM::MULTIPLICATIVE);
       addConnection(c);
     }
     else

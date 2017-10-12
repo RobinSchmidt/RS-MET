@@ -266,7 +266,7 @@ public:
 protected:
 
   // for getting and setting the min/max values of the mod-depth slider and for the clipping of the
-  // modulated value and getting/setting relative mode (maybe these should be inlined):
+  // modulated value and getting/setting relative mode:
   inline double getModDepthMin() { return assignedParameter->getMinValue(); }
   inline double getModDepthMax() { return assignedParameter->getMaxValue(); }
   inline int    getModMode()     { return modConnection->getMode(); }
@@ -282,7 +282,8 @@ protected:
     MOD_DEPTH_MAX,
     MOD_MODE_ABSOLUTE,
     MOD_MODE_RELATIVE,
-    MOD_MODE_EXPONENTIAL
+    MOD_MODE_EXPONENTIAL,
+    MOD_MODE_MULTIPLICATIVE
   };
 
   ModulationConnection* modConnection = nullptr; // needs to be assigned in constructor

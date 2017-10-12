@@ -404,9 +404,10 @@ public:
   the unmodulated base value, m the modulator output and d the modulation depth. */
   enum modModes
   {
-    ABSOLUTE = 0,  // d * m
-    RELATIVE,      // d * m * u
-    EXPONENTIAL    // u * 2^(d*m) - u
+    ABSOLUTE = 0,    // d * m
+    RELATIVE,        // d * m * u
+    EXPONENTIAL,     // u * 2^(d*m) - u
+    MULTIPLICATIVE   // u * m^d     - u
   };
 
   /** Constructor. You should pass a ModulationSource and a ModulationTarget. If you want to enable
@@ -452,12 +453,18 @@ public:
     double z;
     switch(mode)  // maybe use function pointer instead of switch
     {
-    case ABSOLUTE:    z = d * m;             break;
-    case RELATIVE:    z = d * m * u;         break;
-    case EXPONENTIAL: z = u * exp2(d*m) - u; break; // maybe rename function to pow2
-    default:          z = 0;
+    case ABSOLUTE:       z = d * m;             break;
+    case RELATIVE:       z = d * m * u;         break;
+    case EXPONENTIAL:    z = u * exp2(d*m) - u; break; // maybe rename function to pow2
+    case MULTIPLICATIVE: z = u * pow(m, d) - u; break; // what about 0^-1 = 1/0?
+    default:             z = 0;
     }
     *targetValue += z;
+
+    // multiplicative mode may produce infinity when it gets an input like m=0, d=-1: 0^-1 = 1/0.
+    // that in itself might later be clipped to max target value but what if one modulator produces
+    // inf and another one -inf because u is neagtive in the 2nd? then we get inf-inf = NaN
+    // ...maybe we should clip here already?
   }
 
 

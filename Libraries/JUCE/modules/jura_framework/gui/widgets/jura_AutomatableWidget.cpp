@@ -659,9 +659,10 @@ void rsModulationDepthSlider::rPopUpMenuChanged(RPopUpMenu* menu)
   }
   juce::String text = menu->getSelectedText();
   typedef ModulationConnection::modModes MM;
-  if(text == "Mode: Absolute")    setModMode(MM::ABSOLUTE);
-  if(text == "Mode: Relative")    setModMode(MM::RELATIVE);
-  if(text == "Mode: Exponential") setModMode(MM::EXPONENTIAL);
+  if(text == "Mode: Absolute")       setModMode(MM::ABSOLUTE);
+  if(text == "Mode: Relative")       setModMode(MM::RELATIVE);
+  if(text == "Mode: Exponential")    setModMode(MM::EXPONENTIAL);
+  if(text == "Mode: Multiplicative") setModMode(MM::MULTIPLICATIVE);
 }
 
 void rsModulationDepthSlider::addPopUpMenuItems()
@@ -676,9 +677,10 @@ void rsModulationDepthSlider::addPopUpMinMaxAndModeItems()
   rightClickPopUp->addItem(MOD_DEPTH_MAX, "Mod depth max");
   typedef ModulationConnection::modModes MM;
   int m = getModMode();
-  rightClickPopUp->addItem(MOD_MODE_ABSOLUTE,    "Mode: Absolute",    true, m == MM::ABSOLUTE);
-  rightClickPopUp->addItem(MOD_MODE_RELATIVE,    "Mode: Relative",    true, m == MM::RELATIVE);
-  rightClickPopUp->addItem(MOD_MODE_EXPONENTIAL, "Mode: Exponential", true, m == MM::EXPONENTIAL);
+  rightClickPopUp->addItem(MOD_MODE_ABSOLUTE,       "Mode: Absolute",       true, m == MM::ABSOLUTE);
+  rightClickPopUp->addItem(MOD_MODE_RELATIVE,       "Mode: Relative",       true, m == MM::RELATIVE);
+  rightClickPopUp->addItem(MOD_MODE_EXPONENTIAL,    "Mode: Exponential",    true, m == MM::EXPONENTIAL);
+  rightClickPopUp->addItem(MOD_MODE_MULTIPLICATIVE, "Mode: Multiplicative", true, m == MM::MULTIPLICATIVE);
 }
 
 //=================================================================================================

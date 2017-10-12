@@ -1,9 +1,8 @@
 ModSystem:
  -ModulatableSlider: show the modulation-range
- -since the fix for getting stuck, we trigger an assertion in the destructor (when ther is a 
-  connection)
-  ->fixed..or worked around...it's still weird
  -clean up the files
+ -BUG: when ladder cutoff is modulated and one then changes the resonance, this display shows
+  the mod plot with moudalted cutoff
 
 Chainer:
  -make the size of the selector popup adequate
