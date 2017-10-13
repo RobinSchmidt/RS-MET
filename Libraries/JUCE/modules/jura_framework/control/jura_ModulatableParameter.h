@@ -444,7 +444,7 @@ public:
   /** Returns the Parameter object that controls the amount of modulation */
   MetaControlledParameter* getDepthParameter() const { return depthParam; }
 
-  /** Applies the source-value to the target-value with given amount. */
+  /** Applies the source-value to the target-value, taking into account the modulation depth. */
   inline void apply()
   {
     double m = *sourceValue;

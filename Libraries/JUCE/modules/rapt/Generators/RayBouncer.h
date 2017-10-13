@@ -166,11 +166,6 @@ public:
   void setStartY(T newY);
   inline void setLaunchAngleDegrees(T newAngle) { rayBouncer.setLaunchAngle(T(PI/180)*newAngle); }
 
-
-
-
-
-
   /** \name Processing */
 
   /** Computes one x,y-pair of output values at a time. */
@@ -212,6 +207,56 @@ protected:
   // to complex animated shape and sound
   // maybe when the ellipse size is animated, we should compensate for any frequency change that
   // is caused by this - or maybe compensate only partially according to a user parameter
+
+};
+
+//=================================================================================================
+
+/** A simplified 1D version of the raybouncer concept. The particle just slides up and down on a 
+one dimensional line and gets reflected whenever it hits the floor or the ceiling. */
+
+template<class T>
+class rsRayBouncer1D
+{
+
+public:
+
+  /** \name Construction/Destruction */
+
+  /** Constructor.  */
+  rsRayBouncer1D();
+
+
+  inline T getSample()
+  {
+    T out = x;
+
+    x += dx;
+
+    // possibly multiple reflections:
+    while(x > ceil || x < floor)
+    {
+      if(x > ceil)
+      {
+        T over = x - ceil;
+        x = ceil - over;
+      }
+      if(x < floor)
+      {
+        T under = floor - x;
+        x = floor + under;
+      }
+    }
+
+    return out;
+  }
+
+protected:
+
+  T floor = 0, ceil = 1;
+  T sampleRate = 44100;
+  T dx = 0.01;
+  T x;
 
 };
 
