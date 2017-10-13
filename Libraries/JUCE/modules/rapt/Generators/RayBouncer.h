@@ -228,12 +228,19 @@ public:
 
   /** \name Setup */
 
+  /** Sets the floor. When the particle drops below that value, it gets reflected upward. */
   void setFloor(T newFloor) { floor = newFloor; }
+
+  /** Sets the ceiling. When the particle drops below that value, it gets reflected downward. */
   void setCeil( T newCeil)  { ceil = newCeil;   }  
   // todo: sanity checks (floor < ceil), maybe have something like abs(ceil-floor) > minDistance
    
-
+  /** Sets the increment for the upward part. */
   void setIncrement(T newIncrement) { inc = newIncrement; }
+
+  /** Sets the decrement for the downward part. */
+  void setDecrement(T newDecrement) { dec = newDecrement; }
+
 
   void setShape(T newShape) { shape = newShape; }
 
@@ -253,7 +260,7 @@ public:
       {
         T over = x - ceil;
         x = ceil - over;
-        dx = -inc;
+        dx = -dec;
       }
       if(x < floor)
       {
@@ -263,7 +270,6 @@ public:
       }
     }
   }
-
 
   inline T getSample()
   {
@@ -284,7 +290,8 @@ protected:
 
   T floor = 0, ceil = 1;
   T sampleRate = 44100;
-  T inc = T(0.01);
+  T inc = T(0.01);  
+  T dec = T(0.01);
   T dx  = T(0.01);
   T x   = 0;
   T start = 0;

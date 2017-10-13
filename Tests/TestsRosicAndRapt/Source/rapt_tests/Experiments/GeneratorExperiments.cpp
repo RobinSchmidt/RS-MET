@@ -191,7 +191,8 @@ void rayBouncer1D()
   rb.setFloor(    -0.0f);
   rb.setCeil(     +1.0f);
   rb.setIncrement( 0.01f);
-  rb.setShape(    +0.009f);
+  rb.setDecrement( 0.02f);
+  rb.setShape(    +0.000f);
 
   // create output sequence:
   static const int N = 500;   // number of output samples
