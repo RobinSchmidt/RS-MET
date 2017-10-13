@@ -258,14 +258,12 @@ public:
     {
       if(x > ceil)
       {
-        T over = x - ceil;
-        x = ceil - over;
+        x  = 2*ceil - x;    // optimize: have a ceil2 member which is 2*ceil
         dx = -dec;
       }
       if(x < floor)
       {
-        T under = floor - x;
-        x = floor + under;
+        x  = 2*floor - x;   // here too
         dx = inc;
       }
     }
