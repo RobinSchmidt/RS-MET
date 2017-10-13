@@ -12,8 +12,8 @@ void particleForceDistanceLaw()
   static const int N = 1000;
   static const int numExponents = 7;
   float exponents[numExponents] = { -3, -2, -1, 0, 1, 2, 3 };
-  float size1 = 0.01;
-  float size2 = 0.01;
+  float size1 = 0.01f;
+  float size2 = 0.01f;
 
   float test = ps.getForceByDistance(1, size1, size2);
 
@@ -107,17 +107,17 @@ void particleSystem()
 
 
   // place them at (-1,0,0) and (+1,0,0) with zero velocity initially:
-  ps.initialPositions[0]  = rsVector3DF(-0.5, +0.0, +0.0);
-  ps.initialPositions[1]  = rsVector3DF(+0.5, -0.0, +0.0);
-  ps.initialVelocities[0] = rsVector3DF( 0.0, -0.01, -0.0);
-  ps.initialVelocities[1] = rsVector3DF( 0.0, +0.01, +0.0);
+  ps.initialPositions[0]  = rsVector3DF(-0.5f, +0.0f,  +0.0f);
+  ps.initialPositions[1]  = rsVector3DF(+0.5f, -0.0f,  +0.0f);
+  ps.initialVelocities[0] = rsVector3DF( 0.0f, -0.01f, -0.0f);
+  ps.initialVelocities[1] = rsVector3DF( 0.0f, +0.01f, +0.0f);
 
   // in a first run, we only let them interact via gravitation - they should attract each other:
-  ps.setGravitationalConstant(1.0);
-  ps.setElectricConstant(0.0);
-  ps.setMagneticConstant(0.2);
+  ps.setGravitationalConstant(1.0f);
+  ps.setElectricConstant(0.0f);
+  ps.setMagneticConstant(0.2f);
   ps.setStepSize(stepSize);
-  ps.setForceLawExponent(2.0); // 2: inverse-square law (asymptotic), 0: force distance-independent
+  ps.setForceLawExponent(2.0f); // 2: inverse-square law (asymptotic), 0: force distance-independent
   //ps.setForceLawOffset(1.0);   // 0: non-asymptotic inverse power law
 
   // record trajectories and energies:
@@ -161,7 +161,7 @@ void particleSystem()
   //  -maybe we should apply the stepSize to the velocity update?
 }
 
-void rayBubble()
+void rayBouncer()
 {
   rsRayBouncerF rb;
   rb.setEllipseParameters(1, 2, float(PI/4), 0.1f, 0.2f);
@@ -182,5 +182,25 @@ void rayBubble()
   plt.addCommand("set size square");           // set aspect ratio to 1:1 ..encapsulate in GNUPlotter
   plt.addDataArrays(N, x, y);
   //plt.addDataArrays(Ne, xe, ye);
+  plt.plot();
+}
+
+void rayBouncer1D()
+{
+  rsRayBouncer1DF rb;
+  rb.setFloor(    -0.2f);
+  rb.setCeil(     +0.7f);
+  rb.setIncrement(+0.01f);
+  rb.setShape(    +0.0f);
+
+  // create output sequence:
+  static const int N = 500;   // number of output samples
+  float x[N];
+  rb.reset();
+  for(int n = 0; n < N; n++)
+    x[n] = rb.getSample();
+
+  GNUPlotter plt;
+  plt.addDataArrays(N, x);
   plt.plot();
 }

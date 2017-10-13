@@ -61,6 +61,7 @@ template RAPT::rsParticleSystem<float>;
 
 // Generators:
 template RAPT::rsRayBouncer<float>;
+template RAPT::rsRayBouncer1D<float>;
 
 // Modulation:
 template RAPT::rsBreakpointModulator<float>;

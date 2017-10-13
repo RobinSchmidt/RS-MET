@@ -213,7 +213,12 @@ protected:
 //=================================================================================================
 
 /** A simplified 1D version of the raybouncer concept. The particle just slides up and down on a 
-one dimensional line and gets reflected whenever it hits the floor or the ceiling. */
+one dimensional line and gets reflected whenever it hits the floor or the ceiling. 
+
+todo:
+-make it possible to change the shape by feedback (see elan's envelope for formulas)
+
+*/
 
 template<class T>
 class rsRayBouncer1D
@@ -221,42 +226,62 @@ class rsRayBouncer1D
 
 public:
 
-  /** \name Construction/Destruction */
+  /** \name Setup */
 
-  /** Constructor.  */
-  rsRayBouncer1D();
+  void setFloor(T newFloor) { floor = newFloor; }
+  void setCeil( T newCeil)  { ceil = newCeil;   }  
+  // todo: sanity checks (floor < ceil), maybe have something like abs(ceil-floor) > minDistance
+   
+
+  void setIncrement(T newIncrement) { inc = newIncrement; }
+
+  void setShape(T newShape) { shape = newShape; }
 
 
   inline T getSample()
   {
     T out = x;
 
-    x += dx;
+    // update:
+    x  += dx;
+    dx += shape*dx; //
 
-    // possibly multiple reflections:
+    // reflection(s):
     while(x > ceil || x < floor)
     {
       if(x > ceil)
       {
         T over = x - ceil;
         x = ceil - over;
+        dx = -inc;
       }
       if(x < floor)
       {
         T under = floor - x;
         x = floor + under;
+        dx = inc;
       }
     }
 
     return out;
   }
 
+  void reset() 
+  { 
+    x  = start; 
+    dx = inc;
+  }
+
+
 protected:
 
   T floor = 0, ceil = 1;
   T sampleRate = 44100;
-  T dx = 0.01;
-  T x;
+  T inc = T(0.01);
+  T dx  = T(0.01);
+  T x   = 0;
+  T start = 0;
+  T shape = 0;
 
 };
 

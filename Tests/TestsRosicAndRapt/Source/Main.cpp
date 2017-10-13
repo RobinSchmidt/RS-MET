@@ -61,11 +61,12 @@ int main(int argc, char* argv[])
   //smoothingFilterTransitionTimes();
 
   // Physics:
-  particleForceDistanceLaw();
+  //particleForceDistanceLaw();
   //particleSystem(); 
 
   // Generators:
-  //rayBubble();
+  //rayBouncer();
+  rayBouncer1D();
 
   // Graphics:
   //lineDrawing();

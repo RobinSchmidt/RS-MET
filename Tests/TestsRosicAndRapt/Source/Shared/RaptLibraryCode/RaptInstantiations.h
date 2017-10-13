@@ -36,6 +36,7 @@ typedef RAPT::rsParticleSystem<float> rsParticleSystemF;
 
 // Generators:
 typedef RAPT::rsRayBouncer<float> rsRayBouncerF;
+typedef RAPT::rsRayBouncer1D<float> rsRayBouncer1DF;
 
 // Modulation:
 typedef RAPT::rsBreakpointModulator<float> rsBreakpointModulatorF;
