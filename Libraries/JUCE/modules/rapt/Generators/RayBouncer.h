@@ -238,15 +238,15 @@ public:
   void setShape(T newShape) { shape = newShape; }
 
 
-  inline T getSample()
+  /** \name Processing */
+
+  void increment()
   {
-    T out = x;
+    x += dx + shape*x;
+  }
 
-    // update:
-    x  += dx;
-    dx += shape*dx; //
-
-    // reflection(s):
+  void reflect()
+  {
     while(x > ceil || x < floor)
     {
       if(x > ceil)
@@ -262,7 +262,14 @@ public:
         dx = inc;
       }
     }
+  }
 
+
+  inline T getSample()
+  {
+    T out = x;
+    increment();
+    reflect();
     return out;
   }
 
