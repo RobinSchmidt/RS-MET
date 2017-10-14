@@ -258,12 +258,16 @@ public:
     {
       if(x > ceil)
       {
-        x  = 2*ceil - x;    // optimize: have a ceil2 member which is 2*ceil
+        T over = x - ceil;
+        over *= dec/inc;      // assume decay-velocity from the moment of hitting the ceiling
+        x  = ceil - over;
         dx = -dec;
       }
       if(x < floor)
       {
-        x  = 2*floor - x;   // here too
+        T under = floor - x;
+        under *= inc/dec;     // assume attack velocity from the moment of hitting the floor
+        x = floor + under;
         dx = inc;
       }
     }
@@ -286,7 +290,7 @@ public:
 
 protected:
 
-  T floor = 0, ceil = 1;
+  T floor = 0, ceil = 1; // rename to min/max
   T sampleRate = 44100;
   T inc = T(0.01);  
   T dec = T(0.01);
