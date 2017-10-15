@@ -301,4 +301,30 @@ protected:
 
 };
 
+/*
+The update equation in increment() is:
+
+x += dx + shape*x;
+
+This is a recurrence relation of the form:
+
+x[0] = s                 // start value
+x[n] = b*x[n-1] + a      // b = 1 + shape, a = dx
+
+the first few term of which come out as:
+
+x[1] = b*x[0] + a                       = b * s +     a      
+x[2] = b*x[1] + a = b*(b*s + a) + a     = b^2*s + b * a
+x[3] = b*x[2] + a = b*(b^2*s + b*a) + a = b^3*s + b^2*a
+
+from which we see the genral pattern:
+
+x[n] = b^n * s + b^(n-1) * a
+
+...hmm, but wolfram alpha says:
+x(n) = (a b^n - a + s b^(n+1) - s b^n)/(b-1)
+for this input:
+RSolve[{x[n] == b x[n-1] + a,x[0]==s}, x[n], n]
+*/
+
 #endif
