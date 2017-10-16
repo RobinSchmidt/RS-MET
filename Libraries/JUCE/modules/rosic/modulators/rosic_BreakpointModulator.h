@@ -244,7 +244,7 @@ namespace rosic
     already existing breakpoint, for example). The integer return-value informs, at which index if
     the new breakpoint was inserted. It will return -1, when the breakpoint could not be
     inserted. */
-    int  insertBreakpoint(double newTimeStamp, double newLevel, int newShape = 0,
+    int  insertBreakpoint(double newTimeStamp, double newLevel, int newShape = -1,
       double newShapeAmount = 0.0);
 
     /** Removes a breakpoint from the vector. The return-value informs, if there was actually a

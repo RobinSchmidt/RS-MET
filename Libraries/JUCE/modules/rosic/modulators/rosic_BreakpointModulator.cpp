@@ -162,13 +162,27 @@ int BreakpointModulator::insertBreakpoint(double newTimeStamp,
         //else
         //  newBreakpoint.shapeAmount = newShapeAmount;
 
-        // code above has been deactivated - why (and since when) do we do that? - it breaks 
-        // patches that use Staistep shape. use the passed arguments no matter what:
-        newBreakpoint.shape = newShape;
-        newBreakpoint.shapeAmount = newShapeAmount;
-        // maybe the intention was that when the user inserts new breakpoints, the new one gets
-        // the same settings...in this case, maybe we should use -1 as default arguments and check
-        // against these values...or let the enum begin with index 1
+        //// code above has been deactivated - why (and since when) do we do that? - it breaks 
+        //// patches that use Stairstep shape. use the passed arguments no matter what:
+        //newBreakpoint.shape = newShape;
+        //newBreakpoint.shapeAmount = newShapeAmount;
+        //// maybe the intention was that when the user inserts new breakpoints, the new one gets
+        //// the same settings...in this case, maybe we should use -1 as default arguments and check
+        //// against these values...or let the enum begin with index 1
+
+        // yeah...that seems to be the case - let's copy neighbour values if and only if
+        // newShape == -1
+        if(newShape == -1)
+        {
+          newBreakpoint.shape       = data->breakpoints[bpIndex].shape;
+          newBreakpoint.shapeAmount = data->breakpoints[bpIndex].shapeAmount;
+        }
+        else
+        {
+          newBreakpoint.shape       = newShape;
+          newBreakpoint.shapeAmount = newShapeAmount;
+        }
+
 
 
         // ! enter critical section !

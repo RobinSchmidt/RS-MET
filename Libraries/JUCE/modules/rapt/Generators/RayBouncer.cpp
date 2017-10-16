@@ -222,6 +222,7 @@ T rsBouncillator<T>::getInstantForHitting(T w, T s, T a, T b)
 {
   return log((a+(b-1)*w)/(a+(b-1)*s)) / log(b); 
   // works for: b!=0, b!=1, a+b*s!=s, a+b*w!=w
+  // we should include a condition - if any of these conditions above do not hold, return 0.5)
 
   // The explicit equation for x[n] in predictOutput:
   // x(n) = (a b^n - a + s b^(n+1) - s b^n) / (b-1)
