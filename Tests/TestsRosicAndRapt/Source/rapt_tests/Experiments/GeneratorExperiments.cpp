@@ -168,12 +168,12 @@ void bouncillator()
   rb.setCeil(     +1.0f);
   rb.setIncrement( 0.05f);
   rb.setDecrement( 0.02f);
-  //rb.setShape(    +0.000f);
+  rb.setShape(    -0.015f);
 
   // create output sequence:
   static const int N = 500;   // number of output samples
   float x[N];
-  rb.reset();
+  rb.resetToMin();
   for(int n = 0; n < N; n++)
     x[n] = rb.getSample();
 
@@ -189,8 +189,8 @@ void bouncillatorFormula()
   float min   = -0.2f;
   float max   = +1.5f;
   float inc   =  0.04f;
-  float dec   =  0.02f;
-  float shape =  0.1f;
+  float dec   =  0.04f;
+  float shape =  0.01f;
   //float start = -0.2f;
 
   rsBouncillatorF bnc;
@@ -199,28 +199,23 @@ void bouncillatorFormula()
   bnc.setIncrement(inc);
   bnc.setDecrement(dec);
   bnc.setShape(shape);
-  //bnc.setStart(start);
 
-  // variables for the formulas:
-  float s = min;
-  float a = inc;
-  float b = 1+shape;
 
   // create output sequence using the bouncillator object:
-  static const int N = 30;   // number of output samples
+  static const int N = 60;   // number of output samples
   float x[N], xp[N];          // computed and predicted output
-  bnc.reset();
+  bnc.resetToMin();
+  //bnc.resetToMax();
   for(int n = 0; n < N; n++)
   {
     x[n]  = bnc.getSample();
-    //xp[n] = ((a-s)*pow(b, n) + s*pow(b, n+1) - a) / (b-1); // works for b!=1
-    xp[n] = bnc.predictOutput(float(n), s, a, b);
+    xp[n] = bnc.predictOutput(float(n), min, inc, 1+shape);
+    //xp[n] = bnc.predictOutput(float(n), max, -dec, 1+shape);
   }
 
   // predict instant of hitting the wall:
-  float w  = max;  // we want to hit the max-value
-  //float nw = log((a+(b-1)*w)/(a+(b-1)*s)) / log(b); // works for: b!=0, b!=1, a+b*s!=s, a+b*w!=w
-  float nw = bnc.getInstantForHitting(w, s, a, b);
+  float nw = bnc.getInstantForHitting(max, min, inc, 1+shape);
+  //float nw = bnc.getInstantForHitting(min, max, -dec, 1+shape);
 
   GNUPlotter plt;
   plt.addDataArrays(N, x);

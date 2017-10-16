@@ -204,6 +204,8 @@ T rsBouncillator<T>::predictOutput(T n, T s, T a, T b)
 {
   return ((a-s)*pow(b, n) + s*pow(b, n+1) - a) / (b-1); 
   // works for b!=1
+
+  // ...explain where formula comes from
 }
 
 template<class T>
@@ -238,24 +240,22 @@ void rsBouncillator<T>::reflectLinear()
 template<class T>
 void rsBouncillator<T>::reflectCurved()
 {
-  reflectLinear(); // preliminary
-  return;
-
+  //reflectLinear(); return; // preliminary
   while(x > max || x < min)
   {
     if(x > max)
     {
       T nw = getInstantForHitting(max, min, dx, 1+shape);
-      T nx = T(1) - (nw-int(nw)); // use floor function
-      x    = predictOutput(nx, min, dx, 1+shape);
+      T nx = T(1) - (nw-floor(nw));
       dx   = -dec;
+      x    = predictOutput(nx, max, dx, 1+shape);
     }
     if(x < min)
     {
       T nw = getInstantForHitting(min, max, dx, 1+shape);
-      T nx = T(1) - (nw-int(nw)); // use floor function
-      x    = predictOutput(nx, max, dx, 1+shape);
+      T nx = T(1) - (nw-floor(nw));
       dx   = inc;
+      x    = predictOutput(nx, min, dx, 1+shape);
     }
   }
 }

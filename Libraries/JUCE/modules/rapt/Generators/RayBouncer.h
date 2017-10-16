@@ -241,7 +241,8 @@ public:
   /** Sets the decrement for the downward part. */
   void setDecrement(T newDecrement) { dec = newDecrement; }
 
-
+  /** Sets up a shape parameter taht controls, how much of the current value will be added when 
+  computing the new current value, i.e. a kind of feedback. */
   void setShape(T newShape) { shape = newShape; }
 
   //void setStart(T newStart) { start = newStart; }
@@ -288,14 +289,23 @@ public:
     return out;
   }
 
-  /** Resets the object to its initial state. */
-  void reset() 
+  void resetToMin() 
   { 
-    //x  = start; 
     x  = min; 
     dx = inc;
   }
 
+  void resetToMax() 
+  { 
+    x  = max; 
+    dx = -dec;
+  }
+
+  /** Resets the object to its initial state. */
+  void reset()
+  {
+    resetToMin();
+  }
 
 protected:
 
@@ -305,7 +315,7 @@ protected:
   T dec = T(0.01);
   T dx  = T(0.01);
   T x   = 0;
-  //T start = 0;
+  //T start = 0; // spoils reflection formulas with curve?
   T shape = 0; // maybe have separate up/down shapes
 
 };
@@ -322,13 +332,9 @@ x[n] = b*x[n-1] + a      // b = 1 + shape, a = dx
 
 the first few term of which come out as:
 
-x[1] = b*x[0] + a                       = b * s +     a      
-x[2] = b*x[1] + a = b*(b*s + a) + a     = b^2*s + b * a
-x[3] = b*x[2] + a = b*(b^2*s + b*a) + a = b^3*s + b^2*a
-
-from which we see the genral pattern:
-
-x[n] = b^n * s + b^(n-1) * a
+x[1] = b*x[0] + a                           = b * s +  a      
+x[2] = b*x[1] + a = b*(b*s + a) + a         = b^2*s + b * a + a
+x[3] = b*x[2] + a = b*(b^2*s + b*a + a) + a = b^3*s + b^2*a + b*a + a
 
 ...hmm, but wolfram alpha says:
 x(n) = (a b^n - a + s b^(n+1) - s b^n)/(b-1)
