@@ -244,6 +244,8 @@ public:
 
   void setShape(T newShape) { shape = newShape; }
 
+  void setStart(T newStart) { start = newStart; }
+
 
   /** \name Processing */
 

@@ -182,6 +182,48 @@ void bouncillator()
   plt.plot();
 }
 
+void bouncillatorFormula()
+{
+  // test, whether the explicit formula for the particle poisition x[n] gives correct results
+
+  float min   = -0.2f;
+  float max   = +1.5f;
+  float inc   =  0.04f;
+  float dec   =  0.02f;
+  float shape =  0.1f;
+  float start = -0.2f;
+
+  rsBouncillatorF bnc;
+  bnc.setFloor(    min);
+  bnc.setCeil(     max);
+  bnc.setIncrement(inc);
+  bnc.setDecrement(dec);
+  bnc.setShape(shape);
+  bnc.setStart(start);
+
+  // variables for the formulas:
+  float s = start;
+  float a = inc;
+  float b = 1+shape;
+
+  // create output sequence using the bouncillator object:
+  static const int N = 30;   // number of output samples
+  float x[N], xp[N];          // computed and predicted output
+  bnc.reset();
+  for(int n = 0; n < N; n++)
+  {
+    x[n]  = bnc.getSample();
+    xp[n] = ((a-s)*pow(b, n) + s*pow(b, n+1) - a) / (b-1); // b != 1
+  }
+
+  // predict output, using explicit formula:
+
+  GNUPlotter plt;
+  plt.addDataArrays(N, x);
+  plt.addDataArrays(N, xp);
+  plt.plot();
+}
+
 void rayBouncer()
 {
   rsRayBouncerF rb;

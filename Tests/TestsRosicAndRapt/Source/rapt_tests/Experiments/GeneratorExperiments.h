@@ -8,6 +8,7 @@ void particleSystem();            // move to PhysicsExperiments
 
 
 void bouncillator();
+void bouncillatorFormula();
 void rayBouncer();
 
 
