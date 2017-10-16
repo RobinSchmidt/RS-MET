@@ -229,10 +229,10 @@ public:
   /** \name Setup */
 
   /** Sets the floor. When the particle drops below that value, it gets reflected upward. */
-  void setFloor(T newFloor) { floor = newFloor; }
+  void setFloor(T newFloor) { min = newFloor; }
 
   /** Sets the ceiling. When the particle drops below that value, it gets reflected downward. */
-  void setCeil( T newCeil)  { ceil = newCeil;   }  
+  void setCeil( T newCeil)  { max = newCeil;   }  
   // todo: sanity checks (floor < ceil), maybe have something like abs(ceil-floor) > minDistance
    
   /** Sets the increment for the upward part. */
@@ -292,14 +292,14 @@ public:
   void reset() 
   { 
     //x  = start; 
-    x  = floor; 
+    x  = min; 
     dx = inc;
   }
 
 
 protected:
 
-  T floor = 0, ceil = 1; // rename to min/max
+  T min = 0, max = 1;
   T sampleRate = 44100;
   T inc = T(0.01);  
   T dec = T(0.01);

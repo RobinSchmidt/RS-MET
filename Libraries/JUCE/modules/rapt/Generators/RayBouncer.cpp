@@ -216,20 +216,20 @@ T rsBouncillator<T>::getInstantForHitting(T w, T s, T a, T b)
 template<class T>
 void rsBouncillator<T>::reflectLinear()
 {
-  while(x > ceil || x < floor)
+  while(x > max || x < min)
   {
-    if(x > ceil)
+    if(x > max)
     {
-      T over = x - ceil;
+      T over = x - max;
       over *= dec/inc;      // assume decay-velocity from the moment of hitting the ceiling
-      x  = ceil - over;
+      x  = max - over;
       dx = -dec;
     }
-    if(x < floor)
+    if(x < min)
     {
-      T under = floor - x;
+      T under = min - x;
       under *= inc/dec;     // assume attack velocity from the moment of hitting the floor
-      x = floor + under;
+      x = min + under;
       dx = inc;
     }
   }
@@ -238,23 +238,23 @@ void rsBouncillator<T>::reflectLinear()
 template<class T>
 void rsBouncillator<T>::reflectCurved()
 {
-  //reflectLinear(); // preliminary
-  //return;
+  reflectLinear(); // preliminary
+  return;
 
-  while(x > ceil || x < floor)
+  while(x > max || x < min)
   {
-    if(x > ceil)
+    if(x > max)
     {
-      T nw = getInstantForHitting(ceil, floor, dx, 1+shape);
+      T nw = getInstantForHitting(max, min, dx, 1+shape);
       T nx = T(1) - (nw-int(nw)); // use floor function
-      x    = predictOutput(nx, floor, dx, 1+shape);
+      x    = predictOutput(nx, min, dx, 1+shape);
       dx   = -dec;
     }
-    if(x < floor)
+    if(x < min)
     {
-      T nw = getInstantForHitting(floor, ceil, dx, 1+shape);
+      T nw = getInstantForHitting(min, max, dx, 1+shape);
       T nx = T(1) - (nw-int(nw)); // use floor function
-      x    = predictOutput(nx, ceil, dx, 1+shape);
+      x    = predictOutput(nx, max, dx, 1+shape);
       dx   = inc;
     }
   }
