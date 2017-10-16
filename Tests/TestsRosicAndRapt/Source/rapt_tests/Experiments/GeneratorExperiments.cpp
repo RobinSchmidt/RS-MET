@@ -168,7 +168,7 @@ void bouncillator()
   rb.setCeil(     +1.0f);
   rb.setIncrement( 0.05f);
   rb.setDecrement( 0.02f);
-  rb.setShape(    -0.015f);
+  rb.setShape(    +0.016f);
 
   // create output sequence:
   static const int N = 500;   // number of output samples

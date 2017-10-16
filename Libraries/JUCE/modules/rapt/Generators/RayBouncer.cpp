@@ -274,4 +274,7 @@ void rsBouncillator<T>::reflectCurved()
       x    = predictOutput(nx, min, dx, 1+shape);         // use 1+shapeUp
     }
   }
+  // nnnaahhh...this is wrong - we can't pass min or max for s - we should use the actual value
+  // where it started - we need a member variable lastStart or something...this allows to 
+  // re-introduce the start parameter as well
 }

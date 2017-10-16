@@ -289,13 +289,13 @@ public:
 
   void resetToMin() 
   { 
-    x  = min; 
+    s = x = min; 
     dx = inc;
   }
 
   void resetToMax() 
   { 
-    x  = max; 
+    s = x = max; 
     dx = -dec;
   }
 
@@ -315,6 +315,8 @@ protected:
   T x   = 0;
   //T start = 0; // spoils reflection formulas with curve?
   T shape = 0; // maybe have separate up/down shapes
+
+  T s = 0;  // previous start
 
 };
 
