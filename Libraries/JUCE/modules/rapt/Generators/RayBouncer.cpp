@@ -223,10 +223,10 @@ T rsBouncillator<T>::getInstantForHitting(T w, T s, T a, T b)
   return log((a+(b-1)*w)/(a+(b-1)*s)) / log(b); 
   // works for: b!=0, b!=1, a+b*s!=s, a+b*w!=w
 
-  // The explicit equation for x[n] above:
+  // The explicit equation for x[n] in predictOutput:
   // x(n) = (a b^n - a + s b^(n+1) - s b^n) / (b-1)
   // can be solved for n when plugging a value w (for "wall") into the lhs. This gives:
-  // n = (log((a + (b - 1) w)/(a + (b - 1) s)) + 2 i ? c_1)/(log(b)) , c_1 integer
+  // n = (log((a + (b - 1) w)/(a + (b - 1) s)) + 2 i Pi c_1)/(log(b)) , c_1 integer
   // for the input:
   // Solve[w == (a b^n - a + s b^(n+1) - s b^n)/(b-1), n]
 }
