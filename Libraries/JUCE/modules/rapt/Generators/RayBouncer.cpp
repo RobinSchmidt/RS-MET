@@ -196,3 +196,33 @@ void rsRayBouncerDriver<T>::reset()
   rayBouncer.reset();
   // todo: reset modulators, when we have some...
 }
+
+//-------------------------------------------------------------------------------------------------
+
+template<class T>
+void rsBouncillator<T>::reflectLinear()
+{
+  while(x > ceil || x < floor)
+  {
+    if(x > ceil)
+    {
+      T over = x - ceil;
+      over *= dec/inc;      // assume decay-velocity from the moment of hitting the ceiling
+      x  = ceil - over;
+      dx = -dec;
+    }
+    if(x < floor)
+    {
+      T under = floor - x;
+      under *= inc/dec;     // assume attack velocity from the moment of hitting the floor
+      x = floor + under;
+      dx = inc;
+    }
+  }
+}
+
+template<class T>
+void rsBouncillator<T>::reflectCurved()
+{
+  reflectLinear(); // preliminary
+}

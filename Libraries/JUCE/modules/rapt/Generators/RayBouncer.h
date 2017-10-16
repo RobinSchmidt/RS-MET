@@ -249,40 +249,31 @@ public:
 
   /** \name Processing */
 
+  /** Increments our current value. */
   void increment()
   {
     x += dx + shape*x;
   }
 
-  void reflect()
-  {
-    while(x > ceil || x < floor)
-    {
-      if(x > ceil)
-      {
-        T over = x - ceil;
-        over *= dec/inc;      // assume decay-velocity from the moment of hitting the ceiling
-        x  = ceil - over;
-        dx = -dec;
-      }
-      if(x < floor)
-      {
-        T under = floor - x;
-        under *= inc/dec;     // assume attack velocity from the moment of hitting the floor
-        x = floor + under;
-        dx = inc;
-      }
-    }
-  }
+  /** Computes reflection without taking into account curving. */
+  void reflectLinear();
 
+  /** Computes reflection taking into account curving. */
+  void reflectCurved();
+
+  /** Produces one output sample at a time. */
   inline T getSample()
   {
     T out = x;
     increment();
-    reflect();
+    if(shape == 0)  // maybe use abs(shape) < eps or something for numerical robustness
+      reflectLinear();
+    else
+      reflectCurved();
     return out;
   }
 
+  /** Resets the object to its initial state. */
   void reset() 
   { 
     x  = start; 
