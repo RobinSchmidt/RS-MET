@@ -261,20 +261,17 @@ void rsBouncillator<T>::reflectCurved()
   {
     if(x > max)
     {
-      T nw = getInstantForHitting(max, min, dx, 1+shape); // use 1+shapeUp
-      T nx = T(1) - (nw-floor(nw));
-      dx   = -dec;
-      x    = predictOutput(nx, max, dx, 1+shape);         // use 1+shapeDown
+      T nw  = getInstantForHitting(max, s, dx, 1+shape); // use 1+shapeUp
+      T nx  = T(1) - (nw-floor(nw));
+      dx    = -dec;
+      s = x = predictOutput(nx, max, dx, 1+shape);       // use 1+shapeDown
     }
     if(x < min)
     {
-      T nw = getInstantForHitting(min, max, dx, 1+shape); // use 1+shapeDown
-      T nx = T(1) - (nw-floor(nw));
-      dx   = inc;
-      x    = predictOutput(nx, min, dx, 1+shape);         // use 1+shapeUp
+      T nw  = getInstantForHitting(min, s, dx, 1+shape); // use 1+shapeDown
+      T nx  = T(1) - (nw-floor(nw));
+      dx    = inc;
+      s = x = predictOutput(nx, min, dx, 1+shape);       // use 1+shapeUp
     }
   }
-  // nnnaahhh...this is wrong - we can't pass min or max for s - we should use the actual value
-  // where it started - we need a member variable lastStart or something...this allows to 
-  // re-introduce the start parameter as well
 }
