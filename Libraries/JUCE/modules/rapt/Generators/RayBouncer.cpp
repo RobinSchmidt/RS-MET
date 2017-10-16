@@ -238,5 +238,24 @@ void rsBouncillator<T>::reflectLinear()
 template<class T>
 void rsBouncillator<T>::reflectCurved()
 {
-  reflectLinear(); // preliminary
+  //reflectLinear(); // preliminary
+  //return;
+
+  while(x > ceil || x < floor)
+  {
+    if(x > ceil)
+    {
+      T nw = getInstantForHitting(ceil, floor, dx, 1+shape);
+      T nx = T(1) - (nw-int(nw)); // use floor function
+      x    = predictOutput(nx, floor, dx, 1+shape);
+      dx   = -dec;
+    }
+    if(x < floor)
+    {
+      T nw = getInstantForHitting(floor, ceil, dx, 1+shape);
+      T nx = T(1) - (nw-int(nw)); // use floor function
+      x    = predictOutput(nx, ceil, dx, 1+shape);
+      dx   = inc;
+    }
+  }
 }

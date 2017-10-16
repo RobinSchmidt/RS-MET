@@ -244,7 +244,7 @@ public:
 
   void setShape(T newShape) { shape = newShape; }
 
-  void setStart(T newStart) { start = newStart; }
+  //void setStart(T newStart) { start = newStart; }
 
 
 
@@ -291,7 +291,8 @@ public:
   /** Resets the object to its initial state. */
   void reset() 
   { 
-    x  = start; 
+    //x  = start; 
+    x  = floor; 
     dx = inc;
   }
 
@@ -304,7 +305,7 @@ protected:
   T dec = T(0.01);
   T dx  = T(0.01);
   T x   = 0;
-  T start = 0;
+  //T start = 0;
   T shape = 0; // maybe have separate up/down shapes
 
 };

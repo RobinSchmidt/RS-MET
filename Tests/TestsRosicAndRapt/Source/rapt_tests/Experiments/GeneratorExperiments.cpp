@@ -191,7 +191,7 @@ void bouncillatorFormula()
   float inc   =  0.04f;
   float dec   =  0.02f;
   float shape =  0.1f;
-  float start = -0.2f;
+  //float start = -0.2f;
 
   rsBouncillatorF bnc;
   bnc.setFloor(    min);
@@ -199,10 +199,10 @@ void bouncillatorFormula()
   bnc.setIncrement(inc);
   bnc.setDecrement(dec);
   bnc.setShape(shape);
-  bnc.setStart(start);
+  //bnc.setStart(start);
 
   // variables for the formulas:
-  float s = start;
+  float s = min;
   float a = inc;
   float b = 1+shape;
 
