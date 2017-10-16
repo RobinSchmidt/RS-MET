@@ -213,10 +213,12 @@ void bouncillatorFormula()
   for(int n = 0; n < N; n++)
   {
     x[n]  = bnc.getSample();
-    xp[n] = ((a-s)*pow(b, n) + s*pow(b, n+1) - a) / (b-1); // b != 1
+    xp[n] = ((a-s)*pow(b, n) + s*pow(b, n+1) - a) / (b-1); // works for b!=1
   }
 
-  // predict output, using explicit formula:
+  // predict instant of hitting the wall:
+  float w  = max;  // we want to hit the max-value
+  float nw = log((a+(b-1)*w)/(a+(b-1)*s)) / log(b); // works for: b!=0, b!=1, a+b*s!=s, a+b*w!=w
 
   GNUPlotter plt;
   plt.addDataArrays(N, x);
