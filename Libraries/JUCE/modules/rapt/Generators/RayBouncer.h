@@ -221,7 +221,7 @@ todo:
 */
 
 template<class T>
-class rsRayBouncer1D
+class rsBouncillator
 {
 
 public:
@@ -325,6 +325,12 @@ x[n] = b^n * s + b^(n-1) * a
 x(n) = (a b^n - a + s b^(n+1) - s b^n)/(b-1)
 for this input:
 RSolve[{x[n] == b x[n-1] + a,x[0]==s}, x[n], n]
+
+plugging in the "wall" value w for the lhs in the solution and solving for n:
+Solve[w == (a b^n - a + s b^(n+1) - s b^n)/(b-1), n]
+gives:
+n = (log((a + (b - 1) w)/(a + (b - 1) s)) + 2 i ? c_1)/(log(b)) , c_1 integer
+
 */
 
 #endif

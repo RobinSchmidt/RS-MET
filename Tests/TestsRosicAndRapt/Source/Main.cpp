@@ -65,8 +65,8 @@ int main(int argc, char* argv[])
   //particleSystem(); 
 
   // Generators:
+  bouncillator();
   //rayBouncer();
-  rayBouncer1D();
 
   // Graphics:
   //lineDrawing();

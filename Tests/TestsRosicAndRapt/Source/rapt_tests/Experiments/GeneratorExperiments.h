@@ -7,7 +7,8 @@ void particleForceDistanceLaw();
 void particleSystem();            // move to PhysicsExperiments
 
 
+void bouncillator();
 void rayBouncer();
-void rayBouncer1D();
+
 
 #endif

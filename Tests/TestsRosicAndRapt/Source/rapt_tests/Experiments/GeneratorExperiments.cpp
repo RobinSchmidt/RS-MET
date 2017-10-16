@@ -161,6 +161,27 @@ void particleSystem()
   //  -maybe we should apply the stepSize to the velocity update?
 }
 
+void bouncillator()
+{
+  rsBouncillatorF rb;
+  rb.setFloor(    -0.0f);
+  rb.setCeil(     +1.0f);
+  rb.setIncrement( 0.05f);
+  rb.setDecrement( 0.02f);
+  //rb.setShape(    +0.000f);
+
+  // create output sequence:
+  static const int N = 500;   // number of output samples
+  float x[N];
+  rb.reset();
+  for(int n = 0; n < N; n++)
+    x[n] = rb.getSample();
+
+  GNUPlotter plt;
+  plt.addDataArrays(N, x);
+  plt.plot();
+}
+
 void rayBouncer()
 {
   rsRayBouncerF rb;
@@ -185,23 +206,4 @@ void rayBouncer()
   plt.plot();
 }
 
-void rayBouncer1D()
-{
-  rsRayBouncer1DF rb;
-  rb.setFloor(    -0.0f);
-  rb.setCeil(     +1.0f);
-  rb.setIncrement( 0.05f);
-  rb.setDecrement( 0.02f);
-  //rb.setShape(    +0.000f);
 
-  // create output sequence:
-  static const int N = 500;   // number of output samples
-  float x[N];
-  rb.reset();
-  for(int n = 0; n < N; n++)
-    x[n] = rb.getSample();
-
-  GNUPlotter plt;
-  plt.addDataArrays(N, x);
-  plt.plot();
-}

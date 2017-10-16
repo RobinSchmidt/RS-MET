@@ -35,8 +35,8 @@ typedef RAPT::rsStateVariableFilter<float, float> rsStateVariableFilterFF;
 typedef RAPT::rsParticleSystem<float> rsParticleSystemF;
 
 // Generators:
+typedef RAPT::rsBouncillator<float> rsBouncillatorF;
 typedef RAPT::rsRayBouncer<float> rsRayBouncerF;
-typedef RAPT::rsRayBouncer1D<float> rsRayBouncer1DF;
 
 // Modulation:
 typedef RAPT::rsBreakpointModulator<float> rsBreakpointModulatorF;
