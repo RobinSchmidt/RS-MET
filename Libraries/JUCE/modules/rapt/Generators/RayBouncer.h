@@ -316,7 +316,7 @@ protected:
   //T start = 0; // spoils reflection formulas with curve?
   T shape = 0; // maybe have separate up/down shapes
 
-  T s = 0;  // previous start
+  T s = 0;  // previous start value (1st sample (index 0, i.e. x[0]) after bounce)
 
 };
 

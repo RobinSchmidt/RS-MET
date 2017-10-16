@@ -240,14 +240,14 @@ void rsBouncillator<T>::reflectLinear()
     {
       T over = x - max;
       over *= dec/inc;      // assume decay-velocity from the moment of hitting the ceiling
-      x  = max - over;
+      s = x = max - over;
       dx = -dec;
     }
     if(x < min)
     {
       T under = min - x;
       under *= inc/dec;     // assume attack velocity from the moment of hitting the floor
-      x = min + under;
+      s = x = min + under;
       dx = inc;
     }
   }
