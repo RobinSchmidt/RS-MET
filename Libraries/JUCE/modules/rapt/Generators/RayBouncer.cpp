@@ -205,7 +205,16 @@ T rsBouncillator<T>::predictOutput(T n, T s, T a, T b)
   return ((a-s)*pow(b, n) + s*pow(b, n+1) - a) / (b-1); 
   // works for b!=1
 
-  // ...explain where formula comes from
+  // The update equation in increment() is:
+  // x += dx + shape*x;
+  // This is a recurrence relation of the form:
+  // x[0] = s                 // start value
+  // x[n] = b*x[n-1] + a      // b = 1 + shape, a = dx
+  // wolfram alpha can solve this recurrence for an explicit expression of x[n], in terms of n with
+  // parameters s,a,b - the result is:
+  // x(n) = (a b^n - a + s b^(n+1) - s b^n) / (b-1)
+  // the input was:
+  // RSolve[{x[n] == b x[n-1] + a,x[0]==s}, x[n], n]
 }
 
 template<class T>
@@ -213,6 +222,13 @@ T rsBouncillator<T>::getInstantForHitting(T w, T s, T a, T b)
 {
   return log((a+(b-1)*w)/(a+(b-1)*s)) / log(b); 
   // works for: b!=0, b!=1, a+b*s!=s, a+b*w!=w
+
+  // The explicit equation for x[n] above:
+  // x(n) = (a b^n - a + s b^(n+1) - s b^n) / (b-1)
+  // can be solved for n when plugging a value w (for "wall") into the lhs. This gives:
+  // n = (log((a + (b - 1) w)/(a + (b - 1) s)) + 2 i ? c_1)/(log(b)) , c_1 integer
+  // for the input:
+  // Solve[w == (a b^n - a + s b^(n+1) - s b^n)/(b-1), n]
 }
 
 template<class T>
@@ -245,17 +261,17 @@ void rsBouncillator<T>::reflectCurved()
   {
     if(x > max)
     {
-      T nw = getInstantForHitting(max, min, dx, 1+shape);
+      T nw = getInstantForHitting(max, min, dx, 1+shape); // use 1+shapeUp
       T nx = T(1) - (nw-floor(nw));
       dx   = -dec;
-      x    = predictOutput(nx, max, dx, 1+shape);
+      x    = predictOutput(nx, max, dx, 1+shape);         // use 1+shapeDown
     }
     if(x < min)
     {
-      T nw = getInstantForHitting(min, max, dx, 1+shape);
+      T nw = getInstantForHitting(min, max, dx, 1+shape); // use 1+shapeDown
       T nx = T(1) - (nw-floor(nw));
       dx   = inc;
-      x    = predictOutput(nx, min, dx, 1+shape);
+      x    = predictOutput(nx, min, dx, 1+shape);         // use 1+shapeUp
     }
   }
 }
