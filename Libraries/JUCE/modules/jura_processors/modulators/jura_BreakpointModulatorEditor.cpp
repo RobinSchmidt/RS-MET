@@ -125,7 +125,7 @@ void BreakpointModulatorGlobalEditor::rButtonClicked(RButton *buttonThatWasClick
   moduleToEdit->markStateAsDirty();
 }
 
-void BreakpointModulatorGlobalEditor::rSliderValueChanged(RSlider *sliderThatHasChanged)
+void BreakpointModulatorGlobalEditor::rSliderValueChanged(RSlider *s)
 {
   if( modulatorToEdit == NULL )
     return;
@@ -703,8 +703,12 @@ void BreakpointModulatorEditor::changeListenerCallback(ChangeBroadcaster *object
     breakpointParameterEditor->selectBreakpoint(breakpointEditor->getSelectedBreakpointIndex());
     breakpointZoomer->updateScrollbars();
   }
-  else if( objectThatHasChanged == breakpointParameterEditor )
+  else if(objectThatHasChanged == breakpointParameterEditor)
+  {
     breakpointEditor->updatePlotCurveData();
+    breakpointEditor->updateMaximumRange();
+    breakpointZoomer->updateScrollbars();
+  }
 
   moduleToEdit->markStateAsDirty();
   sendChangeMessage();
