@@ -247,6 +247,21 @@ public:
   void setStart(T newStart) { start = newStart; }
 
 
+
+  /** \name Inquiry */
+
+  /** Predicts the output for a (possibly non-integer) sample index n. 
+  ..explain s,b,a
+  */
+  T predictOutput(T n, T s, T a, T b);
+
+  /** Computes the time-instant at which the given value of w will be hit (in samples, likely 
+  non-integer valued) */
+  T getInstantForHitting(T w, T s, T a, T b);
+
+
+
+
   /** \name Processing */
 
   /** Increments our current value. */
@@ -290,7 +305,7 @@ protected:
   T dx  = T(0.01);
   T x   = 0;
   T start = 0;
-  T shape = 0;
+  T shape = 0; // maybe have separate up/down shapes
 
 };
 

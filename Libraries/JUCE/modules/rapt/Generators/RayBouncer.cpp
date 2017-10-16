@@ -200,6 +200,20 @@ void rsRayBouncerDriver<T>::reset()
 //-------------------------------------------------------------------------------------------------
 
 template<class T>
+T rsBouncillator<T>::predictOutput(T n, T s, T a, T b)
+{
+  return ((a-s)*pow(b, n) + s*pow(b, n+1) - a) / (b-1); 
+  // works for b!=1
+}
+
+template<class T>
+T rsBouncillator<T>::getInstantForHitting(T w, T s, T a, T b)
+{
+  return log((a+(b-1)*w)/(a+(b-1)*s)) / log(b); 
+  // works for: b!=0, b!=1, a+b*s!=s, a+b*w!=w
+}
+
+template<class T>
 void rsBouncillator<T>::reflectLinear()
 {
   while(x > ceil || x < floor)
