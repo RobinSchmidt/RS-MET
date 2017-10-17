@@ -87,12 +87,12 @@ public:
   void resized() override;
 
   /** Overrides the paint-function of the component base-class. */
-  virtual void paint(Graphics &g);
+  virtual void paint(Graphics &g) override;
 
   /** Overrides setDirty() to initiate a re-drawing. */
   //virtual void setDirty(bool shouldSetToDirty = true);
 
-  virtual void enablementChanged() { RWidget::enablementChanged(); }
+  virtual void enablementChanged() override { RWidget::enablementChanged(); }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -540,7 +540,7 @@ protected:
   virtual void setColours(const Colour newBackgroundColour, const Colour newOutlineColour,
     const Colour newHandleColour, const Colour newTextColour, const Colour newSpecialColour1,
     const Colour newSpecialColour2) {};
-  virtual void setColourScheme(const WidgetColourScheme& newColourScheme) {}
+  virtual void setColourScheme(const WidgetColourScheme& newColourScheme) override {}
 
 
   juce_UseDebuggingNewOperator;

@@ -2,6 +2,7 @@
 #define jura_AutomatableWidget_h
 
 class rsModulationConnectionWidget;
+class AutomatableWidget;
 
 /** A component for setting up the modulations of some ModulationTarget. */
 

@@ -12,8 +12,8 @@ public:
 
   AudioModuleEditor* createEditor() override;
 
-  virtual void parameterChanged(Parameter* parameterThatHasChanged);
-  virtual void handleMidiMessage(MidiMessage message);
+  virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
+  virtual void handleMidiMessage(MidiMessage message) override;
 
   virtual void getSampleFrameStereo(double *inOutL, double *inOutR) { }
 

@@ -202,7 +202,7 @@ public:
 
   /** Callback to indicate that a parameter has changed - subclasses should override this and
   update their signal processing accordingly. */
-  virtual void parameterChanged(Parameter* parameterThatHasChanged);
+  virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
 
   /** Calls a parameterChanged for each of the observed parameters - this should trigger the
   appropriate updating of the signal processing core in the subclasses. */
@@ -218,10 +218,10 @@ public:
 
   /** Recalls a state (i.e. the settings of all relevant parameters) from an XmlElement. */
   virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 
-    bool markAsClean);
+    bool markAsClean) override;
 
   /** Returns the state (i.e. the settings of all relevant parameters) in form of an XmlElement. */
-  virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean);
+  virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean) override;
 
   /** Converts a state which might possibly be from an older version to the current patch-format. 
   The baseclass implementation just returns the state as is, but will trigger a debug-break if the 
@@ -476,7 +476,7 @@ public:
 
   /** Updates the widgets according to the state of the assignedParameter (if any) and updates the 
   state-widget set. calls updateWidgetEnablement(). */
-  virtual void updateWidgetsAccordingToState();
+  virtual void updateWidgetsAccordingToState() override;
 
   /** Override this if you want to update the enablement of some widgets according to the state
   of the module. Will be called from updateWidgetsAccordingToState(). */

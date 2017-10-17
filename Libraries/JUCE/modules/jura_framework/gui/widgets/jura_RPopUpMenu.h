@@ -143,13 +143,13 @@ public:
 
   /** Overriden from RTreeViewObserver. */
   virtual void treeNodeClicked(RTreeView *treeView, RTreeViewNode *nodeThatWasClicked, 
-    const MouseEvent &mouseEvent, int clickPosition);
+    const MouseEvent &mouseEvent, int clickPosition) override;
 
   /** Overriden from RTreeViewObserver. */
-  virtual void treeNodeChanged(RTreeView *treeView, RTreeViewNode *nodeThatHasChanged);
+  virtual void treeNodeChanged(RTreeView *treeView, RTreeViewNode *nodeThatHasChanged) override;
 
   /** Overriden to set up the size of the content-component. */
-  virtual void resized();
+  virtual void resized() override;
 
   //virtual void paint(Graphics &g);
 
