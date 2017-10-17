@@ -176,18 +176,19 @@ ModulationConnection::ModulationConnection(ModulationSource* _source, Modulation
 
   double depthMin = target->getDefaultModulationDepthMin();
   double depthMax = target->getDefaultModulationDepthMax();
+  double depthDef = clip(0, depthMin, depthMax);      // default depth
   depth = clip(target->getInitialModulationDepth(), depthMin, depthMax);
 
-  //if(depthMin <= 0.0 && depthMax >= 0.0)
-  //  depth = 0.0;
-  //else
-  //  depth = 0.5 * (depthMin + depthMax);
-
   juce::String name = source->getModulationSourceName(); // should we use the displayName here?
-  depthParam = new MetaControlledParameter(name, depthMin, depthMax, depth, Parameter::LINEAR, 0.0);
+  depthParam = new 
+    MetaControlledParameter(name, depthMin, depthMax, depthDef, Parameter::LINEAR, 0.0);
+  depthParam->setValue(depth);
   depthParam->setValueChangeCallback<ModulationConnection>(
     this, &ModulationConnection::setDepthMember);
   depthParam->setMetaParameterManager(metaManager);
+
+  // what, if the user changes min/max at runtime in a way such that the default value is not 
+  // within the min/max range anymore? do we need additional consistency checks?
 }
 
 ModulationConnection::~ModulationConnection()
