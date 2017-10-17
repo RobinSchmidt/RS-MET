@@ -92,6 +92,8 @@ class JUCE_API AudioModuleChainObserver
 {
 
 public:
+    
+  virtual ~AudioModuleChainObserver() {}
 
   /** Called whenever a module was added to the chain. Your observer subclass may want to keep a 
   pointer to the module to modify it, create an editor, etc. */

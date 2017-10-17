@@ -1,7 +1,7 @@
 rsModulationSetup::rsModulationSetup(AutomatableWidget* widgetToModulate, 
   MetaParameterManager* metaManagerTouse)
-  : widget(widgetToModulate)
-  , rsDeletionRequester(widgetToModulate)
+  : rsDeletionRequester(widgetToModulate)
+  , widget(widgetToModulate)
   , metaManager(metaManagerTouse)
 {
   addWidget( modulationsLabel = new RTextField("Modulations") );

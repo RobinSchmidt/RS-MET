@@ -440,7 +440,7 @@ int ModulationManager::numRegisteredSourcesOfType(ModulationSource* source)
   int result = 0;
   for(int i = 0; i < size(availableSources); i++)
   {
-    if(typeid(*source) == typeid(*availableSources[i]))
+    if(typeid(*source) == typeid(*availableSources[i])) // gives warning on mac
       result++;
   }
   return result;

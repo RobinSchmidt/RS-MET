@@ -184,7 +184,7 @@ void rsLineDrawer<TPix, TWgt, TCor>::setupAlgorithmVariables(TCor x0, TCor y0, T
   dx    = x1 - x0;                     // x-distance
   dy    = y1 - y0;                     // y-distance
   L     = sqrt(dx*dx + dy*dy);         // length of the line
-  steep = abs(dy) > std::abs(dx);
+  steep = std::abs(dy) > std::abs(dx);
   if(steep){                           // swap roles of x and y for steep lines
     rsSwap(dx, dy);
     rsSwap(x0, y0);
@@ -210,7 +210,7 @@ void rsLineDrawer<TPix, TWgt, TCor>::setupAlgorithmVariables(TCor x0, TCor y0, T
   // compute loop limits:
   d = w2;                                     // end-cap extension
   if(!roundCaps)
-    d *= (abs(dx)+std::abs(dy))/L;
+    d *= (std::abs(dx)+std::abs(dy))/L;
   xs  = rsLimit((int)floor(x0-d), 0, xMax);   // start of left cap (and overall line)
   xel = rsLimit((int)ceil( x0+d), 0, xMax);   // end of left cap
   xsr = rsLimit((int)floor(x1-d), 0, xMax);   // start of right cap
