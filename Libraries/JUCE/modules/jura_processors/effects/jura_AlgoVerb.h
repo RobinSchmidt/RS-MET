@@ -27,12 +27,12 @@ public:
   //-----------------------------------------------------------------------------------------------
   // automation and state management:
 
-  virtual void parameterChanged(Parameter* parameterThatHasChanged);
+  virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
 
   //-----------------------------------------------------------------------------------------------
   // parameter settings:
 
-  virtual void setSampleRate(double newSampleRate)
+  virtual void setSampleRate(double newSampleRate) override
   {
     wrappedAlgoVerb->setSampleRate((float)newSampleRate);
   }
@@ -54,7 +54,7 @@ public:
   //---------------------------------------------------------------------------------------------
   // event processing:
 
-  virtual void reset()
+  virtual void reset() override
   {
     wrappedAlgoVerb->reset();
   }

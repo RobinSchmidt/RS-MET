@@ -25,7 +25,7 @@ public:
   //---------------------------------------------------------------------------------------------
   // parameter settings:
 
-  virtual void setSampleRate(double newSampleRate)
+  virtual void setSampleRate(double newSampleRate) override
   {
     wrappedFourOscSection->setSampleRate(newSampleRate);
   }

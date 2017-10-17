@@ -115,8 +115,8 @@ public:
   //-----------------------------------------------------------------------------------------------
   // callbacks:
 
-  virtual void parameterChanged(Parameter* parameterThatHasChanged);
-  virtual void parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted);
+  virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
+  virtual void parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted) override;
 
   /** This method is called when one of the assigned rosic::AutomatableParameters has been changed.
   We override it here in the subclass to do the actual GUI update. */
@@ -128,13 +128,13 @@ public:
 
   /** Overrides mouseDown for adjusting the frequency and resonance and lets a context menu pop up 
   when the right button is clicked for MIDI-learn functionality. */
-  virtual void mouseDown(const MouseEvent& e);
+  virtual void mouseDown(const MouseEvent& e) override;
 
   /** Overrides mouseDrag for adjusting the frequency and resonance. */
-  virtual void mouseDrag(const MouseEvent& e);
+  virtual void mouseDrag(const MouseEvent& e) override;
 
   /** Overrides the resized-method. */
-  virtual void resized();
+  virtual void resized() override;
 
   /** Updates the frequency response plot. */
   virtual void updatePlot();

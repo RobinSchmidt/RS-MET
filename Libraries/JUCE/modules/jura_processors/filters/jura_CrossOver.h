@@ -20,7 +20,7 @@ public:
 
   //virtual void parameterChanged(Parameter* parameterThatHasChanged);
 
-  virtual void setSampleRate(double newSampleRate)
+  virtual void setSampleRate(double newSampleRate) override
   {
     ScopedLock scopedLock(*lock);
     wrappedCrossOver->setSampleRate(newSampleRate);
@@ -62,7 +62,7 @@ public:
     }
   }
 
-  virtual void reset()
+  virtual void reset() override
   {
     ScopedLock scopedLock(*lock);
     wrappedCrossOver->resetBuffers();

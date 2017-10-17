@@ -58,24 +58,24 @@ public:
 //---------------------------------------------------------------------------------------------
 // overrides:
 
-  virtual void parameterChanged(Parameter* parameterThatHasChanged);
+  virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
 
   virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
-    bool markAsClean);
+    bool markAsClean) override;
 
-  virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean);
+  virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean) override;
 
-  virtual void setSampleRate(double newSampleRate)
+  virtual void setSampleRate(double newSampleRate) override
   {
     ScopedLock scopedLock(*lock);
     wrappedQuadrifex->setSampleRate(newSampleRate);
   }
-  virtual void setBeatsPerMinute(double newBpm)
+  virtual void setBeatsPerMinute(double newBpm) override
   {
     ScopedLock scopedLock(*lock);
     wrappedQuadrifex->setTempoInBPM(newBpm);
   }
-  virtual void trigger()
+  virtual void trigger() override
   {
     ScopedLock scopedLock(*lock);
     wrappedQuadrifex->trigger();
@@ -128,7 +128,7 @@ public:
   }
   */
 
-  virtual void reset()
+  virtual void reset() override
   {
     ScopedLock scopedLock(*lock);
     wrappedQuadrifex->reset();

@@ -132,17 +132,17 @@ public:
 
   AudioModuleEditor* createEditor() override;
 
-  virtual void parameterChanged(Parameter* parameterThatHasChanged);
+  virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
 
   virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 
-    bool markAsClean);
-  virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean);
+    bool markAsClean) override;
+  virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean) override;
 
   //virtual XmlElement EchoLabAudioModule::convertXmlStateIfNecessary(const XmlElement& xmlState);
 
   // delegations to rosic::EchoLab withh added thread-safety and possible additional actions:
-  virtual void setSampleRate(double newSampleRate);
-  virtual void setBeatsPerMinute(double newBpm);
+  virtual void setSampleRate(double newSampleRate) override;
+  virtual void setBeatsPerMinute(double newBpm) override;
   int addDelayLine(double newDelayTime, double newGainFactor);
   bool removeDelayLine(int index);
   void removeAllDelayLines();
@@ -155,7 +155,7 @@ public:
 
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
 
-  virtual void reset();
+  virtual void reset() override;
 
 protected:
 

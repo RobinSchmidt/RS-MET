@@ -21,22 +21,22 @@ public:
   //---------------------------------------------------------------------------------------------
   // automation and state management:
 
-  virtual void parameterChanged(Parameter* parameterThatHasChanged);
+  virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
 
   virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
-    bool markAsClean);
+    bool markAsClean) override;
 
-  virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean);
+  virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean) override;
 
   //---------------------------------------------------------------------------------------------
   // parameter settings:
 
-  virtual void setSampleRate(double newSampleRate)
+  virtual void setSampleRate(double newSampleRate) override
   {
     wrappedStereoDelay->setSampleRate(newSampleRate);
   }
 
-  virtual void setBeatsPerMinute(double newBpm)
+  virtual void setBeatsPerMinute(double newBpm) override
   {
     wrappedStereoDelay->setBeatsPerMinute(newBpm);
   }
@@ -58,7 +58,7 @@ public:
   //---------------------------------------------------------------------------------------------
   // event processing:
 
-  virtual void reset()
+  virtual void reset() override
   {
     wrappedStereoDelay->reset();
   }

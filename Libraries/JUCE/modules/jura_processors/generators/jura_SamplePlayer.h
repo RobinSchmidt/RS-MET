@@ -23,12 +23,12 @@ public:
   //---------------------------------------------------------------------------------------------
   // automation:
 
-  virtual void parameterChanged(Parameter* parameterThatHasChanged);
+  virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
 
   virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
-    bool markAsClean);
+    bool markAsClean) override;
 
-  virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean);
+  virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean) override;
 
   //---------------------------------------------------------------------------------------------
   // audio processing:

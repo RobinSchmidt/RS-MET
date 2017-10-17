@@ -44,20 +44,20 @@ public:
   // \todo: addParameter, removeParameter, createMetaParameters
 
   /** Overrides the callback that is called when one of the parameters has been changed. */
-  virtual void parameterChanged(Parameter* parameterThatHasChanged);
+  virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
 
   // \todo: introduce callback metaParameterChanged
 
   /** Returns the state of this module as XmlElement. */
-  virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean);
+  virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean) override;
 
   /** Restores the state of this module from an XmlElement (which was presumably previously created 
   via getStateAsXml). */
   virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 
-    bool markAsClean);
+    bool markAsClean) override;
 
   /** Converts a state which might possibly be from an older version to the current patch-format. */
-  virtual XmlElement convertXmlStateIfNecessary(const XmlElement& xmlState);
+  virtual XmlElement convertXmlStateIfNecessary(const XmlElement& xmlState) override;
 
   /** Returns the state of the given channel as XmlElement. */
   virtual XmlElement* getChannelStateAsXml(int channelIndex);
@@ -69,7 +69,7 @@ public:
   // setup:
 
   /** Sets up the sample-rate. */
-  virtual void setSampleRate(double newSampleRate);
+  virtual void setSampleRate(double newSampleRate) override;
 
   /** Marks one of the channels as selected. */
   virtual void selectChannel(int channelToSelect);
@@ -137,7 +137,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   // others:
 
-  virtual void reset();
+  virtual void reset() override;
 
 protected:
 
@@ -239,33 +239,33 @@ public:
 
   /** Overrides the purely virtual parameterSetChanged() method of the ParameterSetObserver base 
   class. */
-  virtual void parameterSetChanged(ParameterSetHolder* parameterSetHolderThatHasChanged);
+  virtual void parameterSetChanged(ParameterSetHolder* parameterSetHolderThatHasChanged) override;
 
   /** Overrides the purely virtual parameterChanged() method of the ParameterObserver base class. */
-  virtual void parameterChanged(Parameter* parameterThatHasChanged);
+  virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
 
   /** Overrides the purely virtual method of the ParameterObserver base class in order to 
   invalidate our pointer-member 'assignedParameter'. */
-  virtual void parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted);
+  virtual void parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted) override;
 
   /** Overrides mouseMove in order to update the cursor according to what is under the mouse. */
-  virtual void mouseMove(const MouseEvent &e);
+  virtual void mouseMove(const MouseEvent &e) override;
 
   /** Overrides mouseDown for adjusting the frequency and resonance and lets a context menu pop up 
   when the right button is clicked for MIDI-learn functionality. */
-  virtual void mouseDown(const MouseEvent& e);
+  virtual void mouseDown(const MouseEvent& e) override;
 
   /** Overrides mouseDrag for adjusting the frequency and resonance. */
-  virtual void mouseDrag(const MouseEvent& e);
+  virtual void mouseDrag(const MouseEvent& e) override;
 
   /** Overrides mouseUp to reset the currentDragHandle to NONE. */
-  virtual void mouseUp(const MouseEvent& e);
+  virtual void mouseUp(const MouseEvent& e) override;
 
   /** Overrides mouseWheelMove to adjust the bandwidth on wheel moves. */
   virtual void mouseWheelMove (const MouseEvent& ev, const MouseWheelDetails& wheel) override;
 
   /** Overrides the resized-method. */
-  virtual void resized();
+  virtual void resized() override;
 
   /** Updates the frequency response plot. */
   virtual void updatePlot();
@@ -279,7 +279,7 @@ protected:
 
   /** Overrides CurveFamilyPlot::plotCurveFamily in order to additionally draw the handles. */
   virtual void plotCurveFamily(Graphics &g, juce::Image *targetImage = NULL, 
-    XmlElement *targetSVG = NULL);
+    XmlElement *targetSVG = NULL) override;
 
   /** Creates the Popup menu that is used by openRightClickPopupMenu(). */
   //virtual void createRightClickPopupMenu(PopupMenu*& menu);

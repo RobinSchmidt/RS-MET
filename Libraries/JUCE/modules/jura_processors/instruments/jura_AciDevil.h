@@ -29,7 +29,7 @@ public:
   // parameter settings:
 
 
-  virtual void setSampleRate(double newSampleRate)
+  virtual void setSampleRate(double newSampleRate) override
   {
     wrappedAciDevil->setSampleRate(newSampleRate);
   }
@@ -37,7 +37,7 @@ public:
   //---------------------------------------------------------------------------------------------
   // automation and state management:
 
-  virtual void parameterChanged(Parameter* parameterThatHasChanged);
+  virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
 
   //virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
   //  bool markAsClean);

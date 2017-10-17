@@ -30,17 +30,17 @@ public:
   //virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, bool markAsClean);
 
   /** Converts a state which might possibly be from an older version to the current patch-format. */
-  virtual XmlElement convertXmlStateIfNecessary(const XmlElement& xmlState);
+  virtual XmlElement convertXmlStateIfNecessary(const XmlElement& xmlState) override;
 
   //-----------------------------------------------------------------------------------------------
   // parameter settings:
 
-  virtual void setSampleRate(double newSampleRate)
+  virtual void setSampleRate(double newSampleRate) override
   {
     wrappedPitchShifter->setSampleRate(newSampleRate);
   }
 
-  virtual void setBeatsPerMinute(double newBpm)
+  virtual void setBeatsPerMinute(double newBpm) override
   {
     wrappedPitchShifter->setBeatsPerMinute(newBpm);
   }
@@ -75,7 +75,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   // event processing:
 
-  virtual void reset()
+  virtual void reset() override
   {
     wrappedPitchShifter->reset();
   }

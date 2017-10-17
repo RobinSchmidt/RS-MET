@@ -28,7 +28,7 @@ public:
   OscilloscopeAudioModule(CriticalSection *newPlugInLock, 
     rosic::OscilloscopeBufferOld* displayBufferToUse);
 
-  virtual void parameterChanged(Parameter* parameterThatHasChanged);
+  virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
 
   virtual void setSampleRate(double newSampleRate) override
   { 
@@ -81,7 +81,7 @@ public:
 
   SpectrumAnalyzerAudioModule(CriticalSection *newPlugInLock, 
     rosic::SpectrumAnalyzer *spectrumAnalyzerToWrap);
-  virtual void parameterChanged(Parameter* parameterThatHasChanged);
+  virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
 
   virtual void setSampleRate(double newSampleRate) override
   { 
@@ -166,9 +166,9 @@ public:
   /** Returns the current analysis mode. @see: modes */
   virtual int getMode() const { return mode; }
 
-  virtual void parameterChanged(Parameter* parameterThatHasChanged);
+  virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
 
-  virtual void setSampleRate(double newSampleRate)
+  virtual void setSampleRate(double newSampleRate) override
   {
     // preliminary - implement functions in the classes of the emebedded objects and rely on 
     // baseclass implementation to iterate over child audio modules
