@@ -264,6 +264,10 @@ rsVector3D<T> rsParticleSystem<T>::getForceBetween(const rsParticle<T>& p1, cons
 
   // maybe allow for (non-physical) general inverse power force laws instead of the usual inverse
   // square law
+
+  // invent other forces that have no physical counterpart for example based on v1 x v2, p1 x p1,
+  // (p1 x v2) x (p2 x v1), p x v, etc. - just take care that f(j,i) = -f(i,j) holds for every
+  // such force
 }
 
 template<class T>

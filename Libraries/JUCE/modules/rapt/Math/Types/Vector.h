@@ -82,24 +82,56 @@ rsVector3D<T> operator/(const rsVector3D<T>& v, T s)
   return rsVector3D<T>(v.x*s, v.y*s, v.z*s);
 }
 
-/** Computes the dot-product between two 3D vectors v and w. */
+/** Computes the dot-product between two 3D vectors a and b. */
 template<class T>
-T dot(const rsVector3D<T>& v, const rsVector3D<T>& w)
+T dot(const rsVector3D<T>& a, const rsVector3D<T>& b)
 {
-  return v.x*w.x + v.y*w.y + v.z*w.z;
+  return a.x*b.x + a.y*b.y + a.z*b.z;
 }
 
 /** Computes the cross-product between two 3D vectors v and w. Here, v is the left operand. That's 
-important, because the cross-product is not commutative. Instead, we have (v*w) = -(w*v) where the
-* symbol is used here to denote the cross-product. */
+important, because the cross-product is not commutative. Instead, we have (a x b) = -(b x a) where 
+the x symbol is used here to denote the cross-product. */
 template<class T>
-rsVector3D<T> cross(const rsVector3D<T>& v, const rsVector3D<T>& w)
+rsVector3D<T> cross(const rsVector3D<T>& a, const rsVector3D<T>& b)
 {
-  return rsVector3D<T>(v.y*w.z-v.z*w.y, v.z*w.x-v.x*w.z, v.x*w.y-v.y*w.x); 
+  return rsVector3D<T>(a.y*b.z-a.z*b.y, a.z*b.x-a.x*b.z, a.x*b.y-a.y*b.x); 
 }
 
-// todo: triple(u, v, w); - compute triple-product
+/** Returns the triple product of the 3 vectors a,b,c, defined as: 
+V = (a x b) * c = a * (b x c) = (b x c) * a = (c x a) * b
+Its a scalar that gives the volume V of parallelepiped spanned by the 3 vectors. */
+template<class T>
+rsVector3D<T> triple(const rsVector3D<T>& a, const rsVector3D<T>& b, const rsVector3D<T>& c)
+{
+  dot(cross(a, b), c); 
+}
+
+/** Returns the determinant of the matrix that results from writing the 3 given vectors as columns
+into a 3x3 matrix. If this determinant is 0, the 3 vectors are linearly dependent, i.e. one can be 
+expressed in terms of the other two, i.e. they are all in the same plane. */
+template<class T>
+T det(const rsVector3D<T>& a, const rsVector3D<T>& b, const rsVector3D<T>& c)
+{
+  return a.x*b.y*c.z + b.x*c.y*a.z + c.x*a.y*b.z - c.x*b.y*a.z - b.x*a.y*c.z - a.x*c.y*b.z;
+}
+
+/** Returns the angle between vectors a and b. (needs testing) */
+template<class T>
+T angle(const rsVector3D<T>& a, const rsVector3D<T>& b)
+{
+  return acos(dot(a, b) / sqrt(a.getSquaredEuclideanNorm() * b.getSquaredEuclideanNorm()));
+}
+
 // maybe return references from operators - avoid copying
+
+/*
+Vector identities:
+(a x b) x c = (ac)b - (bc)a  "double cross"
+b = (1/a^2) * (ab)a + (1/a^2) (a x b) x a = parallel + normal component of b with respect to a
+
+
+*/
 
 
 
