@@ -7,6 +7,7 @@ void ellipseLineIntersections();
 void linearRegression();
 void productLogPlot();
 void sinCosTable();
+void expBipolar();
 void expGaussBell();
 
 #endif

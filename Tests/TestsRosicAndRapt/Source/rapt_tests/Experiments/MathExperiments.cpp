@@ -118,6 +118,7 @@ double productLog(const double z)
   // This function is also known as Lambert-W or Omega function.
 
   // adapted from http://keithbriggs.info/software/LambertW.c
+  // here's more: http://keithbriggs.info/software.html
 
   if(0.0 == z) 
     return 0.0;
@@ -213,6 +214,42 @@ void sinCosTable()
   GNUPlotter plt;
   plt.addDataArrays(N, &x[0], &ySin[0], &yCos[0], &ySinTbl[0], &yCosTbl[0]);
   plt.plot();
+}
+
+void expBipolar()
+{
+  // find coeffs for a parametrized exponential function y = f(x) = a * e^(b*x) + c such that 
+  // f(0) = y0, f(1) = y1, f'(0) = s. We have f'(x) = a*b*e^(b*x). The equation system is:
+  // y0 = a + c         
+  // y1 = a * e^b + c
+  // s  = a * b
+  // solving 1 and 3 for c and b and plugging into 2 gives:
+  // d = y1 - y0 == a e^(s/a) - a
+  // which can be given to wolfram alpha as:
+  // Solve[d == a e^(s/a) - a, a ]
+
+  double y0 = 0.2;
+  double y1 = 8.0;
+  double s  = 1.0;
+
+  // compute coeffs:
+  //double dy  = y0 - y1;
+  //double tmp = (exp(s/dy)*s)/dy;
+  //tmp = productLog(tmp);
+  //double a = s*dy / (-dy * tmp + s); // nope - formula must be wrong 
+
+  double d = y1 - y0;
+  double w = productLog(- (exp(-s/d)*s) / d);
+  double a = d*s / (d*w+s);
+  double b = s  / a;
+  double c = y0 - a;
+
+  // compute values at the endpoints for test:
+  double f0  = a * exp(b * 0) + c; // f0 is wrong
+  double f1  = a * exp(b * 1) + c;
+  double fp0 = a * b;
+
+  int dummy = 0;
 }
 
 void expGaussBell()

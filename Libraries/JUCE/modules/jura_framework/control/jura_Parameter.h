@@ -92,9 +92,9 @@ public:
 
   /** Override this function in your subclass to map a normalized input value (in the range 0..1) 
   to the corresponding output value (in the range min..max).  */
-  virtual double map(double normalizedValue) = 0;
+  virtual double map(double normalizedValue) const = 0;
 
-  virtual double unmap(double value) = 0;
+  virtual double unmap(double value) const = 0;
 
   virtual double setMin(double newMin) { min = newMin; }
 
@@ -105,6 +105,23 @@ protected:
   double min = 0, max = 1;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsParameterMapper)
+};
+
+
+class JUCE_API rsParameterMapperLinear : public rsParameterMapper
+{
+public:
+  virtual double   map(double x) const { return min + (max-min) * x; }
+  virtual double unmap(double y) const { return (y-min) / (max-min); }
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsParameterMapperLinear)
+};
+
+class JUCE_API rsParameterMapperExponential : public rsParameterMapper
+{
+public:
+  virtual double   map(double x) const { return min * exp(x*(log(max/min))); }
+  virtual double unmap(double y) const { return log(y/min) / (log(max/min)); }
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsParameterMapperExponential)
 };
 
 
@@ -494,7 +511,11 @@ protected:
   StringArray stringValues;
 
   // mutex lock to acquire when we notify our observers and call our callbacks:
-  CriticalSection *mutex = nullptr;
+  CriticalSection* mutex = nullptr;
+
+  // mapper object for mapping back and forth between normalized and actual value:
+  rsParameterMapper* mapper = nullptr;
+    // not yet used - when operative, delete minValue, maxValue members
 
   // the callback objects
   GenericMemberFunctionCallback1<void, double> *valueChangeCallbackDouble = nullptr;
