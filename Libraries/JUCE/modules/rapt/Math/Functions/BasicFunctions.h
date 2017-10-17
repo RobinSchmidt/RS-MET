@@ -70,7 +70,7 @@ mapping is linear for the input and the output. Example: y = linToLin(x, 0.0, 1.
 will map the input x assumed to lie inside 0.0...1.0 to the range between -96.0...24.0. This
 function is useful to convert between parameter representations between 0.0...1.0 and the
 clear-text parameters. */
-inline double rsLinToLin(double in, double inMin, double inMax, double outMin, double outMax);
+double rsLinToLin(double in, double inMin, double inMax, double outMin, double outMax);
 
 /** Converts a value between inMin and inMax into a value between outMin and outMax where the
 mapping of the output is exponential. Example: y = linToExp(x, 0.0, 1.0, 20.0, 20000.0) will map
@@ -141,11 +141,11 @@ inline void rsRangeConversionCoefficients(T inMin, T inMax, T outMin, T outMax,
 
 /** Rounds the given x to the closest integer. */
 template <class T>
-inline int rsRoundToInt(T x);
+int rsRoundToInt(T x);
 
 /** Returns +1 for x > 0, -1 for x < 0 and 0 for x == 0. */
 template <class T>
-inline T rsSign(T x);
+T rsSign(T x);
 
 /** Swaps in1 and in2, if in1 > in2 */
 template <class T>

@@ -42,7 +42,7 @@ public:
   inline void processFrame(TSig *x, TSig *y);
 
   /** Computes an output sample from a given input sample */
-  inline TSig getSample(TSig in);
+  TSig getSample(TSig in);
 
 
   /** \name Misc */

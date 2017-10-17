@@ -1,7 +1,8 @@
 rsModulationSetup::rsModulationSetup(AutomatableWidget* widgetToModulate, 
   MetaParameterManager* metaManagerTouse)
-  : widget(widgetToModulate), metaManager(metaManagerTouse)
+  : widget(widgetToModulate)
   , rsDeletionRequester(widgetToModulate)
+  , metaManager(metaManagerTouse)
 {
   addWidget( modulationsLabel = new RTextField("Modulations") );
   modulationsLabel->setNoBackgroundAndOutline(true);

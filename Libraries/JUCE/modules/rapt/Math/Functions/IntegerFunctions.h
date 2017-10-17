@@ -31,7 +31,7 @@ template<class TUInt>
 TUInt rsFactorial(TUInt n);
 
 template <class T>
-RS_INLINE T rsFactorial(T n);
+T rsFactorial(T n);
 
 /** Calculates the greatest common divisor of n and m. */
 template<class TUInt>
