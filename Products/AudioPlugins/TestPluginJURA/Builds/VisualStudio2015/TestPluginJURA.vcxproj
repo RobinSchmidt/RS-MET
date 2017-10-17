@@ -2132,9 +2132,6 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Basic\OnePoleFilter.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Basic\SmoothingFilter - Copy.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Basic\SmoothingFilter.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -4383,7 +4380,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Data\Data.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Data\MatrixTools.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Basic\OnePoleFilter.h"/>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Basic\SmoothingFilter - Copy.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Basic\SmoothingFilter.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Musical\LadderFilter.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Musical\PhasorFilter.h"/>

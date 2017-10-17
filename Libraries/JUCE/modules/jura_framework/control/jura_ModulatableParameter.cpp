@@ -182,7 +182,7 @@ ModulationConnection::ModulationConnection(ModulationSource* _source, Modulation
   juce::String name = source->getModulationSourceName(); // should we use the displayName here?
   depthParam = new 
     MetaControlledParameter(name, depthMin, depthMax, depthDef, Parameter::LINEAR, 0.0);
-  depthParam->setValue(depth);
+  depthParam->setValue(depth, false, false);
   depthParam->setValueChangeCallback<ModulationConnection>(
     this, &ModulationConnection::setDepthMember);
   depthParam->setMetaParameterManager(metaManager);
