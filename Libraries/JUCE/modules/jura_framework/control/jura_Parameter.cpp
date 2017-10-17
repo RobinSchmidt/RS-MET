@@ -226,6 +226,8 @@ void Parameter::addStringValue(const String& valueToAdd)
 
 double Parameter::valueToProportion(double value)
 {
+  // use return mapper->unmap(value); later
+
   if(minValue >= maxValue)
     return 0.0;
   switch( scaling )
@@ -243,6 +245,8 @@ double Parameter::valueToProportion(double value)
 
 double Parameter::proportionToValue(double prop)
 {
+  // use return mapper->map(value); later
+
   switch( scaling )
   {
   case EXPONENTIAL: return minValue * exp(prop*(log(maxValue/minValue)));

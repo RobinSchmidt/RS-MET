@@ -44,7 +44,7 @@
 #define RS_POW2_15 32768
 
 //#define FIX_DENORM 1.e-12  // small constant to add to avoid denormal numbers
-#define TINY RS_MIN(float)
+#define RS_TINY RS_MIN(float)
 
 
 #endif

@@ -74,6 +74,44 @@ public:
 };
 
 //=================================================================================================
+
+/**
+
+todo: use this class for all the mapping between normalized anc actual value
+have a null-object that does an identity mapping
+*/
+
+class JUCE_API rsParameterMapper
+{
+
+public:
+
+
+  /** Destructor. */
+  virtual ~rsParameterMapper(){};
+
+  /** Override this function in your subclass to map a normalized input value (in the range 0..1) 
+  to the corresponding output value (in the range min..max).  */
+  virtual double map(double normalizedValue) = 0;
+
+  virtual double unmap(double value) = 0;
+
+  virtual double setMin(double newMin) { min = newMin; }
+
+  virtual double setMax(double newMax) { max = newMax; }
+
+protected:
+
+  double min = 0, max = 1;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsParameterMapper)
+};
+
+
+
+
+
+//=================================================================================================
 // the actual Parameter class:
 
 /** This class represents a parameter that may notify interested objects whenever its value was

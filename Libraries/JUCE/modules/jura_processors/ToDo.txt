@@ -1,8 +1,11 @@
+Parameter:
+ -support custom mapping functions
+
 ModSystem:
  -ModulatableSlider: show the modulation-range
  -clean up the files
  -BUG: when ladder cutoff is modulated and one then changes the resonance, this display shows
-  the mod plot with moudalted cutoff
+  the mod plot with modulated cutoff
 
 Chainer:
  -make the size of the selector popup adequate
@@ -42,6 +45,7 @@ RayBouncer:
 Bugs:
 
 Framework:
+ -Parameter needs EXPONENTIAL_BIPOLAR scaling
  -big font incomplete
  -default colors are weird/wrong
  -bang/hit buttons don't flash - maybe they should operate on mouse-up an flash on as long as the
