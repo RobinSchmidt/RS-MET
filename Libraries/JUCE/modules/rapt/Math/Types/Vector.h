@@ -101,22 +101,26 @@ rsVector3D<T> cross(const rsVector3D<T>& a, const rsVector3D<T>& b)
 /** Returns the triple product of the 3 vectors a,b,c, defined as: 
 V = (a x b) * c = a * (b x c) = (b x c) * a = (c x a) * b
 Its a scalar that gives the volume V of parallelepiped spanned by the 3 vectors. */
+// not yet tested
 template<class T>
 rsVector3D<T> triple(const rsVector3D<T>& a, const rsVector3D<T>& b, const rsVector3D<T>& c)
 {
   dot(cross(a, b), c); 
 }
 
+
 /** Returns the determinant of the matrix that results from writing the 3 given vectors as columns
 into a 3x3 matrix. If this determinant is 0, the 3 vectors are linearly dependent, i.e. one can be 
 expressed in terms of the other two, i.e. they are all in the same plane. */
+// not yet tested
 template<class T>
 T det(const rsVector3D<T>& a, const rsVector3D<T>& b, const rsVector3D<T>& c)
 {
   return a.x*b.y*c.z + b.x*c.y*a.z + c.x*a.y*b.z - c.x*b.y*a.z - b.x*a.y*c.z - a.x*c.y*b.z;
 }
 
-/** Returns the angle between vectors a and b. (needs testing) */
+/** Returns the angle between vectors a and b. */
+// not yet tested
 template<class T>
 T angle(const rsVector3D<T>& a, const rsVector3D<T>& b)
 {
