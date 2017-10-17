@@ -38,7 +38,7 @@ public:
 
 
   /** Do we really need to override this ?! */
-  virtual void setSampleRate(double newSampleRate)
+  virtual void setSampleRate(double newSampleRate) override
   {
     wrappedMagicCarpet->setSampleRate(newSampleRate);
   }
@@ -48,7 +48,7 @@ public:
     wrappedMagicCarpet->getSampleFrameStereo(inOutL, inOutR);
   }
 
-  virtual void reset()
+  virtual void reset() override
   {
     wrappedMagicCarpet->resetAllVoices();
   }

@@ -100,7 +100,7 @@ public:
   //---------------------------------------------------------------------------------------------
   // others:
 
-  virtual void reset()
+  virtual void reset() override
   {
     if(wrappedStraightliner != NULL)
       wrappedStraightliner->resetAllVoices();
@@ -110,7 +110,7 @@ public:
   as child-module but each osc separately, so we must manually tak care of updating the preset
   field of the FourOscSectionEditor here. */
   virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
-    bool markAsClean);
+    bool markAsClean) override;
 
 protected:
 

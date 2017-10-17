@@ -16,7 +16,7 @@ public:
 
 
   /** Do we really need to override this ?! */
-  virtual void setSampleRate(double newSampleRate)
+  virtual void setSampleRate(double newSampleRate) override
   {
     if(wrappedQuadriga != NULL)
       wrappedQuadriga->setSampleRate(newSampleRate);
@@ -28,7 +28,7 @@ public:
       wrappedQuadriga->getSampleFrameStereo(inOutL, inOutR);
   }
 
-  virtual void reset()
+  virtual void reset() override
   {
     if(wrappedQuadriga != NULL)
       wrappedQuadriga->resetAllVoices();

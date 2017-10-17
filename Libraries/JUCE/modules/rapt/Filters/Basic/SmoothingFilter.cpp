@@ -172,7 +172,7 @@ void rsSmoothingFilter<TSig, TPar>::createTauScalerTable()
           }
           yOld = yNow;
         }
-        TPar dbg = desiredNumSamples / actualNumSamples;
+        //TPar dbg = desiredNumSamples / actualNumSamples;
         tauScalers(i, j) *= desiredNumSamples / actualNumSamples;
       }
     }

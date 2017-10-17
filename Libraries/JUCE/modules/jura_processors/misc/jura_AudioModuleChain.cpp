@@ -669,7 +669,7 @@ void AudioModuleChain::createDebugModSourcesAndTargets()
   // ...oh...the modManager's metaManager pointer is still null here - why?
   // -> solved by calling setMetaParameterManager in the ctor
 
-  int dummy = 0;
+  // int dummy = 0;
 }
 
 //=================================================================================================

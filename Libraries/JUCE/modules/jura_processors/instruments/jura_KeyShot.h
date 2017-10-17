@@ -16,12 +16,12 @@ public:
 
 
   /** Do we really need to override this ?! */
-  virtual void setSampleRate(double newSampleRate)
+  virtual void setSampleRate(double newSampleRate) override
   {
     wrappedKeyShot->setSampleRate(newSampleRate);
   }
 
-  virtual void reset()
+  virtual void reset() override
   {
     wrappedKeyShot->resetAllVoices();
   }

@@ -23,12 +23,12 @@ public:
   //---------------------------------------------------------------------------------------------
   // automation and state management:
 
-  virtual void parameterChanged(Parameter* parameterThatHasChanged);
+  virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
 
   virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
-    bool markAsClean);
+    bool markAsClean) override;
 
-  virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean);
+  virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean) override;
 
   //---------------------------------------------------------------------------------------------
   // parameter settings:
@@ -39,7 +39,7 @@ public:
   /** Returns the algorithm as juse::juce::String object */
   virtual juce::String getAlgorithmString();
 
-  virtual void setSampleRate(double newSampleRate)
+  virtual void setSampleRate(double newSampleRate) override
   {
     wrappedDspWorkbench->setSampleRate(newSampleRate);
   }
@@ -93,7 +93,7 @@ public:
   // callbacks:
 
   /** Implements the purely virtual rButtonClicked()-method of the ButtonListener base-class. */
-  virtual void rButtonClicked(RButton *buttonThatWasClicked);
+  virtual void rButtonClicked(RButton *buttonThatWasClicked) override;
 
   /** Implements the purely virtual rButtonClicked()-method of the ComboBoxListener base-class. */
   virtual void comboBoxChanged(ComboBox *comboBoxThatHasChanged);
@@ -103,17 +103,17 @@ public:
 
   /** Implements the purely virtual rSliderValueChanged-method of the RSliderListener 
   base-class. */
-  virtual void rSliderValueChanged(RSlider *sliderThatHasChanged);
+  virtual void rSliderValueChanged(RSlider *sliderThatHasChanged) override;
 
   /** Implements the purely virtual rTextFieldChanged-method of the RTextFieldListener 
   base-class. */
   virtual void rTextFieldChanged(RTextField *textFieldThatHasChanged);
 
   /** Overrides paint(). */   
-  virtual void paint(Graphics &g);
+  virtual void paint(Graphics &g) override;
 
   /** Overrides resized(). */    
-  virtual void resized();
+  virtual void resized() override;
 
   //virtual void textEditorTextChanged(TextEditor &editor);
   //virtual void textEditorReturnKeyPressed(TextEditor &editor);
@@ -126,7 +126,7 @@ public:
   virtual void rTextEditorFocusLost(RTextEditor& editor) override;
 
 
-  virtual void textChanged(RTextEntryField *rTextEntryFieldThatHasChanged) {}
+  virtual void textChanged(RTextEntryField *rTextEntryFieldThatHasChanged) override {}
 
   //---------------------------------------------------------------------------------------------
   // others:
@@ -141,7 +141,7 @@ public:
 protected:
 
   /** Overrides the method inherited from RPolyphonicInstrumentEditor. */
-  virtual void updateWidgetsAccordingToState();
+  virtual void updateWidgetsAccordingToState() override;
 
   /** Shows or hides certain modulation-target specific wdgets according to the currently 
   selected modulation-target. */
