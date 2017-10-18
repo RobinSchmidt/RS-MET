@@ -84,8 +84,11 @@ class JUCE_API rsParameterMapper
 
 public:
 
+  /** Constructor. */
+  rsParameterMapper() {}
+
   /** Destructor. */
-  virtual ~rsParameterMapper() {};
+  virtual ~rsParameterMapper() {}
 
   /** Override this function in your subclass to map a normalized input value (in the range 0..1) 
   to the corresponding actual parameter value (in the range min..max).  */
@@ -102,7 +105,7 @@ public:
   //virtual double setMax(double newMax) { max = newMax; }
 
   /** Sets up the range for the (mapped, actual) parameter value. */
-  virtual double setRange(double newMin, double newMax)
+  virtual void setRange(double newMin, double newMax)
   {
     jassert(newMin <= newMax);
     min = newMin;
@@ -129,6 +132,7 @@ quantity (such as decibels or semitones). */
 class JUCE_API rsParameterMapperLinear : public rsParameterMapper
 {
 public:
+  rsParameterMapperLinear() {}
   virtual double   map(double x) const { return min + (max-min) * x; }
   virtual double unmap(double y) const { return (y-min) / (max-min); }
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsParameterMapperLinear)
@@ -143,6 +147,7 @@ value. */
 class JUCE_API rsParameterMapperExponential : public rsParameterMapper
 {
 public:
+  rsParameterMapperExponential() {}
   virtual double   map(double x) const { return min * exp(x*(log(max/min))); }
   virtual double unmap(double y) const { return log(y/min) / (log(max/min)); }
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsParameterMapperExponential)
@@ -231,9 +236,11 @@ public:
     INTEGER,        // maybe remove, linear should be just as good
     LINEAR,
     EXPONENTIAL,
-    LINEAR_BIPOLAR
+    LINEAR_BIPOLAR,
     // EXPONENTIAL_WITH_OFFSET,
     // CUSTOM // requires a ParameterMapper object to be passed
+
+    NUM_SCALINGS
   };
 
   //-----------------------------------------------------------------------------------------------

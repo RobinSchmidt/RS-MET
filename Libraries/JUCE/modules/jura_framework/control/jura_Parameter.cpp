@@ -38,11 +38,15 @@ Parameter::Parameter(const juce::String& newName, double newMin, double newMax,
   if(newScaling == STRING)
     newInterval = 1.0;      // multiple choice are parameters represented by integers
 
+  mapper   = new rsParameterMapperLinear();
+  minValue = newMin;       // delete soon
+  maxValue = newMax;       // delete soon
+  scaling  = newScaling;   // delete soon
+  setRange(newMin, newMax);
+  setScaling(newScaling);
+
   name         = newName;
-  minValue     = newMin;
-  maxValue     = newMax;
   interval     = newInterval;
-  scaling      = newScaling;
   defaultValue = restrictValueToParameterRange(newDefault);
   value        = defaultValue;
 
@@ -56,12 +60,16 @@ Parameter::Parameter(CriticalSection *criticalSectionToUse, const String& newNam
   jassert(!(newMinValue >= newMaxValue));                      // that would result in a zero or negative range
   jassert(!(newMinValue <= 0.0 && newScaling == EXPONENTIAL)); // exponential scaling requires strictly positive minimum value
 
+  mapper   = new rsParameterMapperLinear();
+  minValue = newMinValue; // delete soon
+  maxValue = newMaxValue; // delete soon
+  scaling  = newScaling;  // delete soon
+  setRange(newMinValue, newMaxValue);
+  setScaling(newScaling);  // set this before restrictValueToParameterRange is called
+
   mutex         = criticalSectionToUse;
   name          = newName;
-  minValue      = newMinValue;
-  maxValue      = newMaxValue;
   interval      = newInterval;
-  scaling       = newScaling;  // set this before restrictValueToParameterRange is called
   defaultValue  = restrictValueToParameterRange(newDefaultValue);
   value         = defaultValue;
 
@@ -83,6 +91,8 @@ Parameter::~Parameter()
   // remark: we use a while-loop to account for the possibility that the observer de-registers
   // itself in the callback to parameterIsGoingToBeDeleted in which case the array-size shrinks
   // inside the iteration which would make a for-loop ...mmm...a bug
+
+  delete mapper;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -188,16 +198,36 @@ void Parameter::setDefaultValue(double newDefaultValue, bool setToDefault)
 void Parameter::setScaling(int newScaling)
 {
   ScopedPointerLock spl(mutex);
-  if( newScaling < BOOLEAN || newScaling > EXPONENTIAL )
+  if( newScaling < BOOLEAN || newScaling >= NUM_SCALINGS )
   {
     jassertfalse;
     return; // invalid scaling index
   }
   scaling = newScaling;
 
+  // create a new mapper object, if necessarry (maybe factor out):
   if(scaling == EXPONENTIAL)
   {
-
+    rsParameterMapperExponential* tmp = dynamic_cast<rsParameterMapperExponential*>(mapper);
+    if(tmp == nullptr) // old mapper is the wrong kind, we need to create a new one
+    {
+      tmp = new rsParameterMapperExponential;
+      tmp->setRange(mapper->getMin(), mapper->getMax());
+      delete mapper;
+      mapper = tmp;
+    }
+  }
+  else
+  {
+    // default case, catches LINEAR, LINEAR_BIPOLAR, INTEGER, BOOLEAN, STRING, uses linear mapper
+    rsParameterMapperLinear* tmp = dynamic_cast<rsParameterMapperLinear*>(mapper);
+    if(tmp == nullptr) // old mapper is the wrong kind, we need to create a new one
+    {
+      tmp = new rsParameterMapperLinear;
+      tmp->setRange(mapper->getMin(), mapper->getMax());
+      delete mapper;
+      mapper = tmp;
+    }
   }
 }
 
