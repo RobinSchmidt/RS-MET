@@ -98,12 +98,6 @@ public:
   the range min..max) to the corresponding normalized value (in the range 0..1). */
   virtual double unmap(double value) const = 0;
 
-  /** Sets the minimum value. */
-  //virtual double setMin(double newMin) { min = newMin; }
-
-  /** Sets the maximum value. */
-  //virtual double setMax(double newMax) { max = newMax; }
-
   /** Sets up the range for the (mapped, actual) parameter value. */
   virtual void setRange(double newMin, double newMax)
   {
@@ -126,21 +120,21 @@ protected:
 };
 
 /** Subclass of rsParameterMapper for linear mapping. This is appropriate for parameters that are
-either intrinsically linear (such as a phase between -180..+180) or a linearized measure of some 
-quantity (such as decibels or semitones). */
+either intrinsically perceived on a linear scale (such as a phase between -180..+180) or a 
+linearized measure of some quantity (such as decibels or semitones). */
 
 class JUCE_API rsParameterMapperLinear : public rsParameterMapper
 {
 public:
   rsParameterMapperLinear() {}
-  virtual double   map(double x) const { return min + (max-min) * x; }
-  virtual double unmap(double y) const { return (y-min) / (max-min); }
+  double   map(double x) const override { return min + (max-min) * x; }
+  double unmap(double y) const override { return (y-min) / (max-min); }
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsParameterMapperLinear)
 };
 
 /** Subclass of rsParameterMapper for exponential mapping. This is appropriate for parameters that 
 are perceived linearly on a logarithmic scale, but nevertheless are entered as raw values by the 
-user. An example woul be a frequency parameter with a range of 20..20000. With exponential mapping, 
+user. An example would be a frequency parameter with a range of 20..20000. With exponential mapping, 
 equal differences in slider value translate to equal multiplication factors for the parameter 
 value. */
 
@@ -148,8 +142,8 @@ class JUCE_API rsParameterMapperExponential : public rsParameterMapper
 {
 public:
   rsParameterMapperExponential() {}
-  virtual double   map(double x) const { return min * exp(x*(log(max/min))); }
-  virtual double unmap(double y) const 
+  double   map(double x) const override { return min * exp(x*(log(max/min))); }
+  double unmap(double y) const override 
   {
     return jlimit(0.0, 1.0, log(y/min) / (log(max/min)));
     //return log(y/min) / (log(max/min)); 
@@ -160,12 +154,47 @@ public:
 };
 
 /** ...for bipolar exponential mapping */
-// not yet finished
+// needs test
 class JUCE_API rsParameterMapperSinh : public rsParameterMapper
 {
 public:
-  virtual double   map(double x) const { return 0; } 
-  virtual double unmap(double y) const { return 0; }
+
+  virtual double map(double x) const 
+  { 
+    x = 2*x - 1;           // 0..1 to -1..+1
+    return a * sinh(b*x);  // -max..max
+    // maybe generalize to y = a * sinh(b*(x+c)) + d for unsymmetric ranges, etc. 
+  } 
+
+  virtual double unmap(double y) const 
+  { 
+    y = asinh(y/a) / b;    // -1..+1
+    return 0.5 * (y+1);    //  0..1
+  }
+
+  void setRange(double newMin, double newMax) override
+  {
+    jassert(newMin == -newMax); // supports currently only 0-centered symmetric mapping
+    rsParameterMapper::setRange(newMin, newMax);
+    updateCoeffs();
+  }
+
+  void setShape(double newShape)
+  {
+    jassert(newShape > 0);
+    b = newShape;
+    updateCoeffs();
+  }
+
+protected:
+
+  void updateCoeffs()
+  {
+    a = max / sinh(b);
+  }
+
+  double a = 1, b = 1;
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsParameterMapperSinh)
 };
 
