@@ -159,6 +159,12 @@ class JUCE_API rsParameterMapperSinh : public rsParameterMapper
 {
 public:
 
+  rsParameterMapperSinh(double minValue, double maxValue, double shape)
+  {
+    b = shape;
+    setRange(minValue, maxValue); // updates the a-coeff
+  }
+
   virtual double map(double x) const 
   { 
     x = 2*x - 1;           // 0..1 to -1..+1
