@@ -149,7 +149,13 @@ class JUCE_API rsParameterMapperExponential : public rsParameterMapper
 public:
   rsParameterMapperExponential() {}
   virtual double   map(double x) const { return min * exp(x*(log(max/min))); }
-  virtual double unmap(double y) const { return log(y/min) / (log(max/min)); }
+  virtual double unmap(double y) const 
+  {
+    return jlimit(0.0, 1.0, log(y/min) / (log(max/min)));
+    //return log(y/min) / (log(max/min)); 
+  }
+
+  //return jlimit(0.0, 1.0, log(value/minValue) / (log(maxValue/minValue)) );
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsParameterMapperExponential)
 };
 
@@ -373,14 +379,13 @@ public:
   /** Returns the lower limit of the parameter. */
   virtual double getMinValue() const
   {
-    ScopedPointerLock spl(mutex); return minValue;
+    ScopedPointerLock spl(mutex); return mapper->getMin();
   }
 
   /** Returns the upper limit of the parameter. */
   virtual double getMaxValue() const 
   { 
-    ScopedPointerLock spl(mutex); 
-    return maxValue; 
+    ScopedPointerLock spl(mutex); return mapper->getMax(); 
   }
 
   /** Returns the interval in which the parameter is adjusted. */
@@ -543,8 +548,6 @@ protected:
 
   juce::String name;                 // string for the parameter name
   double       value;                // actual value of the parameter
-  double       minValue;             // lower limit for the parameter
-  double       maxValue;             // upper limit for the parameter
   double       interval;             // interval for adjustments
   double       defaultValue;         // default value of this parameter
   int          scaling;              // index to the scaling/mapping to be used
@@ -561,7 +564,6 @@ protected:
 
   // mapper object for mapping back and forth between normalized and actual value:
   rsParameterMapper* mapper = nullptr;
-    // not yet used - when operative, delete minValue, maxValue, scaling members
 
   // the callback objects
   GenericMemberFunctionCallback1<void, double> *valueChangeCallbackDouble = nullptr;

@@ -39,8 +39,6 @@ Parameter::Parameter(const juce::String& newName, double newMin, double newMax,
     newInterval = 1.0;      // multiple choice are parameters represented by integers
 
   mapper   = new rsParameterMapperLinear();
-  minValue = newMin;       // delete soon
-  maxValue = newMax;       // delete soon
   scaling  = newScaling;   // delete soon
   setRange(newMin, newMax);
   setScaling(newScaling);
@@ -61,8 +59,6 @@ Parameter::Parameter(CriticalSection *criticalSectionToUse, const String& newNam
   jassert(!(newMinValue <= 0.0 && newScaling == EXPONENTIAL)); // exponential scaling requires strictly positive minimum value
 
   mapper   = new rsParameterMapperLinear();
-  minValue = newMinValue; // delete soon
-  maxValue = newMaxValue; // delete soon
   scaling  = newScaling;  // delete soon
   setRange(newMinValue, newMaxValue);
   setScaling(newScaling);  // set this before restrictValueToParameterRange is called
@@ -119,8 +115,7 @@ void Parameter::setRangeAndValue(double newMin, double newMax, double newValue,
   ScopedPointerLock spl(mutex);
   jassert(newMin <= newValue && newValue <= newMax); // inconsistent values
 
-  minValue = newMin;
-  maxValue = newMax;
+  mapper->setRange(newMin, newMax);
   value = restrictValueToParameterRange(newValue);
 
   if( callCallbacks == true )
@@ -161,8 +156,7 @@ void Parameter::setStringValue(const juce::String &newString, bool sendNotificat
 void Parameter::setRange(double newMinValue, double newMaxValue)
 {
   ScopedPointerLock spl(mutex);
-  minValue = newMinValue;
-  maxValue = newMaxValue;
+  mapper->setRange(newMinValue, newMaxValue);
   valueSanityCheck();
   for(int i=0; i < (int) parameterObservers.size(); i++)
   {
@@ -173,18 +167,18 @@ void Parameter::setRange(double newMinValue, double newMaxValue)
 
 void Parameter::setMinValue(double newMinValue)
 {
-  if( newMinValue <= maxValue )
-    setRange(newMinValue, maxValue);
+  if( newMinValue <= getMaxValue() )
+    setRange(newMinValue, getMaxValue());
   else
-    setRange(maxValue, maxValue);
+    setRange(getMaxValue(), getMaxValue());
 }
 
 void Parameter::setMaxValue(double newMaxValue)
 {
-  if( newMaxValue >= minValue )
-    setRange(minValue, newMaxValue);
+  if( newMaxValue >= getMinValue() )
+    setRange(getMinValue(), newMaxValue);
   else
-    setRange(minValue, minValue);
+    setRange(getMinValue(), getMinValue());
 }
 
 void Parameter::setDefaultValue(double newDefaultValue, bool setToDefault)
@@ -262,8 +256,9 @@ void Parameter::addStringValue(const String& valueToAdd)
 {
   ScopedPointerLock spl(mutex);
   stringValues.addIfNotAlreadyThere(valueToAdd);
-  minValue = 0.0;
-  maxValue = (double) (stringValues.size()-1);
+  mapper->setRange(0.0, (double)(stringValues.size()-1));
+  //minValue = 0.0;
+  //maxValue = (double) (stringValues.size()-1);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -271,8 +266,10 @@ void Parameter::addStringValue(const String& valueToAdd)
 
 double Parameter::valueToProportion(double value)
 {
-  // use return mapper->unmap(value); later
+  return mapper->unmap(value);
 
+  // old:
+  /*
   if(minValue >= maxValue)
     return 0.0;
   switch( scaling )
@@ -286,17 +283,21 @@ double Parameter::valueToProportion(double value)
   }
   default: return (value - minValue) / (maxValue - minValue); // LINEAR(_BIPOLAR)
   }
+  */
 }
 
 double Parameter::proportionToValue(double prop)
 {
-  // use return mapper->map(value); later
+  return mapper->map(prop);
 
+  // old:
+  /*
   switch( scaling )
   {
   case EXPONENTIAL: return minValue * exp(prop*(log(maxValue/minValue)));
   default:          return minValue + (maxValue - minValue) * prop;
   }
+  */
 }
 
 String Parameter::getStringValue() const
@@ -414,17 +415,18 @@ double Parameter::restrictValueToParameterRange(double valueToRestrict)
 
   // quantize:
   if( interval > 0 )
-    valueToRestrict = minValue + interval * floor((valueToRestrict - minValue) / interval + 0.5);
+    valueToRestrict = getMinValue() 
+    + interval * floor((valueToRestrict - getMinValue()) / interval + 0.5);
   if( scaling == BOOLEAN )
     valueToRestrict = (double) (valueToRestrict >= 0.5);
   if( scaling == STRING || scaling == INTEGER )
     valueToRestrict = (double) round(valueToRestrict);
 
   // clip:
-  if( valueToRestrict > maxValue )
-    return maxValue;
-  if( valueToRestrict < minValue )
-    return minValue;
+  if( valueToRestrict > getMaxValue() )
+    return getMaxValue();
+  if( valueToRestrict < getMinValue() )
+    return getMinValue();
 
   return valueToRestrict;
 }
@@ -432,14 +434,26 @@ double Parameter::restrictValueToParameterRange(double valueToRestrict)
 void Parameter::valueSanityCheck()
 {
   ScopedPointerLock spl(mutex);
-  jassert( !( minValue <= 0.0 && scaling == EXPONENTIAL ) );
-  if( ( minValue <= 0.0 && scaling == EXPONENTIAL ) )
+  jassert( !( getMinValue() <= 0.0 && scaling == EXPONENTIAL ) );
+
+  /*
+  // todo: update this for use with new mapper object:
+  if((getMinValue() <= 0.0 && scaling == EXPONENTIAL))
+  {
     minValue = 0.1;
-  jassert( maxValue > minValue );
-  if( maxValue <= minValue )
-    maxValue = minValue+1.0;
-  value                = restrictValueToParameterRange(value);
-  defaultValue         = restrictValueToParameterRange(defaultValue);
+  }
+  jassert( getMaxValue() > getMinValue() );  // maybe allow >=
+  if(getMaxValue() <= getMinValue())
+  {
+    maxValue = getMinValue+1.0;
+  }
+  */
+  // updated:
+  jassert( getMaxValue() >= getMinValue() ); 
+
+
+  value        = restrictValueToParameterRange(value);
+  defaultValue = restrictValueToParameterRange(defaultValue);
 }
 
 //=================================================================================================

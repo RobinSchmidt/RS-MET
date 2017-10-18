@@ -98,8 +98,8 @@ void AutomatableParameter::revertToDefaults(bool resetValueAlso, bool sendNotifi
 {
   ScopedPointerLock spl(mutex);
   assignedMidiController = defaultMidiController;
-  lowerAutomationLimit   = minValue;
-  upperAutomationLimit   = maxValue;
+  lowerAutomationLimit   = getMinValue();
+  upperAutomationLimit   = getMaxValue();
   if( resetValueAlso == true )
     setValue(defaultValue, sendNotification, callCallbacks);
 }
@@ -111,9 +111,9 @@ bool AutomatableParameter::isInDefaultState() const
   ScopedPointerLock spl(mutex);
   if( assignedMidiController != defaultMidiController )
     return false;
-  if( minValue != lowerAutomationLimit )
+  if( getMinValue() != lowerAutomationLimit )
     return false;
-  if( maxValue != upperAutomationLimit )
+  if( getMaxValue() != upperAutomationLimit )
     return false;
   return true;
 }
