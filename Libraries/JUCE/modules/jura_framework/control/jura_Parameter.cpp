@@ -194,6 +194,11 @@ void Parameter::setScaling(int newScaling)
     return; // invalid scaling index
   }
   scaling = newScaling;
+
+  if(scaling == EXPONENTIAL)
+  {
+
+  }
 }
 
 void Parameter::setScalingFromString(String newScalingString)

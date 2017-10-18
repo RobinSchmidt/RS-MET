@@ -75,30 +75,45 @@ public:
 
 //=================================================================================================
 
-/**
-
-todo: use this class for all the mapping between normalized anc actual value
-have a null-object that does an identity mapping
-*/
+/** Objects of (subclasses of) this class are used in Parameter to do the mapping between the 
+normalized range 0..1 and the actual parameter range. Subclasses can implement different mapping 
+functions (shapes) to go from some minimum to some maximum parameter value. */
 
 class JUCE_API rsParameterMapper
 {
 
 public:
 
-
   /** Destructor. */
-  virtual ~rsParameterMapper(){};
+  virtual ~rsParameterMapper() {};
 
   /** Override this function in your subclass to map a normalized input value (in the range 0..1) 
-  to the corresponding output value (in the range min..max).  */
+  to the corresponding actual parameter value (in the range min..max).  */
   virtual double map(double normalizedValue) const = 0;
 
+  /** Override this function in your subclass to map the actual parameter value (in 
+  the range min..max) to the corresponding normalized value (in the range 0..1). */
   virtual double unmap(double value) const = 0;
 
-  virtual double setMin(double newMin) { min = newMin; }
+  /** Sets the minimum value. */
+  //virtual double setMin(double newMin) { min = newMin; }
 
-  virtual double setMax(double newMax) { max = newMax; }
+  /** Sets the maximum value. */
+  //virtual double setMax(double newMax) { max = newMax; }
+
+  /** Sets up the range for the (mapped, actual) parameter value. */
+  virtual double setRange(double newMin, double newMax)
+  {
+    jassert(newMin <= newMax);
+    min = newMin;
+    max = newMax;
+  }
+
+  /** Returns the minimum value. */
+  inline double getMin() { return min; }
+
+  /** Returns the maximum value. */
+  inline double getMax() { return max; }
 
 protected:
 
@@ -107,6 +122,9 @@ protected:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsParameterMapper)
 };
 
+/** Subclass of rsParameterMapper for linear mapping. This is appropriate for parameters that are
+either intrinsically linear (such as a phase between -180..+180) or a linearized measure of some 
+quantity (such as decibels or semitones). */
 
 class JUCE_API rsParameterMapperLinear : public rsParameterMapper
 {
@@ -116,6 +134,12 @@ public:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsParameterMapperLinear)
 };
 
+/** Subclass of rsParameterMapper for exponential mapping. This is appropriate for parameters that 
+are perceived linearly on a logarithmic scale, but nevertheless are entered as raw values by the 
+user. An example woul be a frequency parameter with a range of 20..20000. With exponential mapping, 
+equal differences in slider value translate to equal multiplication factors for the parameter 
+value. */
+
 class JUCE_API rsParameterMapperExponential : public rsParameterMapper
 {
 public:
@@ -124,9 +148,15 @@ public:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsParameterMapperExponential)
 };
 
-
-
-
+/** ...for bipolar exponential mapping */
+// not yet finished
+class JUCE_API rsParameterMapperSinh : public rsParameterMapper
+{
+public:
+  virtual double   map(double x) const { return 0; } 
+  virtual double unmap(double y) const { return 0; }
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsParameterMapperSinh)
+};
 
 //=================================================================================================
 // the actual Parameter class:
@@ -335,7 +365,11 @@ public:
   }
 
   /** Returns the upper limit of the parameter. */
-  virtual double getMaxValue() const { ScopedPointerLock spl(mutex); return maxValue; }
+  virtual double getMaxValue() const 
+  { 
+    ScopedPointerLock spl(mutex); 
+    return maxValue; 
+  }
 
   /** Returns the interval in which the parameter is adjusted. */
   virtual double getInterval() const { ScopedPointerLock spl(mutex); return interval; }
@@ -515,7 +549,7 @@ protected:
 
   // mapper object for mapping back and forth between normalized and actual value:
   rsParameterMapper* mapper = nullptr;
-    // not yet used - when operative, delete minValue, maxValue members
+    // not yet used - when operative, delete minValue, maxValue, scaling members
 
   // the callback objects
   GenericMemberFunctionCallback1<void, double> *valueChangeCallbackDouble = nullptr;

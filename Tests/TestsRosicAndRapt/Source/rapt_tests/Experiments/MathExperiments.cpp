@@ -240,7 +240,7 @@ void expBipolar()
 
   double d = y1 - y0;
   double w = productLog(- (exp(-s/d)*s) / d);
-  double a = d*s / (d*w+s);
+  double a = -d*s / (d*w+s);
   double b = s  / a;
   double c = y0 - a;
 
