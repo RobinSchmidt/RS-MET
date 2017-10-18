@@ -237,10 +237,9 @@ public:
     LINEAR,
     EXPONENTIAL,
     LINEAR_BIPOLAR,
-    // EXPONENTIAL_WITH_OFFSET,
-    // CUSTOM // requires a ParameterMapper object to be passed
 
-    NUM_SCALINGS
+    NUM_SCALINGS,
+    CUSTOM          // requires a rsParameterMapper object to be passed
   };
 
   //-----------------------------------------------------------------------------------------------
@@ -311,6 +310,12 @@ public:
 
   /** Chooses one of the scaling methods for this parameter from a string. @see: scalings */
   virtual void setScalingFromString(juce::String newScalingString);
+
+  /** Sets up a custom parameter mapper object to be used for mapping back and forth between 
+  normalized (0..1) and actual (min..max) values. You can use this, whenever you need a mapping
+  that is not listed in the scalings enum. This parameter will take over ownership of the passed
+  object, i.e. delete it on destruction. */
+  virtual void setMapper(rsParameterMapper* newMapper);
 
   /** Assigns a name to this parameter. */
   virtual void setName(const juce::String& newName)

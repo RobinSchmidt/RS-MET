@@ -248,6 +248,16 @@ void Parameter::setScalingFromString(String newScalingString)
     setScaling(LINEAR);
 }
 
+void Parameter::setMapper(rsParameterMapper* newMapper)
+{
+  scaling = CUSTOM;
+  if(mapper != newMapper)
+  {
+    delete mapper;
+    mapper = newMapper;
+  }
+}
+
 void Parameter::addStringValue(const String& valueToAdd)
 {
   ScopedPointerLock spl(mutex);
