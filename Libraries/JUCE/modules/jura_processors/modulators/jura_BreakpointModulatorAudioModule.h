@@ -69,6 +69,10 @@ public:
     wrappedBreakpointModulator->noteOff(true);
   }
 
+  virtual void setBeatsPerMinute(double bpm) override
+  {
+    wrappedBreakpointModulator->setBeatsPerMinute(bpm);
+  }
 
 protected:
 
