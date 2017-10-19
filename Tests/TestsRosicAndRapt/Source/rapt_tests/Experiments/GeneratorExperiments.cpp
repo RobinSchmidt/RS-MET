@@ -250,7 +250,7 @@ void rayBouncer()
 void xoxosOsc()
 {
   // Oscillator based on an ellipse in the xy-plane
-  // todo: find and link references...
+  // todo: find and links references, explanations, ...
 
   static const int N = 1000;   // number of output samples
   float T = 250;               // period in samples
@@ -263,22 +263,22 @@ void xoxosOsc()
   float w = float(2*PI/T);
   float sB = sin(B);
   float cB = cos(B);
-  float s, c, kc, ks, a;
+  float s, c, Ac, Cs, a;
   for(int n = 0; n < N; n++)
   {
     s  = sin(w*n);
     c  = cos(w*n);
-    kc = A + c;
-    ks = C * s;
-    a  = 1 / sqrt(kc*kc + ks*ks);  // normalizer
-    x[n]   = a*kc*cB;
-    y[n]   = a*ks*sB;
+    Ac = A + c;
+    Cs = C * s;
+    a  = 1 / sqrt(Ac*Ac + Cs*Cs);  // normalizer
+    x[n]   = a*Ac*cB;
+    y[n]   = a*Cs*sB;
     sum[n] = x[n] + y[n];
   }
 
-  // plot outputs
+  // plot outputs:
   GNUPlotter plt;
-  //plt.addDataArrays(N, x, y);
+  //plt.addDataArrays(N, x, y); // plot the ellipse
   plt.addDataArrays(N, sum);
   plt.addDataArrays(N, x);
   plt.addDataArrays(N, y);
