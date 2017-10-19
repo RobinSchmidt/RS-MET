@@ -165,14 +165,14 @@ public:
     setRange(minValue, maxValue); // updates the a-coeff
   }
 
-  virtual double map(double x) const 
+  double map(double x) const override
   { 
     x = 2*x - 1;           // 0..1 to -1..+1
     return a * sinh(b*x);  // -max..max
     // maybe generalize to y = a * sinh(b*(x+c)) + d for unsymmetric ranges, etc. 
   } 
 
-  virtual double unmap(double y) const 
+  double unmap(double y) const override
   { 
     y = asinh(y/a) / b;    // -1..+1
     return 0.5 * (y+1);    //  0..1

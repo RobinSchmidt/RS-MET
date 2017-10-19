@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
 
   // Math:
   //ellipseLineIntersections();
-  expBipolar();
+  //expBipolar();
   //expGaussBell();
   //linearRegression();
   //productLogPlot();
@@ -66,9 +66,10 @@ int main(int argc, char* argv[])
   //particleSystem(); 
 
   // Generators:
-  bouncillator();
+  //bouncillator();
   //bouncillatorFormula();
   //rayBouncer();
+  xoxosOsc();
 
   // Graphics:
   //lineDrawing();
