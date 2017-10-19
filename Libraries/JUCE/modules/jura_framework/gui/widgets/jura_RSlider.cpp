@@ -209,6 +209,9 @@ double RSlider::getValueFromText (const String& text) const
 
 double RSlider::proportionOfLengthToValue(double proportion) const
 {
+  if(assignedParameter != nullptr)
+    return assignedParameter->proportionToValue(proportion);
+
   // todo:  use linToLin, linToExp, expToLin
   // this code duplicates similar code in Parameter - factor out, get rid of redundancy
   switch( scaling )
@@ -223,8 +226,14 @@ double RSlider::proportionOfLengthToValue(double proportion) const
 
 double RSlider::valueToProportionOfLength(double value) const
 {
+  if(assignedParameter != nullptr)
+    return assignedParameter->valueToProportion(value);
+
+
   // catch cases where minValue == maxValue
   // todo:  use linToLin, linToExp, expToLin
+  // or maybe get rid of this code altogether and let this be done by the parameter - if someone
+  // wnat to use a slider with attached parameter, use a dummy parameter
 
   switch( scaling )
   {
