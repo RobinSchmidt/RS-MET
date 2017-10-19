@@ -920,6 +920,7 @@ void BreakpointModulatorEditor::autoAdjustPlotRangeY()
 }
 
 const std::vector<String> BreakpointModulatorEditor::GridIntervalStringArray{
+  "1",
   "1/2",
   "1/4",
   "1/8",
@@ -933,6 +934,7 @@ const std::vector<String> BreakpointModulatorEditor::GridIntervalStringArray{
 };
 
 const std::vector<double> BreakpointModulatorEditor::GridIntervalValueArray{
+  1.0,
   1.0/2.0,
   1.0/4.0,
   1.0/8.0,
