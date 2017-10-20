@@ -247,4 +247,44 @@ void rayBouncer()
   plt.plot();
 }
 
+void xoxosOsc()
+{
+  // Oscillator based on an ellipse in the xy-plane
+  // todo: find and links references, explanations, ...
 
+  static const int N = 1000;   // number of output samples
+  float T = 250;               // period in samples
+  float A = 0.5f;              // -1..+1
+  float B = 1.0f;              // -PI..+PI
+  float C = 0.8f;              // -inf..+inf
+
+  // generate signals:
+  float x[N], y[N], sum[N];
+  float w = float(2*PI/T);
+  float sB = sin(B);
+  float cB = cos(B);
+  float s, c, Ac, Cs, a;
+  for(int n = 0; n < N; n++)
+  {
+    s  = sin(w*n);
+    c  = cos(w*n);
+    Ac = A + c;
+    Cs = C * s;
+    a  = 1 / sqrt(Ac*Ac + Cs*Cs);  // normalizer
+    x[n]   = a*Ac*cB;
+    y[n]   = a*Cs*sB;
+    sum[n] = x[n] + y[n];
+  }
+
+  // plot outputs:
+  GNUPlotter plt;
+  //plt.addDataArrays(N, x, y); // plot the ellipse
+  plt.addDataArrays(N, sum);
+  plt.addDataArrays(N, x);
+  plt.addDataArrays(N, y);
+  plt.plot();
+
+  // Observations:
+  // B=C=0: pulse wave, A controls pulse-width
+  // A=1, B=PI/2, C = +-0.8: saw wave, higher C makes long transition more sigmoid
+}

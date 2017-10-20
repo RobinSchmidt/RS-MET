@@ -47,6 +47,7 @@ void Ladder::createStaticParameters()
   p->setValueChangeCallback<Ladder>(this, &Ladder::setResonance);
 
   p = new Param("StereoSpread", -24.0, +24.0, 0.0, Parameter::LINEAR_BIPOLAR);
+  //p->setMapper(new rsParameterMapperSinh(-24, +24, 2.0)); // for test
   addObservedParameter(p);
   p->setValueChangeCallback<Ladder>(this, &Ladder::setStereoSpread);
 
