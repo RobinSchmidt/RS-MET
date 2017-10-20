@@ -250,13 +250,23 @@ void rayBouncer()
 void xoxosOsc()
 {
   // Oscillator based on an ellipse in the xy-plane
-  // todo: find and links references, explanations, ...
+  // more info:
+  // https://www.kvraudio.com/forum/viewtopic.php?p=6656238#p6656238
+  // https://gitlab.com/Hickler/Soundemote/issues/67
+  // https://github.com/RobinSchmidt/RS-MET/issues/72
+  // play with parameters:
+  // https://www.desmos.com/calculator/7h9mknbv3q
+  // i think, it works as follows:
+  // -create x,y values on a circle (standard rotating phasor in the plane)
+  // -convert x,y to values on an arbitrary ellipse
+  //  (-project onto the x- and y-axis (i.e. take the x- and y-value))...really?
+
 
   static const int N = 1000;   // number of output samples
   float T = 250;               // period in samples
-  float A = 0.5f;              // -1..+1
-  float B = 1.0f;              // -PI..+PI
-  float C = 0.8f;              // -inf..+inf
+  float A = 0.8f;              // -1..+1,      Upper/Lower Bias (?)
+  float B = 0.5f;              // -PI..+PI     Left/Right Bias (?)
+  float C = 0.5f;              // -inf..+inf   Upper/Lower Pinch (?)
 
   // generate signals:
   float x[N], y[N], sum[N];
@@ -273,7 +283,7 @@ void xoxosOsc()
     a  = 1 / sqrt(Ac*Ac + Cs*Cs);  // normalizer
     x[n]   = a*Ac*cB;
     y[n]   = a*Cs*sB;
-    sum[n] = x[n] + y[n];
+    sum[n] = x[n] + y[n]; // maybe it could be further flexibilized by taking a weighted sum?
   }
 
   // plot outputs:

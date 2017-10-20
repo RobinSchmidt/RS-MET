@@ -278,9 +278,9 @@ public:
     LINEAR,
     EXPONENTIAL,
     LINEAR_BIPOLAR,
+    CUSTOM,         // requires a rsParameterMapper object to be passed
 
-    NUM_SCALINGS,
-    CUSTOM          // requires a rsParameterMapper object to be passed
+    NUM_SCALINGS
   };
 
   //-----------------------------------------------------------------------------------------------

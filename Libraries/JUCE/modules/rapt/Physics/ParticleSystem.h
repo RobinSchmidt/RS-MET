@@ -83,7 +83,7 @@ public:
 
   rsVector3D<T> pos;  // position
   rsVector3D<T> vel;  // velocity
-  T mass   = 1;
+  T mass   = 1;       // todo: maybe distinguish inertial and gravitational mass
   T charge = 1;
   T size   = 1;       // to avoid force singularities
   // maybe have some kind of spin / angular-velocity (a vector)
