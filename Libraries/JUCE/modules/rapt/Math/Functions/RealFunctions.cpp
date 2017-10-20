@@ -143,7 +143,7 @@ T rsSineIntegralViaContinuedFractions(T x)  // recommended for |x| > 3
   T xAbs = fabs(x);
   T a;
   std::complex<T> b(1.0, xAbs);
-  std::complex<T> c = 1.0 / TINY;
+  std::complex<T> c = 1.0 / RS_TINY;
   std::complex<T> d = 1.0 / b;
   std::complex<T> h = d;
   std::complex<T> cd;
