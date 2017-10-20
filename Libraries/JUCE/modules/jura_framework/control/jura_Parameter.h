@@ -95,7 +95,8 @@ public:
   virtual double map(double normalizedValue) const = 0;
 
   /** Override this function in your subclass to map the actual parameter value (in 
-  the range min..max) to the corresponding normalized value (in the range 0..1). */
+  the range min..max) to the corresponding normalized value (in the range 0..1). It should be the
+  inverse function of map. For example, if map is exp then unmap should be log. */
   virtual double unmap(double value) const = 0;
 
   /** Sets up the range for the (mapped, actual) parameter value. */
@@ -149,12 +150,18 @@ public:
     //return log(y/min) / (log(max/min)); 
   }
 
-  //return jlimit(0.0, 1.0, log(value/minValue) / (log(maxValue/minValue)) );
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsParameterMapperExponential)
 };
 
-/** ...for bipolar exponential mapping */
-// needs test
+/** A mapper based on the hyperbolic sine function, using y = a * sinh(b*x) where x is a value
+between -1 and +1 (derived from the normalized 0..1 parameter p as x = 2*p-1). This function is 
+suitable for parameters that should be mapped exponentially but should nevertheless by bipolar.
+An example would be a frequency between -20000 and +20000 Hz. You can set up a shape parameter 
+which controls the trade-off between precision around zero and high frequency precision (in the 
+case of the freq-example). This shape parameter is actually the "b" in the formula. The "a" will 
+then be determined by "b" and the max value (i.e. 20000). It currently supports only ranges that 
+are symmetric around zero, i.e. min should be -max. */
+
 class JUCE_API rsParameterMapperSinh : public rsParameterMapper
 {
 public:
@@ -178,6 +185,7 @@ public:
     return 0.5 * (y+1);    //  0..1
   }
 
+  /** The range must be symmetrical around 0: newMin == -newMax. */
   void setRange(double newMin, double newMax) override
   {
     jassert(newMin == -newMax); // supports currently only 0-centered symmetric mapping
@@ -269,7 +277,9 @@ public:
   /** An enumeration of the available scalings of the parameter. BOOLEAN will map all
   values >= 0.5 to 1.0, and all values < 0.5 to 0.0, INTEGER will linearly map to the range between
   minValue and maxValue and round to the nearest integer, LINEAR will provide a linear mapping
-  without rounding and EXPONENTIAL will provide exponential mapping. */
+  without rounding and EXPONENTIAL will provide exponential mapping. LINEAR_BIPOLAR is mapping 
+  function wise the same as LINEAR, it is just distinguished to serve as a hint for sliders to 
+  draw themselves differently for bipolar parameters */
   enum scalings
   {
     BOOLEAN = 0,
@@ -511,6 +521,7 @@ public:
     if(calleeObject != nullptr)
       valueChangeCallbackDouble =
       new SpecificMemberFunctionCallback1<CalleeClass, void, double>(calleeObject, memberToCall);
+    callValueChangeCallbacks();
   }
 
   /** @see registerValueChangeCallback(CalleeClass *calleeObject, void (CalleeClass::*memberToCall) (double)) */
@@ -526,6 +537,7 @@ public:
     if(calleeObject != nullptr)
       valueChangeCallbackInt
       = new SpecificMemberFunctionCallback1<CalleeClass, void, int>(calleeObject, memberToCall);
+    callValueChangeCallbacks();
   }
 
   /** @see registerValueChangeCallback(CalleeClass *calleeObject, void (CalleeClass::*memberToCall) (double)) */
@@ -541,12 +553,14 @@ public:
     if(calleeObject != nullptr)
       valueChangeCallbackBool =
       new SpecificMemberFunctionCallback1<CalleeClass, void, bool>(calleeObject, memberToCall);
+    callValueChangeCallbacks();
   }
 
   void setValueChangeCallback(std::function<void(double)> cb)
   {
 	  ScopedPointerLock spl(mutex);
 	  valueChangeCallbackFunction = cb;
+    callValueChangeCallbacks();
   }
 
   /** Clears our valueChangeCallbacks, so they will call back nothing. */
