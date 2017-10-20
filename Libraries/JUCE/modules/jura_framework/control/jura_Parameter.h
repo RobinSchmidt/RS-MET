@@ -153,8 +153,14 @@ public:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsParameterMapperExponential)
 };
 
-/** ...for bipolar exponential mapping */
-// needs test
+/** A mapper based on the hyperbolic sine function, using y = a * sinh(b*x) where x is a value
+between -1 and +1 (derived from the normalized 0..1 parameter p as x = 2*p-1). This function is 
+suitable for parameters that should be mapped exponentially but should nevertheless by bipolar.
+An example would be a frequency between -20000 and +20000 Hz. You can set up a shape parameter 
+which controls the trade-off between precision around zero and high frequency precision (in the 
+case of the freq-example). This shape parameter is actually the "b" in the formula. The "a" will 
+then be determined by "b" and the max value (i.e. 20000). */
+
 class JUCE_API rsParameterMapperSinh : public rsParameterMapper
 {
 public:
@@ -269,7 +275,9 @@ public:
   /** An enumeration of the available scalings of the parameter. BOOLEAN will map all
   values >= 0.5 to 1.0, and all values < 0.5 to 0.0, INTEGER will linearly map to the range between
   minValue and maxValue and round to the nearest integer, LINEAR will provide a linear mapping
-  without rounding and EXPONENTIAL will provide exponential mapping. */
+  without rounding and EXPONENTIAL will provide exponential mapping. LINEAR_BIPOLAR is mapping 
+  function wise the same as LINEAR, it is just distinguished to serve as a hint for sliders to 
+  draw themselves differently for bipolar parameters */
   enum scalings
   {
     BOOLEAN = 0,
