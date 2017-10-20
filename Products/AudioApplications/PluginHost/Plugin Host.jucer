@@ -56,8 +56,10 @@
     </CODEBLOCKS_LINUX>
     <XCODE_MAC targetFolder="Builds/MacOSX">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="Plugin Host"/>
-        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="Plugin Host"/>
+        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="Plugin Host"
+                       headerPath="../../../../../Libraries/JUCE/modules"/>
+        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="Plugin Host"
+                       headerPath="../../../../../Libraries/JUCE/modules"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_video" path="../../juce"/>
