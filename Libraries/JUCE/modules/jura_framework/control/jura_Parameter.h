@@ -521,6 +521,7 @@ public:
     if(calleeObject != nullptr)
       valueChangeCallbackDouble =
       new SpecificMemberFunctionCallback1<CalleeClass, void, double>(calleeObject, memberToCall);
+    callValueChangeCallbacks();
   }
 
   /** @see registerValueChangeCallback(CalleeClass *calleeObject, void (CalleeClass::*memberToCall) (double)) */
@@ -536,6 +537,7 @@ public:
     if(calleeObject != nullptr)
       valueChangeCallbackInt
       = new SpecificMemberFunctionCallback1<CalleeClass, void, int>(calleeObject, memberToCall);
+    callValueChangeCallbacks();
   }
 
   /** @see registerValueChangeCallback(CalleeClass *calleeObject, void (CalleeClass::*memberToCall) (double)) */
@@ -551,12 +553,14 @@ public:
     if(calleeObject != nullptr)
       valueChangeCallbackBool =
       new SpecificMemberFunctionCallback1<CalleeClass, void, bool>(calleeObject, memberToCall);
+    callValueChangeCallbacks();
   }
 
   void setValueChangeCallback(std::function<void(double)> cb)
   {
 	  ScopedPointerLock spl(mutex);
 	  valueChangeCallbackFunction = cb;
+    callValueChangeCallbacks();
   }
 
   /** Clears our valueChangeCallbacks, so they will call back nothing. */
