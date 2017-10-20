@@ -95,7 +95,8 @@ public:
   virtual double map(double normalizedValue) const = 0;
 
   /** Override this function in your subclass to map the actual parameter value (in 
-  the range min..max) to the corresponding normalized value (in the range 0..1). */
+  the range min..max) to the corresponding normalized value (in the range 0..1). It should be the
+  inverse function of map. For example, if map is exp then unmap should be log. */
   virtual double unmap(double value) const = 0;
 
   /** Sets up the range for the (mapped, actual) parameter value. */
@@ -149,7 +150,6 @@ public:
     //return log(y/min) / (log(max/min)); 
   }
 
-  //return jlimit(0.0, 1.0, log(value/minValue) / (log(maxValue/minValue)) );
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsParameterMapperExponential)
 };
 
@@ -159,7 +159,8 @@ suitable for parameters that should be mapped exponentially but should neverthel
 An example would be a frequency between -20000 and +20000 Hz. You can set up a shape parameter 
 which controls the trade-off between precision around zero and high frequency precision (in the 
 case of the freq-example). This shape parameter is actually the "b" in the formula. The "a" will 
-then be determined by "b" and the max value (i.e. 20000). */
+then be determined by "b" and the max value (i.e. 20000). It currently supports only ranges that 
+are symmetric around zero, i.e. min should be -max. */
 
 class JUCE_API rsParameterMapperSinh : public rsParameterMapper
 {
@@ -184,6 +185,7 @@ public:
     return 0.5 * (y+1);    //  0..1
   }
 
+  /** The range must be symmetrical around 0: newMin == -newMax. */
   void setRange(double newMin, double newMax) override
   {
     jassert(newMin == -newMax); // supports currently only 0-centered symmetric mapping
