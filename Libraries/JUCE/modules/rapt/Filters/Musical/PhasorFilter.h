@@ -4,6 +4,10 @@
 /** This is a filter based on a spiraling phasor in the xy-plane... 
 
 This class is just a stub - it's still under construction..
+
+here's a paper that describes a similar concept:
+https://ccrma.stanford.edu/courses/250a-fall-2003/hiqfilters.pdf
+
 */
 
 template<class TSig, class TPar> // signal, parameter types

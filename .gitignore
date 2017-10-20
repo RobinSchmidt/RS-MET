@@ -73,3 +73,8 @@ Release
 *.opensdf
 /Tests/TestsRosicAndRapt/Builds/VisualStudio2015/x64/Debug/*.ilk
 /Products/AudioPlugins/TestPluginJURA/Builds/LinuxMakefile/build/intermediate/Debug
+Debug
+/Products/AudioPlugins/TestPluginJURA/Builds/VisualStudio2015/*.psess
+/Products/AudioPlugins/TestPluginJURA/Builds/VisualStudio2015/Report20170707-2053.vspx
+/Libraries/JUCE/modules/romos/TestSuite/Thumbs.db
+/Tests/TestsRosicAndRapt/Builds/VisualStudio2015/.vs/TestsRosicAndRapt/v14/*.suo
