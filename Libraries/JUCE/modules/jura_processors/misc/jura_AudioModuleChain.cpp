@@ -415,10 +415,10 @@ AudioModuleEditor* AudioModuleChain::createEditor()
 
 void AudioModuleChain::processBlock(double **inOutBuffer, int numChannels, int numSamples)
 {
+  if(numChannels != 2)
+    return;
+
   ScopedLock scopedLock(*lock);
-  jassert(numChannels == 2);
-  //if(size(availableSources) == 0)
-  //if(size(modulationConnections) == 0)
   if( modManager.getNumConnections() == 0)
   {
     // in case of no modulations, we can use a faster loop

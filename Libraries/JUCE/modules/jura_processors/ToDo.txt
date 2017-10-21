@@ -1,6 +1,3 @@
-Parameter:
- -support custom mapping functions
-
 ModSystem:
  -ModulatableSlider: show the modulation-range
  -clean up the files
@@ -43,6 +40,8 @@ RayBouncer:
  -Workhorse
 
 Bugs:
+-Breakpoint editor:
+ -grid/quantization buttons inconsistent with whether the grid is shown or not
 
 Framework:
  -Parameter needs EXPONENTIAL_BIPOLAR scaling
