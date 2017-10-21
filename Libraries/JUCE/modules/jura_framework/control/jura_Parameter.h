@@ -108,10 +108,10 @@ public:
   }
 
   /** Returns the minimum value. */
-  inline double getMin() { return min; }
+  inline double getMin() const { return min; }
 
   /** Returns the maximum value. */
-  inline double getMax() { return max; }
+  inline double getMax() const { return max; }
 
 protected:
 
@@ -122,7 +122,7 @@ protected:
 
 /** Subclass of rsParameterMapper for linear mapping. This is appropriate for parameters that are
 either intrinsically perceived on a linear scale (such as a phase between -180..+180) or a 
-linearized measure of some quantity (such as decibels or semitones). */
+perceptually linearized measure of some quantity (such as decibels or semitones). */
 
 class JUCE_API rsParameterMapperLinear : public rsParameterMapper
 {
@@ -212,6 +212,88 @@ protected:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsParameterMapperSinh)
 };
 
+/** Parameter mapper based on the hyperbolic tangent. ...the code actually exactly parallels the 
+sinh mapper - maybe we can avoid the duplication by refactoring? ...maybe it needs to use function 
+pointers to sinh/asinh and tanh/atanh respectively ...and maybe that can then be generalized  */
+class JUCE_API rsParameterMapperTanh : public rsParameterMapper
+{
+public:
+
+  rsParameterMapperTanh(double minValue, double maxValue, double shape)
+  {
+    b = shape;
+    setRange(minValue, maxValue); // updates the a-coeff
+  }
+
+  double map(double x) const override
+  { 
+    x = 2*x - 1;           // 0..1 to -1..+1
+    return a * tanh(b*x);  // -max..max
+                           // maybe generalize to y = a * tanh(b*(x+c)) + d for unsymmetric ranges, etc. 
+  } 
+
+  double unmap(double y) const override
+  { 
+    y = atanh(y/a) / b;    // -1..+1
+    return 0.5 * (y+1);    //  0..1
+  }
+
+  /** The range must be symmetrical around 0: newMin == -newMax. */
+  void setRange(double newMin, double newMax) override
+  {
+    jassert(newMin == -newMax); // supports currently only 0-centered symmetric mapping
+    rsParameterMapper::setRange(newMin, newMax);
+    updateCoeffs();
+  }
+
+  void setShape(double newShape)
+  {
+    jassert(newShape > 0);
+    b = newShape;
+    updateCoeffs();
+  }
+
+protected:
+
+  void updateCoeffs()
+  {
+    a = max / tanh(b);
+  }
+
+  double a = 1, b = 1;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsParameterMapperTanh)
+};
+
+
+/*
+these are elan's rational mapping functions, they could be useful for a mapper, too:
+
+double curve(double value, double tension)
+{
+double t = tension;
+double v = value;
+return (t*v-v)/(2*t*v-t-1);
+}
+
+double s_curve(double value, double tension)
+{
+double t = tension;
+double v = value;
+
+if (v < 0.5)
+return (t*v-v) / (4*t*v-t-1);
+
+v += -0.5;
+t *= -0.5;
+return (t*v-v*0.5) / (4*t*v-t-0.5) + 0.5;
+}
+
+https://www.desmos.com/calculator/xaklfkriac
+
+...also a tanh based mapper could be useful (maybe unipolar and bipolar) - a saturating curve
+*/
+
 //=================================================================================================
 // the actual Parameter class:
 
@@ -263,9 +345,6 @@ functions)
 -for performance, provide two versions of setValue - the regular one and a version
  setValueWithoutLocking - where the latter should be called only under the premise that the
  mutex-lock is already held by the caller
-
-\todo factor out a ParameterMapper class that does all the mapping - maybe it should be more
-generally a ValueMapper or something
 
 */
 
@@ -364,7 +443,7 @@ public:
 
   /** Sets up a custom parameter mapper object to be used for mapping back and forth between 
   normalized (0..1) and actual (min..max) values. You can use this, whenever you need a mapping
-  that is not listed in the scalings enum. This parameter will take over ownership of the passed
+  that is not listed in the scalings enum. This Parameter will take over ownership of the passed
   object, i.e. delete it on destruction. */
   virtual void setMapper(rsParameterMapper* newMapper);
 
@@ -598,8 +677,8 @@ protected:
 
   juce::String name;                 // string for the parameter name
   double       value;                // actual value of the parameter
-  double       interval;             // interval for adjustments
-  double       defaultValue;         // default value of this parameter
+  double       interval;             // interval for adjustments ...rename to stepSize
+  double       defaultValue;         // default value of this parameter ...maybe rename to resetValue
   int          scaling;              // index to the scaling/mapping to be used
   bool         saveAndRecall = true; // flag, to switch automatic saving on/off - why?
 
