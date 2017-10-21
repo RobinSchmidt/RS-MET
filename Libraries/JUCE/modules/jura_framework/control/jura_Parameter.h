@@ -521,7 +521,8 @@ public:
     if(calleeObject != nullptr)
       valueChangeCallbackDouble =
       new SpecificMemberFunctionCallback1<CalleeClass, void, double>(calleeObject, memberToCall);
-    callValueChangeCallbacks();
+    callValueChangeCallbacks(); // enforce consistency of parameter with core object after wiring
+                                // up the callback
   }
 
   /** @see registerValueChangeCallback(CalleeClass *calleeObject, void (CalleeClass::*memberToCall) (double)) */
