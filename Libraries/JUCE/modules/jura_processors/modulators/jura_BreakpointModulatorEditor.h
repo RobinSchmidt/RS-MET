@@ -232,6 +232,9 @@ protected:
   ModulatorCurveEditor*      breakpointEditor;
   CoordinateSystemZoomerOld* breakpointZoomer;
 
+  static const std::vector<String> GridIntervalStringArray;
+  static const std::vector<double> GridIntervalValueArray
+
   juce_UseDebuggingNewOperator;
 };
 

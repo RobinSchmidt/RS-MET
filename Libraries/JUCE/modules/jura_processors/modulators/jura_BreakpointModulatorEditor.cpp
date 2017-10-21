@@ -286,7 +286,7 @@ BreakpointParameterEditor::BreakpointParameterEditor(CriticalSection *newPlugInL
   levelSlider->setDescription("Level of selected breakpoint");
   levelSlider->setStringConversionFunction(&valueToString3);
   //levelSlider->setRange(-2.0, 2.0, 0.001, 1.0);
-  levelSlider->setRange(0.0, 4.0, 0.001, 1.0);
+  levelSlider->setRange(-4.0, 4.0, 0.001, 0.0);
   levelSlider->setLayout(RSlider::NAME_ABOVE);
 
   std::vector<double> defaultValues;
@@ -568,35 +568,25 @@ BreakpointModulatorEditor::BreakpointModulatorEditor(CriticalSection *newPlugInL
   addWidget( snapXComboBox = new RComboBox("SnapXComboBox") );
   snapXComboBox->registerComboBoxObserver(this);
   snapXComboBox->setDescription("Select spacing of the vertical grid lines");
-  snapXComboBox->addItem(0, "1/2"   );
-  snapXComboBox->addItem(1, "1/4"   );
-  snapXComboBox->addItem(2, "1/8"   );
-  snapXComboBox->addItem(3, "0.1"   );
-  snapXComboBox->addItem(4, "1/16"  );
-  snapXComboBox->addItem(5, "1/32"  );
-  snapXComboBox->addItem(6, "1/64"  );
-  snapXComboBox->addItem(7, "0.01"  );
-  snapXComboBox->addItem(8, "1/128" );
-  snapXComboBox->selectItemByIndex(2, false);
 
-  addWidget( snapYButton = new RButton("#Y:") );
+  addWidget(snapYButton = new RButton("#Y:"));
   snapYButton->setDescription("Toggle level-quantization on/off.");
   snapYButton->setClickingTogglesState(true);
   snapYButton->addRButtonListener(this);
 
-  addWidget( snapYComboBox = new RComboBox("SnapYComboBox") );
+  addWidget(snapYComboBox = new RComboBox("SnapYComboBox"));
   snapYComboBox->registerComboBoxObserver(this);
   snapYComboBox->setDescription("Select spacing of the horizontal grid lines");
-  snapYComboBox->addItem(0, "1/2"   );
-  snapYComboBox->addItem(1, "1/4"   );
-  snapYComboBox->addItem(2, "1/8"   );
-  snapYComboBox->addItem(3, "0.1"   );
-  snapYComboBox->addItem(4, "1/16"  );
-  snapYComboBox->addItem(5, "1/32"  );
-  snapYComboBox->addItem(6, "1/64"  );
-  snapYComboBox->addItem(7, "0.01"  );
-  snapYComboBox->addItem(8, "1/128" );
-  snapYComboBox->selectItemByIndex(2, false);
+
+  for (int i = 0; i < GridIntervalStringArray.size(); ++i)
+  {
+    snapXComboBox->addItem(i, GridIntervalStringArray[i]);
+    snapYComboBox->addItem(i, GridIntervalStringArray[i]);
+  }
+
+  snapXComboBox->selectItemByIndex(5, true); // 1/16
+  snapYComboBox->selectItemByIndex(4, true); // 1/12 (pitch)
+
    // get rid of this code duplication...
 
   addWidget(closeButton = new RButton(RButton::CLOSE), true, false); // invisible by default
@@ -929,80 +919,70 @@ void BreakpointModulatorEditor::autoAdjustPlotRangeY()
   breakpointZoomer->zoomToAllY();
 }
 
+const std::vector<String> BreakpointModulatorEditor::GridIntervalStringArray{
+  "1",
+  "1/2",
+  "1/4",
+  "1/8",
+  "1/12",
+  "1/16",
+  "1/24",
+  "1/32",
+  "1/64",
+  "1/100",
+  "1/128",
+};
+
+const std::vector<double> BreakpointModulatorEditor::GridIntervalValueArray{
+  1.0,
+  1.0/2.0,
+  1.0/4.0,
+  1.0/8.0,
+  1.0/12.0,
+  1.0/16.0,
+  1.0/24.0,
+  1.0/32.0,
+  1.0/64.0,
+  1.0/100.0,
+  1.0/128.0,
+};
+
 double BreakpointModulatorEditor::gridIntervalFromIndex(int index)
 {
-  switch(index)
-  {
-  case  0: return 1.0/2.0;
-  case  1: return 1.0/4.0;
-  case  2: return 1.0/8.0;
-  case  3: return 0.1;
-  case  4: return 1.0/16.0;
-  case  5: return 1.0/32.0;
-  case  6: return 1.0/64.0;
-  case  7: return 0.01;
-  case  8: return 1.0/128.0;
-  default: return 0.1;
-  }
+  if (index < 0 || index >= GridIntervalValueArray.size())
+    return 0.01;
+
+  return  GridIntervalValueArray[index];
 }
 
 int BreakpointModulatorEditor::indexFromGridInterval(double interval)
 {
-  if     ( interval == 0.5       )  return 1;
-  else if( interval == 0.25      )  return 2;
-  else if( interval == 1.0/8.0   )  return 3;
-  else if( interval == 0.1       )  return 4;
-  else if( interval == 1.0/16.0  )  return 5;
-  else if( interval == 1.0/32.0  )  return 6;
-  else if( interval == 1.0/64.0  )  return 7;
-  else if( interval == 0.01      )  return 8;
-  else if( interval == 1.0/128.0 )  return 9;
-  else                              return 4;
+  for (int i = 0; i < GridIntervalValueArray.size(); ++i)
+  {
+    if (interval == GridIntervalValueArray[i])
+      return i;
+  }
+  
+  return 9; // 0.01
 }
 
 double BreakpointModulatorEditor::timeIntervalFromIndex(int index)
 {
-  switch(index)
-  {
-  case  2: return 1.0/16.0;
-  case  3: return 1.0/12.0;
-  case  4: return 1.0/8.0;
-  case  5: return 1.0/6.0;
-  case  6: return 1.0/4.0;
-  case  7: return 1.0/3.0;
-  case  8: return 1.0/2.0;
-  case  9: return 1.0;
-  case 10: return 1.5;
-  case 11: return 2.0;
-  case 12: return 3.0;
-  case 13: return 4.0;
-  case 14: return 6.0;
-  case 15: return 8.0;
-  case 16: return 12.0;
-  case 17: return 16.0;
-  default: return 1.0;
-  }
+  if (index < 0 || index >= GridIntervalValueArray.size())
+    return 0.01;
+
+  return  GridIntervalValueArray[index];
 }
 
 int BreakpointModulatorEditor::indexFromTimeInterval(double interval)
 {
-  if     ( interval == 1.0/16.0  )  return  2;
-  else if( interval == 1.0/12.0  )  return  3;
-  else if( interval == 1.0/8.0   )  return  4;
-  else if( interval == 1.0/6.0   )  return  5;
-  else if( interval == 1.0/4.0   )  return  6;
-  else if( interval == 1.0/3.0   )  return  7;
-  else if( interval == 1.0/2.0   )  return  8;
-  else if( interval == 1.0       )  return  9;
-  else if( interval == 1.5       )  return 10;
-  else if( interval == 2.0       )  return 11;
-  else if( interval == 3.0       )  return 12;
-  else if( interval == 4.0       )  return 13;
-  else if( interval == 6.0       )  return 14;
-  else if( interval == 8.0       )  return 15;
-  else if( interval == 12.0      )  return 16;
-  else if( interval == 16.0      )  return 17;
-  else                              return  1; // no predefined interval
+  for (int i = 0; i < GridIntervalValueArray.size(); ++i)
+  {
+    if (interval == GridIntervalValueArray[i])
+      return i;
+  }
+
+  return 0; // 1, no predefined interval
 }
 
 //=================================================================================================
