@@ -214,7 +214,14 @@ protected:
 
 /** Parameter mapper based on the hyperbolic tangent. ...the code actually exactly parallels the 
 sinh mapper - maybe we can avoid the duplication by refactoring? ...maybe it needs to use function 
-pointers to sinh/asinh and tanh/atanh respectively ...and maybe that can then be generalized  */
+pointers to sinh/asinh and tanh/atanh respectively ...and maybe that can then be generalized.
+maybe factor out a class rsParameterMapperBipolar that is defined via the function:
+
+y = a * f(b*x)
+
+for some function f wich can be sinh, tanh, etc. and that is defined by a function pointer. 
+subclasses then just set the function-pointer in the constructor (or actually 2 function pointers, 
+for forward (sinh/tanh) and backward (asinh/atanh) mapping */
 class JUCE_API rsParameterMapperTanh : public rsParameterMapper
 {
 public:
