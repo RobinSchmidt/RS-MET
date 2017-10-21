@@ -5557,6 +5557,7 @@
 		12F9C0DCCFD0FE8DE84625C4 = {isa = XCBuildConfiguration; buildSettings = {  }; name = Debug; };
 		8CAAC8924A7B29D87F56A4D7 = {isa = XCBuildConfiguration; buildSettings = {  }; name = Release; };
 		CA01AA48419E8EB0940620C1 = {isa = XCBuildConfiguration; buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -5589,9 +5590,11 @@
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
 				OTHER_LDFLAGS = "-bundle -lTestPluginJURA";
 				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.TestPluginJUCE;
+				SDKROOT = macosx10.11;
 				SDKROOT_ppc = macosx10.5;
 				WRAPPER_EXTENSION = vst; }; name = Debug; };
 		1C171F4BEBD7F32386875D34 = {isa = XCBuildConfiguration; buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -5625,9 +5628,11 @@
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
 				OTHER_LDFLAGS = "-bundle -lTestPluginJURA";
 				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.TestPluginJUCE;
+				SDKROOT = macosx10.11;
 				SDKROOT_ppc = macosx10.5;
 				WRAPPER_EXTENSION = vst; }; name = Release; };
 		D8F42DD051B229633C8565C5 = {isa = XCBuildConfiguration; buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -5661,9 +5666,11 @@
 				OTHER_LDFLAGS = "-bundle -lTestPluginJURA";
 				OTHER_REZFLAGS = "-d ppc_$ppc -d i386_$i386 -d ppc64_$ppc64 -d x86_64_$x86_64 -I /System/Library/Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework/Versions/A/Headers -I \"$(DEVELOPER_DIR)/Extras/CoreAudio/AudioUnits/AUPublic/AUBase\"";
 				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.TestPluginJUCE;
+				SDKROOT = macosx10.11;
 				SDKROOT_ppc = macosx10.5;
 				WRAPPER_EXTENSION = component; }; name = Debug; };
 		B8B3102C64950862FFB7B64E = {isa = XCBuildConfiguration; buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -5698,9 +5705,11 @@
 				OTHER_LDFLAGS = "-bundle -lTestPluginJURA";
 				OTHER_REZFLAGS = "-d ppc_$ppc -d i386_$i386 -d ppc64_$ppc64 -d x86_64_$x86_64 -I /System/Library/Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework/Versions/A/Headers -I \"$(DEVELOPER_DIR)/Extras/CoreAudio/AudioUnits/AUPublic/AUBase\"";
 				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.TestPluginJUCE;
+				SDKROOT = macosx10.11;
 				SDKROOT_ppc = macosx10.5;
 				WRAPPER_EXTENSION = component; }; name = Release; };
 		040DDB88412BD4B0554683CE = {isa = XCBuildConfiguration; buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -5728,8 +5737,10 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.TestPluginJUCE;
+				SDKROOT = macosx10.11;
 				SDKROOT_ppc = macosx10.5; }; name = Debug; };
 		CE62C5B5B53AC0DA032469F0 = {isa = XCBuildConfiguration; buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -5758,6 +5769,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.TestPluginJUCE;
+				SDKROOT = macosx10.11;
 				SDKROOT_ppc = macosx10.5; }; name = Release; };
 		C83EFB6C8799749F1709483A = {isa = XCBuildConfiguration; buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -5772,7 +5784,6 @@
 				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
 				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "TestPluginJURA";
 				WARNING_CFLAGS = -Wreorder;
 				ZERO_LINK = NO; }; name = Debug; };

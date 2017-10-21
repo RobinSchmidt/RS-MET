@@ -129,8 +129,10 @@
     </LINUX_MAKE>
     <XCODE_MAC targetFolder="Builds/MacOSX">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="TestPluginJURA"/>
-        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="TestPluginJURA"/>
+        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="TestPluginJURA"
+                       osxSDK="10.11 SDK" osxCompatibility="10.11 SDK" osxArchitecture="64BitUniversal"/>
+        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="TestPluginJURA"
+                       osxSDK="10.11 SDK" osxCompatibility="10.11 SDK" osxArchitecture="64BitUniversal"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="rosic" path="../../../Libraries/JUCE/modules"/>

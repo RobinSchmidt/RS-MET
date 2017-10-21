@@ -10,7 +10,7 @@
 namespace BinaryData
 {
     extern const char*   DebugNotes_txt;
-    const int            DebugNotes_txtSize = 966;
+    const int            DebugNotes_txtSize = 938;
 
     extern const char*   ToDo_txt;
     const int            ToDo_txtSize = 0;
