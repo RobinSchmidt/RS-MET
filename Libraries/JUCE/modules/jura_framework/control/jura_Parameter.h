@@ -272,29 +272,85 @@ protected:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsParameterMapperTanh)
 };
 
+class JUCE_API rsParameterMapperRational : public rsParameterMapper
+{
+public:
+
+  rsParameterMapperRational(double minValue, double maxValue, double shape)
+  {
+    tension = shape;
+    rsParameterMapper::setRange(minValue, maxValue);
+  }
+
+  double curve(double t, double v) const
+  {
+    double tv = t*v;
+    return (tv-v)/(2*tv-t-1);
+  }
+
+  /** Shape must be between -1 and +1, negative for log, positive for exp */
+  void setShape(double newShape) { tension = newShape;}
+
+  double map(double x) const override 
+  {    
+    return jmap(curve(tension, x), min, max);
+  }
+  double unmap(double y) const override 
+  { 
+    return curve(-tension, jmap(y, min, max, 0.0, 1.0));
+  }
+
+protected:
+
+  double tension;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsParameterMapperRational)
+};
+
+class JUCE_API rsParameterMapperRationalBipolar : public rsParameterMapper
+{
+public:
+
+  rsParameterMapperRationalBipolar(double minValue, double maxValue, double shape)
+  {
+    tension = shape;
+    rsParameterMapper::setRange(minValue, maxValue);
+  }
+
+  double s_curve(double t, double v) const
+  {
+    double tv = t*v;
+
+    if (v < 0.5)
+      return (tv-v) / (4*tv-t-1);
+
+    v += -0.5;
+    t *= -0.5;
+    tv = t*v;
+    return (tv-v*0.5) / (4*tv-t-0.5) + 0.5;
+  }
+
+  /** Shape must be between -1 and +1, negative for log, positive for exp */
+  void setShape(double newShape) { tension = newShape; }
+
+  double map(double x) const override
+  {
+    return jmap(s_curve(tension, x), min, max);
+  }
+  double unmap(double y) const override
+  {
+    return s_curve(-tension, jmap(y, min, max, 0.0, 1.0));
+  }
+
+protected:
+
+  double tension;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsParameterMapperRationalBipolar)
+};
 
 /*
 these are elan's rational mapping functions, they could be useful for a mapper, too:
-
-double curve(double value, double tension)
-{
-double t = tension;
-double v = value;
-return (t*v-v)/(2*t*v-t-1);
-}
-
-double s_curve(double value, double tension)
-{
-double t = tension;
-double v = value;
-
-if (v < 0.5)
-return (t*v-v) / (4*t*v-t-1);
-
-v += -0.5;
-t *= -0.5;
-return (t*v-v*0.5) / (4*t*v-t-0.5) + 0.5;
-}
 
 https://www.desmos.com/calculator/xaklfkriac
 
