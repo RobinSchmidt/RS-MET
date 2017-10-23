@@ -37,6 +37,9 @@ rsModulationSetup::rsModulationSetup(AutomatableWidget* widgetToModulate,
 
   updateConnectionWidgetsArray();
 
+  setAlwaysOnTop(true); // should not be hidden by main gui window
+
+
   //modManager = nullptr;
   //ModulatableParameter* mp = widgetToModulate->getModulatableParameter();
   //if(mp != nullptr)
