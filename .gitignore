@@ -78,3 +78,6 @@ Debug
 /Products/AudioPlugins/TestPluginJURA/Builds/VisualStudio2015/Report20170707-2053.vspx
 /Libraries/JUCE/modules/romos/TestSuite/Thumbs.db
 /Tests/TestsRosicAndRapt/Builds/VisualStudio2015/.vs/TestsRosicAndRapt/v14/*.suo
+/Products/AudioPlugins/Chainer/Builds/VisualStudio2015/.vs/Chainer/v14/*.suo
+/Products/AudioPlugins/Chainer/Builds/VisualStudio2015/.vs/TestPluginJURA/v14/*.suo
+/Products/AudioPlugins/Chainer/Builds/VisualStudio2015/*.sdf
