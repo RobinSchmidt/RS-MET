@@ -3,7 +3,7 @@ PhasorFilter::PhasorFilter(CriticalSection *lockToUse) : AudioModule(lockToUse)
 {
   ScopedLock scopedLock(*lock);
   moduleName = "PhasorFilter";
-  setActiveDirectory(getApplicationDirectory() + "/PhasorFilterPresets");
+  setActiveDirectory(getApplicationDirectory() + "/Presets/PhasorFilter");
 
   // maybe later we should make a convenience class in RAPT that includes the statemapper already
   filterCore.setStateMapper(&stateMapper);

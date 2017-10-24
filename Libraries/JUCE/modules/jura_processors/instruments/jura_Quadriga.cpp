@@ -14,7 +14,7 @@ QuadrigaAudioModule::QuadrigaAudioModule(CriticalSection *newPlugInLock)
   moduleName = juce::String("Quadriga");
 
   // initialize the current directory for preset loading and saving:
-  setActiveDirectory(getApplicationDirectory() + juce::String("/QuadrigaPresets") );
+  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/Quadriga") );
 
   quadrigenModule = new QuadrigenAudioModule(lock, &wrappedQuadriga->voiceArray[0].quadrigen);
   quadrigenModule->setModuleName(juce::String("Quadrigen"));

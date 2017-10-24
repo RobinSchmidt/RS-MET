@@ -6,7 +6,7 @@ KeyShotAudioModule::KeyShotAudioModule(CriticalSection *newPlugInLock)
   setInstrumentToWrap(wrappedKeyShot);
 
   moduleName = juce::String("KeyShot");
-  setActiveDirectory(getApplicationDirectory() + juce::String("/KeyShotPresets") );
+  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/KeyShot") );
 
   samplePlayerModule = new SamplePlayerAudioModule(lock, 
     &wrappedKeyShot->voiceArray[0].samplePlayer);

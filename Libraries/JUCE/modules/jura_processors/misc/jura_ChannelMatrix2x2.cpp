@@ -12,7 +12,7 @@ ChannelMatrix2x2AudioModule::ChannelMatrix2x2AudioModule(CriticalSection *newPlu
   }
 
   moduleName = juce::String("ChannelMatrix2x2");
-  setActiveDirectory(getApplicationDirectory() + juce::String("/ChannelMatrix2x2Presets") );
+  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/ChannelMatrix2x2") );
   //initializeAutomatableParameters(); //
 }
 

@@ -9,7 +9,7 @@ FuncShaperAudioModule::FuncShaperAudioModule(CriticalSection *newPlugInLock,
 
 
   moduleName  = juce::String("FuncShaper");
-  setActiveDirectory(getApplicationDirectory() + juce::String("/FuncShaperPresets") );
+  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/FuncShaper") );
   initializeAutomatableParameters();
 
   // use initial value for "a" that is different from the default value:
@@ -25,7 +25,7 @@ FuncShaperAudioModule::FuncShaperAudioModule(CriticalSection *newPlugInLock)
 
   // move to init function, shaer with other cosntructor:
   moduleName  = juce::String("FuncShaper");
-  setActiveDirectory(getApplicationDirectory() + juce::String("/FuncShaperPresets") );
+  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/FuncShaper") );
   initializeAutomatableParameters();
 
   // use initial value for "a" that is different from the default value:

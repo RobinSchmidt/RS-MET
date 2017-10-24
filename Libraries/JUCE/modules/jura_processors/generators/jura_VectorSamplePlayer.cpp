@@ -7,7 +7,7 @@ VectorSamplePlayerAudioModule::VectorSamplePlayerAudioModule(CriticalSection *ne
   moduleName = juce::String("VectorSamplePlayer");
 
   // initialize the current directory for preset loading and saving:
-  setActiveDirectory(getApplicationDirectory() + juce::String("/VectorSamplePlayerPresets"));
+  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/VectorSamplePlayer"));
 
   vectorMixerModule = new VectorMixerAudioModule(lock, &wrappedVectorSamplePlayer->vectorMixer);
   vectorMixerModule->setModuleName(juce::String("VectorMixer"));

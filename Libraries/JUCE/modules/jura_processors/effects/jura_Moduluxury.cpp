@@ -17,7 +17,7 @@ ModuluxuryAudioModule::ModuluxuryAudioModule(CriticalSection *newPlugInLock,
   }
 
   moduleName = juce::String("Moduluxury");
-  setActiveDirectory(getApplicationDirectory() + juce::String("/ModuluxuryPresets"));
+  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/Moduluxury"));
   initializeAutomatableParameters();
 }
 

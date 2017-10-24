@@ -2,7 +2,7 @@ PhaseScopeMultiColor::PhaseScopeMultiColor(CriticalSection *lockToUse) : AudioMo
 {
   ScopedLock scopedLock(*plugInLock);
   moduleName = "PhaseScopeMultiColor";
-  setActiveDirectory(getApplicationDirectory() + "/PhaseScopeMultiColorPresets");
+  setActiveDirectory(getApplicationDirectory() + "/Presets/PhaseScopeMultiColor");
   rainbow = false;
 
   pixelScale = 1.0;

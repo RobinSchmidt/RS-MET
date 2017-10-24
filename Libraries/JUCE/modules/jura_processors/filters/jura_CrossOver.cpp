@@ -17,7 +17,7 @@ CrossOverAudioModule::CrossOverAudioModule(CriticalSection *newPlugInLock,
 
   moduleName = juce::String("CrossOver");
   wantsTempoSyncInfo = false;  // mmmhh...maybe better set it to false in the baseclass and to true in subclasses that need it
-  setActiveDirectory(getApplicationDirectory() + juce::String("/CrossOverPresets") );
+  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/CrossOver") );
   createStaticParameters();
 }
 

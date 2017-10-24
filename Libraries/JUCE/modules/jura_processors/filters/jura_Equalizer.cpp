@@ -24,7 +24,7 @@ EqualizerAudioModule::EqualizerAudioModule(CriticalSection *newPlugInLock)
 void EqualizerAudioModule::init()
 {
   moduleName = juce::String("Equalizer");
-  setActiveDirectory(getApplicationDirectory() + juce::String("/EqualizerPresets") );
+  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/Equalizer") );
   selectedChannel  = 0;
   selectedIndex    = -1;
   patchFormatIndex = 2;

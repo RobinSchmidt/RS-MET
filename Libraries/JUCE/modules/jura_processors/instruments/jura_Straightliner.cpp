@@ -8,7 +8,7 @@ StraightlinerAudioModule::StraightlinerAudioModule(CriticalSection *newPlugInLoc
   wrappedStraightliner = new rosic::Straightliner;
   setInstrumentToWrap(wrappedStraightliner);
   setModuleName(juce::String("Straightliner"));
-  setActiveDirectory(getApplicationDirectory() + juce::String("/StraightlinerPresets") );
+  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/Straightliner") );
   //oscSectionEditor->setActiveDirectory(pluginDir + juce::String(T("/StraightlinerPresets/OscSectionPresets")) );
 
   oscSectionModule = new FourOscSectionAudioModule(lock, 

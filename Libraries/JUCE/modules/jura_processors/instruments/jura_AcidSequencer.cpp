@@ -10,7 +10,7 @@ AcidSequencerAudioModule::AcidSequencerAudioModule(CriticalSection *newPlugInLoc
   jassert(acidSequencerToWrap != NULL); // you must pass a valid rosic-object to the constructor
   wrappedAcidSequencer = acidSequencerToWrap;
   setModuleName(juce::String("AcidSequencer"));
-  setActiveDirectory(getApplicationDirectory() + juce::String("/AcidSequencerPresets") );
+  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/AcidSequencer") );
   initializeAutomatableParameters();
 }
 

@@ -8,7 +8,7 @@ WorkhorseAudioModule::WorkhorseAudioModule(CriticalSection *newPlugInLock)
   moduleName = juce::String(("Workhorse"));
 
   // initialize the current directory for preset loading and saving:
-  setActiveDirectory(getApplicationDirectory() + juce::String(("/WorkhorsePresets")) );
+  setActiveDirectory(getApplicationDirectory() + juce::String(("/Presets/Workhorse")) );
 
   vectorMixerModule = new VectorMixerAudioModule(lock, &wrappedWorkhorse->vectorMixer);
   vectorMixerModule->setModuleName(juce::String(("VectorMixer")));

@@ -20,7 +20,7 @@ QuadrifexAudioModule::QuadrifexAudioModule(CriticalSection *newPlugInLock,
 
   editor     = NULL;
   moduleName = juce::String(("Quadrifex"));
-  setActiveDirectory(getApplicationDirectory() + juce::String(("/QuadrifexPresets")) );
+  setActiveDirectory(getApplicationDirectory() + juce::String(("/Presets/Quadrifex")) );
 
   matrixModule = new RoutingMatrixAudioModule(lock, &wrappedQuadrifex->mixMatrix);
   matrixModule->setModuleName(juce::String(("RoutingMatrix5x5")));

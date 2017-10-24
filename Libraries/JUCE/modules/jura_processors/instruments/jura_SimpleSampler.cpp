@@ -9,7 +9,7 @@ SimpleSamplerAudioModule::SimpleSamplerAudioModule(CriticalSection *newPlugInLoc
   setInstrumentToWrap(wrappedSimpleSampler);
 
   moduleName = juce::String("SimpleSampler");
-  setActiveDirectory(getApplicationDirectory() + juce::String("/SimpleSamplerPresets") );
+  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/SimpleSampler") );
 
   samplePlayerModule = new SamplePlayerAudioModule(lock, 
     &wrappedSimpleSampler->voiceArray[0].oscSection.samplePlayer1);

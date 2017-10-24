@@ -8,7 +8,7 @@ CombStereoizerAudioModule::CombStereoizerAudioModule(CriticalSection *newPlugInL
   jassert(stereoizerToWrap != NULL); // you must pass a valid rosic-object to the constructor
   wrappedCombStereoizer = stereoizerToWrap;
   moduleName = juce::String("CombStereoizer");
-  setActiveDirectory(getApplicationDirectory() + juce::String("/CombStereoizerPresets"));
+  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/CombStereoizer"));
   initializeAutomatableParameters();
 }
 

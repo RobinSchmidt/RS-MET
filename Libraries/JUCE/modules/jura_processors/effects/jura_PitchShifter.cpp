@@ -17,7 +17,7 @@ PitchShifterAudioModule::PitchShifterAudioModule(CriticalSection *newPlugInLock,
   }
 
   moduleName = juce::String("PitchShifter");
-  setActiveDirectory(getApplicationDirectory() + juce::String("/PitchShifterPresets"));
+  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/PitchShifter"));
   createStaticParameters();
 }
 

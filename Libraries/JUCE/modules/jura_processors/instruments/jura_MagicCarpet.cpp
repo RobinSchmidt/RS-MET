@@ -8,7 +8,7 @@ DelayPhaserAudioModule::DelayPhaserAudioModule(CriticalSection *newPlugInLock,
   wrappedDelayPhaser = newDelayPhaserToWrap;
   moduleName = juce::String("DelayPhaser");
   setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
-    + juce::String(("DelayPhaserPresets")) );
+    + juce::String(("/Presets/DelayPhaser")) );
   initializeAutomatableParameters();
 
   phaser1Module = new PhaserAudioModule(lock, &wrappedDelayPhaser->phaser1);
@@ -69,7 +69,7 @@ MagicCarpetAudioModule::MagicCarpetAudioModule(CriticalSection *newPlugInLock)
   moduleName = juce::String(("MagicCarpet"));
 
   // initialize the current directory for preset loading and saving:
-  setActiveDirectory(getApplicationDirectory() + juce::String(("/MagicCarpetPresets")) );
+  setActiveDirectory(getApplicationDirectory() + juce::String(("/Presets/MagicCarpet")) );
 
   oscSectionModule = new VectorSamplePlayerAudioModule(lock,
     &wrappedMagicCarpet->voiceArray[0].oscSection);

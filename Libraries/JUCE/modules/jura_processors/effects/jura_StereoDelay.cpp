@@ -15,7 +15,7 @@ StereoDelayAudioModule::StereoDelayAudioModule(CriticalSection *newPlugInLock,
     wrappedStereoDelayIsOwned = true;
   }
   moduleName = juce::String("StereoDelay");
-  setActiveDirectory(getApplicationDirectory() + juce::String(("/StereoDelayPresets")) );
+  setActiveDirectory(getApplicationDirectory() + juce::String(("/Presets/StereoDelay")) );
   initializeAutomatableParameters();
 }
 

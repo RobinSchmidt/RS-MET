@@ -9,7 +9,7 @@ Enveloper::Enveloper(CriticalSection *lockToUse)
   envGenWrapper = new BreakpointModulatorAudioModule(lockToUse, &envGen);
   addChildAudioModule(envGenWrapper);
 
-  setActiveDirectory(getApplicationDirectory() + "/EnveloperPresets");
+  setActiveDirectory(getApplicationDirectory() + "/Presets/Enveloper");
 }
 
 AudioModuleEditor* Enveloper::createEditor()

@@ -10,7 +10,7 @@ LowFrequencyOscillatorAudioModule::LowFrequencyOscillatorAudioModule(CriticalSec
   wrappedLowFrequencyOscillator = newLowFrequencyOscillatorToWrap;
   moduleName = juce::String("LowFrequencyOscillator");
   setActiveDirectory(getApplicationDirectory() 
-    + juce::File::separatorString + juce::String("LowFrequencyOscillatorPresets"));
+    + juce::File::separatorString + juce::String("Presets/LowFrequencyOscillator"));
 
   /*
   audioFileManager.setPermissibleWildcardPatterns(juce::String(T("*.wav;*.flac;*.xml")));

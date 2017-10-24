@@ -10,7 +10,7 @@ MultiModeFilterAudioModule::MultiModeFilterAudioModule(CriticalSection *newPlugI
   moduleName = juce::String("MultiModeFilter");
 
   // initialize the current directory for preset loading and saving:
-  setActiveDirectory(getApplicationDirectory() + juce::String("/MultiModeFilterPresets") );
+  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/MultiModeFilter") );
 
   // create and initialize the automatable parameters:
   initializeAutomatableParameters();

@@ -13,7 +13,7 @@ BreakpointModulatorAudioModule::BreakpointModulatorAudioModule(CriticalSection *
   }
   wrappedBreakpointModulator = newBreakpointModulatorToWrap;
   moduleName = juce::String("BreakpointModulator");
-  setActiveDirectory(getApplicationDirectory() + juce::String("/BreakpointModulatorPresets") );
+  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/BreakpointModulator") );
   initializeAutomatableParameters();
 }
 

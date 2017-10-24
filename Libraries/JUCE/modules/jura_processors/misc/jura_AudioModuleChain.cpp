@@ -263,14 +263,14 @@ AudioModuleChain::AudioModuleChain(CriticalSection *lockToUse,
   moduleName = "Chainer";
 
 #ifdef _WIN32
-  juce::String presetPath = getApplicationDirectory() + "/ChainerPresets";
+  juce::String presetPath = getApplicationDirectory() + "/Presets/Chainer";
 #elif __APPLE__
-  juce::String presetPath = "/Library/Audio/Presets/RS-MET/Chainer/ChainerPresets";
+  juce::String presetPath = "/Library/Audio/Presets/RS-MET/Chainer";
 #elif __linux__
-  juce::String presetPath = getApplicationDirectory() + "/ChainerPresets";
+  juce::String presetPath = getApplicationDirectory() + "/Presets/Chainer";
 #endif
   setActiveDirectory(presetPath);
-  //setActiveDirectory(getApplicationDirectory() + "/ChainerPresets");  // old
+  //setActiveDirectory(getApplicationDirectory() + "/Presets/Chainer");  // old
 
   modManager.setMetaParameterManager(metaManagerToUse);
   setModulationManager(&modManager);

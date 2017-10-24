@@ -5,7 +5,7 @@ Ladder::Ladder(CriticalSection *lockToUse, MetaParameterManager* metaManagerToUs
 {
   ScopedLock scopedLock(*lock);
   moduleName = "Ladder";
-  setActiveDirectory(getApplicationDirectory() + "/LadderPresets");
+  setActiveDirectory(getApplicationDirectory() + "/Presets/Ladder");
 
   createStaticParameters();
 }

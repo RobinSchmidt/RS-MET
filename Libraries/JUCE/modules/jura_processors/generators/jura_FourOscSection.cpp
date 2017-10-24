@@ -10,7 +10,7 @@ FourOscSectionAudioModule::FourOscSectionAudioModule(CriticalSection *newPlugInL
   moduleName = juce::String("FourOscillatorSection");
 
   // initialize the current directory for preset loading and saving:
-  setActiveDirectory(getApplicationDirectory() + juce::String("/FourOscSectionPresets") );
+  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/FourOscSection") );
 
   osc1Module = new OscillatorStereoAudioModule(lock, &wrappedFourOscSection->osc1);
   osc1Module->setModuleName(juce::String("Osc1"));

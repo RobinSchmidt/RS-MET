@@ -10,7 +10,7 @@ StandardWaveformRendererAudioModule::StandardWaveformRendererAudioModule(Critica
   wrappedStandardWaveformRenderer = newStandardWaveformRendererToWrap;
   moduleName = juce::String("StandardWaveformRenderer");
   setActiveDirectory(getApplicationDirectory()
-    + juce::File::separatorString + juce::String("StandardWaveformRendererPresets") );
+    + juce::File::separatorString + juce::String("Presets/StandardWaveformRenderer") );
   initializeAutomatableParameters();
 }
 
@@ -141,7 +141,7 @@ WaveformRendererAudioModule::WaveformRendererAudioModule(CriticalSection *newPlu
   wrappedWaveformRenderer = newWaveformRendererToWrap;
   moduleName = juce::String("WaveformRenderer");
   setActiveDirectory(getApplicationDirectory()
-    + juce::File::separatorString + juce::String("WaveformRendererPresets") );
+    + juce::File::separatorString + juce::String("Presets/WaveformRenderer") );
 
   // child modules:
   standardRendererModule = new StandardWaveformRendererAudioModule(lock, &wrappedWaveformRenderer->standardRenderer);
@@ -205,7 +205,7 @@ WaveTableAudioModule::WaveTableAudioModule(CriticalSection *newPlugInLock,
   wrappedWaveTable = newWaveTableToWrap;
   moduleName = juce::String("WaveTable");
   setActiveDirectory(getApplicationDirectory()
-    + juce::File::separatorString + juce::String("WaveTablePresets") );
+    + juce::File::separatorString + juce::String("Presets/WaveTable") );
   initializeAutomatableParameters();
   /*
   audioFileManager.setPermissibleWildcardPatterns(juce::String(T("*.wav;*.flac;")));

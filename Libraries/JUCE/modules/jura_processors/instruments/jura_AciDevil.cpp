@@ -9,7 +9,7 @@ AciDevilAudioModule::AciDevilAudioModule(CriticalSection *newPlugInLock,
 
   // factor out common code of both construtors into init function:
   setModuleName(juce::String("AciDevil"));
-  setActiveDirectory(getApplicationDirectory() + juce::String("/AciDevilPresets") );
+  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/AciDevil") );
   initializeAutomatableParameters();
   sequencerModule = new AcidSequencerAudioModule(lock, &wrappedAciDevil->sequencer);
   sequencerModule->setModuleName(juce::String("Sequencer"));
@@ -24,7 +24,7 @@ AciDevilAudioModule::AciDevilAudioModule(CriticalSection *newPlugInLock)
 
   // factor out common code of both construtors into init function:
   setModuleName(juce::String("AciDevil"));
-  setActiveDirectory(getApplicationDirectory() + juce::String("/AciDevilPresets") );
+  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/AciDevil") );
   initializeAutomatableParameters();
   sequencerModule = new AcidSequencerAudioModule(lock, &wrappedAciDevil->sequencer);
   sequencerModule->setModuleName(juce::String("Sequencer"));

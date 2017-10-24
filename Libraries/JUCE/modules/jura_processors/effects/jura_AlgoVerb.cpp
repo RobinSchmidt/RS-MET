@@ -8,7 +8,7 @@ AlgoVerbAudioModule::AlgoVerbAudioModule(CriticalSection *newPlugInLock, rosic::
   wrappedAlgoVerb = algoVerbToWrap;
 
   moduleName = juce::String("AlgoVerb");
-  setActiveDirectory(getApplicationDirectory() + juce::String("/AlgoVerbPresets") );
+  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/AlgoVerb") );
   initializeAutomatableParameters();
 }
 
@@ -19,7 +19,7 @@ AlgoVerbAudioModule::AlgoVerbAudioModule(CriticalSection *newPlugInLock) : Audio
 
   // get rid of duplication - make init function
   moduleName = juce::String("AlgoVerb");
-  setActiveDirectory(getApplicationDirectory() + juce::String("/AlgoVerbPresets") );
+  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/AlgoVerb") );
   initializeAutomatableParameters();
 }
 
