@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="Lt8ojO" name="Chainer" projectType="audioplug" version="1.0.0"
+              bundleIdentifier="com.rs-met.Chainer" includeBinaryInAppConfig="1"
+              buildVST="1" buildVST3="0" buildAU="1" buildAUv3="0" buildRTAS="0"
+              buildAAX="0" pluginName="Chainer" pluginDesc="Chainer" pluginManufacturer="RS-MET"
+              pluginManufacturerCode="RSMT" pluginCode="Chnr" pluginChannelConfigs=""
+              pluginIsSynth="0" pluginWantsMidiIn="1" pluginProducesMidiOut="0"
+              pluginIsMidiEffectPlugin="0" pluginEditorRequiresKeys="0" pluginAUExportPrefix="ChainerAU"
+              pluginRTASCategory="" aaxIdentifier="com.RS-MET.Chainer" pluginAAXCategory="AAX_ePlugInCategory_Dynamics"
+              jucerVersion="4.2.4" companyName="RS-MET" companyWebsite="www.rs-met.com"
+              companyEmail="robin@rs-met.com">
+  <MAINGROUP id="J7WzKP" name="Chainer">
+    <GROUP id="{5348A3D7-BFCF-B722-2C65-2A345253A7EB}" name="Source">
+      <FILE id="NOmWFA" name="PluginProcessor.cpp" compile="1" resource="0"
+            file="Source/PluginProcessor.cpp"/>
+    </GROUP>
+    <FILE id="ZfwWN7" name="DebugNotes.txt" compile="0" resource="1" file="DebugNotes.txt"/>
+    <FILE id="cXUD5t" name="ToDo.txt" compile="0" resource="1" file="ToDo.txt"/>
+  </MAINGROUP>
+  <EXPORTFORMATS>
+    <VS2015 targetFolder="Builds/VisualStudio2015">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" winWarningLevel="3" generateManifest="1" winArchitecture="x64"
+                       isDebug="1" optimisation="1" targetName="Chainer"/>
+        <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
+                       isDebug="0" optimisation="3" targetName="Chainer"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_core" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="jura_framework" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="jura_processors" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="rosic" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="romos" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="rapt" path="../../../Libraries/JUCE/modules"/>
+      </MODULEPATHS>
+    </VS2015>
+    <CODEBLOCKS_WINDOWS targetFolder="Builds/CodeBlocksWindows" extraCompilerFlags="-fpermissive">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="Chainer"
+                       headerPath="..\..\..\..\..\Libraries\JUCE\modules"/>
+        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="Chainer"
+                       headerPath="..\..\..\..\..\Libraries\JUCE\modules"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="jura_processors" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="jura_framework" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="rosic" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="romos" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="rapt" path="../../../Libraries/JUCE/modules"/>
+      </MODULEPATHS>
+    </CODEBLOCKS_WINDOWS>
+    <CODEBLOCKS_LINUX targetFolder="Builds/CodeBlocksLinux" extraCompilerFlags="-fPIC"
+                      extraLinkerFlags="" externalLibraries="asound&#10;X11&#10;Xext&#10;freetype"
+                      userNotes="The plugin builds but crashes without any hint what could be wrong. We need to use the makefile on linux">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="Chainer"
+                       headerPath="../../../../../Libraries/JUCE/modules"/>
+        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="Chainer"
+                       headerPath="../../../../../Libraries/JUCE/modules"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="jura_processors" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="jura_framework" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="rosic" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="romos" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="rapt" path="../../../Libraries/JUCE/modules"/>
+      </MODULEPATHS>
+    </CODEBLOCKS_LINUX>
+    <LINUX_MAKE targetFolder="Builds/LinuxMakefile" extraCompilerFlags="-fPIC"
+                externalLibraries="asound&#10;X11&#10;Xext&#10;freetype" userNotes="to build a debug version, just type &quot;make&quot; into the commandline (launched in the same directory where the makefile resides), for a release version, type &quot;make CONFIG=Release&quot;">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="Chainer"
+                       headerPath="../../../../../Libraries/JUCE/modules"/>
+        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="Chainer"
+                       headerPath="../../../../../Libraries/JUCE/modules"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="jura_processors" path="../../juce"/>
+        <MODULEPATH id="jura_framework" path="../../juce"/>
+        <MODULEPATH id="juce_gui_extra" path="../../juce"/>
+        <MODULEPATH id="juce_gui_basics" path="../../juce"/>
+        <MODULEPATH id="juce_graphics" path="../../juce"/>
+        <MODULEPATH id="juce_events" path="../../juce"/>
+        <MODULEPATH id="juce_data_structures" path="../../juce"/>
+        <MODULEPATH id="juce_core" path="../../juce"/>
+        <MODULEPATH id="juce_audio_processors" path="../../juce"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../juce"/>
+        <MODULEPATH id="juce_audio_formats" path="../../juce"/>
+        <MODULEPATH id="juce_audio_devices" path="../../juce"/>
+        <MODULEPATH id="juce_audio_basics" path="../../juce"/>
+        <MODULEPATH id="rosic" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="romos" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="rapt" path="../../../Libraries/JUCE/modules"/>
+      </MODULEPATHS>
+    </LINUX_MAKE>
+    <XCODE_MAC targetFolder="Builds/MacOSX">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="Chainer"
+                       osxSDK="default" osxCompatibility="10.9 SDK" osxArchitecture="64BitUniversal"/>
+        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="Chainer"
+                       osxSDK="default" osxCompatibility="10.9 SDK" osxArchitecture="64BitUniversal"
+                       linkTimeOptimisation="1"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="rosic" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="romos" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="rapt" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="jura_processors" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="jura_framework" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../../../Libraries/JUCE/modules"/>
+      </MODULEPATHS>
+    </XCODE_MAC>
+  </EXPORTFORMATS>
+  <MODULES>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_audio_plugin_client" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="jura_framework" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="jura_processors" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="rapt" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="romos" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="rosic" showAllCode="1" useLocalCopy="0"/>
+  </MODULES>
+  <JUCEOPTIONS JUCE_QUICKTIME="disabled" JUCE_WEB_BROWSER="disabled" JUCE_ENABLE_LIVE_CONSTANT_EDITOR="disabled"
+               JUCE_USE_FLAC="enabled" JUCE_USE_OGGVORBIS="disabled" JUCE_USE_MP3AUDIOFORMAT="disabled"
+               JUCE_USE_LAME_AUDIO_FORMAT="disabled" JUCE_USE_WINDOWS_MEDIA_FORMAT="disabled"/>
+</JUCERPROJECT>

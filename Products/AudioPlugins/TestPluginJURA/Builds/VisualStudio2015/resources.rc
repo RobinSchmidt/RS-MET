@@ -14,9 +14,9 @@ BEGIN
     BLOCK "040904E4"
     BEGIN
       VALUE "CompanyName",  "RS-MET\0"
-      VALUE "FileDescription",  "TestPluginJURA\0"
+      VALUE "FileDescription",  "Chainer\0"
       VALUE "FileVersion",  "1.0.0\0"
-      VALUE "ProductName",  "TestPluginJURA\0"
+      VALUE "ProductName",  "Chainer\0"
       VALUE "ProductVersion",  "1.0.0\0"
     END
   END

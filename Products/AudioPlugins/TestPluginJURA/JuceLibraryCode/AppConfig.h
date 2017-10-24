@@ -236,10 +236,10 @@
  #define JucePlugin_Build_STANDALONE       0
 #endif
 #ifndef  JucePlugin_Name
- #define JucePlugin_Name                   "TestPluginJURA"
+ #define JucePlugin_Name                   "Chainer"
 #endif
 #ifndef  JucePlugin_Desc
- #define JucePlugin_Desc                   "TestPluginJURA"
+ #define JucePlugin_Desc                   "Chainer"
 #endif
 #ifndef  JucePlugin_Manufacturer
  #define JucePlugin_Manufacturer           "RS-MET"
@@ -254,7 +254,7 @@
  #define JucePlugin_ManufacturerCode       0x52534d54 // 'RSMT'
 #endif
 #ifndef  JucePlugin_PluginCode
- #define JucePlugin_PluginCode             0x4c74386f // 'Lt8o'
+ #define JucePlugin_PluginCode             0x43686e72 // 'Chnr'
 #endif
 #ifndef  JucePlugin_IsSynth
  #define JucePlugin_IsSynth                0
@@ -293,16 +293,16 @@
  #define JucePlugin_AUSubType              JucePlugin_PluginCode
 #endif
 #ifndef  JucePlugin_AUExportPrefix
- #define JucePlugin_AUExportPrefix         TestPluginJURAAU
+ #define JucePlugin_AUExportPrefix         ChainerAU
 #endif
 #ifndef  JucePlugin_AUExportPrefixQuoted
- #define JucePlugin_AUExportPrefixQuoted   "TestPluginJURAAU"
+ #define JucePlugin_AUExportPrefixQuoted   "ChainerAU"
 #endif
 #ifndef  JucePlugin_AUManufacturerCode
  #define JucePlugin_AUManufacturerCode     JucePlugin_ManufacturerCode
 #endif
 #ifndef  JucePlugin_CFBundleIdentifier
- #define JucePlugin_CFBundleIdentifier     com.yourcompany.TestPluginJUCE
+ #define JucePlugin_CFBundleIdentifier     com.rs-met.Chainer
 #endif
 #ifndef  JucePlugin_RTASCategory
  #define JucePlugin_RTASCategory           ePlugInCategory_None
@@ -320,7 +320,7 @@
  #define JucePlugin_RTASDisableMultiMono   0
 #endif
 #ifndef  JucePlugin_AAXIdentifier
- #define JucePlugin_AAXIdentifier          com.RS-MET.TestPluginJURA
+ #define JucePlugin_AAXIdentifier          com.RS-MET.Chainer
 #endif
 #ifndef  JucePlugin_AAXManufacturerCode
  #define JucePlugin_AAXManufacturerCode    JucePlugin_ManufacturerCode

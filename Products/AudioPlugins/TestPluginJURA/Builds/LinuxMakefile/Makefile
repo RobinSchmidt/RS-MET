@@ -31,7 +31,7 @@ ifeq ($(CONFIG),Debug)
   JUCE_CXXFLAGS += $(CXXFLAGS) $(JUCE_CFLAGS) -std=c++11
   JUCE_LDFLAGS += $(LDFLAGS) $(TARGET_ARCH) -L$(JUCE_BINDIR) -L$(JUCE_LIBDIR) -Wl,--no-undefined -shared $(shell pkg-config --libs alsa freetype2 libcurl x11 xext xinerama) -ldl -lpthread -lrt -lasound -lX11 -lXext -lfreetype 
 
-  TARGET := TestPluginJURA.so
+  TARGET := Chainer.so
   BLDCMD = $(CXX) -o $(JUCE_OUTDIR)/$(TARGET) $(OBJECTS) $(JUCE_LDFLAGS) $(RESOURCES) $(TARGET_ARCH)
   CLEANCMD = rm -rf $(JUCE_OUTDIR)/$(TARGET) $(JUCE_OBJDIR)
 endif
@@ -51,7 +51,7 @@ ifeq ($(CONFIG),Release)
   JUCE_CXXFLAGS += $(CXXFLAGS) $(JUCE_CFLAGS) -std=c++11
   JUCE_LDFLAGS += $(LDFLAGS) $(TARGET_ARCH) -L$(JUCE_BINDIR) -L$(JUCE_LIBDIR) -Wl,--no-undefined -shared -fvisibility=hidden $(shell pkg-config --libs alsa freetype2 libcurl x11 xext xinerama) -ldl -lpthread -lrt -lasound -lX11 -lXext -lfreetype 
 
-  TARGET := TestPluginJURA.so
+  TARGET := Chainer.so
   BLDCMD = $(CXX) -o $(JUCE_OUTDIR)/$(TARGET) $(OBJECTS) $(JUCE_LDFLAGS) $(RESOURCES) $(TARGET_ARCH)
   CLEANCMD = rm -rf $(JUCE_OUTDIR)/$(TARGET) $(JUCE_OBJDIR)
 endif
@@ -80,7 +80,7 @@ OBJECTS := \
 .PHONY: clean
 
 $(JUCE_OUTDIR)/$(TARGET): check-pkg-config $(OBJECTS) $(RESOURCES)
-	@echo Linking TestPluginJURA
+	@echo Linking Chainer
 	-@mkdir -p $(JUCE_BINDIR)
 	-@mkdir -p $(JUCE_LIBDIR)
 	-@mkdir -p $(JUCE_OUTDIR)
@@ -91,11 +91,11 @@ check-pkg-config:
 	@pkg-config --print-errors alsa freetype2 libcurl x11 xext xinerama
 
 clean:
-	@echo Cleaning TestPluginJURA
+	@echo Cleaning Chainer
 	@$(CLEANCMD)
 
 strip:
-	@echo Stripping TestPluginJURA
+	@echo Stripping Chainer
 	-@$(STRIP) --strip-unneeded $(JUCE_OUTDIR)/$(TARGET)
 
 $(JUCE_OBJDIR)/PluginProcessor_a059e380.o: ../../Source/PluginProcessor.cpp

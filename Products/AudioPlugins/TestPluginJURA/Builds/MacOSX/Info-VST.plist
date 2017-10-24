@@ -10,9 +10,9 @@
     <key>CFBundleIdentifier</key>
     <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
     <key>CFBundleName</key>
-    <string>TestPluginJURA</string>
+    <string>Chainer</string>
     <key>CFBundleDisplayName</key>
-    <string>TestPluginJURA</string>
+    <string>Chainer</string>
     <key>CFBundlePackageType</key>
     <string>BNDL</string>
     <key>CFBundleSignature</key>
