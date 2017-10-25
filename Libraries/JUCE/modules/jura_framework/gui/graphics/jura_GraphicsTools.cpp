@@ -337,6 +337,19 @@ void fillRectWithBilinearGradientSlow(Graphics &graphics, int x, int y, int w, i
   delete[] pixelData;
 }
 
+inline void setPixelRGB(uint8* p, uint8 r, uint8 g, uint8 b)
+{
+#ifndef _MSC_VER   // #ifdef JUCE_LITTLE_ENDIAN seems to not solve the wrong-color thing
+  p[0] = r;
+  p[1] = g;
+  p[2] = b;
+#else
+  p[0] = b;  // blue comes first,
+  p[1] = g;  // green comes second,
+  p[2] = r;  // red comes third in memory
+#endif
+}
+
 void fillRectWithBilinearGradient(Graphics &graphics, int x, int y, int w, int h,
   Colour topLeftColour, Colour topRightColour, Colour bottomLeftColour, Colour bottomRightColour)
 {
@@ -403,7 +416,7 @@ void fillRectWithBilinearGradient(Graphics &graphics, int x, int y, int w, int h
   double pInc = 1.0/(double)(w-1); // increment per iteration for p
   double qInc = 1.0/(double)(h-1); // increment per (inner) iteration for q
 
-  for(int i=0; i<w; i++)
+  for(int i = 0; i < w; i++)
   {
     // colour components of one pixel in the top-line:
     t_r    = (1.0-p)*t_l_r + p*t_r_r;
@@ -420,30 +433,14 @@ void fillRectWithBilinearGradient(Graphics &graphics, int x, int y, int w, int h
     r_int = (uint8) (255 * t_r);
     g_int = (uint8) (255 * t_g);
     b_int = (uint8) (255 * t_b);
-#ifndef _MSC_VER   // #ifdef JUCE_LITTLE_ENDIAN seems to not solve the wrong-color thing
-    pixelData[baseAddress+0] = r_int;
-    pixelData[baseAddress+1] = g_int;
-    pixelData[baseAddress+2] = b_int;
-#else
-    pixelData[baseAddress+0] = b_int;  // blue comes first,
-    pixelData[baseAddress+1] = g_int;  // green comes second,
-    pixelData[baseAddress+2] = r_int;  // red comes third in memory
-#endif
+    setPixelRGB(pixelData+baseAddress, r_int, g_int, b_int);
 
     // draw the current bottom-line pixel:
     baseAddress = 3*i+w*(h-1)*3;
     r_int = (uint8) (255 * b_r);
     g_int = (uint8) (255 * b_g);
     b_int = (uint8) (255 * b_b);
-#ifndef _MSC_VER
-    pixelData[baseAddress+0] = r_int;
-    pixelData[baseAddress+1] = g_int;
-    pixelData[baseAddress+2] = b_int;
-#else
-    pixelData[baseAddress+0] = b_int;  // blue comes first,
-    pixelData[baseAddress+1] = g_int;  // green comes second,
-    pixelData[baseAddress+2] = r_int;  // red comes third in memory
-#endif
+    setPixelRGB(pixelData+baseAddress, r_int, g_int, b_int);
 
     // increment the relative x-position:
     p += pInc;
@@ -451,7 +448,7 @@ void fillRectWithBilinearGradient(Graphics &graphics, int x, int y, int w, int h
     // fill the column between 'top' and 'bottom':
     baseAddress = 3*i;
     q = 0.0;
-    for(int j=1; j<(h-1); j++)
+    for(int j = 1; j < (h-1); j++)
     {
       r = (1.0-q)*t_r + q*b_r;
       g = (1.0-q)*t_g + q*b_g;
@@ -462,17 +459,7 @@ void fillRectWithBilinearGradient(Graphics &graphics, int x, int y, int w, int h
       b_int = (uint8) (255 * b);
 
       baseAddress += baseAddressInc;
-
-#ifndef _MSC_VER
-      pixelData[baseAddress+0] = r_int;
-      pixelData[baseAddress+1] = g_int;
-      pixelData[baseAddress+2] = b_int;
-#else
-      pixelData[baseAddress+0] = b_int;  // the blue-value
-      pixelData[baseAddress+1] = g_int;  // the green-value
-      pixelData[baseAddress+2] = r_int;  // the red-value
-#endif
-
+      setPixelRGB(pixelData+baseAddress, r_int, g_int, b_int);
       q += qInc; // increment the relative y-position:
     }
   }
