@@ -386,7 +386,8 @@ void fillRectWithBilinearGradient(Graphics &graphics, int x, int y, int w, int h
 
   uint8* pixelData = bitmap.getPixelPointer(0, 0);
   int baseAddress;                        // address for a blue (is followed by reen and red)
-  int baseAddressInc = bitmap.lineStride; // increment for  baseAddress per iteration of inner loop
+  //int baseAddressInc = bitmap.lineStride; // increment for  baseAddress per iteration of inner loop
+  int lineStride = bitmap.lineStride; // increment for  baseAddress per iteration of inner loop
 
   // get the colour-components of the 4 edges as float-values:
   // top-left (abbreviated as t_l):
@@ -431,28 +432,29 @@ void fillRectWithBilinearGradient(Graphics &graphics, int x, int y, int w, int h
     b_g    = (1.0-p)*b_l_g + p*b_r_g;
     b_b    = (1.0-p)*b_l_b + p*b_r_b;
 
-    // draw the current top-line pixel:
-    baseAddress = pixelStride*i; // old: 3*i; ...maybe we need lineStride?
-    r_int = (uint8) (255 * t_r);
-    g_int = (uint8) (255 * t_g);
-    b_int = (uint8) (255 * t_b);
-    setPixelRGB(pixelData+baseAddress, r_int, g_int, b_int);
 
     // draw the current bottom-line pixel:
-    baseAddress = pixelStride*i + w*(h-1)*pixelStride; 
+    //baseAddress = pixelStride*i + w*(h-1)*pixelStride; 
          // old: 3*i+w*(h-1)*3;
          // maybe needs to be pixelStride*i + lineStride*(h-1)?
-
+    baseAddress = i * pixelStride + (h-1) * lineStride; 
     r_int = (uint8) (255 * b_r);
     g_int = (uint8) (255 * b_g);
     b_int = (uint8) (255 * b_b);
+    setPixelRGB(pixelData+baseAddress, r_int, g_int, b_int);
+
+    // draw the current top-line pixel:
+    baseAddress = i * pixelStride; // old: 3*i; ...maybe we need lineStride?
+    r_int = (uint8) (255 * t_r);
+    g_int = (uint8) (255 * t_g);
+    b_int = (uint8) (255 * t_b);
     setPixelRGB(pixelData+baseAddress, r_int, g_int, b_int);
 
     // increment the relative x-position:
     p += pInc;
 
     // fill the column between 'top' and 'bottom':
-    baseAddress = pixelStride*i; // old: 3*i;
+    //baseAddress = pixelStride*i; // old: 3*i;
     q = 0.0;
     for(int j = 1; j < (h-1); j++)
     {
@@ -464,7 +466,7 @@ void fillRectWithBilinearGradient(Graphics &graphics, int x, int y, int w, int h
       g_int = (uint8) (255 * g);
       b_int = (uint8) (255 * b);
 
-      baseAddress += baseAddressInc;
+      baseAddress += lineStride;
       setPixelRGB(pixelData+baseAddress, r_int, g_int, b_int);
       q += qInc; // increment the relative y-position:
     }
