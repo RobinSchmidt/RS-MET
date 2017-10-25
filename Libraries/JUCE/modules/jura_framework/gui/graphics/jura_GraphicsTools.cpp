@@ -340,21 +340,15 @@ void fillRectWithBilinearGradientSlow(Graphics &graphics, int x, int y, int w, i
 void fillRectWithBilinearGradient(Graphics &graphics, int x, int y, int w, int h,
   Colour topLeftColour, Colour topRightColour, Colour bottomLeftColour, Colour bottomRightColour)
 {
-  // We create a 2x2 pixel image with the given 4 colors and scale it up. The interpolation will
-  // create the gradient:
-
-  Image img(Image::ARGB, 2, 2, false);
-  img.setPixelAt(0, 0, topLeftColour);
-  img.setPixelAt(0, 1, bottomLeftColour);
-  img.setPixelAt(1, 0, topRightColour);
-  img.setPixelAt(1, 1, bottomRightColour);
-  graphics.drawImage(img, x, y, w, h, 0, 0, 2, 2, Graphics::lowResamplingQuality);
-  return;
-
-  // The code below doesn't work anymore because we can't set the pixel data directly this way
-  // anymore - there may be a different way but for now, the above trick is OK (even though i
-  // think it looks not as good as what the old code below produces - we leave it there, just in
-  // case it should be re-activated someday.
+  //// We create a 2x2 pixel image with the given 4 colors and scale it up. The interpolation will
+  //// create the gradient:
+  //Image img(Image::ARGB, 2, 2, false);
+  //img.setPixelAt(0, 0, topLeftColour);
+  //img.setPixelAt(0, 1, bottomLeftColour);
+  //img.setPixelAt(1, 0, topRightColour);
+  //img.setPixelAt(1, 1, bottomRightColour);
+  //graphics.drawImage(img, x, y, w, h, 0, 0, 2, 2, Graphics::mediumResamplingQuality);
+  //return;
 
   // require at least 2 pixels width and height:
   if( w <= 1 || h <= 1 )
@@ -370,18 +364,13 @@ void fillRectWithBilinearGradient(Graphics &graphics, int x, int y, int w, int h
 
   // ToDo: use the alpha-channels of the colours as well...
 
-  // allocate an empty image-object:
-  Image *background = new Image(juce::Image::RGB, w, h, false);
-
-  // allocate memory for the raw pixel-data (h lines, each line has w colums,
-  // each pixel has 3 bytes for blue, green and red (in that order)):
-  uint8 *pixelData  = new uint8[h*w*3];
-
-  int    baseAddress;
-  // address for a blue-value (is followed by addresses for green and red)
-
-  int    baseAddressInc = 3*w;
-  // increment for the baseAddress per iteration of the inner loop
+  // allocate image, init pointer-variables:
+  Image background(juce::Image::RGB, w, h, false);
+  juce::Image::BitmapData bitmap(background, juce::Image::BitmapData::writeOnly);
+  jassert(bitmap.pixelStride == 3);
+  uint8* pixelData = bitmap.getPixelPointer(0, 0);
+  int baseAddress;                        // address for a blue (is followed by reen and red)
+  int baseAddressInc = bitmap.lineStride; // increment for  baseAddress per iteration of inner loop
 
   // get the colour-components of the 4 edges as float-values:
   // top-left (abbreviated as t_l):
@@ -488,20 +477,10 @@ void fillRectWithBilinearGradient(Graphics &graphics, int x, int y, int w, int h
     }
   }
 
-  // copy the generated pixel-data into the image-object:
-  //background->setPixelData(0, 0, w, h, pixelData, 3*w);  // this needs to be updated there's no
-  // setPixelData anymore...
+  graphics.drawImageAt(background, x, y);  // draw the image into the graphics-object
 
-
-  // draw the image into the graphics-object:
-  graphics.drawImageAt(*background, x, y);
-
-
-  graphics.drawText("jura_GraphicsTools.cpp fillRectWithBilinearGradient() needs to be updated", 0, 0, w, h, Justification::centred, false);
-
-  // free dynamically allocated memory:
-  delete   background;
-  delete[] pixelData;
+  //juce::String debugInfo = "w=" + String(w) + ", h=" + String(h);
+  //graphics.drawText(debugInfo, 0, 0, w, h, Justification::centred, false);
 }
 
 void fillRectWithBilinearGradient(Graphics &graphics, Rectangle<int> r,  Colour topLeftColour,
