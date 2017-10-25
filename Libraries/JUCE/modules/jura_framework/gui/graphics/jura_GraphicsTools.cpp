@@ -380,7 +380,10 @@ void fillRectWithBilinearGradient(Graphics &graphics, int x, int y, int w, int h
   // allocate image, init pointer-variables:
   Image background(juce::Image::RGB, w, h, false);
   juce::Image::BitmapData bitmap(background, juce::Image::BitmapData::writeOnly);
-  jassert(bitmap.pixelStride == 3);
+
+  //jassert(bitmap.pixelStride == 3);
+  int pixelStride = bitmap.pixelStride;
+
   uint8* pixelData = bitmap.getPixelPointer(0, 0);
   int baseAddress;                        // address for a blue (is followed by reen and red)
   int baseAddressInc = bitmap.lineStride; // increment for  baseAddress per iteration of inner loop
@@ -429,14 +432,17 @@ void fillRectWithBilinearGradient(Graphics &graphics, int x, int y, int w, int h
     b_b    = (1.0-p)*b_l_b + p*b_r_b;
 
     // draw the current top-line pixel:
-    baseAddress = 3*i;
+    baseAddress = pixelStride*i; // old: 3*i; ...maybe we need lineStride?
     r_int = (uint8) (255 * t_r);
     g_int = (uint8) (255 * t_g);
     b_int = (uint8) (255 * t_b);
     setPixelRGB(pixelData+baseAddress, r_int, g_int, b_int);
 
     // draw the current bottom-line pixel:
-    baseAddress = 3*i+w*(h-1)*3;
+    baseAddress = pixelStride*i + w*(h-1)*pixelStride; 
+         // old: 3*i+w*(h-1)*3;
+         // maybe needs to be pixelStride*i + lineStride*(h-1)?
+
     r_int = (uint8) (255 * b_r);
     g_int = (uint8) (255 * b_g);
     b_int = (uint8) (255 * b_b);
@@ -446,7 +452,7 @@ void fillRectWithBilinearGradient(Graphics &graphics, int x, int y, int w, int h
     p += pInc;
 
     // fill the column between 'top' and 'bottom':
-    baseAddress = 3*i;
+    baseAddress = pixelStride*i; // old: 3*i;
     q = 0.0;
     for(int j = 1; j < (h-1); j++)
     {
