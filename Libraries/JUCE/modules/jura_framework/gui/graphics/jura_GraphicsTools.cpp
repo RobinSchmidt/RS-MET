@@ -472,6 +472,11 @@ void fillRectWithBilinearGradient(Graphics &graphics, int x, int y, int w, int h
     }
   }
 
+  // set the alpha channel to 255, if the image has one:
+  if(pixelStride == 4)
+    for(int i = 0; i < w*h; i++)
+      pixelData[4*i] = 255;
+
   graphics.drawImageAt(background, x, y);  // draw the image into the graphics-object
 
   //juce::String debugInfo = "w=" + String(w) + ", h=" + String(h);
