@@ -474,8 +474,9 @@ void fillRectWithBilinearGradient(Graphics &graphics, int x, int y, int w, int h
 
   // set the alpha channel to 255, if the image has one:
   if(pixelStride == 4)
-    for(int i = 0; i < w*h; i++)
-      pixelData[4*i] = 255;
+    for(int i = 0; i < h; i++)
+      for(int j = 0; j < w; j++)
+        pixelData[lineStride*i + 4*j + 3] = 255;
 
   graphics.drawImageAt(background, x, y);  // draw the image into the graphics-object
 
