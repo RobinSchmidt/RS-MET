@@ -128,7 +128,8 @@ AudioSampleBuffer* AudioFileManager::createAudioSampleBufferFromFile(const Strin
   if( pathIsRelativeToCurrentExecutable )
   {
     // retrieve the directory of the current executable file (or dynamic link library):
-    File   thisExeAsFile         = File::getSpecialLocation(File::currentExecutableFile);
+    //File   thisExeAsFile         = File::getSpecialLocation(File::currentExecutableFile);
+    File   thisExeAsFile         = File::getSpecialLocation(File::currentApplicationFile);
     File   thisDirectoryAsFile   = thisExeAsFile.getParentDirectory();
     String thisDirectoryAsString = thisDirectoryAsFile.getFullPathName();
 
@@ -138,6 +139,8 @@ AudioSampleBuffer* AudioFileManager::createAudioSampleBufferFromFile(const Strin
   }
   else
     fullPath = filePath; // the filePath is already absolute - we can use it as is
+  
+  fullPath = fullPath.replaceCharacter('\\', '/');
 
   return createAudioSampleBufferFromFile(File(fullPath), showAlertBoxWhenFailed);
 }
