@@ -297,4 +297,12 @@ void xoxosOsc()
   // Observations:
   // B=C=0: pulse wave, A controls pulse-width
   // A=1, B=PI/2, C = +-0.8: saw wave, higher C makes long transition more sigmoid
+
+  // todo: check the parameter meanings, i think, they are y-offset, x-scale and rotation-angle
+
+  // make a 3D version of it:
+  // -obtain new point x,y,z via 3D rotation matrix (this has 3 frequencies)
+  // -transform point (which is on sphere) to point on ellipsoid (which contains origin)
+  // -project onto unit sphere by dividing x,y,z by  sqrt(x^2 + y^2 + z^2)
+  // -take linear combination of x,y,z as output
 }
