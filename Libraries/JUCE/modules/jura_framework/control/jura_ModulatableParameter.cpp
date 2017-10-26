@@ -353,15 +353,15 @@ void ModulationManager::removeConnection(int i)
     t->doModulationUpdate();  }
 }
 
-void ModulationManager::resetAllTargetRangeLimits()
-{
-  ScopedLock scopedLock(*modLock); 
-  for(int i = 0; i < size(availableTargets); i++)
-  {
-    availableTargets[i]->setModulationRangeMin(-INF);
-    availableTargets[i]->setModulationRangeMax(+INF);
-  }
-}
+//void ModulationManager::resetAllTargetRangeLimits()
+//{
+//  ScopedLock scopedLock(*modLock); 
+//  for(int i = 0; i < size(availableTargets); i++)
+//  {
+//    availableTargets[i]->setModulationRangeMin(-INF);
+//    availableTargets[i]->setModulationRangeMax(+INF);
+//  }
+//}
 
 void ModulationManager::registerModulationSource(ModulationSource* source)
 {
@@ -525,7 +525,7 @@ void ModulationManager::setStateFromXml(const XmlElement& xmlState)
   }
 
   // recall range limits:
-  resetAllTargetRangeLimits();
+  //resetAllTargetRangeLimits();
   XmlElement* xmlLimits = xmlState.getChildByName("RangeLimits");
   if(xmlLimits != nullptr)
   {

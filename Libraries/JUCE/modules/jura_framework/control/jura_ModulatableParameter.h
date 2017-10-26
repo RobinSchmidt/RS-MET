@@ -555,7 +555,7 @@ public:
   void removeConnection(int index);
 
   /** Resets all the range limits for all registered modulation targets to +-inf. */
-  void resetAllTargetRangeLimits();
+  //void resetAllTargetRangeLimits();
 
 
   /** \name Registration of sources and targets */
