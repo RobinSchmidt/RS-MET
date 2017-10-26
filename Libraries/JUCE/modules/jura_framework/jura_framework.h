@@ -31,6 +31,8 @@
 //#include <cstdio.h>    // for gcc on windows - doesn't help
 //#include <stdio.h>
 #include <limits.h>
+#include <xmmintrin.h>   // for FTZ (flush-to-zero)
+#include <pmmintrin.h>   // for DAZ (denormals-are-zero)
 
 //#include <juce_core/juce_core.h>
 //#include <juce_audio_basics/juce_audio_basics.h>
