@@ -173,6 +173,7 @@ bool MetaParameterManager::attachParameter(MetaControlledParameter* param, int i
   detachParameter(param);
   if(index >= 0 && index < size(metaParams)) {
     metaParams[index]->attachParameter(param);
+    updateMetaName(index);
     return true; }
   else {
     jassertfalse; // index out of range
@@ -181,8 +182,10 @@ bool MetaParameterManager::attachParameter(MetaControlledParameter* param, int i
 
 void MetaParameterManager::detachParameter(MetaControlledParameter* param)
 {
-  for(int i = 0; i < size(metaParams); i++)
+  for(int i = 0; i < size(metaParams); i++){
     metaParams[i]->detachParameter(param);
+    updateMetaName(i);
+  }
 }
 
 MetaParameter* MetaParameterManager::getMetaParameter(int index)
@@ -219,4 +222,19 @@ bool MetaParameterManager::setMetaName(int index, const String& newName)
     return false;
   metaParams[index]->setName(newName);
   return true;
+}
+
+void MetaParameterManager::updateMetaName(int index)
+{
+  // does not yet work:
+  /*
+  if(autoUpdateMetaNames && index >= 0 && index < size(metaParams))
+  {
+    String name = "Meta " + String(index);
+    for(int i = 0; i < size(metaParams[index]->params); i++)
+      name += ", " + metaParams[index]->params[i]->getName();
+    // the host does not yet get the new name. we somehow need to call
+    // plugin->updateHostDisplay();
+  }
+  */
 }

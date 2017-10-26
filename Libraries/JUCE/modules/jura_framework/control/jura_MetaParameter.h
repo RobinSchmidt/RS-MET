@@ -179,6 +179,8 @@ protected:
 
   std::vector<MetaControlledParameter*> params; // list of pointers to the dependent parameters
 
+  friend class MetaParameterManager;
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MetaParameter)
 };
 
@@ -227,11 +229,14 @@ public:
   successful (it will fail, if index is out of range). */
   bool setMetaName(int index, const String& newName);
 
+  void updateMetaName(int index);
 
 
 protected:
 
   std::vector<MetaParameter*> metaParams;
+
+  bool autoUpdateMetaNames = true;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MetaParameterManager)
 };
