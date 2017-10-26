@@ -196,20 +196,27 @@ void AudioPlugin::processBlock(AudioBuffer<double> &buffer, MidiBuffer &midiMess
 {
   ScopedLock scopedLock(plugInLock);
 
+  // enable flush-to-zero (FTZ) and denormals-are-zero (DAZ) mode:
+  _MM_SET_FLUSH_ZERO_MODE(_MM_FLUSH_ZERO_ON);
+  _MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);
+  // see here: https://software.intel.com/en-us/node/523328
+
   if(wrappedAudioModule != nullptr)
   {
     int numChannels = buffer.getNumChannels();
     int numSamples  = buffer.getNumSamples();
     double **inOutBuffer = buffer.getArrayOfWritePointers();
-
-    // later, we have to add the MIDI processing here...(and call
-    // underlyingAudioModule->handleMidiMessage accordingly) ...but maybe we should do that in
-    // a subclass AudioPluginWithMidiIn
-
     wrappedAudioModule->processBlock(inOutBuffer, numChannels, numSamples);
   }
   else
     buffer.clear();
+
+  // ... maybe we should restore the original FTZ/DAZ settings here? other plugins down the chain
+  // may want to have denormals...well...that's very unlikely, but still
+
+  // maybe we should have a function that avoids acquiring the lock and setting denormal flags that
+  // can be called from the AudioPluginWithMidiIn subclass (assuming that it already holds the lock
+  // and has set the denormal flags)
 }
 
 bool AudioPlugin::setPreferredBusArrangement(bool isInput, int bus,

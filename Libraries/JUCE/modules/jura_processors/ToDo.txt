@@ -1,3 +1,10 @@
+Fix denormals once and for all, see:
+https://en.wikipedia.org/wiki/Denormal_number#Disabling_denormal_floats_at_the_code_level
+https://web.archive.org/web/20120225091101/http://phonophunk.com/articles/pentium4-denormalization.php
+https://software.intel.com/en-us/articles/x87-and-sse-floating-point-assists-in-ia-32-flush-to-zero-ftz-and-denormals-are-zero-daz/
+https://forum.juce.com/t/resolving-denormal-floats-once-and-for-all/8241
+https://software.intel.com/en-us/node/523328
+
 ModSystem:
  -ModulatableSlider: show the modulation-range
  -clean up the files
