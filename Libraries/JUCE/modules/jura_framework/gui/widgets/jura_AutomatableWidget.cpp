@@ -4,7 +4,8 @@ rsModulationSetup::rsModulationSetup(AutomatableWidget* widgetToModulate,
   , widget(widgetToModulate)
   , metaManager(metaManagerTouse)
 {
-  addWidget( modulationsLabel = new RTextField("Modulations") );
+  addWidget( modulationsLabel = 
+    new RTextField(widgetToModulate->getParameterName() + " Modulations") );
   modulationsLabel->setNoBackgroundAndOutline(true);
   modulationsLabel->setDescription(juce::String("Modulation setup"));
 
@@ -512,6 +513,11 @@ MetaControlledParameter* AutomatableWidget::getMetaControlledParameter()
 ModulatableParameter* AutomatableWidget::getModulatableParameter()
 {
   return dynamic_cast<ModulatableParameter*> (wrappedWidget->assignedParameter);
+}
+
+String AutomatableWidget::getParameterName()
+{
+  return wrappedWidget->assignedParameter->getName();
 }
 
 MetaParameterManager* AutomatableWidget::getMetaParameterManager()

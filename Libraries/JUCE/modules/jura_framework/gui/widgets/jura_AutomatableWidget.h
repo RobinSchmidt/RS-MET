@@ -128,9 +128,14 @@ public:
   /** Similar to @see getAutomatbleParameter. */
   ModulatableParameter* getModulatableParameter();
 
+  /** Returns the name of the underlying parameter. */
+  String getParameterName();
+
   /** Returns a pointer to the MetaParameterManager that is used by the underlying parameter, if 
   any - a nullptr otherwise. */
   MetaParameterManager* getMetaParameterManager();
+
+
 
   // overrides:
   void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged) override;
