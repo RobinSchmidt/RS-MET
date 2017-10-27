@@ -1,9 +1,18 @@
-Fix denormals once and for all, see:
-https://en.wikipedia.org/wiki/Denormal_number#Disabling_denormal_floats_at_the_code_level
-https://web.archive.org/web/20120225091101/http://phonophunk.com/articles/pentium4-denormalization.php
-https://software.intel.com/en-us/articles/x87-and-sse-floating-point-assists-in-ia-32-flush-to-zero-ftz-and-denormals-are-zero-daz/
-https://forum.juce.com/t/resolving-denormal-floats-once-and-for-all/8241
-https://software.intel.com/en-us/node/523328
+BUGS:
+ -in Reaper, after plugging in a fresh instance of Chainer, selecting Ladder and attaching two 
+  parameters to the same meta, the sliders don't move in sync 
+  -the localAutomationSwitch flag is false - also for the sliders 
+  -after saving and reloading the project, it works
+  -after moving the host provided meta-slider, it works, too
+  https://github.com/RobinSchmidt/RS-MET/issues/113
+  https://github.com/RobinSchmidt/RS-MET/issues/110
+-also in Reaper:
+ -reported crash on switch some particular presets:
+  https://github.com/RobinSchmidt/RS-MET/issues/65#issuecomment-339857576
+  ...but i don't see this here
+ -also, when loading a preset with connected modulations, removing the modulation, reloading the 
+  preset and the opening the mod-menu, the depth slider does not appear (but the slider is colored
+  red indicating a connection) ...seems to happen only with mushroom, not chainer
 
 ModSystem:
  -ModulatableSlider: show the modulation-range
@@ -217,3 +226,10 @@ General:
 -take more care about const correctness in declarations
 
 
+Fix denormals once and for all, see:
+https://en.wikipedia.org/wiki/Denormal_number#Disabling_denormal_floats_at_the_code_level
+https://web.archive.org/web/20120225091101/http://phonophunk.com/articles/pentium4-denormalization.php
+https://software.intel.com/en-us/articles/x87-and-sse-floating-point-assists-in-ia-32-flush-to-zero-ftz-and-denormals-are-zero-daz/
+https://forum.juce.com/t/resolving-denormal-floats-once-and-for-all/8241
+https://software.intel.com/en-us/node/523328
+(done  in AudioPlugin::processBlock - but we may need to reset it)
