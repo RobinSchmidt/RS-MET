@@ -21,7 +21,7 @@ class JUCE_API ParameterObserver
 public:
 
   //-----------------------------------------------------------------------------------------------
-  // construction/destruction:
+  /** \name Construction/Destruction */
 
   /** Constructor. */
   ParameterObserver();
@@ -30,7 +30,7 @@ public:
   virtual ~ParameterObserver();
 
   //-----------------------------------------------------------------------------------------------
-  // callbacks:
+  /** \name Callbacks */
 
   /** The callback method that will get called when one of our observed parameters was changed. */
   virtual void parameterChanged(Parameter* parameterThatHasChanged) = 0;
@@ -45,13 +45,23 @@ public:
   range. */
   virtual void parameterRangeChanged(Parameter* /*parameterThatHasChangedRange*/) {}
 
-  // maybe, we should get rid of the stuff below:
-
   /** Informs whether this instance wants automation notifications */
   virtual bool wantsAutomationNotification();
+    // rename to wants parameterChangedCallbacks
+
 
   //-----------------------------------------------------------------------------------------------
-  // public data members:
+  /** \name Setup */
+
+  static void setGuiAutomationSwitch(bool newSwitch) { guiAutomationSwitch = newSwitch; }
+
+
+protected:
+
+
+
+  //-----------------------------------------------------------------------------------------------
+  // data members:
 
   /** A flag which can turn off automation listening globally for all instances of
   ParameterObserver that have the isGuiElement flag set to true. */

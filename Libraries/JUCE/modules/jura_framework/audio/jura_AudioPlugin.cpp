@@ -137,10 +137,10 @@ AudioProcessorEditor* AudioPlugin::createEditor()
 {
   if(wrappedAudioModule == nullptr)
     return nullptr;
-  ParameterObserver::guiAutomationSwitch = false;   // don't automate widgets during creation
+  ParameterObserver::setGuiAutomationSwitch(false);   // don't automate widgets during creation
   AudioModuleEditor *moduleEditor = wrappedAudioModule->createEditor();
   AudioPluginEditor *pluginEditor = new AudioPluginEditor(moduleEditor, this);
-  ParameterObserver::guiAutomationSwitch = true;    // now, widgets can be automated again
+  ParameterObserver::setGuiAutomationSwitch(true);    // now, widgets can be automated again
   return pluginEditor;
 }
 
@@ -173,11 +173,11 @@ void AudioPlugin::setStateInformation(const void* data, int sizeInBytes)
 
     XmlElement* const xml = getXmlFromBinary(data, sizeInBytes);
     //ParameterObserver::globalAutomationSwitch = false; // why this - threading problems? -> interferes with total recall in quadrifex
-    ParameterObserver::guiAutomationSwitch = false;
+    ParameterObserver::setGuiAutomationSwitch(false);
     wrappedAudioModule->setStateFromXml(*xml, "recalled by host", false);
     editorWidth  = xml->getIntAttribute("EditorWidth",  0);
     editorHeight = xml->getIntAttribute("EditorHeight", 0);
-    ParameterObserver::guiAutomationSwitch = true;
+    ParameterObserver::setGuiAutomationSwitch(true);
     //ParameterObserver::globalAutomationSwitch = true;
     delete xml;
 

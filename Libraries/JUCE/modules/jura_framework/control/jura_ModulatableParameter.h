@@ -467,7 +467,7 @@ public:
       z = clip(u * pow(m, d) - u, -1.e100, +1.e100);
       // Multiplicative mode may produce infinity when it gets an input like m=0, d=-1: 0^-1 = 1/0.
       // That in itself might later be clipped to max target value but if one modulator produces
-      // inf and another one -inf because u is neagtive in the 2nd, we would get inf-inf = NaN so
+      // inf and another one -inf because u is negative in the 2nd, we would get inf-inf = NaN so
       // we need to clip here already.
     } break;
     default:             z = 0;
