@@ -93,7 +93,7 @@ VectorMixerPad::VectorMixerPad(rosic::VectorMixer* newVectorMixerToEdit, const j
   setDescription("Drag around the dot to adjust the mix between the 4 signals");
 
   // indicate that this ParameterObserver is a GUI element:
-  ParameterObserver::isGuiElement = true;
+  ParameterObserver::setIsGuiElement(true);
 
   // assign the pointer to the VectorMixer to be edited:
   vectorMixerToEdit = newVectorMixerToEdit;
@@ -119,14 +119,14 @@ VectorMixerPad::VectorMixerPad(rosic::VectorMixer* newVectorMixerToEdit, const j
   yParameter  = NULL;
 
   // activate automation for this ParameterObserver:
-  ParameterObserver::localAutomationSwitch = true;
+  ParameterObserver::setLocalAutomationSwitch(true);
 }
 
 VectorMixerPad::~VectorMixerPad()
 {
   // remove ourselves as listeners from the Parameter objects, such that they do 
   // not try to notify a nonexistent listener:
-  ParameterObserver::localAutomationSwitch = false;
+  ParameterObserver::setLocalAutomationSwitch(false);
   if( xParameter != NULL )
     xParameter->deRegisterParameterObserver(this);
   if( yParameter != NULL )
@@ -190,7 +190,7 @@ void VectorMixerPad::changeListenerCallback(ChangeBroadcaster *objectThatHasChan
 {
   // temporarily switch the wantsAutomationNotification flag from the ParameterObserver base 
   // class off to avoid circular notifications and updates:
-  localAutomationSwitch = false;
+  setLocalAutomationSwitch(false);
 
   // call the method which updates the widget:
   updateBackgroundImage();
@@ -198,7 +198,7 @@ void VectorMixerPad::changeListenerCallback(ChangeBroadcaster *objectThatHasChan
 
 
   // switch the wantsAutomationNotification flag on again:  
-  localAutomationSwitch = true;
+  setLocalAutomationSwitch(true);
 }
 
 void VectorMixerPad::mouseDown(const MouseEvent &e)

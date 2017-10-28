@@ -379,8 +379,8 @@ PhaseScopeEditor::PhaseScopeEditor(jura::PhaseScope *newPhaseScopeToEdit)
   setSize(400+widgetMargin, 400+headerMargin);
 
   // needs to be done to show/hid sliders depending on whether sync is on or off
-  localAutomationSwitch = true;
-  isGuiElement = true;
+  setLocalAutomationSwitch(true);
+  setIsGuiElement(true);
   scope->getParameterByName("Sync")->registerParameterObserver(this);
   parameterChanged(scope->getParameterByName("Sync"));
 

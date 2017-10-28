@@ -49,36 +49,39 @@ public:
   virtual bool wantsAutomationNotification();
     // rename to wants parameterChangedCallbacks
 
-
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
+  /** Turns on/off automation listening globally for all instances of ParameterObserver that have 
+  the isGuiElement flag set to true. */
   static void setGuiAutomationSwitch(bool newSwitch) { guiAutomationSwitch = newSwitch; }
 
+  /** Turns on/off automation listening globally for all instances of ParameterObserver. */
+  static void setGlobalAutomationSwitch(bool newSwitch) { globalAutomationSwitch = newSwitch; }
 
-protected:
+  /** Sets a flag which indicates whether or not this ParameterObserver want to receive 
+  notifications.It can make sense to switch that off temporarily when this listener also 
+  manipulates the parameter. */
+  void setLocalAutomationSwitch(bool newSwitch) { localAutomationSwitch = newSwitch; }
+
+  /** Sets a flag to indicate that this ParameterObserver is a GUI element - set this to true in 
+  your subclass when it is a GUI element. */
+  void setIsGuiElement(bool newIsGui) { isGuiElement = newIsGui; }
 
 
+private:
 
   //-----------------------------------------------------------------------------------------------
-  // data members:
+  // data 
 
-  /** A flag which can turn off automation listening globally for all instances of
-  ParameterObserver that have the isGuiElement flag set to true. */
   static bool guiAutomationSwitch;
-
-  /** A flag which can turn off automation listening globally for all instances of
-  ParameterObserver. */
   static bool globalAutomationSwitch;
-
-  /** A flag which indicates whether or not this ParameterObserver want to receive notifications.
-  It can make sense to switch that off temporarily when this listener also manipulates the
-  parameter. */
   bool localAutomationSwitch;
-
-  /** A flag to indicate that this ParameterObserver is a GUI element - set this to true in your
-  subclass when it is a GUI element. */
   bool isGuiElement;
+
+  // data is made private to enforce to set them by function calls in subclasses, so we may hook
+  // into changes to them with the debugger (changing them temporarily is a source for subtle 
+  // bugs)
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParameterObserver)
 };

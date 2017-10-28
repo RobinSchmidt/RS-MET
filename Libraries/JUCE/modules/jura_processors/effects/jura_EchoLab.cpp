@@ -801,7 +801,7 @@ EchoLabPlotEditor::EchoLabPlotEditor(CriticalSection *newPlugInLock,
   currentlyDraggedHandle = NONE;
   delayLineEditor        = NULL;
 
-  ParameterObserver::localAutomationSwitch = true;
+  ParameterObserver::setLocalAutomationSwitch(true);
 }
 
 EchoLabPlotEditor::~EchoLabPlotEditor(void)

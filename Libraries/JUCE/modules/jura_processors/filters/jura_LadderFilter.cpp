@@ -180,7 +180,7 @@ LadderSpectrumEditor::LadderSpectrumEditor(const juce::String& name)
 
 
   setDescription("Drag around the node to adjust the filter's frequency and resonance");
-  ParameterObserver::isGuiElement = true;
+  ParameterObserver::setIsGuiElement(true);
 
   // set up the plot range:
   setMaximumRange(15.625, 32000.0, -60.0, 60.0);
@@ -198,14 +198,14 @@ LadderSpectrumEditor::LadderSpectrumEditor(const juce::String& name)
   dotRadius = 5.f;
 
   // activate automation for this ParameterObserver:
-  ParameterObserver::localAutomationSwitch = true;
+  ParameterObserver::setLocalAutomationSwitch(true);
 }
 
 LadderSpectrumEditor::~LadderSpectrumEditor(void)
 {
   // remove ourselves as listeners from the Parameter objects, such that they do not try to notify 
   // a nonexistent listener:
-  ParameterObserver::localAutomationSwitch = false;
+  ParameterObserver::setLocalAutomationSwitch(false);
   if( freqParameter != NULL )
     freqParameter->deRegisterParameterObserver(this);
   if( resoParameter != NULL )
@@ -281,7 +281,7 @@ void LadderSpectrumEditor::changeListenerCallback(ChangeBroadcaster *objectThatH
 {
   // temporarily switch the wantsAutomationNotification flag from the ParameterObserver base 
   // class off to avoid circular notifications and updates:
-  localAutomationSwitch = false;
+  setLocalAutomationSwitch(false);
 
     // ?? what is this good for ?? we don't send out any messages here... fihure out in debugger
 
@@ -290,7 +290,7 @@ void LadderSpectrumEditor::changeListenerCallback(ChangeBroadcaster *objectThatH
   //updateWidgetFromAssignedParameter(false);
 
   // switch the wantsAutomationNotification flag on again:  
-  localAutomationSwitch = true;
+  setLocalAutomationSwitch(true);
 }
 
 void LadderSpectrumEditor::mouseDown(const MouseEvent &e)

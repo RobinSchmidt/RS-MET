@@ -10,8 +10,8 @@ const BitmapFont* RWidget::font = &BitmapFontRoundedBoldA10D0::instance;
 
 RWidget::RWidget(const String& newDescription) 
 {
-  localAutomationSwitch    = true;
-  isGuiElement             = true;
+  setLocalAutomationSwitch(true);
+  setIsGuiElement(true);
   noBackgroundAndOutline   = false;
   alphaMultiplier          = 1.f;
   description              = newDescription;
@@ -33,7 +33,7 @@ RWidget::~RWidget()
 {
   // remove ourselves as listener from the Parameter object, such that it does not try to notify a 
   // nonexistent listener:
-  ParameterObserver::localAutomationSwitch = false;
+  setLocalAutomationSwitch(false);
   if( assignedParameter != NULL )
     assignedParameter->deRegisterParameterObserver(this);
 
@@ -176,9 +176,9 @@ void RWidget::handleAsyncUpdate()
 {
   if( assignedParameter != NULL )
   {
-    localAutomationSwitch = false; // to avoid circular notifications and updates
+    setLocalAutomationSwitch(false); // to avoid circular notifications and updates
     updateWidgetFromAssignedParameter();
-    localAutomationSwitch = true;
+    setLocalAutomationSwitch(true);
   }
   //repaint();
 }

@@ -391,7 +391,7 @@ MultiModeFreqResponseEditor::MultiModeFreqResponseEditor(const juce::String& nam
 {
   setDescription("Drag around the node to adjust the filter's frequency and resonance, Q or gain");
 
-  ParameterObserver::isGuiElement = true;
+  ParameterObserver::setIsGuiElement(true);
   filterToEdit = NULL;
 
   // set up the plot range:
@@ -421,13 +421,13 @@ MultiModeFreqResponseEditor::MultiModeFreqResponseEditor(const juce::String& nam
   magnitudes  = NULL;
 
   // activate automation for this ParameterObserver:
-  ParameterObserver::localAutomationSwitch = true;
+  ParameterObserver::setLocalAutomationSwitch(true);
 }
 
 MultiModeFreqResponseEditor::~MultiModeFreqResponseEditor(void)
 {
   // remove ourselves as listeners from the Parameter objects, such that they do not try to notify a nonexistent listener:
-  ParameterObserver::localAutomationSwitch = false;
+  ParameterObserver::setLocalAutomationSwitch(false);
   if( freqParameter != NULL )
     freqParameter->deRegisterParameterObserver(this);
   if( resoParameter != NULL )
@@ -548,7 +548,7 @@ void MultiModeFreqResponseEditor::changeListenerCallback(ChangeBroadcaster *obje
 {
   // temporarily switch the wantsAutomationNotification flag from the ParameterObserver base 
   // class off to avoid circular notifications and updates:
-  localAutomationSwitch = false;
+  setLocalAutomationSwitch(false);
 
   // call the method which updates the widget:
   updatePlot();
@@ -556,7 +556,7 @@ void MultiModeFreqResponseEditor::changeListenerCallback(ChangeBroadcaster *obje
 
 
   // switch the wantsAutomationNotification flag on again:  
-  localAutomationSwitch = true;
+  setLocalAutomationSwitch(true);
 }
 
 void MultiModeFreqResponseEditor::mouseDown(const MouseEvent &e)

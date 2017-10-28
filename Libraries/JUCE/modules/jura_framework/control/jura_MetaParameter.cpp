@@ -134,20 +134,20 @@ void MetaParameter::setMetaValue(double newValue)
 { 
   jassert(newValue >= 0.0 && newValue <= 1.0); // must be a normalized value in the range 0..1
   metaValue = newValue;
-  localAutomationSwitch = false; // so we don't call ourselves recursively
+  setLocalAutomationSwitch(false); // so we don't call ourselves recursively
   for(int i = 0; i < size(params); i++)  
     params[i]->setFromMetaValue(metaValue, true, true);
-  localAutomationSwitch = true;
+  setLocalAutomationSwitch(true);
 }
 
 void MetaParameter::parameterChanged(Parameter* p)
 {
   metaValue = p->getProportionalValue();
-  localAutomationSwitch = false; // so we don't call ourselves recursively
+  setLocalAutomationSwitch(false); // so we don't call ourselves recursively
   for(int i = 0; i < size(params); i++) {
     if(params[i] != p)
       params[i]->setFromMetaValue(metaValue, true, true); }
-  localAutomationSwitch = true;
+  setLocalAutomationSwitch(true);
 }
 
 void MetaParameter::parameterIsGoingToBeDeleted(Parameter* p)

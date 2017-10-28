@@ -395,8 +395,8 @@ FuncShaperModuleEditor::FuncShaperModuleEditor(CriticalSection *newPlugInLock,
   funcShaperAudioModule->getParameterByName("b")->registerParameterObserver(this);
   funcShaperAudioModule->getParameterByName("c")->registerParameterObserver(this);
   funcShaperAudioModule->getParameterByName("d")->registerParameterObserver(this);
-  localAutomationSwitch = true;
-  isGuiElement          = true;
+  setLocalAutomationSwitch(true);
+  setIsGuiElement(true);
 
   // generate the x-values for the plot:
   int    numValues = funcShaperAudioModule->wrappedFuncShaper->distortionCurve.getTableSize();

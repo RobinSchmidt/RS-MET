@@ -16,14 +16,14 @@ RSlider::RSlider(const String& name)
   nameRectangle->addMouseListener(this, true);
   setWantsKeyboardFocus(true); // we need this for the mousewheel to work
 
-  ParameterObserver::localAutomationSwitch = true; // do we need this?
+  ParameterObserver::setLocalAutomationSwitch(true); // do we need this?
 }
 
 RSlider::~RSlider()
 {
   // remove ourselves as listener from the Parameter object, such that it does not try to notify a 
   // nonexistent listener:
-  ParameterObserver::localAutomationSwitch = false;
+  ParameterObserver::setLocalAutomationSwitch(false);
 
   if( assignedParameter != NULL )
     assignedParameter->deRegisterParameterObserver(this);
@@ -91,12 +91,12 @@ void RSlider::setValue(double newValue, const bool sendUpdateMessage,
     // currently being tested:
     if( assignedParameter != NULL )
     {
-      ParameterObserver::localAutomationSwitch = false;
+      ParameterObserver::setLocalAutomationSwitch(false);
       //assignedParameter->setValue(currentValue);  //old
       //assignedParameter->setValue(currentValue, false); 
       assignedParameter->setValue(currentValue, sendUpdateMessage, sendUpdateMessage); 
        // is the thing with the sendUpdateMessage correct?
-      ParameterObserver::localAutomationSwitch = true;
+      ParameterObserver::setLocalAutomationSwitch(true);
     }
     repaint();
 

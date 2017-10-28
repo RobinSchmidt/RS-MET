@@ -458,7 +458,7 @@ EqualizerPlotEditor::EqualizerPlotEditor(CriticalSection *newPlugInLock, Equaliz
 {
   setDescription("Left: insert or grab band-handle, right: remove band");
 
-  ParameterObserver::isGuiElement = true;
+  ParameterObserver::setIsGuiElement(true);
 
   plugInLock            = newPlugInLock;
   equalizerModuleToEdit = NULL;  // will be assigned later via call to setEqualizerModuleToEdit
@@ -495,7 +495,7 @@ EqualizerPlotEditor::EqualizerPlotEditor(CriticalSection *newPlugInLock, Equaliz
   currentlyDraggedHandle = NONE;
 
   // activate automation for this ParameterObserver:
-  ParameterObserver::localAutomationSwitch = true;
+  ParameterObserver::setLocalAutomationSwitch(true);
 
   setEqualizerModuleToEdit(newEqualizerModuleToEdit);
 }

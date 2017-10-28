@@ -6,7 +6,7 @@ StereoPanPlotEditor::StereoPanPlotEditor(const juce::String& name)
   setDescription("Shows the curves for the pan-law - red: L->L, blue: R->R, green: R->L, brown: L->R");
 
 
-  ParameterObserver::isGuiElement = true;
+  ParameterObserver::setIsGuiElement(true);
   stereoPanToEdit = NULL;
 
   // set up the plot range:
@@ -39,14 +39,14 @@ StereoPanPlotEditor::StereoPanPlotEditor(const juce::String& name)
   allGains[3] = gLR;
 
   // activate automation for this ParameterObserver:
-  ParameterObserver::localAutomationSwitch = true;
+  ParameterObserver::setLocalAutomationSwitch(true);
 }
 
 StereoPanPlotEditor::~StereoPanPlotEditor(void)
 {
   // remove ourselves as listeners from the Parameter objects, such that they do 
   // not try to notify a nonexistent listener:
-  ParameterObserver::localAutomationSwitch = false;
+  ParameterObserver::setLocalAutomationSwitch(false);
   if( panParameter != NULL )
     panParameter->deRegisterParameterObserver(this);
   if( panLawParameter != NULL )
@@ -106,14 +106,14 @@ void StereoPanPlotEditor::changeListenerCallback(ChangeBroadcaster *objectThatHa
 {
   // temporarily switch the wantsAutomationNotification flag from the ParameterObserver base 
   // class off to avoid circular notifications and updates:
-  localAutomationSwitch = false;
+  setLocalAutomationSwitch(false);
 
   // call the method which updates the widget:
   updatePlot();
   //updateWidgetFromAssignedParameter(false);
 
   // switch the wantsAutomationNotification flag on again:  
-  localAutomationSwitch = true;
+  setLocalAutomationSwitch(true);
 }
 
 void StereoPanPlotEditor::mouseDown(const MouseEvent &e)

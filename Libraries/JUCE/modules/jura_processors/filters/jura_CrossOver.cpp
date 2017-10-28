@@ -96,7 +96,7 @@ CrossOverPlotEditor::CrossOverPlotEditor(CriticalSection *newPlugInLock, CrossOv
 
   setDescription("Vertical lines: adjust frequency, triangles: turn on/off");
 
-  ParameterObserver::isGuiElement = true;
+  ParameterObserver::setIsGuiElement(true);
 
   crossOverModuleToEdit = newCrossOverModuleToEdit;  
 
@@ -148,7 +148,7 @@ CrossOverPlotEditor::CrossOverPlotEditor(CriticalSection *newPlugInLock, CrossOv
   selectedIndex          = -1;
 
   // activate automation for this ParameterObserver:
-  ParameterObserver::localAutomationSwitch = true;
+  ParameterObserver::setLocalAutomationSwitch(true);
 }
 
 CrossOverPlotEditor::~CrossOverPlotEditor(void)
@@ -156,7 +156,7 @@ CrossOverPlotEditor::~CrossOverPlotEditor(void)
   ScopedLock scopedLock(*plugInLock);
 
   // remove ourselves as listeners from the Parameter objects, such that they do not try to notify a nonexistent listener:
-  ParameterObserver::localAutomationSwitch = false;
+  ParameterObserver::setLocalAutomationSwitch(false);
 
   if( onOff21Parameter != NULL ) onOff21Parameter->deRegisterParameterObserver(this);
   if( onOff22Parameter != NULL ) onOff22Parameter->deRegisterParameterObserver(this);
@@ -278,14 +278,14 @@ void CrossOverPlotEditor::changeListenerCallback(ChangeBroadcaster *objectThatHa
 
   // temporarily switch the wantsAutomationNotification flag from the ParameterObserver base 
   // class off to avoid circular notifications and updates:
-  localAutomationSwitch = false;
+  setLocalAutomationSwitch(false);
 
   // call the method which updates the widget:
   updatePlot();
   //updateWidgetFromAssignedParameter(false);
 
   // switch the wantsAutomationNotification flag on again:  
-  localAutomationSwitch = true;
+  setLocalAutomationSwitch(true);
 }
 
 void CrossOverPlotEditor::mouseMove(const MouseEvent &e)
