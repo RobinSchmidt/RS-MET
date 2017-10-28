@@ -277,6 +277,11 @@ public:
   void setUnmodulatedValue(double newValue)
   {
     unmodulatedValue = newValue;
+
+    modulatedValue   = unmodulatedValue; 
+    // Elan's smoother needs this - it makes sure that the modulated value is always the same as
+    // the unmodulated value in case when no modulatios are applied
+
   }
 
   /** Adds a ModulationSource to this ModulationTarget. The amount of modulation is initially 0. */

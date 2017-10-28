@@ -1,3 +1,6 @@
+Mod-System: make sure that the modulated value always equals the unmodulated value, even when there
+are no mod-connections
+
 BUGS:
  -in Reaper, after plugging in a fresh instance of Chainer, selecting Ladder and attaching two 
   parameters to the same meta, the sliders don't move in sync 
