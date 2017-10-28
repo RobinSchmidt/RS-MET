@@ -376,6 +376,12 @@ public:
     return clip(modulatedValue, rangeMin, rangeMax);
   }
 
+  /** Returns the unmodulated value, which is the base value when no modulation is applied. */
+  inline double getUnmodulatedValue() const
+  {
+    return unmodulatedValue;
+  }
+
 
 protected:
 
@@ -456,15 +462,17 @@ public:
     case ABSOLUTE:       z = d * m;             break;
     case RELATIVE:       z = d * m * u;         break;
     case EXPONENTIAL:    z = u * exp2(d*m) - u; break; // maybe rename function to pow2
-    case MULTIPLICATIVE: z = u * pow(m, d) - u; break; // what about 0^-1 = 1/0?
+    case MULTIPLICATIVE: 
+    {
+      z = clip(u * pow(m, d) - u, -1.e100, +1.e100);
+      // Multiplicative mode may produce infinity when it gets an input like m=0, d=-1: 0^-1 = 1/0.
+      // That in itself might later be clipped to max target value but if one modulator produces
+      // inf and another one -inf because u is neagtive in the 2nd, we would get inf-inf = NaN so
+      // we need to clip here already.
+    } break;
     default:             z = 0;
     }
     *targetValue += z;
-
-    // multiplicative mode may produce infinity when it gets an input like m=0, d=-1: 0^-1 = 1/0.
-    // that in itself might later be clipped to max target value but what if one modulator produces
-    // inf and another one -inf because u is neagtive in the 2nd? then we get inf-inf = NaN
-    // ...maybe we should clip here already?
   }
 
 
