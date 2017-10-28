@@ -5,8 +5,8 @@ bool ParameterObserver::guiAutomationSwitch    = true;
 
 ParameterObserver::ParameterObserver()
 {
-  localAutomationSwitch  = false;
-  isGuiElement           = false;
+  localAutomationSwitch = true;   // was formerly false by default...why?
+  isGuiElement = false;
 }
 
 ParameterObserver::~ParameterObserver()
