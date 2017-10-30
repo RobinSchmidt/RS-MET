@@ -8,7 +8,7 @@ class AutomatableWidget;
 
 class JUCE_API rsModulationSetup : public ColourSchemeComponent, public RButtonListener, 
   public rsDeletionRequester, public rsGarbageCollector, public RPopUpMenuObserver, 
-  public RTextEntryFieldObserver
+  public RTextEntryFieldObserver, public ModulationTargetObserver
 {
 
 public:
@@ -28,6 +28,7 @@ public:
   virtual void rButtonClicked(RButton *button) override;
   virtual void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged) override;
   virtual void textChanged(RTextEntryField *rTextEntryFieldThatHasChanged) override;
+  virtual void modulationsChanged() override;
 
 protected:
 

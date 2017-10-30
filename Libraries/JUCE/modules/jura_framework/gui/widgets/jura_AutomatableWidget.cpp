@@ -40,15 +40,18 @@ rsModulationSetup::rsModulationSetup(AutomatableWidget* widgetToModulate,
 
   setAlwaysOnTop(true); // should not be hidden by main gui window
 
-
   //modManager = nullptr;
-  //ModulatableParameter* mp = widgetToModulate->getModulatableParameter();
-  //if(mp != nullptr)
-  //  modManager = mp->getModulationManager();
+  ModulatableParameter* mp = widgetToModulate->getModulatableParameter();
+  if(mp != nullptr)
+    mp->registerModulationTargetObserver(this);
 }
 
 rsModulationSetup::~rsModulationSetup()
 {
+  ModulatableParameter* mp = widget->getModulatableParameter();
+  if(mp != nullptr)
+    mp->deRegisterModulationTargetObserver(this);
+
   delete connectableSourcesPopUp;
   delete removableSourcesPopUp;
 }
@@ -126,6 +129,14 @@ void rsModulationSetup::textChanged(RTextEntryField *rTextEntryFieldThatHasChang
     setClipMin(toDouble(clipMinField->getTextEntryField()->getText()));
   else if(rTextEntryFieldThatHasChanged == clipMaxField->getTextEntryField())
     setClipMax(toDouble(clipMaxField->getTextEntryField()->getText()));
+}
+
+void rsModulationSetup::modulationsChanged()
+{
+  // we need to update the slider array here...this may be called also when the user switches a 
+  // preset
+  // ...hmm...but is doesn't get called on preset switch - not in chainer, at least, instead
+  // the menu closes
 }
 
 void rsModulationSetup::addConnection(int index)
