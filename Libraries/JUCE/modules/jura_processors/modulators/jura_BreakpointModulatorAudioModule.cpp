@@ -263,12 +263,15 @@ void BreakpointModulatorAudioModule::setStateFromXml(const XmlElement& xmlState,
   }
   else
     jassertfalse;
+
+  sendChangeMessage();
 }
 
 void BreakpointModulatorAudioModule::setStateToDefaults()
 {
   if( wrappedBreakpointModulator != NULL )
     wrappedBreakpointModulator->initialize();
+  sendChangeMessage();
 }
 
 AudioModuleEditor* BreakpointModulatorAudioModule::createEditor()

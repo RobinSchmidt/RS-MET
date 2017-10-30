@@ -5,7 +5,7 @@
 plugIn or sub-module inside a plugIn. */
 
 class JUCE_API BreakpointModulatorAudioModule 
-  : /*public AudioModule*/ public AudioModuleWithMidiIn , public ModulationSource
+  : public AudioModuleWithMidiIn, public ModulationSource, public ChangeBroadcaster
 {
 
   friend class BreakpointModulatorEditor;
