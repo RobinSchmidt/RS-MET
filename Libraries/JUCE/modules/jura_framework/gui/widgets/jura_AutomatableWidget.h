@@ -59,7 +59,7 @@ protected:
   void addWidgetsForConnection(ModulationConnection* c); 
 
   /** Removes the widgets for the connection with given index. */
-  void removeWidgetsForConnection(int index); 
+  //void removeWidgetsForConnection(int index); 
 
   /** Clears the array of connections widgets. */
   void clearConnectionWidgets();

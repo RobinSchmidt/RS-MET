@@ -133,10 +133,7 @@ void rsModulationSetup::textChanged(RTextEntryField *rTextEntryFieldThatHasChang
 
 void rsModulationSetup::modulationsChanged()
 {
-  // we need to update the slider array here...this may be called also when the user switches a 
-  // preset
-  // ...hmm...but is doesn't get called on preset switch - not in chainer, at least, instead
-  // the menu closes
+  updateConnectionWidgetsArray();
 }
 
 void rsModulationSetup::addConnection(int index)
@@ -146,7 +143,8 @@ void rsModulationSetup::addConnection(int index)
   {
     std::vector<ModulationSource*> sources = mp->getDisconnectedSources();
     mp->addModulationSource(sources[index]);
-    addWidgetsForConnection(mp->getConnectionTo(sources[index]));
+    //addWidgetsForConnection(mp->getConnectionTo(sources[index]));
+    // not necessary anymore - we do now a full update in the modulationsChanged callback
   }
 }
 
@@ -155,7 +153,7 @@ void rsModulationSetup::removeConnection(int index)
   ModulatableParameter* mp = widget->getModulatableParameter();
   if(mp != nullptr)
   {
-    removeWidgetsForConnection(index);
+    //removeWidgetsForConnection(index); // not necessary anymore, see comment in addConnection
     std::vector<ModulationSource*> sources = mp->getConnectedSources();
     mp->removeModulationSource(sources[index]);
     updateSize();
@@ -257,6 +255,7 @@ void rsModulationSetup::addWidgetsForConnection(ModulationConnection* c)
   updateSize();
 }
 
+/*
 void rsModulationSetup::removeWidgetsForConnection(int i)
 {
   connectionWidgets[i]->removeButton->removeRButtonListener(this);
@@ -264,6 +263,7 @@ void rsModulationSetup::removeWidgetsForConnection(int i)
   removeWidget(connectionWidgets[i], true, false); // false, to not delete it immediately
   remove(connectionWidgets, i);
 }
+*/
 
 void rsModulationSetup::clearConnectionWidgets()
 {
