@@ -40,15 +40,18 @@ rsModulationSetup::rsModulationSetup(AutomatableWidget* widgetToModulate,
 
   setAlwaysOnTop(true); // should not be hidden by main gui window
 
-
   //modManager = nullptr;
-  //ModulatableParameter* mp = widgetToModulate->getModulatableParameter();
-  //if(mp != nullptr)
-  //  modManager = mp->getModulationManager();
+  ModulatableParameter* mp = widgetToModulate->getModulatableParameter();
+  if(mp != nullptr)
+    mp->registerModulationTargetObserver(this);
 }
 
 rsModulationSetup::~rsModulationSetup()
 {
+  ModulatableParameter* mp = widget->getModulatableParameter();
+  if(mp != nullptr)
+    mp->deRegisterModulationTargetObserver(this);
+
   delete connectableSourcesPopUp;
   delete removableSourcesPopUp;
 }
@@ -128,6 +131,11 @@ void rsModulationSetup::textChanged(RTextEntryField *rTextEntryFieldThatHasChang
     setClipMax(toDouble(clipMaxField->getTextEntryField()->getText()));
 }
 
+void rsModulationSetup::modulationsChanged()
+{
+  updateConnectionWidgetsArray();
+}
+
 void rsModulationSetup::addConnection(int index)
 {
   ModulatableParameter* mp = widget->getModulatableParameter();
@@ -135,7 +143,8 @@ void rsModulationSetup::addConnection(int index)
   {
     std::vector<ModulationSource*> sources = mp->getDisconnectedSources();
     mp->addModulationSource(sources[index]);
-    addWidgetsForConnection(mp->getConnectionTo(sources[index]));
+    //addWidgetsForConnection(mp->getConnectionTo(sources[index]));
+    // not necessary anymore - we do now a full update in the modulationsChanged callback
   }
 }
 
@@ -144,7 +153,7 @@ void rsModulationSetup::removeConnection(int index)
   ModulatableParameter* mp = widget->getModulatableParameter();
   if(mp != nullptr)
   {
-    removeWidgetsForConnection(index);
+    //removeWidgetsForConnection(index); // not necessary anymore, see comment in addConnection
     std::vector<ModulationSource*> sources = mp->getConnectedSources();
     mp->removeModulationSource(sources[index]);
     updateSize();
@@ -246,6 +255,7 @@ void rsModulationSetup::addWidgetsForConnection(ModulationConnection* c)
   updateSize();
 }
 
+/*
 void rsModulationSetup::removeWidgetsForConnection(int i)
 {
   connectionWidgets[i]->removeButton->removeRButtonListener(this);
@@ -253,6 +263,7 @@ void rsModulationSetup::removeWidgetsForConnection(int i)
   removeWidget(connectionWidgets[i], true, false); // false, to not delete it immediately
   remove(connectionWidgets, i);
 }
+*/
 
 void rsModulationSetup::clearConnectionWidgets()
 {

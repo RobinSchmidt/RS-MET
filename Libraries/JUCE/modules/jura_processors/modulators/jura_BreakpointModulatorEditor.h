@@ -160,6 +160,9 @@ public:
   BreakpointModulatorEditor(CriticalSection *newPlugInLock, 
     BreakpointModulatorAudioModule* newModulatorToEdit);
 
+  /** Destructor. */
+  virtual ~BreakpointModulatorEditor();
+
   //-----------------------------------------------------------------------------------------------
   // setup:
 
@@ -214,6 +217,9 @@ protected:
   /** Automatically adjusts the y-axis plot-range according to the current content. */
   virtual void autoAdjustPlotRangeY();
 
+  // pointer to the AudioModule object which is being edited:
+  jura::BreakpointModulatorAudioModule* modulatorModule;
+
   // pointer to the actual Modulator object which is being edited:
   rosic::BreakpointModulator* modulatorToEdit;
 
@@ -240,7 +246,9 @@ protected:
 
 //=================================================================================================
 
-/** Compact editor for the BreakpointModulatorAudioModule. */
+/** Compact editor for the BreakpointModulatorAudioModule. 
+maybe this needs to ba a ChangeListener, too - same as the non-compact version
+*/
 
 class JUCE_API BreakpointModulatorEditorCompact : virtual public AudioModuleEditor
 {

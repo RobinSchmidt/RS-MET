@@ -250,6 +250,7 @@ void ModulationManager::applyModulationsNoLock()
   // compute output signals of all modulators:
   for(i = 0; i < size(availableSources); i++)
     availableSources[i]->updateModulationValue();
+    // maybe we should loop only over an array of "usedSources"?
 
   // initialize modulation target values with their unmodulated values:
   for(i = 0; i < size(affectedTargets); i++)

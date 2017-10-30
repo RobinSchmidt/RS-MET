@@ -601,8 +601,16 @@ BreakpointModulatorEditor::BreakpointModulatorEditor(CriticalSection *newPlugInL
   stateWidgetSet->stateMinusButton->setDescription("Skip to previous modulation curve in current directory");
   stateWidgetSet->stateFileNameLabel->setDescription("Name of current preset for the breakpoint modulator (if any)");
 
+  modulatorModule = newBreakpointModulatorAudioModule;
+  modulatorModule->addChangeListener(this);
+
   setModulatorToEdit(newBreakpointModulatorAudioModule->wrappedBreakpointModulator);
      // this will also set up the widgets according to the state of the modulator
+}
+
+BreakpointModulatorEditor::~BreakpointModulatorEditor()
+{
+  modulatorModule->removeChangeListener(this);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -617,7 +625,6 @@ void BreakpointModulatorEditor::setModulatorToEdit(rosic::BreakpointModulator* n
   //breakpointEditor->updateMaximumRange(true);
   //breakpointEditor->setMaximumRange(breakpointEditor->getMaximumMeaningfulRange(10.0, 5.0, 5.0, 10.0));
   breakpointZoomer->zoomToAllXY();
-
   updateWidgetsAccordingToState(true);
 }
 
@@ -682,7 +689,12 @@ void BreakpointModulatorEditor::changeListenerCallback(ChangeBroadcaster *object
   if( modulatorToEdit == NULL )
     return;
 
-  if( objectThatHasChanged == stateWidgetSet )
+  if(objectThatHasChanged == modulatorModule)
+  {
+    updateWidgetsAccordingToState();
+    return;
+  }
+  else if( objectThatHasChanged == stateWidgetSet )
   {
     AudioModuleEditor::changeListenerCallback(objectThatHasChanged);
     sendChangeMessage();

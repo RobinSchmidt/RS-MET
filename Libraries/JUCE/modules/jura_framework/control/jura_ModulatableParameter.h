@@ -261,12 +261,12 @@ public:
   /** Must be overriden by subclasses to do whatever they need to do after our modulatedValue has 
   been computed (for example, ModulatableParameter invokes the setter-callback which in turn 
   updates the corresponding value in the core dsp algorithm). */
-  //virtual void doModulationUpdate() = 0;
   virtual void doModulationUpdate()
   {
-    // we need an empty basclass implementation because in the destructor of a plugin, 
-    // doModulationUpdate would otherwise get called with a null-reference (or something),
-    // in ModulationManager::removeConnection when the modulateble parameter deletes itself
+    // we need an empty baseclass implementation because in the destructor of a plugin, 
+    // doModulationUpdate would otherwise (in case of a purely virtual function) get called with a 
+    // null-reference (or something), in ModulationManager::removeConnection when the modulateble 
+    // parameter deletes itself
   }
 
 
@@ -280,8 +280,12 @@ public:
 
     modulatedValue   = unmodulatedValue; 
     // Elan's smoother needs this - it makes sure that the modulated value is always the same as
-    // the unmodulated value in case when no modulatios are applied
-
+    // the unmodulated value, even in cases in case where no modulations are applied (in which case 
+    // initModulatedValue is not called (per sample)). It works only, if the smoother calls 
+    // setUnmodulatedValue (per sample) before applyModulations is called for the same sample, 
+    // otherwise the modulations don't work anymore, because the modulatedValue is reset after 
+    // modulations have been applied. It's a bit hacky but probably needs to be taken into account
+    // when designing a parameter smoother for jura.
   }
 
   /** Adds a ModulationSource to this ModulationTarget. The amount of modulation is initially 0. */
@@ -703,7 +707,7 @@ public:
 };
 
 /** A subclass of ModulationTarget that allows to be monitored by observer objects, for example,
-a slider on a gui could keept track of whether its underlying parameter has modulations applied to 
+a slider on a gui could keep track of whether its underlying parameter has modulations applied to 
 it and if so, change its appearance. */
 
 class JUCE_API ObservableModulationTarget : public ModulationTarget
@@ -804,7 +808,7 @@ protected:
 };
 
 /** This class is like ModulatebleParameter except that it uses the other std::function based
-callback, so if you use this callbakc mechanism, use thsi class for your parameters */ 
+callback, so if you use this callback mechanism, use this class for your parameters */ 
 class JUCE_API ModulatableParameter2 : public ModulatableParameter
 {
   using ModulatableParameter::ModulatableParameter; // import baseclass constructors
@@ -813,8 +817,5 @@ class JUCE_API ModulatableParameter2 : public ModulatableParameter
     valueChangeCallbackFunction(getModulatedValue());
   }
 };
-
-
-
 
 #endif
