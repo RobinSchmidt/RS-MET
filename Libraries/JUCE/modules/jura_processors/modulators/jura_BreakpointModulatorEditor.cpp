@@ -606,6 +606,8 @@ BreakpointModulatorEditor::BreakpointModulatorEditor(CriticalSection *newPlugInL
 
   setModulatorToEdit(newBreakpointModulatorAudioModule->wrappedBreakpointModulator);
      // this will also set up the widgets according to the state of the modulator
+
+  setSize(500, 260);
 }
 
 BreakpointModulatorEditor::~BreakpointModulatorEditor()
