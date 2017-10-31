@@ -64,6 +64,11 @@ public:
     wrappedBreakpointModulator->noteOn(true, noteNumber, velocity);
   }
 
+  void noteOn(bool startFromCurrentLevel, int noteNumber, int velocity)
+  {
+    wrappedBreakpointModulator->noteOn(startFromCurrentLevel, noteNumber, velocity);
+  }
+
   virtual void noteOff(int noteNumber) override
   {
     wrappedBreakpointModulator->noteOff(true);
