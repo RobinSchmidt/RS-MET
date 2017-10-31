@@ -539,18 +539,14 @@ void ModulatableAudioModule::addObservedParameter(Parameter* p)
 void AudioModuleWithMidiIn::handleMidiMessage(MidiMessage message)
 {
   ScopedLock scopedLock(*lock);
-  if( message.isController() )
-  {
-    int controllerNumber = message.getControllerNumber();
-    int controllerValue  = message.getControllerValue();
-    setMidiController(controllerNumber, (float) controllerValue);
-  }
-  else if( message.isNoteOn() )
+  if( message.isNoteOn() )
     noteOn(message.getNoteNumber(), message.getVelocity());
   else if( message.isNoteOff() )
     noteOff(message.getNoteNumber());
   else if( message.isAllNotesOff() )
     allNotesOff();
+  else if( message.isController() )
+    setMidiController(message.getControllerNumber(), (float) message.getControllerValue());
   else if( message.isPitchWheel() )
     setPitchBend(message.getPitchWheelValue());
   else if (message.isAftertouch())

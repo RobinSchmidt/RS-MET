@@ -117,7 +117,8 @@ MultiAnalyzer
  -gui messed up
  -memory leak on shutdown
 
-
+-PhaseScope:
+ -in 1D mode, the x-scaling should have no effect
 
 Quadriga:
  -gui messed up
