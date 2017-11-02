@@ -15,7 +15,6 @@ void Ladder::createStaticParameters()
   ScopedLock scopedLock(*lock);
 
   std::vector<double> defaultValues;
-  //typedef MetaControlledParameter Param;
   typedef ModulatableParameter Param;
   Param* p;
 

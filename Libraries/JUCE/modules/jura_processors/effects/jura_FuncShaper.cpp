@@ -10,7 +10,7 @@ FuncShaperAudioModule::FuncShaperAudioModule(CriticalSection *newPlugInLock,
 
   moduleName  = juce::String("FuncShaper");
   setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/FuncShaper") );
-  initializeAutomatableParameters();
+  createParameters();
 
   // use initial value for "a" that is different from the default value:
   setFormulaParameterMaxValue("aMax", 4.0);
@@ -26,7 +26,7 @@ FuncShaperAudioModule::FuncShaperAudioModule(CriticalSection *newPlugInLock)
   // move to init function, shaer with other cosntructor:
   moduleName  = juce::String("FuncShaper");
   setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/FuncShaper") );
-  initializeAutomatableParameters();
+  createParameters();
 
   // use initial value for "a" that is different from the default value:
   setFormulaParameterMaxValue("aMax", 4.0);
@@ -89,7 +89,7 @@ void FuncShaperAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
   switch( index )
   {
   case   0: wrappedFuncShaper->useInputFilter(value >= 0.5);  break;
-  case   1: wrappedFuncShaper->setInHighpassCutoff(value);    break;
+  //case   1: wrappedFuncShaper->setInHighpassCutoff(value);    break;
   case   2: wrappedFuncShaper->setInLowpassCutoff(value);     break;
   case   3: wrappedFuncShaper->setDrive(value);               break;
   case   4: wrappedFuncShaper->setDcOffset(value);            break;
@@ -149,12 +149,25 @@ void FuncShaperAudioModule::setFormulaParameterRange(const juce::String& augment
 //-------------------------------------------------------------------------------------------------
 // internal functions:
 
-void FuncShaperAudioModule::initializeAutomatableParameters()
+void FuncShaperAudioModule::createParameters()
 {
-  // create automatable parameters:
+  typedef ModulatableParameter Param;
+  Param* p;
 
+  typedef rosic::FuncShaper FS;
+  FS* fs = wrappedFuncShaper;
+
+  p = new Param("InputHighpass", 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL);
+  p->setDefaultModParameters(20, 20000, -1, +1, ModulationConnection::EXPONENTIAL);
+  p->setValueChangeCallback<FS>(fs, &FS::setInHighpassCutoff);
+  addObservedParameter(p);
+
+
+
+
+  // create automatable parameters:
   addObservedParameter(new AutomatableParameter(lock, "InputFilterUsed",   0.0,     1.0, 1.0,     0.0, Parameter::BOOLEAN    ));
-  addObservedParameter(new AutomatableParameter(lock, "InputHighpass",    20.0, 20000.0, 0.0,    20.0, Parameter::EXPONENTIAL));
+  //addObservedParameter(new AutomatableParameter(lock, "InputHighpass",    20.0, 20000.0, 0.0,    20.0, Parameter::EXPONENTIAL));
   addObservedParameter(new AutomatableParameter(lock, "InputLowpass",     20.0, 20000.0, 0.0, 20000.0, Parameter::EXPONENTIAL));
   addObservedParameter(new AutomatableParameter(lock, "Drive",           -48.0,    48.0, 0.0,     0.0, Parameter::LINEAR)     );
   addObservedParameter(new AutomatableParameter(lock, "DC",               -1.0,     1.0, 0.0,     0.0, Parameter::LINEAR)     );
@@ -166,17 +179,14 @@ void FuncShaperAudioModule::initializeAutomatableParameters()
 
   // create non-automatable parameters:
   addObservedParameter(new Parameter(lock, "Oversampling", 1.0, 16.0, 1.0, 4.0, Parameter::LINEAR));
-
   addObservedParameter(new Parameter(lock, "a",     0.0, 1.0, 0.01, 0.5, Parameter::LINEAR));
   addObservedParameter(new Parameter(lock, "b",     0.0, 1.0, 0.01, 0.5, Parameter::LINEAR));
   addObservedParameter(new Parameter(lock, "c",     0.0, 1.0, 0.01, 0.5, Parameter::LINEAR));
   addObservedParameter(new Parameter(lock, "d",     0.0, 1.0, 0.01, 0.5, Parameter::LINEAR));
-
   addObservedParameter(new Parameter(lock, "aMin", -INF, INF, 0.0, 0.0, Parameter::LINEAR));
   addObservedParameter(new Parameter(lock, "bMin", -INF, INF, 0.0, 0.0, Parameter::LINEAR));
   addObservedParameter(new Parameter(lock, "cMin", -INF, INF, 0.0, 0.0, Parameter::LINEAR));
   addObservedParameter(new Parameter(lock, "dMin", -INF, INF, 0.0, 0.0, Parameter::LINEAR));
-
   addObservedParameter(new Parameter(lock, "aMax", -INF, INF, 0.0, 1.0, Parameter::LINEAR));
   addObservedParameter(new Parameter(lock, "bMax", -INF, INF, 0.0, 1.0, Parameter::LINEAR));
   addObservedParameter(new Parameter(lock, "cMax", -INF, INF, 0.0, 1.0, Parameter::LINEAR));

@@ -72,7 +72,7 @@ public:
 
 protected:
 
-  void initializeAutomatableParameters();
+  void createParameters();
 
   void setFormulaParameterMinValue(const juce::String& augmentedName, double newMinValue);
   void setFormulaParameterMaxValue(const juce::String& augmentedName, double newMaxValue);
