@@ -101,11 +101,11 @@ void FuncShaperAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
   //case   8: wrappedFuncShaper->setOutVol(value);              break;
   //case   9: wrappedFuncShaper->setDryWet(value);              break;
 
-  case  10: wrappedFuncShaper->setOversampling((int)value);   break;
-  case  11: wrappedFuncShaper->setA(value, true);             break;
-  case  12: wrappedFuncShaper->setB(value, true);             break;
-  case  13: wrappedFuncShaper->setC(value, true);             break;
-  case  14: wrappedFuncShaper->setD(value, true);             break;
+  //case  10: wrappedFuncShaper->setOversampling((int)value);   break;
+  //case  11: wrappedFuncShaper->setA(value, true);             break;
+  //case  12: wrappedFuncShaper->setB(value, true);             break;
+  //case  13: wrappedFuncShaper->setC(value, true);             break;
+  //case  14: wrappedFuncShaper->setD(value, true);             break;
   default:
     {
       if( index <= 18 )        // handle changes of min-values
@@ -221,12 +221,39 @@ void FuncShaperAudioModule::createParameters()
   //addObservedParameter(new AutomatableParameter(lock, "OutLevel",        -24.0,    24.0, 0.0,     0.0, Parameter::LINEAR)     );
   //addObservedParameter(new AutomatableParameter(lock, "DryWet",            0.0,   100.0, 0.0,   100.0, Parameter::LINEAR)     );
 
+
   // create non-automatable parameters:
-  addObservedParameter(new Parameter(lock, "Oversampling", 1.0, 16.0, 1.0, 4.0, Parameter::LINEAR));
-  addObservedParameter(new Parameter(lock, "a",     0.0, 1.0, 0.01, 0.5, Parameter::LINEAR));
-  addObservedParameter(new Parameter(lock, "b",     0.0, 1.0, 0.01, 0.5, Parameter::LINEAR));
-  addObservedParameter(new Parameter(lock, "c",     0.0, 1.0, 0.01, 0.5, Parameter::LINEAR));
-  addObservedParameter(new Parameter(lock, "d",     0.0, 1.0, 0.01, 0.5, Parameter::LINEAR));
+
+  typedef jura::FuncShaperAudioModule FSM;
+
+  Parameter* q;
+
+  q = new Parameter("Oversampling", 1.0, 16.0, 4.0, Parameter::LINEAR, 1.0);
+  q->setValueChangeCallback<FS>(fs, &FS::setOversampling);
+  addObservedParameter(q);
+
+  q = new Parameter("a", 0.0, 1.0, 0.5, Parameter::LINEAR, 0.01);
+  q->setValueChangeCallback<FSM>(this, &FSM::setA);
+  addObservedParameter(q);
+
+  q = new Parameter("b", 0.0, 1.0, 0.5, Parameter::LINEAR, 0.01);
+  q->setValueChangeCallback<FSM>(this, &FSM::setB);
+  addObservedParameter(q);
+
+  q = new Parameter("c", 0.0, 1.0, 0.5, Parameter::LINEAR, 0.01);
+  q->setValueChangeCallback<FSM>(this, &FSM::setC);
+  addObservedParameter(q);
+
+  q = new Parameter("d", 0.0, 1.0, 0.5, Parameter::LINEAR, 0.01);
+  q->setValueChangeCallback<FSM>(this, &FSM::setD);
+  addObservedParameter(q);
+
+  // old:
+  //addObservedParameter(new Parameter(lock, "Oversampling", 1.0, 16.0, 1.0, 4.0, Parameter::LINEAR));
+  //addObservedParameter(new Parameter(lock, "a",     0.0, 1.0, 0.01, 0.5, Parameter::LINEAR));
+  //addObservedParameter(new Parameter(lock, "b",     0.0, 1.0, 0.01, 0.5, Parameter::LINEAR));
+  //addObservedParameter(new Parameter(lock, "c",     0.0, 1.0, 0.01, 0.5, Parameter::LINEAR));
+  //addObservedParameter(new Parameter(lock, "d",     0.0, 1.0, 0.01, 0.5, Parameter::LINEAR));
   addObservedParameter(new Parameter(lock, "aMin", -INF, INF, 0.0, 0.0, Parameter::LINEAR));
   addObservedParameter(new Parameter(lock, "bMin", -INF, INF, 0.0, 0.0, Parameter::LINEAR));
   addObservedParameter(new Parameter(lock, "cMin", -INF, INF, 0.0, 0.0, Parameter::LINEAR));

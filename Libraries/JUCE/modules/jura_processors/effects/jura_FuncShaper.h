@@ -39,6 +39,13 @@ public:
     wrappedFuncShaper->setSampleRate(newSampleRate);
   }
 
+  // callback targets:
+  void setA(double newA) { wrappedFuncShaper->setA(newA, true); }
+  void setB(double newB) { wrappedFuncShaper->setB(newB, true); }
+  void setC(double newC) { wrappedFuncShaper->setC(newC, true); }
+  void setD(double newD) { wrappedFuncShaper->setD(newD, true); }
+
+
   //---------------------------------------------------------------------------------------------
   // audio processing:
 
