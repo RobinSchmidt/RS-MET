@@ -106,15 +106,15 @@ void FuncShaperAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
   //case  12: wrappedFuncShaper->setB(value, true);             break;
   //case  13: wrappedFuncShaper->setC(value, true);             break;
   //case  14: wrappedFuncShaper->setD(value, true);             break;
-  default:
-    {
-      if( index <= 18 )        // handle changes of min-values
-        setFormulaParameterMinValue(parameterThatHasChanged->getName(), value);
-      else if( index <= 22 )   // handle changes of max-values
-        setFormulaParameterMaxValue(parameterThatHasChanged->getName(), value);
-      else
-        DEBUG_BREAK; // unknown parameter
-    }
+  //default:
+  //  {
+  //    if( index <= 18 )        // handle changes of min-values
+  //      setFormulaParameterMinValue(parameterThatHasChanged->getName(), value);
+  //    else if( index <= 22 )   // handle changes of max-values
+  //      setFormulaParameterMaxValue(parameterThatHasChanged->getName(), value);
+  //    else
+  //      DEBUG_BREAK; // unknown parameter
+  //  }
   } // end of switch( parameterIndex )
 
 
@@ -248,25 +248,59 @@ void FuncShaperAudioModule::createParameters()
   q->setValueChangeCallback<FSM>(this, &FSM::setD);
   addObservedParameter(q);
 
+
+  q = new Parameter("aMin", -INF, +INF, 0.0, Parameter::LINEAR);
+  q->setValueChangeCallback<FSM>(this, &FSM::setMinA);
+  addObservedParameter(q);
+
+  q = new Parameter("bMin", -INF, +INF, 0.0, Parameter::LINEAR);
+  q->setValueChangeCallback<FSM>(this, &FSM::setMinB);
+  addObservedParameter(q);
+
+  q = new Parameter("cMin", -INF, +INF, 0.0, Parameter::LINEAR);
+  q->setValueChangeCallback<FSM>(this, &FSM::setMinC);
+  addObservedParameter(q);
+
+  q = new Parameter("dMin", -INF, +INF, 0.0, Parameter::LINEAR);
+  q->setValueChangeCallback<FSM>(this, &FSM::setMinD);
+  addObservedParameter(q);
+
+  q = new Parameter("aMax", -INF, +INF, 0.0, Parameter::LINEAR);
+  q->setValueChangeCallback<FSM>(this, &FSM::setMaxA);
+  addObservedParameter(q);
+
+  q = new Parameter("bMax", -INF, +INF, 0.0, Parameter::LINEAR);
+  q->setValueChangeCallback<FSM>(this, &FSM::setMaxB);
+  addObservedParameter(q);
+
+  q = new Parameter("cMax", -INF, +INF, 0.0, Parameter::LINEAR);
+  q->setValueChangeCallback<FSM>(this, &FSM::setMaxC);
+  addObservedParameter(q);
+
+  q = new Parameter("dMax", -INF, +INF, 0.0, Parameter::LINEAR);
+  q->setValueChangeCallback<FSM>(this, &FSM::setMaxD);
+  addObservedParameter(q);
+
+
   // old:
   //addObservedParameter(new Parameter(lock, "Oversampling", 1.0, 16.0, 1.0, 4.0, Parameter::LINEAR));
   //addObservedParameter(new Parameter(lock, "a",     0.0, 1.0, 0.01, 0.5, Parameter::LINEAR));
   //addObservedParameter(new Parameter(lock, "b",     0.0, 1.0, 0.01, 0.5, Parameter::LINEAR));
   //addObservedParameter(new Parameter(lock, "c",     0.0, 1.0, 0.01, 0.5, Parameter::LINEAR));
   //addObservedParameter(new Parameter(lock, "d",     0.0, 1.0, 0.01, 0.5, Parameter::LINEAR));
-  addObservedParameter(new Parameter(lock, "aMin", -INF, INF, 0.0, 0.0, Parameter::LINEAR));
-  addObservedParameter(new Parameter(lock, "bMin", -INF, INF, 0.0, 0.0, Parameter::LINEAR));
-  addObservedParameter(new Parameter(lock, "cMin", -INF, INF, 0.0, 0.0, Parameter::LINEAR));
-  addObservedParameter(new Parameter(lock, "dMin", -INF, INF, 0.0, 0.0, Parameter::LINEAR));
-  addObservedParameter(new Parameter(lock, "aMax", -INF, INF, 0.0, 1.0, Parameter::LINEAR));
-  addObservedParameter(new Parameter(lock, "bMax", -INF, INF, 0.0, 1.0, Parameter::LINEAR));
-  addObservedParameter(new Parameter(lock, "cMax", -INF, INF, 0.0, 1.0, Parameter::LINEAR));
-  addObservedParameter(new Parameter(lock, "dMax", -INF, INF, 0.0, 1.0, Parameter::LINEAR));
+  //addObservedParameter(new Parameter(lock, "aMin", -INF, INF, 0.0, 0.0, Parameter::LINEAR));
+  //addObservedParameter(new Parameter(lock, "bMin", -INF, INF, 0.0, 0.0, Parameter::LINEAR));
+  //addObservedParameter(new Parameter(lock, "cMin", -INF, INF, 0.0, 0.0, Parameter::LINEAR));
+  //addObservedParameter(new Parameter(lock, "dMin", -INF, INF, 0.0, 0.0, Parameter::LINEAR));
+  //addObservedParameter(new Parameter(lock, "aMax", -INF, INF, 0.0, 1.0, Parameter::LINEAR));
+  //addObservedParameter(new Parameter(lock, "bMax", -INF, INF, 0.0, 1.0, Parameter::LINEAR));
+  //addObservedParameter(new Parameter(lock, "cMax", -INF, INF, 0.0, 1.0, Parameter::LINEAR));
+  //addObservedParameter(new Parameter(lock, "dMax", -INF, INF, 0.0, 1.0, Parameter::LINEAR));
 
-  // make a call to parameterChanged for each parameter in order to set up the DSP-core to reflect
-  // the values the automatable parameters:
-  for(int i=0; i < (int) parameters.size(); i++ )
-    parameterChanged(parameters[i]);
+  //// make a call to parameterChanged for each parameter in order to set up the DSP-core to reflect
+  //// the values the automatable parameters:
+  //for(int i=0; i < (int) parameters.size(); i++ )
+  //  parameterChanged(parameters[i]);
 }
 
 //=================================================================================================
