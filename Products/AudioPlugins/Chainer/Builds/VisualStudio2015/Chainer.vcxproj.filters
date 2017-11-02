@@ -2362,6 +2362,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_ParameterManager.cpp">
       <Filter>Juce Modules\jura_framework\control</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_SmoothableParameter.cpp">
+      <Filter>Juce Modules\jura_framework\control</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_StateManager.cpp">
       <Filter>Juce Modules\jura_framework\control</Filter>
     </ClCompile>
@@ -6145,6 +6148,9 @@
       <Filter>Juce Modules\jura_framework\control</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_ScopedPointerLock.h">
+      <Filter>Juce Modules\jura_framework\control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_SmoothableParameter.h">
       <Filter>Juce Modules\jura_framework\control</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_StateManager.h">
