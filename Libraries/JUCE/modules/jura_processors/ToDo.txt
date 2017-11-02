@@ -68,7 +68,10 @@ Bugs:
  -grid/quantization buttons inconsistent with whether the grid is shown or not
 
 FuncShaper:
- -loading a preset on mac does not update the formula
+ -loading a preset on mac does not update the formula (also on win)
+ -handling of a,b,c,d min/max values ahs been commented temporarliy - make it work again:
+  setFormulaParameterMinValue, setFormulaParameterMaxValue, setFormulaParameterRange
+  in FuncShaperAudioModule
 
 Framework:
  -CoordinateSystem zoomer should zoom out maximally when clicking the middle button / mouse-wheel

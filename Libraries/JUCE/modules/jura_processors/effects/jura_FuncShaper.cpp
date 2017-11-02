@@ -124,29 +124,35 @@ void FuncShaperAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
 
 void FuncShaperAudioModule::setFormulaParameterMinValue(const juce::String& augmentedName, double newMinValue)
 {
+  /*
   getParameterByName(augmentedName)->setValue(newMinValue, false, false);
   Parameter *p = getParameterByName(augmentedName.substring(0, 1));
   p->setMinValue(newMinValue);
   p->setDefaultValue(0.5 * (p->getMinValue() + p->getMaxValue()) );
     // maybe use a member useMidValueAsDefaultValue in Parameter -> may take mapping into account
     // or maybe use a useProportionAsDefaultValue(double proportion) and call with 0.5
+    */
 }
 
 void FuncShaperAudioModule::setFormulaParameterMaxValue(const juce::String& augmentedName, double newMaxValue)
 {
+  /*
   getParameterByName(augmentedName)->setValue(newMaxValue, false, false);
   Parameter *p = getParameterByName(augmentedName.substring(0, 1));
   p->setMaxValue(newMaxValue);
   p->setDefaultValue(0.5 * (p->getMinValue() + p->getMaxValue()) );
+  */
 }
 
 void FuncShaperAudioModule::setFormulaParameterRange(const juce::String& augmentedName, double newMinValue, double newMaxValue)
 {
+  /*
   getParameterByName(augmentedName.substring(0, 1) + "Min")->setValue(newMinValue, false, false);
   getParameterByName(augmentedName.substring(0, 1) + "Max")->setValue(newMaxValue, false, false);
   Parameter *p = getParameterByName(augmentedName.substring(0, 1));
   p->setRange(newMinValue, newMaxValue);
   p->setDefaultValue(0.5 * (p->getMinValue() + p->getMaxValue()) );
+  */
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -168,12 +174,12 @@ void FuncShaperAudioModule::createParameters()
   p->setValueChangeCallback<FS>(fs, &FS::useInputFilter);
   addObservedParameter(p);
 
-  p = new Param("InputHighpass", 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL);
+  p = new Param("InputHighpass", 20.0, 20000.0, 20.0, Parameter::EXPONENTIAL);
   p->setDefaultModParameters(20, 20000, -1, +1, ModulationConnection::EXPONENTIAL);
   p->setValueChangeCallback<FS>(fs, &FS::setInHighpassCutoff);
   addObservedParameter(p);
 
-  p = new Param("InputLowpass", 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL);
+  p = new Param("InputLowpass", 20.0, 20000.0, 20000.0, Parameter::EXPONENTIAL);
   p->setDefaultModParameters(20, 20000, -1, +1, ModulationConnection::EXPONENTIAL);
   p->setValueChangeCallback<FS>(fs, &FS::setInLowpassCutoff);
   addObservedParameter(p);
@@ -191,12 +197,12 @@ void FuncShaperAudioModule::createParameters()
   p->setValueChangeCallback<FS>(fs, &FS::useOutputFilter);
   addObservedParameter(p);
 
-  p = new Param("OutputHighpass", 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL);
+  p = new Param("OutputHighpass", 20.0, 20000.0, 20.0, Parameter::EXPONENTIAL);
   p->setDefaultModParameters(20, 20000, -1, +1, ModulationConnection::EXPONENTIAL);
   p->setValueChangeCallback<FS>(fs, &FS::setOutHighpassCutoff);
   addObservedParameter(p);
 
-  p = new Param("OutputLowpass", 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL);
+  p = new Param("OutputLowpass", 20.0, 20000.0, 20000.0, Parameter::EXPONENTIAL);
   p->setDefaultModParameters(20, 20000, -1, +1, ModulationConnection::EXPONENTIAL);
   p->setValueChangeCallback<FS>(fs, &FS::setOutLowpassCutoff);
   addObservedParameter(p);
@@ -205,7 +211,7 @@ void FuncShaperAudioModule::createParameters()
   p->setValueChangeCallback<FS>(fs, &FS::setOutVol);
   addObservedParameter(p);
 
-  p = new Param("DryWet", 0.0, 100.0, 0.0, Parameter::LINEAR);
+  p = new Param("DryWet", 0.0, 100.0, 100.0, Parameter::LINEAR);
   p->setValueChangeCallback<FS>(fs, &FS::setDryWet);
   addObservedParameter(p);
 
@@ -250,36 +256,36 @@ void FuncShaperAudioModule::createParameters()
 
 
   q = new Parameter("aMin", -INF, +INF, 0.0, Parameter::LINEAR);
-  q->setValueChangeCallback<FSM>(this, &FSM::setMinA);
   addObservedParameter(q);
+  q->setValueChangeCallback<FSM>(this, &FSM::setMinA);
 
   q = new Parameter("bMin", -INF, +INF, 0.0, Parameter::LINEAR);
-  q->setValueChangeCallback<FSM>(this, &FSM::setMinB);
   addObservedParameter(q);
+  q->setValueChangeCallback<FSM>(this, &FSM::setMinB);
 
   q = new Parameter("cMin", -INF, +INF, 0.0, Parameter::LINEAR);
-  q->setValueChangeCallback<FSM>(this, &FSM::setMinC);
   addObservedParameter(q);
+  q->setValueChangeCallback<FSM>(this, &FSM::setMinC);
 
   q = new Parameter("dMin", -INF, +INF, 0.0, Parameter::LINEAR);
-  q->setValueChangeCallback<FSM>(this, &FSM::setMinD);
   addObservedParameter(q);
+  q->setValueChangeCallback<FSM>(this, &FSM::setMinD);
 
   q = new Parameter("aMax", -INF, +INF, 0.0, Parameter::LINEAR);
-  q->setValueChangeCallback<FSM>(this, &FSM::setMaxA);
   addObservedParameter(q);
+  q->setValueChangeCallback<FSM>(this, &FSM::setMaxA);
 
   q = new Parameter("bMax", -INF, +INF, 0.0, Parameter::LINEAR);
-  q->setValueChangeCallback<FSM>(this, &FSM::setMaxB);
   addObservedParameter(q);
+  q->setValueChangeCallback<FSM>(this, &FSM::setMaxB);
 
   q = new Parameter("cMax", -INF, +INF, 0.0, Parameter::LINEAR);
-  q->setValueChangeCallback<FSM>(this, &FSM::setMaxC);
   addObservedParameter(q);
+  q->setValueChangeCallback<FSM>(this, &FSM::setMaxC);
 
   q = new Parameter("dMax", -INF, +INF, 0.0, Parameter::LINEAR);
-  q->setValueChangeCallback<FSM>(this, &FSM::setMaxD);
   addObservedParameter(q);
+  q->setValueChangeCallback<FSM>(this, &FSM::setMaxD);
 
 
   // old:
