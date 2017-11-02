@@ -88,10 +88,10 @@ void FuncShaperAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
   double value = parameterThatHasChanged->getValue();
   switch( index )
   {
-  case   0: wrappedFuncShaper->useInputFilter(value >= 0.5);  break;
+  //case   0: wrappedFuncShaper->useInputFilter(value >= 0.5);  break;
   //case   1: wrappedFuncShaper->setInHighpassCutoff(value);    break;
-  case   2: wrappedFuncShaper->setInLowpassCutoff(value);     break;
-  case   3: wrappedFuncShaper->setDrive(value);               break;
+  //case   2: wrappedFuncShaper->setInLowpassCutoff(value);     break;
+  //case   3: wrappedFuncShaper->setDrive(value);               break;
   case   4: wrappedFuncShaper->setDcOffset(value);            break;
   case   5: wrappedFuncShaper->useOutputFilter(value >= 0.5); break;
   case   6: wrappedFuncShaper->setOutHighpassCutoff(value);   break;
@@ -157,19 +157,31 @@ void FuncShaperAudioModule::createParameters()
   typedef rosic::FuncShaper FS;
   FS* fs = wrappedFuncShaper;
 
+  p = new Param("InputFilterUsed", 0.0, 1.0, 0.0, Parameter::BOOLEAN);
+  //p->setDefaultModParameters(0, 1, 0, 1, ModulationConnection::ABSOLUTE); // does not compile - why?
+  p->setValueChangeCallback<FS>(fs, &FS::useInputFilter);
+  addObservedParameter(p);
+
   p = new Param("InputHighpass", 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL);
   p->setDefaultModParameters(20, 20000, -1, +1, ModulationConnection::EXPONENTIAL);
   p->setValueChangeCallback<FS>(fs, &FS::setInHighpassCutoff);
   addObservedParameter(p);
 
+  p = new Param("InputLowpass", 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL);
+  p->setDefaultModParameters(20, 20000, -1, +1, ModulationConnection::EXPONENTIAL);
+  p->setValueChangeCallback<FS>(fs, &FS::setInLowpassCutoff);
+  addObservedParameter(p);
 
+  p = new Param("Drive", -48.0, 48.0, 0.0, Parameter::LINEAR);
+  p->setValueChangeCallback<FS>(fs, &FS::setDrive);
+  addObservedParameter(p);
 
 
   // create automatable parameters:
-  addObservedParameter(new AutomatableParameter(lock, "InputFilterUsed",   0.0,     1.0, 1.0,     0.0, Parameter::BOOLEAN    ));
+  //addObservedParameter(new AutomatableParameter(lock, "InputFilterUsed",   0.0,     1.0, 1.0,     0.0, Parameter::BOOLEAN    ));
   //addObservedParameter(new AutomatableParameter(lock, "InputHighpass",    20.0, 20000.0, 0.0,    20.0, Parameter::EXPONENTIAL));
-  addObservedParameter(new AutomatableParameter(lock, "InputLowpass",     20.0, 20000.0, 0.0, 20000.0, Parameter::EXPONENTIAL));
-  addObservedParameter(new AutomatableParameter(lock, "Drive",           -48.0,    48.0, 0.0,     0.0, Parameter::LINEAR)     );
+  //addObservedParameter(new AutomatableParameter(lock, "InputLowpass",     20.0, 20000.0, 0.0, 20000.0, Parameter::EXPONENTIAL));
+  //addObservedParameter(new AutomatableParameter(lock, "Drive",           -48.0,    48.0, 0.0,     0.0, Parameter::LINEAR)     );
   addObservedParameter(new AutomatableParameter(lock, "DC",               -1.0,     1.0, 0.0,     0.0, Parameter::LINEAR)     );
   addObservedParameter(new AutomatableParameter(lock, "OutputFilterUsed",  0.0,     1.0, 1.0,     0.0, Parameter::BOOLEAN    ));
   addObservedParameter(new AutomatableParameter(lock, "OutputHighpass",   20.0, 20000.0, 0.0,    20.0, Parameter::EXPONENTIAL));
