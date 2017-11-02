@@ -81,6 +81,8 @@ void FuncShaperAudioModule::setStateFromXml(const XmlElement& xmlState,
 
 void FuncShaperAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
 {
+  // function will be obsolete after completing updating the parameter handling
+
   if( wrappedFuncShaper == NULL )
     return;
 
@@ -92,12 +94,13 @@ void FuncShaperAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
   //case   1: wrappedFuncShaper->setInHighpassCutoff(value);    break;
   //case   2: wrappedFuncShaper->setInLowpassCutoff(value);     break;
   //case   3: wrappedFuncShaper->setDrive(value);               break;
-  case   4: wrappedFuncShaper->setDcOffset(value);            break;
-  case   5: wrappedFuncShaper->useOutputFilter(value >= 0.5); break;
-  case   6: wrappedFuncShaper->setOutHighpassCutoff(value);   break;
-  case   7: wrappedFuncShaper->setOutLowpassCutoff(value);    break;
-  case   8: wrappedFuncShaper->setOutVol(value);              break;
-  case   9: wrappedFuncShaper->setDryWet(value);              break;
+  //case   4: wrappedFuncShaper->setDcOffset(value);            break;
+  //case   5: wrappedFuncShaper->useOutputFilter(value >= 0.5); break;
+  //case   6: wrappedFuncShaper->setOutHighpassCutoff(value);   break;
+  //case   7: wrappedFuncShaper->setOutLowpassCutoff(value);    break;
+  //case   8: wrappedFuncShaper->setOutVol(value);              break;
+  //case   9: wrappedFuncShaper->setDryWet(value);              break;
+
   case  10: wrappedFuncShaper->setOversampling((int)value);   break;
   case  11: wrappedFuncShaper->setA(value, true);             break;
   case  12: wrappedFuncShaper->setB(value, true);             break;
@@ -157,6 +160,9 @@ void FuncShaperAudioModule::createParameters()
   typedef rosic::FuncShaper FS;
   FS* fs = wrappedFuncShaper;
 
+
+  // create automatable parameters:
+
   p = new Param("InputFilterUsed", 0.0, 1.0, 0.0, Parameter::BOOLEAN);
   //p->setDefaultModParameters(0, 1, 0, 1, ModulationConnection::ABSOLUTE); // does not compile - why?
   p->setValueChangeCallback<FS>(fs, &FS::useInputFilter);
@@ -176,18 +182,44 @@ void FuncShaperAudioModule::createParameters()
   p->setValueChangeCallback<FS>(fs, &FS::setDrive);
   addObservedParameter(p);
 
+  p = new Param("DC", -1.0, 1.0, 0.0, Parameter::LINEAR);
+  p->setValueChangeCallback<FS>(fs, &FS::setDcOffset);
+  addObservedParameter(p);
 
-  // create automatable parameters:
+  p = new Param("OutputFilterUsed", 0.0, 1.0, 0.0, Parameter::BOOLEAN);
+  //p->setDefaultModParameters(0, 1, 0, 1, ModulationConnection::ABSOLUTE); // does not compile - why?
+  p->setValueChangeCallback<FS>(fs, &FS::useOutputFilter);
+  addObservedParameter(p);
+
+  p = new Param("OutputHighpass", 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL);
+  p->setDefaultModParameters(20, 20000, -1, +1, ModulationConnection::EXPONENTIAL);
+  p->setValueChangeCallback<FS>(fs, &FS::setOutHighpassCutoff);
+  addObservedParameter(p);
+
+  p = new Param("OutputLowpass", 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL);
+  p->setDefaultModParameters(20, 20000, -1, +1, ModulationConnection::EXPONENTIAL);
+  p->setValueChangeCallback<FS>(fs, &FS::setOutLowpassCutoff);
+  addObservedParameter(p);
+
+  p = new Param("OutLevel", -24.0, 24.0, 0.0, Parameter::LINEAR);
+  p->setValueChangeCallback<FS>(fs, &FS::setOutVol);
+  addObservedParameter(p);
+
+  p = new Param("DryWet", 0.0, 100.0, 0.0, Parameter::LINEAR);
+  p->setValueChangeCallback<FS>(fs, &FS::setDryWet);
+  addObservedParameter(p);
+
+  // old:
   //addObservedParameter(new AutomatableParameter(lock, "InputFilterUsed",   0.0,     1.0, 1.0,     0.0, Parameter::BOOLEAN    ));
   //addObservedParameter(new AutomatableParameter(lock, "InputHighpass",    20.0, 20000.0, 0.0,    20.0, Parameter::EXPONENTIAL));
   //addObservedParameter(new AutomatableParameter(lock, "InputLowpass",     20.0, 20000.0, 0.0, 20000.0, Parameter::EXPONENTIAL));
   //addObservedParameter(new AutomatableParameter(lock, "Drive",           -48.0,    48.0, 0.0,     0.0, Parameter::LINEAR)     );
-  addObservedParameter(new AutomatableParameter(lock, "DC",               -1.0,     1.0, 0.0,     0.0, Parameter::LINEAR)     );
-  addObservedParameter(new AutomatableParameter(lock, "OutputFilterUsed",  0.0,     1.0, 1.0,     0.0, Parameter::BOOLEAN    ));
-  addObservedParameter(new AutomatableParameter(lock, "OutputHighpass",   20.0, 20000.0, 0.0,    20.0, Parameter::EXPONENTIAL));
-  addObservedParameter(new AutomatableParameter(lock, "OutputLowpass",    20.0, 20000.0, 0.0, 20000.0, Parameter::EXPONENTIAL));
-  addObservedParameter(new AutomatableParameter(lock, "OutLevel",        -24.0,    24.0, 0.0,     0.0, Parameter::LINEAR)     );
-  addObservedParameter(new AutomatableParameter(lock, "DryWet",            0.0,   100.0, 0.0,   100.0, Parameter::LINEAR)     );
+  //addObservedParameter(new AutomatableParameter(lock, "DC",               -1.0,     1.0, 0.0,     0.0, Parameter::LINEAR)     );
+  //addObservedParameter(new AutomatableParameter(lock, "OutputFilterUsed",  0.0,     1.0, 1.0,     0.0, Parameter::BOOLEAN    ));
+  //addObservedParameter(new AutomatableParameter(lock, "OutputHighpass",   20.0, 20000.0, 0.0,    20.0, Parameter::EXPONENTIAL));
+  //addObservedParameter(new AutomatableParameter(lock, "OutputLowpass",    20.0, 20000.0, 0.0, 20000.0, Parameter::EXPONENTIAL));
+  //addObservedParameter(new AutomatableParameter(lock, "OutLevel",        -24.0,    24.0, 0.0,     0.0, Parameter::LINEAR)     );
+  //addObservedParameter(new AutomatableParameter(lock, "DryWet",            0.0,   100.0, 0.0,   100.0, Parameter::LINEAR)     );
 
   // create non-automatable parameters:
   addObservedParameter(new Parameter(lock, "Oversampling", 1.0, 16.0, 1.0, 4.0, Parameter::LINEAR));
