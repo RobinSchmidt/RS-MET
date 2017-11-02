@@ -8,24 +8,47 @@ class JUCE_API rsSmoother
 
 public:
 
-  void update()
-  {
-    //currentValue = smoothingFilter.getSample(targetValue);
+  // setSmoothingTime, setSmoothingOrder, setSmoothingShape
 
-    // \todo:
-    // -call a value-change callback, 
-    // -maybe return a bool that indicates if target has been reached which can be 
-    //  used by rsSmoothingManager to deactivate the smoother
+  void setTargetValue(double newTargetValue)
+  {
+    targetValue = newTargetValue;
+    tolerance   = jmax(targetValue * 1.e-6, 1.e-12); // ad hoc - maybe find some better formula
+  }
+
+  inline void callCallback()
+  {
+    if(valueChangeCallback != nullptr)
+      valueChangeCallback->call(currentValue);
+  }
+
+  bool updateValue()
+  {
+    currentValue = smoothingFilter.getSample(targetValue);
+    if(fabs(currentValue-targetValue) < tolerance) 
+    {
+      currentValue = targetValue;
+      callCallback();
+      return true;
+    }
+    else
+    {
+      callCallback();
+      return false;
+    }
   }
 
 protected:
 
-
+    
   double currentValue, targetValue;
+  double tolerance = 1.e-8;    // maybe make user-settable, determines when we consider the
+                               // current value close enough to the target value to be considered
+                               // equal, i.e. the target has been reached
 
-  //RAPT::rsSmoothingFilter<double, double> smoothingFilter;
-    // ahh..damn...we don't have access to rapt here...smoothing stuff needs to be moved to
-    // jura_processors
+  RAPT::rsSmoothingFilter<double, double> smoothingFilter;
+
+  GenericMemberFunctionCallback1<void, double> *valueChangeCallback = nullptr;
 
 };
 
@@ -36,6 +59,19 @@ class JUCE_API rsSmoothingManager
 {
 
 
+
+  void updateSmoothedValues()
+  {
+    for(int i = 0; i < size(usedSmoothers); i++)
+    {
+      bool targetReached = usedSmoothers[i]->updateValue();
+      if(targetReached)
+      {
+        // remove smoother from usedSmoothers and put it back to the smootherPool
+      }
+    }
+  }
+
 protected:
 
   std::vector<rsSmoother*> smootherPool;
@@ -45,7 +81,7 @@ protected:
 
 //=================================================================================================
 
-class JUCE_API rsSmoothableParameter : public Parameter
+class JUCE_API rsSmoothableParameter : public MetaControlledParameter
 {
 
 public:

@@ -664,7 +664,7 @@ public:
   as first argument will reset the callback to call nothing (2nd argument does not matter in this
   case, but you still must pass something suitable). */
   template<class CalleeClass>
-  void setValueChangeCallback(CalleeClass *calleeObject,
+  void setValueChangeCallback(CalleeClass *calleeObject, 
     void (CalleeClass::*memberToCall) (double))
   {
     ScopedPointerLock spl(mutex);
