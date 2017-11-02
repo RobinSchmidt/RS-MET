@@ -70,8 +70,9 @@ namespace jura
 #include "custom_widgets/jura_EffectSelectionPopup.h"
 #include "custom_widgets/jura_MeteringDisplay.h"
 
-#include "basics/jura_WaveTable.h"
 #include "basics/jura_RoutingMatrix.h"
+#include "basics/jura_SmoothableParameter.h"
+#include "basics/jura_WaveTable.h"
 
 #include "analyzers/jura_MidiMessageFilter.h"  // maybe move to basics
 #include "analyzers/jura_MidiMonitor.h"

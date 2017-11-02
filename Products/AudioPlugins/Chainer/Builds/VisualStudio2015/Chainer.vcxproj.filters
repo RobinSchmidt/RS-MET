@@ -2362,9 +2362,6 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_ParameterManager.cpp">
       <Filter>Juce Modules\jura_framework\control</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_SmoothableParameter.cpp">
-      <Filter>Juce Modules\jura_framework\control</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_StateManager.cpp">
       <Filter>Juce Modules\jura_framework\control</Filter>
     </ClCompile>
@@ -2579,6 +2576,9 @@
       <Filter>Juce Modules\jura_processors\analyzers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_RoutingMatrix.cpp">
+      <Filter>Juce Modules\jura_processors\basics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_SmoothableParameter.cpp">
       <Filter>Juce Modules\jura_processors\basics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_WaveTable.cpp">
@@ -6150,9 +6150,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_ScopedPointerLock.h">
       <Filter>Juce Modules\jura_framework\control</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_SmoothableParameter.h">
-      <Filter>Juce Modules\jura_framework\control</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_StateManager.h">
       <Filter>Juce Modules\jura_framework\control</Filter>
     </ClInclude>
@@ -6370,6 +6367,9 @@
       <Filter>Juce Modules\jura_processors\analyzers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_RoutingMatrix.h">
+      <Filter>Juce Modules\jura_processors\basics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_SmoothableParameter.h">
       <Filter>Juce Modules\jura_processors\basics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_WaveTable.h">
