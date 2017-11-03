@@ -239,6 +239,7 @@ protected:
     // we should better use the inherited childAudioModules array - but there are errors
 
   ModulationManager modManager;
+  //rsSmoothingManager smoothingManager;
 
   //std::vector<AudioModule*> modulators;
 
