@@ -199,6 +199,15 @@ inline void appendIfNotAlreadyThere(vector<T>& v, T newElement)
     append(v, newElement);
 }
 
+template<class T>
+inline T getAndRemoveLast(vector<T>& v)
+{
+  T result = v[v.size()-1];
+  v.pop_back();
+  return result;
+}
+
+
 
 
 

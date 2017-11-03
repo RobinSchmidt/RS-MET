@@ -82,16 +82,27 @@ protected:
 class JUCE_API rsSmoothingManager
 {
 
+public:
 
+  ~rsSmoothingManager();
+
+  void addSmootherFor(GenericMemberFunctionCallback1<void, double>* newCallback, 
+    double targetValue);
+
+  /** Removes a smoother from the usedSmoothers and puts it back into the smootherPool. */ 
+  void removeSmoother(int index);
 
   void updateSmoothedValues()
   {
+    // i think, we should lock a mutex here
+
     for(int i = 0; i < size(usedSmoothers); i++)
     {
       bool targetReached = usedSmoothers[i]->updateValue();
-      if(targetReached)
+      if(targetReached) 
       {
-        // remove smoother from usedSmoothers and put it back into the smootherPool
+        removeSmoother(i);
+        i--; 
       }
     }
   }
@@ -103,6 +114,8 @@ protected:
 
   double smoothingTime = 100;  // milliseconds
   double sampleRate = 44100;
+
+
 
 };
 
@@ -124,7 +137,8 @@ public:
 
   virtual ~rsSmoothableParameter();
 
-
+  /** Oevvrides setValue in order to use the passed newValue as target-value for smoothing instead 
+  of immediatly setting it and calling the callback. */
   virtual void setValue(double newValue, bool sendNotification, bool callCallbacks) override;
   // maybe we need to override setProportionalValue too? ..and maybe some others?
 

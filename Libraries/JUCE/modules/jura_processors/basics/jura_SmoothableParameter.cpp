@@ -6,6 +6,37 @@ double rsSmoother::absoluteTolerance = 1.e-12;
 
 //=================================================================================================
 
+rsSmoothingManager::~rsSmoothingManager()
+{
+  int i;
+  for(i = 0; i < size(usedSmoothers); i++)
+    delete usedSmoothers[i];
+  for(i = 0; i < size(smootherPool); i++)
+    delete smootherPool[i];
+}
+
+void rsSmoothingManager::addSmootherFor(GenericMemberFunctionCallback1<void, double>* newCallback,
+  double targetValue)
+{
+  rsSmoother* smoother;
+  if(size(smootherPool) > 0)
+    smoother = getAndRemoveLast(smootherPool);
+  else
+    smoother = new rsSmoother;
+  smoother->setValueChangeCallback(newCallback);
+  smoother->setTargetValue(targetValue);
+  append(usedSmoothers, smoother);
+}
+
+void rsSmoothingManager::removeSmoother(int index)
+{
+  rsSmoother* smoother = usedSmoothers[index];
+  remove(usedSmoothers, index);
+  append(smootherPool, smoother);
+}
+
+//=================================================================================================
+
 rsSmoothableParameter::rsSmoothableParameter(const juce::String& name, double min, double max, 
   double defaultValue, int scaling, double interval)
   : ModulatableParameter(name, min, max, defaultValue, scaling, interval)
@@ -25,9 +56,7 @@ void rsSmoothableParameter::setValue(double newValue, bool sendNotification, boo
   if(smoothingManager == nullptr)
     ModulatableParameter::setValue(newValue, sendNotification, callCallbacks);
   else
-  {
-
-  }
+    smoothingManager->addSmootherFor(smootherCallbackTarget, newValue);
 }
 
 void rsSmoothableParameter::setSmoothedValue(double newValue)
