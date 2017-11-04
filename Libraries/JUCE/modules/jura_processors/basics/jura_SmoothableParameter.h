@@ -10,7 +10,47 @@ concepts/ideas:
 */
 
 
+class rsSmoothingManager;
+
+/** Baseclass for all smoothing targets. An rsSmoother object gets passed a pointer to an object of 
+(some subclass of) this class and repeatedly calls setSmoothedValue, which your subclass must 
+override and take appropriate action inside the overriden function. */
+
+class JUCE_API rsSmoothingTarget
+{
+
+public:
+
+
+  virtual ~rsSmoothingTarget() = default;
+
+  /** Subclasses must ovveride this to accept a new, smoothed value (supposedly coming out of some
+  lowpass filter). */
+  virtual void setSmoothedValue(double newValue) = 0;
+
+  //virtual void smoothingWillStart();
+  //virtual void smoothingHasEnded();
+
+  /** Sets up the smoothing manager to be used. This functions should be called soon after 
+  construction. */
+  void setSmoothingManager(rsSmoothingManager* newManager)
+  {
+    smoothingManager = newManager;
+  }
+
+  inline double getSmoothingTime() { return smoothingTime; }
+
+protected:
+
+  rsSmoothingManager* smoothingManager = nullptr;
+
+  double smoothingTime = 100.0; // in milliseconds
+
+};
+
 //=================================================================================================
+
+/** */
 
 class JUCE_API rsSmoother
 {
@@ -22,12 +62,14 @@ public:
 
   void setTimeConstantAndSampleRate(double timeConstant, double sampleRate)
   {
-    smoothingFilter.setTimeConstantAndSampleRate(timeConstant, sampleRate);
+    smoothingFilter.setTimeConstantAndSampleRate(0.001*timeConstant, sampleRate);
   }
 
-  void setValueChangeCallback(GenericMemberFunctionCallback1<void, double>* newCallback)
+  /** Assigns this Smoother to a new SmoothingTarget object on which setSmoothedValue will be 
+  called. */
+  void setSmoothingTarget(rsSmoothingTarget* newTarget)
   {
-    valueChangeCallback = newCallback;
+    target = newTarget;
   }
 
   void setTargetValue(double newTargetValue)
@@ -36,24 +78,21 @@ public:
     tolerance   = jmax(fabs(targetValue) * relativeTolerance, absoluteTolerance);
   }
 
-  inline void callCallback()
-  {
-    if(valueChangeCallback != nullptr)
-      valueChangeCallback->call(currentValue);
-  }
-
+  /** Updates the current value via the smoothing-filter and returns true, if the target-value has 
+  been reached. If so, the SmoothingManager may remove the smoother object form the array of active 
+  smoothers. */
   bool updateValue()
   {
     currentValue = smoothingFilter.getSample(targetValue);
     if(fabs(currentValue-targetValue) < tolerance) 
     {
       currentValue = targetValue;
-      callCallback();
+      target->setSmoothedValue(currentValue);
       return true;
     }
     else
     {
-      callCallback();
+      target->setSmoothedValue(currentValue);
       return false;
     }
   }
@@ -65,9 +104,7 @@ protected:
 
   RAPT::rsSmoothingFilter<double, double> smoothingFilter;
 
-  GenericMemberFunctionCallback1<void, double>* valueChangeCallback = nullptr;
-    // maybe use std::function?
-
+  rsSmoothingTarget* target = nullptr;
 
   // these values determine when we consider the current value close enough to the target value to
   // be considered equal, i.e. the target has been reached:
@@ -86,8 +123,8 @@ public:
 
   ~rsSmoothingManager();
 
-  void addSmootherFor(GenericMemberFunctionCallback1<void, double>* newCallback, 
-    double targetValue);
+  void addSmootherFor(rsSmoothingTarget* target, double targetValue);
+    // maybe rename to startSmoothing
 
   /** Removes a smoother from the usedSmoothers and puts it back into the smootherPool. */ 
   void removeSmoother(int index);
@@ -112,10 +149,7 @@ protected:
   std::vector<rsSmoother*> smootherPool;
   std::vector<rsSmoother*> usedSmoothers;
 
-  double smoothingTime = 100;  // milliseconds
   double sampleRate = 44100;
-
-
 
 };
 
@@ -125,7 +159,7 @@ protected:
 // Parameter < ModulatableParameter < SmoothableParameter < MetaControlledParameter
 // but where will then a PolyphonicParameter go? ...we'll see
 
-class JUCE_API rsSmoothableParameter : public ModulatableParameter //: public MetaControlledParameter
+class JUCE_API rsSmoothableParameter : public ModulatableParameter, public rsSmoothingTarget
 {
 
 public:
@@ -142,18 +176,10 @@ public:
   virtual void setValue(double newValue, bool sendNotification, bool callCallbacks) override;
   // maybe we need to override setProportionalValue too? ..and maybe some others?
 
-  /** This is used as target function for the callback in rsSmoother. */
-  void setSmoothedValue(double newValue);
+
+  virtual void setSmoothedValue(double newValue) override;
 
 protected:
-
-
-
-
-  rsSmoothingManager* smoothingManager = nullptr;
-
-  GenericMemberFunctionCallback1<void, double>* smootherCallbackTarget = nullptr; 
-    // maybe use std::function?
 
 };
 

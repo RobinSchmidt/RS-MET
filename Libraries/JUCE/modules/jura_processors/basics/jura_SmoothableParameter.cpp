@@ -15,16 +15,16 @@ rsSmoothingManager::~rsSmoothingManager()
     delete smootherPool[i];
 }
 
-void rsSmoothingManager::addSmootherFor(GenericMemberFunctionCallback1<void, double>* newCallback,
-  double targetValue)
+void rsSmoothingManager::addSmootherFor(rsSmoothingTarget* target, double targetValue)
 {
   rsSmoother* smoother;
   if(size(smootherPool) > 0)
     smoother = getAndRemoveLast(smootherPool);
   else
     smoother = new rsSmoother;
-  smoother->setValueChangeCallback(newCallback);
+  smoother->setSmoothingTarget(target);
   smoother->setTargetValue(targetValue);
+  smoother->setTimeConstantAndSampleRate(target->getSmoothingTime(), sampleRate);
   append(usedSmoothers, smoother);
 }
 
@@ -41,14 +41,12 @@ rsSmoothableParameter::rsSmoothableParameter(const juce::String& name, double mi
   double defaultValue, int scaling, double interval)
   : ModulatableParameter(name, min, max, defaultValue, scaling, interval)
 {
-  // create target callback that can be passed to the smoother:
-  smootherCallbackTarget = new SpecificMemberFunctionCallback1<rsSmoothableParameter, void, double>
-    (this, &rsSmoothableParameter::setSmoothedValue);
+
 }
 
 rsSmoothableParameter::~rsSmoothableParameter()
 {
-  delete smootherCallbackTarget;
+
 }
 
 void rsSmoothableParameter::setValue(double newValue, bool sendNotification, bool callCallbacks)
@@ -56,7 +54,13 @@ void rsSmoothableParameter::setValue(double newValue, bool sendNotification, boo
   if(smoothingManager == nullptr)
     ModulatableParameter::setValue(newValue, sendNotification, callCallbacks);
   else
-    smoothingManager->addSmootherFor(smootherCallbackTarget, newValue);
+  {
+    // we need to check here, if this parameter is already being among the smoothed ones, if so, we
+    // just need to update the target-value - but maybe we can do this also inside
+    // smoothingManager->addSmootherFor ...which could perhaps be renamed
+
+    smoothingManager->addSmootherFor(this, newValue);
+  }
 }
 
 void rsSmoothableParameter::setSmoothedValue(double newValue)
