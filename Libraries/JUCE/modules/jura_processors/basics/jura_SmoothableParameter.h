@@ -29,17 +29,20 @@ public:
   lowpass filter). */
   virtual void setSmoothedValue(double newValue) = 0;
 
+  /** Function that will be called when smoothing will start on this target. The baseclass 
+  implementation just sets the isSmoothing flag to true. if you need additional actions to be 
+  performed, you may override it. */
   virtual void smoothingWillStart() { isSmoothing = true; }
 
+  /** Function that will be called when smoothing has ended on this target.
+  @see smoothingWillStart */
   virtual void smoothingHasEnded()  { isSmoothing = false; }
 
   /** Sets up the smoothing manager to be used. This functions should be called soon after 
   construction. */
-  void setSmoothingManager(rsSmoothingManager* newManager)
-  {
-    smoothingManager = newManager;
-  }
+  void setSmoothingManager(rsSmoothingManager* newManager) { smoothingManager = newManager; }
 
+  /** Returns the desired smoothing time for this object (in milliseconds). */
   inline double getSmoothingTime() { return smoothingTime; }
 
 protected:
@@ -148,6 +151,10 @@ public:
   /** Removes a smoother from the usedSmoothers and puts it back into the smootherPool. */ 
   void removeSmoother(int index);
 
+  /** Iterates through our array of active smoothers and lets each of them perform its smoothing
+  update operation. Should be called by outside code once per sample before the actual dsp-code for 
+  that same sample is computed. If modulation is also desired, it should be called before 
+  applyModulations is called on the ModualtionManager object. */
   void updateSmoothedValues()
   {
     // i think, we should lock a mutex here
@@ -177,6 +184,10 @@ protected:
 // maybe we need to change the inheritance hierarchy to
 // Parameter < ModulatableParameter < SmoothableParameter < MetaControlledParameter
 // but where will then a PolyphonicParameter go? ...we'll see
+
+/** Subclass of ModulatableParameter that is also a subclass of rsSmoothingTarget to allows 
+smoothing of user input to be performed. This smoothed user input is used to set up the 
+unmodulatedValue in the ModulationTarget baseclass. */
 
 class JUCE_API rsSmoothableParameter : public ModulatableParameter, public rsSmoothingTarget
 {
