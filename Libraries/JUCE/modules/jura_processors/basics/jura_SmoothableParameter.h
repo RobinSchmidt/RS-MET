@@ -11,6 +11,7 @@ concepts/ideas:
 
 
 class rsSmoothingManager;
+class rsSmoother;
 
 /** Baseclass for all smoothing targets. An rsSmoother object gets passed a pointer to an object of 
 (some subclass of) this class and repeatedly calls setSmoothedValue, which your subclass must 
@@ -28,8 +29,9 @@ public:
   lowpass filter). */
   virtual void setSmoothedValue(double newValue) = 0;
 
-  //virtual void smoothingWillStart();
-  //virtual void smoothingHasEnded();
+  virtual void smoothingWillStart() { isSmoothing = true; }
+
+  virtual void smoothingHasEnded()  { isSmoothing = false; }
 
   /** Sets up the smoothing manager to be used. This functions should be called soon after 
   construction. */
@@ -42,41 +44,58 @@ public:
 
 protected:
 
+  double smoothingTime = 100.0; // in milliseconds
+  bool isSmoothing = false;
   rsSmoothingManager* smoothingManager = nullptr;
 
-  double smoothingTime = 100.0; // in milliseconds
+private:
+
+  rsSmoother* smoother = nullptr;
+
+  friend class rsSmoothingManager;
+  friend class rsSmoother;
 
 };
 
 //=================================================================================================
 
-/** */
+/** An object that takes a SmoothingTarget and repeatedly calls setSmoothedValue on it with a value 
+that is obtained from applying a lowpass filter to the target value. */
 
 class JUCE_API rsSmoother
 {
 
 public:
 
-  // setSmoothingOrder, setSmoothingShape, 
-  
-
-  void setTimeConstantAndSampleRate(double timeConstant, double sampleRate)
-  {
-    smoothingFilter.setTimeConstantAndSampleRate(0.001*timeConstant, sampleRate);
-  }
+  /** Constructor. */
+  rsSmoother();
 
   /** Assigns this Smoother to a new SmoothingTarget object on which setSmoothedValue will be 
   called. */
   void setSmoothingTarget(rsSmoothingTarget* newTarget)
   {
     target = newTarget;
+    target->smoother = this;
   }
 
+  /** Sets the target value that should be reached in our SmoothingTarget. */
   void setTargetValue(double newTargetValue)
   {
     targetValue = newTargetValue;
     tolerance   = jmax(fabs(targetValue) * relativeTolerance, absoluteTolerance);
   }
+
+  /** Sets time-constant (in milliseconds) and sampleRate for the underlying smoothin filter. */
+  void setTimeConstantAndSampleRate(double timeConstant, double sampleRate)
+  {
+    smoothingFilter.setTimeConstantAndSampleRate(0.001*timeConstant, sampleRate);
+  }
+
+  // setSmoothingOrder, setSmoothingShape, 
+
+
+  /** Returns a pointer to our SmoothingTarget. */
+  rsSmoothingTarget* getSmoothingTarget() { return target; }
 
   /** Updates the current value via the smoothing-filter and returns true, if the target-value has 
   been reached. If so, the SmoothingManager may remove the smoother object form the array of active 

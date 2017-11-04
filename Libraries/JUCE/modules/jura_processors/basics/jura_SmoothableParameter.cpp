@@ -2,7 +2,10 @@
 double rsSmoother::relativeTolerance = 1.e-6;
 double rsSmoother::absoluteTolerance = 1.e-12;
 
-
+rsSmoother::rsSmoother()
+{
+  smoothingFilter.setOrder(1);
+}
 
 //=================================================================================================
 
@@ -17,20 +20,27 @@ rsSmoothingManager::~rsSmoothingManager()
 
 void rsSmoothingManager::addSmootherFor(rsSmoothingTarget* target, double targetValue)
 {
-  rsSmoother* smoother;
-  if(size(smootherPool) > 0)
-    smoother = getAndRemoveLast(smootherPool);
+  if(target->isSmoothing)
+    target->smoother->setTargetValue(targetValue);
   else
-    smoother = new rsSmoother;
-  smoother->setSmoothingTarget(target);
-  smoother->setTargetValue(targetValue);
-  smoother->setTimeConstantAndSampleRate(target->getSmoothingTime(), sampleRate);
-  append(usedSmoothers, smoother);
+  {
+    rsSmoother* smoother;
+    if(size(smootherPool) > 0)
+      smoother = getAndRemoveLast(smootherPool);
+    else
+      smoother = new rsSmoother;
+    smoother->setSmoothingTarget(target);
+    smoother->setTargetValue(targetValue);
+    smoother->setTimeConstantAndSampleRate(target->getSmoothingTime(), sampleRate);
+    append(usedSmoothers, smoother);
+    target->smoothingWillStart();
+  }
 }
 
 void rsSmoothingManager::removeSmoother(int index)
 {
   rsSmoother* smoother = usedSmoothers[index];
+  smoother->getSmoothingTarget()->smoothingHasEnded();
   remove(usedSmoothers, index);
   append(smootherPool, smoother);
 }
@@ -54,13 +64,7 @@ void rsSmoothableParameter::setValue(double newValue, bool sendNotification, boo
   if(smoothingManager == nullptr)
     ModulatableParameter::setValue(newValue, sendNotification, callCallbacks);
   else
-  {
-    // we need to check here, if this parameter is already being among the smoothed ones, if so, we
-    // just need to update the target-value - but maybe we can do this also inside
-    // smoothingManager->addSmootherFor ...which could perhaps be renamed
-
     smoothingManager->addSmootherFor(this, newValue);
-  }
 }
 
 void rsSmoothableParameter::setSmoothedValue(double newValue)
