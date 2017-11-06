@@ -296,6 +296,7 @@ void AudioModuleChain::addModule(const juce::String& type)
 {
   ScopedLock scopedLock(*lock);
   AudioModule *m = AudioModuleFactory::createModule(type, lock, &modManager, metaParamManager); // todo: pass the metaParamManager too
+  m->setSmoothingManager(smoothingManager);
   m->setMetaParameterManager(metaParamManager); // without, we hit jassert(metaParaManager != nullptr) in MetaControlledParameter::attachToMetaParameter - after passing metaParamManagerto the constructor, we may delete this
   append(modules, m);
   m->setModuleName("Slot" + String(size(modules)) + "-" + type);

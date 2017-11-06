@@ -60,10 +60,17 @@ rsSmoothableParameter::rsSmoothableParameter(const juce::String& name, double mi
 
 void rsSmoothableParameter::setValue(double newValue, bool sendNotification, bool callCallbacks)
 {
+  ModulatableParameter::setValue(newValue, sendNotification, callCallbacks);
+  if(smoothingManager != nullptr)
+    smoothingManager->addSmootherFor(this, newValue);
+
+  // doesn't work:
+  /*
   if(smoothingManager == nullptr)
     ModulatableParameter::setValue(newValue, sendNotification, callCallbacks);
   else
     smoothingManager->addSmootherFor(this, newValue);
+  */
 }
 
 void rsSmoothableParameter::setSmoothedValue(double newValue)
