@@ -434,7 +434,8 @@ FuncShaperModuleEditor::FuncShaperModuleEditor(CriticalSection *newPlugInLock,
   inLowpassSlider->setDescriptionField(infoField);
   inLowpassSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
-  addWidget( driveSlider = new RSlider("DriveSlider") );
+  //addWidget( driveSlider = new RSlider("DriveSlider") );
+  addWidget( driveSlider = new ModulatableSlider );
   driveSlider->setRange(-48.0, 48.0, 0.01, 0.0);
   driveSlider->assignParameter(funcShaperAudioModule->getParameterByName("Drive") );
   driveSlider->setSliderName(juce::String("Drive"));
