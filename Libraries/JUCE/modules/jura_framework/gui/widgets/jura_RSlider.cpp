@@ -96,14 +96,19 @@ void RSlider::setValue(double newValue, const bool sendUpdateMessage,
       MetaControlledParameter* mcp = dynamic_cast<MetaControlledParameter*> (assignedParameter);
       if(mcp != nullptr)
       {
-        if(mcp->hasAttachedMeta())
+        int metaIndex = mcp->getMetaParameterIndex();
+        if(metaIndex != -1)
         {
-          // parameter will be updated through the meta-parameter and we want to avoid updating it
-          // twice
-
-          // ....hmm...that doesn't seem to work - so we temporarily do it here until we find a 
-          // solution:
-          assignedParameter->setValue(currentValue, sendUpdateMessage, sendUpdateMessage); 
+          // parameter will be updated through the meta-parameter anyway and we want to avoid 
+          // updating it twice, so we go through the MetaManager here:
+          MetaParameterManager* mm = mcp->getMetaParameterManager();
+          if(mm != nullptr)
+          {
+            double prop = valueToProportionOfLength(currentValue);
+            mcp->getMetaParameterManager()->setMetaValue(metaIndex, prop);
+          }
+          else
+            assignedParameter->setValue(currentValue, sendUpdateMessage, sendUpdateMessage); 
         }
         else
           assignedParameter->setValue(currentValue, sendUpdateMessage, sendUpdateMessage); 
