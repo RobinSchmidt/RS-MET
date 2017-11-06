@@ -238,6 +238,9 @@ public:
   void setMetaParameterManager(MetaParameterManager* managerToUse);
     // maybe remove - it should be passed to the constructor
 
+  /** sets up the smoothing manager used for parameter smoothing. @see setMetaParameterManager. */
+  void setSmoothingManager(rsSmoothingManager* managerToUse);
+
   //-----------------------------------------------------------------------------------------------
   // \name Audio processing:
 
@@ -286,6 +289,7 @@ protected:
   std::vector<AudioModule*> childModules;  // maybe rename to childAudioModules
   AudioModule* parentModule = nullptr; // new - needed for tree traversal from leaves
 
+  rsSmoothingManager* smoothingManager = nullptr;
   MetaParameterManager* metaParamManager = nullptr;
 
   double triggerInterval = 0.0;    // interval (in beats) for calls to trigger()

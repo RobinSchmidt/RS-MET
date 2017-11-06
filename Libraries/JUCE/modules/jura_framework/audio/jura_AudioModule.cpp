@@ -455,17 +455,33 @@ void AudioModule::setMetaParameterManager(MetaParameterManager* managerToUse)
 {
   ScopedLock scopedLock(*lock);
   metaParamManager = managerToUse;
-  int i;
+  unsigned int i;
 
-  for(i = 0; i < (int)childModules.size(); i++)
+  for(i = 0; i < childModules.size(); i++)
     childModules[i]->setMetaParameterManager(metaParamManager);
 
-  // maybe factor out - we may need to do this in other places as well:
-  for(i = 0; i < (int)parameters.size(); i++)
+  for(i = 0; i < parameters.size(); i++)
   {
     MetaControlledParameter* mcp = dynamic_cast<MetaControlledParameter*>(parameters[i]);
     if(mcp != nullptr)
       mcp->setMetaParameterManager(metaParamManager);
+  }
+}
+
+void AudioModule::setSmoothingManager(rsSmoothingManager* managerToUse)
+{
+  ScopedLock scopedLock(*lock);
+  smoothingManager = managerToUse;
+  unsigned int i;
+
+  for(i = 0; i < childModules.size(); i++)
+    childModules[i]->setSmoothingManager(smoothingManager);
+
+  for(i = 0; i < parameters.size(); i++)
+  {
+    rsSmoothableParameter* sp = dynamic_cast<rsSmoothableParameter*>(parameters[i]);
+    if(sp != nullptr)
+      sp->setSmoothingManager(smoothingManager);
   }
 }
 
