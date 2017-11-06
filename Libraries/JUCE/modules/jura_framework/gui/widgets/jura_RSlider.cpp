@@ -89,13 +89,28 @@ void RSlider::setValue(double newValue, const bool sendUpdateMessage,
     currentValue = newValue;
 
     // currently being tested:
-    if( assignedParameter != NULL )
+    if( assignedParameter != nullptr )
     {
       ParameterObserver::setLocalAutomationSwitch(false);
-      //assignedParameter->setValue(currentValue);  //old
-      //assignedParameter->setValue(currentValue, false); 
-      assignedParameter->setValue(currentValue, sendUpdateMessage, sendUpdateMessage); 
-       // is the thing with the sendUpdateMessage correct?
+
+      MetaControlledParameter* mcp = dynamic_cast<MetaControlledParameter*> (assignedParameter);
+      if(mcp != nullptr)
+      {
+        if(mcp->hasAttachedMeta())
+        {
+          // parameter will be updated through the meta-parameter and we want to avoid updating it
+          // twice
+
+          // ....hmm...that doesn't seem to work - so we temporarily do it here until we find a 
+          // solution:
+          assignedParameter->setValue(currentValue, sendUpdateMessage, sendUpdateMessage); 
+        }
+        else
+          assignedParameter->setValue(currentValue, sendUpdateMessage, sendUpdateMessage); 
+      }
+      else
+        assignedParameter->setValue(currentValue, sendUpdateMessage, sendUpdateMessage); 
+
       ParameterObserver::setLocalAutomationSwitch(true);
     }
     repaint();
