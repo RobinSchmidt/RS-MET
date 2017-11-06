@@ -48,6 +48,7 @@ void rsSmoothingManager::removeSmoother(int index)
 {
   rsSmoother* smoother = usedSmoothers[index];
   smoother->getSmoothingTarget()->smoothingHasEnded();
+  smoother->getSmoothingTarget()->smoother = nullptr;
   remove(usedSmoothers, index);
   append(smootherPool, smoother);
 }

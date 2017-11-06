@@ -45,11 +45,11 @@ protected:
 
   double smoothingTime = 100.0; // in milliseconds
   bool isSmoothing = false;
-  rsSmoothingManager* smoothingManager = nullptr;
+  rsSmoothingManager* smoothingManager = nullptr; 
 
 private:
 
-  rsSmoother* smoother = nullptr;
+  rsSmoother* smoother = nullptr; // maybe this can aslo serve as isSmoothing flag?
 
   friend class rsSmoothingManager;
   friend class rsSmoother;
