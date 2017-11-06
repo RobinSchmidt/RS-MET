@@ -76,6 +76,9 @@ public:
   /** Resets the internal filter state to 0. */
   void reset();
 
+  /** Sets the internal filter state to the given value. */
+  void setStates(TSig value);
+
 protected:
 
   /** Updates our filter coefficients according to the setting of decay and order. */

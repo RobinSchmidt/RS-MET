@@ -420,7 +420,11 @@ void AudioModuleChain::processBlock(double **inOutBuffer, int numChannels, int n
     return;
 
   ScopedLock scopedLock(*lock);
-  if( modManager.getNumConnections() == 0)
+
+  bool needsSmoothing  = smoothingManager->needsSmoothing();
+  bool needsModulation = modManager.getNumConnections() > 0;
+
+  if( !needsSmoothing && !needsModulation )
   {
     // in case of no modulations, we can use a faster loop
     for(int i = 0; i < size(modules); i++)
@@ -432,7 +436,10 @@ void AudioModuleChain::processBlock(double **inOutBuffer, int numChannels, int n
     // then compute a sample-frame from each non-modulator module
     for(int n = 0; n < numSamples; n++)
     {
-      modManager.applyModulationsNoLock();
+      if(needsSmoothing)
+        smoothingManager->updateSmoothedValues();
+      if(needsModulation)
+        modManager.applyModulationsNoLock();
       for(int i = 0; i < size(modules); i++)
       {
         //// for debug:

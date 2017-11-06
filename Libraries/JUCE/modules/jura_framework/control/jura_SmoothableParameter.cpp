@@ -18,7 +18,8 @@ rsSmoothingManager::~rsSmoothingManager()
     delete smootherPool[i];
 }
 
-void rsSmoothingManager::addSmootherFor(rsSmoothingTarget* target, double targetValue)
+void rsSmoothingManager::addSmootherFor(rsSmoothingTarget* target, double targetValue, 
+  double oldValue)
 {
   if(target->isSmoothing)
     target->smoother->setTargetValue(targetValue);
@@ -31,6 +32,7 @@ void rsSmoothingManager::addSmootherFor(rsSmoothingTarget* target, double target
       smoother = new rsSmoother;
     smoother->setSmoothingTarget(target);
     smoother->setTargetValue(targetValue);
+    smoother->setCurrentValue(oldValue);
 
     smoother->setTimeConstantAndSampleRate(target->getSmoothingTime(), sampleRate);
       // maybe, we should call this conditionally to avoid computations when it doesn't acually 
@@ -60,20 +62,34 @@ rsSmoothableParameter::rsSmoothableParameter(const juce::String& name, double mi
 
 void rsSmoothableParameter::setValue(double newValue, bool sendNotification, bool callCallbacks)
 {
-  ModulatableParameter::setValue(newValue, sendNotification, callCallbacks);
-  if(smoothingManager != nullptr)
-    smoothingManager->addSmootherFor(this, newValue);
+  //ModulatableParameter::setValue(newValue, sendNotification, callCallbacks);
+  //if(smoothingManager != nullptr)
+  //  smoothingManager->addSmootherFor(this, newValue);
 
-  // doesn't work:
-  /*
   if(smoothingManager == nullptr)
     ModulatableParameter::setValue(newValue, sendNotification, callCallbacks);
   else
-    smoothingManager->addSmootherFor(this, newValue);
-  */
+  {
+    double oldValue = getValue();
+    ModulatableParameter::setValue(newValue, sendNotification, false);
+    //value = oldValue;
+    smoothingManager->addSmootherFor(this, newValue, oldValue);
+  }
 }
 
 void rsSmoothableParameter::setSmoothedValue(double newValue)
 {
-  ModulatableParameter::setUnmodulatedValue(newValue); // is this all?
+  //ModulatableParameter::setValue(newValue, false, true);
+
+  value = newValue;
+  callValueChangeCallbacks();
+
+  /*
+  if(hasModulation())
+    ModulatableParameter::setUnmodulatedValue(newValue); 
+  else
+  {
+    setValue(newValue, false, true);
+  }
+  */
 }

@@ -92,6 +92,11 @@ public:
     // wrappedFuncShaper->processBlockStereo(inOutBuffer[0], inOutBuffer[1], numSamples);
   }
 
+  virtual void processStereoFrame(double *left, double *right) override
+  {
+    wrappedFuncShaper->getSampleFrameStereo(left, right, left, right);
+  }
+
 
 protected:
 

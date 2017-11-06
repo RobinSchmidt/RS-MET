@@ -65,8 +65,14 @@ void rsSmoothingFilter<TSig, TPar>::setShapeParameter(TPar newParam)
 template<class TSig, class TPar>
 void rsSmoothingFilter<TSig, TPar>::reset()
 {
+  setStates(0);
+}
+
+template<class TSig, class TPar>
+void rsSmoothingFilter<TSig, TPar>::setStates(TSig value)
+{
   for(int i = 0; i < order; i++)
-    y1[i] = 0;
+    y1[i] = value;
 }
 
 template<class TSig, class TPar>

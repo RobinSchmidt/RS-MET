@@ -82,6 +82,14 @@ public:
     tolerance   = jmax(fabs(targetValue) * relativeTolerance, absoluteTolerance);
   }
 
+  /** Sets the currentValue variable. This must be initialized to the old value before the smoother
+  is invoked. */
+  void setCurrentValue(double newCurrentValue)
+  {
+    currentValue = newCurrentValue;
+    smoothingFilter.setStates(currentValue);
+  }
+
   /** Sets time-constant (in milliseconds) and sampleRate for the underlying smoothing filter. */
   void setTimeConstantAndSampleRate(double timeConstant, double sampleRate)
   {
@@ -142,11 +150,16 @@ public:
 
   ~rsSmoothingManager();
 
-  void addSmootherFor(rsSmoothingTarget* target, double targetValue);
+  void addSmootherFor(rsSmoothingTarget* target, double targetValue, double oldValue);
     // maybe rename to startSmoothing
 
   /** Removes a smoother from the usedSmoothers and puts it back into the smootherPool. */ 
   void removeSmoother(int index);
+
+  /** Returns true, if there are currently any targets being smoothed. You can check this in your
+  processBlock callback - if it returns false, you may do away with the per-sample smoother 
+  processing. */
+  bool needsSmoothing() { return usedSmoothers.size() > 0; }
 
   /** Iterates through our array of active smoothers and lets each of them perform its smoothing
   update operation. Should be called by outside code once per sample before the actual dsp-code for 
