@@ -771,6 +771,12 @@ public:
     ModulationTarget::setUnmodulatedValue(newValue);
   }
 
+  virtual void setSmoothedValue(double newValue) override
+  {
+    modulatedValue = unmodulatedValue = value = newValue;
+    callValueChangeCallbacks(); 
+  }
+
   /** Sets up the pointer to our owner, i.e. the AudioModule that contains this parameter (needed 
   for unique identification of this parameter in the tree of AudioModules when a state is 
   recalled). */
