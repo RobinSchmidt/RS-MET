@@ -37,10 +37,10 @@ JUCE_API int getAvailableScreenPixelsBelow(const juce::Component* c);
 // include RAPT already here, so we need to copy them (that violates the DRY principle, but i 
 // currently don't know, how to do this any better):
 
-// update: RAPT is now included, so we may delete them?
+// update: RAPT is now included, so we may delete them? ...clean this up!
 
 //static const double PI  = 3.1415926535897932384626433832795;
-static const double INF = std::numeric_limits<double>::infinity();
+static const double INF = std::numeric_limits<double>::infinity(); // move to rapt
 
 inline double clip(double x, double min, double max)
 {
@@ -143,6 +143,7 @@ inline bool isCloseTo(double x, double targetValue, double tolerance)
   else
     return false;
 }
+
 
 // some little helper/convenience functions to deal with std::vectors (move to RAPT):
 

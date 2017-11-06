@@ -61,6 +61,7 @@ namespace jura
 #include "control/jura_PreDefinedParameters.h"
 #include "control/jura_MetaParameter.h"
 #include "control/jura_ModulatableParameter.h"
+#include "control/jura_SmoothableParameter.h"
 #include "control/jura_ParameterManager.h"
 #include "control/jura_StateManager.h"
 

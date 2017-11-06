@@ -23,7 +23,6 @@ namespace jura
 #include "custom_widgets/jura_MeteringDisplay.cpp"
 
 #include "basics/jura_RoutingMatrix.cpp"
-#include "basics/jura_SmoothableParameter.cpp"
 #include "basics/jura_WaveTable.cpp"
 
 #include "analyzers/jura_MidiMessageFilter.cpp"  // maybe move to basics
