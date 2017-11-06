@@ -209,7 +209,7 @@ protected:
 smoothing of user input to be performed. This smoothed user input is used to set up the 
 unmodulatedValue in the ModulationTarget baseclass. */
 
-class JUCE_API rsSmoothableParameter : public ModulatableParameter, public rsSmoothingTarget
+class JUCE_API rsSmoothableParameter : public Parameter, public rsSmoothingTarget
 {
 
 public:

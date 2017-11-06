@@ -70,7 +70,7 @@ there. To make this work, you will have to call setMetaParameterManager to pass 
 MetaParameterManager to use. Once this is done, you can attach this parameter to one of the
 MetaParameters by calling attachToMetaParameter. */
 
-class JUCE_API MetaControlledParameter : public Parameter
+class JUCE_API MetaControlledParameter : public rsSmoothableParameter
 {
 
 public:

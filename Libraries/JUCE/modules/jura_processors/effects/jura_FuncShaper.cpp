@@ -164,7 +164,8 @@ void FuncShaperAudioModule::setFormulaParameterRange(const juce::String& augment
 void FuncShaperAudioModule::createParameters()
 {
   //typedef ModulatableParameter Param;
-  typedef rsSmoothableParameter Param;
+  //typedef rsSmoothableParameter Param;
+  typedef MetaControlledParameter Param;
   Param* p;
 
   typedef rosic::FuncShaper FS;
@@ -179,12 +180,12 @@ void FuncShaperAudioModule::createParameters()
   addObservedParameter(p);
 
   p = new Param("InputHighpass", 20.0, 20000.0, 20.0, Parameter::EXPONENTIAL);
-  p->setDefaultModParameters(20, 20000, -1, +1, ModulationConnection::EXPONENTIAL);
+  //p->setDefaultModParameters(20, 20000, -1, +1, ModulationConnection::EXPONENTIAL);
   p->setValueChangeCallback<FS>(fs, &FS::setInHighpassCutoff);
   addObservedParameter(p);
 
   p = new Param("InputLowpass", 20.0, 20000.0, 20000.0, Parameter::EXPONENTIAL);
-  p->setDefaultModParameters(20, 20000, -1, +1, ModulationConnection::EXPONENTIAL);
+  //p->setDefaultModParameters(20, 20000, -1, +1, ModulationConnection::EXPONENTIAL);
   p->setValueChangeCallback<FS>(fs, &FS::setInLowpassCutoff);
   addObservedParameter(p);
 
@@ -202,12 +203,12 @@ void FuncShaperAudioModule::createParameters()
   addObservedParameter(p);
 
   p = new Param("OutputHighpass", 20.0, 20000.0, 20.0, Parameter::EXPONENTIAL);
-  p->setDefaultModParameters(20, 20000, -1, +1, ModulationConnection::EXPONENTIAL);
+  //p->setDefaultModParameters(20, 20000, -1, +1, ModulationConnection::EXPONENTIAL);
   p->setValueChangeCallback<FS>(fs, &FS::setOutHighpassCutoff);
   addObservedParameter(p);
 
   p = new Param("OutputLowpass", 20.0, 20000.0, 20000.0, Parameter::EXPONENTIAL);
-  p->setDefaultModParameters(20, 20000, -1, +1, ModulationConnection::EXPONENTIAL);
+  //p->setDefaultModParameters(20, 20000, -1, +1, ModulationConnection::EXPONENTIAL);
   p->setValueChangeCallback<FS>(fs, &FS::setOutLowpassCutoff);
   addObservedParameter(p);
 

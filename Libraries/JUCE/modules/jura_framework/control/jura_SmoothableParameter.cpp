@@ -57,7 +57,7 @@ void rsSmoothingManager::removeSmoother(int index)
 
 rsSmoothableParameter::rsSmoothableParameter(const juce::String& name, double min, double max, 
   double defaultValue, int scaling, double interval)
-  : ModulatableParameter(name, min, max, defaultValue, scaling, interval)
+  : Parameter(name, min, max, defaultValue, scaling, interval)
 {
 
 }
@@ -65,17 +65,18 @@ rsSmoothableParameter::rsSmoothableParameter(const juce::String& name, double mi
 void rsSmoothableParameter::setValue(double newValue, bool sendNotification, bool callCallbacks)
 {
   if(smoothingTime == 0.0 || smoothingManager == nullptr)
-    ModulatableParameter::setValue(newValue, sendNotification, callCallbacks);
+    Parameter::setValue(newValue, sendNotification, callCallbacks);
   else
   {
     double oldValue = getValue();
-    ModulatableParameter::setValue(newValue, sendNotification, false);
+    Parameter::setValue(newValue, sendNotification, false);
     smoothingManager->addSmootherFor(this, newValue, oldValue);
   }
 }
 
 void rsSmoothableParameter::setSmoothedValue(double newValue)
 {
-  modulatedValue = unmodulatedValue = value = newValue;
+  //modulatedValue = unmodulatedValue = value = newValue;
+  value = newValue;
   callValueChangeCallbacks(); // maybe we should call a "NoLock" version of that?
 }
