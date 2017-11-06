@@ -1,13 +1,6 @@
 #ifndef jura_SmoothableParameter_h
 #define jura_SmoothableParameter_h
 
-/*
-
-concepts/ideas:
--the smoother must call ModulatedParameter::setUnmodulatedValue
- ->SmoothableParameter should derive from ModulatableParameter?
-
-*/
 
 
 class rsSmoothingManager;
@@ -57,7 +50,7 @@ private:
 
   friend class rsSmoothingManager;
   friend class rsSmoother;
-
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsSmoothingTarget)
 };
 
 //=================================================================================================
@@ -134,6 +127,7 @@ protected:
   static double absoluteTolerance;
   double tolerance;
   
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsSmoother)
 };
 
 //=================================================================================================
@@ -177,6 +171,8 @@ protected:
 
   double sampleRate = 44100;
 
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsSmoothingManager)
 };
 
 //=================================================================================================
@@ -185,7 +181,7 @@ protected:
 // Parameter < ModulatableParameter < SmoothableParameter < MetaControlledParameter
 // but where will then a PolyphonicParameter go? ...we'll see
 
-/** Subclass of ModulatableParameter that is also a subclass of rsSmoothingTarget to allows 
+/** Subclass of ModulatableParameter that is also a subclass of rsSmoothingTarget to allow 
 smoothing of user input to be performed. This smoothed user input is used to set up the 
 unmodulatedValue in the ModulationTarget baseclass. */
 
@@ -199,18 +195,19 @@ public:
   rsSmoothableParameter(const juce::String& name, double min = 0.0, double max = 1.0,
     double defaultValue = 0.5, int scaling = LINEAR, double interval = 0.0);
 
-  virtual ~rsSmoothableParameter();
+  /** Destructor */
+  virtual ~rsSmoothableParameter() = default;
 
-  /** Oevvrides setValue in order to use the passed newValue as target-value for smoothing instead 
+  /** Overrides setValue in order to use the passed newValue as target-value for smoothing instead 
   of immediatly setting it and calling the callback. */
   virtual void setValue(double newValue, bool sendNotification, bool callCallbacks) override;
   // maybe we need to override setProportionalValue too? ..and maybe some others?
 
-
+  /** Overriden from rsSmoothingTarget. This is the per-sample callback. */
   virtual void setSmoothedValue(double newValue) override;
 
-protected:
 
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsSmoothableParameter)
 };
 
 #endif

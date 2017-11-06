@@ -54,11 +54,6 @@ rsSmoothableParameter::rsSmoothableParameter(const juce::String& name, double mi
 
 }
 
-rsSmoothableParameter::~rsSmoothableParameter()
-{
-
-}
-
 void rsSmoothableParameter::setValue(double newValue, bool sendNotification, bool callCallbacks)
 {
   if(smoothingManager == nullptr)
