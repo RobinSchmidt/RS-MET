@@ -537,7 +537,7 @@ FuncShaperModuleEditor::FuncShaperModuleEditor(CriticalSection *newPlugInLock,
   // set up the widgets:
   updateWidgetsAccordingToState();
 
-  setSize(420, 300); // not yet optimal
+  setSize(480, 300);
 }
 
 FuncShaperModuleEditor::~FuncShaperModuleEditor()

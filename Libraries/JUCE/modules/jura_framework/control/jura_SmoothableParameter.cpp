@@ -30,14 +30,15 @@ void rsSmoothingManager::addSmootherFor(rsSmoothingTarget* target, double target
       smoother = getAndRemoveLast(smootherPool);
     else
       smoother = new rsSmoother;
+
+    smoother->setSmoothingOrder(3);
+    smoother->setTimeConstantAndSampleRate(target->getSmoothingTime(), sampleRate);
+      // maybe, we should call these conditionally to avoid computations when it doesn't acually 
+      // change anything
+
     smoother->setSmoothingTarget(target);
     smoother->setTargetValue(targetValue);
     smoother->setCurrentValue(oldValue);
-
-    smoother->setTimeConstantAndSampleRate(target->getSmoothingTime(), sampleRate);
-      // maybe, we should call this conditionally to avoid computations when it doesn't acually 
-      // change anything
-
     append(usedSmoothers, smoother);
     target->smoothingWillStart();
   }
@@ -62,34 +63,18 @@ rsSmoothableParameter::rsSmoothableParameter(const juce::String& name, double mi
 
 void rsSmoothableParameter::setValue(double newValue, bool sendNotification, bool callCallbacks)
 {
-  //ModulatableParameter::setValue(newValue, sendNotification, callCallbacks);
-  //if(smoothingManager != nullptr)
-  //  smoothingManager->addSmootherFor(this, newValue);
-
-  if(smoothingManager == nullptr)
+  if(smoothingTime == 0.0 || smoothingManager == nullptr)
     ModulatableParameter::setValue(newValue, sendNotification, callCallbacks);
   else
   {
     double oldValue = getValue();
     ModulatableParameter::setValue(newValue, sendNotification, false);
-    //value = oldValue;
     smoothingManager->addSmootherFor(this, newValue, oldValue);
   }
 }
 
 void rsSmoothableParameter::setSmoothedValue(double newValue)
 {
-  //ModulatableParameter::setValue(newValue, false, true);
-
-  value = newValue;
+  modulatedValue = unmodulatedValue = value = newValue;
   callValueChangeCallbacks();
-
-  /*
-  if(hasModulation())
-    ModulatableParameter::setUnmodulatedValue(newValue); 
-  else
-  {
-    setValue(newValue, false, true);
-  }
-  */
 }

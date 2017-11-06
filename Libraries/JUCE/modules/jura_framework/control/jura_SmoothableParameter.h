@@ -1,8 +1,6 @@
 #ifndef jura_SmoothableParameter_h
 #define jura_SmoothableParameter_h
 
-
-
 class rsSmoothingManager;
 class rsSmoother;
 
@@ -96,7 +94,11 @@ public:
     smoothingFilter.setTimeConstantAndSampleRate(0.001*timeConstant, sampleRate);
   }
 
-  // setSmoothingOrder, setSmoothingShape, 
+  /** Sets the order of the smoothing lowpass filter. Higher orders make the transition shape more
+  sigmoid. An order of 1 gives the typical RC loading curve as transition shape. */
+  void setSmoothingOrder(int newOrder) { smoothingFilter.setOrder(newOrder); }
+
+  // setSmoothingShape, 
 
 
   /** Returns a pointer to our SmoothingTarget. */
