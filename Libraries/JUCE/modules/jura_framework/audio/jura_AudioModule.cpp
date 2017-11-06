@@ -87,6 +87,7 @@ void AudioModule::addChildAudioModule(AudioModule* moduleToAdd)
   ScopedLock scopedLock(*lock);
   appendIfNotAlreadyThere(childModules, moduleToAdd);
   moduleToAdd->parentModule = this;
+  moduleToAdd->setSmoothingManager(smoothingManager);
   moduleToAdd->setMetaParameterManager(metaParamManager);
   addChildStateManager(moduleToAdd);
 }
@@ -130,9 +131,14 @@ bool AudioModule::checkForCrack()
 void AudioModule::addObservedParameter(Parameter *parameterToAdd)
 {
   ParameterManager::addObservedParameter(parameterToAdd);
+
   MetaControlledParameter* mcp = dynamic_cast<MetaControlledParameter*> (parameterToAdd);
   if(mcp != nullptr)
     mcp->setMetaParameterManager(getMetaParameterManager());
+
+  rsSmoothableParameter* sp = dynamic_cast<rsSmoothableParameter*> (parameterToAdd);
+  if(sp != nullptr)
+    sp->setSmoothingManager(smoothingManager);
 }
 
 //-------------------------------------------------------------------------------------------------

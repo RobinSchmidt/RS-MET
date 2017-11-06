@@ -138,6 +138,8 @@ class JUCE_API rsSmoothingManager
 
 public:
 
+  rsSmoothingManager() = default;
+
   ~rsSmoothingManager();
 
   void addSmootherFor(rsSmoothingTarget* target, double targetValue);

@@ -131,6 +131,8 @@ public:
 
 protected:
 
+  rsSmoothingManager smoothingManager;
+
   /** Creates the parameters that are reported to the host. Called internally from the
   constructor. */
   void createHostAutomatableParameters(int numParameters);

@@ -40,6 +40,7 @@ void AudioPlugin::setAudioModuleToWrap(AudioModule* moduleToWrap)
 {
   jassert(moduleToWrap != nullptr); // you must pass a valid object here
   wrappedAudioModule = moduleToWrap;
+  wrappedAudioModule->setSmoothingManager(&smoothingManager);
   wrappedAudioModule->setMetaParameterManager(&metaParaManager);
 }
 
