@@ -34,8 +34,12 @@ public:
   construction. */
   void setSmoothingManager(rsSmoothingManager* newManager) { smoothingManager = newManager; }
 
+  /** Sets the time-constant (in milliseconds) that will be used in the smoothing filter. 
+  Passing 0 switches the smoothing off completely. */
+  void setSmoothingTime(double newTime) { smoothingTime = newTime; }
+
   /** Returns the desired smoothing time for this object (in milliseconds). */
-  inline double getSmoothingTime() { return smoothingTime; }
+  inline double getSmoothingTime() const { return smoothingTime; }
 
 protected:
 
@@ -169,7 +173,9 @@ public:
   applyModulations is called on the ModualtionManager object. */
   void updateSmoothedValues()
   {
-    // i think, we should lock a mutex here
+    // i think, we should lock a mutex here...but actually, i think a mutex is already locked
+    // by the block-processing function...but maybe we should lock it elsewhere...in
+    // addSmootherFor and removeSmoother
 
     for(int i = 0; i < size(usedSmoothers); i++)
     {

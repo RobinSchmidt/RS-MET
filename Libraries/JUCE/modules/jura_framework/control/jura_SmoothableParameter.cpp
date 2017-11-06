@@ -76,5 +76,5 @@ void rsSmoothableParameter::setValue(double newValue, bool sendNotification, boo
 void rsSmoothableParameter::setSmoothedValue(double newValue)
 {
   modulatedValue = unmodulatedValue = value = newValue;
-  callValueChangeCallbacks();
+  callValueChangeCallbacks(); // maybe we should call a "NoLock" version of that?
 }

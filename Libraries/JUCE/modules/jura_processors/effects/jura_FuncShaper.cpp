@@ -439,7 +439,8 @@ FuncShaperModuleEditor::FuncShaperModuleEditor(CriticalSection *newPlugInLock,
   driveSlider->setDescriptionField(infoField);
   driveSlider->setStringConversionFunction(&decibelsToStringWithUnit2);
 
-  addWidget( dcSlider = new RSlider("DCSlider") );
+  //addWidget( dcSlider = new RSlider("DCSlider") );
+  addWidget( dcSlider = new ModulatableSlider );
   dcSlider->setRange(-1.0, 1.0, 0.001, 0.0);
   dcSlider->assignParameter(funcShaperAudioModule->getParameterByName("DC") );
   dcSlider->setSliderName(juce::String("DC"));
