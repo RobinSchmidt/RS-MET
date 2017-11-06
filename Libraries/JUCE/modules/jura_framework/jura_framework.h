@@ -33,6 +33,7 @@
 #include <limits.h>
 #include <xmmintrin.h>   // for FTZ (flush-to-zero)
 #include <pmmintrin.h>   // for DAZ (denormals-are-zero)
+#include <functional>
 
 //#include <juce_core/juce_core.h>
 //#include <juce_audio_basics/juce_audio_basics.h>

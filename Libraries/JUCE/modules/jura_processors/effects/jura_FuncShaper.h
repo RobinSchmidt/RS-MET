@@ -3,7 +3,7 @@
 
 /** This class wraps rosic::FuncShaper into a jura::AudioModule to facilitate its use as plugIn. */
 
-class FuncShaperAudioModule : public AudioModule
+class FuncShaperAudioModule : public ModulatableAudioModule
 {
 
   friend class FuncShaperModuleEditor;
@@ -13,9 +13,13 @@ public:
   //---------------------------------------------------------------------------------------------
   // construction/destruction:
 
-  FuncShaperAudioModule(CriticalSection *newPlugInLock, rosic::FuncShaper *funcShaperToWrap);
+  FuncShaperAudioModule(CriticalSection *newPlugInLock, rosic::FuncShaper *funcShaperToWrap, 
+    MetaParameterManager* metaManagerToUse = nullptr, 
+    ModulationManager* modManagerToUse = nullptr);
 
-  FuncShaperAudioModule(CriticalSection *newPlugInLock);
+  FuncShaperAudioModule(CriticalSection *newPlugInLock, 
+    MetaParameterManager* metaManagerToUse = nullptr,
+    ModulationManager* modManagerToUse = nullptr);
 
   virtual ~FuncShaperAudioModule();
 

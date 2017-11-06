@@ -1,8 +1,6 @@
 #ifndef jura_Parameter_h
 #define jura_Parameter_h
 
-#include <functional>
-
 class Parameter; // forward declaration
 
 //=================================================================================================

@@ -25,7 +25,7 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
 
   // effects:
   if(type == "Enveloper")        return new Enveloper(                  lock);
-  if(type == "FuncShaper")       return new FuncShaperAudioModule(      lock);
+  if(type == "FuncShaper")       return new FuncShaperAudioModule(      lock, metaMan, modMan);
   if(type == "AlgoVerb")         return new AlgoVerbAudioModule(        lock);
   if(type == "EchoLab")          return new EchoLabAudioModule(         lock);
   if(type == "StereoDelay")      return new StereoDelayAudioModule(     lock);

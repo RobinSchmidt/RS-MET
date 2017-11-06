@@ -2,7 +2,9 @@
 // construction/destruction:
 
 FuncShaperAudioModule::FuncShaperAudioModule(CriticalSection *newPlugInLock,
-  rosic::FuncShaper *funcShaperToWrap) : AudioModule(newPlugInLock)
+  rosic::FuncShaper *funcShaperToWrap, MetaParameterManager* metaManagerToUse,
+  ModulationManager* modManagerToUse) 
+  : ModulatableAudioModule(newPlugInLock, metaManagerToUse, modManagerToUse)
 {
   jassert(funcShaperToWrap != NULL); // you must pass a valid rosic-object to the constructor
   wrappedFuncShaper = funcShaperToWrap;
@@ -17,8 +19,9 @@ FuncShaperAudioModule::FuncShaperAudioModule(CriticalSection *newPlugInLock,
   getParameterByName("a")->setValue(2.0, true, true);
 }
 
-FuncShaperAudioModule::FuncShaperAudioModule(CriticalSection *newPlugInLock)
-  : AudioModule(newPlugInLock)
+FuncShaperAudioModule::FuncShaperAudioModule(CriticalSection *newPlugInLock, 
+  MetaParameterManager* metaManagerToUse, ModulationManager* modManagerToUse)
+  : ModulatableAudioModule(newPlugInLock, metaManagerToUse, modManagerToUse)
 {
   wrappedFuncShaper = new rosic::FuncShaper;
   wrappedFuncShaperIsOwned = true;
