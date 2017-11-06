@@ -15,6 +15,7 @@ class JUCE_API rsSmoothingTarget
 
 public:
 
+  rsSmoothingTarget() = default;
 
   virtual ~rsSmoothingTarget() = default;
 
@@ -81,7 +82,7 @@ public:
     tolerance   = jmax(fabs(targetValue) * relativeTolerance, absoluteTolerance);
   }
 
-  /** Sets time-constant (in milliseconds) and sampleRate for the underlying smoothin filter. */
+  /** Sets time-constant (in milliseconds) and sampleRate for the underlying smoothing filter. */
   void setTimeConstantAndSampleRate(double timeConstant, double sampleRate)
   {
     smoothingFilter.setTimeConstantAndSampleRate(0.001*timeConstant, sampleRate);

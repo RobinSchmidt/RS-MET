@@ -182,6 +182,7 @@
 		0D7CBD11A86D3924761E9081 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_MidiOutput.h"; path = "../../../../../Libraries/JUCE/modules/juce_audio_devices/midi_io/juce_MidiOutput.h"; sourceTree = "SOURCE_ROOT"; };
 		0DACBAEA308C495BDB72843C = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "jura_Callbacks.cpp"; path = "../../../../../Libraries/JUCE/modules/jura_framework/control/jura_Callbacks.cpp"; sourceTree = "SOURCE_ROOT"; };
 		0DBF44272E8F5A39E1D27DDE = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "juce_ArrowButton.cpp"; path = "../../../../../Libraries/JUCE/modules/juce_gui_basics/buttons/juce_ArrowButton.cpp"; sourceTree = "SOURCE_ROOT"; };
+		0DCEABF74F9F5E1717A29BF1 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "jura_SmoothableParameter - Copy.cpp"; path = "../../../../../Libraries/JUCE/modules/jura_processors/basics/jura_SmoothableParameter - Copy.cpp"; sourceTree = "SOURCE_ROOT"; };
 		0DE6F3C9B0D94F9BF735CCCD = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "juce_Logger.cpp"; path = "../../../../../Libraries/JUCE/modules/juce_core/logging/juce_Logger.cpp"; sourceTree = "SOURCE_ROOT"; };
 		0E0380C049A6B869C8C9321B = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_ByteOrder.h"; path = "../../../../../Libraries/JUCE/modules/juce_core/memory/juce_ByteOrder.h"; sourceTree = "SOURCE_ROOT"; };
 		0E0F17A782FE9F267338E206 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "jura_PolyphonicInstrument.cpp"; path = "../../../../../Libraries/JUCE/modules/jura_processors/instruments/jura_PolyphonicInstrument.cpp"; sourceTree = "SOURCE_ROOT"; };
@@ -979,6 +980,7 @@
 		5E82C078287FD28A708F2962 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "rosic_NoiseGeneratorOld.h"; path = "../../../../../Libraries/JUCE/modules/rosic/generators/rosic_NoiseGeneratorOld.h"; sourceTree = "SOURCE_ROOT"; };
 		5E8D3E5AB3FA370E9ABD7CBC = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_WindowsHooks.h"; path = "../../../../../Libraries/JUCE/modules/juce_audio_plugin_client/utility/juce_WindowsHooks.h"; sourceTree = "SOURCE_ROOT"; };
 		5E9A784357AF461983BE868F = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "juce_audio_plugin_client_RTAS_utils.cpp"; path = "../../../../../Libraries/JUCE/modules/juce_audio_plugin_client/juce_audio_plugin_client_RTAS_utils.cpp"; sourceTree = "SOURCE_ROOT"; };
+		5E9F74FB5D15C08BB5C1116E = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "jura_SmoothableParameter - Copy.h"; path = "../../../../../Libraries/JUCE/modules/jura_processors/basics/jura_SmoothableParameter - Copy.h"; sourceTree = "SOURCE_ROOT"; };
 		5ECDDFA2F51CBC8C6CD4DF52 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CAAtomicStack.h; path = "../../../../../Libraries/JUCE/modules/juce_audio_plugin_client/AU/CoreAudioUtilityClasses/CAAtomicStack.h"; sourceTree = "SOURCE_ROOT"; };
 		5EEA30BC5EF8AEBD0B1D06A2 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "jura_EffectSelectionPopup.h"; path = "../../../../../Libraries/JUCE/modules/jura_processors/custom_widgets/jura_EffectSelectionPopup.h"; sourceTree = "SOURCE_ROOT"; };
 		5F17F72C937585DBB4481006 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "romos_ConcreteProcessingTests.cpp"; path = "../../../../../Libraries/JUCE/modules/romos/TestSuite/romos_ConcreteProcessingTests.cpp"; sourceTree = "SOURCE_ROOT"; };
@@ -4190,6 +4192,8 @@
 		89F9B441DED083028C57A545 = {isa = PBXGroup; children = (
 					0122644388C0C6363FCBD672,
 					1B4879358A507DF4BD749797,
+					0DCEABF74F9F5E1717A29BF1,
+					5E9F74FB5D15C08BB5C1116E,
 					16CE6A8100835C8C7BCB99CF,
 					B5910A384DC66CE163548D82,
 					216AA8F06FC1F4A7BBD0810B,

@@ -16,7 +16,7 @@
   license:          GPL/Commercial
 
   dependencies:     juce_core, juce_audio_basics, juce_graphics, juce_gui_basics,
-                    juce_audio_formats, juce_audio_processors
+                    juce_audio_formats, juce_audio_processors, rapt
   OSXFrameworks:
   iOSFrameworks:
 
@@ -41,6 +41,8 @@
 //#include <juce_graphics/juce_graphics.h>
 //#include <juce_gui_basics/juce_gui_basics.h>
 using namespace juce;
+
+#include <rapt/rapt.h>
 
 namespace jura
 {

@@ -31,7 +31,11 @@ void rsSmoothingManager::addSmootherFor(rsSmoothingTarget* target, double target
       smoother = new rsSmoother;
     smoother->setSmoothingTarget(target);
     smoother->setTargetValue(targetValue);
+
     smoother->setTimeConstantAndSampleRate(target->getSmoothingTime(), sampleRate);
+      // maybe, we should call this conditionally to avoid computations when it doesn't acually 
+      // change anything
+
     append(usedSmoothers, smoother);
     target->smoothingWillStart();
   }

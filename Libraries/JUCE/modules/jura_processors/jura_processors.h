@@ -37,7 +37,7 @@
 //#include <juce_gui_basics/juce_gui_basics.h>
 #include <jura_framework/jura_framework.h>
 
-#include <rapt/rapt.h>
+//#include <rapt/rapt.h>
 
 #ifdef _MSC_VER
 #include <romos/romos.h>

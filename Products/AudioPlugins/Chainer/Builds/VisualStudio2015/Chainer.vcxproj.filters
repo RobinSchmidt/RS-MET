@@ -2578,6 +2578,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_RoutingMatrix.cpp">
       <Filter>Juce Modules\jura_processors\basics</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_SmoothableParameter - Copy.cpp">
+      <Filter>Juce Modules\jura_processors\basics</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_SmoothableParameter.cpp">
       <Filter>Juce Modules\jura_processors\basics</Filter>
     </ClCompile>
@@ -6367,6 +6370,9 @@
       <Filter>Juce Modules\jura_processors\analyzers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_RoutingMatrix.h">
+      <Filter>Juce Modules\jura_processors\basics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_SmoothableParameter - Copy.h">
       <Filter>Juce Modules\jura_processors\basics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\basics\jura_SmoothableParameter.h">
