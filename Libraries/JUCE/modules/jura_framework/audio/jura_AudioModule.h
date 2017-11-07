@@ -69,7 +69,7 @@ public:
   there). To enable meta-control, you can also pass
   
   */
-  AudioModule(CriticalSection *lockToUse, MetaParameterManager* metaManagerToUse = nullptr);
+  AudioModule(CriticalSection* lockToUse, MetaParameterManager* metaManagerToUse = nullptr);
 
   /** Destructor. */
   virtual ~AudioModule();

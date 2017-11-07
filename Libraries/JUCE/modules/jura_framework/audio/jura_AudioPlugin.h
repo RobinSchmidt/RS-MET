@@ -40,8 +40,7 @@ public:
 //=================================================================================================
 
 /** This class wraps a jura::AudioModule into a juce::AudioProcessor, so we can use it as
-plugin.
-\todo - mayb move this pair of h/cpp files into another folder */
+plugin. */
 
 class JUCE_API AudioPlugin : public AudioProcessor
 {
@@ -51,7 +50,7 @@ public:
   /** Constructor. You can pass a number of parameters that this plugin will report to the host and
   which will then be available to use as meta-parameters for automation. */
   AudioPlugin(int numParameters = 10);
-    // todo: change the default value to 0 - but only after updatind Elan's projects to pass in the
+    // todo: change the default value to 0 - but only after updating Elan's projects to pass in the
     // required number
 
 

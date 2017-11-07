@@ -49,7 +49,7 @@ protected:
 
 private:
 
-  rsSmoother* smoother = nullptr; // maybe this can aslo serve as isSmoothing flag?
+  rsSmoother* smoother = nullptr; // maybe this can also serve as isSmoothing flag?
 
   friend class rsSmoothingManager;
   friend class rsSmoother;
@@ -156,8 +156,12 @@ public:
 
   ~rsSmoothingManager();
 
+  /** Sets the sample rate at which all the smoothing filters should operate. */
+  void setSampleRate(double newSampleRate) { sampleRate = newSampleRate; }
+
+  /** Adds a smoother (which is basically a little wrapper around a lowpass filter) for the given
+  smoothing target to our array of active smoothers. */
   void addSmootherFor(rsSmoothingTarget* target, double targetValue, double oldValue);
-    // maybe rename to startSmoothing
 
   /** Removes a smoother from the usedSmoothers and puts it back into the smootherPool. */ 
   void removeSmoother(int index);
@@ -201,10 +205,6 @@ protected:
 
 //=================================================================================================
 
-// maybe we need to change the inheritance hierarchy to
-// Parameter < ModulatableParameter < SmoothableParameter < MetaControlledParameter
-// but where will then a PolyphonicParameter go? ...we'll see
-
 /** Subclass of ModulatableParameter that is also a subclass of rsSmoothingTarget to allow 
 smoothing of user input to be performed. This smoothed user input is used to set up the 
 unmodulatedValue in the ModulationTarget baseclass. */
@@ -213,7 +213,6 @@ class JUCE_API rsSmoothableParameter : public Parameter, public rsSmoothingTarge
 {
 
 public:
-
 
   /** Constructor */
   rsSmoothableParameter(const juce::String& name, double min = 0.0, double max = 1.0,
@@ -225,11 +224,9 @@ public:
   /** Overrides setValue in order to use the passed newValue as target-value for smoothing instead 
   of immediatly setting it and calling the callback. */
   virtual void setValue(double newValue, bool sendNotification, bool callCallbacks) override;
-  // maybe we need to override setProportionalValue too? ..and maybe some others?
 
   /** Overriden from rsSmoothingTarget. This is the per-sample callback. */
   virtual void setSmoothedValue(double newValue) override;
-
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsSmoothableParameter)
 };

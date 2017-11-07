@@ -1,5 +1,9 @@
-Mod-System: make sure that the modulated value always equals the unmodulated value, even when there
-are no mod-connections
+Smoothing-Sytem:
+ -make thread-safe
+ -provide a flag to temporarily switch off smoothing completely (useful for preset-switch)
+ -optimize addSmootherFor - smoothing filters don't need to recompute filter-coeffs, if the 
+  settings are the same
+ -maybe get rid of the isSmoothing flag, the smoother-pointer can serve as such flag as well
 
 BUGS:
  -in Reaper, after plugging in a fresh instance of Chainer, selecting Ladder and attaching two 

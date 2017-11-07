@@ -87,6 +87,7 @@ void AudioPlugin::prepareToPlay(double sampleRate, int maximumExpectedSamplesPer
   }
   // Maybe we could release the buffer when the host calls releaseResources() - we'll see.
 
+  smoothingManager.setSampleRate(sampleRate);
   if( wrappedAudioModule != nullptr )
     wrappedAudioModule->setSampleRate(sampleRate);
 }
