@@ -419,7 +419,7 @@ void AudioModuleChain::processBlock(double **inOutBuffer, int numChannels, int n
   if(numChannels != 2)
     return;
 
-  ScopedLock scopedLock(*lock);
+  //ScopedLock scopedLock(*lock); already held by wrapping plugin
 
   bool needsSmoothing  = smoothingManager->needsSmoothing();
   bool needsModulation = modManager.getNumConnections() > 0;
