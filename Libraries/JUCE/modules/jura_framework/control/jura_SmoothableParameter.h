@@ -159,6 +159,10 @@ public:
   /** Sets the sample rate at which all the smoothing filters should operate. */
   void setSampleRate(double newSampleRate) { sampleRate = newSampleRate; }
 
+  /** Sets the mutex lock objevt to be used for accessing our smoother arrays in a thread-safe 
+  way. */
+  void setMutexLock(CriticalSection* newLock) { lock = newLock; }
+
   /** Adds a smoother (which is basically a little wrapper around a lowpass filter) for the given
   smoothing target to our array of active smoothers. */
   void addSmootherFor(rsSmoothingTarget* target, double targetValue, double oldValue);
@@ -168,7 +172,7 @@ public:
 
   /** Returns true, if there are currently any targets being smoothed. You can check this in your
   processBlock callback - if it returns false, you may do away with the per-sample smoother 
-  processing. */
+  processing. Calling code should already hold the lock for the mutex. */
   bool needsSmoothing() { return usedSmoothers.size() > 0; }
 
   /** Iterates through our array of active smoothers and lets each of them perform its smoothing
@@ -177,10 +181,14 @@ public:
   applyModulations is called on the ModualtionManager object. */
   void updateSmoothedValues()
   {
-    // i think, we should lock a mutex here...but actually, i think a mutex is already locked
-    // by the block-processing function...but maybe we should lock it elsewhere...in
-    // addSmootherFor and removeSmoother
+    ScopedLock sl(*lock);
+    updateSmoothedValuesNoLock();
+  }
 
+  /** Same as updateSmoothedValues but wihtout locking the mutex. Should be used when calling code
+  has the mutex already locked. */
+  void updateSmoothedValuesNoLock()
+  {
     for(int i = 0; i < size(usedSmoothers); i++)
     {
       bool targetReached = usedSmoothers[i]->updateValue();
@@ -192,13 +200,13 @@ public:
     }
   }
 
+
 protected:
 
   std::vector<rsSmoother*> smootherPool;
   std::vector<rsSmoother*> usedSmoothers;
-
   double sampleRate = 44100;
-
+  CriticalSection* lock = nullptr;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsSmoothingManager)
 };

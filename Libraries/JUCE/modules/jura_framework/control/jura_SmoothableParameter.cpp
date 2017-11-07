@@ -21,6 +21,7 @@ rsSmoothingManager::~rsSmoothingManager()
 void rsSmoothingManager::addSmootherFor(rsSmoothingTarget* target, double targetValue, 
   double oldValue)
 {
+  ScopedLock sl(*lock);
   if(target->isSmoothing)
     target->smoother->setTargetValue(targetValue);
   else
@@ -46,6 +47,7 @@ void rsSmoothingManager::addSmootherFor(rsSmoothingTarget* target, double target
 
 void rsSmoothingManager::removeSmoother(int index)
 {
+  ScopedLock sl(*lock);
   rsSmoother* smoother = usedSmoothers[index];
   smoother->getSmoothingTarget()->smoothingHasEnded();
   smoother->getSmoothingTarget()->smoother = nullptr;

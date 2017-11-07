@@ -437,7 +437,7 @@ void AudioModuleChain::processBlock(double **inOutBuffer, int numChannels, int n
     for(int n = 0; n < numSamples; n++)
     {
       if(needsSmoothing)
-        smoothingManager->updateSmoothedValues();
+        smoothingManager->updateSmoothedValuesNoLock();
       if(needsModulation)
         modManager.applyModulationsNoLock();
       for(int i = 0; i < size(modules); i++)

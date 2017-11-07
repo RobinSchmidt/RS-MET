@@ -23,6 +23,7 @@ AudioPlugin::AudioPlugin(int numParameters)
 {
   ScopedLock sl(plugInLock);
   initialiseJuce_GUI();  // why do we need this?
+  smoothingManager.setMutexLock(&plugInLock);
   createHostAutomatableParameters(numParameters);
 }
 

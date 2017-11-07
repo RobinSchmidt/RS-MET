@@ -1,5 +1,4 @@
 Smoothing-Sytem:
- -make thread-safe
  -provide a flag to temporarily switch off smoothing completely (useful for preset-switch)
  -optimize addSmootherFor - smoothing filters don't need to recompute filter-coeffs, if the 
   settings are the same

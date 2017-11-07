@@ -83,7 +83,7 @@ protected:
   int getParameterIndex(Parameter *parameterToLookFor);
 
   /** A mutex-lock for accesses to the vector of observed parameters. */
-  CriticalSection *lock = nullptr;
+  CriticalSection* lock = nullptr;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParameterManager)
 };
