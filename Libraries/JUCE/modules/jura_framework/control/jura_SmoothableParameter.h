@@ -142,6 +142,7 @@ protected:
   static double absoluteTolerance;
   double tolerance;
   
+  friend class rsSmoothingManager;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsSmoother)
 };
 
@@ -162,6 +163,11 @@ public:
   /** Sets the mutex lock objevt to be used for accessing our smoother arrays in a thread-safe 
   way. */
   void setMutexLock(CriticalSection* newLock) { lock = newLock; }
+
+  /** Turns all smoothing globally off. This may be useful when initializing parameters and/or 
+  recalling a state. If any smoothers are currently running at the moment, the bypass is activated,
+  it will immediately set all targets to their target values. */
+  void setBypassSmoothing(bool shouldBeBypassed);
 
   /** Adds a smoother (which is basically a little wrapper around a lowpass filter) for the given
   smoothing target to our array of active smoothers. */
@@ -200,6 +206,11 @@ public:
     }
   }
 
+  /** If currently any smoothers are running, their targets will immediately be set to the target 
+  values by calling this function (an the smoothers are removed from the active smoother array and 
+  put back into the pool). */
+  void flushTargetValues();
+
 
 protected:
 
@@ -207,6 +218,7 @@ protected:
   std::vector<rsSmoother*> usedSmoothers;
   double sampleRate = 44100;
   CriticalSection* lock = nullptr;
+  bool smoothingBypassed = false;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsSmoothingManager)
 };

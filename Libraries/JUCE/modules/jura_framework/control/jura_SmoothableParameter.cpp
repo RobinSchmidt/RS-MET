@@ -18,10 +18,25 @@ rsSmoothingManager::~rsSmoothingManager()
     delete smootherPool[i];
 }
 
+void rsSmoothingManager::setBypassSmoothing(bool shouldBeBypassed)
+{
+  ScopedLock sl(*lock);
+  if(shouldBeBypassed == true)
+    flushTargetValues();
+  smoothingBypassed = shouldBeBypassed;
+}
+
 void rsSmoothingManager::addSmootherFor(rsSmoothingTarget* target, double targetValue, 
   double oldValue)
 {
   ScopedLock sl(*lock);
+
+  if(smoothingBypassed)
+  {
+    target->setSmoothedValue(targetValue);
+    return;
+  }
+
   if(target->isSmoothing)
     target->smoother->setTargetValue(targetValue);
   else
@@ -53,6 +68,17 @@ void rsSmoothingManager::removeSmoother(int index)
   smoother->getSmoothingTarget()->smoother = nullptr;
   remove(usedSmoothers, index);
   append(smootherPool, smoother);
+}
+
+void rsSmoothingManager::flushTargetValues()
+{
+  ScopedLock sl(*lock);
+  for(int i = 0; i < size(usedSmoothers); i++)
+  {
+    usedSmoothers[i]->target->setSmoothedValue(usedSmoothers[i]->targetValue);
+    removeSmoother(i);
+    i--;
+  }
 }
 
 //=================================================================================================
