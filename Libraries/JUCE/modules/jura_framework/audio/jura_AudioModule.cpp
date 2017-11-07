@@ -416,6 +416,7 @@ void AudioModule::setStateFromXml(const XmlElement& xmlState, const juce::String
 {
   ScopedLock scopedLock(*lock);
 
+  bool smoothingIsByassed = smoothingManager->isSmoothingBypassed();
   smoothingManager->setBypassSmoothing(true);
 
   XmlElement convertedState = convertXmlStateIfNecessary(xmlState);
@@ -437,7 +438,7 @@ void AudioModule::setStateFromXml(const XmlElement& xmlState, const juce::String
 
   setStateName(stateName, markAsClean);
 
-  smoothingManager->setBypassSmoothing(false);
+  smoothingManager->setBypassSmoothing(smoothingIsByassed); // restore old bypassstate
 }
 
 XmlElement AudioModule::convertXmlStateIfNecessary(const XmlElement& xmlState)

@@ -3,6 +3,8 @@ Smoothing-Sytem:
   -done - now use it by calling smoothingManager->setBypassSmoothing(true/false); at start/end of
    all setStateFromXml overrides in all AudioModules
   -maybe it's needed also in createParameters?
+  -seems like it's needed when the GUI is opened...or we need to avoid to call setValue on the
+   underlying parameter when the widgets are created
  -maybe have a per-target smoothing bypass flag (useful for integer parameters that should still be
   meta-controlled and/or modulatable)
  -optimize addSmootherFor - smoothing filters don't need to recompute filter-coeffs, if the 

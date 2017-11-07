@@ -561,6 +561,9 @@ void AudioModuleChain::setStateFromXml(const XmlElement& xmlState, const juce::S
 {
   ScopedLock scopedLock(*lock);
 
+  bool smoothingIsByassed = smoothingManager->isSmoothingBypassed();
+  smoothingManager->setBypassSmoothing(true);
+
   //AudioModule::setStateFromXml(xmlState, stateName, markAsClean); 
   // the Chainer has no (global) parameters of its own, nor any static child-modules, so we don't
   // need to call the baseclass method here (it wouldn't do anything)
@@ -572,6 +575,8 @@ void AudioModuleChain::setStateFromXml(const XmlElement& xmlState, const juce::S
   //recallMidiMappingFromXml(xmlState);
   //recallMetaMappingFromXml(xmlState); // there
   recallMetaValuesFromXml(xmlState);
+
+  smoothingManager->setBypassSmoothing(smoothingIsByassed); // restore old bypassstate
 }
 
 void AudioModuleChain::recallSlotsFromXml(const XmlElement &xmlState, bool markAsClean)

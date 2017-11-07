@@ -181,6 +181,9 @@ public:
   processing. Calling code should already hold the lock for the mutex. */
   bool needsSmoothing() { return usedSmoothers.size() > 0; }
 
+  /** Returns whether or not smoothing is gloabally bypassed. */
+  bool isSmoothingBypassed() { return smoothingBypassed; }
+
   /** Iterates through our array of active smoothers and lets each of them perform its smoothing
   update operation. Should be called by outside code once per sample before the actual dsp-code for 
   that same sample is computed. If modulation is also desired, it should be called before 
