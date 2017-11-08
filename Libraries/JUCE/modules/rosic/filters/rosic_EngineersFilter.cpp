@@ -89,5 +89,4 @@ void rsEngineersFilter::updateCoefficients()
 {
   BiquadCascade::initBiquadCoeffs();
   designer.getBiquadCascadeCoefficients(b0, b1, b2, a1, a2);
-  BiquadCascadeStereo::reset();
 }
