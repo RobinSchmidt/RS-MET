@@ -201,7 +201,15 @@ void RSlider::updateWidgetFromAssignedParameter(bool sendChangeMessage)
   {
     setRange(assignedParameter->getMinValue(), assignedParameter->getMaxValue(), 
              assignedParameter->getInterval(), assignedParameter->getDefaultValue(), false);
-    setValue(assignedParameter->getValue(), sendChangeMessage, false);
+
+    // old - not good because it calls setValue on the parameter:
+    //setValue(assignedParameter->getValue(), sendChangeMessage, false);
+
+    // new:
+    currentValue = constrainValue(assignedParameter->getValue());
+    repaint();
+    if(sendChangeMessage)
+      triggerChangeMessage(false);
   }
 }
 
