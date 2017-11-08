@@ -10,8 +10,8 @@
   ID:               jura_processors
   vendor:           RS-MET
   version:          0.0.1
-  name:             JUCE wrappers for RAPT
-  description:      JUCE wrappers and GUIs for RAPT's audio signal processing algorithms
+  name:             JUCE wrappers for RAPT and rosic
+  description:      JUCE wrappers and GUIs for RAPT's and rosic's DSP algorithms
   website:          http://www.rs-met.com
   license:          GPL/Commercial
 

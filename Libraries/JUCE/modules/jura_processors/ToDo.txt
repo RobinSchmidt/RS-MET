@@ -1,3 +1,5 @@
+
+
 Smoothing-Sytem:
  -maybe provide a global scaler for all smoothing times in smoothing manager
  -provide a flag to temporarily switch off smoothing completely (useful for preset-switch)
