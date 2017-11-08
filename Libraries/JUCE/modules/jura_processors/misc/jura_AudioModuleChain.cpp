@@ -330,6 +330,7 @@ void AudioModuleChain::replaceModule(int index, const juce::String& type)
     AudioModule* oldModule = modules[index];
     AudioModule* newModule = AudioModuleFactory::createModule(type, lock, &modManager, metaParamManager);
     newModule->setModuleName("Slot" + String(index+1) + "-" + type);
+    newModule->setSmoothingManager(smoothingManager);
     newModule->setMetaParameterManager(metaParamManager); // superfluous now?
     newModule->loadDefaultPreset(); // later: either load default preset or recall a stored state
     newModule->setSampleRate(sampleRate);

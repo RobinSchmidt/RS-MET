@@ -83,6 +83,7 @@ FuncShaper:
  -handling of a,b,c,d min/max values ahs been commented temporarliy - make it work again:
   setFormulaParameterMinValue, setFormulaParameterMaxValue, setFormulaParameterRange
   in FuncShaperAudioModule
+ -produces hiss when turning up dc and drive (without input)
 
 Framework:
  -CoordinateSystem zoomer should zoom out maximally when clicking the middle button / mouse-wheel
