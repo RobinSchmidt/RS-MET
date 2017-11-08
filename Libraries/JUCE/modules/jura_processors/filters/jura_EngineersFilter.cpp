@@ -101,8 +101,10 @@ void EngineersFilterAudioModule::initializeAutomatableParameters()
   //p->addStringValue(juce::String(T("Halpern")));
   //p->addStringValue(juce::String(T("Linkwitz/Riley")));
   //p->addStringValue(juce::String(T("Coincident Poles")));
-  // maybe sort the differently: Bessel->Butter->Papoulis->Cheby->Ellip
   addObservedParameter(p);
+  // maybe sort the differently: Bessel->Butter->Papoulis->Cheby->Ellip
+  // or better: Coincident, Gauss, Bessel, Linkwitz, Butter, Papoulis, Halpern, Inv Cheby, Cheby
+  // elliptic
 
   // #002:	
   p = new AutomatableParameter(lock, "Frequency" , 20.0, 20000.0, 0.0, 1000.0, 

@@ -12,27 +12,6 @@ Smoothing-Sytem:
  -rsSmoothableParameter::setSmoothedValue should call calbakcs without locking, same for the 
   overriden version in ModulatableParameter
 
-BUGS:
- -in Reaper, after plugging in a fresh instance of Chainer, selecting Ladder and attaching two 
-  parameters to the same meta, the sliders don't move in sync 
-  -the localAutomationSwitch flag is false - also for the sliders 
-  -after saving and reloading the project, it works
-  -after moving the host provided meta-slider, it works, too
-  https://github.com/RobinSchmidt/RS-MET/issues/113
-  https://github.com/RobinSchmidt/RS-MET/issues/110
-  ->FIXED
-
--also in Reaper:
- -reported crash on switch some particular presets:
-  https://github.com/RobinSchmidt/RS-MET/issues/65#issuecomment-339857576
-  ...but i don't see this here
-
- -i think, i need to colse the modulation-menu on preset switch...or better: update it
-
- -also, when loading a preset with connected modulations, removing the modulation, reloading the 
-  preset and the opening the mod-menu, the depth slider does not appear (but the slider is colored
-  red indicating a connection) ...seems to happen only with mushroom, not chainer
-
 ModSystem:
  -ModulatableSlider: show the modulation-range
  -clean up the files
