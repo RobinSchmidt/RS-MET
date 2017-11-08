@@ -767,6 +767,8 @@ public:
   /** Overriden in order to also set up unmodulatedValue member inherited from ModulationTarget. */
   virtual void setValue(double newValue, bool sendNotification, bool callCallbacks) override
   {
+    if(value == newValue)
+      return;
     MetaControlledParameter::setValue(newValue, sendNotification, callCallbacks);
     ModulationTarget::setUnmodulatedValue(newValue);
   }

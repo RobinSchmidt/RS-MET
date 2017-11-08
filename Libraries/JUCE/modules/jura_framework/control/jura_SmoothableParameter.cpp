@@ -92,6 +92,8 @@ rsSmoothableParameter::rsSmoothableParameter(const juce::String& name, double mi
 
 void rsSmoothableParameter::setValue(double newValue, bool sendNotification, bool callCallbacks)
 {
+  if(value == newValue)
+    return;
   if(smoothingTime == 0.0 || smoothingManager == nullptr)
     Parameter::setValue(newValue, sendNotification, callCallbacks);
   else

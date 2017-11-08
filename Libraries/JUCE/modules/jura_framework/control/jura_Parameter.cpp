@@ -97,11 +97,8 @@ Parameter::~Parameter()
 void Parameter::setValue(double newValue, bool sendNotification, bool callCallbacks)
 {
   ScopedPointerLock spl(mutex);
-
-  //// experimental (seems to break total recall for SpiralGenerator):
-  //if(value = newValue)  // hey - that's wrong - it should be if(value == newValue), fix and remove comment
-  //  return;
-
+  if(value == newValue)
+    return;
   value = restrictValueToParameterRange(newValue);
   if( callCallbacks == true )
     callValueChangeCallbacks();
