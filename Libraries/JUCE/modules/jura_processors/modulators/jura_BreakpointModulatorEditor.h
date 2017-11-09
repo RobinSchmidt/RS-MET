@@ -232,15 +232,15 @@ protected:
 
   // widgets:
   RButton   *snapXButton, *snapYButton;
-  RComboBox *snapXComboBox, *snapYComboBox;
+  RComboBox *snapXComboBox, *snapYComboBox; // rename to gridX...
 
   // plot and related stuff:
   ModulatorCurveEditor*      breakpointEditor;
   CoordinateSystemZoomerOld* breakpointZoomer;
 
   // obsolete soon:
-  static const std::vector<String> GridIntervalStringArray;
-  static const std::vector<double> GridIntervalValueArray
+  //static const std::vector<String> GridIntervalStringArray;
+  //static const std::vector<double> GridIntervalValueArray
 
   juce_UseDebuggingNewOperator;
 };

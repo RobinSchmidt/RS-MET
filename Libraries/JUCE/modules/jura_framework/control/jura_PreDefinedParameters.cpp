@@ -31,5 +31,7 @@ const std::vector<double> ParameterGridInterval::gridIntervalValueArray{
 
 ParameterGridInterval::ParameterGridInterval(const juce::String& name) : Parameter(name)
 {
-
+  setScaling(STRING);
+  for (int i = 0; i < gridIntervalStringArray.size(); ++i)
+    addStringValue(gridIntervalStringArray[i]);
 }
