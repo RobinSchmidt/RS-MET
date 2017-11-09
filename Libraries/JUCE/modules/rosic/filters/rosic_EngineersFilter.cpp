@@ -26,7 +26,7 @@ void rsEngineersFilter::setMode(int newMode)
 void rsEngineersFilter::setApproximationMethod(int newApproximationMethod)
 {
   designer.setApproximationMethod(newApproximationMethod);
-  updateCoefficients();
+  updateCoefficients(true);
 }
 
 void rsEngineersFilter::setFrequency(double newFrequency)
@@ -85,8 +85,10 @@ void rsEngineersFilter::getMagnitudeResponse(double *frequencies, double *magnit
 
 // internal functions:
 
-void rsEngineersFilter::updateCoefficients()
+void rsEngineersFilter::updateCoefficients(bool resetState)
 {
   BiquadCascade::initBiquadCoeffs();
   designer.getBiquadCascadeCoefficients(b0, b1, b2, a1, a2);
+  if(resetState)
+    BiquadCascadeStereo::reset();
 }

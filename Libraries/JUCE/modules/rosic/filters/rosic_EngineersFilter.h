@@ -102,7 +102,7 @@ public:
 protected:
 
   /** Triggers a re-calculation of the biquad coefficients. */
-  void updateCoefficients();
+  void updateCoefficients(bool resetState = false);
 
   InfiniteImpulseResponseDesigner designer;
 
