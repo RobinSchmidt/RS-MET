@@ -2004,6 +2004,7 @@
 		C426D58B5AC705CB41198F3C = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "rosic_WhiteToPinkFilter.cpp"; path = "../../../../../Libraries/JUCE/modules/rosic/filters/rosic_WhiteToPinkFilter.cpp"; sourceTree = "SOURCE_ROOT"; };
 		C440977CD628B711F5568AED = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TestHelpers.h; path = ../../../../../Libraries/JUCE/modules/romos/TestSuite/TestHelpers.h; sourceTree = "SOURCE_ROOT"; };
 		C45D79A0CD14EDF5AF58FF69 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "as_restore.h"; path = "../../../../../Libraries/JUCE/modules/rosic/_third_party/angelscript/as_restore.h"; sourceTree = "SOURCE_ROOT"; };
+		C46890CF989CF1078DF94876 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "jura_PreDefinedParameters.cpp"; path = "../../../../../Libraries/JUCE/modules/jura_framework/control/jura_PreDefinedParameters.cpp"; sourceTree = "SOURCE_ROOT"; };
 		C46A905502583666690E9E79 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "as_config.h"; path = "../../../../../Libraries/JUCE/modules/rosic/_third_party/angelscript/as_config.h"; sourceTree = "SOURCE_ROOT"; };
 		C477BC82A990BDB90774AAAD = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_TemporaryFile.h"; path = "../../../../../Libraries/JUCE/modules/juce_core/files/juce_TemporaryFile.h"; sourceTree = "SOURCE_ROOT"; };
 		C47801912A429057D89A7CBF = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "juce_MouseInactivityDetector.cpp"; path = "../../../../../Libraries/JUCE/modules/juce_gui_basics/mouse/juce_MouseInactivityDetector.cpp"; sourceTree = "SOURCE_ROOT"; };
@@ -4018,6 +4019,7 @@
 					244259DA95C512DB0BD09BEC,
 					D79DC6D90AC985C288FA6A75,
 					73174453B6D73096DCA5E9BA,
+					C46890CF989CF1078DF94876,
 					4F2B3BFDE14A57EC2E21539E,
 					81667324AA8B0FA0069B904D,
 					F3022EAA3F173268E21F0A9F,

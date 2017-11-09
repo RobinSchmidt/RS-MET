@@ -37,7 +37,7 @@ public:
     value        = defaultValue;
   }
 
-  juce_UseDebuggingNewOperator;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParameterPowersOfTwo)
 };
 
 class ParameterTwoPoleFilterMode : public AutomatableParameter
@@ -72,7 +72,7 @@ public:
 
     setValue(0.0, false, false); // init to Bypass
   }
-  juce_UseDebuggingNewOperator;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParameterTwoPoleFilterMode)
 };
 
 class ParameterFourPoleFilterMode : public AutomatableParameter
@@ -129,8 +129,19 @@ public:
     setValue(0.0, false, false); // init to Bypass
   }
 
-  juce_UseDebuggingNewOperator;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParameterFourPoleFilterMode)
 };
 
+//=================================================================================================
+
+/** For grids like in the node editor for the BreakpointModulator */ 
+
+class ParameterGridInterval : public Parameter
+{
+public:
+
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParameterGridInterval)
+};
 
 #endif
