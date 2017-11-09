@@ -1748,6 +1748,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_ParameterManager.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_ParameterProfiles.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_SmoothableParameter.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -4247,6 +4250,8 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_ModulatableParameter.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_Parameter.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_ParameterManager.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_ParameterMappers.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_ParameterProfiles.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_PreDefinedParameters.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_ScopedPointerLock.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_SmoothableParameter.h"/>

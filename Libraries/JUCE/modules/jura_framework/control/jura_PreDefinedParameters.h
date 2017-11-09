@@ -5,7 +5,8 @@
 intialize all the values, default values etc. everytime one needs a parameter of the kind.
 
 todo: get rid of these - instead make initialization functions for various kinds of parameters
-such that they work with all subclasses of Parameter
+such that they work with all subclasses of Parameter - see ParameterProfiles .h/cpp
+
 */
 
 

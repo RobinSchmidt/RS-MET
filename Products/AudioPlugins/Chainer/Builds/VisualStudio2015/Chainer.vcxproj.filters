@@ -2362,6 +2362,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_ParameterManager.cpp">
       <Filter>Juce Modules\jura_framework\control</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_ParameterProfiles.cpp">
+      <Filter>Juce Modules\jura_framework\control</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_SmoothableParameter.cpp">
       <Filter>Juce Modules\jura_framework\control</Filter>
     </ClCompile>
@@ -6142,6 +6145,12 @@
       <Filter>Juce Modules\jura_framework\control</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_ParameterManager.h">
+      <Filter>Juce Modules\jura_framework\control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_ParameterMappers.h">
+      <Filter>Juce Modules\jura_framework\control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_ParameterProfiles.h">
       <Filter>Juce Modules\jura_framework\control</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\control\jura_PreDefinedParameters.h">

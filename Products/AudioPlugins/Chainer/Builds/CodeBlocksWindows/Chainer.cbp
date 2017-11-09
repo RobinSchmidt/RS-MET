@@ -4945,6 +4945,18 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/control/jura_ParameterMappers.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/control/jura_ParameterProfiles.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/control/jura_ParameterProfiles.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_framework/control/jura_PreDefinedParameters.h">
       <Option compile="0"/>
       <Option link="0"/>

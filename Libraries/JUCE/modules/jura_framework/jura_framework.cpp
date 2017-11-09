@@ -19,6 +19,7 @@ namespace jura
 
 #include "control/jura_Mediator.cpp"
 #include "control/jura_Parameter.cpp"
+#include "control/jura_ParameterProfiles.cpp"
 #include "control/jura_SmoothableParameter.cpp"
 #include "control/jura_AutomatableParameter.cpp"
 #include "control/jura_MetaParameter.cpp"
