@@ -82,7 +82,7 @@ public:
 protected:
 
   /** Fills the array of automatable parameters. */
-  virtual void initializeAutomatableParameters();
+  virtual void createParameters();
 
   /** Pointer to the underlying RAPT object which is wrapped. */
   //RAPT::rsBreakpointModulator<double> *wrappedBreakpointModulator;

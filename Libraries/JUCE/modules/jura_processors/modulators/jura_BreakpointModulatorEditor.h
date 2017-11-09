@@ -238,6 +238,7 @@ protected:
   ModulatorCurveEditor*      breakpointEditor;
   CoordinateSystemZoomerOld* breakpointZoomer;
 
+  // obsolete soon:
   static const std::vector<String> GridIntervalStringArray;
   static const std::vector<double> GridIntervalValueArray
 

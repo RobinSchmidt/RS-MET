@@ -14,7 +14,7 @@ BreakpointModulatorAudioModule::BreakpointModulatorAudioModule(CriticalSection *
   wrappedBreakpointModulator = newBreakpointModulatorToWrap;
   moduleName = juce::String("BreakpointModulator");
   setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/BreakpointModulator") );
-  initializeAutomatableParameters();
+  createParameters();
 }
 
 BreakpointModulatorAudioModule::~BreakpointModulatorAudioModule()
@@ -49,6 +49,7 @@ void BreakpointModulatorAudioModule::parameterChanged(Parameter* parameterThatHa
 
 int stringToModBreakpointShapeIndex(const juce::String &shapeString)
 {
+  // use a std::map for this:
   typedef rosic::ModBreakpoint BP;
   if(      shapeString == "Stairstep" )  return BP::STAIRSTEP;
   else if( shapeString == "Linear" )     return BP::LINEAR;
@@ -109,6 +110,8 @@ XmlElement* BreakpointModulatorAudioModule::getStateAsXml(const juce::String& st
     xmlState->setAttribute(juce::String("LoopMode"), juce::String("Forward") );
   else
     xmlState->setAttribute(juce::String("LoopMode"), juce::String("Off") );
+
+  // gridX, gridY, snapX, snapY
 
   // create an XmlElement for each breakpoint and add it as child-XmlElement:
   for(int p = 0; p <= wrappedBreakpointModulator->lastBreakpointIndex(); p++)
@@ -283,15 +286,13 @@ AudioModuleEditor* BreakpointModulatorAudioModule::createEditor()
 //-------------------------------------------------------------------------------------------------
 // internal functions:
 
-void BreakpointModulatorAudioModule::initializeAutomatableParameters()
+void BreakpointModulatorAudioModule::createParameters()
 {
   // create the automatable parameters and add them to the list - note that the order of the adds
   // is important because in parameterChanged(), the index (position in the array) will be used to
   // identify which particlua parameter has changed.
 
-  //juce::Array<double> defaultValues;
   std::vector<double> defaultValues;
-
 
   typedef MetaControlledParameter Param;
   Param* p;
@@ -379,6 +380,13 @@ void BreakpointModulatorAudioModule::initializeAutomatableParameters()
   defaultValues.push_back(100.0);
   p->setDefaultValues(defaultValues);
   addObservedParameter(p);
+
+  // new parameters added 2017 for save/recall grid/snap settings:
+  addObservedParameter(new ParameterGridInterval("GridX"));
+  addObservedParameter(new ParameterGridInterval("GridY"));
+  addObservedParameter(new Parameter("SnapX", 0.0, 1.0, 0.0, Parameter::BOOLEAN, 1.0));
+  addObservedParameter(new Parameter("SnapY", 0.0, 1.0, 0.0, Parameter::BOOLEAN, 1.0));
+
 
   // make a call to setValue for each parameter in order to set up all the slave voices (still
   // necessary?):

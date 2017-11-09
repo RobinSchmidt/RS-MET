@@ -140,6 +140,10 @@ class ParameterGridInterval : public Parameter
 {
 public:
 
+  ParameterGridInterval(const juce::String& name);
+
+  static const std::vector<String> gridIntervalStringArray;
+  static const std::vector<double> gridIntervalValueArray;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParameterGridInterval)
 };
