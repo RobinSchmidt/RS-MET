@@ -142,6 +142,9 @@ public:
 
   ParameterGridInterval(const juce::String& name);
 
+  virtual void setStringValue(const juce::String& newString, bool sendNotification,
+    bool callCallbacks) override;
+
   static const std::vector<String> gridIntervalStringArray;
   static const std::vector<double> gridIntervalValueArray;
 
