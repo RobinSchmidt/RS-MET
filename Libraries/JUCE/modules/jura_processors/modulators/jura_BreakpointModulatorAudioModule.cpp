@@ -84,16 +84,11 @@ XmlElement* BreakpointModulatorAudioModule::getStateAsXml(const juce::String& st
   // store the inherited controller mappings:
   XmlElement *xmlState = AudioModule::getStateAsXml(stateName, markAsClean);
 
-  //// store the parameters of the underlying core object:
-  //if( wrappedBreakpointModulator != NULL )
-  //  xmlState = breakpointModulatorStateToXml(wrappedBreakpointModulator, xmlState);
+  // gridX, gridY, snapX, snapY (should be already added by baseclass method?)
+  // to figure out, we need to connect the params to widgets to set them to values different from
+  // their default values
 
-  //double doubleValue = 0.0;
-  //int    intValue    = 0;
-  //bool   boolValue   = false;
-  juce::String stringValue = juce::String::empty;
-
-  // add some attributes:
+  // add some attributes (todo: have parameter objects for this, so it can be done by baseclass):
   xmlState->setAttribute(juce::String("ScaleFactor"),      wrappedBreakpointModulator->getScaleFactor() );
   xmlState->setAttribute(juce::String("Offset"),           wrappedBreakpointModulator->getOffset() );
   xmlState->setAttribute(juce::String("TimeScale"),        wrappedBreakpointModulator->getTimeScale() );
@@ -111,8 +106,6 @@ XmlElement* BreakpointModulatorAudioModule::getStateAsXml(const juce::String& st
   else
     xmlState->setAttribute(juce::String("LoopMode"), juce::String("Off") );
 
-  // gridX, gridY, snapX, snapY
-
   // create an XmlElement for each breakpoint and add it as child-XmlElement:
   for(int p = 0; p <= wrappedBreakpointModulator->lastBreakpointIndex(); p++)
   {
@@ -122,10 +115,8 @@ XmlElement* BreakpointModulatorAudioModule::getStateAsXml(const juce::String& st
     breakpointState->setAttribute(juce::String("Level"),       wrappedBreakpointModulator->getBreakpointLevel(p));
     breakpointState->setAttribute(juce::String("Shape"),       modBreakpointShapeIndexToString(wrappedBreakpointModulator->getBreakpointShape(p) ) );
     breakpointState->setAttribute(juce::String("ShapeAmount"), wrappedBreakpointModulator->getBreakpointShapeAmount(p));
-
     xmlState->addChildElement(breakpointState);
-
-  } // end of for(int p=0; p<=modulator->lastBreakpointIndex(); p++)
+  }
 
   return xmlState;
 }
@@ -135,12 +126,6 @@ void BreakpointModulatorAudioModule::setStateFromXml(const XmlElement& xmlState,
 {
   // restore the inherited controller mappings:
   AudioModule::setStateFromXml(xmlState, stateName, markAsClean);
-
-  //// restore the parameters of the underlying core object:
-  //if( wrappedBreakpointModulator != NULL )
-  //  breakpointModulatorStateFromXml(wrappedBreakpointModulator, xmlState);
-
-  //bool success = true;  // get rid
 
   rosic::BreakpointModulator *modulator = wrappedBreakpointModulator; // use a shorter name here...
 
@@ -290,15 +275,12 @@ void BreakpointModulatorAudioModule::createParameters()
 {
   // create the automatable parameters and add them to the list - note that the order of the adds
   // is important because in parameterChanged(), the index (position in the array) will be used to
-  // identify which particlua parameter has changed.
+  // identify which particular parameter has changed.
 
   std::vector<double> defaultValues;
 
   typedef MetaControlledParameter Param;
   Param* p;
-
-  // this pointer will be used to temporarily store the addresses of the created Parameter-objects:
-  //AutomatableParameter* p;
 
   // #00
   p = new Param("TimeScale", 0.0625, 16.0, 1.0, Parameter::EXPONENTIAL);
