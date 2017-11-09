@@ -84,10 +84,6 @@ XmlElement* BreakpointModulatorAudioModule::getStateAsXml(const juce::String& st
   // store the inherited controller mappings:
   XmlElement *xmlState = AudioModule::getStateAsXml(stateName, markAsClean);
 
-  // gridX, gridY, snapX, snapY (should be already added by baseclass method?)
-  // to figure out, we need to connect the params to widgets to set them to values different from
-  // their default values
-
   // add some attributes (todo: have parameter objects for this, so it can be done by baseclass):
   xmlState->setAttribute(juce::String("ScaleFactor"),      wrappedBreakpointModulator->getScaleFactor() );
   xmlState->setAttribute(juce::String("Offset"),           wrappedBreakpointModulator->getOffset() );

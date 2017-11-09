@@ -895,6 +895,7 @@ void BreakpointModulatorEditor::updateWidgetsAccordingToState(bool deSelectBreak
   globalEditor->updateWidgetsAccordingToState();
   breakpointParameterEditor->updateWidgetsAccordingToState();
 
+  /*
   // !!!NEEDS UPDATE!!!
   snapXButton->setToggleState(breakpointEditor->isVerticalFineGridVisible(), false);
   gridXComboBox->selectItemByIndex(
@@ -902,6 +903,17 @@ void BreakpointModulatorEditor::updateWidgetsAccordingToState(bool deSelectBreak
   snapYButton->setToggleState(breakpointEditor->isHorizontalFineGridVisible(), false);
   gridYComboBox->selectItemByIndex(
     indexFromGridInterval(breakpointEditor->getHorizontalFineGridInterval())-1, false);
+    */
+  // updated - does not work yet:
+  String test1 = modulatorModule->getParameterByName("GridX")->getStringValue();
+  String test2 = modulatorModule->getParameterByName("GridY")->getStringValue();
+  gridXComboBox->selectItemFromText(modulatorModule->getParameterByName("GridX")->getStringValue(), false);
+  gridYComboBox->selectItemFromText(modulatorModule->getParameterByName("GridY")->getStringValue(), false);
+  snapXButton->setToggleState(modulatorModule->getParameterByName("SnapX")->getValue() >= 0.5, false);
+  snapYButton->setToggleState(modulatorModule->getParameterByName("SnapY")->getValue() >= 0.5, false);
+
+  // maybe we need to adjust the grid-settings of the plot itself also?
+
 
   // update the plot:
   breakpointEditor->updateMaximumRange(true);

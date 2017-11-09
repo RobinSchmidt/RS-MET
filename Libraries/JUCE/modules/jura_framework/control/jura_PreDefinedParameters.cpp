@@ -36,10 +36,22 @@ ParameterGridInterval::ParameterGridInterval(const juce::String& name) : Paramet
     addStringValue(gridIntervalStringArray[i]);
 }
 
+/*
 void ParameterGridInterval::setStringValue(const juce::String& newString, bool sendNotification,
   bool callCallbacks)
 {
   for (int i = 0; i < gridIntervalStringArray.size(); ++i)
     if(newString == gridIntervalStringArray[i])
+    {
       setValue(gridIntervalValueArray[i], sendNotification, callCallbacks);
+    }
+}
+*/
+
+double ParameterGridInterval::getValue() const
+{
+  ScopedPointerLock spl(mutex); 
+  int index = (int)value;
+  return gridIntervalValueArray[index];
+  //return value;
 }
