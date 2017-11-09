@@ -252,8 +252,8 @@ void BreakpointModulatorAudioModule::setStateFromXml(const XmlElement& xmlState,
   else
     jassertfalse;
 
-  if(markAsClean)
-    markStateAsClean(); // does not work
+  //if(markAsClean)
+  //  markStateAsClean(); // does not work
 
   sendChangeMessage();
 }
@@ -276,14 +276,7 @@ AudioModuleEditor* BreakpointModulatorAudioModule::createEditor()
 
 void BreakpointModulatorAudioModule::createParameters()
 {
-  // create the automatable parameters and add them to the list - note that the order of the adds
-  // is important because in parameterChanged(), the index (position in the array) will be used to
-  // identify which particular parameter has changed. ...not anymore
-
   std::vector<double> defaultValues;
-
-  //typedef MetaControlledParameter Param;
-  //Param* p;
 
   typedef ModulatableParameter Param;
   Param* p;
@@ -291,7 +284,6 @@ void BreakpointModulatorAudioModule::createParameters()
   typedef rosic::BreakpointModulator BM;
   BM* bm = wrappedBreakpointModulator;
 
-  // #00
   p = new Param("TimeScale", 0.0625, 16.0, 1.0, Parameter::EXPONENTIAL);
   defaultValues.push_back(1.0/16.0);
   defaultValues.push_back(1.0/12.0);
@@ -314,7 +306,6 @@ void BreakpointModulatorAudioModule::createParameters()
   p->setValueChangeCallback<BM>(bm, &BM::setTimeScale);
   addObservedParameter(p);
 
-  // #01
   p = new Param("TimeScaleByKey", -150.0, 150.0, 0.0, Parameter::LINEAR, 1.0);
   defaultValues.clear();
   defaultValues.push_back(-100.0);
@@ -324,7 +315,6 @@ void BreakpointModulatorAudioModule::createParameters()
   p->setValueChangeCallback<BM>(bm, &BM::setTimeScaleByKey);
   addObservedParameter(p);
 
-  // #02
   p = new Param("TimeScaleByVel", -150.0, 150.0, 0.0, Parameter::LINEAR, 1.0);
   defaultValues.clear();
   defaultValues.push_back(-100.0);
@@ -334,7 +324,6 @@ void BreakpointModulatorAudioModule::createParameters()
   p->setValueChangeCallback<BM>(bm, &BM::setTimeScaleByVel);
   addObservedParameter(p);
 
-  // #03
   p = new Param("Depth", 0.0, 4.0, 1.0, Parameter::LINEAR);
   defaultValues.clear();
   defaultValues.push_back(1.0/16.0);
@@ -358,7 +347,6 @@ void BreakpointModulatorAudioModule::createParameters()
   p->setValueChangeCallback<BM>(bm, &BM::setDepth);
   addObservedParameter(p);
 
-  // #04
   p = new Param("DepthByKey", -150.0, 150.0, 0.0, Parameter::LINEAR, 1.0);
   defaultValues.clear();
   defaultValues.push_back(-100.0);
@@ -368,7 +356,6 @@ void BreakpointModulatorAudioModule::createParameters()
   p->setValueChangeCallback<BM>(bm, &BM::setDepthByKey);
   addObservedParameter(p);
 
-  // #05
   p = new Param("DepthByVel", -150.0, 150.0, 0.0, Parameter::LINEAR, 1.0);
   defaultValues.clear();
   defaultValues.push_back(-100.0);

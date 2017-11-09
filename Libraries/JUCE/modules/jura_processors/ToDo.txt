@@ -1,5 +1,5 @@
 BreakpointModulatorAudioModule:
- -switch to callback based handling of parameter-changes
+ -make grid/snap save/recall work
 
 
 Smoothing-Sytem:
