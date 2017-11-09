@@ -566,10 +566,10 @@ BreakpointModulatorEditor::BreakpointModulatorEditor(CriticalSection *newPlugInL
   snapXButton->addRButtonListener(this);
   snapXButton->assignParameter(newBreakpointModulatorAudioModule->getParameterByName("SnapX"));
 
-  addWidget( snapXComboBox = new RComboBox("SnapXComboBox") );
-  snapXComboBox->registerComboBoxObserver(this);
-  snapXComboBox->setDescription("Select spacing of the vertical grid lines");
-  snapXComboBox->assignParameter(newBreakpointModulatorAudioModule->getParameterByName("GridX"));
+  addWidget( gridXComboBox = new RComboBox("GridXComboBox") );
+  gridXComboBox->registerComboBoxObserver(this);
+  gridXComboBox->setDescription("Select spacing of the vertical grid lines");
+  gridXComboBox->assignParameter(newBreakpointModulatorAudioModule->getParameterByName("GridX"));
 
   addWidget(snapYButton = new RButton("#Y:"));
   snapYButton->setDescription("Toggle level-quantization on/off.");
@@ -577,21 +577,13 @@ BreakpointModulatorEditor::BreakpointModulatorEditor(CriticalSection *newPlugInL
   snapYButton->addRButtonListener(this);
   snapYButton->assignParameter(newBreakpointModulatorAudioModule->getParameterByName("SnapY"));
 
-  addWidget(snapYComboBox = new RComboBox("SnapYComboBox"));
-  snapYComboBox->registerComboBoxObserver(this);
-  snapYComboBox->setDescription("Select spacing of the horizontal grid lines");
-  snapYComboBox->assignParameter(newBreakpointModulatorAudioModule->getParameterByName("GridY"));
+  addWidget(gridYComboBox = new RComboBox("GridYComboBox"));
+  gridYComboBox->registerComboBoxObserver(this);
+  gridYComboBox->setDescription("Select spacing of the horizontal grid lines");
+  gridYComboBox->assignParameter(newBreakpointModulatorAudioModule->getParameterByName("GridY"));
 
-  /*
-  for (int i = 0; i < GridIntervalStringArray.size(); ++i)
-  {
-    snapXComboBox->addItem(i, GridIntervalStringArray[i]);
-    snapYComboBox->addItem(i, GridIntervalStringArray[i]);
-  }
-  */
-
-  snapXComboBox->selectItemByIndex(5, true); // 1/16
-  snapYComboBox->selectItemByIndex(4, true); // 1/12 (pitch)
+  //gridXComboBox->selectItemByIndex(5, true); // 1/16
+  //gridYComboBox->selectItemByIndex(4, true); // 1/12 (pitch)
 
    // get rid of this code duplication...
 
@@ -749,15 +741,18 @@ void BreakpointModulatorEditor::rComboBoxChanged(RComboBox *rComboBoxThatHasChan
   }
     */
 
-  if( rComboBoxThatHasChanged == snapXComboBox )
+
+  // !!!NEEDS UPDATE!!! maybe we should add ourselves as ParameterObserver to the grid 
+  // parameters...
+  if( rComboBoxThatHasChanged == gridXComboBox )
   {
-    int newGridIntervalIndex = snapXComboBox->getSelectedItemIdentifier();
+    int newGridIntervalIndex = gridXComboBox->getSelectedItemIdentifier();
     breakpointEditor->setVerticalFineGrid(gridIntervalFromIndex(newGridIntervalIndex), true);
     breakpointEditor->repaint();
   }
-  else if( rComboBoxThatHasChanged == snapYComboBox )
+  else if( rComboBoxThatHasChanged == gridYComboBox )
   {
-    int newGridIntervalIndex = snapYComboBox->getSelectedItemIdentifier();
+    int newGridIntervalIndex = gridYComboBox->getSelectedItemIdentifier();
     breakpointEditor->setHorizontalFineGrid(gridIntervalFromIndex(newGridIntervalIndex), true);
     breakpointEditor->repaint();
   }
@@ -869,8 +864,8 @@ void BreakpointModulatorEditor::resized()
   snapYButton->setBounds(x+4, y+14+4, 32, 16);
   x = snapXButton->getRight()-2;
   w = getWidth()-x;
-  snapXComboBox->setBounds(x, y+4,    w-6, 16);
-  snapYComboBox->setBounds(x, y+14+4, w-6, 16);
+  gridXComboBox->setBounds(x, y+4,    w-6, 16);
+  gridYComboBox->setBounds(x, y+14+4, w-6, 16);
 }
 
 void BreakpointModulatorEditor::deSelectBreakpoint()
@@ -902,10 +897,10 @@ void BreakpointModulatorEditor::updateWidgetsAccordingToState(bool deSelectBreak
 
   // !!!NEEDS UPDATE!!!
   snapXButton->setToggleState(breakpointEditor->isVerticalFineGridVisible(), false);
-  snapXComboBox->selectItemByIndex(
+  gridXComboBox->selectItemByIndex(
     indexFromGridInterval(breakpointEditor->getVerticalFineGridInterval())-1, false);
   snapYButton->setToggleState(breakpointEditor->isHorizontalFineGridVisible(), false);
-  snapYComboBox->selectItemByIndex(
+  gridYComboBox->selectItemByIndex(
     indexFromGridInterval(breakpointEditor->getHorizontalFineGridInterval())-1, false);
 
   // update the plot:
@@ -940,41 +935,7 @@ void BreakpointModulatorEditor::autoAdjustPlotRangeY()
   breakpointZoomer->zoomToAllY();
 }
 
-/*
-const std::vector<String> BreakpointModulatorEditor::GridIntervalStringArray{
-  "1",
-  "1/2",
-  "1/4",
-  "1/8",
-  "1/10",
-  "1/12",
-  "1/16",
-  "1/24",
-  "1/32",
-  "1/64",
-  "1/100",
-  "1/128",
-};
-
-const std::vector<double> BreakpointModulatorEditor::GridIntervalValueArray{
-  1.0,
-  1.0/2.0,
-  1.0/4.0,
-  1.0/8.0,
-  1.0/10.0,
-  1.0/12.0,
-  1.0/16.0,
-  1.0/24.0,
-  1.0/32.0,
-  1.0/64.0,
-  1.0/100.0,
-  1.0/128.0,
-};
-
-*/
-
 // try to get rid of these 4 methods:
-
 double BreakpointModulatorEditor::gridIntervalFromIndex(int index)
 {
   if (index < 0 || index >= ParameterGridInterval::gridIntervalValueArray.size())
@@ -982,7 +943,6 @@ double BreakpointModulatorEditor::gridIntervalFromIndex(int index)
 
   return  ParameterGridInterval::gridIntervalValueArray[index];
 }
-
 int BreakpointModulatorEditor::indexFromGridInterval(double interval)
 {
   for (int i = 0; i < ParameterGridInterval::gridIntervalValueArray.size(); ++i)
@@ -993,7 +953,6 @@ int BreakpointModulatorEditor::indexFromGridInterval(double interval)
   
   return 9; // 0.01
 }
-
 double BreakpointModulatorEditor::timeIntervalFromIndex(int index)
 {
   if (index < 0 || index >= ParameterGridInterval::gridIntervalValueArray.size())
@@ -1001,7 +960,6 @@ double BreakpointModulatorEditor::timeIntervalFromIndex(int index)
 
   return  ParameterGridInterval::gridIntervalValueArray[index];
 }
-
 int BreakpointModulatorEditor::indexFromTimeInterval(double interval)
 {
   for (int i = 0; i < ParameterGridInterval::gridIntervalValueArray.size(); ++i)
@@ -1009,7 +967,6 @@ int BreakpointModulatorEditor::indexFromTimeInterval(double interval)
     if (interval == ParameterGridInterval::gridIntervalValueArray[i])
       return i;
   }
-
   return 0; // 1, no predefined interval
 }
 

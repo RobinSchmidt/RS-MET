@@ -279,16 +279,18 @@ void BreakpointModulatorEditorMulti::rComboBoxChanged(RComboBox *rComboBoxThatHa
 
   if( rComboBoxThatHasChanged == breakpointParameterEditor->shapeComboBox )
     breakpointEditorMulti->updatePlotCurveData(editedModulatorIndex, modulatorToEdit, true);
-  else if( rComboBoxThatHasChanged == snapXComboBox )
+
+  // !!!NEEDS UPDATE!!!
+  else if( rComboBoxThatHasChanged == gridXComboBox )
   {
-    int newGridIntervalIndex = snapXComboBox->getSelectedItemIdentifier();
+    int newGridIntervalIndex = gridXComboBox->getSelectedItemIdentifier();
     breakpointEditorMulti->setVerticalFineGrid(gridIntervalFromIndex(newGridIntervalIndex),
       snapXButton->getToggleState());
     breakpointEditorMulti->repaint();
   }
-  else if( rComboBoxThatHasChanged == snapYComboBox )
+  else if( rComboBoxThatHasChanged == gridYComboBox )
   {
-    int newGridIntervalIndex = snapYComboBox->getSelectedItemIdentifier();
+    int newGridIntervalIndex = gridYComboBox->getSelectedItemIdentifier();
     breakpointEditorMulti->setHorizontalFineGrid(gridIntervalFromIndex(newGridIntervalIndex),
       snapYButton->getToggleState());
     breakpointEditorMulti->repaint();
@@ -352,12 +354,12 @@ void BreakpointModulatorEditorMulti::resized()
   y = snapRectangle.getY();
   snapXButton->setBounds(x+4, y+4, 32, 16);
   x = snapXButton->getRight();
-  snapXComboBox->setBounds(x+4, y+4, snapRectangle.getRight()-x-8, 16);
+  gridXComboBox->setBounds(x+4, y+4, snapRectangle.getRight()-x-8, 16);
   x = snapRectangle.getX();
   y = snapXButton->getBottom();
   snapYButton->setBounds(x+4, y+4, 32, 16);
   x = snapXButton->getRight();
-  snapYComboBox->setBounds(x+4, y+4, snapRectangle.getRight()-x-8, 16);
+  gridYComboBox->setBounds(x+4, y+4, snapRectangle.getRight()-x-8, 16);
 
   // the middle section (the curve editor):
   x = leftSectionWidth;
