@@ -169,7 +169,6 @@ void FuncShaperAudioModule::createParameters()
   typedef rosic::FuncShaper FS;
   FS* fs = wrappedFuncShaper;
 
-
   // create automatable parameters:
 
   p = new Param("InputFilterUsed", 0.0, 1.0, 0.0, Parameter::BOOLEAN);

@@ -142,8 +142,8 @@ public:
 
   ParameterGridInterval(const juce::String& name);
 
-  //virtual void setStringValue(const juce::String& newString, bool sendNotification,
-  //  bool callCallbacks) override;
+  virtual void setStringValue(const juce::String& newString, bool sendNotification,
+    bool callCallbacks) override;
 
   virtual double getValue() const override;
 

@@ -1,3 +1,5 @@
+BreakpointModulatorAudioModule:
+ -switch to callback based handling of parameter-changes
 
 
 Smoothing-Sytem:
