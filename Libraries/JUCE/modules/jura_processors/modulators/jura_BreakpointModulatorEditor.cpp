@@ -4,7 +4,6 @@
 BreakpointModulatorGlobalEditor::BreakpointModulatorGlobalEditor(CriticalSection *newPlugInLock,
   BreakpointModulatorAudioModule* newModulatorToEdit)
   : AudioModuleEditor(newModulatorToEdit)
-  //: AudioModuleEditor(newPlugInLock, newModulatorToEdit)
 {
   layout = 0;
 
@@ -582,11 +581,6 @@ BreakpointModulatorEditor::BreakpointModulatorEditor(CriticalSection *newPlugInL
   gridYComboBox->setDescription("Select spacing of the horizontal grid lines");
   gridYComboBox->assignParameter(newBreakpointModulatorAudioModule->getParameterByName("GridY"));
 
-  //gridXComboBox->selectItemByIndex(5, true); // 1/16
-  //gridYComboBox->selectItemByIndex(4, true); // 1/12 (pitch)
-
-   // get rid of this code duplication...
-
   addWidget(closeButton = new RButton(RButton::CLOSE), true, false); // invisible by default
   closeButton->setDescription("Closes the modulator editor");
   closeButton->setClickingTogglesState(false);
@@ -741,26 +735,7 @@ void BreakpointModulatorEditor::rComboBoxChanged(RComboBox *rComboBoxThatHasChan
   }
     */
 
-
-  /*
-  // !!!NEEDS UPDATE!!! maybe we should add ourselves as ParameterObserver to the grid 
-  // parameters...
-  if( rComboBoxThatHasChanged == gridXComboBox )
-  {
-    int newGridIntervalIndex = gridXComboBox->getSelectedItemIdentifier();
-    breakpointEditor->setVerticalFineGrid(gridIntervalFromIndex(newGridIntervalIndex), true);
-    breakpointEditor->repaint();
-  }
-  else if( rComboBoxThatHasChanged == gridYComboBox )
-  {
-    int newGridIntervalIndex = gridYComboBox->getSelectedItemIdentifier();
-    breakpointEditor->setHorizontalFineGrid(gridIntervalFromIndex(newGridIntervalIndex), true);
-    breakpointEditor->repaint();
-  }
-  */
-
   updateWidgetsAccordingToState(false);
-
   moduleToEdit->markStateAsDirty();
 }
 
@@ -898,19 +873,6 @@ void BreakpointModulatorEditor::updateWidgetsAccordingToState(bool deSelectBreak
 
   globalEditor->updateWidgetsAccordingToState();
   breakpointParameterEditor->updateWidgetsAccordingToState();
-
-  /*
-  // !!!NEEDS UPDATE!!!
-  snapXButton->setToggleState(breakpointEditor->isVerticalFineGridVisible(), false);
-  gridXComboBox->selectItemByIndex(
-    indexFromGridInterval(breakpointEditor->getVerticalFineGridInterval())-1, false);
-  snapYButton->setToggleState(breakpointEditor->isHorizontalFineGridVisible(), false);
-  gridYComboBox->selectItemByIndex(
-    indexFromGridInterval(breakpointEditor->getHorizontalFineGridInterval())-1, false);
-    */
-  // updated - does not work yet:
-  //String test1 = modulatorModule->getParameterByName("GridX")->getStringValue();
-  //String test2 = modulatorModule->getParameterByName("GridY")->getStringValue();
 
   Parameter *p;
   double gridX, gridY;
