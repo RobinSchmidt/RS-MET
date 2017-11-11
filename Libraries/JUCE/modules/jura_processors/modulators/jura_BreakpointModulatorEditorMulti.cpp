@@ -179,8 +179,11 @@ void BreakpointModulatorEditorMulti::rButtonClicked(RButton *button)
     moduleToEdit->markStateAsDirty();
     return;
   }
-  else if( button == snapXButton || button == snapYButton )
+  else if(button == snapXButton || button == snapYButton)
+  {
     BreakpointModulatorEditor::rButtonClicked(button);
+    breakpointEditorMulti->repaint(); // needed?
+  }
 
   globalEditors.getLock().enter();
   for(int i=0; i<globalEditors.size(); i++)
@@ -264,29 +267,36 @@ void BreakpointModulatorEditorMulti::changeListenerCallback(
   moduleToEdit->markStateAsDirty();
 }
 
-void BreakpointModulatorEditorMulti::rComboBoxChanged(RComboBox *rComboBoxThatHasChanged)
+void BreakpointModulatorEditorMulti::rComboBoxChanged(RComboBox* box)
 {
   if( modulatorToEdit == NULL )
     return;
 
-  if( rComboBoxThatHasChanged == breakpointParameterEditor->shapeComboBox )
+  if( box == breakpointParameterEditor->shapeComboBox )
     breakpointEditorMulti->updatePlotCurveData(editedModulatorIndex, modulatorToEdit, true);
 
   // !!!NEEDS UPDATE!!!
-  else if( rComboBoxThatHasChanged == gridXComboBox )
+  else if( box == gridXComboBox || box == gridYComboBox )
   {
+    BreakpointModulatorEditor::rComboBoxChanged(box);
+    updatePlotAndGridWidgets(modulatorModule, breakpointEditorMulti);
+    breakpointEditorMulti->repaint(); // needed?
+    /*
     int newGridIntervalIndex = gridXComboBox->getSelectedItemIdentifier();
     breakpointEditorMulti->setVerticalFineGrid(gridIntervalFromIndex(newGridIntervalIndex),
       snapXButton->getToggleState());
     breakpointEditorMulti->repaint();
+    */
   }
-  else if( rComboBoxThatHasChanged == gridYComboBox )
+  /*
+  else if( box == gridYComboBox )
   {
     int newGridIntervalIndex = gridYComboBox->getSelectedItemIdentifier();
     breakpointEditorMulti->setHorizontalFineGrid(gridIntervalFromIndex(newGridIntervalIndex),
       snapYButton->getToggleState());
     breakpointEditorMulti->repaint();
   }
+  */
 }
 
 void BreakpointModulatorEditorMulti::copyColourSettingsFrom(

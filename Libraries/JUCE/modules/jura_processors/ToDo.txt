@@ -1,5 +1,7 @@
 BreakpointModulatorAudioModule:
  -make grid/snap save/recall work
+  -i think, for the multi-editor, we need to re-assign the callbacks for the parameters when the
+   selected modulator changes ...hmm...or maybe not?
 
 
 Smoothing-Sytem:
