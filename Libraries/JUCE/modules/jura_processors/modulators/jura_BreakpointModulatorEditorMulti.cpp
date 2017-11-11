@@ -101,6 +101,9 @@ void BreakpointModulatorEditorMulti::selectModulatorToEdit(int index)
   for(int i=0; i<widgets.size(); i++)
     widgets[i]->setColourScheme(widgetColourScheme);
 
+  // new:
+  assignGridAndSnapWidgets(modulatorModule);
+  updatePlotAndGridWidgets(modulatorModule, breakpointEditorMulti);
 
   repaint();
 
@@ -176,16 +179,24 @@ void BreakpointModulatorEditorMulti::rButtonClicked(RButton *buttonThatWasClicke
     moduleToEdit->markStateAsDirty();
     return;
   }
-  else if( buttonThatWasClicked == snapXButton )
+  else if( buttonThatWasClicked == snapXButton || buttonThatWasClicked == snapYButton )
   {
-    breakpointEditorMulti->setSnapToFineGridX(snapXButton->getToggleState());
-    breakpointEditorMulti->setVerticalFineGridVisible(snapXButton->getToggleState());
+    BreakpointModulatorEditor::rButtonClicked(buttonThatWasClicked);
+    //updatePlotAndGridWidgets(modulatorModule, breakpointEditorMulti);
+    //breakpointEditorMulti->setSnapToFineGridX(snapXButton->getToggleState());
+    //breakpointEditorMulti->setVerticalFineGridVisible(snapXButton->getToggleState());
   }
+  /*
   else if( buttonThatWasClicked == snapYButton )
   {
-    breakpointEditorMulti->setSnapToFineGridY(snapYButton->getToggleState());
-    breakpointEditorMulti->setHorizontalFineGridVisible(snapYButton->getToggleState());
+    BreakpointModulatorEditor::rButtonClicked(buttonThatWasClicked);
+    //updatePlotAndGridWidgets(modulatorModule, breakpointEditorMulti);
+    //breakpointEditorMulti->setSnapToFineGridY(snapYButton->getToggleState());
+    //breakpointEditorMulti->setHorizontalFineGridVisible(snapYButton->getToggleState());
   }
+  */
+
+
   globalEditors.getLock().enter();
   for(int i=0; i<globalEditors.size(); i++)
   {

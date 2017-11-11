@@ -563,23 +563,19 @@ BreakpointModulatorEditor::BreakpointModulatorEditor(CriticalSection *newPlugInL
   snapXButton->setDescription("Toggle time-quantization on/off.");
   snapXButton->setClickingTogglesState(true);
   snapXButton->addRButtonListener(this);
-  snapXButton->assignParameter(newBreakpointModulatorAudioModule->getParameterByName("SnapX"));
 
   addWidget( gridXComboBox = new RComboBox("GridXComboBox") );
   gridXComboBox->registerComboBoxObserver(this);
   gridXComboBox->setDescription("Select spacing of the vertical grid lines");
-  gridXComboBox->assignParameter(newBreakpointModulatorAudioModule->getParameterByName("GridX"));
 
   addWidget(snapYButton = new RButton("#Y:"));
   snapYButton->setDescription("Toggle level-quantization on/off.");
   snapYButton->setClickingTogglesState(true);
   snapYButton->addRButtonListener(this);
-  snapYButton->assignParameter(newBreakpointModulatorAudioModule->getParameterByName("SnapY"));
 
   addWidget(gridYComboBox = new RComboBox("GridYComboBox"));
   gridYComboBox->registerComboBoxObserver(this);
   gridYComboBox->setDescription("Select spacing of the horizontal grid lines");
-  gridYComboBox->assignParameter(newBreakpointModulatorAudioModule->getParameterByName("GridY"));
 
   addWidget(closeButton = new RButton(RButton::CLOSE), true, false); // invisible by default
   closeButton->setDescription("Closes the modulator editor");
@@ -595,6 +591,7 @@ BreakpointModulatorEditor::BreakpointModulatorEditor(CriticalSection *newPlugInL
 
   modulatorModule = newBreakpointModulatorAudioModule;
   modulatorModule->addChangeListener(this);
+  assignGridAndSnapWidgets(modulatorModule);
 
   setModulatorToEdit(newBreakpointModulatorAudioModule->wrappedBreakpointModulator);
      // this will also set up the widgets according to the state of the modulator
@@ -915,6 +912,14 @@ void BreakpointModulatorEditor::updatePlotAndGridWidgets(BreakpointModulatorAudi
 
 //-------------------------------------------------------------------------------------------------
 // internal functions:
+
+void BreakpointModulatorEditor::assignGridAndSnapWidgets(BreakpointModulatorAudioModule* m)
+{
+  snapXButton->assignParameter(m->getParameterByName("SnapX"));
+  snapYButton->assignParameter(m->getParameterByName("SnapY"));
+  gridXComboBox->assignParameter(m->getParameterByName("GridX"));
+  gridYComboBox->assignParameter(m->getParameterByName("GridY"));
+}
 
 void BreakpointModulatorEditor::autoAdjustPlotRangeX()
 {

@@ -202,6 +202,10 @@ public:
 
 protected:
 
+  /** Assigns the grid/snap widgets to the corresponding Parameters in the passed 
+  BreakpointModulatorAudioModule. */
+  void assignGridAndSnapWidgets(BreakpointModulatorAudioModule* m);
+
   /** Returns the grid-interval which belongs to a given interval-index. */
   virtual double gridIntervalFromIndex(int index);
 
