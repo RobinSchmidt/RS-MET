@@ -874,33 +874,29 @@ void BreakpointModulatorEditor::updateWidgetsAccordingToState(bool deSelectBreak
   globalEditor->updateWidgetsAccordingToState();
   breakpointParameterEditor->updateWidgetsAccordingToState();
 
+  // factor out into updatePlotAndGridWidgets(BreakpointModulatorAudioModule* m,
+  // ModulatorCurveEditor* plotEditor):
+
   Parameter *p;
   double gridX, gridY;
   bool snapX, snapY;
+  getGridAndSnapSettings(modulatorModule, gridX, gridY, snapX, snapY);
 
   p = modulatorModule->getParameterByName("GridX");
-  gridX = p->getValue();
   gridXComboBox->selectItemFromText(p->getStringValue(), false);
 
   p = modulatorModule->getParameterByName("GridY");
-  gridY = p->getValue();
   gridYComboBox->selectItemFromText(p->getStringValue(), false);
 
   p = modulatorModule->getParameterByName("SnapX");
-  snapX = p->getValue() >= 0.5;
   snapXButton->setToggleState(snapX, false);
 
   p = modulatorModule->getParameterByName("SnapY");
-  snapY = p->getValue() >= 0.5;
   snapYButton->setToggleState(snapY, false);
 
-  // update the plot:
-  breakpointEditor->setHorizontalFineGrid(gridY, snapY);
-  breakpointEditor->setVerticalFineGrid(  gridX, snapX);
-  breakpointEditor->setSnapToFineGridX(snapX);
-  breakpointEditor->setSnapToFineGridY(snapY);
-  breakpointEditor->updateMaximumRange(true);
-  breakpointEditor->updatePlotCurveData();
+  updatePlotEditor(breakpointEditor, gridX, gridY, snapX, snapY);
+
+
 
   stateWidgetSet->updateStateNameField();
 }
@@ -908,6 +904,35 @@ void BreakpointModulatorEditor::updateWidgetsAccordingToState(bool deSelectBreak
 void BreakpointModulatorEditor::updateWidgetsAccordingToState()
 {
   updateWidgetsAccordingToState(true);
+}
+
+void BreakpointModulatorEditor::updatePlotEditor(ModulatorCurveEditor* plotEditor, 
+  double gridX, double gridY, bool snapX, bool snapY)
+{
+  plotEditor->setHorizontalFineGrid(gridY, snapY);
+  plotEditor->setVerticalFineGrid(  gridX, snapX);
+  plotEditor->setSnapToFineGridX(snapX);
+  plotEditor->setSnapToFineGridY(snapY);
+  plotEditor->updateMaximumRange(true);
+  plotEditor->updatePlotCurveData();
+}
+
+void BreakpointModulatorEditor::getGridAndSnapSettings(BreakpointModulatorAudioModule* m, 
+  double& gridX, double& gridY, bool& snapX, bool& snapY)
+{
+  Parameter *p;
+
+  p = m->getParameterByName("GridX");
+  gridX = p->getValue();
+
+  p = m->getParameterByName("GridY");
+  gridY = p->getValue();
+
+  p = m->getParameterByName("SnapX");
+  snapX = p->getValue() >= 0.5;
+
+  p = m->getParameterByName("SnapY");
+  snapY = p->getValue() >= 0.5;
 }
 
 //-------------------------------------------------------------------------------------------------
