@@ -302,7 +302,8 @@ String Parameter::getStringValue() const
   ScopedPointerLock spl(mutex);
   if( this->isStringParameter() )
   {
-    int index = (int) getValue();
+    // int index = (int) getValue(); // doesn't work for subclass ParameterGridInterval because
+    int index = (int) value;         // it wrangles the value, so we need this
     if( index >=0 && index < stringValues.size() )
       return stringValues[index];
     else

@@ -91,12 +91,16 @@ XmlElement* BreakpointModulatorAudioModule::getStateAsXml(const juce::String& st
   // add some attributes (todo: have parameter objects for this, so it can be done by baseclass):
   xmlState->setAttribute(juce::String("ScaleFactor"),      wrappedBreakpointModulator->getScaleFactor() );
   xmlState->setAttribute(juce::String("Offset"),           wrappedBreakpointModulator->getOffset() );
+
+  // these 6 should be superfluous now:
   xmlState->setAttribute(juce::String("TimeScale"),        wrappedBreakpointModulator->getTimeScale() );
   xmlState->setAttribute(juce::String("TimeScaleByKey"),   wrappedBreakpointModulator->getTimeScaleByKey() );
   xmlState->setAttribute(juce::String("TimeScaleByVel"),   wrappedBreakpointModulator->getTimeScaleByVel() );
   xmlState->setAttribute(juce::String("Depth"),            wrappedBreakpointModulator->getDepth() );
   xmlState->setAttribute(juce::String("DepthByKey"),       wrappedBreakpointModulator->getDepthByKey() );
   xmlState->setAttribute(juce::String("DepthByVel"),       wrappedBreakpointModulator->getDepthByVel() );
+
+
   xmlState->setAttribute(juce::String("SyncMode"),         wrappedBreakpointModulator->isInSyncMode());
   xmlState->setAttribute(juce::String("LoopStartIndex"),   wrappedBreakpointModulator->getLoopStartIndex() );
   xmlState->setAttribute(juce::String("LoopEndIndex"),     wrappedBreakpointModulator->getLoopEndIndex() );
