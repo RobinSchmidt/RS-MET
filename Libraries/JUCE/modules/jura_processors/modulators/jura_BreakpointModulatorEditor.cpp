@@ -873,31 +873,7 @@ void BreakpointModulatorEditor::updateWidgetsAccordingToState(bool deSelectBreak
 
   globalEditor->updateWidgetsAccordingToState();
   breakpointParameterEditor->updateWidgetsAccordingToState();
-
-  // factor out into updatePlotAndGridWidgets(BreakpointModulatorAudioModule* m,
-  // ModulatorCurveEditor* plotEditor):
-
-  Parameter *p;
-  double gridX, gridY;
-  bool snapX, snapY;
-  getGridAndSnapSettings(modulatorModule, gridX, gridY, snapX, snapY);
-
-  p = modulatorModule->getParameterByName("GridX");
-  gridXComboBox->selectItemFromText(p->getStringValue(), false);
-
-  p = modulatorModule->getParameterByName("GridY");
-  gridYComboBox->selectItemFromText(p->getStringValue(), false);
-
-  p = modulatorModule->getParameterByName("SnapX");
-  snapXButton->setToggleState(snapX, false);
-
-  p = modulatorModule->getParameterByName("SnapY");
-  snapYButton->setToggleState(snapY, false);
-
-  updatePlotEditor(breakpointEditor, gridX, gridY, snapX, snapY);
-
-
-
+  updatePlotAndGridWidgets(modulatorModule, breakpointEditor);
   stateWidgetSet->updateStateNameField();
 }
 
@@ -906,33 +882,35 @@ void BreakpointModulatorEditor::updateWidgetsAccordingToState()
   updateWidgetsAccordingToState(true);
 }
 
-void BreakpointModulatorEditor::updatePlotEditor(ModulatorCurveEditor* plotEditor, 
-  double gridX, double gridY, bool snapX, bool snapY)
-{
-  plotEditor->setHorizontalFineGrid(gridY, snapY);
-  plotEditor->setVerticalFineGrid(  gridX, snapX);
-  plotEditor->setSnapToFineGridX(snapX);
-  plotEditor->setSnapToFineGridY(snapY);
-  plotEditor->updateMaximumRange(true);
-  plotEditor->updatePlotCurveData();
-}
-
-void BreakpointModulatorEditor::getGridAndSnapSettings(BreakpointModulatorAudioModule* m, 
-  double& gridX, double& gridY, bool& snapX, bool& snapY)
+void BreakpointModulatorEditor::updatePlotAndGridWidgets(BreakpointModulatorAudioModule* m, 
+  ModulatorCurveEditor* plot)
 {
   Parameter *p;
+  double gridX, gridY;
+  bool snapX, snapY;
 
   p = m->getParameterByName("GridX");
   gridX = p->getValue();
+  gridXComboBox->selectItemFromText(p->getStringValue(), false);
 
   p = m->getParameterByName("GridY");
   gridY = p->getValue();
+  gridYComboBox->selectItemFromText(p->getStringValue(), false);
 
   p = m->getParameterByName("SnapX");
   snapX = p->getValue() >= 0.5;
+  snapXButton->setToggleState(snapX, false);
 
   p = m->getParameterByName("SnapY");
   snapY = p->getValue() >= 0.5;
+  snapYButton->setToggleState(snapY, false);
+
+  plot->setHorizontalFineGrid(gridY, snapY);
+  plot->setVerticalFineGrid(  gridX, snapX);
+  plot->setSnapToFineGridX(snapX);
+  plot->setSnapToFineGridY(snapY);
+  plot->updateMaximumRange(true);
+  plot->updatePlotCurveData();
 }
 
 //-------------------------------------------------------------------------------------------------

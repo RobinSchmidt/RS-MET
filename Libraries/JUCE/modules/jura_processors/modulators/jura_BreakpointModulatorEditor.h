@@ -196,17 +196,11 @@ public:
   purely virtual function here). */
   virtual void updateWidgetsAccordingToState();
 
-  /** Used internally to update the passed plotEditor inside updateWidgetsAccordingToState. */
-  virtual void updatePlotEditor(ModulatorCurveEditor* plotEditor, double gridX, double gridY, 
-    bool snapX, bool snapY);
-
+  /** Updates the passed ModulatorCurveEditor "plot" and the grid/snap widgets according to the 
+  passed BreakpointModulatorAudioModule "m". Used internally in updateWidgetsAccordingToState. */
+  void updatePlotAndGridWidgets(BreakpointModulatorAudioModule* m, ModulatorCurveEditor* plot);
 
 protected:
-
-  /** Fills the passed grid/snap variables according to the passed 
-  BreakpointModulatorAudioModule. */
-  void getGridAndSnapSettings(BreakpointModulatorAudioModule* m, double& gridX, double& gridY, 
-    bool& snapX, bool& snapY);
 
   /** Returns the grid-interval which belongs to a given interval-index. */
   virtual double gridIntervalFromIndex(int index);
