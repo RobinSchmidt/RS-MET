@@ -76,8 +76,8 @@ void BreakpointModulatorEditorMulti::selectModulatorToEdit(int index)
   jassert( index < modulatorModules.size() ); // index out of range
   index %= modulatorModules.size();
   editedModulatorIndex = index;
+  modulatorModule      = modulatorModules[index];
   modulatorToEdit      = modulatorModules[index]->wrappedBreakpointModulator;
-  //moduleToEdit         = modulatorModules[index];
   breakpointParameterEditor->setModulatorToEdit(modulatorModules[index]);
   modulatorModules.getLock().exit();
 
@@ -416,7 +416,9 @@ void BreakpointModulatorEditorMulti::updateWidgetsAccordingToState(bool deSelect
     globalEditors[m]->updateWidgetsAccordingToState();
   globalEditors.getLock().exit();
 
+
   // update the plot:
+  updatePlotAndGridWidgets(modulatorModule, breakpointEditorMulti);  // new
   breakpointEditorMulti->updateMaximumRange(true);
   breakpointEditorMulti->updateCurveDataForAllPlots(true, true);
   breakpointZoomer->zoomToAllXY();
