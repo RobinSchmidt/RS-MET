@@ -742,6 +742,7 @@ void BreakpointModulatorEditor::rComboBoxChanged(RComboBox *rComboBoxThatHasChan
     */
 
 
+  /*
   // !!!NEEDS UPDATE!!! maybe we should add ourselves as ParameterObserver to the grid 
   // parameters...
   if( rComboBoxThatHasChanged == gridXComboBox )
@@ -756,6 +757,9 @@ void BreakpointModulatorEditor::rComboBoxChanged(RComboBox *rComboBoxThatHasChan
     breakpointEditor->setHorizontalFineGrid(gridIntervalFromIndex(newGridIntervalIndex), true);
     breakpointEditor->repaint();
   }
+  */
+
+  updateWidgetsAccordingToState(false);
 
   moduleToEdit->markStateAsDirty();
 }
@@ -931,6 +935,8 @@ void BreakpointModulatorEditor::updateWidgetsAccordingToState(bool deSelectBreak
   // update the plot:
   breakpointEditor->setHorizontalFineGrid(gridY, snapY);
   breakpointEditor->setVerticalFineGrid(  gridX, snapX);
+  breakpointEditor->setSnapToFineGridX(snapX);
+  breakpointEditor->setSnapToFineGridY(snapY);
   breakpointEditor->updateMaximumRange(true);
   breakpointEditor->updatePlotCurveData();
 
