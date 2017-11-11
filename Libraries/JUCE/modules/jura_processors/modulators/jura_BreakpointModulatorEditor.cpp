@@ -905,17 +905,32 @@ void BreakpointModulatorEditor::updateWidgetsAccordingToState(bool deSelectBreak
     indexFromGridInterval(breakpointEditor->getHorizontalFineGridInterval())-1, false);
     */
   // updated - does not work yet:
-  String test1 = modulatorModule->getParameterByName("GridX")->getStringValue();
-  String test2 = modulatorModule->getParameterByName("GridY")->getStringValue();
-  gridXComboBox->selectItemFromText(modulatorModule->getParameterByName("GridX")->getStringValue(), false);
-  gridYComboBox->selectItemFromText(modulatorModule->getParameterByName("GridY")->getStringValue(), false);
-  snapXButton->setToggleState(modulatorModule->getParameterByName("SnapX")->getValue() >= 0.5, false);
-  snapYButton->setToggleState(modulatorModule->getParameterByName("SnapY")->getValue() >= 0.5, false);
+  //String test1 = modulatorModule->getParameterByName("GridX")->getStringValue();
+  //String test2 = modulatorModule->getParameterByName("GridY")->getStringValue();
 
-  // maybe we need to adjust the grid-settings of the plot itself also?
+  Parameter *p;
+  double gridX, gridY;
+  bool snapX, snapY;
 
+  p = modulatorModule->getParameterByName("GridX");
+  gridX = p->getValue();
+  gridXComboBox->selectItemFromText(p->getStringValue(), false);
+
+  p = modulatorModule->getParameterByName("GridY");
+  gridY = p->getValue();
+  gridYComboBox->selectItemFromText(p->getStringValue(), false);
+
+  p = modulatorModule->getParameterByName("SnapX");
+  snapX = p->getValue() >= 0.5;
+  snapXButton->setToggleState(snapX, false);
+
+  p = modulatorModule->getParameterByName("SnapY");
+  snapY = p->getValue() >= 0.5;
+  snapYButton->setToggleState(snapY, false);
 
   // update the plot:
+  breakpointEditor->setHorizontalFineGrid(gridY, snapY);
+  breakpointEditor->setVerticalFineGrid(  gridX, snapX);
   breakpointEditor->updateMaximumRange(true);
   breakpointEditor->updatePlotCurveData();
 
