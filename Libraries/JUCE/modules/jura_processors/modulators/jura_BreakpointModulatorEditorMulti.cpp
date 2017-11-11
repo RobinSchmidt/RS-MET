@@ -167,47 +167,32 @@ void BreakpointModulatorEditorMulti::setChildColourScheme(int index,
 //-------------------------------------------------------------------------------------------------
 // callbacks:
 
-void BreakpointModulatorEditorMulti::rButtonClicked(RButton *buttonThatWasClicked)
+void BreakpointModulatorEditorMulti::rButtonClicked(RButton *button)
 {
   if( moduleToEdit == NULL )
     return;
 
-  if( buttonThatWasClicked == breakpointParameterEditor->shapeToAllButton )
+  if( button == breakpointParameterEditor->shapeToAllButton )
   {
     if( breakpointParameterEditor->shapeToAllButton->getToggleState() == true )
       breakpointEditorMulti->updatePlotCurveData(editedModulatorIndex, modulatorToEdit, true);
     moduleToEdit->markStateAsDirty();
     return;
   }
-  else if( buttonThatWasClicked == snapXButton || buttonThatWasClicked == snapYButton )
-  {
-    BreakpointModulatorEditor::rButtonClicked(buttonThatWasClicked);
-    //updatePlotAndGridWidgets(modulatorModule, breakpointEditorMulti);
-    //breakpointEditorMulti->setSnapToFineGridX(snapXButton->getToggleState());
-    //breakpointEditorMulti->setVerticalFineGridVisible(snapXButton->getToggleState());
-  }
-  /*
-  else if( buttonThatWasClicked == snapYButton )
-  {
-    BreakpointModulatorEditor::rButtonClicked(buttonThatWasClicked);
-    //updatePlotAndGridWidgets(modulatorModule, breakpointEditorMulti);
-    //breakpointEditorMulti->setSnapToFineGridY(snapYButton->getToggleState());
-    //breakpointEditorMulti->setHorizontalFineGridVisible(snapYButton->getToggleState());
-  }
-  */
-
+  else if( button == snapXButton || button == snapYButton )
+    BreakpointModulatorEditor::rButtonClicked(button);
 
   globalEditors.getLock().enter();
   for(int i=0; i<globalEditors.size(); i++)
   {
-    if( buttonThatWasClicked == globalEditors[i]->editButton )
+    if( button == globalEditors[i]->editButton )
     {
       selectModulatorToEdit(i);
       globalEditors.getLock().exit();
       //breakpointEditorMulti->updatePlotImage();
       return;
     }
-    else if( buttonThatWasClicked == globalEditors[i]->loopButton )
+    else if( button == globalEditors[i]->loopButton )
     {
       // maybe this (ugly) nested if should be in wrapped into a function...
       modulatorModules.getLock().enter();
@@ -237,10 +222,6 @@ void BreakpointModulatorEditorMulti::rButtonClicked(RButton *buttonThatWasClicke
     }
   }
   globalEditors.getLock().exit();
-
-
-  // let the baseclass handle clicks on the snapX/y buttons:
-  //BreakpointModulatorEditor::rButtonClicked(buttonThatWasClicked);
 }
 
 void BreakpointModulatorEditorMulti::changeListenerCallback(
