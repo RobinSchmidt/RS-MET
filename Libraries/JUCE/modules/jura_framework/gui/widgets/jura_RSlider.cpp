@@ -88,7 +88,10 @@ void RSlider::setValue(double newValue, const bool sendUpdateMessage,
   {
     currentValue = newValue;
 
+    /*
     // currently being tested:
+    // nope - this code seems to not work with meta-parameters - wehn moving the slider on the 
+    // gui, the host doesn't update (the corresponding slider on the generic gui doesn't move):
     if( assignedParameter != nullptr )
     {
       ParameterObserver::setLocalAutomationSwitch(false);
@@ -118,10 +121,28 @@ void RSlider::setValue(double newValue, const bool sendUpdateMessage,
 
       ParameterObserver::setLocalAutomationSwitch(true);
     }
-    repaint();
+    */
+    /*
+    // this is the new version:
+    if(assignedParameter != nullptr)
+    {
+      ParameterObserver::setLocalAutomationSwitch(false);
+      assignedParameter->setValue(currentValue, sendUpdateMessage, sendUpdateMessage); 
+      ParameterObserver::setLocalAutomationSwitch(true);
+    }
+    */
 
-    if (sendUpdateMessage)
-      triggerChangeMessage (sendMessageSynchronously);
+    // this is the newer version (if it works reliably, delete old versions above):
+    if(assignedParameter != nullptr)
+    {
+      ParameterObserver::setLocalAutomationSwitch(false);    // to not recursively notify ourselves
+      assignedParameter->setValue(currentValue, true, true); // ...in this call
+      ParameterObserver::setLocalAutomationSwitch(true);
+    }
+
+    repaint();
+    if(sendUpdateMessage)
+      triggerChangeMessage(sendMessageSynchronously);
   }
 }
 
