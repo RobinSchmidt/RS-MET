@@ -90,7 +90,6 @@ void BreakpointModulatorEditorMulti::selectModulatorToEdit(int index)
 
   breakpointEditorMulti->selectModulatorToEdit(index);
 
-
   breakpointParameterEditor->copyColourSettingsFrom(globalEditors[index]);
   breakpointZoomer->copyColourSettingsFrom(globalEditors[index]);
   breakpointEditorMulti->setColourScheme(globalEditors[index]->getPlotColourScheme());

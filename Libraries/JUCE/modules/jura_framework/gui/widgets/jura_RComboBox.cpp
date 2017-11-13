@@ -188,7 +188,7 @@ void RComboBox::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
 void RComboBox::updateWidgetFromAssignedParameter(bool sendNotification)
 {
   if( assignedParameter != NULL )
-    selectItemByIndex((int) assignedParameter->getValue(), sendNotification);
+    selectItemByIndex((int) assignedParameter->getRawValue(), sendNotification);
 }
 
 void RComboBox::mouseDown(const MouseEvent& e)
