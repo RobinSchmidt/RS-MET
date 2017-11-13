@@ -177,13 +177,13 @@ inline int find(vector<T>& v, T elementToFind)
 }
 
 template<class T>
-inline void removeFirstOccurrence(vector<T>& v, T elementToRemove)
+inline bool removeFirstOccurrence(vector<T>& v, T elementToRemove)
 {
   for(int i = 0; i < size(v); i++)
     if(v[i] == elementToRemove){
       remove(v, i);
-      return;
-    }
+      return true; }
+  return false;
 }
 
 template<class T>

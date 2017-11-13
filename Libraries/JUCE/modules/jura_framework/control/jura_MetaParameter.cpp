@@ -124,10 +124,10 @@ void MetaParameter::attachParameter(MetaControlledParameter* p)
   // ...but somehow the host must get notified
 }
 
-void MetaParameter::detachParameter(MetaControlledParameter* p)
+bool MetaParameter::detachParameter(MetaControlledParameter* p)
 {
   p->deRegisterParameterObserver(this);
-  removeFirstOccurrence(params, p);
+  return removeFirstOccurrence(params, p);
 }
 
 void MetaParameter::setMetaValue(double newValue)
@@ -182,10 +182,9 @@ bool MetaParameterManager::attachParameter(MetaControlledParameter* param, int i
 
 void MetaParameterManager::detachParameter(MetaControlledParameter* param)
 {
-  for(int i = 0; i < size(metaParams); i++){
-    metaParams[i]->detachParameter(param);
-    updateMetaName(i);
-  }
+  for(int i = 0; i < size(metaParams); i++) {
+    if(metaParams[i]->detachParameter(param)) // checks, if actual detachment took place...
+      updateMetaName(i); }                    // ...if so, name should be updated
 }
 
 MetaParameter* MetaParameterManager::getMetaParameter(int index)
@@ -228,8 +227,6 @@ bool MetaParameterManager::setMetaName(int index, const String& newName)
 
 void MetaParameterManager::updateMetaName(int index)
 {
-  /*
-  // does not yet work:
   if(autoUpdateMetaNames && index >= 0 && index < size(metaParams))
   {
     String name = "Meta " + String(index);
@@ -237,5 +234,4 @@ void MetaParameterManager::updateMetaName(int index)
       name += ", " + metaParams[index]->params[i]->getName();
     setMetaName(index, name);
   }
-  */
 }

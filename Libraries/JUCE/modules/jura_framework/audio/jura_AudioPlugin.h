@@ -109,7 +109,7 @@ public:
   // override for MetaParameterManagerObserver baseclass:
   virtual void metaNameChanged(MetaParameterManager* manager, int index) override
   {
-    //updateHostDisplay();
+    updateHostDisplay(); // does not yet work
   }
 
   //-----------------------------------------------------------------------------------------------

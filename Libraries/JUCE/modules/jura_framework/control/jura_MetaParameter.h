@@ -151,8 +151,10 @@ public:
   /** Attaches the given MetaControlledParameter to this MetaParameter. */
   void attachParameter(MetaControlledParameter* p);
 
-  /** Detaches the given MetaControlledParameter from this MetaParameter. */
-  void detachParameter(MetaControlledParameter* p);
+  /** Detaches the given MetaControlledParameter from this MetaParameter, if it is attached. It 
+  returns true, if it was attached (i.e. an actualy removal took place). If it wasn't attached, 
+  nothing happens and flase will be returned. */
+  bool detachParameter(MetaControlledParameter* p);
 
   /** Resets this MetaParameter to its default value of 0.5 (causing callbacks and
   notifications). */
