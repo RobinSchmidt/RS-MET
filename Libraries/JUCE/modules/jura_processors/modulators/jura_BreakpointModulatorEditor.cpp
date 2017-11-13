@@ -646,7 +646,7 @@ void BreakpointModulatorEditor::setDescriptionField(RLabel *newDescriptionField)
 //-------------------------------------------------------------------------------------------------
 // callbacks:
 
-void BreakpointModulatorEditor::rButtonClicked(RButton *buttonThatWasClicked)
+void BreakpointModulatorEditor::rButtonClicked(RButton *button)
 {
   if( modulatorToEdit == NULL )
     return;
@@ -660,18 +660,19 @@ void BreakpointModulatorEditor::rButtonClicked(RButton *buttonThatWasClicked)
     }
   }
   */
-  if( buttonThatWasClicked == globalEditor->loopButton )
+  if( button == globalEditor->loopButton )
     breakpointEditor->updatePlotImage();
-  else if( buttonThatWasClicked == snapXButton )
+  else if( button == snapXButton )
   {
     breakpointEditor->setSnapToFineGridX(snapXButton->getToggleState());
     breakpointEditor->setVerticalFineGridVisible(snapXButton->getToggleState());
   }
-  else if( buttonThatWasClicked == snapYButton )
+  else if( button == snapYButton )
   {
     breakpointEditor->setSnapToFineGridY(snapYButton->getToggleState());
     breakpointEditor->setHorizontalFineGridVisible(snapYButton->getToggleState());
   }
+
   moduleToEdit->markStateAsDirty();
 }
 

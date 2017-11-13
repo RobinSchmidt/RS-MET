@@ -2,6 +2,8 @@ BreakpointModulatorAudioModule:
  -make grid/snap save/recall work
   -i think, for the multi-editor, we need to re-assign the callbacks for the parameters when the
    selected modulator changes ...hmm...or maybe not?
+ -maybe the editors should be ParameterObservers and oberve the snap/grid parameters in the 
+  underlying AudioModules - when they change, update the plot
 
 
 Smoothing-Sytem:
