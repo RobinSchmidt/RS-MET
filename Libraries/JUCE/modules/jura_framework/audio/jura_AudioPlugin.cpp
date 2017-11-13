@@ -239,6 +239,13 @@ bool AudioPlugin::setPreferredBusArrangement(bool isInput, int bus,
   return AudioProcessor::setPreferredBusArrangement(isInput, bus, preferredSet);
 }
 
+// i tried to override it in order to check, if it gets called whe we call updateHostDisplay() in
+// metaNameChanged - but at least the juce host doesn't try to inquire a new name :-(
+//String AudioPlugin::getParameterName(int parameterIndex, int maximumStringLength)
+//{
+//  return AudioProcessor::getParameterName(parameterIndex, maximumStringLength);
+//}
+
 void AudioPlugin::createHostAutomatableParameters(int numParameters)
 {
   parameters.resize(numParameters);

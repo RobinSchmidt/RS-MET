@@ -119,6 +119,7 @@ public:
   virtual void processBlock(AudioBuffer<double>& buffer, MidiBuffer& midiMessages) override;
   virtual bool setPreferredBusArrangement(bool isInput, int bus,
     const AudioChannelSet& preferredSet) override;
+  //virtual String getParameterName(int parameterIndex, int maximumStringLength) override;
 
   //-----------------------------------------------------------------------------------------------
   // data:
@@ -128,7 +129,7 @@ public:
   /** Mutex-lock for all accesses to the underlyingAudioModule's member functions - a pointer to
   the lock is  passed to the embedded AudioModule and should be used there also and the AudioModule
   should also pass this lock on to the GUI Editors. */
-  CriticalSection plugInLock;
+  CriticalSection plugInLock;  // maybe we should use getCallbackLock()
 
 
   MetaParameterManager metaParaManager;
