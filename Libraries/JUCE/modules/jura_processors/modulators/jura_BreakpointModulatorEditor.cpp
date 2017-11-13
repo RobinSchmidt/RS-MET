@@ -662,23 +662,8 @@ void BreakpointModulatorEditor::rButtonClicked(RButton *button)
   */
   if( button == globalEditor->loopButton )
     breakpointEditor->updatePlotImage();
-  else if( button == snapXButton )
-  {
-    // this should work, but doesn't:
-    //updatePlotAndGridWidgets(modulatorModule, breakpointEditor); 
-
-    // ...instead, we need this:
-    breakpointEditor->setSnapToFineGridX(snapXButton->getToggleState());
-    breakpointEditor->setVerticalFineGridVisible(snapXButton->getToggleState());
-  }
-  else if( button == snapYButton )
-  {
-    //...same here
-    //updatePlotAndGridWidgets(modulatorModule, breakpointEditor);
-
-    breakpointEditor->setSnapToFineGridY(snapYButton->getToggleState());
-    breakpointEditor->setHorizontalFineGridVisible(snapYButton->getToggleState());
-  }
+  else if( button == snapXButton || button == snapYButton )
+    updatePlotAndGridWidgets(modulatorModule, breakpointEditor); 
 
   moduleToEdit->markStateAsDirty();
 }

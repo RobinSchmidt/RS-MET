@@ -118,6 +118,11 @@ signature for the to-be-called-back member functions and potential code-bloat du
 instantiation (it's based on template functors). It's recommended to be used mainly for performance
 critical callback applications and/or when it's not acceptable to derive from ParameterObserver.
 
+The callbacks are called before the observer notifications - this may be relevant in situations 
+where a parameter change triggers a gui update that, for example, re-draws a plot. In this case, it 
+may be important that a underlying dsp object (connected via callback) has already a new parameter
+value when the gui repaints itself in the observer notification.
+
 NOTE: currently there's no mechanism to de-register a member-function based callback -> the object
 which member function is connected to a parameter is assumed to to be valid for the whole lifetime
 of the Parameter object that calls it back (\todo provide a mechanism for de-registering member
