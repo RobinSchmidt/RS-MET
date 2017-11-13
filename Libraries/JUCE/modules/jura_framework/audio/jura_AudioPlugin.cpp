@@ -25,11 +25,13 @@ AudioPlugin::AudioPlugin(int numParameters)
   initialiseJuce_GUI();  // why do we need this?
   smoothingManager.setMutexLock(&plugInLock);
   createHostAutomatableParameters(numParameters);
+  metaParaManager.registerObserver(this);
 }
 
 AudioPlugin::~AudioPlugin()
 {
   ScopedLock sl(plugInLock);
+  //metaParaManager.deRegisterObserver(this); // metaParaManager is destroyed anyway, so we may not need to deregister
   if( wrappedAudioModule != nullptr )  // not necessary? it's actually safe to delete a nullptr
   {
     delete wrappedAudioModule;

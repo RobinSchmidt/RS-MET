@@ -189,6 +189,27 @@ protected:
 
 //=================================================================================================
 
+class JUCE_API MetaParameterManager;
+
+/** Baseclass for objects that need to observe a MetaParameterManager. */
+
+class JUCE_API MetaParameterManagerObserver
+{
+
+public:
+
+  MetaParameterManagerObserver() = default;
+  virtual ~MetaParameterManagerObserver() = default;
+
+  /** Function that gets called when one of the meta-names hase changed. */
+  virtual void metaNameChanged(MetaParameterManager* manager, int index) = 0;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MetaParameterManagerObserver)
+};
+
+
+//=================================================================================================
+
 /** A class to manage a bunch of MetaParameters, allowing MetaControlledParameter objects to attach
 themselves to any of our managed MetaParameters. */
 
@@ -209,6 +230,18 @@ public:
   /** If the passed parameter is attached to any of our managed MetaParameters, this function
   will detach it (otherwise it will have no effect). */
   void detachParameter(MetaControlledParameter* param);
+
+  /** Adds a new observer to our list of observers. */
+  void registerObserver(MetaParameterManagerObserver* observer)
+  {
+    appendIfNotAlreadyThere(metaObservers, observer);
+  }
+
+  /** Removes the given observer from our list of observers. */
+  void deRegisterObserver(MetaParameterManagerObserver* observer)
+  {
+    removeFirstOccurrence(metaObservers, observer);
+  }
 
   /** Returns the number of MetaParameters that are managed by this object. */
   inline int getNumMetaParameters() { return (int) size(metaParams); }
@@ -232,12 +265,16 @@ public:
   successful (it will fail, if index is out of range). */
   bool setMetaName(int index, const String& newName);
 
+  /** Updates the name of the meta-parameter with givne index, taking into account the depedent
+  parameters and notifies our observers about that change. */
   void updateMetaName(int index);
 
 
 protected:
 
   std::vector<MetaParameter*> metaParams;
+
+  std::vector<MetaParameterManagerObserver*> metaObservers;
 
   bool autoUpdateMetaNames = true;
 

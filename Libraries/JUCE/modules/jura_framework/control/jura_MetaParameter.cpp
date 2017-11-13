@@ -221,20 +221,21 @@ bool MetaParameterManager::setMetaName(int index, const String& newName)
   if(index < 0 || index >= size(metaParams))
     return false;
   metaParams[index]->setName(newName);
+  for(unsigned int i = 0; i < metaObservers.size(); ++i)
+    metaObservers[i]->metaNameChanged(this, index);
   return true;
 }
 
 void MetaParameterManager::updateMetaName(int index)
 {
-  // does not yet work:
   /*
+  // does not yet work:
   if(autoUpdateMetaNames && index >= 0 && index < size(metaParams))
   {
     String name = "Meta " + String(index);
     for(int i = 0; i < size(metaParams[index]->params); i++)
       name += ", " + metaParams[index]->params[i]->getName();
-    // the host does not yet get the new name. we somehow need to call
-    // plugin->updateHostDisplay();
+    setMetaName(index, name);
   }
   */
 }

@@ -1,15 +1,3 @@
-BreakpointModulatorAudioModule:
- debug: 
-  -set breakpoint in BreakpointModulatorEditor::updatePlotAndGridWidgets
-  -load preset for starightliners pitch-env
-  -switch the edited env (to amp or filter)
-  -switch back - the grid/sanp settings have now chaged - why?
- -make grid/snap save/recall work
-  -i think, for the multi-editor, we need to re-assign the callbacks for the parameters when the
-   selected modulator changes ...hmm...or maybe not? ..it's already done
-
-
-
 Smoothing-Sytem:
  -maybe provide a global scaler for all smoothing times in smoothing manager
  -provide a flag to temporarily switch off smoothing completely (useful for preset-switch)

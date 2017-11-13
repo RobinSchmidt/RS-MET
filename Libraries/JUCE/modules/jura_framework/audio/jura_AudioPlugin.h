@@ -42,7 +42,7 @@ public:
 /** This class wraps a jura::AudioModule into a juce::AudioProcessor, so we can use it as
 plugin. */
 
-class JUCE_API AudioPlugin : public AudioProcessor
+class JUCE_API AudioPlugin : public AudioProcessor, public MetaParameterManagerObserver
 {
 
 public:
@@ -105,6 +105,12 @@ public:
   virtual void getStateInformation(juce::MemoryBlock& destData) override;
   virtual void setStateInformation(const void* data, int sizeInBytes) override;
   virtual void processBlock(AudioBuffer<float>& buffer, MidiBuffer& midiMessages) override;
+
+  // override for MetaParameterManagerObserver baseclass:
+  virtual void metaNameChanged(MetaParameterManager* manager, int index) override
+  {
+    //updateHostDisplay();
+  }
 
   //-----------------------------------------------------------------------------------------------
   // optional overrides for juce::AudioProcessor baseclass:
