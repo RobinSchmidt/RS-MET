@@ -664,11 +664,18 @@ void BreakpointModulatorEditor::rButtonClicked(RButton *button)
     breakpointEditor->updatePlotImage();
   else if( button == snapXButton )
   {
+    // this should work, but doesn't:
+    //updatePlotAndGridWidgets(modulatorModule, breakpointEditor); 
+
+    // ...instead, we need this:
     breakpointEditor->setSnapToFineGridX(snapXButton->getToggleState());
     breakpointEditor->setVerticalFineGridVisible(snapXButton->getToggleState());
   }
   else if( button == snapYButton )
   {
+    //...same here
+    //updatePlotAndGridWidgets(modulatorModule, breakpointEditor);
+
     breakpointEditor->setSnapToFineGridY(snapYButton->getToggleState());
     breakpointEditor->setHorizontalFineGridVisible(snapYButton->getToggleState());
   }

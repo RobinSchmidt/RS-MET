@@ -127,9 +127,9 @@ void RButton::clicked()
 {
   if( clickTogglesState )
     isOn = !isOn;
-  sendClickMessage();
   if( assignedParameter != NULL )
     assignedParameter->setValue((double) getToggleState(), true, true);
+  sendClickMessage();
   repaint();
 }
 
