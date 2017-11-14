@@ -8,15 +8,7 @@ FuncShaperAudioModule::FuncShaperAudioModule(CriticalSection *newPlugInLock,
 {
   jassert(funcShaperToWrap != NULL); // you must pass a valid rosic-object to the constructor
   wrappedFuncShaper = funcShaperToWrap;
-
-
-  moduleName  = juce::String("FuncShaper");
-  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/FuncShaper") );
-  createParameters();
-
-  // use initial value for "a" that is different from the default value:
-  setFormulaParameterMaxValue("a", 4.0);
-  getParameterByName("a")->setValue(2.0, true, true);
+  init();
 }
 
 FuncShaperAudioModule::FuncShaperAudioModule(CriticalSection *newPlugInLock, 
@@ -25,8 +17,11 @@ FuncShaperAudioModule::FuncShaperAudioModule(CriticalSection *newPlugInLock,
 {
   wrappedFuncShaper = new rosic::FuncShaper;
   wrappedFuncShaperIsOwned = true;
+  init();
+}
 
-  // move to init function, shaer with other cosntructor:
+void FuncShaperAudioModule::init()
+{
   moduleName  = juce::String("FuncShaper");
   setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/FuncShaper") );
   createParameters();

@@ -23,6 +23,8 @@ public:
     MetaParameterManager* metaManagerToUse = nullptr,
     ModulationManager* modManagerToUse = nullptr);
 
+  void init();
+
   virtual ~FuncShaperAudioModule();
 
   AudioModuleEditor* createEditor() override;
