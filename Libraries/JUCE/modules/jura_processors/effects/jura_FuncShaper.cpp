@@ -82,44 +82,14 @@ void FuncShaperAudioModule::setStateFromXml(const XmlElement& xmlState,
 //-------------------------------------------------------------------------------------------------
 // automation:
 
-void FuncShaperAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
+void FuncShaperAudioModule::parameterChanged(Parameter* p)
 {
-  // function will be obsolete after completing updating the parameter handling
-
-  if( wrappedFuncShaper == NULL )
-    return;
-
-  int    index = getIndexOfParameter(parameterThatHasChanged);
-  double value = parameterThatHasChanged->getValue();
-  switch( index )
+  juce::String name = p->getName();
+  if(name == "a" || name == "b" || name == "c" || name == "d")
   {
-  //case   0: wrappedFuncShaper->useInputFilter(value >= 0.5);  break;
-  //case   1: wrappedFuncShaper->setInHighpassCutoff(value);    break;
-  //case   2: wrappedFuncShaper->setInLowpassCutoff(value);     break;
-  //case   3: wrappedFuncShaper->setDrive(value);               break;
-  //case   4: wrappedFuncShaper->setDcOffset(value);            break;
-  //case   5: wrappedFuncShaper->useOutputFilter(value >= 0.5); break;
-  //case   6: wrappedFuncShaper->setOutHighpassCutoff(value);   break;
-  //case   7: wrappedFuncShaper->setOutLowpassCutoff(value);    break;
-  //case   8: wrappedFuncShaper->setOutVol(value);              break;
-  //case   9: wrappedFuncShaper->setDryWet(value);              break;
-
-  //case  10: wrappedFuncShaper->setOversampling((int)value);   break;
-  //case  11: wrappedFuncShaper->setA(value, true);             break;
-  //case  12: wrappedFuncShaper->setB(value, true);             break;
-  //case  13: wrappedFuncShaper->setC(value, true);             break;
-  //case  14: wrappedFuncShaper->setD(value, true);             break;
-  //default:
-  //  {
-  //    if( index <= 18 )        // handle changes of min-values
-  //      setFormulaParameterMinValue(parameterThatHasChanged->getName(), value);
-  //    else if( index <= 22 )   // handle changes of max-values
-  //      setFormulaParameterMaxValue(parameterThatHasChanged->getName(), value);
-  //    else
-  //      DEBUG_BREAK; // unknown parameter
-  //  }
-  } // end of switch( parameterIndex )
-
+    // we need to send a notification that the plot needs an update
+    int dummy = 0;
+  }
 
   markStateAsDirty();
 }
@@ -213,18 +183,6 @@ void FuncShaperAudioModule::createParameters()
   p->setValueChangeCallback<FS>(fs, &FS::setDryWet);
   addObservedParameter(p);
 
-  // old:
-  //addObservedParameter(new AutomatableParameter(lock, "InputFilterUsed",   0.0,     1.0, 1.0,     0.0, Parameter::BOOLEAN    ));
-  //addObservedParameter(new AutomatableParameter(lock, "InputHighpass",    20.0, 20000.0, 0.0,    20.0, Parameter::EXPONENTIAL));
-  //addObservedParameter(new AutomatableParameter(lock, "InputLowpass",     20.0, 20000.0, 0.0, 20000.0, Parameter::EXPONENTIAL));
-  //addObservedParameter(new AutomatableParameter(lock, "Drive",           -48.0,    48.0, 0.0,     0.0, Parameter::LINEAR)     );
-  //addObservedParameter(new AutomatableParameter(lock, "DC",               -1.0,     1.0, 0.0,     0.0, Parameter::LINEAR)     );
-  //addObservedParameter(new AutomatableParameter(lock, "OutputFilterUsed",  0.0,     1.0, 1.0,     0.0, Parameter::BOOLEAN    ));
-  //addObservedParameter(new AutomatableParameter(lock, "OutputHighpass",   20.0, 20000.0, 0.0,    20.0, Parameter::EXPONENTIAL));
-  //addObservedParameter(new AutomatableParameter(lock, "OutputLowpass",    20.0, 20000.0, 0.0, 20000.0, Parameter::EXPONENTIAL));
-  //addObservedParameter(new AutomatableParameter(lock, "OutLevel",        -24.0,    24.0, 0.0,     0.0, Parameter::LINEAR)     );
-  //addObservedParameter(new AutomatableParameter(lock, "DryWet",            0.0,   100.0, 0.0,   100.0, Parameter::LINEAR)     );
-
 
   // create non-automatable parameters:
 
@@ -284,27 +242,6 @@ void FuncShaperAudioModule::createParameters()
   q = new Parameter("dMax", -INF, +INF, +1.0, Parameter::IDENTITY);
   addObservedParameter(q);
   q->setValueChangeCallback<FSM>(this, &FSM::setMaxD);
-
-
-  // old:
-  //addObservedParameter(new Parameter(lock, "Oversampling", 1.0, 16.0, 1.0, 4.0, Parameter::LINEAR));
-  //addObservedParameter(new Parameter(lock, "a",     0.0, 1.0, 0.01, 0.5, Parameter::LINEAR));
-  //addObservedParameter(new Parameter(lock, "b",     0.0, 1.0, 0.01, 0.5, Parameter::LINEAR));
-  //addObservedParameter(new Parameter(lock, "c",     0.0, 1.0, 0.01, 0.5, Parameter::LINEAR));
-  //addObservedParameter(new Parameter(lock, "d",     0.0, 1.0, 0.01, 0.5, Parameter::LINEAR));
-  //addObservedParameter(new Parameter(lock, "aMin", -INF, INF, 0.0, 0.0, Parameter::LINEAR));
-  //addObservedParameter(new Parameter(lock, "bMin", -INF, INF, 0.0, 0.0, Parameter::LINEAR));
-  //addObservedParameter(new Parameter(lock, "cMin", -INF, INF, 0.0, 0.0, Parameter::LINEAR));
-  //addObservedParameter(new Parameter(lock, "dMin", -INF, INF, 0.0, 0.0, Parameter::LINEAR));
-  //addObservedParameter(new Parameter(lock, "aMax", -INF, INF, 0.0, 1.0, Parameter::LINEAR));
-  //addObservedParameter(new Parameter(lock, "bMax", -INF, INF, 0.0, 1.0, Parameter::LINEAR));
-  //addObservedParameter(new Parameter(lock, "cMax", -INF, INF, 0.0, 1.0, Parameter::LINEAR));
-  //addObservedParameter(new Parameter(lock, "dMax", -INF, INF, 0.0, 1.0, Parameter::LINEAR));
-
-  //// make a call to parameterChanged for each parameter in order to set up the DSP-core to reflect
-  //// the values the automatable parameters:
-  //for(int i=0; i < (int) parameters.size(); i++ )
-  //  parameterChanged(parameters[i]);
 }
 
 //=================================================================================================

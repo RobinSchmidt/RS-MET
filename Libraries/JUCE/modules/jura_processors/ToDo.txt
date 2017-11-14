@@ -56,7 +56,10 @@ RayBouncer:
 Bugs:
 
 FuncShaper:
- -when switchin presets from "Rectify" to "RectifyTwice", the plot doesn't update
+ -when switching presets from "Rectify" to "RectifyTwice", the plot doesn't update
+  i think, we should make the editor an observer of FuncShaperAudioModule (instead of observing the
+  a,b,c,d parameters - the AudioModule itself should oberve them and send out notifications)
+ -switching from BitCrush to the next takes a long time
  -produces hiss when turning up dc and drive (without input)
 
 Framework:
