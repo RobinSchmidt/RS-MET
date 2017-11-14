@@ -644,5 +644,3 @@ void FuncShaperModuleEditor::resized()
   y += 32;
   dryWetSlider->setBounds(x+4, y+4, w-8, 16);
 }
-
-

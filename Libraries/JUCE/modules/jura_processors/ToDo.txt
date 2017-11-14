@@ -56,20 +56,6 @@ RayBouncer:
 Bugs:
 
 FuncShaper:
- -when switching presets from initial state to "Rectify" the plot shows a wrong curve - has "a" 
-  the wrong value? it seems, "a" has a value of 2 after loading the preset?
-  setA() is not called on preset load and the "a" value in the wrappedFuncShaper is still 2
-  -it's because in Parameter::setValue, value == newValue is true (why?), so the callback doesn't 
-   get called
-  -i think, it is because the "a" parameter value is set to 1 (without calling any callback) when 
-   the range is updated, i think, i should use Parameter::setRangeAndValue in the recall
- -switching from BitCrushQuietSignals2 to the next preset takes a long time
-  -i think, during preset recall, the table is recomputed multiple times and that may take a long 
-   time.
-  -...and it seems the recomputation time depends on the current settings of all parameters
-   ->somehow, we need to make sure, that all variables and the formula string are set up once
-   and then one recalculation takes place
- -produces hiss when turning up dc and drive (without input)
 
 Framework:
  -CoordinateSystem zoomer should zoom out maximally when clicking the middle button / mouse-wheel
