@@ -1,9 +1,11 @@
 #ifndef jura_FuncShaper_h
 #define jura_FuncShaper_h
 
+
+
 /** This class wraps rosic::FuncShaper into a jura::AudioModule to facilitate its use as plugIn. */
 
-class FuncShaperAudioModule : public ModulatableAudioModule
+class FuncShaperAudioModule : public ModulatableAudioModule, public ChangeBroadcaster
 {
 
   friend class FuncShaperModuleEditor;
@@ -106,7 +108,6 @@ protected:
 
   void createParameters();
 
-
   rosic::FuncShaper *wrappedFuncShaper;
   bool wrappedFuncShaperIsOwned = false;
 
@@ -116,8 +117,7 @@ protected:
 
 //=================================================================================================
 
-class FuncShaperModuleEditor : public AudioModuleEditor, public RTextEntryFieldObserver, 
-  public ParameterObserver //public RSliderListener, 
+class FuncShaperModuleEditor : public AudioModuleEditor, public RTextEntryFieldObserver
 {
 
 public:
@@ -126,7 +126,8 @@ public:
   // construction/destruction:
 
   /** Constructor. */
-  FuncShaperModuleEditor(CriticalSection *newPlugInLock, FuncShaperAudioModule* newFuncShaperAudioModule);
+  FuncShaperModuleEditor(CriticalSection *newPlugInLock, 
+    FuncShaperAudioModule* newFuncShaperAudioModule);
 
   /** Destructor. */
   virtual ~FuncShaperModuleEditor();
@@ -134,8 +135,9 @@ public:
   //---------------------------------------------------------------------------------------------
   // callbacks:
 
-  virtual void parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted);
-  virtual void parameterChanged(Parameter* parameterThatHasChanged);
+  /** Gets called from the funcShapeAudioModule when the formula or one of the a,b,c,d parameters
+  changes (in which case the plot must be updated). */
+  virtual void changeListenerCallback(ChangeBroadcaster *source) override;
 
   /** Implements the purely virtual method inherited from RTextEntryFieldObserver. */
   virtual void textChanged(RTextEntryField *rTextEntryFieldThatHasChanged);
@@ -175,7 +177,5 @@ protected:
 
   juce_UseDebuggingNewOperator;
 };
-
-
 
 #endif 

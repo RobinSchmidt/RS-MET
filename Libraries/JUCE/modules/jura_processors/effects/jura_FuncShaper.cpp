@@ -68,7 +68,8 @@ void FuncShaperAudioModule::setStateFromXml(const XmlElement& xmlState,
   // restore the function-string:
   juce::String functionString = xmlState.getStringAttribute("FunctionString");
   char* functionStringC = toZeroTerminatedString(functionString);
-  bool stringIsValid = wrappedFuncShaper->setFunctionString(functionStringC, false);
+  //bool stringIsValid = wrappedFuncShaper->setFunctionString(functionStringC, false);
+  bool stringIsValid = wrappedFuncShaper->setFunctionString(functionStringC, true);
   if(functionStringC)
     delete functionStringC;
 
@@ -77,6 +78,8 @@ void FuncShaperAudioModule::setStateFromXml(const XmlElement& xmlState,
 
   if( markAsClean == true )
     markStateAsClean();
+
+  sendChangeMessage();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -86,14 +89,9 @@ void FuncShaperAudioModule::parameterChanged(Parameter* p)
 {
   juce::String name = p->getName();
   if(name == "a" || name == "b" || name == "c" || name == "d")
-  {
-    // we need to send a notification that the plot needs an update
-    int dummy = 0;
-  }
-
+    sendChangeMessage();
   markStateAsDirty();
 }
-
 
 void FuncShaperAudioModule::setFormulaParameterMinValue(const juce::String& augmentedName, 
   double newMinValue)
@@ -448,13 +446,8 @@ FuncShaperModuleEditor::FuncShaperModuleEditor(CriticalSection *newPlugInLock,
   shaperPlot->setVerticalFineGrid(0.1, true);
   addPlot(shaperPlot);
 
-  // we observe the a,b,c,d parameters in order to redraw the plot when one of them changes:
-  funcShaperAudioModule->getParameterByName("a")->registerParameterObserver(this);
-  funcShaperAudioModule->getParameterByName("b")->registerParameterObserver(this);
-  funcShaperAudioModule->getParameterByName("c")->registerParameterObserver(this);
-  funcShaperAudioModule->getParameterByName("d")->registerParameterObserver(this);
-  setLocalAutomationSwitch(true);
-  setIsGuiElement(true);
+  // observe funcShaperAudioModule in order to redraw plot when formula changes:
+  funcShaperAudioModule->addChangeListener(this);
 
   // generate the x-values for the plot:
   int    numValues = funcShaperAudioModule->wrappedFuncShaper->distortionCurve.getTableSize();
@@ -478,29 +471,22 @@ FuncShaperModuleEditor::FuncShaperModuleEditor(CriticalSection *newPlugInLock,
 
 FuncShaperModuleEditor::~FuncShaperModuleEditor()
 {
-  funcShaperAudioModule->getParameterByName("a")->deRegisterParameterObserver(this);
-  funcShaperAudioModule->getParameterByName("b")->deRegisterParameterObserver(this);
-  funcShaperAudioModule->getParameterByName("c")->deRegisterParameterObserver(this);
-  funcShaperAudioModule->getParameterByName("d")->deRegisterParameterObserver(this);
-
+  funcShaperAudioModule->removeChangeListener(this);
   if( xValues )
     delete[] xValues;
   if( yValues )
     delete[] yValues;
-  //deleteAllChildren();
 }
 
 //-------------------------------------------------------------------------------------------------
 // callbacks:
 
-void FuncShaperModuleEditor::parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted)
+void FuncShaperModuleEditor::changeListenerCallback(ChangeBroadcaster *source)
 {
-
-}
-
-void FuncShaperModuleEditor::parameterChanged(Parameter* parameterThatHasChanged)
-{
-  shaperPlot->updatePlotImage();  // it was one of the a,b,c,d parameters (these are the ones we observe)
+  if(source == funcShaperAudioModule)
+    shaperPlot->updatePlotImage(); 
+  else
+    AudioModuleEditor::changeListenerCallback(source);
 }
 
 void FuncShaperModuleEditor::textChanged(RTextEntryField *rTextEntryFieldThatHasChanged)
@@ -514,7 +500,8 @@ void FuncShaperModuleEditor::textChanged(RTextEntryField *rTextEntryFieldThatHas
   {
     juce::String functionString  = formulaField->getText();
     char*        functionStringC = toZeroTerminatedString(functionString);
-    bool stringIsValid = funcShaperAudioModule->wrappedFuncShaper->setFunctionString(functionStringC, false);
+    bool stringIsValid = funcShaperAudioModule->wrappedFuncShaper
+      ->setFunctionString(functionStringC, false); // why false, shouldn't we recalculate the table?
     if(functionStringC)
       delete functionStringC;
 
@@ -536,7 +523,8 @@ void FuncShaperModuleEditor::textChanged(RTextEntryField *rTextEntryFieldThatHas
 void FuncShaperModuleEditor::updateWidgetsAccordingToState()
 {
   AudioModuleEditor::updateWidgetsAccordingToState();
-  formulaField->setText(juce::String(funcShaperAudioModule->wrappedFuncShaper->getFunctionString()));
+  formulaField->setText(juce::String(funcShaperAudioModule->wrappedFuncShaper
+    ->getFunctionString()));
   shaperPlot->updatePlotImage();
 }
 
@@ -544,12 +532,12 @@ void FuncShaperModuleEditor::paint(Graphics &g)
 {
   AudioModuleEditor::paint(g);
 
-  fillRectWithBilinearGradient(g, formulaRectangle, editorColourScheme.topLeft, editorColourScheme.topRight,
-    editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
+  fillRectWithBilinearGradient(g, formulaRectangle, editorColourScheme.topLeft, 
+    editorColourScheme.topRight, editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
   fillRectWithBilinearGradient(g, inputRectangle, editorColourScheme.topLeft,
     editorColourScheme.topRight, editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
-  fillRectWithBilinearGradient(g, outputRectangle, editorColourScheme.topLeft, editorColourScheme.topRight,
-    editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
+  fillRectWithBilinearGradient(g, outputRectangle, editorColourScheme.topLeft, 
+    editorColourScheme.topRight, editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
 
   g.setColour(editorColourScheme.outline);
   g.drawRect(formulaRectangle);
