@@ -54,8 +54,6 @@ RayBouncer:
  -Workhorse
 
 Bugs:
--Breakpoint editor:
- -grid/quantization buttons inconsistent with whether the grid is shown or not
 
 FuncShaper:
  -loading a preset on mac does not update the formula (also on win)

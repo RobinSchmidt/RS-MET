@@ -156,7 +156,8 @@ public:
   draw themselves differently for bipolar parameters */
   enum scalings
   {
-    BOOLEAN = 0,
+    IDENTITY = 0,
+    BOOLEAN,
     STRING,         // rename to CHOICE
     INTEGER,        // maybe remove, linear should be just as good
     LINEAR,

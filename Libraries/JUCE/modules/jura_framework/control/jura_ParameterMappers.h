@@ -30,7 +30,7 @@ public:
   /** Sets up the range for the (mapped, actual) parameter value. */
   virtual void setRange(double newMin, double newMax)
   {
-    jassert(newMin <= newMax);
+    jassert(newMin < newMax);
     min = newMin;
     max = newMax;
   }
@@ -61,6 +61,22 @@ public:
   double   map(double x) const override { return min + (max-min) * x; }
   double unmap(double y) const override { return (y-min) / (max-min); }
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsParameterMapperLinear)
+};
+
+//=================================================================================================
+
+/** Subclass of rsParameterMapper for identity mapping. This mapper should be used when the range
+must be unrestricted, i.e. go from -inf to +inf. In this case, the linear mapper would produce
+NaN. */
+
+class JUCE_API rsParameterMapperIdentity : public rsParameterMapper
+{
+public:
+  rsParameterMapperIdentity() { min = -INF; max = INF; }
+  double   map(double x) const override { return x; }
+  double unmap(double y) const override { return y; }
+  void setRange(double newMin, double newMax) override {} // do nothing
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsParameterMapperIdentity)
 };
 
 //=================================================================================================

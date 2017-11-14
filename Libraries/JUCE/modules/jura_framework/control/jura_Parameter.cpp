@@ -189,7 +189,7 @@ void Parameter::setDefaultValue(double newDefaultValue, bool setToDefault)
 void Parameter::setScaling(int newScaling)
 {
   ScopedPointerLock spl(mutex);
-  if( newScaling < BOOLEAN || newScaling >= NUM_SCALINGS )
+  if( newScaling < IDENTITY || newScaling >= NUM_SCALINGS )
   {
     jassertfalse;
     return; // invalid scaling index
@@ -208,16 +208,25 @@ void Parameter::setScaling(int newScaling)
       mapper = tmp;
     }
   }
+  else if(scaling == IDENTITY)
+  {
+    rsParameterMapperIdentity* tmp = dynamic_cast<rsParameterMapperIdentity*>(mapper);
+    if(tmp == nullptr) 
+    {
+      delete mapper;
+      mapper = new rsParameterMapperIdentity;
+    }
+  }
   else
   {
     // default case, catches LINEAR, LINEAR_BIPOLAR, INTEGER, BOOLEAN, STRING, uses linear mapper
     rsParameterMapperLinear* tmp = dynamic_cast<rsParameterMapperLinear*>(mapper);
-    if(tmp == nullptr) // old mapper is the wrong kind, we need to create a new one
+    if(tmp == nullptr) 
     {
       tmp = new rsParameterMapperLinear;
       tmp->setRange(mapper->getMin(), mapper->getMax());
       delete mapper;
-      mapper = tmp;
+      mapper = tmp; 
     }
   }
 }
@@ -253,7 +262,7 @@ void Parameter::addStringValue(const String& valueToAdd)
 {
   ScopedPointerLock spl(mutex);
   stringValues.addIfNotAlreadyThere(valueToAdd);
-  mapper->setRange(0.0, (double)(stringValues.size()-1));
+  mapper->setRange(0.0, jmax(double(stringValues.size()-1), DBL_MIN)); // max must be > min
   //minValue = 0.0;
   //maxValue = (double) (stringValues.size()-1);
 }
