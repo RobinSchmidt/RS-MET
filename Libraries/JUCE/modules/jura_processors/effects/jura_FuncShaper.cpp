@@ -54,22 +54,25 @@ XmlElement* FuncShaperAudioModule::getStateAsXml(const juce::String& stateName, 
 void FuncShaperAudioModule::setStateFromXml(const XmlElement& xml,
                                             const juce::String& stateName, bool markAsClean)
 {
+  // restore the function-string:
+  juce::String functionString = xml.getStringAttribute("FunctionString");
+  char* functionStringC = toZeroTerminatedString(functionString);
+  bool stringIsValid = wrappedFuncShaper->setFunctionString(functionStringC, false);
+  if(functionStringC)
+    delete functionStringC;
+
   // recall formula a,b,c,d parameters (and their ranges):
   recallFormulaParameterFromXml(xml, "a");
   recallFormulaParameterFromXml(xml, "b");
   recallFormulaParameterFromXml(xml, "c");
   recallFormulaParameterFromXml(xml, "d");
 
+  //wrappedFuncShaper->calculateTable();
+
+  //stringIsValid = wrappedFuncShaper->setFunctionString(functionStringC, true);
+
   // use basclass implementation to restore other numeric parameters:
   AudioModule::setStateFromXml(xml, stateName, markAsClean);
-
-  // restore the function-string:
-  juce::String functionString = xml.getStringAttribute("FunctionString");
-  char* functionStringC = toZeroTerminatedString(functionString);
-  //bool stringIsValid = wrappedFuncShaper->setFunctionString(functionStringC, false);
-  bool stringIsValid = wrappedFuncShaper->setFunctionString(functionStringC, true);
-  if(functionStringC)
-    delete functionStringC;
 
   if( markAsClean == true )
     markStateAsClean();
@@ -120,6 +123,7 @@ void FuncShaperAudioModule::setFormulaParameterAndRange(const juce::String& name
 {
   Parameter *p = getParameterByName(name);
   p->setRangeAndValue(newMin, newMax, newValue, true, true);
+  //p->setRangeAndValue(newMin, newMax, newValue, false, false);
   p->setDefaultValue(0.5 * (p->getMinValue() + p->getMaxValue()) );
   getParameterByName(name + "Min")->setValue(newMin, false, false);
   getParameterByName(name + "Max")->setValue(newMax, false, false);

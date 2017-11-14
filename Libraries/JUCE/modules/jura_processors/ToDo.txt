@@ -63,7 +63,12 @@ FuncShaper:
    get called
   -i think, it is because the "a" parameter value is set to 1 (without calling any callback) when 
    the range is updated, i think, i should use Parameter::setRangeAndValue in the recall
- -switching from BitCrush to the next takes a long time
+ -switching from BitCrushQuietSignals2 to the next preset takes a long time
+  -i think, during preset recall, the table is recomputed multiple times and that may take a long 
+   time.
+  -...and it seems the recomputation time depends on the current settings of all parameters
+   ->somehow, we need to make sure, that all variables and the formula string are set up once
+   and then one recalculation takes place
  -produces hiss when turning up dc and drive (without input)
 
 Framework:
