@@ -15,7 +15,7 @@ FuncShaperAudioModule::FuncShaperAudioModule(CriticalSection *newPlugInLock,
   createParameters();
 
   // use initial value for "a" that is different from the default value:
-  setFormulaParameterMaxValue("aMax", 4.0);
+  setFormulaParameterMaxValue("a", 4.0);
   getParameterByName("a")->setValue(2.0, true, true);
 }
 
@@ -32,7 +32,7 @@ FuncShaperAudioModule::FuncShaperAudioModule(CriticalSection *newPlugInLock,
   createParameters();
 
   // use initial value for "a" that is different from the default value:
-  setFormulaParameterMaxValue("aMax", 4.0);
+  setFormulaParameterMaxValue("a", 4.0);
   getParameterByName("a")->setValue(2.0, true, true);
 }
 
@@ -93,32 +93,32 @@ void FuncShaperAudioModule::parameterChanged(Parameter* p)
   markStateAsDirty();
 }
 
-void FuncShaperAudioModule::setFormulaParameterMinValue(const juce::String& augmentedName, 
-  double newMinValue)
+void FuncShaperAudioModule::setFormulaParameterMinValue(const juce::String& name, double newMin)
 {
-  getParameterByName(augmentedName)->setValue(newMinValue, false, false);
-  Parameter *p = getParameterByName(augmentedName.substring(0, 1));
-  p->setMinValue(newMinValue);
+  getParameterByName(name + "Min")->setValue(newMin, false, false);
+  Parameter *p = getParameterByName(name);
+  p->setMinValue(newMin);
   p->setDefaultValue(0.5 * (p->getMinValue() + p->getMaxValue()) );
     // maybe use a member useMidValueAsDefaultValue in Parameter -> may take mapping into account
     // or maybe use a useProportionAsDefaultValue(double proportion) and call with 0.5
 }
 
-void FuncShaperAudioModule::setFormulaParameterMaxValue(const juce::String& augmentedName, double newMaxValue)
+void FuncShaperAudioModule::setFormulaParameterMaxValue(const juce::String& name, double newMax)
 {
-  getParameterByName(augmentedName)->setValue(newMaxValue, false, false);
-  Parameter *p = getParameterByName(augmentedName.substring(0, 1));
-  p->setMaxValue(newMaxValue);
+  getParameterByName(name + "Max")->setValue(newMax, false, false);
+  Parameter *p = getParameterByName(name);
+  p->setMaxValue(newMax);
   p->setDefaultValue(0.5 * (p->getMinValue() + p->getMaxValue()) );
 }
 
-void FuncShaperAudioModule::setFormulaParameterRange(const juce::String& augmentedName, 
-  double newMinValue, double newMaxValue)
+void FuncShaperAudioModule::setFormulaParameterRange(const juce::String& name, double newMin, 
+  double newMax)
 {
-  getParameterByName(augmentedName.substring(0, 1) + "Min")->setValue(newMinValue, false, false);
-  getParameterByName(augmentedName.substring(0, 1) + "Max")->setValue(newMaxValue, false, false);
-  Parameter *p = getParameterByName(augmentedName.substring(0, 1));
-  p->setRange(newMinValue, newMaxValue);
+  getParameterByName(name + "Min")->setValue(newMin, false, false);
+  getParameterByName(name + "Max")->setValue(newMax, false, false);
+
+  Parameter *p = getParameterByName(name);
+  p->setRange(newMin, newMax);
   p->setDefaultValue(0.5 * (p->getMinValue() + p->getMaxValue()) );
 }
 

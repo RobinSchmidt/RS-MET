@@ -45,11 +45,12 @@ public:
     wrappedFuncShaper->setSampleRate(newSampleRate);
   }
 
-  // formula parameter range settings: 
-  void setFormulaParameterMinValue(const juce::String& augmentedName, double newMinValue);
-  void setFormulaParameterMaxValue(const juce::String& augmentedName, double newMaxValue);
-  void setFormulaParameterRange(   const juce::String& augmentedName, double newMinValue, 
-    double newMaxValue);
+  // formula parameter range settings, name can be any of a,b,c,d: 
+  void setFormulaParameterMinValue(const juce::String& name, double newMin);
+  void setFormulaParameterMaxValue(const juce::String& name, double newMax);
+  void setFormulaParameterRange(   const juce::String& name, double newMin, double newMax);
+
+
 
   // callback targets:
   void setA(double newA) { wrappedFuncShaper->setA(newA, true); }
@@ -57,15 +58,15 @@ public:
   void setC(double newC) { wrappedFuncShaper->setC(newC, true); }
   void setD(double newD) { wrappedFuncShaper->setD(newD, true); }
 
-  void setMinA(double newMin) { setFormulaParameterMinValue("aMin", newMin); } // correct to pass "aMin" - or just "a"?
-  void setMinB(double newMin) { setFormulaParameterMinValue("bMin", newMin); }
-  void setMinC(double newMin) { setFormulaParameterMinValue("cMin", newMin); }
-  void setMinD(double newMin) { setFormulaParameterMinValue("dMin", newMin); }
+  void setMinA(double newMin) { setFormulaParameterMinValue("a", newMin); }
+  void setMinB(double newMin) { setFormulaParameterMinValue("b", newMin); }
+  void setMinC(double newMin) { setFormulaParameterMinValue("c", newMin); }
+  void setMinD(double newMin) { setFormulaParameterMinValue("d", newMin); }
 
-  void setMaxA(double newMax) { setFormulaParameterMaxValue("aMax", newMax); }
-  void setMaxB(double newMax) { setFormulaParameterMaxValue("bMax", newMax); }
-  void setMaxC(double newMax) { setFormulaParameterMaxValue("cMax", newMax); }
-  void setMaxD(double newMax) { setFormulaParameterMaxValue("dMax", newMax); }
+  void setMaxA(double newMax) { setFormulaParameterMaxValue("a", newMax); }
+  void setMaxB(double newMax) { setFormulaParameterMaxValue("b", newMax); }
+  void setMaxC(double newMax) { setFormulaParameterMaxValue("c", newMax); }
+  void setMaxD(double newMax) { setFormulaParameterMaxValue("d", newMax); }
 
   //---------------------------------------------------------------------------------------------
   // audio processing:
