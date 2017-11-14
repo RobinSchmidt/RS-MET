@@ -67,7 +67,6 @@ public:
   void setMaxC(double newMax) { setFormulaParameterMaxValue("cMax", newMax); }
   void setMaxD(double newMax) { setFormulaParameterMaxValue("dMax", newMax); }
 
-
   //---------------------------------------------------------------------------------------------
   // audio processing:
 
@@ -112,7 +111,6 @@ protected:
   bool wrappedFuncShaperIsOwned = false;
 
   juce_UseDebuggingNewOperator;
-
 };
 
 //=================================================================================================

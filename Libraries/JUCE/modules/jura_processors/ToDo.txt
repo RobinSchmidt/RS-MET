@@ -56,9 +56,13 @@ RayBouncer:
 Bugs:
 
 FuncShaper:
- -when switching presets from "Rectify" to "RectifyTwice", the plot doesn't update
-  i think, we should make the editor an observer of FuncShaperAudioModule (instead of observing the
-  a,b,c,d parameters - the AudioModule itself should oberve them and send out notifications)
+ -when switching presets from initial state to "Rectify" the plot shows a wrong curve - has "a" 
+  the wrong value? it seems, "a" has a value of 2 after loading the preset?
+  setA() is not called on preset load and the "a" value in the wrappedFuncShaper is still 2
+  -it's because in Parameter::setValue, value == newValue is true (why?), so the callback doesn't 
+   get called
+  -i think, it is because the "a" parameter value is set to 1 (without calling any callback) when 
+   the range is updated, i think, i should use Parameter::setRangeAndValue in the recall
  -switching from BitCrush to the next takes a long time
  -produces hiss when turning up dc and drive (without input)
 

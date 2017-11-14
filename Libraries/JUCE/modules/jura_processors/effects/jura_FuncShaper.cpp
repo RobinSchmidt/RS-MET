@@ -65,6 +65,9 @@ void FuncShaperAudioModule::setStateFromXml(const XmlElement& xmlState,
   setFormulaParameterRange("c", xmlState.getDoubleAttribute("cMin", -1.0), xmlState.getDoubleAttribute("cMax", +1.0));
   setFormulaParameterRange("d", xmlState.getDoubleAttribute("dMin", -1.0), xmlState.getDoubleAttribute("dMax", +1.0));
 
+  // use basclass implementation to restore numeric parameters
+  AudioModule::setStateFromXml(xmlState, stateName, markAsClean);
+
   // restore the function-string:
   juce::String functionString = xmlState.getStringAttribute("FunctionString");
   char* functionStringC = toZeroTerminatedString(functionString);
@@ -72,9 +75,6 @@ void FuncShaperAudioModule::setStateFromXml(const XmlElement& xmlState,
   bool stringIsValid = wrappedFuncShaper->setFunctionString(functionStringC, true);
   if(functionStringC)
     delete functionStringC;
-
-  // use basclass implementation to restore numeric parameters
-  AudioModule::setStateFromXml(xmlState, stateName, markAsClean);
 
   if( markAsClean == true )
     markStateAsClean();
