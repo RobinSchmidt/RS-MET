@@ -37,6 +37,10 @@ public:
   virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
     bool markAsClean) override;
 
+  /** Used internally by setStateFromXml to recall the a,b,c,d parameters along with their 
+  min/max values. "name" is any of "a".."d". */
+  void recallFormulaParameterFromXml(const XmlElement& xml, const juce::String& name);
+
   virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean) override;
 
   //---------------------------------------------------------------------------------------------
@@ -48,11 +52,10 @@ public:
   }
 
   // formula parameter range settings, name can be any of a,b,c,d: 
-  void setFormulaParameterMinValue(const juce::String& name, double newMin);
-  void setFormulaParameterMaxValue(const juce::String& name, double newMax);
-  void setFormulaParameterRange(   const juce::String& name, double newMin, double newMax);
-
-
+  void setFormulaParameterMin(const juce::String& name, double newMin);
+  void setFormulaParameterMax(const juce::String& name, double newMax);
+  void setFormulaParameterAndRange(const juce::String& name, double newValue, 
+    double newMin, double newMax);
 
   // callback targets:
   void setA(double newA) { wrappedFuncShaper->setA(newA, true); }
@@ -60,15 +63,15 @@ public:
   void setC(double newC) { wrappedFuncShaper->setC(newC, true); }
   void setD(double newD) { wrappedFuncShaper->setD(newD, true); }
 
-  void setMinA(double newMin) { setFormulaParameterMinValue("a", newMin); }
-  void setMinB(double newMin) { setFormulaParameterMinValue("b", newMin); }
-  void setMinC(double newMin) { setFormulaParameterMinValue("c", newMin); }
-  void setMinD(double newMin) { setFormulaParameterMinValue("d", newMin); }
+  void setMinA(double newMin) { setFormulaParameterMin("a", newMin); }
+  void setMinB(double newMin) { setFormulaParameterMin("b", newMin); }
+  void setMinC(double newMin) { setFormulaParameterMin("c", newMin); }
+  void setMinD(double newMin) { setFormulaParameterMin("d", newMin); }
 
-  void setMaxA(double newMax) { setFormulaParameterMaxValue("a", newMax); }
-  void setMaxB(double newMax) { setFormulaParameterMaxValue("b", newMax); }
-  void setMaxC(double newMax) { setFormulaParameterMaxValue("c", newMax); }
-  void setMaxD(double newMax) { setFormulaParameterMaxValue("d", newMax); }
+  void setMaxA(double newMax) { setFormulaParameterMax("a", newMax); }
+  void setMaxB(double newMax) { setFormulaParameterMax("b", newMax); }
+  void setMaxC(double newMax) { setFormulaParameterMax("c", newMax); }
+  void setMaxD(double newMax) { setFormulaParameterMax("d", newMax); }
 
   //---------------------------------------------------------------------------------------------
   // audio processing:

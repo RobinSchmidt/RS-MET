@@ -27,7 +27,7 @@ void FuncShaperAudioModule::init()
   createParameters();
 
   // use initial value for "a" that is different from the default value:
-  setFormulaParameterMaxValue("a", 4.0);
+  setFormulaParameterMax("a", 4.0);
   getParameterByName("a")->setValue(2.0, true, true);
 }
 
@@ -51,20 +51,20 @@ XmlElement* FuncShaperAudioModule::getStateAsXml(const juce::String& stateName, 
   return xmlState;
 }
 
-void FuncShaperAudioModule::setStateFromXml(const XmlElement& xmlState,
+void FuncShaperAudioModule::setStateFromXml(const XmlElement& xml,
                                             const juce::String& stateName, bool markAsClean)
 {
-  // set up min/max values for a,b,c,d - we can't use inherited behavior because min and max must be set simultaneously:
-  setFormulaParameterRange("a", xmlState.getDoubleAttribute("aMin", -1.0), xmlState.getDoubleAttribute("aMax", +1.0));
-  setFormulaParameterRange("b", xmlState.getDoubleAttribute("bMin", -1.0), xmlState.getDoubleAttribute("bMax", +1.0));
-  setFormulaParameterRange("c", xmlState.getDoubleAttribute("cMin", -1.0), xmlState.getDoubleAttribute("cMax", +1.0));
-  setFormulaParameterRange("d", xmlState.getDoubleAttribute("dMin", -1.0), xmlState.getDoubleAttribute("dMax", +1.0));
+  // recall formula a,b,c,d parameters (and their ranges):
+  recallFormulaParameterFromXml(xml, "a");
+  recallFormulaParameterFromXml(xml, "b");
+  recallFormulaParameterFromXml(xml, "c");
+  recallFormulaParameterFromXml(xml, "d");
 
-  // use basclass implementation to restore numeric parameters
-  AudioModule::setStateFromXml(xmlState, stateName, markAsClean);
+  // use basclass implementation to restore other numeric parameters:
+  AudioModule::setStateFromXml(xml, stateName, markAsClean);
 
   // restore the function-string:
-  juce::String functionString = xmlState.getStringAttribute("FunctionString");
+  juce::String functionString = xml.getStringAttribute("FunctionString");
   char* functionStringC = toZeroTerminatedString(functionString);
   //bool stringIsValid = wrappedFuncShaper->setFunctionString(functionStringC, false);
   bool stringIsValid = wrappedFuncShaper->setFunctionString(functionStringC, true);
@@ -75,6 +75,15 @@ void FuncShaperAudioModule::setStateFromXml(const XmlElement& xmlState,
     markStateAsClean();
 
   sendChangeMessage();
+}
+
+void FuncShaperAudioModule::recallFormulaParameterFromXml(const XmlElement& xml, 
+  const juce::String& name)
+{
+  setFormulaParameterAndRange(name, 
+    xml.getDoubleAttribute(name,          0.0), 
+    xml.getDoubleAttribute(name + "Min", -1.0), 
+    xml.getDoubleAttribute(name + "Max", +1.0));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -88,7 +97,7 @@ void FuncShaperAudioModule::parameterChanged(Parameter* p)
   markStateAsDirty();
 }
 
-void FuncShaperAudioModule::setFormulaParameterMinValue(const juce::String& name, double newMin)
+void FuncShaperAudioModule::setFormulaParameterMin(const juce::String& name, double newMin)
 {
   getParameterByName(name + "Min")->setValue(newMin, false, false);
   Parameter *p = getParameterByName(name);
@@ -98,7 +107,7 @@ void FuncShaperAudioModule::setFormulaParameterMinValue(const juce::String& name
     // or maybe use a useProportionAsDefaultValue(double proportion) and call with 0.5
 }
 
-void FuncShaperAudioModule::setFormulaParameterMaxValue(const juce::String& name, double newMax)
+void FuncShaperAudioModule::setFormulaParameterMax(const juce::String& name, double newMax)
 {
   getParameterByName(name + "Max")->setValue(newMax, false, false);
   Parameter *p = getParameterByName(name);
@@ -106,15 +115,14 @@ void FuncShaperAudioModule::setFormulaParameterMaxValue(const juce::String& name
   p->setDefaultValue(0.5 * (p->getMinValue() + p->getMaxValue()) );
 }
 
-void FuncShaperAudioModule::setFormulaParameterRange(const juce::String& name, double newMin, 
-  double newMax)
+void FuncShaperAudioModule::setFormulaParameterAndRange(const juce::String& name, double newValue,
+  double newMin, double newMax)
 {
+  Parameter *p = getParameterByName(name);
+  p->setRangeAndValue(newMin, newMax, newValue, true, true);
+  p->setDefaultValue(0.5 * (p->getMinValue() + p->getMaxValue()) );
   getParameterByName(name + "Min")->setValue(newMin, false, false);
   getParameterByName(name + "Max")->setValue(newMax, false, false);
-
-  Parameter *p = getParameterByName(name);
-  p->setRange(newMin, newMax);
-  p->setDefaultValue(0.5 * (p->getMinValue() + p->getMaxValue()) );
 }
 
 //-------------------------------------------------------------------------------------------------
