@@ -60,15 +60,15 @@ void FuncShaperAudioModule::setStateFromXml(const XmlElement& xmlState,
                                             const juce::String& stateName, bool markAsClean)
 {
   // set up min/max values for a,b,c,d - we can't use inherited behavior because min and max must be set simultaneously:
-  setFormulaParameterRange("a", xmlState.getDoubleAttribute("aMin", 0.0), xmlState.getDoubleAttribute("aMax", 1.0));
-  setFormulaParameterRange("b", xmlState.getDoubleAttribute("bMin", 0.0), xmlState.getDoubleAttribute("bMax", 1.0));
-  setFormulaParameterRange("c", xmlState.getDoubleAttribute("cMin", 0.0), xmlState.getDoubleAttribute("cMax", 1.0));
-  setFormulaParameterRange("d", xmlState.getDoubleAttribute("dMin", 0.0), xmlState.getDoubleAttribute("dMax", 1.0));
+  setFormulaParameterRange("a", xmlState.getDoubleAttribute("aMin", -1.0), xmlState.getDoubleAttribute("aMax", +1.0));
+  setFormulaParameterRange("b", xmlState.getDoubleAttribute("bMin", -1.0), xmlState.getDoubleAttribute("bMax", +1.0));
+  setFormulaParameterRange("c", xmlState.getDoubleAttribute("cMin", -1.0), xmlState.getDoubleAttribute("cMax", +1.0));
+  setFormulaParameterRange("d", xmlState.getDoubleAttribute("dMin", -1.0), xmlState.getDoubleAttribute("dMax", +1.0));
 
   // restore the function-string:
   juce::String functionString = xmlState.getStringAttribute("FunctionString");
   char* functionStringC = toZeroTerminatedString(functionString);
-  //bool stringIsValid = wrappedFuncShaper->setFunctionString(functionStringC, false);
+  bool stringIsValid = wrappedFuncShaper->setFunctionString(functionStringC, false);
   if(functionStringC)
     delete functionStringC;
 

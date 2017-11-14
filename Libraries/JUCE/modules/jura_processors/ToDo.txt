@@ -56,10 +56,7 @@ RayBouncer:
 Bugs:
 
 FuncShaper:
- -loading a preset on mac does not update the formula (also on win)
- -handling of a,b,c,d min/max values ahs been commented temporarliy - make it work again:
-  setFormulaParameterMinValue, setFormulaParameterMaxValue, setFormulaParameterRange
-  in FuncShaperAudioModule
+ -when switchin presets from "Rectify" to "RectifyTwice", the plot doesn't update
  -produces hiss when turning up dc and drive (without input)
 
 Framework:
