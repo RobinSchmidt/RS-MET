@@ -54,6 +54,8 @@ XmlElement* FuncShaperAudioModule::getStateAsXml(const juce::String& stateName, 
 void FuncShaperAudioModule::setStateFromXml(const XmlElement& xml,
                                             const juce::String& stateName, bool markAsClean)
 {
+  autoRecalcTable = false;
+
   // restore the function-string:
   juce::String functionString = xml.getStringAttribute("FunctionString");
   char* functionStringC = toZeroTerminatedString(functionString);
@@ -67,9 +69,8 @@ void FuncShaperAudioModule::setStateFromXml(const XmlElement& xml,
   recallFormulaParameterFromXml(xml, "c");
   recallFormulaParameterFromXml(xml, "d");
 
-  //wrappedFuncShaper->calculateTable();
-
-  //stringIsValid = wrappedFuncShaper->setFunctionString(functionStringC, true);
+  wrappedFuncShaper->calculateTable();
+  autoRecalcTable = true;
 
   // use basclass implementation to restore other numeric parameters:
   AudioModule::setStateFromXml(xml, stateName, markAsClean);
@@ -123,7 +124,6 @@ void FuncShaperAudioModule::setFormulaParameterAndRange(const juce::String& name
 {
   Parameter *p = getParameterByName(name);
   p->setRangeAndValue(newMin, newMax, newValue, true, true);
-  //p->setRangeAndValue(newMin, newMax, newValue, false, false);
   p->setDefaultValue(0.5 * (p->getMinValue() + p->getMaxValue()) );
   getParameterByName(name + "Min")->setValue(newMin, false, false);
   getParameterByName(name + "Max")->setValue(newMax, false, false);

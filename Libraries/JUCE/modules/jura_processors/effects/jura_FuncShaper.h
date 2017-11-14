@@ -58,10 +58,10 @@ public:
     double newMin, double newMax);
 
   // callback targets:
-  void setA(double newA) { wrappedFuncShaper->setA(newA, true); }
-  void setB(double newB) { wrappedFuncShaper->setB(newB, true); }
-  void setC(double newC) { wrappedFuncShaper->setC(newC, true); }
-  void setD(double newD) { wrappedFuncShaper->setD(newD, true); }
+  void setA(double newA) { wrappedFuncShaper->setA(newA, autoRecalcTable); }
+  void setB(double newB) { wrappedFuncShaper->setB(newB, autoRecalcTable); }
+  void setC(double newC) { wrappedFuncShaper->setC(newC, autoRecalcTable); }
+  void setD(double newD) { wrappedFuncShaper->setD(newD, autoRecalcTable); }
 
   void setMinA(double newMin) { setFormulaParameterMin("a", newMin); }
   void setMinB(double newMin) { setFormulaParameterMin("b", newMin); }
@@ -115,6 +115,7 @@ protected:
 
   rosic::FuncShaper *wrappedFuncShaper;
   bool wrappedFuncShaperIsOwned = false;
+  bool autoRecalcTable = true;
 
   juce_UseDebuggingNewOperator;
 };
