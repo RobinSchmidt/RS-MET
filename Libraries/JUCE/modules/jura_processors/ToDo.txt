@@ -1,3 +1,30 @@
+For Multiband-effects:
+ -drag over EngineersFilter, CrossOver, FiniteImpulseResponseFilter from rosic to rapt
+ -make classes 
+ -rsFilterBank: 
+  -band of parallel bandpass (plus a lowpass and highpass band)
+  -templatized on the filter type, the type needs a function like:
+   setBandEdgeFrequencies(lower, upper) where lower can be 0 (for lowpasses) and upper can be
+   inf (or fs/2) for highpasses, otherwise it will give a bandpass
+  -splits the signal into low, high and any number of bandpass bands plus a residual given by
+   residual = original - sum(bands)
+  -processSampleFrame(T in, T* outs)
+ -rsFilterTree:
+  -hierarchical band-splitter based on pairs of low- and highpass filters
+  -templatized on the splitter type (might be 1st or 2nd order IIR with perfect reconstruction, FIR
+   or any other kind, like Linkwitz-Riley, etc.)
+ -an FIR filter may have a function setOrder(K) which determines the length of the impulse response
+  like N = 2^K (or 2^K-1, if odd order is desired)
+or:
+ -make a spectral splitter: one forward FFT, apply spectral windowing for filtering, multiple iFFTs
+  -maybe look into baseclass rosic::SpectralProcessor
+or:
+ -use a bank of butterworth (or butterworth-squared) bandpasses, obtain magnitude response (or 
+  pole-zero positions) of the sum filter and apply a compensation ("flattening") filter either
+  pre-splitter or post-recombination
+
+  
+
 Smoothing-Sytem:
  -maybe provide a global scaler for all smoothing times in smoothing manager
  -provide a flag to temporarily switch off smoothing completely (useful for preset-switch)
