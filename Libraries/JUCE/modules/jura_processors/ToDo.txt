@@ -2,7 +2,7 @@ For Multiband-effects:
  -drag over EngineersFilter, CrossOver, FiniteImpulseResponseFilter from rosic to rapt
  -make classes 
  -rsFilterBank: 
-  -band of parallel bandpass (plus a lowpass and highpass band)
+  -bank of parallel bandpasses (plus a lowpass and highpass band)
   -templatized on the filter type, the type needs a function like:
    setBandEdgeFrequencies(lower, upper) where lower can be 0 (for lowpasses) and upper can be
    inf (or fs/2) for highpasses, otherwise it will give a bandpass
@@ -22,6 +22,10 @@ or:
  -use a bank of butterworth (or butterworth-squared) bandpasses, obtain magnitude response (or 
   pole-zero positions) of the sum filter and apply a compensation ("flattening") filter either
   pre-splitter or post-recombination
+ -any poles and zeros inside the unit circle can be compensated by putting a zero/pole on the 
+  respective pole/zero
+ -if it has zeros outside the unit-circle, compensate them by using poles at positions that are 
+  reflected in the unit circle
 
   
 
@@ -36,7 +40,7 @@ Smoothing-Sytem:
  -optimize addSmootherFor - smoothing filters don't need to recompute filter-coeffs, if the 
   settings are the same
  -maybe get rid of the isSmoothing flag, the smoother-pointer can serve as such flag as well
- -rsSmoothableParameter::setSmoothedValue should call calbakcs without locking, same for the 
+ -rsSmoothableParameter::setSmoothedValue should call callbacks without locking, same for the 
   overriden version in ModulatableParameter
 
 ModSystem:
