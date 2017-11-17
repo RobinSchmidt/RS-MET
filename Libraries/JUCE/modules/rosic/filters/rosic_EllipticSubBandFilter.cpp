@@ -62,10 +62,10 @@ void EllipticSubBandFilter::setSubDivision(double newSubDivision)
   // in place on the temporary arrays):
 
   double gainDummy;
-  PoleZeroMapper::prototypeToAnalogLowpass(poles, 6, zeros, 6, &gainDummy, wa);
+  rsPoleZeroMapper::prototypeToAnalogLowpass(poles, 6, zeros, 6, &gainDummy, wa);
 
   // transform poles and zeros from s-domain to z-domain via bilinear transform:
-  PoleZeroMapper::bilinearAnalogToDigital(poles, 6, zeros, 6, sampleRate, &gainDummy);
+  rsPoleZeroMapper::bilinearAnalogToDigital(poles, 6, zeros, 6, sampleRate, &gainDummy);
 
   // convert the pole-zero representation to biquad cascade cofficients:
   FilterCoefficientConverter::polesAndZerosToBiquadCascade(poles, 6, zeros, 6, b0, b1, b2, a1, a2, false);

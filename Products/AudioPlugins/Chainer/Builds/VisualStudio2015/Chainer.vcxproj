@@ -2990,7 +2990,7 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_PoleZeroMapper.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_PoleZeroMapperBlah.cpp">
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_PoleZeroMapperOld.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_PrototypeDesigner.cpp">

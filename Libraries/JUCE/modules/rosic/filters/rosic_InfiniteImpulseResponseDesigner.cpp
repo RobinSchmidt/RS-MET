@@ -275,27 +275,27 @@ void rsInfiniteImpulseResponseDesigner::getPolesAndZeros(Complex* poles, Complex
   // s-plane frequency transformation:
   switch( mode )
   {
-  case LOWPASS:    PoleZeroMapper::sPlanePrototypeToLowpass(   protoPoles, protoZeros, poles, zeros, prototypeOrder, wa1);      break;
-  case HIGHPASS:   PoleZeroMapper::sPlanePrototypeToHighpass(  protoPoles, protoZeros, poles, zeros, prototypeOrder, wa1);      break;
-  case BANDPASS:   PoleZeroMapper::sPlanePrototypeToBandpass(  protoPoles, protoZeros, poles, zeros, prototypeOrder, wa1, wa2); break;
-  case BANDREJECT: PoleZeroMapper::sPlanePrototypeToBandreject(protoPoles, protoZeros, poles, zeros, prototypeOrder, wa1, wa2); break;
-  case LOW_SHELV:  PoleZeroMapper::sPlanePrototypeToLowpass(   protoPoles, protoZeros, poles, zeros, prototypeOrder, wa1);      break;
+  case LOWPASS:    rsPoleZeroMapper::sPlanePrototypeToLowpass(   protoPoles, protoZeros, poles, zeros, prototypeOrder, wa1);      break;
+  case HIGHPASS:   rsPoleZeroMapper::sPlanePrototypeToHighpass(  protoPoles, protoZeros, poles, zeros, prototypeOrder, wa1);      break;
+  case BANDPASS:   rsPoleZeroMapper::sPlanePrototypeToBandpass(  protoPoles, protoZeros, poles, zeros, prototypeOrder, wa1, wa2); break;
+  case BANDREJECT: rsPoleZeroMapper::sPlanePrototypeToBandreject(protoPoles, protoZeros, poles, zeros, prototypeOrder, wa1, wa2); break;
+  case LOW_SHELV:  rsPoleZeroMapper::sPlanePrototypeToLowpass(   protoPoles, protoZeros, poles, zeros, prototypeOrder, wa1);      break;
   case HIGH_SHELV:
     {
       // this is ugly - rewrite the prototype design code such that all approximation methods can be treated uniformly:
       if( prototypeDesigner.needsSpecialHighShelvTransform() )
-        PoleZeroMapper::sPlanePrototypeToHighShelv( protoPoles, protoZeros, poles, zeros, prototypeOrder, wa1);
+        rsPoleZeroMapper::sPlanePrototypeToHighShelv( protoPoles, protoZeros, poles, zeros, prototypeOrder, wa1);
       else
-        PoleZeroMapper::sPlanePrototypeToHighpass(  protoPoles, protoZeros, poles, zeros, prototypeOrder, wa1);
+        rsPoleZeroMapper::sPlanePrototypeToHighpass(  protoPoles, protoZeros, poles, zeros, prototypeOrder, wa1);
     }
     break;
-  case PEAK:       PoleZeroMapper::sPlanePrototypeToBandpass(  protoPoles, protoZeros, poles, zeros, prototypeOrder, wa1, wa2); break;
-  default:         PoleZeroMapper::sPlanePrototypeToLowpass(   protoPoles, protoZeros, poles, zeros, prototypeOrder, wa1);      break;
+  case PEAK:       rsPoleZeroMapper::sPlanePrototypeToBandpass(  protoPoles, protoZeros, poles, zeros, prototypeOrder, wa1, wa2); break;
+  default:         rsPoleZeroMapper::sPlanePrototypeToLowpass(   protoPoles, protoZeros, poles, zeros, prototypeOrder, wa1);      break;
   };
 
   // transform from the s-domain to the z-domain via the bilinear transform:
   double g; // not used actually
-  PoleZeroMapper::bilinearAnalogToDigital(poles, finalOrder, zeros, finalOrder, fs, &g);
+  rsPoleZeroMapper::bilinearAnalogToDigital(poles, finalOrder, zeros, finalOrder, fs, &g);
 
   // free dynamically allocated memory:
   delete[] protoPoles;

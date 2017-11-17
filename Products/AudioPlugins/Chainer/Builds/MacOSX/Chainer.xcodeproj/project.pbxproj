@@ -1427,7 +1427,6 @@
 		8C17B51CCB30177D10181B4B = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = "juce_audio_devices.mm"; path = "../../../../../Libraries/JUCE/modules/juce_audio_devices/juce_audio_devices.mm"; sourceTree = "SOURCE_ROOT"; };
 		8C309D3F0EE8FFE17A9F9611 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "rosic_TestGenerator.h"; path = "../../../../../Libraries/JUCE/modules/rosic/generators/rosic_TestGenerator.h"; sourceTree = "SOURCE_ROOT"; };
 		8C3C180DE9A6E032E476757A = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "rosic_StandardWaveformRenderer.h"; path = "../../../../../Libraries/JUCE/modules/rosic/rendering/rosic_StandardWaveformRenderer.h"; sourceTree = "SOURCE_ROOT"; };
-		8C49322CFEB70F65EA777EB3 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "rosic_PoleZeroMapperBlah.cpp"; path = "../../../../../Libraries/JUCE/modules/rosic/filters/rosic_PoleZeroMapperBlah.cpp"; sourceTree = "SOURCE_ROOT"; };
 		8C4EF6C44EE10F8FE96CD00A = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Equalizer5.h; path = ../../../../../Libraries/JUCE/modules/rosic/legacy/Equalizer5.h; sourceTree = "SOURCE_ROOT"; };
 		8CA9129B2E8EE1D45EB0E1D6 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SampleLauncher.h; path = ../../../../../Libraries/JUCE/modules/rosic/legacy/SampleLauncher.h; sourceTree = "SOURCE_ROOT"; };
 		8CDE11CBF63326CE1E1771AE = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "juce_ImageCache.cpp"; path = "../../../../../Libraries/JUCE/modules/juce_graphics/images/juce_ImageCache.cpp"; sourceTree = "SOURCE_ROOT"; };
@@ -1667,6 +1666,7 @@
 		A4A819266428034E8CDF5ED4 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "juce_win32_AudioCDBurner.cpp"; path = "../../../../../Libraries/JUCE/modules/juce_audio_devices/native/juce_win32_AudioCDBurner.cpp"; sourceTree = "SOURCE_ROOT"; };
 		A4D950A070540529D4282F42 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "juce_ResizableCornerComponent.cpp"; path = "../../../../../Libraries/JUCE/modules/juce_gui_basics/layout/juce_ResizableCornerComponent.cpp"; sourceTree = "SOURCE_ROOT"; };
 		A4DE5A7DB68E8712E0617370 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "juce_HyperlinkButton.cpp"; path = "../../../../../Libraries/JUCE/modules/juce_gui_basics/buttons/juce_HyperlinkButton.cpp"; sourceTree = "SOURCE_ROOT"; };
+		A4E25722DF483F92CA57AFC3 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "rosic_PoleZeroMapperOld.cpp"; path = "../../../../../Libraries/JUCE/modules/rosic/filters/rosic_PoleZeroMapperOld.cpp"; sourceTree = "SOURCE_ROOT"; };
 		A4E585CECBAF233928353774 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CADebugPrintf.h; path = "../../../../../Libraries/JUCE/modules/juce_audio_plugin_client/AU/CoreAudioUtilityClasses/CADebugPrintf.h"; sourceTree = "SOURCE_ROOT"; };
 		A4F7D23F2766A82AB0285172 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MatrixTools.h; path = ../../../../../Libraries/JUCE/modules/rapt/Data/MatrixTools.h; sourceTree = "SOURCE_ROOT"; };
 		A5019D711FD6F6BD8AE86A37 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "juce_ToolbarItemComponent.cpp"; path = "../../../../../Libraries/JUCE/modules/juce_gui_basics/widgets/juce_ToolbarItemComponent.cpp"; sourceTree = "SOURCE_ROOT"; };
@@ -5021,7 +5021,7 @@
 					411D95C81449255F3F1E221F,
 					2A9957E3F77D9870971CB3A7,
 					46694898CAF8E579CD7FF920,
-					8C49322CFEB70F65EA777EB3,
+					A4E25722DF483F92CA57AFC3,
 					F11D7548B83E7A9726EA193B,
 					9B5E23C2BA386B7A39707E24,
 					062096CFDDC85828026467DD,

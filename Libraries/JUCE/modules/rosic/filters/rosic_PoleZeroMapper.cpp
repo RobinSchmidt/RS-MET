@@ -1,10 +1,5 @@
-//#include "rosic_PoleZeroMapper.h"
-//#include "../math/rosic_PolynomialAlgorithms.h"
-//#include "rosic_PrototypeDesigner.h"
-//using namespace rosic;
-
-void PoleZeroMapper::sLowpassToLowshelf(Complex *z, Complex *p, double *k, Complex *zNew, Complex *pNew, double *kNew,
-                                        int N, double G0, double G)
+void rsPoleZeroMapper::sLowpassToLowshelf(Complex *z, Complex *p, double *k, Complex *zNew, 
+  Complex *pNew, double *kNew, int N, double G0, double G)
 {
   if( G0 == 0.0 )
   {
@@ -21,7 +16,8 @@ void PoleZeroMapper::sLowpassToLowshelf(Complex *z, Complex *p, double *k, Compl
   double *b     = new double[N+1];
   double *bS    = new double[2*N+1];  // shelving magnitude squared numerator coeffs
 
-  // we design a boost filter in any case - a dip filter will later be obtained by swapping poles and zeros:
+  // we design a boost filter in any case - a dip filter will later be obtained by swapping 
+  // poles and zeros:
   bool dip = false;
   if( G < G0 )
   {
@@ -30,7 +26,8 @@ void PoleZeroMapper::sLowpassToLowshelf(Complex *z, Complex *p, double *k, Compl
     G0  = 1.0 / G0;
   }
 
-  // scale poles/zeros/gain of the lowpass such that the resulting low-shelving filter has a gain of sqrt(G*G0) at unit frequency:
+  // scale poles/zeros/gain of the lowpass such that the resulting low-shelving filter has a gain 
+  // of sqrt(G*G0) at unit frequency:
   //double GB = sqrt(G0*G);                       // bandwidth gain
   //double GC = sqrt((GB*GB-G0*G0)/(G*G-G0*G0));  // desired lowpass gain at unit frequency
   //PrototypeDesigner::scaleToMatchGainAtUnity(z, p, k, zTmp, pTmp, &kTmp, N, GC);  // commented for test
@@ -71,7 +68,7 @@ void PoleZeroMapper::sLowpassToLowshelf(Complex *z, Complex *p, double *k, Compl
   delete[] bS;
 }
 
-void PoleZeroMapper::sLowpassToLowpass(Complex *z,    Complex *p,    double *k,
+void rsPoleZeroMapper::sLowpassToLowpass(Complex *z,    Complex *p,    double *k,
                                        Complex *zNew, Complex *pNew, double *kNew,
                                        int N, double wc)
 {
@@ -83,7 +80,7 @@ void PoleZeroMapper::sLowpassToLowpass(Complex *z,    Complex *p,    double *k,
   *kNew = *k * pow(wc, N-nz);
 }
 
-void PoleZeroMapper::sLowpassToHighpass(Complex *r, Complex *rNew, int N, double wc)
+void rsPoleZeroMapper::sLowpassToHighpass(Complex *r, Complex *rNew, int N, double wc)
 {
   for(int n = 0; n < N; n++)
   {
@@ -93,7 +90,7 @@ void PoleZeroMapper::sLowpassToHighpass(Complex *r, Complex *rNew, int N, double
       rNew[n] = wc / r[n];
   }
 }
-void PoleZeroMapper::sLowpassToHighpass(Complex *z,    Complex *p,    double *k,
+void rsPoleZeroMapper::sLowpassToHighpass(Complex *z,    Complex *p,    double *k,
                                         Complex *zNew, Complex *pNew, double *kNew,
                                         int N, double wc)
 {
@@ -110,7 +107,7 @@ void PoleZeroMapper::sLowpassToHighpass(Complex *z,    Complex *p,    double *k,
     *kNew = - *kNew;
 }
 
-void PoleZeroMapper::sLowpassToBandpass(Complex *r, Complex *rNew, int N, double wc, double bw)
+void rsPoleZeroMapper::sLowpassToBandpass(Complex *r, Complex *rNew, int N, double wc, double bw)
 {
   Complex tmp1, tmp2;
   for(int n = 0; n < N; n++)
@@ -125,7 +122,7 @@ void PoleZeroMapper::sLowpassToBandpass(Complex *r, Complex *rNew, int N, double
     rNew[N+n] = tmp1 - tmp2;
   }
 }
-void PoleZeroMapper::sLowpassToBandpass(Complex *z,    Complex *p,    double *k,
+void rsPoleZeroMapper::sLowpassToBandpass(Complex *z,    Complex *p,    double *k,
                                         Complex *zNew, Complex *pNew, double *kNew,
                                         int N, double wl, double wu)
 {
@@ -145,7 +142,7 @@ void PoleZeroMapper::sLowpassToBandpass(Complex *z,    Complex *p,    double *k,
   *kNew  = *k * pow(bw, N-nz);
 }
 
-void PoleZeroMapper::sLowpassToBandreject(Complex *r, Complex *rNew, int N, double wc, double bw)
+void rsPoleZeroMapper::sLowpassToBandreject(Complex *r, Complex *rNew, int N, double wc, double bw)
 {
   Complex tmp1, tmp2;
   for(int n = 0; n < N; n++)
@@ -160,7 +157,7 @@ void PoleZeroMapper::sLowpassToBandreject(Complex *r, Complex *rNew, int N, doub
     rNew[N+n] = tmp1 - tmp2;
   }
 }
-void PoleZeroMapper::sLowpassToBandreject(Complex *z,    Complex *p,    double *k,
+void rsPoleZeroMapper::sLowpassToBandreject(Complex *z,    Complex *p,    double *k,
                                           Complex *zNew, Complex *pNew, double *kNew,
                                           int N, double wl, double wu)
 {
@@ -187,9 +184,7 @@ void PoleZeroMapper::sLowpassToBandreject(Complex *z,    Complex *p,    double *
     *kNew = - *kNew;
 }
 
-
-
-void PoleZeroMapper::prototypeToAnalogLowpass(Complex* poles, int numPoles, Complex* zeros,
+void rsPoleZeroMapper::prototypeToAnalogLowpass(Complex* poles, int numPoles, Complex* zeros,
   int numZeros, double* gain, double targetCutoff)
 {
   int i;
@@ -200,8 +195,8 @@ void PoleZeroMapper::prototypeToAnalogLowpass(Complex* poles, int numPoles, Comp
   *gain *= 1; // preliminary - \todo adjust gain: *gain /= targetCutoff; ?
 }
 
-void PoleZeroMapper::sPlanePrototypeToLowpass(Complex *prototypePoles, Complex *prototypeZeros, Complex *targetPoles,
-                                                 Complex *targetZeros, int prototypeOrder, double targetCutoff)
+void rsPoleZeroMapper::sPlanePrototypeToLowpass(Complex *prototypePoles, Complex *prototypeZeros, 
+  Complex *targetPoles, Complex *targetZeros, int prototypeOrder, double targetCutoff)
 {
   for(int i=0; i<prototypeOrder; i++)
   {
@@ -210,8 +205,8 @@ void PoleZeroMapper::sPlanePrototypeToLowpass(Complex *prototypePoles, Complex *
   }
 }
 
-void PoleZeroMapper::prototypeToAnalogHighpass(Complex* poles, int numPoles, Complex* zeros, int numZeros, double* gain,
-                                              double targetCutoff)
+void rsPoleZeroMapper::prototypeToAnalogHighpass(Complex* poles, int numPoles, Complex* zeros, 
+  int numZeros, double* gain, double targetCutoff)
 {
   int i;
   for(i=0; i<numPoles; i++)
@@ -219,16 +214,16 @@ void PoleZeroMapper::prototypeToAnalogHighpass(Complex* poles, int numPoles, Com
   for(i=0; i<numZeros; i++)
     zeros[i] = targetCutoff / zeros[i];
 
-  // there are numPoles-numZeros zeros at infinity in the lowpass-prototype and for for each such zero at infinity, we obtain a zero at
-  // s=0 in the highpass filter:
+  // there are numPoles-numZeros zeros at infinity in the lowpass-prototype and for for each such 
+  // zero at infinity, we obtain a zero at s=0 in the highpass filter:
   for(i=numZeros; i<numPoles; i++)
     zeros[i] = Complex(0.0, 0.0);
 
   *gain *= 1; // preliminary \todo adjust gain
 }
 
-void PoleZeroMapper::sPlanePrototypeToHighpass(Complex *prototypePoles, Complex *prototypeZeros, Complex *targetPoles,
-                                                  Complex *targetZeros, int prototypeOrder, double targetCutoff)
+void rsPoleZeroMapper::sPlanePrototypeToHighpass(Complex *prototypePoles, Complex *prototypeZeros, 
+  Complex *targetPoles, Complex *targetZeros, int prototypeOrder, double targetCutoff)
 {
   for(int i=0; i<prototypeOrder; i++)
   {
@@ -240,8 +235,8 @@ void PoleZeroMapper::sPlanePrototypeToHighpass(Complex *prototypePoles, Complex 
   }
 }
 
-void PoleZeroMapper::prototypeToAnalogHighShelv(Complex* poles, int numPoles, Complex* zeros, int numZeros, double* /*gain*/,
-                                                   double targetCutoff)
+void rsPoleZeroMapper::prototypeToAnalogHighShelv(Complex* poles, int numPoles, Complex* zeros, 
+  int numZeros, double* /*gain*/, double targetCutoff)
 {
   int i;
   for(i=0; i<numPoles; i++)
@@ -249,11 +244,12 @@ void PoleZeroMapper::prototypeToAnalogHighShelv(Complex* poles, int numPoles, Co
   for(i=0; i<numZeros; i++)
     zeros[i] = poles[i] * targetCutoff;
 
-  // \todo adjust gain - huh= this is not supposed to work when overwriting the poles in the first array
+  // \todo adjust gain - huh= this is not supposed to work when overwriting the poles in the first 
+  // array
 }
 
-void PoleZeroMapper::sPlanePrototypeToHighShelv(Complex *prototypePoles, Complex *prototypeZeros, Complex *targetPoles,
-                                                   Complex *targetZeros, int prototypeOrder, double targetCutoff)
+void rsPoleZeroMapper::sPlanePrototypeToHighShelv(Complex *prototypePoles, Complex *prototypeZeros, 
+  Complex *targetPoles, Complex *targetZeros, int prototypeOrder, double targetCutoff)
 {
   for(int i=0; i<prototypeOrder; i++)
   {
@@ -262,15 +258,16 @@ void PoleZeroMapper::sPlanePrototypeToHighShelv(Complex *prototypePoles, Complex
   }
 }
 
-void PoleZeroMapper::prototypeToAnalogBandpass(Complex* poles, int numPoles, Complex* zeros, int numZeros, double* /*gain*/,
-                                                  double targetLowCutoff, double targetHighCutoff)
+void rsPoleZeroMapper::prototypeToAnalogBandpass(Complex* poles, int numPoles, Complex* zeros, 
+  int numZeros, double* /*gain*/, double targetLowCutoff, double targetHighCutoff)
 {
   double wc = sqrt(targetLowCutoff*targetHighCutoff); // center (radian) frequency
   double bw = targetHighCutoff - targetLowCutoff;     // bandwidth
   Complex* tmpPoles = new Complex[2*numPoles];
   Complex* tmpZeros = new Complex[2*numPoles];
 
-  // for each pole (or zero) in the prototype, we obtain a pair of poles (or zeros) in the bandpass-filter:
+  // for each pole (or zero) in the prototype, we obtain a pair of poles (or zeros) in the 
+  // bandpass-filter:
   int     i;
   Complex tmp1, tmp2;
   for(i=0; i<numPoles; i++)
@@ -332,14 +329,15 @@ void PoleZeroMapper::prototypeToAnalogBandpass(Complex* poles, int numPoles, Com
   delete[] tmpZeros;
 }
 
-void PoleZeroMapper::sPlanePrototypeToBandpass(Complex *prototypePoles, Complex *prototypeZeros, Complex *targetPoles,
-                                                  Complex *targetZeros, int prototypeOrder, double targetLowerCutoff,
-                                                  double targetUpperCutoff)
+void rsPoleZeroMapper::sPlanePrototypeToBandpass(Complex *prototypePoles, Complex *prototypeZeros, 
+  Complex *targetPoles, Complex *targetZeros, int prototypeOrder, double targetLowerCutoff,                      
+  double targetUpperCutoff)
 {
   double wc = sqrt(targetLowerCutoff*targetUpperCutoff); // center (radian) frequency
   double bw = targetUpperCutoff - targetLowerCutoff;     // bandwidth
 
-  // for each pole (or zero) in the prototype, we obtain a pair of poles (or zeros) in the bandpass-filter:
+  // for each pole (or zero) in the prototype, we obtain a pair of poles (or zeros) in the 
+  // bandpass-filter:
   Complex tmp1, tmp2;
   int k;
   for(k=0; k<prototypeOrder; k++)
@@ -379,8 +377,8 @@ void PoleZeroMapper::sPlanePrototypeToBandpass(Complex *prototypePoles, Complex 
   }
 }
 
-void PoleZeroMapper::prototypeToAnalogBandstop(Complex* poles, int numPoles, Complex* zeros, int numZeros, double* /*gain*/,
-                                                  double targetLowCutoff, double targetHighCutoff)
+void rsPoleZeroMapper::prototypeToAnalogBandstop(Complex* poles, int numPoles, Complex* zeros, 
+  int numZeros, double* /*gain*/, double targetLowCutoff, double targetHighCutoff)
 {
   double wc = sqrt(targetLowCutoff*targetHighCutoff); // center (radian) frequency
   double bw = targetHighCutoff - targetLowCutoff;     // bandwidth
@@ -389,7 +387,8 @@ void PoleZeroMapper::prototypeToAnalogBandstop(Complex* poles, int numPoles, Com
   Complex* tmpPoles = new Complex[order];
   Complex* tmpZeros = new Complex[order];
 
-  // for each pole (or zero) in the prototype, we obtain a pair of poles (or zeros) in the bandpass-filter:
+  // for each pole (or zero) in the prototype, we obtain a pair of poles (or zeros) in the 
+  // bandpass-filter:
   int     i;
   Complex tmp1, tmp2;
   for(i=0; i<numPoles; i++)
@@ -433,14 +432,15 @@ void PoleZeroMapper::prototypeToAnalogBandstop(Complex* poles, int numPoles, Com
   // \todo: adjust gain
 }
 
-void PoleZeroMapper::sPlanePrototypeToBandreject(Complex *prototypePoles, Complex *prototypeZeros, Complex *targetPoles,
-                                                    Complex *targetZeros, int prototypeOrder, double targetLowerCutoff,
-                                                    double targetUpperCutoff)
+void rsPoleZeroMapper::sPlanePrototypeToBandreject(Complex *prototypePoles, 
+  Complex *prototypeZeros, Complex *targetPoles, Complex *targetZeros, int prototypeOrder, 
+  double targetLowerCutoff, double targetUpperCutoff)
 {
   double wc = sqrt(targetLowerCutoff*targetUpperCutoff); // center (radian) frequency
   double bw = targetUpperCutoff - targetLowerCutoff;     // bandwidth
 
-  // for each pole (or zero) in the prototype, we obtain a pair of poles (or zeros) in the bandpass-filter:
+  // for each pole (or zero) in the prototype, we obtain a pair of poles (or zeros) in the 
+  // bandpass-filter:
   Complex tmp1, tmp2;
   int k;
   for(k=0; k<prototypeOrder; k++)
@@ -483,8 +483,8 @@ void PoleZeroMapper::sPlanePrototypeToBandreject(Complex *prototypePoles, Comple
   }
 }
 
-void PoleZeroMapper::bilinearAnalogToDigital(Complex* poles, int numPoles, Complex* zeros, int numZeros, double sampleRate,
-                                                double* /*gain*/)
+void rsPoleZeroMapper::bilinearAnalogToDigital(Complex* poles, int numPoles, Complex* zeros, 
+  int numZeros, double sampleRate, double* /*gain*/)
 {
   int     i;
   Complex z;
@@ -492,7 +492,8 @@ void PoleZeroMapper::bilinearAnalogToDigital(Complex* poles, int numPoles, Compl
 
   for(i=0; i<numPoles; i++)
   {
-    // we don't check against infinity (as we do with zeros) because infinite poles should actually never occur in practice
+    // we don't check against infinity (as we do with zeros) because infinite poles should actually 
+    // never occur in practice
     z        = scaler * poles[i];
     poles[i] = (1.0+z)/(1.0-z);
   }
@@ -509,7 +510,7 @@ void PoleZeroMapper::bilinearAnalogToDigital(Complex* poles, int numPoles, Compl
   }
 }
 
-void PoleZeroMapper::zLowpassToLowpass(Complex* /*z*/, Complex* /*p*/, double* /*k*/,
+void rsPoleZeroMapper::zLowpassToLowpass(Complex* /*z*/, Complex* /*p*/, double* /*k*/,
   Complex* /*zNew*/, Complex* /*pNew*/, double* /*kNew*/, int /*N*/, double /*wc*/, double /*wt*/)
 {
   // not yet implemented

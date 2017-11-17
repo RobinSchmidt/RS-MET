@@ -3607,7 +3607,7 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_PoleZeroMapper.cpp">
       <Filter>Juce Modules\rosic\filters</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_PoleZeroMapperBlah.cpp">
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_PoleZeroMapperOld.cpp">
       <Filter>Juce Modules\rosic\filters</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_PrototypeDesigner.cpp">
