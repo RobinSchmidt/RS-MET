@@ -21,7 +21,7 @@ namespace rosic
   class LinkwitzRileyCrossOver
   {
 
-    friend class CrossOver4Way;
+    friend class rsCrossOver4Way;
 
   public:
 
@@ -173,7 +173,7 @@ namespace rosic
   class LinkwitzRileyCrossOverStereo
   {
 
-    friend class CrossOver4Way;
+    friend class rsCrossOver4Way;
 
   public:
 

@@ -1,25 +1,20 @@
-//#include "rosic_CrossOver4Way.h"
-//using namespace rosic;
-
-//-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-CrossOver4Way::CrossOver4Way() 
+rsCrossOver4Way::rsCrossOver4Way() 
 : lowBranchCompensationAllpass(4)
 , highBranchCompensationAllpass(4)
 {
  
 }
 
-CrossOver4Way::~CrossOver4Way()
+rsCrossOver4Way::~rsCrossOver4Way()
 {
 
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
 // setup:
 
-void CrossOver4Way::setSampleRate(double newSampleRate)
+void rsCrossOver4Way::setSampleRate(double newSampleRate)
 {
   stage1.setSampleRate(newSampleRate);
   for(int s=0; s<2; s++)
@@ -27,7 +22,7 @@ void CrossOver4Way::setSampleRate(double newSampleRate)
   setupCompensationAllpasses();
 }
 
-void CrossOver4Way::setBandActive(bool shouldBeActive, int treeLevel, int indexInLevel)
+void rsCrossOver4Way::setBandActive(bool shouldBeActive, int treeLevel, int indexInLevel)
 {
   if( treeLevel == 0 )
     stage1.setActive(shouldBeActive);
@@ -35,7 +30,8 @@ void CrossOver4Way::setBandActive(bool shouldBeActive, int treeLevel, int indexI
     stage2[indexInLevel].setActive(shouldBeActive);
 }
 
-void CrossOver4Way::setCrossoverFrequency(double newCrossoverFrequency, int treeLevel, int indexInLevel)
+void rsCrossOver4Way::setCrossoverFrequency(double newCrossoverFrequency, int treeLevel, 
+  int indexInLevel)
 {
   if( treeLevel == 0 )
     stage1.setCrossoverFrequency(newCrossoverFrequency);
@@ -44,7 +40,7 @@ void CrossOver4Way::setCrossoverFrequency(double newCrossoverFrequency, int tree
   setupCompensationAllpasses();
 }
 
-void CrossOver4Way::setSlope(int newSlope, int treeLevel, int indexInLevel)
+void rsCrossOver4Way::setSlope(int newSlope, int treeLevel, int indexInLevel)
 {
   if( treeLevel == 0 )
     stage1.setSlope(newSlope);
@@ -53,17 +49,16 @@ void CrossOver4Way::setSlope(int newSlope, int treeLevel, int indexInLevel)
   setupCompensationAllpasses();
 }
 
-void CrossOver4Way::setMonoMode(bool shouldBeMono)
+void rsCrossOver4Way::setMonoMode(bool shouldBeMono)
 {
   stage1.setMono(shouldBeMono);
   for(int s=0; s<2; s++)
     stage2[s].setMono(shouldBeMono);
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
 // inquiry:
 
-bool CrossOver4Way::isBandActive(int treeLevel, int indexInLevel) const
+bool rsCrossOver4Way::isBandActive(int treeLevel, int indexInLevel) const
 {
   if( treeLevel == 0 )
     return stage1.isActive();
@@ -73,7 +68,7 @@ bool CrossOver4Way::isBandActive(int treeLevel, int indexInLevel) const
     return false;
 }
 
-double CrossOver4Way::getCrossoverFrequency(int treeLevel, int indexInLevel) const
+double rsCrossOver4Way::getCrossoverFrequency(int treeLevel, int indexInLevel) const
 {
   if( treeLevel == 0 )
     return stage1.getCrossoverFrequency();
@@ -83,7 +78,7 @@ double CrossOver4Way::getCrossoverFrequency(int treeLevel, int indexInLevel) con
     return 0.0;
 }
 
-int CrossOver4Way::getSlope(int treeLevel, int indexInLevel) const
+int rsCrossOver4Way::getSlope(int treeLevel, int indexInLevel) const
 {
   if( treeLevel == 0 )
     return stage1.getSlope();
@@ -93,7 +88,8 @@ int CrossOver4Way::getSlope(int treeLevel, int indexInLevel) const
     return 0;
 }
 
-void CrossOver4Way::getMagnitudeResponse(double* frequencies, double* magnitudes, int numBins, int outputChannel, bool inDecibels)
+void rsCrossOver4Way::getMagnitudeResponse(double* frequencies, double* magnitudes, int numBins, 
+  int outputChannel, bool inDecibels)
 {
   fillWithValue(magnitudes, numBins, -100.0);
 
@@ -166,10 +162,9 @@ void CrossOver4Way::getMagnitudeResponse(double* frequencies, double* magnitudes
   clipBuffer(magnitudes, numBins, -150.0, 10.0);
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
 // audio-processing:
 
-void CrossOver4Way::processBuffer(float **inOutBuffer, int length)
+void rsCrossOver4Way::processBuffer(float **inOutBuffer, int length)
 {
   int c, n;
   double sampleFrame[8];
@@ -186,10 +181,9 @@ void CrossOver4Way::processBuffer(float **inOutBuffer, int length)
   }
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
 // others:
 
-void CrossOver4Way::resetBuffers()
+void rsCrossOver4Way::resetBuffers()
 {
   stage1.resetBuffers();
   for(int s=0; s<2; s++)
@@ -198,12 +192,13 @@ void CrossOver4Way::resetBuffers()
   highBranchCompensationAllpass.reset();
 }
 
-void CrossOver4Way::setupCompensationAllpasses()
+void rsCrossOver4Way::setupCompensationAllpasses()
 {
   lowBranchCompensationAllpass.copySettingsFrom(&stage2[1].crossoverL.sumAllpass);   // we could also copy from the lowpass
   highBranchCompensationAllpass.copySettingsFrom(&stage2[0].crossoverL.sumAllpass);
   highBranchCompensationAllpass.turnIntoAllpass();
 
-  // Interestingly, the allpass resulting from adding a lowpass- and highpass Butterworth-squared response is itself only a non-squared
-  // Butterworth-allpass response. Half of the zeros end up inside the unit circle canceling with half of the poles.
+  // Interestingly, the allpass resulting from adding a lowpass- and highpass Butterworth-squared 
+  // response is itself only a non-squared Butterworth-allpass response. Half of the zeros end up 
+  // inside the unit circle canceling with half of the poles.
 }

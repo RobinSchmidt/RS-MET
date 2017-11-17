@@ -11,7 +11,8 @@ class CrossOverAudioModule : public AudioModule
 
 public:
 
-  CrossOverAudioModule(CriticalSection *newPlugInLock, rosic::CrossOver4Way *crossOverToWrap = nullptr);
+  CrossOverAudioModule(CriticalSection *newPlugInLock, 
+    rosic::rsCrossOver4Way *crossOverToWrap = nullptr);
 
   virtual ~CrossOverAudioModule();
 
@@ -72,19 +73,19 @@ protected:
 
   void createStaticParameters();
 
-  rosic::CrossOver4Way *wrappedCrossOver;
+  rosic::rsCrossOver4Way *wrappedCrossOver;
   bool wrappedCrossOverIsOwned = false;
 
   // adapter functions for the callbacks (boilerplate):
-  void setBandActive_0_0(bool shouldBeActive)        { wrappedCrossOver->setBandActive(shouldBeActive, 0, 0); }
+  void setBandActive_0_0(bool shouldBeActive)         { wrappedCrossOver->setBandActive(shouldBeActive, 0, 0); }
   void setCrossoverFrequency_0_0(double newFrequency) { wrappedCrossOver->setCrossoverFrequency(newFrequency, 0, 0); }
   void setSlope_0_0(int newSlope)                     { wrappedCrossOver->setSlope(newSlope, 0, 0); }
 
-  void setBandActive_1_0(bool shouldBeActive)        { wrappedCrossOver->setBandActive(shouldBeActive, 1, 0); }
+  void setBandActive_1_0(bool shouldBeActive)         { wrappedCrossOver->setBandActive(shouldBeActive, 1, 0); }
   void setCrossoverFrequency_1_0(double newFrequency) { wrappedCrossOver->setCrossoverFrequency(newFrequency, 1, 0); }
   void setSlope_1_0(int newSlope)                     { wrappedCrossOver->setSlope(newSlope, 1, 0); }
 
-  void setBandActive_1_1(bool shouldBeActive)        { wrappedCrossOver->setBandActive(shouldBeActive, 1, 1); }
+  void setBandActive_1_1(bool shouldBeActive)         { wrappedCrossOver->setBandActive(shouldBeActive, 1, 1); }
   void setCrossoverFrequency_1_1(double newFrequency) { wrappedCrossOver->setCrossoverFrequency(newFrequency, 1, 1); }
   void setSlope_1_1(int newSlope)                     { wrappedCrossOver->setSlope(newSlope, 1, 1); }
 

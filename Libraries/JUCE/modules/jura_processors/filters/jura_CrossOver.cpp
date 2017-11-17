@@ -1,8 +1,8 @@
 
 // construction/destruction:
 
-CrossOverAudioModule::CrossOverAudioModule(CriticalSection *newPlugInLock, 
-  rosic::CrossOver4Way *crossOverToWrap) : AudioModule(newPlugInLock)
+CrossOverAudioModule::CrossOverAudioModule(CriticalSection* newPlugInLock, 
+  rosic::rsCrossOver4Way* crossOverToWrap) : AudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
   //jassert(crossOverToWrap != NULL); // you must pass a valid rosic-object to the constructor
@@ -11,7 +11,7 @@ CrossOverAudioModule::CrossOverAudioModule(CriticalSection *newPlugInLock,
     wrappedCrossOver   = crossOverToWrap;
   else
   {
-    wrappedCrossOver = new rosic::CrossOver4Way;
+    wrappedCrossOver = new rosic::rsCrossOver4Way;
     wrappedCrossOverIsOwned = true;
   }
 
@@ -42,7 +42,7 @@ void CrossOverAudioModule::createStaticParameters()
 
   p = new AutomatableParameter(lock, "Mono", 0.0, 1.0,  1.0, 0.0, Parameter::BOOLEAN);
   addObservedParameter(p);
-  p->setValueChangeCallback(wrappedCrossOver, &CrossOver4Way::setMonoMode);
+  p->setValueChangeCallback(wrappedCrossOver, &rsCrossOver4Way::setMonoMode);
 
   p = new AutomatableParameter(lock, "OnOff_1_1", 0.0, 1.0, 1.0, 1.0, Parameter::BOOLEAN);
   addObservedParameter(p);
