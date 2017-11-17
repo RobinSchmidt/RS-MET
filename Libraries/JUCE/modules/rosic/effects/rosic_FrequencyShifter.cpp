@@ -14,7 +14,7 @@ FreqShifterHalfbandFilter::FreqShifterHalfbandFilter()
 
   // design the filter as biquad cascade:
   rsEngineersFilter halfbandFilterBiquad;
-  halfbandFilterBiquad.setApproximationMethod(PrototypeDesigner::ELLIPTIC);
+  halfbandFilterBiquad.setApproximationMethod(rsPrototypeDesigner::ELLIPTIC);
   halfbandFilterBiquad.setSampleRate(44100.0);
   halfbandFilterBiquad.setFrequency(11025);        // place passband edge exactly at sampleRate/4
   halfbandFilterBiquad.setRipple(0.1);
@@ -58,14 +58,14 @@ FrequencyShifter::FrequencyShifter()
   feedbackFactor = 0.0;
   yOld           = 0.0;
 
-  halfbandFilter1.setApproximationMethod(PrototypeDesigner::ELLIPTIC);
+  halfbandFilter1.setApproximationMethod(rsPrototypeDesigner::ELLIPTIC);
   halfbandFilter1.setSampleRate(44100.0);
   halfbandFilter1.setFrequency(11025);
   halfbandFilter1.setRipple(0.1);
   halfbandFilter1.setStopbandRejection(95.0);
   halfbandFilter1.setPrototypeOrder(24);
 
-  halfbandFilter2.setApproximationMethod(PrototypeDesigner::ELLIPTIC);
+  halfbandFilter2.setApproximationMethod(rsPrototypeDesigner::ELLIPTIC);
   halfbandFilter2.setSampleRate(44100.0);
   halfbandFilter2.setFrequency(11025);
   halfbandFilter2.setRipple(0.1);

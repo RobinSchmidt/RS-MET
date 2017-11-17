@@ -177,9 +177,9 @@ void rsInfiniteImpulseResponseDesigner::getPolesAndZeros(Complex* poles, Complex
 
   // set up the type for the prototype (lowpass/low-shelv):
   if( mode == LOW_SHELV || mode == HIGH_SHELV || mode == PEAK || mode == BYPASS )
-    prototypeDesigner.setPrototypeMode(PrototypeDesigner::LOWSHELV_PROTOTYPE);
+    prototypeDesigner.setPrototypeMode(rsPrototypeDesigner::LOWSHELV_PROTOTYPE);
   else
-    prototypeDesigner.setPrototypeMode(PrototypeDesigner::LOWPASS_PROTOTYPE);
+    prototypeDesigner.setPrototypeMode(rsPrototypeDesigner::LOWPASS_PROTOTYPE);
 
   double  f1, f2, wd1, wd2, wa1, wa2;
   double  fs = sampleRate;
@@ -237,17 +237,17 @@ void rsInfiniteImpulseResponseDesigner::getPolesAndZeros(Complex* poles, Complex
     // we need to cope with exchange of roles of poles and zeros for high-shelving (inverse)
     // chebychevs because the low-shelv -> high-shelv frequency transform exchanges these roles
     // once again:
-    if( prototypeDesigner.getApproximationMethod() == PrototypeDesigner::CHEBYCHEV )
+    if( prototypeDesigner.getApproximationMethod() == rsPrototypeDesigner::CHEBYCHEV )
     {
-      prototypeDesigner.setApproximationMethod(PrototypeDesigner::INVERSE_CHEBYCHEV);
+      prototypeDesigner.setApproximationMethod(rsPrototypeDesigner::INVERSE_CHEBYCHEV);
       prototypeDesigner.getPolesAndZeros(poles, zeros);
-      prototypeDesigner.setApproximationMethod(PrototypeDesigner::CHEBYCHEV);
+      prototypeDesigner.setApproximationMethod(rsPrototypeDesigner::CHEBYCHEV);
     }
-    else if( prototypeDesigner.getApproximationMethod() == PrototypeDesigner::INVERSE_CHEBYCHEV )
+    else if( prototypeDesigner.getApproximationMethod() == rsPrototypeDesigner::INVERSE_CHEBYCHEV )
     {
-      prototypeDesigner.setApproximationMethod(PrototypeDesigner::CHEBYCHEV);
+      prototypeDesigner.setApproximationMethod(rsPrototypeDesigner::CHEBYCHEV);
       prototypeDesigner.getPolesAndZeros(poles, zeros);
-      prototypeDesigner.setApproximationMethod(PrototypeDesigner::INVERSE_CHEBYCHEV);
+      prototypeDesigner.setApproximationMethod(rsPrototypeDesigner::INVERSE_CHEBYCHEV);
     }
     else
       prototypeDesigner.getPolesAndZeros(poles, zeros);
@@ -321,7 +321,7 @@ void rsInfiniteImpulseResponseDesigner::getBiquadCascadeCoefficients(double *b0,
   // set up the type for the prototype (lowpass/low-shelv):
   if( mode == LOW_SHELV || mode == HIGH_SHELV || mode == PEAK || mode == BYPASS )
   {
-    prototypeDesigner.setPrototypeMode(PrototypeDesigner::LOWSHELV_PROTOTYPE);
+    prototypeDesigner.setPrototypeMode(rsPrototypeDesigner::LOWSHELV_PROTOTYPE);
     if( isCloseTo(gain, 0.0, 0.001) || mode == BYPASS ) // gains of zero yield a 'bypass' filter
     {
       for(int b = 0; b < numBiquads; b++) // msvc gives an "unreachable code" warning here - but
@@ -336,7 +336,7 @@ void rsInfiniteImpulseResponseDesigner::getBiquadCascadeCoefficients(double *b0,
     }
   }
   else
-    prototypeDesigner.setPrototypeMode(PrototypeDesigner::LOWPASS_PROTOTYPE);
+    prototypeDesigner.setPrototypeMode(rsPrototypeDesigner::LOWPASS_PROTOTYPE);
 
   double  f1, f2, wd1, wd2; // wa1, wa2;
   double  fs = sampleRate;
@@ -425,10 +425,10 @@ void rsInfiniteImpulseResponseDesigner::normalizeGain(double *b0, double *b1, do
     w = wc;            // normalize at passband center frequency
 
   double normalizeFactor = 1.0;
-  if( prototypeDesigner.getPrototypeMode() == PrototypeDesigner::LOWSHELV_PROTOTYPE )
+  if( prototypeDesigner.getPrototypeMode() == rsPrototypeDesigner::LOWSHELV_PROTOTYPE )
   {
-    if(  prototypeDesigner.getApproximationMethod() == PrototypeDesigner::INVERSE_CHEBYCHEV
-      || prototypeDesigner.getApproximationMethod() == PrototypeDesigner::ELLIPTIC )
+    if(  prototypeDesigner.getApproximationMethod() == rsPrototypeDesigner::INVERSE_CHEBYCHEV
+      || prototypeDesigner.getApproximationMethod() == rsPrototypeDesigner::ELLIPTIC )
     {
       if( isEven(prototypeDesigner.getOrder()) )
       {
@@ -440,8 +440,8 @@ void rsInfiniteImpulseResponseDesigner::normalizeGain(double *b0, double *b1, do
   }
   else // prototype is lowpass
   {
-    if(  prototypeDesigner.getApproximationMethod() == PrototypeDesigner::CHEBYCHEV
-      || prototypeDesigner.getApproximationMethod() == PrototypeDesigner::ELLIPTIC )
+    if(  prototypeDesigner.getApproximationMethod() == rsPrototypeDesigner::CHEBYCHEV
+      || prototypeDesigner.getApproximationMethod() == rsPrototypeDesigner::ELLIPTIC )
     {
       if( isEven(prototypeDesigner.getOrder()) )
       {

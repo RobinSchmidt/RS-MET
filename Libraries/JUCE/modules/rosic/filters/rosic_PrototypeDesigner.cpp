@@ -1,12 +1,6 @@
-//#include "rosic_PrototypeDesigner.h"
-//#include "rosic_PoleZeroMapper.h"  // obsolete?
-//#include "rosic_FilterAnalyzer.h"
-//using namespace rosic;
-
-//-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-PrototypeDesigner::PrototypeDesigner()
+rsPrototypeDesigner::rsPrototypeDesigner()
 {
   L                     = 2;
   r                     = 0;
@@ -37,7 +31,7 @@ PrototypeDesigner::PrototypeDesigner()
   */
 }
 
-PrototypeDesigner::~PrototypeDesigner()
+rsPrototypeDesigner::~rsPrototypeDesigner()
 {
 
 }
@@ -45,7 +39,7 @@ PrototypeDesigner::~PrototypeDesigner()
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // parameter settings:
 
-void PrototypeDesigner::setOrder(int newOrder)
+void rsPrototypeDesigner::setOrder(int newOrder)
 {
   if( newOrder >= 1 && newOrder != N )
   {
@@ -64,7 +58,7 @@ void PrototypeDesigner::setOrder(int newOrder)
   }
 }
 
-void PrototypeDesigner::setApproximationMethod(int newApproximationMethod)
+void rsPrototypeDesigner::setApproximationMethod(int newApproximationMethod)
 {
   if( newApproximationMethod < BUTTERWORTH || newApproximationMethod > PAPOULIS )
     DEBUG_BREAK; // this is not one of the enumerated approximation methods
@@ -76,7 +70,7 @@ void PrototypeDesigner::setApproximationMethod(int newApproximationMethod)
   }
 }
 
-void PrototypeDesigner::setPrototypeMode(int newPrototypeMode)
+void rsPrototypeDesigner::setPrototypeMode(int newPrototypeMode)
 {
   if( newPrototypeMode == LOWPASS_PROTOTYPE || newPrototypeMode == LOWSHELV_PROTOTYPE )
   {
@@ -87,7 +81,7 @@ void PrototypeDesigner::setPrototypeMode(int newPrototypeMode)
     DEBUG_BREAK; // this is not one of the enumerated modes
 }
 
-void PrototypeDesigner::setPassbandRipple(double newPassbandRipple)
+void rsPrototypeDesigner::setPassbandRipple(double newPassbandRipple)
 {
   if( newPassbandRipple >= 0.0 )
   {
@@ -98,7 +92,7 @@ void PrototypeDesigner::setPassbandRipple(double newPassbandRipple)
     DEBUG_BREAK; // ripple (in dB) must be >= 0
 }
 
-void PrototypeDesigner::setStopbandRejection(double newStopbandRejection)
+void rsPrototypeDesigner::setStopbandRejection(double newStopbandRejection)
 {
   if( newStopbandRejection >= 0.0 )
   {
@@ -109,7 +103,7 @@ void PrototypeDesigner::setStopbandRejection(double newStopbandRejection)
     DEBUG_BREAK; // ripple (in dB) must be >= 0
 }
 
-void PrototypeDesigner::setGain(double newGain)
+void rsPrototypeDesigner::setGain(double newGain)
 {
   if( newGain != A )
   {
@@ -118,7 +112,7 @@ void PrototypeDesigner::setGain(double newGain)
   }
 }
 
-void PrototypeDesigner::setReferenceGain(double newReferenceGain)
+void rsPrototypeDesigner::setReferenceGain(double newReferenceGain)
 {
   if( newReferenceGain != A0 )
   {
@@ -127,7 +121,7 @@ void PrototypeDesigner::setReferenceGain(double newReferenceGain)
   }
 }
 
-void PrototypeDesigner::setPassbandGainRatio(double newPassbandGainRatio)
+void rsPrototypeDesigner::setPassbandGainRatio(double newPassbandGainRatio)
 {
   if( newPassbandGainRatio >= 1.0 || newPassbandGainRatio <= 0.0 || newPassbandGainRatio < Rs )
   {
@@ -141,7 +135,7 @@ void PrototypeDesigner::setPassbandGainRatio(double newPassbandGainRatio)
   }
 }
 
-void PrototypeDesigner::setStopbandGainRatio(double newStopbandGainRatio)
+void rsPrototypeDesigner::setStopbandGainRatio(double newStopbandGainRatio)
 {
   if( newStopbandGainRatio >= 1.0 || newStopbandGainRatio <= 0.0 || newStopbandGainRatio > Rp )
   {
@@ -155,11 +149,10 @@ void PrototypeDesigner::setStopbandGainRatio(double newStopbandGainRatio)
   }
 }
 
-
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // static member functions:
 
-void PrototypeDesigner::getNumBiquadsAndFirstOrderStages(int N, int &L, int &r)
+void rsPrototypeDesigner::getNumBiquadsAndFirstOrderStages(int N, int &L, int &r)
 {
   if( isOdd(N) )
   {
@@ -173,7 +166,7 @@ void PrototypeDesigner::getNumBiquadsAndFirstOrderStages(int N, int &L, int &r)
   }
 }
 
-double PrototypeDesigner::ellipdeg(int N, double k_1)
+double rsPrototypeDesigner::ellipdeg(int N, double k_1)
 {
   int L;
   if( isEven(N) )
@@ -205,7 +198,7 @@ double PrototypeDesigner::ellipdeg(int N, double k_1)
   return k;
 }
 
-double PrototypeDesigner::ellipdeg1(int N, double k)
+double rsPrototypeDesigner::ellipdeg1(int N, double k)
 {
   int L;
   if( isEven(N) )
@@ -226,7 +219,7 @@ double PrototypeDesigner::ellipdeg1(int N, double k)
   return k1;
 }
 
-double PrototypeDesigner::ellipdeg2(double N, double k)
+double rsPrototypeDesigner::ellipdeg2(double N, double k)
 {
   int M = 7;
 
@@ -253,7 +246,7 @@ double PrototypeDesigner::ellipdeg2(double N, double k)
   return k1;
 }
 
-double PrototypeDesigner::getRequiredButterworthOrder(double passbandFrequency, double passbandRipple, double stopbandFrequency,
+double rsPrototypeDesigner::getRequiredButterworthOrder(double passbandFrequency, double passbandRipple, double stopbandFrequency,
                                                       double stopbandRipple)
 {
   double Gp = pow(10.0, -passbandRipple/20.0);                      // (1),Eq.1
@@ -263,7 +256,7 @@ double PrototypeDesigner::getRequiredButterworthOrder(double passbandFrequency, 
   return log(es/ep) / log(stopbandFrequency/passbandFrequency);     // (1),Eq.9
 }
 
-double PrototypeDesigner::getRequiredChebychevOrder(double passbandFrequency, double passbandRipple, double stopbandFrequency,
+double rsPrototypeDesigner::getRequiredChebychevOrder(double passbandFrequency, double passbandRipple, double stopbandFrequency,
                                                     double stopbandRipple)
 {
   double Gp = pow(10.0, -passbandRipple/20.0);                       // (1),Eq.1
@@ -273,7 +266,7 @@ double PrototypeDesigner::getRequiredChebychevOrder(double passbandFrequency, do
   return acosh(es/ep) / acosh(stopbandFrequency/passbandFrequency);  // (1),Eq.9
 }
 
-double PrototypeDesigner::getRequiredEllipticOrder(double passbandFrequency, double passbandRipple, double stopbandFrequency,
+double rsPrototypeDesigner::getRequiredEllipticOrder(double passbandFrequency, double passbandRipple, double stopbandFrequency,
                                                    double stopbandRipple)
 {
   double Gp = pow(10.0, -passbandRipple/20.0);                       // (1),Eq.1
@@ -288,7 +281,7 @@ double PrototypeDesigner::getRequiredEllipticOrder(double passbandFrequency, dou
   return (K1p*K)/(K1*Kp);                                            // (1),Eq.34
 }
 
-void PrototypeDesigner::magSquaredNumAndDen(double *b, double *a, double *b2, double *a2, int N)
+void rsPrototypeDesigner::magSquaredNumAndDen(double *b, double *a, double *b2, double *a2, int N)
 {
   double *am = new double[N+1];
   double *bm = new double[N+1];
@@ -300,7 +293,7 @@ void PrototypeDesigner::magSquaredNumAndDen(double *b, double *a, double *b2, do
   delete[] bm;
 }
 
-void PrototypeDesigner::shelvingMagSqrNumFromLowpassMagSqr(double *b2, double *a2, double k, int N,
+void rsPrototypeDesigner::shelvingMagSqrNumFromLowpassMagSqr(double *b2, double *a2, double k, int N,
                                                            double G0, double G, double *bShelf)
 {
   weightedSum(b2, a2, bShelf, 2*N+1, k*k*(G*G-G0*G0), G0*G0);
@@ -316,7 +309,7 @@ void PrototypeDesigner::shelvingMagSqrNumFromLowpassMagSqr(double *b2, double *a
 }
 
 // factor out shelvingMagSqrNumeratorFromLowpassMagSqr:
-void PrototypeDesigner::shelvingMagSqrNumeratorFromLowpassTransfer(double *b, double *a, double k, int N,
+void rsPrototypeDesigner::shelvingMagSqrNumeratorFromLowpassTransfer(double *b, double *a, double k, int N,
                                                                    double G0, double G, double *bShelf)
 {
   double *a2 = new double[2*N+1];
@@ -332,7 +325,7 @@ void PrototypeDesigner::shelvingMagSqrNumeratorFromLowpassTransfer(double *b, do
   delete[] b2;
 }
 
-void PrototypeDesigner::scaleToMatchGainAtUnity(Complex *z, Complex *p, double *k, Complex *zNew, Complex *pNew, double *kNew,
+void rsPrototypeDesigner::scaleToMatchGainAtUnity(Complex *z, Complex *p, double *k, Complex *zNew, Complex *pNew, double *kNew,
                                                 int N, double g)
 {
   double  wc    = FilterAnalyzer::findAnalogFrequencyWithMagnitude(z, p, k, N, g, 1.0);
@@ -346,7 +339,7 @@ void PrototypeDesigner::scaleToMatchGainAtUnity(Complex *z, Complex *p, double *
   *kNew  = *k / pow(wc, N-nz);
 }
 
-void PrototypeDesigner::getInverseFilter(Complex* z, Complex* p, double* k, 
+void rsPrototypeDesigner::getInverseFilter(Complex* z, Complex* p, double* k, 
   Complex* zNew, Complex* pNew, double* kNew, int N)
 {
   //rassert(false); // something seems wrong about this - we should write the inverted poles, zeros
@@ -362,7 +355,7 @@ void PrototypeDesigner::getInverseFilter(Complex* z, Complex* p, double* k,
   delete[] zTmp;
 }
 
-int PrototypeDesigner::getLeftHalfPlaneRoots(double *a, Complex *r, int N)
+int rsPrototypeDesigner::getLeftHalfPlaneRoots(double *a, Complex *r, int N)
 {
   Complex *rTmp = new Complex[N]; // maybe we can get rid of that temporary array
   findPolynomialRoots(a, N, rTmp);
@@ -384,7 +377,7 @@ int PrototypeDesigner::getLeftHalfPlaneRoots(double *a, Complex *r, int N)
 }
 
 
-void PrototypeDesigner::getBesselLowpassZerosPolesAndGain(Complex *z, Complex *p, double *k, int N)
+void rsPrototypeDesigner::getBesselLowpassZerosPolesAndGain(Complex *z, Complex *p, double *k, int N)
 {
   // zeros are at infinity:
   fillWithValue(z, N, Complex(INF, 0.0));
@@ -411,7 +404,7 @@ void PrototypeDesigner::getBesselLowpassZerosPolesAndGain(Complex *z, Complex *p
   delete[] a;
 }
 
-void PrototypeDesigner::getBesselLowShelfZerosPolesAndGain(Complex *z, Complex *p, double *k, int N, double G, double G0)
+void rsPrototypeDesigner::getBesselLowShelfZerosPolesAndGain(Complex *z, Complex *p, double *k, int N, double G, double G0)
 {
   // old version - needs root-finder twice:
   //getBesselLowpassZerosPolesAndGain(z, p, k, N);
@@ -474,7 +467,7 @@ void PrototypeDesigner::getBesselLowShelfZerosPolesAndGain(Complex *z, Complex *
 }
 
 
-void PrototypeDesigner::papoulisMagnitudeSquaredDenominator(double *a, int N)
+void rsPrototypeDesigner::papoulisMagnitudeSquaredDenominator(double *a, int N)
 {
   int n;
   fillWithZeros(a, 2*N+1);  // do we need this?
@@ -496,7 +489,7 @@ void PrototypeDesigner::papoulisMagnitudeSquaredDenominator(double *a, int N)
   a[0] += 1.0;
 }
 
-void PrototypeDesigner::getPapoulisLowpassZerosPolesAndGain(Complex *z, Complex *p, double *k, int N)
+void rsPrototypeDesigner::getPapoulisLowpassZerosPolesAndGain(Complex *z, Complex *p, double *k, int N)
 {
   // find poles:
   double *a2 = new double[2*N+1];     // coefficients of the magnitude-squared polynomial D(s)*D(-s)
@@ -512,7 +505,7 @@ void PrototypeDesigner::getPapoulisLowpassZerosPolesAndGain(Complex *z, Complex 
   delete[] a2;
 }
 
-void PrototypeDesigner::getPapoulisLowShelfZerosPolesAndGain(Complex *z, Complex *p, double *k, int N, double G, double G0)
+void rsPrototypeDesigner::getPapoulisLowShelfZerosPolesAndGain(Complex *z, Complex *p, double *k, int N, double G, double G0)
 {
   //getPapoulisLowpassZerosPolesAndGain(z, p, k, N);
   //PoleZeroMapper::sLowpassToLowshelf(z, p, k, z, p, k, N, G0, G);
@@ -587,7 +580,7 @@ void PrototypeDesigner::getPapoulisLowShelfZerosPolesAndGain(Complex *z, Complex
   delete[] bS;
 }
 
-void PrototypeDesigner::getEllipticLowpassZerosPolesAndGain(Complex *z, Complex *p, double *k, int N, double Gp, double Gs)
+void rsPrototypeDesigner::getEllipticLowpassZerosPolesAndGain(Complex *z, Complex *p, double *k, int N, double Gp, double Gs)
 {
 //  int nz;
 //  if( isEven(N) )
@@ -634,7 +627,7 @@ void PrototypeDesigner::getEllipticLowpassZerosPolesAndGain(Complex *z, Complex 
 }
 
 /*
-void PrototypeDesigner::getLowpassZerosPolesAndGain(Complex *z, Complex *p, double *k, int N, int approximationMethod)
+void rsPrototypeDesigner::getLowpassZerosPolesAndGain(Complex *z, Complex *p, double *k, int N, int approximationMethod)
 {
   int dummy = 0;
 }
@@ -643,7 +636,7 @@ void PrototypeDesigner::getLowpassZerosPolesAndGain(Complex *z, Complex *p, doub
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // inquiry:
 
-Complex PrototypeDesigner::getFilterResponseAt(Complex s)
+Complex rsPrototypeDesigner::getFilterResponseAt(Complex s)
 {
   Complex num, den;
   Complex tmp;
@@ -682,12 +675,12 @@ Complex PrototypeDesigner::getFilterResponseAt(Complex s)
   return num/den;
 }
 
-double PrototypeDesigner::getMagnitudeAt(double w)
+double rsPrototypeDesigner::getMagnitudeAt(double w)
 {
   return getFilterResponseAt(Complex(0.0, w)).getRadius();
 }
 
-double PrototypeDesigner::findFrequencyWithMagnitude(double magnitude, double wLow, double wHigh)
+double rsPrototypeDesigner::findFrequencyWithMagnitude(double magnitude, double wLow, double wHigh)
 {
   // until we have something better, we search for the frequency at which the desired gain occurs by means of the bisection method:
 
@@ -715,17 +708,17 @@ double PrototypeDesigner::findFrequencyWithMagnitude(double magnitude, double wL
   return 0.5 * (wLow+wHigh); //preliminary
 }
 
-int PrototypeDesigner::getNumFinitePoles()
+int rsPrototypeDesigner::getNumFinitePoles()
 {
   return numFinitePoles;
 }
 
-int PrototypeDesigner::getNumFiniteZeros()
+int rsPrototypeDesigner::getNumFiniteZeros()
 {
   return numFiniteZeros;
 }
 
-int PrototypeDesigner::getNumNonRedundantFinitePoles()
+int rsPrototypeDesigner::getNumNonRedundantFinitePoles()
 {
   if( isEven(numFinitePoles) )
     return numFinitePoles/2;
@@ -733,7 +726,7 @@ int PrototypeDesigner::getNumNonRedundantFinitePoles()
     return (numFinitePoles+1)/2;
 }
 
-int PrototypeDesigner::getNumNonRedundantFiniteZeros()
+int rsPrototypeDesigner::getNumNonRedundantFiniteZeros()
 {
   if( isEven(numFiniteZeros) )
     return numFiniteZeros/2;
@@ -741,7 +734,7 @@ int PrototypeDesigner::getNumNonRedundantFiniteZeros()
     return (numFiniteZeros+1)/2;
 }
 
-void PrototypeDesigner::getPolesAndZeros(Complex *poles, Complex *zeros)
+void rsPrototypeDesigner::getPolesAndZeros(Complex *poles, Complex *zeros)
 {
   if( stateIsDirty == true )
     updatePolesAndZeros(); // re-calculate only if necesarry
@@ -752,7 +745,7 @@ void PrototypeDesigner::getPolesAndZeros(Complex *poles, Complex *zeros)
   }
 }
 
-bool PrototypeDesigner::hasCurrentMethodRippleParameter()
+bool rsPrototypeDesigner::hasCurrentMethodRippleParameter()
 
 {
   if( prototypeMode == LOWPASS_PROTOTYPE )
@@ -772,7 +765,7 @@ bool PrototypeDesigner::hasCurrentMethodRippleParameter()
   }
 }
 
-bool PrototypeDesigner::hasCurrentMethodRejectionParameter()
+bool rsPrototypeDesigner::hasCurrentMethodRejectionParameter()
 {
   if( prototypeMode == LOWPASS_PROTOTYPE )
   {
@@ -782,7 +775,7 @@ bool PrototypeDesigner::hasCurrentMethodRejectionParameter()
     return false;
 }
 
-bool PrototypeDesigner::needsSpecialHighShelvTransform()
+bool rsPrototypeDesigner::needsSpecialHighShelvTransform()
 {
   return (approximationMethod == BUTTERWORTH)
     ||   (approximationMethod == CHEBYCHEV)
@@ -793,7 +786,7 @@ bool PrototypeDesigner::needsSpecialHighShelvTransform()
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // pole/zero calculation:
 
-void PrototypeDesigner::updatePolesAndZeros()
+void rsPrototypeDesigner::updatePolesAndZeros()
 {
   if( stateIsDirty == true )
   {
@@ -825,13 +818,13 @@ void PrototypeDesigner::updatePolesAndZeros()
   }
 }
 
-void PrototypeDesigner::makeBypass()
+void rsPrototypeDesigner::makeBypass()
 {
   numFinitePoles = 0;
   numFiniteZeros = 0;
 }
 
-void PrototypeDesigner::makeButterworthLowpass()
+void rsPrototypeDesigner::makeButterworthLowpass()
 {
   numFinitePoles = N;
   numFiniteZeros = 0;
@@ -861,7 +854,7 @@ void PrototypeDesigner::makeButterworthLowpass()
   stateIsDirty = false;
 }
 
-void PrototypeDesigner::makeButterworthLowShelv()
+void rsPrototypeDesigner::makeButterworthLowShelv()
 {
   numFinitePoles = N;
   numFiniteZeros = N;
@@ -907,7 +900,7 @@ void PrototypeDesigner::makeButterworthLowShelv()
   stateIsDirty = false;
 }
 
-void PrototypeDesigner::makeChebychevLowpass()
+void rsPrototypeDesigner::makeChebychevLowpass()
 {
   numFinitePoles = N;
   numFiniteZeros = 0;
@@ -937,7 +930,7 @@ void PrototypeDesigner::makeChebychevLowpass()
   stateIsDirty = false;
 }
 
-void PrototypeDesigner::makeChebychevLowShelv()
+void rsPrototypeDesigner::makeChebychevLowShelv()
 {
   numFinitePoles = N;
   numFiniteZeros = N;
@@ -988,7 +981,7 @@ void PrototypeDesigner::makeChebychevLowShelv()
   stateIsDirty = false;
 }
 
-void PrototypeDesigner::makeInverseChebychevLowpass()
+void rsPrototypeDesigner::makeInverseChebychevLowpass()
 {
   numFinitePoles = N;
   if( isEven(N) )
@@ -1026,7 +1019,7 @@ void PrototypeDesigner::makeInverseChebychevLowpass()
   stateIsDirty = false;
 }
 
-void PrototypeDesigner::makeInverseChebychevLowShelv()
+void rsPrototypeDesigner::makeInverseChebychevLowShelv()
 {
   numFinitePoles = N;
   numFiniteZeros = N;
@@ -1078,7 +1071,7 @@ void PrototypeDesigner::makeInverseChebychevLowShelv()
   stateIsDirty = false;
 }
 
-void PrototypeDesigner::makeEllipticLowpass()
+void rsPrototypeDesigner::makeEllipticLowpass()
 {
   numFinitePoles = N;
   if( isEven(N) )
@@ -1117,7 +1110,7 @@ void PrototypeDesigner::makeEllipticLowpass()
   stateIsDirty = false;
 }
 
-void PrototypeDesigner::makeEllipticLowShelv()
+void rsPrototypeDesigner::makeEllipticLowShelv()
 {
   numFinitePoles = N;
   numFiniteZeros = N;
@@ -1173,7 +1166,7 @@ void PrototypeDesigner::makeEllipticLowShelv()
   stateIsDirty = false;
 }
 
-void PrototypeDesigner::makeBesselLowShelv(double G, double G0)
+void rsPrototypeDesigner::makeBesselLowShelv(double G, double G0)
 {
   fillWithZeros(p, maxNumNonRedundantPoles);
   fillWithZeros(z, maxNumNonRedundantPoles);
@@ -1186,7 +1179,7 @@ void PrototypeDesigner::makeBesselLowShelv(double G, double G0)
   Complex zTmp[25];
   Complex pTmp[25];
   double  kTmp;
-  PrototypeDesigner::getBesselLowShelfZerosPolesAndGain(zTmp, pTmp, &kTmp, N, G, G0);
+  rsPrototypeDesigner::getBesselLowShelfZerosPolesAndGain(zTmp, pTmp, &kTmp, N, G, G0);
 
   // findPolynomialRoots returns the roots sorted by ascending real part. for a Bessel-polynomial, this ensures that the real pole, if
   // present, is in pTmp[0] (it has the largest negative real part). this is importatnt for the next call:
@@ -1195,8 +1188,7 @@ void PrototypeDesigner::makeBesselLowShelv(double G, double G0)
   stateIsDirty = false;
 }
 
-
-void PrototypeDesigner::makePapoulisLowShelv(double G, double G0)
+void rsPrototypeDesigner::makePapoulisLowShelv(double G, double G0)
 {
   fillWithZeros(p, maxNumNonRedundantPoles);
   fillWithZeros(z, maxNumNonRedundantPoles);
@@ -1209,7 +1201,7 @@ void PrototypeDesigner::makePapoulisLowShelv(double G, double G0)
   Complex zTmp[25];
   Complex pTmp[25];
   double  kTmp;
-  PrototypeDesigner::getPapoulisLowShelfZerosPolesAndGain(zTmp, pTmp, &kTmp, N, G, G0);
+  rsPrototypeDesigner::getPapoulisLowShelfZerosPolesAndGain(zTmp, pTmp, &kTmp, N, G, G0);
 
   // findPolynomialRoots returns the roots sorted by ascending real part. for a Bessel-polynomial, this ensures that the real pole, if
   // present, is in pTmp[0] (it has the largest negative real part). this is importatnt for the next call:
@@ -1219,7 +1211,7 @@ void PrototypeDesigner::makePapoulisLowShelv(double G, double G0)
 }
 
 
-void PrototypeDesigner::pickNonRedundantPolesAndZeros(Complex *zTmp, Complex *pTmp)
+void rsPrototypeDesigner::pickNonRedundantPolesAndZeros(Complex *zTmp, Complex *pTmp)
 {
   zeroNegligibleImaginaryParts(pTmp, N, 1.e-11);
   zeroNegligibleImaginaryParts(zTmp, N, 1.e-11);

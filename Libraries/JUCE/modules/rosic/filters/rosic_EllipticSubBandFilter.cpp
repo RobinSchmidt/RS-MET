@@ -1,6 +1,3 @@
-//#include "rosic_EllipticSubBandFilter.h"
-//using namespace rosic;
-
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
@@ -11,8 +8,8 @@ EllipticSubBandFilter::EllipticSubBandFilter()
   numStages = 6;      // this is a 12th order filter with 6 biquad-sections
 
   // design the analog prototype filter with unit cutoff frequency:
-  PrototypeDesigner designer;
-  designer.setApproximationMethod(PrototypeDesigner::ELLIPTIC);
+  rsPrototypeDesigner designer;
+  designer.setApproximationMethod(rsPrototypeDesigner::ELLIPTIC);
   designer.setOrder(2*numStages);
   designer.setPassbandRipple(0.1);
   designer.setStopbandRejection(96.0);

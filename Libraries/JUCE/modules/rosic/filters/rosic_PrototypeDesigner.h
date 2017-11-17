@@ -41,7 +41,7 @@ References:
   that all approximations can be treated uniformly later on
  -lot's of stinky code duplication -> eliminate it */
 
-class PrototypeDesigner
+class rsPrototypeDesigner
 {
 
 public:
@@ -77,10 +77,10 @@ public:
   // construction/destruction:
 
   /** Constructor. */
-  PrototypeDesigner();
+  rsPrototypeDesigner();
 
   /** Destructor. */
-  ~PrototypeDesigner();
+  ~rsPrototypeDesigner();
 
   //-----------------------------------------------------------------------------------------------
   // parameter settings:

@@ -161,7 +161,7 @@ protected:
   int    prototypeOrder;
 
   // embedded objects:
-  PrototypeDesigner prototypeDesigner;
+  rsPrototypeDesigner prototypeDesigner;
 
   /*
   double getBiquadMagnitudeAt(double b0, double b1, double b2,

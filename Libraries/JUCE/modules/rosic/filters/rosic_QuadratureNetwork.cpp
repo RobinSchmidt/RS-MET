@@ -1,6 +1,3 @@
-//#include "rosic_QuadratureNetwork.h"
-//using namespace rosic;
-
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
@@ -8,8 +5,8 @@ QuadratureNetwork::QuadratureNetwork()
 {
   order = 12;
   gain  = 1.0;
-  designer.setApproximationMethod(PrototypeDesigner::ELLIPTIC);  
-  designer.setMode(PrototypeDesigner::LOWPASS_PROTOTYPE);
+  designer.setApproximationMethod(rsPrototypeDesigner::ELLIPTIC);  
+  designer.setMode(rsPrototypeDesigner::LOWPASS_PROTOTYPE);
   designer.setPrototypeOrder(order);
   designer.setSampleRate(44100.0);
   designer.setFrequency(11025.0);

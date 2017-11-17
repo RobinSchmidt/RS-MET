@@ -43,12 +43,12 @@ void PoleZeroMapper::sLowpassToLowshelf(Complex *z, Complex *p, double *k, Compl
   // obtain magnitude-squared numerator polynomial for shelving filter:
   rootsToCoeffs(zTmp, b, N);
   rootsToCoeffs(pTmp, a, N);
-  PrototypeDesigner::shelvingMagSqrNumeratorFromLowpassTransfer(b, a, kTmp, N, G0, G, bS);
+  rsPrototypeDesigner::shelvingMagSqrNumeratorFromLowpassTransfer(b, a, kTmp, N, G0, G, bS);
 
   // obtain zeros, poles and gain of the new shelving filter:
   //findPolynomialRoots(bS, 2*N, &zTmp[-1]);
   //int numLeftZeros = onlyLeftHalfPlane(zTmp, zTmp, 2*N);
-  PrototypeDesigner::getLeftHalfPlaneRoots(bS, zTmp, 2*N);  // test - replaces the 2 commented lines above - seems to work
+  rsPrototypeDesigner::getLeftHalfPlaneRoots(bS, zTmp, 2*N);  // test - replaces the 2 commented lines above - seems to work
 
   // if we make a dip-filter, poles and zeros exchange roles:
   if( dip == false )
