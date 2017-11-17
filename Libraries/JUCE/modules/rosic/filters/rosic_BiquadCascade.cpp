@@ -1,6 +1,6 @@
 // construction/destruction:
 
-BiquadCascade::BiquadCascade(int newMaxNumStages)
+rsBiquadCascade::rsBiquadCascade(int newMaxNumStages)
 {
   if( newMaxNumStages >= 1 )
     maxNumStages = newMaxNumStages;
@@ -23,7 +23,7 @@ BiquadCascade::BiquadCascade(int newMaxNumStages)
   numStages = maxNumStages; 
 }
 
-BiquadCascade::~BiquadCascade()
+rsBiquadCascade::~rsBiquadCascade()
 {
   delete[] a1;
   delete[] a2;
@@ -38,7 +38,7 @@ BiquadCascade::~BiquadCascade()
 
 // parameter settings:
 
-void BiquadCascade::setNumStages(int newNumStages)
+void rsBiquadCascade::setNumStages(int newNumStages)
 {
   if( (newNumStages >= 0 ) && (newNumStages <= maxNumStages) )
     numStages = newNumStages;
@@ -47,7 +47,7 @@ void BiquadCascade::setNumStages(int newNumStages)
   reset();
 }
 
-void BiquadCascade::setOrder(int newOrder)
+void rsBiquadCascade::setOrder(int newOrder)
 {
   if( isEven(newOrder) )
     setNumStages(newOrder/2);
@@ -55,14 +55,14 @@ void BiquadCascade::setOrder(int newOrder)
     setNumStages( (newOrder+1)/2 );
 }
 
-void BiquadCascade::setGlobalGainFactor(double newGain)
+void rsBiquadCascade::setGlobalGainFactor(double newGain)
 {
   b0[0] *= newGain;
   b1[0] *= newGain;
   b2[0] *= newGain;
 }
 
-void BiquadCascade::copySettingsFrom(BiquadCascade *other)
+void rsBiquadCascade::copySettingsFrom(rsBiquadCascade *other)
 {
   setNumStages(other->getNumStages());
 
@@ -78,7 +78,7 @@ void BiquadCascade::copySettingsFrom(BiquadCascade *other)
   }
 }
 
-void BiquadCascade::turnIntoAllpass()
+void rsBiquadCascade::turnIntoAllpass()
 {
   for(int i=0; i<numStages; i++)
   {
@@ -112,20 +112,20 @@ void BiquadCascade::turnIntoAllpass()
 
 // inquiry:
 
-void BiquadCascade::getFrequencyResponse(double *w, Complex *H, int numBins, int accumulationMode)
+void rsBiquadCascade::getFrequencyResponse(double *w, Complex *H, int numBins, int accumulationMode)
 {
   FilterAnalyzer::getBiquadCascadeFrequencyResponse(b0, b1, b2, a1, a2, numStages, w, H, numBins, 
     accumulationMode);
 }
 
-void BiquadCascade::getMagnitudeResponse(double *w, double *magnitudes, int numBins, 
+void rsBiquadCascade::getMagnitudeResponse(double *w, double *magnitudes, int numBins, 
   bool inDecibels, bool accumulate)
 {
   FilterAnalyzer::getBiquadCascadeMagnitudeResponse(b0, b1, b2, a1, a2, numStages, w, magnitudes, 
     numBins, inDecibels, accumulate);
 }
 
-void BiquadCascade::getMagnitudeResponse(double *frequencies, double sampleRate, 
+void rsBiquadCascade::getMagnitudeResponse(double *frequencies, double sampleRate, 
   double *magnitudes, int numBins, bool inDecibels,      
                                          bool accumulate)
 {
@@ -136,7 +136,7 @@ void BiquadCascade::getMagnitudeResponse(double *frequencies, double sampleRate,
 //-------------------------------------------------------------------------------------------------
 // others:
 
-void BiquadCascade::initBiquadCoeffs()
+void rsBiquadCascade::initBiquadCoeffs()
 {
   for(int i=0; i<maxNumStages; i++)
   {
@@ -148,7 +148,7 @@ void BiquadCascade::initBiquadCoeffs()
   }
 }
 
-void BiquadCascade::reset()
+void rsBiquadCascade::reset()
 {
   for(int i=0; i<maxNumStages; i++)
   {
@@ -160,9 +160,9 @@ void BiquadCascade::reset()
 }
 
 //=================================================================================================
-// class BiquadCascadeStereo:
+// class rsBiquadCascadeStereo:
 
-BiquadCascadeStereo::BiquadCascadeStereo(int newMaxNumStages) : BiquadCascade(newMaxNumStages)
+rsBiquadCascadeStereo::rsBiquadCascadeStereo(int newMaxNumStages) : rsBiquadCascade(newMaxNumStages)
 {
   x1R = new double[maxNumStages];
   x2R = new double[maxNumStages];
@@ -172,7 +172,7 @@ BiquadCascadeStereo::BiquadCascadeStereo(int newMaxNumStages) : BiquadCascade(ne
   reset();                   
 }
 
-BiquadCascadeStereo::~BiquadCascadeStereo()
+rsBiquadCascadeStereo::~rsBiquadCascadeStereo()
 {
   delete[] x1R;
   delete[] x2R;
@@ -180,9 +180,9 @@ BiquadCascadeStereo::~BiquadCascadeStereo()
   delete[] y2R;
 }
 
-void BiquadCascadeStereo::reset()
+void rsBiquadCascadeStereo::reset()
 {
-  BiquadCascade::reset();
+  rsBiquadCascade::reset();
   for(int i=0; i<maxNumStages; i++)
   {
     x2R[i] = 0.0;

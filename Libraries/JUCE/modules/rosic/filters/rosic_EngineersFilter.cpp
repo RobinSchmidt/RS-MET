@@ -1,6 +1,6 @@
 // construction/destruction:
 
-rsEngineersFilter::rsEngineersFilter() : BiquadCascadeStereo(25)
+rsEngineersFilter::rsEngineersFilter() : rsBiquadCascadeStereo(25)
 {
   numStages  = 1;
   sampleRate = 44100.0;
@@ -10,7 +10,7 @@ rsEngineersFilter::rsEngineersFilter() : BiquadCascadeStereo(25)
 
 void rsEngineersFilter::setSampleRate(double newSampleRate)
 {
-  //BiquadCascade::setSampleRate(newSampleRate);
+  //rsBiquadCascadeStereo::setSampleRate(newSampleRate);
   sampleRate = newSampleRate;
   designer.setSampleRate(newSampleRate);
   updateCoefficients();
@@ -19,7 +19,7 @@ void rsEngineersFilter::setSampleRate(double newSampleRate)
 void rsEngineersFilter::setMode(int newMode)
 {
   designer.setMode(newMode);
-  BiquadCascade::setNumStages(designer.getNumBiquadStages());
+  rsBiquadCascadeStereo::setNumStages(designer.getNumBiquadStages());
   updateCoefficients();
 }
 
@@ -38,7 +38,7 @@ void rsEngineersFilter::setFrequency(double newFrequency)
 void rsEngineersFilter::setPrototypeOrder(int newOrder)
 {
   designer.setPrototypeOrder(newOrder);
-  BiquadCascade::setNumStages(designer.getNumBiquadStages());
+  rsBiquadCascadeStereo::setNumStages(designer.getNumBiquadStages());
   updateCoefficients();
 }
 
@@ -74,7 +74,7 @@ void rsEngineersFilter::getMagnitudeResponse(double *frequencies, double *magnit
   double *w = new double[numBins];
   for(int k = 0; k < numBins; k++)
     w[k] = 2 * PI * frequencies[k] / sampleRate;
-  BiquadCascade::getMagnitudeResponse(w, magnitudes, numBins, inDecibels, accumulate);
+  rsBiquadCascadeStereo::getMagnitudeResponse(w, magnitudes, numBins, inDecibels, accumulate);
   for(int k = 0; k < numBins; k++)
   {
     if( w[k] > PI )
@@ -87,8 +87,8 @@ void rsEngineersFilter::getMagnitudeResponse(double *frequencies, double *magnit
 
 void rsEngineersFilter::updateCoefficients(bool resetState)
 {
-  BiquadCascade::initBiquadCoeffs();
+  rsBiquadCascade::initBiquadCoeffs();
   designer.getBiquadCascadeCoefficients(b0, b1, b2, a1, a2);
   if(resetState)
-    BiquadCascadeStereo::reset();
+    rsBiquadCascadeStereo::reset();
 }

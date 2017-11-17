@@ -13,7 +13,7 @@ Each stage has its own set of coefficients which has to be set from outside this
 does not do the filter-design. The coefficients can be calculated by one of the "Designer" classes 
 such as for example the BiquadDesigner class. */
 
-class BiquadCascade
+class rsBiquadCascade
 {
 
 public:
@@ -23,10 +23,10 @@ public:
 
   /** Constructor. You may pass the maximum number of stages that this cascade will be able to 
   realize here (default is 12). */
-  BiquadCascade(int newMaxNumStages = 12);
+  rsBiquadCascade(int newMaxNumStages = 12);
 
   /** Destructor. */
-  ~BiquadCascade();
+  ~rsBiquadCascade();
 
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
@@ -46,7 +46,7 @@ public:
   void setGlobalGainFactor(double newGainFactor);
 
   /** Copies the settings (numStages and the coefficients) from another instance of this class. */
-  void copySettingsFrom(BiquadCascade *other);
+  void copySettingsFrom(rsBiquadCascade *other);
 
   /** Turns this biquad-cascade into an allpass filter that has the same poles as the original 
   filter. The zeros are moevd to positions that are reflections of the poles in the unit circle. */
@@ -58,7 +58,8 @@ public:
   /** Allows the user to set the filter coefficients for the individual biquad-stages. The 
   difference-equation of each of the biquad stages is: 
   \f[ y[n] = b_0 x[n] + b_1 x[n-1] + b_2 x[n-2] - a_1 y[n-1] - a_2 y[n-2] \f] */
-  INLINE void setCoeffs(double *newB0, double *newB1, double *newB2, double *newA1, double *newA2); //, double newGain = 1.0);
+  INLINE void setCoeffs(double *newB0, double *newB1, double *newB2, double *newA1, double *newA2); 
+  //, double newGain = 1.0);
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
@@ -157,7 +158,7 @@ protected:
 //-------------------------------------------------------------------------------------------------
 // inlined functions:
 
-INLINE void BiquadCascade::setCoeffs(double *newB0, double *newB1, double *newB2, double *newA1, 
+INLINE void rsBiquadCascade::setCoeffs(double *newB0, double *newB1, double *newB2, double *newA1, 
   double *newA2) //, double  newGain)
 {
   for(int i=0; i<numStages; i++)
@@ -170,7 +171,7 @@ INLINE void BiquadCascade::setCoeffs(double *newB0, double *newB1, double *newB2
   }
 }
 
-INLINE double BiquadCascade::getSampleDirect1(double in)
+INLINE double rsBiquadCascade::getSampleDirect1(double in)
 {
   doubleA tmp, tmp2;
   intA i;  // for the loop through the stages 
@@ -196,7 +197,7 @@ INLINE double BiquadCascade::getSampleDirect1(double in)
   return tmp;
 }
 
-INLINE double BiquadCascade::getSampleDirect2(double in)
+INLINE double rsBiquadCascade::getSampleDirect2(double in)
 {
   static doubleA x, y, g;
   static intA    i;  // for the loop through the stages
@@ -223,9 +224,9 @@ INLINE double BiquadCascade::getSampleDirect2(double in)
 
 //=================================================================================================
 
-/** This is the stereo version of the BiquadCascade class. */
+/** This is the stereo version of the rsBiquadCascade class. */
 
-class BiquadCascadeStereo : public BiquadCascade
+class rsBiquadCascadeStereo : public rsBiquadCascade
 {
 
 public:
@@ -235,10 +236,10 @@ public:
 
   /** Constructor. You may pass the maximum number of stages that this cascade will be able to 
   realize here (default is 12). */
-  BiquadCascadeStereo(int newMaxNumStages = 12);
+  rsBiquadCascadeStereo(int newMaxNumStages = 12);
 
   /** Destructor. */
-  ~BiquadCascadeStereo();
+  ~rsBiquadCascadeStereo();
 
   //-----------------------------------------------------------------------------------------------
   /** \name Audio Processing */
@@ -266,11 +267,11 @@ protected:
 
   // make copy-constructor and assignment operator unavailable (move this idiom into a macro an 
   // use the macro everywhere, where an object is not trivially copyable):
-  BiquadCascadeStereo(const BiquadCascadeStereo&) = delete;
-  BiquadCascadeStereo& operator=(const BiquadCascadeStereo&) = delete;
+  rsBiquadCascadeStereo(const rsBiquadCascadeStereo&) = delete;
+  rsBiquadCascadeStereo& operator=(const rsBiquadCascadeStereo&) = delete;
 };
 
-INLINE void BiquadCascadeStereo::getSampleFrameDirect1(double *inOutL, double *inOutR)
+INLINE void rsBiquadCascadeStereo::getSampleFrameDirect1(double *inOutL, double *inOutR)
 {
   doubleA tmpL = *inOutL + TINY;
   doubleA tmpR = *inOutR + TINY;
@@ -300,7 +301,7 @@ INLINE void BiquadCascadeStereo::getSampleFrameDirect1(double *inOutL, double *i
   *inOutR = tmpR;
 }
 
-INLINE void BiquadCascadeStereo::getSampleFrameDirect2(double *inOutL, double *inOutR)
+INLINE void rsBiquadCascadeStereo::getSampleFrameDirect2(double *inOutL, double *inOutR)
 {
   doubleA xL, yL, gL, xR, yR, gR;
 

@@ -95,7 +95,7 @@ namespace rosic
     LinkwitzRileyCrossOverStereo stage2[2];
 
     // allpass-filters for compensating for the allpasses that results from addition of sub-branches:
-    BiquadCascadeStereo lowBranchCompensationAllpass, highBranchCompensationAllpass;
+    rsBiquadCascadeStereo lowBranchCompensationAllpass, highBranchCompensationAllpass;
 
   };
 

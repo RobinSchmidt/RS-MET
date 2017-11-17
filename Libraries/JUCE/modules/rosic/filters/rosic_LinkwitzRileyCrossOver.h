@@ -1,10 +1,6 @@
 #ifndef rosic_LinkwitzRileyCrossOver_h
 #define rosic_LinkwitzRileyCrossOver_h
 
-//// rosic-indcludes:
-//#include "rosic_InfiniteImpulseResponseDesigner.h"
-//#include "rosic_BiquadCascade.h"
-
 namespace rosic
 {
 
@@ -117,8 +113,8 @@ namespace rosic
     void updateFilterCoefficients();
 
     // embedded objects:
-    BiquadCascade lowpass1, lowpass2; // direct-form performed worse than biquad-cascade
-    BiquadCascade sumAllpass;
+    rsBiquadCascade lowpass1, lowpass2; // direct-form performed worse than biquad-cascade
+    rsBiquadCascade sumAllpass;
 
     double sampleRate;
     double crossoverFrequency;

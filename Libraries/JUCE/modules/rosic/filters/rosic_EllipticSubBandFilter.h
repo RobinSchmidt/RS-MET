@@ -1,12 +1,6 @@
 #ifndef rosic_EllipticSubBandFilter_h
 #define rosic_EllipticSubBandFilter_h
 
-//// rosic-indcludes:
-//#include "rosic_BiquadCascade.h"
-//#include "rosic_PrototypeDesigner.h"
-//#include "rosic_PoleZeroMapper.h"
-//#include "rosic_FilterCoefficientConverter.h"
-
 namespace rosic
 {
 
@@ -17,7 +11,7 @@ namespace rosic
 
   */
 
-  class EllipticSubBandFilter : public BiquadCascade
+  class EllipticSubBandFilter : public rsBiquadCascade
   {
 
   public:
