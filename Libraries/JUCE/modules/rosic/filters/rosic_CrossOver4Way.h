@@ -90,8 +90,8 @@ protected:
   void setupCompensationAllpasses();
 
   // we use the crossover-object in a binary tree like structure:
-  LinkwitzRileyCrossOverStereo stage1;
-  LinkwitzRileyCrossOverStereo stage2[2];
+  rsLinkwitzRileyCrossOverStereo stage1;
+  rsLinkwitzRileyCrossOverStereo stage2[2];
 
   // allpass-filters for compensating for the allpasses that results from addition of sub-branches:
   rsBiquadCascadeStereo lowBranchCompensationAllpass, highBranchCompensationAllpass;

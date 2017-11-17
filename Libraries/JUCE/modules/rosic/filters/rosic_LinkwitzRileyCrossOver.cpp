@@ -1,10 +1,6 @@
-//#include "rosic_LinkwitzRileyCrossOver.h"
-//using namespace rosic;
-
-//-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-LinkwitzRileyCrossOver::LinkwitzRileyCrossOver(int newMaxButterworthOrder) 
+rsLinkwitzRileyCrossOver::rsLinkwitzRileyCrossOver(int newMaxButterworthOrder) 
 : lowpass1(newMaxButterworthOrder/2)
 , lowpass2(newMaxButterworthOrder/2)
 , sumAllpass(newMaxButterworthOrder/2)
@@ -18,15 +14,14 @@ LinkwitzRileyCrossOver::LinkwitzRileyCrossOver(int newMaxButterworthOrder)
   updateFilterCoefficients();
 }
 
-LinkwitzRileyCrossOver::~LinkwitzRileyCrossOver()
+rsLinkwitzRileyCrossOver::~rsLinkwitzRileyCrossOver()
 {
 
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
 // setup:
 
-void LinkwitzRileyCrossOver::setSampleRate(double newSampleRate)
+void rsLinkwitzRileyCrossOver::setSampleRate(double newSampleRate)
 {
   if( newSampleRate > 0.0 && newSampleRate != sampleRate )
   {
@@ -35,31 +30,30 @@ void LinkwitzRileyCrossOver::setSampleRate(double newSampleRate)
   }
 }
 
-void LinkwitzRileyCrossOver::setCrossoverFrequency(double newCrossoverFrequency)
+void rsLinkwitzRileyCrossOver::setCrossoverFrequency(double newCrossoverFrequency)
 {
   if( newCrossoverFrequency <= 20000.0 )
     crossoverFrequency = newCrossoverFrequency;
   updateFilterCoefficients();
 }
 
-void LinkwitzRileyCrossOver::setSlope(int newSlope)
+void rsLinkwitzRileyCrossOver::setSlope(int newSlope)
 {
   rassert( newSlope%12 == 0 && newSlope >= 12 ); // slope must be a multiple of 12 dB/oct
   setButterworthOrder(newSlope/12);
 }
 
-void LinkwitzRileyCrossOver::setButterworthOrder(int newOrder)
+void rsLinkwitzRileyCrossOver::setButterworthOrder(int newOrder)
 {
   if( newOrder >= 1 && newOrder <= maxButterworthOrder )
     butterworthOrder = newOrder;
   updateFilterCoefficients();
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
 // inquiry:
 
-void LinkwitzRileyCrossOver::getLowpassMagnitudeResponse(double *frequencies, double *magnitudes, int numBins, 
-                                                         bool inDecibels, bool accumulate)
+void rsLinkwitzRileyCrossOver::getLowpassMagnitudeResponse(double *frequencies, double *magnitudes, 
+  int numBins, bool inDecibels, bool accumulate)
 {
   if( accumulate == false )
   {
@@ -72,7 +66,8 @@ void LinkwitzRileyCrossOver::getLowpassMagnitudeResponse(double *frequencies, do
   lowpass2.getMagnitudeResponse(frequencies, sampleRate, magnitudes, numBins, true, true);
 }
 
-void LinkwitzRileyCrossOver::getLowpassFrequencyResponse(double *frequencies, Complex *H, int numBins, bool accumulate)
+void rsLinkwitzRileyCrossOver::getLowpassFrequencyResponse(double *frequencies, Complex *H, 
+  int numBins, bool accumulate)
 {
   if( accumulate == false )  
     fillWithValue(H, numBins, Complex(1.0));
@@ -87,8 +82,8 @@ void LinkwitzRileyCrossOver::getLowpassFrequencyResponse(double *frequencies, Co
   delete[] w;
 }
 
-void LinkwitzRileyCrossOver::getHighpassMagnitudeResponse(double *frequencies, double *magnitudes, int numBins, 
-                                                          bool inDecibels, bool accumulate)
+void rsLinkwitzRileyCrossOver::getHighpassMagnitudeResponse(double *frequencies, 
+  double *magnitudes, int numBins, bool inDecibels, bool accumulate)
 {
   Complex *H = new Complex[numBins];
   getHighpassFrequencyResponse(frequencies, H, numBins, false);
@@ -123,7 +118,8 @@ void LinkwitzRileyCrossOver::getHighpassMagnitudeResponse(double *frequencies, d
   delete[] H;
 }
 
-void LinkwitzRileyCrossOver::getHighpassFrequencyResponse(double *frequencies, Complex *H, int numBins, bool accumulate)
+void rsLinkwitzRileyCrossOver::getHighpassFrequencyResponse(double *frequencies, Complex *H, 
+  int numBins, bool accumulate)
 {
   double *w = new double[numBins];
   copyBuffer(frequencies, w, numBins);
@@ -148,17 +144,16 @@ void LinkwitzRileyCrossOver::getHighpassFrequencyResponse(double *frequencies, C
   delete[] w;
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
 // others:
 
-void LinkwitzRileyCrossOver::resetBuffers()
+void rsLinkwitzRileyCrossOver::resetBuffers()
 {
   lowpass1.reset();
   lowpass2.reset();
   sumAllpass.reset();
 }
 
-void LinkwitzRileyCrossOver::updateFilterCoefficients()
+void rsLinkwitzRileyCrossOver::updateFilterCoefficients()
 {
   // create and set up a filter-designer object:
   InfiniteImpulseResponseDesigner designer;
@@ -166,13 +161,14 @@ void LinkwitzRileyCrossOver::updateFilterCoefficients()
   designer.setApproximationMethod(PrototypeDesigner::BUTTERWORTH);
   designer.setPrototypeOrder(butterworthOrder);
   designer.setFrequency(crossoverFrequency);
-  // \todo keep this object around as a member to avoid unnecessary re-calculations of the prototype poles
+  // \todo keep this object around as a member to avoid unnecessary re-calculations of the 
+  // prototype poles
 
   // design the lowpasses:
   designer.setMode(InfiniteImpulseResponseDesigner::LOWPASS);
   lowpass1.setOrder(butterworthOrder);
-  designer.getBiquadCascadeCoefficients(lowpass1.getAddressB0(), lowpass1.getAddressB1(), lowpass1.getAddressB2(), 
-                                                                 lowpass1.getAddressA1(), lowpass1.getAddressA2() );
+  designer.getBiquadCascadeCoefficients(lowpass1.getAddressB0(), lowpass1.getAddressB1(), 
+    lowpass1.getAddressB2(), lowpass1.getAddressA1(), lowpass1.getAddressA2() );
   lowpass2.copySettingsFrom(&lowpass1);
 
   // obtain the allpass:
