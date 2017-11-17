@@ -2770,6 +2770,12 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Musical\StateVariableFilter.cpp">
       <Filter>Juce Modules\rapt\Filters\Musical</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\FilterCoefficientConverter.cpp">
+      <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\InfiniteImpulseResponseDesigner.cpp">
+      <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\PoleZeroMapper.cpp">
       <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
     </ClCompile>
@@ -6587,6 +6593,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Musical\StateVariableFilter.h">
       <Filter>Juce Modules\rapt\Filters\Musical</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\FilterCoefficientConverter.h">
+      <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\InfiniteImpulseResponseDesigner.h">
+      <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\PoleZeroMapper.h">
       <Filter>Juce Modules\rapt\Filters\Scientific</Filter>

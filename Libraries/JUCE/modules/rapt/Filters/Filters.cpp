@@ -12,5 +12,7 @@ namespace RAPT
 
 #include "Scientific/PrototypeDesigner.cpp"
 #include "Scientific/PoleZeroMapper.cpp" 
+#include "Scientific/FilterCoefficientConverter.cpp"
+#include "Scientific/InfiniteImpulseResponseDesigner.cpp"
 
 }

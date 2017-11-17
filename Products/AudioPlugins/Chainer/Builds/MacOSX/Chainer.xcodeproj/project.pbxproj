@@ -216,6 +216,7 @@
 		11756C7E845849C7CD44683D = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "as_datatype.h"; path = "../../../../../Libraries/JUCE/modules/rosic/_third_party/angelscript/as_datatype.h"; sourceTree = "SOURCE_ROOT"; };
 		11EB8EAF7A469DDE71C29045 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "juce_ChannelRemappingAudioSource.cpp"; path = "../../../../../Libraries/JUCE/modules/juce_audio_basics/sources/juce_ChannelRemappingAudioSource.cpp"; sourceTree = "SOURCE_ROOT"; };
 		120AE920E3144A048E80FCD7 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "setup_11.h"; path = "../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/modes/setup_11.h"; sourceTree = "SOURCE_ROOT"; };
+		12100734BB9A22B968942B14 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = InfiniteImpulseResponseDesigner.h; path = ../../../../../Libraries/JUCE/modules/rapt/Filters/Scientific/InfiniteImpulseResponseDesigner.h; sourceTree = "SOURCE_ROOT"; };
 		121B0C10743F98BAD89CBF27 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MagicCarpetEqualizer.cpp; path = ../../../../../Libraries/JUCE/modules/rosic/legacy/MagicCarpetEqualizer.cpp; sourceTree = "SOURCE_ROOT"; };
 		12510C1BA6823C7BD12F588D = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "juce_FileListComponent.cpp"; path = "../../../../../Libraries/JUCE/modules/juce_gui_basics/filebrowser/juce_FileListComponent.cpp"; sourceTree = "SOURCE_ROOT"; };
 		127DBC0625DF1A4504E3783E = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "rosic_Interpolator.h"; path = "../../../../../Libraries/JUCE/modules/rosic/basics/rosic_Interpolator.h"; sourceTree = "SOURCE_ROOT"; };
@@ -667,6 +668,7 @@
 		3F7B5BD35161A12697929A0C = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = lsp.c; path = "../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/lsp.c"; sourceTree = "SOURCE_ROOT"; };
 		3FA579D3200ABABABE0AA69F = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CAVectorUnit.h; path = "../../../../../Libraries/JUCE/modules/juce_audio_plugin_client/AU/CoreAudioUtilityClasses/CAVectorUnit.h"; sourceTree = "SOURCE_ROOT"; };
 		3FA6625B8FE4B172F1B12CAA = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BlepInitialization.h; path = ../../../../../Libraries/JUCE/modules/rosic/legacy/BlepInitialization.h; sourceTree = "SOURCE_ROOT"; };
+		3FB1B921DDE41F47296DF0EB = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = InfiniteImpulseResponseDesigner.cpp; path = ../../../../../Libraries/JUCE/modules/rapt/Filters/Scientific/InfiniteImpulseResponseDesigner.cpp; sourceTree = "SOURCE_ROOT"; };
 		3FEB9EA18EBD79B78EE8FADF = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "juce_QuickTimeAudioFormat.cpp"; path = "../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/juce_QuickTimeAudioFormat.cpp"; sourceTree = "SOURCE_ROOT"; };
 		4004091072EC592B7A56D690 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "jura_Editor.cpp"; path = "../../../../../Libraries/JUCE/modules/jura_framework/gui/editors/jura_Editor.cpp"; sourceTree = "SOURCE_ROOT"; };
 		401590F51A8569640661F831 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Matrix.cpp; path = ../../../../../Libraries/JUCE/modules/rapt/Math/Types/Matrix.cpp; sourceTree = "SOURCE_ROOT"; };
@@ -714,6 +716,7 @@
 		43EB82A1091B824E16CE421E = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_RelativePointPath.h"; path = "../../../../../Libraries/JUCE/modules/juce_gui_basics/positioning/juce_RelativePointPath.h"; sourceTree = "SOURCE_ROOT"; };
 		441DB9CD5A6F91A67AE859E4 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "rosic_DemoVersionNoiseEmitter.cpp"; path = "../../../../../Libraries/JUCE/modules/rosic/others/rosic_DemoVersionNoiseEmitter.cpp"; sourceTree = "SOURCE_ROOT"; };
 		443E95A7FA4876A31B0A2394 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "romos_ModuleContainer.cpp"; path = "../../../../../Libraries/JUCE/modules/romos/Framework/romos_ModuleContainer.cpp"; sourceTree = "SOURCE_ROOT"; };
+		44623B055E6D843CF6B7A91B = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = FilterCoefficientConverter.h; path = ../../../../../Libraries/JUCE/modules/rapt/Filters/Scientific/FilterCoefficientConverter.h; sourceTree = "SOURCE_ROOT"; };
 		44640E243DAD437B0E815719 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "rosic_SingleSidebandModulator.cpp"; path = "../../../../../Libraries/JUCE/modules/rosic/effects/rosic_SingleSidebandModulator.cpp"; sourceTree = "SOURCE_ROOT"; };
 		4465C6326E0B5B176F596D7E = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "jura_KeyShot.h"; path = "../../../../../Libraries/JUCE/modules/jura_processors/instruments/jura_KeyShot.h"; sourceTree = "SOURCE_ROOT"; };
 		446C75C7B5C4749615F11275 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "juce_linux_Midi.cpp"; path = "../../../../../Libraries/JUCE/modules/juce_audio_devices/native/juce_linux_Midi.cpp"; sourceTree = "SOURCE_ROOT"; };
@@ -1053,6 +1056,7 @@
 		66389399D0F538820F3A4844 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "rosic_ComplexFunctions.cpp"; path = "../../../../../Libraries/JUCE/modules/rosic/math/rosic_ComplexFunctions.cpp"; sourceTree = "SOURCE_ROOT"; };
 		664AA48490A4B9130A481E9C = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "romos_TestEventGenerator.cpp"; path = "../../../../../Libraries/JUCE/modules/romos/TestSuite/romos_TestEventGenerator.cpp"; sourceTree = "SOURCE_ROOT"; };
 		6660C5F6F27A0C34154AD05D = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "juce_FileLogger.cpp"; path = "../../../../../Libraries/JUCE/modules/juce_core/logging/juce_FileLogger.cpp"; sourceTree = "SOURCE_ROOT"; };
+		666818AD6D5098518577D726 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = FilterCoefficientConverter.cpp; path = ../../../../../Libraries/JUCE/modules/rapt/Filters/Scientific/FilterCoefficientConverter.cpp; sourceTree = "SOURCE_ROOT"; };
 		6668A92A13FD83216D1BC708 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "juce_AudioProcessorParameters.cpp"; path = "../../../../../Libraries/JUCE/modules/juce_audio_processors/utilities/juce_AudioProcessorParameters.cpp"; sourceTree = "SOURCE_ROOT"; };
 		66B6879D930A38E02AB0F7DB = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "jura_processors.cpp"; path = "../../../../../Libraries/JUCE/modules/jura_processors/jura_processors.cpp"; sourceTree = "SOURCE_ROOT"; };
 		66DF7CC46F0D6ECB38D4E842 = {isa = PBXFileReference; lastKnownFileType = text.txt; name = license.txt; path = "../../../../../Libraries/JUCE/modules/rosic/_third_party/ExprEval_v3_4/docs/license.txt"; sourceTree = "SOURCE_ROOT"; };
@@ -4343,27 +4347,31 @@
 					455EE0CF3F9709789C4FD4A5,
 					6C604A61C99AFB9D3ABDF1E4,
 					A4F7D23F2766A82AB0285172, ); name = Data; sourceTree = "<group>"; };
-		69CEFB1626E44671A605475B = {isa = PBXGroup; children = (
+		7C8FC4FEC820BACD9016A5F3 = {isa = PBXGroup; children = (
 					9689A8EF1CAED3CC52EF39FA,
 					7FC579975F0C156CE7D1B9F8,
 					DA5D27770EA2763793264BA4,
 					33865ECA24314054F6F41838, ); name = Basic; sourceTree = "<group>"; };
-		27907C27D1A09257B4EBCD96 = {isa = PBXGroup; children = (
+		7FD6EB90DBE0A335BF77F818 = {isa = PBXGroup; children = (
 					A33EC6C949F86DB133C4E500,
 					DBBAC4CA7B97239FC1925546,
 					E0C683DAB32999D08AFF88B2,
 					6D871BE2752F1E45FD56B9DA,
 					33DF7B83B76430ED34468B20,
 					816DA03AAA7049E34B405096, ); name = Musical; sourceTree = "<group>"; };
-		AAF3927406B221301A9C35B6 = {isa = PBXGroup; children = (
+		5A568863F95DC2B87EE92AD0 = {isa = PBXGroup; children = (
+					666818AD6D5098518577D726,
+					44623B055E6D843CF6B7A91B,
+					3FB1B921DDE41F47296DF0EB,
+					12100734BB9A22B968942B14,
 					04F8D87563507E7B3CA867E6,
 					8C0E318C6AFFDF17C0ADDC17,
 					BA6209B99EAF42AAEB01EEAC,
 					81307E5688AACBA196BAF3CB, ); name = Scientific; sourceTree = "<group>"; };
 		70E723DA2879161FED6D5CD0 = {isa = PBXGroup; children = (
-					69CEFB1626E44671A605475B,
-					27907C27D1A09257B4EBCD96,
-					AAF3927406B221301A9C35B6,
+					7C8FC4FEC820BACD9016A5F3,
+					7FD6EB90DBE0A335BF77F818,
+					5A568863F95DC2B87EE92AD0,
 					D53488E89CC658A52AA80709,
 					23C025DF1CA5842200623B53, ); name = Filters; sourceTree = "<group>"; };
 		7518377DBAE0012A3D2AB6EC = {isa = PBXGroup; children = (

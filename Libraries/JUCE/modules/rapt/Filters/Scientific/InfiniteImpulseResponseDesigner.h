@@ -1,14 +1,14 @@
-#ifndef rosic_InfiniteImpulseResponseDesigner_h
-#define rosic_InfiniteImpulseResponseDesigner_h
-
-namespace rosic
-{
+#ifndef RAPT_INFINITEIMPULSERESPONSEDESIGNER_H_INCLUDED
+#define RAPT_INFINITEIMPULSERESPONSEDESIGNER_H_INCLUDED
 
 /** This class designs (calculates coefficients for) a high order digital infinite impulse response 
 (IIR) filter a la Orfanidis. */
 
+template<class T>
 class rsInfiniteImpulseResponseDesigner
 {
+
+  typedef std::complex<T> Complex; // preliminary
 
 public:
 
@@ -38,7 +38,7 @@ public:
   /** \name Setup */
 
   /** Sets the sample-rate on which the filter should operate. */
-  void setSampleRate(double newSampleRate);
+  void setSampleRate(T newSampleRate);
 
   /** Selects the mode for the filter. */
   void setMode(int newMode);
@@ -57,34 +57,34 @@ public:
   Butterworth low-shelving and high shelving filters the half-gain frequency (for the approximation 
   methods, the ripple settings define the gain at that frequency). It calls setLowerFrequency and
   setUpperFrequency (which you also may use yourself alternatively) */
-  void setFrequency(double newFrequency);
+  void setFrequency(T newFrequency);
 
   /** Sets the bandwidth of the filter in octaves. For Butterworth bandpass and bandreject filters 
   it is defined by the -3.01 points on both edges of the passband and for Butterworth peak filters 
   it is defined by half-gain frequencies. For other approximation methods, the ripple settings are 
   taken into account. It calls setLowerFrequency and setUpperFrequency (which you also may use 
   yourself alternatively) */
-  void setBandwidth(double newBandwidth);
+  void setBandwidth(T newBandwidth);
 
   /** Selects the lower cutoff-/corner frequency for bandpass, bandreject and peaking filters or 
   the one and only cutoff-/corner frequency for lowpass, low-shelving, highpass and high-shelving 
   modes. */
-  void setLowerFrequency(double newLowerFrequency);
+  void setLowerFrequency(T newLowerFrequency);
 
   /** Selects the upper cutoff-/corner frequency for bandpass, bandreject and peaking filters. For 
   other filter-modes, this is irrelevant. */
-  void setUpperFrequency(double newUpperFrequency);
+  void setUpperFrequency(T newUpperFrequency);
 
   /** Sets the gain for peak and shelving modes (in decibels). */
-  void setGain(double newGain);
+  void setGain(T newGain);
 
   /** Sets the ripple in the passband for pass filter designs in decibels and also the (in-band 
   and/or out-of-band) ripple in the shelving filter designs in terms of a percentage of the peak 
   gain. */
-  void setRipple(double newPassbandRipple);
+  void setRipple(T newPassbandRipple);
 
   /** Sets the rejection in the stopband for lowpass designs in decibels. */
-  void setStopbandRejection(double newStopbandRejection);
+  void setStopbandRejection(T newStopbandRejection);
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
@@ -106,7 +106,7 @@ public:
   int getNumBiquadStages();
 
   /** Returns the passbandRipple in dB. */
-  double getPassbandRipple() const { return prototypeDesigner.getPassbandRipple(); }
+  T getPassbandRipple() const { return prototypeDesigner.getPassbandRipple(); }
 
   /** Returns true if the currently selected mode supports a bandwidth parameter. */
   bool hasCurrentModeBandwidthParameter();
@@ -130,10 +130,10 @@ public:
 
   /** Calculates and stores the coefficients for a biquad cascade which realizes the filter with 
   the desired specifications. */
-  void getBiquadCascadeCoefficients(double *b0, double *b1, double *b2, double *a1, double *a2);
+  void getBiquadCascadeCoefficients(T* b0, T* b1, T* b2, T* a1, T* a2);
 
   /** Calculates and returns the coefficients for a direct-form implementation. */
-  void getDirectFormCoefficients(double *b, double *a);
+  void getDirectFormCoefficients(T* b, T* a);
 
   //===============================================================================================
 
@@ -147,36 +147,25 @@ protected:
   properly chosen normalized radian frequency, taking into account all the ripple, method, mode 
   settings. wc is the center frequency which is only relevant for bandpass/bandreject and peak 
   modes. */
-  void normalizeGain(double *b0, double *b1, double *b2, double *a1, double *a2, double wc, 
-    int numBiquads);
+  void normalizeGain(T* b0, T* b1, T* b2, T* a1, T* a2, T wc, int numBiquads);
 
   /// Ensures that all frequencies have meainingful
   //void frequenciesSanityCheck();
 
-  double sampleRate;
-  double frequency, bandwidth;
-  double lowerFrequency, upperFrequency;
-  double gain;                              // gain in decibels (for shelving- and peak modes)
-  int    mode;
-  int    prototypeOrder;
+  T sampleRate;
+  T frequency, bandwidth;
+  T lowerFrequency, upperFrequency;
+  T gain;                              // gain in decibels (for shelving- and peak modes)
+  int mode;
+  int prototypeOrder;
 
   // embedded objects:
   rsPrototypeDesigner prototypeDesigner;
 
-  /*
-  double getBiquadMagnitudeAt(double b0, double b1, double b2,
-    double a1, double a2, double omega);*/
-  /**< Calculates the magnitude-response of a digital biquad filter with coefficeints b0, b1, b2,
-  a0, a1, a1 at the normalized radian frequency 'omega'. */
-
-  /*
-  void normalizeBiquadStages(double *b0, double *b1, double *b2,
-    double *a1, double *a2, double omega, int numStages);*/
-  /**< Normalizes the biquad stages described by the given coefficients in such a way that each
+  /** Normalizes the biquad stages described by the given coefficients in such a way that each
   stage has unit magnitude at the normalized radian frequency 'omega'. */
+  //void normalizeBiquadStages(T *b0, T *b1, T *b2, T *a1, T *a2, T omega, int numStages);
 
 };
-
-}
 
 #endif
