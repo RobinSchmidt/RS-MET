@@ -104,7 +104,7 @@ protected:
   /** Triggers a re-calculation of the biquad coefficients. */
   void updateCoefficients(bool resetState = false);
 
-  InfiniteImpulseResponseDesigner designer;
+  rsInfiniteImpulseResponseDesigner designer;
 
   double sampleRate;
 

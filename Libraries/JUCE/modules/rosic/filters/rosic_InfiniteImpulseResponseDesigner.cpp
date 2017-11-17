@@ -1,10 +1,6 @@
-//#include "rosic_InfiniteImpulseResponseDesigner.h"
-//using namespace rosic;
-
-//-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-InfiniteImpulseResponseDesigner::InfiniteImpulseResponseDesigner()
+rsInfiniteImpulseResponseDesigner::rsInfiniteImpulseResponseDesigner()
 {
   sampleRate     = 44100.0;
   frequency      = 1000.0;
@@ -14,21 +10,20 @@ InfiniteImpulseResponseDesigner::InfiniteImpulseResponseDesigner()
   prototypeOrder = 2;
 }
 
-InfiniteImpulseResponseDesigner::~InfiniteImpulseResponseDesigner()
+rsInfiniteImpulseResponseDesigner::~rsInfiniteImpulseResponseDesigner()
 {
 
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
 // parameter settings:
 
-void InfiniteImpulseResponseDesigner::setSampleRate(double newSampleRate)
+void rsInfiniteImpulseResponseDesigner::setSampleRate(double newSampleRate)
 {
   if( newSampleRate > 0.0 )
     sampleRate = newSampleRate;
 }
 
-void InfiniteImpulseResponseDesigner::setMode(int newMode)
+void rsInfiniteImpulseResponseDesigner::setMode(int newMode)
 {
   if( newMode >= BYPASS && newMode <= PEAK )
     mode = newMode;
@@ -36,7 +31,7 @@ void InfiniteImpulseResponseDesigner::setMode(int newMode)
     DEBUG_BREAK;  // newMode must be one of the numbers defined in enum 'modes'
 }
 
-void InfiniteImpulseResponseDesigner::setPrototypeOrder(int newOrder)
+void rsInfiniteImpulseResponseDesigner::setPrototypeOrder(int newOrder)
 {
   if( newOrder >= 1 )
     prototypeOrder = newOrder;
@@ -44,24 +39,24 @@ void InfiniteImpulseResponseDesigner::setPrototypeOrder(int newOrder)
     DEBUG_BREAK;  // newOrder must be at least 1
 }
 
-void InfiniteImpulseResponseDesigner::setApproximationMethod(int newApproximationMethod)
+void rsInfiniteImpulseResponseDesigner::setApproximationMethod(int newApproximationMethod)
 {
   prototypeDesigner.setApproximationMethod(newApproximationMethod);
 }
 
-void InfiniteImpulseResponseDesigner::setFrequency(double newFrequency)
+void rsInfiniteImpulseResponseDesigner::setFrequency(double newFrequency)
 {
   frequency = newFrequency;
   calculateLowerAndUpperFrequency();
 }
 
-void InfiniteImpulseResponseDesigner::setBandwidth(double newBandwidth)
+void rsInfiniteImpulseResponseDesigner::setBandwidth(double newBandwidth)
 {
   bandwidth = newBandwidth;
   calculateLowerAndUpperFrequency();
 }
 
-void InfiniteImpulseResponseDesigner::setLowerFrequency(double newLowerFrequency)
+void rsInfiniteImpulseResponseDesigner::setLowerFrequency(double newLowerFrequency)
 {
   if( newLowerFrequency > 0.0 )
     lowerFrequency = newLowerFrequency;
@@ -69,7 +64,7 @@ void InfiniteImpulseResponseDesigner::setLowerFrequency(double newLowerFrequency
     DEBUG_BREAK;  // negative frequencies are not allowed
 }
 
-void InfiniteImpulseResponseDesigner::setUpperFrequency(double newUpperFrequency)
+void rsInfiniteImpulseResponseDesigner::setUpperFrequency(double newUpperFrequency)
 {
   if( newUpperFrequency > 0.0 )
     upperFrequency = newUpperFrequency;
@@ -77,27 +72,26 @@ void InfiniteImpulseResponseDesigner::setUpperFrequency(double newUpperFrequency
     DEBUG_BREAK;  // negative frequencies are not allowed
 }
 
-void InfiniteImpulseResponseDesigner::setGain(double newGain)
+void rsInfiniteImpulseResponseDesigner::setGain(double newGain)
 {
   gain = newGain;
 }
 
-void InfiniteImpulseResponseDesigner::setRipple(double newRipple)
+void rsInfiniteImpulseResponseDesigner::setRipple(double newRipple)
 {
   prototypeDesigner.setPassbandRipple(newRipple);
   prototypeDesigner.setPassbandGainRatio(1.0-0.01*newRipple);
   prototypeDesigner.setStopbandGainRatio(0.01*newRipple);
 }
 
-void InfiniteImpulseResponseDesigner::setStopbandRejection(double newStopbandRejection)
+void rsInfiniteImpulseResponseDesigner::setStopbandRejection(double newStopbandRejection)
 {
   prototypeDesigner.setStopbandRejection(newStopbandRejection);
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
 // inquiry:
 
-bool InfiniteImpulseResponseDesigner::doesModeDoubleTheOrder()
+bool rsInfiniteImpulseResponseDesigner::doesModeDoubleTheOrder()
 {
   if( mode == BANDPASS || mode == BANDREJECT || mode == PEAK )
     return true;
@@ -105,7 +99,7 @@ bool InfiniteImpulseResponseDesigner::doesModeDoubleTheOrder()
     return false;
 }
 
-int InfiniteImpulseResponseDesigner::getFinalFilterOrder()
+int rsInfiniteImpulseResponseDesigner::getFinalFilterOrder()
 {
   if( doesModeDoubleTheOrder() == true )
     return 2*prototypeOrder;
@@ -113,7 +107,7 @@ int InfiniteImpulseResponseDesigner::getFinalFilterOrder()
     return prototypeOrder;
 }
 
-int InfiniteImpulseResponseDesigner::getNumBiquadStages()
+int rsInfiniteImpulseResponseDesigner::getNumBiquadStages()
 {
   int order = getFinalFilterOrder();
   if( isEven(order) )
@@ -122,7 +116,7 @@ int InfiniteImpulseResponseDesigner::getNumBiquadStages()
     return (order+1)/2;
 }
 
-bool InfiniteImpulseResponseDesigner::hasCurrentModeBandwidthParameter()
+bool rsInfiniteImpulseResponseDesigner::hasCurrentModeBandwidthParameter()
 {
   if( mode == BANDPASS || mode == BANDREJECT || mode == PEAK )
     return true;
@@ -130,7 +124,7 @@ bool InfiniteImpulseResponseDesigner::hasCurrentModeBandwidthParameter()
     return false;
 }
 
-bool InfiniteImpulseResponseDesigner::hasCurrentModeGainParameter()
+bool rsInfiniteImpulseResponseDesigner::hasCurrentModeGainParameter()
 {
   if( mode == LOW_SHELV || mode == HIGH_SHELV || mode == PEAK )
     return true;
@@ -138,7 +132,7 @@ bool InfiniteImpulseResponseDesigner::hasCurrentModeGainParameter()
     return false;
 }
 
-bool InfiniteImpulseResponseDesigner::hasCurrentModeRippleParameter()
+bool rsInfiniteImpulseResponseDesigner::hasCurrentModeRippleParameter()
 {
   if( prototypeDesigner.hasCurrentMethodRippleParameter() )
   {
@@ -151,7 +145,7 @@ bool InfiniteImpulseResponseDesigner::hasCurrentModeRippleParameter()
     return false;
 }
 
-bool InfiniteImpulseResponseDesigner::hasCurrentModeRejectionParameter()
+bool rsInfiniteImpulseResponseDesigner::hasCurrentModeRejectionParameter()
 {
   if( prototypeDesigner.hasCurrentMethodRejectionParameter() )
   {
@@ -164,10 +158,9 @@ bool InfiniteImpulseResponseDesigner::hasCurrentModeRejectionParameter()
     return false;
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
 // coefficient retrieval:
 
-void InfiniteImpulseResponseDesigner::getPolesAndZeros(Complex* poles, Complex* zeros)
+void rsInfiniteImpulseResponseDesigner::getPolesAndZeros(Complex* poles, Complex* zeros)
 {
   // calculate the required order and number of biquads for the filter:
   int finalOrder;
@@ -262,8 +255,8 @@ void InfiniteImpulseResponseDesigner::getPolesAndZeros(Complex* poles, Complex* 
   else
     prototypeDesigner.getPolesAndZeros(poles, zeros);
 
-  // because the PrototypeDesigner returns only one representant for each pair of complex conjugate poles/zeros, we now create the full
-  // set here:
+  // because the PrototypeDesigner returns only one representant for each pair of complex 
+  // conjugate poles/zeros, we now create the full set here:
   if( isOdd(prototypeOrder) )
   {
     // copy the real pole/zero to the end:
@@ -309,7 +302,8 @@ void InfiniteImpulseResponseDesigner::getPolesAndZeros(Complex* poles, Complex* 
   delete[] protoZeros;
 }
 
-void InfiniteImpulseResponseDesigner::getBiquadCascadeCoefficients(double *b0, double *b1, double *b2, double *a1, double *a2)
+void rsInfiniteImpulseResponseDesigner::getBiquadCascadeCoefficients(double *b0, double *b1, 
+  double *b2, double *a1, double *a2)
 {
   // calculate the required order and number of biquads for the filter:
   int finalOrder, numBiquads;
@@ -364,7 +358,8 @@ void InfiniteImpulseResponseDesigner::getBiquadCascadeCoefficients(double *b0, d
       f1 = 0.99*0.5*fs;  // ensure frequency < sampleRate/2
   }
 
-  // prewarp the frequencies to the desired frequencies required for the design of the (unnormalized) analog prototype filter:
+  // prewarp the frequencies to the desired frequencies required for the design of the 
+  // (unnormalized) analog prototype filter:
   if( mode == BANDPASS || mode == BANDREJECT || mode == PEAK )
   {
     wd1 = 2.0*PI*f1/fs;         // normalized digital radian frequency 1
@@ -395,7 +390,7 @@ void InfiniteImpulseResponseDesigner::getBiquadCascadeCoefficients(double *b0, d
   delete[] zeros;
 }
 
-void InfiniteImpulseResponseDesigner::getDirectFormCoefficients(double *b, double *a)
+void rsInfiniteImpulseResponseDesigner::getDirectFormCoefficients(double *b, double *a)
 {
   int numBiquads = getNumBiquadStages();
   double *b0 = new double[numBiquads];
@@ -412,14 +407,14 @@ void InfiniteImpulseResponseDesigner::getDirectFormCoefficients(double *b, doubl
   delete[] a2;
 }
 
-void InfiniteImpulseResponseDesigner::calculateLowerAndUpperFrequency()
+void rsInfiniteImpulseResponseDesigner::calculateLowerAndUpperFrequency()
 {
   lowerFrequency = frequency / pow(2.0, 0.5*bandwidth);
   upperFrequency = lowerFrequency * pow(2.0, bandwidth);
 }
 
-void InfiniteImpulseResponseDesigner::normalizeGain(double *b0, double *b1, double *b2,
-                                               double *a1, double *a2, double wc, int numBiquads)
+void rsInfiniteImpulseResponseDesigner::normalizeGain(double *b0, double *b1, double *b2, 
+  double *a1, double *a2, double wc, int numBiquads)
 {
   double w = 0.0;
   if( mode == LOWPASS || mode == BANDREJECT || mode == HIGH_SHELV || mode == PEAK ) // redundant
@@ -459,5 +454,6 @@ void InfiniteImpulseResponseDesigner::normalizeGain(double *b0, double *b1, doub
     }
   }
 
-  FilterCoefficientConverter::normalizeBiquadStages(b0, b1, b2, a1, a2, w, numBiquads, normalizeFactor);
+  FilterCoefficientConverter::normalizeBiquadStages(b0, b1, b2, a1, a2, w, numBiquads, 
+    normalizeFactor);
 }
