@@ -9,26 +9,14 @@ rsPrototypeDesigner::rsPrototypeDesigner()
   prototypeMode         = LOWPASS_PROTOTYPE;
   numFinitePoles        = 2;
   numFiniteZeros        = 0;
-  Ap                    = amp2dB(sqrt(2.0));     // 3.01 dB passband ripple for lowpasses
-  As                    = 60.0;                  // 60.0 dB stopband attenuation for lowpasses
-  A                     = 0.0;                   // cut/boost in dB for shelvers
-  A0                    = 0.0;                   // reference gain in dB for shelvers
-  Rp                    = 0.95;                  // inner ripple as fraction of dB-peak-gain for shelv
-  Rs                    = 0.05;                  // outer ripple as fraction of peak
-  stateIsDirty          = true;                  // poles and zeros need to be evaluated
+  Ap                    = amp2dB(sqrt(2.0)); // 3.01 dB passband ripple for lowpasses
+  As                    = 60.0;              // 60.0 dB stopband attenuation for lowpasses
+  A                     = 0.0;               // cut/boost in dB for shelvers
+  A0                    = 0.0;               // reference gain in dB for shelvers
+  Rp                    = 0.95;              // inner ripple as fraction of dB-peak-gain for shelv
+  Rs                    = 0.05;              // outer ripple as fraction of peak
+  stateIsDirty          = true;              // poles and zeros need to be evaluated
   updatePolesAndZeros();
-
-  /*
-  // for obtaining the scale-factors for the Bessel-filters:
-  setApproximationMethod(BESSEL);
-  setOrder(25);
-  makeBesselLowpass();
-  double p1 = p[0].getRadius();
-  makeBesselLowpassFromTable();
-  double p2 = p[0].getRadius();
-  double factor = p2/p1;
-  int dummy = 0;
-  */
 }
 
 rsPrototypeDesigner::~rsPrototypeDesigner()
@@ -36,7 +24,6 @@ rsPrototypeDesigner::~rsPrototypeDesigner()
 
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
 // parameter settings:
 
 void rsPrototypeDesigner::setOrder(int newOrder)
@@ -149,7 +136,6 @@ void rsPrototypeDesigner::setStopbandGainRatio(double newStopbandGainRatio)
   }
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
 // static member functions:
 
 void rsPrototypeDesigner::getNumBiquadsAndFirstOrderStages(int N, int &L, int &r)
@@ -246,8 +232,8 @@ double rsPrototypeDesigner::ellipdeg2(double N, double k)
   return k1;
 }
 
-double rsPrototypeDesigner::getRequiredButterworthOrder(double passbandFrequency, double passbandRipple, double stopbandFrequency,
-                                                      double stopbandRipple)
+double rsPrototypeDesigner::getRequiredButterworthOrder(double passbandFrequency, 
+  double passbandRipple, double stopbandFrequency, double stopbandRipple)
 {
   double Gp = pow(10.0, -passbandRipple/20.0);                      // (1),Eq.1
   double Gs = pow(10.0, -stopbandRipple/20.0);                      // (1),Eq.1
@@ -256,8 +242,8 @@ double rsPrototypeDesigner::getRequiredButterworthOrder(double passbandFrequency
   return log(es/ep) / log(stopbandFrequency/passbandFrequency);     // (1),Eq.9
 }
 
-double rsPrototypeDesigner::getRequiredChebychevOrder(double passbandFrequency, double passbandRipple, double stopbandFrequency,
-                                                    double stopbandRipple)
+double rsPrototypeDesigner::getRequiredChebychevOrder(double passbandFrequency, 
+  double passbandRipple, double stopbandFrequency, double stopbandRipple)
 {
   double Gp = pow(10.0, -passbandRipple/20.0);                       // (1),Eq.1
   double Gs = pow(10.0, -stopbandRipple/20.0);                       // (1),Eq.1
@@ -266,8 +252,8 @@ double rsPrototypeDesigner::getRequiredChebychevOrder(double passbandFrequency, 
   return acosh(es/ep) / acosh(stopbandFrequency/passbandFrequency);  // (1),Eq.9
 }
 
-double rsPrototypeDesigner::getRequiredEllipticOrder(double passbandFrequency, double passbandRipple, double stopbandFrequency,
-                                                   double stopbandRipple)
+double rsPrototypeDesigner::getRequiredEllipticOrder(double passbandFrequency, 
+  double passbandRipple, double stopbandFrequency, double stopbandRipple)
 {
   double Gp = pow(10.0, -passbandRipple/20.0);                       // (1),Eq.1
   double Gs = pow(10.0, -stopbandRipple/20.0);                       // (1),Eq.1
@@ -293,40 +279,33 @@ void rsPrototypeDesigner::magSquaredNumAndDen(double *b, double *a, double *b2, 
   delete[] bm;
 }
 
-void rsPrototypeDesigner::shelvingMagSqrNumFromLowpassMagSqr(double *b2, double *a2, double k, int N,
-                                                           double G0, double G, double *bShelf)
+void rsPrototypeDesigner::shelvingMagSqrNumFromLowpassMagSqr(double *b2, double *a2, double k, 
+  int N, double G0, double G, double *bShelf)
 {
   weightedSum(b2, a2, bShelf, 2*N+1, k*k*(G*G-G0*G0), G0*G0);
-
-  /*
-  // debug:
-  double b2d[20], a2d[20], bsd[20];
-  copyBuffer(b2,     b2d, 2*N+1);
-  copyBuffer(a2,     a2d, 2*N+1);
-  copyBuffer(bShelf, bsd, 2*N+1);
-  int dummy = 0;
-  */
 }
 
 // factor out shelvingMagSqrNumeratorFromLowpassMagSqr:
-void rsPrototypeDesigner::shelvingMagSqrNumeratorFromLowpassTransfer(double *b, double *a, double k, int N,
-                                                                   double G0, double G, double *bShelf)
+void rsPrototypeDesigner::shelvingMagSqrNumeratorFromLowpassTransfer(double *b, double *a, 
+  double k, int N, double G0, double G, double *bShelf)
 {
   double *a2 = new double[2*N+1];
   double *b2 = new double[2*N+1];
 
-  // construct lowpass magnitude squared numerator and denominator N_LP(s)*N_LP(-s), D_LP(s)*D_LP(-s):
+  // construct lowpass magnitude squared numerator and denominator 
+  // N_LP(s)*N_LP(-s), D_LP(s)*D_LP(-s):
   magSquaredNumAndDen(b, a, b2, a2, N);
 
-  // obtain coefficients for shelving filter's magnitude squared function numerator polynomial N_LS(s)*N_LS(-s):
+  // obtain coefficients for shelving filter's magnitude squared function numerator polynomial 
+  // N_LS(s)*N_LS(-s):
   shelvingMagSqrNumFromLowpassMagSqr(b2, a2, k, N, G0, G, bShelf);
 
   delete[] a2;
   delete[] b2;
 }
 
-void rsPrototypeDesigner::scaleToMatchGainAtUnity(Complex *z, Complex *p, double *k, Complex *zNew, Complex *pNew, double *kNew,
-                                                int N, double g)
+void rsPrototypeDesigner::scaleToMatchGainAtUnity(Complex *z, Complex *p, double *k, Complex *zNew, 
+  Complex *pNew, double *kNew, int N, double g)
 {
   double  wc    = FilterAnalyzer::findAnalogFrequencyWithMagnitude(z, p, k, N, g, 1.0);
   double scaler = 1.0/wc;
@@ -361,23 +340,14 @@ int rsPrototypeDesigner::getLeftHalfPlaneRoots(double *a, Complex *r, int N)
   findPolynomialRoots(a, N, rTmp);
   int numLeftRoots = onlyLeftHalfPlane(rTmp, r, N);
 
-  /*
-  // debug stuff:
-  double aD[50];
-  copyBuffer(a, aD, N+1);
-  Complex rL[50];
-  fillWithValue(rL, 50, Complex(INF));
-  numLeftRoots = onlyLeftHalfPlane(&rTmp[1], rL, N);
-
-  */
-
   rassert(numLeftRoots == ceil(0.5*N)); // maybe take this out later
   delete[] rTmp;
   return numLeftRoots;
 }
 
 
-void rsPrototypeDesigner::getBesselLowpassZerosPolesAndGain(Complex *z, Complex *p, double *k, int N)
+void rsPrototypeDesigner::getBesselLowpassZerosPolesAndGain(Complex *z, Complex *p, double *k, 
+  int N)
 {
   // zeros are at infinity:
   fillWithValue(z, N, Complex(INF, 0.0));
@@ -404,7 +374,8 @@ void rsPrototypeDesigner::getBesselLowpassZerosPolesAndGain(Complex *z, Complex 
   delete[] a;
 }
 
-void rsPrototypeDesigner::getBesselLowShelfZerosPolesAndGain(Complex *z, Complex *p, double *k, int N, double G, double G0)
+void rsPrototypeDesigner::getBesselLowShelfZerosPolesAndGain(Complex *z, Complex *p, double *k, 
+  int N, double G, double G0)
 {
   // old version - needs root-finder twice:
   //getBesselLowpassZerosPolesAndGain(z, p, k, N);
@@ -431,7 +402,8 @@ void rsPrototypeDesigner::getBesselLowShelfZerosPolesAndGain(Complex *z, Complex
   // construct lowpass denominator:
   double *a  = new double[N+1];
   besselPolynomial(a, N);
-  reverse(a, N+1);   // leaving this out leads to a modified Bessel filter response - maybe experiment a bit, response looks good
+  reverse(a, N+1);   // leaving this out leads to a modified Bessel filter response - maybe 
+                     // experiment a bit, response looks good
 
   // find poles of the shelving filter:
   findPolynomialRoots(a, N, p);
@@ -451,8 +423,9 @@ void rsPrototypeDesigner::getBesselLowShelfZerosPolesAndGain(Complex *z, Complex
   // set gain constant:
   *k = G0;
 
-  // now we have a shelving filter with correct low-frequency gain G and reference gain G0, but possibly still with wrong bandwidth gain
-  // GB at unity - now we adjust zeros/poles/gain to match GB:
+  // now we have a shelving filter with correct low-frequency gain G and reference gain G0, but 
+  // possibly still with wrong bandwidth gain GB at unity - now we adjust zeros/poles/gain to 
+  // match GB:
   double GB = sqrt(G*G0);
   scaleToMatchGainAtUnity(z, p, k, z, p, k, N, GB);
 
@@ -489,10 +462,11 @@ void rsPrototypeDesigner::papoulisMagnitudeSquaredDenominator(double *a, int N)
   a[0] += 1.0;
 }
 
-void rsPrototypeDesigner::getPapoulisLowpassZerosPolesAndGain(Complex *z, Complex *p, double *k, int N)
+void rsPrototypeDesigner::getPapoulisLowpassZerosPolesAndGain(Complex *z, Complex *p, double *k, 
+  int N)
 {
   // find poles:
-  double *a2 = new double[2*N+1];     // coefficients of the magnitude-squared polynomial D(s)*D(-s)
+  double *a2 = new double[2*N+1];     // coefficients of magnitude-squared polynomial D(s)*D(-s)
   papoulisMagnitudeSquaredDenominator(a2, N);
   getLeftHalfPlaneRoots(a2, p, 2*N);
 
@@ -505,12 +479,12 @@ void rsPrototypeDesigner::getPapoulisLowpassZerosPolesAndGain(Complex *z, Comple
   delete[] a2;
 }
 
-void rsPrototypeDesigner::getPapoulisLowShelfZerosPolesAndGain(Complex *z, Complex *p, double *k, int N, double G, double G0)
+void rsPrototypeDesigner::getPapoulisLowShelfZerosPolesAndGain(Complex *z, Complex *p, double *k, 
+  int N, double G, double G0)
 {
   //getPapoulisLowpassZerosPolesAndGain(z, p, k, N);
   //PoleZeroMapper::sLowpassToLowshelf(z, p, k, z, p, k, N, G0, G);
   //return;
-
 
   // catch lowpass case:
   if( G0 == 0.0 )
@@ -529,11 +503,11 @@ void rsPrototypeDesigner::getPapoulisLowShelfZerosPolesAndGain(Complex *z, Compl
     G0  = 1.0 / G0;
   }
 
-
-  // factor out into a function getMagnitudeSquaredNumAndDen, the call this function here - this function can switch between Papoulis,
-  // Gauss, etc. and fill the arrays accordingly, Bessel is a special case - it doesn't need to find poles of the mag-squared function,
-  // there we can directly find the poles of the transfer function ...hmm...but maybe we can still factor out a function getPoles or
-  // something...
+  // factor out into a function getMagnitudeSquaredNumAndDen, then call this function here - this 
+  // function can switch between Papoulis, Gauss, etc. and fill the arrays accordingly, Bessel is 
+  // a special case - it doesn't need to find poles of the mag-squared function, there we can 
+  // directly find the poles of the transfer function ...hmm...but maybe we can still factor out a 
+  // function getPoles or something...
 
   // coefficients of the magnitude-squared polynomial D(s)*D(-s)
   double *a2 = new double[2*N+1];
@@ -550,8 +524,8 @@ void rsPrototypeDesigner::getPapoulisLowShelfZerosPolesAndGain(Complex *z, Compl
   fillWithZeros(b2, 2*N+1);
   b2[0] = 1.0;
 
-  // end of "factor out" ...in general, we need to scale the b2-polynomial also by dividing through the leading coeff?
-
+  // end of "factor out" ...in general, we need to scale the b2-polynomial also by dividing through 
+  // the leading coeff?
 
   // adjust lowpass DC gain via k:
   *k = sqrt(fabs(a2[0]));  // in general: sqrt(fabs(a2[0]/b2[0])) ?
@@ -580,7 +554,8 @@ void rsPrototypeDesigner::getPapoulisLowShelfZerosPolesAndGain(Complex *z, Compl
   delete[] bS;
 }
 
-void rsPrototypeDesigner::getEllipticLowpassZerosPolesAndGain(Complex *z, Complex *p, double *k, int N, double Gp, double Gs)
+void rsPrototypeDesigner::getEllipticLowpassZerosPolesAndGain(Complex *z, Complex *p, double *k, 
+  int N, double Gp, double Gs)
 {
 //  int nz;
 //  if( isEven(N) )
@@ -602,7 +577,7 @@ void rsPrototypeDesigner::getEllipticLowpassZerosPolesAndGain(Complex *z, Comple
   // calculate the position of the real pole (if present):
   if( r == 1 )
   {
-    //p[L+r-1] = -Omega_p/sinh(v_0*PI*0.5*kk);                   // Eq. 73
+    //p[L+r-1] = -Omega_p/sinh(v_0*PI*0.5*kk);                 // Eq. 73
     p[N-1] = j * snC(j*v_0, kk);                               // from ellipap.m - find Eq.
     z[N-1] = INF;
   }
@@ -627,13 +602,13 @@ void rsPrototypeDesigner::getEllipticLowpassZerosPolesAndGain(Complex *z, Comple
 }
 
 /*
-void rsPrototypeDesigner::getLowpassZerosPolesAndGain(Complex *z, Complex *p, double *k, int N, int approximationMethod)
+void rsPrototypeDesigner::getLowpassZerosPolesAndGain(Complex *z, Complex *p, double *k, int N, 
+int approximationMethod)
 {
   int dummy = 0;
 }
 */
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
 // inquiry:
 
 Complex rsPrototypeDesigner::getFilterResponseAt(Complex s)
@@ -664,14 +639,13 @@ Complex rsPrototypeDesigner::getFilterResponseAt(Complex s)
     Lp  = numFinitePoles/2;
   }
 
-  // accumulate the product of the linear factors for the denominator (poles) and numerator (zeros):
+  // accumulate product of linear factors for denominator (poles) and numerator (zeros):
   int i;
   for(i=0; i<Lz; i++)
     num *= ((s-z[i]) * (s-z[i].getConjugate()));
   for(i=0; i<Lp; i++)
     den *= ((s-p[i]) * (s-p[i].getConjugate()));
 
-  // return the quotient of the calculated numerator and denominator as result:
   return num/den;
 }
 
@@ -682,30 +656,21 @@ double rsPrototypeDesigner::getMagnitudeAt(double w)
 
 double rsPrototypeDesigner::findFrequencyWithMagnitude(double magnitude, double wLow, double wHigh)
 {
-  // until we have something better, we search for the frequency at which the desired gain occurs by means of the bisection method:
+  // until we have something better, we search for the frequency at which the desired gain occurs 
+  // by means of the bisection method:
 
-  //double wMid  = 0.5 * (wLow+wHigh);       // set-but-not-used warnings
-  //double mLow  = getMagnitudeAt(wLow);
-  //double mMid  = getMagnitudeAt(wMid);
-  //double mHigh = getMagnitudeAt(wHigh);
-
-  //double mLow, mHigh;
+  double tolerance = 0.0001; // maybe make parameter
   double wMid, mMid;
-
-  while( wHigh-wLow > 0.0001 )
+  while( wHigh-wLow > tolerance )
   {
     wMid  = 0.5 * (wLow+wHigh);
-    //mLow  = getMagnitudeAt(wLow);
     mMid  = getMagnitudeAt(wMid);
-    //mHigh = getMagnitudeAt(wHigh);
-
     if( mMid > magnitude )
       wLow = wMid;
     else
       wHigh = wMid;
   }
-
-  return 0.5 * (wLow+wHigh); //preliminary
+  return 0.5 * (wLow+wHigh);
 }
 
 int rsPrototypeDesigner::getNumFinitePoles()
@@ -783,7 +748,6 @@ bool rsPrototypeDesigner::needsSpecialHighShelvTransform()
     ||   (approximationMethod == ELLIPTIC);
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
 // pole/zero calculation:
 
 void rsPrototypeDesigner::updatePolesAndZeros()
@@ -830,10 +794,10 @@ void rsPrototypeDesigner::makeButterworthLowpass()
   numFiniteZeros = 0;
 
   // intermediate variables:
-  Complex j(0.0, 1.0);                                     // imaginary unit
-  double  Gp     = sqrt(0.5);                              // use -3.01 dB point as cutoff frequency for Butterworths
-  //double  Gp   = pow(10.0, -Ap/20.0);                    // (1),Eq.1 - more general (cutoff gain can be specified), not used here
-  double  ep     = sqrt(1.0/(Gp*Gp)-1.0);                  // (1),Eq.2
+  Complex j(0.0, 1.0);                        // imaginary unit
+  double  Gp     = sqrt(0.5);                 // use -3.01 dB point as cutoff frequency for Butterworths
+  //double  Gp   = pow(10.0, -Ap/20.0);       // (1),Eq.1 - more general (cutoff gain can be specified), not used here
+  double  ep     = sqrt(1.0/(Gp*Gp)-1.0);     // (1),Eq.2
   double  ep_pow = pow(ep, -1.0/(double) N);
 
   // calculate the position of the real pole (if present):
@@ -1051,7 +1015,8 @@ void rsPrototypeDesigner::makeInverseChebychevLowShelv()
   double eb    = sqrt( (G*G-Gb*Gb) / (Gb*Gb-G0*G0) );
   double wb    = cosh( acosh(es/eb) / (double) N );  // why not 1 / cosh(..)?
 
-  // calculate real pole and zero of the first order stage, if present and store them in the last array slots:
+  // calculate real pole and zero of the first order stage, if present and store them in the last
+  // array slots:
   if( r == 1 )
   {
     z[L+r-1] = -wb/sinh(u);
@@ -1094,7 +1059,7 @@ void rsPrototypeDesigner::makeEllipticLowpass()
   // calculate the position of the real pole (if present):
   if( r == 1 )
   {
-    //p[L+r-1] = -Omega_p/sinh(v_0*PI*0.5*k);                     // Eq. 73
+    //p[L+r-1] = -Omega_p/sinh(v_0*PI*0.5*k);                    // Eq. 73
     p[L+r-1] = j * snC(j*v_0, k);                                // from ellipap.m
     z[L+r-1] = INF;
   }
@@ -1181,8 +1146,9 @@ void rsPrototypeDesigner::makeBesselLowShelv(double G, double G0)
   double  kTmp;
   rsPrototypeDesigner::getBesselLowShelfZerosPolesAndGain(zTmp, pTmp, &kTmp, N, G, G0);
 
-  // findPolynomialRoots returns the roots sorted by ascending real part. for a Bessel-polynomial, this ensures that the real pole, if
-  // present, is in pTmp[0] (it has the largest negative real part). this is importatnt for the next call:
+  // findPolynomialRoots returns the roots sorted by ascending real part. for a Bessel-polynomial, 
+  // this ensures that the real pole, if present, is in pTmp[0] (it has the largest negative real 
+  // part). this is importatnt for the next call:
 
   pickNonRedundantPolesAndZeros(zTmp, pTmp);
   stateIsDirty = false;
@@ -1203,8 +1169,9 @@ void rsPrototypeDesigner::makePapoulisLowShelv(double G, double G0)
   double  kTmp;
   rsPrototypeDesigner::getPapoulisLowShelfZerosPolesAndGain(zTmp, pTmp, &kTmp, N, G, G0);
 
-  // findPolynomialRoots returns the roots sorted by ascending real part. for a Bessel-polynomial, this ensures that the real pole, if
-  // present, is in pTmp[0] (it has the largest negative real part). this is importatnt for the next call:
+  // findPolynomialRoots returns the roots sorted by ascending real part. for a Bessel-polynomial, 
+  // this ensures that the real pole, if present, is in pTmp[0] (it has the largest negative real 
+  // part). this is importatnt for the next call:
 
   pickNonRedundantPolesAndZeros(zTmp, pTmp);
   stateIsDirty = false;
@@ -1220,8 +1187,8 @@ void rsPrototypeDesigner::pickNonRedundantPolesAndZeros(Complex *zTmp, Complex *
   copyBuffer(pTmp, p, L+r);
   copyBuffer(zTmp, z, L+r);
 
-  // the caller is supposed to ensure that the real zero/pole, if present, is in zTmp[0], pTmp[0] - but we need it in the last positions
-  // z[L+r], p[L+r], so we reverse the arrays:
+  // the caller is supposed to ensure that the real zero/pole, if present, is in zTmp[0], pTmp[0] - 
+  // but we need it in the last positions z[L+r], p[L+r], so we reverse the arrays:
   reverse(p, L+r);
   reverse(z, L+r);
 }
