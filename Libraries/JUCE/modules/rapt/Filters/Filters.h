@@ -19,6 +19,7 @@ namespace RAPT
 #include "Musical/StateVariableFilter.h"
 //include "Musical/AttackDecaySineFilter.h" // maybe get rid of writing "Filter" all the time
 
+// maybe rename folder to Technical
 #include "Scientific/PrototypeDesigner.h"          // unit cutoff analog prototypes
 #include "Scientific/PoleZeroMapper.h"             // LP->LP, LP->HP, S->Z bilinear, etc.
 #include "Scientific/FilterCoefficientConverter.h" // pole-zero-to-biquad, etc
