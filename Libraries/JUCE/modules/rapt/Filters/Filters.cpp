@@ -11,5 +11,6 @@ namespace RAPT
 #include "Musical/StateVariableFilter.cpp"
 
 #include "Scientific/PrototypeDesigner.cpp"
+#include "Scientific/PoleZeroMapper.cpp" 
 
 }
