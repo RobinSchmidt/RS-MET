@@ -23,7 +23,9 @@ namespace RAPT
 #include "Scientific/PoleZeroMapper.h"             // LP->LP, LP->HP, S->Z bilinear, etc.
 #include "Scientific/FilterCoefficientConverter.h" // pole-zero-to-biquad, etc
 #include "Scientific/InfiniteImpulseResponseDesigner.h"
-//...
+//#include "Scientific/FilterAnalyzer.h"
+//#include "Scientific/BiquadCascade.h"
+
 
 //#include "Convolution/WindowedSinc.h" 
 

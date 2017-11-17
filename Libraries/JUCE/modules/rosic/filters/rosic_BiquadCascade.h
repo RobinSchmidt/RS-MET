@@ -161,7 +161,7 @@ protected:
 INLINE void rsBiquadCascade::setCoeffs(double *newB0, double *newB1, double *newB2, double *newA1, 
   double *newA2) //, double  newGain)
 {
-  for(int i=0; i<numStages; i++)
+  for(int i = 0; i < numStages; i++)
   {
     b0[i] = newB0[i];
     b1[i] = newB1[i];
@@ -180,7 +180,7 @@ INLINE double rsBiquadCascade::getSampleDirect1(double in)
 
   // calculate current output-sample (y[n]) of all the BiQuad-stages (the output of one stage is 
   // the input for the next stage):
-  for(i=0; i<numStages; i++)
+  for(i = 0; i < numStages; i++)
   {
     tmp2 = tmp; // for x1[i]
 
@@ -206,7 +206,7 @@ INLINE double rsBiquadCascade::getSampleDirect2(double in)
 
   // calculate current output-sample (y[n]) of all the BiQuad-stages (the output of one stage is 
   // the input for the next stage):
-  for(i=0; i<numStages; i++)
+  for(i = 0; i < numStages; i++)
   {
     // calculate current output-sample (y[n]) of BiQuad-stage i:
     g = x - a1[i]*y1[i] - a2[i]*y2[i];
@@ -278,7 +278,7 @@ INLINE void rsBiquadCascadeStereo::getSampleFrameDirect1(double *inOutL, double 
 
   doubleA tmpL2, tmpR2;
 
-  for(int i=0; i<numStages; i++)
+  for(int i = 0; i < numStages; i++)
   {
     tmpL2  = tmpL;
     tmpR2  = tmpR;
@@ -308,7 +308,7 @@ INLINE void rsBiquadCascadeStereo::getSampleFrameDirect2(double *inOutL, double 
   yL = xL = *inOutL + TINY;
   yR = xR = *inOutR + TINY;
 
-  for(int i=0; i<numStages; i++)
+  for(int i = 0; i < numStages; i++)
   {
     gL     = xL - a1[i]*y1[i]  - a2[i]*y2[i];
     gR     = xR - a1[i]*y1R[i] - a2[i]*y2R[i];

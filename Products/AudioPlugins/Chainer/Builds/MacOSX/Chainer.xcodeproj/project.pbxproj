@@ -1667,6 +1667,7 @@
 		A4780944E99AC5DD02A2A951 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "juce_Value.cpp"; path = "../../../../../Libraries/JUCE/modules/juce_data_structures/values/juce_Value.cpp"; sourceTree = "SOURCE_ROOT"; };
 		A47938CAB4A21AF0A471C206 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Time.h; path = ../../../../../Libraries/JUCE/modules/rosic/legacy/Time.h; sourceTree = "SOURCE_ROOT"; };
 		A47D2236F5F5878B8C6877E2 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = "juce_mac_MessageManager.mm"; path = "../../../../../Libraries/JUCE/modules/juce_events/native/juce_mac_MessageManager.mm"; sourceTree = "SOURCE_ROOT"; };
+		A482242D362CEFA3E04C2A5E = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BiquadCascade.h; path = ../../../../../Libraries/JUCE/modules/rapt/Filters/Scientific/BiquadCascade.h; sourceTree = "SOURCE_ROOT"; };
 		A489EA7ECF2DBD42014DF768 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "juce_ConnectedChildProcess.cpp"; path = "../../../../../Libraries/JUCE/modules/juce_events/interprocess/juce_ConnectedChildProcess.cpp"; sourceTree = "SOURCE_ROOT"; };
 		A4912AE631A8898921A9C21F = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TabulatedFunction.h; path = ../../../../../Libraries/JUCE/modules/rosic/legacy/TabulatedFunction.h; sourceTree = "SOURCE_ROOT"; };
 		A49D89BE1AD98BB710AA8AF7 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_XmlDocument.h"; path = "../../../../../Libraries/JUCE/modules/juce_core/xml/juce_XmlDocument.h"; sourceTree = "SOURCE_ROOT"; };
@@ -2036,6 +2037,7 @@
 		C6A8ACAD32C76B3206F77292 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AggressorOscSection.h; path = ../../../../../Libraries/JUCE/modules/rosic/legacy/AggressorOscSection.h; sourceTree = "SOURCE_ROOT"; };
 		C6A93937B89688775207D36A = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "rosic_ChannelMatrix2x2.h"; path = "../../../../../Libraries/JUCE/modules/rosic/basics/rosic_ChannelMatrix2x2.h"; sourceTree = "SOURCE_ROOT"; };
 		C6BEC1EA10B470856AF42D84 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = inffast.c; path = "../../../../../Libraries/JUCE/modules/juce_core/zip/zlib/inffast.c"; sourceTree = "SOURCE_ROOT"; };
+		C6C95CE7960BC449EE5B2123 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = BiquadCascade.cpp; path = ../../../../../Libraries/JUCE/modules/rapt/Filters/Scientific/BiquadCascade.cpp; sourceTree = "SOURCE_ROOT"; };
 		C6EA69F23EC03C4815EC7957 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "jura_LowFrequencyOscillator.cpp"; path = "../../../../../Libraries/JUCE/modules/jura_processors/modulators/jura_LowFrequencyOscillator.cpp"; sourceTree = "SOURCE_ROOT"; };
 		C7113F0C917FA3853C9EB0CE = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "jura_AlgoVerb.h"; path = "../../../../../Libraries/JUCE/modules/jura_processors/effects/jura_AlgoVerb.h"; sourceTree = "SOURCE_ROOT"; };
 		C72E3459B4962F1373A645F3 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "rosic_GeneratorModules.h"; path = "../../../../../Libraries/JUCE/modules/rosic/infrastructure/rosic_GeneratorModules.h"; sourceTree = "SOURCE_ROOT"; };
@@ -4347,19 +4349,21 @@
 					455EE0CF3F9709789C4FD4A5,
 					6C604A61C99AFB9D3ABDF1E4,
 					A4F7D23F2766A82AB0285172, ); name = Data; sourceTree = "<group>"; };
-		7C8FC4FEC820BACD9016A5F3 = {isa = PBXGroup; children = (
+		8E4E18CF0BF8E5B16A816300 = {isa = PBXGroup; children = (
 					9689A8EF1CAED3CC52EF39FA,
 					7FC579975F0C156CE7D1B9F8,
 					DA5D27770EA2763793264BA4,
 					33865ECA24314054F6F41838, ); name = Basic; sourceTree = "<group>"; };
-		7FD6EB90DBE0A335BF77F818 = {isa = PBXGroup; children = (
+		AE7C696AA9B4445F0EECB177 = {isa = PBXGroup; children = (
 					A33EC6C949F86DB133C4E500,
 					DBBAC4CA7B97239FC1925546,
 					E0C683DAB32999D08AFF88B2,
 					6D871BE2752F1E45FD56B9DA,
 					33DF7B83B76430ED34468B20,
 					816DA03AAA7049E34B405096, ); name = Musical; sourceTree = "<group>"; };
-		5A568863F95DC2B87EE92AD0 = {isa = PBXGroup; children = (
+		24BF835418ADD090A2865051 = {isa = PBXGroup; children = (
+					C6C95CE7960BC449EE5B2123,
+					A482242D362CEFA3E04C2A5E,
 					666818AD6D5098518577D726,
 					44623B055E6D843CF6B7A91B,
 					3FB1B921DDE41F47296DF0EB,
@@ -4368,10 +4372,10 @@
 					8C0E318C6AFFDF17C0ADDC17,
 					BA6209B99EAF42AAEB01EEAC,
 					81307E5688AACBA196BAF3CB, ); name = Scientific; sourceTree = "<group>"; };
-		70E723DA2879161FED6D5CD0 = {isa = PBXGroup; children = (
-					7C8FC4FEC820BACD9016A5F3,
-					7FD6EB90DBE0A335BF77F818,
-					5A568863F95DC2B87EE92AD0,
+		AE43030A98CD4A7B4C0347DA = {isa = PBXGroup; children = (
+					8E4E18CF0BF8E5B16A816300,
+					AE7C696AA9B4445F0EECB177,
+					24BF835418ADD090A2865051,
 					D53488E89CC658A52AA80709,
 					23C025DF1CA5842200623B53, ); name = Filters; sourceTree = "<group>"; };
 		7518377DBAE0012A3D2AB6EC = {isa = PBXGroup; children = (
@@ -4422,11 +4426,11 @@
 					32080F9A9DC31CC58E578CCF,
 					6205C4B0608494350A172221,
 					E77C07F92CA2072A5D3BD187, ); name = Math; sourceTree = "<group>"; };
-		B43A724094878D09B1E44518 = {isa = PBXGroup; children = (
+		DA18DFE22A3A92C9064E4356 = {isa = PBXGroup; children = (
 					EDE1CE2B2EE54F5B673CDEE4,
 					99046BA8F6C13BE61A043E60, ); name = Envelopes; sourceTree = "<group>"; };
-		1A414052789CFDEC0DC56B6E = {isa = PBXGroup; children = (
-					B43A724094878D09B1E44518,
+		8E182679E3595AF20575CF3B = {isa = PBXGroup; children = (
+					DA18DFE22A3A92C9064E4356,
 					229AB975CC306B75005D06BA,
 					B71FC2B9AB1538799AF1BCF1,
 					19C0CA8188E316F39C47ABF6, ); name = Modulators; sourceTree = "<group>"; };
@@ -4470,10 +4474,10 @@
 		1226D31CD1AD5903EF194C61 = {isa = PBXGroup; children = (
 					44541FFB7818E4E32172D510,
 					BF20CA7128346ECED43429F6,
-					70E723DA2879161FED6D5CD0,
+					AE43030A98CD4A7B4C0347DA,
 					7518377DBAE0012A3D2AB6EC,
 					AE27757F9C40E2BAA36DD398,
-					1A414052789CFDEC0DC56B6E,
+					8E182679E3595AF20575CF3B,
 					6BDFD885A892EEC28564B176,
 					D5E48ABEFA0CFB9EE8F32B78,
 					658E2D0D4464081CF8840F50,
