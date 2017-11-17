@@ -68,10 +68,11 @@ void EllipticSubBandFilter::setSubDivision(double newSubDivision)
   rsPoleZeroMapper::bilinearAnalogToDigital(poles, 6, zeros, 6, sampleRate, &gainDummy);
 
   // convert the pole-zero representation to biquad cascade cofficients:
-  FilterCoefficientConverter::polesAndZerosToBiquadCascade(poles, 6, zeros, 6, b0, b1, b2, a1, a2, false);
+  rsFilterCoefficientConverter::polesAndZerosToBiquadCascade(poles, 6, zeros, 6, b0, b1, b2, a1, 
+    a2, false);
 
   // normalize DC-gain to unity for each stage:
-  FilterCoefficientConverter::normalizeBiquadStages(b0, b1, b2, a1, a2, 0.0, 6);
+  rsFilterCoefficientConverter::normalizeBiquadStages(b0, b1, b2, a1, a2, 0.0, 6);
 
   // use unity gain:
   //gain = 1.0;

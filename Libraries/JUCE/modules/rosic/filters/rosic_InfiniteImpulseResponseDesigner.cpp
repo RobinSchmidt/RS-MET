@@ -376,11 +376,12 @@ void rsInfiniteImpulseResponseDesigner::getBiquadCascadeCoefficients(double *b0,
   }
 
   // allocate temporary memory:
-  Complex* poles      = new Complex[finalOrder];
-  Complex* zeros      = new Complex[finalOrder];
+  Complex* poles = new Complex[finalOrder];
+  Complex* zeros = new Complex[finalOrder];
 
   getPolesAndZeros(poles, zeros);
-  FilterCoefficientConverter::polesAndZerosToBiquadCascade(poles, zeros, finalOrder, b0, b1, b2, a1, a2);
+  rsFilterCoefficientConverter::polesAndZerosToBiquadCascade(poles, zeros, finalOrder, b0, b1, 
+    b2, a1, a2);
 
   double deWarpedPassbandCenter = 2.0*atan(sqrt(tan(0.5*wd1)*tan(0.5*wd2)));
   normalizeGain(b0, b1, b2, a1, a2, deWarpedPassbandCenter, numBiquads);
@@ -399,7 +400,7 @@ void rsInfiniteImpulseResponseDesigner::getDirectFormCoefficients(double *b, dou
   double *a1 = new double[numBiquads];
   double *a2 = new double[numBiquads];
   getBiquadCascadeCoefficients(b0, b1, b2, a1, a2);
-  FilterCoefficientConverter::biquadCascadeToDirectForm(numBiquads, b0, b1, b2, a1, a2, b, a);
+  rsFilterCoefficientConverter::biquadCascadeToDirectForm(numBiquads, b0, b1, b2, a1, a2, b, a);
   delete[] b0;
   delete[] b1;
   delete[] b2;
@@ -454,6 +455,6 @@ void rsInfiniteImpulseResponseDesigner::normalizeGain(double *b0, double *b1, do
     }
   }
 
-  FilterCoefficientConverter::normalizeBiquadStages(b0, b1, b2, a1, a2, w, numBiquads, 
+  rsFilterCoefficientConverter::normalizeBiquadStages(b0, b1, b2, a1, a2, w, numBiquads, 
     normalizeFactor);
 }

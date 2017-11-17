@@ -1,11 +1,4 @@
-//#include "rosic_FrequencyShifter.h"
-//using namespace rosic;
-
-//=================================================================================================
 // class FreqShifterHalfbandFilter:
-
-//-------------------------------------------------------------------------------------------------
-// construction/destruction:
 
 FreqShifterHalfbandFilter::FreqShifterHalfbandFilter()
 : stage1(8), stage2(8), stage3(8)
@@ -28,15 +21,18 @@ FreqShifterHalfbandFilter::FreqShifterHalfbandFilter()
   double a2[order/3+1];
   double b3[order/3+1];
   double a3[order/3+1];
-  FilterCoefficientConverter::biquadCascadeToDirectForm(order/6, halfbandFilterBiquad.getAddressB0(),                                                     
+  rsFilterCoefficientConverter::biquadCascadeToDirectForm(order/6, 
+    halfbandFilterBiquad.getAddressB0(),                                                     
     halfbandFilterBiquad.getAddressB1(), halfbandFilterBiquad.getAddressB2(), 
     halfbandFilterBiquad.getAddressA1(), halfbandFilterBiquad.getAddressA2(),
     b1, a1);
-  FilterCoefficientConverter::biquadCascadeToDirectForm(order/6, halfbandFilterBiquad.getAddressB0()+order/6, 
+  rsFilterCoefficientConverter::biquadCascadeToDirectForm(order/6, 
+    halfbandFilterBiquad.getAddressB0()+order/6, 
     halfbandFilterBiquad.getAddressB1()+order/6, halfbandFilterBiquad.getAddressB2()+order/6, 
     halfbandFilterBiquad.getAddressA1()+order/6, halfbandFilterBiquad.getAddressA2()+order/6,
     b2, a2);
-  FilterCoefficientConverter::biquadCascadeToDirectForm(order/6, halfbandFilterBiquad.getAddressB0()+2*order/6, 
+  rsFilterCoefficientConverter::biquadCascadeToDirectForm(order/6, 
+    halfbandFilterBiquad.getAddressB0()+2*order/6, 
     halfbandFilterBiquad.getAddressB1()+2*order/6, halfbandFilterBiquad.getAddressB2()+2*order/6, 
     halfbandFilterBiquad.getAddressA1()+2*order/6, halfbandFilterBiquad.getAddressA2()+2*order/6,
     b3, a3);
@@ -48,7 +44,6 @@ FreqShifterHalfbandFilter::FreqShifterHalfbandFilter()
 //=================================================================================================
 // class FrequencyShifter:
 
-//-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
 FrequencyShifter::FrequencyShifter()
@@ -73,7 +68,6 @@ FrequencyShifter::FrequencyShifter()
   halfbandFilter2.setPrototypeOrder(24);
   // will result in a stopband frequency <= 11040
   
-
   sinOsc1.setStartPhase(0.0);
   sinOsc2.setStartPhase(0.0);
   cosOsc1.setStartPhase(0.5*PI);
@@ -144,7 +138,6 @@ void FrequencyShifter::setupOscillators()
   mutex.unlock();
 }
 
-
 //=================================================================================================
 // class FrequencyShifterStereo:
 
@@ -163,7 +156,3 @@ FrequencyShifterStereo::~FrequencyShifterStereo()
 {
 
 }
-
-
-
-
