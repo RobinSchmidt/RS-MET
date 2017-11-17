@@ -205,8 +205,8 @@ public:
   /** Computes zeros, poles and gain factor for an analog elliptic prototype filter of order "N" 
   with passband gain variation (ripple) "Gp" and maximum stopband amplitude "Gs", and stores them 
   in "z", "p" and "k", respectively. */
-  static void getEllipticLowpassZerosPolesAndGain(Complex *z, Complex *p, double *k, int N, 
-    double Gp, double Gs);
+  static void getEllipticLowpassZerosPolesAndGain(Complex* z, Complex* p, T* k, int N, 
+    T Gp, T Gs);
 
   //static void getLowpassZerosPolesAndGain(Complex* z, Complex* p, T* k, int N, 
   //  int approximationMethod);

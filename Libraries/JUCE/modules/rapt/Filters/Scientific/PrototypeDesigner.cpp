@@ -197,7 +197,7 @@ T rsPrototypeDesigner<T>::ellipdeg(int N, T k_1)
 }
 
 template<class T>
-double rsPrototypeDesigner<T>::ellipdeg1(int N, T k)
+T rsPrototypeDesigner<T>::ellipdeg1(int N, T k)
 {
   int L;
   if( isEven(N) )
@@ -219,7 +219,7 @@ double rsPrototypeDesigner<T>::ellipdeg1(int N, T k)
 }
 
 template<class T>
-double rsPrototypeDesigner<T>::ellipdeg2(T N, T k)
+T rsPrototypeDesigner<T>::ellipdeg2(T N, T k)
 {
   int M = 7;
 
@@ -258,7 +258,7 @@ T rsPrototypeDesigner<T>::getRequiredButterworthOrder(T passbandFrequency, T pas
 }
 
 template<class T>
-T rsPrototypeDesigner::getRequiredChebychevOrder(T passbandFrequency, T passbandRipple, 
+T rsPrototypeDesigner<T>::getRequiredChebychevOrder(T passbandFrequency, T passbandRipple, 
   T stopbandFrequency, T stopbandRipple)
 {
   T Gp = pow(10.0, -passbandRipple/20.0);                           // (1),Eq.1
@@ -624,13 +624,13 @@ void rsPrototypeDesigner<T>::getEllipticLowpassZerosPolesAndGain(Complex* z, Com
   T H0 = pow(Gp, 1-r);    // preliminary - can be made simpler (without pow)
   Complex n = productOfFiniteFactors(p, N);
   Complex d = productOfFiniteFactors(z, N);
-  *k        = H0 * (n/d).re;
+  *k        = H0 * (n/d).real();
 }
 
 // inquiry:
 
 template<class T>
-Complex rsPrototypeDesigner<T>::getFilterResponseAt(Complex s)
+std::complex<T> rsPrototypeDesigner<T>::getFilterResponseAt(Complex s)
 {
   Complex num, den;
   Complex tmp;
@@ -780,7 +780,7 @@ bool rsPrototypeDesigner<T>::needsSpecialHighShelvTransform()
 // pole/zero calculation:
 
 template<class T>
-void rsPrototypeDesigner::updatePolesAndZeros()
+void rsPrototypeDesigner<T>::updatePolesAndZeros()
 {
   if( stateIsDirty == true )
   {
@@ -819,6 +819,7 @@ void rsPrototypeDesigner<T>::makeBypass()
   numFiniteZeros = 0;
 }
 
+template<class T>
 void rsPrototypeDesigner<T>::makeButterworthLowpass()
 {
   numFinitePoles = N;
