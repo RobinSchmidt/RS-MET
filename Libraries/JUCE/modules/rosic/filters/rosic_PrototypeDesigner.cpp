@@ -171,7 +171,7 @@ double rsPrototypeDesigner::ellipdeg(int N, double k_1)
 
     double u_i;
     double prod = 1.0;
-    for(int i=1; i<=L; i++)
+    for(int i = 1; i <= L; i++)
     {
       u_i   = (double) (2*i-1) / (double) N;
       prod *= snC(u_i, kc).re;
@@ -194,7 +194,7 @@ double rsPrototypeDesigner::ellipdeg1(int N, double k)
 
   double u_i;
   double prod = 1.0;
-  for(int i=1; i<=L; i++)
+  for(int i = 1; i <= L; i++)
   {
     u_i   = (double) (2*i-1) / (double) N;
     prod *= snC(u_i, k).re;
@@ -219,7 +219,7 @@ double rsPrototypeDesigner::ellipdeg2(double N, double k)
   int m;
   double sum1 = 0.0;
   double sum2 = 0.0;
-  for(m=1; m<=M; m++)
+  for(m = 1; m <= M; m++)
   {
     sum1 += pow(q1, (double) (m*(m+1)) );
     sum2 += pow(q1, (double) (m*m)     );
@@ -585,7 +585,7 @@ void rsPrototypeDesigner::getEllipticLowpassZerosPolesAndGain(Complex *z, Comple
   // calculate the complex conjugate poles and zeros:
   double  u_i;
   Complex zeta_i;
-  for(int i=0; i<L; i++)
+  for(int i = 0; i < L; i++)
   {
     u_i      = (double) (2*(i+1)-1) / (double) N;                // Eq. 69
     zeta_i   = cdC(u_i, kk);                                     // from ellipap.m - find Eq.
@@ -641,9 +641,9 @@ Complex rsPrototypeDesigner::getFilterResponseAt(Complex s)
 
   // accumulate product of linear factors for denominator (poles) and numerator (zeros):
   int i;
-  for(i=0; i<Lz; i++)
+  for(i = 0; i < Lz; i++)
     num *= ((s-z[i]) * (s-z[i].getConjugate()));
-  for(i=0; i<Lp; i++)
+  for(i = 0; i < Lp; i++)
     den *= ((s-p[i]) * (s-p[i].getConjugate()));
 
   return num/den;
@@ -703,7 +703,7 @@ void rsPrototypeDesigner::getPolesAndZeros(Complex *poles, Complex *zeros)
 {
   if( stateIsDirty == true )
     updatePolesAndZeros(); // re-calculate only if necesarry
-  for(int i=0; i<(L+r); i++)
+  for(int i = 0; i < (L+r); i++)
   {
     poles[i] = p[i];
     zeros[i] = z[i];
@@ -808,7 +808,7 @@ void rsPrototypeDesigner::makeButterworthLowpass()
   }
   // calculate the complex conjugate poles and zeros:
   double  u_i;
-  for(int i=0; i<L; i++)
+  for(int i = 0; i < L; i++)
   {
     u_i  = (double) (2*(i+1)-1) / (double) N;              // Eq.69
     p[i] = ep_pow*j*expC(j*u_i*PI*0.5);                    // Eq.70
@@ -850,7 +850,7 @@ void rsPrototypeDesigner::makeButterworthLowShelv()
   }
   // calculate the complex conjugate poles and zeros:
   double phi, s, c;
-  for(int i=0; i<L; i++)
+  for(int i = 0; i < L; i++)
   {
     phi     = (double) (2*(i+1)-1)*PI / (double) (2*N);    // (2),Eq.95
     s       = sin(phi);                                    // (2),Eq.95
@@ -883,7 +883,7 @@ void rsPrototypeDesigner::makeChebychevLowpass()
     z[L+r-1] = INF;
   }
   // calculate the complex conjugate poles and zeros:
-  for(int i=0; i<L; i++)
+  for(int i = 0; i < L; i++)
   {
     u_i  = (double) (2*(i+1)-1) / (double) N;        // Eq. 69
     p[i] = j*cosC((u_i-j*v_0)*PI*0.5);               // Eq. 71
@@ -935,7 +935,7 @@ void rsPrototypeDesigner::makeChebychevLowShelv()
   // calculate the complex conjugate poles and zeros:
   double phi_i; //, s, c;
   Complex j(0.0, 1.0); // imaginary unit
-  for(int i=0; i<L; i++)
+  for(int i = 0; i < L; i++)
   {
     phi_i = (double) (2*(i+1)-1)*PI / (double) (2*N);
     z[i]  = j*wb*cosC(phi_i - j*u);
@@ -959,7 +959,8 @@ void rsPrototypeDesigner::makeInverseChebychevLowpass()
   double  v0 = asinh(es) / (N*PI*0.5);                   // Eq. 74
   Complex j(0.0, 1.0);                                   // imaginary unit
 
-  double  wb = 1.0; // ...leads to a gain of Gs (stopband-gain) at unity (w=1), we rescale it here so as to have the -3 dB point at w=1:
+  double  wb = 1.0; // ...leads to a gain of Gs (stopband-gain) at unity (w=1), we rescale it here
+                    // so as to have the -3 dB point at w=1:
   double  Gp = sqrt(0.5);
   double  ep = sqrt(1.0/(Gp*Gp)-1.0);
   wb         = cosh( acosh(es/ep) / N );                        // (1),Eq.9
@@ -973,7 +974,7 @@ void rsPrototypeDesigner::makeInverseChebychevLowpass()
   }
 
   // calculate the complex conjugate poles and zeros:
-  for(int i=0; i<L; i++)
+  for(int i = 0; i < L; i++)
   {
     ui   = (double) (2*(i+1)-1) / (double) N;                   // Eq.69
     z[i] = wb / (j*cosC(ui*PI/2));                              // Eq.73 with k=1
@@ -1026,7 +1027,7 @@ void rsPrototypeDesigner::makeInverseChebychevLowShelv()
   // calculate the complex conjugate poles and zeros:
   double  phi_i;
   Complex j(0.0, 1.0); // imaginary unit
-  for(int i=0; i<L; i++)
+  for(int i = 0; i < L; i++)
   {
     phi_i = (double) (2*(i+1)-1)*PI / (double) (2*N);
     z[i]  = wb / (j*cosC(phi_i-j*u));
@@ -1064,7 +1065,7 @@ void rsPrototypeDesigner::makeEllipticLowpass()
     z[L+r-1] = INF;
   }
   // calculate the complex conjugate poles and zeros:
-  for(int i=0; i<L; i++)
+  for(int i = 0; i < L; i++)
   {
     u_i    = (double) (2*(i+1)-1) / (double) N;                  // Eq. 69
     zeta_i = cdC(u_i, k);                                        // from ellipap.m
@@ -1115,7 +1116,7 @@ void rsPrototypeDesigner::makeEllipticLowShelv()
 
   // calculate the complex conjugate poles and zeros:
   double ui;
-  for(int i=0; i<L; i++)
+  for(int i = 0; i < L; i++)
   {
     ui   = (double) (2*(i+1)-1) / (double) N;          // (2),Eq.37
     p[i] = j*wb * cdC( (ui-jv0), k );                  // line 179 in hpeq.m

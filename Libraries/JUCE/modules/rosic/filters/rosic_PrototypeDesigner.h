@@ -74,7 +74,7 @@ public:
   };
 
   //-----------------------------------------------------------------------------------------------
-  // construction/destruction:
+  /** \name Construction/Destruction */
 
   /** Constructor. */
   rsPrototypeDesigner();
@@ -83,7 +83,7 @@ public:
   ~rsPrototypeDesigner();
 
   //-----------------------------------------------------------------------------------------------
-  // parameter settings:
+  /** \name Setup */
 
   /** Sets ups the order of the filter - that is the number of first order sections. Each section 
   increases the slope by 6 dB/oct (for lowpass-designs). If the order is odd, a real pole-/zero 
@@ -127,7 +127,7 @@ public:
   void makeBypass();
 
   //-----------------------------------------------------------------------------------------------
-  // static member functions:
+  /** \name Static Functions */
 
   /** Given desired the order "N" of the prototype filter, this function returns the number of 
   required 2nd order sections in "L" and 1st order sections in "r" (either 0 or 1). */
@@ -236,7 +236,7 @@ public:
   //  double G, double G0); 
 
   //-----------------------------------------------------------------------------------------------
-  // inquiry:
+  /** \name Inquiry */
 
   /** Re-calculates the poles and zeros (if necesarry) an writes them into the respective arrays. 
   For complex conjugate pairs, it will only write one representant of the pair into the array. If 
@@ -353,9 +353,6 @@ protected:
   respectively - the caller must ensure this.  */
   void pickNonRedundantPolesAndZeros(Complex *zTmp, Complex *pTmp);
 
-  //void makeBesselLowpassFromTable();
-  //void scaleBesselPolesToFitButterworth();
-
   // user parameters:
   int N;                   // prototype filter order: N = 2*L + r 
   int approximationMethod; // selected approximation method 
@@ -375,16 +372,11 @@ protected:
   int numFinitePoles;      // number of poles (excluding those at infinity)
   int numFiniteZeros;      // number of zeros (excluding those at infinity). 
 
-  //Complex* z;              // array of the non-redundant zeros
-  //Complex* p;              // array of the non-redundant poles
 
   // arrays for nonredundant poles and zeros:
   static const int maxNumNonRedundantPoles = 13;
   Complex z[maxNumNonRedundantPoles];  // zeros
   Complex p[maxNumNonRedundantPoles];  // poles
-
-  //Complex z[32];  // zeros
-  //Complex p[32];  // poles
 
   bool stateIsDirty;   // this flag indicates, whether the poles, zeros and gain need to be 
                        // re-calculated or are still valid from a previous calculation
