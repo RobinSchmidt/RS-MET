@@ -1320,6 +1320,7 @@
 		80E83C20930EA93BEDC5F023 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AUOutputBase.h; path = "../../../../../Libraries/JUCE/modules/juce_audio_plugin_client/AU/CoreAudioUtilityClasses/AUOutputBase.h"; sourceTree = "SOURCE_ROOT"; };
 		80F8FCC9EC3E94597BE7A7DA = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "jura_CombStereoizer.cpp"; path = "../../../../../Libraries/JUCE/modules/jura_processors/effects/jura_CombStereoizer.cpp"; sourceTree = "SOURCE_ROOT"; };
 		812C5523398C15AA9EDFC81F = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "juce_android_Midi.cpp"; path = "../../../../../Libraries/JUCE/modules/juce_audio_devices/native/juce_android_Midi.cpp"; sourceTree = "SOURCE_ROOT"; };
+		81307E5688AACBA196BAF3CB = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PrototypeDesigner.h; path = ../../../../../Libraries/JUCE/modules/rapt/Filters/Scientific/PrototypeDesigner.h; sourceTree = "SOURCE_ROOT"; };
 		813D395E4E8B48DDB77BDD1C = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_SystemTrayIconComponent.h"; path = "../../../../../Libraries/JUCE/modules/juce_gui_extra/misc/juce_SystemTrayIconComponent.h"; sourceTree = "SOURCE_ROOT"; };
 		814443A57AAB22EB99EE2B75 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "jura_InteractiveCoordinateSystemOld.cpp"; path = "../../../../../Libraries/JUCE/modules/jura_framework/gui/plots/jura_InteractiveCoordinateSystemOld.cpp"; sourceTree = "SOURCE_ROOT"; };
 		81667324AA8B0FA0069B904D = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "jura_ScopedPointerLock.h"; path = "../../../../../Libraries/JUCE/modules/jura_framework/control/jura_ScopedPointerLock.h"; sourceTree = "SOURCE_ROOT"; };
@@ -1898,6 +1899,7 @@
 		BA17189A8C96D3763943DA0F = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_XMLCodeTokeniser.h"; path = "../../../../../Libraries/JUCE/modules/juce_gui_extra/code_editor/juce_XMLCodeTokeniser.h"; sourceTree = "SOURCE_ROOT"; };
 		BA2B86F2B719AB8F5F2195FA = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "rosic_Harmonics.h"; path = "../../../../../Libraries/JUCE/modules/rosic/effects/rosic_Harmonics.h"; sourceTree = "SOURCE_ROOT"; };
 		BA591F793AC91E398029A9AA = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "rosic_LinearPredictor.cpp"; path = "../../../../../Libraries/JUCE/modules/rosic/analysis/rosic_LinearPredictor.cpp"; sourceTree = "SOURCE_ROOT"; };
+		BA6209B99EAF42AAEB01EEAC = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PrototypeDesigner.cpp; path = ../../../../../Libraries/JUCE/modules/rapt/Filters/Scientific/PrototypeDesigner.cpp; sourceTree = "SOURCE_ROOT"; };
 		BA73C74597493107FA56C37C = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "kiss_fftnd.c"; path = "../../../../../Libraries/JUCE/modules/rosic/_third_party/kiss_fft_v1_2_6/tools/kiss_fftnd.c"; sourceTree = "SOURCE_ROOT"; };
 		BA7F3F175C6CA0E3C33D8277 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "juce_ToolbarItemPalette.cpp"; path = "../../../../../Libraries/JUCE/modules/juce_gui_basics/widgets/juce_ToolbarItemPalette.cpp"; sourceTree = "SOURCE_ROOT"; };
 		BA948960F0C78A2E06DCE4BD = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_Expression.h"; path = "../../../../../Libraries/JUCE/modules/juce_core/maths/juce_Expression.h"; sourceTree = "SOURCE_ROOT"; };
@@ -4351,9 +4353,13 @@
 					6D871BE2752F1E45FD56B9DA,
 					33DF7B83B76430ED34468B20,
 					816DA03AAA7049E34B405096, ); name = Musical; sourceTree = "<group>"; };
+		AAF3927406B221301A9C35B6 = {isa = PBXGroup; children = (
+					BA6209B99EAF42AAEB01EEAC,
+					81307E5688AACBA196BAF3CB, ); name = Scientific; sourceTree = "<group>"; };
 		70E723DA2879161FED6D5CD0 = {isa = PBXGroup; children = (
 					69CEFB1626E44671A605475B,
 					27907C27D1A09257B4EBCD96,
+					AAF3927406B221301A9C35B6,
 					D53488E89CC658A52AA80709,
 					23C025DF1CA5842200623B53, ); name = Filters; sourceTree = "<group>"; };
 		7518377DBAE0012A3D2AB6EC = {isa = PBXGroup; children = (

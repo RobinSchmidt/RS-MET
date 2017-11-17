@@ -10,4 +10,6 @@ namespace RAPT
 #include "Musical/PhasorFilter.cpp"
 #include "Musical/StateVariableFilter.cpp"
 
+//#include "Scientific/PrototypeDesigner.cpp"
+
 }
