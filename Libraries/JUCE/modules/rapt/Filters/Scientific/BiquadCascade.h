@@ -86,7 +86,7 @@ public:
   /** Writes the complex frequency-response of a biquad-cascade at the normalized radian 
   frequencies given in 'w' into the array 'H'. */
   void getFrequencyResponse(TCoef* w, std::complex<TCoef>* H, int numBins, 
-    int accumulationMode = FilterAnalyzer::NO_ACCUMULATION);
+    int accumulationMode = rsFilterAnalyzer<TCoef>::NO_ACCUMULATION);
 
   /** Writes the magnitdue-response of a biquad-cascade at the normalized radian frequencies given 
   in 'w' into the array 'magnitudes'. Both arrays are assumed to be "numBins" long. "inDecibels" 
