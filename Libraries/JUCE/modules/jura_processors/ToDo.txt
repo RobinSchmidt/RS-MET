@@ -260,3 +260,7 @@ https://software.intel.com/en-us/articles/x87-and-sse-floating-point-assists-in-
 https://forum.juce.com/t/resolving-denormal-floats-once-and-for-all/8241
 https://software.intel.com/en-us/node/523328
 (done  in AudioPlugin::processBlock - but we may need to reset it)
+
+for implementid SIMD vectors, see:
+http://johanmabille.github.io/blog/2014/10/10/writing-c-plus-plus-wrappers-for-simd-intrinsics-3/
+https://github.com/p12tic/libsimdpp
