@@ -7,7 +7,7 @@ namespace RAPT
 // make a nested namespace Filters or Filter
 
 //#include "Basic/OnePoleFilter.h"
-#include "Basic/SmoothingFilter.h"
+#include "Basic/SmoothingFilter.h"   // maybe move to a Tool
 //#include "Basic/OnePoleOneZero.h"
 //#include "Basic/TwoPoleOneZero.h"  // decaying sine, etc.
 //#include "Basic/Biquad.h"
@@ -24,8 +24,8 @@ namespace RAPT
 #include "Scientific/FilterCoefficientConverter.h"      // pole-zero-to-biquad, etc
 #include "Scientific/InfiniteImpulseResponseDesigner.h" // coeffs for Butterworth, elliptic,..
 #include "Scientific/FilterAnalyzer.h"                  // transfer-function, frequency response,..
-#include "Scientific/BiquadCascade.h" // rename to BiquadChain
-
+#include "Scientific/BiquadCascade.h"                   // rename to BiquadChain
+#include "Scientific/EngineersFilter.h" 
 
 //#include "Convolution/WindowedSinc.h" 
 

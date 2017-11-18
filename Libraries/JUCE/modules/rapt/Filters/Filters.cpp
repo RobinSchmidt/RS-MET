@@ -16,5 +16,6 @@ namespace RAPT
 #include "Scientific/InfiniteImpulseResponseDesigner.cpp"
 #include "Scientific/FilterAnalyzer.cpp"
 #include "Scientific/BiquadCascade.cpp"
+#include "Scientific/EngineersFilter.cpp" 
 
 }

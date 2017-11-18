@@ -698,6 +698,7 @@
 		42AF0368F5259701E0752E8C = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = doit.c; path = "../../../../../Libraries/JUCE/modules/rosic/_third_party/kiss_fft_v1_2_6/test/doit.c"; sourceTree = "SOURCE_ROOT"; };
 		42B660F8FBFC5C9D3F719BEE = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "jura_PlotPreviewButton.h"; path = "../../../../../Libraries/JUCE/modules/jura_framework/gui/widgets/jura_PlotPreviewButton.h"; sourceTree = "SOURCE_ROOT"; };
 		42BA84648250840F21BE1902 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "rosic_Interpolator.cpp"; path = "../../../../../Libraries/JUCE/modules/rosic/basics/rosic_Interpolator.cpp"; sourceTree = "SOURCE_ROOT"; };
+		42CAF1D068DAAF74EBCF0113 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = EngineersFilter.cpp; path = ../../../../../Libraries/JUCE/modules/rapt/Filters/Scientific/EngineersFilter.cpp; sourceTree = "SOURCE_ROOT"; };
 		42DBF6C6024A49A32BBAFCC8 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "rosic_WindowDesigner.cpp"; path = "../../../../../Libraries/JUCE/modules/rosic/basics/rosic_WindowDesigner.cpp"; sourceTree = "SOURCE_ROOT"; };
 		42E0BD6EEF77AC4352B73F2E = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "jura_BreakpointModulatorAudioModule.cpp"; path = "../../../../../Libraries/JUCE/modules/jura_processors/modulators/jura_BreakpointModulatorAudioModule.cpp"; sourceTree = "SOURCE_ROOT"; };
 		42E13923EA32450D31F12531 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = "juce_audio_plugin_client_VST_utils.mm"; path = "../../../../../Libraries/JUCE/modules/juce_audio_plugin_client/juce_audio_plugin_client_VST_utils.mm"; sourceTree = "SOURCE_ROOT"; };
@@ -1923,6 +1924,7 @@
 		BB564AAD506A388415F9D48B = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "rosic_FilterAnalyzer.cpp"; path = "../../../../../Libraries/JUCE/modules/rosic/filters/rosic_FilterAnalyzer.cpp"; sourceTree = "SOURCE_ROOT"; };
 		BB78D90B41A58A956291817F = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Line2D.cpp; path = ../../../../../Libraries/JUCE/modules/rapt/Math/Geometry/Line2D.cpp; sourceTree = "SOURCE_ROOT"; };
 		BB8CE2D9291806C50CB30B9E = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = kfc.c; path = "../../../../../Libraries/JUCE/modules/rosic/_third_party/kiss_fft_v1_2_6/tools/kfc.c"; sourceTree = "SOURCE_ROOT"; };
+		BBD380165DAD10AC29746D98 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = EngineersFilter.h; path = ../../../../../Libraries/JUCE/modules/rapt/Filters/Scientific/EngineersFilter.h; sourceTree = "SOURCE_ROOT"; };
 		BBD3BC853288B51AD234DB38 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = fft4g.c; path = "../../../../../Libraries/JUCE/modules/rosic/_third_party/ooura_fft/fft4g.c"; sourceTree = "SOURCE_ROOT"; };
 		BBD76ECC6151FF9DE3E47635 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_LocalisedStrings.h"; path = "../../../../../Libraries/JUCE/modules/juce_core/text/juce_LocalisedStrings.h"; sourceTree = "SOURCE_ROOT"; };
 		BBE536F47DCAC6ABF551734D = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "juce_MidiKeyboardState.cpp"; path = "../../../../../Libraries/JUCE/modules/juce_audio_basics/midi/juce_MidiKeyboardState.cpp"; sourceTree = "SOURCE_ROOT"; };
@@ -4366,6 +4368,8 @@
 		24BF835418ADD090A2865051 = {isa = PBXGroup; children = (
 					C6C95CE7960BC449EE5B2123,
 					A482242D362CEFA3E04C2A5E,
+					42CAF1D068DAAF74EBCF0113,
+					BBD380165DAD10AC29746D98,
 					A7CA949FC055765CA913F28B,
 					B8E99579E4A7229F9E5BE609,
 					666818AD6D5098518577D726,
