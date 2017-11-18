@@ -26,6 +26,7 @@ namespace RAPT
 #include "Scientific/FilterAnalyzer.h"                  // transfer-function, frequency response,..
 #include "Scientific/BiquadCascade.h"                   // rename to BiquadChain
 #include "Scientific/EngineersFilter.h" 
+#include "Scientific/LinkwitzRileyCrossOver.h" 
 
 //#include "Convolution/WindowedSinc.h" 
 

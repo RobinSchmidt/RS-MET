@@ -17,5 +17,6 @@ namespace RAPT
 #include "Scientific/FilterAnalyzer.cpp"
 #include "Scientific/BiquadCascade.cpp"
 #include "Scientific/EngineersFilter.cpp" 
+#include "Scientific/LinkwitzRileyCrossOver.cpp" 
 
 }

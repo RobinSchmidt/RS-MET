@@ -25,7 +25,7 @@ class rsLinkwitzRileyCrossOver
 public:
 
   //-----------------------------------------------------------------------------------------------
-  // construction/destruction:
+  /** \name Construction/Destruction */
 
   /** Constructor. newMaxButterworthOrder should be even. */
   rsLinkwitzRileyCrossOver(int newMaxButterworthOrder = 8);
@@ -34,7 +34,7 @@ public:
   ~rsLinkwitzRileyCrossOver();
 
   //-----------------------------------------------------------------------------------------------
-  // parameter settings:
+  /** \name Setup */
 
   /** Sets up the sample rate for this filter. */
   void setSampleRate(double newSampleRate);
@@ -50,7 +50,7 @@ public:
   void setButterworthOrder(int newOrder);
 
   //-----------------------------------------------------------------------------------------------
-  // inquiry:
+  /** \name Inquiry */
 
   /** Returns the samplerate. */
   double getSampleRate() const
@@ -92,19 +92,19 @@ public:
     bool accumulate = false);
 
   //-----------------------------------------------------------------------------------------------
-  // audio processing:
+  /** \name Audio Processing */
 
   /** Calculates a pair of lowpass/highpass output samples from a (presumbaly) broadband input 
   signal. */
-  INLINE void getSamplePair(double *in, double *outLow, double *outHigh);
-  INLINE void getSamplePair(float  *in, float  *outLow, float  *outHigh);
+  INLINE void getSamplePair(double* in, double* outLow, double* outHigh);
+  INLINE void getSamplePair(float*  in, float*  outLow, float*  outHigh);
 
   /** Processes a buffer of samples. */
-  INLINE void processBuffer(double *in, double *outLow, double *outHigh, int length);
-  INLINE void processBuffer(float  *in, float  *outLow, float  *outHigh, int length);
+  INLINE void processBuffer(double* in, double* outLow, double* outHigh, int length);
+  INLINE void processBuffer(float*  in, float*  outLow, float*  outHigh, int length);
 
   //-----------------------------------------------------------------------------------------------
-  // others:
+  /** \name Misc */
 
   /** Resets the internal buffers of the filters to all zeros. */
   void resetBuffers();
@@ -130,21 +130,21 @@ protected:
 //-------------------------------------------------------------------------------------------------
 // inlined functions:
 
-INLINE void rsLinkwitzRileyCrossOver::getSamplePair(double *in, double *outLow, double *outHigh)
+INLINE void rsLinkwitzRileyCrossOver::getSamplePair(double* in, double* outLow, double* outHigh)
 {
   double tmp  = *in;
   *outLow     = lowpass2.getSampleDirect2(lowpass1.getSampleDirect2(tmp));
   *outHigh    = sumAllpass.getSampleDirect2(tmp) - *outLow;
 }
 
-INLINE void rsLinkwitzRileyCrossOver::getSamplePair(float *in, float *outLow, float *outHigh)
+INLINE void rsLinkwitzRileyCrossOver::getSamplePair(float* in, float* outLow, float* outHigh)
 {
   double tmp  = (double)*in;
   *outLow     = (float)lowpass2.getSampleDirect2(lowpass1.getSampleDirect2(tmp));
   *outHigh    = (float)(sumAllpass.getSampleDirect2(tmp) - *outLow);
 }
 
-INLINE void rsLinkwitzRileyCrossOver::processBuffer(double *in, double *outLow, double *outHigh, 
+INLINE void rsLinkwitzRileyCrossOver::processBuffer(double* in, double* outLow, double* outHigh, 
   int length)
 {
   double tmp;
@@ -156,7 +156,7 @@ INLINE void rsLinkwitzRileyCrossOver::processBuffer(double *in, double *outLow, 
   }
 }
 
-INLINE void rsLinkwitzRileyCrossOver::processBuffer(float *in, float *outLow, float *outHigh, 
+INLINE void rsLinkwitzRileyCrossOver::processBuffer(float* in, float* outLow, float* outHigh, 
   int length)
 {
   float tmp;

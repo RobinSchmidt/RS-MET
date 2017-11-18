@@ -1,6 +1,7 @@
 // construction/destruction:
 
-rsLinkwitzRileyCrossOver::rsLinkwitzRileyCrossOver(int newMaxButterworthOrder) 
+template<class TSig, class TPar>
+rsLinkwitzRileyCrossOver<TSig, TPar>::rsLinkwitzRileyCrossOver(int newMaxButterworthOrder) 
 : lowpass1(newMaxButterworthOrder/2)
 , lowpass2(newMaxButterworthOrder/2)
 , sumAllpass(newMaxButterworthOrder/2)
@@ -14,14 +15,10 @@ rsLinkwitzRileyCrossOver::rsLinkwitzRileyCrossOver(int newMaxButterworthOrder)
   updateFilterCoefficients();
 }
 
-rsLinkwitzRileyCrossOver::~rsLinkwitzRileyCrossOver()
-{
-
-}
-
 // setup:
 
-void rsLinkwitzRileyCrossOver::setSampleRate(double newSampleRate)
+template<class TSig, class TPar>
+void rsLinkwitzRileyCrossOver<TSig, TPar>::setSampleRate(TPar newSampleRate)
 {
   if( newSampleRate > 0.0 && newSampleRate != sampleRate )
   {
@@ -30,20 +27,23 @@ void rsLinkwitzRileyCrossOver::setSampleRate(double newSampleRate)
   }
 }
 
-void rsLinkwitzRileyCrossOver::setCrossoverFrequency(double newCrossoverFrequency)
+template<class TSig, class TPar>
+void rsLinkwitzRileyCrossOver<TSig, TPar>::setCrossoverFrequency(TPar newCrossoverFrequency)
 {
   if( newCrossoverFrequency <= 20000.0 )
     crossoverFrequency = newCrossoverFrequency;
   updateFilterCoefficients();
 }
 
-void rsLinkwitzRileyCrossOver::setSlope(int newSlope)
+template<class TSig, class TPar>
+void rsLinkwitzRileyCrossOver<TSig, TPar>::setSlope(int newSlope)
 {
   rassert( newSlope%12 == 0 && newSlope >= 12 ); // slope must be a multiple of 12 dB/oct
   setButterworthOrder(newSlope/12);
 }
 
-void rsLinkwitzRileyCrossOver::setButterworthOrder(int newOrder)
+template<class TSig, class TPar>
+void rsLinkwitzRileyCrossOver<TSig, TPar>::setButterworthOrder(int newOrder)
 {
   if( newOrder >= 1 && newOrder <= maxButterworthOrder )
     butterworthOrder = newOrder;
@@ -52,8 +52,9 @@ void rsLinkwitzRileyCrossOver::setButterworthOrder(int newOrder)
 
 // inquiry:
 
-void rsLinkwitzRileyCrossOver::getLowpassMagnitudeResponse(double* frequencies, double* magnitudes, 
-  int numBins, bool inDecibels, bool accumulate)
+template<class TSig, class TPar>
+void rsLinkwitzRileyCrossOver<TSig, TPar>::getLowpassMagnitudeResponse(TPar* frequencies, 
+  TPar* magnitudes, int numBins, bool inDecibels, bool accumulate)
 {
   if( accumulate == false )
   {
@@ -66,13 +67,14 @@ void rsLinkwitzRileyCrossOver::getLowpassMagnitudeResponse(double* frequencies, 
   lowpass2.getMagnitudeResponse(frequencies, sampleRate, magnitudes, numBins, true, true);
 }
 
-void rsLinkwitzRileyCrossOver::getLowpassFrequencyResponse(double* frequencies, Complex* H, 
-  int numBins, bool accumulate)
+template<class TSig, class TPar>
+void rsLinkwitzRileyCrossOver<TSig, TPar>::getLowpassFrequencyResponse(TPar* frequencies, 
+  Complex* H, int numBins, bool accumulate)
 {
   if( accumulate == false )  
     fillWithValue(H, numBins, Complex(1.0));
 
-  double *w = new double[numBins];
+  TPar* w = new TPar[numBins];
   copyBuffer(frequencies, w, numBins);
   scale(w, w, numBins, 2*PI/sampleRate);
 
@@ -82,46 +84,34 @@ void rsLinkwitzRileyCrossOver::getLowpassFrequencyResponse(double* frequencies, 
   delete[] w;
 }
 
-void rsLinkwitzRileyCrossOver::getHighpassMagnitudeResponse(double* frequencies, 
-  double* magnitudes, int numBins, bool inDecibels, bool accumulate)
+template<class TSig, class TPar>
+void rsLinkwitzRileyCrossOver<TSig, TPar>::getHighpassMagnitudeResponse(TPar* frequencies, 
+  TPar* magnitudes, int numBins, bool inDecibels, bool accumulate)
 {
   Complex* H = new Complex[numBins];
   getHighpassFrequencyResponse(frequencies, H, numBins, false);
-
-  if( accumulate == true )
-  {
-    if( inDecibels == true )
-    {
+  if( accumulate == true ) {
+    if( inDecibels == true ) {
       for(int k=0; k<numBins; k++)
-        magnitudes[k] += amp2dB(H[k].getRadius());
-    }
-    else 
-    {
+        magnitudes[k] += amp2dB(H[k].getRadius()); }
+    else {
       for(int k=0; k<numBins; k++)
-        magnitudes[k] *= H[k].getRadius();
-    }
-  }
-  else
-  {
-    if( inDecibels == true )
-    {
+        magnitudes[k] *= H[k].getRadius(); }}
+  else {
+    if( inDecibels == true ) {
       for(int k=0; k<numBins; k++)
-        magnitudes[k] = amp2dB(H[k].getRadius());
-    }
-    else 
-    {
+        magnitudes[k] = amp2dB(H[k].getRadius()); }
+    else {
       for(int k=0; k<numBins; k++)
-        magnitudes[k] = H[k].getRadius();
-    }
-  }
-
+        magnitudes[k] = H[k].getRadius(); }}
   delete[] H;
 }
 
-void rsLinkwitzRileyCrossOver::getHighpassFrequencyResponse(double* frequencies, Complex* H, 
-  int numBins, bool accumulate)
+template<class TSig, class TPar>
+void rsLinkwitzRileyCrossOver<TSig, TPar>::getHighpassFrequencyResponse(TPar* frequencies, 
+  Complex* H, int numBins, bool accumulate)
 {
-  double *w = new double[numBins];
+  TPar* w = new TPar[numBins];
   copyBuffer(frequencies, w, numBins);
   scale(w, w, numBins, 2*PI/sampleRate);
 
@@ -146,14 +136,16 @@ void rsLinkwitzRileyCrossOver::getHighpassFrequencyResponse(double* frequencies,
 
 // others:
 
-void rsLinkwitzRileyCrossOver::resetBuffers()
+template<class TSig, class TPar>
+void rsLinkwitzRileyCrossOver<TSig, TPar>::resetBuffers()
 {
   lowpass1.reset();
   lowpass2.reset();
   sumAllpass.reset();
 }
 
-void rsLinkwitzRileyCrossOver::updateFilterCoefficients()
+template<class TSig, class TPar>
+void rsLinkwitzRileyCrossOver<TSig, TPar>::updateFilterCoefficients()
 {
   // create and set up a filter-designer object:
   rsInfiniteImpulseResponseDesigner designer;
