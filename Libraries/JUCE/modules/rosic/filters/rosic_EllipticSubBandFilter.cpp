@@ -1,6 +1,6 @@
 // construction/destruction:
 
-EllipticSubBandFilter::EllipticSubBandFilter()
+rsEllipticSubBandFilter::rsEllipticSubBandFilter()
 {
   initBiquadCoeffs(); // initializes the filter-coefficents
   reset();            // resets the filters memory buffers (to 0)
@@ -21,7 +21,7 @@ EllipticSubBandFilter::EllipticSubBandFilter()
 
 // parameter settings:
 
-void EllipticSubBandFilter::setSubDivision(double newSubDivision)
+void rsEllipticSubBandFilter::setSubDivision(double newSubDivision)
 {
   if( newSubDivision > 1.0 )
     subDivision = newSubDivision;

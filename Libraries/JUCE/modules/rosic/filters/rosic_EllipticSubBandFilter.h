@@ -8,14 +8,14 @@ namespace rosic
 situations in which a very steep filter is desirable such as anti-aliasing and anti-imaging in 
 resampling applications. */
 
-class EllipticSubBandFilter : public rsBiquadCascade
+class rsEllipticSubBandFilter : public rsBiquadCascade
 {
 
 public:
 
   /** Constructor. Calculates the poles and zeros for the analog unit cutoff prototype filter and 
   stores them in the member arrays prototypePoles and prototypeZeros. */
-  EllipticSubBandFilter();
+  rsEllipticSubBandFilter();
 
   /** Sets the subdivision factor, for example 2 for a halfband filter (which passes everything 
   below half the Nyquist frequency and stops everything above) or 4 for a quarterband filter. */

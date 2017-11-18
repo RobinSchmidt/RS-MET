@@ -7,13 +7,13 @@ namespace rosic
 /** This is an elliptic subband filter of 12th order using a Direct Form II implementation 
 structure. */
 
-class EllipticQuarterBandFilter
+class rsEllipticQuarterBandFilter
 {
 
 public:
 
   /** Constructor. */
-  EllipticQuarterBandFilter();
+  rsEllipticQuarterBandFilter();
 
   /** Resets the filter state. */
   void reset();

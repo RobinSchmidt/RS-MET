@@ -47,7 +47,7 @@ namespace rosic
     //=============================================================================================
 
     SimpleSamplerVoice*   voiceArray;
-    EllipticSubBandFilter antiAliasFilterL, antiAliasFilterR;
+    rsEllipticSubBandFilter antiAliasFilterL, antiAliasFilterR;
 
   protected:
 

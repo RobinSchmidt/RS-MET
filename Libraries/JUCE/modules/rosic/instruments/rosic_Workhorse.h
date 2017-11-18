@@ -44,7 +44,7 @@ namespace rosic
     //=============================================================================================
 
     WorkhorseVoice*     voiceArray;
-    EllipticSubBandFilter antiAliasFilterL, antiAliasFilterR;
+    rsEllipticSubBandFilter antiAliasFilterL, antiAliasFilterR;
     VectorMixer           vectorMixer;
     // for later: use the vectorMixer above only for th GUI and two additonal vectorMixers for left 
     // and right channel for the actual DSP code (because they are going to be modulatd by the 

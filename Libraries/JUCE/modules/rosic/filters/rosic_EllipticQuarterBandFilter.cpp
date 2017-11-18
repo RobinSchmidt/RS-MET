@@ -1,20 +1,11 @@
-//#include "rosic_EllipticQuarterBandFilter.h"
-//using namespace rosic;
-
-//-------------------------------------------------------------------------------------------------
-// construction/destruction:
-
-EllipticQuarterBandFilter::EllipticQuarterBandFilter()
+rsEllipticQuarterBandFilter::rsEllipticQuarterBandFilter()
 {
   reset();  
 }
 
-//-------------------------------------------------------------------------------------------------
-// parameter settings:
-
-void EllipticQuarterBandFilter::reset()
+void rsEllipticQuarterBandFilter::reset()
 {
-  for(int i=0; i<12; i++)
+  for(int i = 0; i < 12; i++)
     w[i] = 0.0;
 }
 

@@ -100,8 +100,8 @@ namespace rosic
  protected:
 
   //embedded objects:
-	 OnePoleFilter        dcBlocker;
-  EllipticSubBandFilter antiAliasFlt;
+  OnePoleFilter        dcBlocker;
+  rsEllipticSubBandFilter antiAliasFlt;
 
 	 //parameter variables:
   intA    overSampling;

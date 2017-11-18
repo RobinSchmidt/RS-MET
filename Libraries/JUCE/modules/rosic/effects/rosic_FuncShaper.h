@@ -211,8 +211,8 @@ namespace rosic
     TabulatedFunction         distortionCurve;
     LowpassHighpass           outputFilterL, outputFilterR;
     OnePoleFilterStereo       deClickingFilter;
-    EllipticSubBandFilter upsamplerL, upsamplerR;
-    EllipticSubBandFilter antiAliasFilterL, antiAliasFilterR;
+    rsEllipticSubBandFilter upsamplerL, upsamplerR;
+    rsEllipticSubBandFilter antiAliasFilterL, antiAliasFilterR;
 
     //=============================================================================================
 

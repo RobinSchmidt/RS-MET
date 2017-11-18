@@ -198,16 +198,17 @@ namespace rosic
     //-----------------------------------------------------------------------------------------------
     // embedded objects: 
 
-    MipMappedWaveTable        waveTable1, waveTable2, subWaveTable1, subWaveTable2;
-    BlendOscillator           oscillator, subOscillator;
-    TeeBeeFilter              filter;
-    AnalogEnvelope            ampEnv; 
-    DecayEnvelope             mainEnv;
-    LeakyIntegrator           pitchSlewLimiter, ampDeClicker; // ampEnv3; //ampEnv2, 
-    LeakyIntegrator           rc1, rc2;
-    OnePoleFilter             hp1, hp2;                      // highpasses
-    EllipticQuarterBandFilter antiAliasFilter;
-    AcidSequencer             sequencer;
+    MipMappedWaveTable waveTable1, waveTable2, subWaveTable1, subWaveTable2;
+    BlendOscillator    oscillator, subOscillator;
+    TeeBeeFilter       filter;
+    AnalogEnvelope     ampEnv; 
+    DecayEnvelope      mainEnv;
+    LeakyIntegrator    pitchSlewLimiter, ampDeClicker; // ampEnv3; //ampEnv2, 
+    LeakyIntegrator    rc1, rc2;
+    OnePoleFilter      hp1, hp2;                      // highpasses
+    AcidSequencer      sequencer;
+    rsEllipticQuarterBandFilter antiAliasFilter;
+
 
   protected:
 

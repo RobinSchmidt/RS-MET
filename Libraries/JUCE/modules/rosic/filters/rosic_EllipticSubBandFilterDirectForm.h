@@ -7,13 +7,13 @@ namespace rosic
 /** This is an elliptic subband filter of 12th order using a Direct Form II implementation 
 structure. */
 
-class EllipticSubBandFilterDirectForm
+class rsEllipticSubBandFilterDirectForm
 {
 
 public:
 
   /** Constructor. Initializes coefficients for an elliptic halfband filter. */
-  EllipticSubBandFilterDirectForm();
+  rsEllipticSubBandFilterDirectForm();
 
   /** Sets the subdivision factor, for example 2 for a halfband filter (which passes everything
   below half the Nyquist frequency and stops everything above) or 4 for a quarterband filter. */

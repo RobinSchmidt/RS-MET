@@ -205,7 +205,7 @@ namespace rosic
     LeakyIntegrator           pitchSlewLimiter, ampDeClicker; // ampEnv3; //ampEnv2, 
     LeakyIntegrator           rc1, rc2;
     OnePoleFilter             hp1, hp2;                      // highpasses
-    EllipticQuarterBandFilter antiAliasFilter;
+    rsEllipticQuarterBandFilter antiAliasFilter;
     AcidSequencer             sequencer;
 
   protected:

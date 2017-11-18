@@ -84,7 +84,7 @@ namespace rosic
     bool   gainIsZero[numShapers];   // array of flags to indicate zero gain
     bool   chebychevMode;            // flag to indicate that chebychev polynomials should be used
 
-    EllipticSubBandFilterDirectForm subbandFiltersL[numShapers], subbandFiltersR[numShapers];
+    rsEllipticSubBandFilterDirectForm subbandFiltersL[numShapers], subbandFiltersR[numShapers];
     LowpassHighpass inFilterL, inFilterR, outFilterL, outFilterR;
 
   };
