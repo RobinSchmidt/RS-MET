@@ -1,6 +1,7 @@
 -drag scientific IIR filters into RAPT:
  -DircetForm, Linkwitz, CrossOver4Way, Ellitpic, QuadratureNetwork
  -get rid of typedef std::complex<T> Complex;
+ -make 4-way crossover work (needs some updates, see commented code sections)
 -drag convolutional filters into rapt
 -drag more musical filters into rapt
 

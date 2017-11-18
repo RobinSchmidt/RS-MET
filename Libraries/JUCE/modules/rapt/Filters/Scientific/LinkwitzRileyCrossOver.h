@@ -18,8 +18,8 @@ template<class TSig, class TPar>
 class rsLinkwitzRileyCrossOver
 {
 
-  typedef std::complex<TPar> Complex; // preliminary
-  friend class rsCrossOver4Way;
+  typedef std::complex<TPar> Complex;       // preliminary
+  //friend class rsCrossOver4Way<TSig, TPar>;
 
 public:
 

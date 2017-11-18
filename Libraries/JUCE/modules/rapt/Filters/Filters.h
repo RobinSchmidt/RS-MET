@@ -19,6 +19,7 @@ namespace RAPT
 #include "Musical/StateVariableFilter.h"
 //include "Musical/AttackDecaySineFilter.h" // maybe get rid of writing "Filter" all the time
 
+// maybe rename to InfiniteImpulseResponse
 #include "Scientific/PrototypeDesigner.h"               // unit cutoff analog prototypes
 #include "Scientific/PoleZeroMapper.h"                  // LP->LP, LP->HP, bilinear S->Z, etc.
 #include "Scientific/FilterCoefficientConverter.h"      // pole-zero-to-biquad, etc
@@ -27,6 +28,7 @@ namespace RAPT
 #include "Scientific/BiquadCascade.h"                   // rename to BiquadChain
 #include "Scientific/EngineersFilter.h" 
 #include "Scientific/LinkwitzRileyCrossOver.h" 
+#include "Scientific/CrossOver4Way.h" 
 
 //#include "Convolution/WindowedSinc.h" 
 

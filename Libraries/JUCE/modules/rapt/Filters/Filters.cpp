@@ -16,7 +16,8 @@ namespace RAPT
 #include "Scientific/InfiniteImpulseResponseDesigner.cpp"
 #include "Scientific/FilterAnalyzer.cpp"
 #include "Scientific/BiquadCascade.cpp"
-#include "Scientific/EngineersFilter.cpp" 
-#include "Scientific/LinkwitzRileyCrossOver.cpp" 
+#include "Scientific/EngineersFilter.cpp"
+#include "Scientific/LinkwitzRileyCrossOver.cpp"
+#include "Scientific/CrossOver4Way.cpp"
 
 }
