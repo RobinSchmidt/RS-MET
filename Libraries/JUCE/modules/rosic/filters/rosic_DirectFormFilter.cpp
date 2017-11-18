@@ -1,7 +1,3 @@
-//#include "rosic_DirectFormFilter.h"
-//using namespace rosic;
-
-//-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:
 
 DirectFormFilter::DirectFormFilter(int maximumOrder)
@@ -22,7 +18,6 @@ DirectFormFilter::~DirectFormFilter()
   delete[] b;
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
 // parameter settings:
 
 void DirectFormFilter::setCoefficients(double *newCoeffsA, double *newCoeffsB, int newOrder)
@@ -49,7 +44,7 @@ double DirectFormFilter::getMagnitudeResponseAt(double omega)
   double cb = 0.0; 
   double sb = 0.0;
   double sk, ck;
-  for(int k=0; k<=order; k++)
+  for(int k = 0; k <= order; k++)
   {
     sk  = sin(k*omega);  // \todo optimize by trigonometric recursion
     ck  = cos(k*omega);  
@@ -61,15 +56,16 @@ double DirectFormFilter::getMagnitudeResponseAt(double omega)
   return sqrt( (cb*cb + sb*sb) / (ca*ca + sa*sa) );
 }
 
-void DirectFormFilter::getMagnitudeResponse(double *frequencies, double *magnitudes, int numBins, double sampleRate, 
-                                            bool inDecibels, bool accumulate)
+void DirectFormFilter::getMagnitudeResponse(double *frequencies, double *magnitudes, int numBins, 
+  double sampleRate, bool inDecibels, bool accumulate)
 {
   double H;
   for(int k=0; k<numBins; k++)
   {
     H = getMagnitudeResponseAt(2*PI*frequencies[k] / sampleRate);
 
-    // \todo move this decision function somewher where it can be shared - other filter use that, too
+    // \todo move this decision function somewher where it can be shared - other filter use that, 
+    // too
     if( !inDecibels && !accumulate )
       magnitudes[k]  = H;
     else if( !inDecibels && accumulate )
@@ -81,12 +77,11 @@ void DirectFormFilter::getMagnitudeResponse(double *frequencies, double *magnitu
   }
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
 // others:
 
 void DirectFormFilter::reset()
 {
-  for(int i=0; i<=maxOrder; i++)
+  for(int i = 0; i <= maxOrder; i++)
     w[i] = 0.0;
 }
 
@@ -94,7 +89,7 @@ void DirectFormFilter::initializeCoefficients()
 {
   b[0] = 1.0;
   a[0] = 1.0;
-  for(int i=1; i<=maxOrder; i++)
+  for(int i = 1; i <= maxOrder; i++)
   {
     b[i] = 0.0;
     a[i] = 0.0;

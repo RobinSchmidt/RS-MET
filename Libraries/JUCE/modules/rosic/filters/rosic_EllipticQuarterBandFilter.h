@@ -1,57 +1,25 @@
 #ifndef rosic_EllipticQuarterBandFilter_h
 #define rosic_EllipticQuarterBandFilter_h
 
-//#include <string.h> // for memmove
-//
-//// rosic-indcludes:
-//#include "../basics/GlobalDefinitions.h"
-
 namespace rosic
 {
 
-  /**
+/** This is an elliptic subband filter of 12th order using a Direct Form II implementation 
+structure. */
 
-  This is an elliptic subband filter of 12th order using a Direct Form II implementation structure.
+class EllipticQuarterBandFilter
+{
 
-  */
+public:
 
-  class EllipticQuarterBandFilter
-  {
+  /** Constructor. */
+  EllipticQuarterBandFilter();
 
-  public:
+  /** Resets the filter state. */
+  void reset();
 
-    //---------------------------------------------------------------------------------------------
-    // construction/destruction:
-
-    /** Constructor. */
-    EllipticQuarterBandFilter();   
-
-    //---------------------------------------------------------------------------------------------
-    // parameter settings:
-
-    /** Resets the filter state. */
-    void reset();
-
-    //---------------------------------------------------------------------------------------------
-    // audio processing:
-
-    /** Calculates a single filtered output-sample. */
-    INLINE double getSample(double in);
-
-    //=============================================================================================
-
-  protected:
-
-    // state buffer:
-    double w[12];
-
-  };
-
-  //-----------------------------------------------------------------------------------------------
-  // from here: definitions of the functions to be inlined, i.e. all functions which are supposed 
-  // to be called at audio-rate (they can't be put into the .cpp file):
-
-  INLINE double EllipticQuarterBandFilter::getSample(double in)
+  /** Calculates a single filtered output-sample. */
+  INLINE double getSample(double in)
   {
     const double a01 =   -9.1891604652189471;
     const double a02 =   40.177553696870497;
@@ -72,25 +40,25 @@ namespace rosic
     const double b03 =    -0.0022158566490711852;
     const double b04 =     0.0028320091007278322;
     const double b05 =    -0.0029776933151090413;
-    const double b06 =     0.0030283628243514991;    
+    const double b06 =     0.0030283628243514991;
     const double b07 =    -0.0029776933151090413;
     const double b08 =     0.0028320091007278331;
     const double b09 =    -0.0022158566490711861;
-    const double b10 =     0.0013681887636296393;    
+    const double b10 =     0.0013681887636296393;
     const double b11 =    -0.00055538501265606384;
     const double b12 =     0.00013671732099945636;
 
     // calculate intermediate and output sample via direct form II - the parentheses facilitate 
     // out-of-order execution of the independent additions (for performance optimization):
     double tmp =   (in + TINY)
-                 - ( (a01*w[0] + a02*w[1] ) + (a03*w[2]  + a04*w[3]   ) ) 
-                 - ( (a05*w[4] + a06*w[5] ) + (a07*w[6]  + a08*w[7]   ) )
-                 - ( (a09*w[8] + a10*w[9] ) + (a11*w[10] +  a12*w[11] ) );
-   
-    double y =     b00*tmp 
-                 + ( (b01*w[0] + b02*w[1])  +  (b03*w[2]  + b04*w[3]  ) )  
-                 + ( (b05*w[4] + b06*w[5])  +  (b07*w[6]  + b08*w[7]  ) )
-                 + ( (b09*w[8] + b10*w[9])  +  (b11*w[10] + b12*w[11] ) );
+      - ((a01*w[0] + a02*w[1]) + (a03*w[2]  + a04*w[3]))
+      - ((a05*w[4] + a06*w[5]) + (a07*w[6]  + a08*w[7]))
+      - ((a09*w[8] + a10*w[9]) + (a11*w[10] +  a12*w[11]));
+
+    double y =     b00*tmp
+      + ((b01*w[0] + b02*w[1])  +  (b03*w[2]  + b04*w[3]))
+      + ((b05*w[4] + b06*w[5])  +  (b07*w[6]  + b08*w[7]))
+      + ((b09*w[8] + b10*w[9])  +  (b11*w[10] + b12*w[11]));
 
     // update state variables:
     memmove(&w[1], &w[0], 11*sizeof(double));
@@ -99,6 +67,12 @@ namespace rosic
     return y;
   }
 
-} // end namespace rosic
+protected:
 
-#endif // rosic_EllipticQuarterBandFilter_h
+  double w[12];  // state buffer
+
+};
+
+}
+
+#endif

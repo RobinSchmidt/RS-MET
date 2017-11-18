@@ -4,40 +4,31 @@
 namespace rosic
 {
 
-  /**
+/** This class implements a 12th order elliptic lowpass filter which is intended to be used for 
+situations in which a very steep filter is desirable such as anti-aliasing and anti-imaging in 
+resampling applications. */
 
-  This class implements a 12th order elliptic lowpass filter which is intended to be used for situations in which a very steep filter is 
-  desirable such as anti-aliasing and anti-imaging in resampling applications. 
+class EllipticSubBandFilter : public rsBiquadCascade
+{
 
-  */
+public:
 
-  class EllipticSubBandFilter : public rsBiquadCascade
-  {
+  /** Constructor. Calculates the poles and zeros for the analog unit cutoff prototype filter and 
+  stores them in the member arrays prototypePoles and prototypeZeros. */
+  EllipticSubBandFilter();
 
-  public:
+  /** Sets the subdivision factor, for example 2 for a halfband filter (which passes everything 
+  below half the Nyquist frequency and stops everything above) or 4 for a quarterband filter. */
+  void setSubDivision(double newSubDivision);
 
-    //-------------------------------------------------------------------------------------------------------------------------------------
-    // construction/destruction:
+protected:
 
-    /** Constructor. Calculates the poles and zeros for the analog unit cutoff prototype filter and stores them in the member arrays 
-    prototypePoles and prototypeZeros. */
-    EllipticSubBandFilter();   
+  double  subDivision;
+  Complex prototypePoles[6];
+  Complex prototypeZeros[6];
 
-    //-------------------------------------------------------------------------------------------------------------------------------------
-    // parameter settings:
+};
 
-    /** Sets the subdivision factor, for example 2 for a halfband filter (which passes everything below half the Nyquist frequency and 
-    stops everything above) or 4 for a quarterband filter. */
-    void setSubDivision(double newSubDivision);
-
-  protected:
-
-    double  subDivision;
-    Complex prototypePoles[6];
-    Complex prototypeZeros[6];
-
-  };
-
-} 
+}
 
 #endif

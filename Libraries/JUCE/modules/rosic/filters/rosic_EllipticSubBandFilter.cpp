@@ -1,4 +1,3 @@
-//-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
 EllipticSubBandFilter::EllipticSubBandFilter()
@@ -20,7 +19,6 @@ EllipticSubBandFilter::EllipticSubBandFilter()
   setSubDivision(2.0);
 }
 
-//-------------------------------------------------------------------------------------------------
 // parameter settings:
 
 void EllipticSubBandFilter::setSubDivision(double newSubDivision)
@@ -54,7 +52,8 @@ void EllipticSubBandFilter::setSubDivision(double newSubDivision)
   //wd = PI/subDivision;    // for FreqShifter test
 
   double sampleRate = 44100.0; 
-  // actually, this should be irrelevant but we need it as dummy. \todo make some tests if this is really irrelevant
+  // actually, this should be irrelevant but we need it as dummy. \todo make some tests if this is 
+  // really irrelevant
 
   double wa = 2.0*sampleRate*tan(0.5*wd);  // pre-warped analog radian frequency 
 
@@ -77,5 +76,3 @@ void EllipticSubBandFilter::setSubDivision(double newSubDivision)
   // use unity gain:
   //gain = 1.0;
 }
-
-
