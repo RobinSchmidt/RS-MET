@@ -2776,6 +2776,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\CrossOver4Way.cpp">
       <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\DirectFormFilter.cpp">
+      <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\EngineersFilter.cpp">
       <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
     </ClCompile>
@@ -6613,6 +6616,9 @@
       <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\CrossOver4Way.h">
+      <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\DirectFormFilter.h">
       <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\EngineersFilter.h">
