@@ -307,7 +307,7 @@ void rsPrototypeDesigner::shelvingMagSqrNumeratorFromLowpassTransfer(double *b, 
 void rsPrototypeDesigner::scaleToMatchGainAtUnity(Complex *z, Complex *p, double *k, Complex *zNew, 
   Complex *pNew, double *kNew, int N, double g)
 {
-  double  wc    = FilterAnalyzer::findAnalogFrequencyWithMagnitude(z, p, k, N, g, 1.0);
+  double  wc    = rsFilterAnalyzer::findAnalogFrequencyWithMagnitude(z, p, k, N, g, 1.0);
   double scaler = 1.0/wc;
   for(int n = 0; n < N; n++)
   {

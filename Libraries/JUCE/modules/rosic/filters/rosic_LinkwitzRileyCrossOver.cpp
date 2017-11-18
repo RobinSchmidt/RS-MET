@@ -76,8 +76,8 @@ void rsLinkwitzRileyCrossOver::getLowpassFrequencyResponse(double *frequencies, 
   copyBuffer(frequencies, w, numBins);
   scale(w, w, numBins, 2*PI/sampleRate);
 
-  lowpass1.getFrequencyResponse(w, H, numBins, FilterAnalyzer::MULTIPLICATIVE_ACCUMULATION);
-  lowpass2.getFrequencyResponse(w, H, numBins, FilterAnalyzer::MULTIPLICATIVE_ACCUMULATION);
+  lowpass1.getFrequencyResponse(w, H, numBins, rsFilterAnalyzer::MULTIPLICATIVE_ACCUMULATION);
+  lowpass2.getFrequencyResponse(w, H, numBins, rsFilterAnalyzer::MULTIPLICATIVE_ACCUMULATION);
 
   delete[] w;
 }

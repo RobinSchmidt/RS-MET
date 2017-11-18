@@ -158,7 +158,8 @@ void rsCrossOver4Way::getMagnitudeResponse(double* frequencies, double* magnitud
     }
   }
 
-  FilterAnalyzer::clampValuesAboveNyquist(frequencies, magnitudes, numBins, stage1.getSampleRate(), -100.0);
+  rsFilterAnalyzer::clampValuesAboveNyquist(frequencies, magnitudes, numBins, 
+    stage1.getSampleRate(), -100.0);
   clipBuffer(magnitudes, numBins, -150.0, 10.0);
 }
 

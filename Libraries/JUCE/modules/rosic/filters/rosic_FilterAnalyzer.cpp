@@ -1,4 +1,4 @@
-Complex FilterAnalyzer::getAnalogFrequencyResponseAt(Complex *z, Complex *p, double k, int N, 
+Complex rsFilterAnalyzer::getAnalogFrequencyResponseAt(Complex* z, Complex* p, double k, int N, 
   double w)
 {
   Complex s = Complex(0.0, w);
@@ -7,22 +7,22 @@ Complex FilterAnalyzer::getAnalogFrequencyResponseAt(Complex *z, Complex *p, dou
   return k * n/d;
 }
 
-double FilterAnalyzer::getAnalogMagnitudeResponseAt(Complex *z, Complex *p, double k, int N, 
+double rsFilterAnalyzer::getAnalogMagnitudeResponseAt(Complex* z, Complex* p, double k, int N, 
   double w)
 {
   return getAnalogFrequencyResponseAt(z, p, k, N, w).getRadius();
   // maybe it can be computed more efficiently?
 }
 
-void FilterAnalyzer::getAnalogMagnitudeResponse(Complex *z, Complex *p, double k, int N, double *w, 
-  double *m, int numBins)
+void rsFilterAnalyzer::getAnalogMagnitudeResponse(Complex* z, Complex* p, double k, int N, double* w, 
+  double* m, int numBins)
 {
   for(int i = 0; i < numBins; i++)
     m[i] = getAnalogMagnitudeResponseAt(z, p, k, N, w[i]);
 }
 
-void FilterAnalyzer::getAnalogPhaseResponse(Complex *z, Complex *p, double k, int N, double *w, 
-  double *phs, int numBins)
+void rsFilterAnalyzer::getAnalogPhaseResponse(Complex* z, Complex* p, double k, int N, double* w, 
+  double* phs, int numBins)
 {
   for(int i = 0; i < numBins; i++)
     phs[i] = getAnalogFrequencyResponseAt(z, p, k, N, w[i]).getAngle();
@@ -30,7 +30,7 @@ void FilterAnalyzer::getAnalogPhaseResponse(Complex *z, Complex *p, double k, in
   // \todo: unwrap the phase
 }
 
-double FilterAnalyzer::findAnalogFrequencyWithMagnitude(Complex *z, Complex *p, double *k, int N, 
+double rsFilterAnalyzer::findAnalogFrequencyWithMagnitude(Complex* z, Complex* p, double* k, int N, 
   double A, double initialGuess)
 {
   //if( A <= 0.0 || A >= 1.0 )
@@ -40,9 +40,9 @@ double FilterAnalyzer::findAnalogFrequencyWithMagnitude(Complex *z, Complex *p, 
   // function):
   double wL = initialGuess;
   double wU = initialGuess;
-  while( FilterAnalyzer::getAnalogMagnitudeResponseAt(z, p, *k, N, wL) < A )
+  while( rsFilterAnalyzer::getAnalogMagnitudeResponseAt(z, p, *k, N, wL) < A )
     wL = wL/2;
-  while( FilterAnalyzer::getAnalogMagnitudeResponseAt(z, p, *k, N, wU) > A )
+  while( rsFilterAnalyzer::getAnalogMagnitudeResponseAt(z, p, *k, N, wU) > A )
     wU = wU*2;
 
   // find the frequency at which the magnitude is equal to A by bisection:  
@@ -52,7 +52,7 @@ double FilterAnalyzer::findAnalogFrequencyWithMagnitude(Complex *z, Complex *p, 
   double tol  = A*eps;     // amplitude tolerance - maybe use A*eps?
   double wM   = (wL+wU)/2; // midpoint
   double wOld = wM;        // to remember wM from previous iteration
-  double AM   = FilterAnalyzer::getAnalogMagnitudeResponseAt(z, p, *k, N, wM);
+  double AM   = rsFilterAnalyzer::getAnalogMagnitudeResponseAt(z, p, *k, N, wM);
   while( abs(AM-A) > tol && i < iMax ) 
   {
     if( AM > A )
@@ -61,7 +61,7 @@ double FilterAnalyzer::findAnalogFrequencyWithMagnitude(Complex *z, Complex *p, 
       wU = wM;
     wOld = wM;
     wM   = (wL+wU)/2;
-    AM = FilterAnalyzer::getAnalogMagnitudeResponseAt(z, p, *k, N, wM);
+    AM = rsFilterAnalyzer::getAnalogMagnitudeResponseAt(z, p, *k, N, wM);
     i++;
 
     if( abs(wM-wOld) < eps * min(wOld, wM) ) // 2nd convergence cirterion based on frequency difference - maybe use as only criterion
@@ -76,7 +76,7 @@ double FilterAnalyzer::findAnalogFrequencyWithMagnitude(Complex *z, Complex *p, 
   return wM;
 }
 
-double FilterAnalyzer::getBiquadMagnitudeAt(const double b0, const double b1, const double b2, 
+double rsFilterAnalyzer::getBiquadMagnitudeAt(const double b0, const double b1, const double b2, 
   const double a1, const double a2, const double w)
 {
   double c1  = cos(w);
@@ -86,8 +86,8 @@ double FilterAnalyzer::getBiquadMagnitudeAt(const double b0, const double b1, co
   return sqrt(num/den);
 }
     
-void FilterAnalyzer::getBiquadMagnitudeResponse(const double b0, const double b1, const double b2, 
-  const double a1, const double a2, double *w, double *mag, int numBins, bool inDecibels)
+void rsFilterAnalyzer::getBiquadMagnitudeResponse(const double b0, const double b1, const double b2, 
+  const double a1, const double a2, double* w, double* mag, int numBins, bool inDecibels)
 {
   for(int k = 0; k < numBins; k++)
     mag[k] = getBiquadMagnitudeAt(b0, b1, b2, a1, a2, w[k]);
@@ -95,7 +95,7 @@ void FilterAnalyzer::getBiquadMagnitudeResponse(const double b0, const double b1
     convertToDecibels(mag, numBins);
 }
 
-Complex FilterAnalyzer::getBiquadTransferFunctionAt(const double b0, const double b1, 
+Complex rsFilterAnalyzer::getBiquadTransferFunctionAt(const double b0, const double b1, 
   const double b2, const double a1, const double a2, const Complex z)
 {
   Complex z1 = 1 / z;  // z^-1
@@ -103,8 +103,8 @@ Complex FilterAnalyzer::getBiquadTransferFunctionAt(const double b0, const doubl
   return (b0 + b1*z1 + b2*z2) / (1 + a1*z1 + a2*z2);
 }
 
-Complex FilterAnalyzer::getBiquadCascadeTransferFunctionAt(double *b0, double *b1, double *b2, 
-  double *a1, double *a2, int numBiquads, Complex z)
+Complex rsFilterAnalyzer::getBiquadCascadeTransferFunctionAt(double* b0, double* b1, double* b2, 
+  double* a1, double* a2, int numBiquads, Complex z)
 {
   Complex H = 1.0;
   for(int i = 0; i < numBiquads; i++)
@@ -112,8 +112,8 @@ Complex FilterAnalyzer::getBiquadCascadeTransferFunctionAt(double *b0, double *b
   return H;
 }
 
-void FilterAnalyzer::getBiquadCascadeFrequencyResponse(double *b0, double *b1, double *b2, 
-  double *a1, double *a2, int numBiquads, double *w, Complex *H, int numBins, int accumulationMode)
+void rsFilterAnalyzer::getBiquadCascadeFrequencyResponse(double* b0, double* b1, double* b2, 
+  double* a1, double* a2, int numBiquads, double* w, Complex* H, int numBins, int accumulationMode)
 {
   if( accumulationMode == NO_ACCUMULATION )
   {
@@ -128,19 +128,19 @@ void FilterAnalyzer::getBiquadCascadeFrequencyResponse(double *b0, double *b1, d
     DEBUG_BREAK; // invalid accumulation mode
 }
 
-void FilterAnalyzer::multiplyWithBiquadCascadeFrequencyResponse(double *b0, double *b1, double *b2, 
-  double *a1, double *a2, int numBiquads, double *w, Complex *H, int numBins)
+void rsFilterAnalyzer::multiplyWithBiquadCascadeFrequencyResponse(double* b0, double* b1, double* b2, 
+  double* a1, double* a2, int numBiquads, double* w, Complex* H, int numBins)
 {
   Complex j(0.0, 1.0);
-  for(int k=0; k<numBins; k++)
+  for(int k = 0; k < numBins; k++)
   {
     Complex z = expC(j*w[k]);
     H[k] *= getBiquadCascadeTransferFunctionAt(b0, b1, b2, a1, a2, numBiquads, z);
   }
 }
    
-void FilterAnalyzer::addWithBiquadCascadeFrequencyResponse(double *b0, double *b1, double *b2, 
-  double *a1, double *a2, int numBiquads, double *w, Complex *H, int numBins)
+void rsFilterAnalyzer::addWithBiquadCascadeFrequencyResponse(double* b0, double* b1, double* b2, 
+  double* a1, double* a2, int numBiquads, double* w, Complex* H, int numBins)
 {
   Complex j(0.0, 1.0);
   for(int k=0; k<numBins; k++)
@@ -150,8 +150,8 @@ void FilterAnalyzer::addWithBiquadCascadeFrequencyResponse(double *b0, double *b
   }
 }
 
-void FilterAnalyzer::getBiquadCascadeMagnitudeResponse(double *b0, double *b1, double *b2, 
-  double *a1, double *a2, int numBiquads, double *w, double *mag, int numBins, bool inDecibels, 
+void rsFilterAnalyzer::getBiquadCascadeMagnitudeResponse(double* b0, double* b1, double* b2, 
+  double* a1, double* a2, int numBiquads, double* w, double* mag, int numBins, bool inDecibels, 
   bool accumulate)
 {
   Complex *H   = new Complex[numBins];
@@ -181,9 +181,9 @@ void FilterAnalyzer::getBiquadCascadeMagnitudeResponse(double *b0, double *b1, d
   delete[] H;
 }
 
-void FilterAnalyzer::getBiquadCascadeMagnitudeResponse(double *b0, double *b1, double *b2, 
-  double *a1, double *a2, int numBiquads, double *frequencies, double sampleRate, 
-  double *magnitudes, int numBins, bool inDecibels, bool accumulate)
+void rsFilterAnalyzer::getBiquadCascadeMagnitudeResponse(double* b0, double* b1, double* b2, 
+  double* a1, double* a2, int numBiquads, double* frequencies, double sampleRate, 
+  double* magnitudes, int numBins, bool inDecibels, bool accumulate)
 {
   double *w = new double[numBins];
   double scaler = 2*PI / sampleRate;
@@ -194,7 +194,7 @@ void FilterAnalyzer::getBiquadCascadeMagnitudeResponse(double *b0, double *b1, d
   delete[] w;
 }
 
-double FilterAnalyzer::getBiquadPhaseResponseAt(double b0, double b1, double b2, double a1, 
+double rsFilterAnalyzer::getBiquadPhaseResponseAt(double b0, double b1, double b2, double a1, 
   double a2, double w)
 {
   Complex z = expC(Complex(0.0, w));  // z = e^(j*w)
@@ -205,8 +205,8 @@ double FilterAnalyzer::getBiquadPhaseResponseAt(double b0, double b1, double b2,
   return phase; 
 }
 
-double FilterAnalyzer::getBiquadCascadePhaseResponseAt(double *b0, double *b1, double *b2, 
-  double *a1, double *a2, int numBiquads, double w)
+double rsFilterAnalyzer::getBiquadCascadePhaseResponseAt(double* b0, double* b1, double* b2, 
+  double* a1, double* a2, int numBiquads, double w)
 {
   double phase = 0.0;
   for(int i = 0; i < numBiquads; i++)
@@ -214,8 +214,8 @@ double FilterAnalyzer::getBiquadCascadePhaseResponseAt(double *b0, double *b1, d
   return phase;
 }
 
-void FilterAnalyzer::getBiquadCascadePhaseResponse(double *b0, double *b1, double *b2, double *a1, 
-  double *a2, int numBiquads, double *w, double *phases, int numBins, bool accumulate)
+void rsFilterAnalyzer::getBiquadCascadePhaseResponse(double* b0, double* b1, double* b2, 
+  double* a1, double *a2, int numBiquads, double *w, double *phases, int numBins, bool accumulate)
 {
   if( accumulate == true )
   {
@@ -229,25 +229,26 @@ void FilterAnalyzer::getBiquadCascadePhaseResponse(double *b0, double *b1, doubl
   }
 }
 
-void FilterAnalyzer::getMagnitudes(Complex *H, double *magnitudes, int length)
+void rsFilterAnalyzer::getMagnitudes(Complex* H, double* magnitudes, int length)
 {
   for(int k = 0; k < length; k++)
     magnitudes[k] = H[k].getRadius();
 }
 
-void FilterAnalyzer::getPhases(Complex *H, double *phases, int length)
+void rsFilterAnalyzer::getPhases(Complex* H, double* phases, int length)
 {
   for(int k = 0; k < length; k++)
     phases[k] = H[k].getAngle();
+  // \todo unwrap(phases, length, 2*PI); maybe conditionally
 }
 
-void FilterAnalyzer::convertToDecibels(double *values, int length, double clipLowAmplitudeAt)
+void rsFilterAnalyzer::convertToDecibels(double* values, int length, double clipLowAmplitudeAt)
 {
   for(int k = 0; k < length; k++)
     values[k] = amp2dBWithCheck(values[k], clipLowAmplitudeAt); 
 }
 
-void FilterAnalyzer::clampValuesAboveNyquist(double *frequencies, double *values, int length, 
+void rsFilterAnalyzer::clampValuesAboveNyquist(double* frequencies, double* values, int length, 
   double sampleRate, double clampValue)
 {
   for(int k = 0; k < length; k++)

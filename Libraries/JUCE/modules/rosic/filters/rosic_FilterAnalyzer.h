@@ -23,7 +23,7 @@ response for cascaded or parallel connections of filters.
 \todo: split into 2 classes: AnalogFilterAnalyzer, DigitalFilterAnalyzer and get rid of the 
  Analog/Digital qualifiers in the member function names */
 
-class FilterAnalyzer
+class rsFilterAnalyzer
 {
 
 public:
@@ -43,23 +43,23 @@ public:
 
   /** Returns the complex frequency response of an "N"th analog filter with zeros, poles and gain 
   given in "z", "p", "k" at the radian frequency "w". */
-  static Complex getAnalogFrequencyResponseAt(Complex *z, Complex *p, double k, int N, double w);
+  static Complex getAnalogFrequencyResponseAt(Complex* z, Complex* p, double k, int N, double w);
 
   /** Returns the magnitude response of an "N"th analog filter with zeros, poles and gain given in
   "z", "p", "k" at the radian frequency "w". */
-  static double getAnalogMagnitudeResponseAt(Complex *z, Complex *p, double k, int N, double w);
+  static double getAnalogMagnitudeResponseAt(Complex* z, Complex* p, double k, int N, double w);
 
   /** Writes the magnitude response of an "N"th analog filter with zeros, poles and gain given in 
   "z", "p", "k" at the radian frequencies given in "w" into the array "m". Arrays "w" and "m" 
   should be of length "numBins". */
-  static void getAnalogMagnitudeResponse(Complex *z, Complex *p, double k, int N, double *w, 
-    double *m, int numBins);
+  static void getAnalogMagnitudeResponse(Complex* z, Complex* p, double k, int N, double* w, 
+    double* m, int numBins);
 
   /** Writes the phase response of an "N"th analog filter with zeros, poles and gain given in 
   "z", "p", "k" at the radian frequencies given in "w" into the array "phs". Arrays "w" and "phs" 
   should be of length "numBins". */
-  static void getAnalogPhaseResponse(Complex *z, Complex *p, double k, int N, double *w, 
-    double *phs, int numBins);
+  static void getAnalogPhaseResponse(Complex* z, Complex* p, double k, int N, double* w, 
+    double* phs, int numBins);
 
   // \todo: getAnalogPhaseDelay, getAnalogGroupDelay
 
@@ -68,7 +68,7 @@ public:
   on the desired value passed in "magnitude". The caller should ensure that the filter actually 
   takes on the desired magnitude value somewhere, otherwise the retrun value will be meaningless. 
   You may pass an initial guess for the radian frequency. */
-  static double findAnalogFrequencyWithMagnitude(Complex *z, Complex *p, double *k, int N, 
+  static double findAnalogFrequencyWithMagnitude(Complex* z, Complex* p, double* k, int N, 
     double magnitude, double initialGuess = 1.0);
 
   //-----------------------------------------------------------------------------------------------
@@ -85,7 +85,7 @@ public:
   /** Writes the magnitude response of a biquad-cascade at the normalized radian frequencies given 
   in 'w' into the array 'mag'. */
   static void getBiquadMagnitudeResponse(const double b0, const double b1, const double b2, 
-    const double a1, const double a2, double *w, double *mag, int numBins, 
+    const double a1, const double a2, double* w, double* mag, int numBins, 
     bool inDecibels = false);
 
   /** Returns the value of the transfer-function of a biquad at the given value 'z'. */
@@ -93,37 +93,37 @@ public:
     const double a1, const double a2, const Complex z);
 
   /** Returns the value of the transfer-function of a biquad-cascade at the given value 'z'. */
-  static Complex getBiquadCascadeTransferFunctionAt(double *b0, double *b1, double *b2, double *a1, 
-    double *a2, int numBiquads, Complex z);
+  static Complex getBiquadCascadeTransferFunctionAt(double* b0, double* b1, double* b2, double* a1, 
+    double* a2, int numBiquads, Complex z);
 
   /** Writes the complex frequency-response of a biquad-cascade at the normalized radian 
   frequencies given in 'w' into the array 'H'. */
-  static void getBiquadCascadeFrequencyResponse(double *b0, double *b1, double *b2, double *a1, 
-    double *a2, int numBiquads, double *w, Complex *H, int numBins, 
+  static void getBiquadCascadeFrequencyResponse(double* b0, double* b1, double* b2, double* a1, 
+    double* a2, int numBiquads, double* w, Complex* H, int numBins, 
     int accumulationMode = NO_ACCUMULATION);
 
   /** Multiplies a given frequency-response 'H' at the normalized radian frequencies 'w' with the 
   frequency-response of a biquad-cascade. This function is useful for accumulating 
   frequency-responses of filters that are connected in series. */
-  static void multiplyWithBiquadCascadeFrequencyResponse(double *b0, double *b1, double *b2, 
-    double *a1, double *a2, int numBiquads, double *w, Complex *H, int numBins);
+  static void multiplyWithBiquadCascadeFrequencyResponse(double* b0, double* b1, double* b2, 
+    double* a1, double* a2, int numBiquads, double* w, Complex* H, int numBins);
 
   /** Adds a given frequency-response 'H' at the normalized radian frequencies 'w' with the 
   frequency-response of a biquad-cascade. This function is useful for accumulating 
   frequency-responses of filters that are connected in parallel. */
-  static void addWithBiquadCascadeFrequencyResponse(double *b0, double *b1, double *b2, double *a1, 
-    double *a2, int numBiquads, double *w, Complex *H, int numBins);
+  static void addWithBiquadCascadeFrequencyResponse(double* b0, double* b1, double* b2, double* a1, 
+    double* a2, int numBiquads, double* w, Complex* H, int numBins);
 
   /** Writes the magnitude response of a biquad-cascade at the normalized radian frequencies given 
   in 'w' into the array 'magnitudes'. */
-  static void getBiquadCascadeMagnitudeResponse(double *b0, double *b1, double *b2, double *a1, 
-    double *a2, int numBiquads, double *w, double *magnitudes, int numBins, 
+  static void getBiquadCascadeMagnitudeResponse(double* b0, double* b1, double* b2, double* a1, 
+    double* a2, int numBiquads, double* w, double* magnitudes, int numBins, 
     bool inDecibels = false, bool accumulate = false);
 
   /** Writes the magnitude response of a biquad-cascade at the physical frequencies given in 
   'frequencies' into the array 'magnitudes'. */
-  static void getBiquadCascadeMagnitudeResponse(double *b0, double *b1, double *b2, double *a1, 
-    double *a2, int numBiquads, double *frequencies, double sampleRate, double *magnitudes, 
+  static void getBiquadCascadeMagnitudeResponse(double* b0, double* b1, double* b2, double* a1, 
+    double* a2, int numBiquads, double* frequencies, double sampleRate, double* magnitudes, 
     int numBins, bool inDecibels = false, bool accumulate = false);
 
 
@@ -134,13 +134,13 @@ public:
 
   /** Returns the value of the (unwrapped) phase-response of a digital biquad-cascade at the given 
   normalized radian frequency 'w'. */
-  static double getBiquadCascadePhaseResponseAt(double *b0, double *b1, double *b2, double *a1, 
-    double *a2, int numBiquads, double w);
+  static double getBiquadCascadePhaseResponseAt(double* b0, double* b1, double* b2, double* a1, 
+    double* a2, int numBiquads, double w);
 
   /** Writes the (unwrapped) phase response of a digital biquad-cascade at the normalized radian 
   frequencies given in 'w' into the array 'phases'. */
-  static void getBiquadCascadePhaseResponse(double *b0, double *b1, double *b2, double *a1, 
-    double *a2, int numBiquads,  double *w, double *phases, int numBins, bool accumulate = false);
+  static void getBiquadCascadePhaseResponse(double* b0, double* b1, double* b2, double* a1, 
+    double* a2, int numBiquads,  double* w, double* phases, int numBins, bool accumulate = false);
 
 
   //-----------------------------------------------------------------------------------------------
@@ -151,22 +151,22 @@ public:
   // some general helper functions:
 
   /** Extracts the magnitudes from the complex-values in H and writed them int 'magnitudes'. */
-  static void getMagnitudes(Complex *H, double *magnitudes, int length);
+  static void getMagnitudes(Complex* H, double* magnitudes, int length);
 
   /** Extracts the phases from the complex-values in H and writed them int 'phases'. */
-  static void getPhases(Complex *H, double *phases, int length);
+  static void getPhases(Complex* H, double* phases, int length);
 
   /** Converts an array of values (presumably magnitudes) to decibels. Because this conversion may 
   lead to negative infinite (in case of zero amplitude) or undefined (in case of negative 
   amplitude) values, the amplitude-values may be clipped (from bottom) to some small positive value. 
   The default value of 0.0000000001 corresponds to -200 dB. */
-  static void convertToDecibels(double *values, int length, 
+  static void convertToDecibels(double* values, int length, 
     double clipLowAmplitudeAt = 0.0000000001);
 
   /** Clamps all values (in the array 'values') at frequencies higher than sampleRate/2 to the 
   given constant 'clampValue' - this is useful for 'clipping' irrelevant data which otherwise would 
   have been plotted. */
-  static void clampValuesAboveNyquist(double *frequencies, double *values, int length, 
+  static void clampValuesAboveNyquist(double* frequencies, double* values, int length, 
     double sampleRate, double clampValue);
 
 };

@@ -114,14 +114,14 @@ void rsBiquadCascade::turnIntoAllpass()
 
 void rsBiquadCascade::getFrequencyResponse(double *w, Complex *H, int numBins, int accumulationMode)
 {
-  FilterAnalyzer::getBiquadCascadeFrequencyResponse(b0, b1, b2, a1, a2, numStages, w, H, numBins, 
+  rsFilterAnalyzer::getBiquadCascadeFrequencyResponse(b0, b1, b2, a1, a2, numStages, w, H, numBins, 
     accumulationMode);
 }
 
 void rsBiquadCascade::getMagnitudeResponse(double *w, double *magnitudes, int numBins, 
   bool inDecibels, bool accumulate)
 {
-  FilterAnalyzer::getBiquadCascadeMagnitudeResponse(b0, b1, b2, a1, a2, numStages, w, magnitudes, 
+  rsFilterAnalyzer::getBiquadCascadeMagnitudeResponse(b0, b1, b2, a1, a2, numStages, w, magnitudes, 
     numBins, inDecibels, accumulate);
 }
 
@@ -129,7 +129,7 @@ void rsBiquadCascade::getMagnitudeResponse(double *frequencies, double sampleRat
   double *magnitudes, int numBins, bool inDecibels,      
                                          bool accumulate)
 {
-  FilterAnalyzer::getBiquadCascadeMagnitudeResponse(b0, b1, b2, a1, a2, numStages, frequencies, 
+  rsFilterAnalyzer::getBiquadCascadeMagnitudeResponse(b0, b1, b2, a1, a2, numStages, frequencies, 
     sampleRate, magnitudes, numBins, inDecibels, accumulate);
 }
 
