@@ -105,7 +105,9 @@ void Plotter::plotData(int numValues, double *x, double *y1, double *y2, double 
   strcat(commandPath, commandFile);
 
   char* callString = new char[200];
-  strcpy(callString, gnuplotPath);
+  strcpy(callString, "\"");
+  strcat(callString, gnuplotPath);
+  strcat(callString, "\" ");
   strcat(callString, " ");
   strcat(callString, commandPath);
   strcat(callString, " -");        // the minus avoids gnuplot to immediately exit 

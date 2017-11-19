@@ -17,8 +17,12 @@ legacy reasons
 */
 
 // define the location for gnuplot and the directory for the temporary files:  
-static const char* gnuplotPath = "E:/SoftwareWindows/Development/GnuPlot/gp426win32/gnuplot/bin/wgnuplot";
-static const char* tmpDataDir  = "D:/TmpData/";
+//gnuplotPath = "C:/Program Files/gnuplot/bin/gnuplot.exe";
+//dataPath    = "E:/Temp/gnuplotData.dat";
+//static const char* gnuplotPath = "E:/SoftwareWindows/Development/GnuPlot/gp426win32/gnuplot/bin/wgnuplot";
+//static const char* tmpDataDir  = "D:/TmpData/";
+static const char* gnuplotPath = "C:/Program Files/gnuplot/bin/gnuplot.exe";
+static const char* tmpDataDir  = "E:/Temp/";
 
 class Plotter
 {

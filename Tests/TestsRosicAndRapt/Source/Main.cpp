@@ -19,6 +19,9 @@ using namespace rotes;
 
 int main(int argc, char* argv[])
 {
+  //===============================================================================================
+  // RoSiC tests:
+
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
 
@@ -33,6 +36,42 @@ int main(int argc, char* argv[])
   //testRosicMath();
   //testRosicNonRealTime();
   //testRosicOthers();
+
+  //-----------------------------------------------------------------------------------------------
+  // Experiments:
+
+  // Analysis:
+
+  // Basics:
+
+  // Effects:
+
+  // File:
+
+  // Filters:
+  //testLadderFilter();
+  //testModalFilter();
+  //testModalFilterWithAttack();
+  //testBiquadPhasePlot();
+  //testFiniteImpulseResponseDesigner();
+  //testConvolverPartitioned();
+  //testFiniteImpulseResponseFilter();
+  //testFilterAnalyzer();
+  //testBiquadCascade();
+  //testCrossover4Way();
+  //testCrossover4Way2();
+  //testSlopeFilter();
+  //testPrototypeDesigner();
+  //testLowpassToLowshelf();
+  //testBesselPrototypeDesign();
+  testPapoulisPrototypeDesign();
+  //testEngineersFilter();
+  //testPoleZeroMapping();
+  //highOrderFilterPolesAndZeros();
+
+
+  //===============================================================================================
+  // RAPT tests:
 
   //-----------------------------------------------------------------------------------------------
   // Performance tests:
@@ -69,7 +108,7 @@ int main(int argc, char* argv[])
   //bouncillator();
   //bouncillatorFormula();
   //rayBouncer();
-  xoxosOsc();
+  //xoxosOsc();
 
   // Graphics:
   //lineDrawing();
