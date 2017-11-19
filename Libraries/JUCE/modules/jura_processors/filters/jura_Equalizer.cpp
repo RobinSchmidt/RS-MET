@@ -1469,10 +1469,12 @@ void EqualizerModuleEditor::resized()
 
   if( layout == SLIDERS_RIGHT )
   {
+    // the size/position computations are a mess - improve!
+
     int rightSectionWidth   = 128;
     int bottomSectionHeight = 24;
 
-    x = w-rightSectionWidth-4;
+    x = w-rightSectionWidth;
     h = infoField->getY() - y - bottomSectionHeight;
 
     rightSectionRectangle.setBounds(x, y+4, rightSectionWidth, h-4);
@@ -1509,35 +1511,30 @@ void EqualizerModuleEditor::resized()
     //globalGainSlider->setLayout(RSlider::NAME_ABOVE);
     //globalGainSlider->setBounds(x+4, y+4, w-8, 32);
 
-    x = 4;
+    x = 0;
     w = rightSectionRectangle.getX()-x;
     y = getPresetSectionBottom();
     h = infoField->getY() - y - bottomSectionHeight;
-    plotEditor->setBounds(4, y+4, w, h-4);
+    plotEditor->setBounds(x, y+4, w+2, h-4);
 
     // new widgets for v10.04:
-    y = plotEditor->getBottom();
-    bottomSectionRectangle.setBounds(4, y, getWidth()-8, 24);
+    y = plotEditor->getBottom()-2;
+    bottomSectionRectangle.setBounds(0, y, getWidth(), bottomSectionHeight+4); 
 
     x = bottomSectionRectangle.getX();
 
+    y += 1;
     bypassButton->setBounds(x+4, y+4, 60, 16);
     stereoModeComboBox->setBounds(bypassButton->getRight()+4, y+4, 180, 16);
-
     channelSelectButton1->setBounds(stereoModeComboBox->getRight()+4,   y+4, 16, 16);
     channelSelectButton2->setBounds(channelSelectButton1->getRight()-2, y+4, 16, 16);
-
-
 
     x = rightSectionRectangle.getX();
     w = rightSectionRectangle.getWidth();
     globalGainSlider->setBounds(x+4, y+4, w-8, 16);
 
-
     w = 92;
     gainRangeComboBox->setBounds(globalGainSlider->getX()-w-4, y+4, w, 16);
-
-    //gainRangeComboBox->setBounds(channelSelectButton2->getRight()+16, y+4, 92, 16);
   }
   if( layout == SLIDERS_BELOW )
   {
