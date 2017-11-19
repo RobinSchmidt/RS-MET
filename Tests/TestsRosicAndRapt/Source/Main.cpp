@@ -10,12 +10,22 @@ using namespace rotes;
 
 #include "rapt_tests/PerformanceTests/MathPerformanceTests.h"
 
-
-
 #include "Experiments/Experiments.h"
 
-
-//#include "Shared\Shared.h" // temporary - to figure out where the emory leak comes from
+/*
+// temporary - to figure out where the emory leak comes from (so we may can comment out all 
+// headers above):
+#include <crtdbg.h>
+#include <iostream>
+inline bool detectMemoryLeaks()
+{
+#ifdef _MSC_VER
+  return (_CrtDumpMemoryLeaks() == 1);
+#else
+  return false;
+#endif
+}
+*/
 
 int main(int argc, char* argv[])
 {
@@ -64,7 +74,7 @@ int main(int argc, char* argv[])
   //testPrototypeDesigner();
   //testLowpassToLowshelf();
   //testBesselPrototypeDesign();
-  testPapoulisPrototypeDesign();
+  //testPapoulisPrototypeDesign();
   //testEngineersFilter();
   //testPoleZeroMapping();
   //highOrderFilterPolesAndZeros();
