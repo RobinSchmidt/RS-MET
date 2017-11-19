@@ -12,12 +12,14 @@ namespace RAPT
 //#include "Basic/TwoPoleOneZero.h"  // decaying sine, etc.
 //#include "Basic/Biquad.h"
 //#include "Basic/BiquadChain.h"
+//#include "Basic/CookBookFilter.h"
 //...
 
 #include "Musical/LadderFilter.h"
 #include "Musical/PhasorFilter.h"
 #include "Musical/StateVariableFilter.h"
 //include "Musical/AttackDecaySineFilter.h" // maybe get rid of writing "Filter" all the time
+//#include "Basic/Equalizer.h"
 
 // maybe rename to InfiniteImpulseResponse
 #include "Scientific/PrototypeDesigner.h"               // unit cutoff analog prototypes
@@ -30,6 +32,7 @@ namespace RAPT
 #include "Scientific/LinkwitzRileyCrossOver.h" 
 #include "Scientific/CrossOver4Way.h" 
 #include "Scientific/DirectFormFilter.h" 
+#include "Scientific/EllipticSubBandFilter.h" 
 
 //#include "Convolution/WindowedSinc.h" 
 

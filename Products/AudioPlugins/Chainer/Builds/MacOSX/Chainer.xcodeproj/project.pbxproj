@@ -1178,6 +1178,7 @@
 		722783D18B4B702BD99E1C23 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "rosic_LowpassHighpass.cpp"; path = "../../../../../Libraries/JUCE/modules/rosic/filters/rosic_LowpassHighpass.cpp"; sourceTree = "SOURCE_ROOT"; };
 		722DE92C59678AC8D8AF298B = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "rosic_KeyShotVoice.h"; path = "../../../../../Libraries/JUCE/modules/rosic/instruments/rosic_KeyShotVoice.h"; sourceTree = "SOURCE_ROOT"; };
 		7296C9E0F1E94ABD8C82081F = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_audio_basics.h"; path = "../../../../../Libraries/JUCE/modules/juce_audio_basics/juce_audio_basics.h"; sourceTree = "SOURCE_ROOT"; };
+		72BE494CE4E9BA170804DCF8 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = EllipticSubBandFilter.cpp; path = ../../../../../Libraries/JUCE/modules/rapt/Filters/Scientific/EllipticSubBandFilter.cpp; sourceTree = "SOURCE_ROOT"; };
 		72FDE58BCA5C542760FDC309 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "jura_MidiMonitor.cpp"; path = "../../../../../Libraries/JUCE/modules/jura_processors/analyzers/jura_MidiMonitor.cpp"; sourceTree = "SOURCE_ROOT"; };
 		72FF5254B31BD0AC5423986C = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "rosic_Oscillator.cpp"; path = "../../../../../Libraries/JUCE/modules/rosic/generators/rosic_Oscillator.cpp"; sourceTree = "SOURCE_ROOT"; };
 		73174453B6D73096DCA5E9BA = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "jura_ParameterProfiles.h"; path = "../../../../../Libraries/JUCE/modules/jura_framework/control/jura_ParameterProfiles.h"; sourceTree = "SOURCE_ROOT"; };
@@ -1316,6 +1317,7 @@
 		7F7B083C407AE6668143C002 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_TimeSliceThread.h"; path = "../../../../../Libraries/JUCE/modules/juce_core/threads/juce_TimeSliceThread.h"; sourceTree = "SOURCE_ROOT"; };
 		7FC579975F0C156CE7D1B9F8 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = OnePoleFilter.h; path = ../../../../../Libraries/JUCE/modules/rapt/Filters/Basic/OnePoleFilter.h; sourceTree = "SOURCE_ROOT"; };
 		7FD82EC6C9964D6E6D60062B = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "juce_DirectoryIterator.cpp"; path = "../../../../../Libraries/JUCE/modules/juce_core/files/juce_DirectoryIterator.cpp"; sourceTree = "SOURCE_ROOT"; };
+		80265DD53BA32B734E1D9D32 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = EllipticSubBandFilter.h; path = ../../../../../Libraries/JUCE/modules/rapt/Filters/Scientific/EllipticSubBandFilter.h; sourceTree = "SOURCE_ROOT"; };
 		802E7B0D02396BDD0D00CAD0 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_Variant.h"; path = "../../../../../Libraries/JUCE/modules/juce_core/containers/juce_Variant.h"; sourceTree = "SOURCE_ROOT"; };
 		8076E50F7117E5E7FD4E7611 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_AudioFormatWriter.h"; path = "../../../../../Libraries/JUCE/modules/juce_audio_formats/format/juce_AudioFormatWriter.h"; sourceTree = "SOURCE_ROOT"; };
 		807A834982254AB6CBD13E13 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "rosic_FuncShaper.h"; path = "../../../../../Libraries/JUCE/modules/rosic/effects/rosic_FuncShaper.h"; sourceTree = "SOURCE_ROOT"; };
@@ -4378,6 +4380,8 @@
 					486988A3A5C5BEFBA68D269C,
 					C38997111F8802F130AF1010,
 					D302DCCAE883CDA8907FE644,
+					72BE494CE4E9BA170804DCF8,
+					80265DD53BA32B734E1D9D32,
 					42CAF1D068DAAF74EBCF0113,
 					BBD380165DAD10AC29746D98,
 					A7CA949FC055765CA913F28B,

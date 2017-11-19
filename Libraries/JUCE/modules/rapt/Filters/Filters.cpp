@@ -19,6 +19,7 @@ namespace RAPT
 #include "Scientific/EngineersFilter.cpp"
 #include "Scientific/LinkwitzRileyCrossOver.cpp"
 #include "Scientific/CrossOver4Way.cpp"
-#include "Scientific/DirectFormFilter.cpp" 
+#include "Scientific/DirectFormFilter.cpp"
+#include "Scientific/EllipticSubBandFilter.cpp"
 
 }
