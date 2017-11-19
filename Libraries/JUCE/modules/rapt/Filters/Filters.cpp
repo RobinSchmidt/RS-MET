@@ -22,5 +22,6 @@ namespace RAPT
 #include "Scientific/DirectFormFilter.cpp"
 #include "Scientific/EllipticSubBandFilter.cpp"
 #include "Scientific/EllipticSubBandFilterDirectForm.cpp"
+#include "Scientific/QuadratureNetwork.cpp"
 
 }

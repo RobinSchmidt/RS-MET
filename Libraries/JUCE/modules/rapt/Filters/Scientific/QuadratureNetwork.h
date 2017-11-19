@@ -1,8 +1,5 @@
-#ifndef rosic_QuadratureNetwork_h
-#define rosic_QuadratureNetwork_h
-
-namespace rosic
-{
+#ifndef RAPT_QUADRATURENETWORK_H_INCLUDED
+#define RAPT_QUADRATURENETWORK_H_INCLUDED
 
 /** This class implements a pair of filters which approximates a 90 degree phase shift between 
 both output signals. It accomplishes this by starting from an elliptic halfband lowpass filter and
@@ -10,8 +7,13 @@ rotating its pole/zero pattern by 90 degrees, thus leaving only the positive fre
 (now complex) output signal. The real and imaginary parts of this complex signal are now
 phase-shifted by 90 degrees with respect to one another. */
 
+template<class TSig, class TPar>
 class QuadratureNetwork
 {
+
+  // preliminary:
+  typedef std::complex<TPar> ComplexPar; 
+  typedef std::complex<TSig> ComplexSig;
 
 public:
 
@@ -25,23 +27,23 @@ public:
   /** \name Setup */
 
   /** Chooses one of the approximation methods as defined in
-  PrototypeDesigner::approximationMethods. */
+  rsPrototypeDesigner::approximationMethods. */
   void setApproximationMethod(int newApproximationMethod);
 
   /** Selects the order of the filter. */
   void setOrder(int newOrder);
 
   /** Sets the ripple in the passband in decibels. */
-  void setRipple(double newPassbandRipple);
+  void setRipple(TPar newPassbandRipple);
 
   /** Sets the rejection in the stopband in decibels. */
-  void setStopbandRejection(double newStopbandRejection);
+  void setStopbandRejection(TPar newStopbandRejection);
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
   /** Returns the approximation method to be used
-  @see enum PrototypeDesigner::approximationMethods. */
+  @see enum rsPrototypeDesigner::approximationMethods. */
   int getApproximationMethod() { return designer.getApproximationMethod(); }
 
   /** Returns true if the currently selected mode supports a ripple parameter. */
@@ -55,7 +57,20 @@ public:
 
   /** Returns a pair of output samples that represent the in-phase component (real part) and
   the quadrature phase component (imaginary part). */
-  INLINE void getOutputSamplePair(double in, double *outRealPart, double *outImaginaryPart);
+  inline void getOutputSamplePair(TSig in, TSig *outReal, TSig *outImag)
+  {
+    Complex tmp = gain*in;
+    for(int i = 0; i < order; i++)
+    {
+      y[i] = tmp - zeros[i]*x[i] + poles[i]*y[i];
+      x[i] = tmp;
+      tmp  = y[i];
+      // can(?) be streamlined by noting that x[i] == y[i-1] for i >= 1
+    }
+    tmp = y[order-1];
+    *outReal = tmp.re;
+    *outImag = tmp.im;
+  }
 
   //-----------------------------------------------------------------------------------------------
   /** \name Misc */
@@ -69,39 +84,15 @@ protected:
   void updateCoefficients();
 
   static const int maxOrder = 20;
-  Complex poles[maxOrder];
-  Complex zeros[maxOrder];
-  double  gain;
-  int     order;
+  ComplexPar poles[maxOrder];
+  ComplexPar zeros[maxOrder];
+  TPar gain;
+  int  order;
 
-  Complex x[maxOrder];  // past inputs of the individual stages
-  Complex y[maxOrder];  // past outputs of the individual stages 
+  ComplexSig x[maxOrder];  // past inputs of the individual stages
+  ComplexSig y[maxOrder];  // past outputs of the individual stages 
 
   rsInfiniteImpulseResponseDesigner designer;
 };
 
-//-------------------------------------------------------------------------------------------------
-// from here: definitions of the functions to be inlined, i.e. all functions which are supposed 
-// to be called at audio-rate (they can't be put into the .cpp file):
-
-INLINE void QuadratureNetwork::getOutputSamplePair(double in,
-  double *outRealPart, double *outImaginaryPart)
-{
-  Complex tmp = gain*in;
-  for(int i=0; i<order; i++)
-  {
-    y[i] = tmp - zeros[i]*x[i] + poles[i]*y[i];
-    x[i] = tmp;
-    tmp  = y[i];
-
-    // can(?) be streamlined by noting that x[i] == y[i-1] for i >= 1
-  }
-
-  tmp = y[order-1];
-  *outRealPart      = tmp.re;
-  *outImaginaryPart = tmp.im;
-}
-
-} // end namespace rosic
-
-#endif // rosic_QuadratureNetwork_h
+#endif

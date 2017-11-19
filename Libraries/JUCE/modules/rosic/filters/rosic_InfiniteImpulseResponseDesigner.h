@@ -26,7 +26,7 @@ public:
   };
 
   //-----------------------------------------------------------------------------------------------
-  /** \name Construction/Destruction: */
+  /** \name Construction/Destruction */
 
   /** Constructor. */
   rsInfiniteImpulseResponseDesigner();
