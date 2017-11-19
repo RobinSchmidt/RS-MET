@@ -10,7 +10,10 @@ void rsMatrix<T>::setSize(size_t numRows, size_t numColumns)
   this->N = numRows;
   this->M = numColumns;
   data.resize(this->N * this->M);
-  this->d = &data[0];
+  if(data.size() > 0)
+    this->d = &data[0];
+  else
+    this->d = nullptr;
 }
 
 // rsFillWithValue

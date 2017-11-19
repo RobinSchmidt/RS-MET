@@ -59,7 +59,9 @@ public:
 
 
   /** Standard constructor. You must pass the initial number of rows and columns */
-  rsMatrix(size_t numRows = 1, size_t numColumns = 1);
+  rsMatrix(size_t numRows = 0, size_t numColumns = 0);
+  //rsMatrix(size_t numRows = 1, size_t numColumns = 1); // leads to memory leaks
+
  
   /** Copy constructor. */
   //rsMatrix(const rsMatrix& other);

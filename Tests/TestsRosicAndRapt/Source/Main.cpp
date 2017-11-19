@@ -13,7 +13,7 @@ using namespace rotes;
 #include "Experiments/Experiments.h"
 
 /*
-// temporary - to figure out where the emory leak comes from (so we may can comment out all 
+// temporary - to figure out where the memory leak comes from (so we may can comment out all 
 // headers above):
 #include <crtdbg.h>
 #include <iostream>
@@ -25,6 +25,11 @@ inline bool detectMemoryLeaks()
   return false;
 #endif
 }
+// ...it seems that the RAPT module introduces the memory leak...maybe some global object gets 
+// created that does memory allocation?
+// ...i seems like the rsMatrix constructor gets called for the static matrix member in 
+// rsSmoothingFilter. ...maybe we have more cases where we have static members and/or global
+// objects which do dynamic memory allocation in their constructors?
 */
 
 int main(int argc, char* argv[])
