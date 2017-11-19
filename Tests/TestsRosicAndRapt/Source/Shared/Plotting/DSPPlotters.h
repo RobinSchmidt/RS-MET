@@ -18,7 +18,7 @@ class FilterPlotter : public GNUPlotter
 
 public:
 
-  FilterPlotter(bool isDigital); // maybe pass in a sampleRate, use inf for analog filters
+  FilterPlotter(bool isDigital); // maybe pass in a sampleRate, use inf as default (->analog filter)
 
   /** Adds a filter specification in terms of poles, zeros and gain to our list. */
   void addPoleZeroSet(int numPoles, std::complex<T>* poles, int numZeros, std::complex<T>* zeros,
@@ -45,9 +45,17 @@ public:
   given in the vector. */
   std::vector<std::complex<T>> getFrequencyResponse(int index, std::vector<T> frequencies);
 
+  /** Evaluates polynomial defined by its roots at the value z. */
+  std::complex<T> polynomialByRoots(std::complex<T> z, std::vector<std::complex<T>> roots);
+
+  /** Evaluates complex transfer function defined by its zeros z, poles p and gain k at the 
+  complex value s */
+  std::complex<T> transferFunctionZPK(std::complex<T> s, std::vector<std::complex<T>> z,
+    std::vector<std::complex<T>> p, T k);
+
 protected:
 
-  bool isDigital = true;
+  bool isDigital = false; // maybe should be part of FilterSpecification, so we can compare digital and analog responses
   T sampleRate = 1;
 
   struct FilterSpecification

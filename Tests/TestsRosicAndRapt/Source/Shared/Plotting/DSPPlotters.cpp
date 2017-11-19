@@ -42,7 +42,36 @@ vector<T> FilterPlotter<T>::getFrequencyAxis(int numFreqs, T lowFreq, T highFreq
   return freqs;
 }
 
-vector<complex<T>> getFrequencyResponse(int index, vector<T> f)
+template <class T>
+vector<complex<T>> FilterPlotter<T>::getFrequencyResponse(int index, vector<T> f)
 {
+  FilterSpecification spec = filterSpecs[index];
+  complex<T> j(0.0, 1.0);                // imaginary unit
+  complex<T> s;                          // value on s-plane where w evaluate H
+  vector<complex<T>> H(f.size());        // frequency response
+  for(int k = 0; k < f.size(); k++) {
+    s = j * 2 * M_PI * f[k];
+    if(isDigital)
+      s = exp(s/sampleRate); // more typically called "z"
+    H[k] = transferFunctionZPK(s, spec.poles, spec.zeros, spec.gain); 
+  }
+  return H;
+}
 
+template <class T>
+complex<T> FilterPlotter<T>::polynomialByRoots(complex<T> z, vector<complex<T>> r)
+{
+  complex<T> w = 1;
+  for(int i = 0; i < r.size(); i++)
+    w *= z-r[i];
+  return w;
+}
+
+template <class T>
+complex<T> FilterPlotter<T>::transferFunctionZPK(complex<T> s, vector<complex<T>> z, 
+  vector<complex<T>> p, T k)
+{
+  complex<T> num = polynomialByRoots(s, z);
+  complex<T> den = polynomialByRoots(s, p);
+  return k * num/den;
 }
