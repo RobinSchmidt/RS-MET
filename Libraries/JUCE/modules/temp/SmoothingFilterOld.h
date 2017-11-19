@@ -96,6 +96,16 @@ protected:
   // provide functions to set them separately. That's more convenient for the user. It increases 
   // our data a bit, but the convenience may be worth it.
 
+
+  // variables for the table of the time-constant scalers:
+  static const int  maxOrder = 16;
+  static const int  numAsyms = 8;
+  static const TPar maxAsym;
+  static bool tableIsFilled;
+  static rsMatrix<TPar> tauScalers; // 2D table
+  void createTauScalerTable();
+
+
 };
 
 #endif

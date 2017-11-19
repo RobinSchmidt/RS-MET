@@ -1,6 +1,19 @@
 template<class TSig, class TPar>
+const TPar rsSmoothingFilter<TSig, TPar>::maxAsym = 2.0;
+
+template<class TSig, class TPar>
+bool rsSmoothingFilter<TSig, TPar>::tableIsFilled = false;
+
+template<class TSig, class TPar>
+rsMatrix<TPar> rsSmoothingFilter<TSig, TPar>::tauScalers; 
+
+
+
+template<class TSig, class TPar>
 rsSmoothingFilter<TSig, TPar>::rsSmoothingFilter()
 {
+  if(!tableIsFilled)
+    createTauScalerTable();
   y1.resize(1);
   coeffs.resize(1);
   reset();
@@ -65,6 +78,30 @@ void rsSmoothingFilter<TSig, TPar>::setStates(TSig value)
 template<class TSig, class TPar>
 void rsSmoothingFilter<TSig, TPar>::updateCoeffs()
 {
+  /*
+  // under construction - this doesn't work yet:
+  TPar tmp, scaler;
+  for(int i = 0; i < order; i++)
+  {
+    tmp  = decay / (TPar) pow(i+1, shapeParam); // scaled decay time-constant      // tau[n] = tau[0] / n^p // p == shapeParam
+    int asymIndex = (int)(shapeParam*(numAsyms-1)); // later: use interpolation
+
+    //tmp  = decay;      // for test
+    //int asymIndex = 0; // test
+
+    scaler = tauScalers(order-1, asymIndex);  
+    coeffs[i] = exp(-1/(scaler*tmp));      
+
+    //coeffs[i] = exp(-1/tmp); 
+  }
+   //maybe try, if it responds different to modulations of the time-constants are in reverse
+   //order (from short to long instead of long to short)
+
+   //if shapeParam == 0, we may use an optimized loop (we don't need to compute different coeffs - 
+   //compute one and fill the whole coeffs array with it
+   */
+
+
   TPar tmp;
   if(shapeParam != 0)
   {
@@ -87,6 +124,89 @@ void rsSmoothingFilter<TSig, TPar>::updateCoeffs()
   }
 }
 
+template<class TSig, class TPar>
+void rsSmoothingFilter<TSig, TPar>::createTauScalerTable()
+{
+  return; // temporarily deactivated - doesn't work yet
+
+  y1.resize(maxOrder);
+  coeffs.resize(maxOrder);
+  reset();
+  tauScalers.setSize(maxOrder, numAsyms);
+
+  // We initialize all scalers to one, then for each order and asymmetry value, we set up a 
+  // tentative filter with some desired time to reach 1/2, then measure, how long it actually takes
+  // to reach one half and use the ratio of the requested vs the actual time as scaler for that
+  // combination of order/asymmetry.
+  tauScalers.setAllValues(1);
+
+  int numIterations = 4;
+  for(int k = 1; k <= numIterations; k++) // test - maybe we need to iterate a few times to converge
+  {                                       // yes! that helps a lot - todo: use a convergence criterion
+
+    for(int i = 0; i < maxOrder; i++)
+    {
+      order = i+1;
+      for(int j = 0; j < numAsyms; j++)
+      {
+        // init scaler to 1 and set up a desired number of samples and asymmetry:
+        //tauScalers(i, j) = 1;
+        TPar asym  = TPar(j) / TPar(numAsyms-1);
+        shapeParam = asym;
+        TPar desiredNumSamples = 101.0;
+        setNumSamplesToReachHalf(desiredNumSamples);
+
+        // now measure, how many samples it actually takes:
+        reset();
+        TPar actualNumSamples;
+        TSig yNow, yOld = 0;
+        for(int n = 0; true; n++)
+        {
+          yNow = getSample(1);
+          if(yNow > TSig(0.5))
+          {
+            actualNumSamples = TPar(n); 
+            //actualNumSamples = TPar(n-1);
+
+            // refine by computing a fractional part by fitting a line and solving for the 0:
+            TPar d0 = yOld - TPar(0.5);
+            TPar d1 = yNow - TPar(0.5);
+            TPar frac = d0 / (d0-d1);
+            actualNumSamples += frac;
+
+            break;
+          }
+          yOld = yNow;
+        }
+        //TPar dbg = desiredNumSamples / actualNumSamples;
+        tauScalers(i, j) *= desiredNumSamples / actualNumSamples;
+      }
+    }
+
+  }
+
+  y1.resize(maxOrder);
+  coeffs.resize(maxOrder);
+  setOrder(1);
+  tableIsFilled = true;
+
+  // Something is wrong with this table computation. For zero asymmetry it is imprecise (where the 
+  // imprecision increases with order) and for higher asymmetries, it's totally off. 
+  // OK - i think, this is a precision issue. When we use a higher number for desiredNumSamples,
+  // it gets more precise. For the 1st order filter, it goes like this:
+  // desiredNumSamples  value-crossed
+  //   100              0.495
+  //  1000              0.4995
+  // 10000              0.500038
+  // in order to avoid having to use a high number of samples here in the table-creation, we may 
+  // fit an actual exponential curve to samples 0, n-1, n and solve for where this function crosses 
+  // .5 ...but no - that would work only for the 1st order case. higher order filters don't follow
+  // that curve - maybe we need cubic interpolation? ...or maybe we should pre-compute all the 
+  // tables once using a high precision calculation.
+
+  // or maybe we should try a filter based on the step-invariant instead of impulse-invariant 
+  // transform? or maybe measure, when the impulse-response goes through 0.5
+}
 
 /*
 
