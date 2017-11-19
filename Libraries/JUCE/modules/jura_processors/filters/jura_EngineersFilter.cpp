@@ -436,8 +436,6 @@ EngineersFilterModuleEditor::EngineersFilterModuleEditor(CriticalSection *newPlu
 {
   setHeadlineText( juce::String("EngineersFilter") );
 
-  isTopLevelEditor = true;
-
   jassert(newEngineersFilterAudioModule != NULL ); // you must pass a valid module here
   sciFilterModuleToEdit = newEngineersFilterAudioModule;
 
@@ -570,10 +568,7 @@ void EngineersFilterModuleEditor::resized()
   y = methodComboBox->getBottom();
   h = infoField->getY()-y;
 
-  if( isTopLevelEditor )
-    plotEditor->setBounds(4, y+4, getWidth()-8, h-4);
-  else
-    plotEditor->setBounds(4, y+4, getWidth()-8, h-8);
+  plotEditor->setBounds(0, y+4, getWidth(), h-4);
 }
 
 void EngineersFilterModuleEditor::updateWidgetVisibility()
