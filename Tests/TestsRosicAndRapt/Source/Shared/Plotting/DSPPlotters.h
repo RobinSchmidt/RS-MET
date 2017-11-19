@@ -6,7 +6,11 @@
 /* Subclasses of GNUPlotter that specialize in making plots related to digital signal processing 
 (DSP). */
 
-/** A class for visualizing analog and digital filter responses. */
+/** A class for visualizing analog and digital filter responses. It may plot magnitude responses,
+phase responses, pole/zero plots etc. for one or more filters. You need to specify the filters in 
+terms of their poles and zeros. For each filter, you once call addPoleZeroSet to add the filter to
+the list. Once you are finished adding filters this way, you can get the various plots via the
+respective plot... functions. */
 
 template <class T>
 class FilterPlotter : public GNUPlotter
@@ -14,11 +18,13 @@ class FilterPlotter : public GNUPlotter
 
 public:
 
-  FilterPlotter(bool isDigital);
+  FilterPlotter(bool isDigital); // maybe pass in a sampleRate, use inf for analog filters
 
+  /** Adds a filter specification in terms of poles, zeros and gain to our list. */
   void addPoleZeroSet(int numPoles, std::complex<T>* poles, int numZeros, std::complex<T>* zeros,
     T gain);
 
+  /** Plots the magnitude responses of all the filters. */
   void plotMagnitude(int numFreqs, T lowFreq, T highFreq, bool logFreqAxis, bool decibels);
   /*
   void plotPhase();
@@ -42,6 +48,7 @@ public:
 protected:
 
   bool isDigital = true;
+  T sampleRate = 1;
 
   struct FilterSpecification
   {

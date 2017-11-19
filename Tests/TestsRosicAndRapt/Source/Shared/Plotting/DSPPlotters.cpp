@@ -8,8 +8,8 @@ FilterPlotter<T>::FilterPlotter(bool isDigital)
 }
 
 template <class T>
-void FilterPlotter<T>::addPoleZeroSet(int numPoles, std::complex<T>* poles, int numZeros, 
-  std::complex<T>* zeros, T gain)
+void FilterPlotter<T>::addPoleZeroSet(int numPoles, complex<T>* poles, int numZeros, 
+  complex<T>* zeros, T gain)
 {
   FilterSpecification spec;
   spec.poles.resize(numPoles);
@@ -31,13 +31,18 @@ void FilterPlotter<T>::plotMagnitude(int numFreqs, T lowFreq, T highFreq, bool l
 }
 
 template <class T>
-std::vector<T> FilterPlotter<T>::getFrequencyAxis(int numFreqs, T lowFreq, T highFreq, 
+vector<T> FilterPlotter<T>::getFrequencyAxis(int numFreqs, T lowFreq, T highFreq, 
   bool logarithmic)
 {
-  std::vector<T> freqs(numFreqs);
+  vector<T> freqs(numFreqs);
   if(logarithmic)
     rangeLogarithmic(&freqs[0], numFreqs, lowFreq, highFreq);
   else
     rangeLinear(&freqs[0], numFreqs, lowFreq, highFreq);
   return freqs;
+}
+
+vector<complex<T>> getFrequencyResponse(int index, vector<T> f)
+{
+
 }
