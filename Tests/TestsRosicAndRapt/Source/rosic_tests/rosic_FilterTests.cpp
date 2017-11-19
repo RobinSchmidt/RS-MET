@@ -218,8 +218,8 @@ void rotes::testBiquadPhasePlot()
   // obtain magnitude phase response:
   double m[numBins];
   double p[numBins];
-  FilterAnalyzer::getBiquadCascadeMagnitudeResponse(b0, b1, b2, a1, a2, numBiquads, w, m, numBins, false, false);
-  FilterAnalyzer::getBiquadCascadePhaseResponse(b0, b1, b2, a1, a2, numBiquads, w, p, numBins, false);
+  rsFilterAnalyzer::getBiquadCascadeMagnitudeResponse(b0, b1, b2, a1, a2, numBiquads, w, m, numBins, false, false);
+  rsFilterAnalyzer::getBiquadCascadePhaseResponse(b0, b1, b2, a1, a2, numBiquads, w, p, numBins, false);
 
   // plot the (magnitude- and) phase response:
   Plotter::plotData(numBins, w, p);
@@ -394,9 +394,9 @@ void rotes::testFilterAnalyzer()
   int prototypeOrder        = 3;
 
   // the filter-designer:
-  rosic::InfiniteImpulseResponseDesigner designer;
-  designer.setApproximationMethod(PrototypeDesigner::BUTTERWORTH);
-  designer.setMode(InfiniteImpulseResponseDesigner::LOWPASS);
+  rosic::rsInfiniteImpulseResponseDesigner designer;
+  designer.setApproximationMethod(rsPrototypeDesigner::BUTTERWORTH);
+  designer.setMode(rsInfiniteImpulseResponseDesigner::LOWPASS);
   designer.setFrequency(filterFrequency);
   designer.setSampleRate(sampleRate);
   designer.setPrototypeOrder(prototypeOrder);
@@ -431,13 +431,13 @@ void rotes::testFilterAnalyzer()
 
   //FilterAnalyzer::getBiquadCascadeMagnitudeResponse(b0, b1, b2, a1, a2, numBiquads, omegas, magnitudes, numBins, true);
 
-  FilterAnalyzer::getBiquadCascadeFrequencyResponse(         b0, b1, b2, a1, a2, numBiquads, omegas, H, numBins);
-  FilterAnalyzer::multiplyWithBiquadCascadeFrequencyResponse(b0, b1, b2, a1, a2, numBiquads, omegas, H, numBins);
-  FilterAnalyzer::addWithBiquadCascadeFrequencyResponse(     b0, b1, b2, a1, a2, numBiquads, omegas, H, numBins);
+  rsFilterAnalyzer::getBiquadCascadeFrequencyResponse(         b0, b1, b2, a1, a2, numBiquads, omegas, H, numBins);
+  rsFilterAnalyzer::multiplyWithBiquadCascadeFrequencyResponse(b0, b1, b2, a1, a2, numBiquads, omegas, H, numBins);
+  rsFilterAnalyzer::addWithBiquadCascadeFrequencyResponse(     b0, b1, b2, a1, a2, numBiquads, omegas, H, numBins);
 
 
-  FilterAnalyzer::getMagnitudes( H, magnitudes, numBins);
-  FilterAnalyzer::convertToDecibels(magnitudes, numBins);
+  rsFilterAnalyzer::getMagnitudes( H, magnitudes, numBins);
+  rsFilterAnalyzer::convertToDecibels(magnitudes, numBins);
 
   rosic::clipBuffer(magnitudes, numBins, -60.0, 20.0);
 
@@ -451,11 +451,11 @@ void rotes::testBiquadCascade()
 {
   double sampleRate = 44100.0;
 
-  InfiniteImpulseResponseDesigner designer;
-  rosic::BiquadCascade            biquadCascade;
+  rsInfiniteImpulseResponseDesigner designer;
+  rosic::rsBiquadCascade            biquadCascade;
 
-  designer.setApproximationMethod(PrototypeDesigner::BUTTERWORTH);
-  designer.setMode(InfiniteImpulseResponseDesigner::BANDPASS);
+  designer.setApproximationMethod(rsPrototypeDesigner::BUTTERWORTH);
+  designer.setMode(rsInfiniteImpulseResponseDesigner::BANDPASS);
   designer.setPrototypeOrder(5);
   designer.setSampleRate(sampleRate);
   designer.setFrequency(5000.0);
@@ -480,9 +480,9 @@ void rotes::testBiquadCascade()
   }
 
   biquadCascade.getFrequencyResponse(omegas, H, numBins);
-  FilterAnalyzer::getMagnitudes(H, magnitudes, numBins);
-  FilterAnalyzer::getPhases(    H, phases,     numBins);
-  //FilterAnalyzer::convertToDecibels(magnitudes, numBins);
+  rsFilterAnalyzer::getMagnitudes(H, magnitudes, numBins);
+  rsFilterAnalyzer::getPhases(    H, phases,     numBins);
+  //rsFilterAnalyzer::convertToDecibels(magnitudes, numBins);
 
   biquadCascade.getMagnitudeResponse(omegas, magnitudes, numBins, true, false);
   biquadCascade.getMagnitudeResponse(omegas, magnitudes, numBins, true, true);
@@ -712,7 +712,7 @@ void rotes::testCrossover4Way2()
   double lowClipValue      = -40.0;   // lower magnitude limit in dB for the plots
 
   // set up the crossover:
-  CrossOver4Way crossover;
+  rsCrossOver4Way crossover;
   crossover.setSampleRate(sampleRate);
   crossover.setCrossoverFrequency(lowCrossoverFreq,  1, 0);
   crossover.setCrossoverFrequency(highCrossoverFreq, 1, 1);
@@ -837,8 +837,8 @@ void rotes::testPrototypeDesigner()
 
   Complex poles[10];
   Complex zeros[10];
-  PrototypeDesigner designer;
-  designer.setApproximationMethod(PrototypeDesigner::BESSEL);
+  rsPrototypeDesigner designer;
+  designer.setApproximationMethod(rsPrototypeDesigner::BESSEL);
   designer.getPolesAndZeros(poles, zeros);
 
   int dummy = 0;
@@ -862,14 +862,14 @@ void rotes::testLowpassToLowshelf()
   // analog unit cutoff lowpass prototype design:
   Complex z[N], p[N]; // arrays of lowpass prototype poles and zeros
   double  k;          // lowpass prototype filter gain
-  //PrototypeDesigner::getBesselLowpassZerosPolesAndGain(z, p, &k, N);
-  PrototypeDesigner::getEllipticLowpassZerosPolesAndGain(z, p, &k, N, Gp, Gs);
+  //rsPrototypeDesigner::getBesselLowpassZerosPolesAndGain(z, p, &k, N);
+  rsPrototypeDesigner::getEllipticLowpassZerosPolesAndGain(z, p, &k, N, Gp, Gs);
   //Plotter::plotAnalogMagnitudeResponse(z, p, k, N, 0.0, 3.0, 1000);
 
   // transform lowpass to low-shelving:
   Complex zs[N], ps[N]; // arrays of lowshelf prototype poles and zeros
   double  ks;           // lowshelf prototype filter gain
-  PoleZeroMapper::sLowpassToLowshelf(z, p, &k, zs, ps, &ks, N, G0, G);
+  rsPoleZeroMapper::sLowpassToLowshelf(z, p, &k, zs, ps, &ks, N, G0, G);
   Plotter::plotAnalogMagnitudeResponse(zs, ps, ks, N, 0.0, 3.0, 2000);
 }
 
@@ -902,14 +902,14 @@ void rotes::testBesselPrototypeDesign()
   // analog low-shelving design:
   Complex z[N], p[N]; // arrays of lowshelf prototype poles and zeros
   double  k;          // lowshelf prototype filter gain
-  PrototypeDesigner::getBesselLowShelfZerosPolesAndGain(z, p, &k, N, G, G0);
+  rsPrototypeDesigner::getBesselLowShelfZerosPolesAndGain(z, p, &k, N, G, G0);
   Plotter::plotAnalogMagnitudeResponse(z, p, k, N, 0.0, 3.0, 2000);
   //Plotter::plotAnalogPhaseResponse(z, p, k, N, 0.0, 3.0, 2000);
 
 
   Complex zp[N], pp[N]; // arrays of lowpass prototype poles and zeros
   double  kp;          // lowpass prototype filter gain
-  PrototypeDesigner::getBesselLowpassZerosPolesAndGain(zp, pp, &kp, N);
+  rsPrototypeDesigner::getBesselLowpassZerosPolesAndGain(zp, pp, &kp, N);
   //Plotter::plotAnalogMagnitudeResponse(zp, pp, kp, N, 0.0, 3.0, 2000);
   //Plotter::plotAnalogPhaseResponse(zp, pp, kp, N, 0.0, 3.0, 2000);
 
@@ -920,20 +920,20 @@ void rotes::testBesselPrototypeDesign()
   double  kLP, kHP, kBP, kBR; 
 
   // LP -> LP:
-  PoleZeroMapper::sLowpassToLowpass(z, p, &k, zLP, pLP, &kLP, N, wcw);
+  rsPoleZeroMapper::sLowpassToLowpass(z, p, &k, zLP, pLP, &kLP, N, wcw);
   //Plotter::plotAnalogMagnitudeResponse(zLP, pLP, kLP, N, 0.0, 3.0*wcw, 200);
 
   // LP -> HP:
-  PoleZeroMapper::sLowpassToHighpass(z, p, &k, zHP, pHP, &kHP, N, wcw);
+  rsPoleZeroMapper::sLowpassToHighpass(z, p, &k, zHP, pHP, &kHP, N, wcw);
   //Plotter::plotAnalogMagnitudeResponse(zHP, pHP, kHP, N, 0.0, 3.0*wcw, 200);
   //Plotter::plotAnalogPhaseResponse(zHP, pHP, kHP, N, 0.0, 3.0*wcw, 200);
 
   // LP -> BP:
-  PoleZeroMapper::sLowpassToBandpass(z, p, &k, zBP, pBP, &kBP, N, wlw, wuw);
+  rsPoleZeroMapper::sLowpassToBandpass(z, p, &k, zBP, pBP, &kBP, N, wlw, wuw);
   //Plotter::plotAnalogMagnitudeResponse(zBP, pBP, kBP, 2*N, 0.0, 3.0*wcw, 200);
 
   // LP -> BR:
-  PoleZeroMapper::sLowpassToBandreject(z, p, &k, zBR, pBR, &kBR, N, wlw, wuw);
+  rsPoleZeroMapper::sLowpassToBandreject(z, p, &k, zBR, pBR, &kBR, N, wlw, wuw);
   //Plotter::plotAnalogMagnitudeResponse(zBR, pBR, kBR, 2*N, 0.0, 3.0*wcw, 200);
 }
 
@@ -953,8 +953,8 @@ void rotes::testPapoulisPrototypeDesign()
   // analog low-shelving design:
   Complex z[N], p[N]; // arrays of lowshelf prototype poles and zeros
   double  k;          // lowshelf prototype filter gain
-  //PrototypeDesigner::getPapoulisLowpassZerosPolesAndGain(z, p, &k, N);
-  PrototypeDesigner::getPapoulisLowShelfZerosPolesAndGain(z, p, &k, N, G, G0);
+  //rsPrototypeDesigner::getPapoulisLowpassZerosPolesAndGain(z, p, &k, N);
+  rsPrototypeDesigner::getPapoulisLowShelfZerosPolesAndGain(z, p, &k, N, G, G0);
   Plotter::plotAnalogMagnitudeResponse(z, p, k, N, 0.0, 3.0, 2000);
 }
 
@@ -1016,9 +1016,9 @@ void rotes::testPoleZeroMapping()
   double  k = 1.0;               // filter gain
 
 
-  InfiniteImpulseResponseDesigner iirDesigner;
-  iirDesigner.setApproximationMethod(rosic::PrototypeDesigner::ELLIPTIC);
-  iirDesigner.setMode(InfiniteImpulseResponseDesigner::LOWPASS);
+  rsInfiniteImpulseResponseDesigner iirDesigner;
+  iirDesigner.setApproximationMethod(rosic::rsPrototypeDesigner::ELLIPTIC);
+  iirDesigner.setMode(rsInfiniteImpulseResponseDesigner::LOWPASS);
   iirDesigner.setPrototypeOrder(N);
   iirDesigner.setSampleRate(fs);
   iirDesigner.setFrequency(fc);
@@ -1039,11 +1039,11 @@ void rotes::highOrderFilterPolesAndZeros()
   double Ap    =     1.0;  // passband ripple in dB
   double As    =    50.0;  // stopband rejection in dB
   double bw    =     1.0;  // bandwidth in octaves
-  int mode   = InfiniteImpulseResponseDesigner::BANDPASS;
-  int method = PrototypeDesigner::ELLIPTIC;
+  int mode   = rsInfiniteImpulseResponseDesigner::BANDPASS;
+  int method = rsPrototypeDesigner::ELLIPTIC;
 
   // create and set up the filter designer object:
-  InfiniteImpulseResponseDesigner designer;
+  rsInfiniteImpulseResponseDesigner designer;
   designer.setPrototypeOrder(N);
   designer.setSampleRate(fs);
   designer.setFrequency(fc);
@@ -1053,13 +1053,9 @@ void rotes::highOrderFilterPolesAndZeros()
   designer.setMode(mode);
   designer.setApproximationMethod(method);
 
-
   // compute poles and zeros:
   Complex z[2*N], p[2*N];        // arrays of poles and zeros
   designer.getPolesAndZeros(p, z);
-
-
-
 
   int dummy = 0;
 }

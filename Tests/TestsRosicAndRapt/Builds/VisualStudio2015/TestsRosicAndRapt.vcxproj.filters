@@ -62,6 +62,9 @@
     <Filter Include="Juce Modules\rapt\Filters\Musical">
       <UniqueIdentifier>{F476BC58-8E03-665A-31B3-38D8620F18EC}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Juce Modules\rapt\Filters\Scientific">
+      <UniqueIdentifier>{7561471E-D19A-F3F3-2EC1-E541FB7E7BE5}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Juce Modules\rapt\Generators">
       <UniqueIdentifier>{2584BCEB-C557-9A65-E2CF-912962FBE27E}</UniqueIdentifier>
     </Filter>
@@ -250,6 +253,9 @@
     <ClCompile Include="..\..\Source\Shared\RaptLibraryCode\RaptInstantiations.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\RaptLibraryCode</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Shared\Plotting\DSPPlotter.cpp">
+      <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Shared\Plotting\GNUPlotter.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>
     </ClCompile>
@@ -322,9 +328,6 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Basic\OnePoleFilter.cpp">
       <Filter>Juce Modules\rapt\Filters\Basic</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Basic\SmoothingFilter - Copy.cpp">
-      <Filter>Juce Modules\rapt\Filters\Basic</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Basic\SmoothingFilter.cpp">
       <Filter>Juce Modules\rapt\Filters\Basic</Filter>
     </ClCompile>
@@ -336,6 +339,45 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Musical\StateVariableFilter.cpp">
       <Filter>Juce Modules\rapt\Filters\Musical</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\BiquadCascade.cpp">
+      <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\CrossOver4Way.cpp">
+      <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\DirectFormFilter.cpp">
+      <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\EllipticSubBandFilter.cpp">
+      <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\EllipticSubBandFilterDirectForm.cpp">
+      <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\EngineersFilter.cpp">
+      <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\FilterAnalyzer.cpp">
+      <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\FilterCoefficientConverter.cpp">
+      <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\InfiniteImpulseResponseDesigner.cpp">
+      <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\LinkwitzRileyCrossOver.cpp">
+      <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\PoleZeroMapper.cpp">
+      <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\PrototypeDesigner.cpp">
+      <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\QuadratureNetwork.cpp">
+      <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Filters.cpp">
       <Filter>Juce Modules\rapt\Filters</Filter>
@@ -1042,7 +1084,7 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_PoleZeroMapper.cpp">
       <Filter>Juce Modules\rosic\filters</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_PoleZeroMapperBlah.cpp">
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_PoleZeroMapperOld.cpp">
       <Filter>Juce Modules\rosic\filters</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\filters\rosic_PrototypeDesigner.cpp">
@@ -1707,6 +1749,9 @@
     <ClInclude Include="..\..\Source\Shared\RaptLibraryCode\RaptInstantiations.h">
       <Filter>TestsRosicAndRapt\Source\Shared\RaptLibraryCode</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Shared\Plotting\DSPPlotter.h">
+      <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Shared\Plotting\GNUPlotter.h">
       <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>
     </ClInclude>
@@ -1788,9 +1833,6 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Basic\OnePoleFilter.h">
       <Filter>Juce Modules\rapt\Filters\Basic</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Basic\SmoothingFilter - Copy.h">
-      <Filter>Juce Modules\rapt\Filters\Basic</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Basic\SmoothingFilter.h">
       <Filter>Juce Modules\rapt\Filters\Basic</Filter>
     </ClInclude>
@@ -1802,6 +1844,45 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Musical\StateVariableFilter.h">
       <Filter>Juce Modules\rapt\Filters\Musical</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\BiquadCascade.h">
+      <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\CrossOver4Way.h">
+      <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\DirectFormFilter.h">
+      <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\EllipticSubBandFilter.h">
+      <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\EllipticSubBandFilterDirectForm.h">
+      <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\EngineersFilter.h">
+      <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\FilterAnalyzer.h">
+      <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\FilterCoefficientConverter.h">
+      <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\InfiniteImpulseResponseDesigner.h">
+      <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\LinkwitzRileyCrossOver.h">
+      <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\PoleZeroMapper.h">
+      <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\PrototypeDesigner.h">
+      <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Scientific\QuadratureNetwork.h">
+      <Filter>Juce Modules\rapt\Filters\Scientific</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Filters.h">
       <Filter>Juce Modules\rapt\Filters</Filter>

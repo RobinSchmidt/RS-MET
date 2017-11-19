@@ -5,8 +5,6 @@
 
 namespace rotes
 {
-
-
   void testLadderFilter();
   void testModalFilter();
   void testModalFilterWithAttack();
@@ -25,11 +23,7 @@ namespace rotes
   void testPapoulisPrototypeDesign();
   void testEngineersFilter();
   void testPoleZeroMapping();
-
-  // some newer code, written to produce reference outputs to check/debug copy/pase/edited code in
-  // RSLib:
   void highOrderFilterPolesAndZeros();
-
 }
 
 #endif 
