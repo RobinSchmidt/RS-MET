@@ -253,7 +253,7 @@
     <ClCompile Include="..\..\Source\Shared\RaptLibraryCode\RaptInstantiations.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\RaptLibraryCode</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Shared\Plotting\DSPPlotter.cpp">
+    <ClCompile Include="..\..\Source\Shared\Plotting\DSPPlotters.cpp">
       <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Shared\Plotting\GNUPlotter.cpp">
@@ -1749,7 +1749,7 @@
     <ClInclude Include="..\..\Source\Shared\RaptLibraryCode\RaptInstantiations.h">
       <Filter>TestsRosicAndRapt\Source\Shared\RaptLibraryCode</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Shared\Plotting\DSPPlotter.h">
+    <ClInclude Include="..\..\Source\Shared\Plotting\DSPPlotters.h">
       <Filter>TestsRosicAndRapt\Source\Shared\Plotting</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Shared\Plotting\GNUPlotter.h">

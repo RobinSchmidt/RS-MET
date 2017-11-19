@@ -138,7 +138,7 @@
     <ClCompile Include="..\..\Source\Shared\Utilities\PerformanceTestTools.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Utilities\TestInputCreation.cpp"/>
     <ClCompile Include="..\..\Source\Shared\RaptLibraryCode\RaptInstantiations.cpp"/>
-    <ClCompile Include="..\..\Source\Shared\Plotting\DSPPlotter.cpp"/>
+    <ClCompile Include="..\..\Source\Shared\Plotting\DSPPlotters.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Plotting\GNUPlotter.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Plotting\Plotting.cpp"/>
     <ClCompile Include="..\..\Source\Shared\Plotting\rosic_Plotter.cpp"/>
@@ -1563,7 +1563,7 @@
     <ClInclude Include="..\..\Source\Shared\Utilities\PerformanceTestTools.h"/>
     <ClInclude Include="..\..\Source\Shared\Utilities\TestInputCreation.h"/>
     <ClInclude Include="..\..\Source\Shared\RaptLibraryCode\RaptInstantiations.h"/>
-    <ClInclude Include="..\..\Source\Shared\Plotting\DSPPlotter.h"/>
+    <ClInclude Include="..\..\Source\Shared\Plotting\DSPPlotters.h"/>
     <ClInclude Include="..\..\Source\Shared\Plotting\GNUPlotter.h"/>
     <ClInclude Include="..\..\Source\Shared\Plotting\Plotting.h"/>
     <ClInclude Include="..\..\Source\Shared\Plotting\rosic_Plotter.h"/>

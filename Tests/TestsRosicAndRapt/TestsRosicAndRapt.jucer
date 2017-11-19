@@ -56,8 +56,8 @@
                 file="Source/Shared/RaptLibraryCode/RaptInstantiations.h"/>
         </GROUP>
         <GROUP id="{2FD6D867-5BCE-6EA7-AA7A-0B678FC2D479}" name="Plotting">
-          <FILE id="nAfnxK" name="DSPPlotter.cpp" compile="1" resource="0" file="Source/Shared/Plotting/DSPPlotter.cpp"/>
-          <FILE id="MgSEcF" name="DSPPlotter.h" compile="0" resource="0" file="Source/Shared/Plotting/DSPPlotter.h"/>
+          <FILE id="QfPywz" name="DSPPlotters.cpp" compile="1" resource="0" file="Source/Shared/Plotting/DSPPlotters.cpp"/>
+          <FILE id="N7Zpln" name="DSPPlotters.h" compile="0" resource="0" file="Source/Shared/Plotting/DSPPlotters.h"/>
           <FILE id="xlYcGO" name="GNUPlotter.cpp" compile="1" resource="0" file="Source/Shared/Plotting/GNUPlotter.cpp"/>
           <FILE id="iJVniX" name="GNUPlotter.h" compile="0" resource="0" file="Source/Shared/Plotting/GNUPlotter.h"/>
           <FILE id="oLiZ6u" name="Plotting.cpp" compile="1" resource="0" file="Source/Shared/Plotting/Plotting.cpp"/>

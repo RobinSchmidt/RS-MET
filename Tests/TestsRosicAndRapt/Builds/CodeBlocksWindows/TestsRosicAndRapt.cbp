@@ -123,8 +123,8 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../Source/Shared/Plotting/DSPPlotter.cpp"/>
-    <Unit filename="../../Source/Shared/Plotting/DSPPlotter.h">
+    <Unit filename="../../Source/Shared/Plotting/DSPPlotters.cpp"/>
+    <Unit filename="../../Source/Shared/Plotting/DSPPlotters.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
