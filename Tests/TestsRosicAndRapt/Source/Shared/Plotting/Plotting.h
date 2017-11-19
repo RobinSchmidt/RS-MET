@@ -2,6 +2,7 @@
 #define RAPT_PLOTTING_H
 
 #include "GNUPlotter.h"
+using namespace std;
 
 ///** Plots at most five y-functions against a common x-axis. */
 //void plotData(int N, float *x, float *y1, float *y2 = nullptr, float *y3 = nullptr,
