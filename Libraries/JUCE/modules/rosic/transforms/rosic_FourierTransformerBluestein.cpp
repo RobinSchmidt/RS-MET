@@ -1,14 +1,10 @@
-//#include "rosic_FourierTransformerBluestein.h"
-//using namespace rosic;
-
-//-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
 FourierTransformerBluestein::FourierTransformerBluestein()
 {
-  h                     = NULL;
-  c                     = NULL;
-  y                     = NULL;
+  h                     = nullptr;
+  c                     = nullptr;
+  y                     = nullptr;
   N                     = 0;
   M                     = 0;
   direction             = FourierTransformerRadix2::FORWARD;
@@ -19,16 +15,15 @@ FourierTransformerBluestein::FourierTransformerBluestein()
 
 FourierTransformerBluestein::~FourierTransformerBluestein()
 {
-  if( h != NULL )
+  if( h != nullptr )
     delete[] h;
-  if( c != NULL )
+  if( c != nullptr )
     delete[] c;
-  if( y != NULL )
+  if( y != nullptr )
     delete[] y;
 }
 
-//-------------------------------------------------------------------------------------------------
-// parameter settings:
+// setup:
 
 void FourierTransformerBluestein::setBlockSize(int newBlockSize)
 {
@@ -51,7 +46,7 @@ void FourierTransformerBluestein::setBlockSize(int newBlockSize)
     updateNormalizationFactor();
 
     // free old and allocate new memory for the internal buffer of size M:
-    if( y != NULL )
+    if( y != nullptr )
       delete[] y;
     y = new Complex[M];
   }
@@ -90,8 +85,7 @@ void FourierTransformerBluestein::setNormalizationMode(int newNormalizationMode)
     DEBUG_BREAK; // passed int-parameter does not correspond to any meaningful enum-field
 }
 
-//-------------------------------------------------------------------------------------------------
-// signal processing:
+// processing:
 
 void FourierTransformerBluestein::transformComplexBufferInPlace(Complex *buffer)
 {
@@ -166,11 +160,11 @@ void FourierTransformerBluestein::transformComplexBuffer(Complex *inBuffer, Comp
 
 void FourierTransformerBluestein::generateChirp()
 {
-  if( h != NULL )
+  if( h != nullptr )
     delete[] h;
   h = new Complex[M];
 
-  if( c != NULL )
+  if( c != nullptr )
     delete[] c;
   c = new Complex[N];
 
@@ -220,6 +214,3 @@ void FourierTransformerBluestein::updateNormalizationFactor()
   else
     normalizationFactor = 1.0;
 }
-
-
-

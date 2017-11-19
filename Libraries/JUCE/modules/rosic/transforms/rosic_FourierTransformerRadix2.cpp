@@ -1,9 +1,5 @@
-//#include "rosic_FourierTransformerRadix2.h"
-//using namespace rosic;
+#include "../_third_party/ooura_fft/fft4g.c" // maybe try fft4g.c, compare performance
 
-#include "../_third_party/ooura_fft/fft4g.c"
-
-//-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
 FourierTransformerRadix2::FourierTransformerRadix2()
@@ -13,9 +9,9 @@ FourierTransformerRadix2::FourierTransformerRadix2()
   direction           = FORWARD;
   normalizationMode   = NORMALIZE_ON_INVERSE_TRAFO;
   normalizationFactor = 1.0;
-  w                   = NULL;
-  ip                  = NULL;
-  tmpBuffer           = NULL;
+  w                   = nullptr;
+  ip                  = nullptr;
+  tmpBuffer           = nullptr;
 
   setBlockSize(256);
 }
@@ -23,15 +19,14 @@ FourierTransformerRadix2::FourierTransformerRadix2()
 FourierTransformerRadix2::~FourierTransformerRadix2()
 {
   // free dynamically allocated memory:
-  if( w != NULL )
+  if( w != nullptr )
     delete[] w;
-  if( ip != NULL )
+  if( ip != nullptr )
     delete[] ip;
-  if( tmpBuffer != NULL )
+  if( tmpBuffer != nullptr )
     delete[] tmpBuffer;
 }
 
-//-------------------------------------------------------------------------------------------------
 // parameter settings:
 
 void FourierTransformerRadix2::setBlockSize(int newBlockSize)
@@ -47,16 +42,16 @@ void FourierTransformerRadix2::setBlockSize(int newBlockSize)
       logN = (int) floor( log2((double) N + 0.5 ) );
       updateNormalizationFactor();
 
-      if( w != NULL )
+      if( w != nullptr )
         delete[] w;
       w    = new double[2*N];
 
-      if( ip != NULL )
+      if( ip != nullptr )
         delete[] ip;
       ip    = new int[(int) ceil(4.0+sqrt((double)N))];
       ip[0] = 0; // indicate that re-initialization is necesarry
 
-      if( tmpBuffer != NULL )
+      if( tmpBuffer != nullptr )
         delete[] tmpBuffer;
       tmpBuffer = new Complex[N];
     }
@@ -98,7 +93,6 @@ void FourierTransformerRadix2::setRealSignalMode(bool /*willBeUsedForRealSignals
   ip[0] = 0; // retriggers twiddle-factor computation
 }
 
-//-------------------------------------------------------------------------------------------------
 // signal processing:
 
 void FourierTransformerRadix2::transformComplexBufferInPlace(Complex *buffer)
@@ -134,12 +128,12 @@ void FourierTransformerRadix2::transformComplexBuffer(Complex *inBuffer, Complex
   int n;
   if( normalizationFactor != 1.0 )
   {
-    for(n=0; n<2*N; n++)
+    for(n = 0; n < 2*N; n++)
       d_outBuffer[n] = d_inBuffer[n] * normalizationFactor;
   }
   else
   {
-    for(n=0; n<2*N; n++)
+    for(n = 0; n < 2*N; n++)
       d_outBuffer[n] = d_inBuffer[n];
   }
 
@@ -152,8 +146,7 @@ void FourierTransformerRadix2::transformComplexBuffer(Complex *inBuffer, Complex
   cdft(2*N, sign, d_outBuffer, ip, w);
 }
 
-//-------------------------------------------------------------------------------------------------
-// convenience functions for real signal:
+// convenience functions for real signals:
 
 void FourierTransformerRadix2::transformRealSignal(double *inSignal, Complex *outSpectrum)
 {
@@ -167,12 +160,12 @@ void FourierTransformerRadix2::transformRealSignal(double *inSignal, Complex *ou
   int n;
   if( normalizationFactor != 1.0 )
   {
-    for(n=0; n<N; n++)
+    for(n = 0; n < N; n++)
       d_outBuffer[n] = inSignal[n] * normalizationFactor;
   }
   else
   {
-    for(n=0; n<N; n++)
+    for(n = 0; n < N; n++)
       d_outBuffer[n] = inSignal[n];
   }
 
@@ -181,7 +174,7 @@ void FourierTransformerRadix2::transformRealSignal(double *inSignal, Complex *ou
 
   // for some reason, this routine returns the second half of the spectrum (the complex conjugate
   // values of the desired first half), so we need to take the complex conjugates:
-  for(n=3; n<N; n+=2) // start at n=3 (imaginary part of the first bin after DC)
+  for(n = 3; n < N; n += 2) // start at n=3 (imaginary part of the first bin after DC)
     d_outBuffer[n] = -d_outBuffer[n];
 }
 
@@ -191,9 +184,8 @@ void FourierTransformerRadix2::transformRealSignal(double *signal, double *reAnd
   transformRealSignal(signal, c_reAndIm);
 }
 
-
-void FourierTransformerRadix2::getRealSignalMagnitudesAndPhases(double *signal,
-                                                                double *magnitudes, double *phases)
+void FourierTransformerRadix2::getRealSignalMagnitudesAndPhases(double *signal, double *magnitudes, 
+  double *phases)
 {
   transformRealSignal(signal, tmpBuffer);
 
@@ -206,7 +198,7 @@ void FourierTransformerRadix2::getRealSignalMagnitudesAndPhases(double *signal,
   double* dBuffer = &(tmpBuffer[0].re);
   double  re, im;
   int     k;
-  for(k=1; k<N/2; k++)
+  for(k = 1; k < N/2; k++)
   {
     re            = dBuffer[2*k];
     im            = dBuffer[2*k+1];
@@ -226,7 +218,7 @@ void FourierTransformerRadix2::getRealSignalMagnitudes(double *signal, double *m
   double* dBuffer = &(tmpBuffer[0].re);
   double  re, im;
   int     k;
-  for(k=1; k<N/2; k++)
+  for(k = 1; k < N/2; k++)
   {
     re            = dBuffer[2*k];
     im            = dBuffer[2*k+1];
@@ -246,7 +238,7 @@ void FourierTransformerRadix2::transformSymmetricSpectrum(Complex *inSpectrum, d
   int n;
   if( normalizationFactor != 1.0 )
   {
-    for(n=0; n<N; n++)
+    for(n = 0; n < N; n++)
       outSignal[n] = 2.0 * d_inBuffer[n] * normalizationFactor;
   }
   else
@@ -257,7 +249,7 @@ void FourierTransformerRadix2::transformSymmetricSpectrum(Complex *inSpectrum, d
 
   // for some reason, the subsequent routine expects the second half of the spectrum (the complex
   // conjugate values of the first half), so we need to take the complex conjugates:
-  for(n=3; n<N; n+=2) // start at n=3 (imaginary part of the first bin after DC)
+  for(n = 3; n < N; n += 2) // start at n=3 (imaginary part of the first bin after DC)
     outSignal[n] = -outSignal[n];
 
   // use Ooura's routine:
@@ -270,9 +262,8 @@ void FourierTransformerRadix2::transformSymmetricSpectrum(double *reAndIm, doubl
   transformSymmetricSpectrum(c_reAndIm, signal);
 }
 
-void FourierTransformerRadix2::getRealSignalFromMagnitudesAndPhases(double *magnitudes,
-                                                                    double *phases,
-                                                                    double *signal)
+void FourierTransformerRadix2::getRealSignalFromMagnitudesAndPhases(double *magnitudes,                                                                  
+  double *phases, double *signal)
 {
   tmpBuffer[0].re = magnitudes[0];
   tmpBuffer[0].im = phases[0];
@@ -280,7 +271,7 @@ void FourierTransformerRadix2::getRealSignalFromMagnitudesAndPhases(double *magn
   int k;
   double* dBuffer = &(tmpBuffer[0].re);
   double  s, c;
-  for(k=1; k<N/2; k++)
+  for(k = 1; k < N/2; k++)
   {
     sinCos(phases[k], &s, &c);
     dBuffer[2*k]   = magnitudes[k] * c;
@@ -290,23 +281,15 @@ void FourierTransformerRadix2::getRealSignalFromMagnitudesAndPhases(double *magn
   transformSymmetricSpectrum(tmpBuffer, signal);
 }
 
-//-------------------------------------------------------------------------------------------------
 // pre-calculations:
 
 void FourierTransformerRadix2::updateNormalizationFactor()
 {
   if( (normalizationMode == NORMALIZE_ON_FORWARD_TRAFO && direction == FORWARD) ||
       (normalizationMode == NORMALIZE_ON_INVERSE_TRAFO && direction == INVERSE)    )
-  {
     normalizationFactor = 1.0 / (double) N;
-  }
   else if( normalizationMode == ORTHONORMAL_TRAFO )
-  {
     normalizationFactor = 1.0 / sqrt((double) N);
-  }
   else
     normalizationFactor = 1.0;
 }
-
-
-

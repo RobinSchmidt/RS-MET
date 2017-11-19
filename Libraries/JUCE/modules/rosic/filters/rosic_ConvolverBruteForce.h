@@ -63,7 +63,7 @@ namespace rosic
     doubleA *x;       // buffer for past input samples
     doubleA *h;       // array containing the impulse response
     int M;            // length of the impulse response
-    MutexLock mutex;  // mutex-lock for accessing the buffers in athread safe way - 
+    MutexLock mutex;  // mutex-lock for accessing the buffers in a thread safe way - 
                       // \todo get rid of that, thread-safety should be handled elsewhere
 
   };
