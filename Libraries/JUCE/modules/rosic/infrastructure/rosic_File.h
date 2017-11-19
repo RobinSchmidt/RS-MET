@@ -96,7 +96,8 @@ namespace rosic
     // static functions and data members:
 
     /** This is an empty string. */
-    static const rsFile nonExistent;
+    //static const rsFile nonExistent; 
+    // causes memory leak because of memory allocation in absolutePath member
 
     /** If a file with the given path/name already exists, it creates an alternative name for the 
     file by appending a string with some number. If no file with the given name exists, the 

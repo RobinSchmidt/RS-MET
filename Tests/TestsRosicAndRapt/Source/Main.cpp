@@ -12,25 +12,6 @@ using namespace rotes;
 
 #include "Experiments/Experiments.h"
 
-/*
-// temporary - to figure out where the memory leak comes from (so we may can comment out all 
-// headers above):
-#include <crtdbg.h>
-#include <iostream>
-inline bool detectMemoryLeaks()
-{
-#ifdef _MSC_VER
-  return (_CrtDumpMemoryLeaks() == 1);
-#else
-  return false;
-#endif
-}
-// ...it seems that the RAPT module introduces the memory leak...maybe some global object gets 
-// created that does memory allocation?
-// ...i seems like the rsMatrix constructor gets called for the static matrix member in 
-// rsSmoothingFilter. ...maybe we have more cases where we have static members and/or global
-// objects which do dynamic memory allocation in their constructors?
-*/
 
 int main(int argc, char* argv[])
 {
@@ -145,10 +126,11 @@ int main(int argc, char* argv[])
 
   //DEBUG_HOOK;
 
-  // somehow, we always get memory leaks, even if we do nothing - figure out why - does some header
-  // create a global object which leaks?
   if( detectMemoryLeaks() )
     std::cout << "\n\n!!! Memory leaks detected !!! \n";
+    // If memory leaks occur even though no objects are actually created on the heap, it could mean 
+    // that some class in a library module has a static data member that does a dynamic memory 
+    // allocation or some global object is created somewhere that dynamically allocates memory.
 
   getchar();
   return(EXIT_SUCCESS);
