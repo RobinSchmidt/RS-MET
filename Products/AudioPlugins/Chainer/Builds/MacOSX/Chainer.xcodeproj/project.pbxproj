@@ -1353,6 +1353,7 @@
 		8314CF42658D40C815B0F79D = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_WaitableEvent.h"; path = "../../../../../Libraries/JUCE/modules/juce_core/threads/juce_WaitableEvent.h"; sourceTree = "SOURCE_ROOT"; };
 		8335307F3C9B943062E41272 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "juce_KeyListener.cpp"; path = "../../../../../Libraries/JUCE/modules/juce_gui_basics/keyboard/juce_KeyListener.cpp"; sourceTree = "SOURCE_ROOT"; };
 		836398FEED37406ABD1C2098 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = "juce_AU_Wrapper.mm"; path = "../../../../../Libraries/JUCE/modules/juce_audio_plugin_client/AU/juce_AU_Wrapper.mm"; sourceTree = "SOURCE_ROOT"; };
+		83789CB65B5A04BB54F45318 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = EllipticSubBandFilterDirectForm.cpp; path = ../../../../../Libraries/JUCE/modules/rapt/Filters/Scientific/EllipticSubBandFilterDirectForm.cpp; sourceTree = "SOURCE_ROOT"; };
 		8379FF275CDDBBF865ACEE53 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_FileFilter.h"; path = "../../../../../Libraries/JUCE/modules/juce_core/files/juce_FileFilter.h"; sourceTree = "SOURCE_ROOT"; };
 		838D66C1F5FEB76F6591FB60 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "romos_Liberty.h"; path = "../../../../../Libraries/JUCE/modules/romos/Framework/romos_Liberty.h"; sourceTree = "SOURCE_ROOT"; };
 		83A2A8937B22B5FF5DB74ADE = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_ComponentPeer.h"; path = "../../../../../Libraries/JUCE/modules/juce_gui_basics/windows/juce_ComponentPeer.h"; sourceTree = "SOURCE_ROOT"; };
@@ -1956,6 +1957,7 @@
 		BDCC30F02C23AE35A3962C98 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = BiquadCascadeStereoSSE2.cpp; path = ../../../../../Libraries/JUCE/modules/rosic/legacy/BiquadCascadeStereoSSE2.cpp; sourceTree = "SOURCE_ROOT"; };
 		BE1ED52306D03AD669DD30AC = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_MPEZoneLayout.h"; path = "../../../../../Libraries/JUCE/modules/juce_audio_basics/mpe/juce_MPEZoneLayout.h"; sourceTree = "SOURCE_ROOT"; };
 		BE760EB15C7FCEA66C494742 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_AudioParameterBool.h"; path = "../../../../../Libraries/JUCE/modules/juce_audio_processors/utilities/juce_AudioParameterBool.h"; sourceTree = "SOURCE_ROOT"; };
+		BE79D42C8AB4A92A47C0F736 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = EllipticSubBandFilterDirectForm.h; path = ../../../../../Libraries/JUCE/modules/rapt/Filters/Scientific/EllipticSubBandFilterDirectForm.h; sourceTree = "SOURCE_ROOT"; };
 		BE938355357FD915A76A1CD3 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = jchuff.c; path = "../../../../../Libraries/JUCE/modules/juce_graphics/image_formats/jpglib/jchuff.c"; sourceTree = "SOURCE_ROOT"; };
 		BEB4EF0A315D11C195B3C3EE = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "juce_Socket.cpp"; path = "../../../../../Libraries/JUCE/modules/juce_core/network/juce_Socket.cpp"; sourceTree = "SOURCE_ROOT"; };
 		BED41626B34AD9CFAE707C34 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SuperOscillator.cpp; path = ../../../../../Libraries/JUCE/modules/rosic/legacy/SuperOscillator.cpp; sourceTree = "SOURCE_ROOT"; };
@@ -4382,6 +4384,8 @@
 					D302DCCAE883CDA8907FE644,
 					72BE494CE4E9BA170804DCF8,
 					80265DD53BA32B734E1D9D32,
+					83789CB65B5A04BB54F45318,
+					BE79D42C8AB4A92A47C0F736,
 					42CAF1D068DAAF74EBCF0113,
 					BBD380165DAD10AC29746D98,
 					A7CA949FC055765CA913F28B,

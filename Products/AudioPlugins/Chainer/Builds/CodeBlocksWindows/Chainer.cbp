@@ -6101,6 +6101,14 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/rapt/Filters/Scientific/EllipticSubBandFilterDirectForm.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/rapt/Filters/Scientific/EllipticSubBandFilterDirectForm.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/rapt/Filters/Scientific/EngineersFilter.cpp">
       <Option compile="0"/>
       <Option link="0"/>

@@ -31,8 +31,9 @@ namespace RAPT
 #include "Scientific/EngineersFilter.h" 
 #include "Scientific/LinkwitzRileyCrossOver.h" 
 #include "Scientific/CrossOver4Way.h" 
-#include "Scientific/DirectFormFilter.h" 
-#include "Scientific/EllipticSubBandFilter.h" 
+#include "Scientific/DirectFormFilter.h"
+#include "Scientific/EllipticSubBandFilter.h"
+#include "Scientific/EllipticSubBandFilterDirectForm.h"
 
 //#include "Convolution/WindowedSinc.h" 
 

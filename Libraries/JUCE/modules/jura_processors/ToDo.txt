@@ -115,6 +115,12 @@ EchoLab
 
 MultiAnalyzer
  -no horizontal scrollbar in scope (but might be intentional?)
+ -integrate PhaseScope and TrackMeter, maybe have a 1D-2D side-by side display for the PhaseScope
+ -Tabs: Plot (current scope), FFT, scope (phase-scope), Meters, spectrogram, histogram, filterbank,
+  pitch, envelope, loudness-histogram
+  Multi-Views
+  -show several analyses at once (maybe select those relevant for sound-design, have a different 
+   Multi-View for mix, mastreing, etc.)
 
 -Straightliner bugs:
  -preset-dirty star is present after loading a preset
