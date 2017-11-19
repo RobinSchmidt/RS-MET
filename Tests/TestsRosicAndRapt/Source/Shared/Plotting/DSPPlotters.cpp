@@ -2,14 +2,14 @@
 using namespace std;
 
 template <class T>
-FilterPlotter<T>::FilterPlotter(bool isDigital)
+FilterPlotter<T>::FilterPlotter()
 {
-  this->isDigital = isDigital;
+
 }
 
 template <class T>
 void FilterPlotter<T>::addPoleZeroSet(int numPoles, complex<T>* poles, int numZeros, 
-  complex<T>* zeros, T gain)
+  complex<T>* zeros, T gain, T sampleRate)
 {
   FilterSpecification spec;
   spec.poles.resize(numPoles);
@@ -20,6 +20,7 @@ void FilterPlotter<T>::addPoleZeroSet(int numPoles, complex<T>* poles, int numZe
   for(i = 0; i < numZeros; i++)
     spec.zeros[i] = zeros[i];
   spec.gain = gain;
+  spec.sampleRate = sampleRate;
   filterSpecs.push_back(spec);
 }
 
@@ -46,6 +47,7 @@ template <class T>
 vector<complex<T>> FilterPlotter<T>::getFrequencyResponse(int index, vector<T> f)
 {
   FilterSpecification spec = filterSpecs[index];
+  bool isDigital = spec.sampleRate == inf;
   complex<T> j(0.0, 1.0);                // imaginary unit
   complex<T> s;                          // value on s-plane where w evaluate H
   vector<complex<T>> H(f.size());        // frequency response
@@ -53,7 +55,7 @@ vector<complex<T>> FilterPlotter<T>::getFrequencyResponse(int index, vector<T> f
     s = j * 2 * M_PI * f[k];
     if(isDigital)
       s = exp(s/sampleRate); // more typically called "z"
-    H[k] = transferFunctionZPK(s, spec.poles, spec.zeros, spec.gain); 
+    H[k] = transferFunctionZPK(s, spec.zeros, spec.poles, spec.gain); 
   }
   return H;
 }

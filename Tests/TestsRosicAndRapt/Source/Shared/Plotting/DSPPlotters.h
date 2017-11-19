@@ -18,11 +18,17 @@ class FilterPlotter : public GNUPlotter
 
 public:
 
-  FilterPlotter(bool isDigital); // maybe pass in a sampleRate, use inf as default (->analog filter)
+  static const T inf = std::numeric_limits<T>::infinity(); // shorthand
 
-  /** Adds a filter specification in terms of poles, zeros and gain to our list. */
+  FilterPlotter();
+
+  /** Adds a filter specification in terms of poles, zeros and gain to our list. You may also pass 
+  a sampleRate in which case the poles and zeros will be interpreted as z-plane values. Otherwise
+  an analog filter (corresponding to an infinite sampl rate) will be assumed and the poles and 
+  zeros are interpreted as being in the s-plane */
   void addPoleZeroSet(int numPoles, std::complex<T>* poles, int numZeros, std::complex<T>* zeros,
-    T gain);
+    T gain, T sampleRate = inf);
+  // maybe rename to addFilter
 
   /** Plots the magnitude responses of all the filters. */
   void plotMagnitude(int numFreqs, T lowFreq, T highFreq, bool logFreqAxis, bool decibels);
@@ -55,14 +61,12 @@ public:
 
 protected:
 
-  bool isDigital = false; // maybe should be part of FilterSpecification, so we can compare digital and analog responses
-  T sampleRate = 1;
-
   struct FilterSpecification
   {
     std::vector<T> poles;
     std::vector<T> zeros;
-    T gain;
+    T gain = 1;
+    T sampleRate = inf;
   };
   std::vector<FilterSpecification> filterSpecs; 
 
