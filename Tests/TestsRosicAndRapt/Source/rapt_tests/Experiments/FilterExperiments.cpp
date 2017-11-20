@@ -279,6 +279,13 @@ void nonUniformMovingAverage()
   // gets averaged out better?
 }
 
+void prototypeDesign()
+{
+
+
+  FilterPlotter<float> plt;
+}
+
 void smoothingFilterOrders()
 {
   // We plot the step responses of the rsSmoothingFilter for various orders.

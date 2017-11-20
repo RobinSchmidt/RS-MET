@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
   //testPrototypeDesigner();
   //testLowpassToLowshelf();
   //testBesselPrototypeDesign();
-  testPapoulisPrototypeDesign();
+  //testPapoulisPrototypeDesign();
   //testEngineersFilter();
   //testPoleZeroMapping();
   //highOrderFilterPolesAndZeros();
@@ -93,6 +93,7 @@ int main(int argc, char* argv[])
   // Filter:
   //ladderResonanceManipulation();
   //nonUniformMovingAverage();
+  prototypeDesign();
   //smoothingFilterOrders();
   //smoothingFilterTransitionTimes();
 

@@ -18,7 +18,8 @@ class FilterPlotter : public GNUPlotter
 
 public:
 
-  static const T inf = std::numeric_limits<T>::infinity(); // shorthand
+  static const T pi;  // 3.1415926535897932384626433832795
+  static const T inf; // std::numeric_limits<T>::infinity()
 
   FilterPlotter();
 
@@ -66,14 +67,21 @@ protected:
 
   struct FilterSpecification
   {
-    std::vector<T> poles;
-    std::vector<T> zeros;
+    std::vector<std::complex<T>> poles;
+    std::vector<std::complex<T>> zeros;
     T gain = 1;
     T sampleRate = inf;
   };
   std::vector<FilterSpecification> filterSpecs; 
 
 };
+
+// todo: allow for filters to be specified also in terms of their polynomial coefficients - maybe 
+// either by incoroprating a root finder or by allowing to store a filter specification in one of
+// the two alternative formats (zeros-poles-gain (zpk) or coeff-arrays), conversion from zpk to
+// coeffs may be required anyway to compute group delay (i think we'll need derivatives of 
+// numerator and denominator, quotient-rule and maybe chain-rule to evaluate the derivative of the
+// phase-response)
 
 // todo: make a class SpectrogramPlotter
 
