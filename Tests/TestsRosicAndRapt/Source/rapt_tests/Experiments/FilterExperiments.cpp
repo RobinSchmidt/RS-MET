@@ -287,7 +287,7 @@ void reflectRoots(complex<float>* roots, int N) // rename to mirrorFirstHalf, ma
 }
 void prototypeDesign()
 {
-  static const int N = 4;  // filter order
+  static const int N = 6;  // filter order
 
   // obtain filter poles and zeros:
   std::complex<float> poles[N], zeros[N];
@@ -295,6 +295,8 @@ void prototypeDesign()
   pd.setOrder(N);
   //pd.setApproximationMethod(rsPrototypeDesignerF::BUTTERWORTH);
   pd.setApproximationMethod(rsPrototypeDesignerF::ELLIPTIC);
+  //pd.setApproximationMethod(rsPrototypeDesignerF::PAPOULIS);
+  //pd.setApproximationMethod(rsPrototypeDesignerF::BESSEL);
   pd.setPassbandRipple(1); 
   pd.setStopbandRejection(20);
   pd.getPolesAndZeros(poles, zeros); // returns only the non-redundant upper halfplane poles
@@ -306,14 +308,14 @@ void prototypeDesign()
   // create plotter, pass filter specification and plot:
   FilterPlotter<float> plt;
   plt.addPoleZeroSet(pd.getNumFinitePoles(), poles, pd.getNumFiniteZeros(), zeros, 1.f);
-  plt.plotMagnitude(1000, 0, 3, false, false);
+  plt.plotMagnitude(2000, 0, 3, false, false);
 
 
   // issues:
 
   // it seems, elliptic prototypes have an overall gain equal to the reciprocal of the linear 
-  // stopband rejection (passband ripple seems to have no effect) -> add overall gain to
-  // the prototype designer
+  // stopband rejection (passband ripple seems to have no effect), Papoulis design has also a
+  // wrong DC gain -> add overall gain to the prototype designer
 
   // elliptic filters of odd order don't plot because the zeros are arranged wrongly (there's an
   // infinite zero in the middle of the array) - re-arrange the zero array in this case
