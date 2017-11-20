@@ -58,7 +58,7 @@ template <class T>
 vector<complex<T>> FilterPlotter<T>::getFrequencyResponse(int index, vector<T>& f)
 {
   FilterSpecification spec = filterSpecs[index];
-  bool isDigital = spec.sampleRate == inf;
+  bool isDigital = spec.sampleRate != inf;
   complex<T> j(0.0, 1.0);                        // imaginary unit                         
   vector<complex<T>> H(f.size());                // frequency response
   for(int k = 0; k < f.size(); k++) {

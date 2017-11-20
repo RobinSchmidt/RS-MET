@@ -280,7 +280,7 @@ void nonUniformMovingAverage()
 }
 
 
-void reflectRoots(complex<float>* roots, int N)
+void reflectRoots(complex<float>* roots, int N) // rename to mirrorFirstHalf, make generic, add to library
 {
   for(int i = 0; i <= N/2; i++)
     roots[N-1-i] = conj(roots[i]);
@@ -306,6 +306,7 @@ void prototypeDesign()
   // create plotter, pass filter specification and plot:
   FilterPlotter<float> plt;
   plt.addPoleZeroSet(pd.getNumFinitePoles(), poles, pd.getNumFiniteZeros(), zeros, 1.f);
+  plt.plotMagnitude(200, 0, 10, false, false);
 }
 
 void smoothingFilterOrders()
