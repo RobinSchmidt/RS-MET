@@ -35,10 +35,10 @@ public:
   /*
   void plotPhase();
   void plotMagnitudeAndPhase(); // in one plot
-  void plotPolesAndZeros();
-  void plotTransferFunctionMagnitude();
   void plotPhaseDelay();
   void plotGroupDelay();
+  void plotPolesAndZeros();
+  void plotTransferFunctionMagnitude();
   void plotImpulseResponse();
   void plotStepResponse();
   */
@@ -49,15 +49,18 @@ public:
 
   /** Returns the complex frequency response of the filter with given index at the frequencies 
   given in the vector. */
-  std::vector<std::complex<T>> getFrequencyResponse(int index, std::vector<T> frequencies);
+  std::vector<std::complex<T>> getFrequencyResponse(int index, std::vector<T>& frequencies);
+
+  /** Extracts the magnitudes from the passed complex frequency response array.  */
+  std::vector<T> getMagnitudes(std::vector<std::complex<T>>& complexFreqResponse);
 
   /** Evaluates polynomial defined by its roots at the value z. */
-  std::complex<T> polynomialByRoots(std::complex<T> z, std::vector<std::complex<T>> roots);
+  std::complex<T> polynomialByRoots(std::complex<T> z, std::vector<std::complex<T>>& roots);
 
   /** Evaluates complex transfer function defined by its zeros z, poles p and gain k at the 
   complex value s */
-  std::complex<T> transferFunctionZPK(std::complex<T> s, std::vector<std::complex<T>> z,
-    std::vector<std::complex<T>> p, T k);
+  std::complex<T> transferFunctionZPK(std::complex<T> s, std::vector<std::complex<T>>& z,
+    std::vector<std::complex<T>>& p, T k);
 
 protected:
 
