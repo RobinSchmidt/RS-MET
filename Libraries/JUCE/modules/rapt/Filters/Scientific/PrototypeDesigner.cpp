@@ -997,15 +997,15 @@ void rsPrototypeDesigner<T>::makeInverseChebychevLowpass()
 
   T  wb = 1.0; // ...leads to a gain of Gs (stopband-gain) at unity (w=1), we rescale it here
                     // so as to have the -3 dB point at w=1:
-  T  Gp = sqrt(0.5);
-  T  ep = sqrt(1.0/(Gp*Gp)-1.0);
+  T  Gp = sqrt(T(0.5));
+  T  ep = sqrt(T(1)/(Gp*Gp)-T(1));
   wb    = cosh( acosh(es/ep) / N );                             // (1),Eq.9
 
   // calculate the position of the real pole (if present):
-  T ui;
+  //T ui;
   if( r == 1 )
   {
-    p[L+r-1] = -wb / sinh(v0*PI*0.5);                           // Eq.73 with k=1
+    p[L+r-1] = -wb / sinh(v0*T(PI*0.5));                           // Eq.73 with k=1
     z[L+r-1] = RS_INF(T);
   }
 
@@ -1044,14 +1044,14 @@ void rsPrototypeDesigner<T>::makeInverseChebychevLowShelv()
   T Gs    = rsDbToAmp(A0 + Rs*A);
   T es    = sqrt( (G*G-Gs*Gs) / (Gs*Gs-G0*G0) );
   //T g0    = pow(G0, 1.0 / (T) N);
-  T g     = pow(G,   1.0 / (T) N);
-  T alpha = pow(es + sqrt(1.0 + es*es), 1.0 / (T) N);
-  T beta  = pow((G0*es + Gs*sqrt(1.0 + es*es) ), 1.0/(T) N);
+  T g     = pow(G,   T(1) / T(N));
+  T alpha = pow(es + sqrt(T(1) + es*es), T(1) / T(N));
+  T beta  = pow((G0*es + Gs*sqrt(T(1) + es*es) ), T(1)/T(N));
   T u     = log(beta/g);
   T v     = log(alpha);
   T Gb    = sqrt(G0*G);
   T eb    = sqrt( (G*G-Gb*Gb) / (Gb*Gb-G0*G0) );
-  T wb    = cosh( acosh(es/eb) / (T) N );  // why not 1 / cosh(..)?
+  T wb    = cosh( acosh(es/eb) / T(N) );  // why not 1 / cosh(..)?
 
   // calculate real pole and zero of the first order stage, if present and store them in the last
   // array slots:
@@ -1066,7 +1066,7 @@ void rsPrototypeDesigner<T>::makeInverseChebychevLowShelv()
   Complex j(0.0, 1.0); // imaginary unit
   for(int i = 0; i < L; i++)
   {
-    phi_i = (T) (2*(i+1)-1)*PI / (T) (2*N);
+    phi_i = (T) (2*(i+1)-1)*T(PI) / T(2*N);
     z[i]  = wb / (j*rsCosC(phi_i-j*u));
     p[i]  = wb / (j*rsCosC(phi_i-j*v));
   }
@@ -1085,12 +1085,12 @@ void rsPrototypeDesigner<T>::makeEllipticLowpass()
 
   // declare/assign/calculate some repeatedly needed variables:
   Complex j(0.0, 1.0);                                    // imaginary unit
-  T  u_i;
+  //T  u_i;
   Complex zeta_i;
-  T  Gp  = pow(10.0, -Ap/20.0);                 // Eq. 1
-  T  Gs  = pow(10.0, -As/20.0);                 // Eq. 1
-  T  ep  = sqrt(1.0/(Gp*Gp) - 1.0);             // Eq. 2
-  T  es  = sqrt(1.0/(Gs*Gs) - 1.0);             // Eq. 2
+  T  Gp  = pow(T(10), -Ap/T(20));               // Eq. 1
+  T  Gs  = pow(T(10), -As/T(20));               // Eq. 1
+  T  ep  = sqrt(T(1)/(Gp*Gp) - T(1));           // Eq. 2
+  T  es  = sqrt(T(1)/(Gs*Gs) - T(1));           // Eq. 2
   T  k1  = ep/es;                               // Eq. 3
   T  k   = ellipdeg(N, k1);                     // solve degree equation for k
   T  v_0 =  (-j*rsAsnC(j/ep, k1)/(T)N).real();  // from ellipap.m
@@ -1142,7 +1142,7 @@ void rsPrototypeDesigner<T>::makeEllipticLowShelv()
   T  k   = ellipdeg(N, k1);                       // degree equation
   //Complex u = rsAcdC(eb/ep, k1) / N;            // old
   Complex u = rsAcdC(Complex(eb/ep), k1) / T(N);  // following text after (2),Eq.65
-  T  wb  = 1.0 / rsCdC(u, k).real();              // ...ditto
+  T  wb  = T(1) / rsCdC(u, k).real();             // ...ditto
   Complex j   = Complex(0.0, 1.0);                // imaginary unit
   Complex ju0 = rsAsnC(j*G/(ep*G0), k1) / T(N);   // line 111 in hpeq.m
   Complex jv0 = rsAsnC(j  / ep,     k1) / T(N);   // line 113 in hpeq.m
@@ -1155,7 +1155,7 @@ void rsPrototypeDesigner<T>::makeEllipticLowShelv()
   }
 
   // calculate the complex conjugate poles and zeros:
-  T ui;
+  //T ui;
   for(int i = 0; i < L; i++)
   {
     Complex ui = (T) (2*(i+1)-1) / (T) N;              // (2),Eq.37

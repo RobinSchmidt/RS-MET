@@ -301,7 +301,8 @@ RS_INLINE double rsSoftClip(double x, double lowClamp = -1.0, double highClamp =
 RS_INLINE double rsSqrWave(double x);
 
 /** Same syntax as fmod but brings the result into the symmetric interval -y/2...y/2 */
-RS_INLINE double rsSrem(double x, double y);
+template<class T>
+RS_INLINE T rsSrem(T x, T y);
 
 /** The unit step function - returns 1 for x>=0, 0 else. */
 RS_INLINE double rsStep(double x);
@@ -874,13 +875,12 @@ RS_INLINE double rsSoftClip(double x, double lowClamp, double highClamp,
   return out;
 }
 
-RS_INLINE double rsSrem(double x, double y)
+template<class T>
+RS_INLINE T rsSrem(T x, T y)
 {
-  double z = fmod(x, y);
-
+  T z = fmod(x, y);
   if(fabs(z) > 0.5*y)
     z = z - y*rsSign(z);
-
   return z;
 }
 

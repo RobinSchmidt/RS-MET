@@ -304,7 +304,8 @@ std::complex<T> rsPolynomial<T>::convergeToRootViaLaguerre(std::complex<T> *a, i
   static const int maxNumIterations = itsBeforeFracStep*numFractions;
 
   // fractions for taking fractional update steps to break a limit cycles:
-  static T fractions[numFractions+1] = {0.0, 0.5, 0.25, 0.75, 0.13, 0.38, 0.62, 0.88, 1.0};
+  static T fractions[numFractions+1] = { T(0.0),  T(0.5),  T(0.25), T(0.75), T(0.13), T(0.38), 
+                                         T(0.62), T(0.88), T(1.0) };
 
   std::complex<T> r = initialGuess; // the current estimate for the root
   for(int i = 1; i <= maxNumIterations; i++)
@@ -340,7 +341,7 @@ std::complex<T> rsPolynomial<T>::convergeToRootViaLaguerre(std::complex<T> *a, i
     // Eq. 9.5.8)
     std::complex<T> dr;
     if( GpA > 0.0 )
-      dr = std::complex<T>(order, 0.0) / Gp;  // Eq. 9.5.11
+      dr = std::complex<T>(T(order), 0.0) / Gp;  // Eq. 9.5.11
     else
       dr = exp(log(T(1)+abs(r))) * std::complex<T>(cos((T)i), sin((T)i));
         // \todo use sinCos()
@@ -366,7 +367,7 @@ std::complex<T> rsPolynomial<T>::convergeToRootViaLaguerre(std::complex<T> *a, i
 template<class T>
 void rsPolynomial<T>::findPolynomialRoots(std::complex<T> *a, int order, std::complex<T> *roots)
 {
-  const T eps = 2.0e-14; // for float, it was 2.0e-6 - use template numeric_limit<T>
+  const T eps = T(2.0e-14); // for float, it was 2.0e-6 - use template numeric_limit<T>
 
   // allocate memory for the coefficients of the deflated polynomial and initialize it as
   // non-deflated polynomial:
@@ -995,7 +996,7 @@ void rsPolynomial<T>::maximumSlopeMonotonicPolynomial(T *w, int n)
     for(i = 0; i <= k; i++) 
     {
       //a[i] = (2.0*i+1.0)/(M_SQRT2*(k+1.0));
-      a[i] = (2.0*i+1.0)/(SQRT2*(k+1.0));
+      a[i] = T(2*i+1) / T(SQRT2*(k+1));
     }
   }                           // even
   else 
@@ -1083,11 +1084,11 @@ void rsPolynomial<T>::maximumSlopeMonotonicPolynomial(T *w, int n)
       c0 = -s[0];
       for(j = 1; j < i+1; j++) 
       {
-        c1 = -s[j] + 2.0*s[j-1];
+        c1 = -s[j] + 2*s[j-1];
         s[j-1] = c0;
         c0 = c1;
       }
-      c1 = 2.0*s[i];
+      c1 = 2*s[i];
       s[i] = c0;
       s[i+1] = c1;
     }

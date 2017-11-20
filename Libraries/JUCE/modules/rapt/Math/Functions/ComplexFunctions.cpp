@@ -34,8 +34,8 @@ std::complex<T> rsAcdC(std::complex<T> w, T k)
   rsEllipticIntegral(k, &K, &Kprime);
   T R = Kprime/K;
 
-  u.real(rsSrem(u.real(), 4.0));
-  u.imag(rsSrem(u.imag(), 2.0*R));
+  u.real(rsSrem(u.real(), T(4)  ));
+  u.imag(rsSrem(u.imag(), T(2*R)));
 
   return u;
 }

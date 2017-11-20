@@ -36,7 +36,7 @@ inline T rsBeatsToSeconds(T beat, T bpm)
 template<class T>
 inline T rsDbToAmp(T dB)
 {
-  return exp(dB * 0.11512925464970228420089957273422);
+  return exp(dB * T(0.11512925464970228420089957273422));
 }
 
 /** Given a value x between 0 and 1, this function returns a value of a cubic polynomial that 

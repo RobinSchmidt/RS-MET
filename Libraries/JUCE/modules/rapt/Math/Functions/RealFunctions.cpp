@@ -15,7 +15,7 @@ void rsLanden(T k, int M, T* v)
   {
     for(n=0; n<M; n++)
     {
-      k    = (k/(1.0+rsSqrt(1.0-k*k)));
+      k    = (k/(T(1) + sqrt(T(1)-k*k)));
       k   *= k;
       v[n] = k;
     }
@@ -31,8 +31,8 @@ T rsIdentity(T x)
 template<class T>
 void rsEllipticIntegral(T k, T *K, T *Kprime, int M)
 {
-  T kmin = 1e-6;
-  T kmax = rsSqrt(1-kmin*kmin);
+  T kmin = T(1e-6);
+  T kmax = sqrt(1 - kmin*kmin);
   T kp, L;
   T* v  = new T[M];
   T* vp = new T[M];
@@ -42,32 +42,32 @@ void rsEllipticIntegral(T k, T *K, T *Kprime, int M)
     *K = RS_INF(T);
   else if(k > kmax)
   {
-    kp = rsSqrt(1.0-k*k);
-    L  = -log(kp/4.0);
-    *K = L + (L-1.0)*kp*kp/4.0;
+    kp = sqrt(1 - k*k);
+    L  = -log(kp / 4);
+    *K = L + (L-1)*kp*kp/4;
   }
   else
   {
     rsLanden(k, M, v);
     for(n=0; n<M; n++)
       v[n] += 1.0;
-    *K = ArrayTools::rsProduct(v, M) * 0.5*PI;
+    *K = ArrayTools::rsProduct(v, M) * T(0.5*PI);
   }
 
   if(k == 0.0)
     *Kprime = RS_INF(T);
   else if(k < kmin)
   {
-    L       = -log(k/4.0);
-    *Kprime = L + (L-1.0)*k*k/4.0;
+    L       = -log(k/4);
+    *Kprime = L + (L-1)*k*k/4;
   }
   else
   {
-    kp = rsSqrt(1.0-k*k);
+    kp = sqrt(1 - k*k);
     rsLanden(kp, M, vp);
     for(n=0; n<M; n++)
       vp[n] += 1.0;
-    *Kprime = ArrayTools::rsProduct(vp, M) * 0.5*PI;
+    *Kprime = ArrayTools::rsProduct(vp, M) * T(0.5*PI);
   }
 
   delete[] v;
