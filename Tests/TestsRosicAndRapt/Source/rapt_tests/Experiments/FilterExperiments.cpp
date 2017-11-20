@@ -281,7 +281,19 @@ void nonUniformMovingAverage()
 
 void prototypeDesign()
 {
+  static const int order = 9;
+
+  // obtain filter poles and zeros:
+  std::complex<float> poles[order], zeros[order];
   rsPrototypeDesignerF pd;
+  pd.setOrder(order);
+  pd.setApproximationMethod(rsPrototypeDesignerF::BUTTERWORTH);
+  pd.setPassbandRipple(3); 
+  pd.setStopbandRejection(40);
+  pd.getPolesAndZeros(poles, zeros); // returns only the non-redundant upper halfplane poles
+
+  // create full pole/zero set by reflection:
+
 
   FilterPlotter<float> plt;
 }
