@@ -293,10 +293,10 @@ void prototypeDesign()
   std::complex<float> poles[N], zeros[N];
   rsPrototypeDesignerF pd;
   pd.setOrder(N);
-  pd.setApproximationMethod(rsPrototypeDesignerF::BUTTERWORTH);
-  //pd.setApproximationMethod(rsPrototypeDesignerF::ELLIPTIC);
-  pd.setPassbandRipple(3); 
-  pd.setStopbandRejection(40);
+  //pd.setApproximationMethod(rsPrototypeDesignerF::BUTTERWORTH);
+  pd.setApproximationMethod(rsPrototypeDesignerF::ELLIPTIC);
+  pd.setPassbandRipple(1); 
+  pd.setStopbandRejection(20);
   pd.getPolesAndZeros(poles, zeros); // returns only the non-redundant upper halfplane poles
 
   // create full pole/zero set by reflection:
@@ -306,7 +306,17 @@ void prototypeDesign()
   // create plotter, pass filter specification and plot:
   FilterPlotter<float> plt;
   plt.addPoleZeroSet(pd.getNumFinitePoles(), poles, pd.getNumFiniteZeros(), zeros, 1.f);
-  plt.plotMagnitude(200, 0, 2, false, false);
+  plt.plotMagnitude(1000, 0, 3, false, false);
+
+
+  // issues:
+
+  // it seems, elliptic prototypes have an overall gain equal to the reciprocal of the linear 
+  // stopband rejection (passband ripple seems to have no effect) -> add overall gain to
+  // the prototype designer
+
+  // elliptic filters of odd order don't plot because the zeros are arranged wrongly (there's an
+  // infinite zero in the middle of the array) - re-arrange the zero array in this case
 }
 
 void smoothingFilterOrders()
