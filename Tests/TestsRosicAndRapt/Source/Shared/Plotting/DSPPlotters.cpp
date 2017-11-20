@@ -97,5 +97,6 @@ complex<T> FilterPlotter<T>::transferFunctionZPK(complex<T> s, vector<complex<T>
   return k * num/den;
 }
 
-// instantiation:
+// template instantiations:
 template FilterPlotter<float>;
+template FilterPlotter<double>;

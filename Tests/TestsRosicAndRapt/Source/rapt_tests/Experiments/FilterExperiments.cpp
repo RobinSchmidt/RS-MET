@@ -281,6 +281,7 @@ void nonUniformMovingAverage()
 
 void prototypeDesign()
 {
+  //rsPrototypeDesignerF pd;
 
 
   FilterPlotter<float> plt;

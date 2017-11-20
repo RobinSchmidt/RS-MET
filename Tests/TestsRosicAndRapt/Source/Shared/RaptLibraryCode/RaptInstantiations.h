@@ -24,12 +24,18 @@ typedef RAPT::rsVector3D<float> rsVector3DF;
 
 
 
-// Filters:
+// Filters-Musical:
 typedef RAPT::rsSmoothingFilter<float, float> rsSmoothingFilterFF;
 typedef RAPT::rsLadderFilter<float, float> rsLadderFilterFF;
 typedef RAPT::rsPhasorFilter<float, float> rsPhasorFilterFF;
 typedef RAPT::rsPhasorStateMapper<float> rsPhasorStateMapperF;
 typedef RAPT::rsStateVariableFilter<float, float> rsStateVariableFilterFF; 
+
+// Filters-Scientific:
+typedef RAPT::rsPrototypeDesigner<float> rsPrototyeDesignerF;
+
+
+
 
 // Physics:
 typedef RAPT::rsParticleSystem<float> rsParticleSystemF;

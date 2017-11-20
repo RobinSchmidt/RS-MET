@@ -49,12 +49,15 @@ template RAPT::rsVector3D<float>;
 template void RAPT::rsStatistics::linearRegression(int N, float* x, float* y, float& a, float& b);
 template float RAPT::rsStatistics::proportionalRegression(int N, float* x, float* y);
 
-// Filters:
+// Filters-Musical:
 template RAPT::rsSmoothingFilter<float, float>;
 template RAPT::rsLadderFilter<float, float>;
 template RAPT::rsPhasorFilter<float, float>;
 template RAPT::rsPhasorStateMapper<float>;
 template RAPT::rsStateVariableFilter<float, float>; 
+
+// Filters-Scientific:
+//template RAPT::rsPrototypeDesigner<float>;
 
 // Physics:
 template RAPT::rsParticleSystem<float>;
