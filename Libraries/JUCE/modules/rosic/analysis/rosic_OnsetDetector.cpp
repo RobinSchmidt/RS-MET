@@ -1,5 +1,4 @@
-#include "rosic_OnsetDetector.h"
-using namespace rosic;
+#include "../_third_party/bernsee_fft/BernseeFFT.cpp"
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
@@ -157,7 +156,7 @@ void OnsetDetector::feedSignalBlock(float *sampleData, int numSamples)
 
 void OnsetDetector::finishBlockProcessing()
 {
-  numBlocks = flux.size();
+  numBlocks = (int)flux.size();
   if( numBlocks > 0 )
     flux[0] = 0.0;   // ignore very first value
   findOnsetsFromFluxMaxima();
@@ -375,13 +374,7 @@ void OnsetDetector::fitQuadratic(float *x, float *y, float &a, float &b, float &
   float k3 = x[1]      - x[0];
   float k4 = k1/k3;
   float k5 = k2/k3;
-  a        = (y[2]-k4*x[2]-y[0]+k4*x[0]) / (x[2]*x[2]+k5*x[2]-x[0]*x[0]-k5*x[0]);
-  b        = (k1+k2*a)/k3;
-  c        = y[0]-a*x[0]*x[0]-b*x[0];
+  a = (y[2]-k4*x[2]-y[0]+k4*x[0]) / (x[2]*x[2]+k5*x[2]-x[0]*x[0]-k5*x[0]);
+  b = (k1+k2*a)/k3;
+  c = y[0]-a*x[0]*x[0]-b*x[0];
 }
-
-
-
-
-
-

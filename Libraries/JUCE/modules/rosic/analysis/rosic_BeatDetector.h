@@ -1,8 +1,8 @@
 #ifndef rosic_BeatDetector_h
 #define rosic_BeatDetector_h
 
-#include "rosic_OnsetDetector.h"
-#include <limits.h>
+//#include "rosic_OnsetDetector.h"
+//#include <limits.h>
 
 namespace rosic
 {

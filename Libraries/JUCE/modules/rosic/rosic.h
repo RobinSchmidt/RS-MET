@@ -286,6 +286,8 @@
 #include "analysis/rosic_SpectrumAnalyzer.h"
 #include "analysis/rosic_TrackMeter.h"
 #include "analysis/rosic_WaveformDisplayBuffer.h"
+#include "analysis/rosic_OnsetDetector.h"
+#include "analysis/rosic_BeatDetector.h"
 
 // dynamics:
 #include "dynamics/rosic_BesselFilterForGainSignal.h"

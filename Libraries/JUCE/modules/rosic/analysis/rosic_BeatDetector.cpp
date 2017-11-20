@@ -1,5 +1,5 @@
-#include "rosic_BeatDetector.h"
-using namespace rosic;
+//#include "rosic_BeatDetector.h"
+//using namespace rosic;
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
@@ -46,12 +46,12 @@ void BeatDetector::estimateTempi()
   float              minBPM   = 90.f;     // minimum expected tempo in BPM
   float              margin   = 0.125f;   // relative tolerance margin for the clusters 
   unsigned int       M        = 20;       // memory (number of IOIs to consider)
-  const unsigned int numTempi = 5;        // number of potential tempi to maintain
+  const unsigned int numTempi = 5;        // number of potential tempi to maintain - use size_t
 
   // internal variables:
   float        maxBeatInterval = 60.f/minBPM;
   float        minBeatInterval = maxBeatInterval/2.f;
-  unsigned int numOnsets       = onsets.size();
+  unsigned int numOnsets       = (unsigned int) onsets.size(); // use size_t
 
   // allocate memory for the tempo and confidence estimates:
   float** tempoEstimates = new float*[numOnsets];
@@ -125,7 +125,7 @@ void BeatDetector::estimateTempi()
     for(unsigned int c=0; c<clusterWeights.size(); c++)
       weightSum += clusterWeights[c];
 
-    for(unsigned int t=0; t<rmin(numTempi, clusterWeights.size()); t++)
+    for(unsigned int t=0; t<rmin(numTempi,(unsigned int) clusterWeights.size()); t++)
     {
       // find cluster with maximum weight:
       float maxWeight = 0.f;

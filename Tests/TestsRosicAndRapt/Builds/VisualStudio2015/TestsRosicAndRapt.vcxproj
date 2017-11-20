@@ -434,6 +434,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_variablescope.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\bernsee_fft\BernseeFFT.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\cephes_tweaked\double\const.c">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -554,6 +557,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\soundtouch\WavFile.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_BeatDetector.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_CyclicAutoCorrelator.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -573,6 +579,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_LinearPredictor.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_OnsetDetector.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_OscilloscopeBufferOld.cpp">
@@ -1691,6 +1700,7 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_tokenizer.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_typeinfo.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_variablescope.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\bernsee_fft\BernseeFFT.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\cephes_tweaked\double\mconf.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ExprEval_v3_4\datalist.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ExprEval_v3_4\defs.h"/>
@@ -1737,6 +1747,7 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\tnt_subscript.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\tnt_vec.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\tnt_version.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_BeatDetector.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_CyclicAutoCorrelator.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_EnvelopeFollower.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_FormantPreserver.h"/>
@@ -1744,6 +1755,7 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_InstantaneousEnvelopeDetector.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_LevelDetector.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_LinearPredictor.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_OnsetDetector.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_OscilloscopeBufferOld.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_PitchDetector.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_ScopeScreenScanner.h"/>

@@ -1007,6 +1007,14 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../Libraries/JUCE/modules/rosic/_third_party/bernsee_fft/BernseeFFT.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/JUCE/modules/rosic/_third_party/bernsee_fft/BernseeFFT.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../Libraries/JUCE/modules/rosic/_third_party/cephes_tweaked/double/const.c">
       <Option compile="0"/>
       <Option link="0"/>
@@ -1391,6 +1399,14 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../Libraries/JUCE/modules/rosic/analysis/rosic_BeatDetector.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/JUCE/modules/rosic/analysis/rosic_BeatDetector.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../Libraries/JUCE/modules/rosic/analysis/rosic_CyclicAutoCorrelator.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -1444,6 +1460,14 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../Libraries/JUCE/modules/rosic/analysis/rosic_LinearPredictor.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/JUCE/modules/rosic/analysis/rosic_OnsetDetector.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/JUCE/modules/rosic/analysis/rosic_OnsetDetector.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
