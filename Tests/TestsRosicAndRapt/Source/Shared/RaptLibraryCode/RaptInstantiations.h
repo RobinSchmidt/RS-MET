@@ -32,7 +32,7 @@ typedef RAPT::rsPhasorStateMapper<float> rsPhasorStateMapperF;
 typedef RAPT::rsStateVariableFilter<float, float> rsStateVariableFilterFF; 
 
 // Filters-Scientific:
-//typedef RAPT::rsPrototypeDesigner<float> rsPrototypeDesignerF;
+typedef RAPT::rsPrototypeDesigner<float> rsPrototypeDesignerF;
 typedef RAPT::rsPrototypeDesigner<double> rsPrototypeDesignerD;
 
 

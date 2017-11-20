@@ -322,7 +322,7 @@ std::complex<T> rsPolynomial<T>::convergeToRootViaLaguerre(std::complex<T> *a, i
     std::complex<T> G  = P[1]/P[0];       // Eq. 9.5.6
     std::complex<T> H  = G*G - P[2]/P[0]; // Eq. 9.5.7
 
-    std::complex<T> sq = sqrt(T(order-1)*((T)order*H-G*G)); // square-root Eq. 9.5.11
+    std::complex<T> sq = sqrt(T(order-1)*(T(order)*H-G*G)); // square-root Eq. 9.5.11
     std::complex<T> Gp = G + sq;  // denominator in 9.5.11 with positive sign for square-root
     std::complex<T> Gm = G - sq;  // denominator in 9.5.11 with negative sign for square-root
 

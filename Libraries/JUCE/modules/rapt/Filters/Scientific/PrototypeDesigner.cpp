@@ -191,7 +191,7 @@ T rsPrototypeDesigner<T>::ellipdeg(int N, T k_1)
     }
     prod = prod*prod*prod*prod;
     T kp = pow(kc, (T) N) * prod; // complement of k
-    k    = sqrt(1.0-kp*kp);
+    k    = sqrt(T(1)-kp*kp);
   }
 
   return k;
@@ -229,7 +229,7 @@ T rsPrototypeDesigner<T>::ellipdeg2(T N, T k)
   T Kprime;
   rsEllipticIntegral(k, &K, &Kprime);
 
-  T q  = exp(-PI*Kprime/K);
+  T q  = exp(-T(PI)*Kprime/K);
   T q1 = pow(q, N);
 
   int m;
@@ -241,9 +241,9 @@ T rsPrototypeDesigner<T>::ellipdeg2(T N, T k)
     sum2 += pow(q1, (T) (m*m)     );
   }
 
-  T tmp = (1.0+sum1) / (1.0+2.0*sum2);
+  T tmp = (T(1)+sum1) / (T(1)+T(2)*sum2);
   tmp  *= tmp;
-  T k1  = 4.0 * sqrt(q1) * tmp;
+  T k1  = T(4) * sqrt(q1) * tmp;
 
   return k1;
 }
@@ -252,21 +252,21 @@ template<class T>
 T rsPrototypeDesigner<T>::getRequiredButterworthOrder(T passbandFrequency, T passbandRipple, 
   T stopbandFrequency, T stopbandRipple)
 {
-  T Gp = pow(10.0, -passbandRipple/20.0);                       // (1),Eq.1
-  T Gs = pow(10.0, -stopbandRipple/20.0);                       // (1),Eq.1
-  T ep = sqrt(1.0 / (Gp*Gp) - 1.0);                             // (1),Eq.2
-  T es = sqrt(1.0 / (Gs*Gs) - 1.0);                             // (1),Eq.2
-  return log(es/ep) / log(stopbandFrequency/passbandFrequency); // (1),Eq.9
+  T Gp = pow(T(10), -passbandRipple/T(20));                      // (1),Eq.1
+  T Gs = pow(T(10), -stopbandRipple/T(20));                      // (1),Eq.1
+  T ep = sqrt(T(1) / (Gp*Gp) - T(1));                            // (1),Eq.2
+  T es = sqrt(T(1) / (Gs*Gs) - T(1));                            // (1),Eq.2
+  return log(es/ep) / log(stopbandFrequency/passbandFrequency);  // (1),Eq.9
 }
 
 template<class T>
 T rsPrototypeDesigner<T>::getRequiredChebychevOrder(T passbandFrequency, T passbandRipple, 
   T stopbandFrequency, T stopbandRipple)
 {
-  T Gp = pow(10.0, -passbandRipple/20.0);                           // (1),Eq.1
-  T Gs = pow(10.0, -stopbandRipple/20.0);                           // (1),Eq.1
-  T ep = sqrt(1.0 / (Gp*Gp) - 1.0);                                 // (1),Eq.2
-  T es = sqrt(1.0 / (Gs*Gs) - 1.0);                                 // (1),Eq.2
+  T Gp = pow(T(10), -passbandRipple/T(20));                         // (1),Eq.1
+  T Gs = pow(T(10), -stopbandRipple/T(20));                         // (1),Eq.1
+  T ep = sqrt(T(1) / (Gp*Gp) - T(1));                               // (1),Eq.2
+  T es = sqrt(T(1) / (Gs*Gs) - T(1));                               // (1),Eq.2
   return acosh(es/ep) / acosh(stopbandFrequency/passbandFrequency); // (1),Eq.9
 }
 
@@ -274,10 +274,10 @@ template<class T>
 T rsPrototypeDesigner<T>::getRequiredEllipticOrder(T passbandFrequency, T passbandRipple, 
   T stopbandFrequency, T stopbandRipple)
 {
-  T Gp = pow(10.0, -passbandRipple/20.0);                       // (1),Eq.1
-  T Gs = pow(10.0, -stopbandRipple/20.0);                       // (1),Eq.1
-  T ep = sqrt(1.0 / (Gp*Gp) - 1.0);                             // (1),Eq.2
-  T es = sqrt(1.0 / (Gs*Gs) - 1.0);                             // (1),Eq.2
+  T Gp = pow(T(10), -passbandRipple/T(20));                     // (1),Eq.1
+  T Gs = pow(T(10), -stopbandRipple/T(20));                     // (1),Eq.1
+  T ep = sqrt(T(1) / (Gp*Gp) - T(1));                           // (1),Eq.2
+  T es = sqrt(T(1) / (Gs*Gs) - T(1));                           // (1),Eq.2
   T k  = passbandFrequency / stopbandFrequency;                 // (1),Eq.3
   T k1 = ep/es;                                                 // (1),Eq.3
   T K, Kp, K1, K1p;
@@ -331,7 +331,7 @@ void rsPrototypeDesigner<T>::scaleToMatchGainAtUnity(Complex* z, Complex* p, T* 
   Complex* pNew, T* kNew, int N, T g)
 {
   T  wc    = rsFilterAnalyzer<T>::findAnalogFrequencyWithMagnitude(z, p, k, N, g, 1.0);
-  T scaler = 1.0/wc;
+  T scaler = T(1)/wc;
   for(int n = 0; n < N; n++)
   {
     pNew[n] = scaler * p[n];
@@ -352,7 +352,7 @@ void rsPrototypeDesigner<T>::getInverseFilter(Complex* z, Complex* p, T* k, Comp
   ArrayTools::rsCopyBuffer(z,    zTmp, N);
   ArrayTools::rsCopyBuffer(p,    zNew, N);
   ArrayTools::rsCopyBuffer(zTmp, pNew, N);
-  *kNew = 1.0 / *k;
+  *kNew = T(1) / *k;
   delete[] zTmp;
 }
 
@@ -384,10 +384,10 @@ void rsPrototypeDesigner<T>::getBesselLowpassZerosPolesAndGain(Complex* z, Compl
   bool matchButterworth = true; // maybe make this a parameter later
   if( matchButterworth == true )
   {
-    T scaler = 1.0 / pow(a[0], 1.0/N);
+    T scaler = T(1) / pow(a[0], T(1)/N);
     for(int n = 0; n < N; n++)
       p[n] *= scaler;
-    *k = 1.0;
+    *k = T(1);
   }
   else
     *k = a[0];
@@ -417,8 +417,8 @@ void rsPrototypeDesigner<T>::getBesselLowShelfZerosPolesAndGain(Complex* z, Comp
   if( G < G0 )
   {
     dip = true;
-    G   = 1.0 / G;
-    G0  = 1.0 / G0;
+    G   = T(1) / G;
+    G0  = T(1) / G0;
   }
 
   // construct lowpass denominator:
@@ -497,7 +497,7 @@ void rsPrototypeDesigner<T>::getPapoulisLowpassZerosPolesAndGain(Complex* z, Com
   ArrayTools::rsFillWithValue(z, N, Complex(RS_INF(T), 0.0));
 
   // set gain at DC to unity:
-  *k = sqrt(1.0/fabs(a2[2*N]));
+  *k = sqrt(T(1)/fabs(a2[2*N]));
 
   delete[] a2;
 }
@@ -523,8 +523,8 @@ void rsPrototypeDesigner<T>::getPapoulisLowShelfZerosPolesAndGain(Complex* z, Co
   if( G < G0 )
   {
     dip = true;
-    G   = 1.0 / G;
-    G0  = 1.0 / G0;
+    G   = T(1) / G;
+    G0  = T(1) / G0;
   }
 
   // factor out into a function getMagnitudeSquaredNumAndDen, then call this function here - this 
@@ -539,7 +539,7 @@ void rsPrototypeDesigner<T>::getPapoulisLowShelfZerosPolesAndGain(Complex* z, Co
   getLeftHalfPlaneRoots(a2, p, 2*N);
 
   // normalize denominator polynomial such that the leading coeff has unity as absolute value:
-  T scaler = 1.0 / fabs(a2[2*N]);
+  T scaler = T(1) / fabs(a2[2*N]);
   for(int n = 0; n <= 2*N; n++)
     a2[n] *= scaler;
 
@@ -593,11 +593,11 @@ void rsPrototypeDesigner<T>::getEllipticLowpassZerosPolesAndGain(Complex* z, Com
 
   // declare/assign/calculate some repeatedly needed variables:
   Complex j(0.0, 1.0);                            // imaginary unit
-  T  ep  = sqrt(1.0/(Gp*Gp) - 1.0);               // Eq. 2
-  T  es  = sqrt(1.0/(Gs*Gs) - 1.0);               // Eq. 2
+  T  ep  = sqrt(T(1)/(Gp*Gp) - T(1));             // Eq. 2
+  T  es  = sqrt(T(1)/(Gs*Gs) - T(1));             // Eq. 2
   T  k1  = ep/es;                                 // Eq. 3
   T  kk  = ellipdeg(N, k1);                       // solve degree equation for k
-  T  v_0 =  (-j*rsAsnC(j/ep, k1) / (T) N).real(); // from ellipap.m
+  T  v_0 =  (-j*rsAsnC(j/ep, k1) / T(N)).real(); // from ellipap.m
 
   // calculate the position of the real pole (if present):
   if( r == 1 )
@@ -608,7 +608,7 @@ void rsPrototypeDesigner<T>::getEllipticLowpassZerosPolesAndGain(Complex* z, Com
   }
 
   // calculate the complex conjugate poles and zeros:
-  T  u_i;
+  //T  u_i;
   Complex zeta_i;
   for(int i = 0; i < L; i++)
   {
@@ -679,18 +679,18 @@ T rsPrototypeDesigner<T>::findFrequencyWithMagnitude(T magnitude, T wLow, T wHig
   // until we have something better, we search for the frequency at which the desired gain occurs 
   // by means of the bisection method:
 
-  T tolerance = 0.0001; // maybe make parameter
+  T tolerance = T(0.0001); // maybe make parameter
   T wMid, mMid;
   while( wHigh-wLow > tolerance )
   {
-    wMid  = 0.5 * (wLow+wHigh);
+    wMid  = T(0.5) * (wLow+wHigh);
     mMid  = getMagnitudeAt(wMid);
     if( mMid > magnitude )
       wLow = wMid;
     else
       wHigh = wMid;
   }
-  return 0.5 * (wLow+wHigh);
+  return T(0.5) * (wLow+wHigh);
 }
 
 template<class T>
@@ -826,10 +826,10 @@ void rsPrototypeDesigner<T>::makeButterworthLowpass()
 
   // intermediate variables:
   Complex j(0.0, 1.0);                   // imaginary unit
-  T  Gp     = sqrt(0.5);                 // use -3.01 dB point as cutoff frequency for Butterworths
+  T  Gp     = sqrt(T(0.5));              // use -3.01 dB point as cutoff frequency for Butterworths
   //T  Gp   = pow(10.0, -Ap/20.0);       // (1),Eq.1 - more general (cutoff gain can be specified), not used here
-  T  ep     = sqrt(1.0/(Gp*Gp)-1.0);     // (1),Eq.2
-  T  ep_pow = pow(ep, -1.0/(T) N);
+  T  ep     = sqrt(T(1)/(Gp*Gp)-T(1));   // (1),Eq.2
+  T  ep_pow = pow(ep, T(-1)/(T) N);
 
   // calculate the position of the real pole (if present):
   if( r == 1 )
@@ -838,7 +838,7 @@ void rsPrototypeDesigner<T>::makeButterworthLowpass()
     z[L+r-1] = RS_INF(T);                                  // zero at infinity
   }
   // calculate the complex conjugate poles and zeros:
-  T  u_i;
+  //T  u_i;
   for(int i = 0; i < L; i++)
   {
     Complex u_i  = (T) (2*(i+1)-1) / (T) N;                // Eq.69
@@ -870,10 +870,10 @@ void rsPrototypeDesigner<T>::makeButterworthLowShelv()
   T G    = rsDbToAmp(A);
   T GB   = sqrt(G0*G);                           // (2),Eq.52
   T ep   = sqrt( (G*G-GB*GB) / (GB*GB-G0*G0) );  // (2),Eq.12
-  T g0   = pow(G0, 1.0 / (T) N);                 // (2),Eq.94
-  T g    = pow(G,  1.0 / (T) N);                 // (2),Eq.94
+  T g0   = pow(G0, T(1) / T(N));                 // (2),Eq.94
+  T g    = pow(G,  T(1) / T(N));                 // (2),Eq.94
   T wb   = 1.0;                                  // unit cutoff prototype
-  T beta = wb * pow(ep, -1.0 / (T) N);           // (2),Eq.94
+  T beta = wb * pow(ep, T(-1) / (T) N);          // (2),Eq.94
 
   // calculate the position of the real pole (if present):
   if( r == 1 )
@@ -885,7 +885,7 @@ void rsPrototypeDesigner<T>::makeButterworthLowShelv()
   T phi, s, c;
   for(int i = 0; i < L; i++)
   {
-    phi = (T) (2*(i+1)-1)*PI / (T) (2*N);    // (2),Eq.95
+    phi = (T) (2*(i+1)-1)*T(PI) / T(2*N);    // (2),Eq.95
     s   = sin(phi);                          // (2),Eq.95
     c   = cos(phi);                          // (2),Eq.95
     z[i].real(-s*g*beta/g0);                 // (2),Eq.93
@@ -904,16 +904,16 @@ void rsPrototypeDesigner<T>::makeChebychevLowpass()
   numFiniteZeros = 0;
 
   // intermediate variables:
-  T Gp   = pow(10.0, -Ap/20.0);            // Eq. 1
-  T ep   = sqrt(1.0/(Gp*Gp) - 1.0);        // Eq. 2
-  T v_0  = asinh(1.0/ep) / (N*PI*0.5);     // Eq. 72
+  T Gp   = pow(T(10), -Ap/T(20));            // Eq. 1
+  T ep   = sqrt(T(1)/(Gp*Gp) - T(1));        // Eq. 2
+  T v_0  = asinh(T(1)/ep) / T(N*PI*0.5);     // Eq. 72
   T u_i;
   Complex j(0.0, 1.0); // imaginary unit
 
   // calculate the position of the real pole (if present):
   if( r == 1 )
   {
-    p[L+r-1] = -sinh(v_0*PI*0.5);          // Eq. 71
+    p[L+r-1] = -sinh(v_0*T(PI*0.5));         // Eq. 71
     z[L+r-1] = RS_INF(T);
   }
   // calculate the complex conjugate poles and zeros:
@@ -950,15 +950,15 @@ void rsPrototypeDesigner<T>::makeChebychevLowShelv()
   // calculate intermediate variables:
   T Gp    = rsDbToAmp(A0 + Rp*A);
   T ep    = sqrt( (G*G-Gp*Gp) / (Gp*Gp-G0*G0) );
-  T g0    = pow(G0, 1.0 / (T) N);
+  T g0    = pow(G0, T(1) / T(N));
   //T g     = pow(G,   1.0 / (T) N);
-  T alpha = pow(1.0/ep + sqrt(1.0 + 1.0/(ep*ep)), 1.0/(T) N);
-  T beta  = pow((G/ep + Gp*sqrt(1.0 + 1.0/(ep*ep)) ), 1.0/(T) N);
+  T alpha = pow(T(1)/ep +  sqrt(T(1) + T(1)/(ep*ep)),   T(1)/(T) N);
+  T beta  = pow((G/ep + Gp*sqrt(T(1) + T(1)/(ep*ep)) ), T(1)/(T) N);
   T u     = log(beta/g0);
   T v     = log(alpha);
   T Gb    = sqrt(G0*G);
   T eb    = sqrt( (G*G-Gb*Gb) / (Gb*Gb-G0*G0) );
-  T wb    = 1.0 / cosh( acosh(eb/ep) / (T)N ); // why 1/cosh(...) and not simply cosh?
+  T wb    = T(1) / cosh( acosh(eb/ep) / T(N) ); // why 1/cosh(...) and not simply cosh?
 
   // calculate real pole and zero of the first order stage, if present and store them in the last array slots:
   if( r == 1 )
@@ -972,7 +972,7 @@ void rsPrototypeDesigner<T>::makeChebychevLowShelv()
   Complex j(0.0, 1.0); // imaginary unit
   for(int i = 0; i < L; i++)
   {
-    phi_i = (T) (2*(i+1)-1)*PI / (T) (2*N);
+    phi_i = (T) (2*(i+1)-1)*T(PI) / T(2*N);
     z[i]  = j*wb*rsCosC(phi_i - j*u);
     p[i]  = j*wb*rsCosC(phi_i - j*v);
   }
@@ -990,9 +990,9 @@ void rsPrototypeDesigner<T>::makeInverseChebychevLowpass()
     numFiniteZeros = N-1;
 
   // declare/assign/calculate some repeatedly needed variables:
-  T  Gs = pow(10.0, -As/20.0);                      // Eq. 1
-  T  es = sqrt(1.0/(Gs*Gs)-1.0);                    // Eq. 2
-  T  v0 = asinh(es) / (N*PI*0.5);                   // Eq. 74
+  T  Gs = pow(T(10), -As/T(20));                    // Eq. 1
+  T  es = sqrt(T(1) / (Gs*Gs)-T(1));                // Eq. 2
+  T  v0 = asinh(es) / T(N*PI*0.5);                  // Eq. 74
   Complex j(0.0, 1.0);                              // imaginary unit
 
   T  wb = 1.0; // ...leads to a gain of Gs (stopband-gain) at unity (w=1), we rescale it here
