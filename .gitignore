@@ -1,4 +1,3 @@
-*.pdf
 /Libraries/RAPT/Build/VisualStudio2015/x64/Debug/*.obj
 /Libraries/RAPT/Build/VisualStudio2015/x64/Debug/*.exe
 /Products/AudioPlugins/TestPluginJURA/Builds/VisualStudio2015/x64/Debug/*.dll
