@@ -44,21 +44,21 @@ void rsPolynomial<T>::evaluatePolynomialAndDerivativesAt(T x, T *a, int order, T
 template <class T>
 void rsPolynomial<T>::multiplyPolynomials(T *a, int aOrder, T *b, int bOrder, T *result)
 {
-  rsConvolve(a, aOrder+1, b, bOrder+1, result);
+  ArrayTools::rsConvolve(a, aOrder+1, b, bOrder+1, result);
 }
 
 template <class T>
 void rsPolynomial<T>::dividePolynomials(T *p, int pOrder, T *d, int dOrder, T *q, T *r)
 {
-  rsCopyBuffer(p, r, pOrder+1); // init remainder with p
-  rsFillWithZeros(q, pOrder+1); // init quotient with zeros
+  ArrayTools::rsCopyBuffer(p, r, pOrder+1); // init remainder with p
+  ArrayTools::rsFillWithZeros(q, pOrder+1); // init quotient with zeros
   for(int k = pOrder-dOrder; k >= 0; k--)
   {
     q[k] = r[dOrder+k] / d[dOrder];
     for(int j = dOrder+k-1; j >= k; j--)
       r[j] -= q[k] * d[j-k];
   }
-  rsFillWithZeros(&r[dOrder], pOrder-dOrder+1);
+  ArrayTools::rsFillWithZeros(&r[dOrder], pOrder-dOrder+1);
 }
 
 template <class T>
@@ -265,7 +265,7 @@ std::complex<T> rsPolynomial<T>::evaluatePolynomialWithRoots(std::complex<T> s,
   std::complex<T> result = 1.0;
   for(int i = 0; i < N; i++)
   {
-    if( !r[i].isInfinite() )
+    if( !isInfinite(r[i]) )
       result *= (s - r[i]);
   }
   return result;
@@ -279,14 +279,14 @@ T evaluatePolynomialWithTwoDerivativesAndError(std::complex<T> *a, int order,
   P[0] = a[order];                // P(z)
   P[1] = std::complex<T>(0.0, 0.0);  // P'(z)
   P[2] = std::complex<T>(0.0, 0.0);  // P''(z)
-  T err = P[0].getRadius();  // estimated roundoff error in evaluation of the polynomial
-  T zA  = z.getRadius();     // absolute value of z
+  T err = abs(P[0]);          // estimated roundoff error in evaluation of the polynomial
+  T zA  = abs(z);             // absolute value of z
   for(int j = order-1; j >= 0; j--)
   {
     P[2] = z * P[2] + P[1];
     P[1] = z * P[1] + P[0];
     P[0] = z * P[0] + a[j];
-    err  = P[0].getRadius() + zA*err;
+    err  = abs(P[0]) + zA*err;
   }
   P[2] *= 2.0;
   return err;
@@ -312,7 +312,7 @@ std::complex<T> rsPolynomial<T>::convergeToRootViaLaguerre(std::complex<T> *a, i
     std::complex<T> P[3];    // holds P, P', P''
     T  err = eps * evaluatePolynomialWithTwoDerivativesAndError(a, order, r, P);
 
-    if( P[0].getRadius() <= err )
+    if( abs(P[0]) <= err )
       return r;
       // "simplified stopping criterion due to Adams", referred to on page 373 (?)
       // can we get rid of this? if so, we might also replace the above loop by
@@ -322,14 +322,14 @@ std::complex<T> rsPolynomial<T>::convergeToRootViaLaguerre(std::complex<T> *a, i
     std::complex<T> G  = P[1]/P[0];       // Eq. 9.5.6
     std::complex<T> H  = G*G - P[2]/P[0]; // Eq. 9.5.7
 
-    std::complex<T> sq = rsSqrtC((order-1.0)*((T)order*H-G*G)); // square-root Eq. 9.5.11
+    std::complex<T> sq = sqrt(T(order-1)*((T)order*H-G*G)); // square-root Eq. 9.5.11
     std::complex<T> Gp = G + sq;  // denominator in 9.5.11 with positive sign for square-root
     std::complex<T> Gm = G - sq;  // denominator in 9.5.11 with negative sign for square-root
 
     // choose Gp or Gm according to which has larger magnitude (page 372, bottom), re-use Gp for
     // the result:
-    T GpA = Gp.getRadius();
-    T GmA = Gm.getRadius();
+    T GpA = abs(Gp);
+    T GmA = abs(Gm);
     if( GpA < GmA )
     {
       Gp  = Gm;
@@ -342,7 +342,7 @@ std::complex<T> rsPolynomial<T>::convergeToRootViaLaguerre(std::complex<T> *a, i
     if( GpA > 0.0 )
       dr = std::complex<T>(order, 0.0) / Gp;  // Eq. 9.5.11
     else
-      dr = exp(log(1.0+r.getRadius())) * std::complex<T>(cos((T)i), sin((T)i));
+      dr = exp(log(T(1)+abs(r))) * std::complex<T>(cos((T)i), sin((T)i));
         // \todo use sinCos()
 
     // compute new estimate for the root:
@@ -371,7 +371,7 @@ void rsPolynomial<T>::findPolynomialRoots(std::complex<T> *a, int order, std::co
   // allocate memory for the coefficients of the deflated polynomial and initialize it as
   // non-deflated polynomial:
   std::complex<T> *ad = new std::complex<T>[order+1];
-  rsCopyBuffer(a, ad, order+1);
+  ArrayTools::rsCopyBuffer(a, ad, order+1);
 
   // loop over the roots:
   for(int j = order; j >= 1; j--)
@@ -385,8 +385,8 @@ void rsPolynomial<T>::findPolynomialRoots(std::complex<T> *a, int order, std::co
 
     // maybe move into a member function Complex::zeroNegligibleImaginaryPart(T ratio);
     // -> ratio = 2*eps (maybe leave this to client code):
-    if( fabs(r.im) <= 2.0*eps*fabs(r.re) )
-      r.im = 0.0;
+    if( fabs(r.imag()) <= 2.0*eps*fabs(r.real()) )
+      r.imag(0);
 
     // store root in output array:
     roots[j-1] = r;
@@ -394,7 +394,8 @@ void rsPolynomial<T>::findPolynomialRoots(std::complex<T> *a, int order, std::co
     // deflate the deflated polynomial again by the monomial that corresponds to our most recently
     // found root:
     std::complex<T> rem = ad[j];  // remainder - not used, needed for passing a dummy pointer
-    dividePolynomialByMonomialInPlace(ad, j, r, &rem);
+    //dividePolynomialByMonomialInPlace(ad, j, r, &rem); // old
+    rsPolynomial<std::complex<T>>::dividePolynomialByMonomialInPlace(ad, j, r, &rem);
   }
 
   rsSortComplexArrayByReIm(roots, order);  // maybe leave this to client code
@@ -405,7 +406,7 @@ template<class T>
 void rsPolynomial<T>::findPolynomialRoots(T *a, int order, std::complex<T> *roots)
 {
   std::complex<T> *ac = new std::complex<T>[order+1];
-  rsConvertBuffer(a, ac, order+1);
+  ArrayTools::rsConvertBuffer(a, ac, order+1);
   findPolynomialRoots(ac, order, roots);
   delete[] ac;
 }
@@ -970,6 +971,138 @@ void rsPolynomial<T>::rsLegendrePolynomialRecursion(T *a, int n, T *a1, T *a2)
 
   // Legendre polynomials are a special case of Jacobi polynomials, so this would also work:
   // rsJacobiPolynomialRecursion(a, n, a1, a2, 0.0, 0.0);
+}
+
+template<class T>
+void rsPolynomial<T>::maximumSlopeMonotonicPolynomial(T *w, int n)
+{
+  T *a,*p,*s,*v,c0,c1;
+  int i,j,k;
+
+  a = new T [n+1];
+  p = new T [2*n+1];
+  s = new T [2*n+1];
+  v = new T [2*n+4];
+
+  k = (n-1)/2;
+  //  n = 2k + 1 for odd 'n' and n = 2k + 2 for even 'n':
+  //  n: 1 2 3 4 5 6 ...
+  //  k: 0 0 1 1 2 2 ...
+
+  //  form vector of 'a' constants:
+  if(n & 1)                   // odd
+  {               
+    for(i = 0; i <= k; i++) 
+    {
+      //a[i] = (2.0*i+1.0)/(M_SQRT2*(k+1.0));
+      a[i] = (2.0*i+1.0)/(SQRT2*(k+1.0));
+    }
+  }                           // even
+  else 
+  {
+    for(i = 0; i < k+1; i++) 
+    {
+      a[i] = 0.0;
+    }
+    if(k & 1) 
+    {
+      for(i = 1; i <= k; i+=2) 
+      {
+        a[i] = (2*i+1)/sqrt((T) ((k+1)*(k+2)));
+      }
+    }
+    else 
+    {
+      for(i = 0; i <= k; i+=2) 
+      {
+        a[i] = (2*i+1)/sqrt((T) ((k+1)*(k+2)));
+      }
+    }
+  }
+  for(i = 0; i <= n; i++)
+  {
+    s[i] = 0.0;
+    w[i] = 0.0;
+  }
+
+  // form s[] = sum of a[i]*P[i]
+  s[0] = a[0];
+  s[1] = a[1];
+  for(i = 2; i <= k; i++) 
+  {
+    legendrePolynomial(p, i);
+    for(j = 0; j <= i; j++) 
+    {
+      s[j] += a[i]*p[j];
+    }
+  }
+
+  //  form v[] = square of s[]:
+  for(i = 0; i <= 2*k+2; i++) 
+  {
+    v[i] = 0.0;
+  }
+  for(i = 0; i <= k; i++) 
+  {
+    for(j = 0; j <= k;j++) 
+    {
+      v[i+j] += s[i]*s[j];    
+    }
+  }
+
+  // modify integrand for even 'n':
+  v[2*k+1] = 0.0;
+  if((n & 1) == 0) 
+  {
+    for(i = n; i >= 0; i--) 
+    {
+      v[i+1] += v[i];
+    }
+  }
+
+  // form integral of v[]:
+  for(i = n+1; i >= 0; i--) 
+  {
+    v[i+1] = v[i]/(T)(i+1.0);
+  }
+  v[0] = 0.0;
+
+  // clear s[] for use in computing definite integral:
+  for(i = 0; i < (n+2); i++)
+  { 
+    s[i] = 0.0;
+  }
+  s[0] = -1.0;
+  s[1] =  2.0;
+
+  // calculate definite integral:
+  for(i = 1; i <= n; i++) 
+  {
+    if(i > 1) 
+    {
+      c0 = -s[0];
+      for(j = 1; j < i+1; j++) 
+      {
+        c1 = -s[j] + 2.0*s[j-1];
+        s[j-1] = c0;
+        c0 = c1;
+      }
+      c1 = 2.0*s[i];
+      s[i] = c0;
+      s[i+1] = c1;
+    }
+    for(j = i; j > 0; j--) 
+    {
+      w[j] += (v[i]*s[j]);
+    }
+  }
+  if((n & 1) == 0) 
+    w[1] = 0.0;
+
+  delete [] v;
+  delete [] p;
+  delete [] s;
+  delete [] a;
 }
 
 template<class T>

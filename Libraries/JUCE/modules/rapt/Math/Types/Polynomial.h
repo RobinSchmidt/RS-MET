@@ -332,6 +332,13 @@ public:
 
   // todo: void chebychevPolynomial(T *a, int order);
 
+  /** Constructs a polynomial p(x) of order 2*N+1 with the following properties: 
+  p(0) = 0, p(1) = 1, p'(x) >= 0 for all x (monotonically increasing), p'(1) = maximum possible 
+  when monotonicity is assumed. \todo: check if these properties are actually true. Such 
+  polynomials are used in Papoulis filters. */
+  static void maximumSlopeMonotonicPolynomial(T *a, int N);
+
+
   // \todo for Halpern filters:
   //void jacobiPolynomial(T *a, int order); // the U-polynomials
   //void maximallyDivergingMonotonicPolynomial(T *a, int order); // the T-polynomial

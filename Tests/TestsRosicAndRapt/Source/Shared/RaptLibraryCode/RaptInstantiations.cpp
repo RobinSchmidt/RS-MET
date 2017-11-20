@@ -58,6 +58,7 @@ template RAPT::rsStateVariableFilter<float, float>;
 
 // Filters-Scientific:
 //template RAPT::rsPrototypeDesigner<float>;
+template RAPT::rsPrototypeDesigner<double>;
 
 // Physics:
 template RAPT::rsParticleSystem<float>;

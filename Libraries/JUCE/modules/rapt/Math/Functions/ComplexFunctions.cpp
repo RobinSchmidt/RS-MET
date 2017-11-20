@@ -1,6 +1,6 @@
 
 template<class T>
-std::complex<T> rsAcdC(std::complex<T> w, double k)
+std::complex<T> rsAcdC(std::complex<T> w, T k)
 {
   if(k == 1.0)
   {
@@ -8,33 +8,34 @@ std::complex<T> rsAcdC(std::complex<T> w, double k)
     return std::complex<T>(0.0, 0.0);
   }
 
-  int    M = 7;     // fixed number of Landen iterations
-  double v[7];      // array to store the vector of descending elliptic moduli
+  int M = 7;     // fixed number of Landen iterations
+  T v[7];      // array to store the vector of descending elliptic moduli
   rsLanden(k, M, v);
 
   int    n;
-  double v1;
+  T v1;
   for(n = 0; n < M; n++)
   {
     if(n == 0)
       v1 = k;
     else
       v1 = v[n-1];
-    w = w / (1.0 + rsSqrtC(1.0 - w*w * v1*v1)) * 2.0/(1.0+v[n]);
+    //w = w / (T(1) + rsSqrtC(T(1) - w*w * v1*v1)) * 2.0/(1.0+v[n]);
+    w = w / (T(1) + sqrt(T(1) - w*w * v1*v1)) * T(2)/(T(1)+v[n]);
   }
 
   std::complex<T> u;
-  if(w == 1.0)
+  if(w == T(1))
     u = 0.0;
   else
-    u = (2.0/PI) * rsAcosC(w);
+    u = T(2.0/PI) * rsAcosC(w);
 
-  double K, Kprime;
+  T K, Kprime;
   rsEllipticIntegral(k, &K, &Kprime);
-  double R = Kprime/K;
+  T R = Kprime/K;
 
-  u.real() = rsSrem(u.real(), 4.0);
-  u.imag() = rsSrem(u.imag(), 2.0*R);
+  u.real(rsSrem(u.real(), 4.0));
+  u.imag(rsSrem(u.imag(), 2.0*R));
 
   return u;
 }
@@ -42,8 +43,8 @@ std::complex<T> rsAcdC(std::complex<T> w, double k)
 template<class T>
 std::complex<T> rsAcosC(std::complex<T> z)
 {
-  std::complex<T> tmp = z + std::complex<T>(0.0, 1.0) * rsSqrtC(1.0 - z*z);
-  tmp = rsLogC(tmp);
+  std::complex<T> tmp = z + std::complex<T>(T(0), T(1)) * sqrt(T(1) - z*z);
+  tmp = log(tmp);
   return tmp * std::complex<T>(0.0, -1.0);
 }
 
@@ -51,14 +52,14 @@ template<class T>
 std::complex<T> rsAcoshC(std::complex<T> z)
 {
   std::complex<T> tmp = z + rsSqrtC(z - 1.0) * rsSqrtC(z + 1.0);
-  return rsLogC(tmp);
+  return log(tmp);
 }
 
 template<class T>
 std::complex<T> rsAsinC(std::complex<T> z)
 {
   std::complex<T> tmp = z * std::complex<T>(0.0, 1.0) + rsSqrtC(1.0 - z*z);
-  tmp = rsLogC(tmp);
+  tmp = log(tmp);
   return tmp * std::complex<T>(0.0, -1.0);
 }
 
@@ -66,20 +67,20 @@ template<class T>
 std::complex<T> rsAsinhC(std::complex<T> z)
 {
   std::complex<T> tmp = z + rsSqrtC(z*z + 1.0);
-  return rsLogC(tmp);
+  return log(tmp);
 }
 
 template<class T>
-std::complex<T> rsAsnC(std::complex<T> w, double k)
+std::complex<T> rsAsnC(std::complex<T> w, T k)
 {
-  return 1.0 - rsAcdC(w, k);
+  return T(1) - rsAcdC(w, k);
 }
 
 template<class T>
 std::complex<T> rsAtanC(std::complex<T> z)
 {
   std::complex<T> tmp = (std::complex<T>(0.0, 1.0) + z) / (std::complex<T>(0.0, 1.0) - z);
-  tmp = rsLogC(tmp);
+  tmp = log(tmp);
   return tmp * std::complex<T>(0.0, -0.50);
 }
 
@@ -92,18 +93,18 @@ std::complex<T> rsAtanhC(std::complex<T> z)
 }
 
 template<class T>
-std::complex<T> rsCdC(std::complex<T> u, double k)
+std::complex<T> rsCdC(std::complex<T> u, T k)
 {
-  int    M = 7;     // fixed number of Landen iterations
-  double v[7];      // array to store the vector of descending elliptic moduli
+  int M = 7;     // fixed number of Landen iterations
+  T v[7];      // array to store the vector of descending elliptic moduli
   rsLanden(k, M, v);
 
   // initialization:
-  std::complex<T> w = rsCosC(u * PI/2.0);
+  std::complex<T> w = rsCosC(u * T(PI/2.0));
 
   // ascending Landen/Gauss transformation:
   for(int n=M-1; n>=0; n--)
-    w = (1.0+v[n])*w / (1.0+v[n]*w*w);
+    w = (T(1)+v[n])*w / (T(1)+v[n]*w*w);
 
   return w;
 }
@@ -111,17 +112,18 @@ std::complex<T> rsCdC(std::complex<T> u, double k)
 template<class T>
 std::complex<T> rsCosC(std::complex<T> z)
 {
-  std::complex<T> tmp = rsExpC(std::complex<T>(0.0, 1.0) * z); // tmp = exp(i*z);
-  tmp        += rsExpC(std::complex<T>(0.0, -1.0)* z);      // tmp = exp(i*z) + exp(-i*z)
-  return 0.5 * tmp;
+  std::complex<T> tmp = exp(std::complex<T>(0.0, 1.0) * z); // tmp = exp(i*z);
+  tmp        += exp(std::complex<T>(0.0, -1.0)* z);      // tmp = exp(i*z) + exp(-i*z)
+  return T(0.5) * tmp;
 }
 
 template<class T>
 std::complex<T> rsCoshC(std::complex<T> z)
 {
-  return 0.5 * (expC(z) + expC(-z));
+  return T(0.5) * (expC(z) + expC(-z));
 }
 
+/*
 template<class T>
 std::complex<T> rsExpC(std::complex<T> z)
 {
@@ -141,12 +143,14 @@ std::complex<T> rsLogC(std::complex<T> z)
   tmp.imag() = z.getAngle();
   return tmp;
 }
+*/
+
 
 template<class T>
 std::complex<T> rsPowC(std::complex<T> basis, std::complex<T> exponent)
 {
   if(basis != std::complex<T>(0.0, 0.0))
-    return rsExpC(exponent * rsLogC((std::complex<T>)basis));
+    return exp(exponent * rsLogC((std::complex<T>)basis));
   else // basis == 0
   {
     if(exponent.real() == 0.0 && exponent.imag() == 0.0)
@@ -156,37 +160,37 @@ std::complex<T> rsPowC(std::complex<T> basis, std::complex<T> exponent)
     else if(exponent.real() > 0.0 && exponent.imag() == 0.0)
       return std::complex<T>(0.0, 0.0);
     else
-      return rsExpC(exponent * rsLogC((std::complex<T>)basis));
+      return exp(exponent * rsLogC((std::complex<T>)basis));
   }
 }
 
 template<class T>
 std::complex<T> rsSinC(std::complex<T> z)
 {
-  std::complex<T> tmp = rsExpC(std::complex<T>(0.0, 1.0) * z); // tmp = exp(i*z);
-  tmp        -= rsExpC(std::complex<T>(0.0, -1.0) * z);      // tmp = exp(i*z) - exp(-i*z)
+  std::complex<T> tmp = exp(std::complex<T>(0.0, 1.0) * z); // tmp = exp(i*z);
+  tmp        -= exp(std::complex<T>(0.0, -1.0) * z);      // tmp = exp(i*z) - exp(-i*z)
   return tmp * std::complex<T>(0.0, -0.5);
 }
 
 template<class T>
 std::complex<T> rsSinhC(std::complex<T> z)
 {
-  return 0.5 * (expC(z) - expC(-z));
+  return T(0.5) * (expC(z) - expC(-z));
 }
 
 template<class T>
-std::complex<T> rsSnC(std::complex<T> u, double k)
+std::complex<T> rsSnC(std::complex<T> u, T k)
 {
-  int    M = 7;     // fixed number of Landen iterations
-  double v[7];      // array to store the vector of descending elliptic moduli
+  int M = 7;     // fixed number of Landen iterations
+  T v[7];        // array to store the vector of descending elliptic moduli
   rsLanden(k, M, v);
 
   // initialization:
-  std::complex<T> w = rsSinC(u * PI/2.0);
+  std::complex<T> w = rsSinC(u * T(PI/2.0));
 
   // ascending Landen/Gauss transformation:
   for(int n = M-1; n >= 0; n--)
-    w = (1.0+v[n])*w / (1.0+v[n]*w*w);
+    w = (T(1)+v[n])*w / (T(1)+v[n]*w*w);
 
   return w;
 }
@@ -222,7 +226,7 @@ int rsGetNumFiniteValues(std::complex<T> *a, int N)
   int result = 0;
   for(int n = 0; n < N; n++)
   {
-    if(!a[n].isInfinite())
+    if(!isInfinite(a[n]))
       result++;
   }
   return result;
@@ -249,7 +253,7 @@ std::complex<T> rsProductOfFiniteFactors(std::complex<T> *a, int N)
   std::complex<T> result = std::complex<T>(1.0, 0.0);
   for(int n = 0; n < N; n++)
   {
-    if(!a[n].isInfinite())
+    if(!isInfinite(a[n]))
       result *= a[n];
   }
   return result;
@@ -286,12 +290,12 @@ int rsOnlyUpperHalfPlane(std::complex<T> *z, std::complex<T> *zU, int N)
 }
 
 template<class T>
-void rsZeroNegligibleImaginaryParts(std::complex<T> *z, int length, double threshold)
+void rsZeroNegligibleImaginaryParts(std::complex<T> *z, int length, T threshold)
 {
   for(int n = 0; n < length; n++)
   {
     if(fabs(z[n].imag()) < threshold)
-      z[n].imag() = 0.0;
+      z[n].imag(0);
   }
 }
 
@@ -299,7 +303,7 @@ template<class T>
 void rsConjugate(std::complex<T> *z, int length)
 {
   for(int n = 0; n < length; n++)
-    z[n].imag() = -z[n].imag();
+    z[n].imag(-z[n].imag());
 }
 
 template<class T>

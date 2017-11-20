@@ -3,15 +3,15 @@ std::complex<T> rsFilterAnalyzer<T>::getAnalogFrequencyResponseAt(Complex* z, Co
   int N, T w)
 {
   Complex s = Complex(0.0, w);
-  Complex n = evaluatePolynomialWithRoots(s, z, N); 
-  Complex d = evaluatePolynomialWithRoots(s, p, N); 
+  Complex n = rsPolynomial<T>::evaluatePolynomialWithRoots(s, z, N); 
+  Complex d = rsPolynomial<T>::evaluatePolynomialWithRoots(s, p, N); 
   return k * n/d;
 }
 
 template<class T>
 T rsFilterAnalyzer<T>::getAnalogMagnitudeResponseAt(Complex* z, Complex* p, T k, int N, T w)
 {
-  return getAnalogFrequencyResponseAt(z, p, k, N, w).getRadius();
+  return abs(getAnalogFrequencyResponseAt(z, p, k, N, w));
   // maybe it can be computed more efficiently?
 }
 
@@ -68,14 +68,15 @@ T rsFilterAnalyzer<T>::findAnalogFrequencyWithMagnitude(Complex* z, Complex* p, 
     AM = rsFilterAnalyzer::getAnalogMagnitudeResponseAt(z, p, *k, N, wM);
     i++;
 
-    if( abs(wM-wOld) < eps * min(wOld, wM) ) // 2nd convergence cirterion based on frequency difference - maybe use as only criterion
+    if( abs(wM-wOld) < eps * rsMin(wOld, wM) ) // 2nd convergence criterion based on frequency difference - maybe use as only criterion
       break;  
     //if( abs(wM-wOld) < eps * std::min(wOld, wM) ) // 2nd convergence cirterion based on frequency difference - maybe use as only criterion
     //  break;  
   }
 
-  if( i >= iMax )
-    rosic::error("Slow convergence in FilterAnalyzer::findAnalogFrequencyWithMagnitude");
+  if(i >= iMax)
+    RS_DEBUG_BREAK;
+    //rsError("Slow convergence in FilterAnalyzer::findAnalogFrequencyWithMagnitude");
 
   return wM;
 }

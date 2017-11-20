@@ -3,20 +3,20 @@
 template<class T>
 rsPrototypeDesigner<T>::rsPrototypeDesigner()
 {
-  L                     = 2;
-  r                     = 0;
-  N                     = L+r;
-  approximationMethod   = BUTTERWORTH;
-  prototypeMode         = LOWPASS_PROTOTYPE;
-  numFinitePoles        = 2;
-  numFiniteZeros        = 0;
-  Ap                    = amp2dB(sqrt(2.0)); // 3.01 dB passband ripple for lowpasses
-  As                    = 60.0;              // 60.0 dB stopband attenuation for lowpasses
-  A                     = 0.0;               // cut/boost in dB for shelvers
-  A0                    = 0.0;               // reference gain in dB for shelvers
-  Rp                    = 0.95;              // inner ripple as fraction of dB-peak-gain for shelv
-  Rs                    = 0.05;              // outer ripple as fraction of peak
-  stateIsDirty          = true;              // poles and zeros need to be evaluated
+  L                   = 2;
+  r                   = 0;
+  N                   = L+r;
+  approximationMethod = BUTTERWORTH;
+  prototypeMode       = LOWPASS_PROTOTYPE;
+  numFinitePoles      = 2;
+  numFiniteZeros      = 0;
+  Ap                  = (T)rsAmpToDb(sqrt(2)); // 3.01 dB passband ripple for lowpasses
+  As                  = 60.0;     // 60.0 dB stopband attenuation for lowpasses
+  A                   = 0.0;      // cut/boost in dB for shelvers
+  A0                  = 0.0;      // reference gain in dB for shelvers
+  Rp                  = (T)0.95;  // inner ripple as fraction of dB-peak-gain for shelv
+  Rs                  = (T)0.05;  // outer ripple as fraction of peak
+  stateIsDirty        = true;     // poles and zeros need to be evaluated
   updatePolesAndZeros();
 }
 
@@ -34,7 +34,7 @@ void rsPrototypeDesigner<T>::setOrder(int newOrder)
   if( newOrder >= 1 && newOrder != N )
   {
     N = newOrder;
-    if( isOdd(N) )
+    if( rsIsOdd(N) )
     {
       r = 1;
       L = (N-1)/2;
@@ -52,7 +52,7 @@ template<class T>
 void rsPrototypeDesigner<T>::setApproximationMethod(int newApproximationMethod)
 {
   if( newApproximationMethod < BUTTERWORTH || newApproximationMethod > PAPOULIS )
-    DEBUG_BREAK; // this is not one of the enumerated approximation methods
+    RS_DEBUG_BREAK; // this is not one of the enumerated approximation methods
 
   if( newApproximationMethod != approximationMethod )
   {
@@ -70,7 +70,7 @@ void rsPrototypeDesigner<T>::setPrototypeMode(int newPrototypeMode)
     stateIsDirty  = true;
   }
   else
-    DEBUG_BREAK; // this is not one of the enumerated modes
+    RS_DEBUG_BREAK; // this is not one of the enumerated modes
 }
 
 template<class T>
@@ -82,7 +82,7 @@ void rsPrototypeDesigner<T>::setPassbandRipple(T newPassbandRipple)
     stateIsDirty = true;
   }
   else
-    DEBUG_BREAK; // ripple (in dB) must be >= 0
+    RS_DEBUG_BREAK; // ripple (in dB) must be >= 0
 }
 
 template<class T>
@@ -94,7 +94,7 @@ void rsPrototypeDesigner<T>::setStopbandRejection(T newStopbandRejection)
     stateIsDirty = true;
   }
   else
-    DEBUG_BREAK; // ripple (in dB) must be >= 0
+    RS_DEBUG_BREAK; // ripple (in dB) must be >= 0
 }
 
 template<class T>
@@ -122,7 +122,7 @@ void rsPrototypeDesigner<T>::setPassbandGainRatio(T newPassbandGainRatio)
 {
   if( newPassbandGainRatio >= 1.0 || newPassbandGainRatio <= 0.0 || newPassbandGainRatio < Rs )
   {
-    DEBUG_BREAK; // this bandwidth gain ratio makes no sense (inequation 51 is violated)
+    RS_DEBUG_BREAK; // this bandwidth gain ratio makes no sense (inequation 51 is violated)
     return;
   }
   if( newPassbandGainRatio != Rp  )
@@ -137,7 +137,7 @@ void rsPrototypeDesigner<T>::setStopbandGainRatio(T newStopbandGainRatio)
 {
   if( newStopbandGainRatio >= 1.0 || newStopbandGainRatio <= 0.0 || newStopbandGainRatio > Rp )
   {
-    DEBUG_BREAK; // this stopband gain ratio makes no sense (inequation 51 is violated)
+    RS_DEBUG_BREAK; // this stopband gain ratio makes no sense (inequation 51 is violated)
     return;
   }
   if( newStopbandGainRatio != Rp  )
@@ -152,7 +152,7 @@ void rsPrototypeDesigner<T>::setStopbandGainRatio(T newStopbandGainRatio)
 template<class T>
 void rsPrototypeDesigner<T>::getNumBiquadsAndFirstOrderStages(int N, int &L, int &r)
 {
-  if( isOdd(N) )
+  if( rsIsOdd(N) )
   {
     r = 1;
     L = (N-1)/2;
@@ -168,25 +168,26 @@ template<class T>
 T rsPrototypeDesigner<T>::ellipdeg(int N, T k_1)
 {
   int L;
-  if( isEven(N) )
+  if( rsIsEven(N) )
     L = N/2;
   else
     L = (N-1)/2;
 
-  T kmin = 1e-6;
+  T kmin = (T)1e-6;
   T k;
 
   if (k_1 < kmin)
-    k = ellipdeg2(1.0 / (T) N, k_1);
+    k = ellipdeg2(T(1) / T(N), k_1);
   else
   {
     T kc = sqrt(1-k_1*k_1);			  // complement of k1
-    T u_i;
+    //T u_i;                      // old
+    std::complex<T> u_i;          // use real argument later again
     T prod = 1.0;
     for(int i = 1; i <= L; i++)
     {
       u_i   = (T) (2*i-1) / (T) N;
-      prod *= snC(u_i, kc).re;
+      prod *= rsSnC(u_i, kc).real(); // use a real sn-function
     }
     prod = prod*prod*prod*prod;
     T kp = pow(kc, (T) N) * prod; // complement of k
@@ -200,17 +201,18 @@ template<class T>
 T rsPrototypeDesigner<T>::ellipdeg1(int N, T k)
 {
   int L;
-  if( isEven(N) )
+  if( rsIsEven(N) )
     L = N/2;
   else
     L = (N-1)/2;
 
-  T u_i;
+  //T u_i;     
+  std::complex<T> u_i;  // use real argument later again
   T prod = 1.0;
   for(int i = 1; i <= L; i++)
   {
     u_i   = (T) (2*i-1) / (T) N;
-    prod *= snC(u_i, k).re;
+    prod *= rsSnC(u_i, k).real();
   }
   prod = prod*prod*prod*prod;
   T k1 = pow(k, (T) N) * prod;
@@ -225,7 +227,7 @@ T rsPrototypeDesigner<T>::ellipdeg2(T N, T k)
 
   T K;
   T Kprime;
-  ellipticIntegral(k, &K, &Kprime);
+  rsEllipticIntegral(k, &K, &Kprime);
 
   T q  = exp(-PI*Kprime/K);
   T q1 = pow(q, N);
@@ -279,8 +281,8 @@ T rsPrototypeDesigner<T>::getRequiredEllipticOrder(T passbandFrequency, T passba
   T k  = passbandFrequency / stopbandFrequency;                 // (1),Eq.3
   T k1 = ep/es;                                                 // (1),Eq.3
   T K, Kp, K1, K1p;
-  ellipticIntegral(k,  &K,  &Kp);                               // (1),Eq.19
-  ellipticIntegral(k1, &K1, &K1p);
+  rsEllipticIntegral(k,  &K,  &Kp);                             // (1),Eq.19
+  rsEllipticIntegral(k1, &K1, &K1p);
   return (K1p*K)/(K1*Kp);                                       // (1),Eq.34
 }
 
@@ -289,10 +291,10 @@ void rsPrototypeDesigner<T>::magSquaredNumAndDen(T* b, T* a, T* b2, T* a2, int N
 {
   T* am = new T[N+1];
   T* bm = new T[N+1];
-  polyCoeffsForNegativeArgument(b, bm, N);  // coeffs of N(-s)
-  polyCoeffsForNegativeArgument(a, am, N);  // coeffs of D(-s)
-  multiplyPolynomials(b, N, bm, N, b2);     // coeffs of N(s)*N(-s)
-  multiplyPolynomials(a, N, am, N, a2);     // coeffs of D(s)*D(-s)
+  rsPolynomial<T>::polyCoeffsForNegativeArgument(b, bm, N);  // coeffs of N(-s)
+  rsPolynomial<T>::polyCoeffsForNegativeArgument(a, am, N);  // coeffs of D(-s)
+  rsPolynomial<T>::multiplyPolynomials(b, N, bm, N, b2);     // coeffs of N(s)*N(-s)
+  rsPolynomial<T>::multiplyPolynomials(a, N, am, N, a2);     // coeffs of D(s)*D(-s)
   delete[] am;
   delete[] bm;
 }
@@ -301,7 +303,7 @@ template<class T>
 void rsPrototypeDesigner<T>::shelvingMagSqrNumFromLowpassMagSqr(T* b2, T* a2, T k, 
   int N, T G0, T G, T* bShelf)
 {
-  weightedSum(b2, a2, bShelf, 2*N+1, k*k*(G*G-G0*G0), G0*G0);
+  ArrayTools::rsWeightedSum(b2, a2, bShelf, 2*N+1, k*k*(G*G-G0*G0), G0*G0);
 }
 
 // factor out shelvingMagSqrNumeratorFromLowpassMagSqr:
@@ -328,14 +330,14 @@ template<class T>
 void rsPrototypeDesigner<T>::scaleToMatchGainAtUnity(Complex* z, Complex* p, T* k, Complex* zNew, 
   Complex* pNew, T* kNew, int N, T g)
 {
-  T  wc    = FilterAnalyzer::findAnalogFrequencyWithMagnitude(z, p, k, N, g, 1.0);
+  T  wc    = rsFilterAnalyzer<T>::findAnalogFrequencyWithMagnitude(z, p, k, N, g, 1.0);
   T scaler = 1.0/wc;
   for(int n = 0; n < N; n++)
   {
     pNew[n] = scaler * p[n];
     zNew[n] = scaler * z[n];
   }
-  int nz = getNumFiniteValues(z, N);
+  int nz = rsGetNumFiniteValues(z, N);
   *kNew  = *k / pow(wc, N-nz);
 }
 
@@ -347,11 +349,9 @@ void rsPrototypeDesigner<T>::getInverseFilter(Complex* z, Complex* p, T* k, Comp
   //                // and gain zeros into zNew, pNew, kNew
 
   Complex *zTmp = new Complex[N]; // to make it work, when the new arrays are equal to the old ones
-  copyBuffer(z,    zTmp, N);
-  //copyBuffer(p,    z,    N);  // yes, this was wrong
-  //copyBuffer(zTmp, p,    N);
-  copyBuffer(p,    zNew,    N);
-  copyBuffer(zTmp, pNew,    N);
+  ArrayTools::rsCopyBuffer(z,    zTmp, N);
+  ArrayTools::rsCopyBuffer(p,    zNew, N);
+  ArrayTools::rsCopyBuffer(zTmp, pNew, N);
   *kNew = 1.0 / *k;
   delete[] zTmp;
 }
@@ -360,10 +360,9 @@ template<class T>
 int rsPrototypeDesigner<T>::getLeftHalfPlaneRoots(T* a, Complex* r, int N)
 {
   Complex *rTmp = new Complex[N]; // maybe we can get rid of that temporary array
-  findPolynomialRoots(a, N, rTmp);
-  int numLeftRoots = onlyLeftHalfPlane(rTmp, r, N);
-
-  rassert(numLeftRoots == ceil(0.5*N)); // maybe take this out later
+  rsPolynomial<T>::findPolynomialRoots(a, N, rTmp);
+  int numLeftRoots = rsOnlyLeftHalfPlane(rTmp, r, N);
+  rsAssert(numLeftRoots == ceil(0.5*N)); // maybe take this out later
   delete[] rTmp;
   return numLeftRoots;
 }
@@ -372,14 +371,14 @@ template<class T>
 void rsPrototypeDesigner<T>::getBesselLowpassZerosPolesAndGain(Complex* z, Complex* p, T* k, int N)
 {
   // zeros are at infinity:
-  fillWithValue(z, N, Complex(INF, 0.0));
+  ArrayTools::rsFillWithValue(z, N, Complex(RS_INF(T), 0.0));
 
   // find poles:
   T* a = new T[N+1];        // Bessel-Polynomial coefficients
-  besselPolynomial(a, N);
-  reverse(a, N+1);          // we actually use a reverse Bessel polynomial
+  rsPolynomial<T>::besselPolynomial(a, N);
+  ArrayTools::rsReverse(a, N+1);          // we actually use a reverse Bessel polynomial
 
-  findPolynomialRoots(a, N, p);
+  rsPolynomial<T>::findPolynomialRoots(a, N, p);
 
   // set gain and scale poles to match Butterworth magnitude response asymptotically, if desired:
   bool matchButterworth = true; // maybe make this a parameter later
@@ -424,16 +423,16 @@ void rsPrototypeDesigner<T>::getBesselLowShelfZerosPolesAndGain(Complex* z, Comp
 
   // construct lowpass denominator:
   T* a  = new T[N+1];
-  besselPolynomial(a, N);
-  reverse(a, N+1);   // leaving this out leads to a modified Bessel filter response - maybe 
-                     // experiment a bit, response looks good
+  rsPolynomial<T>::besselPolynomial(a, N);
+  ArrayTools::rsReverse(a, N+1);  // leaving this out leads to a modified Bessel filter response - maybe 
+                                  // experiment a bit, response looks good
 
   // find poles of the shelving filter:
-  findPolynomialRoots(a, N, p);
+  rsPolynomial<T>::findPolynomialRoots(a, N, p);
 
   // construct lowpass numerator:
   T* b = new T[N+1];
-  fillWithZeros(b, N+1);
+  ArrayTools::rsFillWithZeros(b, N+1);
   b[0] = a[0];
 
   // obtain magnitude-squared numerator polynomial for shelving filter:
@@ -466,10 +465,10 @@ template<class T>
 void rsPrototypeDesigner<T>::papoulisMagnitudeSquaredDenominator(T* a, int N)
 {
   int n;
-  fillWithZeros(a, 2*N+1);  // do we need this?
+  ArrayTools::rsFillWithZeros(a, 2*N+1);  // do we need this?
 
   // construct the polynomial L_N(w^2):
-  maximumSlopeMonotonicPolynomial(a, N);  // does the same same as lopt(a, N); from C.R.Bond
+  rsPolynomial<T>::maximumSlopeMonotonicPolynomial(a, N);  // does the same same as lopt(a, N); from C.R.Bond
 
   // flip sign of coeffs for odd powers (substitute w^2 with -s^2):
   for(n = 1; n <= N; n += 2)
@@ -495,7 +494,7 @@ void rsPrototypeDesigner<T>::getPapoulisLowpassZerosPolesAndGain(Complex* z, Com
   getLeftHalfPlaneRoots(a2, p, 2*N);
 
   // zeros are at infinity:
-  fillWithValue(z, N, Complex(INF, 0.0));
+  ArrayTools::rsFillWithValue(z, N, Complex(RS_INF(T), 0.0));
 
   // set gain at DC to unity:
   *k = sqrt(1.0/fabs(a2[2*N]));
@@ -546,7 +545,7 @@ void rsPrototypeDesigner<T>::getPapoulisLowShelfZerosPolesAndGain(Complex* z, Co
 
   // construct lowpass numerator:
   T* b2 = new T[2*N+1];
-  fillWithZeros(b2, 2*N+1);
+  ArrayTools::rsFillWithZeros(b2, 2*N+1);
   b2[0] = 1.0;
 
   // end of "factor out" ...in general, we need to scale the b2-polynomial also by dividing through 
@@ -584,7 +583,7 @@ void rsPrototypeDesigner<T>::getEllipticLowpassZerosPolesAndGain(Complex* z, Com
   int N, T Gp, T Gs)
 {
 //  int nz;
-//  if( isEven(N) )
+//  if( rsIsEven(N) )
 //    nz = N;
 //  else
 //    nz = N-1;
@@ -593,19 +592,19 @@ void rsPrototypeDesigner<T>::getEllipticLowpassZerosPolesAndGain(Complex* z, Com
   getNumBiquadsAndFirstOrderStages(N, L, r);
 
   // declare/assign/calculate some repeatedly needed variables:
-  Complex j(0.0, 1.0);                          // imaginary unit
-  T  ep  = sqrt(1.0/(Gp*Gp) - 1.0);             // Eq. 2
-  T  es  = sqrt(1.0/(Gs*Gs) - 1.0);             // Eq. 2
-  T  k1  = ep/es;                               // Eq. 3
-  T  kk  = ellipdeg(N, k1);                     // solve degree equation for k
-  T  v_0 =  (-j*asnC(j/ep, k1) / (T) N).re;     // from ellipap.m
+  Complex j(0.0, 1.0);                            // imaginary unit
+  T  ep  = sqrt(1.0/(Gp*Gp) - 1.0);               // Eq. 2
+  T  es  = sqrt(1.0/(Gs*Gs) - 1.0);               // Eq. 2
+  T  k1  = ep/es;                                 // Eq. 3
+  T  kk  = ellipdeg(N, k1);                       // solve degree equation for k
+  T  v_0 =  (-j*rsAsnC(j/ep, k1) / (T) N).real(); // from ellipap.m
 
   // calculate the position of the real pole (if present):
   if( r == 1 )
   {
     //p[L+r-1] = -Omega_p/sinh(v_0*PI*0.5*kk);                 // Eq. 73
-    p[N-1] = j * snC(j*v_0, kk);                               // from ellipap.m - find Eq.
-    z[N-1] = INF;
+    p[N-1] = j * rsSnC(j*v_0, kk);                               // from ellipap.m - find Eq.
+    z[N-1] = RS_INF(T);
   }
 
   // calculate the complex conjugate poles and zeros:
@@ -613,17 +612,17 @@ void rsPrototypeDesigner<T>::getEllipticLowpassZerosPolesAndGain(Complex* z, Com
   Complex zeta_i;
   for(int i = 0; i < L; i++)
   {
-    u_i      = (T) (2*(i+1)-1) / (T) N;                // Eq. 69
-    zeta_i   = cdC(u_i, kk);                           // from ellipap.m - find Eq.
+    Complex u_i = (T) (2*(i+1)-1) / (T) N;             // Eq. 69
+    zeta_i   = rsCdC(u_i, kk);                         // from ellipap.m - find Eq.
     z[2*i]   = j / (kk*zeta_i);                        // Eq. 62
-    p[2*i]   = j*cdC((u_i-j*v_0), kk);
-    z[2*i+1] = z[2*i].getConjugate();
-    p[2*i+1] = p[2*i].getConjugate();
+    p[2*i]   = j*rsCdC((u_i-j*v_0), kk);
+    z[2*i+1] = conj(z[2*i]); 
+    p[2*i+1] = conj(p[2*i]);
   }
 
   T H0 = pow(Gp, 1-r);    // preliminary - can be made simpler (without pow)
-  Complex n = productOfFiniteFactors(p, N);
-  Complex d = productOfFiniteFactors(z, N);
+  Complex n = rsProductOfFiniteFactors(p, N);
+  Complex d = rsProductOfFiniteFactors(z, N);
   *k        = H0 * (n/d).real();
 }
 
@@ -637,9 +636,9 @@ std::complex<T> rsPrototypeDesigner<T>::getFilterResponseAt(Complex s)
   int     Lz, Lp;
 
   // initialize the numerator and denominator:
-  if( isOdd(numFiniteZeros) )
+  if( rsIsOdd(numFiniteZeros) )
   {
-    num = -z[L+r-1].re;
+    num = -z[L+r-1].real();
     Lz  = (numFiniteZeros-1)/2;
   }
   else
@@ -647,9 +646,9 @@ std::complex<T> rsPrototypeDesigner<T>::getFilterResponseAt(Complex s)
     num = 1.0;
     Lz  = numFiniteZeros/2;
   }
-  if( isOdd(numFinitePoles) )
+  if( rsIsOdd(numFinitePoles) )
   {
-    den = -p[L+r-1].re;
+    den = -p[L+r-1].real();
     Lp  = (numFinitePoles-1)/2;
   }
   else
@@ -661,9 +660,9 @@ std::complex<T> rsPrototypeDesigner<T>::getFilterResponseAt(Complex s)
   // accumulate product of linear factors for denominator (poles) and numerator (zeros):
   int i;
   for(i = 0; i < Lz; i++)
-    num *= ((s-z[i]) * (s-z[i].getConjugate()));
+    num *= ((s-z[i]) * (s-conj(z[i])));
   for(i = 0; i < Lp; i++)
-    den *= ((s-p[i]) * (s-p[i].getConjugate()));
+    den *= ((s-p[i]) * (s-conj(p[i])));
 
   return num/den;
 }
@@ -671,7 +670,7 @@ std::complex<T> rsPrototypeDesigner<T>::getFilterResponseAt(Complex s)
 template<class T>
 T rsPrototypeDesigner<T>::getMagnitudeAt(T w)
 {
-  return getFilterResponseAt(Complex(0.0, w)).getRadius();
+  return abs(getFilterResponseAt(Complex(0.0, w)));
 }
 
 template<class T>
@@ -709,7 +708,7 @@ int rsPrototypeDesigner<T>::getNumFiniteZeros()
 template<class T>
 int rsPrototypeDesigner<T>::getNumNonRedundantFinitePoles()
 {
-  if( isEven(numFinitePoles) )
+  if( rsIsEven(numFinitePoles) )
     return numFinitePoles/2;
   else
     return (numFinitePoles+1)/2;
@@ -718,7 +717,7 @@ int rsPrototypeDesigner<T>::getNumNonRedundantFinitePoles()
 template<class T>
 int rsPrototypeDesigner<T>::getNumNonRedundantFiniteZeros()
 {
-  if( isEven(numFiniteZeros) )
+  if( rsIsEven(numFiniteZeros) )
     return numFiniteZeros/2;
   else
     return (numFiniteZeros+1)/2;
@@ -800,12 +799,12 @@ void rsPrototypeDesigner<T>::updatePolesAndZeros()
     {
       switch( approximationMethod )
       {
-      case BUTTERWORTH:       makeButterworthLowShelv();                    break;
-      case CHEBYCHEV:         makeChebychevLowShelv();                      break;
-      case INVERSE_CHEBYCHEV: makeInverseChebychevLowShelv();               break;
-      case ELLIPTIC:          makeEllipticLowShelv();                       break;
-      case BESSEL:            makeBesselLowShelv(  dB2amp(A), dB2amp(A0));  break;
-      case PAPOULIS:          makePapoulisLowShelv(dB2amp(A), dB2amp(A0));  break;
+      case BUTTERWORTH:       makeButterworthLowShelv();                         break;
+      case CHEBYCHEV:         makeChebychevLowShelv();                           break;
+      case INVERSE_CHEBYCHEV: makeInverseChebychevLowShelv();                    break;
+      case ELLIPTIC:          makeEllipticLowShelv();                            break;
+      case BESSEL:            makeBesselLowShelv(  rsDbToAmp(A), rsDbToAmp(A0)); break;
+      case PAPOULIS:          makePapoulisLowShelv(rsDbToAmp(A), rsDbToAmp(A0)); break;
       }
     }
     stateIsDirty = false;
@@ -836,15 +835,16 @@ void rsPrototypeDesigner<T>::makeButterworthLowpass()
   if( r == 1 )
   {
     p[L+r-1] = -ep_pow;                                    // Eq.70
-    z[L+r-1] = INF;                                        // zero at infinity
+    z[L+r-1] = RS_INF(T);                                  // zero at infinity
   }
   // calculate the complex conjugate poles and zeros:
   T  u_i;
   for(int i = 0; i < L; i++)
   {
-    u_i  = (T) (2*(i+1)-1) / (T) N;                        // Eq.69
-    p[i] = ep_pow*j*expC(j*u_i*PI*0.5);                    // Eq.70
-    z[i] = INF;                                            // zeros are at infinity
+    Complex u_i  = (T) (2*(i+1)-1) / (T) N;                // Eq.69
+    //p[i] = ep_pow*j*rsExpC(j*u_i*T(PI*0.5));                  // old
+    p[i] = ep_pow*j*exp(j*u_i*T(PI*0.5));                  // Eq.70
+    z[i] = RS_INF(T);                                      // zeros are at infinity
   }
 
   stateIsDirty = false;
@@ -857,7 +857,7 @@ void rsPrototypeDesigner<T>::makeButterworthLowShelv()
   numFiniteZeros = N;
 
   // catch some special cases:
-  if( A0 == NEG_INF ) // lowpass-case
+  if( A0 == -RS_INF(T) ) // lowpass-case
   {
     makeButterworthLowpass();
     return;
@@ -866,8 +866,8 @@ void rsPrototypeDesigner<T>::makeButterworthLowShelv()
     makeBypass();
 
   // intermediate variables:
-  T G0   = dB2amp(A0);
-  T G    = dB2amp(A);
+  T G0   = rsDbToAmp(A0);
+  T G    = rsDbToAmp(A);
   T GB   = sqrt(G0*G);                           // (2),Eq.52
   T ep   = sqrt( (G*G-GB*GB) / (GB*GB-G0*G0) );  // (2),Eq.12
   T g0   = pow(G0, 1.0 / (T) N);                 // (2),Eq.94
@@ -885,13 +885,13 @@ void rsPrototypeDesigner<T>::makeButterworthLowShelv()
   T phi, s, c;
   for(int i = 0; i < L; i++)
   {
-    phi     = (T) (2*(i+1)-1)*PI / (T) (2*N);    // (2),Eq.95
-    s       = sin(phi);                          // (2),Eq.95
-    c       = cos(phi);                          // (2),Eq.95
-    z[i].re = -s*g*beta/g0;                      // (2),Eq.93
-    z[i].im =  c*g*beta/g0;                      // (2),Eq.93
-    p[i].re = -s*beta;                           // (2),Eq.93
-    p[i].im =  c*beta;                           // (2),Eq.93
+    phi = (T) (2*(i+1)-1)*PI / (T) (2*N);    // (2),Eq.95
+    s   = sin(phi);                          // (2),Eq.95
+    c   = cos(phi);                          // (2),Eq.95
+    z[i].real(-s*g*beta/g0);                 // (2),Eq.93
+    z[i].imag( c*g*beta/g0);                 // (2),Eq.93
+    p[i].real(-s*beta);                      // (2),Eq.93
+    p[i].imag( c*beta);                      // (2),Eq.93
   }
 
   stateIsDirty = false;
@@ -913,15 +913,15 @@ void rsPrototypeDesigner<T>::makeChebychevLowpass()
   // calculate the position of the real pole (if present):
   if( r == 1 )
   {
-    p[L+r-1] = -sinh(v_0*PI*0.5);                    // Eq. 71
-    z[L+r-1] = INF;
+    p[L+r-1] = -sinh(v_0*PI*0.5);          // Eq. 71
+    z[L+r-1] = RS_INF(T);
   }
   // calculate the complex conjugate poles and zeros:
   for(int i = 0; i < L; i++)
   {
-    u_i  = (T) (2*(i+1)-1) / (T) N;        // Eq. 69
-    p[i] = j*cosC((u_i-j*v_0)*PI*0.5);     // Eq. 71
-    z[i] = INF;                            // zeros at infinity
+    u_i  = (T) (2*(i+1)-1) / (T) N;         // Eq. 69
+    p[i] = j*rsCosC((u_i-j*v_0)*T(PI*0.5)); // Eq. 71
+    z[i] = RS_INF(T);                       // zeros at infinity
   }
 
   //gain = 1.0 / getFilterResponseAt(Complex(0.0, 0.0)).getMagnitude();
@@ -935,11 +935,11 @@ void rsPrototypeDesigner<T>::makeChebychevLowShelv()
   numFiniteZeros = N;
 
   // calculate the linear gain-factors:
-  T G0 = dB2amp(A0);
-  T G  = dB2amp(A);
+  T G0 = rsDbToAmp(A0);
+  T G  = rsDbToAmp(A);
 
   // catch some special cases:
-  if( A0 == NEG_INF ) // lowpass-case
+  if( A0 == -RS_INF(T) ) // lowpass-case
   {
     makeChebychevLowpass();
     return;
@@ -948,7 +948,7 @@ void rsPrototypeDesigner<T>::makeChebychevLowShelv()
     makeBypass();
 
   // calculate intermediate variables:
-  T Gp    = dB2amp(A0 + Rp*A);
+  T Gp    = rsDbToAmp(A0 + Rp*A);
   T ep    = sqrt( (G*G-Gp*Gp) / (Gp*Gp-G0*G0) );
   T g0    = pow(G0, 1.0 / (T) N);
   //T g     = pow(G,   1.0 / (T) N);
@@ -973,8 +973,8 @@ void rsPrototypeDesigner<T>::makeChebychevLowShelv()
   for(int i = 0; i < L; i++)
   {
     phi_i = (T) (2*(i+1)-1)*PI / (T) (2*N);
-    z[i]  = j*wb*cosC(phi_i - j*u);
-    p[i]  = j*wb*cosC(phi_i - j*v);
+    z[i]  = j*wb*rsCosC(phi_i - j*u);
+    p[i]  = j*wb*rsCosC(phi_i - j*v);
   }
 
   stateIsDirty = false;
@@ -984,7 +984,7 @@ template<class T>
 void rsPrototypeDesigner<T>::makeInverseChebychevLowpass()
 {
   numFinitePoles = N;
-  if( isEven(N) )
+  if( rsIsEven(N) )
     numFiniteZeros = N;
   else
     numFiniteZeros = N-1;
@@ -1006,15 +1006,15 @@ void rsPrototypeDesigner<T>::makeInverseChebychevLowpass()
   if( r == 1 )
   {
     p[L+r-1] = -wb / sinh(v0*PI*0.5);                           // Eq.73 with k=1
-    z[L+r-1] = INF;
+    z[L+r-1] = RS_INF(T);
   }
 
   // calculate the complex conjugate poles and zeros:
   for(int i = 0; i < L; i++)
   {
-    ui   = (T) (2*(i+1)-1) / (T) N;                             // Eq.69
-    z[i] = wb / (j*cosC(ui*PI/2));                              // Eq.73 with k=1
-    p[i] = wb / (j*cosC((ui - j*v0)*PI/2));                     // Eq.73 with k=1
+    Complex ui = (T) (2*(i+1)-1) / (T) N;                            // Eq.69
+    z[i] = wb / (j*rsCosC(ui*T(PI/2)));                              // Eq.73 with k=1
+    p[i] = wb / (j*rsCosC((ui - j*v0)*T(PI/2)));                     // Eq.73 with k=1
   }
 
   stateIsDirty = false;
@@ -1027,11 +1027,11 @@ void rsPrototypeDesigner<T>::makeInverseChebychevLowShelv()
   numFiniteZeros = N;
 
   // calculate the linear gain-factors:
-  T G0 = dB2amp(A0);
-  T G  = dB2amp(A);
+  T G0 = rsDbToAmp(A0);
+  T G  = rsDbToAmp(A);
 
   // catch some special cases:
-  if( A0 == NEG_INF ) // lowpass-case
+  if( A0 == -RS_INF(T) ) // lowpass-case
   {
     makeInverseChebychevLowpass();
     return;
@@ -1040,8 +1040,8 @@ void rsPrototypeDesigner<T>::makeInverseChebychevLowShelv()
     makeBypass();
 
   // calculate intermediate variables (\todo check if the gains have reasonable values):
-  //T Gs    = dB2amp(Rs*G + (1.0-Rs)*G0);
-  T Gs    = dB2amp(A0 + Rs*A);
+  //T Gs    = rsDbToAmp(Rs*G + (1.0-Rs)*G0);
+  T Gs    = rsDbToAmp(A0 + Rs*A);
   T es    = sqrt( (G*G-Gs*Gs) / (Gs*Gs-G0*G0) );
   //T g0    = pow(G0, 1.0 / (T) N);
   T g     = pow(G,   1.0 / (T) N);
@@ -1067,8 +1067,8 @@ void rsPrototypeDesigner<T>::makeInverseChebychevLowShelv()
   for(int i = 0; i < L; i++)
   {
     phi_i = (T) (2*(i+1)-1)*PI / (T) (2*N);
-    z[i]  = wb / (j*cosC(phi_i-j*u));
-    p[i]  = wb / (j*cosC(phi_i-j*v));
+    z[i]  = wb / (j*rsCosC(phi_i-j*u));
+    p[i]  = wb / (j*rsCosC(phi_i-j*v));
   }
 
   stateIsDirty = false;
@@ -1078,7 +1078,7 @@ template<class T>
 void rsPrototypeDesigner<T>::makeEllipticLowpass()
 {
   numFinitePoles = N;
-  if( isEven(N) )
+  if( rsIsEven(N) )
     numFiniteZeros = N;
   else
     numFiniteZeros = N-1;
@@ -1093,22 +1093,22 @@ void rsPrototypeDesigner<T>::makeEllipticLowpass()
   T  es  = sqrt(1.0/(Gs*Gs) - 1.0);             // Eq. 2
   T  k1  = ep/es;                               // Eq. 3
   T  k   = ellipdeg(N, k1);                     // solve degree equation for k
-  T  v_0 =  (-j*asnC(j/ep, k1) / (T) N).re;     // from ellipap.m
+  T  v_0 =  (-j*rsAsnC(j/ep, k1)/(T)N).real();  // from ellipap.m
 
   // calculate the position of the real pole (if present):
   if( r == 1 )
   {
     //p[L+r-1] = -Omega_p/sinh(v_0*PI*0.5*k);                    // Eq. 73
-    p[L+r-1] = j * snC(j*v_0, k);                                // from ellipap.m
-    z[L+r-1] = INF;
+    p[L+r-1] = j * rsSnC(j*v_0, k);                                // from ellipap.m
+    z[L+r-1] = RS_INF(T);
   }
   // calculate the complex conjugate poles and zeros:
   for(int i = 0; i < L; i++)
   {
-    u_i    = (T) (2*(i+1)-1) / (T) N;                            // Eq. 69
-    zeta_i = cdC(u_i, k);                                        // from ellipap.m
+    Complex u_i = (T) (2*(i+1)-1) / (T) N;                       // Eq. 69
+    zeta_i = rsCdC(u_i, k);                                      // from ellipap.m
     z[i]   = j / (k*zeta_i);                                     // Eq. 62
-    p[i]   = j*cdC((u_i-j*v_0), k);
+    p[i]   = j*rsCdC((u_i-j*v_0), k);
   }
 
   stateIsDirty = false;
@@ -1121,7 +1121,7 @@ void rsPrototypeDesigner<T>::makeEllipticLowShelv()
   numFiniteZeros = N;
 
   // catch some special cases:
-  if( A0 == NEG_INF ) // lowpass-case
+  if( A0 == -RS_INF(T) ) // lowpass-case
   {
     makeEllipticLowpass();
     return;
@@ -1130,42 +1130,43 @@ void rsPrototypeDesigner<T>::makeEllipticLowShelv()
     makeBypass();
 
   // intermediate variables:
-  T  G0  = dB2amp(A0);                            // reference amplitude
-  T  G   = dB2amp(A);                             // boost/cut amplitude
-  T  Gp  = dB2amp(A0 + Rp*A);                     // passband-amplitude (Rp near 1)
-  T  Gs  = dB2amp(A0 + Rs*A);                     // stopband-amplitude (Rs near 0)
+  T  G0  = rsDbToAmp(A0);                         // reference amplitude
+  T  G   = rsDbToAmp(A);                          // boost/cut amplitude
+  T  Gp  = rsDbToAmp(A0 + Rp*A);                  // passband-amplitude (Rp near 1)
+  T  Gs  = rsDbToAmp(A0 + Rs*A);                  // stopband-amplitude (Rs near 0)
   T  Gb  = sqrt(G0*G);                            // (2),Eq.52 (gain at the bandedges)
   T  ep  = sqrt( (G*G-Gp*Gp) / (Gp*Gp-G0*G0) );   // (2),Eq.12
   T  es  = sqrt( (G*G-Gs*Gs) / (Gs*Gs-G0*G0) );   // (2),Eq.39
   T  eb  = sqrt( (G*G-Gb*Gb) / (Gb*Gb-G0*G0) );   // (2),Eq.64
   T  k1  = ep/es;                                 // (2),Eq.39
   T  k   = ellipdeg(N, k1);                       // degree equation
-  Complex u   = acdC(eb/ep, k1) / N;              // following text after (2),Eq.65
-  T  wb  = 1.0 / cdC(u, k).re;                    // ...ditto
+  //Complex u = rsAcdC(eb/ep, k1) / N;            // old
+  Complex u = rsAcdC(Complex(eb/ep), k1) / T(N);  // following text after (2),Eq.65
+  T  wb  = 1.0 / rsCdC(u, k).real();              // ...ditto
   Complex j   = Complex(0.0, 1.0);                // imaginary unit
-  Complex ju0 = asnC(j*G/(ep*G0), k1) / N;        // line 111 in hpeq.m
-  Complex jv0 = asnC(j  / ep,     k1) / N;        // line 113 in hpeq.m
+  Complex ju0 = rsAsnC(j*G/(ep*G0), k1) / T(N);   // line 111 in hpeq.m
+  Complex jv0 = rsAsnC(j  / ep,     k1) / T(N);   // line 113 in hpeq.m
 
   // calculate the position of the real pole (if present):
   if( r == 1 )
   {
-    p[L+r-1] = wb*(j*cdC(-1.0+jv0,k)).re;              // line 148 in hpeq.m
-    z[L+r-1] = wb*(j*cdC(-1.0+ju0,k)).re;              // line 145 in hpeq.m
+    p[L+r-1] = wb*(j*rsCdC(T(-1)+jv0,k)).real();        // line 148 in hpeq.m
+    z[L+r-1] = wb*(j*rsCdC(T(-1)+ju0,k)).real();        // line 145 in hpeq.m
   }
 
   // calculate the complex conjugate poles and zeros:
   T ui;
   for(int i = 0; i < L; i++)
   {
-    ui   = (T) (2*(i+1)-1) / (T) N;                    // (2),Eq.37
-    p[i] = j*wb * cdC( (ui-jv0), k );                  // line 179 in hpeq.m
+    Complex ui = (T) (2*(i+1)-1) / (T) N;              // (2),Eq.37
+    p[i] = j*wb * rsCdC( (ui-jv0), k );                // line 179 in hpeq.m
 
     if( G0 == 0.0 && G != 0.0 )                        // lines 172-178 in hpeq.m
-      z[i] = j*wb / (k*cdC(ui,k));   // lowpass
+      z[i] = j*wb / (k*rsCdC(ui,k));   // lowpass
     else if( G0 != 0.0 && G == 0.0 )
-      z[i] = j*wb * cdC(ui,k);       // highpass
+      z[i] = j*wb * rsCdC(ui,k);       // highpass
     else
-      z[i] = j*wb * cdC(ui-ju0,k);   // low-shelv
+      z[i] = j*wb * rsCdC(ui-ju0,k);   // low-shelv
   }
 
   stateIsDirty = false;
@@ -1174,8 +1175,8 @@ void rsPrototypeDesigner<T>::makeEllipticLowShelv()
 template<class T>
 void rsPrototypeDesigner<T>::makeBesselLowShelv(T G, T G0)
 {
-  fillWithZeros(p, maxNumNonRedundantPoles);
-  fillWithZeros(z, maxNumNonRedundantPoles);
+  ArrayTools::rsFillWithZeros(p, maxNumNonRedundantPoles);
+  ArrayTools::rsFillWithZeros(z, maxNumNonRedundantPoles);
   numFinitePoles = N;
   if( G0 == 0.0 )
     numFiniteZeros = 0;
@@ -1198,8 +1199,8 @@ void rsPrototypeDesigner<T>::makeBesselLowShelv(T G, T G0)
 template<class T>
 void rsPrototypeDesigner<T>::makePapoulisLowShelv(T G, T G0)
 {
-  fillWithZeros(p, maxNumNonRedundantPoles);
-  fillWithZeros(z, maxNumNonRedundantPoles);
+  ArrayTools::rsFillWithZeros(p, maxNumNonRedundantPoles);
+  ArrayTools::rsFillWithZeros(z, maxNumNonRedundantPoles);
   numFinitePoles = N;
   if( G0 == 0.0 )
     numFiniteZeros = 0;
@@ -1222,15 +1223,15 @@ void rsPrototypeDesigner<T>::makePapoulisLowShelv(T G, T G0)
 template<class T>
 void rsPrototypeDesigner<T>::pickNonRedundantPolesAndZeros(Complex *zTmp, Complex *pTmp)
 {
-  zeroNegligibleImaginaryParts(pTmp, N, 1.e-11);
-  zeroNegligibleImaginaryParts(zTmp, N, 1.e-11);
-  onlyUpperHalfPlane(pTmp, pTmp, N);
-  onlyUpperHalfPlane(zTmp, zTmp, N);
-  copyBuffer(pTmp, p, L+r);
-  copyBuffer(zTmp, z, L+r);
+  rsZeroNegligibleImaginaryParts(pTmp, N, T(1.e-11));
+  rsZeroNegligibleImaginaryParts(zTmp, N, T(1.e-11));
+  rsOnlyUpperHalfPlane(pTmp, pTmp, N);
+  rsOnlyUpperHalfPlane(zTmp, zTmp, N);
+  ArrayTools::rsCopyBuffer(pTmp, p, L+r);
+  ArrayTools::rsCopyBuffer(zTmp, z, L+r);
 
   // the caller is supposed to ensure that the real zero/pole, if present, is in zTmp[0], pTmp[0] - 
   // but we need it in the last positions z[L+r], p[L+r], so we reverse the arrays:
-  reverse(p, L+r);
-  reverse(z, L+r);
+  ArrayTools::rsReverse(p, L+r);
+  ArrayTools::rsReverse(z, L+r);
 }
