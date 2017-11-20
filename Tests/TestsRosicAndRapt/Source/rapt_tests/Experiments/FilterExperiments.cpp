@@ -279,23 +279,33 @@ void nonUniformMovingAverage()
   // gets averaged out better?
 }
 
+
+void reflectRoots(complex<float>* roots, int N)
+{
+  for(int i = 0; i <= N/2; i++)
+    roots[N-1-i] = conj(roots[i]);
+}
 void prototypeDesign()
 {
-  static const int order = 9;
+  static const int N = 8;  // filter order
 
   // obtain filter poles and zeros:
-  std::complex<float> poles[order], zeros[order];
+  std::complex<float> poles[N], zeros[N];
   rsPrototypeDesignerF pd;
-  pd.setOrder(order);
-  pd.setApproximationMethod(rsPrototypeDesignerF::BUTTERWORTH);
+  pd.setOrder(N);
+  //pd.setApproximationMethod(rsPrototypeDesignerF::BUTTERWORTH);
+  pd.setApproximationMethod(rsPrototypeDesignerF::ELLIPTIC);
   pd.setPassbandRipple(3); 
   pd.setStopbandRejection(40);
   pd.getPolesAndZeros(poles, zeros); // returns only the non-redundant upper halfplane poles
 
   // create full pole/zero set by reflection:
+  reflectRoots(poles, N);
+  reflectRoots(zeros, N);
 
-
+  // create plotter, pass filter specification and plot:
   FilterPlotter<float> plt;
+  plt.addPoleZeroSet(pd.getNumFinitePoles(), poles, pd.getNumFiniteZeros(), zeros, 1.f);
 }
 
 void smoothingFilterOrders()
