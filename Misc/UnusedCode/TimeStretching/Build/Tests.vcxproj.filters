@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\WavFile">
+      <UniqueIdentifier>{0b6fb877-d5de-4248-854f-c824e77439ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{2ea27173-5e5d-44da-9b38-b8274bc1d6f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ElastiquePro">
+      <UniqueIdentifier>{890c4c2d-d955-43d1-aa03-124b2498d89a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Code\Tests\Tests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Soundtouch\source\SoundStretch\WavFile.cpp">
+      <Filter>Source Files\WavFile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Tests\TimeStretcher.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Tests\Utilities.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Bernsee\smbPitchShiftModified.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Code\ElastiquePro\zPlane\include\zPlane\elastiqueProAPI.h">
+      <Filter>Header Files\ElastiquePro</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Tests\TimeStretcher.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Tests\Utilities.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Tests\InfiniteDataStream.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
