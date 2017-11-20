@@ -9,7 +9,6 @@ namespace RAPT
 #include "Functions/BasicFunctions.h"
 #include "Functions/IntegerFunctions.h"
 #include "Functions/RealFunctions.h"
-#include "Functions/AudioFunctions.h"     // maybe move into a Music or Audio submodule
 #include "Functions/ComplexFunctions.h"
 #include "Functions/FunctionIterators.h"
 #include "Functions/MoebiusTransform.h"

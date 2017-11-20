@@ -38,6 +38,7 @@
 #include "Basics/Basics.h"               // type definitions, constants, functions, etc.
 #include "Data/Data.h"                   // data structures like arrays, lists, files, etc.
 #include "Math/Math.h"                   // interpolation, transforms, linear algebra, numerical analysis
+#include "AudioBasics/AudioBasics.h" 
 //#include "Music/Music.h"               // scales (pitchToFreq, ..), time signatures, sequences, patterns, notes, MIDI, etc.
 #include "Filters/Filters.h"             // butterworth, ladder, biquad, elliptic, SVF, etc.
 //#include "Analysis/Analysis.h"         // envelope follower, smoother, pitch-detector, etc.

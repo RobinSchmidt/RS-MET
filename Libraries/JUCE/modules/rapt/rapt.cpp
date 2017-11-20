@@ -15,6 +15,7 @@ think) */
 #include "Basics/Basics.cpp"
 #include "Data/Data.cpp"
 #include "Math/Math.cpp"
+#include "AudioBasics/AudioBasics.cpp" 
 #include "Filters/Filters.cpp"
 //#include "Analysis/Analysis.cpp"
 #include "Physics/Physics.cpp"

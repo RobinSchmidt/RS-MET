@@ -158,6 +158,12 @@
     <ClCompile Include="..\..\Source\rosic_tests\rosic_OthersTests.cpp"/>
     <ClCompile Include="..\..\Source\rosic_tests\rosic_StringTests.cpp"/>
     <ClCompile Include="..\..\Source\Main.cpp"/>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\AudioBasics\AudioBasics.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\AudioBasics\AudioFunctions.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\Basics.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -231,9 +237,6 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\RayBouncer.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\AudioFunctions.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\BasicFunctions.cpp">
@@ -1585,6 +1588,8 @@
     <ClInclude Include="..\..\Source\rosic_tests\rosic_NumericalTests.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\rosic_OthersTests.h"/>
     <ClInclude Include="..\..\Source\rosic_tests\rosic_StringTests.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\AudioBasics\AudioBasics.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\AudioBasics\AudioFunctions.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\Basics.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\Constants.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\MacroDefinitions.h"/>
@@ -1614,7 +1619,6 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Filters.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\Generators.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\RayBouncer.h"/>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\AudioFunctions.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\BasicFunctions.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\BellFunctions.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\ComplexFunctions.h"/>

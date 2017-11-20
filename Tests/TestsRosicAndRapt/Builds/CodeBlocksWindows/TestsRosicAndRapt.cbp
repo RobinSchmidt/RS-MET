@@ -223,6 +223,22 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../Source/Main.cpp"/>
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/AudioBasics/AudioBasics.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/AudioBasics/AudioBasics.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/AudioBasics/AudioFunctions.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/AudioBasics/AudioFunctions.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../Libraries/JUCE/modules/rapt/Basics/Basics.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -436,14 +452,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../Libraries/JUCE/modules/rapt/Generators/RayBouncer.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Math/Functions/AudioFunctions.cpp">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Math/Functions/AudioFunctions.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
