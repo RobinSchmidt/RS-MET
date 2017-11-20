@@ -1,0 +1,17 @@
+https://www-m10.ma.tum.de/foswiki/pub/Lehre/ProjektiveGeometrieWS0607/chap9.pdf
+..also chap10....
+
+http://www.kegelschnitte.de/kegelschnitte_gross.pdf
+
+http://www.mathe-seiten.de/kegelschnitte.pdf
+
+https://de.wikipedia.org/wiki/Schnittpunkt#Schnittpunkte_zweier_Kegelschnitte
+
+
+try
+0 = A*x² + B*x*y + C*y² + D*x + E*y + F
+0 = a*x² + b*x*y + c*y² + d*x + e*y + f
+
+examples:
+4 real intersections:
+http://www.wolframalpha.com/input/?i=x%C2%B2+-+y%C2%B2+%2B+x*y+%2B+x+%2B+2*y+%3D+1,+x%C2%B2%2F2+%2B+y%C2%B2*2+%2B+x*y+%2B+y+%2B+x%2F4+%3D+2

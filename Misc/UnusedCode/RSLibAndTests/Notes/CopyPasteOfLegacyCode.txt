@@ -1,0 +1,37 @@
+This file contains information, which parts of the legacy DSP library "rosic" has already been integrated into the the new RSLib library, how classes may have been renamed, re-organized, etc.
+
+analysis:
+rosic_CyclicAutoCorrelator -> 
+
+filters:
+rosic_BiquadBase                       -> Audio/Filters/Biquad rsBiquad
+rosic_BiquadCascade                    -> Audio/Filters/BiquadCascade rsBiquadCascade
+rosic_BiquadDesigner                   -> Audio/Filters/Biquad rsBiquadDesigner (move stuff into rsBiquad class)
+rosic_BiquadMonoDF1                    -> Audio/Filters/Biquad rsBiquadMonoDF1
+rosic_BiquadStereoDF1                  -> Audio/Filters/Biquad rsBiquadStereoDF1
+rosic_BiquadStereoDF2                  -> Audio/Filters/Biquad rsBiquadStereoDF2
+rosic_EnigineersFilter                 -> Audio/Filters/EnigineersFilter
+rosic_FilterAnalyzer                   -> Audio/Filters/FilterAnalyzer
+rosic_FilterCoefficientConverter       -> Audio/Filters/FilterCoefficientConverter
+rosic_InfiniteImpulseResponseDesigner  -> Audio/Filters/InfiniteImpulseResponseDesigner
+rosic_PoleZeroMapper                   -> Audio/Filters/PoleZeroMapper
+rosic_PrototypeDesigner                -> Audio/Filters/PrototypeDesigner 
+
+
+math:
+rosic_Interpolation                    -> Math/Misc/Interpolation
+
+...
+
+rendering:
+rosic_NonRealtimeProcesses             -> Audio/Misc/MiscAudio
+
+transforms:
+rosic_FourierTransformerBluestein      -> Math/Misc/FourierTransformer
+rosic_FourierTransformerRadix2         -> Math/Misc/FourierTransformer
+
+datatype renaming:
+Complex -> rsComplexDbl
+Vector -> rsVectorDbl
+
+rsModalSynthesizer -> rsModalFilterBank

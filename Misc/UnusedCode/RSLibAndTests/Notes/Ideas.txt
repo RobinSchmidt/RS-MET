@@ -1,0 +1,125 @@
+-time-frequency-scale representations:
+ -the idea is to have a 3D representation of a signal in terms of time t, frequency f and scale s 
+  that can be evaluated at arbitrary (continuous) values for all 3 variables
+ -it should have member variables: double *x; int N;
+ -the idea is that for each triple of values (t,f,s) we can compute a complex value z that 
+  represents the signal at the given  triple
+ -have a baseclass rsTimeFrequencyRepresentation with virtual member function that allows for 
+  evaluation of the representaion at arbirtary times t, frequencies f (and possibly also scales s):
+  rsComplexDbl valueAt(double t, double f, double s); // t: time, f: frequency, s: scale
+  -interpolation with complex-coefficient splines? "complex time-frequency spline" CTFS-interpolation
+ -maybe have also special cases for 2D representations such as 
+  -rsTimeFrequencyRepresentation
+  -rsTimeScaleRepresentation
+ -have a subclasses:
+  -rsFourierSpectrogram (where scale is a fixed parameter)
+  -rsGaborSpectrogram (where scale is proportional to 1/f)
+  -rsDaubechiesScalogram
+  -rsWignerDistribution
+  -etc.
+ -the Fourier spectrogram would be 2D slice from this 3D representation for fixed s, the Gabor 
+  spectrogram a slice for which s = c/f (for some constant c which is a parameter)
+
+-phase-vocoder:
+ -take care to use periodic windows (start at zero end nonzero, last value equals 2nd)
+ -maybe it can be based on the rsFourierSpectrogram - i.e. the analysis part returns an object
+  of this class and the synthesis takes an object of this class as parameter
+ -a generalized implementation should allow to center each window at an arbitrary sample index and
+  allow each window to have its own arbitrary size and to use arbitrary amounts of zero padding for
+  each window, it should also be possible to use arbitrary analysis- and synthesis windows
+  -this makes it possible to have an adaptive scheme, to, for example, take 3 cycles in each window
+   for signals with time-varying pitches, or one cycle with rectangular windowing
+  -it complicates the process of perfect reconstruction and least-squares signal synthesis from 
+   arbitrary spectrograms (in the sense that the synthesized signal has a spectrogram that is a 
+   least-squares approximation of the desired spectrogram a la Griffin/Lim)
+  -maybe the perfect reconstruction can be done in a straightforward way by dividing the raw
+   overlap/added signal by a gain signal g[n] = sum_m wa[n+m-j] * ws[n+m] where wa is the 
+   analysis window, ws is the synthesis window, m runs over all indices that give a nonzero 
+   product at a particular n and j is a time offset between the center of the analysis and 
+   synthesis window (if we use different analysis and synthesis hopsizes, for example). such a 
+   division by this g[n] should demodulate the output for perfect reconstruction. the sequence
+   g[n] may be accumulated straightforwardly, by accumulating a window-product into the gain signal
+   each time a grain is accumulated into the (raw) overlap/add signal
+  -maybe for obtaining values at arbitrary times and frequencies, we could use bilinear 
+   interpolation of the complex values (maybe real/imag is better for this than radius/angle) or
+   maybe spline interpolation (for example, first interpolate along the frequency axis using a 
+   quintic spline (at 4 different time indices) and then use the 4 values to interpolate along the 
+   time axis using a cubic spline - i.e. the interpolation order along both axes could be adjusted
+   separately)
+  -for the phase-unwrapping, it my be advisable to (in order to avoid precision loss), to store the
+   actual phase (as resulting from the FFT) and an integer that gives the multiple of 2*pi that 
+   would have to be added (don't actually add it to the double-variable that represents the phase 
+   because unwrapped phases may become large, and we want to avoid precision loss for the fractional 
+   part - in the same way as we handle it with rsFractionalIndex (maybe the class can be used but 
+   should have a more general name then))
+  -advantages of the heterodyne filterbank:
+   -naturally produces frequency- and amplitude tracks at the original samplerate (no interpolation
+    required for resynthesis unless we deliberately decimate the control signals)
+   -maybe be straightforwardly generalized to use time-varying filters
+   -pitch shifting is a straightforward multiplication of the frequencies
+   -we may use multipass bidirectional IIR filters for the analysis which can be made to approach
+    the gaussian shape (->optimal time/frequency resolution)
+   -might be better suited for sinusoidal modeling
+   -does not introduce an artificial windowing
+  -advantages of the FFT approach
+   -operations on the spectral envelope (auch as formant preservation) are straightforward to 
+    implement
+   -perfect reconstruction is straightforward, as long as some constraints are met
+   -might be more efficient (although i'm not sure, if that staement assumes slow FIR filters in
+    the heterodyne approach
+  -there's also the complex bandpass interpretation (see DAFX book) which is equivalent to the 
+   heterodyne filterbank - however, here, it's not so straightforward to introduce time variant
+   center frequencies
+   
+-sinusoidal-modeling:
+ -taking the output of the phase vocoder, we create preliminary tracks of time-varying sinusoids 
+  resulting in ak[n], pk[n] as instantaneous amplitudes and phases for each sinusoid (with index k)
+ -using these preliminary sinusoidal tracks, we refine these by using time varying bandpass filters
+  tuned to the instantaneous frequencies - their output signals will be used to create refined 
+  sinusoidal tracks by measuring instantaneous frequencies again (via pitch-marks) and obtaining
+  instantaneous amplitudes. (the filters should be zero-phase (whatever that means in a 
+  time-varying case, maybe some kind of symmetry measure, energy-center, peak-position), either 
+  noncausal FIR or bidirectional IIR - experiment, how they perform with regard to time varying 
+  phase response, maybe we can use an input sinusoid at some frequency and measure the time varying
+  phase response by looking at the instantaneous phase at each sample index)
+ -this refinement can be iterated until it converges, once converged, it should give a more 
+  accurate sinusoidal model than the initial phase-vocoder output
+ -some care has to be taken about tracks that start and end somewhere in the middle - maybe each 
+  track should have a start- and end-index
+ -because of memory constraints, we should perhaps intertwine the creation and resynthesis of the 
+  sinusoidal tracks - i.e. always work at one track a time instead of analyzing all tracks first 
+  and then reynthesizing them all at once, actually, the output of the last filtering iteration
+  can be seen as "resythesized"" output of that particular track
+ -maybe once a track has been resynthesized, it should be subtracted from the input signal and 
+  further tracks should operate on the residual
+   
+
+
+  
+
+
+-improve numerical precision of algorithms by using more sophisticated summing methods
+ -avoid addition of two elements of very different magnitude
+ -avoid subtraction (i.e. addition of a negative number) of numbers which are close
+ -have functions like T sumSimple(T *x, int N), T sumKahan(T *x, int N), etc.
+ -pass a function-pointer to the summing function into the algorithm and use it there (for example 
+  in matrix multiplication) - when nothing is passed, simple summing will be used
+  
+-implement simplified polynomial base-change for polynomials of ascending order (it involves solving 
+ a triangular system)
+-implement further simplified polynomial base-change for chebychev-polynomials from/to powers
+
+-least-squares polynomial fitting:
+ -simple-version (with vandermonde matrix)
+ -numerically stable version using chebychev-polynomials  
+ 
+-spectral envelope estimation
+ -connect spectral peaks with cubic spline
+ -select only those peaks which are some threshhold above a local average 
+  -the width of the average shall be related to the fundamental - perhaps choose df = f0 
+  (frequency difference equals fundamental frequncy)
+ -maybe a weigthed average can be used, more weight at the center, less towards the sides,
+  similar to window functions)
+ -maybe the average should be computed on the dB-scale (maybe using some floor value, bcs dB
+  goes to -infinity)
+  

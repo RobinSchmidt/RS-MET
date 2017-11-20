@@ -1,0 +1,342 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Others">
+      <UniqueIdentifier>{4bee4ab8-a95a-401d-9556-03102c5ba15b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RSMath">
+      <UniqueIdentifier>{d1feacea-f2d4-4e64-8cb1-d14f9e860f6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RSCore">
+      <UniqueIdentifier>{cb91e203-0f28-4000-8013-d902abfcc68d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RSAudio">
+      <UniqueIdentifier>{df983c9b-2b9b-4053-bb8e-4e6befadbf3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RSGraphics">
+      <UniqueIdentifier>{369395fb-6c8c-441a-b163-3222a7b92710}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RSCore\Definitions">
+      <UniqueIdentifier>{38e2a312-4c01-4718-be39-6bc77ca5295d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RSCore\Containers">
+      <UniqueIdentifier>{b514da7c-5a80-42f4-945d-51e6e2267940}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RSCore\Utilities">
+      <UniqueIdentifier>{db6e28c7-50b8-4e45-a04d-ed6edcfbcff6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RSCore\Text">
+      <UniqueIdentifier>{e5a0fd60-06ad-4177-b5d9-94a8e6821896}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RSCore\Files">
+      <UniqueIdentifier>{f12ea49a-3511-4d27-8cf1-e99347e8e6bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RSMath\Functions">
+      <UniqueIdentifier>{e5f4bb31-ead2-48f2-a6a5-1dd185c4717a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RSMath\Geometry">
+      <UniqueIdentifier>{dacaf24f-b6fb-4f11-b194-c1d9c16ac52c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RSMath\Misc">
+      <UniqueIdentifier>{b376b5b2-08ca-428c-8834-c837c2baa758}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RSMath\Types">
+      <UniqueIdentifier>{b045606d-4bf5-42d5-b00a-9e98d074aba0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RSAudio\Analysis">
+      <UniqueIdentifier>{e84cc011-9abe-453d-9fd5-75d9a242b76b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RSAudio\Synthesis">
+      <UniqueIdentifier>{0f263bb3-0b31-4656-81ed-17c4e33c8df4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RSGraphics\Fonts">
+      <UniqueIdentifier>{214e0da6-4e5e-4750-8bf0-f0b5d161dda9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RSGraphics\Rendering">
+      <UniqueIdentifier>{3d9a217d-0b1b-4f28-a1a9-752f90a6c029}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Common">
+      <UniqueIdentifier>{a666486f-def0-45ca-a30a-ff332b037651}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RSCore\Misc">
+      <UniqueIdentifier>{c4cfe444-648d-4d91-8ae8-b0f839612b08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RSAudio\Misc">
+      <UniqueIdentifier>{0df8c5dd-a639-4fe6-af43-4ab0fc1648ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RSAudio\Filter">
+      <UniqueIdentifier>{774489cd-f33c-4f5b-b6a0-cf2b0b3e2247}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Notes\ToDoUnitTestsRSCore.txt">
+      <Filter>Others</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Code\UnitTests\RSCore\Definitions\TypeSizeTests.cpp">
+      <Filter>Source Files\RSCore\Definitions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\RSCore\Containers\ArrayTests.cpp">
+      <Filter>Source Files\RSCore\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\RSCore\Containers\KeyValueMapTests.cpp">
+      <Filter>Source Files\RSCore\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\RSCore\Containers\ListTests.cpp">
+      <Filter>Source Files\RSCore\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\RSCore\Containers\TreeTests.cpp">
+      <Filter>Source Files\RSCore\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\RSCore\Utilities\NumberManipulationsTests.cpp">
+      <Filter>Source Files\RSCore\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\RSCore\Utilities\SortAndSearchTests.cpp">
+      <Filter>Source Files\RSCore\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\RSCore\Utilities\BufferFunctionTests.cpp">
+      <Filter>Source Files\RSCore\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\RSCore\Text\KeyValueStringTreeTests.cpp">
+      <Filter>Source Files\RSCore\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\RSCore\Text\StringTests.cpp">
+      <Filter>Source Files\RSCore\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\RSCore\Files\FileTests.cpp">
+      <Filter>Source Files\RSCore\Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\RSMath\Functions\IntegerFunctionTests.cpp">
+      <Filter>Source Files\RSMath\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\RSMath\Functions\MoebiusTransformTests.cpp">
+      <Filter>Source Files\RSMath\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\RSMath\Geometry\Point2DTests.cpp">
+      <Filter>Source Files\RSMath\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\RSMath\Geometry\Polygon2DTests.cpp">
+      <Filter>Source Files\RSMath\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\RSMath\Geometry\Triangle2DTests.cpp">
+      <Filter>Source Files\RSMath\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\RSMath\Misc\DifferentialEquationTests.cpp">
+      <Filter>Source Files\RSMath\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\RSMath\Misc\TransformsTests.cpp">
+      <Filter>Source Files\RSMath\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\RSMath\Types\ComplexTests.cpp">
+      <Filter>Source Files\RSMath\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\RSMath\Types\MultiArrayTests.cpp">
+      <Filter>Source Files\RSMath\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\RSMath\Types\VectorTests.cpp">
+      <Filter>Source Files\RSMath\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\RSAudio\Synthesis\ModalTests.cpp">
+      <Filter>Source Files\RSAudio\Synthesis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\RSAudio\Analysis\PitchDetectorTests.cpp">
+      <Filter>Source Files\RSAudio\Analysis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\RSGraphics\Fonts\FontTests.cpp">
+      <Filter>Source Files\RSGraphics\Fonts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\RSGraphics\Rendering\RenderingTests.cpp">
+      <Filter>Source Files\RSGraphics\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\RSCore\RSCoreTests.cpp">
+      <Filter>Source Files\RSCore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\RSMath\RSMathTests.cpp">
+      <Filter>Source Files\RSMath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\RSAudio\RSAudioTests.cpp">
+      <Filter>Source Files\RSAudio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\RSGraphics\RSGraphicsTests.cpp">
+      <Filter>Source Files\RSGraphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\UnitTestUtilities.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Common\TestUtilities.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\UnitTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\RSCore\Misc\CallbackTests.cpp">
+      <Filter>Source Files\RSCore\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\RSMath\Misc\LinearAlgebraTests.cpp">
+      <Filter>Source Files\RSMath\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\RSMath\Misc\PolynomialTests.cpp">
+      <Filter>Source Files\RSMath\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\RSMath\Functions\RealFunctionTests.cpp">
+      <Filter>Source Files\RSMath\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\RSMath\Misc\MiscMathTests.cpp">
+      <Filter>Source Files\RSMath\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\RSMath\Types\BigIntTests.cpp">
+      <Filter>Source Files\RSMath\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\RSMath\Misc\NumberTheoryTests.cpp">
+      <Filter>Source Files\RSMath\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\RSMath\Types\MatrixTests.cpp">
+      <Filter>Source Files\RSMath\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\RSAudio\Misc\MiscAudioTests.cpp">
+      <Filter>Source Files\RSAudio\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Common\Prototypes.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\UnitTests\RSAudio\Filter\FilterTests.cpp">
+      <Filter>Source Files\RSAudio\Filter</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Config\RSBuildConfig.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSCore\Definitions\TypeSizeTests.h">
+      <Filter>Source Files\RSCore\Definitions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSCore\Containers\ArrayTests.h">
+      <Filter>Source Files\RSCore\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSCore\Containers\KeyValueMapTests.h">
+      <Filter>Source Files\RSCore\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSCore\Containers\ListTests.h">
+      <Filter>Source Files\RSCore\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSCore\Containers\TreeTests.h">
+      <Filter>Source Files\RSCore\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSCore\Utilities\NumberManipulationsTests.h">
+      <Filter>Source Files\RSCore\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSCore\Utilities\SortAndSearchTests.h">
+      <Filter>Source Files\RSCore\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSCore\Utilities\BufferFunctionTests.h">
+      <Filter>Source Files\RSCore\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSCore\Text\KeyValueStringTreeTests.h">
+      <Filter>Source Files\RSCore\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSCore\Text\StringTests.h">
+      <Filter>Source Files\RSCore\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSCore\Files\FileTests.h">
+      <Filter>Source Files\RSCore\Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSMath\Functions\IntegerFunctionTests.h">
+      <Filter>Source Files\RSMath\Functions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSMath\Functions\MoebiusTransformTests.h">
+      <Filter>Source Files\RSMath\Functions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSMath\Geometry\Point2DTests.h">
+      <Filter>Source Files\RSMath\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSMath\Geometry\Polygon2DTests.h">
+      <Filter>Source Files\RSMath\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSMath\Geometry\Triangle2DTests.h">
+      <Filter>Source Files\RSMath\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSMath\Misc\DifferentialEquationTests.h">
+      <Filter>Source Files\RSMath\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSMath\Misc\TransformsTests.h">
+      <Filter>Source Files\RSMath\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSMath\Types\ComplexTests.h">
+      <Filter>Source Files\RSMath\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSMath\Types\MultiArrayTests.h">
+      <Filter>Source Files\RSMath\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSMath\Types\VectorTests.h">
+      <Filter>Source Files\RSMath\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSAudio\Synthesis\ModalTests.h">
+      <Filter>Source Files\RSAudio\Synthesis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSAudio\Analysis\PitchDetectorTests.h">
+      <Filter>Source Files\RSAudio\Analysis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSGraphics\Fonts\FontTests.h">
+      <Filter>Source Files\RSGraphics\Fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSGraphics\Rendering\RenderingTests.h">
+      <Filter>Source Files\RSGraphics\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSCore\RSCoreTests.h">
+      <Filter>Source Files\RSCore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSMath\RSMathTests.h">
+      <Filter>Source Files\RSMath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSAudio\RSAudioTests.h">
+      <Filter>Source Files\RSAudio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSGraphics\RSGraphicsTests.h">
+      <Filter>Source Files\RSGraphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\UnitTestUtilities.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Common\TestUtilities.h">
+      <Filter>Source Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSCore\Misc\CallbackTests.h">
+      <Filter>Source Files\RSCore\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSMath\Misc\LinearAlgebraTests.h">
+      <Filter>Source Files\RSMath\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSMath\Misc\PolynomialTests.h">
+      <Filter>Source Files\RSMath\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSMath\Functions\RealFunctionTests.h">
+      <Filter>Source Files\RSMath\Functions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSMath\Misc\MiscMathTests.h">
+      <Filter>Source Files\RSMath\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSMath\Types\BigIntTests.h">
+      <Filter>Source Files\RSMath\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSMath\Misc\NumberTheoryTests.h">
+      <Filter>Source Files\RSMath\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSMath\Types\MatrixTests.h">
+      <Filter>Source Files\RSMath\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSAudio\Misc\MiscAudioTests.h">
+      <Filter>Source Files\RSAudio\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Common\Prototypes.h">
+      <Filter>Source Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\UnitTests\RSAudio\Filter\FilterTests.h">
+      <Filter>Source Files\RSAudio\Filter</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_workspace_file>
+	<Workspace title="Workspace">
+		<Project filename="../../../RSLib/Build/CodeBlocks/RSLib.cbp" />
+		<Project filename="UnitTests.cbp" active="1">
+			<Depends filename="../../../RSLib/Build/CodeBlocks/RSLib.cbp" />
+		</Project>
+	</Workspace>
+</CodeBlocks_workspace_file>

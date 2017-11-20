@@ -1,0 +1,54 @@
+split RSAudio into:
+-Common/Basics: general functions, formulas, filter-design, transforms, etc.
+-Realtime: realtime processors like filters, distortion, reverb, etc.
+-Processes: nonrealtime algorithms like timestretch, bidriectional filters, etc. 
+ may use nonrealtime processors internally
+ 
+have a baseclass rsTask (in rsCore) with members:
+std::atomic<float> percentDone;
+std::atomic<bool>  isRunning, isDone; 
+float getPercentDone() { return percentDone; }
+void stop() { isRunning = false; }
+void start() 
+{ 
+  percentDone = 0.f;     // maybe, but maybe not if we have a resume() function
+  isDone      = false;
+  isRunning   = true;
+  // set up threads, start the computation
+}
+...maybe also have a continue() or resume() function to pick up processing again that has been stopped.
+
+and a subclass rsAudioTask (in rsAudio) with members
+void setInput(rsAudioBuffer inBuffer);
+rsAudioBuffer getOutput();
+
+that serves as baseclass for all processing-heavy nonrealtime audio-processes. the process is started with start(), possibly stopped with stop() and at any time in between, getPercentDone may be called (from another thread, presumably the GUI thread) such that a progress bar can be displayed in an application. subclasses should internally update a corresponding progress variable inside their core algorithm and regularly check the isStopped (or isRunning) flag in order to interrupt the processing on user request (i.e. on clicking a "Cancel" button). for the progress variable, we could use any variable type for which an assignment operation is an atomic operation on the machine, such that we can simply read it out from any thread at any time without worrying about thread synchronization. a 32 bit float should work, on x64 systems, maybe also a double precision value. see here:
+
+https://msdn.microsoft.com/en-us/library/windows/desktop/ms684122%28v=vs.85%29.aspx
+http://stackoverflow.com/questions/11745440/what-operations-are-atomic-in-c
+http://stackoverflow.com/questions/8290768/is-assignment-operator-atomic
+http://stackoverflow.com/questions/1292786/is-updating-double-operation-atomic
+
+hmm - but this says, it's not guaranteed by the C++ cpec - we would have to look into the specs of the target machines/OSes
+
+http://preshing.com/20130618/atomic-vs-non-atomic-operations/
+
+maybe we should take care of proper alignment of the variable and maybe declare it volatile?
+
+or maybe use the c++11 feature of std::atomic
+http://en.cppreference.com/w/cpp/atomic/atomic
+
+like having member variables:
+
+std::atomic<float> percentDone;
+std::atomic<bool>  isStopped;
+
+
+
+
+Parallelization:
+
+Maybe have a subclass of rsMatrix called rsThreadedMatrix that implements some tasks such as multiplication, inversion, etc. using multithreading. This lets the code parallelize things to spread the computational load over the CPU cores. For example, with two CPU-cores, in matrix multiplication, successive row-column products could be alternately computed by 2 threads. For big matrices, this should cut the computation time roughly to 1/2 (or generally 1/numCores). For this to be beneficial, the overhead incurred by the multithreading should be small compared to the computation cost of one row-column product, so it makes sense mostly for very big matrices and/or matrices of big datatypes. For a test, we could create a 1000x1000 matrix of arbitrary precision floats (say, 100 decimal places) and compute a matrix-product - once with the normal rsMatrix class and once with the threaded class and compare the computation times. 
+
+
+

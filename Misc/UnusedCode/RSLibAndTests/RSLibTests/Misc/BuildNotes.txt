@@ -1,0 +1,35 @@
+
+
+
+
+Building and using RSLib:
+The RSLib project files for MS Visual Studio and CodeBlocks are set up such that the library will be built as dynamically linked library - a .dll ("dynamic link library") on windows, a .so ("shared object") file on linux and a .component [check that] file on OSX. Because Visual Studio needs the __declspec(dllexport) prefix for all classes and functions that should be exported from a .dll and also needs the __declspec(dllimport) prefix when headers of a dynamically linked library are included in some project that uses the .dll, the file RSBuildConfig.h (located in the folder Config) has two macros that can be switched on and off:
+
+#define RS_BUILD_DLL 1  // enable this when building the dll
+#define RS_USE_DLL 0    // enable this in a project that uses the RSLib dll
+
+if the RS_BUILD_DLL is active, it will have the effect that all occurences of the RSLib_API macro inside the library will be replaced by __declspec(dllexport) by the preprocessor when Visual Studio is used. Likewise, if the RS_USE_DLL switch is active, occurences of RSLib_API will be replaced by __declspec(dllimport) in Visual Studio. For the gcc compiler, no such import/export prefixes are required, so the RSLib_API macro will just be replaced by emptyness. The RSBuildConfig.h file is included from the file RSCore.h:
+
+#include <RSBuildConfig.h>
+
+where the <...> indicate that the file is supposed to be included from a location that is part of the compiler's default include paths. Project specific default include paths can be set up within the project file of the IDE (in Visual Studio: Project -> Properties -> Configuration Properties -> C/C++ -> General -> Additional Include Directories). In the RSLib project, there's the entry $(ProjectDir)\..\..\Config which says that two folders up from the project directory, there's a "Config" folder which should be used as include directory - and this is precisely where the RSBuildConfig.h file sits and is included from when building RSLib. If, however, in a different project - one that uses RSLib instead of building it - a different folder is used with a modified RSBuildConfig.h file, then that modified file will be included and switch all the RSlib library code to use a different import/export prefix (or none at all). If you want to use RSLib as .dll, you should set the RS_USE_DLL macro to 1 and the RS_BUILD_DLL to 0 in your modified config file. If you want to link statically to RSLib, you should set both to 0 and make sure that the relevant code of RSLib is compiled and linked together with your own code by adding the relevant implementation files RSCore.cpp, RSMath.cpp, RSAudio.cpp, RSGraphics.cpp to your project. These are the only files that need to be compiled - they include all the other .cpp files of the library and lump them together into just 4 compilation units (that makes compilation dramatically faster compared to compiling everything separately - that scheme is called "unity build" and also used by the JUCE library). If you want to use RSLib as .dll, you also need to make sure that your own compiled code (either your .exe or your .dll) finds the RSLib.dll file at runtime. Personally, i prefer to set up my projects such that the RSLib.dll file ends up in the same directory as the file that uses it. On OSX and Linux [verify that], the default locations where programs look for dynanically linked libraries at runtime do not include the directory where the dll-using program code is located, but with some compiler switches, the program can be set up in the way to look inside its own folder, too [elabrate on this - what exactly to do]
+
+
+
+
+
+
+So, if you want to use RSLib statically linked from within your project, what you (supposedly) need to do is:
+-make a copy of the RSBuildConfig.h file and put it to a convenient place
+-edit it to set both macros to 0, such that a .dll is neither built nor used
+-make sure that your modified config file will be used by setting up the compiler's include path accordingly
+-include the RSLib.h header in your files which will use RSLib functions/classes
+-add the RSLib module-files with the relevant functionality (RSCore.cpp, RSMath.cpp, RSAudio.cpp, RSGraphics.cpp) to your projects, so they will  be compiled and linked along with your own code
+
+If you want to use RSLib dynamically linked, you need to:
+-make a copy of the RSBuildConfig.h file and put it to a convenient place
+-edit it to set RS_BUILD_DLL to 0 and RS_USE_DLL to 1, indicating that a .dll is used
+-make sure that your modified config file will be used by setting up the compiler's include path accordingly
+-include the RSLib.h header in your files which will use RSLib functions/classes
+-build the RSLib as .dll
+-set you own project up in a way that your compiled code will find the RSLib.dll file at runtime

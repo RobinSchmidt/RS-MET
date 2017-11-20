@@ -1,0 +1,281 @@
+write down odd numbers starting at 3:
+
+03 05 07 09 11 13 15 17 19 21 23 25 27 29 31 33 35 37 39 41 43 45 47 49 51 53 55 57 59 61 63 65 67 69 71 73 75 77 79 81 83 85 87 89 91 93 95 97 99
+
+
+scratch multiples of 3 (using an increment of 3:
+03 05 07 09 11 13 15 17 19 21 23 25 27 29 31 33 35 37 39 41 43 45 47 49 51 53 55 57 59 61 63 65 67 69 71 73 75 77 79 81 83 85 87 89 91 93 95 97 99 
+         x        x        x        x        x        x        x        x        x        x        x        x        x        x        x        x
+...we have to start at 9 and use an increment of 3 (6, if we had written all numbers)
+
+
+in what remains, scratch mutiples of 5:
+03 05 07 09 11 13 15 17 19 21 23 25 27 29 31 33 35 37 39 41 43 45 47 49 51 53 55 57 59 61 63 65 67 69 71 73 75 77 79 81 83 85 87 89 91 93 95 97 99  
+         x        x        x        x        x        x        x        x        x        x        x        x        x        x        x        x
+                                 x     <-5->    x           <-10->            x      <-5->   x             <-10->          x      <-5->   x
+                                 5              7                             11             13                            17             19								 
+->start at 25 and use 2 alternating increments 5 and 10	- check if it continues like this - nope, it has to do with primes above 5							 
+
+maybe for 7 we would have to use 3 alternating, increments?, maybe these ar not necesarrily distinct?
+we observe that the 2 alternating incremnts used for 5, are 5*1 = 5*(3-2) and 5*2=5*(5-3), i.e. the current prime times the differences between
+successive primes. is that incident or a general rule?
+if it's a general rule, we should
+
+write down multiples of seven, from 7^2=49 onwards (below 49, all mutiples are crossed out already) and mark those, which have not been
+crossed out already
+
+49 56 63 70 77 84 91 98 105 112 119 126 133 140 147 154 161 168 175 182 189 196 203 210 217 224 231 236
+x           x     x             x       x               x                       x       x        
+7           11    13            17      19              23                      29      31              multiplier for 7 to get to the to-be-crossed number. these are the primes above 7
+
+
+algorithm for crossing every nonprime once (using 1-based array indexing):
+write down natural numbers up to N an array a=1...N
+cross 1 (it's not a prime)
+cross all even numbers(start at 4, use stepsize of 2)
+cross all odd mutiples of 3 (start at 9, use stepsize 6)
+init prime array p with all primes <= 3^2: 2,3,5,7
+init ip=2
+init current prime pk=p[ip]=3
+init number of known primes np=4
+
+loop:
+1: fetch next prime pk:
+   pkOld = pk
+   ip    = ip+1
+   pk    = p[ip]
+2: collect all nonzero values in a from pkOld^2 to pk^2-1 and 
+   append them to our array of primes p, update the number of
+   known primes np accordingly
+3: cross pk*r where r is any of the primes from pk upward   
+4: for all primes q from 5 up to but not including pk, cross q*r 
+   in array a where r is any of the numbers that have just been 
+   added to p in step 2
+5: go back to 1  
+
+1: fetch pk=5
+2: append 11,13,17,19,23 to p
+3: cross 5*5,5*7,5*11,5*13,5*17,5*19,5*23 
+4: nothing to do
+
+1: fetch pk=7
+2: append 29,31,37,41,43,47 to p
+3: cross 7*7,7*11,7*13,7*17,7*19,7*23,7*29,7*31,7*37,7*41,7*43,7*47 
+4: cross 5*29,5*31,5*37,5*41,5*43,5*47
+   
+1: fetch pk=11
+2: append 53,59,61,67,71,73,79,83,89,97,101,103,107,109,113 to p 
+3: cross 11*11,11*13,11*17,...,11*109,11*113
+4: cross 5*53,5*59,...,5*113
+   cross 7*53,7*59,...,7*113
+   
+1: fetch pk=13
+2: append 127,...,167
+3: cross 13*13,...,13*167
+4: cross  5*127,..., 5*167
+   cross  7*127,..., 7*167
+   cross 11*127,...,11*167
+   
+we need to establish that at any time, the greatest prime in the 
+array times 5 is larger than the next prime squared, otherwise we 
+cannot guarantee that all nonprimes up to pk^2 have been crossed 
+already. an upper bound for the next prime after pk is 2*pk-1 
+(http://en.wikipedia.org/wiki/Bertrand%27s_postulate). we have 
+5*pk^2 > (2*pk-1)^2 = 4*pk^2 - 4*pk + 1, so the desired requirement 
+is fulfilled. (we could actually have used the tighter formulation
+with an upper bound of 2*pk-3)
+   
+loop-invariant: before and after each iteration, the array a has 
+crossed out all nonprimes up to pk^2 and p contains all primes up
+to pk^2 ...is that true? - noo, it misses to cross nonprimes with 
+multiple factors (except for simple squares). the 1st such values 
+are 5^2*5=125,5^2*7=175. an inner loop in steps 3 and 4 over the 
+exponents could help, but then we would still miss to cross out 
+numbers with more than one multiple factor like 5^2*7^2,... we 
+could add another loop nesting level which runs over the exponent
+of the second factor, but that would cover only nonprimes with 2
+multiple factors and without any other factors: we would still miss 
+5^2*7^2*11,...
+
+maybe we sohould modify the algorithm as follows:
+loop:
+1: fetch next prime pk:
+2: collect all nonzero values in a from pkOld^2 to pk^2-1 and 
+   append them to our array of primes p, update the number of
+   known primes np accordingly
+3: for all primes q with 5 <= q <= pk, and all multipliers r (not 
+   required to be prime) with pkOld+1 <= r < pk, cross all 
+   multiples q*r
+4: go back to 1  
+
+step 3 should now also cover composite numbers with multiple factors,
+but we are not guaranteed anymore to cross out each nonprime exactly
+once (although, redundant crossings occur more rarely than in the
+sieve of Eratosthenes)
+
+
+
+other idea:
+-cross multiples of 2: 
+ stepsize 2, start: 2*2=4
+-cross multiples of 3 which are no multiple of 2
+ stepsize: 2*3=6, start: 3*3=9
+-cross multiples of 5 which are no multiple of 2 or 3
+ stepsize: 2*3*5=30, start: 5*5=25, 5*7=35
+           -> 2 out of 2*3=6 possible start values
+-cross multiples of 7 which are no multiple of 2,3 or 5:
+ stepsize: 2*3*5*7=210, 
+ start: 7* 7= 49, 7*11= 77, 7*13= 91, 7*17=119, 7*19=133, 
+        7*23=161, 7*29=203, 7*31=217 (=210+7)
+		-> 8 out of 2*3*5=30 possible start-values
+-cross multiples of 11 which are no multiple of 2,3,5 or 7:
+ stepsize: 2*3*5*7*11=2310
+ start: 11 *11= 121, 11* 13= 143, 11* 17= 187, 11* 19= 209, 
+        11 *23= 253, 11* 29= 319, 11* 31= 341, 11* 37= 407,
+		11 *41= 451, 11* 43= 473, 11* 47= 517, 11* 53= 583,
+		11 *59= 649, 11* 61= 671, 11* 67= 737, 11* 71= 781,
+		11 *73= 803, 11* 79= 869, 11* 83= 913, 11* 89= 979,
+		11 *97=1067, 11*101=1111, 11*103=1133, 11*107=1177,
+		11*109=1199, 11*113=1243, 11*127=1397, 11*131=1441,
+		11*137=1507, 11*139=1529, 
+		11*143=1573 -> 143 = 11*13 (not divisible by 2,3,5,7 but nonprime) -> fail!
+		11*149=1639, 11*151=1661,
+		
+	
+when looking at the start-values for 7, we see that the	next 
+potential candidates are already covered: 
+37*7=259= 49+210, 41*7=287= 77+210, 43*7=301= 91+210, 47*7=329=119+210, 
+53*7=371=161+210, 59*7=413=203+210, 61*7=427=217+210, 		
+67*7=469=259+210  -> from here, the 2nd repitition begins
+		
+this suggests, that we can predict the primes past 31 from 
+previous known primes as: pNew = (7 * pOld + 210) / 7
+...but for some primes pOld, pNew is nonprime and for some 
+nonprimes pOld, pNew is prime - we shall call the former case
+a "false positive" and the latter case a "miss"
+
+P7    := product(primes-up-to-7) = 2*3*5*7 = 210
+f7(n) := (7*n + P7) / 7 = n + P5
+ 37 = (7*  7 + P7) / 7
+ 41 = (7* 11 + P7) / 7
+ 43 = (7* 13 + P7) / 7
+ 47 = (7* 17 + P7) / 7
+ 49 = (7* 19 + P7) / 7   = 7*7       -> false positive
+ 53 = (7* 23 + P7) / 7
+ 59 = (7* 29 + P7) / 7
+ 61 = (7* 31 + P7) / 7
+ 67 = (7* 37 + P7) / 7
+ 71 = (7* 41 + P7) / 7
+ 73 = (7* 43 + P7) / 7
+ 77 = (7* 47 + P7) / 7   = 7*11      -> false positive
+ 79 = (7* 49 + P7) / 7   49 = 7*7    -> miss
+ 83 = (7* 53 + P7) / 7
+ 89 = (7* 59 + P7) / 7
+ 91 = (7* 61 + P7) / 7   = 7*13      -> false positive
+ 97 = (7* 67 + P7) / 7  
+101 = (7* 71 + P7) / 7  
+103 = (7* 73 + P7) / 7  
+103 = (7* 77 + P7) / 7   77 = 7*11   -> miss
+109 = (7* 79 + P7) / 7  
+113 = (7* 83 + P7) / 7
+119 = (7* 89 + P7) / 7   = 7*17      -> false positive
+127 = (7* 97 + P7) / 7
+131 = (7*101 + P7) / 7
+133 = (7*103 + P7) / 7   = 7*19      -> false positive
+137 = (7*107 + P7) / 7
+139 = (7*109 + P7) / 7
+143 = (7*113 + P7) / 7   = 11*13     -> false positive
+
+
+false positives occur, where the LHS is 7*7, 7*11, 7*13, 7*17
+misses occur, where the multiplier for 7 is 7,11,
+->this seems to have structure as well
+the LHS is ensured to contain only factors >= 7 (this is how it 
+was constructed: "mutiples of seven which are no mutiple of
+2,3 or 5"), so, for the false positives, we only need to check
+against products free of 2,3,5
+
+hmm - OK, the recursion for primes doesn't work, but at least, it
+seems to show a way for an improved sieve which avoids multiple
+crossings of the same number:
+-use n increment of P7
+-start at all values from 7^2 (included) and strictly less than
+ 7^2 + P7 which have not already been crossed out, these are precisely
+ those multiples of 7 which are free from factors 2,3,5
+-does this also mean, that in the next iteration (with pk=11), we don't need
+ to start at 11^2 but can start at 7^2 + P7? ...hmm - no, i don't think so
+-if not, the cost for the search desired starting points seems to grow quickly
+ 
+-the outer loop would iterate until the current prime is greater than
+ sqrt(maxValue-in-buffer) - or maybe only until pk^2 + Pk > max
+ (current-prime-squared + product-up-to-current-prime) > maxValue-in-buffer
+ 
+
+
+let's try the same thing with 3 instead of 7:
+P3 = 2*6 = 6
+f3(n) := (3*n + P3) / 3 = (3*n + 6) / 3
+  5 = (3* 3 + 6) / 3
+  7 = (3* 5 + 6) / 3  
+  9 = (3* 7 + 6) / 3 = 3*3  -> false positive
+ 11 = (3* 9 + 6) / 3        -> miss (9 = 3*3)
+ 13 = (3*11 + 6) / 3    
+ 15 = (3*13 + 6) / 3 = 3*5  -> false positive
+ 17 = (3*15 + 6) / 3        -> miss (15 = 3*5) 
+ 19 = (3*17 + 6) / 3   
+ 21 = (3*19 + 6) / 3 = 3*7  -> false positive
+ 23 = (3*21 + 6) / 3        -> miss (21 = 3*7)  
+ 25 = (3*23 + 6) / 3 = 5*5  -> false positive
+ 29 = (3*27 + 6) / 3        -> miss (27 = 3*3*3)   
+ 31 = (3*29 + 6) / 3 = 5*5  -> false positive 
+ 33 = (3*31 + 6) / 3 = 3*11 -> false positive  
+ 
+false positives are free of factors 2 and misses have a multiplier
+also free of factors 2?
+
+p[k] = (7*p[k-d] + Pd) / 7 where d = 7 or 7+1?
+
+
+does this suggest a recursion to generate primes????!!!!
+that would be too good to be true!!!
+
+let d = some prime = 7, Pd = product(primes-up-to-d), then:
+pk = (d*p{k-d-1} + Pd) / d  holds for 37...47
+pk = (d*p{k-d}   + Pd) / d  holds for 53...73
+maybe recursion 2 holds generally for primes pk with
+7^2 < pk < 11^2? and 
+
+maybe recursion 1 holds between 5^2 < pk <  7^2?
+no: (7*5+210)/7 = 35
+
+let's see, how it works for 11:
+
+
+
+
+this recursion
+
+   
+
+
+ 
+ 
+  rsUint32 tp[np] = {2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101,
+                     103,107,109,113,127,131,137,139,149,151,157,163,167,173,179,181,191,193,197,
+                     199,211,223,227,229,233,239,241,251,257,263,269,271,277,281,283,293,307,311,
+                     313,317,331,337,347,349,353,359,367,373,379,383,389,397,401,409,419,421,431,
+                     433,439,443,449,457,461,463,467,479,487,491,499,503,509,521,523,541,547,557,
+                     563,569,571,577,587,593,599,601,607,613,617,619,631,641,643,647,653,659,661,
+                     673,677,683,691,701,709,719,727,733,739,743,751,757,761,769,773,787,797,809,
+                     811,821,823,827,829,839,853,857,859,863,877,881,883,887,907,911,919,929,937,
+                     941,947,953,967,971,977,983,991,997};
+
+
+
+
+
+
+
+
+
+

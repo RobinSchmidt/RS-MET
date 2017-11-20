@@ -1,0 +1,577 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{E88F2AE8-6367-4EDC-AD62-6A66809B283D}</ProjectGuid>
+    <RootNamespace>RSCore</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectName>RSLib</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)\..\..\GeneratedFiles\Visual Studio\Binaries\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)\..\..\GeneratedFiles\Visual Studio\IntermediateFiles\$(ProjectName)\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)\..\..\GeneratedFiles\Visual Studio\Binaries\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)\..\..\GeneratedFiles\Visual Studio\IntermediateFiles\$(ProjectName)\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <DisableLanguageExtensions>false</DisableLanguageExtensions>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\..\Config;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <BuildLog>
+      <Path>$(IntDir)\$(ProjectName).log</Path>
+    </BuildLog>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>true</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <DisableLanguageExtensions>false</DisableLanguageExtensions>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\..\Config;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <BuildLog>
+      <Path>$(IntDir)\$(ProjectName).log</Path>
+    </BuildLog>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Code\Audio\Analysis\AutoCorrelationPitchDetector.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Analysis\CyclicAutoCorrelator.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Analysis\EnvelopeFollower.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Analysis\FormantRemover.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Analysis\LinearPredictor.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Analysis\ZeroCrossingPitchDetector.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Delay\DelayLine.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Filters\Biquad.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Filters\BiquadCascade.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Filters\EngineersFilter.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Filters\FilterAnalyzer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Filters\FilterCoefficientConverter.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Filters\FilterDesignFormulas.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Filters\FourPoleFilter.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Filters\InfiniteImpulseResponseDesigner.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Filters\MovingAverage.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Filters\OnePoleFilter.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Filters\PhonoFilter.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Filters\PoleZeroMapper.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Filters\PrototypeDesigner.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Filters\StateVariableFilter.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Filters\TransistorLadder.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Misc\AudioFunctions.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Misc\BandwidthConverter.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Misc\MiscAudio.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Misc\SlewRateLimiterLinear.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Misc\WindowFunctions.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\RSAudio.cpp" />
+    <ClCompile Include="..\..\Code\Audio\Misc\SlewRateLimiter.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Modulators\BreakpointModulator.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Sampling\Resampler.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Sampling\SampleManipulation.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Synthesis\ModalFilterBank.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Core\Misc\Parameter.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Core\Text\KeyValueStringPair.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Graphics\RSGraphics.cpp" />
+    <ClCompile Include="..\..\Code\Graphics\Misc\ColorSpaces.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Graphics\Misc\Image.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Graphics\Misc\Justification.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\Functions\FunctionIterators.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\Misc\CurveFitting.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\Misc\FunctionObjects.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\Misc\GradientBasedMinimizer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\Misc\Interpolation.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\Misc\MultiLayerPerceptron.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\Misc\NumericCalculus.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\RSMath.cpp" />
+    <ClCompile Include="..\..\Code\Core\Misc\ErrorHandling.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Core\Misc\SystemInformation.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Core\RSCore.cpp" />
+    <ClCompile Include="..\..\Code\Core\Containers\Flags.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Core\Files\File.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Core\Files\FileInputOutput.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Core\Files\FileStream.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Core\Files\WaveFile.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Core\Misc\Logger.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Core\Text\KeyValueStringArray.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Core\Text\KeyValueStringTree.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Core\Text\String.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Core\Utilities\MathBasics.inl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Core\Utilities\NumberManipulations.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Core\Utilities\SortAndSearch.inl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Graphics\Rendering\GraphicsRenderer2D.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Graphics\Rendering\WrappersForAGG.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Graphics\Rendering\AGG_2.4\src\agg_vcgen_stroke.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Graphics\Fonts\GlobalFontInstances.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Graphics\Fonts\PixelFont.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Graphics\Fonts\PixelFontRoundedA7D0.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Graphics\Fonts\PixelFontRoundedBoldA10D0.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Graphics\Fonts\PixelFontRoundedBoldA16D0.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Graphics\Fonts\PixelFontRoundedBoldA9D0.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\Misc\PolynomialAlgorithms.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\Types\BigFloat.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\Types\BigInt.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\Types\BigNumber.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\Types\Matrix.inl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\Types\Tensor.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\Types\Vector.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\Functions\IntegerFunctions.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\Functions\RealFunctions.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\Geometry\GeometricFunctions.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\Misc\FourierTransformer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Code\Audio\Analysis\AutoCorrelationPitchDetector.h" />
+    <ClInclude Include="..\..\Code\Audio\Analysis\CyclicAutoCorrelator.h" />
+    <ClInclude Include="..\..\Code\Audio\Analysis\EnvelopeFollower.h" />
+    <ClInclude Include="..\..\Code\Audio\Analysis\FormantRemover.h" />
+    <ClInclude Include="..\..\Code\Audio\Analysis\LinearPredictor.h" />
+    <ClInclude Include="..\..\Code\Audio\Analysis\ResponseGetters.h" />
+    <ClInclude Include="..\..\Code\Audio\Analysis\ZeroCrossingPitchDetector.h" />
+    <ClInclude Include="..\..\Code\Audio\Delay\DelayLine.h" />
+    <ClInclude Include="..\..\Code\Audio\Filters\Biquad.h" />
+    <ClInclude Include="..\..\Code\Audio\Filters\BiquadCascade.h" />
+    <ClInclude Include="..\..\Code\Audio\Filters\EngineersFilter.h" />
+    <ClInclude Include="..\..\Code\Audio\Filters\FilterAnalyzer.h" />
+    <ClInclude Include="..\..\Code\Audio\Filters\FilterCoefficientConverter.h" />
+    <ClInclude Include="..\..\Code\Audio\Filters\FilterDesignFormulas.h" />
+    <ClInclude Include="..\..\Code\Audio\Filters\FourPoleFilter.h" />
+    <ClInclude Include="..\..\Code\Audio\Filters\InfiniteImpulseResponseDesigner.h" />
+    <ClInclude Include="..\..\Code\Audio\Filters\MovingAverage.h" />
+    <ClInclude Include="..\..\Code\Audio\Filters\OnePoleFilter.h" />
+    <ClInclude Include="..\..\Code\Audio\Filters\PhonoFilter.h" />
+    <ClInclude Include="..\..\Code\Audio\Filters\PoleZeroMapper.h" />
+    <ClInclude Include="..\..\Code\Audio\Filters\PrototypeDesigner.h" />
+    <ClInclude Include="..\..\Code\Audio\Filters\StateVariableFilter.h" />
+    <ClInclude Include="..\..\Code\Audio\Filters\TransistorLadder.h" />
+    <ClInclude Include="..\..\Code\Audio\Misc\AudioFunctions.h" />
+    <ClInclude Include="..\..\Code\Audio\Misc\BandwidthConverter.h" />
+    <ClInclude Include="..\..\Code\Audio\Misc\MiscAudio.h" />
+    <ClInclude Include="..\..\Code\Audio\Misc\SlewRateLimiterLinear.h" />
+    <ClInclude Include="..\..\Code\Audio\Misc\WindowFunctions.h" />
+    <ClInclude Include="..\..\Code\Audio\RSAudio.h" />
+    <ClInclude Include="..\..\Code\Audio\Misc\SlewRateLimiter.h" />
+    <ClInclude Include="..\..\Code\Audio\Modulators\BreakpointModulator.h" />
+    <ClInclude Include="..\..\Code\Audio\Sampling\Resampler.h" />
+    <ClInclude Include="..\..\Code\Audio\Sampling\SampleManipulation.h" />
+    <ClInclude Include="..\..\Code\Audio\Synthesis\ModalFilterBank.h" />
+    <ClInclude Include="..\..\Code\Core\Containers\InfiniteDataStream.h" />
+    <ClInclude Include="..\..\Code\Core\Definitions\StandardHeaders.h" />
+    <ClInclude Include="..\..\Code\Core\Misc\Callback.h" />
+    <ClInclude Include="..\..\Code\Core\Misc\Parameter.h" />
+    <ClInclude Include="..\..\Code\Core\Utilities\ArrayFunctions.h" />
+    <ClInclude Include="..\..\Code\Core\Utilities\MatrixFunctions.h" />
+    <ClInclude Include="..\..\Code\Graphics\RSGraphics.h" />
+    <ClInclude Include="..\..\Code\Graphics\Misc\ColorSpaces.h" />
+    <ClInclude Include="..\..\Code\Graphics\Misc\Image.h" />
+    <ClInclude Include="..\..\Code\Graphics\Misc\Justification.h" />
+    <ClInclude Include="..\..\Code\Math\Functions\FunctionIterators.h" />
+    <ClInclude Include="..\..\Code\Math\Misc\CurveFitting.h" />
+    <ClInclude Include="..\..\Code\Math\Misc\FunctionObjects.h" />
+    <ClInclude Include="..\..\Code\Math\Misc\GradientBasedMinimizer.h" />
+    <ClInclude Include="..\..\Code\Math\Misc\Interpolation.h" />
+    <ClInclude Include="..\..\Code\Math\Misc\LinearAlgebra.h" />
+    <ClInclude Include="..\..\Code\Math\Misc\MultiLayerPerceptron.h" />
+    <ClInclude Include="..\..\Code\Math\Misc\NumberTheory.h" />
+    <ClInclude Include="..\..\Code\Math\Misc\NumericCalculus.h" />
+    <ClInclude Include="..\..\Code\Math\RSMath.h" />
+    <ClInclude Include="..\..\Code\Math\Misc\DifferentialEquationSystem.h" />
+    <ClInclude Include="..\..\Code\Math\Misc\PolynomialAlgorithms.h" />
+    <ClInclude Include="..\..\Code\Math\Misc\Statistics.h" />
+    <ClInclude Include="..\..\Code\Core\Misc\ErrorHandling.h" />
+    <ClInclude Include="..\..\Code\Core\Misc\SystemInformation.h" />
+    <ClInclude Include="..\..\Code\Core\RSCore.h" />
+    <ClInclude Include="..\..\Code\Core\Containers\Array.h" />
+    <ClInclude Include="..\..\Code\Core\Containers\Flags.h" />
+    <ClInclude Include="..\..\Code\Core\Containers\KeyValueMap.h" />
+    <ClInclude Include="..\..\Code\Core\Containers\List.h" />
+    <ClInclude Include="..\..\Code\Core\Containers\Range.h" />
+    <ClInclude Include="..\..\Code\Core\Containers\Tree.h" />
+    <ClInclude Include="..\..\Code\Core\Definitions\ConstantDefinitions.h" />
+    <ClInclude Include="..\..\Code\Core\Definitions\MacroDefinitions.h" />
+    <ClInclude Include="..\..\Code\Core\Definitions\Setup.h" />
+    <ClInclude Include="..\..\Code\Core\Definitions\TypeDefinitions.h" />
+    <ClInclude Include="..\..\Code\Core\Files\File.h" />
+    <ClInclude Include="..\..\Code\Core\Files\FileInputOutput.h" />
+    <ClInclude Include="..\..\Code\Core\Files\FileStream.h" />
+    <ClInclude Include="..\..\Code\Core\Files\WaveFile.h" />
+    <ClInclude Include="..\..\Code\Core\Misc\Logger.h" />
+    <ClInclude Include="..\..\Code\Core\Text\KeyValueStringArray.h" />
+    <ClInclude Include="..\..\Code\Core\Text\KeyValueStringPair.h" />
+    <ClInclude Include="..\..\Code\Core\Text\KeyValueStringTree.h" />
+    <ClInclude Include="..\..\Code\Core\Text\String.h" />
+    <ClInclude Include="..\..\Code\Core\Utilities\MathBasics.h" />
+    <ClInclude Include="..\..\Code\Core\Utilities\NumberManipulations.h" />
+    <ClInclude Include="..\..\Code\Core\Utilities\SortAndSearch.h" />
+    <ClInclude Include="..\..\Code\Graphics\Rendering\GraphicsRenderer2D.h" />
+    <ClInclude Include="..\..\Code\Graphics\Rendering\WrappersForAGG.h" />
+    <ClInclude Include="..\..\Code\Graphics\Rendering\AGG_2.4\include\agg_basics.h" />
+    <ClInclude Include="..\..\Code\Graphics\Rendering\AGG_2.4\include\agg_conv_stroke.h" />
+    <ClInclude Include="..\..\Code\Graphics\Rendering\AGG_2.4\include\agg_path_storage.h" />
+    <ClInclude Include="..\..\Code\Graphics\Rendering\AGG_2.4\include\agg_rasterizer_outline.h" />
+    <ClInclude Include="..\..\Code\Graphics\Rendering\AGG_2.4\include\agg_rasterizer_scanline_aa.h" />
+    <ClInclude Include="..\..\Code\Graphics\Rendering\AGG_2.4\include\agg_renderer_primitives.h" />
+    <ClInclude Include="..\..\Code\Graphics\Rendering\AGG_2.4\include\agg_renderer_scanline.h" />
+    <ClInclude Include="..\..\Code\Graphics\Rendering\AGG_2.4\include\agg_rendering_buffer.h" />
+    <ClInclude Include="..\..\Code\Graphics\Rendering\AGG_2.4\include\agg_scanline_p.h" />
+    <ClInclude Include="..\..\Code\Graphics\Rendering\AGG_2.4\include\agg_scanline_storage_bin.h" />
+    <ClInclude Include="..\..\Code\Graphics\Fonts\GlobalFontInstances.h" />
+    <ClInclude Include="..\..\Code\Graphics\Fonts\PixelFont.h" />
+    <ClInclude Include="..\..\Code\Graphics\Fonts\PixelFontRoundedA7D0.h" />
+    <ClInclude Include="..\..\Code\Graphics\Fonts\PixelFontRoundedBoldA10D0.h" />
+    <ClInclude Include="..\..\Code\Graphics\Fonts\PixelFontRoundedBoldA16D0.h" />
+    <ClInclude Include="..\..\Code\Graphics\Fonts\PixelFontRoundedBoldA9D0.h" />
+    <ClInclude Include="..\..\Code\Math\Types\BigFloat.h" />
+    <ClInclude Include="..\..\Code\Math\Types\BigInt.h" />
+    <ClInclude Include="..\..\Code\Math\Types\BigNumber.h" />
+    <ClInclude Include="..\..\Code\Math\Types\Complex.h" />
+    <ClInclude Include="..\..\Code\Math\Types\Matrix.h" />
+    <ClInclude Include="..\..\Code\Math\Types\ModularInteger.h" />
+    <ClInclude Include="..\..\Code\Math\Types\MultiArray.h" />
+    <ClInclude Include="..\..\Code\Math\Types\Polynomial.h" />
+    <ClInclude Include="..\..\Code\Math\Types\Tensor.h" />
+    <ClInclude Include="..\..\Code\Math\Types\Vector.h" />
+    <ClInclude Include="..\..\Code\Math\Functions\ComplexFunctions.h" />
+    <ClInclude Include="..\..\Code\Math\Functions\IntegerFunctions.h" />
+    <ClInclude Include="..\..\Code\Math\Functions\MoebiusTransform.h" />
+    <ClInclude Include="..\..\Code\Math\Functions\RealFunctions.h" />
+    <ClInclude Include="..\..\Code\Math\Geometry\AffineTransform2D.h" />
+    <ClInclude Include="..\..\Code\Math\Geometry\GeometricFunctions.h" />
+    <ClInclude Include="..\..\Code\Math\Geometry\Point2D.h" />
+    <ClInclude Include="..\..\Code\Math\Geometry\Polygon2D.h" />
+    <ClInclude Include="..\..\Code\Math\Geometry\Rectangle2D.h" />
+    <ClInclude Include="..\..\Code\Math\Geometry\Triangle2D.h" />
+    <ClInclude Include="..\..\Code\Math\Misc\FourierTransformer.h" />
+    <ClInclude Include="..\..\Code\Math\Misc\Transforms.h" />
+    <ClInclude Include="..\..\Code\RSLib.h" />
+    <ClInclude Include="..\..\Config\RSBuildConfig.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Code\Audio\Analysis\ResponseGetters.inl" />
+    <None Include="..\..\Code\Core\Utilities\ArrayFunctions.inl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\..\Code\Core\Utilities\MatrixFunctions.inl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\..\Code\Math\Misc\LinearAlgebra.inl" />
+    <None Include="..\..\Code\Math\Misc\NumberTheory.inl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\..\Code\Math\Types\ModularInteger.inl" />
+    <None Include="..\..\Code\Math\Types\MultiArray.inl" />
+    <None Include="..\..\Code\Math\Functions\ComplexFunctions.inl" />
+    <None Include="..\..\Code\Math\Misc\Statistics.inl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\..\Code\Math\Misc\Transforms.inl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\..\Code\Math\Types\Polynomial.inl" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="UnitTests" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Win32_Debug">
+				<Option platforms="Windows;" />
+				<Option output="..\..\GeneratedFiles\CodeBlocks\Binaries\$(TARGET_NAME)\UnitTests" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="..\..\GeneratedFiles\CodeBlocks\Binaries\$(TARGET_NAME)\" />
+				<Option object_output="..\..\GeneratedFiles\CodeBlocks\ObjectFiles\$(PROJECT_NAME)\$(TARGET_NAME)\" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<Linker>
+					<Add option="-enable-auto-import" />
+				</Linker>
+			</Target>
+			<Target title="Linux_Debug">
+				<Option platforms="Unix;" />
+				<Option output="..\..\GeneratedFiles\CodeBlocks\Binaries\$(TARGET_NAME)\UnitTests" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="..\..\GeneratedFiles\CodeBlocks\Binaries\$(TARGET_NAME)\" />
+				<Option object_output="..\..\GeneratedFiles\CodeBlocks\ObjectFiles\$(PROJECT_NAME)\$(TARGET_NAME)\" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<Linker>
+					<Add option="-Wl,-rpath,./" />
+				</Linker>
+			</Target>
+			<Target title="OSX_Debug">
+				<Option platforms="Mac;" />
+				<Option output="..\..\GeneratedFiles\CodeBlocks\Binaries\$(TARGET_NAME)\UnitTests" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="..\..\GeneratedFiles\CodeBlocks\Binaries\$(TARGET_NAME)\" />
+				<Option object_output="..\..\GeneratedFiles\CodeBlocks\ObjectFiles\$(PROJECT_NAME)\$(TARGET_NAME)\" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-std=c++0x" />
+			<Add option="-Wall" />
+			<Add directory="..\..\Config" />
+			<Add directory="..\..\..\RSLib\Code" />
+		</Compiler>
+		<Linker>
+			<Add library="RSLib" />
+			<Add directory="..\..\GeneratedFiles\CodeBlocks\Binaries\$(TARGET_NAME)" />
+		</Linker>
+		<Unit filename="..\..\Code\Common\Prototypes.cpp" />
+		<Unit filename="..\..\Code\Common\Prototypes.h" />
+		<Unit filename="..\..\Code\Common\TestUtilities.cpp" />
+		<Unit filename="..\..\Code\Common\TestUtilities.h" />
+		<Unit filename="..\..\Code\UnitTests\RSAudio\Analysis\PitchDetectorTests.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="..\..\Code\UnitTests\RSAudio\Analysis\PitchDetectorTests.h" />
+		<Unit filename="..\..\Code\UnitTests\RSAudio\Filter\FilterTests.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="..\..\Code\UnitTests\RSAudio\Filter\FilterTests.h" />
+		<Unit filename="..\..\Code\UnitTests\RSAudio\Misc\MiscAudioTests.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="..\..\Code\UnitTests\RSAudio\Misc\MiscAudioTests.h" />
+		<Unit filename="..\..\Code\UnitTests\RSAudio\RSAudioTests.cpp" />
+		<Unit filename="..\..\Code\UnitTests\RSAudio\RSAudioTests.h" />
+		<Unit filename="..\..\Code\UnitTests\RSAudio\Synthesis\ModalTests.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="..\..\Code\UnitTests\RSAudio\Synthesis\ModalTests.h" />
+		<Unit filename="..\..\Code\UnitTests\RSCore\Containers\ArrayTests.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="..\..\Code\UnitTests\RSCore\Containers\ArrayTests.h" />
+		<Unit filename="..\..\Code\UnitTests\RSCore\Containers\KeyValueMapTests.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="..\..\Code\UnitTests\RSCore\Containers\KeyValueMapTests.h" />
+		<Unit filename="..\..\Code\UnitTests\RSCore\Containers\ListTests.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="..\..\Code\UnitTests\RSCore\Containers\ListTests.h" />
+		<Unit filename="..\..\Code\UnitTests\RSCore\Containers\TreeTests.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="..\..\Code\UnitTests\RSCore\Containers\TreeTests.h" />
+		<Unit filename="..\..\Code\UnitTests\RSCore\Definitions\TypeSizeTests.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="..\..\Code\UnitTests\RSCore\Definitions\TypeSizeTests.h" />
+		<Unit filename="..\..\Code\UnitTests\RSCore\Files\FileTests.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="..\..\Code\UnitTests\RSCore\Files\FileTests.h" />
+		<Unit filename="..\..\Code\UnitTests\RSCore\Misc\CallbackTests.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="..\..\Code\UnitTests\RSCore\Misc\CallbackTests.h" />
+		<Unit filename="..\..\Code\UnitTests\RSCore\RSCoreTests.cpp" />
+		<Unit filename="..\..\Code\UnitTests\RSCore\RSCoreTests.h" />
+		<Unit filename="..\..\Code\UnitTests\RSCore\Text\KeyValueStringTreeTests.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="..\..\Code\UnitTests\RSCore\Text\KeyValueStringTreeTests.h" />
+		<Unit filename="..\..\Code\UnitTests\RSCore\Text\StringTests.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="..\..\Code\UnitTests\RSCore\Text\StringTests.h" />
+		<Unit filename="..\..\Code\UnitTests\RSCore\Utilities\BufferFunctionTests.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="..\..\Code\UnitTests\RSCore\Utilities\BufferFunctionTests.h" />
+		<Unit filename="..\..\Code\UnitTests\RSCore\Utilities\NumberManipulationsTests.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="..\..\Code\UnitTests\RSCore\Utilities\NumberManipulationsTests.h" />
+		<Unit filename="..\..\Code\UnitTests\RSCore\Utilities\SortAndSearchTests.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="..\..\Code\UnitTests\RSCore\Utilities\SortAndSearchTests.h" />
+		<Unit filename="..\..\Code\UnitTests\RSGraphics\Fonts\FontTests.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="..\..\Code\UnitTests\RSGraphics\Fonts\FontTests.h" />
+		<Unit filename="..\..\Code\UnitTests\RSGraphics\RSGraphicsTests.cpp" />
+		<Unit filename="..\..\Code\UnitTests\RSGraphics\RSGraphicsTests.h" />
+		<Unit filename="..\..\Code\UnitTests\RSGraphics\Rendering\RenderingTests.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="..\..\Code\UnitTests\RSGraphics\Rendering\RenderingTests.h" />
+		<Unit filename="..\..\Code\UnitTests\RSMath\Functions\IntegerFunctionTests.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="..\..\Code\UnitTests\RSMath\Functions\IntegerFunctionTests.h" />
+		<Unit filename="..\..\Code\UnitTests\RSMath\Functions\MoebiusTransformTests.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="..\..\Code\UnitTests\RSMath\Functions\MoebiusTransformTests.h" />
+		<Unit filename="..\..\Code\UnitTests\RSMath\Functions\RealFunctionTests.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="..\..\Code\UnitTests\RSMath\Functions\RealFunctionTests.h" />
+		<Unit filename="..\..\Code\UnitTests\RSMath\Geometry\Point2DTests.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="..\..\Code\UnitTests\RSMath\Geometry\Point2DTests.h" />
+		<Unit filename="..\..\Code\UnitTests\RSMath\Geometry\Polygon2DTests.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="..\..\Code\UnitTests\RSMath\Geometry\Polygon2DTests.h" />
+		<Unit filename="..\..\Code\UnitTests\RSMath\Geometry\Triangle2DTests.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="..\..\Code\UnitTests\RSMath\Geometry\Triangle2DTests.h" />
+		<Unit filename="..\..\Code\UnitTests\RSMath\Misc\DifferentialEquationTests.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="..\..\Code\UnitTests\RSMath\Misc\DifferentialEquationTests.h" />
+		<Unit filename="..\..\Code\UnitTests\RSMath\Misc\LinearAlgebraTests.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="..\..\Code\UnitTests\RSMath\Misc\LinearAlgebraTests.h" />
+		<Unit filename="..\..\Code\UnitTests\RSMath\Misc\MiscMathTests.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="..\..\Code\UnitTests\RSMath\Misc\MiscMathTests.h" />
+		<Unit filename="..\..\Code\UnitTests\RSMath\Misc\NumberTheoryTests.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="..\..\Code\UnitTests\RSMath\Misc\NumberTheoryTests.h" />
+		<Unit filename="..\..\Code\UnitTests\RSMath\Misc\TransformsTests.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="..\..\Code\UnitTests\RSMath\Misc\TransformsTests.h" />
+		<Unit filename="..\..\Code\UnitTests\RSMath\RSMathTests.cpp" />
+		<Unit filename="..\..\Code\UnitTests\RSMath\RSMathTests.h" />
+		<Unit filename="..\..\Code\UnitTests\RSMath\Types\BigIntTests.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="..\..\Code\UnitTests\RSMath\Types\BigIntTests.h" />
+		<Unit filename="..\..\Code\UnitTests\RSMath\Types\ComplexTests.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="..\..\Code\UnitTests\RSMath\Types\ComplexTests.h" />
+		<Unit filename="..\..\Code\UnitTests\RSMath\Types\MatrixTests.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="..\..\Code\UnitTests\RSMath\Types\MatrixTests.h" />
+		<Unit filename="..\..\Code\UnitTests\RSMath\Types\MultiArrayTests.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="..\..\Code\UnitTests\RSMath\Types\MultiArrayTests.h" />
+		<Unit filename="..\..\Code\UnitTests\RSMath\Types\VectorTests.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="..\..\Code\UnitTests\RSMath\Types\VectorTests.h" />
+		<Unit filename="..\..\Code\UnitTests\UnitTestUtilities.cpp" />
+		<Unit filename="..\..\Code\UnitTests\UnitTestUtilities.h" />
+		<Unit filename="..\..\Code\UnitTests\UnitTests.cpp" />
+		<Unit filename="..\..\Config\RSBuildConfig.h" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+			<envvars />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

@@ -1,0 +1,85 @@
+interesting Boost libraries:
+-Algoritm
+-Bimap (bidirectional associative container)
+-Container
+-Filesystem
+-Function (for callbacks)
+-Lockfree
+-Math
+-MinMax (find min and max of array fast)
+-Multiprecision
+-Odeint (ordinary differential equations)
+-PropertyTree (XML)
+-Python
+-Random
+-Rational
+-Regex
+-Signals2
+-Smart Ptr
+-Sort
+-String Algo
+-uBLAS
+
+install this Visual Studio PlugIn - allows to view arrays
+https://visualstudiogallery.msdn.microsoft.com/eedc48e7-5169-40d3-b602-ad451990a420
+
+how to watch arrays in the debugger (tip 4):
+http://www.codeproject.com/Articles/469416/More-Visual-Studio-Debugging-Tips-for-Native-De
+tip 8 is also good
+
+we may look into annotated assmbler code
+http://www.codeproject.com/Articles/359801/10plus-powerful-debugging-tricks-with-Visual-Studi
+
+-write experiments for plotter
+-let plotter take color and style for each dataset
+-change plotter class to use a std:string
+-let the plotter do pole/zero plots
+-maybe move it into RSLib
+
+
+Easy Work:
+-clean up ArrayFunctions.h/.inl (move matrix functions into appropritae file, rename parameters)
+-rename BigIntTest to BigNumTests
+-clean up FunctionObjects, GradientBasedMinimizer -> edit style
+-move all the preliminary code which has not yet been cleaned up
+ and integrated properly into the library structure (there's a lot of 
+ it in Resampler.h/cpp) into a separate file "Preliminary.h/.cpp" 
+ or "UnderConstruction.h/cpp"
+ 
+
+
+-write unit- and perfomance tests for the MultiLayerPerceptron
+-optimize matrix and vector class
+
+-rsMatrix:
+ -deprecate randomizeElements (maybe it's useful for unit-tests, but then provide a function for that there)
+ -make use of the basic matrix-handling functions in RSCore where appropriate
+ -move implementations into the .inl file
+
+
+ 
+-optimize matrix class by avoiding excessive deep-copying (see comment there)
+-try to improve performance matrix and vector classes by using some pointer infrastructure that avoids deep copying for function/operator return values
+-optimize vector class in the same way
+ 
+-move the (templatized) implementation of vector class into .inl file
+
+ 
+
+-fix warnings in gcc
+ -warning: deleting object of abstract class type 'RSLib::rsCallbackBase1<double, double>' which has non-virtual destructor will cause undefined behaviour [-Wdelete-non-virtual-dtor]
+ ...but declaring virtual destructors for rsCallbackBase1 and rsCallback1 leads to
+ segmentation fault error when running the tests
+
+-NumberTheory.inl - let the rsFillPrimeTable function take a partially filled table
+
+
+
+ 
+ 
+ 
+
+-port RSLib CodeBlocks project to x64 on Windows
+ -perhaps, we need to switch the compiler - it says something about mingw32..., so maybe even if the compiler options are set correctly (like: -march=x86-64), it builds a x82 (32 bit) version. this has been confirmed by using dumpbin on RSLib.dll
+ 
+ 

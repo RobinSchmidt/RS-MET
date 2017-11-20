@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{700041af-2c03-4e21-af91-1c90897ccb9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RSAudio">
+      <UniqueIdentifier>{3f82f69d-1074-41ba-921d-649a628d590e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Common">
+      <UniqueIdentifier>{6a2f13f4-73c0-402e-9956-c832ba67da97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RSMath">
+      <UniqueIdentifier>{58ea9b62-c9c6-445e-87db-80a0ef67dfa7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Misc">
+      <UniqueIdentifier>{0a503642-cc23-4a41-857b-291460d04d32}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Code\Experiments\ExperimentsUtilities.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Experiments\Experiments.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Common\TestUtilities.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Experiments\RSMath\MathExperiments.cpp">
+      <Filter>Source Files\RSMath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Experiments\RSAudio\AnalysisExperiments.cpp">
+      <Filter>Source Files\RSAudio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Experiments\RSAudio\FilterExperiments.cpp">
+      <Filter>Source Files\RSAudio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Experiments\RSAudio\ModalExperiments.cpp">
+      <Filter>Source Files\RSAudio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Experiments\RSAudio\ModulatorExperiments.cpp">
+      <Filter>Source Files\RSAudio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Experiments\RSAudio\DelayExperiments.cpp">
+      <Filter>Source Files\RSAudio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Experiments\RSAudio\PartialExtractionExperiments.cpp">
+      <Filter>Source Files\RSAudio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Experiments\RSAudio\ResamplingExperiments.cpp">
+      <Filter>Source Files\RSAudio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Common\Prototypes.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Experiments\RSAudio\MiscAudioExperiments.cpp">
+      <Filter>Source Files\RSAudio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Experiments\Misc\PlotterExperiments.cpp">
+      <Filter>Source Files\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Common\GNUPlotter.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Experiments\RSAudio\PhaseVocoderExperiments.cpp">
+      <Filter>Source Files\RSAudio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Experiments\RSAudio\SaturationExperiments.cpp">
+      <Filter>Source Files\RSAudio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Experiments\RSAudio\OscillatorExperiments.cpp">
+      <Filter>Source Files\RSAudio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Experiments\Misc\CellularExperiments.cpp">
+      <Filter>Source Files\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Experiments\RSAudio\PhysicsExperiments.cpp">
+      <Filter>Source Files\RSAudio</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Code\Experiments\ExperimentsUtilities.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Common\TestUtilities.h">
+      <Filter>Source Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Experiments\RSMath\MathExperiments.h">
+      <Filter>Source Files\RSMath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Experiments\RSAudio\AnalysisExperiments.h">
+      <Filter>Source Files\RSAudio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Experiments\RSAudio\FilterExperiments.h">
+      <Filter>Source Files\RSAudio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Experiments\RSAudio\ModalExperiments.h">
+      <Filter>Source Files\RSAudio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Experiments\RSAudio\ModulatorExperiments.h">
+      <Filter>Source Files\RSAudio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Experiments\RSAudio\DelayExperiments.h">
+      <Filter>Source Files\RSAudio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Experiments\RSAudio\PartialExtractionExperiments.h">
+      <Filter>Source Files\RSAudio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Experiments\RSAudio\ResamplingExperiments.h">
+      <Filter>Source Files\RSAudio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Common\Prototypes.h">
+      <Filter>Source Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Experiments\RSAudio\MiscAudioExperiments.h">
+      <Filter>Source Files\RSAudio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Experiments\Misc\PlotterExperiments.h">
+      <Filter>Source Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Common\GNUPlotter.h">
+      <Filter>Source Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Experiments\RSAudio\PhaseVocoderExperiments.h">
+      <Filter>Source Files\RSAudio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Experiments\RSAudio\SaturationExperiments.h">
+      <Filter>Source Files\RSAudio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Experiments\RSAudio\OscillatorExperiments.h">
+      <Filter>Source Files\RSAudio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Experiments\Misc\CellularExperiments.h">
+      <Filter>Source Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Experiments\RSAudio\PhysicsExperiments.h">
+      <Filter>Source Files\RSAudio</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

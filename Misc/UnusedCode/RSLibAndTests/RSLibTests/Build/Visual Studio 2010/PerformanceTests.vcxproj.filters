@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{6c2c1ecd-bc89-40b4-93f1-107e89e3b608}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RSAudio">
+      <UniqueIdentifier>{05ad06f9-9f1b-4818-af29-25eebcb28e7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RSAudio\Analysis">
+      <UniqueIdentifier>{d4b376c4-a3d1-4cfa-87b5-6a8a61cadc3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RSAudio\Synthesis">
+      <UniqueIdentifier>{320ce9d4-2bff-4be1-aac5-8fdabb9139a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Common">
+      <UniqueIdentifier>{e57ed069-7eee-4cc4-a5c0-f73a7e282fc8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RSMath">
+      <UniqueIdentifier>{87da6ec1-84f7-4b43-b828-e60bfc681ce5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RSCore">
+      <UniqueIdentifier>{0fda233b-eb4c-45db-8b14-b3f0bc904e15}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Code\PerformanceTests\RSAudio\Synthesis\ModalTests.cpp">
+      <Filter>Source Files\RSAudio\Synthesis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\PerformanceTests\RSAudio\Analysis\AnalysisTests.cpp">
+      <Filter>Source Files\RSAudio\Analysis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\PerformanceTests\PerformanceTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\PerformanceTests\PerformanceTestUtilities.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\PerformanceTests\ProcessorCycleCounter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Common\TestUtilities.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\PerformanceTests\RSMath\MathTests.cpp">
+      <Filter>Source Files\RSMath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\PerformanceTests\RSCore\CoreTests.cpp">
+      <Filter>Source Files\RSCore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\PerformanceTests\RSAudio\MiscAudioTests.cpp">
+      <Filter>Source Files\RSAudio</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Code\PerformanceTests\RSAudio\Synthesis\ModalTests.h">
+      <Filter>Source Files\RSAudio\Synthesis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\PerformanceTests\RSAudio\Analysis\AnalysisTests.h">
+      <Filter>Source Files\RSAudio\Analysis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\PerformanceTests\ProcessorCycleCounter.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\PerformanceTests\PerformanceTestUtilities.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Common\TestUtilities.h">
+      <Filter>Source Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\PerformanceTests\RSMath\MathTests.h">
+      <Filter>Source Files\RSMath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\PerformanceTests\RSCore\CoreTests.h">
+      <Filter>Source Files\RSCore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\PerformanceTests\RSAudio\MiscAudioTests.h">
+      <Filter>Source Files\RSAudio</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,790 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Core">
+      <UniqueIdentifier>{2befae41-329c-4a45-8232-53643077f193}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core\Containers">
+      <UniqueIdentifier>{e67aa8ff-ee64-4dc5-a9eb-c28c0deb05bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core\Definitions">
+      <UniqueIdentifier>{482da209-9326-4cee-9882-af22a2ed3528}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core\Files">
+      <UniqueIdentifier>{d7046dad-4643-4aea-8890-05e46ca92fbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics">
+      <UniqueIdentifier>{043718d1-2aa0-4f0e-b8cc-4aa55e6c49cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics\Rendering">
+      <UniqueIdentifier>{0ab977e4-bf22-48f4-92fd-9f0ec2bc9e17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics\Rendering\AGG_2.4">
+      <UniqueIdentifier>{936006ec-92c3-43b4-af5d-7673a82832b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics\Rendering\AGG_2.4\include">
+      <UniqueIdentifier>{3beb8970-3c07-4a48-a432-8240c0692d2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics\Rendering\AGG_2.4\src">
+      <UniqueIdentifier>{d4ca30bc-c601-4fd1-8601-1fddb7f8b5c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics\Fonts">
+      <UniqueIdentifier>{7ec35d19-427f-44ee-b2c4-75fc2eaf78eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Math">
+      <UniqueIdentifier>{7fd68217-27bb-4bd6-8cfc-f7826bec1081}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Math\Types">
+      <UniqueIdentifier>{412a7086-722f-45d0-aa18-599b71052fcf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Math\Functions">
+      <UniqueIdentifier>{b8d127ce-e412-4f03-a46a-ad8917cd9f83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Math\Geometry">
+      <UniqueIdentifier>{1b8716c9-f3c6-4870-8dba-7a257dbddec8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Math\Misc">
+      <UniqueIdentifier>{09c04ecf-e79e-4129-bf8a-88d1072160e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core\Misc">
+      <UniqueIdentifier>{de0d4be8-c436-4d8c-8f2b-23461b2e60d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core\Text">
+      <UniqueIdentifier>{250351cc-bc18-42c8-898b-12630a35e732}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core\Utilities">
+      <UniqueIdentifier>{6784f9a7-dcc5-4de8-97c4-2918b761d392}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Audio">
+      <UniqueIdentifier>{ed276247-8ec0-40c3-a745-ca6925b61902}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Audio\Analysis">
+      <UniqueIdentifier>{105f87c5-1115-4750-ad39-c57d04189079}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Audio\Filters">
+      <UniqueIdentifier>{6c695e24-431a-4a33-b460-8434181cd540}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Audio\Misc">
+      <UniqueIdentifier>{73d14463-afd7-4c64-ba9c-7650a19b6bf2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Audio\Modulators">
+      <UniqueIdentifier>{ffab6bb7-a84e-418d-9f58-c8faedde83de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Audio\Sampling">
+      <UniqueIdentifier>{ebb4e7a4-d73a-4b88-b392-63c6087569ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Audio\Synthesis">
+      <UniqueIdentifier>{8503b999-73c4-4220-8992-79baee2d649b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics\Misc">
+      <UniqueIdentifier>{d1c2a887-1a6e-4dd5-821e-352819d2a1a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Audio\Delay">
+      <UniqueIdentifier>{7472276e-b896-4a09-a6dd-7b14f39890d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Audio\Physics">
+      <UniqueIdentifier>{00409167-ab87-4a56-97f8-14d2931af4be}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Code\Core\Containers\Flags.cpp">
+      <Filter>Source Files\Core\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Core\Files\File.cpp">
+      <Filter>Source Files\Core\Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Core\Files\FileInputOutput.cpp">
+      <Filter>Source Files\Core\Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Core\Files\FileStream.cpp">
+      <Filter>Source Files\Core\Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Core\Files\WaveFile.cpp">
+      <Filter>Source Files\Core\Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Core\Misc\Logger.cpp">
+      <Filter>Source Files\Core\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Core\Text\KeyValueStringArray.cpp">
+      <Filter>Source Files\Core\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Core\Text\KeyValueStringTree.cpp">
+      <Filter>Source Files\Core\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Core\Text\String.cpp">
+      <Filter>Source Files\Core\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Core\Utilities\NumberManipulations.cpp">
+      <Filter>Source Files\Core\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Graphics\Rendering\GraphicsRenderer2D.cpp">
+      <Filter>Source Files\Graphics\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Graphics\Rendering\WrappersForAGG.cpp">
+      <Filter>Source Files\Graphics\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Graphics\Rendering\AGG_2.4\src\agg_vcgen_stroke.cpp">
+      <Filter>Source Files\Graphics\Rendering\AGG_2.4\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Graphics\Fonts\GlobalFontInstances.cpp">
+      <Filter>Source Files\Graphics\Fonts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Graphics\Fonts\PixelFont.cpp">
+      <Filter>Source Files\Graphics\Fonts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Graphics\Fonts\PixelFontRoundedA7D0.cpp">
+      <Filter>Source Files\Graphics\Fonts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Graphics\Fonts\PixelFontRoundedBoldA10D0.cpp">
+      <Filter>Source Files\Graphics\Fonts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Graphics\Fonts\PixelFontRoundedBoldA16D0.cpp">
+      <Filter>Source Files\Graphics\Fonts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Graphics\Fonts\PixelFontRoundedBoldA9D0.cpp">
+      <Filter>Source Files\Graphics\Fonts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\Types\Tensor.cpp">
+      <Filter>Source Files\Math\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\Types\Vector.cpp">
+      <Filter>Source Files\Math\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\Functions\IntegerFunctions.cpp">
+      <Filter>Source Files\Math\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\Functions\RealFunctions.cpp">
+      <Filter>Source Files\Math\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\Geometry\GeometricFunctions.cpp">
+      <Filter>Source Files\Math\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Core\Misc\SystemInformation.cpp">
+      <Filter>Source Files\Core\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Core\Utilities\SortAndSearch.inl">
+      <Filter>Source Files\Core\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Core\Misc\ErrorHandling.cpp">
+      <Filter>Source Files\Core\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Analysis\AutoCorrelationPitchDetector.cpp">
+      <Filter>Source Files\Audio\Analysis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Analysis\CyclicAutoCorrelator.cpp">
+      <Filter>Source Files\Audio\Analysis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Analysis\EnvelopeFollower.cpp">
+      <Filter>Source Files\Audio\Analysis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Analysis\FormantRemover.cpp">
+      <Filter>Source Files\Audio\Analysis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Analysis\LinearPredictor.cpp">
+      <Filter>Source Files\Audio\Analysis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Analysis\ZeroCrossingPitchDetector.cpp">
+      <Filter>Source Files\Audio\Analysis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Misc\SlewRateLimiter.cpp">
+      <Filter>Source Files\Audio\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Modulators\BreakpointModulator.cpp">
+      <Filter>Source Files\Audio\Modulators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Sampling\SampleManipulation.cpp">
+      <Filter>Source Files\Audio\Sampling</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Core\Utilities\MathBasics.inl">
+      <Filter>Source Files\Core\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Graphics\Misc\ColorSpaces.cpp">
+      <Filter>Source Files\Graphics\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Graphics\Misc\Image.cpp">
+      <Filter>Source Files\Graphics\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Graphics\Misc\Justification.cpp">
+      <Filter>Source Files\Graphics\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\Misc\PolynomialAlgorithms.cpp">
+      <Filter>Source Files\Math\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\RSMath.cpp">
+      <Filter>Source Files\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Core\RSCore.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\RSAudio.cpp">
+      <Filter>Source Files\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Graphics\RSGraphics.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Filters\FilterDesignFormulas.cpp">
+      <Filter>Source Files\Audio\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Filters\FourPoleFilter.cpp">
+      <Filter>Source Files\Audio\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Filters\OnePoleFilter.cpp">
+      <Filter>Source Files\Audio\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Filters\PhonoFilter.cpp">
+      <Filter>Source Files\Audio\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Filters\StateVariableFilter.cpp">
+      <Filter>Source Files\Audio\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Core\Text\KeyValueStringPair.cpp">
+      <Filter>Source Files\Core\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Core\Misc\Parameter.cpp">
+      <Filter>Source Files\Core\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Misc\SlewRateLimiterLinear.cpp">
+      <Filter>Source Files\Audio\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Delay\DelayLine.cpp">
+      <Filter>Source Files\Audio\Delay</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Filters\MovingAverage.cpp">
+      <Filter>Source Files\Audio\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\Misc\CurveFitting.cpp">
+      <Filter>Source Files\Math\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\Types\BigInt.cpp">
+      <Filter>Source Files\Math\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\Types\BigFloat.cpp">
+      <Filter>Source Files\Math\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\Types\BigNumber.cpp">
+      <Filter>Source Files\Math\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\Types\Matrix.inl">
+      <Filter>Source Files\Math\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\Misc\FunctionObjects.cpp">
+      <Filter>Source Files\Math\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\Misc\GradientBasedMinimizer.cpp">
+      <Filter>Source Files\Math\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\Misc\MultiLayerPerceptron.cpp">
+      <Filter>Source Files\Math\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Misc\AudioFunctions.cpp">
+      <Filter>Source Files\Audio\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\Functions\FunctionIterators.cpp">
+      <Filter>Source Files\Math\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Sampling\Resampler.cpp">
+      <Filter>Source Files\Audio\Sampling</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Misc\MiscAudio.cpp">
+      <Filter>Source Files\Audio\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\Misc\Interpolation.cpp">
+      <Filter>Source Files\Math\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\Misc\FourierTransformer.cpp">
+      <Filter>Source Files\Math\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Misc\WindowFunctions.cpp">
+      <Filter>Source Files\Audio\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\Misc\NumericCalculus.cpp">
+      <Filter>Source Files\Math\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Misc\BandwidthConverter.cpp">
+      <Filter>Source Files\Audio\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Filters\Biquad.cpp">
+      <Filter>Source Files\Audio\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Filters\BiquadCascade.cpp">
+      <Filter>Source Files\Audio\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Filters\FilterAnalyzer.cpp">
+      <Filter>Source Files\Audio\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Filters\PrototypeDesigner.cpp">
+      <Filter>Source Files\Audio\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Filters\PoleZeroMapper.cpp">
+      <Filter>Source Files\Audio\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Filters\FilterCoefficientConverter.cpp">
+      <Filter>Source Files\Audio\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Filters\InfiniteImpulseResponseDesigner.cpp">
+      <Filter>Source Files\Audio\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Filters\EngineersFilter.cpp">
+      <Filter>Source Files\Audio\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Sampling\PhaseVocoder.cpp">
+      <Filter>Source Files\Audio\Sampling</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Filters\FakeResonanceFilter.cpp">
+      <Filter>Source Files\Audio\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Filters\ModalFilterBank.cpp">
+      <Filter>Source Files\Audio\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Misc\Interpolator.cpp">
+      <Filter>Source Files\Audio\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Filters\LadderFilter.cpp">
+      <Filter>Source Files\Audio\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Misc\Saturator.cpp">
+      <Filter>Source Files\Audio\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\Functions\Sigmoids.cpp">
+      <Filter>Source Files\Math\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Math\Functions\BellFunctions.cpp">
+      <Filter>Source Files\Math\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Audio\Physics\DoublePendulum.cpp">
+      <Filter>Source Files\Audio\Physics</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Code\Core\Containers\Array.h">
+      <Filter>Source Files\Core\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Core\Containers\Flags.h">
+      <Filter>Source Files\Core\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Core\Containers\KeyValueMap.h">
+      <Filter>Source Files\Core\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Core\Containers\List.h">
+      <Filter>Source Files\Core\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Core\Containers\Range.h">
+      <Filter>Source Files\Core\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Core\Containers\Tree.h">
+      <Filter>Source Files\Core\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Core\Definitions\ConstantDefinitions.h">
+      <Filter>Source Files\Core\Definitions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Core\Definitions\MacroDefinitions.h">
+      <Filter>Source Files\Core\Definitions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Core\Definitions\Setup.h">
+      <Filter>Source Files\Core\Definitions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Core\Definitions\TypeDefinitions.h">
+      <Filter>Source Files\Core\Definitions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Core\Files\File.h">
+      <Filter>Source Files\Core\Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Core\Files\FileInputOutput.h">
+      <Filter>Source Files\Core\Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Core\Files\FileStream.h">
+      <Filter>Source Files\Core\Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Core\Files\WaveFile.h">
+      <Filter>Source Files\Core\Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Core\Misc\Logger.h">
+      <Filter>Source Files\Core\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Core\Text\KeyValueStringArray.h">
+      <Filter>Source Files\Core\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Core\Text\KeyValueStringPair.h">
+      <Filter>Source Files\Core\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Core\Text\KeyValueStringTree.h">
+      <Filter>Source Files\Core\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Core\Text\String.h">
+      <Filter>Source Files\Core\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Core\Utilities\NumberManipulations.h">
+      <Filter>Source Files\Core\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Core\Utilities\SortAndSearch.h">
+      <Filter>Source Files\Core\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Graphics\Rendering\GraphicsRenderer2D.h">
+      <Filter>Source Files\Graphics\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Graphics\Rendering\WrappersForAGG.h">
+      <Filter>Source Files\Graphics\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Graphics\Rendering\AGG_2.4\include\agg_basics.h">
+      <Filter>Source Files\Graphics\Rendering\AGG_2.4\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Graphics\Rendering\AGG_2.4\include\agg_conv_stroke.h">
+      <Filter>Source Files\Graphics\Rendering\AGG_2.4\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Graphics\Rendering\AGG_2.4\include\agg_path_storage.h">
+      <Filter>Source Files\Graphics\Rendering\AGG_2.4\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Graphics\Rendering\AGG_2.4\include\agg_rasterizer_outline.h">
+      <Filter>Source Files\Graphics\Rendering\AGG_2.4\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Graphics\Rendering\AGG_2.4\include\agg_rasterizer_scanline_aa.h">
+      <Filter>Source Files\Graphics\Rendering\AGG_2.4\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Graphics\Rendering\AGG_2.4\include\agg_renderer_primitives.h">
+      <Filter>Source Files\Graphics\Rendering\AGG_2.4\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Graphics\Rendering\AGG_2.4\include\agg_renderer_scanline.h">
+      <Filter>Source Files\Graphics\Rendering\AGG_2.4\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Graphics\Rendering\AGG_2.4\include\agg_rendering_buffer.h">
+      <Filter>Source Files\Graphics\Rendering\AGG_2.4\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Graphics\Rendering\AGG_2.4\include\agg_scanline_p.h">
+      <Filter>Source Files\Graphics\Rendering\AGG_2.4\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Graphics\Rendering\AGG_2.4\include\agg_scanline_storage_bin.h">
+      <Filter>Source Files\Graphics\Rendering\AGG_2.4\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Graphics\Fonts\GlobalFontInstances.h">
+      <Filter>Source Files\Graphics\Fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Graphics\Fonts\PixelFont.h">
+      <Filter>Source Files\Graphics\Fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Graphics\Fonts\PixelFontRoundedA7D0.h">
+      <Filter>Source Files\Graphics\Fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Graphics\Fonts\PixelFontRoundedBoldA10D0.h">
+      <Filter>Source Files\Graphics\Fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Graphics\Fonts\PixelFontRoundedBoldA16D0.h">
+      <Filter>Source Files\Graphics\Fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Graphics\Fonts\PixelFontRoundedBoldA9D0.h">
+      <Filter>Source Files\Graphics\Fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Math\Types\Complex.h">
+      <Filter>Source Files\Math\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Math\Types\MultiArray.h">
+      <Filter>Source Files\Math\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Math\Types\Tensor.h">
+      <Filter>Source Files\Math\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Math\Types\Vector.h">
+      <Filter>Source Files\Math\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Math\Functions\ComplexFunctions.h">
+      <Filter>Source Files\Math\Functions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Math\Functions\IntegerFunctions.h">
+      <Filter>Source Files\Math\Functions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Math\Functions\MoebiusTransform.h">
+      <Filter>Source Files\Math\Functions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Math\Functions\RealFunctions.h">
+      <Filter>Source Files\Math\Functions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Math\Geometry\AffineTransform2D.h">
+      <Filter>Source Files\Math\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Math\Geometry\GeometricFunctions.h">
+      <Filter>Source Files\Math\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Math\Geometry\Point2D.h">
+      <Filter>Source Files\Math\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Math\Geometry\Polygon2D.h">
+      <Filter>Source Files\Math\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Math\Geometry\Rectangle2D.h">
+      <Filter>Source Files\Math\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Math\Geometry\Triangle2D.h">
+      <Filter>Source Files\Math\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Math\Misc\Transforms.h">
+      <Filter>Source Files\Math\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Core\Misc\SystemInformation.h">
+      <Filter>Source Files\Core\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Core\Misc\ErrorHandling.h">
+      <Filter>Source Files\Core\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Math\Misc\Statistics.h">
+      <Filter>Source Files\Math\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\Analysis\AutoCorrelationPitchDetector.h">
+      <Filter>Source Files\Audio\Analysis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\Analysis\CyclicAutoCorrelator.h">
+      <Filter>Source Files\Audio\Analysis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\Analysis\EnvelopeFollower.h">
+      <Filter>Source Files\Audio\Analysis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\Analysis\FormantRemover.h">
+      <Filter>Source Files\Audio\Analysis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\Analysis\LinearPredictor.h">
+      <Filter>Source Files\Audio\Analysis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\Analysis\ResponseGetters.h">
+      <Filter>Source Files\Audio\Analysis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\Analysis\ZeroCrossingPitchDetector.h">
+      <Filter>Source Files\Audio\Analysis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\Misc\SlewRateLimiter.h">
+      <Filter>Source Files\Audio\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\Modulators\BreakpointModulator.h">
+      <Filter>Source Files\Audio\Modulators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\Sampling\SampleManipulation.h">
+      <Filter>Source Files\Audio\Sampling</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Core\Utilities\MathBasics.h">
+      <Filter>Source Files\Core\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\RSLib.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Graphics\Misc\ColorSpaces.h">
+      <Filter>Source Files\Graphics\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Graphics\Misc\Image.h">
+      <Filter>Source Files\Graphics\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Graphics\Misc\Justification.h">
+      <Filter>Source Files\Graphics\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Math\Misc\DifferentialEquationSystem.h">
+      <Filter>Source Files\Math\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Math\Misc\PolynomialAlgorithms.h">
+      <Filter>Source Files\Math\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Math\RSMath.h">
+      <Filter>Source Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Core\RSCore.h">
+      <Filter>Source Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\RSAudio.h">
+      <Filter>Source Files\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Graphics\RSGraphics.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\Misc\AudioFunctions.h">
+      <Filter>Source Files\Audio\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Core\Definitions\StandardHeaders.h">
+      <Filter>Source Files\Core\Definitions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\Filters\FilterDesignFormulas.h">
+      <Filter>Source Files\Audio\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\Filters\FourPoleFilter.h">
+      <Filter>Source Files\Audio\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\Filters\OnePoleFilter.h">
+      <Filter>Source Files\Audio\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\Filters\PhonoFilter.h">
+      <Filter>Source Files\Audio\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\Filters\StateVariableFilter.h">
+      <Filter>Source Files\Audio\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Config\RSBuildConfig.h" />
+    <ClInclude Include="..\..\Code\Core\Misc\Parameter.h">
+      <Filter>Source Files\Core\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Core\Misc\Callback.h">
+      <Filter>Source Files\Core\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Math\Misc\LinearAlgebra.h">
+      <Filter>Source Files\Math\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\Misc\SlewRateLimiterLinear.h">
+      <Filter>Source Files\Audio\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\Delay\DelayLine.h">
+      <Filter>Source Files\Audio\Delay</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\Filters\MovingAverage.h">
+      <Filter>Source Files\Audio\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Core\Containers\InfiniteDataStream.h">
+      <Filter>Source Files\Core\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Math\Misc\CurveFitting.h">
+      <Filter>Source Files\Math\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Math\Types\BigInt.h">
+      <Filter>Source Files\Math\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Math\Types\BigFloat.h">
+      <Filter>Source Files\Math\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Math\Types\BigNumber.h">
+      <Filter>Source Files\Math\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Math\Misc\NumberTheory.h">
+      <Filter>Source Files\Math\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Math\Types\ModularInteger.h">
+      <Filter>Source Files\Math\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Core\Utilities\MatrixFunctions.h">
+      <Filter>Source Files\Core\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Core\Utilities\ArrayFunctions.h">
+      <Filter>Source Files\Core\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Math\Types\Matrix.h">
+      <Filter>Source Files\Math\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Math\Misc\FunctionObjects.h">
+      <Filter>Source Files\Math\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Math\Misc\GradientBasedMinimizer.h">
+      <Filter>Source Files\Math\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Math\Misc\MultiLayerPerceptron.h">
+      <Filter>Source Files\Math\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Math\Functions\FunctionIterators.h">
+      <Filter>Source Files\Math\Functions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\Sampling\Resampler.h">
+      <Filter>Source Files\Audio\Sampling</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\Misc\MiscAudio.h">
+      <Filter>Source Files\Audio\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Math\Misc\Interpolation.h">
+      <Filter>Source Files\Math\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Math\Misc\FourierTransformer.h">
+      <Filter>Source Files\Math\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\Misc\WindowFunctions.h">
+      <Filter>Source Files\Audio\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Math\Misc\NumericCalculus.h">
+      <Filter>Source Files\Math\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\Misc\BandwidthConverter.h">
+      <Filter>Source Files\Audio\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\Filters\Biquad.h">
+      <Filter>Source Files\Audio\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\Filters\BiquadCascade.h">
+      <Filter>Source Files\Audio\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\Filters\FilterAnalyzer.h">
+      <Filter>Source Files\Audio\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\Filters\PrototypeDesigner.h">
+      <Filter>Source Files\Audio\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\Filters\PoleZeroMapper.h">
+      <Filter>Source Files\Audio\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\Filters\FilterCoefficientConverter.h">
+      <Filter>Source Files\Audio\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\Filters\InfiniteImpulseResponseDesigner.h">
+      <Filter>Source Files\Audio\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\Filters\EngineersFilter.h">
+      <Filter>Source Files\Audio\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Math\Types\Polynomial.h">
+      <Filter>Source Files\Math\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\Sampling\PhaseVocoder.h">
+      <Filter>Source Files\Audio\Sampling</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\Filters\FakeResonanceFilter.h">
+      <Filter>Source Files\Audio\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\Filters\ModalFilterBank.h">
+      <Filter>Source Files\Audio\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\Misc\Interpolator.h">
+      <Filter>Source Files\Audio\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\Filters\LadderFilter.h">
+      <Filter>Source Files\Audio\Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\Misc\Saturator.h">
+      <Filter>Source Files\Audio\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Math\Functions\Sigmoids.h">
+      <Filter>Source Files\Math\Functions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Math\Functions\BellFunctions.h">
+      <Filter>Source Files\Math\Functions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Audio\Physics\DoublePendulum.h">
+      <Filter>Source Files\Audio\Physics</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Code\Math\Types\MultiArray.inl">
+      <Filter>Source Files\Math\Types</Filter>
+    </None>
+    <None Include="..\..\Code\Math\Functions\ComplexFunctions.inl">
+      <Filter>Source Files\Math\Functions</Filter>
+    </None>
+    <None Include="..\..\Code\Math\Misc\Transforms.inl">
+      <Filter>Source Files\Math\Misc</Filter>
+    </None>
+    <None Include="..\..\Code\Math\Misc\Statistics.inl">
+      <Filter>Source Files\Math\Misc</Filter>
+    </None>
+    <None Include="..\..\Code\Audio\Analysis\ResponseGetters.inl">
+      <Filter>Source Files\Audio\Analysis</Filter>
+    </None>
+    <None Include="..\..\Code\Math\Misc\LinearAlgebra.inl">
+      <Filter>Source Files\Math\Misc</Filter>
+    </None>
+    <None Include="..\..\Code\Math\Misc\NumberTheory.inl">
+      <Filter>Source Files\Math\Misc</Filter>
+    </None>
+    <None Include="..\..\Code\Math\Types\ModularInteger.inl">
+      <Filter>Source Files\Math\Types</Filter>
+    </None>
+    <None Include="..\..\Code\Core\Utilities\MatrixFunctions.inl">
+      <Filter>Source Files\Core\Utilities</Filter>
+    </None>
+    <None Include="..\..\Code\Core\Utilities\ArrayFunctions.inl">
+      <Filter>Source Files\Core\Utilities</Filter>
+    </None>
+    <None Include="..\..\Code\Math\Types\Polynomial.inl">
+      <Filter>Source Files\Math\Types</Filter>
+    </None>
+  </ItemGroup>
+</Project>

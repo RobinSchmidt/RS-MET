@@ -1,0 +1,5 @@
+dependencies between modules:
+
+Core---Math---Audio
+           |
+            --Graphics 

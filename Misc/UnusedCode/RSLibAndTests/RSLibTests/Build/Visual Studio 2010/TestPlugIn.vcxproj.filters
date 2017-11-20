@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Common">
+      <UniqueIdentifier>{8cfc6e34-1a01-422b-ae16-389cc766e31f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Common\RSLib">
+      <UniqueIdentifier>{395088ec-4afb-4dc2-a780-e4a216201da2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Common\VST-SDK">
+      <UniqueIdentifier>{db8cd188-32af-4070-bc32-cfd95ef95d14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\PlugIns">
+      <UniqueIdentifier>{e6c49d29-2721-40fd-9bc7-88d6af83c890}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Common\Utilities">
+      <UniqueIdentifier>{d22644f7-307e-4aab-8ece-495face09850}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Code\TestPlugIns\Common\RSLibConfig\RSBuildConfig.h">
+      <Filter>Source Files\Common\RSLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\TestPlugIns\Common\vstsdk2.4\pluginterfaces\vst2.x\aeffect.h">
+      <Filter>Source Files\Common\VST-SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\TestPlugIns\Common\vstsdk2.4\pluginterfaces\vst2.x\aeffectx.h">
+      <Filter>Source Files\Common\VST-SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\TestPlugIns\Common\vstsdk2.4\pluginterfaces\vst2.x\vstfxstore.h">
+      <Filter>Source Files\Common\VST-SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\TestPlugIns\Common\vstsdk2.4\public.sdk\source\vst2.x\aeffeditor.h">
+      <Filter>Source Files\Common\VST-SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\TestPlugIns\Common\vstsdk2.4\public.sdk\source\vst2.x\audioeffect.h">
+      <Filter>Source Files\Common\VST-SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\TestPlugIns\Common\vstsdk2.4\public.sdk\source\vst2.x\audioeffectx.h">
+      <Filter>Source Files\Common\VST-SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\TestPlugIns\PlugIns\vstPhonoFilter.h">
+      <Filter>Source Files\PlugIns</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\TestPlugIns\PlugIns\vstStateVariableFilter.h">
+      <Filter>Source Files\PlugIns</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\TestPlugIns\Common\Utilities\vstPlugIn.h">
+      <Filter>Source Files\Common\Utilities</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\RSLib\Code\Audio\RSAudio.cpp">
+      <Filter>Source Files\Common\RSLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\RSLib\Code\Math\RSMath.cpp">
+      <Filter>Source Files\Common\RSLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\RSLib\Code\Core\RSCore.cpp">
+      <Filter>Source Files\Common\RSLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\TestPlugIns\Common\vstsdk2.4\public.sdk\source\vst2.x\audioeffect.cpp">
+      <Filter>Source Files\Common\VST-SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\TestPlugIns\Common\vstsdk2.4\public.sdk\source\vst2.x\audioeffectx.cpp">
+      <Filter>Source Files\Common\VST-SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\TestPlugIns\Common\vstsdk2.4\public.sdk\source\vst2.x\vstplugmain.cpp">
+      <Filter>Source Files\Common\VST-SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\TestPlugIns\PlugIns\vstPhonoFilter.cpp">
+      <Filter>Source Files\PlugIns</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\TestPlugIns\PlugIns\vstStateVariableFilter.cpp">
+      <Filter>Source Files\PlugIns</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\TestPlugIns\Common\Utilities\vstPlugIn.cpp">
+      <Filter>Source Files\Common\Utilities</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Code\TestPlugIns\Common\vstsdk2.4\public.sdk\samples\vst2.x\win\vstplug.def">
+      <Filter>Source Files\Common\VST-SDK</Filter>
+    </None>
+    <None Include="..\..\Code\TestPlugIns\BuildReadMe.txt" />
+  </ItemGroup>
+</Project>

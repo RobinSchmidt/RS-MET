@@ -1,0 +1,567 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="RSLib" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Option show_notes="0">
+			<notes>
+				<![CDATA[the -fPIC compiler flag has been added for the dll-builds on linux]]>
+			</notes>
+		</Option>
+		<Build>
+			<Target title="Win32_Debug">
+				<Option platforms="Windows;" />
+				<Option output="$(WORKSPACE_DIR)/../../GeneratedFiles/CodeBlocks/Binaries/$(TARGET_NAME)/$(PROJECT_NAME).dll" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="$(WORKSPACE_DIR)/../../GeneratedFiles/CodeBlocks/Binaries/$(TARGET_NAME)" />
+				<Option object_output="$(WORKSPACE_DIR)/../../GeneratedFiles/CodeBlocks/ObjectFiles/$(PROJECT_NAME)/$(TARGET_NAME)/" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-W" />
+					<Add option="-DWINDOWS" />
+				</Compiler>
+			</Target>
+			<Target title="Win32_Release">
+				<Option platforms="Windows;" />
+				<Option output="$(WORKSPACE_DIR)/../../GeneratedFiles/CodeBlocks/Binaries/$(TARGET_NAME)/$(PROJECT_NAME).dll" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="$(WORKSPACE_DIR)/../../GeneratedFiles/CodeBlocks/Binaries/$(TARGET_NAME)" />
+				<Option object_output="$(WORKSPACE_DIR)/../../GeneratedFiles/CodeBlocks/ObjectFiles/$(PROJECT_NAME)/$(TARGET_NAME)/" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-W" />
+					<Add option="-DWINDOWS" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+			<Target title="Linux_Debug">
+				<Option platforms="Unix;" />
+				<Option output="$(WORKSPACE_DIR)/../../GeneratedFiles/CodeBlocks/Binaries/$(TARGET_NAME)/lib$(PROJECT_NAME).so" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="$(WORKSPACE_DIR)/../../GeneratedFiles/CodeBlocks/Binaries/$(TARGET_NAME)" />
+				<Option object_output="$(WORKSPACE_DIR)/../../GeneratedFiles/CodeBlocks/ObjectFiles/$(PROJECT_NAME)/$(TARGET_NAME)/" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-W" />
+					<Add option="-g" />
+					<Add option="-fPIC" />
+				</Compiler>
+			</Target>
+			<Target title="Linux_Release">
+				<Option platforms="Unix;" />
+				<Option output="$(WORKSPACE_DIR)/../../GeneratedFiles/CodeBlocks/Binaries/$(TARGET_NAME)/$(PROJECT_NAME).so" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="$(WORKSPACE_DIR)/../../GeneratedFiles/CodeBlocks/Binaries/$(TARGET_NAME)" />
+				<Option object_output="$(WORKSPACE_DIR)/../../GeneratedFiles/CodeBlocks/ObjectFiles/$(PROJECT_NAME)/$(TARGET_NAME)/" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-W" />
+					<Add option="-fPIC" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+			<Target title="OSX_Debug">
+				<Option platforms="Mac;" />
+				<Option output="$(WORKSPACE_DIR)/../../GeneratedFiles/CodeBlocks/Binaries/$(TARGET_NAME)/lib$(PROJECT_NAME)" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="$(WORKSPACE_DIR)/../../GeneratedFiles/CodeBlocks/Binaries/$(TARGET_NAME)" />
+				<Option object_output="$(WORKSPACE_DIR)/../../GeneratedFiles/CodeBlocks/ObjectFiles/$(PROJECT_NAME)/$(TARGET_NAME)/" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-W" />
+					<Add option="-DOSX" />
+					<Add option="-DCOCOA" />
+				</Compiler>
+				<Linker>
+					<Add option="-dynamiclib" />
+					<Add option="-install_name @loader_path/libRSLib.dylib" />
+				</Linker>
+			</Target>
+			<Target title="OSX_Release">
+				<Option platforms="Mac;" />
+				<Option output="$(WORKSPACE_DIR)/../../GeneratedFiles/CodeBlocks/Binaries/$(TARGET_NAME)/lib$(PROJECT_NAME)" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="$(WORKSPACE_DIR)/../../GeneratedFiles/CodeBlocks/Binaries/$(TARGET_NAME)" />
+				<Option object_output="$(WORKSPACE_DIR)/../../GeneratedFiles/CodeBlocks/ObjectFiles/$(PROJECT_NAME)/$(TARGET_NAME)/" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-W" />
+					<Add option="-DOSX" />
+					<Add option="-DCOCOA" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add option="-dynamiclib" />
+					<Add option="-install_name @loader_path/libRSLib.dylib" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-std=c++0x" />
+			<Add directory="../../Config" />
+		</Compiler>
+		<Unit filename="../../Code/Audio/Analysis/AutoCorrelationPitchDetector.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Audio/Analysis/AutoCorrelationPitchDetector.h" />
+		<Unit filename="../../Code/Audio/Analysis/CyclicAutoCorrelator.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Audio/Analysis/CyclicAutoCorrelator.h" />
+		<Unit filename="../../Code/Audio/Analysis/EnvelopeFollower.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Audio/Analysis/EnvelopeFollower.h" />
+		<Unit filename="../../Code/Audio/Analysis/FormantRemover.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Audio/Analysis/FormantRemover.h" />
+		<Unit filename="../../Code/Audio/Analysis/LinearPredictor.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Audio/Analysis/LinearPredictor.h" />
+		<Unit filename="../../Code/Audio/Analysis/ResponseGetters.h" />
+		<Unit filename="../../Code/Audio/Analysis/ZeroCrossingPitchDetector.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Audio/Analysis/ZeroCrossingPitchDetector.h" />
+		<Unit filename="../../Code/Audio/Delay/DelayLine.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Audio/Delay/DelayLine.h" />
+		<Unit filename="../../Code/Audio/Filters/Biquad.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Audio/Filters/Biquad.h" />
+		<Unit filename="../../Code/Audio/Filters/EngineersFilter.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Audio/Filters/EngineersFilter.h" />
+		<Unit filename="../../Code/Audio/Filters/FakeResonanceFilter.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Audio/Filters/FakeResonanceFilter.h" />
+		<Unit filename="../../Code/Audio/Filters/FilterAnalyzer.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Audio/Filters/FilterAnalyzer.h" />
+		<Unit filename="../../Code/Audio/Filters/FilterCoefficientConverter.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Audio/Filters/FilterCoefficientConverter.h" />
+		<Unit filename="../../Code/Audio/Filters/FilterDesignFormulas.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Audio/Filters/FilterDesignFormulas.h" />
+		<Unit filename="../../Code/Audio/Filters/FourPoleFilter.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Audio/Filters/FourPoleFilter.h" />
+		<Unit filename="../../Code/Audio/Filters/InfiniteImpulseResponseDesigner.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Audio/Filters/InfiniteImpulseResponseDesigner.h" />
+		<Unit filename="../../Code/Audio/Filters/LadderFilter.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Audio/Filters/LadderFilter.h" />
+		<Unit filename="../../Code/Audio/Filters/ModalFilterBank.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Audio/Filters/ModalFilterBank.h" />
+		<Unit filename="../../Code/Audio/Filters/MovingAverage.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Audio/Filters/MovingAverage.h" />
+		<Unit filename="../../Code/Audio/Filters/OnePoleFilter.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Audio/Filters/OnePoleFilter.h" />
+		<Unit filename="../../Code/Audio/Filters/PhonoFilter.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Audio/Filters/PhonoFilter.h" />
+		<Unit filename="../../Code/Audio/Filters/PoleZeroMapper.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Audio/Filters/PoleZeroMapper.h" />
+		<Unit filename="../../Code/Audio/Filters/PrototypeDesigner.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Audio/Filters/PrototypeDesigner.h" />
+		<Unit filename="../../Code/Audio/Filters/StateVariableFilter.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Audio/Filters/StateVariableFilter.h" />
+		<Unit filename="../../Code/Audio/Misc/AudioFunctions.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Audio/Misc/AudioFunctions.h" />
+		<Unit filename="../../Code/Audio/Misc/BandwidthConverter.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Audio/Misc/BandwidthConverter.h" />
+		<Unit filename="../../Code/Audio/Misc/Interpolator.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Audio/Misc/Interpolator.h" />
+		<Unit filename="../../Code/Audio/Misc/MiscAudio.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Audio/Misc/MiscAudio.h" />
+		<Unit filename="../../Code/Audio/Misc/SlewRateLimiter.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Audio/Misc/SlewRateLimiter.h" />
+		<Unit filename="../../Code/Audio/Misc/SlewRateLimiterLinear.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Audio/Misc/SlewRateLimiterLinear.h" />
+		<Unit filename="../../Code/Audio/Misc/WindowFunctions.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Audio/Misc/WindowFunctions.h" />
+		<Unit filename="../../Code/Audio/Modulators/BreakpointModulator.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Audio/Modulators/BreakpointModulator.h" />
+		<Unit filename="../../Code/Audio/RSAudio.cpp" />
+		<Unit filename="../../Code/Audio/RSAudio.h" />
+		<Unit filename="../../Code/Audio/Sampling/Resampler.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Audio/Sampling/Resampler.h" />
+		<Unit filename="../../Code/Audio/Sampling/SampleManipulation.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Audio/Sampling/SampleManipulation.h" />
+		<Unit filename="../../Code/Core/Containers/Array.h" />
+		<Unit filename="../../Code/Core/Containers/Flags.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Core/Containers/Flags.h" />
+		<Unit filename="../../Code/Core/Containers/KeyValueMap.h" />
+		<Unit filename="../../Code/Core/Containers/List.h" />
+		<Unit filename="../../Code/Core/Containers/Range.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Core/Containers/Range.h" />
+		<Unit filename="../../Code/Core/Containers/Tree.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Core/Containers/Tree.h" />
+		<Unit filename="../../Code/Core/Definitions/ConstantDefinitions.h" />
+		<Unit filename="../../Code/Core/Definitions/MacroDefinitions.h" />
+		<Unit filename="../../Code/Core/Definitions/Setup.h" />
+		<Unit filename="../../Code/Core/Definitions/StandardHeaders.h" />
+		<Unit filename="../../Code/Core/Definitions/TypeDefinitions.h" />
+		<Unit filename="../../Code/Core/Files/File.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Core/Files/File.h" />
+		<Unit filename="../../Code/Core/Files/FileInputOutput.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Core/Files/FileInputOutput.h" />
+		<Unit filename="../../Code/Core/Files/FileStream.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Core/Files/FileStream.h" />
+		<Unit filename="../../Code/Core/Files/WaveFile.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Core/Files/WaveFile.h" />
+		<Unit filename="../../Code/Core/Misc/Callback.h" />
+		<Unit filename="../../Code/Core/Misc/ErrorHandling.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Core/Misc/ErrorHandling.h" />
+		<Unit filename="../../Code/Core/Misc/Logger.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Core/Misc/Logger.h" />
+		<Unit filename="../../Code/Core/Misc/Parameter.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Core/Misc/Parameter.h" />
+		<Unit filename="../../Code/Core/Misc/SystemInformation.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Core/Misc/SystemInformation.h" />
+		<Unit filename="../../Code/Core/RSCore.cpp" />
+		<Unit filename="../../Code/Core/RSCore.h" />
+		<Unit filename="../../Code/Core/Text/KeyValueStringArray.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Core/Text/KeyValueStringArray.h" />
+		<Unit filename="../../Code/Core/Text/KeyValueStringPair.h" />
+		<Unit filename="../../Code/Core/Text/KeyValueStringTree.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Core/Text/KeyValueStringTree.h" />
+		<Unit filename="../../Code/Core/Text/String.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Core/Text/String.h" />
+		<Unit filename="../../Code/Core/Utilities/ArrayFunctions.h" />
+		<Unit filename="../../Code/Core/Utilities/ArrayFunctions.inl" />
+		<Unit filename="../../Code/Core/Utilities/MathBasics.h" />
+		<Unit filename="../../Code/Core/Utilities/MathBasics.inl" />
+		<Unit filename="../../Code/Core/Utilities/MatrixFunctions.h" />
+		<Unit filename="../../Code/Core/Utilities/MatrixFunctions.inl" />
+		<Unit filename="../../Code/Core/Utilities/NumberManipulations.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Core/Utilities/NumberManipulations.h" />
+		<Unit filename="../../Code/Core/Utilities/SortAndSearch.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Core/Utilities/SortAndSearch.h" />
+		<Unit filename="../../Code/Graphics/Fonts/GlobalFontInstances.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Graphics/Fonts/GlobalFontInstances.h" />
+		<Unit filename="../../Code/Graphics/Fonts/PixelFont.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Graphics/Fonts/PixelFont.h" />
+		<Unit filename="../../Code/Graphics/Fonts/PixelFontRoundedA7D0.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Graphics/Fonts/PixelFontRoundedA7D0.h" />
+		<Unit filename="../../Code/Graphics/Fonts/PixelFontRoundedBoldA10D0.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Graphics/Fonts/PixelFontRoundedBoldA10D0.h" />
+		<Unit filename="../../Code/Graphics/Fonts/PixelFontRoundedBoldA16D0.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Graphics/Fonts/PixelFontRoundedBoldA16D0.h" />
+		<Unit filename="../../Code/Graphics/Fonts/PixelFontRoundedBoldA9D0.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Graphics/Fonts/PixelFontRoundedBoldA9D0.h" />
+		<Unit filename="../../Code/Graphics/Misc/ColorSpaces.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Graphics/Misc/ColorSpaces.h" />
+		<Unit filename="../../Code/Graphics/Misc/Image.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Graphics/Misc/Image.h" />
+		<Unit filename="../../Code/Graphics/Misc/Justification.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Graphics/Misc/Justification.h" />
+		<Unit filename="../../Code/Graphics/RSGraphics.cpp" />
+		<Unit filename="../../Code/Graphics/RSGraphics.h" />
+		<Unit filename="../../Code/Graphics/Rendering/AGG_2.4/src/agg_vcgen_stroke.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Graphics/Rendering/GraphicsRenderer2D.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Graphics/Rendering/GraphicsRenderer2D.h" />
+		<Unit filename="../../Code/Graphics/Rendering/WrappersForAGG.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Graphics/Rendering/WrappersForAGG.h" />
+		<Unit filename="../../Code/Math/Functions/BellFunctions.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Math/Functions/BellFunctions.h" />
+		<Unit filename="../../Code/Math/Functions/ComplexFunctions.h" />
+		<Unit filename="../../Code/Math/Functions/ComplexFunctions.inl" />
+		<Unit filename="../../Code/Math/Functions/FunctionIterators.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Math/Functions/FunctionIterators.h" />
+		<Unit filename="../../Code/Math/Functions/IntegerFunctions.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Math/Functions/IntegerFunctions.h" />
+		<Unit filename="../../Code/Math/Functions/MoebiusTransform.h" />
+		<Unit filename="../../Code/Math/Functions/RealFunctions.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Math/Functions/RealFunctions.h" />
+		<Unit filename="../../Code/Math/Functions/Sigmoids.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Math/Functions/Sigmoids.h" />
+		<Unit filename="../../Code/Math/Geometry/AffineTransform2D.h" />
+		<Unit filename="../../Code/Math/Geometry/GeometricFunctions.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Math/Geometry/Point2D.h" />
+		<Unit filename="../../Code/Math/Geometry/Polygon2D.h" />
+		<Unit filename="../../Code/Math/Geometry/Rectangle2D.h" />
+		<Unit filename="../../Code/Math/Geometry/Triangle2D.h" />
+		<Unit filename="../../Code/Math/Misc/CurveFitting.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Math/Misc/CurveFitting.h" />
+		<Unit filename="../../Code/Math/Misc/DifferentialEquationSystem.h" />
+		<Unit filename="../../Code/Math/Misc/FourierTransformer.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Math/Misc/FourierTransformer.h" />
+		<Unit filename="../../Code/Math/Misc/FunctionObjects.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Math/Misc/FunctionObjects.h" />
+		<Unit filename="../../Code/Math/Misc/GradientBasedMinimizer.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Math/Misc/GradientBasedMinimizer.h" />
+		<Unit filename="../../Code/Math/Misc/Interpolation.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Math/Misc/Interpolation.h" />
+		<Unit filename="../../Code/Math/Misc/LinearAlgebra.h" />
+		<Unit filename="../../Code/Math/Misc/LinearAlgebra.inl" />
+		<Unit filename="../../Code/Math/Misc/MultiLayerPerceptron.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Math/Misc/MultiLayerPerceptron.h" />
+		<Unit filename="../../Code/Math/Misc/NumericCalculus.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Math/Misc/NumericCalculus.h" />
+		<Unit filename="../../Code/Math/Misc/PolynomialAlgorithms.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Math/Misc/PolynomialAlgorithms.h" />
+		<Unit filename="../../Code/Math/Misc/Statistics.h" />
+		<Unit filename="../../Code/Math/Misc/Statistics.inl" />
+		<Unit filename="../../Code/Math/Misc/Transforms.h" />
+		<Unit filename="../../Code/Math/Misc/Transforms.inl" />
+		<Unit filename="../../Code/Math/RSMath.cpp" />
+		<Unit filename="../../Code/Math/RSMath.h" />
+		<Unit filename="../../Code/Math/Types/BigFloat.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Math/Types/BigFloat.h" />
+		<Unit filename="../../Code/Math/Types/BigInt.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Math/Types/BigInt.h" />
+		<Unit filename="../../Code/Math/Types/Complex.h" />
+		<Unit filename="../../Code/Math/Types/Matrix.h" />
+		<Unit filename="../../Code/Math/Types/Matrix.inl" />
+		<Unit filename="../../Code/Math/Types/MultiArray.h" />
+		<Unit filename="../../Code/Math/Types/Polynomial.h" />
+		<Unit filename="../../Code/Math/Types/Polynomial.inl" />
+		<Unit filename="../../Code/Math/Types/Tensor.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Math/Types/Tensor.h" />
+		<Unit filename="../../Code/Math/Types/Vector.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="../../Code/Math/Types/Vector.h" />
+		<Unit filename="../../Config/RSBuildConfig.h" />
+		<Unit filename="../../Notes/ToDoRSCore.txt" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+			<envvars />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

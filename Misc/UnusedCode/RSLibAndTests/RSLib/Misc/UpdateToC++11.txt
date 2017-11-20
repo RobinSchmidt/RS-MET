@@ -1,0 +1,62 @@
+C++11 provides a couple of features that could be benficial for some of the RSLib code
+
+performance optimizations:
+-move contructors, move assignment operators:
+ -avoid excessive copying in typal operations like addition and multiplication
+  classes: rsMatrix, rsVector, rsMultiArray
+-type traits:
+ -if a type has the trivially_copyable trait, rsCopyBuffer could use memcpy
+  http://en.cppreference.com/w/cpp/types/is_trivially_copyable
+-
+ 
+build time optimizations:
+-extern templates
+ -maybe not relevant because we don't have many translation units
+ 
+code simplification, clarification:
+-variadic templates
+-constructor delegation
+ -constructors can call other constructors and thereby avoid duplicating their code
+-constructor inheritance
+ -subclasses my inherit baseclass constructors (via the "using" keyword)
+-in class assignment
+-initializer lists
+-uniform initialization
+-explicit overrides:
+ -overriden functions can be explictly declared as such by the keywor override
+ -allows compiler to check, if it's really an override and not accidently a new function (for 
+  example, because the parameter type is different)
+-final declarations
+ -prevent subclasses from overriding a function
+-function deletions
+-type inference:
+ -long typenames can often be replaced with "auto" in declarations
+-range based loop:
+ -simplify syntax of loops over all elements of an array, list, etc.
+-lambda functions and expressions, closures
+-alternative function syntax (trailing return types)
+-nullpointer
+ -instead of the "NULL" macro or the integer 0, we can use the "nullptr" keyword for nullpointers
+  for enhanced clarity and disambiguation
+-strongly typed enumerations
+-nested template syntax
+ -it's now allowed to clos a nested template with >> - formerly, we had to use a space between
+  the angle brackets because >> was interpreted as shift operator
+-explicit conversion operators
+-template aliases
+ -allow typedefs for templated types (? - clarify)
+-move semantics:
+ -since C++11 now may avoid excessive copying for function return values due to move 
+  constructors, we can have functions that return vectors, matrices, etc. instead of passing pointers or references for "result" parameters
+
+
+multithreading:
+
+
+
+unclassified:
+-constant expressions:
+
+
+References:
+https://en.wikipedia.org/wiki/C%2B%2B11

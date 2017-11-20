@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{624258f8-e965-4722-85cc-a99be0131410}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RSAudio">
+      <UniqueIdentifier>{76f2a300-a697-40f5-9aad-f9e66f60c5dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RSAudio\Synthesis">
+      <UniqueIdentifier>{655e205f-41ab-4f2f-9bd7-996d96bbc089}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Common">
+      <UniqueIdentifier>{af66b3fa-f090-4034-ab64-1a5faf1a6fff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RSGraphics">
+      <UniqueIdentifier>{7a397ec2-a73f-4890-8447-61ebbf53aa84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RSGraphics\Rendering">
+      <UniqueIdentifier>{5f985fe1-9801-4014-9dfd-0d4a70e46f6f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Code\Examples\Examples.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Examples\RSAudio\Synthesis\ModalExamples.cpp">
+      <Filter>Source Files\RSAudio\Synthesis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Examples\RSAudio\Synthesis\SampleMapGenerator.cpp">
+      <Filter>Source Files\RSAudio\Synthesis</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Common\TestUtilities.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Examples\RSGraphics\Rendering\FractalArtGenerator.cpp">
+      <Filter>Source Files\RSGraphics\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Code\Examples\RSGraphics\Rendering\FractalExamples.cpp">
+      <Filter>Source Files\RSGraphics\Rendering</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Code\Examples\RSAudio\Synthesis\ModalExamples.h">
+      <Filter>Source Files\RSAudio\Synthesis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Examples\RSAudio\Synthesis\SampleMapGenerator.h">
+      <Filter>Source Files\RSAudio\Synthesis</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Common\TestUtilities.h">
+      <Filter>Source Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Examples\RSGraphics\Rendering\FractalArtGenerator.h">
+      <Filter>Source Files\RSGraphics\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Code\Examples\RSGraphics\Rendering\FractalExamples.h">
+      <Filter>Source Files\RSGraphics\Rendering</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

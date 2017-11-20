@@ -1,0 +1,3783 @@
+# depslib dependency file v1.0
+1342721700 source:d:\programming\c++\robinscodebase\rslibtests\code\common\testhelperfunctions.cpp
+	"TestHelperFunctions.h"
+
+1342721700 rFunctions.h"
+
+1344948718 d:\programming\c++\robinscodebase\rslibtests\code\common\testhelperfunctions.h
+	<RSLib.h>
+
+1346347961 
+
+1344584070 d:\programming\c++\robinscodebase\rslib\code\rslib.h
+	"Core/RSCore.h"
+	"Math/RSMath.h"
+	"Audio/RSAudio.h"
+	"Graphics/RSGraphics.h"
+
+1344587670 RSGraphics.h"
+
+1427128483 d:\programming\c++\robinscodebase\rslib\code\core\rscore.h
+	<RSBuildConfig.h>
+	"Definitions/Setup.h"
+	"Definitions/StandardHeaders.h"
+	"Definitions/ConstantDefinitions.h"
+	"Definitions/TypeDefinitions.h"
+	"Definitions/MacroDefinitions.h"
+	"Misc/ErrorHandling.h"
+	"Utilities/NumberManipulations.h"
+	"Utilities/MathBasics.h"
+	"Utilities/MathBasics.inl"
+	"Utilities/ArrayFunctions.h"
+	"Utilities/ArrayFunctions.inl"
+	"Utilities/SortAndSearch.inl"
+	"Utilities/MatrixFunctions.h"
+	"Utilities/MatrixFunctions.inl"
+	"Containers/Array.h"
+	"Containers/Flags.h"
+	"Containers/Range.h"
+	"Containers/InfiniteDataStream.h"
+	"Containers/KeyValueMap.h"
+	"Containers/List.h"
+	"Containers/Tree.h"
+	"Text/String.h"
+	"Text/KeyValueStringPair.h"
+	"Text/KeyValueStringArray.h"
+	"Text/KeyValueStringTree.h"
+	"Files/File.h"
+	"Files/FileStream.h"
+	"Files/WaveFile.h"
+	"Files/FileInputOutput.h"
+	"Misc/Logger.h"
+	"Misc/SystemInformation.h"
+	"Misc/Callback.h"
+	"Misc/Parameter.h"
+
+1427132083 meter.h"
+
+1344948827 emInformation.h"
+
+1344945085 d:\programming\c++\robinscodebase\rslibtests\config\rsbuildconfig.h
+
+1427129155 d:\programming\c++\robinscodebase\rslib\code\core\definitions\setup.h
+
+1346344361 d:\programming\c++\robinscodebase\rslib\code\core\definitions\standardheaders.h
+	<ctype.h>
+	<float.h>
+	<limits.h>
+	<stddef.h>
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<algorithm>
+	<cmath>
+	<functional>
+	<iostream>
+	<iterator>
+	<limits>
+	<string>
+	<vector>
+
+1381184592 d:\programming\c++\robinscodebase\rslib\code\core\definitions\constantdefinitions.h
+
+1425827573 d:\programming\c++\robinscodebase\rslib\code\core\definitions\typedefinitions.h
+
+1413291673 d:\programming\c++\robinscodebase\rslib\code\core\definitions\macrodefinitions.h
+
+1381340106 d:\programming\c++\robinscodebase\rslib\code\core\utilities\numbermanipulations.h
+
+1412250936 d:\programming\c++\robinscodebase\rslib\code\core\utilities\mathbasics.inl
+
+1412881286 d:\programming\c++\robinscodebase\rslib\code\core\utilities\bufferfunctions.inl
+
+1381416108 d:\programming\c++\robinscodebase\rslib\code\core\utilities\sortandsearch.inl
+
+1381355962 d:\programming\c++\robinscodebase\rslib\code\core\containers\flags.h
+
+1344541036 d:\programming\c++\robinscodebase\rslib\code\core\containers\range.h
+
+1412263513 d:\programming\c++\robinscodebase\rslib\code\core\containers\array.h
+
+1344541012 d:\programming\c++\robinscodebase\rslib\code\core\containers\keyvaluemap.h
+
+1344541024 d:\programming\c++\robinscodebase\rslib\code\core\containers\list.h
+
+1344541050 d:\programming\c++\robinscodebase\rslib\code\core\containers\tree.h
+
+1379258150 d:\programming\c++\robinscodebase\rslib\code\core\text\string.h
+
+1344585578 d:\programming\c++\robinscodebase\rslib\code\core\text\keyvaluestringpair.h
+
+1344541328 d:\programming\c++\robinscodebase\rslib\code\core\text\keyvaluestringarray.h
+
+1344541354 d:\programming\c++\robinscodebase\rslib\code\core\text\keyvaluestringtree.h
+
+1344541194 d:\programming\c++\robinscodebase\rslib\code\core\files\file.h
+
+1344541216 d:\programming\c++\robinscodebase\rslib\code\core\files\filestream.h
+
+1344541228 d:\programming\c++\robinscodebase\rslib\code\core\files\wavefile.h
+
+1346339432 d:\programming\c++\robinscodebase\rslib\code\core\files\fileinputoutput.h
+
+1358367321 d:\programming\c++\robinscodebase\rslib\code\core\misc\errorhandling.h
+
+1346167999 d:\programming\c++\robinscodebase\rslib\code\core\misc\logger.h
+
+1346332926 d:\programming\c++\robinscodebase\rslib\code\core\misc\systeminformation.h
+
+1427561415 d:\programming\c++\robinscodebase\rslib\code\math\rsmath.h
+	"../Core/RSCore.h"
+	"Types/Complex.h"
+	"Functions/IntegerFunctions.h"
+	"Functions/RealFunctions.h"
+	"Functions/FunctionIterators.h"
+	"Functions/ComplexFunctions.inl"
+	"Functions/MoebiusTransform.h"
+	"Geometry/Point2D.h"
+	"Geometry/Rectangle2D.h"
+	"Geometry/Triangle2D.h"
+	"Geometry/Polygon2D.h"
+	"Geometry/AffineTransform2D.h"
+	"Types/BigNumber.h"
+	"Types/BigInt.h"
+	"Types/BigFloat.h"
+	"Types/ModularInteger.inl"
+	"Types/Vector.h"
+	"Types/Matrix.h"
+	"Types/Matrix.inl"
+	"Types/MultiArray.inl"
+	"Types/Tensor.h"
+	"Misc/NumericCalculus.h"
+	"Misc/Interpolation.h"
+	"Misc/LinearAlgebra.inl"
+	"Misc/CurveFitting.h"
+	"Misc/Transforms.inl"
+	"Misc/Statistics.inl"
+	"Misc/FourierTransformer.h"
+	"Misc/DifferentialEquationSystem.h"
+	"Misc/PolynomialAlgorithms.h"
+	"Misc/NumberTheory.inl"
+	"Misc/FunctionObjects.h"
+	"Misc/GradientBasedMinimizer.h"
+	"Misc/MultiLayerPerceptron.h"
+
+1435936814 iLayerPerceptron.h"
+
+1359275356 nomialAlgorithms.h"
+
+1379930293 d:\programming\c++\robinscodebase\rslib\code\math\types\complex.h
+
+1379441292 d:\programming\c++\robinscodebase\rslib\code\math\functions\integerfunctions.h
+
+1425648227 d:\programming\c++\robinscodebase\rslib\code\math\functions\realfunctions.h
+
+1379930293 d:\programming\c++\robinscodebase\rslib\code\math\functions\complexfunctions.inl
+	"ComplexFunctions.h"
+
+1433870717 nctions.h"
+
+1379930293 d:\programming\c++\robinscodebase\rslib\code\math\functions\complexfunctions.h
+
+1379930293 d:\programming\c++\robinscodebase\rslib\code\math\functions\moebiustransform.h
+
+1379930293 d:\programming\c++\robinscodebase\rslib\code\math\geometry\point2d.h
+
+1344542440 d:\programming\c++\robinscodebase\rslib\code\math\geometry\rectangle2d.h
+
+1344542452 d:\programming\c++\robinscodebase\rslib\code\math\geometry\triangle2d.h
+
+1344542430 d:\programming\c++\robinscodebase\rslib\code\math\geometry\polygon2d.h
+
+1344542392 d:\programming\c++\robinscodebase\rslib\code\math\geometry\affinetransform2d.h
+
+1413545529 d:\programming\c++\robinscodebase\rslib\code\math\types\vector.h
+
+1346251336 d:\programming\c++\robinscodebase\rslib\code\math\types\multiarray.inl
+	"MultiArray.h"
+
+1346254936 y.h"
+
+1344542742 d:\programming\c++\robinscodebase\rslib\code\math\types\multiarray.h
+
+1413207774 d:\programming\c++\robinscodebase\rslib\code\math\types\tensor.h
+
+1344546108 d:\programming\c++\robinscodebase\rslib\code\math\misc\linearequationsystems.inl
+
+1381228407 d:\programming\c++\robinscodebase\rslib\code\math\misc\transforms.inl
+
+1344542542 d:\programming\c++\robinscodebase\rslib\code\math\misc\statistics.inl
+
+1345122147 d:\programming\c++\robinscodebase\rslib\code\math\misc\fouriertransformerradix2.h
+
+1344947326 d:\programming\c++\robinscodebase\rslib\code\math\misc\differentialequationsystem.h
+
+1427380566 d:\programming\c++\robinscodebase\rslib\code\math\misc\polynomialalgorithms.h
+
+1425565846 d:\programming\c++\robinscodebase\rslib\code\audio\rsaudio.h
+	"../Math/RSMath.h"
+	"Misc/AudioFunctions.h"
+	"Misc/MiscAudio.h"
+	"Misc/SlewRateLimiter.h"
+	"Misc/SlewRateLimiterLinear.h"
+	"Misc/WindowFunctions.h"
+	"Delay/DelayLine.h"
+	"Filters/FilterAnalysis.h"
+	"Filters/FilterDesignFormulas.h"
+	"Filters/BiquadDesigner.h"
+	"Filters/MovingAverage.h"
+	"Filters/OnePoleFilter.h"
+	"Filters/FourPoleFilter.h"
+	"Filters/TransistorLadder.h"
+	"Filters/StateVariableFilter.h"
+	"Filters/PhonoFilter.h"
+	"Analysis/ResponseGetters.inl"
+	"Analysis/LinearPredictor.h"
+	"Analysis/FormantRemover.h"
+	"Analysis/EnvelopeFollower.h"
+	"Analysis/CyclicAutoCorrelator.h"
+	"Analysis/AutoCorrelationPitchDetector.h"
+	"Analysis/ZeroCrossingPitchDetector.h"
+	"Modulators/BreakpointModulator.h"
+	"Sampling/Resampler.h"
+	"Sampling/SampleManipulation.h"
+	"Synthesis/ModalFilterBank.h"
+
+1433966800 /ModalFilterBank.h"
+
+1425565928 d:\programming\c++\robinscodebase\rslib\code\audio\misc\audiofunctions.h
+
+1344540888 d:\programming\c++\robinscodebase\rslib\code\audio\misc\slewratelimiter.h
+
+1421460367 d:\programming\c++\robinscodebase\rslib\code\audio\filters\filteranalysis.h
+
+1421613877 d:\programming\c++\robinscodebase\rslib\code\audio\filters\filterdesignformulas.h
+
+1421614147 d:\programming\c++\robinscodebase\rslib\code\audio\filters\biquaddesigner.h
+
+1345709120 d:\programming\c++\robinscodebase\rslib\code\audio\filters\onepolefilter.h
+
+1421614012 d:\programming\c++\robinscodebase\rslib\code\audio\filters\fourpolefilter.h
+
+1344540846 d:\programming\c++\robinscodebase\rslib\code\audio\filters\transistorladder.h
+
+1379930293 d:\programming\c++\robinscodebase\rslib\code\audio\filters\statevariablefilter.h
+
+1344540816 d:\programming\c++\robinscodebase\rslib\code\audio\filters\phonofilter.h
+
+1344540670 d:\programming\c++\robinscodebase\rslib\code\audio\analysis\responsegetters.inl
+	"ResponseGetters.h"
+
+1344544270 etters.h"
+
+1344540608 d:\programming\c++\robinscodebase\rslib\code\audio\analysis\responsegetters.h
+
+1379930294 d:\programming\c++\robinscodebase\rslib\code\audio\analysis\linearpredictor.h
+
+1344540582 d:\programming\c++\robinscodebase\rslib\code\audio\analysis\formantremover.h
+
+1379930294 d:\programming\c++\robinscodebase\rslib\code\audio\analysis\envelopefollower.h
+
+1379930146 d:\programming\c++\robinscodebase\rslib\code\audio\analysis\cyclicautocorrelator.h
+
+1427229542 d:\programming\c++\robinscodebase\rslib\code\audio\analysis\autocorrelationpitchdetector.h
+
+1427298575 d:\programming\c++\robinscodebase\rslib\code\audio\analysis\zerocrossingpitchdetector.h
+
+1344540904 d:\programming\c++\robinscodebase\rslib\code\audio\modulators\breakpointmodulator.h
+
+1344540946 d:\programming\c++\robinscodebase\rslib\code\audio\sampling\samplemanipulation.h
+
+1421842357 d:\programming\c++\robinscodebase\rslib\code\audio\synthesis\modalfilterbank.h
+
+1344945353 d:\programming\c++\robinscodebase\rslib\code\graphics\rsgraphics.h
+	"../Math/RSMath.h"
+	"Misc/ColorSpaces.h"
+	"Misc/Justification.h"
+	"Misc/Image.h"
+	"Fonts/PixelFont.h"
+	"Fonts/PixelFontRoundedA7D0.h"
+	"Fonts/PixelFontRoundedBoldA10D0.h"
+	"Fonts/PixelFontRoundedBoldA16D0.h"
+	"Fonts/PixelFontRoundedBoldA9D0.h"
+	"Fonts/GlobalFontInstances.h"
+	"Rendering/WrappersForAGG.h"
+	"Rendering/GraphicsRenderer2D.h"
+
+1344948953 /GraphicsRenderer2D.h"
+
+1351762225 d:\programming\c++\robinscodebase\rslib\code\graphics\misc\colorspaces.h
+
+1344541798 d:\programming\c++\robinscodebase\rslib\code\graphics\misc\justification.h
+
+1353167274 d:\programming\c++\robinscodebase\rslib\code\graphics\misc\image.h
+
+1345122560 d:\programming\c++\robinscodebase\rslib\code\graphics\fonts\pixelfont.h
+
+1344541720 d:\programming\c++\robinscodebase\rslib\code\graphics\fonts\pixelfontroundeda7d0.h
+
+1344541748 d:\programming\c++\robinscodebase\rslib\code\graphics\fonts\pixelfontroundedbolda10d0.h
+
+1344541760 d:\programming\c++\robinscodebase\rslib\code\graphics\fonts\pixelfontroundedbolda16d0.h
+
+1344541736 d:\programming\c++\robinscodebase\rslib\code\graphics\fonts\pixelfontroundedbolda9d0.h
+
+1344541696 d:\programming\c++\robinscodebase\rslib\code\graphics\fonts\globalfontinstances.h
+
+1344541826 d:\programming\c++\robinscodebase\rslib\code\graphics\rendering\wrappersforagg.h
+	"../../Math/Geometry/Polygon2D.h"
+	"../Misc/Image.h"
+
+1344545426 mage.h"
+
+1345122829 d:\programming\c++\robinscodebase\rslib\code\graphics\rendering\graphicsrenderer2d.h
+
+1345122459 source:d:\programming\c++\robinscodebase\rslibtests\code\unittests\main.cpp
+	"RSCore/RSCoreTests.h"
+	"RSMath/RSMathTests.h"
+	"RSAudio/RSAudioTests.h"
+	"RSGraphics/RSGraphicsTests.h"
+
+1434549356 s/RSGraphicsTests.h"
+
+1346169881 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\rscoretests.h
+	"Definitions/TypeSizeTests.h"
+	"Containers/ArrayTests.h"
+	"Containers/KeyValueMapTests.h"
+	"Containers/ListTests.h"
+	"Containers/TreeTests.h"
+	"Utilities/BufferFunctionTests.h"
+	"Utilities/NumberManipulationsTests.h"
+	"Utilities/SortAndSearchTests.h"
+	"Text/StringTests.h"
+	"Text/KeyValueStringTreeTests.h"
+	"Files/FileTests.h"
+	"Misc/CallbackTests.h"
+
+1346173481 backTests.h"
+
+1345121489 eTests.h"
+
+1345131746 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\definitions\typesizetests.h
+	"../../UnitTestUtilities.h"
+
+1434549216 tTestUtilities.h"
+
+1345051936 Common/TestHelperFunctions.h"
+
+1381330531 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\containers\arraytests.h
+	"../../UnitTestUtilities.h"
+
+1345131855 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\containers\keyvaluemaptests.h
+	"../../UnitTestUtilities.h"
+
+1345131855 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\containers\listtests.h
+	"../../UnitTestUtilities.h"
+
+1345131855 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\containers\treetests.h
+	"../../UnitTestUtilities.h"
+
+1427212437 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\utilities\bufferfunctiontests.h
+	"../../UnitTestUtilities.h"
+
+1345131855 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\utilities\numbermanipulationstests.h
+	"../../UnitTestUtilities.h"
+
+1345131855 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\utilities\sortandsearchtests.h
+	"../../UnitTestUtilities.h"
+
+1345131855 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\text\stringtests.h
+	"../../UnitTestUtilities.h"
+
+1345131855 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\text\keyvaluestringtreetests.h
+	"../../UnitTestUtilities.h"
+
+1346343104 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\files\filetests.h
+	"../Text/StringTests.h"
+
+1346346704 tringTests.h"
+
+1413282699 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\rsmathtests.h
+	"Functions/IntegerFunctionTests.h"
+	"Functions/MoebiusTransformTests.h"
+	"Functions/RealFunctionTests.h"
+	"Geometry/Point2DTests.h"
+	"Geometry/Polygon2DTests.h"
+	"Geometry/Triangle2DTests.h"
+	"Misc/DifferentialEquationTests.h"
+	"Misc/TransformsTests.h"
+	"Misc/LinearAlgebraTests.h"
+	"Misc/PolynomialTests.h"
+	"Misc/MiscMathTests.h"
+	"Misc/NumberTheoryTests.h"
+	"Types/BigIntTests.h"
+	"Types/ComplexTests.h"
+	"Types/MultiArrayTests.h"
+	"Types/VectorTests.h"
+	"Types/MatrixTests.h"
+
+1413286299 rixTests.h"
+
+1358371475 torTests.h"
+
+1412250612 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\functions\integerfunctiontests.h
+	"../../UnitTestUtilities.h"
+
+1345131779 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\functions\moebiustransformtests.h
+	"../../UnitTestUtilities.h"
+
+1345131855 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\geometry\point2dtests.h
+	"../../UnitTestUtilities.h"
+
+1345131855 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\geometry\polygon2dtests.h
+	"../../UnitTestUtilities.h"
+
+1345131855 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\geometry\triangle2dtests.h
+	"../../UnitTestUtilities.h"
+
+1345131855 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\misc\differentialequationtests.h
+	"../../UnitTestUtilities.h"
+
+1346243494 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\misc\transformstests.h
+	"../../UnitTestUtilities.h"
+
+1345131855 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\types\complextests.h
+	"../../UnitTestUtilities.h"
+
+1345131855 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\types\multiarraytests.h
+	"../../UnitTestUtilities.h"
+
+1345131855 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\types\vectortests.h
+	"../../UnitTestUtilities.h"
+
+1425320933 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsaudio\rsaudiotests.h
+	"Analysis/PitchDetectorTests.h"
+	"Misc/MiscAudioTests.h"
+	"Synthesis/ModalTests.h"
+
+1434549397 /ModalTests.h"
+
+1345131779 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsaudio\analysis\pitchdetectortests.h
+	"../../UnitTestUtilities.h"
+
+1345131855 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsaudio\synthesis\modaltests.h
+	"../../UnitTestUtilities.h"
+
+1351718988 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsgraphics\rsgraphicstests.h
+	"Fonts/FontTests.h"
+	"Rendering/RenderingTests.h"
+
+1351722588 /RenderingTests.h"
+
+1345131746 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsgraphics\fonts\fonttests.h
+	"../../UnitTestUtilities.h"
+
+1345131779 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsgraphics\rendering\renderingtests.h
+	"../../UnitTestUtilities.h"
+
+1425320945 source:d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsaudio\rsaudiotests.cpp
+	"RSAudioTests.h"
+	"Analysis/PitchDetectorTests.cpp"
+	"Misc/MiscAudioTests.cpp"
+	"Synthesis/ModalTests.cpp"
+
+1434551939 /ModalTests.cpp"
+
+1345123682 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsaudio\analysis\pitchdetectortests.cpp
+	"PitchDetectorTests.h"
+
+1345127282 ctorTests.h"
+
+1345125414 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsaudio\synthesis\modaltests.cpp
+	"ModalTests.h"
+
+1425918329 s.h"
+
+1346169906 source:d:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\rscoretests.cpp
+	"RSCoreTests.h"
+	"Definitions/TypeSizeTests.cpp"
+	"Containers/ArrayTests.cpp"
+	"Containers/KeyValueMapTests.cpp"
+	"Containers/ListTests.cpp"
+	"Containers/TreeTests.cpp"
+	"Utilities/BufferFunctionTests.cpp"
+	"Utilities/NumberManipulationsTests.cpp"
+	"Utilities/SortAndSearchTests.cpp"
+	"Text/StringTests.cpp"
+	"Text/KeyValueStringTreeTests.cpp"
+	"Files/FileTests.cpp"
+	"Misc/CallbackTests.cpp"
+
+1346173506 backTests.cpp"
+
+1345121528 eTests.cpp"
+
+1345041625 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\definitions\typesizetests.cpp
+	"TypeSizeTests.h"
+
+1413818418 ests.h"
+
+1421349256 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\containers\arraytests.cpp
+	"ArrayTests.h"
+
+1345042556 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\containers\keyvaluemaptests.cpp
+	"KeyValueMapTests.h"
+
+1345046156 apTests.h"
+
+1328787580 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\containers\listtests.cpp
+	"ListTests.h"
+	"../../HelperFunctions/TestHelperFunctions.h"
+	"../../../../Libraries/RSCore/DataStructures/List.h"
+
+1328791180 ../Libraries/RSCore/DataStructures/List.h"
+
+1308745530 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\containers\treetests.cpp
+	"TreeTests.h"
+
+1345054615 .h"
+
+1427226969 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\utilities\bufferfunctiontests.cpp
+	"BufferFunctionTests.h"
+
+1427230569 ctionTests.h"
+
+1342694776 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\utilities\numbermanipulationstests.cpp
+	"NumberManipulationsTests.h"
+
+1342698376 ipulationsTests.h"
+
+1342705086 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\utilities\sortandsearchtests.cpp
+	"SortAndSearchTests.h"
+
+1342708686 archTests.h"
+
+1342633096 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\text\stringtests.cpp
+	"StringTests.h"
+
+1434553344 ts.h"
+
+1308746332 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\text\keyvaluestringtreetests.cpp
+	"KeyValueStringTreeTests.h"
+
+1308749932 tringTreeTests.h"
+
+1345124775 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\files\filetests.cpp
+	"FileTests.h"
+
+1351719780 source:d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsgraphics\rsgraphicstests.cpp
+	"RSGraphicsTests.h"
+	"Fonts/FontTests.cpp"
+	"Rendering/RenderingTests.cpp"
+
+1351723380 /RenderingTests.cpp"
+
+1345051015 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsgraphics\fonts\fonttests.cpp
+	"FontTests.h"
+
+1342024762 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsgraphics\rendering\renderingtests.cpp
+	"RenderingTests.h"
+
+1312544118 Tests.h"
+
+1413282712 source:d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\rsmathtests.cpp
+	"RSMathTests.h"
+	"Functions/IntegerFunctionTests.cpp"
+	"Functions/MoebiusTransformTests.cpp"
+	"Functions/RealFunctionTests.cpp"
+	"Geometry/Point2DTests.cpp"
+	"Geometry/Polygon2DTests.cpp"
+	"Geometry/Triangle2DTests.cpp"
+	"Misc/DifferentialEquationTests.cpp"
+	"Misc/TransformsTests.cpp"
+	"Misc/LinearAlgebraTests.cpp"
+	"Misc/PolynomialTests.cpp"
+	"Misc/MiscMathTests.cpp"
+	"Misc/NumberTheoryTests.cpp"
+	"Types/BigIntTests.cpp"
+	"Types/ComplexTests.cpp"
+	"Types/MultiArrayTests.cpp"
+	"Types/VectorTests.cpp"
+	"Types/MatrixTests.cpp"
+
+1413286312 rixTests.cpp"
+
+1358371523 torTests.cpp"
+
+1412872326 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\functions\integerfunctiontests.cpp
+	"IntegerFunctionTests.h"
+
+1412875926 nctionTests.h"
+
+1379930457 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\functions\moebiustransformtests.cpp
+	"MoebiusTransformTests.h"
+
+1379934057 ansformTests.h"
+
+1308746106 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\geometry\point2dtests.cpp
+	"Point2DTests.h"
+
+1308749442 sts.h"
+
+1312540518 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\geometry\polygon2dtests.cpp
+	"Polygon2DTests.h"
+
+1308746218 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\geometry\triangle2dtests.cpp
+	"Triangle2DTests.h"
+
+1308749818 DTests.h"
+
+1345048729 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\misc\differentialequationtests.cpp
+	"DifferentialEquationTests.h"
+
+1345052329 ialEquationTests.h"
+
+1346243494 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\misc\transformstests.cpp
+	"TransformsTests.h"
+
+1433435616 sTests.h"
+
+1308745842 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\types\complextests.cpp
+	"ComplexTests.h"
+
+1342693448 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\types\multiarraytests.cpp
+	"MultiArrayTests.h"
+
+1342697048 yTests.h"
+
+1345561646 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\types\vectortests.cpp
+	"VectorTests.h"
+
+1342721700 source:/Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/Common/TestHelperFunctions.cpp
+	"TestHelperFunctions.h"
+
+1344948718 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/Common/TestHelperFunctions.h
+	<RSLib.h>
+
+1344587670 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/RSLib.h
+	"Core/RSCore.h"
+	"Math/RSMath.h"
+	"Audio/RSAudio.h"
+	"Graphics/RSGraphics.h"
+	"Core/RSCore.h"
+	"Math/RSMath.h"
+	"Audio/RSAudio.h"
+	"Graphics/RSGraphics.h"
+
+1358372266 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Core/RSCore.h
+	<RSBuildConfig.h>
+	"Definitions/Setup.h"
+	"Definitions/StandardHeaders.h"
+	"Definitions/ConstantDefinitions.h"
+	"Definitions/TypeDefinitions.h"
+	"Definitions/MacroDefinitions.h"
+	"Utilities/NumberManipulations.h"
+	"Utilities/MathBasics.inl"
+	"Utilities/BufferFunctions.inl"
+	"Utilities/SortAndSearch.inl"
+	"Containers/Flags.h"
+	"Containers/Range.h"
+	"Containers/Array.h"
+	"Containers/KeyValueMap.h"
+	"Containers/List.h"
+	"Containers/Tree.h"
+	"Text/String.h"
+	"Text/KeyValueStringPair.h"
+	"Text/KeyValueStringArray.h"
+	"Text/KeyValueStringTree.h"
+	"Files/File.h"
+	"Files/FileStream.h"
+	"Files/WaveFile.h"
+	"Files/FileInputOutput.h"
+	"Misc/ErrorHandling.h"
+	"Misc/Logger.h"
+	"Misc/SystemInformation.h"
+	<RSBuildConfig.h>
+	"Definitions/Setup.h"
+	"Definitions/StandardHeaders.h"
+	"Definitions/ConstantDefinitions.h"
+	"Definitions/TypeDefinitions.h"
+	"Definitions/MacroDefinitions.h"
+	"Misc/ErrorHandling.h"
+	"Utilities/NumberManipulations.h"
+	"Utilities/MathBasics.inl"
+	"Utilities/BufferFunctions.inl"
+	"Utilities/SortAndSearch.inl"
+	"Containers/Flags.h"
+	"Containers/Range.h"
+	"Containers/Array.h"
+	"Containers/InfiniteDataStream.h"
+	"Containers/KeyValueMap.h"
+	"Containers/List.h"
+	"Containers/Tree.h"
+	"Text/String.h"
+	"Text/KeyValueStringPair.h"
+	"Text/KeyValueStringArray.h"
+	"Text/KeyValueStringTree.h"
+	"Files/File.h"
+	"Files/FileStream.h"
+	"Files/WaveFile.h"
+	"Files/FileInputOutput.h"
+	"Misc/Logger.h"
+	"Misc/SystemInformation.h"
+	"Misc/Callback.h"
+	"Misc/Parameter.h"
+
+1344948685 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Config/RSBuildConfig.h
+
+1345125436 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Definitions/Setup.h
+
+1346347961 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Definitions/StandardHeaders.h
+	<ctype.h>
+	<float.h>
+	<limits.h>
+	<stddef.h>
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<algorithm>
+	<cmath>
+	<functional>
+	<iostream>
+	<iterator>
+	<limits>
+	<string>
+	<vector>
+	<ctype.h>
+	<float.h>
+	<limits.h>
+	<stddef.h>
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<algorithm>
+	<cmath>
+	<functional>
+	<iostream>
+	<iterator>
+	<limits>
+	<string>
+	<vector>
+
+1358368315 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Definitions/ConstantDefinitions.h
+
+1344544728 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Definitions/TypeDefinitions.h
+
+1358367427 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Definitions/MacroDefinitions.h
+
+1357394694 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Utilities/NumberManipulations.h
+
+1346248124 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Utilities/MathBasics.inl
+
+1359549828 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Utilities/BufferFunctions.inl
+
+1344545056 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Utilities/SortAndSearch.inl
+
+1344544598 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Containers/Flags.h
+
+1344544636 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Containers/Range.h
+
+1353527273 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Containers/Array.h
+
+1344544612 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Containers/KeyValueMap.h
+
+1344544624 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Containers/List.h
+
+1344544650 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Containers/Tree.h
+
+1346352581 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Text/String.h
+
+1344589178 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Text/KeyValueStringPair.h
+
+1344544928 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Text/KeyValueStringArray.h
+
+1344544954 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Text/KeyValueStringTree.h
+
+1344544794 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Files/File.h
+
+1344544816 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Files/FileStream.h
+
+1344544828 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Files/WaveFile.h
+
+1346343032 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Files/FileInputOutput.h
+
+1358367321 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Misc/ErrorHandling.h
+
+1346171599 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Misc/Logger.h
+
+1346336526 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Misc/SystemInformation.h
+
+1359275356 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Math/RSMath.h
+	"../Core/RSCore.h"
+	"Types/Complex.h"
+	"Functions/IntegerFunctions.h"
+	"Functions/RealFunctions.h"
+	"Functions/ComplexFunctions.inl"
+	"Functions/MoebiusTransform.h"
+	"Geometry/Point2D.h"
+	"Geometry/Rectangle2D.h"
+	"Geometry/Triangle2D.h"
+	"Geometry/Polygon2D.h"
+	"Geometry/AffineTransform2D.h"
+	"Types/Vector.h"
+	"Types/MultiArray.inl"
+	"Types/Tensor.h"
+	"Misc/LinearEquationSystems.inl"
+	"Misc/Transforms.inl"
+	"Misc/Statistics.inl"
+	"Misc/FourierTransformerRadix2.h"
+	"Misc/DifferentialEquationSystem.h"
+	"Misc/PolynomialAlgorithms.h"
+	"../Core/RSCore.h"
+	"Types/Complex.h"
+	"Functions/IntegerFunctions.h"
+	"Functions/RealFunctions.h"
+	"Functions/ComplexFunctions.inl"
+	"Functions/MoebiusTransform.h"
+	"Geometry/Point2D.h"
+	"Geometry/Rectangle2D.h"
+	"Geometry/Triangle2D.h"
+	"Geometry/Polygon2D.h"
+	"Geometry/AffineTransform2D.h"
+	"Types/Vector.h"
+	"Types/MultiArray.inl"
+	"Types/Tensor.h"
+	"Types/ArbitraryPrecisionFloat.h"
+	"Misc/CurveFitting.h"
+	"Misc/LinearAlgebra.inl"
+	"Misc/Transforms.inl"
+	"Misc/Statistics.inl"
+	"Misc/FourierTransformerRadix2.h"
+	"Misc/DifferentialEquationSystem.h"
+	"Misc/PolynomialAlgorithms.h"
+
+1346248220 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Types/Complex.h
+
+1359653744 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Functions/IntegerFunctions.h
+
+1360342752 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Functions/RealFunctions.h
+
+1358369951 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Functions/ComplexFunctions.inl
+	"ComplexFunctions.h"
+	"ComplexFunctions.h"
+
+1358369949 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Functions/ComplexFunctions.h
+
+1344545956 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Functions/MoebiusTransform.h
+
+1344546014 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Geometry/Point2D.h
+
+1344546040 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Geometry/Rectangle2D.h
+
+1344546052 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Geometry/Triangle2D.h
+
+1344546030 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Geometry/Polygon2D.h
+
+1344545992 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Geometry/AffineTransform2D.h
+
+1346747741 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Types/Vector.h
+
+1346254936 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Types/MultiArray.inl
+	"MultiArray.h"
+	"MultiArray.h"
+
+1344546342 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Types/MultiArray.h
+
+1344547308 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Types/Tensor.h
+
+1344546108 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Misc/LinearEquationSystems.inl
+
+1345560428 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Misc/Transforms.inl
+
+1344546142 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Misc/Statistics.inl
+
+1345125747 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Misc/FourierTransformerRadix2.h
+
+1344950926 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Misc/DifferentialEquationSystem.h
+
+1357823920 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Misc/PolynomialAlgorithms.h
+
+1354976373 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/RSAudio.h
+	"../Math/RSMath.h"
+	"Misc/AudioFunctions.h"
+	"Misc/SlewRateLimiter.h"
+	"Filters/FilterAnalysis.h"
+	"Filters/FilterDesignFormulas.h"
+	"Filters/BiquadDesigner.h"
+	"Filters/OnePoleFilter.h"
+	"Filters/FourPoleFilter.h"
+	"Filters/TransistorLadder.h"
+	"Filters/StateVariableFilter.h"
+	"Filters/PhonoFilter.h"
+	"Analysis/ResponseGetters.inl"
+	"Analysis/LinearPredictor.h"
+	"Analysis/FormantRemover.h"
+	"Analysis/EnvelopeFollower.h"
+	"Analysis/CyclicAutoCorrelator.h"
+	"Analysis/AutoCorrelationPitchDetector.h"
+	"Analysis/ZeroCrossingPitchDetector.h"
+	"Modulators/BreakpointModulator.h"
+	"Sampling/SampleManipulation.h"
+	"Synthesis/ModalFilterBank.h"
+	"../Math/RSMath.h"
+	"Misc/AudioFunctions.h"
+	"Misc/SlewRateLimiter.h"
+	"Misc/SlewRateLimiterLinear.h"
+	"Delay/DelayLine.h"
+	"Filters/FilterAnalysis.h"
+	"Filters/FilterDesignFormulas.h"
+	"Filters/BiquadDesigner.h"
+	"Filters/MovingAverage.h"
+	"Filters/OnePoleFilter.h"
+	"Filters/FourPoleFilter.h"
+	"Filters/TransistorLadder.h"
+	"Filters/StateVariableFilter.h"
+	"Filters/PhonoFilter.h"
+	"Analysis/ResponseGetters.inl"
+	"Analysis/LinearPredictor.h"
+	"Analysis/FormantRemover.h"
+	"Analysis/EnvelopeFollower.h"
+	"Analysis/CyclicAutoCorrelator.h"
+	"Analysis/AutoCorrelationPitchDetector.h"
+	"Analysis/ZeroCrossingPitchDetector.h"
+	"Modulators/BreakpointModulator.h"
+	"Sampling/SampleManipulation.h"
+	"Synthesis/ModalFilterBank.h"
+
+1356811057 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Misc/AudioFunctions.h
+
+1344544488 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Misc/SlewRateLimiter.h
+
+1344544360 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Filters/FilterAnalysis.h
+
+1344544372 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Filters/FilterDesignFormulas.h
+
+1345126845 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Filters/BiquadDesigner.h
+
+1345712720 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Filters/OnePoleFilter.h
+
+1344544384 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Filters/FourPoleFilter.h
+
+1344544446 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Filters/TransistorLadder.h
+
+1346241055 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Filters/StateVariableFilter.h
+
+1344544416 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Filters/PhonoFilter.h
+
+1344544270 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Analysis/ResponseGetters.inl
+	"ResponseGetters.h"
+	"ResponseGetters.h"
+
+1344544208 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Analysis/ResponseGetters.h
+
+1345126845 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Analysis/LinearPredictor.h
+
+1344544182 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Analysis/FormantRemover.h
+
+1344544168 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Analysis/EnvelopeFollower.h
+
+1345126845 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Analysis/CyclicAutoCorrelator.h
+
+1344544046 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Analysis/AutoCorrelationPitchDetector.h
+
+1346186979 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Analysis/ZeroCrossingPitchDetector.h
+
+1344544504 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Modulators/BreakpointModulator.h
+
+1344544546 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Sampling/SampleManipulation.h
+
+1346324444 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Synthesis/ModalFilterBank.h
+
+1344948953 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Graphics/RSGraphics.h
+	"../Math/RSMath.h"
+	"Misc/ColorSpaces.h"
+	"Misc/Justification.h"
+	"Misc/Image.h"
+	"Fonts/PixelFont.h"
+	"Fonts/PixelFontRoundedA7D0.h"
+	"Fonts/PixelFontRoundedBoldA10D0.h"
+	"Fonts/PixelFontRoundedBoldA16D0.h"
+	"Fonts/PixelFontRoundedBoldA9D0.h"
+	"Fonts/GlobalFontInstances.h"
+	"Rendering/WrappersForAGG.h"
+	"Rendering/GraphicsRenderer2D.h"
+	"../Math/RSMath.h"
+	"Misc/ColorSpaces.h"
+	"Misc/Justification.h"
+	"Misc/Image.h"
+	"Fonts/PixelFont.h"
+	"Fonts/PixelFontRoundedA7D0.h"
+	"Fonts/PixelFontRoundedBoldA10D0.h"
+	"Fonts/PixelFontRoundedBoldA16D0.h"
+	"Fonts/PixelFontRoundedBoldA9D0.h"
+	"Fonts/GlobalFontInstances.h"
+	"Rendering/WrappersForAGG.h"
+	"Rendering/GraphicsRenderer2D.h"
+
+1351762225 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Graphics/Misc/ColorSpaces.h
+
+1344545398 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Graphics/Misc/Justification.h
+
+1353167274 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Graphics/Misc/Image.h
+
+1345126160 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Graphics/Fonts/PixelFont.h
+
+1344545320 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Graphics/Fonts/PixelFontRoundedA7D0.h
+
+1344545348 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Graphics/Fonts/PixelFontRoundedBoldA10D0.h
+
+1344545360 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Graphics/Fonts/PixelFontRoundedBoldA16D0.h
+
+1344545336 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Graphics/Fonts/PixelFontRoundedBoldA9D0.h
+
+1344545296 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Graphics/Fonts/GlobalFontInstances.h
+
+1344545426 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Graphics/Rendering/WrappersForAGG.h
+	"../../Math/Geometry/Polygon2D.h"
+	"../Misc/Image.h"
+	"../../Math/Geometry/Polygon2D.h"
+	"../Misc/Image.h"
+
+1345126429 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Graphics/Rendering/GraphicsRenderer2D.h
+
+1345122200 source:/Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSAudio/RSAudioTests.cpp
+	"RSAudioTests.h"
+	"Analysis/PitchDetectorTests.cpp"
+	"Synthesis/ModalTests.cpp"
+	"RSAudioTests.h"
+	"Analysis/PitchDetectorTests.cpp"
+	"Synthesis/ModalTests.cpp"
+
+1345122154 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSAudio/RSAudioTests.h
+	"Analysis/PitchDetectorTests.h"
+	"Synthesis/ModalTests.h"
+	"Analysis/PitchDetectorTests.h"
+	"Synthesis/ModalTests.h"
+
+1345135379 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSAudio/Analysis/PitchDetectorTests.h
+	"../../../Common/TestHelperFunctions.h"
+	"../../UnitTestUtilities.h"
+
+1345135455 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSAudio/Synthesis/ModalTests.h
+	"../../../Common/TestHelperFunctions.h"
+	"../../UnitTestUtilities.h"
+
+1345127282 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSAudio/Analysis/PitchDetectorTests.cpp
+	"PitchDetectorTests.h"
+	"PitchDetectorTests.h"
+
+1345129014 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSAudio/Synthesis/ModalTests.cpp
+	"ModalTests.h"
+	"ModalTests.h"
+
+1346173506 source:/Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/RSCoreTests.cpp
+	"RSCoreTests.h"
+	"Definitions/TypeSizeTests.cpp"
+	"Containers/ArrayTests.cpp"
+	"Containers/KeyValueMapTests.cpp"
+	"Containers/ListTests.cpp"
+	"Containers/TreeTests.cpp"
+	"Utilities/BufferFunctionTests.cpp"
+	"Utilities/NumberManipulationsTests.cpp"
+	"Utilities/SortAndSearchTests.cpp"
+	"Text/StringTests.cpp"
+	"Text/KeyValueStringTreeTests.cpp"
+	"Files/FileTests.cpp"
+	"RSCoreTests.h"
+	"Definitions/TypeSizeTests.cpp"
+	"Containers/ArrayTests.cpp"
+	"Containers/KeyValueMapTests.cpp"
+	"Containers/ListTests.cpp"
+	"Containers/TreeTests.cpp"
+	"Utilities/BufferFunctionTests.cpp"
+	"Utilities/NumberManipulationsTests.cpp"
+	"Utilities/SortAndSearchTests.cpp"
+	"Text/StringTests.cpp"
+	"Text/KeyValueStringTreeTests.cpp"
+	"Files/FileTests.cpp"
+	"Misc/CallbackTests.cpp"
+
+1346173481 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/RSCoreTests.h
+	"Definitions/TypeSizeTests.h"
+	"Containers/ArrayTests.h"
+	"Containers/KeyValueMapTests.h"
+	"Containers/ListTests.h"
+	"Containers/TreeTests.h"
+	"Utilities/BufferFunctionTests.h"
+	"Utilities/NumberManipulationsTests.h"
+	"Utilities/SortAndSearchTests.h"
+	"Text/StringTests.h"
+	"Text/KeyValueStringTreeTests.h"
+	"Files/FileTests.h"
+	"Definitions/TypeSizeTests.h"
+	"Containers/ArrayTests.h"
+	"Containers/KeyValueMapTests.h"
+	"Containers/ListTests.h"
+	"Containers/TreeTests.h"
+	"Utilities/BufferFunctionTests.h"
+	"Utilities/NumberManipulationsTests.h"
+	"Utilities/SortAndSearchTests.h"
+	"Text/StringTests.h"
+	"Text/KeyValueStringTreeTests.h"
+	"Files/FileTests.h"
+	"Misc/CallbackTests.h"
+
+1345135346 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Definitions/TypeSizeTests.h
+	"../../../Common/TestHelperFunctions.h"
+	"../../UnitTestUtilities.h"
+
+1357840335 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Containers/ArrayTests.h
+	"../../../Common/TestHelperFunctions.h"
+	"../../UnitTestUtilities.h"
+
+1345135455 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Containers/KeyValueMapTests.h
+	"../../../Common/TestHelperFunctions.h"
+	"../../UnitTestUtilities.h"
+
+1345135455 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Containers/ListTests.h
+	"../../../Common/TestHelperFunctions.h"
+	"../../UnitTestUtilities.h"
+
+1345135455 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Containers/TreeTests.h
+	"../../../Common/TestHelperFunctions.h"
+	"../../UnitTestUtilities.h"
+
+1345135455 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Utilities/BufferFunctionTests.h
+	"../../../Common/TestHelperFunctions.h"
+	"../../UnitTestUtilities.h"
+
+1345135455 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Utilities/NumberManipulationsTests.h
+	"../../../Common/TestHelperFunctions.h"
+	"../../UnitTestUtilities.h"
+
+1345135455 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Utilities/SortAndSearchTests.h
+	"../../../Common/TestHelperFunctions.h"
+	"../../UnitTestUtilities.h"
+
+1345135455 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Text/StringTests.h
+	"../../../Common/TestHelperFunctions.h"
+	"../../UnitTestUtilities.h"
+
+1345135455 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Text/KeyValueStringTreeTests.h
+	"../../../Common/TestHelperFunctions.h"
+	"../../UnitTestUtilities.h"
+
+1346346704 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Files/FileTests.h
+	"../Text/StringTests.h"
+	"../Text/StringTests.h"
+
+1345045225 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Definitions/TypeSizeTests.cpp
+	"TypeSizeTests.h"
+	"TypeSizeTests.h"
+
+1357843073 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Containers/ArrayTests.cpp
+	"ArrayTests.h"
+	"ArrayTests.h"
+
+1345046156 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Containers/KeyValueMapTests.cpp
+	"KeyValueMapTests.h"
+	"KeyValueMapTests.h"
+
+1328787580 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Containers/ListTests.cpp
+	"ListTests.h"
+	"../../HelperFunctions/TestHelperFunctions.h"
+	"../../../../Libraries/RSCore/DataStructures/List.h"
+	"ListTests.h"
+	"../../HelperFunctions/TestHelperFunctions.h"
+	"../../../../Libraries/RSCore/DataStructures/List.h"
+
+1308749130 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Containers/TreeTests.cpp
+	"TreeTests.h"
+	"TreeTests.h"
+
+1345047176 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Utilities/BufferFunctionTests.cpp
+	"BufferFunctionTests.h"
+	"BufferFunctionTests.h"
+
+1342698376 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Utilities/NumberManipulationsTests.cpp
+	"NumberManipulationsTests.h"
+	"NumberManipulationsTests.h"
+
+1342708686 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Utilities/SortAndSearchTests.cpp
+	"SortAndSearchTests.h"
+	"SortAndSearchTests.h"
+
+1342636696 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Text/StringTests.cpp
+	"StringTests.h"
+	"StringTests.h"
+
+1308749932 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Text/KeyValueStringTreeTests.cpp
+	"KeyValueStringTreeTests.h"
+	"KeyValueStringTreeTests.h"
+
+1345128375 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Files/FileTests.cpp
+	"FileTests.h"
+	"FileTests.h"
+
+1351719780 source:/Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSGraphics/RSGraphicsTests.cpp
+	"RSGraphicsTests.h"
+	"Fonts/FontTests.cpp"
+	"Rendering/RenderingTests.cpp"
+	"RSGraphicsTests.h"
+	"Fonts/FontTests.cpp"
+	"Rendering/RenderingTests.cpp"
+
+1351718988 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSGraphics/RSGraphicsTests.h
+	"Fonts/FontTests.h"
+	"Rendering/RenderingTests.h"
+	"Fonts/FontTests.h"
+	"Rendering/RenderingTests.h"
+
+1345135346 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSGraphics/Fonts/FontTests.h
+	"../../../Common/TestHelperFunctions.h"
+	"../../UnitTestUtilities.h"
+
+1345135379 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSGraphics/Rendering/RenderingTests.h
+	"../../../Common/TestHelperFunctions.h"
+	"../../UnitTestUtilities.h"
+
+1345054615 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSGraphics/Fonts/FontTests.cpp
+	"FontTests.h"
+	"FontTests.h"
+
+1342028362 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSGraphics/Rendering/RenderingTests.cpp
+	"RenderingTests.h"
+	"RenderingTests.h"
+
+1358371523 source:/Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/RSMathTests.cpp
+	"RSMathTests.h"
+	"Functions/IntegerFunctionTests.cpp"
+	"Functions/MoebiusTransformTests.cpp"
+	"Geometry/Point2DTests.cpp"
+	"Geometry/Polygon2DTests.cpp"
+	"Geometry/Triangle2DTests.cpp"
+	"Misc/DifferentialEquationTests.cpp"
+	"Misc/TransformsTests.cpp"
+	"Types/ComplexTests.cpp"
+	"Types/MultiArrayTests.cpp"
+	"Types/VectorTests.cpp"
+	"RSMathTests.h"
+	"Functions/IntegerFunctionTests.cpp"
+	"Functions/MoebiusTransformTests.cpp"
+	"Functions/RealFunctionTests.cpp"
+	"Geometry/Point2DTests.cpp"
+	"Geometry/Polygon2DTests.cpp"
+	"Geometry/Triangle2DTests.cpp"
+	"Misc/DifferentialEquationTests.cpp"
+	"Misc/TransformsTests.cpp"
+	"Misc/LinearAlgebraTests.cpp"
+	"Misc/PolynomialTests.cpp"
+	"Misc/MiscMathTests.cpp"
+	"Types/ComplexTests.cpp"
+	"Types/MultiArrayTests.cpp"
+	"Types/VectorTests.cpp"
+
+1358371475 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/RSMathTests.h
+	"Functions/IntegerFunctionTests.h"
+	"Functions/MoebiusTransformTests.h"
+	"Geometry/Point2DTests.h"
+	"Geometry/Polygon2DTests.h"
+	"Geometry/Triangle2DTests.h"
+	"Misc/DifferentialEquationTests.h"
+	"Misc/TransformsTests.h"
+	"Types/ComplexTests.h"
+	"Types/MultiArrayTests.h"
+	"Types/VectorTests.h"
+	"Functions/IntegerFunctionTests.h"
+	"Functions/MoebiusTransformTests.h"
+	"Functions/RealFunctionTests.h"
+	"Geometry/Point2DTests.h"
+	"Geometry/Polygon2DTests.h"
+	"Geometry/Triangle2DTests.h"
+	"Misc/DifferentialEquationTests.h"
+	"Misc/TransformsTests.h"
+	"Misc/LinearAlgebraTests.h"
+	"Misc/PolynomialTests.h"
+	"Misc/MiscMathTests.h"
+	"Types/ComplexTests.h"
+	"Types/MultiArrayTests.h"
+	"Types/VectorTests.h"
+
+1345135330 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Functions/IntegerFunctionTests.h
+	"../../../Common/TestHelperFunctions.h"
+	"../../UnitTestUtilities.h"
+
+1345135379 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Functions/MoebiusTransformTests.h
+	"../../../Common/TestHelperFunctions.h"
+	"../../UnitTestUtilities.h"
+
+1345135455 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Geometry/Point2DTests.h
+	"../../../Common/TestHelperFunctions.h"
+	"../../UnitTestUtilities.h"
+
+1345135455 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Geometry/Polygon2DTests.h
+	"../../../Common/TestHelperFunctions.h"
+	"../../UnitTestUtilities.h"
+
+1345135455 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Geometry/Triangle2DTests.h
+	"../../../Common/TestHelperFunctions.h"
+	"../../UnitTestUtilities.h"
+
+1345135455 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Misc/DifferentialEquationTests.h
+	"../../../Common/TestHelperFunctions.h"
+	"../../UnitTestUtilities.h"
+
+1346247094 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Misc/TransformsTests.h
+	"../../../Common/TestHelperFunctions.h"
+	"../../UnitTestUtilities.h"
+
+1345135455 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Types/ComplexTests.h
+	"../../../Common/TestHelperFunctions.h"
+	"../../UnitTestUtilities.h"
+
+1345135455 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Types/MultiArrayTests.h
+	"../../../Common/TestHelperFunctions.h"
+	"../../UnitTestUtilities.h"
+
+1345135455 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Types/VectorTests.h
+	"../../../Common/TestHelperFunctions.h"
+	"../../UnitTestUtilities.h"
+
+1357388883 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Functions/IntegerFunctionTests.cpp
+	"IntegerFunctionTests.h"
+	"IntegerFunctionTests.h"
+
+1342636794 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Functions/MoebiusTransformTests.cpp
+	"MoebiusTransformTests.h"
+	"MoebiusTransformTests.h"
+
+1308749706 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Geometry/Point2DTests.cpp
+	"Point2DTests.h"
+	"Point2DTests.h"
+
+1312544118 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Geometry/Polygon2DTests.cpp
+	"Polygon2DTests.h"
+	"Polygon2DTests.h"
+
+1308749818 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Geometry/Triangle2DTests.cpp
+	"Triangle2DTests.h"
+	"Triangle2DTests.h"
+
+1345052329 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Misc/DifferentialEquationTests.cpp
+	"DifferentialEquationTests.h"
+	"DifferentialEquationTests.h"
+
+1346247094 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Misc/TransformsTests.cpp
+	"TransformsTests.h"
+	"TransformsTests.h"
+
+1308749442 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Types/ComplexTests.cpp
+	"ComplexTests.h"
+	"ComplexTests.h"
+
+1342697048 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Types/MultiArrayTests.cpp
+	"MultiArrayTests.h"
+	"MultiArrayTests.h"
+
+1345565246 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Types/VectorTests.cpp
+	"VectorTests.h"
+	"VectorTests.h"
+
+1345122459 source:/Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/main.cpp
+	"RSCore/RSCoreTests.h"
+	"RSMath/RSMathTests.h"
+	"RSAudio/RSAudioTests.h"
+	"RSGraphics/RSGraphicsTests.h"
+
+1357398504 d:\programming\c++\robinscodebase\rslibtests\code\unittests\unittestutilities.h
+	"../Common/TestUtilities.h"
+
+1357402104 /TestUtilities.h"
+
+1425915517 d:\programming\c++\robinscodebase\rslibtests\code\common\testutilities.h
+	"../Common/Prototypes.h"
+
+1430855234 /Prototypes.h"
+
+1357398506 source:d:\programming\c++\robinscodebase\rslibtests\code\unittests\unittestutilities.cpp
+	"UnitTestUtilities.h"
+
+1357402106 tilities.h"
+
+1425321999 source:d:\programming\c++\robinscodebase\rslibtests\code\unittests\unittests.cpp
+	"RSCore/RSCoreTests.h"
+	"RSMath/RSMathTests.h"
+	"RSAudio/RSAudioTests.h"
+	"RSGraphics/RSGraphicsTests.h"
+
+1427287049 source:d:\programming\c++\robinscodebase\rslibtests\code\common\testutilities.cpp
+	"TestUtilities.h"
+
+1427290649 ties.h"
+
+1346178555 d:\programming\c++\robinscodebase\rslib\code\core\misc\callbacks.h
+
+1346181332 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\misc\callbacktests.h
+	"../../UnitTestUtilities.h"
+
+1412869955 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\misc\callbacktests.cpp
+	"CallbackTests.h"
+
+1346239757 d:\programming\c++\robinscodebase\rslib\code\core\misc\parameter.h
+
+1412871267 d:\programming\c++\robinscodebase\rslib\code\core\misc\callback.h
+
+1425315452 d:\programming\c++\robinscodebase\rslib\code\math\misc\linearalgebra.inl
+
+1413452432 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\misc\linearalgebratests.h
+	"../../UnitTestUtilities.h"
+
+1413465765 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\misc\linearalgebratests.cpp
+	"LinearAlgebraTests.h"
+
+1413469365 ebraTests.h"
+
+1347109713 d:\programming\c++\robinscodebase\rslib\code\audio\misc\slewratelimiterlinear.h
+
+1412868971 d:\programming\c++\robinscodebase\rslib\code\audio\delay\delayline.h
+
+1355144950 d:\programming\c++\robinscodebase\rslib\code\audio\filters\movingaverage.h
+
+1425141424 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\functions\realfunctiontests.h
+	"../../UnitTestUtilities.h"
+
+1427324343 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\misc\polynomialtests.h
+	"../../UnitTestUtilities.h"
+
+1425735282 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\functions\realfunctiontests.cpp
+	"RealFunctionTests.h"
+
+1425738882 ionTests.h"
+
+1427380825 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\misc\polynomialtests.cpp
+	"PolynomialTests.h"
+
+1435937765 lTests.h"
+
+1421349076 d:\programming\c++\robinscodebase\rslib\code\core\containers\infinitedatastream.h
+
+1359676366 d:\programming\c++\robinscodebase\rslib\code\math\types\arbitraryprecisionfloat.h
+
+1358371071 d:\programming\c++\robinscodebase\rslib\code\math\misc\curvefitting.h
+
+1426095512 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\misc\miscmathtests.h
+	"../../UnitTestUtilities.h"
+
+1413814818 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\misc\miscmathtests.cpp
+	"MiscMathTests.h"
+
+1346747799 source:/Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/Common/TestUtilities.cpp
+	"TestUtilities.h"
+
+1346748410 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/Common/TestUtilities.h
+	<RSLib.h>
+
+1357843152 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Containers/InfiniteDataStream.h
+
+1346234950 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Misc/Callback.h
+
+1346243357 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Misc/Parameter.h
+
+1359672766 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Types/ArbitraryPrecisionFloat.h
+
+1358371071 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Misc/CurveFitting.h
+
+1358263940 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Misc/LinearAlgebra.inl
+
+1347113313 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Misc/SlewRateLimiterLinear.h
+
+1355144672 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Delay/DelayLine.h
+
+1355144950 /Work/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Filters/MovingAverage.h
+
+1357398504 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/UnitTestUtilities.h
+	"../Common/TestUtilities.h"
+
+1346184932 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Misc/CallbackTests.h
+	"../../UnitTestUtilities.h"
+
+1346234950 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Misc/CallbackTests.cpp
+	"CallbackTests.h"
+
+1357388849 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Functions/RealFunctionTests.h
+	"../../UnitTestUtilities.h"
+
+1358262935 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Misc/LinearAlgebraTests.h
+	"../../UnitTestUtilities.h"
+
+1357820264 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Misc/PolynomialTests.h
+	"../../UnitTestUtilities.h"
+
+1359276726 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Misc/MiscMathTests.h
+	"../../UnitTestUtilities.h"
+
+1360342319 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Functions/RealFunctionTests.cpp
+	"RealFunctionTests.h"
+
+1358263230 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Misc/LinearAlgebraTests.cpp
+	"LinearAlgebraTests.h"
+
+1359552979 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Misc/PolynomialTests.cpp
+	"PolynomialTests.h"
+
+1359551806 /Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Misc/MiscMathTests.cpp
+	"MiscMathTests.h"
+
+1357398506 source:/Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/UnitTestUtilities.cpp
+	"UnitTestUtilities.h"
+
+1358371550 source:/Work/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/UnitTests.cpp
+	"RSCore/RSCoreTests.h"
+	"RSMath/RSMathTests.h"
+	"RSAudio/RSAudioTests.h"
+	"RSGraphics/RSGraphicsTests.h"
+
+1381224594 d:\programming\c++\robinscodebase\rslib\code\math\types\bigint.h
+
+1412868483 d:\programming\c++\robinscodebase\rslib\code\math\types\bigfloat.h
+
+1379238414 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\types\biginttests.h
+	"../../UnitTestUtilities.h"
+
+1412872198 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\types\biginttests.cpp
+	"ComplexTests.h"
+
+1413202079 d:\programming\c++\robinscodebase\rslib\code\core\utilities\bufferfunctions.h
+
+1412872038 d:\programming\c++\robinscodebase\rslib\code\math\types\bignumber.h
+
+1382613698 d:\programming\c++\robinscodebase\rslib\code\math\types\modularinteger.inl
+	"ModularInteger.h"
+
+1435936092 teger.h"
+
+1382544965 d:\programming\c++\robinscodebase\rslib\code\math\types\modularinteger.h
+
+1412262954 d:\programming\c++\robinscodebase\rslib\code\math\misc\numbertheory.inl
+	"NumberTheory.h"
+
+1427998236 ory.h"
+
+1412168580 d:\programming\c++\robinscodebase\rslib\code\math\misc\numbertheory.h
+
+1382358728 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\misc\numbertheorytests.h
+	"../../UnitTestUtilities.h"
+
+1413461573 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\misc\numbertheorytests.cpp
+	"NumberTheoryTests.h"
+
+1413465173 oryTests.h"
+
+1412250375 d:\programming\c++\robinscodebase\rslib\code\core\utilities\mathbasics.h
+
+1413887048 d:\programming\c++\robinscodebase\rslib\code\core\utilities\matrixfunctions.h
+
+1413465717 d:\programming\c++\robinscodebase\rslib\code\core\utilities\matrixfunctions.inl
+
+1427226859 d:\programming\c++\robinscodebase\rslib\code\core\utilities\arrayfunctions.h
+
+1427226580 d:\programming\c++\robinscodebase\rslib\code\core\utilities\arrayfunctions.inl
+
+1425315670 d:\programming\c++\robinscodebase\rslib\code\math\types\matrix.h
+
+1413991908 d:\programming\c++\robinscodebase\rslib\code\math\types\matrix.inl
+
+1413364955 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\types\matrixtests.h
+	"../../UnitTestUtilities.h"
+
+1413992768 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\types\matrixtests.cpp
+	"MatrixTests.h"
+
+1413627197 d:\programming\c++\robinscodebase\rslib\code\math\misc\functionobjects.h
+
+1413628704 d:\programming\c++\robinscodebase\rslib\code\math\misc\gradientbasedminimizer.h
+
+1427561215 d:\programming\c++\robinscodebase\rslib\code\math\misc\multilayerperceptron.h
+
+1426030724 d:\programming\c++\robinscodebase\rslib\code\math\functions\functioniterators.h
+
+1426787322 d:\programming\c++\robinscodebase\rslib\code\math\misc\interpolation.h
+
+1425316584 d:\programming\c++\robinscodebase\rslib\code\math\misc\fouriertransformer.h
+
+1427229113 d:\programming\c++\robinscodebase\rslib\code\audio\misc\miscaudio.h
+
+1426708591 d:\programming\c++\robinscodebase\rslib\code\audio\sampling\resampler.h
+
+1425836498 d:\programming\c++\robinscodebase\rslib\code\audio\misc\windowfunctions.h
+
+1425320859 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsaudio\misc\miscaudiotests.h
+	"../../UnitTestUtilities.h"
+
+1425916716 d:\programming\c++\robinscodebase\rslibtests\code\unittests\rsaudio\misc\miscaudiotests.cpp
+	"MiscAudioTests.h"
+
+1426082042 d:\programming\c++\robinscodebase\rslibtests\code\common\prototypes.h
+	<RSLib.h>
+
+1427561562 d:\programming\c++\robinscodebase\rslib\code\math\misc\numericcalculus.h
+
+1425914729 source:d:\programming\c++\robinscodebase\rslibtests\code\common\prototypes.cpp
+	"Prototypes.h"
+
+1427290649 source:f:\programming\c++\robinscodebase\rslibtests\code\common\testutilities.cpp
+	"TestUtilities.h"
+
+1430855234 f:\programming\c++\robinscodebase\rslibtests\code\common\testutilities.h
+	"../Common/Prototypes.h"
+
+1426085642 f:\programming\c++\robinscodebase\rslibtests\code\common\prototypes.h
+	<RSLib.h>
+
+1344587670 f:\programming\c++\robinscodebase\rslib\code\rslib.h
+	"Core/RSCore.h"
+	"Math/RSMath.h"
+	"Audio/RSAudio.h"
+	"Graphics/RSGraphics.h"
+
+1427132083 f:\programming\c++\robinscodebase\rslib\code\core\rscore.h
+	<RSBuildConfig.h>
+	"Definitions/Setup.h"
+	"Definitions/StandardHeaders.h"
+	"Definitions/ConstantDefinitions.h"
+	"Definitions/TypeDefinitions.h"
+	"Definitions/MacroDefinitions.h"
+	"Misc/ErrorHandling.h"
+	"Utilities/NumberManipulations.h"
+	"Utilities/MathBasics.h"
+	"Utilities/MathBasics.inl"
+	"Utilities/ArrayFunctions.h"
+	"Utilities/ArrayFunctions.inl"
+	"Utilities/SortAndSearch.inl"
+	"Utilities/MatrixFunctions.h"
+	"Utilities/MatrixFunctions.inl"
+	"Containers/Array.h"
+	"Containers/Flags.h"
+	"Containers/Range.h"
+	"Containers/InfiniteDataStream.h"
+	"Containers/KeyValueMap.h"
+	"Containers/List.h"
+	"Containers/Tree.h"
+	"Text/String.h"
+	"Text/KeyValueStringPair.h"
+	"Text/KeyValueStringArray.h"
+	"Text/KeyValueStringTree.h"
+	"Files/File.h"
+	"Files/FileStream.h"
+	"Files/WaveFile.h"
+	"Files/FileInputOutput.h"
+	"Misc/Logger.h"
+	"Misc/SystemInformation.h"
+	"Misc/Callback.h"
+	"Misc/Parameter.h"
+
+1344948685 f:\programming\c++\robinscodebase\rslibtests\config\rsbuildconfig.h
+
+1427132755 f:\programming\c++\robinscodebase\rslib\code\core\definitions\setup.h
+
+1346347961 f:\programming\c++\robinscodebase\rslib\code\core\definitions\standardheaders.h
+	<ctype.h>
+	<float.h>
+	<limits.h>
+	<stddef.h>
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<algorithm>
+	<cmath>
+	<functional>
+	<iostream>
+	<iterator>
+	<limits>
+	<string>
+	<vector>
+
+1434127424 f:\programming\c++\robinscodebase\rslib\code\core\definitions\constantdefinitions.h
+
+1425831173 f:\programming\c++\robinscodebase\rslib\code\core\definitions\typedefinitions.h
+
+1413295273 f:\programming\c++\robinscodebase\rslib\code\core\definitions\macrodefinitions.h
+
+1358370921 f:\programming\c++\robinscodebase\rslib\code\core\misc\errorhandling.h
+
+1381343706 f:\programming\c++\robinscodebase\rslib\code\core\utilities\numbermanipulations.h
+
+1434551619 f:\programming\c++\robinscodebase\rslib\code\core\utilities\mathbasics.h
+
+1434551590 f:\programming\c++\robinscodebase\rslib\code\core\utilities\mathbasics.inl
+
+1435878954 f:\programming\c++\robinscodebase\rslib\code\core\utilities\arrayfunctions.h
+
+1435878977 f:\programming\c++\robinscodebase\rslib\code\core\utilities\arrayfunctions.inl
+
+1381419708 f:\programming\c++\robinscodebase\rslib\code\core\utilities\sortandsearch.inl
+
+1413890648 f:\programming\c++\robinscodebase\rslib\code\core\utilities\matrixfunctions.h
+
+1413469317 f:\programming\c++\robinscodebase\rslib\code\core\utilities\matrixfunctions.inl
+
+1412267113 f:\programming\c++\robinscodebase\rslib\code\core\containers\array.h
+
+1381359562 f:\programming\c++\robinscodebase\rslib\code\core\containers\flags.h
+
+1344544636 f:\programming\c++\robinscodebase\rslib\code\core\containers\range.h
+
+1421352676 f:\programming\c++\robinscodebase\rslib\code\core\containers\infinitedatastream.h
+
+1344544612 f:\programming\c++\robinscodebase\rslib\code\core\containers\keyvaluemap.h
+
+1344544624 f:\programming\c++\robinscodebase\rslib\code\core\containers\list.h
+
+1344544650 f:\programming\c++\robinscodebase\rslib\code\core\containers\tree.h
+
+1379261750 f:\programming\c++\robinscodebase\rslib\code\core\text\string.h
+
+1344589178 f:\programming\c++\robinscodebase\rslib\code\core\text\keyvaluestringpair.h
+
+1344544928 f:\programming\c++\robinscodebase\rslib\code\core\text\keyvaluestringarray.h
+
+1344544954 f:\programming\c++\robinscodebase\rslib\code\core\text\keyvaluestringtree.h
+
+1344544794 f:\programming\c++\robinscodebase\rslib\code\core\files\file.h
+
+1344544816 f:\programming\c++\robinscodebase\rslib\code\core\files\filestream.h
+
+1344544828 f:\programming\c++\robinscodebase\rslib\code\core\files\wavefile.h
+
+1431268503 f:\programming\c++\robinscodebase\rslib\code\core\files\fileinputoutput.h
+
+1346171599 f:\programming\c++\robinscodebase\rslib\code\core\misc\logger.h
+
+1346336526 f:\programming\c++\robinscodebase\rslib\code\core\misc\systeminformation.h
+
+1412874867 f:\programming\c++\robinscodebase\rslib\code\core\misc\callback.h
+
+1346243357 f:\programming\c++\robinscodebase\rslib\code\core\misc\parameter.h
+
+1435936814 f:\programming\c++\robinscodebase\rslib\code\math\rsmath.h
+	"../Core/RSCore.h"
+	"Types/Complex.h"
+	"Functions/IntegerFunctions.h"
+	"Functions/RealFunctions.h"
+	"Functions/FunctionIterators.h"
+	"Functions/ComplexFunctions.inl"
+	"Functions/MoebiusTransform.h"
+	"Geometry/Point2D.h"
+	"Geometry/Rectangle2D.h"
+	"Geometry/Triangle2D.h"
+	"Geometry/Polygon2D.h"
+	"Geometry/AffineTransform2D.h"
+	"Types/BigNumber.h"
+	"Types/BigInt.h"
+	"Types/BigFloat.h"
+	"Types/ModularInteger.inl"
+	"Types/Vector.h"
+	"Types/Matrix.h"
+	"Types/Matrix.inl"
+	"Types/MultiArray.inl"
+	"Types/Polynomial.h"
+	"Types/Polynomial.inl"
+	"Types/Tensor.h"
+	"Misc/NumericCalculus.h"
+	"Misc/LinearAlgebra.inl"
+	"Misc/PolynomialAlgorithms.h"
+	"Misc/Interpolation.h"
+	"Misc/CurveFitting.h"
+	"Misc/Transforms.inl"
+	"Misc/Statistics.inl"
+	"Misc/FourierTransformer.h"
+	"Misc/DifferentialEquationSystem.h"
+	"Misc/NumberTheory.inl"
+	"Misc/FunctionObjects.h"
+	"Misc/GradientBasedMinimizer.h"
+	"Misc/MultiLayerPerceptron.h"
+
+1379933893 f:\programming\c++\robinscodebase\rslib\code\math\types\complex.h
+
+1434159655 f:\programming\c++\robinscodebase\rslib\code\math\functions\integerfunctions.h
+
+1428514186 f:\programming\c++\robinscodebase\rslib\code\math\functions\realfunctions.h
+
+1426034324 f:\programming\c++\robinscodebase\rslib\code\math\functions\functioniterators.h
+
+1433870717 f:\programming\c++\robinscodebase\rslib\code\math\functions\complexfunctions.inl
+	"ComplexFunctions.h"
+
+1379933893 f:\programming\c++\robinscodebase\rslib\code\math\functions\complexfunctions.h
+
+1379933893 f:\programming\c++\robinscodebase\rslib\code\math\functions\moebiustransform.h
+
+1379933893 f:\programming\c++\robinscodebase\rslib\code\math\geometry\point2d.h
+
+1344546040 f:\programming\c++\robinscodebase\rslib\code\math\geometry\rectangle2d.h
+
+1344546052 f:\programming\c++\robinscodebase\rslib\code\math\geometry\triangle2d.h
+
+1344546030 f:\programming\c++\robinscodebase\rslib\code\math\geometry\polygon2d.h
+
+1344545992 f:\programming\c++\robinscodebase\rslib\code\math\geometry\affinetransform2d.h
+
+1412875638 f:\programming\c++\robinscodebase\rslib\code\math\types\bignumber.h
+
+1381228194 f:\programming\c++\robinscodebase\rslib\code\math\types\bigint.h
+
+1412872083 f:\programming\c++\robinscodebase\rslib\code\math\types\bigfloat.h
+
+1435936092 f:\programming\c++\robinscodebase\rslib\code\math\types\modularinteger.inl
+	"ModularInteger.h"
+
+1382548565 f:\programming\c++\robinscodebase\rslib\code\math\types\modularinteger.h
+
+1413549129 f:\programming\c++\robinscodebase\rslib\code\math\types\vector.h
+
+1425319270 f:\programming\c++\robinscodebase\rslib\code\math\types\matrix.h
+
+1413995508 f:\programming\c++\robinscodebase\rslib\code\math\types\matrix.inl
+
+1346254936 f:\programming\c++\robinscodebase\rslib\code\math\types\multiarray.inl
+	"MultiArray.h"
+
+1344546342 f:\programming\c++\robinscodebase\rslib\code\math\types\multiarray.h
+
+1413211374 f:\programming\c++\robinscodebase\rslib\code\math\types\tensor.h
+
+1427656761 f:\programming\c++\robinscodebase\rslib\code\math\misc\numericcalculus.h
+
+1425319052 f:\programming\c++\robinscodebase\rslib\code\math\misc\linearalgebra.inl
+
+1434391232 f:\programming\c++\robinscodebase\rslib\code\math\misc\polynomialalgorithms.h
+
+1434161567 f:\programming\c++\robinscodebase\rslib\code\math\misc\interpolation.h
+
+1358374671 f:\programming\c++\robinscodebase\rslib\code\math\misc\curvefitting.h
+
+1427757856 f:\programming\c++\robinscodebase\rslib\code\math\misc\transforms.inl
+
+1435880248 f:\programming\c++\robinscodebase\rslib\code\math\misc\statistics.inl
+
+1425320184 f:\programming\c++\robinscodebase\rslib\code\math\misc\fouriertransformer.h
+
+1427647283 f:\programming\c++\robinscodebase\rslib\code\math\misc\differentialequationsystem.h
+
+1427998236 f:\programming\c++\robinscodebase\rslib\code\math\misc\numbertheory.inl
+	"NumberTheory.h"
+
+1412172180 f:\programming\c++\robinscodebase\rslib\code\math\misc\numbertheory.h
+
+1434200683 f:\programming\c++\robinscodebase\rslib\code\math\misc\functionobjects.h
+
+1413632304 f:\programming\c++\robinscodebase\rslib\code\math\misc\gradientbasedminimizer.h
+
+1427564815 f:\programming\c++\robinscodebase\rslib\code\math\misc\multilayerperceptron.h
+
+1433966800 f:\programming\c++\robinscodebase\rslib\code\audio\rsaudio.h
+	"../Math/RSMath.h"
+	"Misc/AudioFunctions.h"
+	"Misc/BandwidthConverter.h"
+	"Misc/MiscAudio.h"
+	"Misc/SlewRateLimiter.h"
+	"Misc/SlewRateLimiterLinear.h"
+	"Misc/WindowFunctions.h"
+	"Delay/DelayLine.h"
+	"Filters/FilterAnalyzer.h"
+	"Filters/FilterDesignFormulas.h"
+	"Filters/PrototypeDesigner.h"
+	"Filters/PoleZeroMapper.h"
+	"Filters/FilterCoefficientConverter.h"
+	"Filters/InfiniteImpulseResponseDesigner.h"
+	"Filters/Biquad.h"
+	"Filters/BiquadCascade.h"
+	"Filters/EngineersFilter.h"
+	"Filters/MovingAverage.h"
+	"Filters/OnePoleFilter.h"
+	"Filters/FourPoleFilter.h"
+	"Filters/TransistorLadder.h"
+	"Filters/StateVariableFilter.h"
+	"Filters/PhonoFilter.h"
+	"Analysis/ResponseGetters.inl"
+	"Analysis/LinearPredictor.h"
+	"Analysis/FormantRemover.h"
+	"Analysis/EnvelopeFollower.h"
+	"Analysis/CyclicAutoCorrelator.h"
+	"Analysis/AutoCorrelationPitchDetector.h"
+	"Analysis/ZeroCrossingPitchDetector.h"
+	"Modulators/BreakpointModulator.h"
+	"Sampling/Resampler.h"
+	"Sampling/SampleManipulation.h"
+	"Synthesis/ModalFilterBank.h"
+
+1431363605 f:\programming\c++\robinscodebase\rslib\code\audio\misc\audiofunctions.h
+
+1434127830 f:\programming\c++\robinscodebase\rslib\code\audio\misc\bandwidthconverter.h
+
+1432669392 f:\programming\c++\robinscodebase\rslib\code\audio\misc\miscaudio.h
+
+1344544488 f:\programming\c++\robinscodebase\rslib\code\audio\misc\slewratelimiter.h
+
+1347113313 f:\programming\c++\robinscodebase\rslib\code\audio\misc\slewratelimiterlinear.h
+
+1432659247 f:\programming\c++\robinscodebase\rslib\code\audio\misc\windowfunctions.h
+
+1412872571 f:\programming\c++\robinscodebase\rslib\code\audio\delay\delayline.h
+
+1433438465 f:\programming\c++\robinscodebase\rslib\code\audio\filters\filteranalysis.h
+
+1421617477 f:\programming\c++\robinscodebase\rslib\code\audio\filters\filterdesignformulas.h
+
+1421617747 f:\programming\c++\robinscodebase\rslib\code\audio\filters\biquaddesigner.h
+
+1434079965 f:\programming\c++\robinscodebase\rslib\code\audio\filters\movingaverage.h
+
+1345712720 f:\programming\c++\robinscodebase\rslib\code\audio\filters\onepolefilter.h
+
+1421617612 f:\programming\c++\robinscodebase\rslib\code\audio\filters\fourpolefilter.h
+
+1344544446 f:\programming\c++\robinscodebase\rslib\code\audio\filters\transistorladder.h
+
+1428007857 f:\programming\c++\robinscodebase\rslib\code\audio\filters\statevariablefilter.h
+
+1344544416 f:\programming\c++\robinscodebase\rslib\code\audio\filters\phonofilter.h
+
+1344544270 f:\programming\c++\robinscodebase\rslib\code\audio\analysis\responsegetters.inl
+	"ResponseGetters.h"
+
+1344544208 f:\programming\c++\robinscodebase\rslib\code\audio\analysis\responsegetters.h
+
+1379933894 f:\programming\c++\robinscodebase\rslib\code\audio\analysis\linearpredictor.h
+
+1344544182 f:\programming\c++\robinscodebase\rslib\code\audio\analysis\formantremover.h
+
+1379933894 f:\programming\c++\robinscodebase\rslib\code\audio\analysis\envelopefollower.h
+
+1435857640 f:\programming\c++\robinscodebase\rslib\code\audio\analysis\cyclicautocorrelator.h
+
+1427233142 f:\programming\c++\robinscodebase\rslib\code\audio\analysis\autocorrelationpitchdetector.h
+
+1427302175 f:\programming\c++\robinscodebase\rslib\code\audio\analysis\zerocrossingpitchdetector.h
+
+1344544504 f:\programming\c++\robinscodebase\rslib\code\audio\modulators\breakpointmodulator.h
+
+1435868455 f:\programming\c++\robinscodebase\rslib\code\audio\sampling\resampler.h
+
+1344544546 f:\programming\c++\robinscodebase\rslib\code\audio\sampling\samplemanipulation.h
+
+1434078643 f:\programming\c++\robinscodebase\rslib\code\audio\synthesis\modalfilterbank.h
+
+1344948953 f:\programming\c++\robinscodebase\rslib\code\graphics\rsgraphics.h
+	"../Math/RSMath.h"
+	"Misc/ColorSpaces.h"
+	"Misc/Justification.h"
+	"Misc/Image.h"
+	"Fonts/PixelFont.h"
+	"Fonts/PixelFontRoundedA7D0.h"
+	"Fonts/PixelFontRoundedBoldA10D0.h"
+	"Fonts/PixelFontRoundedBoldA16D0.h"
+	"Fonts/PixelFontRoundedBoldA9D0.h"
+	"Fonts/GlobalFontInstances.h"
+	"Rendering/WrappersForAGG.h"
+	"Rendering/GraphicsRenderer2D.h"
+
+1351765825 f:\programming\c++\robinscodebase\rslib\code\graphics\misc\colorspaces.h
+
+1344545398 f:\programming\c++\robinscodebase\rslib\code\graphics\misc\justification.h
+
+1353170874 f:\programming\c++\robinscodebase\rslib\code\graphics\misc\image.h
+
+1345126160 f:\programming\c++\robinscodebase\rslib\code\graphics\fonts\pixelfont.h
+
+1344545320 f:\programming\c++\robinscodebase\rslib\code\graphics\fonts\pixelfontroundeda7d0.h
+
+1344545348 f:\programming\c++\robinscodebase\rslib\code\graphics\fonts\pixelfontroundedbolda10d0.h
+
+1344545360 f:\programming\c++\robinscodebase\rslib\code\graphics\fonts\pixelfontroundedbolda16d0.h
+
+1344545336 f:\programming\c++\robinscodebase\rslib\code\graphics\fonts\pixelfontroundedbolda9d0.h
+
+1344545296 f:\programming\c++\robinscodebase\rslib\code\graphics\fonts\globalfontinstances.h
+
+1344545426 f:\programming\c++\robinscodebase\rslib\code\graphics\rendering\wrappersforagg.h
+	"../../Math/Geometry/Polygon2D.h"
+	"../Misc/Image.h"
+
+1345126429 f:\programming\c++\robinscodebase\rslib\code\graphics\rendering\graphicsrenderer2d.h
+
+1434551939 source:f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsaudio\rsaudiotests.cpp
+	"RSAudioTests.h"
+	"Analysis/PitchDetectorTests.cpp"
+	"Filter/FilterTests.cpp"
+	"Misc/MiscAudioTests.cpp"
+	"Synthesis/ModalTests.cpp"
+
+1434549397 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsaudio\rsaudiotests.h
+	"Analysis/PitchDetectorTests.h"
+	"Filter/FilterTests.h"
+	"Misc/MiscAudioTests.h"
+	"Synthesis/ModalTests.h"
+
+1345135379 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsaudio\analysis\pitchdetectortests.h
+	"../../UnitTestUtilities.h"
+
+1357402104 f:\programming\c++\robinscodebase\rslibtests\code\unittests\unittestutilities.h
+	"../Common/TestUtilities.h"
+
+1431012827 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsaudio\misc\miscaudiotests.h
+	"../../UnitTestUtilities.h"
+
+1345135455 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsaudio\synthesis\modaltests.h
+	"../../UnitTestUtilities.h"
+
+1345127282 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsaudio\analysis\pitchdetectortests.cpp
+	"PitchDetectorTests.h"
+
+1433437720 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsaudio\misc\miscaudiotests.cpp
+	"MiscAudioTests.h"
+
+1345129014 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsaudio\synthesis\modaltests.cpp
+	"ModalTests.h"
+
+1346173506 source:f:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\rscoretests.cpp
+	"RSCoreTests.h"
+	"Definitions/TypeSizeTests.cpp"
+	"Containers/ArrayTests.cpp"
+	"Containers/KeyValueMapTests.cpp"
+	"Containers/ListTests.cpp"
+	"Containers/TreeTests.cpp"
+	"Utilities/BufferFunctionTests.cpp"
+	"Utilities/NumberManipulationsTests.cpp"
+	"Utilities/SortAndSearchTests.cpp"
+	"Text/StringTests.cpp"
+	"Text/KeyValueStringTreeTests.cpp"
+	"Files/FileTests.cpp"
+	"Misc/CallbackTests.cpp"
+
+1346173481 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\rscoretests.h
+	"Definitions/TypeSizeTests.h"
+	"Containers/ArrayTests.h"
+	"Containers/KeyValueMapTests.h"
+	"Containers/ListTests.h"
+	"Containers/TreeTests.h"
+	"Utilities/BufferFunctionTests.h"
+	"Utilities/NumberManipulationsTests.h"
+	"Utilities/SortAndSearchTests.h"
+	"Text/StringTests.h"
+	"Text/KeyValueStringTreeTests.h"
+	"Files/FileTests.h"
+	"Misc/CallbackTests.h"
+
+1345135346 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\definitions\typesizetests.h
+	"../../UnitTestUtilities.h"
+
+1381334131 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\containers\arraytests.h
+	"../../UnitTestUtilities.h"
+
+1345135455 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\containers\keyvaluemaptests.h
+	"../../UnitTestUtilities.h"
+
+1345135455 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\containers\listtests.h
+	"../../UnitTestUtilities.h"
+
+1345135455 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\containers\treetests.h
+	"../../UnitTestUtilities.h"
+
+1427216037 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\utilities\bufferfunctiontests.h
+	"../../UnitTestUtilities.h"
+
+1345135455 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\utilities\numbermanipulationstests.h
+	"../../UnitTestUtilities.h"
+
+1345135455 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\utilities\sortandsearchtests.h
+	"../../UnitTestUtilities.h"
+
+1345135455 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\text\stringtests.h
+	"../../UnitTestUtilities.h"
+
+1345135455 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\text\keyvaluestringtreetests.h
+	"../../UnitTestUtilities.h"
+
+1346346704 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\files\filetests.h
+	"../Text/StringTests.h"
+
+1346184932 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\misc\callbacktests.h
+	"../../UnitTestUtilities.h"
+
+1428950405 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\definitions\typesizetests.cpp
+	"TypeSizeTests.h"
+
+1421352856 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\containers\arraytests.cpp
+	"ArrayTests.h"
+
+1345046156 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\containers\keyvaluemaptests.cpp
+	"KeyValueMapTests.h"
+
+1328791180 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\containers\listtests.cpp
+	"ListTests.h"
+	"../../HelperFunctions/TestHelperFunctions.h"
+	"../../../../Libraries/RSCore/DataStructures/List.h"
+
+1308749130 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\containers\treetests.cpp
+	"TreeTests.h"
+
+1427230569 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\utilities\bufferfunctiontests.cpp
+	"BufferFunctionTests.h"
+
+1342698376 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\utilities\numbermanipulationstests.cpp
+	"NumberManipulationsTests.h"
+
+1342708686 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\utilities\sortandsearchtests.cpp
+	"SortAndSearchTests.h"
+
+1342636696 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\text\stringtests.cpp
+	"StringTests.h"
+
+1308749932 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\text\keyvaluestringtreetests.cpp
+	"KeyValueStringTreeTests.h"
+
+1345128375 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\files\filetests.cpp
+	"FileTests.h"
+
+1412873555 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\misc\callbacktests.cpp
+	"CallbackTests.h"
+
+1351723380 source:f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsgraphics\rsgraphicstests.cpp
+	"RSGraphicsTests.h"
+	"Fonts/FontTests.cpp"
+	"Rendering/RenderingTests.cpp"
+
+1351722588 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsgraphics\rsgraphicstests.h
+	"Fonts/FontTests.h"
+	"Rendering/RenderingTests.h"
+
+1345135346 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsgraphics\fonts\fonttests.h
+	"../../UnitTestUtilities.h"
+
+1345135379 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsgraphics\rendering\renderingtests.h
+	"../../UnitTestUtilities.h"
+
+1345054615 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsgraphics\fonts\fonttests.cpp
+	"FontTests.h"
+
+1342028362 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsgraphics\rendering\renderingtests.cpp
+	"RenderingTests.h"
+
+1413286312 source:f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\rsmathtests.cpp
+	"RSMathTests.h"
+	"Functions/IntegerFunctionTests.cpp"
+	"Functions/MoebiusTransformTests.cpp"
+	"Functions/RealFunctionTests.cpp"
+	"Geometry/Point2DTests.cpp"
+	"Geometry/Polygon2DTests.cpp"
+	"Geometry/Triangle2DTests.cpp"
+	"Misc/DifferentialEquationTests.cpp"
+	"Misc/TransformsTests.cpp"
+	"Misc/LinearAlgebraTests.cpp"
+	"Misc/PolynomialTests.cpp"
+	"Misc/MiscMathTests.cpp"
+	"Misc/NumberTheoryTests.cpp"
+	"Types/BigIntTests.cpp"
+	"Types/ComplexTests.cpp"
+	"Types/MultiArrayTests.cpp"
+	"Types/VectorTests.cpp"
+	"Types/MatrixTests.cpp"
+
+1413286299 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\rsmathtests.h
+	"Functions/IntegerFunctionTests.h"
+	"Functions/MoebiusTransformTests.h"
+	"Functions/RealFunctionTests.h"
+	"Geometry/Point2DTests.h"
+	"Geometry/Polygon2DTests.h"
+	"Geometry/Triangle2DTests.h"
+	"Misc/DifferentialEquationTests.h"
+	"Misc/TransformsTests.h"
+	"Misc/LinearAlgebraTests.h"
+	"Misc/PolynomialTests.h"
+	"Misc/MiscMathTests.h"
+	"Misc/NumberTheoryTests.h"
+	"Types/BigIntTests.h"
+	"Types/ComplexTests.h"
+	"Types/MultiArrayTests.h"
+	"Types/VectorTests.h"
+	"Types/MatrixTests.h"
+
+1412254212 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\functions\integerfunctiontests.h
+	"../../UnitTestUtilities.h"
+
+1345135379 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\functions\moebiustransformtests.h
+	"../../UnitTestUtilities.h"
+
+1425145024 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\functions\realfunctiontests.h
+	"../../UnitTestUtilities.h"
+
+1345135455 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\geometry\point2dtests.h
+	"../../UnitTestUtilities.h"
+
+1345135455 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\geometry\polygon2dtests.h
+	"../../UnitTestUtilities.h"
+
+1345135455 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\geometry\triangle2dtests.h
+	"../../UnitTestUtilities.h"
+
+1345135455 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\misc\differentialequationtests.h
+	"../../UnitTestUtilities.h"
+
+1346247094 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\misc\transformstests.h
+	"../../UnitTestUtilities.h"
+
+1413456032 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\misc\linearalgebratests.h
+	"../../UnitTestUtilities.h"
+
+1435936947 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\misc\polynomialtests.h
+	"../../UnitTestUtilities.h"
+
+1426099112 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\misc\miscmathtests.h
+	"../../UnitTestUtilities.h"
+
+1382362328 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\misc\numbertheorytests.h
+	"../../UnitTestUtilities.h"
+
+1379242014 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\types\biginttests.h
+	"../../UnitTestUtilities.h"
+
+1345135455 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\types\complextests.h
+	"../../UnitTestUtilities.h"
+
+1345135455 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\types\multiarraytests.h
+	"../../UnitTestUtilities.h"
+
+1345135455 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\types\vectortests.h
+	"../../UnitTestUtilities.h"
+
+1413368555 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\types\matrixtests.h
+	"../../UnitTestUtilities.h"
+
+1412875926 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\functions\integerfunctiontests.cpp
+	"IntegerFunctionTests.h"
+
+1379934057 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\functions\moebiustransformtests.cpp
+	"MoebiusTransformTests.h"
+
+1425738882 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\functions\realfunctiontests.cpp
+	"RealFunctionTests.h"
+
+1308749706 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\geometry\point2dtests.cpp
+	"Point2DTests.h"
+
+1312544118 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\geometry\polygon2dtests.cpp
+	"Polygon2DTests.h"
+
+1308749818 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\geometry\triangle2dtests.cpp
+	"Triangle2DTests.h"
+
+1345052329 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\misc\differentialequationtests.cpp
+	"DifferentialEquationTests.h"
+
+1433435616 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\misc\transformstests.cpp
+	"TransformsTests.h"
+
+1413469365 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\misc\linearalgebratests.cpp
+	"LinearAlgebraTests.h"
+
+1435937765 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\misc\polynomialtests.cpp
+	"PolynomialTests.h"
+
+1413818418 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\misc\miscmathtests.cpp
+	"MiscMathTests.h"
+
+1413465173 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\misc\numbertheorytests.cpp
+	"NumberTheoryTests.h"
+
+1412875798 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\types\biginttests.cpp
+	"ComplexTests.h"
+
+1308749442 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\types\complextests.cpp
+	"ComplexTests.h"
+
+1342697048 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\types\multiarraytests.cpp
+	"MultiArrayTests.h"
+
+1345565246 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\types\vectortests.cpp
+	"VectorTests.h"
+
+1413996368 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\types\matrixtests.cpp
+	"MatrixTests.h"
+
+1357402106 source:f:\programming\c++\robinscodebase\rslibtests\code\unittests\unittestutilities.cpp
+	"UnitTestUtilities.h"
+
+1434549356 source:f:\programming\c++\robinscodebase\rslibtests\code\unittests\unittests.cpp
+	"RSCore/RSCoreTests.h"
+	"RSMath/RSMathTests.h"
+	"RSAudio/RSAudioTests.h"
+	"RSGraphics/RSGraphicsTests.h"
+
+1425918329 source:f:\programming\c++\robinscodebase\rslibtests\code\common\prototypes.cpp
+	"Prototypes.h"
+
+1433443087 f:\programming\c++\robinscodebase\rslib\code\audio\filters\biquad.h
+
+1433442145 f:\programming\c++\robinscodebase\rslib\code\audio\filters\filteranalyzer.h
+
+1434643620 f:\programming\c++\robinscodebase\rslib\code\audio\filters\biquadcascade.h
+
+1434469840 f:\programming\c++\robinscodebase\rslib\code\audio\filters\prototypedesigner.h
+
+1434079184 f:\programming\c++\robinscodebase\rslib\code\audio\filters\polezeromapper.h
+
+1433964717 f:\programming\c++\robinscodebase\rslib\code\audio\filters\filtercoefficientconverter.h
+
+1434039403 f:\programming\c++\robinscodebase\rslib\code\audio\filters\infiniteimpulseresponsedesigner.h
+
+1434123134 f:\programming\c++\robinscodebase\rslib\code\audio\filters\engineersfilter.h
+
+1434549216 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsaudio\filter\filtertests.h
+	"../../UnitTestUtilities.h"
+
+1435936643 f:\programming\c++\robinscodebase\rslib\code\math\types\polynomial.h
+
+1435938071 f:\programming\c++\robinscodebase\rslib\code\math\types\polynomial.inl
+
+1434553344 f:\programming\c++\robinscodebase\rslibtests\code\unittests\rsaudio\filter\filtertests.cpp
+	"FilterTests.h"
+
+1437678523 source:/media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/Common/Prototypes.cpp
+	"Prototypes.h"
+
+1437675235 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/Common/Prototypes.h
+	<RSLib.h>
+
+1344587670 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/RSLib.h
+	"Core/RSCore.h"
+	"Math/RSMath.h"
+	"Audio/RSAudio.h"
+	"Graphics/RSGraphics.h"
+
+1427128483 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Core/RSCore.h
+	<RSBuildConfig.h>
+	"Definitions/Setup.h"
+	"Definitions/StandardHeaders.h"
+	"Definitions/ConstantDefinitions.h"
+	"Definitions/TypeDefinitions.h"
+	"Definitions/MacroDefinitions.h"
+	"Misc/ErrorHandling.h"
+	"Utilities/NumberManipulations.h"
+	"Utilities/MathBasics.h"
+	"Utilities/MathBasics.inl"
+	"Utilities/ArrayFunctions.h"
+	"Utilities/ArrayFunctions.inl"
+	"Utilities/SortAndSearch.inl"
+	"Utilities/MatrixFunctions.h"
+	"Utilities/MatrixFunctions.inl"
+	"Containers/Array.h"
+	"Containers/Flags.h"
+	"Containers/Range.h"
+	"Containers/InfiniteDataStream.h"
+	"Containers/KeyValueMap.h"
+	"Containers/List.h"
+	"Containers/Tree.h"
+	"Text/String.h"
+	"Text/KeyValueStringPair.h"
+	"Text/KeyValueStringArray.h"
+	"Text/KeyValueStringTree.h"
+	"Files/File.h"
+	"Files/FileStream.h"
+	"Files/WaveFile.h"
+	"Files/FileInputOutput.h"
+	"Misc/Logger.h"
+	"Misc/SystemInformation.h"
+	"Misc/Callback.h"
+	"Misc/Parameter.h"
+
+1344948685 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Config/RSBuildConfig.h
+
+1438685953 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Definitions/Setup.h
+
+1346347961 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Definitions/StandardHeaders.h
+	<ctype.h>
+	<float.h>
+	<limits.h>
+	<stddef.h>
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<algorithm>
+	<cmath>
+	<functional>
+	<iostream>
+	<iterator>
+	<limits>
+	<string>
+	<vector>
+
+1434127424 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Definitions/ConstantDefinitions.h
+
+1425827573 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Definitions/TypeDefinitions.h
+
+1413295273 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Definitions/MacroDefinitions.h
+
+1358367321 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Misc/ErrorHandling.h
+
+1438686171 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Utilities/NumberManipulations.h
+
+1439242195 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Utilities/MathBasics.h
+
+1437499640 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Utilities/MathBasics.inl
+
+1438197872 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Utilities/ArrayFunctions.h
+
+1438197811 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Utilities/ArrayFunctions.inl
+
+1381419708 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Utilities/SortAndSearch.inl
+
+1413890648 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Utilities/MatrixFunctions.h
+
+1413469317 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Utilities/MatrixFunctions.inl
+
+1438687176 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Containers/Array.h
+
+1381359562 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Containers/Flags.h
+
+1344544636 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Containers/Range.h
+
+1421349076 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Containers/InfiniteDataStream.h
+
+1344544612 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Containers/KeyValueMap.h
+
+1344544624 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Containers/List.h
+
+1344544650 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Containers/Tree.h
+
+1379261750 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Text/String.h
+
+1344589178 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Text/KeyValueStringPair.h
+
+1344544928 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Text/KeyValueStringArray.h
+
+1344544954 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Text/KeyValueStringTree.h
+
+1344544794 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Files/File.h
+
+1438687296 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Files/FileStream.h
+
+1439437545 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Files/WaveFile.h
+
+1439435576 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Files/FileInputOutput.h
+
+1346171599 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Misc/Logger.h
+
+1346336526 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Misc/SystemInformation.h
+
+1412874867 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Misc/Callback.h
+
+1346243357 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Core/Misc/Parameter.h
+
+1435936814 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/RSMath.h
+	"../Core/RSCore.h"
+	"Types/Complex.h"
+	"Functions/IntegerFunctions.h"
+	"Functions/RealFunctions.h"
+	"Functions/FunctionIterators.h"
+	"Functions/ComplexFunctions.inl"
+	"Functions/MoebiusTransform.h"
+	"Geometry/Point2D.h"
+	"Geometry/Rectangle2D.h"
+	"Geometry/Triangle2D.h"
+	"Geometry/Polygon2D.h"
+	"Geometry/AffineTransform2D.h"
+	"Types/BigNumber.h"
+	"Types/BigInt.h"
+	"Types/BigFloat.h"
+	"Types/ModularInteger.inl"
+	"Types/Vector.h"
+	"Types/Matrix.h"
+	"Types/Matrix.inl"
+	"Types/MultiArray.inl"
+	"Types/Polynomial.h"
+	"Types/Polynomial.inl"
+	"Types/Tensor.h"
+	"Misc/NumericCalculus.h"
+	"Misc/LinearAlgebra.inl"
+	"Misc/PolynomialAlgorithms.h"
+	"Misc/Interpolation.h"
+	"Misc/CurveFitting.h"
+	"Misc/Transforms.inl"
+	"Misc/Statistics.inl"
+	"Misc/FourierTransformer.h"
+	"Misc/DifferentialEquationSystem.h"
+	"Misc/NumberTheory.inl"
+	"Misc/FunctionObjects.h"
+	"Misc/GradientBasedMinimizer.h"
+	"Misc/MultiLayerPerceptron.h"
+
+1379933893 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Types/Complex.h
+
+1437688342 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Functions/IntegerFunctions.h
+
+1438686672 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Functions/RealFunctions.h
+
+1426030724 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Functions/FunctionIterators.h
+
+1433870717 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Functions/ComplexFunctions.inl
+	"ComplexFunctions.h"
+
+1379933893 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Functions/ComplexFunctions.h
+
+1379933893 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Functions/MoebiusTransform.h
+
+1379933893 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Geometry/Point2D.h
+
+1344546040 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Geometry/Rectangle2D.h
+
+1344546052 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Geometry/Triangle2D.h
+
+1344546030 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Geometry/Polygon2D.h
+
+1344545992 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Geometry/AffineTransform2D.h
+
+1412875638 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Types/BigNumber.h
+
+1381228194 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Types/BigInt.h
+
+1412872083 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Types/BigFloat.h
+
+1435936092 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Types/ModularInteger.inl
+	"ModularInteger.h"
+
+1382548565 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Types/ModularInteger.h
+
+1413549129 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Types/Vector.h
+
+1425315670 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Types/Matrix.h
+
+1413995508 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Types/Matrix.inl
+
+1346254936 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Types/MultiArray.inl
+	"MultiArray.h"
+
+1344546342 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Types/MultiArray.h
+
+1435936643 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Types/Polynomial.h
+
+1436204487 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Types/Polynomial.inl
+
+1413211374 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Types/Tensor.h
+
+1427656761 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Misc/NumericCalculus.h
+
+1425315452 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Misc/LinearAlgebra.inl
+
+1437692115 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Misc/PolynomialAlgorithms.h
+
+1437772780 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Misc/Interpolation.h
+
+1358371071 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Misc/CurveFitting.h
+
+1427757856 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Misc/Transforms.inl
+
+1438312771 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Misc/Statistics.inl
+
+1425316584 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Misc/FourierTransformer.h
+
+1427647283 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Misc/DifferentialEquationSystem.h
+
+1427998236 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Misc/NumberTheory.inl
+	"NumberTheory.h"
+
+1412172180 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Misc/NumberTheory.h
+
+1434200683 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Misc/FunctionObjects.h
+
+1413632304 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Misc/GradientBasedMinimizer.h
+
+1427561215 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Math/Misc/MultiLayerPerceptron.h
+
+1433966800 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/RSAudio.h
+	"../Math/RSMath.h"
+	"Misc/AudioFunctions.h"
+	"Misc/BandwidthConverter.h"
+	"Misc/MiscAudio.h"
+	"Misc/SlewRateLimiter.h"
+	"Misc/SlewRateLimiterLinear.h"
+	"Misc/WindowFunctions.h"
+	"Delay/DelayLine.h"
+	"Filters/FilterAnalyzer.h"
+	"Filters/FilterDesignFormulas.h"
+	"Filters/PrototypeDesigner.h"
+	"Filters/PoleZeroMapper.h"
+	"Filters/FilterCoefficientConverter.h"
+	"Filters/InfiniteImpulseResponseDesigner.h"
+	"Filters/Biquad.h"
+	"Filters/BiquadCascade.h"
+	"Filters/EngineersFilter.h"
+	"Filters/MovingAverage.h"
+	"Filters/OnePoleFilter.h"
+	"Filters/FourPoleFilter.h"
+	"Filters/TransistorLadder.h"
+	"Filters/StateVariableFilter.h"
+	"Filters/PhonoFilter.h"
+	"Analysis/ResponseGetters.inl"
+	"Analysis/LinearPredictor.h"
+	"Analysis/FormantRemover.h"
+	"Analysis/EnvelopeFollower.h"
+	"Analysis/CyclicAutoCorrelator.h"
+	"Analysis/AutoCorrelationPitchDetector.h"
+	"Analysis/ZeroCrossingPitchDetector.h"
+	"Modulators/BreakpointModulator.h"
+	"Sampling/Resampler.h"
+	"Sampling/SampleManipulation.h"
+	"Synthesis/ModalFilterBank.h"
+
+1431363605 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Misc/AudioFunctions.h
+
+1434127830 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Misc/BandwidthConverter.h
+
+1432669392 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Misc/MiscAudio.h
+
+1344544488 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Misc/SlewRateLimiter.h
+
+1347113313 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Misc/SlewRateLimiterLinear.h
+
+1432659247 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Misc/WindowFunctions.h
+
+1412872571 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Delay/DelayLine.h
+
+1433442145 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Filters/FilterAnalyzer.h
+
+1421613877 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Filters/FilterDesignFormulas.h
+
+1437692467 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Filters/PrototypeDesigner.h
+
+1434079184 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Filters/PoleZeroMapper.h
+
+1433964717 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Filters/FilterCoefficientConverter.h
+
+1434039403 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Filters/InfiniteImpulseResponseDesigner.h
+
+1433443087 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Filters/Biquad.h
+
+1434643620 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Filters/BiquadCascade.h
+
+1434123134 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Filters/EngineersFilter.h
+
+1434079965 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Filters/MovingAverage.h
+
+1345712720 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Filters/OnePoleFilter.h
+
+1421614012 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Filters/FourPoleFilter.h
+
+1344544446 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Filters/TransistorLadder.h
+
+1428007857 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Filters/StateVariableFilter.h
+
+1344544416 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Filters/PhonoFilter.h
+
+1344544270 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Analysis/ResponseGetters.inl
+	"ResponseGetters.h"
+
+1344544208 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Analysis/ResponseGetters.h
+
+1379933894 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Analysis/LinearPredictor.h
+
+1344544182 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Analysis/FormantRemover.h
+
+1379933894 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Analysis/EnvelopeFollower.h
+
+1435857640 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Analysis/CyclicAutoCorrelator.h
+
+1427229542 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Analysis/AutoCorrelationPitchDetector.h
+
+1427298575 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Analysis/ZeroCrossingPitchDetector.h
+
+1438687121 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Modulators/BreakpointModulator.h
+
+1436888815 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Sampling/Resampler.h
+
+1344544546 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Sampling/SampleManipulation.h
+
+1434078643 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Audio/Synthesis/ModalFilterBank.h
+
+1344948953 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Graphics/RSGraphics.h
+	"../Math/RSMath.h"
+	"Misc/ColorSpaces.h"
+	"Misc/Justification.h"
+	"Misc/Image.h"
+	"Fonts/PixelFont.h"
+	"Fonts/PixelFontRoundedA7D0.h"
+	"Fonts/PixelFontRoundedBoldA10D0.h"
+	"Fonts/PixelFontRoundedBoldA16D0.h"
+	"Fonts/PixelFontRoundedBoldA9D0.h"
+	"Fonts/GlobalFontInstances.h"
+	"Rendering/WrappersForAGG.h"
+	"Rendering/GraphicsRenderer2D.h"
+
+1351762225 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Graphics/Misc/ColorSpaces.h
+
+1344545398 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Graphics/Misc/Justification.h
+
+1353167274 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Graphics/Misc/Image.h
+
+1345126160 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Graphics/Fonts/PixelFont.h
+
+1344545320 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Graphics/Fonts/PixelFontRoundedA7D0.h
+
+1344545348 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Graphics/Fonts/PixelFontRoundedBoldA10D0.h
+
+1344545360 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Graphics/Fonts/PixelFontRoundedBoldA16D0.h
+
+1344545336 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Graphics/Fonts/PixelFontRoundedBoldA9D0.h
+
+1344545296 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Graphics/Fonts/GlobalFontInstances.h
+
+1344545426 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Graphics/Rendering/WrappersForAGG.h
+	"../../Math/Geometry/Polygon2D.h"
+	"../Misc/Image.h"
+
+1345126429 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLib/Code/Graphics/Rendering/GraphicsRenderer2D.h
+
+1427287049 source:/media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/Common/TestUtilities.cpp
+	"TestUtilities.h"
+
+1430855234 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/Common/TestUtilities.h
+	"../Common/Prototypes.h"
+
+1434551939 source:/media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSAudio/RSAudioTests.cpp
+	"RSAudioTests.h"
+	"Analysis/PitchDetectorTests.cpp"
+	"Filter/FilterTests.cpp"
+	"Misc/MiscAudioTests.cpp"
+	"Synthesis/ModalTests.cpp"
+
+1434549397 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSAudio/RSAudioTests.h
+	"Analysis/PitchDetectorTests.h"
+	"Filter/FilterTests.h"
+	"Misc/MiscAudioTests.h"
+	"Synthesis/ModalTests.h"
+
+1345135379 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSAudio/Analysis/PitchDetectorTests.h
+	"../../UnitTestUtilities.h"
+
+1357398504 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/UnitTestUtilities.h
+	"../Common/TestUtilities.h"
+
+1437691932 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSAudio/Filter/FilterTests.h
+	"../../UnitTestUtilities.h"
+
+1431012827 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSAudio/Misc/MiscAudioTests.h
+	"../../UnitTestUtilities.h"
+
+1345135455 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSAudio/Synthesis/ModalTests.h
+	"../../UnitTestUtilities.h"
+
+1345127282 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSAudio/Analysis/PitchDetectorTests.cpp
+	"PitchDetectorTests.h"
+
+1437692087 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSAudio/Filter/FilterTests.cpp
+	"FilterTests.h"
+
+1433437720 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSAudio/Misc/MiscAudioTests.cpp
+	"MiscAudioTests.h"
+
+1345129014 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSAudio/Synthesis/ModalTests.cpp
+	"ModalTests.h"
+
+1346173506 source:/media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/RSCoreTests.cpp
+	"RSCoreTests.h"
+	"Definitions/TypeSizeTests.cpp"
+	"Containers/ArrayTests.cpp"
+	"Containers/KeyValueMapTests.cpp"
+	"Containers/ListTests.cpp"
+	"Containers/TreeTests.cpp"
+	"Utilities/BufferFunctionTests.cpp"
+	"Utilities/NumberManipulationsTests.cpp"
+	"Utilities/SortAndSearchTests.cpp"
+	"Text/StringTests.cpp"
+	"Text/KeyValueStringTreeTests.cpp"
+	"Files/FileTests.cpp"
+	"Misc/CallbackTests.cpp"
+
+1346173481 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/RSCoreTests.h
+	"Definitions/TypeSizeTests.h"
+	"Containers/ArrayTests.h"
+	"Containers/KeyValueMapTests.h"
+	"Containers/ListTests.h"
+	"Containers/TreeTests.h"
+	"Utilities/BufferFunctionTests.h"
+	"Utilities/NumberManipulationsTests.h"
+	"Utilities/SortAndSearchTests.h"
+	"Text/StringTests.h"
+	"Text/KeyValueStringTreeTests.h"
+	"Files/FileTests.h"
+	"Misc/CallbackTests.h"
+
+1345135346 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Definitions/TypeSizeTests.h
+	"../../UnitTestUtilities.h"
+
+1381334131 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Containers/ArrayTests.h
+	"../../UnitTestUtilities.h"
+
+1345135455 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Containers/KeyValueMapTests.h
+	"../../UnitTestUtilities.h"
+
+1345135455 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Containers/ListTests.h
+	"../../UnitTestUtilities.h"
+
+1345135455 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Containers/TreeTests.h
+	"../../UnitTestUtilities.h"
+
+1427212437 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Utilities/BufferFunctionTests.h
+	"../../UnitTestUtilities.h"
+
+1345135455 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Utilities/NumberManipulationsTests.h
+	"../../UnitTestUtilities.h"
+
+1345135455 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Utilities/SortAndSearchTests.h
+	"../../UnitTestUtilities.h"
+
+1345135455 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Text/StringTests.h
+	"../../UnitTestUtilities.h"
+
+1345135455 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Text/KeyValueStringTreeTests.h
+	"../../UnitTestUtilities.h"
+
+1346346704 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Files/FileTests.h
+	"../Text/StringTests.h"
+
+1346184932 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Misc/CallbackTests.h
+	"../../UnitTestUtilities.h"
+
+1428950405 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Definitions/TypeSizeTests.cpp
+	"TypeSizeTests.h"
+
+1421349256 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Containers/ArrayTests.cpp
+	"ArrayTests.h"
+
+1345046156 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Containers/KeyValueMapTests.cpp
+	"KeyValueMapTests.h"
+
+1328787580 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Containers/ListTests.cpp
+	"ListTests.h"
+	"../../HelperFunctions/TestHelperFunctions.h"
+	"../../../../Libraries/RSCore/DataStructures/List.h"
+
+1308749130 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Containers/TreeTests.cpp
+	"TreeTests.h"
+
+1427226969 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Utilities/BufferFunctionTests.cpp
+	"BufferFunctionTests.h"
+
+1342698376 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Utilities/NumberManipulationsTests.cpp
+	"NumberManipulationsTests.h"
+
+1342708686 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Utilities/SortAndSearchTests.cpp
+	"SortAndSearchTests.h"
+
+1342636696 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Text/StringTests.cpp
+	"StringTests.h"
+
+1308749932 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Text/KeyValueStringTreeTests.cpp
+	"KeyValueStringTreeTests.h"
+
+1439502428 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Files/FileTests.cpp
+	"FileTests.h"
+
+1412873555 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSCore/Misc/CallbackTests.cpp
+	"CallbackTests.h"
+
+1351719780 source:/media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSGraphics/RSGraphicsTests.cpp
+	"RSGraphicsTests.h"
+	"Fonts/FontTests.cpp"
+	"Rendering/RenderingTests.cpp"
+
+1351718988 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSGraphics/RSGraphicsTests.h
+	"Fonts/FontTests.h"
+	"Rendering/RenderingTests.h"
+
+1345135346 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSGraphics/Fonts/FontTests.h
+	"../../UnitTestUtilities.h"
+
+1345135379 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSGraphics/Rendering/RenderingTests.h
+	"../../UnitTestUtilities.h"
+
+1345054615 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSGraphics/Fonts/FontTests.cpp
+	"FontTests.h"
+
+1342028362 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSGraphics/Rendering/RenderingTests.cpp
+	"RenderingTests.h"
+
+1413286312 source:/media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/RSMathTests.cpp
+	"RSMathTests.h"
+	"Functions/IntegerFunctionTests.cpp"
+	"Functions/MoebiusTransformTests.cpp"
+	"Functions/RealFunctionTests.cpp"
+	"Geometry/Point2DTests.cpp"
+	"Geometry/Polygon2DTests.cpp"
+	"Geometry/Triangle2DTests.cpp"
+	"Misc/DifferentialEquationTests.cpp"
+	"Misc/TransformsTests.cpp"
+	"Misc/LinearAlgebraTests.cpp"
+	"Misc/PolynomialTests.cpp"
+	"Misc/MiscMathTests.cpp"
+	"Misc/NumberTheoryTests.cpp"
+	"Types/BigIntTests.cpp"
+	"Types/ComplexTests.cpp"
+	"Types/MultiArrayTests.cpp"
+	"Types/VectorTests.cpp"
+	"Types/MatrixTests.cpp"
+
+1413286299 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/RSMathTests.h
+	"Functions/IntegerFunctionTests.h"
+	"Functions/MoebiusTransformTests.h"
+	"Functions/RealFunctionTests.h"
+	"Geometry/Point2DTests.h"
+	"Geometry/Polygon2DTests.h"
+	"Geometry/Triangle2DTests.h"
+	"Misc/DifferentialEquationTests.h"
+	"Misc/TransformsTests.h"
+	"Misc/LinearAlgebraTests.h"
+	"Misc/PolynomialTests.h"
+	"Misc/MiscMathTests.h"
+	"Misc/NumberTheoryTests.h"
+	"Types/BigIntTests.h"
+	"Types/ComplexTests.h"
+	"Types/MultiArrayTests.h"
+	"Types/VectorTests.h"
+	"Types/MatrixTests.h"
+
+1412254212 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Functions/IntegerFunctionTests.h
+	"../../UnitTestUtilities.h"
+
+1345135379 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Functions/MoebiusTransformTests.h
+	"../../UnitTestUtilities.h"
+
+1425141424 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Functions/RealFunctionTests.h
+	"../../UnitTestUtilities.h"
+
+1345135455 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Geometry/Point2DTests.h
+	"../../UnitTestUtilities.h"
+
+1345135455 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Geometry/Polygon2DTests.h
+	"../../UnitTestUtilities.h"
+
+1345135455 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Geometry/Triangle2DTests.h
+	"../../UnitTestUtilities.h"
+
+1345135455 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Misc/DifferentialEquationTests.h
+	"../../UnitTestUtilities.h"
+
+1346247094 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Misc/TransformsTests.h
+	"../../UnitTestUtilities.h"
+
+1413456032 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Misc/LinearAlgebraTests.h
+	"../../UnitTestUtilities.h"
+
+1437691935 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Misc/PolynomialTests.h
+	"../../UnitTestUtilities.h"
+
+1426095512 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Misc/MiscMathTests.h
+	"../../UnitTestUtilities.h"
+
+1382362328 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Misc/NumberTheoryTests.h
+	"../../UnitTestUtilities.h"
+
+1379242014 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Types/BigIntTests.h
+	"../../UnitTestUtilities.h"
+
+1345135455 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Types/ComplexTests.h
+	"../../UnitTestUtilities.h"
+
+1345135455 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Types/MultiArrayTests.h
+	"../../UnitTestUtilities.h"
+
+1345135455 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Types/VectorTests.h
+	"../../UnitTestUtilities.h"
+
+1413368555 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Types/MatrixTests.h
+	"../../UnitTestUtilities.h"
+
+1412875926 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Functions/IntegerFunctionTests.cpp
+	"IntegerFunctionTests.h"
+
+1379934057 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Functions/MoebiusTransformTests.cpp
+	"MoebiusTransformTests.h"
+
+1425735282 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Functions/RealFunctionTests.cpp
+	"RealFunctionTests.h"
+
+1308749706 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Geometry/Point2DTests.cpp
+	"Point2DTests.h"
+
+1312544118 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Geometry/Polygon2DTests.cpp
+	"Polygon2DTests.h"
+
+1308749818 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Geometry/Triangle2DTests.cpp
+	"Triangle2DTests.h"
+
+1345052329 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Misc/DifferentialEquationTests.cpp
+	"DifferentialEquationTests.h"
+
+1433435616 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Misc/TransformsTests.cpp
+	"TransformsTests.h"
+
+1413469365 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Misc/LinearAlgebraTests.cpp
+	"LinearAlgebraTests.h"
+
+1437692043 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Misc/PolynomialTests.cpp
+	"PolynomialTests.h"
+
+1413818418 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Misc/MiscMathTests.cpp
+	"MiscMathTests.h"
+
+1413465173 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Misc/NumberTheoryTests.cpp
+	"NumberTheoryTests.h"
+
+1412875798 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Types/BigIntTests.cpp
+	"ComplexTests.h"
+
+1308749442 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Types/ComplexTests.cpp
+	"ComplexTests.h"
+
+1342697048 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Types/MultiArrayTests.cpp
+	"MultiArrayTests.h"
+
+1345565246 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Types/VectorTests.cpp
+	"VectorTests.h"
+
+1413996368 /media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/RSMath/Types/MatrixTests.cpp
+	"MatrixTests.h"
+
+1437692008 source:/media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/UnitTests.cpp
+	"RSCore/RSCoreTests.h"
+	"RSMath/RSMathTests.h"
+	"RSAudio/RSAudioTests.h"
+	"RSGraphics/RSGraphicsTests.h"
+
+1357398506 source:/media/rob/Internal Datadisk/Programming/C++/RobinsCodeBase/RSLibTests/Code/UnitTests/UnitTestUtilities.cpp
+	"UnitTestUtilities.h"
+
+1437682123 source:e:\programming\c++\robinscodebase\rslibtests\code\common\prototypes.cpp
+	"Prototypes.h"
+
+1446555574 e:\programming\c++\robinscodebase\rslibtests\code\common\prototypes.h
+	<RSLib.h>
+
+1344591270 e:\programming\c++\robinscodebase\rslib\code\rslib.h
+	"Core/RSCore.h"
+	"Math/RSMath.h"
+	"Audio/RSAudio.h"
+	"Graphics/RSGraphics.h"
+
+1446160116 e:\programming\c++\robinscodebase\rslib\code\core\rscore.h
+	<RSBuildConfig.h>
+	"Definitions/Setup.h"
+	"Definitions/StandardHeaders.h"
+	"Definitions/ConstantDefinitions.h"
+	"Definitions/TypeDefinitions.h"
+	"Definitions/MacroDefinitions.h"
+	"Misc/ErrorHandling.h"
+	"Utilities/NumberManipulations.h"
+	"Utilities/MathBasics.h"
+	"Utilities/MathBasics.inl"
+	"Utilities/ArrayFunctions.h"
+	"Utilities/ArrayFunctions.inl"
+	"Utilities/SortAndSearch.inl"
+	"Utilities/MatrixFunctions.h"
+	"Utilities/MatrixFunctions.inl"
+	"Containers/Array.h"
+	"Containers/Flags.h"
+	"Containers/Range.h"
+	"Containers/InfiniteDataStream.h"
+	"Containers/KeyValueMap.h"
+	"Containers/List.h"
+	"Containers/Tree.h"
+	"Text/String.h"
+	"Text/KeyValueStringPair.h"
+	"Text/KeyValueStringArray.h"
+	"Text/KeyValueStringTree.h"
+	"Files/File.h"
+	"Files/FileStream.h"
+	"Files/WaveFile.h"
+	"Files/FileInputOutput.h"
+	"Misc/Logger.h"
+	"Misc/SystemInformation.h"
+	"Misc/Callback.h"
+	"Misc/Parameter.h"
+
+1344952285 e:\programming\c++\robinscodebase\rslibtests\config\rsbuildconfig.h
+
+1438689553 e:\programming\c++\robinscodebase\rslib\code\core\definitions\setup.h
+
+1346351561 e:\programming\c++\robinscodebase\rslib\code\core\definitions\standardheaders.h
+	<ctype.h>
+	<float.h>
+	<limits.h>
+	<stddef.h>
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<algorithm>
+	<cmath>
+	<functional>
+	<iostream>
+	<iterator>
+	<limits>
+	<string>
+	<vector>
+
+1434131024 e:\programming\c++\robinscodebase\rslib\code\core\definitions\constantdefinitions.h
+
+1445532241 e:\programming\c++\robinscodebase\rslib\code\core\definitions\typedefinitions.h
+
+1413298873 e:\programming\c++\robinscodebase\rslib\code\core\definitions\macrodefinitions.h
+
+1358370921 e:\programming\c++\robinscodebase\rslib\code\core\misc\errorhandling.h
+
+1438689771 e:\programming\c++\robinscodebase\rslib\code\core\utilities\numbermanipulations.h
+
+1459867401 e:\programming\c++\robinscodebase\rslib\code\core\utilities\mathbasics.h
+
+1460738005 e:\programming\c++\robinscodebase\rslib\code\core\utilities\mathbasics.inl
+
+1452806503 e:\programming\c++\robinscodebase\rslib\code\core\utilities\arrayfunctions.h
+
+1452806530 e:\programming\c++\robinscodebase\rslib\code\core\utilities\arrayfunctions.inl
+
+1381423308 e:\programming\c++\robinscodebase\rslib\code\core\utilities\sortandsearch.inl
+
+1413894248 e:\programming\c++\robinscodebase\rslib\code\core\utilities\matrixfunctions.h
+
+1445531987 e:\programming\c++\robinscodebase\rslib\code\core\utilities\matrixfunctions.inl
+
+1447195222 e:\programming\c++\robinscodebase\rslib\code\core\containers\array.h
+
+1381363162 e:\programming\c++\robinscodebase\rslib\code\core\containers\flags.h
+
+1344548236 e:\programming\c++\robinscodebase\rslib\code\core\containers\range.h
+
+1421352676 e:\programming\c++\robinscodebase\rslib\code\core\containers\infinitedatastream.h
+
+1344548212 e:\programming\c++\robinscodebase\rslib\code\core\containers\keyvaluemap.h
+
+1344548224 e:\programming\c++\robinscodebase\rslib\code\core\containers\list.h
+
+1344548250 e:\programming\c++\robinscodebase\rslib\code\core\containers\tree.h
+
+1379265350 e:\programming\c++\robinscodebase\rslib\code\core\text\string.h
+
+1344592778 e:\programming\c++\robinscodebase\rslib\code\core\text\keyvaluestringpair.h
+
+1344548528 e:\programming\c++\robinscodebase\rslib\code\core\text\keyvaluestringarray.h
+
+1344548554 e:\programming\c++\robinscodebase\rslib\code\core\text\keyvaluestringtree.h
+
+1344548394 e:\programming\c++\robinscodebase\rslib\code\core\files\file.h
+
+1438690896 e:\programming\c++\robinscodebase\rslib\code\core\files\filestream.h
+
+1439441145 e:\programming\c++\robinscodebase\rslib\code\core\files\wavefile.h
+
+1439439176 e:\programming\c++\robinscodebase\rslib\code\core\files\fileinputoutput.h
+
+1346175199 e:\programming\c++\robinscodebase\rslib\code\core\misc\logger.h
+
+1346340126 e:\programming\c++\robinscodebase\rslib\code\core\misc\systeminformation.h
+
+1412878467 e:\programming\c++\robinscodebase\rslib\code\core\misc\callback.h
+
+1346246957 e:\programming\c++\robinscodebase\rslib\code\core\misc\parameter.h
+
+1461863823 e:\programming\c++\robinscodebase\rslib\code\math\rsmath.h
+	"../Core/RSCore.h"
+	"Types/Complex.h"
+	"Functions/IntegerFunctions.h"
+	"Functions/RealFunctions.h"
+	"Functions/Sigmoids.h"
+	"Functions/FunctionIterators.h"
+	"Functions/ComplexFunctions.inl"
+	"Functions/MoebiusTransform.h"
+	"Geometry/Point2D.h"
+	"Geometry/Rectangle2D.h"
+	"Geometry/Triangle2D.h"
+	"Geometry/Polygon2D.h"
+	"Geometry/AffineTransform2D.h"
+	"Types/BigNumber.h"
+	"Types/BigInt.h"
+	"Types/BigFloat.h"
+	"Types/ModularInteger.inl"
+	"Types/Vector.h"
+	"Types/Matrix.h"
+	"Types/Matrix.inl"
+	"Types/MultiArray.inl"
+	"Types/Polynomial.h"
+	"Types/Polynomial.inl"
+	"Types/Tensor.h"
+	"Misc/NumericCalculus.h"
+	"Misc/LinearAlgebra.inl"
+	"Misc/PolynomialAlgorithms.h"
+	"Misc/Interpolation.h"
+	"Misc/CurveFitting.h"
+	"Misc/Transforms.inl"
+	"Misc/Statistics.inl"
+	"Misc/FourierTransformer.h"
+	"Misc/DifferentialEquationSystem.h"
+	"Misc/NumberTheory.inl"
+	"Misc/FunctionObjects.h"
+	"Misc/GradientBasedMinimizer.h"
+	"Misc/MultiLayerPerceptron.h"
+
+1440521162 e:\programming\c++\robinscodebase\rslib\code\math\types\complex.h
+
+1437691942 e:\programming\c++\robinscodebase\rslib\code\math\functions\integerfunctions.h
+
+1459867987 e:\programming\c++\robinscodebase\rslib\code\math\functions\realfunctions.h
+
+1461864542 e:\programming\c++\robinscodebase\rslib\code\math\functions\sigmoids.h
+
+1456015742 e:\programming\c++\robinscodebase\rslib\code\math\functions\functioniterators.h
+
+1433874317 e:\programming\c++\robinscodebase\rslib\code\math\functions\complexfunctions.inl
+	"ComplexFunctions.h"
+
+1379937493 e:\programming\c++\robinscodebase\rslib\code\math\functions\complexfunctions.h
+
+1379937493 e:\programming\c++\robinscodebase\rslib\code\math\functions\moebiustransform.h
+
+1379937493 e:\programming\c++\robinscodebase\rslib\code\math\geometry\point2d.h
+
+1344549640 e:\programming\c++\robinscodebase\rslib\code\math\geometry\rectangle2d.h
+
+1344549652 e:\programming\c++\robinscodebase\rslib\code\math\geometry\triangle2d.h
+
+1344549630 e:\programming\c++\robinscodebase\rslib\code\math\geometry\polygon2d.h
+
+1344549592 e:\programming\c++\robinscodebase\rslib\code\math\geometry\affinetransform2d.h
+
+1412879238 e:\programming\c++\robinscodebase\rslib\code\math\types\bignumber.h
+
+1381231794 e:\programming\c++\robinscodebase\rslib\code\math\types\bigint.h
+
+1412875683 e:\programming\c++\robinscodebase\rslib\code\math\types\bigfloat.h
+
+1435939692 e:\programming\c++\robinscodebase\rslib\code\math\types\modularinteger.inl
+	"ModularInteger.h"
+
+1382552165 e:\programming\c++\robinscodebase\rslib\code\math\types\modularinteger.h
+
+1413552729 e:\programming\c++\robinscodebase\rslib\code\math\types\vector.h
+
+1449630774 e:\programming\c++\robinscodebase\rslib\code\math\types\matrix.h
+
+1413999108 e:\programming\c++\robinscodebase\rslib\code\math\types\matrix.inl
+
+1346258536 e:\programming\c++\robinscodebase\rslib\code\math\types\multiarray.inl
+	"MultiArray.h"
+
+1344549942 e:\programming\c++\robinscodebase\rslib\code\math\types\multiarray.h
+
+1435940243 e:\programming\c++\robinscodebase\rslib\code\math\types\polynomial.h
+
+1436208087 e:\programming\c++\robinscodebase\rslib\code\math\types\polynomial.inl
+
+1413214974 e:\programming\c++\robinscodebase\rslib\code\math\types\tensor.h
+
+1427660361 e:\programming\c++\robinscodebase\rslib\code\math\misc\numericcalculus.h
+
+1461694414 e:\programming\c++\robinscodebase\rslib\code\math\misc\linearalgebra.inl
+
+1437695715 e:\programming\c++\robinscodebase\rslib\code\math\misc\polynomialalgorithms.h
+
+1437776380 e:\programming\c++\robinscodebase\rslib\code\math\misc\interpolation.h
+
+1358374671 e:\programming\c++\robinscodebase\rslib\code\math\misc\curvefitting.h
+
+1440632196 e:\programming\c++\robinscodebase\rslib\code\math\misc\transforms.inl
+
+1440392568 e:\programming\c++\robinscodebase\rslib\code\math\misc\statistics.inl
+
+1425320184 e:\programming\c++\robinscodebase\rslib\code\math\misc\fouriertransformer.h
+
+1427650883 e:\programming\c++\robinscodebase\rslib\code\math\misc\differentialequationsystem.h
+
+1428001836 e:\programming\c++\robinscodebase\rslib\code\math\misc\numbertheory.inl
+	"NumberTheory.h"
+
+1412175780 e:\programming\c++\robinscodebase\rslib\code\math\misc\numbertheory.h
+
+1457694906 e:\programming\c++\robinscodebase\rslib\code\math\misc\functionobjects.h
+
+1413635904 e:\programming\c++\robinscodebase\rslib\code\math\misc\gradientbasedminimizer.h
+
+1427564815 e:\programming\c++\robinscodebase\rslib\code\math\misc\multilayerperceptron.h
+
+1458672731 e:\programming\c++\robinscodebase\rslib\code\audio\rsaudio.h
+	"../Math/RSMath.h"
+	"Misc/AudioFunctions.h"
+	"Misc/BandwidthConverter.h"
+	"Misc/MiscAudio.h"
+	"Misc/Saturator.h"
+	"Misc/SlewRateLimiter.h"
+	"Misc/SlewRateLimiterLinear.h"
+	"Misc/WindowFunctions.h"
+	"Misc/Interpolator.h"
+	"Delay/DelayLine.h"
+	"Filters/FilterAnalyzer.h"
+	"Filters/FilterDesignFormulas.h"
+	"Filters/PrototypeDesigner.h"
+	"Filters/PoleZeroMapper.h"
+	"Filters/FilterCoefficientConverter.h"
+	"Filters/InfiniteImpulseResponseDesigner.h"
+	"Filters/Biquad.h"
+	"Filters/BiquadCascade.h"
+	"Filters/EngineersFilter.h"
+	"Filters/MovingAverage.h"
+	"Filters/ModalFilterBank.h"
+	"Filters/OnePoleFilter.h"
+	"Filters/FourPoleFilter.h"
+	"Filters/LadderFilter.h"
+	"Filters/StateVariableFilter.h"
+	"Filters/PhonoFilter.h"
+	"Filters/FakeResonanceFilter.h"
+	"Analysis/ResponseGetters.inl"
+	"Analysis/LinearPredictor.h"
+	"Analysis/FormantRemover.h"
+	"Analysis/EnvelopeFollower.h"
+	"Analysis/CyclicAutoCorrelator.h"
+	"Analysis/AutoCorrelationPitchDetector.h"
+	"Analysis/ZeroCrossingPitchDetector.h"
+	"Modulators/BreakpointModulator.h"
+	"Sampling/Resampler.h"
+	"Sampling/SampleManipulation.h"
+	"Sampling/PhaseVocoder.h"
+
+1456341947 e:\programming\c++\robinscodebase\rslib\code\audio\misc\audiofunctions.h
+
+1440388223 e:\programming\c++\robinscodebase\rslib\code\audio\misc\bandwidthconverter.h
+
+1441819860 e:\programming\c++\robinscodebase\rslib\code\audio\misc\miscaudio.h
+
+1461700731 e:\programming\c++\robinscodebase\rslib\code\audio\misc\saturator.h
+
+1440610985 e:\programming\c++\robinscodebase\rslib\code\audio\misc\slewratelimiter.h
+
+1347116913 e:\programming\c++\robinscodebase\rslib\code\audio\misc\slewratelimiterlinear.h
+
+1447363835 e:\programming\c++\robinscodebase\rslib\code\audio\misc\windowfunctions.h
+
+1455921054 e:\programming\c++\robinscodebase\rslib\code\audio\misc\interpolator.h
+
+1455914617 e:\programming\c++\robinscodebase\rslib\code\audio\delay\delayline.h
+
+1433445745 e:\programming\c++\robinscodebase\rslib\code\audio\filters\filteranalyzer.h
+
+1421617477 e:\programming\c++\robinscodebase\rslib\code\audio\filters\filterdesignformulas.h
+
+1437696067 e:\programming\c++\robinscodebase\rslib\code\audio\filters\prototypedesigner.h
+
+1434082784 e:\programming\c++\robinscodebase\rslib\code\audio\filters\polezeromapper.h
+
+1433968317 e:\programming\c++\robinscodebase\rslib\code\audio\filters\filtercoefficientconverter.h
+
+1434043003 e:\programming\c++\robinscodebase\rslib\code\audio\filters\infiniteimpulseresponsedesigner.h
+
+1457558058 e:\programming\c++\robinscodebase\rslib\code\audio\filters\biquad.h
+
+1434647220 e:\programming\c++\robinscodebase\rslib\code\audio\filters\biquadcascade.h
+
+1434126734 e:\programming\c++\robinscodebase\rslib\code\audio\filters\engineersfilter.h
+
+1458258282 e:\programming\c++\robinscodebase\rslib\code\audio\filters\movingaverage.h
+
+1457641304 e:\programming\c++\robinscodebase\rslib\code\audio\filters\modalfilterbank.h
+
+1345716320 e:\programming\c++\robinscodebase\rslib\code\audio\filters\onepolefilter.h
+
+1421617612 e:\programming\c++\robinscodebase\rslib\code\audio\filters\fourpolefilter.h
+
+1460841415 e:\programming\c++\robinscodebase\rslib\code\audio\filters\ladderfilter.h
+
+1428011457 e:\programming\c++\robinscodebase\rslib\code\audio\filters\statevariablefilter.h
+
+1344548016 e:\programming\c++\robinscodebase\rslib\code\audio\filters\phonofilter.h
+
+1456463435 e:\programming\c++\robinscodebase\rslib\code\audio\filters\fakeresonancefilter.h
+
+1456411621 e:\programming\c++\robinscodebase\rslib\code\audio\analysis\responsegetters.inl
+	"ResponseGetters.h"
+
+1456411571 e:\programming\c++\robinscodebase\rslib\code\audio\analysis\responsegetters.h
+
+1450753598 e:\programming\c++\robinscodebase\rslib\code\audio\analysis\linearpredictor.h
+
+1344547782 e:\programming\c++\robinscodebase\rslib\code\audio\analysis\formantremover.h
+
+1456558555 e:\programming\c++\robinscodebase\rslib\code\audio\analysis\envelopefollower.h
+
+1435861240 e:\programming\c++\robinscodebase\rslib\code\audio\analysis\cyclicautocorrelator.h
+
+1427233142 e:\programming\c++\robinscodebase\rslib\code\audio\analysis\autocorrelationpitchdetector.h
+
+1427302175 e:\programming\c++\robinscodebase\rslib\code\audio\analysis\zerocrossingpitchdetector.h
+
+1438690721 e:\programming\c++\robinscodebase\rslib\code\audio\modulators\breakpointmodulator.h
+
+1454436702 e:\programming\c++\robinscodebase\rslib\code\audio\sampling\resampler.h
+
+1344548146 e:\programming\c++\robinscodebase\rslib\code\audio\sampling\samplemanipulation.h
+
+1449813797 e:\programming\c++\robinscodebase\rslib\code\audio\sampling\phasevocoder.h
+
+1344952553 e:\programming\c++\robinscodebase\rslib\code\graphics\rsgraphics.h
+	"../Math/RSMath.h"
+	"Misc/ColorSpaces.h"
+	"Misc/Justification.h"
+	"Misc/Image.h"
+	"Fonts/PixelFont.h"
+	"Fonts/PixelFontRoundedA7D0.h"
+	"Fonts/PixelFontRoundedBoldA10D0.h"
+	"Fonts/PixelFontRoundedBoldA16D0.h"
+	"Fonts/PixelFontRoundedBoldA9D0.h"
+	"Fonts/GlobalFontInstances.h"
+	"Rendering/WrappersForAGG.h"
+	"Rendering/GraphicsRenderer2D.h"
+
+1351765825 e:\programming\c++\robinscodebase\rslib\code\graphics\misc\colorspaces.h
+
+1344548998 e:\programming\c++\robinscodebase\rslib\code\graphics\misc\justification.h
+
+1353170874 e:\programming\c++\robinscodebase\rslib\code\graphics\misc\image.h
+
+1345129760 e:\programming\c++\robinscodebase\rslib\code\graphics\fonts\pixelfont.h
+
+1344548920 e:\programming\c++\robinscodebase\rslib\code\graphics\fonts\pixelfontroundeda7d0.h
+
+1344548948 e:\programming\c++\robinscodebase\rslib\code\graphics\fonts\pixelfontroundedbolda10d0.h
+
+1344548960 e:\programming\c++\robinscodebase\rslib\code\graphics\fonts\pixelfontroundedbolda16d0.h
+
+1344548936 e:\programming\c++\robinscodebase\rslib\code\graphics\fonts\pixelfontroundedbolda9d0.h
+
+1344548896 e:\programming\c++\robinscodebase\rslib\code\graphics\fonts\globalfontinstances.h
+
+1344549026 e:\programming\c++\robinscodebase\rslib\code\graphics\rendering\wrappersforagg.h
+	"../../Math/Geometry/Polygon2D.h"
+	"../Misc/Image.h"
+
+1345130029 e:\programming\c++\robinscodebase\rslib\code\graphics\rendering\graphicsrenderer2d.h
+
+1427290649 source:e:\programming\c++\robinscodebase\rslibtests\code\common\testutilities.cpp
+	"TestUtilities.h"
+
+1430858834 e:\programming\c++\robinscodebase\rslibtests\code\common\testutilities.h
+	"../Common/Prototypes.h"
+
+1434555539 source:e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsaudio\rsaudiotests.cpp
+	"RSAudioTests.h"
+	"Analysis/PitchDetectorTests.cpp"
+	"Filter/FilterTests.cpp"
+	"Misc/MiscAudioTests.cpp"
+	"Synthesis/ModalTests.cpp"
+
+1434552997 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsaudio\rsaudiotests.h
+	"Analysis/PitchDetectorTests.h"
+	"Filter/FilterTests.h"
+	"Misc/MiscAudioTests.h"
+	"Synthesis/ModalTests.h"
+
+1345138979 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsaudio\analysis\pitchdetectortests.h
+	"../../UnitTestUtilities.h"
+
+1357402104 e:\programming\c++\robinscodebase\rslibtests\code\unittests\unittestutilities.h
+	"../Common/TestUtilities.h"
+
+1437695532 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsaudio\filter\filtertests.h
+	"../../UnitTestUtilities.h"
+
+1431016427 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsaudio\misc\miscaudiotests.h
+	"../../UnitTestUtilities.h"
+
+1345139055 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsaudio\synthesis\modaltests.h
+	"../../UnitTestUtilities.h"
+
+1345130882 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsaudio\analysis\pitchdetectortests.cpp
+	"PitchDetectorTests.h"
+
+1437695687 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsaudio\filter\filtertests.cpp
+	"FilterTests.h"
+
+1442858327 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsaudio\misc\miscaudiotests.cpp
+	"MiscAudioTests.h"
+
+1345132614 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsaudio\synthesis\modaltests.cpp
+	"ModalTests.h"
+
+1346177106 source:e:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\rscoretests.cpp
+	"RSCoreTests.h"
+	"Definitions/TypeSizeTests.cpp"
+	"Containers/ArrayTests.cpp"
+	"Containers/KeyValueMapTests.cpp"
+	"Containers/ListTests.cpp"
+	"Containers/TreeTests.cpp"
+	"Utilities/BufferFunctionTests.cpp"
+	"Utilities/NumberManipulationsTests.cpp"
+	"Utilities/SortAndSearchTests.cpp"
+	"Text/StringTests.cpp"
+	"Text/KeyValueStringTreeTests.cpp"
+	"Files/FileTests.cpp"
+	"Misc/CallbackTests.cpp"
+
+1346177081 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\rscoretests.h
+	"Definitions/TypeSizeTests.h"
+	"Containers/ArrayTests.h"
+	"Containers/KeyValueMapTests.h"
+	"Containers/ListTests.h"
+	"Containers/TreeTests.h"
+	"Utilities/BufferFunctionTests.h"
+	"Utilities/NumberManipulationsTests.h"
+	"Utilities/SortAndSearchTests.h"
+	"Text/StringTests.h"
+	"Text/KeyValueStringTreeTests.h"
+	"Files/FileTests.h"
+	"Misc/CallbackTests.h"
+
+1345138946 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\definitions\typesizetests.h
+	"../../UnitTestUtilities.h"
+
+1381337731 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\containers\arraytests.h
+	"../../UnitTestUtilities.h"
+
+1345139055 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\containers\keyvaluemaptests.h
+	"../../UnitTestUtilities.h"
+
+1345139055 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\containers\listtests.h
+	"../../UnitTestUtilities.h"
+
+1345139055 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\containers\treetests.h
+	"../../UnitTestUtilities.h"
+
+1427216037 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\utilities\bufferfunctiontests.h
+	"../../UnitTestUtilities.h"
+
+1345139055 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\utilities\numbermanipulationstests.h
+	"../../UnitTestUtilities.h"
+
+1345139055 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\utilities\sortandsearchtests.h
+	"../../UnitTestUtilities.h"
+
+1345139055 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\text\stringtests.h
+	"../../UnitTestUtilities.h"
+
+1345139055 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\text\keyvaluestringtreetests.h
+	"../../UnitTestUtilities.h"
+
+1346350304 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\files\filetests.h
+	"../Text/StringTests.h"
+
+1346188532 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\misc\callbacktests.h
+	"../../UnitTestUtilities.h"
+
+1428954005 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\definitions\typesizetests.cpp
+	"TypeSizeTests.h"
+
+1421352856 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\containers\arraytests.cpp
+	"ArrayTests.h"
+
+1345049756 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\containers\keyvaluemaptests.cpp
+	"KeyValueMapTests.h"
+
+1328791180 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\containers\listtests.cpp
+	"ListTests.h"
+	"../../HelperFunctions/TestHelperFunctions.h"
+	"../../../../Libraries/RSCore/DataStructures/List.h"
+
+1308752730 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\containers\treetests.cpp
+	"TreeTests.h"
+
+1427230569 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\utilities\bufferfunctiontests.cpp
+	"BufferFunctionTests.h"
+
+1342701976 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\utilities\numbermanipulationstests.cpp
+	"NumberManipulationsTests.h"
+
+1342712286 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\utilities\sortandsearchtests.cpp
+	"SortAndSearchTests.h"
+
+1342640296 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\text\stringtests.cpp
+	"StringTests.h"
+
+1308753532 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\text\keyvaluestringtreetests.cpp
+	"KeyValueStringTreeTests.h"
+
+1439506028 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\files\filetests.cpp
+	"FileTests.h"
+
+1412877155 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rscore\misc\callbacktests.cpp
+	"CallbackTests.h"
+
+1351723380 source:e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsgraphics\rsgraphicstests.cpp
+	"RSGraphicsTests.h"
+	"Fonts/FontTests.cpp"
+	"Rendering/RenderingTests.cpp"
+
+1351722588 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsgraphics\rsgraphicstests.h
+	"Fonts/FontTests.h"
+	"Rendering/RenderingTests.h"
+
+1345138946 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsgraphics\fonts\fonttests.h
+	"../../UnitTestUtilities.h"
+
+1345138979 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsgraphics\rendering\renderingtests.h
+	"../../UnitTestUtilities.h"
+
+1345058215 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsgraphics\fonts\fonttests.cpp
+	"FontTests.h"
+
+1342031962 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsgraphics\rendering\renderingtests.cpp
+	"RenderingTests.h"
+
+1413289912 source:e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\rsmathtests.cpp
+	"RSMathTests.h"
+	"Functions/IntegerFunctionTests.cpp"
+	"Functions/MoebiusTransformTests.cpp"
+	"Functions/RealFunctionTests.cpp"
+	"Geometry/Point2DTests.cpp"
+	"Geometry/Polygon2DTests.cpp"
+	"Geometry/Triangle2DTests.cpp"
+	"Misc/DifferentialEquationTests.cpp"
+	"Misc/TransformsTests.cpp"
+	"Misc/LinearAlgebraTests.cpp"
+	"Misc/PolynomialTests.cpp"
+	"Misc/MiscMathTests.cpp"
+	"Misc/NumberTheoryTests.cpp"
+	"Types/BigIntTests.cpp"
+	"Types/ComplexTests.cpp"
+	"Types/MultiArrayTests.cpp"
+	"Types/VectorTests.cpp"
+	"Types/MatrixTests.cpp"
+
+1413289899 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\rsmathtests.h
+	"Functions/IntegerFunctionTests.h"
+	"Functions/MoebiusTransformTests.h"
+	"Functions/RealFunctionTests.h"
+	"Geometry/Point2DTests.h"
+	"Geometry/Polygon2DTests.h"
+	"Geometry/Triangle2DTests.h"
+	"Misc/DifferentialEquationTests.h"
+	"Misc/TransformsTests.h"
+	"Misc/LinearAlgebraTests.h"
+	"Misc/PolynomialTests.h"
+	"Misc/MiscMathTests.h"
+	"Misc/NumberTheoryTests.h"
+	"Types/BigIntTests.h"
+	"Types/ComplexTests.h"
+	"Types/MultiArrayTests.h"
+	"Types/VectorTests.h"
+	"Types/MatrixTests.h"
+
+1412257812 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\functions\integerfunctiontests.h
+	"../../UnitTestUtilities.h"
+
+1345138979 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\functions\moebiustransformtests.h
+	"../../UnitTestUtilities.h"
+
+1459861418 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\functions\realfunctiontests.h
+	"../../UnitTestUtilities.h"
+
+1345139055 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\geometry\point2dtests.h
+	"../../UnitTestUtilities.h"
+
+1345139055 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\geometry\polygon2dtests.h
+	"../../UnitTestUtilities.h"
+
+1345139055 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\geometry\triangle2dtests.h
+	"../../UnitTestUtilities.h"
+
+1345139055 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\misc\differentialequationtests.h
+	"../../UnitTestUtilities.h"
+
+1346250694 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\misc\transformstests.h
+	"../../UnitTestUtilities.h"
+
+1413459632 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\misc\linearalgebratests.h
+	"../../UnitTestUtilities.h"
+
+1437695535 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\misc\polynomialtests.h
+	"../../UnitTestUtilities.h"
+
+1440165189 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\misc\miscmathtests.h
+	"../../UnitTestUtilities.h"
+
+1382365928 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\misc\numbertheorytests.h
+	"../../UnitTestUtilities.h"
+
+1379245614 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\types\biginttests.h
+	"../../UnitTestUtilities.h"
+
+1345139055 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\types\complextests.h
+	"../../UnitTestUtilities.h"
+
+1345139055 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\types\multiarraytests.h
+	"../../UnitTestUtilities.h"
+
+1345139055 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\types\vectortests.h
+	"../../UnitTestUtilities.h"
+
+1413372155 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\types\matrixtests.h
+	"../../UnitTestUtilities.h"
+
+1412879526 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\functions\integerfunctiontests.cpp
+	"IntegerFunctionTests.h"
+
+1379937657 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\functions\moebiustransformtests.cpp
+	"MoebiusTransformTests.h"
+
+1461864286 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\functions\realfunctiontests.cpp
+	"RealFunctionTests.h"
+
+1308753306 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\geometry\point2dtests.cpp
+	"Point2DTests.h"
+
+1312547718 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\geometry\polygon2dtests.cpp
+	"Polygon2DTests.h"
+
+1308753418 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\geometry\triangle2dtests.cpp
+	"Triangle2DTests.h"
+
+1345055929 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\misc\differentialequationtests.cpp
+	"DifferentialEquationTests.h"
+
+1433439216 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\misc\transformstests.cpp
+	"TransformsTests.h"
+
+1413472965 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\misc\linearalgebratests.cpp
+	"LinearAlgebraTests.h"
+
+1437695643 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\misc\polynomialtests.cpp
+	"PolynomialTests.h"
+
+1413822018 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\misc\miscmathtests.cpp
+	"MiscMathTests.h"
+
+1413468773 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\misc\numbertheorytests.cpp
+	"NumberTheoryTests.h"
+
+1412879398 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\types\biginttests.cpp
+	"ComplexTests.h"
+
+1308753042 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\types\complextests.cpp
+	"ComplexTests.h"
+
+1342700648 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\types\multiarraytests.cpp
+	"MultiArrayTests.h"
+
+1345568846 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\types\vectortests.cpp
+	"VectorTests.h"
+
+1413999968 e:\programming\c++\robinscodebase\rslibtests\code\unittests\rsmath\types\matrixtests.cpp
+	"MatrixTests.h"
+
+1437695608 source:e:\programming\c++\robinscodebase\rslibtests\code\unittests\unittests.cpp
+	"RSCore/RSCoreTests.h"
+	"RSMath/RSMathTests.h"
+	"RSAudio/RSAudioTests.h"
+	"RSGraphics/RSGraphicsTests.h"
+
+1357402106 source:e:\programming\c++\robinscodebase\rslibtests\code\unittests\unittestutilities.cpp
+	"UnitTestUtilities.h"
+

@@ -1,0 +1,61 @@
+
+-maximum line-width: 100 characters
+-block indent: 2 characters
+
+
+doxygen compatible comments
+
+example class:
+
+#ifndef RS_FOOBAR_H
+#define RS_FOOBAR_H
+
+namespace RSLib
+{
+
+  class FooBar 
+  {
+
+  public:
+
+    //---------------------------------------------------------------------------------------------
+    /** \name Construction/Destruction */
+
+	/** Constructor. */
+    FooBar(int foo, int bar);
+ 
+    /** Destructor. */ 
+    ~FooBar();
+   
+    //---------------------------------------------------------------------------------------------
+    /** \name Accessors */	
+	
+    /** Returns the value of foo. */ 
+	int getFoo();
+	
+    /** Returns the value of bar. */ 	
+	int getBar();
+
+	
+    /** Sets the value of foo. */ 	
+	void setFoo(int newFoo);
+	
+    /** Sets the value of bar. */ 		
+	void setBar(int newBar);
+   
+    //---------------------------------------------------------------------------------------------
+    /** \name Data */	
+   
+protected:
+   
+    int foo;
+
+private:
+
+    int bar;
+
+};
+
+}
+
+#endif 

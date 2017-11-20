@@ -1,0 +1,1 @@
+When building with MS Visual Studio, not all generated files end up in the folder "RSLib/GeneratedFiles/" as they are supposed to, but there will be an additional directory "RSLib/Build/GeneratedFiles" where it will dump the build logfile. I don't know, why this happens or how to fix it. However, for backup purposes, it's safe to delete both "GeneratedFiles" folders.

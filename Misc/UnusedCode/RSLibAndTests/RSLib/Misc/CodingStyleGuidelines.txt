@@ -1,0 +1,20 @@
+-line-width is 100 characters max
+-class names use BigCamelCase
+-member names use smallCamelCase
+-non self-explanatory member-functions are described by doxygen comments
+-where it makes sense (bigger classes), member functions are grouped into 
+ categories using the doxygen syntax: /** \name MyCategory */ 
+-before a new category begins, there are two lines of whitepsace
+-callback-type functions begin with "on" like onMouseDown etc.
+-when more then one classes are declared in one file, they are separated by
+ lines of the "================" type
+
+typical categories for member functions (for copy/paste):
+/** \name Construction/Destruction */
+/** \name Setup */
+/** \name Inquiry */
+/** \name Misc */
+/** \name Static Member Functions */
+/** \name Internal Functions */
+/** \name Data */
+/** \name Operators */
