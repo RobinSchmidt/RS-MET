@@ -23,13 +23,22 @@ public:
 
   FilterPlotter();
 
+  /** Decides whether frequency parameters that are passed in to certain functions should be
+  interpreted as radian frequencies (typically denoted as omega) or not. In the latter case, they
+  are interpreted as being in Hz for analog filters or as fractions of the sample rate for 
+  digital filters. By default, i.e. if you don't call this function, they are interpreted as 
+  radian frequencies. */
+  void setFrequenciesAreRadian(bool areRadian);
+
   /** Adds a filter specification in terms of poles, zeros and gain to our list. You may also pass 
   a sampleRate in which case the poles and zeros will be interpreted as z-plane values. Otherwise
-  an analog filter (corresponding to an infinite sampl rate) will be assumed and the poles and 
+  an analog filter (corresponding to an infinite sample rate) will be assumed and the poles and 
   zeros are interpreted as being in the s-plane */
   void addPoleZeroSet(int numPoles, std::complex<T>* poles, int numZeros, std::complex<T>* zeros,
     T gain, T sampleRate = inf);
   // maybe rename to addFilter
+
+
 
   /** Plots the magnitude responses of all the filters. */
   void plotMagnitude(int numFreqs, T lowFreq, T highFreq, bool logFreqAxis, bool decibels);
@@ -64,6 +73,8 @@ public:
     std::vector<std::complex<T>>& p, T k);
 
 protected:
+
+  T freqScale = 1.0;
 
   struct FilterSpecification
   {

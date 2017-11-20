@@ -14,6 +14,15 @@ FilterPlotter<T>::FilterPlotter()
 }
 
 template <class T>
+void FilterPlotter<T>::setFrequenciesAreRadian(bool areRadian)
+{
+  if(areRadian)
+    freqScale = T(1);
+  else
+    freqScale = 2*pi;
+}
+
+template <class T>
 void FilterPlotter<T>::addPoleZeroSet(int numPoles, complex<T>* poles, int numZeros, 
   complex<T>* zeros, T gain, T sampleRate)
 {
@@ -60,12 +69,12 @@ vector<complex<T>> FilterPlotter<T>::getFrequencyResponse(int index, vector<T>& 
 {
   FilterSpecification spec = filterSpecs[index];
   bool isDigital = spec.sampleRate != inf;
-  complex<T> j(0.0, 1.0);                        // imaginary unit                         
-  vector<complex<T>> H(f.size());                // frequency response
+  complex<T> j(0.0, 1.0);                          // imaginary unit                         
+  vector<complex<T>> H(f.size());                  // frequency response
   for(int k = 0; k < f.size(); k++) {
-    complex<T> s = j * complex<T>(2*pi*f[k]);    // value on s-plane where we evaluate H
+    complex<T> s = j * complex<T>(freqScale*f[k]); // value on s-plane where we evaluate H
     if(isDigital)
-      s = exp(s/spec.sampleRate);                // conversion of analog "s" to digital "z"
+      s = exp(s/spec.sampleRate);                  // conversion of analog "s" to digital "z"
     H[k] = transferFunctionZPK(s, spec.zeros, spec.poles, spec.gain); 
   }
   return H;
