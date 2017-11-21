@@ -60,6 +60,7 @@ template RAPT::rsStateVariableFilter<float, float>;
 template RAPT::rsPrototypeDesigner<float>;
 //template RAPT::rsPrototypeDesigner<double>;
 template RAPT::rsPoleZeroMapper<float>;
+template RAPT::rsFilterCoefficientConverter<float>;
 
 // Physics:
 template RAPT::rsParticleSystem<float>;
