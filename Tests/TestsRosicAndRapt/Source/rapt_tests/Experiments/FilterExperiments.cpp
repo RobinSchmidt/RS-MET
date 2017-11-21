@@ -331,7 +331,7 @@ void prototypeDesign()
   // create plotter, pass filter specification and plot:
   FilterPlotter<float> plt;
   plt.addFilterSpecification(spec);
-  //plt.addFilterSpecification(pd.getNumFinitePoles(), poles, pd.getNumFiniteZeros(), zeros, 1.f);
+  plt.addFilterSpecification(pd.getNumFinitePoles(), poles, pd.getNumFiniteZeros(), zeros, 1.f);
   plt.plotMagnitude(200, 0, 3, false, false);
 
   // issues:

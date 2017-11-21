@@ -44,7 +44,7 @@ void FilterPlotter<T>::addFilterSpecification(const FilterSpecificationZPK<T>& s
 {
   filterSpecs.push_back(spec);
 }
-
+/*
 // old:
 template <class T>
 void FilterPlotter<T>::plotMagnitude(int numFreqs, T lowFreq, T highFreq, bool logFreqAxis, 
@@ -62,8 +62,8 @@ void FilterPlotter<T>::plotMagnitude(int numFreqs, T lowFreq, T highFreq, bool l
   }
   plot();
 }
+*/
 
-/*
 // new - doens't work yet because the data in the datafile is wrongly formatted:
 template <class T>
 void FilterPlotter<T>::plotMagnitude(int numFreqs, T lowFreq, T highFreq, bool logFreqAxis, 
@@ -79,10 +79,9 @@ void FilterPlotter<T>::plotMagnitude(int numFreqs, T lowFreq, T highFreq, bool l
     data[0][i+1] = mag;
     addGraph(string("i 0 u 1:") + s(i+2) + string(" w lines lw 1.5 axes x1y1 notitle"));
   }
-  addData(data);
+  addDataBlockColumnLine(data);
   plot();
 }
-*/
 
 template <class T>
 vector<T> FilterPlotter<T>::getFrequencyAxis(int numFreqs, T lowFreq, T highFreq, bool logarithmic)

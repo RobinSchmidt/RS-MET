@@ -206,7 +206,21 @@ public:
   a 2nd parameter and the innermost index runs from 0...2 (over the dimensions of the 3D vector).
   */
   template <class T>
-  void addData(const std::vector<std::vector<std::vector<T>>>& d);
+  void addDataBlockLineColumn(const std::vector<std::vector<std::vector<T>>>& d);
+
+  // for legacy - remove soon
+  template <class T>
+  void addData(const std::vector<std::vector<std::vector<T>>>& d)
+  { addDataBlockLineColumn(d); }
+
+  /** Similar to addDataBlockLineColumn but here the middle index runs over the columns and the 
+  last index over the lines. In each block, all vectors for the same middle index must have the 
+  same length. For example size(d[0][0]) == size(d[0][1]) == ... size[0][n] and also
+  size(d[1][0]) == size(d[1][1]) == ... size(d[1][n]) etc. where n = size(d)-1. It can be used to
+  add a function family with an arbitrary number of functions (or sets of such function 
+  families). */
+  template <class T>
+  void addDataBlockColumnLine(const std::vector<std::vector<std::vector<T>>>& d);
 
   /** Adds a segmented dataset to our datafile. It's similar to 
   addData(int numRows, int numColumns, T **data) just that instead of passing a number of rows,

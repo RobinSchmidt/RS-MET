@@ -282,7 +282,7 @@ void GNUPlotter::setDataPrecision(unsigned int n)
 }
 
 template <class T>
-void GNUPlotter::addData(const vector<vector<vector<T>>>& d)
+void GNUPlotter::addDataBlockLineColumn(const vector<vector<vector<T>>>& d)
 {
   ofstream out(dataPath, ofstream::app);
   for(size_t i = 0; i < d.size(); i++) {           // loop over blocks
@@ -298,9 +298,29 @@ void GNUPlotter::addData(const vector<vector<vector<T>>>& d)
   dataInfo.push_back(DataInfo(d.size(), d[0].size())); // keep track of written data
 }
 // explicit instantiations for double, float and int:
-template void GNUPlotter::addData(const vector<vector<vector<double>>>& d);
-template void GNUPlotter::addData(const vector<vector<vector<float>>>& d);
-template void GNUPlotter::addData(const vector<vector<vector<int>>>& d);
+template void GNUPlotter::addDataBlockLineColumn(const vector<vector<vector<double>>>& d);
+template void GNUPlotter::addDataBlockLineColumn(const vector<vector<vector<float>>>& d);
+template void GNUPlotter::addDataBlockLineColumn(const vector<vector<vector<int>>>& d);
+
+template <class T>
+void GNUPlotter::addDataBlockColumnLine(const std::vector<std::vector<std::vector<T>>>& d)
+{
+  ofstream out(dataPath, ofstream::app);
+  for(size_t i = 0; i < d.size(); i++) {           // loop over blocks
+    for(size_t j = 0; j < d[i][0].size(); j++) {   // loop over columns
+      for(size_t k = 0; k < d[i].size(); k++)      // loop over lines
+        out << sd(d[i][k][j]) + " ";
+      out << "\n"; 
+    }
+    out << "\n"; 
+  }
+  out << "\n";
+  out.close();
+  dataInfo.push_back(DataInfo(d.size(), d[0][0].size()));
+}
+template void GNUPlotter::addDataBlockColumnLine(const vector<vector<vector<double>>>& d);
+template void GNUPlotter::addDataBlockColumnLine(const vector<vector<vector<float>>>& d);
+template void GNUPlotter::addDataBlockColumnLine(const vector<vector<vector<int>>>& d);
 
 template <class T>
 void GNUPlotter::addData(int numBlocks, int *blockLengths, int numColumns, T **data)
