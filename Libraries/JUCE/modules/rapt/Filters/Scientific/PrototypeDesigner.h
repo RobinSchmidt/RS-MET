@@ -240,18 +240,18 @@ public:
   T findFrequencyWithMagnitude(T magnitude, T wLow, T wHigh);
 
   /** Returns the number of finite poles. */
-  int getNumFinitePoles();
+  int getNumFinitePoles() const;
 
   /** Returns the number of finite zeros. */
-  int getNumFiniteZeros();
+  int getNumFiniteZeros() const;
 
   /** Returns the number of non-redundant finite zeros (each pair of complex conjugate zeros counts
   only once). */
-  int getNumNonRedundantFiniteZeros();
+  int getNumNonRedundantFiniteZeros() const;
 
   /** Returns the number of non-redundant finite poles (each pair of complex conjugate poles counts 
   only once). */
-  int getNumNonRedundantFinitePoles();
+  int getNumNonRedundantFinitePoles() const;
 
   /** Returns the passbandRipple in dB. */
   T getPassbandRipple() const { return Ap; }

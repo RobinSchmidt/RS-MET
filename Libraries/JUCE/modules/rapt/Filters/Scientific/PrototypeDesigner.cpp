@@ -694,19 +694,19 @@ T rsPrototypeDesigner<T>::findFrequencyWithMagnitude(T magnitude, T wLow, T wHig
 }
 
 template<class T>
-int rsPrototypeDesigner<T>::getNumFinitePoles()
+int rsPrototypeDesigner<T>::getNumFinitePoles() const
 {
   return numFinitePoles;
 }
 
 template<class T>
-int rsPrototypeDesigner<T>::getNumFiniteZeros()
+int rsPrototypeDesigner<T>::getNumFiniteZeros() const
 {
   return numFiniteZeros;
 }
 
 template<class T>
-int rsPrototypeDesigner<T>::getNumNonRedundantFinitePoles()
+int rsPrototypeDesigner<T>::getNumNonRedundantFinitePoles() const
 {
   if( rsIsEven(numFinitePoles) )
     return numFinitePoles/2;
@@ -715,7 +715,7 @@ int rsPrototypeDesigner<T>::getNumNonRedundantFinitePoles()
 }
 
 template<class T>
-int rsPrototypeDesigner<T>::getNumNonRedundantFiniteZeros()
+int rsPrototypeDesigner<T>::getNumNonRedundantFiniteZeros() const
 {
   if( rsIsEven(numFiniteZeros) )
     return numFiniteZeros/2;

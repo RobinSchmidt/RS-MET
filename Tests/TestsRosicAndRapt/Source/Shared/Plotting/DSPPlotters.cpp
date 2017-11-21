@@ -40,6 +40,12 @@ void FilterPlotter<T>::addFilterSpecification(int numPoles, complex<T>* poles, i
 }
 
 template <class T>
+void FilterPlotter<T>::addFilterSpecification(const FilterSpecificationZPK<T>& spec)
+{
+  filterSpecs.push_back(spec);
+}
+
+template <class T>
 void FilterPlotter<T>::plotMagnitude(int numFreqs, T lowFreq, T highFreq, bool logFreqAxis, 
   bool decibels)
 {
@@ -47,7 +53,10 @@ void FilterPlotter<T>::plotMagnitude(int numFreqs, T lowFreq, T highFreq, bool l
   for(unsigned int i = 0; i < filterSpecs.size(); i++) {
     vector<complex<T>> H = getFrequencyResponse(i, f);
     vector<T> mag = getMagnitudes(H);
-    addDataArrays(numFreqs, &f[0], &mag[0]);
+    addDataArrays(numFreqs, &f[0], &mag[0]); 
+      // wrong - because each data-set ahs its own freq-axis - works only, if there's juts one
+      // filter spec
+
     addGraph(string("i 0 u 1:") + s(i+2) + string(" w lines lw 1.5 axes x1y1 notitle"));
   }
   plot();

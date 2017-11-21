@@ -279,18 +279,36 @@ void nonUniformMovingAverage()
   // gets averaged out better?
 }
 
-
-void reflectRoots(complex<float>* roots, int N) // rename to mirrorFirstHalf, make generic, add to library
+template<class T>
+void reflectRoots(complex<T>* roots, int N) // rename to mirrorFirstHalf, make generic, add to library
 {
   for(int i = 0; i <= N/2; i++)
     roots[N-1-i] = conj(roots[i]);
 }
+template<class T>
+FilterSpecificationZPK<T> getFilterSpecificationZPK(rsPrototypeDesigner<T>& pd)
+{
+  int nz = pd.getNumFiniteZeros();
+  int np = pd.getNumFinitePoles();
+  vector<complex<T>> z(nz);
+  vector<complex<T>> p(np);
+  pd.getPolesAndZeros(&p[0], &z[0]); // returns only the non-redundant upper halfplane poles
+  reflectRoots(&p[0], np);           // create full pole/zero set by reflection
+  reflectRoots(&z[0], nz);
+  FilterSpecificationZPK<T> spec;
+  spec.poles = p;
+  spec.zeros = z;
+  //spec.gain  = 1;
+  return spec;
+}
 void prototypeDesign()
 {
-  static const int N = 6;  // filter order
+  typedef float Real;
+
+  static const int N = 4;  // filter order
 
   // obtain filter poles and zeros:
-  std::complex<float> poles[N], zeros[N];
+  std::complex<Real> poles[N], zeros[N];
   rsPrototypeDesignerF pd;
   pd.setOrder(N);
   //pd.setApproximationMethod(rsPrototypeDesignerF::BUTTERWORTH);
@@ -305,17 +323,20 @@ void prototypeDesign()
   reflectRoots(poles, N);
   reflectRoots(zeros, N);
 
+  FilterSpecificationZPK<Real> spec = getFilterSpecificationZPK(pd);
+
   // create plotter, pass filter specification and plot:
   FilterPlotter<float> plt;
-  plt.addFilterSpecification(pd.getNumFinitePoles(), poles, pd.getNumFiniteZeros(), zeros, 1.f);
+  plt.addFilterSpecification(spec);
+  //plt.addFilterSpecification(pd.getNumFinitePoles(), poles, pd.getNumFiniteZeros(), zeros, 1.f);
   plt.plotMagnitude(2000, 0, 3, false, false);
-
 
   // issues:
 
-  // it seems, elliptic prototypes have an overall gain equal to the reciprocal of the linear 
-  // stopband rejection (passband ripple seems to have no effect), Papoulis design has also a
-  // wrong DC gain -> add overall gain to the prototype designer
+  // it seems, even order elliptic prototypes have an overall gain equal to the reciprocal of the 
+  // linear stopband rejection (passband ripple seems to have no effect), odd order ellicptics have
+  // a different gain and it seems to depend on the ripple (might be computed by evaluating DC 
+  // gain). Papoulis design has also a wrong DC gain -> add overall gain to the prototype designer
 
   // elliptic filters of odd order don't plot because the zeros are arranged wrongly (there's an
   // infinite zero in the middle of the array) - re-arrange the zero array in this case

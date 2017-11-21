@@ -53,8 +53,8 @@ public:
   void addFilterSpecification(int numPoles, std::complex<T>* poles, int numZeros, 
     std::complex<T>* zeros,  T gain, T sampleRate = inf);
 
-
-
+  /** Adds a filter specification via an object the FilterSpecificationZPK class. */
+  void addFilterSpecification(const FilterSpecificationZPK<T>& spec);
 
   /** Plots the magnitude responses of all the filters. */
   void plotMagnitude(int numFreqs, T lowFreq, T highFreq, bool logFreqAxis, bool decibels);
