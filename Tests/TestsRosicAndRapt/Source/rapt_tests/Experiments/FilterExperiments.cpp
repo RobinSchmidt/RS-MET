@@ -288,10 +288,13 @@ void reflectRoots(complex<T>* roots, int N) // rename to mirrorFirstHalf, make g
 template<class T>
 FilterSpecificationZPK<T> getFilterSpecificationZPK(rsPrototypeDesigner<T>& pd)
 {
+  // this function doesn't work when nz = 0
   int nz = pd.getNumFiniteZeros();
   int np = pd.getNumFinitePoles();
   vector<complex<T>> z(nz);
   vector<complex<T>> p(np);
+  //vector<complex<T>> z(max(nz, 1));
+  //vector<complex<T>> p(max(np, 1));
   pd.getPolesAndZeros(&p[0], &z[0]); // returns only the non-redundant upper halfplane poles
   reflectRoots(&p[0], np);           // create full pole/zero set by reflection
   reflectRoots(&z[0], nz);
@@ -329,7 +332,7 @@ void prototypeDesign()
   FilterPlotter<float> plt;
   plt.addFilterSpecification(spec);
   //plt.addFilterSpecification(pd.getNumFinitePoles(), poles, pd.getNumFiniteZeros(), zeros, 1.f);
-  plt.plotMagnitude(2000, 0, 3, false, false);
+  plt.plotMagnitude(200, 0, 3, false, false);
 
   // issues:
 
