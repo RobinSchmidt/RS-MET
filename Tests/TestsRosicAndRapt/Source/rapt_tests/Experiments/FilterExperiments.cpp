@@ -279,6 +279,7 @@ void nonUniformMovingAverage()
   // gets averaged out better?
 }
 
+
 template<class T>
 void reflectRoots(complex<T>* roots, int N) // rename to mirrorFirstHalf, make generic, add to library
 {
@@ -286,24 +287,28 @@ void reflectRoots(complex<T>* roots, int N) // rename to mirrorFirstHalf, make g
     roots[N-1-i] = conj(roots[i]);
 }
 template<class T>
+void removeInfiniteValues(vector<complex<T>>& z)
+{
+  for(size_t i = 0; i < z.size(); i++) {
+    if(isInfinite(z[i])) {
+      z.erase(z.begin() + i);
+      i--; }}
+}
+template<class T>
 FilterSpecificationZPK<T> getFilterSpecificationZPK(rsPrototypeDesigner<T>& pd)
 {
-  // this function doesn't work when nz = 0
   int nz = pd.getNumFiniteZeros();
   int np = pd.getNumFinitePoles();
-  vector<complex<T>> z(np);          // np is correct,  will be filled with inf and cleared later
-  vector<complex<T>> p(np);
-  //vector<complex<T>> z(max(nz, 1));
-  //vector<complex<T>> p(max(np, 1));
-  pd.getPolesAndZeros(&p[0], &z[0]); // returns only the non-redundant upper halfplane poles
+  vector<complex<T>> z(np);          // np is correct, we may get infinite zeros which will be..
+  vector<complex<T>> p(np);          // ..removed later
+  pd.getPolesAndZeros(&p[0], &z[0]); // returns only the non-redundant upper halfplane poles/zeros
   reflectRoots(&p[0], np);           // create full pole/zero set by reflection
   reflectRoots(&z[0], np);
-  if(nz == 0)  
-    z.clear(); // filters without finite zeros
+  removeInfiniteValues(z);
   FilterSpecificationZPK<T> spec;
   spec.poles = p;
   spec.zeros = z;
-  //spec.gain  = 1;
+  //spec.gain  = pd.getGain();
   return spec;
 }
 void prototypeDesign()
@@ -313,27 +318,20 @@ void prototypeDesign()
   static const int N = 4;  // filter order
 
   // obtain filter poles and zeros:
-  std::complex<Real> poles[N], zeros[N];
   rsPrototypeDesignerF pd;
-  pd.setOrder(N);
-  pd.setApproximationMethod(rsPrototypeDesignerF::BUTTERWORTH);
-  //pd.setApproximationMethod(rsPrototypeDesignerF::ELLIPTIC);
+  //pd.setApproximationMethod(rsPrototypeDesignerF::BUTTERWORTH);
+  pd.setApproximationMethod(rsPrototypeDesignerF::ELLIPTIC);
   //pd.setApproximationMethod(rsPrototypeDesignerF::PAPOULIS);
   //pd.setApproximationMethod(rsPrototypeDesignerF::BESSEL);
   pd.setPassbandRipple(1); 
   pd.setStopbandRejection(20);
-  //pd.getPolesAndZeros(poles, zeros); // returns only the non-redundant upper halfplane poles
-
-  // create full pole/zero set by reflection:
-  reflectRoots(poles, N);
-  reflectRoots(zeros, N);
+  pd.setOrder(N);
 
   FilterSpecificationZPK<Real> spec = getFilterSpecificationZPK(pd);
 
   // create plotter, pass filter specification and plot:
   FilterPlotter<float> plt;
   plt.addFilterSpecification(spec);
-  //plt.addFilterSpecification(pd.getNumFinitePoles(), poles, pd.getNumFiniteZeros(), zeros, 1.f);
   plt.plotMagnitude(200, 0, 3, false, false);
 
   // issues:
@@ -342,9 +340,6 @@ void prototypeDesign()
   // linear stopband rejection (passband ripple seems to have no effect), odd order ellicptics have
   // a different gain and it seems to depend on the ripple (might be computed by evaluating DC 
   // gain). Papoulis design has also a wrong DC gain -> add overall gain to the prototype designer
-
-  // elliptic filters of odd order don't plot because the zeros are arranged wrongly (there's an
-  // infinite zero in the middle of the array) - re-arrange the zero array in this case
 }
 
 void smoothingFilterOrders()
