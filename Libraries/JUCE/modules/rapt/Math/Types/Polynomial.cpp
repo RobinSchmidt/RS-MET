@@ -441,7 +441,7 @@ void rsPolynomial<T>::rootsToCoeffs(std::complex<T> *r, std::complex<T> *a, int 
 {
   std::complex<T> *rF = new std::complex<T>[N]; // only the finite roots
   int nF = rsCopyFiniteValues(r, rF, N);
-  rsFillWithZeros(a, N+1);
+  ArrayTools::rsFillWithZeros(a, N+1);
   if( nF == 0 )
     a[0] = 1.0;
   else
@@ -466,7 +466,7 @@ void rsPolynomial<T>::rootsToCoeffs(std::complex<T> *r, T *a, int N)
   std::complex<T> *ac = new std::complex<T>[N+1];
   rootsToCoeffs(r, ac, N);
   for(int n = 0; n <= N; n++)
-    a[n] = ac[n].re;
+    a[n] = ac[n].real();
   delete[] ac;
 }
 

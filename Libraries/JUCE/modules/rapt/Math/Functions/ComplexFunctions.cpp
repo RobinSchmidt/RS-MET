@@ -238,7 +238,7 @@ int rsCopyFiniteValues(std::complex<T> *z, std::complex<T> *zF, int N)
   int m = 0;
   for(int n = 0; n < N; n++)
   {
-    if(!z[n].isInfinite())
+    if(!isInfinite(z[n]))
     {
       zF[m] = z[n];
       m++;

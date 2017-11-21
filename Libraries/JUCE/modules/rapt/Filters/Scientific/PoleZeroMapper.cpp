@@ -4,8 +4,8 @@ void rsPoleZeroMapper<T>::sLowpassToLowshelf(Complex *z, Complex *p, T *k, Compl
 {
   if( G0 == 0.0 )
   {
-    copyBuffer(z, zNew, N);
-    copyBuffer(p, pNew, N);
+    ArrayTools::rsCopyBuffer(z, zNew, N);
+    ArrayTools::rsCopyBuffer(p, pNew, N);
     *kNew = *k * G;
     return;
   }
@@ -23,8 +23,8 @@ void rsPoleZeroMapper<T>::sLowpassToLowshelf(Complex *z, Complex *p, T *k, Compl
   if( G < G0 )
   {
     dip = true;
-    G   = 1.0 / G;
-    G0  = 1.0 / G0;
+    G   = T(1) / G;
+    G0  = T(1) / G0;
   }
 
   // scale poles/zeros/gain of the lowpass such that the resulting low-shelving filter has a gain 
@@ -34,32 +34,32 @@ void rsPoleZeroMapper<T>::sLowpassToLowshelf(Complex *z, Complex *p, T *k, Compl
   //PrototypeDesigner::scaleToMatchGainAtUnity(z, p, k, zTmp, pTmp, &kTmp, N, GC);  // commented for test
 
   // for debug:
-  copyBuffer(z, zTmp, N);
-  copyBuffer(p, pTmp, N);
+  ArrayTools::rsCopyBuffer(z, zTmp, N);
+  ArrayTools::rsCopyBuffer(p, pTmp, N);
   kTmp = *k;
 
   // obtain magnitude-squared numerator polynomial for shelving filter:
-  rootsToCoeffs(zTmp, b, N);
-  rootsToCoeffs(pTmp, a, N);
-  rsPrototypeDesigner::shelvingMagSqrNumeratorFromLowpassTransfer(b, a, kTmp, N, G0, G, bS);
+  rsPolynomial<T>::rootsToCoeffs(zTmp, b, N);
+  rsPolynomial<T>::rootsToCoeffs(pTmp, a, N);
+  rsPrototypeDesigner<T>::shelvingMagSqrNumeratorFromLowpassTransfer(b, a, kTmp, N, G0, G, bS);
 
   // obtain zeros, poles and gain of the new shelving filter:
   //findPolynomialRoots(bS, 2*N, &zTmp[-1]);
   //int numLeftZeros = onlyLeftHalfPlane(zTmp, zTmp, 2*N);
-  rsPrototypeDesigner::getLeftHalfPlaneRoots(bS, zTmp, 2*N);  // test - replaces the 2 commented lines above - seems to work
+  rsPrototypeDesigner<T>::getLeftHalfPlaneRoots(bS, zTmp, 2*N);  // test - replaces the 2 commented lines above - seems to work
 
   // if we make a dip-filter, poles and zeros exchange roles:
   if( dip == false )
   {
-    copyBuffer(zTmp, zNew, N);
-    copyBuffer(pTmp, pNew, N);
+    ArrayTools::rsCopyBuffer(zTmp, zNew, N);
+    ArrayTools::rsCopyBuffer(pTmp, pNew, N);
     *kNew = sqrt(fabs(bS[2*N]));
   }
   else
   {
-    copyBuffer(zTmp, pNew, N);
-    copyBuffer(pTmp, zNew, N);
-    *kNew = 1.0 / sqrt(fabs(bS[2*N]));
+    ArrayTools::rsCopyBuffer(zTmp, pNew, N);
+    ArrayTools::rsCopyBuffer(pTmp, zNew, N);
+    *kNew = T(1) / sqrt(fabs(bS[2*N]));
   }
 
   delete[] zTmp;
@@ -77,7 +77,7 @@ void rsPoleZeroMapper<T>::sLowpassToLowpass(Complex* z, Complex* p, T* k, Comple
     zNew[n] = wc * z[n];
   for(int n = 0; n < N; n++)
     pNew[n] = wc * p[n];
-  int nz = getNumFiniteValues(z, N); // number of finite zeros in prototype
+  int nz = rsGetNumFiniteValues(z, N); // number of finite zeros in prototype
   *kNew = *k * pow(wc, N-nz);
 }
 
@@ -86,7 +86,7 @@ void rsPoleZeroMapper<T>::sLowpassToHighpass(Complex *r, Complex *rNew, int N, T
 {
   for(int n = 0; n < N; n++)
   {
-    if( r[n].isInfinite() )
+    if( isInfinite(r[n]) )
       rNew[n] = Complex(0.0, 0.0);
     else
       rNew[n] = wc / r[n];
@@ -99,14 +99,14 @@ void rsPoleZeroMapper<T>::sLowpassToHighpass(Complex* z, Complex* p,T* k, Comple
 {
   sLowpassToHighpass(z, zNew, N, wc);
   sLowpassToHighpass(p, pNew, N, wc);
-  Complex n = productOfFiniteFactors(z, N);
-  Complex d = productOfFiniteFactors(p, N);
+  Complex n = rsProductOfFiniteFactors(z, N);
+  Complex d = rsProductOfFiniteFactors(p, N);
   *kNew     = *k * (n/d).real();
 
   // sign-factor: kNew = k * (-1)^(length(p) + length(z)) * prod(z) / prod(p);
   // ..or maybe not? ..consult octave/matlab implementation
-  int nz = getNumFiniteValues(z, N);
-  if( isOdd(N+nz) )
+  int nz = rsGetNumFiniteValues(z, N);
+  if( rsIsOdd(N+nz) )
     *kNew = - *kNew;
 }
 
@@ -116,12 +116,12 @@ void rsPoleZeroMapper<T>::sLowpassToBandpass(Complex* r, Complex* rNew, int N, T
   Complex tmp1, tmp2;
   for(int n = 0; n < N; n++)
   {
-    tmp1      = 0.5 * bw * r[n];
+    tmp1      = T(0.5) * bw * r[n];
     tmp2      = -bw * r[n];
 
     // this is common with the bandreject case - factor out:
-    tmp2      = 0.25 * tmp2*tmp2;
-    tmp2      = sqrtC(tmp2 - wc*wc);
+    tmp2      = T(0.25) * tmp2*tmp2;
+    tmp2      = sqrt(tmp2 - wc*wc);
     rNew[n]   = tmp1 + tmp2;
     rNew[N+n] = tmp1 - tmp2;
   }
@@ -137,13 +137,13 @@ void rsPoleZeroMapper<T>::sLowpassToBandpass(Complex* z, Complex* p, T* k, Compl
   sLowpassToBandpass(p, pNew, N, wc, bw);
   for(int n = 0; n < N; n++)
   {
-    if( z[n].isInfinite() )
+    if( isInfinite(z[n]) )
     {
-      zNew[n]   = Complex(0.0, 0.0);
-      zNew[N+n] = Complex(INF, 0.0);
+      zNew[n]   = Complex(0.0,       0.0);
+      zNew[N+n] = Complex(RS_INF(T), 0.0);
     }
   }
-  int nz = getNumFiniteValues(z, N); // number of finite zeros in prototype
+  int nz = rsGetNumFiniteValues(z, N); // number of finite zeros in prototype
   *kNew  = *k * pow(bw, N-nz);
 }
 
@@ -153,12 +153,12 @@ void rsPoleZeroMapper<T>::sLowpassToBandreject(Complex* r, Complex* rNew, int N,
   Complex tmp1, tmp2;
   for(int n = 0; n < N; n++)
   {
-    tmp1      = 0.5 * bw / r[n];
+    tmp1      = T(0.5) * bw / r[n];
     tmp2      = -bw / r[n];
 
     // this is common with the bandpass case - factor out:
-    tmp2      = 0.25 * tmp2*tmp2;
-    tmp2      = sqrtC(tmp2 - wc*wc);
+    tmp2      = T(0.25) * tmp2*tmp2;
+    tmp2      = sqrt(tmp2 - wc*wc);
     rNew[n]   = tmp1 + tmp2;
     rNew[N+n] = tmp1 - tmp2;
   }
@@ -175,19 +175,19 @@ void rsPoleZeroMapper<T>::sLowpassToBandreject(Complex* z, Complex* p, T* k, Com
   Complex sz = Complex(0.0, wc);
   for(int n = 0; n < N; n++)
   {
-    if( z[n].isInfinite() )
+    if( isInfinite(z[n]) )
     {
       zNew[n]   =  sz;
       zNew[N+n] = -sz;
     }
   }
-  Complex n = productOfFiniteFactors(z, N);
-  Complex d = productOfFiniteFactors(p, N);
-  *kNew     = *k * (n/d).re;
+  Complex n = rsProductOfFiniteFactors(z, N);
+  Complex d = rsProductOfFiniteFactors(p, N);
+  *kNew     = *k * (n/d).real();
 
   // sign-factor - see m-file: kNew = k * (-1)^(length(p) + length(z)) * prod(z) / prod(p);
-  int nz = getNumFiniteValues(z, N);
-  if( isOdd(N+nz) )
+  int nz = rsGetNumFiniteValues(z, N);
+  if( rsIsOdd(N+nz) )
     *kNew = - *kNew;
 }
 
@@ -239,7 +239,7 @@ void rsPoleZeroMapper<T>::sPlanePrototypeToHighpass(Complex* prototypePoles, Com
   for(int i = 0; i < prototypeOrder; i++)
   {
     targetPoles[i] = targetCutoff / prototypePoles[i];
-    if( prototypeZeros[i].isInfinite() )
+    if( isInfinite(prototypeZeros[i]) )
       targetZeros[i] = Complex(0.0, 0.0);
     else
       targetZeros[i] = targetCutoff / prototypeZeros[i];
@@ -286,10 +286,10 @@ void rsPoleZeroMapper<T>::prototypeToAnalogBandpass(Complex* poles, int numPoles
   Complex tmp1, tmp2;
   for(i = 0; i < numPoles; i++)
   {
-    tmp1                     = 0.5 * bw * poles[i];
+    tmp1                     = T(0.5) * bw * poles[i];
     tmp2                     = -bw * poles[i];
-    tmp2                     = 0.25 * tmp2*tmp2;
-    tmp2                     = sqrtC(tmp2 - wc*wc);
+    tmp2                     = T(0.25) * tmp2*tmp2;
+    tmp2                     = sqrt(tmp2 - wc*wc);
     //tmpPoles[2*i]   = tmp1 + tmp2;
     //tmpPoles[2*i+1] = tmp1 - tmp2;
     tmpPoles[i]              = tmp1 + tmp2;
@@ -297,10 +297,10 @@ void rsPoleZeroMapper<T>::prototypeToAnalogBandpass(Complex* poles, int numPoles
   }
   for(i = 0; i < numZeros; i++)
   {
-    tmp1                     = 0.5 * bw * zeros[i];
+    tmp1                     = T(0.5) * bw * zeros[i];
     tmp2                     = -bw * zeros[i];
-    tmp2                     = 0.25 * tmp2*tmp2;
-    tmp2                     = sqrtC(tmp2 - wc*wc);
+    tmp2                     = T(0.25) * tmp2*tmp2;
+    tmp2                     = sqrt(tmp2 - wc*wc);
     //tmpZeros[2*i]   = tmp1 + tmp2;
     //tmpZeros[2*i+1] = tmp1 - tmp2;
     tmpZeros[i]              = tmp1 + tmp2;
@@ -314,7 +314,7 @@ void rsPoleZeroMapper<T>::prototypeToAnalogBandpass(Complex* poles, int numPoles
     //tmpZeros[2*i]   = 0.0;
     //tmpZeros[2*i+1] = INF;
     tmpZeros[i]              = 0.0;
-    tmpZeros[2*numPoles-i-1] = INF;
+    tmpZeros[2*numPoles-i-1] = RS_INF(T);
   }
 
   //int         order = 2 * max(numPoles, numZeros);
@@ -348,25 +348,25 @@ void rsPoleZeroMapper<T>::sPlanePrototypeToBandpass(Complex* prototypePoles, Com
   for(k = 0; k < prototypeOrder; k++)
   {
     // transform poles:
-    tmp1 = 0.5 * bw * prototypePoles[k];
+    tmp1 = T(0.5) * bw * prototypePoles[k];
     tmp2 = -bw * prototypePoles[k];
-    tmp2 = 0.25 * tmp2*tmp2;
-    tmp2 = sqrtC(tmp2 - wc*wc);
+    tmp2 = T(0.25) * tmp2*tmp2;
+    tmp2 = sqrt(tmp2 - wc*wc);
     targetPoles[2*k]   = tmp1 + tmp2;
     targetPoles[2*k+1] = tmp1 - tmp2;
 
     // transform zeros:
-    if( prototypeZeros[k].isInfinite() )
+    if( isInfinite(prototypeZeros[k]) )
     {
-      targetZeros[2*k]   = INF;
+      targetZeros[2*k]   = RS_INF(T);
       targetZeros[2*k+1] = 0.0;
     }
     else
     {
-      tmp1 = 0.5 * bw * prototypeZeros[k];
+      tmp1 = T(0.5) * bw * prototypeZeros[k];
       tmp2 = -bw * prototypeZeros[k];
-      tmp2 = 0.25 * tmp2*tmp2;
-      tmp2 = sqrtC(tmp2 - wc*wc);
+      tmp2 = T(0.25) * tmp2*tmp2;
+      tmp2 = sqrt(tmp2 - wc*wc);
       targetZeros[2*k]   = tmp1 + tmp2;
       targetZeros[2*k+1] = tmp1 - tmp2;
     }
@@ -389,7 +389,7 @@ void rsPoleZeroMapper<T>::prototypeToAnalogBandstop(Complex* poles, int numPoles
   T wc = sqrt(targetLowCutoff*targetHighCutoff); // center (radian) frequency
   T bw = targetHighCutoff - targetLowCutoff;     // bandwidth
 
-  int         order = 2 * rmax(numPoles, numZeros);
+  int         order = 2 * rsMax(numPoles, numZeros);
   Complex* tmpPoles = new Complex[order];
   Complex* tmpZeros = new Complex[order];
 
@@ -399,19 +399,19 @@ void rsPoleZeroMapper<T>::prototypeToAnalogBandstop(Complex* poles, int numPoles
   Complex tmp1, tmp2;
   for(i = 0; i < numPoles; i++)
   {
-    tmp1            = 0.5*bw / poles[i];
+    tmp1            = T(0.5) * bw / poles[i];
     tmp2            = -bw / poles[i];
-    tmp2            = 0.25 * tmp2*tmp2;
-    tmp2            = sqrtC(tmp2 - wc*wc);
+    tmp2            = T(0.25) * tmp2*tmp2;
+    tmp2            = sqrt(tmp2 - wc*wc);
     tmpPoles[2*i]   = tmp1 + tmp2;
     tmpPoles[2*i+1] = tmp1 - tmp2;
   }
   for(i = 0; i < numZeros; i++)
   {
-    tmp1            = 0.5*bw / zeros[i];
+    tmp1            = T(0.5) * bw / zeros[i];
     tmp2            = -bw / zeros[i];
-    tmp2            = 0.25 * tmp2*tmp2;
-    tmp2            = sqrtC(tmp2 - wc*wc);
+    tmp2            = T(0.25) * tmp2*tmp2;
+    tmp2            = sqrt(tmp2 - wc*wc);
     tmpZeros[2*i]   = tmp1 + tmp2;
     tmpZeros[2*i+1] = tmp1 - tmp2;
   }
@@ -453,26 +453,26 @@ void rsPoleZeroMapper<T>::sPlanePrototypeToBandreject(Complex* prototypePoles,
   for(k = 0; k < prototypeOrder; k++)
   {
     // transform poles:
-    tmp1 = 0.5 * bw / prototypePoles[k];
+    tmp1 = T(0.5) * bw / prototypePoles[k];
     tmp2 = -bw / prototypePoles[k];
-    tmp2 = 0.25 * tmp2*tmp2;
-    tmp2 = sqrtC(tmp2 - wc*wc);
+    tmp2 = T(0.25) * tmp2*tmp2;
+    tmp2 = sqrt(tmp2 - wc*wc);
     targetPoles[2*k]   = tmp1 + tmp2;
     targetPoles[2*k+1] = tmp1 - tmp2;
 
     // transform zeros:
     Complex j(0.0, 1.0); // imaginary unit
-    if( prototypeZeros[k].isInfinite() )
+    if( isInfinite(prototypeZeros[k]) )
     {
       targetZeros[2*k]   =  j*wc;
       targetZeros[2*k+1] = -j*wc;
     }
     else
     {
-      tmp1 = 0.5 * bw / prototypeZeros[k];
+      tmp1 = T(0.5) * bw / prototypeZeros[k];
       tmp2 = -bw / prototypeZeros[k];
-      tmp2 = 0.25 * tmp2*tmp2;
-      tmp2 = sqrtC(tmp2 - wc*wc);
+      tmp2 = T(0.25) * tmp2*tmp2;
+      tmp2 = sqrt(tmp2 - wc*wc);
       targetZeros[2*k]   = tmp1 + tmp2;
       targetZeros[2*k+1] = tmp1 - tmp2;
     }
@@ -484,7 +484,7 @@ void rsPoleZeroMapper<T>::sPlanePrototypeToBandreject(Complex* prototypePoles,
   {
     rsSwap(targetPoles[k], targetPoles[k+1]);
     int kp = (k-1)/4;
-    if( !prototypeZeros[kp].isInfinite() )
+    if( !isInfinite(prototypeZeros[kp]) )
       rsSwap(targetZeros[k], targetZeros[k+1]); // don't want to swap the generated zeros at +-j*wc
     k += 4;
   }
@@ -496,24 +496,25 @@ void rsPoleZeroMapper<T>::bilinearAnalogToDigital(Complex* poles, int numPoles, 
 {
   int     i;
   Complex z;
-  T scaler = 0.5/sampleRate;
+  T scaler = T(0.5)/sampleRate;
+  Complex one(1, 0);
 
   for(i = 0; i < numPoles; i++)
   {
     // we don't check against infinity (as we do with zeros) because infinite poles should actually 
     // never occur in practice
     z        = scaler * poles[i];
-    poles[i] = (1.0+z)/(1.0-z);
+    poles[i] = (one+z)/(one-z);
   }
 
   for(i = 0; i < numZeros; i++)
   {
-    if( zeros[i].isInfinite() )
+    if( isInfinite(zeros[i]) )
       zeros[i] = Complex(-1.0, 0.0);
     else
     {
       z        = scaler * zeros[i];
-      zeros[i] = (1.0+z)/(1.0-z);
+      zeros[i] = (one+z)/(one-z);
     }
   }
   // maybe factor out into bilinearAnalogToDigital(Complex* roots, int numRoots, T sampleRate)
