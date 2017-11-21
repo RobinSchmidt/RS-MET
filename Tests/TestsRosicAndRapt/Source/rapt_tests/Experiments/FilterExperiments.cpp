@@ -315,23 +315,27 @@ void prototypeDesign()
 {
   typedef float Real;
 
-  static const int N = 4;  // filter order
+  // min and max filter order to plot:
+  int minOrder = 1;
+  int maxOrder = 5;
 
-  // obtain filter poles and zeros:
+  // create and set up prototype designer:
   rsPrototypeDesignerF pd;
-  //pd.setApproximationMethod(rsPrototypeDesignerF::BUTTERWORTH);
-  pd.setApproximationMethod(rsPrototypeDesignerF::ELLIPTIC);
+  pd.setApproximationMethod(rsPrototypeDesignerF::BUTTERWORTH);
+  //pd.setApproximationMethod(rsPrototypeDesignerF::ELLIPTIC);
   //pd.setApproximationMethod(rsPrototypeDesignerF::PAPOULIS);
   //pd.setApproximationMethod(rsPrototypeDesignerF::BESSEL);
   pd.setPassbandRipple(1); 
   pd.setStopbandRejection(20);
-  pd.setOrder(N);
 
-  FilterSpecificationZPK<Real> spec = getFilterSpecificationZPK(pd);
-
-  // create plotter, pass filter specification and plot:
+  // create plotter, add filter specs for the desired orders to it and plot:
   FilterPlotter<float> plt;
-  plt.addFilterSpecification(spec);
+  for(int i = minOrder; i <= maxOrder; i++)
+  {
+    pd.setOrder(i);
+    FilterSpecificationZPK<Real> spec = getFilterSpecificationZPK(pd);
+    plt.addFilterSpecification(spec);
+  }
   plt.plotMagnitude(200, 0, 3, false, false);
 
   // issues:
