@@ -6,6 +6,22 @@
 /* Subclasses of GNUPlotter that specialize in making plots related to digital signal processing 
 (DSP). */
 
+
+/** A structure to specify a filter in terms of its zeros, poles, a gain factor and possibly a 
+sample rate. If the sample rate is infinity (the default), an analog filter is assumed and the 
+zeros and poles are in the s-plane. If it's nonzero, the filter is assumed to be digital and the
+zeros and poles are in the z-plane. */
+
+template <class T>
+struct FilterSpecificationZPK
+{
+  std::vector<std::complex<T>> poles;
+  std::vector<std::complex<T>> zeros;
+  T gain = 1;
+  T sampleRate = std::numeric_limits<T>::infinity();
+};
+
+
 /** A class for visualizing analog and digital filter responses. It may plot magnitude responses,
 phase responses, pole/zero plots etc. for one or more filters. You need to specify the filters in 
 terms of their poles and zeros. For each filter, you once call addPoleZeroSet to add the filter to
@@ -34,9 +50,9 @@ public:
   a sampleRate in which case the poles and zeros will be interpreted as z-plane values. Otherwise
   an analog filter (corresponding to an infinite sample rate) will be assumed and the poles and 
   zeros are interpreted as being in the s-plane */
-  void addPoleZeroSet(int numPoles, std::complex<T>* poles, int numZeros, std::complex<T>* zeros,
-    T gain, T sampleRate = inf);
-  // maybe rename to addFilter
+  void addFilterSpecification(int numPoles, std::complex<T>* poles, int numZeros, 
+    std::complex<T>* zeros,  T gain, T sampleRate = inf);
+
 
 
 
@@ -76,14 +92,7 @@ protected:
 
   T freqScale = 1.0;
 
-  struct FilterSpecification
-  {
-    std::vector<std::complex<T>> poles;
-    std::vector<std::complex<T>> zeros;
-    T gain = 1;
-    T sampleRate = inf;
-  };
-  std::vector<FilterSpecification> filterSpecs; 
+  std::vector<FilterSpecificationZPK<T>> filterSpecs; 
 
 };
 

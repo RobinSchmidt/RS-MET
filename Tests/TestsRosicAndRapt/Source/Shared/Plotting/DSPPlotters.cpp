@@ -23,10 +23,10 @@ void FilterPlotter<T>::setFrequenciesAreRadian(bool areRadian)
 }
 
 template <class T>
-void FilterPlotter<T>::addPoleZeroSet(int numPoles, complex<T>* poles, int numZeros, 
+void FilterPlotter<T>::addFilterSpecification(int numPoles, complex<T>* poles, int numZeros, 
   complex<T>* zeros, T gain, T sampleRate)
 {
-  FilterSpecification spec;
+  FilterSpecificationZPK<T> spec;
   spec.poles.resize(numPoles);
   spec.zeros.resize(numZeros);
   int i;
@@ -67,7 +67,7 @@ vector<T> FilterPlotter<T>::getFrequencyAxis(int numFreqs, T lowFreq, T highFreq
 template <class T>
 vector<complex<T>> FilterPlotter<T>::getFrequencyResponse(int index, vector<T>& f)
 {
-  FilterSpecification spec = filterSpecs[index];
+  FilterSpecificationZPK<T> spec = filterSpecs[index];
   bool isDigital = spec.sampleRate != inf;
   complex<T> j(0.0, 1.0);                          // imaginary unit                         
   vector<complex<T>> H(f.size());                  // frequency response
