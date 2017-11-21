@@ -24,6 +24,7 @@ namespace RAPT
 #include "Geometry/Line2D.h"
 #include "Geometry/ConicSection.h"
 #include "Geometry/Ellipse.h"
+#include "Geometry/GeometricTransformations.h"
 
 #include "Misc/Statistics.h"
 

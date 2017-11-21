@@ -19,6 +19,7 @@ namespace RAPT
 #include "Geometry/Line2D.cpp"
 #include "Geometry/ConicSection.cpp"
 #include "Geometry/Ellipse.cpp"
+#include "Geometry/GeometricTransformations.cpp"
 
 #include "Misc/Statistics.cpp"
 
