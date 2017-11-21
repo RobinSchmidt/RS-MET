@@ -16,7 +16,7 @@ References:
  -(3) Larry D.Paarmann: Design and Analysis of Analog Filters
 
 \todo
- -check the gain calculation
+ -check the gain calculation, include gain factor
  -solve the degree quation for other values than the filter order
  -check getFilterResponseAt() - seems to be buggy - obsolete?
  -get rid of needsSpecialHighShelvTransform() - rewrite the prototype design code in such a way 
@@ -46,6 +46,7 @@ public:
   };
   // re-order: COINCINDENT_POLE, GAUSS, BESSEL, BUTTERWORTH, PAPOULIS <-?-> HALPERN, CHEBY1 <-?-> 
   // CHEBY2, ELLIPTIC ->sorted by desirability of time response vs. frequency response (roughly)
+  // or maybe sort by ringing time?
 
   // ideas: try other polynomials, for example non-reversed Bessel, Laguerre, etc. - if roots occur 
   // in the right half-plane, reflect them, maybe try Power-Series expansions of various 
@@ -355,6 +356,7 @@ protected:
   static const int maxNumNonRedundantPoles = 13;
   Complex z[maxNumNonRedundantPoles];  // zeros
   Complex p[maxNumNonRedundantPoles];  // poles
+  //T gain = 1;                          // overall gain factor
 
   bool stateIsDirty;   // this flag indicates, whether the poles, zeros and gain need to be 
                        // re-calculated or are still valid from a previous calculation

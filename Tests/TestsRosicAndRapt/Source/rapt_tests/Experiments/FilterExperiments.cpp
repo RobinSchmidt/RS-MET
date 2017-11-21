@@ -290,7 +290,7 @@ template<class T>
 void removeInfiniteValues(vector<complex<T>>& z)
 {
   for(size_t i = 0; i < z.size(); i++) {
-    if(isInfinite(z[i])) {
+    if(isInfinite(z[i])) {   // as rs prefix
       z.erase(z.begin() + i);
       i--; }}
 }
@@ -317,14 +317,19 @@ void prototypeDesign()
 
   // min and max filter order to plot:
   int minOrder = 1;
-  int maxOrder = 5;
+  int maxOrder = 6;
 
   // create and set up prototype designer:
   rsPrototypeDesignerF pd;
-  pd.setApproximationMethod(rsPrototypeDesignerF::BUTTERWORTH);
-  //pd.setApproximationMethod(rsPrototypeDesignerF::ELLIPTIC);
-  //pd.setApproximationMethod(rsPrototypeDesignerF::PAPOULIS);
+  // GAUSS
   //pd.setApproximationMethod(rsPrototypeDesignerF::BESSEL);
+  //pd.setApproximationMethod(rsPrototypeDesignerF::BUTTERWORTH);
+  //pd.setApproximationMethod(rsPrototypeDesignerF::PAPOULIS);
+  // HALPERN
+  //pd.setApproximationMethod(rsPrototypeDesignerF::CHEBYCHEV);
+  //pd.setApproximationMethod(rsPrototypeDesignerF::INVERSE_CHEBYCHEV);
+  pd.setApproximationMethod(rsPrototypeDesignerF::ELLIPTIC);
+
   pd.setPassbandRipple(1); 
   pd.setStopbandRejection(20);
 
@@ -336,7 +341,7 @@ void prototypeDesign()
     FilterSpecificationZPK<Real> spec = getFilterSpecificationZPK(pd);
     plt.addFilterSpecification(spec);
   }
-  plt.plotMagnitude(200, 0, 3, false, false);
+  plt.plotMagnitude(1000, 0, 3, false, false);
 
   // issues:
 
