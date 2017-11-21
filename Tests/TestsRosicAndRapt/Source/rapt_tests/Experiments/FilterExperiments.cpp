@@ -320,7 +320,7 @@ void prototypeDesign()
   //pd.setApproximationMethod(rsPrototypeDesignerF::BESSEL);
   pd.setPassbandRipple(1); 
   pd.setStopbandRejection(20);
-  pd.getPolesAndZeros(poles, zeros); // returns only the non-redundant upper halfplane poles
+  //pd.getPolesAndZeros(poles, zeros); // returns only the non-redundant upper halfplane poles
 
   // create full pole/zero set by reflection:
   reflectRoots(poles, N);
@@ -331,7 +331,7 @@ void prototypeDesign()
   // create plotter, pass filter specification and plot:
   FilterPlotter<float> plt;
   plt.addFilterSpecification(spec);
-  plt.addFilterSpecification(pd.getNumFinitePoles(), poles, pd.getNumFiniteZeros(), zeros, 1.f);
+  //plt.addFilterSpecification(pd.getNumFinitePoles(), poles, pd.getNumFiniteZeros(), zeros, 1.f);
   plt.plotMagnitude(200, 0, 3, false, false);
 
   // issues:

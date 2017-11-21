@@ -694,20 +694,23 @@ T rsPrototypeDesigner<T>::findFrequencyWithMagnitude(T magnitude, T wLow, T wHig
 }
 
 template<class T>
-int rsPrototypeDesigner<T>::getNumFinitePoles() const
+int rsPrototypeDesigner<T>::getNumFinitePoles()
 {
+  updatePolesAndZeros();
   return numFinitePoles;
 }
 
 template<class T>
-int rsPrototypeDesigner<T>::getNumFiniteZeros() const
+int rsPrototypeDesigner<T>::getNumFiniteZeros()
 {
+  updatePolesAndZeros();
   return numFiniteZeros;
 }
 
 template<class T>
-int rsPrototypeDesigner<T>::getNumNonRedundantFinitePoles() const
+int rsPrototypeDesigner<T>::getNumNonRedundantFinitePoles()
 {
+  updatePolesAndZeros();
   if( rsIsEven(numFinitePoles) )
     return numFinitePoles/2;
   else
@@ -715,8 +718,9 @@ int rsPrototypeDesigner<T>::getNumNonRedundantFinitePoles() const
 }
 
 template<class T>
-int rsPrototypeDesigner<T>::getNumNonRedundantFiniteZeros() const
+int rsPrototypeDesigner<T>::getNumNonRedundantFiniteZeros()
 {
+  updatePolesAndZeros();
   if( rsIsEven(numFiniteZeros) )
     return numFiniteZeros/2;
   else
@@ -726,8 +730,8 @@ int rsPrototypeDesigner<T>::getNumNonRedundantFiniteZeros() const
 template<class T>
 void rsPrototypeDesigner<T>::getPolesAndZeros(Complex* poles, Complex* zeros)
 {
-  if( stateIsDirty == true )
-    updatePolesAndZeros(); // re-calculate only if necesarry
+  //if( stateIsDirty == true )// re-calculate only if necesarry ..is actually checked there internally
+  updatePolesAndZeros(); 
   for(int i = 0; i < (L+r); i++)
   {
     poles[i] = p[i];
