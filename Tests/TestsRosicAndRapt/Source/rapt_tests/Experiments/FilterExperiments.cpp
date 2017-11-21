@@ -291,13 +291,15 @@ FilterSpecificationZPK<T> getFilterSpecificationZPK(rsPrototypeDesigner<T>& pd)
   // this function doesn't work when nz = 0
   int nz = pd.getNumFiniteZeros();
   int np = pd.getNumFinitePoles();
-  vector<complex<T>> z(nz);
+  vector<complex<T>> z(np);          // np is correct,  will be filled with inf and cleared later
   vector<complex<T>> p(np);
   //vector<complex<T>> z(max(nz, 1));
   //vector<complex<T>> p(max(np, 1));
   pd.getPolesAndZeros(&p[0], &z[0]); // returns only the non-redundant upper halfplane poles
   reflectRoots(&p[0], np);           // create full pole/zero set by reflection
-  reflectRoots(&z[0], nz);
+  reflectRoots(&z[0], np);
+  if(nz == 0)  
+    z.clear(); // filters without finite zeros
   FilterSpecificationZPK<T> spec;
   spec.poles = p;
   spec.zeros = z;
@@ -314,8 +316,8 @@ void prototypeDesign()
   std::complex<Real> poles[N], zeros[N];
   rsPrototypeDesignerF pd;
   pd.setOrder(N);
-  //pd.setApproximationMethod(rsPrototypeDesignerF::BUTTERWORTH);
-  pd.setApproximationMethod(rsPrototypeDesignerF::ELLIPTIC);
+  pd.setApproximationMethod(rsPrototypeDesignerF::BUTTERWORTH);
+  //pd.setApproximationMethod(rsPrototypeDesignerF::ELLIPTIC);
   //pd.setApproximationMethod(rsPrototypeDesignerF::PAPOULIS);
   //pd.setApproximationMethod(rsPrototypeDesignerF::BESSEL);
   pd.setPassbandRipple(1); 
