@@ -9,7 +9,7 @@ etc. */
 template<class T>
 inline T rsAmpToDb(T amp)
 {
-  return 8.6858896380650365530225783783321 * log(amp);
+  return T(8.6858896380650365530225783783321) * log(amp);
 }
 
 /** Converts a raw amplitude value/factor to a value in decibels with a check, if the amplitude

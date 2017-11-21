@@ -160,7 +160,7 @@ protected:
   int prototypeOrder;
 
   // embedded objects:
-  rsPrototypeDesigner prototypeDesigner;
+  rsPrototypeDesigner<T> prototypeDesigner;
 
   /** Normalizes the biquad stages described by the given coefficients in such a way that each
   stage has unit magnitude at the normalized radian frequency 'omega'. */
