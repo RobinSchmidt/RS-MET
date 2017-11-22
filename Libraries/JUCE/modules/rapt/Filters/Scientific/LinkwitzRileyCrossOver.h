@@ -38,6 +38,10 @@ public:
   /** Sets up the sample rate for this filter. */
   void setSampleRate(TPar newSampleRate);
 
+  /** Switches the crossover on/off. When off, the input signal is passed through to the lowpass 
+  output and the highpass output will be empty (zero). */
+  void setActive(bool shouldBeActive) { active = shouldBeActive; }
+
   /** Sets the crossover frequency. */
   void setCrossoverFrequency(TPar newCrossoverFrequency);
 
@@ -53,6 +57,9 @@ public:
 
   /** Returns the samplerate. */
   TPar getSampleRate() const { return sampleRate; }
+
+  /** Informs, whether the crossover is active or not. */
+  bool isActive() const { return active; }
 
   /** Returns the crossover frequency. */
   TPar getCrossoverFrequency() const { return crossoverFrequency; }
@@ -88,6 +95,13 @@ public:
   signal. */
   inline void getSamplePair(TSig* in, TSig* outLow, TSig* outHigh)
   {
+    if(!active)
+    {
+      *outLow  = *in;
+      *outHigh = TSig(0);
+      return;
+    }
+
     TSig tmp  = *in;
     *outLow  = lowpass2.getSampleDirect2(lowpass1.getSampleDirect2(tmp));
     *outHigh = sumAllpass.getSampleDirect2(tmp) - *outLow;
@@ -96,6 +110,13 @@ public:
   /** Processes a buffer of samples. */
   inline void processBuffer(TSig* in, TSig* outLow, TSig* outHigh, int length)
   {
+    if(!active)
+    {
+      memcpy(outLow, in, sizeof(TSig));
+      memset(outHigh, 0, sizeof(TSig));
+      return;
+    }
+
     TSig tmp;
     for(int n = 0; n < length; n++)
     {
@@ -113,6 +134,8 @@ public:
 
   //===============================================================================================
 
+  rsBiquadCascade<TSig, TPar> sumAllpass; // temporarily move to public - use friend declaration
+
 protected:
 
   /** Triggers a re-calculation of the filter coefficients. */
@@ -120,12 +143,13 @@ protected:
 
   // embedded objects:
   rsBiquadCascade<TSig, TPar> lowpass1, lowpass2; // direct-form performed worse than biquad-cascade
-  rsBiquadCascade<TSig, TPar> sumAllpass;
+
 
   TPar sampleRate;
   TPar crossoverFrequency;
   int  butterworthOrder;     // order of the Butterworth filters
   int  maxButterworthOrder;  // maximum order of the Butterworth filters
+  bool active = true;
 
 };
 

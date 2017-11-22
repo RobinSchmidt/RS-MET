@@ -88,7 +88,7 @@ template<class TSig, class TPar>
 void rsCrossOver4Way<TSig, TPar>::getMagnitudeResponse(TPar* frequencies, TPar* magnitudes, 
   int numBins, int outputChannel, bool inDecibels)
 {
-  fillWithValue(magnitudes, numBins, -100.0);
+  rsArray::fillWithValue(magnitudes, numBins, TPar(-100));
 
   if( !stage2[0].isActive() && !stage2[1].isActive() ) 
   {
@@ -157,7 +157,7 @@ void rsCrossOver4Way<TSig, TPar>::getMagnitudeResponse(TPar* frequencies, TPar* 
 
   rsFilterAnalyzer<TPar>::clampValuesAboveNyquist(frequencies, magnitudes, numBins, 
     stage1.getSampleRate(), -100.0);
-  clipBuffer(magnitudes, numBins, -150.0, 10.0);
+  rsArray::clipBuffer(magnitudes, numBins, TPar(-150), TPar(10));
 }
 
 // audio-processing:
@@ -196,8 +196,8 @@ void rsCrossOver4Way<TSig, TPar>::resetBuffers()
 template<class TSig, class TPar>
 void rsCrossOver4Way<TSig, TPar>::setupCompensationAllpasses()
 {
-  lowBranchCompensationAllpass.copySettingsFrom(&stage2[1].crossoverL.sumAllpass);   // we could also copy from the lowpass
-  highBranchCompensationAllpass.copySettingsFrom(&stage2[0].crossoverL.sumAllpass);
+  lowBranchCompensationAllpass.copySettingsFrom(&stage2[1].sumAllpass);   // we could also copy from the lowpass
+  highBranchCompensationAllpass.copySettingsFrom(&stage2[0].sumAllpass);
   highBranchCompensationAllpass.turnIntoAllpass();
 
   // Interestingly, the allpass resulting from adding a lowpass- and highpass Butterworth-squared 

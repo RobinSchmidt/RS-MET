@@ -41,6 +41,7 @@ typedef RAPT::rsFilterAnalyzer<float> rsFilterAnalyzerF;
 typedef RAPT::rsBiquadCascade<float, float> rsBiquadCascadeFF;
 typedef RAPT::rsEngineersFilter<float, float> rsEngineersFilterFF;
 typedef RAPT::rsLinkwitzRileyCrossOver<float, float> rsLinkwitzRileyCrossOverFF;
+typedef RAPT::rsCrossOver4Way<float, float> rsCrossOver4WayFF;
 
 
 
