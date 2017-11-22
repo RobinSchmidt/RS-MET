@@ -63,6 +63,7 @@ template RAPT::rsPoleZeroMapper<float>;
 template RAPT::rsFilterCoefficientConverter<float>;
 template RAPT::rsInfiniteImpulseResponseDesigner<float>;
 template RAPT::rsFilterAnalyzer<float>;
+template RAPT::rsBiquadCascade<float, float>;
 
 // Physics:
 template RAPT::rsParticleSystem<float>;

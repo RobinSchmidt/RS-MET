@@ -46,14 +46,14 @@ void rsBiquadCascade<TSig, TCoef>::setNumStages(int newNumStages)
   if( (newNumStages >= 0 ) && (newNumStages <= maxNumStages) )
     numStages = newNumStages;
   else
-    DEBUG_BREAK;
+    RS_DEBUG_BREAK;
   reset();
 }
 
 template<class TSig, class TCoef>
 void rsBiquadCascade<TSig, TCoef>::setOrder(int newOrder)
 {
-  if( isEven(newOrder) )
+  if( rsIsEven(newOrder) )
     setNumStages(newOrder/2);
   else
     setNumStages( (newOrder+1)/2 );
@@ -92,15 +92,15 @@ void rsBiquadCascade<TSig, TCoef>::turnIntoAllpass()
     if( a2[i] == 0.0 )  // biquad stage is actually 1st order
     {
       b0[i] = a1[i];
-      b1[i] = 1.0;
-      b2[i] = 0.0;
+      b1[i] = TCoef(1);
+      b2[i] = 0;
     }
     else
     {
 
       b0[i]  = a2[i];
       b1[i]  = a1[i];
-      b2[i]  = 1.0;
+      b2[i]  = TCoef(1);
     }
   }
 
@@ -108,8 +108,9 @@ void rsBiquadCascade<TSig, TCoef>::turnIntoAllpass()
   for(int i = 0; i < numStages; i++)
   {
     TCoef num = b0[i]*b0[i] + b1[i]*b1[i] + b2[i]*b2[i] 
-      + 2.0*(b0[i]*b1[i] + b1[i]*b2[i]) + 2.0*b0[i]*b2[i];
-    TCoef den = 1.0 + a1[i]*a1[i] + a2[i]*a2[i] + 2.0*(a1[i] + a1[i]*a2[i]) + 2.0*a2[i];
+      + TCoef(2)*(b0[i]*b1[i] + b1[i]*b2[i]) + TCoef(2)*b0[i]*b2[i];
+    TCoef den = TCoef(1) + a1[i]*a1[i] + a2[i]*a2[i]          
+      + TCoef(2)*(a1[i] + a1[i]*a2[i]) + TCoef(2)*a2[i];
     TCoef g   = sqrt(den/num);
     b0[i] *= g;
     b1[i] *= g;
@@ -123,24 +124,24 @@ template<class TSig, class TCoef>
 void rsBiquadCascade<TSig, TCoef>::getFrequencyResponse(TCoef* w, std::complex<TCoef>* H, 
   int numBins, int accumulationMode)
 {
-  FilterAnalyzer::getBiquadCascadeFrequencyResponse(b0, b1, b2, a1, a2, numStages, w, H, numBins, 
-    accumulationMode);
+  rsFilterAnalyzer<TCoef>::getBiquadCascadeFrequencyResponse(b0, b1, b2, a1, a2, numStages, w, H, 
+    numBins, accumulationMode);
 }
 
 template<class TSig, class TCoef>
 void rsBiquadCascade<TSig, TCoef>::getMagnitudeResponse(TCoef *w, TCoef *magnitudes, int numBins, 
   bool inDecibels, bool accumulate)
 {
-  FilterAnalyzer::getBiquadCascadeMagnitudeResponse(b0, b1, b2, a1, a2, numStages, w, magnitudes, 
-    numBins, inDecibels, accumulate);
+  rsFilterAnalyzer<TCoef>::getBiquadCascadeMagnitudeResponse(b0, b1, b2, a1, a2, numStages, w, 
+    magnitudes, numBins, inDecibels, accumulate);
 }
 
 template<class TSig, class TCoef>
 void rsBiquadCascade<TSig, TCoef>::getMagnitudeResponse(TCoef* frequencies, TCoef sampleRate, 
   TCoef* magnitudes, int numBins, bool inDecibels, bool accumulate)
 {
-  FilterAnalyzer::getBiquadCascadeMagnitudeResponse(b0, b1, b2, a1, a2, numStages, frequencies, 
-    sampleRate, magnitudes, numBins, inDecibels, accumulate);
+  rsFilterAnalyzer<TCoef>::getBiquadCascadeMagnitudeResponse(b0, b1, b2, a1, a2, numStages, 
+    frequencies, sampleRate, magnitudes, numBins, inDecibels, accumulate);
 }
 
 //-------------------------------------------------------------------------------------------------
