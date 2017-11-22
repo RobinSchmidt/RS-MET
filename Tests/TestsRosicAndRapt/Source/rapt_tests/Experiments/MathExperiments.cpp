@@ -177,7 +177,7 @@ void productLogPlot()
 
   // evaluate function:
   vector<float> x(N), y(N);
-  ArrayTools::rsFillWithRangeLinear(&x[0], N, xMin, xMax);
+  rsArray::rsFillWithRangeLinear(&x[0], N, xMin, xMax);
   for(int n = 0; n < N; n++)
     y[n] = (float) productLog(x[n]);
 
@@ -199,7 +199,7 @@ void sinCosTable()
   //float xMin =   0.0;
   float xMax = +15.0;
   vector<float> x(N), ySin(N), yCos(N), ySinTbl(N), yCosTbl(N);
-  ArrayTools::rsFillWithRangeLinear(&x[0], N, xMin, xMax);
+  rsArray::rsFillWithRangeLinear(&x[0], N, xMin, xMax);
   for(int n = 0; n < N; n++)
   {
     ySin[n] = sin(x[n]);
@@ -293,7 +293,7 @@ void expGaussBell()
 
          // evaluate function:
   vector<float> x(N), y(N);
-  ArrayTools::rsFillWithRangeLinear(&x[0], N, xMin, xMax);
+  rsArray::rsFillWithRangeLinear(&x[0], N, xMin, xMax);
   for(int n = 0; n < N; n++)
   {
     double t = x[n]; // temporary

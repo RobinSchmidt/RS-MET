@@ -20,7 +20,7 @@ public:
 
   inline void setAllValues(T value)
   {
-    ArrayTools::rsFillWithValue(d, int(N*M), value);
+    rsArray::rsFillWithValue(d, int(N*M), value);
   }
 
   // void setToIdentityMatrix(T scaler = 1);

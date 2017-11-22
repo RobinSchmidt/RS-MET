@@ -51,7 +51,7 @@ void rsEllipticIntegral(T k, T *K, T *Kprime, int M)
     rsLanden(k, M, v);
     for(n=0; n<M; n++)
       v[n] += 1.0;
-    *K = ArrayTools::rsProduct(v, M) * T(0.5*PI);
+    *K = rsArray::rsProduct(v, M) * T(0.5*PI);
   }
 
   if(k == 0.0)
@@ -67,7 +67,7 @@ void rsEllipticIntegral(T k, T *K, T *Kprime, int M)
     rsLanden(kp, M, vp);
     for(n=0; n<M; n++)
       vp[n] += 1.0;
-    *Kprime = ArrayTools::rsProduct(vp, M) * T(0.5*PI);
+    *Kprime = rsArray::rsProduct(vp, M) * T(0.5*PI);
   }
 
   delete[] v;

@@ -303,7 +303,7 @@ template<class T>
 void rsPrototypeDesigner<T>::shelvingMagSqrNumFromLowpassMagSqr(T* b2, T* a2, T k, 
   int N, T G0, T G, T* bShelf)
 {
-  ArrayTools::rsWeightedSum(b2, a2, bShelf, 2*N+1, k*k*(G*G-G0*G0), G0*G0);
+  rsArray::rsWeightedSum(b2, a2, bShelf, 2*N+1, k*k*(G*G-G0*G0), G0*G0);
 }
 
 // factor out shelvingMagSqrNumeratorFromLowpassMagSqr:
@@ -349,9 +349,9 @@ void rsPrototypeDesigner<T>::getInverseFilter(Complex* z, Complex* p, T* k, Comp
   //                // and gain zeros into zNew, pNew, kNew
 
   Complex *zTmp = new Complex[N]; // to make it work, when the new arrays are equal to the old ones
-  ArrayTools::rsCopyBuffer(z,    zTmp, N);
-  ArrayTools::rsCopyBuffer(p,    zNew, N);
-  ArrayTools::rsCopyBuffer(zTmp, pNew, N);
+  rsArray::rsCopyBuffer(z,    zTmp, N);
+  rsArray::rsCopyBuffer(p,    zNew, N);
+  rsArray::rsCopyBuffer(zTmp, pNew, N);
   *kNew = T(1) / *k;
   delete[] zTmp;
 }
@@ -371,12 +371,12 @@ template<class T>
 void rsPrototypeDesigner<T>::getBesselLowpassZerosPolesAndGain(Complex* z, Complex* p, T* k, int N)
 {
   // zeros are at infinity:
-  ArrayTools::rsFillWithValue(z, N, Complex(RS_INF(T), 0.0));
+  rsArray::rsFillWithValue(z, N, Complex(RS_INF(T), 0.0));
 
   // find poles:
   T* a = new T[N+1];        // Bessel-Polynomial coefficients
   rsPolynomial<T>::besselPolynomial(a, N);
-  ArrayTools::rsReverse(a, N+1);          // we actually use a reverse Bessel polynomial
+  rsArray::rsReverse(a, N+1);          // we actually use a reverse Bessel polynomial
 
   rsPolynomial<T>::findPolynomialRoots(a, N, p);
 
@@ -424,7 +424,7 @@ void rsPrototypeDesigner<T>::getBesselLowShelfZerosPolesAndGain(Complex* z, Comp
   // construct lowpass denominator:
   T* a  = new T[N+1];
   rsPolynomial<T>::besselPolynomial(a, N);
-  ArrayTools::rsReverse(a, N+1);  // leaving this out leads to a modified Bessel filter response - maybe 
+  rsArray::rsReverse(a, N+1);  // leaving this out leads to a modified Bessel filter response - maybe 
                                   // experiment a bit, response looks good
 
   // find poles of the shelving filter:
@@ -432,7 +432,7 @@ void rsPrototypeDesigner<T>::getBesselLowShelfZerosPolesAndGain(Complex* z, Comp
 
   // construct lowpass numerator:
   T* b = new T[N+1];
-  ArrayTools::rsFillWithZeros(b, N+1);
+  rsArray::rsFillWithZeros(b, N+1);
   b[0] = a[0];
 
   // obtain magnitude-squared numerator polynomial for shelving filter:
@@ -465,7 +465,7 @@ template<class T>
 void rsPrototypeDesigner<T>::papoulisMagnitudeSquaredDenominator(T* a, int N)
 {
   int n;
-  ArrayTools::rsFillWithZeros(a, 2*N+1);  // do we need this?
+  rsArray::rsFillWithZeros(a, 2*N+1);  // do we need this?
 
   // construct the polynomial L_N(w^2):
   rsPolynomial<T>::maximumSlopeMonotonicPolynomial(a, N);  // does the same same as lopt(a, N); from C.R.Bond
@@ -494,7 +494,7 @@ void rsPrototypeDesigner<T>::getPapoulisLowpassZerosPolesAndGain(Complex* z, Com
   getLeftHalfPlaneRoots(a2, p, 2*N);
 
   // zeros are at infinity:
-  ArrayTools::rsFillWithValue(z, N, Complex(RS_INF(T), 0.0));
+  rsArray::rsFillWithValue(z, N, Complex(RS_INF(T), 0.0));
 
   // set gain at DC to unity:
   *k = sqrt(T(1)/fabs(a2[2*N]));
@@ -545,7 +545,7 @@ void rsPrototypeDesigner<T>::getPapoulisLowShelfZerosPolesAndGain(Complex* z, Co
 
   // construct lowpass numerator:
   T* b2 = new T[2*N+1];
-  ArrayTools::rsFillWithZeros(b2, 2*N+1);
+  rsArray::rsFillWithZeros(b2, 2*N+1);
   b2[0] = 1.0;
 
   // end of "factor out" ...in general, we need to scale the b2-polynomial also by dividing through 
@@ -1179,8 +1179,8 @@ void rsPrototypeDesigner<T>::makeEllipticLowShelv()
 template<class T>
 void rsPrototypeDesigner<T>::makeBesselLowShelv(T G, T G0)
 {
-  ArrayTools::rsFillWithZeros(p, maxNumNonRedundantPoles);
-  ArrayTools::rsFillWithZeros(z, maxNumNonRedundantPoles);
+  rsArray::rsFillWithZeros(p, maxNumNonRedundantPoles);
+  rsArray::rsFillWithZeros(z, maxNumNonRedundantPoles);
   numFinitePoles = N;
   if( G0 == 0.0 )
     numFiniteZeros = 0;
@@ -1203,8 +1203,8 @@ void rsPrototypeDesigner<T>::makeBesselLowShelv(T G, T G0)
 template<class T>
 void rsPrototypeDesigner<T>::makePapoulisLowShelv(T G, T G0)
 {
-  ArrayTools::rsFillWithZeros(p, maxNumNonRedundantPoles);
-  ArrayTools::rsFillWithZeros(z, maxNumNonRedundantPoles);
+  rsArray::rsFillWithZeros(p, maxNumNonRedundantPoles);
+  rsArray::rsFillWithZeros(z, maxNumNonRedundantPoles);
   numFinitePoles = N;
   if( G0 == 0.0 )
     numFiniteZeros = 0;
@@ -1231,11 +1231,11 @@ void rsPrototypeDesigner<T>::pickNonRedundantPolesAndZeros(Complex *zTmp, Comple
   rsZeroNegligibleImaginaryParts(zTmp, N, T(1.e-11));
   rsOnlyUpperHalfPlane(pTmp, pTmp, N);
   rsOnlyUpperHalfPlane(zTmp, zTmp, N);
-  ArrayTools::rsCopyBuffer(pTmp, p, L+r);
-  ArrayTools::rsCopyBuffer(zTmp, z, L+r);
+  rsArray::rsCopyBuffer(pTmp, p, L+r);
+  rsArray::rsCopyBuffer(zTmp, z, L+r);
 
   // the caller is supposed to ensure that the real zero/pole, if present, is in zTmp[0], pTmp[0] - 
   // but we need it in the last positions z[L+r], p[L+r], so we reverse the arrays:
-  ArrayTools::rsReverse(p, L+r);
-  ArrayTools::rsReverse(z, L+r);
+  rsArray::rsReverse(p, L+r);
+  rsArray::rsReverse(z, L+r);
 }

@@ -44,21 +44,21 @@ void rsPolynomial<T>::evaluatePolynomialAndDerivativesAt(T x, T *a, int order, T
 template <class T>
 void rsPolynomial<T>::multiplyPolynomials(T *a, int aOrder, T *b, int bOrder, T *result)
 {
-  ArrayTools::rsConvolve(a, aOrder+1, b, bOrder+1, result);
+  rsArray::rsConvolve(a, aOrder+1, b, bOrder+1, result);
 }
 
 template <class T>
 void rsPolynomial<T>::dividePolynomials(T *p, int pOrder, T *d, int dOrder, T *q, T *r)
 {
-  ArrayTools::rsCopyBuffer(p, r, pOrder+1); // init remainder with p
-  ArrayTools::rsFillWithZeros(q, pOrder+1); // init quotient with zeros
+  rsArray::rsCopyBuffer(p, r, pOrder+1); // init remainder with p
+  rsArray::rsFillWithZeros(q, pOrder+1); // init quotient with zeros
   for(int k = pOrder-dOrder; k >= 0; k--)
   {
     q[k] = r[dOrder+k] / d[dOrder];
     for(int j = dOrder+k-1; j >= k; j--)
       r[j] -= q[k] * d[j-k];
   }
-  ArrayTools::rsFillWithZeros(&r[dOrder], pOrder-dOrder+1);
+  rsArray::rsFillWithZeros(&r[dOrder], pOrder-dOrder+1);
 }
 
 template <class T>
@@ -372,7 +372,7 @@ void rsPolynomial<T>::findPolynomialRoots(std::complex<T> *a, int order, std::co
   // allocate memory for the coefficients of the deflated polynomial and initialize it as
   // non-deflated polynomial:
   std::complex<T> *ad = new std::complex<T>[order+1];
-  ArrayTools::rsCopyBuffer(a, ad, order+1);
+  rsArray::rsCopyBuffer(a, ad, order+1);
 
   // loop over the roots:
   for(int j = order; j >= 1; j--)
@@ -407,7 +407,7 @@ template<class T>
 void rsPolynomial<T>::findPolynomialRoots(T *a, int order, std::complex<T> *roots)
 {
   std::complex<T> *ac = new std::complex<T>[order+1];
-  ArrayTools::rsConvertBuffer(a, ac, order+1);
+  rsArray::rsConvertBuffer(a, ac, order+1);
   findPolynomialRoots(ac, order, roots);
   delete[] ac;
 }
@@ -441,7 +441,7 @@ void rsPolynomial<T>::rootsToCoeffs(std::complex<T> *r, std::complex<T> *a, int 
 {
   std::complex<T> *rF = new std::complex<T>[N]; // only the finite roots
   int nF = rsCopyFiniteValues(r, rF, N);
-  ArrayTools::rsFillWithZeros(a, N+1);
+  rsArray::rsFillWithZeros(a, N+1);
   if( nF == 0 )
     a[0] = 1.0;
   else
@@ -1115,7 +1115,7 @@ void rsPolynomial<T>::rsPartialFractionExpansion(
 {
   // sanity check for inputs:
   rsAssert(numeratorOrder < denominatorOrder);
-  rsAssert(ArrayTools::rsSum(multiplicities, numDistinctPoles) == denominatorOrder);
+  rsAssert(rsArray::rsSum(multiplicities, numDistinctPoles) == denominatorOrder);
 
   // make denominator monic:
   rsScale(numerator,   numeratorOrder+1,   1.0/denominator[denominatorOrder]);

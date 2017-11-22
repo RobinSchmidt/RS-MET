@@ -2,9 +2,10 @@
 #define RAPT_ARRAYTOOLS_H_INCLUDED
 
 /** A collection of functions that operate on 1-dimensional arrays. 
-\todo get rid of the rs-prefixes */
+\todo get rid of the rs-prefixes, rename file 
+*/
 
-class ArrayTools
+class rsArray
 {
 
 public:

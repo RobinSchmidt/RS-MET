@@ -5965,6 +5965,22 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/rapt/AudioBasics/AudioBasics.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/rapt/AudioBasics/AudioBasics.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/rapt/AudioBasics/AudioFunctions.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/rapt/AudioBasics/AudioFunctions.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/rapt/Basics/Basics.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -6266,6 +6282,14 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/rapt/Math/Geometry/Ellipse.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/rapt/Math/Geometry/GeometricTransformations.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/rapt/Math/Geometry/GeometricTransformations.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
@@ -7113,6 +7137,14 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/rosic/_third_party/bernsee_fft/BernseeFFT.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/rosic/_third_party/bernsee_fft/BernseeFFT.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/rosic/_third_party/cephes_tweaked/double/const.c">
       <Option compile="0"/>
       <Option link="0"/>
@@ -7497,6 +7529,14 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/rosic/analysis/rosic_BeatDetector.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/rosic/analysis/rosic_BeatDetector.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/rosic/analysis/rosic_CyclicAutoCorrelator.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -7550,6 +7590,14 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/rosic/analysis/rosic_LinearPredictor.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/rosic/analysis/rosic_OnsetDetector.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/rosic/analysis/rosic_OnsetDetector.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>

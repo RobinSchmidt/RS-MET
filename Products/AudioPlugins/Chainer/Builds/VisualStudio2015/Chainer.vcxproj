@@ -2126,6 +2126,12 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\jura_processors.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\AudioBasics\AudioBasics.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\AudioBasics\AudioFunctions.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\Basics.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2229,6 +2235,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Geometry\Ellipse.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Geometry\GeometricTransformations.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Geometry\Line2D.cpp">
@@ -2531,6 +2540,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_variablescope.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\bernsee_fft\BernseeFFT.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\cephes_tweaked\double\const.c">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2651,6 +2663,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\soundtouch\WavFile.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_BeatDetector.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_CyclicAutoCorrelator.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2670,6 +2685,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_LinearPredictor.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_OnsetDetector.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_OscilloscopeBufferOld.cpp">
@@ -4422,6 +4440,8 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\tools\jura_TuningFileManager.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\jura_processors.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\jura_processors.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\AudioBasics\AudioBasics.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\AudioBasics\AudioFunctions.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\Basics.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\Constants.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\MacroDefinitions.h"/>
@@ -4463,6 +4483,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\SinCosTable.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Geometry\ConicSection.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Geometry\Ellipse.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Geometry\GeometricTransformations.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Geometry\Line2D.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\Statistics.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Types\Matrix.h"/>
@@ -4568,6 +4589,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_tokenizer.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_typeinfo.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\angelscript\as_variablescope.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\bernsee_fft\BernseeFFT.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\cephes_tweaked\double\mconf.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ExprEval_v3_4\datalist.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\ExprEval_v3_4\defs.h"/>
@@ -4614,6 +4636,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\tnt_subscript.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\tnt_vec.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\_third_party\tnt\tnt_version.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_BeatDetector.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_CyclicAutoCorrelator.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_EnvelopeFollower.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_FormantPreserver.h"/>
@@ -4621,6 +4644,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_InstantaneousEnvelopeDetector.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_LevelDetector.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_LinearPredictor.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_OnsetDetector.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_OscilloscopeBufferOld.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_PitchDetector.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\analysis\rosic_ScopeScreenScanner.h"/>
