@@ -88,7 +88,7 @@ public:
   signal. */
   inline void getSamplePair(TSig* in, TSig* outLow, TSig* outHigh)
   {
-    double tmp  = *in;
+    TSig tmp  = *in;
     *outLow  = lowpass2.getSampleDirect2(lowpass1.getSampleDirect2(tmp));
     *outHigh = sumAllpass.getSampleDirect2(tmp) - *outLow;
   }
@@ -96,7 +96,7 @@ public:
   /** Processes a buffer of samples. */
   inline void processBuffer(TSig* in, TSig* outLow, TSig* outHigh, int length)
   {
-    double tmp;
+    TSig tmp;
     for(int n = 0; n < length; n++)
     {
       tmp = in[n];

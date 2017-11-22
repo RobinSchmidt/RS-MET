@@ -65,6 +65,7 @@ template RAPT::rsInfiniteImpulseResponseDesigner<float>;
 template RAPT::rsFilterAnalyzer<float>;
 template RAPT::rsBiquadCascade<float, float>;
 template RAPT::rsEngineersFilter<float, float>;
+template RAPT::rsLinkwitzRileyCrossOver<float, float>;
 
 // Physics:
 template RAPT::rsParticleSystem<float>;
