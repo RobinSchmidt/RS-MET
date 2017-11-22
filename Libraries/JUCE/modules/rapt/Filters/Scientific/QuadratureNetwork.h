@@ -8,7 +8,7 @@ rotating its pole/zero pattern by 90 degrees, thus leaving only the positive fre
 phase-shifted by 90 degrees with respect to one another. */
 
 template<class TSig, class TPar>
-class QuadratureNetwork
+class rsQuadratureNetwork
 {
 
   // preliminary:
@@ -21,7 +21,7 @@ public:
   /** \name Construction/Destruction */
 
   /** Constructor. */
-  QuadratureNetwork();
+  rsQuadratureNetwork();
 
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
@@ -59,7 +59,7 @@ public:
   the quadrature phase component (imaginary part). */
   inline void getOutputSamplePair(TSig in, TSig *outReal, TSig *outImag)
   {
-    Complex tmp = gain*in;
+    ComplexSig tmp = gain*in;
     for(int i = 0; i < order; i++)
     {
       y[i] = tmp - zeros[i]*x[i] + poles[i]*y[i];
@@ -68,8 +68,8 @@ public:
       // can(?) be streamlined by noting that x[i] == y[i-1] for i >= 1
     }
     tmp = y[order-1];
-    *outReal = tmp.re;
-    *outImag = tmp.im;
+    *outReal = tmp.real();
+    *outImag = tmp.imag();
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -92,7 +92,7 @@ protected:
   ComplexSig x[maxOrder];  // past inputs of the individual stages
   ComplexSig y[maxOrder];  // past outputs of the individual stages 
 
-  rsInfiniteImpulseResponseDesigner designer;
+  rsInfiniteImpulseResponseDesigner<TPar> designer;
 };
 
 #endif
