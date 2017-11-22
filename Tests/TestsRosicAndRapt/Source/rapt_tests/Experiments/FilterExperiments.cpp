@@ -315,23 +315,26 @@ void prototypeDesign()
 {
   //rsEngineersFilterFF ef;
 
-
+  typedef rsPrototypeDesignerF PD;
   typedef float Real;
 
   // min and max filter order to plot:
-  int minOrder = 4;
-  int maxOrder = 4;
+  int minOrder = 5;
+  int maxOrder = 5;
 
   // create and set up prototype designer:
   rsPrototypeDesignerF pd;
   // GAUSS
-  //pd.setApproximationMethod(rsPrototypeDesignerF::BESSEL);
-  //pd.setApproximationMethod(rsPrototypeDesignerF::BUTTERWORTH);
-  //pd.setApproximationMethod(rsPrototypeDesignerF::PAPOULIS);
+  //pd.setApproximationMethod(PD::BESSEL);
+  //pd.setApproximationMethod(PD::BUTTERWORTH);
+  pd.setApproximationMethod(PD::PAPOULIS);
   // HALPERN
-  //pd.setApproximationMethod(rsPrototypeDesignerF::CHEBYCHEV);
-  //pd.setApproximationMethod(rsPrototypeDesignerF::INVERSE_CHEBYCHEV);
-  pd.setApproximationMethod(rsPrototypeDesignerF::ELLIPTIC);
+  //pd.setApproximationMethod(PD::CHEBYCHEV);
+  //pd.setApproximationMethod(PD::INVERSE_CHEBYCHEV);
+  //pd.setApproximationMethod(PD::ELLIPTIC);
+
+  pd.setPrototypeMode(PD::LOWSHELV_PROTOTYPE);
+  pd.setGain(6.02f); // needs to be nonzero for plots
 
   pd.setPassbandRipple(1); 
   pd.setStopbandRejection(20);
@@ -344,8 +347,8 @@ void prototypeDesign()
     FilterSpecificationZPK<Real> spec = getFilterSpecificationZPK(pd);
     plt.addFilterSpecification(spec);
   }
-  //plt.plotMagnitude(1000, 0, 3, false, false);
-  plt.plotPolesAndZeros();
+  plt.plotMagnitude(1000, 0, 3, false, false);
+  //plt.plotPolesAndZeros();
 
   // issues:
 
