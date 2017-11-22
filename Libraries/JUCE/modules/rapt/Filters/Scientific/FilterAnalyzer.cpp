@@ -28,7 +28,7 @@ void rsFilterAnalyzer<T>::getAnalogPhaseResponse(Complex* z, Complex* p, T k, in
   int numBins)
 {
   for(int i = 0; i < numBins; i++)
-    phs[i] = getAnalogFrequencyResponseAt(z, p, k, N, w[i]).getAngle();
+    phs[i] = arg(getAnalogFrequencyResponseAt(z, p, k, N, w[i]));
 
   // \todo: unwrap the phase
 }
@@ -86,9 +86,9 @@ T rsFilterAnalyzer<T>::getBiquadMagnitudeAt(const T b0, const T b1, const T b2, 
   const T a2, const T w)
 {
   T c1  = cos(w);
-  T c2  = 2.0*c1*c1-1.0;  // == cos(2.0*w) by virtue of the identity cos(2*x) = 2*cos^2(x)-1
-  T num = b0*b0 + b1*b1 + b2*b2 + 2.0 * (b0*b1 + b1*b2) * c1 + 2.0 * b0*b2*c2;
-  T den = 1.0   + a1*a1 + a2*a2 + 2.0 * (   a1 + a1*a2) * c1 + 2.0 *    a2*c2;
+  T c2  = T(2)*c1*c1-T(1);  // == cos(2.0*w) by virtue of the identity cos(2*x) = 2*cos^2(x)-1
+  T num = b0*b0 + b1*b1 + b2*b2 + T(2) * (b0*b1 + b1*b2) * c1 + T(2) * b0*b2*c2;
+  T den = T(1)  + a1*a1 + a2*a2 + T(2) * (   a1 + a1*a2) * c1 + T(2) *    a2*c2;
   return sqrt(num/den);
 }
 
@@ -106,16 +106,16 @@ template<class T>
 std::complex<T> rsFilterAnalyzer<T>::getBiquadTransferFunctionAt(const T b0, const T b1, 
   const T b2, const T a1, const T a2, const Complex z)
 {
-  Complex z1 = 1 / z;  // z^-1
-  Complex z2 = z1*z1;  // z^-2
-  return (b0 + b1*z1 + b2*z2) / (1 + a1*z1 + a2*z2);
+  Complex z1 = T(1) / z;  // z^-1
+  Complex z2 = z1*z1;     // z^-2
+  return (b0 + b1*z1 + b2*z2) / (T(1) + a1*z1 + a2*z2);
 }
 
 template<class T>
 std::complex<T> rsFilterAnalyzer<T>::getBiquadCascadeTransferFunctionAt(T* b0, T* b1, T* b2, T* a1,
   T* a2, int numBiquads, Complex z)
 {
-  Complex H = 1.0;
+  Complex H = T(1);
   for(int i = 0; i < numBiquads; i++)
     H *= getBiquadTransferFunctionAt(b0[i], b1[i], b2[i], a1[i], a2[i], z);
   return H;
@@ -127,7 +127,7 @@ void rsFilterAnalyzer<T>::getBiquadCascadeFrequencyResponse(T* b0, T* b1, T* b2,
 {
   if( accumulationMode == NO_ACCUMULATION )
   {
-    fillWithValue(H, numBins, Complex(1.0, 0.0));
+    ArrayTools::rsFillWithValue(H, numBins, Complex(1.0, 0.0));
     multiplyWithBiquadCascadeFrequencyResponse(b0, b1, b2, a1, a2, numBiquads, w, H, numBins);
   }
   else if( accumulationMode == MULTIPLICATIVE_ACCUMULATION )
@@ -135,7 +135,7 @@ void rsFilterAnalyzer<T>::getBiquadCascadeFrequencyResponse(T* b0, T* b1, T* b2,
   else if( accumulationMode == ADDITIVE_ACCUMULATION )
     addWithBiquadCascadeFrequencyResponse(b0, b1, b2, a1, a2, numBiquads, w, H, numBins);
   else
-    DEBUG_BREAK; // invalid accumulation mode
+    RS_DEBUG_BREAK; // invalid accumulation mode
 }
 
 template<class T>
@@ -145,7 +145,7 @@ void rsFilterAnalyzer<T>::multiplyWithBiquadCascadeFrequencyResponse(T* b0, T* b
   Complex j(0.0, 1.0);
   for(int k = 0; k < numBins; k++)
   {
-    Complex z = expC(j*w[k]);
+    Complex z = exp(j*w[k]);
     H[k] *= getBiquadCascadeTransferFunctionAt(b0, b1, b2, a1, a2, numBiquads, z);
   }
 }
@@ -157,7 +157,7 @@ void rsFilterAnalyzer<T>::addWithBiquadCascadeFrequencyResponse(T* b0, T* b1, T*
   Complex j(0.0, 1.0);
   for(int k=0; k<numBins; k++)
   {
-    Complex z = expC(j*w[k]);
+    Complex z = exp(j*w[k]);
     H[k] += getBiquadCascadeTransferFunctionAt(b0, b1, b2, a1, a2, numBiquads, z);
   }
 }
@@ -176,17 +176,17 @@ void rsFilterAnalyzer<T>::getBiquadCascadeMagnitudeResponse(T* b0, T* b1, T* b2,
   {  
     convertToDecibels(tmp, numBins, 0.0);    
     if( accumulate == false )
-      copyBuffer(tmp, mag, numBins);  
+      ArrayTools::rsCopyBuffer(tmp, mag, numBins);  
     else
-      add(mag, tmp, mag, numBins);
-    clipBuffer(mag, numBins, -200.0, INF);  // avoid negative infinities
+      ArrayTools::rsAdd(mag, tmp, mag, numBins);
+    ArrayTools::rsClipBuffer(mag, numBins, T(-200), RS_INF(T));  // avoid negative infinities
   }
   else
   {
     if( accumulate == false )
-      copyBuffer(tmp, mag, numBins);  
+      ArrayTools::rsCopyBuffer(tmp, mag, numBins);  
     else
-      multiply(mag, tmp, mag, numBins);
+      ArrayTools::rsMultiply(mag, tmp, mag, numBins);
   }
 
   delete[] tmp;
@@ -199,7 +199,7 @@ void rsFilterAnalyzer<T>::getBiquadCascadeMagnitudeResponse(T* b0, T* b1, T* b2,
   bool accumulate)
 {
   T *w = new T[numBins];
-  T scaler = 2*PI / sampleRate;
+  T scaler = T(2*PI) / sampleRate;
   for(int k = 0; k < numBins; k++)
     w[k] = scaler * frequencies[k];
   getBiquadCascadeMagnitudeResponse(b0, b1, b2, a1, a2, numBiquads, w, magnitudes, numBins, 
@@ -210,11 +210,11 @@ void rsFilterAnalyzer<T>::getBiquadCascadeMagnitudeResponse(T* b0, T* b1, T* b2,
 template<class T>
 T rsFilterAnalyzer<T>::getBiquadPhaseResponseAt(T b0, T b1, T b2, T a1, T a2, T w)
 {
-  Complex z = expC(Complex(0.0, w));  // z = e^(j*w)
+  Complex z = exp(Complex(0.0, w));  // z = e^(j*w)
   Complex H = getBiquadTransferFunctionAt(b0, b1, b2, a1, a2, z);  
-  T  phase = H.getAngle();
+  T phase = arg(H);
   if( phase > 0.0 )
-    phase -= 2.0*PI;
+    phase -= T(2*PI);
   return phase; 
 }
 
@@ -248,14 +248,14 @@ template<class T>
 void rsFilterAnalyzer<T>::getMagnitudes(Complex* H, T* magnitudes, int length)
 {
   for(int k = 0; k < length; k++)
-    magnitudes[k] = H[k].getRadius();
+    magnitudes[k] = abs(H[k]);
 }
 
 template<class T>
 void rsFilterAnalyzer<T>::getPhases(Complex* H, T* phases, int length)
 {
   for(int k = 0; k < length; k++)
-    phases[k] = H[k].getAngle();
+    phases[k] = arg(H[k]);
   // \todo unwrap(phases, length, 2*PI); maybe conditionally
 }
 
@@ -263,7 +263,7 @@ template<class T>
 void rsFilterAnalyzer<T>::convertToDecibels(T* values, int length, T clipLowAmplitudeAt)
 {
   for(int k = 0; k < length; k++)
-    values[k] = amp2dBWithCheck(values[k], clipLowAmplitudeAt); 
+    values[k] = rsAmpToDbWithCheck(values[k], clipLowAmplitudeAt); 
 }
 
 template<class T>
@@ -272,7 +272,7 @@ void rsFilterAnalyzer<T>::clampValuesAboveNyquist(T* frequencies, T* values, int
 {
   for(int k = 0; k < length; k++)
   {
-    if( frequencies[k] > 0.5*sampleRate )
+    if( frequencies[k] > T(0.5)*sampleRate )
       values[k] = clampValue;
   }
 }

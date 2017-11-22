@@ -42,3 +42,7 @@ void rsRotateXYZ(T* x, T* y, T* z, T rx, T ry, T rz)
   *y = yx*X + yy*Y + yz*Z;    // |y| = |yx yy yz| * |Y|
   *z = zx*X + zy*Y + zz*Z;    // |z|   |zx zy zz|   |Z|
 }
+
+// maybe make a class rsRotationXYZ that stores the matrix coeffs and has functions like
+// setAngleX, setAngleY, setAngleZ and apply(T* x, T* y, T* z) - avoids recomputaion of coeffs
+// if the same rotation is applied repeatedly to various vectors
