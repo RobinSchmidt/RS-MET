@@ -44,6 +44,7 @@ typedef RAPT::rsLinkwitzRileyCrossOver<float, float> rsLinkwitzRileyCrossOverFF;
 typedef RAPT::rsCrossOver4Way<float, float> rsCrossOver4WayFF;
 typedef RAPT::rsDirectFormFilter<float, float> rsDirectFormFilterFF;
 typedef RAPT::rsEllipticSubBandFilter<float, float> rsEllipticSubBandFilterFF;
+typedef RAPT::rsEllipticSubBandFilterDirectForm<float, float> rsEllipticSubBandFilterDirectFormFF;
 
 
 

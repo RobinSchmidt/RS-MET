@@ -69,6 +69,7 @@ template RAPT::rsLinkwitzRileyCrossOver<float, float>;
 template RAPT::rsCrossOver4Way<float, float>;
 template RAPT::rsDirectFormFilter<float, float>;
 template RAPT::rsEllipticSubBandFilter<float, float>;
+template RAPT::rsEllipticSubBandFilterDirectForm<float, float>;
 
 // Physics:
 template RAPT::rsParticleSystem<float>;
