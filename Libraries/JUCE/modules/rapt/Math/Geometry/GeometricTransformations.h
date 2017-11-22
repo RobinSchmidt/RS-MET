@@ -9,6 +9,8 @@ template<class T>
 class rsRotationXYZ
 {
 
+public:
+
   rsRotationXYZ(T angleX = 0, T angleY = 0, T angleZ = 0)
   {
     rx = angleX;
