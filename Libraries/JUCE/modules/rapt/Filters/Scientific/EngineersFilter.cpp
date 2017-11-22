@@ -3,7 +3,7 @@
 template<class TSig, class TPar>
 rsEngineersFilter<TSig, TPar>::rsEngineersFilter() : rsBiquadCascade<TSig, TPar>(25)
 {
-  numStages  = 1;
+  this->numStages  = 1;
   sampleRate = 44100.0;
 }
 
@@ -79,7 +79,7 @@ void rsEngineersFilter<TSig, TPar>::setStopbandRejection(TPar newStopbandRejecti
 // inquiry:
 
 template<class TSig, class TPar>
-void rsEngineersFilter<TSig, TPar>::getMagnitudeResponse(TPar* frequencies, TPar* magnitudes, 
+void rsEngineersFilter<TSig, TPar>::getMagnitudeResponse(TPar* frequencies, TPar* magnitudes,
   int numBins, bool inDecibels, bool accumulate)
 {
   TPar* w = new TPar[numBins];
@@ -101,7 +101,7 @@ template<class TSig, class TPar>
 void rsEngineersFilter<TSig, TPar>::updateCoefficients(bool resetState)
 {
   rsBiquadCascade<TSig, TPar>::initBiquadCoeffs();
-  designer.getBiquadCascadeCoefficients(b0, b1, b2, a1, a2);
+  designer.getBiquadCascadeCoefficients(this->b0, this->b1, this->b2, this->a1, this->a2);
   if(resetState)
     rsBiquadCascade<TSig, TPar>::reset();
 }

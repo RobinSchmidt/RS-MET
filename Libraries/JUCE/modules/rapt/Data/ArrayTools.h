@@ -44,7 +44,7 @@ public:
   directions. 
   \todo: remove - redundant with rsAllocateMatrix  */
   template<class T>
-  static void alocateSquareArray2D(T**& theArray, int size);
+  static void allocateSquareArray2D(T**& theArray, int size);
 
   /** Applies the function f given by the function-pointer to all elements in inBuffer and stores
   the result in outBuffer (both buffers may be equal). */

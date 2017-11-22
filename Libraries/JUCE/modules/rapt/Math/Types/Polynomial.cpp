@@ -304,7 +304,7 @@ std::complex<T> rsPolynomial<T>::convergeToRootViaLaguerre(std::complex<T> *a, i
   static const int maxNumIterations = itsBeforeFracStep*numFractions;
 
   // fractions for taking fractional update steps to break a limit cycles:
-  static T fractions[numFractions+1] = { T(0.0),  T(0.5),  T(0.25), T(0.75), T(0.13), T(0.38), 
+  static T fractions[numFractions+1] = { T(0.0),  T(0.5),  T(0.25), T(0.75), T(0.13), T(0.38),
                                          T(0.62), T(0.88), T(1.0) };
 
   std::complex<T> r = initialGuess; // the current estimate for the root
@@ -992,29 +992,29 @@ void rsPolynomial<T>::maximumSlopeMonotonicPolynomial(T *w, int n)
 
   //  form vector of 'a' constants:
   if(n & 1)                   // odd
-  {               
-    for(i = 0; i <= k; i++) 
+  {
+    for(i = 0; i <= k; i++)
     {
       //a[i] = (2.0*i+1.0)/(M_SQRT2*(k+1.0));
       a[i] = T(2*i+1) / T(SQRT2*(k+1));
     }
   }                           // even
-  else 
+  else
   {
-    for(i = 0; i < k+1; i++) 
+    for(i = 0; i < k+1; i++)
     {
       a[i] = 0.0;
     }
-    if(k & 1) 
+    if(k & 1)
     {
-      for(i = 1; i <= k; i+=2) 
+      for(i = 1; i <= k; i+=2)
       {
         a[i] = (2*i+1)/sqrt((T) ((k+1)*(k+2)));
       }
     }
-    else 
+    else
     {
-      for(i = 0; i <= k; i+=2) 
+      for(i = 0; i <= k; i+=2)
       {
         a[i] = (2*i+1)/sqrt((T) ((k+1)*(k+2)));
       }
@@ -1029,40 +1029,40 @@ void rsPolynomial<T>::maximumSlopeMonotonicPolynomial(T *w, int n)
   // form s[] = sum of a[i]*P[i]
   s[0] = a[0];
   s[1] = a[1];
-  for(i = 2; i <= k; i++) 
+  for(i = 2; i <= k; i++)
   {
     legendrePolynomial(p, i);
-    for(j = 0; j <= i; j++) 
+    for(j = 0; j <= i; j++)
     {
       s[j] += a[i]*p[j];
     }
   }
 
   //  form v[] = square of s[]:
-  for(i = 0; i <= 2*k+2; i++) 
+  for(i = 0; i <= 2*k+2; i++)
   {
     v[i] = 0.0;
   }
-  for(i = 0; i <= k; i++) 
+  for(i = 0; i <= k; i++)
   {
-    for(j = 0; j <= k;j++) 
+    for(j = 0; j <= k;j++)
     {
-      v[i+j] += s[i]*s[j];    
+      v[i+j] += s[i]*s[j];
     }
   }
 
   // modify integrand for even 'n':
   v[2*k+1] = 0.0;
-  if((n & 1) == 0) 
+  if((n & 1) == 0)
   {
-    for(i = n; i >= 0; i--) 
+    for(i = n; i >= 0; i--)
     {
       v[i+1] += v[i];
     }
   }
 
   // form integral of v[]:
-  for(i = n+1; i >= 0; i--) 
+  for(i = n+1; i >= 0; i--)
   {
     v[i+1] = v[i]/(T)(i+1.0);
   }
@@ -1070,19 +1070,19 @@ void rsPolynomial<T>::maximumSlopeMonotonicPolynomial(T *w, int n)
 
   // clear s[] for use in computing definite integral:
   for(i = 0; i < (n+2); i++)
-  { 
+  {
     s[i] = 0.0;
   }
   s[0] = -1.0;
   s[1] =  2.0;
 
   // calculate definite integral:
-  for(i = 1; i <= n; i++) 
+  for(i = 1; i <= n; i++)
   {
-    if(i > 1) 
+    if(i > 1)
     {
       c0 = -s[0];
-      for(j = 1; j < i+1; j++) 
+      for(j = 1; j < i+1; j++)
       {
         c1 = -s[j] + 2*s[j-1];
         s[j-1] = c0;
@@ -1092,12 +1092,12 @@ void rsPolynomial<T>::maximumSlopeMonotonicPolynomial(T *w, int n)
       s[i] = c0;
       s[i+1] = c1;
     }
-    for(j = i; j > 0; j--) 
+    for(j = i; j > 0; j--)
     {
       w[j] += (v[i]*s[j]);
     }
   }
-  if((n & 1) == 0) 
+  if((n & 1) == 0)
     w[1] = 0.0;
 
   delete [] v;
@@ -1115,7 +1115,7 @@ void rsPolynomial<T>::rsPartialFractionExpansion(
 {
   // sanity check for inputs:
   rsAssert(numeratorOrder < denominatorOrder);
-  rsAssert(rsArray::rsSum(multiplicities, numDistinctPoles) == denominatorOrder);
+  rsAssert(rsArray::sum(multiplicities, numDistinctPoles) == denominatorOrder);
 
   // make denominator monic:
   scale(numerator,   numeratorOrder+1,   1.0/denominator[denominatorOrder]);

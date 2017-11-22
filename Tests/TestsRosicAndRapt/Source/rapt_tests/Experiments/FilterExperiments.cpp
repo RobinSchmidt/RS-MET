@@ -313,6 +313,9 @@ FilterSpecificationZPK<T> getFilterSpecificationZPK(rsPrototypeDesigner<T>& pd)
 }
 void prototypeDesign()
 {
+  //rsEngineersFilterFF ef;
+
+
   typedef float Real;
 
   // min and max filter order to plot:
