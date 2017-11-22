@@ -1,7 +1,7 @@
 #include "FilterExperiments.h"
 
 //template <class T1, class T2>
-//void rsScale(T1 *buffer, int length, T2 scaleFactor)
+//void scale(T1 *buffer, int length, T2 scaleFactor)
 //{
 //  for(int n = 0; n < length; n++)
 //    buffer[n] *= scaleFactor;

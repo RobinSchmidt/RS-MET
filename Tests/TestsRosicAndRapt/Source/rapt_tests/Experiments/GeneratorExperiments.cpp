@@ -21,7 +21,7 @@ void particleForceDistanceLaw()
   float dMax = 2;
   float d[N];
   float f[numExponents][N];
-  rsArray::rsFillWithRangeLinear(d, N, dMin, dMax);
+  rsArray::fillWithRangeLinear(d, N, dMin, dMax);
   for(int p = 0; p < numExponents; p++)
   {
     ps.setForceLawExponent(exponents[p]);

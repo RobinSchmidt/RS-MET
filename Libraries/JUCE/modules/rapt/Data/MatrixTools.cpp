@@ -144,7 +144,7 @@ void MatrixTools::rsMatrixInPlaceMultiply(T **A, T **B, int N, int M)
   T *Ai = new T[M];  // i-th row of A (for temporary storage)
   for(int i = 0; i < N; i++)
   {
-    rsCopyBuffer(A[i], Ai, M);
+    copyBuffer(A[i], Ai, M);
     for(int j = 0; j < M; j++)
     {
       A[i][j] = T(0);

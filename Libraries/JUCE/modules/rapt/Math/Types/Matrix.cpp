@@ -16,4 +16,4 @@ void rsMatrix<T>::setSize(size_t numRows, size_t numColumns)
     this->d = nullptr;
 }
 
-// rsFillWithValue
+// fillWithValue

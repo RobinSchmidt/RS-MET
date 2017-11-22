@@ -3,7 +3,7 @@
 // these will eventually go to the RAPT library:
 
 template <class T>
-inline void rsFillWithZeros(T *buffer, int length)
+inline void fillWithZeros(T *buffer, int length)
 {
   for(int i = 0; i < length; i++)
     buffer[i] = T(0);
@@ -50,7 +50,7 @@ void createWaveform(float *x, int N, int shape, float frequency, float sampleRat
   float phase, bool antiAlias)
 {
   float w = (float)(2*PI*frequency/sampleRate);
-  rsFillWithZeros(x, N);
+  fillWithZeros(x, N);
   switch( shape )
   {
   case 0:
@@ -131,7 +131,7 @@ void createWaveform(float *x, int N, int shape, float frequency, float sampleRat
 //  double sampleRate, double phase, bool antiAlias)
 //{
 //  double w = 2*PI*frequency/sampleRate;
-//  rsFillWithZeros(x, N);
+//  fillWithZeros(x, N);
 //  if( antiAlias == false )
 //  {
 //    for(int n=0; n<N; n++)

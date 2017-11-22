@@ -30,7 +30,7 @@ void rsPolynomial<T>::evaluatePolynomialAndDerivativesAt(T x, T *a, int order, T
   int numDerivatives)
 {
   results[0] = a[order];
-  rsFillWithZeros(&results[1], numDerivatives);
+  fillWithZeros(&results[1], numDerivatives);
   for(int i = order-1; i >= 0; i--)
   {
     int n = rsMin(numDerivatives, order-1);
@@ -44,21 +44,21 @@ void rsPolynomial<T>::evaluatePolynomialAndDerivativesAt(T x, T *a, int order, T
 template <class T>
 void rsPolynomial<T>::multiplyPolynomials(T *a, int aOrder, T *b, int bOrder, T *result)
 {
-  rsArray::rsConvolve(a, aOrder+1, b, bOrder+1, result);
+  rsArray::convolve(a, aOrder+1, b, bOrder+1, result);
 }
 
 template <class T>
 void rsPolynomial<T>::dividePolynomials(T *p, int pOrder, T *d, int dOrder, T *q, T *r)
 {
-  rsArray::rsCopyBuffer(p, r, pOrder+1); // init remainder with p
-  rsArray::rsFillWithZeros(q, pOrder+1); // init quotient with zeros
+  rsArray::copyBuffer(p, r, pOrder+1); // init remainder with p
+  rsArray::fillWithZeros(q, pOrder+1); // init quotient with zeros
   for(int k = pOrder-dOrder; k >= 0; k--)
   {
     q[k] = r[dOrder+k] / d[dOrder];
     for(int j = dOrder+k-1; j >= k; j--)
       r[j] -= q[k] * d[j-k];
   }
-  rsArray::rsFillWithZeros(&r[dOrder], pOrder-dOrder+1);
+  rsArray::fillWithZeros(&r[dOrder], pOrder-dOrder+1);
 }
 
 template <class T>
@@ -134,14 +134,14 @@ void rsPolynomial<T>::polyFiniteDifference(T *a, T *ad, int N, int direction, T 
   rsCreatePascalTriangle(binomCoeffs, numCoeffs);
 
   // actual coefficient computation for ad:
-  rsFillWithZeros(ad, N);
+  fillWithZeros(ad, N);
   for(unsigned int n = 0; n <= N; n++)
   {
     for(unsigned int k = 1; k <= n; k++)
       ad[n-k] += a[n] * rsPascalTriangle(binomCoeffs, n, k) * hk[k];
   }
   if(direction == -1)
-    rsScale(ad, N, -1);
+    scale(ad, N, -1);
 
   delete[] hk;
   delete[] binomCoeffs;
@@ -161,9 +161,9 @@ void rsPolynomial<T>::createPolynomialPowers(T *a, int N, T **aPowers, int highe
   aPowers[0][0] = 1;
   if(highestPower < 1)
     return;
-  rsCopyBuffer(a, aPowers[1], N+1);
+  copyBuffer(a, aPowers[1], N+1);
   for(int k = 2; k <= highestPower; k++)
-    rsConvolve(aPowers[k-1], (k-1)*N+1, a, N+1, aPowers[k]);
+    convolve(aPowers[k-1], (k-1)*N+1, a, N+1, aPowers[k]);
 }
 
 template <class T>
@@ -174,7 +174,7 @@ void rsPolynomial<T>::composePolynomials(T *a, int aN, T *b, int bN, T *c)
   an[0]  = T(1);         // initialize to a[]^0
 
                          // accumulation:
-  rsFillWithZeros(c, cN+1);
+  fillWithZeros(c, cN+1);
   c[0] = b[0];
   int K = 1;
   for(int n = 1; n <= bN; n++)
@@ -372,7 +372,7 @@ void rsPolynomial<T>::findPolynomialRoots(std::complex<T> *a, int order, std::co
   // allocate memory for the coefficients of the deflated polynomial and initialize it as
   // non-deflated polynomial:
   std::complex<T> *ad = new std::complex<T>[order+1];
-  rsArray::rsCopyBuffer(a, ad, order+1);
+  rsArray::copyBuffer(a, ad, order+1);
 
   // loop over the roots:
   for(int j = order; j >= 1; j--)
@@ -407,7 +407,7 @@ template<class T>
 void rsPolynomial<T>::findPolynomialRoots(T *a, int order, std::complex<T> *roots)
 {
   std::complex<T> *ac = new std::complex<T>[order+1];
-  rsArray::rsConvertBuffer(a, ac, order+1);
+  rsArray::convertBuffer(a, ac, order+1);
   findPolynomialRoots(ac, order, roots);
   delete[] ac;
 }
@@ -441,7 +441,7 @@ void rsPolynomial<T>::rootsToCoeffs(std::complex<T> *r, std::complex<T> *a, int 
 {
   std::complex<T> *rF = new std::complex<T>[N]; // only the finite roots
   int nF = rsCopyFiniteValues(r, rF, N);
-  rsArray::rsFillWithZeros(a, N+1);
+  rsArray::fillWithZeros(a, N+1);
   if( nF == 0 )
     a[0] = 1.0;
   else
@@ -1118,8 +1118,8 @@ void rsPolynomial<T>::rsPartialFractionExpansion(
   rsAssert(rsArray::rsSum(multiplicities, numDistinctPoles) == denominatorOrder);
 
   // make denominator monic:
-  rsScale(numerator,   numeratorOrder+1,   1.0/denominator[denominatorOrder]);
-  rsScale(denominator, denominatorOrder+1, 1.0/denominator[denominatorOrder]);
+  scale(numerator,   numeratorOrder+1,   1.0/denominator[denominatorOrder]);
+  scale(denominator, denominatorOrder+1, 1.0/denominator[denominatorOrder]);
 
   // establish coefficient matrix:
   std::complex<T> **A; rsAllocateSquareArray2D(A, denominatorOrder);
@@ -1127,7 +1127,7 @@ void rsPolynomial<T>::rsPartialFractionExpansion(
   std::complex<T> remainder;                                   // always zero
   for(int i = 0, k = 0; i < numDistinctPoles; i++)
   {
-    rsCopyBuffer(denominator, tmp, denominatorOrder+1);
+    copyBuffer(denominator, tmp, denominatorOrder+1);
     for(int m = 0; m < multiplicities[i]; m++)
     {
       dividePolynomialByMonomialInPlace(tmp, denominatorOrder-m, poles[i], &remainder);
@@ -1138,8 +1138,8 @@ void rsPolynomial<T>::rsPartialFractionExpansion(
   }
 
   // solve the linear system using an appropriately zero-padded numerator as RHS:
-  rsCopyBuffer(numerator, tmp, numeratorOrder+1);
-  rsFillWithZeros(&tmp[numeratorOrder+1], denominatorOrder-(numeratorOrder+1));
+  copyBuffer(numerator, tmp, numeratorOrder+1);
+  fillWithZeros(&tmp[numeratorOrder+1], denominatorOrder-(numeratorOrder+1));
   rsSolveLinearSystem(A, pfeCoeffs, tmp, denominatorOrder);
 
   // clean up:

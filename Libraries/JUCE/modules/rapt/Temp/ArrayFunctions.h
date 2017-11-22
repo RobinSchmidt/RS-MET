@@ -96,7 +96,7 @@ namespace RAPT
   sequence with the convolution product of the sequence with some other sequence or even with
   itself (such as when squaring polynomials). */
   template <class Tx, class Th, class Ty>
-  void rsConvolve(Tx *x, int xLength, Th *h, int hLength, Ty *y);
+  void convolve(Tx *x, int xLength, Th *h, int hLength, Ty *y);
 
   /** Copies the data of one array into another one and converts the type if necessary. */
   template <class T1, class T2>
@@ -109,16 +109,16 @@ namespace RAPT
   void rsConvolveInPlace(T *x, int xLength, T *h, int hLength);
     // this function operates not truly "in place" - it uses a temporary buffer internally - maybe
     // it's possible to run convolution truly in place by running the outer loop backwards?
-    // DEPRECATED - we can now do in-place covolution with the regular rsConvolve function
+    // DEPRECATED - we can now do in-place covolution with the regular convolve function
 
   /** Copies the data of one array into another one, converting the datatype, if necessarry. */
   template <class T1, class T2>
-  void rsCopyBuffer(const T1 *source, T2 *destination, int length);
+  void copyBuffer(const T1 *source, T2 *destination, int length);
 
   // old version:
   /** Copies the data of one array into another one. */
   //template <class T>
-  //void rsCopyBuffer(const T *source, T *destination, int length);
+  //void copyBuffer(const T *source, T *destination, int length);
 
   /** Copies values from the source into the target buffer if they match (via the '==' operator of
   type T) one of the elements contained in the elementsToMatch buffer. The source and target
@@ -179,7 +179,7 @@ namespace RAPT
   void rsDeAllocateSquareArray2D(T**& theArray, int size);
 
   /** Deconvolves the impulse response h out of the signal y resulting in the signal x which has a
-  length of yLength-hLength+1. It's the inverse of rsConvolve. */
+  length of yLength-hLength+1. It's the inverse of convolve. */
   template <class T>
   void rsDeConvolve(T *y, int yLength, T *h, int hLength, T *x);
 
@@ -208,7 +208,7 @@ namespace RAPT
 
   /** Fills the buffer with random values between min and max. */
   template <class T>
-  void rsFillWithRandomValues(T *buffer, int length, double min, double max, int seed);
+  void fillWithRandomValues(T *buffer, int length, double min, double max, int seed);
 
   /** Fills the buffer with values ranging (exponentially scaled) from min to max (both end-values
   inclusive). */
@@ -218,16 +218,16 @@ namespace RAPT
   /** Fills the buffer with values ranging from min to max (both end-values inclusive). 
   \todo: rename min/max into start/end  */
   template <class T>
-  void rsFillWithRangeLinear(T *buffer, int length, T min, T max);
+  void fillWithRangeLinear(T *buffer, int length, T min, T max);
 
   /** Fills the passed array with one value at all indices. */
   template <class T>
-  void rsFillWithValue(T *buffer, int length, T value);
+  void fillWithValue(T *buffer, int length, T value);
 
   /** Fills the passed array with all zeros - the type must have a constructor that takes an int
   and initializes to the zero element when 0 is passed. */
   template <class T>
-  void rsFillWithZeros(T *buffer, int length);
+  void fillWithZeros(T *buffer, int length);
 
   /** Filters the signal in input buffer x and stores the result in output buffer y. The filter
   realizes the difference equation:
@@ -355,7 +355,7 @@ namespace RAPT
   operators: +=, / and a constructor which takes an int and initializes to zero when 0 is passed
   and a typecast from int. */
   template <class T>
-  T rsMean(T *buffer, int length);
+  T mean(T *buffer, int length);
 
   /** Returns the median of the passed buffer. */
   template <class T>
@@ -410,7 +410,7 @@ namespace RAPT
 
   /** Reverses the order of the elements the passed array. */
   template <class T>
-  void rsReverse(T *buffer, int length);
+  void reverse(T *buffer, int length);
 
   /** Shifts the content of the buffer numPlaces to the right, filling it up with zeros from the
   left. */
@@ -419,11 +419,11 @@ namespace RAPT
 
   /** Scales the buffer by a constant factor. */
   template <class T1, class T2>
-  void rsScale(T1 *buffer, int length, T2 scaleFactor);
+  void scale(T1 *buffer, int length, T2 scaleFactor);
 
   /** Scales the "src" buffer by a constant factor and writes the result into the "dst" buffer. */
   template <class T1, class T2>
-  void rsScale(T1 *src, T1 *dst, int length, T2 scaleFactor);
+  void scale(T1 *src, T1 *dst, int length, T2 scaleFactor);
 
 
   /** Given the sequence y of length yLength, this function returns a sequence x which, when

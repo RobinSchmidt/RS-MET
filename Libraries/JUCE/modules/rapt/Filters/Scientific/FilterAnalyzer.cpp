@@ -127,7 +127,7 @@ void rsFilterAnalyzer<T>::getBiquadCascadeFrequencyResponse(T* b0, T* b1, T* b2,
 {
   if( accumulationMode == NO_ACCUMULATION )
   {
-    rsArray::rsFillWithValue(H, numBins, Complex(1.0, 0.0));
+    rsArray::fillWithValue(H, numBins, Complex(1.0, 0.0));
     multiplyWithBiquadCascadeFrequencyResponse(b0, b1, b2, a1, a2, numBiquads, w, H, numBins);
   }
   else if( accumulationMode == MULTIPLICATIVE_ACCUMULATION )
@@ -176,17 +176,17 @@ void rsFilterAnalyzer<T>::getBiquadCascadeMagnitudeResponse(T* b0, T* b1, T* b2,
   {  
     convertToDecibels(tmp, numBins, 0.0);    
     if( accumulate == false )
-      rsArray::rsCopyBuffer(tmp, mag, numBins);  
+      rsArray::copyBuffer(tmp, mag, numBins);  
     else
-      rsArray::rsAdd(mag, tmp, mag, numBins);
-    rsArray::rsClipBuffer(mag, numBins, T(-200), RS_INF(T));  // avoid negative infinities
+      rsArray::add(mag, tmp, mag, numBins);
+    rsArray::clipBuffer(mag, numBins, T(-200), RS_INF(T));  // avoid negative infinities
   }
   else
   {
     if( accumulate == false )
-      rsArray::rsCopyBuffer(tmp, mag, numBins);  
+      rsArray::copyBuffer(tmp, mag, numBins);  
     else
-      rsArray::rsMultiply(mag, tmp, mag, numBins);
+      rsArray::multiply(mag, tmp, mag, numBins);
   }
 
   delete[] tmp;

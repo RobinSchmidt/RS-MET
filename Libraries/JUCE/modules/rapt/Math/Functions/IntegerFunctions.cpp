@@ -123,7 +123,7 @@ void rsCreatePascalTriangle(TUInt *pt, TUInt numLines)
 template<class TUInt>
 void rsGetLineOfPascalTriangle(TUInt *c, TUInt n)
 {
-  rsArray::rsFillWithZeros(c, n+1);
+  rsArray::fillWithZeros(c, n+1);
   c[0] = 1;
   for(TUInt i = 0; i <= n; i++)
   {

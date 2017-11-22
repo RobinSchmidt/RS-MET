@@ -189,13 +189,13 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::processSampleFrame(TSig x, TSig y)
 template<class TSig, class TPix, class TPar>
 void rsPhaseScopeBuffer<TSig, TPix, TPar>::applyPixelDecay()
 {
-  rsArray::rsScale(image.getPixelPointer(0, 0), image.getNumPixels(), decayFactor);
+  rsArray::scale(image.getPixelPointer(0, 0), image.getNumPixels(), decayFactor);
 }
 
 template<class TSig, class TPix, class TPar>
 void rsPhaseScopeBuffer<TSig, TPix, TPar>::reset()
 {
-  rsArray::rsFillWithZeros(image.getPixelPointer(0, 0), image.getNumPixels());
+  rsArray::fillWithZeros(image.getPixelPointer(0, 0), image.getNumPixels());
   scanPos = 0.0;
 
   // (xOld,yOld) = (0,0) - but in pixel coordinates:
@@ -361,10 +361,10 @@ void rsPhaseScopeBuffer2<TSig, TPix, TPar>::applyPixelDecay()
   if(decayByAverage != 0)
   {
     // apply additional decay that depends on the global average value
-    TPix mean   = rsArray::rsMean(p, N);
+    TPix mean = rsArray::mean(p, N);
     //TPix scaler = 1 / (1 + decayByAverage*mean); // maybe try a formula with exp
     TPix scaler =  (TPix) (1-exp(-1 / (decayByAverage*mean)));
-    rsArray::rsScale(p, N, scaler);
+    rsArray::scale(p, N, scaler);
   }
 }
 

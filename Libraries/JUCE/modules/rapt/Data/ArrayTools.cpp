@@ -24,24 +24,24 @@ inline unsigned long rsBitReverse(unsigned long number, unsigned long numBits)
 //-------------------------------------------------------------------------------------------------
 
 template <class T>
-void rsArray::rsAdd(T *buffer1, T *buffer2, T *result, int length)
+void rsArray::add(T *buffer1, T *buffer2, T *result, int length)
 {
   for(int i = 0; i < length; i++)
     result[i] = buffer1[i] + buffer2[i];
 }
 
 template <class T>
-void rsArray::rsAdd(T *buffer, T valueToAdd, T *result, int length)
+void rsArray::add(T *buffer, T valueToAdd, T *result, int length)
 {
   for(int i = 0; i < length; i++)
     result[i] = buffer[i] + valueToAdd;
 }
 
 template <class T>
-void rsArray::rsAddCircularShiftedCopy(T *buffer, int length, double offset, T weight)
+void rsArray::addCircularShiftedCopy(T *buffer, int length, double offset, T weight)
 {
   T *tmp = new T[length];
-  rsCopyBuffer(buffer, tmp, length);
+  copyBuffer(buffer, tmp, length);
   circularShiftInterpolated(tmp, length, offset);
   scale(tmp, length, weight);
   add(buffer, tmp, buffer, length);
@@ -49,7 +49,7 @@ void rsArray::rsAddCircularShiftedCopy(T *buffer, int length, double offset, T w
 }
 
 template<class T>
-void rsArray::rsAddInto(T *x, int N, T *y, int L, int n)
+void rsArray::addInto(T *x, int N, T *y, int L, int n)
 {
   int r = 0;                // read start
   if(n < 0)
@@ -66,7 +66,7 @@ void rsArray::rsAddInto(T *x, int N, T *y, int L, int n)
 }
 
 template<class T>
-void rsArray::rsAllocateSquareArray2D(T**& theArray, int size)
+void rsArray::allocateSquareArray2D(T**& theArray, int size)
 {
   theArray = new T*[size];
   for(int i = 0; i < size; i++)
@@ -74,14 +74,14 @@ void rsArray::rsAllocateSquareArray2D(T**& theArray, int size)
 }
 
 template <class T>
-void rsArray::rsApplyFunction(T *inBuffer, T *outBuffer, int length, T (*f) (T))
+void rsArray::applyFunction(T *inBuffer, T *outBuffer, int length, T (*f) (T))
 {
   for(int i = 0; i < length; i++)
     outBuffer[i] = f(inBuffer[i]);
 }
 
 template <class T>
-bool rsArray::rsAreBuffersApproximatelyEqual(T *buffer1, T *buffer2, int length, T tolerance)
+bool rsArray::areBuffersApproximatelyEqual(T *buffer1, T *buffer2, int length, T tolerance)
 {
   for(int i = 0; i < length; i++)
   {
@@ -92,7 +92,7 @@ bool rsArray::rsAreBuffersApproximatelyEqual(T *buffer1, T *buffer2, int length,
 }
 
 template <class T>
-bool rsArray::rsAreBuffersEqual(T *buffer1, T *buffer2, int length)
+bool rsArray::areBuffersEqual(T *buffer1, T *buffer2, int length)
 {
   for(int i = 0; i < length; i++)
   {
@@ -103,7 +103,7 @@ bool rsArray::rsAreBuffersEqual(T *buffer1, T *buffer2, int length)
 }
 
 template <class T>
-void rsArray::rsCircularShift(T *buffer, int length, int numPositions)
+void rsArray::circularShift(T *buffer, int length, int numPositions)
 {
   int na = abs(numPositions);
   while(na > length)
@@ -125,7 +125,7 @@ void rsArray::rsCircularShift(T *buffer, int length, int numPositions)
 }
 
 template <class T>
-void rsArray::rsCircularShiftInterpolated(T *buffer, int length, double numPositions)
+void rsArray::circularShiftInterpolated(T *buffer, int length, double numPositions)
 {
   double read = rsWrapAround(numPositions, (double)length);
   int    w    = 0;                       // write position
@@ -134,7 +134,7 @@ void rsArray::rsCircularShiftInterpolated(T *buffer, int length, double numPosit
   double f    = read-r;                  // fractional part of read position
   double f2   = 1.0-f;
   T *tmp      = new T[length];
-  rsCopyBuffer(buffer, tmp, length);
+  copyBuffer(buffer, tmp, length);
   while(r < length-1)
   {
     buffer[w] = f2*tmp[r] + f*tmp[r+1];
@@ -154,7 +154,7 @@ void rsArray::rsCircularShiftInterpolated(T *buffer, int length, double numPosit
 }
 
 template <class T>
-void rsArray::rsClipBuffer(T *buffer, int length, T min, T max)
+void rsArray::clipBuffer(T *buffer, int length, T min, T max)
 {
   for(int i = 0; i < length; i++)
   {
@@ -166,7 +166,7 @@ void rsArray::rsClipBuffer(T *buffer, int length, T min, T max)
 }
 
 template <class T>
-int rsArray::rsCompare(T *a, T *b, int length)
+int rsArray::compare(T *a, T *b, int length)
 {
   for(int i = 0; i < length; i++)
   {
@@ -179,7 +179,7 @@ int rsArray::rsCompare(T *a, T *b, int length)
 }
 
 template <class T>
-int rsArray::rsCompare(T *a, int na, T *b, int nb)
+int rsArray::compare(T *a, int na, T *b, int nb)
 {
   int nMin = rsMin(na, nb);
   for(int i = 0; i < nMin; i++)
@@ -203,7 +203,7 @@ int rsArray::rsCompare(T *a, int na, T *b, int nb)
 }
 
 template <class T>
-bool rsArray::rsContains(T *buffer, int length, T elementToFind)
+bool rsArray::contains(T *buffer, int length, T elementToFind)
 {
   for(int i = 0; i < length; i++)
   {
@@ -215,14 +215,14 @@ bool rsArray::rsContains(T *buffer, int length, T elementToFind)
 }
 
 template <class T1, class T2>
-void rsArray::rsConvertBuffer(T1 *source, T2 *destination, int length)
+void rsArray::convertBuffer(T1 *source, T2 *destination, int length)
 {
   for(int i = 0; i < length; i++)
     destination[i] = (T2)source[i];
 }
 
 template <class T>
-void rsArray::rsConvolve(T *x, int xLength, T *h, int hLength, T *y)
+void rsArray::convolve(T *x, int xLength, T *h, int hLength, T *y)
 {
   for(int n = xLength+hLength-2; n >= 0; n--)
   {
@@ -234,7 +234,7 @@ void rsArray::rsConvolve(T *x, int xLength, T *h, int hLength, T *y)
 }
 
 template <class T1, class T2>
-void rsArray::rsCopyBuffer(const T1 *source, T2 *destination, int length)
+void rsArray::copyBuffer(const T1 *source, T2 *destination, int length)
 {
   for(int i = 0; i < length; i++)
     destination[i] = (T2)source[i];
@@ -242,7 +242,7 @@ void rsArray::rsCopyBuffer(const T1 *source, T2 *destination, int length)
 
 // old version without type conversion:
 //template <class T>
-//void rsCopyBuffer(const T *source, T *destination, int length)
+//void copyBuffer(const T *source, T *destination, int length)
 //{
 //  for(int i = 0; i < length; i++)
 //    destination[i] = source[i];
@@ -250,13 +250,13 @@ void rsArray::rsCopyBuffer(const T1 *source, T2 *destination, int length)
 //}
 
 template <class T>
-void rsArray::rsConvolveInPlace(T *x, int xLength, T *h, int hLength)
+void rsArray::convolveInPlace(T *x, int xLength, T *h, int hLength)
 {
-  rsConvolve(x, xLength, h, hLength, x);
+  convolve(x, xLength, h, hLength, x);
 }
 
 template <class T>
-void rsArray::rsCopyBufferWithLinearInterpolation(T *source, int sourceLength, T *destination,
+void rsArray::copyBufferWithLinearInterpolation(T *source, int sourceLength, T *destination,
   int destinationLength)
 {
   double increment    = (double)sourceLength / (double)destinationLength;
@@ -281,7 +281,7 @@ void rsArray::rsCopyBufferWithLinearInterpolation(T *source, int sourceLength, T
 }
 
 template <class T>
-int rsArray::rsCopyIfMatching(T *sourceBuffer, T *targetBuffer, int sourceAndTargetLength,
+int rsArray::copyIfMatching(T *sourceBuffer, T *targetBuffer, int sourceAndTargetLength,
   T *elementsToMatch, int matchLength)
 {
   int numWritten = 0;
@@ -297,7 +297,7 @@ int rsArray::rsCopyIfMatching(T *sourceBuffer, T *targetBuffer, int sourceAndTar
 }
 
 template <class T>
-int rsArray::rsCopyIfNotMatching(T *sourceBuffer, T *targetBuffer, int sourceAndTargetLength,
+int rsArray::copyIfNotMatching(T *sourceBuffer, T *targetBuffer, int sourceAndTargetLength,
   T *elementsToStrip, int stripLength)
 {
   int numWritten = 0;
@@ -313,32 +313,32 @@ int rsArray::rsCopyIfNotMatching(T *sourceBuffer, T *targetBuffer, int sourceAnd
 }
 
 template<class T1, class T2>
-void rsArray::rsCopySection(T1 *source, int sourceLength, T2 *destination, int copyStart, int copyLength)
+void rsArray::copySection(T1 *source, int sourceLength, T2 *destination, int copyStart, int copyLength)
 {
   int cl, pl1, pl2;  // actual copy-, pre-padding-, post-padding-lengths
   if(copyStart >= 0)
   {
     // copying:
     cl = rsMin(copyLength, sourceLength-copyStart);
-    rsCopyBuffer(&source[copyStart], destination, cl);
+    copyBuffer(&source[copyStart], destination, cl);
 
     // post-padding:
     pl2 = copyLength-cl;
-    rsFillWithZeros(&destination[cl], pl2);
+    fillWithZeros(&destination[cl], pl2);
   }
   else
   {
     // pre-padding:
     pl1 = rsMin(-copyStart, copyLength);
-    rsFillWithZeros(destination, pl1);
+    fillWithZeros(destination, pl1);
 
     // copying:
     cl = rsMin(copyLength-pl1, sourceLength);
-    rsCopyBuffer(source, &destination[pl1], cl);
+    copyBuffer(source, &destination[pl1], cl);
 
     // post-padding:
     pl2 = copyLength-cl-pl1;
-    rsFillWithZeros(&destination[pl1+cl], pl2);
+    fillWithZeros(&destination[pl1+cl], pl2);
   }
 }
 
@@ -350,30 +350,30 @@ void rsArray::rsCopySection(T1 *source, int sourceLength, T2 *destination, int c
 //  {
 //    // copying:
 //    cl = rsMin(copyLength, sourceLength-copyStart);
-//    rsCopyBuffer(&source[copyStart], destination, cl);
+//    copyBuffer(&source[copyStart], destination, cl);
 
 //    // post-padding:
 //    pl2 = copyLength-cl;
-//    rsFillWithZeros(&destination[cl], pl2);
+//    fillWithZeros(&destination[cl], pl2);
 //  }
 //  else
 //  {
 //    // pre-padding:
 //    pl1 = rsMin(-copyStart, copyLength);
-//    rsFillWithZeros(destination, pl1);
+//    fillWithZeros(destination, pl1);
 
 //    // copying:
 //    cl = rsMin(copyLength-pl1, sourceLength);
-//    rsCopyBuffer(source, &destination[pl1], cl);
+//    copyBuffer(source, &destination[pl1], cl);
 
 //    // post-padding:
 //    pl2 = copyLength-cl-pl1;
-//    rsFillWithZeros(&destination[pl1+cl], pl2);
+//    fillWithZeros(&destination[pl1+cl], pl2);
 //  }
 //}
 
 template <class T>
-void rsArray::rsCumulativeSum(T *x, T *y, int N)
+void rsArray::cumulativeSum(T *x, T *y, int N)
 {
   y[0] = x[0];
   for(int n = 1; n < N; n++)
@@ -381,15 +381,15 @@ void rsArray::rsCumulativeSum(T *x, T *y, int N)
 }
 
 template <class T>
-void rsArray::rsCumulativeSum(T *x, T *y, int N, int order)
+void rsArray::cumulativeSum(T *x, T *y, int N, int order)
 {
-  rsCopyBuffer(x, y, N);
+  copyBuffer(x, y, N);
   for(int i = 1; i <= order; i++)
-    rsCumulativeSum(y, y, N);
+    cumulativeSum(y, y, N);
 }
 
 template<class T>
-void rsArray::rsDeAllocateSquareArray2D(T**& theArray, int size)
+void rsArray::deAllocateSquareArray2D(T**& theArray, int size)
 {
   for(int i = 0; i < size; i++)
     delete[] theArray[i];
@@ -397,7 +397,7 @@ void rsArray::rsDeAllocateSquareArray2D(T**& theArray, int size)
 }
 
 template <class T>
-int rsArray::rsFirstIndexWithNonZeroValue(T *buffer, int N)
+int rsArray::firstIndexWithNonZeroValue(T *buffer, int N)
 {
   for(int i = 0; i < N; i++)
   {
@@ -408,20 +408,20 @@ int rsArray::rsFirstIndexWithNonZeroValue(T *buffer, int N)
 }
 
 template <class T>
-void rsArray::rsFillWithZeros(T *buffer, int length)
+void rsArray::fillWithZeros(T *buffer, int length)
 {
   for(int i = 0; i < length; i++)
     buffer[i] = T(0);
 }
 
 template <class T>
-void rsArray::rsDeConvolve(T *y, int yLength, T *h, int hLength, T *x)
+void rsArray::deConvolve(T *y, int yLength, T *h, int hLength, T *x)
 {
-  int m = rsFirstIndexWithNonZeroValue(h, hLength);
+  int m = firstIndexWithNonZeroValue(h, hLength);
   if(m == -1)
   {
     // h is all zeros - return an all-zero x-signal:
-    rsFillWithZeros(x, yLength-hLength+1);
+    fillWithZeros(x, yLength-hLength+1);
     return;
   }
   T scaler = T(1) / h[m];
@@ -448,12 +448,12 @@ void rsArray::rsDeConvolve(T *y, int yLength, T *h, int hLength, T *x)
 }
 
 template <class T>
-void rsArray::rsDeInterleave(T *buffer, int numFrames, int numElementsPerFrame)
+void rsArray::deInterleave(T *buffer, int numFrames, int numElementsPerFrame)
 {
   T *tmp = new T[numFrames*numElementsPerFrame];
   int i, j;
   for(i = 0; i < numFrames*numElementsPerFrame; i++)
-    tmp[i] = buffer[i];  // \todo use rsCopyBuffer
+    tmp[i] = buffer[i];  // \todo use copyBuffer
   for(j = 0; j < numElementsPerFrame; j++)
   {
     int k = numFrames*j;
@@ -464,7 +464,7 @@ void rsArray::rsDeInterleave(T *buffer, int numFrames, int numElementsPerFrame)
 }
 
 template <class T>
-void rsArray::rsDifference(T *buffer, int length, int order, bool periodic)
+void rsArray::difference(T *buffer, int length, int order, bool periodic)
 {
   T x, x1; // for temporary storage of the x, x[n-1] samples
   for(int o = 1; o <= order; o++)
@@ -483,21 +483,21 @@ void rsArray::rsDifference(T *buffer, int length, int order, bool periodic)
 }
 
 template <class T1, class T2, class TR>
-void rsArray::rsDivide(T1 *buffer1, T2 *buffer2, TR *result, int length)
+void rsArray::divide(T1 *buffer1, T2 *buffer2, TR *result, int length)
 {
   for(int i = 0; i < length; i++)
     result[i] = buffer1[i] / buffer2[i];
 }
 
 template <class T>
-void rsArray::rsFillWithIndex(T *buffer, int length)
+void rsArray::fillWithIndex(T *buffer, int length)
 {
   for(int i = 0; i < length; i++)
     buffer[i] = T(i);
 }
 
 template <class T>
-void rsArray::rsFillWithRandomValues(T *buffer, int length, double min, double max, int seed)
+void rsArray::fillWithRandomValues(T *buffer, int length, double min, double max, int seed)
 {
   rsRandomUniform(min, max, seed);
   for(int i = 0; i < length; i++)
@@ -505,17 +505,17 @@ void rsArray::rsFillWithRandomValues(T *buffer, int length, double min, double m
 }
 
 template <class T>
-void rsArray::rsFillWithValue(T *buffer, int length, T value)
+void rsArray::fillWithValue(T *buffer, int length, T value)
 {
   for(int i = 0; i < length; i++)
     buffer[i] = value;
 }
 
 template <class T>
-void rsArray::rsFillWithRangeExponential(T *buffer, int length, T min, T max)
+void rsArray::fillWithRangeExponential(T *buffer, int length, T min, T max)
 {
   if(min == max)
-    rsFillWithValue(buffer, length, min);
+    fillWithValue(buffer, length, min);
   else
   {
     for(int i = 0; i < length; i++)
@@ -524,10 +524,10 @@ void rsArray::rsFillWithRangeExponential(T *buffer, int length, T min, T max)
 }
 
 template <class T>
-void rsArray::rsFillWithRangeLinear(T *buffer, int length, T min, T max)
+void rsArray::fillWithRangeLinear(T *buffer, int length, T min, T max)
 {
   if(min == max)
-    rsFillWithValue(buffer, length, min);
+    fillWithValue(buffer, length, min);
   else
   {
     double factor = (max-min) / (double)(length-1);
@@ -537,7 +537,7 @@ void rsArray::rsFillWithRangeLinear(T *buffer, int length, T min, T max)
 }
 
 template <class T>
-void rsArray::rsFilter(T *x, int xLength, T *y, int yLength, T *b, int bOrder, T *a, int aOrder)
+void rsArray::filter(T *x, int xLength, T *y, int yLength, T *b, int bOrder, T *a, int aOrder)
 {
   // allocate and intitialize memory for the filters internal state:
   int i, n;
@@ -587,7 +587,7 @@ void rsArray::rsFilter(T *x, int xLength, T *y, int yLength, T *b, int bOrder, T
 }
 
 template <class T>
-void rsArray::rsFilterBiDirectional(T *x, int xLength, T *y, int yLength, T *b, int bOrder, T *a,
+void rsArray::filterBiDirectional(T *x, int xLength, T *y, int yLength, T *b, int bOrder, T *a,
   int aOrder, int numRingOutSamples)
 {
   // allocate and intitialize memory for the filters internal state:
@@ -691,7 +691,7 @@ void rsArray::rsFilterBiDirectional(T *x, int xLength, T *y, int yLength, T *b, 
 }
 
 template <class T>
-void rsArray::rsFitIntoRange(T *buffer, int length, T min, T max)
+void rsArray::fitIntoRange(T *buffer, int length, T min, T max)
 {
   T range        = max-min;
   T currentMin   = minValue(buffer, length);
@@ -706,19 +706,19 @@ void rsArray::rsFitIntoRange(T *buffer, int length, T min, T max)
 }
 
 template <class T>
-void rsArray::rsImpulseResponse(T *h, int hLength, T *b, int bOrder, T *a, int aOrder)
+void rsArray::impulseResponse(T *h, int hLength, T *b, int bOrder, T *a, int aOrder)
 {
   T x = T(1);
   filter(&x, 1, h, hLength, b, bOrder, a, aOrder);
 }
 
 template <class T>
-void rsArray::rsInterleave(T *buffer, int numFrames, int numElementsPerFrame)
+void rsArray::interleave(T *buffer, int numFrames, int numElementsPerFrame)
 {
   T *tmp = new T[numFrames*numElementsPerFrame];
   int i, j;
   for(i=0; i<numFrames*numElementsPerFrame; i++)
-    tmp[i] = buffer[i];  // \todo use rsCopyBuffer
+    tmp[i] = buffer[i];  // \todo use copyBuffer
   for(j = 0; j < numElementsPerFrame; j++)
   {
     int k = numFrames*j;
@@ -729,7 +729,7 @@ void rsArray::rsInterleave(T *buffer, int numFrames, int numElementsPerFrame)
 }
 
 template<class T>
-T rsArray::rsInterpolatedValueAt(T *x, int N, double n)
+T rsArray::interpolatedValueAt(T *x, int N, double n)
 {
   if(n < 0.0 || n > N-1)
     return 0.0;
@@ -744,7 +744,7 @@ T rsArray::rsInterpolatedValueAt(T *x, int N, double n)
 }
 
 template<class T>
-T rsArray::rsInterpolateClamped(T *y, int N, double n)
+T rsArray::interpolateClamped(T *y, int N, double n)
 {
   if(n <= 0.0)
     return y[0];
@@ -756,7 +756,7 @@ T rsArray::rsInterpolateClamped(T *y, int N, double n)
 }
 
 template <class T>
-bool rsArray::rsIsFilledWithValue(T *buffer, int length, T value)
+bool rsArray::isFilledWithValue(T *buffer, int length, T value)
 {
   for(int n = 0; n < length; n++)
   {
@@ -767,7 +767,7 @@ bool rsArray::rsIsFilledWithValue(T *buffer, int length, T value)
 }
 
 template<class T>
-bool rsArray::rsIsPeak(T *x, int n)
+bool rsArray::isPeak(T *x, int n)
 {
   if(x[n] > x[n-1] && x[n] > x[n+1])
     return true;
@@ -775,7 +775,7 @@ bool rsArray::rsIsPeak(T *x, int n)
 }
 
 template<class T>
-bool rsArray::rsIsValley(T *x, int n)
+bool rsArray::isValley(T *x, int n)
 {
   if(x[n] < x[n-1] && x[n] < x[n+1])
     return true;
@@ -783,18 +783,18 @@ bool rsArray::rsIsValley(T *x, int n)
 }
 
 template<class T>
-bool rsArray::rsIsPeakOrValley(T *x, int n)
+bool rsArray::isPeakOrValley(T *x, int n)
 {
   return rsIsPeak(x, n) || rsIsValley(x, n);
 }
 
 template<class T>
-int rsArray::rsFindPeakOrValleyRight(T *x, int N, int n0)
+int rsArray::findPeakOrValleyRight(T *x, int N, int n0)
 {
   int nR = -1;
   for(int n = rsMax(1, n0); n < N-1; n++)
   {
-    if(rsIsPeakOrValley(x, n))
+    if(isPeakOrValley(x, n))
     {
       nR = n;
       break;
@@ -804,12 +804,12 @@ int rsArray::rsFindPeakOrValleyRight(T *x, int N, int n0)
 }
 
 template<class T>
-int rsArray::rsFindPeakOrValleyLeft(T *x, int N, int n0)
+int rsArray::findPeakOrValleyLeft(T *x, int N, int n0)
 {
   int nL = -1;
   for(int n = rsMin(N-2, n0); n > 0; n--)
   {
-    if(rsIsPeakOrValley(x, n))
+    if(isPeakOrValley(x, n))
     {
       nL = n;
       break;
@@ -819,23 +819,23 @@ int rsArray::rsFindPeakOrValleyLeft(T *x, int N, int n0)
 }
 
 template <class T>
-bool rsArray::rsIsAllZeros(T *buffer, int length)
+bool rsArray::isAllZeros(T *buffer, int length)
 {
   return rsIsFilledWithValue(buffer, length, T(0));
 }
 
 template <class T>
-void rsArray::rsLeftShift(T *buffer, int length, int numPlaces)
+void rsArray::leftShift(T *buffer, int length, int numPlaces)
 {
   //rsAssert(numPlaces >= 0 && numPlaces <= length, "we require 0 <= numPlaces <= length ");
   int i;
   for(i = 0; i < length-numPlaces; i++)
     buffer[i] = buffer[i+numPlaces];
-  rsFillWithZeros(&buffer[i], numPlaces);
+  fillWithZeros(&buffer[i], numPlaces);
 }
 
 template <class T>
-T rsArray::rsLimitToRange(T value, T min, T max)
+T rsArray::limitToRange(T value, T min, T max)
 {
   if(value < min)
     return min;
@@ -846,7 +846,7 @@ T rsArray::rsLimitToRange(T value, T min, T max)
 }
 
 template <class T>
-T rsArray::rsMaxAbs(T *buffer, int length)
+T rsArray::maxAbs(T *buffer, int length)
 {
   T max = T(0);
   for(int i = 0; i < length; i++)
@@ -858,7 +858,7 @@ T rsArray::rsMaxAbs(T *buffer, int length)
 }
 
 template <class T>
-int rsArray::rsMaxAbsIndex(const T* const buffer, int length)
+int rsArray::maxAbsIndex(const T* const buffer, int length)
 {
   T max = T(0);
   int maxIndex = 0;
@@ -874,7 +874,7 @@ int rsArray::rsMaxAbsIndex(const T* const buffer, int length)
 }
 
 template <class T>
-T rsArray::rsMaxDeviation(T *buffer1, T *buffer2, int length)
+T rsArray::maxDeviation(T *buffer1, T *buffer2, int length)
 {
   T max = T(0);
   for(int i=0; i<length; i++)
@@ -887,7 +887,7 @@ T rsArray::rsMaxDeviation(T *buffer1, T *buffer2, int length)
 }
 
 template <class T>
-int rsArray::rsMaxIndex(T *buffer, int length)
+int rsArray::maxIndex(T *buffer, int length)
 {
   T   value = buffer[0];
   int index = 0;
@@ -903,13 +903,13 @@ int rsArray::rsMaxIndex(T *buffer, int length)
 }
 
 template <class T>
-T rsArray::rsMaxValue(T *buffer, int length)
+T rsArray::maxValue(T *buffer, int length)
 {
   return buffer[rsMaxIndex(buffer, length)];
 }
 
 template <class T>
-int rsArray::rsMinIndex(T *buffer, int length)
+int rsArray::minIndex(T *buffer, int length)
 {
   T   value = buffer[0];
   int index = 0;
@@ -925,26 +925,26 @@ int rsArray::rsMinIndex(T *buffer, int length)
 }
 
 template <class T>
-T rsArray::rsMinValue(T *buffer, int length)
+T rsArray::minValue(T *buffer, int length)
 {
   return buffer[rsMinIndex(buffer, length)];
 }
 
 template <class T>
-T rsArray::rsMean(T *buffer, int length)
+T rsArray::mean(T *buffer, int length)
 {
-  return rsSum(buffer, length) / (T)length;
+  return sum(buffer, length) / (T)length;
 }
 
 template <class T>
-T rsArray::rsMedian(T *buffer, int length)
+T rsArray::median(T *buffer, int length)
 {
   T* tmpBuffer = new T[length];
-  rsCopyBuffer(buffer, tmpBuffer, length);
+  copyBuffer(buffer, tmpBuffer, length);
 
   std::sort(tmpBuffer, &tmpBuffer[length]);
   T med;
-  if(rsIsOdd(length))
+  if(isOdd(length))
     med = tmpBuffer[(length-1)/2];
   else
     med = (T)(0.5 * (tmpBuffer[length/2] + tmpBuffer[length/2-1]));
@@ -954,35 +954,35 @@ T rsArray::rsMedian(T *buffer, int length)
 }
 
 template <class T1, class T2, class TR>
-void rsArray::rsMultiply(T1 *buffer1, T2 *buffer2, TR *result, int length)
+void rsArray::multiply(T1 *buffer1, T2 *buffer2, TR *result, int length)
 {
   for(int i = 0; i < length; i++)
     result[i] = buffer1[i] * buffer2[i];
 }
 
 template<class T>
-void rsArray::rsNegate(T *source, T *destination, int length)
+void rsArray::negate(T *source, T *destination, int length)
 {
   for(int i = 0; i < length; i++)
     destination[i] = -source[i];
 }
 
 template <class T>
-void rsArray::rsNormalize(T *buffer, int length, T maximum, bool subtractMean)
+void rsArray::normalize(T *buffer, int length, T maximum, bool subtractMean)
 {
   if(subtractMean == true)
   {
-    T mean = rsMean(buffer, length);
-    rsAdd(buffer, -mean, buffer, length);
+    T mean = mean(buffer, length);
+    add(buffer, -mean, buffer, length);
   }
-  T max   = rsMaxAbs(buffer, length);;
+  T max   = maxAbs(buffer, length);;
   T scale = maximum / max;
   for(int i = 0; i < length; i++)
     buffer[i] *= scale;
 }
 
 template <class T>
-void rsArray::rsOrderBitReversed(T *buffer, int N, int log2N)
+void rsArray::orderBitReversed(T *buffer, int N, int log2N)
 {
   int n, nr; // index and bit-reversed index
   for(n = 0; n < N; n++)
@@ -994,7 +994,7 @@ void rsArray::rsOrderBitReversed(T *buffer, int N, int log2N)
 }
 
 template <class T>
-void rsArray::rsOrderBitReversedOutOfPlace(T *inBuffer, T *outBuffer, int length, int numBits)
+void rsArray::orderBitReversedOutOfPlace(T *inBuffer, T *outBuffer, int length, int numBits)
 {
   // gather up the values from the bit-reversed positions in the input array:
   for(int n = 0; n < length; n++)
@@ -1002,7 +1002,7 @@ void rsArray::rsOrderBitReversedOutOfPlace(T *inBuffer, T *outBuffer, int length
 }
 
 template <class T>
-T rsArray::rsProduct(const T* const buffer, int length)
+T rsArray::product(const T* const buffer, int length)
 {
   T accu = T(1); // constructor call with 1 should initilize to multiplicative neutral element
   for(int n = 0; n < length; n++)
@@ -1011,15 +1011,15 @@ T rsArray::rsProduct(const T* const buffer, int length)
 }
 
 template <class T>
-void rsArray::rsRemoveMean(T *buffer, int length)
+void rsArray::removeMean(T *buffer, int length)
 {
-  T m = rsMean(buffer, length);
+  T m = mean(buffer, length);
   for(int i = 0; i < length; i++)
     buffer[i] -= m;
 }
 
 template <class T>
-void rsArray::rsReverse(T *buffer, int length)
+void rsArray::reverse(T *buffer, int length)
 {
   T tmp;
   int lengthMinus1 = length-1;
@@ -1032,40 +1032,40 @@ void rsArray::rsReverse(T *buffer, int length)
 }
 
 template <class T>
-void rsArray::rsRightShift(T *buffer, int length, int numPlaces)
+void rsArray::rightShift(T *buffer, int length, int numPlaces)
 {
   //rsAssert(numPlaces >= 0 && numPlaces <= length, "we require 0 <= numPlaces <= length ");
   for(int i = length-1; i >= numPlaces; i--)
     buffer[i] = buffer[i-numPlaces];
-  rsFillWithZeros(buffer, numPlaces);
+  fillWithZeros(buffer, numPlaces);
 }
 
 template <class T1, class T2>
-void rsArray::rsScale(T1 *buffer, int length, T2 scaleFactor)
+void rsArray::scale(T1 *buffer, int length, T2 scaleFactor)
 {
   for(int n = 0; n < length; n++)
     buffer[n] *= (T1)scaleFactor;
 }
 
 template <class T1, class T2>
-void rsArray::rsScale(T1 *src, T1 *dst, int length, T2 scaleFactor)
+void rsArray::scale(T1 *src, T1 *dst, int length, T2 scaleFactor)
 {
   for(int n = 0; n < length; n++)
     dst[n] = scaleFactor * src[n];
 }
 
 template <class T>
-void rsArray::rsSequenceSqrt(T *y, int yLength, T *x)
+void rsArray::sequenceSqrt(T *y, int yLength, T *x)
 {
-  int m2 = rsFirstIndexWithNonZeroValue(y, yLength);
+  int m2 = firstIndexWithNonZeroValue(y, yLength);
   if(m2 == -1)
   {
     // y is all zeros - return an all-zero x-sequence:
-    rsFillWithZeros(x, (yLength+1)/2);
+    fillWithZeros(x, (yLength+1)/2);
     return;
   }
   int m = m2/2;          // 1st index of nonzero value in x
-  rsFillWithZeros(x, m);
+  fillWithZeros(x, m);
   x[m] = rsSqrt(y[m2]);    // maybe use a complex generalization later
   T scaler = T(1) / (2*x[m]);
   for(int n = m+1; n < (yLength+1)/2; n++)
@@ -1078,23 +1078,23 @@ void rsArray::rsSequenceSqrt(T *y, int yLength, T *x)
 }
 
 template <class T>
-void rsArray::rsShift(T *buffer, int length, int numPlaces)
+void rsArray::shift(T *buffer, int length, int numPlaces)
 {
   if(numPlaces >= 0)
-    rsRightShift(buffer, length, numPlaces);
+    rightShift(buffer, length, numPlaces);
   else
-    rsLeftShift(buffer, length, -numPlaces);
+    leftShift(buffer, length, -numPlaces);
 }
 
 template <class T>
-void rsArray::rsSubtract(T *buffer1, T *buffer2, T *result, int length)
+void rsArray::subtract(T *buffer1, T *buffer2, T *result, int length)
 {
   for(int i = 0; i < length; i++)
     result[i] = buffer1[i] - buffer2[i];
 }
 
 template <class T>
-T rsArray::rsSum(T *buffer, int length)
+T rsArray::sum(T *buffer, int length)
 {
   T accu = T(0); // constructor call with 0 should initilizes to additive neutral element
   for(int n = 0; n < length; n++)
@@ -1103,7 +1103,7 @@ T rsArray::rsSum(T *buffer, int length)
 }
 
 template<class T>
-T rsArray::rsSumOfProducts(T *x, T *y, int N)
+T rsArray::sumOfProducts(T *x, T *y, int N)
 {
   T s = T(0);
   for(int n = 0; n < N; n++)
@@ -1112,12 +1112,12 @@ T rsArray::rsSumOfProducts(T *x, T *y, int N)
 }
 
 template<class T>
-T rsArray::rsSumOfSquares(T *x, int N)
+T rsArray::sumOfSquares(T *x, int N)
 {
-  return rsSumOfProducts(x, x, N);
+  return sumOfProducts(x, x, N);
 }
 
-inline void rsArray::rsSwapDataBuffers(void *buffer1, void *buffer2, void *bufferTmp, int sizeInBytes)
+inline void rsArray::swapDataBuffers(void *buffer1, void *buffer2, void *bufferTmp, int sizeInBytes)
 {
   memcpy(bufferTmp, buffer1, sizeInBytes);
   memcpy(buffer1, buffer2, sizeInBytes);
@@ -1125,7 +1125,7 @@ inline void rsArray::rsSwapDataBuffers(void *buffer1, void *buffer2, void *buffe
 }
 
 template<class T>
-void rsArray::rsTransposeSquareArray(T **in, T **out, int size)
+void rsArray::transposeSquareArray(T **in, T **out, int size)
 {
   for(int i = 0; i < size; i++)
   {
@@ -1135,7 +1135,7 @@ void rsArray::rsTransposeSquareArray(T **in, T **out, int size)
 }
 
 template<class T>
-void rsArray::rsTransposeSquareArray(T **A, int N)
+void rsArray::transposeSquareArray(T **A, int N)
 {
   int k = 1;
   for(int i = k-1; i < N-1; i++)
@@ -1147,7 +1147,7 @@ void rsArray::rsTransposeSquareArray(T **A, int N)
 }
 
 template <class T>
-T rsArray::rsWeightedSum(T *w, T *x, rsUint32 length)
+T rsArray::weightedSum(T *w, T *x, rsUint32 length)
 {
   T s(0);
   for(rsUint32 i = 0; i < length; i++)
@@ -1156,7 +1156,7 @@ T rsArray::rsWeightedSum(T *w, T *x, rsUint32 length)
 }
 
 template <class T>
-void rsArray::rsWeightedSum(T *buffer1, T *buffer2, T *result, int length, T weight1, T weight2)
+void rsArray::weightedSum(T *buffer1, T *buffer2, T *result, int length, T weight1, T weight2)
 {
   for(int n = 0; n < length; n++)
     result[n] = weight1 * buffer1[n] + weight2 * buffer2[n];

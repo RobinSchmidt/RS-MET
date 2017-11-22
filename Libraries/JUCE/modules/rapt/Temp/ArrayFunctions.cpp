@@ -7,24 +7,24 @@ namespace RAPT
 {
 
   template <class T>
-  void rsAdd(T *buffer1, T *buffer2, T *result, int length)
+  void add(T *buffer1, T *buffer2, T *result, int length)
   {
     for(int i = 0; i < length; i++)
       result[i] = buffer1[i] + buffer2[i];
   }
 
   template <class T>
-  void rsAdd(T *buffer, T valueToAdd, T *result, int length)
+  void add(T *buffer, T valueToAdd, T *result, int length)
   {
     for(int i = 0; i < length; i++)
       result[i] = buffer[i] + valueToAdd;
   }
 
   template <class T>
-  void rsAddCircularShiftedCopy(T *buffer, int length, double offset, T weight)
+  void addCircularShiftedCopy(T *buffer, int length, double offset, T weight)
   {
     T *tmp = new T[length];
-    rsCopyBuffer(buffer, tmp, length);
+    copyBuffer(buffer, tmp, length);
     circularShiftInterpolated(tmp, length, offset);
     scale(tmp, length, weight);
     add(buffer, tmp, buffer, length);
@@ -116,7 +116,7 @@ namespace RAPT
     double f    = read-r;                  // fractional part of read position
     double f2   = 1.0-f;
     T *tmp      = new T[length];
-    rsCopyBuffer(buffer, tmp, length);
+    copyBuffer(buffer, tmp, length);
     while( r < length-1 )
     {
       buffer[w] = f2*tmp[r] + f*tmp[r+1];
@@ -204,7 +204,7 @@ namespace RAPT
   }
 
   template <class Tx, class Th, class Ty>
-  void rsConvolve(Tx *x, int xLength, Th *h, int hLength, Ty *y)
+  void convolve(Tx *x, int xLength, Th *h, int hLength, Ty *y)
   {
     for(int n = xLength+hLength-2; n >= 0; n--)
     {
@@ -217,7 +217,7 @@ namespace RAPT
 
   // old:
   //template <class T>
-  //void rsConvolve(T *x, int xLength, T *h, int hLength, T *y)
+  //void convolve(T *x, int xLength, T *h, int hLength, T *y)
   //{
   //  for(int n = xLength+hLength-2; n >= 0; n--)
   //  {
@@ -229,7 +229,7 @@ namespace RAPT
   //}
 
   template <class T1, class T2>
-  void rsCopyBuffer(const T1 *source, T2 *destination, int length)
+  void copyBuffer(const T1 *source, T2 *destination, int length)
   {
     for(int i = 0; i < length; i++)
       destination[i] = (T2) source[i];
@@ -237,7 +237,7 @@ namespace RAPT
 
   // old version without type conversion:
   //template <class T>
-  //void rsCopyBuffer(const T *source, T *destination, int length)
+  //void copyBuffer(const T *source, T *destination, int length)
   //{
   //  for(int i = 0; i < length; i++)
   //    destination[i] = source[i];
@@ -247,7 +247,7 @@ namespace RAPT
   template <class T>
   void rsConvolveInPlace(T *x, int xLength, T *h, int hLength)
   {
-    rsConvolve(x, xLength, h, hLength, x);
+    convolve(x, xLength, h, hLength, x);
   }
 
   template <class T>
@@ -315,25 +315,25 @@ namespace RAPT
     {
       // copying:
       cl = rsMin(copyLength, sourceLength-copyStart);
-      rsCopyBuffer(&source[copyStart], destination, cl);
+      copyBuffer(&source[copyStart], destination, cl);
 
       // post-padding:
       pl2 = copyLength-cl;
-      rsFillWithZeros(&destination[cl], pl2);
+      fillWithZeros(&destination[cl], pl2);
     }
     else
     {
       // pre-padding:
       pl1 = rsMin(-copyStart, copyLength);
-      rsFillWithZeros(destination, pl1);
+      fillWithZeros(destination, pl1);
 
       // copying:
       cl = rsMin(copyLength-pl1, sourceLength);
-      rsCopyBuffer(source, &destination[pl1], cl);
+      copyBuffer(source, &destination[pl1], cl);
 
       // post-padding:
       pl2 = copyLength-cl-pl1;
-      rsFillWithZeros(&destination[pl1+cl], pl2);
+      fillWithZeros(&destination[pl1+cl], pl2);
     }
   }
 
@@ -345,25 +345,25 @@ namespace RAPT
   //  {
   //    // copying:
   //    cl = rsMin(copyLength, sourceLength-copyStart);
-  //    rsCopyBuffer(&source[copyStart], destination, cl);
+  //    copyBuffer(&source[copyStart], destination, cl);
 
   //    // post-padding:
   //    pl2 = copyLength-cl;
-  //    rsFillWithZeros(&destination[cl], pl2);
+  //    fillWithZeros(&destination[cl], pl2);
   //  }
   //  else
   //  {
   //    // pre-padding:
   //    pl1 = rsMin(-copyStart, copyLength);
-  //    rsFillWithZeros(destination, pl1);
+  //    fillWithZeros(destination, pl1);
 
   //    // copying:
   //    cl = rsMin(copyLength-pl1, sourceLength);
-  //    rsCopyBuffer(source, &destination[pl1], cl);
+  //    copyBuffer(source, &destination[pl1], cl);
 
   //    // post-padding:
   //    pl2 = copyLength-cl-pl1;
-  //    rsFillWithZeros(&destination[pl1+cl], pl2);
+  //    fillWithZeros(&destination[pl1+cl], pl2);
   //  }
   //}
 
@@ -378,7 +378,7 @@ namespace RAPT
   template <class T>
   void rsCumulativeSum(T *x, T *y, int N, int order)
   {  
-    rsCopyBuffer(x, y, N);
+    copyBuffer(x, y, N);
     for(int i = 1; i <= order; i++)
       rsCumulativeSum(y, y, N);
   }
@@ -403,7 +403,7 @@ namespace RAPT
   }
 
   template <class T>
-  void rsFillWithZeros(T *buffer, int length)
+  void fillWithZeros(T *buffer, int length)
   {
     for(int i = 0; i < length; i++)
       buffer[i] = T(0);
@@ -416,7 +416,7 @@ namespace RAPT
     if( m == -1 )
     {
       // h is all zeros - return an all-zero x-signal:
-      rsFillWithZeros(x, yLength-hLength+1);
+      fillWithZeros(x, yLength-hLength+1);
       return;
     }
     T scaler = T(1) / h[m];
@@ -448,7 +448,7 @@ namespace RAPT
     T *tmp = new T[numFrames*numElementsPerFrame];
     int i, j;
     for(i = 0; i < numFrames*numElementsPerFrame; i++)
-      tmp[i] = buffer[i];  // \todo use rsCopyBuffer
+      tmp[i] = buffer[i];  // \todo use copyBuffer
     for(j = 0; j < numElementsPerFrame; j++)
     {
       int k = numFrames*j;
@@ -492,7 +492,7 @@ namespace RAPT
   }
 
   template <class T>
-  void rsFillWithRandomValues(T *buffer, int length, double min, double max, int seed)
+  void fillWithRandomValues(T *buffer, int length, double min, double max, int seed)
   {
     rsRandomUniform(min, max, seed);
     for(int i = 0; i < length; i++)
@@ -500,7 +500,7 @@ namespace RAPT
   }
 
   template <class T>
-  void rsFillWithValue(T *buffer, int length, T value)
+  void fillWithValue(T *buffer, int length, T value)
   {
     for(int i = 0; i < length; i++)
       buffer[i] = value;
@@ -510,7 +510,7 @@ namespace RAPT
   void rsFillWithRangeExponential(T *buffer, int length, T min, T max)
   {
     if( min == max )
-      rsFillWithValue(buffer, length, min);
+      fillWithValue(buffer, length, min);
     else
     {
       for(int i = 0; i < length; i++)
@@ -519,10 +519,10 @@ namespace RAPT
   }
 
   template <class T>
-  void rsFillWithRangeLinear(T *buffer, int length, T min, T max)
+  void fillWithRangeLinear(T *buffer, int length, T min, T max)
   {
     if( min == max )
-      rsFillWithValue(buffer, length, min);
+      fillWithValue(buffer, length, min);
     else
     {
       double factor = (max-min) / (double) (length-1);
@@ -713,7 +713,7 @@ namespace RAPT
     T *tmp = new T[numFrames*numElementsPerFrame];
     int i, j;
     for(i=0; i<numFrames*numElementsPerFrame; i++)
-      tmp[i] = buffer[i];  // \todo use rsCopyBuffer
+      tmp[i] = buffer[i];  // \todo use copyBuffer
     for(j = 0; j < numElementsPerFrame; j++)
     {
       int k = numFrames*j;
@@ -826,7 +826,7 @@ namespace RAPT
     int i;
     for(i = 0; i < length-numPlaces; i++)
       buffer[i] = buffer[i+numPlaces];
-    rsFillWithZeros(&buffer[i], numPlaces);
+    fillWithZeros(&buffer[i], numPlaces);
   }
 
   template <class T>
@@ -926,7 +926,7 @@ namespace RAPT
   }
 
   template <class T>
-  T rsMean(T *buffer, int length)
+  T mean(T *buffer, int length)
   {
     return rsSum(buffer, length) / (T) length;
   }
@@ -935,7 +935,7 @@ namespace RAPT
   T rsMedian(T *buffer, int length)
   {
     T* tmpBuffer = new T[length];
-    rsCopyBuffer(buffer, tmpBuffer, length);
+    copyBuffer(buffer, tmpBuffer, length);
 
     std::sort(tmpBuffer, &tmpBuffer[length]);
     T med;
@@ -967,8 +967,8 @@ namespace RAPT
   {
     if(subtractMean == true)
     {
-      T mean = rsMean(buffer, length);
-      rsAdd(buffer, -mean, buffer, length);
+      T mean = mean(buffer, length);
+      add(buffer, -mean, buffer, length);
     }
     T max   = rsMaxAbs(buffer, length);;
     T scale = maximum / max;
@@ -1008,13 +1008,13 @@ namespace RAPT
   template <class T>
   void rsRemoveMean(T *buffer, int length)
   {
-    T m = rsMean(buffer, length);
+    T m = mean(buffer, length);
     for(int i = 0; i < length; i++)
       buffer[i] -= m;
   }
 
   template <class T>
-  void rsReverse(T *buffer, int length)
+  void reverse(T *buffer, int length)
   {
     T tmp;
     int lengthMinus1 = length-1;
@@ -1032,18 +1032,18 @@ namespace RAPT
     rsAssert(numPlaces >= 0 && numPlaces <= length, "we require 0 <= numPlaces <= length ");
     for(int i = length-1; i >= numPlaces; i--)
       buffer[i] = buffer[i-numPlaces];
-    rsFillWithZeros(buffer, numPlaces);
+    fillWithZeros(buffer, numPlaces);
   }
 
   template <class T1, class T2>
-  void rsScale(T1 *buffer, int length, T2 scaleFactor)
+  void scale(T1 *buffer, int length, T2 scaleFactor)
   {
     for(int n = 0; n < length; n++)
       buffer[n] *= scaleFactor;
   }
 
   template <class T1, class T2>
-  void rsScale(T1 *src, T1 *dst, int length, T2 scaleFactor)
+  void scale(T1 *src, T1 *dst, int length, T2 scaleFactor)
   {
     for(int n = 0; n < length; n++)
       dst[n] = scaleFactor * src[n];
@@ -1056,11 +1056,11 @@ namespace RAPT
     if( m2 == -1 )
     {
       // y is all zeros - return an all-zero x-sequence:
-      rsFillWithZeros(x, (yLength+1)/2);
+      fillWithZeros(x, (yLength+1)/2);
       return;
     }
     int m = m2/2;          // 1st index of nonzero value in x
-    rsFillWithZeros(x, m);
+    fillWithZeros(x, m);
     x[m] = rsSqrt(y[m2]);    // maybe use a complex generalization later
     T scaler = T(1) / (2*x[m]);
     for(int n = m+1; n < (yLength+1)/2; n++)
