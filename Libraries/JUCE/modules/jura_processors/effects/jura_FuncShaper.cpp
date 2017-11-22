@@ -59,7 +59,8 @@ void FuncShaperAudioModule::setStateFromXml(const XmlElement& xml,
   // restore the function-string:
   juce::String functionString = xml.getStringAttribute("FunctionString");
   char* functionStringC = toZeroTerminatedString(functionString);
-  bool stringIsValid = wrappedFuncShaper->setFunctionString(functionStringC, false);
+  //bool stringIsValid = wrappedFuncShaper->setFunctionString(functionStringC, false);
+  wrappedFuncShaper->setFunctionString(functionStringC, false);
   if(functionStringC)
     delete functionStringC;
 

@@ -145,18 +145,18 @@ public:
   virtual void changeListenerCallback(ChangeBroadcaster *source) override;
 
   /** Implements the purely virtual method inherited from RTextEntryFieldObserver. */
-  virtual void textChanged(RTextEntryField *rTextEntryFieldThatHasChanged);
+  virtual void textChanged(RTextEntryField *rTextEntryFieldThatHasChanged) override;
 
   /** Overrides paint(). */   
-  virtual void paint(Graphics &g);
+  virtual void paint(Graphics &g) override;
 
   /** Overrides resized(). */    
-  virtual void resized();
+  virtual void resized() override;
 
 protected:
 
   /** Overrides the method inherited from RPolyphonicInstrumentEditor. */
-  virtual void updateWidgetsAccordingToState();
+  virtual void updateWidgetsAccordingToState() override;
 
   /** This is the actual plugin engine which does all the dsp and automation handling. */
   FuncShaperAudioModule *funcShaperAudioModule;

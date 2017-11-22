@@ -638,7 +638,7 @@ public:
   ModulationSources of the same type that are registered here. This is used to figure out, for 
   example, how many LFOs, envelopes, etc. already exist in order to assign an appropriate name
   to the next one to be added (it's actually not currently used). */
-  int numRegisteredSourcesOfType(ModulationSource* source);
+  //int numRegisteredSourcesOfType(ModulationSource* source);
 
   /** Returns a pointer to the ModulationSource with given name, if a source with that name exists 
   in our array of registered sources. Otherwise, it will return a nullptr. */

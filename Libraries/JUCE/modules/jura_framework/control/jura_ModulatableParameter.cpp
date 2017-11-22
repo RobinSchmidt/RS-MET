@@ -435,6 +435,7 @@ ModulationConnection* ModulationManager::getConnectionBetween(const ModulationSo
   return nullptr;
 }
 
+/*
 int ModulationManager::numRegisteredSourcesOfType(ModulationSource* source)
 {
   ScopedLock scopedLock(*modLock); 
@@ -446,6 +447,7 @@ int ModulationManager::numRegisteredSourcesOfType(ModulationSource* source)
   }
   return result;
 }
+*/
 
 ModulationSource* ModulationManager::getSourceByName(const juce::String& sourceName)
 {

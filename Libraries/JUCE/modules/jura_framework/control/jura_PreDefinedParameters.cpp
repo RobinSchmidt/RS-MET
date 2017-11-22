@@ -43,7 +43,7 @@ void ParameterGridInterval::setStringValue(const juce::String& newString, bool s
   Parameter::setStringValue(newString, sendNotification, callCallbacks); 
   String test = getStringValue();
   jassert(test == newString);
-  int dummy = 0;
+  //int dummy = 0;
 
   /*
   for (int i = 0; i < gridIntervalStringArray.size(); ++i)

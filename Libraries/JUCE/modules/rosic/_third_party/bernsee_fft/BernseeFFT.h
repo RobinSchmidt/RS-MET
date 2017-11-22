@@ -2,7 +2,7 @@
 #define BernseeFFT_h
 
 #include <math.h>
-#define M_PI 3.14159265358979323846
+//#define M_PI 3.14159265358979323846
 
 /**
 FFT routine, (C)1996 S.M.Bernsee. Sign = -1 is FFT, 1 is iFFT (inverse)
