@@ -43,8 +43,10 @@ void rsDirectFormFilter<TSig, TCoef>::setGlobalGainFactor(TCoef newFactor)
 }
 
 template<class TSig, class TCoef>
-double rsDirectFormFilter<TSig, TCoef>::getMagnitudeResponseAt(TCoef omega)
+TCoef rsDirectFormFilter<TSig, TCoef>::getMagnitudeResponseAt(TCoef omega)
 {
+  // todo: move computation into rsFilterAnalyzer
+
   TCoef ca = 0.0;
   TCoef sa = 0.0;
   TCoef cb = 0.0; 
@@ -66,10 +68,10 @@ template<class TSig, class TCoef>
 void rsDirectFormFilter<TSig, TCoef>::getMagnitudeResponse(TCoef* frequencies, TCoef* magnitudes, 
   int numBins, TCoef sampleRate, bool inDecibels, bool accumulate)
 {
-  double H;
+  TCoef H;
   for(int k = 0; k < numBins; k++)
   {
-    H = getMagnitudeResponseAt(2*PI*frequencies[k] / sampleRate);
+    H = getMagnitudeResponseAt(TCoef(2*PI)*frequencies[k] / sampleRate);
 
     // \todo move this decision function somewhere where it can be shared - other filter use that, 
     // too
@@ -78,9 +80,9 @@ void rsDirectFormFilter<TSig, TCoef>::getMagnitudeResponse(TCoef* frequencies, T
     else if( !inDecibels && accumulate )
       magnitudes[k] *= H;
     else if( inDecibels && !accumulate )
-      magnitudes[k]  = amp2dBWithCheck(H, 0.0000001); // clip at -140 dB
+      magnitudes[k]  = rsAmpToDbWithCheck(H, TCoef(0.0000001)); // clip at -140 dB
     else if( inDecibels && accumulate )
-      magnitudes[k] += amp2dBWithCheck(H, 0.0000001);
+      magnitudes[k] += rsAmpToDbWithCheck(H, TCoef(0.0000001));
   }
 }
 

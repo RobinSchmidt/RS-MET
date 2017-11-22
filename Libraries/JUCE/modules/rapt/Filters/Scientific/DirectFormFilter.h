@@ -39,7 +39,7 @@ public:
 
   /** Returns the magnitude response at the given normalized radian frequency 'omega' where pi 
   corresponds to half the sample-rate. */
-  double getMagnitudeResponseAt(TCoef omega);
+  TCoef getMagnitudeResponseAt(TCoef omega);
 
   /** Calculates the magnitudes of the frequency-response at the frequencies given in the array 
   "frequencies" (in Hz) and stores them in the array "magnitudes". Both arrays are assumed to be 
@@ -59,7 +59,7 @@ public:
   {
     // obtain intermediate signal as output from feedback part:
     int k;
-    TSig tmp = in + TINY;
+    TSig tmp = in;
     for(k = 1; k <= order; k++)
       tmp -= a[k]*w[k];
 
