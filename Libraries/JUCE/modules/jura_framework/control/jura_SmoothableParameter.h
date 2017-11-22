@@ -215,10 +215,14 @@ public:
   void flushTargetValues();
 
 
+  std::vector<rsSmoother*> usedSmoothers;  
+    // temporarily made public - Elan needs to loop over them when setting a global smoothing speed
+    // maybe we should have a function: useGlobalSmoothingTime(bool, double)
+
 protected:
 
   std::vector<rsSmoother*> smootherPool;
-  std::vector<rsSmoother*> usedSmoothers;
+
   double sampleRate = 44100;
   CriticalSection* lock = nullptr;
   bool smoothingBypassed = false;
