@@ -2,7 +2,7 @@
 
 void smbFft(float *fftBuffer, long fftFrameSize, long sign)
 {
-  const float pi = 3.14159265358979323846;
+  const float pi = float(3.14159265358979323846);
   float wr, wi, arg, *p1, *p2, temp;
   float tr, ti, ur, ui, *p1r, *p1i, *p2r, *p2i;
   long i, bitm, j, le, le2, k, logN;

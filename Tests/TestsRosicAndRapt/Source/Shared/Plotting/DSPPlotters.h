@@ -58,12 +58,15 @@ public:
 
   /** Plots the magnitude responses of all the filters. */
   void plotMagnitude(int numFreqs, T lowFreq, T highFreq, bool logFreqAxis, bool decibels);
+
+  /** Plots the poles and zeros of all the filters in s- or z-plane. */
+  void plotPolesAndZeros();
+
   /*
   void plotPhase();
   void plotMagnitudeAndPhase(); // in one plot
   void plotPhaseDelay();
   void plotGroupDelay();
-  void plotPolesAndZeros();
   void plotTransferFunctionMagnitude();
   void plotImpulseResponse();
   void plotStepResponse();

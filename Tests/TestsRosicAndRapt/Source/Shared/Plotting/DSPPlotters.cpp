@@ -44,27 +44,7 @@ void FilterPlotter<T>::addFilterSpecification(const FilterSpecificationZPK<T>& s
 {
   filterSpecs.push_back(spec);
 }
-/*
-// old:
-template <class T>
-void FilterPlotter<T>::plotMagnitude(int numFreqs, T lowFreq, T highFreq, bool logFreqAxis, 
-  bool decibels)
-{
-  vector<T> f = getFrequencyAxis(numFreqs, lowFreq, highFreq, logFreqAxis);
-  for(unsigned int i = 0; i < filterSpecs.size(); i++) {
-    vector<complex<T>> H = getFrequencyResponse(i, f);
-    vector<T> mag = getMagnitudes(H);
-    addDataArrays(numFreqs, &f[0], &mag[0]); 
-      // wrong - because each data-set ahs its own freq-axis - works only, if there's juts one
-      // filter spec
 
-    addGraph(string("i 0 u 1:") + s(i+2) + string(" w lines lw 1.5 axes x1y1 notitle"));
-  }
-  plot();
-}
-*/
-
-// new - doens't work yet because the data in the datafile is wrongly formatted:
 template <class T>
 void FilterPlotter<T>::plotMagnitude(int numFreqs, T lowFreq, T highFreq, bool logFreqAxis, 
   bool decibels)
@@ -80,6 +60,18 @@ void FilterPlotter<T>::plotMagnitude(int numFreqs, T lowFreq, T highFreq, bool l
     addGraph(string("i 0 u 1:") + s(i+2) + string(" w lines lw 1.5 axes x1y1 notitle"));
   }
   addDataBlockColumnLine(data);
+  plot();
+}
+
+template <class T>
+void FilterPlotter<T>::plotPolesAndZeros()
+{
+  for(unsigned int i = 0; i < filterSpecs.size(); i++)
+  {
+    addDataComplex(filterSpecs[i].poles);
+    addDataComplex(filterSpecs[i].zeros);
+    // still incomplete - look into GNUPlotCPP demos to see how it's done
+  }
   plot();
 }
 
