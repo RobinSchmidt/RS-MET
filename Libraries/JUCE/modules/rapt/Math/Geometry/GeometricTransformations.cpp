@@ -1,5 +1,5 @@
 template<class T>
-void rsRotationXYZ::apply(T* x, T* y, T* z)
+void rsRotationXYZ<T>::apply(T* x, T* y, T* z)
 {
   // temporaries:
   T X = *x; 
@@ -13,7 +13,7 @@ void rsRotationXYZ::apply(T* x, T* y, T* z)
 }
 
 template<class T>
-void rsRotationXYZ::updateCoeffs()
+void rsRotationXYZ<T>::updateCoeffs()
 {
   // sines/cosines:
   T sx = sin(rx); T cx = cos(rx);
