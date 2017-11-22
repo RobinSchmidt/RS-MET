@@ -25,7 +25,7 @@ Expression::Expression() : m_vlist(0), m_flist(0), m_dlist(0), m_expr(0)
     m_abortcount = 200000;
     m_abortreset = 200000;
     }
-    
+
 // Destructor
 Expression::~Expression()
     {
@@ -38,7 +38,7 @@ void Expression::SetValueList(ValueList *vlist)
     {
     m_vlist = vlist;
     }
-    
+
 // Get value list
 ValueList *Expression::GetValueList() const
     {
@@ -50,32 +50,32 @@ void Expression::SetFunctionList(FunctionList *flist)
     {
     m_flist = flist;
     }
-    
+
 // Get function list
 FunctionList *Expression::GetFunctionList() const
     {
     return m_flist;
-    }     
-    
+    }
+
 // Set data list
 void Expression::SetDataList(DataList *dlist)
     {
     m_dlist = dlist;
     }
-    
+
 // Get data list
 DataList *Expression::GetDataList() const
     {
     return m_dlist;
-    }        
-            
+    }
+
 // Test for an abort
 bool Expression::DoTestAbort()
     {
     // Derive a class to test abort
     return false;
     }
-    
+
 // Test for an abort
 void Expression::TestAbort(bool force)
     {
@@ -94,7 +94,7 @@ void Expression::TestAbort(bool force)
             {
             // Reset count
             m_abortcount = m_abortreset;
-            
+
             // Test abort
             if(DoTestAbort())
                 {
@@ -116,26 +116,26 @@ void Expression::SetTestAbortCount(unsigned long count)
     if(m_abortcount > count)
         m_abortcount = count;
     }
-            
+
 // Parse expression
 void Expression::Parse(const string &exstr)
     {
     // Clear the expression if needed
     if(m_expr)
         Clear();
-        
+
     // Create parser
-    auto_ptr<Parser> p(new Parser(this));
-    
+    unique_ptr<Parser> p(new Parser(this));
+
     // Parse the expression
     m_expr = p->Parse(exstr);
     }
-    
+
 // Clear the expression
 void Expression::Clear()
     {
     delete m_expr;
-    m_expr = 0; 
+    m_expr = 0;
     }
 
 // Evaluate an expression
@@ -148,6 +148,6 @@ double Expression::Evaluate()
     else
         {
         throw(EmptyExpressionException());
-        }    
+        }
     }
-            
+

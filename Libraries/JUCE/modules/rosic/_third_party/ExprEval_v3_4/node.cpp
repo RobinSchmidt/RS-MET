@@ -244,7 +244,7 @@ void FunctionNode::Parse(Parser &parser, Parser::size_type start, Parser::size_t
           else
           {
           // Create node
-            auto_ptr<Node> n(parser.ParseRegion(last, pos - 1));
+            unique_ptr<Node> n(parser.ParseRegion(last, pos - 1));
             m_nodes.push_back(n.get());
             n.release();
           }

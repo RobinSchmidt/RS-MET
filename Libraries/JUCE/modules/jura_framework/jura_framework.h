@@ -30,6 +30,7 @@
 
 //#include <cstdio.h>    // for gcc on windows - doesn't help
 //#include <stdio.h>
+#include <float.h>
 #include <limits.h>
 #include <xmmintrin.h>   // for FTZ (flush-to-zero)
 #include <pmmintrin.h>   // for DAZ (denormals-are-zero)
@@ -92,7 +93,7 @@ namespace jura
 #include "gui/widgets/jura_RTextField.h"
 #include "gui/widgets/jura_RTextEditor.h" // maybe later it should be moved below RScrollBar...
 #include "gui/widgets/jura_RButton.h"     // ..if the texteditor becomes scrollable
-#include "gui/widgets/jura_PlotPreviewButton.h" 
+#include "gui/widgets/jura_PlotPreviewButton.h"
 #include "gui/widgets/jura_RScrollBar.h"
 #include "gui/widgets/jura_RTreeView.h"
 #include "gui/widgets/jura_RPopUpComponent.h"
@@ -129,9 +130,9 @@ namespace jura
 #include "audio/jura_AudioFileBuffer.h"
 #include "audio/jura_AudioFileBufferUser.h"
 
-// the "panel" stuff more or less parallels the "plot" stuff but the implementation is 
-// different (using a background thread for drawing). at some point, we should settle for one or 
-// the other version...or somehow merge the code...maybe even make a totally different version 
+// the "panel" stuff more or less parallels the "plot" stuff but the implementation is
+// different (using a background thread for drawing). at some point, we should settle for one or
+// the other version...or somehow merge the code...maybe even make a totally different version
 // based on OpenGL - currently, it's a bit messy:
 #include "gui/panels/jura_PanelRange.h"
 #include "gui/panels/jura_Panel.h"
@@ -153,7 +154,7 @@ namespace jura
 
 #include "audio/jura_AudioSampleBufferFunctions.h"
 #include "audio/jura_ImmediatePlaybackAudioSource.h"
-#include "audio/jura_AudioModule.h" 
+#include "audio/jura_AudioModule.h"
 #include "audio/jura_AudioPlugin.h"
 
 

@@ -94,7 +94,7 @@ void ValueList::Add(const string &name, double def, bool constant)
     else
         {
         // Create value
-        auto_ptr<ValueListItem> i(new ValueListItem(name, def ,constant));
+        unique_ptr<ValueListItem> i(new ValueListItem(name, def ,constant));
 
         // Add value to list
         m_values.push_back(i.get());
