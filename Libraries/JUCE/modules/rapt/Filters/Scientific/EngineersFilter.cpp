@@ -1,7 +1,7 @@
 // construction/destruction:
 
 template<class TSig, class TPar>
-rsEngineersFilter<TSig, TPar>::rsEngineersFilter() : rsBiquadCascadeStereo(25)
+rsEngineersFilter<TSig, TPar>::rsEngineersFilter() : rsBiquadCascade<TSig, TPar>(25)
 {
   numStages  = 1;
   sampleRate = 44100.0;
@@ -22,7 +22,7 @@ template<class TSig, class TPar>
 void rsEngineersFilter<TSig, TPar>::setMode(int newMode)
 {
   designer.setMode(newMode);
-  rsBiquadCascade<TPar>::setNumStages(designer.getNumBiquadStages());
+  rsBiquadCascade<TSig, TPar>::setNumStages(designer.getNumBiquadStages());
   updateCoefficients();
 }
 
@@ -44,7 +44,7 @@ template<class TSig, class TPar>
 void rsEngineersFilter<TSig, TPar>::setPrototypeOrder(int newOrder)
 {
   designer.setPrototypeOrder(newOrder);
-  rsBiquadCascade<TPar>::setNumStages(designer.getNumBiquadStages());
+  rsBiquadCascade<TSig, TPar>::setNumStages(designer.getNumBiquadStages());
   updateCoefficients();
 }
 
@@ -84,8 +84,9 @@ void rsEngineersFilter<TSig, TPar>::getMagnitudeResponse(TPar* frequencies, TPar
 {
   TPar* w = new TPar[numBins];
   for(int k = 0; k < numBins; k++)
-    w[k] = 2 * PI * frequencies[k] / sampleRate;
-  rsBiquadCascade<TPar>::getMagnitudeResponse(w, magnitudes, numBins, inDecibels, accumulate);
+    w[k] = TPar(2*PI) * frequencies[k] / sampleRate;
+  rsBiquadCascade<TSig, TPar>::getMagnitudeResponse(w, magnitudes, numBins, inDecibels,
+    accumulate);
   for(int k = 0; k < numBins; k++)
   {
     if( w[k] > PI )
@@ -99,8 +100,8 @@ void rsEngineersFilter<TSig, TPar>::getMagnitudeResponse(TPar* frequencies, TPar
 template<class TSig, class TPar>
 void rsEngineersFilter<TSig, TPar>::updateCoefficients(bool resetState)
 {
-  rsBiquadCascade<TPar>::initBiquadCoeffs();
+  rsBiquadCascade<TSig, TPar>::initBiquadCoeffs();
   designer.getBiquadCascadeCoefficients(b0, b1, b2, a1, a2);
   if(resetState)
-    rsBiquadCascade<TPar>::reset();
+    rsBiquadCascade<TSig, TPar>::reset();
 }

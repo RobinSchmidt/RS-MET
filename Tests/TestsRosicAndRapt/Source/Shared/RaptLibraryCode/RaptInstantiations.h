@@ -39,6 +39,7 @@ typedef RAPT::rsFilterCoefficientConverter<float> rsFilterCoefficientConverterF;
 typedef RAPT::rsInfiniteImpulseResponseDesigner<float> rsInfiniteImpulseResponseDesignerF;
 typedef RAPT::rsFilterAnalyzer<float> rsFilterAnalyzerF;
 typedef RAPT::rsBiquadCascade<float, float> rsBiquadCascadeFF;
+typedef RAPT::rsEngineersFilter<float, float> rsEngineersFilterFF;
 
 
 
