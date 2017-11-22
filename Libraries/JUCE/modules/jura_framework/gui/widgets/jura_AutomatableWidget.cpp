@@ -450,7 +450,7 @@ void AutomatableWidget::addPopUpMetaItems()
     int mi = mcp->getMetaParameterIndex();
     String miString;
     if(mi > -1)
-      miString = "(currently " + String(mi) + ": " + mcp->getMetaParameterName() + ")";
+      miString = "(currently " + mcp->getMetaParameterName() + ")";
     else
       miString = "(currently none)";
 
