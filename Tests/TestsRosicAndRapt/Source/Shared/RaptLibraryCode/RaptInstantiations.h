@@ -37,6 +37,7 @@ typedef RAPT::rsPrototypeDesigner<float> rsPrototypeDesignerF;
 typedef RAPT::rsPoleZeroMapper<float> rsPoleZeroMapperF;
 typedef RAPT::rsFilterCoefficientConverter<float> rsFilterCoefficientConverterF;
 typedef RAPT::rsInfiniteImpulseResponseDesigner<float> rsInfiniteImpulseResponseDesignerF;
+typedef RAPT::rsFilterAnalyzer<float> rsFilterAnalyzerF;
 
 
 
