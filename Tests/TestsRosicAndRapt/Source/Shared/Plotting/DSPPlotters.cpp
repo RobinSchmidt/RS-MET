@@ -73,13 +73,14 @@ void FilterPlotter<T>::plotPolesAndZeros(int plotSize)
     addGraph("i " + s(2*i)   + " u 1:2 w points pt 2 ps 1 notitle");
     addGraph("i " + s(2*i+1) + " u 1:2 w points pt 6 ps 1 notitle");
 
-    /*
     // show the multiplicities of poles and zeros:
-    double thresh = 1.e-8; // threshold for considering close poles/zeros as multiple root
+    T thresh = T(1.e-8);    // threshold for considering close poles/zeros as multiple root
+                            // maybe use something that depends on the epsilon of T
     drawMultiplicities(filterSpecs[i].poles, thresh);
     drawMultiplicities(filterSpecs[i].zeros, thresh);
-    */
   }
+
+  // todo: make the colors of the poles, zeros and multiplicities for each filter equal
 
   setupForPoleZeroPlot(plotSize);
   plot();
@@ -178,6 +179,52 @@ void FilterPlotter<T>::setupForPoleZeroPlot(int size)
   if(zDomain == true)
     addCommand("set object 1 ellipse at first 0,0 size 2,2 fs empty border rgb \"#808080\""); 
 }
+
+
+// returns true, if the relative distance between x and y is smaller than the given threshold 
+// ("relative" with respect to the actual absolute values of x and y, such that for larger values 
+// the tolerance also increases)
+template <class T>
+bool almostEqual(complex<T> x, complex<T> y, T thresh)
+{
+  return abs(x-y) / fmax(abs(x), abs(y)) < thresh;
+}
+
+template <class T>
+void FilterPlotter<T>::drawMultiplicities(const vector<complex<T>>& z, T thresh)
+{
+  size_t N = z.size();       // number of values
+  vector<complex<T>> zd(N);  // collected distinct values
+  vector<int> m(N);          // m[i] = multiplicity of value zd[i]
+  vector<bool> done(N);      // vector of flags, if z[i] was already absorbed into zd
+  int i, j;
+  int k = 0;
+
+  // collect distinct values and their multiplicities:
+  for(i = 0; i < N; i++) {
+    if(!done[i]) {
+      zd[k]   = z[i];
+      m[k]    = 1;
+      done[i] = true;
+      for(j = i+1; j < N; j++) { // find values equal to zd[k] == z[i]
+        if(!done[j] && almostEqual(z[i], z[j], thresh)) {
+          m[k]    += 1;
+          done[j]  = true; }}
+      k++; }}
+
+  // k is now the number of distinct values stored in zd with associated multiplicities in m
+  for(i = 0; i < k; i++){
+    if(m[i] > 1)
+      addAnnotation(zd[i].real(), zd[i].imag(), " " + to_string(m[i]), "left"); }
+}
+
+
+
+
+
+
+
+
 
 // template instantiations:
 template FilterPlotter<float>;

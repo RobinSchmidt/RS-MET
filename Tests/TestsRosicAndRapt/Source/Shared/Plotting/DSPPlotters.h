@@ -97,6 +97,11 @@ protected:
   /** Adds the commands to set up the appropriate plotting options for for a pole/zero plot. */
   void setupForPoleZeroPlot(int size);
 
+  /** Given an array of complex values z (for example, roots of a polynomial), this function plots
+  their multiplicities at their positions */
+  void drawMultiplicities(const std::vector<std::complex<T>>& z, T thresh);
+    // not yet tested
+
   T freqScale = 1.0;
   std::vector<FilterSpecificationZPK<T>> filterSpecs; 
 
