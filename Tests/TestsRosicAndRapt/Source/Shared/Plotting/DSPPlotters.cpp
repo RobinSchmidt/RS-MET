@@ -56,7 +56,7 @@ void FilterPlotter<T>::plotMagnitude(int numFreqs, T lowFreq, T highFreq, bool l
   for(unsigned int i = 0; i < filterSpecs.size(); i++) {
     vector<complex<T>> H = getFrequencyResponse(i, f);
     vector<T> mag = getMagnitudes(H);
-    data[0][i+1] = mag;
+    data[0][i+1] = mag;  // refactor to data[0][i+1] = getMagnitudeResponse(i, f);
     addGraph(string("i 0 u 1:") + s(i+2) + string(" w lines lw 1.5 axes x1y1 notitle"));
   }
   addDataBlockColumnLine(data);

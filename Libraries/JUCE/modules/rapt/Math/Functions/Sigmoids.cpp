@@ -336,6 +336,7 @@ void rsScaledAndShiftedSigmoid<T>::updateCoeffs()
   // center-T(0.5)*width, center+T(0.5)*width because inside the function, we will subtract
   // two very close numbers if width is small. this results in precision loss. We should drag
   // the function body in here and simplify the formulas for better numeric precision..
+  // ..done?
 
   //*scale = (outMax-outMin) / (inMax-inMin); // outMax=1, outMin=-1
   //*shift = outMin - (*scale * inMin);

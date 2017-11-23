@@ -164,6 +164,7 @@ TUInt rsPowInt(TUInt base, TUInt exponent)
   for(TUInt p = 1; p <= exponent; p++)
     result *= base;
   return result;
+  //...i think, in RSLib there's a better algorithm for that
 }
 
 template<class TInt>

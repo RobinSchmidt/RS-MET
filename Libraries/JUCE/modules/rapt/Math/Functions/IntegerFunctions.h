@@ -146,7 +146,7 @@ void rsStirlingNumbersFirstKind(TInt **s, TInt nMax);
  // \todo use "triangular" array for s
 
 /** Fills the 2-dimensional array s (which is supposed to be of size (nMax+1) times (nMax+1)) with
-Stirling numbers of the first kind. The array is actually triangular and looks like this:
+Stirling numbers of the second kind. The array is actually triangular and looks like this:
 n |k=  0   1   2   3   4   5
 -----------------------------
 0 |    1
@@ -161,7 +161,8 @@ expansion x^n = sum_k=0^n S(n,k) x_(n). @see rsStirlingNumbersFirstKind */
 template<class TInt>
 void rsStirlingNumbersSecondKind(TInt **S, TInt nMax);
 
-/** Sum of all integers between min and max (min and max inclusive). */
+/** Sum of all integers between min and max (min and max inclusive). The function uses a closed 
+form formula, so it doesn't actually have to loop over the values. */
 template<class TInt>
 TInt rsSum(TInt min, TInt max);
   // \todo: if possible, make a generalized version that returns the sum of all k^n for some

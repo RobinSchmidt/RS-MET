@@ -49,7 +49,7 @@ public:
 
 
   /** Soft clipping using a hexic polynomial with threshold t. Below t, the output is the identity
-  function, above t, a properly scaled and shifted sextic polynomial will be used. */
+  function, above t, a properly scaled and shifted hexic polynomial will be used. */
   static T softClipHexic(T x, T t);
 
   /** Special case of softClipHexic(double x, double t) where t = 0.5. */
