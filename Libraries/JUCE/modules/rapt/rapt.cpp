@@ -44,6 +44,7 @@ template class RAPT::rsNormalizedSigmoids<double>;
 template class RAPT::rsSinCosTable<double>;
 template class RAPT::rsScaledAndShiftedSigmoid<double>;
 template class RAPT::rsEllipse<double>;
+template class RAPT::rsRotationXYZ<double>;
 
 
 template class RAPT::rsStateVariableFilter<double, double>;
