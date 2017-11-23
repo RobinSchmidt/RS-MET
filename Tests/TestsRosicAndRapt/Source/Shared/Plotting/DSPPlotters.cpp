@@ -141,21 +141,6 @@ complex<T> FilterPlotter<T>::transferFunctionZPK(complex<T> s, vector<complex<T>
 }
 
 template <class T>
-double maxAbsReIm(const vector<complex<T>>& x) // maybe make member
-{
-  // returns maximum absolute value of all real an imaginary parts
-  double m = 0.0;
-  for(int i = 0; i < x.size(); i++)
-  {
-    if(fabs(x[i].real()) > m)
-      m = fabs(x[i].real());
-    if(fabs(x[i].imag()) > m)
-      m = fabs(x[i].imag());
-  }
-  return m;
-}
-
-template <class T>
 void FilterPlotter<T>::setupForPoleZeroPlot(int size)
 {
   bool zDomain = false;
@@ -178,16 +163,6 @@ void FilterPlotter<T>::setupForPoleZeroPlot(int size)
 
   if(zDomain == true)
     addCommand("set object 1 ellipse at first 0,0 size 2,2 fs empty border rgb \"#808080\""); 
-}
-
-
-// returns true, if the relative distance between x and y is smaller than the given threshold 
-// ("relative" with respect to the actual absolute values of x and y, such that for larger values 
-// the tolerance also increases)
-template <class T>
-bool almostEqual(complex<T> x, complex<T> y, T thresh)
-{
-  return abs(x-y) / fmax(abs(x), abs(y)) < thresh;
 }
 
 template <class T>
@@ -218,13 +193,25 @@ void FilterPlotter<T>::drawMultiplicities(const vector<complex<T>>& z, T thresh)
       addAnnotation(zd[i].real(), zd[i].imag(), " " + to_string(m[i]), "left"); }
 }
 
+template <class T>
+double FilterPlotter<T>::maxAbsReIm(const vector<complex<T>>& x)
+{
+  double m = 0.0;
+  for(int i = 0; i < x.size(); i++)
+  {
+    if(fabs(x[i].real()) > m)
+      m = fabs(x[i].real());
+    if(fabs(x[i].imag()) > m)
+      m = fabs(x[i].imag());
+  }
+  return m;
+}
 
-
-
-
-
-
-
+template <class T>
+bool  FilterPlotter<T>::almostEqual(complex<T> x, complex<T> y, T thresh)
+{
+  return abs(x-y) / fmax(abs(x), abs(y)) < thresh;
+}
 
 // template instantiations:
 template FilterPlotter<float>;

@@ -102,6 +102,14 @@ protected:
   void drawMultiplicities(const std::vector<std::complex<T>>& z, T thresh);
     // not yet tested
 
+  /** Returns maximum absolute value of all real an imaginary parts. */
+  double maxAbsReIm(const std::vector<std::complex<T>>& x);
+
+  /** Returns true, if the relative distance between x and y is smaller than the given threshold 
+  ("relative" with respect to the actual absolute values of x and y, such that for larger values 
+  the tolerance also increases) */
+  bool almostEqual(std::complex<T> x, std::complex<T> y, T thresh);
+
   T freqScale = 1.0;
   std::vector<FilterSpecificationZPK<T>> filterSpecs; 
 
