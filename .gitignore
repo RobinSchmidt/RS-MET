@@ -22,3 +22,5 @@
 *.tlog
 *.user
 Misc/UnusedCode/RSLibAndTests/RSLibTests/GeneratedFiles
+Products/AudioPlugins/Chainer/Builds/VisualStudio2015/x64/Debug/
+

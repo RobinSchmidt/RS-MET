@@ -89,7 +89,7 @@ T dot(const rsVector3D<T>& a, const rsVector3D<T>& b)
   return a.x*b.x + a.y*b.y + a.z*b.z;
 }
 
-/** Computes the cross-product between two 3D vectors v and w. Here, v is the left operand. That's 
+/** Computes the cross-product between two 3D vectors a and b. Here, a is the left operand. That's 
 important, because the cross-product is not commutative. Instead, we have (a x b) = -(b x a) where 
 the x symbol is used here to denote the cross-product. */
 template<class T>

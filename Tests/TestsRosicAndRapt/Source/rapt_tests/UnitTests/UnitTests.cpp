@@ -1,12 +1,30 @@
 #include "UnitTests.h"
 
-bool runUnitTests()
+bool runUnitTest(bool (*test)(), const string& name)
 {
-  bool r = true;  // test result
+  //cout << "Testing: " + name + ": ";
+  cout << name + ": ";
+  bool passed = test();
+  rsAssert(passed); // break, if test fails
+  if(passed)
+    cout << "Passed\n";
+  else
+    cout << "Failed\n";
+  return passed;
+}
 
-  r &= imagePainterUnitTest();
+bool runAllUnitTests()
+{
+  bool passed = true;  // test result
+
+  // Filters:
+  passed &= runUnitTest(&prototypeDesignUnitTest, "rsPrototypeDesigner");
+
+  // Visualization:
+  passed &= runUnitTest(&imagePainterUnitTest, "rsImagePainter");
+
   //...
   //...more to come...
 
-  return r;
+  return passed;
 }

@@ -59,8 +59,9 @@ public:
   /** Plots the magnitude responses of all the filters. */
   void plotMagnitude(int numFreqs, T lowFreq, T highFreq, bool logFreqAxis, bool decibels);
 
-  /** Plots the poles and zeros of all the filters in s- or z-plane. */
-  void plotPolesAndZeros();
+  /** Plots the poles and zeros of all the filters in s- or z-plane. You can pass the plot-size in 
+  pixels (it will always use a square plot). */
+  void plotPolesAndZeros(int plotSize = 400);
 
   /*
   void plotPhase();
@@ -93,8 +94,23 @@ public:
 
 protected:
 
-  T freqScale = 1.0;
+  /** Adds the commands to set up the appropriate plotting options for for a pole/zero plot. */
+  void setupForPoleZeroPlot(int size);
 
+  /** Given an array of complex values z (for example, roots of a polynomial), this function plots
+  their multiplicities at their positions */
+  void drawMultiplicities(const std::vector<std::complex<T>>& z, T thresh);
+    // not yet tested
+
+  /** Returns maximum absolute value of all real an imaginary parts. */
+  double maxAbsReIm(const std::vector<std::complex<T>>& x);
+
+  /** Returns true, if the relative distance between x and y is smaller than the given threshold 
+  ("relative" with respect to the actual absolute values of x and y, such that for larger values 
+  the tolerance also increases) */
+  bool almostEqual(std::complex<T> x, std::complex<T> y, T thresh);
+
+  T freqScale = 1.0;
   std::vector<FilterSpecificationZPK<T>> filterSpecs; 
 
 };

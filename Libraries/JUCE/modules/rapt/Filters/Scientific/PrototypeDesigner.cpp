@@ -399,7 +399,7 @@ template<class T>
 void rsPrototypeDesigner<T>::getBesselLowShelfZerosPolesAndGain(Complex* z, Complex* p, T* k, 
   int N, T G, T G0)
 {
-  // old version - needs root-finder twice:
+  // old version - less code but needs root-finder twice:
   //getBesselLowpassZerosPolesAndGain(z, p, k, N);
   //PoleZeroMapper::sLowpassToLowshelf(z, p, k, z, p, k, N, G0, G);
   //return;

@@ -1,6 +1,6 @@
 #include "ImageUnitTests.h"
 
-void fillWithCheckerBoardPattern(ImageF& image)
+void fillWithCheckerBoardPattern(rsImageF& image)
 {
   image.clear();
   for(int x = 0; x < image.getWidth(); x++) {
@@ -11,7 +11,7 @@ void fillWithCheckerBoardPattern(ImageF& image)
   }
 }
 
-void fillWithCross(ImageF& image)
+void fillWithCross(rsImageF& image)
 {
   image.clear();
   int cx = image.getWidth()  / 2;
@@ -22,7 +22,7 @@ void fillWithCross(ImageF& image)
     image(cx, y) = 1;
 }
 
-bool testAlphaMaskPaintingAntiAliased(ImagePainterFFF& painter, float x, float y)
+bool testAlphaMaskPaintingAntiAliased(rsImagePainterFFF& painter, float x, float y)
 {
   // We clear the image and paint a "dot" into the image (that is pointed to in the passed 
   // ImagePainter) and then check, if all pixels outside the rectangle of the dot are still
@@ -39,8 +39,8 @@ bool testAlphaMaskPaintingAntiAliased(ImagePainterFFF& painter, float x, float y
 
   // initializations:
   int wi, hi, wm, hm, xs, xe, ys, ye;
-  ImageF     *img = painter.getImage();
-  AlphaMaskF *msk = painter.getAlphaMask();
+  rsImageF     *img = painter.getImage();
+  rsAlphaMaskF *msk = painter.getAlphaMask();
   wi = img->getWidth();       // image width
   hi = img->getHeight();      // image height
   wm = msk->getWidth();       // mask width
@@ -79,9 +79,9 @@ bool imagePainterUnitTest()
 {
   bool result = true;
 
-  ImageF image;
-  AlphaMaskF mask;  // maybe use a regular image as mask
-  ImagePainterFFF painter(&image, &mask);
+  rsImageF image;
+  rsAlphaMaskF mask;  // maybe use a regular image as mask
+  rsImagePainterFFF painter(&image, &mask);
 
 
   int imageWidth  = 30;
@@ -157,17 +157,13 @@ bool imagePainterUnitTest()
   painter.paintDotViaMask(w-1+dx, h-1+dy, b);   // bottom-right
   painter.paintDotViaMask(w2 +dx, h2 +dy, b);   // center
 
-
   //painter.paintDotViaMask(10.2f, 10.6f, 1);
   // we use the 1000 here, because the painter uses this strange saturating function - maybe, we 
   // should introduce a blend-mode: mix, add, add-and-clip, add-and-saturate, multiply, ...
   // for testing here, we should use either alpha-blend or add-and-clip (should give same results)
 
-
-  writeImageToFilePPM(mask,  "PaintTestMask.ppm");
-  writeImageToFilePPM(image, "PaintTestImage.ppm");
-
-
+  //writeImageToFilePPM(mask,  "PaintTestMask.ppm");
+  //writeImageToFilePPM(image, "PaintTestImage.ppm");
 
   // ...
 
