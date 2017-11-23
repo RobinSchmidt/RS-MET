@@ -52,7 +52,6 @@ bool prototypeDesignUnitTest()
   r &= isCloseTo(z[2], CF(-0.450323164f, 0.f),          tol);
   r &= pd.getNumFinitePoles() == 5;
   r &= pd.getNumFiniteZeros() == 5;
-
   pd.setPrototypeMode(PD::LOWPASS_PROTOTYPE);
   pd.setOrder(6);                                               // 6th order lowpass
   pd.getPolesAndZeros(&p[0], &z[0]);
@@ -67,17 +66,24 @@ bool prototypeDesignUnitTest()
   pd.setPrototypeMode(PD::LOWSHELV_PROTOTYPE);                  // 6th order low-boost
   pd.setGain(+6);
   pd.getPolesAndZeros(&p[0], &z[0]);  
-  r &= isCloseTo(p[0], CF(-0.111895919f, 0.949936688f), tol); // -0.111895919+i*0.949936688
-  r &= isCloseTo(p[1], CF(-0.300119370f, 0.678187668f), tol); // -0.300119370+i*0.678187668
-  r &= isCloseTo(p[2], CF(-0.426341325f, 0.233113691f), tol); // -0.426341325+i*0.233113691
-  r &= isCloseTo(z[0], CF(-0.139246285f, 0.999132454f), tol); // -0.139246285+i*0.999132454
-  r &= isCloseTo(z[1], CF(-0.380611271f, 0.720496416f), tol); // -0.380611271+i*0.720496416
-  r &= isCloseTo(z[2], CF(-0.534630060f, 0.254959404f), tol); // -0.534630060+i*0.254959404
+  r &= isCloseTo(p[0], CF(-0.111895919f, 0.949936688f), tol);
+  r &= isCloseTo(p[1], CF(-0.300119370f, 0.678187668f), tol);
+  r &= isCloseTo(p[2], CF(-0.426341325f, 0.233113691f), tol);
+  r &= isCloseTo(z[0], CF(-0.139246285f, 0.999132454f), tol);
+  r &= isCloseTo(z[1], CF(-0.380611271f, 0.720496416f), tol);
+  r &= isCloseTo(z[2], CF(-0.534630060f, 0.254959404f), tol);
 
-
-
-  //pd.setPrototypeMode(PD::LOWSHELV_PROTOTYPE);
-  //pd.setGain(6.02f);
+  // 6th order Bessel low-cut:
+  pd.setApproximationMethod(PD::BESSEL);
+  pd.setPrototypeMode(PD::LOWSHELV_PROTOTYPE);
+  pd.setGain(-6);
+  pd.getPolesAndZeros(&p[0], &z[0]);
+  r &= isCloseTo(p[0], CF(-0.659143269f, 1.40492857f),  tol);
+  r &= isCloseTo(p[1], CF(-1.15471625f,  1.03821945f),  tol);
+  r &= isCloseTo(p[2], CF(-1.53899157f,  0.387341291f), tol);
+  r &= isCloseTo(z[0], CF(-0.750605762f, 1.34034932f),  tol);
+  r &= isCloseTo(z[1], CF(-1.11451340f,  0.783524334f), tol);
+  r &= isCloseTo(z[2], CF(-1.26746202f,  0.258809835f), tol);
 	
 	return r;
 }
