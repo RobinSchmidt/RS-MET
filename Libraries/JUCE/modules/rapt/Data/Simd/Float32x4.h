@@ -9,7 +9,7 @@
 -compare performance of SSE implementation to non SSE
 */
 
-class Float32x4
+class rsFloat32x4
 {
 
 public:
@@ -17,27 +17,27 @@ public:
   /** \name Construction */
 
   /** Constructor. Sets up the 4 elements to the given values. */
-  Float32x4(float v0 = 0.f, float v1 = 0.f, float v2 = 0.f, float v3 = 0.f)
+  rsFloat32x4(float v0 = 0.f, float v1 = 0.f, float v2 = 0.f, float v3 = 0.f)
   {
     setValues(v0, v1, v2, v3);
   }
 
   /** Constructor. Sets up the all 4 elements to the same give value. */
-  Float32x4(float value)
+  rsFloat32x4(float value)
   {
     setValues(value, value, value, value);
   }
 
   /** Constructor for conversion from double to float and setting up all 4 elements to the same 
   value. */
-  Float32x4(double value)
+  rsFloat32x4(double value)
   {
     float f = (float)value;
     setValues(f, f, f, f);
   }
    
   /** Conversion constructor for int. */
-  Float32x4(int value)
+  rsFloat32x4(int value)
   {
     float f = (float)value;
     setValues(f, f, f, f);
@@ -69,37 +69,37 @@ public:
   /** \name Operators */
 
   /** Unary minus */
-  inline Float32x4 operator-() const
+  inline rsFloat32x4 operator-() const
   { 
-    return Float32x4(-v[0], -v[1], -v[2], -v[3]); 
+    return rsFloat32x4(-v[0], -v[1], -v[2], -v[3]); 
   }
 
   /** Addition of 2 Float32x4 vectors. */
-  inline Float32x4 operator+(const Float32x4 &y)
+  inline rsFloat32x4 operator+(const rsFloat32x4& y)
   {
-    return Float32x4(v[0]+y.v[0], v[1]+y.v[1], v[2]+y.v[2], v[3]+y.v[3]);
+    return rsFloat32x4(v[0]+y.v[0], v[1]+y.v[1], v[2]+y.v[2], v[3]+y.v[3]);
   }
 
   /** Subtraction of 2 Float32x4 vectors. */
-  inline Float32x4 operator-(const Float32x4 &y)
+  inline rsFloat32x4 operator-(const rsFloat32x4& y)
   {
-    return Float32x4(v[0]-y.v[0], v[1]-y.v[1], v[2]-y.v[2], v[3]-y.v[3]);
+    return rsFloat32x4(v[0]-y.v[0], v[1]-y.v[1], v[2]-y.v[2], v[3]-y.v[3]);
   }
 
   /** Multiplication of 2 Float32x4 vectors. */
-  inline Float32x4 operator*(const Float32x4 &y)
+  inline rsFloat32x4 operator*(const rsFloat32x4& y)
   {
-    return Float32x4(v[0]*y.v[0], v[1]*y.v[1], v[2]*y.v[2], v[3]*y.v[3]);
+    return rsFloat32x4(v[0]*y.v[0], v[1]*y.v[1], v[2]*y.v[2], v[3]*y.v[3]);
   }
 
   /** Division of 2 Float32x4 vectors. */
-  inline Float32x4 operator/(const Float32x4 &y)
+  inline rsFloat32x4 operator/(const rsFloat32x4& y)
   {
-    return Float32x4(v[0]/y.v[0], v[1]/y.v[1], v[2]/y.v[2], v[3]/y.v[3]);
+    return rsFloat32x4(v[0]/y.v[0], v[1]/y.v[1], v[2]/y.v[2], v[3]/y.v[3]);
   }
 
   /** In place multiplication of this Float32x4 vector with another. */
-  inline Float32x4 operator*=(const Float32x4 &y)
+  inline rsFloat32x4 operator*=(const rsFloat32x4& y)
   {
     v[0] *= y.v[0];
     v[1] *= y.v[1];
@@ -109,19 +109,21 @@ public:
   }
 
   /** Less-or-equal comparison. Returns true, if all 4 values are less or equal. */
-  inline bool operator<=(const Float32x4 &y)
+  inline bool operator<=(const rsFloat32x4& y)
   {
     return v[0] <= y.v[0] && v[1] <= y.v[1] && v[2] <= y.v[2] && v[3] <= y.v[3];
   }
 
   /** Greater-or-equal comparison. Returns true, if all 4 values are greater or equal. */
-  inline bool operator>=(const Float32x4 &y)
+  inline bool operator>=(const rsFloat32x4& y)
   {
     return v[0] >= y.v[0] && v[1] >= y.v[1] && v[2] >= y.v[2] && v[3] >= y.v[3];
   }
 
-  // the set of operators is still incomplete
-
+  // the set of operators is still incomplete, we need
+  // +, -, *, /;  +=, -=, *=, /=;  ==, !=, >=, <=, >, <; unary -
+  // for the binary operators, we need also versions where either left or right operator can be a 
+  // single float
 
 
 protected:

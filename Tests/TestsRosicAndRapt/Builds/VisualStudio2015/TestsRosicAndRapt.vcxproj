@@ -128,6 +128,9 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\FilterUnitTests.cpp"/>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\ImageUnitTests.cpp"/>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\UnitTests.cpp"/>
     <ClCompile Include="..\..\Source\rapt_tests\PerformanceTests\MathPerformanceTests.cpp"/>
     <ClCompile Include="..\..\Source\rapt_tests\Experiments\FilterExperiments.cpp"/>
     <ClCompile Include="..\..\Source\rapt_tests\Experiments\GeneratorExperiments.cpp"/>
@@ -1570,6 +1573,9 @@
     <ClCompile Include="..\..\JuceLibraryCode\rosic.cpp"/>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\FilterUnitTests.h"/>
+    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\ImageUnitTests.h"/>
+    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\UnitTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\PerformanceTests\MathPerformanceTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\Experiments\FilterExperiments.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\Experiments\GeneratorExperiments.h"/>

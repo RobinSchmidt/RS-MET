@@ -69,6 +69,21 @@
       <Add library="kernel32"/>
       <Add library="comctl32"/>
     </Linker>
+    <Unit filename="../../Source/rapt_tests/UnitTests/FilterUnitTests.cpp"/>
+    <Unit filename="../../Source/rapt_tests/UnitTests/FilterUnitTests.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../Source/rapt_tests/UnitTests/ImageUnitTests.cpp"/>
+    <Unit filename="../../Source/rapt_tests/UnitTests/ImageUnitTests.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../Source/rapt_tests/UnitTests/UnitTests.cpp"/>
+    <Unit filename="../../Source/rapt_tests/UnitTests/UnitTests.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../Source/rapt_tests/PerformanceTests/MathPerformanceTests.cpp"/>
     <Unit filename="../../Source/rapt_tests/PerformanceTests/MathPerformanceTests.h">
       <Option compile="0"/>

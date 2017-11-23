@@ -199,7 +199,7 @@ public:
   /** Constructs the denominator polynomial of the magnitude-squared function for Papoulis filters 
   where "N" is the filter order and "a2" is of length 2*N+1. */
   static void papoulisMagnitudeSquaredDenominator(T* a2, int N);
-  static void getPapoulisLowpassZerosPolesAndGain(Complex* z, Complex* p, T* k, int N);
+  static void getPapoulisLowpassZerosPolesAndGain( Complex* z, Complex* p, T* k, int N);
   static void getPapoulisLowShelfZerosPolesAndGain(Complex* z, Complex* p, T* k, int N, T G, T G0);
   // maybe make this the only public method for Papoulis Design
 

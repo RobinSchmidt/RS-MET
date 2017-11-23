@@ -143,7 +143,7 @@ complex<T> FilterPlotter<T>::transferFunctionZPK(complex<T> s, vector<complex<T>
 template <class T>
 void FilterPlotter<T>::setupForPoleZeroPlot(int size)
 {
-  bool zDomain = false;
+  bool zDomain = true;
   double range = 0;
   for(unsigned int i = 0; i < filterSpecs.size(); i++) 
   {

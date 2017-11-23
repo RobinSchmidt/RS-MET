@@ -2,7 +2,8 @@
 #define UNITTESTS_INCLUDED
 
 #include "ImageUnitTests.h"
+#include "FilterUnitTests.h"
 
-bool runUnitTests();
+bool runAllUnitTests();
 
 #endif

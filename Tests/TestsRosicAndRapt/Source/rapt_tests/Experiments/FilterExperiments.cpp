@@ -319,8 +319,8 @@ void prototypeDesign()
   typedef float Real;
 
   // min and max filter order to plot:
-  int minOrder = 5;
-  int maxOrder = 5;
+  int minOrder = 6;
+  int maxOrder = 6;
 
   // create and set up prototype designer:
   rsPrototypeDesignerF pd;
@@ -347,8 +347,8 @@ void prototypeDesign()
     FilterSpecificationZPK<Real> spec = getFilterSpecificationZPK(pd);
     plt.addFilterSpecification(spec);
   }
-  //plt.plotMagnitude(1000, 0, 3, false, false);
   plt.plotPolesAndZeros(600);
+  //plt.plotMagnitude(1000, 0, 3, false, false);
 
   // issues:
 
