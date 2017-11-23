@@ -64,14 +64,24 @@ void FilterPlotter<T>::plotMagnitude(int numFreqs, T lowFreq, T highFreq, bool l
 }
 
 template <class T>
-void FilterPlotter<T>::plotPolesAndZeros()
+void FilterPlotter<T>::plotPolesAndZeros(int plotSize)
 {
   for(unsigned int i = 0; i < filterSpecs.size(); i++)
   {
     addDataComplex(filterSpecs[i].poles);
     addDataComplex(filterSpecs[i].zeros);
-    // still incomplete - look into GNUPlotCPP demos to see how it's done
+    addGraph("i " + s(2*i)   + " u 1:2 w points pt 2 ps 1 notitle");
+    addGraph("i " + s(2*i+1) + " u 1:2 w points pt 6 ps 1 notitle");
+
+    /*
+    // show the multiplicities of poles and zeros:
+    double thresh = 1.e-8; // threshold for considering close poles/zeros as multiple root
+    drawMultiplicities(filterSpecs[i].poles, thresh);
+    drawMultiplicities(filterSpecs[i].zeros, thresh);
+    */
   }
+
+  setupForPoleZeroPlot(plotSize);
   plot();
 }
 
@@ -127,6 +137,46 @@ complex<T> FilterPlotter<T>::transferFunctionZPK(complex<T> s, vector<complex<T>
   complex<T> num = polynomialByRoots(s, z);
   complex<T> den = polynomialByRoots(s, p);
   return k * num/den;
+}
+
+template <class T>
+double maxAbsReIm(const vector<complex<T>>& x) // maybe make member
+{
+  // returns maximum absolute value of all real an imaginary parts
+  double m = 0.0;
+  for(int i = 0; i < x.size(); i++)
+  {
+    if(fabs(x[i].real()) > m)
+      m = fabs(x[i].real());
+    if(fabs(x[i].imag()) > m)
+      m = fabs(x[i].imag());
+  }
+  return m;
+}
+
+template <class T>
+void FilterPlotter<T>::setupForPoleZeroPlot(int size)
+{
+  bool zDomain = false;
+  double range = 0;
+  for(unsigned int i = 0; i < filterSpecs.size(); i++) 
+  {
+    range   = fmax(range, maxAbsReIm(filterSpecs[i].poles));  
+    range   = fmax(range, maxAbsReIm(filterSpecs[i].zeros)); 
+    zDomain = zDomain || (filterSpecs[i].sampleRate != inf);
+  }
+  range = 1.1 * fmax(1.0, range);
+  setRange(-range, range, -range, range);
+
+  addCommand("set size square");                // set aspect ratio to 1:1
+  addCommand("set xzeroaxis lt 1");             // draw x-axis
+  addCommand("set yzeroaxis lt 1");             // draw y-axis
+  addCommand("set xlabel \"Real Part\"");
+  addCommand("set ylabel \"Imaginary Part\"");
+  setPixelSize(size, size);
+
+  if(zDomain == true)
+    addCommand("set object 1 ellipse at first 0,0 size 2,2 fs empty border rgb \"#808080\""); 
 }
 
 // template instantiations:

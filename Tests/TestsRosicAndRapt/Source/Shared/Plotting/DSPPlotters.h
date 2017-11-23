@@ -59,8 +59,9 @@ public:
   /** Plots the magnitude responses of all the filters. */
   void plotMagnitude(int numFreqs, T lowFreq, T highFreq, bool logFreqAxis, bool decibels);
 
-  /** Plots the poles and zeros of all the filters in s- or z-plane. */
-  void plotPolesAndZeros();
+  /** Plots the poles and zeros of all the filters in s- or z-plane. You can pass the plot-size in 
+  pixels (it will always use a square plot). */
+  void plotPolesAndZeros(int plotSize = 400);
 
   /*
   void plotPhase();
@@ -93,8 +94,10 @@ public:
 
 protected:
 
-  T freqScale = 1.0;
+  /** Adds the commands to set up the appropriate plotting options for for a pole/zero plot. */
+  void setupForPoleZeroPlot(int size);
 
+  T freqScale = 1.0;
   std::vector<FilterSpecificationZPK<T>> filterSpecs; 
 
 };
