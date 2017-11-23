@@ -21,15 +21,15 @@ void rsRotationXYZ<T>::updateCoeffs()
   T sz = sin(rz); T cz = cos(rz);
 
   // rotation matrix coeffs:
-  T xx =  cz*cy;
-  T xy = -sz*cx + cz*sy*sx;
-  T xz =  sz*sx + cz*sy*cx;
-  T yx =  sz*cy;
-  T yy =  cz*cx + sz*sy*sx;
-  T yz = -cz*sx + sz*sy*cx;
-  T zx = -sy;
-  T zy =  cy*sx;
-  T zz =  cy*cx;
+  xx =  cz*cy;
+  xy = -sz*cx + cz*sy*sx;
+  xz =  sz*sx + cz*sy*cx;
+  yx =  sz*cy;
+  yy =  cz*cx + sz*sy*sx;
+  yz = -cz*sx + sz*sy*cx;
+  zx = -sy;
+  zy =  cy*sx;
+  zz =  cy*cx;
 }
 
 // for a rotation around the z-axis first, then the y-axis then the x axis, the matrix would be:
