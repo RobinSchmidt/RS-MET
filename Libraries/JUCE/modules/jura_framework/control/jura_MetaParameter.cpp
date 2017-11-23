@@ -229,9 +229,22 @@ void MetaParameterManager::updateMetaName(int index)
 {
   if(autoUpdateMetaNames && index >= 0 && index < size(metaParams))
   {
-    String name = "Meta " + String(index);
-    for(int i = 0; i < size(metaParams[index]->params); i++)
-      name += ", " + metaParams[index]->params[i]->getName();
-    setMetaName(index, name);
+    auto sz = size(metaParams[index]->params);
+    auto idxStr = String(index);
+    if (sz > 0)
+    {
+      String name = idxStr+": ";
+
+      for (auto i = 0; i < sz; i++)
+        name += metaParams[index]->params[i]->getName()+", ";
+
+      name = name.substring(0, name.length()-2);
+
+      setMetaName(index, name);
+    }
+    else
+    {
+      setMetaName(index, "Meta "+idxStr);
+    }      
   }
 }
