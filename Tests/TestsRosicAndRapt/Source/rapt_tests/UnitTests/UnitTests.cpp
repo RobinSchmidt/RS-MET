@@ -2,26 +2,29 @@
 
 bool runUnitTest(bool (*test)(), const string& name)
 {
-  bool r = test();
-
-  // todo: print result
-
-  return r;
+  //cout << "Testing: " + name + ": ";
+  cout << name + ": ";
+  bool passed = test();
+  rsAssert(passed); // break, if test fails
+  if(passed)
+    cout << "Passed\n";
+  else
+    cout << "Failed\n";
+  return passed;
 }
 
 bool runAllUnitTests()
 {
-  bool r = true;  // test result
+  bool passed = true;  // test result
 
   // Filters:
-  r &= runUnitTest(&prototypeDesignUnitTest, "rsPrototypeDesigner");
+  passed &= runUnitTest(&prototypeDesignUnitTest, "rsPrototypeDesigner");
 
   // Visualization:
-  r &= runUnitTest(&imagePainterUnitTest, "rsImagePainter");
+  passed &= runUnitTest(&imagePainterUnitTest, "rsImagePainter");
 
-  /*r &= imagePainterUnitTest();*/
   //...
   //...more to come...
 
-  return r;
+  return passed;
 }
