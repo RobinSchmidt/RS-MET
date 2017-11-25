@@ -378,15 +378,14 @@ void rsPrototypeDesigner<T>::getBesselDenominatorCoeffs(T* a, int N)
 template<class T>
 void rsPrototypeDesigner<T>::getBesselLowpassZerosPolesAndGain(Complex* z, Complex* p, T* k, int N)
 {
+  // obsolete - delete soon:
+  /*
   // zeros are at infinity:
   rsArray::fillWithValue(z, N, Complex(RS_INF(T), 0.0));
 
   // find poles:
-  T* a = new T[N+1];        // Bessel-Polynomial coefficients
-  //T a[20];
-  rsPolynomial<T>::besselPolynomial(a, N);
-  rsArray::reverse(a, N+1);          // we actually use a reverse Bessel polynomial
-
+  T* a = new T[N+1];
+  getBesselDenominatorCoeffs(a, N);
   rsPolynomial<T>::findPolynomialRoots(a, N, p);
 
   // set gain and scale poles to match Butterworth magnitude response asymptotically, if desired:
@@ -402,18 +401,19 @@ void rsPrototypeDesigner<T>::getBesselLowpassZerosPolesAndGain(Complex* z, Compl
     *k = a[0];
 
   delete[] a;
+  */
 }
 
 template<class T>
 void rsPrototypeDesigner<T>::getBesselLowShelfZerosPolesAndGain(Complex* z, Complex* p, T* k, 
   int N, T G, T G0)
 {
-  //// new - after refactoring:
-  //getLowShelfZerosPolesAndGain(z, p, k, N, G, G0, &getBesselDenominatorCoeffs);
-  //return;
-  //  // after testing, the old code below can be deleted if everything works
+  // new - after refactoring:
+  getLowShelfZerosPolesAndGain(z, p, k, N, G, G0, &getBesselDenominatorCoeffs);
+  return;
+    // after testing, the old code below can be deleted if everything works
 
-  
+  /*
   // old version - less code but needs root-finder twice:
   //getBesselLowpassZerosPolesAndGain(z, p, k, N);
   //PoleZeroMapper::sLowpassToLowshelf(z, p, k, z, p, k, N, G0, G);
@@ -474,6 +474,7 @@ void rsPrototypeDesigner<T>::getBesselLowShelfZerosPolesAndGain(Complex* z, Comp
   delete[] a;
   delete[] b;
   delete[] bS;
+  */
 }
 
 template<class T>
@@ -600,8 +601,27 @@ template<class T>
 void rsPrototypeDesigner<T>::getLowpassZerosPolesAndGain(Complex* z, Complex* p, T* k, int N,
   void (*denominatorCoeffsFunction)(T* a, int N))
 {
+  // zeros are at infinity:
+  rsArray::fillWithValue(z, N, Complex(RS_INF(T), 0.0));
 
+  // find poles:
+  T* a = new T[N+1];
+  denominatorCoeffsFunction(a, N);
+  rsPolynomial<T>::findPolynomialRoots(a, N, p);
 
+  // set gain and scale poles to match Butterworth magnitude response asymptotically, if desired:
+  bool matchButterworth = true; // maybe make this a parameter later
+  if( matchButterworth == true )
+  {
+    T scaler = T(1) / pow(a[0], T(1)/N);
+    for(int n = 0; n < N; n++)
+      p[n] *= scaler;
+    *k = T(1);
+  }
+  else
+    *k = a[0];
+
+  delete[] a;
 }
 
 template<class T>

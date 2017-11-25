@@ -356,7 +356,7 @@ void prototypeDesign()
 
   // min and max filter order to plot:
   int minOrder = 1;
-  int maxOrder = 6;
+  int maxOrder = 10;
 
   // create and set up prototype designer:
   rsPrototypeDesignerF pd;
@@ -369,7 +369,7 @@ void prototypeDesign()
   //pd.setApproximationMethod(PD::INVERSE_CHEBYCHEV);
   //pd.setApproximationMethod(PD::ELLIPTIC);
 
-  //pd.setPrototypeMode(PD::LOWSHELV_PROTOTYPE);
+  pd.setPrototypeMode(PD::LOWSHELV_PROTOTYPE);
   pd.setGain(-6.02f); // needs to be nonzero for plots
 
   pd.setPassbandRipple(1); 
