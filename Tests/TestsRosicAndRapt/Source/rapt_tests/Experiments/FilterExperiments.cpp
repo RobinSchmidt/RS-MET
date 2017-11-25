@@ -322,8 +322,8 @@ void prototypeDesign()
   typedef float Real;
 
   // min and max filter order to plot:
-  int minOrder = 5;
-  int maxOrder = 5;
+  int minOrder = 3;
+  int maxOrder = 3;
 
   // create and set up prototype designer:
   rsPrototypeDesignerF pd;
@@ -351,17 +351,7 @@ void prototypeDesign()
     plt.addFilterSpecification(spec);
   }
   //plt.plotPolesAndZeros(600);
-  plt.plotMagnitude(1000, 0, 3, false, false);
-
-  // check, if the problem with odd bessel filters also exists in the rosic version:
-  rosic::rsPrototypeDesigner pd2;
-  rosic::Complex poles[10], zeros[10];
-  pd2.setApproximationMethod(pd2.BESSEL);
-  pd2.setOrder(5);
-  pd2.getPolesAndZeros(poles, zeros);
-
-  int dummy = 0;
-
+  //plt.plotMagnitude(1000, 0, 3, false, false);
 
 
   // issues:
@@ -374,6 +364,24 @@ void prototypeDesign()
   // something is wrong with odd order bessel filters (exept for order = 1), looks like it never 
   // worked in rapt - ive gone back to the commit of 21.11.2017, 00:06:28 with message:
   // implemented FilterPlotter<T>::plotMagnitude
+
+  // compare float/double versions:
+  rsPrototypeDesignerD pdD;
+  complex<double> polesD[5], zerosD[5];
+  pdD.setApproximationMethod(pdD.BESSEL);
+  pdD.setOrder(maxOrder);
+  pdD.getPolesAndZeros(polesD, zerosD);
+
+  complex<float> polesF[5], zerosF[5];
+  pd.setApproximationMethod(pd.BESSEL);
+  pd.setOrder(maxOrder);
+  pd.getPolesAndZeros(polesF, zerosF);
+
+  int dummy = 0;
+  // ok, yes - that's the problem: the double precision poles are correct (they match with what the 
+  // rosic version computes) but the single precision float poles are wrong. It's probably 
+  // something about the root finder
+
 }
 
 void smoothingFilterOrders()

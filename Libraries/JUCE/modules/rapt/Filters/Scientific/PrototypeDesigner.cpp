@@ -383,6 +383,7 @@ void rsPrototypeDesigner<T>::getBesselLowpassZerosPolesAndGain(Complex* z, Compl
 
   // find poles:
   T* a = new T[N+1];        // Bessel-Polynomial coefficients
+  //T a[20];
   rsPolynomial<T>::besselPolynomial(a, N);
   rsArray::reverse(a, N+1);          // we actually use a reverse Bessel polynomial
 

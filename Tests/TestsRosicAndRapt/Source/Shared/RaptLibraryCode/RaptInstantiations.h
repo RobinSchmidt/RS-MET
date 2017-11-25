@@ -33,7 +33,7 @@ typedef RAPT::rsStateVariableFilter<float, float> rsStateVariableFilterFF;
 
 // Filters-Scientific:
 typedef RAPT::rsPrototypeDesigner<float> rsPrototypeDesignerF;
-//typedef RAPT::rsPrototypeDesigner<double> rsPrototypeDesignerD;
+typedef RAPT::rsPrototypeDesigner<double> rsPrototypeDesignerD;
 typedef RAPT::rsPoleZeroMapper<float> rsPoleZeroMapperF;
 typedef RAPT::rsFilterCoefficientConverter<float> rsFilterCoefficientConverterF;
 typedef RAPT::rsInfiniteImpulseResponseDesigner<float> rsInfiniteImpulseResponseDesignerF;
