@@ -1,4 +1,5 @@
 #include "GeneratorExperiments.h"
+using namespace RAPT;
 
 void particleForceDistanceLaw()
 {

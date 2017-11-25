@@ -1,4 +1,5 @@
 #include "MathPerformanceTests.h"
+using namespace RAPT;
 
 void matrixAdressingTest()
 {

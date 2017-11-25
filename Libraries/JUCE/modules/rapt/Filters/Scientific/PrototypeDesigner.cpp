@@ -407,12 +407,12 @@ template<class T>
 void rsPrototypeDesigner<T>::getBesselLowShelfZerosPolesAndGain(Complex* z, Complex* p, T* k, 
   int N, T G, T G0)
 {
-  // new - after refactoring:
-  getLowShelfZerosPolesAndGain(z, p, k, N, G, G0, &getBesselDenominatorCoeffs);
-  return;
-    // after testing, the old code below can be deleted if everything works
+  //// new - after refactoring:
+  //getLowShelfZerosPolesAndGain(z, p, k, N, G, G0, &getBesselDenominatorCoeffs);
+  //return;
+  //  // after testing, the old code below can be deleted if everything works
 
-  /*
+  
   // old version - less code but needs root-finder twice:
   //getBesselLowpassZerosPolesAndGain(z, p, k, N);
   //PoleZeroMapper::sLowpassToLowshelf(z, p, k, z, p, k, N, G0, G);
@@ -473,7 +473,6 @@ void rsPrototypeDesigner<T>::getBesselLowShelfZerosPolesAndGain(Complex* z, Comp
   delete[] a;
   delete[] b;
   delete[] bS;
-  */
 }
 
 template<class T>

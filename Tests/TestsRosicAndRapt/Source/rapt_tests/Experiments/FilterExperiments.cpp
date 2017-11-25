@@ -1,4 +1,5 @@
 #include "FilterExperiments.h"
+using namespace RAPT;
 
 //template <class T1, class T2>
 //void scale(T1 *buffer, int length, T2 scaleFactor)
@@ -319,7 +320,7 @@ void prototypeDesign()
   typedef float Real;
 
   // min and max filter order to plot:
-  int minOrder = 6;
+  int minOrder = 1;
   int maxOrder = 6;
 
   // create and set up prototype designer:
@@ -334,7 +335,7 @@ void prototypeDesign()
   //pd.setApproximationMethod(PD::ELLIPTIC);
 
   pd.setPrototypeMode(PD::LOWSHELV_PROTOTYPE);
-  pd.setGain(6.02f); // needs to be nonzero for plots
+  pd.setGain(-6.02f); // needs to be nonzero for plots
 
   pd.setPassbandRipple(1); 
   pd.setStopbandRejection(20);
@@ -347,8 +348,8 @@ void prototypeDesign()
     FilterSpecificationZPK<Real> spec = getFilterSpecificationZPK(pd);
     plt.addFilterSpecification(spec);
   }
-  plt.plotPolesAndZeros(600);
-  //plt.plotMagnitude(1000, 0, 3, false, false);
+  //plt.plotPolesAndZeros(600);
+  plt.plotMagnitude(1000, 0, 3, false, false);
 
   // issues:
 
@@ -356,6 +357,8 @@ void prototypeDesign()
   // linear stopband rejection (passband ripple seems to have no effect), odd order ellicptics have
   // a different gain and it seems to depend on the ripple (might be computed by evaluating DC 
   // gain). Papoulis design has also a wrong DC gain -> add overall gain to the prototype designer
+
+  // something is wrong with odd order bessel shelvers (exept for order = 1) 
 }
 
 void smoothingFilterOrders()

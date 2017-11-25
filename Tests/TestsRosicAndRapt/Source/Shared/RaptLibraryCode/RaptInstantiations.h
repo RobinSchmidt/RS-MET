@@ -12,7 +12,7 @@ PhaseScopeBufferFFD typedef wouldn't exist. */
 #define RAPT_INSTANTIATIONS_H
 
 #include "../../../../../Libraries/JUCE/modules/rapt/rapt.h"
-using namespace RAPT;
+//using namespace RAPT;
 
 // Math:
 typedef RAPT::rsConicSection<float> rsConicSectionF;

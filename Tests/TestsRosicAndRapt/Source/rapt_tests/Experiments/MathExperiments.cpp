@@ -1,4 +1,5 @@
 #include "MathExperiments.h"
+using namespace RAPT;
 
 void ellipseLineIntersections()
 {

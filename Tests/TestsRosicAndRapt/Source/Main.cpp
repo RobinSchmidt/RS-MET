@@ -103,7 +103,7 @@ int main(int argc, char* argv[])
   // Filter:
   //ladderResonanceManipulation();
   //nonUniformMovingAverage();
-  //prototypeDesign();
+  prototypeDesign();
   //smoothingFilterOrders();
   //smoothingFilterTransitionTimes();
 

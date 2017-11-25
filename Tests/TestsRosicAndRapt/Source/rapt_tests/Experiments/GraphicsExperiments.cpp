@@ -1,4 +1,5 @@
 #include "GraphicsExperiments.h"
+using namespace RAPT;
 
 // Sources:
 // Anti Aliasing in general:
