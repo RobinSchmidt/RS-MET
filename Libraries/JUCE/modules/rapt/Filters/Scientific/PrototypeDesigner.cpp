@@ -1321,8 +1321,11 @@ void rsPrototypeDesigner<T>::makePapoulisLowShelv(T G, T G0)
 template<class T>
 void rsPrototypeDesigner<T>::pickNonRedundantPolesAndZeros(Complex *zTmp, Complex *pTmp)
 {
-  rsZeroNegligibleImaginaryParts(pTmp, N, T(1.e-11));
-  rsZeroNegligibleImaginaryParts(zTmp, N, T(1.e-11));
+  //const T thresh = T(1.e-11); // preliminary - old, worked for double
+  T thresh = 10 * std::numeric_limits<T>::epsilon(); // ad-hoc - needs testing for double
+
+  rsZeroNegligibleImaginaryParts(pTmp, N, thresh);
+  rsZeroNegligibleImaginaryParts(zTmp, N, thresh);
   rsOnlyUpperHalfPlane(pTmp, pTmp, N);
   rsOnlyUpperHalfPlane(zTmp, zTmp, N);
   rsArray::copyBuffer(pTmp, p, L+r);

@@ -318,12 +318,45 @@ void prototypeDesign()
 {
   //rsEngineersFilterFF ef;
 
+  /*
+  // something is wrong with odd order bessel filters (exept for order = 1), looks like it never 
+  // worked in rapt - ive gone back to the commit of 21.11.2017, 00:06:28 with message:
+  // implemented FilterPlotter<T>::plotMagnitude
+  // code for debugging :
+  // compare float/double versions:
+  rsPrototypeDesignerD pdD;
+  complex<double> polesD[5], zerosD[5];
+  pdD.setApproximationMethod(pdD.BESSEL);
+  pdD.setOrder(3);
+  pdD.getPolesAndZeros(polesD, zerosD);
+
+  rsPrototypeDesignerF pdF;
+  complex<float> polesF[5], zerosF[5];
+  pdF.setApproximationMethod(pdF.BESSEL);
+  pdF.setOrder(3);
+  pdF.getPolesAndZeros(polesF, zerosF);
+
+  int dummy = 0;
+  // ok, yes - that's the problem: the double precision poles are correct (they match with what the 
+  // rosic version computes) but the single precision float poles are wrong. It's probably 
+  // something about the root finder
+  // in rsPrototypeDesigner<T>::makeBesselLowShelv the pickNonRedundantPolesAndZeros fills the p 
+  // member array differently for double and float versions, the pTmp array is the same in both
+  // cases
+
+  // in rsZeroNegligibleImaginaryParts the "real" pole has some small negative imaginary part which 
+  // doesn't get zeroed out and in the subsequent call to rsOnlyUpperHalfPlane, the real pole
+  // get thrown away - we need a different threshold for float than we use for double
+  // ...ok - seems to be fixed.
+  */
+
+
   typedef rsPrototypeDesignerF PD;
   typedef float Real;
 
   // min and max filter order to plot:
-  int minOrder = 3;
-  int maxOrder = 3;
+  int minOrder = 1;
+  int maxOrder = 6;
 
   // create and set up prototype designer:
   rsPrototypeDesignerF pd;
@@ -351,8 +384,7 @@ void prototypeDesign()
     plt.addFilterSpecification(spec);
   }
   //plt.plotPolesAndZeros(600);
-  //plt.plotMagnitude(1000, 0, 3, false, false);
-
+  plt.plotMagnitude(1000, 0, 3, false, false);
 
   // issues:
 
@@ -360,28 +392,6 @@ void prototypeDesign()
   // linear stopband rejection (passband ripple seems to have no effect), odd order ellicptics have
   // a different gain and it seems to depend on the ripple (might be computed by evaluating DC 
   // gain). Papoulis design has also a wrong DC gain -> add overall gain to the prototype designer
-
-  // something is wrong with odd order bessel filters (exept for order = 1), looks like it never 
-  // worked in rapt - ive gone back to the commit of 21.11.2017, 00:06:28 with message:
-  // implemented FilterPlotter<T>::plotMagnitude
-
-  // compare float/double versions:
-  rsPrototypeDesignerD pdD;
-  complex<double> polesD[5], zerosD[5];
-  pdD.setApproximationMethod(pdD.BESSEL);
-  pdD.setOrder(maxOrder);
-  pdD.getPolesAndZeros(polesD, zerosD);
-
-  complex<float> polesF[5], zerosF[5];
-  pd.setApproximationMethod(pd.BESSEL);
-  pd.setOrder(maxOrder);
-  pd.getPolesAndZeros(polesF, zerosF);
-
-  int dummy = 0;
-  // ok, yes - that's the problem: the double precision poles are correct (they match with what the 
-  // rosic version computes) but the single precision float poles are wrong. It's probably 
-  // something about the root finder
-
 }
 
 void smoothingFilterOrders()
