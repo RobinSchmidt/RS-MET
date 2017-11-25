@@ -1,5 +1,7 @@
 #include "FilterExperiments.h"
-using namespace RAPT;
+//using namespace RAPT;
+
+#include "../../../../../Libraries/JUCE/modules/rosic/rosic.h"
 
 //template <class T1, class T2>
 //void scale(T1 *buffer, int length, T2 scaleFactor)
@@ -206,15 +208,15 @@ float parabolic(float x)      // half-area: 2/3  (Epanechikov)
 }
 float cubicBell(float x)
 {
-  return rsPositiveBellFunctions<float>::cubic(fabs(x));
+  return RAPT::rsPositiveBellFunctions<float>::cubic(fabs(x));
 }
 float quinticBell(float x)
 {
-  return rsPositiveBellFunctions<float>::quintic(fabs(x));
+  return RAPT::rsPositiveBellFunctions<float>::quintic(fabs(x));
 }
 float hepticBell(float x)
 {
-  return rsPositiveBellFunctions<float>::heptic(fabs(x));
+  return RAPT::rsPositiveBellFunctions<float>::heptic(fabs(x));
 }
 void nonUniformMovingAverage()
 {
@@ -232,13 +234,13 @@ void nonUniformMovingAverage()
   float t = 0.f; // time
   float dt;      // time delta between samples
   x[0] = t;
-  y[0] = (float)round(rsRandomUniform(minY, maxY, seed)); 
+  y[0] = (float)round(RAPT::rsRandomUniform(minY, maxY, seed)); 
   for(int n = 1; n < N; n++){
     //dt = (float)round(rsRandomUniform(minDist, maxDist));
-    dt = (float)rsRandomUniform(minDist, maxDist);
+    dt = (float)RAPT::rsRandomUniform(minDist, maxDist);
     t += dt;
     x[n] = t;
-    y[n] = (float)rsRandomUniform(minY, maxY); 
+    y[n] = (float)RAPT::rsRandomUniform(minY, maxY); 
     //y[n] = (float)round(rsRandomUniform(minY, maxY)); 
   }
 
@@ -291,12 +293,12 @@ template<class T>
 void removeInfiniteValues(vector<complex<T>>& z)
 {
   for(size_t i = 0; i < z.size(); i++) {
-    if(isInfinite(z[i])) {   // as rs prefix
+    if(RAPT::isInfinite(z[i])) {   // as rs prefix
       z.erase(z.begin() + i);
       i--; }}
 }
 template<class T>
-FilterSpecificationZPK<T> getFilterSpecificationZPK(rsPrototypeDesigner<T>& pd)
+FilterSpecificationZPK<T> getFilterSpecificationZPK(RAPT::rsPrototypeDesigner<T>& pd)
 {
   int nz = pd.getNumFiniteZeros();
   int np = pd.getNumFinitePoles();
@@ -326,15 +328,15 @@ void prototypeDesign()
   // create and set up prototype designer:
   rsPrototypeDesignerF pd;
   // GAUSS
-  //pd.setApproximationMethod(PD::BESSEL);
+  pd.setApproximationMethod(PD::BESSEL);
   //pd.setApproximationMethod(PD::BUTTERWORTH);
-  pd.setApproximationMethod(PD::PAPOULIS);
+  //pd.setApproximationMethod(PD::PAPOULIS);
   // HALPERN
   //pd.setApproximationMethod(PD::CHEBYCHEV);
   //pd.setApproximationMethod(PD::INVERSE_CHEBYCHEV);
   //pd.setApproximationMethod(PD::ELLIPTIC);
 
-  pd.setPrototypeMode(PD::LOWSHELV_PROTOTYPE);
+  //pd.setPrototypeMode(PD::LOWSHELV_PROTOTYPE);
   pd.setGain(-6.02f); // needs to be nonzero for plots
 
   pd.setPassbandRipple(1); 
@@ -351,6 +353,9 @@ void prototypeDesign()
   //plt.plotPolesAndZeros(600);
   plt.plotMagnitude(1000, 0, 3, false, false);
 
+  // check, if the problem with odd bessel shelvers also exists in the rosic version:
+  rosic::rsPrototypeDesigner pd2;
+
   // issues:
 
   // it seems, even order elliptic prototypes have an overall gain equal to the reciprocal of the 
@@ -358,7 +363,7 @@ void prototypeDesign()
   // a different gain and it seems to depend on the ripple (might be computed by evaluating DC 
   // gain). Papoulis design has also a wrong DC gain -> add overall gain to the prototype designer
 
-  // something is wrong with odd order bessel shelvers (exept for order = 1) 
+  // something is wrong with odd order bessel filters (exept for order = 1) 
 }
 
 void smoothingFilterOrders()
