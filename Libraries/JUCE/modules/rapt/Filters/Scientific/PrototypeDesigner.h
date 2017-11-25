@@ -184,6 +184,13 @@ public:
   \todo maybe move to PolynomialAlgorithms */
   static int getLeftHalfPlaneRoots(T* a, Complex* r, int N);
 
+
+  static void getBesselDenominatorCoeffs(T* a, int N); 
+  //static void getPapoulisDenominatorCoeffs(T* a, int N); 
+  //static void getHalpernDenominatorCoeffs(T* a, int N); 
+  //static void getGaussDenominatorCoeffs(T* a, int N); 
+
+
   /** Computes zeros, poles and gain factor for an analog lowpass Bessel prototype filter of order 
   "N" and stores them in "z", "p" and "k", respectively.
   // \todo: include parameter for the normalization mode (asymptotic, delay-normalized, 
@@ -202,6 +209,22 @@ public:
   static void getPapoulisLowpassZerosPolesAndGain( Complex* z, Complex* p, T* k, int N);
   static void getPapoulisLowShelfZerosPolesAndGain(Complex* z, Complex* p, T* k, int N, T G, T G0);
   // maybe make this the only public method for Papoulis Design
+
+  //-------------------------------------------------------
+  // refactoring - not yet finsihed:
+
+  static void getLowpassZerosPolesAndGain(Complex* z, Complex* p, T* k, int N,
+    void (*denominatorCoeffsFunction)(T* a, int N));
+
+  /** Given a "denominatorCoeffsFunction" that generates polynomial coefficienst for a lowpass prototype 
+  transfer function, this function creates the zeros, poles and gain for the corresponding 
+  low-shelving prototype with given shelving-gain G and reference-gain G0. */
+  static void getLowShelfZerosPolesAndGain(Complex* z, Complex* p, T* k, int N, T G, T G0,
+    void (*denominatorCoeffsFunction)(T* a, int N));
+    // maybe have an optional numeratorCoeffsFunction (defaulting to a nullptr in which case the 
+    // numerator is taken to be 1
+
+  //-------------------------------------------------------
 
   /** Computes zeros, poles and gain factor for an analog elliptic prototype filter of order "N" 
   with passband gain variation (ripple) "Gp" and maximum stopband amplitude "Gs", and stores them 
@@ -356,7 +379,7 @@ protected:
   static const int maxNumNonRedundantPoles = 13;
   Complex z[maxNumNonRedundantPoles];  // zeros
   Complex p[maxNumNonRedundantPoles];  // poles
-  //T gain = 1;                          // overall gain factor
+  //T k = 1;                          // overall gain factor - not yet used
 
   bool stateIsDirty;   // this flag indicates, whether the poles, zeros and gain need to be 
                        // re-calculated or are still valid from a previous calculation

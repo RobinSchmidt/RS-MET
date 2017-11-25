@@ -368,6 +368,14 @@ int rsPrototypeDesigner<T>::getLeftHalfPlaneRoots(T* a, Complex* r, int N)
 }
 
 template<class T>
+void rsPrototypeDesigner<T>::getBesselDenominatorCoeffs(T* a, int N)
+{
+  rsPolynomial<T>::besselPolynomial(a, N);
+  rsArray::reverse(a, N+1);  // leaving this out leads to a modified Bessel filter response - maybe 
+                             // experiment a bit, response looks good
+}
+
+template<class T>
 void rsPrototypeDesigner<T>::getBesselLowpassZerosPolesAndGain(Complex* z, Complex* p, T* k, int N)
 {
   // zeros are at infinity:
@@ -399,6 +407,12 @@ template<class T>
 void rsPrototypeDesigner<T>::getBesselLowShelfZerosPolesAndGain(Complex* z, Complex* p, T* k, 
   int N, T G, T G0)
 {
+  // new - after refactoring:
+  getLowShelfZerosPolesAndGain(z, p, k, N, G, G0, &getBesselDenominatorCoeffs);
+  return;
+    // after testing, the old code below can be deleted if everything works
+
+  /*
   // old version - less code but needs root-finder twice:
   //getBesselLowpassZerosPolesAndGain(z, p, k, N);
   //PoleZeroMapper::sLowpassToLowshelf(z, p, k, z, p, k, N, G0, G);
@@ -459,6 +473,7 @@ void rsPrototypeDesigner<T>::getBesselLowShelfZerosPolesAndGain(Complex* z, Comp
   delete[] a;
   delete[] b;
   delete[] bS;
+  */
 }
 
 template<class T>
@@ -577,6 +592,85 @@ void rsPrototypeDesigner<T>::getPapoulisLowShelfZerosPolesAndGain(Complex* z, Co
   delete[] b2;
   delete[] bS;
 }
+
+//-------------------------------------------------------
+// refactoring - not yet finsihed:
+
+template<class T>
+void rsPrototypeDesigner<T>::getLowpassZerosPolesAndGain(Complex* z, Complex* p, T* k, int N,
+  void (*denominatorCoeffsFunction)(T* a, int N))
+{
+
+
+}
+
+template<class T>
+void rsPrototypeDesigner<T>::getLowShelfZerosPolesAndGain(Complex* z, Complex* p, T* k, int N, 
+  T G, T G0, void (*denominatorCoeffsFunction)(T* a, int N))
+{
+  // catch lowpass case:
+  if( G0 == 0.0 )
+  {
+    getLowpassZerosPolesAndGain(z, p, k, N, denominatorCoeffsFunction);
+    *k *= G;
+    return;
+  }
+
+  // design boost filter and invert later, if a dip is desired:
+  bool dip = false;
+  if(G < G0)
+  {
+    dip = true;
+    G   = T(1) / G;
+    G0  = T(1) / G0;
+  }
+
+  // construct lowpass denominator:
+  T* a = new T[N+1];
+  denominatorCoeffsFunction(a, N);
+
+  //...from getBesselLowShelfZerosPolesAndGain:
+  //rsPolynomial<T>::besselPolynomial(a, N); 
+  //rsArray::reverse(a, N+1);  // leaving this out leads to a modified Bessel filter response - maybe 
+  // experiment a bit, response looks good
+
+  // find poles of the shelving filter:
+  rsPolynomial<T>::findPolynomialRoots(a, N, p);
+
+  // construct lowpass numerator:
+  T* b = new T[N+1];
+  rsArray::fillWithZeros(b, N+1);
+  b[0] = a[0];
+
+  // obtain magnitude-squared numerator polynomial for shelving filter:
+  T* bS = new T[2*N+1];
+  shelvingMagSqrNumeratorFromLowpassTransfer(b, a, 1.0, N, G0, G, bS);
+
+  // find left halfplane zeros (= zeros of the shelving filter):
+  getLeftHalfPlaneRoots(bS, z, 2*N);
+
+  // set gain constant:
+  *k = G0;
+
+  // now we have a shelving filter with correct low-frequency gain G and reference gain G0, but 
+  // possibly still with wrong bandwidth gain GB at unity - now we adjust zeros/poles/gain to 
+  // match GB:
+  T GB = sqrt(G*G0);
+  scaleToMatchGainAtUnity(z, p, k, z, p, k, N, GB);
+
+  // invert filter in case of a dip:
+  if( dip == true )
+  getInverseFilter(z, p, k, z, p, k, N);
+
+  // cleanup:
+  delete[] a;
+  delete[] b;
+  delete[] bS;
+}
+
+// end refactoring
+//-------------------------------------------------------
+
 
 template<class T>
 void rsPrototypeDesigner<T>::getEllipticLowpassZerosPolesAndGain(Complex* z, Complex* p, T* k, 
