@@ -322,8 +322,8 @@ void prototypeDesign()
   typedef float Real;
 
   // min and max filter order to plot:
-  int minOrder = 1;
-  int maxOrder = 6;
+  int minOrder = 5;
+  int maxOrder = 5;
 
   // create and set up prototype designer:
   rsPrototypeDesignerF pd;
@@ -353,8 +353,16 @@ void prototypeDesign()
   //plt.plotPolesAndZeros(600);
   plt.plotMagnitude(1000, 0, 3, false, false);
 
-  // check, if the problem with odd bessel shelvers also exists in the rosic version:
+  // check, if the problem with odd bessel filters also exists in the rosic version:
   rosic::rsPrototypeDesigner pd2;
+  rosic::Complex poles[10], zeros[10];
+  pd2.setApproximationMethod(pd2.BESSEL);
+  pd2.setOrder(5);
+  pd2.getPolesAndZeros(poles, zeros);
+
+  int dummy = 0;
+
+
 
   // issues:
 
@@ -363,7 +371,9 @@ void prototypeDesign()
   // a different gain and it seems to depend on the ripple (might be computed by evaluating DC 
   // gain). Papoulis design has also a wrong DC gain -> add overall gain to the prototype designer
 
-  // something is wrong with odd order bessel filters (exept for order = 1) 
+  // something is wrong with odd order bessel filters (exept for order = 1), looks like it never 
+  // worked in rapt - ive gone back to the commit of 21.11.2017, 00:06:28 with message:
+  // implemented FilterPlotter<T>::plotMagnitude
 }
 
 void smoothingFilterOrders()
