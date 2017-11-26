@@ -1,33 +1,74 @@
 #ifndef RAPT_ROTATIONOSCILLATOR_H_INCLUDED
 #define RAPT_ROTATIONOSCILLATOR_H_INCLUDED
 
+/** An oscillator based on a vector that rotates in 3D space. The vector produced by this basic 
+rotation produces values that lie on the unit sphere. this unit-sphere vector is then shifted and 
+scaled along the 3 coordinate axes - this produces a vector on an ellipsoid whose axes are aligned
+with the coordinate axes. Then, this ellipsoid is rotated around the 3 axes to produce a general 
+ellipsoid. After that, the length of the vector is renormalized (so it will end up on the unit 
+sphere again). 
+
+...Then, an output signal is produced by projecting.. 
+
+maybe rename to SphereProjectionOsc or EllispoidOsc
+
+This oscillator is a 3D generalization of an algorithm proposed by xoxos on KVR:
+
+*/
+
 template<class T>
 class rsRotationOscillator
 {
 
 public:
 
-  void setFrequency(T newFrequency);
 
-  void setSampleRate(T newSampleRate);
 
-  void setFrequencyScalerX(T newScaler);
+  void setSampleRate(T newSampleRate)
+  {
+    sampleRate = newSampleRate;
+    oscMatrixNeedsUpdate = true;
+  }
 
-  void setFrequencyScalerY(T newScaler);
+  void setFrequency(T newFrequency)
+  {
+    freq = newFrequency;
+    oscMatrixNeedsUpdate = true;
+  }
 
-  void setFrequencyScalerZ(T newScaler);
+  void setFrequencyScalerX(T newScaler)
+  {
+    freqScaleX = newScaler;
+    oscMatrixNeedsUpdate = true;
+  }
+
+  void setFrequencyScalerY(T newScaler)
+  {
+    freqScaleY = newScaler;
+    oscMatrixNeedsUpdate = true;
+  }
+
+  void setFrequencyScalerZ(T newScaler)
+  {
+    freqScaleZ = newScaler;
+    oscMatrixNeedsUpdate = true;
+  }
+
 
 
   void processSampleFrame(T* x, T* y, T* z);
 
 
-  /** Resets the state vactor to (x,y,z) = (1,0,0). */
-  void reset()
+  T getSample()
   {
-    X = 1;
-    Y = 0;
-    Z = 0;
+    T x, y, z;
+    processSampleFrame(&x, &y, &z);
+    return x + y + z;
   }
+
+
+  /** Resets the state vactor to (x,y,z) = (1,0,0). */
+  void reset();
 
 
 protected:

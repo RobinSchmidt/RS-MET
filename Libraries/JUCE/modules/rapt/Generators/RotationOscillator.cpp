@@ -16,13 +16,15 @@ void rsRotationOscillator<T>::processSampleFrame(T* x, T* y, T* z)
   T tz = (Z + shiftZ) * scaleZ;
 
   // rotate the ellipsoid:
-  ellipsoidRotation.apply(&tx, &ty, &tz);
+  transformRotation.apply(&tx, &ty, &tz);
 
   // renormalize length:
-  T s = 1 / sqrt(tx*tx + ty*ty + tz*tz);
+  T s = 1 / sqrt(tx*tx + ty*ty + tz*tz); // what about div-by-zero?
   tx *= s;
   ty *= s;
   tz *= s;
+
+  //...maybe apply spherical (soft) clipping?
 
   // apply the output rotation and assign outputs:
   //outputRotation.apply(&tx, &ty, &tz);
@@ -36,14 +38,24 @@ void rsRotationOscillator<T>::processSampleFrame(T* x, T* y, T* z)
 }
 
 template<class T>
+void rsRotationOscillator<T>::reset()
+{
+  X = 1;
+  Y = 0;
+  Z = 0;
+}
+
+template<class T>
 void rsRotationOscillator<T>::updateOscillationMatrix()
 {
-  T w  = 2*T(PI)*frequency/sampleRate;
+  T w  = 2*T(PI)*freq/sampleRate;
   oscillateRotation.setAngles(w*freqScaleX, w*freqScaleY, w*freqScaleZ);
+  oscMatrixNeedsUpdate = false;
 }
 
 template<class T>
 void rsRotationOscillator<T>::updateTransformMatrix()
 {
   transformRotation.setAngles(rotX, rotY, rotZ);
+  trafoMatrixNeedsUpdate = false;
 }
