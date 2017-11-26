@@ -1941,6 +1941,9 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\Generators.h">
       <Filter>Juce Modules\rapt\Generators</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\NoiseGenerator.h">
+      <Filter>Juce Modules\rapt\Generators</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\RayBouncer.h">
       <Filter>Juce Modules\rapt\Generators</Filter>
     </ClInclude>

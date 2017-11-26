@@ -649,11 +649,6 @@ void rsPrototypeDesigner<T>::getLowShelfZerosPolesAndGain(Complex* z, Complex* p
   T* a = new T[N+1];
   denominatorCoeffsFunction(a, N);
 
-  //...from getBesselLowShelfZerosPolesAndGain:
-  //rsPolynomial<T>::besselPolynomial(a, N); 
-  //rsArray::reverse(a, N+1);  // leaving this out leads to a modified Bessel filter response - maybe 
-  // experiment a bit, response looks good
-
   // find poles of the shelving filter:
   rsPolynomial<T>::findPolynomialRoots(a, N, p);
 

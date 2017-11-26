@@ -7,6 +7,7 @@ namespace RAPT
 // make a nested namespace Generators
 
 #include "RayBouncer.h"
+#include "NoiseGenerator.h"
 
 // maybe make subdirectories: Oscillator, Sampling, Physical, Chaotic, Noise,
 // Geometric, etc.

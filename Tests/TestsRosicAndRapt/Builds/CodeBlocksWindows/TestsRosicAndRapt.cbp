@@ -462,6 +462,10 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Generators/NoiseGenerator.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../Libraries/JUCE/modules/rapt/Generators/RayBouncer.cpp">
       <Option compile="0"/>
       <Option link="0"/>
