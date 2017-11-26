@@ -1,10 +1,11 @@
-
-
 template<class T>
 void rsRotationOscillator<T>::processSampleFrame(T* x, T* y, T* z)
 {
-  if(matrixNeedsUpdate)
-    updateRotationMatrix();
+  // update matrices, if necessarry:
+  if(oscMatrixNeedsUpdate)
+    updateOscillationMatrix();
+  if(trafoMatrixNeedsUpdate)
+    updateTransformMatrix();
 
   // obtain new vector on unit sphere:
   oscillateRotation.apply(&X, &Y, &Z);
@@ -32,6 +33,17 @@ void rsRotationOscillator<T>::processSampleFrame(T* x, T* y, T* z)
 
   // todo: maybe apply decay, maybe inject and input signal in state update -> turns it into a 
   // filter
+}
 
+template<class T>
+void rsRotationOscillator<T>::updateOscillationMatrix()
+{
+  T w  = 2*T(PI)*frequency/sampleRate;
+  oscillateRotation.setAngles(w*freqScaleX, w*freqScaleY, w*freqScaleZ);
+}
 
+template<class T>
+void rsRotationOscillator<T>::updateTransformMatrix()
+{
+  transformRotation.setAngles(rotX, rotY, rotZ);
 }

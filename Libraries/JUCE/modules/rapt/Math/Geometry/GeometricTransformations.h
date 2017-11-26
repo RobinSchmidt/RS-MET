@@ -37,6 +37,14 @@ public:
     updateCoeffs();
   }
 
+  void setAngles(T newAngleX, T newAngleY, T newAngleZ)
+  {
+    rx = newAngleX;
+    ry = newAngleY;
+    rz = newAngleZ;
+    updateCoeffs();
+  }
+
   /** Applies the rotation matrix to the coordinate values. */
   void apply(T* x, T* y, T* z);
 
