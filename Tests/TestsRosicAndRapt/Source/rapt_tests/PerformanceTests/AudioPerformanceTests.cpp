@@ -5,6 +5,7 @@ void ladderPerformance()
 {
   int numSamples = 50000;
   typedef double Real;
+  //typedef float Real;
   vector<Real> x = createNoise(numSamples, 0, Real(-1), Real(+1));
 
   RAPT::rsLadderFilter<Real, Real> lf;
@@ -22,6 +23,7 @@ void ladderPerformance()
 
   // Results:
   // double: with 1 / (1 + x^2) nonlinearity: 88 cycles, linear: 58 cycles, softClipHexic: 102
+  // for float, it seems to be about the same
 
 
 }

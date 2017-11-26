@@ -2671,6 +2671,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_RayBouncer.cpp">
       <Filter>Juce Modules\jura_processors\generators</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_RotationOscillator.cpp">
+      <Filter>Juce Modules\jura_processors\generators</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_SamplePlayer.cpp">
       <Filter>Juce Modules\jura_processors\generators</Filter>
     </ClCompile>
@@ -2828,6 +2831,9 @@
       <Filter>Juce Modules\rapt\Generators</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Generators\RayBouncer.cpp">
+      <Filter>Juce Modules\rapt\Generators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Generators\RotationOscillator.cpp">
       <Filter>Juce Modules\rapt\Generators</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\BasicFunctions.cpp">
@@ -6525,6 +6531,9 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_RayBouncer.h">
       <Filter>Juce Modules\jura_processors\generators</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_RotationOscillator.h">
+      <Filter>Juce Modules\jura_processors\generators</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_SamplePlayer.h">
       <Filter>Juce Modules\jura_processors\generators</Filter>
     </ClInclude>
@@ -6696,7 +6705,13 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Generators\Generators.h">
       <Filter>Juce Modules\rapt\Generators</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Generators\NoiseGenerator.h">
+      <Filter>Juce Modules\rapt\Generators</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Generators\RayBouncer.h">
+      <Filter>Juce Modules\rapt\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Generators\RotationOscillator.h">
       <Filter>Juce Modules\rapt\Generators</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\BasicFunctions.h">

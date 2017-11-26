@@ -17,6 +17,7 @@ page 284.
 template<class T>
 class rsNoiseGenerator
 {
+
 public:
 
   rsNoiseGenerator() = default;

@@ -4,5 +4,6 @@ namespace RAPT
 {
 
 #include "RayBouncer.cpp"
+#include "RotationOscillator.cpp"
 
 }

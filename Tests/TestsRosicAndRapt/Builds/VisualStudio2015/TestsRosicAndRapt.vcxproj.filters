@@ -415,6 +415,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\RayBouncer.cpp">
       <Filter>Juce Modules\rapt\Generators</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\RotationOscillator.cpp">
+      <Filter>Juce Modules\rapt\Generators</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\BasicFunctions.cpp">
       <Filter>Juce Modules\rapt\Math\Functions</Filter>
     </ClCompile>
@@ -1951,6 +1954,9 @@
       <Filter>Juce Modules\rapt\Generators</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\RayBouncer.h">
+      <Filter>Juce Modules\rapt\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\RotationOscillator.h">
       <Filter>Juce Modules\rapt\Generators</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\BasicFunctions.h">

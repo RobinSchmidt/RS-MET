@@ -5765,6 +5765,14 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/generators/jura_RotationOscillator.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/generators/jura_RotationOscillator.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/generators/jura_SamplePlayer.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -6205,11 +6213,23 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/rapt/Generators/NoiseGenerator.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/rapt/Generators/RayBouncer.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/rapt/Generators/RayBouncer.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/rapt/Generators/RotationOscillator.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/rapt/Generators/RotationOscillator.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>

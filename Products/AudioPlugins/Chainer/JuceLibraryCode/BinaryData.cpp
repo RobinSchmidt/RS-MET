@@ -36,7 +36,12 @@ static const unsigned char temp_binary_data_0[] =
 "sudo apt-get install libx11-dev\r\n"
 "sudo apt-get install libxrandr-dev \r\n"
 "sudo apt-get install libxinerama-dev\r\n"
-"sudo apt-get install libxcursor-dev\r\n";
+"sudo apt-get install libxcursor-dev\r\n"
+"sudo apt-get install libxcurl-dev\r\n"
+"\r\n"
+"for the juce PluginHost - additionally this is needed:\r\n"
+"sudo apt-get install libgl-dev\r\n"
+"\r\n";
 
 const char* DebugNotes_txt = (const char*) temp_binary_data_0;
 
@@ -57,7 +62,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes) throw
 
     switch (hash)
     {
-        case 0x4358baff:  numBytes = 966; return DebugNotes_txt;
+        case 0x4358baff:  numBytes = 1093; return DebugNotes_txt;
         case 0x80091737:  numBytes = 0; return ToDo_txt;
         default: break;
     }
