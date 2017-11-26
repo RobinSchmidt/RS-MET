@@ -19,15 +19,20 @@ void RotationOscillatorAudioModule::createParameters()
   typedef ModulatableParameter Param;
   Param* p;
 
+
+  p = new Param("Renormalize", 0.0, 2.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<LO>(lo, &LO::setRenormalizationAmount);
+
   p = new Param("FreqScaleX", 0.0, 10.0, 1.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<LO>(lo, &LO::setFrequencyScalerX);
 
-  p = new Param("FreqScaleY", 0.0, 10.0, 1.0, Parameter::LINEAR);
+  p = new Param("FreqScaleY", 0.0, 10.0, 2.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<LO>(lo, &LO::setFrequencyScalerY);
 
-  p = new Param("FreqScaleZ", 0.0, 10.0, 0.0, Parameter::LINEAR);
+  p = new Param("FreqScaleZ", 0.0, 10.0, 3.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<LO>(lo, &LO::setFrequencyScalerZ);
 

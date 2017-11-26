@@ -68,6 +68,7 @@ void rsLissajousOscillator3D<T>::processSampleFrame(T* x, T* y, T* z)
 
   // renormalize length:
   T s = 1 / sqrt(tx*tx + ty*ty + tz*tz); // what about div-by-zero?
+  s   = pow(s, renormExponent);
   tx *= s;
   ty *= s;
   tz *= s;

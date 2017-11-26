@@ -50,7 +50,14 @@ public:
     outputMatrixNeedsUpdate = true;
   }
 
+  void setRenormalizationAmount(T newAmount)
+  {
+    renormExponent = newAmount;
+  }
+
   void processSampleFrame(T* x, T* y, T* z);
+
+
 
 
   void getSampleFrameStereo(T* left, T* right)
@@ -90,11 +97,14 @@ protected:
   T freqScaleZ = 0;
 
   T phaseX = 0;
-  T phaseY = T(0.5*PI);
+  //T phaseY = T(0.5*PI);
+  T phaseY = 0;
   T phaseZ = 0;
 
   T incX = 0, incY = 0, incZ = 0;  // phase increments
   T posX = 0, posY = 0, posZ = 0;  // current position/phase
+
+  T renormExponent = 0;
 
 
   T shiftX = 0;
