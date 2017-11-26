@@ -9,6 +9,7 @@ using namespace rotes;
 #include "rapt_tests/Experiments/GraphicsExperiments.h"
 
 #include "rapt_tests/PerformanceTests/MathPerformanceTests.h"
+#include "rapt_tests/PerformanceTests/AudioPerformanceTests.h"
 
 #include "rapt_tests/UnitTests/UnitTests.h"
 
@@ -75,7 +76,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
 
-  runAllUnitTests();
+  //runAllUnitTests();
   //filterUnitTests();
 
 
@@ -84,6 +85,8 @@ int main(int argc, char* argv[])
 
   //matrixAdressingTest();
   //sinCosPerformance();
+
+  ladderPerformance();
 
 
   //-----------------------------------------------------------------------------------------------
@@ -103,7 +106,7 @@ int main(int argc, char* argv[])
   // Filter:
   //ladderResonanceManipulation();
   //nonUniformMovingAverage();
-  prototypeDesign();
+  //prototypeDesign();
   //smoothingFilterOrders();
   //smoothingFilterTransitionTimes();
 

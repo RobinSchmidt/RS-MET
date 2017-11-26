@@ -177,3 +177,17 @@ void createWaveform(float *x, int N, int shape, float frequency, float sampleRat
 //  }
 //}
 
+template<class T>
+std::vector<T> createNoise(int numSamples, int seed, T min, T max)
+{
+  std::vector<T> x(numSamples);
+  RAPT::rsNoiseGenerator<T> ng;
+  ng.setRange(min, max);
+  ng.setSeed(seed);
+  ng.reset();
+  for(int n = 0; n < numSamples; n++)
+    x[n] = ng.getSample();
+  return x;
+}
+template std::vector<float> createNoise(int numSamples, int seed, float min, float max);
+template std::vector<double> createNoise(int numSamples, int seed, double min, double max);

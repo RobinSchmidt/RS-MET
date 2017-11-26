@@ -10,6 +10,7 @@ page 284.
 \todo 
 -make subclasses that produce random numbers with different distributions, for example by adding
  outputs of the underlying basic generator
+-make a colored noise generator by using the SlopeFilter (in rosic - needs to be dragged to rapt)
 
 */
 

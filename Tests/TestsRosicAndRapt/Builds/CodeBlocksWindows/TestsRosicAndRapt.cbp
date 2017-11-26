@@ -84,6 +84,11 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../Source/rapt_tests/PerformanceTests/AudioPerformanceTests.cpp"/>
+    <Unit filename="../../Source/rapt_tests/PerformanceTests/AudioPerformanceTests.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../Source/rapt_tests/PerformanceTests/MathPerformanceTests.cpp"/>
     <Unit filename="../../Source/rapt_tests/PerformanceTests/MathPerformanceTests.h">
       <Option compile="0"/>

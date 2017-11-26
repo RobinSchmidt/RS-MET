@@ -30,6 +30,10 @@ void createWaveform(float *x, int N, int shape, float frequency, float sampleRat
 //phases given by n*p, where n is the harmonic number of the sine (starting at 1) */
 //double sineSum(double p, double *A, double N);
 
+/** Returns a vector of random samples uniformly distributed between min and max. */
+template<class T>
+std::vector<T> createNoise(int numSamples, int seed = 0, T min = T(-1), T max = T(+1));
+
 
 
 

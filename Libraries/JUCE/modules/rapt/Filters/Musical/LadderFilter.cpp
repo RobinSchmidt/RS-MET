@@ -120,6 +120,7 @@ inline TSig rsLadderFilter<TSig, TPar>::getSampleNoGain(TSig in)
   //y[4] /= 1 + y[4]*y[4];     // (ad hoc) nonlinearity applied to the feedback signal
   y[0]  = in - k*y[4];       // linear
   //y[0] /= 1 + y[0]*y[0];     // nonlineariry applied to input plus feedback signal
+  //y[0]  = rsNormalizedSigmoids<TSig>::softClipHexic(y[0]);
   y[1]  = b*y[0]  - a*y[1];
   y[2]  = b*y[1]  - a*y[2];
   y[3]  = b*y[2]  - a*y[3];
