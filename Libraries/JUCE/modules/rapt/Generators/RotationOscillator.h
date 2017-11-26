@@ -17,62 +17,38 @@ This oscillator is a 3D generalization of an algorithm proposed by xoxos on KVR:
 */
 
 template<class T>
-class rsRotationOscillator
+class rsLissajousOscillator3D
 {
 
 public:
 
+  void setSampleRate(T newSampleRate);
+  void setFrequency(T newFrequency);
+  void setFrequencyScalerX(T newScaler);
+  void setFrequencyScalerY(T newScaler);
+  void setFrequencyScalerZ(T newScaler);
 
-
-  void setSampleRate(T newSampleRate)
-  {
-    sampleRate = newSampleRate;
-    oscMatrixNeedsUpdate = true;
-  }
-
-  void setFrequency(T newFrequency)
-  {
-    freq = newFrequency;
-    oscMatrixNeedsUpdate = true;
-  }
-
-  void setFrequencyScalerX(T newScaler)
-  {
-    freqScaleX = newScaler;
-    oscMatrixNeedsUpdate = true;
-  }
-
-  void setFrequencyScalerY(T newScaler)
-  {
-    freqScaleY = newScaler;
-    oscMatrixNeedsUpdate = true;
-  }
-
-  void setFrequencyScalerZ(T newScaler)
-  {
-    freqScaleZ = newScaler;
-    oscMatrixNeedsUpdate = true;
-  }
+  void setPhaseX(T newPhase) { phaseX = rsDegreeToRadiant(newPhase); }
+  void setPhaseY(T newPhase) { phaseY = rsDegreeToRadiant(newPhase); }
+  void setPhaseZ(T newPhase) { phaseZ = rsDegreeToRadiant(newPhase); }
 
   void setOutputRotationX(T newAngle)
   {
-    outRotX = PI * newAngle / 180;
+    outRotX = rsDegreeToRadiant(newAngle);
     outputMatrixNeedsUpdate = true;
   }
 
   void setOutputRotationY(T newAngle)
   {
-    outRotY = PI * newAngle / 180;
+    outRotY = rsDegreeToRadiant(newAngle);
     outputMatrixNeedsUpdate = true;
   }
 
   void setOutputRotationZ(T newAngle)
   {
-    outRotZ = PI * newAngle / 180;
+    outRotZ = rsDegreeToRadiant(newAngle);
     outputMatrixNeedsUpdate = true;
   }
-
-
 
   void processSampleFrame(T* x, T* y, T* z);
 
@@ -81,10 +57,7 @@ public:
   {
     T x, y, z;
     processSampleFrame(&x, &y, &z);
-    //*left  = x+z;  // preliminary - use projection matrix later
-    //*right = y-z;
-
-    *left  = x;  // preliminary - use projection matrix later
+    *left  = x;
     *right = y;
   }
 
@@ -96,49 +69,52 @@ public:
   }
 
 
-  /** Resets the state vactor to (x,y,z) = (1,0,0). */
+  /** Resets the phases. */
   void reset();
 
 
 protected:
 
-  void updateOscillationMatrix();
 
+  void updatePhaseIncrements();
   void updateTransformMatrix();
-
   void updateOutputMatrix();
 
-
-
-  rsRotationXYZ<T> oscillateRotation;
   rsRotationXYZ<T> transformRotation;
   rsRotationXYZ<T> outputRotation; // ..or maybe use 2x3 projection matrix
 
   T sampleRate = 44100; 
-  T freq = 1000;
-  T freqScaleX = 0;
-  T freqScaleY = 0;
-  T freqScaleZ = 1;
+  T freq = 100;
+  T freqScaleX = 1;
+  T freqScaleY = 1;
+  T freqScaleZ = 0;
+
+  T phaseX = 0;
+  T phaseY = T(0.5*PI);
+  T phaseZ = 0;
+
+  T incX = 0, incY = 0, incZ = 0;  // phase increments
+  T posX = 0, posY = 0, posZ = 0;  // current position/phase
+
+
   T shiftX = 0;
   T shiftY = 0;
   T shiftZ = 0;
+
   T scaleX = 1;
   T scaleY = 1;
   T scaleZ = 1;
+
   T trafoRotX = 0;
   T trafoRotY = 0;
   T trafoRotZ = 0;
+
   T outRotX = 0;
   T outRotY = 0;
   T outRotZ = 0;
 
-
-  T X = 1, Y = 0, Z = 0;
-
-  bool oscMatrixNeedsUpdate    = true;
   bool trafoMatrixNeedsUpdate  = true;
   bool outputMatrixNeedsUpdate = true;
-
 };
 
 #endif

@@ -13,36 +13,38 @@ void RotationOscillatorAudioModule::createParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  typedef RAPT::rsRotationOscillator<double> RO;
-  RO* ro = &oscCore;
+  typedef RAPT::rsLissajousOscillator3D<double> LO;
+  LO* lo = &oscCore;
 
   typedef ModulatableParameter Param;
   Param* p;
 
-  p = new Param("FreqScaleX", 0.0, 10.0, 0.0, Parameter::LINEAR);
+  p = new Param("FreqScaleX", 0.0, 10.0, 1.0, Parameter::LINEAR);
   addObservedParameter(p);
-  p->setValueChangeCallback<RO>(ro, &RO::setFrequencyScalerX);
+  p->setValueChangeCallback<LO>(lo, &LO::setFrequencyScalerX);
 
-  p = new Param("FreqScaleY", 0.0, 10.0, 0.0, Parameter::LINEAR);
+  p = new Param("FreqScaleY", 0.0, 10.0, 1.0, Parameter::LINEAR);
   addObservedParameter(p);
-  p->setValueChangeCallback<RO>(ro, &RO::setFrequencyScalerY);
+  p->setValueChangeCallback<LO>(lo, &LO::setFrequencyScalerY);
 
-  p = new Param("FreqScaleZ", 0.0, 10.0, 1.0, Parameter::LINEAR);
+  p = new Param("FreqScaleZ", 0.0, 10.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
-  p->setValueChangeCallback<RO>(ro, &RO::setFrequencyScalerZ);
+  p->setValueChangeCallback<LO>(lo, &LO::setFrequencyScalerZ);
+
+
 
 
   p = new Param("OutRotX", -180, +180.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
-  p->setValueChangeCallback<RO>(ro, &RO::setOutputRotationX);
+  p->setValueChangeCallback<LO>(lo, &LO::setOutputRotationX);
 
   p = new Param("OutRotY", -180, +180.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
-  p->setValueChangeCallback<RO>(ro, &RO::setOutputRotationY);
+  p->setValueChangeCallback<LO>(lo, &LO::setOutputRotationY);
 
   p = new Param("OutRotZ", -180, +180.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
-  p->setValueChangeCallback<RO>(ro, &RO::setOutputRotationZ);
+  p->setValueChangeCallback<LO>(lo, &LO::setOutputRotationZ);
 }
 
 void RotationOscillatorAudioModule::processBlock(double **inOutBuffer, int numChannels, int numSamples)

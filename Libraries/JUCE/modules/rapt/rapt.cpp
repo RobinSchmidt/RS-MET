@@ -73,7 +73,7 @@ template class RAPT::rsPhasorStateMapper<double>;
 
 template class RAPT::rsRayBouncer<double>;
 template class RAPT::rsRayBouncerDriver<double>;
-template class RAPT::rsRotationOscillator<double>;
+template class RAPT::rsLissajousOscillator3D<double>;
 
 // hmm...it seems, we need all these explicit instantiations anyway - maybe clean up the build
 // system...rename the files to raptJuceModule.h/cpp

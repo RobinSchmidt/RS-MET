@@ -22,7 +22,7 @@ public:
 
 protected:
 
-  RAPT::rsRotationOscillator<double> oscCore;
+  RAPT::rsLissajousOscillator3D<double> oscCore;
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RotationOscillatorAudioModule)

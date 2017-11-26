@@ -1,5 +1,44 @@
+
+
 template<class T>
-void rsRotationOscillator<T>::processSampleFrame(T* x, T* y, T* z)
+void rsLissajousOscillator3D<T>::setSampleRate(T newSampleRate)
+{
+  sampleRate = newSampleRate;
+  updatePhaseIncrements();
+}
+
+template<class T>
+void rsLissajousOscillator3D<T>::setFrequency(T newFrequency)
+{
+  freq = newFrequency;
+  updatePhaseIncrements();
+}
+
+template<class T>
+void rsLissajousOscillator3D<T>::setFrequencyScalerX(T newScaler)
+{
+  freqScaleX = newScaler;
+  incX = freqScaleX * 2*T(PI)*freq/sampleRate;
+}
+
+template<class T>
+void rsLissajousOscillator3D<T>::setFrequencyScalerY(T newScaler)
+{
+  freqScaleY = newScaler;
+  incY = freqScaleY * 2*T(PI)*freq/sampleRate;
+}
+
+template<class T>
+void rsLissajousOscillator3D<T>::setFrequencyScalerZ(T newScaler)
+{
+  freqScaleZ = newScaler;
+  incZ = freqScaleZ * 2*T(PI)*freq/sampleRate;
+}
+
+
+
+template<class T>
+void rsLissajousOscillator3D<T>::processSampleFrame(T* x, T* y, T* z)
 {
   // hmm...no - this is boring - it just rotates with one frequency
   // instead we should use 3 sine-oscillators with freq and phase
@@ -7,15 +46,17 @@ void rsRotationOscillator<T>::processSampleFrame(T* x, T* y, T* z)
   // wz = 0, wx = wy, px = 0°, py = 90°
 
   // update matrices, if necessarry:
-  if(oscMatrixNeedsUpdate)
-    updateOscillationMatrix();
   if(trafoMatrixNeedsUpdate)
     updateTransformMatrix();
   if(outputMatrixNeedsUpdate)
     updateOutputMatrix();
 
   // obtain new vector on unit sphere:
-  oscillateRotation.apply(&X, &Y, &Z);
+  //oscillateRotation.apply(&X, &Y, &Z);
+
+  T X = sin(posX);
+  T Y = sin(posY);
+  T Z = sin(posZ);
 
   // transform to ellipsoid:
   T tx = (X + shiftX) * scaleX;
@@ -39,36 +80,39 @@ void rsRotationOscillator<T>::processSampleFrame(T* x, T* y, T* z)
   *y = ty;
   *z = tz;
 
+  posX += incX;
+  posY += incY;
+  posZ += incZ;
 
-  // todo: maybe apply decay, maybe inject and input signal in state update -> turns it into a 
-  // filter
+  posX = rsWrapAround(posX, 2*PI);
 }
 
 template<class T>
-void rsRotationOscillator<T>::reset()
+void rsLissajousOscillator3D<T>::reset()
 {
-  X = 1;
-  Y = 0;
-  Z = 0;
+  posX = phaseX;
+  posY = phaseY;
+  posZ = phaseZ;
 }
 
 template<class T>
-void rsRotationOscillator<T>::updateOscillationMatrix()
+void rsLissajousOscillator3D<T>::updatePhaseIncrements()
 {
   T w  = 2*T(PI)*freq/sampleRate;
-  oscillateRotation.setAngles(w*freqScaleX, w*freqScaleY, w*freqScaleZ);
-  oscMatrixNeedsUpdate = false;
+  incX = w * freqScaleX;
+  incY = w * freqScaleY;
+  incZ = w * freqScaleZ;
 }
 
 template<class T>
-void rsRotationOscillator<T>::updateTransformMatrix()
+void rsLissajousOscillator3D<T>::updateTransformMatrix()
 {
   transformRotation.setAngles(trafoRotX, trafoRotY, trafoRotZ);
   trafoMatrixNeedsUpdate = false;
 }
 
 template<class T>
-void rsRotationOscillator<T>::updateOutputMatrix()
+void rsLissajousOscillator3D<T>::updateOutputMatrix()
 {
   outputRotation.setAngles(outRotX, outRotY, outRotZ);
   outputMatrixNeedsUpdate = false;
