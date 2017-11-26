@@ -578,7 +578,8 @@ protected:
                                           // use std::vector
 
   int widgetHeight   = 16; 
-  int widgetDistance = 4;
+  //int widgetDistance = 4;
+  int widgetDistance = -2;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GenericAudioModuleEditor)
 };

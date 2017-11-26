@@ -37,6 +37,21 @@ void RotationOscillatorAudioModule::createParameters()
   p->setValueChangeCallback<LO>(lo, &LO::setFrequencyScalerZ);
 
 
+  double maxFreqOffset = 20;
+  p = new Param("FreqOffsetX", -maxFreqOffset, maxFreqOffset, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<LO>(lo, &LO::setFrequencyOffsetX);
+
+  p = new Param("FreqOffsetY", -maxFreqOffset, maxFreqOffset, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<LO>(lo, &LO::setFrequencyOffsetY);
+
+  p = new Param("FreqOffsetZ", -maxFreqOffset, maxFreqOffset, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<LO>(lo, &LO::setFrequencyOffsetZ);
+
+
+
 
 
   p = new Param("OutRotX", -180, +180.0, 0.0, Parameter::LINEAR);

@@ -27,6 +27,10 @@ public:
   void setFrequencyScalerX(T newScaler);
   void setFrequencyScalerY(T newScaler);
   void setFrequencyScalerZ(T newScaler);
+  void setFrequencyOffsetX(T newOffset);
+  void setFrequencyOffsetY(T newOffset);
+  void setFrequencyOffsetZ(T newOffset);
+
 
   void setPhaseX(T newPhase) { phaseX = rsDegreeToRadiant(newPhase); }
   void setPhaseY(T newPhase) { phaseY = rsDegreeToRadiant(newPhase); }
@@ -90,11 +94,12 @@ protected:
   rsRotationXYZ<T> transformRotation;
   rsRotationXYZ<T> outputRotation; // ..or maybe use 2x3 projection matrix
 
-  T sampleRate = 44100; 
+  T sampleRate  = 44100; 
+  T omegaFactor = 2*PI/44100;
   T freq = 100;
-  T freqScaleX = 1;
-  T freqScaleY = 1;
-  T freqScaleZ = 0;
+
+  T freqScalerX = 1, freqScalerY = 1, freqScalerZ = 1;
+  T freqOffsetX = 1, freqOffsetY = 1, freqOffsetZ = 1;
 
   T phaseX = 0;
   //T phaseY = T(0.5*PI);

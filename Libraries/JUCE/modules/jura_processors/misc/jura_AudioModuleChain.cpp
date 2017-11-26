@@ -14,7 +14,7 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
   if(type == "MidiMonitor")   return new MidiMonitorAudioModule(  lock);
 
   // generators:
-  if(type == "EllipsoidOsc")  return new RotationOscillatorAudioModule(lock, metaMan, modMan);
+  if(type == "Lissajous")     return new RotationOscillatorAudioModule(lock, metaMan, modMan);
   if(type == "RayBouncer")    return new RayBouncerAudioModule(lock);
 
   // filters:
@@ -67,7 +67,7 @@ juce::String AudioModuleFactory::getModuleType(AudioModule *m)
   if(dynamic_cast<MidiMonitorAudioModule*> (m))    return "MidiMonitor";
 
   // generators:
-  if(dynamic_cast<RotationOscillatorAudioModule*>(m))  return "EllipsoidOsc";
+  if(dynamic_cast<RotationOscillatorAudioModule*>(m))  return "Lissajous";
   if(dynamic_cast<RayBouncerAudioModule*>(m))          return "RayBouncer";
 
   // filters:
@@ -187,8 +187,8 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
   popUpMenu->addTreeNodeItem(new RTreeViewNode("None",    i++));
 
   node = new RTreeViewNode("Sources", -1, "Sources");
-  node->addChildNode(new RTreeViewNode("EllipsoidOsc",    i++));
-  node->addChildNode(new RTreeViewNode("RayBouncer",      i++));
+  node->addChildNode(new RTreeViewNode("Lissajous",      i++));
+  node->addChildNode(new RTreeViewNode("RayBouncer",     i++));
   //node->addChildNode(new RTreeViewNode("WaveOscillator",  i++));
   //node->addChildNode(new RTreeViewNode("FourOscSection",  i++));
   //node->addChildNode(new RTreeViewNode("NoiseGenerator",  i++));
@@ -295,16 +295,21 @@ void AudioModuleChain::addEmptySlot()
   addModule("None");
 }
 
-void AudioModuleChain::addModule(const juce::String& type)
+bool AudioModuleChain::addModule(const juce::String& type)
 {
   ScopedLock scopedLock(*lock);
   AudioModule *m = AudioModuleFactory::createModule(type, lock, &modManager, metaParamManager); // todo: pass the metaParamManager too
-  m->setSmoothingManager(smoothingManager);
-  m->setMetaParameterManager(metaParamManager); // without, we hit jassert(metaParaManager != nullptr) in MetaControlledParameter::attachToMetaParameter - after passing metaParamManagerto the constructor, we may delete this
-  append(modules, m);
-  m->setModuleName("Slot" + String(size(modules)) + "-" + type);
-  addToModulatorsIfApplicable(m);
-  sendAudioModuleWasAddedNotification(m, size(modules)-1);
+  if(m)
+  {
+    m->setSmoothingManager(smoothingManager);
+    m->setMetaParameterManager(metaParamManager); // without, we hit jassert(metaParaManager != nullptr) in MetaControlledParameter::attachToMetaParameter - after passing metaParamManagerto the constructor, we may delete this
+    append(modules, m);
+    m->setModuleName("Slot" + String(size(modules)) + "-" + type);
+    addToModulatorsIfApplicable(m);
+    sendAudioModuleWasAddedNotification(m, size(modules)-1);
+    return true;
+  }
+  return false;
 }
 
 void AudioModuleChain::deleteModule(int index)
@@ -593,10 +598,12 @@ void AudioModuleChain::recallSlotsFromXml(const XmlElement &xmlState, bool markA
     juce::String type = slotState->getStringAttribute("Type");
     if(i == tmpActiveSlot)        // hack: we set it before adding the module, so the editor
       activeSlot = tmpActiveSlot; // retrieves the correct value in the moduleAdded callback
-    addModule(type);
-    XmlElement *moduleState = slotState->getChildElement(0);
-    modules[i]->setStateFromXml(*moduleState, "", markAsClean);
-    i++;
+    if(addModule(type))
+    {
+      XmlElement *moduleState = slotState->getChildElement(0);
+      modules[i]->setStateFromXml(*moduleState, "", markAsClean);
+      i++;
+    }
   }
 }
 

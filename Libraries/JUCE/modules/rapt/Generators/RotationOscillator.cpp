@@ -1,9 +1,8 @@
-
-
 template<class T>
 void rsLissajousOscillator3D<T>::setSampleRate(T newSampleRate)
 {
   sampleRate = newSampleRate;
+  omegaFactor = 2*PI / sampleRate;
   updatePhaseIncrements();
 }
 
@@ -17,32 +16,49 @@ void rsLissajousOscillator3D<T>::setFrequency(T newFrequency)
 template<class T>
 void rsLissajousOscillator3D<T>::setFrequencyScalerX(T newScaler)
 {
-  freqScaleX = newScaler;
-  incX = freqScaleX * 2*T(PI)*freq/sampleRate;
+  freqScalerX = newScaler;
+  incX = omegaFactor * (freqScalerX * freq + freqOffsetX);
 }
 
 template<class T>
 void rsLissajousOscillator3D<T>::setFrequencyScalerY(T newScaler)
 {
-  freqScaleY = newScaler;
-  incY = freqScaleY * 2*T(PI)*freq/sampleRate;
+  freqScalerY = newScaler;
+  incY = omegaFactor * (freqScalerY * freq + freqOffsetY);
 }
 
 template<class T>
 void rsLissajousOscillator3D<T>::setFrequencyScalerZ(T newScaler)
 {
-  freqScaleZ = newScaler;
-  incZ = freqScaleZ * 2*T(PI)*freq/sampleRate;
+  freqScalerZ = newScaler;
+  incZ = omegaFactor * (freqScalerZ * freq + freqOffsetZ);
 }
 
+template<class T>
+void rsLissajousOscillator3D<T>::setFrequencyOffsetX(T newOffset)
+{
+  freqOffsetX = newOffset;
+  incX = omegaFactor * (freqOffsetX * freq + freqOffsetX);
+}
 
+template<class T>
+void rsLissajousOscillator3D<T>::setFrequencyOffsetY(T newOffset)
+{
+  freqOffsetY = newOffset;
+  incY = omegaFactor * (freqOffsetY * freq + freqOffsetY);
+}
+
+template<class T>
+void rsLissajousOscillator3D<T>::setFrequencyOffsetZ(T newOffset)
+{
+  freqOffsetZ = newOffset;
+  incZ = omegaFactor * (freqOffsetZ * freq + freqOffsetZ);
+}
 
 template<class T>
 void rsLissajousOscillator3D<T>::processSampleFrame(T* x, T* y, T* z)
 {
-  // hmm...no - this is boring - it just rotates with one frequency
-  // instead we should use 3 sine-oscillators with freq and phase
-  // ...make a 3D Lissajous oscillator - it reduces to xoxos osc when
+  // i think, it reduces to xoxos osc when
   // wz = 0, wx = wy, px = 0°, py = 90°
 
   // update matrices, if necessarry:
@@ -67,7 +83,8 @@ void rsLissajousOscillator3D<T>::processSampleFrame(T* x, T* y, T* z)
   transformRotation.apply(&tx, &ty, &tz);
 
   // renormalize length:
-  T s = 1 / sqrt(tx*tx + ty*ty + tz*tz); // what about div-by-zero?
+  T c = 0.001; // to avoid div-by-zero
+  T s = 1 / sqrt(c + tx*tx + ty*ty + tz*tz); // what about div-by-zero?
   s   = pow(s, renormExponent);
   tx *= s;
   ty *= s;
@@ -99,10 +116,9 @@ void rsLissajousOscillator3D<T>::reset()
 template<class T>
 void rsLissajousOscillator3D<T>::updatePhaseIncrements()
 {
-  T w  = 2*T(PI)*freq/sampleRate;
-  incX = w * freqScaleX;
-  incY = w * freqScaleY;
-  incZ = w * freqScaleZ;
+  incX = omegaFactor * (freqScalerX * freq + freqOffsetX);
+  incY = omegaFactor * (freqScalerY * freq + freqOffsetY);
+  incZ = omegaFactor * (freqScalerZ * freq + freqOffsetZ);
 }
 
 template<class T>

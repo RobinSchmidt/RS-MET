@@ -144,8 +144,9 @@ public:
   /** Adds an empty slot the end of the chain. */
   void addEmptySlot();
 
-  /** Adds a module of the given type at the end of the chain. */
-  void addModule(const juce::String& type);
+  /** Tries to add a module of the given type at the end of the chain and reports whether this was 
+  successful. */
+  bool addModule(const juce::String& type);
 
   /** Deletes the module at the given index. */
   void deleteModule(int index);
