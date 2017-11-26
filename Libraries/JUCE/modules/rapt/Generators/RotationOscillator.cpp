@@ -1,11 +1,18 @@
 template<class T>
 void rsRotationOscillator<T>::processSampleFrame(T* x, T* y, T* z)
 {
+  // hmm...no - this is boring - it just rotates with one frequency
+  // instead we should use 3 sine-oscillators with freq and phase
+  // ...make a 3D Lissajous oscillator - it reduces to xoxos osc when
+  // wz = 0, wx = wy, px = 0°, py = 90°
+
   // update matrices, if necessarry:
   if(oscMatrixNeedsUpdate)
     updateOscillationMatrix();
   if(trafoMatrixNeedsUpdate)
     updateTransformMatrix();
+  if(outputMatrixNeedsUpdate)
+    updateOutputMatrix();
 
   // obtain new vector on unit sphere:
   oscillateRotation.apply(&X, &Y, &Z);
@@ -27,7 +34,7 @@ void rsRotationOscillator<T>::processSampleFrame(T* x, T* y, T* z)
   //...maybe apply spherical (soft) clipping?
 
   // apply the output rotation and assign outputs:
-  //outputRotation.apply(&tx, &ty, &tz);
+  outputRotation.apply(&tx, &ty, &tz);
   *x = tx;
   *y = ty;
   *z = tz;
@@ -56,6 +63,13 @@ void rsRotationOscillator<T>::updateOscillationMatrix()
 template<class T>
 void rsRotationOscillator<T>::updateTransformMatrix()
 {
-  transformRotation.setAngles(rotX, rotY, rotZ);
+  transformRotation.setAngles(trafoRotX, trafoRotY, trafoRotZ);
   trafoMatrixNeedsUpdate = false;
+}
+
+template<class T>
+void rsRotationOscillator<T>::updateOutputMatrix()
+{
+  outputRotation.setAngles(outRotX, outRotY, outRotZ);
+  outputMatrixNeedsUpdate = false;
 }

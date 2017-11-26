@@ -7,7 +7,8 @@ class JUCE_API RotationOscillatorAudioModule : public jura::AudioModuleWithMidiI
 
 public:
 
-  RotationOscillatorAudioModule(CriticalSection *lockToUse);
+  RotationOscillatorAudioModule(CriticalSection *lockToUse,
+    MetaParameterManager* metaManagerToUse = nullptr, ModulationManager* modManagerToUse = nullptr);
 
   /** Creates the static parameters for this module (i.e. parameters that are not created
   dynamically and are thus always there). */

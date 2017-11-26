@@ -14,6 +14,7 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
   if(type == "MidiMonitor")   return new MidiMonitorAudioModule(  lock);
 
   // generators:
+  if(type == "EllipsoidOsc")  return new RotationOscillatorAudioModule(lock, metaMan, modMan);
   if(type == "RayBouncer")    return new RayBouncerAudioModule(lock);
 
   // filters:
@@ -66,7 +67,8 @@ juce::String AudioModuleFactory::getModuleType(AudioModule *m)
   if(dynamic_cast<MidiMonitorAudioModule*> (m))    return "MidiMonitor";
 
   // generators:
-  if(dynamic_cast<RayBouncerAudioModule*>(m))      return "RayBouncer";
+  if(dynamic_cast<RotationOscillatorAudioModule*>(m))  return "EllipsoidOsc";
+  if(dynamic_cast<RayBouncerAudioModule*>(m))          return "RayBouncer";
 
   // filters:
   if(dynamic_cast<EqualizerAudioModule*>(m))       return "Equalizer";
@@ -185,6 +187,7 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
   popUpMenu->addTreeNodeItem(new RTreeViewNode("None",    i++));
 
   node = new RTreeViewNode("Sources", -1, "Sources");
+  node->addChildNode(new RTreeViewNode("EllipsoidOsc",    i++));
   node->addChildNode(new RTreeViewNode("RayBouncer",      i++));
   //node->addChildNode(new RTreeViewNode("WaveOscillator",  i++));
   //node->addChildNode(new RTreeViewNode("FourOscSection",  i++));

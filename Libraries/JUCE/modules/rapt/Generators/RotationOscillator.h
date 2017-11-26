@@ -54,10 +54,39 @@ public:
     oscMatrixNeedsUpdate = true;
   }
 
+  void setOutputRotationX(T newAngle)
+  {
+    outRotX = PI * newAngle / 180;
+    outputMatrixNeedsUpdate = true;
+  }
+
+  void setOutputRotationY(T newAngle)
+  {
+    outRotY = PI * newAngle / 180;
+    outputMatrixNeedsUpdate = true;
+  }
+
+  void setOutputRotationZ(T newAngle)
+  {
+    outRotZ = PI * newAngle / 180;
+    outputMatrixNeedsUpdate = true;
+  }
+
 
 
   void processSampleFrame(T* x, T* y, T* z);
 
+
+  void getSampleFrameStereo(T* left, T* right)
+  {
+    T x, y, z;
+    processSampleFrame(&x, &y, &z);
+    //*left  = x+z;  // preliminary - use projection matrix later
+    //*right = y-z;
+
+    *left  = x;  // preliminary - use projection matrix later
+    *right = y;
+  }
 
   T getSample()
   {
@@ -77,31 +106,38 @@ protected:
 
   void updateTransformMatrix();
 
+  void updateOutputMatrix();
+
 
 
   rsRotationXYZ<T> oscillateRotation;
   rsRotationXYZ<T> transformRotation;
-  //rsRotationXYZ<T> outputRotation; // ..or maybe use 2x3 projection matrix
+  rsRotationXYZ<T> outputRotation; // ..or maybe use 2x3 projection matrix
 
   T sampleRate = 44100; 
   T freq = 1000;
-  T freqScaleX = 1;
+  T freqScaleX = 0;
   T freqScaleY = 0;
-  T freqScaleZ = 0;
+  T freqScaleZ = 1;
   T shiftX = 0;
   T shiftY = 0;
   T shiftZ = 0;
-  T scaleX = 0;
-  T scaleY = 0;
-  T scaleZ = 0;
-  T rotX = 0;
-  T rotY = 0;
-  T rotZ = 0;
+  T scaleX = 1;
+  T scaleY = 1;
+  T scaleZ = 1;
+  T trafoRotX = 0;
+  T trafoRotY = 0;
+  T trafoRotZ = 0;
+  T outRotX = 0;
+  T outRotY = 0;
+  T outRotZ = 0;
+
 
   T X = 1, Y = 0, Z = 0;
 
-  bool oscMatrixNeedsUpdate = true;
-  bool trafoMatrixNeedsUpdate = true;
+  bool oscMatrixNeedsUpdate    = true;
+  bool trafoMatrixNeedsUpdate  = true;
+  bool outputMatrixNeedsUpdate = true;
 
 };
 
