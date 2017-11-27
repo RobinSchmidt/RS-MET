@@ -220,21 +220,29 @@ public:
   Paarmann: Design and Analysis of Analog Filters.   */
   static void halpernPolynomial(T *a, int N);
 
+  static void halpernDenominator(T *a, int N);
+
   /** Generates coefficients of a polynomial of order 2*N for the squared polynomial that occurs
   in the denominator of Gaussian filters. It's the polynomial in the denominator of Eq. 8.7 in 
   Paarmann: Design and Analysis of Analog Filters. */
   static void gaussianPolynomial(T *a, int N, T wc);
 
+  static void gaussianDenominator(T *a, int N);
 
 
 
-
-  static void getPapoulisLowpassZerosPolesAndGain( Complex* z, Complex* p, T* k, int N);
+  //static void getPapoulisLowpassZerosPolesAndGain( Complex* z, Complex* p, T* k, int N);
   static void getPapoulisLowShelfZerosPolesAndGain(Complex* z, Complex* p, T* k, int N, T G, T G0);
   // maybe make this the only public method for Papoulis Design
 
   //-------------------------------------------------------
   // refactoring - not yet finsihed:
+
+  static void zpkFromMagSquaredCoeffsLP(Complex* z, Complex* p, T* k, int N,
+    void (*denominatorCoeffsFunction)(T* a, int N));
+
+  static void zpkFromMagSquaredCoeffsLS(Complex* z, Complex* p, T* k, int N, T G, T G0,
+    void (*denominatorCoeffsFunction)(T* a, int N));
 
 
   static void zpkFromTransferCoeffsLP(Complex* z, Complex* p, T* k, int N,

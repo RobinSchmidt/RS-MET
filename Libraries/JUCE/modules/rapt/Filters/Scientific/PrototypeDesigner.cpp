@@ -496,11 +496,11 @@ void adjustDenominator(T* a, int N)
 template<class T>
 void rsPrototypeDesigner<T>::papoulisDenominator(T* a, int N)
 {
-  papoulisPolynomial(a, N);  // L_N(w^2)
-  adjustDenominator(a, N);
+  papoulisPolynomial(a, N);  // L_N^2(w) in (3) Eq. 8.14
+  adjustDenominator( a, N);  // denominator of H(s)*H(-s)
 }
 
-//// old version:
+//// old:
 //template<class T>
 //void rsPrototypeDesigner<T>::papoulisDenominator(T* a, int N)
 //{
@@ -536,6 +536,13 @@ void rsPrototypeDesigner<T>::halpernPolynomial(T *a, int N)
 }
 
 template<class T>
+void rsPrototypeDesigner<T>::halpernDenominator(T *a, int N)
+{
+  halpernPolynomial(a, N);  // T_N^2(w) in (3) Eq. 8.18
+  adjustDenominator(a, N);  // denominator of H(s)*H(-s)
+}
+
+template<class T>
 void rsPrototypeDesigner<T>::gaussianPolynomial(T *a, int N, T wc)
 {  
   rsArray::fillWithZeros(a, 2*N+1);
@@ -548,14 +555,94 @@ void rsPrototypeDesigner<T>::gaussianPolynomial(T *a, int N, T wc)
   }
 }
 
-
-
-
-
+template<class T>
+void rsPrototypeDesigner<T>::gaussianDenominator(T *a, int N)
+{
+  gaussianPolynomial(a, N, 1);  // sum in (3) Eq. 8.7
+  //adjustDenominator(a, N);      // denominator of H(s)*H(-s)
+  // needs test -  i think, we don't need to add 1 to a[0]
+}
 
 // end new
 //-----------------------------------------------
 
+template<class T>
+void rsPrototypeDesigner<T>::zpkFromMagSquaredCoeffsLP(Complex* z, Complex* p, T* k, int N,
+  void (*denomCoeffsFunc)(T* a, int N))
+{
+  T a2[maxCoeffs];
+  denomCoeffsFunc(a2, N);               // coeffs of magnitude-squared polynomial D(s)*D(-s)
+  getLeftHalfPlaneRoots(a2, p, 2*N);                      // find stable poles of D(s)*D(-s)
+  rsArray::fillWithValue(z, N, Complex(RS_INF(T), 0.0));  // zeros are at infinity
+  *k = sqrt(T(1)/fabs(a2[2*N]));                          // set gain at DC to unity
+
+}
+
+template<class T>
+void rsPrototypeDesigner<T>::zpkFromMagSquaredCoeffsLS(Complex* z, Complex* p, T* k, int N, T G, T G0,
+  void (*denomCoeffsFunc)(T* a, int N))
+{
+  // catch lowpass case:
+  if( G0 == 0.0 )
+  {
+    zpkFromMagSquaredCoeffsLP(z, p, k, N, denomCoeffsFunc);
+    *k *= G;
+    return;
+  }
+
+  // design boost filter and invert later, if a dip is desired:
+  bool dip = false;
+  if( G < G0 )
+  {
+    dip = true;
+    G   = T(1) / G;
+    G0  = T(1) / G0;
+  }
+
+  // coefficients of the magnitude-squared polynomial D(s)*D(-s)
+  T a[maxCoeffs];
+  denomCoeffsFunc(a, N);
+  getLeftHalfPlaneRoots(a, p, 2*N);
+
+  // normalize denominator polynomial such that the leading coeff has unity as absolute value:
+  T scaler = T(1) / fabs(a[2*N]);
+  for(int n = 0; n <= 2*N; n++)
+    a[n] *= scaler;
+
+  // construct lowpass numerator:
+  T b[maxCoeffs];
+  rsArray::fillWithZeros(b, 2*N+1);
+  b[0] = 1.0;
+
+
+  // adjust lowpass DC gain via k:
+  *k = sqrt(fabs(a[0]));  // in general: sqrt(fabs(a2[0]/b2[0])) ?
+  //*k = sign(a2[0]) * sqrt(fabs(a2[0]));
+
+  // obtain magnitude-squared numerator polynomial for shelving filter:
+  T bS[maxCoeffs];
+  shelvingMagSqrNumFromLowpassMagSqr(b, a, *k, N, G0, G, bS); // can b be reused?
+
+  // find left halfplane zeros (= zeros of the shelving filter):
+  getLeftHalfPlaneRoots(bS, z, 2*N);
+
+  // set gain constant for shelving filter:
+  *k = G0;
+
+  // adjust bandwidth:
+  T GB = sqrt(G*G0);
+  scaleToMatchGainAtUnity(z, p, k, z, p, k, N, GB);
+
+  // invert filter in case of a dip:
+  if( dip == true )
+    getInverseFilter(z, p, k, z, p, k, N);
+
+}
+
+
+
+/*
+// obsolete:
 template<class T>
 void rsPrototypeDesigner<T>::getPapoulisLowpassZerosPolesAndGain(Complex* z, Complex* p, T* k, 
   int N)
@@ -566,11 +653,16 @@ void rsPrototypeDesigner<T>::getPapoulisLowpassZerosPolesAndGain(Complex* z, Com
   rsArray::fillWithValue(z, N, Complex(RS_INF(T), 0.0));  // zeros are at infinity
   *k = sqrt(T(1)/fabs(a2[2*N]));                          // set gain at DC to unity
 }
+*/
 
 template<class T>
 void rsPrototypeDesigner<T>::getPapoulisLowShelfZerosPolesAndGain(Complex* z, Complex* p, T* k, 
   int N, T G, T G0)
 {
+  zpkFromMagSquaredCoeffsLS(z, p, k, N, G, G0, &papoulisDenominator);
+  return;
+
+  /*
   // catch lowpass case:
   if( G0 == 0.0 )
   {
@@ -595,31 +687,32 @@ void rsPrototypeDesigner<T>::getPapoulisLowShelfZerosPolesAndGain(Complex* z, Co
   // function getPoles or something...
 
   // coefficients of the magnitude-squared polynomial D(s)*D(-s)
-  T a2[maxCoeffs];
-  papoulisDenominator(a2, N);
-  //papoulisPolynomial(a2, N);  // new - test
-  getLeftHalfPlaneRoots(a2, p, 2*N);
+  T a[maxCoeffs];
+  papoulisDenominator(a, N);
+  //halpernDenominator(a, N); // ...ok looks good - we need a function pointer
+  papoulisDenominator(a, N);
+  getLeftHalfPlaneRoots(a, p, 2*N);
 
   // normalize denominator polynomial such that the leading coeff has unity as absolute value:
-  T scaler = T(1) / fabs(a2[2*N]);
+  T scaler = T(1) / fabs(a[2*N]);
   for(int n = 0; n <= 2*N; n++)
-    a2[n] *= scaler;
+    a[n] *= scaler;
 
   // construct lowpass numerator:
-  T b2[maxCoeffs];
-  rsArray::fillWithZeros(b2, 2*N+1);
-  b2[0] = 1.0;
+  T b[maxCoeffs];
+  rsArray::fillWithZeros(b, 2*N+1);
+  b[0] = 1.0;
 
   // end of "factor out" ...in general, we need to scale the b2-polynomial also by dividing through 
   // the leading coeff?
 
   // adjust lowpass DC gain via k:
-  *k = sqrt(fabs(a2[0]));  // in general: sqrt(fabs(a2[0]/b2[0])) ?
+  *k = sqrt(fabs(a[0]));  // in general: sqrt(fabs(a2[0]/b2[0])) ?
   //*k = sign(a2[0]) * sqrt(fabs(a2[0]));
 
   // obtain magnitude-squared numerator polynomial for shelving filter:
   T bS[maxCoeffs];
-  shelvingMagSqrNumFromLowpassMagSqr(b2, a2, *k, N, G0, G, bS); // can b2 be reused?
+  shelvingMagSqrNumFromLowpassMagSqr(b, a, *k, N, G0, G, bS); // can b be reused?
 
   // find left halfplane zeros (= zeros of the shelving filter):
   getLeftHalfPlaneRoots(bS, z, 2*N);
@@ -634,7 +727,9 @@ void rsPrototypeDesigner<T>::getPapoulisLowShelfZerosPolesAndGain(Complex* z, Co
   // invert filter in case of a dip:
   if( dip == true )
     getInverseFilter(z, p, k, z, p, k, N);
+  */
 }
+
 
 //-------------------------------------------------------
 // refactoring - not yet finsihed:
