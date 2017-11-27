@@ -440,7 +440,7 @@ template<class T>
 void rsPrototypeDesigner<T>::papoulisMagnitudeSquaredDenominator(T* a, int N)
 {
   int n;
-  rsArray::fillWithZeros(a, 2*N+1);  // do we need this?
+  //rsArray::fillWithZeros(a, 2*N+1);  // do we need this?
 
   // construct the polynomial L_N(w^2):
   rsPolynomial<T>::maximumSlopeMonotonicPolynomial(a, N);  // does the same same as lopt(a, N); from C.R.Bond
@@ -470,7 +470,7 @@ void rsPrototypeDesigner<T>::papoulisPolynomial(T *v, int N)
   T *P2 = new T[N/2+1];
   T *P  = nullptr;  // pointer to the current P array
 
-                    // create integrand:
+  // create integrand:
   int k, r;
   if( rsIsOdd(N) )
   {
@@ -524,19 +524,19 @@ template<class T>
 void rsPrototypeDesigner<T>::halpernPolynomial(T *a, int N)
 {  
   a[0] = 0;
-  T *a1 = &a[1];                // index shift of one for multiplication by x in Eq. 8.19
-  rsHalpernU(a1, N-1);          // create U-polynomial
-  rsArray::convolve(a1, N, a1, N, a1); // square U-polynomial
-  rsArray::scale(a1, 2*N-1, 2*N);      // apply squared scale factor
-  rsPolynomial<T>::polyIntegral(a, a, 2*N-1);    // compute integral from 0 to w
+  T *a1 = &a[1];                               // index shift of one for multiplication by x in Eq. 8.19 
+  rsHalpernU(a1, N-1);                         // create U-polynomial
+  rsArray::convolve(a1, N, a1, N, a1);         // square U-polynomial
+  rsArray::scale(a1, 2*N-1, 2*N);              // apply squared scale factor
+  rsPolynomial<T>::polyIntegral(a, a, 2*N-1);  // compute integral from 0 to w
 }
 
 template<class T>
 void rsPrototypeDesigner<T>::gaussianPolynomial(T *a, int N, T wc)
 {  
   rsArray::fillWithZeros(a, 2*N+1);
-  T g = log(T(2)) / (wc*wc);  // gamma
-  T s = 1;                   // scaler
+  T g = log(T(2)) / (wc*wc);    // gamma
+  T s = 1;                      // scaler
   for(int k = 0; k <= N; k++)
   {
     a[2*k] = s;    // == g^k / k! == pow(g, k) / rsFactorial(k);
@@ -597,8 +597,10 @@ void rsPrototypeDesigner<T>::getPapoulisLowShelfZerosPolesAndGain(Complex* z, Co
   // function getPoles or something...
 
   // coefficients of the magnitude-squared polynomial D(s)*D(-s)
-  T* a2 = new T[2*N+1];
+  //T* a2 = new T[2*N+1];
+  T a2[maxCoeffs];
   papoulisMagnitudeSquaredDenominator(a2, N);
+  //papoulisPolynomial(a2, N);  // new - test - sign inverted and a2[0] is wrong
   getLeftHalfPlaneRoots(a2, p, 2*N);
 
   // normalize denominator polynomial such that the leading coeff has unity as absolute value:
@@ -607,7 +609,8 @@ void rsPrototypeDesigner<T>::getPapoulisLowShelfZerosPolesAndGain(Complex* z, Co
     a2[n] *= scaler;
 
   // construct lowpass numerator:
-  T* b2 = new T[2*N+1];
+  //T* b2 = new T[2*N+1];
+  T b2[maxCoeffs];
   rsArray::fillWithZeros(b2, 2*N+1);
   b2[0] = 1.0;
 
@@ -619,7 +622,8 @@ void rsPrototypeDesigner<T>::getPapoulisLowShelfZerosPolesAndGain(Complex* z, Co
   //*k = sign(a2[0]) * sqrt(fabs(a2[0]));
 
   // obtain magnitude-squared numerator polynomial for shelving filter:
-  T *bS = new T[2*N+1];
+  //T *bS = new T[2*N+1];
+  T bS[maxCoeffs];
   shelvingMagSqrNumFromLowpassMagSqr(b2, a2, *k, N, G0, G, bS);
 
   // find left halfplane zeros (= zeros of the shelving filter):
@@ -636,9 +640,9 @@ void rsPrototypeDesigner<T>::getPapoulisLowShelfZerosPolesAndGain(Complex* z, Co
   if( dip == true )
     getInverseFilter(z, p, k, z, p, k, N);
 
-  delete[] a2;
-  delete[] b2;
-  delete[] bS;
+  //delete[] a2;
+  //delete[] b2;
+  //delete[] bS;
 }
 
 //-------------------------------------------------------
@@ -1335,8 +1339,8 @@ void rsPrototypeDesigner<T>::makeEllipticLowShelv()
 template<class T>
 void rsPrototypeDesigner<T>::makeBesselLowShelv(T G, T G0)
 {
-  rsArray::fillWithZeros(p, maxNumNonRedundantPoles);
-  rsArray::fillWithZeros(z, maxNumNonRedundantPoles);
+  rsArray::fillWithZeros(p, maxBiquads);
+  rsArray::fillWithZeros(z, maxBiquads);
   numFinitePoles = N;
   if( G0 == 0.0 )
     numFiniteZeros = 0;
@@ -1359,8 +1363,8 @@ void rsPrototypeDesigner<T>::makeBesselLowShelv(T G, T G0)
 template<class T>
 void rsPrototypeDesigner<T>::makePapoulisLowShelv(T G, T G0)
 {
-  rsArray::fillWithZeros(p, maxNumNonRedundantPoles);
-  rsArray::fillWithZeros(z, maxNumNonRedundantPoles);
+  rsArray::fillWithZeros(p, maxBiquads);
+  rsArray::fillWithZeros(z, maxBiquads);
   numFinitePoles = N;
   if( G0 == 0.0 )
     numFiniteZeros = 0;

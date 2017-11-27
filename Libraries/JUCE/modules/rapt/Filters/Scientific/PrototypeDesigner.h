@@ -394,11 +394,21 @@ protected:
   int numFiniteZeros;      // number of zeros (excluding those at infinity). 
 
 
+  static const int maxBiquads = 10;               // maximum number of biquad sections
+  static const int maxOrder   = 2 * maxBiquads;   // maximum filter order
+  static const int maxCoeffs  = 2 * maxOrder + 1; // maximum number of polynomial coeffs
+
+  //static const int maxNumNonRedundantPoles = 13;
+
   // arrays for nonredundant poles and zeros:
-  static const int maxNumNonRedundantPoles = 13;
-  Complex z[maxNumNonRedundantPoles];  // zeros
-  Complex p[maxNumNonRedundantPoles];  // poles
-  //T k = 1;                          // overall gain factor - not yet used
+  Complex z[maxBiquads];   // zeros
+  Complex p[maxBiquads];   // poles
+  //T k = 1;               // overall gain factor - not yet used
+
+  //// temporary storage of polynomial coeffs (needed for some filters):
+  //T coeffsA[2*maxOrder];   // denominator coeffs
+  //T coeffsB[2*maxOrder];   // lowpass numerator coeffs
+  //T coeffsBS[2*maxOrder];  // low-shelf numerator coeffs
 
   bool stateIsDirty;   // this flag indicates, whether the poles, zeros and gain need to be 
                        // re-calculated or are still valid from a previous calculation
