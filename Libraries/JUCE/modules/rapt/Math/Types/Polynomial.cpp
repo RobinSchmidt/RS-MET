@@ -174,12 +174,12 @@ void rsPolynomial<T>::composePolynomials(T *a, int aN, T *b, int bN, T *c)
   an[0]  = T(1);         // initialize to a[]^0
 
                          // accumulation:
-  fillWithZeros(c, cN+1);
+  rsArray::fillWithZeros(c, cN+1);
   c[0] = b[0];
   int K = 1;
   for(int n = 1; n <= bN; n++)
   {
-    rsConvolveInPlace(an, K, a, aN+1);
+    rsArray::convolveInPlace(an, K, a, aN+1);
     K += aN;
     for(int k = 0; k < K; k++)
       c[k] += b[n] * an[k];
@@ -968,7 +968,7 @@ void rsPolynomial<T>::rsLegendrePolynomialRecursion(T *a, int n, T *a1, T *a2)
     a[1] = 1.0;
     return;
   }
-  rsPolynomialRecursion(a, T(n), n, a1, 0.0, 2.0*n-1.0, a2, -(n-1.0));
+  rsPolynomialRecursion(a, T(n), n, a1, 0.0, T(2)*n-T(1), a2, -(n-T(1)));
 
   // Legendre polynomials are a special case of Jacobi polynomials, so this would also work:
   // rsJacobiPolynomialRecursion(a, n, a1, a2, 0.0, 0.0);

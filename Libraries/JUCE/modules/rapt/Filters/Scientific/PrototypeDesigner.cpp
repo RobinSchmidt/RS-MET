@@ -5,72 +5,14 @@ void updateLegendrePolynomial(T **P, T *P1, T *P2, int r)
 {
   if( rsIsEven(r) )
   {
-    rsLegendrePolynomialRecursion(P1, r, P2, P1);
+    rsPolynomial<T>::rsLegendrePolynomialRecursion(P1, r, P2, P1);
     *P = P1;
   }
   else
   {
-    rsLegendrePolynomialRecursion(P2, r, P1, P2);
+    rsPolynomial<T>::rsLegendrePolynomialRecursion(P2, r, P1, P2);
     *P = P2;
   }
-}
-
-template<class T>
-void rsPapoulisPolynomial(T *v, int N)
-{
-  // temporary arrays for Legendre polynomials:
-  T *P1 = new T[N/2+1];
-  T *P2 = new T[N/2+1];
-  T *P  = nullptr;  // pointer to the current P array
-
-  // create integrand:
-  int k, r;
-  if( rsIsOdd(N) )
-  {
-    k = (N-1)/2;
-
-    // create weighted sum of Legendre polynomials in v:
-    rsFillWithZeros(v, k+1);
-    for(r = 0; r <= k; r++)
-    {
-      updateLegendrePolynomial(&P, P1, P2, r);
-      weightedSumOfPolynomials(v, r, 1.0, P, r, 2*r+1.0, v);
-    }
-
-    // square it:
-    rsConvolve(v, k+1, v, k+1, v);
-  }
-  else
-  {
-    k = (N-2)/2;
-
-    // generate Legendre polynomial of order k+1, store in P:
-    for(r = 0; r <= k+1; r++)
-      updateLegendrePolynomial(&P, P1, P2, r);
-
-    // take the derivative, store in v:
-    polyDerivative(P, v, k+1);
-
-    // square it:
-    rsConvolve(v, k+1, v, k+1, v);
-
-    // multiply by (x+1):
-    v[2*k+1] = 0;
-    for(r = 2*k+1; r >= 1; r--)
-      v[r] += v[r-1];
-  }
-
-  // integrate from -1 to 2*w^2-1:
-  T a[1] = { -1 };  
-  T b[3] = { -1, 0, 2};
-  integratePolynomialWithPolynomialLimits(v, N-1, a, 0, b, 2, v);
-
-  // scale, such that L^2(1) = 1:
-  rsScale(v, 2*N+1, 1.0 / rsSum(v, 2*N+1));
-
-  // clean up:
-  delete[] P1;
-  delete[] P2;
 }
 
 template<class T>
@@ -78,7 +20,7 @@ void rsHalpernU(T *a, int K)
 {
   // Computes coefficients of the U-polynomials given in "Design and Analysis of Analog Filters", 
   // page 256-257 except for the scale factor in front.
-  rsFillWithZeros(a, K+1);
+  rsArray::fillWithZeros(a, K+1);
   rsUint64 k, m;
   if( rsIsEven(K) )
   {
@@ -104,29 +46,7 @@ void rsHalpernU(T *a, int K)
   }
 }
 
-template<class T>
-void rsHalpernPolynomial(T *a, int N)
-{  
-  a[0] = 0;
-  T *a1 = &a[1];                // index shift of one for multiplication by x in Eq. 8.19
-  rsHalpernU(a1, N-1);          // create U-polynomial
-  rsConvolve(a1, N, a1, N, a1); // square U-polynomial
-  rsScale(a1, 2*N-1, 2*N);      // apply squared scale factor
-  polyIntegral(a, a, 2*N-1);    // compute integral from 0 to w
-}
 
-template<class T>
-void rsGaussianPolynomial(T *a, int N, T wc)
-{  
-  rsFillWithZeros(a, 2*N+1);
-  T g = log(2.0) / (wc*wc);  // gamma
-  T s = 1;                   // scaler
-  for(int k = 0; k <= N; k++)
-  {
-    a[2*k] = s;    // == g^k / k! == pow(g, k) / rsFactorial(k);
-    s *= g/(k+1);
-  }
-}
 
 //=================================================================================================
 // class rsPrototypeDesigner
@@ -538,6 +458,94 @@ void rsPrototypeDesigner<T>::papoulisMagnitudeSquaredDenominator(T* a, int N)
   // add the constant 1 to the polynomial:
   a[0] += 1.0;
 }
+
+//-----------------------------------------------
+// new stuff:
+
+template<class T>
+void rsPrototypeDesigner<T>::papoulisPolynomial(T *v, int N)
+{
+  // temporary arrays for Legendre polynomials:
+  T *P1 = new T[N/2+1];
+  T *P2 = new T[N/2+1];
+  T *P  = nullptr;  // pointer to the current P array
+
+                    // create integrand:
+  int k, r;
+  if( rsIsOdd(N) )
+  {
+    k = (N-1)/2;
+
+    // create weighted sum of Legendre polynomials in v:
+    rsArray::fillWithZeros(v, k+1);
+    for(r = 0; r <= k; r++)
+    {
+      updateLegendrePolynomial(&P, P1, P2, r);
+      rsPolynomial<T>::weightedSumOfPolynomials(v, r, T(1), P, r, 2*r+T(1), v);
+    }
+
+    // square it:
+    rsArray::convolve(v, k+1, v, k+1, v);
+  }
+  else
+  {
+    k = (N-2)/2;
+
+    // generate Legendre polynomial of order k+1, store in P:
+    for(r = 0; r <= k+1; r++)
+      updateLegendrePolynomial(&P, P1, P2, r);
+
+    // take the derivative, store in v:
+    rsPolynomial<T>::polyDerivative(P, v, k+1);
+
+    // square it:
+    rsArray::convolve(v, k+1, v, k+1, v);
+
+    // multiply by (x+1):
+    v[2*k+1] = 0;
+    for(r = 2*k+1; r >= 1; r--)
+      v[r] += v[r-1];
+  }
+
+  // integrate from -1 to 2*w^2-1:
+  T a[1] = { -1 };  
+  T b[3] = { -1, 0, 2};
+  rsPolynomial<T>::integratePolynomialWithPolynomialLimits(v, N-1, a, 0, b, 2, v);
+
+  // scale, such that L^2(1) = 1:
+  rsArray::scale(v, 2*N+1, 1.0 / rsArray::sum(v, 2*N+1));
+
+  // clean up:
+  delete[] P1;
+  delete[] P2;
+}
+
+template<class T>
+void rsPrototypeDesigner<T>::halpernPolynomial(T *a, int N)
+{  
+  a[0] = 0;
+  T *a1 = &a[1];                // index shift of one for multiplication by x in Eq. 8.19
+  rsHalpernU(a1, N-1);          // create U-polynomial
+  rsArray::convolve(a1, N, a1, N, a1); // square U-polynomial
+  rsArray::scale(a1, 2*N-1, 2*N);      // apply squared scale factor
+  rsPolynomial<T>::polyIntegral(a, a, 2*N-1);    // compute integral from 0 to w
+}
+
+template<class T>
+void rsPrototypeDesigner<T>::gaussianPolynomial(T *a, int N, T wc)
+{  
+  rsArray::fillWithZeros(a, 2*N+1);
+  T g = log(T(2)) / (wc*wc);  // gamma
+  T s = 1;                   // scaler
+  for(int k = 0; k <= N; k++)
+  {
+    a[2*k] = s;    // == g^k / k! == pow(g, k) / rsFactorial(k);
+    s *= g/(k+1);
+  }
+}
+
+// end new
+//-----------------------------------------------
 
 template<class T>
 void rsPrototypeDesigner<T>::getPapoulisLowpassZerosPolesAndGain(Complex* z, Complex* p, T* k, 

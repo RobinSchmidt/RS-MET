@@ -206,6 +206,22 @@ public:
   /** Constructs the denominator polynomial of the magnitude-squared function for Papoulis filters 
   where "N" is the filter order and "a2" is of length 2*N+1. */
   static void papoulisMagnitudeSquaredDenominator(T* a2, int N);
+    // obsolete soon?
+
+  /** Generates coefficients of a polynomial of order 2*N for the squared polynomial that occurs
+  in the denominator of Papoulis filters. It's the L^2(w) polynomial in Eq. 8.14 in 
+  Paarmann: Design and Analysis of Analog Filters.  */
+  static void papoulisPolynomial(T *a, int N);
+
+  /** Generates coefficients of a polynomial of order 2*N for the squared polynomial that occurs
+  in the denominator of Halpern filters. It's the T^2(w) polynomial in Eq. 8.18 in 
+  Paarmann: Design and Analysis of Analog Filters.   */
+  static void halpernPolynomial(T *a, int N);
+
+  /** Generates coefficients of a polynomial of order 2*N for the squared polynomial that occurs
+  in the denominator of Gaussian filters. It's the polynomial in the denominator of Eq. 8.7 in 
+  Paarmann: Design and Analysis of Analog Filters. */
+  static void gaussianPolynomial(T *a, int N, T wc);
 
 
   static void getPapoulisLowpassZerosPolesAndGain( Complex* z, Complex* p, T* k, int N);
