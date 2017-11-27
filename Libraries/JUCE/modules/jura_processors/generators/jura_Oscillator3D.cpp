@@ -24,7 +24,7 @@ void RotationOscillatorAudioModule::createParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<LO>(lo, &LO::setRenormalizationAmount);
 
-  p = new Param("Clip", 0.0, 1.0, 2.0, Parameter::LINEAR);
+  p = new Param("Clip", 0.0, 2.0, 1.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<LO>(lo, &LO::setClipAmplitude);
 
@@ -54,11 +54,9 @@ void RotationOscillatorAudioModule::createParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<LO>(lo, &LO::setFrequencyOffsetZ);
 
-
   p = new Param("PhaseX", -180, +180.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<LO>(lo, &LO::setPhaseX);
-
 
   p = new Param("PhaseY", -180, +180.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
@@ -67,6 +65,46 @@ void RotationOscillatorAudioModule::createParameters()
   p = new Param("PhaseZ", -180, +180.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<LO>(lo, &LO::setPhaseZ);
+
+
+  p = new Param("ShiftX", -1, +1.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<LO>(lo, &LO::setShiftX);
+
+  p = new Param("ShiftY", -1, +1.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<LO>(lo, &LO::setShiftY);
+
+  p = new Param("ShiftZ", -1, +1.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<LO>(lo, &LO::setShiftZ);
+
+
+  p = new Param("ScaleX", -2, +2.0, 1.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<LO>(lo, &LO::setScaleX);
+
+  p = new Param("ScaleY", -2, +2.0, 1.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<LO>(lo, &LO::setScaleY);
+
+  p = new Param("ScaleZ", -2, +2.0, 1.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<LO>(lo, &LO::setScaleZ);
+
+
+  p = new Param("RotX", -180, +180.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<LO>(lo, &LO::setRotationX);
+
+  p = new Param("RotY", -180, +180.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<LO>(lo, &LO::setRotationY);
+
+  p = new Param("RotZ", -180, +180.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<LO>(lo, &LO::setRotationZ);
+
 
 
   p = new Param("OutRotX", -180, +180.0, 0.0, Parameter::LINEAR);

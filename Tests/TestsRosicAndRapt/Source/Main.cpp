@@ -76,7 +76,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
 
-  //runAllUnitTests();
+  runAllUnitTests();
   //filterUnitTests();
 
 
@@ -86,7 +86,7 @@ int main(int argc, char* argv[])
   //matrixAdressingTest();
   //sinCosPerformance();
 
-  ladderPerformance();
+  //ladderPerformance();
 
 
   //-----------------------------------------------------------------------------------------------
@@ -106,7 +106,7 @@ int main(int argc, char* argv[])
   // Filter:
   //ladderResonanceManipulation();
   //nonUniformMovingAverage();
-  //prototypeDesign();
+  prototypeDesign();
   //smoothingFilterOrders();
   //smoothingFilterTransitionTimes();
 

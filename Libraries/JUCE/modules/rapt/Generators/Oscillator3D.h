@@ -5,7 +5,7 @@
 all oscillate with their own frequency....
 
 todo: 
--Level (dB), LevelByFreq (dB/oct), shift, scale, rot, waveshape parameters to warp sines into saws and/or
+-Level (dB), LevelByFreq (dB/oct), waveshape parameters to warp sines into saws and/or
  squares (phase-shaping)
 -rename to rsOscillator3D
 
@@ -20,35 +20,34 @@ public:
 
   void setSampleRate(T newSampleRate);
   void setFrequency(T newFrequency);
+
   void setFrequencyScalerX(T newScaler);
   void setFrequencyScalerY(T newScaler);
   void setFrequencyScalerZ(T newScaler);
+
   void setFrequencyOffsetX(T newOffset);
   void setFrequencyOffsetY(T newOffset);
   void setFrequencyOffsetZ(T newOffset);
-
 
   void setPhaseX(T newPhase) { phaseX = rsDegreeToRadiant(newPhase); }
   void setPhaseY(T newPhase) { phaseY = rsDegreeToRadiant(newPhase); }
   void setPhaseZ(T newPhase) { phaseZ = rsDegreeToRadiant(newPhase); }
 
-  void setOutputRotationX(T newAngle)
-  {
-    outRotX = rsDegreeToRadiant(newAngle);
-    outputMatrixNeedsUpdate = true;
-  }
+  void setShiftX(T newShift) { shiftX = newShift; }
+  void setShiftY(T newShift) { shiftY = newShift; }
+  void setShiftZ(T newShift) { shiftZ = newShift; }
 
-  void setOutputRotationY(T newAngle)
-  {
-    outRotY = rsDegreeToRadiant(newAngle);
-    outputMatrixNeedsUpdate = true;
-  }
+  void setScaleX(T newScale) { scaleX = newScale; }
+  void setScaleY(T newScale) { scaleY = newScale; }
+  void setScaleZ(T newScale) { scaleZ = newScale; }
 
-  void setOutputRotationZ(T newAngle)
-  {
-    outRotZ = rsDegreeToRadiant(newAngle);
-    outputMatrixNeedsUpdate = true;
-  }
+  void setRotationX(T newRot) { trafoRotX = rsDegreeToRadiant(newRot); trafoMatrixNeedsUpdate  = true; }
+  void setRotationY(T newRot) { trafoRotY = rsDegreeToRadiant(newRot); trafoMatrixNeedsUpdate  = true; }
+  void setRotationZ(T newRot) { trafoRotZ = rsDegreeToRadiant(newRot); trafoMatrixNeedsUpdate  = true; }
+
+  void setOutputRotationX(T newAngle) { outRotX = rsDegreeToRadiant(newAngle); outputMatrixNeedsUpdate = true; }
+  void setOutputRotationY(T newAngle) { outRotY = rsDegreeToRadiant(newAngle); outputMatrixNeedsUpdate = true; }
+  void setOutputRotationZ(T newAngle) { outRotZ = rsDegreeToRadiant(newAngle); outputMatrixNeedsUpdate = true; }
 
   /** Sets the maount by which the length of the x,y,z will be renormalized to unit length. It 
   works as follows: the length of the vector is computes, then the reciprocal r = 1/length of this 

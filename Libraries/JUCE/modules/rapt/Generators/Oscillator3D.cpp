@@ -83,7 +83,7 @@ void rsLissajousOscillator3D<T>::processSampleFrame(T* x, T* y, T* z)
   transformRotation.apply(&tx, &ty, &tz);
 
   // renormalize length:
-  T c = 0.001; // to avoid div-by-zero
+  T c = 0.0001; // to avoid div-by-zero
   T s = 1 / sqrt(c + tx*tx + ty*ty + tz*tz); // what about div-by-zero?
   s   = pow(s, renormExponent);
   tx *= s;

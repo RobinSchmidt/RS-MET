@@ -195,7 +195,7 @@ public:
   "N" and stores them in "z", "p" and "k", respectively.
   // \todo: include parameter for the normalization mode (asymptotic, delay-normalized, 
   cutoff-normalized) */
-  static void getBesselLowpassZerosPolesAndGain(Complex* z, Complex* p, T *k, int N);
+  //static void getBesselLowpassZerosPolesAndGain(Complex* z, Complex* p, T *k, int N);
 
   /** Computes zeros, poles and gain factor for an analog low-shelving Bessel prototype filter.
   @see getBesselLowpassZerosPolesAndGain */
@@ -206,6 +206,8 @@ public:
   /** Constructs the denominator polynomial of the magnitude-squared function for Papoulis filters 
   where "N" is the filter order and "a2" is of length 2*N+1. */
   static void papoulisMagnitudeSquaredDenominator(T* a2, int N);
+
+
   static void getPapoulisLowpassZerosPolesAndGain( Complex* z, Complex* p, T* k, int N);
   static void getPapoulisLowShelfZerosPolesAndGain(Complex* z, Complex* p, T* k, int N, T G, T G0);
   // maybe make this the only public method for Papoulis Design
@@ -213,13 +215,14 @@ public:
   //-------------------------------------------------------
   // refactoring - not yet finsihed:
 
-  static void getLowpassZerosPolesAndGain(Complex* z, Complex* p, T* k, int N,
+
+  static void zpkFromTransferCoeffsLP(Complex* z, Complex* p, T* k, int N,
     void (*denominatorCoeffsFunction)(T* a, int N));
 
-  /** Given a "denominatorCoeffsFunction" that generates polynomial coefficienst for a lowpass prototype 
+  /** Given a "denominatorCoeffsFunction" that generates polynomial coefficients for a lowpass prototype 
   transfer function, this function creates the zeros, poles and gain for the corresponding 
   low-shelving prototype with given shelving-gain G and reference-gain G0. */
-  static void getLowShelfZerosPolesAndGain(Complex* z, Complex* p, T* k, int N, T G, T G0,
+  static void zpkFromTransferCoeffsLS(Complex* z, Complex* p, T* k, int N, T G, T G0,
     void (*denominatorCoeffsFunction)(T* a, int N));
     // maybe have an optional numeratorCoeffsFunction (defaulting to a nullptr in which case the 
     // numerator is taken to be 1
