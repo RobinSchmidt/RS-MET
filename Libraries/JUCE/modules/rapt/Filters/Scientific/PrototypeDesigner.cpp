@@ -436,28 +436,7 @@ void rsPrototypeDesigner<T>::getBesselLowShelfZerosPolesAndGain(Complex* z, Comp
   return;
 }
 
-template<class T>
-void rsPrototypeDesigner<T>::papoulisMagnitudeSquaredDenominator(T* a, int N)
-{
-  int n;
-  //rsArray::fillWithZeros(a, 2*N+1);  // do we need this?
 
-  // construct the polynomial L_N(w^2):
-  rsPolynomial<T>::maximumSlopeMonotonicPolynomial(a, N);  // does the same same as lopt(a, N); from C.R.Bond
-
-  // flip sign of coeffs for odd powers (substitute w^2 with -s^2):
-  for(n = 1; n <= N; n += 2)
-    a[n] = -a[n];
-
-  // convert polynomial in s^2 to the corresponding polynomial in s:
-  for(n = N; n >= 0; n--)
-    a[2*n] = a[n];
-  for(n = 1; n <= 2*N; n += 2)
-    a[n] = 0.0;
-
-  // add the constant 1 to the polynomial:
-  a[0] += 1.0;
-}
 
 //-----------------------------------------------
 // new stuff:
@@ -472,53 +451,78 @@ void rsPrototypeDesigner<T>::papoulisPolynomial(T *v, int N)
 
   // create integrand:
   int k, r;
-  if( rsIsOdd(N) )
-  {
+  if( rsIsOdd(N) ) {
     k = (N-1)/2;
-
-    // create weighted sum of Legendre polynomials in v:
     rsArray::fillWithZeros(v, k+1);
-    for(r = 0; r <= k; r++)
-    {
-      updateLegendrePolynomial(&P, P1, P2, r);
-      rsPolynomial<T>::weightedSumOfPolynomials(v, r, T(1), P, r, 2*r+T(1), v);
+    for(r = 0; r <= k; r++) {                  // create weighted sum of ...
+      updateLegendrePolynomial(&P, P1, P2, r); // ... Legendre polynomials in v
+      rsPolynomial<T>::weightedSumOfPolynomials(v, r, T(1), P, r, 2*r+T(1), v); 
     }
-
-    // square it:
-    rsArray::convolve(v, k+1, v, k+1, v);
+    rsArray::convolve(v, k+1, v, k+1, v);      // square it
   }
-  else
-  {
+  else {
     k = (N-2)/2;
-
-    // generate Legendre polynomial of order k+1, store in P:
     for(r = 0; r <= k+1; r++)
-      updateLegendrePolynomial(&P, P1, P2, r);
-
-    // take the derivative, store in v:
-    rsPolynomial<T>::polyDerivative(P, v, k+1);
-
-    // square it:
-    rsArray::convolve(v, k+1, v, k+1, v);
-
-    // multiply by (x+1):
-    v[2*k+1] = 0;
-    for(r = 2*k+1; r >= 1; r--)
+      updateLegendrePolynomial(&P, P1, P2, r);  // generate Legendre polynomial of order k+1 in P
+    rsPolynomial<T>::polyDerivative(P, v, k+1); // take the derivative, store in v:
+    rsArray::convolve(v, k+1, v, k+1, v);       // square it
+    v[2*k+1] = 0;                               // multiply ...
+    for(r = 2*k+1; r >= 1; r--)                 // ... by (x+1)
       v[r] += v[r-1];
   }
 
   // integrate from -1 to 2*w^2-1:
   T a[1] = { -1 };  
   T b[3] = { -1, 0, 2};
-  rsPolynomial<T>::integratePolynomialWithPolynomialLimits(v, N-1, a, 0, b, 2, v);
-
-  // scale, such that L^2(1) = 1:
-  rsArray::scale(v, 2*N+1, 1.0 / rsArray::sum(v, 2*N+1));
+  rsPolynomial<T>::integratePolynomialWithPolynomialLimits(v, N-1, a, 0, b, 2, v);  
+  rsArray::scale(v, 2*N+1, 1.0 / rsArray::sum(v, 2*N+1));  // scale, such that L^2(1) = 1
 
   // clean up:
   delete[] P1;
   delete[] P2;
 }
+
+template<class T>
+void adjustDenominator(T* a, int N)
+{
+  // i'm not sure anymore why we need this but i think, it is may be because the original 
+  // polynomial is in "w" and when we convert to input "s", we get i^2 = -1 terms ...figure out
+  for(int k = 2; k <= 2*N; k += 4)
+    a[k] = -a[k];
+  a[0] += 1.0;
+}
+
+// new:
+template<class T>
+void rsPrototypeDesigner<T>::papoulisDenominator(T* a, int N)
+{
+  papoulisPolynomial(a, N);  // L_N(w^2)
+  adjustDenominator(a, N);
+}
+
+//// old version:
+//template<class T>
+//void rsPrototypeDesigner<T>::papoulisDenominator(T* a, int N)
+//{
+//  int n;
+//
+//  // construct the polynomial L_N(w^2):
+//  rsPolynomial<T>::maximumSlopeMonotonicPolynomial(a, N);  // does the same same as lopt(a, N); from C.R.Bond
+//
+//  // flip sign of coeffs for odd powers (substitute w^2 with -s^2) ..why do we need this - because
+//  // of i^2 = -1?:
+//  for(n = 1; n <= N; n += 2)
+//    a[n] = -a[n];
+//
+//  // convert polynomial in s^2 to the corresponding polynomial in s:
+//  for(n = N; n >= 0; n--)
+//    a[2*n] = a[n];
+//  for(n = 1; n <= 2*N; n += 2)
+//    a[n] = 0.0;
+//
+//  // add the constant 1 to the polynomial:
+//  a[0] += 1.0;
+//}
 
 template<class T>
 void rsPrototypeDesigner<T>::halpernPolynomial(T *a, int N)
@@ -544,6 +548,11 @@ void rsPrototypeDesigner<T>::gaussianPolynomial(T *a, int N, T wc)
   }
 }
 
+
+
+
+
+
 // end new
 //-----------------------------------------------
 
@@ -551,28 +560,17 @@ template<class T>
 void rsPrototypeDesigner<T>::getPapoulisLowpassZerosPolesAndGain(Complex* z, Complex* p, T* k, 
   int N)
 {
-  // find poles:
-  T* a2 = new T[2*N+1];     // coefficients of magnitude-squared polynomial D(s)*D(-s)
-  papoulisMagnitudeSquaredDenominator(a2, N);
-  getLeftHalfPlaneRoots(a2, p, 2*N);
-
-  // zeros are at infinity:
-  rsArray::fillWithValue(z, N, Complex(RS_INF(T), 0.0));
-
-  // set gain at DC to unity:
-  *k = sqrt(T(1)/fabs(a2[2*N]));
-
-  delete[] a2;
+  T a2[maxCoeffs];
+  papoulisDenominator(a2, N);           // coeffs of magnitude-squared polynomial D(s)*D(-s)
+  getLeftHalfPlaneRoots(a2, p, 2*N);                      // find stable poles of D(s)*D(-s)
+  rsArray::fillWithValue(z, N, Complex(RS_INF(T), 0.0));  // zeros are at infinity
+  *k = sqrt(T(1)/fabs(a2[2*N]));                          // set gain at DC to unity
 }
 
 template<class T>
 void rsPrototypeDesigner<T>::getPapoulisLowShelfZerosPolesAndGain(Complex* z, Complex* p, T* k, 
   int N, T G, T G0)
 {
-  //getPapoulisLowpassZerosPolesAndGain(z, p, k, N);
-  //PoleZeroMapper::sLowpassToLowshelf(z, p, k, z, p, k, N, G0, G);
-  //return;
-
   // catch lowpass case:
   if( G0 == 0.0 )
   {
@@ -597,10 +595,9 @@ void rsPrototypeDesigner<T>::getPapoulisLowShelfZerosPolesAndGain(Complex* z, Co
   // function getPoles or something...
 
   // coefficients of the magnitude-squared polynomial D(s)*D(-s)
-  //T* a2 = new T[2*N+1];
   T a2[maxCoeffs];
-  papoulisMagnitudeSquaredDenominator(a2, N);
-  //papoulisPolynomial(a2, N);  // new - test - sign inverted and a2[0] is wrong
+  papoulisDenominator(a2, N);
+  //papoulisPolynomial(a2, N);  // new - test
   getLeftHalfPlaneRoots(a2, p, 2*N);
 
   // normalize denominator polynomial such that the leading coeff has unity as absolute value:
@@ -609,7 +606,6 @@ void rsPrototypeDesigner<T>::getPapoulisLowShelfZerosPolesAndGain(Complex* z, Co
     a2[n] *= scaler;
 
   // construct lowpass numerator:
-  //T* b2 = new T[2*N+1];
   T b2[maxCoeffs];
   rsArray::fillWithZeros(b2, 2*N+1);
   b2[0] = 1.0;
@@ -622,9 +618,8 @@ void rsPrototypeDesigner<T>::getPapoulisLowShelfZerosPolesAndGain(Complex* z, Co
   //*k = sign(a2[0]) * sqrt(fabs(a2[0]));
 
   // obtain magnitude-squared numerator polynomial for shelving filter:
-  //T *bS = new T[2*N+1];
   T bS[maxCoeffs];
-  shelvingMagSqrNumFromLowpassMagSqr(b2, a2, *k, N, G0, G, bS);
+  shelvingMagSqrNumFromLowpassMagSqr(b2, a2, *k, N, G0, G, bS); // can b2 be reused?
 
   // find left halfplane zeros (= zeros of the shelving filter):
   getLeftHalfPlaneRoots(bS, z, 2*N);
@@ -639,10 +634,6 @@ void rsPrototypeDesigner<T>::getPapoulisLowShelfZerosPolesAndGain(Complex* z, Co
   // invert filter in case of a dip:
   if( dip == true )
     getInverseFilter(z, p, k, z, p, k, N);
-
-  //delete[] a2;
-  //delete[] b2;
-  //delete[] bS;
 }
 
 //-------------------------------------------------------

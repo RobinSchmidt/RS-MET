@@ -13,10 +13,11 @@ bool prototypeDesignUnitTest()
   typedef complex<float> CF;
   float inf = std::numeric_limits<float>::infinity();
 
-	bool r = true;   // test result
-  float tol = 0.f; // zero tolerance - float comparisons are currently exact
-  CF p[3], z[3];   // arrays for retrieved poles
-  PD pd;           // prototype designer object
+	bool r = true;      // test result
+  //float tol = 0.f;  // zero tolerance - float comparisons are currently exact
+  float tol = 1.e-7f;
+  CF p[3], z[3];      // arrays for retrieved poles
+  PD pd;              // prototype designer object
 
   // Papoulis filters:
   pd.setApproximationMethod(PD::PAPOULIS);
