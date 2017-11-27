@@ -950,24 +950,28 @@ void rsPrototypeDesigner<T>::updatePolesAndZeros()
     {
       switch( approximationMethod )
       {
-      case BUTTERWORTH:       makeButterworthLowpass();         break;
-      case CHEBYCHEV:         makeChebychevLowpass();           break;
-      case INVERSE_CHEBYCHEV: makeInverseChebychevLowpass();    break;
-      case ELLIPTIC:          makeEllipticLowpass();            break;
-      case BESSEL:            makeBesselLowShelv(  1.0, 0.0);   break;
-      case PAPOULIS:          makePapoulisLowShelv(1.0, 0.0);   break;
+      case BUTTERWORTH:       makeButterworthLowpass();                break;
+      case CHEBYCHEV:         makeChebychevLowpass();                  break;
+      case INVERSE_CHEBYCHEV: makeInverseChebychevLowpass();           break;
+      case ELLIPTIC:          makeEllipticLowpass();                   break;
+      case BESSEL:            makeLowShelfFromZPK(&besselZPK,   1, 0); break;
+      case GAUSSIAN:          makeLowShelfFromZPK(&gaussianZPK, 1, 0); break;
+      case PAPOULIS:          makeLowShelfFromZPK(&papoulisZPK, 1, 0); break;
+      case HALPERN:           makeLowShelfFromZPK(&halpernZPK,  1, 0); break;
       }
     }
     else if( prototypeMode == LOWSHELV_PROTOTYPE )
     {
       switch( approximationMethod )
       {
-      case BUTTERWORTH:       makeButterworthLowShelv();                         break;
-      case CHEBYCHEV:         makeChebychevLowShelv();                           break;
-      case INVERSE_CHEBYCHEV: makeInverseChebychevLowShelv();                    break;
-      case ELLIPTIC:          makeEllipticLowShelv();                            break;
-      case BESSEL:            makeBesselLowShelv(  rsDbToAmp(A), rsDbToAmp(A0)); break;
-      case PAPOULIS:          makePapoulisLowShelv(rsDbToAmp(A), rsDbToAmp(A0)); break;
+      case BUTTERWORTH:       makeButterworthLowShelv();       break;
+      case CHEBYCHEV:         makeChebychevLowShelv();         break;
+      case INVERSE_CHEBYCHEV: makeInverseChebychevLowShelv();  break;
+      case ELLIPTIC:          makeEllipticLowShelv();          break;
+      case BESSEL:            makeLowShelfFromZPK(&besselZPK,  rsDbToAmp(A),rsDbToAmp(A0)); break;
+      case GAUSSIAN:          makeLowShelfFromZPK(&gaussianZPK,rsDbToAmp(A),rsDbToAmp(A0)); break;
+      case PAPOULIS:          makeLowShelfFromZPK(&papoulisZPK,rsDbToAmp(A),rsDbToAmp(A0)); break;
+      case HALPERN:           makeLowShelfFromZPK(&halpernZPK, rsDbToAmp(A),rsDbToAmp(A0)); break;
       }
     }
     stateIsDirty = false;
@@ -1335,61 +1339,6 @@ void rsPrototypeDesigner<T>::makeEllipticLowShelv()
   stateIsDirty = false;
 }
 
-
-// refactor to avoid code duplication with papoulis design:
-
-template<class T>
-void rsPrototypeDesigner<T>::makeBesselLowShelv(T G, T G0)
-{
-  makeLowShelfFromZPK(&besselZPK, G, G0);
-
-  /*
-  rsArray::fillWithZeros(p, maxBiquads);
-  rsArray::fillWithZeros(z, maxBiquads);
-  numFinitePoles = N;
-  if( G0 == 0.0 )
-    numFiniteZeros = 0;
-  else
-    numFiniteZeros = N;
-
-  Complex zTmp[maxOrder];
-  Complex pTmp[maxOrder];
-  T  kTmp;
-  rsPrototypeDesigner::besselZPK(zTmp, pTmp, &kTmp, N, G, G0);
-
-  // findPolynomialRoots returns the roots sorted by ascending real part. for a Bessel-polynomial, 
-  // this ensures that the real pole, if present, is in pTmp[0] (it has the largest negative real 
-  // part). this is importatnt for the next call:
-
-  pickNonRedundantPolesAndZeros(zTmp, pTmp);
-  stateIsDirty = false;
-  */
-}
-
-template<class T>
-void rsPrototypeDesigner<T>::makePapoulisLowShelv(T G, T G0)
-{
-  makeLowShelfFromZPK(&papoulisZPK, G, G0);
-
-  /*
-  rsArray::fillWithZeros(p, maxBiquads);
-  rsArray::fillWithZeros(z, maxBiquads);
-  numFinitePoles = N;
-  if( G0 == 0.0 )
-    numFiniteZeros = 0;
-  else
-    numFiniteZeros = N;
-
-  Complex zTmp[maxOrder];
-  Complex pTmp[maxOrder];
-  T kTmp;
-  rsPrototypeDesigner::papoulisZPK(zTmp, pTmp, &kTmp, N, G, G0);
-
-  pickNonRedundantPolesAndZeros(zTmp, pTmp);
-  stateIsDirty = false;
-  */
-}
-
 template<class T>
 void rsPrototypeDesigner<T>::makeLowShelfFromZPK(  
   void (*zpkFunc)(Complex* z, Complex* p, T* k, int N, T G, T G0),
@@ -1405,8 +1354,8 @@ void rsPrototypeDesigner<T>::makeLowShelfFromZPK(
 
   Complex zTmp[maxOrder];
   Complex pTmp[maxOrder];
-  T kTmp;
-  zpkFunc(zTmp, pTmp, &kTmp, N, G, G0);
+  //T kTmp;
+  zpkFunc(zTmp, pTmp, &k, N, G, G0); // is it possible to use z, p instead of temp-arrays?
 
   // findPolynomialRoots returns the roots sorted by ascending real part. for a Bessel-polynomial, 
   // this ensures that the real pole, if present, is in pTmp[0] (it has the largest negative real 
@@ -1415,8 +1364,6 @@ void rsPrototypeDesigner<T>::makeLowShelfFromZPK(
   pickNonRedundantPolesAndZeros(zTmp, pTmp);
   stateIsDirty = false;
 }
-
-
 
 template<class T>
 void rsPrototypeDesigner<T>::pickNonRedundantPolesAndZeros(Complex *zTmp, Complex *pTmp)

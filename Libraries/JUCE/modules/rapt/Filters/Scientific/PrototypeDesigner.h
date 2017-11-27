@@ -40,7 +40,7 @@ public:
     ELLIPTIC,          ///< equiripple in passband and stopband, maximally steep transition
     BESSEL,            ///< approximates linear phase
     PAPOULIS,          ///< maximizes steepness at cutoff (selectivity) under constraint of monotonicity
-    GAUSS,             ///< smallest timelength*bandwidth product, good time response (no overshoot?)
+    GAUSSIAN,          ///< smallest timelength*bandwidth product, good time response (no overshoot?)
     HALPERN            ///< minimizes ratio of bandwidths at specified magnitudes (shaping factor) under constraint of monotonicity
                        ///< ...less steep at cutoff but steeper in stopband than Papoulis
   };
@@ -361,12 +361,6 @@ protected:
   /** Calculates the poles and zeros for an elliptic low-shelving filter. */
   void makeEllipticLowShelv();
 
-  /** Assigns the postions of the poles of a Bessel prototype filter. */
-  void makeBesselLowShelv(T G = 1.0, T G0 = 0.0);
-
-  /** Assigns the postions of the poles of a Papoulis prototype filter. */
-  void makePapoulisLowShelv(T G = 1.0, T G0 = 0.0);
-
   /** Given gain G, reference gain G0 and a function that computes the zeros, poles and gain
   (such as papoulisZPK, besselZPK, etc.), this function uses the zpk-function to assign our zeros, 
   poles and gain member variables. */
@@ -411,7 +405,7 @@ protected:
   // arrays for nonredundant poles and zeros:
   Complex z[maxBiquads];   // zeros
   Complex p[maxBiquads];   // poles
-  //T k = 1;               // overall gain factor - not yet used
+  T k = 1;                 // overall gain factor - not yet used
 
   bool stateIsDirty;   // this flag indicates, whether the poles, zeros and gain need to be 
                        // re-calculated or are still valid from a previous calculation
