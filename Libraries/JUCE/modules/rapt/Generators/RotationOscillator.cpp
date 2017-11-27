@@ -70,9 +70,9 @@ void rsLissajousOscillator3D<T>::processSampleFrame(T* x, T* y, T* z)
   // obtain new vector on unit sphere:
   //oscillateRotation.apply(&X, &Y, &Z);
 
-  T X = sin(posX);
-  T Y = sin(posY);
-  T Z = sin(posZ);
+  T X = sin(posX + phaseX);
+  T Y = sin(posY + phaseY);
+  T Z = sin(posZ + phaseZ);
 
   // transform to ellipsoid:
   T tx = (X + shiftX) * scaleX;
@@ -91,6 +91,13 @@ void rsLissajousOscillator3D<T>::processSampleFrame(T* x, T* y, T* z)
   tz *= s;
 
   //...maybe apply spherical (soft) clipping?
+  T clipInv = 1 / clip; // make member
+  tx = clip * rsNormalizedSigmoids<T>::softClipHexic(clipInv*tx);
+  ty = clip * rsNormalizedSigmoids<T>::softClipHexic(clipInv*ty);
+  tz = clip * rsNormalizedSigmoids<T>::softClipHexic(clipInv*tz);
+  //ty /= 1 / (1+ty*ty);
+  //tz /= 1 / (1+tz*tz);
+
 
   // apply the output rotation and assign outputs:
   outputRotation.apply(&tx, &ty, &tz);
@@ -103,14 +110,16 @@ void rsLissajousOscillator3D<T>::processSampleFrame(T* x, T* y, T* z)
   posZ += incZ;
 
   posX = rsWrapAround(posX, 2*PI);
+  posY = rsWrapAround(posY, 2*PI);
+  posZ = rsWrapAround(posZ, 2*PI);
 }
 
 template<class T>
 void rsLissajousOscillator3D<T>::reset()
 {
-  posX = phaseX;
-  posY = phaseY;
-  posZ = phaseZ;
+  posX = 0;
+  posY = 0;
+  posZ = 0;
 }
 
 template<class T>

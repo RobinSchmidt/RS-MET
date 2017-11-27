@@ -3,8 +3,8 @@ RotationOscillatorAudioModule::RotationOscillatorAudioModule(CriticalSection *lo
   : AudioModuleWithMidiIn(lockToUse, metaManagerToUse, modManagerToUse)
 {
   ScopedLock scopedLock(*lock);
-  moduleName = "EllipsoidOsc";
-  setActiveDirectory(getApplicationDirectory() + "/Presets/EllipsoidOsc");
+  moduleName = "Osc3D";
+  setActiveDirectory(getApplicationDirectory() + "/Presets/Oscillator3D");
 
   createParameters();
 }
@@ -24,18 +24,22 @@ void RotationOscillatorAudioModule::createParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<LO>(lo, &LO::setRenormalizationAmount);
 
+  p = new Param("Clip", 0.0, 1.0, 2.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<LO>(lo, &LO::setClipAmplitude);
+
+
   p = new Param("FreqScaleX", 0.0, 10.0, 1.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<LO>(lo, &LO::setFrequencyScalerX);
 
-  p = new Param("FreqScaleY", 0.0, 10.0, 2.0, Parameter::LINEAR);
+  p = new Param("FreqScaleY", 0.0, 10.0, 1.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<LO>(lo, &LO::setFrequencyScalerY);
 
-  p = new Param("FreqScaleZ", 0.0, 10.0, 3.0, Parameter::LINEAR);
+  p = new Param("FreqScaleZ", 0.0, 10.0, 1.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallback<LO>(lo, &LO::setFrequencyScalerZ);
-
 
   double maxFreqOffset = 20;
   p = new Param("FreqOffsetX", -maxFreqOffset, maxFreqOffset, 0.0, Parameter::LINEAR);
@@ -51,7 +55,18 @@ void RotationOscillatorAudioModule::createParameters()
   p->setValueChangeCallback<LO>(lo, &LO::setFrequencyOffsetZ);
 
 
+  p = new Param("PhaseX", -180, +180.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<LO>(lo, &LO::setPhaseX);
 
+
+  p = new Param("PhaseY", -180, +180.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<LO>(lo, &LO::setPhaseY);
+
+  p = new Param("PhaseZ", -180, +180.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallback<LO>(lo, &LO::setPhaseZ);
 
 
   p = new Param("OutRotX", -180, +180.0, 0.0, Parameter::LINEAR);

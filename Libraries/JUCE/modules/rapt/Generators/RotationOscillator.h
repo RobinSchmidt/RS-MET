@@ -1,18 +1,14 @@
 #ifndef RAPT_ROTATIONOSCILLATOR_H_INCLUDED
 #define RAPT_ROTATIONOSCILLATOR_H_INCLUDED
 
-/** An oscillator based on a vector that rotates in 3D space. The vector produced by this basic 
-rotation produces values that lie on the unit sphere. this unit-sphere vector is then shifted and 
-scaled along the 3 coordinate axes - this produces a vector on an ellipsoid whose axes are aligned
-with the coordinate axes. Then, this ellipsoid is rotated around the 3 axes to produce a general 
-ellipsoid. After that, the length of the vector is renormalized (so it will end up on the unit 
-sphere again). 
+/** This is a sound generator based on 3-dimensional Lissajous figures. The x, y and z coordinates
+all oscillate with their own frequency....
 
-...Then, an output signal is produced by projecting.. 
+todo: 
+-Level (dB), LevelByFreq (dB/oct), shift, scale, rot, waveshape parameters to warp sines into saws and/or
+ squares (phase-shaping)
+-rename to rsOscillator3D
 
-maybe rename to SphereProjectionOsc or EllispoidOsc
-
-This oscillator is a 3D generalization of an algorithm proposed by xoxos on KVR:
 
 */
 
@@ -54,10 +50,16 @@ public:
     outputMatrixNeedsUpdate = true;
   }
 
-  void setRenormalizationAmount(T newAmount)
-  {
-    renormExponent = newAmount;
-  }
+  /** Sets the maount by which the length of the x,y,z will be renormalized to unit length. It 
+  works as follows: the length of the vector is computes, then the reciprocal r = 1/length of this 
+  length is obtained and x,y,z value are multiplied by r^p where "p" is a power that is adjusted
+  by this function.  */
+  void setRenormalizationAmount(T newAmount) { renormExponent = newAmount; }
+
+  /** Sets the amplitude at which x,y,z values are clipped. Th nonlinar range begins at half of 
+  this value, so when you pass 2, all amplitudes between -1 and +1 will be passed without 
+  distortion. */
+  void setClipAmplitude(T newAmplitude) { clip = newAmplitude; clipInv = 1/clip; }
 
   void processSampleFrame(T* x, T* y, T* z);
 
@@ -110,23 +112,14 @@ protected:
   T posX = 0, posY = 0, posZ = 0;  // current position/phase
 
   T renormExponent = 0;
+  T clip = 2, clipInv = T(0.5);
 
 
-  T shiftX = 0;
-  T shiftY = 0;
-  T shiftZ = 0;
+  T shiftX = 0, shiftY = 0, shiftZ = 0;
+  T scaleX = 1, scaleY = 1, scaleZ = 1;
 
-  T scaleX = 1;
-  T scaleY = 1;
-  T scaleZ = 1;
-
-  T trafoRotX = 0;
-  T trafoRotY = 0;
-  T trafoRotZ = 0;
-
-  T outRotX = 0;
-  T outRotY = 0;
-  T outRotZ = 0;
+  T trafoRotX = 0, trafoRotY = 0, trafoRotZ = 0;
+  T outRotX   = 0, outRotY   = 0, outRotZ   = 0;
 
   bool trafoMatrixNeedsUpdate  = true;
   bool outputMatrixNeedsUpdate = true;
