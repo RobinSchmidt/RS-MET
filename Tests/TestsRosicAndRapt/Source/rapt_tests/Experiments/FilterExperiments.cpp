@@ -311,6 +311,7 @@ FilterSpecificationZPK<T> getFilterSpecificationZPK(RAPT::rsPrototypeDesigner<T>
   FilterSpecificationZPK<T> spec;
   spec.poles = p;
   spec.zeros = z;
+  spec.sampleRate = RS_INF(T);
   //spec.gain  = pd.getGain();
   return spec;
 }
@@ -355,22 +356,22 @@ void prototypeDesign()
 
 
   // min and max filter order to plot:
-  int minOrder = 1;
-  int maxOrder = 10;
+  int minOrder = 7;
+  int maxOrder = 7;
 
   // create and set up prototype designer:
   PD pd;
-  pd.setApproximationMethod(PD::GAUSSIAN);
+  //pd.setApproximationMethod(PD::GAUSSIAN);
   //pd.setApproximationMethod(PD::BESSEL);
   //pd.setApproximationMethod(PD::BUTTERWORTH);
   //pd.setApproximationMethod(PD::PAPOULIS);
-  //pd.setApproximationMethod(PD::HALPERN);
+  pd.setApproximationMethod(PD::HALPERN);
   //pd.setApproximationMethod(PD::CHEBYCHEV);
   //pd.setApproximationMethod(PD::INVERSE_CHEBYCHEV);
   //pd.setApproximationMethod(PD::ELLIPTIC);
 
-  pd.setPrototypeMode(PD::LOWSHELV_PROTOTYPE);
-  pd.setGain(-6.02f); // needs to be nonzero for plots
+  //pd.setPrototypeMode(PD::LOWSHELV_PROTOTYPE);
+  //pd.setGain(-6.02f); // needs to be nonzero for plots
 
   pd.setPassbandRipple(1); 
   pd.setStopbandRejection(20);
@@ -383,8 +384,8 @@ void prototypeDesign()
     FilterSpecificationZPK<Real> spec = getFilterSpecificationZPK(pd);
     plt.addFilterSpecification(spec);
   }
-  //plt.plotPolesAndZeros(600);
-  plt.plotMagnitude(1000, 0, 3, false, false);
+  plt.plotPolesAndZeros(600);
+  //plt.plotMagnitude(1000, 0, 3, false, false);
 
   // issues:
 
@@ -392,7 +393,7 @@ void prototypeDesign()
   // finding and or sorting/picking. In rsPrototypeDesigner<T>::makeLowShelfFromZPK the pTmp
   // array is weird. ...figure out, if the poly-coeffs are right - if so, look at what's going
   // wrong with the root finding - OK - done - the poly-coeffs match those from Paarmann's m-file
-  // so they are correct
+  // so they are correct ..it seems to be a problem in pickNonRedundantPolesAndZeros
 
   // it seems, even order elliptic prototypes have an overall gain equal to the reciprocal of the 
   // linear stopband rejection (passband ripple seems to have no effect), odd order ellicptics have

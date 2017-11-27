@@ -568,12 +568,11 @@ void rsPrototypeDesigner<T>::zpkFromMagSquaredCoeffsLP(Complex* z, Complex* p, T
   void (*denomCoeffsFunc)(T* a, int N))
 {
   T a[maxCoeffs];
-  rsArray::fillWithValue(a, maxCoeffs, RS_INF(T)); // for debug
+  //rsArray::fillWithValue(a, maxCoeffs, RS_INF(T)); // for debug
   denomCoeffsFunc(a, N);                // coeffs of magnitude-squared polynomial D(s)*D(-s)
   getLeftHalfPlaneRoots(a, p, 2*N);                       // find stable poles of D(s)*D(-s)
   rsArray::fillWithValue(z, N, Complex(RS_INF(T), 0.0));  // zeros are at infinity
   *k = sqrt(T(1)/fabs(a[2*N]));                           // set gain at DC to unity - shouldn't we divide by a[0]?
-
 }
 
 template<class T>
@@ -1345,8 +1344,7 @@ void rsPrototypeDesigner<T>::makeEllipticLowShelv()
 
 template<class T>
 void rsPrototypeDesigner<T>::makeLowShelfFromZPK(  
-  void (*zpkFunc)(Complex* z, Complex* p, T* k, int N, T G, T G0),
-  T G, T G0)
+  void (*zpkFunc)(Complex* z, Complex* p, T* k, int N, T G, T G0), T G, T G0)
 {
   rsArray::fillWithZeros(p, maxBiquads);
   rsArray::fillWithZeros(z, maxBiquads);
@@ -1358,12 +1356,14 @@ void rsPrototypeDesigner<T>::makeLowShelfFromZPK(
 
   Complex zTmp[maxOrder];
   Complex pTmp[maxOrder];
-  //T kTmp;
-  zpkFunc(zTmp, pTmp, &k, N, G, G0); // is it possible to use z, p instead of temp-arrays?
+  zpkFunc(zTmp, pTmp, &k, N, G, G0);
 
   // findPolynomialRoots returns the roots sorted by ascending real part. for a Bessel-polynomial, 
   // this ensures that the real pole, if present, is in pTmp[0] (it has the largest negative real 
-  // part). this is importatnt for the next call:
+  // part). this is importatnt for the next call
+
+  // maybe it's better to sort them by ascending imaginary part, pick the 2nd half of the array and 
+  // then reverse it
 
   pickNonRedundantPolesAndZeros(zTmp, pTmp);
   stateIsDirty = false;
