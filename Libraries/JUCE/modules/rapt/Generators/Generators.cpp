@@ -3,7 +3,7 @@
 namespace RAPT
 {
 
+#include "Oscillator3D.cpp"
 #include "RayBouncer.cpp"
-#include "RotationOscillator.cpp"
 
 }

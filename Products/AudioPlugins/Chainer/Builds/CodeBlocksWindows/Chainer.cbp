@@ -5749,6 +5749,14 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/generators/jura_Oscillator3D.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/generators/jura_Oscillator3D.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/generators/jura_OscillatorStereo.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -5762,14 +5770,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/generators/jura_RayBouncer.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/generators/jura_RotationOscillator.cpp">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/generators/jura_RotationOscillator.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
@@ -6217,19 +6217,19 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/rapt/Generators/Oscillator3D.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/rapt/Generators/Oscillator3D.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/rapt/Generators/RayBouncer.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/rapt/Generators/RayBouncer.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/rapt/Generators/RotationOscillator.cpp">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/rapt/Generators/RotationOscillator.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>

@@ -46,9 +46,9 @@ namespace jura
 #include "modulators/jura_BreakpointModulatorEditorMulti.cpp"
 #include "modulators/jura_LowFrequencyOscillator.cpp"
 
+#include "generators/jura_Oscillator3D.cpp"
 #include "generators/jura_OscillatorStereo.cpp"
 #include "generators/jura_FourOscSection.cpp"
-#include "generators/jura_RotationOscillator.cpp"
 #include "generators/jura_SamplePlayer.cpp"
 #include "generators/jura_VectorMixer.cpp"         // maybe move to basics
 #include "generators/jura_VectorSamplePlayer.cpp"

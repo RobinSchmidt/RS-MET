@@ -94,9 +94,9 @@ namespace jura
 #include "modulators/jura_BreakpointModulatorEditorMulti.h"
 #include "modulators/jura_LowFrequencyOscillator.h"
 
+#include "generators/jura_Oscillator3D.h"
 #include "generators/jura_OscillatorStereo.h"
 #include "generators/jura_FourOscSection.h"
-#include "generators/jura_RotationOscillator.h"
 #include "generators/jura_SamplePlayer.h"
 #include "generators/jura_VectorMixer.h"  // maybe move to basics
 #include "generators/jura_VectorSamplePlayer.h"

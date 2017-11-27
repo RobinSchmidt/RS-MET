@@ -2665,13 +2665,13 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_FourOscSection.cpp">
       <Filter>Juce Modules\jura_processors\generators</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_Oscillator3D.cpp">
+      <Filter>Juce Modules\jura_processors\generators</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_OscillatorStereo.cpp">
       <Filter>Juce Modules\jura_processors\generators</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_RayBouncer.cpp">
-      <Filter>Juce Modules\jura_processors\generators</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_RotationOscillator.cpp">
       <Filter>Juce Modules\jura_processors\generators</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_SamplePlayer.cpp">
@@ -2830,10 +2830,10 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Generators\Generators.cpp">
       <Filter>Juce Modules\rapt\Generators</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Generators\RayBouncer.cpp">
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Generators\Oscillator3D.cpp">
       <Filter>Juce Modules\rapt\Generators</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Generators\RotationOscillator.cpp">
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Generators\RayBouncer.cpp">
       <Filter>Juce Modules\rapt\Generators</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\BasicFunctions.cpp">
@@ -6525,13 +6525,13 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_FourOscSection.h">
       <Filter>Juce Modules\jura_processors\generators</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_Oscillator3D.h">
+      <Filter>Juce Modules\jura_processors\generators</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_OscillatorStereo.h">
       <Filter>Juce Modules\jura_processors\generators</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_RayBouncer.h">
-      <Filter>Juce Modules\jura_processors\generators</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_RotationOscillator.h">
       <Filter>Juce Modules\jura_processors\generators</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\generators\jura_SamplePlayer.h">
@@ -6708,10 +6708,10 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Generators\NoiseGenerator.h">
       <Filter>Juce Modules\rapt\Generators</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Generators\RayBouncer.h">
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Generators\Oscillator3D.h">
       <Filter>Juce Modules\rapt\Generators</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Generators\RotationOscillator.h">
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Generators\RayBouncer.h">
       <Filter>Juce Modules\rapt\Generators</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\BasicFunctions.h">
