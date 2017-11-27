@@ -537,9 +537,9 @@ void rsPrototypeDesigner<T>::halpernDenominator(T *a, int N)
 }
 
 template<class T>
-void rsPrototypeDesigner<T>::gaussianPolynomial(T *a2, int N, T wc)
+void rsPrototypeDesigner<T>::gaussianPolynomial(T *a, int N, T wc)
 { 
-  T a[maxCoeffs]; // preliminary - use parameter array later
+  //T a[maxCoeffs]; // preliminary - use parameter array later
 
   rsArray::fillWithZeros(a, 2*N+1);
   T g = log(T(2)) / (wc*wc);    // gamma
@@ -567,11 +567,12 @@ template<class T>
 void rsPrototypeDesigner<T>::zpkFromMagSquaredCoeffsLP(Complex* z, Complex* p, T* k, int N,
   void (*denomCoeffsFunc)(T* a, int N))
 {
-  T a2[maxCoeffs];
-  denomCoeffsFunc(a2, N);               // coeffs of magnitude-squared polynomial D(s)*D(-s)
-  getLeftHalfPlaneRoots(a2, p, 2*N);                      // find stable poles of D(s)*D(-s)
+  T a[maxCoeffs];
+  rsArray::fillWithValue(a, maxCoeffs, RS_INF(T)); // for debug
+  denomCoeffsFunc(a, N);                // coeffs of magnitude-squared polynomial D(s)*D(-s)
+  getLeftHalfPlaneRoots(a, p, 2*N);                       // find stable poles of D(s)*D(-s)
   rsArray::fillWithValue(z, N, Complex(RS_INF(T), 0.0));  // zeros are at infinity
-  *k = sqrt(T(1)/fabs(a2[2*N]));                          // set gain at DC to unity
+  *k = sqrt(T(1)/fabs(a[2*N]));                           // set gain at DC to unity - shouldn't we divide by a[0]?
 
 }
 
