@@ -361,9 +361,9 @@ void prototypeDesign()
   // create and set up prototype designer:
   rsPrototypeDesignerF pd;
   // GAUSS
-  pd.setApproximationMethod(PD::BESSEL);
+  //pd.setApproximationMethod(PD::BESSEL);
   //pd.setApproximationMethod(PD::BUTTERWORTH);
-  //pd.setApproximationMethod(PD::PAPOULIS);
+  pd.setApproximationMethod(PD::PAPOULIS);
   // HALPERN
   //pd.setApproximationMethod(PD::CHEBYCHEV);
   //pd.setApproximationMethod(PD::INVERSE_CHEBYCHEV);

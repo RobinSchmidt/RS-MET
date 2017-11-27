@@ -367,6 +367,12 @@ protected:
   /** Assigns the postions of the poles of a Papoulis prototype filter. */
   void makePapoulisLowShelv(T G = 1.0, T G0 = 0.0);
 
+  /** Given gain G, reference gain G0 and a function that computes the zeros, poles and gain
+  (such as papoulisZPK, besselZPK, etc.), this function uses the zpk-function to assign our zeros, 
+  poles and gain member variables. */
+  void makeLowShelfFromZPK(void (*zpkFunc)(Complex* z, Complex* p, T* k, int N, T G, T G0), 
+    T G, T G0);
+
   /** Given the arrays zTmp and pTmp of poles and zeros, this function picks the non-redundant ones
   and copies them into our z and p members, respectively. The arrays zTmp, pTmp are assumed to 
   contain N zeros and poles, where N is the order of the prototype filter. Complex poles/zeros 

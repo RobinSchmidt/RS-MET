@@ -1341,6 +1341,9 @@ void rsPrototypeDesigner<T>::makeEllipticLowShelv()
 template<class T>
 void rsPrototypeDesigner<T>::makeBesselLowShelv(T G, T G0)
 {
+  makeLowShelfFromZPK(&besselZPK, G, G0);
+
+  /*
   rsArray::fillWithZeros(p, maxBiquads);
   rsArray::fillWithZeros(z, maxBiquads);
   numFinitePoles = N;
@@ -1360,11 +1363,15 @@ void rsPrototypeDesigner<T>::makeBesselLowShelv(T G, T G0)
 
   pickNonRedundantPolesAndZeros(zTmp, pTmp);
   stateIsDirty = false;
+  */
 }
 
 template<class T>
 void rsPrototypeDesigner<T>::makePapoulisLowShelv(T G, T G0)
 {
+  makeLowShelfFromZPK(&papoulisZPK, G, G0);
+
+  /*
   rsArray::fillWithZeros(p, maxBiquads);
   rsArray::fillWithZeros(z, maxBiquads);
   numFinitePoles = N;
@@ -1380,8 +1387,34 @@ void rsPrototypeDesigner<T>::makePapoulisLowShelv(T G, T G0)
 
   pickNonRedundantPolesAndZeros(zTmp, pTmp);
   stateIsDirty = false;
+  */
 }
 
+template<class T>
+void rsPrototypeDesigner<T>::makeLowShelfFromZPK(  
+  void (*zpkFunc)(Complex* z, Complex* p, T* k, int N, T G, T G0),
+  T G, T G0)
+{
+  rsArray::fillWithZeros(p, maxBiquads);
+  rsArray::fillWithZeros(z, maxBiquads);
+  numFinitePoles = N;
+  if( G0 == 0.0 )
+    numFiniteZeros = 0; // works only because it's currently used only for allpole lowpass designs
+  else
+    numFiniteZeros = N;
+
+  Complex zTmp[maxOrder];
+  Complex pTmp[maxOrder];
+  T kTmp;
+  zpkFunc(zTmp, pTmp, &kTmp, N, G, G0);
+
+  // findPolynomialRoots returns the roots sorted by ascending real part. for a Bessel-polynomial, 
+  // this ensures that the real pole, if present, is in pTmp[0] (it has the largest negative real 
+  // part). this is importatnt for the next call:
+
+  pickNonRedundantPolesAndZeros(zTmp, pTmp);
+  stateIsDirty = false;
+}
 
 
 
