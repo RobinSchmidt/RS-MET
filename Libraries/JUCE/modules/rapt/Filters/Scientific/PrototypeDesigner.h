@@ -41,8 +41,9 @@ public:
     BESSEL,            ///< approximates linear phase
     PAPOULIS,          ///< maximizes steepness at cutoff (selectivity) under constraint of monotonicity
     GAUSSIAN,          ///< smallest timelength*bandwidth product, good time response (no overshoot?)
-    HALPERN            ///< minimizes ratio of bandwidths at specified magnitudes (shaping factor) under constraint of monotonicity
+    HALPERN,           ///< minimizes ratio of bandwidths at specified magnitudes (shaping factor) under constraint of monotonicity
                        ///< ...less steep at cutoff but steeper in stopband than Papoulis
+    NUM_APPROXIMATION_METHODS
   };
   // re-order: COINCINDENT_POLE, GAUSS, BESSEL, BUTTERWORTH, PAPOULIS <-?-> HALPERN, CHEBY1 <-?-> 
   // CHEBY2, ELLIPTIC ->sorted by desirability of time response vs. frequency response (roughly)

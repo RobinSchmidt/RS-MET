@@ -361,16 +361,17 @@ void prototypeDesign()
   // create and set up prototype designer:
   rsPrototypeDesignerF pd;
   // GAUSS
-  pd.setApproximationMethod(PD::BESSEL);
+  //pd.setApproximationMethod(PD::BESSEL);
   //pd.setApproximationMethod(PD::BUTTERWORTH);
   pd.setApproximationMethod(PD::PAPOULIS);
+  //pd.setApproximationMethod(PD::HALPERN);
   // HALPERN
   //pd.setApproximationMethod(PD::CHEBYCHEV);
   //pd.setApproximationMethod(PD::INVERSE_CHEBYCHEV);
   //pd.setApproximationMethod(PD::ELLIPTIC);
 
-  pd.setPrototypeMode(PD::LOWSHELV_PROTOTYPE);
-  pd.setGain(-6.02f); // needs to be nonzero for plots
+  //pd.setPrototypeMode(PD::LOWSHELV_PROTOTYPE);
+  //pd.setGain(-6.02f); // needs to be nonzero for plots
 
   pd.setPassbandRipple(1); 
   pd.setStopbandRejection(20);

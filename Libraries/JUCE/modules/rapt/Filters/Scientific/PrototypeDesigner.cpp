@@ -104,7 +104,7 @@ void rsPrototypeDesigner<T>::setOrder(int newOrder)
 template<class T>
 void rsPrototypeDesigner<T>::setApproximationMethod(int newApproximationMethod)
 {
-  if( newApproximationMethod < BUTTERWORTH || newApproximationMethod > PAPOULIS )
+  if( newApproximationMethod < BUTTERWORTH || newApproximationMethod >= NUM_APPROXIMATION_METHODS )
     RS_DEBUG_BREAK; // this is not one of the enumerated approximation methods
 
   if( newApproximationMethod != approximationMethod )
@@ -537,8 +537,10 @@ void rsPrototypeDesigner<T>::halpernDenominator(T *a, int N)
 }
 
 template<class T>
-void rsPrototypeDesigner<T>::gaussianPolynomial(T *a, int N, T wc)
-{  
+void rsPrototypeDesigner<T>::gaussianPolynomial(T *a2, int N, T wc)
+{ 
+  T a[maxCoeffs]; // preliminary - use parameter array later
+
   rsArray::fillWithZeros(a, 2*N+1);
   T g = log(T(2)) / (wc*wc);    // gamma
   T s = 1;                      // scaler
@@ -553,7 +555,8 @@ template<class T>
 void rsPrototypeDesigner<T>::gaussianDenominator(T *a, int N)
 {
   gaussianPolynomial(a, N, 1);  // sum in (3) Eq. 8.7
-  //adjustDenominator(a, N);      // denominator of H(s)*H(-s)
+  adjustDenominator(a, N);      // denominator of H(s)*H(-s)
+  a[0] -= 1;
   // needs test -  i think, we don't need to add 1 to a[0]
 }
 
