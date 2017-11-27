@@ -350,34 +350,34 @@ void prototypeDesign()
   // ...ok - seems to be fixed.
   */
 
+  typedef double Real;
+  typedef RAPT::rsPrototypeDesigner<Real> PD;
 
-  typedef rsPrototypeDesignerF PD;
-  typedef float Real;
 
   // min and max filter order to plot:
   int minOrder = 1;
   int maxOrder = 10;
 
   // create and set up prototype designer:
-  rsPrototypeDesignerF pd;
+  PD pd;
   // GAUSS
   //pd.setApproximationMethod(PD::BESSEL);
   //pd.setApproximationMethod(PD::BUTTERWORTH);
-  pd.setApproximationMethod(PD::PAPOULIS);
-  //pd.setApproximationMethod(PD::HALPERN);
+  //pd.setApproximationMethod(PD::PAPOULIS);
+  pd.setApproximationMethod(PD::HALPERN);
   // HALPERN
   //pd.setApproximationMethod(PD::CHEBYCHEV);
   //pd.setApproximationMethod(PD::INVERSE_CHEBYCHEV);
   //pd.setApproximationMethod(PD::ELLIPTIC);
 
-  //pd.setPrototypeMode(PD::LOWSHELV_PROTOTYPE);
-  //pd.setGain(-6.02f); // needs to be nonzero for plots
+  pd.setPrototypeMode(PD::LOWSHELV_PROTOTYPE);
+  pd.setGain(-6.02f); // needs to be nonzero for plots
 
   pd.setPassbandRipple(1); 
   pd.setStopbandRejection(20);
 
   // create plotter, add filter specs for the desired orders to it and plot:
-  FilterPlotter<float> plt;
+  FilterPlotter<Real> plt;
   for(int i = minOrder; i <= maxOrder; i++)
   {
     pd.setOrder(i);
