@@ -39,9 +39,9 @@ public:
     INVERSE_CHEBYCHEV, ///< equiripple in stopband, monotonic in passband
     ELLIPTIC,          ///< equiripple in passband and stopband, maximally steep transition
     BESSEL,            ///< approximates linear phase
-    PAPOULIS           ///< maximizes steepness at cutoff (selectivity) under constraint of monotonicity
-    // GAUSS           ///< smallest timelength*bandwidth product, good time response (no overshoot?)
-    // HALPERN         ///< minimizes ratio of bandwidths at specified magnitudes (shaping factor) under constraint of monotonicity
+    PAPOULIS,          ///< maximizes steepness at cutoff (selectivity) under constraint of monotonicity
+    GAUSS,             ///< smallest timelength*bandwidth product, good time response (no overshoot?)
+    HALPERN            ///< minimizes ratio of bandwidths at specified magnitudes (shaping factor) under constraint of monotonicity
                        ///< ...less steep at cutoff but steeper in stopband than Papoulis
   };
   // re-order: COINCINDENT_POLE, GAUSS, BESSEL, BUTTERWORTH, PAPOULIS <-?-> HALPERN, CHEBY1 <-?-> 
@@ -185,41 +185,31 @@ public:
   static int getLeftHalfPlaneRoots(T* a, Complex* r, int N);
 
 
-  static void getBesselDenominatorCoeffs(T* a, int N); 
-  //static void getPapoulisDenominatorCoeffs(T* a, int N); 
-  //static void getHalpernDenominatorCoeffs(T* a, int N); 
-  //static void getGaussDenominatorCoeffs(T* a, int N); 
-
-
-  /** Computes zeros, poles and gain factor for an analog lowpass Bessel prototype filter of order 
-  "N" and stores them in "z", "p" and "k", respectively.
-  // \todo: include parameter for the normalization mode (asymptotic, delay-normalized, 
-  cutoff-normalized) */
-  //static void getBesselLowpassZerosPolesAndGain(Complex* z, Complex* p, T *k, int N);
+  /** Generates the coefficients of the N-th order reverse Bessel polynomial that occurs in the 
+  denominator of the transfer function of Bessel filters. Note that in contrast to Papoulis, 
+  Halpern and Gauss filters, thes are the coefficients of the transfer function itself, not the
+  magnitude-squared response coeffs. */
+  static void besselDenominator(T* a, int N); 
 
   /** Computes zeros, poles and gain factor for an analog low-shelving Bessel prototype filter.
   @see getBesselLowpassZerosPolesAndGain */
-  static void getBesselLowShelfZerosPolesAndGain(Complex* z, Complex* p, T* k, int N, T G, T G0);
-
-  // Papoulis design:
-
-
+  static void besselZPK(Complex* z, Complex* p, T* k, int N, T G, T G0);
 
   /** Generates coefficients of a polynomial of order 2*N for the squared polynomial that occurs
-  in the denominator of Papoulis filters. It's the L^2(w) polynomial in Eq. 8.14 in 
+  in the denominator of N-th order Papoulis filters. It's the L^2(w) polynomial in Eq. 8.14 in 
   Paarmann: Design and Analysis of Analog Filters.  */
   static void papoulisPolynomial(T *a, int N);
 
   /** Constructs the denominator polynomial of the magnitude-squared function for Papoulis filters 
-  where "N" is the filter order and "a2" is of length 2*N+1. */
-  static void papoulisDenominator(T* a2, int N);
-
+  where "N" is the filter order and "a" is of length 2*N+1. */
+  static void papoulisDenominator(T* a, int N);
 
   /** Generates coefficients of a polynomial of order 2*N for the squared polynomial that occurs
-  in the denominator of Halpern filters. It's the T^2(w) polynomial in Eq. 8.18 in 
+  in the denominator of N-th order Halpern filters. It's the T^2(w) polynomial in Eq. 8.18 in 
   Paarmann: Design and Analysis of Analog Filters.   */
   static void halpernPolynomial(T *a, int N);
 
+  /** Analogous to papoulisDenominator */
   static void halpernDenominator(T *a, int N);
 
   /** Generates coefficients of a polynomial of order 2*N for the squared polynomial that occurs
@@ -230,13 +220,12 @@ public:
   static void gaussianDenominator(T *a, int N);
 
 
+  static void papoulisZPK(Complex* z, Complex* p, T* k, int N, T G, T G0);
+  static void halpernZPK( Complex* z, Complex* p, T* k, int N, T G, T G0);
+  static void gaussianZPK(Complex* z, Complex* p, T* k, int N, T G, T G0);
 
-  //static void getPapoulisLowpassZerosPolesAndGain( Complex* z, Complex* p, T* k, int N);
-  static void getPapoulisLowShelfZerosPolesAndGain(Complex* z, Complex* p, T* k, int N, T G, T G0);
-  // maybe make this the only public method for Papoulis Design
 
-  //-------------------------------------------------------
-  // refactoring - not yet finsihed:
+
 
   static void zpkFromMagSquaredCoeffsLP(Complex* z, Complex* p, T* k, int N,
     void (*denominatorCoeffsFunction)(T* a, int N));
@@ -417,11 +406,6 @@ protected:
   Complex z[maxBiquads];   // zeros
   Complex p[maxBiquads];   // poles
   //T k = 1;               // overall gain factor - not yet used
-
-  //// temporary storage of polynomial coeffs (needed for some filters):
-  //T coeffsA[2*maxOrder];   // denominator coeffs
-  //T coeffsB[2*maxOrder];   // lowpass numerator coeffs
-  //T coeffsBS[2*maxOrder];  // low-shelf numerator coeffs
 
   bool stateIsDirty;   // this flag indicates, whether the poles, zeros and gain need to be 
                        // re-calculated or are still valid from a previous calculation

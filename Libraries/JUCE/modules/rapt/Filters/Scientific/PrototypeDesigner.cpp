@@ -421,7 +421,7 @@ int rsPrototypeDesigner<T>::getLeftHalfPlaneRoots(T* a, Complex* r, int N)
 }
 
 template<class T>
-void rsPrototypeDesigner<T>::getBesselDenominatorCoeffs(T* a, int N)
+void rsPrototypeDesigner<T>::besselDenominator(T* a, int N)
 {
   rsPolynomial<T>::besselPolynomial(a, N);
   rsArray::reverse(a, N+1);  // leaving this out leads to a modified Bessel filter response - maybe 
@@ -429,17 +429,11 @@ void rsPrototypeDesigner<T>::getBesselDenominatorCoeffs(T* a, int N)
 }
 
 template<class T>
-void rsPrototypeDesigner<T>::getBesselLowShelfZerosPolesAndGain(Complex* z, Complex* p, T* k, 
-  int N, T G, T G0)
+void rsPrototypeDesigner<T>::besselZPK(Complex* z, Complex* p, T* k, int N, T G, T G0)
 {
-  zpkFromTransferCoeffsLS(z, p, k, N, G, G0, &getBesselDenominatorCoeffs);
+  zpkFromTransferCoeffsLS(z, p, k, N, G, G0, &besselDenominator);
   return;
 }
-
-
-
-//-----------------------------------------------
-// new stuff:
 
 template<class T>
 void rsPrototypeDesigner<T>::papoulisPolynomial(T *v, int N)
@@ -639,100 +633,23 @@ void rsPrototypeDesigner<T>::zpkFromMagSquaredCoeffsLS(Complex* z, Complex* p, T
 
 }
 
-
-
-/*
-// obsolete:
 template<class T>
-void rsPrototypeDesigner<T>::getPapoulisLowpassZerosPolesAndGain(Complex* z, Complex* p, T* k, 
-  int N)
-{
-  T a2[maxCoeffs];
-  papoulisDenominator(a2, N);           // coeffs of magnitude-squared polynomial D(s)*D(-s)
-  getLeftHalfPlaneRoots(a2, p, 2*N);                      // find stable poles of D(s)*D(-s)
-  rsArray::fillWithValue(z, N, Complex(RS_INF(T), 0.0));  // zeros are at infinity
-  *k = sqrt(T(1)/fabs(a2[2*N]));                          // set gain at DC to unity
-}
-*/
-
-template<class T>
-void rsPrototypeDesigner<T>::getPapoulisLowShelfZerosPolesAndGain(Complex* z, Complex* p, T* k, 
-  int N, T G, T G0)
+void rsPrototypeDesigner<T>::papoulisZPK(Complex* z, Complex* p, T* k, int N, T G, T G0)
 {
   zpkFromMagSquaredCoeffsLS(z, p, k, N, G, G0, &papoulisDenominator);
-  return;
-
-  /*
-  // catch lowpass case:
-  if( G0 == 0.0 )
-  {
-    getPapoulisLowpassZerosPolesAndGain(z, p, k, N);
-    *k *= G;
-    return;
-  }
-
-  // design boost filter and invert later, if a dip is desired:
-  bool dip = false;
-  if( G < G0 )
-  {
-    dip = true;
-    G   = T(1) / G;
-    G0  = T(1) / G0;
-  }
-
-  // factor out into a function getMagnitudeSquaredNumAndDen, then call this function here - this 
-  // function can switch between Papoulis, Gauss, etc. and fill the arrays accordingly, Bessel is 
-  // a special case - it doesn't need to find poles of the mag-squared function, there we can 
-  // directly find the poles of the transfer function ...hmm...but maybe we can still factor out a 
-  // function getPoles or something...
-
-  // coefficients of the magnitude-squared polynomial D(s)*D(-s)
-  T a[maxCoeffs];
-  papoulisDenominator(a, N);
-  //halpernDenominator(a, N); // ...ok looks good - we need a function pointer
-  papoulisDenominator(a, N);
-  getLeftHalfPlaneRoots(a, p, 2*N);
-
-  // normalize denominator polynomial such that the leading coeff has unity as absolute value:
-  T scaler = T(1) / fabs(a[2*N]);
-  for(int n = 0; n <= 2*N; n++)
-    a[n] *= scaler;
-
-  // construct lowpass numerator:
-  T b[maxCoeffs];
-  rsArray::fillWithZeros(b, 2*N+1);
-  b[0] = 1.0;
-
-  // end of "factor out" ...in general, we need to scale the b2-polynomial also by dividing through 
-  // the leading coeff?
-
-  // adjust lowpass DC gain via k:
-  *k = sqrt(fabs(a[0]));  // in general: sqrt(fabs(a2[0]/b2[0])) ?
-  //*k = sign(a2[0]) * sqrt(fabs(a2[0]));
-
-  // obtain magnitude-squared numerator polynomial for shelving filter:
-  T bS[maxCoeffs];
-  shelvingMagSqrNumFromLowpassMagSqr(b, a, *k, N, G0, G, bS); // can b be reused?
-
-  // find left halfplane zeros (= zeros of the shelving filter):
-  getLeftHalfPlaneRoots(bS, z, 2*N);
-
-  // set gain constant for shelving filter:
-  *k = G0;
-
-  // adjust bandwidth:
-  T GB = sqrt(G*G0);
-  scaleToMatchGainAtUnity(z, p, k, z, p, k, N, GB);
-
-  // invert filter in case of a dip:
-  if( dip == true )
-    getInverseFilter(z, p, k, z, p, k, N);
-  */
 }
 
+template<class T>
+void rsPrototypeDesigner<T>::halpernZPK(Complex* z, Complex* p, T* k, int N, T G, T G0)
+{
+  zpkFromMagSquaredCoeffsLS(z, p, k, N, G, G0, &halpernDenominator);
+}
 
-//-------------------------------------------------------
-// refactoring - not yet finsihed:
+template<class T>
+void rsPrototypeDesigner<T>::gaussianZPK(Complex* z, Complex* p, T* k, int N, T G, T G0)
+{
+  zpkFromMagSquaredCoeffsLS(z, p, k, N, G, G0, &gaussianDenominator);
+}
 
 template<class T>
 void rsPrototypeDesigner<T>::zpkFromTransferCoeffsLP(Complex* z, Complex* p, T* k, int N,
@@ -819,10 +736,6 @@ void rsPrototypeDesigner<T>::zpkFromTransferCoeffsLS(Complex* z, Complex* p, T* 
   delete[] b;
   delete[] bS;
 }
-
-// end refactoring
-//-------------------------------------------------------
-
 
 template<class T>
 void rsPrototypeDesigner<T>::getEllipticLowpassZerosPolesAndGain(Complex* z, Complex* p, T* k, 
@@ -1422,6 +1335,9 @@ void rsPrototypeDesigner<T>::makeEllipticLowShelv()
   stateIsDirty = false;
 }
 
+
+// refactor to avoid code duplication with papoulis design:
+
 template<class T>
 void rsPrototypeDesigner<T>::makeBesselLowShelv(T G, T G0)
 {
@@ -1433,10 +1349,10 @@ void rsPrototypeDesigner<T>::makeBesselLowShelv(T G, T G0)
   else
     numFiniteZeros = N;
 
-  Complex zTmp[25];
-  Complex pTmp[25];
+  Complex zTmp[maxOrder];
+  Complex pTmp[maxOrder];
   T  kTmp;
-  rsPrototypeDesigner::getBesselLowShelfZerosPolesAndGain(zTmp, pTmp, &kTmp, N, G, G0);
+  rsPrototypeDesigner::besselZPK(zTmp, pTmp, &kTmp, N, G, G0);
 
   // findPolynomialRoots returns the roots sorted by ascending real part. for a Bessel-polynomial, 
   // this ensures that the real pole, if present, is in pTmp[0] (it has the largest negative real 
@@ -1457,18 +1373,17 @@ void rsPrototypeDesigner<T>::makePapoulisLowShelv(T G, T G0)
   else
     numFiniteZeros = N;
 
-  Complex zTmp[25];
-  Complex pTmp[25];
+  Complex zTmp[maxOrder];
+  Complex pTmp[maxOrder];
   T kTmp;
-  rsPrototypeDesigner::getPapoulisLowShelfZerosPolesAndGain(zTmp, pTmp, &kTmp, N, G, G0);
-
-  // findPolynomialRoots returns the roots sorted by ascending real part. for a Bessel-polynomial, 
-  // this ensures that the real pole, if present, is in pTmp[0] (it has the largest negative real 
-  // part). this is importatnt for the next call:
+  rsPrototypeDesigner::papoulisZPK(zTmp, pTmp, &kTmp, N, G, G0);
 
   pickNonRedundantPolesAndZeros(zTmp, pTmp);
   stateIsDirty = false;
 }
+
+
+
 
 template<class T>
 void rsPrototypeDesigner<T>::pickNonRedundantPolesAndZeros(Complex *zTmp, Complex *pTmp)
