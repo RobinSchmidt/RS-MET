@@ -350,28 +350,28 @@ void prototypeDesign()
   // ...ok - seems to be fixed.
   */
 
-  typedef double Real;
+  typedef float Real;
   typedef RAPT::rsPrototypeDesigner<Real> PD;
 
 
   // min and max filter order to plot:
   int minOrder = 1;
-  int maxOrder = 10;
+  int maxOrder = 7;
 
   // create and set up prototype designer:
   PD pd;
   // GAUSS
+  //pd.setApproximationMethod(PD::GAUSSIAN);
   //pd.setApproximationMethod(PD::BESSEL);
   //pd.setApproximationMethod(PD::BUTTERWORTH);
   //pd.setApproximationMethod(PD::PAPOULIS);
   pd.setApproximationMethod(PD::HALPERN);
-  // HALPERN
   //pd.setApproximationMethod(PD::CHEBYCHEV);
   //pd.setApproximationMethod(PD::INVERSE_CHEBYCHEV);
   //pd.setApproximationMethod(PD::ELLIPTIC);
 
-  pd.setPrototypeMode(PD::LOWSHELV_PROTOTYPE);
-  pd.setGain(-6.02f); // needs to be nonzero for plots
+  //pd.setPrototypeMode(PD::LOWSHELV_PROTOTYPE);
+  //pd.setGain(-6.02f); // needs to be nonzero for plots
 
   pd.setPassbandRipple(1); 
   pd.setStopbandRejection(20);
@@ -388,6 +388,11 @@ void prototypeDesign()
   plt.plotMagnitude(1000, 0, 3, false, false);
 
   // issues:
+
+  // Odd order Halpern filters for order >= 7 don't work. It seems, the issue arises in the root
+  // finding and or sorting/picking. In rsPrototypeDesigner<T>::makeLowShelfFromZPK the pTmp
+  // array is weird. ...figure out, if the poly-coeffs are right - if so, look at what's going
+  // wrong with the root finding
 
   // it seems, even order elliptic prototypes have an overall gain equal to the reciprocal of the 
   // linear stopband rejection (passband ripple seems to have no effect), odd order ellicptics have
