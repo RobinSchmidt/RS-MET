@@ -1,42 +1,45 @@
 template <class T>
-void rsMaxHeapify(T *buffer, int length, int i, int heapSize)
+bool defaultLess(T& left, T& right)
+{
+  return left < right;
+}
+
+template <class T>
+void rsMaxHeapify(T *buffer, int length, int i, int heapSize, bool (*less)(T& left, T& right))
 {
   int left  = 2*i+1;
   int right = 2*i+2;
   int largest;
-
-  if(left <= heapSize-1 && buffer[left] > buffer[i])
+  if(left <= heapSize-1 && less(buffer[i], buffer[left]))
     largest = left;
   else
     largest = i;
 
-  if(right <= heapSize-1 && buffer[right] > buffer[largest])
+  if(right <= heapSize-1 && less(buffer[largest], buffer[right]))
     largest = right;
 
-  if(largest != i)
-  {
+  if(largest != i) {
     rsSwap(buffer[i], buffer[largest]);
-    rsMaxHeapify(buffer, length, largest, heapSize);
+    rsMaxHeapify(buffer, length, largest, heapSize, less); 
   }
 }
 
 template <class T>
-void rsBuildMaxHeap(T *buffer, int length)
+void rsBuildMaxHeap(T *buffer, int length, bool (*less)(T& left, T& right))
 {
   for(int i = length/2-1; i >= 0; i--)
-    rsMaxHeapify(buffer, length, i, length);
+    rsMaxHeapify(buffer, length, i, length, less);
 }
 
 template <class T>
-void rsHeapSort(T *buffer, int length)
+void rsHeapSort(T *buffer, int length, bool (*less)(T& left, T& right))
 {
-  rsBuildMaxHeap(buffer, length);
+  rsBuildMaxHeap(buffer, length, less);
   int heapSize = length;
-  for(int i = length-1; i >= 1; i--)
-  {
+  for(int i = length-1; i >= 1; i--) {
     rsSwap(buffer[0], buffer[i]);
     heapSize--;
-    rsMaxHeapify(buffer, length, 0, heapSize);
+    rsMaxHeapify(buffer, length, 0, heapSize, less);
   }
 }
 
