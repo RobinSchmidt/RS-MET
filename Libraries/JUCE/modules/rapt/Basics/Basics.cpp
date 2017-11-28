@@ -3,6 +3,6 @@
 namespace RAPT
 {
 
-// to be populated
+#include "SortAndSearch.cpp"
 
 }

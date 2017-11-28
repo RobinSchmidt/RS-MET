@@ -343,6 +343,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\Basics.cpp">
       <Filter>Juce Modules\rapt\Basics</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\SortAndSearch.cpp">
+      <Filter>Juce Modules\rapt\Basics</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Data\ArrayTools.cpp">
       <Filter>Juce Modules\rapt\Data</Filter>
     </ClCompile>
@@ -412,10 +415,10 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\Generators.cpp">
       <Filter>Juce Modules\rapt\Generators</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\RayBouncer.cpp">
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\Oscillator3D.cpp">
       <Filter>Juce Modules\rapt\Generators</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\RotationOscillator.cpp">
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\RayBouncer.cpp">
       <Filter>Juce Modules\rapt\Generators</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\BasicFunctions.cpp">
@@ -1875,6 +1878,9 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\MacroDefinitions.h">
       <Filter>Juce Modules\rapt\Basics</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\SortAndSearch.h">
+      <Filter>Juce Modules\rapt\Basics</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\TypeDefinitions.h">
       <Filter>Juce Modules\rapt\Basics</Filter>
     </ClInclude>
@@ -1953,10 +1959,10 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\NoiseGenerator.h">
       <Filter>Juce Modules\rapt\Generators</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\RayBouncer.h">
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\Oscillator3D.h">
       <Filter>Juce Modules\rapt\Generators</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\RotationOscillator.h">
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\RayBouncer.h">
       <Filter>Juce Modules\rapt\Generators</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\BasicFunctions.h">

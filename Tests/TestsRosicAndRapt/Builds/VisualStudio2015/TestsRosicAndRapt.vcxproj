@@ -171,6 +171,9 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\Basics.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\SortAndSearch.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Data\ArrayTools.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -240,10 +243,10 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\Generators.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\RayBouncer.cpp">
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\Oscillator3D.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\RotationOscillator.cpp">
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\RayBouncer.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\BasicFunctions.cpp">
@@ -1616,6 +1619,7 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\Basics.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\Constants.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\MacroDefinitions.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\SortAndSearch.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\TypeDefinitions.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Data\Simd\Float32x4.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Data\ArrayTools.h"/>
@@ -1642,8 +1646,8 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Filters.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\Generators.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\NoiseGenerator.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\Oscillator3D.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\RayBouncer.h"/>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Generators\RotationOscillator.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\BasicFunctions.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\BellFunctions.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\ComplexFunctions.h"/>

@@ -336,6 +336,7 @@ void rsSortComplexArrayByReIm(std::complex<T> *z, int length)
   std::sort(zv.begin(), zv.end(), rsComplexLessByReIm<T>);
   for(i = 0; i < length; i++)
     z[i] = zv[i];
+  // why don't we sort in place...because input is a c-array?
 }
 
 template<class T>

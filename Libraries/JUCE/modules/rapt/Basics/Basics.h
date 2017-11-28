@@ -7,6 +7,8 @@ namespace RAPT
 #include "Constants.h"
 #include "TypeDefinitions.h"
 #include "MacroDefinitions.h"
+//#include "MathBasics.h"  // add from RSLib
+#include "SortAndSearch.h"
 
 }
 
