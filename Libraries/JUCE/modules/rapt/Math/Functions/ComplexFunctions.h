@@ -143,6 +143,10 @@ they are equal, comparing imaginary parts. */
 template<class T>
 bool rsComplexLessByReIm(const std::complex<T>& left, const std::complex<T>& right);
 
+/** Like rsComplexLessByReIm but comparing imaginary parts first */
+template<class T>
+bool rsComplexLessByImRe(const std::complex<T>& left, const std::complex<T>& right);
+
 /** Sorts an array of complex numbers according to the less-than criterion defined by the
 function complexLessByReIm. */
 template<class T>

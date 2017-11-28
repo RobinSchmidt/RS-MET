@@ -318,6 +318,25 @@ bool rsComplexLessByReIm(const std::complex<T>& left, const std::complex<T>& rig
     // real parts are equal - compare by imaginary parts:
     if(left.imag() < right.imag())
       return true;
+    else if(right.imag() < left.imag())
+      return false;
+    else
+      return false; // both complex numbers are equal
+  }
+}
+
+template<class T>
+bool rsComplexLessByImRe(const std::complex<T>& left, const std::complex<T>& right)
+{
+  if(left.imag() < right.imag())
+    return true;
+  else if(right.imag() < left.imag())
+    return false;
+  else
+  {
+    // imaginary parts are equal - compare by real parts:
+    if(left.real() < right.real())
+      return true;
     else if(right.real() < left.real())
       return false;
     else
@@ -329,17 +348,6 @@ template<class T>
 void rsSortComplexArrayByReIm(std::complex<T> *z, int length)
 {
   rsHeapSort(z, length, rsComplexLessByReIm<T>);
-  /*
-  // old - needed conversion to std::vector:
-  int i;
-  std::vector<std::complex<T> > zv;
-  zv.reserve(length);
-  for(i = 0; i < length; i++)
-    zv.push_back(z[i]);
-  std::sort(zv.begin(), zv.end(), rsComplexLessByReIm<T>);
-  for(i = 0; i < length; i++)
-    z[i] = zv[i];
-  */
 }
 
 template<class T>
