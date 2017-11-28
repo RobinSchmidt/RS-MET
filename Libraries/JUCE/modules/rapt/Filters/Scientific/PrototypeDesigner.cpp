@@ -412,11 +412,13 @@ void rsPrototypeDesigner<T>::getInverseFilter(Complex* z, Complex* p, T* k, Comp
 template<class T>
 int rsPrototypeDesigner<T>::getLeftHalfPlaneRoots(T* a, Complex* r, int N)
 {
-  Complex *rTmp = new Complex[N]; // maybe we can get rid of that temporary array
-  rsPolynomial<T>::findPolynomialRoots(a, N, rTmp);
-  int numLeftRoots = rsOnlyLeftHalfPlane(rTmp, r, N);
+  //Complex *rTmp = new Complex[N]; // maybe we can get rid of that temporary array
+  std::vector<Complex> rTmp; // maybe we can get rid of that temporary array
+  rTmp.resize(N);
+  rsPolynomial<T>::findPolynomialRoots(a, N, &rTmp[0]);
+  int numLeftRoots = rsOnlyLeftHalfPlane(&rTmp[0], r, N);
   rsAssert(numLeftRoots == ceil(0.5*N)); // maybe take this out later
-  delete[] rTmp;
+  //delete[] rTmp;
   return numLeftRoots;
 }
 

@@ -1,11 +1,12 @@
 template <class T>
-bool defaultLess(T& left, T& right)
+bool defaultLess(const T& left, const T& right)
 {
   return left < right;
 }
 
 template <class T>
-void rsMaxHeapify(T *buffer, int length, int i, int heapSize, bool (*less)(T& left, T& right))
+void rsMaxHeapify(T *buffer, int length, int i, int heapSize, 
+  bool (*less)(const T& left, const T& right))
 {
   int left  = 2*i+1;
   int right = 2*i+2;
@@ -25,14 +26,15 @@ void rsMaxHeapify(T *buffer, int length, int i, int heapSize, bool (*less)(T& le
 }
 
 template <class T>
-void rsBuildMaxHeap(T *buffer, int length, bool (*less)(T& left, T& right))
+void rsBuildMaxHeap(T *buffer, int length, 
+  bool (*less)(const T& left, const T& right))
 {
   for(int i = length/2-1; i >= 0; i--)
     rsMaxHeapify(buffer, length, i, length, less);
 }
 
 template <class T>
-void rsHeapSort(T *buffer, int length, bool (*less)(T& left, T& right))
+void rsHeapSort(T *buffer, int length, bool (*less)(const T& left, const T& right))
 {
   rsBuildMaxHeap(buffer, length, less);
   int heapSize = length;

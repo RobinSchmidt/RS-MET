@@ -7,7 +7,7 @@
 /** Default less-than comparison function used in sorting. It's based on the less-than operator of 
 type T and returns true if left < right, false otherwise. */
 template <class T>
-bool defaultLess(T& left, T& right);
+bool defaultLess(const T& left, const T& right);
 
 /** Re-orders the elements in the array such that they fullfill the max-heap property. A max-heap
 is a binary tree which is completely filled on all levels except possibly the lowest which is
@@ -17,7 +17,8 @@ such a tree as array, we use the following convention: array[0] is the root, arr
 left child of node i, array[2*i+2] is the right child of node i. The complexity is O(n).
 Reference: Introduction to Algorithms, 2nd Ed, p. 133 */
 template <class T>
-void rsBuildMaxHeap(T *buffer, int length, bool (*lessThen)(T& left, T& right));
+void rsBuildMaxHeap(T *buffer, int length, 
+  bool (*lessThen)(const T& left, const T& right));
 
 /** Assuming that the sub-trees rooted at 2*i+1 (left subtree) and 2*i+2 (right subtree) are
 max-heaps but buffer[i] itself violates the max-heap property (by being smaller that one of
@@ -26,7 +27,8 @@ at i becomes itself a max-heap. heapSize is the number of elements in the array 
 max-heap property holds, so heapSize <= length. The complexity is O(log(n))
 Reference: Introduction to Algorithms, 2nd Ed, p. 130 */
 template <class T>
-void rsMaxHeapify(T *buffer, int length, int i, int heapSize, bool (*lessThen)(T& left, T& right));
+void rsMaxHeapify(T *buffer, int length, int i, int heapSize, 
+  bool (*lessThen)(const T& left, const T& right));
 
 /** Sorts an array by first turning it into a max-heap (via buildMaxHeap). The largest element
 is now found at array[0] and can be seen as the root of the max-heap. We may now exchange it
@@ -40,7 +42,8 @@ Reference: Introduction to Algorithms, 2nd Ed, p. 136
 \todo let it take a pointer to a comparator function as optinal argument (if NULL is passed, it
 will use a default comparator function which is based on the < operator of the class) */
 template <class T>
-void rsHeapSort(T *buffer, int length, bool (*lessThen)(T& left, T& right) = defaultLess);
+void rsHeapSort(T *buffer, int length, 
+  bool (*lessThen)(const T& left, const T& right) = defaultLess);
 
 /** Checks whether the buffer is sorted in ascending order, that is buffer[i] <= buffer[i+1] for
 all i. */

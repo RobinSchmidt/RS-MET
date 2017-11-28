@@ -307,7 +307,7 @@ void rsConjugate(std::complex<T> *z, int length)
 }
 
 template<class T>
-bool rsComplexLessByReIm(const std::complex<T> left, const std::complex<T> right)
+bool rsComplexLessByReIm(const std::complex<T>& left, const std::complex<T>& right)
 {
   if(left.real() < right.real())
     return true;
@@ -328,6 +328,9 @@ bool rsComplexLessByReIm(const std::complex<T> left, const std::complex<T> right
 template<class T>
 void rsSortComplexArrayByReIm(std::complex<T> *z, int length)
 {
+  rsHeapSort(z, length, rsComplexLessByReIm<T>);
+  /*
+  // old - needed conversion to std::vector:
   int i;
   std::vector<std::complex<T> > zv;
   zv.reserve(length);
@@ -336,7 +339,7 @@ void rsSortComplexArrayByReIm(std::complex<T> *z, int length)
   std::sort(zv.begin(), zv.end(), rsComplexLessByReIm<T>);
   for(i = 0; i < length; i++)
     z[i] = zv[i];
-  // why don't we sort in place...because input is a c-array?
+  */
 }
 
 template<class T>

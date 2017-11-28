@@ -141,7 +141,7 @@ void rsConjugate(std::complex<T> *z, int length);
 /** Compares two complex numbers for a less-than condition by first comparing real parts and if
 they are equal, comparing imaginary parts. */
 template<class T>
-bool rsComplexLessByReIm(const std::complex<T> left, const std::complex<T> right);
+bool rsComplexLessByReIm(const std::complex<T>& left, const std::complex<T>& right);
 
 /** Sorts an array of complex numbers according to the less-than criterion defined by the
 function complexLessByReIm. */
