@@ -375,7 +375,8 @@ protected:
   such pair.
   ATTENTION: If there is a real zero/pole present, they are assumed to be in zTmp[0] and pTmp[0] 
   respectively - the caller must ensure this.  */
-  void pickNonRedundantPolesAndZeros(Complex *zTmp, Complex *pTmp);
+  //void pickNonRedundantPolesAndZeros(Complex *zTmp, Complex *pTmp);
+  // obsolete
 
   // user parameters:
   int N;                   // prototype filter order: N = 2*L + r 

@@ -1368,7 +1368,7 @@ void rsPrototypeDesigner<T>::makeLowShelfFromZPK(
   rsHeapSort(pTmp, N, rsComplexLessByImRe<T>);
   rsArray::copyBuffer(zTmp, z, L+r);  // select first half (lower halfplane) roots
   rsArray::copyBuffer(pTmp, p, L+r);
-  rsConjugate(z, L+r);                // covert to corresponding upper halfplane roots
+  rsConjugate(z, L+r);                // convert to corresponding upper halfplane roots
   rsConjugate(p, L+r);                
   // last pole/zero is the real one, if present (they are now sorted by descending imaginary part
   // and the imag part is >= 0)
@@ -1376,6 +1376,7 @@ void rsPrototypeDesigner<T>::makeLowShelfFromZPK(
   stateIsDirty = false;
 }
 
+/*
 // function is obsolete now:
 template<class T>
 void rsPrototypeDesigner<T>::pickNonRedundantPolesAndZeros(Complex *zTmp, Complex *pTmp)
@@ -1395,3 +1396,4 @@ void rsPrototypeDesigner<T>::pickNonRedundantPolesAndZeros(Complex *zTmp, Comple
   rsArray::reverse(p, L+r);
   rsArray::reverse(z, L+r);
 }
+*/

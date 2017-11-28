@@ -356,8 +356,8 @@ void prototypeDesign()
 
 
   // min and max filter order to plot:
-  int minOrder = 7;
-  int maxOrder = 7;
+  int minOrder = 1;
+  int maxOrder = 10;
 
   // create and set up prototype designer:
   PD pd;
@@ -370,8 +370,8 @@ void prototypeDesign()
   //pd.setApproximationMethod(PD::INVERSE_CHEBYCHEV);
   //pd.setApproximationMethod(PD::ELLIPTIC);
 
-  //pd.setPrototypeMode(PD::LOWSHELV_PROTOTYPE);
-  //pd.setGain(-6.02f); // needs to be nonzero for plots
+  pd.setPrototypeMode(PD::LOWSHELV_PROTOTYPE);
+  pd.setGain(+6.02f); // needs to be nonzero for plots
 
   pd.setPassbandRipple(1); 
   pd.setStopbandRejection(20);
@@ -389,16 +389,12 @@ void prototypeDesign()
 
   // issues:
 
-  // Odd order Halpern filters for order >= 7 don't work. It seems, the issue arises in the root
-  // finding and or sorting/picking. In rsPrototypeDesigner<T>::makeLowShelfFromZPK the pTmp
-  // array is weird. ...figure out, if the poly-coeffs are right - if so, look at what's going
-  // wrong with the root finding - OK - done - the poly-coeffs match those from Paarmann's m-file
-  // so they are correct ..it seems to be a problem in pickNonRedundantPolesAndZeros
-
   // it seems, even order elliptic prototypes have an overall gain equal to the reciprocal of the 
   // linear stopband rejection (passband ripple seems to have no effect), odd order ellicptics have
   // a different gain and it seems to depend on the ripple (might be computed by evaluating DC 
   // gain). Papoulis design has also a wrong DC gain -> add overall gain to the prototype designer
+
+  // todo: test the gaussian filter design
 }
 
 void smoothingFilterOrders()
