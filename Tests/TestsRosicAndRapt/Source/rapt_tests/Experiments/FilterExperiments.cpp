@@ -384,8 +384,8 @@ void prototypeDesign()
     FilterSpecificationZPK<Real> spec = getFilterSpecificationZPK(pd);
     plt.addFilterSpecification(spec);
   }
-  plt.plotPolesAndZeros(600);
-  //plt.plotMagnitude(1000, 0, 3, false, false);
+  //plt.plotPolesAndZeros(600);
+  plt.plotMagnitude(1000, 0, 3, false, false);
 
   // issues:
 

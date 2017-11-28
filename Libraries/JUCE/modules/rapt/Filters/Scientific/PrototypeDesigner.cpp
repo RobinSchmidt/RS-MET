@@ -412,13 +412,11 @@ void rsPrototypeDesigner<T>::getInverseFilter(Complex* z, Complex* p, T* k, Comp
 template<class T>
 int rsPrototypeDesigner<T>::getLeftHalfPlaneRoots(T* a, Complex* r, int N)
 {
-  //Complex *rTmp = new Complex[N]; // maybe we can get rid of that temporary array
   std::vector<Complex> rTmp; // maybe we can get rid of that temporary array
   rTmp.resize(N);
   rsPolynomial<T>::findPolynomialRoots(a, N, &rTmp[0]);
   int numLeftRoots = rsOnlyLeftHalfPlane(&rTmp[0], r, N);
   rsAssert(numLeftRoots == ceil(0.5*N)); // maybe take this out later
-  //delete[] rTmp;
   return numLeftRoots;
 }
 
@@ -558,8 +556,7 @@ void rsPrototypeDesigner<T>::gaussianDenominator(T *a, int N)
 {
   gaussianPolynomial(a, N, 1);  // sum in (3) Eq. 8.7
   adjustDenominator(a, N);      // denominator of H(s)*H(-s)
-  a[0] -= 1;
-  // needs test -  i think, we don't need to add 1 to a[0]
+  a[0] -= 1;                    // adjustDenominator adds one but we don't need that
 }
 
 // end new
@@ -1362,15 +1359,24 @@ void rsPrototypeDesigner<T>::makeLowShelfFromZPK(
 
   // findPolynomialRoots returns the roots sorted by ascending real part. for a Bessel-polynomial, 
   // this ensures that the real pole, if present, is in pTmp[0] (it has the largest negative real 
-  // part). this is importatnt for the next call
+  // part). this is importatnt for the next call:
+  //pickNonRedundantPolesAndZeros(zTmp, pTmp); // old..
 
   // maybe it's better to sort them by ascending imaginary part, pick the 2nd half of the array and 
-  // then reverse it
+  // then reverse it, so the new code is:
+  rsHeapSort(zTmp, N, rsComplexLessByImRe<T>);
+  rsHeapSort(pTmp, N, rsComplexLessByImRe<T>);
+  rsArray::copyBuffer(zTmp, z, L+r);  // select first half (lower halfplane) roots
+  rsArray::copyBuffer(pTmp, p, L+r);
+  rsConjugate(z, L+r);                // covert to corresponding upper halfplane roots
+  rsConjugate(p, L+r);                
+  // last pole/zero is the real one, if present (they are now sorted by descending imaginary part
+  // and the imag part is >= 0)
 
-  pickNonRedundantPolesAndZeros(zTmp, pTmp);
   stateIsDirty = false;
 }
 
+// function is obsolete now:
 template<class T>
 void rsPrototypeDesigner<T>::pickNonRedundantPolesAndZeros(Complex *zTmp, Complex *pTmp)
 {
