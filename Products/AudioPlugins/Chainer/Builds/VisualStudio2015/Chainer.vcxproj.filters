@@ -2761,6 +2761,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\Basics.cpp">
       <Filter>Juce Modules\rapt\Basics</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\SortAndSearch.cpp">
+      <Filter>Juce Modules\rapt\Basics</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Data\ArrayTools.cpp">
       <Filter>Juce Modules\rapt\Data</Filter>
     </ClCompile>
@@ -6628,6 +6631,9 @@
       <Filter>Juce Modules\rapt\Basics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\MacroDefinitions.h">
+      <Filter>Juce Modules\rapt\Basics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\SortAndSearch.h">
       <Filter>Juce Modules\rapt\Basics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\TypeDefinitions.h">

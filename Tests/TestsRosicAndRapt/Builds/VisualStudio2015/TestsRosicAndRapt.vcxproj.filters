@@ -101,6 +101,9 @@
     <Filter Include="Juce Modules\rapt\Temp">
       <UniqueIdentifier>{1077C9FE-8734-5D17-6E96-F6DB62A1D921}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Juce Modules\rapt\Unfinished">
+      <UniqueIdentifier>{6A17A633-5931-836E-67EA-F3DA66DD4636}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Juce Modules\rapt\Visualization">
       <UniqueIdentifier>{A495B1EB-B33C-6A74-A31A-9C489FDD0ED7}</UniqueIdentifier>
     </Filter>
@@ -501,6 +504,12 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Vector.cpp">
       <Filter>Juce Modules\rapt\Temp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\BandSplitter.cpp">
+      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Unfinished.cpp">
+      <Filter>Juce Modules\rapt\Unfinished</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Graphics\AlphaMask.cpp">
       <Filter>Juce Modules\rapt\Visualization\Graphics</Filter>
@@ -2051,6 +2060,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Vector.h">
       <Filter>Juce Modules\rapt\Temp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\BandSplitter.h">
+      <Filter>Juce Modules\rapt\Unfinished</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Unfinished.h">
+      <Filter>Juce Modules\rapt\Unfinished</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Graphics\AlphaMask.h">
       <Filter>Juce Modules\rapt\Visualization\Graphics</Filter>

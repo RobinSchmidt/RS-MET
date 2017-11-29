@@ -15,12 +15,6 @@ namespace RAPT
 //#include "Basic/CookBookFilter.h"
 //...
 
-#include "Musical/LadderFilter.h"
-#include "Musical/PhasorFilter.h"
-#include "Musical/StateVariableFilter.h"
-//include "Musical/AttackDecaySineFilter.h" // maybe get rid of writing "Filter" all the time
-//#include "Basic/Equalizer.h"
-
 #include "Scientific/PrototypeDesigner.h"               // unit cutoff analog prototypes
 #include "Scientific/PoleZeroMapper.h"                  // LP->LP, LP->HP, bilinear S->Z, etc.
 #include "Scientific/FilterCoefficientConverter.h"      // pole-zero-to-biquad, etc
@@ -36,6 +30,12 @@ namespace RAPT
 #include "Scientific/QuadratureNetwork.h"
 
 //#include "Convolution/WindowedSinc.h" 
+
+#include "Musical/LadderFilter.h"
+#include "Musical/PhasorFilter.h"
+#include "Musical/StateVariableFilter.h"
+//include "Musical/AttackDecaySineFilter.h" // maybe get rid of writing "Filter" all the time
+//#include "Basic/Equalizer.h"
 
 }
 

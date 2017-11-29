@@ -723,6 +723,22 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/BandSplitter.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/BandSplitter.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Unfinished.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../Libraries/JUCE/modules/rapt/Unfinished/Unfinished.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../Libraries/JUCE/modules/rapt/Visualization/Graphics/AlphaMask.cpp">
       <Option compile="0"/>
       <Option link="0"/>

@@ -6,10 +6,6 @@ namespace RAPT
 //#include "Basic/OnePoleFilter.cpp"
 #include "Basic/SmoothingFilter.cpp"
 
-#include "Musical/LadderFilter.cpp"
-#include "Musical/PhasorFilter.cpp"
-#include "Musical/StateVariableFilter.cpp"
-
 #include "Scientific/PrototypeDesigner.cpp"
 #include "Scientific/PoleZeroMapper.cpp" 
 #include "Scientific/FilterCoefficientConverter.cpp"
@@ -23,5 +19,9 @@ namespace RAPT
 #include "Scientific/EllipticSubBandFilter.cpp"
 #include "Scientific/EllipticSubBandFilterDirectForm.cpp"
 #include "Scientific/QuadratureNetwork.cpp"
+
+#include "Musical/LadderFilter.cpp"
+#include "Musical/PhasorFilter.cpp"
+#include "Musical/StateVariableFilter.cpp"
 
 }

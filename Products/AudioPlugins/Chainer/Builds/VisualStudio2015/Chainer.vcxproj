@@ -2138,6 +2138,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\Basics.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\SortAndSearch.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Data\ArrayTools.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -4452,6 +4455,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\Basics.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\Constants.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\MacroDefinitions.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\SortAndSearch.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Basics\TypeDefinitions.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Data\Simd\Float32x4.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Data\ArrayTools.h"/>

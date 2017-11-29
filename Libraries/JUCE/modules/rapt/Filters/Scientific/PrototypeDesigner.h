@@ -16,6 +16,7 @@ References:
  -(3) Larry D.Paarmann: Design and Analysis of Analog Filters
 
 \todo
+ -test the gaussian design (compare poles with reference design, like Paarmann's GAUSSDE.m)
  -check the gain calculation, include gain factor
  -solve the degree quation for other values than the filter order
  -check getFilterResponseAt() - seems to be buggy - obsolete?
@@ -397,12 +398,10 @@ protected:
   int numFinitePoles;      // number of poles (excluding those at infinity)
   int numFiniteZeros;      // number of zeros (excluding those at infinity). 
 
-
   static const int maxBiquads = 10;               // maximum number of biquad sections
   static const int maxOrder   = 2 * maxBiquads;   // maximum filter order
-  static const int maxCoeffs  = 2 * maxOrder + 1; // maximum number of polynomial coeffs
-
-  //static const int maxNumNonRedundantPoles = 13;
+  static const int maxCoeffs  = 2 * maxOrder + 1; // maximum number of polynomial coeffs, * 2 
+                                                  // because we need mag-squared polynomials
 
   // arrays for nonredundant poles and zeros:
   Complex z[maxBiquads];   // zeros
