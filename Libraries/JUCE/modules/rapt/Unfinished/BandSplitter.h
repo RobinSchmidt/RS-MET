@@ -9,7 +9,30 @@ class rsTwoBandSplitter
 
 public:
 
+  /** Sets the normalized radian frequency at which the split occurs. */
+  void setOmega(TPar newOmega);
+
+  /** Resets state buffer variables */
+  void reset() { x1 = y1 = 0; }
+
+  inline void getSamplePair(TSig in, TSig* lo, TSig* hi)
+  {
+    // state update:
+    y1 = b0*in + b1*x1 - a1*y1;
+    x1 = in;
+
+    // assign outputs:
+    *lo = y1;
+    *hi = in - y1;
+
+    // maybe factor out a function getLowpassSample
+  }
+
 protected:
+
+  TSig x1 = 0, y1 = 0; // buffers
+  TPar b0 = 0, b1 = 0; // feedforward coeffs
+  TPar a1 = 0;         // feedback coeff
 
 };
 
@@ -30,6 +53,15 @@ protected:
 
 };
 
+/*
+-split the signal in a hierarchical way
+ -always split the low band further
+ -..or maybe always split the high band further - this makes the final high pass steepest and i 
+  think it's more important to keep the high band free from low-frequency leakage than vice versa
+ -or maybe split in a binary tree like way (distributes the slopes evenly between high and low 
+  bands)
+ -maybe make this a user choice
+*/
 
 
 #endif

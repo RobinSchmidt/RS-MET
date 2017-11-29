@@ -3,6 +3,7 @@
 
 #include "../../Shared/Shared.h"
 
+void bandSplittingTwoWay();
 void ladderResonanceManipulation();
 void nonUniformMovingAverage();
 void prototypeDesign();

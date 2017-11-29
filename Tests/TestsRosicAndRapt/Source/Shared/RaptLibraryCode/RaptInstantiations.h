@@ -68,4 +68,8 @@ typedef RAPT::rsImageDrawer<float, float, float> rsImageDrawerFFF;
 typedef RAPT::rsLineDrawer<float, float, float> rsLineDrawerFFF;
 typedef RAPT::rsPhaseScopeBuffer<float, float, double> rsPhaseScopeBufferFFD;
 
+// Unfinished:
+typedef RAPT::rsTwoBandSplitter<float, float> rsTwoBandSplitterFF;
+typedef RAPT::rsMultiBandSplitter<float, float> rsMultiBandSplitterFF;
+
 #endif

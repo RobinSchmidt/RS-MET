@@ -104,9 +104,10 @@ int main(int argc, char* argv[])
   //sinCosTable();
 
   // Filter:
+  bandSplittingTwoWay();
   //ladderResonanceManipulation();
   //nonUniformMovingAverage();
-  prototypeDesign();
+  //prototypeDesign();
   //smoothingFilterOrders();
   //smoothingFilterTransitionTimes();
 

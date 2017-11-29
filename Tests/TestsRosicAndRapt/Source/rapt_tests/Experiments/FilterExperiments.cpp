@@ -1,14 +1,21 @@
 #include "FilterExperiments.h"
 //using namespace RAPT;
 
-#include "../../../../../Libraries/JUCE/modules/rosic/rosic.h"
+void bandSplittingTwoWay()
+{
+  // user parameters:
+  float sampleRate = 44100;
+  float splitFreq  = sampleRate/4; // 11025
 
-//template <class T1, class T2>
-//void scale(T1 *buffer, int length, T2 scaleFactor)
-//{
-//  for(int n = 0; n < length; n++)
-//    buffer[n] *= scaleFactor;
-//}
+  // set up the splitter:
+  float omega = 2*float(PI)*splitFreq/sampleRate;
+  rsTwoBandSplitterFF splitter;
+  splitter.setOmega(omega);
+
+
+
+
+}
 
 //-------------------------------------------------------------------------------------------------
 

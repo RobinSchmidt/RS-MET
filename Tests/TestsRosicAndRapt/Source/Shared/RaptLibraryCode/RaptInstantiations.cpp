@@ -91,3 +91,7 @@ template RAPT::rsPhaseScopeBuffer<float, float, double>;
 
 // Modulators:
 //template RAPT::rsBreakpointModulator<double>; // will be needed, when the class is templatized
+
+// Unfinished:
+template RAPT::rsTwoBandSplitter<float, float>;
+template RAPT::rsMultiBandSplitter<float, float>;
