@@ -73,7 +73,7 @@ public:
   void setSampleRate(TPar newSampleRate);
 
   /** Sets the splitting frequency for the band with given index. */
-  //void setSplitFrequency(int bandIndex, TPar newFrequency);
+  void setSplitFrequency(int bandIndex, TPar newFrequency);
 
   /** Sets up all the splitting frequencies at once. */
   void setSplitFrequencies(const std::vector<TPar>& newFrequencies);
@@ -84,7 +84,7 @@ public:
   void addBand(TPar splitFrequency);
 
 
-  void setSlopeAccumulationMode(int newMode);
+  void setSlopeAccumulationMode(int newMode) { mode = newMode; }
 
 
 
@@ -103,17 +103,17 @@ public:
     size_t N = splitters.size();
     switch(mode)
     {
-    case ACCUMULATE_INTO_LOWPASS: {   // slope accumulates into lowpass band
-      lo = in;
-      for(size_t k = 0; k < N; k++) {
-        splitters[N-1-k]->getSamplePair(lo, &lo, &hi);
-        outs[N-1-k] = hi; }
-    } break;
     case ACCUMULATE_INTO_HIGHPASS: {   // slope accumulates into highpass band
       hi = in;
       for(size_t k = 0; k < N; k++) {
         splitters[k]->getSamplePair(hi, &lo, &hi);
         outs[k] = lo; }
+    } break;
+    case ACCUMULATE_INTO_LOWPASS: {   // slope accumulates into lowpass band
+      lo = in;
+      for(size_t k = 0; k < N; k++) {
+        splitters[N-1-k]->getSamplePair(lo, &lo, &hi);
+        outs[N-1-k] = hi; }
     } break;
     }
   }

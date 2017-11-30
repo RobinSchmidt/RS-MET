@@ -104,7 +104,8 @@ int main(int argc, char* argv[])
   //sinCosTable();
 
   // Filter:
-  bandSplittingTwoWay();
+  //bandSplittingTwoWay();
+  bandSplittingMultiWay();
   //ladderResonanceManipulation();
   //nonUniformMovingAverage();
   //prototypeDesign();

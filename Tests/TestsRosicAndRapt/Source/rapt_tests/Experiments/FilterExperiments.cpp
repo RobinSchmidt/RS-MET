@@ -20,14 +20,35 @@ void bandSplittingTwoWay()
 void bandSplittingMultiWay()
 {
   // user parameters:
+  int numSamples = 50000;
   float sampleRate = 44100;
-  vector<float> splitFreqs = { 100, 300, 1000, 3000, 10000 };
+  //vector<float> splitFreqs = { 100, 300, 1000, 3000, 10000 };
+  vector<float> splitFreqs = { 80, 150, 250, 500, 1000, 2000, 4000, 8000 };
 
-
+  // set up dsp objects and signal arrays:
+  int n, k;
   rsMultiBandSplitterFF splitter;
+  splitter.setSplitFrequencies(splitFreqs);
+  int numBands = splitter.getNumBands();
+  std::vector<float> x(numSamples);
+  std::vector<std::vector<float>> y(numBands);
+  for(k = 0; k < numBands; k++)
+    y[k].resize(numSamples);
+  RAPT::rsNoiseGenerator<float> ng;
+  std::vector<float> tmp(numBands);  // holds the array of bandpass output samples
 
+  // produce input and output signals:
+  for(n = 0; n < numSamples; n++)
+  {
+    x[n] = ng.getSample();
+    splitter.processSampleFrame(x[n], &tmp[0]);
+    for(k = 0; k < numBands; k++)
+      y[k][n] = tmp[k];
+  }
 
-  FilterPlotter<float> plt;
+  // write outputs to files
+
+  //FilterPlotter<float> plt;
 }
 
 //-------------------------------------------------------------------------------------------------
