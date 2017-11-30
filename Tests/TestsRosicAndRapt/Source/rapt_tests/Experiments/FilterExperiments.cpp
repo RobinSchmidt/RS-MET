@@ -12,9 +12,22 @@ void bandSplittingTwoWay()
   rsTwoBandSplitterFF splitter;
   splitter.setOmega(omega);
 
+  // plot poles/zeros and magnitude responses:
+  FilterPlotter<float> plt;
+  // ...
+}
+
+void bandSplittingMultiWay()
+{
+  // user parameters:
+  float sampleRate = 44100;
+  vector<float> splitFreqs = { 100, 300, 1000, 3000, 10000 };
 
 
+  rsMultiBandSplitterFF splitter;
 
+
+  FilterPlotter<float> plt;
 }
 
 //-------------------------------------------------------------------------------------------------
