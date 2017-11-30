@@ -22,13 +22,14 @@ void bandSplittingMultiWay()
   // user parameters:
   int numSamples = 50000;
   float sampleRate = 44100;
-  //vector<float> splitFreqs = { 100, 300, 1000, 3000, 10000 };
-  vector<float> splitFreqs = { 80, 150, 250, 500, 1000, 2000, 4000, 8000 };
+  vector<float> splitFreqs = { 100, 300, 1000, 3000, 10000 };
+  //vector<float> splitFreqs = { 80, 150, 250, 500, 1000, 2000, 4000, 8000 };
 
   // set up dsp objects and signal arrays:
   int n, k;
   rsMultiBandSplitterFF splitter;
   splitter.setSplitFrequencies(splitFreqs);
+  splitter.setSlopeAccumulationMode(rsMultiBandSplitterFF::ACCUMULATE_INTO_LOWPASS);
   int numBands = splitter.getNumBands();
   std::vector<float> x(numSamples);
   std::vector<std::vector<float>> y(numBands);
@@ -47,6 +48,15 @@ void bandSplittingMultiWay()
   }
 
   // write outputs to files
+  rosic::writeToMonoWaveFile("Input.wav", &x[0], numSamples, 44100, 16);
+
+  // preliminary (use a loop later):
+  rosic::writeToMonoWaveFile("Output0.wav", &y[0][0], numSamples, 44100, 16);
+  rosic::writeToMonoWaveFile("Output1.wav", &y[1][0], numSamples, 44100, 16);
+  rosic::writeToMonoWaveFile("Output2.wav", &y[2][0], numSamples, 44100, 16);
+  rosic::writeToMonoWaveFile("Output3.wav", &y[3][0], numSamples, 44100, 16);
+  rosic::writeToMonoWaveFile("Output4.wav", &y[4][0], numSamples, 44100, 16);
+  rosic::writeToMonoWaveFile("Output5.wav", &y[5][0], numSamples, 44100, 16);
 
   //FilterPlotter<float> plt;
 }

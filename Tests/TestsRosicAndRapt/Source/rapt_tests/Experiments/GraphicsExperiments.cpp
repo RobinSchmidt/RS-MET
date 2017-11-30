@@ -34,7 +34,7 @@ inline int   roundToInt(float x)      { return ipart(x + 0.5f);      }
 inline float fpart(float x)           { return x - ipart(x);         }
 inline float rfpart(float x)          { return 1 - fpart(x);         }
 inline void  swap(float& x, float& y) { float t = x; x = y; y = t;   }
-inline float min(float x, float y)    { return x < y ? x : y; }
+//inline float min(float x, float y)    { return x < y ? x : y; }
 //inline void  plot(ImageF& im, int x, int y, float c){ im(x, y) += c; }
 //inline void  plot(ImageF& im, int x, int y, float c){ im(x,y) = min(1.f, im(x,y)+c); }
 inline void  plot(rsImageF& im, int x, int y, float c){ im(x,y) = (im(x,y)+c)/(1+c) ; }

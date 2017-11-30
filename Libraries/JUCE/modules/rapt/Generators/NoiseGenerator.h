@@ -20,12 +20,14 @@ class rsNoiseGenerator
 
 public:
 
-  rsNoiseGenerator() = default;
-	~rsNoiseGenerator() = default;
+  //rsNoiseGenerator() = default;
+	//~rsNoiseGenerator() = default;
 
-  /** Sets the seed (initial state) of the PRNG. Note that this function doesn't reset the 
-  state. */
-  inline void setSeed(unsigned long newSeed) { seed = newSeed; }
+  /** Sets the seed (initial state) of the PRNG and sets the current state to the seed value. */
+  inline void setSeed(unsigned long newSeed) { state = seed = newSeed; }
+
+  /** Sets the seed without resetting the state. */
+  inline void setSeedWithoutReset(unsigned long newSeed) { seed = newSeed; }
 
   /** Sets the range for the numbers to be produced. */
   inline void setRange(T min, T max)

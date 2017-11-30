@@ -91,7 +91,7 @@ public:
 
 
 
-  int getNumBands() { return (int)splitters.size(); }
+  int getNumBands() { return (int)splitters.size() + 1; }
 
 
   /** Produces one output sample frame. The frequency bands are in ascending order (from lowpass 
@@ -108,12 +108,14 @@ public:
       for(size_t k = 0; k < N; k++) {
         splitters[k]->getSamplePair(hi, &lo, &hi);
         outs[k] = lo; }
+      outs[N] = hi; // is that right?
     } break;
     case ACCUMULATE_INTO_LOWPASS: {   // slope accumulates into lowpass band
       lo = in;
       for(size_t k = 0; k < N; k++) {
         splitters[N-1-k]->getSamplePair(lo, &lo, &hi);
         outs[N-1-k] = hi; }
+      outs[0] = lo; // ?
     } break;
     }
   }
