@@ -86,36 +86,31 @@ public:
 
   void setSlopeAccumulationMode(int newMode) { mode = newMode; }
 
-
-
-
-
-
   int getNumBands() { return (int)splitters.size() + 1; }
 
 
   /** Produces one output sample frame. The frequency bands are in ascending order (from lowpass 
-  through the variosu bandpasses up to highpass). The caller must make sure that the output array 
+  through the various bandpasses up to highpass). The caller must make sure that the output array 
   is at least as long as the number of bands. */
   void processSampleFrame(TSig in, TSig* outs)
   {
     TSig lo, hi;  // temporaries
-    size_t N = splitters.size();
+    int N = (int) splitters.size();
     switch(mode)
     {
     case ACCUMULATE_INTO_HIGHPASS: {   // slope accumulates into highpass band
       hi = in;
-      for(size_t k = 0; k < N; k++) {
+      for(int k = 0; k < N; k++) {
         splitters[k]->getSamplePair(hi, &lo, &hi);
         outs[k] = lo; }
-      outs[N] = hi; // is that right?
+      outs[N] = hi;
     } break;
     case ACCUMULATE_INTO_LOWPASS: {   // slope accumulates into lowpass band
       lo = in;
-      for(size_t k = 0; k < N; k++) {
-        splitters[N-1-k]->getSamplePair(lo, &lo, &hi);
-        outs[N-1-k] = hi; }
-      outs[0] = lo; // ?
+      for(int k = N-1; k >= 0; k--) {  // here, k indeed needs to be a signed integer
+        splitters[k]->getSamplePair(lo, &lo, &hi);
+        outs[k+1] = hi; }
+      outs[0] = lo;
     } break;
     }
   }

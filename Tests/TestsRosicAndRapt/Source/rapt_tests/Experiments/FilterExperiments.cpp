@@ -45,6 +45,13 @@ void bandSplittingMultiWay()
     splitter.processSampleFrame(x[n], &tmp[0]);
     for(k = 0; k < numBands; k++)
       y[k][n] = tmp[k];
+
+    // test, if the band outputs recombine correctly:
+    float xr = 0.f;
+    for(k = 0; k < numBands; k++)
+      xr += y[k][n];
+    float error = x[n] - xr;
+    int dummy = 0;
   }
 
   // write outputs to files
