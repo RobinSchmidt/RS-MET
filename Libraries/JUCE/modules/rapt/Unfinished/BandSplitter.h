@@ -12,6 +12,9 @@ public:
   /** Sets the normalized radian frequency at which the split occurs. */
   void setOmega(TPar newOmega);
 
+  /** Returns the normalized radian frequency at which the split occurs. */
+  TPar getOmega() const { return w; }
+
   /** Resets state buffer variables */
   void reset() { x1 = y1 = 0; }
 
@@ -23,15 +26,17 @@ public:
     return y1;
   }
 
+  /** Produces a pair of a lowpass and a highpass output sample from an input sample. */
   inline void getSamplePair(TSig in, TSig* lo, TSig* hi)
   {
     *lo = getLowpassSample(in);
-    *hi = in - *lo;
+    *hi = in - *lo; // ensures tha in = lo + hi (perfect reconstruction)
   }
 
 protected:
 
   TSig x1 = 0, y1 = 0; // buffers
+  TPar w  = 0;         // normalized radian frequency ("omega")
   TPar b0 = 0, b1 = 0; // feedforward coeffs
   TPar a1 = 0;         // feedback coeff
 
@@ -48,7 +53,11 @@ class rsMultiBandSplitter
 
 public:
 
-
+  enum slopeAccumulationModes
+  {
+    ACCUMULATE_INTO_HIGHPASS = 0,
+    ACCUMULATE_INTO_LOWPASS
+  };
 
   /** Sets up the sample rate. */
   void setSampleRate(TPar newSampleRate);
@@ -60,35 +69,44 @@ public:
 
   void setSplitFrequency(int bandIndex, TPar newFrequency);
 
+
+  int getNumBands() { return (int)splitters.size(); }
+
+
   /** Produces one output sample frame. The frequency bands are in ascending order and the called 
   must make sure that the output array is at least as long as the number of bands. */
   void processSampleFrame(TSig in, TSig* outs)
   {
     TSig lo, hi;  // temporaries
     size_t N = splitters.size();
-
-    // slope accumulates into lowpass band:
-    lo = in;
-    for(size_t k = 0; k < N; k++) {
-      splitters[N-1-k]->getSamplePair(lo, &lo, &hi);
-      outs[N-1-k] = hi; }
-
-    // slope accumualtes into highpass band:
-
-
-
-
-
+    switch(mode)
+    {
+    case ACCUMULATE_INTO_LOWPASS: {   // slope accumulates into lowpass band
+      lo = in;
+      for(size_t k = 0; k < N; k++) {
+        splitters[N-1-k]->getSamplePair(lo, &lo, &hi);
+        outs[N-1-k] = hi; }
+    } break;
+    case ACCUMULATE_INTO_HIGHPASS: {   // slope accumulates into highpass band
+      hi = in;
+      for(size_t k = 0; k < N; k++) {
+        splitters[k]->getSamplePair(hi, &lo, &hi);
+        outs[k] = lo; }
+    } break;
+    }
   }
 
 protected:
 
   /** Updates our array of two-way splitters. */
-  //void updateSplitters();
+  void updateSplitters();
 
+  std::vector<TPar> splitFreqs;  // splitting frequencies
   std::vector<rsTwoBandSplitter<TSig, TPar>*> splitters;
 
-  int mode = 0;
+  TPar sampleRate = 44100;
+
+  int mode = ACCUMULATE_INTO_HIGHPASS;
 
 };
 
