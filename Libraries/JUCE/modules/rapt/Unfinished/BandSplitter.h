@@ -1,7 +1,12 @@
 #ifndef RAPT_BANDSPLITTER_H_INCLUDED
 #define RAPT_BANDSPLITTER_H_INCLUDED
 
-/** A filter pair to split an incoming signal into lowpass- and a highpass part. */
+/** A filter pair to split an incoming signal into lowpass- and a highpass part. The highpass part
+is obtained by subtracting the lowpass part from the original signal. This means that adding the
+highpass and lowpass outputs together gives the original signal back - the splitter provides
+perfect reconstruction. That's a feature that not all band-splitters have. For example, 
+Linkwitz/Riley splitters provide only allpass reconstruction (adding high and low bands gives an
+allpassed version of the input). */
 
 template<class TSig, class TPar>
 class rsTwoBandSplitter
@@ -11,6 +16,8 @@ public:
 
   /** Sets the normalized radian frequency at which the split occurs. */
   void setOmega(TPar newOmega);
+
+  //void setOrder(int newOrder); // to be added later
 
   /** Returns the normalized radian frequency at which the split occurs. */
   TPar getOmega() const { return w; }
@@ -59,22 +66,37 @@ public:
     ACCUMULATE_INTO_LOWPASS
   };
 
+  /** Destructor. Clears array of bandsplitter objects. */
+  ~rsMultiBandSplitter();
+
   /** Sets up the sample rate. */
   void setSampleRate(TPar newSampleRate);
+
+  /** Sets the splitting frequency for the band with given index. */
+  //void setSplitFrequency(int bandIndex, TPar newFrequency);
 
   /** Sets up all the splitting frequencies at once. */
   void setSplitFrequencies(const std::vector<TPar>& newFrequencies);
 
-  void setNumBands(int newNumBands);
+  //void setNumBands(int newNumBands);
 
-  void setSplitFrequency(int bandIndex, TPar newFrequency);
+  /** Adds a new band with the given splitting frequency. */
+  void addBand(TPar splitFrequency);
+
+
+  void setSlopeAccumulationMode(int newMode);
+
+
+
+
 
 
   int getNumBands() { return (int)splitters.size(); }
 
 
-  /** Produces one output sample frame. The frequency bands are in ascending order and the called 
-  must make sure that the output array is at least as long as the number of bands. */
+  /** Produces one output sample frame. The frequency bands are in ascending order (from lowpass 
+  through the variosu bandpasses up to highpass). The caller must make sure that the output array 
+  is at least as long as the number of bands. */
   void processSampleFrame(TSig in, TSig* outs)
   {
     TSig lo, hi;  // temporaries
@@ -97,6 +119,9 @@ public:
   }
 
 protected:
+
+  /** Clears or arrays of band-splitter objects and frequencies. */
+  void clearArrays();
 
   /** Updates our array of two-way splitters. */
   void updateSplitters();
