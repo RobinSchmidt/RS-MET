@@ -20,17 +20,18 @@ void bandSplittingTwoWay()
 void bandSplittingMultiWay()
 {
   // user parameters:
-  int numSamples = 50000;
+  int numSamples = 80000;
   float sampleRate = 44100;
-  vector<float> splitFreqs = { 100, 300, 1000, 3000, 10000 };
+  //vector<float> splitFreqs = { 100, 300, 1000, 3000, 10000 };
   //vector<float> splitFreqs = { 80, 150, 250, 500, 1000, 2000, 4000, 8000 };
+  vector<float> splitFreqs = { 125, 250, 500, 1000, 2000, 4000, 8000 };
 
   // set up dsp objects and signal arrays:
   int n, k;
   rsMultiBandSplitterFF splitter;
   splitter.setSplitFrequencies(splitFreqs);
-  //splitter.setSlopeAccumulationMode(rsMultiBandSplitterFF::ACCUMULATE_INTO_LOWPASS);
-  splitter.setSlopeAccumulationMode(rsMultiBandSplitterFF::ACCUMULATE_INTO_HIGHPASS);
+  splitter.setSlopeAccumulationMode(rsMultiBandSplitterFF::ACCUMULATE_INTO_LOWPASS);
+  //splitter.setSlopeAccumulationMode(rsMultiBandSplitterFF::ACCUMULATE_INTO_HIGHPASS);
   int numBands = splitter.getNumBands();
   std::vector<float> x(numSamples);
   std::vector<std::vector<float>> y(numBands);
@@ -65,6 +66,8 @@ void bandSplittingMultiWay()
   rosic::writeToMonoWaveFile("Output3.wav", &y[3][0], numSamples, 44100, 16);
   rosic::writeToMonoWaveFile("Output4.wav", &y[4][0], numSamples, 44100, 16);
   rosic::writeToMonoWaveFile("Output5.wav", &y[5][0], numSamples, 44100, 16);
+  rosic::writeToMonoWaveFile("Output6.wav", &y[6][0], numSamples, 44100, 16);
+  rosic::writeToMonoWaveFile("Output7.wav", &y[7][0], numSamples, 44100, 16);
 
   //FilterPlotter<float> plt;
 }
@@ -94,23 +97,28 @@ void bandSplittingTreeAlgo()
 {
   // We test the strategy to build a binary tree of splits symbolically by using strings that
   // represent the path of partial signal along the splitter tree, for example, "LHL" means
-  // the signal went throug a lowpass then highpass the another lowpass
+  // the signal went through a lowpass then a highpass then another lowpass
 
-  int numBands = 16; // algo currently assumes a power of 2
-  std::vector<std::string> str(numBands);
-  int numCalls = updateBandSplitStrings(str, 0, numBands); 
+  int numBands = 8; // algo currently assumes a power of 2
+  std::vector<std::string> str1(numBands);
+  int numCalls = updateBandSplitStrings(str1, 0, numBands); 
     // numCalls should be 2*numBands-1 (for numBands a power of two)
 
-  //int start = 0;
-  //int L = numBands;
-  //while(L > 0)
-  //{
-  //  L /= 2;
-  //  str[start] += "L";  
-  //  start += L;
-  //  str[start] += "H";
-  //  int dummy = 0;      // doesn't work yet
-  //}
+  // ok, the recursive function seems to work - now let's try to convert it into an iterative algo
+  std::vector<std::string> str2(numBands);
+  int S = 0;        // start
+  int L = numBands; // length
+  while(L > 1)
+  {
+    int L2 = L/2;
+    while(L2 > 1)
+    {
+      str2[S]   = str2[S] + "L";
+      str2[S+L] = str2[S] + "H";
+      L2 /= 2;
+      int dummy = 0; // doesn't work yet
+    }
+  }
 }
 
 //-------------------------------------------------------------------------------------------------
