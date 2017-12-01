@@ -112,6 +112,8 @@ public:
         outs[k+1] = hi; }
       outs[0] = lo;
     } break;
+
+      // the code can be streamlined to get rid of the temporaries
     }
   }
 

@@ -29,7 +29,8 @@ void bandSplittingMultiWay()
   int n, k;
   rsMultiBandSplitterFF splitter;
   splitter.setSplitFrequencies(splitFreqs);
-  splitter.setSlopeAccumulationMode(rsMultiBandSplitterFF::ACCUMULATE_INTO_LOWPASS);
+  //splitter.setSlopeAccumulationMode(rsMultiBandSplitterFF::ACCUMULATE_INTO_LOWPASS);
+  splitter.setSlopeAccumulationMode(rsMultiBandSplitterFF::ACCUMULATE_INTO_HIGHPASS);
   int numBands = splitter.getNumBands();
   std::vector<float> x(numSamples);
   std::vector<std::vector<float>> y(numBands);
@@ -66,6 +67,50 @@ void bandSplittingMultiWay()
   rosic::writeToMonoWaveFile("Output5.wav", &y[5][0], numSamples, 44100, 16);
 
   //FilterPlotter<float> plt;
+}
+
+//void append(std::string& str, std::string& appendix
+
+
+int updateBandSplitStrings(std::vector<std::string>& str, int start, int length)
+{
+  static int numCalls = 0;
+  numCalls++;
+
+  if(length == 1)
+    return numCalls;
+
+  int L = length/2;
+  str[start+L] = str[start] + "H";
+  str[start]   = str[start] + "L";  
+
+  // recursion:
+  updateBandSplitStrings(str, start+L, L); // upper branch (highpass)
+  updateBandSplitStrings(str, start,   L); // lower branch (lowpass)
+
+  return numCalls;
+}
+void bandSplittingTreeAlgo()
+{
+  // We test the strategy to build a binary tree of splits symbolically by using strings that
+  // represent the path of partial signal along the splitter tree, for example, "LHL" means
+  // the signal went throug a lowpass then highpass the another lowpass
+
+  int numBands = 16; // algo currently assumes a power of 2
+  std::vector<std::string> str(numBands);
+  int numCalls = updateBandSplitStrings(str, 0, numBands); 
+    // numCalls should be 2*numBands-1 (for numBands a power of two)
+
+  //int start = 0;
+  //int L = numBands;
+  //while(L > 0)
+  //{
+  //  L /= 2;
+  //  str[start] += "L";  
+  //  start += L;
+  //  str[start] += "H";
+  //  int dummy = 0;      // doesn't work yet
+  //}
 }
 
 //-------------------------------------------------------------------------------------------------

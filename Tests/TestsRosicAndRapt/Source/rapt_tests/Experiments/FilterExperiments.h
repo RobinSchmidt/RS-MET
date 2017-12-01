@@ -5,6 +5,7 @@
 
 void bandSplittingTwoWay();
 void bandSplittingMultiWay();
+void bandSplittingTreeAlgo();
 void ladderResonanceManipulation();
 void nonUniformMovingAverage();
 void prototypeDesign();
