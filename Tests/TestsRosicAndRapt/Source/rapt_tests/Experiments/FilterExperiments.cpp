@@ -99,26 +99,28 @@ void bandSplittingTreeAlgo()
   // represent the path of partial signal along the splitter tree, for example, "LHL" means
   // the signal went through a lowpass then a highpass then another lowpass
 
-  int numBands = 8; // algo currently assumes a power of 2
+  int numBands = 16; // algo currently assumes a power of 2
   std::vector<std::string> str1(numBands);
   int numCalls = updateBandSplitStrings(str1, 0, numBands); 
     // numCalls should be 2*numBands-1 (for numBands a power of two)
 
   // ok, the recursive function seems to work - now let's try to convert it into an iterative algo
   std::vector<std::string> str2(numBands);
-  int S = 0;        // start
-  int L = numBands; // length
-  while(L > 1)
+  int inc = numBands;
+  int numIts = 0;
+  while(inc > 1)
   {
-    int L2 = L/2;
-    while(L2 > 1)
+    int pos = 0;
+    while(pos < numBands)
     {
-      str2[S]   = str2[S] + "L";
-      str2[S+L] = str2[S] + "H";
-      L2 /= 2;
-      int dummy = 0; // doesn't work yet
+      str2[pos+inc/2] = str2[pos] + "H";
+      str2[pos]       = str2[pos] + "L";
+      pos += inc;
+      numIts++;
     }
+    inc /= 2;
   }
+
 }
 
 //-------------------------------------------------------------------------------------------------

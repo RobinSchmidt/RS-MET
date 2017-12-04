@@ -23,6 +23,9 @@ protected:
 
   rosic::rsMultiBandCompressor multiCompCore;
 
+  int maxNumBands  = 16;
+  int selectedBand = 0;
+
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MultiCompAudioModule)
 };
