@@ -4,7 +4,9 @@
 namespace rosic
 {
 
-/**  */
+/** A multiband compressor with an arbitrary number of bands and perfect reconstruction, i.e. with 
+neutral settings, it will be totally transparent (up to roundoff error) and not color the signal in
+any way. */
 
 class rsMultiBandCompressor
 {
@@ -24,7 +26,7 @@ public:
   //---------------------------------------------------------------------------------------------
   /** \name Setup */
 
-  void setNumerOfBands(int newNumber);
+  void setNumberOfBands(int newNumber);
 
   void setSplitFrequency(int bandIndex, double newFrequency);
 
@@ -48,16 +50,18 @@ protected:
 
   rapt::rsMultiBandSplitter<double, double> splitterL, splitterR;
   std::vector<Compressor*> compressors;
-
+  std::vector<double> tmpL, tmpR; // temporary buffers
+  int numBands = 1;
 };
 
 //-----------------------------------------------------------------------------------------------
 // inlined functions:
 
-
-
 INLINE void rsMultiBandCompressor::getSampleFrameStereo(double *inOutL, double *inOutR)
 {
+  splitterL.processSampleFrame(*inOutL, &tmpL[0]);
+  splitterR.processSampleFrame(*inOutR, &tmpR[0]);
+
 
 }
 
