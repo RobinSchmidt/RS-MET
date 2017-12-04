@@ -93,6 +93,26 @@ public:
   /** Produces one output sample frame. The frequency bands are in ascending order (from lowpass 
   through the various bandpasses up to highpass). The caller must make sure that the output array 
   is at least as long as the number of bands. */
+
+  void processSampleFrame(TSig in, TSig* outs)
+  {
+    int N = (int) splitters.size();
+    switch(mode)
+    {
+    case ACCUMULATE_INTO_HIGHPASS: {   // slope accumulates into highpass band
+      for(int k = 0; k < N; k++)
+        splitters[k]->getSamplePair(in, &outs[k], &in);
+      outs[N] = in;
+    } break;
+    case ACCUMULATE_INTO_LOWPASS: {   // slope accumulates into lowpass band
+      for(int k = N-1; k >= 0; k--) // here, k indeed needs to be a signed integer
+        splitters[k]->getSamplePair(in, &in, &outs[k+1]);
+      outs[0] = in;
+    } break;
+    }
+  }
+
+  /*
   void processSampleFrame(TSig in, TSig* outs)
   {
     TSig lo, hi;  // temporaries
@@ -114,9 +134,11 @@ public:
       outs[0] = lo;
     } break;
       // the code can be streamlined to get rid of the temporaries
-
     }
   }
+  */
+
+
 
 protected:
 
