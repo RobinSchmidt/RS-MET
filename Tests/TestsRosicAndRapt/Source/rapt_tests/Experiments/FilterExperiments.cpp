@@ -31,7 +31,8 @@ void bandSplittingMultiWay()
   rsMultiBandSplitterFF splitter;
   splitter.setSplitFrequencies(splitFreqs);
   //splitter.setSlopeAccumulationMode(rsMultiBandSplitterFF::ACCUMULATE_INTO_LOWPASS);
-  splitter.setSlopeAccumulationMode(rsMultiBandSplitterFF::ACCUMULATE_INTO_HIGHPASS);
+  //splitter.setSlopeAccumulationMode(rsMultiBandSplitterFF::ACCUMULATE_INTO_HIGHPASS);
+  splitter.setSlopeAccumulationMode(rsMultiBandSplitterFF::BINARY_TREE);
   int numBands = splitter.getNumBands();
   std::vector<float> x(numSamples);
   std::vector<std::vector<float>> y(numBands);
@@ -99,28 +100,32 @@ void bandSplittingTreeAlgo()
   // represent the path of partial signal along the splitter tree, for example, "LHL" means
   // the signal went through a lowpass then a highpass then another lowpass
 
-  int numBands = 16; // algo currently assumes a power of 2
+  int numBands = 8; // algo currently assumes a power of 2
   std::vector<std::string> str1(numBands);
   int numCalls = updateBandSplitStrings(str1, 0, numBands); 
     // numCalls should be 2*numBands-1 (for numBands a power of two)
 
   // ok, the recursive function seems to work - now let's try to convert it into an iterative algo
   std::vector<std::string> str2(numBands);
-  int inc = numBands;
+  int inc = numBands; // nextPowerOfTwo(numBands) for non-powers-of-2?
   int numIts = 0;
   while(inc > 1)
   {
     int pos = 0;
     while(pos < numBands)
     {
-      str2[pos+inc/2] = str2[pos] + "H";
+      str2[pos+inc/2] = str2[pos] + "H"; // maybe call inc/2 offset
       str2[pos]       = str2[pos] + "L";
       pos += inc;
       numIts++;
     }
     inc /= 2;
   }
+  // ok - this seems to work, too. In the actual splitter, we need to initialize y[0] with the 
+  // input and then run exactly that type of iteration using y[pos] as input to the two-way 
+  // splitters, y[pos] (also) as lowpass output and y[pos+inc/2] as highpass output
 
+  bool works = (str2 == str1);
 }
 
 //-------------------------------------------------------------------------------------------------

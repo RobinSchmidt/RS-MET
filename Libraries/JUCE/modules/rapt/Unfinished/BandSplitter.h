@@ -109,6 +109,19 @@ public:
         splitters[k]->getSamplePair(in, &in, &outs[k+1]);
       outs[0] = in;
     } break;
+    case BINARY_TREE:
+    {
+      int numBands = getNumBands(); // currently assumes numBands to be a power of 2
+      int inc = numBands;
+      outs[0] = in;
+      while(inc > 1){
+        int pos = 0;
+        while(pos < numBands){
+          int splitterIndex = pos+inc/2-1; // for debug
+          splitters[pos+inc/2-1]->getSamplePair(outs[pos], &outs[pos], &outs[pos+inc/2]);
+          pos += inc; }
+        inc /= 2; }
+    } break;
     }
   }
 
