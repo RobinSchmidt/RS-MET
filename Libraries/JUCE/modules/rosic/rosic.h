@@ -15,7 +15,7 @@
   website:          http://www.rs-met.com
   license:          GPL/Commercial
 
-  dependencies:
+  dependencies:     rapt
   OSXFrameworks:
   iOSFrameworks:
 
@@ -29,9 +29,11 @@
 //-------------------------------------------------------------------------------------------------
 // new, centralized header includes (when finished, delete old ones):
 
+#include <rapt/rapt.h>
+
 #include <math.h>
 #include <float.h>      // for DBL_MIN, ..
-#include <algorithm>    // for sort
+//#include <algorithm>    // for sort
 #include <cstring>      // for memcpy on linux/gcc
 #include <list>
 #include <stdlib.h>     // needed on OSX for atoi, atof, rand, abs

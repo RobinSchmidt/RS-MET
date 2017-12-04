@@ -1,0 +1,7 @@
+rsMultiBandCompressor::rsMultiBandCompressor(int newLookAheadBufferSize) 
+{
+
+}
+
+
+

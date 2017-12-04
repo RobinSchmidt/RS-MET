@@ -62,8 +62,9 @@ public:
 
   enum slopeAccumulationModes
   {
-    ACCUMULATE_INTO_HIGHPASS = 0,
-    ACCUMULATE_INTO_LOWPASS
+    ACCUMULATE_INTO_HIGHPASS = 0,  // always splits the high band further
+    ACCUMULATE_INTO_LOWPASS,       // always splits the low band further
+    BINARY_TREE                    // builds a binary tree of splitters (not yet implemented)
   };
 
   /** Destructor. Clears array of bandsplitter objects. */
@@ -112,8 +113,8 @@ public:
         outs[k+1] = hi; }
       outs[0] = lo;
     } break;
-
       // the code can be streamlined to get rid of the temporaries
+
     }
   }
 

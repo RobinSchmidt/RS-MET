@@ -2297,6 +2297,12 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Vector.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\BandSplitter.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Unfinished.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Graphics\AlphaMask.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2808,6 +2814,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\dynamics\rosic_Limiter.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\dynamics\rosic_MultiBandCompressor.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\dynamics\rosic_NoiseGate.cpp">
@@ -4513,6 +4522,8 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Misc.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Polynomial.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Temp\Vector.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\BandSplitter.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Unfinished\Unfinished.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Graphics\AlphaMask.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Graphics\Image.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Visualization\Graphics\ImageDrawer.h"/>
@@ -4696,6 +4707,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\dynamics\rosic_DynamicsProcessorBase.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\dynamics\rosic_Expander.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\dynamics\rosic_Limiter.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\dynamics\rosic_MultiBandCompressor.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\dynamics\rosic_NoiseGate.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\dynamics\rosic_SoftKneeCompressor.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rosic\dynamics\rosic_SoftKneeExpander.h"/>

@@ -44,7 +44,7 @@
 //#include <juce_gui_basics/juce_gui_basics.h>
 using namespace juce;
 
-#include <rapt/rapt.h>
+#include <rapt/rapt.h> // maybe include rosic instead? rosic now depends on rapt
 
 namespace jura
 {
