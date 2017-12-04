@@ -26,6 +26,8 @@ public:
   //---------------------------------------------------------------------------------------------
   /** \name Setup */
 
+  void setSampleRate(double newSampleRate);
+
   void setNumberOfBands(int newNumber);
 
   void setSplitFrequency(int bandIndex, double newFrequency);
@@ -44,11 +46,13 @@ public:
   /** Calculates one output stereo sample-frame at a time. */
   INLINE void getSampleFrameStereo(double *inOutL, double *inOutR);
 
+  void reset();
+
   //===============================================================================================
 
 protected:
 
-  rapt::rsMultiBandSplitter<double, double> splitterL, splitterR;
+  RAPT::rsMultiBandSplitter<double, double> splitterL, splitterR;
   std::vector<Compressor*> compressors;
   std::vector<double> tmpL, tmpR; // temporary buffers
   int numBands = 1;

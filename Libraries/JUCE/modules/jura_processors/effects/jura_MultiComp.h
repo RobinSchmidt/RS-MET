@@ -2,7 +2,7 @@
 #define jura_MultiComp_h
 
 
-class JUCE_API MultiCompAudioModule : public jura::AudioModule
+class JUCE_API MultiCompAudioModule : public jura::ModulatableAudioModule
 {
 
 public:
@@ -21,6 +21,7 @@ public:
 
 protected:
 
+  rosic::rsMultiBandCompressor multiCompCore;
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MultiCompAudioModule)

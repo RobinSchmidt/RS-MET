@@ -300,6 +300,7 @@
 #include "dynamics/rosic_NoiseGate.h"
 #include "dynamics/rosic_SoftKneeCompressor.h"
 #include "dynamics/rosic_SoftKneeExpander.h"
+#include "dynamics/rosic_MultiBandCompressor.h"
 
 // effects:
 #include "effects/rosic_FeedbackDelayNetwork.h"

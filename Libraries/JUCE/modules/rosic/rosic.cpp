@@ -238,6 +238,7 @@ rosic: rs_dsp (this should never depend on any juce class/module)
 #include "dynamics/rosic_NoiseGate.cpp"
 #include "dynamics/rosic_SoftKneeCompressor.cpp"
 #include "dynamics/rosic_SoftKneeExpander.cpp"
+#include "dynamics/rosic_MultiBandCompressor.cpp"
 // where's the Leveller?
 // make a dynamics processor with freely adjustable curve
 

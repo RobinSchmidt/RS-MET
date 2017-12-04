@@ -1,6 +1,6 @@
 MultiCompAudioModule::MultiCompAudioModule(CriticalSection *lockToUse, 
   MetaParameterManager* metaManagerToUse, ModulationManager* modManagerToUse)
-  : AudioModule(lockToUse, metaManagerToUse, modManagerToUse)
+  : ModulatableAudioModule(lockToUse, metaManagerToUse, modManagerToUse)
 {
   ScopedLock scopedLock(*lock);
   moduleName = "MultiComp";
@@ -13,20 +13,16 @@ void MultiCompAudioModule::createParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  typedef RAPT::rsLissajousOscillator3D<double> LO;
-  LO* lo = &oscCore;
+  typedef rosic::rsMultiBandCompressor MBC;
+  MBC* mbc = &multiCompCore;
 
   typedef ModulatableParameter Param;
   Param* p;
 
 
-  p = new Param("Renormalize", 0.0, 2.0, 0.0, Parameter::LINEAR);
+  p = new Param("NumBands", 1.0, 16.0, 1.0, Parameter::INTEGER);
   addObservedParameter(p);
-  p->setValueChangeCallback<LO>(lo, &LO::setRenormalizationAmount);
-
-  p = new Param("Clip", 0.0, 2.0, 1.0, Parameter::LINEAR);
-  addObservedParameter(p);
-  p->setValueChangeCallback<LO>(lo, &LO::setClipAmplitude);
+  p->setValueChangeCallback<MBC>(mbc, &MBC::setNumberOfBands);
 }
 
 void MultiCompAudioModule::processBlock(double **inOutBuffer, int numChannels, int numSamples)
