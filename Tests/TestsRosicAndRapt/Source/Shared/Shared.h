@@ -8,7 +8,7 @@
 #include "Utilities/FileWriting.h"
 #include "Utilities/PerformanceTestTools.h"
 
-#include "rosic/rosic.h"
+//#include "rosic/rosic.h"
 
 inline bool detectMemoryLeaks()
 {

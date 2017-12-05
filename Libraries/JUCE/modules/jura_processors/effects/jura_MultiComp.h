@@ -23,7 +23,7 @@ protected:
 
   rosic::rsMultiBandCompressor multiCompCore;
 
-  int maxNumBands  = 16;
+  int maxNumBands  = 0;  // assigned in constructor
   int selectedBand = 0;
 
 

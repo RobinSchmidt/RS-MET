@@ -27,3 +27,9 @@ void writeImageToFilePPM(const rsImageF& img, const char* path)
   fclose(fd);
   delete[] buf;
 }
+
+void writeToMonoWaveFile(std::string path, float *signal, int numFrames, int sampleRate,
+  int numBits)
+{
+  rosic::writeToMonoWaveFile(path.c_str(), signal, numFrames, sampleRate, numBits);
+}

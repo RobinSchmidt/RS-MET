@@ -117,7 +117,7 @@ public:
       while(inc > 1){
         int pos = 0;
         while(pos < numBands){
-          int splitterIndex = pos+inc/2-1; // for debug
+          //int splitterIndex = pos+inc/2-1; // for debug
           splitters[pos+inc/2-1]->getSamplePair(outs[pos], &outs[pos], &outs[pos+inc/2]);
           pos += inc; }
         inc /= 2; }

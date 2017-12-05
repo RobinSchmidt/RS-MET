@@ -40,6 +40,12 @@ public:
 
   void setReleaseTime(int bandIndex, double newReleaseTime);
 
+  //---------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+  /** Returns the maximum number of bands that is supported. */
+  int getMaxNumberOfBands() { return maxNumBands; }
+
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
@@ -56,6 +62,7 @@ protected:
   std::vector<Compressor*> compressors;
   std::vector<double> tmpL, tmpR; // temporary buffers
   int numBands = 1;
+  int maxNumBands = 16; // preliminary - make indefinite in the future
 };
 
 //-----------------------------------------------------------------------------------------------

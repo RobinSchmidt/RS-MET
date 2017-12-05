@@ -6,6 +6,8 @@ MultiCompAudioModule::MultiCompAudioModule(CriticalSection *lockToUse,
   moduleName = "MultiComp";
   setActiveDirectory(getApplicationDirectory() + "/Presets/MultiComp");
 
+
+  maxNumBands = multiCompCore.getMaxNumBands();
   createParameters();
 }
 
@@ -19,10 +21,24 @@ void MultiCompAudioModule::createParameters()
   typedef ModulatableParameter Param;
   Param* p;
 
-
-  p = new Param("NumBands", 1.0, 16.0, 1.0, Parameter::INTEGER);
+  p = new Param("NumBands", 1.0, maxNumBands, 1.0, Parameter::INTEGER);
   addObservedParameter(p);
   p->setValueChangeCallback<MBC>(mbc, &MBC::setNumberOfBands);
+
+
+
+  // SplitMode - steep lowpass, steep highpass, binary tree
+
+  for(int i = 0; i < maxNumBands; i++)
+  {
+    // let the lowest band formally have a split-frequency of zero, so we can have the same number
+    // of splitters as we have compressors ...or maybe not
+
+
+  }
+
+
+
 }
 
 void MultiCompAudioModule::processBlock(double **inOutBuffer, int numChannels, int numSamples)

@@ -20,11 +20,12 @@ void bandSplittingTwoWay()
 void bandSplittingMultiWay()
 {
   // user parameters:
-  int numSamples = 80000;
+  int numSamples = 100;
   float sampleRate = 44100;
   //vector<float> splitFreqs = { 100, 300, 1000, 3000, 10000 };
   //vector<float> splitFreqs = { 80, 150, 250, 500, 1000, 2000, 4000, 8000 };
-  vector<float> splitFreqs = { 125, 250, 500, 1000, 2000, 4000, 8000 };
+  vector<float> splitFreqs = { 125, 250, 500, 1000, 2000, 4000, 8000 };  // 8 bands
+  //vector<float> splitFreqs = { 60, 90, 135, 200, 300, 450, 675, 1000, 1500, 2200, 3000, 4500, 6000, 9000, 13000 };  // 16 bands
 
   // set up dsp objects and signal arrays:
   int n, k;
@@ -42,9 +43,10 @@ void bandSplittingMultiWay()
   std::vector<float> tmp(numBands);  // holds the array of bandpass output samples
 
   // produce input and output signals:
+  x[0] = 1;
   for(n = 0; n < numSamples; n++)
   {
-    x[n] = ng.getSample();
+    //x[n] = ng.getSample();
     splitter.processSampleFrame(x[n], &tmp[0]);
     for(k = 0; k < numBands; k++)
       y[k][n] = tmp[k];
@@ -57,20 +59,16 @@ void bandSplittingMultiWay()
     int dummy = 0;
   }
 
-  // write outputs to files
+  // write outputs to files:
   rosic::writeToMonoWaveFile("Input.wav", &x[0], numSamples, 44100, 16);
-
-  // preliminary (use a loop later):
-  rosic::writeToMonoWaveFile("Output0.wav", &y[0][0], numSamples, 44100, 16);
-  rosic::writeToMonoWaveFile("Output1.wav", &y[1][0], numSamples, 44100, 16);
-  rosic::writeToMonoWaveFile("Output2.wav", &y[2][0], numSamples, 44100, 16);
-  rosic::writeToMonoWaveFile("Output3.wav", &y[3][0], numSamples, 44100, 16);
-  rosic::writeToMonoWaveFile("Output4.wav", &y[4][0], numSamples, 44100, 16);
-  rosic::writeToMonoWaveFile("Output5.wav", &y[5][0], numSamples, 44100, 16);
-  rosic::writeToMonoWaveFile("Output6.wav", &y[6][0], numSamples, 44100, 16);
-  rosic::writeToMonoWaveFile("Output7.wav", &y[7][0], numSamples, 44100, 16);
+  for(k = 0; k < numBands; k++)
+    writeToMonoWaveFile("Output"+to_string(k)+".wav", &y[k][0], numSamples, (int) sampleRate, 16);
 
   //FilterPlotter<float> plt;
+  GNUPlotter plt;
+  for(k = 0; k < numBands; k++)
+    plt.addDataArrays(numSamples, &y[k][0]);
+  plt.plot();
 }
 
 //void append(std::string& str, std::string& appendix
