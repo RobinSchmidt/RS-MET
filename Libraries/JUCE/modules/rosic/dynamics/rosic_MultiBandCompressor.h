@@ -70,10 +70,21 @@ protected:
 
 INLINE void rsMultiBandCompressor::getSampleFrameStereo(double *inOutL, double *inOutR)
 {
+  // split inputs into frequency bands:
   splitterL.processSampleFrame(*inOutL, &tmpL[0]);
   splitterR.processSampleFrame(*inOutR, &tmpR[0]);
 
+  // compress individual bands:
+  for(int k = 0; k < numBands; k++)
+    compressors[k]->getSampleFrameStereo(&tmpL[k], &tmpR[k]);
 
+  // recombine compressed bands into output:
+  *inOutL = *inOutR = 0;
+  for(int k = 0; k < numBands; k++)
+  {
+    *inOutL += tmpL[k];
+    *inOutR += tmpR[k];
+  }
 }
 
 }
