@@ -48,6 +48,13 @@ void rsMultiBandSplitter<TSig, TPar>::addBand(TPar splitFrequency)
   splitters.push_back(splitter);        // here too
 }
 
+template<class TSig, class TPar>
+void rsMultiBandSplitter<TSig, TPar>::reset()
+{
+  for(size_t i = 0; i < splitters.size(); i++)
+    splitters[i]->reset();
+}
+
 /*
 template<class TSig, class TPar>
 void rsMultiBandSplitter<TSig, TPar>::setNumBands(int newNumBands)

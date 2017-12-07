@@ -89,11 +89,13 @@ public:
 
   int getNumBands() { return (int)splitters.size() + 1; }
 
+  /** Resets the states of the band-splitter filters. */
+  void reset();
+
 
   /** Produces one output sample frame. The frequency bands are in ascending order (from lowpass 
   through the various bandpasses up to highpass). The caller must make sure that the output array 
   is at least as long as the number of bands. */
-
   void processSampleFrame(TSig in, TSig* outs)
   {
     int N = (int) splitters.size();

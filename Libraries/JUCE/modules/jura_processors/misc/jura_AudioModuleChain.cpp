@@ -27,6 +27,7 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
   // effects:
   if(type == "Enveloper")        return new Enveloper(                  lock);
   if(type == "FuncShaper")       return new FuncShaperAudioModule(      lock, metaMan, modMan);
+  if(type == "MultiComp")        return new MultiCompAudioModule(       lock, metaMan, modMan);
   if(type == "AlgoVerb")         return new AlgoVerbAudioModule(        lock);
   if(type == "EchoLab")          return new EchoLabAudioModule(         lock);
   if(type == "StereoDelay")      return new StereoDelayAudioModule(     lock);
@@ -80,6 +81,7 @@ juce::String AudioModuleFactory::getModuleType(AudioModule *m)
   // effects:
   if(dynamic_cast<Enveloper*>(m))                   return "Enveloper";
   if(dynamic_cast<FuncShaperAudioModule*>(m))       return "FuncShaper";
+  if(dynamic_cast<MultiCompAudioModule*>(m))        return "MultiComp";
   if(dynamic_cast<AlgoVerbAudioModule*>(m))         return "AlgoVerb";
   if(dynamic_cast<EchoLabAudioModule*>(m))          return "EchoLab";
   if(dynamic_cast<StereoDelayAudioModule*>(m))      return "StereoDelay";
@@ -214,6 +216,7 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
   node = new RTreeViewNode("Effects", -1, "Effects");
   node->addChildNode(new RTreeViewNode("Enveloper",     i++));
   node->addChildNode(new RTreeViewNode("FuncShaper",    i++));
+  node->addChildNode(new RTreeViewNode("MultiComp",     i++));
   node->addChildNode(new RTreeViewNode("StereoDelay",   i++));
   node->addChildNode(new RTreeViewNode("PitchShifter",  i++));
   //node->addChildNode(new RTreeViewNode("EchoLab",       i++));
