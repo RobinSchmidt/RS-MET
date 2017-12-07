@@ -34,10 +34,20 @@ void rsMultiBandSplitter<TSig, TPar>::setSplitFrequency(int bandIndex, TPar newF
 template<class TSig, class TPar>
 void rsMultiBandSplitter<TSig, TPar>::setSplitFrequencies(const std::vector<TPar>& newFrequencies)
 {
-  // it's not always necessarry to clear and create everything anew - optimize this later
-  clearArrays();
-  for(int i = 0; i < newFrequencies.size(); i++)
-    addBand(newFrequencies[i]);
+  splitFreqs = newFrequencies;
+  updateSplitters();
+
+  //// it's not always necessarry to clear and create everything anew - optimize this later
+  //clearArrays();
+  //for(int i = 0; i < newFrequencies.size(); i++)
+  //  addBand(newFrequencies[i]);
+}
+
+template<class TSig, class TPar>
+void rsMultiBandSplitter<TSig, TPar>::setNumberOfActiveBands(int newNumber)
+{
+  rsAssert(newNumber <= getNumBands());
+  numActiveBands = newNumber;
 }
 
 template<class TSig, class TPar>
@@ -88,7 +98,16 @@ void rsMultiBandSplitter<TSig, TPar>::clearArrays()
 template<class TSig, class TPar>
 void rsMultiBandSplitter<TSig, TPar>::updateSplitters()
 {
+  // delete superfluous splitters:
+  for(size_t i = splitFreqs.size(); i < splitters.size(); i++)
+    delete splitters[i];
   splitters.resize(splitFreqs.size());
+
+  // create new splitters as necessary and set them up:
   for(size_t k = 0; k < splitters.size(); k++)
+  {
+    if(splitters[k] == nullptr)
+      splitters[k] = new rsTwoBandSplitter<TSig, TPar>;
     splitters[k]->setOmega(TPar(2*PI)*splitFreqs[k]/sampleRate);
+  }
 }

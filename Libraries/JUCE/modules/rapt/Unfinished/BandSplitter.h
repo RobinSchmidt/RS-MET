@@ -85,6 +85,13 @@ public:
   will their split frequencies evenly distributed on a log-frequency scale between the old topmost
   split-frequency and the Nyquist frequency. */
   void setNumberOfBands(int newNumber);
+    // rename to setNumberOfAvailableBands
+
+  /** Sometimes it may be convenient (or more efficient) to not change the arrays of splitters 
+  (causing deletions or allocations of new objects) but just use a lesser number of splitters than 
+  available. Use this function to set the number of af active bands to less than or equal the 
+  number of available bands. */
+  void setNumberOfActiveBands(int newNumber);
 
   /** Adds a new band with the given splitting frequency. */
   void addBand(TPar splitFrequency);
@@ -103,16 +110,17 @@ public:
   is at least as long as the number of bands. */
   void processSampleFrame(TSig in, TSig* outs)
   {
-    int N = (int) splitters.size();
+    //int numSplitters = (int) splitters.size(); // use getNumActiveBands
+    int numSplitters = numActiveBands - 1;
     switch(mode)
     {
     case ACCUMULATE_INTO_HIGHPASS: {   // slope accumulates into highpass band
-      for(int k = 0; k < N; k++)
+      for(int k = 0; k < numSplitters; k++)
         splitters[k]->getSamplePair(in, &outs[k], &in);
-      outs[N] = in;
+      outs[numSplitters] = in; // "outs" has to be one slot longer than splitters array
     } break;
     case ACCUMULATE_INTO_LOWPASS: {   // slope accumulates into lowpass band
-      for(int k = N-1; k >= 0; k--) // here, k indeed needs to be a signed integer
+      for(int k = numSplitters-1; k >= 0; k--) // here, k indeed needs to be a signed integer
         splitters[k]->getSamplePair(in, &in, &outs[k+1]);
       outs[0] = in;
     } break;
@@ -128,37 +136,13 @@ public:
           splitters[pos+inc/2-1]->getSamplePair(outs[pos], &outs[pos], &outs[pos+inc/2]);
           pos += inc; }
         inc /= 2; }
+
+      // maybe here we should collect/recombine the topmost bands, if the number of active bands is
+      // less than the number of available bands - available bands should always be a power of 2
+
     } break;
     }
   }
-
-  /*
-  void processSampleFrame(TSig in, TSig* outs)
-  {
-    TSig lo, hi;  // temporaries
-    int N = (int) splitters.size();
-    switch(mode)
-    {
-    case ACCUMULATE_INTO_HIGHPASS: {   // slope accumulates into highpass band
-      hi = in;
-      for(int k = 0; k < N; k++) {
-        splitters[k]->getSamplePair(hi, &lo, &hi);
-        outs[k] = lo; }
-      outs[N] = hi;
-    } break;
-    case ACCUMULATE_INTO_LOWPASS: {   // slope accumulates into lowpass band
-      lo = in;
-      for(int k = N-1; k >= 0; k--) {  // here, k indeed needs to be a signed integer
-        splitters[k]->getSamplePair(lo, &lo, &hi);
-        outs[k+1] = hi; }
-      outs[0] = lo;
-    } break;
-      // the code can be streamlined to get rid of the temporaries
-    }
-  }
-  */
-
-
 
 protected:
 
@@ -174,18 +158,8 @@ protected:
   TPar sampleRate = 44100;
 
   int mode = ACCUMULATE_INTO_HIGHPASS;
+  int numActiveBands = 1;
 
 };
-
-/*
--split the signal in a hierarchical way
- -always split the low band further
- -..or maybe always split the high band further - this makes the final high pass steepest and i 
-  think it's more important to keep the high band free from low-frequency leakage than vice versa
- -or maybe split in a binary tree like way (distributes the slopes evenly between high and low 
-  bands)
- -maybe make this a user choice
-*/
-
 
 #endif
