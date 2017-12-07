@@ -18,6 +18,7 @@ public:
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
   virtual void setSampleRate(double newSampleRate) override;
   virtual void reset() override;
+  AudioModuleEditor* createEditor() override;
 
 protected:
 
@@ -28,6 +29,36 @@ protected:
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MultiCompAudioModule)
+};
+
+//=================================================================================================
+
+class MultiCompModuleEditor : public AudioModuleEditor
+{
+
+public:
+
+  MultiCompModuleEditor(MultiCompAudioModule* multiCompModuleToEdit);
+
+  virtual void resized();
+
+protected:
+
+
+  virtual void createWidgets();
+
+  /** Makes currently required widgets visible and currently not required widgets invisible. */
+  virtual void updateWidgetVisibility();
+
+  MultiCompAudioModule *multiCompModule;
+
+  // widgets:
+  std::vector<RSlider*> splitFreqSliders, thresholdSliders, ratioSliders, attackSliders, 
+    releaseSliders;
+  std::vector<RButton*> editButtons, soloButtons, muteButtons;
+  RComboBox *boxSplitMode;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MultiCompModuleEditor)
 };
 
 #endif

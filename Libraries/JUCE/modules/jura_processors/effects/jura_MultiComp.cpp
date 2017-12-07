@@ -5,9 +5,7 @@ MultiCompAudioModule::MultiCompAudioModule(CriticalSection *lockToUse,
   ScopedLock scopedLock(*lock);
   moduleName = "MultiComp";
   setActiveDirectory(getApplicationDirectory() + "/Presets/MultiComp");
-
-
-  maxNumBands = multiCompCore.getMaxNumBands();
+  maxNumBands = multiCompCore.getMaxNumberOfBands();
   createParameters();
 }
 
@@ -34,11 +32,7 @@ void MultiCompAudioModule::createParameters()
     // let the lowest band formally have a split-frequency of zero, so we can have the same number
     // of splitters as we have compressors ...or maybe not
 
-
   }
-
-
-
 }
 
 void MultiCompAudioModule::processBlock(double **inOutBuffer, int numChannels, int numSamples)
@@ -55,4 +49,36 @@ void MultiCompAudioModule::setSampleRate(double newSampleRate)
 void MultiCompAudioModule::reset()
 {
   multiCompCore.reset();
+}
+
+AudioModuleEditor* MultiCompAudioModule::createEditor()
+{
+  return new MultiCompModuleEditor(this);
+}
+
+//=================================================================================================
+
+MultiCompModuleEditor::MultiCompModuleEditor(MultiCompAudioModule* multiCompModuleToEdit)
+  : AudioModuleEditor(multiCompModuleToEdit)
+{
+  ScopedLock scopedLock(*lock);
+  multiCompModule = multiCompModuleToEdit;
+  setHeadlineText("MultiComp");
+  createWidgets();
+  setSize(400, 300);
+}
+
+void MultiCompModuleEditor::createWidgets()
+{
+
+}
+
+void MultiCompModuleEditor::resized()
+{
+
+}
+
+void MultiCompModuleEditor::updateWidgetVisibility()
+{
+
 }
