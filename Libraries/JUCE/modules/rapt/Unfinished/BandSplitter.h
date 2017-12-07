@@ -60,11 +60,11 @@ class rsMultiBandSplitter
 
 public:
 
-  enum slopeAccumulationModes
+  enum slopeAccumulationModes // rename to splitmodes
   {
     ACCUMULATE_INTO_HIGHPASS = 0,  // always splits the high band further
     ACCUMULATE_INTO_LOWPASS,       // always splits the low band further
-    BINARY_TREE                    // builds a binary tree of splitters (not yet implemented)
+    BINARY_TREE                    // builds a binary tree of splitters (assumes numBands = 2^k)
   };
 
   /** Destructor. Clears array of bandsplitter objects. */
@@ -79,7 +79,12 @@ public:
   /** Sets up all the splitting frequencies at once. */
   void setSplitFrequencies(const std::vector<TPar>& newFrequencies);
 
-  //void setNumBands(int newNumBands);
+  /** Sets the number of bands into which the signal will be split. Bands are ordered from the 
+  lowest to the highest, so when the new number is less than the old number, bands will be taken 
+  away from the high side. When the new number is greater than the old ones, the newly added bands
+  will their split frequencies evenly distributed on a log-frequency scale between the old topmost
+  split-frequency and the Nyquist frequency. */
+  void setNumberOfBands(int newNumber);
 
   /** Adds a new band with the given splitting frequency. */
   void addBand(TPar splitFrequency);

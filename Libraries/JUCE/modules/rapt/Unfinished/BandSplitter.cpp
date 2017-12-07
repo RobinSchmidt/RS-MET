@@ -25,9 +25,10 @@ void rsMultiBandSplitter<TSig, TPar>::setSampleRate(TPar newSampleRate)
 }
 
 template<class TSig, class TPar>
-void rsMultiBandSplitter<TSig, TPar>::setSplitFrequency(int bandIndex, TPar newFrequency)
+void rsMultiBandSplitter<TSig, TPar>::setSplitFrequency(int bandIndex, TPar newFreq)
 {
-
+  splitFreqs[bandIndex] = newFreq;
+  splitters[bandIndex]->setOmega(TPar(2*PI)*newFreq/sampleRate);
 }
 
 template<class TSig, class TPar>
@@ -55,13 +56,25 @@ void rsMultiBandSplitter<TSig, TPar>::reset()
     splitters[i]->reset();
 }
 
-/*
 template<class TSig, class TPar>
-void rsMultiBandSplitter<TSig, TPar>::setNumBands(int newNumBands)
+void rsMultiBandSplitter<TSig, TPar>::setNumberOfBands(int newNumBands)
 {
-
+  int oldNumBands = getNumBands();
+  if(newNumBands == oldNumBands)
+    return; // nothing to do
+  if(newNumBands > oldNumBands)
+  {
+    TPar loFreq = splitFreqs[oldNumBands-2];
+    TPar hiFreq = TPar(0.5) * sampleRate;
+    splitFreqs.resize(newNumBands-1);
+    for(int k = 0; k < (newNumBands-oldNumBands); k++)
+      splitFreqs[oldNumBands-2+k] = loFreq; // preliminary ...
+    // ..new bands should have frequencies spread between currently highest and nyquist freq
+  }
+  else
+    splitFreqs.resize(newNumBands-1);
+  updateSplitters();
 }
-*/
 
 template<class TSig, class TPar>
 void rsMultiBandSplitter<TSig, TPar>::clearArrays()
@@ -75,5 +88,7 @@ void rsMultiBandSplitter<TSig, TPar>::clearArrays()
 template<class TSig, class TPar>
 void rsMultiBandSplitter<TSig, TPar>::updateSplitters()
 {
-
+  splitters.resize(splitFreqs.size());
+  for(size_t k = 0; k < splitters.size(); k++)
+    splitters[k]->setOmega(TPar(2*PI)*splitFreqs[k]/sampleRate);
 }

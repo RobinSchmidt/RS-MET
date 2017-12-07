@@ -23,7 +23,34 @@ void rsMultiBandCompressor::setSampleRate(double newSampleRate)
 
 void rsMultiBandCompressor::setNumberOfBands(int newNumber)
 {
+  splitterL.setNumberOfBands(newNumber);
+  splitterR.setNumberOfBands(newNumber);
+}
 
+void rsMultiBandCompressor::setSplitFrequency(int bandIndex, double newFrequency)
+{
+  splitterL.setSplitFrequency(bandIndex, newFrequency);
+  splitterR.setSplitFrequency(bandIndex, newFrequency);
+}
+
+void rsMultiBandCompressor::setThreshold(int bandIndex, double newThreshold)
+{
+  compressors[bandIndex]->setThreshold(newThreshold);
+}
+
+void rsMultiBandCompressor::setRatio(int bandIndex, double newRatio)
+{
+  compressors[bandIndex]->setRatio(newRatio);
+}
+
+void rsMultiBandCompressor::setAttackTime(int bandIndex, double newAttackTime)
+{
+  compressors[bandIndex]->setAttackTime(newAttackTime);
+}
+
+void rsMultiBandCompressor::setReleaseTime(int bandIndex, double newReleaseTime)
+{
+  compressors[bandIndex]->setReleaseTime(newReleaseTime);
 }
 
 void rsMultiBandCompressor::reset()
