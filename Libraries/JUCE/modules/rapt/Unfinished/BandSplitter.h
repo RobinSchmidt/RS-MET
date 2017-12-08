@@ -103,6 +103,15 @@ public:
 
   int getNumBands() { return (int)splitters.size() + 1; }
 
+  /** Returns the upper cutoff frequency for the band with given index. */
+  TPar getSplitFrequency(int index) 
+  { 
+    if(index < splitFreqs.size())
+      return splitFreqs[index];
+    else
+      return 0;
+  }
+
   /** Resets the states of the band-splitter filters. */
   void reset();
 

@@ -48,6 +48,9 @@ public:
   /** Returns the maximum number of bands that is supported. */
   int getMaxNumberOfBands() { return maxNumBands; }
 
+  /** Returns the upper cutoff frequency for the band with given index. */
+  double getSplitFrequency(int index) { return splitterL.getSplitFrequency(index); }
+
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 

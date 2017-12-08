@@ -24,7 +24,7 @@ void MultiCompAudioModule::createParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<MBC>(mbc, &MBC::setNumberOfBands);
 
-  p = new Param("SelectedBand", 1.0, maxNumBands, 1.0, Parameter::STRING);
+  p = new Param("SelectedBand", 0.0, maxNumBands-1, 0.0, Parameter::STRING);
   p->addStringValue("1"); // have a function: addNumericStringValues(int min, int max, int stepSize)
   p->addStringValue("2"); //...
   addObservedParameter(p);
@@ -45,6 +45,7 @@ void MultiCompAudioModule::createParameters()
     juce::String idxStr = juce::String(i+1);
 
     p = new Param("SplitFrequency" + idxStr, 20.0, 20000.0, 0.0, Parameter::EXPONENTIAL);
+    p->setValue(mbc->getSplitFrequency(i), false, false);
     addObservedParameter(p);
     p->setValueChangeCallback<MultiCompAudioModule>(this, &MultiCompAudioModule::setSplitFreq);
 
