@@ -30,6 +30,8 @@ public:
 
   void setNumberOfBands(int newNumber);
 
+  void setSplitMode(int newMode);
+
   void setSplitFrequency(int bandIndex, double newFrequency);
 
   void setThreshold(int bandIndex, double newThreshold);

@@ -35,6 +35,12 @@ void rsMultiBandCompressor::setNumberOfBands(int newNumber)
   splitterR.setNumberOfActiveBands(newNumber);
 }
 
+void rsMultiBandCompressor::setSplitMode(int newMode)
+{
+  splitterL.setSplitMode(newMode);
+  splitterR.setSplitMode(newMode);
+}
+
 void rsMultiBandCompressor::setSplitFrequency(int bandIndex, double newFrequency)
 {
   splitterL.setSplitFrequency(bandIndex, newFrequency);

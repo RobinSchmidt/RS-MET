@@ -97,7 +97,9 @@ public:
   void addBand(TPar splitFrequency);
 
 
-  void setSlopeAccumulationMode(int newMode) { mode = newMode; }
+  //void setSlopeAccumulationMode(int newMode) { mode = newMode; }
+
+  void setSplitMode(int newMode) { mode = newMode; }
 
   int getNumBands() { return (int)splitters.size() + 1; }
 

@@ -18,6 +18,8 @@ public:
 
   int getSelectedBand() { return selectedBand; }
 
+  int getMaxNumBands() { return maxNumBands; }
+
   // overriden from AudioModule baseclass:
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
   virtual void setSampleRate(double newSampleRate) override;
@@ -44,14 +46,15 @@ protected:
 
 //=================================================================================================
 
-class MultiCompModuleEditor : public AudioModuleEditor
+class MultiCompModuleEditor : public AudioModuleEditor, public RComboBoxObserver
 {
 
 public:
 
   MultiCompModuleEditor(MultiCompAudioModule* multiCompModuleToEdit);
 
-  virtual void resized();
+  virtual void rComboBoxChanged(RComboBox* comboBoxThatHasChanged) override;
+  virtual void resized() override;
 
 protected:
 
@@ -64,6 +67,7 @@ protected:
   MultiCompAudioModule *multiCompModule;
 
   // widgets:
+  RSlider *numBandsSlider;
   std::vector<RSlider*> splitFreqSliders, thresholdSliders, ratioSliders, attackSliders, 
     releaseSliders;
   //std::vector<RButton*> editButtons, soloButtons, muteButtons;
