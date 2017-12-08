@@ -25,8 +25,7 @@ void MultiCompAudioModule::createParameters()
   p->setValueChangeCallback<MBC>(mbc, &MBC::setNumberOfBands);
 
   p = new Param("SelectedBand", 0.0, maxNumBands-1, 0.0, Parameter::STRING);
-  p->addStringValue("1"); // have a function: addNumericStringValues(int min, int max, int stepSize)
-  p->addStringValue("2"); //...
+  p->addNumericStringValues(1, 16);
   addObservedParameter(p);
   p->setValueChangeCallback<MultiCompAudioModule>(this, &MultiCompAudioModule::selectBand);
 

@@ -262,6 +262,11 @@ public:
   /** Adds a string value to the array - relevant only for string-based parameters. */
   virtual void addStringValue(const juce::String& valueToAdd);
 
+  /** Sometimes you want to use numeric values but represent them as strings, for example in 
+  dropdown menus. in such cases, you can conveniently add a range of numeric string values via 
+  this function, for example addNumericStringValues(2, 8, 2) would add "2", "4", "6", "8". */
+  virtual void addNumericStringValues(int min, int max, int step = 1);
+
   /** Sets the mutex lock to use for parameter changes. */
   virtual void setMutexToUse(CriticalSection* cs) { mutex = cs; }
 

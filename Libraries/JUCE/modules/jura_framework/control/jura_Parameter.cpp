@@ -267,6 +267,12 @@ void Parameter::addStringValue(const String& valueToAdd)
   //maxValue = (double) (stringValues.size()-1);
 }
 
+void Parameter::addNumericStringValues(int min, int max, int step)
+{
+  for(int i = min; i <= max; i++)
+    addStringValue(String(i));
+}
+
 //-------------------------------------------------------------------------------------------------
 // inquiry:
 
