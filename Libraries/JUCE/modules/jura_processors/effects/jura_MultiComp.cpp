@@ -96,7 +96,7 @@ MultiCompModuleEditor::MultiCompModuleEditor(MultiCompAudioModule* multiCompModu
   multiCompModule = multiCompModuleToEdit;
   setHeadlineText("MultiComp");
   createWidgets();
-  setSize(400, 300);
+  setSize(400, 100);
 }
 
 void MultiCompModuleEditor::createWidgets()
@@ -157,10 +157,44 @@ void MultiCompModuleEditor::rComboBoxChanged(RComboBox* box)
 
 void MultiCompModuleEditor::resized()
 {
+  AudioModuleEditor::resized();
+  int x = 4;
+  int y = getPresetSectionBottom() + 4;
+  int w = getWidth() / 2 - 8;
+  int h = 16;
+  int d = h-2;
 
+  numBandsSlider->setBounds(x, y, w, h); y += d;
+  bandSelectBox ->setBounds(x, y, w, h); y += d;
+  splitModeBox  ->setBounds(x, y, w, h); y += d;
+
+  x = getWidth() / 2 + 4;
+  for(int k = 0; k < multiCompModule->getMaxNumBands(); k++)
+  {
+    y = getPresetSectionBottom() + 4;
+    splitFreqSliders[k]->setBounds(x, y, w, h); y += d;
+    thresholdSliders[k]->setBounds(x, y, w, h); y += d;
+    ratioSliders[k]    ->setBounds(x, y, w, h); y += d;
+    attackSliders[k]   ->setBounds(x, y, w, h); y += d;
+    releaseSliders[k]  ->setBounds(x, y, w, h); y += d;
+  }
 }
 
 void MultiCompModuleEditor::updateWidgetVisibility()
 {
-
+  int k;
+  for(k = 0; k < multiCompModule->getMaxNumBands(); k++)
+  {
+    splitFreqSliders[k]->setVisible(false);
+    thresholdSliders[k]->setVisible(false);
+    ratioSliders[k]    ->setVisible(false);
+    attackSliders[k]   ->setVisible(false);
+    releaseSliders[k]  ->setVisible(false);
+  }
+  k = multiCompModule->getSelectedBand();
+  splitFreqSliders[k]->setVisible(true);
+  thresholdSliders[k]->setVisible(true);
+  ratioSliders[k]    ->setVisible(true);
+  attackSliders[k]   ->setVisible(true);
+  releaseSliders[k]  ->setVisible(true);
 }
