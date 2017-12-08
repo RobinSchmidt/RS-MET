@@ -20,7 +20,7 @@ void MultiCompAudioModule::createParameters()
   typedef Parameter Param;
   Param* p;
 
-  p = new Param("NumBands", 1.0, maxNumBands, 16.0, Parameter::INTEGER); // use 1 as default later
+  p = new Param("NumBands", 1.0, maxNumBands, 1.0, Parameter::INTEGER); // use 1 as default later
   addObservedParameter(p);
   p->setValueChangeCallback<MBC>(mbc, &MBC::setNumberOfBands);
 
@@ -32,7 +32,7 @@ void MultiCompAudioModule::createParameters()
   p = new Param("SplitMode", 0.0, 2.0, 0.0, Parameter::STRING);
   p->addStringValue("Steep Lowpass");
   p->addStringValue("Steep Highpass");
-  p->addStringValue("Binary Tree");
+  //p->addStringValue("Binary Tree"); // doesn't work yet
   addObservedParameter(p);
   p->setValueChangeCallback<MBC>(mbc, &MBC::setSplitMode);
 
@@ -64,6 +64,8 @@ void MultiCompAudioModule::createParameters()
     addObservedParameter(p);
     p->setValueChangeCallback<MultiCompAudioModule>(this, &MultiCompAudioModule::setRelease);
   }
+
+  getParameterByName("SelectedBand")->setValue(0, true, true); // initially select band 1
 }
 
 void MultiCompAudioModule::processBlock(double **inOutBuffer, int numChannels, int numSamples)
@@ -96,6 +98,7 @@ MultiCompModuleEditor::MultiCompModuleEditor(MultiCompAudioModule* multiCompModu
   multiCompModule = multiCompModuleToEdit;
   setHeadlineText("MultiComp");
   createWidgets();
+  updateWidgetVisibility();
   setSize(400, 100);
 }
 
