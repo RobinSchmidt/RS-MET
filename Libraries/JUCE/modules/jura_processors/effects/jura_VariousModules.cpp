@@ -553,8 +553,9 @@ void HarmonicsModuleEditor::resized()
 //-------------------------------------------------------------------------------------------------
 // WaveShaper:
 
-WaveShaperAudioModule::WaveShaperAudioModule(CriticalSection *newPlugInLock, rosic::WaveShaper *newWaveShaperToWrap)
- : AudioModule(newPlugInLock)
+WaveShaperAudioModule::WaveShaperAudioModule(CriticalSection *newPlugInLock, 
+  rosic::WaveShaper *newWaveShaperToWrap)
+ : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
 

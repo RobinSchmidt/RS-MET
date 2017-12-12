@@ -549,12 +549,7 @@ void AudioModule::notifyParameterObservers(bool recursivelyForChildModules)
 void ModulatableAudioModule::addObservedParameter(Parameter* p)
 {
   AudioModule::addObservedParameter(p);
-  ModulatableParameter* mp = dynamic_cast<ModulatableParameter*> (p);
-  if(mp != nullptr)
-  {
-    registerModulationTarget(mp);
-    mp->setOwnerAudioModule(this);
-  }
+  setupForModulationIfModulatable(p);
 }
 
 void ModulatableAudioModule::addChildAudioModule(AudioModule* moduleToAdd)
@@ -563,6 +558,23 @@ void ModulatableAudioModule::addChildAudioModule(AudioModule* moduleToAdd)
   ModulatableAudioModule* ma = dynamic_cast<ModulatableAudioModule*> (moduleToAdd);
   if(ma != nullptr)
     ma->setModulationManager(modManager);
+}
+
+void ModulatableAudioModule::setModulationManager(ModulationManager* managerToUse)
+{
+  ModulationParticipant::setModulationManager(managerToUse);
+  for(int i = 0; i < parameters.size(); i++)
+    setupForModulationIfModulatable(parameters[i]);
+}
+
+void ModulatableAudioModule::setupForModulationIfModulatable(Parameter* p)
+{
+  ModulatableParameter* mp = dynamic_cast<ModulatableParameter*> (p);
+  if(mp != nullptr)
+  {
+    registerModulationTarget(mp);
+    mp->setOwnerAudioModule(this);
+  }
 }
 
 //=================================================================================================

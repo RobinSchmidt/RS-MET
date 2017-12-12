@@ -165,7 +165,7 @@ protected:
 //-----------------------------------------------------------------------------------------------
 // WaveShaper:
 
-class WaveShaperAudioModule : public AudioModule
+class WaveShaperAudioModule : public ModulatableAudioModule
 {
   friend class WaveShaperModuleEditor;
 public:

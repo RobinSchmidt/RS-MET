@@ -140,7 +140,7 @@ public:
 
   /** Sets up the ModulationManager that should be used for registering ModulationSources and 
   ModulationTargets. Should be called sometime soon after construction. */
-  void setModulationManager(ModulationManager* managerToUse)
+  virtual void setModulationManager(ModulationManager* managerToUse)
   {
     modManager = managerToUse;
   }

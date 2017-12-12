@@ -343,13 +343,20 @@ public:
   ModulationManager, in case it is a ModulatableParameter. */
   virtual void addObservedParameter(Parameter* parameterToAdd) override;
 
-  /** Overriden in order to pass the ModulationManger object "modManager" inheridted from 
-  ModulationParticipant to the child-module to be added in case, the child is itself a 
-  ModulatableAudioModule. */
+  /** Overriden from AudioModule in order to pass the ModulationManger object "modManager" 
+  inheridted from ModulationParticipant to the child-module to be added in case, the child is 
+  itself a  ModulatableAudioModule. */
   virtual void addChildAudioModule(AudioModule* moduleToAdd) override;
+
+  /** Overriden from ModulationParticipant in order set up the ModulationManager "modMan" in all
+  our ModulatableParameters. */
+  virtual void setModulationManager(ModulationManager* managerToUse) override;
 
 protected:
 
+  /** Checks, if the passed Parameter is actually a ModulatableParameter and if so, does the 
+  required setup work such as registering it with the ModulationManager. */
+  void setupForModulationIfModulatable(Parameter* p);
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulatableAudioModule)
 };
