@@ -3563,7 +3563,7 @@ void FlangerAudioModule::createStaticParameters()
   p->setDefaultValue(8.0, true);
   p->setScaling(Parameter::EXPONENTIAL);
 
-  p = new Param("Depth", 0.0, 48., 12.0, Parameter::LINEAR0, 0.1);  // #04
+  p = new Param("Depth", 0.0, 48.0, 12.0, Parameter::LINEAR, 0.1);  // #04
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedFlanger, &Flanger::setDepth);
 
@@ -3670,22 +3670,23 @@ void PhaserAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  AutomatableParameter* p;
+  typedef ModulatableParameter Param;
+  Param* p;
 
-  p = dynamic_cast<AutomatableParameter*> (lfoModule->getParameterByName(("CycleLength")));
+  p = dynamic_cast<Param*> (lfoModule->getParameterByName(("CycleLength")));
   p->setRange(0.25, 16.0);
   p->setDefaultValue(8.0, true);
   p->setScaling(Parameter::EXPONENTIAL);
 
-  p = new AutomatableParameter(lock, "Depth", 0.0, 48.0, 0.1, 12.0, Parameter::LINEAR);  // #04
+  p = new Param("Depth", 0.0, 48.0, 12.0, Parameter::LINEAR, 0.1);  // #04
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedPhaser, &Phaser::setDepth);
 
-  p = new AutomatableParameter(lock, "DryWetRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
+  p = new Param("DryWetRatio", 0.0, 1.0, 0.5, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedPhaser, &Phaser::setDryWetRatio);
 
-  p = new AutomatableParameter(lock, juce::String(("FilterMode")), 0.0, 1.0, 1.0, 0.0, Parameter::STRING);
+  p = new Param("FilterMode", 0.0, 1.0, 0.0, Parameter::STRING, 1.0);
   //p->addStringValue(juce::String(("Bypass")));
   p->addStringValue(juce::String(("Allpass 1st order")));
   p->addStringValue(juce::String(("Allpass 2nd order")));
@@ -3693,28 +3694,28 @@ void PhaserAudioModule::createStaticParameters()
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedPhaser, &Phaser::setFilterMode);
 
-  p = new AutomatableParameter(lock, "Frequency", 2.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
+  p = new Param("Frequency", 2.0, 20000.0, 1000.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedPhaser, &Phaser::setFrequency);
 
-  p = new AutomatableParameter(lock, "Q", 0.1, 10.0, 0.01, 1.0, Parameter::EXPONENTIAL);
+  p = new Param("Q", 0.1, 10.0, 1.0, Parameter::EXPONENTIAL, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedPhaser, &Phaser::setQ);
 
-  p = new AutomatableParameter(lock, "Feedback", -99.0, 99.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("Feedback", -99.0, 99.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedPhaser, &Phaser::setFeedbackInPercent);
 
-  p = new AutomatableParameter(lock, "NumStages", 1.0, 24.0, 1.0, 4.0, Parameter::LINEAR);
+  p = new Param("NumStages", 1.0, 24.0, 4.0, Parameter::LINEAR, 1.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedPhaser, &Phaser::setNumStages);
 
-  //p = new AutomatableParameter(lock, "Activated", 0.0, 1.0, 1.0, 1.0, Parameter::BOOLEAN);
+  //p = new Param("Activated", 0.0, 1.0, 1.0, Parameter::BOOLEAN, 1.0);
   //addObservedParameter(p);
   //p->setValueChangeCallback(wrappedPhaser, &Phaser::setActive);
 
-  for(int i=0; i < (int) parameters.size(); i++)
-    parameters[i]->resetToDefaultValue(true, true);
+  //for(int i=0; i < (int) parameters.size(); i++)
+  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 PhaserModuleEditor::PhaserModuleEditor(CriticalSection *newPlugInLock, PhaserAudioModule* newPhaserAudioModule)
@@ -3842,17 +3843,19 @@ void TremoloAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  AutomatableParameter* p;
-  p = dynamic_cast<AutomatableParameter*> (lfoModule->getParameterByName(("CycleLength")));
-  p->setRange(0.125, 4.0);
-  p->setUpperAutomationLimit(4.0);
+  typedef ModulatableParameter Param;
+  Param* p;
 
-  p = new AutomatableParameter(lock, "Depth", 0.0, 100.0, 1.0, 50.0, Parameter::LINEAR);
+  p = dynamic_cast<Param*> (lfoModule->getParameterByName(("CycleLength")));
+  p->setRange(0.125, 4.0);
+  //p->setUpperAutomationLimit(4.0);
+
+  p = new Param("Depth", 0.0, 100.0, 50.0, Parameter::LINEAR, 1.0);
   addObservedParameter(p);
   p->setValueChangeCallback<Tremolo>(wrappedTremolo, &Tremolo::setDepthInPercent);
 
-  for(int i=0; i < (int) parameters.size(); i++)
-    parameters[i]->resetToDefaultValue(true, true);
+  //for(int i=0; i < (int) parameters.size(); i++)
+  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 TremoloModuleEditor::TremoloModuleEditor(CriticalSection *newPlugInLock, TremoloAudioModule* newTremoloAudioModule)
@@ -3904,18 +3907,19 @@ void VibratoAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  AutomatableParameter* p;
+  typedef ModulatableParameter Param;
+  Param* p;
 
-  p = new AutomatableParameter(lock, "Depth", 0.0, 2.0, 0.01, 0.5, Parameter::LINEAR);
+  p = new Param("Depth", 0.0, 2.0, 0.5, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback<Vibrato>(wrappedVibrato, &Vibrato::setDepthInPercent);
 
-  p = new AutomatableParameter(lock, "DryWet", 0.0, 1.0, 0.01, 100.0, Parameter::LINEAR);
+  p = new Param("DryWet", 0.0, 1.0, 100.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback<Vibrato>(wrappedVibrato, &Vibrato::setDryWetRatio);
 
-  for(int i=0; i < (int) parameters.size(); i++)
-    parameters[i]->resetToDefaultValue(true, true);
+  //for(int i=0; i < (int) parameters.size(); i++)
+  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 VibratoModuleEditor::VibratoModuleEditor(CriticalSection *newPlugInLock, VibratoAudioModule* newVibratoAudioModule)
@@ -4135,30 +4139,31 @@ void FormantShifterAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  AutomatableParameter* p;
+  typedef ModulatableParameter Param;
+  Param* p;
 
-  //p = new AutomatableParameter(lock, ("BlockSize"), 32.0, 8192.0, 0.0, 2048.0, Parameter::EXPONENTIAL);
+  //p = new Param("BlockSize", 32.0, 8192.0, 2048.0, Parameter::EXPONENTIAL, 0.0);
   //addObservedParameter(p);
   //p->setValueChangeCallback(wrappedFormantShifter, &FormantShifterStereo::setBlockSize);
 
-  p = new AutomatableParameter(lock, ("FormantScale"), 0.25, 4.0, 0.01, 1.0, Parameter::EXPONENTIAL);
+  p = new Param("FormantScale", 0.25, 4.0, 1.0, Parameter::EXPONENTIAL, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedFormantShifter, &FormantShifterStereo::setFormantScale);
 
-  p = new AutomatableParameter(lock, ("FormantOffset"), -200.0, 200.0, 1.0, 0.0, Parameter::LINEAR);
+  p = new Param("FormantOffset", -200.0, 200.0, 0.0, Parameter::LINEAR, 1.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedFormantShifter, &FormantShifterStereo::setFormantOffset);
 
-  p = new AutomatableParameter(lock, ("DryWetRatio"), 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
+  p = new Param("DryWetRatio", 0.0, 1.0, 1.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedFormantShifter, &FormantShifterStereo::setDryWetRatio);
 
-  //p = new AutomatableParameter(lock, ("Mono"), 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
+  //p = new Param("Mono", 0.0, 1.0, 0.0, Parameter::BOOLEAN, 1.0);
   //addObservedParameter(p);
   //p->setValueChangeCallback(wrappedFormantShifter, &FormantShifterStereo::setMono);
 
-  for(int i=0; i < (int) parameters.size(); i++)
-    parameters[i]->resetToDefaultValue(true, true);
+  //for(int i=0; i < (int) parameters.size(); i++)
+  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 FormantShifterModuleEditor::FormantShifterModuleEditor(CriticalSection *newPlugInLock,
@@ -4644,27 +4649,29 @@ void FrequencyShifterAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  AutomatableParameter* p;
+  //AutomatableParameter* p;
+  typedef ModulatableParameter Param;
+  Param* p;
 
-  p = new AutomatableParameter(lock, "FrequencyShift", -200.0, 200.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("FrequencyShift", -200.0, 200.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedFrequencyShifter, &FrequencyShifterStereo::setFrequencyShift);
 
-  p = new AutomatableParameter(lock, "Feedback", -99.0, 99.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("Feedback", -99.0, 99.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedFrequencyShifter, &FrequencyShifterStereo::setFeedbackInPercent);
 
-  p = new AutomatableParameter(lock, "StereoOffset", -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("StereoOffset", -100.0, 100.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedFrequencyShifter, &FrequencyShifterStereo::setStereoOffset);
 
-  //p = new AutomatableParameter(lock, "DryWetRatio", 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
+  //p = new Param("DryWetRatio", 0.0, 1.0, 1.0, Parameter::LINEAR, 0.01);
   //addObservedParameter(p);
-  //p = new AutomatableParameter(lock, "MidSideRatio", 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
+  //p = new Param("MidSideRatio", 0.0, 1.0, 1.0, Parameter::LINEAR, 0.01);
   //addObservedParameter(p);
 
-  for(int i=0; i < (int) parameters.size(); i++)
-    parameters[i]->resetToDefaultValue(true, true);
+  //for(int i=0; i < (int) parameters.size(); i++)
+  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 FrequencyShifterModuleEditor::FrequencyShifterModuleEditor(CriticalSection *newPlugInLock,
@@ -4750,34 +4757,36 @@ void PhaseStereoizerAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  AutomatableParameter* p;
+  //AutomatableParameter* p;
+  typedef ModulatableParameter Param;
+  Param* p;
 
-  p = new AutomatableParameter(lock, "StereoPhaseOffset", 0.0, 180.0, 1.0, 90.0, Parameter::LINEAR);
+  p = new Param("StereoPhaseOffset", 0.0, 180.0, 90.0, Parameter::LINEAR, 1.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedPhaseStereoizer, &PhaseStereoizer::setPhaseOffset);
 
-  p = new AutomatableParameter(lock, "DryWetRatio", 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
+  p = new Param("DryWetRatio", 0.0, 1.0, 1.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedPhaseStereoizer, &PhaseStereoizer::setDryWetRatio);
 
-  p = new AutomatableParameter(lock, "MidSideRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
+  p = new Param("MidSideRatio", 0.0, 1.0, 0.5, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedPhaseStereoizer, &PhaseStereoizer::setMidSideRatio);
 
-  //p = new AutomatableParameter(lock, "Gain", -6.0, 24.0, 0.1, 0.0, Parameter::LINEAR);
+  //p = new Param("Gain", -6.0, 24.0, 0.0, Parameter::LINEAR, 0.1);
   //addObservedParameter(p);
   //p->setValueChangeCallback(wrappedPhaseStereoizer, &PhaseStereoizer::setGain);
 
-  p = new AutomatableParameter(lock, "Lowpass", 20.0, 20000.0, 0.0, 20000.0, Parameter::EXPONENTIAL);
+  p = new Param("Lowpass", 20.0, 20000.0, 20000.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedPhaseStereoizer, &PhaseStereoizer::setLowpassCutoff);
 
-  p = new AutomatableParameter(lock, "Highpass", 20.0, 20000.0, 0.0, 20.0, Parameter::EXPONENTIAL);
+  p = new Param("Highpass", 20.0, 20000.0, 20.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedPhaseStereoizer, &PhaseStereoizer::setHighpassCutoff);
 
-  for(int i=0; i < (int) parameters.size(); i++)
-    parameters[i]->resetToDefaultValue(true, true);
+  //for(int i=0; i < (int) parameters.size(); i++)
+  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 PhaseStereoizerModuleEditor::PhaseStereoizerModuleEditor(CriticalSection *newPlugInLock,
