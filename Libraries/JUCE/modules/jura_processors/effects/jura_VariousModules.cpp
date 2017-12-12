@@ -641,28 +641,28 @@ WaveShaperModuleEditor::WaveShaperModuleEditor(CriticalSection *newPlugInLock, W
   curveComboBox->setDescriptionField(infoField);
   curveComboBox->registerComboBoxObserver(this); // to update enablement of the sliders
 
-  addWidget( driveSlider = new RSlider (("DriveSlider")) );
+  addWidget( driveSlider = new ModulatableSlider );
   driveSlider->assignParameter( moduleToEdit->getParameterByName("Drive") );
   driveSlider->setDescription(juce::String(("Gain of the input signal before the waveshaper")));
   driveSlider->setDescriptionField(infoField);
   driveSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
   driveSlider->addListener(this); // to update the plot
 
-  addWidget( dcSlider = new RSlider (("DCSlider")) );
+  addWidget( dcSlider = new ModulatableSlider );
   dcSlider->assignParameter( moduleToEdit->getParameterByName("DC") );
   dcSlider->setDescription(juce::String(("DC offset for the input signal (after drive, before waveshaper)")));
   dcSlider->setDescriptionField(infoField);
   dcSlider->setStringConversionFunction(&valueToString2);
   dcSlider->addListener(this); // to update the plot
 
-  addWidget( amountSlider = new RSlider (("AmountSlider")) );
+  addWidget( amountSlider = new ModulatableSlider );
   amountSlider->assignParameter( moduleToEdit->getParameterByName("Amount") );
   amountSlider->setDescription(juce::String(("Amount of the effect in percent")));
   amountSlider->setDescriptionField(infoField);
   amountSlider->setStringConversionFunction(&percentToStringWithUnit0);
   amountSlider->addListener(this); // to update the plot
 
-  addWidget( outputLevelSlider = new RSlider (("OutputLevelSlider")) );
+  addWidget( outputLevelSlider = new ModulatableSlider );
   outputLevelSlider->assignParameter( moduleToEdit->getParameterByName("OutputLevel") );
   outputLevelSlider->setSliderName(juce::String(("Level")));
   outputLevelSlider->setDescription(juce::String(("Overall level of the output signal")));

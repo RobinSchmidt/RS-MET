@@ -191,8 +191,8 @@ public:
 protected:
   WaveShaperAudioModule *waveShaperModuleToEdit;
   RComboBox *curveComboBox;
-  RSlider   *driveSlider, *dcSlider, *amountSlider, *outputLevelSlider,
-    *oversamplingSlider, *slopeSlider, *interceptSlider;
+  ModulatableSlider *driveSlider, *dcSlider, *amountSlider, *outputLevelSlider;
+  RSlider  *oversamplingSlider, *slopeSlider, *interceptSlider;
   CurveFamilyPlotOld *plot;
   double *xValues, *yValues;
   int    numValues;
