@@ -2291,21 +2291,22 @@ void DualTwoPoleFilterAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  AutomatableParameter* p;
+  typedef ModulatableParameter Param;
+  Param* p;
 
   p = new ParameterTwoPoleFilterMode(lock, juce::String(("Mode1")));
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedDualTwoPoleFilter, &DualTwoPoleFilter::setMode1);
 
-  p = new AutomatableParameter(lock, "Frequency1", 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
+  p = new Param("Frequency1", 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedDualTwoPoleFilter, &DualTwoPoleFilter::setFrequency1);
 
-  p = new AutomatableParameter(lock, "Gain1", -48, 48.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("Gain1", -48, 48.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedDualTwoPoleFilter, &DualTwoPoleFilter::setGain1);
 
-  p = new AutomatableParameter(lock, "Bandwidth1", 0.2, 6.0, 0.01, 1.0, Parameter::EXPONENTIAL);
+  p = new Param("Bandwidth1", 0.2, 6.0, 1.0, Parameter::EXPONENTIAL, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedDualTwoPoleFilter, &DualTwoPoleFilter::setBandwidth1);
 
@@ -2313,36 +2314,36 @@ void DualTwoPoleFilterAudioModule::createStaticParameters()
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedDualTwoPoleFilter, &DualTwoPoleFilter::setMode2);
 
-  p = new AutomatableParameter(lock, "Frequency2", 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
+  p = new Param("Frequency2", 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedDualTwoPoleFilter, &DualTwoPoleFilter::setFrequency2);
 
-  p = new AutomatableParameter(lock, "Gain2", -48, 48.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("Gain2", -48, 48.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedDualTwoPoleFilter, &DualTwoPoleFilter::setGain2);
 
-  p = new AutomatableParameter(lock, "Bandwidth2", 0.2, 6.0, 0.01, 1.0, Parameter::EXPONENTIAL);
+  p = new Param("Bandwidth2", 0.2, 6.0, 1.0, Parameter::EXPONENTIAL, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedDualTwoPoleFilter, &DualTwoPoleFilter::setBandwidth2);
 
-  p = new AutomatableParameter(lock, "SerialParallelBlend", 0.0, 1.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new Param("SerialParallelBlend", 0.0, 1.0, 0.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedDualTwoPoleFilter, &DualTwoPoleFilter::setSerialParallelBlend);
 
-  p = new AutomatableParameter(lock, "FrequencyScale", 0.125, 8.0, 0.001, 1.0, Parameter::EXPONENTIAL);
+  p = new Param("FrequencyScale", 0.125, 8.0, 1.0, Parameter::EXPONENTIAL, 0.001);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedDualTwoPoleFilter, &DualTwoPoleFilter::setFrequencyScale);
 
-  p = new AutomatableParameter(lock, "GainScale", 0.125, 8.0, 0.001, 1.0, Parameter::EXPONENTIAL);
+  p = new Param("GainScale", 0.125, 8.0, 1.0, Parameter::EXPONENTIAL, 0.001);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedDualTwoPoleFilter, &DualTwoPoleFilter::setGainScale);
 
-  p = new AutomatableParameter(lock, "BandwidthScale", 0.125, 8.0, 0.001, 1.0, Parameter::EXPONENTIAL);
+  p = new Param("BandwidthScale", 0.125, 8.0, 1.0, Parameter::EXPONENTIAL, 0.001);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedDualTwoPoleFilter, &DualTwoPoleFilter::setBandwidthScale);
 
-  for(int i=0; i < (int) parameters.size(); i++)
-    parameters[i]->resetToDefaultValue(true, true);
+  //for(int i=0; i < (int) parameters.size(); i++)
+  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 DualTwoPoleFilterModuleEditor::DualTwoPoleFilterModuleEditor(CriticalSection *newPlugInLock,
@@ -2914,25 +2915,26 @@ void TwoPoleFilterAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  AutomatableParameter* p;
+  typedef ModulatableParameter Param;
+  Param* p;
 
   p = new ParameterTwoPoleFilterMode(lock);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedTwoPoleFilter, &TwoPoleFilter::setMode);
 
-  p = new AutomatableParameter(lock, "Frequency", 2.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
+  p = new Param("Frequency", 2.0, 20000.0, 1000.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedTwoPoleFilter, &TwoPoleFilter::setFrequency);
 
-  p = new AutomatableParameter(lock, "Gain", -48, 48.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("Gain", -48, 48.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedTwoPoleFilter, &TwoPoleFilter::setGain);
 
-  p = new AutomatableParameter(lock, "Bandwidth", 0.2, 6.0, 0.01, 1.0, Parameter::EXPONENTIAL);
+  p = new Param("Bandwidth", 0.2, 6.0, 1.0, Parameter::EXPONENTIAL, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedTwoPoleFilter, &TwoPoleFilter::setBandwidth);
 
-  p = new AutomatableParameter(lock, "Radius", -4.0, 4.0, 0.00001, 0.0, Parameter::LINEAR);
+  p = new Param("Radius", -4.0, 4.0, 0.0, Parameter::LINEAR, 0.00001);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedTwoPoleFilter, &TwoPoleFilter::setRadius);
 
@@ -3965,18 +3967,20 @@ void WahWahAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  AutomatableParameter* p;
+  //AutomatableParameter* p;
+  typedef ModulatableParameter Param;
+  Param* p;
 
-  p = dynamic_cast<AutomatableParameter*> (lfoModule->getParameterByName(("CycleLength")));
+  p = dynamic_cast<Param*> (lfoModule->getParameterByName(("CycleLength"))); // may be nullptr? -> check this
   p->setRange(0.25, 8.0);
   p->setDefaultValue(0.5, true);
   p->setScaling(Parameter::EXPONENTIAL);
 
-  p = new AutomatableParameter(lock, "Depth", 0.0, 48.0, 0.1, 12.0, Parameter::LINEAR);  // #04
+  p = new Param("Depth", 0.0, 48.0, 12.0, Parameter::LINEAR, 0.1);  // #04
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedWahWah, &WahWah::setDepth);
 
-  p = new AutomatableParameter(lock, "DryWetRatio", 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
+  p = new Param("DryWetRatio", 0.0, 1.0, 1.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedWahWah, &WahWah::setDryWetRatio);
 
@@ -3985,20 +3989,20 @@ void WahWahAudioModule::createStaticParameters()
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedWahWah, &WahWah::setFilterMode);
 
-  p = new AutomatableParameter(lock, "Frequency", 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
+  p = new Param("Frequency", 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedWahWah, &WahWah::setFrequency);
 
-  p = new AutomatableParameter(lock, "Gain", -48, 48.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("Gain", -48, 48.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedWahWah, &WahWah::setGain);
 
-  p = new AutomatableParameter(lock, "Bandwidth", 0.25, 2.0, 0.01, 1.0, Parameter::EXPONENTIAL);
+  p = new Param("Bandwidth", 0.25, 2.0, 1.0, Parameter::EXPONENTIAL, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedWahWah, &WahWah::setBandwidth);
 
-  for(int i=0; i < (int) parameters.size(); i++)
-    parameters[i]->resetToDefaultValue(true, true);
+  //for(int i=0; i < (int) parameters.size(); i++)
+  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 WahWahModuleEditor::WahWahModuleEditor(CriticalSection *newPlugInLock, WahWahAudioModule* newWahWahAudioModule)

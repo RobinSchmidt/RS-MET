@@ -40,7 +40,7 @@ public:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParameterPowersOfTwo)
 };
 
-class ParameterTwoPoleFilterMode : public AutomatableParameter
+class ParameterTwoPoleFilterMode : public ModulatableParameter
 {
 public:
   ParameterTwoPoleFilterMode(CriticalSection *criticalSectionToUse,
@@ -51,9 +51,9 @@ public:
     double newDefaultValue       = 0.0,
     int newScaling               = STRING,
     int /*newDefaultMidiController*/ = -1,
-    bool /*newSaveAndRecall*/        = true)
-    : AutomatableParameter(criticalSectionToUse, newName, newLowerLimit, newUpperLimit,
-    newInterval, newDefaultValue, newScaling)
+    bool /*newSaveAndRecall*/        = true) // change parameter order, remove CriticalSection
+    : ModulatableParameter(newName, newLowerLimit, newUpperLimit, newDefaultValue, 
+      newScaling, newInterval)
   {
     addStringValue("Bypass");
     addStringValue("Peak/Dip");

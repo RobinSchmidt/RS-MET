@@ -22,9 +22,9 @@ namespace jura
 #include "control/jura_ParameterProfiles.cpp"
 #include "control/jura_SmoothableParameter.cpp"
 #include "control/jura_AutomatableParameter.cpp"
-#include "control/jura_PreDefinedParameters.cpp"
 #include "control/jura_MetaParameter.cpp"
 #include "control/jura_ModulatableParameter.cpp"
+#include "control/jura_PreDefinedParameters.cpp"
 #include "control/jura_ParameterManager.cpp"
 #include "control/jura_StateManager.cpp"
 

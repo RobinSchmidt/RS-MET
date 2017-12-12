@@ -1,7 +1,10 @@
 -make all the modulation stuff available for quadrifex
  -derive effects from ModulatableAudioModule - done
  -use ModulatableParameter where appropriate 
-  -done up to CombResonatorAudioModule
+  -done up to DualTwoPoleFilterAudioModule
+  -we need them also in:
+   LowFrequencyOscillatorAudioModule::initializeAutomatableParameters()
+   otherwise the modulation-modules will crash due to failed dynamic cast
  -use ModulatableSlider correspondingly
 
 
