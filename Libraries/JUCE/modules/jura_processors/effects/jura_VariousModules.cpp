@@ -2558,17 +2558,18 @@ void FourPoleFilterAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  AutomatableParameter* p;
+  typedef ModulatableParameter Param;
+  Param* p;
 
   p = new ParameterFourPoleFilterMode(lock);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedFourPoleFilter, &FourPoleFilter::setMode);
 
-  p = new AutomatableParameter(lock, "Frequency", 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
+  p = new Param("Frequency", 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedFourPoleFilter, &FourPoleFilter::setFrequency);
 
-  p = new AutomatableParameter(lock, "Gain", -48, 48.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("Gain", -48, 48.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedFourPoleFilter, &FourPoleFilter::setGain);
 
@@ -2577,8 +2578,8 @@ void FourPoleFilterAudioModule::createStaticParameters()
   //addObservedParameter(p);
   //p->setValueChangeCallback(wrappedFourPoleFilter, &FourPoleFilter::setBandwidth);
 
-  for(int i=0; i < (int) parameters.size(); i++)
-    parameters[i]->resetToDefaultValue(true, true);
+  //for(int i=0; i < (int) parameters.size(); i++)
+  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 FourPoleFilterModuleEditor::FourPoleFilterModuleEditor(CriticalSection *newPlugInLock,
@@ -2679,9 +2680,10 @@ void LadderFilterAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  AutomatableParameter* p;
+  typedef ModulatableParameter Param;
+  Param* p;
 
-  p = new AutomatableParameter(lock, juce::String(("Mode")), 0.0, 1.0, 1.0, 0.0, Parameter::STRING);
+  p = new Param("Mode", 0.0, 1.0, 0.0, Parameter::STRING, 1.0);
   p->addStringValue(juce::String(("Lowpass")));
   p->addStringValue(juce::String(("Highpass")));
   p->addStringValue(juce::String(("Bandpass 6+12")));
@@ -2693,27 +2695,27 @@ void LadderFilterAudioModule::createStaticParameters()
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedLadderFilter, &rosic::LadderFilter::setMode);
 
-  p = new AutomatableParameter(lock, juce::String(("Frequency")), 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
+  p = new Param("Frequency", 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedLadderFilter, &rosic::LadderFilter::setCutoff);
 
-  p = new AutomatableParameter(lock, juce::String(("Resonance")), 0.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("Resonance", 0.0, 100.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedLadderFilter, &rosic::LadderFilter::setResonanceInPercent);
 
-  p = new AutomatableParameter(lock, juce::String(("MakeUp")), 0.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("MakeUp", 0.0, 100.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedLadderFilter, &rosic::LadderFilter::setMakeUp);
 
-  p = new AutomatableParameter(lock, juce::String(("Drive")), -24.0, 48.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("Drive", -24.0, 48.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedLadderFilter, &rosic::LadderFilter::setDrive);
 
-  p = new AutomatableParameter(lock, juce::String(("Order")), 0.0, 4.0, 1.0, 4.0, Parameter::LINEAR);
+  p = new Param("Order", 0.0, 4.0, 4.0, Parameter::LINEAR, 1.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedLadderFilter, &rosic::LadderFilter::setOutputStage);
 
-  p = new AutomatableParameter(lock, juce::String(("Morph")), 0.0, 1.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new Param("Morph", 0.0, 1.0, 0.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedLadderFilter, &rosic::LadderFilter::setMorph);
 
@@ -2724,8 +2726,8 @@ void LadderFilterAudioModule::createStaticParameters()
   addObservedParameter(p);
   */
 
-  for(int i=0; i < (int) parameters.size(); i++)
-    parameters[i]->resetToDefaultValue(true, true);
+  //for(int i=0; i < (int) parameters.size(); i++)
+  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 LadderFilterModuleEditor::LadderFilterModuleEditor(CriticalSection *newPlugInLock, LadderFilterAudioModule* newLadderFilterAudioModule)
@@ -3967,7 +3969,6 @@ void WahWahAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  //AutomatableParameter* p;
   typedef ModulatableParameter Param;
   Param* p;
 

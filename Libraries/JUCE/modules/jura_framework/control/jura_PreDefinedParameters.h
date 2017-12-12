@@ -75,7 +75,7 @@ public:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParameterTwoPoleFilterMode)
 };
 
-class ParameterFourPoleFilterMode : public AutomatableParameter
+class ParameterFourPoleFilterMode : public ModulatableParameter
 {
 public:
   ParameterFourPoleFilterMode(CriticalSection *criticalSectionToUse,
@@ -87,8 +87,8 @@ public:
     int newScaling               = STRING,
     int /*newDefaultMidiController*/ = -1,
     bool /*newSaveAndRecall*/        = true)
-    : AutomatableParameter(criticalSectionToUse, newName, newLowerLimit, newUpperLimit,
-    newInterval, newDefaultValue, newScaling)
+    : ModulatableParameter(newName, newLowerLimit, newUpperLimit, newDefaultValue, newScaling, 
+      newInterval)
   {
     addStringValue("Bypass");
     addStringValue("Lowpass 6 dB/oct");
