@@ -570,9 +570,13 @@ void WaveShaperAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  AutomatableParameter* p;
+  typedef ModulatableParameter Param;
+  Param* p;
 
-  p = new AutomatableParameter(lock, juce::String(("CurveType")), 0.0, 3.0, 1.0, 1.0, Parameter::STRING);
+  //AutomatableParameter* p;
+
+  //p = new AutomatableParameter(lock, juce::String(("CurveType")), 0.0, 3.0, 1.0, 1.0, Parameter::STRING);
+  p = new Param("CurveType", 0.0, 3.0, 1.0, Parameter::STRING, 1.0);
   p->addStringValue(juce::String(("Linear")));
   p->addStringValue(juce::String(("Tanh")));
   p->addStringValue(juce::String(("Hardclip")));
@@ -584,31 +588,38 @@ void WaveShaperAudioModule::createStaticParameters()
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setTransferFunction);
 
-  p = new AutomatableParameter(lock, "Drive", -24.0, 48.0, 0.1, 0.0, Parameter::LINEAR);
+  //p = new AutomatableParameter(lock, "Drive", -24.0, 48.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("Drive", -24.0, 48.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setDrive);
 
-  p = new AutomatableParameter(lock, "DC", -5.0, 5.0, 0.01, 0.0, Parameter::LINEAR);
+  //p = new AutomatableParameter(lock, "DC", -5.0, 5.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new Param("DC", -5.0, 5.0, 0.01, Parameter::LINEAR, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setDcOffset);
 
-  p = new AutomatableParameter(lock, "Amount", -200.0, 200.0, 1.0, 100.0, Parameter::LINEAR);
+  //p = new AutomatableParameter(lock, "Amount", -200.0, 200.0, 1.0, 100.0, Parameter::LINEAR);
+  p = new Param("Amount", -200.0, 200.0, 100.0, Parameter::LINEAR, 1.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setAmount);
 
-  p = new AutomatableParameter(lock, "OutputLevel", -48.0, 6.0, 0.1, 0.0, Parameter::LINEAR);
+  //p = new AutomatableParameter(lock, "OutputLevel", -48.0, 6.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("OutputLevel", -48.0, 6.0, 0.1, Parameter::LINEAR, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setOutputLevel);
 
-  p = new AutomatableParameter(lock, "Oversampling", 1.0, 16.0, 1.0, 4.0, Parameter::LINEAR);
+  //p = new AutomatableParameter(lock, "Oversampling", 1.0, 16.0, 1.0, 4.0, Parameter::LINEAR);
+  p = new Param("Oversampling", 1.0, 16.0, 4.0, Parameter::LINEAR, 1.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setOversampling);
 
-  p = new AutomatableParameter(lock, "InterceptY", -0.5, 0.5, 0.01, 0.0, Parameter::LINEAR);
+  //p = new AutomatableParameter(lock, "InterceptY", -0.5, 0.5, 0.01, 0.0, Parameter::LINEAR);
+  p = new Param("InterceptY", -0.5, 0.5, 0.01, Parameter::LINEAR, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setPenticInterceptY);
 
-  p = new AutomatableParameter(lock, "Slope", -1.0, 3.0, 0.01, 1.0, Parameter::LINEAR);
+  //p = new AutomatableParameter(lock, "Slope", -1.0, 3.0, 0.01, 1.0, Parameter::LINEAR);
+  p = new Param("Slope", -1.0, 3.0, 1.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setPenticSlopeAtZero);
 
