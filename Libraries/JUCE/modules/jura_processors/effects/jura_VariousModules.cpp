@@ -594,7 +594,7 @@ void WaveShaperAudioModule::createStaticParameters()
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setDrive);
 
   //p = new AutomatableParameter(lock, "DC", -5.0, 5.0, 0.01, 0.0, Parameter::LINEAR);
-  p = new Param("DC", -5.0, 5.0, 0.01, Parameter::LINEAR, 0.0);
+  p = new Param("DC", -5.0, 5.0, 0.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setDcOffset);
 

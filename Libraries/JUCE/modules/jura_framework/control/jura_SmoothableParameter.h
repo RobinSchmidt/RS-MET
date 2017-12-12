@@ -43,7 +43,7 @@ public:
 
 protected:
 
-  double smoothingTime = 0.0; // in milliseconds
+  double smoothingTime = 50.0; // in milliseconds
   bool isSmoothing = false;
   rsSmoothingManager* smoothingManager = nullptr; 
 

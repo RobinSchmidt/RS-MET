@@ -502,7 +502,7 @@ void Quadrifex::processBlock(double* inOutL, double* inOutR, int numFrames)
 }
 
 /*
-void Quadrifex::getSampleFrameStereoUnsafe(double *inOutL, double *inOutR)
+void Quadrifex::getSampleFrameStereo(double *inOutL, double *inOutR)
 {
   double tmp1L = 0.0;
   double tmp1R = 0.0;
@@ -624,9 +624,3 @@ void Quadrifex::getSampleFrameStereoUnsafe(double *inOutL, double *inOutR)
   *inOutR = inR * dryFactor  + tmp1R * wetFactor;
 }
 */
-
-
-
-
-
-

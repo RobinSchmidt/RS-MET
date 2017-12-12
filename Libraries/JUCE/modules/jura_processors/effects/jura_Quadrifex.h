@@ -81,9 +81,15 @@ public:
     wrappedQuadrifex->trigger();
   }
 
+  virtual void processStereoFrame(double *left, double *right) override
+  {
+    //wrappedQuadrifex->getSampleFrameStereo(left, right);
+    wrappedQuadrifex->processBlock(left, right, 1); // inefficient, preliminary
+  }
+
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
   {
-    ScopedLock scopedLock(*lock);
+    //ScopedLock scopedLock(*lock); // is already held
     if(numChannels != 2)
       return;
     wrappedQuadrifex->processBlock(inOutBuffer[0], inOutBuffer[1], numSamples);
