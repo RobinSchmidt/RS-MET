@@ -20,7 +20,7 @@ void TuningSlider::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
 
 void TuningSlider::addPopUpMenuItems()
 {
-  jassertfalse; // it needs to be checked carefully, if the popup menu works as intended
+  //jassertfalse; // it needs to be checked carefully, if the popup menu works as intended
 
   addPopUpEnterValueItem();
   addPopUpOctaveUpDownItems();

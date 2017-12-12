@@ -5,6 +5,13 @@
 -drag convolutional filters into rapt
 -drag more musical filters into rapt
 
+in Quadrifex::setEffectAlgorithm, we need to call 
+addChildAudioModule(audioModule);
+before
+audioModule->setStateFromXml(...)
+otherwise in the state recall we get an access violation related to uninitilized smoothing manager
+
+
 For Multiband-effects:
  -drag over EngineersFilter, CrossOver, FiniteImpulseResponseFilter from rosic to rapt
  -make classes 
