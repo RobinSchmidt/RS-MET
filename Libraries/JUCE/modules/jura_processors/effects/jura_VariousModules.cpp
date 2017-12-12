@@ -2857,14 +2857,15 @@ void SlopeFilterAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  AutomatableParameter* p;
+  typedef ModulatableParameter Param;
+  Param* p;
 
-  p = new AutomatableParameter(lock, "Slope", -12.0, 12.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new Param("Slope", -12.0, 12.0, 0.0, Parameter::LINEAR, 0.01);
   p->setValueChangeCallback(wrappedSlopeFilter, &SlopeFilter::setSlope);
   addObservedParameter(p);
 
-  for(int i=0; i < (int) parameters.size(); i++)
-    parameters[i]->resetToDefaultValue(true, true);
+  //for(int i=0; i < (int) parameters.size(); i++)
+  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 SlopeFilterModuleEditor::SlopeFilterModuleEditor(CriticalSection *newPlugInLock, SlopeFilterAudioModule* newSlopeFilterAudioModule)
@@ -3055,50 +3056,51 @@ void PingPongEchoAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  AutomatableParameter* p;
+  typedef ModulatableParameter Param;
+  Param* p;
 
-  p = new AutomatableParameter(lock, "DelayTime", 0.125, 1.0, 0.0125, 0.5, Parameter::LINEAR);
+  p = new Param("DelayTime", 0.125, 1.0, 0.5, Parameter::LINEAR, 0.0125);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedPingPongEcho, &PingPongEcho::setDelayTime);
 
-  p = new AutomatableParameter(lock, "DryWetRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
+  p = new Param("DryWetRatio", 0.0, 1.0, 0.5, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedPingPongEcho, &PingPongEcho::setDryWetRatio);
 
-  p = new AutomatableParameter(lock, "Feedback", -100.0, 100.0, 0.1, 50.0, Parameter::LINEAR);
+  p = new Param("Feedback", -100.0, 100.0, 50.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedPingPongEcho, &PingPongEcho::setFeedbackInPercent);
 
-  p = new AutomatableParameter(lock, "Pan", -1.0, 1.0, 0.01, -0.4, Parameter::LINEAR);
+  p = new Param("Pan", -1.0, 1.0, -0.4, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedPingPongEcho, &PingPongEcho::setPan);
 
-  p = new AutomatableParameter(lock, "HighDamp", 20.0, 20000.0, 0.0, 4000.0, Parameter::EXPONENTIAL);
+  p = new Param("HighDamp", 20.0, 20000.0, 4000.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedPingPongEcho, &PingPongEcho::setHighDamp);
 
-  p = new AutomatableParameter(lock, "LowDamp", 20.0, 20000.0, 0.0, 250.0, Parameter::EXPONENTIAL);
+  p = new Param("LowDamp", 20.0, 20000.0, 250.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedPingPongEcho, &PingPongEcho::setLowDamp);
 
-  p = new AutomatableParameter(lock, "PingPong", 0.0, 1.0, 1.0, 1.0, Parameter::BOOLEAN);
+  p = new Param("PingPong", 0.0, 1.0, 1.0, Parameter::BOOLEAN, 1.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedPingPongEcho, &PingPongEcho::setPingPongMode);
 
-  p = new AutomatableParameter(lock, "TrueStereo", 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
+  p = new Param("TrueStereo", 0.0, 1.0, 0.0, Parameter::BOOLEAN, 1.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedPingPongEcho, &PingPongEcho::setTrueStereoMode);
 
-  p = new AutomatableParameter(lock, "TempoSync", 0.0, 1.0, 1.0, 1.0, Parameter::BOOLEAN);
+  p = new Param("TempoSync", 0.0, 1.0, 1.0, Parameter::BOOLEAN, 1.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedPingPongEcho, &PingPongEcho::setSyncMode);
 
-  p = new AutomatableParameter(lock, "Activated", 0.0, 1.0, 1.0, 1.0, Parameter::BOOLEAN);
+  p = new Param("Activated", 0.0, 1.0, 1.0, Parameter::BOOLEAN, 1.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedPingPongEcho, &PingPongEcho::setActive);
 
-  for(int i=0; i < (int) parameters.size(); i++)
-    parameters[i]->resetToDefaultValue(true, true);
+  //for(int i=0; i < (int) parameters.size(); i++)
+  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 PingPongEchoModuleEditor::PingPongEchoModuleEditor(CriticalSection *newPlugInLock, PingPongEchoAudioModule* newPingPongEchoAudioModule)
@@ -3227,50 +3229,51 @@ void ReverbAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  AutomatableParameter* p;
+  typedef ModulatableParameter Param;
+  Param* p;
 
-  p = new AutomatableParameter(lock, "DryWetRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
+  p = new Param("DryWetRatio", 0.0, 1.0, 0.5, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedReverb, &rosic::rsReverb::setDryWetRatio);
 
-  p = new AutomatableParameter(lock, "FirstEcho", 10.0, 200.0, 0.1, 50.0, Parameter::EXPONENTIAL);
+  p = new Param("FirstEcho", 10.0, 200.0, 50.0, Parameter::EXPONENTIAL, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedReverb, &rosic::rsReverb::setReferenceDelayTime);
 
-  p = new AutomatableParameter(lock, "PreDelay", 0.0, 250.0, 1.0, 0.0, Parameter::LINEAR);
+  p = new Param("PreDelay", 0.0, 250.0, 0.0, Parameter::LINEAR, 1.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedReverb, &rosic::rsReverb::setPreDelay);
 
-  p = new AutomatableParameter(lock, "DecayTime", 0.1, 10.0, 0.01, 3.0, Parameter::EXPONENTIAL);
+  p = new Param("DecayTime", 0.1, 10.0, 3.0, Parameter::EXPONENTIAL, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedReverb, &rosic::rsReverb::setMidReverbTime);
 
-  p = new AutomatableParameter(lock, "HighDecayScale", 0.1, 10.0, 0.01, 0.3, Parameter::EXPONENTIAL);
+  p = new Param("HighDecayScale", 0.1, 10.0, 0.3, Parameter::EXPONENTIAL, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedReverb, &rosic::rsReverb::setHighReverbTimeScale);
 
-  p = new AutomatableParameter(lock, "LowDecayScale", 0.1, 10.0, 0.01, 1.0, Parameter::EXPONENTIAL);
+  p = new Param("LowDecayScale", 0.1, 10.0, 1.0, Parameter::EXPONENTIAL, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedReverb, &rosic::rsReverb::setLowReverbTimeScale);
 
-  p = new AutomatableParameter(lock, "HighCrossoverFrequency", 20.0, 20000.0, 0.0, 4000.0, Parameter::EXPONENTIAL);
+  p = new Param("HighCrossoverFrequency", 20.0, 20000.0, 4000.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedReverb, &rosic::rsReverb::setHighCrossoverFreq);
 
-  p = new AutomatableParameter(lock, "LowCrossoverFrequency", 20.0, 20000.0, 0.0, 250.0, Parameter::EXPONENTIAL);
+  p = new Param("LowCrossoverFrequency", 20.0, 20000.0, 250.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedReverb, &rosic::rsReverb::setLowCrossoverFreq);
 
-  p = new AutomatableParameter(lock, "Pinking", 0.0, 1.0, 1.0, 1.0, Parameter::BOOLEAN);
+  p = new Param("Pinking", 0.0, 1.0, 1.0, Parameter::BOOLEAN, 1.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedReverb, &rosic::rsReverb::setWetPinkingSwitch);
 
-  p = new AutomatableParameter(lock, "StereoSwap", 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
+  p = new Param("StereoSwap", 0.0, 1.0, 0.0, Parameter::BOOLEAN, 1.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedReverb, &rosic::rsReverb::setStereoSwapSwitch);
 
-  for(int i=0; i < (int) parameters.size(); i++)
-    parameters[i]->resetToDefaultValue(true, true);
+  //for(int i=0; i < (int) parameters.size(); i++)
+  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 ReverbModuleEditor::ReverbModuleEditor(CriticalSection *newPlugInLock, ReverbAudioModule* newReverbAudioModule)
@@ -3403,14 +3406,15 @@ void SimpleDelayAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  AutomatableParameter* p;
+  typedef ModulatableParameter Param;
+  Param* p;
 
-  p = new AutomatableParameter(lock, "DelayTime", 0.0, 200.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new Param("DelayTime", 0.0, 200.0, 0.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedSimpleDelay, &FractionalDelayLineStereo::setDelayTimeInMilliseconds);
 
-  for(int i=0; i < (int) parameters.size(); i++)
-    parameters[i]->resetToDefaultValue(true, true);
+  //for(int i=0; i < (int) parameters.size(); i++)
+  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 SimpleDelayModuleEditor::SimpleDelayModuleEditor(CriticalSection *newPlugInLock, SimpleDelayAudioModule* newSimpleDelayAudioModule)
@@ -3551,34 +3555,36 @@ void FlangerAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  AutomatableParameter* p;
-  p = dynamic_cast<AutomatableParameter*> (lfoModule->getParameterByName(("CycleLength")));
+  typedef ModulatableParameter Param;
+  Param* p;
+
+  p = dynamic_cast<Param*> (lfoModule->getParameterByName(("CycleLength")));
   p->setRange(0.25, 16.0);
   p->setDefaultValue(8.0, true);
   p->setScaling(Parameter::EXPONENTIAL);
 
-  p = new AutomatableParameter(lock, "Depth", 0.0, 48.0, 0.1, 12.0, Parameter::LINEAR);  // #04
+  p = new Param("Depth", 0.0, 48., 12.0, Parameter::LINEAR0, 0.1);  // #04
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedFlanger, &Flanger::setDepth);
 
-  p = new AutomatableParameter(lock, "DryWetRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
+  p = new Param("DryWetRatio", 0.0, 1.0, 0.5, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedFlanger, &Flanger::setDryWetRatio);
 
-  p = new AutomatableParameter(lock, "Frequency", 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
+  p = new Param("Frequency", 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedFlanger, &Flanger::setFrequency);
 
-  p = new AutomatableParameter(lock, "Feedback", -99.0, 99.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("Feedback", -99.0, 99.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedFlanger, &Flanger::setFeedbackInPercent);
 
-  p = new AutomatableParameter(lock, "Invert", 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
+  p = new Param("Invert", 0.0, 1.0, 0.0, Parameter::BOOLEAN, 1.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedFlanger, &Flanger::setNegativePolarity);
 
-  for(int i=0; i < (int) parameters.size(); i++)
-    parameters[i]->resetToDefaultValue(true, true);
+  //for(int i=0; i < (int) parameters.size(); i++)
+  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 FlangerModuleEditor::FlangerModuleEditor(CriticalSection *newPlugInLock, FlangerAudioModule* newFlangerAudioModule)
