@@ -1,6 +1,7 @@
 -make all the modulation stuff available for quadrifex
  -derive effects from ModulatableAudioModule - done
- -use ModulatableParameter where appropriate
+ -use ModulatableParameter where appropriate 
+  -done up to Expander
  -use ModulatableSlider correspondingly
 
 

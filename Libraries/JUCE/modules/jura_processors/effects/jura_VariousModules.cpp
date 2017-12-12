@@ -593,43 +593,36 @@ void WaveShaperAudioModule::createStaticParameters()
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setTransferFunction);
 
-  //p = new AutomatableParameter(lock, "Drive", -24.0, 48.0, 0.1, 0.0, Parameter::LINEAR);
   p = new Param("Drive", -24.0, 48.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setDrive);
 
-  //p = new AutomatableParameter(lock, "DC", -5.0, 5.0, 0.01, 0.0, Parameter::LINEAR);
   p = new Param("DC", -5.0, 5.0, 0.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setDcOffset);
 
-  //p = new AutomatableParameter(lock, "Amount", -200.0, 200.0, 1.0, 100.0, Parameter::LINEAR);
   p = new Param("Amount", -200.0, 200.0, 100.0, Parameter::LINEAR, 1.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setAmount);
 
-  //p = new AutomatableParameter(lock, "OutputLevel", -48.0, 6.0, 0.1, 0.0, Parameter::LINEAR);
   p = new Param("OutputLevel", -48.0, 6.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setOutputLevel);
 
-  //p = new AutomatableParameter(lock, "Oversampling", 1.0, 16.0, 1.0, 4.0, Parameter::LINEAR);
   p = new Param("Oversampling", 1.0, 16.0, 4.0, Parameter::LINEAR, 1.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setOversampling);
 
-  //p = new AutomatableParameter(lock, "InterceptY", -0.5, 0.5, 0.01, 0.0, Parameter::LINEAR);
   p = new Param("InterceptY", -0.5, 0.5, 0.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setPenticInterceptY);
 
-  //p = new AutomatableParameter(lock, "Slope", -1.0, 3.0, 0.01, 1.0, Parameter::LINEAR);
   p = new Param("Slope", -1.0, 3.0, 1.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setPenticSlopeAtZero);
 
-  for(int i=0; i < (int) parameters.size(); i++)
-    parameters[i]->resetToDefaultValue(true, true);
+  //for(int i=0; i < (int) parameters.size(); i++)
+  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 WaveShaperModuleEditor::WaveShaperModuleEditor(CriticalSection *newPlugInLock, WaveShaperAudioModule* newWaveShaperAudioModule)
@@ -832,26 +825,27 @@ void CompShaperAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  AutomatableParameter* p;
+  typedef ModulatableParameter Param;
+  Param* p;
 
-  p = new AutomatableParameter(lock, "Threshold", -48.0, 12.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("Threshold", -48.0, 12.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedCompShaper, &CompShaper::setThreshold);
 
-  p = new AutomatableParameter(lock, "Ratio", 1.0, 40.0, 0.01, 1.0, Parameter::EXPONENTIAL);
+  p = new Param("Ratio", 1.0, 40.0, 1.0, Parameter::EXPONENTIAL, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedCompShaper, &CompShaper::setRatio);
 
-  p = new AutomatableParameter(lock, "KneeWidth", 0.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("KneeWidth", 0.0, 100.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedCompShaper, &CompShaper::setKneeWidth);
 
-  p = new AutomatableParameter(lock, "Clip", 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
+  p = new Param("Clip", 0.0, 1.0, 0.0, Parameter::BOOLEAN, 1.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedCompShaper, &CompShaper::setToClipperMode);
 
-  for(int i=0; i < (int) parameters.size(); i++)
-    parameters[i]->resetToDefaultValue(true, true);
+  //for(int i=0; i < (int) parameters.size(); i++)
+  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 CompShaperModuleEditor::CompShaperModuleEditor(CriticalSection *newPlugInLock, CompShaperAudioModule* newCompShaperAudioModule)
@@ -1002,49 +996,50 @@ void CompressorAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  AutomatableParameter* p;
+  typedef ModulatableParameter Param;
+  Param* p;
 
-  p = new AutomatableParameter(lock, ("Attack"), 1.0, 1000.0, 0.01, 10.0, Parameter::EXPONENTIAL);
+  p = new Param("Attack", 1.0, 1000.0, 10.0, Parameter::EXPONENTIAL, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeCompressor>(wrappedCompressor, &SoftKneeCompressor::setAttackTime);
 
-  p = new AutomatableParameter(lock, ("Release"), 10.0, 1000.0, 0.1, 100.0, Parameter::EXPONENTIAL);
+  p = new Param("Release", 10.0, 1000.0, 100.0, Parameter::EXPONENTIAL, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeCompressor>(wrappedCompressor, &SoftKneeCompressor::setReleaseTime);
 
-  p = new AutomatableParameter(lock, ("LookAhead"), 0.0, 50.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new Param("LookAhead", 0.0, 50.0, 0.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeCompressor>(wrappedCompressor, &SoftKneeCompressor::setLookAheadTime);
 
-  p = new AutomatableParameter(lock, ("InLevel"), -24.0, 24.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("InLevel", -24.0, 24.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeCompressor>(wrappedCompressor, &SoftKneeCompressor::setInputGain);
 
-  p = new AutomatableParameter(lock, ("OutLevel"), -24.0, 48.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("OutLevel", -24.0, 48.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeCompressor>(wrappedCompressor, &SoftKneeCompressor::setOutputGain);
 
-  p = new AutomatableParameter(lock, ("DryWetRatio"), 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
+  p = new Param("DryWetRatio", 0.0, 1.0, 1.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeCompressor>(wrappedCompressor, &SoftKneeCompressor::setDryWetRatio);
 
-  p = new AutomatableParameter(lock, ("Threshold"), -48.0, 12.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("Threshold", -48.0, 12.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeCompressor>(wrappedCompressor, &SoftKneeCompressor::setThreshold);
 
-  p = new AutomatableParameter(lock, ("Ratio"), 1.0, 40.0, 0.01, 1.0, Parameter::EXPONENTIAL);
+  p = new Param("Ratio", 1.0, 40.0, 1.0, Parameter::EXPONENTIAL, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeCompressor>(wrappedCompressor, &SoftKneeCompressor::setRatio);
 
-  p = new AutomatableParameter(lock, ("KneeWidth"), 0.0, 48.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("KneeWidth", 0.0, 48.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeCompressor>(wrappedCompressor, &SoftKneeCompressor::setKneeWidth);
 
-  p = new AutomatableParameter(lock, ("Limit"), 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
+  p = new Param("Limit", 0.0, 1.0, 0.0, Parameter::BOOLEAN, 1.0);
   addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeCompressor>(wrappedCompressor, &SoftKneeCompressor::setLimiterMode);
 
-  p = new AutomatableParameter(lock, ("AutoGain"), 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
+  p = new Param("AutoGain", 0.0, 1.0, 0.0, Parameter::BOOLEAN, 1.0);
   addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeCompressor>(wrappedCompressor, &SoftKneeCompressor::setAutoGain);
 
@@ -1053,8 +1048,8 @@ void CompressorAudioModule::createStaticParameters()
   //p->setValueChangeCallback(wrappedCompressor, &SoftKneeCompressor::setAntiAlias);
   // only for test - usually on
 
-  for(int i=0; i < (int) parameters.size(); i++)
-    parameters[i]->resetToDefaultValue(true, true);
+  //for(int i=0; i < (int) parameters.size(); i++)
+  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1240,49 +1235,51 @@ void ExpanderAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  AutomatableParameter* p;
+  //AutomatableParameter* p;
+  typedef ModulatableParameter Param;
+  Param* p;
 
-  p = new AutomatableParameter(lock, ("Attack"), 1.0, 1000.0, 0.01, 10.0, Parameter::EXPONENTIAL);
+  p = new Param("Attack", 1.0, 1000.0, 10.0, Parameter::EXPONENTIAL, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeExpander>(wrappedExpander, &SoftKneeExpander::setAttackTime);
 
-  p = new AutomatableParameter(lock, ("Release"), 10.0, 1000.0, 0.1, 100.0, Parameter::EXPONENTIAL);
+  p = new Param("Release", 10.0, 1000.0, 100.0, Parameter::EXPONENTIAL, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeExpander>(wrappedExpander, &SoftKneeExpander::setReleaseTime);
 
-  p = new AutomatableParameter(lock, ("LookAhead"), 0.0, 50.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new Param("LookAhead", 0.0, 50.0, 0.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeExpander>(wrappedExpander, &SoftKneeExpander::setLookAheadTime);
 
-  p = new AutomatableParameter(lock, ("InLevel"), -24.0, 24.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("InLevel", -24.0, 24.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeExpander>(wrappedExpander, &SoftKneeExpander::setInputGain);
 
-  p = new AutomatableParameter(lock, ("OutLevel"), -24.0, 48.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("OutLevel", -24.0, 48.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeExpander>(wrappedExpander, &SoftKneeExpander::setOutputGain);
 
-  p = new AutomatableParameter(lock, ("DryWetRatio"), 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
+  p = new Param("DryWetRatio", 0.0, 1.0, 1.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeExpander>(wrappedExpander, &SoftKneeExpander::setDryWetRatio);
 
-  p = new AutomatableParameter(lock, ("Threshold"), -48.0, 12.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("Threshold", -48.0, 12.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeExpander>(wrappedExpander, &SoftKneeExpander::setThreshold);
 
-  p = new AutomatableParameter(lock, ("Ratio"), 1.0, 40.0, 0.01, 1.0, Parameter::EXPONENTIAL);
+  p = new Param("Ratio", 1.0, 40.0, 1.0, Parameter::EXPONENTIAL, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeExpander>(wrappedExpander, &SoftKneeExpander::setRatio);
 
-  p = new AutomatableParameter(lock, ("KneeWidth"), 0.0, 48.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("KneeWidth", 0.0, 48.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback<SoftKneeExpander>(wrappedExpander, &SoftKneeExpander::setKneeWidth);
 
   //p = new Parameter("Gate", 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
   //addObservedParameter(p);
 
-  for(int i=0; i < (int) parameters.size(); i++)
-    parameters[i]->resetToDefaultValue(true, true);
+  //for(int i=0; i < (int) parameters.size(); i++)
+  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 ExpanderModuleEditor::ExpanderModuleEditor(CriticalSection *newPlugInLock, ExpanderAudioModule* newExpanderAudioModule)
