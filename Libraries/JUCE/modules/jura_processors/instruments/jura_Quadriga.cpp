@@ -20,7 +20,7 @@ QuadrigaAudioModule::QuadrigaAudioModule(CriticalSection *newPlugInLock)
   quadrigenModule->setModuleName(juce::String("Quadrigen"));
   addChildAudioModule(quadrigenModule);
 
-  quadrifexModule = new QuadrifexAudioModule(lock, &wrappedQuadriga->quadrifex);
+  quadrifexModule = new QuadrifexAudioModule(lock, nullptr, nullptr, &wrappedQuadriga->quadrifex); // nullptrs preliminary
   quadrifexModule->setModuleName(juce::String("Quadrifex"));
   addChildAudioModule(quadrifexModule);
 

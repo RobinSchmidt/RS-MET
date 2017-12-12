@@ -3,15 +3,20 @@
 
 class QuadrifexModuleEditor;
 
-class QuadrifexAudioModule : public AudioModule
+class QuadrifexAudioModule : public ModulatableAudioModule /*public AudioModule*/
 {
 
   friend class QuadrifexModuleEditor;
 
 public:
 
-  QuadrifexAudioModule(CriticalSection *newPlugInLock, 
+  QuadrifexAudioModule(CriticalSection* lockToUse,
+    MetaParameterManager* metaManagerToUse = nullptr,
+    ModulationManager* modManagerToUse = nullptr,
     rosic::Quadrifex *quadrifexToWrap = nullptr);
+
+  //QuadrifexAudioModule(CriticalSection *newPlugInLock, 
+  //  rosic::Quadrifex *quadrifexToWrap = nullptr);
 
   virtual ~QuadrifexAudioModule();
 

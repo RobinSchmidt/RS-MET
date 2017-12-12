@@ -604,7 +604,7 @@ void WaveShaperAudioModule::createStaticParameters()
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setAmount);
 
   //p = new AutomatableParameter(lock, "OutputLevel", -48.0, 6.0, 0.1, 0.0, Parameter::LINEAR);
-  p = new Param("OutputLevel", -48.0, 6.0, 0.1, Parameter::LINEAR, 0.0);
+  p = new Param("OutputLevel", -48.0, 6.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setOutputLevel);
 
@@ -614,7 +614,7 @@ void WaveShaperAudioModule::createStaticParameters()
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setOversampling);
 
   //p = new AutomatableParameter(lock, "InterceptY", -0.5, 0.5, 0.01, 0.0, Parameter::LINEAR);
-  p = new Param("InterceptY", -0.5, 0.5, 0.01, Parameter::LINEAR, 0.0);
+  p = new Param("InterceptY", -0.5, 0.5, 0.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setPenticInterceptY);
 

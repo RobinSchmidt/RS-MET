@@ -2,9 +2,13 @@
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-QuadrifexAudioModule::QuadrifexAudioModule(CriticalSection *newPlugInLock,
+//QuadrifexAudioModule::QuadrifexAudioModule(CriticalSection *newPlugInLock,
+//  rosic::Quadrifex *quadrifexToWrap)
+//: AudioModule(newPlugInLock)
+QuadrifexAudioModule::QuadrifexAudioModule(CriticalSection* lockToUse, 
+  MetaParameterManager* metaManagerToUse, ModulationManager* modManagerToUse, 
   rosic::Quadrifex *quadrifexToWrap)
-: AudioModule(newPlugInLock)
+  : ModulatableAudioModule(lockToUse, metaManagerToUse, modManagerToUse) 
 {
   ScopedLock scopedLock(*lock);
 
