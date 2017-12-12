@@ -140,10 +140,12 @@ void LowFrequencyOscillatorAudioModule::parameterChanged(Parameter* parameterTha
 
 void LowFrequencyOscillatorAudioModule::initializeAutomatableParameters()
 {
-  AutomatableParameter* p;
+  typedef ModulatableParameter Param;
+  Param* p;
+
   std::vector<double> defaultValues;
 
-  p = new AutomatableParameter(lock, "CycleLength", 0.125, 1.0, 0.0125, 0.25, Parameter::LINEAR);
+  p = new Param("CycleLength", 0.125, 1.0, 0.25, Parameter::LINEAR, 0.0125);
   defaultValues.clear();
   defaultValues.push_back(0.125);
   defaultValues.push_back(0.25);
@@ -165,10 +167,10 @@ void LowFrequencyOscillatorAudioModule::initializeAutomatableParameters()
   p->setDefaultValues(defaultValues);
   addObservedParameter(p); 
 
-  p = new AutomatableParameter(lock, "TempoSync", 0.0, 1.0, 1.0, 1.0, Parameter::BOOLEAN);
+  p = new Param("TempoSync", 0.0, 1.0, 1.0, Parameter::BOOLEAN, 1.0);
   addObservedParameter(p);
 
-  p = new AutomatableParameter(lock, "StartPhase", 0.0, 360.0, 1.0, 0.0, Parameter::LINEAR);
+  p = new Param("StartPhase", 0.0, 360.0, 0.0, Parameter::LINEAR, 1.0);
   defaultValues.clear();
   defaultValues.push_back(0.0);
   defaultValues.push_back(45.0);
@@ -181,7 +183,7 @@ void LowFrequencyOscillatorAudioModule::initializeAutomatableParameters()
   p->setDefaultValues(defaultValues);
   addObservedParameter(p); 
 
-  p = new AutomatableParameter(lock, "StereoPhase", 0.0, 180.0, 1.0, 0.0, Parameter::LINEAR);
+  p = new Param("StereoPhase", 0.0, 180.0, 0.0, Parameter::LINEAR, 1.0);
   p->setDefaultValues(defaultValues);
   addObservedParameter(p); 
 
