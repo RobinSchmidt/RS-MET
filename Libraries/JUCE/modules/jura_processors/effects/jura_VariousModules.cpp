@@ -1235,7 +1235,6 @@ void ExpanderAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  //AutomatableParameter* p;
   typedef ModulatableParameter Param;
   Param* p;
 
@@ -1448,38 +1447,39 @@ void LimiterAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  AutomatableParameter* p;
+  typedef ModulatableParameter Param;
+  Param* p;
 
-  p = new AutomatableParameter(lock, ("Attack"), 0.0, 10.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new Param("Attack", 0.0, 10.0, 0.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback<Limiter>(wrappedLimiter, &Limiter::setAttackTime);
 
-  p = new AutomatableParameter(lock, ("Release"), 10.0, 1000.0, 0.1, 100.0, Parameter::EXPONENTIAL);
+  p = new Param("Release", 10.0, 1000.0, 100.0, Parameter::EXPONENTIAL, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback<Limiter>(wrappedLimiter, &Limiter::setReleaseTime);
 
-  p = new AutomatableParameter(lock, ("LookAhead"), 0.0, 50.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new Param("LookAhead", 0.0, 50.0, 0.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback<Limiter>(wrappedLimiter, &Limiter::setLookAheadTime);
 
-  p = new AutomatableParameter(lock, ("InLevel"), -24.0, 24.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("InLevel", -24.0, 24.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback<Limiter>(wrappedLimiter, &Limiter::setInputGain);
 
-  p = new AutomatableParameter(lock, ("OutLevel"), -24.0, 48.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("OutLevel", -24.0, 48.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback<Limiter>(wrappedLimiter, &Limiter::setOutputGain);
 
-  p = new AutomatableParameter(lock, ("DryWetRatio"), 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
+  p = new Param("DryWetRatio", 0.0, 1.0, 1.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback<Limiter>(wrappedLimiter, &Limiter::setDryWetRatio);
 
-  p = new AutomatableParameter(lock, ("Limit"), -48.0, 12.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("Limit", -48.0, 12.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback<Limiter>(wrappedLimiter, &Limiter::setLimit);
 
-  for(int i=0; i < (int) parameters.size(); i++)
-    parameters[i]->resetToDefaultValue(true, true);
+  //for(int i=0; i < (int) parameters.size(); i++)
+  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 LimiterModuleEditor::LimiterModuleEditor(CriticalSection *newPlugInLock, LimiterAudioModule* newLimiterAudioModule)
@@ -1623,46 +1623,47 @@ void NoiseGateAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  AutomatableParameter* p;
+  typedef ModulatableParameter Param;
+  Param* p;
 
-  p = new AutomatableParameter(lock, ("Attack"), 0.1, 10.0, 0.01, 1.0, Parameter::EXPONENTIAL);
+  p = new Param("Attack", 0.1, 10.0, 1.0, Parameter::EXPONENTIAL, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback<NoiseGate>(wrappedNoiseGate, &NoiseGate::setAttackTime);
 
-  p = new AutomatableParameter(lock, ("Hold"), 0.1, 100.0, 0.01, 10.0, Parameter::EXPONENTIAL);
+  p = new Param("Hold", 0.1, 100.0, 10.0, Parameter::EXPONENTIAL, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback<NoiseGate>(wrappedNoiseGate, &NoiseGate::setHoldTime);
 
-  p = new AutomatableParameter(lock, ("Release"), 1.0, 1000.0, 1.0, 10.0, Parameter::EXPONENTIAL);
+  p = new Param("Release", 1.0, 1000.0, 10.0, Parameter::EXPONENTIAL, 1.0);
   addObservedParameter(p);
   p->setValueChangeCallback<NoiseGate>(wrappedNoiseGate, &NoiseGate::setReleaseTime);
 
-  p = new AutomatableParameter(lock, ("LookAhead"), 0.0, 50.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new Param("LookAhead", 0.0, 50.0, 0.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback<NoiseGate>(wrappedNoiseGate, &NoiseGate::setLookAheadTime);
 
-  p = new AutomatableParameter(lock, ("InLevel"), -24.0, 24.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("InLevel", -24.0, 24.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback<NoiseGate>(wrappedNoiseGate, &NoiseGate::setInputGain);
 
-  p = new AutomatableParameter(lock, ("OutLevel"), -24.0, 48.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("OutLevel", -24.0, 48.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback<NoiseGate>(wrappedNoiseGate, &NoiseGate::setOutputGain);
 
-  p = new AutomatableParameter(lock, ("DryWetRatio"), 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
+  p = new Param("DryWetRatio", 0.0, 1.0, 1.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback<NoiseGate>(wrappedNoiseGate, &NoiseGate::setDryWetRatio);
 
-  p = new AutomatableParameter(lock, ("Threshold"), -48.0, 12.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("Threshold", -48.0, 12.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback<NoiseGate>(wrappedNoiseGate, &NoiseGate::setThreshold);
 
-  p = new AutomatableParameter(lock, ("Hysteresis"), 0.0, 12.0, 0.1, 3.0, Parameter::LINEAR);
+  p = new Param("Hysteresis", 0.0, 12.0, 3.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback<NoiseGate>(wrappedNoiseGate, &NoiseGate::setHysteresis);
 
-  for(int i=0; i < (int) parameters.size(); i++)
-    parameters[i]->resetToDefaultValue(true, true);
+  //for(int i=0; i < (int) parameters.size(); i++)
+  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 NoiseGateModuleEditor::NoiseGateModuleEditor(CriticalSection *newPlugInLock, NoiseGateAudioModule* newNoiseGateAudioModule)
@@ -1825,58 +1826,59 @@ void CombBankAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  AutomatableParameter* p;
+  typedef ModulatableParameter Param;
+  Param* p;
 
-  p = new AutomatableParameter(lock, "DryWetRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
+  p = new Param("DryWetRatio", 0.0, 1.0, 0.5, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombBank, &CombBank::setDryWetRatio);
 
-  p = new AutomatableParameter(lock, "Level", -48.0, 6.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("Level", -48.0, 6.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombBank, &CombBank::setLevel);
 
-  p = new AutomatableParameter(lock, "Frequency", 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
+  p = new Param("Frequency", 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombBank, &CombBank::setReferenceFrequency);
 
-  p = new AutomatableParameter(lock, "Detune", -1.0, 1.0, 0.0, 0.0, Parameter::LINEAR_BIPOLAR);
+  p = new Param("Detune", -1.0, 1.0, 0.0, Parameter::LINEAR_BIPOLAR, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombBank, &CombBank::setDetune);
 
-  p = new AutomatableParameter(lock, "Pan1", -1.0, 1.0, 0.0, 0.0, Parameter::LINEAR_BIPOLAR);
+  p = new Param("Pan1", -1.0, 1.0, 0.0, Parameter::LINEAR_BIPOLAR, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombBank, &CombBank::setPan1);
 
-  p = new AutomatableParameter(lock, "Pan2", -1.0, 1.0, 0.0, 0.0, Parameter::LINEAR_BIPOLAR);
+  p = new Param("Pan2", -1.0, 1.0, 0.0, Parameter::LINEAR_BIPOLAR, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombBank, &CombBank::setPan2);
 
-  p = new AutomatableParameter(lock, "OddOnly", 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
+  p = new Param("OddOnly", 0.0, 1.0, 0.0, Parameter::BOOLEAN, 1.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombBank, &CombBank::setOddOnlyMode);
 
-  p = new AutomatableParameter(lock, "DecayTime", 0.1, 10.0, 0.1, 3.0, Parameter::EXPONENTIAL);
+  p = new Param("DecayTime", 0.1, 10.0, 3.0, Parameter::EXPONENTIAL, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombBank, &CombBank::setDecayTime);
 
-  p = new AutomatableParameter(lock, "HighDecayScale", 0.1, 10.0, 0.01, 0.3, Parameter::EXPONENTIAL);
+  p = new Param("HighDecayScale", 0.1, 10.0, 0.3, Parameter::EXPONENTIAL, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombBank, &CombBank::setHighDecayScale);
 
-  p = new AutomatableParameter(lock, "LowDecayScale", 0.1, 10.0, 0.01, 1.0, Parameter::EXPONENTIAL);
+  p = new Param("LowDecayScale", 0.1, 10.0, 1.0, Parameter::EXPONENTIAL, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombBank, &CombBank::setLowDecayScale);
 
-  p = new AutomatableParameter(lock, "HighCrossoverFrequency", 20.0, 20000.0, 0.0, 4000.0, Parameter::EXPONENTIAL);
+  p = new Param("HighCrossoverFrequency", 20.0, 20000.0, 4000.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombBank, &CombBank::setHighCrossoverFreq);
 
-  p = new AutomatableParameter(lock, "LowCrossoverFrequency", 20.0, 20000.0, 0.0, 250.0, Parameter::EXPONENTIAL);
+  p = new Param("LowCrossoverFrequency", 20.0, 20000.0, 250.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombBank, &CombBank::setLowCrossoverFreq);
 
-  for(int i=0; i < (int) parameters.size(); i++)
-    parameters[i]->resetToDefaultValue(true, true);
+  //for(int i=0; i < (int) parameters.size(); i++)
+  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 CombBankModuleEditor::CombBankModuleEditor(CriticalSection *newPlugInLock, CombBankAudioModule* newCombBankAudioModule)
@@ -2056,58 +2058,59 @@ void CombResonatorAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  AutomatableParameter* p;
+  typedef ModulatableParameter Param;
+  Param* p;
 
-  p = new AutomatableParameter(lock, "DryWetRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
+  p = new Param("DryWetRatio", 0.0, 1.0, 0.5, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombResonator, &CombResonatorStereo::setDryWetRatio);
 
-  p = new AutomatableParameter(lock, "Level", -48.0, 6.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("Level", -48.0, 6.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombResonator, &CombResonatorStereo::setLevel);
 
-  p = new AutomatableParameter(lock, "Frequency", 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
+  p = new Param("Frequency", 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombResonator, &CombResonatorStereo::setFrequency);
 
-  p = new AutomatableParameter(lock, "Detune", -1.0, 1.0, 0.0, 0.0, Parameter::LINEAR_BIPOLAR);
+  p = new Param("Detune", -1.0, 1.0, 0.0, Parameter::LINEAR_BIPOLAR, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombResonator, &CombResonatorStereo::setDetune);
 
-  p = new AutomatableParameter(lock, "Pan1", -1.0, 1.0, 0.0, 0.0, Parameter::LINEAR_BIPOLAR);
+  p = new Param("Pan1", -1.0, 1.0, 0.0, Parameter::LINEAR_BIPOLAR, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombResonator, &CombResonatorStereo::setPan1);
 
-  p = new AutomatableParameter(lock, "Pan2", -1.0, 1.0, 0.0, 0.0, Parameter::LINEAR_BIPOLAR);
+  p = new Param("Pan2", -1.0, 1.0, 0.0, Parameter::LINEAR_BIPOLAR, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombResonator, &CombResonatorStereo::setPan2);
 
-  p = new AutomatableParameter(lock, "OddOnly", 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
+  p = new Param("OddOnly", 0.0, 1.0, 0.0, Parameter::BOOLEAN, 1.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombResonator, &CombResonatorStereo::setOddOnlyMode);
 
-  p = new AutomatableParameter(lock, "DecayTime", 0.1, 10.0, 0.1, 3.0, Parameter::EXPONENTIAL);
+  p = new Param("DecayTime", 0.1, 10.0, 3.0, Parameter::EXPONENTIAL, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombResonator, &CombResonatorStereo::setDecayTime);
 
-  p = new AutomatableParameter(lock, "HighDecayScale", 0.1, 10.0, 0.01, 0.3, Parameter::EXPONENTIAL);
+  p = new Param("HighDecayScale", 0.1, 10.0, 0.3, Parameter::EXPONENTIAL, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombResonator, &CombResonatorStereo::setHighDecayScale);
 
-  p = new AutomatableParameter(lock, "LowDecayScale", 0.1, 10.0, 0.01, 1.0, Parameter::EXPONENTIAL);
+  p = new Param("LowDecayScale", 0.1, 10.0, 1.0, Parameter::EXPONENTIAL, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombResonator, &CombResonatorStereo::setLowDecayScale);
 
-  p = new AutomatableParameter(lock, "HighCrossoverFrequency", 20.0, 20000.0, 0.0, 4000.0, Parameter::EXPONENTIAL);
+  p = new Param("HighCrossoverFrequency", 20.0, 20000.0, 4000.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombResonator, &CombResonatorStereo::setHighCrossoverFreq);
 
-  p = new AutomatableParameter(lock, "LowCrossoverFrequency", 20.0, 20000.0, 0.0, 250.0, Parameter::EXPONENTIAL);
+  p = new Param("LowCrossoverFrequency", 20.0, 20000.0, 250.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombResonator, &CombResonatorStereo::setLowCrossoverFreq);
 
-  for(int i=0; i < (int) parameters.size(); i++)
-    parameters[i]->resetToDefaultValue(true, true);
+  //for(int i=0; i < (int) parameters.size(); i++)
+  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 CombResonatorModuleEditor::CombResonatorModuleEditor(CriticalSection *newPlugInLock, CombResonatorAudioModule* newCombResonatorAudioModule)
