@@ -64,7 +64,7 @@ public:
 //-----------------------------------------------------------------------------------------------
 // BitCrusher:
 
-class BitCrusherAudioModule : public AudioModule
+class BitCrusherAudioModule : public ModulatableAudioModule
 {
 public:
   BitCrusherAudioModule(CriticalSection *newPlugInLock, rosic::BitCrusher *newBitCrusherToWrap);
@@ -88,7 +88,7 @@ protected:
 //-----------------------------------------------------------------------------------------------
 // Harmonics:
 
-class HarmonicsAudioModule : public AudioModule
+class HarmonicsAudioModule : public ModulatableAudioModule
 {
 public:
   HarmonicsAudioModule(CriticalSection *newPlugInLock, rosic::Harmonics *newHarmonicsToWrap);
@@ -119,7 +119,7 @@ protected:
 //-----------------------------------------------------------------------------------------------
 // ModulatedAllpass:
 
-class ModulatedAllpassAudioModule : public AudioModule
+class ModulatedAllpassAudioModule : public ModulatableAudioModule
 {
 public:
   ModulatedAllpassAudioModule(CriticalSection *newPlugInLock, rosic::ModulatedAllpass *newModulatedAllpassToWrap);
@@ -142,7 +142,7 @@ protected:
 //-----------------------------------------------------------------------------------------------
 // SlewRateLimiter:
 
-class SlewRateLimiterAudioModule : public AudioModule
+class SlewRateLimiterAudioModule : public ModulatableAudioModule
 {
 public:
   SlewRateLimiterAudioModule(CriticalSection *newPlugInLock, rosic::SlewRateLimiterStereo *newSlewRateLimiterToWrap);
@@ -201,7 +201,7 @@ protected:
 //-----------------------------------------------------------------------------------------------
 // CompShaper:
 
-class CompShaperAudioModule : public AudioModule
+class CompShaperAudioModule : public ModulatableAudioModule
 {
 public:
   CompShaperAudioModule(CriticalSection *newPlugInLock, rosic::CompShaper *newCompShaperToWrap);
@@ -230,7 +230,7 @@ protected:
 //-----------------------------------------------------------------------------------------------
 // Compressor:
 
-class CompressorAudioModule : public AudioModule
+class CompressorAudioModule : public ModulatableAudioModule
 {
 public:
   CompressorAudioModule(CriticalSection *newPlugInLock, rosic::SoftKneeCompressor *newCompressorToWrap);
@@ -257,7 +257,7 @@ protected:
 //-----------------------------------------------------------------------------------------------
 // Expander:
 
-class ExpanderAudioModule : public AudioModule
+class ExpanderAudioModule : public ModulatableAudioModule
 {
 public:
   ExpanderAudioModule(CriticalSection *newPlugInLock, rosic::SoftKneeExpander *newExpanderToWrap);
@@ -284,7 +284,7 @@ protected:
 //-----------------------------------------------------------------------------------------------
 // Limiter:
 
-class LimiterAudioModule : public AudioModule
+class LimiterAudioModule : public ModulatableAudioModule
 {
 public:
   LimiterAudioModule(CriticalSection *newPlugInLock, rosic::Limiter *newLimiterToWrap);
@@ -309,7 +309,7 @@ protected:
 //-----------------------------------------------------------------------------------------------
 // NoiseGate:
 
-class NoiseGateAudioModule : public AudioModule
+class NoiseGateAudioModule : public ModulatableAudioModule
 {
 public:
   NoiseGateAudioModule(CriticalSection *newPlugInLock, rosic::NoiseGate *newNoiseGateToWrap);
@@ -339,7 +339,7 @@ protected:
 //-----------------------------------------------------------------------------------------------
 // CombBank:
 
-class CombBankAudioModule : public AudioModule
+class CombBankAudioModule : public ModulatableAudioModule
 {
 public:
   CombBankAudioModule(CriticalSection *newPlugInLock, rosic::CombBank *newCombBankToWrap);
@@ -366,7 +366,7 @@ protected:
 //-----------------------------------------------------------------------------------------------
 // CombResonator:
 
-class CombResonatorAudioModule : public AudioModule
+class CombResonatorAudioModule : public ModulatableAudioModule
 {
 public:
   CombResonatorAudioModule(CriticalSection *newPlugInLock, rosic::CombResonatorStereo *newCombResonatorToWrap);
@@ -393,7 +393,7 @@ protected:
 //-----------------------------------------------------------------------------------------------
 // DualTwoPoleFilter:
 
-class DualTwoPoleFilterAudioModule : public AudioModule
+class DualTwoPoleFilterAudioModule : public ModulatableAudioModule
 {
   friend class DualTwoPoleFilterModuleEditor;
 public:
@@ -424,7 +424,7 @@ protected:
 //-----------------------------------------------------------------------------------------------
 // FourPoleFilter:
 
-class FourPoleFilterAudioModule : public AudioModule
+class FourPoleFilterAudioModule : public ModulatableAudioModule
 {
   friend class FourPoleFilterModuleEditor;
 public:
@@ -453,7 +453,7 @@ protected:
 //-----------------------------------------------------------------------------------------------
 // LadderFilter:
 
-class LadderFilterAudioModule : public AudioModule
+class LadderFilterAudioModule : public ModulatableAudioModule
 {
   friend class LadderFilterModuleEditor;
 public:
@@ -482,7 +482,7 @@ protected:
 //-----------------------------------------------------------------------------------------------
 // SlopeFilter:
 
-class SlopeFilterAudioModule : public AudioModule
+class SlopeFilterAudioModule : public ModulatableAudioModule
 {
   friend class SlopeFilterModuleEditor;
 public:
@@ -507,7 +507,7 @@ protected:
 //-----------------------------------------------------------------------------------------------
 // TwoPoleFilter:
 
-class TwoPoleFilterAudioModule : public AudioModule
+class TwoPoleFilterAudioModule : public ModulatableAudioModule
 {
   friend class TwoPoleFilterModuleEditor;
 public:
@@ -538,7 +538,7 @@ protected:
 //-----------------------------------------------------------------------------------------------
 // PingPongEcho:
 
-class PingPongEchoAudioModule : public AudioModule
+class PingPongEchoAudioModule : public ModulatableAudioModule
 {
 public:
   PingPongEchoAudioModule(CriticalSection *newPlugInLock, rosic::PingPongEcho *newPingPongEchoToWrap);
@@ -570,7 +570,7 @@ protected:
 //-----------------------------------------------------------------------------------------------
 // Reverb:
 
-class ReverbAudioModule : public AudioModule
+class ReverbAudioModule : public ModulatableAudioModule
 {
 public:
   ReverbAudioModule(CriticalSection *newPlugInLock, rosic::rsReverb *newReverbToWrap);
@@ -595,7 +595,7 @@ protected:
 //-----------------------------------------------------------------------------------------------
 // SimpleDelay:
 
-class SimpleDelayAudioModule : public AudioModule
+class SimpleDelayAudioModule : public ModulatableAudioModule
 {
 public:
   SimpleDelayAudioModule(CriticalSection *newPlugInLock, rosic::FractionalDelayLineStereo *newSimpleDelayToWrap);
@@ -622,7 +622,7 @@ protected:
 //-----------------------------------------------------------------------------------------------
 // ModulationEffect baseclass:
 
-class ModulationEffectAudioModule : public AudioModule //, public AudioFileManager //, public StateFileManager
+class ModulationEffectAudioModule : public ModulatableAudioModule //, public AudioFileManager //, public StateFileManager
 {
   friend class ModulationEffectModuleEditor;
 public:
@@ -792,7 +792,7 @@ protected:
 //-----------------------------------------------------------------------------------------------
 // FormantShifter:
 
-class FormantShifterAudioModule : public AudioModule
+class FormantShifterAudioModule : public ModulatableAudioModule
 {
 public:
   FormantShifterAudioModule(CriticalSection *newPlugInLock, rosic::FormantShifterStereo *newFormantShifterToWrap);
@@ -820,7 +820,7 @@ protected:
 //-----------------------------------------------------------------------------------------------
 // Chorus:
 
-class ChorusAudioModule : public AudioModule
+class ChorusAudioModule : public ModulatableAudioModule
 {
 public:
   ChorusAudioModule(CriticalSection *newPlugInLock, rosic::Chorus *newChorusToWrap);
@@ -853,7 +853,7 @@ protected:
 //-----------------------------------------------------------------------------------------------
 // FrequencyShifter:
 
-class FrequencyShifterAudioModule : public AudioModule
+class FrequencyShifterAudioModule : public ModulatableAudioModule
 {
 public:
   FrequencyShifterAudioModule(CriticalSection *newPlugInLock, rosic::FrequencyShifterStereo *newFrequencyShifterToWrap);
@@ -876,7 +876,7 @@ protected:
 //-----------------------------------------------------------------------------------------------
 // PhaseStereoizer:
 
-class PhaseStereoizerAudioModule : public AudioModule
+class PhaseStereoizerAudioModule : public ModulatableAudioModule
 {
 public:
   PhaseStereoizerAudioModule(CriticalSection *newPlugInLock, rosic::PhaseStereoizer *newPhaseStereoizerToWrap);
@@ -902,7 +902,7 @@ protected:
 //-----------------------------------------------------------------------------------------------
 // RingModulator:
 
-class RingModulatorAudioModule : public AudioModule
+class RingModulatorAudioModule : public ModulatableAudioModule
 {
 public:
   RingModulatorAudioModule(CriticalSection *newPlugInLock, rosic::RingModulatorStereo *newRingModulatorToWrap);
@@ -926,7 +926,7 @@ protected:
 //-----------------------------------------------------------------------------------------------
 // SingleSidebandModulator:
 
-class SingleSidebandModulatorAudioModule : public AudioModule
+class SingleSidebandModulatorAudioModule : public ModulatableAudioModule
 {
 public:
   SingleSidebandModulatorAudioModule(CriticalSection *newPlugInLock,
@@ -953,7 +953,7 @@ protected:
 //-----------------------------------------------------------------------------------------------
 // StereoPan:
 
-class StereoPanAudioModule : public AudioModule
+class StereoPanAudioModule : public ModulatableAudioModule
 {
   friend class StereoPanModuleEditor;
 public:
@@ -984,7 +984,7 @@ protected:
 //-----------------------------------------------------------------------------------------------
 // StereoWidth:
 
-class StereoWidthAudioModule : public AudioModule
+class StereoWidthAudioModule : public ModulatableAudioModule
 {
 public:
   StereoWidthAudioModule(CriticalSection *newPlugInLock, rosic::StereoWidth *newStereoWidthToWrap);
@@ -1010,7 +1010,7 @@ protected:
 //-----------------------------------------------------------------------------------------------
 // SineOscillator:
 
-class SineOscillatorAudioModule : public AudioModule
+class SineOscillatorAudioModule : public ModulatableAudioModule
 {
 public:
   SineOscillatorAudioModule(CriticalSection *newPlugInLock, rosic::SineOscillator *newSineOscillatorToWrap);
@@ -1033,7 +1033,7 @@ protected:
 //-----------------------------------------------------------------------------------------------
 // Noisifier:
 
-class NoisifierAudioModule : public AudioModule
+class NoisifierAudioModule : public ModulatableAudioModule
 {
 public:
   NoisifierAudioModule(CriticalSection *newPlugInLock, rosic::Noisifier *newNoisifierToWrap);

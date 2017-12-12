@@ -5,7 +5,7 @@
 // BitCrusher:
 
 BitCrusherAudioModule::BitCrusherAudioModule(CriticalSection *newPlugInLock, rosic::BitCrusher *newBitCrusherToWrap)
-: AudioModule(newPlugInLock)
+: ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
   jassert( newBitCrusherToWrap != NULL ); // you must pass a valid rosic-object
@@ -90,7 +90,7 @@ void BitCrusherModuleEditor::resized()
 
 ModulatedAllpassAudioModule::ModulatedAllpassAudioModule(CriticalSection *newPlugInLock,
                                                          rosic::ModulatedAllpass *newModulatedAllpassToWrap)
-                                                          : AudioModule(newPlugInLock)
+                                                          : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
   jassert( newModulatedAllpassToWrap != NULL ); // you must pass a valid rosic-object
@@ -162,7 +162,7 @@ void ModulatedAllpassModuleEditor::resized()
 
 SlewRateLimiterAudioModule::SlewRateLimiterAudioModule(CriticalSection *newPlugInLock,
                                                        rosic::SlewRateLimiterStereo *newSlewRateLimiterToWrap)
-                                                        : AudioModule(newPlugInLock)
+                                                        : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
 
@@ -234,7 +234,7 @@ void SlewRateLimiterModuleEditor::resized()
 // Harmonics:
 
 HarmonicsAudioModule::HarmonicsAudioModule(CriticalSection *newPlugInLock, rosic::Harmonics *newHarmonicsToWrap)
- : AudioModule(newPlugInLock)
+ : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
 
@@ -813,7 +813,7 @@ void WaveShaperModuleEditor::updatePlot()
 // CompShaper:
 
 CompShaperAudioModule::CompShaperAudioModule(CriticalSection *newPlugInLock, rosic::CompShaper *newCompShaperToWrap)
- : AudioModule(newPlugInLock)
+ : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
   jassert( newCompShaperToWrap != NULL ); // you must pass a valid rosic-object
@@ -982,7 +982,7 @@ void CompShaperModuleEditor::resized()
 // Compressor:
 
 CompressorAudioModule::CompressorAudioModule(CriticalSection *newPlugInLock, rosic::SoftKneeCompressor *newCompressorToWrap)
- : AudioModule(newPlugInLock)
+ : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
 
@@ -1220,7 +1220,7 @@ void CompressorModuleEditor::resized()
 // Expander:
 
 ExpanderAudioModule::ExpanderAudioModule(CriticalSection *newPlugInLock, rosic::SoftKneeExpander *newExpanderToWrap)
- : AudioModule(newPlugInLock)
+ : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
 
@@ -1431,7 +1431,7 @@ void ExpanderModuleEditor::resized()
 // Limiter:
 
 LimiterAudioModule::LimiterAudioModule(CriticalSection *newPlugInLock, rosic::Limiter *newLimiterToWrap)
- : AudioModule(newPlugInLock)
+ : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
 
@@ -1606,7 +1606,7 @@ void LimiterModuleEditor::resized()
 // NoiseGate:
 
 NoiseGateAudioModule::NoiseGateAudioModule(CriticalSection *newPlugInLock, rosic::NoiseGate *newNoiseGateToWrap)
- : AudioModule(newPlugInLock)
+ : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
 
@@ -1808,7 +1808,7 @@ void NoiseGateModuleEditor::resized()
 // CombBank:
 
 CombBankAudioModule::CombBankAudioModule(CriticalSection *newPlugInLock, rosic::CombBank *newCombBankToWrap)
- : AudioModule(newPlugInLock)
+ : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
 
@@ -2039,7 +2039,7 @@ void CombBankModuleEditor::resized()
 // CombResonator:
 
 CombResonatorAudioModule::CombResonatorAudioModule(CriticalSection *newPlugInLock, rosic::CombResonatorStereo *newCombResonatorToWrap)
- : AudioModule(newPlugInLock)
+ : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
 
@@ -2271,7 +2271,7 @@ void CombResonatorModuleEditor::resized()
 
 DualTwoPoleFilterAudioModule::DualTwoPoleFilterAudioModule(CriticalSection *newPlugInLock,
                                                            rosic::DualTwoPoleFilter *newDualTwoPoleFilterToWrap)
-                                                            : AudioModule(newPlugInLock)
+                                                            : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
 
@@ -2537,7 +2537,7 @@ void DualTwoPoleFilterModuleEditor::updateWidgetEnablement()
 // FourPoleFilter:
 
 FourPoleFilterAudioModule::FourPoleFilterAudioModule(CriticalSection *newPlugInLock, rosic::FourPoleFilter *newFourPoleFilterToWrap)
- : AudioModule(newPlugInLock)
+ : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
 
@@ -2658,7 +2658,7 @@ void FourPoleFilterModuleEditor::updateWidgetEnablement()
 // LadderFilter:
 
 LadderFilterAudioModule::LadderFilterAudioModule(CriticalSection *newPlugInLock, rosic::LadderFilter *newLadderFilterToWrap)
- : AudioModule(newPlugInLock)
+ : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
 
@@ -2836,7 +2836,7 @@ void LadderFilterModuleEditor::updateWidgetEnablement()
 // SlopeFilter:
 
 SlopeFilterAudioModule::SlopeFilterAudioModule(CriticalSection *newPlugInLock, rosic::SlopeFilter *newSlopeFilterToWrap)
- : AudioModule(newPlugInLock)
+ : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
   jassert( newSlopeFilterToWrap != NULL ); // you must pass a valid rosic-object
@@ -2894,7 +2894,7 @@ void SlopeFilterModuleEditor::resized()
 // TwoPoleFilter:
 
 TwoPoleFilterAudioModule::TwoPoleFilterAudioModule(CriticalSection *newPlugInLock, rosic::TwoPoleFilter *newTwoPoleFilterToWrap)
- : AudioModule(newPlugInLock)
+ : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
 
@@ -3031,7 +3031,7 @@ void TwoPoleFilterModuleEditor::updateWidgetEnablement()
 // PingPongEcho:
 
 PingPongEchoAudioModule::PingPongEchoAudioModule(CriticalSection *newPlugInLock, rosic::PingPongEcho *newPingPongEchoToWrap)
- : AudioModule(newPlugInLock)
+ : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
 
@@ -3203,7 +3203,7 @@ void PingPongEchoModuleEditor::resized()
 // Reverb:
 
 ReverbAudioModule::ReverbAudioModule(CriticalSection *newPlugInLock, rosic::rsReverb *newReverbToWrap)
- : AudioModule(newPlugInLock)
+ : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
 
@@ -3379,7 +3379,7 @@ void ReverbModuleEditor::resized()
 // SimpleDelay:
 
 SimpleDelayAudioModule::SimpleDelayAudioModule(CriticalSection *newPlugInLock, rosic::FractionalDelayLineStereo *newSimpleDelayToWrap)
- : AudioModule(newPlugInLock)
+ : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
 
@@ -3442,7 +3442,7 @@ void SimpleDelayModuleEditor::resized()
 
 ModulationEffectAudioModule::ModulationEffectAudioModule(CriticalSection *newPlugInLock,
                                                          rosic::ModulationEffect *newModulationEffectToWrap)
-                                                          : AudioModule(newPlugInLock)
+                                                          : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
 
@@ -4104,7 +4104,7 @@ void WahWahModuleEditor::updateWidgetEnablement()
 // FormantShifter:
 
 FormantShifterAudioModule::FormantShifterAudioModule(CriticalSection *newPlugInLock, rosic::FormantShifterStereo *newFormantShifterToWrap)
- : AudioModule(newPlugInLock)
+ : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
 
@@ -4211,7 +4211,7 @@ void FormantShifterModuleEditor::resized()
 // Chorus:
 
 ChorusAudioModule::ChorusAudioModule(CriticalSection *newPlugInLock, rosic::Chorus *newChorusToWrap)
- : AudioModule(newPlugInLock)
+ : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
 
@@ -4613,7 +4613,7 @@ void ChorusModuleEditor::resized()
 
 FrequencyShifterAudioModule::FrequencyShifterAudioModule(CriticalSection *newPlugInLock,
                                                          rosic::FrequencyShifterStereo *newFrequencyShifterToWrap)
-                                                          : AudioModule(newPlugInLock)
+                                                          : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
 
@@ -4719,7 +4719,7 @@ void FrequencyShifterModuleEditor::resized()
 // PhaseStereoizer:
 
 PhaseStereoizerAudioModule::PhaseStereoizerAudioModule(CriticalSection *newPlugInLock, rosic::PhaseStereoizer *newPhaseStereoizerToWrap)
- : AudioModule(newPlugInLock)
+ : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
 
@@ -4846,7 +4846,7 @@ void PhaseStereoizerModuleEditor::resized()
 // RingModulator:
 
 RingModulatorAudioModule::RingModulatorAudioModule(CriticalSection *newPlugInLock, rosic::RingModulatorStereo *newRingModulatorToWrap)
- : AudioModule(newPlugInLock)
+ : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
 
@@ -4956,7 +4956,7 @@ void RingModulatorModuleEditor::resized()
 
 SingleSidebandModulatorAudioModule::SingleSidebandModulatorAudioModule(CriticalSection *newPlugInLock,
   rosic::SingleSidebandModulatorStereo *newSingleSidebandModulatorToWrap)
-   : AudioModule(newPlugInLock)
+   : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
 
@@ -5090,7 +5090,7 @@ void SingleSidebandModulatorModuleEditor::resized()
 // StereoPan:
 
 StereoPanAudioModule::StereoPanAudioModule(CriticalSection *newPlugInLock, rosic::StereoPan *newStereoPanToWrap)
- : AudioModule(newPlugInLock)
+ : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
 
@@ -5210,7 +5210,7 @@ void StereoPanModuleEditor::resized()
 // StereoWidth:
 
 StereoWidthAudioModule::StereoWidthAudioModule(CriticalSection *newPlugInLock, rosic::StereoWidth *newStereoWidthToWrap)
- : AudioModule(newPlugInLock)
+ : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
 
@@ -5284,7 +5284,7 @@ void StereoWidthModuleEditor::resized()
 // SineOscillator:
 
 SineOscillatorAudioModule::SineOscillatorAudioModule(CriticalSection *newPlugInLock, rosic::SineOscillator *newSineOscillatorToWrap)
- : AudioModule(newPlugInLock)
+ : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
 
@@ -5347,7 +5347,7 @@ void SineOscillatorModuleEditor::resized()
 // Noisifier:
 
 NoisifierAudioModule::NoisifierAudioModule(CriticalSection *newPlugInLock, rosic::Noisifier *newNoisifierToWrap)
- : AudioModule(newPlugInLock)
+ : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
 
