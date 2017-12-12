@@ -4757,7 +4757,6 @@ void PhaseStereoizerAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  //AutomatableParameter* p;
   typedef ModulatableParameter Param;
   Param* p;
 
@@ -4886,30 +4885,31 @@ void RingModulatorAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  AutomatableParameter* p;
+  typedef ModulatableParameter Param;
+  Param* p;
 
-  p = new AutomatableParameter(lock, ("Frequency"), 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
+  p = new Param("Frequency", 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedRingModulator, &RingModulatorStereo::setModulatorFrequency);
 
-  p = new AutomatableParameter(lock, ("Feedback"), -99.0, 99.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("Feedback", -99.0, 99.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedRingModulator, &RingModulatorStereo::setFeedbackInPercent);
 
-  p = new AutomatableParameter(lock, ("StereoOffset"), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("StereoOffset", -100.0, 100.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedRingModulator, &RingModulatorStereo::setStereoOffset);
 
-  p = new AutomatableParameter(lock, ("DryWetRatio"), 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
+  p = new Param("DryWetRatio", 0.0, 1.0, 1.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedRingModulator, &RingModulatorStereo::setDryWetRatio);
 
-  p = new AutomatableParameter(lock, ("AntiAlias"), 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
+  p = new Param("AntiAlias", 0.0, 1.0, 0.0, Parameter::BOOLEAN, 1.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedRingModulator, &RingModulatorStereo::setAntiAliasing);
 
-  for(int i=0; i < (int) parameters.size(); i++)
-    parameters[i]->resetToDefaultValue(true, true);
+  //for(int i=0; i < (int) parameters.size(); i++)
+  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 RingModulatorModuleEditor::RingModulatorModuleEditor(CriticalSection *newPlugInLock, RingModulatorAudioModule* newRingModulatorAudioModule)
@@ -4996,38 +4996,40 @@ void SingleSidebandModulatorAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  AutomatableParameter* p;
+  //AutomatableParameter* p;
+  typedef ModulatableParameter Param;
+  Param* p;
 
-  p = new AutomatableParameter(lock, ("Frequency"), 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
+  p = new Param("Frequency", 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedSingleSidebandModulator, &SingleSidebandModulatorStereo::setModulatorFrequency);
 
-  p = new AutomatableParameter(lock, ("UpperSidebandLevel"), -60.0, 0.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("UpperSidebandLevel", -60.0, 0.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedSingleSidebandModulator, &SingleSidebandModulatorStereo::setUpperSidebandLevel);
 
-  p = new AutomatableParameter(lock, ("LowerSidebandLevel"), -60.0, 0.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("LowerSidebandLevel", -60.0, 0.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedSingleSidebandModulator, &SingleSidebandModulatorStereo::setLowerSidebandLevel);
 
-  p = new AutomatableParameter(lock, ("Feedback"), -99.0, 99.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("Feedback", -99.0, 99.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedSingleSidebandModulator, &SingleSidebandModulatorStereo::setFeedbackInPercent);
 
-  p = new AutomatableParameter(lock, ("StereoOffset"), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("StereoOffset", -100.0, 100.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedSingleSidebandModulator, &SingleSidebandModulatorStereo::setStereoOffset);
 
-  p = new AutomatableParameter(lock, ("DryWetRatio"), 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
+  p = new Param("DryWetRatio", 0.0, 1.0, 1.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedSingleSidebandModulator, &SingleSidebandModulatorStereo::setDryWetRatio);
 
-  p = new AutomatableParameter(lock, ("AntiAlias"), 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
+  p = new Param("AntiAlias", 0.0, 1.0, 0.0, Parameter::BOOLEAN, 1.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedSingleSidebandModulator, &SingleSidebandModulatorStereo::setAntiAliasing);
 
-  for(int i=0; i < (int) parameters.size(); i++)
-    parameters[i]->resetToDefaultValue(true, true);
+  //for(int i=0; i < (int) parameters.size(); i++)
+  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 SingleSidebandModulatorModuleEditor::SingleSidebandModulatorModuleEditor(CriticalSection *newPlugInLock,
@@ -5130,9 +5132,10 @@ void StereoPanAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  AutomatableParameter* p;
+  typedef ModulatableParameter Param;
+  Param* p;
 
-  p = new AutomatableParameter(lock, juce::String(("PanLaw")), 0.0, 8.0, 1.0, 1.0, Parameter::STRING);
+  p = new Param("PanLaw", 0.0, 8.0, 1.0, Parameter::STRING, 1.0);
   p->addStringValue(juce::String(("Linear")));
   p->addStringValue(juce::String(("Trigonometric")));
   p->addStringValue(juce::String(("Square Root")));
@@ -5146,16 +5149,16 @@ void StereoPanAudioModule::createStaticParameters()
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedStereoPan, &StereoPan::setPanLaw);
 
-  p = new AutomatableParameter(lock, "Pan", -1.0, 1.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new Param("Pan", -1.0, 1.0, 0.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedStereoPan, &StereoPan::setPanoramaPosition);
 
-  p = new AutomatableParameter(lock, "Gain", -12.0, 12.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new Param("Gain", -12.0, 12.0, 0.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedStereoPan, &StereoPan::setGain);
 
-  for(int i=0; i < (int) parameters.size(); i++)
-    parameters[i]->resetToDefaultValue(true, true);
+  //for(int i=0; i < (int) parameters.size(); i++)
+  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 StereoPanModuleEditor::StereoPanModuleEditor(CriticalSection *newPlugInLock, StereoPanAudioModule* newStereoPanAudioModule)
@@ -5250,18 +5253,19 @@ void StereoWidthAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  AutomatableParameter* p;
+  typedef ModulatableParameter Param;
+  Param* p;
 
-  p = new AutomatableParameter(lock, "MidSideRatio", 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
+  p = new Param("MidSideRatio", 0.0, 1.0, 0.5, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedStereoWidth, &StereoWidth::setMidSideRatio);
 
-  p = new AutomatableParameter(lock, "Gain", -6.0, 24.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("Gain", -6.0, 24.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedStereoWidth, &StereoWidth::setGlobalGain);
 
-  for(int i=0; i < (int) parameters.size(); i++)
-    parameters[i]->resetToDefaultValue(true, true);
+  //for(int i=0; i < (int) parameters.size(); i++)
+  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 StereoWidthModuleEditor::StereoWidthModuleEditor(CriticalSection *newPlugInLock, StereoWidthAudioModule* newStereoWidthAudioModule)
@@ -5324,16 +5328,18 @@ void SineOscillatorAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  AutomatableParameter* p;
+  //AutomatableParameter* p;
+  typedef ModulatableParameter Param;
+  Param* p;
 
-  p = new AutomatableParameter(lock, "Frequency", 0.2, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
+  p = new Param("Frequency", 0.2, 20000.0, 1000.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedSineOscillator, &SineOscillator::setFrequency);
 
   // \todo: add gain parameter
 
-  for(int i=0; i < (int) parameters.size(); i++)
-    parameters[i]->resetToDefaultValue(true, true);
+  //for(int i=0; i < (int) parameters.size(); i++)
+  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 SineOscillatorModuleEditor::SineOscillatorModuleEditor(CriticalSection *newPlugInLock,
@@ -5387,30 +5393,31 @@ void NoisifierAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  AutomatableParameter* p;
+  typedef ModulatableParameter Param;
+  Param* p;
 
-  p = new AutomatableParameter(lock, "PassLevel", -96.0, 6.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("PassLevel", -96.0, 6.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedNoisifier, &Noisifier::setPassThroughLevel);
 
-  p = new AutomatableParameter(lock, "NoiseLevel", -96.0, 6.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("NoiseLevel", -96.0, 6.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedNoisifier, &Noisifier::setNoiseLevel);
 
-  p = new AutomatableParameter(lock, "SpectralSlope", -12.0, 12.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("SpectralSlope", -12.0, 12.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedNoisifier, &Noisifier::setNoiseSpectralSlope);
 
-  p = new AutomatableParameter(lock, "LowestFrequency", 20.0, 20000.0, 0.0, 20.0, Parameter::EXPONENTIAL);
+  p = new Param("LowestFrequency", 20.0, 20000.0, 20.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedNoisifier, &Noisifier::setLowestFrequency);
 
-  p = new AutomatableParameter(lock, "HighestFrequency", 20.0, 20000.0, 0.0, 20000.0, Parameter::EXPONENTIAL);
+  p = new Param("HighestFrequency", 20.0, 20000.0, 20000.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedNoisifier, &Noisifier::setHighestFrequency);
 
-  for(int i=0; i < (int) parameters.size(); i++)
-    parameters[i]->resetToDefaultValue(true, true);
+  //for(int i=0; i < (int) parameters.size(); i++)
+  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 NoisifierModuleEditor::NoisifierModuleEditor(CriticalSection *newPlugInLock, NoisifierAudioModule* newNoisifierAudioModule)
