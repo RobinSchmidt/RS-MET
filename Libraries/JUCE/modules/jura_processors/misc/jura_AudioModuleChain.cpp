@@ -32,7 +32,7 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
   if(type == "EchoLab")          return new EchoLabAudioModule(         lock);
   if(type == "StereoDelay")      return new StereoDelayAudioModule(     lock);
   if(type == "PitchShifter")     return new PitchShifterAudioModule(    lock);
-  if(type == "Quadrifex")        return new QuadrifexAudioModule(       lock);
+  if(type == "Quadrifex")        return new QuadrifexAudioModule(       lock, metaMan, modMan);
   if(type == "Moduluxury")       return new ModuluxuryAudioModule(      lock);
   if(type == "ChannelMatrix2x2") return new ChannelMatrix2x2AudioModule(lock);
   if(type == "DspWorkbench")     return new DspWorkbenchAudioModule(    lock);

@@ -343,8 +343,10 @@ public:
   ModulationManager, in case it is a ModulatableParameter. */
   virtual void addObservedParameter(Parameter* parameterToAdd) override;
 
-  // do we need to override addChildAudioModule too? i think so
-
+  /** Overriden in order to pass the ModulationManger object "modManager" inheridted from 
+  ModulationParticipant to the child-module to be added in case, the child is itself a 
+  ModulatableAudioModule. */
+  virtual void addChildAudioModule(AudioModule* moduleToAdd) override;
 
 protected:
 

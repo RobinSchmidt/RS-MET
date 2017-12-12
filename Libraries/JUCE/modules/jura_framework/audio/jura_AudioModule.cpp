@@ -557,6 +557,14 @@ void ModulatableAudioModule::addObservedParameter(Parameter* p)
   }
 }
 
+void ModulatableAudioModule::addChildAudioModule(AudioModule* moduleToAdd)
+{
+  AudioModule::addChildAudioModule(moduleToAdd);
+  ModulatableAudioModule* ma = dynamic_cast<ModulatableAudioModule*> (moduleToAdd);
+  if(ma != nullptr)
+    ma->setModulationManager(modManager);
+}
+
 //=================================================================================================
 // class AudioModuleWithMidiIn
 
