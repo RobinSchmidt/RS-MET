@@ -1,3 +1,4 @@
+
 //=================================================================================================
 // Distortion Effects:
 
@@ -22,22 +23,23 @@ void BitCrusherAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  AutomatableParameter* p;
+  typedef ModulatableParameter Param;
+  Param* p;
 
-  p = new AutomatableParameter(lock, "Decimation", 1.0, 128.0, 1.0, 1.0, Parameter::LINEAR);
+  p = new Param("Decimation", 1.0, 128.0, 1.0, Parameter::LINEAR, 1.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedBitCrusher, &BitCrusher::setDecimationFactor);
 
-  p = new AutomatableParameter(lock, "Quantization", 0.001, 1.0, 0.0, 0.00001, Parameter::EXPONENTIAL);
+  p = new Param("Quantization", 0.001, 1.0, 0.00001, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedBitCrusher, &BitCrusher::setQuantizationInterval);
 
-  p = new AutomatableParameter(lock, "Amount", -200.0, 200.0, 1.0, 100.0, Parameter::LINEAR);
+  p = new Param("Amount", -200.0, 200.0, 100.0, Parameter::LINEAR, 1.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedBitCrusher, &BitCrusher::setAmount);
 
-  for(int i=0; i < (int) parameters.size(); i++ )
-    parameters[i]->resetToDefaultValue(true, true);
+  //for(int i=0; i < (int) parameters.size(); i++ )
+  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 BitCrusherModuleEditor::BitCrusherModuleEditor(CriticalSection *newPlugInLock, BitCrusherAudioModule* newBitCrusherAudioModule)
@@ -105,18 +107,19 @@ void ModulatedAllpassAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  AutomatableParameter* p;
+  typedef ModulatableParameter Param;
+  Param* p;
 
-  p = new AutomatableParameter(lock, "Factor", -10.0, 10.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new Param("Factor", -10.0, 10.0, 0.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedModulatedAllpass, &ModulatedAllpass::setFactor);
 
-  p = new AutomatableParameter(lock, "Offset", -1.0, 1.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new Param("Offset", -1.0, 1.0, 0.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedModulatedAllpass, &ModulatedAllpass::setOffset);
 
-  for(int i=0; i < (int) parameters.size(); i++ )
-    parameters[i]->resetToDefaultValue(true, true);
+  //for(int i=0; i < (int) parameters.size(); i++ )
+  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 ModulatedAllpassModuleEditor::ModulatedAllpassModuleEditor(CriticalSection *newPlugInLock,
@@ -178,18 +181,19 @@ void SlewRateLimiterAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  AutomatableParameter* p;
+  typedef ModulatableParameter Param;
+  Param* p;
 
-  p = new AutomatableParameter(lock, "Attack",  0.0, 10.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new Param("Attack",  0.0, 10.0, 0.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedSlewRateLimiter, &SlewRateLimiterStereo::setAttackTime);
 
-  p = new AutomatableParameter(lock, "Release", 0.0, 10.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new Param("Release", 0.0, 10.0, 0.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedSlewRateLimiter, &SlewRateLimiterStereo::setReleaseTime);
 
-  for(int i=0; i < (int) parameters.size(); i++ )
-    parameters[i]->resetToDefaultValue(true, true);
+  //for(int i=0; i < (int) parameters.size(); i++ )
+  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 SlewRateLimiterModuleEditor::SlewRateLimiterModuleEditor(CriticalSection *newPlugInLock,
@@ -281,58 +285,60 @@ void HarmonicsAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  AutomatableParameter* p;
+  typedef ModulatableParameter Param;
+  Param* p;
 
   // ...here we either need a callback with two parameters, or we must stick to the old callback mechansim - for now, we'll do the latter
 
-  p = new AutomatableParameter(lock, juce::String(("Drive")), -24.0, 24.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("Drive", -24.0, 24.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedHarmonics, &Harmonics::setDrive);
 
-  p = new AutomatableParameter(lock, juce::String(("DryWetRatio")), 0.0, 1.0, 0.01, 0.5, Parameter::LINEAR);
+  p = new Param("DryWetRatio", 0.0, 1.0, 0.5, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedHarmonics, &Harmonics::setDryWetRatio);
 
-  p = new AutomatableParameter(lock, juce::String(("InputHighpass")), 20.0, 20000.0, 0.0, 20.0, Parameter::EXPONENTIAL);
+  p = new Param("InputHighpass", 20.0, 20000.0, 20.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedHarmonics, &Harmonics::setInputHighpassCutoff);
 
-  p = new AutomatableParameter(lock, juce::String(("InputLowpass")), 20.0, 20000.0, 0.0, 20000.0, Parameter::EXPONENTIAL);
+  p = new Param("InputLowpass", 20.0, 20000.0, 20000.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedHarmonics, &Harmonics::setInputLowpassCutoff);
 
-  p = new AutomatableParameter(lock, juce::String(("OutputHighpass")), 20.0, 20000.0, 0.0, 20.0, Parameter::EXPONENTIAL);
+  p = new Param("OutputHighpass", 20.0, 20000.0, 20.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedHarmonics, &Harmonics::setOutputHighpassCutoff);
 
-  p = new AutomatableParameter(lock, juce::String(("OutputLowpass")), 20.0, 20000.0, 0.0, 20000.0, Parameter::EXPONENTIAL);
+  p = new Param("OutputLowpass", 20.0, 20000.0, 20000.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedHarmonics, &Harmonics::setOutputLowpassCutoff);
 
   // these parameters are still used with the old callback mechanism (because they invoke two-parametric functions) - we may do something
   // better here later:
-  p = new AutomatableParameter(lock, juce::String(("H02")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p);
-  p = new AutomatableParameter(lock, juce::String(("H03")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p);
-  p = new AutomatableParameter(lock, juce::String(("H04")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p);
-  p = new AutomatableParameter(lock, juce::String(("H05")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p);
-  p = new AutomatableParameter(lock, juce::String(("H06")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p);
-  p = new AutomatableParameter(lock, juce::String(("H07")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p);
-  p = new AutomatableParameter(lock, juce::String(("H08")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p);
-  p = new AutomatableParameter(lock, juce::String(("H09")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p);
-  p = new AutomatableParameter(lock, juce::String(("H10")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p);
-  p = new AutomatableParameter(lock, juce::String(("H11")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p);
-  p = new AutomatableParameter(lock, juce::String(("H12")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p);
+  AutomatableParameter* ap;
+  ap = new AutomatableParameter(lock, juce::String(("H02")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
+  addObservedParameter(ap);
+  ap = new AutomatableParameter(lock, juce::String(("H03")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
+  addObservedParameter(ap);
+  ap = new AutomatableParameter(lock, juce::String(("H04")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
+  addObservedParameter(ap);
+  ap = new AutomatableParameter(lock, juce::String(("H05")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
+  addObservedParameter(ap);
+  ap = new AutomatableParameter(lock, juce::String(("H06")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
+  addObservedParameter(ap);
+  ap = new AutomatableParameter(lock, juce::String(("H07")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
+  addObservedParameter(ap);
+  ap = new AutomatableParameter(lock, juce::String(("H08")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
+  addObservedParameter(ap);
+  ap = new AutomatableParameter(lock, juce::String(("H09")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
+  addObservedParameter(ap);
+  ap = new AutomatableParameter(lock, juce::String(("H10")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
+  addObservedParameter(ap);
+  ap = new AutomatableParameter(lock, juce::String(("H11")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
+  addObservedParameter(ap);
+  ap = new AutomatableParameter(lock, juce::String(("H12")), -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
+  addObservedParameter(ap);
 
   for(int i=0; i < (int) parameters.size(); i++ )
   {
@@ -573,8 +579,6 @@ void WaveShaperAudioModule::createStaticParameters()
 
   typedef ModulatableParameter Param;
   Param* p;
-
-  //AutomatableParameter* p;
 
   //p = new AutomatableParameter(lock, juce::String(("CurveType")), 0.0, 3.0, 1.0, 1.0, Parameter::STRING);
   p = new Param("CurveType", 0.0, 3.0, 1.0, Parameter::STRING, 1.0);
