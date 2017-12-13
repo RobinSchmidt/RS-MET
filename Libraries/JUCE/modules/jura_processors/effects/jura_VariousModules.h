@@ -573,7 +573,7 @@ public:
   virtual void resized();
   juce_UseDebuggingNewOperator;
 protected:
-  RSlider *delayTimeSlider, *dryWetSlider, *feedbackSlider, *panSlider, *highDampSlider,
+  ModulatableSlider *delayTimeSlider, *dryWetSlider, *feedbackSlider, *panSlider, *highDampSlider,
     *lowDampSlider;
   RButton *pingPongButton, *tempoSyncButton, *trueStereoButton;
 };
@@ -598,7 +598,7 @@ public:
   virtual void resized();
   juce_UseDebuggingNewOperator;
 protected:
-  RSlider *dryWetSlider, *firstEchoSlider, *preDelaySlider, *decayTimeSlider,
+  ModulatableSlider *dryWetSlider, *firstEchoSlider, *preDelaySlider, *decayTimeSlider,
     *highDecayScaleSlider, *lowDecayScaleSlider, *highFreqSlider, *lowFreqSlider;
   RButton *pinkButton, *stereoSwapButton;
 };
@@ -623,7 +623,7 @@ public:
   virtual void resized();
   juce_UseDebuggingNewOperator;
 protected:
-  RSlider *delaySlider;
+  ModulatableSlider *delaySlider;
 };
 
 
@@ -685,7 +685,7 @@ public:
   juce_UseDebuggingNewOperator;
 protected:
   FlangerAudioModule *flangerModuleToEdit;
-  RSlider *depthSlider, *dryWetSlider, *frequencySlider, *feedbackSlider;
+  ModulatableSlider *depthSlider, *dryWetSlider, *frequencySlider, *feedbackSlider;
   RButton *invertButton;
 };
 
@@ -714,7 +714,8 @@ public:
 protected:
   PhaserAudioModule *phaserModuleToEdit;
   RTextField *filterLabel;
-  RSlider    *depthSlider, *dryWetSlider, *frequencySlider, *qSlider, *feedbackSlider, *stagesSlider;
+  ModulatableSlider *depthSlider, *dryWetSlider, *frequencySlider, *qSlider, *feedbackSlider,
+    *stagesSlider;
   RComboBox  *modeComboBox;
 };
 
@@ -740,7 +741,7 @@ public:
   juce_UseDebuggingNewOperator;
 protected:
   TremoloAudioModule *tremoloModuleToEdit;
-  RSlider *depthSlider;
+  ModulatableSlider *depthSlider;
 };
 
 //-----------------------------------------------------------------------------------------------
@@ -765,7 +766,7 @@ public:
   juce_UseDebuggingNewOperator;
 protected:
   VibratoAudioModule *vibratoModuleToEdit;
-  RSlider *depthSlider, *dryWetSlider;
+  ModulatableSlider *depthSlider, *dryWetSlider;
 };
 
 //-----------------------------------------------------------------------------------------------
@@ -793,7 +794,7 @@ public:
 protected:
   WahWahAudioModule *wahWahModuleToEdit;
   RTextField *filterLabel;
-  RSlider    *depthSlider, *dryWetSlider, *frequencySlider, *gainSlider, *bandwidthSlider;
+  ModulatableSlider *depthSlider, *dryWetSlider, *frequencySlider, *gainSlider, *bandwidthSlider;
   RComboBox  *modeComboBox;
 };
 
