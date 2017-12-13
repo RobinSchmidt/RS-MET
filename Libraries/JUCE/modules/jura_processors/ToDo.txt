@@ -3,7 +3,7 @@
  -use ModulatableParameter where appropriate 
   -done up except for Chorus - that needs a special look
  -use ModulatableSlider correspondingly
-  -done up to NoiseGateModuleEditor
+  -done up to FrequencyShifterModuleEditor
 
 
 -drag scientific IIR filters into RAPT:

@@ -821,7 +821,7 @@ public:
   virtual void resized();
   juce_UseDebuggingNewOperator;
 protected:
-  RSlider *formantScaleSlider, *formantOffsetSlider, *dryWetSlider;
+  ModulatableSlider *formantScaleSlider, *formantOffsetSlider, *dryWetSlider;
   // blockSizeComboBox/Slider
 };
 
@@ -854,8 +854,8 @@ protected:
   juce::Rectangle<int> globalRect, voice1Rect, voice2Rect, voice3Rect, voice4Rect;
   RTextField *globalLabel;
   RButton    *voice1Button, *voice2Button, *voice3Button, *voice4Button;
-  RSlider    *delaySlider, *cycleLengthSlider, *depthSlider, *globalFeedbackSlider, *crossMixSlider,
-    *feedback2Slider, *dryWetSlider, *stereoPhaseSlider;
+  ModulatableSlider *delaySlider, *cycleLengthSlider, *depthSlider, *globalFeedbackSlider, 
+    *crossMixSlider, *feedback2Slider, *dryWetSlider, *stereoPhaseSlider;
   RSlider    *voice1DelaySlider, *voice1DepthSlider, *voice1AmpSlider,
     *voice2DelaySlider, *voice2DepthSlider, *voice2AmpSlider,
     *voice3DelaySlider, *voice3DepthSlider, *voice3AmpSlider,
@@ -882,7 +882,7 @@ public:
   virtual void resized();
   juce_UseDebuggingNewOperator;
 protected:
-  RSlider *shiftSlider, *feedbackSlider, *stereoOffsetSlider, *dryWetSlider, *midSideSlider;
+  ModulatableSlider *shiftSlider, *feedbackSlider, *stereoOffsetSlider, *dryWetSlider, *midSideSlider;
 };
 
 //-----------------------------------------------------------------------------------------------

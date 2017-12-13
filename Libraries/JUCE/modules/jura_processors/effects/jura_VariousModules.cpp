@@ -4174,19 +4174,19 @@ FormantShifterModuleEditor::FormantShifterModuleEditor(CriticalSection *newPlugI
 
   jassert(newFormantShifterAudioModule != NULL ); // you must pass a valid module here
 
-  addWidget( formantScaleSlider = new RSlider (("FormantScaleSlider")) );
+  addWidget( formantScaleSlider = new ModulatableSlider );
   formantScaleSlider->assignParameter( moduleToEdit->getParameterByName(("FormantScale")) );
   formantScaleSlider->setDescription(juce::String(("Formant scale factor")));
   formantScaleSlider->setDescriptionField(infoField);
   formantScaleSlider->setStringConversionFunction(&valueToString2);
 
-  addWidget( formantOffsetSlider = new RSlider (("FormantOffsetSlider")) );
+  addWidget( formantOffsetSlider = new ModulatableSlider );
   formantOffsetSlider->assignParameter( moduleToEdit->getParameterByName(("FormantOffset")) );
   formantOffsetSlider->setDescription(juce::String(("Formant offset in Hz")));
   formantOffsetSlider->setDescriptionField(infoField);
   formantOffsetSlider->setStringConversionFunction(&hertzToStringWithUnit1);
 
-  addWidget( dryWetSlider = new RSlider (("DryWetSlider")) );
+  addWidget( dryWetSlider = new ModulatableSlider );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName(("DryWetRatio")) );
   dryWetSlider->setSliderName(juce::String(("Dry/Wet")));
   dryWetSlider->setDescription(juce::String(("Ratio between dry (original) and wet (ringmodulated) signal")));
@@ -4201,7 +4201,7 @@ FormantShifterModuleEditor::FormantShifterModuleEditor(CriticalSection *newPlugI
   monoButton->setClickingTogglesState(true);
   */
 
-  updateWidgetsAccordingToState();
+  //updateWidgetsAccordingToState();
 }
 
 void FormantShifterModuleEditor::resized()
@@ -4365,51 +4365,51 @@ ChorusModuleEditor::ChorusModuleEditor(CriticalSection *newPlugInLock, ChorusAud
   globalLabel->setDescription(("Global parameters for the chorus effect"));
   globalLabel->setDescriptionField(infoField);
 
-  addWidget( delaySlider = new RSlider (("DelaySlider")) );
+  addWidget( delaySlider = new ModulatableSlider );
   delaySlider->assignParameter( moduleToEdit->getParameterByName("Delay") );
   delaySlider->setDescription(juce::String(("Average delay in the delaylines")));
   delaySlider->setDescriptionField(infoField);
   delaySlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
-  addWidget( cycleLengthSlider = new RSlider (("CycleLengthSlider")) );
+  addWidget( cycleLengthSlider = new ModulatableSlider );
   cycleLengthSlider->assignParameter( moduleToEdit->getParameterByName("CycleLength") );
   cycleLengthSlider->setSliderName(juce::String(("Cycle")));
   cycleLengthSlider->setDescription(juce::String(("Length of one cycle (in beats)")));
   cycleLengthSlider->setDescriptionField(infoField);
   cycleLengthSlider->setStringConversionFunction(&beatsToStringWithUnit4);
 
-  addWidget( depthSlider = new RSlider (("DepthSlider")) );
+  addWidget( depthSlider = new ModulatableSlider );
   depthSlider->assignParameter( moduleToEdit->getParameterByName("Depth") );
   depthSlider->setDescription(juce::String(("Depth of the modulation")));
   depthSlider->setDescriptionField(infoField);
   depthSlider->setStringConversionFunction(&semitonesToStringWithUnit2);
 
-  addWidget( globalFeedbackSlider = new RSlider (("GlobalFeedbackSlider")) );
+  addWidget( globalFeedbackSlider = new ModulatableSlider );
   globalFeedbackSlider->assignParameter( moduleToEdit->getParameterByName("GlobalFeedback") );
   globalFeedbackSlider->setSliderName(juce::String(("Feedback")));
   globalFeedbackSlider->setDescription(juce::String(("Feedback around the chorus effect")));
   globalFeedbackSlider->setDescriptionField(infoField);
   globalFeedbackSlider->setStringConversionFunction(&percentToStringWithUnit0);
 
-  addWidget( crossMixSlider = new RSlider (("CrossMixSlider")) );
+  addWidget( crossMixSlider = new ModulatableSlider );
   crossMixSlider->assignParameter( moduleToEdit->getParameterByName("CrossMix") );
   crossMixSlider->setDescription(juce::String(("Amount by which left wet signal goes to right channel and vice versa")));
   crossMixSlider->setDescriptionField(infoField);
   crossMixSlider->setStringConversionFunction(&percentToStringWithUnit0);
 
-  addWidget( feedback2Slider = new RSlider (("Feedback2Slider")) );
+  addWidget( feedback2Slider = new ModulatableSlider );
   feedback2Slider->assignParameter( moduleToEdit->getParameterByName("FeedbackPostCrossMix") );
   feedback2Slider->setDescription(juce::String(("Feedback around the chorus effect after channel cross-mix")));
   feedback2Slider->setDescriptionField(infoField);
   feedback2Slider->setStringConversionFunction(&percentToStringWithUnit0);
 
-  addWidget( stereoPhaseSlider = new RSlider (("StereoPhaseSlider")) );
+  addWidget( stereoPhaseSlider = new ModulatableSlider );
   stereoPhaseSlider->assignParameter( moduleToEdit->getParameterByName("StereoPhase") );
   stereoPhaseSlider->setDescription(juce::String(("Phase offset between LFOs for left and right channel")));
   stereoPhaseSlider->setDescriptionField(infoField);
   stereoPhaseSlider->setStringConversionFunction(&degreesToStringWithUnit0);
 
-  addWidget( dryWetSlider = new RSlider (("DryWetSlider")) );
+  addWidget( dryWetSlider = new ModulatableSlider );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName("DryWetRatio") );
   dryWetSlider->setDescription(juce::String(("Ratio between dry (original) and wet (chorused) signal")));
   dryWetSlider->setDescriptionField(infoField);
@@ -4682,25 +4682,25 @@ FrequencyShifterModuleEditor::FrequencyShifterModuleEditor(CriticalSection *newP
 
   jassert(newFrequencyShifterAudioModule != NULL ); // you must pass a valid module here
 
-  addWidget( shiftSlider = new RSlider (("ShiftSlider")) );
+  addWidget( shiftSlider = new ModulatableSlider );
   shiftSlider->assignParameter( moduleToEdit->getParameterByName("FrequencyShift") );
   shiftSlider->setDescription(juce::String(("Frequency shift in Hz")));
   shiftSlider->setDescriptionField(infoField);
   shiftSlider->setStringConversionFunction(&hertzToStringWithUnit1);
 
-  addWidget( feedbackSlider = new RSlider (("FeedbackSlider")) );
+  addWidget( feedbackSlider = new ModulatableSlider );
   feedbackSlider->assignParameter( moduleToEdit->getParameterByName("Feedback") );
   feedbackSlider->setDescription(juce::String(("Feedback around the shifter")));
   feedbackSlider->setDescriptionField(infoField);
   feedbackSlider->setStringConversionFunction(&percentToStringWithUnit1);
 
-  addWidget( stereoOffsetSlider = new RSlider (("StereoOffsetSlider")) );
+  addWidget( stereoOffsetSlider = new ModulatableSlider );
   stereoOffsetSlider->assignParameter( moduleToEdit->getParameterByName("StereoOffset") );
   stereoOffsetSlider->setDescription(juce::String(("Stereo offset of the shift between left and right in Hz")));
   stereoOffsetSlider->setDescriptionField(infoField);
   stereoOffsetSlider->setStringConversionFunction(&hertzToStringWithUnit1);
 
-  addWidget( dryWetSlider = new RSlider (("DryWetSlider")) );
+  addWidget( dryWetSlider = new ModulatableSlider );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName("DryWetRatio") );
   dryWetSlider->setSliderName(juce::String(("Dry/Wet")));
   dryWetSlider->setDescription(juce::String(("Ratio between dry (original) and wet (frequency shifted) signal")));
@@ -4716,7 +4716,7 @@ FrequencyShifterModuleEditor::FrequencyShifterModuleEditor(CriticalSection *newP
   midSideSlider->setStringConversionFunction(&ratioToString0);
   */
 
-  updateWidgetsAccordingToState();
+  //updateWidgetsAccordingToState();
 }
 
 void FrequencyShifterModuleEditor::resized()
