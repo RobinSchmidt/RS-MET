@@ -4796,33 +4796,33 @@ PhaseStereoizerModuleEditor::PhaseStereoizerModuleEditor(CriticalSection *newPlu
 
   jassert(newPhaseStereoizerAudioModule != NULL ); // you must pass a valid module here
 
-  addWidget( phaseOffsetSlider = new RSlider (("PhaseOffsetSlider")) );
+  addWidget( phaseOffsetSlider = new ModulatableSlider );
   phaseOffsetSlider->assignParameter( moduleToEdit->getParameterByName("StereoPhaseOffset") );
   phaseOffsetSlider->setDescription(juce::String(("Phase offset between left and right (wet) signal in degrees")));
   phaseOffsetSlider->setDescriptionField(infoField);
   phaseOffsetSlider->setStringConversionFunction(&degreesToStringWithUnit0);
 
-  addWidget( dryWetRatioSlider = new RSlider (("DryWetRatioSlider")) );
+  addWidget( dryWetRatioSlider = new ModulatableSlider );
   dryWetRatioSlider->assignParameter( moduleToEdit->getParameterByName("DryWetRatio") );
   dryWetRatioSlider->setDescription(juce::String(("Ratio between dry (original) and wet (phase-shifted) signal")));
   dryWetRatioSlider->setDescriptionField(infoField);
   dryWetRatioSlider->setStringConversionFunction(&ratioToString0);
 
-  addWidget( sideLowpassSlider = new RSlider (("SideLowpassSlider")) );
+  addWidget( sideLowpassSlider = new ModulatableSlider );
   sideLowpassSlider->assignParameter( moduleToEdit->getParameterByName("Lowpass") );
   sideLowpassSlider->setSliderName(juce::String(("Lowpass")));
   sideLowpassSlider->setDescription(juce::String(("Cutoff frequency of the lowpass filter for the wet side signal")));
   sideLowpassSlider->setDescriptionField(infoField);
   sideLowpassSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
-  addWidget( sideHighpassSlider = new RSlider (("SideHighpassSlider")) );
+  addWidget( sideHighpassSlider = new ModulatableSlider );
   sideHighpassSlider->assignParameter( moduleToEdit->getParameterByName("Highpass") );
   sideHighpassSlider->setSliderName(juce::String(("Highpass")));
   sideHighpassSlider->setDescription(juce::String(("Cutoff frequency of the highpass filter for the wet side signal")));
   sideHighpassSlider->setDescriptionField(infoField);
   sideHighpassSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
-  addWidget( midSideRatioSlider = new RSlider (("MidSideRatioSlider")) );
+  addWidget( midSideRatioSlider = new ModulatableSlider );
   midSideRatioSlider->assignParameter( moduleToEdit->getParameterByName("MidSideRatio") );
   midSideRatioSlider->setDescription(juce::String(("Ratio between mid and side signal (stereo-width)")));
   midSideRatioSlider->setDescriptionField(infoField);
@@ -4836,7 +4836,7 @@ PhaseStereoizerModuleEditor::PhaseStereoizerModuleEditor(CriticalSection *newPlu
   gainSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
   */
 
-  updateWidgetsAccordingToState();
+  //updateWidgetsAccordingToState();
 }
 
 void PhaseStereoizerModuleEditor::resized()
@@ -4919,25 +4919,25 @@ RingModulatorModuleEditor::RingModulatorModuleEditor(CriticalSection *newPlugInL
 
   jassert(newRingModulatorAudioModule != NULL ); // you must pass a valid module here
 
-  addWidget( frequencySlider = new RSlider (("FrequencySlider")) );
+  addWidget( frequencySlider = new ModulatableSlider );
   frequencySlider->assignParameter( moduleToEdit->getParameterByName(("Frequency")) );
   frequencySlider->setDescription(juce::String(("Frequency in Hz")));
   frequencySlider->setDescriptionField(infoField);
   frequencySlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
-  addWidget( feedbackSlider = new RSlider (("FeedbackSlider")) );
+  addWidget( feedbackSlider = new ModulatableSlider );
   feedbackSlider->assignParameter( moduleToEdit->getParameterByName(("Feedback")) );
   feedbackSlider->setDescription(juce::String(("Feedback around the ringmodulator")));
   feedbackSlider->setDescriptionField(infoField);
   feedbackSlider->setStringConversionFunction(&percentToStringWithUnit1);
 
-  addWidget( stereoOffsetSlider = new RSlider (("StereoOffsetSlider")) );
+  addWidget( stereoOffsetSlider = new ModulatableSlider );
   stereoOffsetSlider->assignParameter( moduleToEdit->getParameterByName(("StereoOffset")) );
   stereoOffsetSlider->setDescription(juce::String(("Stereo offset of the frequency between left and right in Hz")));
   stereoOffsetSlider->setDescriptionField(infoField);
   stereoOffsetSlider->setStringConversionFunction(&hertzToStringWithUnit1);
 
-  addWidget( dryWetSlider = new RSlider (("DryWetSlider")) );
+  addWidget( dryWetSlider = new ModulatableSlider );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName(("DryWetRatio")) );
   dryWetSlider->setSliderName(juce::String(("Dry/Wet")));
   dryWetSlider->setDescription(juce::String(("Ratio between dry (original) and wet (ringmodulated) signal")));
@@ -4950,7 +4950,7 @@ RingModulatorModuleEditor::RingModulatorModuleEditor(CriticalSection *newPlugInL
   antiAliasButton->setDescriptionField(infoField);
   antiAliasButton->setClickingTogglesState(true);
 
-  updateWidgetsAccordingToState();
+  //updateWidgetsAccordingToState();
 }
 
 void RingModulatorModuleEditor::resized()
@@ -5040,37 +5040,37 @@ SingleSidebandModulatorModuleEditor::SingleSidebandModulatorModuleEditor(Critica
 
   jassert(newSingleSidebandModulatorAudioModule != NULL ); // you must pass a valid module here
 
-  addWidget( frequencySlider = new RSlider (("FrequencySlider")) );
+  addWidget( frequencySlider = new ModulatableSlider );
   frequencySlider->assignParameter( moduleToEdit->getParameterByName(("Frequency")) );
   frequencySlider->setDescription(juce::String(("Frequency in Hz")));
   frequencySlider->setDescriptionField(infoField);
   frequencySlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
-  addWidget( upperSidebandLevelSlider = new RSlider (("UpperSidebandLevelSlider")) );
+  addWidget( upperSidebandLevelSlider = new ModulatableSlider );
   upperSidebandLevelSlider->assignParameter( moduleToEdit->getParameterByName(("UpperSidebandLevel")) );
   upperSidebandLevelSlider->setDescription(juce::String(("Upper sideband level in dB")));
   upperSidebandLevelSlider->setDescriptionField(infoField);
   upperSidebandLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
-  addWidget( lowerSidebandLevelSlider = new RSlider (("LowerSidebandLevelSlider")) );
+  addWidget( lowerSidebandLevelSlider = new ModulatableSlider );
   lowerSidebandLevelSlider->assignParameter( moduleToEdit->getParameterByName(("LowerSidebandLevel")) );
   lowerSidebandLevelSlider->setDescription(juce::String(("Lower sideband level in dB")));
   lowerSidebandLevelSlider->setDescriptionField(infoField);
   lowerSidebandLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
-  addWidget( feedbackSlider = new RSlider (("FeedbackSlider")) );
+  addWidget( feedbackSlider = new ModulatableSlider );
   feedbackSlider->assignParameter( moduleToEdit->getParameterByName(("Feedback")) );
   feedbackSlider->setDescription(juce::String(("Feedback around the SSB-modulator")));
   feedbackSlider->setDescriptionField(infoField);
   feedbackSlider->setStringConversionFunction(&percentToStringWithUnit1);
 
-  addWidget( stereoOffsetSlider = new RSlider (("StereoOffsetSlider")) );
+  addWidget( stereoOffsetSlider = new ModulatableSlider );
   stereoOffsetSlider->assignParameter( moduleToEdit->getParameterByName(("StereoOffset")) );
   stereoOffsetSlider->setDescription(juce::String(("Stereo offset of the frequency between left and right in Hz")));
   stereoOffsetSlider->setDescriptionField(infoField);
   stereoOffsetSlider->setStringConversionFunction(&hertzToStringWithUnit1);
 
-  addWidget( dryWetSlider = new RSlider (("DryWetSlider")) );
+  addWidget( dryWetSlider = new ModulatableSlider );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName(("DryWetRatio")) );
   dryWetSlider->setSliderName(juce::String(("Dry/Wet")));
   dryWetSlider->setDescription(juce::String(("Ratio between dry (original) and wet (modulated) signal")));
@@ -5179,14 +5179,14 @@ StereoPanModuleEditor::StereoPanModuleEditor(CriticalSection *newPlugInLock, Ste
   panLawComboBox->setDescriptionField(infoField);
   //panLawComboBox->addListener(this); // to update the plot
 
-  addWidget( panSlider = new RSlider (("PanSlider")) );
+  addWidget( panSlider = new ModulatableSlider );
   panSlider->assignParameter( moduleToEdit->getParameterByName("Pan") );
   panSlider->setDescription(juce::String(("Panorama position")));
   panSlider->setDescriptionField(infoField);
   panSlider->setStringConversionFunction(&valueToString2);
   //panSlider->addListener(this); // to update the plot
 
-  addWidget( gainSlider = new RSlider (("GainSlider")) );
+  addWidget( gainSlider = new ModulatableSlider );
   gainSlider->assignParameter( moduleToEdit->getParameterByName("Gain") );
   gainSlider->setDescription(juce::String(("Gain")));
   gainSlider->setDescriptionField(infoField);
@@ -5275,13 +5275,13 @@ StereoWidthModuleEditor::StereoWidthModuleEditor(CriticalSection *newPlugInLock,
 
   jassert(newStereoWidthAudioModule != NULL ); // you must pass a valid module here
 
-  addWidget( midSideRatioSlider = new RSlider (("MidSideRatioSlider")) );
+  addWidget( midSideRatioSlider = new ModulatableSlider );
   midSideRatioSlider->assignParameter( moduleToEdit->getParameterByName("MidSideRatio") );
   midSideRatioSlider->setDescription(juce::String(("Ratio between mid and side signal (stereo-width)")));
   midSideRatioSlider->setDescriptionField(infoField);
   midSideRatioSlider->setStringConversionFunction(&ratioToString0);
 
-  addWidget( gainSlider = new RSlider (("GainSlider")) );
+  addWidget( gainSlider = new ModulatableSlider );
   gainSlider->assignParameter( moduleToEdit->getParameterByName("Gain") );
   gainSlider->setDescription(juce::String(("Global gain for compensation of gain changes")));
   gainSlider->setDescriptionField(infoField);
@@ -5350,13 +5350,13 @@ SineOscillatorModuleEditor::SineOscillatorModuleEditor(CriticalSection *newPlugI
 
   jassert(newSineOscillatorAudioModule != NULL ); // you must pass a valid module here
 
-  addWidget( frequencySlider = new RSlider (("FrequencySlider")) );
+  addWidget( frequencySlider = new ModulatableSlider );
   frequencySlider->assignParameter( moduleToEdit->getParameterByName("Frequency") );
   frequencySlider->setDescription(juce::String(("Frequency of the sinusoid")));
   frequencySlider->setDescriptionField(infoField);
   frequencySlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
-  updateWidgetsAccordingToState();
+  //updateWidgetsAccordingToState();
 }
 
 void SineOscillatorModuleEditor::resized()
@@ -5427,38 +5427,37 @@ NoisifierModuleEditor::NoisifierModuleEditor(CriticalSection *newPlugInLock, Noi
 
   jassert(newNoisifierAudioModule != NULL ); // you must pass a valid module here
 
-  addWidget( passLevelSlider = new RSlider (("PassLevelSlider")) );
+  addWidget( passLevelSlider = new ModulatableSlider );
   passLevelSlider->assignParameter( moduleToEdit->getParameterByName("PassLevel") );
   passLevelSlider->setDescription(juce::String(("Level with which the input signal is passed through")));
   passLevelSlider->setDescriptionField(infoField);
   passLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
-  addWidget( noiseLevelSlider = new RSlider (("NoiseLevelSlider")) );
+  addWidget( noiseLevelSlider = new ModulatableSlider );
   noiseLevelSlider->assignParameter( moduleToEdit->getParameterByName("NoiseLevel") );
   noiseLevelSlider->setDescription(juce::String(("Level with which the generated noise is mixed in")));
   noiseLevelSlider->setDescriptionField(infoField);
   noiseLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
-  addWidget( spectralSlopeSlider = new RSlider (("SpectralSlopeSlider")) );
+  addWidget( spectralSlopeSlider = new ModulatableSlider );
   spectralSlopeSlider->assignParameter( moduleToEdit->getParameterByName("SpectralSlope") );
   spectralSlopeSlider->setDescription(juce::String(("Spectral slope of the generated noise")));
   spectralSlopeSlider->setDescriptionField(infoField);
   spectralSlopeSlider->setStringConversionFunction(&decibelsPerOctaveToString2);
 
-  addWidget( lowestFreqSlider = new RSlider (("LowestFreqSlider")) );
+  addWidget( lowestFreqSlider = new ModulatableSlider );
   lowestFreqSlider->assignParameter( moduleToEdit->getParameterByName("LowestFrequency") );
   lowestFreqSlider->setDescription(juce::String(("Lowest frequency present in the noise")));
   lowestFreqSlider->setDescriptionField(infoField);
   lowestFreqSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
-  addWidget( highestFreqSlider = new RSlider (("HighestFreqSlider")) );
+  addWidget( highestFreqSlider = new ModulatableSlider );
   highestFreqSlider->assignParameter( moduleToEdit->getParameterByName("HighestFrequency") );
   highestFreqSlider->setDescription(juce::String(("Highest frequency present in the noise")));
   highestFreqSlider->setDescriptionField(infoField);
   highestFreqSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
-
-  updateWidgetsAccordingToState();
+  //updateWidgetsAccordingToState();
 }
 
 void NoisifierModuleEditor::resized()

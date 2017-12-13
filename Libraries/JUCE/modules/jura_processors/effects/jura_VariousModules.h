@@ -905,9 +905,8 @@ public:
   virtual void resized();
   juce_UseDebuggingNewOperator;
 protected:
-  RSlider *phaseOffsetSlider, *dryWetRatioSlider, *sideLowpassSlider, *sideHighpassSlider,
+  ModulatableSlider *phaseOffsetSlider, *dryWetRatioSlider, *sideLowpassSlider, *sideHighpassSlider,
     *midSideRatioSlider, *gainSlider;
-
   RButton *channelSwapButton;
 };
 
@@ -931,7 +930,7 @@ public:
   virtual void resized();
   juce_UseDebuggingNewOperator;
 protected:
-  RSlider *frequencySlider, *feedbackSlider, *stereoOffsetSlider, *dryWetSlider;
+  ModulatableSlider *frequencySlider, *feedbackSlider, *stereoOffsetSlider, *dryWetSlider;
   RButton *antiAliasButton;
 };
 
@@ -957,8 +956,8 @@ public:
   virtual void resized();
   juce_UseDebuggingNewOperator;
 protected:
-  RSlider *frequencySlider, *feedbackSlider, *stereoOffsetSlider, *upperSidebandLevelSlider,
-    *lowerSidebandLevelSlider, *dryWetSlider;
+  ModulatableSlider *frequencySlider, *feedbackSlider, *stereoOffsetSlider, 
+    *upperSidebandLevelSlider, *lowerSidebandLevelSlider, *dryWetSlider;
   RButton *antiAliasButton;
 };
 
@@ -987,7 +986,7 @@ protected:
   StereoPanAudioModule *stereoPanModuleToEdit;
   RTextField           *panLawLabel;
   RComboBox            *panLawComboBox;
-  RSlider              *panSlider, *gainSlider;
+  ModulatableSlider    *panSlider, *gainSlider;
   StereoPanPlotEditor  *plot;
   double *xValues, *yValues;
   int    numValues;
@@ -1013,7 +1012,7 @@ public:
   virtual void resized();
   juce_UseDebuggingNewOperator;
 protected:
-  RSlider *midSideRatioSlider, *gainSlider; // maybe include a correlation meter?
+  ModulatableSlider *midSideRatioSlider, *gainSlider; // maybe include a correlation meter?
 };
 
 //===============================================================================================
@@ -1039,7 +1038,7 @@ public:
   virtual void resized();
   juce_UseDebuggingNewOperator;
 protected:
-  RSlider *frequencySlider, *levelSlider;
+  ModulatableSlider *frequencySlider, *levelSlider;
 };
 
 //-----------------------------------------------------------------------------------------------
@@ -1062,7 +1061,7 @@ public:
   virtual void resized();
   juce_UseDebuggingNewOperator;
 protected:
-  RSlider *passLevelSlider, *noiseLevelSlider, *spectralSlopeSlider, *lowestFreqSlider,
+  ModulatableSlider *passLevelSlider, *noiseLevelSlider, *spectralSlopeSlider, *lowestFreqSlider,
     *highestFreqSlider;
 };
 
