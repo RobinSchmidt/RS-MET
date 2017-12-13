@@ -366,9 +366,10 @@ public:
 protected:
   juce::Rectangle<int> toneParametersRect, decayParametersRect; //, otherParametersRect;
   RTextField *toneLabel, *decayLabel; //, *othersLabel;
-  RSlider    *dryWetSlider, *levelSlider, *frequencySlider, *detuneSlider, *pan1Slider, *pan2Slider, *decayTimeSlider,
-    *highDecayScaleSlider, *lowDecayScaleSlider, *highFreqSlider, *lowFreqSlider;
-  RButton    *oddOnlyButton;
+  ModulatableSlider *dryWetSlider, *levelSlider, *frequencySlider, *detuneSlider, *pan1Slider, 
+    *pan2Slider, *decayTimeSlider,*highDecayScaleSlider, *lowDecayScaleSlider, *highFreqSlider, 
+    *lowFreqSlider;
+  RButton *oddOnlyButton;
 };
 
 //-----------------------------------------------------------------------------------------------
@@ -393,8 +394,9 @@ public:
 protected:
   juce::Rectangle<int> toneParametersRect, decayParametersRect; //, otherParametersRect;
   RTextField *toneLabel, *decayLabel; //, *othersLabel;
-  RSlider    *dryWetSlider, *levelSlider, *frequencySlider, *detuneSlider, *pan1Slider, *pan2Slider, *decayTimeSlider,
-    *highDecayScaleSlider, *lowDecayScaleSlider, *highFreqSlider, *lowFreqSlider;
+  ModulatableSlider *dryWetSlider, *levelSlider, *frequencySlider, *detuneSlider, *pan1Slider, 
+    *pan2Slider, *decayTimeSlider, *highDecayScaleSlider, *lowDecayScaleSlider, *highFreqSlider, 
+    *lowFreqSlider;
   RButton    *oddOnlyButton;
 };
 
@@ -425,8 +427,9 @@ protected:
   juce::Rectangle<int> globalRect, filter1Rect, filter2Rect;
   RTextField *globalLabel, *filter1Label, *filter2Label;
   RComboBox  *modeComboBox1, *modeComboBox2;
-  RSlider    *frequencySlider1, *gainSlider1, *bandwidthSlider1, *frequencySlider2, *gainSlider2, *bandwidthSlider2,
-    *serialParallelBlendSlider, *frequencyScaleSlider, *gainScaleSlider, *bandwidthScaleSlider;
+  ModulatableSlider *frequencySlider1, *gainSlider1, *bandwidthSlider1, *frequencySlider2, 
+    *gainSlider2, *bandwidthSlider2, *serialParallelBlendSlider, *frequencyScaleSlider, 
+    *gainScaleSlider, *bandwidthScaleSlider;
 };
 
 //-----------------------------------------------------------------------------------------------
@@ -455,7 +458,7 @@ protected:
   FourPoleFilterAudioModule *fourPoleFilterModuleToEdit;
   //RComboBox *modeComboBox;
   FourPoleFilterModeComboBox *modeComboBox;
-  RSlider   *frequencySlider, *gainSlider, *bandwidthSlider;
+  ModulatableSlider *frequencySlider, *gainSlider, *bandwidthSlider;
 };
 
 //-----------------------------------------------------------------------------------------------
@@ -483,7 +486,7 @@ public:
 protected:
   LadderFilterAudioModule *ladderFilterModuleToEdit;
   RComboBox *modeComboBox;
-  RSlider   *frequencySlider, *resonanceSlider, *makeUpSlider, *driveSlider, *orderSlider,
+  ModulatableSlider *frequencySlider, *resonanceSlider, *makeUpSlider, *driveSlider, *orderSlider,
     *morphSlider;
 };
 
@@ -509,7 +512,7 @@ public:
   juce_UseDebuggingNewOperator;
 protected:
   SlopeFilterAudioModule *slopeFilterModuleToEdit;
-  RSlider *slopeSlider;
+  ModulatableSlider *slopeSlider;
 };
 
 //-----------------------------------------------------------------------------------------------
@@ -537,7 +540,7 @@ public:
 protected:
   TwoPoleFilterAudioModule *twoPoleFilterModuleToEdit;
   RComboBox *modeComboBox;
-  RSlider   *frequencySlider, *gainSlider, *bandwidthSlider, *radiusSlider;
+  ModulatableSlider *frequencySlider, *gainSlider, *bandwidthSlider, *radiusSlider;
 };
 
 //===============================================================================================
