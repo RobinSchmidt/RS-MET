@@ -142,7 +142,7 @@ public:
   virtual void resized();
   juce_UseDebuggingNewOperator;
 protected:
-  RSlider *factorSlider, *offsetSlider;
+  ModulatableSlider *factorSlider, *offsetSlider;
 };
 
 //-----------------------------------------------------------------------------------------------
@@ -165,7 +165,7 @@ public:
   virtual void resized();
   juce_UseDebuggingNewOperator;
 protected:
-  RSlider *attackSlider, *releaseSlider;
+  ModulatableSlider *attackSlider, *releaseSlider;
 };
 
 //-----------------------------------------------------------------------------------------------
@@ -226,7 +226,8 @@ public:
 protected:
   juce::Rectangle<int> curveParametersRect, timeParametersRect, otherParametersRect;
   RTextField *curveLabel, *timeLabel, *othersLabel;
-  RSlider    *driveSlider, *outLevelSlider, *amountSlider, *thresholdSlider, *ratioSlider, *kneeSlider;
+  ModulatableSlider *driveSlider, *outLevelSlider, *amountSlider, *thresholdSlider, *ratioSlider, 
+    *kneeSlider;
   RButton    *clipButton;
 };
 

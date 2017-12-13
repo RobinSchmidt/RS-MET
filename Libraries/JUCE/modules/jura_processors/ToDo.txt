@@ -3,6 +3,7 @@
  -use ModulatableParameter where appropriate 
   -done up except for Chorus - that needs a special look
  -use ModulatableSlider correspondingly
+  -done up to CompShaperModuleEditor
 
 
 -drag scientific IIR filters into RAPT:

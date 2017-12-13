@@ -130,13 +130,13 @@ ModulatedAllpassModuleEditor::ModulatedAllpassModuleEditor(CriticalSection *newP
 
   jassert(newModulatedAllpassAudioModule != NULL ); // you must pass a valid module here
 
-  addWidget( factorSlider = new RSlider (("FactorSlider")) );
+  addWidget( factorSlider = new ModulatableSlider );
   factorSlider->assignParameter( moduleToEdit->getParameterByName("Factor") );
   factorSlider->setDescription(juce::String(("Factor for the modulating signal")));
   factorSlider->setDescriptionField(infoField);
   factorSlider->setStringConversionFunction(&valueToString2);
 
-  addWidget( offsetSlider = new RSlider (("OffsetSlider")) );
+  addWidget( offsetSlider = new ModulatableSlider );
   offsetSlider->assignParameter( moduleToEdit->getParameterByName("Offset") );
   offsetSlider->setDescription(juce::String(("Offset for the modulating signal")));
   offsetSlider->setDescriptionField(infoField);
@@ -204,13 +204,13 @@ SlewRateLimiterModuleEditor::SlewRateLimiterModuleEditor(CriticalSection *newPlu
 
   jassert(newSlewRateLimiterAudioModule != NULL ); // you must pass a valid module here
 
-  addWidget( attackSlider = new RSlider (("AttackSlider")) );
+  addWidget( attackSlider = new ModulatableSlider );
   attackSlider->assignParameter( moduleToEdit->getParameterByName("Attack") );
   attackSlider->setDescription(juce::String(("Slew rate for upward jumps")));
   attackSlider->setDescriptionField(infoField);
   attackSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
-  addWidget( releaseSlider = new RSlider (("ReleaseSlider")) );
+  addWidget( releaseSlider = new ModulatableSlider );
   releaseSlider->assignParameter( moduleToEdit->getParameterByName("Release") );
   releaseSlider->setDescription(juce::String(("Slew rate for dwonward jumps")));
   releaseSlider->setDescriptionField(infoField);
@@ -870,19 +870,19 @@ CompShaperModuleEditor::CompShaperModuleEditor(CriticalSection *newPlugInLock, C
   othersLabel->setDescription(("Parameters for input-/output-gain and dry/wet mix"));
   othersLabel->setDescriptionField(infoField);
 
-  addWidget( thresholdSlider = new RSlider (("ThresholdSlider")) );
+  addWidget( thresholdSlider = new ModulatableSlider );
   thresholdSlider->assignParameter( moduleToEdit->getParameterByName("Threshold") );
   thresholdSlider->setDescription(juce::String(("Threshold above which the signal will be attenuated")));
   thresholdSlider->setDescriptionField(infoField);
   thresholdSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
-  addWidget( ratioSlider = new RSlider (("RatioSlider")) );
+  addWidget( ratioSlider = new ModulatableSlider );
   ratioSlider->assignParameter( moduleToEdit->getParameterByName("Ratio") );
   ratioSlider->setDescription(juce::String(("Ratio .....find a good short explanation")));
   ratioSlider->setDescriptionField(infoField);
   ratioSlider->setStringConversionFunction(&valueToString2);
 
-  addWidget( kneeSlider = new RSlider (("KneeSlider")) );
+  addWidget( kneeSlider = new ModulatableSlider );
   kneeSlider->assignParameter( moduleToEdit->getParameterByName("KneeWidth") );
   kneeSlider->setDescription(juce::String(("Transition width between the two slopes")));
   kneeSlider->setDescriptionField(infoField);
@@ -894,19 +894,19 @@ CompShaperModuleEditor::CompShaperModuleEditor(CriticalSection *newPlugInLock, C
   clipButton->setDescriptionField(infoField);
   clipButton->setClickingTogglesState(true);
 
-  addWidget( driveSlider = new RSlider (("InLevelSlider")) );
+  addWidget( driveSlider = new ModulatableSlider );
   driveSlider->assignParameter( moduleToEdit->getParameterByName("Drive") );
   driveSlider->setDescription(juce::String(("Gain for the input signal (pre waveshaper)")));
   driveSlider->setDescriptionField(infoField);
   driveSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
-  addWidget( outLevelSlider = new RSlider (("OutLevelSlider")) );
+  addWidget( outLevelSlider = new ModulatableSlider );
   outLevelSlider->assignParameter( moduleToEdit->getParameterByName("OutLevel") );
   outLevelSlider->setDescription(juce::String(("Gain for the output signal (post waveshaper)")));
   outLevelSlider->setDescriptionField(infoField);
   outLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
-  updateWidgetsAccordingToState();
+  //updateWidgetsAccordingToState();
 }
 
 void CompShaperModuleEditor::resized()

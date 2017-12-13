@@ -74,6 +74,11 @@ void MultiCompAudioModule::processBlock(double **inOutBuffer, int numChannels, i
     multiCompCore.getSampleFrameStereo(&inOutBuffer[0][n], &inOutBuffer[1][n]);
 }
 
+void MultiCompAudioModule::processStereoFrame(double *left, double *right)
+{
+  multiCompCore.getSampleFrameStereo(left, right);
+}
+
 void MultiCompAudioModule::setSampleRate(double newSampleRate)
 {
   multiCompCore.setSampleRate(newSampleRate);
