@@ -22,6 +22,7 @@ class BypassAudioModule : public AudioModule
 public:
   BypassAudioModule(CriticalSection *newPlugInLock, rosic::BypassModule *newBypassToWrap) 
     : AudioModule(newPlugInLock) {}
+  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override {}
   juce_UseDebuggingNewOperator;
 };
 
@@ -42,10 +43,15 @@ class MuteAudioModule : public AudioModule
 public:
   MuteAudioModule(CriticalSection *newPlugInLock, rosic::MuteModule *newMuteToWrap) 
     : AudioModule(newPlugInLock)  {}
-  virtual void getSampleFrameStereo(double* inOutL, double* inOutR)
+  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
   {
-    *inOutL = *inOutR = 0.0;
+    for(int i = 0; i < numChannels; i++)
+      fillWithZeros(inOutBuffer[i], numSamples);
   }
+  //virtual void getSampleFrameStereo(double* inOutL, double* inOutR)
+  //{
+  //  *inOutL = *inOutR = 0.0;
+  //}
   juce_UseDebuggingNewOperator;
 };
 
@@ -82,7 +88,7 @@ public:
   virtual void resized();
   juce_UseDebuggingNewOperator;
 protected:
-  RSlider *decimationSlider, *quantizationSlider, *amountSlider;
+  ModulatableSlider *decimationSlider, *quantizationSlider, *amountSlider;
 };
 
 //-----------------------------------------------------------------------------------------------

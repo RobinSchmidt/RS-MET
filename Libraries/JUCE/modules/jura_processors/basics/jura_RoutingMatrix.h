@@ -10,11 +10,8 @@ public:
 
   RoutingMatrixAudioModule(CriticalSection *newPlugInLock, 
     rosic::RoutingMatrix *newRoutingMatrixToWrap);
-  virtual void parameterChanged(Parameter* parameterThatHasChanged);
-  virtual void getSampleFrameStereo(double* inOutL, double* inOutR)
-  {
-    *inOutL = *inOutR = 0.0;
-  }
+  virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
+  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override {}
 
 protected:
 

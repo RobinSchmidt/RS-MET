@@ -49,25 +49,25 @@ BitCrusherModuleEditor::BitCrusherModuleEditor(CriticalSection *newPlugInLock, B
 
   jassert(newBitCrusherAudioModule != NULL ); // you must pass a valid module here
 
-  addWidget( decimationSlider = new RSlider (("DecimationSlider")) );
+  addWidget( decimationSlider = new ModulatableSlider );
   decimationSlider->assignParameter( moduleToEdit->getParameterByName("Decimation") );
   decimationSlider->setDescription(juce::String(("Decimation factor for the sample-rate")));
   decimationSlider->setDescriptionField(infoField);
   decimationSlider->setStringConversionFunction(&valueToString0);
 
-  addWidget( quantizationSlider = new RSlider (("QuantizationSlider")) );
+  addWidget( quantizationSlider = new ModulatableSlider );
   quantizationSlider->assignParameter( moduleToEdit->getParameterByName("Quantization") );
   quantizationSlider->setDescription(juce::String(("Quantization interval for the amplitude")));
   quantizationSlider->setDescriptionField(infoField);
   quantizationSlider->setStringConversionFunction(&valueToString4);
 
-  addWidget( amountSlider = new RSlider (("AmountSlider")) );
+  addWidget( amountSlider = new ModulatableSlider );
   amountSlider->assignParameter( moduleToEdit->getParameterByName("Amount") );
   amountSlider->setDescription(juce::String(("Amount of the effect in percent")));
   amountSlider->setDescriptionField(infoField);
   amountSlider->setStringConversionFunction(&percentToStringWithUnit0);
 
-  updateWidgetsAccordingToState();
+  //updateWidgetsAccordingToState();
 }
 
 void BitCrusherModuleEditor::resized()

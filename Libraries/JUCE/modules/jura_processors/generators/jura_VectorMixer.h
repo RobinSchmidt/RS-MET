@@ -18,7 +18,7 @@ public:
   //---------------------------------------------------------------------------------------------
   // automation:
 
-  virtual void parameterChanged(Parameter* parameterThatHasChanged);
+  virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
 
   /*
   virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
@@ -30,12 +30,7 @@ public:
   //---------------------------------------------------------------------------------------------
   // audio processing:
 
-  /** Calculates a stereo-ouput frame. */
-  virtual void getSampleFrameStereo(double* inOutL, double* inOutR)
-  {
-    *inOutL = *inOutR = 0.0;
-  }
-
+  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override {}
 
 protected:
 

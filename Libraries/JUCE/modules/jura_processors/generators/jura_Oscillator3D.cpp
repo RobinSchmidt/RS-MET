@@ -124,10 +124,11 @@ void RotationOscillatorAudioModule::processBlock(double **inOutBuffer, int numCh
 {
   //double x, y, z;
   for(int n = 0; n < numSamples; n++)
-  {
     oscCore.getSampleFrameStereo(&inOutBuffer[0][n], &inOutBuffer[1][n]);
-    //inOutBuffer[0][n] = inOutBuffer[1][n] = oscCore.getSample(); // produce stereo output later
-  }
+}
+void RotationOscillatorAudioModule::processStereoFrame(double *left, double *right)
+{
+  oscCore.getSampleFrameStereo(left, right);
 }
 
 void RotationOscillatorAudioModule::setSampleRate(double newSampleRate)

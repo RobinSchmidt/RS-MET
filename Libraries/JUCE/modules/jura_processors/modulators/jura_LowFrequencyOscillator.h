@@ -14,11 +14,11 @@ public:
     rosic::LowFrequencyOscillator *newLowFrequencyOscillatorToWrap);
 
 
-  virtual void parameterChanged(Parameter* parameterThatHasChanged);  // to be deprecated
+  virtual void parameterChanged(Parameter* parameterThatHasChanged) override;  // to be deprecated
 
   virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
-    bool markAsClean);
-  virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean);
+    bool markAsClean) override;
+  virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean) override;
 
   virtual void setWaveformFromFile(const juce::String &fileToLoadFrom);
 
@@ -27,10 +27,17 @@ public:
     wrappedLowFrequencyOscillator->setBeatsPerMinute(newBpm);
   }
 
-  virtual void getSampleFrameStereo(double* inOutL, double* inOutR)
+  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override 
   {
-    *inOutL = *inOutR = wrappedLowFrequencyOscillator->getSample();
+    for(int n = 0; n < numSamples; n++)
+      for(int i = 0; i < numChannels; i++)
+        inOutBuffer[i][n] = wrappedLowFrequencyOscillator->getSample();
   }
+
+  //virtual void getSampleFrameStereo(double* inOutL, double* inOutR)
+  //{
+  //  *inOutL = *inOutR = wrappedLowFrequencyOscillator->getSample();
+  //}
 
 protected:
 
