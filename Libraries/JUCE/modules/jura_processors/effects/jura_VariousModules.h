@@ -256,9 +256,9 @@ public:
 protected:
   juce::Rectangle<int> curveParametersRect, timeParametersRect, otherParametersRect;
   RTextField *curveLabel, *timeLabel, *othersLabel;
-  RSlider    *attackSlider, *releaseSlider, *lookAheadSlider, *inLevelSlider, *outLevelSlider, *dryWetSlider, *thresholdSlider,
-    *ratioSlider, *kneeSlider;
-  RButton    *autoGainButton, *limitButton, *antiAliasButton;
+  ModulatableSlider *attackSlider, *releaseSlider, *lookAheadSlider, *inLevelSlider, 
+    *outLevelSlider, *dryWetSlider, *thresholdSlider, *ratioSlider, *kneeSlider;
+  RButton *autoGainButton, *limitButton, *antiAliasButton;
 };
 
 //-----------------------------------------------------------------------------------------------
@@ -283,8 +283,8 @@ public:
 protected:
   juce::Rectangle<int> curveParametersRect, timeParametersRect, otherParametersRect;
   RTextField *curveLabel, *timeLabel, *othersLabel;
-  RSlider    *attackSlider, *releaseSlider, *lookAheadSlider, *inLevelSlider, *outLevelSlider,
-    *dryWetSlider, *thresholdSlider, *ratioSlider, *kneeSlider;
+  ModulatableSlider *attackSlider, *releaseSlider, *lookAheadSlider, *inLevelSlider, 
+    *outLevelSlider, *dryWetSlider, *thresholdSlider, *ratioSlider, *kneeSlider;
   RButton    *gateButton;
 };
 
@@ -310,7 +310,8 @@ public:
 protected:
   juce::Rectangle<int> curveParametersRect, timeParametersRect, otherParametersRect;
   RTextField *curveLabel, *timeLabel, *othersLabel;
-  RSlider    *attackSlider, *releaseSlider, *lookAheadSlider, *inLevelSlider, *outLevelSlider, *dryWetSlider, *limitSlider;
+  ModulatableSlider *attackSlider, *releaseSlider, *lookAheadSlider, *inLevelSlider, 
+    *outLevelSlider, *dryWetSlider, *limitSlider;
 };
 
 //-----------------------------------------------------------------------------------------------
@@ -335,8 +336,8 @@ public:
 protected:
   juce::Rectangle<int> curveParametersRect, timeParametersRect, otherParametersRect;
   RTextField *curveLabel, *timeLabel, *othersLabel;
-  RSlider    *attackSlider, *holdSlider, *releaseSlider, *lookAheadSlider, *inLevelSlider, *outLevelSlider, *dryWetSlider,
-    *thresholdSlider, *hysteresisSlider;
+  ModulatableSlider *attackSlider, *holdSlider, *releaseSlider, *lookAheadSlider, *inLevelSlider, 
+    *outLevelSlider, *dryWetSlider, *thresholdSlider, *hysteresisSlider;
 };
 
 

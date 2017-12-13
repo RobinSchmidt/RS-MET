@@ -1077,56 +1077,56 @@ CompressorModuleEditor::CompressorModuleEditor(CriticalSection *newPlugInLock, C
   othersLabel->setDescription(("Parameters for input-/output-gain and dry/wet mix"));
   othersLabel->setDescriptionField(infoField);
 
-  addWidget( attackSlider = new RSlider (("AttackSlider")) );
+  addWidget( attackSlider = new ModulatableSlider );
   attackSlider->assignParameter( moduleToEdit->getParameterByName("Attack") );
   attackSlider->setDescription(juce::String(("Attack time for the envelope detector")));
   attackSlider->setDescriptionField(infoField);
   attackSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
-  addWidget( releaseSlider = new RSlider (("ReleaseSlider")) );
+  addWidget( releaseSlider = new ModulatableSlider );
   releaseSlider->assignParameter( moduleToEdit->getParameterByName("Release") );
   releaseSlider->setDescription(juce::String(("Release time for the envelope detector")));
   releaseSlider->setDescriptionField(infoField);
   releaseSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
-  addWidget( lookAheadSlider = new RSlider (("LookAheadSlider")) );
+  addWidget( lookAheadSlider = new ModulatableSlider );
   lookAheadSlider->assignParameter( moduleToEdit->getParameterByName("LookAhead") );
   lookAheadSlider->setDescription(juce::String(("LookAhead time for the envelope detector")));
   lookAheadSlider->setDescriptionField(infoField);
   lookAheadSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
-  addWidget( inLevelSlider = new RSlider (("InLevelSlider")) );
+  addWidget( inLevelSlider = new ModulatableSlider );
   inLevelSlider->assignParameter( moduleToEdit->getParameterByName("InLevel") );
   inLevelSlider->setDescription(juce::String(("Gain for the input signal (pre compression)")));
   inLevelSlider->setDescriptionField(infoField);
   inLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
-  addWidget( outLevelSlider = new RSlider (("OutLevelSlider")) );
+  addWidget( outLevelSlider = new ModulatableSlider );
   outLevelSlider->assignParameter( moduleToEdit->getParameterByName("OutLevel") );
   outLevelSlider->setDescription(juce::String(("Gain for the output signal (post compression)")));
   outLevelSlider->setDescriptionField(infoField);
   outLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
-  addWidget( dryWetSlider = new RSlider (("DryWetSlider")) );
+  addWidget( dryWetSlider = new ModulatableSlider );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName("DryWetRatio") );
   dryWetSlider->setSliderName(juce::String(("Dry/Wet")));
   dryWetSlider->setDescription(juce::String(("Mix ratio between original and compressed signal")));
   dryWetSlider->setDescriptionField(infoField);
   dryWetSlider->setStringConversionFunction(&ratioToString0);
 
-  addWidget( thresholdSlider = new RSlider (("ThresholdSlider")) );
+  addWidget( thresholdSlider = new ModulatableSlider );
   thresholdSlider->assignParameter( moduleToEdit->getParameterByName("Threshold") );
   thresholdSlider->setDescription(juce::String(("Threshold above which the signal will be attenuated")));
   thresholdSlider->setDescriptionField(infoField);
   thresholdSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
-  addWidget( ratioSlider = new RSlider (("RatioSlider")) );
+  addWidget( ratioSlider = new ModulatableSlider );
   ratioSlider->assignParameter( moduleToEdit->getParameterByName("Ratio") );
   ratioSlider->setDescription(juce::String(("Ratio .....find a good short explanation")));
   ratioSlider->setDescriptionField(infoField);
   ratioSlider->setStringConversionFunction(&valueToString2);
 
-  addWidget( kneeSlider = new RSlider (("KneeSlider")) );
+  addWidget( kneeSlider = new ModulatableSlider );
   kneeSlider->assignParameter( moduleToEdit->getParameterByName("KneeWidth") );
   kneeSlider->setSliderName(juce::String(("Knee")));
   kneeSlider->setDescription(juce::String(("Transition width between the two slopes")));
@@ -1303,56 +1303,56 @@ ExpanderModuleEditor::ExpanderModuleEditor(CriticalSection *newPlugInLock, Expan
   othersLabel->setDescription(("Parameters for input-/output-gain and dry/wet mix"));
   othersLabel->setDescriptionField(infoField);
 
-  addWidget( attackSlider = new RSlider (("AttackSlider")) );
+  addWidget( attackSlider = new ModulatableSlider );
   attackSlider->assignParameter( moduleToEdit->getParameterByName("Attack") );
   attackSlider->setDescription(juce::String(("Attack time for the envelope detector")));
   attackSlider->setDescriptionField(infoField);
   attackSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
-  addWidget( releaseSlider = new RSlider (("ReleaseSlider")) );
+  addWidget( releaseSlider = new ModulatableSlider );
   releaseSlider->assignParameter( moduleToEdit->getParameterByName("Release") );
   releaseSlider->setDescription(juce::String(("Release time for the envelope detector")));
   releaseSlider->setDescriptionField(infoField);
   releaseSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
-  addWidget( lookAheadSlider = new RSlider (("LookAheadSlider")) );
+  addWidget( lookAheadSlider = new ModulatableSlider );
   lookAheadSlider->assignParameter( moduleToEdit->getParameterByName("LookAhead") );
   lookAheadSlider->setDescription(juce::String(("LookAhead time for the envelope detector")));
   lookAheadSlider->setDescriptionField(infoField);
   lookAheadSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
-  addWidget( inLevelSlider = new RSlider (("InLevelSlider")) );
+  addWidget( inLevelSlider = new ModulatableSlider );
   inLevelSlider->assignParameter( moduleToEdit->getParameterByName("InLevel") );
   inLevelSlider->setDescription(juce::String(("Gain for the input signal (pre compression)")));
   inLevelSlider->setDescriptionField(infoField);
   inLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
-  addWidget( outLevelSlider = new RSlider (("OutLevelSlider")) );
+  addWidget( outLevelSlider = new ModulatableSlider );
   outLevelSlider->assignParameter( moduleToEdit->getParameterByName("OutLevel") );
   outLevelSlider->setDescription(juce::String(("Gain for the output signal (post compression)")));
   outLevelSlider->setDescriptionField(infoField);
   outLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
-  addWidget( dryWetSlider = new RSlider (("DryWetSlider")) );
+  addWidget( dryWetSlider = new ModulatableSlider );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName("DryWetRatio") );
   dryWetSlider->setSliderName(juce::String(("Dry/Wet")));
   dryWetSlider->setDescription(juce::String(("Mix ratio between original and compressed signal")));
   dryWetSlider->setDescriptionField(infoField);
   dryWetSlider->setStringConversionFunction(&ratioToString0);
 
-  addWidget( thresholdSlider = new RSlider (("ThresholdSlider")) );
+  addWidget( thresholdSlider = new ModulatableSlider );
   thresholdSlider->assignParameter( moduleToEdit->getParameterByName("Threshold") );
   thresholdSlider->setDescription(juce::String(("Threshold above which the signal will be attenuated")));
   thresholdSlider->setDescriptionField(infoField);
   thresholdSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
-  addWidget( ratioSlider = new RSlider (("RatioSlider")) );
+  addWidget( ratioSlider = new ModulatableSlider );
   ratioSlider->assignParameter( moduleToEdit->getParameterByName("Ratio") );
   ratioSlider->setDescription(juce::String(("Ratio .....find a good short explanation")));
   ratioSlider->setDescriptionField(infoField);
   ratioSlider->setStringConversionFunction(&valueToString2);
 
-  addWidget( kneeSlider = new RSlider (("KneeSlider")) );
+  addWidget( kneeSlider = new ModulatableSlider );
   kneeSlider->assignParameter( moduleToEdit->getParameterByName("KneeWidth") );
   kneeSlider->setSliderName(juce::String(("Knee")));
   kneeSlider->setDescription(juce::String(("Transition width between the two slopes")));
@@ -1504,44 +1504,44 @@ LimiterModuleEditor::LimiterModuleEditor(CriticalSection *newPlugInLock, Limiter
   othersLabel->setDescription(("Parameters for input-/output-gain and dry/wet mix"));
   othersLabel->setDescriptionField(infoField);
 
-  addWidget( attackSlider = new RSlider(("AttackSlider")) );
+  addWidget( attackSlider = new ModulatableSlider );
   attackSlider->assignParameter( moduleToEdit->getParameterByName(("Attack")) );
   attackSlider->setDescription(juce::String(("Attack time for the envelope detector")));
   attackSlider->setDescriptionField(infoField);
   attackSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
-  addWidget( releaseSlider = new RSlider(("ReleaseSlider")) );
+  addWidget( releaseSlider = new ModulatableSlider );
   releaseSlider->assignParameter( moduleToEdit->getParameterByName(("Release")) );
   releaseSlider->setDescription(juce::String(("Release time for the envelope detector")));
   releaseSlider->setDescriptionField(infoField);
   releaseSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
-  addWidget( lookAheadSlider = new RSlider(("LookAheadSlider")) );
+  addWidget( lookAheadSlider = new ModulatableSlider );
   lookAheadSlider->assignParameter( moduleToEdit->getParameterByName(("LookAhead")) );
   lookAheadSlider->setDescription(juce::String(("LookAhead time for the envelope detector")));
   lookAheadSlider->setDescriptionField(infoField);
   lookAheadSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
-  addWidget( inLevelSlider = new RSlider(("InLevelSlider")) );
+  addWidget( inLevelSlider = new ModulatableSlider );
   inLevelSlider->assignParameter( moduleToEdit->getParameterByName(("InLevel")) );
   inLevelSlider->setDescription(juce::String(("Gain for the input signal (pre compression)")));
   inLevelSlider->setDescriptionField(infoField);
   inLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
-  addWidget( outLevelSlider = new RSlider(("OutLevelSlider")) );
+  addWidget( outLevelSlider = new ModulatableSlider );
   outLevelSlider->assignParameter( moduleToEdit->getParameterByName(("OutLevel")) );
   outLevelSlider->setDescription(juce::String(("Gain for the output signal (post compression)")));
   outLevelSlider->setDescriptionField(infoField);
   outLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
-  addWidget( dryWetSlider = new RSlider(("DryWetSlider")) );
+  addWidget( dryWetSlider = new ModulatableSlider );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName(("DryWetRatio")) );
   dryWetSlider->setSliderName(juce::String(("Dry/Wet")));
   dryWetSlider->setDescription(juce::String(("Mix ratio between original and compressed signal")));
   dryWetSlider->setDescriptionField(infoField);
   dryWetSlider->setStringConversionFunction(&ratioToString0);
 
-  addWidget( limitSlider = new RSlider(("LimitSlider")) );
+  addWidget( limitSlider = new ModulatableSlider );
   limitSlider->assignParameter( moduleToEdit->getParameterByName(("Limit")) );
   limitSlider->setDescription(juce::String(("Limit above which the signal will be attenuated")));
   limitSlider->setDescriptionField(infoField);
@@ -1688,62 +1688,62 @@ NoiseGateModuleEditor::NoiseGateModuleEditor(CriticalSection *newPlugInLock, Noi
   othersLabel->setDescription(("Parameters for input-/output-gain and dry/wet mix"));
   othersLabel->setDescriptionField(infoField);
 
-  addWidget( attackSlider = new RSlider (("AttackSlider")) );
+  addWidget( attackSlider = new ModulatableSlider );
   attackSlider->assignParameter( moduleToEdit->getParameterByName("Attack") );
   attackSlider->setDescription(juce::String(("Time for the gate to open")));
   attackSlider->setDescriptionField(infoField);
   attackSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
-  addWidget( holdSlider = new RSlider (("HoldSlider")) );
+  addWidget( holdSlider = new ModulatableSlider );
   holdSlider->assignParameter( moduleToEdit->getParameterByName("Hold") );
   holdSlider->setDescription(juce::String(("Time for the gate to stay open after close threshold was undercut")));
   holdSlider->setDescriptionField(infoField);
   holdSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
-  addWidget( releaseSlider = new RSlider (("ReleaseSlider")) );
+  addWidget( releaseSlider = new ModulatableSlider );
   releaseSlider->assignParameter( moduleToEdit->getParameterByName("Release") );
   releaseSlider->setDescription(juce::String(("Release time for the envelope detector")));
   releaseSlider->setDescriptionField(infoField);
   releaseSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
-  addWidget( lookAheadSlider = new RSlider (("LookAheadSlider")) );
+  addWidget( lookAheadSlider = new ModulatableSlider );
   lookAheadSlider->assignParameter( moduleToEdit->getParameterByName("LookAhead") );
   lookAheadSlider->setDescription(juce::String(("LookAhead time for the envelope detector")));
   lookAheadSlider->setDescriptionField(infoField);
   lookAheadSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
-  addWidget( inLevelSlider = new RSlider (("InLevelSlider")) );
+  addWidget( inLevelSlider = new ModulatableSlider );
   inLevelSlider->assignParameter( moduleToEdit->getParameterByName("InLevel") );
   inLevelSlider->setDescription(juce::String(("Gain for the input signal (pre compression)")));
   inLevelSlider->setDescriptionField(infoField);
   inLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
-  addWidget( outLevelSlider = new RSlider (("OutLevelSlider")) );
+  addWidget( outLevelSlider = new ModulatableSlider );
   outLevelSlider->assignParameter( moduleToEdit->getParameterByName("OutLevel") );
   outLevelSlider->setDescription(juce::String(("Gain for the output signal (post compression)")));
   outLevelSlider->setDescriptionField(infoField);
   outLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
-  addWidget( dryWetSlider = new RSlider (("DryWetSlider")) );
+  addWidget( dryWetSlider = new ModulatableSlider );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName("DryWetRatio") );
   dryWetSlider->setSliderName(juce::String(("Dry/Wet")));
   dryWetSlider->setDescription(juce::String(("Mix ratio between original and compressed signal")));
   dryWetSlider->setDescriptionField(infoField);
   dryWetSlider->setStringConversionFunction(&ratioToString0);
 
-  addWidget( thresholdSlider = new RSlider (("ThresholdSlider")) );
+  addWidget( thresholdSlider = new ModulatableSlider );
   thresholdSlider->assignParameter( moduleToEdit->getParameterByName("Threshold") );
   thresholdSlider->setDescription(juce::String(("Threshold for the gate to open")));
   thresholdSlider->setDescriptionField(infoField);
   thresholdSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
-  addWidget( hysteresisSlider = new RSlider (("HysteresisSlider")) );
+  addWidget( hysteresisSlider = new ModulatableSlider );
   hysteresisSlider->assignParameter( moduleToEdit->getParameterByName("Hysteresis") );
   hysteresisSlider->setDescription(juce::String(("Difference between opening and closing threshold")));
   hysteresisSlider->setDescriptionField(infoField);
   hysteresisSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
-  updateWidgetsAccordingToState();
+  //updateWidgetsAccordingToState();
 }
 
 void NoiseGateModuleEditor::resized()
