@@ -793,6 +793,8 @@ public:
   {
     if( valueChangeCallbackDouble != nullptr )
       valueChangeCallbackDouble->call(getModulatedValue());
+    if( valueChangeCallbackInt != nullptr )
+      valueChangeCallbackInt->call((int)getModulatedValue());
   }
 
   /** Overriden to call our callback function with the modulated value. */
