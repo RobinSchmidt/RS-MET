@@ -115,7 +115,7 @@ public:
 protected:
   juce::Rectangle<int> globalRect, harmonicsRect;
   RTextField *globalLabel, *harmonicsLabel, *inFilterLabel, *outFilterLabel;
-  RSlider    *driveSlider, *dryWetSlider, *inHighpassSlider, *inLowpassSlider,
+  ModulatableSlider *driveSlider, *dryWetSlider, *inHighpassSlider, *inLowpassSlider,
     *outHighpassSlider, *outLowpassSlider;
   RSlider    *h02Slider, *h03Slider, *h04Slider, *h05Slider, *h06Slider, *h07Slider, *h08Slider,
     *h09Slider, *h10Slider, *h11Slider, *h12Slider;

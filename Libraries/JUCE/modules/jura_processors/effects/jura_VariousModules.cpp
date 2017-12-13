@@ -374,13 +374,13 @@ HarmonicsModuleEditor::HarmonicsModuleEditor(CriticalSection *newPlugInLock, Har
   outFilterLabel->setDescription(("Parameters of the filter at the output stage"));
   outFilterLabel->setDescriptionField(infoField);
 
-  addWidget( driveSlider = new RSlider (("InLevelSlider")) );
+  addWidget( driveSlider = new ModulatableSlider );
   driveSlider->assignParameter( moduleToEdit->getParameterByName("Drive") );
   driveSlider->setDescription(juce::String(("Gain for the input signal (pre waveshaper)")));
   driveSlider->setDescriptionField(infoField);
   driveSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
-  addWidget( dryWetSlider = new RSlider (("DryWetSlider")) );
+  addWidget( dryWetSlider = new ModulatableSlider );
   dryWetSlider->assignParameter( moduleToEdit->getParameterByName("DryWetRatio") );
   dryWetSlider->setSliderName(juce::String(("Dry/Wet")));
   dryWetSlider->setDescription(juce::String(("Ratio between dry and wet signal")));
@@ -388,28 +388,28 @@ HarmonicsModuleEditor::HarmonicsModuleEditor(CriticalSection *newPlugInLock, Har
   dryWetSlider->setStringConversionFunction(&ratioToString0);
 
 
-  addWidget( inHighpassSlider = new RSlider (("InHighpassSlider")) );
+  addWidget( inHighpassSlider = new ModulatableSlider );
   inHighpassSlider->assignParameter( moduleToEdit->getParameterByName("InputHighpass") );
   inHighpassSlider->setSliderName(juce::String(("Highpass")));
   inHighpassSlider->setDescription(juce::String(("Cutoff frequency of the input highpass filter")));
   inHighpassSlider->setDescriptionField(infoField);
   inHighpassSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
-  addWidget( inLowpassSlider = new RSlider (("InLowpassSlider")) );
+  addWidget( inLowpassSlider = new ModulatableSlider );
   inLowpassSlider->assignParameter( moduleToEdit->getParameterByName("InputLowpass") );
   inLowpassSlider->setSliderName(juce::String(("Lowpass")));
   inLowpassSlider->setDescription(juce::String(("Cutoff frequency of the input lowpass filter")));
   inLowpassSlider->setDescriptionField(infoField);
   inLowpassSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
-  addWidget( outHighpassSlider = new RSlider (("OutHighpassSlider")) );
+  addWidget( outHighpassSlider = new ModulatableSlider );
   outHighpassSlider->assignParameter( moduleToEdit->getParameterByName("OutputHighpass") );
   outHighpassSlider->setSliderName(juce::String(("Highpass")));
   outHighpassSlider->setDescription(juce::String(("Cutoff frequency of the output highpass filter")));
   outHighpassSlider->setDescriptionField(infoField);
   outHighpassSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
-  addWidget( outLowpassSlider = new RSlider (("OutLowpassSlider")) );
+  addWidget( outLowpassSlider = new ModulatableSlider );
   outLowpassSlider->assignParameter( moduleToEdit->getParameterByName("OutputLowpass") );
   outLowpassSlider->setSliderName(juce::String(("Lowpass")));
   outLowpassSlider->setDescription(juce::String(("Cutoff frequency of the output lowpass filter")));
