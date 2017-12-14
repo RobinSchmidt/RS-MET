@@ -1306,7 +1306,6 @@ void EchoLabPlotEditor::refreshCompletely()
 
 //=================================================================================================
 
-
 EchoLabModuleEditor::EchoLabModuleEditor(CriticalSection *newPlugInLock, 
   EchoLabAudioModule* newEchoLabAudioModule) 
   : AudioModuleEditor(newEchoLabAudioModule)
@@ -1362,32 +1361,18 @@ EchoLabModuleEditor::EchoLabModuleEditor(CriticalSection *newPlugInLock,
   delayPlotZoomer->setCoordinateSystem(delayPlotEditor);
 
 
-    
-  //dummyDelayLine = new rosic::EchoLabDelayLine; 
-  //dummyDelayLineModule = new EchoLabDelayLineAudioModule(newPlugInLock, dummyDelayLine);
-  //delayLineModuleEditor = new EchoLabDelayLineModuleEditor(newPlugInLock, dummyDelayLineModule);
   delayLineModuleEditor = new EchoLabDelayLineModuleEditor(newPlugInLock, nullptr);
-    // i think, we really need to pass non-null pointer here. maybe a good place to apply the
-    // Null Object pattern
   delayLineModuleEditor->setDescriptionField(infoField, true);
   addChildEditor(delayLineModuleEditor);
 
   delayPlotEditor->setDelayLineModuleEditor(delayLineModuleEditor);
 
-  isTopLevelEditor = true;
-
   numHueOffsets = 1; // for filter-sections
 
   initializeColourScheme();
   updateWidgetsAccordingToState();
-  setSize(600, 300);
+  setSize(900, 400);
 }
-
-//EchoLabModuleEditor::~EchoLabModuleEditor()
-//{
-//  delete dummyDelayLineModule;
-//  delete dummyDelayLine;
-//}
 
 //-------------------------------------------------------------------------------------------------
 // setup:
@@ -1490,7 +1475,9 @@ void EchoLabModuleEditor::resized()
 
   stateWidgetSet->setBounds(x, y+4, stateWidgetSet->getWidth()/2, stateWidgetSet->getHeight());
 
-  int equalizerHeight = 220;
+  //int equalizerHeight = 220; // old
+  int equalizerHeight = 180;
+  //int equalizerHeight = h/2; // crashes, if gui size is too small
 
   y = getPresetSectionBottom();
   h = infoField->getY()-y-equalizerHeight;
