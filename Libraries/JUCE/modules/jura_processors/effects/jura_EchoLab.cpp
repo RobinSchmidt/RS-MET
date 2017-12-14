@@ -544,9 +544,106 @@ XmlElement* EchoLabAudioModule::getStateAsXml(const juce::String& stateName, boo
   return xmlState;
 }
 
+
+
+bool equalizerStateFromXml(Equalizer* equalizer, const XmlElement &xmlState)
+{
+  bool success = true;
+
+  // remove all possibly existing bands:
+  equalizer->removeAllBands();
+
+  // retrieve per-band data and add bands accordingly:
+  double f, g, b;
+  int    m = 1;
+  forEachXmlChildElementWithTagName(xmlState, child, "Band")
+  {
+    f = child->getDoubleAttribute("Frequency", 1000.0);
+    g = child->getDoubleAttribute("Gain",      0.0);
+    b = child->getDoubleAttribute("Bandwidth", 1.0);
+    //q = child->getDoubleAttribute(T("Q"),         sqrt(0.5));
+
+    juce::String modeString = child->getStringAttribute("Mode", "Peak/Dip");
+    if( modeString == juce::String("Peak/Dip") )
+      m = TwoPoleFilter::PEAK;
+    else if( modeString == juce::String("Low Shelving") )
+      m = TwoPoleFilter::LOW_SHELF;
+    else if( modeString == juce::String("High Shelving") )
+      m = TwoPoleFilter::HIGH_SHELF;
+    else if( modeString == juce::String("Lowpass 6 dB/oct") )
+      m = TwoPoleFilter::LOWPASS6;
+    else if( modeString == juce::String("Lowpass 12 dB/oct") )
+      m = TwoPoleFilter::LOWPASS12;
+    else if( modeString == juce::String("Highpass 6 dB/oct") )
+      m = TwoPoleFilter::HIGHPASS6;
+    else if( modeString == juce::String("Highpass 12 dB/oct") )
+      m = TwoPoleFilter::HIGHPASS12;
+    else if( modeString == juce::String("Notch 2*6 dB/oct") )
+      m = TwoPoleFilter::BANDREJECT;
+
+    equalizer->addBand(m, f, g, b);
+  }
+  equalizer->setGlobalGain(xmlState.getDoubleAttribute("GlobalGain", 0.0));
+
+  return success;
+}
+
+bool echoLabDelayLineStateFromXml(EchoLabDelayLine* delayLine, const XmlElement &xmlState)
+{
+  delayLine->setDelayTime(        xmlState.getDoubleAttribute("DelayTime", 0.5 )   );
+  delayLine->setGlobalGainFactor( xmlState.getDoubleAttribute("Amplitude", 0.5 )   );
+  delayLine->setFeedbackInPercent(xmlState.getDoubleAttribute("Feedback",  0.0 )   );
+  delayLine->setPan(              xmlState.getDoubleAttribute("Pan",       0.0 )   );
+  delayLine->setPingPongMode(     xmlState.getBoolAttribute(  "PingPong",  false ) );
+  delayLine->setMute(             xmlState.getBoolAttribute(  "Mute",      false ) );
+
+  // restore the embedded equalizer's state:
+  delayLine->feedbackEqualizer.removeAllBands();
+  XmlElement* feedbackEqualizerState = xmlState.getChildByName("FeedbackFilter");
+  if( feedbackEqualizerState != NULL )
+    equalizerStateFromXml(&(delayLine->feedbackEqualizer.equalizers[0]), *feedbackEqualizerState);
+
+  delayLine->inputEqualizer.removeAllBands();
+  XmlElement* inputEqualizerState = xmlState.getChildByName("InputFilter");
+  if( inputEqualizerState != NULL )
+    equalizerStateFromXml(&(delayLine->inputEqualizer.equalizers[0]), *inputEqualizerState);
+
+  return true;
+}
+
+bool echoLabStateFromXml(EchoLab* echoLab, const XmlElement &xmlState)
+{
+  echoLab->acquireLock();
+
+  // remove all possibly existing delaylines:
+  echoLab->removeAllDelayLines();
+
+  // retrieve per-delayline data and add delaylines accordingly:
+  rosic::EchoLabDelayLine* currentDelayLine = NULL;
+  double time, amplitude;
+  int    index;
+  forEachXmlChildElementWithTagName(xmlState, child, "DelayLine")
+  {
+    time      = child->getDoubleAttribute("DelayTime", 0.5);
+    amplitude = child->getDoubleAttribute("Amplitude", 0.5);
+    index     = echoLab->addDelayLine(time, amplitude);
+    currentDelayLine = echoLab->getDelayLine(index);
+    if( currentDelayLine != NULL )
+      echoLabDelayLineStateFromXml(currentDelayLine, *child);
+  }
+  echoLab->setSyncForDelayTimes(xmlState.getBoolAttribute(  "SyncDelayTimes", false));
+  echoLab->setDryWet(           xmlState.getDoubleAttribute("DryWet",           0.5));
+  echoLab->setWetLevel(         xmlState.getDoubleAttribute("WetLevel",         0.0));
+  echoLab->setDelayLineSolo(    xmlState.getIntAttribute(   "Solo",              -1));
+
+  echoLab->releaseLock();
+  return true;
+}
+
 void EchoLabAudioModule::setStateFromXml(const XmlElement& xmlState, 
   const juce::String& stateName, bool markAsClean)
 {
+  /*
   jassertfalse;
 
   // this function must be re-implemented
@@ -561,7 +658,6 @@ void EchoLabAudioModule::setStateFromXml(const XmlElement& xmlState,
   // first
 
   ScopedPointerLock spl(lock);
-
   removeAllDelayLines();
 
   // create the audiomodules for the delaylines:
@@ -582,19 +678,19 @@ void EchoLabAudioModule::setStateFromXml(const XmlElement& xmlState,
   // should set up the internal states of the individual delaylines (which are now child-modules)
   // -> we must perhaps override setStateFromXml in EchoLabDelayLineAudioModule
   // ...this seems not yet to work....
+  */
 
 
-  /*
   // this is the old implementation:
   ScopedPointerLock spl(lock);
   AudioModule::setStateFromXml(xmlState, stateName, markAsClean);
-  if( wrappedEchoLab != NULL )
+  if(wrappedEchoLab != nullptr)
   {
-  wrappedEchoLab->acquireLock();
-  echoLabStateFromXml(wrappedEchoLab, xmlState);
-  wrappedEchoLab->releaseLock();
+    wrappedEchoLab->acquireLock();
+    echoLabStateFromXml(wrappedEchoLab, xmlState);
+    wrappedEchoLab->releaseLock();
   }
-  */
+
 }
 
 /*
@@ -687,39 +783,7 @@ EchoLabDelayLineAudioModule* EchoLabAudioModule::getDelayLineModule(int index) c
 }
 
 // audio processing:
-/*
-void EchoLabAudioModule::getSampleFrameStereo(double* inOutL, double* inOutR)
-{ 
-  jassertfalse; // nor good idea to use this function - performance hog
-  ScopedPointerLock spl(lock);
-  wrappedEchoLab->getSampleFrameStereo(inOutL, inOutR); 
-}
-*/
-void EchoLabAudioModule::processStereoFrame(double *left, double *right)
-{
-  wrappedEchoLab->getSampleFrameStereo(left, right); 
-}
 
-/*
-void EchoLabAudioModule::processBlock(AudioSampleBuffer& buffer, MidiBuffer& midiMessages) 
-{ 
-ScopedPointerLock spl(lock);
-
-  if( wrappedEchoLab == NULL || buffer.getNumChannels() < 1 )
-  {
-    jassertfalse;
-    return;
-  }
-
-  float *left, *right;  
-  left  = buffer.getWritePointer(0, 0);
-  if( buffer.getNumChannels() < 2 )
-    right = buffer.getWritePointer(0, 0);
-  else
-    right = buffer.getWritePointer(1, 0);
-  wrappedEchoLab->processBlock(left, right, buffer.getNumSamples());
-} 
-*/
 void EchoLabAudioModule::processBlock(double **inOutBuffer, int numChannels, int numSamples)
 {
   if( wrappedEchoLab == nullptr || numChannels != 2 )  {
@@ -727,6 +791,11 @@ void EchoLabAudioModule::processBlock(double **inOutBuffer, int numChannels, int
     return;
   }
   wrappedEchoLab->processBlock(&inOutBuffer[0][0], &inOutBuffer[1][0], numSamples);
+}
+
+void EchoLabAudioModule::processStereoFrame(double *left, double *right)
+{
+  wrappedEchoLab->getSampleFrameStereo(left, right); 
 }
 
 // others:
