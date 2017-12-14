@@ -531,7 +531,12 @@ XmlElement* echoLabStateToXml(EchoLab *echoLab, XmlElement* xmlElementToStartFro
 XmlElement* EchoLabAudioModule::getStateAsXml(const juce::String& stateName, bool markAsClean)
 {
   ScopedPointerLock spl(lock);
-  XmlElement *xmlState = AudioModule::getStateAsXml(stateName, markAsClean);
+
+  XmlElement* xmlState = nullptr;
+
+  //xmlState = AudioModule::getStateAsXml(stateName, markAsClean);
+    // nope - when we do this AND have the code below, each delayline is stored twice
+
   if( wrappedEchoLab != NULL )
   {
     wrappedEchoLab->acquireLock();
@@ -680,9 +685,16 @@ void EchoLabAudioModule::setStateFromXml(const XmlElement& xmlState,
   // ...this seems not yet to work....
   */
 
-
-  // this is the old implementation:
+  // old:
   ScopedPointerLock spl(lock);
+
+  int numDelayLines =  wrappedEchoLab->getNumDelayLines(); // for debug;
+
+  // new:
+  removeAllDelayLines();
+  numDelayLines = wrappedEchoLab->getNumDelayLines();
+
+  // old:
   AudioModule::setStateFromXml(xmlState, stateName, markAsClean);
   if(wrappedEchoLab != nullptr)
   {
@@ -690,7 +702,11 @@ void EchoLabAudioModule::setStateFromXml(const XmlElement& xmlState,
     echoLabStateFromXml(wrappedEchoLab, xmlState);
     wrappedEchoLab->releaseLock();
   }
+  numDelayLines =  wrappedEchoLab->getNumDelayLines();
 
+  // new:
+  for(int i = 0; i < wrappedEchoLab->getNumDelayLines(); i++)
+    addDelayLineModuleFor(i); // new function
 }
 
 /*
@@ -728,20 +744,27 @@ int EchoLabAudioModule::addDelayLine(double newDelayTime, double newGainFactor)
   ScopedPointerLock spl(lock);
 
   int index = wrappedEchoLab->addDelayLine(newDelayTime, newGainFactor);
-
-  if( index != -1 )
+  if(index != -1)
   {
-    EchoLabDelayLineAudioModule *newDelayLineModule 
+    EchoLabDelayLineAudioModule *newDelayLineModule
       = new EchoLabDelayLineAudioModule(lock, wrappedEchoLab->getDelayLine(index));
     newDelayLineModule->getParameterByName(
-      juce::String("DelayTime"))->setValue(newDelayTime,  true, true);
+      juce::String("DelayTime"))->setValue(newDelayTime, true, true);
     newDelayLineModule->getParameterByName(
       juce::String("Amplitude"))->setValue(newGainFactor, true, true);
     delayLineModules.add(newDelayLineModule);
     addChildAudioModule(newDelayLineModule);
   }
-
   return index;
+}
+
+void EchoLabAudioModule::addDelayLineModuleFor(int index)
+{
+  jassert(index >= 0 && index < wrappedEchoLab->getNumDelayLines());
+  EchoLabDelayLineAudioModule *newDelayLineModule
+    = new EchoLabDelayLineAudioModule(lock, wrappedEchoLab->getDelayLine(index));
+  delayLineModules.add(newDelayLineModule);
+  addChildAudioModule(newDelayLineModule);
 }
 
 bool EchoLabAudioModule::removeDelayLine(int index)

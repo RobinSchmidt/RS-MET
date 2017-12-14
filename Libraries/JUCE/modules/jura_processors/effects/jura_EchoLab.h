@@ -145,6 +145,7 @@ public:
   virtual void setSampleRate(double newSampleRate) override;
   virtual void setBeatsPerMinute(double newBpm) override;
   int addDelayLine(double newDelayTime, double newGainFactor);
+  void addDelayLineModuleFor(int index);
   bool removeDelayLine(int index);
   void removeAllDelayLines();
 
