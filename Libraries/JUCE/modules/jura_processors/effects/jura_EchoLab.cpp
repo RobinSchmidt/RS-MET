@@ -214,7 +214,7 @@ EchoLabDelayLineModuleEditor::EchoLabDelayLineModuleEditor(CriticalSection *newP
 void EchoLabDelayLineModuleEditor::setDelayLineModuleToEdit(
   EchoLabDelayLineAudioModule* newEchoLabDelayLineModuleToEdit)
 {
-  ScopedLock scopedLock(*lock);
+  ScopedPointerLock spl(lock);
 
   removeWatchedAudioModule(delayLineModuleToEdit);
 
@@ -257,7 +257,7 @@ void EchoLabDelayLineModuleEditor::setDelayLineModuleToEdit(
 
 void EchoLabDelayLineModuleEditor::setHueOffsetForFilterEditors(float hueOffset)
 {
-  ScopedLock scopedLock(*lock);
+  ScopedPointerLock spl(lock);
   inputEqualizerEditor->setCentralHue(editorColourScheme.getCentralHue() 
     + editorColourScheme.getHueOffset(0));
   feedbackEqualizerEditor->setCentralHue(editorColourScheme.getCentralHue() 
@@ -276,7 +276,7 @@ sendChangeMessage(); // triggers update of the plot
 
 void EchoLabDelayLineModuleEditor::updateWidgetsAccordingToState()
 {
-  ScopedLock scopedLock(*lock);
+  ScopedPointerLock spl(lock);
 
   AudioModuleEditor::updateWidgetsAccordingToState();
   updateWidgetVisibility();
@@ -292,7 +292,7 @@ void EchoLabDelayLineModuleEditor::updateWidgetsAccordingToState()
 
 void EchoLabDelayLineModuleEditor::audioModuleWillBeDeleted(AudioModule *moduleToBeDeleted)
 {
-  ScopedLock scopedLock(*lock);
+  ScopedPointerLock spl(lock);
   if( moduleToBeDeleted == delayLineModuleToEdit && delayLineModuleToEdit != NULL )
     setDelayLineModuleToEdit(NULL);
 }
@@ -354,7 +354,7 @@ void EchoLabDelayLineModuleEditor::resized()
 
 void EchoLabDelayLineModuleEditor::updateWidgetVisibility()
 {
-  ScopedLock scopedLock(*lock);
+  ScopedPointerLock spl(lock);
 
   bool visible = true;
   if( delayLineModuleToEdit == NULL )
@@ -414,7 +414,7 @@ AudioModuleEditor* EchoLabAudioModule::createEditor()
 
 void EchoLabAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
 {
-  ScopedLock scopedLock(*lock);
+  ScopedPointerLock spl(lock);
   //if( wrappedEchoLab == NULL )
   //  return;
 
@@ -530,7 +530,7 @@ XmlElement* echoLabStateToXml(EchoLab *echoLab, XmlElement* xmlElementToStartFro
 
 XmlElement* EchoLabAudioModule::getStateAsXml(const juce::String& stateName, bool markAsClean)
 {
-  ScopedLock scopedLock(*lock);
+  ScopedPointerLock spl(lock);
   XmlElement *xmlState = AudioModule::getStateAsXml(stateName, markAsClean);
   if( wrappedEchoLab != NULL )
   {
@@ -560,7 +560,7 @@ void EchoLabAudioModule::setStateFromXml(const XmlElement& xmlState,
   // we perhaps need to drag over the EchoLabStateFromXml function from the old codebase 
   // first
 
-  ScopedLock scopedLock(*lock);
+  ScopedPointerLock spl(lock);
 
   removeAllDelayLines();
 
@@ -586,7 +586,7 @@ void EchoLabAudioModule::setStateFromXml(const XmlElement& xmlState,
 
   /*
   // this is the old implementation:
-  ScopedLock scopedLock(*plugInLock);
+  ScopedPointerLock spl(lock);
   AudioModule::setStateFromXml(xmlState, stateName, markAsClean);
   if( wrappedEchoLab != NULL )
   {
@@ -600,7 +600,7 @@ void EchoLabAudioModule::setStateFromXml(const XmlElement& xmlState,
 /*
 XmlElement EchoLabAudioModule::convertXmlStateIfNecessary(const XmlElement& xmlState)
 {
-ScopedLock scopedLock(*plugInLock);
+ScopedPointerLock spl(lock);
 
 DEBUG_BREAK; 
 // \todo: implement this function - should take care of updating the sub-states for the two filters (the new EqualizerAudioModule
@@ -617,19 +617,19 @@ return AudioModule::convertXmlStateIfNecessary(xmlState);
 
 void EchoLabAudioModule::setSampleRate(double newSampleRate)   
 { 
-  ScopedLock scopedLock(*lock);
+  ScopedPointerLock spl(lock);
   wrappedEchoLab->setSampleRate(newSampleRate); 
 }
 
 void EchoLabAudioModule::setBeatsPerMinute(double newBpm)   
 { 
-  ScopedLock scopedLock(*lock);
+  ScopedPointerLock spl(lock);
   wrappedEchoLab->setTempoInBPM(newBpm); 
 }
 
 int EchoLabAudioModule::addDelayLine(double newDelayTime, double newGainFactor)
 {
-  ScopedLock scopedLock(*lock);
+  ScopedPointerLock spl(lock);
 
   int index = wrappedEchoLab->addDelayLine(newDelayTime, newGainFactor);
 
@@ -650,7 +650,7 @@ int EchoLabAudioModule::addDelayLine(double newDelayTime, double newGainFactor)
 
 bool EchoLabAudioModule::removeDelayLine(int index)
 {
-  ScopedLock scopedLock(*lock);
+  ScopedPointerLock spl(lock);
 
   bool success = false;
 
@@ -673,7 +673,7 @@ bool EchoLabAudioModule::removeDelayLine(int index)
 
 void EchoLabAudioModule::removeAllDelayLines()
 {
-  ScopedLock scopedLock(*lock);
+  ScopedPointerLock spl(lock);
   while( delayLineModules.size() > 0 )
     removeDelayLine(delayLineModules.size()-1);
 }
@@ -691,13 +691,13 @@ EchoLabDelayLineAudioModule* EchoLabAudioModule::getDelayLineModule(int index) c
 void EchoLabAudioModule::getSampleFrameStereo(double* inOutL, double* inOutR)
 { 
   jassertfalse; // nor good idea to use this function - performance hog
-  ScopedLock scopedLock(*lock);
+  ScopedPointerLock spl(lock);
   wrappedEchoLab->getSampleFrameStereo(inOutL, inOutR); 
 }
 
 void EchoLabAudioModule::processBlock(AudioSampleBuffer& buffer, MidiBuffer& midiMessages) 
 { 
-  ScopedLock scopedLock(*lock);
+ScopedPointerLock spl(lock);
 
   if( wrappedEchoLab == NULL || buffer.getNumChannels() < 1 )
   {
@@ -723,13 +723,13 @@ void EchoLabAudioModule::processBlock(double **inOutBuffer, int numChannels, int
 
 void EchoLabAudioModule::reset() 
 { 
-  ScopedLock scopedLock(*lock);
+  ScopedPointerLock spl(lock);
   wrappedEchoLab->resetDelayLines(); 
 }
 
 void EchoLabAudioModule::initializeAutomatableParameters()
 {
-  ScopedLock scopedLock(*lock);
+  ScopedPointerLock spl(lock);
 
   // create the automatable parameters and add them to the list - note that the order of the adds
   // is important because in parameterChanged(), the index (position in the array) will be used to
@@ -824,7 +824,7 @@ void EchoLabPlotEditor::setDelayLineModuleEditor(
 
 bool EchoLabPlotEditor::selectDelayLine(int indexToSelect)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedPointerLock spl(plugInLock);
 
   removeWatchedAudioModule(selectedDelayLine);
   deRegisterFromObservedParameters();
@@ -872,7 +872,7 @@ void EchoLabPlotEditor::deSelectDelayLine()
 
 bool EchoLabPlotEditor::removeDelayLine(int indexToRemove)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedPointerLock spl(plugInLock);
 
   if( indexToRemove < 0 
     || indexToRemove >= echoLabModuleToEdit->wrappedEchoLab->getNumDelayLines() )
@@ -903,7 +903,7 @@ bool EchoLabPlotEditor::removeDelayLine(int indexToRemove)
 
 int EchoLabPlotEditor::getIndexAtPixelPosition(int x, int y)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedPointerLock spl(plugInLock);
 
   double dotRadius = 5.0;
   double xd = (double) x;
@@ -926,21 +926,20 @@ int EchoLabPlotEditor::getIndexAtPixelPosition(int x, int y)
 
 void EchoLabPlotEditor::audioModuleWillBeDeleted(AudioModule *moduleToBeDeleted)
 {  
-  ScopedLock scopedLock(*plugInLock);
+  ScopedPointerLock spl(plugInLock);
   if( moduleToBeDeleted == selectedDelayLine && selectedDelayLine != NULL )
     selectDelayLine(-1);
 }
 
 void EchoLabPlotEditor::parameterChanged(Parameter* parameterThatHasChanged)
 {
-
-  ScopedLock scopedLock(*plugInLock);
+  ScopedPointerLock spl(plugInLock);
   updatePlot();
 }
 
 void EchoLabPlotEditor::mouseMove(const MouseEvent &e)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedPointerLock spl(plugInLock);
 
   int index = getIndexAtPixelPosition(e.x, e.y);
   if( index != -1 )
@@ -978,7 +977,7 @@ void EchoLabPlotEditor::mouseMove(const MouseEvent &e)
 
 void EchoLabPlotEditor::mouseDown(const MouseEvent &e)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedPointerLock spl(plugInLock);
 
   int tmpIndex = getIndexAtPixelPosition(e.x, e.y);
   if( tmpIndex == -1 )
@@ -1016,7 +1015,7 @@ void EchoLabPlotEditor::mouseDrag(const juce::MouseEvent &e)
   if( e.mods.isRightButtonDown() || e.mouseWasClicked() )
     return;   // ignore right-drags because the band was just removed
 
-  ScopedLock scopedLock(*plugInLock);
+  ScopedPointerLock spl(plugInLock);
 
   // get the position of the event in components coordinates:
   double x = e.getMouseDownX() + e.getDistanceFromDragStartX();
@@ -1058,7 +1057,7 @@ void EchoLabPlotEditor::mouseUp(const juce::MouseEvent &e)
 
 void EchoLabPlotEditor::mouseWheelMove(const MouseEvent& e, const MouseWheelDetails& wheel)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedPointerLock spl(plugInLock);
 
   int index = getIndexAtPixelPosition(e.x, e.y);
   if( index != -1 )
@@ -1076,7 +1075,7 @@ void EchoLabPlotEditor::mouseWheelMove(const MouseEvent& e, const MouseWheelDeta
 
 int EchoLabPlotEditor::getDragHandleAt(int x, int y)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedPointerLock spl(plugInLock);
 
   double xd = (double) x;
   double yd = (double) y;
@@ -1138,7 +1137,7 @@ void EchoLabPlotEditor::resized()
 
 void EchoLabPlotEditor::updatePlot()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedPointerLock spl(plugInLock);
 
   // \todo: setup sample-rate and stuff ....see BreakpointModulatorEditor....
   /*
@@ -1165,7 +1164,7 @@ void EchoLabPlotEditor::plotCurveFamily(Graphics &g, juce::Image* targetImage, X
   //g.setColour(graphColour); 
   */
 
-  ScopedLock scopedLock(*plugInLock);
+  ScopedPointerLock spl(plugInLock);
 
   Colour defaultColour  = plotColourScheme.getCurveColour(0);
   Colour selectedColour = plotColourScheme.getCurveColour(1);
@@ -1291,7 +1290,7 @@ void EchoLabPlotEditor::refreshCompletely()
 {
   // this function is called on total recall
 
-  ScopedLock scopedLock(*plugInLock);
+  ScopedPointerLock spl(plugInLock);
 
   /*
   // old:
@@ -1400,7 +1399,7 @@ void EchoLabModuleEditor::initializeColourScheme()
 
 void EchoLabModuleEditor::updateSubEditorColourSchemes()
 {
-  ScopedLock scopedLock(*lock);
+  ScopedPointerLock spl(lock);
   delayLineModuleEditor->copyColourSettingsFrom(this);
   delayLineModuleEditor->setHueOffsetForFilterEditors(editorColourScheme.getHueOffset(0));
 }
@@ -1416,7 +1415,7 @@ void EchoLabModuleEditor::copyColourSettingsFrom(const ColourSchemeComponent *co
 
 void EchoLabModuleEditor::rButtonClicked(RButton *buttonThatWasClicked)
 {
-  ScopedLock scopedLock(*lock);
+  ScopedPointerLock spl(lock);
 
   if( buttonThatWasClicked == snapToTimeGridButton )
   {
