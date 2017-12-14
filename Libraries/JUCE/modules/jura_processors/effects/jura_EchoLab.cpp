@@ -232,7 +232,7 @@ void EchoLabDelayLineModuleEditor::setDelayLineModuleToEdit(
     feedbackSlider->assignParameter(delayLineModuleToEdit->getParameterByName(juce::String("Feedback")));
     pingPongButton->assignParameter(delayLineModuleToEdit->getParameterByName(juce::String("PingPong")));
     muteButton    ->assignParameter(delayLineModuleToEdit->getParameterByName(juce::String("Mute")));
-    soloButton    ->assignParameter(delayLineModuleToEdit->getParameterByName(juce::String("Solo")));
+    //soloButton    ->assignParameter(delayLineModuleToEdit->getParameterByName(juce::String("Solo")));
 
     timeSlider->setSliderName(juce::String("Time"));
     gainSlider->setSliderName(juce::String("Gain"));
@@ -694,7 +694,13 @@ void EchoLabAudioModule::getSampleFrameStereo(double* inOutL, double* inOutR)
   ScopedPointerLock spl(lock);
   wrappedEchoLab->getSampleFrameStereo(inOutL, inOutR); 
 }
+*/
+void EchoLabAudioModule::processStereoFrame(double *left, double *right)
+{
+  wrappedEchoLab->getSampleFrameStereo(left, right); 
+}
 
+/*
 void EchoLabAudioModule::processBlock(AudioSampleBuffer& buffer, MidiBuffer& midiMessages) 
 { 
 ScopedPointerLock spl(lock);
@@ -716,7 +722,11 @@ ScopedPointerLock spl(lock);
 */
 void EchoLabAudioModule::processBlock(double **inOutBuffer, int numChannels, int numSamples)
 {
-  // something to do...
+  if( wrappedEchoLab == nullptr || numChannels != 2 )  {
+    jassertfalse;
+    return;
+  }
+  wrappedEchoLab->processBlock(&inOutBuffer[0][0], &inOutBuffer[1][0], numSamples);
 }
 
 // others:

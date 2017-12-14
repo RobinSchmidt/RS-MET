@@ -230,10 +230,10 @@ namespace rosic
     // audio processing:
 
     /** Calculates a stereo output sampleframe. */
-    INLINE void getSampleFrameStereo(double *inOutL, double *inOutR);
+    INLINE void getSampleFrameStereo(double* inOutL, double* inOutR);
 
     /** Calculates an entire block of samples at once. */
-    INLINE void processBlock(float *inOutL, float *inOutR, int numSamples);
+    INLINE void processBlock(double* inOutL, double* inOutR, int numSamples);
 
     //-------------------------------------------------------------------------------------------------------------------------------------
     // others:
@@ -312,14 +312,18 @@ namespace rosic
     *inOutR = inR * dryFactor  + wetR * wetFactor;
   }
 
-  INLINE void EchoLab::processBlock(float *inOutL, float *inOutR, int numSamples)
+  INLINE void EchoLab::processBlock(double* inOutL, double* inOutR, int numSamples)
   {
     unsigned int i;
 
     mutex.lock();
-    for(i=0; i<delayLines.size(); i++)
+    for(i = 0; i < delayLines.size(); i++)
       delayLines[i]->acquireFilterLocks();
 
+    for(int n = 0; n < numSamples; n++)
+      getSampleFrameStereoWithoutLocks(&inOutL[n], &inOutR[n]);
+
+    /*
     double tmpL, tmpR;
     for(int n=0; n<numSamples; n++)
     {
@@ -329,8 +333,9 @@ namespace rosic
       inOutL[n] = (float) tmpL;
       inOutR[n] = (float) tmpR;
     }
+    */
 
-    for(i=0; i<delayLines.size(); i++)
+    for(i = 0; i < delayLines.size(); i++)
       delayLines[i]->releaseFilterLocks();
     mutex.unlock();
   }

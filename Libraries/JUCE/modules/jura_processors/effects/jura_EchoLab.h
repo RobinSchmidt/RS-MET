@@ -155,6 +155,8 @@ public:
   //virtual void processBlock(AudioSampleBuffer& buffer, MidiBuffer& midiMessages);
 
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
+  virtual void processStereoFrame(double *left, double *right) override;
+
 
   virtual void reset() override;
 

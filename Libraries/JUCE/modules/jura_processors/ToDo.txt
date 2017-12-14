@@ -79,9 +79,9 @@ RayBouncer:
  -TrackMeter (done - check gui size/arrangement)
  -Straightliner (done...still some minor bugs)
  -Quadrifex (done - many effects still incomplete or buggy)
+ -EchoLab (check Solo - mode)
 
  -AlgoVerb
- -EchoLab
  -Liberty
  -MagicCarpet
  -Moduluxury (obsolete with the new mod-system)
