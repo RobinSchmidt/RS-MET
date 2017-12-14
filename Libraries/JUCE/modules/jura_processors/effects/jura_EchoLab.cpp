@@ -1362,6 +1362,11 @@ EchoLabModuleEditor::EchoLabModuleEditor(CriticalSection *newPlugInLock,
   addChildColourSchemeComponent(delayPlotZoomer);
   delayPlotZoomer->setCoordinateSystem(delayPlotEditor);
 
+
+    
+  //dummyDelayLine = new rosic::EchoLabDelayLine; 
+  //dummyDelayLineModule = new EchoLabDelayLineAudioModule(newPlugInLock, dummyDelayLine);
+  //delayLineModuleEditor = new EchoLabDelayLineModuleEditor(newPlugInLock, dummyDelayLineModule);
   delayLineModuleEditor = new EchoLabDelayLineModuleEditor(newPlugInLock, nullptr);
     // i think, we really need to pass non-null pointer here. maybe a good place to apply the
     // Null Object pattern
@@ -1378,6 +1383,12 @@ EchoLabModuleEditor::EchoLabModuleEditor(CriticalSection *newPlugInLock,
   updateWidgetsAccordingToState();
   setSize(600, 300);
 }
+
+//EchoLabModuleEditor::~EchoLabModuleEditor()
+//{
+//  delete dummyDelayLineModule;
+//  delete dummyDelayLine;
+//}
 
 //-------------------------------------------------------------------------------------------------
 // setup:

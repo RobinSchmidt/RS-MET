@@ -513,7 +513,7 @@ EqualizerPlotEditor::~EqualizerPlotEditor(void)
 
 void EqualizerPlotEditor::setEqualizerModuleToEdit(EqualizerAudioModule* newEqualizerModuleToEdit)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedPointerLock spl(plugInLock);
 
   if( newEqualizerModuleToEdit == equalizerModuleToEdit )
     return;
@@ -540,7 +540,7 @@ void EqualizerPlotEditor::setEqualizerModuleToEdit(EqualizerAudioModule* newEqua
 
 void EqualizerPlotEditor::unAssignParameters()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedPointerLock spl(plugInLock);
 
   if( filterModeParameter != NULL )
     filterModeParameter->deRegisterParameterObserver(this);
@@ -561,7 +561,7 @@ void EqualizerPlotEditor::unAssignParameters()
 
 void EqualizerPlotEditor::assignParametersToSelectedBand()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedPointerLock spl(plugInLock);
 
   unAssignParameters();
 
@@ -592,7 +592,7 @@ void EqualizerPlotEditor::assignParametersToSelectedBand()
 
 int EqualizerPlotEditor::getBandIndexAtPixelPosition(int x, int y)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedPointerLock spl(plugInLock);
   if( equalizerModuleToEdit == NULL )
     return -1;
 
@@ -643,7 +643,7 @@ int EqualizerPlotEditor::getBandIndexAtPixelPosition(int x, int y)
 /*
 void EqualizerPlotEditor::changeListenerCallback(ChangeBroadcaster *objectThatHasChanged)
 {
-ScopedLock scopedLock(*plugInLock);
+ScopedPointerLock spl(plugInLock);
 assignParametersToSelectedBand();
 updatePlot();
 }
@@ -651,20 +651,20 @@ updatePlot();
 
 void EqualizerPlotEditor::parameterSetChanged(ParameterSetHolder* parameterSetHolderThatHasChanged)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedPointerLock spl(plugInLock);
   assignParametersToSelectedBand();
   updatePlot();
 }
 
 void EqualizerPlotEditor::parameterChanged(Parameter* parameterThatHasChanged)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedPointerLock spl(plugInLock);
   updatePlot();
 }
 
 void EqualizerPlotEditor::parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedPointerLock spl(plugInLock);
 
   parameterThatWillBeDeleted->deRegisterParameterObserver(this);
 
@@ -682,7 +682,7 @@ void EqualizerPlotEditor::parameterIsGoingToBeDeleted(Parameter* parameterThatWi
 
 void EqualizerPlotEditor::mouseMove(const MouseEvent &e)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedPointerLock spl(plugInLock);
   if( equalizerModuleToEdit == NULL )
     return;
 
@@ -736,7 +736,7 @@ void EqualizerPlotEditor::mouseMove(const MouseEvent &e)
 
 void EqualizerPlotEditor::mouseDown(const MouseEvent &e)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedPointerLock spl(plugInLock);
   if( equalizerModuleToEdit == NULL )
     return;
 
@@ -815,7 +815,7 @@ void EqualizerPlotEditor::mouseDrag(const juce::MouseEvent &e)
   if( e.mods.isRightButtonDown() || e.mouseWasClicked() )
     return;   // ignore right-drags because the band was just removed, alos ignore just-clicks
 
-  ScopedLock scopedLock(*plugInLock);
+  ScopedPointerLock spl(plugInLock);
   if( equalizerModuleToEdit == NULL )
     return;
 
@@ -879,7 +879,7 @@ void EqualizerPlotEditor::mouseUp(const juce::MouseEvent &e)
 
 void EqualizerPlotEditor::mouseWheelMove(const MouseEvent& e, const MouseWheelDetails& wheel)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedPointerLock spl(plugInLock);
   if( equalizerModuleToEdit == NULL )
     return;
 
@@ -899,7 +899,7 @@ void EqualizerPlotEditor::mouseWheelMove(const MouseEvent& e, const MouseWheelDe
 
 int EqualizerPlotEditor::getDragHandleAt(int x, int y)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedPointerLock spl(plugInLock);
   if( equalizerModuleToEdit == NULL )
     return NONE;
 
@@ -996,7 +996,7 @@ void EqualizerPlotEditor::resized()
 
 void EqualizerPlotEditor::updatePlot()
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedPointerLock spl(plugInLock);
   if( equalizerModuleToEdit == NULL )
   {
     fillWithZeros(magnitudes1, numBins);
@@ -1013,7 +1013,7 @@ void EqualizerPlotEditor::updatePlot()
 void EqualizerPlotEditor::plotCurveFamily(Graphics &g, juce::Image* targetImage,
   XmlElement *targetSVG)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedPointerLock spl(plugInLock);
   if( equalizerModuleToEdit == NULL )
     return;
 
@@ -1107,7 +1107,7 @@ menu->addItem(8, juce::String(T("Insert node: Notch 2*6 dB/oct"))   );
 
 void EqualizerPlotEditor::handleRightClickPopupMenuResult(int result, int x, int y)
 {
-ScopedLock scopedLock(*plugInLock);
+ScopedPointerLock spl(plugInLock);
 if( equalizerModuleToEdit == NULL )
 return;
 
@@ -1142,7 +1142,7 @@ handleRightClickPopupMenuResult(result, x, y);
 
 void EqualizerPlotEditor::xyToFrequencyAndGain(double &x, double &y)
 {
-  ScopedLock scopedLock(*plugInLock);
+  ScopedPointerLock spl(plugInLock);
   if( equalizerModuleToEdit == NULL )
     return;
 
@@ -1279,7 +1279,7 @@ EqualizerModuleEditor::~EqualizerModuleEditor()
 
 void EqualizerModuleEditor::setEqualizerModuleToEdit(EqualizerAudioModule* newEqualizerModuleToEdit)
 {
-  ScopedLock scopedLock(*lock);
+  ScopedPointerLock spl(lock);
   //if( newEqualizerModuleToEdit == plotEditor->equalizerModuleToEdit )
   //  return;
 
@@ -1340,7 +1340,7 @@ void EqualizerModuleEditor::setUseSmallComboBox(bool shouldBeSmall)
 
 void EqualizerModuleEditor::rButtonClicked(RButton *buttonThatWasClicked)
 {
-  ScopedLock scopedLock(*lock);
+  ScopedPointerLock spl(lock);
   if( plotEditor->equalizerModuleToEdit == NULL )
     return;
 
@@ -1352,7 +1352,7 @@ void EqualizerModuleEditor::rButtonClicked(RButton *buttonThatWasClicked)
 
 void EqualizerModuleEditor::rComboBoxChanged(RComboBox  *rComboBoxThatHasChanged)
 {
-  ScopedLock scopedLock(*lock);
+  ScopedPointerLock spl(lock);
   updateWidgetVisibility();
   updateWidgetAppearance();
   updatePlotRange();
@@ -1360,7 +1360,7 @@ void EqualizerModuleEditor::rComboBoxChanged(RComboBox  *rComboBoxThatHasChanged
 
 void EqualizerModuleEditor::changeListenerCallback(ChangeBroadcaster *objectThatHasChanged)
 {
-  ScopedLock scopedLock(*lock);
+  ScopedPointerLock spl(lock);
   if( plotEditor->equalizerModuleToEdit == NULL )
     return;
 
@@ -1387,7 +1387,7 @@ void EqualizerModuleEditor::changeListenerCallback(ChangeBroadcaster *objectThat
 
 void EqualizerModuleEditor::parameterSetChanged(ParameterSetHolder* parameterSetHolderThatHasChanged)
 {
-  ScopedLock scopedLock(*lock);
+  ScopedPointerLock spl(lock);
   if( plotEditor->equalizerModuleToEdit == NULL )
     return;
 
@@ -1397,7 +1397,7 @@ void EqualizerModuleEditor::parameterSetChanged(ParameterSetHolder* parameterSet
 
 void EqualizerModuleEditor::updateWidgetsAccordingToState()
 {
-  ScopedLock scopedLock(*lock);
+  ScopedPointerLock spl(lock);
 
   AudioModuleEditor::updateWidgetsAccordingToState();
   if( plotEditor->equalizerModuleToEdit == NULL )
@@ -1628,7 +1628,7 @@ void EqualizerModuleEditor::resized()
 
 void EqualizerModuleEditor::updateWidgetVisibility()
 {
-  ScopedLock scopedLock(*lock);
+  ScopedPointerLock spl(lock);
 
   frequencySlider->setVisible(     false);
   gainSlider->setVisible(          false);
@@ -1661,7 +1661,7 @@ void EqualizerModuleEditor::updateWidgetVisibility()
 
 void EqualizerModuleEditor::updateWidgetAppearance()
 {
-  ScopedLock scopedLock(*lock);
+  ScopedPointerLock spl(lock);
 
   if( plotEditor->equalizerModuleToEdit == NULL )
     return;

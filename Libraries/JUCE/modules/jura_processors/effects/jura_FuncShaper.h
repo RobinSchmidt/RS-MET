@@ -117,7 +117,7 @@ protected:
   bool wrappedFuncShaperIsOwned = false;
   bool autoRecalcTable = true;
 
-  juce_UseDebuggingNewOperator;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FuncShaperAudioModule)
 };
 
 //=================================================================================================
@@ -180,7 +180,7 @@ protected:
   double *xValues;
   double **yValues;
 
-  juce_UseDebuggingNewOperator;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FuncShaperModuleEditor)
 };
 
 #endif 

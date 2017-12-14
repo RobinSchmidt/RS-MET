@@ -534,9 +534,9 @@ protected:
   /** Returns the xml filename that should be used for storing the preferences. */
   virtual juce::String getPreferencesFileName();
 
-  RTextField      *infoField;       // field for short help texts, when mouse is over a widget
-  CriticalSection *lock;            // pointer to the global plugInLock
-  AudioModule     *moduleToEdit;
+  RTextField*      infoField;             // field for short help texts when mouse is over a widget
+  CriticalSection* lock = nullptr;        // pointer to the global plugInLock
+  AudioModule*     moduleToEdit = nullptr;
   int presetSectionPosition, linkPosition;
 
   // clean this up - it's obsolete:

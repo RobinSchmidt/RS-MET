@@ -216,10 +216,10 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
   node = new RTreeViewNode("Effects", -1, "Effects");
   node->addChildNode(new RTreeViewNode("Enveloper",     i++));
   node->addChildNode(new RTreeViewNode("FuncShaper",    i++));
-  node->addChildNode(new RTreeViewNode("MultiComp",     i++));
-  node->addChildNode(new RTreeViewNode("StereoDelay",   i++));
-  node->addChildNode(new RTreeViewNode("PitchShifter",  i++));
-  //node->addChildNode(new RTreeViewNode("EchoLab",       i++));
+  //node->addChildNode(new RTreeViewNode("MultiComp",     i++));
+  node->addChildNode(new RTreeViewNode("StereoDelay",   i++)); // include in Quadrifex
+  node->addChildNode(new RTreeViewNode("PitchShifter",  i++)); // include in Quadrifex
+  node->addChildNode(new RTreeViewNode("EchoLab",       i++));
   node->addChildNode(new RTreeViewNode("Quadrifex",     i++));
   //node->addChildNode(new RTreeViewNode("AlgoVerb",      i++));
   node->setOpen(false);

@@ -52,6 +52,7 @@ public:
 
   virtual void reset();
 
+
 protected:
 
   void initializeAutomatableParameters();
@@ -63,7 +64,7 @@ protected:
 
   friend class EchoLabDelayLineModuleEditor;
 
-  juce_UseDebuggingNewOperator;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(EchoLabDelayLineAudioModule)
 };
 
 //=================================================================================================
@@ -322,6 +323,9 @@ public:
 
   EchoLabModuleEditor(CriticalSection *newPlugInLock, EchoLabAudioModule* newEchoLabAudioModule);
 
+  /** Deletes the dummies. */
+  //~EchoLabModuleEditor();
+
   //-----------------------------------------------------------------------------------------------
   // setup:
 
@@ -350,6 +354,12 @@ protected:
   RTimeGridComboBox *timeGridComboBox;
 
   EchoLabDelayLineModuleEditor *delayLineModuleEditor;
+
+  // some dummy objects that will be initialized in the constructor and initially be used for the 
+  // delayLineModuleEditor (it needs a valid object when being constructed, but there may not be 
+  // any actual delayline in the EchoLabAudioModule yet)
+  //EchoLabDelayLineAudioModule* dummyDelayLineModule = nullptr;
+  //rosic::EchoLabDelayLine* dummyDelayLine = nullptr;
 
   /*
   //Rectangle leftRectangle1, leftRectangle2, leftRectangle3, eqBandParamRectangle;

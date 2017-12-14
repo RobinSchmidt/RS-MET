@@ -441,6 +441,7 @@ public:
   void setDepth(double newDepth)
   {
     depthParam->setValue(newDepth, true, true);
+    // modManager->modulationDepthChanged(this);
   }
 
   /** Sets the parameter range and value of the modulation depths. */

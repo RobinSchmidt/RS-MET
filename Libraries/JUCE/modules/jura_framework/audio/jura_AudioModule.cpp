@@ -641,8 +641,9 @@ void AudioModuleWithMidiIn::setPitchBend(int pitchBendValue)
 
 AudioModuleEditor::AudioModuleEditor(AudioModule* newModuleToEdit)
 {
-  lock = newModuleToEdit->lock;
   moduleToEdit = newModuleToEdit;
+  if(moduleToEdit != nullptr)
+    lock = moduleToEdit->lock;
   init();
 }
 
@@ -660,7 +661,8 @@ AudioModuleEditor::AudioModuleEditor(CriticalSection* pluginLockToUse)
 
 void AudioModuleEditor::init()
 {
-  ScopedLock scopedLock(*lock);
+  //ScopedLock scopedLock(*lock);
+  ScopedPointerLock spl(lock);
 
   if( moduleToEdit != NULL )
   {
@@ -708,7 +710,8 @@ void AudioModuleEditor::init()
 
 AudioModuleEditor::~AudioModuleEditor()
 {
-  ScopedLock scopedLock(*lock);
+  //ScopedLock scopedLock(*lock);
+  ScopedPointerLock spl(lock);
   stateWidgetSet->removeChangeListener(this);
   if( moduleToEdit != NULL )
     moduleToEdit->removeStateWatcher(stateWidgetSet);
@@ -720,7 +723,8 @@ AudioModuleEditor::~AudioModuleEditor()
 
 void AudioModuleEditor::setModuleToEdit(AudioModule *newModuleToEdit)
 {
-  ScopedLock scopedLock(*lock);
+  //ScopedLock scopedLock(*lock);
+  ScopedPointerLock spl(lock);
   if( moduleToEdit != NULL )
     moduleToEdit->removeStateWatcher(stateWidgetSet);
   moduleToEdit = newModuleToEdit;
@@ -733,7 +737,8 @@ void AudioModuleEditor::setModuleToEdit(AudioModule *newModuleToEdit)
 
 void AudioModuleEditor::invalidateModulePointer()
 {
-  ScopedLock scopedLock(*lock);
+  //ScopedLock scopedLock(*lock);
+  ScopedPointerLock spl(lock);
   moduleToEdit = NULL;
 }
 
@@ -787,7 +792,8 @@ void AudioModuleEditor::changeListenerCallback(juce::ChangeBroadcaster *objectTh
 
 void AudioModuleEditor::updateWidgetsAccordingToState()
 {
-  ScopedLock scopedLock(*lock);
+  //ScopedLock scopedLock(*lock);
+  ScopedPointerLock spl(lock);
   Editor::updateWidgetsAccordingToState();
   if( moduleToEdit != NULL )
     stateWidgetSet->stateFileNameLabel->setText(moduleToEdit->getStateNameWithStarIfDirty());
@@ -893,7 +899,8 @@ void AudioModuleEditor::savePreferencesToFile()
 
 juce::String AudioModuleEditor::getPreferencesTagName()
 {
-  ScopedLock scopedLock(*lock);
+  //ScopedLock scopedLock(*lock);
+  ScopedPointerLock spl(lock);
   if( moduleToEdit != NULL )
     return moduleToEdit->getModuleName() + juce::String("Preferences");
   else
@@ -908,7 +915,8 @@ juce::String AudioModuleEditor::getPreferencesFileName()
 
 //void AudioModuleEditor::autoGenerateSliders()
 //{
-//  ScopedLock scopedLock(*plugInLock);
+//  //ScopedLock scopedLock(*lock);
+//  ScopedPointerLock spl(lock);
 //  if( moduleToEdit == NULL )
 //    return;
 //
@@ -955,7 +963,8 @@ juce::String AudioModuleEditor::getPreferencesFileName()
 GenericAudioModuleEditor::GenericAudioModuleEditor(AudioModule* newModuleToEdit)
   : AudioModuleEditor(newModuleToEdit)
 {
-  ScopedLock scopedLock(*lock);
+  //ScopedLock scopedLock(*lock);
+  ScopedPointerLock spl(lock);
 
   setPresetSectionPosition(RIGHT_TO_HEADLINE);
   createWidgets();
@@ -966,7 +975,8 @@ GenericAudioModuleEditor::GenericAudioModuleEditor(AudioModule* newModuleToEdit)
 
 void GenericAudioModuleEditor::resized()
 {
-  ScopedLock scopedLock(*lock);
+  //ScopedLock scopedLock(*lock);
+  ScopedPointerLock spl(lock);
   AudioModuleEditor::resized();
 
   // preliminary - this arrangement is still ugly:
@@ -983,7 +993,8 @@ void GenericAudioModuleEditor::resized()
 
 void GenericAudioModuleEditor::createWidgets()
 {
-  ScopedLock scopedLock(*lock);
+  //ScopedLock scopedLock(*lock);
+  ScopedPointerLock spl(lock);
   jassert(moduleToEdit != nullptr);
 
   // for each of the module's parameter, create an appropriate widget and add it to this editor
