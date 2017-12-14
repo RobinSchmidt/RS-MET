@@ -258,6 +258,27 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
   //setSize(300, 300); // has no effect
 }
 
+void AudioModuleSelector::drawHighlighted(bool shouldBeHighlighted)
+{
+  highlighted = shouldBeHighlighted;
+  repaint();
+}
+
+void AudioModuleSelector::paint(Graphics& g)
+{
+  if(!highlighted)
+    RComboBox::paint(g);
+  else
+  {
+    g.fillAll(getHandleColour()); // only difference to baseclass version - maybe refactor
+    g.setColour(getOutlineColour());
+    g.drawRect(0, 0, getWidth(), getHeight(), 2);
+    int x = 4;
+    int y = getHeight()/2 - font->getFontAscent()/2;
+    drawBitmapFontText(g, x, y, getSelectedItemText(), font, getTextColour());
+  }
+}
+
 //=================================================================================================
 
 AudioModuleChain::AudioModuleChain(CriticalSection *lockToUse, 
@@ -777,15 +798,15 @@ void AudioModuleChainEditor::updateSelectorArray()
     numSelectors++;
   }
 
-
   //// old:
   //// without it, the selector for 1st slot is wrong after preset loading:
   //if(numSelectors > 0 )
   //  selectors[0]->selectItemFromText(AudioModuleFactory::getModuleType(chain->modules[0]), false);
 
-  // new - let selectors reflect the selected module type:
+  // let selectors reflect the selected module type and selector for highlight active slot
   for(int i = 0; i < numSelectors; i++)
     selectors[i]->selectItemFromText(AudioModuleFactory::getModuleType(chain->modules[i]), false);
+  updateActiveSelector();
 }
 
 void AudioModuleChainEditor::updateEditorArray()
@@ -829,6 +850,16 @@ void AudioModuleChainEditor::updateActiveEditor()
   }
 }
 
+void AudioModuleChainEditor::updateActiveSelector()
+{
+  for(int i = 0; i < size(selectors); i++){
+    if(i == chain->activeSlot)
+      selectors[i]->drawHighlighted(true);
+    else
+      selectors[i]->drawHighlighted(false);
+  }
+}
+
 void AudioModuleChainEditor::mouseDown(const MouseEvent &e)
 {
   //ScopedLock scopedLock(*lock); // blocks audio when popup is open
@@ -845,6 +876,7 @@ void AudioModuleChainEditor::mouseDown(const MouseEvent &e)
         // click was on inactive slot selector - activate:
         chain->activeSlot = i;
         updateActiveEditor();
+        updateActiveSelector();
         repaint();
       }
     }
@@ -913,9 +945,8 @@ void AudioModuleChainEditor::paintOverChildren(Graphics& g)
   ScopedLock scopedLock(*lock);
   if(size(selectors) == 0)   // occurs during state recall
     return;
-  g.setColour(Colours::black);
-  //g.setColour(Colours::darkred);
-  //g.setColour(selectors[chain->activeSlot]->getSpecialColour1());
+
+  g.setColour(Colour::fromFloatRGBA(0.8125f, 0.8125f, 0.8125f, 1.f));// maybe switch depending on widget color-scheme (dark-on-bright vs bright-on-dark)
   juce::Rectangle<int> rect = selectors[chain->activeSlot]->getBounds();
   g.drawRect(rect, 2);  // 2nd param: thickness
 }

@@ -51,6 +51,7 @@ public:
   ColourScheme()
   {
     appearance           = DARK_ON_BRIGHT;
+    //appearance           = BRIGHT_ON_DARK;
     centralHue           = 0.f;
     saturationMultiplier = 0.f;
     brightnessGamma      = 1.f;
@@ -160,7 +161,12 @@ class JUCE_API EditorColourScheme : public ColourScheme
 
 public:
 
-  EditorColourScheme() { updateColours(); }
+  EditorColourScheme() 
+  { 
+    //appearance = BRIGHT_ON_DARK;
+    appearance = DARK_ON_BRIGHT;
+    updateColours(); 
+  }
 
   Colour topLeft, topRight, bottomLeft, bottomRight, outline, headline, headlineOutline;
 
@@ -181,7 +187,12 @@ class JUCE_API WidgetColourScheme : public ColourScheme
 
 public:
 
-  WidgetColourScheme() { updateColours(); }
+  WidgetColourScheme() 
+  { 
+    appearance = BRIGHT_ON_DARK;
+    //appearance = DARK_ON_BRIGHT;
+    updateColours(); 
+  }
 
   Colour background, outline, handle, text, special; // \todo define mouseOverOutline colour
 
@@ -210,6 +221,7 @@ public:
 
   PlotColourScheme()
   {
+    appearance = BRIGHT_ON_DARK;
     curveColouringStrategy = ALTERNATING;
     curveHueSpread         = 0.125;
     updateColours();

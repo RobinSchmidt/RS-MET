@@ -138,13 +138,13 @@ public:
   // callbacks:
 
   /** Overriden ffrom RPopUpOwner. */
-  virtual void rPopUpDismissedByClickOnOwner(ROwnedPopUpComponent *popUp);
+  virtual void rPopUpDismissedByClickOnOwner(ROwnedPopUpComponent *popUp) override;
 
-  virtual void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged);
+  virtual void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged) override;
 
-  virtual void updateWidgetFromAssignedParameter(bool sendNotification = false);
-  virtual void mouseDown(const MouseEvent&);
-  virtual void paint(Graphics&);
+  virtual void updateWidgetFromAssignedParameter(bool sendNotification = false) override;
+  virtual void mouseDown(const MouseEvent&) override;
+  virtual void paint(Graphics&) override;
 
 protected:
 

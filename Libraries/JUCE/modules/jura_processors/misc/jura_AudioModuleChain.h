@@ -73,7 +73,14 @@ class JUCE_API AudioModuleSelector : public RComboBox
 {
 public:
   AudioModuleSelector();
+
+  /** Should be set true when the selector corresponds to the active slot */
+  void drawHighlighted(bool shouldBeHighlighted);
+
+  virtual void paint(Graphics& g) override;
+
 protected:
+  bool highlighted = false;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioModuleSelector)
 };
 
@@ -297,6 +304,10 @@ public:
   /** Updates this editor to show the module-editor of the currently active slot. This may also 
   cause the GUI to resize itself. */
   void updateActiveEditor();
+
+  /** Updates the highlighting of the selector dropdowns such that the currently active slot is
+  highlighted. */
+  void updateActiveSelector();
 
   // overrides:
   virtual void mouseDown(const MouseEvent &e) override;

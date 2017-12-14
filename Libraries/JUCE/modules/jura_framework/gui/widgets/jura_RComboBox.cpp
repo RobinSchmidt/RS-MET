@@ -212,10 +212,8 @@ void RComboBox::paint(Graphics& g)
   g.fillAll(getBackgroundColour());
   g.setColour(getOutlineColour());
   g.drawRect(0, 0, getWidth(), getHeight(), 2);
-
   int x = 4;
   int y = getHeight()/2 - font->getFontAscent()/2;
-
   drawBitmapFontText(g, x, y, getSelectedItemText(), font, getTextColour());
 
   //grayOutIfDisabled(g);
