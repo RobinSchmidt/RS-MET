@@ -1593,11 +1593,11 @@ void EqualizerModuleEditor::resized()
 
     x = 0;
     y = getPresetSectionBottom();
-    w = getWidth()/4;
 
-    filterModeComboBox->setBounds(x+4, y+4, w-8, 16);
+    filterModeComboBox->setBounds(x+4, y+4, 80, 16);
 
     x = filterModeComboBox->getRight();
+    w = (getWidth()-x) /4;
     frequencySlider->setBounds(x+4, y+4, w-4, 16);
 
     x = frequencySlider->getRight();
@@ -1605,6 +1605,10 @@ void EqualizerModuleEditor::resized()
 
     x = gainSlider->getRight();
     bandwidthSlider->setBounds(x+4, y+4, w-4, 16);
+
+    x = bandwidthSlider->getRight();
+    w = getWidth() - x;
+    globalGainSlider->setBounds(x+4, y+4, w-8, 16);
 
     y = gainSlider->getBottom()+4;
     w = getWidth();
