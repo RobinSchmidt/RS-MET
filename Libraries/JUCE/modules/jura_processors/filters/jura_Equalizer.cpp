@@ -1439,16 +1439,17 @@ void EqualizerModuleEditor::updateWidgetsAccordingToState()
 void EqualizerModuleEditor::paint(Graphics &g)
 {
   AudioModuleEditor::paint(g);
+  if(layout != SLIDERS_ABOVE)
+  {
+    fillRectWithBilinearGradient(g, rightSectionRectangle, editorColourScheme.topLeft, editorColourScheme.topRight,
+      editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
+    fillRectWithBilinearGradient(g, bottomSectionRectangle, editorColourScheme.topLeft, editorColourScheme.topRight,
+      editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
 
-  fillRectWithBilinearGradient(g, rightSectionRectangle, editorColourScheme.topLeft, editorColourScheme.topRight,
-    editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
-  fillRectWithBilinearGradient(g, bottomSectionRectangle, editorColourScheme.topLeft, editorColourScheme.topRight,
-    editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
-
-  g.setColour(editorColourScheme.outline);
-  g.drawRect(rightSectionRectangle);
-  g.drawRect(bottomSectionRectangle);
-
+    g.setColour(editorColourScheme.outline);
+    g.drawRect(rightSectionRectangle);
+    g.drawRect(bottomSectionRectangle);
+  }
   // ...this could actually be done in the baseclass via the guiRectangles array, i think
 
   /*
@@ -1470,6 +1471,7 @@ void EqualizerModuleEditor::resized()
   if( layout == SLIDERS_RIGHT )
   {
     // the size/position computations are a mess - improve!
+    bandParametersLabel->setVisible(true);
 
     int rightSectionWidth   = 128;
     int bottomSectionHeight = 24;
@@ -1538,6 +1540,8 @@ void EqualizerModuleEditor::resized()
   }
   if( layout == SLIDERS_BELOW )
   {
+    bandParametersLabel->setVisible(false); // correct?
+
     x = 0;
     w = getWidth();
     y = getPresetSectionBottom();
@@ -1576,6 +1580,8 @@ void EqualizerModuleEditor::resized()
   }
   if( layout == SLIDERS_ABOVE )
   {
+    bandParametersLabel->setVisible(false);
+
     //x = getHeadlineRight()+40;
     x = getWidth()/2;
     w = getWidth()-x;
