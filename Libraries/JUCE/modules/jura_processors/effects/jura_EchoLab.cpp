@@ -427,7 +427,7 @@ void EchoLabAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
   } // end of switch( parameterIndex )
 }
 
-
+/*
 // try to get rid of these:
 XmlElement* equalizerStateToXml(Equalizer* equalizer, XmlElement* xmlElementToStartFrom)
 {
@@ -530,6 +530,7 @@ XmlElement* echoLabStateToXml(EchoLab *echoLab, XmlElement* xmlElementToStartFro
 
   return xmlState;
 }
+*/
 
 XmlElement* EchoLabAudioModule::getStateAsXml(const juce::String& stateName, bool markAsClean)
 {
@@ -537,17 +538,18 @@ XmlElement* EchoLabAudioModule::getStateAsXml(const juce::String& stateName, boo
 
   XmlElement* xmlState = nullptr;
 
-  //xmlState = AudioModule::getStateAsXml(stateName, markAsClean);
-    // nope - when we do this AND have the code below, each delayline is stored twice
+  xmlState = AudioModule::getStateAsXml(stateName, markAsClean);
+    // when we do this AND have the code below, each delayline is stored twice
 
+  /*
   if( wrappedEchoLab != NULL )
   {
     wrappedEchoLab->acquireLock();
     xmlState = echoLabStateToXml(wrappedEchoLab, xmlState);
     wrappedEchoLab->releaseLock();
   }
-
   // hmmm...actually, we may get away with the baseclass implementation, i think
+  */
 
   return xmlState;
 }
@@ -555,11 +557,8 @@ XmlElement* EchoLabAudioModule::getStateAsXml(const juce::String& stateName, boo
 void EchoLabAudioModule::setStateFromXml(const XmlElement& xmlState, 
   const juce::String& stateName, bool markAsClean)
 {
-  // maybe we need legacy-preset conversion? (but maybe not)
-
   ScopedPointerLock spl(lock);
   removeAllDelayLines();
-
   for(int i = 0; i < xmlState.getNumChildElements(); i++)  // create child-modules for delaylines
   {
     if( xmlState.getChildElement(i)->hasTagName(juce::String("DelayLine")) )
@@ -589,7 +588,8 @@ XmlElement EchoLabAudioModule::convertXmlStateIfNecessary(const XmlElement& xml)
   XmlElement xml2 = xml;
 
   // what was previously stored by the name "SyncDelayTimes" is now read as "Sync":
-  xml2.setAttribute("Sync", (int)xml.getBoolAttribute("SyncDelayTimes", false));
+  if(xml.hasAttribute("SyncDelayTimes"))
+    xml2.setAttribute("Sync", xml.getBoolAttribute("SyncDelayTimes", false));
   return xml2;
 }
 
