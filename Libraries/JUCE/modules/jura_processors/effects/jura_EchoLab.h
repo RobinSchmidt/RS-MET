@@ -27,12 +27,8 @@ public:
   virtual EqualizerAudioModule* getFeedbackEqualizerModule() const 
   { return feedbackEqualizerModule; }
 
-
   //-----------------------------------------------------------------------------------------------
   // audio processing:
-
-  //virtual void getSampleFrameStereo(double* inOutL, double* inOutR);
-  //virtual void processBlock(AudioSampleBuffer& buffer, MidiBuffer& midiMessages);
 
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples)
   {
@@ -57,10 +53,9 @@ protected:
 
   void initializeAutomatableParameters();
 
-  rosic::EchoLabDelayLine *wrappedEchoLabDelayLine;
-
-  EqualizerAudioModule    *inputEqualizerModule;
-  EqualizerAudioModule    *feedbackEqualizerModule;
+  rosic::EchoLabDelayLine* wrappedEchoLabDelayLine;
+  EqualizerAudioModule* inputEqualizerModule;
+  EqualizerAudioModule* feedbackEqualizerModule;
 
   friend class EchoLabDelayLineModuleEditor;
 
@@ -113,8 +108,7 @@ protected:
   RSlider *timeSlider, *gainSlider, *feedbackSlider, *panSlider;
   RButton *pingPongButton, *muteButton, *soloButton, *flushButton;
 
-  
-  juce_UseDebuggingNewOperator;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(EchoLabDelayLineModuleEditor)
 };
 
 //=================================================================================================
@@ -137,7 +131,6 @@ public:
 
   virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 
     bool markAsClean) override;
-  virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean) override;
   virtual XmlElement EchoLabAudioModule::convertXmlStateIfNecessary(const XmlElement& xmlState);
   virtual void setSampleRate(double newSampleRate) override;
   virtual void setBeatsPerMinute(double newBpm) override;
@@ -145,19 +138,14 @@ public:
   virtual void processStereoFrame(double *left, double *right) override;
   virtual void reset() override;
 
-
-
   // delegations to rosic::EchoLab withh added thread-safety and possible additional actions:
   int addDelayLine(double newDelayTime, double newGainFactor);
-  void addDelayLineModuleFor(int index);
+  //void addDelayLineModuleFor(int index);
   bool removeDelayLine(int index);
   void removeAllDelayLines();
 
   /** Returns a pointer to the delayline audiomodule with given index. */
   EchoLabDelayLineAudioModule* getDelayLineModule(int index) const;
-
-
-
 
 protected:
 
@@ -168,7 +156,6 @@ protected:
 
   juce::Array<EchoLabDelayLineAudioModule*> delayLineModules; // use std::vector
 
-  //EchoLabDelayLineAudioModule               *selectedDelayLineModule;
 
   juce_UseDebuggingNewOperator;
 };

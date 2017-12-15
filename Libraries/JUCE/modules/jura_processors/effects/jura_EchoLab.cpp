@@ -415,9 +415,6 @@ AudioModuleEditor* EchoLabAudioModule::createEditor()
 void EchoLabAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
 {
   ScopedPointerLock spl(lock);
-  //if( wrappedEchoLab == NULL )
-  //  return;
-
   double value = parameterThatHasChanged->getValue();
   switch( getIndexOfParameter(parameterThatHasChanged) )
   {
@@ -425,133 +422,6 @@ void EchoLabAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
   case   1: wrappedEchoLab->setWetLevel(         value);        break;
   case   2: wrappedEchoLab->setSyncForDelayTimes(value >= 0.5); break;
   } // end of switch( parameterIndex )
-}
-
-/*
-// try to get rid of these:
-XmlElement* equalizerStateToXml(Equalizer* equalizer, XmlElement* xmlElementToStartFrom)
-{
-  // the XmlElement which stores all the releveant state-information:
-  XmlElement* xmlState;
-  if( xmlElementToStartFrom == NULL )
-    xmlState = new XmlElement(juce::String("Equalizer")); 
-  else
-    xmlState = xmlElementToStartFrom;
-
-  xmlState->setAttribute("GlobalGain", equalizer->getGlobalGain());
-
-  // create an XmlElement for each band and add it as child-XmlElement:
-  for(int i=0; i<equalizer->getNumBands(); i++)
-  {
-    XmlElement* bandState = new XmlElement(juce::String("Band"));
-
-    bandState->setAttribute(juce::String("Frequency"), equalizer->getBandFrequency(i));
-    bandState->setAttribute(juce::String("Gain"),      equalizer->getBandGain(i));
-    bandState->setAttribute(juce::String("Bandwidth"), equalizer->getBandBandwidth(i));
-
-    juce::String modeString;
-    int mode = equalizer->getBandMode(i);
-    switch( mode )
-    {
-    case TwoPoleFilter::PEAK:       modeString = juce::String("Peak/Dip");           break;
-    case TwoPoleFilter::LOW_SHELF:  modeString = juce::String("Low Shelving");       break;
-    case TwoPoleFilter::HIGH_SHELF: modeString = juce::String("High Shelving");      break;
-    case TwoPoleFilter::LOWPASS6:   modeString = juce::String("Lowpass 6 dB/oct");   break;
-    case TwoPoleFilter::LOWPASS12:  modeString = juce::String("Lowpass 12 dB/oct");  break;
-    case TwoPoleFilter::HIGHPASS6:  modeString = juce::String("Highpass 6 dB/oct");  break;
-    case TwoPoleFilter::HIGHPASS12: modeString = juce::String("Highpass 12 dB/oct"); break;
-    case TwoPoleFilter::BANDREJECT: modeString = juce::String("Notch 2*6 dB/oct");   break;
-    }
-    bandState->setAttribute("Mode", modeString);
-
-    xmlState->addChildElement(bandState);
-  } 
-
-  return xmlState;
-}
-
-XmlElement* echoLabDelayLineStateToXml(EchoLabDelayLine* delayLine, XmlElement* xmlElementToStartFrom)
-{
-  XmlElement* xmlState;
-  if( xmlElementToStartFrom == NULL )
-    xmlState = new XmlElement(juce::String("DelayLine")); 
-  else
-    xmlState = xmlElementToStartFrom;
-
-  // todo: store value only if different from default values (save space)
-  xmlState->setAttribute("DelayTime", delayLine->getDelayTime()              );
-  xmlState->setAttribute("Amplitude", delayLine->getGlobalGainFactor()       );
-  xmlState->setAttribute("Feedback",  delayLine->getFeedbackInPercent()      );
-  xmlState->setAttribute("Pan",       delayLine->getPan()                    );
-  xmlState->setAttribute("PingPong",  delayLine->isInPingPongMode()          );
-  xmlState->setAttribute("Mute",      delayLine->isMuted()                   );
-
-  // store the embedded equalizer's state as child element (unless it's neutral):
-  if( delayLine->feedbackEqualizer.getNumBands(0) > 0 
-    || delayLine->feedbackEqualizer.getGlobalGain() != 0.0 )
-  {
-    XmlElement* feedbackEqState = new XmlElement(juce::String("FeedbackFilter"));
-    feedbackEqState 
-      = equalizerStateToXml(&(delayLine->feedbackEqualizer.equalizers[0]), feedbackEqState);
-    xmlState->addChildElement(feedbackEqState);
-  }
-  if( delayLine->inputEqualizer.getNumBands(0) > 0 
-    || delayLine->inputEqualizer.getGlobalGain() != 0.0 )
-  {
-    XmlElement* inputEqState = new XmlElement(juce::String("InputFilter"));
-    inputEqState = equalizerStateToXml(&(delayLine->inputEqualizer.equalizers[0]), inputEqState);
-    xmlState->addChildElement(inputEqState);
-  }
-
-  return xmlState;
-}
-
-XmlElement* echoLabStateToXml(EchoLab *echoLab, XmlElement* xmlElementToStartFrom)
-{
-  XmlElement* xmlState;
-  if( xmlElementToStartFrom == NULL )
-    xmlState = new XmlElement(juce::String("EchoLabState")); 
-  else
-    xmlState = xmlElementToStartFrom;
-
-  // create an XmlElement for each delayline and add it as child-XmlElement:
-  echoLab->acquireLock();
-  xmlState->setAttribute("SyncDelayTimes", echoLab->isDelayTimeSynced());
-  xmlState->setAttribute("DryWet",         echoLab->getDryWet() );
-  xmlState->setAttribute("WetLevel",       echoLab->getWetLevel() );
-  xmlState->setAttribute("Solo",           echoLab->getSoloedDelayLineIndex() );
-  for(int i=0; i<echoLab->getNumDelayLines(); i++)
-  {
-    rosic::EchoLabDelayLine* delayLine = echoLab->getDelayLine(i);
-    XmlElement* delayLineState = echoLabDelayLineStateToXml(delayLine, NULL);
-    xmlState->addChildElement(delayLineState);
-  } 
-  echoLab->releaseLock();
-
-  return xmlState;
-}
-*/
-
-XmlElement* EchoLabAudioModule::getStateAsXml(const juce::String& stateName, bool markAsClean)
-{
-  ScopedPointerLock spl(lock);
-
-  XmlElement* xmlState = nullptr;
-
-  xmlState = AudioModule::getStateAsXml(stateName, markAsClean);
-    // when we do this AND have the code below, each delayline is stored twice
-
-  /*
-  if( wrappedEchoLab != NULL )
-  {
-    wrappedEchoLab->acquireLock();
-    xmlState = echoLabStateToXml(wrappedEchoLab, xmlState);
-    wrappedEchoLab->releaseLock();
-  }
-  // hmmm...actually, we may get away with the baseclass implementation, i think
-  */
-
-  return xmlState;
 }
 
 void EchoLabAudioModule::setStateFromXml(const XmlElement& xmlState, 
@@ -575,16 +445,6 @@ void EchoLabAudioModule::setStateFromXml(const XmlElement& xmlState,
 XmlElement EchoLabAudioModule::convertXmlStateIfNecessary(const XmlElement& xml)
 {
   ScopedPointerLock spl(lock);
-
-  //DEBUG_BREAK;
-  // \todo: implement this function - should take care of updating the sub-states for the two filters (the new EqualizerAudioModule
-  // admits 2 channels
-  // hmmmm....may it's better to just define a mono version and stereo version of EqualizerAudioModule
-  // ...or maybe we can adapt the state save/recall in the EqualizerAudioModule so as to admit for both versions
-  // one with and one without the "Channel" child element
-
-  //int xmlPatchFormatIndex = xmlState.getIntAttribute(T("PatchFormat"), patchFormatIndex);
-
   XmlElement xml2 = xml;
 
   // what was previously stored by the name "SyncDelayTimes" is now read as "Sync":
@@ -623,7 +483,7 @@ int EchoLabAudioModule::addDelayLine(double newDelayTime, double newGainFactor)
   }
   return index;
 }
-
+/*
 void EchoLabAudioModule::addDelayLineModuleFor(int index)
 {
   jassert(index >= 0 && index < wrappedEchoLab->getNumDelayLines());
@@ -632,7 +492,7 @@ void EchoLabAudioModule::addDelayLineModuleFor(int index)
   delayLineModules.add(newDelayLineModule);
   addChildAudioModule(newDelayLineModule);
 }
-
+*/
 bool EchoLabAudioModule::removeDelayLine(int index)
 {
   ScopedPointerLock spl(lock);
