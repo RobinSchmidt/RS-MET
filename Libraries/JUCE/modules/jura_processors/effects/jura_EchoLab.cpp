@@ -1296,8 +1296,8 @@ void EchoLabModuleEditor::resized()
 
   y = getPresetSectionBottom();
   h = infoField->getY()-y-equalizerHeight;
-  delayPlotEditor->setBounds(4, y+4, 
-    w-delayPlotZoomer->getZoomerSize()-8+RWidget::outlineThickness, 
+  delayPlotEditor->setBounds(0, y+4, 
+    w-delayPlotZoomer->getZoomerSize()-0+RWidget::outlineThickness, 
     h-delayPlotZoomer->getZoomerSize()-4);
   delayPlotZoomer->alignWidgetsToCoordinateSystem();
 
@@ -1313,9 +1313,9 @@ void EchoLabModuleEditor::resized()
   dryWetSlider->setBounds(x+4,       y, w/2-8, 16);
   wetLevelSlider->setBounds(x+w/2+4, y, w/2-8, 16);
 
-  x = 4; 
+  x = 0; 
   y = delayPlotZoomer->getBottom() - RWidget::outlineThickness;
-  w = getWidth() - 8;
+  w = getWidth() - 0;
   h = infoField->getY() - y; 
   delayLineModuleEditor->setBounds(x, y, w, h);
 }
