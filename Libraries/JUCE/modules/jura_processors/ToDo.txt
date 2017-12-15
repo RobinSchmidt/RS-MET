@@ -1,3 +1,7 @@
+-EchoLab
+ -make save/recall work for sync (done), snap, solo
+ -fix gui errors
+
 
 -drag scientific IIR filters into RAPT:
  -DircetForm, Linkwitz, CrossOver4Way, Ellitpic, QuadratureNetwork

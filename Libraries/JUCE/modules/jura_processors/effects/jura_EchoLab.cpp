@@ -421,11 +421,14 @@ void EchoLabAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
   double value = parameterThatHasChanged->getValue();
   switch( getIndexOfParameter(parameterThatHasChanged) )
   {
-  case   0: wrappedEchoLab->setDryWet(  value); break;
-  case   1: wrappedEchoLab->setWetLevel(value); break;
+  case   0: wrappedEchoLab->setDryWet(           value);        break;
+  case   1: wrappedEchoLab->setWetLevel(         value);        break;
+  case   2: wrappedEchoLab->setSyncForDelayTimes(value >= 0.5); break;
   } // end of switch( parameterIndex )
 }
 
+
+// try to get rid of these:
 XmlElement* equalizerStateToXml(Equalizer* equalizer, XmlElement* xmlElementToStartFrom)
 {
   // the XmlElement which stores all the releveant state-information:
@@ -570,23 +573,25 @@ void EchoLabAudioModule::setStateFromXml(const XmlElement& xmlState,
   AudioModule::setStateFromXml(xmlState, stateName, markAsClean); // sets up delayline states
 }
 
-/*
-XmlElement EchoLabAudioModule::convertXmlStateIfNecessary(const XmlElement& xmlState)
+XmlElement EchoLabAudioModule::convertXmlStateIfNecessary(const XmlElement& xml)
 {
-ScopedPointerLock spl(lock);
+  ScopedPointerLock spl(lock);
 
-DEBUG_BREAK; 
-// \todo: implement this function - should take care of updating the sub-states for the two filters (the new EqualizerAudioModule
-// admits 2 channels
-// hmmmm....may it's better to just define a mono version and stereo version of EqualizerAudioModule
-// ...or maybe we can adapt the state save/recall in the EqualizerAudioModule so as to admit for both versions
-// one with and one without the "Channel" child element
+  //DEBUG_BREAK;
+  // \todo: implement this function - should take care of updating the sub-states for the two filters (the new EqualizerAudioModule
+  // admits 2 channels
+  // hmmmm....may it's better to just define a mono version and stereo version of EqualizerAudioModule
+  // ...or maybe we can adapt the state save/recall in the EqualizerAudioModule so as to admit for both versions
+  // one with and one without the "Channel" child element
 
-int xmlPatchFormatIndex = xmlState.getIntAttribute(T("PatchFormat"), patchFormatIndex);
+  //int xmlPatchFormatIndex = xmlState.getIntAttribute(T("PatchFormat"), patchFormatIndex);
 
-return AudioModule::convertXmlStateIfNecessary(xmlState);
+  XmlElement xml2 = xml;
+
+  // what was previously stored by the name "SyncDelayTimes" is now read as "Sync":
+  xml2.setAttribute("Sync", (int)xml.getBoolAttribute("SyncDelayTimes", false));
+  return xml2;
 }
-*/
 
 void EchoLabAudioModule::setSampleRate(double newSampleRate)   
 { 
@@ -709,6 +714,10 @@ void EchoLabAudioModule::initializeAutomatableParameters()
 
   // #01:
   p = new AutomatableParameter(lock, "WetLevel", -36.0, 6.0, 0.01, 0.0, Parameter::LINEAR); 
+  addObservedParameter(p);
+
+  // #02:
+  p = new AutomatableParameter(lock, "Sync", 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN); 
   addObservedParameter(p);
 
   // make a call to setValue for each parameter in order to set up all the slave voices:
@@ -1295,10 +1304,11 @@ EchoLabModuleEditor::EchoLabModuleEditor(CriticalSection *newPlugInLock,
   wetLevelSlider->setStringConversionFunction(decibelsToStringWithUnit2);
 
   addWidget( delaySyncButton = new RButton(juce::String("Sync")) );
+  delaySyncButton->assignParameter( echoLabModuleToEdit->getParameterByName("Sync") );
   delaySyncButton->setDescription(
     juce::String("Toggle sync for delaytime on/off. Time unit is beats in sync-mode, seconds otherwise"));
   delaySyncButton->setDescriptionField(infoField);
-  delaySyncButton->addRButtonListener(this);
+  //delaySyncButton->addRButtonListener(this);
 
   addWidget( snapToTimeGridButton = new RButton(juce::String("Snap:")) );
   snapToTimeGridButton->setDescription(juce::String("Toggle magnetic time-grid on/off."));

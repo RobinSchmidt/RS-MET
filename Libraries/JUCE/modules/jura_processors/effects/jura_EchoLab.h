@@ -138,12 +138,16 @@ public:
   virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 
     bool markAsClean) override;
   virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean) override;
-
-  //virtual XmlElement EchoLabAudioModule::convertXmlStateIfNecessary(const XmlElement& xmlState);
-
-  // delegations to rosic::EchoLab withh added thread-safety and possible additional actions:
+  virtual XmlElement EchoLabAudioModule::convertXmlStateIfNecessary(const XmlElement& xmlState);
   virtual void setSampleRate(double newSampleRate) override;
   virtual void setBeatsPerMinute(double newBpm) override;
+  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
+  virtual void processStereoFrame(double *left, double *right) override;
+  virtual void reset() override;
+
+
+
+  // delegations to rosic::EchoLab withh added thread-safety and possible additional actions:
   int addDelayLine(double newDelayTime, double newGainFactor);
   void addDelayLineModuleFor(int index);
   bool removeDelayLine(int index);
@@ -152,20 +156,12 @@ public:
   /** Returns a pointer to the delayline audiomodule with given index. */
   EchoLabDelayLineAudioModule* getDelayLineModule(int index) const;
 
-  //virtual void getSampleFrameStereo(double* inOutL, double* inOutR);
-  //virtual void processBlock(AudioSampleBuffer& buffer, MidiBuffer& midiMessages);
-
-  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
-  virtual void processStereoFrame(double *left, double *right) override;
 
 
-  virtual void reset() override;
 
 protected:
 
   virtual void initializeAutomatableParameters();
-
-  //CriticalSection wrappedEchoLabLock;
 
   rosic::EchoLab *wrappedEchoLab;
   bool wrappedEchoLabIsOwned = false;
@@ -173,15 +169,6 @@ protected:
   juce::Array<EchoLabDelayLineAudioModule*> delayLineModules; // use std::vector
 
   //EchoLabDelayLineAudioModule               *selectedDelayLineModule;
-
-  //EqualizerAudioModule *inputEqualizerModule;
-  //EqualizerAudioModule *feedbackEqualizerModule;
-  //...nah -> goes to EchoLabDelayLineAudioModule
-
-  //juce::Array<EqualizerAudioModule*> inputEqualizerModules;
-  //juce::Array<EqualizerAudioModule*> feedbackEqualizerModules;
-
-  //juce::Array<EchoLabDelayLineAudioModule*> echoLabDelayLineModules;
 
   juce_UseDebuggingNewOperator;
 };
