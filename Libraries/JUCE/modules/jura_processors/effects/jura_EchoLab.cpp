@@ -316,8 +316,8 @@ void EchoLabDelayLineModuleEditor::resized()
   int w = (getWidth() - middleWidth) / 2;
   int h = getHeight();
 
-  inputEqualizerEditor   ->setBounds(x,               y, w, h);
-  feedbackEqualizerEditor->setBounds(x+w+middleWidth, y, w, h);
+  inputEqualizerEditor   ->setBounds(x,                 y, w+2, h);
+  feedbackEqualizerEditor->setBounds(x+w+middleWidth-2, y, w+2, h);
 
   guiLayoutRectangles.clear();
   middleRectangle.setBounds(getWidth()/2-middleWidth/2, y, middleWidth, h);
