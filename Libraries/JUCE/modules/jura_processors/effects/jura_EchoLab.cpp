@@ -550,7 +550,7 @@ XmlElement* EchoLabAudioModule::getStateAsXml(const juce::String& stateName, boo
 }
 
 
-
+/*
 bool equalizerStateFromXml(Equalizer* equalizer, const XmlElement &xmlState)
 {
   bool success = true;
@@ -644,12 +644,12 @@ bool echoLabStateFromXml(EchoLab* echoLab, const XmlElement &xmlState)
   echoLab->releaseLock();
   return true;
 }
+*/
 
 void EchoLabAudioModule::setStateFromXml(const XmlElement& xmlState, 
   const juce::String& stateName, bool markAsClean)
 {
-  /*
-  jassertfalse;
+  //jassertfalse;
 
   // this function must be re-implemented
   // we have to do more here - we need to create and set up all the required child-modules
@@ -676,19 +676,20 @@ void EchoLabAudioModule::setStateFromXml(const XmlElement& xmlState,
       addDelayLine(delayTime, amplitude);
     }
   }
-
-  // at this point, the delaytimes are still correct
-
+  // at this point, the delaytimes are still incorrect
   AudioModule::setStateFromXml(xmlState, stateName, markAsClean);
   // should set up the internal states of the individual delaylines (which are now child-modules)
   // -> we must perhaps override setStateFromXml in EchoLabDelayLineAudioModule
   // ...this seems not yet to work....
-  */
 
+  int numDelayLines =  wrappedEchoLab->getNumDelayLines(); // for debug
+  int dummy = 0;
+
+  /*
   // old:
   ScopedPointerLock spl(lock);
 
-  int numDelayLines =  wrappedEchoLab->getNumDelayLines(); // for debug;
+  int numDelayLines =  wrappedEchoLab->getNumDelayLines(); // for debug
 
   // new:
   removeAllDelayLines();
@@ -707,6 +708,7 @@ void EchoLabAudioModule::setStateFromXml(const XmlElement& xmlState,
   // new:
   for(int i = 0; i < wrappedEchoLab->getNumDelayLines(); i++)
     addDelayLineModuleFor(i); // new function
+  */
 }
 
 /*
