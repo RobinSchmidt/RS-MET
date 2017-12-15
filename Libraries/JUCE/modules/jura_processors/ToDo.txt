@@ -1,5 +1,5 @@
 -EchoLab
- -make save/recall work for sync (done), snap, solo
+ -make save/recall work for snap, solo
  -fix gui errors
 
 

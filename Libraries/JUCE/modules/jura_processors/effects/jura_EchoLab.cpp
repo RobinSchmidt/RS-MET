@@ -299,18 +299,12 @@ void EchoLabDelayLineModuleEditor::audioModuleWillBeDeleted(AudioModule *moduleT
 
 void EchoLabDelayLineModuleEditor::paint(Graphics &g)
 {
-  //g.fillAll(Colours::lavender);
-
   AudioModuleEditor::paint(g);
-
-
   int x = middleRectangle.getX(); // + middleRectangle.getWidth()/2;
   int y = middleRectangle.getY();
-  //drawBitmapFontText(g, x+4, y+4, juce::String("Delay-Setup"), &boldFont16px, editorColourScheme.headline);
-  drawBitmapFontText(g, x+4, y+4, juce::String("Delay-Setup"), 
-    &BitmapFontRoundedBoldA10D0::instance, editorColourScheme.headline);
+  drawBitmapFontText(g, x+4, y+4, "Delay-Setup", 
+    &BitmapFontRoundedBoldA16D0::instance, editorColourScheme.headline);
 }
-
 
 void EchoLabDelayLineModuleEditor::resized()
 {
@@ -332,18 +326,18 @@ void EchoLabDelayLineModuleEditor::resized()
   x = middleRectangle.getX();
   y = middleRectangle.getY()+32;
   w = middleRectangle.getWidth();
+  int wh = 16;  // widget height
+  int dy = 14;
 
-  timeSlider->setBounds(x+4, y, w-8, 16);
-  y += 20;
-  gainSlider->setBounds(x+4, y, w-8, 16);
-  y += 20;
-  panSlider->setBounds(x+4, y, w-8, 16);
-  y += 24;
-  feedbackSlider->setBounds(x+4, y, w-8, 32);
-  y += 48;
+  timeSlider->setBounds(x+4, y, w-8, wh); y += dy;
+  gainSlider->setBounds(x+4, y, w-8, wh); y += dy;
+  panSlider->setBounds(x+4,  y, w-8, wh);
+  y += 16;
+  feedbackSlider->setBounds(x+4, y, w-8, 2*wh); // 2*wh bcs has text above
 
-  pingPongButton->setBounds(x+16, y, w-32, 16);
-  y += 32;
+  y += 36;
+  pingPongButton->setBounds(x+16, y, w-32, 20);
+  y += 28;
   muteButton->setBounds(x+4, y, w/2-8, 16);
   soloButton->setBounds(x+w/2+4, y, w/2-8, 16);
   y += 20;
@@ -483,23 +477,11 @@ int EchoLabAudioModule::addDelayLine(double newDelayTime, double newGainFactor)
   }
   return index;
 }
-/*
-void EchoLabAudioModule::addDelayLineModuleFor(int index)
-{
-  jassert(index >= 0 && index < wrappedEchoLab->getNumDelayLines());
-  EchoLabDelayLineAudioModule *newDelayLineModule
-    = new EchoLabDelayLineAudioModule(lock, wrappedEchoLab->getDelayLine(index));
-  delayLineModules.add(newDelayLineModule);
-  addChildAudioModule(newDelayLineModule);
-}
-*/
+
 bool EchoLabAudioModule::removeDelayLine(int index)
 {
   ScopedPointerLock spl(lock);
-
   bool success = false;
-
-  //if( index < 0 || index >= delayLineModules.size() )  // huh? shouldn't it be index >= 0 && index < size?
   if( index >= 0 && index < delayLineModules.size() )
   {
     EchoLabDelayLineAudioModule *delayLineModule = delayLineModules[index];
@@ -508,11 +490,11 @@ bool EchoLabAudioModule::removeDelayLine(int index)
 
     success = wrappedEchoLab->removeDelayLine(index);
     jassert( success  == true   ); 
-    // we successfully removed the EqualizerAudioModules but not the underlying rosic-delayline object - something must have gone wrong
+    // we successfully removed the EqualizerAudioModules but not the underlying rosic-delayline 
+    // object - something must have gone wrong
   }
   else
     jassertfalse; // invalid index
-
   return success;
 }
 

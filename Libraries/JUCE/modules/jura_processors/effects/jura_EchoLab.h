@@ -140,7 +140,6 @@ public:
 
   // delegations to rosic::EchoLab withh added thread-safety and possible additional actions:
   int addDelayLine(double newDelayTime, double newGainFactor);
-  //void addDelayLineModuleFor(int index);
   bool removeDelayLine(int index);
   void removeAllDelayLines();
 
