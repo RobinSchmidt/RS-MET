@@ -1581,11 +1581,15 @@ void EqualizerModuleEditor::resized()
     w = getWidth()-x;
 
     //globalGainSlider->setBounds(x+4, y+4, w-8, 16);
-    stateWidgetSet->stateFileNameLabel->setVisible(false);
+    //stateWidgetSet->stateFileNameLabel->setVisible(false);
+    stateWidgetSet->stateFileNameLabel->setVisible(true);
 
-    x  = stateWidgetSet->stateSaveButton->getX()-16-80;
-    x += stateWidgetSet->getX();
-    globalGainSlider->setBounds(x, 6, 80, 16);
+    //x  = stateWidgetSet->stateSaveButton->getX()-16-80;
+    //x += stateWidgetSet->getX();
+    //globalGainSlider->setBounds(x, 6, 80, 16);
+    x = getHeadlineRight() + 4;
+    w = stateWidgetSet->getX() - x - 8;
+    globalGainSlider->setBounds(x, 6, w, 16);
 
     x = 0;
     y = getPresetSectionBottom();

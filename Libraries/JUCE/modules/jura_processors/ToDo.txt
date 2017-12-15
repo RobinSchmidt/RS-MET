@@ -1,6 +1,9 @@
 -EchoLab
  -make save/recall work for snap, solo
  -fix gui errors
+  -EQ: 
+   -when gui is wide, the "Band Parameters" rectangle appears
+   -gloabl gain slider invisible
 
 
 -drag scientific IIR filters into RAPT:
