@@ -1602,10 +1602,10 @@ void EqualizerModuleEditor::resized()
     x = gainSlider->getRight();
     bandwidthSlider->setBounds(x+4, y+4, w-4, 16);
 
-    y = gainSlider->getBottom();
+    y = gainSlider->getBottom()+4;
     w = getWidth();
     h = getHeight()-y;
-    plotEditor->setBounds(4, y+4, w-8, h-8);
+    plotEditor->setBounds(0, y, w, h);
 
     /*
     globalGainSlider->setSliderName(juce::String(T("GG")));
@@ -1687,22 +1687,30 @@ void EqualizerModuleEditor::updateWidgetAppearance()
 
   if( useShortSliderNames == true )
   {
-    globalGainSlider->setSliderName(juce::String("GG"));
-    frequencySlider->setSliderName(juce::String("F"));
-    gainSlider->setSliderName(juce::String("G"));
-    bandwidthSlider->setSliderName(juce::String("B"));
+    globalGainSlider->setSliderName("GG");
+    frequencySlider->setSliderName( "F");
+    gainSlider->setSliderName(      "G");
+    bandwidthSlider->setSliderName( "B");
+
+    // currently, when we use short names, we also want the compact layout:
+    globalGainSlider->setLayout(RSlider::NAME_INSIDE);
+    frequencySlider->setLayout( RSlider::NAME_INSIDE);
+    gainSlider->setLayout(      RSlider::NAME_INSIDE);
+    bandwidthSlider->setLayout( RSlider::NAME_INSIDE);
+
   }
 
   if( useSmallComboBox == true )
   {
-    filterModeComboBox->setNameLabelWidth(0);
-    filterModeComboBox->setItemText(2, juce::String("Low Shelf"));
-    filterModeComboBox->setItemText(3, juce::String("High Shelf"));
-    filterModeComboBox->setItemText(4, juce::String("Lowpass 6"));
-    filterModeComboBox->setItemText(5, juce::String("Lowpass 12"));
-    filterModeComboBox->setItemText(6, juce::String("Highpass 6"));
-    filterModeComboBox->setItemText(7, juce::String("Highpass 12"));
-    filterModeComboBox->setItemText(8, juce::String("Notch"));
+    filterModeComboBox->setNameLabelWidth(0); // workaround because INVISIBLE doesn't work
+    filterModeComboBox->setNameLabelPosition(RNamedComboBox::LEFT_TO_BOX);
+    filterModeComboBox->setItemText(2, "Low Shelf");
+    filterModeComboBox->setItemText(3, "High Shelf");
+    filterModeComboBox->setItemText(4, "Lowpass 6");
+    filterModeComboBox->setItemText(5, "Lowpass 12");
+    filterModeComboBox->setItemText(6, "Highpass 6");
+    filterModeComboBox->setItemText(7, "Highpass 12");
+    filterModeComboBox->setItemText(8, "Notch");
   }
 }
 
