@@ -256,24 +256,24 @@ void ModulationManager::applyModulations()
 
 void ModulationManager::applyModulationsNoLock()
 {
-  int i;
+  size_t i;
 
   // compute output signals of all modulators:
-  for(i = 0; i < size(availableSources); i++)
+  for(i = 0; i < availableSources.size(); i++)
     availableSources[i]->updateModulationValue();
     // maybe we should loop only over an array of "usedSources"?
 
   // initialize modulation target values with their unmodulated values:
-  for(i = 0; i < size(affectedTargets); i++)
+  for(i = 0; i < affectedTargets.size(); i++)
     affectedTargets[i]->initModulatedValue();
 
   // apply all modulations:
-  for(i = 0; i < size(modulationConnections); i++)
+  for(i = 0; i < modulationConnections.size(); i++)
     modulationConnections[i]->apply();
 
   // let the targets do whatever work they have to do with the modulated value (typically, 
   // call setter-callbacks):
-  for(i = 0; i < size(affectedTargets); i++)
+  for(i = 0; i < affectedTargets.size(); i++)
     affectedTargets[i]->doModulationUpdate();
 }
 
