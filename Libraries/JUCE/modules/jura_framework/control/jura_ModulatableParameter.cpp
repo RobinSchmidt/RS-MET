@@ -66,6 +66,17 @@ juce::String ModulationSource::getModulationSourceDisplayName() const
     return displayName;
 }
 
+bool ModulationSource::hasConnectedTargets() const
+{
+  if(modManager){
+    const std::vector<ModulationConnection*>& 
+      allConnections = modManager->getModulationConnections();
+    for(int i = 0; i < size(allConnections); i++){
+      if(this == allConnections[i]->source)
+        return true; }}
+  return false;
+}
+
 //-------------------------------------------------------------------------------------------------
 
 ModulationTarget::~ModulationTarget() 
@@ -152,7 +163,7 @@ std::vector<ModulationConnection*> ModulationTarget::getConnections() const
   return result;
 }
 
-bool ModulationTarget::hasModulation() const
+bool ModulationTarget::hasConnectedSources() const
 {
   if(modManager){
     const std::vector<ModulationConnection*>& 
@@ -349,7 +360,7 @@ void ModulationManager::removeConnection(int i)
   remove(modulationConnections, i);
   if(omt)
     omt->sendModulationsChangedNotification();
-  if(!t->hasModulation()) {        // avoids the target getting stuck at modulated value when last 
+  if(!t->hasConnectedSources()) {  // avoids the target getting stuck at modulated value when last 
     t->initModulatedValue();       // modulator was removed
     t->doModulationUpdate();  }
 }

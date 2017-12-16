@@ -1,6 +1,8 @@
 #ifndef jura_AutomatableWidget_h
 #define jura_AutomatableWidget_h
 
+// rename file to 
+
 class rsModulationConnectionWidget;
 class AutomatableWidget;
 

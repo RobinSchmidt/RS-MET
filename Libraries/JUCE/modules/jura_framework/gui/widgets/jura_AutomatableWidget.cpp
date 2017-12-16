@@ -195,6 +195,8 @@ void rsModulationSetup::showConnectableSourcesPopUp()
     for(int i = 0; i < size(sources); i++)
     {
       juce::String name = sources[i]->getModulationSourceDisplayName();
+      if(sources[i]->hasConnectedTargets())
+        name += "*";
       connectableSourcesPopUp->addItem(i+1, name);     // +1 bcs 0 is not allowed for the id
     }
   }
@@ -750,6 +752,6 @@ void ModulatableSlider::paint(Graphics& g)
 {
   AutomatableSlider::paint(g);
   ModulatableParameter* mp = dynamic_cast<ModulatableParameter*> (assignedParameter);
-  if(mp && mp->hasModulation())
+  if(mp && mp->hasConnectedSources())
     g.fillAll(Colour::fromFloatRGBA(1.f, 0.f, 0.f, 0.125f)); // preliminary
 }

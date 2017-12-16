@@ -232,6 +232,9 @@ public:
   This may potentially be different from the name used for state recall. */
   juce::String getModulationSourceDisplayName() const;
 
+  /** Returns true, if this source is connected to at least one ModulationTarget. */
+  bool hasConnectedTargets() const;
+
 protected:
 
   double modValue = 0;
@@ -366,7 +369,7 @@ public:
   virtual juce::String getModulationTargetName() = 0;
 
   /** Returns true, if this target is connected to at least one ModulationSource. */
-  bool hasModulation() const;
+  bool hasConnectedSources() const;
 
 
   /** \name Misc */
@@ -513,6 +516,7 @@ protected:
   MetaControlledParameter* depthParam; // maybe it should be a ModulatableParameter? but that may
                                        // raise some issues - maybe later...
 
+  friend class ModulationSource;
   friend class ModulationTarget;
   friend class ModulationManager;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationConnection) 
