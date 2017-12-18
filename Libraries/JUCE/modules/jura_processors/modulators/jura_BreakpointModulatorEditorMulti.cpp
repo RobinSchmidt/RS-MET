@@ -385,21 +385,16 @@ void BreakpointModulatorEditorMulti::resized()
   globalEditors.getLock().enter();
   int numModulators = globalEditors.size();
   leftSectionRectangles.clear();
-  //x = 0;
-  x = 2;
-  //w = leftSectionWidth+2;
-  w = leftSectionWidth-2;
+  x = 0;
+  w = leftSectionWidth+2;
   h = 78;
-  //y = getHeight() - h;
-  y = getHeight() - h - 2;
+  y = getHeight() - h;
   for(int i=numModulators-1; i>=0; i--)
   {
     juce::Rectangle<int> *r = new juce::Rectangle<int>(x, y, w, h);
     leftSectionRectangles.add(r);
     globalEditors[i]->setBounds(*r);
-    //y -= h-2;
-    y -= h;
-
+    y -= h-2;
   }
 
   globalEditors.getLock().exit();
