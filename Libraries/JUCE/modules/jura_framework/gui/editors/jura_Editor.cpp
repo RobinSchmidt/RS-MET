@@ -105,7 +105,7 @@ void Editor::paint(Graphics &g)
   {
     fillRectWithBilinearGradient(g, guiLayoutRectangles[i], editorColourScheme.topLeft, 
       editorColourScheme.topRight, editorColourScheme.bottomLeft, editorColourScheme.bottomRight);
-    g.drawRect(guiLayoutRectangles[i], 1);
+    g.drawRect(guiLayoutRectangles[i], 2);
   }
   if( headlineStyle != NO_HEADLINE )
     drawHeadline(g);

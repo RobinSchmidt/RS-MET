@@ -26,13 +26,11 @@ void RDraggableNumber::paint (Graphics& g)
   g.setColour(getOutlineColour());
   g.drawRect(handleRectangle, 2);
 
-  BitmapFontRoundedBoldA10D0 font = BitmapFontRoundedBoldA10D0::instance;
-
   // draw the value:
   String valueString = stringConversionFunction(currentValue);
-  int x = getWidth() - font.getTextPixelWidth(valueString, font.getDefaultKerning());
-  int y = handleRectangle.getY() + handleRectangle.getHeight()/2 - font.getFontAscent()/2;
-  drawBitmapFontText(g, x-4, y, valueString, &font, getTextColour());
+  int x = getWidth() - font->getTextPixelWidth(valueString, font->getDefaultKerning());
+  int y = handleRectangle.getY() + handleRectangle.getHeight()/2 - font->getFontAscent()/2;
+  drawBitmapFontText(g, x-4, y, valueString, font, getTextColour());
 
   // draw the name:
   x             = 4;
@@ -40,10 +38,10 @@ void RDraggableNumber::paint (Graphics& g)
   if( layout == NAME_ABOVE )
   {
     x      = 0;
-    y      = handleRectangle.getY() - font.getFontAscent() - 2;
+    y      = handleRectangle.getY() - font->getFontAscent() - 2;
     //colour = colourScheme.special;
   }
-  drawBitmapFontText(g, x, y, sliderName, &font, colour);
+  drawBitmapFontText(g, x, y, sliderName, font, colour);
 
   // gray out the slider if it's disabled:
   //if( !isEnabled() )

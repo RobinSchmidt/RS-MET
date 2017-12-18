@@ -1,3 +1,8 @@
+-rename:
+ -PhaseScope -> Scope
+ -MultiAnalyzer's Scope: WaveDisplay (button: Wave)
+ -BreakpointModulator: MultiSegmentEnvelopeGenerator (MSEG), short: MultiSegment - or MultiStage, MSEG
+ -AciDevil ...DevilFish, AcidDevil
 
 Fix guis for:
 -Straightliner

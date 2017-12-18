@@ -228,13 +228,11 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
   node->setOpen(false);
   popUpMenu->addTreeNodeItem(node);
 
-  /*
   node = new RTreeViewNode("Modulators", -1, "Modulators");
   node->addChildNode(new RTreeViewNode("BreakpointModulator",  i++));
   //node->addChildNode(new RTreeViewNode("LowFrequencyOscillator",  i++));
   node->setOpen(false);
   popUpMenu->addTreeNodeItem(node);
-  */
 
   node = new RTreeViewNode("Analyzers", -1, "Analyzers");
   node->addChildNode(new RTreeViewNode("PhaseScope",    i++));
@@ -733,6 +731,7 @@ ToolChainEditor::ToolChainEditor(jura::ToolChain *moduleChainToEdit)
   ScopedLock scopedLock(*lock);
   chain = moduleChainToEdit;
   setHeadlinePosition(TOP_LEFT);
+  numHueOffsets = 2;
   stateWidgetSet->setLayout(StateLoadSaveWidgetSet::LABEL_AND_BUTTONS_ABOVE);
   updateEditorArray();
   updateSelectorArray();

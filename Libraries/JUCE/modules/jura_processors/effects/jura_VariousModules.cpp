@@ -3520,7 +3520,7 @@ void ModulationEffectModuleEditor::resized()
   int w = getWidth()/2;
   int h = getHeight()-y;
 
-  lfoRect.setBounds(x, y, w, h);
+  lfoRect.setBounds(x, y, w+2, h);
   effectRect.setBounds(x+w, y, w, h);
   guiLayoutRectangles.clear();
   guiLayoutRectangles.add(lfoRect);

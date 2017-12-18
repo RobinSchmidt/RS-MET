@@ -123,7 +123,7 @@ StraightlinerModuleEditor::StraightlinerModuleEditor(CriticalSection *newPlugInL
 
   numHueOffsets = 2; // for osc- and filter-section
 
-                     //loadColourScheme();
+  //loadColourScheme();
   updateSubEditorColourSchemes();
   updateWidgetsAccordingToState();
 

@@ -183,8 +183,8 @@ void WaveformRendererAudioModule::initializeAutomatableParameters()
   p = new Parameter(lock, "Mode", 0.0, 3.0, 1.0, 0.0, Parameter::STRING);
   p->addStringValue("StandardWaveform");
   p->addStringValue("AudioFile");
-  p->addStringValue("Algorithm");
-  p->addStringValue("MultiSegment");
+  //p->addStringValue("Algorithm");
+  //p->addStringValue("MultiSegment");
   addObservedParameter(p);
 
   for(int i=0; i < (int) parameters.size(); i++ )
@@ -640,7 +640,7 @@ WaveTableModuleEditorCompact::WaveTableModuleEditorCompact(CriticalSection *newP
   popUpEditorH =  200;
 
   waveformLabel = new RTextField("Waveform:");
-  addAndMakeVisible(waveformLabel);
+  addWidget(waveformLabel);
 
   numSamplesInPlot = 0;
   xValues          = NULL;
@@ -765,7 +765,7 @@ void WaveTableModuleEditorCompact::resized()
   y = editButton->getBottom() - RWidget::outlineThickness;
 
   waveformDisplay->invalidatePointers();
-  waveformDisplay->setBounds(x+4, y, w-8, h-y-4);
+  waveformDisplay->setBounds(x, y, w, h-y);
   numSamplesInPlot = waveformDisplay->getWidth();
   delete[] xValues;
   delete[] yValuesL;
