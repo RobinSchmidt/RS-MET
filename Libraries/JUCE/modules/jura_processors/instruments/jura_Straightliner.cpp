@@ -327,11 +327,11 @@ void StraightlinerModuleEditor::resized()
 
   x = 2*w;
   y = getHeadlineBottom()+4;
-  midSideRatioSlider->setBounds(x+4, y, w-8, 14);
-  y += 16;
-  numVoicesSlider->setBounds(   x+4, y, w-8, 14);
-  y += 16;
-  compSlider->setBounds(        x+4, y, w-8, 14);
+  midSideRatioSlider->setBounds(x+4, y, w-8, 16);
+  y += 14;
+  numVoicesSlider->setBounds(   x+4, y, w-8, 16);
+  y += 14;
+  compSlider->setBounds(        x+4, y, w-8, 16);
 
   x = 3*w;
   y = getHeadlineBottom();

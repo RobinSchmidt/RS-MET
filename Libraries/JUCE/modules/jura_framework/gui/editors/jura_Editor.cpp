@@ -175,7 +175,8 @@ void Editor::drawHeadline(Graphics& g)
 // construction/destruction:
 EditorWithStateFile::EditorWithStateFile(const String& name) : Editor(name)
 {
-  addChildColourSchemeComponent( stateWidgetSet = new StateLoadSaveWidgetSet() );
+  //addChildColourSchemeComponent( stateWidgetSet = new StateLoadSaveWidgetSet() );
+  addWidgetSet(stateWidgetSet = new StateLoadSaveWidgetSet(), true, true);
 
   //if( moduleToEdit != NULL )
   //  moduleToEdit->addStateWatcher(stateWidgetSet);

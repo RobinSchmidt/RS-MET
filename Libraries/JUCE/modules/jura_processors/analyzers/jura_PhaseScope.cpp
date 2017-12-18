@@ -376,7 +376,8 @@ PhaseScopeEditor::PhaseScopeEditor(jura::PhaseScope *newPhaseScopeToEdit)
   createWidgets();
 
   int headerMargin = 26;  // this is the height we need for headline and preset-section
-  setSize(400+widgetMargin, 400+headerMargin);
+  int displaySize = 250;
+  setSize(displaySize+widgetMargin, displaySize+headerMargin);
 
   // needs to be done to show/hid sliders depending on whether sync is on or off
   setLocalAutomationSwitch(true);

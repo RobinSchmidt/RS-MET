@@ -237,7 +237,7 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
   */
 
   node = new RTreeViewNode("Analyzers", -1, "Analyzers");
-  //node->addChildNode(new RTreeViewNode("PhaseScope",    i++));
+  node->addChildNode(new RTreeViewNode("PhaseScope",    i++));
   //node->addChildNode(new RTreeViewNode("PhaseScope2",   i++));
   node->addChildNode(new RTreeViewNode("MultiAnalyzer", i++));
   //node->addChildNode(new RTreeViewNode("TrackMeter",    i++));
