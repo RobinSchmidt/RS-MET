@@ -1063,9 +1063,9 @@ void MultiAnalyzerModuleEditor::resized()
   frameRateSlider->setBounds(x, y+4, 80, 16);
   */
 
-  x = 4;
+  x = 0;
   y = spectrumAnalyzerButton->getBottom() - RWidget::outlineThickness;
-  w = getWidth()-8;
+  w = getWidth();
   h = infoField->getY()-y;
   oscilloscopeEditor->setBounds(x, y, w, h);
   spectrumAnalyzerEditor->setBounds(x, y, w, h);

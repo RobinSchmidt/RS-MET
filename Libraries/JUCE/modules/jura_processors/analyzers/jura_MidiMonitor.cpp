@@ -259,7 +259,7 @@ MidiMonitorModuleEditor::MidiMonitorModuleEditor(CriticalSection *newPlugInLock,
   updateWidgetsAccordingToState();
   updateScreen();
 
-  setSize(600, 600);
+  setSize(600, 440);
 }
 
 MidiMonitorModuleEditor::~MidiMonitorModuleEditor()
