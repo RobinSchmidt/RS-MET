@@ -80,7 +80,7 @@ OBJECTS := \
 .PHONY: clean
 
 $(JUCE_OUTDIR)/$(TARGET): check-pkg-config $(OBJECTS) $(RESOURCES)
-	@echo Linking Chainer
+	@echo Linking ToolChain
 	-@mkdir -p $(JUCE_BINDIR)
 	-@mkdir -p $(JUCE_LIBDIR)
 	-@mkdir -p $(JUCE_OUTDIR)
@@ -91,11 +91,11 @@ check-pkg-config:
 	@pkg-config --print-errors alsa freetype2 libcurl x11 xext xinerama
 
 clean:
-	@echo Cleaning Chainer
+	@echo Cleaning ToolChain
 	@$(CLEANCMD)
 
 strip:
-	@echo Stripping Chainer
+	@echo Stripping ToolChain
 	-@$(STRIP) --strip-unneeded $(JUCE_OUTDIR)/$(TARGET)
 
 $(JUCE_OBJDIR)/PluginProcessor_a059e380.o: ../../Source/PluginProcessor.cpp

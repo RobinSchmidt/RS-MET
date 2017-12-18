@@ -236,10 +236,10 @@
  #define JucePlugin_Build_STANDALONE       0
 #endif
 #ifndef  JucePlugin_Name
- #define JucePlugin_Name                   "Chainer"
+ #define JucePlugin_Name                   "ToolChain"
 #endif
 #ifndef  JucePlugin_Desc
- #define JucePlugin_Desc                   "Chainer"
+ #define JucePlugin_Desc                   "ToolChain"
 #endif
 #ifndef  JucePlugin_Manufacturer
  #define JucePlugin_Manufacturer           "RS-MET"
@@ -254,7 +254,7 @@
  #define JucePlugin_ManufacturerCode       0x52534d54 // 'RSMT'
 #endif
 #ifndef  JucePlugin_PluginCode
- #define JucePlugin_PluginCode             0x43686e72 // 'Chnr'
+ #define JucePlugin_PluginCode             0x546c436e // 'TlCn'
 #endif
 #ifndef  JucePlugin_IsSynth
  #define JucePlugin_IsSynth                0
@@ -293,16 +293,16 @@
  #define JucePlugin_AUSubType              JucePlugin_PluginCode
 #endif
 #ifndef  JucePlugin_AUExportPrefix
- #define JucePlugin_AUExportPrefix         ChainerAU
+ #define JucePlugin_AUExportPrefix         ToolChainAU
 #endif
 #ifndef  JucePlugin_AUExportPrefixQuoted
- #define JucePlugin_AUExportPrefixQuoted   "ChainerAU"
+ #define JucePlugin_AUExportPrefixQuoted   "ToolChainAU"
 #endif
 #ifndef  JucePlugin_AUManufacturerCode
  #define JucePlugin_AUManufacturerCode     JucePlugin_ManufacturerCode
 #endif
 #ifndef  JucePlugin_CFBundleIdentifier
- #define JucePlugin_CFBundleIdentifier     com.rs-met.Chainer
+ #define JucePlugin_CFBundleIdentifier     com.rs-met.ToolChain
 #endif
 #ifndef  JucePlugin_RTASCategory
  #define JucePlugin_RTASCategory           ePlugInCategory_None
@@ -320,7 +320,7 @@
  #define JucePlugin_RTASDisableMultiMono   0
 #endif
 #ifndef  JucePlugin_AAXIdentifier
- #define JucePlugin_AAXIdentifier          com.RS-MET.Chainer
+ #define JucePlugin_AAXIdentifier          com.RS-MET.ToolChain
 #endif
 #ifndef  JucePlugin_AAXManufacturerCode
  #define JucePlugin_AAXManufacturerCode    JucePlugin_ManufacturerCode

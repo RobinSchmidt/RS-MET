@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2015
-Project("{E697C039-2FB1-9D8E-E098-461ED0634CF3}") = "Chainer", "Chainer.vcxproj", "{05FFA3EA-CF46-20C0-DD81-53EE67A0B465}"
+Project("{E388987A-B95B-4576-A8C9-D2ABC3243DDA}") = "ToolChain", "ToolChain.vcxproj", "{05FFA3EA-CF46-20C0-DD81-53EE67A0B465}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

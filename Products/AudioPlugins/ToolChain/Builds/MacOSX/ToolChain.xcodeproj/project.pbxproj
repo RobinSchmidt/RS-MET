@@ -185,7 +185,6 @@
 		0DBF44272E8F5A39E1D27DDE = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "juce_ArrowButton.cpp"; path = "../../../../../Libraries/JUCE/modules/juce_gui_basics/buttons/juce_ArrowButton.cpp"; sourceTree = "SOURCE_ROOT"; };
 		0DE6F3C9B0D94F9BF735CCCD = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "juce_Logger.cpp"; path = "../../../../../Libraries/JUCE/modules/juce_core/logging/juce_Logger.cpp"; sourceTree = "SOURCE_ROOT"; };
 		0E0380C049A6B869C8C9321B = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_ByteOrder.h"; path = "../../../../../Libraries/JUCE/modules/juce_core/memory/juce_ByteOrder.h"; sourceTree = "SOURCE_ROOT"; };
-		0E0661D583C4BE384DF76455 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "jura_EchoLab - Copy.cpp"; path = "../../../../../Libraries/JUCE/modules/jura_processors/effects/jura_EchoLab - Copy.cpp"; sourceTree = "SOURCE_ROOT"; };
 		0E0F17A782FE9F267338E206 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "jura_PolyphonicInstrument.cpp"; path = "../../../../../Libraries/JUCE/modules/jura_processors/instruments/jura_PolyphonicInstrument.cpp"; sourceTree = "SOURCE_ROOT"; };
 		0E8A614A8162DECC53AD2DE0 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "juce_TextDiff.cpp"; path = "../../../../../Libraries/JUCE/modules/juce_core/text/juce_TextDiff.cpp"; sourceTree = "SOURCE_ROOT"; };
 		0E8AE85ADE6FDD3BF6DC00EE = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_ConcertinaPanel.h"; path = "../../../../../Libraries/JUCE/modules/juce_gui_basics/layout/juce_ConcertinaPanel.h"; sourceTree = "SOURCE_ROOT"; };
@@ -800,7 +799,6 @@
 		4B682D4513EF40BA3976758F = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "romos_Liberty.cpp"; path = "../../../../../Libraries/JUCE/modules/romos/Framework/romos_Liberty.cpp"; sourceTree = "SOURCE_ROOT"; };
 		4B6B44024064A81E9C563380 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_MathsFunctions.h"; path = "../../../../../Libraries/JUCE/modules/juce_core/maths/juce_MathsFunctions.h"; sourceTree = "SOURCE_ROOT"; };
 		4B6B83DD68C5C73CEAFBA44B = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = fixed.c; path = "../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/flac/libFLAC/fixed.c"; sourceTree = "SOURCE_ROOT"; };
-		4B9748E92C5424365FF94DAA = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Chainer.entitlements; path = Chainer.entitlements; sourceTree = "SOURCE_ROOT"; };
 		4BCEA93E0A7011303C3B249D = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "jura_RSyncIntervalComboBox.cpp"; path = "../../../../../Libraries/JUCE/modules/jura_framework/gui/widgets/jura_RSyncIntervalComboBox.cpp"; sourceTree = "SOURCE_ROOT"; };
 		4BD50E107787CFF0A6C9A7B7 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "juce_FileTreeComponent.cpp"; path = "../../../../../Libraries/JUCE/modules/juce_gui_basics/filebrowser/juce_FileTreeComponent.cpp"; sourceTree = "SOURCE_ROOT"; };
 		4BEBE613EDCF49D7BE46674A = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "rosic_ExponentialSmoother.h"; path = "../../../../../Libraries/JUCE/modules/rosic/others/rosic_ExponentialSmoother.h"; sourceTree = "SOURCE_ROOT"; };
@@ -2568,7 +2566,6 @@
 		F8225EA543B52E7037E272A2 = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libChainer.a; sourceTree = "BUILT_PRODUCTS_DIR"; };
 		F82A75C5D8A2C1682DA0B952 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_Justification.h"; path = "../../../../../Libraries/JUCE/modules/juce_graphics/placement/juce_Justification.h"; sourceTree = "SOURCE_ROOT"; };
 		F857C5023780FFD6E1715493 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_AudioSampleBuffer.h"; path = "../../../../../Libraries/JUCE/modules/juce_audio_basics/buffers/juce_AudioSampleBuffer.h"; sourceTree = "SOURCE_ROOT"; };
-		F889091B7703F07E8D065E40 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "jura_EchoLab - Copy.h"; path = "../../../../../Libraries/JUCE/modules/jura_processors/effects/jura_EchoLab - Copy.h"; sourceTree = "SOURCE_ROOT"; };
 		F8A6A2540C29628CC66C8DC3 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "juce_DirectoryContentsDisplayComponent.cpp"; path = "../../../../../Libraries/JUCE/modules/juce_gui_basics/filebrowser/juce_DirectoryContentsDisplayComponent.cpp"; sourceTree = "SOURCE_ROOT"; };
 		F8ACB3D8145E280F8EC5EEC9 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "jura_MultiModeFilter.h"; path = "../../../../../Libraries/JUCE/modules/jura_processors/filters/jura_MultiModeFilter.h"; sourceTree = "SOURCE_ROOT"; };
 		F8B4C1ACD592C515459DBED0 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_UndoableAction.h"; path = "../../../../../Libraries/JUCE/modules/juce_data_structures/undomanager/juce_UndoableAction.h"; sourceTree = "SOURCE_ROOT"; };
@@ -2582,6 +2579,7 @@
 		F95572949E0A07ABED272854 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_LeakedObjectDetector.h"; path = "../../../../../Libraries/JUCE/modules/juce_core/memory/juce_LeakedObjectDetector.h"; sourceTree = "SOURCE_ROOT"; };
 		F961EA8C0BD7CCCF0FED4830 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "jura_CoordinateSystemOld.cpp"; path = "../../../../../Libraries/JUCE/modules/jura_framework/gui/plots/jura_CoordinateSystemOld.cpp"; sourceTree = "SOURCE_ROOT"; };
 		F97EEDFF76D54F7D42D8E9D2 = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Info-AU.plist"; path = "Info-AU.plist"; sourceTree = "SOURCE_ROOT"; };
+		F9A13276B15F22E74D99503F = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = ToolChain.entitlements; path = ToolChain.entitlements; sourceTree = "SOURCE_ROOT"; };
 		F9C38E0320BA0CBBE34FC515 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "tnt_fortran_array3d.h"; path = "../../../../../Libraries/JUCE/modules/rosic/_third_party/tnt/tnt_fortran_array3d.h"; sourceTree = "SOURCE_ROOT"; };
 		FA25DF9766C9DD53850B5237 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_MemoryMappedAudioFormatReader.h"; path = "../../../../../Libraries/JUCE/modules/juce_audio_formats/format/juce_MemoryMappedAudioFormatReader.h"; sourceTree = "SOURCE_ROOT"; };
 		FA2CEEB9BAB615E47FAA0730 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "rosic_EllipticSubBandFilter.cpp"; path = "../../../../../Libraries/JUCE/modules/rosic/filters/rosic_EllipticSubBandFilter.cpp"; sourceTree = "SOURCE_ROOT"; };
@@ -2651,7 +2649,7 @@
 		A788DA03FA9116CB34217C33 = {isa = PBXGroup; children = (
 					B30B09861157AD89F422D7D0,
 					E9D387DD8979D63CF02303D9,
-					C4E6A6A3FCBCA61A90BD179B, ); name = Chainer; sourceTree = "<group>"; };
+					C4E6A6A3FCBCA61A90BD179B, ); name = ToolChain; sourceTree = "<group>"; };
 		EB3C2242A47A1F56284C799B = {isa = PBXGroup; children = (
 					894A093B2477A0745B5E872F,
 					B2BB504A850DA9812A8E877B,
@@ -4271,8 +4269,6 @@
 					C7113F0C917FA3853C9EB0CE,
 					80F8FCC9EC3E94597BE7A7DA,
 					991BC7CB0E607B6B3B5BEFDA,
-					0E0661D583C4BE384DF76455,
-					F889091B7703F07E8D065E40,
 					2E09FF2A40394716BF6EA2BF,
 					C5C568DCA0D351C2AFCDABA4,
 					18441DF52574496327A7BD03,
@@ -5677,7 +5673,7 @@
 					F33E41CFD675D13B30287332,
 					F8225EA543B52E7037E272A2, ); name = Products; sourceTree = "<group>"; };
 		549AF9CC103EDEAB54AE783E = {isa = PBXGroup; children = (
-					4B9748E92C5424365FF94DAA,
+					F9A13276B15F22E74D99503F,
 					A788DA03FA9116CB34217C33,
 					EBBB2E70A490851531D9355A,
 					2BF8A0A763CA092DA9F47907,
@@ -5719,7 +5715,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
 				OTHER_LDFLAGS = "-bundle -lChainer";
-				PRODUCT_BUNDLE_IDENTIFIER = com.rs-met.Chainer;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rs-met.ToolChain;
 				SDKROOT_ppc = macosx10.5;
 				WRAPPER_EXTENSION = vst; }; name = Debug; };
 		1C171F4BEBD7F32386875D34 = {isa = XCBuildConfiguration; buildSettings = {
@@ -5757,7 +5753,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
 				OTHER_LDFLAGS = "-bundle -lChainer";
-				PRODUCT_BUNDLE_IDENTIFIER = com.rs-met.Chainer;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rs-met.ToolChain;
 				SDKROOT_ppc = macosx10.5;
 				WRAPPER_EXTENSION = vst; }; name = Release; };
 		D8F42DD051B229633C8565C5 = {isa = XCBuildConfiguration; buildSettings = {
@@ -5794,7 +5790,7 @@
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
 				OTHER_LDFLAGS = "-bundle -lChainer";
 				OTHER_REZFLAGS = "-d ppc_$ppc -d i386_$i386 -d ppc64_$ppc64 -d x86_64_$x86_64 -I /System/Library/Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework/Versions/A/Headers -I \"$(DEVELOPER_DIR)/Extras/CoreAudio/AudioUnits/AUPublic/AUBase\"";
-				PRODUCT_BUNDLE_IDENTIFIER = com.rs-met.Chainer;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rs-met.ToolChain;
 				SDKROOT_ppc = macosx10.5;
 				WRAPPER_EXTENSION = component; }; name = Debug; };
 		B8B3102C64950862FFB7B64E = {isa = XCBuildConfiguration; buildSettings = {
@@ -5833,7 +5829,7 @@
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
 				OTHER_LDFLAGS = "-bundle -lChainer";
 				OTHER_REZFLAGS = "-d ppc_$ppc -d i386_$i386 -d ppc64_$ppc64 -d x86_64_$x86_64 -I /System/Library/Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework/Versions/A/Headers -I \"$(DEVELOPER_DIR)/Extras/CoreAudio/AudioUnits/AUPublic/AUBase\"";
-				PRODUCT_BUNDLE_IDENTIFIER = com.rs-met.Chainer;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rs-met.ToolChain;
 				SDKROOT_ppc = macosx10.5;
 				WRAPPER_EXTENSION = component; }; name = Release; };
 		040DDB88412BD4B0554683CE = {isa = XCBuildConfiguration; buildSettings = {
@@ -5864,7 +5860,7 @@
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
-				PRODUCT_BUNDLE_IDENTIFIER = com.rs-met.Chainer;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rs-met.ToolChain;
 				SDKROOT_ppc = macosx10.5; }; name = Debug; };
 		CE62C5B5B53AC0DA032469F0 = {isa = XCBuildConfiguration; buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
@@ -5896,7 +5892,7 @@
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
-				PRODUCT_BUNDLE_IDENTIFIER = com.rs-met.Chainer;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rs-met.ToolChain;
 				SDKROOT_ppc = macosx10.5; }; name = Release; };
 		C83EFB6C8799749F1709483A = {isa = XCBuildConfiguration; buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -5941,7 +5937,7 @@
 		B713E1A66D7FCAF7B0313190 = {isa = PBXAggregateTarget; buildConfigurationList = 82D1392FE9A78ACCC17F797C; buildPhases = (  ); buildRules = ( ); dependencies = (
 					70DC1C697D4C603CFDC279CD,
 					C59FADCE0E00D68F8E1FA90E,
-					2DE23612349637A296BFA333, ); name = "Chainer (All)"; productName = Chainer; };
+					2DE23612349637A296BFA333, ); name = "ToolChain (All)"; productName = ToolChain; };
 		E25387015A5935913F00C733 = {isa = XCConfigurationList; buildConfigurations = (
 					CA01AA48419E8EB0940620C1,
 					1C171F4BEBD7F32386875D34, ); defaultConfigurationIsVisible = 0; defaultConfigurationName = Debug; };
@@ -5964,7 +5960,7 @@
 					BB9AAA62627E93A08E792EB2,
 					077E54A1CBA5E88F3751B5E7,
 					E89E085059B43606CD4CE39C, ); buildRules = ( ); dependencies = (
-					2DE23612349637A296BFA333, ); name = "Chainer (VST)"; productName = Chainer; productReference = 7A3E1CE46572E6DDB40D5CE1; productType = "com.apple.product-type.bundle"; };
+					2DE23612349637A296BFA333, ); name = "ToolChain (VST)"; productName = ToolChain; productReference = 7A3E1CE46572E6DDB40D5CE1; productType = "com.apple.product-type.bundle"; };
 		484DA02AED16E1A93A4F2555 = {isa = XCConfigurationList; buildConfigurations = (
 					D8F42DD051B229633C8565C5,
 					B8B3102C64950862FFB7B64E, ); defaultConfigurationIsVisible = 0; defaultConfigurationName = Debug; };
@@ -5993,7 +5989,7 @@
 					93C81C3B987B562EC934863B,
 					95C2AB3D933C156343F2573E,
 					5396A9875A528382E3279AD4, ); buildRules = ( ); dependencies = (
-					2DE23612349637A296BFA333, ); name = "Chainer (AU)"; productName = Chainer; productReference = F33E41CFD675D13B30287332; productType = "com.apple.product-type.bundle"; };
+					2DE23612349637A296BFA333, ); name = "ToolChain (AU)"; productName = ToolChain; productReference = F33E41CFD675D13B30287332; productType = "com.apple.product-type.bundle"; };
 		1D855E213305979C3B5B07D8 = {isa = XCConfigurationList; buildConfigurations = (
 					040DDB88412BD4B0554683CE,
 					CE62C5B5B53AC0DA032469F0, ); defaultConfigurationIsVisible = 0; defaultConfigurationName = Debug; };
@@ -6018,7 +6014,7 @@
 					C12432BA4CAD39A032C317FB,
 					8EA24000CF841D00BC9AD4A4, ); runOnlyForDeploymentPostprocessing = 0; };
 		02D728FDAE753C18615B25A0 = {isa = PBXNativeTarget; buildConfigurationList = 1D855E213305979C3B5B07D8; buildPhases = (
-					8301F05179F0BA7EDE2FB9A2, ); buildRules = ( ); dependencies = (  ); name = "Chainer (Shared Code)"; productName = Chainer; productReference = F8225EA543B52E7037E272A2; productType = "com.apple.product-type.library.static"; };
+					8301F05179F0BA7EDE2FB9A2, ); buildRules = ( ); dependencies = (  ); name = "ToolChain (Shared Code)"; productName = ToolChain; productReference = F8225EA543B52E7037E272A2; productType = "com.apple.product-type.library.static"; };
 		4C1AB900E64F464953AB859B = {isa = PBXProject; buildConfigurationList = 34B857D1B0359F05E56864CF; attributes = { LastUpgradeCheck = 0440; TargetAttributes = { B713E1A66D7FCAF7B0313190 = { SystemCapabilities = {com.apple.InAppPurchase = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; }; };A2195CCDED904DA324465542 = { SystemCapabilities = {com.apple.InAppPurchase = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; }; };9794997D448A9C4E85C8F6E1 = { SystemCapabilities = {com.apple.InAppPurchase = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; }; };02D728FDAE753C18615B25A0 = { SystemCapabilities = {com.apple.InAppPurchase = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; }; }; }; }; compatibilityVersion = "Xcode 3.2"; hasScannedForEncodings = 0; mainGroup = 549AF9CC103EDEAB54AE783E; projectDirPath = ""; projectRoot = ""; targets = (B713E1A66D7FCAF7B0313190, A2195CCDED904DA324465542, 9794997D448A9C4E85C8F6E1, 02D728FDAE753C18615B25A0); };
 	};
 	rootObject = 4C1AB900E64F464953AB859B;

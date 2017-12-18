@@ -10,9 +10,9 @@
     <key>CFBundleIdentifier</key>
     <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
     <key>CFBundleName</key>
-    <string>Chainer</string>
+    <string>ToolChain</string>
     <key>CFBundleDisplayName</key>
-    <string>Chainer</string>
+    <string>ToolChain</string>
     <key>CFBundlePackageType</key>
     <string>BNDL</string>
     <key>CFBundleSignature</key>
@@ -29,17 +29,17 @@
     <array>
       <dict>
         <key>name</key>
-        <string>RS-MET: Chainer</string>
+        <string>RS-MET: ToolChain</string>
         <key>description</key>
-        <string>Chainer</string>
+        <string>ToolChain</string>
         <key>factoryFunction</key>
-        <string>ChainerAUFactory</string>
+        <string>ToolChainAUFactory</string>
         <key>manufacturer</key>
         <string>RSMT</string>
         <key>type</key>
         <string>aumf</string>
         <key>subtype</key>
-        <string>Chnr</string>
+        <string>TlCn</string>
         <key>version</key>
         <integer>65536</integer>
       </dict>

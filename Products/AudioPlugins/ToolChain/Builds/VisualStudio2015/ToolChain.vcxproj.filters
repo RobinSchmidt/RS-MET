@@ -2,11 +2,11 @@
 
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Chainer">
-      <UniqueIdentifier>{210A60C2-7737-A3A7-3D87-9EB051682535}</UniqueIdentifier>
+    <Filter Include="ToolChain">
+      <UniqueIdentifier>{4492DE36-639D-F010-96B4-03C9D076304D}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Chainer\Source">
-      <UniqueIdentifier>{17857173-D0B8-C46D-6855-76BE84727914}</UniqueIdentifier>
+    <Filter Include="ToolChain\Source">
+      <UniqueIdentifier>{A153B74F-D0F3-E4CD-6598-F48685342DA9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Juce Modules">
       <UniqueIdentifier>{422C46B7-0467-2DB0-BF3C-16DFCAFD69AC}</UniqueIdentifier>
@@ -629,7 +629,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\PluginProcessor.cpp">
-      <Filter>Chainer\Source</Filter>
+      <Filter>ToolChain\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_basics\buffers\juce_AudioDataConverters.cpp">
       <Filter>Juce Modules\juce_audio_basics\buffers</Filter>
@@ -2618,9 +2618,6 @@
       <Filter>Juce Modules\jura_processors\effects</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_CombStereoizer.cpp">
-      <Filter>Juce Modules\jura_processors\effects</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_EchoLab - Copy.cpp">
       <Filter>Juce Modules\jura_processors\effects</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_EchoLab.cpp">
@@ -6498,9 +6495,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_CombStereoizer.h">
       <Filter>Juce Modules\jura_processors\effects</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_EchoLab - Copy.h">
-      <Filter>Juce Modules\jura_processors\effects</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_EchoLab.h">
       <Filter>Juce Modules\jura_processors\effects</Filter>
     </ClInclude>
@@ -8316,10 +8310,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\DebugNotes.txt">
-      <Filter>Chainer</Filter>
+      <Filter>ToolChain</Filter>
     </None>
     <None Include="..\..\ToDo.txt">
-      <Filter>Chainer</Filter>
+      <Filter>ToolChain</Filter>
     </None>
     <None Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_formats\codecs\flac\Flac Licence.txt">
       <Filter>Juce Modules\juce_audio_formats\codecs\flac</Filter>

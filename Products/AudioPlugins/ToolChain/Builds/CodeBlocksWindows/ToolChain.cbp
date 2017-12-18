@@ -3,7 +3,7 @@
 <CodeBlocks_project_file>
   <FileVersion major="1" minor="6"/>
   <Project>
-    <Option title="Chainer"/>
+    <Option title="ToolChain"/>
     <Option pch_mode="2"/>
     <Option compiler="gcc"/>
     <Build>
@@ -5618,14 +5618,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/jura_CombStereoizer.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/jura_EchoLab - Copy.cpp">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/jura_processors/effects/jura_EchoLab - Copy.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
