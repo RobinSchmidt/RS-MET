@@ -82,8 +82,8 @@ namespace jura
 #include "instruments/jura_Liberty.cpp" // not yet available on gcc 
 #endif
 
-#include "misc/jura_AudioModuleChain.cpp"
 #include "misc/jura_ChannelMatrix2x2.cpp"
 #include "misc/jura_DspWorkbench.cpp"
+#include "misc/jura_ToolChain.cpp"
 
 }

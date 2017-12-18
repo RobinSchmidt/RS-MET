@@ -130,9 +130,9 @@ namespace jura
 #include "instruments/jura_Liberty.h"    // romos currently doesn't compile on gcc
 #endif
 
-#include "misc/jura_AudioModuleChain.h"
 #include "misc/jura_ChannelMatrix2x2.h"
 #include "misc/jura_DspWorkbench.h"
+#include "misc/jura_ToolChain.h"
 
 }
 
