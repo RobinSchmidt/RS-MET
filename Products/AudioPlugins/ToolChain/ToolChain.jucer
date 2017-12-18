@@ -22,9 +22,9 @@
     <VS2015 targetFolder="Builds/VisualStudio2015">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="3" generateManifest="1" winArchitecture="x64"
-                       isDebug="1" optimisation="1" targetName="Chainer"/>
+                       isDebug="1" optimisation="1" targetName="ToolChain"/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
-                       isDebug="0" optimisation="3" targetName="Chainer"/>
+                       isDebug="0" optimisation="3" targetName="ToolChain"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../../../Libraries/JUCE/modules"/>
@@ -47,9 +47,9 @@
     </VS2015>
     <CODEBLOCKS_WINDOWS targetFolder="Builds/CodeBlocksWindows" extraCompilerFlags="-fpermissive">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="Chainer"
+        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="ToolChain"
                        headerPath="..\..\..\..\..\Libraries\JUCE\modules"/>
-        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="Chainer"
+        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="ToolChain"
                        headerPath="..\..\..\..\..\Libraries\JUCE\modules"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
@@ -75,9 +75,9 @@
                       extraLinkerFlags="" externalLibraries="asound&#10;X11&#10;Xext&#10;freetype"
                       userNotes="The plugin builds but crashes without any hint what could be wrong. We need to use the makefile on linux">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="Chainer"
+        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="ToolChain"
                        headerPath="../../../../../Libraries/JUCE/modules"/>
-        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="Chainer"
+        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="ToolChain"
                        headerPath="../../../../../Libraries/JUCE/modules"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
@@ -102,9 +102,9 @@
     <LINUX_MAKE targetFolder="Builds/LinuxMakefile" extraCompilerFlags="-fPIC"
                 externalLibraries="asound&#10;X11&#10;Xext&#10;freetype" userNotes="to build a debug version, just type &quot;make&quot; into the commandline (launched in the same directory where the makefile resides), for a release version, type &quot;make CONFIG=Release&quot;">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="Chainer"
+        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="ToolChain"
                        headerPath="../../../../../Libraries/JUCE/modules"/>
-        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="Chainer"
+        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="ToolChain"
                        headerPath="../../../../../Libraries/JUCE/modules"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
@@ -128,9 +128,9 @@
     </LINUX_MAKE>
     <XCODE_MAC targetFolder="Builds/MacOSX">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="Chainer"
+        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="ToolChain"
                        osxSDK="default" osxCompatibility="10.9 SDK" osxArchitecture="64BitUniversal"/>
-        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="Chainer"
+        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="ToolChain"
                        osxSDK="default" osxCompatibility="10.9 SDK" osxArchitecture="64BitUniversal"
                        linkTimeOptimisation="1"/>
       </CONFIGURATIONS>

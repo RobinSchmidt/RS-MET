@@ -287,17 +287,17 @@ AudioModuleChain::AudioModuleChain(CriticalSection *lockToUse,
   , modManager(lockToUse) // maybe pass the metaManagerToUse to this constructor call
 {
   ScopedLock scopedLock(*lock);
-  moduleName = "Chainer";
+  moduleName = "ToolChain";
 
 #ifdef _WIN32
-  juce::String presetPath = getApplicationDirectory() + "/Presets/Chainer";
+  juce::String presetPath = getApplicationDirectory() + "/Presets/ToolChain";
 #elif __APPLE__
-  juce::String presetPath = "/Library/Audio/Presets/RS-MET/Chainer";
+  juce::String presetPath = "/Library/Audio/Presets/RS-MET/ToolChain";
 #elif __linux__
-  juce::String presetPath = getApplicationDirectory() + "/Presets/Chainer";
+  juce::String presetPath = getApplicationDirectory() + "/Presets/ToolChain";
 #endif
   setActiveDirectory(presetPath);
-  //setActiveDirectory(getApplicationDirectory() + "/Presets/Chainer");  // old
+  //setActiveDirectory(getApplicationDirectory() + "/Presets/ToolChain");  // old
 
   modManager.setMetaParameterManager(metaManagerToUse);
   setModulationManager(&modManager);
