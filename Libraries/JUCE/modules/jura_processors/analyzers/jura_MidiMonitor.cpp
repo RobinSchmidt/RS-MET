@@ -291,7 +291,7 @@ void MidiMonitorModuleEditor::resized()
   int w = getWidth()-136;
   int h = infoField->getY()-y;
 
-  outputDisplay->setBounds(x+4, y+4, w-8, h-4);
+  outputDisplay->setBounds(x, y+4, w-8, h-4);
 
   x = outputDisplay->getRight();
   w = getWidth()-x;
