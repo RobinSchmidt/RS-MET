@@ -188,6 +188,26 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
 
   popUpMenu->addTreeNodeItem(new RTreeViewNode("None",    i++));
 
+
+  node = new RTreeViewNode("Instruments", -1, "Instruments");
+  node->addChildNode(new RTreeViewNode("AciDevil",       i++));
+  node->addChildNode(new RTreeViewNode("Straightliner",  i++));
+  node->setOpen(false);
+  popUpMenu->addTreeNodeItem(node);
+
+  node = new RTreeViewNode("Effects", -1, "Effects");
+  //node->addChildNode(new RTreeViewNode("Enveloper",     i++));
+  node->addChildNode(new RTreeViewNode("FuncShaper",    i++));
+  //node->addChildNode(new RTreeViewNode("MultiComp",     i++));
+  //node->addChildNode(new RTreeViewNode("StereoDelay",   i++)); // include in Quadrifex
+  //node->addChildNode(new RTreeViewNode("PitchShifter",  i++)); // include in Quadrifex
+  node->addChildNode(new RTreeViewNode("EchoLab",       i++));
+  node->addChildNode(new RTreeViewNode("Quadrifex",     i++));
+  //node->addChildNode(new RTreeViewNode("AlgoVerb",      i++));
+  node->setOpen(false);
+  popUpMenu->addTreeNodeItem(node);
+
+  /*
   node = new RTreeViewNode("Sources", -1, "Sources");
   node->addChildNode(new RTreeViewNode("Oscillator3D",   i++));
   node->addChildNode(new RTreeViewNode("RayBouncer",     i++));
@@ -197,9 +217,10 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
   //node->addChildNode(new RTreeViewNode("SamplePlayer",    i++));
   node->setOpen(false);
   popUpMenu->addTreeNodeItem(node);
+  */
 
   node = new RTreeViewNode("Filters", -1, "Filters");
-  node->addChildNode(new RTreeViewNode("Ladder",          i++));
+  //node->addChildNode(new RTreeViewNode("Ladder",          i++));
   node->addChildNode(new RTreeViewNode("Equalizer",       i++));
   node->addChildNode(new RTreeViewNode("EngineersFilter", i++));
   //node->addChildNode(new RTreeViewNode("PhasorFilter",    i++));
@@ -207,39 +228,24 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
   node->setOpen(false);
   popUpMenu->addTreeNodeItem(node);
 
+  /*
   node = new RTreeViewNode("Modulators", -1, "Modulators");
   node->addChildNode(new RTreeViewNode("BreakpointModulator",  i++));
   //node->addChildNode(new RTreeViewNode("LowFrequencyOscillator",  i++));
   node->setOpen(false);
   popUpMenu->addTreeNodeItem(node);
-
-  node = new RTreeViewNode("Effects", -1, "Effects");
-  node->addChildNode(new RTreeViewNode("Enveloper",     i++));
-  node->addChildNode(new RTreeViewNode("FuncShaper",    i++));
-  //node->addChildNode(new RTreeViewNode("MultiComp",     i++));
-  node->addChildNode(new RTreeViewNode("StereoDelay",   i++)); // include in Quadrifex
-  node->addChildNode(new RTreeViewNode("PitchShifter",  i++)); // include in Quadrifex
-  node->addChildNode(new RTreeViewNode("EchoLab",       i++));
-  node->addChildNode(new RTreeViewNode("Quadrifex",     i++));
-  //node->addChildNode(new RTreeViewNode("AlgoVerb",      i++));
-  node->setOpen(false);
-  popUpMenu->addTreeNodeItem(node);
-
-  node = new RTreeViewNode("Instruments", -1, "Instruments");
-  node->addChildNode(new RTreeViewNode("AciDevil",       i++));
-  node->addChildNode(new RTreeViewNode("Straightliner",  i++));
-  node->setOpen(false);
-  popUpMenu->addTreeNodeItem(node);
+  */
 
   node = new RTreeViewNode("Analyzers", -1, "Analyzers");
-  node->addChildNode(new RTreeViewNode("PhaseScope",    i++));
+  //node->addChildNode(new RTreeViewNode("PhaseScope",    i++));
   //node->addChildNode(new RTreeViewNode("PhaseScope2",   i++));
   node->addChildNode(new RTreeViewNode("MultiAnalyzer", i++));
-  node->addChildNode(new RTreeViewNode("TrackMeter",    i++));
+  //node->addChildNode(new RTreeViewNode("TrackMeter",    i++));
   node->addChildNode(new RTreeViewNode("MidiMonitor",   i++));
   node->setOpen(false);
   popUpMenu->addTreeNodeItem(node);
 
+  /*
   // ToDo:
   node = new RTreeViewNode("UnderConstruction", -1, "UnderConstruction");
 #ifdef _MSC_VER
@@ -252,8 +258,7 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
   //node->addChildNode(new RTreeViewNode("Workhorse",      i++));
   node->setOpen(false);
   popUpMenu->addTreeNodeItem(node);
-
-
+  */
 
   //setSize(300, 300); // has no effect
 }
