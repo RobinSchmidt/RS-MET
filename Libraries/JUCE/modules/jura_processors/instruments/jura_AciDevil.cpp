@@ -384,7 +384,7 @@ AciDevilModuleEditor::AciDevilModuleEditor(CriticalSection *newPlugInLock, AciDe
   // set up the widgets:
   updateWidgetsAccordingToState();
 
-  setSize(800, 400);
+  setSize(781, 396);
 }
 
 //-------------------------------------------------------------------------------------------------
