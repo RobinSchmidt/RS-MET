@@ -174,6 +174,7 @@ void StraightlinerModuleEditor::updateWidgetsAccordingToState()
     straightlinerAudioModule->markStateAsClean();
 }
 
+/*
 void StraightlinerModuleEditor::paint(Graphics &g)
 {
   if( drawGradientsBasedOnOutlines == false ) 
@@ -301,6 +302,7 @@ void StraightlinerModuleEditor::paint(Graphics &g)
 
   Editor::drawHeadline(g);
 }
+*/
 
 void StraightlinerModuleEditor::resized()
 {
@@ -356,14 +358,14 @@ void StraightlinerModuleEditor::resized()
   w = getWidth()/2;
   h = 304;
 
-  oscSectionEditor->setBounds(x+4, y+8, w-8, h);
+  oscSectionEditor->setBounds(x, y+8, w+1, h);
 
   y = oscSectionEditor->getY();
-  x = oscSectionEditor->getRight()+8;
+  x = oscSectionEditor->getRight();
   h = oscSectionEditor->getBottom()-y;
   w = oscSectionEditor->getWidth();
 
-  filterEditor->setBounds(x, y, w, h);
+  filterEditor->setBounds(x-2, y, w, h);
 
   x = oscSectionEditor->getX();
   y = oscSectionEditor->getBottom()+8;
@@ -374,7 +376,8 @@ void StraightlinerModuleEditor::resized()
   y = oscSectionEditor->getBottom()+8;
   w = filterEditor->getRight()-x;
   //h = 256;
-  h = 260;
+  //h = 260;
+  h = getHeight()-y;
   envelopeEditor->setBounds(x, y, w, h);
 }
 

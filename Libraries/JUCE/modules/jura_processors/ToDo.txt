@@ -1,8 +1,5 @@
 Fix guis for:
 -Straightliner
--FuncShaper
--Quadrifex
--MultiAnalyzer
 
 Bugs in the smoothing system:
  -with very long smoothing times (in the order of seconds), the slider is glitchy and when

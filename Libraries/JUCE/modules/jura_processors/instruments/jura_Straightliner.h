@@ -157,7 +157,7 @@ public:
   // callbacks:
   virtual void copyColourSettingsFrom(const ColourSchemeComponent *componentToCopyFrom);
   virtual void updateWidgetsAccordingToState();
-  virtual void paint(Graphics &g); 
+  //virtual void paint(Graphics &g); 
   virtual void resized();
 
 protected:
