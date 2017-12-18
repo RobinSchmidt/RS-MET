@@ -15,7 +15,7 @@ things:
 -somewhere have a ModulationManager object lying around, a pointer to that object should be passed
  to the constructor call of the ModulatableAudioModule baseclass
 -use objects of type ModulatableParameter for its parameters
--(not yet:) use objects of type ModulatableSlider for the sliders of the to-be-modulated parameters
+-use objects of type ModulatableSlider for the sliders of the to-be-modulated parameters
 -every ModulationSource that should be available must be registered with the ModulationManager
  object
 -before producing a sample, your AudioModule must call applyModulations on the ModulationManager
@@ -704,7 +704,7 @@ public:
   ModulationTargetObserver() = default;
   virtual ~ModulationTargetObserver() = default;
 
-  /** Subclasses need to override this in order to repond to changes of the modulation settings of 
+  /** Subclasses need to override this in order to respond to changes of the modulation settings of 
   their observed modulation target. */
   virtual void modulationsChanged() = 0;
 

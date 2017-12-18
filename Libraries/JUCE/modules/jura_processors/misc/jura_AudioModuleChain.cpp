@@ -734,6 +734,8 @@ AudioModuleChainEditor::AudioModuleChainEditor(jura::AudioModuleChain *moduleCha
   updateActiveEditor();
   chain->addAudioModuleChainObserver(this);
   addChangeListener(this); // we listen to ourselves for deferred destruction of selectors
+
+  //setWidgetAppearance(ColourScheme::DARK_ON_BRIGHT); // bug: doesn't affect state-widgets
 }
 
 AudioModuleChainEditor::~AudioModuleChainEditor()

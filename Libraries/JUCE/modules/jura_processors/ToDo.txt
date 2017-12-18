@@ -1,3 +1,5 @@
+rename Chainer to ToolChain
+
 -EchoLab
  -make save/recall work for snap, solo
  -fix gui errors
