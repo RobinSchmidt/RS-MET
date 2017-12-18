@@ -1,5 +1,5 @@
-#ifndef jura_AudioModuleChain_h
-#define jura_AudioModuleChain_h
+#ifndef jura_ToolChain_h
+#define jura_ToolChain_h
   
 /** A do-nothing dummy AudioModule to be used as placeholder. 
 todo:
@@ -33,7 +33,7 @@ public:
 can also translate back from a given subclass-pointer to the corresponding string and create a list
 of all available types. 
 
-\todo: maybe make this an abstract factory - that way, the AudioModuleChain could be parameterized
+\todo: maybe make this an abstract factory - that way, the ToolChain could be parameterized
 with a factory object and could propagated up into jura_framework (next to AudioModule/AudioPlugin)
 without knowing about the actual kinds of AudioModule subclasses that are defined in the 
 jura_processors module. The actual Chainer plugin would then somehow need to get an object of a 
@@ -86,35 +86,35 @@ protected:
 
 //=================================================================================================
 
-class JUCE_API AudioModuleChain; // forward declaration
+class JUCE_API ToolChain; // forward declaration
 
-/** Baseclass for objects that must keep track of the state of one (or more) AudioModuleChain 
+/** Baseclass for objects that must keep track of the state of one (or more) ToolChain 
 objects. Observers must override some callback fucntions to take appropriate actions for various 
 kinds of state changes. 
 \todo: maybe it's sufficient to pass the index in the callbacks - we may not really need to pass 
 the pointers along as well
 */
 
-class JUCE_API AudioModuleChainObserver
+class JUCE_API ToolChainObserver
 {
 
 public:
     
-  virtual ~AudioModuleChainObserver() {}
+  virtual ~ToolChainObserver() {}
 
   /** Called whenever a module was added to the chain. Your observer subclass may want to keep a 
   pointer to the module to modify it, create an editor, etc. */
-  virtual void audioModuleWasAdded(AudioModuleChain *chain, AudioModule *module, int index) = 0;
+  virtual void audioModuleWasAdded(ToolChain *chain, AudioModule *module, int index) = 0;
 
   /** Called before modules in the chain will be deleted. Your observer subclass will probably want 
   to invalidate any pointers to the module that it keeps, delete editors, etc. */
-  virtual void audioModuleWillBeDeleted(AudioModuleChain *chain, AudioModule *module, 
+  virtual void audioModuleWillBeDeleted(ToolChain *chain, AudioModule *module, 
     int index) = 0;
 
   /** Called whenever a module in the chain was replaced by another module. Note that the old 
   module may also be deleted after being replaced, so you should invalidate all pointers to it that 
   you may have around. */
-  virtual void audioModuleWasReplaced(AudioModuleChain *chain, AudioModule *oldModule, 
+  virtual void audioModuleWasReplaced(ToolChain *chain, AudioModule *oldModule, 
     AudioModule *newModule, int index) = 0;
 
 };
@@ -136,7 +136,7 @@ AudioModule objects.
 -rename the plugin to RAPTPlug...or just RAPT
  */
 
-class JUCE_API AudioModuleChain 
+class JUCE_API ToolChain 
   : public jura::AudioModuleWithMidiIn
   /*, public jura::ModulationManager*/
   // we need to have a ModulationManager member to pass it to the constructor of
@@ -145,8 +145,8 @@ class JUCE_API AudioModuleChain
 
 public:
 
-  AudioModuleChain(CriticalSection *lockToUse, MetaParameterManager* metaManagerToUse = nullptr);
-  virtual ~AudioModuleChain();
+  ToolChain(CriticalSection *lockToUse, MetaParameterManager* metaManagerToUse = nullptr);
+  virtual ~ToolChain();
 
   /** Adds an empty slot the end of the chain. */
   void addEmptySlot();
@@ -183,10 +183,10 @@ public:
   // observer stuff:
 
    /** Adds an observer that will get notified about changes to the state of the chain. */
-  void addAudioModuleChainObserver(AudioModuleChainObserver *observerToAdd);
+  void addToolChainObserver(ToolChainObserver *observerToAdd);
 
-  /** Removes an oberver that was previously added by addAudioModuleChainObserver. */
-  void removeAudioModuleChainObserver(AudioModuleChainObserver *observerToRemove);
+  /** Removes an oberver that was previously added by addToolChainObserver. */
+  void removeToolChainObserver(ToolChainObserver *observerToRemove);
 
   /** Called internally, whenever a module was added to the chain. */
   void sendAudioModuleWasAddedNotification(AudioModule *module, int index);
@@ -254,15 +254,15 @@ protected:
   int activeSlot = 0;            // slot for which the editor is currently shown 
   double sampleRate;
 
-  std::vector<AudioModuleChainObserver*> observers;
+  std::vector<ToolChainObserver*> observers;
 
-  friend class AudioModuleChainEditor;
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioModuleChain)
+  friend class ToolChainEditor;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ToolChain)
 };
 
 //=================================================================================================
 
-/** Implements a GUI editor for the AudioModuleChain.
+/** Implements a GUI editor for the ToolChain.
 \todo: 
 -Enveloper: set module name of the embedded Modulator module to "Enveloper"
 -add bypass switches for each module
@@ -270,14 +270,14 @@ protected:
 -make it possible to drag the slots up and down to change the order of the modules
  */
 
-class JUCE_API AudioModuleChainEditor : public AudioModuleEditor, public AudioModuleChainObserver,
+class JUCE_API ToolChainEditor : public AudioModuleEditor, public ToolChainObserver,
   public RComboBoxObserver, public ChangeBroadcaster
 {
 
 public:
 
-  AudioModuleChainEditor(jura::AudioModuleChain *moduleChainToEdit);
-  virtual ~AudioModuleChainEditor();
+  ToolChainEditor(jura::ToolChain *moduleChainToEdit);
+  virtual ~ToolChainEditor();
 
   /** Returns an editor for the AudioModule in the given slot index. Note that this may return a 
   nullptr in the case when the "modules" and "editors" arrays are empty (this occurs as a 
@@ -298,7 +298,7 @@ public:
   void updateSelectorArray();
 
   /** Updates our array of AudioModuleEditors to match the number of modules of the edited 
-  AudioModuleChain. */
+  ToolChain. */
   void updateEditorArray();
 
   /** Updates this editor to show the module-editor of the currently active slot. This may also 
@@ -315,11 +315,11 @@ public:
   virtual void paintOverChildren(Graphics& g) override;
   virtual void rComboBoxChanged(RComboBox* comboBoxThatHasChanged) override;
   virtual void changeListenerCallback(ChangeBroadcaster *source) override;
-  virtual void audioModuleWasAdded(AudioModuleChain *chain, 
+  virtual void audioModuleWasAdded(ToolChain *chain, 
     AudioModule *module, int index) override;
-  virtual void audioModuleWillBeDeleted(AudioModuleChain *chain, 
+  virtual void audioModuleWillBeDeleted(ToolChain *chain, 
     AudioModule *module, int index) override;
-  virtual void audioModuleWasReplaced(AudioModuleChain *chain, 
+  virtual void audioModuleWasReplaced(ToolChain *chain, 
     AudioModule *oldModule, AudioModule *newModule, int index) override;
 
 
@@ -342,7 +342,7 @@ protected:
   void clearEditorArray();
 
   // Data:
-  AudioModuleChain* chain;                    // the edited object
+  ToolChain* chain;                    // the edited object
   vector<AudioModuleSelector*> selectors;     // combo-boxes for selecting modules
   vector<AudioModuleEditor*>   editors;       // array of editors for the modules
 
@@ -351,7 +351,7 @@ protected:
   int leftColumnWidth = 160; // for the chainer widgets
   int bottomRowHeight =  16; // for infoline, link, etc.
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioModuleChainEditor)
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ToolChainEditor)
 };
 
 #endif 

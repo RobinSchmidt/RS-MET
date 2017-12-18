@@ -1,11 +1,9 @@
-rename Chainer to ToolChain
+Bugs in the smoothing system:
+ -with very long smoothing times (in the order of seconds), the slider is glitchy and when
+  changing the module in ToolChain while smoothing, we get an access violation
 
 -EchoLab
  -make save/recall work for snap, solo
- -fix gui errors
-  -EQ: 
-   -when gui is wide, the "Band Parameters" rectangle appears
-   -gloabl gain slider invisible
 
 
 -drag scientific IIR filters into RAPT:
