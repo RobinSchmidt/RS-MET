@@ -562,7 +562,7 @@ void FuncShaperModuleEditor::resized()
   int h = getHeight();
 
   y = getPresetSectionBottom();
-  formulaRectangle.setBounds(4, y+4, getWidth()-8, 64);
+  formulaRectangle.setBounds(0, y+4, getWidth(), 64);
 
   // the top rectangle:
 
@@ -604,7 +604,7 @@ void FuncShaperModuleEditor::resized()
 
   // the left rectangle:
 
-  inputRectangle.setBounds(4, shaperPlot->getY(), shaperPlot->getX()-4, shaperPlot->getHeight() );
+  inputRectangle.setBounds(0, shaperPlot->getY(), shaperPlot->getX()+2, shaperPlot->getHeight() );
 
   x = inputRectangle.getX();
   y = inputRectangle.getY();
@@ -626,8 +626,8 @@ void FuncShaperModuleEditor::resized()
 
   // the right rectangle:
 
-  outputRectangle.setBounds(shaperPlot->getRight(), shaperPlot->getY() ,
-    shaperPlot->getX()-4, shaperPlot->getHeight() );
+  outputRectangle.setBounds(shaperPlot->getRight()-2, shaperPlot->getY(),
+    shaperPlot->getX(), shaperPlot->getHeight() );
 
   x = outputRectangle.getX();
   y = outputRectangle.getY();
