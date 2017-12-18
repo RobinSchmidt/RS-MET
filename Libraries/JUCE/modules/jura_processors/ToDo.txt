@@ -1,3 +1,5 @@
+-preset load/save widgets don't respect colorscheme settings
+
 Fix guis for:
 -Straightliner
 -FuncShaper (try resizing)

@@ -931,13 +931,10 @@ void ToolChainEditor::resized()
   w = getWidth() - x - margin;
   webLink->setBounds(x, y+3, w, bottomRowHeight);
 
-  //// color setup doesn't work properly yet - the active selector rectangle is drawn on top of it
-  //// and when doing other stuff while it's open there can be access violations - so the button
-  //// setup code is commented out:
-  //int buttonWidth = 40;
-  //x = leftColumnWidth - buttonWidth - margin;
-  //y = margin;
-  //setupButton->setBounds(x, y, buttonWidth, 16);
+  int buttonWidth = 40;
+  x = leftColumnWidth - buttonWidth - margin;
+  y = margin;
+  setupButton->setBounds(x, y, buttonWidth, 16);
 
   // If this is a ToolChain wrapped into an AudioPlugIn, we want to resize the whole parent
   // window as well:
@@ -1016,7 +1013,7 @@ void ToolChainEditor::deleteEditor(int index)
   jassert(index >= 0 && index < size(editors)); // index out of range
   if(activeEditor == editors[index])
     activeEditor = nullptr;
-  delete editors[index];
+  removeChildColourSchemeComponent(editors[index], true);
   editors[index] = nullptr;
 }
 
@@ -1025,6 +1022,6 @@ void ToolChainEditor::clearEditorArray()
   ScopedLock scopedLock(*lock);
   activeEditor = nullptr;
   for(int i = 0; i < size(editors); i++)
-    delete editors[i];
+    removeChildColourSchemeComponent(editors[i], true);
   editors.clear();
 }
