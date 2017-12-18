@@ -1701,11 +1701,9 @@ void QuadrifexRoutingDiagram::drawSlotBox(Graphics &g, float x, float y, float w
 QuadrifexModuleEditor::QuadrifexModuleEditor(CriticalSection *newPlugInLock,
   QuadrifexAudioModule* newQuadrifexAudioModule) : AudioModuleEditor(newQuadrifexAudioModule)
 {
-
   ScopedLock scopedLock(*lock);
   // if we don't acquire it here, it hangs on opening the GUI ...why?
 
-  isTopLevelEditor = true;
 
   setHeadlineStyle(MAIN_HEADLINE);
   jassert(newQuadrifexAudioModule != NULL ); // you must pass a valid module here
@@ -1998,9 +1996,9 @@ void QuadrifexModuleEditor::resized()
   int w = getWidth();
   int h = getHeight();
 
-  int leftWidth = 200;
+  int leftWidth = 200 + w%2;
   h = infoField->getY()-y-2;
-  globalRectangle.setBounds(4, y+4, leftWidth, h);
+  globalRectangle.setBounds(0, y+4, leftWidth, h);
 
   x = globalRectangle.getX();
   y = globalRectangle.getY();
@@ -2030,7 +2028,8 @@ void QuadrifexModuleEditor::resized()
   // setup the sizes of the child editors:
   x = globalRectangle.getRight()-RWidget::outlineThickness;
   y = globalRectangle.getY();
-  w = (getWidth()-x-RWidget::outlineThickness)/2;
+  //w = (getWidth()-x-RWidget::outlineThickness)/2;
+  w = (getWidth()-x)/2 + 1;
   h = globalRectangle.getHeight()/2 + RWidget::outlineThickness/2;
   for(int i=0; i<rosic::Quadrifex::numEffectSlots; i++)
   {
