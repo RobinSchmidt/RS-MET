@@ -208,7 +208,8 @@ void ColourSchemeComponent::addWidgetSet(WidgetSet* widgetSetToAdd, bool addAsCh
   widgetSets.addIfNotAlreadyThere(widgetSetToAdd);
   if( addAsChildComponent == true )
   {
-    addChildComponent(widgetSetToAdd);
+    //addChildComponent(widgetSetToAdd);
+    addChildColourSchemeComponent(widgetSetToAdd);
     if( makeVisible == true )
       widgetSetToAdd->setVisible(true);
   }

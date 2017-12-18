@@ -682,7 +682,8 @@ void AudioModuleEditor::init()
   webLink->setDescriptionField(infoField);
 
   stateWidgetSet = new StateLoadSaveWidgetSet();
-  addChildColourSchemeComponent( stateWidgetSet );
+  addWidgetSet(stateWidgetSet, true, true);
+  //addChildColourSchemeComponent( stateWidgetSet ); // old
   if( moduleToEdit != NULL )
     moduleToEdit->addStateWatcher(stateWidgetSet);
   stateWidgetSet->setDescriptionField(infoField);
