@@ -9,8 +9,10 @@
               pluginProducesMidiOut="0" pluginIsMidiEffectPlugin="0" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="TestPluginJUCEAU" pluginRTASCategory=""
               aaxIdentifier="com.RS-MET.TestPluginJUCE" pluginAAXCategory="AAX_ePlugInCategory_Dynamics"
-              jucerVersion="4.2.4" companyName="RS-MET" companyWebsite="www.rs-met.com"
-              companyEmail="robin@rs-met.com">
+              jucerVersion="5.2.0" companyName="RS-MET" companyWebsite="www.rs-met.com"
+              companyEmail="robin@rs-met.com" displaySplashScreen="1" reportAppUsage="1"
+              splashScreenColour="Dark" buildStandalone="0" enableIAA="0" cppLanguageStandard="11"
+              companyCopyright="RS-MET">
   <MAINGROUP id="J7WzKP" name="TestPluginJUCE">
     <GROUP id="{5348A3D7-BFCF-B722-2C65-2A345253A7EB}" name="Source">
       <FILE id="NOmWFA" name="PluginProcessor.cpp" compile="1" tion="0" file="Source/PluginProcessor.cpp"/>
@@ -25,9 +27,11 @@
     <VS2015 targetFolder="Builds/VisualStudio2015">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
-                       isDebug="1" optimisation="1" targetName="TestPluginJUCE"/>
+                       isDebug="1" optimisation="1" targetName="TestPluginJUCE" debugInformationFormat="ProgramDatabase"
+                       enablePluginBinaryCopyStep="0"/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
-                       isDebug="0" optimisation="3" targetName="TestPluginJUCE"/>
+                       isDebug="0" optimisation="3" targetName="TestPluginJUCE" debugInformationFormat="ProgramDatabase"
+                       enablePluginBinaryCopyStep="0" linkTimeOptimisation="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../../../Libraries/JUCE/modules"/>
@@ -41,12 +45,15 @@
         <MODULEPATH id="juce_audio_formats" path="../../../Libraries/JUCE/modules"/>
         <MODULEPATH id="juce_audio_processors" path="../../../Libraries/JUCE/modules"/>
         <MODULEPATH id="juce_audio_plugin_client" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="rapt" path="../../../Libraries/JUCE/modules"/>
       </MODULEPATHS>
     </VS2015>
     <CODEBLOCKS_WINDOWS targetFolder="Builds/CodeBlocksWindows" extraCompilerFlags="-fpermissive">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="TestPluginJUCE"/>
-        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="TestPluginJUCE"/>
+        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="TestPluginJUCE"
+                       windowsCodeBlocksArchitecture="-m64"/>
+        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="TestPluginJUCE"
+                       windowsCodeBlocksArchitecture="-m64"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_gui_extra" path="../../../Libraries/JUCE/modules"/>
@@ -60,15 +67,16 @@
         <MODULEPATH id="juce_audio_formats" path="../../../Libraries/JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../../Libraries/JUCE/modules"/>
         <MODULEPATH id="juce_audio_basics" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="rapt" path="../../../Libraries/JUCE/modules"/>
       </MODULEPATHS>
     </CODEBLOCKS_WINDOWS>
     <CODEBLOCKS_LINUX targetFolder="Builds/CodeBlocksLinux" extraCompilerFlags="-fPIC"
                       externalLibraries="asound&#10;X11&#10;Xext&#10;freetype">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="TestPluginJUCE"
-                       headerPath="../../../../../Libraries/JUCE/modules"/>
+                       headerPath="../../../../../Libraries/JUCE/modules" linuxCodeBlocksArchitecture="-m64"/>
         <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="TestPluginJUCE"
-                       headerPath="../../../../../Libraries/JUCE/modules"/>
+                       headerPath="../../../../../Libraries/JUCE/modules" linuxCodeBlocksArchitecture="-m64"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_gui_extra" path="../../juce"/>
@@ -82,6 +90,7 @@
         <MODULEPATH id="juce_audio_formats" path="../../juce"/>
         <MODULEPATH id="juce_audio_devices" path="../../juce"/>
         <MODULEPATH id="juce_audio_basics" path="../../juce"/>
+        <MODULEPATH id="rapt" path="../../../Libraries/JUCE/modules"/>
       </MODULEPATHS>
     </CODEBLOCKS_LINUX>
   </EXPORTFORMATS>
@@ -97,6 +106,7 @@
     <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="rapt" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
   </MODULES>
   <JUCEOPTIONS JUCE_QUICKTIME="disabled" JUCE_WEB_BROWSER="disabled" JUCE_ENABLE_LIVE_CONSTANT_EDITOR="disabled"/>
 </JUCERPROJECT>

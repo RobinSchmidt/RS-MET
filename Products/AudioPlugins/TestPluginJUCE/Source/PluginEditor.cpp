@@ -1,6 +1,8 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+using namespace RAPT;
+
 TestPluginAudioProcessorEditor::TestPluginAudioProcessorEditor (TestPluginAudioProcessor& p)
     : AudioProcessorEditor (&p), processor (p)
 {
@@ -8,7 +10,7 @@ TestPluginAudioProcessorEditor::TestPluginAudioProcessorEditor (TestPluginAudioP
   labelMode.setJustificationType(Justification::centredLeft);
   addAndMakeVisible(&labelMode);
 
-  typedef LadderFilter<float, float> Ladder; // for accessing the enum of modes conveniently
+  typedef rsLadderFilter<float, float> Ladder; // for accessing the enum of modes conveniently
   boxMode.addItem("Flat",                  Ladder::FLAT+1);    // +1 because the ID cannot be 0, when
   boxMode.addItem("Lowpass 6 dB/oct",      Ladder::LP_6+1);    // retieving the ID, we'll use the
   boxMode.addItem("Lowpass 12 dB/oct",     Ladder::LP_12+1);   // returned value -1

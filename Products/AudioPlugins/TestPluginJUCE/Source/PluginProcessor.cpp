@@ -1,8 +1,6 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
-#include "../../../../Libraries/RAPT/Source/Modules/RAPT.cpp"
-
 TestPluginAudioProcessor::TestPluginAudioProcessor()
 {
 }
@@ -68,6 +66,7 @@ void TestPluginAudioProcessor::releaseResources()
   // spare memory, etc.
 }
 
+/*
 #ifndef JucePlugin_PreferredChannelConfigurations
 bool TestPluginAudioProcessor::setPreferredBusArrangement (bool isInput, int bus, 
   const AudioChannelSet& preferredSet)
@@ -94,6 +93,7 @@ bool TestPluginAudioProcessor::setPreferredBusArrangement (bool isInput, int bus
 }
 #endif
 // can this function be factored out into a baseclass to avoid boilerplate code for other plugins?
+*/
 
 void TestPluginAudioProcessor::processBlock(AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 {

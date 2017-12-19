@@ -6,8 +6,6 @@
 #include <complex>    // abused for representing stereo signals
 using namespace std;
 
-#include "../../../../Libraries/RAPT/Source/Modules/RAPT.h"
-using namespace RAPT;
 
 /** A test plugin implementing a multimode ladder filter  */
 
@@ -28,7 +26,7 @@ public:
   void releaseResources() override;
 
 #ifndef JucePlugin_PreferredChannelConfigurations
-  bool setPreferredBusArrangement (bool isInput, int bus, const AudioChannelSet& preferredSet) override;
+  //bool setPreferredBusArrangement (bool isInput, int bus, const AudioChannelSet& preferredSet) override;
 #endif
 
   void processBlock (AudioSampleBuffer&, MidiBuffer&) override;
@@ -67,7 +65,7 @@ protected:
 
   double cutoff, reso;  // mapped parameters - todo: use AudioProcessorParameter class
 
-  LadderFilter<complex<double>, double> ladder;
+  RAPT::rsLadderFilter<complex<double>, double> ladder;
     // The embedded RAPT LadderFilter object - we use complex numbers for the signal type to 
     // represent stereo signals (real part: left channel, imaginary part: right channel).
     // ToDo: maybe use a different stereo-pair type later, based on a SIMD datatype that represents

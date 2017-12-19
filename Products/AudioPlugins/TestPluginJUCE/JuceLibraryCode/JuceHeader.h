@@ -10,8 +10,7 @@
 
 */
 
-#ifndef __APPHEADERFILE_LT8OJO__
-#define __APPHEADERFILE_LT8OJO__
+#pragma once
 
 #include "AppConfig.h"
 
@@ -26,6 +25,7 @@
 #include <juce_graphics/juce_graphics.h>
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <juce_gui_extra/juce_gui_extra.h>
+#include <rapt/rapt.h>
 
 
 #if ! DONT_SET_USING_JUCE_NAMESPACE
@@ -42,5 +42,3 @@ namespace ProjectInfo
     const int          versionNumber  = 0x10000;
 }
 #endif
-
-#endif   // __APPHEADERFILE_LT8OJO__
