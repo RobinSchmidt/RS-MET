@@ -1,6 +1,12 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2015
-Project("{E388987A-B95B-4576-A8C9-D2ABC3243DDA}") = "ToolChain", "ToolChain.vcxproj", "{05FFA3EA-CF46-20C0-DD81-53EE67A0B465}"
+
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ToolChain - VST", "ToolChain_VST.vcxproj", "{7A3015B3-BFDC-158C-9C8E-82E6BE550FCA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{935061A6-9104-290E-C14D-EE4571EAD9EB} = {935061A6-9104-290E-C14D-EE4571EAD9EB}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ToolChain - Shared Code", "ToolChain_SharedCode.vcxproj", "{935061A6-9104-290E-C14D-EE4571EAD9EB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -8,10 +14,14 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{05FFA3EA-CF46-20C0-DD81-53EE67A0B465}.Debug|x64.ActiveCfg = Debug|x64
-		{05FFA3EA-CF46-20C0-DD81-53EE67A0B465}.Debug|x64.Build.0 = Debug|x64
-		{05FFA3EA-CF46-20C0-DD81-53EE67A0B465}.Release|x64.ActiveCfg = Release|x64
-		{05FFA3EA-CF46-20C0-DD81-53EE67A0B465}.Release|x64.Build.0 = Release|x64
+		{7A3015B3-BFDC-158C-9C8E-82E6BE550FCA}.Debug|x64.ActiveCfg = Debug|x64
+		{7A3015B3-BFDC-158C-9C8E-82E6BE550FCA}.Debug|x64.Build.0 = Debug|x64
+		{7A3015B3-BFDC-158C-9C8E-82E6BE550FCA}.Release|x64.ActiveCfg = Release|x64
+		{7A3015B3-BFDC-158C-9C8E-82E6BE550FCA}.Release|x64.Build.0 = Release|x64
+		{935061A6-9104-290E-C14D-EE4571EAD9EB}.Debug|x64.ActiveCfg = Debug|x64
+		{935061A6-9104-290E-C14D-EE4571EAD9EB}.Debug|x64.Build.0 = Debug|x64
+		{935061A6-9104-290E-C14D-EE4571EAD9EB}.Release|x64.ActiveCfg = Release|x64
+		{935061A6-9104-290E-C14D-EE4571EAD9EB}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
