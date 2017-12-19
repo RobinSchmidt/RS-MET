@@ -137,8 +137,10 @@ public:
 
   enum modes
   {
-    OSCILLOSCOPE = 0,
-    SPECTRUM_ANALYZER
+    WAVEFORM = 0,
+    SPECTRUM
+    // METERS,
+    // SPECTROGRAM,
   };
 
   //-----------------------------------------------------------------------------------------------
@@ -180,9 +182,9 @@ public:
   {
     switch(mode)
     {
-    case OSCILLOSCOPE: 
+    case WAVEFORM: 
       oscilloscopeModule->processBlock(inOutBuffer, numChannels, numSamples);     break;
-    case SPECTRUM_ANALYZER:
+    case SPECTRUM:
       spectrumAnalyzerModule->processBlock(inOutBuffer, numChannels, numSamples); break;
     }
   }

@@ -160,8 +160,9 @@ void MultiAnalyzerAudioModule::parameterChanged(Parameter* parameterThatHasChang
 void MultiAnalyzerAudioModule::initializeAutomatableParameters()
 {
   Parameter *p = new Parameter(lock, "Mode", 0.0, 1.0, 1.0, 1.0, Parameter::STRING);
-  p->addStringValue(juce::String("Oscilloscope"));
-  p->addStringValue(juce::String("SpectrumAnalyzer"));
+  //p->addStringValue(juce::String("Oscilloscope"));
+  p->addStringValue("WaveformDisplay");
+  p->addStringValue("SpectrumAnalyzer");
   p->setValue(1.0, false, false);
   addObservedParameter(p);
 
@@ -1013,15 +1014,17 @@ MultiAnalyzerModuleEditor::MultiAnalyzerModuleEditor(CriticalSection *newPlugInL
   addChildEditor(spectrumAnalyzerEditor, true, false);
 
   // buttons for tabbing between the subeditors:
-  addWidget( oscilloscopeButton = new RButton(juce::String("Scope")) );
-  oscilloscopeButton->setDescription(juce::String("Switch to oscilloscope mode"));
+  addWidget( oscilloscopeButton = new RButton("Wave") );
+  oscilloscopeButton->setDescription("Switch to waveform display mode");
   oscilloscopeButton->setDescriptionField(infoField);
   oscilloscopeButton->addRButtonListener(this);
 
-  addWidget( spectrumAnalyzerButton = new RButton(juce::String("Spectrum")) );
-  spectrumAnalyzerButton->setDescription(juce::String("Switch to spectrum analyzer mode"));
+  addWidget( spectrumAnalyzerButton = new RButton("Spectrum") );
+  spectrumAnalyzerButton->setDescription("Switch to spectrum analyzer mode");
   spectrumAnalyzerButton->setDescriptionField(infoField);
   spectrumAnalyzerButton->addRButtonListener(this);
+
+  // todo: add meters, spectrogram, pitch
 
   loadPreferencesFromFile();
   updateWidgetsAccordingToState();
@@ -1035,9 +1038,9 @@ void MultiAnalyzerModuleEditor::rButtonClicked(RButton *buttonThatWasClicked)
     return;
 
   if( buttonThatWasClicked == oscilloscopeButton )
-    multiAnalyzerAudioModule->setMode(MultiAnalyzerAudioModule::OSCILLOSCOPE);
+    multiAnalyzerAudioModule->setMode(MultiAnalyzerAudioModule::WAVEFORM);
   else if( buttonThatWasClicked == spectrumAnalyzerButton )
-    multiAnalyzerAudioModule->setMode(MultiAnalyzerAudioModule::SPECTRUM_ANALYZER);
+    multiAnalyzerAudioModule->setMode(MultiAnalyzerAudioModule::SPECTRUM);
   else
     AudioModuleEditor::rButtonClicked(buttonThatWasClicked);
 
@@ -1093,13 +1096,13 @@ void MultiAnalyzerModuleEditor::updateSubEditorVisibilitiesAndTabButtonStates()
   int mode = multiAnalyzerAudioModule->getMode();
   switch( mode )
   {
-  case MultiAnalyzerAudioModule::OSCILLOSCOPE:
+  case MultiAnalyzerAudioModule::WAVEFORM:
   {
     oscilloscopeButton->setToggleState(true, false);
     oscilloscopeEditor->setVisible(true);
   }
   break;
-  case MultiAnalyzerAudioModule::SPECTRUM_ANALYZER:
+  case MultiAnalyzerAudioModule::SPECTRUM:
   {
     spectrumAnalyzerButton->setToggleState(true, false);
     spectrumAnalyzerEditor->setVisible(true);
