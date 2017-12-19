@@ -117,8 +117,9 @@ public:
 
   virtual bool supportsDoublePrecisionProcessing() const override { return true; }
   virtual void processBlock(AudioBuffer<double>& buffer, MidiBuffer& midiMessages) override;
-  virtual bool setPreferredBusArrangement(bool isInput, int bus,
-    const AudioChannelSet& preferredSet) override;
+  //virtual bool setPreferredBusArrangement(bool isInput, int bus,
+  //  const AudioChannelSet& preferredSet) override;
+  virtual int getBusCount(bool isInput)	const { return 2; } // preliminary
   //virtual String getParameterName(int parameterIndex, int maximumStringLength) override;
 
   //-----------------------------------------------------------------------------------------------

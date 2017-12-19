@@ -89,6 +89,18 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_basics/audio_play_head/juce_AudioPlayHead.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_basics/buffers/juce_AudioChannelSet.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_basics/buffers/juce_AudioChannelSet.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_basics/buffers/juce_AudioDataConverters.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -118,14 +130,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_basics/effects/juce_Decibels.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_basics/effects/juce_FFT.cpp">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_basics/effects/juce_FFT.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
@@ -273,6 +277,10 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_basics/native/juce_mac_CoreAudioLayouts.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_basics/sources/juce_AudioSource.h">
       <Option compile="0"/>
       <Option link="0"/>
@@ -298,6 +306,14 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_basics/sources/juce_IIRFilterAudioSource.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_basics/sources/juce_MemoryAudioSource.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_basics/sources/juce_MemoryAudioSource.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
@@ -358,18 +374,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_basics/juce_audio_basics.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/audio_cd/juce_AudioCDBurner.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/audio_cd/juce_AudioCDReader.cpp">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/audio_cd/juce_AudioCDReader.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
@@ -437,11 +441,11 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/juce_linux_ALSA.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/juce_ios_Audio.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/juce_linux_AudioCDReader.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/juce_linux_ALSA.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
@@ -450,14 +454,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/juce_linux_Midi.cpp">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/juce_mac_AudioCDBurner.mm">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/juce_mac_AudioCDReader.mm">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
@@ -474,14 +470,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/juce_win32_ASIO.cpp">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/juce_win32_AudioCDBurner.cpp">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/juce_win32_AudioCDReader.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
@@ -1061,14 +1049,6 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/juce_QuickTimeAudioFormat.cpp">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/juce_QuickTimeAudioFormat.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/juce_WavAudioFormat.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -1405,10 +1385,6 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_plugin_client/AU/juce_AU_Shared.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_plugin_client/AU/juce_AU_Wrapper.mm">
       <Option compile="0"/>
       <Option link="0"/>
@@ -1473,10 +1449,6 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_plugin_client/utility/juce_PluginBusUtilities.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_plugin_client/utility/juce_PluginHostType.h">
       <Option compile="0"/>
       <Option link="0"/>
@@ -1497,7 +1469,15 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_plugin_client/VST/juce_VSTCallbackHandler.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_plugin_client/VST3/juce_VST3_Wrapper.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_plugin_client/AUResources.r">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
@@ -1597,6 +1577,10 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_processors/format_types/juce_AU_Shared.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_processors/format_types/juce_AudioUnitPluginFormat.h">
       <Option compile="0"/>
       <Option link="0"/>
@@ -1629,6 +1613,10 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_processors/format_types/juce_VSTCommon.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_processors/format_types/juce_VSTInterface.h">
       <Option compile="0"/>
       <Option link="0"/>
@@ -1642,18 +1630,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_processors/format_types/juce_VSTPluginFormat.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_processors/processors/juce_AudioChannelSet.cpp">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_processors/processors/juce_AudioChannelSet.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_processors/processors/juce_AudioPlayHead.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
@@ -1813,7 +1789,15 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_core/containers/juce_HashMap_test.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_core/containers/juce_LinkedListPointer.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_core/containers/juce_ListenerList.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
@@ -2077,6 +2061,14 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_core/misc/juce_StdFunctionCompat.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_core/misc/juce_StdFunctionCompat.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_core/misc/juce_Uuid.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -2242,6 +2234,14 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_core/network/juce_URL.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_core/network/juce_WebInputStream.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_core/network/juce_WebInputStream.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
@@ -2881,6 +2881,10 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_events/native/juce_linux_EventLoop.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_events/native/juce_linux_Messaging.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -2893,15 +2897,19 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_events/native/juce_ScopedXLock.h">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_events/native/juce_win32_HiddenMessageWindow.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_events/native/juce_win32_Messaging.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_events/native/juce_win32_WinRTWrapper.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_events/native/juce_win32_WinRTWrapper.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
@@ -3505,11 +3513,19 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_graphics/native/juce_android_IconHelpers.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_graphics/native/juce_freetype_Fonts.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_graphics/native/juce_linux_Fonts.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_graphics/native/juce_linux_IconHelpers.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
@@ -3529,11 +3545,19 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_graphics/native/juce_mac_IconHelpers.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_graphics/native/juce_RenderingHelpers.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_graphics/native/juce_win32_Direct2DGraphicsContext.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_graphics/native/juce_win32_Direct2DGraphicsContext.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
@@ -3546,6 +3570,10 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_graphics/native/juce_win32_Fonts.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_graphics/native/juce_win32_IconHelpers.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
@@ -3989,6 +4017,26 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_basics/layout/juce_Grid.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_basics/layout/juce_Grid.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_basics/layout/juce_GridItem.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_basics/layout/juce_GridItem.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_basics/layout/juce_GridUnitTests.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_basics/layout/juce_GroupComponent.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -4117,6 +4165,14 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_basics/lookandfeel/juce_LookAndFeel_V4.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_basics/lookandfeel/juce_LookAndFeel_V4.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_basics/menus/juce_MenuBarComponent.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -4154,6 +4210,14 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_basics/misc/juce_DropShadower.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_basics/misc/juce_JUCESplashScreen.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_basics/misc/juce_JUCESplashScreen.h">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
@@ -4253,15 +4317,23 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_basics/native/juce_linux_Clipboard.cpp">
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_basics/native/juce_linux_FileChooser.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_basics/native/juce_linux_Windowing.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_basics/native/juce_linux_X11.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_basics/native/juce_linux_X11.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_basics/native/juce_linux_X11_Clipboard.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_basics/native/juce_linux_X11_Windowing.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
@@ -4681,6 +4753,10 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_extra/embedding/juce_XEmbedComponent.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_extra/misc/juce_AnimatedAppComponent.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -4733,6 +4809,14 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_extra/misc/juce_PushNotifications.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_extra/misc/juce_PushNotifications.h">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_extra/misc/juce_RecentlyOpenedFilesList.cpp">
       <Option compile="0"/>
       <Option link="0"/>
@@ -4761,7 +4845,15 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_extra/native/juce_android_PushNotifications.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_extra/native/juce_android_WebBrowserComponent.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_extra/native/juce_ios_PushNotifications.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
@@ -4769,11 +4861,15 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_extra/native/juce_linux_SystemTrayIcon.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_extra/native/juce_linux_X11_SystemTrayIcon.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_extra/native/juce_linux_WebBrowserComponent.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_extra/native/juce_linux_X11_WebBrowserComponent.cpp">
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_extra/native/juce_linux_XEmbedComponent.cpp">
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>

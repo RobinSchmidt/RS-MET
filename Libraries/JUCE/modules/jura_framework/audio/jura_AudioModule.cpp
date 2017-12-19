@@ -910,7 +910,7 @@ juce::String AudioModuleEditor::getPreferencesTagName()
 
 juce::String AudioModuleEditor::getPreferencesFileName()
 {
-  return getApplicationDirectory() + File::separatorString + getPreferencesTagName()
+  return getApplicationDirectory() + File::getSeparatorString() + getPreferencesTagName()
     + juce::String(".xml");
 }
 

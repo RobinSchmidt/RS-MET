@@ -15,7 +15,8 @@ BitCrusherAudioModule::BitCrusherAudioModule(CriticalSection *newPlugInLock, ros
 
   // maybe these 2 calls can be absorbed into 1 initialize() call or something:
   //setActiveDirectory(getApplicationDirectory() + juce::File::separatorString + juce::String(("BitCrusherPresets")) );
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString + moduleName + juce::String(("Presets")) );
+  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString() + moduleName 
+    + juce::String(("Presets")) );
   createStaticParameters();
 }
 
@@ -99,7 +100,8 @@ ModulatedAllpassAudioModule::ModulatedAllpassAudioModule(CriticalSection *newPlu
   wrappedModulatedAllpass = newModulatedAllpassToWrap;
   moduleName  = juce::String(("ModulatedAllpass"));
 
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString + juce::String(("ModulatedAllpassPresets")) );
+  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString() 
+    + juce::String(("ModulatedAllpassPresets")) );
   createStaticParameters();
 }
 
@@ -172,7 +174,7 @@ SlewRateLimiterAudioModule::SlewRateLimiterAudioModule(CriticalSection *newPlugI
   jassert( newSlewRateLimiterToWrap != NULL ); // you must pass a valid rosic-object
   wrappedSlewRateLimiter = newSlewRateLimiterToWrap;
   moduleName  = juce::String(("SlewRateLimiter"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
+  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
     + juce::String(("SlewRateLimiterPresets")) );
   createStaticParameters();
 }
@@ -245,7 +247,7 @@ HarmonicsAudioModule::HarmonicsAudioModule(CriticalSection *newPlugInLock, rosic
   jassert( newHarmonicsToWrap != NULL ); // you must pass a valid rosic-object
   wrappedHarmonics = newHarmonicsToWrap;
   moduleName  = juce::String(("Harmonics"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
+  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
     + juce::String(("HarmonicsPresets")) );
   createStaticParameters();
 }
@@ -568,7 +570,7 @@ WaveShaperAudioModule::WaveShaperAudioModule(CriticalSection *newPlugInLock,
   jassert( newWaveShaperToWrap != NULL ); // you must pass a valid rosic-object
   wrappedWaveShaper = newWaveShaperToWrap;
   moduleName  = juce::String(("WaveShaper"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
+  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
     + juce::String(("WaveShaperPresets")) );
   createStaticParameters();
 }
@@ -816,7 +818,7 @@ CompShaperAudioModule::CompShaperAudioModule(CriticalSection *newPlugInLock, ros
   jassert( newCompShaperToWrap != NULL ); // you must pass a valid rosic-object
   wrappedCompShaper = newCompShaperToWrap;
   moduleName  = juce::String(("CompShaper"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
+  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
     + juce::String(("CompShaperPresets")) );
   createStaticParameters();
 }
@@ -987,7 +989,7 @@ CompressorAudioModule::CompressorAudioModule(CriticalSection *newPlugInLock, ros
   jassert( newCompressorToWrap != NULL ); // you must pass a valid rosic-object
   wrappedCompressor = newCompressorToWrap;
   moduleName  = juce::String(("Compressor"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
+  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
     + juce::String(("CompressorPresets")) );
   createStaticParameters();
 }
@@ -1226,7 +1228,7 @@ ExpanderAudioModule::ExpanderAudioModule(CriticalSection *newPlugInLock, rosic::
   jassert( newExpanderToWrap != NULL ); // you must pass a valid rosic-object
   wrappedExpander = newExpanderToWrap;
   moduleName  = juce::String(("Expander"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
+  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
     + juce::String(("ExpanderPresets")) );
   createStaticParameters();
 }
@@ -1438,7 +1440,7 @@ LimiterAudioModule::LimiterAudioModule(CriticalSection *newPlugInLock, rosic::Li
   jassert( newLimiterToWrap != NULL ); // you must pass a valid rosic-object
   wrappedLimiter = newLimiterToWrap;
   moduleName  = juce::String(("Limiter"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
+  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
     + juce::String(("LimiterPresets")) );
   createStaticParameters();
 }
@@ -1614,7 +1616,7 @@ NoiseGateAudioModule::NoiseGateAudioModule(CriticalSection *newPlugInLock, rosic
   jassert( newNoiseGateToWrap != NULL ); // you must pass a valid rosic-object
   wrappedNoiseGate = newNoiseGateToWrap;
   moduleName  = juce::String(("NoiseGate"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
+  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
     + juce::String(("NoiseGatePresets")) );
   createStaticParameters();
 }
@@ -1817,7 +1819,7 @@ CombBankAudioModule::CombBankAudioModule(CriticalSection *newPlugInLock, rosic::
   jassert( newCombBankToWrap != NULL ); // you must pass a valid rosic-object
   wrappedCombBank = newCombBankToWrap;
   moduleName  = juce::String(("CombBank"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
+  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
     + juce::String(("CombBankPresets")) );
   createStaticParameters();
 }
@@ -2049,7 +2051,7 @@ CombResonatorAudioModule::CombResonatorAudioModule(CriticalSection *newPlugInLoc
   jassert( newCombResonatorToWrap != NULL ); // you must pass a valid rosic-object
   wrappedCombResonator = newCombResonatorToWrap;
   moduleName  = juce::String(("CombResonator"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
+  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
     + juce::String(("CombResonatorPresets")) );
   createStaticParameters();
 }
@@ -2282,7 +2284,7 @@ DualTwoPoleFilterAudioModule::DualTwoPoleFilterAudioModule(CriticalSection *newP
   jassert( newDualTwoPoleFilterToWrap != NULL ); // you must pass a valid rosic-object
   wrappedDualTwoPoleFilter = newDualTwoPoleFilterToWrap;
   moduleName  = juce::String(("DualTwoPoleFilter"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
+  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
     + juce::String(("DualTwoPoleFilterPresets")) );
   createStaticParameters();
 }
@@ -2549,7 +2551,7 @@ FourPoleFilterAudioModule::FourPoleFilterAudioModule(CriticalSection *newPlugInL
   jassert( newFourPoleFilterToWrap != NULL ); // you must pass a valid rosic-object
   wrappedFourPoleFilter = newFourPoleFilterToWrap;
   moduleName  = juce::String(("FourPoleFilter"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
+  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
     + juce::String(("FourPoleFilterPresets")) );
   createStaticParameters();
 }
@@ -2671,7 +2673,7 @@ LadderFilterAudioModule::LadderFilterAudioModule(CriticalSection *newPlugInLock,
   jassert( newLadderFilterToWrap != NULL ); // you must pass a valid rosic-object
   wrappedLadderFilter = newLadderFilterToWrap;
   moduleName  = juce::String(("LadderFilter"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
+  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
     + juce::String(("LadderFilterPresets")) );
   createStaticParameters();
 }
@@ -2849,7 +2851,8 @@ SlopeFilterAudioModule::SlopeFilterAudioModule(CriticalSection *newPlugInLock, r
   jassert( newSlopeFilterToWrap != NULL ); // you must pass a valid rosic-object
   wrappedSlopeFilter = newSlopeFilterToWrap;
   moduleName  = juce::String(("SlopeFilter"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString + juce::String(("SlopeFilterPresets")) );
+  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString() 
+    + juce::String(("SlopeFilterPresets")) );
   createStaticParameters();
 }
 
@@ -2909,7 +2912,7 @@ TwoPoleFilterAudioModule::TwoPoleFilterAudioModule(CriticalSection *newPlugInLoc
   jassert( newTwoPoleFilterToWrap != NULL ); // you must pass a valid rosic-object
   wrappedTwoPoleFilter = newTwoPoleFilterToWrap;
   moduleName  = juce::String(("TwoPoleFilter"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
+  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
     + juce::String(("TwoPoleFilterPresets")) );
   createStaticParameters();
 }
@@ -3047,7 +3050,7 @@ PingPongEchoAudioModule::PingPongEchoAudioModule(CriticalSection *newPlugInLock,
   jassert( newPingPongEchoToWrap != NULL ); // you must pass a valid rosic-object
   wrappedPingPongEcho = newPingPongEchoToWrap;
   moduleName  = juce::String(("PingPongEcho"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
+  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
     + juce::String(("PingPongEchoPresets")) );
   createStaticParameters();
 }
@@ -3220,7 +3223,7 @@ ReverbAudioModule::ReverbAudioModule(CriticalSection *newPlugInLock, rosic::rsRe
   jassert( newReverbToWrap != NULL ); // you must pass a valid rosic-object
   wrappedReverb = newReverbToWrap;
   moduleName  = juce::String(("Reverb"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
+  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
     + juce::String(("ReverbPresets")) );
   createStaticParameters();
 }
@@ -3397,7 +3400,7 @@ SimpleDelayAudioModule::SimpleDelayAudioModule(CriticalSection *newPlugInLock, r
   jassert( newSimpleDelayToWrap != NULL ); // you must pass a valid rosic-object
   wrappedSimpleDelay = newSimpleDelayToWrap;
   moduleName  = juce::String(("SimpleDelay"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
+  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
     + juce::String(("SimpleDelayPresets")) );
   createStaticParameters();
 }
@@ -3462,7 +3465,7 @@ ModulationEffectAudioModule::ModulationEffectAudioModule(CriticalSection *newPlu
   wrappedModulationEffect = newModulationEffectToWrap;
   moduleName  = juce::String(("ModulationEffect"));
   setActiveDirectory(getApplicationDirectory()
-    + juce::File::separatorString + juce::String(("ModulationEffectPresets")) );
+    + juce::File::getSeparatorString() + juce::String(("ModulationEffectPresets")) );
   lfoModule = new LowFrequencyOscillatorAudioModule(newPlugInLock, &wrappedModulationEffect->lfo);
   lfoModule->setModuleName(juce::String(("LowFrequencyOscillator")));
   addChildAudioModule(lfoModule);
@@ -3546,7 +3549,7 @@ FlangerAudioModule::FlangerAudioModule(CriticalSection *newPlugInLock, rosic::Fl
   jassert( newFlangerToWrap != NULL ); // you must pass a valid rosic-object
   wrappedFlanger = newFlangerToWrap;
   moduleName  = juce::String(("Flanger"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
+  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
     + juce::String(("FlangerPresets")) );
   createStaticParameters();
 }
@@ -3661,7 +3664,7 @@ PhaserAudioModule::PhaserAudioModule(CriticalSection *newPlugInLock, rosic::Phas
   jassert( newPhaserToWrap != NULL ); // you must pass a valid rosic-object
   wrappedPhaser = newPhaserToWrap;
   moduleName  = juce::String(("Phaser"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
+  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
     + juce::String(("PhaserPresets")) );
   createStaticParameters();
 }
@@ -3834,7 +3837,7 @@ TremoloAudioModule::TremoloAudioModule(CriticalSection *newPlugInLock, rosic::Tr
   jassert( newTremoloToWrap != NULL ); // you must pass a valid rosic-object
   wrappedTremolo = newTremoloToWrap;
   moduleName  = juce::String(("Tremolo"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
+  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
     + juce::String(("TremoloPresets")) );
   createStaticParameters();
 }
@@ -3898,7 +3901,7 @@ VibratoAudioModule::VibratoAudioModule(CriticalSection *newPlugInLock, rosic::Vi
   jassert( newVibratoToWrap != NULL ); // you must pass a valid rosic-object
   wrappedVibrato = newVibratoToWrap;
   moduleName  = juce::String(("Vibrato"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
+  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
     + juce::String(("VibratoPresets")) );
   createStaticParameters();
 }
@@ -3970,7 +3973,7 @@ WahWahAudioModule::WahWahAudioModule(CriticalSection *newPlugInLock, rosic::WahW
   jassert( newWahWahToWrap != NULL ); // you must pass a valid rosic-object
   wrappedWahWah = newWahWahToWrap;
   moduleName  = juce::String(("WahWah"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
+  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
     + juce::String(("WahWahPresets")) );
   createStaticParameters();
 }
@@ -4130,7 +4133,7 @@ FormantShifterAudioModule::FormantShifterAudioModule(CriticalSection *newPlugInL
   jassert( newFormantShifterToWrap != NULL ); // you must pass a valid rosic-object
   wrappedFormantShifter = newFormantShifterToWrap;
   moduleName  = juce::String(("FormantShifter"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
+  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
     + juce::String(("FormantShifterPresets")) );
   createStaticParameters();
 }
@@ -4238,7 +4241,7 @@ ChorusAudioModule::ChorusAudioModule(CriticalSection *newPlugInLock, rosic::Chor
   jassert( newChorusToWrap != NULL ); // you must pass a valid rosic-object
   wrappedChorus = newChorusToWrap;
   moduleName  = juce::String(("Chorus"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
+  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
     + juce::String(("ChorusPresets")) );
   createStaticParameters();
 }
@@ -4640,7 +4643,7 @@ FrequencyShifterAudioModule::FrequencyShifterAudioModule(CriticalSection *newPlu
   jassert( newFrequencyShifterToWrap != NULL ); // you must pass a valid rosic-object
   wrappedFrequencyShifter = newFrequencyShifterToWrap;
   moduleName  = juce::String(("FrequencyShifter"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
+  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
     + juce::String(("FrequencyShifterPresets")) );
   createStaticParameters();
 }
@@ -4748,7 +4751,7 @@ PhaseStereoizerAudioModule::PhaseStereoizerAudioModule(CriticalSection *newPlugI
   jassert( newPhaseStereoizerToWrap != NULL ); // you must pass a valid rosic-object
   wrappedPhaseStereoizer = newPhaseStereoizerToWrap;
   moduleName  = juce::String(("PhaseStereoizer"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
+  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
     + juce::String(("PhaseStereoizerPresets")) );
   createStaticParameters();
 }
@@ -4876,7 +4879,7 @@ RingModulatorAudioModule::RingModulatorAudioModule(CriticalSection *newPlugInLoc
   jassert( newRingModulatorToWrap != NULL ); // you must pass a valid rosic-object
   wrappedRingModulator = newRingModulatorToWrap;
   moduleName  = juce::String(("RingModulator"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
+  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
     + juce::String(("RingModulatorPresets")) );
   createStaticParameters();
 }
@@ -4987,7 +4990,7 @@ SingleSidebandModulatorAudioModule::SingleSidebandModulatorAudioModule(CriticalS
   jassert( newSingleSidebandModulatorToWrap != NULL ); // you must pass a valid rosic-object
   wrappedSingleSidebandModulator = newSingleSidebandModulatorToWrap;
   moduleName  = juce::String(("SingleSidebandModulator"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
+  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
     + juce::String(("SingleSidebandModulatorPresets")) );
   createStaticParameters();
 }
@@ -5123,7 +5126,7 @@ StereoPanAudioModule::StereoPanAudioModule(CriticalSection *newPlugInLock, rosic
   jassert( newStereoPanToWrap != NULL ); // you must pass a valid rosic-object
   wrappedStereoPan = newStereoPanToWrap;
   moduleName  = juce::String(("StereoPan"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
+  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
     + juce::String(("StereoPanPresets")) );
   createStaticParameters();
 }
@@ -5244,7 +5247,7 @@ StereoWidthAudioModule::StereoWidthAudioModule(CriticalSection *newPlugInLock, r
   jassert( newStereoWidthToWrap != NULL ); // you must pass a valid rosic-object
   wrappedStereoWidth = newStereoWidthToWrap;
   moduleName  = juce::String(("StereoWidth"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
+  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
     + juce::String(("StereoWidthPresets")) );
   createStaticParameters();
 }
@@ -5319,7 +5322,7 @@ SineOscillatorAudioModule::SineOscillatorAudioModule(CriticalSection *newPlugInL
   jassert( newSineOscillatorToWrap != NULL ); // you must pass a valid rosic-object
   wrappedSineOscillator = newSineOscillatorToWrap;
   moduleName  = juce::String(("SineOscillator"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
+  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
     + juce::String(("SineOscillatorPresets")) );
   createStaticParameters();
 }
@@ -5384,7 +5387,7 @@ NoisifierAudioModule::NoisifierAudioModule(CriticalSection *newPlugInLock, rosic
   jassert( newNoisifierToWrap != NULL ); // you must pass a valid rosic-object
   wrappedNoisifier = newNoisifierToWrap;
   moduleName       = juce::String(("Noisifier"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
+  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
     + juce::String(("NoisifierPresets")) );
   createStaticParameters();
 }

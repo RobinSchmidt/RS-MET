@@ -1,3 +1,13 @@
+Upgrade to juce 5.2.5
+-replace code for juce modules (done)
+-make chainer build again (done)
+ -BUG: has ridiculous number of output pins in juce host
+ -maybe juce host needs to be upgraded?
+-upgrade Projucer code, make it build
+-upgrade plugin host code, make it build
+-figure out how we can avoid removing the "final" declaration from juce::Image
+
+
 -rename:
  -PhaseScope -> Scope
  -BreakpointModulator: MultiSegmentEnvelopeGenerator (MSEG), short: MultiSegment - or MultiStage, MSEG

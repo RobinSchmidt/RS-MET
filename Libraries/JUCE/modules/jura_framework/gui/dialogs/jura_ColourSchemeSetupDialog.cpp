@@ -78,7 +78,7 @@ ColourSchemeSetupDialog::ColourSchemeSetupDialog(ColourSchemeComponent *owner, i
   }
 
   StateFileManager::setActiveDirectory(
-    getApplicationDirectory() + File::separatorString + String("ColorSchemes") );
+    getApplicationDirectory() + File::getSeparatorString() + String("ColorSchemes") );
 
   ownerComponent     = owner;
   xmlColorsOnOpening = NULL;

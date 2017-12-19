@@ -363,7 +363,7 @@ void RTextEntryField::mouseDrag(const MouseEvent &e)
   int x2 = x1 + e.getDistanceFromDragStartX();
 
   if( x1 > x2 )
-    swapVariables(x1, x2);
+    RAPT::rsSwap(x1, x2);
 
   selectionStart = pixelPositionToCharacterIndex(x1);
   selectionEnd   = pixelPositionToCharacterIndex(x2);

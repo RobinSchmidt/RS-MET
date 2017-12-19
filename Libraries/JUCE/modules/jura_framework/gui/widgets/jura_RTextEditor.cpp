@@ -1131,7 +1131,7 @@ void RTextEditor::repaintCaret()
 void RTextEditor::repaintText(int textStartIndex, int textEndIndex)
 {
   if(textStartIndex > textEndIndex && textEndIndex > 0)
-    swapVariables (textStartIndex, textEndIndex);
+    RAPT::rsSwap(textStartIndex, textEndIndex);
   int x = 0, y = 0, lh = currentFont->getFontHeight()+textEditorLineSpacing;
   const int wordWrapWidth = getWordWrapWidth();
   if(wordWrapWidth > 0)
@@ -1280,7 +1280,7 @@ void RTextEditor::moveCursorTo(const int newPosition, const bool isSelecting) th
       selectionStart = getCaretPosition();
       if(selectionEnd < selectionStart)
       {
-        swapVariables(selectionStart, selectionEnd);
+        RAPT::rsSwap(selectionStart, selectionEnd);
         dragType = draggingSelectionEnd;
       }
     }
@@ -1289,7 +1289,7 @@ void RTextEditor::moveCursorTo(const int newPosition, const bool isSelecting) th
       selectionEnd = getCaretPosition();
       if(selectionEnd < selectionStart)
       {
-        swapVariables(selectionStart, selectionEnd);
+        RAPT::rsSwap(selectionStart, selectionEnd);
         dragType = draggingSelectionStart;
       }
     }

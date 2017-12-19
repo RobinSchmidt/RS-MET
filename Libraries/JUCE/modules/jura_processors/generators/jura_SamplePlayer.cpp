@@ -434,7 +434,7 @@ void SamplePlayerEditorDisplay::setSamplePlayerToEdit(rosic::SamplePlayer *newPl
   */
 
 
-  juce::String audioFile = getApplicationDirectory() + juce::File::separatorString
+  juce::String audioFile = getApplicationDirectory() + juce::File::getSeparatorString()
     + juce::String(samplePlayerToEdit->getSampleName());
   setAudioFileToUse(juce::File(audioFile));
 

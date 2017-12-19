@@ -10,6 +10,15 @@ namespace RAPT
 //#include "MathBasics.h"  // add from RSLib
 #include "SortAndSearch.h"
 
+// move to some other file:
+template<class T>
+inline void rsSwap(T& x, T& y)
+{
+  T t = x;
+  x = y;
+  y = t;
+}
+
 }
 
 #endif

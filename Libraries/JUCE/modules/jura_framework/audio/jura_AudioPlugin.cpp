@@ -224,6 +224,7 @@ void AudioPlugin::processBlock(AudioBuffer<double> &buffer, MidiBuffer &midiMess
   // and has set the denormal flags)
 }
 
+/*
 bool AudioPlugin::setPreferredBusArrangement(bool isInput, int bus,
   const AudioChannelSet& preferredSet)
 {
@@ -238,6 +239,7 @@ bool AudioPlugin::setPreferredBusArrangement(bool isInput, int bus,
     return false;
   return AudioProcessor::setPreferredBusArrangement(isInput, bus, preferredSet);
 }
+*/
 
 //// i tried to override it in order to check, if it gets called whe we call updateHostDisplay() in
 //// metaNameChanged - but at least the juce host doesn't try to inquire a new name :-(

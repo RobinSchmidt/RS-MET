@@ -102,10 +102,10 @@ XmlElement* LibertyAudioModule::getModuleStateAsXml(romos::Module *module,
 
   XmlElement *xmlState = new XmlElement(rosicToJuce(module->getTypeName()));
 
-  xmlState->setAttribute(juce::String(("Name")), rosicToJuce(module->getName())    );
-  xmlState->setAttribute(juce::String(("X")),    juce::String(module->getPositionX())  );
-  xmlState->setAttribute(juce::String(("Y")),    juce::String(module->getPositionY())  );
-  xmlState->setAttribute(juce::String(("Poly")), juce::String(module->isPolyphonic())  );
+  xmlState->setAttribute("Name", rosicToJuce(module->getName())    );
+  xmlState->setAttribute("X",    juce::String(module->getPositionX())  );
+  xmlState->setAttribute("Y",    juce::String(module->getPositionY())  );
+  xmlState->setAttribute("Poly", juce::String((int)module->isPolyphonic())  );
 
   unsigned int i;
   romos::ModuleContainer *container = dynamic_cast<romos::ModuleContainer*> (module);
@@ -2405,7 +2405,10 @@ void ModularBlockDiagramPanel::drawGrid(Graphics &g)
     for(int x=1; x<numVerticalLines; x++)
     {
       for(int y=1; y<numHorizontalLines; y++)
-        g.setPixel(inPixels(x), inPixels(y));
+      {
+        //g.setPixel(inPixels(x), inPixels(y)); // not available in juce 5.2.0 anymore
+        g.fillRect(inPixels(x), inPixels(y), 1, 1);
+      }
     }
   }
 }
@@ -2480,6 +2483,8 @@ void ModularBlockDiagramPanel::drawModule(Graphics &g, romos::Module *moduleToDr
     int offset = 8;
     g.drawRect(x-offset, y+offset, w, h, t);
 
+    /*
+    // setPixel not available anymore in juce 5.2 - find replacement
     g.setPixel(x-2, y+2);
     g.setPixel(x-2, y+3);
     g.setPixel(x-3, y+2);
@@ -2509,6 +2514,7 @@ void ModularBlockDiagramPanel::drawModule(Graphics &g, romos::Module *moduleToDr
     g.setPixel(x-5+1, y+h+6-2);
     g.setPixel(x-6+1, y+h+5-2);
     g.setPixel(x-6+1, y+h+6-2);
+    */
   }
 
   g.setColour(Colours::lavender); // preliminary

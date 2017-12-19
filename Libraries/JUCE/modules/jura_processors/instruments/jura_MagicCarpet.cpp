@@ -7,7 +7,7 @@ DelayPhaserAudioModule::DelayPhaserAudioModule(CriticalSection *newPlugInLock,
   jassert( newDelayPhaserToWrap != NULL ); // you must pass a valid rosic-object
   wrappedDelayPhaser = newDelayPhaserToWrap;
   moduleName = juce::String("DelayPhaser");
-  setActiveDirectory(getApplicationDirectory() + juce::File::separatorString
+  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
     + juce::String(("/Presets/DelayPhaser")) );
   initializeAutomatableParameters();
 

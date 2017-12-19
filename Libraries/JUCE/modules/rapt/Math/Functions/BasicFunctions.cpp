@@ -299,13 +299,13 @@ inline T rsSquare(T x)
   return x*x;
 }
 
-template <class T>
-inline void rsSwap(T &in1, T &in2)
-{
-  T tmp = in1;
-  in1   = in2;
-  in2   = tmp;
-}
+//template <class T>
+//inline void rsSwap(T &in1, T &in2)
+//{
+//  T tmp = in1;
+//  in1   = in2;
+//  in2   = tmp;
+//}
 
 template<class T>
 inline T rsUnityValue(T value)

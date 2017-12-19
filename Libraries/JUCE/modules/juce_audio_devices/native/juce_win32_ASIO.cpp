@@ -2,25 +2,26 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2015 - ROLI Ltd.
+   Copyright (c) 2017 - ROLI Ltd.
 
-   Permission is granted to use this software under the terms of either:
-   a) the GPL v2 (or any later version)
-   b) the Affero GPL v3
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   Details of these licenses can be found at: www.gnu.org/licenses
+   The code included in this file is provided under the terms of the ISC license
+   http://www.isc.org/downloads/software-support-policy/isc-license. Permission
+   To use, copy, modify, and/or distribute this software for any purpose with or
+   without fee is hereby granted provided that the above copyright notice and
+   this permission notice appear in all copies.
 
-   JUCE is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-
-   ------------------------------------------------------------------------------
-
-   To release a closed-source product which uses JUCE, commercial licenses are
-   available: visit www.juce.com for more information.
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
+
+namespace juce
+{
 
 #undef WINDOWS
 
@@ -341,6 +342,8 @@ public:
          insideControlPanelModalLoop (false),
          shouldUsePreferredSize (false)
     {
+        ::CoInitialize (nullptr);
+
         name = devName;
         inBuffers.calloc (4);
         outBuffers.calloc (4);
@@ -406,6 +409,8 @@ public:
     Array<int> getAvailableBufferSizes() override       { return bufferSizes; }
     int getDefaultBufferSize() override                 { return preferredBufferSize; }
 
+    int getXRunCount() const noexcept override          { return xruns; }
+
     String open (const BigInteger& inputChannels,
                  const BigInteger& outputChannels,
                  double sr, int bufferSizeSamples) override
@@ -461,6 +466,9 @@ public:
         err = asioObject->getChannels (&totalNumInputChans, &totalNumOutputChans);
         jassert (err == ASE_OK);
 
+        if (asioObject->future (kAsioCanReportOverload, nullptr) != ASE_OK)
+            xruns = -1;
+
         inBuffers.calloc (totalNumInputChans + 8);
         outBuffers.calloc (totalNumOutputChans + 8);
 
@@ -500,11 +508,10 @@ public:
         if (err == ASE_OK)
         {
             buffersCreated = true;
-
             tempBuffer.calloc (totalBuffers * currentBlockSizeSamples + 32);
 
             int n = 0;
-            Array <int> types;
+            Array<int> types;
             currentBitDepth = 16;
 
             for (int i = 0; i < (int) totalNumInputChans; ++i)
@@ -786,6 +793,7 @@ private:
     bool volatile littleEndian, postOutput, needToReset;
     bool volatile insideControlPanelModalLoop;
     bool volatile shouldUsePreferredSize;
+    int xruns = 0;
 
     //==============================================================================
     static String convertASIOString (char* const text, int length)
@@ -1177,6 +1185,7 @@ private:
         totalNumOutputChans = 0;
         numActiveInputChans = 0;
         numActiveOutputChans = 0;
+        xruns = 0;
         currentCallback = nullptr;
 
         error.clear();
@@ -1346,7 +1355,7 @@ private:
         {
             case kAsioSelectorSupported:
                 if (value == kAsioResetRequest || value == kAsioEngineVersion || value == kAsioResyncRequest
-                     || value == kAsioLatenciesChanged || value == kAsioSupportsInputMonitor)
+                     || value == kAsioLatenciesChanged || value == kAsioSupportsInputMonitor || value == kAsioOverload)
                     return 1;
                 break;
 
@@ -1357,7 +1366,8 @@ private:
             case kAsioEngineVersion:    return 2;
 
             case kAsioSupportsTimeInfo:
-            case kAsioSupportsTimeCode: return 0;
+            case kAsioSupportsTimeCode:  return 0;
+            case kAsioOverload: xruns++; return 1;
         }
 
         return 0;
@@ -1429,16 +1439,7 @@ struct ASIOAudioIODevice::ASIOCallbackFunctions <sizeof(currentASIODev) / sizeof
 class ASIOAudioIODeviceType  : public AudioIODeviceType
 {
 public:
-    ASIOAudioIODeviceType()
-        : AudioIODeviceType ("ASIO"),
-          hasScanned (false)
-    {
-    }
-
-    ~ASIOAudioIODeviceType()
-    {
-        masterReference.clear();
-    }
+    ASIOAudioIODeviceType() : AudioIODeviceType ("ASIO") {}
 
     //==============================================================================
     void scanForDevices()
@@ -1534,13 +1535,13 @@ public:
         callDeviceChangeListeners();
     }
 
-    WeakReference<ASIOAudioIODeviceType>::Master masterReference;
+    JUCE_DECLARE_WEAK_REFERENCEABLE (ASIOAudioIODeviceType)
 
 private:
     StringArray deviceNames;
     Array<CLSID> classIds;
 
-    bool hasScanned;
+    bool hasScanned = false;
 
     //==============================================================================
     static bool checkClassIsOk (const String& classId)
@@ -1639,3 +1640,5 @@ AudioIODeviceType* AudioIODeviceType::createAudioIODeviceType_ASIO()
 {
     return new ASIOAudioIODeviceType();
 }
+
+} // namespace juce

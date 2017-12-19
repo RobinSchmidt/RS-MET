@@ -1,31 +1,67 @@
 /*
   ==============================================================================
 
-   This file is part of the juce_core module of the JUCE library.
-   Copyright (c) 2015 - ROLI Ltd.
+   This file is part of the JUCE library.
+   Copyright (c) 2017 - ROLI Ltd.
 
-   Permission to use, copy, modify, and/or distribute this software for any purpose with
-   or without fee is hereby granted, provided that the above copyright notice and this
-   permission notice appear in all copies.
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD
-   TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN
-   NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
-   DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER
-   IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
-   CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+   The code included in this file is provided under the terms of the ISC license
+   http://www.isc.org/downloads/software-support-policy/isc-license. Permission
+   To use, copy, modify, and/or distribute this software for any purpose with or
+   without fee is hereby granted provided that the above copyright notice and
+   this permission notice appear in all copies.
 
-   ------------------------------------------------------------------------------
-
-   NOTE! This permissive ISC license applies ONLY to files within the juce_core module!
-   All other JUCE modules are covered by a dual GPL/commercial license, so if you are
-   using any other modules, be sure to check that you also comply with their license.
-
-   For more details, visit www.juce.com
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
 
+namespace juce
+{
+
+#define JNI_CLASS_MEMBERS(METHOD, STATICMETHOD, FIELD, STATICFIELD) \
+  METHOD (constructor, "<init>",     "(Landroid/content/Context;Landroid/media/MediaScannerConnection$MediaScannerConnectionClient;)V") \
+  METHOD (connect,     "connect",    "()V") \
+  METHOD (disconnect,  "disconnect", "()V") \
+  METHOD (scanFile,    "scanFile",   "(Ljava/lang/String;Ljava/lang/String;)V") \
+
+DECLARE_JNI_CLASS (MediaScannerConnection, "android/media/MediaScannerConnection");
+#undef JNI_CLASS_MEMBERS
+
+//==============================================================================
+class MediaScannerConnectionClient : public AndroidInterfaceImplementer
+{
+public:
+    virtual void onMediaScannerConnected() = 0;
+    virtual void onScanCompleted() = 0;
+
+private:
+    jobject invoke (jobject proxy, jobject method, jobjectArray args) override
+    {
+        auto* env = getEnv();
+
+        auto methodName = juceString ((jstring) env->CallObjectMethod (method, Method.getName));
+
+        if (methodName == "onMediaScannerConnected")
+        {
+            onMediaScannerConnected();
+            return nullptr;
+        }
+        else if (methodName == "onScanCompleted")
+        {
+            onScanCompleted();
+            return nullptr;
+        }
+
+        return AndroidInterfaceImplementer::invoke (proxy, method, args);
+    }
+};
+
+//==============================================================================
 bool File::isOnCDRomDrive() const
 {
     return false;
@@ -43,7 +79,7 @@ bool File::isOnRemovableDrive() const
 
 String File::getVersion() const
 {
-    return String();
+    return {};
 }
 
 static File getSpecialFile (jmethodID type)
@@ -71,7 +107,11 @@ File File::getSpecialLocation (const SpecialLocationType type)
             return File ("/system/app");
 
         case tempDirectory:
-            return File (android.appDataDir).getChildFile (".temp");
+        {
+            File tmp = File (android.appDataDir).getChildFile (".temp");
+            tmp.createDirectory();
+            return File (tmp.getFullPathName());
+        }
 
         case invokedExecutableFile:
         case currentExecutableFile:
@@ -84,7 +124,7 @@ File File::getSpecialLocation (const SpecialLocationType type)
             break;
     }
 
-    return File();
+    return {};
 }
 
 bool File::moveToTrash() const
@@ -96,7 +136,7 @@ bool File::moveToTrash() const
     return false;
 }
 
-JUCE_API bool JUCE_CALLTYPE Process::openDocument (const String& fileName, const String& parameters)
+JUCE_API bool JUCE_CALLTYPE Process::openDocument (const String& fileName, const String&)
 {
     const LocalRef<jstring> t (javaString (fileName));
     android.activity.callVoidMethod (JuceAppActivity.launchURL, t.get());
@@ -106,3 +146,51 @@ JUCE_API bool JUCE_CALLTYPE Process::openDocument (const String& fileName, const
 void File::revealToUser() const
 {
 }
+
+//==============================================================================
+class SingleMediaScanner : public MediaScannerConnectionClient
+{
+public:
+    SingleMediaScanner (const String& filename)
+        : msc (getEnv()->NewObject (MediaScannerConnection,
+                                    MediaScannerConnection.constructor,
+                                    android.activity.get(),
+                                    CreateJavaInterface (this, "android/media/MediaScannerConnection$MediaScannerConnectionClient").get())),
+          file (filename)
+    {
+        getEnv()->CallVoidMethod (msc.get(), MediaScannerConnection.connect);
+    }
+
+    void onMediaScannerConnected() override
+    {
+        auto* env = getEnv();
+
+        env->CallVoidMethod (msc.get(), MediaScannerConnection.scanFile, javaString (file).get(), 0);
+    }
+
+    void onScanCompleted() override
+    {
+        getEnv()->CallVoidMethod (msc.get(), MediaScannerConnection.disconnect);
+    }
+
+private:
+    GlobalRef msc;
+    String file;
+};
+
+void FileOutputStream::flushInternal()
+{
+    if (fileHandle != 0)
+    {
+        if (fsync (getFD (fileHandle)) == -1)
+            status = getResultForErrno();
+
+        // This stuff tells the OS to asynchronously update the metadata
+        // that the OS has cached aboud the file - this metadata is used
+        // when the device is acting as a USB drive, and unless it's explicitly
+        // refreshed, it'll get out of step with the real file.
+        new SingleMediaScanner (file.getFullPathName());
+    }
+}
+
+} // namespace juce
