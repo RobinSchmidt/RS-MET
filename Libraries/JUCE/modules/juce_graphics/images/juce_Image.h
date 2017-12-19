@@ -53,7 +53,7 @@ class ImagePixelData;
 
     @see Graphics, ImageFileFormat, ImageCache, ImageConvolutionKernel
 */
-class JUCE_API  Image // final  final declaration remove by Robin Schmidt
+class JUCE_API  Image //final // final declaration removed by Robin Schmidt
 {
 public:
     //==============================================================================
