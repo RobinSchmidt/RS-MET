@@ -2,22 +2,24 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2015 - ROLI Ltd.
+   Copyright (c) 2017 - ROLI Ltd.
 
-   Permission is granted to use this software under the terms of either:
-   a) the GPL v2 (or any later version)
-   b) the Affero GPL v3
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   Details of these licenses can be found at: www.gnu.org/licenses
+   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
+   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
+   27th April 2017).
 
-   JUCE is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+   End User License Agreement: www.juce.com/juce-5-licence
+   Privacy Policy: www.juce.com/juce-5-privacy-policy
 
-   ------------------------------------------------------------------------------
+   Or: You may also use this code under the terms of the GPL v3 (see
+   www.gnu.org/licenses).
 
-   To release a closed-source product which uses JUCE, commercial licenses are
-   available: visit www.juce.com for more information.
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
@@ -32,24 +34,27 @@
 //==============================================================================
 const int FilterGraph::midiChannelNumber = 0x1000;
 
-FilterGraph::FilterGraph (AudioPluginFormatManager& formatManager_)
+FilterGraph::FilterGraph (AudioPluginFormatManager& fm)
     : FileBasedDocument (filenameSuffix,
                          filenameWildcard,
                          "Load a filter graph",
                          "Save a filter graph"),
-      formatManager (formatManager_), lastUID (0)
+      formatManager (fm)
 {
     InternalPluginFormat internalFormat;
 
-    addFilter (internalFormat.getDescriptionFor (InternalPluginFormat::audioInputFilter),  0.5f,  0.1f);
-    addFilter (internalFormat.getDescriptionFor (InternalPluginFormat::midiInputFilter),   0.25f, 0.1f);
-    addFilter (internalFormat.getDescriptionFor (InternalPluginFormat::audioOutputFilter), 0.5f,  0.9f);
+    addFilter (internalFormat.audioInDesc,  { 0.5,  0.1 });
+    addFilter (internalFormat.midiInDesc,   { 0.25, 0.1 });
+    addFilter (internalFormat.audioOutDesc, { 0.5,  0.9 });
+
+    graph.addListener (this);
 
     setChangedFlag (false);
 }
 
 FilterGraph::~FilterGraph()
 {
+    graph.addListener (this);
     graph.clear();
 }
 
@@ -64,41 +69,48 @@ int FilterGraph::getNumFilters() const noexcept
     return graph.getNumNodes();
 }
 
-const AudioProcessorGraph::Node::Ptr FilterGraph::getNode (const int index) const noexcept
+AudioProcessorGraph::Node::Ptr FilterGraph::getNode (int index) const noexcept
 {
     return graph.getNode (index);
 }
 
-const AudioProcessorGraph::Node::Ptr FilterGraph::getNodeForId (const uint32 uid) const noexcept
+AudioProcessorGraph::Node::Ptr FilterGraph::getNodeForId (uint32 uid) const
 {
     return graph.getNodeForId (uid);
 }
 
-void FilterGraph::addFilter (const PluginDescription* desc, double x, double y)
+AudioProcessorGraph::Node::Ptr FilterGraph::getNodeForName (const String& name) const
 {
-    if (desc != nullptr)
-    {
-        struct AsyncCallback : public AudioPluginFormat::InstantiationCompletionCallback
-        {
-            AsyncCallback (FilterGraph* myself, double inX, double inY)
-                : owner (myself), posX (inX), posY (inY)
-            {}
+    for (int i = 0; i < graph.getNumNodes(); i++)
+        if (auto node = graph.getNode (i))
+            if (auto p = node->getProcessor())
+                if (p->getName().equalsIgnoreCase (name))
+                    return node;
 
-            void completionCallback (AudioPluginInstance* instance, const String& error) override
-            {
-                owner->addFilterCallback (instance, error, posX, posY);
-            }
-
-            FilterGraph* owner;
-            double posX, posY;
-        };
-
-        formatManager.createPluginInstanceAsync (*desc, graph.getSampleRate(), graph.getBlockSize(),
-                                                 new AsyncCallback (this, x, y));
-    }
+    return nullptr;
 }
 
-void FilterGraph::addFilterCallback (AudioPluginInstance* instance, const String& error, double x, double y)
+void FilterGraph::addFilter (const PluginDescription& desc, Point<double> p)
+{
+    struct AsyncCallback : public AudioPluginFormat::InstantiationCompletionCallback
+    {
+        AsyncCallback (FilterGraph& g, Point<double> pos)  : owner (g), position (pos)
+        {}
+
+        void completionCallback (AudioPluginInstance* instance, const String& error) override
+        {
+            owner.addFilterCallback (instance, error, position);
+        }
+
+        FilterGraph& owner;
+        Point<double> position;
+    };
+
+    formatManager.createPluginInstanceAsync (desc, graph.getSampleRate(), graph.getBlockSize(),
+                                             new AsyncCallback (*this, p));
+}
+
+void FilterGraph::addFilterCallback (AudioPluginInstance* instance, const String& error, Point<double> pos)
 {
     if (instance == nullptr)
     {
@@ -108,12 +120,12 @@ void FilterGraph::addFilterCallback (AudioPluginInstance* instance, const String
     }
     else
     {
-        AudioProcessorGraph::Node* node = graph.addNode (instance);
+        instance->enableAllBuses();
 
-        if (node != nullptr)
+        if (auto* node = graph.addNode (instance))
         {
-            node->properties.set ("x", x);
-            node->properties.set ("y", y);
+            node->properties.set ("x", pos.x);
+            node->properties.set ("y", pos.y);
             changed();
         }
     }
@@ -150,11 +162,11 @@ void FilterGraph::setNodePosition (const uint32 nodeId, double x, double y)
 
 Point<double> FilterGraph::getNodePosition (const uint32 nodeId) const
 {
-    if (AudioProcessorGraph::Node::Ptr n = graph.getNodeForId (nodeId))
-        return Point<double> (static_cast<double> (n->properties ["x"]),
-                              static_cast<double> (n->properties ["y"]));
+    if (auto n = graph.getNodeForId (nodeId))
+        return { static_cast<double> (n->properties ["x"]),
+                 static_cast<double> (n->properties ["y"]) };
 
-    return Point<double>();
+    return {};
 }
 
 //==============================================================================
@@ -228,14 +240,13 @@ String FilterGraph::getDocumentTitle()
 void FilterGraph::newDocument()
 {
     clear();
-
-    setFile (File());
+    setFile ({});
 
     InternalPluginFormat internalFormat;
 
-    addFilter (internalFormat.getDescriptionFor (InternalPluginFormat::audioInputFilter),  0.5f,  0.1f);
-    addFilter (internalFormat.getDescriptionFor (InternalPluginFormat::midiInputFilter),   0.25f, 0.1f);
-    addFilter (internalFormat.getDescriptionFor (InternalPluginFormat::audioOutputFilter), 0.5f,  0.9f);
+    addFilter (internalFormat.audioInDesc,  { 0.5,  0.1 });
+    addFilter (internalFormat.midiInDesc,   { 0.25, 0.1 });
+    addFilter (internalFormat.audioOutDesc, { 0.5,  0.9 });
 
     setChangedFlag (false);
 }
@@ -284,6 +295,67 @@ void FilterGraph::setLastDocumentOpened (const File& file)
 }
 
 //==============================================================================
+static void readBusLayoutFromXml (AudioProcessor::BusesLayout& busesLayout, AudioProcessor* plugin, const XmlElement& xml, const bool isInput)
+{
+    Array<AudioChannelSet>& targetBuses = (isInput ? busesLayout.inputBuses : busesLayout.outputBuses);
+    int maxNumBuses = 0;
+
+    if (auto* buses = xml.getChildByName (isInput ? "INPUTS" : "OUTPUTS"))
+    {
+        forEachXmlChildElementWithTagName (*buses, e, "BUS")
+        {
+            const int busIdx = e->getIntAttribute ("index");
+            maxNumBuses = jmax (maxNumBuses, busIdx + 1);
+
+            // the number of buses on busesLayout may not be in sync with the plugin after adding buses
+            // because adding an input bus could also add an output bus
+            for (int actualIdx = plugin->getBusCount (isInput) - 1; actualIdx < busIdx; ++actualIdx)
+                if (! plugin->addBus (isInput)) return;
+
+            for (int actualIdx = targetBuses.size() - 1; actualIdx < busIdx; ++actualIdx)
+                targetBuses.add (plugin->getChannelLayoutOfBus (isInput, busIdx));
+
+            const String& layout = e->getStringAttribute("layout");
+
+            if (layout.isNotEmpty())
+                targetBuses.getReference (busIdx) = AudioChannelSet::fromAbbreviatedString (layout);
+        }
+    }
+
+    // if the plugin has more buses than specified in the xml, then try to remove them!
+    while (maxNumBuses < targetBuses.size())
+    {
+        if (! plugin->removeBus (isInput))
+            return;
+
+        targetBuses.removeLast();
+    }
+}
+
+//==============================================================================
+static XmlElement* createBusLayoutXml (const AudioProcessor::BusesLayout& layout, const bool isInput)
+{
+    const Array<AudioChannelSet>& buses = (isInput ? layout.inputBuses : layout.outputBuses);
+
+    XmlElement* xml = new XmlElement (isInput ? "INPUTS" : "OUTPUTS");
+
+    const int n = buses.size();
+    for (int busIdx = 0; busIdx < n; ++busIdx)
+    {
+        XmlElement* bus = new XmlElement ("BUS");
+        bus->setAttribute ("index", busIdx);
+
+        const AudioChannelSet& set = buses.getReference (busIdx);
+        const String layoutName = set.isDisabled() ? "disabled" : set.getSpeakerArrangementAsString();
+
+        bus->setAttribute ("layout", layoutName);
+
+        xml->addChildElement (bus);
+    }
+
+    return xml;
+}
+
 static XmlElement* createNodeXml (AudioProcessorGraph::Node* const node) noexcept
 {
     AudioPluginInstance* plugin = dynamic_cast<AudioPluginInstance*> (node->getProcessor());
@@ -323,6 +395,15 @@ static XmlElement* createNodeXml (AudioProcessorGraph::Node* const node) noexcep
     state->addTextElement (m.toBase64Encoding());
     e->addChildElement (state);
 
+    XmlElement* layouts = new XmlElement ("LAYOUT");
+    const AudioProcessor::BusesLayout layout = plugin->getBusesLayout();
+
+    const bool isInputChoices[] = { true, false };
+    for (bool isInput : isInputChoices)
+        layouts->addChildElement (createBusLayoutXml (layout, isInput));
+
+    e->addChildElement (layouts);
+
     return e;
 }
 
@@ -341,12 +422,18 @@ void FilterGraph::createNodeFromXml (const XmlElement& xml)
     AudioPluginInstance* instance = formatManager.createPluginInstance (pd, graph.getSampleRate(), graph.getBlockSize(), errorMessage);
 
     if (instance == nullptr)
-    {
-        // xxx handle ins + outs
-    }
-
-    if (instance == nullptr)
         return;
+
+    if (const XmlElement* const layoutEntity = xml.getChildByName ("LAYOUT"))
+    {
+        AudioProcessor::BusesLayout layout = instance->getBusesLayout();
+
+        const bool isInputChoices[] = { true, false };
+        for (bool isInput : isInputChoices)
+            readBusLayoutFromXml (layout, instance, *layoutEntity, isInput);
+
+        instance->setBusesLayout (layout);
+    }
 
     AudioProcessorGraph::Node::Ptr node (graph.addNode (instance, (uint32) xml.getIntAttribute ("uid")));
 
