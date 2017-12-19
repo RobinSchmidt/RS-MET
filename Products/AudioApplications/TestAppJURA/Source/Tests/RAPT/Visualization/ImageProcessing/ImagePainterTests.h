@@ -37,10 +37,10 @@ protected:
   void paintDot(int x, int y);
 
   // image/painting stuff:
-  RAPT::ImageResizable<float> paintImage;           // image to paint on
-  RAPT::AlphaMask<float> dotMask;                   // prototype dot
+  RAPT::rsImageResizable<float> paintImage;           // image to paint on
+  RAPT::rsAlphaMask<float> dotMask;                   // prototype dot
   juce::Image displayImage;                         // for displaying the paintImage
-  RAPT::ImagePainter<float, float, float> painter;  // handles to actual painting
+  RAPT::rsImagePainter<float, float, float> painter;  // handles to actual painting
 
   // data:
   float brightness;  // brightness of inserted dots

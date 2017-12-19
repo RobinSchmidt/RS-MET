@@ -2,8 +2,9 @@
 
 <JUCERPROJECT id="G5rTLi" name="TestAppJURA" projectType="guiapp" version="1.0.0"
               bundleIdentifier="com.yourcompany.TestAppJURA" includeBinaryInAppConfig="1"
-              jucerVersion="4.2.4" companyName="RS-MET" companyWebsite="www.rs-met.com"
-              companyEmail="robin@rs-met.com">
+              jucerVersion="5.2.0" companyName="RS-MET" companyWebsite="www.rs-met.com"
+              companyEmail="robin@rs-met.com" displaySplashScreen="1" reportAppUsage="1"
+              splashScreenColour="Dark" cppLanguageStandard="11" companyCopyright="RS-MET">
   <MAINGROUP id="K1ItHv" name="TestAppJURA">
     <GROUP id="{E7DA5915-A163-B06A-6F1B-762E629AA87C}" name="Source">
       <GROUP id="{F297B51F-ADA4-24A8-B081-EC977DA1BEC7}" name="Tests">
@@ -29,9 +30,11 @@
     <VS2015 targetFolder="Builds/VisualStudio2015">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="3" generateManifest="1" winArchitecture="x64"
-                       isDebug="1" optimisation="1" targetName="TestAppJURA" defines="DEBUG=1"/>
+                       isDebug="1" optimisation="1" targetName="TestAppJURA" defines="DEBUG=1"
+                       debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"/>
         <CONFIGURATION name="Release" winWarningLevel="3" generateManifest="1" winArchitecture="x64"
-                       isDebug="0" optimisation="3" targetName="TestAppJURA"/>
+                       isDebug="0" optimisation="3" targetName="TestAppJURA" debugInformationFormat="ProgramDatabase"
+                       enablePluginBinaryCopyStep="0" linkTimeOptimisation="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../../../Libraries/JUCE/modules"/>
@@ -50,6 +53,9 @@
         <MODULEPATH id="juce_audio_utils" path="../../../Libraries/JUCE/modules"/>
         <MODULEPATH id="jura_framework" path="../../../Libraries/JUCE/modules"/>
         <MODULEPATH id="jura_processors" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="rapt" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="rosic" path="../../../Libraries/JUCE/modules"/>
+        <MODULEPATH id="romos" path="../../../Libraries/JUCE/modules"/>
       </MODULEPATHS>
     </VS2015>
   </EXPORTFORMATS>
@@ -70,6 +76,9 @@
     <MODULE id="juce_video" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="jura_framework" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="jura_processors" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="rapt" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="romos" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="rosic" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
   </MODULES>
   <JUCEOPTIONS/>
 </JUCERPROJECT>

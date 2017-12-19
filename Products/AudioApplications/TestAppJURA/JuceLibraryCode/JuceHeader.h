@@ -10,8 +10,7 @@
 
 */
 
-#ifndef __APPHEADERFILE_G5RTLI__
-#define __APPHEADERFILE_G5RTLI__
+#pragma once
 
 #include "AppConfig.h"
 
@@ -31,6 +30,9 @@
 #include <juce_video/juce_video.h>
 #include <jura_framework/jura_framework.h>
 #include <jura_processors/jura_processors.h>
+#include <rapt/rapt.h>
+#include <romos/romos.h>
+#include <rosic/rosic.h>
 
 
 #if ! DONT_SET_USING_JUCE_NAMESPACE
@@ -47,5 +49,3 @@ namespace ProjectInfo
     const int          versionNumber  = 0x10000;
 }
 #endif
-
-#endif   // __APPHEADERFILE_G5RTLI__

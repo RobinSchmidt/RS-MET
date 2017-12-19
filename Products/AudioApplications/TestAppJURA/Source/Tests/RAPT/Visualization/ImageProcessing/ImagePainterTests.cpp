@@ -26,7 +26,7 @@ void PaintCanvas::mouseDrag(const MouseEvent &e)
 void PaintCanvas::paint(Graphics &g)
 {
   normalizedDataToImage(paintImage.getPixelPointer(0, 0), displayImage);  // maybe use colormap
-  g.drawImage(displayImage, Rectangle<float>(0.f, 0.f, (float) getWidth(), (float) getHeight()));
+  g.drawImage(displayImage, juce::Rectangle<float>(0.f, 0.f, (float) getWidth(), (float) getHeight()));
 }
 
 void PaintCanvas::resized()
@@ -134,7 +134,7 @@ void PainterComponent::paint(Graphics &g)
   y = (float)sliderBrightness.getBottom() + 8.f;
   w = (float)previewDot.getWidth();
   h = (float)previewDot.getHeight();
-  g.drawImage(previewDot, Rectangle<float>(x, y, w, h));
+  g.drawImage(previewDot, juce::Rectangle<float>(x, y, w, h));
 }
 
 void PainterComponent::resized()
