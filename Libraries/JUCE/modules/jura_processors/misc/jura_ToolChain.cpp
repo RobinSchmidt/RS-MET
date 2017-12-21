@@ -7,8 +7,8 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
   if(type == "BreakpointModulator") return new BreakpointModulatorAudioModule(lock);
 
   // analysis:
-  if(type == "PhaseScope")    return new PhaseScope(              lock);
-  //if(type == "PhaseScope2")  return new PhaseScope2( lock);
+  if(type == "Scope")    return new PhaseScope(              lock);
+  //if(type == "Scope2")  return new PhaseScope2( lock);
   if(type == "MultiAnalyzer") return new MultiAnalyzerAudioModule(lock);
   if(type == "TrackMeter")    return new TrackMeterAudioModule(   lock);
   if(type == "MidiMonitor")   return new MidiMonitorAudioModule(  lock);
@@ -38,7 +38,7 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
   if(type == "DspWorkbench")     return new DspWorkbenchAudioModule(    lock);
 
   // instruments:
-  if(type == "AciDevil")      return new AciDevilAudioModule(     lock);
+  if(type == "AcidDevil")     return new AciDevilAudioModule(     lock);
   if(type == "Straightliner") return new StraightlinerAudioModule(lock);
   if(type == "MagicCarpet")   return new MagicCarpetAudioModule(  lock);
   if(type == "SimpleSampler") return new SimpleSamplerAudioModule(lock);
@@ -61,8 +61,8 @@ juce::String AudioModuleFactory::getModuleType(AudioModule *m)
   if(dynamic_cast<BreakpointModulatorAudioModule*> (m))  return "BreakpointModulator";
 
   // analysis:
-  //if(dynamic_cast<PhaseScope2*>  (m))            return "PhaseScope2"; // always check subclasses before...
-  if(dynamic_cast<PhaseScope*>   (m))              return "PhaseScope";  // ...their superclasses
+  //if(dynamic_cast<PhaseScope2*>  (m))            return "Scope2"; // always check subclasses before...
+  if(dynamic_cast<PhaseScope*>   (m))              return "Scope";  // ...their superclasses
   if(dynamic_cast<MultiAnalyzerAudioModule*> (m))  return "MultiAnalyzer";
   if(dynamic_cast<TrackMeterAudioModule*> (m))     return "TrackMeter";
   if(dynamic_cast<MidiMonitorAudioModule*> (m))    return "MidiMonitor";
@@ -92,7 +92,7 @@ juce::String AudioModuleFactory::getModuleType(AudioModule *m)
   if(dynamic_cast<DspWorkbenchAudioModule*>(m))     return "DspWorkbench";
 
   // instruments:
-  if(dynamic_cast<AciDevilAudioModule*> (m))       return "AciDevil";
+  if(dynamic_cast<AciDevilAudioModule*> (m))       return "AcidDevil";
   if(dynamic_cast<StraightlinerAudioModule*> (m))  return "Straightliner";
   if(dynamic_cast<MagicCarpetAudioModule*> (m))    return "MagicCarpet";
   if(dynamic_cast<SimpleSamplerAudioModule*> (m))  return "SimpleSampler";
@@ -124,7 +124,7 @@ StringArray AudioModuleFactory::getAvailableModuleTypes()
   a.add("BreakpointModulator");
 
   // analysis:
-  a.add("PhaseScope");
+  a.add("Scope");
   //a.add("PhaseScope2");
   a.add("MultiAnalyzer");
   a.add("TrackMeter");
@@ -153,7 +153,7 @@ StringArray AudioModuleFactory::getAvailableModuleTypes()
   //a.add("DspWorkbench");
 
   // instruments:
-  a.add("AciDevil");
+  a.add("AcidDevil");
   a.add("Straightliner");
   //a.add("MagicCarpet");
   //a.add("SimpleSampler");
@@ -190,7 +190,7 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
 
 
   node = new RTreeViewNode("Instruments", -1, "Instruments");
-  node->addChildNode(new RTreeViewNode("AciDevil",       i++));
+  node->addChildNode(new RTreeViewNode("AcidDevil",       i++));
   node->addChildNode(new RTreeViewNode("Straightliner",  i++));
   node->setOpen(false);
   popUpMenu->addTreeNodeItem(node);
@@ -235,7 +235,7 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
   popUpMenu->addTreeNodeItem(node);
 
   node = new RTreeViewNode("Analyzers", -1, "Analyzers");
-  node->addChildNode(new RTreeViewNode("PhaseScope",    i++));
+  node->addChildNode(new RTreeViewNode("Scope",    i++));
   //node->addChildNode(new RTreeViewNode("PhaseScope2",   i++));
   node->addChildNode(new RTreeViewNode("MultiAnalyzer", i++));
   //node->addChildNode(new RTreeViewNode("TrackMeter",    i++));

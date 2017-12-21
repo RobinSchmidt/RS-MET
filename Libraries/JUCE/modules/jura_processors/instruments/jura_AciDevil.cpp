@@ -8,7 +8,7 @@ AciDevilAudioModule::AciDevilAudioModule(CriticalSection *newPlugInLock,
   wrappedAciDevil = aciDevilToWrap;
 
   // factor out common code of both construtors into init function:
-  setModuleTypeName("AciDevil");
+  setModuleTypeName("AcidDevil");
   initializeAutomatableParameters();
   sequencerModule = new AcidSequencerAudioModule(lock, &wrappedAciDevil->sequencer);
   sequencerModule->setModuleName(juce::String("Sequencer"));
@@ -22,7 +22,7 @@ AciDevilAudioModule::AciDevilAudioModule(CriticalSection *newPlugInLock)
   wrappedAciDevilIsOwned = true;
 
   // factor out common code of both construtors into init function:
-  setModuleTypeName("AciDevil");
+  setModuleTypeName("AcidDevil");
   initializeAutomatableParameters();
   sequencerModule = new AcidSequencerAudioModule(lock, &wrappedAciDevil->sequencer);
   sequencerModule->setModuleName(juce::String("Sequencer"));
