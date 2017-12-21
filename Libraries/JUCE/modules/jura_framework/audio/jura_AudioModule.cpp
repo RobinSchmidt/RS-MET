@@ -190,6 +190,16 @@ void AudioModule::detachMetaParameters()
 //-------------------------------------------------------------------------------------------------
 // inquiry:
 
+juce::String AudioModule::getSupportDirectory() const
+{
+  return getApplicationDirectory(); // preliminary
+}
+
+juce::String AudioModule::getPresetDirectory(bool user) const
+{
+  return getSupportDirectory() + "/Presets/" + getModuleTypeName();
+}
+
 int AudioModule::getIndexAmongNameSakes(AudioModule *child)
 {
   ScopedLock scopedLock(*lock);

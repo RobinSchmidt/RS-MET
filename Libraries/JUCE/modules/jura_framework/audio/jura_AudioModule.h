@@ -156,8 +156,20 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry:
 
-  /** Returns the name of this module. */
+  /** Returns the name of this module, for example "Filter1". */
   virtual juce::String getModuleName() const { return moduleName; }
+
+  /** Returns the type name of this module, for example "LadderFilter". */
+  virtual juce::String getModuleTypeName() const { return moduleTypeName; }
+
+  /** Returns the directory, where the support files such as presets, samples, etc. are supposed to 
+  be found. */
+  virtual juce::String getSupportDirectory() const;
+
+  /** Returns the directory, where the presets are supposed to be found. You can switch between 
+  factory-presets and user-presets via the "user" parameter (in the baseclass implementation, the 
+  same folder will be returned in both cases, but you may want to override this). */
+  virtual juce::String getPresetDirectory(bool user = false) const;
 
   /** When we have several child-modules with the same name (member "moduleName"), this function 
   can be used to find the index of the passed child-module among them. It will return 0 when the 
@@ -297,7 +309,9 @@ protected:
   bool saveAndRecallMetas = false; // store/recall values of meta-params - should be true for top-level modules only
   int patchFormatIndex = 1;        // version of patch format (for backwards compatibility)
 
-  juce::String moduleName;         // name of this AudioModule
+
+  juce::String moduleTypeName;     // type name like "LadderFilter"
+  juce::String moduleName;         // name of this AudioModule, like "Filter1"
   juce::String moduleNameAppendix; // string to be appended to the name on the GUI (such as 
                                    // Demo-Version, etc.) - remove (or factor into some subclass)
 

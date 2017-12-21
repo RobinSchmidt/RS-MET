@@ -1,8 +1,9 @@
+Fix preset path problems for mac:
+-set the moduleTypeName for all AudioModules
+-use getPresetDirectory() for all the AudioModules - test it
+
+
 Upgrade to juce 5.2.5
--replace code for juce modules (done)
--make chainer build again (done)
--upgrade Projucer code, make it build (done)
--upgrade plugin host code, make it build (done)
 -figure out how we can avoid removing the "final" declaration from juce::Image
 
 
