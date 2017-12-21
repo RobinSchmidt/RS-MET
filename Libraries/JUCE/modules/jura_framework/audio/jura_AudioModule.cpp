@@ -220,7 +220,11 @@ juce::String AudioModule::getSupportDirectory() const
 
 juce::String AudioModule::getPresetDirectory(bool user) const
 {
-  return getSupportDirectory() + "/Presets/" + getModuleTypeName();
+  juce::String presetDir = getSupportDirectory() + "/Presets/" + getModuleTypeName();
+  juce::File presetDirAsFile(presetDir);
+  if(!presetDirAsFile.exists())
+    presetDirAsFile.createDirectory();
+  return presetDir;
 }
 
 int AudioModule::getIndexAmongNameSakes(AudioModule *child)
