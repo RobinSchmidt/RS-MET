@@ -32,7 +32,7 @@ LibertyAudioModule::LibertyAudioModule(CriticalSection *newPlugInLock) : AudioMo
 void LibertyAudioModule::init()
 {
   setModuleTypeName("Liberty");
-  macroDirectory = getPresetDirctory() + "/Macros";
+  macroDirectory = getPresetDirectory() + "/Macros";
 }
 
 LibertyAudioModule::~LibertyAudioModule()

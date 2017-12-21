@@ -8,9 +8,11 @@ TuningFileManager::TuningFileManager()
   defaultExtension = juce::String(".tun");
 
   // set the current directory for the tuning files:
-  setActiveDirectory(getApplicationDirectory() + juce::String("/TuningTables") );
+  //setActiveDirectory(getApplicationDirectory() + juce::String("/TuningTables") );
+  AudioModule dummy(nullptr); // try to get rid of this
+  setActiveDirectory(dummy.getSupportDirectory() + "/TuningTables");
 
-  // initialize the TuningTable pointer to NULL
+
   theTable = NULL;
 }
 

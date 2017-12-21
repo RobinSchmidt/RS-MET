@@ -290,7 +290,7 @@ ToolChain::ToolChain(CriticalSection *lockToUse,
   , modManager(lockToUse) // maybe pass the metaManagerToUse to this constructor call
 {
   ScopedLock scopedLock(*lock);
-  moduleName = "ToolChain";
+  setModuleTypeName("ToolChain");
 
 #ifdef _WIN32
   juce::String presetPath = getApplicationDirectory() + "/Presets/ToolChain";

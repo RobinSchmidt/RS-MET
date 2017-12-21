@@ -15,8 +15,7 @@ DspWorkbenchAudioModule::DspWorkbenchAudioModule(CriticalSection *newPlugInLock,
     wrappedDspWorkbench = new  rosic::DspWorkbench;
     wrappedDspWorkbenchIsOwned = true;
   }
-  moduleName          = juce::String("DSPWorkbench");
-  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/DspWorkbench") );
+  setModuleTypeName("DSPWorkbench");
   initializeAutomatableParameters();
 }
 

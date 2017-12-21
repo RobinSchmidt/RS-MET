@@ -8,7 +8,7 @@ ParameterManager::ParameterManager(CriticalSection *lockToUse)
 
 ParameterManager::~ParameterManager()
 {
-  ScopedLock scopedLock(*lock);
+  ScopedPointerLock scopedLock(lock);
   removeAllObservedParameters(true);
 }
 
@@ -89,7 +89,7 @@ void ParameterManager::removeObservedParameter(Parameter *parameterToRemove, boo
 
 void ParameterManager::removeAllObservedParameters(bool deleteObjects)
 {
-  ScopedLock scopedLock(*lock);
+  ScopedPointerLock scopedLock(lock);
   Parameter *removee; // this is the currently removed parameter
   while( parameters.size() > 0 )
   {

@@ -39,7 +39,7 @@ AudioModule::AudioModule(CriticalSection *lockToUse, MetaParameterManager* metaM
 
 AudioModule::~AudioModule()
 {
-  ScopedLock scopedLock(*lock);
+  ScopedPointerLock scopedLock(lock);
 
   for(int i = 0; i < deletionWatchers.size(); i++)
     deletionWatchers[i]->audioModuleWillBeDeleted(this);

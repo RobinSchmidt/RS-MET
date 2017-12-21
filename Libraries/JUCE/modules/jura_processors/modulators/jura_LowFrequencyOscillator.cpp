@@ -8,9 +8,7 @@ LowFrequencyOscillatorAudioModule::LowFrequencyOscillatorAudioModule(CriticalSec
 {
   jassert( newLowFrequencyOscillatorToWrap != NULL ); // you must pass a valid rosic-object to the constructor
   wrappedLowFrequencyOscillator = newLowFrequencyOscillatorToWrap;
-  moduleName = juce::String("LowFrequencyOscillator");
-  setActiveDirectory(getApplicationDirectory() 
-    + juce::File::getSeparatorString() + juce::String("Presets/LowFrequencyOscillator"));
+  setModuleTypeName("LowFrequencyOscillator");
 
   /*
   audioFileManager.setPermissibleWildcardPatterns(juce::String(T("*.wav;*.flac;*.xml")));

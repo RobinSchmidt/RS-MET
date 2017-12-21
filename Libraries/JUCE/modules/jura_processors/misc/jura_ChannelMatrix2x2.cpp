@@ -10,9 +10,7 @@ ChannelMatrix2x2AudioModule::ChannelMatrix2x2AudioModule(CriticalSection *newPlu
     wrappedChannelMatrix2x2 = new rosic::ChannelMatrix2x2;
     wrappedChannelMatrix2x2IsOwned = true;
   }
-
-  moduleName = juce::String("ChannelMatrix2x2");
-  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/ChannelMatrix2x2") );
+  setModuleTypeName("ChannelMatrix2x2");
   //initializeAutomatableParameters(); //
 }
 
