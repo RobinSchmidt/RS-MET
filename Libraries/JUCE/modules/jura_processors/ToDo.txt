@@ -1,6 +1,8 @@
 Fix preset path problems for mac:
 -set the moduleTypeName for all AudioModules
+ see how EqualizerAudioModule::init() calls setModuleTypeName("Equalizer");
 -use getPresetDirectory() for all the AudioModules - test it
+-let AudioModule::getSupportDirectory() return different things depending on platform
 
 
 Upgrade to juce 5.2.5

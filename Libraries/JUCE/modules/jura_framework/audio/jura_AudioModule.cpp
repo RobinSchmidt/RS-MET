@@ -77,6 +77,16 @@ void AudioModule::setModuleName(const juce::String &newName)
   moduleName = newName;
 }
 
+void AudioModule::setModuleTypeName(const juce::String& newName, bool updatePresetDirectory,
+  bool setModuleNameAlso)
+{
+  moduleTypeName = newName;
+  if(setModuleNameAlso)
+    moduleName = newName;
+  if(updatePresetDirectory)
+    setActiveDirectory(getPresetDirectory());
+}
+
 void AudioModule::setModuleNameAppendix(const juce::String& newAppendix)
 {
   moduleNameAppendix = newAppendix;

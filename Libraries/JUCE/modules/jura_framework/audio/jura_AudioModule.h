@@ -86,6 +86,12 @@ public:
   /** Sets up the name for this AudioModule. */
   virtual void setModuleName(const juce::String& newName);
 
+  /** Sets up the type name of the module and optionally updates the currently active directory for
+  loading and saving presets (which is typically based on that type name). It may also optionally 
+  set the module name to the same name. */
+  virtual void setModuleTypeName(const juce::String& newName, bool updatePresetDirectory = true, 
+    bool setModuleNameAlso = true);
+
   /** Sets up an appendix (like "Demo Version") for the name of this AudioModule. */
   virtual void setModuleNameAppendix(const juce::String& newAppendix);
 
