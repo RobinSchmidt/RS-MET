@@ -590,7 +590,7 @@ BreakpointModulatorEditor::BreakpointModulatorEditor(CriticalSection *newPlugInL
   stateWidgetSet->stateFileNameLabel->setDescription("Name of current preset for the breakpoint modulator (if any)");
 
   modulatorModule = newBreakpointModulatorAudioModule;
-  modulatorModule->addChangeListener(this);
+  //modulatorModule->addChangeListener(this); // crashes Straightliner when loading preset after recall
   assignGridAndSnapWidgets(modulatorModule);
 
   setModulatorToEdit(newBreakpointModulatorAudioModule->wrappedBreakpointModulator);
@@ -601,7 +601,7 @@ BreakpointModulatorEditor::BreakpointModulatorEditor(CriticalSection *newPlugInL
 
 BreakpointModulatorEditor::~BreakpointModulatorEditor()
 {
-  modulatorModule->removeChangeListener(this);
+  //modulatorModule->removeChangeListener(this);
 }
 
 //-------------------------------------------------------------------------------------------------

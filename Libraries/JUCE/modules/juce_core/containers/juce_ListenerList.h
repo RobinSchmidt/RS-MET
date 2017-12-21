@@ -178,8 +178,12 @@ public:
     template <LL_TEMPLATE(1)>
     void call (void (ListenerClass::*callbackFunction) (P1), LL_PARAM(1))
     {
-        for (Iterator<DummyBailOutChecker, ThisType> iter (*this); iter.next();)
-            (iter.getListener()->*callbackFunction) (param1);
+      ListenerClass* listener = nullptr;
+      for(Iterator<DummyBailOutChecker, ThisType> iter (*this); iter.next();)
+      {
+        listener = iter.getListener(); // for debug
+        (iter.getListener()->*callbackFunction) (param1);
+      }
     }
 
     /** Calls a member function, with 1 parameter, on all but the specified listener in the list.

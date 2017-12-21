@@ -3,7 +3,12 @@ Fix preset path problems for mac
 -crash when trying to load a straightliner patch after host based total recall
  ...maybe some ChangeListener does not deregister properly somewhere?
  ChangeBroadcasters: PolyphonicInstrumentEditor, OscillatorStereoEditorContextMenu, 
- MultiModeFreqResponseEditor, ToolChainEditor
+ MultiModeFreqResponseEditor, ToolChainEditor, BreakpointModulatorAudioModule,
+ StateLoadSaveWidgetSet
+ called: BreakpointModulatorAudioModule, StateLoadSaveWidgetSet
+ seems like some ChangeListener of BreakpointModulatorAudioModule is not properly removed
+ -commenting out modulatorModule->addChangeListener(this); in the constructor of 
+  BreakpointModulatorEditor (line 593) fixes the crash
 
 
 
