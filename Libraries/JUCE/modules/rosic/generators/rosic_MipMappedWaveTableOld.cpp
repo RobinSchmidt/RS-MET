@@ -602,7 +602,7 @@ void MipMappedWaveTableOld::fillWithSawOcts()
 
   //calculate the highest harmonic which is to be generated (harmonics should be
   //limited to 20 kHz):
-  int  maxN = (long) floor( 20000.0 / (sampleRate / tableLength) );
+  int  maxN = (int) floor( 20000.0 / (sampleRate / tableLength) );
 
   initPrototypeTable();
 
@@ -614,7 +614,7 @@ void MipMappedWaveTableOld::fillWithSawOcts()
   while( pow(2.0,n) <= maxN )
   {
     amp      = 1.0/pow(2.0,n);
-    int  inc = (long) pow(2.0,n);
+    int  inc = (int) pow(2.0,n);
     for (i=0; i<tableLength; i++)
       prototypeTable[i] += amp * sawBuffer[ (inc*i) % tableLength];
     n++;

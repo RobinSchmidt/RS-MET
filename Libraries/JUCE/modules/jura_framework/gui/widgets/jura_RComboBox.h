@@ -77,7 +77,7 @@ public:
   void selectItemFromText(const juce::String& textToSelect, bool sendNotification);
 
   /** Overriden from RWidget - calls selectItemFromText. */
-  void setStateFromString(const juce::String &stateString, bool sendChangeMessage);
+  void setStateFromString(const juce::String &stateString, bool sendChangeMessage) override;
 
   /** Registers an observer that will be called when the box's content changes. */
   virtual void registerComboBoxObserver(RComboBoxObserver* const observerToRegister);
@@ -87,7 +87,7 @@ public:
 
   /** Overrides a RWidget::assignParameter in order to set up the available options to those that 
   are defined in the Parameter. */
-  virtual void assignParameter(Parameter* parameterToAssign);
+  virtual void assignParameter(Parameter* parameterToAssign) override;
 
   /** Sets the maximum width and height for the popup menu that appears on clicking. */
   virtual void setMaxPopUpSize(int newMaxWidth, int newMaxHeight)
@@ -132,7 +132,7 @@ public:
 
   /** Overriden from RWidget - returns the state (defined as the currently selected text) as 
   string. */
-  virtual juce::String getStateAsString() const;
+  virtual juce::String getStateAsString() const override;
 
   //-----------------------------------------------------------------------------------------------
   // callbacks:
@@ -168,7 +168,7 @@ private:
 
   RComboBox (const RComboBox&);
   const RComboBox& operator= (const RComboBox&);
-  virtual void setText(const juce::String &newText) { RTextField::setText(newText); }
+  virtual void setText(const juce::String &newText) override { RTextField::setText(newText); }
 
   juce_UseDebuggingNewOperator
 };

@@ -131,7 +131,7 @@ public:
 
   virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 
     bool markAsClean) override;
-  virtual XmlElement EchoLabAudioModule::convertXmlStateIfNecessary(const XmlElement& xmlState);
+  virtual XmlElement convertXmlStateIfNecessary(const XmlElement& xmlState) override;
   virtual void setSampleRate(double newSampleRate) override;
   virtual void setBeatsPerMinute(double newBpm) override;
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;

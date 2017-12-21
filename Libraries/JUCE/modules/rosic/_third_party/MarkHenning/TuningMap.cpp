@@ -324,7 +324,7 @@ bool CTuningMap::ReadFromFile(const char * szFilepath)
 		if ( (lET_LastNoteFound >= 0) && (lET_LastNoteFound < 127) )
 		{
 			// Now loop the given data (auto expand):
-			long	H = lET_LastNoteFound;	// Highest MIDI note number
+			int	H = (int)lET_LastNoteFound;	// Highest MIDI note number
 			double	P = m_dblTunes[H];		// Period length
 			for ( int i = H ; i < 128 ; ++i )
 				m_dblTunes[i] = m_dblTunes[i-H] + P;

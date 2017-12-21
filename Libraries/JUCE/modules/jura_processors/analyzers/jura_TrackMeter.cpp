@@ -196,7 +196,7 @@ TrackMeterModuleEditor::TrackMeterModuleEditor(CriticalSection *newPlugInLock,
 
 void TrackMeterModuleEditor::rButtonClicked(RButton* buttonThatWasClicked)
 {
-  double time, level, tauRise, tauFall;
+  double time, level, tauRise = 0, tauFall = 0;
 
   if( buttonThatWasClicked == vuButton )
   {

@@ -208,7 +208,7 @@ namespace rosic
     // double variable
     //doubleA fracIndex;                  // fractional part of phaseIndex
 
-    doubleA increment, tmpNoise, out;
+    doubleA increment, tmpNoise, out = 0;
     doubleA blepPositionFloor, blepPositionFrac, blepValue;
     //intA    intIndex;                   // integer part of phaseIndex
     intA    blepPositionInt;

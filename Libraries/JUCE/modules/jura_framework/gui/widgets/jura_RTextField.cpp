@@ -31,7 +31,7 @@ void RTextField::setJustification(const Justification& newJustification)
 int RTextField::getTextPixelPositionX() const
 {
   //const BitmapFont *font = &BitmapFontRoundedBoldA10D0::instance;
-  int x;
+  int x = 0;
   int hFlags = justification.getOnlyHorizontalFlags();
   if( justification.testFlags(hFlags & Justification::centredLeft) )
     x = horizontalMargin;

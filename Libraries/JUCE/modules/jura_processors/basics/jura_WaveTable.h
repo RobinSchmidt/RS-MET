@@ -29,10 +29,10 @@ public:
   virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
     bool markAsClean) override;
   virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean) override;
-  virtual bool loadFile(const juce::File& fileToLoad);
-  virtual bool saveToFile(const juce::File& fileToSaveTo);
+  virtual bool loadFile(const juce::File& fileToLoad) override;
+  virtual bool saveToFile(const juce::File& fileToSaveTo) override;
   virtual bool setAudioData(AudioSampleBuffer* newBuffer, const juce::File& underlyingFile,
-    bool markAsClean);
+    bool markAsClean) override;
   virtual void setWaveformFromFile(const juce::String &fileToLoadFrom);
 protected:
   rosic::WaveformBuffer *wrappedWaveformBuffer;

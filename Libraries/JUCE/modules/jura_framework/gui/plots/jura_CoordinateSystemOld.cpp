@@ -2107,7 +2107,7 @@ void CoordinateSystemOld::drawAxisX(juce::Graphics &g, Image* targetImage, XmlEl
 
   g.setColour(plotColourScheme.axes);
 
-  double startX, endX, startY, endY;
+  double startX, endX, startY = 0, endY;
 
   startX = currentRange.getMinX();
   endX	  = currentRange.getMaxX();
@@ -2176,7 +2176,7 @@ void CoordinateSystemOld::drawAxisY(juce::Graphics &g, Image* targetImage, XmlEl
 
   g.setColour(plotColourScheme.axes);
 
-  double startX, endX, startY, endY;
+  double startX = 0, endX, startY, endY;
 
   startY = currentRange.getMinY();
   endY	  = currentRange.getMaxY();

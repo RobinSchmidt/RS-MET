@@ -63,7 +63,7 @@ rsString rsFile::readFileAsString() const
   else
   {
     rsString textAsString;
-    textAsString.reserveSize(numCharacters);
+    textAsString.reserveSize((int)numCharacters);
     textAsString = textRaw; // this can be optimized by a method String::copyFromCharArray - avoids one String constructor call
     delete[] textRaw;
     return textAsString;

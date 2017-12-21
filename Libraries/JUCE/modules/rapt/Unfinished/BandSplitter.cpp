@@ -75,7 +75,7 @@ void rsMultiBandSplitter<TSig, TPar>::setNumberOfBands(int newNumBands)
   if(newNumBands > oldNumBands)
   {
     TPar loFreq = splitFreqs[oldNumBands-2];
-    TPar hiFreq = TPar(0.5) * sampleRate;
+    //TPar hiFreq = TPar(0.5) * sampleRate;
     splitFreqs.resize(newNumBands-1);
     for(int k = 0; k < (newNumBands-oldNumBands); k++)
       splitFreqs[oldNumBands-2+k] = loFreq; // preliminary ...

@@ -987,7 +987,7 @@ void rsArray::orderBitReversed(T *buffer, int N, int log2N)
   int n, nr; // index and bit-reversed index
   for(n = 0; n < N; n++)
   {
-    nr = rsBitReverse(n, log2N);
+    nr = (int)rsBitReverse(n, log2N);
     if(n < nr)
       rsSwap(buffer[n], buffer[nr]);
   }

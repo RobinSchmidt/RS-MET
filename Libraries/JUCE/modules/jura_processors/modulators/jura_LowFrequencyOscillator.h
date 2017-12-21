@@ -22,7 +22,7 @@ public:
 
   virtual void setWaveformFromFile(const juce::String &fileToLoadFrom);
 
-  virtual void setBeatsPerMinute(double newBpm)
+  virtual void setBeatsPerMinute(double newBpm) override
   {
     wrappedLowFrequencyOscillator->setBeatsPerMinute(newBpm);
   }
