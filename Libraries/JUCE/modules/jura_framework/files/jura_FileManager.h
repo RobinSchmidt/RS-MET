@@ -15,6 +15,11 @@ JUCE_API juce::String getCommonDocumentsDirectory();
 be found. */
 JUCE_API juce::String getSupportDirectory();
 
+/** Given a path tha may contain backslashes, this function returns a version of that path where 
+the backslashes have been replaced by forward slashes. */
+JUCE_API juce::File convertBackslashToSlash(const juce::File& path);
+// not yet tested
+
 /** Returns a file object if the file with the path given by 'path' exists and is a valid
 audio file, otherwise it returns File::nonexistent. */
 JUCE_API juce::File getAudioFileFromPath(const juce::String& path);

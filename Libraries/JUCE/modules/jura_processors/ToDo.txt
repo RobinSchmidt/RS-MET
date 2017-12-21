@@ -1,24 +1,18 @@
 Fix preset path problems for mac
 
--crash when trying to load a straightliner patch after host based total recall
- ...maybe some ChangeListener does not deregister properly somewhere?
- seems like some ChangeListener of BreakpointModulatorAudioModule is not properly removed
- -commenting out modulatorModule->addChangeListener(this); in the constructor of 
-  BreakpointModulatorEditor (line 593) fixes the crash
-
-
-
 Upgrade to juce 5.2.5
 -figure out how we can avoid removing the "final" declaration from juce::Image
 
-
 -rename:
  -BreakpointModulator: MultiStageEnvelopeGenerator (MSEG), short: MultiSegment - or MultiStage, MSEG
- -AciDevil ...DevilFish, AcidDevil
 
 Fix guis for:
+-AcidDevil
 -Straightliner
 -FuncShaper (try resizing)
+
+Straightliner:
+-load init patch when plugging in
 
 Bugs in the smoothing system:
  -with very long smoothing times (in the order of seconds), the slider is glitchy and when

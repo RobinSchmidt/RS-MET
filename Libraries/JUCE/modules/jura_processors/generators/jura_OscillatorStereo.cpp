@@ -64,7 +64,7 @@ XmlElement* oscillatorStereoStateToXml(OscillatorStereo* osc,
   // the XmlElement which stores all the releveant state-information:
   XmlElement* xmlState;
   if( xmlElementToStartFrom == NULL )
-    xmlState = new XmlElement(juce::String("MultiModeFilterState"));  //wrong? should be OscillatorStereoState
+    xmlState = new XmlElement(juce::String("OscillatorStereo"));  //wrong? should be OscillatorStereoState
   else
     xmlState = xmlElementToStartFrom;
 
@@ -153,6 +153,11 @@ bool oscillatorStereoStateFromXml(OscillatorStereo* osc, const XmlElement &xmlSt
   // load the audio-file into the wavetable for the oscillator:
   juce::String relativePath = xmlState.getStringAttribute("AudioFileRelativePath", juce::String::empty);
   juce::String absolutePath = getSupportDirectory() + File::getSeparatorString() + relativePath;
+
+  // old presets were stored with backslashes - these don't work on mac unless we replace 
+  // the backslashes by forward slashes:
+  relativePath = relativePath.replaceCharacter('\\', '/');
+  absolutePath = absolutePath.replaceCharacter('\\', '/');
 
   AudioSampleBuffer* buffer = AudioFileManager::createAudioSampleBufferFromFile(absolutePath, true);
   if( buffer != NULL )

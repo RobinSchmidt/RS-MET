@@ -32,6 +32,13 @@ juce::String getSupportDirectory()
   // make company name adjustable from client code
 }
 
+juce::File convertBackslashToSlash(const juce::File& path)
+{
+  String str = path.getFullPathName();
+  str = str.replaceCharacter('\\', '/');
+  return File(str);
+}
+
 File getAudioFileFromPath(const String& path)
 {
   File file = File(path);
