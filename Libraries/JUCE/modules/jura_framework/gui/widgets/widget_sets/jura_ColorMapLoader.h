@@ -61,6 +61,10 @@ public:
   that will be updated, when the user loads a new colormap xml file. */
   ColorMapLoader(LoadableColorMap *mapToUpdate);
 
+
+  void setColorMapDirectory(const juce::String& newDirectory);
+  
+
   virtual void stateDirtyFlagChanged(StateManager *stateManager) override;
   // overriden to trigger repaint of the previewer
 
@@ -69,7 +73,7 @@ public:
 protected:
 
   ColorMapPreviewer previewer;
-  LoadableColorMap *loadableColorMap;
+  LoadableColorMap* loadableColorMap;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ColorMapLoader)
 };

@@ -68,6 +68,11 @@ ColorMapLoader::ColorMapLoader(LoadableColorMap *mapToUpdate)
   addAndMakeVisible(previewer);
 }
 
+void ColorMapLoader::setColorMapDirectory(const juce::String& newDirectory)
+{
+  loadableColorMap->setActiveDirectory(newDirectory);
+}
+
 void ColorMapLoader::stateDirtyFlagChanged(StateManager *stateManager)
 {
   StateLoadSaveWidgetSet::stateDirtyFlagChanged(stateManager);

@@ -935,7 +935,7 @@ juce::String AudioModuleEditor::getPreferencesTagName()
 {
   //ScopedLock scopedLock(*lock);
   ScopedPointerLock spl(lock);
-  if( moduleToEdit != NULL )
+  if( moduleToEdit != nullptr )
     return moduleToEdit->getModuleName() + juce::String("Preferences");
   else
     return juce::String("Preferences");
@@ -943,7 +943,12 @@ juce::String AudioModuleEditor::getPreferencesTagName()
 
 juce::String AudioModuleEditor::getPreferencesFileName()
 {
-  return getApplicationDirectory() + File::getSeparatorString() + getPreferencesTagName()
+  juce::String supportDir;
+  if(moduleToEdit != nullptr)
+    supportDir = moduleToEdit->getSupportDirectory();
+  else
+    supportDir = getApplicationDirectory();
+  return supportDir + File::getSeparatorString() + getPreferencesTagName()
     + juce::String(".xml");
 }
 

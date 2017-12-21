@@ -374,6 +374,9 @@ PhaseScopeEditor::PhaseScopeEditor(jura::PhaseScope *newPhaseScopeToEdit)
   addAndMakeVisible(display);
   createWidgets();
 
+  colorMapLoader->setColorMapDirectory(scope->getSupportDirectory() + File::getSeparatorString() 
+    + "ColorMaps");
+
   int headerMargin = 26;  // this is the height we need for headline and preset-section
   int displaySize = 250;
   setSize(displaySize+widgetMargin, displaySize+headerMargin);
