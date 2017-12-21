@@ -150,10 +150,10 @@ bool oscillatorStereoStateFromXml(OscillatorStereo* osc, const XmlElement &xmlSt
   osc->calculateIncrementForAllSlaves();
 
   // load the audio-file into the wavetable for the oscillator:
-  juce::String samplePath = xmlState.getStringAttribute("AudioFileRelativePath", juce::String::empty);
-  samplePath = getSupportDirectory() + File::getSeparatorString() + samplePath;
+  juce::String relativePath = xmlState.getStringAttribute("AudioFileRelativePath", juce::String::empty);
+  juce::String absolutePath = getSupportDirectory() + File::getSeparatorString() + relativePath;
 
-  AudioSampleBuffer* buffer = AudioFileManager::createAudioSampleBufferFromFile(samplePath, true);
+  AudioSampleBuffer* buffer = AudioFileManager::createAudioSampleBufferFromFile(absolutePath, true);
   if( buffer != NULL )
   {
     // pass the actual audio data:
@@ -164,36 +164,23 @@ bool oscillatorStereoStateFromXml(OscillatorStereo* osc, const XmlElement &xmlSt
     else
       channelPointers[1] = buffer->getWritePointer(0, 0);
     osc->waveTable->setWaveform(channelPointers, buffer->getNumSamples() );
-
-    // pass the path as c-string:
-    /*
-    long  length    = samplePath.length();
-    char* fileNameC = new char[length+1];
-    samplePath.copyToBuffer(fileNameC, length);
-    osc->waveTable->setSampleName(fileNameC);
-    */
-    char* fileNameC = toZeroTerminatedString(samplePath);
-    osc->waveTable->setSampleName(fileNameC);
-    delete[] fileNameC;
-
     delete buffer;
     success = true;
+
+    // pass the path as c-string:
+    char* fileNameC = toZeroTerminatedString(relativePath);
+    osc->waveTable->setSampleName(fileNameC);
+    delete[] fileNameC;
   }
   else
   {
-    juce::String errorString = samplePath + juce::String(" !error!");
+    success = false;
 
-    /*
-    long  length    = errorString.length();
-    char* fileNameC = new char[length+1];
-    errorString.copyToBuffer(fileNameC, length);
-    */
-    char* fileNameC = toZeroTerminatedString(errorString);
+    char* fileNameC = toZeroTerminatedString(relativePath);
     osc->waveTable->setSampleName(fileNameC);
     delete[] fileNameC;
 
     osc->waveTable->fillWithAllZeros();
-    success = false;
   }
 
   // let the (wavetable inside the) oscillator render the mip map and restore the old state of the
