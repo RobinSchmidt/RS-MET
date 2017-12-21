@@ -3,13 +3,9 @@ Enveloper::Enveloper(CriticalSection *lockToUse)
   : AudioModuleWithMidiIn(lockToUse) /* , envGenWrapper(lockToUse, &envGen)*/
 {
   ScopedLock scopedLock(*lock);
-  moduleName = "Enveloper";
-  //envGenWrapper.setModuleName(moduleName);
-
+  setModuleTypeName("Enveloper");
   envGenWrapper = new BreakpointModulatorAudioModule(lockToUse, &envGen);
   addChildAudioModule(envGenWrapper);
-
-  setActiveDirectory(getApplicationDirectory() + "/Presets/Enveloper");
 }
 
 AudioModuleEditor* Enveloper::createEditor()

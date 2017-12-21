@@ -11,12 +11,7 @@ BitCrusherAudioModule::BitCrusherAudioModule(CriticalSection *newPlugInLock, ros
   ScopedLock scopedLock(*lock);
   jassert( newBitCrusherToWrap != NULL ); // you must pass a valid rosic-object
   wrappedBitCrusher = newBitCrusherToWrap;
-  moduleName = juce::String(("BitCrusher"));
-
-  // maybe these 2 calls can be absorbed into 1 initialize() call or something:
-  //setActiveDirectory(getApplicationDirectory() + juce::File::separatorString + juce::String(("BitCrusherPresets")) );
-  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString() + moduleName 
-    + juce::String(("Presets")) );
+  setModuleTypeName("BitCrusher");
   createStaticParameters();
 }
 
@@ -38,9 +33,6 @@ void BitCrusherAudioModule::createStaticParameters()
   p = new Param("Amount", -200.0, 200.0, 100.0, Parameter::LINEAR, 1.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedBitCrusher, &BitCrusher::setAmount);
-
-  //for(int i=0; i < (int) parameters.size(); i++ )
-  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 BitCrusherModuleEditor::BitCrusherModuleEditor(CriticalSection *newPlugInLock, BitCrusherAudioModule* newBitCrusherAudioModule)
@@ -67,8 +59,6 @@ BitCrusherModuleEditor::BitCrusherModuleEditor(CriticalSection *newPlugInLock, B
   amountSlider->setDescription(juce::String(("Amount of the effect in percent")));
   amountSlider->setDescriptionField(infoField);
   amountSlider->setStringConversionFunction(&percentToStringWithUnit0);
-
-  //updateWidgetsAccordingToState();
 }
 
 void BitCrusherModuleEditor::resized()
@@ -98,10 +88,7 @@ ModulatedAllpassAudioModule::ModulatedAllpassAudioModule(CriticalSection *newPlu
   ScopedLock scopedLock(*lock);
   jassert( newModulatedAllpassToWrap != NULL ); // you must pass a valid rosic-object
   wrappedModulatedAllpass = newModulatedAllpassToWrap;
-  moduleName  = juce::String(("ModulatedAllpass"));
-
-  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString() 
-    + juce::String(("ModulatedAllpassPresets")) );
+  setModuleTypeName("ModulatedAllpass");
   createStaticParameters();
 }
 
@@ -119,9 +106,6 @@ void ModulatedAllpassAudioModule::createStaticParameters()
   p = new Param("Offset", -1.0, 1.0, 0.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedModulatedAllpass, &ModulatedAllpass::setOffset);
-
-  //for(int i=0; i < (int) parameters.size(); i++ )
-  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 ModulatedAllpassModuleEditor::ModulatedAllpassModuleEditor(CriticalSection *newPlugInLock,
@@ -143,8 +127,6 @@ ModulatedAllpassModuleEditor::ModulatedAllpassModuleEditor(CriticalSection *newP
   offsetSlider->setDescription(juce::String(("Offset for the modulating signal")));
   offsetSlider->setDescriptionField(infoField);
   offsetSlider->setStringConversionFunction(&valueToString2);
-
-  updateWidgetsAccordingToState();
 }
 
 void ModulatedAllpassModuleEditor::resized()
@@ -173,9 +155,7 @@ SlewRateLimiterAudioModule::SlewRateLimiterAudioModule(CriticalSection *newPlugI
 
   jassert( newSlewRateLimiterToWrap != NULL ); // you must pass a valid rosic-object
   wrappedSlewRateLimiter = newSlewRateLimiterToWrap;
-  moduleName  = juce::String(("SlewRateLimiter"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
-    + juce::String(("SlewRateLimiterPresets")) );
+  setModuleTypeName("SlewRateLimiter");
   createStaticParameters();
 }
 
@@ -193,9 +173,6 @@ void SlewRateLimiterAudioModule::createStaticParameters()
   p = new Param("Release", 0.0, 10.0, 0.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedSlewRateLimiter, &SlewRateLimiterStereo::setReleaseTime);
-
-  //for(int i=0; i < (int) parameters.size(); i++ )
-  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 SlewRateLimiterModuleEditor::SlewRateLimiterModuleEditor(CriticalSection *newPlugInLock,
@@ -217,8 +194,6 @@ SlewRateLimiterModuleEditor::SlewRateLimiterModuleEditor(CriticalSection *newPlu
   releaseSlider->setDescription(juce::String(("Slew rate for dwonward jumps")));
   releaseSlider->setDescriptionField(infoField);
   releaseSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
-
-  updateWidgetsAccordingToState();
 }
 
 void SlewRateLimiterModuleEditor::resized()
@@ -243,12 +218,9 @@ HarmonicsAudioModule::HarmonicsAudioModule(CriticalSection *newPlugInLock, rosic
  : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
-
   jassert( newHarmonicsToWrap != NULL ); // you must pass a valid rosic-object
   wrappedHarmonics = newHarmonicsToWrap;
-  moduleName  = juce::String(("Harmonics"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
-    + juce::String(("HarmonicsPresets")) );
+  setModuleTypeName("Harmonics");
   createStaticParameters();
 }
 
@@ -566,12 +538,9 @@ WaveShaperAudioModule::WaveShaperAudioModule(CriticalSection *newPlugInLock,
  : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
-
   jassert( newWaveShaperToWrap != NULL ); // you must pass a valid rosic-object
   wrappedWaveShaper = newWaveShaperToWrap;
-  moduleName  = juce::String(("WaveShaper"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
-    + juce::String(("WaveShaperPresets")) );
+  setModuleTypeName("WaveShaper");
   createStaticParameters();
 }
 
@@ -622,9 +591,6 @@ void WaveShaperAudioModule::createStaticParameters()
   p = new Param("Slope", -1.0, 3.0, 1.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedWaveShaper, &WaveShaper::setPenticSlopeAtZero);
-
-  //for(int i=0; i < (int) parameters.size(); i++)
-  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 WaveShaperModuleEditor::WaveShaperModuleEditor(CriticalSection *newPlugInLock, WaveShaperAudioModule* newWaveShaperAudioModule)
@@ -817,9 +783,7 @@ CompShaperAudioModule::CompShaperAudioModule(CriticalSection *newPlugInLock, ros
   ScopedLock scopedLock(*lock);
   jassert( newCompShaperToWrap != NULL ); // you must pass a valid rosic-object
   wrappedCompShaper = newCompShaperToWrap;
-  moduleName  = juce::String(("CompShaper"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
-    + juce::String(("CompShaperPresets")) );
+  setModuleTypeName("CompShaper");
   createStaticParameters();
 }
 
@@ -845,9 +809,6 @@ void CompShaperAudioModule::createStaticParameters()
   p = new Param("Clip", 0.0, 1.0, 0.0, Parameter::BOOLEAN, 1.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedCompShaper, &CompShaper::setToClipperMode);
-
-  //for(int i=0; i < (int) parameters.size(); i++)
-  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 CompShaperModuleEditor::CompShaperModuleEditor(CriticalSection *newPlugInLock, CompShaperAudioModule* newCompShaperAudioModule)
@@ -907,8 +868,6 @@ CompShaperModuleEditor::CompShaperModuleEditor(CriticalSection *newPlugInLock, C
   outLevelSlider->setDescription(juce::String(("Gain for the output signal (post waveshaper)")));
   outLevelSlider->setDescriptionField(infoField);
   outLevelSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
-
-  //updateWidgetsAccordingToState();
 }
 
 void CompShaperModuleEditor::resized()
@@ -988,9 +947,7 @@ CompressorAudioModule::CompressorAudioModule(CriticalSection *newPlugInLock, ros
 
   jassert( newCompressorToWrap != NULL ); // you must pass a valid rosic-object
   wrappedCompressor = newCompressorToWrap;
-  moduleName  = juce::String(("Compressor"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
-    + juce::String(("CompressorPresets")) );
+  setModuleTypeName("Compressor");
   createStaticParameters();
 }
 
@@ -1049,9 +1006,6 @@ void CompressorAudioModule::createStaticParameters()
   //addObservedParameter(p);
   //p->setValueChangeCallback(wrappedCompressor, &SoftKneeCompressor::setAntiAlias);
   // only for test - usually on
-
-  //for(int i=0; i < (int) parameters.size(); i++)
-  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1152,8 +1106,6 @@ CompressorModuleEditor::CompressorModuleEditor(CriticalSection *newPlugInLock, C
   antiAliasButton->setDescription(juce::String(("AntiAliasing")));
   antiAliasButton->setDescriptionField(infoField);
   antiAliasButton->setClickingTogglesState(true);
-
-  updateWidgetsAccordingToState();
 }
 
 void CompressorModuleEditor::resized()
@@ -1227,9 +1179,7 @@ ExpanderAudioModule::ExpanderAudioModule(CriticalSection *newPlugInLock, rosic::
 
   jassert( newExpanderToWrap != NULL ); // you must pass a valid rosic-object
   wrappedExpander = newExpanderToWrap;
-  moduleName  = juce::String(("Expander"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
-    + juce::String(("ExpanderPresets")) );
+  setModuleTypeName("Expander");
   createStaticParameters();
 }
 
@@ -1278,9 +1228,6 @@ void ExpanderAudioModule::createStaticParameters()
 
   //p = new Parameter("Gate", 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN);
   //addObservedParameter(p);
-
-  //for(int i=0; i < (int) parameters.size(); i++)
-  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 ExpanderModuleEditor::ExpanderModuleEditor(CriticalSection *newPlugInLock, ExpanderAudioModule* newExpanderAudioModule)
@@ -1366,8 +1313,6 @@ ExpanderModuleEditor::ExpanderModuleEditor(CriticalSection *newPlugInLock, Expan
   gateButton->setDescription(juce::String(("Gate signal at the threshold (infinite ratio)")));
   gateButton->setDescriptionField(infoField);
   gateButton->setClickingTogglesState(true);
-
-  updateWidgetsAccordingToState();
 }
 
 void ExpanderModuleEditor::resized()
@@ -1436,12 +1381,9 @@ LimiterAudioModule::LimiterAudioModule(CriticalSection *newPlugInLock, rosic::Li
  : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
-
   jassert( newLimiterToWrap != NULL ); // you must pass a valid rosic-object
   wrappedLimiter = newLimiterToWrap;
-  moduleName  = juce::String(("Limiter"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
-    + juce::String(("LimiterPresets")) );
+  setModuleTypeName("Limiter");
   createStaticParameters();
 }
 
@@ -1479,9 +1421,6 @@ void LimiterAudioModule::createStaticParameters()
   p = new Param("Limit", -48.0, 12.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback<Limiter>(wrappedLimiter, &Limiter::setLimit);
-
-  //for(int i=0; i < (int) parameters.size(); i++)
-  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 LimiterModuleEditor::LimiterModuleEditor(CriticalSection *newPlugInLock, LimiterAudioModule* newLimiterAudioModule)
@@ -1548,8 +1487,6 @@ LimiterModuleEditor::LimiterModuleEditor(CriticalSection *newPlugInLock, Limiter
   limitSlider->setDescription(juce::String(("Limit above which the signal will be attenuated")));
   limitSlider->setDescriptionField(infoField);
   limitSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
-
-  updateWidgetsAccordingToState();
 }
 
 void LimiterModuleEditor::resized()
@@ -1612,12 +1549,9 @@ NoiseGateAudioModule::NoiseGateAudioModule(CriticalSection *newPlugInLock, rosic
  : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
-
   jassert( newNoiseGateToWrap != NULL ); // you must pass a valid rosic-object
   wrappedNoiseGate = newNoiseGateToWrap;
-  moduleName  = juce::String(("NoiseGate"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
-    + juce::String(("NoiseGatePresets")) );
+  setModuleTypeName("NoiseGate");
   createStaticParameters();
 }
 
@@ -1663,9 +1597,6 @@ void NoiseGateAudioModule::createStaticParameters()
   p = new Param("Hysteresis", 0.0, 12.0, 3.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback<NoiseGate>(wrappedNoiseGate, &NoiseGate::setHysteresis);
-
-  //for(int i=0; i < (int) parameters.size(); i++)
-  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 NoiseGateModuleEditor::NoiseGateModuleEditor(CriticalSection *newPlugInLock, NoiseGateAudioModule* newNoiseGateAudioModule)
@@ -1744,8 +1675,6 @@ NoiseGateModuleEditor::NoiseGateModuleEditor(CriticalSection *newPlugInLock, Noi
   hysteresisSlider->setDescription(juce::String(("Difference between opening and closing threshold")));
   hysteresisSlider->setDescriptionField(infoField);
   hysteresisSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
-
-  //updateWidgetsAccordingToState();
 }
 
 void NoiseGateModuleEditor::resized()

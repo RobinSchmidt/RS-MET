@@ -15,9 +15,7 @@ PitchShifterAudioModule::PitchShifterAudioModule(CriticalSection *newPlugInLock,
     wrappedPitchShifter = new rosic::PitchShifterGrainAdaptive;
     wrappedPitchShifterIsOwned = true;
   }
-
-  moduleName = juce::String("PitchShifter");
-  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/PitchShifter"));
+  setModuleTypeName("PitchShifter");
   createStaticParameters();
 }
 

@@ -6,8 +6,7 @@ EchoLabDelayLineAudioModule::EchoLabDelayLineAudioModule(CriticalSection *newPlu
 {
   jassert( echoLabDelayLineToWrap != NULL ); // you must pass a valid rosic-object to the constructor
   wrappedEchoLabDelayLine = echoLabDelayLineToWrap;
-  moduleName = juce::String("DelayLine");
-  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/EchoLab/DelayLine") );
+  setModuleTypeName("DelayLine");
   initializeAutomatableParameters();
 
   inputEqualizerModule = new EqualizerAudioModule(lock, &echoLabDelayLineToWrap->inputEqualizer);
@@ -381,8 +380,7 @@ EchoLabAudioModule::EchoLabAudioModule(CriticalSection *newPlugInLock,
     wrappedEchoLabIsOwned = true;
   }
 
-  moduleName = juce::String("EchoLab");
-  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/EchoLab") );
+  setModuleTypeName("EchoLab");
 
   //inputFilterModule = new EqualizerAudioModule(NULL);
   //inputFilterModule->setModuleName(juce::String(T("InputFilter")));

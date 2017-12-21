@@ -15,9 +15,7 @@ ModuluxuryAudioModule::ModuluxuryAudioModule(CriticalSection *newPlugInLock,
     wrappedModuluxury = new rosic::Moduluxury;
     wrappedModuluxuryIsOwned = true;
   }
-
-  moduleName = juce::String("Moduluxury");
-  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/Moduluxury"));
+  setModuleTypeName("Moduluxury");
   initializeAutomatableParameters();
 }
 

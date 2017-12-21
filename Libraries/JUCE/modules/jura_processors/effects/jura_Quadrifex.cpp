@@ -21,10 +21,8 @@ QuadrifexAudioModule::QuadrifexAudioModule(CriticalSection* lockToUse,
     wrappedQuadrifexIsOwned = true;
   }
 
-
-  editor     = NULL;
-  moduleName = juce::String(("Quadrifex"));
-  setActiveDirectory(getApplicationDirectory() + juce::String(("/Presets/Quadrifex")) );
+  editor     = NULL; // !!! we keep a pointer to the editor???!!! get rid of that!!!
+  setModuleTypeName("Quadrifex");
 
   matrixModule = new RoutingMatrixAudioModule(lock, &wrappedQuadrifex->mixMatrix);
   matrixModule->setModuleName(juce::String(("RoutingMatrix5x5")));

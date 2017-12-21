@@ -14,8 +14,7 @@ StereoDelayAudioModule::StereoDelayAudioModule(CriticalSection *newPlugInLock,
     wrappedStereoDelay = new rosic::StereoDelay;
     wrappedStereoDelayIsOwned = true;
   }
-  moduleName = juce::String("StereoDelay");
-  setActiveDirectory(getApplicationDirectory() + juce::String(("/Presets/StereoDelay")) );
+  setModuleTypeName("StereoDelay");
   initializeAutomatableParameters();
 }
 

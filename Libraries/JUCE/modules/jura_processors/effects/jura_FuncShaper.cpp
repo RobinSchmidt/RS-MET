@@ -22,8 +22,7 @@ FuncShaperAudioModule::FuncShaperAudioModule(CriticalSection *newPlugInLock,
 
 void FuncShaperAudioModule::init()
 {
-  moduleName  = juce::String("FuncShaper");
-  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/FuncShaper") );
+  setModuleTypeName("FuncShaper");
   createParameters();
 
   // use initial value for "a" that is different from the default value:

@@ -3,8 +3,7 @@ MultiCompAudioModule::MultiCompAudioModule(CriticalSection *lockToUse,
   : ModulatableAudioModule(lockToUse, metaManagerToUse, modManagerToUse)
 {
   ScopedLock scopedLock(*lock);
-  moduleName = "MultiComp";
-  setActiveDirectory(getApplicationDirectory() + "/Presets/MultiComp");
+  setModuleTypeName("MultiComp");
   maxNumBands = multiCompCore.getMaxNumberOfBands();
   createParameters();
 }
