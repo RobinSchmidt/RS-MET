@@ -8,6 +8,9 @@ JUCE_API juce::String getApplicationDirectory();
 /** Returns the user's application data directory. */
 JUCE_API juce::String getUserAppDataDirectory();
 
+/** Returns the folder used for documents that are shared among all users of the machine. */
+JUCE_API juce::String getCommonDocumentsDirectory();
+
 /** Returns the directory, where the support files such as presets, samples, etc. are supposed to 
 be found. */
 JUCE_API juce::String getSupportDirectory();

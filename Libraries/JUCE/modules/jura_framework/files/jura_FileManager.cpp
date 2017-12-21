@@ -20,10 +20,16 @@ juce::String getUserAppDataDirectory()
   return File::getSpecialLocation(juce::File::userApplicationDataDirectory).getFullPathName();
 }
 
+juce::String getCommonDocumentsDirectory()
+{
+  return File::getSpecialLocation(juce::File::commonDocumentsDirectory).getFullPathName();
+}
+
 juce::String getSupportDirectory()
 {
+  //return getCommonDocumentsDirectory() + File::getSeparatorString() + "RS-MET";
   return getUserAppDataDirectory() + File::getSeparatorString() + "RS-MET";
-  // make this adjustable from client code
+  // make company name adjustable from client code
 }
 
 File getAudioFileFromPath(const String& path)
