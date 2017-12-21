@@ -1744,12 +1744,9 @@ CombBankAudioModule::CombBankAudioModule(CriticalSection *newPlugInLock, rosic::
  : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
-
   jassert( newCombBankToWrap != NULL ); // you must pass a valid rosic-object
   wrappedCombBank = newCombBankToWrap;
-  moduleName  = juce::String(("CombBank"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
-    + juce::String(("CombBankPresets")) );
+  setModuleTypeName("CombBank");
   createStaticParameters();
 }
 
@@ -1807,9 +1804,6 @@ void CombBankAudioModule::createStaticParameters()
   p = new Param("LowCrossoverFrequency", 20.0, 20000.0, 250.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombBank, &CombBank::setLowCrossoverFreq);
-
-  //for(int i=0; i < (int) parameters.size(); i++)
-  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 CombBankModuleEditor::CombBankModuleEditor(CriticalSection *newPlugInLock, CombBankAudioModule* newCombBankAudioModule)
@@ -1910,8 +1904,6 @@ CombBankModuleEditor::CombBankModuleEditor(CriticalSection *newPlugInLock, CombB
   oddOnlyButton->setDescription(juce::String(("Lets the comb create only odd harmonics.")));
   oddOnlyButton->setDescriptionField(infoField);
   oddOnlyButton->setClickingTogglesState(true);
-
-  //updateWidgetsAccordingToState();
 }
 
 void CombBankModuleEditor::resized()
@@ -1976,12 +1968,9 @@ CombResonatorAudioModule::CombResonatorAudioModule(CriticalSection *newPlugInLoc
  : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
-
   jassert( newCombResonatorToWrap != NULL ); // you must pass a valid rosic-object
   wrappedCombResonator = newCombResonatorToWrap;
-  moduleName  = juce::String(("CombResonator"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
-    + juce::String(("CombResonatorPresets")) );
+  setModuleTypeName("CombResonator");
   createStaticParameters();
 }
 
@@ -2039,9 +2028,6 @@ void CombResonatorAudioModule::createStaticParameters()
   p = new Param("LowCrossoverFrequency", 20.0, 20000.0, 250.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedCombResonator, &CombResonatorStereo::setLowCrossoverFreq);
-
-  //for(int i=0; i < (int) parameters.size(); i++)
-  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 CombResonatorModuleEditor::CombResonatorModuleEditor(CriticalSection *newPlugInLock, CombResonatorAudioModule* newCombResonatorAudioModule)
@@ -2142,8 +2128,6 @@ CombResonatorModuleEditor::CombResonatorModuleEditor(CriticalSection *newPlugInL
   oddOnlyButton->setDescription(juce::String(("Lets the comb create only odd harmonics.")));
   oddOnlyButton->setDescriptionField(infoField);
   oddOnlyButton->setClickingTogglesState(true);
-
-  updateWidgetsAccordingToState();
 }
 
 void CombResonatorModuleEditor::resized()
@@ -2209,12 +2193,9 @@ DualTwoPoleFilterAudioModule::DualTwoPoleFilterAudioModule(CriticalSection *newP
                                                             : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
-
   jassert( newDualTwoPoleFilterToWrap != NULL ); // you must pass a valid rosic-object
   wrappedDualTwoPoleFilter = newDualTwoPoleFilterToWrap;
-  moduleName  = juce::String(("DualTwoPoleFilter"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
-    + juce::String(("DualTwoPoleFilterPresets")) );
+  setModuleTypeName("DualTwoPoleFilter");
   createStaticParameters();
 }
 
@@ -2272,9 +2253,6 @@ void DualTwoPoleFilterAudioModule::createStaticParameters()
   p = new Param("BandwidthScale", 0.125, 8.0, 1.0, Parameter::EXPONENTIAL, 0.001);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedDualTwoPoleFilter, &DualTwoPoleFilter::setBandwidthScale);
-
-  //for(int i=0; i < (int) parameters.size(); i++)
-  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 DualTwoPoleFilterModuleEditor::DualTwoPoleFilterModuleEditor(CriticalSection *newPlugInLock,
@@ -2376,7 +2354,6 @@ DualTwoPoleFilterModuleEditor::DualTwoPoleFilterModuleEditor(CriticalSection *ne
   bandwidthScaleSlider->setDescriptionField(infoField);
   bandwidthScaleSlider->setStringConversionFunction(&valueToString3);
 
-  //updateWidgetsAccordingToState();
   updateWidgetEnablement();
 }
 
@@ -2476,12 +2453,9 @@ FourPoleFilterAudioModule::FourPoleFilterAudioModule(CriticalSection *newPlugInL
  : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
-
   jassert( newFourPoleFilterToWrap != NULL ); // you must pass a valid rosic-object
   wrappedFourPoleFilter = newFourPoleFilterToWrap;
-  moduleName  = juce::String(("FourPoleFilter"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
-    + juce::String(("FourPoleFilterPresets")) );
+  setModuleTypeName("FourPoleFilter");
   createStaticParameters();
 }
 
@@ -2508,9 +2482,6 @@ void FourPoleFilterAudioModule::createStaticParameters()
   //p = new AutomatableParameter(lock, "Bandwidth", 0.2, 6.0, 0.01, 1.0, Parameter::EXPONENTIAL);
   //addObservedParameter(p);
   //p->setValueChangeCallback(wrappedFourPoleFilter, &FourPoleFilter::setBandwidth);
-
-  //for(int i=0; i < (int) parameters.size(); i++)
-  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 FourPoleFilterModuleEditor::FourPoleFilterModuleEditor(CriticalSection *newPlugInLock,
@@ -2547,7 +2518,7 @@ FourPoleFilterModuleEditor::FourPoleFilterModuleEditor(CriticalSection *newPlugI
   bandwidthSlider->setDescriptionField(infoField);
   bandwidthSlider->setStringConversionFunction(&octavesToStringWithUnit2);
 
-  updateWidgetsAccordingToState();
+  //updateWidgetsAccordingToState();
   updateWidgetEnablement();
 }
 
@@ -2598,12 +2569,9 @@ LadderFilterAudioModule::LadderFilterAudioModule(CriticalSection *newPlugInLock,
  : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
-
   jassert( newLadderFilterToWrap != NULL ); // you must pass a valid rosic-object
   wrappedLadderFilter = newLadderFilterToWrap;
-  moduleName  = juce::String(("LadderFilter"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
-    + juce::String(("LadderFilterPresets")) );
+  setModuleTypeName("LadderFilter");
   createStaticParameters();
 }
 
@@ -2656,9 +2624,6 @@ void LadderFilterAudioModule::createStaticParameters()
   p = new Parameter("Bandwidth", 0.2, 6.0, 0.01, 1.0, Parameter::EXPONENTIAL);
   addObservedParameter(p);
   */
-
-  //for(int i=0; i < (int) parameters.size(); i++)
-  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 LadderFilterModuleEditor::LadderFilterModuleEditor(CriticalSection *newPlugInLock, LadderFilterAudioModule* newLadderFilterAudioModule)
@@ -2720,7 +2685,6 @@ LadderFilterModuleEditor::LadderFilterModuleEditor(CriticalSection *newPlugInLoc
   bandwidthSlider->setStringConversionFunction(&octavesToStringWithUnit2);
   */
 
-  //updateWidgetsAccordingToState();
   updateWidgetEnablement();
 }
 
@@ -2779,9 +2743,7 @@ SlopeFilterAudioModule::SlopeFilterAudioModule(CriticalSection *newPlugInLock, r
   ScopedLock scopedLock(*lock);
   jassert( newSlopeFilterToWrap != NULL ); // you must pass a valid rosic-object
   wrappedSlopeFilter = newSlopeFilterToWrap;
-  moduleName  = juce::String(("SlopeFilter"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString() 
-    + juce::String(("SlopeFilterPresets")) );
+  setModuleTypeName("SlopeFilter");
   createStaticParameters();
 }
 
@@ -2795,9 +2757,6 @@ void SlopeFilterAudioModule::createStaticParameters()
   p = new Param("Slope", -12.0, 12.0, 0.0, Parameter::LINEAR, 0.01);
   p->setValueChangeCallback(wrappedSlopeFilter, &SlopeFilter::setSlope);
   addObservedParameter(p);
-
-  //for(int i=0; i < (int) parameters.size(); i++)
-  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 SlopeFilterModuleEditor::SlopeFilterModuleEditor(CriticalSection *newPlugInLock, SlopeFilterAudioModule* newSlopeFilterAudioModule)
@@ -2837,12 +2796,9 @@ TwoPoleFilterAudioModule::TwoPoleFilterAudioModule(CriticalSection *newPlugInLoc
  : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
-
   jassert( newTwoPoleFilterToWrap != NULL ); // you must pass a valid rosic-object
   wrappedTwoPoleFilter = newTwoPoleFilterToWrap;
-  moduleName  = juce::String(("TwoPoleFilter"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
-    + juce::String(("TwoPoleFilterPresets")) );
+  setModuleTypeName("TwoPoleFilter");
   createStaticParameters();
 }
 
@@ -2872,9 +2828,6 @@ void TwoPoleFilterAudioModule::createStaticParameters()
   p = new Param("Radius", -4.0, 4.0, 0.0, Parameter::LINEAR, 0.00001);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedTwoPoleFilter, &TwoPoleFilter::setRadius);
-
-  for(int i=0; i < (int) parameters.size(); i++)
-    parameters[i]->resetToDefaultValue(true, true);
 }
 
 TwoPoleFilterModuleEditor::TwoPoleFilterModuleEditor(CriticalSection *newPlugInLock, TwoPoleFilterAudioModule* newTwoPoleFilterAudioModule)
@@ -2916,7 +2869,7 @@ TwoPoleFilterModuleEditor::TwoPoleFilterModuleEditor(CriticalSection *newPlugInL
   radiusSlider->setStringConversionFunction(&valueToString5);
   radiusSlider->setVisible(false);
 
-  updateWidgetsAccordingToState();
+  //updateWidgetsAccordingToState();
   updateWidgetEnablement();
 }
 
@@ -2975,12 +2928,9 @@ PingPongEchoAudioModule::PingPongEchoAudioModule(CriticalSection *newPlugInLock,
  : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
-
   jassert( newPingPongEchoToWrap != NULL ); // you must pass a valid rosic-object
   wrappedPingPongEcho = newPingPongEchoToWrap;
-  moduleName  = juce::String(("PingPongEcho"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
-    + juce::String(("PingPongEchoPresets")) );
+  setModuleTypeName("PingPongEcho");
   createStaticParameters();
 }
 
@@ -3030,9 +2980,6 @@ void PingPongEchoAudioModule::createStaticParameters()
   p = new Param("Activated", 0.0, 1.0, 1.0, Parameter::BOOLEAN, 1.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedPingPongEcho, &PingPongEcho::setActive);
-
-  //for(int i=0; i < (int) parameters.size(); i++)
-  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 PingPongEchoModuleEditor::PingPongEchoModuleEditor(CriticalSection *newPlugInLock, PingPongEchoAudioModule* newPingPongEchoAudioModule)
@@ -3098,8 +3045,6 @@ PingPongEchoModuleEditor::PingPongEchoModuleEditor(CriticalSection *newPlugInLoc
   tempoSyncButton->setDescriptionField(infoField);
   tempoSyncButton->setClickingTogglesState(true);
   tempoSyncButton->addRButtonListener(this);
-
-  //updateWidgetsAccordingToState();
 }
 
 void PingPongEchoModuleEditor::rButtonClicked(RButton *buttonThatWasClicked)
@@ -3148,12 +3093,9 @@ ReverbAudioModule::ReverbAudioModule(CriticalSection *newPlugInLock, rosic::rsRe
  : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
-
   jassert( newReverbToWrap != NULL ); // you must pass a valid rosic-object
   wrappedReverb = newReverbToWrap;
-  moduleName  = juce::String(("Reverb"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
-    + juce::String(("ReverbPresets")) );
+  setModuleTypeName("Reverb");
   createStaticParameters();
 }
 
@@ -3203,9 +3145,6 @@ void ReverbAudioModule::createStaticParameters()
   p = new Param("StereoSwap", 0.0, 1.0, 0.0, Parameter::BOOLEAN, 1.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedReverb, &rosic::rsReverb::setStereoSwapSwitch);
-
-  //for(int i=0; i < (int) parameters.size(); i++)
-  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 ReverbModuleEditor::ReverbModuleEditor(CriticalSection *newPlugInLock, ReverbAudioModule* newReverbAudioModule)
@@ -3278,8 +3217,6 @@ ReverbModuleEditor::ReverbModuleEditor(CriticalSection *newPlugInLock, ReverbAud
   stereoSwapButton->setButtonText(juce::String(("Swap")));
   stereoSwapButton->setDescriptionField(infoField);
   stereoSwapButton->setClickingTogglesState(true);
-
-  //updateWidgetsAccordingToState();
 }
 
 void ReverbModuleEditor::resized()
@@ -3325,12 +3262,9 @@ SimpleDelayAudioModule::SimpleDelayAudioModule(CriticalSection *newPlugInLock, r
  : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
-
   jassert( newSimpleDelayToWrap != NULL ); // you must pass a valid rosic-object
   wrappedSimpleDelay = newSimpleDelayToWrap;
-  moduleName  = juce::String(("SimpleDelay"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
-    + juce::String(("SimpleDelayPresets")) );
+  setModuleTypeName("SimpleDelay");
   createStaticParameters();
 }
 
@@ -3344,9 +3278,6 @@ void SimpleDelayAudioModule::createStaticParameters()
   p = new Param("DelayTime", 0.0, 200.0, 0.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedSimpleDelay, &FractionalDelayLineStereo::setDelayTimeInMilliseconds);
-
-  //for(int i=0; i < (int) parameters.size(); i++)
-  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 SimpleDelayModuleEditor::SimpleDelayModuleEditor(CriticalSection *newPlugInLock, SimpleDelayAudioModule* newSimpleDelayAudioModule)
@@ -3389,14 +3320,13 @@ ModulationEffectAudioModule::ModulationEffectAudioModule(CriticalSection *newPlu
                                                           : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
-
   jassert( newModulationEffectToWrap != NULL ); // you must pass a valid rosic-object
   wrappedModulationEffect = newModulationEffectToWrap;
-  moduleName  = juce::String(("ModulationEffect"));
-  setActiveDirectory(getApplicationDirectory()
-    + juce::File::getSeparatorString() + juce::String(("ModulationEffectPresets")) );
+  //moduleName  = juce::String(("ModulationEffect"));
+  //setActiveDirectory(getApplicationDirectory()
+  //  + juce::File::getSeparatorString() + juce::String(("ModulationEffectPresets")) );
   lfoModule = new LowFrequencyOscillatorAudioModule(newPlugInLock, &wrappedModulationEffect->lfo);
-  lfoModule->setModuleName(juce::String(("LowFrequencyOscillator")));
+  lfoModule->setModuleTypeName("LowFrequencyOscillator");
   addChildAudioModule(lfoModule);
 }
 
@@ -3423,7 +3353,7 @@ ModulationEffectModuleEditor::ModulationEffectModuleEditor(CriticalSection *newP
   effectLabel->setDescription(("Parameters for the actual effect"));
   effectLabel->setDescriptionField(infoField);
 
-  updateWidgetsAccordingToState();
+  //updateWidgetsAccordingToState();
 }
 
 /*
@@ -3474,12 +3404,9 @@ FlangerAudioModule::FlangerAudioModule(CriticalSection *newPlugInLock, rosic::Fl
 : ModulationEffectAudioModule(newPlugInLock, newFlangerToWrap)
 {
   ScopedLock scopedLock(*lock);
-
   jassert( newFlangerToWrap != NULL ); // you must pass a valid rosic-object
   wrappedFlanger = newFlangerToWrap;
-  moduleName  = juce::String(("Flanger"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
-    + juce::String(("FlangerPresets")) );
+  setModuleTypeName("Flanger");
   createStaticParameters();
 }
 
@@ -3514,9 +3441,6 @@ void FlangerAudioModule::createStaticParameters()
   p = new Param("Invert", 0.0, 1.0, 0.0, Parameter::BOOLEAN, 1.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedFlanger, &Flanger::setNegativePolarity);
-
-  //for(int i=0; i < (int) parameters.size(); i++)
-  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 FlangerModuleEditor::FlangerModuleEditor(CriticalSection *newPlugInLock, FlangerAudioModule* newFlangerAudioModule)
@@ -3558,7 +3482,6 @@ FlangerModuleEditor::FlangerModuleEditor(CriticalSection *newPlugInLock, Flanger
   invertButton->setDescriptionField(infoField);
   invertButton->setClickingTogglesState(true);
 
-  //updateWidgetsAccordingToState();
   updateWidgetEnablement();
 }
 
@@ -3589,12 +3512,9 @@ PhaserAudioModule::PhaserAudioModule(CriticalSection *newPlugInLock, rosic::Phas
 : ModulationEffectAudioModule(newPlugInLock, newPhaserToWrap)
 {
   ScopedLock scopedLock(*lock);
-
   jassert( newPhaserToWrap != NULL ); // you must pass a valid rosic-object
   wrappedPhaser = newPhaserToWrap;
-  moduleName  = juce::String(("Phaser"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
-    + juce::String(("PhaserPresets")) );
+  setModuleTypeName("Phaser");
   createStaticParameters();
 }
 
@@ -3645,9 +3565,6 @@ void PhaserAudioModule::createStaticParameters()
   //p = new Param("Activated", 0.0, 1.0, 1.0, Parameter::BOOLEAN, 1.0);
   //addObservedParameter(p);
   //p->setValueChangeCallback(wrappedPhaser, &Phaser::setActive);
-
-  //for(int i=0; i < (int) parameters.size(); i++)
-  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 PhaserModuleEditor::PhaserModuleEditor(CriticalSection *newPlugInLock, PhaserAudioModule* newPhaserAudioModule)
@@ -3706,7 +3623,6 @@ PhaserModuleEditor::PhaserModuleEditor(CriticalSection *newPlugInLock, PhaserAud
   stagesSlider->setDescriptionField(infoField);
   stagesSlider->setStringConversionFunction(&valueToString0);
 
-  //updateWidgetsAccordingToState();
   updateWidgetEnablement();
 }
 
@@ -3762,12 +3678,9 @@ TremoloAudioModule::TremoloAudioModule(CriticalSection *newPlugInLock, rosic::Tr
 : ModulationEffectAudioModule(newPlugInLock, newTremoloToWrap)
 {
   ScopedLock scopedLock(*lock);
-
   jassert( newTremoloToWrap != NULL ); // you must pass a valid rosic-object
   wrappedTremolo = newTremoloToWrap;
-  moduleName  = juce::String(("Tremolo"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
-    + juce::String(("TremoloPresets")) );
+  setModuleTypeName("Tremolo");
   createStaticParameters();
 }
 
@@ -3785,9 +3698,6 @@ void TremoloAudioModule::createStaticParameters()
   p = new Param("Depth", 0.0, 100.0, 50.0, Parameter::LINEAR, 1.0);
   addObservedParameter(p);
   p->setValueChangeCallback<Tremolo>(wrappedTremolo, &Tremolo::setDepthInPercent);
-
-  //for(int i=0; i < (int) parameters.size(); i++)
-  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 TremoloModuleEditor::TremoloModuleEditor(CriticalSection *newPlugInLock, TremoloAudioModule* newTremoloAudioModule)
@@ -3803,8 +3713,6 @@ TremoloModuleEditor::TremoloModuleEditor(CriticalSection *newPlugInLock, Tremolo
   depthSlider->setDescription(juce::String(("Modulation depth in percent")));
   depthSlider->setDescriptionField(infoField);
   depthSlider->setStringConversionFunction(&percentToStringWithUnit0);
-
-  //updateWidgetsAccordingToState();
 }
 
 void TremoloModuleEditor::resized()
@@ -3826,12 +3734,9 @@ VibratoAudioModule::VibratoAudioModule(CriticalSection *newPlugInLock, rosic::Vi
 : ModulationEffectAudioModule(newPlugInLock, newVibratoToWrap)
 {
   ScopedLock scopedLock(*lock);
-
   jassert( newVibratoToWrap != NULL ); // you must pass a valid rosic-object
   wrappedVibrato = newVibratoToWrap;
-  moduleName  = juce::String(("Vibrato"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
-    + juce::String(("VibratoPresets")) );
+  setModuleTypeName("Vibrato");
   createStaticParameters();
 }
 
@@ -3849,9 +3754,6 @@ void VibratoAudioModule::createStaticParameters()
   p = new Param("DryWet", 0.0, 1.0, 100.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback<Vibrato>(wrappedVibrato, &Vibrato::setDryWetRatio);
-
-  //for(int i=0; i < (int) parameters.size(); i++)
-  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 VibratoModuleEditor::VibratoModuleEditor(CriticalSection *newPlugInLock, VibratoAudioModule* newVibratoAudioModule)
@@ -3874,7 +3776,7 @@ VibratoModuleEditor::VibratoModuleEditor(CriticalSection *newPlugInLock, Vibrato
   dryWetSlider->setDescriptionField(infoField);
   dryWetSlider->setStringConversionFunction(&ratioToString0);
 
-  updateWidgetsAccordingToState();
+  //updateWidgetsAccordingToState();
 }
 
 void VibratoModuleEditor::resized()
@@ -3898,12 +3800,9 @@ WahWahAudioModule::WahWahAudioModule(CriticalSection *newPlugInLock, rosic::WahW
 : ModulationEffectAudioModule(newPlugInLock, newWahWahToWrap)
 {
   ScopedLock scopedLock(*lock);
-
   jassert( newWahWahToWrap != NULL ); // you must pass a valid rosic-object
   wrappedWahWah = newWahWahToWrap;
-  moduleName  = juce::String(("WahWah"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
-    + juce::String(("WahWahPresets")) );
+  setModuleTypeName("WahWah");
   createStaticParameters();
 }
 
@@ -3943,9 +3842,6 @@ void WahWahAudioModule::createStaticParameters()
   p = new Param("Bandwidth", 0.25, 2.0, 1.0, Parameter::EXPONENTIAL, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedWahWah, &WahWah::setBandwidth);
-
-  //for(int i=0; i < (int) parameters.size(); i++)
-  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 WahWahModuleEditor::WahWahModuleEditor(CriticalSection *newPlugInLock, WahWahAudioModule* newWahWahAudioModule)
@@ -3997,7 +3893,6 @@ WahWahModuleEditor::WahWahModuleEditor(CriticalSection *newPlugInLock, WahWahAud
   bandwidthSlider->setDescriptionField(infoField);
   bandwidthSlider->setStringConversionFunction(&octavesToStringWithUnit2);
 
-  //updateWidgetsAccordingToState();
   updateWidgetEnablement();
 }
 
@@ -4058,12 +3953,9 @@ FormantShifterAudioModule::FormantShifterAudioModule(CriticalSection *newPlugInL
  : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
-
   jassert( newFormantShifterToWrap != NULL ); // you must pass a valid rosic-object
   wrappedFormantShifter = newFormantShifterToWrap;
-  moduleName  = juce::String(("FormantShifter"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
-    + juce::String(("FormantShifterPresets")) );
+  setModuleTypeName("FormantShifter");
   createStaticParameters();
 }
 
@@ -4093,9 +3985,6 @@ void FormantShifterAudioModule::createStaticParameters()
   //p = new Param("Mono", 0.0, 1.0, 0.0, Parameter::BOOLEAN, 1.0);
   //addObservedParameter(p);
   //p->setValueChangeCallback(wrappedFormantShifter, &FormantShifterStereo::setMono);
-
-  //for(int i=0; i < (int) parameters.size(); i++)
-  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 FormantShifterModuleEditor::FormantShifterModuleEditor(CriticalSection *newPlugInLock,
@@ -4132,8 +4021,6 @@ FormantShifterModuleEditor::FormantShifterModuleEditor(CriticalSection *newPlugI
   monoButton->setDescriptionField(infoField);
   monoButton->setClickingTogglesState(true);
   */
-
-  //updateWidgetsAccordingToState();
 }
 
 void FormantShifterModuleEditor::resized()
@@ -4166,12 +4053,9 @@ ChorusAudioModule::ChorusAudioModule(CriticalSection *newPlugInLock, rosic::Chor
  : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
-
   jassert( newChorusToWrap != NULL ); // you must pass a valid rosic-object
   wrappedChorus = newChorusToWrap;
-  moduleName  = juce::String(("Chorus"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
-    + juce::String(("ChorusPresets")) );
+  setModuleTypeName("Chorus");
   createStaticParameters();
 }
 
@@ -4568,12 +4452,9 @@ FrequencyShifterAudioModule::FrequencyShifterAudioModule(CriticalSection *newPlu
                                                           : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
-
   jassert( newFrequencyShifterToWrap != NULL ); // you must pass a valid rosic-object
   wrappedFrequencyShifter = newFrequencyShifterToWrap;
-  moduleName  = juce::String(("FrequencyShifter"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
-    + juce::String(("FrequencyShifterPresets")) );
+  setModuleTypeName("FrequencyShifter");
   createStaticParameters();
 }
 
@@ -4601,9 +4482,6 @@ void FrequencyShifterAudioModule::createStaticParameters()
   //addObservedParameter(p);
   //p = new Param("MidSideRatio", 0.0, 1.0, 1.0, Parameter::LINEAR, 0.01);
   //addObservedParameter(p);
-
-  //for(int i=0; i < (int) parameters.size(); i++)
-  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 FrequencyShifterModuleEditor::FrequencyShifterModuleEditor(CriticalSection *newPlugInLock,
@@ -4647,8 +4525,6 @@ FrequencyShifterModuleEditor::FrequencyShifterModuleEditor(CriticalSection *newP
   midSideSlider->setDescriptionField(infoField);
   midSideSlider->setStringConversionFunction(&ratioToString0);
   */
-
-  //updateWidgetsAccordingToState();
 }
 
 void FrequencyShifterModuleEditor::resized()
@@ -4676,12 +4552,9 @@ PhaseStereoizerAudioModule::PhaseStereoizerAudioModule(CriticalSection *newPlugI
  : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
-
   jassert( newPhaseStereoizerToWrap != NULL ); // you must pass a valid rosic-object
   wrappedPhaseStereoizer = newPhaseStereoizerToWrap;
-  moduleName  = juce::String(("PhaseStereoizer"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
-    + juce::String(("PhaseStereoizerPresets")) );
+  setModuleTypeName("PhaseStereoizer");
   createStaticParameters();
 }
 
@@ -4715,9 +4588,6 @@ void PhaseStereoizerAudioModule::createStaticParameters()
   p = new Param("Highpass", 20.0, 20000.0, 20.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedPhaseStereoizer, &PhaseStereoizer::setHighpassCutoff);
-
-  //for(int i=0; i < (int) parameters.size(); i++)
-  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 PhaseStereoizerModuleEditor::PhaseStereoizerModuleEditor(CriticalSection *newPlugInLock,
@@ -4767,8 +4637,6 @@ PhaseStereoizerModuleEditor::PhaseStereoizerModuleEditor(CriticalSection *newPlu
   gainSlider->setDescriptionField(infoField);
   gainSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
   */
-
-  //updateWidgetsAccordingToState();
 }
 
 void PhaseStereoizerModuleEditor::resized()
@@ -4804,12 +4672,9 @@ RingModulatorAudioModule::RingModulatorAudioModule(CriticalSection *newPlugInLoc
  : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
-
   jassert( newRingModulatorToWrap != NULL ); // you must pass a valid rosic-object
   wrappedRingModulator = newRingModulatorToWrap;
-  moduleName  = juce::String(("RingModulator"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
-    + juce::String(("RingModulatorPresets")) );
+  setModuleTypeName("RingModulator");
   createStaticParameters();
 }
 
@@ -4839,9 +4704,6 @@ void RingModulatorAudioModule::createStaticParameters()
   p = new Param("AntiAlias", 0.0, 1.0, 0.0, Parameter::BOOLEAN, 1.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedRingModulator, &RingModulatorStereo::setAntiAliasing);
-
-  //for(int i=0; i < (int) parameters.size(); i++)
-  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 RingModulatorModuleEditor::RingModulatorModuleEditor(CriticalSection *newPlugInLock, RingModulatorAudioModule* newRingModulatorAudioModule)
@@ -4915,12 +4777,9 @@ SingleSidebandModulatorAudioModule::SingleSidebandModulatorAudioModule(CriticalS
    : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
-
   jassert( newSingleSidebandModulatorToWrap != NULL ); // you must pass a valid rosic-object
   wrappedSingleSidebandModulator = newSingleSidebandModulatorToWrap;
-  moduleName  = juce::String(("SingleSidebandModulator"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
-    + juce::String(("SingleSidebandModulatorPresets")) );
+  setModuleTypeName("SingleSidebandModulator");
   createStaticParameters();
 }
 
@@ -4959,9 +4818,6 @@ void SingleSidebandModulatorAudioModule::createStaticParameters()
   p = new Param("AntiAlias", 0.0, 1.0, 0.0, Parameter::BOOLEAN, 1.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedSingleSidebandModulator, &SingleSidebandModulatorStereo::setAntiAliasing);
-
-  //for(int i=0; i < (int) parameters.size(); i++)
-  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 SingleSidebandModulatorModuleEditor::SingleSidebandModulatorModuleEditor(CriticalSection *newPlugInLock,
@@ -5015,7 +4871,7 @@ SingleSidebandModulatorModuleEditor::SingleSidebandModulatorModuleEditor(Critica
   antiAliasButton->setDescriptionField(infoField);
   antiAliasButton->setClickingTogglesState(true);
 
-  updateWidgetsAccordingToState();
+  //updateWidgetsAccordingToState();
 }
 
 void SingleSidebandModulatorModuleEditor::resized()
@@ -5051,12 +4907,9 @@ StereoPanAudioModule::StereoPanAudioModule(CriticalSection *newPlugInLock, rosic
  : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
-
   jassert( newStereoPanToWrap != NULL ); // you must pass a valid rosic-object
   wrappedStereoPan = newStereoPanToWrap;
-  moduleName  = juce::String(("StereoPan"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
-    + juce::String(("StereoPanPresets")) );
+  setModuleTypeName("StereoPan");
   createStaticParameters();
 }
 
@@ -5088,9 +4941,6 @@ void StereoPanAudioModule::createStaticParameters()
   p = new Param("Gain", -12.0, 12.0, 0.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedStereoPan, &StereoPan::setGain);
-
-  //for(int i=0; i < (int) parameters.size(); i++)
-  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 StereoPanModuleEditor::StereoPanModuleEditor(CriticalSection *newPlugInLock, StereoPanAudioModule* newStereoPanAudioModule)
@@ -5172,12 +5022,9 @@ StereoWidthAudioModule::StereoWidthAudioModule(CriticalSection *newPlugInLock, r
  : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
-
   jassert( newStereoWidthToWrap != NULL ); // you must pass a valid rosic-object
   wrappedStereoWidth = newStereoWidthToWrap;
-  moduleName  = juce::String(("StereoWidth"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
-    + juce::String(("StereoWidthPresets")) );
+  setModuleTypeName("StereoWidth");
   createStaticParameters();
 }
 
@@ -5195,9 +5042,6 @@ void StereoWidthAudioModule::createStaticParameters()
   p = new Param("Gain", -6.0, 24.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedStereoWidth, &StereoWidth::setGlobalGain);
-
-  //for(int i=0; i < (int) parameters.size(); i++)
-  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 StereoWidthModuleEditor::StereoWidthModuleEditor(CriticalSection *newPlugInLock, StereoWidthAudioModule* newStereoWidthAudioModule)
@@ -5247,12 +5091,9 @@ SineOscillatorAudioModule::SineOscillatorAudioModule(CriticalSection *newPlugInL
  : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
-
   jassert( newSineOscillatorToWrap != NULL ); // you must pass a valid rosic-object
   wrappedSineOscillator = newSineOscillatorToWrap;
-  moduleName  = juce::String(("SineOscillator"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
-    + juce::String(("SineOscillatorPresets")) );
+  setModuleTypeName("SineOscillator");
   createStaticParameters();
 }
 
@@ -5269,9 +5110,6 @@ void SineOscillatorAudioModule::createStaticParameters()
   p->setValueChangeCallback(wrappedSineOscillator, &SineOscillator::setFrequency);
 
   // \todo: add gain parameter
-
-  //for(int i=0; i < (int) parameters.size(); i++)
-  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 SineOscillatorModuleEditor::SineOscillatorModuleEditor(CriticalSection *newPlugInLock,
@@ -5312,12 +5150,9 @@ NoisifierAudioModule::NoisifierAudioModule(CriticalSection *newPlugInLock, rosic
  : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
-
   jassert( newNoisifierToWrap != NULL ); // you must pass a valid rosic-object
   wrappedNoisifier = newNoisifierToWrap;
-  moduleName       = juce::String(("Noisifier"));
-  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
-    + juce::String(("NoisifierPresets")) );
+  setModuleTypeName("Noisifier");
   createStaticParameters();
 }
 
@@ -5347,9 +5182,6 @@ void NoisifierAudioModule::createStaticParameters()
   p = new Param("HighestFrequency", 20.0, 20000.0, 20000.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedNoisifier, &Noisifier::setHighestFrequency);
-
-  //for(int i=0; i < (int) parameters.size(); i++)
-  //  parameters[i]->resetToDefaultValue(true, true);
 }
 
 NoisifierModuleEditor::NoisifierModuleEditor(CriticalSection *newPlugInLock, NoisifierAudioModule* newNoisifierAudioModule)
@@ -5388,8 +5220,6 @@ NoisifierModuleEditor::NoisifierModuleEditor(CriticalSection *newPlugInLock, Noi
   highestFreqSlider->setDescription(juce::String(("Highest frequency present in the noise")));
   highestFreqSlider->setDescriptionField(infoField);
   highestFreqSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
-
-  //updateWidgetsAccordingToState();
 }
 
 void NoisifierModuleEditor::resized()
