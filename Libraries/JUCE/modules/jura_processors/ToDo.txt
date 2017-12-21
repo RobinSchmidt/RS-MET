@@ -1,9 +1,5 @@
 Fix preset path problems for mac:
--check TuningFile directory
--make sure, sample-directory works for straightliner
 -maybe create the directory, if it doesn't exist
-
-
 
 
 Upgrade to juce 5.2.5

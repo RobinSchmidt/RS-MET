@@ -44,8 +44,8 @@ public:
   /** Same as above except that it takes a String as parameter representing the path to the File.
   The second parameter indicates whether the path should be interpreted as relative to the
   current  executable file (or .dll) - if not, it will be treated as absolute path. */
-  static AudioSampleBuffer* createAudioSampleBufferFromFile(const juce::String& filePath,
-    bool pathIsRelativeToCurrentExecutable = true, bool showAlertBoxWhenFailed = true);
+  //static AudioSampleBuffer* createAudioSampleBufferFromFile(const juce::String& filePath,
+  //  bool pathIsRelativeToCurrentExecutable = true, bool showAlertBoxWhenFailed = true);
 
   // \todo: return a pointer to AudioFileBuffer instead of AudioSampleBuffer
 

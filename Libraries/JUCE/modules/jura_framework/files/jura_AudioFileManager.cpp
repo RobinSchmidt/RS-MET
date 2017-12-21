@@ -119,6 +119,8 @@ AudioSampleBuffer* AudioFileManager::createAudioSampleBufferFromFile(const File&
   }
 }
 
+/*
+// old - may be deleted at some point:
 AudioSampleBuffer* AudioFileManager::createAudioSampleBufferFromFile(const String& filePath,
   bool pathIsRelativeToCurrentExecutable, bool showAlertBoxWhenFailed)
 {
@@ -144,6 +146,7 @@ AudioSampleBuffer* AudioFileManager::createAudioSampleBufferFromFile(const Strin
 
   return createAudioSampleBufferFromFile(File(fullPath), showAlertBoxWhenFailed);
 }
+*/
 
 //-------------------------------------------------------------------------------------------------
 // FileManager overrides:

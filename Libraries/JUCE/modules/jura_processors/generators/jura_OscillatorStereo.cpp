@@ -151,7 +151,7 @@ bool oscillatorStereoStateFromXml(OscillatorStereo* osc, const XmlElement &xmlSt
 
   // load the audio-file into the wavetable for the oscillator:
   juce::String samplePath = xmlState.getStringAttribute("AudioFileRelativePath", juce::String::empty);
-  //samplePath = getSupportDirectory() + File::getSeparatorString() + samplePath;
+  samplePath = getSupportDirectory() + File::getSeparatorString() + samplePath;
 
   AudioSampleBuffer* buffer = AudioFileManager::createAudioSampleBufferFromFile(samplePath, true);
   if( buffer != NULL )
