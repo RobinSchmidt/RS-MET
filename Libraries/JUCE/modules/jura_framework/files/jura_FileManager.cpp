@@ -15,6 +15,17 @@ String getApplicationDirectory()
   return thisDirectoryAsString;
 }
 
+juce::String getUserAppDataDirectory()
+{
+  return File::getSpecialLocation(juce::File::userApplicationDataDirectory).getFullPathName();
+}
+
+juce::String getSupportDirectory()
+{
+  return getUserAppDataDirectory() + File::getSeparatorString() + "RS-MET";
+  // make this adjustable from client code
+}
+
 File getAudioFileFromPath(const String& path)
 {
   File file = File(path);

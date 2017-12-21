@@ -8,7 +8,7 @@ RoutingMatrixAudioModule::RoutingMatrixAudioModule(CriticalSection *newPlugInLoc
 {
   jassert( newRoutingMatrixToWrap != NULL ); // you must pass a valid rosic-object to the constructor
   wrappedRoutingMatrix = newRoutingMatrixToWrap;
-  moduleName = juce::String("RoutingMatrix");
+  setModuleTypeName("RoutingMatrix");
 
   // create and initialize the automatable parameters:
   initializeAutomatableParameters();

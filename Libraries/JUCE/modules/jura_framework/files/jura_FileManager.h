@@ -5,6 +5,13 @@
 /** Returns the directory of the current application (or .dll) as String. */
 JUCE_API juce::String getApplicationDirectory();
 
+/** Returns the user's application data directory. */
+JUCE_API juce::String getUserAppDataDirectory();
+
+/** Returns the directory, where the support files such as presets, samples, etc. are supposed to 
+be found. */
+JUCE_API juce::String getSupportDirectory();
+
 /** Returns a file object if the file with the path given by 'path' exists and is a valid
 audio file, otherwise it returns File::nonexistent. */
 JUCE_API juce::File getAudioFileFromPath(const juce::String& path);

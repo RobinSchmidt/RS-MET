@@ -8,9 +8,7 @@ StandardWaveformRendererAudioModule::StandardWaveformRendererAudioModule(Critica
 {
   jassert( newStandardWaveformRendererToWrap != NULL ); // you must pass a valid rosic-object
   wrappedStandardWaveformRenderer = newStandardWaveformRendererToWrap;
-  moduleName = juce::String("StandardWaveformRenderer");
-  setActiveDirectory(getApplicationDirectory()
-    + juce::File::getSeparatorString() + juce::String("Presets/StandardWaveformRenderer") );
+  setModuleTypeName("StandardWaveformRenderer");
   initializeAutomatableParameters();
 }
 
@@ -46,17 +44,14 @@ void StandardWaveformRendererAudioModule::initializeAutomatableParameters()
 //=================================================================================================
 // class WaveformBufferAudioModule:
 
-WaveformBufferAudioModule::WaveformBufferAudioModule(CriticalSection *newPlugInLock, rosic::WaveformBuffer *newWaveformBufferToWrap)
-: AudioModule(newPlugInLock)
+WaveformBufferAudioModule::WaveformBufferAudioModule(CriticalSection *newPlugInLock, 
+  rosic::WaveformBuffer *newWaveformBufferToWrap) : AudioModule(newPlugInLock)
 {
   jassert( newWaveformBufferToWrap != NULL ); // you must pass a valid rosic-object
   wrappedWaveformBuffer = newWaveformBufferToWrap;
-  moduleName = juce::String("WaveformBuffer");
-  //setActiveDirectory(getApplicationDirectory()
-  //  + File::separatorString + juce::String(T("WaveformBufferPresets")) );
-  AudioFileManager::setActiveDirectory(getApplicationDirectory() 
-    + juce::File::getSeparatorString() + juce::String("Samples") );
-  //initializeAutomatableParameters();
+  setModuleTypeName("WaveformBuffer");
+  AudioFileManager::setActiveDirectory(getSupportDirectory() 
+    + juce::File::getSeparatorString() + "Samples");
 }
 
 XmlElement* WaveformBufferAudioModule::getStateAsXml(const juce::String& stateName,
@@ -139,9 +134,7 @@ WaveformRendererAudioModule::WaveformRendererAudioModule(CriticalSection *newPlu
 {
   jassert( newWaveformRendererToWrap != NULL ); // you must pass a valid rosic-object
   wrappedWaveformRenderer = newWaveformRendererToWrap;
-  moduleName = juce::String("WaveformRenderer");
-  setActiveDirectory(getApplicationDirectory()
-    + juce::File::getSeparatorString() + juce::String("Presets/WaveformRenderer") );
+  setModuleTypeName("WaveformRenderer");
 
   // child modules:
   standardRendererModule = new StandardWaveformRendererAudioModule(lock, &wrappedWaveformRenderer->standardRenderer);
@@ -203,9 +196,7 @@ WaveTableAudioModule::WaveTableAudioModule(CriticalSection *newPlugInLock,
 {
   jassert( newWaveTableToWrap != NULL ); // you must pass a valid rosic-object to the constructor
   wrappedWaveTable = newWaveTableToWrap;
-  moduleName = juce::String("WaveTable");
-  setActiveDirectory(getApplicationDirectory()
-    + juce::File::getSeparatorString() + juce::String("Presets/WaveTable") );
+  setModuleTypeName("WaveTable");
   initializeAutomatableParameters();
   /*
   audioFileManager.setPermissibleWildcardPatterns(juce::String(T("*.wav;*.flac;")));

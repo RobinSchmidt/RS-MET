@@ -170,7 +170,7 @@ public:
 
   /** Returns the directory, where the support files such as presets, samples, etc. are supposed to 
   be found. */
-  virtual juce::String getSupportDirectory() const;
+  //virtual juce::String getSupportDirectory() const;
 
   /** Returns the directory, where the presets are supposed to be found. You can switch between 
   factory-presets and user-presets via the "user" parameter (in the baseclass implementation, the 

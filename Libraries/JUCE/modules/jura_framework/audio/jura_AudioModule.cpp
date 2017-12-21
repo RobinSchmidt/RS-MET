@@ -200,12 +200,12 @@ void AudioModule::detachMetaParameters()
 //-------------------------------------------------------------------------------------------------
 // inquiry:
 
+/*
 juce::String AudioModule::getSupportDirectory() const
 {
-  juce::File userDataDir = File::getSpecialLocation(juce::File::userApplicationDataDirectory);
-  juce::String supportDir = userDataDir.getFullPathName() + File::getSeparatorString() + "RS-MET";
+  juce::String supportDir = getUserAppDataDirectory() + File::getSeparatorString() + "RS-MET";
   return supportDir;
-/*
+
 #ifdef _WIN32
   return getApplicationDirectory(); // preliminary - use user-domcuments folder + "/RS-MET"
 #elif __APPLE__
@@ -215,8 +215,8 @@ juce::String AudioModule::getSupportDirectory() const
 #else
   return getApplicationDirectory(); 
 #endif
-*/
 }
+*/
 
 juce::String AudioModule::getPresetDirectory(bool user) const
 {
@@ -943,12 +943,7 @@ juce::String AudioModuleEditor::getPreferencesTagName()
 
 juce::String AudioModuleEditor::getPreferencesFileName()
 {
-  juce::String supportDir;
-  if(moduleToEdit != nullptr)
-    supportDir = moduleToEdit->getSupportDirectory();
-  else
-    supportDir = getApplicationDirectory();
-  return supportDir + File::getSeparatorString() + getPreferencesTagName()
+  return getSupportDirectory() + File::getSeparatorString() + getPreferencesTagName()
     + juce::String(".xml");
 }
 
