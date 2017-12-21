@@ -7,12 +7,7 @@ MultiModeFilterAudioModule::MultiModeFilterAudioModule(CriticalSection *newPlugI
 {
   jassert( newMultiModeFilterToWrap != NULL ); // you must pass a valid rosic-object
   wrappedMultiModeFilter = newMultiModeFilterToWrap;
-  moduleName = juce::String("MultiModeFilter");
-
-  // initialize the current directory for preset loading and saving:
-  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/MultiModeFilter") );
-
-  // create and initialize the automatable parameters:
+  setModuleTypeName("MultiModeFilter");
   initializeAutomatableParameters();
 }
 

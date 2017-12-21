@@ -8,8 +8,7 @@ SimpleSamplerAudioModule::SimpleSamplerAudioModule(CriticalSection *newPlugInLoc
   wrappedSimpleSampler = new rosic::SimpleSampler;
   setInstrumentToWrap(wrappedSimpleSampler);
 
-  moduleName = juce::String("SimpleSampler");
-  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/SimpleSampler") );
+  setModuleTypeName("SimpleSampler");
 
   samplePlayerModule = new SamplePlayerAudioModule(lock, 
     &wrappedSimpleSampler->voiceArray[0].oscSection.samplePlayer1);

@@ -3,9 +3,7 @@ RayBouncerAudioModule::RayBouncerAudioModule(CriticalSection *lockToUse)
   : AudioModuleWithMidiIn(lockToUse)
 {
   ScopedLock scopedLock(*lock);
-  moduleName = "RayBouncer";
-  setActiveDirectory(getApplicationDirectory() + "/Presets/RayBouncer");
-
+  setModuleTypeName("RayBouncer");
   createParameters();
 }
 

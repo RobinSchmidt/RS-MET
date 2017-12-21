@@ -8,9 +8,7 @@ VectorMixerAudioModule::VectorMixerAudioModule(CriticalSection *newPlugInLock,
 {
   jassert( newVectorMixerToWrap != NULL ); // you must pass a valid rosic-object to the constructor
   wrappedVectorMixer = newVectorMixerToWrap;
-  moduleName = juce::String("VectorMixer");
-
-  // create and initialize the automatable parameters:
+  setModuleTypeName("VectorMixer");
   initializeAutomatableParameters();
 }
 

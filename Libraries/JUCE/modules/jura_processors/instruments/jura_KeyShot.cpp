@@ -4,9 +4,7 @@ KeyShotAudioModule::KeyShotAudioModule(CriticalSection *newPlugInLock)
 {
   wrappedKeyShot = new rosic::KeyShot;
   setInstrumentToWrap(wrappedKeyShot);
-
-  moduleName = juce::String("KeyShot");
-  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/KeyShot") );
+  setModuleTypeName("KeyShot");
 
   samplePlayerModule = new SamplePlayerAudioModule(lock, 
     &wrappedKeyShot->voiceArray[0].samplePlayer);

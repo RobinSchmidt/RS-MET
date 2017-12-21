@@ -9,12 +9,7 @@ QuadrigaAudioModule::QuadrigaAudioModule(CriticalSection *newPlugInLock)
 
   wrappedQuadriga = new rosic::Quadriga;
   setInstrumentToWrap(wrappedQuadriga);
-
-
-  moduleName = juce::String("Quadriga");
-
-  // initialize the current directory for preset loading and saving:
-  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/Quadriga") );
+  setModuleTypeName("Quadriga");
 
   quadrigenModule = new QuadrigenAudioModule(lock, &wrappedQuadriga->voiceArray[0].quadrigen);
   quadrigenModule->setModuleName(juce::String("Quadrigen"));

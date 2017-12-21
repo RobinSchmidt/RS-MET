@@ -6,9 +6,8 @@ DelayPhaserAudioModule::DelayPhaserAudioModule(CriticalSection *newPlugInLock,
 {
   jassert( newDelayPhaserToWrap != NULL ); // you must pass a valid rosic-object
   wrappedDelayPhaser = newDelayPhaserToWrap;
-  moduleName = juce::String("DelayPhaser");
-  setActiveDirectory(getApplicationDirectory() + juce::File::getSeparatorString()
-    + juce::String(("/Presets/DelayPhaser")) );
+  setModuleTypeName("DelayPhaser");
+
   initializeAutomatableParameters();
 
   phaser1Module = new PhaserAudioModule(lock, &wrappedDelayPhaser->phaser1);
@@ -66,10 +65,7 @@ MagicCarpetAudioModule::MagicCarpetAudioModule(CriticalSection *newPlugInLock)
 {
   wrappedMagicCarpet = new rosic::MagicCarpet;
   setInstrumentToWrap(wrappedMagicCarpet);
-  moduleName = juce::String(("MagicCarpet"));
-
-  // initialize the current directory for preset loading and saving:
-  setActiveDirectory(getApplicationDirectory() + juce::String(("/Presets/MagicCarpet")) );
+  setModuleTypeName("MagicCarpet");
 
   oscSectionModule = new VectorSamplePlayerAudioModule(lock,
     &wrappedMagicCarpet->voiceArray[0].oscSection);

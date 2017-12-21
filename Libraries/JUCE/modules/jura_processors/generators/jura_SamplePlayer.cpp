@@ -8,8 +8,7 @@ SamplePlayerAudioModule::SamplePlayerAudioModule(CriticalSection *newPlugInLock,
 {
   jassert( newSamplePlayerToWrap != NULL ); // you must pass a valid rosic-object to the constructor
   wrappedSamplePlayer = newSamplePlayerToWrap;
-  moduleName = juce::String("SamplePlayer");
-  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/SamplePlayer") );
+  setModuleTypeName("SamplePlayer");
   initializeAutomatableParameters();
 }
 

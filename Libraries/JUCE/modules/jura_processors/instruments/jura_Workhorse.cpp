@@ -5,10 +5,7 @@ WorkhorseAudioModule::WorkhorseAudioModule(CriticalSection *newPlugInLock)
   wrappedWorkhorse = new rosic::Workhorse;
   setInstrumentToWrap(wrappedWorkhorse);
 
-  moduleName = juce::String(("Workhorse"));
-
-  // initialize the current directory for preset loading and saving:
-  setActiveDirectory(getApplicationDirectory() + juce::String(("/Presets/Workhorse")) );
+  setModuleTypeName("Workhorse");
 
   vectorMixerModule = new VectorMixerAudioModule(lock, &wrappedWorkhorse->vectorMixer);
   vectorMixerModule->setModuleName(juce::String(("VectorMixer")));

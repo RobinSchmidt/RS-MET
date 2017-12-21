@@ -4,10 +4,7 @@ VectorSamplePlayerAudioModule::VectorSamplePlayerAudioModule(CriticalSection *ne
 {
   jassert(vectorSamplePlayerToWrap != NULL); // you must pass a valid rosic-object to the constructor
   wrappedVectorSamplePlayer = vectorSamplePlayerToWrap;
-  moduleName = juce::String("VectorSamplePlayer");
-
-  // initialize the current directory for preset loading and saving:
-  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/VectorSamplePlayer"));
+  setModuleTypeName("VectorSamplePlayer");
 
   vectorMixerModule = new VectorMixerAudioModule(lock, &wrappedVectorSamplePlayer->vectorMixer);
   vectorMixerModule->setModuleName(juce::String("VectorMixer"));

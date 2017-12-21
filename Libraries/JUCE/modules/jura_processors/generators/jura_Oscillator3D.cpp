@@ -3,9 +3,7 @@ RotationOscillatorAudioModule::RotationOscillatorAudioModule(CriticalSection *lo
   : AudioModuleWithMidiIn(lockToUse, metaManagerToUse, modManagerToUse)
 {
   ScopedLock scopedLock(*lock);
-  moduleName = "Osc3D";
-  setActiveDirectory(getApplicationDirectory() + "/Presets/Oscillator3D");
-
+  setModuleTypeName("Osc3D");
   createParameters();
 }
 

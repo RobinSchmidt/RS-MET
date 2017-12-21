@@ -31,9 +31,8 @@ LibertyAudioModule::LibertyAudioModule(CriticalSection *newPlugInLock) : AudioMo
 
 void LibertyAudioModule::init()
 {
-  setModuleName(juce::String(("Liberty")));
-  setActiveDirectory(getApplicationDirectory() + juce::String(("/Presets/Liberty")) );
-  macroDirectory = getApplicationDirectory() + juce::String(("/Presets/Liberty/Macros")) ;
+  setModuleTypeName("Liberty");
+  macroDirectory = getPresetDirctory() + "/Macros";
 }
 
 LibertyAudioModule::~LibertyAudioModule()

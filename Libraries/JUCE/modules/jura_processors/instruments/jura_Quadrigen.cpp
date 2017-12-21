@@ -8,8 +8,7 @@ QuadrigenAudioModule::QuadrigenAudioModule(CriticalSection *newPlugInLock, rosic
   jassert(quadrigenToWrap != NULL); // you must pass a valid rosic-object to the constructor
   wrappedQuadrigen = quadrigenToWrap;
   editor           = NULL;
-  moduleName       = juce::String("Quadrigen");
-  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/Quadrigen"));
+  setModuleTypeName("Quadrigen");
 
   matrixModule = new RoutingMatrixAudioModule(lock, &wrappedQuadrigen->mixMatrix);
   matrixModule->setModuleName(juce::String("RoutingMatrix"));

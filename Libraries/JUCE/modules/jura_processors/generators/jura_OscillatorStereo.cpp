@@ -6,8 +6,8 @@ OscillatorStereoAudioModule::OscillatorStereoAudioModule(CriticalSection *newPlu
   rosic::OscillatorStereo *newOscillatorStereoToWrap) : AudioModule(newPlugInLock)
 {
   jassert( newOscillatorStereoToWrap != NULL ); // you must pass a valid rosic-object to the constructor
+  setModuleTypeName("OscillatorStereo");
   wrappedOscillatorStereo = newOscillatorStereoToWrap;
-  moduleName = juce::String("OscillatorStereo");
   initializeAutomatableParameters();
 }
 
