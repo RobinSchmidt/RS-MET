@@ -106,12 +106,13 @@ XmlElement* oscillatorStereoStateToXml(OscillatorStereo* osc,
 
 bool oscillatorStereoStateFromXml(OscillatorStereo* osc, const XmlElement &xmlState)
 {
-  bool success = true;
+  bool success = false;
 
   // temporarily switch off the automatic re-rendering of the mip-map, to multiple rendering (one for each
   // parameter):
   bool oldAutoReRenderState = osc->waveTable->isMipMapAutoReRenderingActive();
   osc->waveTable->setAutomaticMipMapReRendering(false);
+  osc->waveTable->fillWithAllZeros();
 
   // restore the settings from the XmlElement:
   osc->setMute(                     xmlState.getBoolAttribute(           "Mute",                  false));
@@ -166,22 +167,12 @@ bool oscillatorStereoStateFromXml(OscillatorStereo* osc, const XmlElement &xmlSt
     osc->waveTable->setWaveform(channelPointers, buffer->getNumSamples() );
     delete buffer;
     success = true;
-
-    // pass the path as c-string:
-    char* fileNameC = toZeroTerminatedString(relativePath);
-    osc->waveTable->setSampleName(fileNameC);
-    delete[] fileNameC;
   }
-  else
-  {
-    success = false;
 
-    char* fileNameC = toZeroTerminatedString(relativePath);
-    osc->waveTable->setSampleName(fileNameC);
-    delete[] fileNameC;
-
-    osc->waveTable->fillWithAllZeros();
-  }
+  // pass the path as c-string:
+  char* fileNameC = toZeroTerminatedString(relativePath);
+  osc->waveTable->setSampleName(fileNameC);
+  delete[] fileNameC;
 
   // let the (wavetable inside the) oscillator render the mip map and restore the old state of the
   // automatic re-rendering:
