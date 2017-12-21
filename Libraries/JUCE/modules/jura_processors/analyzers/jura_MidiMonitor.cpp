@@ -5,7 +5,7 @@
 MidiMonitorAudioModule::MidiMonitorAudioModule(CriticalSection *newPlugInLock) 
   : AudioModuleWithMidiIn(newPlugInLock)
 {
-  moduleName = juce::String(("MidiMonitor"));
+  setModuleTypeName("MidiMonitor");
   initializeAutomatableParameters();
 }
 

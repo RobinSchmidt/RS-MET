@@ -1,9 +1,8 @@
 PhaseScope::PhaseScope(CriticalSection *lockToUse) : AudioModule(lockToUse)
 {
   ScopedLock scopedLock(*lock);
-  moduleName = "PhaseScope";
-  setActiveDirectory(getApplicationDirectory() + "/Presets/PhaseScope");
 
+  setModuleTypeName("Scope");
   phaseScopeBuffer = new RAPT::rsPhaseScopeBuffer<double, float, double>;
 
   pixelScale = 1.0;

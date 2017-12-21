@@ -9,8 +9,7 @@ OscilloscopeAudioModule::OscilloscopeAudioModule(CriticalSection *newPlugInLock,
 {
   jassert(displayBufferToUse != NULL); // you must pass a valid rosic-object to the constructor
   waveformBuffer = displayBufferToUse;
-  moduleName = juce::String("Oscilloscope");
-  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/Oscilloscope") );
+  setModuleTypeName("Oscilloscope"); // use WaveDisplay
   initializeAutomatableParameters();
   displayIsFrozen = false;
 }
@@ -58,8 +57,7 @@ SpectrumAnalyzerAudioModule::SpectrumAnalyzerAudioModule(CriticalSection *newPlu
 {
   jassert(spectrumAnalyzerToWrap != NULL); // you must pass a valid rosic-object to the constructor
   wrappedSpectrumAnalyzer = spectrumAnalyzerToWrap;
-  moduleName = juce::String("SpectrumAnalyzer");
-  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/SpectrumAnalyzer") );
+  setModuleTypeName("SpectrumAnalyzer");
   initializeAutomatableParameters();
   displayIsFrozen  =  false;
 }
@@ -123,9 +121,7 @@ MultiAnalyzerAudioModule::MultiAnalyzerAudioModule(CriticalSection *newPlugInLoc
   addChildAudioModule(oscilloscopeModule);
   addChildAudioModule(spectrumAnalyzerModule);
 
-  moduleName = juce::String("MultiAnalyzer");
-  setActiveDirectory(getApplicationDirectory() + juce::String("/Presets/MultiAnalyzer") );
-
+  setModuleTypeName("MultiAnalyzer");
   initializeAutomatableParameters();
 }
 

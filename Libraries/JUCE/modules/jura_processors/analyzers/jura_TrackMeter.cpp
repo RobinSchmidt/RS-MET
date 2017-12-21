@@ -13,7 +13,7 @@ TrackMeterAudioModule::TrackMeterAudioModule(CriticalSection *newPlugInLock,
     wrappedTrackMeter = new rosic::TrackMeter;
     wrappedTrackMeterIsOwned = true;
   }
-  moduleName = juce::String("TrackMeter");
+  setModuleTypeName("TrackMeter");
   initializeAutomatableParameters();
 }
 
