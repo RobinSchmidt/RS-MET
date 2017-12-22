@@ -132,4 +132,32 @@ protected:
 
 };
 
+//=================================================================================================
+
+class rsFloat64x2 : public __m128d
+{
+
+public:
+
+  rsFloat64x2(__m128d value) : __m128d(value) {}
+  rsFloat64x2(double value) { *this = _mm_load1_pd(&value); }
+
+  // extract vector elements:
+  //double get0() {}
+  //double get1() {}
+
+
+
+};
+
+inline rsFloat64x2 operator+(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_add_pd(a, b)); }
+inline rsFloat64x2 operator-(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_sub_pd(a, b)); }
+inline rsFloat64x2 operator*(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_mul_pd(a, b)); }
+inline rsFloat64x2 operator/(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_div_pd(a, b)); }
+
+inline rsFloat64x2 rsMin(rsFloat64x2 a, rsFloat64x2 b) { return rsFloat64x2(_mm_min_pd(a, b)); }
+inline rsFloat64x2 rsMax(rsFloat64x2 a, rsFloat64x2 b) { return rsFloat64x2(_mm_max_pd(a, b)); }
+
+
+
 #endif
