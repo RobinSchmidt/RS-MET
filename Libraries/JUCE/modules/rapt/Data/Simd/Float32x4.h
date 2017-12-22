@@ -134,30 +134,63 @@ protected:
 
 //=================================================================================================
 
+// see https://msdn.microsoft.com/de-de/library/tyy88x2a(v=vs.90).aspx
+// https://msdn.microsoft.com/de-de/library/9b07190d(v=vs.90).aspx
+
 class rsFloat64x2 : public __m128d
 {
 
 public:
 
+  rsFloat64x2() { *this = rsFloat64x2(_mm_setzero_pd()); }
+
   rsFloat64x2(__m128d value) : __m128d(value) {}
+
   rsFloat64x2(double value) { *this = _mm_load1_pd(&value); }
 
+  /** Loads two values from a 2-value array. */
+  rsFloat64x2(double* values) { *this = _mm_load_pd(values); }
+
+  /** Loads two values from two doubles. */
+  rsFloat64x2(double a, double b) 
+  { 
+    *this = _mm_setr_pd(a, b);
+  }
+
+  /** Sets both elements to a. */
+  inline void set(double a) { *this = _mm_set1_pd(a); }
+    // what's the difference between _mm_set1_pd and _mm_load1_pd? ...the latter takes a pointer?
+
+  /** Sets the first elemet to a and the second element to b. */
+  inline void set(double a, double b) { *this = _mm_setr_pd(a, b); }
+
   // extract vector elements:
-  //double get0() {}
-  //double get1() {}
+  inline double get0() { double d; _mm_storel_pd(&d, *this); return d; }  // lower (index 0)
+  inline double get1() { double d; _mm_storeh_pd(&d, *this); return d; }  // upper (index 1)
 
+  // arithmetic operators:
+  inline rsFloat64x2& operator+=(const rsFloat64x2& b) { return rsFloat64x2(_mm_add_pd(*this, b)); }
+  inline rsFloat64x2& operator-=(const rsFloat64x2& b) { return rsFloat64x2(_mm_sub_pd(*this, b)); }
+  inline rsFloat64x2& operator*=(const rsFloat64x2& b) { return rsFloat64x2(_mm_mul_pd(*this, b)); }
+  inline rsFloat64x2& operator/=(const rsFloat64x2& b) { return rsFloat64x2(_mm_div_pd(*this, b)); }
 
-
+  // unary minus:
+  inline rsFloat64x2& operator-()
+  { 
+    rsFloat64x2 r = rsFloat64x2(_mm_setzero_pd());
+    r -= *this;
+    return r;
+  }
 };
 
-inline rsFloat64x2 operator+(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_add_pd(a, b)); }
-inline rsFloat64x2 operator-(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_sub_pd(a, b)); }
-inline rsFloat64x2 operator*(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_mul_pd(a, b)); }
-inline rsFloat64x2 operator/(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_div_pd(a, b)); }
+inline rsFloat64x2& operator+(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_add_pd(a, b)); }
+inline rsFloat64x2& operator-(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_sub_pd(a, b)); }
+inline rsFloat64x2& operator*(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_mul_pd(a, b)); }
+inline rsFloat64x2& operator/(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_div_pd(a, b)); }
 
-inline rsFloat64x2 rsMin(rsFloat64x2 a, rsFloat64x2 b) { return rsFloat64x2(_mm_min_pd(a, b)); }
-inline rsFloat64x2 rsMax(rsFloat64x2 a, rsFloat64x2 b) { return rsFloat64x2(_mm_max_pd(a, b)); }
+inline rsFloat64x2& rsMin(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_min_pd(a, b)); }
+inline rsFloat64x2& rsMax(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_max_pd(a, b)); }
 
-
+inline rsFloat64x2& rsSqrt(const rsFloat64x2& a) { return rsFloat64x2(_mm_sqrt_pd(a)); }
 
 #endif
