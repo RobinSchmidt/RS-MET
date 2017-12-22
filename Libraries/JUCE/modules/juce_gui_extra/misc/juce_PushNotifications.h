@@ -281,6 +281,11 @@ public:
 
         TimestampVisibility timestampVisibility = normal;  /**< Optional. */
 
+#undef small 
+// !!!HACK!!! added by Robin Schmidt - without it, the "small" in the enum below may replaced by 
+// the preprocessor by "char" (the definition is in rpcndr.h). It happens in SpiralGenerator but 
+// not in ToolChain ...for whatever reason
+
         /**< Controls badge icon type to use if a notification is shown as a badge. Available from Android API 26 or above. */
         enum BadgeIconType
         {

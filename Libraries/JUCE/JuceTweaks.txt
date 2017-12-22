@@ -1,0 +1,4 @@
+To make it work, i had to tweak/hack the juce library a bit:
+
+-juce_PushNotifications.h, line 284: added an "#undef small"
+-juce_Image.h: removed "final" declaration from class
