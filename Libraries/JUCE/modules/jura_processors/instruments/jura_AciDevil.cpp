@@ -51,10 +51,10 @@ void AciDevilAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
   switch( index )
   {
   //case   0: wrappedAciDevil->setMasterLevel(value);           break;
-  case   1: wrappedAciDevil->setAccent(value);                break;
-  case   2: wrappedAciDevil->setSlideTime(value);             break;
-  case   3: wrappedAciDevil->setWaveform(value);              break;
-  case   4: wrappedAciDevil->oscillator.setPulseWidth(value); break;
+  //case   1: wrappedAciDevil->setAccent(value);                break;
+  //case   2: wrappedAciDevil->setSlideTime(value);             break;
+  //case   3: wrappedAciDevil->setWaveform(value);              break;
+  //case   4: wrappedAciDevil->oscillator.setPulseWidth(value); break;
   case   5: wrappedAciDevil->setSubOscLevel(value);           break;
   case   6: wrappedAciDevil->setSubOscWaveform(value);        break;
   case   7: wrappedAciDevil->setCutoff(value);                break;
@@ -98,18 +98,22 @@ void AciDevilAudioModule::createParameters()
 
   // #001:
   p = new Param("Accent", 0.0, 100.0, 50.0, Parameter::LINEAR, 0.1);
+  p->setValueChangeCallback<AD>(ad, &AD::setAccent);
   addObservedParameter(p);
 
   // #002:
   p = new Param("SlideTime", 1.0, 500.0, 60.0, Parameter::EXPONENTIAL, 0.1);
+  p->setValueChangeCallback<AD>(ad, &AD::setSlideTime);
   addObservedParameter(p);
 
   // #003:
   p = new Param("Waveform", 0.0, 1.0, 0.0, Parameter::LINEAR, 0.01);
+  p->setValueChangeCallback<AD>(ad, &AD::setWaveform);
   addObservedParameter(p);
 
   // #004:
   p = new Param("PulseWidth", 1.0, 100.0, 45.0, Parameter::LINEAR, 0.1);
+  p->setValueChangeCallback<AD>(ad, &AD::setPulseWidth);
   addObservedParameter(p);
 
 
@@ -239,6 +243,8 @@ AciDevilModuleEditor::AciDevilModuleEditor(CriticalSection *newPlugInLock, AciDe
   waveformSlider->setDescription(juce::String("Mix between saw- and pulse-wave for main oscillator"));
   waveformSlider->setStringConversionFunction(ratioToString0);
   waveformSlider->setDescriptionField(infoField);
+
+  // pulse-width...
 
   addWidget( subOscLabel = new RTextField( juce::String("SubOsc:")) );
   subOscLabel->setJustification(Justification::centredLeft);

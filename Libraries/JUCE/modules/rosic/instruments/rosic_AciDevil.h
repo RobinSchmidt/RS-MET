@@ -58,6 +58,9 @@ namespace rosic
     0...1 where 0 means pure saw and 1 means pure square. */
     void setWaveform(double newWaveform) { oscillator.setBlendFactor(newWaveform); }
 
+    /** Sets the pulse-width for the pulse-oscilattor in percent. */
+    void setPulseWidth(double newPulseWidth) { oscillator.setPulseWidth(newPulseWidth); }
+
     /** Sets up the suboscillator's waveform continuously between saw and square - the input should 
     be in the range 0...1 where 0 means pure saw and 1 means pure square. */
     void setSubOscWaveform(double newWaveform) { subOscillator.setBlendFactor(newWaveform); }
