@@ -8,7 +8,7 @@ OscillatorStereoAudioModule::OscillatorStereoAudioModule(CriticalSection *newPlu
   jassert( newOscillatorStereoToWrap != NULL ); // you must pass a valid rosic-object to the constructor
   setModuleTypeName("OscillatorStereo");
   wrappedOscillatorStereo = newOscillatorStereoToWrap;
-  initializeAutomatableParameters();
+  createParameters();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -213,7 +213,7 @@ void OscillatorStereoAudioModule::setStateFromXml(const XmlElement& xmlState,
 //-------------------------------------------------------------------------------------------------
 // internal functions:
 
-void OscillatorStereoAudioModule::initializeAutomatableParameters()
+void OscillatorStereoAudioModule::createParameters()
 {
   // create the automatable parameters and add them to the list - note that the order of the adds
   // is important because in parameterChanged(), the index (position in the array) will be used to

@@ -8,7 +8,7 @@ MultiModeFilterAudioModule::MultiModeFilterAudioModule(CriticalSection *newPlugI
   jassert( newMultiModeFilterToWrap != NULL ); // you must pass a valid rosic-object
   wrappedMultiModeFilter = newMultiModeFilterToWrap;
   setModuleTypeName("MultiModeFilter");
-  initializeAutomatableParameters();
+  createParameters();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -245,14 +245,13 @@ void MultiModeFilterAudioModule::setStateFromXml(const XmlElement& xmlState,
 //-------------------------------------------------------------------------------------------------
 // internal functions:
 
-void MultiModeFilterAudioModule::initializeAutomatableParameters()
+void MultiModeFilterAudioModule::createParameters()
 {
-  // create the automatable parameters and add them to the list - note that the order of the adds
-  // is important because in parameterChanged(), the index (position in the array) will be used to
-  // identify which particlua parameter has changed.
+  typedef MetaControlledParameter Param;
+  //Param* p;
 
-  // WARNING: if you change some slider's name here, make sure to also change it in  the editor's
-  // calls to getSliderByName - otherwise the editor wil dereference a NULL pointer
+  typedef rosic::MultiModeFilter MMF;
+  MMF* mmf = wrappedMultiModeFilter;
 
   std::vector<double> defaultValues;
 

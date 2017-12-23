@@ -38,7 +38,7 @@ public:
 protected:
 
   /** Fills the array of automatable parameters. */
-  virtual void initializeAutomatableParameters();
+  virtual void createParameters();
 
   /** Pointer to the underlying rosic object which is wrapped. */
   rosic::MultiModeFilter *wrappedMultiModeFilter;
