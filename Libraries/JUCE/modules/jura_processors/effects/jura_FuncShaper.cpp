@@ -134,7 +134,8 @@ void FuncShaperAudioModule::setFormulaParameterAndRange(const juce::String& name
 
 void FuncShaperAudioModule::createParameters()
 {
-  typedef ModulatableParameter Param;
+  //typedef ModulatableParameter Param;
+  typedef MetaControlledParameter Param;
   Param* p;
 
   typedef rosic::FuncShaper FS;
