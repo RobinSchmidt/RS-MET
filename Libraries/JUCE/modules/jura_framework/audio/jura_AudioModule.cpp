@@ -231,7 +231,10 @@ juce::String AudioModule::getPresetDirectory(bool user) const
   juce::String presetDir = getSupportDirectory() + "/Presets/" + getModuleTypeName();
   juce::File presetDirAsFile(presetDir);
   if(!presetDirAsFile.exists())
-    presetDirAsFile.createDirectory();
+  {
+    return getApplicationDirectory();
+    //presetDirAsFile.createDirectory();
+  }
   return presetDir;
 }
 
