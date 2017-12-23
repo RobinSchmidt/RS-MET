@@ -37,50 +37,6 @@ AudioModuleEditor* AciDevilAudioModule::createEditor()
   return new jura::AciDevilModuleEditor(lock, this); // get rid of passing the lock
 }
 
-// automation:
-
-void AciDevilAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
-{
-
-  if( wrappedAciDevil == NULL )
-    return;
-
-  int    index = getIndexOfParameter(parameterThatHasChanged);
-  double value = parameterThatHasChanged->getValue();
-
-  switch( index )
-  {
-  //case   0: wrappedAciDevil->setMasterLevel(value);           break;
-  //case   1: wrappedAciDevil->setAccent(value);                break;
-  //case   2: wrappedAciDevil->setSlideTime(value);             break;
-  //case   3: wrappedAciDevil->setWaveform(value);              break;
-  //case   4: wrappedAciDevil->oscillator.setPulseWidth(value); break;
-  case   5: wrappedAciDevil->setSubOscLevel(value);           break;
-  case   6: wrappedAciDevil->setSubOscWaveform(value);        break;
-  case   7: wrappedAciDevil->setCutoff(value);                break;
-  case   8: wrappedAciDevil->filter.setResonance(value);      break;
-  case   9: wrappedAciDevil->filter.setMode((int) value);     break;
-  case  10: wrappedAciDevil->setEnvMod(value);                break;
-  case  11: wrappedAciDevil->setNormalDecay(value);           break;
-  case  12: wrappedAciDevil->setAccentDecay(value);           break;
-  case  13: wrappedAciDevil->setNormalAttack(value);          break;
-  case  14: wrappedAciDevil->setAccentAttack(value);          break;
-    // 15 - upwardFraction
-  case  16: wrappedAciDevil->setAmpDecay(value);              break;
-  case  17: wrappedAciDevil->setAmpSustain(value);            break;
-  case  18: wrappedAciDevil->setAmpRelease(value);            break;
-  case  19: wrappedAciDevil->setClipperDrive(value);          break;
-    //....
-
-  default:
-    {
-      // do nothing
-    }
-  } // end of switch( parameterIndex )
-
-}
-
-//-------------------------------------------------------------------------------------------------
 // internal functions:
 
 void AciDevilAudioModule::createParameters()
@@ -91,49 +47,43 @@ void AciDevilAudioModule::createParameters()
   typedef rosic::AciDevil AD;
   AD* ad = wrappedAciDevil;
 
-  // #000:
   p = new Param("MasterLevel", -60.0, 0.0, -12.0, Parameter::LINEAR, 0.1);
   p->setValueChangeCallback<AD>(ad, &AD::setMasterLevel);
   addObservedParameter(p);
 
-  // #001:
   p = new Param("Accent", 0.0, 100.0, 50.0, Parameter::LINEAR, 0.1);
   p->setValueChangeCallback<AD>(ad, &AD::setAccent);
   addObservedParameter(p);
 
-  // #002:
   p = new Param("SlideTime", 1.0, 500.0, 60.0, Parameter::EXPONENTIAL, 0.1);
   p->setValueChangeCallback<AD>(ad, &AD::setSlideTime);
   addObservedParameter(p);
 
-  // #003:
   p = new Param("Waveform", 0.0, 1.0, 0.0, Parameter::LINEAR, 0.01);
   p->setValueChangeCallback<AD>(ad, &AD::setWaveform);
   addObservedParameter(p);
 
-  // #004:
+  // has no slider so far:
   p = new Param("PulseWidth", 1.0, 100.0, 45.0, Parameter::LINEAR, 0.1);
   p->setValueChangeCallback<AD>(ad, &AD::setPulseWidth);
   addObservedParameter(p);
 
-
-  // #005:
   p = new Param("SubOscLevel", -60.0, 0.0, -60.0, Parameter::LINEAR, 0.1);
+  p->setValueChangeCallback<AD>(ad, &AD::setSubOscLevel);
   addObservedParameter(p);
 
-  // #006:
   p = new Param("SubOscWaveform", 0.0, 1.0, 1.0, Parameter::LINEAR, 0.01);
+  p->setValueChangeCallback<AD>(ad, &AD::setSubOscWaveform);
   addObservedParameter(p);
 
-  // #007:
   p = new Param("Cutoff", 200.0, 10000.0, 300.0, Parameter::EXPONENTIAL, 0.0);
+  p->setValueChangeCallback<AD>(ad, &AD::setCutoff);
   addObservedParameter(p);
 
-  // #008:
   p = new Param("Resonance", 0.0, 100.0, 50.0, Parameter::LINEAR, 0.1);
+  p->setValueChangeCallback<AD>(ad, &AD::setResonance);
   addObservedParameter(p);
 
-  // #009:
   p = new Param("FilterMode", 0.0, 14.0, 1.0, Parameter::STRING, 1.0);
   p->addStringValue("Flat");
   p->addStringValue("Lowpass 6");
@@ -151,54 +101,54 @@ void AciDevilAudioModule::createParameters()
   p->addStringValue("Bandpass 12+6");
   p->addStringValue("Bandpass 6+6");
   p->setValue(3.0, false, false);
+  p->setValueChangeCallback<AD>(ad, &AD::setFilterMode);
   addObservedParameter(p);
 
-  // #010:
   p = new Param("EnvMod", 0.0, 80.0, 12.0, Parameter::LINEAR, 0.1);
+  p->setValueChangeCallback<AD>(ad, &AD::setEnvMod);
   addObservedParameter(p);
 
-  // #011:
   p = new Param("NormalDecay", 30.0, 3000.0, 200.0, Parameter::EXPONENTIAL, 0.1);
+  p->setValueChangeCallback<AD>(ad, &AD::setNormalDecay);
   addObservedParameter(p);
 
-  // #012:
   p = new Param("AccentDecay", 30.0, 300.0, 60.0, Parameter::EXPONENTIAL, 0.1);
+  p->setValueChangeCallback<AD>(ad, &AD::setAccentDecay);
   addObservedParameter(p);
 
-  // #013:
   p = new Param("NormalAttack", 3.0, 50.0, 3.0, Parameter::EXPONENTIAL, 0.1);
+  p->setValueChangeCallback<AD>(ad, &AD::setNormalAttack);
   addObservedParameter(p);
 
-  // #014:
   p = new Param("AccentAttack", 3.0, 50.0, 10.0, Parameter::EXPONENTIAL, 0.1);
+  p->setValueChangeCallback<AD>(ad, &AD::setAccentAttack);
   addObservedParameter(p);
 
-  // #015:
-  p = new Param("UpwardFraction", 0.0, 100.0, 66.6, Parameter::LINEAR, 0.1);
-  addObservedParameter(p);
+  //p = new Param("UpwardFraction", 0.0, 100.0, 66.6, Parameter::LINEAR, 0.1);
+  //p->setValueChangeCallback<AD>(ad, &AD::setUpwardFraction);
+  //addObservedParameter(p);
 
-  // #016:
   p = new Param("AmpDecay", 3.0, 3000.0, 1230.0, Parameter::EXPONENTIAL, 0.1);
+  p->setValueChangeCallback<AD>(ad, &AD::setAmpDecay);
   addObservedParameter(p);
 
-  // #017:
   p = new Param("AmpSustain", -60.0, 0.0, -60.0, Parameter::LINEAR, 0.1);
+  p->setValueChangeCallback<AD>(ad, &AD::setAmpSustain);
   addObservedParameter(p);
 
-  // #018:
   p = new Param("AmpRelease", 0.3, 50.0, 0.5, Parameter::EXPONENTIAL, 0.1);
+  p->setValueChangeCallback<AD>(ad, &AD::setAmpRelease);
   addObservedParameter(p);
 
-  // #019:
   p = new Param("DistortionDrive", -24.0, 60.0, 0.0, Parameter::LINEAR, 0.1);
+  p->setValueChangeCallback<AD>(ad, &AD::setClipperDrive);
   addObservedParameter(p);
 }
 
 //=================================================================================================
 
-
-
-AciDevilModuleEditor::AciDevilModuleEditor(CriticalSection *newPlugInLock, AciDevilAudioModule* newAciDevilAudioModule) 
+AciDevilModuleEditor::AciDevilModuleEditor(CriticalSection *newPlugInLock, 
+  AciDevilAudioModule* newAciDevilAudioModule) 
   : AudioModuleEditor(newAciDevilAudioModule)
 {
   setHeadlineStyle(MAIN_HEADLINE);
@@ -405,6 +355,8 @@ void AciDevilModuleEditor::updateWidgetsAccordingToState()
 void AciDevilModuleEditor::paint(Graphics &g)
 {
   AudioModuleEditor::paint(g);
+  // maybe write into the empty area that a more sophisticated distortion is to come
+  // or maybe use it for a filter-plot
 }
 
 void AciDevilModuleEditor::resized()

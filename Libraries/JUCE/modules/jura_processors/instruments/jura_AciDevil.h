@@ -27,10 +27,8 @@ public:
 
   AudioModuleEditor* createEditor() override;
 
-
   //---------------------------------------------------------------------------------------------
   // parameter settings:
-
 
   virtual void setSampleRate(double newSampleRate) override
   {
@@ -38,30 +36,7 @@ public:
   }
 
   //---------------------------------------------------------------------------------------------
-  // automation and state management:
-
-  virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
-
-  //virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
-  //  bool markAsClean);
-
-  //virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean);
-
-  //---------------------------------------------------------------------------------------------
   // audio processing:
-
-  ///** Calculates a stereo-ouput frame. */
-  //virtual void getSampleFrameStereo(double* inOutL, double* inOutR)
-  //{
-  //  *inOutL = *inOutR = wrappedAciDevil->getSample();
-  //}
-  //virtual void processBlockStereo(float *left, float *right, int numSamples)
-  //{
-  //  for(int n=0; n<numSamples; n++)
-  //    left[n] = right[n] = (float)wrappedAciDevil->getSample();
-  //}
-  //// maybe the two functions above are obsolote now
-
 
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
   {
@@ -93,15 +68,6 @@ public:
     wrappedAciDevil->setPitchBend(wheelValueMapped);
   }
 
-//virtual void allNotesOff();
-
-
-
-/** Overrides setMidiController which is inherited from both base-classes - and we simply we
-pass through the function call to both of them here. */
-//virtual void setMidiController(int controllerNumber, int controllerValue); 
-
-
 protected:
 
   void createParameters();
@@ -112,7 +78,7 @@ protected:
   rosic::AciDevil *wrappedAciDevil;
   bool wrappedAciDevilIsOwned = false;
 
-  juce_UseDebuggingNewOperator;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AciDevilAudioModule)
 };
 
 //=================================================================================================
@@ -164,7 +130,7 @@ protected:
 
   AcidSequencerModuleEditor *sequencerEditor;
 
-  juce_UseDebuggingNewOperator;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AciDevilModuleEditor)
 };
 
 #endif

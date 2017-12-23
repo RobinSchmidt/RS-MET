@@ -71,6 +71,12 @@ namespace rosic
     /** Sets the filter's nominal cutoff frequency (in Hz). */
     void setCutoff(double newCutoff); 
 
+    /** Sets the filter's resonance (in percent). */
+    void setResonance(double newResonance) { filter.setResonance(newResonance); }
+
+    /** Sets the filter mode as one of the values defined in TeeBeeFilter::modes. */
+    void setFilterMode(int newMode) { filter.setMode(newMode); }
+
     /** Sets the modulation depth of the filter's cutoff frequency by the filter-envelope generator 
     (in percent of the nominal cutoff frequency). */
     void setEnvMod(double newEnvMod);
