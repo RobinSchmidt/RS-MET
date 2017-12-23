@@ -50,7 +50,7 @@ void AciDevilAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
 
   switch( index )
   {
-  case   0: wrappedAciDevil->setMasterLevel(value);           break;
+  //case   0: wrappedAciDevil->setMasterLevel(value);           break;
   case   1: wrappedAciDevil->setAccent(value);                break;
   case   2: wrappedAciDevil->setSlideTime(value);             break;
   case   3: wrappedAciDevil->setWaveform(value);              break;
@@ -85,10 +85,15 @@ void AciDevilAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
 
 void AciDevilAudioModule::createParameters()
 {
-  AutomatableParameter* p;
+  typedef AutomatableParameter Param;
+  Param* p;
+
+  typedef rosic::AciDevil AD;
+  AD* ad = wrappedAciDevil;
 
   // #000:
-  p = new AutomatableParameter(lock, "MasterLevel", -60.0, 0.0, 0.1, -12.0, Parameter::LINEAR);
+  p = new Param(lock, "MasterLevel", -60.0, 0.0, 0.1, -12.0, Parameter::LINEAR);
+  p->setValueChangeCallback<AD>(ad, &AD::setMasterLevel);
   addObservedParameter(p);
 
   // #001:
