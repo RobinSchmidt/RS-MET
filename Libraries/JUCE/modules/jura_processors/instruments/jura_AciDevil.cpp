@@ -198,7 +198,7 @@ void AciDevilModuleEditor::createWidgets()
   s->setStringConversionFunction(millisecondsToStringWithUnit2);
   s->setDescriptionField(infoField);
 
-  addWidget( oscLabel = new Lbl( juce::String("Oscillator")) );
+  addWidget( oscLabel = new Lbl("Oscillator") );
   oscLabel->setJustification(Justification::centred);
   oscLabel->setDescription("Oscillator parameters");
   oscLabel->setDescriptionField(infoField);

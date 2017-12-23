@@ -120,15 +120,16 @@ protected:
   RTextField *globalLabel, *oscLabel, *filterLabel, *filterEnvLabel, *ampLabel, *sequencerLabel, 
     *normalLabel, *accentLabel, *subOscLabel;
 
-  RSlider *masterLevelSlider, *accentSlider, *slideTimeSlider, *waveformSlider, *subOscLevelSlider, 
-    *subOscWaveformSlider, *cutoffSlider, *resonanceSlider, *envModSlider, *normalDecaySlider, 
-    *normalAttackSlider, *accentDecaySlider, *accentAttackSlider, *upwardFractionSlider, 
-    *ampDecaySlider, *ampSustainSlider, *ampReleaseSlider, *distortionDriveSlider;
+  AutomatableSlider *masterLevelSlider, *accentSlider, *slideTimeSlider, *waveformSlider, 
+    *subOscLevelSlider, *subOscWaveformSlider, *cutoffSlider, *resonanceSlider, *envModSlider, 
+    *normalDecaySlider, *normalAttackSlider, *accentDecaySlider, *accentAttackSlider, 
+    *upwardFractionSlider, *ampDecaySlider, *ampSustainSlider, *ampReleaseSlider, 
+    *distortionDriveSlider;
 
   RTextField *filterModeLabel;
 
-  RComboBox *filterModeBox;
-  RButton   *sequencerButton; 
+  AutomatableComboBox *filterModeBox;
+  //RButton   *sequencerButton; 
 
   AcidSequencerModuleEditor *sequencerEditor;
 

@@ -263,6 +263,73 @@ FuncShaperModuleEditor::FuncShaperModuleEditor(CriticalSection *newPlugInLock,
   // assign the pointer to the rosic::FuncShaper object to be used as aduio engine:
   jassert(newFuncShaperAudioModule != NULL ); // you must pass a valid module here
   funcShaperAudioModule = newFuncShaperAudioModule;
+  createWidgets();
+  updateWidgetsAccordingToState();
+  setSize(480, 300);
+}
+
+FuncShaperModuleEditor::~FuncShaperModuleEditor()
+{
+  funcShaperAudioModule->removeChangeListener(this);
+  if( xValues )
+    delete[] xValues;
+  if( yValues )
+    delete[] yValues;
+}
+
+//-------------------------------------------------------------------------------------------------
+// callbacks:
+
+void FuncShaperModuleEditor::changeListenerCallback(ChangeBroadcaster *source)
+{
+  if(source == funcShaperAudioModule)
+    shaperPlot->updatePlotImage(); 
+  else
+    AudioModuleEditor::changeListenerCallback(source);
+}
+
+void FuncShaperModuleEditor::textChanged(RTextEntryField *rTextEntryFieldThatHasChanged)
+{
+  if( funcShaperAudioModule == NULL )
+    return;
+  if( funcShaperAudioModule->wrappedFuncShaper == NULL )
+    return;
+
+  if( rTextEntryFieldThatHasChanged == formulaField )
+  {
+    juce::String functionString  = formulaField->getText();
+    char*        functionStringC = toZeroTerminatedString(functionString);
+    bool stringIsValid = funcShaperAudioModule->wrappedFuncShaper
+      ->setFunctionString(functionStringC, false); // why false, shouldn't we recalculate the table?
+    if(functionStringC)
+      delete functionStringC;
+
+    // indicate, whether the string was valid or not by the background colour of the editor:
+    if( stringIsValid )
+    {
+      funcShaperAudioModule->wrappedFuncShaper->calculateTable();
+      formulaField->markTextAsInvalid(false);
+    }
+    else
+      formulaField->markTextAsInvalid(true);
+
+    shaperPlot->updatePlotImage();
+  }
+
+  funcShaperAudioModule->markStateAsDirty();
+}
+
+void FuncShaperModuleEditor::createWidgets()
+{
+  typedef AutomatableSlider Sld;
+  typedef AutomatableComboBox Box;
+  //typedef AutomatableButton Btn;
+  typedef RTextField Lbl;
+  Sld* s;
+  Box* c;
+  //Btn* b;
+  Lbl* l;
+
 
   addWidget( formulaLabel = new RTextField(juce::String("Formula:")) );
   formulaLabel->setDescription("Expression for waveshaping transfer function");
@@ -469,62 +536,6 @@ FuncShaperModuleEditor::FuncShaperModuleEditor(CriticalSection *newPlugInLock,
   yValues = new double*[1];
   *yValues = funcShaperAudioModule->wrappedFuncShaper->distortionCurve.getTableAdress();
   shaperPlot->setFunctionFamilyValues(numValues, 1, xValues, yValues);
-
-  // set up the widgets:
-  updateWidgetsAccordingToState();
-
-  setSize(480, 300);
-}
-
-FuncShaperModuleEditor::~FuncShaperModuleEditor()
-{
-  funcShaperAudioModule->removeChangeListener(this);
-  if( xValues )
-    delete[] xValues;
-  if( yValues )
-    delete[] yValues;
-}
-
-//-------------------------------------------------------------------------------------------------
-// callbacks:
-
-void FuncShaperModuleEditor::changeListenerCallback(ChangeBroadcaster *source)
-{
-  if(source == funcShaperAudioModule)
-    shaperPlot->updatePlotImage(); 
-  else
-    AudioModuleEditor::changeListenerCallback(source);
-}
-
-void FuncShaperModuleEditor::textChanged(RTextEntryField *rTextEntryFieldThatHasChanged)
-{
-  if( funcShaperAudioModule == NULL )
-    return;
-  if( funcShaperAudioModule->wrappedFuncShaper == NULL )
-    return;
-
-  if( rTextEntryFieldThatHasChanged == formulaField )
-  {
-    juce::String functionString  = formulaField->getText();
-    char*        functionStringC = toZeroTerminatedString(functionString);
-    bool stringIsValid = funcShaperAudioModule->wrappedFuncShaper
-      ->setFunctionString(functionStringC, false); // why false, shouldn't we recalculate the table?
-    if(functionStringC)
-      delete functionStringC;
-
-    // indicate, whether the string was valid or not by the background colour of the editor:
-    if( stringIsValid )
-    {
-      funcShaperAudioModule->wrappedFuncShaper->calculateTable();
-      formulaField->markTextAsInvalid(false);
-    }
-    else
-      formulaField->markTextAsInvalid(true);
-
-    shaperPlot->updatePlotImage();
-  }
-
-  funcShaperAudioModule->markStateAsDirty();
 }
 
 void FuncShaperModuleEditor::updateWidgetsAccordingToState()

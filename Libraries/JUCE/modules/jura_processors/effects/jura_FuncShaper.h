@@ -155,6 +155,8 @@ public:
 
 protected:
 
+  virtual void createWidgets();
+
   /** Overrides the method inherited from RPolyphonicInstrumentEditor. */
   virtual void updateWidgetsAccordingToState() override;
 
