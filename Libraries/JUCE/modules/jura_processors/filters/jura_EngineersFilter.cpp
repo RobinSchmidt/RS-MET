@@ -9,8 +9,7 @@ EngineersFilterAudioModule::EngineersFilterAudioModule(CriticalSection *newPlugI
 {
   jassert(sciFilterToWrap != NULL); // you must pass a valid rosic-object to the constructor
   wrappedEngineersFilter = sciFilterToWrap;
-  setModuleTypeName("EngineersFilter");
-  initializeAutomatableParameters();
+  init();
 }
 
 EngineersFilterAudioModule::EngineersFilterAudioModule(CriticalSection *newPlugInLock)
@@ -18,11 +17,13 @@ EngineersFilterAudioModule::EngineersFilterAudioModule(CriticalSection *newPlugI
 {
   wrappedEngineersFilter = new rosic::rsEngineersFilter;
   wrappedEngineersFilterIsOwned = true;
+  init();
+}
 
-  // todo: factor out this code (duplicated from the other constuctor) into an init() function that 
-  // can be called from both constructors:
+void EngineersFilterAudioModule::init()
+{
   setModuleTypeName("EngineersFilter");
-  initializeAutomatableParameters();
+  createParameters();
 }
 
 EngineersFilterAudioModule::~EngineersFilterAudioModule()
@@ -69,8 +70,14 @@ void EngineersFilterAudioModule::parameterChanged(Parameter* parameterThatHasCha
 
 // internal functions:
 
-void EngineersFilterAudioModule::initializeAutomatableParameters()
+void EngineersFilterAudioModule::createParameters()
 {
+  typedef MetaControlledParameter Param;
+  //Param* p;
+
+  typedef rosic::rsEngineersFilter EF;
+  EF* ef = wrappedEngineersFilter;
+
   juce::Array<double> defaultValues;
   AutomatableParameter* p;
 

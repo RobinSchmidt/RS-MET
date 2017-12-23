@@ -23,6 +23,8 @@ public:
   destructor). */
   EngineersFilterAudioModule(CriticalSection *newPlugInLock);
 
+  void init();
+
   virtual ~EngineersFilterAudioModule();
 
   AudioModuleEditor* createEditor() override;
@@ -64,7 +66,7 @@ public:
 
 protected:
 
-  void initializeAutomatableParameters();
+  void createParameters();
 
   rosic::rsEngineersFilter *wrappedEngineersFilter;
 

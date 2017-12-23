@@ -1,3 +1,10 @@
+ToolChain
+-let the "Setup" have tabs for 
+ -GUI (colors, etc.)
+ -MIDI (midi-to-mete-mapping)
+ -I/O (num ins/outs, etc.)
+ -Smoothing
+
 Make ToolChain ready for release:
 -consistently use MetaControlledParameter 
  -use callback based update of dsp objects (where possible)
