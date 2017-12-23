@@ -396,89 +396,11 @@ EngineersFilterModuleEditor::EngineersFilterModuleEditor(CriticalSection *newPlu
   EngineersFilterAudioModule* newEngineersFilterAudioModule) 
   : AudioModuleEditor(newEngineersFilterAudioModule)
 {
-  setHeadlineText( juce::String("EngineersFilter") );
-
-  jassert(newEngineersFilterAudioModule != NULL ); // you must pass a valid module here
+  setHeadlineText("EngineersFilter");
+  jassert(newEngineersFilterAudioModule != nullptr ); // you must pass a valid module here
   sciFilterModuleToEdit = newEngineersFilterAudioModule;
-
-  addWidget( modeComboBox = new RNamedComboBox("modeComboBox", "Mode:") );
-  modeComboBox->assignParameter( sciFilterModuleToEdit->getParameterByName("Mode") );
-  modeComboBox->setDescription("Mode or type of the filter");
-  modeComboBox->setDescriptionField(infoField);
-  modeComboBox->registerComboBoxObserver(this); // to update visibility of the sliders
-
-  addWidget( methodComboBox = new RNamedComboBox("methodComboBox", "Method:") );
-  methodComboBox->assignParameter( sciFilterModuleToEdit->getParameterByName("Method") );
-  methodComboBox->setDescription("Approximation method for the filter design");
-  methodComboBox->setDescriptionField(infoField);
-  methodComboBox->registerComboBoxObserver(this); // to update visibility of the sliders
-
-  modeComboBox->setNameLabelWidth(methodComboBox->getNameLabelWidth()); // to align the actual boxes
-
-  addWidget( frequencySlider = new RSlider ("FrequencySlider") );
-  frequencySlider->assignParameter( sciFilterModuleToEdit->getParameterByName("Frequency") );
-  frequencySlider->setSliderName(juce::String("Frequency"));
-  frequencySlider->setDescription(juce::String("Characteristic frequency"));
-  frequencySlider->setDescriptionField(infoField);
-  frequencySlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
-  frequencySlider->addListener(this);
-
-  addWidget( orderSlider = new RSlider ("OrderSlider") );
-  orderSlider->assignParameter( sciFilterModuleToEdit->getParameterByName("Order") );
-  orderSlider->setSliderName(juce::String("Order"));
-  //orderSlider->setDescription(juce::String(T("Order of the prototype filter (bandpass-/reject and peak filters have actual order of twice this value)")));
-  orderSlider->setDescription(juce::String("Order of the prototype filter"));
-  orderSlider->setDescriptionField(infoField);
-  orderSlider->setStringConversionFunction(&valueToString);
-  orderSlider->addListener(this);
-
-  addWidget( bandwidthSlider = new RSlider ("BandwidthSlider") );
-  bandwidthSlider->assignParameter( sciFilterModuleToEdit->getParameterByName("Bandwidth") );
-  bandwidthSlider->setSliderName(juce::String("Bandwidth"));
-  bandwidthSlider->setDescription(juce::String("Bandwidth for bandpass-/bandreject-/peak-filters (in octaves)"));
-  bandwidthSlider->setDescriptionField(infoField);
-  bandwidthSlider->setStringConversionFunction(&octavesToStringWithUnit2);
-  bandwidthSlider->addListener(this);
-
-  addWidget( gainSlider = new RSlider("GainSlider") );
-  gainSlider->assignParameter( sciFilterModuleToEdit->getParameterByName("Gain") );
-  gainSlider->setSliderName(juce::String("Gain"));
-  gainSlider->setDescription(juce::String("Gain for shelving- and peak-filters"));
-  gainSlider->setDescriptionField(infoField);
-  gainSlider->setStringConversionFunction(&decibelsToStringWithUnit2);
-  gainSlider->addListener(this);
-
-  addWidget( rippleSlider = new RSlider("RippleSlider") );
-  rippleSlider->assignParameter( sciFilterModuleToEdit->getParameterByName("Ripple") );
-  rippleSlider->setSliderName(juce::String("Ripple"));
-  rippleSlider->setDescription(juce::String("Ripple insider the filter's passband"));
-  rippleSlider->setDescriptionField(infoField);
-  rippleSlider->setStringConversionFunction(&decibelsToStringWithUnit2);
-  rippleSlider->addListener(this);
-
-  addWidget( rejectionSlider = new RSlider("RejectionSlider") );
-  rejectionSlider->assignParameter( sciFilterModuleToEdit->getParameterByName("Rejection") );
-  rejectionSlider->setSliderName(juce::String("Rejection"));
-  rejectionSlider->setDescription(juce::String("Rejection level for the filter's stopband"));
-  rejectionSlider->setDescriptionField(infoField);
-  rejectionSlider->setStringConversionFunction(&decibelsToStringWithUnit2);
-  rejectionSlider->addListener(this);
-
-  plotEditor = new EngineersFilterPlotEditor(juce::String("SpectrumEditor"));
-  plotEditor->setDescription(juce::String("Frequency response plot"));
-  plotEditor->setDescriptionField(infoField);
-  plotEditor->addChangeListener(this);
-  plotEditor->setEngineersFilterToEdit(newEngineersFilterAudioModule->wrappedEngineersFilter);
-  addPlot( plotEditor );
-  juce::Array<Colour> graphColours;
-  //graphColours.add(Colour(0xffa00000));   
-  //graphColours.add(Colour(0xff30b030));
-  //graphColours.add(Colour(0xff6060ff));
-  setGraphColours(graphColours);
-
-  // set up the widgets:
+  createWidgets();
   updateWidgetsAccordingToState();
-
   setSize(640, 300);  
 }
 
@@ -531,6 +453,89 @@ void EngineersFilterModuleEditor::resized()
   h = infoField->getY()-y;
 
   plotEditor->setBounds(0, y+4, getWidth(), h-4);
+}
+
+void EngineersFilterModuleEditor::createWidgets()
+{
+  typedef AutomatableSlider Sld;
+  //typedef AutomatableComboBox Box;
+  Sld* s;
+  //Box* c;
+
+  addWidget( modeComboBox = new RNamedComboBox("modeComboBox", "Mode:") );
+  modeComboBox->assignParameter( sciFilterModuleToEdit->getParameterByName("Mode") );
+  modeComboBox->setDescription("Mode or type of the filter");
+  modeComboBox->setDescriptionField(infoField);
+  modeComboBox->registerComboBoxObserver(this); // to update visibility of the sliders
+
+  addWidget( methodComboBox = new RNamedComboBox("methodComboBox", "Method:") );
+  methodComboBox->assignParameter( sciFilterModuleToEdit->getParameterByName("Method") );
+  methodComboBox->setDescription("Approximation method for the filter design");
+  methodComboBox->setDescriptionField(infoField);
+  methodComboBox->registerComboBoxObserver(this); // to update visibility of the sliders
+
+  modeComboBox->setNameLabelWidth(methodComboBox->getNameLabelWidth()); // to align the actual boxes
+
+  addWidget( frequencySlider = s = new Sld );
+  s->assignParameter( sciFilterModuleToEdit->getParameterByName("Frequency") );
+  s->setSliderName("Frequency");
+  s->setDescription("Characteristic frequency");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&hertzToStringWithUnitTotal5);
+  s->addListener(this);
+
+  addWidget( orderSlider = s = new Sld );
+  s->assignParameter( sciFilterModuleToEdit->getParameterByName("Order") );
+  s->setSliderName("Order");
+  //s->setDescription(juce::String(T("Order of the prototype filter (bandpass-/reject and peak filters have actual order of twice this value)")));
+  s->setDescription("Order of the prototype filter");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString);
+  s->addListener(this);
+
+  addWidget( bandwidthSlider = s = new Sld );
+  s->assignParameter( sciFilterModuleToEdit->getParameterByName("Bandwidth") );
+  s->setSliderName("Bandwidth");
+  s->setDescription("Bandwidth for bandpass-/bandreject-/peak-filters (in octaves)");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&octavesToStringWithUnit2);
+  s->addListener(this);
+
+  addWidget( gainSlider = s = new Sld );
+  s->assignParameter( sciFilterModuleToEdit->getParameterByName("Gain") );
+  s->setSliderName("Gain");
+  s->setDescription("Gain for shelving- and peak-filters");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&decibelsToStringWithUnit2);
+  s->addListener(this);
+
+  addWidget( rippleSlider = s = new Sld );
+  s->assignParameter( sciFilterModuleToEdit->getParameterByName("Ripple") );
+  s->setSliderName("Ripple");
+  s->setDescription("Ripple insider the filter's passband");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&decibelsToStringWithUnit2);
+  s->addListener(this);
+
+  addWidget( rejectionSlider = s = new Sld );
+  s->assignParameter( sciFilterModuleToEdit->getParameterByName("Rejection") );
+  s->setSliderName("Rejection");
+  s->setDescription("Rejection level for the filter's stopband");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&decibelsToStringWithUnit2);
+  s->addListener(this);
+
+  plotEditor = new EngineersFilterPlotEditor("SpectrumEditor");
+  plotEditor->setDescription("Frequency response plot");
+  plotEditor->setDescriptionField(infoField);
+  plotEditor->addChangeListener(this);
+  plotEditor->setEngineersFilterToEdit(sciFilterModuleToEdit->wrappedEngineersFilter);
+  addPlot( plotEditor );
+  juce::Array<Colour> graphColours;
+  //graphColours.add(Colour(0xffa00000));   
+  //graphColours.add(Colour(0xff30b030));
+  //graphColours.add(Colour(0xff6060ff));
+  setGraphColours(graphColours);
 }
 
 void EngineersFilterModuleEditor::updateWidgetVisibility()

@@ -214,6 +214,8 @@ public:
 
 protected:
 
+  virtual void createWidgets();
+
   /** Makes currently required widgets visible and currently not required widgets invisible. */
   virtual void updateWidgetVisibility();
 
