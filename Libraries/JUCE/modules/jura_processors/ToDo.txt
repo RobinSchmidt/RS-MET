@@ -8,10 +8,8 @@ ToolChain
 -let modulators have ther own slot-array
 
 Make ToolChain ready for release:
+-check why plugin becomes unresponsive in VSTHost when switching to a module with smaller gui
 -don't write Slot1-Straightliner, etc. just Straightliner
--consistently use MetaControlledParameter 
- -use callback based update of dsp objects (where possible)
--consistently use AutomatableSlider/Button/ComboBox
 -AcidDevil
  -fix gui ugliness
 -FuncShaper 
