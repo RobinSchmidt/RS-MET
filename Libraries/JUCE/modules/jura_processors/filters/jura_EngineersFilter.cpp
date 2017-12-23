@@ -73,76 +73,66 @@ void EngineersFilterAudioModule::parameterChanged(Parameter* parameterThatHasCha
 void EngineersFilterAudioModule::createParameters()
 {
   typedef MetaControlledParameter Param;
-  //Param* p;
+  Param* p;
 
   typedef rosic::rsEngineersFilter EF;
   EF* ef = wrappedEngineersFilter;
 
-  juce::Array<double> defaultValues;
-  AutomatableParameter* p;
+  //juce::Array<double> defaultValues;
+
 
   // #000:	
-  p = new AutomatableParameter(lock, "Mode", 0.0, 7.0, 1.0, 1.0, Parameter::STRING);
-  p->addStringValue(juce::String("Bypass"));
-  p->addStringValue(juce::String("Lowpass"));
-  p->addStringValue(juce::String("Highpass"));
-  p->addStringValue(juce::String("Bandpass"));
-  p->addStringValue(juce::String("Bandreject"));
-  p->addStringValue(juce::String("Low Shelf"));
-  p->addStringValue(juce::String("High Shelf"));
-  p->addStringValue(juce::String("Peak/Dip"));
+  p = new Param("Mode", 0.0, 7.0, 1.0, Parameter::STRING, 1.0);
+  p->addStringValue("Bypass");
+  p->addStringValue("Lowpass");
+  p->addStringValue("Highpass");
+  p->addStringValue("Bandpass");
+  p->addStringValue("Bandreject");
+  p->addStringValue("Low Shelf");
+  p->addStringValue("High Shelf");
+  p->addStringValue("Peak/Dip");
   addObservedParameter(p);
 
   // #001:	
-  p = new AutomatableParameter(lock, "Method", 0.0, 5.0, 1.0, 0.0, Parameter::STRING);
-  p->addStringValue(juce::String("Butterworth"));
-  p->addStringValue(juce::String("Chebychev"));
-  p->addStringValue(juce::String("Inverse Chebychev"));
-  p->addStringValue(juce::String("Elliptic"));
-  p->addStringValue(juce::String("Bessel"));
-  p->addStringValue(juce::String("Papoulis"));
-  //p->addStringValue(juce::String(T("Gauss")));
-  //p->addStringValue(juce::String(T("Halpern")));
-  //p->addStringValue(juce::String(T("Linkwitz/Riley")));
-  //p->addStringValue(juce::String(T("Coincident Poles")));
+  p = new Param("Method", 0.0, 5.0, 0.0, Parameter::STRING, 1.0);
+  p->addStringValue("Butterworth");
+  p->addStringValue("Chebychev");
+  p->addStringValue("Inverse Chebychev");
+  p->addStringValue("Elliptic");
+  p->addStringValue("Bessel");
+  p->addStringValue("Papoulis");
+  //p->addStringValue("Gauss");
+  //p->addStringValue("Halpern");
+  //p->addStringValue("Linkwitz/Riley");
+  //p->addStringValue("Coincident Poles");
   addObservedParameter(p);
   // maybe sort the differently: Bessel->Butter->Papoulis->Cheby->Ellip
   // or better: Coincident, Gauss, Bessel, Linkwitz, Butter, Papoulis, Halpern, Inv Cheby, Cheby
   // elliptic
 
   // #002:	
-  p = new AutomatableParameter(lock, "Frequency" , 20.0, 20000.0, 0.0, 1000.0, 
-    Parameter::EXPONENTIAL);
+  p = new Param("Frequency" , 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
 
   // #003:	
-  //p = new Parameter("Slope", 6.0, 120.0, 6.0, 24.0, Parameter::LINEAR);
-  //addObservedParameter(p);
-  p = new AutomatableParameter(lock, "Order", 1.0, 20.0, 1.0, 4.0, Parameter::LINEAR);
+  p = new Param("Order", 1.0, 20.0, 4.0, Parameter::LINEAR, 1.0);
   addObservedParameter(p);
 
   // #004:	
-  p = new AutomatableParameter(lock, "Bandwidth", 0.1, 10.0, 0.01, 1.0, 
-    Parameter::EXPONENTIAL);
+  p = new Param("Bandwidth", 0.1, 10.0, 1.0, Parameter::EXPONENTIAL, 0.01);
   addObservedParameter(p);
 
   // #005:	
-  p = new AutomatableParameter(lock, "Gain", -48, 24.0, 0.01, 0.0, Parameter::LINEAR);
-  //p = new AutomatableParameter(plugInLock, "Gain", -108, 24.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new Param("Gain", -48, 24.0, 0.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
 
   // #006:	
-  p = new AutomatableParameter(lock, "Ripple", 0.1, 12.0, 0.0, 1.0, Parameter::EXPONENTIAL);
+  p = new Param("Ripple", 0.1, 12.0, 1.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
 
   // #007:	
-  p = new AutomatableParameter(lock, "Rejection", 20, 120.0, 0.01, 60.0, Parameter::LINEAR);
+  p = new Param("Rejection", 20, 120.0, 60.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
-
-  // make a call to parameterChanged for each parameter in order to set up the DSP-core to reflect 
-  // the values the automatable parameters:
-  for(int i=0; i < (int) parameters.size(); i++ )
-    parameterChanged(parameters[i]);
 }
 
 //=================================================================================================
