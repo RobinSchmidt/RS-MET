@@ -505,6 +505,7 @@ public:
   // \name Callbacks:
 
   //virtual bool keyPressed(const KeyPress &key, Component *originatingComponent) override;
+  virtual void mouseDown(const MouseEvent& e) override;
   virtual void rDialogBoxChanged(RDialogBox* dialogBoxThatHasChanged) override;
   virtual void rDialogBoxOKClicked(RDialogBox* dialogBoxThatWantsToAcceptAndLeave) override;
   virtual void rDialogBoxCancelClicked(RDialogBox* dialogBoxThatWantsToBeCanceled) override;
@@ -581,6 +582,7 @@ protected:
   RHyperlinkButton         *webLink;
   ColourSchemeSetupDialog  *setupDialog;
 
+  static const bool screenShotsEnabled = true; // maybe disable for release builds
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioModuleEditor)
 };

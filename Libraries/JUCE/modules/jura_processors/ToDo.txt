@@ -1,8 +1,3 @@
-fix the number of I/O channels - see here:
-https://forum.juce.com/search?q=number%20of%20channels%20category%3A11
-https://forum.juce.com/t/plugin-with-fixed-number-of-output-channels-but-non-fixed-nb-of-buses/21321
-https://forum.juce.com/t/4-1-default-channel-configuration-problems/16877
-
 
 ToolChain
 -let the "Setup" have tabs for 

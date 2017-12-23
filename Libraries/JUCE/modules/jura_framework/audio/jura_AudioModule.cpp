@@ -817,6 +817,23 @@ int AudioModuleEditor::getPresetSectionBottom()
 //  return true; // true indicates, that the event was consumed
 //}
 
+void AudioModuleEditor::mouseDown(const MouseEvent& e)
+{
+  if(e.mods.isAltDown() && e.mods.isCommandDown() && screenShotsEnabled)
+  {
+    Image im = createComponentSnapshot(Rectangle<int>(0, 0, getWidth(), getHeight()));
+    String name = moduleToEdit->getModuleTypeName();
+
+    // factor out into saveToPngFile(const Image& im, const String& name):
+    File file = File(getApplicationDirectory() + "/" + name + ".png");
+    PNGImageFormat pngFormat;
+    FileOutputStream fileStream(file);
+    bool success = pngFormat.writeImageToStream(im, fileStream);
+    // we also need to either overwrite the file if it exists or use a variation of the filename,
+    // otherwise the data just gets appended
+  }
+}
+
 void AudioModuleEditor::rDialogBoxChanged(RDialogBox* dialogBoxThatHasChanged)
 {
   copyColourSettingsFrom(setupDialog);
