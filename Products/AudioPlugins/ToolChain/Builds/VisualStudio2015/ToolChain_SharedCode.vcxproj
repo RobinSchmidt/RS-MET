@@ -73,7 +73,7 @@
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\..\..\..\Libraries\JUCE\modules;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=2017.12.24;JUCE_APP_VERSION_HEX=0x7e10c18;JucePlugin_Build_VST=1;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JUCE_SHARED_CODE=1;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=2017.12.24;JUCE_APP_VERSION_HEX=0x7e10c18;JucePlugin_Build_VST=1;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=1;JUCE_SHARED_CODE=1;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader/>
@@ -114,7 +114,7 @@
     <ClCompile>
       <Optimization>Full</Optimization>
       <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\..\..\..\Libraries\JUCE\modules;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=2017.12.24;JUCE_APP_VERSION_HEX=0x7e10c18;JucePlugin_Build_VST=1;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JUCE_SHARED_CODE=1;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=2017.12.24;JUCE_APP_VERSION_HEX=0x7e10c18;JucePlugin_Build_VST=1;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=1;JUCE_SHARED_CODE=1;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader/>
@@ -590,6 +590,54 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\juce_audio_processors.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_utils\audio_cd\juce_AudioCDReader.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_utils\gui\juce_AudioAppComponent.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_utils\gui\juce_AudioDeviceSelectorComponent.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_utils\gui\juce_AudioThumbnail.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_utils\gui\juce_AudioThumbnailCache.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_utils\gui\juce_AudioVisualiserComponent.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_utils\gui\juce_MidiKeyboardComponent.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_utils\native\juce_android_BluetoothMidiDevicePairingDialogue.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_utils\native\juce_linux_AudioCDReader.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_utils\native\juce_linux_BluetoothMidiDevicePairingDialogue.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_utils\native\juce_win_BluetoothMidiDevicePairingDialogue.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_utils\native\juce_win32_AudioCDBurner.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_utils\native\juce_win32_AudioCDReader.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_utils\players\juce_AudioProcessorPlayer.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_utils\players\juce_SoundPlayer.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_utils\juce_audio_utils.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_core\containers\juce_AbstractFifo.cpp">
@@ -3703,6 +3751,7 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_audio_formats.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_audio_plugin_client_utils.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_audio_processors.cpp"/>
+    <ClCompile Include="..\..\JuceLibraryCode\include_juce_audio_utils.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_core.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_data_structures.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_events.cpp"/>
@@ -3940,6 +3989,19 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\utilities\juce_AudioProcessorParameterWithID.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\utilities\juce_AudioProcessorValueTreeState.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\juce_audio_processors.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_utils\audio_cd\juce_AudioCDBurner.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_utils\audio_cd\juce_AudioCDReader.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_utils\gui\juce_AudioAppComponent.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_utils\gui\juce_AudioDeviceSelectorComponent.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_utils\gui\juce_AudioThumbnail.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_utils\gui\juce_AudioThumbnailBase.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_utils\gui\juce_AudioThumbnailCache.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_utils\gui\juce_AudioVisualiserComponent.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_utils\gui\juce_BluetoothMidiDevicePairingDialogue.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_utils\gui\juce_MidiKeyboardComponent.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_utils\players\juce_AudioProcessorPlayer.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_utils\players\juce_SoundPlayer.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_utils\juce_audio_utils.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_core\containers\juce_AbstractFifo.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_core\containers\juce_Array.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_core\containers\juce_ArrayAllocationBase.h"/>

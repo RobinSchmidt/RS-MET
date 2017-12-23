@@ -18,6 +18,7 @@ Make ToolChain ready for release:
 -FuncShaper 
  -fix gui problems (try resizing)
 -Straightliner:
+ -patch loading takes long
 
 on mac, the color-gradients are wrong (maybe the rgba-channels are confused)
 

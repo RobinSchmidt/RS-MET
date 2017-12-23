@@ -28,7 +28,7 @@
           <Add option="-DJucePlugin_Build_AUv3=0"/>
           <Add option="-DJucePlugin_Build_RTAS=0"/>
           <Add option="-DJucePlugin_Build_AAX=0"/>
-          <Add option="-DJucePlugin_Build_Standalone=0"/>
+          <Add option="-DJucePlugin_Build_Standalone=1"/>
           <Add option="-DJUCE_SHARED_CODE=1"/>
           <Add option="-m64"/>
           <Add option="-O0"/>
@@ -109,6 +109,58 @@
           <Add directory="bin/Debug"/>
         </Linker>
       </Target>
+      <Target title="Standalone Plugin | Debug">
+        <Option output="bin/Debug/ToolChain.exe"
+                prefix_auto="0"
+                extension_auto="0"/>
+        <Option object_output="obj/Debug"/>
+        <Option type="0"/>
+        <Option compiler="gcc"/>
+        <Option external_deps="bin/Debug/ToolChain.lib"/>
+        <Compiler>
+          <Add option="-D__MINGW__=1"/>
+          <Add option="-D__MINGW_EXTENSION="/>
+          <Add option="-DDEBUG=1"/>
+          <Add option="-D_DEBUG=1"/>
+          <Add option="-DJUCER_CODEBLOCKS_WINDOWS_8F9AFD66=1"/>
+          <Add option="-DJUCE_APP_VERSION=2017.12.24"/>
+          <Add option="-DJUCE_APP_VERSION_HEX=0x7e10c18"/>
+          <Add option="-DJucePlugin_Build_VST=0"/>
+          <Add option="-DJucePlugin_Build_VST3=0"/>
+          <Add option="-DJucePlugin_Build_AU=0"/>
+          <Add option="-DJucePlugin_Build_AUv3=0"/>
+          <Add option="-DJucePlugin_Build_RTAS=0"/>
+          <Add option="-DJucePlugin_Build_AAX=0"/>
+          <Add option="-DJucePlugin_Build_Standalone=1"/>
+          <Add option="-m64"/>
+          <Add option="-O0"/>
+          <Add option="-std=c++11"/>
+          <Add option="-mstackrealign"/>
+          <Add option="-g"/>
+          <Add option="-fpermissive"/>
+          <Add directory="."/>
+          <Add directory="../../JuceLibraryCode"/>
+          <Add directory="../../../../../Libraries/JUCE/modules"/>
+          <Add directory="..\..\..\..\..\Libraries\JUCE\modules"/>
+        </Compiler>
+        <Linker>
+          <Add option="bin/Debug/ToolChain.lib"/>
+          <Add option="-m64"/>
+          <Add library="comdlg32"/>
+          <Add library="imm32"/>
+          <Add library="ole32"/>
+          <Add library="oleaut32"/>
+          <Add library="rpcrt4"/>
+          <Add library="shlwapi"/>
+          <Add library="uuid"/>
+          <Add library="version"/>
+          <Add library="wininet"/>
+          <Add library="winmm"/>
+          <Add library="ws2_32"/>
+          <Add library="wsock32"/>
+          <Add directory="bin/Debug"/>
+        </Linker>
+      </Target>
       <Target title="Shared Code | Release">
         <Option output="bin/Release/ToolChain.lib"
                 prefix_auto="0"
@@ -129,7 +181,7 @@
           <Add option="-DJucePlugin_Build_AUv3=0"/>
           <Add option="-DJucePlugin_Build_RTAS=0"/>
           <Add option="-DJucePlugin_Build_AAX=0"/>
-          <Add option="-DJucePlugin_Build_Standalone=0"/>
+          <Add option="-DJucePlugin_Build_Standalone=1"/>
           <Add option="-DJUCE_SHARED_CODE=1"/>
           <Add option="-m64"/>
           <Add option="-O3"/>
@@ -209,12 +261,63 @@
           <Add directory="bin/Release"/>
         </Linker>
       </Target>
+      <Target title="Standalone Plugin | Release">
+        <Option output="bin/Release/ToolChain.exe"
+                prefix_auto="0"
+                extension_auto="0"/>
+        <Option object_output="obj/Release"/>
+        <Option type="0"/>
+        <Option compiler="gcc"/>
+        <Option external_deps="bin/Release/ToolChain.lib"/>
+        <Compiler>
+          <Add option="-D__MINGW__=1"/>
+          <Add option="-D__MINGW_EXTENSION="/>
+          <Add option="-DNDEBUG=1"/>
+          <Add option="-DJUCER_CODEBLOCKS_WINDOWS_8F9AFD66=1"/>
+          <Add option="-DJUCE_APP_VERSION=2017.12.24"/>
+          <Add option="-DJUCE_APP_VERSION_HEX=0x7e10c18"/>
+          <Add option="-DJucePlugin_Build_VST=0"/>
+          <Add option="-DJucePlugin_Build_VST3=0"/>
+          <Add option="-DJucePlugin_Build_AU=0"/>
+          <Add option="-DJucePlugin_Build_AUv3=0"/>
+          <Add option="-DJucePlugin_Build_RTAS=0"/>
+          <Add option="-DJucePlugin_Build_AAX=0"/>
+          <Add option="-DJucePlugin_Build_Standalone=1"/>
+          <Add option="-m64"/>
+          <Add option="-O3"/>
+          <Add option="-std=c++11"/>
+          <Add option="-mstackrealign"/>
+          <Add option="-fpermissive"/>
+          <Add directory="."/>
+          <Add directory="../../JuceLibraryCode"/>
+          <Add directory="../../../../../Libraries/JUCE/modules"/>
+          <Add directory="..\..\..\..\..\Libraries\JUCE\modules"/>
+        </Compiler>
+        <Linker>
+          <Add option="bin/Release/ToolChain.lib"/>
+          <Add option="-m64"/>
+          <Add option="-s"/>
+          <Add library="comdlg32"/>
+          <Add library="imm32"/>
+          <Add library="ole32"/>
+          <Add library="oleaut32"/>
+          <Add library="rpcrt4"/>
+          <Add library="shlwapi"/>
+          <Add library="uuid"/>
+          <Add library="version"/>
+          <Add library="wininet"/>
+          <Add library="winmm"/>
+          <Add library="ws2_32"/>
+          <Add library="wsock32"/>
+          <Add directory="bin/Release"/>
+        </Linker>
+      </Target>
     </Build>
     <VirtualTargets>
       <Add alias="Debug"
-           targets="Shared Code | Debug;VST | Debug"/>
+           targets="Shared Code | Debug;VST | Debug;Standalone Plugin | Debug"/>
       <Add alias="Release"
-           targets="Shared Code | Release;VST | Release"/>
+           targets="Shared Code | Release;VST | Release;Standalone Plugin | Release"/>
     </VirtualTargets>
     <Compiler>
       <Add option="-Wall"/>
@@ -2686,6 +2789,210 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_processors/juce_audio_processors.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_utils/audio_cd/juce_AudioCDBurner.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_utils/audio_cd/juce_AudioCDReader.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_utils/audio_cd/juce_AudioCDReader.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_utils/gui/juce_AudioAppComponent.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_utils/gui/juce_AudioAppComponent.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_utils/gui/juce_AudioDeviceSelectorComponent.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_utils/gui/juce_AudioDeviceSelectorComponent.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_utils/gui/juce_AudioThumbnail.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_utils/gui/juce_AudioThumbnail.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_utils/gui/juce_AudioThumbnailBase.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_utils/gui/juce_AudioThumbnailCache.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_utils/gui/juce_AudioThumbnailCache.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_utils/gui/juce_AudioVisualiserComponent.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_utils/gui/juce_AudioVisualiserComponent.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_utils/gui/juce_BluetoothMidiDevicePairingDialogue.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_utils/gui/juce_MidiKeyboardComponent.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_utils/gui/juce_MidiKeyboardComponent.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_utils/native/juce_android_BluetoothMidiDevicePairingDialogue.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_utils/native/juce_ios_BluetoothMidiDevicePairingDialogue.mm">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_utils/native/juce_linux_AudioCDReader.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_utils/native/juce_linux_BluetoothMidiDevicePairingDialogue.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_utils/native/juce_mac_AudioCDBurner.mm">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_utils/native/juce_mac_AudioCDReader.mm">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_utils/native/juce_mac_BluetoothMidiDevicePairingDialogue.mm">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_utils/native/juce_win_BluetoothMidiDevicePairingDialogue.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_utils/native/juce_win32_AudioCDBurner.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_utils/native/juce_win32_AudioCDReader.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_utils/players/juce_AudioProcessorPlayer.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_utils/players/juce_AudioProcessorPlayer.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_utils/players/juce_SoundPlayer.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_utils/players/juce_SoundPlayer.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_utils/juce_audio_utils.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_utils/juce_audio_utils.mm">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_utils/juce_audio_utils.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
@@ -15709,6 +16016,10 @@
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
     </Unit>
+    <Unit filename="../../JuceLibraryCode/include_juce_audio_plugin_client_Standalone.cpp">
+      <Option target="Standalone Plugin | Debug"/>
+      <Option target="Standalone Plugin | Release"/>
+    </Unit>
     <Unit filename="../../JuceLibraryCode/include_juce_audio_plugin_client_utils.cpp">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
@@ -15718,6 +16029,10 @@
       <Option target="VST | Release"/>
     </Unit>
     <Unit filename="../../JuceLibraryCode/include_juce_audio_processors.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+    </Unit>
+    <Unit filename="../../JuceLibraryCode/include_juce_audio_utils.cpp">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
     </Unit>
