@@ -255,10 +255,10 @@ void AciDevilModuleEditor::createWidgets()
   filterModeLabel->setDescription("Mode:");
   filterModeLabel->setDescriptionField(infoField);
 
-  addWidget( filterModeBox = new RComboBox(juce::String("FilterModeComboBox")) );
-  filterModeBox->assignParameter( moduleToEdit->getParameterByName("FilterMode") );
-  filterModeBox->setDescription(filterModeLabel->getDescription());
-  filterModeBox->setDescriptionField(infoField);
+  addWidget( filterModeBox = c = new Box );
+  c->assignParameter( moduleToEdit->getParameterByName("FilterMode") );
+  c->setDescription(filterModeLabel->getDescription());
+  c->setDescriptionField(infoField);
 
   addWidget( envModSlider = new RSlider("EnvModSlider") );
   envModSlider->assignParameter( aciDevilModuleToEdit->getParameterByName("EnvMod") );
