@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="Lt8ojO" name="ToolChain" projectType="audioplug" version="1.0.0"
+<JUCERPROJECT id="Lt8ojO" name="ToolChain" projectType="audioplug" version="2017.12.24"
               bundleIdentifier="com.rs-met.ToolChain" includeBinaryInAppConfig="1"
               buildVST="1" buildVST3="0" buildAU="1" buildAUv3="0" buildRTAS="0"
               buildAAX="0" pluginName="ToolChain" pluginDesc="ToolChain" pluginManufacturer="RS-MET"
@@ -21,7 +21,7 @@
     <FILE id="cXUD5t" name="ToDo.txt" compile="0" resource="1" file="ToDo.txt"/>
   </MAINGROUP>
   <EXPORTFORMATS>
-    <VS2015 targetFolder="Builds/VisualStudio2015">
+    <VS2015 targetFolder="Builds/VisualStudio2015" windowsTargetPlatformVersion="8.1">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="3" generateManifest="1" winArchitecture="x64"
                        isDebug="1" optimisation="1" targetName="ToolChain" debugInformationFormat="ProgramDatabase"

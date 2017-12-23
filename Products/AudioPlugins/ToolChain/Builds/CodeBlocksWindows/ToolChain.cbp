@@ -20,8 +20,8 @@
           <Add option="-DDEBUG=1"/>
           <Add option="-D_DEBUG=1"/>
           <Add option="-DJUCER_CODEBLOCKS_WINDOWS_8F9AFD66=1"/>
-          <Add option="-DJUCE_APP_VERSION=1.0.0"/>
-          <Add option="-DJUCE_APP_VERSION_HEX=0x10000"/>
+          <Add option="-DJUCE_APP_VERSION=2017.12.24"/>
+          <Add option="-DJUCE_APP_VERSION_HEX=0x7e10c18"/>
           <Add option="-DJucePlugin_Build_VST=1"/>
           <Add option="-DJucePlugin_Build_VST3=0"/>
           <Add option="-DJucePlugin_Build_AU=0"/>
@@ -71,8 +71,8 @@
           <Add option="-DDEBUG=1"/>
           <Add option="-D_DEBUG=1"/>
           <Add option="-DJUCER_CODEBLOCKS_WINDOWS_8F9AFD66=1"/>
-          <Add option="-DJUCE_APP_VERSION=1.0.0"/>
-          <Add option="-DJUCE_APP_VERSION_HEX=0x10000"/>
+          <Add option="-DJUCE_APP_VERSION=2017.12.24"/>
+          <Add option="-DJUCE_APP_VERSION_HEX=0x7e10c18"/>
           <Add option="-DJucePlugin_Build_VST=1"/>
           <Add option="-DJucePlugin_Build_VST3=0"/>
           <Add option="-DJucePlugin_Build_AU=0"/>
@@ -121,8 +121,8 @@
           <Add option="-D__MINGW_EXTENSION="/>
           <Add option="-DNDEBUG=1"/>
           <Add option="-DJUCER_CODEBLOCKS_WINDOWS_8F9AFD66=1"/>
-          <Add option="-DJUCE_APP_VERSION=1.0.0"/>
-          <Add option="-DJUCE_APP_VERSION_HEX=0x10000"/>
+          <Add option="-DJUCE_APP_VERSION=2017.12.24"/>
+          <Add option="-DJUCE_APP_VERSION_HEX=0x7e10c18"/>
           <Add option="-DJucePlugin_Build_VST=1"/>
           <Add option="-DJucePlugin_Build_VST3=0"/>
           <Add option="-DJucePlugin_Build_AU=0"/>
@@ -171,8 +171,8 @@
           <Add option="-D__MINGW_EXTENSION="/>
           <Add option="-DNDEBUG=1"/>
           <Add option="-DJUCER_CODEBLOCKS_WINDOWS_8F9AFD66=1"/>
-          <Add option="-DJUCE_APP_VERSION=1.0.0"/>
-          <Add option="-DJUCE_APP_VERSION_HEX=0x10000"/>
+          <Add option="-DJUCE_APP_VERSION=2017.12.24"/>
+          <Add option="-DJUCE_APP_VERSION_HEX=0x7e10c18"/>
           <Add option="-DJucePlugin_Build_VST=1"/>
           <Add option="-DJucePlugin_Build_VST3=0"/>
           <Add option="-DJucePlugin_Build_AU=0"/>

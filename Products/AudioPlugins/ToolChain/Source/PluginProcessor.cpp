@@ -2,6 +2,8 @@
 
 AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
+  //jura::FileManager::companyName = "Soundemote";
+
   //jura::PhaseScope *dummy = nullptr; return createPluginWithoutMidi(dummy);
   //jura::PhaseScope2 *dummy = nullptr; return createPluginWithoutMidi(dummy);
   //jura::PhaseScopeMultiColor *dummy = nullptr; return createPluginWithoutMidi(dummy);

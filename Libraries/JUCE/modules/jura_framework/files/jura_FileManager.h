@@ -1,7 +1,6 @@
 #ifndef jura_FileManager_h
 #define jura_FileManager_h
 
-
 /** Returns the directory of the current application (or .dll) as String. */
 JUCE_API juce::String getApplicationDirectory();
 
@@ -14,6 +13,7 @@ JUCE_API juce::String getCommonDocumentsDirectory();
 /** Returns the directory, where the support files such as presets, samples, etc. are supposed to 
 be found. */
 JUCE_API juce::String getSupportDirectory();
+ // maybe move these 4 functions as static functions into FileManager
 
 /** Given a path tha may contain backslashes, this function returns a version of that path where 
 the backslashes have been replaced by forward slashes. */
@@ -221,6 +221,10 @@ public:
   /** Updates the array which contains all the relevant files in order to skip through them
   via plus/minus buttons. */
   virtual void updateFileList();
+
+  /** A static string member used to locate the company-specific support file folder. By default,
+  it's set to "RS-MET", but since it'S public, you can change that from any convenient place.  */
+  static juce::String companyName;
 
 protected:
 

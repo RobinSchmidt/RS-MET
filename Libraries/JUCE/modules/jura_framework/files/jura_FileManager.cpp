@@ -1,4 +1,3 @@
-
 String getApplicationDirectory()
 {
   File thisExeAsFile       = File::getSpecialLocation(File::currentApplicationFile);
@@ -27,9 +26,8 @@ juce::String getCommonDocumentsDirectory()
 
 juce::String getSupportDirectory()
 {
-  //return getCommonDocumentsDirectory() + File::getSeparatorString() + "RS-MET";
-  return getUserAppDataDirectory() + File::getSeparatorString() + "RS-MET";
-  // make company name adjustable from client code
+  //return getCommonDocumentsDirectory() + File::getSeparatorString() + FileManager::companyName;
+  return getUserAppDataDirectory() + File::getSeparatorString() + FileManager::companyName;
 }
 
 juce::File convertBackslashToSlash(const juce::File& path)
@@ -72,6 +70,8 @@ bool hasDirectoryFiles(const File& directoryToCheck)
 }
 
 //=================================================================================================
+
+juce::String FileManager::companyName = "RS-MET";
 
 // construction/destruction:
 

@@ -43,7 +43,7 @@
 namespace ProjectInfo
 {
     const char* const  projectName    = "ToolChain";
-    const char* const  versionString  = "1.0.0";
-    const int          versionNumber  = 0x10000;
+    const char* const  versionString  = "2017.12.24";
+    const int          versionNumber  = 0x7e10c18;
 }
 #endif

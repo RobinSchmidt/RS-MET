@@ -15,7 +15,7 @@ static const unsigned char temp_binary_data_0[] =
 "under \"Debugging\" the \"Command\" field to the .exe that results from the build.\r\n"
 "On my machine, the path is:\r\n"
 "\r\n"
-"E:\\Programming\\C++\\RS-MET\\Products\\AudioApplications\\PluginHost\\Builds\\VisualStudio2015\\x64\\Debug\\Plugin Host.exe\r\n"
+"E:\\Programming\\C++\\RS-MET\\Products\\AudioApplications\\PluginHost\\Builds\\VisualStudio2015\\x64\\Debug\\App\\Plugin Host.exe\r\n"
 "\r\n"
 "\r\n"
 "to build a release version with the linux makefile, open a terminal in the \r\n"
@@ -62,7 +62,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes) throw
 
     switch (hash)
     {
-        case 0x4358baff:  numBytes = 1093; return DebugNotes_txt;
+        case 0x4358baff:  numBytes = 1097; return DebugNotes_txt;
         case 0x80091737:  numBytes = 0; return ToDo_txt;
         default: break;
     }
