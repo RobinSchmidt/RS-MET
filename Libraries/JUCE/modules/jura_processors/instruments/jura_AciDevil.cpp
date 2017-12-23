@@ -185,30 +185,30 @@ void AciDevilModuleEditor::createWidgets()
   s->setStringConversionFunction(decibelsToStringWithUnit1);
   s->setDescriptionField(infoField);
 
-  addWidget( accentSlider = new RSlider("AccentSlider") );
-  accentSlider->assignParameter( aciDevilModuleToEdit->getParameterByName("Accent") );
-  accentSlider->setDescription(juce::String("Accent in percent"));
-  accentSlider->setStringConversionFunction(percentToStringWithUnit1);
-  accentSlider->setDescriptionField(infoField);
+  addWidget( accentSlider = s = new Sld );
+  s->assignParameter( aciDevilModuleToEdit->getParameterByName("Accent") );
+  s->setDescription("Accent in percent");
+  s->setStringConversionFunction(percentToStringWithUnit1);
+  s->setDescriptionField(infoField);
 
-  addWidget( slideTimeSlider = new RSlider ("SlideTimeSlider") );
-  slideTimeSlider->assignParameter( aciDevilModuleToEdit->getParameterByName("SlideTime") );
-  slideTimeSlider->setSliderName(juce::String("Slide"));
-  slideTimeSlider->setDescription(juce::String("Slide time in milliseconds"));
-  slideTimeSlider->setStringConversionFunction(millisecondsToStringWithUnit2);
-  slideTimeSlider->setDescriptionField(infoField);
+  addWidget( slideTimeSlider = s = new Sld );
+  s->assignParameter( aciDevilModuleToEdit->getParameterByName("SlideTime") );
+  s->setSliderName("Slide");
+  s->setDescription("Slide time in milliseconds");
+  s->setStringConversionFunction(millisecondsToStringWithUnit2);
+  s->setDescriptionField(infoField);
 
   addWidget( oscLabel = new RTextField( juce::String("Oscillator")) );
   oscLabel->setJustification(Justification::centred);
   oscLabel->setDescription("Oscillator parameters");
   oscLabel->setDescriptionField(infoField);
 
-  addWidget( waveformSlider = new RSlider ("WaveformSlider") );
-  waveformSlider->assignParameter( aciDevilModuleToEdit->getParameterByName("Waveform") );
-  waveformSlider->setSliderName(juce::String("Saw/Pulse"));
-  waveformSlider->setDescription(juce::String("Mix between saw- and pulse-wave for main oscillator"));
-  waveformSlider->setStringConversionFunction(ratioToString0);
-  waveformSlider->setDescriptionField(infoField);
+  addWidget( waveformSlider = s = new Sld );
+  s->assignParameter( aciDevilModuleToEdit->getParameterByName("Waveform") );
+  s->setSliderName("Saw/Pulse");
+  s->setDescription("Mix between saw- and pulse-wave for main oscillator");
+  s->setStringConversionFunction(ratioToString0);
+  s->setDescriptionField(infoField);
 
   // pulse-width...
 
@@ -217,19 +217,19 @@ void AciDevilModuleEditor::createWidgets()
   subOscLabel->setDescription("Sub-oscillator settings");
   subOscLabel->setDescriptionField(infoField);
 
-  addWidget( subOscLevelSlider = new RSlider ("SubOscLevelSlider") );
-  subOscLevelSlider->assignParameter( aciDevilModuleToEdit->getParameterByName("SubOscLevel") );
-  subOscLevelSlider->setSliderName(juce::String("Level"));
-  subOscLevelSlider->setDescription(juce::String("Sub-oscillator level in decibels"));
-  subOscLevelSlider->setStringConversionFunction(decibelsToStringWithUnit1);
-  subOscLevelSlider->setDescriptionField(infoField);
+  addWidget( subOscLevelSlider = s = new Sld );
+  s->assignParameter( aciDevilModuleToEdit->getParameterByName("SubOscLevel") );
+  s->setSliderName("Level");
+  s->setDescription("Sub-oscillator level in decibels");
+  s->setStringConversionFunction(decibelsToStringWithUnit1);
+  s->setDescriptionField(infoField);
 
-  addWidget( subOscWaveformSlider = new RSlider("SubOscWaveformSlider") );
-  subOscWaveformSlider->assignParameter( aciDevilModuleToEdit->getParameterByName("SubOscWaveform") );
-  subOscWaveformSlider->setSliderName(juce::String("Saw/Pulse"));
-  subOscWaveformSlider->setDescription(juce::String("Mix between saw- and pulse-wave for suboscillator"));
-  subOscWaveformSlider->setStringConversionFunction(ratioToString0);
-  subOscWaveformSlider->setDescriptionField(infoField);
+  addWidget( subOscWaveformSlider = s = new Sld );
+  s->assignParameter( aciDevilModuleToEdit->getParameterByName("SubOscWaveform") );
+  s->setSliderName("Saw/Pulse");
+  s->setDescription("Mix between saw- and pulse-wave for suboscillator");
+  s->setStringConversionFunction(ratioToString0);
+  s->setDescriptionField(infoField);
 
 
   addWidget( filterLabel = new RTextField( juce::String("Filter")) );
@@ -237,17 +237,17 @@ void AciDevilModuleEditor::createWidgets()
   filterLabel->setDescription("Filter");
   filterLabel->setDescriptionField(infoField);
 
-  addWidget( cutoffSlider = new RSlider("CutoffSlider") );
-  cutoffSlider->assignParameter( aciDevilModuleToEdit->getParameterByName("Cutoff") );
-  cutoffSlider->setDescription(juce::String("Filter cutoff frequency in Hz"));
-  cutoffSlider->setStringConversionFunction(hertzToStringWithUnitTotal5);
-  cutoffSlider->setDescriptionField(infoField);
+  addWidget( cutoffSlider = s = new Sld );
+  s->assignParameter( aciDevilModuleToEdit->getParameterByName("Cutoff") );
+  s->setDescription("Filter cutoff frequency in Hz");
+  s->setStringConversionFunction(hertzToStringWithUnitTotal5);
+  s->setDescriptionField(infoField);
 
-  addWidget( resonanceSlider = new RSlider ("ResonanceSlider") );
-  resonanceSlider->assignParameter( aciDevilModuleToEdit->getParameterByName("Resonance") );
-  resonanceSlider->setDescription(juce::String("Resonance in percent"));
-  resonanceSlider->setStringConversionFunction(percentToStringWithUnit1);
-  resonanceSlider->setDescriptionField(infoField);
+  addWidget( resonanceSlider = s = new Sld );
+  s->assignParameter( aciDevilModuleToEdit->getParameterByName("Resonance") );
+  s->setDescription("Resonance in percent");
+  s->setStringConversionFunction(percentToStringWithUnit1);
+  s->setDescriptionField(infoField);
 
   addWidget( filterModeLabel = new RTextField( juce::String("Mode:")) );
   filterModeLabel->setJustification(Justification::centredLeft);
@@ -260,11 +260,11 @@ void AciDevilModuleEditor::createWidgets()
   c->setDescription(filterModeLabel->getDescription());
   c->setDescriptionField(infoField);
 
-  addWidget( envModSlider = new RSlider("EnvModSlider") );
-  envModSlider->assignParameter( aciDevilModuleToEdit->getParameterByName("EnvMod") );
-  envModSlider->setDescription(juce::String("Amount of modulation of the cutoff frequency in semitones"));
-  envModSlider->setStringConversionFunction(semitonesToStringWithUnit1);
-  envModSlider->setDescriptionField(infoField);
+  addWidget( envModSlider = s = new Sld );
+  s->assignParameter( aciDevilModuleToEdit->getParameterByName("EnvMod") );
+  s->setDescription("Amount of modulation of cutoff frequency in semitones");
+  s->setStringConversionFunction(semitonesToStringWithUnit1);
+  s->setDescriptionField(infoField);
 
 
   addWidget( filterEnvLabel = new RTextField( juce::String("Filter Envelope")) );
@@ -277,19 +277,19 @@ void AciDevilModuleEditor::createWidgets()
   normalLabel->setDescription("Time values for normal (un-accented) notes");
   normalLabel->setDescriptionField(infoField);
 
-  addWidget( normalDecaySlider = new RSlider ("NormalDecaySlider") );
-  normalDecaySlider->assignParameter( aciDevilModuleToEdit->getParameterByName("NormalDecay") );
-  normalDecaySlider->setSliderName(juce::String("Decay"));
-  normalDecaySlider->setDescription(juce::String("Decay time for normal (un-accented) notes in milliseconds."));
-  normalDecaySlider->setStringConversionFunction(millisecondsToStringWithUnit2);
-  normalDecaySlider->setDescriptionField(infoField);
+  addWidget( normalDecaySlider = s = new Sld );
+  s->assignParameter( aciDevilModuleToEdit->getParameterByName("NormalDecay") );
+  s->setSliderName("Decay");
+  s->setDescription("Decay time for normal (un-accented) notes in milliseconds");
+  s->setStringConversionFunction(millisecondsToStringWithUnit2);
+  s->setDescriptionField(infoField);
 
-  addWidget( normalAttackSlider = new RSlider("NormalAttackSlider") );
-  normalAttackSlider->assignParameter( aciDevilModuleToEdit->getParameterByName("NormalAttack") );
-  normalAttackSlider->setSliderName(juce::String("Attack"));
-  normalAttackSlider->setDescription(juce::String("Attack time for normal (un-accented) notes in milliseconds."));
-  normalAttackSlider->setStringConversionFunction(millisecondsToStringWithUnit2);
-  normalAttackSlider->setDescriptionField(infoField);
+  addWidget( normalAttackSlider = s = new Sld );
+  s->assignParameter( aciDevilModuleToEdit->getParameterByName("NormalAttack") );
+  s->setSliderName("Attack");
+  s->setDescription("Attack time for normal (un-accented) notes in milliseconds");
+  s->setStringConversionFunction(millisecondsToStringWithUnit2);
+  s->setDescriptionField(infoField);
 
 
   addWidget( accentLabel = new RTextField( juce::String("Accent:")) );
@@ -297,52 +297,52 @@ void AciDevilModuleEditor::createWidgets()
   accentLabel->setDescription("Time values for accented notes");
   accentLabel->setDescriptionField(infoField);
 
-  addWidget( accentDecaySlider = new RSlider ("AccentDecaySlider") );
-  accentDecaySlider->assignParameter( aciDevilModuleToEdit->getParameterByName("AccentDecay") );
-  accentDecaySlider->setSliderName(juce::String("Decay"));
-  accentDecaySlider->setDescription(juce::String("Decay time for accented notes in milliseconds."));
-  accentDecaySlider->setStringConversionFunction(millisecondsToStringWithUnit2);
-  accentDecaySlider->setDescriptionField(infoField);
+  addWidget( accentDecaySlider = s = new Sld );
+  s->assignParameter( aciDevilModuleToEdit->getParameterByName("AccentDecay") );
+  s->setSliderName("Decay");
+  s->setDescription("Decay time for accented notes in milliseconds");
+  s->setStringConversionFunction(millisecondsToStringWithUnit2);
+  s->setDescriptionField(infoField);
 
-  addWidget( accentAttackSlider = new RSlider ("AccentAttackSlider") );
-  accentAttackSlider->assignParameter( aciDevilModuleToEdit->getParameterByName("AccentAttack") );
-  accentAttackSlider->setSliderName(juce::String("Attack"));
-  accentAttackSlider->setDescription(juce::String("Attack time for accented notes in milliseconds."));
-  accentAttackSlider->setStringConversionFunction(millisecondsToStringWithUnit2);
-  accentAttackSlider->setDescriptionField(infoField);
+  addWidget( accentAttackSlider = s = new Sld );
+  s->assignParameter( aciDevilModuleToEdit->getParameterByName("AccentAttack") );
+  s->setSliderName("Attack");
+  s->setDescription("Attack time for accented notes in milliseconds");
+  s->setStringConversionFunction(millisecondsToStringWithUnit2);
+  s->setDescriptionField(infoField);
 
   addWidget( ampLabel = new RTextField( juce::String("Amplifier")) );
   ampLabel->setJustification(Justification::centred);
   ampLabel->setDescription("Amplide envelope and distortion parameters");
   ampLabel->setDescriptionField(infoField);
 
-  addWidget( ampDecaySlider = new RSlider("AmpDecaySlider") );
-  ampDecaySlider->assignParameter( aciDevilModuleToEdit->getParameterByName("AmpDecay") );
-  ampDecaySlider->setSliderName(juce::String("Decay"));
-  ampDecaySlider->setDescription(juce::String("Decay time for the amplitude envelope in milliseconds."));
-  ampDecaySlider->setStringConversionFunction(millisecondsToStringWithUnit2);
-  ampDecaySlider->setDescriptionField(infoField);
+  addWidget( ampDecaySlider = s = new Sld );
+  s->assignParameter( aciDevilModuleToEdit->getParameterByName("AmpDecay") );
+  s->setSliderName("Decay");
+  s->setDescription("Decay time for amplitude envelope in milliseconds");
+  s->setStringConversionFunction(millisecondsToStringWithUnit2);
+  s->setDescriptionField(infoField);
 
-  addWidget( ampSustainSlider = new RSlider("AmpSustainSlider") );
-  ampSustainSlider->assignParameter( aciDevilModuleToEdit->getParameterByName("AmpSustain") );
-  ampSustainSlider->setSliderName(juce::String("Sustain"));
-  ampSustainSlider->setDescription(juce::String("Sustain level for the amplitude envelope in decibels."));
-  ampSustainSlider->setStringConversionFunction(decibelsToStringWithUnit1);
-  ampSustainSlider->setDescriptionField(infoField);
+  addWidget( ampSustainSlider = s = new Sld );
+  s->assignParameter( aciDevilModuleToEdit->getParameterByName("AmpSustain") );
+  s->setSliderName("Sustain");
+  s->setDescription("Sustain level for amplitude envelope in decibels");
+  s->setStringConversionFunction(decibelsToStringWithUnit1);
+  s->setDescriptionField(infoField);
 
-  addWidget( ampReleaseSlider = new RSlider("AmpReleaseSlider") );
-  ampReleaseSlider->assignParameter( aciDevilModuleToEdit->getParameterByName("AmpRelease") );
-  ampReleaseSlider->setSliderName(juce::String("Release"));
-  ampReleaseSlider->setDescription(juce::String("Release time for the amplitude envelope in milliseconds."));
-  ampReleaseSlider->setStringConversionFunction(millisecondsToStringWithUnit2);
-  ampReleaseSlider->setDescriptionField(infoField);
+  addWidget( ampReleaseSlider = s = new Sld );
+  s->assignParameter( aciDevilModuleToEdit->getParameterByName("AmpRelease") );
+  s->setSliderName("Release");
+  s->setDescription("Release time for amplitude envelope in milliseconds");
+  s->setStringConversionFunction(millisecondsToStringWithUnit2);
+  s->setDescriptionField(infoField);
 
-  addWidget( distortionDriveSlider = new RSlider("DistortionDriveSlider") );
-  distortionDriveSlider->assignParameter( aciDevilModuleToEdit->getParameterByName("DistortionDrive") );
-  distortionDriveSlider->setSliderName(juce::String("Drive"));
-  distortionDriveSlider->setDescription(juce::String("Drive for the distortion unit in decibels."));
-  distortionDriveSlider->setStringConversionFunction(decibelsToStringWithUnit1);
-  distortionDriveSlider->setDescriptionField(infoField);
+  addWidget( distortionDriveSlider = s = new Sld );
+  s->assignParameter( aciDevilModuleToEdit->getParameterByName("DistortionDrive") );
+  s->setSliderName("Drive");
+  s->setDescription("Drive for distortion unit in decibels");
+  s->setStringConversionFunction(decibelsToStringWithUnit1);
+  s->setDescriptionField(infoField);
 
   sequencerEditor = new AcidSequencerModuleEditor(lock, aciDevilModuleToEdit->sequencerModule);
   addChildEditor( sequencerEditor );
