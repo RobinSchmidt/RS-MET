@@ -29,11 +29,6 @@ public:
 
   AudioModuleEditor* createEditor() override;
 
-  virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
-    // get rid of this - use the other callback mechanism
-
-
-
   virtual void setSampleRate(double newSampleRate) override
   {
     wrappedEngineersFilter->setSampleRate(newSampleRate);

@@ -37,37 +37,6 @@ AudioModuleEditor* EngineersFilterAudioModule::createEditor()
   return new jura::EngineersFilterModuleEditor(lock, this); // get rid of passing the lock
 }
 
-// automation:
-
-void EngineersFilterAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
-{
-  if( wrappedEngineersFilter == NULL )
-    return;
-
-  // find out the index in the vector of the parameter that has been changed:
-  int    index = getIndexOfParameter(parameterThatHasChanged);
-  double value = parameterThatHasChanged->getValue();
-  switch( index )
-  {
-  //case 0: wrappedEngineersFilter->setMode(               roundToInt(value)     );   break;
-  //case 1: wrappedEngineersFilter->setApproximationMethod(roundToInt(value) + 1 );   break;
-  case 2: wrappedEngineersFilter->setFrequency(          value);                    break;
-  case 3: wrappedEngineersFilter->setPrototypeOrder(     roundToInt(value)     );   break;
-  case 4: wrappedEngineersFilter->setBandwidth(          value);                    break;
-  case 5: wrappedEngineersFilter->setGain(               value);                    break;
-  case 6: wrappedEngineersFilter->setRipple(             value);                    break;
-  case 7: wrappedEngineersFilter->setStopbandRejection(  value);                    break;
-  /*
-
-  case 3: wrappedEngineersFilter->setUpperFrequency(     value);                    break;
-
-  */
-
-  } // end of switch( parameterIndex )
-
-  markStateAsDirty();
-}
-
 // internal functions:
 
 void EngineersFilterAudioModule::createParameters()
@@ -80,8 +49,6 @@ void EngineersFilterAudioModule::createParameters()
 
   //juce::Array<double> defaultValues;
 
-
-  // #000:	
   p = new Param("Mode", 0.0, 7.0, 1.0, Parameter::STRING, 1.0);
   p->setValueChangeCallback<EF>(ef, &EF::setMode);
   p->addStringValue("Bypass");
@@ -94,7 +61,6 @@ void EngineersFilterAudioModule::createParameters()
   p->addStringValue("Peak/Dip");
   addObservedParameter(p);
 
-  // #001:	
   p = new Param("Method", 0.0, 5.0, 0.0, Parameter::STRING, 1.0);
   p->setValueChangeCallback<EF>(ef, &EF::setApproximationMethod);
   p->addStringValue("Butterworth");
@@ -112,28 +78,28 @@ void EngineersFilterAudioModule::createParameters()
   // or better: Coincident, Gauss, Bessel, Linkwitz, Butter, Papoulis, Halpern, Inv Cheby, Cheby
   // elliptic
 
-  // #002:	
   p = new Param("Frequency" , 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL, 0.0);
+  p->setValueChangeCallback<EF>(ef, &EF::setFrequency);
   addObservedParameter(p);
 
-  // #003:	
   p = new Param("Order", 1.0, 20.0, 4.0, Parameter::LINEAR, 1.0);
+  p->setValueChangeCallback<EF>(ef, &EF::setPrototypeOrder);
   addObservedParameter(p);
 
-  // #004:	
   p = new Param("Bandwidth", 0.1, 10.0, 1.0, Parameter::EXPONENTIAL, 0.01);
+  p->setValueChangeCallback<EF>(ef, &EF::setBandwidth);
   addObservedParameter(p);
 
-  // #005:	
   p = new Param("Gain", -48, 24.0, 0.0, Parameter::LINEAR, 0.01);
+  p->setValueChangeCallback<EF>(ef, &EF::setGain);
   addObservedParameter(p);
-
-  // #006:	
+	
   p = new Param("Ripple", 0.1, 12.0, 1.0, Parameter::EXPONENTIAL, 0.0);
+  p->setValueChangeCallback<EF>(ef, &EF::setRipple);
   addObservedParameter(p);
 
-  // #007:	
   p = new Param("Rejection", 20, 120.0, 60.0, Parameter::LINEAR, 0.01);
+  p->setValueChangeCallback<EF>(ef, &EF::setStopbandRejection);
   addObservedParameter(p);
 }
 
