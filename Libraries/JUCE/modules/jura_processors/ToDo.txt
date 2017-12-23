@@ -7,7 +7,6 @@ Make ToolChain ready for release:
 -FuncShaper 
  -fix gui problems (try resizing)
 -Straightliner:
- -load init patch when plugging in
 
 
 Fix preset path problems for mac
