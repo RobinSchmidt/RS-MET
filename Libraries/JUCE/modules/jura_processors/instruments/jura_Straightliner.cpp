@@ -34,6 +34,8 @@ StraightlinerAudioModule::StraightlinerAudioModule(CriticalSection *newPlugInLoc
     &wrappedStraightliner->voiceArray[0].ampEnv);
   ampEnvModule->setModuleName(juce::String("AmpEnvelope"));
   addChildAudioModule(ampEnvModule);
+
+  loadPreset("000-InitPatchSawtooth.xml");
 }
 
 StraightlinerAudioModule::~StraightlinerAudioModule()

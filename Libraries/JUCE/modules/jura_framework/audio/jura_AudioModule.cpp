@@ -116,6 +116,13 @@ void AudioModule::removeChildAudioModule(AudioModule* moduleToRemove, bool delet
       delete moduleToRemove; }
 }
 
+void AudioModule::loadPreset(const juce::String& pathFromPresetFolder)
+{
+  juce::String path = getPresetDirectory() + "/" + pathFromPresetFolder;
+  loadFile(File(path));
+}
+
+/*
 void AudioModule::loadDefaultPreset()
 {
   juce::String fileName = getDefaultPresetLocation();
@@ -132,6 +139,7 @@ void AudioModule::loadDefaultPreset()
     }
   }
 }
+*/
 
 bool AudioModule::checkForCrack()
 {
@@ -453,17 +461,24 @@ void AudioModule::setStateFromXml(const XmlElement& xmlState, const juce::String
 {
   ScopedLock scopedLock(*lock);
 
-  bool smoothingIsBypassed = smoothingManager->isSmoothingBypassed();  
-  smoothingManager->setBypassSmoothing(true); 
+  bool smoothingIsBypassed = true;
+  if (smoothingManager != nullptr)
+  {
+    smoothingIsBypassed = smoothingManager->isSmoothingBypassed();
+    smoothingManager->setBypassSmoothing(true);
+  }
 
   XmlElement convertedState = convertXmlStateIfNecessary(xmlState);
   recallParametersFromXml(convertedState);
   recallMidiMappingFromXml(convertedState);
-  recallMetaMappingFromXml(convertedState);
-  recallMetaValuesFromXml(convertedState);
-  // maybe this should be done before retrieving the parameter values - because when you change
-  // a parameter range in the code and then load an older preset, a parameter that is connected
-  // to a meta parameter will get the wrong value.
+  if(metaParamManager != nullptr)
+  {
+    recallMetaMappingFromXml(convertedState);
+    recallMetaValuesFromXml(convertedState);
+    // maybe this should be done before retrieving the parameter values - because when you change
+    // a parameter range in the code and then load an older preset, a parameter that is connected
+    // to a meta parameter will get the wrong value.
+  }
 
   recallChildModulesFromXml(convertedState, markAsClean);
 
@@ -475,7 +490,8 @@ void AudioModule::setStateFromXml(const XmlElement& xmlState, const juce::String
 
   setStateName(stateName, markAsClean);
 
-  smoothingManager->setBypassSmoothing(smoothingIsBypassed); // restore old bypass state
+  if (smoothingManager != nullptr)
+    smoothingManager->setBypassSmoothing(smoothingIsBypassed); // restore old bypass state
 }
 
 XmlElement AudioModule::convertXmlStateIfNecessary(const XmlElement& xmlState)

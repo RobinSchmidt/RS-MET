@@ -2,7 +2,6 @@ Make ToolChain ready for release:
 -consistently use MetaControlledParameter 
  -use callback based update of dsp objects (where possible)
 -consistently use AutomatableSlider/Button/ComboBox
--clean up ColorMap folder, rename files
 -AcidDevil
  -fix gui ugliness
 -FuncShaper 

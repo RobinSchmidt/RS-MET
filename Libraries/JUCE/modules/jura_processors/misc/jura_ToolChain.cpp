@@ -356,7 +356,7 @@ void ToolChain::replaceModule(int index, const juce::String& type)
     newModule->setModuleName("Slot" + String(index+1) + "-" + type);
     newModule->setSmoothingManager(smoothingManager);
     newModule->setMetaParameterManager(metaParamManager); // superfluous now?
-    newModule->loadDefaultPreset(); // later: either load default preset or recall a stored state
+    //newModule->loadDefaultPreset(); // later: either load default preset or recall a stored state
     newModule->setSampleRate(sampleRate);
     modules[index] = newModule;
     removeFromModulatorsIfApplicable(oldModule);
