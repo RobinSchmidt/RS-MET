@@ -157,6 +157,13 @@ AciDevilModuleEditor::AciDevilModuleEditor(CriticalSection *newPlugInLock,
   jassert(newAciDevilAudioModule != NULL ); // you must pass a valid module here
   aciDevilModuleToEdit = newAciDevilAudioModule;
 
+  createWidgets();
+  updateWidgetsAccordingToState();
+  setSize(781, 396);
+}
+
+void AciDevilModuleEditor::createWidgets()
+{
   addWidget( globalLabel = new RTextField( juce::String("Global")) );
   //globalLabel->setJustificationType(Justification::centred);
   globalLabel->setDescription("Global parameters");
@@ -331,15 +338,12 @@ AciDevilModuleEditor::AciDevilModuleEditor(CriticalSection *newPlugInLock,
   sequencerEditor = new AcidSequencerModuleEditor(lock, aciDevilModuleToEdit->sequencerModule);
   addChildEditor( sequencerEditor );
   sequencerEditor->setDescriptionField(infoField, true);
-
-  // set up the widgets:
-  updateWidgetsAccordingToState();
-
-  setSize(781, 396);
 }
 
 //-------------------------------------------------------------------------------------------------
 // setup:
+
+
 
 
 

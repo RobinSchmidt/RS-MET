@@ -106,6 +106,8 @@ public:
 
 protected:
 
+  virtual void createWidgets();
+
   /** Overrides the method inherited from AudioModuleEditor. */
   virtual void updateWidgetsAccordingToState();
 
