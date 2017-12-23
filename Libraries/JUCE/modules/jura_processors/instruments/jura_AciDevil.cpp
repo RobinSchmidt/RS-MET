@@ -164,17 +164,26 @@ AciDevilModuleEditor::AciDevilModuleEditor(CriticalSection *newPlugInLock,
 
 void AciDevilModuleEditor::createWidgets()
 {
-  addWidget( globalLabel = new RTextField( juce::String("Global")) );
-  //globalLabel->setJustificationType(Justification::centred);
-  globalLabel->setDescription("Global parameters");
-  globalLabel->setDescriptionField(infoField);
+  typedef AutomatableSlider Sld;
+  typedef AutomatableComboBox Box;
+  //typedef AutomatableButton Btn;
+  typedef RTextField Lbl;
+  Sld* s;
+  Box* c;
+  //Btn* b;
+  Lbl* l;
 
-  addWidget( masterLevelSlider = new RSlider("MasterLevelSlider") );
-  masterLevelSlider->assignParameter( aciDevilModuleToEdit->getParameterByName("MasterLevel") );
-  masterLevelSlider->setSliderName(juce::String("Level"));
-  masterLevelSlider->setDescription(juce::String("Master level in decibels"));
-  masterLevelSlider->setStringConversionFunction(decibelsToStringWithUnit1);
-  masterLevelSlider->setDescriptionField(infoField);
+  addWidget( globalLabel = l = new Lbl("Global"));
+  //l->setJustificationType(Justification::centred);
+  l->setDescription("Global parameters");
+  l->setDescriptionField(infoField);
+
+  addWidget( masterLevelSlider = s = new Sld );
+  s->assignParameter( aciDevilModuleToEdit->getParameterByName("MasterLevel") );
+  s->setSliderName("Level");
+  s->setDescription("Master level in decibels");
+  s->setStringConversionFunction(decibelsToStringWithUnit1);
+  s->setDescriptionField(infoField);
 
   addWidget( accentSlider = new RSlider("AccentSlider") );
   accentSlider->assignParameter( aciDevilModuleToEdit->getParameterByName("Accent") );
