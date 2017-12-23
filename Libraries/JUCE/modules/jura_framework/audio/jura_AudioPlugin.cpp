@@ -20,9 +20,12 @@ void AudioPluginParameter::parameterChanged(Parameter* p)
 //=================================================================================================
 
 AudioPlugin::AudioPlugin(int numParameters)
+  : AudioProcessor(BusesProperties().withInput( "Input",  AudioChannelSet::stereo())
+                                    .withOutput("Output", AudioChannelSet::stereo()))
 {
   ScopedLock sl(plugInLock);
   initialiseJuce_GUI();  // why do we need this?
+  //configureInsAndOuts();
   smoothingManager.setMutexLock(&plugInLock);
   createHostAutomatableParameters(numParameters);
   metaParaManager.registerObserver(this);
@@ -38,6 +41,12 @@ AudioPlugin::~AudioPlugin()
     wrappedAudioModule = nullptr;
   }
 }
+
+//void AudioPlugin::configureInsAndOuts()
+//{
+//  AudioProcessor::BusesLayout layout;
+//  setBusesLayout(layout);
+//}
 
 void AudioPlugin::setAudioModuleToWrap(AudioModule* moduleToWrap)
 {
@@ -196,6 +205,16 @@ void AudioPlugin::setStateInformation(const void* data, int sizeInBytes)
 }
 
 // optional overrides for juce::AudioProcessor:
+
+bool AudioPlugin::isBusesLayoutSupported(const BusesLayout& layout) const
+{
+  bool r = true;  // result
+  int numIns  = layout.getNumChannels(true,  0);
+  int numOuts = layout.getNumChannels(false, 0);
+  r &= numIns  == 2;
+  r &= numOuts == 2;
+  return r;
+}
 
 void AudioPlugin::processBlock(AudioBuffer<double> &buffer, MidiBuffer &midiMessages)
 {

@@ -1,3 +1,9 @@
+fix the number of I/O channels - see here:
+https://forum.juce.com/search?q=number%20of%20channels%20category%3A11
+https://forum.juce.com/t/plugin-with-fixed-number-of-output-channels-but-non-fixed-nb-of-buses/21321
+https://forum.juce.com/t/4-1-default-channel-configuration-problems/16877
+
+
 ToolChain
 -let the "Setup" have tabs for 
  -GUI (colors, etc.)
@@ -9,6 +15,9 @@ ToolChain
 
 Make ToolChain ready for release:
 -check why plugin becomes unresponsive in VSTHost when switching to a module with smaller gui
+ (happens only when input is connected - probably a mutex-lock thing?)
+ -very high cpu load, even when all slots are empty (even when audio is disconnected)
+-in Reaper, ToolChain appears as 64 channel plugin (also in VSTHost)
 -don't write Slot1-Straightliner, etc. just Straightliner
 -AcidDevil
  -fix gui ugliness
@@ -18,11 +27,11 @@ Make ToolChain ready for release:
  -check initial gain
 -Straightliner:
 
-
-Fix preset path problems for mac
+on mac, the color-gradients are wrong (maybe the rgba-channels are confused)
 
 Upgrade to juce 5.2.5
 -figure out how we can avoid removing the "final" declaration from juce::Image
+-
 
 -rename:
  -BreakpointModulator: MultiStageEnvelopeGenerator (MSEG), short: MultiSegment - or MultiStage, MSEG

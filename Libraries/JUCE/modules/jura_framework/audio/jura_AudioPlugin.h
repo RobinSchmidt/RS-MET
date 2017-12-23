@@ -59,6 +59,8 @@ public:
   //-----------------------------------------------------------------------------------------------
   // setup:
 
+  //void configureInsAndOuts();
+
   void setPluginName(const String& newName) { plugInName = newName; }
 
   /** Sets the jura::AudioModule object that is wrapped into an AudioPlugin. */
@@ -117,9 +119,10 @@ public:
 
   virtual bool supportsDoublePrecisionProcessing() const override { return true; }
   virtual void processBlock(AudioBuffer<double>& buffer, MidiBuffer& midiMessages) override;
+  virtual bool isBusesLayoutSupported(const BusesLayout&) const override;
   //virtual bool setPreferredBusArrangement(bool isInput, int bus,
   //  const AudioChannelSet& preferredSet) override;
-  virtual int getBusCount(bool isInput)	const { return 2; } // preliminary
+  //virtual int getBusCount(bool isInput)	const { return 2; } // preliminary
   //virtual String getParameterName(int parameterIndex, int maximumStringLength) override;
 
   //-----------------------------------------------------------------------------------------------
