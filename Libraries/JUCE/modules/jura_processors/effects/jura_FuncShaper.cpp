@@ -322,18 +322,18 @@ void FuncShaperModuleEditor::textChanged(RTextEntryField *rTextEntryFieldThatHas
 void FuncShaperModuleEditor::createWidgets()
 {
   typedef AutomatableSlider Sld;
-  typedef AutomatableComboBox Box;
+  //typedef AutomatableComboBox Box;
   //typedef AutomatableButton Btn;
   typedef RTextField Lbl;
   Sld* s;
-  Box* c;
+  //Box* c;
   //Btn* b;
   Lbl* l;
 
 
-  addWidget( formulaLabel = new RTextField(juce::String("Formula:")) );
-  formulaLabel->setDescription("Expression for waveshaping transfer function");
-  formulaLabel->setDescriptionField(infoField);
+  addWidget( formulaLabel = l = new Lbl("Formula:") );
+  l->setDescription("Expression for waveshaping transfer function");
+  l->setDescriptionField(infoField);
 
   addWidget( formulaField = new RTextEntryField( juce::String("tanh(a*x);")) );
   formulaField->registerTextEntryFieldObserver(this);
@@ -350,12 +350,12 @@ void FuncShaperModuleEditor::createWidgets()
   aMaxField->setDescription("Maximum value for a-parameter");
   aMaxField->setDescriptionField(infoField);
 
-  addWidget( aSlider = new RSlider("aSlider") );
-  aSlider->assignParameter(funcShaperAudioModule->getParameterByName("a"));
-  aSlider->setSliderName(juce::String("a = "));
-  aSlider->setDescription(juce::String("Value of a-parameter in the formula"));
-  aSlider->setDescriptionField(infoField);
-  aSlider->setStringConversionFunction(&valueToString3);
+  addWidget( aSlider = s = new Sld );
+  s->assignParameter(funcShaperAudioModule->getParameterByName("a"));
+  s->setSliderName(juce::String("a = "));
+  s->setDescription(juce::String("Value of a-parameter in the formula"));
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString3);
 
   addWidget( bMinField = new RTextEntryField( juce::String("0.0")) );
   bMinField->assignParameter(funcShaperAudioModule->getParameterByName("bMin"));
@@ -367,12 +367,12 @@ void FuncShaperModuleEditor::createWidgets()
   bMaxField->setDescription("Maximum value for b-parameter");
   bMaxField->setDescriptionField(infoField);
 
-  addWidget( bSlider = new RSlider("bSlider") );
-  bSlider->assignParameter(funcShaperAudioModule->getParameterByName("b"));
-  bSlider->setSliderName(juce::String("b = "));
-  bSlider->setDescription(juce::String("Value of b-parameter in the formula"));
-  bSlider->setDescriptionField(infoField);
-  bSlider->setStringConversionFunction(&valueToString3);
+  addWidget( bSlider = s = new Sld );
+  s->assignParameter(funcShaperAudioModule->getParameterByName("b"));
+  s->setSliderName(juce::String("b = "));
+  s->setDescription(juce::String("Value of b-parameter in the formula"));
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString3);
 
   addWidget( cMinField = new RTextEntryField( juce::String("0.0")) );
   cMinField->assignParameter(funcShaperAudioModule->getParameterByName("cMin"));
@@ -384,12 +384,12 @@ void FuncShaperModuleEditor::createWidgets()
   cMaxField->setDescription("Maximum value for c-parameter");
   cMaxField->setDescriptionField(infoField);
 
-  addWidget( cSlider = new RSlider("cSlider") );
-  cSlider->assignParameter(funcShaperAudioModule->getParameterByName("c"));
-  cSlider->setSliderName(juce::String("c = "));
-  cSlider->setDescription(juce::String("Value of c-parameter in the formula"));
-  cSlider->setDescriptionField(infoField);
-  cSlider->setStringConversionFunction(&valueToString3);
+  addWidget( cSlider = s = new Sld );
+  s->assignParameter(funcShaperAudioModule->getParameterByName("c"));
+  s->setSliderName(juce::String("c = "));
+  s->setDescription(juce::String("Value of c-parameter in the formula"));
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString3);
 
   addWidget( dMinField = new RTextEntryField( juce::String("0.0")) );
   dMinField->assignParameter(funcShaperAudioModule->getParameterByName("dMin"));
@@ -401,12 +401,12 @@ void FuncShaperModuleEditor::createWidgets()
   dMaxField->setDescription("Maximum value for d-parameter");
   dMaxField->setDescriptionField(infoField);
 
-  addWidget( dSlider = new RSlider("dSlider") );
-  dSlider->assignParameter(funcShaperAudioModule->getParameterByName("d"));
-  dSlider->setSliderName(juce::String("d = "));
-  dSlider->setDescription(juce::String("Value of d-parameter in the formula"));
-  dSlider->setDescriptionField(infoField);
-  dSlider->setStringConversionFunction(&valueToString3);
+  addWidget( dSlider = s = new Sld );
+  s->assignParameter(funcShaperAudioModule->getParameterByName("d"));
+  s->setSliderName(juce::String("d = "));
+  s->setDescription(juce::String("Value of d-parameter in the formula"));
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString3);
 
   addWidget( inputLabel = new RTextField(juce::String("Input Signal")) );
   inputLabel->setDescription("Waveshaper input signal manipulations");
@@ -418,52 +418,51 @@ void FuncShaperModuleEditor::createWidgets()
   preFilterButton->setDescriptionField(infoField);
   preFilterButton->setClickingTogglesState(true);
 
-  addWidget( inHighpassSlider = new RSlider ("InHighpassSlider") );
-  inHighpassSlider->setRange(20.0, 20000.0, 0.001, 20.0);
-  inHighpassSlider->setScaling(Parameter::EXPONENTIAL);
-  inHighpassSlider->assignParameter(funcShaperAudioModule->getParameterByName("InputHighpass") );
-  inHighpassSlider->setSliderName(juce::String("HPF"));
-  inHighpassSlider->setDescription(juce::String("Highpass cutoff for input signal"));
-  inHighpassSlider->setDescriptionField(infoField);
-  inHighpassSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
+  addWidget( inHighpassSlider = s = new Sld );
+  s->setRange(20.0, 20000.0, 0.001, 20.0);
+  s->setScaling(Parameter::EXPONENTIAL);
+  s->assignParameter(funcShaperAudioModule->getParameterByName("InputHighpass") );
+  s->setSliderName(juce::String("HPF"));
+  s->setDescription(juce::String("Highpass cutoff for input signal"));
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
-  addWidget( inLowpassSlider = new RSlider("InLowpassSlider") );
-  inLowpassSlider->setRange(20.0, 20000.0, 0.001, 20000.0);
-  inLowpassSlider->setScaling(Parameter::EXPONENTIAL);
-  inLowpassSlider->assignParameter(
-    funcShaperAudioModule->getParameterByName("InputLowpass") );
-  inLowpassSlider->setSliderName(juce::String("LPF"));
-  inLowpassSlider->setDescription(juce::String("Lowpass cutoff for input signal"));
-  inLowpassSlider->setDescriptionField(infoField);
-  inLowpassSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
+  addWidget( inLowpassSlider = s = new Sld );
+  s->setRange(20.0, 20000.0, 0.001, 20000.0);
+  s->setScaling(Parameter::EXPONENTIAL);
+  s->assignParameter(funcShaperAudioModule->getParameterByName("InputLowpass") );
+  s->setSliderName(juce::String("LPF"));
+  s->setDescription(juce::String("Lowpass cutoff for input signal"));
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
-  //addWidget( driveSlider = new RSlider("DriveSlider") );
-  addWidget( driveSlider = new ModulatableSlider );
-  driveSlider->setRange(-48.0, 48.0, 0.01, 0.0);
-  driveSlider->assignParameter(funcShaperAudioModule->getParameterByName("Drive") );
-  driveSlider->setSliderName(juce::String("Drive"));
-  driveSlider->setDescription(juce::String("Gain at the waveshaper's input"));
-  driveSlider->setDescriptionField(infoField);
-  driveSlider->setStringConversionFunction(&decibelsToStringWithUnit2);
+  addWidget( driveSlider = s = new Sld );
+  //addWidget( driveSlider = s = new ModulatableSlider );
+  s->setRange(-48.0, 48.0, 0.01, 0.0);
+  s->assignParameter(funcShaperAudioModule->getParameterByName("Drive") );
+  s->setSliderName(juce::String("Drive"));
+  s->setDescription(juce::String("Gain at the waveshaper's input"));
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&decibelsToStringWithUnit2);
 
-  //addWidget( dcSlider = new RSlider("DCSlider") );
-  addWidget( dcSlider = new ModulatableSlider );
-  dcSlider->setRange(-1.0, 1.0, 0.001, 0.0);
-  dcSlider->assignParameter(funcShaperAudioModule->getParameterByName("DC") );
-  dcSlider->setSliderName(juce::String("DC"));
-  dcSlider->setDescription(juce::String("DC offset at the waveshaper's input (post \"Drive\")"));
-  dcSlider->setDescriptionField(infoField);
-  dcSlider->setStringConversionFunction(&valueToString3);
+  addWidget( dcSlider = s = new Sld );
+  //addWidget( dcSlider = s = new ModulatableSlider );
+  s->setRange(-1.0, 1.0, 0.001, 0.0);
+  s->assignParameter(funcShaperAudioModule->getParameterByName("DC") );
+  s->setSliderName(juce::String("DC"));
+  s->setDescription(juce::String("DC offset at the waveshaper's input (post \"Drive\")"));
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString3);
 
-  addWidget( oversamplingSlider = new RSlider("oversamplingSlider") );
-  oversamplingSlider->setRange(1.0, 16.0, 1.0, 4.0);
-  oversamplingSlider->assignParameter(funcShaperAudioModule->getParameterByName("Oversampling") );
-  oversamplingSlider->setSliderName(juce::String("Oversampling"));
-  oversamplingSlider->setDescription(juce::String("Oversampling factor for internal processing"));
-  oversamplingSlider->setDescriptionField(infoField);
-  oversamplingSlider->setStringConversionFunction(&valueToString0);
+  addWidget( oversamplingSlider = s = new Sld );
+  s->setRange(1.0, 16.0, 1.0, 4.0);
+  s->assignParameter(funcShaperAudioModule->getParameterByName("Oversampling") );
+  s->setSliderName(juce::String("Oversampling"));
+  s->setDescription(juce::String("Oversampling factor for internal processing"));
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToString0);
 
-  addWidget( outputLabel = new RTextField(juce::String("Output Signal")) );
+  addWidget( outputLabel = new Lbl(juce::String("Output Signal")) );
   outputLabel->setDescription("Waveshaper output signal manipulations");
   outputLabel->setDescriptionField(infoField);
 
@@ -473,41 +472,39 @@ void FuncShaperModuleEditor::createWidgets()
   postFilterButton->setDescriptionField(infoField);
   postFilterButton->setClickingTogglesState(true);
 
-  addWidget( outHighpassSlider = new RSlider("OutHighpassSlider") );
-  outHighpassSlider->setRange(20.0, 20000.0, 0.001, 20.0);
-  outHighpassSlider->setScaling(Parameter::EXPONENTIAL);
-  outHighpassSlider->assignParameter(
-    funcShaperAudioModule->getParameterByName("OutputHighpass") );
-  outHighpassSlider->setSliderName(juce::String("HPF"));
-  outHighpassSlider->setDescription(juce::String("Highpass cutoff for output signal"));
-  outHighpassSlider->setDescriptionField(infoField);
-  outHighpassSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
+  addWidget( outHighpassSlider = s = new Sld );
+  s->setRange(20.0, 20000.0, 0.001, 20.0);
+  s->setScaling(Parameter::EXPONENTIAL);
+  s->assignParameter( funcShaperAudioModule->getParameterByName("OutputHighpass") );
+  s->setSliderName(juce::String("HPF"));
+  s->setDescription(juce::String("Highpass cutoff for output signal"));
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
-  addWidget( outLowpassSlider = new RSlider("OutLowpassSlider") );
-  outLowpassSlider->setRange(20.0, 20000.0, 0.001, 20000.0);
-  outLowpassSlider->setScaling(Parameter::EXPONENTIAL);
-  outLowpassSlider->assignParameter(
-    funcShaperAudioModule->getParameterByName("OutputLowpass") );
-  outLowpassSlider->setSliderName(juce::String("LPF"));
-  outLowpassSlider->setDescription(juce::String("Lowpass cutoff for output signal"));
-  outLowpassSlider->setDescriptionField(infoField);
-  outLowpassSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
+  addWidget( outLowpassSlider = s = new Sld );
+  s->setRange(20.0, 20000.0, 0.001, 20000.0);
+  s->setScaling(Parameter::EXPONENTIAL);
+  s->assignParameter( funcShaperAudioModule->getParameterByName("OutputLowpass") );
+  s->setSliderName(juce::String("LPF"));
+  s->setDescription(juce::String("Lowpass cutoff for output signal"));
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
-  addWidget( outVolumeSlider = new RSlider("OutVolumeSlider") );
-  outVolumeSlider->setRange(-24.0, 24.0, 0.01, 0.0);
-  outVolumeSlider->assignParameter(funcShaperAudioModule->getParameterByName("OutLevel") );
-  outVolumeSlider->setSliderName(juce::String("Volume"));
-  outVolumeSlider->setDescription(juce::String("Gain at the waveshaper's output"));
-  outVolumeSlider->setDescriptionField(infoField);
-  outVolumeSlider->setStringConversionFunction(&decibelsToStringWithUnit2);
+  addWidget( outVolumeSlider = s = new Sld );
+  s->setRange(-24.0, 24.0, 0.01, 0.0);
+  s->assignParameter(funcShaperAudioModule->getParameterByName("OutLevel") );
+  s->setSliderName(juce::String("Volume"));
+  s->setDescription(juce::String("Gain at the waveshaper's output"));
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&decibelsToStringWithUnit2);
 
-  addWidget( dryWetSlider = new RSlider("DryWetSlider") );
-  dryWetSlider->setRange(0.0, 100.0, 0.01, 100.0);
-  dryWetSlider->assignParameter(funcShaperAudioModule->getParameterByName("DryWet") );
-  dryWetSlider->setSliderName(juce::String("Dry/Wet"));
-  dryWetSlider->setDescription(juce::String("Mix between clean and distorted signal"));
-  dryWetSlider->setDescriptionField(infoField);
-  dryWetSlider->setStringConversionFunction(&percentToStringWithUnit1);
+  addWidget( dryWetSlider = s = new Sld );
+  s->setRange(0.0, 100.0, 0.01, 100.0);
+  s->assignParameter(funcShaperAudioModule->getParameterByName("DryWet") );
+  s->setSliderName(juce::String("Dry/Wet"));
+  s->setDescription(juce::String("Mix between clean and distorted signal"));
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&percentToStringWithUnit1);
 
   // initialize the plot:
   shaperPlot = new CurveFamilyPlotOld();
