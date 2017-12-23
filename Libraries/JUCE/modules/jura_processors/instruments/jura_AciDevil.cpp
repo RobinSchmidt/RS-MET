@@ -198,7 +198,7 @@ void AciDevilModuleEditor::createWidgets()
   s->setStringConversionFunction(millisecondsToStringWithUnit2);
   s->setDescriptionField(infoField);
 
-  addWidget( oscLabel = new RTextField( juce::String("Oscillator")) );
+  addWidget( oscLabel = new Lbl( juce::String("Oscillator")) );
   oscLabel->setJustification(Justification::centred);
   oscLabel->setDescription("Oscillator parameters");
   oscLabel->setDescriptionField(infoField);
@@ -212,7 +212,7 @@ void AciDevilModuleEditor::createWidgets()
 
   // pulse-width...
 
-  addWidget( subOscLabel = new RTextField( juce::String("SubOsc:")) );
+  addWidget( subOscLabel = new Lbl("SubOsc:") );
   subOscLabel->setJustification(Justification::centredLeft);
   subOscLabel->setDescription("Sub-oscillator settings");
   subOscLabel->setDescriptionField(infoField);
@@ -232,7 +232,7 @@ void AciDevilModuleEditor::createWidgets()
   s->setDescriptionField(infoField);
 
 
-  addWidget( filterLabel = new RTextField( juce::String("Filter")) );
+  addWidget( filterLabel = new Lbl("Filter") );
   filterLabel->setJustification(Justification::centred);
   filterLabel->setDescription("Filter");
   filterLabel->setDescriptionField(infoField);
@@ -249,7 +249,7 @@ void AciDevilModuleEditor::createWidgets()
   s->setStringConversionFunction(percentToStringWithUnit1);
   s->setDescriptionField(infoField);
 
-  addWidget( filterModeLabel = new RTextField( juce::String("Mode:")) );
+  addWidget( filterModeLabel = new Lbl("Mode:") );
   filterModeLabel->setJustification(Justification::centredLeft);
   filterModeLabel->setDescription("Choose the filter mode");
   filterModeLabel->setDescription("Mode:");
@@ -267,12 +267,12 @@ void AciDevilModuleEditor::createWidgets()
   s->setDescriptionField(infoField);
 
 
-  addWidget( filterEnvLabel = new RTextField( juce::String("Filter Envelope")) );
+  addWidget( filterEnvLabel = new Lbl("Filter Envelope") );
   filterEnvLabel->setJustification(Justification::centred);
   filterEnvLabel->setDescription("Filter envelope parameters");
   filterEnvLabel->setDescriptionField(infoField);
 
-  addWidget( normalLabel = new RTextField( juce::String("Normal:")) );
+  addWidget( normalLabel = new Lbl("Normal:") );
   normalLabel->setJustification(Justification::centredLeft);
   normalLabel->setDescription("Time values for normal (un-accented) notes");
   normalLabel->setDescriptionField(infoField);
@@ -292,7 +292,7 @@ void AciDevilModuleEditor::createWidgets()
   s->setDescriptionField(infoField);
 
 
-  addWidget( accentLabel = new RTextField( juce::String("Accent:")) );
+  addWidget( accentLabel = new Lbl("Accent:") );
   accentLabel->setJustification(Justification::centredLeft);
   accentLabel->setDescription("Time values for accented notes");
   accentLabel->setDescriptionField(infoField);
@@ -311,7 +311,7 @@ void AciDevilModuleEditor::createWidgets()
   s->setStringConversionFunction(millisecondsToStringWithUnit2);
   s->setDescriptionField(infoField);
 
-  addWidget( ampLabel = new RTextField( juce::String("Amplifier")) );
+  addWidget( ampLabel = new Lbl("Amplifier") );
   ampLabel->setJustification(Justification::centred);
   ampLabel->setDescription("Amplide envelope and distortion parameters");
   ampLabel->setDescriptionField(infoField);
