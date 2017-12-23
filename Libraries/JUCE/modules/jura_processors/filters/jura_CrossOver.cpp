@@ -677,10 +677,7 @@ CrossOverModuleEditor::CrossOverModuleEditor(CriticalSection *newPlugInLock, Cro
 {
   ScopedLock scopedLock(*lock);
 
-  // set the plugIn-headline:
-  setHeadlineText( juce::String("CrossOver") );
-
-  isTopLevelEditor = true;  // ?
+  //isTopLevelEditor = true;  // ?
 
   // assign the pointer to the rosic::CrossOver object to be used as aduio engine:
   jassert(newCrossOverAudioModule != NULL ); // you must pass a valid module here

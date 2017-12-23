@@ -42,7 +42,6 @@ QuadrigaModuleEditor::QuadrigaModuleEditor(CriticalSection *newPlugInLock,
   : PolyphonicInstrumentEditor(newPlugInLock, newQuadrigaAudioModule)
 {
   setHeadlineStyle(MAIN_HEADLINE);
-  setHeadlineText( juce::String(("Quadriga")) );
 
   setHeadlinePosition(AudioModuleEditor::TOP_LEFT);
   setPresetSectionPosition(AudioModuleEditor::BELOW_HEADLINE);

@@ -258,9 +258,6 @@ FuncShaperModuleEditor::FuncShaperModuleEditor(CriticalSection *newPlugInLock,
   FuncShaperAudioModule* newFuncShaperAudioModule)
   : AudioModuleEditor(newFuncShaperAudioModule)
 {
-  // set the plugIn-headline:
-  setHeadlineText( juce::String("FuncShaper") );
-
   // assign the pointer to the rosic::FuncShaper object to be used as aduio engine:
   jassert(newFuncShaperAudioModule != NULL ); // you must pass a valid module here
   funcShaperAudioModule = newFuncShaperAudioModule;

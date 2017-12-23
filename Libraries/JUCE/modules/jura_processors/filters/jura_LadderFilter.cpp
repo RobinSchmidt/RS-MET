@@ -486,9 +486,6 @@ LadderEditor::LadderEditor(jura::Ladder *newLadderToEdit) : AudioModuleEditor(ne
   // maybe we should avoid this lock here and instead have a function that connects the widgets 
   // with the parameters where we acquire the lock - but maybe not
 
-  // set the plugIn-headline:
-  setHeadlineText("Ladder");
-
   // assign the pointer to the edited object:
   jassert(newLadderToEdit != nullptr ); // you must pass a valid module here
   ladderToEdit = newLadderToEdit;

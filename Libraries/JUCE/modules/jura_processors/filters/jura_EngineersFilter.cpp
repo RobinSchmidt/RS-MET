@@ -396,7 +396,6 @@ EngineersFilterModuleEditor::EngineersFilterModuleEditor(CriticalSection *newPlu
   EngineersFilterAudioModule* newEngineersFilterAudioModule) 
   : AudioModuleEditor(newEngineersFilterAudioModule)
 {
-  setHeadlineText("EngineersFilter");
   jassert(newEngineersFilterAudioModule != nullptr ); // you must pass a valid module here
   sciFilterModuleToEdit = newEngineersFilterAudioModule;
   createWidgets();

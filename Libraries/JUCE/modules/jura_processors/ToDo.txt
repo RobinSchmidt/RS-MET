@@ -11,15 +11,12 @@ ToolChain
 Make ToolChain ready for release:
 -check why plugin becomes unresponsive in VSTHost when switching to a module with smaller gui
  (happens only when input is connected - probably a mutex-lock thing?)
- -very high cpu load, even when all slots are empty (even when audio is disconnected)
--in Reaper, ToolChain appears as 64 channel plugin (also in VSTHost)
 -don't write Slot1-Straightliner, etc. just Straightliner
+ or: write slot number for FuncShaper, Eq, EngFlt, MidiMon
 -AcidDevil
  -fix gui ugliness
 -FuncShaper 
  -fix gui problems (try resizing)
--EngineersFilter:
- -check initial gain
 -Straightliner:
 
 on mac, the color-gradients are wrong (maybe the rgba-channels are confused)

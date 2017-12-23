@@ -145,9 +145,6 @@ void MidiMonitorAudioModule::initializeAutomatableParameters()
 MidiMonitorModuleEditor::MidiMonitorModuleEditor(CriticalSection *newPlugInLock, MidiMonitorAudioModule* newMidiMonitorAudioModule) 
   : AudioModuleEditor(newMidiMonitorAudioModule)
 {
-  // set the plugIn-headline:
-  setHeadlineText( juce::String(("MidiMonitor")) );
-
   // assign the pointer to the rosic::MidiMonitor object to be used as aduio engine:
   jassert(newMidiMonitorAudioModule != NULL ); // you must pass a valid module here
   midiMonitorModuleToEdit = newMidiMonitorAudioModule;

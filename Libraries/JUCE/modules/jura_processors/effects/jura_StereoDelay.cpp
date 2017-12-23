@@ -236,9 +236,6 @@ void StereoDelayAudioModule::initializeAutomatableParameters()
 StereoDelayModuleEditor::StereoDelayModuleEditor(CriticalSection *newPlugInLock, StereoDelayAudioModule* newStereoDelayAudioModule)
   : AudioModuleEditor(newStereoDelayAudioModule)
 {
-  // set the plugIn-headline:
-  setHeadlineText( juce::String(("Stereo Delay")) );
-
   // assign the pointer to the rosic::StereoDelay object to be used as aduio engine:
   jassert(newStereoDelayAudioModule != NULL ); // you must pass a valid module here
   stereoDelayAudioModule = newStereoDelayAudioModule;

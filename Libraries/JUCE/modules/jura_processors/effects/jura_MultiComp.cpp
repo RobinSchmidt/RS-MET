@@ -100,7 +100,7 @@ MultiCompModuleEditor::MultiCompModuleEditor(MultiCompAudioModule* multiCompModu
 {
   ScopedLock scopedLock(*lock);
   multiCompModule = multiCompModuleToEdit;
-  setHeadlineText("MultiComp");
+  //setHeadlineText("MultiComp");
   createWidgets();
   updateWidgetVisibility();
   setSize(400, 100);

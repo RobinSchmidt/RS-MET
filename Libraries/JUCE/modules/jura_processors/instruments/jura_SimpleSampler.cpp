@@ -53,9 +53,6 @@ SimpleSamplerModuleEditor::SimpleSamplerModuleEditor(CriticalSection *newPlugInL
   SimpleSamplerAudioModule* newSimpleSamplerAudioModule) 
   : PolyphonicInstrumentEditor(newPlugInLock, newSimpleSamplerAudioModule)
 {
-  // set the plugIn-headline:
-  setHeadlineText( juce::String("Simple Sampler") );
-
   // assign the pointer to the rosic::SimpleSampler object to be used as aduio engine:
   jassert(newSimpleSamplerAudioModule != NULL ); // you must pass a valid module here
   simpleSamplerAudioModule = newSimpleSamplerAudioModule;

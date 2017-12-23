@@ -192,9 +192,6 @@ PitchShifterModuleEditor::PitchShifterModuleEditor(CriticalSection *newPlugInLoc
   // maybe we should avoid this lock here and instead have a function that connects the widgets with the parameters where we acquire
   // the lock - but maybe not
 
-  // set the plugIn-headline:
-  setHeadlineText( juce::String("PitchShifter") );
-
   // assign the pointer to the rosic::PitchShifter object to be used as aduio engine:
   jassert(newPitchShifterAudioModule != NULL ); // you must pass a valid module here
   pitchShifterModuleToEdit = newPitchShifterAudioModule;

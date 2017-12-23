@@ -71,7 +71,6 @@ WorkhorseModuleEditor::WorkhorseModuleEditor(CriticalSection *newPlugInLock,
   : PolyphonicInstrumentEditor(newPlugInLock, newWorkhorseAudioModule)
 {
   setHeadlineStyle(MAIN_HEADLINE);
-  setHeadlineText( juce::String(("Workhorse")) );
 
   // assign the pointer to the rosic::Workhorse object to be used as aduio engine:
   jassert(newWorkhorseAudioModule != NULL ); // you must pass a valid module here

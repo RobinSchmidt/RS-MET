@@ -380,7 +380,6 @@ MagicCarpetModuleEditor::MagicCarpetModuleEditor(CriticalSection *newPlugInLock,
   : PolyphonicInstrumentEditor(newPlugInLock, newMagicCarpetAudioModule)
 {
   setHeadlineStyle(MAIN_HEADLINE);
-  setHeadlineText( juce::String(("Magic Carpet")) );
 
   setHeadlinePosition(AudioModuleEditor::TOP_LEFT);
   setPresetSectionPosition(AudioModuleEditor::BELOW_HEADLINE);

@@ -1162,9 +1162,6 @@ EqualizerModuleEditor::EqualizerModuleEditor(CriticalSection *newPlugInLock,
   EqualizerAudioModule* newEqualizerAudioModule)
   : AudioModuleEditor(newEqualizerAudioModule)
 {
-  // set the plugIn-headline:
-  setHeadlineText( juce::String("Equalizer") );
-
   // assign the pointer to the rosic::Equalizer object to be used as aduio engine:
   //jassert(newEqualizerAudioModule != NULL ); // you must pass a valid module here
   //equalizerModuleToEdit = newEqualizerAudioModule; // the pointer is now only present in the plot

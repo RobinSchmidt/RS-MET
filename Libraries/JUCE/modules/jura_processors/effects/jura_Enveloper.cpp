@@ -14,7 +14,6 @@ AudioModuleEditor* Enveloper::createEditor()
   jura::BreakpointModulatorEditor* editor = new jura::BreakpointModulatorEditor(lock, envGenWrapper);
 
   //editor->setLayout(1);
-  editor->setHeadlineText("Enveloper");
   editor->setSize(500, 260);
   return editor;
   // somehow, the widgets below the plot are messed up ..or, there is something in the background

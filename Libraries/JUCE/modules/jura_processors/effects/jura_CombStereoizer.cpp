@@ -114,8 +114,6 @@ CombStereoizerModuleEditor::CombStereoizerModuleEditor(CriticalSection *newPlugI
   CombStereoizerAudioModule* newCombStereoizerAudioModule)
   : AudioModuleEditor(newCombStereoizerAudioModule)
 {
-  // set the plugIn-headline:
-  setHeadlineText( juce::String("CombStereoizer") );
 
   // assign the pointer to the rosic::CombStereoizer object to be used as aduio engine:
   jassert(stereoizerAudioModule != NULL ); // you must pass a valid module here

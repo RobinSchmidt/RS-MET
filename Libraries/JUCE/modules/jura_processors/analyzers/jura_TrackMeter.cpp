@@ -79,7 +79,7 @@ TrackMeterModuleEditor::TrackMeterModuleEditor(CriticalSection *newPlugInLock,
   TrackMeterAudioModule* newTrackMeterAudioModule) : AudioModuleEditor(newTrackMeterAudioModule)
 {
   // set the plugIn-headline:
-  setHeadlineText( juce::String(("TrackMeter")) );
+  //setHeadlineText( juce::String(("TrackMeter")) );
 
   // assign the pointer to the rosic::TrackMeter object to be used as aduio engine:
   jassert(newTrackMeterAudioModule != NULL ); // you must pass a valid module here

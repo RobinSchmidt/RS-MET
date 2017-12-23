@@ -120,9 +120,6 @@ AlgoVerbModuleEditor::AlgoVerbModuleEditor(CriticalSection *newPlugInLock,
   AlgoVerbAudioModule* newAlgoVerbAudioModule) 
   : AudioModuleEditor(newAlgoVerbAudioModule)
 {
-  // set the plugIn-headline:
-  setHeadlineText( juce::String("AlgoVerb") );
-
   // assign the pointer to the rosic::AlgoVerb object to be used as aduio engine:
   jassert(newAlgoVerbAudioModule != NULL ); // you must pass a valid module here
   algoVerbModuleToEdit = newAlgoVerbAudioModule;
