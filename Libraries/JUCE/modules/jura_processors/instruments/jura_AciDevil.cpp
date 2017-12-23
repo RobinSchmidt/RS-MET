@@ -6,13 +6,7 @@ AciDevilAudioModule::AciDevilAudioModule(CriticalSection *newPlugInLock,
 {
   jassert(aciDevilToWrap != NULL); // you must pass a valid rosic-object to the constructor
   wrappedAciDevil = aciDevilToWrap;
-
-  // factor out common code of both construtors into init function:
-  setModuleTypeName("AcidDevil");
-  initializeAutomatableParameters();
-  sequencerModule = new AcidSequencerAudioModule(lock, &wrappedAciDevil->sequencer);
-  sequencerModule->setModuleName(juce::String("Sequencer"));
-  addChildAudioModule(sequencerModule);
+  init();
 }
 
 AciDevilAudioModule::AciDevilAudioModule(CriticalSection *newPlugInLock) 
@@ -20,10 +14,13 @@ AciDevilAudioModule::AciDevilAudioModule(CriticalSection *newPlugInLock)
 {
   wrappedAciDevil = new rosic::AciDevil;
   wrappedAciDevilIsOwned = true;
+  init();
+}
 
-  // factor out common code of both construtors into init function:
+void AciDevilAudioModule::init()
+{
   setModuleTypeName("AcidDevil");
-  initializeAutomatableParameters();
+  createParameters();
   sequencerModule = new AcidSequencerAudioModule(lock, &wrappedAciDevil->sequencer);
   sequencerModule->setModuleName(juce::String("Sequencer"));
   addChildAudioModule(sequencerModule);
@@ -86,7 +83,7 @@ void AciDevilAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
 //-------------------------------------------------------------------------------------------------
 // internal functions:
 
-void AciDevilAudioModule::initializeAutomatableParameters()
+void AciDevilAudioModule::createParameters()
 {
   AutomatableParameter* p;
 

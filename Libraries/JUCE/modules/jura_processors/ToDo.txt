@@ -1,3 +1,16 @@
+Make ToolChain ready for release:
+-consistently use MetaControlledParameter 
+ -use callback based update of dsp objects (where possible)
+-consistently use AutomatableSlider/Button/ComboBox
+-clean up ColorMap folder, rename files
+-AcidDevil
+ -fix gui ugliness
+-FuncShaper 
+ -fix gui problems (try resizing)
+-Straightliner:
+ -load init patch when plugging in
+
+
 Fix preset path problems for mac
 
 Upgrade to juce 5.2.5
@@ -6,13 +19,7 @@ Upgrade to juce 5.2.5
 -rename:
  -BreakpointModulator: MultiStageEnvelopeGenerator (MSEG), short: MultiSegment - or MultiStage, MSEG
 
-Fix guis for:
--AcidDevil
--Straightliner
--FuncShaper (try resizing)
 
-Straightliner:
--load init patch when plugging in
 
 Bugs in the smoothing system:
  -with very long smoothing times (in the order of seconds), the slider is glitchy and when

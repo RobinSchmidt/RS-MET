@@ -20,6 +20,9 @@ public:
   /** Constructor that creates our own owned rosic::AciDevil object. */
   AciDevilAudioModule(CriticalSection *newPlugInLock);
 
+  /** Init code called form both constructors. */
+  void init();
+
   virtual ~AciDevilAudioModule();
 
   AudioModuleEditor* createEditor() override;
@@ -101,7 +104,7 @@ pass through the function call to both of them here. */
 
 protected:
 
-  void initializeAutomatableParameters();
+  void createParameters();
 
   AcidSequencerAudioModule *sequencerModule;
 

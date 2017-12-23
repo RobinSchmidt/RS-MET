@@ -134,39 +134,58 @@ protected:
 
 //=================================================================================================
 
+/** A class for convenient handling of SIMD optimizations for a vector of two double-precision
+floating point numbers. 
+
+-not yet tested
+
 // see https://msdn.microsoft.com/de-de/library/tyy88x2a(v=vs.90).aspx
 // https://msdn.microsoft.com/de-de/library/9b07190d(v=vs.90).aspx
+
+*/
 
 class rsFloat64x2 : public __m128d
 {
 
 public:
 
+  /** \name Construction/Destruction */
+
+  /** Standard constructor. Initializes both elements to zero. */
   rsFloat64x2() { *this = rsFloat64x2(_mm_setzero_pd()); }
 
+  /** Constructor to copy an existing pair of values. */
   rsFloat64x2(__m128d value) : __m128d(value) {}
 
-  rsFloat64x2(double value) { *this = _mm_load1_pd(&value); }
+  /** Constructor that initializes both elements to the given value. */
+  rsFloat64x2(double value) { *this = _mm_set1_pd(value); }
+  //rsFloat64x2(double value) { *this = _mm_load1_pd(&value); }
 
-  /** Loads two values from a 2-value array. */
+  /** Constructor that initializes the elements from a 2-value array of doubles. */
   rsFloat64x2(double* values) { *this = _mm_load_pd(values); }
 
-  /** Loads two values from two doubles. */
-  rsFloat64x2(double a, double b) 
-  { 
-    *this = _mm_setr_pd(a, b);
-  }
+  /** Constructor that initializes the elements from two doubles. */
+  rsFloat64x2(double a, double b) { *this = _mm_setr_pd(a, b); }
+
+
+  /** \name Setup */
 
   /** Sets both elements to a. */
   inline void set(double a) { *this = _mm_set1_pd(a); }
     // what's the difference between _mm_set1_pd and _mm_load1_pd? ...the latter takes a pointer?
 
-  /** Sets the first elemet to a and the second element to b. */
+  /** Sets the first element to a and the second element to b. */
   inline void set(double a, double b) { *this = _mm_setr_pd(a, b); }
+
+
+  /** \name Inquiry */
 
   // extract vector elements:
   inline double get0() { double d; _mm_storel_pd(&d, *this); return d; }  // lower (index 0)
   inline double get1() { double d; _mm_storeh_pd(&d, *this); return d; }  // upper (index 1)
+
+
+  /** \name Operators */
 
   // arithmetic operators:
   inline rsFloat64x2& operator+=(const rsFloat64x2& b) { return rsFloat64x2(_mm_add_pd(*this, b)); }
@@ -174,12 +193,12 @@ public:
   inline rsFloat64x2& operator*=(const rsFloat64x2& b) { return rsFloat64x2(_mm_mul_pd(*this, b)); }
   inline rsFloat64x2& operator/=(const rsFloat64x2& b) { return rsFloat64x2(_mm_div_pd(*this, b)); }
 
-  // unary minus:
+  // unary minus (can we do better than that?):
   inline rsFloat64x2& operator-()
   { 
     rsFloat64x2 r = rsFloat64x2(_mm_setzero_pd());
     r -= *this;
-    return r;
+    return r; 
   }
 };
 

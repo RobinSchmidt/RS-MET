@@ -453,7 +453,7 @@ void AudioModule::setStateFromXml(const XmlElement& xmlState, const juce::String
 {
   ScopedLock scopedLock(*lock);
 
-  bool smoothingIsByassed = smoothingManager->isSmoothingBypassed();  
+  bool smoothingIsBypassed = smoothingManager->isSmoothingBypassed();  
   smoothingManager->setBypassSmoothing(true); 
 
   XmlElement convertedState = convertXmlStateIfNecessary(xmlState);
@@ -475,7 +475,7 @@ void AudioModule::setStateFromXml(const XmlElement& xmlState, const juce::String
 
   setStateName(stateName, markAsClean);
 
-  smoothingManager->setBypassSmoothing(smoothingIsByassed); // restore old bypassstate
+  smoothingManager->setBypassSmoothing(smoothingIsBypassed); // restore old bypass state
 }
 
 XmlElement AudioModule::convertXmlStateIfNecessary(const XmlElement& xmlState)
@@ -903,7 +903,7 @@ void AudioModuleEditor::resized()
 
 void AudioModuleEditor::openPreferencesDialog()
 {
-  if( setupDialog == NULL )
+  if( setupDialog == nullptr )
   {
     addChildComponent( setupDialog = new ColourSchemeSetupDialog(this, numHueOffsets) );
     setupDialog->setDescriptionField(infoField, true);
@@ -917,11 +917,14 @@ void AudioModuleEditor::openPreferencesDialog()
 void AudioModuleEditor::loadPreferencesFromFile()
 {
   XmlElement *xmlPreferences = getXmlFromFile( getPreferencesFileName() );
-  if( xmlPreferences == NULL )
+  if( xmlPreferences == nullptr )
     return;
   XmlElement *xmlColors = xmlPreferences->getChildByName(juce::String("ColorScheme"));
-  if( xmlColors == NULL )
+  if(xmlColors == nullptr)
+  {
+    delete xmlPreferences; // new - needs test
     return;
+  }
   setColourSchemeFromXml(*xmlColors);
   delete xmlPreferences;
 }
@@ -1046,7 +1049,8 @@ void GenericAudioModuleEditor::createWidgets()
   for(int i = 0; i < moduleToEdit->getNumParameters(); i++)
   {
     p = moduleToEdit->getParameterByIndex(i);
-    juce::String name = juce::String(p->getName());
+    //juce::String name = juce::String(p->getName()); // why?
+    juce::String name = p->getName();
 
     if(p->getScaling() == Parameter::BOOLEAN)
     {

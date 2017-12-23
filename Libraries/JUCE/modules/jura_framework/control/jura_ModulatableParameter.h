@@ -171,7 +171,7 @@ public:
   /** Returns a reference to the array of available ModulationTarget objects. */
   const std::vector<ModulationTarget*>& getAvailableModulationTargets();
 
-  /** Returns a reference to the array of ModulationConnectionTarget objects. */
+  /** Returns a reference to the array of ModulationConnection objects. */
   const std::vector<ModulationConnection*>& getModulationConnections();
 
 
@@ -179,18 +179,15 @@ protected:
 
   ModulationManager* modManager = nullptr;
 
-
   static std::vector<ModulationSource*> dummySources;
   static std::vector<ModulationTarget*> dummyTargets;
   static std::vector<ModulationConnection*> dummyConnections;
   // These are empty dummy arrays to which references will be returned by 
-  // getAvailableModulationSources/Targets in case our modManager is a nullptr.  This is somehow
-  // ugly design, maybe use the "Null Object" pattern instead:
-  // https://sourcemaking.com/design_patterns/null_object)
+  // getAvailableModulationSources/Targets/getModulationConnections in case our modManager is a 
+  // nullptr.  This is somehow ugly design, maybe use the "Null Object" pattern instead:
+  // https://sourcemaking.com/design_patterns/null_object
   // somewhere, we should have a default "null" ModulationManager object lying around to which
   // our pointer is initialized
-
-
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationParticipant)
 };
@@ -225,7 +222,7 @@ public:
   juce::String getModulationSourceName() const { return modSourceName; }
 
   /** Sets a name that should be used in dropdown list when connecting a mod-source. If you don't
-  st this up, the name that was set by setModulationSourceName will be used by default. */
+  set this up, the name that was set by setModulationSourceName will be used by default. */
   void setModulationSourceDisplayName(const juce::String& newName) { displayName = newName; }
 
   /** Returns the name that should be used to identify the source in the dropdown menu on the gui.
@@ -439,7 +436,7 @@ public:
   /** Destructor. */
   virtual ~ModulationConnection(); // maybe make non-virtual
 
-  /** Sets the modulation depth for this connection. This will acually update the Parameter object 
+  /** Sets the modulation depth for this connection. This will actually update the Parameter object 
   that is associated with the depth. */
   void setDepth(double newDepth)
   {
