@@ -49,8 +49,8 @@ void EngineersFilterAudioModule::parameterChanged(Parameter* parameterThatHasCha
   double value = parameterThatHasChanged->getValue();
   switch( index )
   {
-  case 0: wrappedEngineersFilter->setMode(               roundToInt(value)     );   break;
-  case 1: wrappedEngineersFilter->setApproximationMethod(roundToInt(value) + 1 );   break;
+  //case 0: wrappedEngineersFilter->setMode(               roundToInt(value)     );   break;
+  //case 1: wrappedEngineersFilter->setApproximationMethod(roundToInt(value) + 1 );   break;
   case 2: wrappedEngineersFilter->setFrequency(          value);                    break;
   case 3: wrappedEngineersFilter->setPrototypeOrder(     roundToInt(value)     );   break;
   case 4: wrappedEngineersFilter->setBandwidth(          value);                    break;
@@ -83,6 +83,7 @@ void EngineersFilterAudioModule::createParameters()
 
   // #000:	
   p = new Param("Mode", 0.0, 7.0, 1.0, Parameter::STRING, 1.0);
+  p->setValueChangeCallback<EF>(ef, &EF::setMode);
   p->addStringValue("Bypass");
   p->addStringValue("Lowpass");
   p->addStringValue("Highpass");
@@ -95,6 +96,7 @@ void EngineersFilterAudioModule::createParameters()
 
   // #001:	
   p = new Param("Method", 0.0, 5.0, 0.0, Parameter::STRING, 1.0);
+  p->setValueChangeCallback<EF>(ef, &EF::setApproximationMethod);
   p->addStringValue("Butterworth");
   p->addStringValue("Chebychev");
   p->addStringValue("Inverse Chebychev");

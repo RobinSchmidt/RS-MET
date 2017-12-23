@@ -13,6 +13,8 @@ Make ToolChain ready for release:
  -fix gui ugliness
 -FuncShaper 
  -fix gui problems (try resizing)
+-EngineersFilter:
+ -check initial gain
 -Straightliner:
 
 

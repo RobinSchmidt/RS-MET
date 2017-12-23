@@ -49,7 +49,7 @@ public:
   /** This is an enumeration of the available approximation methods. */
   enum approximationMethods
   {
-    BUTTERWORTH = 1,   ///< maximally flat at DC
+    BUTTERWORTH = 0,   ///< maximally flat at DC
     CHEBYCHEV,         ///< equiripple in passband, monotonic in stopband
     INVERSE_CHEBYCHEV, ///< equiripple in stopband, monotonic in passband
     ELLIPTIC,          ///< equiripple in passband and stopband, maximally steep transition
