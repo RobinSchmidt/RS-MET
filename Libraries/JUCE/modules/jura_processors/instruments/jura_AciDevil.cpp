@@ -85,52 +85,52 @@ void AciDevilAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
 
 void AciDevilAudioModule::createParameters()
 {
-  typedef AutomatableParameter Param;
+  typedef MetaControlledParameter Param;
   Param* p;
 
   typedef rosic::AciDevil AD;
   AD* ad = wrappedAciDevil;
 
   // #000:
-  p = new Param(lock, "MasterLevel", -60.0, 0.0, 0.1, -12.0, Parameter::LINEAR);
+  p = new Param("MasterLevel", -60.0, 0.0, -12.0, Parameter::LINEAR, 0.1);
   p->setValueChangeCallback<AD>(ad, &AD::setMasterLevel);
   addObservedParameter(p);
 
   // #001:
-  p = new AutomatableParameter(lock, "Accent", 0.0, 100.0, 0.1, 50.0, Parameter::LINEAR);
+  p = new Param("Accent", 0.0, 100.0, 50.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
 
   // #002:
-  p = new AutomatableParameter(lock, "SlideTime", 1.0, 500.0, 0.1, 60.0, Parameter::EXPONENTIAL);
+  p = new Param("SlideTime", 1.0, 500.0, 60.0, Parameter::EXPONENTIAL, 0.1);
   addObservedParameter(p);
 
   // #003:
-  p = new AutomatableParameter(lock, "Waveform", 0.0, 1.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new Param("Waveform", 0.0, 1.0, 0.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
 
   // #004:
-  p = new AutomatableParameter(lock, "PulseWidth", 1.0, 100.0, 0.1, 45.0, Parameter::LINEAR);
+  p = new Param("PulseWidth", 1.0, 100.0, 45.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
 
 
   // #005:
-  p = new AutomatableParameter(lock, "SubOscLevel", -60.0, 0.0, 0.1, -60.0, Parameter::LINEAR);
+  p = new Param("SubOscLevel", -60.0, 0.0, -60.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
 
   // #006:
-  p = new AutomatableParameter(lock, "SubOscWaveform", 0.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
+  p = new Param("SubOscWaveform", 0.0, 1.0, 1.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
 
   // #007:
-  p = new AutomatableParameter(lock, "Cutoff", 200.0, 10000.0, 0.0, 300.0, Parameter::EXPONENTIAL, 74);
+  p = new Param("Cutoff", 200.0, 10000.0, 300.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
 
   // #008:
-  p = new AutomatableParameter(lock, "Resonance", 0.0, 100.0, 0.1, 50.0, Parameter::LINEAR, 71);
+  p = new Param("Resonance", 0.0, 100.0, 50.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
 
   // #009:
-  p = new AutomatableParameter(lock, juce::String("FilterMode"), 0.0, 14.0, 1.0, 1.0, Parameter::STRING);
+  p = new Param("FilterMode", 0.0, 14.0, 1.0, Parameter::STRING, 1.0);
   p->addStringValue("Flat");
   p->addStringValue("Lowpass 6");
   p->addStringValue("Lowpass 12");
@@ -150,49 +150,44 @@ void AciDevilAudioModule::createParameters()
   addObservedParameter(p);
 
   // #010:
-  p = new AutomatableParameter(lock, "EnvMod", 0.0, 80.0, 0.1, 12.0, Parameter::LINEAR, 81);
+  p = new Param("EnvMod", 0.0, 80.0, 12.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
 
   // #011:
-  p = new AutomatableParameter(lock, "NormalDecay", 30.0, 3000.0, 0.1, 200.0, Parameter::EXPONENTIAL);
+  p = new Param("NormalDecay", 30.0, 3000.0, 200.0, Parameter::EXPONENTIAL, 0.1);
   addObservedParameter(p);
 
   // #012:
-  p = new AutomatableParameter(lock, "AccentDecay", 30.0, 300.0, 0.1, 60.0, Parameter::EXPONENTIAL);
+  p = new Param("AccentDecay", 30.0, 300.0, 60.0, Parameter::EXPONENTIAL, 0.1);
   addObservedParameter(p);
 
   // #013:
-  p = new AutomatableParameter(lock, "NormalAttack", 3.0, 50.0, 0.1, 3.0, Parameter::EXPONENTIAL);
+  p = new Param("NormalAttack", 3.0, 50.0, 3.0, Parameter::EXPONENTIAL, 0.1);
   addObservedParameter(p);
 
   // #014:
-  p = new AutomatableParameter(lock, "AccentAttack", 3.0, 50.0, 0.1, 10.0, Parameter::EXPONENTIAL);
+  p = new Param("AccentAttack", 3.0, 50.0, 10.0, Parameter::EXPONENTIAL, 0.1);
   addObservedParameter(p);
 
   // #015:
-  p = new AutomatableParameter(lock, "UpwardFraction", 0.0, 100.0, 0.1, 66.6, Parameter::LINEAR);
+  p = new Param("UpwardFraction", 0.0, 100.0, 66.6, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
 
   // #016:
-  p = new AutomatableParameter(lock, "AmpDecay", 3.0, 3000.0, 0.1, 1230.0, Parameter::EXPONENTIAL);
+  p = new Param("AmpDecay", 3.0, 3000.0, 1230.0, Parameter::EXPONENTIAL, 0.1);
   addObservedParameter(p);
 
   // #017:
-  p = new AutomatableParameter(lock, "AmpSustain", -60.0, 0.0, 0.1, -60.0, Parameter::LINEAR);
+  p = new Param("AmpSustain", -60.0, 0.0, -60.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
 
   // #018:
-  p = new AutomatableParameter(lock, "AmpRelease", 0.3, 50.0, 0.1, 0.5, Parameter::EXPONENTIAL);
+  p = new Param("AmpRelease", 0.3, 50.0, 0.5, Parameter::EXPONENTIAL, 0.1);
   addObservedParameter(p);
 
   // #019:
-  p = new AutomatableParameter(lock, "DistortionDrive", -24.0, 60.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("DistortionDrive", -24.0, 60.0, 0.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
-
-  // make a call to parameterChanged for each parameter in order to set up the DSP-core to reflect 
-  // the values the automatable parameters:
-  for(int i=0; i < (int) parameters.size(); i++ )
-    parameterChanged(parameters[i]);
 }
 
 //=================================================================================================
