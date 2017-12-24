@@ -17,6 +17,11 @@ Make ToolChain ready for release:
  -fix gui problems (try resizing)
 -Straightliner:
  -patch loading takes long
+-Equalizer seems to have a memory leak:
+ -load stand alone
+ -plug in the eq
+ -add a band
+ -close the standalone
 
 on mac, the color-gradients are wrong (maybe the rgba-channels are confused)
 
