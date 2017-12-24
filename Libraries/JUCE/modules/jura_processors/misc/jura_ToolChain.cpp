@@ -858,11 +858,13 @@ void ToolChainEditor::updateActiveSelector()
 void ToolChainEditor::mouseDown(const MouseEvent &e)
 {
   //ScopedLock scopedLock(*lock); // blocks audio when popup is open
+  bool wasHandled = false;
   int i = chain->activeSlot;
   juce::Rectangle<int> rect = selectors[i]->getBounds();
   if(rect.contains(e.x, e.y)){
     // click was on active slot selector - pass event through:
     selectors[i]->mouseDown(e.getEventRelativeTo(selectors[i]));
+    wasHandled = true;
   }
   else{
     for(i = 0; i < size(selectors); i++){
@@ -873,9 +875,12 @@ void ToolChainEditor::mouseDown(const MouseEvent &e)
         updateActiveEditor();
         updateActiveSelector();
         repaint();
+        wasHandled = true;
       }
     }
   }
+  if(wasHandled == false)
+    AudioModuleEditor::mouseDown(e);
 }
 
 void ToolChainEditor::resized()

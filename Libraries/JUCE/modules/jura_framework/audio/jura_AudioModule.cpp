@@ -819,6 +819,7 @@ int AudioModuleEditor::getPresetSectionBottom()
 
 void AudioModuleEditor::mouseDown(const MouseEvent& e)
 {
+#if JUCE_DEBUG
   if(e.mods.isAltDown() && e.mods.isCommandDown() && screenShotsEnabled)
   {
     Image im = createComponentSnapshot(Rectangle<int>(0, 0, getWidth(), getHeight()));
@@ -832,6 +833,7 @@ void AudioModuleEditor::mouseDown(const MouseEvent& e)
     // we also need to either overwrite the file if it exists or use a variation of the filename,
     // otherwise the data just gets appended
   }
+#endif
 }
 
 void AudioModuleEditor::rDialogBoxChanged(RDialogBox* dialogBoxThatHasChanged)
