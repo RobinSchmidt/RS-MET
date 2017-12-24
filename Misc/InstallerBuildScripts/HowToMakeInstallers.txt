@@ -1,7 +1,14 @@
 Windows:
 -install Inno Setup from:
  http://www.jrsoftware.org/isdl.php#stable
-
+-create a temporary folder with a subfolder ToolChain
+-into that ToolChain subfolder, copy:
+ "ToolChain_VST2_x64.dll" (plugin)
+ "RS-MET"                 (support files)
+-copy the script file ToolChain.iss into the temp folder
+-open the script with Inno Setup and hit "Compile"
+-the installer will end up in RS-MET_-_ToolChain (subfolder of temp-folder)
+ 
 Mac:
 -install packages from:
  http://s.sudre.free.fr/Software/Packages/about.html

@@ -22,7 +22,6 @@ OutputBaseFilename={#AppName} Installer
 Compression=lzma
 SolidCompression=yes
 ArchitecturesInstallIn64BitMode=x64
-InfoBeforeFile=InstallationInstructions.txt
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -31,8 +30,8 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "custom"; Description: "Custom installation"; Flags: iscustom
 
 [Files]
-Source: "RS-MET\*"; DestDir: "{userappdata}\{#AppPublisher}"; Flags: ignoreversion recursesubdirs createallsubdirs promptifolder; Components: Presets
-Source: "{#AppName}_VST_x64.dll"; DestDir: "{code:GetVST2Dir_64}"; Flags: ignoreversion 64bit; Components: VST2_64;
+Source: "ToolChain\RS-MET\*"; DestDir: "{userappdata}\{#AppPublisher}"; Flags: ignoreversion recursesubdirs createallsubdirs promptifolder; Components: Presets
+Source: "ToolChain\{#AppName}_VST2_x64.dll"; DestDir: "{code:GetVST2Dir_64}"; Flags: ignoreversion 64bit; Components: VST2_64;
 
 [Components]
 Name: "Presets"; Description: "Check this to install Samples and Presets -> WARNING: This will overwrite all factory presets, have you saved custom presets over the factory presets?"; Types: custom; Flags: checkablealone
