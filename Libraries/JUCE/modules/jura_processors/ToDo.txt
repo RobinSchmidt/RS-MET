@@ -11,8 +11,6 @@ ToolChain
 Make ToolChain ready for release:
 -check why plugin becomes unresponsive in VSTHost when switching to a module with smaller gui
  (happens only when input is connected - probably a mutex-lock thing?)
--don't write Slot1-Straightliner, etc. just Straightliner
- or: write slot number for FuncShaper, Eq, EngFlt, MidiMon
 -AcidDevil
  -fix gui ugliness
 -FuncShaper 

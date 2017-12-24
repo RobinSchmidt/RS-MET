@@ -1,0 +1,9 @@
+Windows:
+-install Inno Setup from:
+ http://www.jrsoftware.org/isdl.php#stable
+
+Mac:
+-install packages from:
+ http://s.sudre.free.fr/Software/Packages/about.html
+
+Linux:
