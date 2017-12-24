@@ -12,5 +12,17 @@ Windows:
 Mac:
 -install packages from:
  http://s.sudre.free.fr/Software/Packages/about.html
+-create a temporary folder with a subfolder ToolChain
+-into that ToolChain subfolder, copy:
+ "ToolChain.component" (plugin)
+ "RS-MET"               (support files)
+-copy the script file ToolChain.pkgproj into the temp/ToolChain folder
+-open the script with Packages and hit "Build"
+-installer ends up in temp/ToolChain/InstallerMac
 
 Linux:
+
+
+System-Requirements:
+-Windows 7, x64 or higher
+-OSX 10.5 or higher
