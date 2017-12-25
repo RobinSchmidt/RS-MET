@@ -237,12 +237,10 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
   node->setOpen(false);
   popUpMenu->addTreeNodeItem(node);
 
-  /*
   node = new RTreeViewNode("Dynamics", -1, "Dynamics");
   //node->addChildNode(new RTreeViewNode("MultiComp",     i++));
   node->addChildNode(new RTreeViewNode("Limiter",     i++));
   popUpMenu->addTreeNodeItem(node);
-  */
 
   /*
   node = new RTreeViewNode("Modulators", -1, "Modulators");

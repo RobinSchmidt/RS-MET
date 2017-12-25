@@ -296,6 +296,10 @@ class LimiterAudioModule : public ModulatableAudioModule
 public:
   LimiterAudioModule(CriticalSection *newPlugInLock, rosic::Limiter* newLimiterToWrap = nullptr);
   virtual ~LimiterAudioModule() { if(wrappedLimiterIsOwned) delete wrappedLimiter; }
+  virtual void processStereoFrame(double *left, double *right) override 
+  { 
+    wrappedLimiter->getSampleFrameStereo(left, right); 
+  }
 protected:
   virtual void createStaticParameters();
   rosic::Limiter *wrappedLimiter;

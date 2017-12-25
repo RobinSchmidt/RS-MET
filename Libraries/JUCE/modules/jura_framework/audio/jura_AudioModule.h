@@ -267,7 +267,12 @@ public:
 
   /** This is the audio callback that your subclass needs to override. */
   //virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) = 0;
-  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) {}
+  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) 
+  {
+    if(numChannels == 2)
+      for(int n = 0; n < numSamples; n++)
+        processStereoFrame(&inOutBuffer[0][n], &inOutBuffer[1][n]);
+  }
 
   /** A function to override in case you are producing a stereo-signal and need your module to work
   with the modulation system (i.e. uses ModulatableParameters). It is supposed to produce one 
