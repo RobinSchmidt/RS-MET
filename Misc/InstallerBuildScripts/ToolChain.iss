@@ -34,7 +34,7 @@ Source: "ToolChain\RS-MET\*"; DestDir: "{userappdata}\{#AppPublisher}"; Flags: i
 Source: "ToolChain\{#AppName}_VST2_x64.dll"; DestDir: "{code:GetVST2Dir_64}"; Flags: ignoreversion 64bit; Components: VST2_64;
 
 [Components]
-Name: "Presets"; Description: "Check this to install Samples and Presets -> WARNING: This will overwrite all factory presets, have you saved custom presets over the factory presets?"; Types: custom; Flags: checkablealone
+Name: "Presets"; Description: "Data Files (Presets, Samples, etc.)"; Types: custom; Flags: checkablealone
 Name: "VST2_64"; Description: "64-bit VST2 Plugin (.dll)"; Types: custom; Flags: checkablealone
 
 [Code]

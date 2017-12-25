@@ -34,6 +34,7 @@ public:
     wrappedEngineersFilter->setSampleRate(newSampleRate);
   }
 
+  /*
   // obsolete?
   virtual void processBlockStereo(float *left, float *right, int numSamples)
   {
@@ -46,6 +47,7 @@ public:
       right[n] = (float)dR;
     }
   }
+  */
 
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
   {
