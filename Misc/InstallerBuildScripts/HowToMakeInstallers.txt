@@ -3,32 +3,51 @@ Windows:
  http://www.jrsoftware.org/isdl.php#stable
 -create a temporary folder with a subfolder ToolChain
 -into that ToolChain subfolder, copy:
- "ToolChain_VST2_x64.dll" (plugin)
+ "ToolChain_VST2_x64.dll" (plugin - rename build result, if necessary)
  "RS-MET"                 (support files)
 -copy the script file ToolChain.iss into the temp folder
 -open the script with Inno Setup and hit "Compile"
--the installer will end up in RS-MET_-_ToolChain (subfolder of temp-folder)
+-the installer will end up in InstallerWin (subfolder of temp-folder)
  
 Mac:
 -install packages from:
  http://s.sudre.free.fr/Software/Packages/about.html
-
 -create a temporary folder with a subfolder ToolChain
 -into that ToolChain subfolder, copy:
  "ToolChain.component" (plugin)
  "RS-MET"              (support files)
 -copy the script file ToolChain.pkgproj into the temp folder
-
 -open the script with Packages and hit "Build"
-
 -installer ends up in InstallerMac (subfolder of temp-folder)
 
 Linux:
 
+-------------------------------------------------------------------------------
+
+Manual Installation:
+
+Windows:
+-copy "ToolChain_VST2_x64.dll" into your 64-bit VST plugin folder, for example:
+ C:\Program Files\VstPlugins
+-copy the "RS-MET" folder into:
+ C:\Users\[UserName]\AppData\Roaming 
+
+Mac OSX:
+-copy "ToolChain.component" into:
+ Users/[UserName]/Library/Audio/Plug-Ins/Components
+-copy "RS-MET" folder into:
+ Users/[UserName]/Library
+-If you can't find these folders in "Finder" (they are hidden), click on your
+ main harddisk, choose "Go" from the menu and enter the path directly.
+
+-------------------------------------------------------------------------------
 
 System-Requirements:
 
 -Windows 7, x64 or higher
-
 -OSX 10.5 or higher
--Linux
+-Linux:
+
+see here for installation path suggestions:
+https://github.com/RobinSchmidt/RS-MET/issues/142#issuecomment-353276935
+

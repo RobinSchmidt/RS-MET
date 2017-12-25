@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define AppName "ToolChain"
-#define InstallerOutputFolder = "RS-MET_-_ToolChain"
+#define InstallerOutputFolder = "InstallerWin"
 #define AppVersion "1.0.0"
 #define AppPublisher "RS-MET"
 #define AppURL "http://www.rs-met.com/"
