@@ -1381,8 +1381,9 @@ LimiterAudioModule::LimiterAudioModule(CriticalSection *newPlugInLock, rosic::Li
  : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
-  jassert( newLimiterToWrap != NULL ); // you must pass a valid rosic-object
+  //jassert( newLimiterToWrap != nullptr ); // you must pass a valid rosic-object
   wrappedLimiter = newLimiterToWrap;
+  if(wrappedLimiter==nullptr) { wrappedLimiter=new rosic::Limiter; wrappedLimiterIsOwned=true; }
   setModuleTypeName("Limiter");
   createStaticParameters();
 }

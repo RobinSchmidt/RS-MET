@@ -17,17 +17,10 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
   if(type == "Oscillator3D")  return new RotationOscillatorAudioModule(lock, metaMan, modMan);
   if(type == "RayBouncer")    return new RayBouncerAudioModule(lock);
 
-  // filters:
-  if(type == "Equalizer")       return new EqualizerAudioModule(      lock);
-  if(type == "Ladder")          return new Ladder(                    lock, metaMan, modMan);
-  if(type == "PhasorFilter")    return new PhasorFilter(              lock);
-  if(type == "EngineersFilter") return new EngineersFilterAudioModule(lock);
-  if(type == "CrossOver")       return new CrossOverAudioModule(      lock);
-
   // effects:
   if(type == "Enveloper")        return new Enveloper(                  lock);
   if(type == "FuncShaper")       return new FuncShaperAudioModule(      lock, metaMan, modMan);
-  if(type == "MultiComp")        return new MultiCompAudioModule(       lock, metaMan, modMan);
+
   if(type == "AlgoVerb")         return new AlgoVerbAudioModule(        lock);
   if(type == "EchoLab")          return new EchoLabAudioModule(         lock);
   if(type == "StereoDelay")      return new StereoDelayAudioModule(     lock);
@@ -36,6 +29,17 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
   if(type == "Moduluxury")       return new ModuluxuryAudioModule(      lock);
   if(type == "ChannelMatrix2x2") return new ChannelMatrix2x2AudioModule(lock);
   if(type == "DspWorkbench")     return new DspWorkbenchAudioModule(    lock);
+
+  // filters:
+  if(type == "Equalizer")       return new EqualizerAudioModule(      lock);
+  if(type == "Ladder")          return new Ladder(                    lock, metaMan, modMan);
+  if(type == "PhasorFilter")    return new PhasorFilter(              lock);
+  if(type == "EngineersFilter") return new EngineersFilterAudioModule(lock);
+  if(type == "CrossOver")       return new CrossOverAudioModule(      lock);
+
+  // dynamics:
+  if(type == "Limiter")         return new LimiterAudioModule(   lock);
+  if(type == "MultiComp")        return new MultiCompAudioModule(lock, metaMan, modMan);
 
   // instruments:
   if(type == "AcidDevil")     return new AciDevilAudioModule(     lock);
@@ -55,6 +59,8 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
 
 juce::String AudioModuleFactory::getModuleType(AudioModule *m)
 {
+  // code below should be replaced by m.getModuleTypeName(); - needs good testing
+
   if(dynamic_cast<DummyModule*>  (m))              return "None";
 
   // modulators:
@@ -104,10 +110,13 @@ juce::String AudioModuleFactory::getModuleType(AudioModule *m)
   if(dynamic_cast<LibertyAudioModule*> (m))        return "Liberty";
 #endif
 
-  jassertfalse;  // unknown module type was passed
-  return "UnknownType";
+  return m->getModuleTypeName();
+
+  //jassertfalse;  // unknown module type was passed
+  //return "UnknownType";
 }
 
+/*
 StringArray AudioModuleFactory::getAvailableModuleTypes()
 {
   // this function is obsolete now. we now use the tree in AudioModuleSelector...but this is 
@@ -166,6 +175,7 @@ StringArray AudioModuleFactory::getAvailableModuleTypes()
 
   return a;
 }
+*/
 
 //=================================================================================================
 
@@ -198,7 +208,6 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
   node = new RTreeViewNode("Effects", -1, "Effects");
   //node->addChildNode(new RTreeViewNode("Enveloper",     i++));
   node->addChildNode(new RTreeViewNode("FuncShaper",    i++));
-  //node->addChildNode(new RTreeViewNode("MultiComp",     i++));
   //node->addChildNode(new RTreeViewNode("StereoDelay",   i++)); // include in Quadrifex
   //node->addChildNode(new RTreeViewNode("PitchShifter",  i++)); // include in Quadrifex
   node->addChildNode(new RTreeViewNode("EchoLab",       i++));
@@ -227,6 +236,13 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
   //node->addChildNode(new RTreeViewNode("CrossOver",       i++));
   node->setOpen(false);
   popUpMenu->addTreeNodeItem(node);
+
+  /*
+  node = new RTreeViewNode("Dynamics", -1, "Dynamics");
+  //node->addChildNode(new RTreeViewNode("MultiComp",     i++));
+  node->addChildNode(new RTreeViewNode("Limiter",     i++));
+  popUpMenu->addTreeNodeItem(node);
+  */
 
   /*
   node = new RTreeViewNode("Modulators", -1, "Modulators");

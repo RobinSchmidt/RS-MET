@@ -61,7 +61,7 @@ public:
 
   /** Returns an array of strings with all the available types of AudioModules that can be 
   created. */
-  static StringArray getAvailableModuleTypes();
+  //static StringArray getAvailableModuleTypes();
 
 };
 
@@ -124,20 +124,18 @@ public:
 /** A shell module that can be used to create a chain (i.e. series connection) of some number of
 AudioModule objects. 
 \todo: 
--bug: PhaseScope2 can't be replaced by PhaseScope - it's because the PhaseScope2 subclass pointer
- cn be cast into a PhaseScope pointer, so the dynamic cast returns true
+-have a Dry/Wet and Gain slider
+-let Modulators have their own slot-array
+-let instruments accumulate their outputs (layering)
 -let the plugin have midi-out, so we can make midi effects too
--organize modules in groups (Generators, Filters, Analyzers, etc.) and use a tree-view for 
- selection
 -add more modules
 -maybe at some point make an AudioModuleGraph class that allows for free interconnection
  ->especially important for multi I/O modules
 -let the plugin switch between chain and graph mode
--rename the plugin to RAPTPlug...or just RAPT
+
  */
 
-class JUCE_API ToolChain 
-  : public jura::AudioModuleWithMidiIn
+class JUCE_API ToolChain  : public jura::AudioModuleWithMidiIn
   /*, public jura::ModulationManager*/
   // we need to have a ModulationManager member to pass it to the constructor of
   // AudioModuleWithMidiIn

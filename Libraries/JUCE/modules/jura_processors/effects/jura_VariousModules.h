@@ -294,11 +294,13 @@ protected:
 class LimiterAudioModule : public ModulatableAudioModule
 {
 public:
-  LimiterAudioModule(CriticalSection *newPlugInLock, rosic::Limiter *newLimiterToWrap);
-  juce_UseDebuggingNewOperator;
+  LimiterAudioModule(CriticalSection *newPlugInLock, rosic::Limiter* newLimiterToWrap = nullptr);
+  virtual ~LimiterAudioModule() { if(wrappedLimiterIsOwned) delete wrappedLimiter; }
 protected:
   virtual void createStaticParameters();
   rosic::Limiter *wrappedLimiter;
+  bool wrappedLimiterIsOwned = false;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LimiterAudioModule)
 };
 
 class LimiterModuleEditor : public AudioModuleEditor
