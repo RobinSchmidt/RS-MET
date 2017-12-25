@@ -1,6 +1,3 @@
-//#include "rosof_EngineersFilterAudioModule.h"
-//using namespace rosof;
-
 // construction/destruction:
 
 EngineersFilterAudioModule::EngineersFilterAudioModule(CriticalSection *newPlugInLock, 

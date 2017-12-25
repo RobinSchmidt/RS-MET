@@ -53,41 +53,41 @@ void MultiModeFilterAudioModule::parameterChanged(Parameter* parameterThatHasCha
 
 int stringToFilterModeIndex(const juce::String &modeString)
 {
-  if( modeString == juce::String("Bypass") )  
+  if( modeString == "Bypass" )  
     return rosic::MultiModeFilterParameters::BYPASS;
-  else if( modeString == juce::String("Moogish Lowpass") )  
+  else if( modeString == "Moogish Lowpass" )  
     return rosic::MultiModeFilterParameters::MOOGISH_LOWPASS;
-  else if( modeString == juce::String("Lowpass 6 dB/oct") )  
+  else if( modeString == "Lowpass 6 dB/oct" )  
     return rosic::MultiModeFilterParameters::LOWPASS_6;
-  else if( modeString == juce::String("Lowpass 12 dB/oct") )  
+  else if( modeString == "Lowpass 12 dB/oct" )  
     return rosic::MultiModeFilterParameters::LOWPASS_RBJ;
-  else if( modeString == juce::String("Highpass 6 dB/oct") )  
+  else if( modeString == "Highpass 6 dB/oct" )  
     return rosic::MultiModeFilterParameters::HIGHPASS_6;
-  else if( modeString == juce::String("Highpass 12 dB/oct") )  
+  else if( modeString == "Highpass 12 dB/oct" )  
     return rosic::MultiModeFilterParameters::HIGHPASS_RBJ;
-  else if( modeString == juce::String("Bandpass 2*6 dB/oct") )  
+  else if( modeString == "Bandpass 2*6 dB/oct" )  
     return rosic::MultiModeFilterParameters::BANDPASS_RBJ;
-  else if( modeString == juce::String("Bandstop 2*6 dB/oct") )  
+  else if( modeString == "Bandstop 2*6 dB/oct" )  
     return rosic::MultiModeFilterParameters::BANDREJECT_RBJ;
-  else if( modeString == juce::String("Peak/Dip") )  
+  else if( modeString == "Peak/Dip" )  
     return rosic::MultiModeFilterParameters::PEAK_OR_DIP_RBJ;
-  else if( modeString == juce::String("Low Shelv 1st order") )  
+  else if( modeString == "Low Shelv 1st order" )  
     return rosic::MultiModeFilterParameters::LOW_SHELV_1ST;
-  else if( modeString == juce::String("Low Shelv 2nd order") )  
+  else if( modeString == "Low Shelv 2nd order" )  
     return rosic::MultiModeFilterParameters::LOW_SHELV_RBJ;
-  else if( modeString == juce::String("High Shelv 1st order") )  
+  else if( modeString == "High Shelv 1st order" )  
     return rosic::MultiModeFilterParameters::HIGH_SHELV_1ST;
-  else if( modeString == juce::String("High Shelv 2nd order") )  
+  else if( modeString == "High Shelv 2nd order" )  
     return rosic::MultiModeFilterParameters::HIGH_SHELV_RBJ;
-  else if( modeString == juce::String("Allpass 1st order") )  
+  else if( modeString == "Allpass 1st order" )  
     return rosic::MultiModeFilterParameters::ALLPASS_1ST;
-  else if( modeString == juce::String("Allpass 2nd order") )  
+  else if( modeString == "Allpass 2nd order" )  
     return rosic::MultiModeFilterParameters::ALLPASS_RBJ;
 
-  else if( modeString == juce::String("Morph Low/Band/High") )  
+  else if( modeString == "Morph Low/Band/High" )  
     return rosic::MultiModeFilterParameters::MORPH_LP_BP_HP;
 
-  else if( modeString == juce::String("Morph Low/Peak/High") )  
+  else if( modeString == "Morph Low/Peak/High" )  
     return rosic::MultiModeFilterParameters::MORPH_LP_PK_HP;
 
   // some more else ifs to come...
@@ -99,47 +99,41 @@ int stringToFilterModeIndex(const juce::String &modeString)
 const juce::String filterModeIndexToString(int modeIndex)
 {
   if(modeIndex == rosic::MultiModeFilterParameters::BYPASS ) 
-    return juce::String("Bypass");
+    return "Bypass";
   else if( modeIndex == rosic::MultiModeFilterParameters::MOOGISH_LOWPASS ) 
-    return juce::String("Moogish Lowpass");
-
+    return "Moogish Lowpass";
   else if( modeIndex == rosic::MultiModeFilterParameters::LOWPASS_6 ) 
-    return juce::String("Lowpass 6 dB/oct");
+    return "Lowpass 6 dB/oct";
   else if( modeIndex == rosic::MultiModeFilterParameters::LOWPASS_RBJ ) 
-    return juce::String("Lowpass 12 dB/oct");
+    return "Lowpass 12 dB/oct";
   else if( modeIndex == rosic::MultiModeFilterParameters::HIGHPASS_6 ) 
-    return juce::String("Highpass 6 dB/oct");
+    return "Highpass 6 dB/oct";
   else if( modeIndex == rosic::MultiModeFilterParameters::HIGHPASS_RBJ ) 
-    return juce::String("Highpass 12 dB/oct");
+    return "Highpass 12 dB/oct";
   else if( modeIndex == rosic::MultiModeFilterParameters::BANDPASS_RBJ ) 
-    return juce::String("Bandpass 2*6 dB/oct");
+    return "Bandpass 2*6 dB/oct";
   else if( modeIndex == rosic::MultiModeFilterParameters::BANDREJECT_RBJ ) 
-    return juce::String("Bandstop 2*6 dB/oct");
+    return "Bandstop 2*6 dB/oct";
   else if( modeIndex == rosic::MultiModeFilterParameters::PEAK_OR_DIP_RBJ ) 
-    return juce::String("Peak/Dip");
+    return "Peak/Dip";
   else if( modeIndex == rosic::MultiModeFilterParameters::LOW_SHELV_1ST ) 
-    return juce::String("Low Shelv 1st order");
+    return "Low Shelv 1st order";
   else if( modeIndex == rosic::MultiModeFilterParameters::LOW_SHELV_RBJ ) 
-    return juce::String("Low Shelv 2nd order");
+    return "Low Shelv 2nd order";
   else if( modeIndex == rosic::MultiModeFilterParameters::HIGH_SHELV_1ST ) 
-    return juce::String("High Shelv 1st order");
+    return "High Shelv 1st order";
   else if( modeIndex == rosic::MultiModeFilterParameters::HIGH_SHELV_RBJ ) 
-    return juce::String("High Shelv 2nd order");
+    return "High Shelv 2nd order";
   else if( modeIndex == rosic::MultiModeFilterParameters::ALLPASS_1ST ) 
-    return juce::String("Allpass 1st order");
+    return "Allpass 1st order";
   else if( modeIndex == rosic::MultiModeFilterParameters::ALLPASS_RBJ ) 
-    return juce::String("Allpass 2nd order");
-
+    return "Allpass 2nd order";
   else if(modeIndex == rosic::MultiModeFilterParameters::MORPH_LP_BP_HP ) 
-    return juce::String("Morph Low/Band/High");
-
+    return "Morph Low/Band/High";
   else if(modeIndex == rosic::MultiModeFilterParameters::MORPH_LP_PK_HP ) 
-    return juce::String("Morph Low/Peak/High");
-
-  // some more else ifs to come...
-
+    return "Morph Low/Peak/High";
   else                                              
-    return juce::String("Bypass");
+    return "Bypass";
 }
 
 XmlElement* multiModeFilterStateToXml(MultiModeFilter* filter, 
