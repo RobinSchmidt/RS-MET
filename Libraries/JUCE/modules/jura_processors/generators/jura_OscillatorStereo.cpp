@@ -680,72 +680,38 @@ void OscillatorStereoEditorContextMenu::resized()
   int inc  = sh+4;
   //int inc2 = inc+8;
 
-  ampHeadline->setBounds(x+4, y+4, w-8-16, sh);
-  y += inc;
-  levelSlider->setBounds(x+4, y+4, w-8, sh);
-  y += sh-2;
+  ampHeadline->setBounds(x+4, y+4, w-8-16, sh);     y += inc;
+  levelSlider->setBounds(x+4, y+4, w-8, sh);        y += sh-2;
   levelByKeySlider->setBounds(x+4,  y+4, w2-8, sh);
-  levelByVelSlider->setBounds(w2+4, y+4, w2-8, sh);
-  y += inc;
-  midSideSlider->setBounds(x+4, y+4, w-8, sh);
-  y += sh-2;
-  panSlider->setBounds(x+4, y+4, w-8, sh);
-  y += inc;
+  levelByVelSlider->setBounds(w2+4, y+4, w2-8, sh); y += inc;
+  midSideSlider->setBounds(x+4, y+4, w-8, sh);      y += sh-2;
+  panSlider->setBounds(x+4, y+4, w-8, sh);          y += inc;
 
-  tuningHeadline->setBounds(x+4, y+4, w-8, sh);
-  y += inc;
-  tuneSlider->setBounds(x+4, y+4, w-8, sh);
-  y += sh-2;
-  detuneHzSlider->setBounds(x+4, y+4, w-8, sh);
-  y += sh-2;
-  stereoDetuneSlider->setBounds(x+4, y+4, w-8, sh);
-  y += sh-2;
-  stereoDetuneHzSlider->setBounds(x+4, y+4, w-8, sh);
-  y += inc;
-  timeHeadline->setBounds(x+4, y+4, w-8, sh);
-  y += inc;
-  startPhaseSlider->setBounds(x+4, y+4, w-8, sh);
-  y += sh-2;
-  combHarmonicSlider->setBounds(x+4, y+4, w-8, sh);
-  y += sh-2;
-  combAmountSlider->setBounds(x+4, y+4, w-8, sh);
-  y += sh-2;
-  fullWavePhaseWarpSlider->setBounds(x+4, y+4, w-8, sh);
-  y += sh-2;
-  halfWavePhaseWarpSlider->setBounds(x+4, y+4, w-8, sh);
-
-  //y += sh;
-  //startPhaseByKeySlider->setBounds(x+4,  y+4, w2-8, sh);
-  //startPhaseByVelSlider->setBounds(w2+4, y+4, w2-8, sh);
-  y += inc;
+  tuningHeadline->setBounds(x+4, y+4, w-8, sh);          y += inc;
+  tuneSlider->setBounds(x+4, y+4, w-8, sh);              y += sh-2;
+  detuneHzSlider->setBounds(x+4, y+4, w-8, sh);          y += sh-2;
+  stereoDetuneSlider->setBounds(x+4, y+4, w-8, sh);      y += sh-2;
+  stereoDetuneHzSlider->setBounds(x+4, y+4, w-8, sh);    y += inc;
+  timeHeadline->setBounds(x+4, y+4, w-8, sh);            y += inc;
+  startPhaseSlider->setBounds(x+4, y+4, w-8, sh);        y += sh-2;
+  combHarmonicSlider->setBounds(x+4, y+4, w-8, sh);      y += sh-2;
+  combAmountSlider->setBounds(x+4, y+4, w-8, sh);        y += sh-2;
+  fullWavePhaseWarpSlider->setBounds(x+4, y+4, w-8, sh); y += sh-2;
+  halfWavePhaseWarpSlider->setBounds(x+4, y+4, w-8, sh); y += inc;
   reverseButton->setBounds(x+4,  y+4, w2-8, sh);
-  invertButton->setBounds( w2+4, y+4, w2-8, sh);
-  y += inc;
+  invertButton->setBounds( w2+4, y+4, w2-8, sh);         y += inc;
 
-  magSpectrumHeadline->setBounds(x+4, y+4, w-8, sh);
-  y += inc;
-  spectralContrastSlider->setBounds(x+4, y+4, w-8, sh);
-  y += sh-2;
-  spectralSlopeSlider->setBounds(x+4, y+4, w-8, sh);
-  y += sh-2;
-  highestHarmonicSlider->setBounds(x+4, y+4, w-8, sh);
-  y += sh-2;
-  lowestHarmonicSlider->setBounds(x+4, y+4, w-8, sh);
-  y += sh-2;
-  evenOddSlider->setBounds(x+4, y+4, w-8, sh);
-  y += inc;
-
-
-  phaseSpectrumHeadline->setBounds(x+4, y+4, w-8, sh);
-  y += inc;
-  phaseScaleSlider->setBounds(x+4, y+4, w-8, sh);
-  y += sh-2;
-  phaseShiftSlider->setBounds(x+4, y+4, w-8, sh);
-  y += sh-2;
-  evenOddPhaseShiftSlider->setBounds(x+4, y+4, w-8, sh);
-  y += sh-2;
-  stereoPhaseShiftSlider->setBounds(x+4, y+4, w-8, sh);
-  y += sh-2;
+  magSpectrumHeadline->setBounds(x+4, y+4, w-8, sh);     y += inc;
+  spectralContrastSlider->setBounds(x+4, y+4, w-8, sh);  y += sh-2;
+  spectralSlopeSlider->setBounds(x+4, y+4, w-8, sh);     y += sh-2;
+  highestHarmonicSlider->setBounds(x+4, y+4, w-8, sh);   y += sh-2;
+  lowestHarmonicSlider->setBounds(x+4, y+4, w-8, sh);    y += sh-2;
+  evenOddSlider->setBounds(x+4, y+4, w-8, sh);           y += inc;
+  phaseSpectrumHeadline->setBounds(x+4, y+4, w-8, sh);   y += inc;
+  phaseScaleSlider->setBounds(x+4, y+4, w-8, sh);        y += sh-2;
+  phaseShiftSlider->setBounds(x+4, y+4, w-8, sh);        y += sh-2;
+  evenOddPhaseShiftSlider->setBounds(x+4, y+4, w-8, sh); y += sh-2;
+  stereoPhaseShiftSlider->setBounds(x+4, y+4, w-8, sh);  y += sh-2;
   evenOddStereoPhaseShiftSlider->setBounds(x+4, y+4, w-8, sh);
 }
 
@@ -939,10 +905,8 @@ void OscillatorStereoEditor::resized()
   w = getWidth()-x;
   y += 16;
   x = getWidth()-20;
-  wavePlusButton->setBounds( x, y, 16, 16);
-  x -= 14;
-  waveMinusButton->setBounds(x, y, 16, 16);
-  x = waveMinusButton->getX()-40+2;
+  wavePlusButton->setBounds( x, y, 16, 16); x -= 14;
+  waveMinusButton->setBounds(x, y, 16, 16); x = waveMinusButton->getX()-40+2;
   waveLoadButton->setBounds( x, y, 40, 16);
 
   x = 0;
@@ -954,7 +918,6 @@ void OscillatorStereoEditor::resized()
   emptyDisplay->setBounds(waveformDisplay->getBounds());
   waveFileLabel->setBounds(0, waveformDisplay->getY()-16+2, w-4, 16);
 
-
   /*
   contextMenuViewport->setBounds(waveformDisplay->getBounds());
   contextMenu->setSize(
@@ -965,12 +928,9 @@ void OscillatorStereoEditor::resized()
   x = waveformDisplay->getRight();
   w = getWidth()-x;
   y = waveLoadButton->getBottom()-4;
-  levelSlider->setBounds(x+4, y+4, w-8, 32);
-  y += 32;
-  tuneSlider->setBounds(x+4, y+4, w-8, 32);
-  y += 34;
+  levelSlider->setBounds(x+4, y+4, w-8, 32); y += 32;
+  tuneSlider->setBounds(x+4, y+4, w-8, 32);  y += 34;
   pitchModulationSlider->setBounds(x+4, y+4, w-8, 16);
-
 
   moreButton->setBounds(getWidth()-40-4, getHeight()-16-4, 40, 16);
 

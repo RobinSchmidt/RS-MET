@@ -11,19 +11,19 @@ FourOscSectionAudioModule::FourOscSectionAudioModule(CriticalSection *newPlugInL
   setModuleTypeName("FourOscillatorSection");
 
   osc1Module = new OscillatorStereoAudioModule(lock, &wrappedFourOscSection->osc1);
-  osc1Module->setModuleName(juce::String("Osc1"));
+  osc1Module->setModuleName("Osc1");
   addChildAudioModule(osc1Module);
 
   osc2Module = new OscillatorStereoAudioModule(lock, &wrappedFourOscSection->osc2);
-  osc2Module->setModuleName(juce::String("Osc2"));
+  osc2Module->setModuleName("Osc2");
   addChildAudioModule(osc2Module);
 
   osc3Module = new OscillatorStereoAudioModule(lock, &wrappedFourOscSection->osc3);
-  osc3Module->setModuleName(juce::String("Osc3"));
+  osc3Module->setModuleName("Osc3");
   addChildAudioModule(osc3Module);
 
   osc4Module = new OscillatorStereoAudioModule(lock, &wrappedFourOscSection->osc4);
-  osc4Module->setModuleName(juce::String("Osc4"));
+  osc4Module->setModuleName("Osc4");
   addChildAudioModule(osc4Module);
 }
 
@@ -37,19 +37,19 @@ FourOscSectionModuleEditor::FourOscSectionModuleEditor(CriticalSection *newPlugI
   webLink->setVisible(false);
   infoField->setVisible(false);
 
-  setHeadlineText(juce::String("Oscillators"));
-  setDescription(juce::String("This is the oscillator section"));
+  setHeadlineText("Oscillators");
+  setDescription("This is the oscillator section");
 
   addChildEditor( osc1Editor = new OscillatorStereoEditor(lock, newFourOscSectionToEdit->osc1Module));
   addChildEditor( osc2Editor = new OscillatorStereoEditor(lock, newFourOscSectionToEdit->osc2Module) );
   addChildEditor( osc3Editor = new OscillatorStereoEditor(lock, newFourOscSectionToEdit->osc3Module) );
   addChildEditor( osc4Editor = new OscillatorStereoEditor(lock, newFourOscSectionToEdit->osc4Module) );
 
-  stateWidgetSet->stateLoadButton->setDescription(   juce::String("Load oscillator section setting from file"));
-  stateWidgetSet->stateSaveButton->setDescription(   juce::String("Save oscillator section setting to file"));
-  stateWidgetSet->statePlusButton->setDescription(   juce::String("Skip to next oscillator section setting in current directory"));
-  stateWidgetSet->stateMinusButton->setDescription(  juce::String("Skip to previous oscillator section setting in current directory"));
-  stateWidgetSet->stateFileNameLabel->setDescription(juce::String("Name of current preset for the oscillator section (if any)"));
+  stateWidgetSet->stateLoadButton->setDescription(   "Load oscillator section setting from file");
+  stateWidgetSet->stateSaveButton->setDescription(   "Save oscillator section setting to file");
+  stateWidgetSet->statePlusButton->setDescription(   "Skip to next oscillator section setting in current directory");
+  stateWidgetSet->stateMinusButton->setDescription(  "Skip to previous oscillator section setting in current directory");
+  stateWidgetSet->stateFileNameLabel->setDescription("Name of current preset for the oscillator section (if any)");
 
   isTopLevelEditor = false;
 

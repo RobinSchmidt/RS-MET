@@ -791,7 +791,6 @@ void MultiModeFilterModuleEditor::createWidgets()
   typedef AutomatableButton Btn;  Btn* b;
   //typedef RTextField        Txf;  Txf* t;
 
-
   addWidget( modeComboBox = new RNamedComboBox("ModeComboBox", "Type:") );
   modeComboBox->assignParameter(moduleToEdit->getParameterByName("Mode") );
   modeComboBox->registerComboBoxObserver(this);

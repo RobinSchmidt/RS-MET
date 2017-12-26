@@ -305,6 +305,18 @@ void StraightlinerModuleEditor::paint(Graphics &g)
 }
 */
 
+void StraightlinerModuleEditor::paintOverChildren(Graphics& g)
+{
+  PolyphonicInstrumentEditor::paintOverChildren(g);
+
+  // fine-tune boundary between osc-section and filter editor:
+  int y = oscSectionEditor->getY();
+  int x = oscSectionEditor->getRight()-2;
+  int h = oscSectionEditor->getHeight();
+  g.setColour(oscSectionEditor->getOutlineColour());
+  g.drawVerticalLine(x, (float) y, (float)(y+h));
+}
+
 void StraightlinerModuleEditor::resized()
 {
   AudioModuleEditor::resized();

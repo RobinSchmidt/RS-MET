@@ -129,10 +129,11 @@ public:
   virtual void updateSubEditorColourSchemes();
 
   // callbacks:
-  virtual void copyColourSettingsFrom(const ColourSchemeComponent *componentToCopyFrom);
-  virtual void updateWidgetsAccordingToState();
-  //virtual void paint(Graphics &g); 
-  virtual void resized();
+  virtual void copyColourSettingsFrom(const ColourSchemeComponent *componentToCopyFrom) override;
+  virtual void updateWidgetsAccordingToState() override;
+  //virtual void paint(Graphics &g) override; 
+  virtual void paintOverChildren(Graphics& g) override;
+  virtual void resized() override;
 
 protected:
 

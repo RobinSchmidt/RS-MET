@@ -77,8 +77,8 @@ public:
     FourOscSectionAudioModule *newFourOscSectionToEdit);
 
   // callbacks:
-  virtual void resized();
-  virtual void updateWidgetsAccordingToState();
+  virtual void resized() override;
+  virtual void updateWidgetsAccordingToState() override;
 
 protected:
 
