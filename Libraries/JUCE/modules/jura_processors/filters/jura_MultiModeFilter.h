@@ -20,6 +20,7 @@ public:
 
   //virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
 
+  /*
   virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
     bool markAsClean) override;
 
@@ -29,6 +30,7 @@ public:
   {
     wrappedMultiModeFilter->getSampleFrameStereo(inOutL, inOutR);
   }
+  */
 
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
   {

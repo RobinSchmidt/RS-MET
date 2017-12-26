@@ -51,7 +51,7 @@ void MultiModeFilterAudioModule::parameterChanged(Parameter* parameterThatHasCha
 // state saving and recall:
 
 // temporary - move into get/setStateFrom/ToXml
-
+/*
 int stringToFilterModeIndex(const juce::String &modeString)
 {
   if( modeString == "Bypass" )  
@@ -236,7 +236,7 @@ void MultiModeFilterAudioModule::setStateFromXml(const XmlElement& xmlState,
   if( markAsClean == true )
     markStateAsClean();
 }
-
+*/
 //-------------------------------------------------------------------------------------------------
 // internal functions:
 
@@ -249,6 +249,54 @@ void MultiModeFilterAudioModule::createParameters()
   MMF* mmf = wrappedMultiModeFilter;
 
   std::vector<double> defaultValues;
+
+  /*
+  enum multiModeFilterModes
+  {
+  BYPASS = 0,return "Bypass";
+  MOOGISH_LOWPASS,  return "Moogish Lowpass";
+  LOWPASS_6,  return "Lowpass 6 dB/oct";
+  LOWPASS_RBJ,  return "Lowpass 12 dB/oct";
+  HIGHPASS_6,  return "Highpass 6 dB/oct";
+  HIGHPASS_RBJ,  return "Highpass 12 dB/oct";
+  BANDPASS_RBJ,  return "Bandpass 2*6 dB/oct";
+  BANDREJECT_RBJ,  return "Bandstop 2*6 dB/oct";
+
+  PEAK_OR_DIP_RBJ,  return "Peak/Dip";
+  LOW_SHELV_1ST,  return "Low Shelv 1st order";
+  LOW_SHELV_RBJ,  return "Low Shelv 2nd order";
+  HIGH_SHELV_1ST,  return "High Shelv 1st order";
+  HIGH_SHELV_RBJ,  return "High Shelv 2nd order";
+  ALLPASS_1ST,  return "Allpass 1st order";
+  ALLPASS_RBJ,  return "Allpass 2nd order";
+
+  MORPH_LP_BP_HP,  return "Morph Low/Band/High";
+  MORPH_LP_PK_HP,  return "Morph Low/Peak/High";  
+
+  NUM_FILTER_MODES
+  };
+  */
+
+  p = new Param("Mode", 0.0, 14.0, 1.0, Parameter::STRING, 1.0);
+  p->setValueChangeCallback<MMF>(mmf, &MMF::setMode);
+  p->addStringValue("Bypass");
+  p->addStringValue("Moogish Lowpass");
+  p->addStringValue("Lowpass 6 dB/oct");
+  p->addStringValue("Lowpass 12 dB/oct");
+  p->addStringValue("Highpass 6 dB/oct");
+  p->addStringValue("Highpass 12 dB/oct");
+  p->addStringValue("Bandpass 2*6 dB/oct");
+  p->addStringValue("Bandstop 2*6 dB/oct");
+  p->addStringValue("Peak/Dip");
+  p->addStringValue("Low Shelv 1st order");
+  p->addStringValue("Low Shelv 2nd order");
+  p->addStringValue("High Shelv 1st order");
+  p->addStringValue("High Shelv 2nd order");
+  p->addStringValue("Allpass 1st order");
+  p->addStringValue("Allpass 2nd order");
+  //p->addStringValue("Morph Low/Band/High");
+  //p->addStringValue("Morph Low/Peak/High");
+  addObservedParameter(p);
 
   p = new Param("Frequency", 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL, 0.0);
   p->setValueChangeCallback<MMF>(mmf, &MMF::setFrequencyNominal);
@@ -864,8 +912,10 @@ MultiModeFilterModuleEditor::MultiModeFilterModuleEditor(CriticalSection *newPlu
   */
 
   addWidget( modeComboBox = new RNamedComboBox(juce::String("ModeComboBox"), juce::String("Type:")) );
+  modeComboBox->assignParameter(moduleToEdit->getParameterByName("Mode") );
   modeComboBox->registerComboBoxObserver(this);
   modeComboBox->setDescription("Type/Mode of the filter.");
+  /*
   modeComboBox->addItem( 0, "Bypass"               );  // \todo: use the values from the enum MultiModeFilterModes instead of magic numbers
   modeComboBox->addItem( 1, "Moogish Lowpass"      );
   modeComboBox->addItem( 2, "Lowpass 6 dB/oct"     );
@@ -882,6 +932,7 @@ MultiModeFilterModuleEditor::MultiModeFilterModuleEditor(CriticalSection *newPlu
   modeComboBox->addItem(13, "Allpass 1st order"    );
   modeComboBox->addItem(14, "Allpass 2nd order"    );
   modeComboBox->addItem(15, "Morph Low/Peak/High"  );
+  */
   //modeComboBox->addItem(juce::String(T("Morph Low/Band/High")),      17);
   modeComboBox->selectItemByIndex(1, false);
 
@@ -1046,7 +1097,7 @@ void MultiModeFilterModuleEditor::rComboBoxChanged(RComboBox *rComboBoxThatHasCh
   if( rComboBoxThatHasChanged == modeComboBox )
   {
     //filterToEdit->setMode(modeComboBox->getSelectedId());
-    filterToEdit->setMode( stringToFilterModeIndex(modeComboBox->getText()) );
+    //filterToEdit->setMode( stringToFilterModeIndex(modeComboBox->getText()) );
     updateWidgetArrangement();
     updateWidgetsAccordingToState();  
   }
@@ -1117,7 +1168,7 @@ void MultiModeFilterModuleEditor::updateWidgetsAccordingToState()
 
   //modeComboBox->setText(filterModeIndexToString(filterToEdit->getMode()), true); //old
 
-  modeComboBox->selectItemFromText(filterModeIndexToString(filterToEdit->getMode()), false);
+  //modeComboBox->selectItemFromText(filterModeIndexToString(filterToEdit->getMode()), false);
 
   // something to do here...?
 
