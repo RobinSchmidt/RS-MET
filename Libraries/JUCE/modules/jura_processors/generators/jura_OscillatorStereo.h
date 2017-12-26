@@ -122,6 +122,8 @@ public:
 
 protected:
 
+  virtual void createWidgets();
+
   /** Pointer to the actual OscillatorStereoAudioModule object which is being edited. */
   OscillatorStereoAudioModule* oscillatorModuleToEdit;
 

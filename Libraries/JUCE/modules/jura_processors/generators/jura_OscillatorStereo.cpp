@@ -265,6 +265,15 @@ void OscillatorStereoAudioModule::createParameters()
   sp->setValueChangeCallback<OS>(os, &OS::setHalfWavePhaseWarp);
   addObservedParameter(sp);
 
+  sp = new StaticParam("TimeReverse", 0.0, 1.0, 0.0, Parameter::BOOLEAN, 1.0);
+  sp->setValueChangeCallback<OS>(os, &OS::setTimeReverse);
+  addObservedParameter(sp);
+
+  sp = new StaticParam("PolarityInvert", 0.0, 1.0, 0.0, Parameter::BOOLEAN, 1.0);
+  sp->setValueChangeCallback<OS>(os, &OS::setPolarityInversion);
+  addObservedParameter(sp);
+
+
   // #013:
   /*
   sp = new StaticParam("CombOffset", 0.0, 360.0, 0.0, Parameter::LINEAR, 0.1);
@@ -358,6 +367,49 @@ OscillatorStereoEditorContextMenu::OscillatorStereoEditorContextMenu(
   //jassert( newOscillatorToEdit != NULL )
   oscillatorModuleToEdit = newOscillatorModuleToEdit;
 
+  createWidgets();
+
+  updateWidgetsAccordingToState();
+  setSize(180, 488);
+}
+
+OscillatorStereoEditorContextMenu::~OscillatorStereoEditorContextMenu()
+{
+  deleteAllChildren();
+}
+
+//-------------------------------------------------------------------------------------------------
+// callbacks:
+
+void OscillatorStereoEditorContextMenu::rButtonClicked(RButton *buttonThatWasClicked)
+{
+  if( oscillatorModuleToEdit == NULL )
+    return;
+  if( oscillatorModuleToEdit->wrappedOscillatorStereo == NULL )
+    return;
+
+  rosic::OscillatorStereo* o = oscillatorModuleToEdit->wrappedOscillatorStereo;
+
+  if( buttonThatWasClicked == reverseButton )
+    o->setTimeReverse( reverseButton->getToggleState() );
+  if( buttonThatWasClicked == invertButton )
+    o->setPolarityInversion( invertButton->getToggleState() );
+
+  sendChangeMessage();
+}
+
+void OscillatorStereoEditorContextMenu::rSliderValueChanged(RSlider *sliderThatHasChanged)
+{
+  if( oscillatorModuleToEdit == NULL )
+    return;
+  if( oscillatorModuleToEdit->wrappedOscillatorStereo == NULL )
+    return;
+  //rosic::OscillatorStereo* o = oscillatorModuleToEdit->wrappedOscillatorStereo;
+  sendChangeMessage();
+}
+
+void OscillatorStereoEditorContextMenu::createWidgets()
+{
   addWidget( ampHeadline = new RTextField("Amplitude:") );
   ampHeadline->setNoBackgroundAndOutline(true);
   ampHeadline->setDescription(juce::String("Manipulations of the amplitude"));
@@ -564,44 +616,6 @@ OscillatorStereoEditorContextMenu::OscillatorStereoEditorContextMenu(
   closeButton->setDescription(juce::String("Closes the oscillator context menu"));
   closeButton->setClickingTogglesState(false);
   // we don't listen to this button ourselves - this is the job of the outlying editor object
-
-  updateWidgetsAccordingToState();
-  setSize(180, 488);
-}
-
-OscillatorStereoEditorContextMenu::~OscillatorStereoEditorContextMenu()
-{
-  deleteAllChildren();
-}
-
-//-------------------------------------------------------------------------------------------------
-// callbacks:
-
-void OscillatorStereoEditorContextMenu::rButtonClicked(RButton *buttonThatWasClicked)
-{
-  if( oscillatorModuleToEdit == NULL )
-    return;
-  if( oscillatorModuleToEdit->wrappedOscillatorStereo == NULL )
-    return;
-
-  rosic::OscillatorStereo* o = oscillatorModuleToEdit->wrappedOscillatorStereo;
-
-  if( buttonThatWasClicked == reverseButton )
-    o->setTimeReverse( reverseButton->getToggleState() );
-  if( buttonThatWasClicked == invertButton )
-    o->setPolarityInversion( invertButton->getToggleState() );
-
-  sendChangeMessage();
-}
-
-void OscillatorStereoEditorContextMenu::rSliderValueChanged(RSlider *sliderThatHasChanged)
-{
-  if( oscillatorModuleToEdit == NULL )
-    return;
-  if( oscillatorModuleToEdit->wrappedOscillatorStereo == NULL )
-    return;
-  //rosic::OscillatorStereo* o = oscillatorModuleToEdit->wrappedOscillatorStereo;
-  sendChangeMessage();
 }
 
 void OscillatorStereoEditorContextMenu::updateWidgetsAccordingToState()
