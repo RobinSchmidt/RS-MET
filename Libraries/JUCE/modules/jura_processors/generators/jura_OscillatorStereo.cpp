@@ -382,6 +382,7 @@ OscillatorStereoEditorContextMenu::~OscillatorStereoEditorContextMenu()
 
 void OscillatorStereoEditorContextMenu::rButtonClicked(RButton *buttonThatWasClicked)
 {
+  /* not needed anymore
   if( oscillatorModuleToEdit == NULL )
     return;
   if( oscillatorModuleToEdit->wrappedOscillatorStereo == NULL )
@@ -393,6 +394,7 @@ void OscillatorStereoEditorContextMenu::rButtonClicked(RButton *buttonThatWasCli
     o->setTimeReverse( reverseButton->getToggleState() );
   if( buttonThatWasClicked == invertButton )
     o->setPolarityInversion( invertButton->getToggleState() );
+    */
 
   sendChangeMessage();
 }
@@ -531,15 +533,17 @@ void OscillatorStereoEditorContextMenu::createWidgets()
   s->addListener(this);
   //s->setVisible(false); // not yet meaningfully implemented
 
-  addWidget( reverseButton = new RButton("Reverse") );
-  reverseButton->addRButtonListener(this);
-  reverseButton->setDescription(juce::String("Time reverses the oscillator's waveform"));
-  reverseButton->setClickingTogglesState(true);
+  addWidget( reverseButton = b = new Btn("Reverse") );
+  b->assignParameter( oscillatorModuleToEdit->getParameterByName("TimeReverse") );
+  b->addRButtonListener(this);
+  b->setDescription("Time reverses the oscillator's waveform");
+  b->setClickingTogglesState(true);
 
-  addWidget( invertButton = new RButton("Invert") );
-  invertButton->addRButtonListener(this);
-  invertButton->setDescription("Inverts polarity of the oscillator's ouput");
-  invertButton->setClickingTogglesState(true);
+  addWidget( invertButton = b = new Btn("Invert") );
+  b->assignParameter( oscillatorModuleToEdit->getParameterByName("PolarityInvert") );
+  b->addRButtonListener(this);
+  b->setDescription("Inverts polarity of the oscillator's ouput");
+  b->setClickingTogglesState(true);
 
   // sliders for magnitude spectrum related parameters:
 
@@ -616,11 +620,12 @@ void OscillatorStereoEditorContextMenu::createWidgets()
   s->addListener(this);
 
   addWidget( closeButton = new RButton(RButton::CLOSE) );
-  closeButton->setDescription(juce::String("Closes the oscillator context menu"));
+  closeButton->setDescription("Closes the oscillator context menu");
   closeButton->setClickingTogglesState(false);
   // we don't listen to this button ourselves - this is the job of the outlying editor object
 }
 
+// is this obsolete?
 void OscillatorStereoEditorContextMenu::updateWidgetsAccordingToState()
 {
   if( oscillatorModuleToEdit == NULL )
