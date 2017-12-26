@@ -18,20 +18,6 @@ public:
   //---------------------------------------------------------------------------------------------
   // overrides:
 
-  //virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
-
-  /*
-  virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
-    bool markAsClean) override;
-
-  virtual XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean) override;
-
-  virtual void getSampleFrameStereo(double* inOutL, double* inOutR)
-  {
-    wrappedMultiModeFilter->getSampleFrameStereo(inOutL, inOutR);
-  }
-  */
-
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
   {
     jassertfalse; // not yet implemented
@@ -228,6 +214,8 @@ public:
   MultiModeFreqResponseEditor *frequencyResponseDisplay;
 
 protected:
+
+  virtual void createWidgets();
 
   /** Updates the arrangement of the widgets according to the chosen filter mode. */
   virtual void updateWidgetArrangement();
