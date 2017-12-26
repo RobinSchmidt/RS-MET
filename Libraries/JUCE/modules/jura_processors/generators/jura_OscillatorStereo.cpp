@@ -12,55 +12,9 @@ OscillatorStereoAudioModule::OscillatorStereoAudioModule(CriticalSection *newPlu
 }
 
 //-------------------------------------------------------------------------------------------------
-// automation:
-/*
-void OscillatorStereoAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
-{
-  if( wrappedOscillatorStereo == NULL )
-    return;
-
-  double value = parameterThatHasChanged->getValue();
-  switch( getIndexOfParameter(parameterThatHasChanged) )
-  {
-  case  0: wrappedOscillatorStereo->setLevel(                      value);  break;
-  case  1: wrappedOscillatorStereo->setLevelByKey(                 value);  break;
-  case  2: wrappedOscillatorStereo->setLevelByVel(                 value);  break;
-  case  3: wrappedOscillatorStereo->setMidSide(                    value);  break;
-  case  4: wrappedOscillatorStereo->setPan(                        value);  break;
-
-  case  5: wrappedOscillatorStereo->setDetuneSemitones(            value);  break;
-  case  6: wrappedOscillatorStereo->setDetuneHz(                   value);  break;
-  case  7: wrappedOscillatorStereo->setStereoDetuneSemitones(      value);  break;
-  case  8: wrappedOscillatorStereo->setStereoDetuneHz(             value);  break;
-  case  9: wrappedOscillatorStereo->setPitchEnvelopeDepth(         value);  break;
-
-  case 10: wrappedOscillatorStereo->setStartPhase(                 value);  break;
-  case 11: wrappedOscillatorStereo->setFullWavePhaseWarp(          value);  break;
-  case 12: wrappedOscillatorStereo->setHalfWavePhaseWarp(          value);  break;
-  case 13: wrappedOscillatorStereo->waveTable->setCombHarmonic(    value);  break;
-  case 14: wrappedOscillatorStereo->waveTable->setCombAmount(      value);  break;
-
-  case 15: wrappedOscillatorStereo->setSpectralContrast(           value);  break;
-  case 16: wrappedOscillatorStereo->setSpectralSlope(              value);  break;
-  case 17: wrappedOscillatorStereo->setHighestHarmonicToKeep( (int)value);  break;
-  case 18: wrappedOscillatorStereo->setLowestHarmonicToKeep(  (int)value);  break;
-  case 19: wrappedOscillatorStereo->setEvenOddRatio(               value);  break;
-
-  case 20: wrappedOscillatorStereo->waveTable->setPhaseScale(      value);  break;
-  case 21: wrappedOscillatorStereo->waveTable->setPhaseShift(      value);  break;
-  case 22: wrappedOscillatorStereo->setEvenOddPhaseShift(          value);  break;
-  case 23: wrappedOscillatorStereo->setStereoPhaseShift(           value);  break;
-  case 24: wrappedOscillatorStereo->setEvenOddStereoPhaseShift(    value);  break;
-  } // end of switch( parameterIndex )
-  markStateAsDirty();
-}
-*/
-
-//-------------------------------------------------------------------------------------------------
 // state saving and recall:
 
-XmlElement* oscillatorStereoStateToXml(OscillatorStereo* osc,
-  XmlElement* xmlElementToStartFrom)
+XmlElement* oscillatorStereoStateToXml(OscillatorStereo* osc, XmlElement* xmlElementToStartFrom)
 {
   // the XmlElement which stores all the releveant state-information:
   XmlElement* xmlState;
@@ -71,36 +25,6 @@ XmlElement* oscillatorStereoStateToXml(OscillatorStereo* osc,
 
   // store the settings in the XmlElement:
   xmlState->setAttribute("AudioFileRelativePath", juce::String(osc->waveTable->getSampleName() )    );
-  xmlState->setAttribute("Mute",                    osc->isMuted()                              );
-  xmlState->setAttribute("Level",                   osc->getLevel()                             );
-  xmlState->setAttribute("LevelByKey",              osc->getLevelByKey()                        );
-  xmlState->setAttribute("LevelByVel",              osc->getLevelByVel()                        );
-  xmlState->setAttribute("Pan",                     osc->getPan()                               );
-  xmlState->setAttribute("MidSideRatio",            osc->getMidSide()                           );
-  xmlState->setAttribute("StartPhase",              osc->getStartPhase()                        );
-  xmlState->setAttribute("StartPhaseByKey",         osc->getStartPhaseByKey()                   );
-  xmlState->setAttribute("StartPhaseByVel",         osc->getStartPhaseByVel()                   );
-  xmlState->setAttribute("TimeReverse",             osc->waveTable->isTimeReversed()            );
-  xmlState->setAttribute("PolarityInvert",          osc->waveTable->isPolarityInverted()        );
-  xmlState->setAttribute("FullWavePhaseWarp",       osc->waveTable->getFullWavePhaseWarp()      );
-  xmlState->setAttribute("HalfWavePhaseWarp",       osc->waveTable->getHalfWavePhaseWarp()      );
-  xmlState->setAttribute("CombHarmonic",            osc->waveTable->getCombHarmonic()           );
-  xmlState->setAttribute("CombAmount",              osc->waveTable->getCombAmount()             );
-  xmlState->setAttribute("Tune",                    osc->getDetuneSemitones()                   );
-  xmlState->setAttribute("DetuneHz",                osc->getDetuneHz()                          );
-  xmlState->setAttribute("StereoDetuneSemitones",   osc->getStereoDetuneSemitones()             );
-  xmlState->setAttribute("StereoDetuneHz",          osc->getStereoDetuneHz()                    );
-  xmlState->setAttribute("PitchModulationDepth",    osc->getPitchEnvelopeDepth()                );
-  xmlState->setAttribute("SpectralContrast",        osc->waveTable->getSpectralContrast()       );
-  xmlState->setAttribute("SpectralSlope",           osc->waveTable->getSpectralSlope()          );
-  xmlState->setAttribute("HighestHarmonicToKeep",   osc->waveTable->getHighestHarmonicToKeep()  );
-  xmlState->setAttribute("LowestHarmonicToKeep",    osc->waveTable->getLowestHarmonicToKeep()   );
-  xmlState->setAttribute("PhaseScale",              osc->waveTable->getPhaseScale()             );
-  xmlState->setAttribute("PhaseShift",              osc->waveTable->getPhaseShift()             );
-  xmlState->setAttribute("EvenOddRatio",            osc->waveTable->getEvenOddRatio()           );
-  xmlState->setAttribute("EvenOddPhaseShift",       osc->waveTable->getEvenOddPhaseShift()      );
-  xmlState->setAttribute("StereoPhaseShift",        osc->waveTable->getStereoPhaseShift()       );
-  xmlState->setAttribute("EvenOddStereoPhaseShift", osc->waveTable->getEvenOddStereoPhaseShift());
 
   return xmlState;
 }
@@ -114,38 +38,6 @@ bool oscillatorStereoStateFromXml(OscillatorStereo* osc, const XmlElement &xmlSt
   bool oldAutoReRenderState = osc->waveTable->isMipMapAutoReRenderingActive();
   osc->waveTable->setAutomaticMipMapReRendering(false);
   osc->waveTable->fillWithAllZeros();
-
-  // restore the settings from the XmlElement:
-  osc->setMute(                     xmlState.getBoolAttribute(           "Mute",                  false));
-  osc->setLevel(                    xmlState.getDoubleAttribute(         "Level",                   0.0));
-  osc->setLevelByKey(               xmlState.getDoubleAttribute(         "LevelByKey",              0.0));
-  osc->setLevelByVel(               xmlState.getDoubleAttribute(         "LevelByVel",              0.0));
-  osc->setPan(                      xmlState.getDoubleAttribute(         "Pan",                     0.0));
-  osc->setMidSide(                  xmlState.getDoubleAttribute(         "MidSideRatio",            0.5));
-  osc->setStartPhase(               xmlState.getDoubleAttribute(         "StartPhase",              0.0));
-  osc->setStartPhaseByKey(          xmlState.getDoubleAttribute(         "StartPhaseByKey",         0.0));
-  osc->setStartPhaseByVel(          xmlState.getDoubleAttribute(         "StartPhaseByVel",         0.0));
-  osc->setTimeReverse(              xmlState.getBoolAttribute(           "TimeReverse",           false));
-  osc->setPolarityInversion(        xmlState.getBoolAttribute(           "PolarityInvert",        false));
-  osc->setFullWavePhaseWarp(        xmlState.getDoubleAttribute(         "FullWavePhaseWarp",       0.0));
-  osc->setHalfWavePhaseWarp(        xmlState.getDoubleAttribute(         "HalfWavePhaseWarp",       0.0));
-  osc->waveTable->setCombHarmonic(  xmlState.getDoubleAttribute(         "CombHarmonic",            1.0));
-  osc->waveTable->setCombAmount(    xmlState.getDoubleAttribute(         "CombAmount",              0.0));
-  osc->setDetuneSemitones(          xmlState.getDoubleAttribute(         "Tune",                    0.0));
-  osc->setDetuneHz(                 xmlState.getDoubleAttribute(         "DetuneHz",                0.0));
-  osc->setStereoDetuneSemitones(    xmlState.getDoubleAttribute(         "StereoDetuneSemitones",   0.0));
-  osc->setStereoDetuneHz(           xmlState.getDoubleAttribute(         "StereoDetuneHz",          0.0));
-  osc->setPitchEnvelopeDepth(       xmlState.getDoubleAttribute(         "PitchModulationDepth",    0.0));
-  osc->waveTable->setSpectralContrast( xmlState.getDoubleAttribute(      "SpectralContrast",        1.0));
-  osc->waveTable->setSpectralSlope(    xmlState.getDoubleAttribute(      "SpectralSlope",           0.0));
-  osc->waveTable->setHighestHarmonicToKeep(xmlState.getIntAttribute(     "HighestHarmonicToKeep",  1024));
-  osc->waveTable->setLowestHarmonicToKeep( xmlState.getIntAttribute(     "LowestHarmonicToKeep",      1));
-  osc->waveTable->setPhaseScale( xmlState.getDoubleAttribute(            "PhaseScale",              1.0));
-  osc->waveTable->setPhaseShift( xmlState.getDoubleAttribute(            "PhaseShift",              0.0));
-  osc->waveTable->setEvenOddRatio( xmlState.getDoubleAttribute(          "EvenOddRatio",            0.5));
-  osc->waveTable->setEvenOddPhaseShift(xmlState.getDoubleAttribute(      "EvenOddPhaseShift",       0.0));
-  osc->waveTable->setStereoPhaseShift( xmlState.getDoubleAttribute(      "StereoPhaseShift",        0.0));
-  osc->waveTable->setEvenOddStereoPhaseShift(xmlState.getDoubleAttribute("EvenOddStereoPhaseShift", 0.0));
 
   // let the oscillator and all its slaves calculate their increment:
   //osc->setFrequency(1000.0);
