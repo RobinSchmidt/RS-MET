@@ -435,185 +435,185 @@ void OscillatorStereoEditorContextMenu::createWidgets()
 
   // sliders for amplitude related parameters:
 
-  addWidget( levelSlider = new RSlider("LevelSlider") );
-  levelSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("Level") );
-  levelSlider->setDescription(juce::String("Output level of the oscillator"));
-  levelSlider->setStringConversionFunction(&decibelsToStringWithUnit2);
-  levelSlider->addListener(this); // to send out the change-message for display update
+  addWidget( levelSlider = s = new Sld );
+  s->assignParameter( oscillatorModuleToEdit->getParameterByName("Level") );
+  s->setDescription("Output level of the oscillator");
+  s->setStringConversionFunction(&decibelsToStringWithUnit2);
+  s->addListener(this); // to send out the change-message for display update
 
-  addWidget( levelByKeySlider = new RSlider("LevelByKeySlider") );
-  levelByKeySlider->assignParameter( oscillatorModuleToEdit->getParameterByName("LevelByKey") );
-  levelByKeySlider->setSliderName(juce::String("Key"));
-  levelByKeySlider->setDescription(juce::String("Key dependence of oscillator's output level"));
-  levelByKeySlider->setStringConversionFunction(&decibelsToStringWithUnit2);
+  addWidget( levelByKeySlider = s = new Sld );
+  s->assignParameter( oscillatorModuleToEdit->getParameterByName("LevelByKey") );
+  s->setSliderName("Key");
+  s->setDescription("Key dependence of oscillator's output level");
+  s->setStringConversionFunction(&decibelsToStringWithUnit2);
 
-  addWidget( levelByVelSlider = new RSlider("LevelVelSlider") );
-  levelByVelSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("LevelByVel") );
-  levelByVelSlider->setSliderName(juce::String("Vel"));
-  levelByVelSlider->setDescription(juce::String("Velocity dependence of oscillator's output level"));
-  levelByVelSlider->setStringConversionFunction(&decibelsToStringWithUnit2);
+  addWidget( levelByVelSlider = s = new Sld );
+  s->assignParameter( oscillatorModuleToEdit->getParameterByName("LevelByVel") );
+  s->setSliderName("Vel");
+  s->setDescription("Velocity dependence of oscillator's output level");
+  s->setStringConversionFunction(&decibelsToStringWithUnit2);
 
-  addWidget( midSideSlider = new RSlider("MidSideSlider") );
-  midSideSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("MidSide") );
-  midSideSlider->setSliderName(juce::String("Mid/Side"));
-  midSideSlider->setDescription("Mid/side adjustment for stereo(ized) waveforms");
-  midSideSlider->setStringConversionFunction(&ratioToString0);
-  midSideSlider->addListener(this);
+  addWidget( midSideSlider = s = new Sld );
+  s->assignParameter( oscillatorModuleToEdit->getParameterByName("MidSide") );
+  s->setSliderName("Mid/Side");
+  s->setDescription("Mid/side adjustment for stereo(ized) waveforms");
+  s->setStringConversionFunction(&ratioToString0);
+  s->addListener(this);
 
-  addWidget( panSlider = new RSlider("PanSlider") );
-  panSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("Pan") );
-  panSlider->setSliderName(juce::String("Pan"));
-  panSlider->setDescription("Panorama position of the oscillator");
-  panSlider->setStringConversionFunction(&valueToString2);
-  panSlider->addListener(this);
+  addWidget( panSlider = s = new Sld );
+  s->assignParameter( oscillatorModuleToEdit->getParameterByName("Pan") );
+  s->setSliderName("Pan");
+  s->setDescription("Panorama position of the oscillator");
+  s->setStringConversionFunction(&valueToString2);
+  s->addListener(this);
 
   // sliders for tuning related parameters:
 
   addWidget( tuneSlider = new TuningSlider("TuneSlider") );
   tuneSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("Tune") );
-  tuneSlider->setDescription(juce::String("Tuning of the oscillator in semitones"));
+  tuneSlider->setDescription("Tuning of the oscillator in semitones");
   tuneSlider->setStringConversionFunction(&semitonesToStringWithUnit2);
 
-  addWidget( detuneHzSlider = new RSlider("DetuneSlider") );
-  detuneHzSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("DetuneHz") );
-  detuneHzSlider->setSliderName(juce::String("Detune Hz"));
-  detuneHzSlider->setDescription(juce::String("Detuning of the oscillator in Hz"));
-  detuneHzSlider->setStringConversionFunction(&hertzToStringWithUnit2);
+  addWidget( detuneHzSlider = s = new Sld );
+  s->assignParameter( oscillatorModuleToEdit->getParameterByName("DetuneHz") );
+  s->setSliderName("Detune Hz");
+  s->setDescription("Detuning of the oscillator in Hz");
+  s->setStringConversionFunction(&hertzToStringWithUnit2);
 
-  addWidget( stereoDetuneSlider = new RSlider("StereoDetuneHzSlider") );
-  stereoDetuneSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("StereoDetune") );
-  stereoDetuneSlider->setSliderName(juce::String("Stereo Detune"));
-  stereoDetuneSlider->setDescription(juce::String("Detuning between left and right channel in semitones"));
-  stereoDetuneSlider->setStringConversionFunction(&semitonesToStringWithUnit2);
+  addWidget( stereoDetuneSlider = s = new Sld );
+  s->assignParameter( oscillatorModuleToEdit->getParameterByName("StereoDetune") );
+  s->setSliderName("Stereo Detune");
+  s->setDescription("Detuning between left and right channel in semitones");
+  s->setStringConversionFunction(&semitonesToStringWithUnit2);
 
-  addWidget( stereoDetuneHzSlider = new RSlider("StereoDetuneHzSlider") );
-  stereoDetuneHzSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("StereoDetuneHz") );
-  stereoDetuneHzSlider->setSliderName(juce::String("Stereo Detune Hz"));
-  stereoDetuneHzSlider->setDescription(juce::String("Detuning between left and right channel in Hz"));
-  stereoDetuneHzSlider->setStringConversionFunction(&hertzToStringWithUnit2);
+  addWidget( stereoDetuneHzSlider = s = new Sld );
+  s->assignParameter( oscillatorModuleToEdit->getParameterByName("StereoDetuneHz") );
+  s->setSliderName("Stereo Detune Hz");
+  s->setDescription("Detuning between left and right channel in Hz");
+  s->setStringConversionFunction(&hertzToStringWithUnit2);
 
   // sliders for time domain related parameters:
 
-  addWidget( startPhaseSlider = new RSlider("StartPhaseSlider") );
-  startPhaseSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("StartPhase") );
-  startPhaseSlider->setSliderName(juce::String("Start Phase"));
-  startPhaseSlider->setDescription("Start phase of the oscillator");
-  startPhaseSlider->setStringConversionFunction(&degreesToStringWithUnit0);
-  startPhaseSlider->addListener(this);
+  addWidget( startPhaseSlider = s = new Sld );
+  s->assignParameter( oscillatorModuleToEdit->getParameterByName("StartPhase") );
+  s->setSliderName("Start Phase");
+  s->setDescription("Start phase of the oscillator");
+  s->setStringConversionFunction(&degreesToStringWithUnit0);
+  s->addListener(this);
 
-  addWidget( fullWavePhaseWarpSlider = new RSlider("FullWavePhaseWarpSlider") );
-  fullWavePhaseWarpSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("FullWaveWarp") );
-  fullWavePhaseWarpSlider->setSliderName(juce::String("Full Wave Warp"));
-  fullWavePhaseWarpSlider->setDescription("Applies phase warping to the entire waveform");
-  fullWavePhaseWarpSlider->setStringConversionFunction(&degreesToStringWithUnit0);
-  fullWavePhaseWarpSlider->addListener(this);
+  addWidget( fullWavePhaseWarpSlider = s = new Sld );
+  s->assignParameter( oscillatorModuleToEdit->getParameterByName("FullWaveWarp") );
+  s->setSliderName("Full Wave Warp");
+  s->setDescription("Applies phase warping to the entire waveform");
+  s->setStringConversionFunction(&degreesToStringWithUnit0);
+  s->addListener(this);
 
-  addWidget( halfWavePhaseWarpSlider = new RSlider("HalfWavePhaseWarpSlider") );
-  halfWavePhaseWarpSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("HalfWaveWarp") );
-  halfWavePhaseWarpSlider->setSliderName(juce::String("Half Wave Warp"));
-  halfWavePhaseWarpSlider->setDescription("Applies phase warping both half cycles of the waveform");
-  halfWavePhaseWarpSlider->setStringConversionFunction(&degreesToStringWithUnit0);
-  halfWavePhaseWarpSlider->addListener(this);
+  addWidget( halfWavePhaseWarpSlider = s = new Sld );
+  s->assignParameter( oscillatorModuleToEdit->getParameterByName("HalfWaveWarp") );
+  s->setSliderName("Half Wave Warp");
+  s->setDescription("Applies phase warping both half cycles of the waveform");
+  s->setStringConversionFunction(&degreesToStringWithUnit0);
+  s->addListener(this);
 
-  addWidget( combHarmonicSlider = new RSlider("CombHarmonicSlider") );
-  combHarmonicSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("CombHarmonic") );
-  combHarmonicSlider->setSliderName(juce::String("Comb Harmonic"));
-  combHarmonicSlider->setDescription("Harmonic on which the comb filter acts");
-  combHarmonicSlider->setStringConversionFunction(&degreesToStringWithUnit0);
-  combHarmonicSlider->addListener(this);
-  //combHarmonicSlider->setVisible(false); // not yet meaningfully implemented
+  addWidget( combHarmonicSlider = s = new Sld );
+  s->assignParameter( oscillatorModuleToEdit->getParameterByName("CombHarmonic") );
+  s->setSliderName("Comb Harmonic");
+  s->setDescription("Harmonic on which the comb filter acts");
+  s->setStringConversionFunction(&degreesToStringWithUnit0);
+  s->addListener(this);
+  //s->setVisible(false); // not yet meaningfully implemented
 
-  addWidget( combAmountSlider = new RSlider("CombAmountSlider") );
-  combAmountSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("CombAmount") );
-  combAmountSlider->setSliderName(juce::String("Comb Amount"));
-  combAmountSlider->setDescription("Amount of comb filtering");
-  combAmountSlider->setStringConversionFunction(percentToStringWithUnit1);
-  combAmountSlider->addListener(this);
-  //combAmountSlider->setVisible(false); // not yet meaningfully implemented
+  addWidget( combAmountSlider = s = new Sld );
+  s->assignParameter( oscillatorModuleToEdit->getParameterByName("CombAmount") );
+  s->setSliderName("Comb Amount");
+  s->setDescription("Amount of comb filtering");
+  s->setStringConversionFunction(percentToStringWithUnit1);
+  s->addListener(this);
+  //s->setVisible(false); // not yet meaningfully implemented
 
-  addWidget( reverseButton = new RButton(juce::String("Reverse")) );
+  addWidget( reverseButton = new RButton("Reverse") );
   reverseButton->addRButtonListener(this);
   reverseButton->setDescription(juce::String("Time reverses the oscillator's waveform"));
   reverseButton->setClickingTogglesState(true);
 
-  addWidget( invertButton = new RButton(juce::String("Invert")) );
+  addWidget( invertButton = new RButton("Invert") );
   invertButton->addRButtonListener(this);
-  invertButton->setDescription(juce::String("Inverts polarity of the oscillator's ouput"));
+  invertButton->setDescription("Inverts polarity of the oscillator's ouput");
   invertButton->setClickingTogglesState(true);
 
   // sliders for magnitude spectrum related parameters:
 
-  addWidget( spectralContrastSlider = new RSlider("SpectralContrastSlider") );
-  spectralContrastSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("SpectralContrast") );
-  spectralContrastSlider->setSliderName(juce::String("Contrast"));
-  spectralContrastSlider->setDescription("Spectral contrast acting as exponent on the harmonic's magnitude");
-  spectralContrastSlider->setStringConversionFunction(&valueToString2);
-  spectralContrastSlider->addListener(this);
+  addWidget( spectralContrastSlider = s = new Sld );
+  s->assignParameter( oscillatorModuleToEdit->getParameterByName("SpectralContrast") );
+  s->setSliderName("Contrast");
+  s->setDescription("Spectral contrast acting as exponent on the harmonic's magnitude");
+  s->setStringConversionFunction(&valueToString2);
+  s->addListener(this);
 
-  addWidget( spectralSlopeSlider = new RSlider("SpectralSlopeSlider") );
-  spectralSlopeSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("SpectralSlope") );
-  spectralSlopeSlider->setSliderName(juce::String("Slope"));
-  spectralSlopeSlider->setDescription("Spectral slope applied to the waveform in dB/oct");
-  spectralSlopeSlider->setStringConversionFunction(&decibelsPerOctaveToString2);
-  spectralSlopeSlider->addListener(this);
+  addWidget( spectralSlopeSlider = s = new Sld );
+  s->assignParameter( oscillatorModuleToEdit->getParameterByName("SpectralSlope") );
+  s->setSliderName("Slope");
+  s->setDescription("Spectral slope applied to the waveform in dB/oct");
+  s->setStringConversionFunction(&decibelsPerOctaveToString2);
+  s->addListener(this);
 
-  addWidget( highestHarmonicSlider = new RSlider("LowpassSlider") );
-  highestHarmonicSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("HighestHarmonic") );
-  highestHarmonicSlider->setSliderName(juce::String("Highest Harmonic"));
-  highestHarmonicSlider->setDescription("Highest harmonic in the waveform");
-  highestHarmonicSlider->setStringConversionFunction(&valueToString0);
-  highestHarmonicSlider->addListener(this);
+  addWidget( highestHarmonicSlider = s = new Sld );
+  s->assignParameter( oscillatorModuleToEdit->getParameterByName("HighestHarmonic") );
+  s->setSliderName("Highest Harmonic");
+  s->setDescription("Highest harmonic in the waveform");
+  s->setStringConversionFunction(&valueToString0);
+  s->addListener(this);
 
-  addWidget( lowestHarmonicSlider = new RSlider("HighpassSlider") );
-  lowestHarmonicSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("LowestHarmonic") );
-  lowestHarmonicSlider->setSliderName(juce::String("Lowest Harmonic"));
-  lowestHarmonicSlider->setDescription("Lowest harmonic in the waveform");
-  lowestHarmonicSlider->setStringConversionFunction(&valueToString0);
-  lowestHarmonicSlider->addListener(this);
+  addWidget( lowestHarmonicSlider = s = new Sld );
+  s->assignParameter( oscillatorModuleToEdit->getParameterByName("LowestHarmonic") );
+  s->setSliderName("Lowest Harmonic");
+  s->setDescription("Lowest harmonic in the waveform");
+  s->setStringConversionFunction(&valueToString0);
+  s->addListener(this);
 
-  addWidget( evenOddSlider = new RSlider("EvenOddSlider") );
-  evenOddSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("EvenOddRatio") );
-  evenOddSlider->setSliderName(juce::String("Even/Odd"));
-  evenOddSlider->setDescription("Ratio of even and odd harmonics");
-  evenOddSlider->setStringConversionFunction(&ratioBothFullAtCenterToString0);
-  evenOddSlider->addListener(this);
+  addWidget( evenOddSlider = s = new Sld );
+  s->assignParameter( oscillatorModuleToEdit->getParameterByName("EvenOddRatio") );
+  s->setSliderName("Even/Odd");
+  s->setDescription("Ratio of even and odd harmonics");
+  s->setStringConversionFunction(&ratioBothFullAtCenterToString0);
+  s->addListener(this);
 
   // sliders for phase spectrum related parameters:
 
-  addWidget( evenOddPhaseShiftSlider = new RSlider("EvenOddPhaseShiftSlider") );
-  evenOddPhaseShiftSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("EvenOddPhaseShift") );
-  evenOddPhaseShiftSlider->setSliderName(juce::String("Even/Odd Shift:"));
-  evenOddPhaseShiftSlider->setDescription("Applies a phase shift between even and odd harmonics");
-  evenOddPhaseShiftSlider->setStringConversionFunction(&degreesToStringWithUnit0);
-  evenOddPhaseShiftSlider->addListener(this);
+  addWidget( evenOddPhaseShiftSlider = s = new Sld );
+  s->assignParameter( oscillatorModuleToEdit->getParameterByName("EvenOddPhaseShift") );
+  s->setSliderName("Even/Odd Shift:");
+  s->setDescription("Applies a phase shift between even and odd harmonics");
+  s->setStringConversionFunction(&degreesToStringWithUnit0);
+  s->addListener(this);
 
-  addWidget( phaseScaleSlider = new RSlider("PhaseScaleSlider") );
-  phaseScaleSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("PhaseScale") );
-  phaseScaleSlider->setSliderName(juce::String("Scale:"));
-  phaseScaleSlider->setDescription("Scales the phase of each harmonic ");
-  phaseScaleSlider->setStringConversionFunction(&degreesToStringWithUnit0);
-  phaseScaleSlider->addListener(this);
+  addWidget( phaseScaleSlider = s = new Sld );
+  s->assignParameter( oscillatorModuleToEdit->getParameterByName("PhaseScale") );
+  s->setSliderName("Scale:");
+  s->setDescription("Scales the phase of each harmonic ");
+  s->setStringConversionFunction(&degreesToStringWithUnit0);
+  s->addListener(this);
 
-  addWidget( phaseShiftSlider = new RSlider("PhaseShiftSlider") );
-  phaseShiftSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("PhaseShift") );
-  phaseShiftSlider->setSliderName(juce::String("Shift:"));
-  phaseShiftSlider->setDescription("Shifts the phase of each harmonic by a constant");
-  phaseShiftSlider->setStringConversionFunction(&degreesToStringWithUnit0);
-  phaseShiftSlider->addListener(this);
+  addWidget( phaseShiftSlider = s = new Sld );
+  s->assignParameter( oscillatorModuleToEdit->getParameterByName("PhaseShift") );
+  s->setSliderName("Shift:");
+  s->setDescription("Shifts the phase of each harmonic by a constant");
+  s->setStringConversionFunction(&degreesToStringWithUnit0);
+  s->addListener(this);
 
-  addWidget( stereoPhaseShiftSlider = new RSlider("StereoPhaseShiftSlider") );
-  stereoPhaseShiftSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("StereoPhaseShift") );
-  stereoPhaseShiftSlider->setSliderName(juce::String("Stereo Shift:"));
-  stereoPhaseShiftSlider->setDescription("Applies stereoization via phase-shifting of harmonics");
-  stereoPhaseShiftSlider->setStringConversionFunction(&degreesToStringWithUnit0);
-  stereoPhaseShiftSlider->addListener(this);
+  addWidget( stereoPhaseShiftSlider = s = new Sld );
+  s->assignParameter( oscillatorModuleToEdit->getParameterByName("StereoPhaseShift") );
+  s->setSliderName("Stereo Shift:");
+  s->setDescription("Applies stereoization via phase-shifting of harmonics");
+  s->setStringConversionFunction(&degreesToStringWithUnit0);
+  s->addListener(this);
 
-  addWidget( evenOddStereoPhaseShiftSlider = new RSlider("EvenOddPhaseShiftSlider") );
-  evenOddStereoPhaseShiftSlider->assignParameter( oscillatorModuleToEdit->getParameterByName("EvenOddStereoPhaseShift") );
-  evenOddStereoPhaseShiftSlider->setSliderName(juce::String("Even/Odd Stereo Shift:"));
-  evenOddStereoPhaseShiftSlider->setDescription("Phase shift between even/odd harmonics, applied with opposite signs to left/right channels");
-  evenOddStereoPhaseShiftSlider->setStringConversionFunction(&degreesToStringWithUnit0);
-  evenOddStereoPhaseShiftSlider->addListener(this);
+  addWidget( evenOddStereoPhaseShiftSlider = s = new Sld );
+  s->assignParameter( oscillatorModuleToEdit->getParameterByName("EvenOddStereoPhaseShift") );
+  s->setSliderName("Even/Odd Stereo Shift:");
+  s->setDescription("Phase shift between even/odd harmonics, applied with opposite signs to left/right channels");
+  s->setStringConversionFunction(&degreesToStringWithUnit0);
+  s->addListener(this);
 
   addWidget( closeButton = new RButton(RButton::CLOSE) );
   closeButton->setDescription(juce::String("Closes the oscillator context menu"));
