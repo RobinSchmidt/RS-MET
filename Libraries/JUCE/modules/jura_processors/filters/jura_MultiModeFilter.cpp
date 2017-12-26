@@ -241,21 +241,16 @@ void MultiModeFilterAudioModule::setStateFromXml(const XmlElement& xmlState,
 
 void MultiModeFilterAudioModule::createParameters()
 {
-  //typedef MetaControlledParameter Param;
-  //Param* p;
+  typedef MetaControlledParameter Param;
+  Param* p;
 
   typedef rosic::MultiModeFilter MMF;
   MMF* mmf = wrappedMultiModeFilter;
 
   std::vector<double> defaultValues;
 
-  // this pointer will be used to temporarily store the addresses of the created 
-  // AutomatableParameter-objects:
-  typedef AutomatableParameter Param;
-  AutomatableParameter* p;
-
   // #00
-  p = new Param(lock, "Frequency", 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL, 74);
+  p = new Param("Frequency", 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL, 0.0);
   defaultValues.push_back(20.0);
   defaultValues.push_back(200.0);
   defaultValues.push_back(2000.0);
@@ -266,7 +261,7 @@ void MultiModeFilterAudioModule::createParameters()
     // harmonics (assuming keytrack==100%)
 
   // #01
-  p = new Param(lock, "FrequencyByKey", -200.0, 200.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new Param("FrequencyByKey", -200.0, 200.0, 0.0, Parameter::LINEAR, 0.1);
   defaultValues.clear(); 
   defaultValues.push_back(0.0);
   defaultValues.push_back(25.0);
@@ -277,17 +272,17 @@ void MultiModeFilterAudioModule::createParameters()
   addObservedParameter(p);
 
   // #02
-  p = new Param(lock, "FrequencyByVel", -200.0, 200.0, 0.1, 0.0,  Parameter::LINEAR);
+  p = new Param("FrequencyByVel", -200.0, 200.0, 0.0,  Parameter::LINEAR, 0.1);
   p->setDefaultValues(defaultValues);
   addObservedParameter(p);
 
   // #03
-  p = new Param(lock, "Resonance", 0.0, 100.0, 0.1, 10.0, Parameter::LINEAR, 71);
+  p = new Param("Resonance", 0.0, 100.0, 10.0, Parameter::LINEAR, 0.1);
   p->setDefaultValues(defaultValues);
   addObservedParameter(p);
 
   // #04
-  p = new Param(lock, "Q", 0.5, 50.0, 0.001, sqrt(0.5), Parameter::EXPONENTIAL, 71);
+  p = new Param("Q", 0.5, 50.0, sqrt(0.5), Parameter::EXPONENTIAL, 0.001);
   defaultValues.clear(); 
   defaultValues.push_back(0.5);
   defaultValues.push_back(sqrt(0.5));
@@ -296,7 +291,7 @@ void MultiModeFilterAudioModule::createParameters()
   addObservedParameter(p);
 
   // #05
-  p = new Param(lock, "PreAllpass", 20.0, 20000.0, 0.0, 20000.0, Parameter::EXPONENTIAL);
+  p = new Param("PreAllpass", 20.0, 20000.0, 20000.0, Parameter::EXPONENTIAL, 0.0);
   defaultValues.clear(); 
   defaultValues.push_back(20.0);
   defaultValues.push_back(200.0);
@@ -306,7 +301,7 @@ void MultiModeFilterAudioModule::createParameters()
   addObservedParameter(p);
 
   // #06
-  p = new Param(lock, "MakeUp", 0.0, 100.0, 1.0, 0.0,  Parameter::LINEAR);
+  p = new Param("MakeUp", 0.0, 100.0, 0.0,  Parameter::LINEAR, 1.0);
   defaultValues.clear(); 
   defaultValues.push_back(0.0);
   defaultValues.push_back(25.0);
@@ -317,7 +312,7 @@ void MultiModeFilterAudioModule::createParameters()
   addObservedParameter(p);
 
   // #07
-  p = new Param(lock, "Drive", -24.0, 24.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new Param("Drive", -24.0, 24.0, 0.0, Parameter::LINEAR, 0.01);
   defaultValues.clear(); 
   defaultValues.push_back(-24.0);
   defaultValues.push_back(-18.0);
@@ -334,11 +329,11 @@ void MultiModeFilterAudioModule::createParameters()
   addObservedParameter(p);
 
   // #08
-  p = new Param(lock, "Dc", -1.0, 1.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new Param("Dc", -1.0, 1.0, 0.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
 
   // #09
-  p = new Param(lock, "Gain", -60.0, 30.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new Param("Gain", -60.0, 30.0, 0.0, Parameter::LINEAR, 0.01);
   defaultValues.clear(); 
   defaultValues.push_back(-24.0);
   defaultValues.push_back(-18.0);
@@ -355,7 +350,7 @@ void MultiModeFilterAudioModule::createParameters()
   addObservedParameter(p);
 
   // #10
-  p = new Param(lock, "Morph", -0.99, 0.99, 0.01, 0.0, Parameter::LINEAR);
+  p = new Param("Morph", -0.99, 0.99, 0.0, Parameter::LINEAR, 0.01);
   defaultValues.clear(); 
   defaultValues.push_back(-0.99);
   defaultValues.push_back(0.5);
@@ -364,7 +359,7 @@ void MultiModeFilterAudioModule::createParameters()
   addObservedParameter(p);
 
   // #11
-  p = new Param(lock, "Order", 0.0, 4.0, 1.0, 4.0, Parameter::LINEAR);
+  p = new Param("Order", 0.0, 4.0, 4.0, Parameter::LINEAR, 1.0);
   addObservedParameter(p);
 
   //// make a call to setValue for each parameter in order to set up all the slave voices:
