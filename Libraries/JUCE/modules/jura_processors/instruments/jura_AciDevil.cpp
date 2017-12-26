@@ -159,7 +159,7 @@ AciDevilModuleEditor::AciDevilModuleEditor(CriticalSection *newPlugInLock,
 
   createWidgets();
   updateWidgetsAccordingToState();
-  setSize(781, 396);
+  setSize(779, 388);
 }
 
 void AciDevilModuleEditor::createWidgets()
@@ -386,16 +386,16 @@ void AciDevilModuleEditor::resized()
 
   guiLayoutRectangles.clear();
   globalRectangle.setBounds(x, y, w, h);
-  x = globalRectangle.getRight();
+  x = globalRectangle.getRight()-2;
   w = 140;
   oscRectangle.setBounds(x, y, w, h);
-  x = oscRectangle.getRight();
+  x = oscRectangle.getRight()-2;
   w = 140;
   filterRectangle.setBounds(x, y, w, h);
-  x = filterRectangle.getRight();
+  x = filterRectangle.getRight()-2;
   w = 140;
   filterEnvRectangle.setBounds(x, y, w, h);
-  x = filterEnvRectangle.getRight();
+  x = filterEnvRectangle.getRight()-2;
   w = 140;
   ampRectangle.setBounds(x, y, w, h);
   guiLayoutRectangles.add(globalRectangle);
@@ -480,7 +480,7 @@ void AciDevilModuleEditor::resized()
   y += 24;
   distortionDriveSlider->setBounds(x+4, y+4, w-8, 16);
 
-  y = globalRectangle.getBottom();
+  y = globalRectangle.getBottom()-2;
   w = filterRectangle.getRight();
   sequencerEditor->setBounds(0, y, w, 252);
 }
