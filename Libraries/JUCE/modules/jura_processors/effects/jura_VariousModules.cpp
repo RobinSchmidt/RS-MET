@@ -1424,8 +1424,13 @@ void LimiterAudioModule::createStaticParameters()
   p->setValueChangeCallback<Limiter>(wrappedLimiter, &Limiter::setLimit);
 }
 
-LimiterModuleEditor::LimiterModuleEditor(CriticalSection *newPlugInLock, LimiterAudioModule* newLimiterAudioModule)
-: AudioModuleEditor(newLimiterAudioModule)
+AudioModuleEditor* LimiterAudioModule::createEditor()
+{
+  return new LimiterModuleEditor(lock, this);
+}
+
+LimiterModuleEditor::LimiterModuleEditor(CriticalSection *newPlugInLock, 
+  LimiterAudioModule* newLimiterAudioModule) : AudioModuleEditor(newLimiterAudioModule)
 {
   ScopedLock scopedLock(*lock);
 
@@ -1488,6 +1493,8 @@ LimiterModuleEditor::LimiterModuleEditor(CriticalSection *newPlugInLock, Limiter
   limitSlider->setDescription(juce::String(("Limit above which the signal will be attenuated")));
   limitSlider->setDescriptionField(infoField);
   limitSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
+
+  setSize(400, 215);
 }
 
 void LimiterModuleEditor::resized()
@@ -1501,10 +1508,11 @@ void LimiterModuleEditor::resized()
   int h = getHeight()-y;  // usable height
 
   int h3 = h/3;
-  curveParametersRect.setBounds(x, y, w/2, 2*h3);
-  timeParametersRect.setBounds(x+w/2, y, w/2, 2*h3);
-  y += 2*h3;
-  otherParametersRect.setBounds(x, y, w, h3);
+  curveParametersRect.setBounds(x,      y, w/2+1, 2*h3);
+  timeParametersRect.setBounds(x+w/2-2, y, w/2+2, 2*h3);
+  y += 2*h3-2;
+  //otherParametersRect.setBounds(x, y, w, h3);
+  otherParametersRect.setBounds(x, y, w, getHeight()-y);
 
   guiLayoutRectangles.clear();
   guiLayoutRectangles.add(curveParametersRect);

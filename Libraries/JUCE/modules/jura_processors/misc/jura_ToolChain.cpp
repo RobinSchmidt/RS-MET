@@ -116,67 +116,6 @@ juce::String AudioModuleFactory::getModuleType(AudioModule *m)
   //return "UnknownType";
 }
 
-/*
-StringArray AudioModuleFactory::getAvailableModuleTypes()
-{
-  // this function is obsolete now. we now use the tree in AudioModuleSelector...but this is 
-  // somehow bad design - it would be better, if this function could return some kind of StringTree
-  // which in turn is used to populate the AudioModuleSelector
-
-  // here, we can make certain modules temporarily unavailable by simply commenting the
-  // corresponding line
-
-  StringArray a;
-  a.add("None");        // maybe use "Empty" instead of "None"
-
-  // modulators:
-  a.add("BreakpointModulator");
-
-  // analysis:
-  a.add("Scope");
-  //a.add("PhaseScope2");
-  a.add("MultiAnalyzer");
-  a.add("TrackMeter");
-  a.add("MidiMonitor");
-
-  // generators:
-  a.add("RayBouncer");
-
-  // filters:
-  a.add("Equalizer");
-  a.add("Ladder");
-  //a.add("PhasorFilter");
-  a.add("EngineersFilter");
-  //a.add("CrossOver"); // makes actually no sense in 2in/2out plugin - but just for test
-
-  // effects:
-  a.add("Enveloper");
-  a.add("FuncShaper");
-  //a.add("AlgoVerb");  // currently inactive - not yet complete
-  //a.add("EchoLab");
-  a.add("StereoDelay");
-  a.add("PitchShifter");
-  //a.add("Quadrifex");
-  //a.add("Moduluxury");
-  //a.add("ChannelMatrix2x2");
-  //a.add("DspWorkbench");
-
-  // instruments:
-  a.add("AcidDevil");
-  a.add("Straightliner");
-  //a.add("MagicCarpet");
-  //a.add("SimpleSampler");
-  //a.add("KeyShot");
-  //a.add("Quadriga");
-  //a.add("Workhorse");
-#ifdef _MSC_VER
-  a.add("Liberty"); // not yet available on gcc
-#endif
-
-  return a;
-}
-*/
-
 //=================================================================================================
 
 AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
@@ -259,20 +198,21 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
   node->setOpen(false);
   popUpMenu->addTreeNodeItem(node);
 
-  /*
-  // ToDo:
-  node = new RTreeViewNode("UnderConstruction", -1, "UnderConstruction");
+  bool showUnfinishedModules = false;
+  if(showUnfinishedModules)
+  {
+    node = new RTreeViewNode("UnderConstruction", -1, "UnderConstruction");
 #ifdef _MSC_VER
-  node->addChildNode(new RTreeViewNode("Liberty",        i++));     // not yet available on gcc
+    node->addChildNode(new RTreeViewNode("Liberty", i++));     // not yet available on gcc
 #endif
-  //node->addChildNode(new RTreeViewNode("MagicCarpet",    i++));
-  //node->addChildNode(new RTreeViewNode("SimpleSampler",  i++));
-  //node->addChildNode(new RTreeViewNode("KeyShot",        i++));
-  //node->addChildNode(new RTreeViewNode("Quadriga",       i++));
-  //node->addChildNode(new RTreeViewNode("Workhorse",      i++));
-  node->setOpen(false);
-  popUpMenu->addTreeNodeItem(node);
-  */
+    //node->addChildNode(new RTreeViewNode("MagicCarpet",    i++));
+    node->addChildNode(new RTreeViewNode("SimpleSampler",  i++));
+    //node->addChildNode(new RTreeViewNode("KeyShot",        i++));
+    //node->addChildNode(new RTreeViewNode("Quadriga",       i++));
+    //node->addChildNode(new RTreeViewNode("Workhorse",      i++));
+    node->setOpen(false);
+    popUpMenu->addTreeNodeItem(node);
+  }
 
   //setSize(300, 300); // has no effect
 }
