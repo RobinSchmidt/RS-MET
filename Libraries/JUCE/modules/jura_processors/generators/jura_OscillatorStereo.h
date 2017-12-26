@@ -22,7 +22,7 @@ public:
   //---------------------------------------------------------------------------------------------
   // automation and state management:
 
-  virtual void parameterChanged(Parameter* parameterThatHasChanged);
+  //virtual void parameterChanged(Parameter* parameterThatHasChanged);
 
   virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
     bool markAsClean);

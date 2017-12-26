@@ -13,7 +13,7 @@ OscillatorStereoAudioModule::OscillatorStereoAudioModule(CriticalSection *newPlu
 
 //-------------------------------------------------------------------------------------------------
 // automation:
-
+/*
 void OscillatorStereoAudioModule::parameterChanged(Parameter* parameterThatHasChanged)
 {
   if( wrappedOscillatorStereo == NULL )
@@ -54,6 +54,7 @@ void OscillatorStereoAudioModule::parameterChanged(Parameter* parameterThatHasCh
   } // end of switch( parameterIndex )
   markStateAsDirty();
 }
+*/
 
 //-------------------------------------------------------------------------------------------------
 // state saving and recall:
@@ -224,13 +225,17 @@ void OscillatorStereoAudioModule::createParameters()
   typedef rosic::OscillatorStereo OS;
   OS* os = wrappedOscillatorStereo;
 
+  typedef rosic::MipMappedWaveTableStereo WT;
+  WT* wt = os->waveTable;
+
   std::vector<double> defaultValues;
 
   // amplitude related parameters:
 
-  //Mte
+  p = new Param("Mute", 0.0, 1.0, 0.0, Parameter::BOOLEAN, 1.0);
+  p->setValueChangeCallback<OS>(os, &OS::setMute);
+  addObservedParameter(p);
 
-  // #000:
   p = new Param("Level",    -36.0, 12.0, 0.0, Parameter::LINEAR, 0.01);
   p->setValueChangeCallback<OS>(os, &OS::setLevel);
   defaultValues.push_back(-3.01029996);   // compensation gain for  2 uncorrelated sources
@@ -241,17 +246,14 @@ void OscillatorStereoAudioModule::createParameters()
   p->setDefaultValues(defaultValues);
   addObservedParameter(p);
 
-  // #001:
   p = new Param("LevelByKey", -24.0, 24.0, 0.0, Parameter::LINEAR, 0.01);
   p->setValueChangeCallback<OS>(os, &OS::setLevelByKey);
   addObservedParameter(p);
 
-  // #002:
   p = new Param("LevelByVel", -12.0, 12.0, 0.0, Parameter::LINEAR, 0.01);
   p->setValueChangeCallback<OS>(os, &OS::setLevelByVel);
   addObservedParameter(p);
 
-  // #003:
   p = new Param("MidSide",    0.0,  1.0, 0.5, Parameter::LINEAR, 0.01);
   p->setValueChangeCallback<OS>(os, &OS::setMidSide);
   defaultValues.clear();
@@ -261,7 +263,6 @@ void OscillatorStereoAudioModule::createParameters()
   p->setDefaultValues(defaultValues);
   addObservedParameter(p);
 
-  // #004:
   p = new Param("Pan",       -1.0,  1.0, 0.0, Parameter::LINEAR, 0.01);
   p->setValueChangeCallback<OS>(os, &OS::setPan);
   defaultValues.clear();
@@ -279,7 +280,6 @@ void OscillatorStereoAudioModule::createParameters()
 
   // tuning related parameters:
 
-  // #005:
   p = new Param("Tune",     -36.0, 36.0, 0.0, Parameter::LINEAR, 0.01);
   p->setValueChangeCallback<OS>(os, &OS::setDetuneSemitones);
   defaultValues.clear();
@@ -298,8 +298,8 @@ void OscillatorStereoAudioModule::createParameters()
   p->setDefaultValues(defaultValues);
   addObservedParameter(p);
 
-  // #006:
   p = new Param("DetuneHz", -20.0, 20.0, 0.0, Parameter::LINEAR, 0.01);
+  p->setValueChangeCallback<OS>(os, &OS::setDetuneHz);
   defaultValues.clear();
   defaultValues.push_back(-4.0);
   defaultValues.push_back(-3.0);
@@ -313,8 +313,8 @@ void OscillatorStereoAudioModule::createParameters()
   p->setDefaultValues(defaultValues);
   addObservedParameter(p);
 
-  // #007:
   p = new Param("StereoDetune", -1.0, 1.0, 0.0, Parameter::LINEAR, 0.01);
+  p->setValueChangeCallback<OS>(os, &OS::setStereoDetuneSemitones);
   defaultValues.clear();
   defaultValues.push_back(-0.2);
   defaultValues.push_back(-0.1);
@@ -324,8 +324,8 @@ void OscillatorStereoAudioModule::createParameters()
   p->setDefaultValues(defaultValues);
   addObservedParameter(p);
 
-  // #008:
   p = new Param("StereoDetuneHz", -10.0, 10.0, 0.0, Parameter::LINEAR, 0.01);
+  p->setValueChangeCallback<OS>(os, &OS::setStereoDetuneHz);
   defaultValues.clear();
   defaultValues.push_back(-4.0);
   defaultValues.push_back(-3.0);
@@ -339,8 +339,8 @@ void OscillatorStereoAudioModule::createParameters()
   p->setDefaultValues(defaultValues);
   addObservedParameter(p);
 
-  // #009:
   p = new Param("PitchModulationDepth", -8.0, 8.0, 0.0, Parameter::LINEAR, 0.01);
+  p->setValueChangeCallback<OS>(os, &OS::setPitchEnvelopeDepth);
   defaultValues.clear();
   defaultValues.push_back(-1.0);
   defaultValues.push_back(0.0);
@@ -350,8 +350,8 @@ void OscillatorStereoAudioModule::createParameters()
 
   // time domain waveform related parameters:
 
-  // #010:
   p = new Param("StartPhase", 0.0, 360.0, 0.01, Parameter::LINEAR, 1.0); // why not 0.0 as default?
+  p->setValueChangeCallback<OS>(os, &OS::setStartPhase);
   defaultValues.clear();
   defaultValues.push_back(0.0);
   defaultValues.push_back(45.0);
@@ -364,17 +364,18 @@ void OscillatorStereoAudioModule::createParameters()
   p->setDefaultValues(defaultValues);
   addObservedParameter(p);
 
-  // #011:
-  sp = new StaticParam("FullWaveWarp", -0.99, 0.99, 0.0, Parameter::LINEAR, 0.001);
+  // can we use Param - i.e. is this a parameter that doesn't trigger mip-map recreation?
+  sp = new StaticParam("FullWaveWarp", -0.99, 0.99, 0.0, Parameter::LINEAR, 0.001); 
+  sp->setValueChangeCallback<OS>(os, &OS::setFullWavePhaseWarp);
   addObservedParameter(sp);
 
-  // #012:
   sp = new StaticParam("HalfWaveWarp", -0.99, 0.99, 0.0, Parameter::LINEAR, 0.001);
+  sp->setValueChangeCallback<OS>(os, &OS::setHalfWavePhaseWarp);
   addObservedParameter(sp);
 
   // #013:
   /*
-  p = new AutomatableParameter("CombOffset", 0.0, 360.0, 0.0, Parameter::LINEAR, 0.1);
+  sp = new StaticParam("CombOffset", 0.0, 360.0, 0.0, Parameter::LINEAR, 0.1);
   defaultValues.clear();
   defaultValues.push_back(0.0);
   defaultValues.push_back(45.0);
@@ -384,55 +385,55 @@ void OscillatorStereoAudioModule::createParameters()
   defaultValues.push_back(225.0);
   defaultValues.push_back(270.0);
   defaultValues.push_back(315.0);
-  p->setDefaultValues(defaultValues);
-  addObservedParameter(p);
+  sp->setDefaultValues(defaultValues);
+  addObservedParameter(sp);
   */
 
-  // #014:
   sp = new StaticParam("CombHarmonic", 1.0, 128.0, 1.0, Parameter::EXPONENTIAL, 0.01);
+  sp->setValueChangeCallback<WT>(wt, &WT::setCombHarmonic);
   addObservedParameter(sp);
 
-  // #014:
   sp = new StaticParam("CombAmount", -100.0, 100.0, 0.0, Parameter::LINEAR, 0.1);
+  sp->setValueChangeCallback<WT>(wt, &WT::setCombAmount);
   addObservedParameter(sp);
 
   // magnitude spectrum related parameters:
 
-  // #015:
   sp = new StaticParam("SpectralContrast", 0.25, 4.0, 1.0, Parameter::EXPONENTIAL, 0.01);
+  sp->setValueChangeCallback<WT>(wt, &WT::setSpectralContrast);
   addObservedParameter(sp);
 
-  // #016:
   sp = new StaticParam("SpectralSlope", -6.0, 6.0, 0.0, Parameter::LINEAR, 0.01);
+  sp->setValueChangeCallback<WT>(wt, &WT::setSpectralSlope);
   addObservedParameter(sp);
 
-  // #017:
   sp = new StaticParam("HighestHarmonic", 1.0, 1024.0, 1024.0, Parameter::EXPONENTIAL, 1.0);
+  sp->setValueChangeCallback<WT>(wt, &WT::setHighestHarmonicToKeep);
   addObservedParameter(sp);
 
-  // #018:
   sp = new StaticParam("LowestHarmonic", 1.0, 1024.0, 1.0, Parameter::EXPONENTIAL, 1.0);
+  sp->setValueChangeCallback<WT>(wt, &WT::setLowestHarmonicToKeep);
   addObservedParameter(sp);
 
-  // #019:
   sp = new StaticParam("EvenOddRatio", 0.0, 1.0, 0.5, Parameter::LINEAR, 0.005);
+  sp->setValueChangeCallback<WT>(wt, &WT::setEvenOddRatio);
   addObservedParameter(sp);
 
   //-----------------------------------------------------------------------------------------------
   // phase spectrum related parameters:
 
-  // #020:
   sp = new StaticParam("PhaseScale", -1.0, 1.0, 1.0, Parameter::LINEAR, 0.01);
-  sp->setDefaultValues(defaultValues);
+  sp->setValueChangeCallback<WT>(wt, &WT::setPhaseScale);
+  sp->setDefaultValues(defaultValues); // ?
   addObservedParameter(sp);
 
-  // #021:
   sp = new StaticParam("PhaseShift", -180.0, 180.0, 0.0, Parameter::LINEAR, 1.0);
+  sp->setValueChangeCallback<WT>(wt, &WT::setPhaseShift);
   sp->setDefaultValues(defaultValues);
   addObservedParameter(sp);
 
-  // #022:
   sp = new StaticParam("EvenOddPhaseShift", -180.0, 180.0, 0.0, Parameter::LINEAR, 1.0);
+  sp->setValueChangeCallback<WT>(wt, &WT::setEvenOddPhaseShift);
   defaultValues.clear();
   defaultValues.push_back(-90.0);
   defaultValues.push_back(-45.0);
@@ -442,13 +443,13 @@ void OscillatorStereoAudioModule::createParameters()
   sp->setDefaultValues(defaultValues);
   addObservedParameter(sp);
 
-  // #023:
   sp = new StaticParam("StereoPhaseShift", -180.0, 180.0, 0.0, Parameter::LINEAR, 1.0);
+  sp->setValueChangeCallback<WT>(wt, &WT::setStereoPhaseShift);
   sp->setDefaultValues(defaultValues);
   addObservedParameter(sp);
 
-  // #024:
   sp = new StaticParam("EvenOddStereoPhaseShift", -180.0, 180.0, 0.0, Parameter::LINEAR, 1.0);
+  sp->setValueChangeCallback<WT>(wt, &WT::setEvenOddStereoPhaseShift);
   sp->setDefaultValues(defaultValues);
   addObservedParameter(sp);
 }
