@@ -774,27 +774,7 @@ OscillatorStereoEditor::OscillatorStereoEditor(CriticalSection *newPlugInLock,
   // init the pointer to the modulator to be edited to NULL:
   oscillatorToEdit = NULL;
   jassert( newOscillatorStereoAudioModule != NULL );
-
-
-
-  addPlot( waveformDisplay = new WaveformDisplayOld() );
-  waveformDisplay->setAutoReRendering(false);
-  waveformDisplay->setDescription(juce::String("Click on the display to switch oscillator on/off"));
-  waveformDisplay->setAxisPositionX(CoordinateSystemOld::INVISIBLE);
-  waveformDisplay->setAxisPositionY(CoordinateSystemOld::INVISIBLE);
-  waveformDisplay->setCurrentRangeY(-1.2, 1.2);
-  waveformDisplay->setSampleRate(1.0);
-  waveformDisplay->addMouseListener(this, true);
-  waveformDisplay->setAutoReRendering(true);
-
-  addPlot( emptyDisplay = new CoordinateSystemOld() );
-  emptyDisplay->setAutoReRendering(false);
-  emptyDisplay->setDescription(waveformDisplay->getDescription());
-  emptyDisplay->setAxisPositionX(CoordinateSystemOld::INVISIBLE);
-  emptyDisplay->setAxisPositionY(CoordinateSystemOld::INVISIBLE);
-  emptyDisplay->setCaption(juce::String("Off"), CoordinateSystemOld::CENTER);
-  emptyDisplay->addMouseListener(this, true);
-  emptyDisplay->setAutoReRendering(true);
+  createWidgets();
 
   contextMenu = new OscillatorStereoEditorContextMenu(newOscillatorStereoAudioModule, this);
   contextMenu->addChangeListener(this);
@@ -803,60 +783,6 @@ OscillatorStereoEditor::OscillatorStereoEditor(CriticalSection *newPlugInLock,
   contextMenu->closeButton->addRButtonListener(this);
   addChildColourSchemeComponent(contextMenu, false, false);
   //contextMenu->setSize(200, 200);
-
-  /*
-  contextMenuViewport = new Viewport(juce::String(T("OscillatorStereoSliderViewport")));
-  contextMenuViewport->setViewedComponent(contextMenu);
-  contextMenuViewport->setScrollBarThickness(12);
-  contextMenuViewport->setScrollBarsShown(true, false);
-  addAndMakeVisible(contextMenuViewport);
-  */
-
-  addWidget( waveFileLabel = new RTextField() );
-  waveFileLabel->setNoBackgroundAndOutline(true);
-  waveFileLabel->setJustification(Justification::centredBottom);
-  waveFileLabel->setDescription(juce::String("Name of the currently loaded single cycle audiofile"));
-
-  addWidget( waveLoadButton = new RButton(juce::String("Load")) );
-  waveLoadButton->addRButtonListener(this);
-  waveLoadButton->setDescription(juce::String("Load a waveform"));
-  waveLoadButton->setClickingTogglesState(false);
-
-  addWidget( wavePlusButton = new RButton(RButton::ARROW_RIGHT) );
-  wavePlusButton->addRButtonListener(this);
-  wavePlusButton->setDescription(juce::String("Next waveform in current directory"));
-  wavePlusButton->setClickingTogglesState(false);
-
-  addWidget( waveMinusButton = new RButton(RButton::ARROW_LEFT) );
-  waveMinusButton->addRButtonListener(this);
-  waveMinusButton->setDescription(juce::String("Previous waveform in current directory"));
-  waveMinusButton->setClickingTogglesState(false);
-
-  addWidget( moreButton = new RButton(juce::String("More")) );
-  moreButton->addRButtonListener(this);
-  moreButton->setDescription(juce::String("Open/close context menu with more options"));
-  moreButton->setClickingTogglesState(true);
-
-  addWidget( levelSlider = new RSlider("VolumeSlider") );
-  levelSlider->assignParameter( moduleToEdit->getParameterByName("Level") );
-  levelSlider->setSliderName(juce::String("Level"));
-  levelSlider->setDescription(juce::String("Output level of the oscillator"));
-  levelSlider->setStringConversionFunction(&decibelsToStringWithUnit2);
-  levelSlider->setLayout(RSlider::NAME_ABOVE);
-  levelSlider->addListener(this); // only to update the plot
-
-  addWidget( tuneSlider = new TuningSlider("TuneSlider") );
-  tuneSlider->assignParameter( moduleToEdit->getParameterByName("Tune") );
-  tuneSlider->setSliderName(juce::String("Tune"));
-  tuneSlider->setDescription(juce::String("Tuning of the oscillator in semitones"));
-  tuneSlider->setStringConversionFunction(&semitonesToStringWithUnit2);
-  tuneSlider->setLayout(RSlider::NAME_ABOVE);
-
-  addWidget( pitchModulationSlider = new RSlider("PitchModulationSlider") );
-  pitchModulationSlider->assignParameter( moduleToEdit->getParameterByName("PitchModulationDepth") );
-  pitchModulationSlider->setSliderName(juce::String("Mod"));
-  pitchModulationSlider->setDescription("Modulation depth for the pitch modulator");
-  pitchModulationSlider->setStringConversionFunction(&valueToString2);
 
   numSamplesInPlot    = 0;
   waveformBuffer      = NULL;
@@ -870,6 +796,7 @@ OscillatorStereoEditor::OscillatorStereoEditor(CriticalSection *newPlugInLock,
   // initialize the current directory for waveform loading and saving:
   juce::String appDir = getApplicationDirectory();
   AudioFileManager::setActiveDirectory(appDir + juce::String("/Samples/SingleCycle/Classic") );
+    // needs update!!!
 
   //setOscillatorToEdit(newOscillatorStereoAudioModule->wrappedOscillatorStereo);
   // this will also set up the widgets according to the state of the oscillator
@@ -1078,6 +1005,82 @@ void OscillatorStereoEditor::moved()
 contextMenu->setVisible(false);
 }
 */
+
+void OscillatorStereoEditor::createWidgets()
+{
+  addPlot( waveformDisplay = new WaveformDisplayOld() );
+  waveformDisplay->setAutoReRendering(false);
+  waveformDisplay->setDescription(juce::String("Click on the display to switch oscillator on/off"));
+  waveformDisplay->setAxisPositionX(CoordinateSystemOld::INVISIBLE);
+  waveformDisplay->setAxisPositionY(CoordinateSystemOld::INVISIBLE);
+  waveformDisplay->setCurrentRangeY(-1.2, 1.2);
+  waveformDisplay->setSampleRate(1.0);
+  waveformDisplay->addMouseListener(this, true);
+  waveformDisplay->setAutoReRendering(true);
+
+  addPlot( emptyDisplay = new CoordinateSystemOld() );
+  emptyDisplay->setAutoReRendering(false);
+  emptyDisplay->setDescription(waveformDisplay->getDescription());
+  emptyDisplay->setAxisPositionX(CoordinateSystemOld::INVISIBLE);
+  emptyDisplay->setAxisPositionY(CoordinateSystemOld::INVISIBLE);
+  emptyDisplay->setCaption(juce::String("Off"), CoordinateSystemOld::CENTER);
+  emptyDisplay->addMouseListener(this, true);
+  emptyDisplay->setAutoReRendering(true);
+
+  /*
+  contextMenuViewport = new Viewport(juce::String(T("OscillatorStereoSliderViewport")));
+  contextMenuViewport->setViewedComponent(contextMenu);
+  contextMenuViewport->setScrollBarThickness(12);
+  contextMenuViewport->setScrollBarsShown(true, false);
+  addAndMakeVisible(contextMenuViewport);
+  */
+
+  addWidget( waveFileLabel = new RTextField() );
+  waveFileLabel->setNoBackgroundAndOutline(true);
+  waveFileLabel->setJustification(Justification::centredBottom);
+  waveFileLabel->setDescription(juce::String("Name of the currently loaded single cycle audiofile"));
+
+  addWidget( waveLoadButton = new RButton(juce::String("Load")) );
+  waveLoadButton->addRButtonListener(this);
+  waveLoadButton->setDescription(juce::String("Load a waveform"));
+  waveLoadButton->setClickingTogglesState(false);
+
+  addWidget( wavePlusButton = new RButton(RButton::ARROW_RIGHT) );
+  wavePlusButton->addRButtonListener(this);
+  wavePlusButton->setDescription(juce::String("Next waveform in current directory"));
+  wavePlusButton->setClickingTogglesState(false);
+
+  addWidget( waveMinusButton = new RButton(RButton::ARROW_LEFT) );
+  waveMinusButton->addRButtonListener(this);
+  waveMinusButton->setDescription(juce::String("Previous waveform in current directory"));
+  waveMinusButton->setClickingTogglesState(false);
+
+  addWidget( moreButton = new RButton(juce::String("More")) );
+  moreButton->addRButtonListener(this);
+  moreButton->setDescription(juce::String("Open/close context menu with more options"));
+  moreButton->setClickingTogglesState(true);
+
+  addWidget( levelSlider = new RSlider("VolumeSlider") );
+  levelSlider->assignParameter( moduleToEdit->getParameterByName("Level") );
+  levelSlider->setSliderName(juce::String("Level"));
+  levelSlider->setDescription(juce::String("Output level of the oscillator"));
+  levelSlider->setStringConversionFunction(&decibelsToStringWithUnit2);
+  levelSlider->setLayout(RSlider::NAME_ABOVE);
+  levelSlider->addListener(this); // only to update the plot
+
+  addWidget( tuneSlider = new TuningSlider("TuneSlider") );
+  tuneSlider->assignParameter( moduleToEdit->getParameterByName("Tune") );
+  tuneSlider->setSliderName(juce::String("Tune"));
+  tuneSlider->setDescription(juce::String("Tuning of the oscillator in semitones"));
+  tuneSlider->setStringConversionFunction(&semitonesToStringWithUnit2);
+  tuneSlider->setLayout(RSlider::NAME_ABOVE);
+
+  addWidget( pitchModulationSlider = new RSlider("PitchModulationSlider") );
+  pitchModulationSlider->assignParameter( moduleToEdit->getParameterByName("PitchModulationDepth") );
+  pitchModulationSlider->setSliderName(juce::String("Mod"));
+  pitchModulationSlider->setDescription("Modulation depth for the pitch modulator");
+  pitchModulationSlider->setStringConversionFunction(&valueToString2);
+}
 
 void OscillatorStereoEditor::updatePlot()
 {

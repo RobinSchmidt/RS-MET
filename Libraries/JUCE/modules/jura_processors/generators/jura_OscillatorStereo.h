@@ -198,6 +198,8 @@ public:
 
 protected:
 
+  virtual void createWidgets();
+
   /** Updates the waveform display plot. */
   virtual void updatePlot();
 
