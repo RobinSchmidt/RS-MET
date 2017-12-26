@@ -24,6 +24,10 @@ void MultiModeFilterAudioModule::createParameters()
 
   std::vector<double> defaultValues;
 
+  p = new Param("TwoStages", 0.0, 1.0, 0.0, Parameter::BOOLEAN, 1.0);
+  p->setValueChangeCallback<MMF>(mmf, &MMF::useTwoStages);
+  addObservedParameter(p);
+
   p = new Param("Mode", 0.0, 14.0, 1.0, Parameter::STRING, 1.0);
   p->setValueChangeCallback<MMF>(mmf, &MMF::setMode);
   p->addStringValue("Bypass");
@@ -795,7 +799,7 @@ void MultiModeFilterModuleEditor::createWidgets()
   modeComboBox->selectItemByIndex(1, false);
 
   addWidget( twoStagesButton = b = new Btn("2 Stages") );
-  //b->assignParameter(moduleToEdit->getParameterByName("TwoStages"));
+  b->assignParameter(moduleToEdit->getParameterByName("TwoStages"));
   b->addRButtonListener(this);
   b->setDescription("Switch second filter stage on/off");
   b->setClickingTogglesState(true);
