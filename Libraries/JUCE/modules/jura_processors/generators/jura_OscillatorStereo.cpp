@@ -256,7 +256,6 @@ void OscillatorStereoAudioModule::createParameters()
   p->setDefaultValues(defaultValues);
   addObservedParameter(p);
 
-  // can we use Param - i.e. is this a parameter that doesn't trigger mip-map recreation?
   sp = new StaticParam("FullWaveWarp", -0.99, 0.99, 0.0, Parameter::LINEAR, 0.001); 
   sp->setValueChangeCallback<OS>(os, &OS::setFullWavePhaseWarp);
   addObservedParameter(sp);
@@ -410,25 +409,29 @@ void OscillatorStereoEditorContextMenu::rSliderValueChanged(RSlider *sliderThatH
 
 void OscillatorStereoEditorContextMenu::createWidgets()
 {
-  addWidget( ampHeadline = new RTextField("Amplitude:") );
-  ampHeadline->setNoBackgroundAndOutline(true);
-  ampHeadline->setDescription(juce::String("Manipulations of the amplitude"));
+  typedef AutomatableSlider Sld;  Sld* s;
+  typedef AutomatableButton Btn;  Btn* b;
+  typedef RTextField        Txf;  Txf* t;
 
-  addWidget( tuningHeadline = new RTextField( "Tuning:") );
-  tuningHeadline->setNoBackgroundAndOutline(true);
-  tuningHeadline->setDescription(juce::String("Manipulations of the tuning/detuning of the oscillator"));
+  addWidget( ampHeadline = t = new Txf("Amplitude:") );
+  t->setNoBackgroundAndOutline(true);
+  t->setDescription("Manipulations of the amplitude");
 
-  addWidget( timeHeadline = new RTextField("Time:") );
-  timeHeadline->setNoBackgroundAndOutline(true);
-  timeHeadline->setDescription(juce::String("Time domain manipulations of the waveform"));
+  addWidget( tuningHeadline = t = new Txf("Tuning:") );
+  t->setNoBackgroundAndOutline(true);
+  t->setDescription("Manipulations of the tuning/detuning of the oscillator");
 
-  addWidget( magSpectrumHeadline = new RTextField("Magnitude Spectrum:") );
-  magSpectrumHeadline->setNoBackgroundAndOutline(true);
-  magSpectrumHeadline->setDescription(juce::String("Manipulations of the magnitude spectrum"));
+  addWidget( timeHeadline = t = new Txf("Time:") );
+  t->setNoBackgroundAndOutline(true);
+  t->setDescription("Time domain manipulations of the waveform");
 
-  addWidget( phaseSpectrumHeadline = new RTextField("Phase Spectrum:") );
-  phaseSpectrumHeadline->setNoBackgroundAndOutline(true);
-  phaseSpectrumHeadline->setDescription(juce::String("Manipulations of the phase spectrum"));
+  addWidget( magSpectrumHeadline = t = new Txf("Magnitude Spectrum:") );
+  t->setNoBackgroundAndOutline(true);
+  t->setDescription("Manipulations of the magnitude spectrum");
+
+  addWidget( phaseSpectrumHeadline = t = new Txf("Phase Spectrum:") );
+  t->setNoBackgroundAndOutline(true);
+  t->setDescription("Manipulations of the phase spectrum");
 
   // sliders for amplitude related parameters:
 

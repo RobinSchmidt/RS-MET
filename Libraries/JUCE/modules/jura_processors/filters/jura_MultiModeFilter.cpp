@@ -787,10 +787,10 @@ void MultiModeFilterModuleEditor::updateWidgetsAccordingToState()
 
 void MultiModeFilterModuleEditor::createWidgets()
 {
-  typedef AutomatableSlider Sld;
-  typedef AutomatableButton Btn;
-  Sld* s;
-  Btn* b;
+  typedef AutomatableSlider Sld;  Sld* s;
+  typedef AutomatableButton Btn;  Btn* b;
+  //typedef RTextField        Txf;  Txf* t;
+
 
   addWidget( modeComboBox = new RNamedComboBox("ModeComboBox", "Type:") );
   modeComboBox->assignParameter(moduleToEdit->getParameterByName("Mode") );
