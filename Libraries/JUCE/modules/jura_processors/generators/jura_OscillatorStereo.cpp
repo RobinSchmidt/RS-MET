@@ -215,20 +215,21 @@ void OscillatorStereoAudioModule::setStateFromXml(const XmlElement& xmlState,
 
 void OscillatorStereoAudioModule::createParameters()
 {
-  // create the automatable parameters and add them to the list - note that the order of the adds
-  // is important because in parameterChanged(), the index (position in the array) will be used to
-  // identify which particlua parameter has changed.
+  typedef MetaControlledParameter Param;
+  Param* p;
+
+  typedef Parameter StaticParam;  // for-non-automatable parameters
+  StaticParam* sp; 
+
+  typedef rosic::OscillatorStereo OS;
+  OS* os = wrappedOscillatorStereo;
 
   std::vector<double> defaultValues;
-
-  // this pointer will be used to temporarily store the addresses of the created
-  //AutomatableParameter* p;
-  Parameter* p;
 
   // amplitude related parameters:
 
   // #000:
-  p = new AutomatableParameter(lock, "Level",    -36.0, 12.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new Param("Level",    -36.0, 12.0, 0.0, Parameter::LINEAR, 0.01);
   defaultValues.push_back(-3.01029996);   // compensation gain for  2 uncorrelated sources
   defaultValues.push_back(-4.77121255);   // compensation gain for  3 uncorrelated sources
   defaultValues.push_back(-6.02059991);   // compensation gain for  4 uncorrelated or 2 in-phase sources
@@ -238,15 +239,15 @@ void OscillatorStereoAudioModule::createParameters()
   addObservedParameter(p);
 
   // #001:
-  p = new AutomatableParameter(lock, "LevelByKey", -24.0, 24.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new Param("LevelByKey", -24.0, 24.0, 0.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
 
   // #002:
-  p = new AutomatableParameter(lock, "LevelByVel", -12.0, 12.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new Param("LevelByVel", -12.0, 12.0, 0.0, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
 
   // #003:
-  p = new AutomatableParameter(lock, "MidSide",    0.0,  1.0, 0.01, 0.5, Parameter::LINEAR);
+  p = new Param("MidSide",    0.0,  1.0, 0.5, Parameter::LINEAR, 0.01);
   defaultValues.clear();
   defaultValues.push_back(0.0);
   defaultValues.push_back(0.25);
@@ -255,7 +256,7 @@ void OscillatorStereoAudioModule::createParameters()
   addObservedParameter(p);
 
   // #004:
-  p = new AutomatableParameter(lock, "Pan",       -1.0,  1.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new Param("Pan",       -1.0,  1.0, 0.0, Parameter::LINEAR, 0.01);
   defaultValues.clear();
   defaultValues.push_back(-1.0);
   defaultValues.push_back(-0.75);
@@ -272,7 +273,7 @@ void OscillatorStereoAudioModule::createParameters()
   // tuning related parameters:
 
   // #005:
-  p = new AutomatableParameter(lock, "Tune",     -36.0, 36.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new Param("Tune",     -36.0, 36.0, 0.0, Parameter::LINEAR, 0.01);
   defaultValues.clear();
   defaultValues.push_back(-24.0);      // f/f0 =  1/ 4 = 0.25
   defaultValues.push_back(-12.0);      // f/f0 =  1/ 2 = 0.50
@@ -290,7 +291,7 @@ void OscillatorStereoAudioModule::createParameters()
   addObservedParameter(p);
 
   // #006:
-  p = new AutomatableParameter(lock, "DetuneHz", -20.0, 20.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new Param("DetuneHz", -20.0, 20.0, 0.0, Parameter::LINEAR, 0.01);
   defaultValues.clear();
   defaultValues.push_back(-4.0);
   defaultValues.push_back(-3.0);
@@ -305,7 +306,7 @@ void OscillatorStereoAudioModule::createParameters()
   addObservedParameter(p);
 
   // #007:
-  p = new AutomatableParameter(lock, "StereoDetune", -1.0, 1.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new Param("StereoDetune", -1.0, 1.0, 0.0, Parameter::LINEAR, 0.01);
   defaultValues.clear();
   defaultValues.push_back(-0.2);
   defaultValues.push_back(-0.1);
@@ -316,7 +317,7 @@ void OscillatorStereoAudioModule::createParameters()
   addObservedParameter(p);
 
   // #008:
-  p = new AutomatableParameter(lock, "StereoDetuneHz", -10.0, 10.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new Param("StereoDetuneHz", -10.0, 10.0, 0.0, Parameter::LINEAR, 0.01);
   defaultValues.clear();
   defaultValues.push_back(-4.0);
   defaultValues.push_back(-3.0);
@@ -331,7 +332,7 @@ void OscillatorStereoAudioModule::createParameters()
   addObservedParameter(p);
 
   // #009:
-  p = new AutomatableParameter(lock, "PitchModulationDepth", -8.0, 8.0, 0.01, 0.0, Parameter::LINEAR);
+  p = new Param("PitchModulationDepth", -8.0, 8.0, 0.0, Parameter::LINEAR, 0.01);
   defaultValues.clear();
   defaultValues.push_back(-1.0);
   defaultValues.push_back(0.0);
@@ -342,7 +343,7 @@ void OscillatorStereoAudioModule::createParameters()
   // time domain waveform related parameters:
 
   // #010:
-  p = new Parameter(lock, "StartPhase", 0.0, 360.0, 1.0, 0.01, Parameter::LINEAR);
+  p = new Param("StartPhase", 0.0, 360.0, 0.01, Parameter::LINEAR, 1.0); // why not 0.0 as default?
   defaultValues.clear();
   defaultValues.push_back(0.0);
   defaultValues.push_back(45.0);
@@ -356,16 +357,16 @@ void OscillatorStereoAudioModule::createParameters()
   addObservedParameter(p);
 
   // #011:
-  p = new Parameter(lock, "FullWaveWarp", -0.99, 0.99, 0.001, 0.0, Parameter::LINEAR);
-  addObservedParameter(p);
+  sp = new StaticParam("FullWaveWarp", -0.99, 0.99, 0.0, Parameter::LINEAR, 0.001);
+  addObservedParameter(sp);
 
   // #012:
-  p = new Parameter(lock, "HalfWaveWarp", -0.99, 0.99, 0.001, 0.0, Parameter::LINEAR);
-  addObservedParameter(p);
+  sp = new StaticParam("HalfWaveWarp", -0.99, 0.99, 0.0, Parameter::LINEAR, 0.001);
+  addObservedParameter(sp);
 
   // #013:
   /*
-  p = new AutomatableParameter("CombOffset", 0.0, 360.0, 0.1, 0.0, Parameter::LINEAR);
+  p = new AutomatableParameter("CombOffset", 0.0, 360.0, 0.0, Parameter::LINEAR, 0.1);
   defaultValues.clear();
   defaultValues.push_back(0.0);
   defaultValues.push_back(45.0);
@@ -380,74 +381,68 @@ void OscillatorStereoAudioModule::createParameters()
   */
 
   // #014:
-  //p = new Parameter("CombHarmonic", 0.1, 1024.0, 0.001, 0.0, Parameter::EXPONENTIAL);
-  p = new Parameter(lock, "CombHarmonic", 1.0, 128.0, 0.01, 1.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p);
+  sp = new StaticParam("CombHarmonic", 1.0, 128.0, 1.0, Parameter::EXPONENTIAL, 0.01);
+  addObservedParameter(sp);
 
   // #014:
-  p = new Parameter(lock, "CombAmount", -100.0, 100.0, 0.1, 0.0, Parameter::LINEAR);
-  addObservedParameter(p);
+  sp = new StaticParam("CombAmount", -100.0, 100.0, 0.0, Parameter::LINEAR, 0.1);
+  addObservedParameter(sp);
 
   // magnitude spectrum related parameters:
 
   // #015:
-  p = new Parameter(lock, "SpectralContrast", 0.25, 4.0, 0.01, 1.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p);
+  sp = new StaticParam("SpectralContrast", 0.25, 4.0, 1.0, Parameter::EXPONENTIAL, 0.01);
+  addObservedParameter(sp);
 
   // #016:
-  p = new Parameter(lock, "SpectralSlope", -6.0, 6.0, 0.01, 0.0, Parameter::LINEAR);
-  addObservedParameter(p);
+  sp = new StaticParam("SpectralSlope", -6.0, 6.0, 0.0, Parameter::LINEAR, 0.01);
+  addObservedParameter(sp);
 
   // #017:
-  p = new Parameter(lock, "HighestHarmonic", 1.0, 1024.0, 1.0, 1024.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p);
+  sp = new StaticParam("HighestHarmonic", 1.0, 1024.0, 1024.0, Parameter::EXPONENTIAL, 1.0);
+  addObservedParameter(sp);
 
   // #018:
-  p = new Parameter(lock, "LowestHarmonic", 1.0, 1024.0, 1.0, 1.0, Parameter::EXPONENTIAL);
-  addObservedParameter(p);
+  sp = new StaticParam("LowestHarmonic", 1.0, 1024.0, 1.0, Parameter::EXPONENTIAL, 1.0);
+  addObservedParameter(sp);
 
   // #019:
-  p = new Parameter(lock, "EvenOddRatio", 0.0, 1.0, 0.005, 0.5, Parameter::LINEAR);
-  addObservedParameter(p);
+  sp = new StaticParam("EvenOddRatio", 0.0, 1.0, 0.5, Parameter::LINEAR, 0.005);
+  addObservedParameter(sp);
 
   //-----------------------------------------------------------------------------------------------
   // phase spectrum related parameters:
 
   // #020:
-  p = new Parameter(lock, "PhaseScale", -1.0, 1.0, 0.01, 1.0, Parameter::LINEAR);
-  p->setDefaultValues(defaultValues);
-  addObservedParameter(p);
+  sp = new StaticParam("PhaseScale", -1.0, 1.0, 1.0, Parameter::LINEAR, 0.01);
+  sp->setDefaultValues(defaultValues);
+  addObservedParameter(sp);
 
   // #021:
-  p = new Parameter(lock, "PhaseShift", -180.0, 180.0, 1.0, 0.0, Parameter::LINEAR);
-  p->setDefaultValues(defaultValues);
-  addObservedParameter(p);
+  sp = new StaticParam("PhaseShift", -180.0, 180.0, 0.0, Parameter::LINEAR, 1.0);
+  sp->setDefaultValues(defaultValues);
+  addObservedParameter(sp);
 
   // #022:
-  p = new Parameter(lock, "EvenOddPhaseShift", -180.0, 180.0, 1.0, 0.0, Parameter::LINEAR);
+  sp = new StaticParam("EvenOddPhaseShift", -180.0, 180.0, 0.0, Parameter::LINEAR, 1.0);
   defaultValues.clear();
   defaultValues.push_back(-90.0);
   defaultValues.push_back(-45.0);
   defaultValues.push_back(0.0);
   defaultValues.push_back(45.0);
   defaultValues.push_back(90.0);
-  p->setDefaultValues(defaultValues);
-  addObservedParameter(p);
+  sp->setDefaultValues(defaultValues);
+  addObservedParameter(sp);
 
   // #023:
-  p = new Parameter(lock, "StereoPhaseShift", -180.0, 180.0, 1.0, 0.0, Parameter::LINEAR);
-  p->setDefaultValues(defaultValues);
-  addObservedParameter(p);
+  sp = new StaticParam("StereoPhaseShift", -180.0, 180.0, 0.0, Parameter::LINEAR, 1.0);
+  sp->setDefaultValues(defaultValues);
+  addObservedParameter(sp);
 
   // #024:
-  p = new Parameter(lock, "EvenOddStereoPhaseShift", -180.0, 180.0, 1.0, 0.0, Parameter::LINEAR);
-  p->setDefaultValues(defaultValues);
-  addObservedParameter(p);
-
-
-  // make a call to setValue for each parameter in order to set up all the slave voices:
-  for(int i=0; i < (int) parameters.size(); i++ )
-    parameterChanged(parameters[i]);
+  sp = new StaticParam("EvenOddStereoPhaseShift", -180.0, 180.0, 0.0, Parameter::LINEAR, 1.0);
+  sp->setDefaultValues(defaultValues);
+  addObservedParameter(sp);
 }
 
 //=================================================================================================
