@@ -82,7 +82,7 @@ namespace rosic
 
   */
 
-  class MultiModeFilter //: public PresetRememberer
+  class MultiModeFilter
   {
 
   public:
@@ -132,10 +132,16 @@ namespace rosic
     //void setGlideTime(double newGlideTime);
 
     /** Sets the amount of resonance in percent where 100% leads to self oscillation. */
-    void setResonance(double newResonance, bool updateCoefficients = true);
+    void setResonance(double newResonance) { setResonance(newResonance, true); }
+
+    /** Like setResonance but makes coefficient recalculation optional. */
+    void setResonance(double newResonance, bool updateCoefficients);
 
     /** Sets the Q-factor (applies only to the RBJ filter modes) */
-    void setQ(double newQ, bool updateCoefficients = true);
+    void setQ(double newQ) { setQ(newQ, true); }
+
+    /** Like setQ but makes coefficient recalculation optional. */
+    void setQ(double newQ, bool updateCoefficients);
 
     /** Sets the gain (in dB) for shelving and peaking modes. */
     void setGain(double newGain);
@@ -161,7 +167,10 @@ namespace rosic
     INLINE void setFrequencyInstantaneous(double newFrequency, bool updateCoefficients = true);
 
     /** Sets the morph parameter for the morphable modes. */
-    INLINE void setMorph(double newMorph, bool updateCoefficients = true);
+    INLINE void setMorph(double newMorph) { setMorph(newMorph, true); }
+
+    /** Like setMorph but makes coefficient recalculation optional. */
+    INLINE void setMorph(double newMorph, bool updateCoefficients);
 
     /** Sets the morph-transition parameter for the morphable modes. */
     INLINE void setTransition(double newTransition, bool updateCoefficients = true);
