@@ -164,6 +164,24 @@ void AcidPatternEditor::setPatternToEdit(rosic::AcidPattern *newPatternToEdit)
   patternToEdit = newPatternToEdit;
 }
 
+/*
+void AcidPatternEditor::setColourScheme(const WidgetColourScheme& newColourScheme)
+{
+  RWidget::setColourScheme(newColourScheme);
+
+  // colors we can use:
+  // getOutlineColour(), getHandleColour(), getTextColour(), getSpecialColour1()
+
+  whiteKeyColour           = getHandleColour();
+  blackKeyColour           = Colours::black;
+  backgroundColourWhiteKey = Colours::white;      // for white key lanes
+  backgroundColourBlackKey = Colours::lightgrey;  // for black key lanes
+  handleColor              = getHandleColour();
+  textColour               = getTextColour();
+  lineColour               = getOutlineColour();
+}
+*/
+
 //-------------------------------------------------------------------------------------------------
 // inquiry:
 
@@ -476,8 +494,8 @@ void AcidPatternEditor::paint(juce::Graphics &g)
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-AcidSequencerModuleEditor::AcidSequencerModuleEditor(CriticalSection *newPlugInLock, AcidSequencerAudioModule* newAcidSequencerAudioModule)
-  : AudioModuleEditor(newAcidSequencerAudioModule)
+AcidSequencerModuleEditor::AcidSequencerModuleEditor(CriticalSection *newPlugInLock, 
+  AcidSequencerAudioModule* newAcidSequencerAudioModule) : AudioModuleEditor(newAcidSequencerAudioModule)
 {
   setHeadlineStyle(SUB_HEADLINE);
   setLinkPosition(INVISIBLE);
@@ -490,6 +508,7 @@ AcidSequencerModuleEditor::AcidSequencerModuleEditor(CriticalSection *newPlugInL
 
   patternEditor = new AcidPatternEditor(acidSequencerModuleToEdit->wrappedAcidSequencer);
   addAndMakeVisible(patternEditor);
+  //addWidget(patternEditor);
   patternEditor->setPatternToEdit(acidSequencerModuleToEdit->wrappedAcidSequencer->getPattern(0));
 
   addWidget( modeLabel = new RTextField( juce::String("Mode:")) );

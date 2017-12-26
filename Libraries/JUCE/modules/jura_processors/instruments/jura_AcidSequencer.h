@@ -65,7 +65,7 @@ protected:
 
 //=================================================================================================
 
-class AcidPatternEditor : public Component
+class AcidPatternEditor : public Component // public RWidget ...maybe needs to inherit from ColouSchemeComponent?
 {
 
 public:
@@ -81,6 +81,8 @@ public:
 
   /** Sets the pattern that is to be edited. */
   void setPatternToEdit(rosic::AcidPattern *newPatternToEdit);
+
+  //virtual void setColourScheme(const WidgetColourScheme& newColourScheme) override;
 
   //---------------------------------------------------------------------------------------------
   // inquiry:
@@ -116,11 +118,10 @@ public:
   //---------------------------------------------------------------------------------------------
   // callbacks:
 
-  /** Overrides mouseDown(). */    
-  virtual void mouseDown(const MouseEvent &e);
+  virtual void mouseDown(const MouseEvent &e) override;
+  virtual void paint(Graphics &g) override;
 
-  /** Overrides resized(). */    
-  virtual void paint(Graphics &g);
+
 
 protected:
 

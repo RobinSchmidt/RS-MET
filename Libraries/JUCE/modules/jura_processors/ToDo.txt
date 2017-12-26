@@ -16,6 +16,7 @@ Make ToolChain ready for release:
  (happens only when input is connected - probably a mutex-lock thing?)
 -AcidDevil
  -fix gui ugliness
+ -make step-length meta-controllable
 -FuncShaper 
  -fix gui problems (try resizing)
 -Straightliner:
