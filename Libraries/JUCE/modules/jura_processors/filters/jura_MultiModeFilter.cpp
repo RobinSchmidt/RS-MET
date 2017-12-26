@@ -783,94 +783,96 @@ void MultiModeFilterModuleEditor::updateWidgetsAccordingToState()
 
 void MultiModeFilterModuleEditor::createWidgets()
 {
-  addWidget( modeComboBox = new RNamedComboBox(juce::String("ModeComboBox"), juce::String("Type:")) );
+  typedef AutomatableSlider Sld;
+  typedef AutomatableButton Btn;
+  Sld* s;
+  Btn* b;
+
+  addWidget( modeComboBox = new RNamedComboBox("ModeComboBox", "Type:") );
   modeComboBox->assignParameter(moduleToEdit->getParameterByName("Mode") );
   modeComboBox->registerComboBoxObserver(this);
   modeComboBox->setDescription("Type/Mode of the filter.");
   modeComboBox->selectItemByIndex(1, false);
 
-  addWidget( twoStagesButton = new RButton(juce::String("2 Stages")) );
-  //useTwoStages // assign parameter
-  twoStagesButton->addRButtonListener(this);
-  twoStagesButton->setDescription(juce::String("Switch second filter stage on/off"));
-  twoStagesButton->setClickingTogglesState(true);
+  addWidget( twoStagesButton = b = new Btn("2 Stages") );
+  //b->assignParameter(moduleToEdit->getParameterByName("TwoStages"));
+  b->addRButtonListener(this);
+  b->setDescription("Switch second filter stage on/off");
+  b->setClickingTogglesState(true);
 
-  addWidget( freqSlider = new RSlider("FrequencySlider") );
-  freqSlider->assignParameter(moduleToEdit->getParameterByName("Frequency"));
-  freqSlider->setDescription("Characteristic frequency of the filter");
-  freqSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
+  addWidget( freqSlider = s = new Sld );
+  s->assignParameter(moduleToEdit->getParameterByName("Frequency"));
+  s->setDescription("Characteristic frequency of the filter");
+  s->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
-  addWidget( freqByKeySlider = new RSlider("FrequencyByKeySlider") );
-  freqByKeySlider->assignParameter(moduleToEdit->getParameterByName("FrequencyByKey"));
-  freqByKeySlider->setSliderName("Key");
-  freqByKeySlider->setDescription("Key tracking of the filter's frequency");
-  freqByKeySlider->setStringConversionFunction(&percentToStringWithUnit1);
+  addWidget( freqByKeySlider = s = new Sld );
+  s->assignParameter(moduleToEdit->getParameterByName("FrequencyByKey"));
+  s->setSliderName("Key");
+  s->setDescription("Key tracking of the filter's frequency");
+  s->setStringConversionFunction(&percentToStringWithUnit1);
 
-  addWidget( freqByVelSlider = new RSlider("FrequencyByVelSlider") );
-  freqByVelSlider->assignParameter(moduleToEdit->getParameterByName("FrequencyByVel"));
-  freqByVelSlider->setSliderName("Vel");
-  freqByVelSlider->setDescription("Velocity tracking of the filter's frequency");
-  freqByVelSlider->setStringConversionFunction(&percentToStringWithUnit1);
+  addWidget( freqByVelSlider = s = new Sld );
+  s->assignParameter(moduleToEdit->getParameterByName("FrequencyByVel"));
+  s->setSliderName("Vel");
+  s->setDescription("Velocity tracking of the filter's frequency");
+  s->setStringConversionFunction(&percentToStringWithUnit1);
 
-  addWidget( resoSlider = new RSlider("ResonanceSlider") );
-  resoSlider->assignParameter(moduleToEdit->getParameterByName("Resonance"));
-  resoSlider->setDescription("Resonance amount of the filter");
-  resoSlider->setStringConversionFunction(&percentToStringWithUnit1);
+  addWidget( resoSlider = s = new Sld );
+  s->assignParameter(moduleToEdit->getParameterByName("Resonance"));
+  s->setDescription("Resonance amount of the filter");
+  s->setStringConversionFunction(&percentToStringWithUnit1);
 
-  addWidget( qSlider = new RSlider("QSlider") );
-  qSlider->assignParameter(moduleToEdit->getParameterByName("Q"));
-  qSlider->setSliderName("Q");
-  qSlider->setDescription("Quality factor of the filter");
-  qSlider->setStringConversionFunction(&valueToString3);
+  addWidget( qSlider = s = new Sld );
+  s->assignParameter(moduleToEdit->getParameterByName("Q"));
+  s->setSliderName("Q");
+  s->setDescription("Quality factor of the filter");
+  s->setStringConversionFunction(&valueToString3);
 
-  addWidget( driveSlider = new RSlider("DriveSlider") );
-  driveSlider->assignParameter(moduleToEdit->getParameterByName("Drive"));
-  driveSlider->setDescription("Drives the filter into distortion");
-  driveSlider->setStringConversionFunction(&decibelsToStringWithUnit2);
+  addWidget( driveSlider = s = new Sld );
+  s->assignParameter(moduleToEdit->getParameterByName("Drive"));
+  s->setDescription("Drives the filter into distortion");
+  s->setStringConversionFunction(&decibelsToStringWithUnit2);
 
-  addWidget( orderSlider = new RSlider("OrderSlider") );
-  orderSlider->assignParameter(moduleToEdit->getParameterByName("Order"));
-  orderSlider->setDescription(
-    "Selects the order of the filter - this affects the slope");
-  orderSlider->setStringConversionFunction(&valueToString0);
-  orderSlider->addListener(this);
+  addWidget( orderSlider = s = new Sld );
+  s->assignParameter(moduleToEdit->getParameterByName("Order"));
+  s->setDescription("Selects the order of the filter - this affects the slope");
+  s->setStringConversionFunction(&valueToString0);
+  s->addListener(this);
 
-  addWidget( gainSlider = new RSlider("GainSlider") );
-  gainSlider->assignParameter(moduleToEdit->getParameterByName("Gain"));
-  gainSlider->setSliderName("Gain");
-  gainSlider->setDescription("Gain for peak and shelving filter types");
-  gainSlider->setStringConversionFunction(&decibelsToStringWithUnit2);
+  addWidget( gainSlider = s = new Sld );
+  s->assignParameter(moduleToEdit->getParameterByName("Gain"));
+  s->setSliderName("Gain");
+  s->setDescription("Gain for peak and shelving filter types");
+  s->setStringConversionFunction(&decibelsToStringWithUnit2);
 
-  addWidget( morphSlider = new RSlider("MorphSlider") );
-  morphSlider->assignParameter(moduleToEdit->getParameterByName("Morph") );
-  morphSlider->setDescription("Morph between filter types");
-  morphSlider->setStringConversionFunction(&valueToString2);
-  //morphSlider->setRange(-0.99, 0.99, 0.01, -0.99);
-  //morphSlider->setScaling(Parameter::LINEAR_BIPOLAR);
+  addWidget( morphSlider = s = new Sld );
+  s->assignParameter(moduleToEdit->getParameterByName("Morph") );
+  s->setDescription("Morph between filter types");
+  s->setStringConversionFunction(&valueToString2);
+  //s->setRange(-0.99, 0.99, 0.01, -0.99);
+  //s->setScaling(Parameter::LINEAR_BIPOLAR);
   //automatableSliders.addIfNotAlreadyThere(morphSlider);
   //morphSlider->addListener(this);
 
-  //addWidget( transitionSlider = new RSlider("TransitionSlider") );
-  //transitionSlider->assignParameter(moduleToEdit->getParameterByName("Transition") );
-  //transitionSlider->setSliderName("Transition");
-  //transitionSlider->setDescription("Determines the transition when morphing between filter types");
-  //transitionSlider->setStringConversionFunction(&valueToString3);
+  //addWidget( transitionSlider = s = new Sld );
+  //s->assignParameter(moduleToEdit->getParameterByName("Transition") );
+  //s->setSliderName("Transition");
+  //s->setDescription("Determines the transition when morphing between filter types");
+  //s->setStringConversionFunction(&valueToString3);
 
-  addWidget( preAllpassSlider = new RSlider("PreAllpassSlider") );
-  preAllpassSlider->assignParameter(moduleToEdit->getParameterByName("PreAllpass") );
-  preAllpassSlider->setSliderName("Allpass");
-  preAllpassSlider->setDescription(
-    "Applies a first order allpass before the actual filter to pre-shape the waveform");
-  preAllpassSlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
+  addWidget( preAllpassSlider = s = new Sld );
+  s->assignParameter(moduleToEdit->getParameterByName("PreAllpass") );
+  s->setSliderName("Allpass");
+  s->setDescription("First order allpass before actual filter to pre-shape waveform");
+  s->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
-  addWidget( makeUpSlider = new RSlider("MakeUpSlider") );
-  makeUpSlider->assignParameter(moduleToEdit->getParameterByName("MakeUp") );
-  makeUpSlider->setDescription(
-    "Compensates the low frequency losses at high resonance via a gain factor");
-  makeUpSlider->setStringConversionFunction(&percentToStringWithUnit0);
-  makeUpSlider->addListener(this);
+  addWidget( makeUpSlider = s = new Sld );
+  s->assignParameter(moduleToEdit->getParameterByName("MakeUp") );
+  s->setDescription("Compensates low frequency losses at high resonance via gain");
+  s->setStringConversionFunction(&percentToStringWithUnit0);
+  s->addListener(this);
 
-  frequencyResponseDisplay = new MultiModeFreqResponseEditor(juce::String("SpectrumEditor"));
+  frequencyResponseDisplay = new MultiModeFreqResponseEditor("SpectrumEditor");
   frequencyResponseDisplay->setFilterToEdit(filterToEdit);
   frequencyResponseDisplay->addChangeListener(this);
   frequencyResponseDisplay->assignParameterFreq( moduleToEdit->getParameterByName("Frequency"));
