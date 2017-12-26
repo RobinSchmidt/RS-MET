@@ -33,7 +33,8 @@
 #include <vector>
 #include <algorithm>
 #include <cstring>
-//using namespace std;
+//#include <xmmintrin.h>
+//#include <pmmintrin.h>
 
 #include "Basics/Basics.h"               // type definitions, constants, functions, etc.
 #include "Data/Data.h"                   // data structures like arrays, lists, files, etc.
