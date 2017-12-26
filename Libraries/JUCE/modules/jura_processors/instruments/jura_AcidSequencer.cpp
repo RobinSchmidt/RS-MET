@@ -10,7 +10,7 @@ AcidSequencerAudioModule::AcidSequencerAudioModule(CriticalSection *newPlugInLoc
   jassert(acidSequencerToWrap != NULL); // you must pass a valid rosic-object to the constructor
   wrappedAcidSequencer = acidSequencerToWrap;
   setModuleTypeName("AcidSequencer");
-  initializeAutomatableParameters();
+  createParameters();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -111,7 +111,7 @@ XmlElement* AcidSequencerAudioModule::getStateAsXml(const juce::String &stateNam
 //-------------------------------------------------------------------------------------------------
 // internal functions:
 
-void AcidSequencerAudioModule::initializeAutomatableParameters()
+void AcidSequencerAudioModule::createParameters()
 {
   AutomatableParameter* p;
 
@@ -144,12 +144,9 @@ AcidPatternEditor::AcidPatternEditor(rosic::AcidSequencer *sequencerToEdit)
 
   whiteKeyColour           = Colours::white;
   blackKeyColour           = Colours::black;
-  backgroundColourWhiteKey = Colours::white;
-  backgroundColourBlackKey = Colours::lightgrey;
-  noteHandleColour         = Colours::blue;
-  accentHandleColour       = Colours::blue;
-  slideHandleColour        = Colours::blue;
-  gateHandleColour         = Colours::blue;
+  backgroundColourWhiteKey = Colours::white;      // for white key lanes
+  backgroundColourBlackKey = Colours::lightgrey;  // for black key lanes
+  handleColor              = Colours::black;
   textColour               = Colours::black;
   lineColour               = Colours::black;
 
@@ -311,22 +308,13 @@ void AcidPatternEditor::paint(juce::Graphics &g)
   float thickness = 2.f;
 
 
-  drawBitmapFontText(g, (int)x+3, (int)y+3, juce::String("Gate:"), &BitmapFontRoundedBoldA10D0::instance, textColour);
+  drawBitmapFontText(g, (int)x+3, (int)y+3, "Gate:", &BitmapFontRoundedBoldA10D0::instance, textColour);
   y += topLaneHeight;
-  drawBitmapFontText(g, (int)x+3, (int)y+3, juce::String("Accent:"), &BitmapFontRoundedBoldA10D0::instance, textColour);
+  drawBitmapFontText(g, (int)x+3, (int)y+3, "Accent:", &BitmapFontRoundedBoldA10D0::instance, textColour);
   y += topLaneHeight;
-  drawBitmapFontText(g, (int)x+3, (int)y+3, juce::String("Slide:"), &BitmapFontRoundedBoldA10D0::instance, textColour);
+  drawBitmapFontText(g, (int)x+3, (int)y+3, "Slide:", &BitmapFontRoundedBoldA10D0::instance, textColour);
   y += topLaneHeight;
-  drawBitmapFontText(g, (int)x+3, (int)y+3, juce::String("Octave:"), &BitmapFontRoundedBoldA10D0::instance, textColour);
-
-  // old - delete, when new version above has been tested:
-  //drawBitmapFontText(g, (int)x+3, (int)y+3, juce::String("Gate:"), &boldFont10px, textColour);
-  //y += topLaneHeight;
-  //drawBitmapFontText(g, (int)x+3, (int)y+3, juce::String("Accent:"), &boldFont10px, textColour);
-  //y += topLaneHeight;
-  //drawBitmapFontText(g, (int)x+3, (int)y+3, juce::String("Slide:"), &boldFont10px, textColour);
-  //y += topLaneHeight;
-  //drawBitmapFontText(g, (int)x+3, (int)y+3, juce::String("Octave:"), &boldFont10px, textColour);
+  drawBitmapFontText(g, (int)x+3, (int)y+3, "Octave:", &BitmapFontRoundedBoldA10D0::instance, textColour);
 
   w = keyLength;
 
@@ -345,14 +333,10 @@ void AcidPatternEditor::paint(juce::Graphics &g)
   w = 2*keyLength/3;
   h = (float) rowHeight;
   y = keyboardY + 11*rowHeight;
-  g.fillRect(x, y, w, h);
-  y -= 2*h;
-  g.fillRect(x, y, w, h);
-  y -= 3*h;
-  g.fillRect(x, y, w, h);
-  y -= 2*h;
-  g.fillRect(x, y, w, h);
-  y -= 2*h;
+  g.fillRect(x, y, w, h); y -= 2*h;
+  g.fillRect(x, y, w, h); y -= 3*h;
+  g.fillRect(x, y, w, h); y -= 2*h;
+  g.fillRect(x, y, w, h); y -= 2*h;
   g.fillRect(x, y, w, h);
 
   // draw lanes for the black keys:
@@ -360,14 +344,10 @@ void AcidPatternEditor::paint(juce::Graphics &g)
   w = (float)getWidth()-keyLength;
   y = keyboardY + 11*rowHeight;
   g.setColour(backgroundColourBlackKey);
-  g.fillRect(x, y, w, h);
-  y -= 2*h;
-  g.fillRect(x, y, w, h);
-  y -= 3*h;
-  g.fillRect(x, y, w, h);
-  y -= 2*h;
-  g.fillRect(x, y, w, h);
-  y -= 2*h;
+  g.fillRect(x, y, w, h);  y -= 2*h;
+  g.fillRect(x, y, w, h);  y -= 3*h;
+  g.fillRect(x, y, w, h);  y -= 2*h;
+  g.fillRect(x, y, w, h);  y -= 2*h;
   g.fillRect(x, y, w, h);
 
   // draw horizontal lines for the 4 top-lanes:
@@ -385,34 +365,23 @@ void AcidPatternEditor::paint(juce::Graphics &g)
   g.drawLine(x, y, w, y, thickness);
   g.drawLine(keyLength, 0, keyLength, (float)getHeight(), thickness); // vertical
 
-                                                                      // draw the lines between the piano-roll rows:
+  // draw the lines between the piano-roll rows:
   g.setColour(lineColour);
-  x         = keyLength;
-  h         = (float) rowHeight;
-  y         = keyboardY + h;
+  x = keyLength;
+  h = (float) rowHeight;
+  y = keyboardY + h;
   thickness = 1.f;
-  g.drawLine(x, y, w, y, thickness);
-  y += h;
-  g.drawLine(x, y, w, y, thickness);
-  y += h;
-  g.drawLine(x, y, w, y, thickness);
-  y += h;
-  g.drawLine(x, y, w, y, thickness);
-  y += h;
-  g.drawLine(x, y, w, y, thickness);
-  y += h;
-  g.drawLine(x, y, w, y, thickness);
-  y += h;
-  g.drawLine(x, y, w, y, thickness);
-  y += h;
-  g.drawLine(x, y, w, y, thickness);
-  y += h;
-  g.drawLine(x, y, w, y, thickness);
-  y += h;
-  g.drawLine(x, y, w, y, thickness);
-  y += h;
-  g.drawLine(x, y, w, y, thickness);
-  y += h;
+  g.drawLine(x, y, w, y, thickness);  y += h;
+  g.drawLine(x, y, w, y, thickness);  y += h;
+  g.drawLine(x, y, w, y, thickness);  y += h;
+  g.drawLine(x, y, w, y, thickness);  y += h;
+  g.drawLine(x, y, w, y, thickness);  y += h;
+  g.drawLine(x, y, w, y, thickness);  y += h;
+  g.drawLine(x, y, w, y, thickness);  y += h;
+  g.drawLine(x, y, w, y, thickness);  y += h;
+  g.drawLine(x, y, w, y, thickness);  y += h;
+  g.drawLine(x, y, w, y, thickness);  y += h;
+  g.drawLine(x, y, w, y, thickness);  y += h;
   g.drawLine(x, y, w, y, thickness);
 
   // draw the lines between the piano-roll white keys:
@@ -421,18 +390,12 @@ void AcidPatternEditor::paint(juce::Graphics &g)
   w = keyLength;
   h = (float) rowHeight;
   y = keyboardY + 13*rowHeight - (h+h/2);
-  g.drawLine(x, y, w, y, thickness);
-  y -= 2*h;
-  g.drawLine(x, y, w, y, thickness);
-  y -= h+h/2;
-  g.drawLine(x, y, w, y, thickness);
-  y -= h+h/2;
-  g.drawLine(x, y, w, y, thickness);
-  y -= 2*h;
-  g.drawLine(x, y, w, y, thickness);
-  y -= 2*h;
-  g.drawLine(x, y, w, y, thickness);
-  y -= h+h/2;
+  g.drawLine(x, y, w, y, thickness); y -= 2*h;
+  g.drawLine(x, y, w, y, thickness); y -= h+h/2;
+  g.drawLine(x, y, w, y, thickness); y -= h+h/2;
+  g.drawLine(x, y, w, y, thickness); y -= 2*h;
+  g.drawLine(x, y, w, y, thickness); y -= 2*h;
+  g.drawLine(x, y, w, y, thickness); y -= h+h/2;
   g.drawLine(x, y, w, y, thickness);
 
   // draw the vertical lines between the steps:
@@ -459,6 +422,7 @@ void AcidPatternEditor::paint(juce::Graphics &g)
     float dx     = columnWidth   / 2.f;
     float dy     = topLaneHeight / 2.f;
     int numSteps = patternToEdit->getNumSteps();
+    g.setColour(handleColor);
     for(int i=0; i<patternToEdit->getMaxNumSteps(); i++)
     {
       bool slide = patternToEdit->getSlide(i) && patternToEdit->getGate((i+1)%numSteps);
@@ -483,10 +447,6 @@ void AcidPatternEditor::paint(juce::Graphics &g)
 
       drawBitmapFontText(g, (int)(x+dx), (int)(y+dy), octString,
         &BitmapFontRoundedBoldA10D0::instance, textColour, -1, Justification::centred);
-
-      // old:
-      //drawBitmapFontText(g, (int)(x+dx), (int)(y+dy), octString, &boldFont10px, textColour, -1,
-      //  Justification::centred);
 
       y = keyboardY + 12*rowHeight;
       if( patternToEdit->getGate(i) == true )

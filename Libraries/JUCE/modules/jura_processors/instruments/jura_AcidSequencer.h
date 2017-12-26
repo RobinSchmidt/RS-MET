@@ -54,7 +54,7 @@ public:
 
 protected:
 
-  void initializeAutomatableParameters();
+  void createParameters();
 
   /** Pointer to the underlying rosic object which is wrapped. */
   rosic::AcidSequencer *wrappedAcidSequencer;
@@ -127,9 +127,8 @@ protected:
   rosic::AcidPattern   *patternToEdit;
   rosic::AcidSequencer *sequencerToEdit;
 
-  Colour whiteKeyColour, blackKeyColour, backgroundColourWhiteKey, backgroundColourBlackKey, 
-    noteHandleColour, accentHandleColour, slideHandleColour, gateHandleColour, textColour, 
-    lineColour;
+  Colour whiteKeyColour, blackKeyColour, backgroundColourWhiteKey, backgroundColourBlackKey,
+    handleColor, textColour, lineColour;
 
   float rowHeight, columnWidth, keyLength, topLaneHeight;
 

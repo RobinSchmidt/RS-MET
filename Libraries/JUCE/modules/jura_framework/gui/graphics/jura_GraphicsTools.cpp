@@ -127,6 +127,8 @@ void dataMatrixToImage(float **data, juce::Image &image, uint8 red, uint8 green,
 int drawBitmapFontText(Graphics &g, int x, int y, const String& textToDraw,
   const BitmapFont* fontToUse, const Colour& colourToUse, int kerning, Justification justification)
 {
+  g.saveState();
+
   //jassert(colourToUse != Colours::yellow); // for test only
   if( kerning == -1 )
     kerning = fontToUse->getDefaultKerning();
@@ -163,6 +165,7 @@ int drawBitmapFontText(Graphics &g, int x, int y, const String& textToDraw,
     }
   }
 
+  g.restoreState();
   return x;
 }
 

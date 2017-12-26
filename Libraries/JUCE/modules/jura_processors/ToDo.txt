@@ -1,3 +1,6 @@
+ToolChain Bugs:
+-EchoLab gui not restored when ToolChain preset is loaded
+-on mac, the color-gradients are wrong (maybe the rgba-channels are confused)
 
 ToolChain
 -let the "Setup" have tabs for 
@@ -23,16 +26,12 @@ Make ToolChain ready for release:
  -add a band
  -close the standalone
 
-on mac, the color-gradients are wrong (maybe the rgba-channels are confused)
 
 Upgrade to juce 5.2.5
 -figure out how we can avoid removing the "final" declaration from juce::Image
--
 
 -rename:
  -BreakpointModulator: MultiStageEnvelopeGenerator (MSEG), short: MultiSegment - or MultiStage, MSEG
-
-
 
 Bugs in the smoothing system:
  -with very long smoothing times (in the order of seconds), the slider is glitchy and when
