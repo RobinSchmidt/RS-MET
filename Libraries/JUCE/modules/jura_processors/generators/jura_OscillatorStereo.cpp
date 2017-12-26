@@ -794,9 +794,7 @@ OscillatorStereoEditor::OscillatorStereoEditor(CriticalSection *newPlugInLock,
   setHeadlineStyle(NO_HEADLINE);
 
   // initialize the current directory for waveform loading and saving:
-  juce::String appDir = getApplicationDirectory();
-  AudioFileManager::setActiveDirectory(appDir + juce::String("/Samples/SingleCycle/Classic") );
-    // needs update!!!
+  AudioFileManager::setActiveDirectory(getSupportDirectory() + "/Samples/SingleCycle/Classic");
 
   //setOscillatorToEdit(newOscillatorStereoAudioModule->wrappedOscillatorStereo);
   // this will also set up the widgets according to the state of the oscillator
