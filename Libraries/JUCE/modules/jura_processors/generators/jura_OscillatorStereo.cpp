@@ -228,8 +228,11 @@ void OscillatorStereoAudioModule::createParameters()
 
   // amplitude related parameters:
 
+  //Mte
+
   // #000:
   p = new Param("Level",    -36.0, 12.0, 0.0, Parameter::LINEAR, 0.01);
+  p->setValueChangeCallback<OS>(os, &OS::setLevel);
   defaultValues.push_back(-3.01029996);   // compensation gain for  2 uncorrelated sources
   defaultValues.push_back(-4.77121255);   // compensation gain for  3 uncorrelated sources
   defaultValues.push_back(-6.02059991);   // compensation gain for  4 uncorrelated or 2 in-phase sources
@@ -240,14 +243,17 @@ void OscillatorStereoAudioModule::createParameters()
 
   // #001:
   p = new Param("LevelByKey", -24.0, 24.0, 0.0, Parameter::LINEAR, 0.01);
+  p->setValueChangeCallback<OS>(os, &OS::setLevelByKey);
   addObservedParameter(p);
 
   // #002:
   p = new Param("LevelByVel", -12.0, 12.0, 0.0, Parameter::LINEAR, 0.01);
+  p->setValueChangeCallback<OS>(os, &OS::setLevelByVel);
   addObservedParameter(p);
 
   // #003:
   p = new Param("MidSide",    0.0,  1.0, 0.5, Parameter::LINEAR, 0.01);
+  p->setValueChangeCallback<OS>(os, &OS::setMidSide);
   defaultValues.clear();
   defaultValues.push_back(0.0);
   defaultValues.push_back(0.25);
@@ -257,6 +263,7 @@ void OscillatorStereoAudioModule::createParameters()
 
   // #004:
   p = new Param("Pan",       -1.0,  1.0, 0.0, Parameter::LINEAR, 0.01);
+  p->setValueChangeCallback<OS>(os, &OS::setPan);
   defaultValues.clear();
   defaultValues.push_back(-1.0);
   defaultValues.push_back(-0.75);
@@ -274,6 +281,7 @@ void OscillatorStereoAudioModule::createParameters()
 
   // #005:
   p = new Param("Tune",     -36.0, 36.0, 0.0, Parameter::LINEAR, 0.01);
+  p->setValueChangeCallback<OS>(os, &OS::setDetuneSemitones);
   defaultValues.clear();
   defaultValues.push_back(-24.0);      // f/f0 =  1/ 4 = 0.25
   defaultValues.push_back(-12.0);      // f/f0 =  1/ 2 = 0.50
