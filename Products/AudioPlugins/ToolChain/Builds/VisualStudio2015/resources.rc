@@ -7,7 +7,7 @@
 #include <windows.h>
 
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION  2017,12,24,0
+FILEVERSION  2017,12,26,0
 BEGIN
   BLOCK "StringFileInfo"
   BEGIN
@@ -16,9 +16,9 @@ BEGIN
       VALUE "CompanyName",  "RS-MET\0"
       VALUE "LegalCopyright",  "RS-MET\0"
       VALUE "FileDescription",  "ToolChain\0"
-      VALUE "FileVersion",  "2017.12.24\0"
+      VALUE "FileVersion",  "2017.12.26\0"
       VALUE "ProductName",  "ToolChain\0"
-      VALUE "ProductVersion",  "2017.12.24\0"
+      VALUE "ProductVersion",  "2017.12.26\0"
     END
   END
 

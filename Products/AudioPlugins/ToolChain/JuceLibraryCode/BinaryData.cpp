@@ -37,7 +37,12 @@ static const unsigned char temp_binary_data_0[] =
 "sudo apt-get install libxrandr-dev \r\n"
 "sudo apt-get install libxinerama-dev\r\n"
 "sudo apt-get install libxcursor-dev\r\n"
-"sudo apt-get install libxcurl-dev\r\n"
+"\r\n"
+"sudo apt-get install libcurl-dev\r\n"
+"or \r\n"
+"sudo apt-get install libcurl4-openssl-dev  ?\r\n"
+"...both can't be installed but they seem to be not needed - removing all \r\n"
+"occurences of \"libcurl\" from the makefile, makes it build\r\n"
 "\r\n"
 "for the juce PluginHost - additionally this is needed:\r\n"
 "sudo apt-get install libgl-dev\r\n"
@@ -62,7 +67,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes) throw
 
     switch (hash)
     {
-        case 0x4358baff:  numBytes = 1097; return DebugNotes_txt;
+        case 0x4358baff:  numBytes = 1283; return DebugNotes_txt;
         case 0x80091737:  numBytes = 0; return ToDo_txt;
         default: break;
     }
