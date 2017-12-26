@@ -242,7 +242,7 @@ void OscillatorStereoAudioModule::createParameters()
 
   // time domain waveform related parameters:
 
-  p = new Param("StartPhase", 0.0, 360.0, 0.01, Parameter::LINEAR, 1.0); // why not 0.0 as default?
+  p = new Param("StartPhase", 0.0, 360.0, 0.0, Parameter::LINEAR, 0.01);
   p->setValueChangeCallback<OS>(os, &OS::setStartPhase);
   defaultValues.clear();
   defaultValues.push_back(0.0);
