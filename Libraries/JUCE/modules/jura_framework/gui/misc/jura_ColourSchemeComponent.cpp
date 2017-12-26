@@ -299,11 +299,29 @@ void ColourSchemeComponent::paint(Graphics &g)
 
 void ColourSchemeComponent::paintOverChildren(Graphics &g)
 {
-  if( drawWithEnclosingRectangle == true )
+  if(drawWithEnclosingRectangle == true)
   {
     g.setColour(editorColourScheme.outline);
     g.drawRect(0, 0, getWidth(), getHeight(), 2);
   }
+
+#if JUCE_DEBUG
+  //bool showSize = true; // uncomment, if you want to figure out ideal gui sizes
+  if(showSize)
+  {
+    int w = 80;
+    int h = 20;
+    int x = 0;
+    int y = 0;
+    //int x = getWidth()/2  - w/2;
+    //int y = getHeight()/2 - h/2;
+    g.setColour(Colours::black);
+    g.fillRect(x, y, w, h);
+    g.setColour(Colours::white);
+    juce::String str = String(getWidth()) + " x " + String(getHeight());
+    g.drawText(str, x, y, w, h, Justification::centred);
+  }
+#endif
 }
 
 void ColourSchemeComponent::updateWidgetsAccordingToState()
