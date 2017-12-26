@@ -362,13 +362,10 @@ OscillatorStereoEditorContextMenu::OscillatorStereoEditorContextMenu(
   OscillatorStereoAudioModule* newOscillatorModuleToEdit, Component* componentToAttachTo)
   //: ComponentMovementWatcher(componentToAttachTo)
 {
-  // init the pointer to the oscillatoror to be edited:
-  //jassert( newOscillatorToEdit != NULL )
+  jassert(newOscillatorModuleToEdit != nullptr);
   oscillatorModuleToEdit = newOscillatorModuleToEdit;
-
   createWidgets();
-
-  updateWidgetsAccordingToState();
+  //updateWidgetsAccordingToState();
   setSize(180, 488);
 }
 
@@ -401,11 +398,13 @@ void OscillatorStereoEditorContextMenu::rButtonClicked(RButton *buttonThatWasCli
 
 void OscillatorStereoEditorContextMenu::rSliderValueChanged(RSlider *sliderThatHasChanged)
 {
+  /*
   if( oscillatorModuleToEdit == NULL )
     return;
   if( oscillatorModuleToEdit->wrappedOscillatorStereo == NULL )
     return;
   //rosic::OscillatorStereo* o = oscillatorModuleToEdit->wrappedOscillatorStereo;
+  */
   sendChangeMessage();
 }
 
@@ -625,7 +624,8 @@ void OscillatorStereoEditorContextMenu::createWidgets()
   // we don't listen to this button ourselves - this is the job of the outlying editor object
 }
 
-// is this obsolete?
+/*
+// may be obsolete - verify and delete
 void OscillatorStereoEditorContextMenu::updateWidgetsAccordingToState()
 {
   if( oscillatorModuleToEdit == NULL )
@@ -663,6 +663,7 @@ void OscillatorStereoEditorContextMenu::updateWidgetsAccordingToState()
   reverseButton->setToggleState(          w->isTimeReversed(),             false);
   invertButton->setToggleState(           w->isPolarityInverted(),         false);
 }
+*/
 
 void OscillatorStereoEditorContextMenu::resized()
 {

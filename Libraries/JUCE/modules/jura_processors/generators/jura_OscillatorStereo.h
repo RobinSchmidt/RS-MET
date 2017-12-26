@@ -92,7 +92,8 @@ public:
 
   /** Updates the sliders, buttons, etc. according to the state of the rosic::StereoOscillator 
   object which is being edited. */
-  virtual void updateWidgetsAccordingToState();
+  //virtual void updateWidgetsAccordingToState();
+  // may be obsolete
 
   /** Implements the purely virtual method of the ComponentMovementWatcher baseclass. */
   //virtual void componentMovedOrResized(bool wasMoved, bool wasResized);
