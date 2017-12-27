@@ -5,6 +5,15 @@ Bugs in the smoothing system:
   -it happens also when using the mousewheel
   -check, if it has to do with subclass AutomatableSlider - nope - happens also with regular RSliders
   -using std::atomic<double< instead of double for RSlider currentValue doesn't help either
+  -RSlider::setValue get called twice on mouswheel move 
+   (1) from mouseWheelMove
+   (2) from handleAsyncUpdate -> updateWidgetFromAssignedParameter -> setRange
+  -why is RWidget a subclass of AsyncUpdater?
+  -commenting out:
+      if(sendUpdateMessage)
+      triggerChangeMessage(sendMessageSynchronously);
+   fixes the problem ...maybe be can completely get rid of the AsyncUpdater baseclass?
+   ->try it!
   -in EngineersFilter, the plot is not correctly updated
 
 ToolChain Bugs:
