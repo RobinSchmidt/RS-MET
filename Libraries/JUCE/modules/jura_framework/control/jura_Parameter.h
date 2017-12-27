@@ -477,6 +477,12 @@ public:
   /** Notifies the observers that this parameter has been changed. */
   virtual void notifyObservers();
 
+  /** Notifies only observers that are GUI elements. */
+  virtual void notifyGuiObservers();
+
+  /** Notifies only observers that are not GUI elements. */
+  virtual void notifyNonGuiObservers();
+
   /** Calls all currently registered callback functions for a value change. */
   virtual void callValueChangeCallbacks();
 

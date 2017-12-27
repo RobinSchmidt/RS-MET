@@ -117,14 +117,16 @@ void rsSmoothableParameter::setValue(double newValue, bool sendNotification, boo
   {
     double oldValue = getValue();
 
-    //shouldSendNotification = sendNotification;
-    //Parameter::setValue(newValue, false, false);
-    // hmm...delaying the notification until smoothing is finished is appropriate for gui
-    // elements but not for meta-parameters
-    // i think we need a notifyNonGuiObservers that we call here and a notifyGuiObservers
-    // which we notify in smoothingHasEnded
+    // if the observers should be notified, we want to immediately notify MetaParameters, 
+    // for example, but GUI elements such as plots should be notified only after smoothing
+    // has finished (so, a frequency response plot doesnt get stuck with a graph that shows
+    // the curve before smoothing has finished)
+    shouldSendNotification = sendNotification;
+    Parameter::setValue(newValue, false, false);
+    if(sendNotification)
+      notifyNonGuiObservers();
 
-    Parameter::setValue(newValue, sendNotification, false); // old
+    //Parameter::setValue(newValue, sendNotification, false); // old
 
     smoothingManager->addSmootherFor(this, newValue, oldValue);
   }
@@ -137,11 +139,9 @@ void rsSmoothableParameter::setSmoothedValue(double newValue)
   callValueChangeCallbacks(); // maybe we should call a "NoLock" version of that?
 }
 
-/*
 void rsSmoothableParameter::smoothingHasEnded()
 {
   rsSmoothingTarget::smoothingHasEnded();
   if(shouldSendNotification)
-    notifyObservers();
+    notifyGuiObservers();
 }
-*/

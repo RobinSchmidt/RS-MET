@@ -45,7 +45,7 @@ public:
 
 protected:
 
-  double smoothingTime = 1000.0; // in milliseconds, 5000 for debugging - when done reset to 0
+  double smoothingTime = 50.0; // in milliseconds, 5000 for debugging - when done reset to 0
   bool isSmoothing = false;
   rsSmoothingManager* smoothingManager = nullptr; 
 
@@ -260,7 +260,7 @@ public:
   /** Overriden from rsSmoothingTarget. This is the per-sample callback. */
   virtual void setSmoothedValue(double newValue) override;
 
-  //virtual void smoothingHasEnded() override;
+  virtual void smoothingHasEnded() override;
 
 protected:
 

@@ -409,6 +409,28 @@ void Parameter::notifyObservers()
   }
 }
 
+void Parameter::notifyGuiObservers()
+{
+  ScopedPointerLock spl(mutex);
+  for(int i = 0; i < (int) parameterObservers.size(); i++)
+  {
+    if( parameterObservers[i]->isGuiElement() && 
+      parameterObservers[i]->wantsAutomationNotification() )
+      parameterObservers[i]->parameterChanged(this);
+  }
+}
+
+void Parameter::notifyNonGuiObservers()
+{
+  ScopedPointerLock spl(mutex);
+  for(int i = 0; i < (int) parameterObservers.size(); i++)
+  {
+    if( !parameterObservers[i]->isGuiElement() && 
+      parameterObservers[i]->wantsAutomationNotification() )
+      parameterObservers[i]->parameterChanged(this);
+  }
+}
+
 void Parameter::callValueChangeCallbacks()
 {
   ScopedPointerLock spl(mutex);
