@@ -64,7 +64,15 @@ public:
 
   /** Sets a flag to indicate that this ParameterObserver is a GUI element - set this to true in 
   your subclass when it is a GUI element. */
-  void setIsGuiElement(bool newIsGui) { isGuiElement = newIsGui; }
+  void setIsGuiElement(bool newIsGui) { guiElement = newIsGui; }
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+  /** Returns true, if this is a GUI element (assuming that you correctly called setIsGuiElement in
+  your subclass constructor). */
+  bool isGuiElement() { return guiElement; }
+   // todo: maybe enforce correctness by making isGuiElement() purely virtual
 
 
 private:
@@ -75,7 +83,7 @@ private:
   static bool guiAutomationSwitch;
   static bool globalAutomationSwitch;
   bool localAutomationSwitch;
-  bool isGuiElement;
+  bool guiElement;
 
   // data is made private to enforce to set them by function calls in subclasses, so we may hook
   // into changes to them with the debugger (changing them temporarily is a source for subtle 

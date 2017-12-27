@@ -6,7 +6,7 @@ bool ParameterObserver::guiAutomationSwitch    = true;
 ParameterObserver::ParameterObserver()
 {
   localAutomationSwitch = true;   // was formerly false by default...why?
-  isGuiElement = false;
+  guiElement = false;
 }
 
 ParameterObserver::~ParameterObserver()
@@ -17,7 +17,7 @@ ParameterObserver::~ParameterObserver()
 bool ParameterObserver::wantsAutomationNotification()
 {
   bool result = localAutomationSwitch && globalAutomationSwitch;
-  if( this->isGuiElement == true )
+  if( this->isGuiElement() )
     return result && guiAutomationSwitch;
   else
     return result;

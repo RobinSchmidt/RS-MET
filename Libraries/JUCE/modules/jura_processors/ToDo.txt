@@ -1,3 +1,8 @@
+in order to have the grid lines in plots visually the same, the pixel-size should divisible by
+the number of sections, i.e. (N+1), when N is the number of grid-lines. for example, our usual
+frequency response plots have N=10 frequency lines, so they have 11 sections and the width should
+be a multiple of 11
+
 Bugs in the smoothing system:
  -in EngineersFilter, the plot is not correctly updated when smoothing time is long
  -maybe the SmoothableParameter should send out its parameterChanged callback only after

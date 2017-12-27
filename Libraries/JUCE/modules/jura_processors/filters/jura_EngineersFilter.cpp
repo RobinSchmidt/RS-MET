@@ -353,7 +353,10 @@ EngineersFilterModuleEditor::EngineersFilterModuleEditor(CriticalSection *newPlu
   sciFilterModuleToEdit = newEngineersFilterAudioModule;
   createWidgets();
   updateWidgetsAccordingToState();
-  setSize(640, 300);  
+  //setSize(640, 300);
+  setSize(627, 291);
+   // w x h should be (N*11) x (M*25+66) for homogenous visual appearance of the grid. The plot will
+   // then be (N*11) x (M*25). We choose N=57, M=9 here.
 }
 
 // callbacks:
@@ -390,10 +393,11 @@ void EngineersFilterModuleEditor::resized()
   rippleSlider->setBounds(   x+4, y+4,  w-8, 16);
   rejectionSlider->setBounds(x+4, y+24, w-8, 16);
 
-  y = methodComboBox->getBottom();
+  y = methodComboBox->getBottom()+4;
   h = infoField->getY()-y;
 
-  plotEditor->setBounds(0, y+4, getWidth(), h-4);
+  plotEditor->setBounds(0, y, getWidth(), h);
+  //plotEditor->setBounds(0, 0, getWidth(), getHeight()); // for figuring out ideal size
 }
 
 void EngineersFilterModuleEditor::createWidgets()
