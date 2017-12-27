@@ -1,25 +1,13 @@
+clean up RSlider - but only after good testing
+
 Bugs in the smoothing system:
- -with very long smoothing times (in the order of seconds), the slider is glitchy 
-  -it's really only the slider - the value passed to the dsp callback is correct
-   check RSlider setValue and paint
-  -it happens also when using the mousewheel
-  -check, if it has to do with subclass AutomatableSlider - nope - happens also with regular RSliders
-  -using std::atomic<double< instead of double for RSlider currentValue doesn't help either
-  -RSlider::setValue get called twice on mouswheel move 
-   (1) from mouseWheelMove
-   (2) from handleAsyncUpdate -> updateWidgetFromAssignedParameter -> setRange
-  -why is RWidget a subclass of AsyncUpdater?
-  -commenting out:
-      if(sendUpdateMessage)
-      triggerChangeMessage(sendMessageSynchronously);
-   fixes the problem...but only when the slider is moved directly - when updated via a meta-parameter, it 
-   still glitches
-   ...maybe be can completely get rid of the AsyncUpdater baseclass?
-   ->try it!
-   maybe we need a proper implementation of DescribedComponent::repaintOnMessageThread
-   done: use it consistently in all widgets (also the plot-widgets)
-   -clean up RSlider - but only after good testing
-  -in EngineersFilter, the plot is not correctly updated
+ -in EngineersFilter, the plot is not correctly updated when smoothing time is long
+  ..actually, it's currently not updated at all when moving a slider
+  i think, it's best, when the plot-editor becomes a ParameterObserver and just observes all
+  relevant parameters
+
+
+
 
 ToolChain Bugs:
 -meta-assignment is not recalled

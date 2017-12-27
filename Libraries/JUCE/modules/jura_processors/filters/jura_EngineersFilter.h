@@ -78,7 +78,7 @@ protected:
 editing parameters like the cutoff frequencies. */
 
 class EngineersFilterPlotEditor	: virtual public SpectrumDisplayOld, public ChangeBroadcaster 
-  //, public ParameterObserver, 
+  , public ParameterObserver
 {
 
   /** Enumeration of the handles that can be grabbed and dragged by the mouse.  */
@@ -106,25 +106,22 @@ public:
   /** Passes a pointer the the actual rosic::EngineersFilter object which is to be edited. */
   virtual void setEngineersFilterToEdit(rosic::rsEngineersFilter* newEngineersFilterToEdit);
 
-  /** Assigns a rojue::Parameter object to the cutoff frequency of the lowpass for observation and 
-  manipulation. */
-  //virtual void assignParameterLowFreq(Parameter* parameterToAssign);
-
-  /** Assigns a rojue::Parameter object to the slope of the lowpass for observation and 
-  manipulation. */
-  //virtual void assignParameterLowSlope(Parameter* parameterToAssign);
-
-  /** Assigns a rojue::Parameter object to the cutoff frequency of the highpass for observation and 
-  manipulation. */
-  //virtual void assignParameterHighFreq(Parameter* parameterToAssign);
-
-  /** Assigns a rojue::Parameter object to the slope of the highpass for observation and 
-  manipulation. */
-  //virtual void assignParameterHighSlope(Parameter* parameterToAssign);
+  // functions to assign the parameters, we observe (in order to update the plot) and possibly 
+  // later also to manipulated them:
+  void assign(Parameter*& target, Parameter* p) { target = p; p->registerParameterObserver(this);} 
+  void assignParameterMode(     Parameter* p) { assign(modeParam,      p); }
+  void assignParameterMethod(   Parameter* p) { assign(methodParam,    p); }
+  void assignParameterOrder(    Parameter* p) { assign(orderParam,     p); }
+  void assignParameterFrequency(Parameter* p) { assign(freqParam,      p); }
+  void assignParameterBandwidth(Parameter* p) { assign(bandwidthParam, p); }
+  void assignParameterGain(     Parameter* p) { assign(gainParam,      p); }
+  void assignParameterRipple(   Parameter* p) { assign(rippleParam,    p); }
+  void assignParameterRejection(Parameter* p) { assign(rejectionParam, p); }
 
   //-----------------------------------------------------------------------------------------------
   // callbacks:
 
+  virtual void parameterChanged(Parameter* param) override;
   //virtual void parameterChanged(Parameter* parameterThatHasChanged);
   //virtual void parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted);
 
@@ -175,6 +172,8 @@ protected:
 
   // the parameters which wil cause re-plotting and therefore must be listened to:
   //Parameter *lowFreqParameter, *lowSlopeParameter, *highFreqParameter, *highSlopeParameter;
+  Parameter *modeParam, *methodParam, *orderParam, *freqParam, *bandwidthParam, *gainParam, 
+    *rippleParam, *rejectionParam;
 
   // magnitude response display stuff:
   int    numBins;
