@@ -155,12 +155,24 @@ ColourSchemeComponent* RWidget::getOutlyingColourSchemeComponent()
 
 void RWidget::parameterChanged(Parameter* parameterThatHasChanged)
 {
-  triggerAsyncUpdate();
+  //triggerAsyncUpdate();
+  if( assignedParameter != NULL )
+  {
+    setLocalAutomationSwitch(false); // to avoid circular notifications and updates
+    updateWidgetFromAssignedParameter();
+    setLocalAutomationSwitch(true);
+  }
 }
 
 void RWidget::parameterRangeChanged(Parameter* parameterThatHasChanged)
 {
-  triggerAsyncUpdate();
+  //triggerAsyncUpdate();
+  if( assignedParameter != NULL )
+  {
+    setLocalAutomationSwitch(false); // to avoid circular notifications and updates
+    updateWidgetFromAssignedParameter();
+    setLocalAutomationSwitch(true);
+  }
 }
 
 void RWidget::parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted)
@@ -171,7 +183,7 @@ void RWidget::parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted)
     assignedParameter = NULL;
   }
 }
-
+/*
 void RWidget::handleAsyncUpdate()
 {
   if( assignedParameter != NULL )
@@ -182,7 +194,7 @@ void RWidget::handleAsyncUpdate()
   }
   //repaint();
 }
-
+*/
 void RWidget::updateWidgetFromAssignedParameter(bool sendChangeMessage)
 {
   // needs to be overriden in the subclasses to - for example - update a slider like this:

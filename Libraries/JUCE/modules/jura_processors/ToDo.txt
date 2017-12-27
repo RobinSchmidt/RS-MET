@@ -17,6 +17,7 @@ Bugs in the smoothing system:
    ...maybe be can completely get rid of the AsyncUpdater baseclass?
    ->try it!
    maybe we need a proper implementation of DescribedComponent::repaintOnMessageThread
+   done: use it consistently in all widgets (also the plot-widgets)
   -in EngineersFilter, the plot is not correctly updated
 
 ToolChain Bugs:

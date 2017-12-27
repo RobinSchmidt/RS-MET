@@ -62,7 +62,8 @@ void RSlider::setRange(double newMin, double newMax, double newInt, double newDe
   else
     setValue(currentValue, false, false);
 
-  repaint();
+  repaintOnMessageThread();
+  //repaint();
 }
 
 void RSlider::setScaling(int newScaling)
@@ -142,8 +143,8 @@ void RSlider::setValue(double newValue, const bool sendUpdateMessage,
 
     repaint();
 
-    if(sendUpdateMessage)
-      triggerChangeMessage(sendMessageSynchronously);
+    //if(sendUpdateMessage)
+    //  triggerChangeMessage(sendMessageSynchronously);
   }
 }
 
@@ -237,9 +238,13 @@ void RSlider::updateWidgetFromAssignedParameter(bool sendChangeMessage)
 
     // new:
     currentValue = constrainValue(assignedParameter->getValue());
-    repaint();
-    if(sendChangeMessage)
-      triggerChangeMessage(false);
+    repaintOnMessageThread();
+
+
+    //repaint();
+
+    //if(sendChangeMessage)
+    //  triggerChangeMessage(false);
   }
 }
 
@@ -607,6 +612,7 @@ void RSlider::valueSanityCheck()
   defaultValue = constrainValue(defaultValue);
 }
 
+/*
 void RSlider::handleAsyncUpdate()
 {
   RWidget::handleAsyncUpdate();
@@ -625,3 +631,4 @@ void RSlider::triggerChangeMessage (const bool synchronous)
   else
     triggerAsyncUpdate();
 }
+*/

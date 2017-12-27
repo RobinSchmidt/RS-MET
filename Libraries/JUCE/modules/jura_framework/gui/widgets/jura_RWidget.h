@@ -8,7 +8,7 @@
 
 class ColourSchemeComponent;
 
-class JUCE_API RWidget : public DescribedComponent, public ParameterObserver, public AsyncUpdater
+class JUCE_API RWidget : public DescribedComponent, public ParameterObserver/*, public AsyncUpdater*/
 {
 
 public:
@@ -98,7 +98,7 @@ public:
   //virtual void changeListenerCallback (void *objectThatHasChanged);
 
   /** Overrides handleAsyncUpdate to call updateWidgetFromAssignedParameter from there. */
-  virtual void handleAsyncUpdate();
+  //virtual void handleAsyncUpdate();
 
   /** This method is called when the assigned Parameter has been changed - override it in the
   subclasses to do the actual GUI update. */
