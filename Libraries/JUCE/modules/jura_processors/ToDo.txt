@@ -1,5 +1,4 @@
 ToolChain Bugs:
--EchoLab gui not restored when ToolChain preset is loaded
 -on mac, the color-gradients are wrong (maybe the rgba-channels are confused)
 
 ToolChain

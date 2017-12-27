@@ -583,18 +583,27 @@ void ToolChain::recallSlotsFromXml(const XmlElement &xmlState, bool markAsClean)
     if(i == tmpActiveSlot)        // hack: we set it before adding the module, so the editor
       activeSlot = tmpActiveSlot; // retrieves the correct value in the moduleAdded callback
 
-    if(addModule(type))
+    //// old:
+    //if(addModule(type))
+    //{
+    //  XmlElement *moduleState = slotState->getChildElement(0);
+    //  modules[i]->setStateFromXml(*moduleState, "", markAsClean);
+    //  i++;
+    //}
+    //// it may be better to first create the module, then recall its state and then add it (instead
+    //// of recalling the state after adding) because when loading a preset, the editor my show
+    //// a module in the initial state instead of the actual state - check with EchoLab - load
+    //// ToolChain presets - the EchoLab editro state is wrong after recall
+
+    // new:
+    AudioModule *m = AudioModuleFactory::createModule(type, lock, &modManager, metaParamManager);
+    if(m != nullptr)
     {
       XmlElement *moduleState = slotState->getChildElement(0);
-      modules[i]->setStateFromXml(*moduleState, "", markAsClean);
-      i++;
+      m->setStateFromXml(*moduleState, "", markAsClean); // set the state of the module before...
+      addModule(m);                                      // ...adding it, so the newly created
+      i++;                                               // editor has correct initial state
     }
-
-    // it may be better to first create the module, then recall its state and then add it (instead
-    // of recalling the state after adding) because when loading a preset, the editor my show
-    // a module in the initial state instead of the actual state - check with EchoLab - load
-    // ToolChain presets - the EchoLab editro state is wrong after recall
-
   }
 }
 
