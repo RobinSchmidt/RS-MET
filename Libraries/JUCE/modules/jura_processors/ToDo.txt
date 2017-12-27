@@ -1,15 +1,8 @@
-clean up EngineersFilterModuleEditor
-clean up RSlider - but only after good testing
-
-
 Bugs in the smoothing system:
  -in EngineersFilter, the plot is not correctly updated when smoothing time is long
-  ..actually, it's currently not updated at all when moving a slider
-  i think, it's best, when the plot-editor becomes a ParameterObserver and just observes all
-  relevant parameters
 
-
-
+clean up EngineersFilterModuleEditor
+clean up RSlider - but only after good testing
 
 ToolChain Bugs:
 -meta-assignment is not recalled

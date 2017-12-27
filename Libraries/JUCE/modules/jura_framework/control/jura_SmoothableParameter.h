@@ -45,7 +45,7 @@ public:
 
 protected:
 
-  double smoothingTime = 0.0; // in milliseconds, 5000 for debugging - when done reset to 0
+  double smoothingTime = 1000.0; // in milliseconds, 5000 for debugging - when done reset to 0
   bool isSmoothing = false;
   rsSmoothingManager* smoothingManager = nullptr; 
 

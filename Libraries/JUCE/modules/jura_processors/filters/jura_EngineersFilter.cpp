@@ -105,9 +105,9 @@ void EngineersFilterAudioModule::createParameters()
 EngineersFilterPlotEditor::EngineersFilterPlotEditor(const juce::String& name) 
   : SpectrumDisplayOld(name)
 {
-  setDescription("Drag vertical lines at the corner frequencies to adjust them.");
+  //setDescription("Drag vertical lines at the corner frequencies to adjust them.");
+  setIsGuiElement(true);
 
-  //ParameterObserver::isGuiElement = true;
   sciFilterToEdit = NULL;
 
   // set up the plot range:
@@ -123,14 +123,6 @@ EngineersFilterPlotEditor::EngineersFilterPlotEditor(const juce::String& name)
 
   currentMouseCursor = MouseCursor(MouseCursor::NormalCursor);
   setMouseCursor(currentMouseCursor);
-
-  /*
-  // initialize the two pointers to Parameter objects with NULL:
-  lowFreqParameter   = NULL;
-  lowSlopeParameter  = NULL;
-  highFreqParameter  = NULL;
-  highSlopeParameter = NULL;
-  */
 
   // this stuff will be (re-) assigned in resized():
   numBins     = 0;
@@ -365,18 +357,6 @@ EngineersFilterModuleEditor::EngineersFilterModuleEditor(CriticalSection *newPlu
 }
 
 // callbacks:
-/*
-void EngineersFilterModuleEditor::rComboBoxChanged(RComboBox *rComboBoxThatHasChanged)
-{
-  updateWidgetVisibility();
-  plotEditor->updatePlot();
-}
-
-void EngineersFilterModuleEditor::rSliderValueChanged(RSlider *rSliderThatHasChanged)
-{
-  plotEditor->updatePlot();
-}
-*/
 
 void EngineersFilterModuleEditor::updateWidgetsAccordingToState()
 {
@@ -514,16 +494,16 @@ void EngineersFilterModuleEditor::updateWidgetVisibility()
   if( sf->hasCurrentModeGainParameter() )
   {
     if( sf->getApproximationMethod() == rsPrototypeDesigner::CHEBYCHEV )
-      rippleSlider->setDescription(juce::String("Ripple inside the boost/cut band in percent of dB-peak-gain"));
+      rippleSlider->setDescription("Ripple inside the boost/cut band in percent of dB-peak-gain");
     if( sf->getApproximationMethod() == rsPrototypeDesigner::INVERSE_CHEBYCHEV )
-      rippleSlider->setDescription(juce::String("Ripple outside the boost/cut band in percent of dB-peak-gain"));
+      rippleSlider->setDescription("Ripple outside the boost/cut band in percent of dB-peak-gain");
     if( sf->getApproximationMethod() == rsPrototypeDesigner::ELLIPTIC )
-      rippleSlider->setDescription(juce::String("Ripple in- and outside the boost/cut band in percent of dB-peak-gain"));
+      rippleSlider->setDescription("Ripple in- and outside the boost/cut band in percent of dB-peak-gain");
     rippleSlider->setStringConversionFunction(&percentToStringWithUnit2);
   }
   else
   {
-    rippleSlider->setDescription(juce::String("Ripple inside the filter's passband in dB"));
+    rippleSlider->setDescription("Ripple inside the filter's passband in dB");
     rippleSlider->setStringConversionFunction(&decibelsToStringWithUnit2);
   }
 }

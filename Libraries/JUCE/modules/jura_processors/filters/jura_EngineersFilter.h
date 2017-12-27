@@ -34,21 +34,6 @@ public:
     wrappedEngineersFilter->setSampleRate(newSampleRate);
   }
 
-  /*
-  // obsolete?
-  virtual void processBlockStereo(float *left, float *right, int numSamples)
-  {
-    for(int n = 0; n < numSamples; n++)
-    {
-      double dL = left[n];
-      double dR = right[n];
-      wrappedEngineersFilter->getSampleFrameDirect1(&dL, &dR);
-      left[n]  = (float)dL;
-      right[n] = (float)dR;
-    }
-  }
-  */
-
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
   {
     for(int n = 0; n < numSamples; n++)
@@ -66,10 +51,10 @@ protected:
   void createParameters();
 
   rosic::rsEngineersFilter *wrappedEngineersFilter;
-
   bool wrappedEngineersFilterIsOwned = false;
 
-  juce_UseDebuggingNewOperator;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(EngineersFilterAudioModule)
 };
 
 //=================================================================================================
