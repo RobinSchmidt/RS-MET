@@ -79,12 +79,12 @@ void DebugModuleEditor::createWidgets()
   Parameter* p;
 
   // create vector-pad:
-  //...
+  addWidget(xyPad = new rsVectorPad);
 
 
   addWidget( leftSlider = s = new Sld );
   s->assignParameter( p = debugModule->getParameterByName("Left") );
-  //vectorPad->assignParameterX(p);
+  xyPad->assignParameterX(p);
   s->setSliderName("Left");
   s->setDescription("Left channel output value");
   s->setDescriptionField(infoField);
@@ -92,7 +92,7 @@ void DebugModuleEditor::createWidgets()
 
   addWidget( rightSlider = s = new Sld );
   s->assignParameter( p = debugModule->getParameterByName("Right") );
-  //vectorPad->assignParameterY(p);
+  xyPad->assignParameterY(p);
   s->setSliderName("Right");
   s->setDescription("Right channel output value");
   s->setDescriptionField(infoField);
@@ -110,6 +110,13 @@ void DebugModuleEditor::resized()
   int wh = 16;     // widget height
   int dy = wh-2;   // delta-y between widgets
 
+  int size = jmin(getWidth(), getHeight()-y);
+  xyPad->setBounds(0, y, size, size);
+
+
+  x = xyPad->getRight() + m;
+  w = getWidth() - x - m;
+  y = getPresetSectionBottom() + m;
   leftSlider ->setBounds(x, y, w, wh); y += dy;
   rightSlider->setBounds(x, y, w, wh); y += dy;
 }

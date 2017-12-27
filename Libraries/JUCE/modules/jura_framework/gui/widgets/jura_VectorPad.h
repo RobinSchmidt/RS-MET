@@ -24,10 +24,17 @@ public:
 
   //-----------------------------------------------------------------------------------------------
   // \name Callbacks
+
+  virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
+  virtual void paint(Graphics& g) override;
+
   
   
 protected:
 
+  Parameter *paramX = nullptr, *paramY = nullptr;
+
+  double xMin = -1, xMax = +1, yMin = -1, yMax = +1;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsVectorPad)
 };

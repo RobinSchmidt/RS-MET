@@ -54,6 +54,8 @@ protected:
 
   DebugAudioModule *debugModule;
 
+  rsVectorPad *xyPad;
+
   AutomatableSlider *leftSlider, *rightSlider; // smoothingSlider
   //AutomatableComboBox *modeComboBox;
   //AutomatableButton *invertButton;  
