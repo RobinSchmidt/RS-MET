@@ -51,6 +51,7 @@ This class implements a user interface XY-pad for a rosic::VectorMixer object.
 
 \todo turn this into a general purpose widget with callback and obesrver
 callback: xyPadChanged(double newX, double newY, bool xWasChanged, bool yWasChanged);
+...derive from rsVectorPad
 
 */
 

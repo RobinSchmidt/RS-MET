@@ -54,9 +54,10 @@ protected:
 
   DebugAudioModule *debugModule;
 
-  ModulatableSlider *leftSlider, *rightSlider; // smoothingSlider
+  AutomatableSlider *leftSlider, *rightSlider; // smoothingSlider
   //AutomatableComboBox *modeComboBox;
   //AutomatableButton *invertButton;  
+   // use ModulatabelSlider, etc later
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DebugModuleEditor)
 };

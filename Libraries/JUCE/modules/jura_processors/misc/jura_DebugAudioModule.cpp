@@ -30,6 +30,7 @@ void DebugAudioModule::processBlock(double **inOutBuffer, int numChannels, int n
     for(int n = 0; n < numSamples; n++)
       inOutBuffer[i][n] = values[i];
   // todo: loop over child modules and let them add their value
+  // or have one child module with scale and offset parameters
 }
 
 void DebugAudioModule::processStereoFrame(double *left, double *right)
@@ -73,10 +74,42 @@ DebugModuleEditor::DebugModuleEditor(jura::DebugAudioModule *newDebugModuleToEdi
 
 void DebugModuleEditor::createWidgets()
 {
+  typedef AutomatableSlider Sld;
+  Sld* s;
+  Parameter* p;
 
+  // create vector-pad:
+  //...
+
+
+  addWidget( leftSlider = s = new Sld );
+  s->assignParameter( p = debugModule->getParameterByName("Left") );
+  //vectorPad->assignParameterX(p);
+  s->setSliderName("Left");
+  s->setDescription("Left channel output value");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToStringTotal5);
+
+  addWidget( rightSlider = s = new Sld );
+  s->assignParameter( p = debugModule->getParameterByName("Right") );
+  //vectorPad->assignParameterY(p);
+  s->setSliderName("Right");
+  s->setDescription("Right channel output value");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToStringTotal5);
 }
 
 void DebugModuleEditor::resized()
 {
   AudioModuleEditor::resized();
+  int m  = 4; // margin
+  int x  = m;
+  int y  = getPresetSectionBottom() + m;
+  int w  = getWidth() - 2*m;
+  int h  = getHeight();
+  int wh = 16;     // widget height
+  int dy = wh-2;   // delta-y between widgets
+
+  leftSlider ->setBounds(x, y, w, wh); y += dy;
+  rightSlider->setBounds(x, y, w, wh); y += dy;
 }

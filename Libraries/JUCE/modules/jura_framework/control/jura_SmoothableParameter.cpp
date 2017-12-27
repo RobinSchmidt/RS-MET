@@ -127,6 +127,9 @@ void rsSmoothableParameter::setValue(double newValue, bool sendNotification, boo
       notifyNonGuiObservers();
       // maybe we need an additional flag wantsNotificationAfterSmoothing ...or 
       // wantsImmediateNotification and two functions notifyImmmediately, notifyDelayed
+      // or let ParameterObserver have flags preSmoothNotify, postSmoothNotify which can
+      // be set individually - sliders coudl use preSmoothNotify, plotsuse postSmoothNotify
+      // or both
 
     //Parameter::setValue(newValue, sendNotification, false); // old
 
