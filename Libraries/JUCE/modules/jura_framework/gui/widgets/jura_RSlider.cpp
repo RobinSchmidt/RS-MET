@@ -142,8 +142,8 @@ void RSlider::setValue(double newValue, const bool sendUpdateMessage,
 
     repaint();
 
-    //if(sendUpdateMessage)
-    //  triggerChangeMessage(sendMessageSynchronously);
+    if(sendUpdateMessage)
+      triggerChangeMessage(sendMessageSynchronously);
   }
 }
 
@@ -369,7 +369,7 @@ void RSlider::mouseDown(const MouseEvent& e)
       {
         // jump to value only when alt is down:
         double tmpValue = proportionOfLengthToValue((double)e.x / (double)getWidth());
-        setValue(constrainAndQuantizeValue(tmpValue), true, false);
+        setValue(constrainAndQuantizeValue(tmpValue), false, false);
       }
       valueOnMouseDown = getValue();
       oldDragDistance  = 0;
@@ -405,7 +405,7 @@ void RSlider::mouseDrag(const MouseEvent& e)
       x += dragValue;                                          // new x
       x = clip(x, 0, 1);
       x = proportionOfLengthToValue(x);                        // convert to value
-      setValue(constrainAndQuantizeValue(x), true, false);     // set it
+      setValue(constrainAndQuantizeValue(x), false, false);     // set it
 
       //// old, has value jump issues when pressing/releasing shift during drag:
       //double x = valueToProportionOfLength(valueOnMouseDown);  // in 0..1
@@ -423,7 +423,7 @@ void RSlider::mouseDrag(const MouseEvent& e)
 void RSlider::mouseDoubleClick(const MouseEvent& e)
 {
   if( isEnabled() && e.mods.isLeftButtonDown() )
-    setValue(openModalNumberEntryField(getValue()), true, false);
+    setValue(openModalNumberEntryField(getValue()), false, false);
 }
 
 void RSlider::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel)
@@ -444,10 +444,10 @@ void RSlider::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &w
     if( interval > 0.0 )
     {
       tmpValue = getValue() + s * interval;
-      setValue(constrainAndQuantizeValue(tmpValue), true, false);
+      setValue(constrainAndQuantizeValue(tmpValue), false, false);
     }
     else
-      setProportionalValue(getProportionalValue() + scale * 0.01 * wheel.deltaY, true, false);
+      setProportionalValue(getProportionalValue() + scale * 0.01 * wheel.deltaY, false, false);
   }
 }
 

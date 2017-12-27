@@ -68,8 +68,12 @@ public:
   @see Parameter::scalings. */
   virtual void setScaling(int newScaling);
 
-  /** Sets the current value of the slider and optionally sends out a callback message. */
-  virtual void setValue(double newValue, const bool sendUpdateMessage = true,
+  /** Sets the current value of the slider. 
+  The optional arguments are for triggering an (asynchrnous) update of the lsider itself
+  ...i think, this is to make sure, that repaint gets called on the message thread when a parameter
+  is changed form the audio thread...figure out.. */
+  virtual void setValue(double newValue, 
+    const bool sendUpdateMessage = true,
     const bool sendMessageSynchronously = false);
 
   /** Overriden from RWidget - sets the current value of the slider from a string and optionally
