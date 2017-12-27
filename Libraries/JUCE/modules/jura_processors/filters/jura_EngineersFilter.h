@@ -191,8 +191,7 @@ protected:
 
 /** Editor for EngineersFilterAudioModule */
 
-class EngineersFilterModuleEditor : public AudioModuleEditor, public RComboBoxObserver, 
-  public RSliderListener
+class EngineersFilterModuleEditor : public AudioModuleEditor
 {
 
 public:
@@ -207,10 +206,8 @@ public:
   //---------------------------------------------------------------------------------------------
   // callbacks:
 
-  virtual void rComboBoxChanged(RComboBox *rComboBoxThatHasChanged);
-  virtual void rSliderValueChanged(RSlider *rSliderThatHasChanged);
-  virtual void resized();
-  virtual void updateWidgetsAccordingToState();
+  virtual void resized() override;
+  virtual void updateWidgetsAccordingToState() override;
 
 
 protected:
@@ -221,26 +218,12 @@ protected:
   virtual void updateWidgetVisibility();
 
   EngineersFilterAudioModule *sciFilterModuleToEdit;
-
   EngineersFilterPlotEditor  *plotEditor;
-
-  // use RNamedComboBox:
-  //RLabel    *modeLabel, *methodLabel;
-  //RComboBox *modeComboBox, *methodComboBox;
 
   RNamedComboBox *modeComboBox, *methodComboBox;
 
-
   RSlider   *frequencySlider, *orderSlider, *bandwidthSlider, *gainSlider, *rippleSlider,
-    *rejectionSlider, *inRippleSlider, *outRippleSlider;
-
-  // *transitionWidthSlider, *passbandRippleSlider, *stopBandAttenuationSlider, *stopBandRippleSlider;
-  /*
-  RLabel    *bandsLabel, *lowLabel, *highLabel;
-  RComboBox *numBandsComboBox;
-  RButton   *monoButton;
-  RSlider   *lowFrequencySlider, *lowSlopeSlider, *highFrequencySlider, *highSlopeSlider;
-  */
+    *rejectionSlider;
 
   juce_UseDebuggingNewOperator;
 };

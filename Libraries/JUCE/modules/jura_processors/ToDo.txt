@@ -1,4 +1,6 @@
+clean up EngineersFilterModuleEditor
 clean up RSlider - but only after good testing
+
 
 Bugs in the smoothing system:
  -in EngineersFilter, the plot is not correctly updated when smoothing time is long
