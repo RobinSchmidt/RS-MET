@@ -186,10 +186,6 @@ protected:
   /** Constrains the members currentValue and defaultValue via constrainedValue(). */
   virtual void valueSanityCheck();
 
-  //virtual void enablementChanged();
-  //void handleAsyncUpdate() override;
-  //virtual void triggerChangeMessage(const bool synchronous);
-
   // our listeners:
   juce::Array<RSliderListener*> listeners;  // rename into sliderObservers
 

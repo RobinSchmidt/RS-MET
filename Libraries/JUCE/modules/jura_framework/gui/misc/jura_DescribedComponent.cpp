@@ -57,44 +57,10 @@ void DescribedComponent::mouseExit(const MouseEvent &e)
     descriptionField->setText(String::empty);
 }
 
-void repaintComponent(juce::Component* c)
-{
-  c->repaint();
-}
-
-void testFunction()
-{
-
-  int dummy = 0;
-}
-
 void DescribedComponent::repaintOnMessageThread()
 {
-  // preliminary - repaint only if this is the message thread - what we actually should do is
-  // somehow trigger an asynchronous repaint on on the message thread, if this isn't the message 
-  // thread
-  MessageManager* mm = MessageManager::getInstance();
-  if(mm->isThisTheMessageThread())
+  if(MessageManager::getInstance()->isThisTheMessageThread())
     repaint();
   else
-  {
-    // https://juce.com/doc/classMessageManager
-    // use: void * 	callFunctionOnMessageThread (MessageCallbackFunction *callback, void *userData)
-    // ...but no - that blocks
-    // or void MessageManager::callAsync	(	FunctionType 	functionToCall	)	
-
-    // or this:
-    // https://juce.com/doc/classCallbackMessage
-
-    //MessageManager::callAsync(repaintComponent(this));
-
-    //auto func = testFunction;
-
-    //auto func = [this]{ repaint(); };
-    //MessageManager::callAsync(func);
-
-    MessageManager::callAsync([this]{ repaint(); });
-
-    //jassertfalse;
-  }
+    MessageManager::callAsync( [this]{repaint();} );
 }
