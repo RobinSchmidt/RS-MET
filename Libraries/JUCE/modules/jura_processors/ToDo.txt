@@ -8,8 +8,10 @@ ToolChain
  -MIDI (midi-to-mete-mapping)
  -I/O (num ins/outs, etc.)
  -Smoothing
+ -Oversampling and/or fixed internal sample-rate
 -use vertical scrollbar, when there ar many slots
 -let modulators have ther own slot-array
+
 
 Make ToolChain ready for release:
 -check why plugin becomes unresponsive in VSTHost when switching to a module with smaller gui

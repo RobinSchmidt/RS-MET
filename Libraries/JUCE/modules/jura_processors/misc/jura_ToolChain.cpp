@@ -14,8 +14,10 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
   if(type == "MidiMonitor")   return new MidiMonitorAudioModule(  lock);
 
   // generators:
-  if(type == "Oscillator3D")  return new RotationOscillatorAudioModule(lock, metaMan, modMan);
-  if(type == "RayBouncer")    return new RayBouncerAudioModule(lock);
+  if(type == "Oscillator3D")   return new RotationOscillatorAudioModule(lock, metaMan, modMan);
+  if(type == "RayBouncer")     return new RayBouncerAudioModule(lock);
+  //if(type == "WaveOscillator") return new OscillatorStereoAudioModule(lock);
+  //if(type == "FourOscSection") return new FourOscSectionAudioModule(lock);
 
   // effects:
   if(type == "Enveloper")        return new Enveloper(                  lock);
@@ -120,23 +122,11 @@ juce::String AudioModuleFactory::getModuleType(AudioModule *m)
 
 AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
 {
-  /*
-  // old: linear flat array:
-  setDescription("Select module type");
-  StringArray a = AudioModuleFactory::getAvailableModuleTypes();
-  for(int i = 0; i < a.size(); i++)
-    addItem(i, a[i]);
-  // ...but we want a tree...
-  */
-
-  // ...check carefully, if it works:
   // populate the tree:
 
   RTreeViewNode *node;
   int i = 1;           //  the index is actually not used, but we need it as dummy
-
   popUpMenu->addTreeNodeItem(new RTreeViewNode("None",    i++));
-
 
   node = new RTreeViewNode("Instruments", -1, "Instruments");
   node->addChildNode(new RTreeViewNode("AcidDevil",       i++));
@@ -150,7 +140,7 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
   //node->addChildNode(new RTreeViewNode("StereoDelay",   i++)); // include in Quadrifex
   //node->addChildNode(new RTreeViewNode("PitchShifter",  i++)); // include in Quadrifex
   node->addChildNode(new RTreeViewNode("EchoLab",       i++));
-  //node->addChildNode(new RTreeViewNode("Quadrifex",     i++));
+  node->addChildNode(new RTreeViewNode("Quadrifex",     i++));
   //node->addChildNode(new RTreeViewNode("AlgoVerb",      i++));
   node->setOpen(false);
   popUpMenu->addTreeNodeItem(node);
@@ -159,8 +149,8 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
   node = new RTreeViewNode("Sources", -1, "Sources");
   node->addChildNode(new RTreeViewNode("Oscillator3D",   i++));
   node->addChildNode(new RTreeViewNode("RayBouncer",     i++));
-  //node->addChildNode(new RTreeViewNode("WaveOscillator",  i++));
-  //node->addChildNode(new RTreeViewNode("FourOscSection",  i++));
+  node->addChildNode(new RTreeViewNode("WaveOscillator",  i++));  // 
+  node->addChildNode(new RTreeViewNode("FourOscSection",  i++));
   //node->addChildNode(new RTreeViewNode("NoiseGenerator",  i++));
   //node->addChildNode(new RTreeViewNode("SamplePlayer",    i++));
   node->setOpen(false);
@@ -183,7 +173,7 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
 
   /*
   node = new RTreeViewNode("Modulators", -1, "Modulators");
-  //node->addChildNode(new RTreeViewNode("BreakpointModulator",  i++));
+  node->addChildNode(new RTreeViewNode("BreakpointModulator",  i++));
   //node->addChildNode(new RTreeViewNode("LowFrequencyOscillator",  i++));
   node->setOpen(false);
   popUpMenu->addTreeNodeItem(node);
@@ -216,6 +206,23 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
 
   //setSize(300, 300); // has no effect
 }
+
+// The current release version includes:
+// Instruments:
+//   AcidDevil
+//   Straightliner
+// Effects:
+//   FuncShaper
+//   EchoLab
+// Filters:
+//   Equalizer
+//   EngineersFilter
+// Dynamics:
+//   Limiter
+// Analyzers:
+//   Scope
+//   MultiAnalyzer
+//   MidiMonitor
 
 void AudioModuleSelector::drawHighlighted(bool shouldBeHighlighted)
 {

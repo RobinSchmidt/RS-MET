@@ -2,7 +2,11 @@
 #define jura_OscillatorStereo_h
 
 /** This class wraps rosic::OscillatorStereo into a rosof::AudioModule to facilitate its use as
-plugIn or sub-module inside a plugin.  */
+plugIn or sub-module inside a plugin.  
+
+todo: rename to WaveOscillator
+
+*/
 
 class OscillatorStereoAudioModule : public AudioModule
 {
