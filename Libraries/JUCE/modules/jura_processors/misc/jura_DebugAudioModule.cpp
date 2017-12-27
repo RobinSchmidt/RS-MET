@@ -46,7 +46,10 @@ void DebugAudioModule::reset()
 
 void DebugAudioModule::setMidiController(int controllerNumber, float controllerValue)
 {
-  Parameter* p = getParameterByName("Output");
-  //p->setValue(controllerValue / 127.0, true, false);
-  p->setValue(controllerValue / 127.0, true, true);
+  double v = controllerValue / 127.0; //  0..1
+  v = 2*v-1;                          // -1..+1
+  if(controllerNumber == 74)
+    getParameterByName("Left")->setValue(v, true, true);
+  else if(controllerNumber == 71)
+    getParameterByName("Right")->setValue(v, true, true);
 }

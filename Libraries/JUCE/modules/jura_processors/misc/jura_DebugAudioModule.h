@@ -35,4 +35,8 @@ protected:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DebugAudioModule)
 };
 
+//=================================================================================================
+
+/** Editor for the debugging AudioModule. */
+
 #endif 

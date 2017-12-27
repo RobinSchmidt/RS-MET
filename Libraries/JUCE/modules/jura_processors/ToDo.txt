@@ -7,6 +7,9 @@ Bugs in the smoothing system:
  -when setting a DC-slider immediately to a new value (with alt), no smoothing is applied
   ...but only when a meta is attached
 
+Straightliner - initial patch has moogish lowpass on it - display shows flat freq-response
+-there seems to be something wrong with the mode-indices
+
 clean up EngineersFilterModuleEditor
 clean up RSlider - but only after good testing
 
@@ -16,7 +19,7 @@ ToolChain Bugs:
 ToolChain
 -let the "Setup" have tabs for 
  -GUI (colors, etc.)
- -MIDI (midi-to-mete-mapping)
+ -MIDI (midi-to-meta-mapping)
  -I/O (num ins/outs, etc.)
  -Smoothing
  -Oversampling and/or fixed internal sample-rate
