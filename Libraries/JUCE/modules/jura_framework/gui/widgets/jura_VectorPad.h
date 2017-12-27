@@ -44,6 +44,8 @@ protected:
 
   double xMin = -1, xMax = +1, yMin = -1, yMax = +1;
 
+  float dotSize = 16;
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsVectorPad)
 };
 
