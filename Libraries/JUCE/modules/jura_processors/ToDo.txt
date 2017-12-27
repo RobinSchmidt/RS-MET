@@ -4,6 +4,7 @@ Bugs in the smoothing system:
    check RSlider setValue and paint
   -it happens also when using the mousewheel
   -check, if it has to do with subclass AutomatableSlider - nope - happens also with regular RSliders
+  -using std::atomic<double< instead of double for RSlider currentValue doesn't help either
   -in EngineersFilter, the plot is not correctly updated
 
 ToolChain Bugs:
