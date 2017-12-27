@@ -148,7 +148,7 @@ public:
 
 protected:
 
-  virtual void initializeAutomatableParameters();
+  virtual void createParameters();
 
   rosic::EchoLab *wrappedEchoLab;
   bool wrappedEchoLabIsOwned = false;

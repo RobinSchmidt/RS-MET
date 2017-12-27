@@ -388,7 +388,7 @@ EchoLabAudioModule::EchoLabAudioModule(CriticalSection *newPlugInLock,
   //feedbackFilterModule = new EqualizerAudioModule(NULL);
   //feedbackFilterModule->setModuleName(juce::String(T("FeedbackFilter")));
 
-  initializeAutomatableParameters();
+  createParameters();
 }
 
 EchoLabAudioModule::~EchoLabAudioModule()
@@ -432,6 +432,8 @@ void EchoLabAudioModule::setStateFromXml(const XmlElement& xmlState,
     }
   }
   AudioModule::setStateFromXml(xmlState, stateName, markAsClean); // sets up delayline states
+
+  // we need to notify our editor, so it can update th plot
 }
 
 XmlElement EchoLabAudioModule::convertXmlStateIfNecessary(const XmlElement& xml)
@@ -535,7 +537,7 @@ void EchoLabAudioModule::reset()
   wrappedEchoLab->resetDelayLines(); 
 }
 
-void EchoLabAudioModule::initializeAutomatableParameters()
+void EchoLabAudioModule::createParameters()
 {
   ScopedPointerLock spl(lock);
 

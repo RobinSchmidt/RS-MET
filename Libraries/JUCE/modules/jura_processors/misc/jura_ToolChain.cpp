@@ -278,6 +278,7 @@ bool ToolChain::addModule(const juce::String& type)
   AudioModule *m = AudioModuleFactory::createModule(type, lock, &modManager, metaParamManager); // todo: pass the metaParamManager too
   if(m)
   {
+    // factor out into addModule(AudioModule *m):
     m->setSmoothingManager(smoothingManager);
     m->setMetaParameterManager(metaParamManager); // without, we hit jassert(metaParaManager != nullptr) in MetaControlledParameter::attachToMetaParameter - after passing metaParamManagerto the constructor, we may delete this
     append(modules, m);
@@ -575,12 +576,19 @@ void ToolChain::recallSlotsFromXml(const XmlElement &xmlState, bool markAsClean)
     juce::String type = slotState->getStringAttribute("Type");
     if(i == tmpActiveSlot)        // hack: we set it before adding the module, so the editor
       activeSlot = tmpActiveSlot; // retrieves the correct value in the moduleAdded callback
+
     if(addModule(type))
     {
       XmlElement *moduleState = slotState->getChildElement(0);
       modules[i]->setStateFromXml(*moduleState, "", markAsClean);
       i++;
     }
+
+    // it may be better to first create the module, then recall its state and then add it (instead
+    // of recalling the state after adding) because when loading a preset, the editor my show
+    // a module in the initial state instead of the actual state - check with EchoLab - load
+    // ToolChain presets - the EchoLab editro state is wrong after recall
+
   }
 }
 
