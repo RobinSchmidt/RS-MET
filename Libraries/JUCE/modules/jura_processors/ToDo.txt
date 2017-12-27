@@ -1,12 +1,12 @@
 Bugs in the smoothing system:
  -in EngineersFilter, the plot is not correctly updated when smoothing time is long
+ -maybe the SmoothableParameter should send out its parameterChanged callback only after
+  smoothing has finished, in smoothingHasEnded()
 
 clean up EngineersFilterModuleEditor
 clean up RSlider - but only after good testing
 
 ToolChain Bugs:
--meta-assignment is not recalled
- -for FuncShape it is - probably becaus it received the met-manager in the constructor
 -on mac, the color-gradients are wrong (maybe the rgba-channels are confused)
 
 ToolChain
