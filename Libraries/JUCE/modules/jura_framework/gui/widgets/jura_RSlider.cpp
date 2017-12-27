@@ -82,7 +82,7 @@ void RSlider::setValue(double newValue, const bool sendUpdateMessage,
   const bool sendMessageSynchronously)
 {
   newValue = constrainValue(newValue);
-  valueSanityCheck();
+  valueSanityCheck();  // what does this do? ...without parameters when we not have updated any member yet?
 
   if(currentValue != newValue)
   {
@@ -185,6 +185,14 @@ void RSlider::assignParameter(Parameter *parameterToAssign)
   if( assignedParameter != NULL )
     parameterRangeChanged(assignedParameter);
 }
+
+//void RSlider::parameterChanged(Parameter* p)
+//{
+//  RWidget::parameterChanged(p);
+//  double delta = currentValue - assignedParameter->getValue();
+//  if(fabs(delta) > 0.1)
+//    int dummy = 0;  // for debugging smoothing
+//}
 
 void RSlider::parameterRangeChanged(Parameter* parameterThatHasChangedRange)
 {

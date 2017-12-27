@@ -5,6 +5,7 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
   // otherwise preset recall for ToolChain will not work
 
   if(type == "None")         return new DummyModule( lock);
+  if(type == "DebugAudioModule")        return new DebugAudioModule( lock);
 
   // modulators:
   if(type == "BreakpointModulator") return new BreakpointModulatorAudioModule(lock);
@@ -133,7 +134,10 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
 
   RTreeViewNode *node;
   int i = 1;           //  the index is actually not used, but we need it as dummy
-  popUpMenu->addTreeNodeItem(new RTreeViewNode("None",    i++));
+  popUpMenu->addTreeNodeItem(new RTreeViewNode("None",     i++));
+#if JUCE_DEBUG
+  popUpMenu->addTreeNodeItem(new RTreeViewNode("DebugAudioModule",    i++));
+#endif
 
   node = new RTreeViewNode("Instruments", -1, "Instruments");
   node->addChildNode(new RTreeViewNode("AcidDevil",       i++));

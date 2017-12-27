@@ -97,6 +97,9 @@ public:
   as range, default-value, etc.) and sets up the slider accordingly. */
   void assignParameter(Parameter* parameterToAssign) override;
 
+  //void parameterChanged(Parameter* p) override; 
+    // overrided only for debugging purposes - comment when done
+
   /** The callback method that will get called when one of our observed parameters has changed its
   range. */
   void parameterRangeChanged(Parameter* parameterThatHasChangedRange) override;

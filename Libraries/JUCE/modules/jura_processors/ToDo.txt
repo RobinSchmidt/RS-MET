@@ -1,6 +1,10 @@
 Bugs in the smoothing system:
- -with very long smoothing times (in the order of seconds), the slider is glitchy and when
-  changing the module in ToolChain while smoothing, we get an access violation
+ -with very long smoothing times (in the order of seconds), the slider is glitchy 
+  -it's really only the slider - the value passed to the dsp callback is correct
+   check RSlider setValue and paint
+  -it happens also when using the mousewheel
+  -check, if it has to do with subclass AutomatableSlider - nope - happens also with regular RSliders
+  -in EngineersFilter, the plot is not correctly updated
 
 ToolChain Bugs:
 -on mac, the color-gradients are wrong (maybe the rgba-channels are confused)

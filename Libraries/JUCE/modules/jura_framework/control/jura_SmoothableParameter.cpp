@@ -117,6 +117,7 @@ void rsSmoothableParameter::setValue(double newValue, bool sendNotification, boo
   {
     double oldValue = getValue();
     Parameter::setValue(newValue, sendNotification, false);
+    //Parameter::setValue(newValue, false, false); // for debug - sliders glitch, even when we pass false
     smoothingManager->addSmootherFor(this, newValue, oldValue);
   }
 }
