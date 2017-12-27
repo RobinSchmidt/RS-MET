@@ -9,22 +9,27 @@ void DebugAudioModule::createParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  outParam = new MetaControlledParameter("Output" , -1.0, 1.0, 0.0, Parameter::LINEAR, 0.01);
-  outParam->setValueChangeCallback<DebugAudioModule>(this, &DebugAudioModule::setOutputValue);
-  addObservedParameter(outParam);
+  leftParam = new MetaControlledParameter("Left" , -1.0, 1.0, 0.0, Parameter::LINEAR, 0.01);
+  leftParam->setValueChangeCallback<DebugAudioModule>(this, &DebugAudioModule::setLeftValue);
+  addObservedParameter(leftParam);
+
+  rightParam = new MetaControlledParameter("Right" , -1.0, 1.0, 0.0, Parameter::LINEAR, 0.01);
+  rightParam->setValueChangeCallback<DebugAudioModule>(this, &DebugAudioModule::setRightValue);
+  addObservedParameter(rightParam);
 }
 
 void DebugAudioModule::processBlock(double **inOutBuffer, int numChannels, int numSamples)
 {
   for(int i = 0; i < numChannels; i++)
     for(int n = 0; n < numSamples; n++)
-      inOutBuffer[i][n] = outValue;
+      inOutBuffer[i][n] = values[i];
   // todo: loop over child modules and let them add their value
 }
 
 void DebugAudioModule::processStereoFrame(double *left, double *right)
 {
-  *left = *right = outValue;
+  *left  = values[0];
+  *right = values[1];;
 }
 
 void DebugAudioModule::setSampleRate(double newSampleRate)

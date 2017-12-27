@@ -125,6 +125,8 @@ void rsSmoothableParameter::setValue(double newValue, bool sendNotification, boo
     Parameter::setValue(newValue, false, false);
     if(sendNotification)
       notifyNonGuiObservers();
+      // maybe we need an additional flag wantsNotificationAfterSmoothing ...or 
+      // wantsImmediateNotification and two functions notifyImmmediately, notifyDelayed
 
     //Parameter::setValue(newValue, sendNotification, false); // old
 

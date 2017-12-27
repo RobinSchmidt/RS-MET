@@ -179,7 +179,11 @@ void rsPhaseScopeBuffer<TSig, TPix, TPar>::processSampleFrame(TSig x, TSig y)
 
   // replace x with sawtooth-scanner in 1D mode:
   if(oneDimensonal == true)
-    x = scaleX * getScannerSaw(x+y);
+  {
+    xt = x+y;                         // use sum... 
+    x  = scaleX * getScannerSaw(xt);  // ...for analysis...
+    y  = xt;                          // ...and display
+  }
 
   // transform to pixel coordinates and draw line:
   toPixelCoordinates(x, y);

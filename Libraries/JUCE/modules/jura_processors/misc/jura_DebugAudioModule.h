@@ -20,15 +20,16 @@ public:
   virtual void setMidiController(int controllerNumber, float controllerValue) override;
 
   // callback target functions:
-  void setOutputValue(double newValue) 
-  { 
-    outValue  = newValue; 
-  }
+  void setLeftValue( double newValue) { values[0] = newValue;  }
+  void setRightValue(double newValue) { values[1] = newValue;  }
 
 protected:
 
-  double outValue;
-  MetaControlledParameter *outParam;
+
+  static const int numValues = 2;
+  double values[numValues] = { 0, 0 };
+
+  MetaControlledParameter *leftParam, *rightParam;
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DebugAudioModule)
