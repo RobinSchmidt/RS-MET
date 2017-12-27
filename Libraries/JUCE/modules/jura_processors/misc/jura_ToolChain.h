@@ -12,7 +12,10 @@ todo:
 class JUCE_API DummyModule : public jura::AudioModule
 {
 public:
-  DummyModule(CriticalSection *lockToUse) : AudioModule(lockToUse) {}
+  DummyModule(CriticalSection *lockToUse) : AudioModule(lockToUse) 
+  {
+    setModuleTypeName("None");
+  }
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override 
   {
     //// for debug:

@@ -1,6 +1,9 @@
 AudioModule* AudioModuleFactory::createModule(const juce::String& type, CriticalSection *lock, 
   ModulationManager* modMan, MetaParameterManager* metaMan)
 {
+  // it is important that the strings used her match the moduleTypeName of the respective module
+  // otherwise preset recall for ToolChain will not work
+
   if(type == "None")         return new DummyModule( lock);
 
   // modulators:
@@ -55,14 +58,17 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
   if(type == "Liberty")       return new LibertyAudioModule(      lock);
 #endif
 
-  jassertfalse;  // unknown module type requested
-  return nullptr;
+  jassertfalse;   // unknown module type requested
+  //return nullptr;
+  return new DummyModule(lock); // to avoid a crash when a user messes up an xml file
 }
 
 juce::String AudioModuleFactory::getModuleType(AudioModule *m)
 {
-  // code below should be replaced by m.getModuleTypeName(); - needs good testing
+  return m->getModuleTypeName();
+    // replaces code below, needs testing, then old code can be deleted
 
+  /*
   if(dynamic_cast<DummyModule*>  (m))              return "None";
 
   // modulators:
@@ -113,6 +119,7 @@ juce::String AudioModuleFactory::getModuleType(AudioModule *m)
 #endif
 
   return m->getModuleTypeName();
+  */
 
   //jassertfalse;  // unknown module type was passed
   //return "UnknownType";
