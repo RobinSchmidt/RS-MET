@@ -150,8 +150,8 @@ void CurveFamilyPlotOld::updatePlotImage(bool redrawCoordinateSystem)
   Graphics g(*plotImage);
   plotCurveFamily(g); 
 
-  //repaintOnMessageThread();
-  repaint();  
+  repaintOnMessageThread();
+  //repaint();  
 }
 
 void CurveFamilyPlotOld::updateBackgroundImage()

@@ -116,7 +116,16 @@ void rsSmoothableParameter::setValue(double newValue, bool sendNotification, boo
   else
   {
     double oldValue = getValue();
-    Parameter::setValue(newValue, sendNotification, false);
+
+    //shouldSendNotification = sendNotification;
+    //Parameter::setValue(newValue, false, false);
+    // hmm...delaying the notification until smoothing is finished is appropriate for gui
+    // elements but not for meta-parameters
+    // i think we need a notifyNonGuiObservers that we call here and a notifyGuiObservers
+    // which we notify in smoothingHasEnded
+
+    Parameter::setValue(newValue, sendNotification, false); // old
+
     smoothingManager->addSmootherFor(this, newValue, oldValue);
   }
 }
@@ -127,3 +136,12 @@ void rsSmoothableParameter::setSmoothedValue(double newValue)
   value = newValue;
   callValueChangeCallbacks(); // maybe we should call a "NoLock" version of that?
 }
+
+/*
+void rsSmoothableParameter::smoothingHasEnded()
+{
+  rsSmoothingTarget::smoothingHasEnded();
+  if(shouldSendNotification)
+    notifyObservers();
+}
+*/

@@ -260,6 +260,12 @@ public:
   /** Overriden from rsSmoothingTarget. This is the per-sample callback. */
   virtual void setSmoothedValue(double newValue) override;
 
+  //virtual void smoothingHasEnded() override;
+
+protected:
+
+  bool shouldSendNotification = true;
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsSmoothableParameter)
 };
 
