@@ -1,3 +1,10 @@
+rsSmoothingTarget::~rsSmoothingTarget()
+{
+  if(smoothingManager)
+    smoothingManager->removeSmootherFor(this);
+}
+
+//=================================================================================================
 
 double rsSmoother::relativeTolerance = 1.e-6;
 double rsSmoother::absoluteTolerance = 1.e-12;
@@ -58,6 +65,16 @@ void rsSmoothingManager::addSmootherFor(rsSmoothingTarget* target, double target
     append(usedSmoothers, smoother);
     target->smoothingWillStart();
   }
+}
+
+void rsSmoothingManager::removeSmootherFor(rsSmoothingTarget* target)
+{
+  ScopedLock sl(*lock);
+  for(size_t i = 0; i < usedSmoothers.size(); i++)
+    if(usedSmoothers[i]->target == target) {
+      removeSmoother(i);
+      return; // there should be at most one smoother per target, so we are done
+    }
 }
 
 void rsSmoothingManager::removeSmoother(int index)

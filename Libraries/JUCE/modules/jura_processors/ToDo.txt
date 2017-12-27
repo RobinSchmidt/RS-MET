@@ -1,3 +1,7 @@
+Bugs in the smoothing system:
+ -with very long smoothing times (in the order of seconds), the slider is glitchy and when
+  changing the module in ToolChain while smoothing, we get an access violation
+
 ToolChain Bugs:
 -on mac, the color-gradients are wrong (maybe the rgba-channels are confused)
 
@@ -35,9 +39,7 @@ Upgrade to juce 5.2.5
 -rename:
  -BreakpointModulator: MultiStageEnvelopeGenerator (MSEG), short: MultiSegment - or MultiStage, MSEG
 
-Bugs in the smoothing system:
- -with very long smoothing times (in the order of seconds), the slider is glitchy and when
-  changing the module in ToolChain while smoothing, we get an access violation
+
 
 -EchoLab
  -make save/recall work for snap, solo, selected

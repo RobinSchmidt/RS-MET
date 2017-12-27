@@ -15,7 +15,9 @@ public:
 
   rsSmoothingTarget() = default;
 
-  virtual ~rsSmoothingTarget() = default;
+  /** Destructor. It will remove the smoother for this target from the smoothinManager (if any), 
+  such that it will not attempt to dereference a dangling pointer. */
+  virtual ~rsSmoothingTarget();
 
   /** Subclasses must ovveride this to accept a new, smoothed value (supposedly coming out of some
   lowpass filter). */
@@ -43,7 +45,7 @@ public:
 
 protected:
 
-  double smoothingTime = 0.0; // in milliseconds
+  double smoothingTime = 5000.0; // in milliseconds, 5000 for debugging - when done reset to 0
   bool isSmoothing = false;
   rsSmoothingManager* smoothingManager = nullptr; 
 
@@ -173,6 +175,9 @@ public:
   smoothing target to our array of active smoothers. */
   void addSmootherFor(rsSmoothingTarget* target, double targetValue, double oldValue);
 
+  /** Removes the smoother for the given target (if any) and puts it back into the smootherPool. */
+  void removeSmootherFor(rsSmoothingTarget* target);
+
   /** Removes a smoother from the usedSmoothers and puts it back into the smootherPool. */ 
   void removeSmoother(int index);
 
@@ -246,7 +251,7 @@ public:
     double defaultValue = 0.5, int scaling = LINEAR, double interval = 0.0);
 
   /** Destructor */
-  virtual ~rsSmoothableParameter() = default;
+  //virtual ~rsSmoothableParameter() = default;
 
   /** Overrides setValue in order to use the passed newValue as target-value for smoothing instead 
   of immediatly setting it and calling the callback. */

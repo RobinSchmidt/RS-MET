@@ -437,7 +437,10 @@ void ToolChain::processBlock(double **inOutBuffer, int numChannels, int numSampl
     for(int n = 0; n < numSamples; n++)
     {
       if(needsSmoothing)
+      {
+        //smoothingManager->updateSmoothedValues(); // nope, the lock is not the problem
         smoothingManager->updateSmoothedValuesNoLock();
+      }
       if(needsModulation)
         modManager.applyModulationsNoLock();
       for(int i = 0; i < size(modules); i++)
