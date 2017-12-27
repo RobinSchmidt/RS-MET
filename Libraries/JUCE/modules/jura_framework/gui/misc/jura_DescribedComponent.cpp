@@ -64,5 +64,7 @@ void DescribedComponent::repaintOnMessageThread()
   // thread
   MessageManager* mm = MessageManager::getInstance();
   if(mm->isThisTheMessageThread())
-    repaint();  
+    repaint();
+  else
+    jassertfalse;
 }

@@ -81,6 +81,7 @@ public:
   recives midi controllers and should repaint a slider, for example) - but triggering repaint
   from the audio thread isn't allowed in juce. */
   void repaintOnMessageThread();
+    // maybe this should go into RWidget
 
   juce_UseDebuggingNewOperator;
 };
