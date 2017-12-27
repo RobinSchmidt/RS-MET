@@ -18,6 +18,12 @@ void DebugAudioModule::createParameters()
   addObservedParameter(rightParam);
 }
 
+AudioModuleEditor* DebugAudioModule::createEditor()
+{
+  //return AudioModuleWithMidiIn::createEditor();
+  return new DebugModuleEditor(this);
+}
+
 void DebugAudioModule::processBlock(double **inOutBuffer, int numChannels, int numSamples)
 {
   for(int i = 0; i < numChannels; i++)
@@ -52,4 +58,25 @@ void DebugAudioModule::setMidiController(int controllerNumber, float controllerV
     getParameterByName("Left")->setValue(v, true, true);
   else if(controllerNumber == 71)
     getParameterByName("Right")->setValue(v, true, true);
+}
+
+//=================================================================================================
+
+DebugModuleEditor::DebugModuleEditor(jura::DebugAudioModule *newDebugModuleToEdit) 
+  : AudioModuleEditor(newDebugModuleToEdit)
+{
+  ScopedLock scopedLock(*lock);
+  debugModule = newDebugModuleToEdit;
+  createWidgets();
+  setSize(500, 300);
+}
+
+void DebugModuleEditor::createWidgets()
+{
+
+}
+
+void DebugModuleEditor::resized()
+{
+  AudioModuleEditor::resized();
 }

@@ -13,6 +13,7 @@ public:
   virtual void createParameters();
 
   // overriden from AudioModule baseclass:
+  AudioModuleEditor* createEditor() override;
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
   virtual void processStereoFrame(double *left, double *right) override;
   virtual void setSampleRate(double newSampleRate) override; 
@@ -38,5 +39,27 @@ protected:
 //=================================================================================================
 
 /** Editor for the debugging AudioModule. */
+
+class JUCE_API DebugModuleEditor : public AudioModuleEditor
+{
+
+public:
+
+  DebugModuleEditor(jura::DebugAudioModule *newDebugModuleToEdit);
+  virtual void resized() override;
+
+protected:
+
+  void createWidgets();
+
+  DebugAudioModule *debugModule;
+
+  ModulatableSlider *leftSlider, *rightSlider; // smoothingSlider
+  //AutomatableComboBox *modeComboBox;
+  //AutomatableButton *invertButton;  
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DebugModuleEditor)
+};
+
 
 #endif 
