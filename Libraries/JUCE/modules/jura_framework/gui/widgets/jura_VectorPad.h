@@ -27,10 +27,18 @@ public:
 
   virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
   virtual void paint(Graphics& g) override;
+  virtual void mouseDown(const MouseEvent& e) override;
+  virtual void mouseDrag(const MouseEvent& e) override;
+
+
 
   
-  
 protected:
+
+  void setParametersFromMouseEvent(const MouseEvent& e);
+
+  void setParametersXY(double x, double y);
+
 
   Parameter *paramX = nullptr, *paramY = nullptr;
 

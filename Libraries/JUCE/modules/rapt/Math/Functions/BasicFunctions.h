@@ -70,7 +70,18 @@ mapping is linear for the input and the output. Example: y = linToLin(x, 0.0, 1.
 will map the input x assumed to lie inside 0.0...1.0 to the range between -96.0...24.0. This
 function is useful to convert between parameter representations between 0.0...1.0 and the
 clear-text parameters. */
-double rsLinToLin(double in, double inMin, double inMax, double outMin, double outMax);
+inline double rsLinToLin(double in, double inMin, double inMax, double outMin, double outMax)
+{
+  return outMin + (outMax-outMin) * (in-inMin) / (inMax-inMin);
+
+  //// map input to the range 0.0...1.0:
+  //double tmp = (in - inMin) / (inMax - inMin);
+
+  //// map the tmp-value to the range outMin...outMax:
+  //tmp *= (outMax - outMin);
+  //tmp += outMin;
+  //return tmp;
+}
 
 /** Converts a value between inMin and inMax into a value between outMin and outMax where the
 mapping of the output is exponential. Example: y = linToExp(x, 0.0, 1.0, 20.0, 20000.0) will map

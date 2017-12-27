@@ -31,11 +31,12 @@ think) */
 #include "Unfinished/Unfinished.cpp" 
 
 
-
 // We request some explicit instantiations here - later, when we add modules to the jura framework
 // which use these classes, they may be deleted. At the moment, they are needed for Elan's
 // Chaosfly but are nowhere instantiatied within jura. It's not a very elegant solution, but it's
 // supposed to be temporary anyway:
+
+//template double RAPT::rsLinToLin(double x, double inMin, double inMax, double outMin, double outMax);
 
 template class RAPT::rsMatrixView<double>;
 template class RAPT::rsMatrix<double>;

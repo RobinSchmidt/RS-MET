@@ -156,6 +156,7 @@ inline T rsLimit(T x, T lowerBound, T upperBound)
   return x;
 }
 
+/*
 inline double rsLinToLin(double in, double inMin, double inMax, double outMin, double outMax)
 {
   // map input to the range 0.0...1.0:
@@ -167,6 +168,7 @@ inline double rsLinToLin(double in, double inMin, double inMax, double outMin, d
 
   return tmp;
 }
+*/
 
 inline double rsLinToExp(double in, double inMin, double inMax, double outMin, double outMax)
 {

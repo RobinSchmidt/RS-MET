@@ -45,6 +45,7 @@
 using namespace juce;
 
 #include <rapt/rapt.h> // maybe include rosic instead? rosic now depends on rapt
+//#include <rosic/rosic.h>
 
 namespace jura
 {
