@@ -18,6 +18,7 @@ Bugs in the smoothing system:
    ->try it!
    maybe we need a proper implementation of DescribedComponent::repaintOnMessageThread
    done: use it consistently in all widgets (also the plot-widgets)
+   -clean up RSlider - but only after good testing
   -in EngineersFilter, the plot is not correctly updated
 
 ToolChain Bugs:

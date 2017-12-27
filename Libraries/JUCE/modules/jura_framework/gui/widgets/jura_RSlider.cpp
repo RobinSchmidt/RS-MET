@@ -62,7 +62,7 @@ void RSlider::setRange(double newMin, double newMax, double newInt, double newDe
   else
     setValue(currentValue, false, false);
 
-  repaintOnMessageThread();
+  //repaintOnMessageThread();
   //repaint();
 }
 
@@ -141,7 +141,7 @@ void RSlider::setValue(double newValue, const bool sendUpdateMessage,
       ParameterObserver::setLocalAutomationSwitch(true);
     }
 
-    repaint();
+    repaintOnMessageThread();
 
     //if(sendUpdateMessage)
     //  triggerChangeMessage(sendMessageSynchronously);

@@ -71,7 +71,9 @@ public:
   /** Sets the current value of the slider. 
   The optional arguments are for triggering an (asynchrnous) update of the lsider itself
   ...i think, this is to make sure, that repaint gets called on the message thread when a parameter
-  is changed form the audio thread...figure out.. */
+  is changed form the audio thread...figure out.. OK - we use repaintOnMessageThread now and may 
+  now get rid of these boolean parameters - but test it before we do that clean up, so we may
+  roll back, if necessary */
   virtual void setValue(double newValue, 
     const bool sendUpdateMessage = true,
     const bool sendMessageSynchronously = false);
