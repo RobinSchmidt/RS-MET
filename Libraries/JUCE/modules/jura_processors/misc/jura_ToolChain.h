@@ -153,6 +153,10 @@ public:
   successful. */
   bool addModule(const juce::String& type);
 
+  /** Adds the passed AudioModule at the end of the chain. This ToolChain object will take over 
+  ownership of the module. */
+  void addModule(AudioModule* module);
+
   /** Deletes the module at the given index. */
   void deleteModule(int index);
 

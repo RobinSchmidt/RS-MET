@@ -276,18 +276,24 @@ bool ToolChain::addModule(const juce::String& type)
 {
   ScopedLock scopedLock(*lock);
   AudioModule *m = AudioModuleFactory::createModule(type, lock, &modManager, metaParamManager); // todo: pass the metaParamManager too
-  if(m)
-  {
-    // factor out into addModule(AudioModule *m):
-    m->setSmoothingManager(smoothingManager);
-    m->setMetaParameterManager(metaParamManager); // without, we hit jassert(metaParaManager != nullptr) in MetaControlledParameter::attachToMetaParameter - after passing metaParamManagerto the constructor, we may delete this
-    append(modules, m);
-    m->setModuleName("Slot" + String(size(modules)) + "-" + type);
-    addToModulatorsIfApplicable(m);
-    sendAudioModuleWasAddedNotification(m, size(modules)-1);
-    return true;
+  if(m){
+    addModule(m);
+    return true; 
   }
   return false;
+}
+
+void ToolChain::addModule(AudioModule* m)
+{
+  ScopedLock scopedLock(*lock);
+  jassert(m != nullptr);
+  m->setSmoothingManager(smoothingManager);
+  m->setMetaParameterManager(metaParamManager); // without, we hit jassert(metaParaManager != nullptr) in MetaControlledParameter::attachToMetaParameter - after passing metaParamManagerto the constructor, we may delete this
+  append(modules, m);
+  //m->setModuleName("Slot" + String(size(modules)) + "-" + type);
+  m->setModuleName("Slot" + String(size(modules)) + "-" + m->getModuleTypeName());
+  addToModulatorsIfApplicable(m);
+  sendAudioModuleWasAddedNotification(m, size(modules)-1);
 }
 
 void ToolChain::deleteModule(int index)
