@@ -12,7 +12,9 @@ Bugs in the smoothing system:
   -commenting out:
       if(sendUpdateMessage)
       triggerChangeMessage(sendMessageSynchronously);
-   fixes the problem ...maybe be can completely get rid of the AsyncUpdater baseclass?
+   fixes the problem...but only when the slider is moved directly - when updated via a meta-parameter, it 
+   still glitches
+   ...maybe be can completely get rid of the AsyncUpdater baseclass?
    ->try it!
   -in EngineersFilter, the plot is not correctly updated
 

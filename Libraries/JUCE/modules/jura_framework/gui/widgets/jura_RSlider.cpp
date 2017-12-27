@@ -142,8 +142,8 @@ void RSlider::setValue(double newValue, const bool sendUpdateMessage,
 
     repaint();
 
-    if(sendUpdateMessage)
-      triggerChangeMessage(sendMessageSynchronously);
+    //if(sendUpdateMessage)
+    //  triggerChangeMessage(sendMessageSynchronously);
   }
 }
 
