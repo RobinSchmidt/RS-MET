@@ -3,7 +3,7 @@
 
 /** A module for framework debugging puposes */
 
-class JUCE_API DebugAudioModule : public jura::AudioModule
+class JUCE_API DebugAudioModule : public jura::AudioModuleWithMidiIn
 {
 
 public:
@@ -17,6 +17,7 @@ public:
   virtual void processStereoFrame(double *left, double *right) override;
   virtual void setSampleRate(double newSampleRate) override; 
   virtual void reset() override;
+  virtual void setMidiController(int controllerNumber, float controllerValue) override;
 
   // callback target functions:
   void setOutputValue(double newValue) 

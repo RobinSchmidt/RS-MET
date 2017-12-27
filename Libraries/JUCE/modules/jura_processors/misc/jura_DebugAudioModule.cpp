@@ -1,4 +1,4 @@
-DebugAudioModule::DebugAudioModule(CriticalSection *lockToUse) : AudioModule(lockToUse)
+DebugAudioModule::DebugAudioModule(CriticalSection *lockToUse) : AudioModuleWithMidiIn(lockToUse)
 {
   ScopedLock scopedLock(*lock);
   setModuleTypeName("DebugAudioModule");
@@ -12,6 +12,9 @@ void DebugAudioModule::createParameters()
   outParam = new MetaControlledParameter("Output" , -1.0, 1.0, 0.0, Parameter::LINEAR, 0.01);
   outParam->setValueChangeCallback<DebugAudioModule>(this, &DebugAudioModule::setOutputValue);
   addObservedParameter(outParam);
+
+
+  //assignMidiController("Output", 74);
 }
 
 void DebugAudioModule::processBlock(double **inOutBuffer, int numChannels, int numSamples)
@@ -37,4 +40,11 @@ void DebugAudioModule::reset()
 {
   ScopedLock scopedLock(*lock);
   AudioModule::reset();
+}
+
+void DebugAudioModule::setMidiController(int controllerNumber, float controllerValue)
+{
+  Parameter* p = getParameterByName("Output");
+  //p->setValue(controllerValue / 127.0, true, false);
+  p->setValue(controllerValue / 127.0, true, true);
 }
