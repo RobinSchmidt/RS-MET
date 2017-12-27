@@ -19,6 +19,8 @@ Bugs in the smoothing system:
   -in EngineersFilter, the plot is not correctly updated
 
 ToolChain Bugs:
+-meta-assignment is not recalled
+ -for FuncShape it is - probably becaus it received the met-manager in the constructor
 -on mac, the color-gradients are wrong (maybe the rgba-channels are confused)
 
 ToolChain

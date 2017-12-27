@@ -613,6 +613,7 @@ void ToolChain::recallSlotsFromXml(const XmlElement &xmlState, bool markAsClean)
     AudioModule *m = AudioModuleFactory::createModule(type, lock, &modManager, metaParamManager);
     if(m != nullptr)
     {
+      m->setMetaParameterManager(metaParamManager);      // so, the meta-mapping gets recalled
       XmlElement *moduleState = slotState->getChildElement(0);
       m->setStateFromXml(*moduleState, "", markAsClean); // set the state of the module before...
       addModule(m);                                      // ...adding it, so the newly created
