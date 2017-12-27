@@ -57,6 +57,17 @@ void DescribedComponent::mouseExit(const MouseEvent &e)
     descriptionField->setText(String::empty);
 }
 
+void repaintComponent(juce::Component* c)
+{
+  c->repaint();
+}
+
+void testFunction()
+{
+
+  int dummy = 0;
+}
+
 void DescribedComponent::repaintOnMessageThread()
 {
   // preliminary - repaint only if this is the message thread - what we actually should do is
@@ -66,5 +77,24 @@ void DescribedComponent::repaintOnMessageThread()
   if(mm->isThisTheMessageThread())
     repaint();
   else
-    jassertfalse;
+  {
+    // https://juce.com/doc/classMessageManager
+    // use: void * 	callFunctionOnMessageThread (MessageCallbackFunction *callback, void *userData)
+    // ...but no - that blocks
+    // or void MessageManager::callAsync	(	FunctionType 	functionToCall	)	
+
+    // or this:
+    // https://juce.com/doc/classCallbackMessage
+
+    //MessageManager::callAsync(repaintComponent(this));
+
+    //auto func = testFunction;
+
+    //auto func = [this]{ repaint(); };
+    //MessageManager::callAsync(func);
+
+    MessageManager::callAsync([this]{ repaint(); });
+
+    //jassertfalse;
+  }
 }
