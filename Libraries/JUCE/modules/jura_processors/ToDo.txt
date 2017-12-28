@@ -1,5 +1,4 @@
 next: 
--make per band params in easyq smoothable, modulatable and automatable
 -check tolerance condition ins rsSmoothableParameter::setvalue
 -find best way to update observers (pre/post/both)
 
