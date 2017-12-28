@@ -1256,7 +1256,7 @@ EqualizerModuleEditor::EqualizerModuleEditor(CriticalSection *newPlugInLock,
   // set up the widgets:
   updateWidgetsAccordingToState();
 
-  setSize(540, 240);
+  setSize(500, 234);
 }
 
 EqualizerModuleEditor::~EqualizerModuleEditor()

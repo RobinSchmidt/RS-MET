@@ -38,7 +38,7 @@ void DebugAudioModule::processBlock(double **inOutBuffer, int numChannels, int n
 {
   for(int i = 0; i < numChannels; i++)
     for(int n = 0; n < numSamples; n++)
-      inOutBuffer[i][n] = values[i];
+      inOutBuffer[i][n] += values[i];
   if(eqModule)
     eqModule->processBlock(inOutBuffer, numChannels, numSamples);
 }
@@ -94,8 +94,10 @@ DebugModuleEditor::DebugModuleEditor(jura::DebugAudioModule *newDebugModuleToEdi
 {
   ScopedLock scopedLock(*lock);
   debugModule = newDebugModuleToEdit;
+  if(debugModule->eqModule != nullptr)
+    addChildEditor(eqEditor = new EqualizerModuleEditor(lock, debugModule->eqModule));
   createWidgets();
-  setSize(500, 300);
+  setSize(500, 460);
 }
 
 void DebugModuleEditor::createWidgets()
@@ -142,9 +144,9 @@ void DebugModuleEditor::resized()
   int wh = 16;     // widget height
   int dy = wh-2;   // delta-y between widgets
 
-  int size = jmin(getWidth(), getHeight()-y);
-  xyPad->setBounds(0, y, size, size);
-
+  int xyPadSize = 200;
+  //int size = jmin(getWidth(), getHeight()-y);
+  xyPad->setBounds(0, y, xyPadSize, xyPadSize);
 
   x = xyPad->getRight() + m;
   w = getWidth() - x - m;
@@ -152,4 +154,11 @@ void DebugModuleEditor::resized()
   leftSlider  ->setBounds(x, y, w, wh); y += dy;
   rightSlider ->setBounds(x, y, w, wh); y += dy;
   smoothSlider->setBounds(x, y, w, wh); y += dy;
+
+  if(eqEditor)
+  {
+    y = xyPad->getBottom();
+    h = getHeight() - y;
+    eqEditor->setBounds(0, y, getWidth(), h);
+  }
 }
