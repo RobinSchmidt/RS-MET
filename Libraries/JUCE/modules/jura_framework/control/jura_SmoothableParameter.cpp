@@ -73,7 +73,7 @@ void rsSmoothingManager::addSmootherFor(rsSmoothingTarget* target, double target
 void rsSmoothingManager::removeSmootherFor(rsSmoothingTarget* target)
 {
   ScopedLock sl(*lock);
-  for(size_t i = 0; i < usedSmoothers.size(); i++)
+  for(int i = 0; i < size(usedSmoothers); i++)
     if(usedSmoothers[i]->target == target) {
       removeSmoother(i);
       return; // there should be at most one smoother per target, so we are done
@@ -140,8 +140,8 @@ void rsSmoothableParameter::setValue(double newValue, bool sendNotification, boo
     shouldSendNotification = sendNotification;
     Parameter::setValue(newValue, false, false);
     if(sendNotification)
-      //notifyObservers();
-      notifyNonGuiObservers();
+      notifyObservers();
+      //notifyNonGuiObservers();
       // maybe we need an additional flag wantsNotificationAfterSmoothing ...or 
       // wantsImmediateNotification and two functions notifyImmmediately, notifyDelayed
       // or let ParameterObserver have flags preSmoothNotify, postSmoothNotify which can
@@ -168,6 +168,6 @@ void rsSmoothableParameter::smoothingHasEnded()
 {
   rsSmoothingTarget::smoothingHasEnded();
   if(shouldSendNotification)
-    //notifyObservers();
-    notifyGuiObservers();
+    notifyObservers();
+    //notifyGuiObservers();
 }
