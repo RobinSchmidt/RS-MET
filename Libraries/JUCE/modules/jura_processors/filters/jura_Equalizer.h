@@ -10,7 +10,7 @@ EqualizerPlotEditor, handle ALL threading aspects here - get rid of mutexes in t
 RepaintNotifyObserver(as baseclass for the editor) in order to not automatically repaint on all 
 ChangeBroadcast messages (this repaints unnecessarily often on preset switches) */
 
-class EqualizerAudioModule : public AudioModule, public ParameterSetHolder
+class EqualizerAudioModule : public ModulatableAudioModule, public ParameterSetHolder
 {
 
   friend class EqualizerPlotEditor;

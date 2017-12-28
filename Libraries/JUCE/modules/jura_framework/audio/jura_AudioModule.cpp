@@ -619,6 +619,12 @@ void ModulatableAudioModule::addChildAudioModule(AudioModule* moduleToAdd)
 void ModulatableAudioModule::setModulationManager(ModulationManager* managerToUse)
 {
   ModulationParticipant::setModulationManager(managerToUse);
+  for(int i = 0; i < size(childModules); i++) 
+  {
+    ModulatableAudioModule* mm = dynamic_cast<ModulatableAudioModule*>(childModules[i]);
+    if(mm)
+      mm->setModulationManager(managerToUse); 
+  }
   for(int i = 0; i < parameters.size(); i++)
     setupForModulationIfModulatable(parameters[i]);
 }

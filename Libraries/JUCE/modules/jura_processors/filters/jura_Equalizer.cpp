@@ -3,7 +3,7 @@
 // construction/destruction:
 
 EqualizerAudioModule::EqualizerAudioModule(CriticalSection *newPlugInLock,
-  rosic::EqualizerStereo *equalizerStereoToWrap) : AudioModule(newPlugInLock)
+  rosic::EqualizerStereo *equalizerStereoToWrap) : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
   jassert(equalizerStereoToWrap != NULL); // you must pass a valid rosic-object to the constructor
@@ -13,7 +13,7 @@ EqualizerAudioModule::EqualizerAudioModule(CriticalSection *newPlugInLock,
 }
 
 EqualizerAudioModule::EqualizerAudioModule(CriticalSection *newPlugInLock)
-  : AudioModule(newPlugInLock)
+  : ModulatableAudioModule(newPlugInLock)
 {
   ScopedLock scopedLock(*lock);
   wrappedEqualizerStereo = new rosic::EqualizerStereo;
