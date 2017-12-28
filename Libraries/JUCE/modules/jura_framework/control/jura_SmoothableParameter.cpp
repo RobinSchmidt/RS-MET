@@ -140,8 +140,8 @@ void rsSmoothableParameter::setValue(double newValue, bool sendNotification, boo
     shouldSendNotification = sendNotification;
     Parameter::setValue(newValue, false, false);
     if(sendNotification)
-      notifyObservers();
-      //notifyNonGuiObservers();
+      //notifyObservers();
+      notifyNonGuiObservers();
       // maybe we need an additional flag wantsNotificationAfterSmoothing ...or 
       // wantsImmediateNotification and two functions notifyImmmediately, notifyDelayed
       // or let ParameterObserver have flags preSmoothNotify, postSmoothNotify which can
@@ -168,6 +168,6 @@ void rsSmoothableParameter::smoothingHasEnded()
 {
   rsSmoothingTarget::smoothingHasEnded();
   if(shouldSendNotification)
-    notifyObservers();
-    //notifyGuiObservers();
+    //notifyObservers();
+    notifyGuiObservers();
 }

@@ -33,6 +33,10 @@ protected:
 
   MetaControlledParameter *leftParam, *rightParam, *smoothParam;
 
+  EqualizerAudioModule* eqModule == nullptr;
+  // We use an equalizer to see if dealing with child-modules and works well. Also, the eq
+  // has a dynamic number of parameters, so we can check that stuff with eq, too.
+
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DebugAudioModule)
 };

@@ -2,6 +2,9 @@ DebugAudioModule::DebugAudioModule(CriticalSection *lockToUse) : AudioModuleWith
 {
   ScopedLock scopedLock(*lock);
   setModuleTypeName("DebugAudioModule");
+
+  addChildAudioModule(eqModule = new EqualizerAudioModule(lock));
+
   createParameters();
 }
 
@@ -36,8 +39,8 @@ void DebugAudioModule::processBlock(double **inOutBuffer, int numChannels, int n
   for(int i = 0; i < numChannels; i++)
     for(int n = 0; n < numSamples; n++)
       inOutBuffer[i][n] = values[i];
-  // todo: loop over child modules and let them add their value
-  // or have one child module with scale and offset parameters
+  if(eqModule)
+    eqModule->processBlock(inOutBuffer, numChannels, numSamples);
 }
 
 void DebugAudioModule::processStereoFrame(double *left, double *right)
