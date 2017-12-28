@@ -143,6 +143,10 @@ public:
   MetaParameterManager. */
   virtual void addObservedParameter(Parameter *parameterToAdd) override;
 
+  /** Sets up the SmoothingManager and MetaParameterManager for the passed parameter, if 
+  applicable (i.e. the parameter is a subclass that supports these things). */
+  virtual void setupManagers(Parameter* p);
+
   //-----------------------------------------------------------------------------------------------
   // \name midi/meta stuff 
   // (midi should go to subclass AudioModuleWithMidiIn):
@@ -370,6 +374,9 @@ public:
   /** Overrides inherited method to additionaly wire the passed Parameter up to the 
   ModulationManager, in case it is a ModulatableParameter. */
   virtual void addObservedParameter(Parameter* parameterToAdd) override;
+
+  /** Overriden to additionally set up the ModulationManager. */
+  virtual void setupManagers(Parameter* p) override;
 
   /** Overriden from AudioModule in order to pass the ModulationManger object "modManager" 
   inheridted from ModulationParticipant to the child-module to be added in case, the child is 

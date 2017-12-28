@@ -286,6 +286,7 @@ void EqualizerAudioModule::addBand(int channel, int mode, double frequency, doub
   p->addStringValue(juce::String("Notch 2*6 dB/oct"));
   p->setValue(mode, false, false);
   p->registerParameterObserver(this);
+  setupManagers(p);
   filterModeParameters[channel].add(p);
 
   p = new ModulatableParameter("Frequency", 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL, 0.0);
@@ -303,6 +304,7 @@ void EqualizerAudioModule::addBand(int channel, int mode, double frequency, doub
   p->setDefaultValues(defaultValues);
   p->setValue(frequency, false, false);
   p->registerParameterObserver(this);
+  setupManagers(p);
   frequencyParameters[channel].add(p);
 
   p = new ModulatableParameter("Gain", -48.0, 48.0, 0.0, Parameter::LINEAR_BIPOLAR, 0.1);
@@ -320,6 +322,7 @@ void EqualizerAudioModule::addBand(int channel, int mode, double frequency, doub
   p->setDefaultValues(defaultValues);
   p->setValue(gain, false, false);
   p->registerParameterObserver(this);
+  setupManagers(p);
   gainParameters[channel].add(p);
 
   double defaultBandwidth = 2.0*asinh(1.0/sqrt(2.0))/log(2.0);  // ca. 1.9, Q = sqrt(1/2), maximum steepness without overshoot for shelves
@@ -335,6 +338,7 @@ void EqualizerAudioModule::addBand(int channel, int mode, double frequency, doub
   p->setDefaultValues(defaultValues);
   p->setValue(bandwidth, false, false);
   p->registerParameterObserver(this);
+  setupManagers(p);
   bandwidthParameters[channel].add(p);
 
   assignCallbacksForDynamicParameters();

@@ -146,15 +146,19 @@ bool AudioModule::checkForCrack()
   return false;
 }
 
-void AudioModule::addObservedParameter(Parameter *parameterToAdd)
+void AudioModule::addObservedParameter(Parameter *p)
 {
-  ParameterManager::addObservedParameter(parameterToAdd);
+  ParameterManager::addObservedParameter(p);
+  setupManagers(p);
+}
 
-  MetaControlledParameter* mcp = dynamic_cast<MetaControlledParameter*> (parameterToAdd);
+void AudioModule::setupManagers(Parameter* p)
+{
+  MetaControlledParameter* mcp = dynamic_cast<MetaControlledParameter*> (p);
   if(mcp != nullptr)
     mcp->setMetaParameterManager(getMetaParameterManager());
 
-  rsSmoothableParameter* sp = dynamic_cast<rsSmoothableParameter*> (parameterToAdd);
+  rsSmoothableParameter* sp = dynamic_cast<rsSmoothableParameter*> (p);
   if(sp != nullptr)
     sp->setSmoothingManager(smoothingManager);
 }
@@ -605,6 +609,12 @@ void AudioModule::notifyParameterObservers(bool recursivelyForChildModules)
 void ModulatableAudioModule::addObservedParameter(Parameter* p)
 {
   AudioModule::addObservedParameter(p);
+  setupForModulationIfModulatable(p);
+}
+
+void ModulatableAudioModule::setupManagers(Parameter* p)
+{
+  AudioModule::setupManagers(p);
   setupForModulationIfModulatable(p);
 }
 
