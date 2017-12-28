@@ -140,8 +140,7 @@ void rsSmoothableParameter::setValue(double newValue, bool sendNotification, boo
     shouldSendNotification = sendNotification;
     Parameter::setValue(newValue, false, false);
     if(sendNotification)
-      //notifyObservers();
-      notifyNonGuiObservers();
+      notifyObserversPreSmoothing();
       // maybe we need an additional flag wantsNotificationAfterSmoothing ...or 
       // wantsImmediateNotification and two functions notifyImmmediately, notifyDelayed
       // or let ParameterObserver have flags preSmoothNotify, postSmoothNotify which can
@@ -149,11 +148,15 @@ void rsSmoothableParameter::setValue(double newValue, bool sendNotification, boo
       // or both
       // ...hmm...at the moment we just notify all observers pre-and post smoothing
       // ..check, if that works well, if so, delete the notify(Non)GuiObservers functions
-      // hmm - it triggers a jassert
+      // hmm - it triggers a jassert when MetaParameters are notified pre and post
 
     //Parameter::setValue(newValue, sendNotification, false); // old
 
-    smoothingManager->addSmootherFor(this, newValue, oldValue);
+    //smoothingManager->addSmootherFor(this, newValue, oldValue);
+    smoothingManager->addSmootherFor(this, value, oldValue); 
+      // value may be != newValue now due to the fact that Parameter::setValue may have quantized 
+      // it and we should aim the smoother at the quantized value
+
   }
 }
 
@@ -168,6 +171,27 @@ void rsSmoothableParameter::smoothingHasEnded()
 {
   rsSmoothingTarget::smoothingHasEnded();
   if(shouldSendNotification)
-    //notifyObservers();
-    notifyGuiObservers();
+    notifyObserversPostSmoothing();
+}
+
+void rsSmoothableParameter::notifyObserversPreSmoothing()
+{
+  ScopedPointerLock spl(mutex);
+  for(int i = 0; i < (int)parameterObservers.size(); i++)
+  {
+    if(parameterObservers[i]->wantsPreSmoothingNotification() &&
+      parameterObservers[i]->wantsAutomationNotification())  // do we need this 2nd check?
+      parameterObservers[i]->parameterChanged(this);
+  }
+}
+
+void rsSmoothableParameter::notifyObserversPostSmoothing()
+{
+  ScopedPointerLock spl(mutex);
+  for(int i = 0; i < (int)parameterObservers.size(); i++)
+  {
+    if(parameterObservers[i]->wantsPostSmoothingNotification() &&
+      parameterObservers[i]->wantsAutomationNotification())  // do we need this 2nd check?
+      parameterObservers[i]->parameterChanged(this);
+  }
 }

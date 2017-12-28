@@ -116,7 +116,7 @@ public:
   // callbacks:
 
   virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
-  virtual void parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted) override;
+  virtual void parameterWillBeDeleted(Parameter* parameterThatWillBeDeleted) override;
 
   /** This method is called when one of the assigned rosic::AutomatableParameters has been changed.
   We override it here in the subclass to do the actual GUI update. */

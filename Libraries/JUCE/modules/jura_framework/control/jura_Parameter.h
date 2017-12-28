@@ -36,16 +36,15 @@ public:
   /** A callback that will be called from the destructor of the Parameter class - it is intended to
   give ParameterObserver objects an opportunity to invalidate any pointers to a particular
   Parameter object that they may hold. */
-  virtual void parameterIsGoingToBeDeleted(Parameter* /*parameterThatWillBeDeleted*/) {};
-    // rename to parameterWillBeDeleted
+  virtual void parameterWillBeDeleted(Parameter* /*parameterThatWillBeDeleted*/) {};
 
   /** The callback method that will get called when one of our observed parameters has changed its
   range. */
   virtual void parameterRangeChanged(Parameter* /*parameterThatHasChangedRange*/) {}
 
-  /** Informs whether this instance wants automation notifications */
+  /** Informs whether this instance wants to receive parameterChanged notifications */
   virtual bool wantsAutomationNotification();
-    // rename to wants parameterChangedCallbacks
+    // rename to wantsNotification
 
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
@@ -66,13 +65,27 @@ public:
   your subclass when it is a GUI element. */
   void setIsGuiElement(bool newIsGui) { guiElement = newIsGui; }
 
+  /** Relevant only for smoothable parameters. Sets up whether or not this observer want to receive
+  notifications before smoothing starts. */
+  void notifyPreSmoothing(bool shouldNotify) { preSmoothNotify = shouldNotify; }
+
+  /** Relevant only for smoothable parameters. Sets up whether or not this observer want to receive
+  notifications after smoothing has ended. */
+  void notifyPostSmoothing(bool shouldNotify) { postSmoothNotify = shouldNotify; }
+
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
   /** Returns true, if this is a GUI element (assuming that you correctly called setIsGuiElement in
   your subclass constructor). */
-  bool isGuiElement() { return guiElement; }
+  bool isGuiElement() const { return guiElement; }
    // todo: maybe enforce correctness by making isGuiElement() purely virtual
+
+  bool wantsPreSmoothingNotification()  const { return preSmoothNotify; }
+
+  bool wantsPostSmoothingNotification() const { return postSmoothNotify; }
+
+
 
 
 private:
@@ -82,8 +95,10 @@ private:
 
   static bool guiAutomationSwitch;
   static bool globalAutomationSwitch;
-  bool localAutomationSwitch;
-  bool guiElement;
+  bool localAutomationSwitch = true;
+  bool guiElement = false;
+  bool preSmoothNotify  = true;
+  bool postSmoothNotify = true;
 
   // data is made private to enforce to set them by function calls in subclasses, so we may hook
   // into changes to them with the debugger (changing them temporarily is a source for subtle 
@@ -478,10 +493,10 @@ public:
   virtual void notifyObservers();
 
   /** Notifies only observers that are GUI elements. */
-  virtual void notifyGuiObservers();
+  //virtual void notifyGuiObservers();
 
   /** Notifies only observers that are not GUI elements. */
-  virtual void notifyNonGuiObservers();
+  //virtual void notifyNonGuiObservers();
 
   /** Calls all currently registered callback functions for a value change. */
   virtual void callValueChangeCallbacks();

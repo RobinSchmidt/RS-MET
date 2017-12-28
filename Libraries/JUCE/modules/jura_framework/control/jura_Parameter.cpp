@@ -5,8 +5,7 @@ bool ParameterObserver::guiAutomationSwitch    = true;
 
 ParameterObserver::ParameterObserver()
 {
-  localAutomationSwitch = true;   // was formerly false by default...why?
-  guiElement = false;
+
 }
 
 ParameterObserver::~ParameterObserver()
@@ -81,7 +80,7 @@ Parameter::~Parameter()
   while( parameterObservers.size() > 0 )
   {
     ParameterObserver *o = parameterObservers[0];
-    o->parameterIsGoingToBeDeleted(this);
+    o->parameterWillBeDeleted(this);
     deRegisterParameterObserver(o);
   }
   // remark: we use a while-loop to account for the possibility that the observer de-registers
@@ -408,7 +407,7 @@ void Parameter::notifyObservers()
       parameterObservers[i]->parameterChanged(this);
   }
 }
-
+/*
 void Parameter::notifyGuiObservers()
 {
   ScopedPointerLock spl(mutex);
@@ -430,7 +429,7 @@ void Parameter::notifyNonGuiObservers()
       parameterObservers[i]->parameterChanged(this);
   }
 }
-
+*/
 void Parameter::callValueChangeCallbacks()
 {
   ScopedPointerLock spl(mutex);

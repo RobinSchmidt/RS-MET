@@ -259,7 +259,7 @@ void LadderSpectrumEditor::parameterChanged(Parameter* parameterThatHasChanged)
   updatePlot();
 }
 
-void LadderSpectrumEditor::parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted)
+void LadderSpectrumEditor::parameterWillBeDeleted(Parameter* parameterThatWillBeDeleted)
 {
   // clear reference to parameter that will be deleted
 }

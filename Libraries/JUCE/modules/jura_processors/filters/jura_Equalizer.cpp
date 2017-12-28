@@ -667,19 +667,19 @@ void EqualizerPlotEditor::parameterChanged(Parameter* parameterThatHasChanged)
   updatePlot();
 }
 
-void EqualizerPlotEditor::parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted)
+void EqualizerPlotEditor::parameterWillBeDeleted(Parameter* p)
 {
   ScopedPointerLock spl(plugInLock);
 
-  parameterThatWillBeDeleted->deRegisterParameterObserver(this);
+  p->deRegisterParameterObserver(this);
 
-  if( parameterThatWillBeDeleted == filterModeParameter )
+  if( p == filterModeParameter )
     filterModeParameter = NULL;
-  else if( parameterThatWillBeDeleted == frequencyParameter )
+  else if( p == frequencyParameter )
     frequencyParameter = NULL;
-  else if( parameterThatWillBeDeleted == gainParameter )
+  else if( p == gainParameter )
     gainParameter = NULL;
-  else if( parameterThatWillBeDeleted == bandwidthParameter )
+  else if( p == bandwidthParameter )
     bandwidthParameter = NULL;
 
   updatePlot();

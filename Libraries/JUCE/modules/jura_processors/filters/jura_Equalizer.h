@@ -246,7 +246,7 @@ public:
 
   /** Overrides the purely virtual method of the ParameterObserver base class in order to 
   invalidate our pointer-member 'assignedParameter'. */
-  virtual void parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted) override;
+  virtual void parameterWillBeDeleted(Parameter* parameterThatWillBeDeleted) override;
 
   /** Overrides mouseMove in order to update the cursor according to what is under the mouse. */
   virtual void mouseMove(const MouseEvent &e) override;

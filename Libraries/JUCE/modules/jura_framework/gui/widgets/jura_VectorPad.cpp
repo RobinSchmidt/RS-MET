@@ -1,5 +1,7 @@
 rsVectorPad::rsVectorPad()
 {
+  notifyPreSmoothing(true);
+  notifyPostSmoothing(true);
   dummyParam = new Parameter("Dummy", -1.0, +1.0, 0.0);
   paramX = paramY = dummyParam;
 }

@@ -10,8 +10,13 @@ const BitmapFont* RWidget::font = &BitmapFontRoundedBoldA10D0::instance;
 
 RWidget::RWidget(const String& newDescription) 
 {
+  // set up inherited ParameterObserver:
   setLocalAutomationSwitch(true);
   setIsGuiElement(true);
+  notifyPreSmoothing(true);
+  notifyPostSmoothing(false);
+
+  // set up appearance stuff:
   noBackgroundAndOutline   = false;
   alphaMultiplier          = 1.f;
   description              = newDescription;

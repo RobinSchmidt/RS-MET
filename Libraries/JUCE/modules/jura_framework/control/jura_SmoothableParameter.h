@@ -271,7 +271,14 @@ public:
   /** Overriden from rsSmoothingTarget. This is the per-sample callback. */
   virtual void setSmoothedValue(double newValue) override;
 
+  /** Overrides smoothingHasEnded in order to notify those ParameterObservers that want to receive
+  post smoothing parameterChanged notifications. */
   virtual void smoothingHasEnded() override;
+
+
+  void notifyObserversPreSmoothing();
+
+  void notifyObserversPostSmoothing();
 
 protected:
 

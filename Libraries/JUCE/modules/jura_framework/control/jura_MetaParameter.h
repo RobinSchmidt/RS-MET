@@ -168,7 +168,7 @@ public:
 
   // callbacks:
   virtual void parameterChanged(Parameter* p) override;
-  virtual void parameterIsGoingToBeDeleted(Parameter* p) override;
+  virtual void parameterWillBeDeleted(Parameter* p) override;
 
 
 protected:

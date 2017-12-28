@@ -95,7 +95,8 @@ String MetaControlledParameter::getMetaParameterName()
 
 MetaParameter::MetaParameter()
 {
-
+  notifyPreSmoothing(true);
+  notifyPostSmoothing(false);
 }
 
 void MetaParameter::attachParameter(MetaControlledParameter* p)
@@ -150,7 +151,7 @@ void MetaParameter::parameterChanged(Parameter* p)
   setLocalAutomationSwitch(true);
 }
 
-void MetaParameter::parameterIsGoingToBeDeleted(Parameter* p)
+void MetaParameter::parameterWillBeDeleted(Parameter* p)
 {
   p->deRegisterParameterObserver(this);
   for(int i = 0; i < size(params); i++) {
