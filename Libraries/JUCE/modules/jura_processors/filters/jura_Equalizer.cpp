@@ -48,32 +48,33 @@ void EqualizerAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  //juce::Array<double> defaultValues;
-  std::vector<double> defaultValues;
-  AutomatableParameter* p;
+  typedef MetaControlledParameter Param;
+  Param* p;
 
-  addObservedParameter( p = new AutomatableParameter(lock, "Bypass", 0.0, 1.0, 1.0, 0.0, Parameter::BOOLEAN) );
+  std::vector<double> defaultValues;
+
+  addObservedParameter( p = new Param("Bypass", 0.0, 1.0, 0.0, Parameter::BOOLEAN, 1.0) );
   p->setValueChangeCallback(wrappedEqualizerStereo, &EqualizerStereo::setBypass);
 
-  p = new AutomatableParameter(lock, "StereoMode", 0.0, 3.0, 1.0, 0.0, Parameter::STRING);
-  p->addStringValue(juce::String("Stereo Linked"));
-  p->addStringValue(juce::String("Left/Right"));
-  p->addStringValue(juce::String("Mid/Side"));
-  p->addStringValue(juce::String("Mono"));
+  p = new Param("StereoMode", 0.0, 3.0, 0.0, Parameter::STRING, 1.0);
+  p->addStringValue("Stereo Linked");
+  p->addStringValue("Left/Right");
+  p->addStringValue("Mid/Side");
+  p->addStringValue("Mono");
   addObservedParameter(p);
   p->setValueChangeCallback(wrappedEqualizerStereo, &EqualizerStereo::setStereoMode);
 
-  p = new AutomatableParameter(lock, "GainRange", 0.0, 4.0, 1.0, 3.0, Parameter::STRING);
-  p->addStringValue(juce::String("3 dB"));
+  p = new Param("GainRange", 0.0, 4.0, 3.0, Parameter::STRING, 1.0);
+  p->addStringValue("3 dB");
   //p->addStringValue(juce::String(T("\xF1 3 dB")));  // xF1 == hex for 241 -> plusminus in extended ASCII
-  p->addStringValue(juce::String("6 dB"));
-  p->addStringValue(juce::String("12 dB"));
-  p->addStringValue(juce::String("24 dB"));
-  p->addStringValue(juce::String("48 dB"));
+  p->addStringValue("6 dB");
+  p->addStringValue("12 dB");
+  p->addStringValue("24 dB");
+  p->addStringValue("48 dB");
   addObservedParameter(p);
   //p->setValueChangeCallback(wrappedEqualizerStereo, &EqualizerStereo::setStereoMode);
 
-  p = new AutomatableParameter(lock, "GlobalGain", -48.0, 48.0, 0.1, 0.0, Parameter::LINEAR_BIPOLAR);
+  p = new Param("GlobalGain", -48.0, 48.0, 0.0, Parameter::LINEAR_BIPOLAR, 0.1);
   defaultValues.clear();
   defaultValues.push_back(-24.0);
   defaultValues.push_back(-18.0);

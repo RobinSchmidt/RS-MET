@@ -30,9 +30,6 @@ void rsVectorPad::assignParameterY(Parameter* newParameterY)
   else
     paramY = dummyParam;
   // get rid of duplication
-
-  //paramY = newParameterY;
-  //paramY->registerParameterObserver(this);
 }
 
 void rsVectorPad::parameterChanged(Parameter* p)
@@ -42,8 +39,7 @@ void rsVectorPad::parameterChanged(Parameter* p)
 
 void rsVectorPad::paint(Graphics& g)
 {
-  g.fillAll(getBackgroundColour()); // use background color
-
+  g.fillAll(getBackgroundColour());
   float x, y;
   x = (float) RAPT::rsLinToLin(paramX->getValue(),  xMin, xMax, 0.0, double(getWidth()-1));
   y = (float) RAPT::rsLinToLin(paramY->getValue(), yMin, yMax, double(getHeight()-1), 0.0);
