@@ -68,6 +68,16 @@ void DebugAudioModule::setMidiController(int controllerNumber, float controllerV
     getParameterByName("Right")->setValue(v, true, true);
 }
 
+void DebugAudioModule::setLeftValue( double newValue) 
+{ 
+  values[0] = newValue;  
+}
+
+void DebugAudioModule::setRightValue(double newValue) 
+{ 
+  values[1] = newValue;  
+}
+
 void DebugAudioModule::setSmoothingTime(double newTime) 
 {
   if(smoothingManager) 

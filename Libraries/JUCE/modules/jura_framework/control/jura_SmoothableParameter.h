@@ -170,6 +170,7 @@ public:
   /** Sets a global smoothing time in milliseconds. Whether that global time is actually used, or
   the per-target time value will be used is determined by... */
   void setSmoothingTime(double newSmoothingTime) { smoothingTime = newSmoothingTime; }
+   // todo: loop over used smoothers to set the up to the new time
 
   /** Sets the mutex lock objevt to be used for accessing our smoother arrays in a thread-safe 
   way. */

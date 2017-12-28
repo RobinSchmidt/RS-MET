@@ -118,6 +118,19 @@ void rsSmoothableParameter::setValue(double newValue, bool sendNotification, boo
     Parameter::setValue(newValue, sendNotification, callCallbacks);
   else
   {
+    double tol = 1.e-7;
+    //double delta = value-newValue;
+    if(fabs(value-newValue) < tol)
+      return;
+    // When this parameter has an attached meta, this function gets called twice. First, when 
+    // setting the parameter from a slider and a second time from the meta. In the second call,
+    // getValue will return a value that is already the new value, but only up to roundoff, so
+    // the if(value == newValue) check doesn't trigger. This would effectively disable smoothing,
+    // so we need this additional check here.
+    // -may need some more thorough checking, especially with regard to the tolerance value and if 
+    //  we should also use a relative tolerance..
+    // -we may also set the value to newValue and invoke a callback and notification
+
     double oldValue = getValue();
 
     // if the observers should be notified, we want to immediately notify MetaParameters, 

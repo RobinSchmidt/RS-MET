@@ -111,7 +111,7 @@ public:
   attached to any MetaParameter, it returns -1. */
   inline int getMetaParameterIndex() { return metaIndex; }
 
-  /** Returns true, if this Parameter has an attached MetaParameter, false otehrwise. */
+  /** Returns true, if this Parameter has an attached MetaParameter, false otherwise. */
   inline bool hasAttachedMeta() { return metaIndex != -1; }
 
   /** Returns the name of the MetaParameter which this Parameter is attached to. */

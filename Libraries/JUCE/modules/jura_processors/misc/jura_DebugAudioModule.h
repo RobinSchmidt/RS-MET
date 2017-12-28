@@ -21,8 +21,8 @@ public:
   virtual void setMidiController(int controllerNumber, float controllerValue) override;
 
   // callback target functions:
-  void setLeftValue( double newValue) { values[0] = newValue;  }
-  void setRightValue(double newValue) { values[1] = newValue;  }
+  void setLeftValue(double newValue);
+  void setRightValue(double newValue);
   void setSmoothingTime(double newTime);
 
 protected:

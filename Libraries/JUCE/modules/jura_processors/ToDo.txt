@@ -5,7 +5,10 @@ be a multiple of 11
 
 Bugs in the smoothing system:
  -when setting a DC-slider immediately to a new value (with alt), no smoothing is applied
-  ...but only when a meta is attached
+  ...but only when a meta is attached - but when resetting to defaul (ctrl), it is smoothed
+  -it's because rsSmoothableParameter::setValue gets called two times, once from the slider and 
+   then again from the meta - and in the second call, oldValue = getValue(); returns the new
+   value - fixed
 
 Straightliner - initial patch has moogish lowpass on it - display shows flat freq-response
 -there seems to be something wrong with the mode-indices
