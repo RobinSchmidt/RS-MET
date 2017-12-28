@@ -1,10 +1,8 @@
-DebugAudioModule::DebugAudioModule(CriticalSection *lockToUse) : AudioModuleWithMidiIn(lockToUse)
+DebugAudioModule::DebugAudioModule(CriticalSection *lockToUse) : ModulatableAudioModule(lockToUse)
 {
   ScopedLock scopedLock(*lock);
   setModuleTypeName("DebugAudioModule");
-
   addChildAudioModule(eqModule = new EqualizerAudioModule(lock));
-
   createParameters();
 }
 
@@ -12,7 +10,7 @@ void DebugAudioModule::createParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  typedef MetaControlledParameter Param;
+  typedef ModulatableParameter Param;
   Param* p;
 
   leftParam = p = new Param("Left" , -1.0, 1.0, 0.0, Parameter::LINEAR, 0.01);
@@ -105,7 +103,7 @@ DebugModuleEditor::DebugModuleEditor(jura::DebugAudioModule *newDebugModuleToEdi
 
 void DebugModuleEditor::createWidgets()
 {
-  typedef AutomatableSlider Sld;
+  typedef ModulatableSlider Sld;
   Sld* s;
   Parameter* p;
 

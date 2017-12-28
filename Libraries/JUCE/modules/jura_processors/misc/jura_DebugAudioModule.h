@@ -3,7 +3,7 @@
 
 /** A module for framework debugging puposes */
 
-class JUCE_API DebugAudioModule : public jura::AudioModuleWithMidiIn
+class JUCE_API DebugAudioModule : public jura::ModulatableAudioModule
 {
 
 public:
@@ -31,7 +31,7 @@ protected:
   static const int numValues = 2;
   double values[numValues] = { 0, 0 };
 
-  MetaControlledParameter *leftParam, *rightParam;
+  ModulatableParameter *leftParam, *rightParam;
   Parameter *smoothParam;
 
   EqualizerAudioModule* eqModule = nullptr;
@@ -65,7 +65,7 @@ protected:
 
   rsVectorPad *xyPad;
 
-  AutomatableSlider *leftSlider, *rightSlider, *smoothSlider;
+  ModulatableSlider *leftSlider, *rightSlider, *smoothSlider;
   //AutomatableComboBox *modeComboBox;
   //AutomatableButton *invertButton;  
    // use ModulatabelSlider, etc later

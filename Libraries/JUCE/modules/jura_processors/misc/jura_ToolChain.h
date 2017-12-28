@@ -227,6 +227,10 @@ protected:
   void recallSlotsFromXml(      const XmlElement &xmlState, bool markAsClean);
   void recallModulationsFromXml(const XmlElement &xmlState); // move to ModulatbleAudioModule
 
+  /** Sets up the pointers to the SmoothingManager, MetaParameterManager and ModulationManager in
+  the passed module. */
+  void setupManagers(AudioModule* module);
+
   /** Checks, if the passed AudioModule can be cast into a ModulationSource and if so, adds it to
   our array of ModulationSources (inherited from ModulationManager). */
   void addToModulatorsIfApplicable(AudioModule* module);

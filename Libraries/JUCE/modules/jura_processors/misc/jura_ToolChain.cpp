@@ -296,8 +296,7 @@ void ToolChain::addModule(AudioModule* m)
 {
   ScopedLock scopedLock(*lock);
   jassert(m != nullptr);
-  m->setSmoothingManager(smoothingManager);
-  m->setMetaParameterManager(metaParamManager); // without, we hit jassert(metaParaManager != nullptr) in MetaControlledParameter::attachToMetaParameter - after passing metaParamManagerto the constructor, we may delete this
+  setupManagers(m);
   append(modules, m);
   //m->setModuleName("Slot" + String(size(modules)) + "-" + type);
   m->setModuleName("Slot" + String(size(modules)) + "-" + m->getModuleTypeName());
@@ -611,7 +610,8 @@ void ToolChain::recallSlotsFromXml(const XmlElement &xmlState, bool markAsClean)
     AudioModule *m = AudioModuleFactory::createModule(type, lock, &modManager, metaParamManager);
     if(m != nullptr)
     {
-      m->setMetaParameterManager(metaParamManager);      // so, the meta-mapping gets recalled
+      //m->setMetaParameterManager(metaParamManager);      // so, the meta-mapping gets recalled
+      setupManagers(m);
       XmlElement *moduleState = slotState->getChildElement(0);
       m->setStateFromXml(*moduleState, "", markAsClean); // set the state of the module before...
       addModule(m);                                      // ...adding it, so the newly created
@@ -627,6 +627,15 @@ void ToolChain::recallModulationsFromXml(const XmlElement &xmlState)
   XmlElement* modXml = xmlState.getChildByName("Modulations");
   if(modXml != nullptr)
     modManager.setStateFromXml(*modXml);  // recall modulation settings
+}
+
+void ToolChain::setupManagers(AudioModule* m)
+{
+  m->setSmoothingManager(smoothingManager);
+  m->setMetaParameterManager(metaParamManager); 
+  ModulatableAudioModule* mm = dynamic_cast<ModulatableAudioModule*>(m);
+  if(mm)
+    mm->setModulationManager(&modManager);
 }
 
 void ToolChain::addToModulatorsIfApplicable(AudioModule* module)
