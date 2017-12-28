@@ -124,12 +124,15 @@ void rsSmoothableParameter::setValue(double newValue, bool sendNotification, boo
     shouldSendNotification = sendNotification;
     Parameter::setValue(newValue, false, false);
     if(sendNotification)
-      notifyNonGuiObservers();
+      notifyObservers();
+      //notifyNonGuiObservers();
       // maybe we need an additional flag wantsNotificationAfterSmoothing ...or 
       // wantsImmediateNotification and two functions notifyImmmediately, notifyDelayed
       // or let ParameterObserver have flags preSmoothNotify, postSmoothNotify which can
-      // be set individually - sliders coudl use preSmoothNotify, plotsuse postSmoothNotify
+      // be set individually - sliders could use preSmoothNotify, plotsuse postSmoothNotify
       // or both
+      // ...hmm...at the moment we just notify all observers pre-and post smoothing
+      // ..check, if that works well, if so, delete the notify(Non)GuiObservers functions
 
     //Parameter::setValue(newValue, sendNotification, false); // old
 
@@ -148,5 +151,6 @@ void rsSmoothableParameter::smoothingHasEnded()
 {
   rsSmoothingTarget::smoothingHasEnded();
   if(shouldSendNotification)
-    notifyGuiObservers();
+    notifyObservers();
+    //notifyGuiObservers();
 }
