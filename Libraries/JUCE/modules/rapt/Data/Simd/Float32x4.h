@@ -211,5 +211,28 @@ inline rsFloat64x2& rsMin(const rsFloat64x2& a, const rsFloat64x2& b) { return r
 inline rsFloat64x2& rsMax(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_max_pd(a, b)); }
 
 inline rsFloat64x2& rsSqrt(const rsFloat64x2& a) { return rsFloat64x2(_mm_sqrt_pd(a)); }
+/*
+for implementid SIMD vectors, see:
+http://johanmabille.github.io/blog/2014/10/10/writing-c-plus-plus-wrappers-for-simd-intrinsics-3/
+https://github.com/p12tic/libsimdpp
+...maybe it's possible to make a template baseclass, templated on the vector and element types 
+like __m128d and double in this case
 
+template<class TElem, class TVec>
+class rsSIMDVector : public TVec
+{
+  public:
+
+  TVec convert(TElem x);
+
+  inline TVec& add(const TVec& a, const TVec& b)
+
+};
+
+class rsFloat64x2 : public rsSIMDVector<double, __m128d>
+{
+
+};
+
+ */
 #endif

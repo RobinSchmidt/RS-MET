@@ -272,9 +272,9 @@ void EqualizerAudioModule::addBand(int channel, int mode, double frequency, doub
   int newIndex = wrappedEqualizerStereo->addBand(channel, mode, frequency, gain, bandwidth);
 
   std::vector<double> defaultValues;
-  Parameter* p;
+  ModulatableParameter* p;
 
-  p = new Parameter(lock, "Mode", 0.0, 8.0, 1.0, 0.0, Parameter::STRING);
+  p = new ModulatableParameter("Mode", 0.0, 8.0, 0.0, Parameter::STRING, 1.0);
   p->addStringValue(juce::String("Bypass"));
   p->addStringValue(juce::String("Peak/Dip"));
   p->addStringValue(juce::String("Low Shelving"));
@@ -288,7 +288,7 @@ void EqualizerAudioModule::addBand(int channel, int mode, double frequency, doub
   p->registerParameterObserver(this);
   filterModeParameters[channel].add(p);
 
-  p = new Parameter(lock, "Frequency", 20.0, 20000.0, 0.0, 1000.0, Parameter::EXPONENTIAL);
+  p = new ModulatableParameter("Frequency", 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL, 0.0);
   defaultValues.clear();
   defaultValues.push_back(   31.25);
   defaultValues.push_back(   62.5);
@@ -305,7 +305,7 @@ void EqualizerAudioModule::addBand(int channel, int mode, double frequency, doub
   p->registerParameterObserver(this);
   frequencyParameters[channel].add(p);
 
-  p = new Parameter(lock, "Gain", -48.0, 48.0, 0.1, 0.0, Parameter::LINEAR_BIPOLAR);
+  p = new ModulatableParameter("Gain", -48.0, 48.0, 0.0, Parameter::LINEAR_BIPOLAR, 0.1);
   defaultValues.clear();
   defaultValues.push_back(-24.0);
   defaultValues.push_back(-18.0);
@@ -323,7 +323,7 @@ void EqualizerAudioModule::addBand(int channel, int mode, double frequency, doub
   gainParameters[channel].add(p);
 
   double defaultBandwidth = 2.0*asinh(1.0/sqrt(2.0))/log(2.0);  // ca. 1.9, Q = sqrt(1/2), maximum steepness without overshoot for shelves
-  p = new Parameter(lock, "Bandwidth", 0.25, 6.0, 0.01, defaultBandwidth, Parameter::EXPONENTIAL);
+  p = new ModulatableParameter("Bandwidth", 0.25, 6.0, defaultBandwidth, Parameter::EXPONENTIAL, 0.01);
   defaultValues.clear();
   defaultValues.push_back(1.0/3.0);
   defaultValues.push_back(0.5);
@@ -442,6 +442,7 @@ void EqualizerAudioModule::assignCallbacksForDynamicParameters()
       frequencyParameters[c][i]->clearValueChangeCallbacks();
       gainParameters[c][i]->clearValueChangeCallbacks();
       bandwidthParameters[c][i]->clearValueChangeCallbacks();
+      // why do we need these call to clear - check and delete if not needed
 
       filterModeParameters[c][i]->setValueChangeCallback(&wrappedEqualizerStereo->equalizers[c].bands[i], &TwoPoleFilter::setMode);
       frequencyParameters[c][i]->setValueChangeCallback( &wrappedEqualizerStereo->equalizers[c].bands[i], &TwoPoleFilter::setFrequency);
@@ -1552,7 +1553,7 @@ void EqualizerModuleEditor::resized()
 
 void EqualizerModuleEditor::createWidgets()
 {
-  typedef AutomatableSlider Sld;
+  typedef ModulatableSlider Sld;
   typedef RNamedComboBox Box;
   typedef AutomatableButton Btn;
   Sld* s;
@@ -1611,19 +1612,19 @@ void EqualizerModuleEditor::createWidgets()
   filterModeComboBox->setDescriptionField(infoField);
   filterModeComboBox->registerComboBoxObserver(this);
 
-  addWidget( frequencySlider = new RSlider("FrequencySlider") );
+  addWidget( frequencySlider = new Sld );
   frequencySlider->setSliderName(juce::String("Frequency"));
   frequencySlider->setDescription(juce::String("Frequency of selected band"));
   frequencySlider->setDescriptionField(infoField);
   frequencySlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
 
-  addWidget( gainSlider = new RSlider("GainSlider") );
+  addWidget( gainSlider = new Sld );
   gainSlider->setSliderName(juce::String("Gain"));
   gainSlider->setDescription(juce::String("Gain of selected band"));
   gainSlider->setDescriptionField(infoField);
   gainSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
 
-  addWidget( bandwidthSlider = new RSlider("BandwidthSlider") );
+  addWidget( bandwidthSlider = new Sld );
   bandwidthSlider->setSliderName(juce::String("Bandwidth"));
   bandwidthSlider->setDescription(juce::String("Bandwidth of selected band"));
   bandwidthSlider->setDescriptionField(infoField);

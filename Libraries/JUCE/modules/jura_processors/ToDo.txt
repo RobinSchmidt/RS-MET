@@ -1,3 +1,8 @@
+next: 
+-make per band params in easyq smoothable, modulatable and automatable
+-check tolerance condition ins rsSmoothableParameter::setvalue
+-find best way to update observers (pre/post/both)
+
 in order to have the grid lines in plots visually the same, the pixel-size should divisible by
 the number of sections, i.e. (N+1), when N is the number of grid-lines. for example, our usual
 frequency response plots have N=10 frequency lines, so they have 11 sections and the width should
@@ -261,13 +266,10 @@ deletes the object conditionally, also an override of processBlock and createEdi
 
 -try to get romos (and Liberty) to compile on gcc
 
--EngineersFilter editor: remove additional space/infoline
--AciDevilEditor: needs other initial size, maybe should not be resizable
  
--turn rapt into a juce module (with no dependencies)
--make rapt and rosic test/demo projects
 -maybe rename rosic to rs_dsp - or maybe raps (Rob's Audio Processing Suite) - jura needs no rename
  or: stay with rapt as rob's audio processing toolkit and have a rapt and a rapt_templates module
+ or ramp: rob's audio and music processors
 -get rid of "using namespace" in headers - lorcan says, this is something to be avoided
 -templatize rosic classes and move templates to rapt
 -in rapt: use omega instead of freq/sampleRate (avoid data redundancy)
@@ -297,13 +299,10 @@ Bugs:
   fix that ...why do we switch that off anyway...is was to solve some other 
   issue...figure out...
 
-
-
 AudioPlugin:  
 
 MetaParameters:
 -make renamable via GUI 
--have an Auto-Rename feature (renames to assigned parameter's name)
 -allow to optionally map midi controllers to meta-parameters
 -fix updating of the frequency-response plot in the Ladder when parameters are automated
 
@@ -312,7 +311,6 @@ AudioModuleChain: use inherited childModules array instead of "modules"
 RSlider: 
 -make default-values and enter-value available on right-click (it's currently only
  available in subclass AutomatableSlider)
-
 
 ParameterManager: rename functions to addParameter, removeParameter
 
@@ -340,6 +338,3 @@ https://forum.juce.com/t/resolving-denormal-floats-once-and-for-all/8241
 https://software.intel.com/en-us/node/523328
 (done  in AudioPlugin::processBlock - but we may need to reset it)
 
-for implementid SIMD vectors, see:
-http://johanmabille.github.io/blog/2014/10/10/writing-c-plus-plus-wrappers-for-simd-intrinsics-3/
-https://github.com/p12tic/libsimdpp
