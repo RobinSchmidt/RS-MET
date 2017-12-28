@@ -23,6 +23,7 @@ public:
   // callback target functions:
   void setLeftValue( double newValue) { values[0] = newValue;  }
   void setRightValue(double newValue) { values[1] = newValue;  }
+  void setSmoothingTime(double newTime);
 
 protected:
 
@@ -30,7 +31,7 @@ protected:
   static const int numValues = 2;
   double values[numValues] = { 0, 0 };
 
-  MetaControlledParameter *leftParam, *rightParam;
+  MetaControlledParameter *leftParam, *rightParam, *smoothParam;
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DebugAudioModule)
@@ -56,7 +57,7 @@ protected:
 
   rsVectorPad *xyPad;
 
-  AutomatableSlider *leftSlider, *rightSlider; // smoothingSlider
+  AutomatableSlider *leftSlider, *rightSlider, *smoothSlider;
   //AutomatableComboBox *modeComboBox;
   //AutomatableButton *invertButton;  
    // use ModulatabelSlider, etc later

@@ -37,15 +37,20 @@ public:
   void setSmoothingManager(rsSmoothingManager* newManager) { smoothingManager = newManager; }
 
   /** Sets the time-constant (in milliseconds) that will be used in the smoothing filter. 
-  Passing 0 switches the smoothing off completely. */
+  Passing 0 switches the smoothing off completely, passing -1 will make the target use a global
+  smoothing time defined in the rsSmoothingManager. */
   void setSmoothingTime(double newTime) { smoothingTime = newTime; }
 
   /** Returns the desired smoothing time for this object (in milliseconds). */
   inline double getSmoothingTime() const { return smoothingTime; }
 
+  /** Returns true when this smoothing target should use the global smoothing time defined in the
+  rsSmoothingManager. */
+  inline bool shouldUseGlobalSmoothingTime() const { return smoothingTime == -1.0; }
+
 protected:
 
-  double smoothingTime = 20.0; // in milliseconds, 5000 for debugging - when done reset to 0
+  double smoothingTime = -1.0; // in milliseconds, -1.0 is code for using global smoothing time
   bool isSmoothing = false;
   rsSmoothingManager* smoothingManager = nullptr; 
 
@@ -162,6 +167,10 @@ public:
   /** Sets the sample rate at which all the smoothing filters should operate. */
   void setSampleRate(double newSampleRate) { sampleRate = newSampleRate; }
 
+  /** Sets a global smoothing time in milliseconds. Whether that global time is actually used, or
+  the per-target time value will be used is determined by... */
+  void setSmoothingTime(double newSmoothingTime) { smoothingTime = newSmoothingTime; }
+
   /** Sets the mutex lock objevt to be used for accessing our smoother arrays in a thread-safe 
   way. */
   void setMutexLock(CriticalSection* newLock) { lock = newLock; }
@@ -229,6 +238,7 @@ protected:
   std::vector<rsSmoother*> smootherPool;
 
   double sampleRate = 44100;
+  double smoothingTime = 20.0;   // in milliseconds
   CriticalSection* lock = nullptr;
   bool smoothingBypassed = false;
 

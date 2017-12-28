@@ -55,7 +55,10 @@ void rsSmoothingManager::addSmootherFor(rsSmoothingTarget* target, double target
       smoother = new rsSmoother;
 
     smoother->setSmoothingOrder(3);
-    smoother->setTimeConstantAndSampleRate(target->getSmoothingTime(), sampleRate);
+    if(target->shouldUseGlobalSmoothingTime())
+      smoother->setTimeConstantAndSampleRate(smoothingTime, sampleRate);
+    else
+      smoother->setTimeConstantAndSampleRate(target->getSmoothingTime(), sampleRate);
       // maybe, we should call these conditionally to avoid computations when it doesn't acually 
       // change anything
 

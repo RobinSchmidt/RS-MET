@@ -9,13 +9,20 @@ void DebugAudioModule::createParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  leftParam = new MetaControlledParameter("Left" , -1.0, 1.0, 0.0, Parameter::LINEAR, 0.01);
-  leftParam->setValueChangeCallback<DebugAudioModule>(this, &DebugAudioModule::setLeftValue);
-  addObservedParameter(leftParam);
+  typedef MetaControlledParameter Param;
+  Param* p;
 
-  rightParam = new MetaControlledParameter("Right" , -1.0, 1.0, 0.0, Parameter::LINEAR, 0.01);
-  rightParam->setValueChangeCallback<DebugAudioModule>(this, &DebugAudioModule::setRightValue);
-  addObservedParameter(rightParam);
+  leftParam = p = new Param("Left" , -1.0, 1.0, 0.0, Parameter::LINEAR, 0.01);
+  p->setValueChangeCallback<DebugAudioModule>(this, &DebugAudioModule::setLeftValue);
+  addObservedParameter(p);
+
+  rightParam = p = new Param("Right" , -1.0, 1.0, 0.0, Parameter::LINEAR, 0.01);
+  p->setValueChangeCallback<DebugAudioModule>(this, &DebugAudioModule::setRightValue);
+  addObservedParameter(p);
+
+  smoothParam = p = new Param("Smoothing" , 0.0, 100.0, 0.0, Parameter::LINEAR, 1.0);
+  p->setValueChangeCallback<DebugAudioModule>(this, &DebugAudioModule::setSmoothingTime);
+  addObservedParameter(p);
 }
 
 AudioModuleEditor* DebugAudioModule::createEditor()
@@ -61,6 +68,12 @@ void DebugAudioModule::setMidiController(int controllerNumber, float controllerV
     getParameterByName("Right")->setValue(v, true, true);
 }
 
+void DebugAudioModule::setSmoothingTime(double newTime) 
+{
+  if(smoothingManager) 
+    smoothingManager->setSmoothingTime(newTime);
+}
+
 //=================================================================================================
 
 DebugModuleEditor::DebugModuleEditor(jura::DebugAudioModule *newDebugModuleToEdit) 
@@ -81,7 +94,6 @@ void DebugModuleEditor::createWidgets()
   // create vector-pad:
   addWidget(xyPad = new rsVectorPad);
 
-
   addWidget( leftSlider = s = new Sld );
   s->assignParameter( p = debugModule->getParameterByName("Left") );
   xyPad->assignParameterX(p);
@@ -95,6 +107,13 @@ void DebugModuleEditor::createWidgets()
   xyPad->assignParameterY(p);
   s->setSliderName("Right");
   s->setDescription("Right channel output value");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&valueToStringTotal5);
+
+  addWidget( smoothSlider = s = new Sld );
+  s->assignParameter( p = debugModule->getParameterByName("Smoothing") );
+  s->setSliderName("Smoothing");
+  s->setDescription("Parameter smoothing in milliseconds");
   s->setDescriptionField(infoField);
   s->setStringConversionFunction(&valueToStringTotal5);
 }
@@ -117,6 +136,7 @@ void DebugModuleEditor::resized()
   x = xyPad->getRight() + m;
   w = getWidth() - x - m;
   y = getPresetSectionBottom() + m;
-  leftSlider ->setBounds(x, y, w, wh); y += dy;
-  rightSlider->setBounds(x, y, w, wh); y += dy;
+  leftSlider  ->setBounds(x, y, w, wh); y += dy;
+  rightSlider ->setBounds(x, y, w, wh); y += dy;
+  smoothSlider->setBounds(x, y, w, wh); y += dy;
 }
