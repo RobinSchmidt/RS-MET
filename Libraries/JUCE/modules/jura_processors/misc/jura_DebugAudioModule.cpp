@@ -46,8 +46,10 @@ void DebugAudioModule::processBlock(double **inOutBuffer, int numChannels, int n
 
 void DebugAudioModule::processStereoFrame(double *left, double *right)
 {
-  *left  = values[0];
-  *right = values[1];;
+  *left  += values[0];
+  *right += values[1];
+  if(eqModule)
+    eqModule->processStereoFrame(left, right);
 }
 
 void DebugAudioModule::setSampleRate(double newSampleRate)
