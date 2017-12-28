@@ -239,7 +239,7 @@ protected:
   std::vector<rsSmoother*> smootherPool;
 
   double sampleRate = 44100;
-  double smoothingTime = 20.0;   // in milliseconds
+  double smoothingTime = 0.0;   // in milliseconds
   CriticalSection* lock = nullptr;
   bool smoothingBypassed = false;
 
