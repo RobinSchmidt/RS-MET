@@ -49,7 +49,11 @@ void rsVectorPad::paint(Graphics& g)
 
 void rsVectorPad::mouseDown(const MouseEvent& e)
 {
-  setParametersFromMouseEvent(e);
+  if(e.mods.isCommandDown()) {
+    paramX->resetToDefaultValue(true, true);
+    paramY->resetToDefaultValue(true, true); }
+  else
+    setParametersFromMouseEvent(e);
 }
 
 void rsVectorPad::mouseDrag(const MouseEvent& e)

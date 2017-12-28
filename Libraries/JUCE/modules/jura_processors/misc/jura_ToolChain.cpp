@@ -182,13 +182,11 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
   node->addChildNode(new RTreeViewNode("Limiter",     i++));
   popUpMenu->addTreeNodeItem(node);
 
-  /*
   node = new RTreeViewNode("Modulators", -1, "Modulators");
   node->addChildNode(new RTreeViewNode("BreakpointModulator",  i++));
   //node->addChildNode(new RTreeViewNode("LowFrequencyOscillator",  i++));
   node->setOpen(false);
   popUpMenu->addTreeNodeItem(node);
-  */
 
   node = new RTreeViewNode("Analyzers", -1, "Analyzers");
   node->addChildNode(new RTreeViewNode("Scope",    i++));

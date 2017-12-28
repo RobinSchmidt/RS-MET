@@ -41,14 +41,14 @@ AudioModuleEditor* EqualizerAudioModule::createEditor()
   return new EqualizerModuleEditor(lock, this);
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // automation and state management:
 
 void EqualizerAudioModule::createStaticParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  typedef MetaControlledParameter Param;
+  typedef ModulatableParameter Param;
   Param* p;
 
   std::vector<double> defaultValues;
@@ -1163,107 +1163,20 @@ EqualizerModuleEditor::EqualizerModuleEditor(CriticalSection *newPlugInLock,
   EqualizerAudioModule* newEqualizerAudioModule)
   : AudioModuleEditor(newEqualizerAudioModule)
 {
-  // assign the pointer to the rosic::Equalizer object to be used as aduio engine:
-  //jassert(newEqualizerAudioModule != NULL ); // you must pass a valid module here
-  //equalizerModuleToEdit = newEqualizerAudioModule; // the pointer is now only present in the plot
-
-  addWidget( bypassButton = new RButton(juce::String("Bypass")) );
-  bypassButton->setDescription(juce::String("Bypass the whole equalizer"));
-  bypassButton->setDescriptionField(infoField);
-  bypassButton->setClickingTogglesState(true);  //...? do we need this ? ...set this active by default in RButton
-
-  addWidget( channelSelectButton1 = new RRadioButton(juce::String("L")) );
-  channelSelectButton1->setDescription(juce::String("Edit left channel curve"));
-  channelSelectButton1->setDescriptionField(infoField);
-  channelSelectButton1->setClickingTogglesState(true);
-  channelSelectButton1->addRButtonListener(this);
-  //channelSelectButton1->setRadioGroupId(1);  // \todo: make this work again
-  channelSelectButton1->addToRadioButtonGroup(&channelSelectRadioGroup);
-  channelSelectButton1->setToggleState(true, false);
-
-  addWidget( channelSelectButton2 = new RRadioButton(juce::String("R")) );
-  channelSelectButton2->setDescription(juce::String("Edit right channel curve"));
-  channelSelectButton2->setDescriptionField(infoField);
-  channelSelectButton2->setClickingTogglesState(true);
-  channelSelectButton2->addRButtonListener(this);
-  //channelSelectButton2->setRadioGroupId(1); // \todo: make this work again
-  channelSelectButton2->addToRadioButtonGroup(&channelSelectRadioGroup);
-  channelSelectButton2->setToggleState(false, false);
-
-  addWidget( stereoModeComboBox = new RNamedComboBox(juce::String("StereoModeComboBox"),
-    juce::String("Stereo Mode:")) );
-  stereoModeComboBox->setDescription("Select mode for processing stereo signals");
-  stereoModeComboBox->setDescriptionField(infoField);
-  stereoModeComboBox->registerComboBoxObserver(this);
-
-  addWidget( gainRangeComboBox = new RNamedComboBox(juce::String("RangeComboBox"),
-    juce::String("Range:")) );
-  gainRangeComboBox->setDescription("Select the range for the plot");
-  gainRangeComboBox->setDescriptionField(infoField);
-  gainRangeComboBox->registerComboBoxObserver(this);
-
-  addWidget( globalGainSlider = new RSlider("GlobalGainSlider") );
-  globalGainSlider->setDescription(juce::String("Global gain to compensate for loudness change"));
-  globalGainSlider->setDescriptionField(infoField);
-  globalGainSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
-
-  addWidget( bandParametersLabel = new RTextField("Band Parameters") );
-  bandParametersLabel->setDescription("Parameters for th selected band");
-  bandParametersLabel->setDescriptionField(infoField);
-  bandParametersLabel->setJustification(Justification::centred);
-  bandParametersLabel->setNoBackgroundAndOutline(true);
-
-  addWidget( filterModeComboBox = new RNamedComboBox(juce::String("FilterModeComboBox"),
-    juce::String("Mode:")) );
-  filterModeComboBox->setDescription("Filter mode of selected band");
-  filterModeComboBox->setDescriptionField(infoField);
-  filterModeComboBox->registerComboBoxObserver(this);
-
-  addWidget( frequencySlider = new RSlider("FrequencySlider") );
-  frequencySlider->setSliderName(juce::String("Frequency"));
-  frequencySlider->setDescription(juce::String("Frequency of selected band"));
-  frequencySlider->setDescriptionField(infoField);
-  frequencySlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
-
-  addWidget( gainSlider = new RSlider("GainSlider") );
-  gainSlider->setSliderName(juce::String("Gain"));
-  gainSlider->setDescription(juce::String("Gain of selected band"));
-  gainSlider->setDescriptionField(infoField);
-  gainSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
-
-  addWidget( bandwidthSlider = new RSlider("BandwidthSlider") );
-  bandwidthSlider->setSliderName(juce::String("Bandwidth"));
-  bandwidthSlider->setDescription(juce::String("Bandwidth of selected band"));
-  bandwidthSlider->setDescriptionField(infoField);
-  bandwidthSlider->setStringConversionFunction(&octavesToStringWithUnit2);
-
-  plotEditor = new EqualizerPlotEditor(lock, newEqualizerAudioModule);
-  plotEditor->setDescriptionField(infoField);
-  //plotEditor->addChangeListener(this);
-  //if( equalizerModuleToEdit != NULL )
-  //  plotEditor->setEqualizerToEdit(equalizerModuleToEdit->wrappedEqualizer);
-  addPlot( plotEditor );
-
+  ScopedPointerLock spl(lock);
+  equalizerModule = newEqualizerAudioModule;
+  createWidgets();
   layout              = SLIDERS_RIGHT;
   useShortSliderNames = false;
   useSmallComboBox    = false;
-
   stateWidgetSet->addChangeListener(this);
-
   setEqualizerModuleToEdit(newEqualizerAudioModule);
-
-  //isTopLevelEditor = true; // for EasyQ - in Quadrifex, we want to set this false
-
-  // set up the widgets:
   updateWidgetsAccordingToState();
-
   setSize(500, 234);
 }
 
 EqualizerModuleEditor::~EqualizerModuleEditor()
 {
-  //setEqualizerModuleToEdit(NULL); // to remove ourselves as ChangeListener - old
-
   if( plotEditor->equalizerModuleToEdit != NULL )
   {
     plotEditor->equalizerModuleToEdit->deRegisterParameterSetObserver(this);
@@ -1635,6 +1548,93 @@ void EqualizerModuleEditor::resized()
 
   updateWidgetVisibility();
   updateWidgetAppearance();
+}
+
+void EqualizerModuleEditor::createWidgets()
+{
+  typedef AutomatableSlider Sld;
+  typedef RNamedComboBox Box;
+  typedef AutomatableButton Btn;
+  Sld* s;
+  //Box* c;
+  Btn* b;
+
+  addWidget( bypassButton = b = new Btn("Bypass") );
+  b->setDescription("Bypass the whole equalizer");
+  b->setDescriptionField(infoField);
+  b->setClickingTogglesState(true);  //...? do we need this ? ...set this active by default in RButton
+
+  addWidget( channelSelectButton1 = new RRadioButton("L") );
+  channelSelectButton1->setDescription("Edit left channel curve");
+  channelSelectButton1->setDescriptionField(infoField);
+  channelSelectButton1->setClickingTogglesState(true);
+  channelSelectButton1->addRButtonListener(this);
+  //channelSelectButton1->setRadioGroupId(1);  // \todo: make this work again
+  channelSelectButton1->addToRadioButtonGroup(&channelSelectRadioGroup);
+  channelSelectButton1->setToggleState(true, false);
+
+  addWidget( channelSelectButton2 = new RRadioButton("R") );
+  channelSelectButton2->setDescription("Edit right channel curve");
+  channelSelectButton2->setDescriptionField(infoField);
+  channelSelectButton2->setClickingTogglesState(true);
+  channelSelectButton2->addRButtonListener(this);
+  //channelSelectButton2->setRadioGroupId(1); // \todo: make this work again
+  channelSelectButton2->addToRadioButtonGroup(&channelSelectRadioGroup);
+  channelSelectButton2->setToggleState(false, false);
+
+  addWidget( stereoModeComboBox = new RNamedComboBox(juce::String("StereoModeComboBox"),
+    juce::String("Stereo Mode:")) );
+  stereoModeComboBox->setDescription("Select mode for processing stereo signals");
+  stereoModeComboBox->setDescriptionField(infoField);
+  stereoModeComboBox->registerComboBoxObserver(this);
+
+  addWidget( gainRangeComboBox = new RNamedComboBox(juce::String("RangeComboBox"),
+    juce::String("Range:")) );
+  gainRangeComboBox->setDescription("Select the range for the plot");
+  gainRangeComboBox->setDescriptionField(infoField);
+  gainRangeComboBox->registerComboBoxObserver(this);
+
+  addWidget( globalGainSlider = s = new Sld );
+  s->setDescription("Global gain to compensate for loudness change");
+  s->setDescriptionField(infoField);
+  s->setStringConversionFunction(&decibelsToStringWithUnit1);
+
+  addWidget( bandParametersLabel = new RTextField("Band Parameters") );
+  bandParametersLabel->setDescription("Parameters for th selected band");
+  bandParametersLabel->setDescriptionField(infoField);
+  bandParametersLabel->setJustification(Justification::centred);
+  bandParametersLabel->setNoBackgroundAndOutline(true);
+
+  addWidget( filterModeComboBox = new RNamedComboBox(juce::String("FilterModeComboBox"),
+    juce::String("Mode:")) );
+  filterModeComboBox->setDescription("Filter mode of selected band");
+  filterModeComboBox->setDescriptionField(infoField);
+  filterModeComboBox->registerComboBoxObserver(this);
+
+  addWidget( frequencySlider = new RSlider("FrequencySlider") );
+  frequencySlider->setSliderName(juce::String("Frequency"));
+  frequencySlider->setDescription(juce::String("Frequency of selected band"));
+  frequencySlider->setDescriptionField(infoField);
+  frequencySlider->setStringConversionFunction(&hertzToStringWithUnitTotal5);
+
+  addWidget( gainSlider = new RSlider("GainSlider") );
+  gainSlider->setSliderName(juce::String("Gain"));
+  gainSlider->setDescription(juce::String("Gain of selected band"));
+  gainSlider->setDescriptionField(infoField);
+  gainSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
+
+  addWidget( bandwidthSlider = new RSlider("BandwidthSlider") );
+  bandwidthSlider->setSliderName(juce::String("Bandwidth"));
+  bandwidthSlider->setDescription(juce::String("Bandwidth of selected band"));
+  bandwidthSlider->setDescriptionField(infoField);
+  bandwidthSlider->setStringConversionFunction(&octavesToStringWithUnit2);
+
+  plotEditor = new EqualizerPlotEditor(lock, equalizerModule);
+  plotEditor->setDescriptionField(infoField);
+  //plotEditor->addChangeListener(this);
+  //if( equalizerModuleToEdit != NULL )
+  //  plotEditor->setEqualizerToEdit(equalizerModuleToEdit->wrappedEqualizer);
+  addPlot( plotEditor );
 }
 
 void EqualizerModuleEditor::updateWidgetVisibility()

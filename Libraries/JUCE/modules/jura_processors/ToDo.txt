@@ -9,6 +9,12 @@ Bugs in the smoothing system:
   -it's because rsSmoothableParameter::setValue gets called two times, once from the slider and 
    then again from the meta - and in the second call, oldValue = getValue(); returns the new
    value - fixed
+ -in the DebugModule, the smoothing time is not recalled correctly
+
+Modulation:
+ -in the DebugModule's Equalizer, the modManager is null ...must derive from modulatableAudiomodule
+  ->same for the DebugModule itself
+
 
 Straightliner - initial patch has moogish lowpass on it - display shows flat freq-response
 -there seems to be something wrong with the mode-indices
@@ -17,7 +23,8 @@ clean up EngineersFilterModuleEditor
 clean up RSlider - but only after good testing
 
 ToolChain Bugs:
--on mac, the color-gradients are wrong (maybe the rgba-channels are confused)
+-mac: the color-gradients are wrong (maybe the rgba-channels are confused)
+-win: sliders on color setup don't work anymore
 
 ToolChain
 -let the "Setup" have tabs for 

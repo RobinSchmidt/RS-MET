@@ -122,12 +122,6 @@ public:
 
   //-----------------------------------------------------------------------------------------------
   // audio processing:
-  /*
-  virtual void processBlockStereo(float *left, float *right, int numSamples)
-  {
-    wrappedEqualizerStereo->processBlock(left, right, numSamples);
-  }
-  */
 
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
   {
@@ -159,7 +153,7 @@ protected:
   int selectedChannel; // currently selected channel (0 for L or M, 1 for R or S)
   int selectedIndex;   // index of currently selected band (-1 if none)
 
-  // arrays for the per-band parameters (later: AutomatableParameter):
+  // arrays for the per-band parameters (later: ModulatableParameter):
   juce::OwnedArray<Parameter> filterModeParameters[2];
   juce::OwnedArray<Parameter> frequencyParameters[2];
   juce::OwnedArray<Parameter> gainParameters[2];
@@ -370,20 +364,24 @@ public:
 
 protected:
 
+  void createWidgets();
   virtual void updateWidgetVisibility();
   virtual void updateWidgetAppearance(); 
   virtual void updatePlotRange();
 
   //virtual void showGainScaleSlider(); ...etc.
 
-  EqualizerPlotEditor  *plotEditor;
+  EqualizerAudioModule* equalizerModule;
+
+  EqualizerPlotEditor* plotEditor;
 
   // rectangles for organizing the gui (can be done by baseclass later...)
   juce::Rectangle<int> rightSectionRectangle, bottomSectionRectangle; 
 
   // widgets:
   RTextField        *bandParametersLabel;
-  RButton           *bypassButton, *copyButton, *pasteButton, *invertButton;
+  AutomatableButton *bypassButton;
+  RButton           *copyButton, *pasteButton, *invertButton;
   RNamedComboBox    *stereoModeComboBox, *gainRangeComboBox, *filterModeComboBox;
   RSlider           *frequencySlider, *gainSlider, *bandwidthSlider, *globalGainSlider;
   RRadioButton      *channelSelectButton1, *channelSelectButton2;
