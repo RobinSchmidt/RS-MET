@@ -31,7 +31,8 @@ protected:
   static const int numValues = 2;
   double values[numValues] = { 0, 0 };
 
-  MetaControlledParameter *leftParam, *rightParam, *smoothParam;
+  MetaControlledParameter *leftParam, *rightParam;
+  Parameter *smoothParam;
 
   EqualizerAudioModule* eqModule = nullptr;
   // We use an equalizer to see if dealing with child-modules and works well. Also, the eq
