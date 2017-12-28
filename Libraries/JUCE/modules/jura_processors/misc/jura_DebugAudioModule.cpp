@@ -96,7 +96,7 @@ void DebugModuleEditor::createWidgets()
 
   addWidget( leftSlider = s = new Sld );
   s->assignParameter( p = debugModule->getParameterByName("Left") );
-  xyPad->assignParameterX(p);
+  //xyPad->assignParameterX(p);
   s->setSliderName("Left");
   s->setDescription("Left channel output value");
   s->setDescriptionField(infoField);
@@ -104,7 +104,7 @@ void DebugModuleEditor::createWidgets()
 
   addWidget( rightSlider = s = new Sld );
   s->assignParameter( p = debugModule->getParameterByName("Right") );
-  xyPad->assignParameterY(p);
+  //xyPad->assignParameterY(p);
   s->setSliderName("Right");
   s->setDescription("Right channel output value");
   s->setDescriptionField(infoField);

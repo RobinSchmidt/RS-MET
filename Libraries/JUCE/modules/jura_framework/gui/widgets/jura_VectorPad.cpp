@@ -1,24 +1,38 @@
 rsVectorPad::rsVectorPad()
 {
-
+  dummyParam = new Parameter("Dummy", -1.0, +1.0, 0.0);
+  paramX = paramY = dummyParam;
 }
 
 rsVectorPad::~rsVectorPad()
 {
   if(paramX != nullptr) paramX->deRegisterParameterObserver(this);
   if(paramY != nullptr) paramY->deRegisterParameterObserver(this);
+  delete dummyParam;
 }
 
 void rsVectorPad::assignParameterX(Parameter* newParameterX)
 {
+  paramX->deRegisterParameterObserver(this);
   paramX = newParameterX;
-  paramX->registerParameterObserver(this);
+  if(paramX)
+    paramX->registerParameterObserver(this);
+  else
+    paramX = dummyParam;
 }
 
 void rsVectorPad::assignParameterY(Parameter* newParameterY)
 {
+  paramY->deRegisterParameterObserver(this);
   paramY = newParameterY;
-  paramY->registerParameterObserver(this);
+  if(paramY)
+    paramY->registerParameterObserver(this);
+  else
+    paramY = dummyParam;
+  // get rid of duplication
+
+  //paramY = newParameterY;
+  //paramY->registerParameterObserver(this);
 }
 
 void rsVectorPad::parameterChanged(Parameter* p)

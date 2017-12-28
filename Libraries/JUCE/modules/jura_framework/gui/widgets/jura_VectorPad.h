@@ -39,6 +39,7 @@ protected:
 
   void setParametersXY(double x, double y);
 
+  Parameter *dummyParam; // so we can use it without assigned parameters
 
   Parameter *paramX = nullptr, *paramY = nullptr;
 
