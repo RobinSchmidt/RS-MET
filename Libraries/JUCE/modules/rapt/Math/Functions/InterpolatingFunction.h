@@ -52,7 +52,7 @@ public:
     T thresh = 1.e-13; // todo: use epsilon of T
     if(fabs(x2-x1) < thresh)
       return T(0.5) * (y1+y2);
-    return x1 + t * (y2-y1) / (x2-x1); // check this formula
+    return y1 + t * (y2-y1) / (x2-x1); // check this formula
   }
 
   /** Returns an interpolated y-value at the given value of x. */
