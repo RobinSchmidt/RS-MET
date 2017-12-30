@@ -58,7 +58,7 @@ public:
   /** Returns an interpolated y-value at the given value of x. */
   T getValue(T x)
   {
-    return x; // preliminary
+    //return x; // preliminary
 
     if(xValues.size() == 0)
       return 0;

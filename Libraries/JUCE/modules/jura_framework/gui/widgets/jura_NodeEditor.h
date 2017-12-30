@@ -144,6 +144,12 @@ public:
 
   rsNodeBasedFunctionEditor(RAPT::rsInterpolatingFunction<double>* functionMapper);
 
+  // Conversions between model and pixel coordinates:
+  double toPixelX(double modelX);
+  double toPixelY(double modelY);
+  double toModelX(double pixelX);
+  double toModelY(double pixelY);
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Overrides:
@@ -157,6 +163,8 @@ public:
 protected:
 
   RAPT::rsInterpolatingFunction<double>* mapper = nullptr;
+
+  double xMin = -1, xMax = +1, yMin = -1, yMax = +1;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsNodeBasedFunctionEditor)
 };

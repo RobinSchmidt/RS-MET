@@ -190,10 +190,39 @@ rsNodeBasedFunctionEditor::rsNodeBasedFunctionEditor(
   mapper = functionMapper;
 }
 
+double rsNodeBasedFunctionEditor::toPixelX(double modelX)
+{
+  return RAPT::rsLinToLin(modelX, xMin, xMax, 0.0, double(getWidth()-1));
+}
+
+double rsNodeBasedFunctionEditor::toPixelY(double modelY)
+{
+  return RAPT::rsLinToLin(modelY, yMin, yMax, double(getHeight()-1), 0.0);
+}
+
+double rsNodeBasedFunctionEditor::toModelX(double pixelX)
+{
+  return RAPT::rsLinToLin(pixelX, 0.0, double(getWidth()-1),  xMin, xMax);
+}
+
+double rsNodeBasedFunctionEditor::toModelY(double pixelY)
+{
+  return RAPT::rsLinToLin(pixelY, double(getHeight()-1), 0.0, yMin, yMax);
+}
+
 void rsNodeBasedFunctionEditor::paint(Graphics& g)
 {
   g.fillAll(getBackgroundColour());
   g.setColour(getHandleColour());
+  for(int i = 0; i < getWidth()-1; i++)
+  {
+    double x1 = double(i);
+    double x2 = double(i+1);
+    double y1 = mapper->getValue(toModelX(x1));
+    double y2 = mapper->getValue(toModelX(x2));
+    g.drawLine((float)x1, (float)toPixelY(y1), (float)x2, (float)toPixelY(y2), 2.f);
+  }
+  /*
   if(nodes.size() > 1)
   {
     for(size_t i = 0; i < nodes.size()-1; i++)
@@ -206,24 +235,17 @@ void rsNodeBasedFunctionEditor::paint(Graphics& g)
       g.drawLine(x1, y1, x2, y2, 2.f);
     }
   }
+  */
   drawNodes(g);
 }
 
-rsDraggableNode* rsNodeBasedFunctionEditor::addNode(double pixelX, double pixelY)
+rsDraggableNode* rsNodeBasedFunctionEditor::addNode(double x, double y)
 {
-  double x, y;
-   
-  // preliminary - todo: apply mapping between pixel and model coordinates:
-  x = pixelX;
-  y = pixelY;
-
+  rsDraggableNode* newNode = rsNodeEditor::addNode(x, y); // x,y are in pixel coordinates
   if(mapper != nullptr)
-  {
-    mapper->addDataPoint(x, y);
+    mapper->addDataPoint(toModelX(x), toModelY(y));
     // maybe we need to set up callbacks here?
-  }
-
-  return rsNodeEditor::addNode(pixelX, pixelY);
+  return newNode;
 }
 
 void rsNodeBasedFunctionEditor::removeNodeAt(int pixelX, int pixelY)
