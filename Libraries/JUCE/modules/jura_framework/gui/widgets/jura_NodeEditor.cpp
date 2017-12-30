@@ -49,10 +49,40 @@ rsNodeEditor::~rsNodeEditor()
     delete nodes[i];
 }
 
-void rsNodeEditor::addNode(double pixelX, double pixelY)
+// setup:
+
+rsDraggableNode* rsNodeEditor::addNode(double pixelX, double pixelY)
 {
-  nodes.push_back(new rsDraggableNode(this, pixelX, pixelY));
+  rsDraggableNode* newNode = new rsDraggableNode(this, pixelX, pixelY);
+  nodes.push_back(newNode);
+  return newNode;
 }
+
+void rsNodeEditor::setDotSize(float newDotSize)
+{
+  dotSize = newDotSize;
+  repaint();
+}
+
+// inquiry:
+
+rsDraggableNode* rsNodeEditor::getNoteAt(int pixelX, int pixelY)
+{
+  float x  = (float)pixelX;
+  float y  = (float)pixelY;
+  float r2 = (float)(dotSize*dotSize);  // radius^2 of circle to check
+  for(size_t i = 0; i < nodes.size(); i++)
+  {
+    float dx = (x - (float)nodes[i]->pixelX);
+    float dy = (y - (float)nodes[i]->pixelY);
+    float d2 = dx*dx + dy*dy;
+    if(d2 <= r2)
+      return nodes[i];
+  }
+  return nullptr;
+}
+
+// callbacks:
 
 void rsNodeEditor::parameterChanged(Parameter* p)
 {
@@ -68,10 +98,9 @@ void rsNodeEditor::paint(Graphics& g)
 
 void rsNodeEditor::mouseDown(const MouseEvent& e)
 {
-  addNode((float)e.x, (float)e.y); 
-  // todo: figure out, if there's currently a node under the mouse - if so, don't add a new node
-  // but let the user drag around the existing node
-
+  draggedNode = getNoteAt(e.x, e.y);
+  if(draggedNode == nullptr)
+    draggedNode = addNode((float)e.x, (float)e.y);
   repaint();
 }
 
@@ -84,6 +113,8 @@ void rsNodeEditor::nodeChanged(const rsDraggableNode* node)
 {
   repaintOnMessageThread();
 }
+
+// misc:
 
 void rsNodeEditor::drawNodes(Graphics& g)
 {
