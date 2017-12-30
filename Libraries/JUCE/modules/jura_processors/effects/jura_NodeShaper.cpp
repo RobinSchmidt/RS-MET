@@ -15,7 +15,7 @@ AudioModuleEditor* NodeShaperAudioModule::createEditor()
   return new jura::NodeShaperModuleEditor(this);
 }
 
-void FuncShaperAudioModule::createParameters()
+void NodeShaperAudioModule::createParameters()
 {
 
 }
@@ -28,7 +28,7 @@ NodeShaperModuleEditor::NodeShaperModuleEditor(NodeShaperAudioModule* newNodeSha
   : AudioModuleEditor(newNodeShaperAudioModule)
 {
   jassert(newNodeShaperAudioModule != NULL ); // you must pass a valid module here
-  nodeShaperAudioModule = newNodeShaperAudioModule;
+  nodeShaperModule = newNodeShaperAudioModule;
   createWidgets();
   //updateWidgetsAccordingToState();
   setSize(480, 300);
@@ -45,11 +45,6 @@ void NodeShaperModuleEditor::createWidgets()
 }
 
 void NodeShaperModuleEditor::updateWidgetsAccordingToState()
-{
-
-}
-
-void NodeShaperModuleEditor::paint(Graphics &g)
 {
 
 }

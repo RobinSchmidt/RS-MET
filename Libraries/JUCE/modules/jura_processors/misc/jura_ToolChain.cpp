@@ -26,6 +26,7 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
   // effects:
   if(type == "Enveloper")        return new Enveloper(                  lock);
   if(type == "FuncShaper")       return new FuncShaperAudioModule(      lock, metaMan, modMan);
+  if(type == "NodeShaper")       return new NodeShaperAudioModule(      lock);
 
   if(type == "AlgoVerb")         return new AlgoVerbAudioModule(        lock);
   if(type == "EchoLab")          return new EchoLabAudioModule(         lock);
@@ -148,6 +149,7 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
   node = new RTreeViewNode("Effects", -1, "Effects");
   //node->addChildNode(new RTreeViewNode("Enveloper",     i++));
   node->addChildNode(new RTreeViewNode("FuncShaper",    i++));
+  node->addChildNode(new RTreeViewNode("NodeShaper",    i++));
   //node->addChildNode(new RTreeViewNode("StereoDelay",   i++)); // include in Quadrifex
   //node->addChildNode(new RTreeViewNode("PitchShifter",  i++)); // include in Quadrifex
   node->addChildNode(new RTreeViewNode("EchoLab",       i++));

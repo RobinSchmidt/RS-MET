@@ -56,6 +56,7 @@ namespace jura
 
 #include "effects/jura_Enveloper.cpp"
 #include "effects/jura_FuncShaper.cpp"
+#include "effects/jura_NodeShaper.cpp"
 #include "effects/jura_AlgoVerb.cpp"
 #include "effects/jura_EchoLab.cpp"
 #include "effects/jura_PitchShifter.cpp"

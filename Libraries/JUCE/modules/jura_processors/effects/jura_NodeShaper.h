@@ -22,7 +22,7 @@ public:
 
   virtual void setSampleRate(double newSampleRate) override
   {
-    wrappedNodeShaper->setSampleRate(newSampleRate);
+    //wrappedNodeShaper->setSampleRate(newSampleRate);
   }
 
   //---------------------------------------------------------------------------------------------
@@ -30,24 +30,29 @@ public:
 
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override
   {
-
+    for(int i = 0; i < numChannels; i++)
+      for(int n = 0; n < numSamples; n++)
+        inOutBuffer[i][n] = mapper.getValue(inOutBuffer[i][n]);
   }
 
   virtual void processStereoFrame(double *left, double *right) override
   {
-
+    *left  = mapper.getValue(*left);
+    *right = mapper.getValue(*right);
   }
 
 protected:
 
   void createParameters();
 
+  rosic::PiecewiseFunction mapper;
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeShaperAudioModule)
 };
 
 //=================================================================================================
 
-class NodeShapeModuleEditor : public AudioModuleEditor
+class NodeShaperModuleEditor : public AudioModuleEditor
 {
 
 public:
@@ -56,10 +61,10 @@ public:
   // \name Construction/Destruction
 
   /** Constructor. */
-  NodeShapeModuleEditor(NodeShaperAudioModule* newNodeShaperAudioModule);
+  NodeShaperModuleEditor(NodeShaperAudioModule* newNodeShaperAudioModule);
 
   /** Destructor. */
-  virtual ~NodeShapeModuleEditor();
+  virtual ~NodeShaperModuleEditor();
 
   //---------------------------------------------------------------------------------------------
   // callbacks:
@@ -75,7 +80,7 @@ protected:
   NodeShaperAudioModule *nodeShaperModule;
 
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeShapeModuleEditor)
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeShaperModuleEditor)
 };
 
 #endif 

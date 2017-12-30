@@ -104,6 +104,7 @@ namespace jura
 
 #include "effects/jura_Enveloper.h"
 #include "effects/jura_FuncShaper.h"
+#include "effects/jura_NodeShaper.h"
 #include "effects/jura_AlgoVerb.h"
 #include "effects/jura_EchoLab.h"
 #include "effects/jura_PitchShifter.h"
