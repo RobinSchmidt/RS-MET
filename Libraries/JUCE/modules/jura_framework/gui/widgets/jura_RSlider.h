@@ -171,6 +171,9 @@ public:
   /** Removes a listener form this slider. */
   virtual void removeListener(RSliderListener* listener) throw();
 
+  /** Notifies our slider-listeners about value-change. */
+  void notifyListeners();
+
   /** Overrides the method inherited from RWidget */
   void updateWidgetFromAssignedParameter(bool sendChangeMessage = false) override;
 

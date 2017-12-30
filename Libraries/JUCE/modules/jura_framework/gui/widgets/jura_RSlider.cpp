@@ -141,6 +141,7 @@ void RSlider::setValue(double newValue, const bool sendUpdateMessage,
       ParameterObserver::setLocalAutomationSwitch(true);
     }
 
+    notifyListeners();
     repaintOnMessageThread();
 
     //if(sendUpdateMessage)
@@ -340,6 +341,12 @@ void RSlider::addListener(RSliderListener* listener) throw()
 void RSlider::removeListener(RSliderListener* listener) throw()
 {
   listeners.removeFirstMatchingValue(listener);
+}
+
+void RSlider::notifyListeners()
+{
+  for(int i = 0; i < listeners.size(); i++)
+    listeners[i]->rSliderValueChanged(this);
 }
 
 //-------------------------------------------------------------------------------------------------

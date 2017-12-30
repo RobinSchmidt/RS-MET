@@ -1,6 +1,8 @@
 next: 
 -check tolerance condition ins rsSmoothableParameter::setvalue
 -find best way to update observers (pre/post/both)
+-in EngineersFilter, the sliders stay grayed out (try papoulis peak)
+
 
 in order to have the grid lines in plots visually the same, the pixel-size should divisible by
 the number of sections, i.e. (N+1), when N is the number of grid-lines. for example, our usual
