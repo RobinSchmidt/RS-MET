@@ -30,6 +30,9 @@ public:
   /** Assigns the parameter object associated with the y-coordinate of this node. */
   virtual void assignParameterY(Parameter* newParameterY);
 
+  /** Sets up a new pixel position for this node. */
+  virtual void setPixelPosition(double newX, double newY);
+
   //-----------------------------------------------------------------------------------------------
   // \name Callbacks
 

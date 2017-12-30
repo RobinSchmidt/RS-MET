@@ -30,6 +30,17 @@ void rsDraggableNode::assignParameterY(Parameter* newParameterY)
     paramY->registerParameterObserver(this);
 }
 
+void rsDraggableNode::setPixelPosition(double newX, double newY)
+{
+  pixelX = newX;
+  pixelY = newY;
+  nodeEditor->nodeChanged(this);
+  // todo: do not call nodeChanged directly here - instead, set up the paramX, paramY parameters
+  // according to the new pixel position. this will trigger a call to our parameterChanged function
+  // which will in turn call nodeEditor->nodeChanged(this); ...hmm...or maybe that's not so good
+  // because nodeChanged will then get called twice (once for x and once for y)
+}
+
 void rsDraggableNode::parameterChanged(Parameter* p)
 {
   nodeEditor->nodeChanged(this);
@@ -106,7 +117,8 @@ void rsNodeEditor::mouseDown(const MouseEvent& e)
 
 void rsNodeEditor::mouseDrag(const MouseEvent& e)
 {
-
+  if(draggedNode != nullptr)
+    draggedNode->setPixelPosition(e.x, e.y); // will indirectly trigger a repaint
 }
 
 void rsNodeEditor::nodeChanged(const rsDraggableNode* node)
