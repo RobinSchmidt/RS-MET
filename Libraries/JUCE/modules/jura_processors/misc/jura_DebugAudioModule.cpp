@@ -107,8 +107,9 @@ void DebugModuleEditor::createWidgets()
   Sld* s;
   Parameter* p;
 
-  // create vector-pad:
+  // create vector-pad and node-editor:
   addWidget(xyPad = new rsVectorPad);
+  addWidget(nodeEditor = new rsNodeEditor);
 
   addWidget( leftSlider = s = new Sld );
   s->assignParameter( p = debugModule->getParameterByName("Left") );
@@ -155,6 +156,16 @@ void DebugModuleEditor::resized()
   leftSlider  ->setBounds(x, y, w, wh); y += dy;
   rightSlider ->setBounds(x, y, w, wh); y += dy;
   smoothSlider->setBounds(x, y, w, wh); y += dy;
+
+  if(nodeEditor)
+  {
+    // preliminary - it overlaps with eq-editor
+    x = xyPad->getRight() + m;
+    w = getWidth() - x - m;
+    y = smoothSlider->getBottom() + m;
+    h = w;
+    nodeEditor->setBounds(x, y, w, h);
+  }
 
   if(eqEditor)
   {

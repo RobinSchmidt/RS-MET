@@ -14,7 +14,7 @@ public:
   // \name Construction/Destruction
 
   /** Constructor */
-  rsDraggableNode(rsNodeEditor* editorContainingThisNode);
+  rsDraggableNode(rsNodeEditor* editorContainingThisNode, double pixelX, double pixelY);
 
   /** Destructor */
   ~rsDraggableNode();
@@ -64,6 +64,10 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Setup:
 
+  /** Adds a new node at the given pixel position. The new node will use nullptrs for the Parameter
+  objects associated with the x- and y-coordinate. Subclasses may want to override this in order to
+  create and assign actual Parameter objects with associated callbacks. */
+  virtual void addNode(double pixelX, double pixelY);
 
 
   //-----------------------------------------------------------------------------------------------
@@ -75,12 +79,15 @@ public:
   virtual void mouseDrag(const MouseEvent& e) override;
   virtual void nodeChanged(const rsDraggableNode* node);
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Misc
 
+  virtual void drawNodes(Graphics& g);
 
   
 protected:
 
-
+  std::vector<rsDraggableNode*> nodes;
 
 
   // these variables also appear in rsVectorPad - maybe we can factor out a baseclass:

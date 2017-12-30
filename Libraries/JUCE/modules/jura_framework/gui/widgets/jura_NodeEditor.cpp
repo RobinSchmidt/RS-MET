@@ -1,7 +1,9 @@
-rsDraggableNode::rsDraggableNode(rsNodeEditor* editor)
+rsDraggableNode::rsDraggableNode(rsNodeEditor* editor, double x, double y)
 {
   jassert(editor != nullptr);
   nodeEditor = editor;
+  pixelX = x;
+  pixelY = y;
 }
 
 rsDraggableNode::~rsDraggableNode()
@@ -43,7 +45,13 @@ rsNodeEditor::rsNodeEditor()
 
 rsNodeEditor::~rsNodeEditor()
 {
+  for(size_t i = 0; i < nodes.size(); i++)
+    delete nodes[i];
+}
 
+void rsNodeEditor::addNode(double pixelX, double pixelY)
+{
+  nodes.push_back(new rsDraggableNode(this, pixelX, pixelY));
 }
 
 void rsNodeEditor::parameterChanged(Parameter* p)
@@ -54,18 +62,17 @@ void rsNodeEditor::parameterChanged(Parameter* p)
 void rsNodeEditor::paint(Graphics& g)
 {
   g.fillAll(getBackgroundColour());
-  /*
-  float x, y;
-  x = (float) RAPT::rsLinToLin(paramX->getValue(),  xMin, xMax, 0.0, double(getWidth()-1));
-  y = (float) RAPT::rsLinToLin(paramY->getValue(), yMin, yMax, double(getHeight()-1), 0.0);
   g.setColour(getHandleColour());
-  g.fillEllipse(x-0.5f*dotSize, y-0.5f*dotSize, dotSize, dotSize);
-  */
+  drawNodes(g);
 }
 
 void rsNodeEditor::mouseDown(const MouseEvent& e)
 {
+  addNode((float)e.x, (float)e.y); 
+  // todo: figure out, if there's currently a node under the mouse - if so, don't add a new node
+  // but let the user drag around the existing node
 
+  repaint();
 }
 
 void rsNodeEditor::mouseDrag(const MouseEvent& e)
@@ -76,4 +83,15 @@ void rsNodeEditor::mouseDrag(const MouseEvent& e)
 void rsNodeEditor::nodeChanged(const rsDraggableNode* node)
 {
   repaintOnMessageThread();
+}
+
+void rsNodeEditor::drawNodes(Graphics& g)
+{
+  for(size_t i = 0; i < nodes.size(); i++)
+  {
+    float x, y;
+    x = (float)nodes[i]->pixelX;
+    y = (float)nodes[i]->pixelY;
+    g.fillEllipse(x-0.5f*dotSize, y-0.5f*dotSize, dotSize, dotSize);
+  }
 }
