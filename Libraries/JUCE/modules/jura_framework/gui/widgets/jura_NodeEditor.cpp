@@ -1,3 +1,40 @@
+rsDraggableNode::rsDraggableNode(rsNodeEditor* editor)
+{
+  jassert(editor != nullptr);
+  nodeEditor = editor;
+}
+
+rsDraggableNode::~rsDraggableNode()
+{
+  if(paramX) paramX->deRegisterParameterObserver(this);
+  if(paramY) paramY->deRegisterParameterObserver(this);
+}
+
+void rsDraggableNode::assignParameterX(Parameter* newParameterX)
+{
+  if(paramX)
+    paramX->deRegisterParameterObserver(this);
+  paramX = newParameterX;
+  if(paramX)
+    paramX->registerParameterObserver(this);
+}
+
+void rsDraggableNode::assignParameterY(Parameter* newParameterY)
+{
+  if(paramY)
+    paramY->deRegisterParameterObserver(this);
+  paramY = newParameterY;
+  if(paramY)
+    paramY->registerParameterObserver(this);
+}
+
+void rsDraggableNode::parameterChanged(Parameter* p)
+{
+  nodeEditor->nodeChanged(this);
+}
+
+//=================================================================================================
+
 rsNodeEditor::rsNodeEditor()
 {
   notifyPreSmoothing(true);
@@ -9,12 +46,12 @@ rsNodeEditor::~rsNodeEditor()
 
 }
 
-void rsVectorPad::parameterChanged(Parameter* p)
+void rsNodeEditor::parameterChanged(Parameter* p)
 {
-  repaintOnMessageThread();
+  //repaintOnMessageThread();
 }
 
-void rsVectorPad::paint(Graphics& g)
+void rsNodeEditor::paint(Graphics& g)
 {
   g.fillAll(getBackgroundColour());
   /*
@@ -26,12 +63,17 @@ void rsVectorPad::paint(Graphics& g)
   */
 }
 
-void rsVectorPad::mouseDown(const MouseEvent& e)
+void rsNodeEditor::mouseDown(const MouseEvent& e)
 {
 
 }
 
-void rsVectorPad::mouseDrag(const MouseEvent& e)
+void rsNodeEditor::mouseDrag(const MouseEvent& e)
 {
 
+}
+
+void rsNodeEditor::nodeChanged(const rsDraggableNode* node)
+{
+  repaintOnMessageThread();
 }
