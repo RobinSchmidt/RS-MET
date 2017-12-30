@@ -45,7 +45,7 @@ protected:
 
   void createParameters();
 
-  rosic::PiecewiseFunction mapper;
+  RAPT::rsInterpolatingFunction<double> mapper;
 
   friend class NodeShaperModuleEditor;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeShaperAudioModule)

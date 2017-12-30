@@ -41,7 +41,7 @@ NodeShaperModuleEditor::~NodeShaperModuleEditor()
 
 void NodeShaperModuleEditor::createWidgets()
 {
-  addWidget(nodeEditor = new rsNodeBasedFunctionEditor);
+  addWidget(nodeEditor = new rsNodeBasedFunctionEditor(&nodeShaperModule->mapper) );
 }
 
 void NodeShaperModuleEditor::updateWidgetsAccordingToState()

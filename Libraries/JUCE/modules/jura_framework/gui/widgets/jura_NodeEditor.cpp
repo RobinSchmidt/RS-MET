@@ -155,6 +155,15 @@ void rsNodeEditor::mouseUp(const MouseEvent &e)
   draggedNode = nullptr;
 }
 
+void rsNodeEditor::mouseMove(const MouseEvent &e)
+{
+  rsDraggableNode* nodeUnderMouse = getNoteAt(e.x, e.y);
+  if(nodeUnderMouse != nullptr)
+    setMouseCursor(MouseCursor(MouseCursor::PointingHandCursor));
+  else
+    setMouseCursor(MouseCursor(MouseCursor::NormalCursor));
+}
+
 void rsNodeEditor::nodeChanged(const rsDraggableNode* node)
 {
   repaintOnMessageThread();
@@ -174,9 +183,36 @@ void rsNodeEditor::drawNodes(Graphics& g)
 }
 
 //=================================================================================================
-/*
-rsNodeBasedFunctionEditor::rsNodeBasedFunctionEditor(rosic::PiecewiseFunction* functionMapper)
+
+rsNodeBasedFunctionEditor::rsNodeBasedFunctionEditor(
+  RAPT::rsInterpolatingFunction<double>* functionMapper)
 {
   mapper = functionMapper;
 }
-*/
+
+rsDraggableNode* rsNodeBasedFunctionEditor::addNode(double pixelX, double pixelY)
+{
+  double x, y;
+   
+  // preliminary - todo: apply mapping between pixel and model coordinates:
+  x = pixelX;
+  y = pixelY;
+
+  if(mapper != nullptr)
+  {
+    mapper->addDataPoint(x, y);
+    // maybe we need to set up callbacks here?
+  }
+
+  return rsNodeEditor::addNode(pixelX, pixelY);
+}
+
+void rsNodeBasedFunctionEditor::removeNodeAt(int pixelX, int pixelY)
+{
+  rsNodeEditor::removeNodeAt(pixelX, pixelY);
+}
+
+void rsNodeBasedFunctionEditor::nodeChanged(const rsDraggableNode* node)
+{
+  rsNodeEditor::nodeChanged(node);
+}

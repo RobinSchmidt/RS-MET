@@ -103,6 +103,7 @@ public:
   virtual void mouseDown(const MouseEvent& e) override;
   virtual void mouseDrag(const MouseEvent& e) override;
   virtual void mouseUp(const MouseEvent &e) override;
+  virtual void mouseMove(const MouseEvent &e) override;
   virtual void nodeChanged(const rsDraggableNode* node);
 
   //-----------------------------------------------------------------------------------------------
@@ -113,6 +114,7 @@ public:
 
   
 protected:
+
 
   std::vector<rsDraggableNode*> nodes;
   rsDraggableNode* draggedNode = nullptr; // node that is currently dragged
@@ -131,13 +133,22 @@ class rsNodeBasedFunctionEditor : public rsNodeEditor
 
 public:
 
-  rsNodeBasedFunctionEditor() = default;
+  //rsNodeBasedFunctionEditor() = default;
 
-  //rsNodeBasedFunctionEditor(rosic::PiecewiseFunction* functionMapper);
+  rsNodeBasedFunctionEditor(RAPT::rsInterpolatingFunction<double>* functionMapper);
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Overrides:
+
+  virtual rsDraggableNode* addNode(double pixelX, double pixelY) override;
+  virtual void removeNodeAt(int pixelX, int pixelY) override;
+  virtual void nodeChanged(const rsDraggableNode* node);
+
 
 protected:
 
-  //rosic::PiecewiseFunction* mapper = nullptr;
+  RAPT::rsInterpolatingFunction<double>* mapper = nullptr;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsNodeBasedFunctionEditor)
 };

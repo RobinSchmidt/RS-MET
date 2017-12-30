@@ -40,6 +40,7 @@ think) */
 
 template class RAPT::rsMatrixView<double>;
 template class RAPT::rsMatrix<double>;
+template class RAPT::rsInterpolatingFunction<double>;
 template class RAPT::rsParametricBellFunction<double>;
 template class RAPT::rsPositiveBellFunctions<double>;
 template class RAPT::rsNormalizedSigmoids<double>;

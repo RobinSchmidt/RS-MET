@@ -5,6 +5,7 @@ namespace RAPT
 
 #include "Functions/BasicFunctions.cpp"
 #include "Functions/IntegerFunctions.cpp"
+#include "Functions/InterpolatingFunction.cpp"
 #include "Functions/RealFunctions.cpp"
 #include "Functions/ComplexFunctions.cpp"
 #include "Functions/FunctionIterators.cpp"
