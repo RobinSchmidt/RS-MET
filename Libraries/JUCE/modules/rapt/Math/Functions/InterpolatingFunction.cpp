@@ -17,7 +17,8 @@ void rsInterpolatingFunction<T>::addDataPoint(T x, T y)
 template<class T>
 void rsInterpolatingFunction<T>::removeDataPoint(size_t index)
 {
-
+  rsRemove(xValues, index);
+  rsRemove(yValues, index);
 }
 
 template<class T>

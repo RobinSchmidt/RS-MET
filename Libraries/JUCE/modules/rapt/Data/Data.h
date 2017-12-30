@@ -6,6 +6,7 @@ namespace RAPT
 
 #include "ArrayTools.h"
 #include "MatrixTools.h"
+#include "StandardContainerTools.h"
 
 //#include "Simd/Float32x4.h"
 
