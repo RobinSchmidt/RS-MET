@@ -69,6 +69,16 @@ rsDraggableNode* rsNodeEditor::addNode(double pixelX, double pixelY)
   return newNode;
 }
 
+void rsNodeEditor::removeNodeAt(int pixelX, int pixelY)
+{
+  int i = getNodeIndexAt(pixelX, pixelY);
+  if(i != -1)
+  {
+    delete nodes[i];
+    remove(nodes, i);
+  }
+}
+
 void rsNodeEditor::setDotSize(float newDotSize)
 {
   dotSize = newDotSize;
@@ -79,18 +89,26 @@ void rsNodeEditor::setDotSize(float newDotSize)
 
 rsDraggableNode* rsNodeEditor::getNoteAt(int pixelX, int pixelY)
 {
+  int i = getNodeIndexAt(pixelX, pixelY);
+  if(i != -1)
+    return nodes[i];
+  return nullptr;
+}
+
+int rsNodeEditor::getNodeIndexAt(int pixelX, int pixelY)
+{
   float x  = (float)pixelX;
   float y  = (float)pixelY;
   float r2 = (float)(dotSize*dotSize);  // radius^2 of circle to check
   for(size_t i = 0; i < nodes.size(); i++)
   {
-    float dx = (x - (float)nodes[i]->pixelX);
-    float dy = (y - (float)nodes[i]->pixelY);
+    float dx = x - (float)nodes[i]->pixelX;
+    float dy = y - (float)nodes[i]->pixelY;
     float d2 = dx*dx + dy*dy;
     if(d2 <= r2)
-      return nodes[i];
+      return (int)i;
   }
-  return nullptr;
+  return -1;
 }
 
 // callbacks:
@@ -108,11 +126,22 @@ void rsNodeEditor::paint(Graphics& g)
 }
 
 void rsNodeEditor::mouseDown(const MouseEvent& e)
-{
+{  
   draggedNode = getNoteAt(e.x, e.y);
-  if(draggedNode == nullptr)
-    draggedNode = addNode((float)e.x, (float)e.y);
-  repaint();
+  if(e.mods.isLeftButtonDown())
+  {
+    if(draggedNode == nullptr)
+    {
+      draggedNode = addNode((float)e.x, (float)e.y);
+      repaint();
+    }
+  }
+  else if(e.mods.isRightButtonDown())
+  {
+    removeNodeAt(e.x, e.y);
+    draggedNode = nullptr;
+    repaint();
+  }
 }
 
 void rsNodeEditor::mouseDrag(const MouseEvent& e)

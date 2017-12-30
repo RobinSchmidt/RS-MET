@@ -72,6 +72,11 @@ public:
   to override this in order to create and assign actual Parameter objects with associated 
   callbacks. */
   virtual rsDraggableNode* addNode(double pixelX, double pixelY);
+   // maybe use int for x,y
+
+  /** If there is a node at the given pixel position, this function will remove it (otherwise it 
+  will have no effect). */
+  virtual void removeNodeAt(int pixelX, int pixelY);
 
   /** Sets the size of the dots in pixels. */
   void setDotSize(float newDotSize);
@@ -86,6 +91,9 @@ public:
   pixel position */
   rsDraggableNode* getNoteAt(int pixelX, int pixelY);
 
+  /** Returns the index in our array of nodes a node at the given position. If there is none, it 
+  will return -1. */
+  int getNodeIndexAt(int pixelX, int pixelY);
 
   //-----------------------------------------------------------------------------------------------
   // \name Callbacks
