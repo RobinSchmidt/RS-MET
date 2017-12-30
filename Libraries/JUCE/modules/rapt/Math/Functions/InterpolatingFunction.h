@@ -18,7 +18,8 @@ public:
   /** Removes the datapoint with givne index. */
   void removeDataPoint(size_t index);
 
-  /** Moves an existing datapoint with given index to a new position. */
+  /** Moves an existing datapoint with given index to a new position. Note that this may change the
+  index in the array. We keep our datapoint arrays sorted according to ascending x-values. */
   void moveDataPoint(size_t index, T newX, T newY);
 
   /** Returns a reference to our array of x-values. It's a constant reference because client code
@@ -37,6 +38,7 @@ public:
         return i;
     return xValues.size()-1;
   }
+  // todo: use binary search with a start-index based on the previously retrieved value
 
 
   /** For internal use only... */

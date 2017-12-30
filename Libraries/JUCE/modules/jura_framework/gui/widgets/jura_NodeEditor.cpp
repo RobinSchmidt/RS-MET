@@ -190,6 +190,25 @@ rsNodeBasedFunctionEditor::rsNodeBasedFunctionEditor(
   mapper = functionMapper;
 }
 
+void rsNodeBasedFunctionEditor::paint(Graphics& g)
+{
+  g.fillAll(getBackgroundColour());
+  g.setColour(getHandleColour());
+  if(nodes.size() > 1)
+  {
+    for(size_t i = 0; i < nodes.size()-1; i++)
+    {
+      float x1, y1, x2, y2;
+      x1 = (float)nodes[i]->getPixelX();
+      y1 = (float)nodes[i]->getPixelY();
+      x2 = (float)nodes[i+1]->getPixelX();
+      y2 = (float)nodes[i+1]->getPixelY();
+      g.drawLine(x1, y1, x2, y2, 2.f);
+    }
+  }
+  drawNodes(g);
+}
+
 rsDraggableNode* rsNodeBasedFunctionEditor::addNode(double pixelX, double pixelY)
 {
   double x, y;

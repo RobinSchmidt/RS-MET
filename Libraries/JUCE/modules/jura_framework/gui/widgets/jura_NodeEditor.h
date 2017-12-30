@@ -21,7 +21,7 @@ public:
   ~rsDraggableNode();
 
   //-----------------------------------------------------------------------------------------------
-  // \name Setup:
+  // \name Setup
 
   /** Assigns the parameter object associated with the x-coordinate of this node. */
   virtual void assignParameterX(Parameter* newParameterX);
@@ -31,6 +31,13 @@ public:
 
   /** Sets up a new pixel position for this node. */
   virtual void setPixelPosition(double newX, double newY);
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
+
+  inline double getPixelX() const { return pixelX; }
+
+  inline double getPixelY() const { return pixelY; }
 
   //-----------------------------------------------------------------------------------------------
   // \name Callbacks
@@ -141,9 +148,10 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Overrides:
 
+  virtual void paint(Graphics& g) override;
   virtual rsDraggableNode* addNode(double pixelX, double pixelY) override;
   virtual void removeNodeAt(int pixelX, int pixelY) override;
-  virtual void nodeChanged(const rsDraggableNode* node);
+  virtual void nodeChanged(const rsDraggableNode* node) override;
 
 
 protected:
