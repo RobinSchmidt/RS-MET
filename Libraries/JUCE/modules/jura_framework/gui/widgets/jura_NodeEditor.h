@@ -1,9 +1,10 @@
 #ifndef jura_NodeEditor_h
 #define jura_NodeEditor_h  
 
-
 class rsNodeEditor;
 
+/** A class for nodes that can be dragged around in a node-editor and my have Parameter objects
+associated with the x- and y coordinates. */
 
 class rsDraggableNode : public ParameterObserver
 {
@@ -18,8 +19,6 @@ public:
 
   /** Destructor */
   ~rsDraggableNode();
-
-
 
   //-----------------------------------------------------------------------------------------------
   // \name Setup:
@@ -50,6 +49,7 @@ protected:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsDraggableNode)
 };
 
+//=================================================================================================
 
 /** This is a baseclass for editors that need to create/remove/drag-around a number of nodes. */
 
@@ -102,11 +102,13 @@ public:
   virtual void paint(Graphics& g) override;
   virtual void mouseDown(const MouseEvent& e) override;
   virtual void mouseDrag(const MouseEvent& e) override;
+  virtual void mouseUp(const MouseEvent &e) override;
   virtual void nodeChanged(const rsDraggableNode* node);
 
   //-----------------------------------------------------------------------------------------------
   // \name Misc
 
+  /** Darws all the nodes. You may want to override it if you need special drawing. */
   virtual void drawNodes(Graphics& g);
 
   
@@ -116,8 +118,8 @@ protected:
   rsDraggableNode* draggedNode = nullptr; // node that is currently dragged
 
   // these variables also appear in rsVectorPad - maybe we can factor out a baseclass:
-  double xMin = -1, xMax = +1, yMin = -1, yMax = +1;
-  float dotSize = 16;
+  //double xMin = -1, xMax = +1, yMin = -1, yMax = +1; // not yet used - maybe not needed
+  float dotSize = 8;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsNodeEditor)
 };

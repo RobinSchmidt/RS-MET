@@ -150,6 +150,11 @@ void rsNodeEditor::mouseDrag(const MouseEvent& e)
     draggedNode->setPixelPosition(e.x, e.y); // will indirectly trigger a repaint
 }
 
+void rsNodeEditor::mouseUp(const MouseEvent &e)
+{
+  draggedNode = nullptr;
+}
+
 void rsNodeEditor::nodeChanged(const rsDraggableNode* node)
 {
   repaintOnMessageThread();
