@@ -41,6 +41,7 @@ template RAPT::rsParametricSigmoid<float>;
 template RAPT::rsScaledAndShiftedSigmoid<float>;
 template RAPT::rsPositiveBellFunctions<float>;
 template RAPT::rsParametricBellFunction<float>;
+template RAPT::rsInterpolatingFunction<float>;
 template RAPT::rsSinCosTable<float>;
 template RAPT::rsSinCosTable<double>;
 template RAPT::rsVector3D<float>;

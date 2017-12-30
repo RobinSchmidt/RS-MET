@@ -11,8 +11,7 @@
 
 */
 
-#ifndef __JUCE_APPCONFIG_HT4IIG__
-#define __JUCE_APPCONFIG_HT4IIG__
+#pragma once
 
 //==============================================================================
 // [BEGIN_USER_CODE_SECTION]
@@ -21,20 +20,43 @@
 
 // [END_USER_CODE_SECTION]
 
+/*
+  ==============================================================================
+
+   In accordance with the terms of the JUCE 5 End-Use License Agreement, the
+   JUCE Code in SECTION A cannot be removed, changed or otherwise rendered
+   ineffective unless you have a JUCE Indie or Pro license, or are using JUCE
+   under the GPL v3 license.
+
+   End User License Agreement: www.juce.com/juce-5-licence
+  ==============================================================================
+*/
+
+// BEGIN SECTION A
+
+#ifndef JUCE_DISPLAY_SPLASH_SCREEN
+ #define JUCE_DISPLAY_SPLASH_SCREEN 1
+#endif
+
+#ifndef JUCE_REPORT_APP_USAGE
+ #define JUCE_REPORT_APP_USAGE 1
+#endif
+
+
+// END SECTION A
+
+#define JUCE_USE_DARK_SPLASH_SCREEN 1
+
 //==============================================================================
 #define JUCE_MODULE_AVAILABLE_rapt       1
 #define JUCE_MODULE_AVAILABLE_rosic      1
 
+#define JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED 1
 //==============================================================================
 #ifndef    JUCE_STANDALONE_APPLICATION
- #ifdef JucePlugin_Build_Standalone
+ #if defined(JucePlugin_Name) && defined(JucePlugin_Build_Standalone)
   #define  JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
  #else
   #define  JUCE_STANDALONE_APPLICATION 1
  #endif
 #endif
-
-#define JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED 1
-
-
-#endif  // __JUCE_APPCONFIG_HT4IIG__

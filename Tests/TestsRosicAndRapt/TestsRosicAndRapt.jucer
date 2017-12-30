@@ -2,7 +2,9 @@
 
 <JUCERPROJECT id="ht4IIg" name="TestsRosicAndRapt" projectType="consoleapp"
               version="1.0.0" bundleIdentifier="com.yourcompany.TestsRosicAndRapt"
-              includeBinaryInAppConfig="1" jucerVersion="4.2.4" defines="DONT_SET_USING_JUCE_NAMESPACE">
+              includeBinaryInAppConfig="1" jucerVersion="5.2.0" defines="DONT_SET_USING_JUCE_NAMESPACE"
+              displaySplashScreen="1" reportAppUsage="1" splashScreenColour="Dark"
+              cppLanguageStandard="11" companyCopyright="">
   <MAINGROUP id="faVDnE" name="TestsRosicAndRapt">
     <GROUP id="{1E9A4B2E-B083-724B-094D-49D8FBCEF73F}" name="Source">
       <GROUP id="{86EEC43B-AEDF-BBF9-BF97-B91B0A6A75D6}" name="rapt_tests">
@@ -15,6 +17,9 @@
                 file="Source/rapt_tests/UnitTests/ImageUnitTests.cpp"/>
           <FILE id="Jkti6q" name="ImageUnitTests.h" compile="0" resource="0"
                 file="Source/rapt_tests/UnitTests/ImageUnitTests.h"/>
+          <FILE id="n0ecux" name="MathUnitTests.cpp" compile="1" resource="0"
+                file="Source/rapt_tests/UnitTests/MathUnitTests.cpp"/>
+          <FILE id="xAAX6K" name="MathUnitTests.h" compile="0" resource="0" file="Source/rapt_tests/UnitTests/MathUnitTests.h"/>
           <FILE id="f93wHx" name="UnitTests.cpp" compile="1" resource="0" file="Source/rapt_tests/UnitTests/UnitTests.cpp"/>
           <FILE id="S3Y8ov" name="UnitTests.h" compile="0" resource="0" file="Source/rapt_tests/UnitTests/UnitTests.h"/>
         </GROUP>
@@ -155,9 +160,11 @@
     <VS2015 targetFolder="Builds/VisualStudio2015">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="3" generateManifest="1" winArchitecture="x64"
-                       isDebug="1" optimisation="1" targetName="TestsRosicAndRapt"/>
+                       isDebug="1" optimisation="1" targetName="TestsRosicAndRapt" debugInformationFormat="ProgramDatabase"
+                       enablePluginBinaryCopyStep="0"/>
         <CONFIGURATION name="Release" winWarningLevel="3" generateManifest="1" winArchitecture="x64"
-                       isDebug="0" optimisation="3" targetName="TestsRosicAndRapt"/>
+                       isDebug="0" optimisation="3" targetName="TestsRosicAndRapt" debugInformationFormat="ProgramDatabase"
+                       enablePluginBinaryCopyStep="0" linkTimeOptimisation="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="rapt" path="../../Libraries/JUCE/modules"/>
@@ -166,8 +173,10 @@
     </VS2015>
     <CODEBLOCKS_WINDOWS targetFolder="Builds/CodeBlocksWindows">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="TestsRosicAndRapt"/>
-        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="TestsRosicAndRapt"/>
+        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="TestsRosicAndRapt"
+                       windowsCodeBlocksArchitecture="-m64"/>
+        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="TestsRosicAndRapt"
+                       windowsCodeBlocksArchitecture="-m64"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="rosic" path="../../Libraries/JUCE/modules"/>

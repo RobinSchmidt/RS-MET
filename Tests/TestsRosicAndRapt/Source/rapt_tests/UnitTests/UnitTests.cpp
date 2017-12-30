@@ -18,6 +18,9 @@ bool runAllUnitTests()
   bool passed = true;  // test result
 
   // Filters:
+  passed &= runUnitTest(&interpolatingFunctionUnitTest, "rsInterpolatingFunction");
+
+  // Filters:
   passed &= runUnitTest(&prototypeDesignUnitTest, "rsPrototypeDesigner");
 
   // Visualization:

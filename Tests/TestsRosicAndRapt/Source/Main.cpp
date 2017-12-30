@@ -76,7 +76,8 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
 
-  //runAllUnitTests();
+  runAllUnitTests();
+  //mathUnitTests();
   //filterUnitTests();
 
 
@@ -105,7 +106,7 @@ int main(int argc, char* argv[])
 
   // Filter:
   //bandSplittingTwoWay();
-  bandSplittingMultiWay();
+  //bandSplittingMultiWay();
   //bandSplittingTreeAlgo();
   //ladderResonanceManipulation();
   //nonUniformMovingAverage();

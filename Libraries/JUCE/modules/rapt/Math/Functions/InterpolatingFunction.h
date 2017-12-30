@@ -36,7 +36,7 @@ public:
     for(size_t i = 0; i < xValues.size(); i++)
       if(xValues[i] > xToFind)
         return i;
-    return xValues.size()-1;
+    return xValues.size();
   }
   // todo: use binary search with a start-index based on the previously retrieved value
 
@@ -48,25 +48,22 @@ public:
     T y1 = yValues[i];
     T x2 = xValues[i+1];
     T y2 = yValues[i+1];
-    T t  = x - x1;
-    T thresh = 1.e-13; // todo: use epsilon of T
+    T thresh = T(1.e-13); // todo: use epsilon of T
     if(fabs(x2-x1) < thresh)
       return T(0.5) * (y1+y2);
-    return y1 + t * (y2-y1) / (x2-x1); // check this formula
+    return y1 + (y2-y1) * (x-x1) / (x2-x1); // check this formula
   }
 
   /** Returns an interpolated y-value at the given value of x. */
   T getValue(T x)
   {
-    //return x; // preliminary
-
     if(xValues.size() == 0)
       return 0;
     if(x < xValues[0])
-      return xValues[0];
+      return yValues[0];
     size_t i = firstIndexOfGreaterX(x);
-    if(i == xValues.size()-1)
-      return xValues[i];
+    if(i == xValues.size())
+      return yValues[i-1];
     return getValueLinear(x, i-1);
   }
 
