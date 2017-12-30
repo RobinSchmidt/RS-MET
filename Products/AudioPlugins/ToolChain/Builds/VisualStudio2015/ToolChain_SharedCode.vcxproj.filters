@@ -2677,6 +2677,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_MultiComp.cpp">
       <Filter>Juce Modules\jura_processors\effects</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_NodeShaper.cpp">
+      <Filter>Juce Modules\jura_processors\effects</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_PitchShifter.cpp">
       <Filter>Juce Modules\jura_processors\effects</Filter>
     </ClCompile>
@@ -6586,6 +6589,9 @@
       <Filter>Juce Modules\jura_processors\effects</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_MultiComp.h">
+      <Filter>Juce Modules\jura_processors\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_NodeShaper.h">
       <Filter>Juce Modules\jura_processors\effects</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_PitchShifter.h">
