@@ -47,8 +47,11 @@ protected:
 
   rosic::PiecewiseFunction mapper;
 
+  friend class NodeShaperModuleEditor;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeShaperAudioModule)
 };
+
+
 
 //=================================================================================================
 
@@ -78,6 +81,8 @@ protected:
   virtual void updateWidgetsAccordingToState() override;
 
   NodeShaperAudioModule *nodeShaperModule;
+
+  rsNodeBasedFunctionEditor *nodeEditor;
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeShaperModuleEditor)

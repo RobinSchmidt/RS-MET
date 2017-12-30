@@ -31,7 +31,7 @@ NodeShaperModuleEditor::NodeShaperModuleEditor(NodeShaperAudioModule* newNodeSha
   nodeShaperModule = newNodeShaperAudioModule;
   createWidgets();
   //updateWidgetsAccordingToState();
-  setSize(480, 300);
+  setSize(300, 300);
 }
 
 NodeShaperModuleEditor::~NodeShaperModuleEditor()
@@ -41,7 +41,7 @@ NodeShaperModuleEditor::~NodeShaperModuleEditor()
 
 void NodeShaperModuleEditor::createWidgets()
 {
-
+  addWidget(nodeEditor = new rsNodeBasedFunctionEditor);
 }
 
 void NodeShaperModuleEditor::updateWidgetsAccordingToState()
@@ -56,4 +56,6 @@ void NodeShaperModuleEditor::resized()
   int y = 0;
   int w = getWidth();
   int h = getHeight();
+
+  nodeEditor->setBounds(x, y, w, h);
 }

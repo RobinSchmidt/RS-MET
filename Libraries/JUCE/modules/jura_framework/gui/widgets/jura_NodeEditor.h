@@ -124,5 +124,22 @@ protected:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsNodeEditor)
 };
 
+//=================================================================================================
+
+class rsNodeBasedFunctionEditor : public rsNodeEditor
+{
+
+public:
+
+  rsNodeBasedFunctionEditor() = default;
+
+  //rsNodeBasedFunctionEditor(rosic::PiecewiseFunction* functionMapper);
+
+protected:
+
+  //rosic::PiecewiseFunction* mapper = nullptr;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsNodeBasedFunctionEditor)
+};
 
 #endif

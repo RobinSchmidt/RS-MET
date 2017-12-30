@@ -172,3 +172,11 @@ void rsNodeEditor::drawNodes(Graphics& g)
     g.fillEllipse(x-0.5f*dotSize, y-0.5f*dotSize, dotSize, dotSize);
   }
 }
+
+//=================================================================================================
+/*
+rsNodeBasedFunctionEditor::rsNodeBasedFunctionEditor(rosic::PiecewiseFunction* functionMapper)
+{
+  mapper = functionMapper;
+}
+*/
