@@ -96,6 +96,35 @@ void rsNodeEditor::removeNodeAt(int pixelX, int pixelY)
     removeNode(i);
 }
 
+int rsNodeEditor::moveNodeTo(int index, int pixelX, int pixelY)
+{
+  nodes[index]->setPixelPosition(pixelX, pixelY); // will indirectly trigger a repaint
+  return index;
+}
+
+void rsNodeEditor::reIndexNode(int oldIndex, int newIndex)
+{
+  if(draggedNodeIndex == oldIndex)
+    draggedNodeIndex = newIndex;
+  while(oldIndex < newIndex)
+  {
+    swapNodes(oldIndex, newIndex);
+    oldIndex++;
+  }
+  while(oldIndex > newIndex)
+  {
+    swapNodes(oldIndex, newIndex);
+    oldIndex--;
+  }
+}
+
+void rsNodeEditor::swapNodes(int i, int j)
+{
+  nodes[i]->index = j;
+  nodes[j]->index = i;
+  RAPT::rsSwap(nodes[i], nodes[j]);
+}
+
 void rsNodeEditor::setDotSize(float newDotSize)
 {
   dotSize = newDotSize;
@@ -149,9 +178,7 @@ void rsNodeEditor::mouseDown(const MouseEvent& e)
   {
     if(draggedNodeIndex == -1)
     {
-      /*draggedNodeIndex =*/ addNode((float)e.x, (float)e.y);
-      // for some reason, we get an access violation when we directly assign the
-      // draggedNodeIndex here
+      draggedNodeIndex = addNode((float)e.x, (float)e.y);
       repaint();
     }
   }
@@ -166,7 +193,7 @@ void rsNodeEditor::mouseDown(const MouseEvent& e)
 void rsNodeEditor::mouseDrag(const MouseEvent& e)
 {
   if(draggedNodeIndex != -1)
-    nodes[draggedNodeIndex]->setPixelPosition(e.x, e.y); // will indirectly trigger a repaint
+    draggedNodeIndex = moveNodeTo(draggedNodeIndex, e.x, e.y);
 }
 
 void rsNodeEditor::mouseUp(const MouseEvent &e)
@@ -264,8 +291,8 @@ int rsNodeBasedFunctionEditor::addNode(double x, double y)
   rsDraggableNode* newNode = new rsDraggableNode(this, x, y);
   insert(nodes, newNode, i);
   nodes[i]->setIndex(i);
-  for(i = i+1; i < size(nodes); i++)
-    nodes[i]->incrementIndex();
+  for(int j = i+1; j < size(nodes); j++)
+    nodes[j]->incrementIndex();
   return i;
 }
 
@@ -279,7 +306,7 @@ void rsNodeBasedFunctionEditor::nodeChanged(int nodeIndex)
 {
   double x = nodes[nodeIndex]->getPixelX();
   double y = nodes[nodeIndex]->getPixelY();
-  int newIndex = mapper->moveDataPoint(nodeIndex, toModelX(x), toModelY(y));
-  //reIndexNode(nodeIndex, newIndex);
+  int newIndex = (int)mapper->moveDataPoint(nodeIndex, toModelX(x), toModelY(y));
+  reIndexNode(nodeIndex, newIndex);
   rsNodeEditor::nodeChanged(nodeIndex);
 }

@@ -59,6 +59,10 @@ protected:
    
   int index = -1;
   double pixelX = 0, pixelY = 0;                  // pixel coordinates of the node
+    // actually, it's a bad idea to store pixel coordinates - when the window is resized, they will
+    // not match the model coordinates anymore - get rid of them, use model-coordinates only
+
+
   Parameter *paramX = nullptr, *paramY = nullptr; // parameter objects associated with x and y
   rsNodeEditor* nodeEditor;                       // editor which edits this node 
                                                   // todo: maybe allow more than one editor
@@ -97,6 +101,16 @@ public:
   /** If there is a node at the given pixel position, this function will remove it (otherwise it 
   will have no effect). */
   virtual void removeNodeAt(int pixelX, int pixelY);
+
+  /** Moves the node with given index to the given new pixel coordinates. The return value is 
+  the new index of the node. In the baseclass implementation, that index is the same as the input 
+  parameter "index" but subclasses may want to re-order nodes depending their positions. */
+  virtual int moveNodeTo(int index, int pixelX, int pixelY);
+
+  /** Moves the node that is currently at oldIndex to the newIndex in our array of nodes. */
+  virtual void reIndexNode(int oldIndex, int newIndex);
+
+  virtual void swapNodes(int index1, int index2);
 
   /** Sets the size of the dots in pixels. */
   void setDotSize(float newDotSize);
