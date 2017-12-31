@@ -30,11 +30,12 @@ void rsDraggableNode::assignParameterY(Parameter* newParameterY)
     paramY->registerParameterObserver(this);
 }
 
-void rsDraggableNode::setPixelPosition(double newX, double newY)
+void rsDraggableNode::setPixelPosition(double newX, double newY, bool callNodeChanged)
 {
   pixelX = newX;
   pixelY = newY;
-  nodeEditor->nodeChanged(index);
+  if(callNodeChanged)
+    nodeEditor->nodeChanged(index);
   //nodeEditor->nodeChanged(this);
   // todo: do not call nodeChanged directly here - instead, set up the paramX, paramY parameters
   // according to the new pixel position. this will trigger a call to our parameterChanged function
@@ -220,12 +221,20 @@ int rsNodeEditor::nodeChanged(int i)
 
 void rsNodeEditor::drawNodes(Graphics& g)
 {
+  bool drawNodeInfo = true;
   for(size_t i = 0; i < nodes.size(); i++)
   {
     float x, y;
     x = (float)nodes[i]->pixelX;
     y = (float)nodes[i]->pixelY;
     g.fillEllipse(x-0.5f*dotSize, y-0.5f*dotSize, dotSize, dotSize);
+    if(drawNodeInfo)
+    {
+      String str = String(i) + ": x=" + String(x) + ", y=" + String(y);
+      //String str = String(i) + "," + String(x) + "," + String(y);
+      drawBitmapFontText(g, nodes[i]->pixelX, nodes[i]->pixelY-10, str, 
+        &normalFont7px, getTextColour(), -1, Justification::centred);
+    }
   }
 }
 
@@ -305,10 +314,10 @@ void rsNodeBasedFunctionEditor::removeNode(int i)
 
 int rsNodeBasedFunctionEditor::moveNodeTo(int index, int pixelX, int pixelY)
 {
-  int newIndex = (int)mapper->moveDataPoint(index, toModelX(pixelX), toModelY(pixelX));
+  int newIndex = (int)mapper->moveDataPoint(index, toModelX(pixelX), toModelY(pixelY));
   reIndexNode(index, newIndex);
-  //rsNodeEditor::moveNodeTo(index, pixelX, pixelY)
-  nodes[newIndex]->setPixelPosition(pixelX, pixelY); // will indirectly trigger a repaint
+  nodes[newIndex]->setPixelPosition(pixelX, pixelY, true); 
+  repaint();
   return newIndex;
 }
 

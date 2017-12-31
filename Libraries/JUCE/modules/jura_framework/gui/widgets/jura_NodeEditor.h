@@ -29,8 +29,9 @@ public:
   /** Assigns the parameter object associated with the y-coordinate of this node. */
   virtual void assignParameterY(Parameter* newParameterY);
 
-  /** Sets up a new pixel position for this node. */
-  virtual void setPixelPosition(double newX, double newY);
+  /** Sets up a new pixel position for this nodeand optionally calls the nodeChanged function of 
+  our editor. */
+  virtual void setPixelPosition(double newX, double newY, bool callNodeChanged = true);
 
   /** This function is used to set up the "index" member variable which should always reflect the
   index in the "nodes" array in the editor. You need to take care of this in subclasses when 
@@ -163,6 +164,8 @@ protected:
 };
 
 //=================================================================================================
+
+// it'S still buggy when there are 3 or more points at the same x-position
 
 class rsNodeBasedFunctionEditor : public rsNodeEditor
 {
