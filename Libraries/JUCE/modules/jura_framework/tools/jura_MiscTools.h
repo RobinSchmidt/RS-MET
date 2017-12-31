@@ -162,6 +162,12 @@ inline void append(vector<T>& v, T newElement)
 }
 
 template<class T>
+inline void insert(vector<T>& v, T newElement, int index)
+{
+  v.insert(v.begin() + index, newElement);
+}
+
+template<class T>
 inline void remove(vector<T>& v, int index)
 {
   v.erase(v.begin() + index);

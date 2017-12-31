@@ -245,10 +245,9 @@ void rsNodeBasedFunctionEditor::paint(Graphics& g)
 
 rsDraggableNode* rsNodeBasedFunctionEditor::addNode(double x, double y)
 {
-  rsDraggableNode* newNode = rsNodeEditor::addNode(x, y); // x,y are in pixel coordinates
-  if(mapper != nullptr)
-    mapper->addDataPoint(toModelX(x), toModelY(y));
-    // maybe we need to set up callbacks here?
+  int index = (int) mapper->addDataPoint(toModelX(x), toModelY(y));
+  rsDraggableNode* newNode = new rsDraggableNode(this, x, y);
+  insert(nodes, newNode, index);
   return newNode;
 }
 
