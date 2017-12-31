@@ -258,10 +258,11 @@ void rsNodeBasedFunctionEditor::paint(Graphics& g)
 
 int rsNodeBasedFunctionEditor::addNode(double x, double y)
 {
-  int index = (int) mapper->addDataPoint(toModelX(x), toModelY(y));
+  int i = (int) mapper->addDataPoint(toModelX(x), toModelY(y));
   rsDraggableNode* newNode = new rsDraggableNode(this, x, y);
-  insert(nodes, newNode, index);
-  return index;
+  insert(nodes, newNode, i);
+  nodes[i]->setIndex(i);
+  return i;
 }
 
 void rsNodeBasedFunctionEditor::removeNode(int i)
@@ -272,5 +273,9 @@ void rsNodeBasedFunctionEditor::removeNode(int i)
 
 void rsNodeBasedFunctionEditor::nodeChanged(int nodeIndex)
 {
+  double x = nodes[nodeIndex]->getPixelX();
+  double y = nodes[nodeIndex]->getPixelY();
+  int newIndex = mapper->moveDataPoint(nodeIndex, toModelX(x), toModelY(y));
+  //reIndexNode(nodeIndex, newIndex);
   rsNodeEditor::nodeChanged(nodeIndex);
 }

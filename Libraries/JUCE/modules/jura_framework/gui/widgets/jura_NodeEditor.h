@@ -32,6 +32,11 @@ public:
   /** Sets up a new pixel position for this node. */
   virtual void setPixelPosition(double newX, double newY);
 
+  /** This function is used to set up the "index" member variable which should always reflect the
+  index in the "nodes" array in the editor. You need to take care of this in subclasses when 
+  adding, dragging and removing nodes. */
+  virtual void setIndex(int newIndex) { index = newIndex; }
+
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
