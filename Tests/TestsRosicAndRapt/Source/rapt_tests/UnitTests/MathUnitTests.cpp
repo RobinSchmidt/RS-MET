@@ -13,6 +13,8 @@ bool interpolatingFunctionUnitTest()
   y = ipf.getValue(10.f);
   r &= y == 0.f;
 
+  // test adding datapoints:
+
   // i: 0 
   // x: 0
   // y: 2
@@ -63,7 +65,23 @@ bool interpolatingFunctionUnitTest()
   // y:  0  2  3  4  6  2  0  1
   i = ipf.addDataPoint(-1.f, 0.f); r &= i == 0;
   y = ipf.getValue( -.5f);         r &= y == 1.f;
+
+  // test moving datapoints:
+
+  // i:  0  1  2  3  4  5  6  7
+  // x: -1  0  1  2  3  3  4  5
+  // y:  0  2  3  4  2  6  0  1
+  i = ipf.moveDataPoint(4, 3.f, 6.f); r &= i == 5;
+
  
+  // test removing datapoints:
+
+  // i:  0  1  2  3  4  5  6
+  // x: -1  0  1  2  3  4  5
+  // y:  0  2  3  4  6  0  1
+  ipf.removeDataPoint(4);
+  y = ipf.getValue( 2.5f); r &= y == 5.f;
+
 
   return r;
 }
