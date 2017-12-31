@@ -33,7 +33,7 @@ public:
   const std::vector<T>& getValuesY() { return yValues; }
 
 
-  /** Returns true, if the datapoint at index i+1 is considered to be "less than" the value at 
+  /** Returns true, if the datapoint at index i+1 is considered to be "less than" the datapoint at 
   index i. We use this function internally to keep our arrays of values sorted. Datapoints are 
   sorted according to ascending x-values and in case of equal x-values, according to ascending 
   y-values. The caller should ensure that i <= N-2. */

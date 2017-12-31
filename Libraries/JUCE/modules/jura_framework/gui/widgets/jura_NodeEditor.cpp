@@ -69,14 +69,18 @@ rsDraggableNode* rsNodeEditor::addNode(double pixelX, double pixelY)
   return newNode;
 }
 
+void rsNodeEditor::removeNode(int i)
+{
+  delete nodes[i];  
+  remove(nodes, i);
+  repaint();
+}
+
 void rsNodeEditor::removeNodeAt(int pixelX, int pixelY)
 {
   int i = getNodeIndexAt(pixelX, pixelY);
   if(i != -1)
-  {
-    delete nodes[i];
-    remove(nodes, i);
-  }
+    removeNode(i);
 }
 
 void rsNodeEditor::setDotSize(float newDotSize)
@@ -248,9 +252,10 @@ rsDraggableNode* rsNodeBasedFunctionEditor::addNode(double x, double y)
   return newNode;
 }
 
-void rsNodeBasedFunctionEditor::removeNodeAt(int pixelX, int pixelY)
+void rsNodeBasedFunctionEditor::removeNode(int i)
 {
-  rsNodeEditor::removeNodeAt(pixelX, pixelY);
+  mapper->removeDataPoint(i);
+  rsNodeEditor::removeNode(i);
 }
 
 void rsNodeBasedFunctionEditor::nodeChanged(const rsDraggableNode* node)

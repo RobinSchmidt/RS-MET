@@ -81,6 +81,9 @@ public:
   virtual rsDraggableNode* addNode(double pixelX, double pixelY);
    // maybe use int for x,y
 
+  /** Removes the node with given index. */
+  virtual void removeNode(int index);
+
   /** If there is a node at the given pixel position, this function will remove it (otherwise it 
   will have no effect). */
   virtual void removeNodeAt(int pixelX, int pixelY);
@@ -156,7 +159,7 @@ public:
 
   virtual void paint(Graphics& g) override;
   virtual rsDraggableNode* addNode(double pixelX, double pixelY) override;
-  virtual void removeNodeAt(int pixelX, int pixelY) override;
+  virtual void removeNode(int index) override;
   virtual void nodeChanged(const rsDraggableNode* node) override;
 
 
