@@ -210,9 +210,10 @@ void rsNodeEditor::mouseMove(const MouseEvent &e)
     setMouseCursor(MouseCursor(MouseCursor::NormalCursor));
 }
 
-void rsNodeEditor::nodeChanged(int i)
+int rsNodeEditor::nodeChanged(int i)
 {
   repaintOnMessageThread();
+  return i;
 }
 
 // misc:
@@ -302,11 +303,21 @@ void rsNodeBasedFunctionEditor::removeNode(int i)
   rsNodeEditor::removeNode(i);
 }
 
-void rsNodeBasedFunctionEditor::nodeChanged(int nodeIndex)
+int rsNodeBasedFunctionEditor::moveNodeTo(int index, int pixelX, int pixelY)
+{
+  int newIndex = (int)mapper->moveDataPoint(index, toModelX(pixelX), toModelY(pixelX));
+  reIndexNode(index, newIndex);
+  //rsNodeEditor::moveNodeTo(index, pixelX, pixelY)
+  nodes[newIndex]->setPixelPosition(pixelX, pixelY); // will indirectly trigger a repaint
+  return newIndex;
+}
+
+int rsNodeBasedFunctionEditor::nodeChanged(int nodeIndex)
 {
   double x = nodes[nodeIndex]->getPixelX();
   double y = nodes[nodeIndex]->getPixelY();
   int newIndex = (int)mapper->moveDataPoint(nodeIndex, toModelX(x), toModelY(y));
   reIndexNode(nodeIndex, newIndex);
   rsNodeEditor::nodeChanged(nodeIndex);
+  return newIndex;
 }

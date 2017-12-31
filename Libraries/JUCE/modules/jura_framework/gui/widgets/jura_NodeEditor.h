@@ -139,7 +139,7 @@ public:
   virtual void mouseUp(const MouseEvent &e) override;
   virtual void mouseMove(const MouseEvent &e) override;
   //virtual void nodeChanged(const rsDraggableNode* node);
-  virtual void nodeChanged(int nodeIndex);
+  virtual int nodeChanged(int nodeIndex);
 
   //-----------------------------------------------------------------------------------------------
   // \name Misc
@@ -187,8 +187,9 @@ public:
   //virtual rsDraggableNode* addNode(double pixelX, double pixelY) override;
   virtual int addNode(double pixelX, double pixelY) override;
   virtual void removeNode(int index) override;
+  int moveNodeTo(int index, int pixelX, int pixelY) override;
   //virtual void nodeChanged(const rsDraggableNode* node) override;
-  virtual void nodeChanged(int nodeIndex) override;
+  virtual int nodeChanged(int nodeIndex) override;
 
 
 protected:
