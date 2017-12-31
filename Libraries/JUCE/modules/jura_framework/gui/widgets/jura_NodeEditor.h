@@ -46,7 +46,8 @@ public:
   virtual void parameterChanged(Parameter* p) override;
 
 protected:
-
+   
+  int index = -1;
   double pixelX = 0, pixelY = 0;                  // pixel coordinates of the node
   Parameter *paramX = nullptr, *paramY = nullptr; // parameter objects associated with x and y
   rsNodeEditor* nodeEditor;                       // editor which edits this node 
@@ -74,12 +75,11 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
-  /** Adds a new node at the given pixel position a returns a pointer to it. The new node will use 
-  nullptrs for the Parameter objects associated with the x- and y-coordinate. Subclasses may want 
-  to override this in order to create and assign actual Parameter objects with associated 
-  callbacks. */
-  virtual rsDraggableNode* addNode(double pixelX, double pixelY);
-   // maybe use int for x,y
+  /** Adds a new node at the given pixel position the index at which it was inserted into our node 
+  arraay The new node will use nullptrs for the Parameter objects associated with the x- and 
+  y-coordinate. Subclasses may want to override this in order to create and assign actual 
+  Parameter objects with associated callbacks. */
+  virtual int addNode(double pixelX, double pixelY);
 
   /** Removes the node with given index. */
   virtual void removeNode(int index);
@@ -114,7 +114,8 @@ public:
   virtual void mouseDrag(const MouseEvent& e) override;
   virtual void mouseUp(const MouseEvent &e) override;
   virtual void mouseMove(const MouseEvent &e) override;
-  virtual void nodeChanged(const rsDraggableNode* node);
+  //virtual void nodeChanged(const rsDraggableNode* node);
+  virtual void nodeChanged(int nodeIndex);
 
   //-----------------------------------------------------------------------------------------------
   // \name Misc
@@ -127,7 +128,8 @@ protected:
 
 
   std::vector<rsDraggableNode*> nodes;
-  rsDraggableNode* draggedNode = nullptr; // node that is currently dragged
+  //rsDraggableNode* draggedNode = nullptr; // node that is currently dragged
+  int draggedNodeIndex = -1;
 
   // these variables also appear in rsVectorPad - maybe we can factor out a baseclass:
   //double xMin = -1, xMax = +1, yMin = -1, yMax = +1; // not yet used - maybe not needed
@@ -158,9 +160,11 @@ public:
   // \name Overrides:
 
   virtual void paint(Graphics& g) override;
-  virtual rsDraggableNode* addNode(double pixelX, double pixelY) override;
+  //virtual rsDraggableNode* addNode(double pixelX, double pixelY) override;
+  virtual int addNode(double pixelX, double pixelY) override;
   virtual void removeNode(int index) override;
-  virtual void nodeChanged(const rsDraggableNode* node) override;
+  //virtual void nodeChanged(const rsDraggableNode* node) override;
+  virtual void nodeChanged(int nodeIndex) override;
 
 
 protected:

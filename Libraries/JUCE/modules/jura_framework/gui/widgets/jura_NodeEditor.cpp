@@ -34,7 +34,8 @@ void rsDraggableNode::setPixelPosition(double newX, double newY)
 {
   pixelX = newX;
   pixelY = newY;
-  nodeEditor->nodeChanged(this);
+  nodeEditor->nodeChanged(index);
+  //nodeEditor->nodeChanged(this);
   // todo: do not call nodeChanged directly here - instead, set up the paramX, paramY parameters
   // according to the new pixel position. this will trigger a call to our parameterChanged function
   // which will in turn call nodeEditor->nodeChanged(this); ...hmm...or maybe that's not so good
@@ -43,7 +44,7 @@ void rsDraggableNode::setPixelPosition(double newX, double newY)
 
 void rsDraggableNode::parameterChanged(Parameter* p)
 {
-  nodeEditor->nodeChanged(this);
+  nodeEditor->nodeChanged(this->index);
 }
 
 //=================================================================================================
@@ -61,18 +62,30 @@ rsNodeEditor::~rsNodeEditor()
 }
 
 // setup:
-
+/*
 rsDraggableNode* rsNodeEditor::addNode(double pixelX, double pixelY)
 {
   rsDraggableNode* newNode = new rsDraggableNode(this, pixelX, pixelY);
   nodes.push_back(newNode);
   return newNode;
 }
+*/
+
+int rsNodeEditor::addNode(double pixelX, double pixelY)
+{
+  rsDraggableNode* newNode = new rsDraggableNode(this, pixelX, pixelY);
+  nodes.push_back(newNode);
+  int i = size(nodes)-1;
+  nodes[i]->index = i;
+  return i;
+}
 
 void rsNodeEditor::removeNode(int i)
 {
   delete nodes[i];  
   remove(nodes, i);
+  for(i = i; i < size(nodes); i++)
+    nodes[i]->index -= 1;
   repaint();
 }
 
@@ -131,32 +144,32 @@ void rsNodeEditor::paint(Graphics& g)
 
 void rsNodeEditor::mouseDown(const MouseEvent& e)
 {  
-  draggedNode = getNoteAt(e.x, e.y);
+  draggedNodeIndex = getNodeIndexAt(e.x, e.y);
   if(e.mods.isLeftButtonDown())
   {
-    if(draggedNode == nullptr)
+    if(draggedNodeIndex == -1)
     {
-      draggedNode = addNode((float)e.x, (float)e.y);
+      draggedNodeIndex = addNode((float)e.x, (float)e.y);
       repaint();
     }
   }
   else if(e.mods.isRightButtonDown())
   {
     removeNodeAt(e.x, e.y);
-    draggedNode = nullptr;
+    draggedNodeIndex = -1;
     repaint();
   }
 }
 
 void rsNodeEditor::mouseDrag(const MouseEvent& e)
 {
-  if(draggedNode != nullptr)
-    draggedNode->setPixelPosition(e.x, e.y); // will indirectly trigger a repaint
+  if(draggedNodeIndex != -1)
+    nodes[draggedNodeIndex]->setPixelPosition(e.x, e.y); // will indirectly trigger a repaint
 }
 
 void rsNodeEditor::mouseUp(const MouseEvent &e)
 {
-  draggedNode = nullptr;
+  draggedNodeIndex = -1;
 }
 
 void rsNodeEditor::mouseMove(const MouseEvent &e)
@@ -168,7 +181,7 @@ void rsNodeEditor::mouseMove(const MouseEvent &e)
     setMouseCursor(MouseCursor(MouseCursor::NormalCursor));
 }
 
-void rsNodeEditor::nodeChanged(const rsDraggableNode* node)
+void rsNodeEditor::nodeChanged(int i)
 {
   repaintOnMessageThread();
 }
@@ -243,12 +256,12 @@ void rsNodeBasedFunctionEditor::paint(Graphics& g)
   drawNodes(g);
 }
 
-rsDraggableNode* rsNodeBasedFunctionEditor::addNode(double x, double y)
+int rsNodeBasedFunctionEditor::addNode(double x, double y)
 {
   int index = (int) mapper->addDataPoint(toModelX(x), toModelY(y));
   rsDraggableNode* newNode = new rsDraggableNode(this, x, y);
   insert(nodes, newNode, index);
-  return newNode;
+  return index;
 }
 
 void rsNodeBasedFunctionEditor::removeNode(int i)
@@ -257,7 +270,7 @@ void rsNodeBasedFunctionEditor::removeNode(int i)
   rsNodeEditor::removeNode(i);
 }
 
-void rsNodeBasedFunctionEditor::nodeChanged(const rsDraggableNode* node)
+void rsNodeBasedFunctionEditor::nodeChanged(int nodeIndex)
 {
-  rsNodeEditor::nodeChanged(node);
+  rsNodeEditor::nodeChanged(nodeIndex);
 }
