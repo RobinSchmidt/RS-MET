@@ -107,18 +107,10 @@ void rsNodeEditor::reIndexNode(int oldIndex, int newIndex)
 {
   if(draggedNodeIndex == oldIndex)
     draggedNodeIndex = newIndex;
-  while(oldIndex < newIndex)
-  {
-    //swapNodes(oldIndex, newIndex);
-    swapNodes(oldIndex, oldIndex+1);
-    oldIndex++;
-  }
-  while(oldIndex > newIndex)
-  {
-    //swapNodes(oldIndex, newIndex);
-    swapNodes(oldIndex, oldIndex-1);
-    oldIndex--;
-  }
+  while(oldIndex < newIndex) {
+    swapNodes(oldIndex, oldIndex+1); oldIndex++; }
+  while(oldIndex > newIndex) {
+    swapNodes(oldIndex, oldIndex-1); oldIndex--; }
 }
 
 void rsNodeEditor::swapNodes(int i, int j)
