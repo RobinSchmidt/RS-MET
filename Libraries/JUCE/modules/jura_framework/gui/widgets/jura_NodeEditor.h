@@ -35,7 +35,12 @@ public:
   /** This function is used to set up the "index" member variable which should always reflect the
   index in the "nodes" array in the editor. You need to take care of this in subclasses when 
   adding, dragging and removing nodes. */
-  virtual void setIndex(int newIndex) { index = newIndex; }
+  inline void setIndex(int newIndex) { index = newIndex; }
+
+  inline void incrementIndex() { index++; }
+
+  inline void decrementIndex() { index--; }
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry

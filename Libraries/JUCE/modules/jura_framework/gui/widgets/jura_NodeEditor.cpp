@@ -85,7 +85,7 @@ void rsNodeEditor::removeNode(int i)
   delete nodes[i];  
   remove(nodes, i);
   for(i = i; i < size(nodes); i++)
-    nodes[i]->index -= 1;
+    nodes[i]->decrementIndex();
   repaint();
 }
 
@@ -149,7 +149,9 @@ void rsNodeEditor::mouseDown(const MouseEvent& e)
   {
     if(draggedNodeIndex == -1)
     {
-      draggedNodeIndex = addNode((float)e.x, (float)e.y);
+      /*draggedNodeIndex =*/ addNode((float)e.x, (float)e.y);
+      // for some reason, we get an access violation when we directly assign the
+      // draggedNodeIndex here
       repaint();
     }
   }
@@ -262,6 +264,8 @@ int rsNodeBasedFunctionEditor::addNode(double x, double y)
   rsDraggableNode* newNode = new rsDraggableNode(this, x, y);
   insert(nodes, newNode, i);
   nodes[i]->setIndex(i);
+  for(i = i+1; i < size(nodes); i++)
+    nodes[i]->incrementIndex();
   return i;
 }
 
