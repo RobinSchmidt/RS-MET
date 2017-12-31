@@ -17,11 +17,11 @@ bool runAllUnitTests()
 {
   bool passed = true;  // test result
 
-  // Filters:
+  // Math:
   passed &= runUnitTest(&interpolatingFunctionUnitTest, "rsInterpolatingFunction");
 
   // Filters:
-  passed &= runUnitTest(&prototypeDesignUnitTest, "rsPrototypeDesigner");
+  //passed &= runUnitTest(&prototypeDesignUnitTest, "rsPrototypeDesigner");
 
   // Visualization:
   passed &= runUnitTest(&imagePainterUnitTest, "rsImagePainter");
