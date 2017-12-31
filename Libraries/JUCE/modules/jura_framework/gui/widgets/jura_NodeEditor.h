@@ -140,6 +140,10 @@ public:
   virtual void mouseUp(const MouseEvent &e) override;
   virtual void mouseMove(const MouseEvent &e) override;
   //virtual void nodeChanged(const rsDraggableNode* node);
+
+  /** A callback that will be called when the node with given index has changed. If you override 
+  this you should return the new index of the node (you may want to re-order nodes depending on 
+  their new positions and the baseclass needs to keep track of that). */
   virtual int nodeChanged(int nodeIndex);
 
   //-----------------------------------------------------------------------------------------------
