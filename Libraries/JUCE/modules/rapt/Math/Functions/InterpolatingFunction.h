@@ -9,6 +9,8 @@ template<class T>
 class rsFunctionNode
 {
 
+public:
+
   /** Enumeration of possible shapes. */
   enum shapes
   {
@@ -60,12 +62,13 @@ class rsFunctionNode
   }
 
 
-protected:
+//protected:
 
   T x = 0, y = 0;
   int shapeType = LINEAR;
   T shapeParam = 0; // maybe this could be the derivative? of y
 
+  //friend class rsInterpolatingFunction<T>;
 };
 
 //=================================================================================================
@@ -89,7 +92,7 @@ public:
   inserted. */
   size_t addDataPoint(T x, T y);
 
-  /** Removes the datapoint with givne index. */
+  /** Removes the datapoint with given index. */
   void removeDataPoint(size_t index);
 
   /** Moves an existing datapoint with given index to a new position. Because we always keep our 
@@ -100,10 +103,10 @@ public:
   /** Returns a reference to our array of x-values. It's a constant reference because client code
   is not allowed to edit that data directly. Instead, it must use the moveDataPoint function which
   will update the datapoint and do some additional stuff. */ 
-  const std::vector<T>& getValuesX() { return xValues; }
+  //const std::vector<T>& getValuesX() { return xValues; }
 
   /** Returns a (constant) reference to our array of x-values. @see getValuesX */
-  const std::vector<T>& getValuesY() { return yValues; }
+  //const std::vector<T>& getValuesY() { return yValues; }
 
 
   /** Returns true, if the datapoint at index i+1 is considered to be "less than" the datapoint at 
@@ -112,22 +115,16 @@ public:
   y-values. The caller should ensure that i <= N-2. */
   bool isNextValueLess(size_t i)
   {
-    if(xValues[i+1] < xValues[i])
-      return true;
-    else if(xValues[i+1] > xValues[i])
-      return false;
-    else
-      return yValues[i+1] < yValues[i]; // if x-values are equal, compare y-values
+    return nodes[i+1] < nodes[i];
   }
-
 
   /** Returns the first index i in our x-array such that x[i] > xToFind. */
   size_t firstIndexOfGreaterX(T xToFind)
   {
-    for(size_t i = 0; i < xValues.size(); i++)
-      if(xValues[i] > xToFind)
+    for(size_t i = 0; i < nodes.size(); i++)
+      if(nodes[i].x > xToFind)
         return i;
-    return xValues.size();
+    return nodes.size();
   }
   // todo: use binary search with a start-index based on the previously retrieved value
   // see https://www.geeksforgeeks.org/binary-search/
@@ -136,10 +133,10 @@ public:
   /** For internal use only... */
   T getValueLinear(T x, size_t i)
   {
-    T x1 = xValues[i];
-    T y1 = yValues[i];
-    T x2 = xValues[i+1];
-    T y2 = yValues[i+1];
+    T x1 = nodes[i].x;
+    T y1 = nodes[i].y;
+    T x2 = nodes[i+1].x;
+    T y2 = nodes[i+1].y;
     T thresh = T(1.e-10); // todo: use epsilon of T
     if(fabs(x2-x1) < thresh)
       return T(0.5) * (y1+y2);
@@ -149,21 +146,19 @@ public:
   /** Returns an interpolated y-value at the given value of x. */
   T getValue(T x)
   {
-    if(xValues.size() == 0)
+    if(nodes.size() == 0)
       return 0;
-    if(x < xValues[0])
-      return yValues[0];
+    if(x < nodes[0].x)
+      return nodes[0].y;
     size_t i = firstIndexOfGreaterX(x);
-    if(i == xValues.size())
-      return yValues[i-1];
+    if(i == nodes.size())
+      return nodes[i-1].y;
     return getValueLinear(x, i-1);
   }
 
 protected:
 
-  std::vector<T> xValues, yValues;
-
-  std::vector<rsFunctionNode<T>> nodes
+  std::vector<rsFunctionNode<T>> nodes;
 
 };
 
