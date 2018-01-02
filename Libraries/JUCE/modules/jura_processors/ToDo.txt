@@ -2,7 +2,9 @@ next:
 -check tolerance condition ins rsSmoothableParameter::setvalue
 -find best way to update observers (pre/post/both)
 -in EngineersFilter, the sliders stay grayed out (try papoulis peak)
--modulators seem to be not immediately available - only after recall
+-modulators seem to be not immediately available for equalizer band params - only after recall
+ -> the modManager of the parameter is null
+ -> in EqualizerAudioModule::addBand, the modManager is null
 
 
 in order to have the grid lines in plots visually the same, the pixel-size should divisible by
