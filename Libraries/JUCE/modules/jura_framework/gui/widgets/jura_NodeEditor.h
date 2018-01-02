@@ -29,10 +29,6 @@ public:
   /** Assigns the parameter object associated with the y-coordinate of this node. */
   virtual void assignParameterY(Parameter* newParameterY);
 
-  /** Sets up a new pixel position for this nodeand optionally calls the nodeChanged function of 
-  our editor. */
-  //virtual void setPixelPosition(double newX, double newY, bool callNodeChanged = true);
-
   /** Sets the position of this node (in model coordinates) calls the nodeChanged function of 
   our editor. */
   virtual void setPosition(double newX, double newY, bool callNodeChanged = true);
@@ -46,12 +42,8 @@ public:
 
   inline void decrementIndex() { index--; }
 
-
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
-
-  //inline double getPixelX() const { return pixelX; }
-  //inline double getPixelY() const { return pixelY; }
 
   inline double getX() const { return x; }
 
@@ -66,17 +58,11 @@ public:
 protected:
    
   int index = -1;
-  double x, y; // (model) coordinates of the node 
-  //double pixelX = 0, pixelY = 0;                  // pixel coordinates of the node
-    // actually, it's a bad idea to store pixel coordinates - when the window is resized, they will
-    // not match the model coordinates anymore - get rid of them, use model-coordinates only
-
-
+  double x, y;                                    // (model) coordinates of the node 
   Parameter *paramX = nullptr, *paramY = nullptr; // parameter objects associated with x and y
   rsNodeEditor* nodeEditor;                       // editor which edits this node 
                                                   // todo: maybe allow more than one editor
 
-  //friend class rsNodeEditor;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsDraggableNode)
 };
 
@@ -189,16 +175,7 @@ class rsNodeBasedFunctionEditor : public rsNodeEditor
 
 public:
 
-  //rsNodeBasedFunctionEditor() = default;
-
   rsNodeBasedFunctionEditor(RAPT::rsInterpolatingFunction<double>* functionMapper);
-
-  // Conversions between model and pixel coordinates:
-  double toPixelX(double modelX);
-  double toPixelY(double modelY);
-  double toModelX(double pixelX);
-  double toModelY(double pixelY);
-
 
   //-----------------------------------------------------------------------------------------------
   // \name Overrides:
@@ -215,8 +192,6 @@ public:
 protected:
 
   RAPT::rsInterpolatingFunction<double>* valueMapper = nullptr;
-
-  double xMin = -1, xMax = +1, yMin = -1, yMax = +1; // get rid of them
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsNodeBasedFunctionEditor)
 };

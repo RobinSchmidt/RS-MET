@@ -4,8 +4,6 @@ rsDraggableNode::rsDraggableNode(rsNodeEditor* editor, double _x, double _y)
   nodeEditor = editor;
   x = _x;
   y = _y;
-  //pixelX = x;
-  //pixelY = y;
 }
 
 rsDraggableNode::~rsDraggableNode()
@@ -32,17 +30,6 @@ void rsDraggableNode::assignParameterY(Parameter* newParameterY)
     paramY->registerParameterObserver(this);
 }
 
-/*
-void rsDraggableNode::setPixelPosition(double newX, double newY, bool callNodeChanged)
-{
-  pixelX = newX;
-  pixelY = newY;
-  if(callNodeChanged)
-    nodeEditor->nodeChanged(index);
-  //nodeEditor->nodeChanged(this);
-}
-*/
-
 void rsDraggableNode::setPosition(double newX, double newY, bool callNodeChanged)
 {
   x = newX;
@@ -66,7 +53,8 @@ rsNodeEditor::rsNodeEditor()
 {
   notifyPreSmoothing(true);
   notifyPostSmoothing(true);
-  xyMapper.setInputRange(0, 1, 0, 1);
+  //xyMapper.setInputRange(0, 1, 0, 1);
+  xyMapper.setInputRange(-1, 1, -1, 1);
 }
 
 rsNodeEditor::~rsNodeEditor()
@@ -271,26 +259,6 @@ rsNodeBasedFunctionEditor::rsNodeBasedFunctionEditor(
   valueMapper = functionMapper;
 }
 
-double rsNodeBasedFunctionEditor::toPixelX(double modelX)
-{
-  return RAPT::rsLinToLin(modelX, xMin, xMax, 0.0, double(getWidth()-1));
-}
-
-double rsNodeBasedFunctionEditor::toPixelY(double modelY)
-{
-  return RAPT::rsLinToLin(modelY, yMin, yMax, double(getHeight()-1), 0.0);
-}
-
-double rsNodeBasedFunctionEditor::toModelX(double pixelX)
-{
-  return RAPT::rsLinToLin(pixelX, 0.0, double(getWidth()-1),  xMin, xMax);
-}
-
-double rsNodeBasedFunctionEditor::toModelY(double pixelY)
-{
-  return RAPT::rsLinToLin(pixelY, double(getHeight()-1), 0.0, yMin, yMax);
-}
-
 void rsNodeBasedFunctionEditor::paint(Graphics& g)
 {
   g.fillAll(getBackgroundColour());
@@ -299,9 +267,9 @@ void rsNodeBasedFunctionEditor::paint(Graphics& g)
   {
     double x1 = double(i);
     double x2 = double(i+1);
-    double y1 = valueMapper->getValue(toModelX(x1));
-    double y2 = valueMapper->getValue(toModelX(x2));
-    g.drawLine((float)x1, (float)toPixelY(y1), (float)x2, (float)toPixelY(y2), 2.f);
+    double y1 = valueMapper->getValue(xyMapper.unmapX(x1));
+    double y2 = valueMapper->getValue(xyMapper.unmapX(x2));
+    g.drawLine((float)x1, (float) xyMapper.mapY(y1), (float)x2, (float) xyMapper.mapY(y2), 2.f);
   }
   /*
   if(nodes.size() > 1)
@@ -322,7 +290,8 @@ void rsNodeBasedFunctionEditor::paint(Graphics& g)
 
 int rsNodeBasedFunctionEditor::addNode(double x, double y)
 {
-  int i = (int) valueMapper->addDataPoint(toModelX(x), toModelY(y));
+  xyMapper.unmap(&x, &y);
+  int i = (int) valueMapper->addDataPoint(x, y);
   rsDraggableNode* newNode = new rsDraggableNode(this, x, y);
   insert(nodes, newNode, i);
   nodes[i]->setIndex(i);
