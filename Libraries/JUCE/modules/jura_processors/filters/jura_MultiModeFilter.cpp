@@ -28,7 +28,8 @@ void MultiModeFilterAudioModule::createParameters()
   p->setValueChangeCallback<MMF>(mmf, &MMF::useTwoStages);
   addObservedParameter(p);
 
-  p = new Param("Mode", 0.0, 14.0, 1.0, Parameter::STRING, 1.0);
+  p = new Param("Mode", 0.0, 14.0, 0.0, Parameter::STRING, 1.0);
+  //p = new Param("Mode", 0.0, 14.0, 1.0, Parameter::STRING, 1.0);
   p->setValueChangeCallback<MMF>(mmf, &MMF::setMode);
   p->addStringValue("Bypass");
   p->addStringValue("Moogish Lowpass");
@@ -795,7 +796,6 @@ void MultiModeFilterModuleEditor::createWidgets()
   modeComboBox->assignParameter(moduleToEdit->getParameterByName("Mode") );
   modeComboBox->registerComboBoxObserver(this);
   modeComboBox->setDescription("Type/Mode of the filter.");
-  modeComboBox->selectItemByIndex(1, false);
 
   addWidget( twoStagesButton = b = new Btn("2 Stages") );
   b->assignParameter(moduleToEdit->getParameterByName("TwoStages"));
