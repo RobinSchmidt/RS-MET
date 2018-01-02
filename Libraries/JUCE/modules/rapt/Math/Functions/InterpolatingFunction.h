@@ -1,9 +1,70 @@
 #ifndef RAPT_INTERPOLATINGFUNCTION_H_INCLUDED
 #define RAPT_INTERPOLATINGFUNCTION_H_INCLUDED
 
+/** A class for representing a node in a piecewise defined function. Each node has x- and 
+y-coodinates and a shape option that determines the shape of the function segment approaching the 
+node (i.e. the curve segment to the left of the node) */
+
+template<class T>
+class rsFunctionNode
+{
+
+  /** Enumeration of possible shapes. */
+  enum shapes
+  {
+    LEFT_NEIGHBOUR,
+    RIGHT_NEIGHBOUR,
+    NEAREST_NEIGHBOUR,
+    LINEAR,             // this is the default
+    CUBIC
+  };
+  // maybe have log, exp, pow shapes
+  // pow: y = a + b * (x+c)^d
+
+  /** Constructor. Initializes the x,y coordinates to the given values and uses a linear shape by 
+  default. */
+  rsFunctionNode(T _x, T _y) : x(_x), y(_y) {}
+
+  /** Sets the x,y coordinates of this node. */
+  inline void setCoordinates(T newX, T newY) { x = newX; y = newY; }
+
+  /** Sets the x-coordinate of this node. */
+  inline void setX(T newX) { x = newX; }
+
+  /** Sets the y-coordinate of this node. */
+  inline void setY(T newY) { y = newY; }
+
+  /** Sets the shape as one of the values in he shapes enum. This determines the shape of the line
+  segment towards this node. */
+  inline void setShapeType(int newType) { shapeType = newType; }
+
+  /** Some shapes have a numeric parameter which can be set via this function. */
+  inline void setShapeParameter(int newParameter) { shapeParam = newParam; }
+
+  /** Returns the x-coordinate of this node. */
+  inline T getX() { return x; }
+
+  /** Returns the y-coordinate of this node. */
+  inline T getY() { return y; }
+
+
+protected:
+
+  T x = 0, y = 0;
+  int shapeType = LINEAR;
+  T shapeParam = 0; // maybe this could be the derivative? of y
+
+};
+
+//=================================================================================================
+
 /** A class for representing a function that is defined via pairs of (x,y) datapoints. You may set
 up these datatpoints and retrieve function values at arbitrary positions which are generated via
-interpolating between the known datapoints .*/
+interpolating between the known datapoints.
+
+-maybe rename to rsNodeBasedFunction and use rsFunctionNode class
+-handle endpoints by either clamping (like now), extrapolation or assuming periodicity
+*/
 
 template<class T>
 class rsInterpolatingFunction
