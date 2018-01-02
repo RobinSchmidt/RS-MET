@@ -1,9 +1,11 @@
-rsDraggableNode::rsDraggableNode(rsNodeEditor* editor, double x, double y)
+rsDraggableNode::rsDraggableNode(rsNodeEditor* editor, double _x, double _y)
 {
   jassert(editor != nullptr);
   nodeEditor = editor;
-  pixelX = x;
-  pixelY = y;
+  x = _x;
+  y = _y;
+  //pixelX = x;
+  //pixelY = y;
 }
 
 rsDraggableNode::~rsDraggableNode()
@@ -30,6 +32,7 @@ void rsDraggableNode::assignParameterY(Parameter* newParameterY)
     paramY->registerParameterObserver(this);
 }
 
+/*
 void rsDraggableNode::setPixelPosition(double newX, double newY, bool callNodeChanged)
 {
   pixelX = newX;
@@ -37,6 +40,15 @@ void rsDraggableNode::setPixelPosition(double newX, double newY, bool callNodeCh
   if(callNodeChanged)
     nodeEditor->nodeChanged(index);
   //nodeEditor->nodeChanged(this);
+}
+*/
+
+void rsDraggableNode::setPosition(double newX, double newY, bool callNodeChanged)
+{
+  x = newX;
+  y = newY;
+  if(callNodeChanged)
+    nodeEditor->nodeChanged(index);
   // todo: do not call nodeChanged directly here - instead, set up the paramX, paramY parameters
   // according to the new pixel position. this will trigger a call to our parameterChanged function
   // which will in turn call nodeEditor->nodeChanged(this); ...hmm...or maybe that's not so good
@@ -73,9 +85,10 @@ rsDraggableNode* rsNodeEditor::addNode(double pixelX, double pixelY)
 }
 */
 
-int rsNodeEditor::addNode(double pixelX, double pixelY)
+int rsNodeEditor::addNode(double x, double y)
 {
-  rsDraggableNode* newNode = new rsDraggableNode(this, pixelX, pixelY);
+  xyMapper.unmap(&x, &y);  // map from pixel- to model coords
+  rsDraggableNode* newNode = new rsDraggableNode(this, x, y);
   nodes.push_back(newNode);
   int i = size(nodes)-1;
   nodes[i]->setIndex(i);
@@ -100,7 +113,9 @@ void rsNodeEditor::removeNodeAt(int pixelX, int pixelY)
 
 int rsNodeEditor::moveNodeTo(int index, int pixelX, int pixelY)
 {
-  nodes[index]->setPixelPosition(pixelX, pixelY); // will indirectly trigger a repaint
+  double x = xyMapper.unmapX(pixelX);
+  double y = xyMapper.unmapY(pixelY);
+  nodes[index]->setPosition(x, y); // will indirectly trigger a repaint
   return index;
 }
 
@@ -144,8 +159,8 @@ int rsNodeEditor::getNodeIndexAt(int pixelX, int pixelY)
   float r2 = (float)(dotSize*dotSize);  // radius^2 of circle to check
   for(size_t i = 0; i < nodes.size(); i++)
   {
-    float dx = x - (float)nodes[i]->getPixelX();
-    float dy = y - (float)nodes[i]->getPixelY();
+    float dx = x - getPixelX(nodes[i]);
+    float dy = y - getPixelY(nodes[i]);
     float d2 = dx*dx + dy*dy;
     if(d2 <= r2)
       return (int)i;
@@ -179,7 +194,7 @@ void rsNodeEditor::paint(Graphics& g)
 
 void rsNodeEditor::resized()
 {
-  xyMapper.setOutputRange(0, getWidth()-1, 0, getHeight()-1);
+  xyMapper.setOutputRange(0, getWidth()-1, getHeight()-1, 0);
 }
 
 void rsNodeEditor::mouseDown(const MouseEvent& e)
@@ -235,14 +250,14 @@ void rsNodeEditor::drawNodes(Graphics& g)
   for(size_t i = 0; i < nodes.size(); i++)
   {
     float x, y;
-    x = (float)nodes[i]->getPixelX();
-    y = (float)nodes[i]->getPixelY();
+    x = getPixelX(nodes[i]);
+    y = getPixelY(nodes[i]);
     g.fillEllipse(x-0.5f*dotSize, y-0.5f*dotSize, dotSize, dotSize);
     if(drawNodeInfo)
     {
       String str = String(i) + ": x=" + String(x) + ", y=" + String(y);
       //String str = String(i) + "," + String(x) + "," + String(y);
-      drawBitmapFontText(g, nodes[i]->getPixelX(), nodes[i]->getPixelY()-10, str, 
+      drawBitmapFontText(g, getPixelX(nodes[i]), getPixelY(nodes[i])-10, str, 
         &normalFont7px, getTextColour(), -1, Justification::centred);
     }
   }
@@ -324,18 +339,21 @@ void rsNodeBasedFunctionEditor::removeNode(int i)
 
 int rsNodeBasedFunctionEditor::moveNodeTo(int index, int pixelX, int pixelY)
 {
-  int newIndex = (int)valueMapper->moveDataPoint(index, toModelX(pixelX), toModelY(pixelY));
+  double x = xyMapper.unmapX(pixelX);
+  double y = xyMapper.unmapY(pixelY);
+  int newIndex = (int)valueMapper->moveDataPoint(index, x, y);
   reIndexNode(index, newIndex);
-  nodes[newIndex]->setPixelPosition(pixelX, pixelY, true); 
+  nodes[newIndex]->setPosition(x, y, true); 
   repaint();
   return newIndex;
 }
 
 int rsNodeBasedFunctionEditor::nodeChanged(int nodeIndex)
 {
-  double x = nodes[nodeIndex]->getPixelX();
-  double y = nodes[nodeIndex]->getPixelY();
-  int newIndex = (int)valueMapper->moveDataPoint(nodeIndex, toModelX(x), toModelY(y));
+  double x = getPixelX(nodes[nodeIndex]);
+  double y = getPixelY(nodes[nodeIndex]);
+  xyMapper.unmap(&x, &y);
+  int newIndex = (int)valueMapper->moveDataPoint(nodeIndex, x, y);
   reIndexNode(nodeIndex, newIndex);
   rsNodeEditor::nodeChanged(nodeIndex);
   return newIndex;

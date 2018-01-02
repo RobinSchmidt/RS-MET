@@ -31,7 +31,11 @@ public:
 
   /** Sets up a new pixel position for this nodeand optionally calls the nodeChanged function of 
   our editor. */
-  virtual void setPixelPosition(double newX, double newY, bool callNodeChanged = true);
+  //virtual void setPixelPosition(double newX, double newY, bool callNodeChanged = true);
+
+  /** Sets the position of this node (in model coordinates) calls the nodeChanged function of 
+  our editor. */
+  virtual void setPosition(double newX, double newY, bool callNodeChanged = true);
 
   /** This function is used to set up the "index" member variable which should always reflect the
   index in the "nodes" array in the editor. You need to take care of this in subclasses when 
@@ -46,9 +50,8 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
-  inline double getPixelX() const { return pixelX; }
-
-  inline double getPixelY() const { return pixelY; }
+  //inline double getPixelX() const { return pixelX; }
+  //inline double getPixelY() const { return pixelY; }
 
   inline double getX() const { return x; }
 
@@ -64,7 +67,7 @@ protected:
    
   int index = -1;
   double x, y; // (model) coordinates of the node 
-  double pixelX = 0, pixelY = 0;                  // pixel coordinates of the node
+  //double pixelX = 0, pixelY = 0;                  // pixel coordinates of the node
     // actually, it's a bad idea to store pixel coordinates - when the window is resized, they will
     // not match the model coordinates anymore - get rid of them, use model-coordinates only
 
