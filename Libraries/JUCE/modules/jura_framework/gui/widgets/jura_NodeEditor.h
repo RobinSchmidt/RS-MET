@@ -50,6 +50,10 @@ public:
 
   inline double getPixelY() const { return pixelY; }
 
+  inline double getX() const { return x; }
+
+  inline double getY() const { return y; }
+
   //-----------------------------------------------------------------------------------------------
   // \name Callbacks
 
@@ -59,6 +63,7 @@ public:
 protected:
    
   int index = -1;
+  double x, y; // (model) coordinates of the node 
   double pixelX = 0, pixelY = 0;                  // pixel coordinates of the node
     // actually, it's a bad idea to store pixel coordinates - when the window is resized, they will
     // not match the model coordinates anymore - get rid of them, use model-coordinates only
@@ -130,6 +135,12 @@ public:
   /** Returns the index in our array of nodes a node at the given position. If there is none, it 
   will return -1. */
   int getNodeIndexAt(int pixelX, int pixelY);
+
+  /** Returns the x-coordinate in pixels of the given node. */
+  float getPixelX(const rsDraggableNode* node);
+
+  /** Returns the y-coordinate in pixels of the given node. */
+  float getPixelY(const rsDraggableNode* node);
 
   //-----------------------------------------------------------------------------------------------
   // \name Callbacks

@@ -153,6 +153,16 @@ int rsNodeEditor::getNodeIndexAt(int pixelX, int pixelY)
   return -1;
 }
 
+float rsNodeEditor::getPixelX(const rsDraggableNode* node)
+{
+  return (float) xyMapper.mapX(node->getX());
+}
+
+float rsNodeEditor::getPixelY(const rsDraggableNode* node)
+{
+  return (float) xyMapper.mapY(node->getY());
+}
+
 // callbacks:
 
 void rsNodeEditor::parameterChanged(Parameter* p)
