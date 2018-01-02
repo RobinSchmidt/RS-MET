@@ -35,9 +35,14 @@ public:
 
 
 
-  virtual void map(T *x, T *y) override;
-
+  virtual void   map(T *x, T *y) override;
   virtual void unmap(T *x, T *y);
+
+  T mapX(T x);
+  T mapY(T y);
+
+  T unmapX(T x);
+  T unmapY(T y);
 
 
 

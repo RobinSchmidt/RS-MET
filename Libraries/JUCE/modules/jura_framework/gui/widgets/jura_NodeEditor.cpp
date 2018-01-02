@@ -237,7 +237,7 @@ void rsNodeEditor::drawNodes(Graphics& g)
 rsNodeBasedFunctionEditor::rsNodeBasedFunctionEditor(
   RAPT::rsInterpolatingFunction<double>* functionMapper)
 {
-  mapper = functionMapper;
+  valueMapper = functionMapper;
 }
 
 double rsNodeBasedFunctionEditor::toPixelX(double modelX)
@@ -268,8 +268,8 @@ void rsNodeBasedFunctionEditor::paint(Graphics& g)
   {
     double x1 = double(i);
     double x2 = double(i+1);
-    double y1 = mapper->getValue(toModelX(x1));
-    double y2 = mapper->getValue(toModelX(x2));
+    double y1 = valueMapper->getValue(toModelX(x1));
+    double y2 = valueMapper->getValue(toModelX(x2));
     g.drawLine((float)x1, (float)toPixelY(y1), (float)x2, (float)toPixelY(y2), 2.f);
   }
   /*
@@ -291,7 +291,7 @@ void rsNodeBasedFunctionEditor::paint(Graphics& g)
 
 int rsNodeBasedFunctionEditor::addNode(double x, double y)
 {
-  int i = (int) mapper->addDataPoint(toModelX(x), toModelY(y));
+  int i = (int) valueMapper->addDataPoint(toModelX(x), toModelY(y));
   rsDraggableNode* newNode = new rsDraggableNode(this, x, y);
   insert(nodes, newNode, i);
   nodes[i]->setIndex(i);
@@ -302,13 +302,13 @@ int rsNodeBasedFunctionEditor::addNode(double x, double y)
 
 void rsNodeBasedFunctionEditor::removeNode(int i)
 {
-  mapper->removeDataPoint(i);
+  valueMapper->removeDataPoint(i);
   rsNodeEditor::removeNode(i);
 }
 
 int rsNodeBasedFunctionEditor::moveNodeTo(int index, int pixelX, int pixelY)
 {
-  int newIndex = (int)mapper->moveDataPoint(index, toModelX(pixelX), toModelY(pixelY));
+  int newIndex = (int)valueMapper->moveDataPoint(index, toModelX(pixelX), toModelY(pixelY));
   reIndexNode(index, newIndex);
   nodes[newIndex]->setPixelPosition(pixelX, pixelY, true); 
   repaint();
@@ -319,7 +319,7 @@ int rsNodeBasedFunctionEditor::nodeChanged(int nodeIndex)
 {
   double x = nodes[nodeIndex]->getPixelX();
   double y = nodes[nodeIndex]->getPixelY();
-  int newIndex = (int)mapper->moveDataPoint(nodeIndex, toModelX(x), toModelY(y));
+  int newIndex = (int)valueMapper->moveDataPoint(nodeIndex, toModelX(x), toModelY(y));
   reIndexNode(nodeIndex, newIndex);
   rsNodeEditor::nodeChanged(nodeIndex);
   return newIndex;

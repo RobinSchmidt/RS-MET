@@ -90,9 +90,9 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
-  /** Adds a new node at the given pixel position the index at which it was inserted into our node 
-  arraay The new node will use nullptrs for the Parameter objects associated with the x- and 
-  y-coordinate. Subclasses may want to override this in order to create and assign actual 
+  /** Adds a new node at the given pixel position and returns the index at which it was inserted 
+  into our node array. The new node will use nullptrs for the Parameter objects associated with the 
+  x- and y-coordinate. Subclasses may want to override this in order to create and assign actual 
   Parameter objects with associated callbacks. */
   virtual int addNode(double pixelX, double pixelY);
 
@@ -111,6 +111,7 @@ public:
   /** Moves the node that is currently at oldIndex to the newIndex in our array of nodes. */
   virtual void reIndexNode(int oldIndex, int newIndex);
 
+  /** Swaps the two nodes at the given indices in out node-array. */
   virtual void swapNodes(int index1, int index2);
 
   /** Sets the size of the dots in pixels. */
@@ -155,14 +156,14 @@ public:
   
 protected:
 
-
   std::vector<rsDraggableNode*> nodes;
-  //rsDraggableNode* draggedNode = nullptr; // node that is currently dragged
-  int draggedNodeIndex = -1;
+  int draggedNodeIndex = -1;  // -1 is code for "none"
 
   // these variables also appear in rsVectorPad - maybe we can factor out a baseclass:
   //double xMin = -1, xMax = +1, yMin = -1, yMax = +1; // not yet used - maybe not needed
   float dotSize = 8;
+
+  RAPT::rsCoordinateMapper2D<double> xyMapper;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsNodeEditor)
 };
@@ -201,9 +202,9 @@ public:
 
 protected:
 
-  RAPT::rsInterpolatingFunction<double>* mapper = nullptr;
+  RAPT::rsInterpolatingFunction<double>* valueMapper = nullptr;
 
-  double xMin = -1, xMax = +1, yMin = -1, yMax = +1;
+  double xMin = -1, xMax = +1, yMin = -1, yMax = +1; // get rid of them
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsNodeBasedFunctionEditor)
 };
