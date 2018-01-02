@@ -254,13 +254,15 @@ void rsNodeEditor::drawNodes(Graphics& g)
 //=================================================================================================
 
 rsNodeBasedFunctionEditor::rsNodeBasedFunctionEditor(
-  RAPT::rsNodeBasedFunction<double>* functionMapper)
+  RAPT::rsNodeBasedFunction<double>* functionMapper, CriticalSection* lockToUse)
 {
+  lock = lockToUse;
   valueMapper = functionMapper;
 }
 
 void rsNodeBasedFunctionEditor::paint(Graphics& g)
 {
+  ScopedPointerLock spl(lock);
   g.fillAll(getBackgroundColour());
   g.setColour(getHandleColour());
   for(int i = 0; i < getWidth()-1; i++)
@@ -290,6 +292,7 @@ void rsNodeBasedFunctionEditor::paint(Graphics& g)
 
 int rsNodeBasedFunctionEditor::addNode(double x, double y)
 {
+  ScopedPointerLock spl(lock);
   xyMapper.unmap(&x, &y);
   int i = (int) valueMapper->addNode(x, y);
   rsDraggableNode* newNode = new rsDraggableNode(this, x, y);
@@ -302,12 +305,14 @@ int rsNodeBasedFunctionEditor::addNode(double x, double y)
 
 void rsNodeBasedFunctionEditor::removeNode(int i)
 {
+  ScopedPointerLock spl(lock);
   valueMapper->removeNode(i);
   rsNodeEditor::removeNode(i);
 }
 
 int rsNodeBasedFunctionEditor::moveNodeTo(int index, int pixelX, int pixelY)
 {
+  ScopedPointerLock spl(lock);
   double x = xyMapper.unmapX(pixelX);
   double y = xyMapper.unmapY(pixelY);
   int newIndex = (int)valueMapper->moveNode(index, x, y);
@@ -319,6 +324,7 @@ int rsNodeBasedFunctionEditor::moveNodeTo(int index, int pixelX, int pixelY)
 
 int rsNodeBasedFunctionEditor::nodeChanged(int nodeIndex)
 {
+  ScopedPointerLock spl(lock);
   double x = getPixelX(nodes[nodeIndex]);
   double y = getPixelY(nodes[nodeIndex]);
   xyMapper.unmap(&x, &y);

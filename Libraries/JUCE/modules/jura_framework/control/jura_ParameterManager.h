@@ -38,6 +38,9 @@ public:
   parameter was not found. */
   virtual int getIndexOfParameter(Parameter* parameterToRetrieveIndexOf) const;
 
+  /** Returns the pointer to the mutex lock that is used by the parameters. */
+  CriticalSection* getCriticalSection() const { return lock; }
+
   //-----------------------------------------------------------------------------------------------
   // inquiry:
 
