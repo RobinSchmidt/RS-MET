@@ -68,7 +68,7 @@ protected:
   rsNodeEditor* nodeEditor;                       // editor which edits this node 
                                                   // todo: maybe allow more than one editor
 
-  friend class rsNodeEditor;
+  //friend class rsNodeEditor;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsDraggableNode)
 };
 

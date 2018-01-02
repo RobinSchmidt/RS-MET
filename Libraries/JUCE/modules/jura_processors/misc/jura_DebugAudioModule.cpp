@@ -1,4 +1,4 @@
-DebugAudioModule::DebugAudioModule(CriticalSection *lockToUse) : ModulatableAudioModule(lockToUse)
+DebugAudioModule::DebugAudioModule(CriticalSection *lockToUse) : AudioModuleWithMidiIn(lockToUse)
 {
   ScopedLock scopedLock(*lock);
   setModuleTypeName("DebugAudioModule");

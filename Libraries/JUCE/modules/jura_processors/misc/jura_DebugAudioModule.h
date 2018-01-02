@@ -3,7 +3,7 @@
 
 /** A module for framework debugging puposes */
 
-class JUCE_API DebugAudioModule : public ModulatableAudioModule
+class JUCE_API DebugAudioModule : public AudioModuleWithMidiIn
 {
 
 public:

@@ -57,6 +57,7 @@ public:
     return xValues.size();
   }
   // todo: use binary search with a start-index based on the previously retrieved value
+  // see https://www.geeksforgeeks.org/binary-search/
 
 
   /** For internal use only... */

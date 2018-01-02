@@ -6,21 +6,6 @@
 // () operator.
 
 
-/** Baseclass for mapping 2-dimensional vectors, represented as pairs of x- and y-coordinates, to 
-a new location. */
 
-template<class T>
-class rsMapper2D
-{
-
-public:
-	//virtual ~rsMapper2D() = default;
-  virtual ~rsMapper2D() {}
-
-  /** Subclasses must override this function to map the incoming xy-pair to the corresponding 
-  outgoing pair. */
-  virtual void map(T *x, T *y) = 0;
-
-};
 
 #endif

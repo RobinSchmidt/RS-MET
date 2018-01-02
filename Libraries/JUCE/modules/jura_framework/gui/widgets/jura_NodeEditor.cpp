@@ -77,7 +77,7 @@ int rsNodeEditor::addNode(double pixelX, double pixelY)
   rsDraggableNode* newNode = new rsDraggableNode(this, pixelX, pixelY);
   nodes.push_back(newNode);
   int i = size(nodes)-1;
-  nodes[i]->index = i;
+  nodes[i]->setIndex(i);
   return i;
 }
 
@@ -115,8 +115,8 @@ void rsNodeEditor::reIndexNode(int oldIndex, int newIndex)
 
 void rsNodeEditor::swapNodes(int i, int j)
 {
-  nodes[i]->index = j;
-  nodes[j]->index = i;
+  nodes[i]->setIndex(j);
+  nodes[j]->setIndex(i);
   RAPT::rsSwap(nodes[i], nodes[j]);
 }
 
@@ -143,8 +143,8 @@ int rsNodeEditor::getNodeIndexAt(int pixelX, int pixelY)
   float r2 = (float)(dotSize*dotSize);  // radius^2 of circle to check
   for(size_t i = 0; i < nodes.size(); i++)
   {
-    float dx = x - (float)nodes[i]->pixelX;
-    float dy = y - (float)nodes[i]->pixelY;
+    float dx = x - (float)nodes[i]->getPixelX();
+    float dy = y - (float)nodes[i]->getPixelY();
     float d2 = dx*dx + dy*dy;
     if(d2 <= r2)
       return (int)i;
@@ -219,14 +219,14 @@ void rsNodeEditor::drawNodes(Graphics& g)
   for(size_t i = 0; i < nodes.size(); i++)
   {
     float x, y;
-    x = (float)nodes[i]->pixelX;
-    y = (float)nodes[i]->pixelY;
+    x = (float)nodes[i]->getPixelX();
+    y = (float)nodes[i]->getPixelY();
     g.fillEllipse(x-0.5f*dotSize, y-0.5f*dotSize, dotSize, dotSize);
     if(drawNodeInfo)
     {
       String str = String(i) + ": x=" + String(x) + ", y=" + String(y);
       //String str = String(i) + "," + String(x) + "," + String(y);
-      drawBitmapFontText(g, nodes[i]->pixelX, nodes[i]->pixelY-10, str, 
+      drawBitmapFontText(g, nodes[i]->getPixelX(), nodes[i]->getPixelY()-10, str, 
         &normalFont7px, getTextColour(), -1, Justification::centred);
     }
   }
