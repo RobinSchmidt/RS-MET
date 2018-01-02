@@ -48,6 +48,7 @@ template class RAPT::rsSinCosTable<double>;
 template class RAPT::rsScaledAndShiftedSigmoid<double>;
 template class RAPT::rsEllipse<double>;
 template class RAPT::rsRotationXYZ<double>;
+template class RAPT::rsCoordinateMapper<double>;
 template class RAPT::rsCoordinateMapper2D<double>;
 
 

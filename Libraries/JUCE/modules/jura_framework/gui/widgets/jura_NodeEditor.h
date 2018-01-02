@@ -170,7 +170,7 @@ protected:
 
 //=================================================================================================
 
-// it'S still buggy when there are 3 or more points at the same x-position
+// i think, we need a mutex lock...yes, definitely
 
 class rsNodeBasedFunctionEditor : public rsNodeEditor
 {
