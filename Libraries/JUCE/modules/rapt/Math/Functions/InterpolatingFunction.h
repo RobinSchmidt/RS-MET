@@ -47,6 +47,18 @@ class rsFunctionNode
   /** Returns the y-coordinate of this node. */
   inline T getY() { return y; }
 
+  /** A node is considered to be less than another, if its x-coordinate is less and in case of 
+  equal x-coordinates, if its y-coordinate is less. */
+  bool operator<(const rsFunctionNode& rhs) const
+  {
+    if(x < rhs.x)
+      return true;
+    else if(x > rhs.x)
+      return false;
+    else
+      return y < rhs.y; 
+  }
+
 
 protected:
 
@@ -150,6 +162,8 @@ public:
 protected:
 
   std::vector<T> xValues, yValues;
+
+  std::vector<rsFunctionNode<T>> nodes
 
 };
 
