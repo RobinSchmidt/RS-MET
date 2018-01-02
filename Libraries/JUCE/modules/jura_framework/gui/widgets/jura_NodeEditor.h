@@ -175,7 +175,7 @@ class rsNodeBasedFunctionEditor : public rsNodeEditor
 
 public:
 
-  rsNodeBasedFunctionEditor(RAPT::rsInterpolatingFunction<double>* functionMapper);
+  rsNodeBasedFunctionEditor(RAPT::rsNodeBasedFunction<double>* functionMapper);
 
   //-----------------------------------------------------------------------------------------------
   // \name Overrides:
@@ -191,7 +191,7 @@ public:
 
 protected:
 
-  RAPT::rsInterpolatingFunction<double>* valueMapper = nullptr;
+  RAPT::rsNodeBasedFunction<double>* valueMapper = nullptr;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsNodeBasedFunctionEditor)
 };

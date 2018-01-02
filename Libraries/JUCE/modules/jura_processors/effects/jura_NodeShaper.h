@@ -45,7 +45,7 @@ protected:
 
   void createParameters();
 
-  RAPT::rsInterpolatingFunction<double> mapper;
+  RAPT::rsNodeBasedFunction<double> mapper;
 
   friend class NodeShaperModuleEditor;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeShaperAudioModule)

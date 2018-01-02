@@ -254,7 +254,7 @@ void rsNodeEditor::drawNodes(Graphics& g)
 //=================================================================================================
 
 rsNodeBasedFunctionEditor::rsNodeBasedFunctionEditor(
-  RAPT::rsInterpolatingFunction<double>* functionMapper)
+  RAPT::rsNodeBasedFunction<double>* functionMapper)
 {
   valueMapper = functionMapper;
 }
@@ -291,7 +291,7 @@ void rsNodeBasedFunctionEditor::paint(Graphics& g)
 int rsNodeBasedFunctionEditor::addNode(double x, double y)
 {
   xyMapper.unmap(&x, &y);
-  int i = (int) valueMapper->addDataPoint(x, y);
+  int i = (int) valueMapper->addNode(x, y);
   rsDraggableNode* newNode = new rsDraggableNode(this, x, y);
   insert(nodes, newNode, i);
   nodes[i]->setIndex(i);
@@ -302,7 +302,7 @@ int rsNodeBasedFunctionEditor::addNode(double x, double y)
 
 void rsNodeBasedFunctionEditor::removeNode(int i)
 {
-  valueMapper->removeDataPoint(i);
+  valueMapper->removeNode(i);
   rsNodeEditor::removeNode(i);
 }
 
@@ -310,7 +310,7 @@ int rsNodeBasedFunctionEditor::moveNodeTo(int index, int pixelX, int pixelY)
 {
   double x = xyMapper.unmapX(pixelX);
   double y = xyMapper.unmapY(pixelY);
-  int newIndex = (int)valueMapper->moveDataPoint(index, x, y);
+  int newIndex = (int)valueMapper->moveNode(index, x, y);
   reIndexNode(index, newIndex);
   nodes[newIndex]->setPosition(x, y, true); 
   repaint();
@@ -322,7 +322,7 @@ int rsNodeBasedFunctionEditor::nodeChanged(int nodeIndex)
   double x = getPixelX(nodes[nodeIndex]);
   double y = getPixelY(nodes[nodeIndex]);
   xyMapper.unmap(&x, &y);
-  int newIndex = (int)valueMapper->moveDataPoint(nodeIndex, x, y);
+  int newIndex = (int)valueMapper->moveNode(nodeIndex, x, y);
   reIndexNode(nodeIndex, newIndex);
   rsNodeEditor::nodeChanged(nodeIndex);
   return newIndex;

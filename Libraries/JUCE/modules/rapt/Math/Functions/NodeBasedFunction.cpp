@@ -1,5 +1,5 @@
 template<class T>
-size_t rsInterpolatingFunction<T>::addDataPoint(T x, T y)
+size_t rsNodeBasedFunction<T>::addNode(T x, T y)
 {
   // maybe find insertion point and use vector::insert
 
@@ -14,13 +14,13 @@ size_t rsInterpolatingFunction<T>::addDataPoint(T x, T y)
 }
 
 template<class T>
-void rsInterpolatingFunction<T>::removeDataPoint(size_t index)
+void rsNodeBasedFunction<T>::removeNode(size_t index)
 {
   rsRemove(nodes, index);
 }
 
 template<class T>
-size_t rsInterpolatingFunction<T>::moveDataPoint(size_t i, T newX, T newY)
+size_t rsNodeBasedFunction<T>::moveNode(size_t i, T newX, T newY)
 {
   nodes[i].x = newX;
   nodes[i].y = newY;

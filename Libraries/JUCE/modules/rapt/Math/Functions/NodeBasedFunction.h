@@ -68,7 +68,7 @@ public:
   int shapeType = LINEAR;
   T shapeParam = 0; // maybe this could be the derivative? of y
 
-  //friend class rsInterpolatingFunction<T>;
+  //friend class rsNodeBasedFunction<T>;
 };
 
 //=================================================================================================
@@ -77,46 +77,36 @@ public:
 up these datatpoints and retrieve function values at arbitrary positions which are generated via
 interpolating between the known datapoints.
 
--maybe rename to rsNodeBasedFunction and use rsFunctionNode class
 -handle endpoints by either clamping (like now), extrapolation or assuming periodicity
 */
 
 template<class T>
-class rsInterpolatingFunction
+class rsNodeBasedFunction
 {
 
 public:
 
+  /** Adds a new node at the given coordinates and returns the index at which it was inserted. */
+  size_t addNode(T x, T y);
 
-  /** Adds a new datapoint at the given coordinates and returns the index at which it was 
-  inserted. */
-  size_t addDataPoint(T x, T y);
-
-  /** Removes the datapoint with given index. */
-  void removeDataPoint(size_t index);
+  /** Removes the node with given index. */
+  void removeNode(size_t index);
 
   /** Moves an existing datapoint with given index to a new position. Because we always keep our 
   data arrays sorted, this may change the index of the datapoint inside the array. The return value
   informs about the new index. */
-  size_t moveDataPoint(size_t index, T newX, T newY);
+  size_t moveNode(size_t index, T newX, T newY);
 
-  /** Returns a reference to our array of x-values. It's a constant reference because client code
-  is not allowed to edit that data directly. Instead, it must use the moveDataPoint function which
+  /** Returns a reference to our array of nodes. It's a constant reference because client code
+  is not allowed to edit that data directly. Instead, it must use the moveNode function which
   will update the datapoint and do some additional stuff. */ 
-  //const std::vector<T>& getValuesX() { return xValues; }
-
-  /** Returns a (constant) reference to our array of x-values. @see getValuesX */
-  //const std::vector<T>& getValuesY() { return yValues; }
-
+  const std::vector<rsFunctionNode<T>>& getNodes() { return nodes; }
 
   /** Returns true, if the datapoint at index i+1 is considered to be "less than" the datapoint at 
   index i. We use this function internally to keep our arrays of values sorted. Datapoints are 
   sorted according to ascending x-values and in case of equal x-values, according to ascending 
   y-values. The caller should ensure that i <= N-2. */
-  bool isNextValueLess(size_t i)
-  {
-    return nodes[i+1] < nodes[i];
-  }
+  bool isNextValueLess(size_t i) { return nodes[i+1] < nodes[i]; }
 
   /** Returns the first index i in our x-array such that x[i] > xToFind. */
   size_t firstIndexOfGreaterX(T xToFind)
