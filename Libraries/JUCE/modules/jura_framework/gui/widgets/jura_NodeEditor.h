@@ -136,6 +136,7 @@ public:
 
   virtual void parameterChanged(Parameter* parameterThatHasChanged) override;
   virtual void paint(Graphics& g) override;
+  virtual void resized() override;
   virtual void mouseDown(const MouseEvent& e) override;
   virtual void mouseDrag(const MouseEvent& e) override;
   virtual void mouseUp(const MouseEvent &e) override;
@@ -158,12 +159,9 @@ protected:
 
   std::vector<rsDraggableNode*> nodes;
   int draggedNodeIndex = -1;  // -1 is code for "none"
-
-  // these variables also appear in rsVectorPad - maybe we can factor out a baseclass:
-  //double xMin = -1, xMax = +1, yMin = -1, yMax = +1; // not yet used - maybe not needed
   float dotSize = 8;
 
-  RAPT::rsCoordinateMapper2D<double> xyMapper;
+  RAPT::rsCoordinateMapper2D<double> xyMapper; // converts to/from pixel-coodinates
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsNodeEditor)
 };

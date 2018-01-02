@@ -54,6 +54,7 @@ rsNodeEditor::rsNodeEditor()
 {
   notifyPreSmoothing(true);
   notifyPostSmoothing(true);
+  xyMapper.setInputRange(0, 1, 0, 1);
 }
 
 rsNodeEditor::~rsNodeEditor()
@@ -164,6 +165,11 @@ void rsNodeEditor::paint(Graphics& g)
   g.fillAll(getBackgroundColour());
   g.setColour(getHandleColour());
   drawNodes(g);
+}
+
+void rsNodeEditor::resized()
+{
+  xyMapper.setOutputRange(0, getWidth()-1, 0, getHeight()-1);
 }
 
 void rsNodeEditor::mouseDown(const MouseEvent& e)
