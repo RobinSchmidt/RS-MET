@@ -19,7 +19,7 @@ rsAutomationSetup::rsAutomationSetup(AutomatableWidget* widgetToAutomate,
   metaAttachBox->setDescription("Select meta parameter to attach");
   // todo: fill the box
 
-  //setSize(250, 100);
+  setSize(250, 100);
 }
 
 rsAutomationSetup::~rsAutomationSetup() 
@@ -39,6 +39,20 @@ void rsAutomationSetup::rComboBoxChanged(RComboBox* cb)
   {
     // ...retrieve selected item and attach meta accordingly
   }
+}
+
+void rsAutomationSetup::resized()
+{
+  int d   = sliderDistance;
+  int x   = d;
+  int y   = d;
+  int w   = getWidth();
+  int h   = getHeight();
+  int sh  = sliderHeight;
+  int inc = sh+d;
+
+  closeButton->setBounds(w-16, 0, 16, 16);
+  //automationLabel->setBounds(x, y, w-8-16, sh); y += inc; 
 }
 
 //=================================================================================================
@@ -363,6 +377,7 @@ AutomatableWidget::~AutomatableWidget()
 {
   delete rightClickPopUp;
   delete modSetup;
+  delete metaSetup;
 }
 
 bool AutomatableWidget::isPopUpOpen()
@@ -383,18 +398,15 @@ bool AutomatableWidget::isPopUpOpen()
   //  return rightClickPopUp->isOpen();
 }
 
-void AutomatableWidget::rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged)
+void AutomatableWidget::rPopUpMenuChanged(RPopUpMenu* menu)
 {
-  if(menuThatHasChanged != rightClickPopUp)
+  if(menu != rightClickPopUp)
     return;
 
   int selectedIdentifier = rightClickPopUp->getSelectedIdentifier();
 
-  if(selectedIdentifier == MODULATION_SETUP)
-  {
-    showModulationSetup();
-    return;
-  }
+  if(selectedIdentifier == AUTOMATION_SETUP) { showAutomationSetup(); return; }
+  if(selectedIdentifier == MODULATION_SETUP) { showModulationSetup(); return; }
 
   MetaControlledParameter* mcp = getMetaControlledParameter();
   if(mcp != nullptr)
@@ -559,11 +571,12 @@ void AutomatableWidget::showModulationSetup()
   modSetup->toFront(true);
 }
 
-
 void AutomatableWidget::deleteObject(rsDeletionRequester* objectToDelete)
 {
   if(objectToDelete == modSetup)
     modSetup->setVisible(false);
+  else if(objectToDelete == metaSetup)
+    metaSetup->setVisible(false);
   else
     jassertfalse;
 }
@@ -811,10 +824,7 @@ void ModulatableSlider::assignParameter(Parameter* p)
 void ModulatableSlider::paint(Graphics& g)
 {
   AutomatableSlider::paint(g);
-  if(assignedParameter != nullptr)
-  {
-    ModulatableParameter* mp = dynamic_cast<ModulatableParameter*> (assignedParameter);
-    if(mp && mp->hasConnectedSources())
-      g.fillAll(Colour::fromFloatRGBA(1.f, 0.f, 0.f, 0.125f)); // preliminary
-  }
+  ModulatableParameter* mp = dynamic_cast<ModulatableParameter*> (assignedParameter);
+  if(mp && mp->hasConnectedSources())
+    g.fillAll(Colour::fromFloatRGBA(1.f, 0.f, 0.f, 0.125f)); // preliminary
 }

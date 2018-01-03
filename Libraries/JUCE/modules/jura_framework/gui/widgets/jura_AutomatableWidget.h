@@ -45,6 +45,7 @@ public:
 
   virtual void rButtonClicked(RButton *button) override;
   virtual void rComboBoxChanged(RComboBox* cb) override;
+  virtual void resized() override;
 
 protected:
 

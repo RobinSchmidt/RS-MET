@@ -6,12 +6,12 @@ next:
  -> the modManager of the parameter is null
  -> in EqualizerAudioModule::addBand, the modManager is null
  -> it also doesn't help if the modulator is plugged in first
--Crash when modulation menu is open and there's at least one connection (depth slider) and we 
+
+-crash when modulation menu is open and there's at least one connection (depth slider) and we 
  switch the toolchain preset (happens in eq - may test if it happens also with other modules)
  -> the rsModulationDepthSlider tries to de-register itself from a (mod-depth) parameter that 
     deosn't exist anymore - override parameterWillBeDeleted?
  -it happens also when the modulation popup has been closed before switching preset
-
 
 in order to have the grid lines in plots visually the same, the pixel-size should divisible by
 the number of sections, i.e. (N+1), when N is the number of grid-lines. for example, our usual
