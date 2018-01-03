@@ -1,7 +1,7 @@
 #ifndef jura_AutomatableWidget_h
 #define jura_AutomatableWidget_h
 
-// rename file to 
+// rename file
 
 class rsModulationConnectionWidget;
 class AutomatableWidget;
@@ -17,7 +17,6 @@ public:
   rsParameterSetupBase(AutomatableWidget* widgetToModulate, MetaParameterManager* metaManager);
   virtual ~rsParameterSetupBase() {}
 
-
 protected:
 
   AutomatableWidget* widget;                 // our owner widget
@@ -32,12 +31,27 @@ protected:
 //=================================================================================================
 
 /** A component for setting up the the connection of a parameter to a meta-parameter, the mapping
-and smoothing. */
+and smoothing. 
+todo: maybe handle midi controller assignment here, too
+*/
 
-class JUCE_API rsAutomationSetup : public rsParameterSetupBase
+class JUCE_API rsAutomationSetup : public rsParameterSetupBase, public RComboBoxObserver
 {
 
+public:
 
+  rsAutomationSetup(AutomatableWidget* widgetToAutomate, MetaParameterManager* metaManager);
+  virtual ~rsAutomationSetup();
+
+
+  virtual void rComboBoxChanged(RComboBox* cb) override;
+
+protected:
+
+  /** Shows the popup menu with the attachable MetaParameters. */
+  void showMetaAttachPopUp();
+
+  RComboBox* metaAttachBox;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsAutomationSetup)
 };

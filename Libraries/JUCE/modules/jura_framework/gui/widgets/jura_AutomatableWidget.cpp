@@ -9,6 +9,33 @@ rsParameterSetupBase::rsParameterSetupBase(AutomatableWidget* widgetToSetup,
 
 //=================================================================================================
 
+rsAutomationSetup::rsAutomationSetup(AutomatableWidget* widgetToAutomate,
+  MetaParameterManager* metaManagerToUse)
+  : rsParameterSetupBase(widgetToAutomate, metaManagerToUse)
+{
+  closeButton->setDescription("Closes the automation setup window");
+
+  addWidget(metaAttachBox = new RComboBox);
+  metaAttachBox->setDescription("Select meta parameter to attach");
+  // todo: fill the box
+
+}
+
+rsAutomationSetup::~rsAutomationSetup() 
+{
+  delete metaAttachBox;
+}
+
+void rsAutomationSetup::rComboBoxChanged(RComboBox* cb)
+{
+  if(cb == metaAttachBox)
+  {
+    // ...retrieve selected item and attach meta accordingly
+  }
+}
+
+//=================================================================================================
+
 rsModulationSetup::rsModulationSetup(AutomatableWidget* widgetToModulate, 
   MetaParameterManager* metaManagerToUse)
   : rsParameterSetupBase(widgetToModulate, metaManagerToUse)
@@ -18,7 +45,7 @@ rsModulationSetup::rsModulationSetup(AutomatableWidget* widgetToModulate,
   addWidget( modulationsLabel = 
     new RTextField(widgetToModulate->getParameterName() + " Modulations") );
   modulationsLabel->setNoBackgroundAndOutline(true);
-  modulationsLabel->setDescription(juce::String("Modulation setup"));
+  modulationsLabel->setDescription("Modulation setup");
 
   addWidget( addButton = new RButton("Add") );
   addButton->setDescription(juce::String("Adds a new modulation connection"));
