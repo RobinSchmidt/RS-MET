@@ -61,9 +61,9 @@ namespace jura
 #include "gui/widgets/jura_RComboBox.cpp"
 #include "gui/widgets/jura_RTimeGridComboBox.cpp"
 #include "gui/widgets/jura_RSyncIntervalComboBox.cpp"
+#include "gui/widgets/jura_NodeEditor.cpp"
 #include "gui/widgets/jura_AutomatableWidget.cpp"
 #include "gui/widgets/jura_VectorPad.cpp"
-#include "gui/widgets/jura_NodeEditor.cpp"
 
 #include "gui/misc/jura_ComponentScrollContainer.cpp"
 

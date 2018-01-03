@@ -19,7 +19,10 @@ rsAutomationSetup::rsAutomationSetup(AutomatableWidget* widgetToAutomate,
   metaAttachBox->setDescription("Select meta parameter to attach");
   // todo: fill the box
 
-  setSize(250, 100);
+  addWidget(metaMapEditor = new rsNodeEditor);
+  metaMapEditor->setDescription("Mapping between meta-parameter and parameter");
+
+  setSize(250, 200);
 }
 
 rsAutomationSetup::~rsAutomationSetup() 
@@ -53,6 +56,10 @@ void rsAutomationSetup::resized()
 
   closeButton->setBounds(w-16, 0, 16, 16);
   //automationLabel->setBounds(x, y, w-8-16, sh); y += inc; 
+
+  y = closeButton->getBottom() + d;
+  h = getHeight()-y;
+  metaMapEditor->setBounds(0, y, w, h);
 }
 
 //=================================================================================================

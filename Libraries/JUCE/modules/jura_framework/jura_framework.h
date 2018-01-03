@@ -104,9 +104,9 @@ namespace jura
 #include "gui/widgets/jura_RComboBox.h"
 #include "gui/widgets/jura_RTimeGridComboBox.h"      // move to jura_processors
 #include "gui/widgets/jura_RSyncIntervalComboBox.h"  // move to jura_processors
+#include "gui/widgets/jura_NodeEditor.h"
 #include "gui/widgets/jura_AutomatableWidget.h"
 #include "gui/widgets/jura_VectorPad.h"
-#include "gui/widgets/jura_NodeEditor.h"
 // there are still some special widgets missing - copy them over soon...
 
 #include "gui/misc/jura_ComponentScrollContainer.h" // needs jura_RScrollBar.h

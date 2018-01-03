@@ -5,6 +5,7 @@
 
 class rsModulationConnectionWidget;
 class AutomatableWidget;
+//class rsNodeEditor;
 
 /** Baseclass for rsAutomationSetup and rsModulationSetup. */
 
@@ -53,6 +54,7 @@ protected:
   void showMetaAttachPopUp();
 
   RComboBox* metaAttachBox;
+  rsNodeEditor* metaMapEditor;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsAutomationSetup)
 };
