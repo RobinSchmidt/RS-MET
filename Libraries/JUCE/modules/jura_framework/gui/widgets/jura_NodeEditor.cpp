@@ -260,6 +260,12 @@ rsNodeBasedFunctionEditor::rsNodeBasedFunctionEditor(
   valueMapper = functionMapper;
 }
 
+void rsNodeBasedFunctionEditor::setFunctionToEdit(RAPT::rsNodeBasedFunction<double>* func) 
+{ 
+  valueMapper = func;
+  updateDraggableNodesArray();
+}
+
 void rsNodeBasedFunctionEditor::paint(Graphics& g)
 {
   ScopedPointerLock spl(lock);
@@ -332,4 +338,18 @@ int rsNodeBasedFunctionEditor::nodeChanged(int nodeIndex)
   reIndexNode(nodeIndex, newIndex);
   rsNodeEditor::nodeChanged(nodeIndex);
   return newIndex;
+}
+
+void rsNodeBasedFunctionEditor::updateDraggableNodesArray()
+{
+  nodes.clear();
+  if(valueMapper == nullptr)
+    return;
+  const std::vector<RAPT::rsFunctionNode<double>> funcNodes = valueMapper->getNodes();
+  for(size_t i = 0; i < funcNodes.size(); i++) 
+  {
+    rsDraggableNode* node = new rsDraggableNode(this, funcNodes[i].getX(), funcNodes[i].getY());
+    node->setIndex(i);
+    nodes.push_back(node); 
+  }
 }

@@ -44,10 +44,10 @@ public:
   inline void setShapeParameter(int newParameter) { shapeParam = newParam; }
 
   /** Returns the x-coordinate of this node. */
-  inline T getX() { return x; }
+  inline T getX() const { return x; }
 
   /** Returns the y-coordinate of this node. */
-  inline T getY() { return y; }
+  inline T getY() const { return y; }
 
   /** A node is considered to be less than another, if its x-coordinate is less and in case of 
   equal x-coordinates, if its y-coordinate is less. */

@@ -15,7 +15,7 @@ public:
   // \name Construction/Destruction
 
   /** Constructor */
-  rsDraggableNode(rsNodeEditor* editorContainingThisNode, double pixelX, double pixelY);
+  rsDraggableNode(rsNodeEditor* editorContainingThisNode, double x, double y);
 
   /** Destructor */
   ~rsDraggableNode();
@@ -182,7 +182,7 @@ public:
   // \name Setup
 
   /** Sets up the rsNodeBasedFunction object to be edited. */
-  virtual void setFunctionToEdit(RAPT::rsNodeBasedFunction<double>* func) { valueMapper = func; }
+  virtual void setFunctionToEdit(RAPT::rsNodeBasedFunction<double>* func);
 
   /** Sets the mutex lock that we use to access the rsNodeBasedFunction when inserting/removing 
   and moving around nodes. */
@@ -201,6 +201,10 @@ public:
 
 
 protected:
+
+  /** Updates the inherited array of draggable nodes in order to in sync with the 
+  rsNodeBasedFunction object that is edited. */
+  void updateDraggableNodesArray();
 
   RAPT::rsNodeBasedFunction<double>* valueMapper = nullptr;
 
