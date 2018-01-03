@@ -12,7 +12,19 @@ class JUCE_API rsParameterSetupBase : public ColourSchemeComponent, public RButt
   public rsDeletionRequester, public rsGarbageCollector, public RPopUpMenuObserver
 {
 
+public:
 
+  rsParameterSetupBase(AutomatableWidget* widgetToModulate, MetaParameterManager* metaManager);
+  virtual ~rsParameterSetupBase() {}
+
+
+protected:
+
+  AutomatableWidget* widget;                 // our owner widget
+  MetaParameterManager* metaManager;
+  RClickButtonNotifyOnMouseUp* closeButton; 
+
+  static const int sliderHeight = 16, sliderDistance = 4;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsParameterSetupBase)
 };
@@ -35,9 +47,8 @@ class JUCE_API rsAutomationSetup : public rsParameterSetupBase
 
 /** A component for setting up the modulations of some ModulationTarget. */
 
-class JUCE_API rsModulationSetup : public ColourSchemeComponent, public RButtonListener, 
-  public rsDeletionRequester, public rsGarbageCollector, public RPopUpMenuObserver, 
-  public RTextEntryFieldObserver, public ModulationTargetObserver
+class JUCE_API rsModulationSetup : public rsParameterSetupBase, public RTextEntryFieldObserver, 
+  public ModulationTargetObserver
 {
 
 public:
@@ -102,22 +113,17 @@ protected:
   double getClipMin();
   double getClipMax();
 
-  AutomatableWidget* widget;         // our owner widget
-  MetaParameterManager* metaManager; // used for meta-controlling modulation amounts
   //ModulationManager*    modManager;  // needed for debugging
 
   // owned widgets:
-  RTextField* modulationsLabel;
+  RTextField* modulationsLabel; // rename, move to baseclass
   std::vector<rsModulationConnectionWidget*> connectionWidgets;
 
   RButton *addButton, *removeButton;
-  RClickButtonNotifyOnMouseUp* closeButton;
-  RLabeledTextEntryField *clipMinField, *clipMaxField;
+  RLabeledTextEntryField *clipMinField, *clipMaxField; // maybe move to baseclass
 
   RPopUpMenu *connectableSourcesPopUp = nullptr; // created when needed the first time
   RPopUpMenu *removableSourcesPopUp   = nullptr; // ditto
-
-  static const int sliderHeight = 16, sliderDistance = 4;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsModulationSetup)
 };

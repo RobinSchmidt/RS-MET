@@ -1,18 +1,24 @@
-rsModulationSetup::rsModulationSetup(AutomatableWidget* widgetToModulate, 
-  MetaParameterManager* metaManagerTouse)
-  : rsDeletionRequester(widgetToModulate)
-  , widget(widgetToModulate)
-  , metaManager(metaManagerTouse)
+rsParameterSetupBase::rsParameterSetupBase(AutomatableWidget* widgetToSetup,
+  MetaParameterManager* metaManagerToUse)
+  : rsDeletionRequester(widgetToSetup), widget(widgetToSetup), metaManager(metaManagerToUse)
 {
+  addWidget( closeButton = new RClickButtonNotifyOnMouseUp(RButton::CLOSE) );
+  closeButton->setClickingTogglesState(false);
+  closeButton->addRButtonListener(this);
+}
+
+//=================================================================================================
+
+rsModulationSetup::rsModulationSetup(AutomatableWidget* widgetToModulate, 
+  MetaParameterManager* metaManagerToUse)
+  : rsParameterSetupBase(widgetToModulate, metaManagerToUse)
+{
+  closeButton->setDescription("Closes the modulation setup window");
+
   addWidget( modulationsLabel = 
     new RTextField(widgetToModulate->getParameterName() + " Modulations") );
   modulationsLabel->setNoBackgroundAndOutline(true);
   modulationsLabel->setDescription(juce::String("Modulation setup"));
-
-  addWidget( closeButton = new RClickButtonNotifyOnMouseUp(RButton::CLOSE) );
-  closeButton->setDescription(juce::String("Closes the modulation setup window"));
-  closeButton->setClickingTogglesState(false);
-  closeButton->addRButtonListener(this);
 
   addWidget( addButton = new RButton("Add") );
   addButton->setDescription(juce::String("Adds a new modulation connection"));
