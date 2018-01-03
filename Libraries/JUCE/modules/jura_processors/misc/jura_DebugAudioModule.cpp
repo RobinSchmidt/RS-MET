@@ -109,7 +109,7 @@ void DebugModuleEditor::createWidgets()
 
   // create vector-pad and node-editor:
   addWidget(xyPad = new rsVectorPad);
-  addWidget(nodeEditor = new rsNodeEditor);
+  //addWidget(nodeEditor = new rsNodeEditor);
 
   addWidget( leftSlider = s = new Sld );
   s->assignParameter( p = debugModule->getParameterByName("Left") );

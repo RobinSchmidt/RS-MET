@@ -6,18 +6,26 @@ rsMetaParameterMapper::rsMetaParameterMapper()
 
 size_t rsMetaParameterMapper::addNode(double x, double y)
 {
+  x = clip(x, 0, 1); y = clip(y, 0, 1);
   return RAPT::rsNodeBasedFunction<double>::addNode(x, y);
 }
 
 void rsMetaParameterMapper::removeNode(size_t index)
 {
+  if(index == 0 || index == nodes.size()-1) return; // first and last node can't be removed
   RAPT::rsNodeBasedFunction<double>::removeNode(index);
 }
 
-size_t rsMetaParameterMapper::moveNode(size_t index, double newX, double newY)
+size_t rsMetaParameterMapper::moveNode(size_t index, double x, double y)
 {
-  return RAPT::rsNodeBasedFunction<double>::moveNode(index, newX, newY);
+  x = clip(x, 0, 1); y = clip(y, 0, 1);  // x and y must be in 0..1
+  if(index == 0)               x = 0;    // first node's x value is fixed at 0
+  if(index == nodes.size()-1)  x = 1;    // last node's x value is fixed at 1
+  return RAPT::rsNodeBasedFunction<double>::moveNode(index, x, y);
 }
+
+// it doesn't really work (or isn't enough) to apply the constraints here - we also need to apply
+// them in the editor
 
 // experimental: null objects (as in https://sourcemaking.com/design_patterns/null_object) to be
 // used by default:

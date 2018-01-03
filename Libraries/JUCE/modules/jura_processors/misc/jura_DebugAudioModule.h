@@ -64,7 +64,7 @@ protected:
   DebugAudioModule *debugModule;
 
   rsVectorPad *xyPad;
-  rsNodeEditor *nodeEditor;
+  rsNodeEditor *nodeEditor = nullptr;
 
   ModulatableSlider *leftSlider, *rightSlider, *smoothSlider;
   //AutomatableComboBox *modeComboBox;
