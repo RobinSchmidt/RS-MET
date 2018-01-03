@@ -111,6 +111,10 @@ public:
   /** Sets the size of the dots in pixels. */
   void setDotSize(float newDotSize);
 
+  /** Sets the range of values between which nodes can be moved (in model coordinates). */
+  void setValueRange(double minX, double maxX, double minY, double maxY)
+  { xyMapper.setInputRange(minX, maxX, minY, maxY); }
+
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
