@@ -6,6 +6,33 @@
 class rsModulationConnectionWidget;
 class AutomatableWidget;
 
+/** Baseclass for rsAutomationSetup and rsModulationSetup. */
+
+class JUCE_API rsParameterSetupBase : public ColourSchemeComponent, public RButtonListener, 
+  public rsDeletionRequester, public rsGarbageCollector, public RPopUpMenuObserver
+{
+
+
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsParameterSetupBase)
+};
+
+//=================================================================================================
+
+/** A component for setting up the the connection of a parameter to a meta-parameter, the mapping
+and smoothing. */
+
+class JUCE_API rsAutomationSetup : public rsParameterSetupBase
+{
+
+
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsAutomationSetup)
+};
+
+
+//=================================================================================================
+
 /** A component for setting up the modulations of some ModulationTarget. */
 
 class JUCE_API rsModulationSetup : public ColourSchemeComponent, public RButtonListener, 
@@ -94,7 +121,6 @@ protected:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsModulationSetup)
 };
-
 
 //=================================================================================================
 
