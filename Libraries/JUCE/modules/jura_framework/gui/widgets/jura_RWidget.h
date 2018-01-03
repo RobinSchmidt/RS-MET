@@ -128,7 +128,7 @@ protected:
     // needs a double parameter for the value to show initially
 
   /** The assigned Parameter object. */
-  Parameter* assignedParameter;
+  Parameter* assignedParameter = nullptr;
 
   /** A pointer to the function which converts a value into a juce::String. */
   juce::String (*stringConversionFunction) (double valueToConvert);

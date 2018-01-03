@@ -9,7 +9,7 @@ class AutomatableWidget;
 /** Baseclass for rsAutomationSetup and rsModulationSetup. */
 
 class JUCE_API rsParameterSetupBase : public ColourSchemeComponent, public RButtonListener, 
-  public rsDeletionRequester, public rsGarbageCollector, public RPopUpMenuObserver
+  public rsDeletionRequester, public rsGarbageCollector
 {
 
 public:
@@ -43,7 +43,7 @@ public:
   rsAutomationSetup(AutomatableWidget* widgetToAutomate, MetaParameterManager* metaManager);
   virtual ~rsAutomationSetup();
 
-
+  virtual void rButtonClicked(RButton *button) override;
   virtual void rComboBoxChanged(RComboBox* cb) override;
 
 protected:
@@ -61,8 +61,8 @@ protected:
 
 /** A component for setting up the modulations of some ModulationTarget. */
 
-class JUCE_API rsModulationSetup : public rsParameterSetupBase, public RTextEntryFieldObserver, 
-  public ModulationTargetObserver
+class JUCE_API rsModulationSetup : public rsParameterSetupBase, public RTextEntryFieldObserver,
+  public RPopUpMenuObserver, public ModulationTargetObserver
 {
 
 public:
@@ -207,6 +207,7 @@ protected:
 
     META_ATTACH,
     META_DETACH,
+    AUTOMATION_SETUP,
 
     MODULATION_SETUP
   };
@@ -233,7 +234,11 @@ protected:
   /** Closes the popup menu. */
   virtual void closePopUp();
 
+  /** Shows the setup for the automation (attachment to meta parameters, mapping functions, 
+  midi controllers and smoothing). */
+  virtual void showAutomationSetup();
 
+  /** Shows the setup for the modulation connections. */
   virtual void showModulationSetup();
 
   /** This is called from the modulation setup popup window when the user clicks on its 
@@ -242,10 +247,11 @@ protected:
   destructor. */
   virtual void deleteObject(rsDeletionRequester* objectToDelete) override;
 
-  RWidget *wrappedWidget;                 // widget that is being made automatable
-  bool popUpIsOpen = false;               // maybe we can get rid of this?
-  RPopUpMenu *rightClickPopUp = nullptr;  // object created when it's needed for the 1st time
-  rsModulationSetup* modSetup = nullptr;  // ditto for modulation setup
+  RWidget *wrappedWidget;                  // widget that is being made automatable
+  bool popUpIsOpen = false;                // maybe we can get rid of this?
+  RPopUpMenu *rightClickPopUp  = nullptr;  // object created when it's needed for the 1st time
+  rsModulationSetup* modSetup  = nullptr;  // ditto for modulation setup
+  rsAutomationSetup* metaSetup = nullptr;  // ditto
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomatableWidget)
 };
@@ -388,8 +394,8 @@ class JUCE_API ModulatableSlider : public AutomatableSlider, public ModulationTa
 
 public:
 
-  ModulatableSlider() {}
-  ~ModulatableSlider();
+  ModulatableSlider();
+  virtual ~ModulatableSlider();
   void modulationsChanged() override;
   void assignParameter(Parameter* parameterToAssign) override;
   void paint(Graphics& g) override;

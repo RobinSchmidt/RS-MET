@@ -1176,8 +1176,8 @@ EqualizerModuleEditor::EqualizerModuleEditor(CriticalSection *newPlugInLock,
   useSmallComboBox    = false;
   stateWidgetSet->addChangeListener(this);
   setEqualizerModuleToEdit(newEqualizerAudioModule);
+  setSize(500, 234); // needs to be called before updateWidgetsAccordingToState or we may call resize during paint or soemthing (hits a jassert)
   updateWidgetsAccordingToState();
-  setSize(500, 234);
 }
 
 EqualizerModuleEditor::~EqualizerModuleEditor()

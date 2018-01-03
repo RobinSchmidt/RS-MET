@@ -245,7 +245,7 @@ void rsNodeEditor::drawNodes(Graphics& g)
     {
       String str = String(i) + ": x=" + String(x) + ", y=" + String(y);
       //String str = String(i) + "," + String(x) + "," + String(y);
-      drawBitmapFontText(g, getPixelX(nodes[i]), getPixelY(nodes[i])-10, str, 
+      drawBitmapFontText(g, (int)getPixelX(nodes[i]), (int)getPixelY(nodes[i])-10, str, 
         &normalFont7px, getTextColour(), -1, Justification::centred);
     }
   }

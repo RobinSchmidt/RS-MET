@@ -19,11 +19,18 @@ rsAutomationSetup::rsAutomationSetup(AutomatableWidget* widgetToAutomate,
   metaAttachBox->setDescription("Select meta parameter to attach");
   // todo: fill the box
 
+  //setSize(250, 100);
 }
 
 rsAutomationSetup::~rsAutomationSetup() 
 {
   delete metaAttachBox;
+}
+
+void rsAutomationSetup::rButtonClicked(RButton *b)
+{
+  if(b == closeButton)
+    requestDeletion();  // maybe move to baseclass
 }
 
 void rsAutomationSetup::rComboBoxChanged(RComboBox* cb)
@@ -489,8 +496,9 @@ void AutomatableWidget::addPopUpMetaItems()
     else
       miString = "(currently none)";
 
-    rightClickPopUp->addItem(META_ATTACH, "Meta attach " + miString);
-    rightClickPopUp->addItem(META_DETACH, "Meta detach");
+    rightClickPopUp->addItem(META_ATTACH,      "Meta attach " + miString);
+    rightClickPopUp->addItem(META_DETACH,      "Meta detach");
+    rightClickPopUp->addItem(AUTOMATION_SETUP, "Automation setup");
   }
 }
 
@@ -523,9 +531,22 @@ void AutomatableWidget::closePopUp()
   popUpIsOpen = false;
 }
 
+void AutomatableWidget::showAutomationSetup()
+{
+  int wh = wrappedWidget->getHeight();       // widget height
+  int x  = wrappedWidget->getScreenX();
+  int y  = wrappedWidget->getScreenY() + wh; // preliminary
+
+  if(metaSetup == nullptr)
+    metaSetup = new rsAutomationSetup(this, getMetaParameterManager());
+  metaSetup->setTopLeftPosition(x, y);
+  metaSetup->addToDesktop(ComponentPeer::windowHasDropShadow | ComponentPeer::windowIsTemporary);
+  metaSetup->setVisible(true);
+  metaSetup->toFront(true);
+}
+// todo: get rid of code duplication
 void AutomatableWidget::showModulationSetup()
 {
-  //int ww = wrappedWidget->getWidth();        // widget width
   int wh = wrappedWidget->getHeight();       // widget height
   int x  = wrappedWidget->getScreenX();
   int y  = wrappedWidget->getScreenY() + wh; // preliminary
@@ -537,6 +558,7 @@ void AutomatableWidget::showModulationSetup()
   modSetup->setVisible(true);
   modSetup->toFront(true);
 }
+
 
 void AutomatableWidget::deleteObject(rsDeletionRequester* objectToDelete)
 {
@@ -761,6 +783,11 @@ void rsModulationConnectionWidget::resized()
 
 //=================================================================================================
 
+ModulatableSlider::ModulatableSlider() 
+{
+
+}
+
 ModulatableSlider::~ModulatableSlider()
 {
   ModulatableParameter* mp = dynamic_cast<ModulatableParameter*> (assignedParameter);
@@ -784,7 +811,10 @@ void ModulatableSlider::assignParameter(Parameter* p)
 void ModulatableSlider::paint(Graphics& g)
 {
   AutomatableSlider::paint(g);
-  ModulatableParameter* mp = dynamic_cast<ModulatableParameter*> (assignedParameter);
-  if(mp && mp->hasConnectedSources())
-    g.fillAll(Colour::fromFloatRGBA(1.f, 0.f, 0.f, 0.125f)); // preliminary
+  if(assignedParameter != nullptr)
+  {
+    ModulatableParameter* mp = dynamic_cast<ModulatableParameter*> (assignedParameter);
+    if(mp && mp->hasConnectedSources())
+      g.fillAll(Colour::fromFloatRGBA(1.f, 0.f, 0.f, 0.125f)); // preliminary
+  }
 }
