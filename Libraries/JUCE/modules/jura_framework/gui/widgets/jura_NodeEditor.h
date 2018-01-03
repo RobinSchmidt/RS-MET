@@ -175,11 +175,21 @@ class rsNodeBasedFunctionEditor : public rsNodeEditor
 
 public:
 
-  rsNodeBasedFunctionEditor(RAPT::rsNodeBasedFunction<double>* functionMapper, 
+  rsNodeBasedFunctionEditor(RAPT::rsNodeBasedFunction<double>* functionMapper = nullptr, 
     CriticalSection* lockToUse = nullptr);
 
   //-----------------------------------------------------------------------------------------------
-  // \name Overrides:
+  // \name Setup
+
+  /** Sets up the rsNodeBasedFunction object to be edited. */
+  virtual void setFunctionToEdit(RAPT::rsNodeBasedFunction<double>* func) { valueMapper = func; }
+
+  /** Sets the mutex lock that we use to access the rsNodeBasedFunction when inserting/removing 
+  and moving around nodes. */
+  virtual void setMutexToUse(CriticalSection* newMutex) { lock = newMutex; }
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Overrides
 
   virtual void paint(Graphics& g) override;
   //virtual rsDraggableNode* addNode(double pixelX, double pixelY) override;

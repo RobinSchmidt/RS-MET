@@ -130,7 +130,7 @@ public:
   pass none, an identity mapping will be used by default. The mapper object should be valid for the
   entire lifetime of this MetaControlledParameter. To reset it, you can use this function with a 
   nullptr argument. */
-  virtual void setParameterMapper(NormalizedParameterMapper* newMapper);
+  //virtual void setParameterMapper(NormalizedParameterMapper* newMapper);
     // feature is not yet tested
 
   /** Attaches this parameter to the MetaParameter with the given index (in the
@@ -153,11 +153,15 @@ public:
   /** Returns the name of the MetaParameter which this Parameter is attached to. */
   String getMetaParameterName();
 
+  /** Returns a pointer to our mapper object. */
+  rsMetaParameterMapper* getMapper() { return &mapper; }
+
 protected:
 
   int metaIndex = -1;
   MetaParameterManager* metaParaManager = nullptr; // use a Null Object by default
-  NormalizedParameterMapper* mapper = nullptr;
+  //NormalizedParameterMapper* mapper = nullptr;
+  rsMetaParameterMapper mapper;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MetaControlledParameter)
 };

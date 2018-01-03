@@ -19,8 +19,15 @@ rsAutomationSetup::rsAutomationSetup(AutomatableWidget* widgetToAutomate,
   metaAttachBox->setDescription("Select meta parameter to attach");
   // todo: fill the box
 
-  addWidget(metaMapEditor = new rsNodeEditor);
+  addWidget(metaMapEditor = new rsNodeBasedFunctionEditor);
   metaMapEditor->setDescription("Mapping between meta-parameter and parameter");
+
+  MetaControlledParameter* mcp = widget->getMetaControlledParameter();
+  if(mcp != nullptr)
+  {
+    metaMapEditor->setFunctionToEdit(mcp->getMapper());
+    metaMapEditor->setMutexToUse(mcp->getUsedMutex());
+  }
 
   setSize(250, 200);
 }

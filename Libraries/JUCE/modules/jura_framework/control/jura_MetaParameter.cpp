@@ -1,6 +1,7 @@
 rsMetaParameterMapper::rsMetaParameterMapper()
 {
-
+  addNode(0, 0);
+  addNode(1, 1);
 }
 
 size_t rsMetaParameterMapper::addNode(double x, double y)
@@ -38,10 +39,17 @@ MetaControlledParameter::MetaControlledParameter(const juce::String& name, doubl
 void MetaControlledParameter::setFromMetaValue(double newMetaValue, bool sendNotification, 
   bool callCallbacks)
 {
+  setProportionalValue(mapper.map(newMetaValue), sendNotification, callCallbacks);
+  // this is preliminary - we may need to keep track of the unmapped value and/or override 
+  // setProportionalValue...we'll see...
+
+
+  /*
   if(mapper == nullptr)
     setProportionalValue(newMetaValue, sendNotification, callCallbacks);
   else
     setProportionalValue(mapper->map(newMetaValue), sendNotification, callCallbacks);
+    */
 
   //setProportionalValue(newMetaValue, sendNotification, callCallbacks);
 
@@ -70,7 +78,7 @@ void MetaControlledParameter::setMetaParameterManager(MetaParameterManager *newM
   }
 
 }
-
+/*
 void MetaControlledParameter::setParameterMapper(NormalizedParameterMapper *newMapper)
 {
   mapper = newMapper;
@@ -82,7 +90,7 @@ void MetaControlledParameter::setParameterMapper(NormalizedParameterMapper *newM
   // implemented by (somehow) quering the metaParaManager (if not null) or use the proportional 
   // value of this Parameter (if metaParaManager null) 
 }
-
+*/
 void MetaControlledParameter::attachToMetaParameter(int index)
 {
   jassert(metaParaManager != nullptr); // we need a reference to a MetaParameterManager object

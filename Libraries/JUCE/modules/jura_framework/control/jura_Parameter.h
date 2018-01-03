@@ -398,6 +398,9 @@ public:
     //return stringValues.size() != 0;
   }
 
+  /** Returns a pointer to the mutex lock object that is used by this parameter. */
+  CriticalSection* getUsedMutex() const { return mutex; }
+
   //-----------------------------------------------------------------------------------------------
   // functions for the callback-mechanisms:
 

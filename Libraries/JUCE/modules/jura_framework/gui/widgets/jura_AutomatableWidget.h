@@ -54,7 +54,7 @@ protected:
   void showMetaAttachPopUp();
 
   RComboBox* metaAttachBox;
-  rsNodeEditor* metaMapEditor;
+  rsNodeBasedFunctionEditor* metaMapEditor;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsAutomationSetup)
 };
