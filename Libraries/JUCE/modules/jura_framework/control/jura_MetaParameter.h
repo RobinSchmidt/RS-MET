@@ -37,6 +37,25 @@ todo:
 -don't use class AutomatableParameter anymore - consider it deprecated, but maybe it should still
  be renamed into MidiControlledParameter...and perhaps be moved inot the jura_processors module
  we may still need it for legacy code compatibility
+
+
+ meta-mapping use case:
+ -cutoff and reso are attached to the same meta
+ -reso has nonmonotonic meta-mapping, say, with a bump in the middle (i.e. high-reso at mid-cutoff)
+ -user moves reso-slider
+ -reso-slider calls setValue on the reso-parameter
+ -reso-parameter notifies meta about the value-change
+ -meta sets up cutoff
+ -how does the the meta know which is the right cutoff? we can't map back from the actual 
+  reso-value - somehow we must keep track of reso-slider's normalized value
+ -the reso-slider's position should reflect that unmapped narmalized value but the numeric readout
+  should reflect the actual resnance
+ ->the presence of the meta-attachment would change the behavior (mapping) of the reso-slider
+   ...maybe we must override the mapping function in MetaControlledParameter
+
+
+
+
 */
 
 /** This is an abstract baseclass for classes that are supposed to map an input value (which is 
@@ -57,6 +76,23 @@ public:
   should have the property that any value between 0..1 (ends inclusive) is a valid input and the 
   output values should be restricted to that same range. */
   virtual double map(double input) = 0;
+
+};
+// naahhh...don't do it that way
+
+
+class JUCE_API rsMetaParameterMapper : public RAPT::rsNodeBasedFunction<double>
+{
+public:
+
+  rsMetaParameterMapper();
+
+  // overriden from rsNodeBasedFunction to apply some restrictions:
+  size_t addNode(double x, double y) override;
+  void removeNode(size_t index) override;
+  size_t moveNode(size_t index, double newX, double newY) override;
+
+  double map(double x) { return rsNodeBasedFunction<double>::getValue(x); }
 
 };
 

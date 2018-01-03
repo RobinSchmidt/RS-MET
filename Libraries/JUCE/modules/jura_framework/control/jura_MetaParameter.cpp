@@ -1,9 +1,29 @@
+rsMetaParameterMapper::rsMetaParameterMapper()
+{
+
+}
+
+size_t rsMetaParameterMapper::addNode(double x, double y)
+{
+  return RAPT::rsNodeBasedFunction<double>::addNode(x, y);
+}
+
+void rsMetaParameterMapper::removeNode(size_t index)
+{
+  RAPT::rsNodeBasedFunction<double>::removeNode(index);
+}
+
+size_t rsMetaParameterMapper::moveNode(size_t index, double newX, double newY)
+{
+  return RAPT::rsNodeBasedFunction<double>::moveNode(index, newX, newY);
+}
 
 // experimental: null objects (as in https://sourcemaking.com/design_patterns/null_object) to be
 // used by default:
 //MetaParameterManager nullMetaParameterManager;
 //NormalizedParameterMapper nullParameterMapper;
 
+//=================================================================================================
 
 MetaControlledParameter::MetaControlledParameter(const juce::String& name, double min, double max,
   double defaultValue, int scaling, double interval)

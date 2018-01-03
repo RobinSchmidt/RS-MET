@@ -87,15 +87,15 @@ class rsNodeBasedFunction
 public:
 
   /** Adds a new node at the given coordinates and returns the index at which it was inserted. */
-  size_t addNode(T x, T y);
+  virtual size_t addNode(T x, T y);
 
   /** Removes the node with given index. */
-  void removeNode(size_t index);
+  virtual void removeNode(size_t index);
 
   /** Moves an existing datapoint with given index to a new position. Because we always keep our 
   data arrays sorted, this may change the index of the datapoint inside the array. The return value
   informs about the new index. */
-  size_t moveNode(size_t index, T newX, T newY);
+  virtual size_t moveNode(size_t index, T newX, T newY);
 
   /** Returns a reference to our array of nodes. It's a constant reference because client code
   is not allowed to edit that data directly. Instead, it must use the moveNode function which
