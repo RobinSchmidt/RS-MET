@@ -171,11 +171,16 @@ public:
   /** Returns a pointer to our mapper object. */
   rsMetaParameterMapper* getMapper() { return &mapper; }
 
+  /** Overrides baseclass method in order to return the stored normalized value instead of 
+  converting back from the actual value (which is not generally possible here anymore due to the
+  presence of a possibly nonmonotonic mapping function). */
+  virtual double getNormalizedValue() override { return normalizedValue; }
+
 protected:
 
+  double normalizedValue = 0.5;
   int metaIndex = -1;
   MetaParameterManager* metaParaManager = nullptr; // use a Null Object by default
-  //NormalizedParameterMapper* mapper = nullptr;
   rsMetaParameterMapper mapper;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MetaControlledParameter)

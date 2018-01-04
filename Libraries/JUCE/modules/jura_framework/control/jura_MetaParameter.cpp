@@ -47,15 +47,14 @@ MetaControlledParameter::MetaControlledParameter(const juce::String& name, doubl
 void MetaControlledParameter::setFromMetaValue(double newMetaValue, bool sendNotification, 
   bool callCallbacks)
 {
-  setNormalizedValue(mapper.map(newMetaValue), sendNotification, callCallbacks);
-  // this is preliminary - we may need to keep track of the unmapped value and/or override 
-  // setProportionalValue...we'll see...
+  setNormalizedValue(newMetaValue, sendNotification, callCallbacks);
 }
 
 void MetaControlledParameter::setNormalizedValue(double newValue, bool sendNotification,
   bool callCallbacks)
 {
-  rsSmoothableParameter::setNormalizedValue(newValue, sendNotification, callCallbacks);
+  normalizedValue = newValue;
+  rsSmoothableParameter::setNormalizedValue(mapper.map(newValue), sendNotification, callCallbacks);
 }
 /*
 void MetaControlledParameter::setValue(double newValue, bool sendNotification, bool callCallbacks)
