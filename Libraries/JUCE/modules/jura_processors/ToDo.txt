@@ -5,6 +5,9 @@ next:
     the normalized value and call setNormalizedValue on the parameter, RSlider::setValue should
     not be called when we have a meta-mapped underlying parameter (insert jassert) 
  -> all (automatable) widgets need to call get/setNormalizedValue
+ -> maybe getValue, getNormalizedValue, getNormalizedDefaultValue should delegate to the assigned
+    parameter, if any
+
 -add features to automation setup: meta slider, attachment menu, sliders for node x,y, smoothing
  maybe midi
 -check tolerance condition ins rsSmoothableParameter::setvalue

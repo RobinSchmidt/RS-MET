@@ -305,7 +305,10 @@ public:
   double getRawValue() const { ScopedPointerLock spl(mutex); return value; }
 
   /** Returns the normalized value in the range 0..1. */
-  virtual double getNormalizedValue() { return valueToProportion(value); }
+  virtual double getNormalizedValue() { ScopedPointerLock spl(mutex); return valueToProportion(value); }
+
+  /** Returns the normalized default value in the range 0..1. */
+  virtual double getNormalizedDefaultValue() { ScopedPointerLock spl(mutex); return valueToProportion(defaultValue); }
 
   /** Converts the clear text value to a proportional value in the range 0..1 according to our
   scaling/mapping function. */

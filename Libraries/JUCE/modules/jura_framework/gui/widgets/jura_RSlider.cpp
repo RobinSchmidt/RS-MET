@@ -324,6 +324,27 @@ const String& RSlider::getSliderName() const
   return sliderName;
 }
 
+double RSlider::getValue() const 
+{
+  if(assignedParameter)
+    return assignedParameter->getValue();
+  return currentValue; 
+}
+
+double RSlider::getNormalizedValue() const 
+{ 
+  if(assignedParameter)
+    return assignedParameter->getNormalizedValue();
+  return valueToProportionOfLength(getValue()); 
+}
+
+double RSlider::getNormalizedDefaultValue() const 
+{ 
+  if(assignedParameter)
+    return assignedParameter->getNormalizedDefaultValue();
+  return valueToProportionOfLength(defaultValue); 
+}
+
 //-------------------------------------------------------------------------------------------------
 // callbacks:
 
