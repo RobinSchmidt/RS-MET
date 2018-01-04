@@ -1,6 +1,9 @@
 next: 
 -constrain meta-mapping nodes in the editor
 -fix slider behavior when map is nonmonotonic and make nonmonotonic generally maps work
+ -> mouse callbacks should only call setNormalizedValue, there, we should constrain and quantize 
+    the normalized value and call setNormalizedValue on the parameter, RSlider::setValue should
+    not be called when we have a meta-mapped underlying parameter (insert jassert) 
 -add features to automation setup: meta slider, attachment menu, sliders for node x,y, smoothing
  maybe midi
 -check tolerance condition ins rsSmoothableParameter::setvalue
