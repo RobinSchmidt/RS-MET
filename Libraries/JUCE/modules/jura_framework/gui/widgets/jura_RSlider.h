@@ -180,6 +180,8 @@ public:
 
 protected:
 
+  /** Returns true when this slider has an underlying parameter that can handle only calls to 
+  setNormalizedValue (not setValue) due to possibly nonmonotonic mapping. */
   virtual bool needsToSetNormalizedParameter();
 
   /** Returns a value that is constrained to the range of the slider. */

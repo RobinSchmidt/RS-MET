@@ -143,7 +143,9 @@ void RSlider::setDefaultValues(std::vector<double> newDefaultValues)
 
 void RSlider::setToDefaultValue(const bool sendUpdateMessage, const bool sendMessageSynchronously)
 {
-  setValue(defaultValue, sendUpdateMessage, sendMessageSynchronously);
+  jassertfalse;
+  // setValue(defaultValue, sendUpdateMessage, sendMessageSynchronously);
+  // old - needs update to work with normalized values only, if necessary
 }
 
 void RSlider::assignParameter(Parameter *parameterToAssign)
@@ -332,21 +334,11 @@ void RSlider::mouseDown(const MouseEvent& e)
   if( isEnabled() )
   {
     if( e.mods.isCommandDown() )
-    {
-      //if( assignedParameter != NULL )
-      //  setValue( assignedParameter->getDefaultValue() );
-      //else
-      //  setValue(defaultValue);   // these default-values should actually be in sync...
-      setValue(defaultValue);
-    }
+      setToDefaultValue(false, false);
     else if( e.mods.isLeftButtonDown() /*&& ModifierKeys::getCurrentModifiers().isAltDown()*/ )
     {
       if(e.mods.isAltDown())
-      {
-        // jump to value only when alt is down:
-        double tmpValue = proportionOfLengthToValue((double)e.x / (double)getWidth());
-        setValue(constrainAndQuantizeValue(tmpValue), false, false);
-      }
+        setNormalizedValue((double)e.x / (double)getWidth(), false, false); // why false?
       valueOnMouseDown = getValue();
       oldDragDistance  = 0;
       dragValue        = 0.0;
