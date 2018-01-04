@@ -84,8 +84,8 @@ public:
 
   /** Sets the value of the slider expressed as proportion of the slider's range, taking into
   account the scaling behaviour. The value is thus between 0...1. */
-  virtual void setProportionalValue(double newProportionalValue,
-    const bool sendUpdateMessage = true, const bool sendMessageSynchronously = false);
+  virtual void setNormalizedValue(double newValue, const bool sendUpdateMessage = true, 
+    const bool sendMessageSynchronously = false);
     // todo: rename to setNormalizedValue
 
   /** Sets the single default value that will be used on ctrl-click. */
@@ -125,7 +125,7 @@ public:
 
   /** Returns the value of the slider expressed as proportion of the slider's range, taking into
   account the scaling behaviour. The value is thus between 0...1. */
-  virtual double getProportionalValue() const { return valueToProportionOfLength(currentValue); }
+  virtual double getNormalizedValue() const { return valueToProportionOfLength(currentValue); }
 
   /** Returns the maximum value of the slider. */
   virtual double getMaximum()  const { return maxValue; }

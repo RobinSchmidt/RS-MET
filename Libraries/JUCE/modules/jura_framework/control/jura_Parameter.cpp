@@ -120,11 +120,10 @@ void Parameter::setRangeAndValue(double newMin, double newMax, double newValue,
     notifyObservers();
 }
 
-void Parameter::setProportionalValue(double newProportionalValue,
-  bool sendNotification, bool callCallbacks)
+void Parameter::setNormalizedValue(double newValue, bool sendNotification, bool callCallbacks)
 {
   ScopedPointerLock spl(mutex);
-  setValue(proportionToValue(newProportionalValue), sendNotification, callCallbacks);
+  setValue(proportionToValue(newValue), sendNotification, callCallbacks);
 }
 
 void Parameter::resetToDefaultValue(bool sendNotification, bool callCallbacks)

@@ -8,7 +8,7 @@ void AudioPluginParameter::setValue(float newValue)
 void AudioPluginParameter::parameterChanged(Parameter* p)
 {
   beginChangeGesture();
-  setValueNotifyingHost((float) p->getProportionalValue());
+  setValueNotifyingHost((float) p->getNormalizedValue());
   endChangeGesture();
 }
 
@@ -65,7 +65,7 @@ void AudioPlugin::autoAttachMetaParameters()
     Parameter* p = wrappedAudioModule->getParameterByIndex(paraIndex);
     MetaControlledParameter* mcp = dynamic_cast<MetaControlledParameter*>(p);
     if(mcp != nullptr) {
-      metaParaManager.setMetaValue(metaIndex, mcp->getProportionalValue());
+      metaParaManager.setMetaValue(metaIndex, mcp->getNormalizedValue());
       metaParaManager.setMetaName( metaIndex, mcp->getName());
       mcp->attachToMetaParameter(metaIndex);
       metaIndex++;

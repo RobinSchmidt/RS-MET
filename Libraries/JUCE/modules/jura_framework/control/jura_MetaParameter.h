@@ -120,6 +120,16 @@ public:
   virtual void setFromMetaValue(double newMetaValue, bool sendNotification,
     bool callCallbacks);
 
+  /*
+  virtual void setValue(double newValue, bool sendNotification, bool callCallbacks) override
+  {
+    jassertfalse;
+    // For a meta-controlled parameter, client code, widgets, etc. should always call
+    // setNormalizedValue
+    rsSmoothableParameter::setValue(newValue, sendNotification, callCallbacks);
+  }
+  */
+
   /** Sets up the MetaParameterManager to use. This function should be called once shortly after
   this MetaControlledParameter object has been created and the passed manager object should remain
   valid for the whole lifetime of this object. */

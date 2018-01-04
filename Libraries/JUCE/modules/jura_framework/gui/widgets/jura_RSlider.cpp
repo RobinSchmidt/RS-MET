@@ -106,11 +106,10 @@ void RSlider::setStateFromString(const juce::String &stateString, bool sendChang
   setValue(value, sendChangeMessage);
 }
 
-void RSlider::setProportionalValue(double newProportionalValue, 
+void RSlider::setNormalizedValue(double newValue, 
       const bool sendUpdateMessage, const bool sendMessageSynchronously)
 {
-  setValue(proportionOfLengthToValue(newProportionalValue), sendUpdateMessage, 
-    sendMessageSynchronously);
+  setValue(proportionOfLengthToValue(newValue), sendUpdateMessage, sendMessageSynchronously);
 }
 
 void RSlider::setDefaultValue(double newDefaultValue)
@@ -410,7 +409,7 @@ void RSlider::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &w
       setValue(constrainAndQuantizeValue(tmpValue), false, false);
     }
     else
-      setProportionalValue(getProportionalValue() + scale * 0.01 * wheel.deltaY, false, false);
+      setNormalizedValue(getNormalizedValue() + scale * 0.01 * wheel.deltaY, false, false);
   }
 }
 

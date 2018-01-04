@@ -47,7 +47,7 @@ MetaControlledParameter::MetaControlledParameter(const juce::String& name, doubl
 void MetaControlledParameter::setFromMetaValue(double newMetaValue, bool sendNotification, 
   bool callCallbacks)
 {
-  setProportionalValue(mapper.map(newMetaValue), sendNotification, callCallbacks);
+  setNormalizedValue(mapper.map(newMetaValue), sendNotification, callCallbacks);
   // this is preliminary - we may need to keep track of the unmapped value and/or override 
   // setProportionalValue...we'll see...
 
@@ -147,7 +147,7 @@ void MetaParameter::attachParameter(MetaControlledParameter* p)
 
   // new:
   if(size(params) == 0)
-    metaValue = p->getProportionalValue();
+    metaValue = p->getNormalizedValue();
   else
     p->setFromMetaValue(metaValue, false, false);
   p->registerParameterObserver(this);
@@ -179,7 +179,7 @@ void MetaParameter::setMetaValue(double newValue)
 
 void MetaParameter::parameterChanged(Parameter* p)
 {
-  metaValue = p->getProportionalValue();
+  metaValue = p->getNormalizedValue();
   setLocalAutomationSwitch(false); // so we don't call ourselves recursively
   for(int i = 0; i < size(params); i++) {
     if(params[i] != p)

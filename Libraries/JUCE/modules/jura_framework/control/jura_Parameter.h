@@ -221,8 +221,7 @@ public:
 
   /** Sets the value of the parameter where the input argument is assumed to be normalized to the
   range 0...1  .... */
-  virtual void setProportionalValue(double newProportionalValue, bool sendNotification,
-    bool callCallbacks);
+  virtual void setNormalizedValue(double newValue, bool sendNotification, bool callCallbacks);
 
   /** Resets the value of the parameter to its default value and (optionally) notifies all the
   listeners and calls the assigned callback function. */
@@ -306,7 +305,7 @@ public:
   double getRawValue() const { ScopedPointerLock spl(mutex); return value; }
 
   /** Returns the normalized value in the range 0..1. */
-  inline double getProportionalValue() { return valueToProportion(value); }
+  virtual double getNormalizedValue() { return valueToProportion(value); }
 
   /** Converts the clear text value to a proportional value in the range 0..1 according to our
   scaling/mapping function. */
