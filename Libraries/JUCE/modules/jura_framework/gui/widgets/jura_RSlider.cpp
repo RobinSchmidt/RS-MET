@@ -361,7 +361,7 @@ void RSlider::mouseDown(const MouseEvent& e)
     {
       if(e.mods.isAltDown())
         setNormalizedValue((double)e.x / (double)getWidth(), false, false); // why false?
-      valueOnMouseDown = getValue(); // i think, we need to store the normalizedValueOnMouseDown
+      normalizedValueOnMouseDown = getNormalizedValue();
       oldDragDistance  = 0;
       dragValue        = 0.0;
     }
@@ -391,8 +391,8 @@ void RSlider::mouseDrag(const MouseEvent& e)
       int dragDelta       = newDragDistance - oldDragDistance;
       oldDragDistance     = newDragDistance;  // update - from now on we only need dragDelta
       dragValue += scale*dragDelta;
-      double x = valueToProportionOfLength(valueOnMouseDown);  // in 0..1
-      x += dragValue;                                          // new x
+      double x = normalizedValueOnMouseDown;  // in 0..1
+      x += dragValue;                         // new x
       x = clip(x, 0, 1);
 
       // new:

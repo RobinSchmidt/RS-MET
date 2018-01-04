@@ -203,7 +203,7 @@ protected:
   // internal state variables:
   double currentValue, minValue, maxValue, defaultValue, interval;
 
-  double valueOnMouseDown = 0;
+  double normalizedValueOnMouseDown = 0;
 
   int oldDragDistance;
   double dragValue = 0;

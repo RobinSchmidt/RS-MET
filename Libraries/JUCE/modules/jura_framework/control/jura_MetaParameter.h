@@ -174,7 +174,10 @@ public:
   /** Overrides baseclass method in order to return the stored normalized value instead of 
   converting back from the actual value (which is not generally possible here anymore due to the
   presence of a possibly nonmonotonic mapping function). */
-  virtual double getNormalizedValue() override { return normalizedValue; }
+  virtual double getNormalizedValue() override { ScopedPointerLock spl(mutex); return normalizedValue; }
+
+  virtual double getNormalizedDefaultValue() override
+  { ScopedPointerLock spl(mutex); return 0.5; } // preliminary
 
 protected:
 
