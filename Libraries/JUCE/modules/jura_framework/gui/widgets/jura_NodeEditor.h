@@ -192,6 +192,10 @@ public:
   and moving around nodes. */
   virtual void setMutexToUse(CriticalSection* newMutex) { lock = newMutex; }
 
+  /** Decides whether or not the x,y coordinates should be clipped at their respective min/max
+  values. */
+  void setClipCoordinatesToRange(bool shouldClip) { clipRanges = shouldClip; }
+
   //-----------------------------------------------------------------------------------------------
   // \name Overrides
 
@@ -210,11 +214,25 @@ protected:
   rsNodeBasedFunction object that is edited. */
   void updateDraggableNodesArray();
 
+  /** Clips the x,y coordinates (given as model coordinates) to their respective min/max values as
+  set up in our xyMapper, if this clipping option is selected (via setClipCoordinatesToRange). */
+  void clipIfDesired(double* x, double* y);
+
   RAPT::rsNodeBasedFunction<double>* valueMapper = nullptr;
+
+  bool clipRanges = false; // clip x,y to their min/max values (todo: maybe have 4 separate flags
+                           // for low/high x/y clipping)
+  // maybe move to baseclass, have also fixFirstNodeX, fixFirstNodeY, fixLastNodeX, fixLastNodeY
+  // firstNodeRemovable, lastNodeRemovable
 
   CriticalSection* lock = nullptr;
 
+
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsNodeBasedFunctionEditor)
 };
+
+
+
 
 #endif

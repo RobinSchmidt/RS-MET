@@ -1,4 +1,8 @@
 next: 
+-constrain meta-mapping nodes in the editor
+-fix slider behavior when map is nonmonotonic and make nonmonotonic generally maps work
+-add features to automation setup: meta slider, attachment menu, sliders for node x,y, smoothing
+ maybe midi
 -check tolerance condition ins rsSmoothableParameter::setvalue
 -find best way to update observers (pre/post/both)
 -in EngineersFilter, the sliders stay grayed out (try papoulis peak)

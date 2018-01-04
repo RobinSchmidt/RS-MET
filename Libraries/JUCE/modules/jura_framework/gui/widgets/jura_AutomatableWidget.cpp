@@ -22,6 +22,7 @@ rsAutomationSetup::rsAutomationSetup(AutomatableWidget* widgetToAutomate,
   addWidget(metaMapEditor = new rsNodeBasedFunctionEditor);
   metaMapEditor->setDescription("Mapping between meta-parameter and parameter");
   metaMapEditor->setValueRange(0, 1, 0, 1);
+  metaMapEditor->setClipCoordinatesToRange(true);
 
   MetaControlledParameter* mcp = widget->getMetaControlledParameter();
   if(mcp != nullptr)

@@ -46,6 +46,11 @@ public:
   virtual T   map(T x) override;
   virtual T unmap(T x);
 
+  inline T getInMin()  const { return inMin;  }
+  inline T getInMax()  const { return inMax;  }
+  inline T getOutMin() const { return outMin; }
+  inline T getOutMax() const { return outMin; }
+
 protected:
 
   T inMin = 0, inMax = 1, outMin = 0, outMax = 1;
@@ -69,10 +74,21 @@ public:
   virtual void   map(T *x, T *y) override;
   virtual void unmap(T *x, T *y);
 
-  T   mapX(T x) { return mapperX.  map(x); }
-  T   mapY(T y) { return mapperY.  map(y); }
-  T unmapX(T x) { return mapperX.unmap(x); }
-  T unmapY(T y) { return mapperY.unmap(y); }
+  inline T   mapX(T x) { return mapperX.  map(x); }
+  inline T   mapY(T y) { return mapperY.  map(y); }
+  inline T unmapX(T x) { return mapperX.unmap(x); }
+  inline T unmapY(T y) { return mapperY.unmap(y); }
+
+  inline T getInMinX()  const { return mapperX.getInMin();  }
+  inline T getInMaxX()  const { return mapperX.getInMax();  }
+  inline T getOutMinX() const { return mapperX.getOutMin(); }
+  inline T getOutMaxX() const { return mapperX.getOutMax(); }
+
+  inline T getInMinY()  const { return mapperY.getInMin();  }
+  inline T getInMaxY()  const { return mapperY.getInMax();  }
+  inline T getOutMinY() const { return mapperY.getOutMin(); }
+  inline T getOutMaxY() const { return mapperY.getOutMax(); }
+
 
 protected:
 

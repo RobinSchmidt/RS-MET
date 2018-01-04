@@ -300,6 +300,7 @@ int rsNodeBasedFunctionEditor::addNode(double x, double y)
 {
   ScopedPointerLock spl(lock);
   xyMapper.unmap(&x, &y);
+  clipIfDesired(&x, &y);
   int i = (int) valueMapper->addNode(x, y);
   rsDraggableNode* newNode = new rsDraggableNode(this, x, y);
   insert(nodes, newNode, i);
@@ -321,6 +322,7 @@ int rsNodeBasedFunctionEditor::moveNodeTo(int index, int pixelX, int pixelY)
   ScopedPointerLock spl(lock);
   double x = xyMapper.unmapX(pixelX);
   double y = xyMapper.unmapY(pixelY);
+  clipIfDesired(&x, &y);
   int newIndex = (int)valueMapper->moveNode(index, x, y);
   reIndexNode(index, newIndex);
   nodes[newIndex]->setPosition(x, y, true); 
@@ -334,6 +336,7 @@ int rsNodeBasedFunctionEditor::nodeChanged(int nodeIndex)
   double x = getPixelX(nodes[nodeIndex]);
   double y = getPixelY(nodes[nodeIndex]);
   xyMapper.unmap(&x, &y);
+  //clipIfDesired(&x, &y); // needed?
   int newIndex = (int)valueMapper->moveNode(nodeIndex, x, y);
   reIndexNode(nodeIndex, newIndex);
   rsNodeEditor::nodeChanged(nodeIndex);
@@ -352,4 +355,11 @@ void rsNodeBasedFunctionEditor::updateDraggableNodesArray()
     node->setIndex(i);
     nodes.push_back(node); 
   }
+}
+
+void rsNodeBasedFunctionEditor::clipIfDesired(double* x, double* y)
+{
+  if(clipRanges) {
+    *x = clip(*x, xyMapper.getInMinX(), xyMapper.getInMaxX());
+    *y = clip(*y, xyMapper.getInMinY(), xyMapper.getInMaxY()); }
 }
