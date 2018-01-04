@@ -120,15 +120,20 @@ public:
   virtual void setFromMetaValue(double newMetaValue, bool sendNotification,
     bool callCallbacks);
 
-  /*
-  virtual void setValue(double newValue, bool sendNotification, bool callCallbacks) override
-  {
-    jassertfalse;
-    // For a meta-controlled parameter, client code, widgets, etc. should always call
-    // setNormalizedValue
-    rsSmoothableParameter::setValue(newValue, sendNotification, callCallbacks);
-  }
-  */
+  /** Overriden to apply the additional meta-mapper. */
+  virtual void setNormalizedValue(double newValue, bool sendNotification, 
+    bool callCallbacks) override;
+
+
+protected:
+  /** Overriden to trigger jassert - we should not call setValue directly on meta-controlled 
+  parameters. Instead, always go through setNormalizedValue so we can store it here. The reason is 
+  the arbitrary, possibly nonmonotonic mapping function between the normalized and actual value. 
+  When setting the actual value directly, we have no way to convert back to the normalized 
+  value. */
+  //virtual void setValue(double newValue, bool sendNotification, bool callCallbacks) override;
+public:
+
 
   /** Sets up the MetaParameterManager to use. This function should be called once shortly after
   this MetaControlledParameter object has been created and the passed manager object should remain

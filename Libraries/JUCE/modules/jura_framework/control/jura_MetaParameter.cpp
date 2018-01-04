@@ -50,28 +50,22 @@ void MetaControlledParameter::setFromMetaValue(double newMetaValue, bool sendNot
   setNormalizedValue(mapper.map(newMetaValue), sendNotification, callCallbacks);
   // this is preliminary - we may need to keep track of the unmapped value and/or override 
   // setProportionalValue...we'll see...
-
-
-  /*
-  if(mapper == nullptr)
-    setProportionalValue(newMetaValue, sendNotification, callCallbacks);
-  else
-    setProportionalValue(mapper->map(newMetaValue), sendNotification, callCallbacks);
-    */
-
-  //setProportionalValue(newMetaValue, sendNotification, callCallbacks);
-
-  // Later, we can introduce a nonlinear mapping function of the range 0..1 to itself here before
-  // calling setProportionalValue. Maybe we can use an object some kind of ParameterMapper class
-  // for this. We could do: 
-  // if(parameterMapper == nullptr) 
-  //   setProportionalValue(newMetaValue, ..);
-  // else
-  //   setProportionalValue(parameterMapper->map(newMetaValue), ..)
-  // Subclases of this mapper class could realize Elan's rational function or we could have a 
-  // breakpoint-based mapping, etc.
 }
 
+void MetaControlledParameter::setNormalizedValue(double newValue, bool sendNotification,
+  bool callCallbacks)
+{
+  rsSmoothableParameter::setNormalizedValue(newValue, sendNotification, callCallbacks);
+}
+/*
+void MetaControlledParameter::setValue(double newValue, bool sendNotification, bool callCallbacks)
+{
+  jassertfalse;
+  // For a meta-controlled parameter, client code, widgets, etc. should always call
+  // setNormalizedValue
+  rsSmoothableParameter::setValue(newValue, sendNotification, callCallbacks);
+}
+*/
 void MetaControlledParameter::setMetaParameterManager(MetaParameterManager *newManager)
 {
   if(newManager != nullptr)
