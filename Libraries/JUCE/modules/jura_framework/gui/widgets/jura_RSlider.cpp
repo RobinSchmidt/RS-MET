@@ -83,69 +83,20 @@ void RSlider::setValue(double newValue, const bool sendUpdateMessage,
   const bool sendMessageSynchronously)
 {
   newValue = constrainValue(newValue);
-  valueSanityCheck();  // what does this do? ...without parameters when we not have updated any member yet?
-
+  //valueSanityCheck();  // what does this do? ...without parameters when we not have updated any member yet?
   if(currentValue != newValue)
   {
     currentValue = newValue;
-
-    /*
-    // currently being tested:
-    // nope - this code seems to not work with meta-parameters - wehn moving the slider on the 
-    // gui, the host doesn't update (the corresponding slider on the generic gui doesn't move):
-    if( assignedParameter != nullptr )
-    {
-      ParameterObserver::setLocalAutomationSwitch(false);
-
-      MetaControlledParameter* mcp = dynamic_cast<MetaControlledParameter*> (assignedParameter);
-      if(mcp != nullptr)
-      {
-        int metaIndex = mcp->getMetaParameterIndex();
-        if(metaIndex != -1)
-        {
-          // parameter will be updated through the meta-parameter anyway and we want to avoid 
-          // updating it twice, so we go through the MetaManager here:
-          MetaParameterManager* mm = mcp->getMetaParameterManager();
-          if(mm != nullptr)
-          {
-            double prop = valueToProportionOfLength(currentValue);
-            mcp->getMetaParameterManager()->setMetaValue(metaIndex, prop);
-          }
-          else
-            assignedParameter->setValue(currentValue, sendUpdateMessage, sendUpdateMessage); 
-        }
-        else
-          assignedParameter->setValue(currentValue, sendUpdateMessage, sendUpdateMessage); 
-      }
-      else
-        assignedParameter->setValue(currentValue, sendUpdateMessage, sendUpdateMessage); 
-
-      ParameterObserver::setLocalAutomationSwitch(true);
-    }
-    */
-    /*
-    // this is the new version:
-    if(assignedParameter != nullptr)
-    {
-      ParameterObserver::setLocalAutomationSwitch(false);
-      assignedParameter->setValue(currentValue, sendUpdateMessage, sendUpdateMessage); 
-      ParameterObserver::setLocalAutomationSwitch(true);
-    }
-    */
-
-    // this is the newer version (if it works reliably, delete old versions above):
     if(assignedParameter != nullptr)
     {
       ParameterObserver::setLocalAutomationSwitch(false);    // to not recursively notify ourselves
       assignedParameter->setValue(currentValue, true, true); // ...in this call
+       // use assignedParameter->setProportionalValue(getProportionalValue());
+ 
       ParameterObserver::setLocalAutomationSwitch(true);
     }
-
     notifyListeners();
     repaintOnMessageThread();
-
-    //if(sendUpdateMessage)
-    //  triggerChangeMessage(sendMessageSynchronously);
   }
 }
 
@@ -618,24 +569,3 @@ void RSlider::valueSanityCheck()
   currentValue = constrainValue(currentValue);
   defaultValue = constrainValue(defaultValue);
 }
-
-/*
-void RSlider::handleAsyncUpdate()
-{
-  RWidget::handleAsyncUpdate();
-  cancelPendingUpdate();
-  for(int i = listeners.size(); --i >= 0;)
-  {
-    ((RSliderListener*) listeners.getUnchecked (i))->rSliderValueChanged(this);
-    i = jmin(i, listeners.size());
-  }
-}
-
-void RSlider::triggerChangeMessage (const bool synchronous)
-{
-  if(synchronous)
-    handleAsyncUpdate();
-  else
-    triggerAsyncUpdate();
-}
-*/
