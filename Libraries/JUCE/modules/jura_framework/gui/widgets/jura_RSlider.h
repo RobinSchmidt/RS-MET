@@ -180,6 +180,7 @@ public:
 
 protected:
 
+  virtual bool needsToSetNormalizedParameter();
 
   /** Returns a value that is constrained to the range of the slider. */
   virtual double constrainValue(double value) const throw();

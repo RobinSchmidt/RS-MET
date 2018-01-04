@@ -82,7 +82,7 @@ void RSlider::setScaling(int newScaling)
 void RSlider::setValue(double newValue, const bool sendUpdateMessage, 
   const bool sendMessageSynchronously)
 {
-  newValue = constrainValue(newValue);
+  newValue = constrainValue(newValue); // why not constrainAndQuantize 
   //valueSanityCheck();  // what does this do? ...without parameters when we not have updated any member yet?
   if(currentValue != newValue)
   {
@@ -91,8 +91,6 @@ void RSlider::setValue(double newValue, const bool sendUpdateMessage,
     {
       ParameterObserver::setLocalAutomationSwitch(false);    // to not recursively notify ourselves
       assignedParameter->setValue(currentValue, true, true); // ...in this call
-       // use assignedParameter->setProportionalValue(getProportionalValue());
- 
       ParameterObserver::setLocalAutomationSwitch(true);
     }
     notifyListeners();
@@ -106,10 +104,26 @@ void RSlider::setStateFromString(const juce::String &stateString, bool sendChang
   setValue(value, sendChangeMessage);
 }
 
-void RSlider::setNormalizedValue(double newValue, 
-      const bool sendUpdateMessage, const bool sendMessageSynchronously)
+void RSlider::setNormalizedValue(double newValue, const bool sendUpdateMessage, 
+  const bool sendMessageSynchronously)
 {
-  setValue(proportionOfLengthToValue(newValue), sendUpdateMessage, sendMessageSynchronously);
+  if(needsToSetNormalizedParameter())
+  {
+    double tmp = proportionOfLengthToValue(newValue);
+    tmp = constrainAndQuantizeValue(tmp);
+    if(currentValue != tmp)
+    {
+      currentValue = tmp;
+      tmp = valueToProportionOfLength(tmp);
+      ParameterObserver::setLocalAutomationSwitch(false);    // to not recursively notify ourselves
+      assignedParameter->setNormalizedValue(tmp, true, true); // ...in this call
+      ParameterObserver::setLocalAutomationSwitch(true);
+      notifyListeners();
+      repaintOnMessageThread();
+    }
+  }
+  else
+    setValue(proportionOfLengthToValue(newValue), sendUpdateMessage, sendMessageSynchronously);
 }
 
 void RSlider::setDefaultValue(double newDefaultValue)
@@ -366,18 +380,13 @@ void RSlider::mouseDrag(const MouseEvent& e)
       double x = valueToProportionOfLength(valueOnMouseDown);  // in 0..1
       x += dragValue;                                          // new x
       x = clip(x, 0, 1);
-      x = proportionOfLengthToValue(x);                        // convert to value
-      setValue(constrainAndQuantizeValue(x), false, false);     // set it
 
-      //// old, has value jump issues when pressing/releasing shift during drag:
-      //double x = valueToProportionOfLength(valueOnMouseDown);  // in 0..1
-      //x += scale * e.getDistanceFromDragStartX();              // new x
-      //x = clip(x, 0, 1);
+      // new:
+      setNormalizedValue(x);
+
+      // old:
       //x = proportionOfLengthToValue(x);                        // convert to value
-      //setValue(constrainAndQuantizeValue(x), true, false);     // set it
-
-      //tmpValue = proportionOfLengthToValue((double) x / (double) getWidth());
-      //setValue(constrainAndQuantizeValue(tmpValue), true, false);
+      //setValue(constrainAndQuantizeValue(x), false, false);     // set it
     }
   }
 }
@@ -531,6 +540,14 @@ void RSlider::resized()
 
 //-------------------------------------------------------------------------------------------------
 // internal functions:
+
+bool RSlider::needsToSetNormalizedParameter()
+{
+  MetaControlledParameter* mcp = dynamic_cast<MetaControlledParameter*>(assignedParameter);
+  if(mcp)
+    return true;
+  return false;
+}
 
 double RSlider::constrainValue(double value) const throw()
 {
