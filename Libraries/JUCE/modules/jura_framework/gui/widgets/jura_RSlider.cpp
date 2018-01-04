@@ -143,9 +143,10 @@ void RSlider::setDefaultValues(std::vector<double> newDefaultValues)
 
 void RSlider::setToDefaultValue(const bool sendUpdateMessage, const bool sendMessageSynchronously)
 {
-  jassertfalse;
-  // setValue(defaultValue, sendUpdateMessage, sendMessageSynchronously);
-  // old - needs update to work with normalized values only, if necessary
+  if(needsToSetNormalizedParameter())
+    setNormalizedValue(getNormalizedDefaultValue(), sendUpdateMessage, sendMessageSynchronously);
+  else
+    setValue(defaultValue, sendUpdateMessage, sendMessageSynchronously);
 }
 
 void RSlider::assignParameter(Parameter *parameterToAssign)
@@ -439,13 +440,13 @@ void RSlider::paint(Graphics& g)
   {
     if( getValue() > defaultValue )
     {
-      thumbLeftValue  = w * valueToProportionOfLength(defaultValue);
-      thumbRightValue = w * valueToProportionOfLength(getValue());
+      thumbLeftValue  = w * getNormalizedDefaultValue();
+      thumbRightValue = w * getNormalizedValue();
     }
     else
     {
-      thumbLeftValue  = w * valueToProportionOfLength(getValue());
-      thumbRightValue = ::ceil(w * valueToProportionOfLength(defaultValue));
+      thumbLeftValue  =        w * getNormalizedValue();
+      thumbRightValue = ::ceil(w * getNormalizedDefaultValue());
     }
     thumbWidth = thumbRightValue - thumbLeftValue;
     g.fillRect((int) (handleRectangle.getX() + thumbLeftValue), handleRectangle.getY(), 
@@ -457,14 +458,14 @@ void RSlider::paint(Graphics& g)
   }
   else
   {
-    thumbWidth = w * valueToProportionOfLength(getValue());
+    thumbWidth = w * getNormalizedValue();
     g.fillRect(handleRectangle.getX(), handleRectangle.getY(), (int) thumbWidth, h);
   }
 
   // draw the default value indicator:
   //g.setColour(specialColour1);
   g.setColour(getMixedColour(getBackgroundColour(), getHandleColour(), 0.25, 0.75));
-  float xf = (float) (w*valueToProportionOfLength(defaultValue));
+  float xf = (float) (w * getNormalizedDefaultValue());
   g.drawLine(xf, (float) handleRectangle.getY(), xf, (float) h, 2.f);
 
   // draw the outline:
@@ -472,7 +473,7 @@ void RSlider::paint(Graphics& g)
   g.drawRect(handleRectangle, 2);
 
   // draw the value:
-  String valueString = stringConversionFunction(currentValue);
+  String valueString = stringConversionFunction(getValue());
   int x = getWidth() - font->getTextPixelWidth(valueString, font->getDefaultKerning());
   int y = handleRectangle.getY() + handleRectangle.getHeight()/2 - font->getFontAscent()/2;
   drawBitmapFontText(g, x-4, y, valueString, font, getTextColour());

@@ -125,7 +125,11 @@ public:
 
   /** Returns the value of the slider expressed as proportion of the slider's range, taking into
   account the scaling behaviour. The value is thus between 0...1. */
-  virtual double getNormalizedValue() const { return valueToProportionOfLength(currentValue); }
+  virtual double getNormalizedValue() const { return valueToProportionOfLength(getValue()); }
+
+  /** Returns the value of the slider expressed as proportion of the slider's range. */
+  virtual double getNormalizedDefaultValue() const 
+  { return valueToProportionOfLength(defaultValue); }
 
   /** Returns the maximum value of the slider. */
   virtual double getMaximum()  const { return maxValue; }
