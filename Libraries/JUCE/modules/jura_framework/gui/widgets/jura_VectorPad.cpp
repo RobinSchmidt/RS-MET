@@ -43,8 +43,10 @@ void rsVectorPad::paint(Graphics& g)
 {
   g.fillAll(getBackgroundColour());
   float x, y;
-  x = (float) RAPT::rsLinToLin(paramX->getValue(),  xMin, xMax, 0.0, double(getWidth()-1));
-  y = (float) RAPT::rsLinToLin(paramY->getValue(), yMin, yMax, double(getHeight()-1), 0.0);
+  //x = (float) RAPT::rsLinToLin(paramX->getValue(),  xMin, xMax, 0.0, double(getWidth()-1));
+  //y = (float) RAPT::rsLinToLin(paramY->getValue(), yMin, yMax, double(getHeight()-1), 0.0);
+  x = (float) RAPT::rsLinToLin(paramX->getNormalizedValue(),  0, 1, 0.0, double(getWidth()-1));
+  y = (float) RAPT::rsLinToLin(paramY->getNormalizedValue(), 0, 1, double(getHeight()-1), 0.0);
   g.setColour(getHandleColour());
   g.fillEllipse(x-0.5f*dotSize, y-0.5f*dotSize, dotSize, dotSize);
 }
@@ -66,13 +68,15 @@ void rsVectorPad::mouseDrag(const MouseEvent& e)
 void rsVectorPad::setParametersFromMouseEvent(const MouseEvent& e)
 {
   double x, y;
-  x = RAPT::rsLinToLin(double(e.x), 0.0, double(getWidth()-1),  xMin, xMax);
-  y = RAPT::rsLinToLin(double(e.y), double(getHeight()-1), 0.0, yMin, yMax);
+  //x = RAPT::rsLinToLin(double(e.x), 0.0, double(getWidth()-1),  xMin, xMax);
+  //y = RAPT::rsLinToLin(double(e.y), double(getHeight()-1), 0.0, yMin, yMax);
+  x = RAPT::rsLinToLin(double(e.x), 0.0, double(getWidth()-1),  0, 1);
+  y = RAPT::rsLinToLin(double(e.y), double(getHeight()-1), 0.0, 0, 1);
   setParametersXY(x, y);
 }
 
-void rsVectorPad::setParametersXY(double x, double y)
+void rsVectorPad::setParametersXY(double x, double y) // rename to setNormalizedParameters
 {
-  paramX->setValue(x, true, true);
-  paramY->setValue(y, true, true);
+  paramX->setNormalizedValue(clip(x, 0, 1), true, true);
+  paramY->setNormalizedValue(clip(y, 0, 1), true, true);
 }
