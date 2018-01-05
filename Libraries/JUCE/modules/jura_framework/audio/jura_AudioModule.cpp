@@ -292,6 +292,21 @@ void AudioModule::parameterChanged(Parameter* parameterThatHasChanged)
   markStateAsDirty();
 }
 
+void AudioModule::parametersToXml(XmlElement* xmlState)
+{
+  // todo: store smoothing and meta-mapping function, if applicable
+
+  // store current parameter values:
+  for(int i = 0; i < getNumParameters(); i++) {
+    Parameter* p = getParameterByIndex(i);
+    if( p != nullptr ) {  // do we need this?
+      if( p->shouldBeSavedAndRecalled() && !p->isCurrentValueDefaultValue() ) {
+        if( p->isStringParameter() )
+          xmlState->setAttribute(p->getName(), p->getStringValue());
+        else
+          xmlState->setAttribute(p->getName(), juce::String(p->getValue()) ); }}}
+}
+
 void AudioModule::midiMappingToXml(XmlElement* xmlState)
 {
   // child element will be added when there are any relevant controller-mappings to be stored:
@@ -346,43 +361,27 @@ void AudioModule::metaValuesToXml(XmlElement* xmlState)
   }
 }
 
-XmlElement* AudioModule::getStateAsXml(const juce::String& stateName, bool markAsClean)
+void AudioModule::childModulesToXml(XmlElement* xmlState)
 {
-  ScopedLock scopedLock(*lock);
-
-  if( !wantsSaveAndRecallState() )
-    return nullptr;
-
-  // the XmlElement which stores all the relevant state-information:
-  XmlElement* xmlState = new XmlElement(moduleName);
-
-  // store a patch format version (useful when patch-formats change later):
-  xmlState->setAttribute("PatchFormat", patchFormatIndex);
-
-  // store midi and/or meta mappings (if any):
-  midiMappingToXml(xmlState);
-  metaMappingToXml(xmlState);
-  metaValuesToXml(xmlState);
-
-  // maybe store smoothing values here
-
-  // store current parameter values:
-  for(int i = 0; i < getNumParameters(); i++) {
-    Parameter* p = getParameterByIndex(i);
-    if( p != nullptr ) {  // do we need this?
-      if( p->shouldBeSavedAndRecalled() && !p->isCurrentValueDefaultValue() ) {
-        if( p->isStringParameter() )
-          xmlState->setAttribute(p->getName(), p->getStringValue());
-        else
-          xmlState->setAttribute(p->getName(), juce::String(p->getValue()) ); }}}
-
-  // save the states of all childModules in child-XmlElements:
   for(int c = 0; c < (int)childModules.size(); c++) {
     if( childModules[c]->wantsSaveAndRecallState() ) {
       XmlElement* childState = childModules[c]->getStateAsXml(
         childModules[c]->getStateName(), false);
       xmlState->addChildElement(childState); }}
+}
 
+XmlElement* AudioModule::getStateAsXml(const juce::String& stateName, bool markAsClean)
+{
+  ScopedLock scopedLock(*lock);
+  if( !wantsSaveAndRecallState() )
+    return nullptr;
+  XmlElement* xmlState = new XmlElement(moduleName);
+  xmlState->setAttribute("PatchFormat", patchFormatIndex); // useful for patch-formats changes
+  midiMappingToXml( xmlState);
+  metaMappingToXml( xmlState);
+  metaValuesToXml(  xmlState);
+  parametersToXml(  xmlState);
+  childModulesToXml(xmlState);
   setStateName(stateName, markAsClean);
   return xmlState;
 }

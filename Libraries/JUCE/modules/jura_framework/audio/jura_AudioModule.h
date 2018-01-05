@@ -304,9 +304,11 @@ public:
 protected:
 
   // used internally as sub-tasks in the get/setState functions:
-  void midiMappingToXml(XmlElement* xmlElementToStartFrom);
-  void metaMappingToXml(XmlElement* xmlElementToStartFrom);
-  void metaValuesToXml(XmlElement* xmlElementToStartFrom);
+  void parametersToXml(  XmlElement* xmlElementToStartFrom);
+  void midiMappingToXml( XmlElement* xmlElementToStartFrom);
+  void metaMappingToXml( XmlElement* xmlElementToStartFrom);
+  void metaValuesToXml(  XmlElement* xmlElementToStartFrom);
+  void childModulesToXml(XmlElement* xmlElementToStartFrom);
 
   void recallParametersFromXml(  const XmlElement &xmlState);
   void recallChildModulesFromXml(const XmlElement &xmlState, bool markAsClean);
