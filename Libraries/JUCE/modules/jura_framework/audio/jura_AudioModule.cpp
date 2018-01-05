@@ -292,7 +292,7 @@ void AudioModule::parameterChanged(Parameter* parameterThatHasChanged)
   markStateAsDirty();
 }
 
-void AudioModule::parametersToXml(XmlElement* xmlState)
+void AudioModule::parametersToXml(XmlElement* xml)
 {
   // todo: store smoothing and meta-mapping function, if applicable
 
@@ -302,12 +302,12 @@ void AudioModule::parametersToXml(XmlElement* xmlState)
     if( p != nullptr ) {  // do we need this?
       if( p->shouldBeSavedAndRecalled() && !p->isCurrentValueDefaultValue() ) {
         if( p->isStringParameter() )
-          xmlState->setAttribute(p->getName(), p->getStringValue());
+          xml->setAttribute(p->getName(), p->getStringValue());
         else
-          xmlState->setAttribute(p->getName(), juce::String(p->getValue()) ); }}}
+          xml->setAttribute(p->getName(), juce::String(p->getValue()) ); }}}
 }
 
-void AudioModule::midiMappingToXml(XmlElement* xmlState)
+void AudioModule::midiMappingToXml(XmlElement* xml)
 {
   // child element will be added when there are any relevant controller-mappings to be stored:
   XmlElement* xmlMapping = new XmlElement("MidiMapping");
@@ -321,12 +321,12 @@ void AudioModule::midiMappingToXml(XmlElement* xmlState)
         xmlParameterSetup->setAttribute("Max",    ap->getUpperAutomationLimit()  );
         xmlMapping->addChildElement(xmlParameterSetup); }}}
   if( xmlMapping->getNumChildElements() != 0 )
-    xmlState->addChildElement(xmlMapping);
+    xml->addChildElement(xmlMapping);
   else
     delete xmlMapping;
 }
 
-void AudioModule::metaMappingToXml(XmlElement* xmlState)
+void AudioModule::metaMappingToXml(XmlElement* xml)
 {
   XmlElement* xmlMapping = new XmlElement("MetaMapping");
   for(int i = 0; i < getNumParameters(); i++) {
@@ -338,12 +338,12 @@ void AudioModule::metaMappingToXml(XmlElement* xmlState)
         // todo: store the mapping function
         xmlMapping->addChildElement(xmlParameterSetup); }}}
   if( xmlMapping->getNumChildElements() != 0 )
-    xmlState->addChildElement(xmlMapping);
+    xml->addChildElement(xmlMapping);
   else
     delete xmlMapping;
 }
 
-void AudioModule::metaValuesToXml(XmlElement* xmlState)
+void AudioModule::metaValuesToXml(XmlElement* xml)
 {
   if(saveAndRecallMetas == true && metaParamManager != nullptr) {
     bool allMetasAtDefault = true;
@@ -355,19 +355,19 @@ void AudioModule::metaValuesToXml(XmlElement* xmlState)
         allMetasAtDefault = false;
         xmlValues->setAttribute("M" + String(i), value); }}
     if( !allMetasAtDefault ) // no child xml needs to be stored
-      xmlState->addChildElement(xmlValues);
+      xml->addChildElement(xmlValues);
     else
       delete xmlValues;
   }
 }
 
-void AudioModule::childModulesToXml(XmlElement* xmlState)
+void AudioModule::childModulesToXml(XmlElement* xml)
 {
   for(int c = 0; c < (int)childModules.size(); c++) {
     if( childModules[c]->wantsSaveAndRecallState() ) {
       XmlElement* childState = childModules[c]->getStateAsXml(
         childModules[c]->getStateName(), false);
-      xmlState->addChildElement(childState); }}
+      xml->addChildElement(childState); }}
 }
 
 XmlElement* AudioModule::getStateAsXml(const juce::String& stateName, bool markAsClean)
@@ -375,18 +375,18 @@ XmlElement* AudioModule::getStateAsXml(const juce::String& stateName, bool markA
   ScopedLock scopedLock(*lock);
   if( !wantsSaveAndRecallState() )
     return nullptr;
-  XmlElement* xmlState = new XmlElement(moduleName);
-  xmlState->setAttribute("PatchFormat", patchFormatIndex); // useful for patch-formats changes
-  midiMappingToXml( xmlState);
-  metaMappingToXml( xmlState);
-  metaValuesToXml(  xmlState);
-  parametersToXml(  xmlState);
-  childModulesToXml(xmlState);
+  XmlElement* xml = new XmlElement(moduleName);
+  xml->setAttribute("PatchFormat", patchFormatIndex); // useful for later patch-format changes
+  midiMappingToXml( xml);
+  metaMappingToXml( xml);
+  metaValuesToXml(  xml);
+  parametersToXml(  xml);
+  childModulesToXml(xml);
   setStateName(stateName, markAsClean);
-  return xmlState;
+  return xml;
 }
 
-void AudioModule::recallParametersFromXml(const XmlElement &xmlState)
+void AudioModule::recallParametersFromXml(const XmlElement &xml)
 {
   juce::String name;
   Parameter* p;
@@ -395,20 +395,19 @@ void AudioModule::recallParametersFromXml(const XmlElement &xmlState)
     name = p->getName();
     if(p->shouldBeSavedAndRecalled()) {
       if(p->isStringParameter())
-        p->setStringValue(xmlState.getStringAttribute(
-          name, p->getDefaultStringValue()), true, true);
+        p->setStringValue(xml.getStringAttribute(name, p->getDefaultStringValue()), true, true);
       else
-        p->setValue(xmlState.getDoubleAttribute(name, p->getDefaultValue()), true, true); }}
+        p->setValue(xml.getDoubleAttribute(name, p->getDefaultValue()), true, true); }}
 }
 
-void AudioModule::recallChildModulesFromXml(const XmlElement &xmlState, bool markAsClean)
+void AudioModule::recallChildModulesFromXml(const XmlElement &xml, bool markAsClean)
 {
   for(int c = 0; c < (int)childModules.size(); c++)
   {
     childModules[c]->setStateToDefaults();
     int indexAmongNameSakes = getIndexAmongNameSakes(childModules[c]);
     XmlElement* childState = getChildElementByNameAndIndexAmongNameSakes(
-      xmlState, childModules[c]->moduleName, indexAmongNameSakes);
+      xml, childModules[c]->moduleName, indexAmongNameSakes);
     if( childState != NULL )
     {
       //childModules[c]->setStateFromXml(*childState, stateName, markAsClean);
@@ -417,10 +416,10 @@ void AudioModule::recallChildModulesFromXml(const XmlElement &xmlState, bool mar
   }
 }
 
-void AudioModule::recallMidiMappingFromXml(const XmlElement &xmlState)
+void AudioModule::recallMidiMappingFromXml(const XmlElement &xml)
 {
   revertToDefaultMapping(); // rename to revertToDefaultMidiMapping
-  XmlElement* xmlMapping = xmlState.getChildByName("MidiMapping");
+  XmlElement* xmlMapping = xml.getChildByName("MidiMapping");
   if( xmlMapping == nullptr )
     return; // no mapping stored, nothing to do
   forEachXmlChildElement(*xmlMapping, xmlParamSetup) {
@@ -432,10 +431,10 @@ void AudioModule::recallMidiMappingFromXml(const XmlElement &xmlState)
       ap->setUpperAutomationLimit(xmlParamSetup->getDoubleAttribute("Max", ap->getMaxValue())); }}
 }
 
-void AudioModule::recallMetaMappingFromXml(const XmlElement &xmlState)
+void AudioModule::recallMetaMappingFromXml(const XmlElement &xml)
 {
   detachMetaParameters();
-  XmlElement* xmlMapping = xmlState.getChildByName("MetaMapping");
+  XmlElement* xmlMapping = xml.getChildByName("MetaMapping");
   if( xmlMapping == nullptr )
     return; // no mapping stored, nothing to do
   forEachXmlChildElement(*xmlMapping, xmlParamSetup) {
@@ -446,11 +445,11 @@ void AudioModule::recallMetaMappingFromXml(const XmlElement &xmlState)
       // todo: retrieve mapping function/curve
 }
 
-void AudioModule::recallMetaValuesFromXml(const XmlElement &xmlState)
+void AudioModule::recallMetaValuesFromXml(const XmlElement &xml)
 {
   if(saveAndRecallMetas == true && metaParamManager != nullptr) {
     metaParamManager->resetAllToDefaults();
-    XmlElement* xmlValues = xmlState.getChildByName("MetaParameterValues");
+    XmlElement* xmlValues = xml.getChildByName("MetaParameterValues");
     if(xmlValues == nullptr)
       return;
     for(int i = 0; i < xmlValues->getNumAttributes(); i++) {
@@ -462,7 +461,7 @@ void AudioModule::recallMetaValuesFromXml(const XmlElement &xmlState)
       metaParamManager->setMetaValue(metaIndex, metaValue); }}
 }
 
-void AudioModule::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
+void AudioModule::setStateFromXml(const XmlElement& xml, const juce::String& stateName,
   bool markAsClean)
 {
   ScopedLock scopedLock(*lock);
@@ -474,7 +473,7 @@ void AudioModule::setStateFromXml(const XmlElement& xmlState, const juce::String
     smoothingManager->setBypassSmoothing(true);
   }
 
-  XmlElement convertedState = convertXmlStateIfNecessary(xmlState);
+  XmlElement convertedState = convertXmlStateIfNecessary(xml);
   recallParametersFromXml(convertedState);
   recallMidiMappingFromXml(convertedState);
   if(metaParamManager != nullptr)
