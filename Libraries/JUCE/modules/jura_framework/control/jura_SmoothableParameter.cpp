@@ -174,6 +174,18 @@ void rsSmoothableParameter::smoothingHasEnded()
     notifyObserversPostSmoothing();
 }
 
+void rsSmoothableParameter::saveToXml(XmlElement* xml) const
+{
+  Parameter::saveToXml(xml);
+  // todo: if(smoothingTime != 0) ...store smoothing time
+}
+
+void rsSmoothableParameter::recallFromXml(const XmlElement& xml)
+{
+  Parameter::recallFromXml(xml);
+  // todo: recall smoothing time, set to 0 if none is stored
+}
+
 void rsSmoothableParameter::notifyObserversPreSmoothing()
 {
   ScopedPointerLock spl(mutex);

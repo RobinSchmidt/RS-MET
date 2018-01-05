@@ -352,7 +352,7 @@ void rsNodeBasedFunctionEditor::updateDraggableNodesArray()
   for(size_t i = 0; i < funcNodes.size(); i++) 
   {
     rsDraggableNode* node = new rsDraggableNode(this, funcNodes[i].getX(), funcNodes[i].getY());
-    node->setIndex(i);
+    node->setIndex((int)i);
     nodes.push_back(node); 
   }
 }

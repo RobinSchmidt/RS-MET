@@ -56,6 +56,19 @@ void MetaControlledParameter::setNormalizedValue(double newValue, bool sendNotif
   normalizedValue = newValue;
   rsSmoothableParameter::setNormalizedValue(mapper.map(newValue), sendNotification, callCallbacks);
 }
+
+void MetaControlledParameter::saveToXml(XmlElement* xml) const
+{
+  rsSmoothableParameter::saveToXml(xml);
+  // todo: store map, if not in default state
+}
+
+void MetaControlledParameter::recallFromXml(const XmlElement& xml) 
+{
+  rsSmoothableParameter::recallFromXml(xml);
+  // todo: look, if map is stored, if so recall it, otherwise init map to defaults
+}
+
 /*
 void MetaControlledParameter::setValue(double newValue, bool sendNotification, bool callCallbacks)
 {

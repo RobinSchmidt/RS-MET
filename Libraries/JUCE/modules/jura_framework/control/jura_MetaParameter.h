@@ -120,9 +120,7 @@ public:
   virtual void setFromMetaValue(double newMetaValue, bool sendNotification,
     bool callCallbacks);
 
-  /** Overriden to apply the additional meta-mapper. */
-  virtual void setNormalizedValue(double newValue, bool sendNotification, 
-    bool callCallbacks) override;
+
 
 
 protected:
@@ -171,6 +169,13 @@ public:
   /** Returns a pointer to our mapper object. */
   rsMetaParameterMapper* getMapper() { return &mapper; }
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Overrides
+
+  /** Overriden to apply the additional meta-mapper. */
+  virtual void setNormalizedValue(double newValue, bool sendNotification, 
+    bool callCallbacks) override;
+
   /** Overrides baseclass method in order to return the stored normalized value instead of 
   converting back from the actual value (which is not generally possible here anymore due to the
   presence of a possibly nonmonotonic mapping function). */
@@ -178,6 +183,12 @@ public:
 
   virtual double getNormalizedDefaultValue() override
   { ScopedPointerLock spl(mutex); return 0.5; } // preliminary
+
+  /** Overriden to possibly store the mapping function, if necessarry. */
+  virtual void saveToXml(XmlElement* xml) const override;
+
+  /** Overriden to possibly recall the mapping function, if necessarry. */
+  virtual void recallFromXml(const XmlElement& xml) override;
 
 protected:
 

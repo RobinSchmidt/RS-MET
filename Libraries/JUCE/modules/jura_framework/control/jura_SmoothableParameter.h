@@ -48,6 +48,7 @@ public:
   rsSmoothingManager. */
   inline bool shouldUseGlobalSmoothingTime() const { return smoothingTime == -1.0; }
 
+
 protected:
 
   double smoothingTime = -1.0; // in milliseconds, -1.0 is code for using global smoothing time
@@ -274,6 +275,12 @@ public:
   /** Overrides smoothingHasEnded in order to notify those ParameterObservers that want to receive
   post smoothing parameterChanged notifications. */
   virtual void smoothingHasEnded() override;
+
+  /** Overriden to possibly store the smoothing time, if necessarry. */
+  virtual void saveToXml(XmlElement* xml) const override;
+
+  /** Overriden to possibly recall the smoothing time, if necessarry. */
+  virtual void recallFromXml(const XmlElement& xml) override;
 
 
   void notifyObserversPreSmoothing();
