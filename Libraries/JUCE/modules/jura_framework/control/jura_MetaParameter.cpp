@@ -27,6 +27,15 @@ size_t rsMetaParameterMapper::moveNode(size_t index, double x, double y)
 // it doesn't really work (or isn't enough) to apply the constraints here - we also need to apply
 // them in the editor
 
+bool rsMetaParameterMapper::isIdentityMap() const
+{
+  if(nodes.size() == 2  && nodes[1].shapeType == RAPT::rsFunctionNode<double>::LINEAR
+    && nodes[0].getX() == 0.0 && nodes[0].getY() == 0.0 
+    && nodes[1].getX() == 1.0 && nodes[1].getY() == 1.0)
+    return true;
+  return false;
+}
+
 // experimental: null objects (as in https://sourcemaking.com/design_patterns/null_object) to be
 // used by default:
 //MetaParameterManager nullMetaParameterManager;
@@ -60,13 +69,19 @@ void MetaControlledParameter::setNormalizedValue(double newValue, bool sendNotif
 void MetaControlledParameter::saveToXml(XmlElement* xml) const
 {
   rsSmoothableParameter::saveToXml(xml);
-  // todo: store map, if not in default state
+  if(!mapper.isIdentityMap())
+    saveMetaMapToXml(xml);
 }
 
 void MetaControlledParameter::recallFromXml(const XmlElement& xml) 
 {
   rsSmoothableParameter::recallFromXml(xml);
   // todo: look, if map is stored, if so recall it, otherwise init map to defaults
+}
+
+void MetaControlledParameter::saveMetaMapToXml(XmlElement* xml) const
+{
+
 }
 
 /*

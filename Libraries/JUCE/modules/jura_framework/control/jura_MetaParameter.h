@@ -94,6 +94,9 @@ public:
 
   double map(double x) { return rsNodeBasedFunction<double>::getValue(x); }
 
+  /** Returns true, if this map is the default identity map. */
+  bool isIdentityMap() const;
+
 };
 
 //=================================================================================================
@@ -115,13 +118,13 @@ public:
   MetaControlledParameter(const juce::String& name, double min = 0.0, double max = 1.0,
     double defaultValue = 0.5, int scaling = LINEAR, double interval = 0.0);
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
+
   /** Sets this parameter up according to a given MetaParameter value and optionally notifies
   observers and/or calls the callbacks. */
   virtual void setFromMetaValue(double newMetaValue, bool sendNotification,
     bool callCallbacks);
-
-
-
 
 protected:
   /** Overriden to trigger jassert - we should not call setValue directly on meta-controlled 
@@ -131,7 +134,6 @@ protected:
   value. */
   //virtual void setValue(double newValue, bool sendNotification, bool callCallbacks) override;
 public:
-
 
   /** Sets up the MetaParameterManager to use. This function should be called once shortly after
   this MetaControlledParameter object has been created and the passed manager object should remain
@@ -153,28 +155,28 @@ public:
   /** Detaches this parameter from any MetaParameter, it may be attched to. */
   virtual void detachFromMetaParameter();
 
+  /** Overriden to apply the additional meta-mapper. */
+  virtual void setNormalizedValue(double newValue, bool sendNotification, 
+    bool callCallbacks) override;
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
+
   /** Return a pointer to the MetaParameterManager object that is used here. */
   inline MetaParameterManager* getMetaParameterManager() { return metaParaManager; }
 
   /** Returns the index of the MetaParameter that this parameter is attached to. If it's not
   attached to any MetaParameter, it returns -1. */
-  inline int getMetaParameterIndex() { return metaIndex; }
+  inline int getMetaParameterIndex() const { return metaIndex; }
 
   /** Returns true, if this Parameter has an attached MetaParameter, false otherwise. */
-  inline bool hasAttachedMeta() { return metaIndex != -1; }
+  inline bool hasAttachedMeta() const { return metaIndex != -1; }
 
   /** Returns the name of the MetaParameter which this Parameter is attached to. */
-  String getMetaParameterName();
+  String getMetaParameterName(); // may be const?
 
   /** Returns a pointer to our mapper object. */
   rsMetaParameterMapper* getMapper() { return &mapper; }
-
-  //-----------------------------------------------------------------------------------------------
-  // \name Overrides
-
-  /** Overriden to apply the additional meta-mapper. */
-  virtual void setNormalizedValue(double newValue, bool sendNotification, 
-    bool callCallbacks) override;
 
   /** Overrides baseclass method in order to return the stored normalized value instead of 
   converting back from the actual value (which is not generally possible here anymore due to the
@@ -184,11 +186,17 @@ public:
   virtual double getNormalizedDefaultValue() override
   { ScopedPointerLock spl(mutex); return 0.5; } // preliminary
 
+  //-----------------------------------------------------------------------------------------------
+  // \name State recall
+
   /** Overriden to possibly store the mapping function, if necessarry. */
   virtual void saveToXml(XmlElement* xml) const override;
 
   /** Overriden to possibly recall the mapping function, if necessarry. */
   virtual void recallFromXml(const XmlElement& xml) override;
+
+  /** Saves the state of the meta map into the given XmlElement. */
+  void saveMetaMapToXml(XmlElement* xml) const;
 
 protected:
 
