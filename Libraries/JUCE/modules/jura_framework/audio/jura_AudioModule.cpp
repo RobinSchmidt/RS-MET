@@ -295,11 +295,12 @@ void AudioModule::parameterChanged(Parameter* parameterThatHasChanged)
 void AudioModule::parameterToXml(XmlElement* xml, Parameter* p)
 {
   if(p == nullptr) return; // why do we need this?
+  p->saveToXml(xml);
 
   // todo: store smoothing and meta-mapping function, if applicable
   // move into Parameter::saveToXml, override in subclasses
   // just call p->saveToXml, likewise in recall: p->recallFromXml
-
+  /*
   if(p->shouldBeSavedAndRecalled() && !p->isCurrentValueDefaultValue())
   {
     if(p->isStringParameter())
@@ -307,6 +308,7 @@ void AudioModule::parameterToXml(XmlElement* xml, Parameter* p)
     else
       xml->setAttribute(p->getName(), juce::String(p->getValue()));
   }
+  */
 }
 
 void AudioModule::parametersToXml(XmlElement* xml)

@@ -192,7 +192,7 @@ public:
   };
 
   //-----------------------------------------------------------------------------------------------
-  // construction/destruction:
+  // \name Construction/Destruction
 
   /** Constructor. You need to pass a name and optionally min/max/deafult values, a type of
   scaling @see secalings and a quantization interval. */
@@ -208,7 +208,7 @@ public:
   virtual ~Parameter();
 
   //-----------------------------------------------------------------------------------------------
-  // parameter settings:
+  // \name Setup
 
   /** Sets the value of the parameter and (optionally) notifies all the listeners and calls the
   assigned callback function. */
@@ -293,7 +293,7 @@ public:
   virtual void setMutexToUse(CriticalSection* cs) { mutex = cs; }
 
   //-----------------------------------------------------------------------------------------------
-  // inquiry:
+  // \name Inquiry
 
   /** Returns the current value of the parameter. Normally, this is the value of our "value" 
   member, but subclasses may override it to wrangle the returned value before, as can be seen in 
@@ -389,7 +389,7 @@ public:
   /** Returns true when this parameter should be saved into preset files (as a parameter of
   AutamatableModule) - it may be desirable to turn this off, when the parameter is save by other
   means in order to avoid redundancies in the preset files. mmmhhh...this seems kinda bad design */
-  virtual bool shouldBeSavedAndRecalled() { ScopedPointerLock spl(mutex); return saveAndRecall; }
+  virtual bool shouldBeSavedAndRecalled() const { ScopedPointerLock spl(mutex); return saveAndRecall; }
 
   /** Returns, whether or not this is a string-based parameter, that is: a parameter which can take
   on a number of named values such as used by comboboxes. */
@@ -404,7 +404,19 @@ public:
   CriticalSection* getUsedMutex() const { return mutex; }
 
   //-----------------------------------------------------------------------------------------------
-  // functions for the callback-mechanisms:
+  // \name State recall
+
+  /** Saves the state of this parameter into the given xml by adding/setting an attribute with a 
+  name given by this Parameter's name and the value given by our value. Note that this will 
+  overwrite any existing attribute in the xml with the same name. */
+  virtual void saveToXml(XmlElement* xml) const;
+
+  /** Searches in the given xml for an attribute whose name matches the name of this Parameter and
+  if such an attribute is found, sets up our value from the attribute's value. */
+  virtual void recallFromXml(const XmlElement& xml);
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Callbacks/Notifications
 
   /** Adds an ParameterObserver to this parameter - the observer will get notified about parameter
   changes. */

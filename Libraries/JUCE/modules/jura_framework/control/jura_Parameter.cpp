@@ -377,6 +377,25 @@ String Parameter::getScalingString() const
 }
 
 //-------------------------------------------------------------------------------------------------
+// state recall:
+
+void Parameter::saveToXml(XmlElement* xml) const
+{
+  if(shouldBeSavedAndRecalled() && !isCurrentValueDefaultValue())
+  {
+    if(isStringParameter())
+      xml->setAttribute(getName(), getStringValue());
+    else
+      xml->setAttribute(getName(), juce::String(getValue()));
+  }
+}
+
+void Parameter::recallFromXml(const XmlElement& xml)
+{
+
+}
+
+//-------------------------------------------------------------------------------------------------
 // add/remove parameterObservers:
 
 void Parameter::registerParameterObserver(ParameterObserver *observerToAdd)
