@@ -167,10 +167,16 @@ protected:
 
   int editorWidth     = 0;
   int editorHeight    = 0;
+
   int editorWidthMin  = 1;
   int editorHeightMin = 1;
   int editorWidthMax  = INT_MAX;
   int editorHeightMax = INT_MAX;
+  // Maybe replace these with a pointer to a juce::ComponentBoundsConstrainer that is initially a 
+  // nullptr an which client code can set via a setEditorBoundsConstrainer function that can be 
+  // called in the createPluginFilter function. This object should delete the passed object on
+  // destruction
+
 
 
   friend class AudioPluginEditor;

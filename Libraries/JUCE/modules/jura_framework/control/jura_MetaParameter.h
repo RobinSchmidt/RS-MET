@@ -97,6 +97,9 @@ public:
   /** Returns true, if this map is the default identity map. */
   bool isIdentityMap() const;
 
+  /** Retruns the state of this mapper as xml element with given tag name. */
+  XmlElement* getStateAsXml(const juce::String& tagName) const;
+
 };
 
 //=================================================================================================
@@ -196,7 +199,7 @@ public:
   virtual void recallFromXml(const XmlElement& xml) override;
 
   /** Saves the state of the meta map into the given XmlElement. */
-  void saveMetaMapToXml(XmlElement* xml) const;
+  //void saveMetaMapToXml(XmlElement* xml) const;
 
 protected:
 

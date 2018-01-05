@@ -36,6 +36,20 @@ bool rsMetaParameterMapper::isIdentityMap() const
   return false;
 }
 
+XmlElement* rsMetaParameterMapper::getStateAsXml(const juce::String& tagName) const
+{
+  XmlElement* mapXml = new XmlElement(tagName);
+  for(size_t i = 0; i < nodes.size(); i++)
+  {
+    XmlElement* nodeXml = new XmlElement("Node");
+    nodeXml->setAttribute("X", nodes[i].getX());
+    nodeXml->setAttribute("Y", nodes[i].getY());
+    // todo: shape-type and shape-param
+    mapXml->addChildElement(nodeXml);
+  }
+  return mapXml;
+}
+
 // experimental: null objects (as in https://sourcemaking.com/design_patterns/null_object) to be
 // used by default:
 //MetaParameterManager nullMetaParameterManager;
@@ -70,7 +84,7 @@ void MetaControlledParameter::saveToXml(XmlElement* xml) const
 {
   rsSmoothableParameter::saveToXml(xml);
   if(!mapper.isIdentityMap())
-    saveMetaMapToXml(xml);
+    xml->addChildElement(mapper.getStateAsXml(getName() + "ParameterMap"));
 }
 
 void MetaControlledParameter::recallFromXml(const XmlElement& xml) 
@@ -79,10 +93,12 @@ void MetaControlledParameter::recallFromXml(const XmlElement& xml)
   // todo: look, if map is stored, if so recall it, otherwise init map to defaults
 }
 
+/*
 void MetaControlledParameter::saveMetaMapToXml(XmlElement* xml) const
 {
 
 }
+*/
 
 /*
 void MetaControlledParameter::setValue(double newValue, bool sendNotification, bool callCallbacks)
