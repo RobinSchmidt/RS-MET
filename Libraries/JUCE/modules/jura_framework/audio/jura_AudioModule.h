@@ -304,6 +304,7 @@ public:
 protected:
 
   // used internally as sub-tasks in the get/setState functions:
+  void parameterToXml(   XmlElement* xmlElementToStartFrom, Parameter* p);
   void parametersToXml(  XmlElement* xmlElementToStartFrom);
   void midiMappingToXml( XmlElement* xmlElementToStartFrom);
   void metaMappingToXml( XmlElement* xmlElementToStartFrom);
