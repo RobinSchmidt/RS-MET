@@ -95,10 +95,20 @@ public:
   double map(double x) { return rsNodeBasedFunction<double>::getValue(x); }
 
   /** Returns true, if this map is the default identity map. */
-  bool isIdentityMap() const;
+  bool isDefaultMap() const;
+    // maybe rename to isDefaultMap and factor out into a baseclass that handles all kinds of maps
+    // make virtual, so subclasses can define their own default maps
 
-  /** Retruns the state of this mapper as xml element with given tag name. */
+  /** Initializes this maps to its default state which is the identity map. */
+  void initToDefaults();
+
+  /** Returns the state of this mapper as xml element with given tag name. */
   XmlElement* getStateAsXml(const juce::String& tagName) const;
+
+  /** Sets up the state of this mapper from the given XmlElement. */
+  void setStateFromXml(const XmlElement& xmlState);
+
+
 
 };
 

@@ -27,7 +27,7 @@ size_t rsMetaParameterMapper::moveNode(size_t index, double x, double y)
 // it doesn't really work (or isn't enough) to apply the constraints here - we also need to apply
 // them in the editor
 
-bool rsMetaParameterMapper::isIdentityMap() const
+bool rsMetaParameterMapper::isDefaultMap() const
 {
   if(nodes.size() == 2  && nodes[1].shapeType == RAPT::rsFunctionNode<double>::LINEAR
     && nodes[0].getX() == 0.0 && nodes[0].getY() == 0.0 
@@ -36,11 +36,17 @@ bool rsMetaParameterMapper::isIdentityMap() const
   return false;
 }
 
+void rsMetaParameterMapper::initToDefaults()
+{
+  nodes.clear(); 
+  addNode(0, 0); 
+  addNode(1, 1); 
+}
+
 XmlElement* rsMetaParameterMapper::getStateAsXml(const juce::String& tagName) const
 {
   XmlElement* mapXml = new XmlElement(tagName);
-  for(size_t i = 0; i < nodes.size(); i++)
-  {
+  for(size_t i = 0; i < nodes.size(); i++) {
     XmlElement* nodeXml = new XmlElement("Node");
     nodeXml->setAttribute("X", nodes[i].getX());
     nodeXml->setAttribute("Y", nodes[i].getY());
@@ -48,6 +54,19 @@ XmlElement* rsMetaParameterMapper::getStateAsXml(const juce::String& tagName) co
     mapXml->addChildElement(nodeXml);
   }
   return mapXml;
+}
+
+void rsMetaParameterMapper::setStateFromXml(const XmlElement& mapXml)
+{
+  nodes.clear();
+  forEachXmlChildElementWithTagName(mapXml, nodeXml, "Node") {
+    double x = nodeXml->getDoubleAttribute("X", 0.0);
+    double y = nodeXml->getDoubleAttribute("Y", 0.0);
+    addNode(x, y);
+  }
+  jassert(nodes.size() >= 2); // xml corrupted? should have at least 2 nodes
+  if(nodes.size() < 2) 
+    initToDefaults();
 }
 
 // experimental: null objects (as in https://sourcemaking.com/design_patterns/null_object) to be
@@ -83,22 +102,19 @@ void MetaControlledParameter::setNormalizedValue(double newValue, bool sendNotif
 void MetaControlledParameter::saveToXml(XmlElement* xml) const
 {
   rsSmoothableParameter::saveToXml(xml);
-  if(!mapper.isIdentityMap())
+  if(!mapper.isDefaultMap())
     xml->addChildElement(mapper.getStateAsXml(getName() + "ParameterMap"));
 }
 
 void MetaControlledParameter::recallFromXml(const XmlElement& xml) 
 {
   rsSmoothableParameter::recallFromXml(xml);
-  // todo: look, if map is stored, if so recall it, otherwise init map to defaults
+  XmlElement* mapXml = xml.getChildByName(getName() + "ParameterMap");
+  if(mapXml != nullptr)
+    mapper.setStateFromXml(*mapXml);
+  else
+    mapper.initToDefaults();
 }
-
-/*
-void MetaControlledParameter::saveMetaMapToXml(XmlElement* xml) const
-{
-
-}
-*/
 
 /*
 void MetaControlledParameter::setValue(double newValue, bool sendNotification, bool callCallbacks)
