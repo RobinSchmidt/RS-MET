@@ -392,7 +392,13 @@ void Parameter::saveToXml(XmlElement* xml) const
 
 void Parameter::recallFromXml(const XmlElement& xml)
 {
-
+  if(shouldBeSavedAndRecalled()) 
+  {
+    if(isStringParameter())
+      setStringValue(xml.getStringAttribute(getName(), getDefaultStringValue()), true, true);
+    else
+      setValue(xml.getDoubleAttribute(getName(), getDefaultValue()), true, true); 
+  }
 }
 
 //-------------------------------------------------------------------------------------------------

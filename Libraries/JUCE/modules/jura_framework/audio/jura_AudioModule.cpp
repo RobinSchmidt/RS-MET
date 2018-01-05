@@ -296,19 +296,6 @@ void AudioModule::parameterToXml(XmlElement* xml, Parameter* p)
 {
   if(p == nullptr) return; // why do we need this?
   p->saveToXml(xml);
-
-  // todo: store smoothing and meta-mapping function, if applicable
-  // move into Parameter::saveToXml, override in subclasses
-  // just call p->saveToXml, likewise in recall: p->recallFromXml
-  /*
-  if(p->shouldBeSavedAndRecalled() && !p->isCurrentValueDefaultValue())
-  {
-    if(p->isStringParameter())
-      xml->setAttribute(p->getName(), p->getStringValue());
-    else
-      xml->setAttribute(p->getName(), juce::String(p->getValue()));
-  }
-  */
 }
 
 void AudioModule::parametersToXml(XmlElement* xml)
@@ -398,16 +385,8 @@ XmlElement* AudioModule::getStateAsXml(const juce::String& stateName, bool markA
 
 void AudioModule::recallParametersFromXml(const XmlElement &xml)
 {
-  juce::String name;
-  Parameter* p;
-  for(int i = 0; i < size(parameters); i++) {
-    p = parameters[i];
-    name = p->getName();
-    if(p->shouldBeSavedAndRecalled()) {
-      if(p->isStringParameter())
-        p->setStringValue(xml.getStringAttribute(name, p->getDefaultStringValue()), true, true);
-      else
-        p->setValue(xml.getDoubleAttribute(name, p->getDefaultValue()), true, true); }}
+  for(int i = 0; i < size(parameters); i++) 
+    parameters[i]->recallFromXml(xml);
 }
 
 void AudioModule::recallChildModulesFromXml(const XmlElement &xml, bool markAsClean)
