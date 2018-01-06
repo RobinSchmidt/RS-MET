@@ -94,12 +94,12 @@ public:
   Parameter objects with associated callbacks. */
   virtual int addNode(double pixelX, double pixelY);
 
-  /** Removes the node with given index. */
-  virtual void removeNode(int index);
+  /** Removes the node with given index and returns if this was successful. */
+  virtual bool removeNode(int index);
 
   /** If there is a node at the given pixel position, this function will remove it (otherwise it 
   will have no effect). */
-  virtual void removeNodeAt(int pixelX, int pixelY);
+  virtual bool removeNodeAt(int pixelX, int pixelY);
 
   /** Moves the node with given index to the given new pixel coordinates. The return value is 
   the new index of the node. In the baseclass implementation, that index is the same as the input 
@@ -222,7 +222,7 @@ public:
   virtual void paint(Graphics& g) override;
   //virtual rsDraggableNode* addNode(double pixelX, double pixelY) override;
   virtual int addNode(double pixelX, double pixelY) override;
-  virtual void removeNode(int index) override;
+  virtual bool removeNode(int index) override;
   int moveNodeTo(int index, int pixelX, int pixelY) override;
   //virtual void nodeChanged(const rsDraggableNode* node) override;
   virtual int nodeChanged(int nodeIndex) override;

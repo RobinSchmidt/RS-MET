@@ -71,10 +71,10 @@ public:
 
   // overriden from rsNodeBasedFunction to apply some restrictions:
   size_t addNode(double x, double y) override;
-  void removeNode(size_t index) override;
+  //bool removeNode(size_t index) override;
   size_t moveNode(size_t index, double newX, double newY) override;
 
-  //virtual bool isNodeRemovable(size_t index) override;
+  virtual bool isNodeRemovable(size_t index) override;
   //virtual size_t constrainNode(size_t index) override;
 
 

@@ -84,22 +84,24 @@ int rsNodeEditor::addNode(double x, double y)
   //return i;
 }
 
-void rsNodeEditor::removeNode(int i)
+bool rsNodeEditor::removeNode(int i)
 {
   if(!isNodeRemovable(i))
-    return; // maybe return false?
+    return false; // maybe return false?
   delete nodes[i];  
   remove(nodes, i);
   for(i = i; i < size(nodes); i++)
     nodes[i]->decrementIndex();
   repaint();
+  return true;
 }
 
-void rsNodeEditor::removeNodeAt(int pixelX, int pixelY)
+bool rsNodeEditor::removeNodeAt(int pixelX, int pixelY)
 {
   int i = getNodeIndexAt(pixelX, pixelY);
   if(i != -1)
-    removeNode(i);
+    return removeNode(i);
+  return false;
 }
 
 int rsNodeEditor::moveNodeTo(int index, int pixelX, int pixelY)
@@ -314,11 +316,14 @@ int rsNodeBasedFunctionEditor::addNode(double x, double y)
   return i;
 }
 
-void rsNodeBasedFunctionEditor::removeNode(int i)
+bool rsNodeBasedFunctionEditor::removeNode(int i)
 {
   ScopedPointerLock spl(lock);
-  valueMapper->removeNode(i);
-  rsNodeEditor::removeNode(i);
+  if(rsNodeEditor::removeNode(i))
+  {
+    return valueMapper->removeNode(i);
+  }
+  return false;
 }
 
 int rsNodeBasedFunctionEditor::moveNodeTo(int index, int pixelX, int pixelY)

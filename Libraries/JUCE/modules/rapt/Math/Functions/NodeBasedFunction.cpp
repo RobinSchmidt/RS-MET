@@ -15,10 +15,12 @@ size_t rsNodeBasedFunction<T>::addNode(T x, T y)
 }
 
 template<class T>
-void rsNodeBasedFunction<T>::removeNode(size_t index)
+bool rsNodeBasedFunction<T>::removeNode(size_t index)
 {
-  if(isNodeRemovable(index))
+  if(isNodeRemovable(index)) {
     rsRemove(nodes, index);
+    return true; }
+  return false;
 }
 
 template<class T>

@@ -9,13 +9,14 @@ size_t rsMetaParameterMapper::addNode(double x, double y)
   y = clip(y, 0, 1);
   return RAPT::rsNodeBasedFunction<double>::addNode(x, y);
 }
-
-void rsMetaParameterMapper::removeNode(size_t index)
+/*
+bool rsMetaParameterMapper::removeNode(size_t index)
 {
-  if(index == 0 || index == nodes.size()-1) return; // first and last node can't be removed
-  RAPT::rsNodeBasedFunction<double>::removeNode(index);
+  if(index == 0 || index == nodes.size()-1) 
+    return false; // first and last node can't be removed
+  return RAPT::rsNodeBasedFunction<double>::removeNode(index);
 }
-
+*/
 size_t rsMetaParameterMapper::moveNode(size_t index, double x, double y)
 {
   x = clip(x, 0, 1); 
@@ -24,14 +25,14 @@ size_t rsMetaParameterMapper::moveNode(size_t index, double x, double y)
   if(index == nodes.size()-1)  x = 1;    // last node's x value is fixed at 1
   return RAPT::rsNodeBasedFunction<double>::moveNode(index, x, y);
 }
-/*
+
 bool rsMetaParameterMapper::isNodeRemovable(size_t index)
 {
   if(index == 0 || index == nodes.size()-1) 
     return false; // first and last node can't be removed
   return true;
 }
-
+/*
 size_t rsMetaParameterMapper::constrainNode(size_t i)
 {
   //return i; // preliminary

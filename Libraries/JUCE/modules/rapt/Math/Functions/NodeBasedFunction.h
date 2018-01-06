@@ -92,8 +92,10 @@ public:
   /** Adds a new node at the given coordinates and returns the index at which it was inserted. */
   virtual size_t addNode(T x, T y);
 
-  /** Removes the node with given index. */
-  virtual void removeNode(size_t index);
+  /** Tries to remove the node with given index and returns true, if it was actually removed (it 
+  may not be removed, if the overriden isNodeRemovable function in a subclass returns false
+  for the node in question). */
+  virtual bool removeNode(size_t index);
 
   /** Moves an existing datapoint with given index to a new position. Because we always keep our 
   data arrays sorted, this may change the index of the datapoint inside the array. The return value
