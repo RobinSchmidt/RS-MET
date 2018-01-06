@@ -71,6 +71,7 @@ public:
   void autoAttachMetaParameters();
 
   /** Sets min/max values for the plugin editor width and height. */
+  /*
   void setEditorSizeLimits(int minWidth, int minHeight, int maxWidth, int maxHeight)
   {
     editorWidthMin  = minWidth;
@@ -81,6 +82,12 @@ public:
   // todo: perhaps remove/hide the resizer widget, if min == max for w and h
   // see juce::AudoProcessorEditor::setResizable 
   // https://www.juce.com/doc/classAudioProcessorEditor#a3d36f7385146270fc752ce17418f115a
+  */
+
+  void setEditorSizeLimits(ComponentBoundsConstrainer* newConstrainer)
+  {
+    editorBoundsConstrainer = newConstrainer;
+  }
 
   //-----------------------------------------------------------------------------------------------
   // mandatory overrides for juce::AudioProcessor baseclass:
@@ -168,10 +175,13 @@ protected:
   int editorWidth     = 0;
   int editorHeight    = 0;
 
+  ComponentBoundsConstrainer* editorBoundsConstrainer = nullptr;
+  /*
   int editorWidthMin  = 1;
   int editorHeightMin = 1;
   int editorWidthMax  = INT_MAX;
   int editorHeightMax = INT_MAX;
+  */
   // Maybe replace these with a pointer to a juce::ComponentBoundsConstrainer that is initially a 
   // nullptr an which client code can set via a setEditorBoundsConstrainer function that can be 
   // called in the createPluginFilter function. This object should delete the passed object on
@@ -243,9 +253,9 @@ public:
     if(h == 0)
       h = wrappedEditor->getHeight();
 
-    //setResizeLimits(200, 100, 6000, 3000); // must be called BEFORE setSize ...old
-    setResizeLimits(pluginToEdit->editorWidthMin, pluginToEdit->editorHeightMin, 
-      pluginToEdit->editorWidthMax, pluginToEdit->editorHeightMax);// must be called BEFORE setSize
+    setResizable(true, true);
+    //setResizeLimits(pluginToEdit->editorWidthMin, pluginToEdit->editorHeightMin, 
+    //  pluginToEdit->editorWidthMax, pluginToEdit->editorHeightMax);// must be called BEFORE setSize
     setSize(w, h);
     addAndMakeVisible(wrappedEditor);
   }

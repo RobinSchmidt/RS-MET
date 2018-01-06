@@ -40,6 +40,7 @@ AudioPlugin::~AudioPlugin()
     delete wrappedAudioModule;
     wrappedAudioModule = nullptr;
   }
+  delete editorBoundsConstrainer;
 }
 
 //void AudioPlugin::configureInsAndOuts()
@@ -155,6 +156,7 @@ AudioProcessorEditor* AudioPlugin::createEditor()
   AudioModuleEditor *moduleEditor = wrappedAudioModule->createEditor();
   AudioPluginEditor *pluginEditor = new AudioPluginEditor(moduleEditor, this);
   ParameterObserver::setGuiAutomationSwitch(true);    // now, widgets can be automated again
+  pluginEditor->setConstrainer(editorBoundsConstrainer);
   return pluginEditor;
 }
 
