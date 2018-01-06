@@ -74,6 +74,10 @@ public:
   void removeNode(size_t index) override;
   size_t moveNode(size_t index, double newX, double newY) override;
 
+  //virtual bool isNodeRemovable(size_t index) override;
+  //virtual size_t constrainNode(size_t index) override;
+
+
   /** Maps an incoming normalized parameter in the range 0..1 to mapped 0..1 range suing the 
   function defined by the nodes in our rsNodeBasedFunction baseclass. */
   double map(double x) { return rsNodeBasedFunction<double>::getValue(x); }

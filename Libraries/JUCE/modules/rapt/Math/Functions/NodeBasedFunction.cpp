@@ -7,9 +7,10 @@ size_t rsNodeBasedFunction<T>::addNode(T x, T y)
 
   // keep arrays sorted according to ascending x:
   size_t i = nodes.size()-1;
-  while(i > 0 && isNextValueLess(i-1)) {
-    rsSwap(nodes[i-1], nodes[i]);
-    i--; }
+  //while(i > 0 && isNextValueLess(i-1)) {
+  //  rsSwap(nodes[i-1], nodes[i]);
+  //  i--; }
+  i = moveNodeToSortedIndex(i);
   return constrainNode(i);
 }
 
@@ -25,13 +26,18 @@ size_t rsNodeBasedFunction<T>::moveNode(size_t i, T newX, T newY)
 {
   nodes[i].x = newX;
   nodes[i].y = newY;
+  i = moveNodeToSortedIndex(i);
+  return constrainNode(i);
+}
 
-  // keep arrays sorted according to ascending x:
+template<class T>
+size_t rsNodeBasedFunction<T>::moveNodeToSortedIndex(size_t i)
+{
   while(i > 0 && isNextValueLess(i-1)) { 
     rsSwap(nodes[i-1], nodes[i]); 
     i--; }
   while(i < nodes.size()-1 && isNextValueLess(i)) {
     rsSwap(nodes[i+1], nodes[i]);
     i++; }
-  return constrainNode(i);
+  return i;
 }

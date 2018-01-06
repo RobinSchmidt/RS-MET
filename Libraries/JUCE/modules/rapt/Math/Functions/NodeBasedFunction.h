@@ -100,19 +100,27 @@ public:
   informs about the new index. */
   virtual size_t moveNode(size_t index, T newX, T newY);
 
+  /** This function is called after the node at the given index has been moved to a new x,y 
+  position. It will move the node up or down in the array of nodes (by successive swaps) to keep 
+  the array sorted. The return value is the new index. */
+  size_t moveNodeToSortedIndex(size_t index);
+
   //-----------------------------------------------------------------------------------------------
   // \name Hooks
 
   /** This function will be called before an attempt to remove a node and will not remove it, if 
   that function returns false. The baseclass implementation just returns true but you can override 
-  it in a subclass if you subclass - for example - requires a certain minimum number of nodes. */
+  it in a subclass if your subclass - for example - requires a certain minimum number of nodes. */
   virtual bool isNodeRemovable(size_t index) { return true; }
+
+  // todo: maybe add a canNodeBeAdded(T x, T y) function. subclasses my have a maximum number of
+  // nodes and/or disallow adding nodes outside a given (x,y) range
 
   /** This function is called after a node has been inserted or moved to a new position. You can
   override it, if you need to apply constraints to the positions of nodes, like for example that 
   the coordinates of the first and/or last node must have certain values. Because changing the 
   position of a node may change its index, too, this function should return the new index of the 
-  after the constraints have been applied. The baseclass implementation does nothing and just 
+  node after the constraints have been applied. The baseclass implementation does nothing and just 
   returns the same index that you give to it. */
   virtual size_t constrainNode(size_t index) { return index; }
 
@@ -171,6 +179,11 @@ public:
   }
 
 protected:
+
+  /** Simply appends a node with given coordinates (and linear shape-type) to our array - without 
+  checking constraints or sorting. This is mainly meant to be used by subclasses to intialize the
+  node array to a default state (in which case the constraints may not work as desired). */
+  void appendNode(T x, T y) { nodes.push_back(rsFunctionNode<T>(x, y)); }
 
   std::vector<rsFunctionNode<T>> nodes;
 

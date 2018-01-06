@@ -24,7 +24,25 @@ size_t rsMetaParameterMapper::moveNode(size_t index, double x, double y)
   if(index == nodes.size()-1)  x = 1;    // last node's x value is fixed at 1
   return RAPT::rsNodeBasedFunction<double>::moveNode(index, x, y);
 }
+/*
+bool rsMetaParameterMapper::isNodeRemovable(size_t index)
+{
+  if(index == 0 || index == nodes.size()-1) 
+    return false; // first and last node can't be removed
+  return true;
+}
 
+size_t rsMetaParameterMapper::constrainNode(size_t i)
+{
+  //return i; // preliminary
+  nodes[i].x = clip(nodes[i].x, 0, 1); 
+  nodes[i].y = clip(nodes[i].y, 0, 1);     // x and y must be in 0..1
+  i = RAPT::rsNodeBasedFunction<double>::moveNodeToSortedIndex(i);
+  if(i == 0)               nodes[i].x = 0; // first node's x value is fixed at 0
+  if(i == nodes.size()-1)  nodes[i].x = 1; // last  node's x value is fixed at 1
+  return RAPT::rsNodeBasedFunction<double>::moveNodeToSortedIndex(i);
+}
+*/
 // it doesn't really work (or isn't enough) to apply the constraints here - we also need to apply
 // them in the editor
 
@@ -40,8 +58,8 @@ bool rsMetaParameterMapper::isDefaultMap() const
 void rsMetaParameterMapper::initToDefaults()
 {
   nodes.clear(); 
-  addNode(0, 0); 
-  addNode(1, 1); 
+  appendNode(0, 0); 
+  appendNode(1, 1); 
 }
 
 XmlElement* rsMetaParameterMapper::getStateAsXml(const juce::String& tagName) const
