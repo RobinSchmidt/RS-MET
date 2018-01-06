@@ -70,12 +70,12 @@ public:
   rsMetaParameterMapper();
 
   // overriden from rsNodeBasedFunction to apply some restrictions:
-  size_t addNode(double x, double y) override;
+  //size_t addNode(double x, double y) override;
   //bool removeNode(size_t index) override;
-  size_t moveNode(size_t index, double newX, double newY) override;
+  //size_t moveNode(size_t index, double newX, double newY) override;
 
   virtual bool isNodeRemovable(size_t index) override;
-  //virtual size_t constrainNode(size_t index) override;
+  virtual size_t constrainNode(size_t index) override;
 
 
   /** Maps an incoming normalized parameter in the range 0..1 to mapped 0..1 range suing the 

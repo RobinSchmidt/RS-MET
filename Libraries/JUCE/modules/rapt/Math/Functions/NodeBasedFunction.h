@@ -129,6 +129,12 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
+  /** Returns the x coordinate of the node with given index. */
+  inline T getNodeX(size_t index) { return nodes[index].getX(); }
+
+  /** Returns the y coordinate of the node with given index. */
+  inline T getNodeY(size_t index) { return nodes[index].getY(); }
+
   /** Returns a reference to our array of nodes. It's a constant reference because client code
   is not allowed to edit that data directly. Instead, it must use the moveNode function which
   will update the datapoint and do some additional stuff. */ 

@@ -334,7 +334,9 @@ int rsNodeBasedFunctionEditor::moveNodeTo(int index, int pixelX, int pixelY)
   clipIfDesired(&x, &y);
   int newIndex = (int)valueMapper->moveNode(index, x, y);
   reIndexNode(index, newIndex);
-  nodes[newIndex]->setPosition(x, y, true); 
+  //nodes[newIndex]->setPosition(x, y, true); 
+  nodes[newIndex]->setPosition(
+    valueMapper->getNodeX(newIndex), valueMapper->getNodeY(newIndex), true);
   repaint();
   return newIndex;
 }
