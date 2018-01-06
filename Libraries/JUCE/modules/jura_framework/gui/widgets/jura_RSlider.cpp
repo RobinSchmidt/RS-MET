@@ -152,8 +152,11 @@ void RSlider::setToDefaultValue(const bool sendUpdateMessage, const bool sendMes
 void RSlider::assignParameter(Parameter *parameterToAssign)
 {
   RWidget::assignParameter(parameterToAssign);
-  if( assignedParameter != NULL )
+  if(assignedParameter != nullptr)
+  {
+    setSliderName(assignedParameter->getName());
     parameterRangeChanged(assignedParameter);
+  }
 }
 
 //void RSlider::parameterChanged(Parameter* p)
@@ -175,7 +178,6 @@ void RSlider::parameterRangeChanged(Parameter* parameterThatHasChangedRange)
     maxValue      = assignedParameter->getMaxValue();
     scaling       = assignedParameter->getScaling();
     interval      = assignedParameter->getInterval();
-    setSliderName(assignedParameter->getName());
     valueSanityCheck();
     //updateWidgetFromAssignedParameter(false);
     repaint();

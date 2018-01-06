@@ -1,12 +1,12 @@
 rsMetaParameterMapper::rsMetaParameterMapper()
 {
-  addNode(0, 0);
-  addNode(1, 1);
+  initToDefaults();
 }
 
 size_t rsMetaParameterMapper::addNode(double x, double y)
 {
-  x = clip(x, 0, 1); y = clip(y, 0, 1);
+  x = clip(x, 0, 1); 
+  y = clip(y, 0, 1);
   return RAPT::rsNodeBasedFunction<double>::addNode(x, y);
 }
 
@@ -18,7 +18,8 @@ void rsMetaParameterMapper::removeNode(size_t index)
 
 size_t rsMetaParameterMapper::moveNode(size_t index, double x, double y)
 {
-  x = clip(x, 0, 1); y = clip(y, 0, 1);  // x and y must be in 0..1
+  x = clip(x, 0, 1); 
+  y = clip(y, 0, 1);                     // x and y must be in 0..1
   if(index == 0)               x = 0;    // first node's x value is fixed at 0
   if(index == nodes.size()-1)  x = 1;    // last node's x value is fixed at 1
   return RAPT::rsNodeBasedFunction<double>::moveNode(index, x, y);
@@ -64,15 +65,15 @@ void rsMetaParameterMapper::setStateFromXml(const XmlElement& mapXml)
     double y = nodeXml->getDoubleAttribute("Y", 0.0);
     addNode(x, y);
   }
-  jassert(nodes.size() >= 2); // xml corrupted? should have at least 2 nodes
+  jassert(nodes.size() >= 2); // xml corrupted? it should have at least 2 nodes
   if(nodes.size() < 2) 
     initToDefaults();
 }
 
-// experimental: null objects (as in https://sourcemaking.com/design_patterns/null_object) to be
+// experimental: null object (as in https://sourcemaking.com/design_patterns/null_object) to be
 // used by default:
 //MetaParameterManager nullMetaParameterManager;
-//NormalizedParameterMapper nullParameterMapper;
+
 
 //=================================================================================================
 
@@ -139,19 +140,7 @@ void MetaControlledParameter::setMetaParameterManager(MetaParameterManager *newM
   }
 
 }
-/*
-void MetaControlledParameter::setParameterMapper(NormalizedParameterMapper *newMapper)
-{
-  mapper = newMapper;
 
-  // maybe we should call something like 
-  // setFromMetaValue(getMetaValue());
-  // here, so a user could re-configure this object at runtime with a new mapper object and have 
-  // that reconfiguration immediately reflected by the parameter values. getMetaValue would be 
-  // implemented by (somehow) quering the metaParaManager (if not null) or use the proportional 
-  // value of this Parameter (if metaParaManager null) 
-}
-*/
 void MetaControlledParameter::attachToMetaParameter(int index)
 {
   jassert(metaParaManager != nullptr); // we need a reference to a MetaParameterManager object

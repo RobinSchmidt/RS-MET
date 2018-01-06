@@ -53,36 +53,18 @@ todo:
  ->the presence of the meta-attachment would change the behavior (mapping) of the reso-slider
    ...maybe we must override the mapping function in MetaControlledParameter
 
-
-
-
 */
 
-/** This is an abstract baseclass for classes that are supposed to map an input value (which is 
-normalized to the range 0..1) to an output value in the same range. It may (optionally) be used
-in a MetaControlledParameter to realize arbitrary mappings from the MetaParameter to the target 
-Parameter. To this end, you would have to define a subclass of NormalizedParameterMapper and 
-configure the respective MetaControlledParameter object with an object of your subclass
-(using MetaControlledParameter::setParameterMapper). */
+//=================================================================================================
 
-class JUCE_API NormalizedParameterMapper
-{
-public:
-  virtual ~NormalizedParameterMapper(){};
-
-  /** Override this function in your subclass to map a normalized input value (in the range 0..1) 
-  to the corresponding output value (in the same range). You may map different input values to the 
-  same output value, i.e. your mapping function does not need to be injective/invertible, but it 
-  should have the property that any value between 0..1 (ends inclusive) is a valid input and the 
-  output values should be restricted to that same range. */
-  virtual double map(double input) = 0;
-
-};
-// naahhh...don't do it that way
-
+/** This class is used to map the normalized parameter range 0..1 that is used by meta-parameters
+to itself via a user definable mapping function, such that several parameters that are controlled
+via the same MetaParameter can map this input-range of the meta parameter to their own normalized
+range in arbitrary ways. */
 
 class JUCE_API rsMetaParameterMapper : public RAPT::rsNodeBasedFunction<double>
 {
+
 public:
 
   rsMetaParameterMapper();
@@ -92,11 +74,13 @@ public:
   void removeNode(size_t index) override;
   size_t moveNode(size_t index, double newX, double newY) override;
 
+  /** Maps an incoming normalized parameter in the range 0..1 to mapped 0..1 range suing the 
+  function defined by the nodes in our rsNodeBasedFunction baseclass. */
   double map(double x) { return rsNodeBasedFunction<double>::getValue(x); }
 
   /** Returns true, if this map is the default identity map. */
   bool isDefaultMap() const;
-    // maybe rename to isDefaultMap and factor out into a baseclass that handles all kinds of maps
+    // maybe factor out into a baseclass that handles all kinds of maps and
     // make virtual, so subclasses can define their own default maps
 
   /** Initializes this maps to its default state which is the identity map. */
@@ -109,7 +93,7 @@ public:
   void setStateFromXml(const XmlElement& xmlState);
 
 
-
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsMetaParameterMapper)
 };
 
 //=================================================================================================
@@ -152,14 +136,6 @@ public:
   this MetaControlledParameter object has been created and the passed manager object should remain
   valid for the whole lifetime of this object. */
   virtual void setMetaParameterManager(MetaParameterManager* newManager);
-
-  /** Sets the mapper object that maps between the MetaParameter value at the input side and the
-  proportional value of the target parameter on the output side. Such a mapper is optional, if you 
-  pass none, an identity mapping will be used by default. The mapper object should be valid for the
-  entire lifetime of this MetaControlledParameter. To reset it, you can use this function with a 
-  nullptr argument. */
-  //virtual void setParameterMapper(NormalizedParameterMapper* newMapper);
-    // feature is not yet tested
 
   /** Attaches this parameter to the MetaParameter with the given index (in the
   MetaParameterManager). */
@@ -208,8 +184,6 @@ public:
   /** Overriden to possibly recall the mapping function, if necessarry. */
   virtual void recallFromXml(const XmlElement& xml) override;
 
-  /** Saves the state of the meta map into the given XmlElement. */
-  //void saveMetaMapToXml(XmlElement* xml) const;
 
 protected:
 

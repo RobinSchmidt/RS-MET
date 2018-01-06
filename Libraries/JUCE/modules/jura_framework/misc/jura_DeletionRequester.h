@@ -65,13 +65,15 @@ public:
 
 //=================================================================================================
 
-/** A subclass of rsDeleteor that doesn't immediately delete the object that is passed but instead
+/** A subclass of rsDeletor that doesn't immediately delete the object that is passed but instead
 moves it into a garbage collector that will get emptied at some later time (using a timer 
 callback). Deferring the deletion to some later time is sometimes necessary when an object wants to 
 delete itself, because after being marked for deletion, it may still receive callbacks. For 
 example, a button that deletes itself (immediately) when clicking on it (on mouseDown), would still 
-receive a mouseUp event after that deletion, leading to an access violation. Such things can be 
-circumvented by deferring the deletion. */
+receive a mouseUp event after that deletion, leading to an access violation. Think of a close 
+button that is part of a window. Clicking on may delete the window and with it the button. Such 
+things can be circumvented by deferring the deletion (although, in this case, it may also be an
+option to delet on mouseUp). */
 
 class JUCE_API rsGarbageCollector : public rsDeletor, public juce::Timer
 {

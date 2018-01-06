@@ -1,14 +1,18 @@
 RoMoS is an acronym for Rob's modular synthesizer.
 
 Some technical details:
-RoMoS distuishes 3 processing stages. The first one is the input stage which is useful, for example, to pre-process incoming events to build 
-sequencers, appregiators, etc. The second stage is polyphonic and is the place where most of the main instrument body resides. 
-The outputs of the voices are added and this sum goes into the third and last stage which is monophonic and can be used to apply
-master effects. Unless spefified otherwise, the outputs of the modules are evaluated according to the positions of the modules inside 
-the structure beginning at the top-left and proceeding to the bottom right. The x-coordinate has higher priority which means that if some 
-module A that is to the left of some other module B but possibly below module B, module A will still be evaluated before module B. If two 
-modules are exactly at the same position (a situation which you should avoid), the evaluation order is undefined. Alternatively, you can 
-explicitely specify the evaluation order yourself. Feedback paths are possible, but there will be an implicit unit delay in such feedback
-paths due to the fact that an output of a module that depends on it own input can only be computed when - so to speak - the output is 
-already known before computing the output - an obviously impossible thing (quite generally in digital signal processing), so we must resort 
-to use the output from the previous sample instant instead.
+RoMoS distuishes 3 processing stages. The first one is the input stage which is useful, for 
+example, to pre-process incoming events to build sequencers, appregiators, etc. The second stage is 
+polyphonic and is the place where most of the main instrument body resides. The outputs of the 
+voices are added and this sum goes into the third and last stage which is monophonic and can be 
+used to apply master effects. Unless spefified otherwise, the outputs of the modules are evaluated 
+according to the positions of the modules inside the structure beginning at the top-left and 
+proceeding to the bottom right. The x-coordinate has higher priority which means that if some 
+module A that is to the left of some other module B but possibly below module B, module A will 
+still be evaluated before module B. If two modules are exactly at the same position (a situation 
+which you should avoid), the evaluation order is undefined. Alternatively, you can explicitely 
+specify the evaluation order yourself. Feedback paths are possible, but there will be an implicit 
+unit delay in such feedback paths due to the fact that an output of a module that depends on it own 
+input can only be computed when - so to speak - the output is already known before computing the 
+output - an obviously impossible thing (quite generally in digital signal processing), so we must 
+resort to use the output from the previous sample instant instead.

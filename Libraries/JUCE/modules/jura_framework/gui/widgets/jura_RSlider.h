@@ -100,7 +100,11 @@ public:
     const bool sendMessageSynchronously = false);
 
   /** Overrides a RWidget::assignParameter in order to retrieve some infos from the Parameter (such
-  as range, default-value, etc.) and sets up the slider accordingly. */
+  as range, default-value, etc.) and sets up the slider accordingly. It will also set the slider's 
+  name equal to the parameter's name. You can change that slider name later, if you want to display
+  a name different from underlying Parameter's name. But in most cases, the slider reflecting the
+  parameter's name is what is desired, so copying it over may save a lot of boilerplate code 
+  typing. */
   void assignParameter(Parameter* parameterToAssign) override;
 
   //void parameterChanged(Parameter* p) override; 
