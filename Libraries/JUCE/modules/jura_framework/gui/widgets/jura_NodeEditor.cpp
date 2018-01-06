@@ -80,11 +80,14 @@ int rsNodeEditor::addNode(double x, double y)
   nodes.push_back(newNode);
   int i = size(nodes)-1;
   nodes[i]->setIndex(i);
-  return i;
+  return constrainNode(i);
+  //return i;
 }
 
 void rsNodeEditor::removeNode(int i)
 {
+  if(!isNodeRemovable(i))
+    return; // maybe return false?
   delete nodes[i];  
   remove(nodes, i);
   for(i = i; i < size(nodes); i++)
@@ -104,7 +107,8 @@ int rsNodeEditor::moveNodeTo(int index, int pixelX, int pixelY)
   double x = xyMapper.unmapX(pixelX);
   double y = xyMapper.unmapY(pixelY);
   nodes[index]->setPosition(x, y); // will indirectly trigger a repaint
-  return index;
+  return constrainNode(index);
+  //return index;
 }
 
 void rsNodeEditor::reIndexNode(int oldIndex, int newIndex)

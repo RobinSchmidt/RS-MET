@@ -38,15 +38,19 @@ public:
   adding, dragging and removing nodes. */
   inline void setIndex(int newIndex) { index = newIndex; }
 
+  /** Increments the index of this node by 1. */
   inline void incrementIndex() { index++; }
 
+  /** Decrements the index of this node by 1. */
   inline void decrementIndex() { index--; }
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
+  /** Returns the x-coordinate of this node. */
   inline double getX() const { return x; }
 
+  /** Returns the y-coordinate of this node. */
   inline double getY() const { return y; }
 
   //-----------------------------------------------------------------------------------------------
@@ -134,6 +138,22 @@ public:
 
   /** Returns the y-coordinate in pixels of the given node. */
   float getPixelY(const rsDraggableNode* node);
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Hooks
+
+  /** This function will be called before an attempt to remove a node and will not remove it, if 
+  that function returns false. The baseclass implementation just returns true but you can override 
+  it in a subclass if you subclass - for example - requires a certain minimum number of nodes. */
+  virtual bool isNodeRemovable(int index) { return true; }
+
+  /** This function is called after a node has been inserted or moved to a new position. You can
+  override it, if you need to apply costraints on the positions of nodes, like for example that the
+  coordinates of the first and/or last node must hae certain values. Because changing the position 
+  of a node may change its index, too, this function should return the new index of the after the
+  constraints have been applied. The baseclass implementation does nothing and just returns the 
+  same index that you give to it. */
+  virtual int constrainNode(int index) { return index; }
 
   //-----------------------------------------------------------------------------------------------
   // \name Callbacks
