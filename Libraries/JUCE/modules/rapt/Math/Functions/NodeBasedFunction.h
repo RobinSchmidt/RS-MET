@@ -86,6 +86,9 @@ class rsNodeBasedFunction
 
 public:
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Node manipulation
+
   /** Adds a new node at the given coordinates and returns the index at which it was inserted. */
   virtual size_t addNode(T x, T y);
 
@@ -96,6 +99,25 @@ public:
   data arrays sorted, this may change the index of the datapoint inside the array. The return value
   informs about the new index. */
   virtual size_t moveNode(size_t index, T newX, T newY);
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Hooks
+
+  /** This function will be called before an attempt to remove a node and will not remove it, if 
+  that function returns false. The baseclass implementation just returns true but you can override 
+  it in a subclass if you subclass - for example - requires a certain minimum number of nodes. */
+  virtual bool isNodeRemovable(size_t index) { return true; }
+
+  /** This function is called after a node has been inserted or moved to a new position. You can
+  override it, if you need to apply constraints to the positions of nodes, like for example that 
+  the coordinates of the first and/or last node must have certain values. Because changing the 
+  position of a node may change its index, too, this function should return the new index of the 
+  after the constraints have been applied. The baseclass implementation does nothing and just 
+  returns the same index that you give to it. */
+  virtual size_t constrainNode(size_t index) { return index; }
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
 
   /** Returns a reference to our array of nodes. It's a constant reference because client code
   is not allowed to edit that data directly. Instead, it must use the moveNode function which
@@ -119,6 +141,8 @@ public:
   // todo: use binary search with a start-index based on the previously retrieved value
   // see https://www.geeksforgeeks.org/binary-search/
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Output computation
 
   /** For internal use only... */
   T getValueLinear(T x, size_t i)

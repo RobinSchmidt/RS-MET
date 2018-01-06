@@ -10,13 +10,14 @@ size_t rsNodeBasedFunction<T>::addNode(T x, T y)
   while(i > 0 && isNextValueLess(i-1)) {
     rsSwap(nodes[i-1], nodes[i]);
     i--; }
-  return i;
+  return constrainNode(i);
 }
 
 template<class T>
 void rsNodeBasedFunction<T>::removeNode(size_t index)
 {
-  rsRemove(nodes, index);
+  if(isNodeRemovable(index))
+    rsRemove(nodes, index);
 }
 
 template<class T>
@@ -32,5 +33,5 @@ size_t rsNodeBasedFunction<T>::moveNode(size_t i, T newX, T newY)
   while(i < nodes.size()-1 && isNextValueLess(i)) {
     rsSwap(nodes[i+1], nodes[i]);
     i++; }
-  return i;
+  return constrainNode(i);
 }

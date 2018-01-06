@@ -226,6 +226,8 @@ public:
   int moveNodeTo(int index, int pixelX, int pixelY) override;
   //virtual void nodeChanged(const rsDraggableNode* node) override;
   virtual int nodeChanged(int nodeIndex) override;
+  virtual bool isNodeRemovable(int i) override { return (int)valueMapper->isNodeRemovable((size_t)i); }
+  virtual int constrainNode(int i) override { return (int)valueMapper->constrainNode((size_t)i); }
 
 
 protected:
