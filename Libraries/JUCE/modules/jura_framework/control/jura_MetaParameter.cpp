@@ -2,6 +2,7 @@ rsMetaParameterMapper::rsMetaParameterMapper()
 {
   initToDefaults();
 }
+
 /*
 size_t rsMetaParameterMapper::addNode(double x, double y)
 {
@@ -16,6 +17,7 @@ bool rsMetaParameterMapper::removeNode(size_t index)
     return false; // first and last node can't be removed
   return RAPT::rsNodeBasedFunction<double>::removeNode(index);
 }
+*/
 
 size_t rsMetaParameterMapper::moveNode(size_t index, double x, double y)
 {
@@ -25,9 +27,11 @@ size_t rsMetaParameterMapper::moveNode(size_t index, double x, double y)
   if(index == nodes.size()-1)  x = 1;    // last node's x value is fixed at 1
   return RAPT::rsNodeBasedFunction<double>::moveNode(index, x, y);
 }
-// it doesn't really work (or isn't enough) to apply the constraints here - we also need to apply
-// them in the editor
-*/
+// without this override, it would still possible to have first or last nodes x coordinates 
+// different from 0 and 1 when the 1st or last node is moved through the position of another 
+// node - then the other one becomes first or last but retains its position - it's something
+// about the constrainNode function being called after re-indexing or something ...i need to
+// figure that out..or not...it works like it is now, it's just unelegant
 
 bool rsMetaParameterMapper::isNodeRemovable(size_t index)
 {
