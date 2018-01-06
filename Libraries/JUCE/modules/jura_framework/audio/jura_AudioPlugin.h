@@ -84,7 +84,7 @@ public:
   // https://www.juce.com/doc/classAudioProcessorEditor#a3d36f7385146270fc752ce17418f115a
   */
 
-  void setEditorSizeLimits(ComponentBoundsConstrainer* newConstrainer)
+  void setEditorBoundsConstrainer(ComponentBoundsConstrainer* newConstrainer)
   {
     editorBoundsConstrainer = newConstrainer;
   }
