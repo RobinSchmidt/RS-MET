@@ -224,6 +224,7 @@ void rsModulationSetup::removeConnection(int index)
   if(mp != nullptr)
   {
     //removeWidgetsForConnection(index); // not necessary anymore, see comment in addConnection
+    connectionWidgets[index]->depthSlider->assignParameter(nullptr);
     std::vector<ModulationSource*> sources = mp->getConnectedSources();
     mp->removeModulationSource(sources[index]);
     updateSize();

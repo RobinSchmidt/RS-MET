@@ -23,6 +23,8 @@ next:
  -> the rsModulationDepthSlider tries to de-register itself from a (mod-depth) parameter that 
     deosn't exist anymore - override parameterWillBeDeleted?
  -it happens also when the modulation popup has been closed before switching preset
+-crash when adding then removing a modulator and the closing the mod-menu
+ ->mod-depth slider tries to unregister from a parameter that already has been deleted
 
 in order to have the grid lines in plots visually the same, the pixel-size should divisible by
 the number of sections, i.e. (N+1), when N is the number of grid-lines. for example, our usual
