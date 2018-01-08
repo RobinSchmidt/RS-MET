@@ -78,6 +78,8 @@ public:
     const bool sendUpdateMessage = true,
     const bool sendMessageSynchronously = false);
 
+  void setIsBipolar(double newValue);
+
   /** Overriden from RWidget - sets the current value of the slider from a string and optionally
   sends out a callback message. */
   void setStateFromString(const juce::String &stateString, bool sendChangeMessage = true) override;
@@ -219,6 +221,8 @@ protected:
   juce::Rectangle<int> handleRectangle;
   juce::String   sliderName;
   Component      *nameRectangle; // just a dummy in order to not receive mouse-events when the user clicks on the name-field
+
+  bool isBipolar;
 
 private:
 

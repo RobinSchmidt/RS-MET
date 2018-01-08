@@ -1,3 +1,4 @@
+#include "jura_RSlider.h"
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
@@ -96,6 +97,11 @@ void RSlider::setValue(double newValue, const bool sendUpdateMessage,
     notifyListeners();
     repaintOnMessageThread();
   }
+}
+
+void RSlider::setIsBipolar(double newValue)
+{
+  isBipolar = newValue;
 }
 
 void RSlider::setStateFromString(const juce::String &stateString, bool sendChangeMessage)
@@ -459,7 +465,7 @@ void RSlider::paint(Graphics& g)
   g.fillRect(handleRectangle);
   double thumbLeftValue, thumbRightValue, thumbWidth;
   g.setColour(getHandleColour());
-  if( scaling == Parameter::LINEAR_BIPOLAR )
+  if( scaling == Parameter::LINEAR_BIPOLAR || isBipolar )
   {
     if( getValue() > defaultValue )
     {
