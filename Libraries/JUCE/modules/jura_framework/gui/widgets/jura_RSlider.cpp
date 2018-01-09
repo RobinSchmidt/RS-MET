@@ -440,14 +440,7 @@ void RSlider::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &w
 
 void RSlider::paint(Graphics& g)
 {
-  // ToDo: allow custom painting by (optionally) delegating it to a painter object :
-  //if(sliderPainter != nullptr)
-  //{
-  //  sliderPainter->paint(this, g);
-  //  return;
-  //}
-  //// ...else the generic rs-met'sh looking slider is painted:
-
+  if(painter != nullptr) { painter->paint(g, this); return; }
 
   int w = getWidth();
   int h = getHeight();

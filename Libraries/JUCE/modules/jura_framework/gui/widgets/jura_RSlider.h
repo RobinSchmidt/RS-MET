@@ -3,12 +3,35 @@
 
 class RSlider;
 
+//=================================================================================================
+
 class JUCE_API RSliderListener // rename to RSliderObserver
 {
 public:
+  RSliderListener() {}
   virtual ~RSliderListener() {}
   virtual void rSliderValueChanged(RSlider* rSlider) = 0;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RSliderListener)
 };
+
+//=================================================================================================
+
+/** Baseclass for objects that paint a slider. */
+
+class JUCE_API RSliderPainter
+{
+public:
+  RSliderPainter() {}
+  virtual ~RSliderPainter() {}
+
+  /** You need to override this method to actually paint the slider suing the passed Graphics 
+  object. */
+  virtual void paint(Graphics& g, RSlider* slider) = 0;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RSliderPainter)
+};
+
+//=================================================================================================
 
 /** This is a class for horizontal sliders....
 
@@ -118,6 +141,11 @@ public:
   another RSlider into this one.*/
   virtual void copySettingsFrom(const RSlider* otherSlider);
 
+  /** Sets up a painter object that can be used for custom painting. By default, this is a nullptr
+  here and we will paint directly in our paint implementation but in case it is a non-nullptr, the
+  actual painting will be delegated to the painter object. */
+  virtual void setPainter(RSliderPainter* painterToUse) { painter = painterToUse; }
+
   //-----------------------------------------------------------------------------------------------
   // inquiry:
 
@@ -219,6 +247,8 @@ protected:
   juce::Rectangle<int> handleRectangle;
   juce::String   sliderName;
   Component      *nameRectangle; // just a dummy in order to not receive mouse-events when the user clicks on the name-field
+
+  RSliderPainter *painter = nullptr;
 
 private:
 

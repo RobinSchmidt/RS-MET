@@ -1,0 +1,10 @@
+In this file, i try to keep track of important chnages to my library, most importantly, changes 
+that break client code.
+
+
+Client-Code-Breaking Changes:
+
+
+Other Changes:
+
+
