@@ -1022,6 +1022,9 @@ void ModulatorCurveEditor::plotCurveFamily(Graphics &g, juce::Image *targetImage
 
 
   plotLoopLocators(g, targetImage, modulatorToEdit, locatorColour);
+
+  if (modulatorToEdit != nullptr /* why? */ && modulatorToEdit->getStrategy() == rosic::BreakpointModulatorData::Strategy::cursor)
+    drawCurrentPositionLocator(g, float(modulatorToEdit->getCursorPosition() * modulatorToEdit->getEndTime()), NO_ARROW, Colours::hotpink, targetImage);
 }
 
 void ModulatorCurveEditor::plotBreakpoints(Graphics &g, juce::Image *targetImage, 
