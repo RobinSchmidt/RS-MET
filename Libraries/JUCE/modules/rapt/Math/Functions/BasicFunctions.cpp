@@ -349,7 +349,7 @@ inline double rsZeroFunction(double x)
 }
 
 template<class T>
-inline T rsZeroValue(T value)
+inline T rsZeroValue(T /*value*/)
 {
   return T(0);
 }

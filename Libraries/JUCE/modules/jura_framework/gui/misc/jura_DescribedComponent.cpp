@@ -1,7 +1,3 @@
-//#include "rojue_DescribedComponent.h"
-//#include "rojue_RTextField.h"
-//using namespace rojue;
-
 // construction/destruction:
 
 DescribedItem::DescribedItem(const String& newDescription) 

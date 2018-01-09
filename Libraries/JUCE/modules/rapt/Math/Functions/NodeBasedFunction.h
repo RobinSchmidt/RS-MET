@@ -113,7 +113,7 @@ public:
   /** This function will be called before an attempt to remove a node and will not remove it, if 
   that function returns false. The baseclass implementation just returns true but you can override 
   it in a subclass if your subclass - for example - requires a certain minimum number of nodes. */
-  virtual bool isNodeRemovable(size_t index) { return true; }
+  virtual bool isNodeRemovable(size_t /*index*/) { return true; }
 
   // todo: maybe add a canNodeBeAdded(T x, T y) function. subclasses my have a maximum number of
   // nodes and/or disallow adding nodes outside a given (x,y) range

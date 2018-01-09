@@ -26,7 +26,7 @@ public:
   /** \name Setup */
 
   /** Sets the initial position of the particle. */
-  inline void setInitialPosition(T x, T y) { x0 = x; y0 = y; }
+  inline void setInitialPosition(T newX, T newY) { x0 = newX; y0 = newY; }
 
   /** Sets the angle at which our particle is launched from its initial position (in radians). */
   inline void setLaunchAngle(T newAngle) { angle = newAngle; }
