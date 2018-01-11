@@ -164,6 +164,15 @@ functions)
  setValueWithoutLocking - where the latter should be called only under the premise that the
  mutex-lock is already held by the caller
 
+the set/getValue stuff is messed up when smoothing/meta-control/modulation comes into play
+ensure the following:
+-set/get(Normalized)Value: sets/returns unmodulated (normalized) target value in all of Parameter's
+ subclasses
+
+
+
+
+
 */
 
 class JUCE_API Parameter
@@ -447,8 +456,8 @@ public:
     if(calleeObject != nullptr)
       valueChangeCallbackDouble =
       new SpecificMemberFunctionCallback1<CalleeClass, void, double>(calleeObject, memberToCall);
-    callValueChangeCallbacks(); // enforce consistency of parameter with core object after wiring
-                                // up the callback
+    callValueChangeCallbacks(value); // enforce consistency of parameter with core object after
+                                     // wiring up the callback
   }
 
   /** @see registerValueChangeCallback(CalleeClass *calleeObject, void (CalleeClass::*memberToCall) (double)) */
@@ -464,7 +473,7 @@ public:
     if(calleeObject != nullptr)
       valueChangeCallbackInt
       = new SpecificMemberFunctionCallback1<CalleeClass, void, int>(calleeObject, memberToCall);
-    callValueChangeCallbacks();
+    callValueChangeCallbacks(value);
   }
 
   /** @see registerValueChangeCallback(CalleeClass *calleeObject, void (CalleeClass::*memberToCall) (double)) */
@@ -480,14 +489,14 @@ public:
     if(calleeObject != nullptr)
       valueChangeCallbackBool =
       new SpecificMemberFunctionCallback1<CalleeClass, void, bool>(calleeObject, memberToCall);
-    callValueChangeCallbacks();
+    callValueChangeCallbacks(value);
   }
 
   void setValueChangeCallback(std::function<void(double)> cb)
   {
 	  ScopedPointerLock spl(mutex);
 	  valueChangeCallbackFunction = cb;
-    callValueChangeCallbacks();
+    callValueChangeCallbacks(value);
   }
 
   /** Clears our valueChangeCallbacks, so they will call back nothing. */
@@ -515,8 +524,10 @@ public:
   /** Notifies only observers that are not GUI elements. */
   //virtual void notifyNonGuiObservers();
 
-  /** Calls all currently registered callback functions for a value change. */
-  virtual void callValueChangeCallbacks();
+  /** Calls all currently registered callback function with the given argument. In a simple 
+  setting, the argument should be the value of this Parameter object (i.e. our "value" member) but
+  in subclasses, it may be a different value due to smoothing and/or modulation.  */
+  virtual void callValueChangeCallbacks(double argument);
 
 protected:
 

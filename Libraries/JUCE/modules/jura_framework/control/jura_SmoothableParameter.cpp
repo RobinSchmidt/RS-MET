@@ -110,17 +110,19 @@ rsSmoothableParameter::rsSmoothableParameter(const juce::String& name, double mi
 
 }
 
-void rsSmoothableParameter::setValue(double newValue, bool sendNotification, bool callCallbacks)
+void rsSmoothableParameter::setNormalizedValue(double newNormalizedValue, bool sendNotification, bool callCallbacks)
 {
-  if(value == newValue)
+  double oldNormalizedValue = getNormalizedValue();
+
+  if(oldNormalizedValue == newNormalizedValue)
     return;
   if(smoothingTime == 0.0 || smoothingManager == nullptr)
-    Parameter::setValue(newValue, sendNotification, callCallbacks);
+    Parameter::setNormalizedValue(newNormalizedValue, sendNotification, callCallbacks);
   else
   {
     double tol = 1.e-7;
     //double delta = value-newValue;
-    if(fabs(value-newValue) < tol)
+    if(fabs(oldNormalizedValue-newNormalizedValue) < tol)
       return;
     // When this parameter has an attached meta, this function gets called twice. First, when 
     // setting the parameter from a slider and a second time from the meta. In the second call,
@@ -131,14 +133,14 @@ void rsSmoothableParameter::setValue(double newValue, bool sendNotification, boo
     //  we should also use a relative tolerance..
     // -we may also set the value to newValue and invoke a callback and notification
 
-    double oldValue = getValue();
+
 
     // if the observers should be notified, we want to immediately notify MetaParameters, 
     // for example, but GUI elements such as plots should be notified only after smoothing
     // has finished (so, a frequency response plot doesnt get stuck with a graph that shows
     // the curve before smoothing has finished)
     shouldSendNotification = sendNotification;
-    Parameter::setValue(newValue, false, false);
+    Parameter::setNormalizedValue(newNormalizedValue, false, false);
     if(sendNotification)
       notifyObserversPreSmoothing();
       // maybe we need an additional flag wantsNotificationAfterSmoothing ...or 
@@ -153,7 +155,7 @@ void rsSmoothableParameter::setValue(double newValue, bool sendNotification, boo
     //Parameter::setValue(newValue, sendNotification, false); // old
 
     //smoothingManager->addSmootherFor(this, newValue, oldValue);
-    smoothingManager->addSmootherFor(this, value, oldValue); 
+    smoothingManager->addSmootherFor(this, oldNormalizedValue, newNormalizedValue); 
       // value may be != newValue now due to the fact that Parameter::setValue may have quantized 
       // it and we should aim the smoother at the quantized value
 
@@ -163,8 +165,9 @@ void rsSmoothableParameter::setValue(double newValue, bool sendNotification, boo
 void rsSmoothableParameter::setSmoothedValue(double newValue)
 {
   //modulatedValue = unmodulatedValue = value = newValue;
-  value = newValue;
-  callValueChangeCallbacks(); // maybe we should call a "NoLock" version of that?
+  //value = newValue;                  // old
+  value = proportionToValue(newValue); // new
+  callValueChangeCallbacks(value); // maybe we should call a "NoLock" version of that?
 }
 
 void rsSmoothableParameter::smoothingHasEnded()

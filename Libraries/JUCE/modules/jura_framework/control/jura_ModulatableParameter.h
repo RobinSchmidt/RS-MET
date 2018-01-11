@@ -776,7 +776,7 @@ public:
   virtual void setSmoothedValue(double newValue) override
   {
     modulatedValue = unmodulatedValue = value = newValue;
-    callValueChangeCallbacks(); 
+    callValueChangeCallbacks(value); // maybe use modulatedValue
   }
 
   /** Sets up the pointer to our owner, i.e. the AudioModule that contains this parameter (needed 

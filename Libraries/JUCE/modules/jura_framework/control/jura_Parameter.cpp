@@ -100,7 +100,7 @@ void Parameter::setValue(double newValue, bool sendNotification, bool callCallba
     return;
   value = restrictValueToParameterRange(newValue);
   if( callCallbacks == true )
-    callValueChangeCallbacks();
+    callValueChangeCallbacks(value);
   if( sendNotification == true )
     notifyObservers();
 }
@@ -115,7 +115,7 @@ void Parameter::setRangeAndValue(double newMin, double newMax, double newValue,
   value = restrictValueToParameterRange(newValue);
 
   if( callCallbacks == true )
-    callValueChangeCallbacks();
+    callValueChangeCallbacks(value);
   if( sendNotification == true )
     notifyObservers();
 }
@@ -454,17 +454,17 @@ void Parameter::notifyNonGuiObservers()
   }
 }
 */
-void Parameter::callValueChangeCallbacks()
+void Parameter::callValueChangeCallbacks(double argument)
 {
   ScopedPointerLock spl(mutex);
-  if (valueChangeCallbackFunction)
-	  valueChangeCallbackFunction(value);
+  if(valueChangeCallbackFunction)
+	  valueChangeCallbackFunction(argument);
   if( valueChangeCallbackDouble != nullptr )
-    valueChangeCallbackDouble->call(value);
+    valueChangeCallbackDouble->call(argument);
   if( valueChangeCallbackInt != nullptr )
-    valueChangeCallbackInt->call(juce::roundDoubleToInt(value));
+    valueChangeCallbackInt->call(juce::roundDoubleToInt(argument));
   if( valueChangeCallbackBool != nullptr )
-    valueChangeCallbackBool->call(value >= 0.5);
+    valueChangeCallbackBool->call(argument >= 0.5);
 }
 
 double Parameter::restrictValueToParameterRange(double valueToRestrict)

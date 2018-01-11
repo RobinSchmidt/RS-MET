@@ -573,7 +573,7 @@ void AudioModule::callParameterCallbacks(bool recursivelyForChildModules)
   //ScopedLock scopedLock(*lock); // wasn't there but should be?
   int i;
   for(i = 0; i < (int)parameters.size(); i++)
-    parameters[i]->callValueChangeCallbacks();
+    parameters[i]->callValueChangeCallbacks(parameters[i]->getValue());
   if(recursivelyForChildModules)
     for(i = 0; i < (int)childModules.size(); i++)
       childModules[i]->callParameterCallbacks(true);

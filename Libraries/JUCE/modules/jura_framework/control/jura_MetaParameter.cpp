@@ -123,7 +123,7 @@ void MetaControlledParameter::setFromMetaValue(double newMetaValue, bool sendNot
 void MetaControlledParameter::setNormalizedValue(double newValue, bool sendNotification,
   bool callCallbacks)
 {
-  normalizedValue = newValue;
+  //normalizedValue = newValue;
   rsSmoothableParameter::setNormalizedValue(mapper.map(newValue), sendNotification, callCallbacks);
 }
 
@@ -221,8 +221,8 @@ void MetaParameter::attachParameter(MetaControlledParameter* p)
     p->setFromMetaValue(metaValue, false, false);
   p->registerParameterObserver(this);
   appendIfNotAlreadyThere(params, p);
-  p->notifyObservers();          // notifies host that MetaParameter has (possibly) changed
-  p->callValueChangeCallbacks(); // might be relevant in other contexts
+  p->notifyObservers();               // notifies host that MetaParameter has (possibly) changed
+  p->callValueChangeCallbacks(p->getValue()); // might be relevant in other contexts
 
   // Desired behavoir: when there are already other Parameters attached to this MetaParameter, set
   // the newly attached Parameter to the current value of the MetaParameter. If there are currently
