@@ -265,21 +265,9 @@ public:
   /** Destructor */
   //virtual ~rsSmoothableParameter() = default;
 
-
-  //virtual void setValue(double newValue, bool sendNotification, bool callCallbacks) override;
-
   /** Overrides setNormalizedValue in order to use the passed newValue as target-value for smoothing 
   instead of immediatly setting it and calling the callback. */
   virtual void setNormalizedValue(double newValue, bool sendNotification, bool callCallbacks) override;
-
-  //virtual double getValue() const override { return Parameter::getValue(); }
-                                                                        
-  virtual double getNormalizedValue() const override 
-  { 
-    ScopedPointerLock spl(mutex); 
-    return normalizedValue; 
-  }
-
 
   /** Overriden from rsSmoothingTarget. This is the per-sample callback. */
   virtual void setSmoothedValue(double newValue) override;

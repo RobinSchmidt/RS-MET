@@ -110,27 +110,20 @@ rsSmoothableParameter::rsSmoothableParameter(const juce::String& name, double mi
 
 }
 
-/*
-void rsSmoothableParameter::setValue(double newValue, bool sendNotification, bool callCallbacks)
-{
-  setNormalizedValue(valueToProportion(newValue), sendNotification, callCallbacks);
-}
-*/
-// overriding this leads to stack overflow
-
 void rsSmoothableParameter::setNormalizedValue(double newNormalizedValue, bool sendNotification, bool callCallbacks)
 {
-  //double oldNormalizedValue = getNormalizedValue();
-
   if(normalizedValue == newNormalizedValue)
     return;
-  if(smoothingTime == 0.0 || smoothingManager == nullptr)
+  if(smoothingTime == 0.0 || smoothingManager == nullptr || smoothingManager->isSmoothingBypassed() )
   {
-    normalizedValue = newNormalizedValue;
+    //normalizedValue = newNormalizedValue;
     Parameter::setNormalizedValue(normalizedValue, sendNotification, callCallbacks);
   }
   else
   {
+    double oldNormalizedValue = normalizedValue;
+
+    /*
     double tol = 1.e-7;
     //double delta = value-newValue;
     if(fabs(normalizedValue-newNormalizedValue) < tol)
@@ -139,6 +132,7 @@ void rsSmoothableParameter::setNormalizedValue(double newNormalizedValue, bool s
       //Parameter::setNormalizedValue(normalizedValue, sendNotification, callCallbacks);
       return;
     }
+    */
     // When this parameter has an attached meta, this function gets called twice. First, when 
     // setting the parameter from a slider and a second time from the meta. In the second call,
     // getValue will return a value that is already the new value, but only up to roundoff, so
@@ -147,6 +141,7 @@ void rsSmoothableParameter::setNormalizedValue(double newNormalizedValue, bool s
     // -may need some more thorough checking, especially with regard to the tolerance value and if 
     //  we should also use a relative tolerance..
     // -we may also set the value to newValue and invoke a callback and notification
+    // maybe this is obsoletet now?
 
 
 
@@ -167,15 +162,12 @@ void rsSmoothableParameter::setNormalizedValue(double newNormalizedValue, bool s
       // ..check, if that works well, if so, delete the notify(Non)GuiObservers functions
       // hmm - it triggers a jassert when MetaParameters are notified pre and post
 
-    //Parameter::setValue(newValue, sendNotification, false); // old
+    smoothingManager->addSmootherFor(this, normalizedValue, oldNormalizedValue); 
+      // normalizedValue may be != newNormalizedValue now due to the fact that 
+      // Parameter::setNormalizedValue may have quantized it and we should aim the smoother at the 
+      // quantized value
 
-    //smoothingManager->addSmootherFor(this, newValue, oldValue);
-    smoothingManager->addSmootherFor(this, newNormalizedValue, normalizedValue); 
-    //smoothingManager->addSmootherFor(this, oldNormalizedValue, newNormalizedValue); // FUCK! BUG!!
-      // value may be != newValue now due to the fact that Parameter::setValue may have quantized 
-      // it and we should aim the smoother at the quantized value
-
-    normalizedValue = newNormalizedValue;
+    //normalizedValue = newNormalizedValue;
   }
 }
 

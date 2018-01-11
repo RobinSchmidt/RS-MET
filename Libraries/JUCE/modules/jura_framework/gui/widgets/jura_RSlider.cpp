@@ -87,12 +87,14 @@ void RSlider::setValue(double newValue, const bool sendUpdateMessage,
   if(currentValue != newValue)
   {
     currentValue = newValue;
+    /*
     if(assignedParameter != nullptr)
     {
       ParameterObserver::setLocalAutomationSwitch(false);    // to not recursively notify ourselves
       assignedParameter->setValue(currentValue, true, true); // ...in this call
       ParameterObserver::setLocalAutomationSwitch(true);
     }
+    */
     notifyListeners();
     repaintOnMessageThread();
   }
@@ -107,7 +109,8 @@ void RSlider::setStateFromString(const juce::String &stateString, bool sendChang
 void RSlider::setNormalizedValue(double newValue, const bool sendUpdateMessage, 
   const bool sendMessageSynchronously)
 {
-  if(needsToSetNormalizedParameter())
+  //if(needsToSetNormalizedParameter())
+  if(assignedParameter != nullptr)
   {
     double tmp = proportionOfLengthToValue(newValue);
     tmp = constrainAndQuantizeValue(tmp);
@@ -143,7 +146,7 @@ void RSlider::setDefaultValues(std::vector<double> newDefaultValues)
 
 void RSlider::setToDefaultValue(const bool sendUpdateMessage, const bool sendMessageSynchronously)
 {
-  if(needsToSetNormalizedParameter())
+  if(assignedParameter != nullptr)
     setNormalizedValue(getNormalizedDefaultValue(), sendUpdateMessage, sendMessageSynchronously);
   else
     setValue(defaultValue, sendUpdateMessage, sendMessageSynchronously);
@@ -550,6 +553,7 @@ void RSlider::resized()
 //-------------------------------------------------------------------------------------------------
 // internal functions:
 
+/*
 bool RSlider::needsToSetNormalizedParameter()
 {
   MetaControlledParameter* mcp = dynamic_cast<MetaControlledParameter*>(assignedParameter);
@@ -557,7 +561,7 @@ bool RSlider::needsToSetNormalizedParameter()
     return true;
   return false;
 }
-
+*/
 double RSlider::constrainValue(double value) const throw()
 {
   if( value <= minValue || maxValue <= minValue )
