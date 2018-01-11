@@ -297,6 +297,8 @@ public:
 
 protected:
 
+  virtual void setNormalizedTargetValue(double newTargetValue, bool sendNotification, 
+    bool callCallbacks);
 
   bool shouldSendNotification = true;
 
