@@ -268,6 +268,7 @@ public:
   /** Overrides setValue in order to use the passed newValue as target-value for smoothing instead 
   of immediatly setting it and calling the callback. */
   virtual void setValue(double newValue, bool sendNotification, bool callCallbacks) override;
+  //virtual void setNormalizedValue(double newValue, bool sendNotification, bool callCallbacks) override;
 
   /** Overriden from rsSmoothingTarget. This is the per-sample callback. */
   virtual void setSmoothedValue(double newValue) override;

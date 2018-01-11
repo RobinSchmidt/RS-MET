@@ -24,7 +24,7 @@ public:
   RSliderPainter() {}
   virtual ~RSliderPainter() {}
 
-  /** You need to override this method to actually paint the slider suing the passed Graphics 
+  /** You need to override this method to actually paint the slider using the passed Graphics 
   object. */
   virtual void paint(Graphics& g, RSlider* slider) = 0;
 
