@@ -756,6 +756,32 @@ void AutomatableButton::parameterChanged(Parameter* p)
 
 //=================================================================================================
 
+AutomatableClickButton::AutomatableClickButton(const juce::String& buttonText)
+  : RClickButton(buttonText), AutomatableWidget(this)
+{
+
+}
+
+void AutomatableClickButton::mouseDown(const MouseEvent& e)
+{
+  if (e.mods.isRightButtonDown())
+  {
+    if (!isPopUpOpen())
+      openRightClickPopupMenu();
+    else
+      closePopUp();
+  }
+  else
+    RClickButton::mouseDown(e);
+}
+
+void AutomatableClickButton::parameterChanged(Parameter* p)
+{
+  RWidget::parameterChanged(p);
+}
+
+//=================================================================================================
+
 void rsModulationDepthSlider::rPopUpMenuChanged(RPopUpMenu* menu)
 {
   int id = rightClickPopUp->getSelectedIdentifier();
@@ -843,5 +869,110 @@ void ModulatableSlider::paint(Graphics& g)
   AutomatableSlider::paint(g);
   ModulatableParameter* mp = dynamic_cast<ModulatableParameter*> (assignedParameter);
   if(mp && mp->hasConnectedSources())
+    g.fillAll(Colour::fromFloatRGBA(1.f, 0.f, 0.f, 0.125f)); // preliminary
+}
+
+//=================================================================================================
+
+ModulatableButton::ModulatableButton(const juce::String& buttonText) : AutomatableButton(buttonText)
+{
+
+}
+
+ModulatableButton::~ModulatableButton()
+{
+  ModulatableParameter* mp = dynamic_cast<ModulatableParameter*> (assignedParameter);
+  if (mp)
+    mp->deRegisterModulationTargetObserver(this);
+}
+
+void ModulatableButton::modulationsChanged()
+{
+  repaint();
+}
+
+void ModulatableButton::assignParameter(Parameter* p)
+{
+  AutomatableButton::assignParameter(p);
+  ModulatableParameter* mp = dynamic_cast<ModulatableParameter*> (p);
+  if (mp)
+    mp->registerModulationTargetObserver(this);
+}
+
+void ModulatableButton::paint(Graphics& g)
+{
+  AutomatableButton::paint(g);
+  ModulatableParameter* mp = dynamic_cast<ModulatableParameter*> (assignedParameter);
+  if (mp && mp->hasConnectedSources())
+    g.fillAll(Colour::fromFloatRGBA(1.f, 0.f, 0.f, 0.125f)); // preliminary
+}
+
+//=================================================================================================
+
+ModulatableClickButton::ModulatableClickButton(const juce::String& buttonText) : AutomatableClickButton(buttonText)
+{
+
+}
+
+ModulatableClickButton::~ModulatableClickButton()
+{
+  ModulatableParameter* mp = dynamic_cast<ModulatableParameter*> (assignedParameter);
+  if (mp)
+    mp->deRegisterModulationTargetObserver(this);
+}
+
+void ModulatableClickButton::modulationsChanged()
+{
+  repaint();
+}
+
+void ModulatableClickButton::assignParameter(Parameter* p)
+{
+  AutomatableClickButton::assignParameter(p);
+  ModulatableParameter* mp = dynamic_cast<ModulatableParameter*> (p);
+  if (mp)
+    mp->registerModulationTargetObserver(this);
+}
+
+void ModulatableClickButton::paint(Graphics& g)
+{
+  AutomatableClickButton::paint(g);
+  ModulatableParameter* mp = dynamic_cast<ModulatableParameter*> (assignedParameter);
+  if (mp && mp->hasConnectedSources())
+    g.fillAll(Colour::fromFloatRGBA(1.f, 0.f, 0.f, 0.125f)); // preliminary
+}
+
+//=================================================================================================
+
+ModulatableComboBox::ModulatableComboBox()
+{
+
+}
+
+ModulatableComboBox::~ModulatableComboBox()
+{
+  ModulatableParameter* mp = dynamic_cast<ModulatableParameter*> (assignedParameter);
+  if (mp)
+    mp->deRegisterModulationTargetObserver(this);
+}
+
+void ModulatableComboBox::modulationsChanged()
+{
+  repaint();
+}
+
+void ModulatableComboBox::assignParameter(Parameter* p)
+{
+  AutomatableComboBox::assignParameter(p);
+  ModulatableParameter* mp = dynamic_cast<ModulatableParameter*> (p);
+  if (mp)
+    mp->registerModulationTargetObserver(this);
+}
+
+void ModulatableComboBox::paint(Graphics& g)
+{
+  AutomatableComboBox::paint(g);
+  ModulatableParameter* mp = dynamic_cast<ModulatableParameter*> (assignedParameter);
+  if (mp && mp->hasConnectedSources())
     g.fillAll(Colour::fromFloatRGBA(1.f, 0.f, 0.f, 0.125f)); // preliminary
 }
