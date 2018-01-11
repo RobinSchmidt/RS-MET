@@ -316,7 +316,9 @@ public:
   /** Returns the current value of the parameter. Normally, this is the value of our "value" 
   member, but subclasses may override it to wrangle the returned value before, as can be seen in 
   @see ParameterGridInterval. */
-  virtual double getValue() const { ScopedPointerLock spl(mutex); return value; } // remove mutex, inline
+  virtual double getValue() const { 
+    ScopedPointerLock spl(mutex); 
+    return value; } // remove mutex, inline
 
   /** Returns the normalized value in the range 0..1. */
   virtual double getNormalizedValue() const { ScopedPointerLock spl(mutex); return normalizedValue; }

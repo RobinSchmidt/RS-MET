@@ -175,8 +175,10 @@ void rsSmoothableParameter::setSmoothedValue(double newValue)
 {
   //modulatedValue = unmodulatedValue = value = newValue;
   //value = newValue;                  // old
-  value = proportionToValue(newValue); // new
-  callValueChangeCallbacks(value); // maybe we should call a "NoLock" version of that?
+  //value = proportionToValue(newValue); // new
+  //callValueChangeCallbacks(value); // maybe we should call a "NoLock" version of that?
+
+  callValueChangeCallbacks(proportionToValue(newValue)); // maybe we should call a "NoLock" version of that?
 }
 
 void rsSmoothableParameter::smoothingHasEnded()
