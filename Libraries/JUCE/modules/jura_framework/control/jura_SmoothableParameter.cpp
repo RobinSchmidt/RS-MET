@@ -115,24 +115,19 @@ void rsSmoothableParameter::setNormalizedValue(double newNormalizedValue, bool s
   if(normalizedValue == newNormalizedValue)
     return;
   if(!needsSmoothing())
-  {
-    //normalizedValue = newNormalizedValue;
     Parameter::setNormalizedValue(normalizedValue, sendNotification, callCallbacks);
-  }
   else
   {
     double oldNormalizedValue = normalizedValue;
 
-    /*
     double tol = 1.e-7;
     //double delta = value-newValue;
-    if(fabs(normalizedValue-newNormalizedValue) < tol)
+    if(fabs(oldNormalizedValue-newNormalizedValue) < tol)
     {
       normalizedValue = newNormalizedValue;
       //Parameter::setNormalizedValue(normalizedValue, sendNotification, callCallbacks);
       return;
     }
-    */
     // When this parameter has an attached meta, this function gets called twice. First, when 
     // setting the parameter from a slider and a second time from the meta. In the second call,
     // getValue will return a value that is already the new value, but only up to roundoff, so
@@ -141,7 +136,7 @@ void rsSmoothableParameter::setNormalizedValue(double newNormalizedValue, bool s
     // -may need some more thorough checking, especially with regard to the tolerance value and if 
     //  we should also use a relative tolerance..
     // -we may also set the value to newValue and invoke a callback and notification
-    // maybe this is obsoletet now?
+    // maybe we should do this in MetaControlledParameter
 
 
 
@@ -166,8 +161,6 @@ void rsSmoothableParameter::setNormalizedValue(double newNormalizedValue, bool s
       // normalizedValue may be != newNormalizedValue now due to the fact that 
       // Parameter::setNormalizedValue may have quantized it and we should aim the smoother at the 
       // quantized value
-
-    //normalizedValue = newNormalizedValue;
   }
 }
 

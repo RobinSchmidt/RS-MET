@@ -112,6 +112,8 @@ MetaControlledParameter::MetaControlledParameter(const juce::String& name, doubl
   // like: 
   // metaParaManager = nullMetaParameterManager;
   // mapper = nullNormalizedParameterMapper; // identity mapper
+
+  unmappedValue = normalizedValue;
 }
 
 void MetaControlledParameter::setFromMetaValue(double newMetaValue, bool sendNotification, 
@@ -123,7 +125,17 @@ void MetaControlledParameter::setFromMetaValue(double newMetaValue, bool sendNot
 void MetaControlledParameter::setNormalizedValue(double newValue, bool sendNotification,
   bool callCallbacks)
 {
-  //normalizedValue = newValue;
+  unmappedValue = newValue;
+  // hmm...maybe the inherited normalizedValue should always store the value pre-mapping and we
+  // may have to copy over the function body of rsSmoothableParameter setNormalizedValue here and
+  // just change
+  // smoothingManager->addSmootherFor(this, normalizedValue, oldNormalizedValue); 
+  // into:
+  // smoothingManager->addSmootherFor(this, mappedNormalizedValue, oldMappedNormalizedValue); 
+  // the we can rid of this weird (fabs(new-old)<tol) stuff there too - it doesn't belong there
+
+
+
   rsSmoothableParameter::setNormalizedValue(mapper.map(newValue), sendNotification, callCallbacks);
 }
 

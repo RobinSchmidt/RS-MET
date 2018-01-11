@@ -171,10 +171,12 @@ public:
   /** Returns a pointer to our mapper object. */
   rsMetaParameterMapper* getMapper() { return &mapper; }
 
-  /** Overrides baseclass method in order to return the stored normalized value instead of 
-  converting back from the actual value (which is not generally possible here anymore due to the
-  presence of a possibly nonmonotonic mapping function). */
-  //virtual double getNormalizedValue() const override { ScopedPointerLock spl(mutex); return normalizedValue; }
+  /** Overrides baseclass method in order to return the not yet mappe normalized value. */
+  virtual double getNormalizedValue() const override 
+  { 
+    ScopedPointerLock spl(mutex); 
+    return unmappedValue; 
+  }
 
   //virtual double getNormalizedDefaultValue() const override
   //{ ScopedPointerLock spl(mutex); return 0.5; } // preliminary
@@ -191,10 +193,14 @@ public:
 
 protected:
 
-  //double normalizedValue = 0.5;
+  double unmappedValue; 
+    // normalized value before custom mapper has been applied, the inherited normalizedValue stores
+    // the already mapped normalized paramater
+
+
   int metaIndex = -1;
   MetaParameterManager* metaParaManager = nullptr; // use a Null Object by default
-  rsMetaParameterMapper mapper;
+  rsMetaParameterMapper mapper; // name-conflict with Parameter::mapper
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MetaControlledParameter)
 };

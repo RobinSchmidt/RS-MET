@@ -11,7 +11,8 @@ void DebugAudioModule::createParameters()
   ScopedLock scopedLock(*lock);
 
   //typedef Parameter Param;
-  typedef rsSmoothableParameter Param;
+  //typedef rsSmoothableParameter Param;
+  typedef MetaControlledParameter Param;
   //typedef ModulatableParameter Param;
   Param* p;
 
