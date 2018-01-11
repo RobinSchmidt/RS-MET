@@ -282,6 +282,13 @@ public:
   /** Overriden to possibly recall the smoothing time, if necessarry. */
   virtual void recallFromXml(const XmlElement& xml) override;
 
+  /** Returns true, if this parameter needs smoothing. (maybe factor out into rsSmoothingTarget) */
+  inline bool needsSmoothing()
+  {
+    return !(smoothingTime == 0.0 || smoothingManager == nullptr
+      || smoothingManager->isSmoothingBypassed());
+  }
+
 
   void notifyObserversPreSmoothing();
   void notifyObserversPostSmoothing();

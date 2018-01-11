@@ -114,7 +114,7 @@ void rsSmoothableParameter::setNormalizedValue(double newNormalizedValue, bool s
 {
   if(normalizedValue == newNormalizedValue)
     return;
-  if(smoothingTime == 0.0 || smoothingManager == nullptr || smoothingManager->isSmoothingBypassed() )
+  if(!needsSmoothing())
   {
     //normalizedValue = newNormalizedValue;
     Parameter::setNormalizedValue(normalizedValue, sendNotification, callCallbacks);
