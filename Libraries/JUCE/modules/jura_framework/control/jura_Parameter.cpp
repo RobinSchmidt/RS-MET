@@ -42,10 +42,11 @@ Parameter::Parameter(const juce::String& newName, double newMin, double newMax,
   setRange(newMin, newMax);
   setScaling(newScaling);
 
-  name         = newName;
-  interval     = newInterval;
-  defaultValue = restrictValueToParameterRange(newDefault);
-  value        = defaultValue;
+  name            = newName;
+  interval        = newInterval;
+  defaultValue    = restrictValueToParameterRange(newDefault);
+  value           = defaultValue;
+  normalizedValue = valueToProportion(value);
 
   valueChangeCallbackFunction = [](double) {};
 }
@@ -67,6 +68,7 @@ Parameter::Parameter(CriticalSection *criticalSectionToUse, const String& newNam
   interval      = newInterval;
   defaultValue  = restrictValueToParameterRange(newDefaultValue);
   value         = defaultValue;
+  normalizedValue = valueToProportion(value);
 
   valueChangeCallbackFunction = [](double) {};
 }
@@ -99,6 +101,7 @@ void Parameter::setValue(double newValue, bool sendNotification, bool callCallba
   if(value == newValue)
     return;
   value = restrictValueToParameterRange(newValue);
+  normalizedValue = valueToProportion(value);
   if( callCallbacks == true )
     callValueChangeCallbacks(value);
   if( sendNotification == true )
@@ -119,6 +122,7 @@ void Parameter::setRangeAndValue(double newMin, double newMax, double newValue,
 
   mapper->setRange(newMin, newMax);
   value = restrictValueToParameterRange(newValue);
+  normalizedValue = valueToProportion(value);
 
   if( callCallbacks == true )
     callValueChangeCallbacks(value);

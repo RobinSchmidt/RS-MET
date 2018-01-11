@@ -319,7 +319,7 @@ public:
   virtual double getValue() const { ScopedPointerLock spl(mutex); return value; } // remove mutex, inline
 
   /** Returns the normalized value in the range 0..1. */
-  virtual double getNormalizedValue() const { ScopedPointerLock spl(mutex); return valueToProportion(value); }
+  virtual double getNormalizedValue() const { ScopedPointerLock spl(mutex); return normalizedValue; }
 
   /** Returns the normalized default value in the range 0..1. */
   virtual double getNormalizedDefaultValue() const { ScopedPointerLock spl(mutex); return valueToProportion(defaultValue); }
@@ -544,13 +544,13 @@ protected:
   values > 0 for exponential scaling, etc.. */
   virtual void valueSanityCheck();
 
-  juce::String name;                 // string for the parameter name
-  //double normalizedValue;            // normalized value in the range 0..1
-  double value;                      // actual value of the parameter
-  double interval;                   // interval for adjustments ...rename to stepSize
-  double defaultValue;               // default value of this parameter ...maybe rename to resetValue
-  int    scaling;                    // index to the scaling/mapping to be used
-  bool   saveAndRecall = true;       // flag, to switch automatic saving on/off - why?
+  juce::String name;            // string for the parameter name
+  double normalizedValue;       // normalized value in the range 0..1
+  double value;                 // actual value of the parameter
+  double interval;              // interval for adjustments ...rename to stepSize
+  double defaultValue;          // default value of this parameter ...maybe rename to resetValue
+  int    scaling;               // index to the scaling/mapping to be used
+  bool   saveAndRecall = true;  // flag, to switch automatic saving on/off - why?
 
   // array of some more default values, meant to be used for easy access via popup menu:
   std::vector<double> defaultValues;

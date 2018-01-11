@@ -302,7 +302,7 @@ public:
 
 protected:
 
-  double normalizedValue = 0.5;     // normalized (target) value in the range 0..1, maybe move to baseclass
+
   bool shouldSendNotification = true;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsSmoothableParameter)
