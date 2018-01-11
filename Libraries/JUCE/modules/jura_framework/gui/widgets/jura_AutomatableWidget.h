@@ -304,6 +304,20 @@ public:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomatableButton)
 };
 
+
+class JUCE_API AutomatableClickButton : public RClickButton, public AutomatableWidget
+{
+
+public:
+
+  AutomatableClickButton(const juce::String& buttonText = juce::String::empty);
+  virtual void mouseDown(const MouseEvent& e) override;
+  //virtual void mouseUp(const MouseEvent& e) override;
+  virtual void parameterChanged(Parameter* p) override;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomatableClickButton)
+};
+
 //=================================================================================================
 
 /** A special slider subclass specifically for being used for the depth-sliders in a modulation
@@ -404,6 +418,48 @@ public:
   void paint(Graphics& g) override;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulatableSlider)
+};
+
+class JUCE_API ModulatableButton : public AutomatableButton, public ModulationTargetObserver
+{
+
+public:
+
+  ModulatableButton(const juce::String& buttonText = juce::String::empty);
+  virtual ~ModulatableButton();
+  void modulationsChanged() override;
+  void assignParameter(Parameter* parameterToAssign) override;
+  virtual void paint(Graphics& g) override;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulatableButton)
+};
+
+class JUCE_API ModulatableClickButton : public AutomatableClickButton, public ModulationTargetObserver
+{
+
+public:
+
+  ModulatableClickButton(const juce::String& buttonText = juce::String::empty);
+  virtual ~ModulatableClickButton();
+  void modulationsChanged() override;
+  void assignParameter(Parameter* parameterToAssign) override;
+  virtual void paint(Graphics& g) override;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulatableClickButton)
+};
+
+class JUCE_API ModulatableComboBox : public AutomatableComboBox, public ModulationTargetObserver
+{
+
+public:
+
+  ModulatableComboBox();
+  virtual ~ModulatableComboBox();
+  void modulationsChanged() override;
+  void assignParameter(Parameter* parameterToAssign) override;
+  virtual void paint(Graphics& g) override;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulatableComboBox)
 };
 
 
