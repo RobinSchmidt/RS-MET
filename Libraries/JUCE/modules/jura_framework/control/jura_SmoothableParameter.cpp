@@ -110,20 +110,35 @@ rsSmoothableParameter::rsSmoothableParameter(const juce::String& name, double mi
 
 }
 
+/*
+void rsSmoothableParameter::setValue(double newValue, bool sendNotification, bool callCallbacks)
+{
+  setNormalizedValue(valueToProportion(newValue), sendNotification, callCallbacks);
+}
+*/
+// overriding this leads to stack overflow
+
 void rsSmoothableParameter::setNormalizedValue(double newNormalizedValue, bool sendNotification, bool callCallbacks)
 {
-  double oldNormalizedValue = getNormalizedValue();
+  //double oldNormalizedValue = getNormalizedValue();
 
-  if(oldNormalizedValue == newNormalizedValue)
+  if(normalizedValue == newNormalizedValue)
     return;
   if(smoothingTime == 0.0 || smoothingManager == nullptr)
-    Parameter::setNormalizedValue(newNormalizedValue, sendNotification, callCallbacks);
+  {
+    normalizedValue = newNormalizedValue;
+    Parameter::setNormalizedValue(normalizedValue, sendNotification, callCallbacks);
+  }
   else
   {
     double tol = 1.e-7;
     //double delta = value-newValue;
-    if(fabs(oldNormalizedValue-newNormalizedValue) < tol)
+    if(fabs(normalizedValue-newNormalizedValue) < tol)
+    {
+      normalizedValue = newNormalizedValue;
+      //Parameter::setNormalizedValue(normalizedValue, sendNotification, callCallbacks);
       return;
+    }
     // When this parameter has an attached meta, this function gets called twice. First, when 
     // setting the parameter from a slider and a second time from the meta. In the second call,
     // getValue will return a value that is already the new value, but only up to roundoff, so
@@ -155,10 +170,12 @@ void rsSmoothableParameter::setNormalizedValue(double newNormalizedValue, bool s
     //Parameter::setValue(newValue, sendNotification, false); // old
 
     //smoothingManager->addSmootherFor(this, newValue, oldValue);
-    smoothingManager->addSmootherFor(this, oldNormalizedValue, newNormalizedValue); 
+    smoothingManager->addSmootherFor(this, newNormalizedValue, normalizedValue); 
+    //smoothingManager->addSmootherFor(this, oldNormalizedValue, newNormalizedValue); // FUCK! BUG!!
       // value may be != newValue now due to the fact that Parameter::setValue may have quantized 
       // it and we should aim the smoother at the quantized value
 
+    normalizedValue = newNormalizedValue;
   }
 }
 

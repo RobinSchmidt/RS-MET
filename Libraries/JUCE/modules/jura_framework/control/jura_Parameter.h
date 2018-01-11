@@ -168,6 +168,10 @@ the set/getValue stuff is messed up when smoothing/meta-control/modulation comes
 ensure the following:
 -set/get(Normalized)Value: sets/returns unmodulated (normalized) target value in all of Parameter's
  subclasses
+ -setNormalizedValue is called from sliders in mouseDrag, etc., getNormalizedValue is called in 
+  paint, so all subclasses must make sure to return a value that is suitable for that purpose
+ -getValue is also called in paint and used for the numeric readout - so subclasses must make
+  sure that get getValue returns the mapped value without smoothing and modulation
 
 
 
@@ -223,14 +227,14 @@ public:
   assigned callback function. */
   virtual void setValue(double newValue, bool sendNotification, bool callCallbacks);
 
+  /** Sets the value of the parameter where the input argument is assumed to be normalized to the
+  range 0...1  .... */
+  virtual void setNormalizedValue(double newValue, bool sendNotification, bool callCallbacks);
+
   /** Sets a new range and value as single operation to avoid inconsistencies that may occur when
   setting these things one after another. */
   virtual void setRangeAndValue(double newMin, double newMax, double newValue, 
     bool sendNotification, bool callCallbacks);
-
-  /** Sets the value of the parameter where the input argument is assumed to be normalized to the
-  range 0...1  .... */
-  virtual void setNormalizedValue(double newValue, bool sendNotification, bool callCallbacks);
 
   /** Resets the value of the parameter to its default value and (optionally) notifies all the
   listeners and calls the assigned callback function. */
@@ -304,28 +308,29 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
+  /** Returns the raw value of our "value" member without the possibility of any wrangling by 
+  subclass overrides. */
+  double getRawValue() const { ScopedPointerLock spl(mutex); return value; }
+    // what is this good for
+
   /** Returns the current value of the parameter. Normally, this is the value of our "value" 
   member, but subclasses may override it to wrangle the returned value before, as can be seen in 
   @see ParameterGridInterval. */
   virtual double getValue() const { ScopedPointerLock spl(mutex); return value; } // remove mutex, inline
 
-  /** Returns the raw value of our "value" member without the possibility of any wrangling by 
-  subclass overrides. */
-  double getRawValue() const { ScopedPointerLock spl(mutex); return value; }
-
   /** Returns the normalized value in the range 0..1. */
-  virtual double getNormalizedValue() { ScopedPointerLock spl(mutex); return valueToProportion(value); }
+  virtual double getNormalizedValue() const { ScopedPointerLock spl(mutex); return valueToProportion(value); }
 
   /** Returns the normalized default value in the range 0..1. */
-  virtual double getNormalizedDefaultValue() { ScopedPointerLock spl(mutex); return valueToProportion(defaultValue); }
+  virtual double getNormalizedDefaultValue() const { ScopedPointerLock spl(mutex); return valueToProportion(defaultValue); }
 
   /** Converts the clear text value to a proportional value in the range 0..1 according to our
   scaling/mapping function. */
-  virtual double valueToProportion(double value);
+  virtual double valueToProportion(double value) const;
 
   /** Converts a proportional value in the range 0..1 to a clear text value according to our
   scaling/mapping function. */
-  virtual double proportionToValue(double proportion);
+  virtual double proportionToValue(double proportion) const;
 
   /** Returns the currently chosen string-value for string based parameters. When this parameter is
   not actually a string based parameter, it will return String::empty. */
@@ -540,11 +545,12 @@ protected:
   virtual void valueSanityCheck();
 
   juce::String name;                 // string for the parameter name
-  double       value;                // actual value of the parameter
-  double       interval;             // interval for adjustments ...rename to stepSize
-  double       defaultValue;         // default value of this parameter ...maybe rename to resetValue
-  int          scaling;              // index to the scaling/mapping to be used
-  bool         saveAndRecall = true; // flag, to switch automatic saving on/off - why?
+  //double normalizedValue;            // normalized value in the range 0..1
+  double value;                      // actual value of the parameter
+  double interval;                   // interval for adjustments ...rename to stepSize
+  double defaultValue;               // default value of this parameter ...maybe rename to resetValue
+  int    scaling;                    // index to the scaling/mapping to be used
+  bool   saveAndRecall = true;       // flag, to switch automatic saving on/off - why?
 
   // array of some more default values, meant to be used for easy access via popup menu:
   std::vector<double> defaultValues;

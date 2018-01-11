@@ -174,10 +174,10 @@ public:
   /** Overrides baseclass method in order to return the stored normalized value instead of 
   converting back from the actual value (which is not generally possible here anymore due to the
   presence of a possibly nonmonotonic mapping function). */
-  virtual double getNormalizedValue() override { ScopedPointerLock spl(mutex); return normalizedValue; }
+  //virtual double getNormalizedValue() const override { ScopedPointerLock spl(mutex); return normalizedValue; }
 
-  virtual double getNormalizedDefaultValue() override
-  { ScopedPointerLock spl(mutex); return 0.5; } // preliminary
+  //virtual double getNormalizedDefaultValue() const override
+  //{ ScopedPointerLock spl(mutex); return 0.5; } // preliminary
 
   //-----------------------------------------------------------------------------------------------
   // \name State recall
@@ -191,7 +191,7 @@ public:
 
 protected:
 
-  double normalizedValue = 0.5;
+  //double normalizedValue = 0.5;
   int metaIndex = -1;
   MetaParameterManager* metaParaManager = nullptr; // use a Null Object by default
   rsMetaParameterMapper mapper;

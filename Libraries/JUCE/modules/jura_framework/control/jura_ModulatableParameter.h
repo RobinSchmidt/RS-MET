@@ -767,11 +767,14 @@ public:
   /** \name Setup */
 
   /** Overriden in order to also set up unmodulatedValue member inherited from ModulationTarget. */
+  /*
   virtual void setValue(double newValue, bool sendNotification, bool callCallbacks) override
   {
     MetaControlledParameter::setValue(newValue, sendNotification, callCallbacks);
     ModulationTarget::setUnmodulatedValue(newValue);
   }
+  */
+  // we need to override setNormalizedValue
 
   virtual void setSmoothedValue(double newValue) override
   {

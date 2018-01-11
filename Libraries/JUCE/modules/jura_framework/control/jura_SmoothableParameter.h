@@ -265,10 +265,21 @@ public:
   /** Destructor */
   //virtual ~rsSmoothableParameter() = default;
 
+
+  //virtual void setValue(double newValue, bool sendNotification, bool callCallbacks) override;
+
   /** Overrides setNormalizedValue in order to use the passed newValue as target-value for smoothing 
   instead of immediatly setting it and calling the callback. */
   virtual void setNormalizedValue(double newValue, bool sendNotification, bool callCallbacks) override;
-  //virtual void setValue(double newValue, bool sendNotification, bool callCallbacks) override;
+
+  //virtual double getValue() const override { return Parameter::getValue(); }
+                                                                        
+  virtual double getNormalizedValue() const override 
+  { 
+    ScopedPointerLock spl(mutex); 
+    return normalizedValue; 
+  }
+
 
   /** Overriden from rsSmoothingTarget. This is the per-sample callback. */
   virtual void setSmoothedValue(double newValue) override;
@@ -285,11 +296,13 @@ public:
 
 
   void notifyObserversPreSmoothing();
-
   void notifyObserversPostSmoothing();
+    // maybe get rid of these - notify observers always pre-smoothing, maybe use temporary filter 
+    // objects for drawing frequency responses that use the target settings
 
 protected:
 
+  double normalizedValue = 0.5;     // normalized (target) value in the range 0..1, maybe move to baseclass
   bool shouldSendNotification = true;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsSmoothableParameter)

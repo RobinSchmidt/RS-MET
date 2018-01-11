@@ -10,7 +10,9 @@ void DebugAudioModule::createParameters()
 {
   ScopedLock scopedLock(*lock);
 
-  typedef ModulatableParameter Param;
+  typedef Parameter Param;
+  //typedef rsSmoothableParameter Param;
+  //typedef ModulatableParameter Param;
   Param* p;
 
   leftParam = p = new Param("Left" , -1.0, 1.0, 0.0, Parameter::LINEAR, 0.01);

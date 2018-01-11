@@ -31,7 +31,7 @@ protected:
   static const int numValues = 2;
   double values[numValues] = { 0, 0 };
 
-  ModulatableParameter *leftParam, *rightParam;
+  Parameter *leftParam, *rightParam;
   Parameter *smoothParam;
 
   EqualizerAudioModule* eqModule = nullptr;

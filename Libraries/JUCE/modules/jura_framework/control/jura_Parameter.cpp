@@ -105,6 +105,12 @@ void Parameter::setValue(double newValue, bool sendNotification, bool callCallba
     notifyObservers();
 }
 
+void Parameter::setNormalizedValue(double newValue, bool sendNotification, bool callCallbacks)
+{
+  ScopedPointerLock spl(mutex);
+  setValue(proportionToValue(newValue), sendNotification, callCallbacks);
+}
+
 void Parameter::setRangeAndValue(double newMin, double newMax, double newValue,
   bool sendNotification, bool callCallbacks)
 {
@@ -118,12 +124,6 @@ void Parameter::setRangeAndValue(double newMin, double newMax, double newValue,
     callValueChangeCallbacks(value);
   if( sendNotification == true )
     notifyObservers();
-}
-
-void Parameter::setNormalizedValue(double newValue, bool sendNotification, bool callCallbacks)
-{
-  ScopedPointerLock spl(mutex);
-  setValue(proportionToValue(newValue), sendNotification, callCallbacks);
 }
 
 void Parameter::resetToDefaultValue(bool sendNotification, bool callCallbacks)
@@ -274,7 +274,7 @@ void Parameter::addNumericStringValues(int min, int max, int step)
 //-------------------------------------------------------------------------------------------------
 // inquiry:
 
-double Parameter::valueToProportion(double value)
+double Parameter::valueToProportion(double value) const
 {
   return mapper->unmap(value);
 
@@ -296,7 +296,7 @@ double Parameter::valueToProportion(double value)
   */
 }
 
-double Parameter::proportionToValue(double prop)
+double Parameter::proportionToValue(double prop) const
 {
   return mapper->map(prop);
 
