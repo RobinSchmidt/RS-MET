@@ -173,11 +173,13 @@ public:
     // rename to getMetaMapper
 
   /** Overrides baseclass method in order to return the not yet mappe normalized value. */
+  /*
   virtual double getNormalizedValue() const override 
   { 
     ScopedPointerLock spl(mutex); 
     return unmappedValue; 
   }
+  */
 
   //virtual double getNormalizedDefaultValue() const override
   //{ ScopedPointerLock spl(mutex); return 0.5; } // preliminary
@@ -205,7 +207,7 @@ protected:
   virtual void setNormalizedTargetValue(double newTargetValue, bool sendNotification, 
     bool callCallbacks) override;
 
-  double unmappedValue; 
+  //double unmappedValue; 
     // normalized value before custom mapper has been applied, the inherited normalizedValue stores
     // the already mapped normalized paramater
 

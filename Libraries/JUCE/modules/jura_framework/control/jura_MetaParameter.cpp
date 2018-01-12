@@ -113,7 +113,7 @@ MetaControlledParameter::MetaControlledParameter(const juce::String& name, doubl
   // metaParaManager = nullMetaParameterManager;
   // mapper = nullNormalizedParameterMapper; // identity mapper
 
-  unmappedValue = normalizedValue;
+  //unmappedValue = normalizedValue;
 }
 
 void MetaControlledParameter::setFromMetaValue(double newMetaValue, bool sendNotification, 
