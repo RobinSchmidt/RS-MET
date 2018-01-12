@@ -193,6 +193,9 @@ public:
 
 protected:
 
+  virtual void setNormalizedTargetValue(double newTargetValue, bool sendNotification, 
+    bool callCallbacks) override;
+
   double unmappedValue; 
     // normalized value before custom mapper has been applied, the inherited normalizedValue stores
     // the already mapped normalized paramater
