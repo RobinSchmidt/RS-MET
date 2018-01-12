@@ -106,7 +106,7 @@ public:
   /** Returns the upper cutoff frequency for the band with given index. */
   TPar getSplitFrequency(int index) 
   { 
-    if(index < splitFreqs.size())
+    if(index < (int)splitFreqs.size())
       return splitFreqs[index];
     else
       return 0;

@@ -622,7 +622,7 @@ void ModulatableAudioModule::setModulationManager(ModulationManager* managerToUs
     if(mm)
       mm->setModulationManager(managerToUse); 
   }
-  for(int i = 0; i < parameters.size(); i++)
+  for(size_t i = 0; i < parameters.size(); i++)
     setupForModulationIfModulatable(parameters[i]);
 }
 
