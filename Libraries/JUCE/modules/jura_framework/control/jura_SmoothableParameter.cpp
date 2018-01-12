@@ -123,7 +123,8 @@ void rsSmoothableParameter::setNormalizedValue(double newNormalizedValue, bool s
 
 void rsSmoothableParameter::setSmoothedValue(double newValue)
 {
-  callValueChangeCallbacks(proportionToValue(newValue)); // maybe we should call a "NoLock" version of that?
+  //callValueChangeCallbacks(proportionToValue(newValue)); // maybe we should call a "NoLock" version of that?
+  callValueChangeCallbacks(mapper->map(newValue)); // ..more efficient - saves virtual function call
 }
 
 void rsSmoothableParameter::smoothingHasEnded()

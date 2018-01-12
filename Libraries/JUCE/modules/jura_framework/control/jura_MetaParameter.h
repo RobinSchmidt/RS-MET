@@ -168,8 +168,9 @@ public:
   /** Returns the name of the MetaParameter which this Parameter is attached to. */
   String getMetaParameterName(); // may be const?
 
-  /** Returns a pointer to our mapper object. */
-  rsMetaParameterMapper* getMapper() { return &mapper; }
+  /** Returns a pointer to our meta-mapper object. */
+  rsMetaParameterMapper* getMapper() { return &metaMapper; }
+    // rename to getMetaMapper
 
   /** Overrides baseclass method in order to return the not yet mappe normalized value. */
   virtual double getNormalizedValue() const override 
@@ -190,6 +191,14 @@ public:
   /** Overriden to possibly recall the mapping function, if necessarry. */
   virtual void recallFromXml(const XmlElement& xml) override;
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Misc
+
+  /** Applies first the user defined node-based map to the normalized input value (mapping the 
+  range 0..1 onto itself) and then the inherited map that maps the normalized 0..1 range to the
+  actual parameter range (for example, exponentially from 20..20000 for a cutoff frequency 
+  parameter) and returns the resulting value. */
+  inline double applyBothMaps(double x) { return mapper->map(metaMapper.map(x)); }
 
 protected:
 
@@ -203,7 +212,7 @@ protected:
 
   int metaIndex = -1;
   MetaParameterManager* metaParaManager = nullptr; // use a Null Object by default
-  rsMetaParameterMapper mapper; // name-conflict with Parameter::mapper
+  rsMetaParameterMapper metaMapper;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MetaControlledParameter)
 };

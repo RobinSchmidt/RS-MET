@@ -122,9 +122,22 @@ void MetaControlledParameter::setFromMetaValue(double newMetaValue, bool sendNot
   setNormalizedValue(newMetaValue, sendNotification, callCallbacks);
 }
 
-void MetaControlledParameter::setNormalizedValue(double newValue, bool sendNotification,
+void MetaControlledParameter::setNormalizedValue(double newNormalizedValue, bool sendNotification,
   bool callCallbacks)
 {
+  if(normalizedValue == newNormalizedValue)
+    return;
+  if(!needsSmoothing())
+  {
+    normalizedValue = newNormalizedValue;
+    value = applyBothMaps(normalizedValue); // maybe apply restrictions here
+    if( callCallbacks == true )    callValueChangeCallbacks(value);
+    if( sendNotification == true ) notifyObservers();
+  }
+  else
+    setNormalizedTargetValue(newNormalizedValue, sendNotification, callCallbacks);
+
+  /*
   unmappedValue = newValue;
   // hmm...maybe the inherited normalizedValue should always store the value pre-mapping and we
   // may have to copy over the function body of rsSmoothableParameter setNormalizedValue here and
@@ -134,16 +147,53 @@ void MetaControlledParameter::setNormalizedValue(double newValue, bool sendNotif
   // smoothingManager->addSmootherFor(this, mappedNormalizedValue, oldMappedNormalizedValue); 
   // the we can rid of this weird (fabs(new-old)<tol) stuff there too - it doesn't belong there
 
-
-
   rsSmoothableParameter::setNormalizedValue(mapper.map(newValue), sendNotification, callCallbacks);
+  */
+}
+
+void MetaControlledParameter::setNormalizedTargetValue(double newTargetValue, bool sendNotification,
+  bool callCallbacks)
+{
+  double oldNormalizedValue = normalizedValue;
+
+  double tol = 1.e-7;
+  if(fabs(oldNormalizedValue-newTargetValue) < tol)
+  {
+    // code is same as in if(!needsSmoothing()) branch in setNormalizedValue 
+    // -> get rid of duplication
+    normalizedValue = newTargetValue;
+    value = applyBothMaps(normalizedValue); // maybe apply restrictions here
+    if( callCallbacks == true )    callValueChangeCallbacks(value);
+    if( sendNotification == true ) notifyObservers();
+    return;
+  }
+  // When this parameter has an attached meta, this function gets called twice. First, when 
+  // setting the parameter from a slider and a second time from the meta. In the second call,
+  // getValue will return a value that is already the new value, but only up to roundoff, so
+  // the if(value == newValue) check doesn't trigger. This would effectively disable smoothing,
+  // so we need this additional check here.
+  // -may need some more thorough checking, especially with regard to the tolerance value and if 
+  //  we should also use a relative tolerance..
+  // -we may also set the value to newValue and invoke a callback and notification
+  // maybe we should do this in MetaControlledParameter
+
+
+  // copy/pasted/edited from rsSmoothableParameter:
+  shouldSendNotification = sendNotification;
+  //Parameter::setNormalizedValue(newTargetValue, false, false);
+  normalizedValue = newTargetValue;
+  value = applyBothMaps(normalizedValue); // maybe apply restrictions here
+  if(sendNotification)
+    notifyObserversPreSmoothing();
+  smoothingManager->addSmootherFor(this, 
+    metaMapper.map(normalizedValue), metaMapper.map(oldNormalizedValue)); 
 }
 
 void MetaControlledParameter::saveToXml(XmlElement* xml) const
 {
   rsSmoothableParameter::saveToXml(xml);
-  if(!mapper.isDefaultMap())
-    xml->addChildElement(mapper.getStateAsXml(getName() + "ParameterMap"));
+  if(!metaMapper.isDefaultMap())
+    xml->addChildElement(metaMapper.getStateAsXml(getName() + "ParameterMap"));
 }
 
 void MetaControlledParameter::recallFromXml(const XmlElement& xml) 
@@ -151,9 +201,9 @@ void MetaControlledParameter::recallFromXml(const XmlElement& xml)
   rsSmoothableParameter::recallFromXml(xml);
   XmlElement* mapXml = xml.getChildByName(getName() + "ParameterMap");
   if(mapXml != nullptr)
-    mapper.setStateFromXml(*mapXml);
+    metaMapper.setStateFromXml(*mapXml);
   else
-    mapper.initToDefaults();
+    metaMapper.initToDefaults();
 }
 
 /*
@@ -208,36 +258,6 @@ String MetaControlledParameter::getMetaParameterName()
   return metaParaManager->getMetaParameterName(metaIndex);
 }
 
-void MetaControlledParameter::setNormalizedTargetValue(double newTargetValue, bool sendNotification,
-  bool callCallbacks)
-{
-  double oldNormalizedValue = normalizedValue;
-
-  double tol = 1.e-7;
-  if(fabs(oldNormalizedValue-newTargetValue) < tol)
-  {
-    normalizedValue = newTargetValue;
-    //Parameter::setNormalizedValue(normalizedValue, sendNotification, callCallbacks);
-    return;
-  }
-  // When this parameter has an attached meta, this function gets called twice. First, when 
-  // setting the parameter from a slider and a second time from the meta. In the second call,
-  // getValue will return a value that is already the new value, but only up to roundoff, so
-  // the if(value == newValue) check doesn't trigger. This would effectively disable smoothing,
-  // so we need this additional check here.
-  // -may need some more thorough checking, especially with regard to the tolerance value and if 
-  //  we should also use a relative tolerance..
-  // -we may also set the value to newValue and invoke a callback and notification
-  // maybe we should do this in MetaControlledParameter
-
-
-  // copy/pasted from rsSmoothableParameter (needs to be edited):
-  shouldSendNotification = sendNotification;
-  Parameter::setNormalizedValue(newTargetValue, false, false);
-  if(sendNotification)
-    notifyObserversPreSmoothing();
-  smoothingManager->addSmootherFor(this, normalizedValue, oldNormalizedValue); 
-}
 
 //-------------------------------------------------------------------------------------------------
 

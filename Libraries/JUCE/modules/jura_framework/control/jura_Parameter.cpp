@@ -124,10 +124,8 @@ void Parameter::setRangeAndValue(double newMin, double newMax, double newValue,
   value = restrictValueToParameterRange(newValue);
   normalizedValue = valueToProportion(value);
 
-  if( callCallbacks == true )
-    callValueChangeCallbacks(value);
-  if( sendNotification == true )
-    notifyObservers();
+  if( callCallbacks == true )    callValueChangeCallbacks(value);
+  if( sendNotification == true ) notifyObservers();
 }
 
 void Parameter::resetToDefaultValue(bool sendNotification, bool callCallbacks)
