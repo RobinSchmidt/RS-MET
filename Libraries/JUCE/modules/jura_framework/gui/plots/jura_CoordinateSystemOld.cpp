@@ -1332,7 +1332,8 @@ void CoordinateSystemOld::updateBackgroundImage()
   drawCoordinateSystem(g);
 
   // trigger a repaint:
-  repaint();
+  //repaint();
+  repaintOnMessageThread();
 }
 
 //-------------------------------------------------------------------------------------------------
