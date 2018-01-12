@@ -169,17 +169,7 @@ public:
   String getMetaParameterName(); // may be const?
 
   /** Returns a pointer to our meta-mapper object. */
-  rsMetaParameterMapper* getMapper() { return &metaMapper; }
-    // rename to getMetaMapper
-
-  /** Overrides baseclass method in order to return the not yet mappe normalized value. */
-  /*
-  virtual double getNormalizedValue() const override 
-  { 
-    ScopedPointerLock spl(mutex); 
-    return unmappedValue; 
-  }
-  */
+  rsMetaParameterMapper* getMetaMapper() { return &metaMapper; }
 
   //virtual double getNormalizedDefaultValue() const override
   //{ ScopedPointerLock spl(mutex); return 0.5; } // preliminary
@@ -206,11 +196,6 @@ protected:
 
   virtual void setNormalizedTargetValue(double newTargetValue, bool sendNotification, 
     bool callCallbacks) override;
-
-  //double unmappedValue; 
-    // normalized value before custom mapper has been applied, the inherited normalizedValue stores
-    // the already mapped normalized paramater
-
 
   int metaIndex = -1;
   MetaParameterManager* metaParaManager = nullptr; // use a Null Object by default

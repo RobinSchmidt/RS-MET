@@ -297,10 +297,11 @@ public:
 
 protected:
 
+  /** Sets the smoothing target value as normalized value in the range 0..1. */
   virtual void setNormalizedTargetValue(double newTargetValue, bool sendNotification, 
     bool callCallbacks);
 
-  bool shouldSendNotification = true;
+  bool shouldSendNotification = true; // flag to indicate if we should send a post-smoothing notification
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsSmoothableParameter)
 };

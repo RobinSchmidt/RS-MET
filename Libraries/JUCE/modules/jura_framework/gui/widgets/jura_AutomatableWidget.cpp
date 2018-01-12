@@ -27,7 +27,7 @@ rsAutomationSetup::rsAutomationSetup(AutomatableWidget* widgetToAutomate,
   MetaControlledParameter* mcp = widget->getMetaControlledParameter();
   if(mcp != nullptr)
   {
-    metaMapEditor->setFunctionToEdit(mcp->getMapper());
+    metaMapEditor->setFunctionToEdit(mcp->getMetaMapper());
     metaMapEditor->setMutexToUse(mcp->getUsedMutex());
   }
 
