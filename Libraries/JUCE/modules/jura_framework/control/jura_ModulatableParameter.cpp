@@ -607,6 +607,29 @@ void ModulationManager::sendModulationChangeNotificationFor(ModulationTarget* ta
 
 //-------------------------------------------------------------------------------------------------
 
+void ModulatableParameter::setNormalizedValue(double newValue, bool sendNotification, bool callCallbacks)
+{
+  MetaControlledParameter::setNormalizedValue(newValue, sendNotification, callCallbacks);
+    // sets up our "value" member
+
+  modulatedValue = unmodulatedValue = value; 
+
+  // maybe we need to call the callbacks here - at leats when there's no smoothing and no modulation?
+
+}
+
+void ModulatableParameter::setSmoothedValue(double newValue)
+{
+  modulatedValue = unmodulatedValue = newValue;
+
+  callValueChangeCallbacks(mapper->map(newValue)); 
+    // why - maybe it's wrong? maybe only needed when there's no mod-connection?
+
+  // old:                                                
+  //modulatedValue = unmodulatedValue = value = newValue;                                             
+  //callValueChangeCallbacks(value); // maybe use modulatedValue
+}
+
 juce::String ModulatableParameter::getModulationTargetName()
 {
   if(ownerModule == nullptr)

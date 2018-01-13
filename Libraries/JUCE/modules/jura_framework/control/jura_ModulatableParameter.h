@@ -765,22 +765,19 @@ public:
 
 
   /** \name Setup */
-
-  /** Overriden in order to also set up unmodulatedValue member inherited from ModulationTarget. */
   /*
   virtual void setValue(double newValue, bool sendNotification, bool callCallbacks) override
   {
-    MetaControlledParameter::setValue(newValue, sendNotification, callCallbacks);
-    ModulationTarget::setUnmodulatedValue(newValue);
+    jassertfalse; // client code should call setNormalizedValue
+    //MetaControlledParameter::setValue(newValue, sendNotification, callCallbacks);
+    //ModulationTarget::setUnmodulatedValue(newValue);
   }
   */
-  // we need to override setNormalizedValue
 
-  virtual void setSmoothedValue(double newValue) override
-  {
-    modulatedValue = unmodulatedValue = value = newValue;
-    callValueChangeCallbacks(value); // maybe use modulatedValue
-  }
+  virtual void setNormalizedValue(double newValue, bool sendNotification, 
+    bool callCallbacks) override;
+
+  virtual void setSmoothedValue(double newValue) override;
 
   /** Sets up the pointer to our owner, i.e. the AudioModule that contains this parameter (needed 
   for unique identification of this parameter in the tree of AudioModules when a state is 
