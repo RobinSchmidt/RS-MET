@@ -1,12 +1,11 @@
 #ifndef jura_UnitTestsView_h
 #define jura_UnitTestsView_h  
 
-//#include "../../JuceLibraryCode/JuceHeader.h"
 #include "jura_framework/UnitTestsParameter.h"
 
 /** A component to perform unit tests for jura classes, print results, etc. */
 
-class JUCE_API UnitTestsView : public jura::Editor
+class JUCE_API UnitTestsView : public jura::Editor, public juce::UnitTestRunner
 {
 
 public:
@@ -21,9 +20,14 @@ public:
 
   UnitTestsView();
 
+  /** Runs the tests with given index (see enum testIndices). */
+  void runTest(int testIndex);
+
   virtual void resized() override;
 
 protected:
+
+
 
   void createWidgets();
 

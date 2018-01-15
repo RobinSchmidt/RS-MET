@@ -6,6 +6,17 @@ UnitTestsView::UnitTestsView()
   createWidgets();
 }
 
+void UnitTestsView::runTest(int testIndex)
+{
+  juce::Array<UnitTest*> tests;
+
+  tests.add(new UnitTestParameter);
+
+  runTests(tests);
+
+  // do we need to clear the array? ..or maybe use OwnedArray?
+}
+
 void UnitTestsView::resized()
 {
   int m  = 4;   // margin
