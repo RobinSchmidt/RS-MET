@@ -15,7 +15,11 @@ void UnitTestsView::runTest(int testIndex)
   //beginTest();
   runTests(tests);
 
-  // do we need to clear the array? ..or maybe use OwnedArray?
+
+
+  for(int i = 0; i < tests.size(); i++)
+    delete tests[i];
+  tests.clear();
 }
 
 void UnitTestsView::resized()

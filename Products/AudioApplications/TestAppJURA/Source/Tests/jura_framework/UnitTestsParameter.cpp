@@ -1,4 +1,6 @@
 #include "UnitTestsParameter.h"
+using namespace juce;
+using namespace jura;
 
 void UnitTestParameter::runTest()
 {
@@ -6,6 +8,11 @@ void UnitTestParameter::runTest()
   runTestSmoothableParameter();
   runTestMetaControlledParameter();
   runTestModulatableParameter();
+}
+
+void UnitTestParameter::parameterChanged(Parameter* parameterThatHasChanged)
+{
+  numNotificationsReceived++;
 }
 
 void UnitTestParameter::callbackTargetDouble(double value)
@@ -18,23 +25,38 @@ void UnitTestParameter::runTestParameter()
 {
   beginTest("Parameter");
 
+
   numCallbacksReceived = 0;
   numNotificationsReceived = 0; 
 
   jura::Parameter p("TestParam", 0.0, 10.0, 5.0);
+  p.registerParameterObserver(this);
   p.setValueChangeCallback<UnitTestParameter>(this, &UnitTestParameter::callbackTargetDouble);
-  expectEquals(numCallbacksReceived, 1,   "");
+  expectEquals(numCallbacksReceived,   1);
 
   p.setValue(2.5, false, false);
-  expectEquals(p.getValue(),           2.5,  "Parameter::getValue failed");
-  expectEquals(p.getNormalizedValue(), 0.25, "Parameter::getNormalizedValue failed");
-  expectEquals(numCallbacksReceived,   1, "");
+  expectEquals(p.getValue(),             2.5);
+  expectEquals(p.getNormalizedValue(),   0.25);
+  expectEquals(numCallbacksReceived,     1);
+  expectEquals(numNotificationsReceived, 0);
 
   p.setValue(7.5, true, true);
-  expectEquals(p.getValue(),           7.5,  "Parameter::getValue failed");
-  expectEquals(p.getNormalizedValue(), 0.75, "Parameter::getNormalizedValue failed");
-  expectEquals(numCallbacksReceived,   2,   "");
-  expectEquals(lastCallbackValue,      7.5, "");
+  expectEquals(p.getValue(),             7.5);
+  expectEquals(lastCallbackValue,        7.5);
+  expectEquals(p.getNormalizedValue(),   0.75);
+  expectEquals(numCallbacksReceived,     2);
+  expectEquals(numNotificationsReceived, 1);
+
+  p.setNormalizedValue(0.25, true, true);
+  expectEquals(p.getValue(),             2.5);
+  expectEquals(lastCallbackValue,        2.5);
+  expectEquals(p.getNormalizedValue(),   0.25);
+  expectEquals(numCallbacksReceived,     3);
+  expectEquals(numNotificationsReceived, 2);
+
+  // test custom mapper, value quantization
+
+
 
   // test, if callbacks and notifications work correctly
 
