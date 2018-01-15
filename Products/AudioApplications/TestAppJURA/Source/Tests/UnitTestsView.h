@@ -13,6 +13,8 @@ public:
   UnitTestsView();
 
 
+  virtual void resized() override;
+
 protected:
 
   void createWidgets();
@@ -21,8 +23,10 @@ protected:
   // .., All) and a click-button "Run"....and an output text window that informs about the results
 
   jura::RTextField *runTestsLabel;
-  jura::RTextEditor *testResultView;
+  jura::RComboBox  *testSelectorBox;
   jura::RClickButtonNotifyOnMouseUp *runButton;
+  jura::RTextEditor *testResultView;
+
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UnitTestsView)

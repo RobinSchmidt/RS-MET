@@ -6,16 +6,37 @@ UnitTestsView::UnitTestsView()
   createWidgets();
 }
 
+void UnitTestsView::resized()
+{
+  int m  = 4;   // margin
+  int x  = m;
+  int y  = m;
+
+  runTestsLabel  ->setBounds(x, y,  76, 20); x +=  76+m;
+  testSelectorBox->setBounds(x, y, 120, 20); x += 120+m;
+  runButton      ->setBounds(x, y,  40, 20); x +=  40+m;
+
+  x = 0;
+  y = runButton->getBottom() + m;
+  int w = getWidth();
+  int h = getHeight();
+  testResultView->setBounds(x, y, w, h);
+}
+
 void UnitTestsView::createWidgets()
 {
-  runTestsLabel  = new RTextField("Run Tests:");
+  runTestsLabel  = new RTextField("Select Test:");
   addWidget(runTestsLabel);
 
+  testSelectorBox = new RComboBox;
+  addWidget(testSelectorBox);
 
+  runButton = new RClickButtonNotifyOnMouseUp("Run");
+  addWidget(runButton);
 
+  testResultView = new RTextEditor;
+  addWidget(testResultView);
 
-  //RTextEditor *testResultView;
-  //RClickButtonNotifyOnMouseUp *runButton;
-
+  // todo: add descriptions
 }
 
