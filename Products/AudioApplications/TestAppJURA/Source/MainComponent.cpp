@@ -1,14 +1,12 @@
 #ifndef MAINCOMPONENT_H_INCLUDED  // hey, but it's a .cpp file (this was auto generated)
 #define MAINCOMPONENT_H_INCLUDED
 
-
 #include  "Tests/RAPT/Visualization/ImageProcessing/ImagePainterTests.h"
+#include  "Tests/UnitTestsView.h"
 
 
 /** This component lives inside our window, and this is where you should put all your controls 
-and content. 
-\todo: split into .h and .cpp file
-*/
+and content. */
 
 class MainContentComponent : public AudioAppComponent
 {
@@ -25,7 +23,8 @@ public:
 
   ~MainContentComponent()
   {
-    //deleteAllChildren();
+    // try to get rid of these delet calls:
+    delete buttonPainter;
     delete buttonUnitTests;
     shutdownAudio();
   }
@@ -73,42 +72,52 @@ public:
 
   void resized() override
   {
-    int x, y, w, h;
-    int bw = 80; // button width
-    int bh = 20; // button height
-    int m = 4;   // margin
+    int m  = 4;   // margin
+    int x  = m;
+    int y  = m;
+    int w  = 80; // button width
+    int h  = 20; // button height
+    int dx = w + m;
 
-    buttonUnitTests->setBounds(m, m, bw, bh);
+    // tab buttons:
+    buttonPainter->setBounds(  x, y, w, h); x += dx;
+    buttonUnitTests->setBounds(x, y, w, h);
 
+    // sub components:
     x = 0;
     y = buttonUnitTests->getBottom() + m;
     w = getWidth()  - x;
     h = getHeight() - y;
-    painter.setBounds(x, y, w, h);
-    //unitTestsView.setBounds(x, y, w, h);
+    painter.setBounds(      x, y, w, h);
+    unitTestsView.setBounds(x, y, w, h);
   }
 
 private:
 
   void createWidgets()
   {
+    buttonPainter = new RRadioButton("Painter");
+    buttonPainter->addToRadioButtonGroup(&tabButtonGroup);
+    addAndMakeVisible(buttonPainter); // maybe use addWidget (inherit from jura::Editor)
+
     buttonUnitTests = new RRadioButton("Unit Tests");
     buttonUnitTests->addToRadioButtonGroup(&tabButtonGroup);
-    addAndMakeVisible(buttonUnitTests); // maybe use addWidget (inherit from jura::Editor)
+    addAndMakeVisible(buttonUnitTests);
   }
 
   void initSubComponents()
   {
     addAndMakeVisible(painter);
+    addAndMakeVisible(unitTestsView);
   }
 
   // widgets:
   RRadioButtonGroup tabButtonGroup;
-  RRadioButton *buttonUnitTests;
+  RRadioButton *buttonPainter, *buttonUnitTests;
 
   // sub-components
   PainterComponent painter;
-  //UnitTestsView unitTestsView;
+  UnitTestsView unitTestsView;
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainContentComponent)
