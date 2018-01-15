@@ -41,6 +41,24 @@ void UnitTestsView::rButtonClicked(RButton* b)
     runTest(ALL); // todo: inquire combobox, which test to run
 }
 
+void UnitTestsView::resultsUpdated()
+{
+  // this is a "shlemiel-the-painter" algorithm - try to avoid that later
+  int numResults = getNumResults();
+  juce::String str;
+  for(int i = 0; i < numResults; i++)
+  {
+    const TestResult* result = getResult(i);
+    str += result->unitTestName; 
+    //str += result->subcategoryName;
+    str += ": Passes: " + String(result->passes);
+    str += ", Fails: "  + String(result->failures);
+    //str += ", Messages: " + String(result->messages());
+    str += "\n";
+  }
+  testResultView->setText(str);
+}
+
 void UnitTestsView::createWidgets()
 {
   runTestsLabel  = new RTextField("Select Test:");
@@ -57,6 +75,7 @@ void UnitTestsView::createWidgets()
   addWidget(runButton);
 
   testResultView = new RTextEditor;
+  testResultView->setMultiLine(true);
   addWidget(testResultView);
 
   // todo: add descriptions

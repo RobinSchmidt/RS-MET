@@ -26,6 +26,7 @@ public:
 
   virtual void resized() override;
   virtual void rButtonClicked(jura::RButton* button) override;
+  virtual void resultsUpdated() override;
 
 protected:
 
