@@ -111,6 +111,8 @@ private:
     addAndMakeVisible(unitTestsView);
   }
 
+
+
   // widgets:
   RRadioButtonGroup tabButtonGroup;
   RRadioButton *buttonPainter, *buttonUnitTests;
