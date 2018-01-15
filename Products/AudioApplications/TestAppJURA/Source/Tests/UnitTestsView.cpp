@@ -29,6 +29,8 @@ void UnitTestsView::createWidgets()
   addWidget(runTestsLabel);
 
   testSelectorBox = new RComboBox;
+  testSelectorBox->addItem(ALL,        "All Tests");
+  testSelectorBox->addItem(PARAMETERS, "Parameters");
   addWidget(testSelectorBox);
 
   runButton = new RClickButtonNotifyOnMouseUp("Run");
