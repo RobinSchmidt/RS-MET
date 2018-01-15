@@ -17,6 +17,10 @@ public:
 
 protected:
 
+  void runTestParameter();
+  void runTestSmoothableParameter();
+  void runTestMetaControlledParameter();
+  void runTestModulatableParameter();
 
 };
 
