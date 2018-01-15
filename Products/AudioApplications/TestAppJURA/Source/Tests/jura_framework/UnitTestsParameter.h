@@ -11,7 +11,7 @@ class JUCE_API UnitTestParameter : public juce::UnitTest, public jura::Parameter
 
 public:
 
-  UnitTestParameter() : juce::UnitTest("Parameter", "Control") {}
+  UnitTestParameter();
 
   virtual void runTest() override;
   virtual void parameterChanged(jura::Parameter* parameterThatHasChanged) override;
@@ -26,6 +26,8 @@ protected:
   void runTestMetaControlledParameter();
   void runTestModulatableParameter();
 
+  void resetCounters();
+
   double lastCallbackValue;
   int numCallbacksReceived;
   int numNotificationsReceived;
@@ -35,7 +37,7 @@ protected:
   // managers:
   jura::rsSmoothingManager   smoothingManager;
   jura::MetaParameterManager metaManager;
-  //jura::ModulationManager    modManager(&lock); // doesn't work
+  jura::ModulationManager    modManager;
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UnitTestParameter)
