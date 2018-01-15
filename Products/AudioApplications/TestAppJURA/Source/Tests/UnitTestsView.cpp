@@ -12,6 +12,7 @@ void UnitTestsView::runTest(int testIndex)
 
   tests.add(new UnitTestParameter);
 
+  //beginTest();
   runTests(tests);
 
   // do we need to clear the array? ..or maybe use OwnedArray?
@@ -34,6 +35,12 @@ void UnitTestsView::resized()
   testResultView->setBounds(x, y, w, h);
 }
 
+void UnitTestsView::rButtonClicked(RButton* b)
+{
+  if(b == runButton)
+    runTest(ALL); // todo: inquire combobox, which test to run
+}
+
 void UnitTestsView::createWidgets()
 {
   runTestsLabel  = new RTextField("Select Test:");
@@ -42,9 +49,11 @@ void UnitTestsView::createWidgets()
   testSelectorBox = new RComboBox;
   testSelectorBox->addItem(ALL,        "All Tests");
   testSelectorBox->addItem(PARAMETERS, "Parameters");
+  //testSelectorBox->addItem(WIDGETS, "Widgets");
   addWidget(testSelectorBox);
 
   runButton = new RClickButtonNotifyOnMouseUp("Run");
+  runButton->addRButtonListener(this);
   addWidget(runButton);
 
   testResultView = new RTextEditor;

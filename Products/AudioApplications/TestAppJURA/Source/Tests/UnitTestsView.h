@@ -5,7 +5,8 @@
 
 /** A component to perform unit tests for jura classes, print results, etc. */
 
-class JUCE_API UnitTestsView : public jura::Editor, public juce::UnitTestRunner
+class JUCE_API UnitTestsView : public jura::Editor, public juce::UnitTestRunner, 
+  public jura::RButtonListener
 {
 
 public:
@@ -24,6 +25,7 @@ public:
   void runTest(int testIndex);
 
   virtual void resized() override;
+  virtual void rButtonClicked(jura::RButton* button) override;
 
 protected:
 

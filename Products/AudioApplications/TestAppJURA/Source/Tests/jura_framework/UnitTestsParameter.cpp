@@ -10,13 +10,14 @@ void UnitTestParameter::runTest()
 
 void UnitTestParameter::runTestParameter()
 {
+  beginTest("Parameter");
+
   jura::Parameter p("TestParam");
 
   p.setValue(0.25, false, false);
   expectEquals(p.getValue(), 0.25, "Parameter::getValue failed");
 
   // test, if callbacks and notifications work correctly
-
 
 
   int dummy = 0;
