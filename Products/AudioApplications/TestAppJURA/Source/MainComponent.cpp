@@ -17,14 +17,16 @@ public:
 
   MainContentComponent()
   {
-    addAndMakeVisible(painter);
-
+    initSubComponents();
+    createWidgets();
     setSize(800, 600);
     setAudioChannels(2, 2); // number of input and output channels
   }
 
   ~MainContentComponent()
   {
+    //deleteAllChildren();
+    delete buttonUnitTests;
     shutdownAudio();
   }
 
@@ -72,17 +74,41 @@ public:
   void resized() override
   {
     int x, y, w, h;
+    int bw = 80; // button width
+    int bh = 20; // button height
+    int m = 4;   // margin
+
+    buttonUnitTests->setBounds(m, m, bw, bh);
+
     x = 0;
-    y = 0;
+    y = buttonUnitTests->getBottom() + m;
     w = getWidth()  - x;
     h = getHeight() - y;
-
     painter.setBounds(x, y, w, h);
+    //unitTestsView.setBounds(x, y, w, h);
   }
 
 private:
 
+  void createWidgets()
+  {
+    buttonUnitTests = new RRadioButton("Unit Tests");
+    buttonUnitTests->addToRadioButtonGroup(&tabButtonGroup);
+    addAndMakeVisible(buttonUnitTests); // maybe use addWidget (inherit from jura::Editor)
+  }
+
+  void initSubComponents()
+  {
+    addAndMakeVisible(painter);
+  }
+
+  // widgets:
+  RRadioButtonGroup tabButtonGroup;
+  RRadioButton *buttonUnitTests;
+
+  // sub-components
   PainterComponent painter;
+  //UnitTestsView unitTestsView;
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainContentComponent)

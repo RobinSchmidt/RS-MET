@@ -2,6 +2,9 @@
 
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="TestAppJURA\Source\Tests\jura_framework">
+      <UniqueIdentifier>{84A1F62E-B419-1B99-CFC9-15ECA6198065}</UniqueIdentifier>
+    </Filter>
     <Filter Include="TestAppJURA\Source\Tests\RAPT\Visualization\ImageProcessing">
       <UniqueIdentifier>{D658B48C-9119-D7E9-148A-21DA49F16123}</UniqueIdentifier>
     </Filter>
@@ -667,11 +670,17 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\Tests\jura_framework\UnitTestsParameter.cpp">
+      <Filter>TestAppJURA\Source\Tests\jura_framework</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Tests\RAPT\Visualization\ImageProcessing\ImagePainterTests.cpp">
       <Filter>TestAppJURA\Source\Tests\RAPT\Visualization\ImageProcessing</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Tests\RAPT\Tests.cpp">
       <Filter>TestAppJURA\Source\Tests\RAPT</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Tests\UnitTestsView.cpp">
+      <Filter>TestAppJURA\Source\Tests</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\MainComponent.cpp">
       <Filter>TestAppJURA\Source</Filter>
@@ -2587,6 +2596,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_AutomatableWidget.cpp">
       <Filter>Juce Modules\jura_framework\gui\widgets</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_NodeEditor.cpp">
+      <Filter>Juce Modules\jura_framework\gui\widgets</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_PlotPreviewButton.cpp">
       <Filter>Juce Modules\jura_framework\gui\widgets</Filter>
     </ClCompile>
@@ -2627,6 +2639,9 @@
       <Filter>Juce Modules\jura_framework\gui\widgets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_RWidget.cpp">
+      <Filter>Juce Modules\jura_framework\gui\widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_VectorPad.cpp">
       <Filter>Juce Modules\jura_framework\gui\widgets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\misc\jura_DeletionRequester.cpp">
@@ -2699,6 +2714,9 @@
       <Filter>Juce Modules\jura_processors\effects</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_MultiComp.cpp">
+      <Filter>Juce Modules\jura_processors\effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_NodeShaper.cpp">
       <Filter>Juce Modules\jura_processors\effects</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_PitchShifter.cpp">
@@ -2791,6 +2809,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\misc\jura_ChannelMatrix2x2.cpp">
       <Filter>Juce Modules\jura_processors\misc</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\misc\jura_DebugAudioModule.cpp">
+      <Filter>Juce Modules\jura_processors\misc</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\misc\jura_DspWorkbench.cpp">
       <Filter>Juce Modules\jura_processors\misc</Filter>
     </ClCompile>
@@ -2843,6 +2864,9 @@
       <Filter>Juce Modules\rapt\Data</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Data\MatrixTools.cpp">
+      <Filter>Juce Modules\rapt\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Data\StandardContainerTools.cpp">
       <Filter>Juce Modules\rapt\Data</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Basic\OnePoleFilter.cpp">
@@ -2924,6 +2948,12 @@
       <Filter>Juce Modules\rapt\Math\Functions</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\IntegerFunctions.cpp">
+      <Filter>Juce Modules\rapt\Math\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\Mappers.cpp">
+      <Filter>Juce Modules\rapt\Math\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\NodeBasedFunction.cpp">
       <Filter>Juce Modules\rapt\Math\Functions</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\RealFunctions.cpp">
@@ -4443,11 +4473,17 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\Tests\jura_framework\UnitTestsParameter.h">
+      <Filter>TestAppJURA\Source\Tests\jura_framework</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Tests\RAPT\Visualization\ImageProcessing\ImagePainterTests.h">
       <Filter>TestAppJURA\Source\Tests\RAPT\Visualization\ImageProcessing</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Tests\RAPT\Tests.h">
       <Filter>TestAppJURA\Source\Tests\RAPT</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Tests\UnitTestsView.h">
+      <Filter>TestAppJURA\Source\Tests</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_basics\audio_play_head\juce_AudioPlayHead.h">
       <Filter>Juce Modules\juce_audio_basics\audio_play_head</Filter>
@@ -6471,6 +6507,9 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_AutomatableWidget.h">
       <Filter>Juce Modules\jura_framework\gui\widgets</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_NodeEditor.h">
+      <Filter>Juce Modules\jura_framework\gui\widgets</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_PlotPreviewButton.h">
       <Filter>Juce Modules\jura_framework\gui\widgets</Filter>
     </ClInclude>
@@ -6511,6 +6550,9 @@
       <Filter>Juce Modules\jura_framework\gui\widgets</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_RWidget.h">
+      <Filter>Juce Modules\jura_framework\gui\widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\gui\widgets\jura_VectorPad.h">
       <Filter>Juce Modules\jura_framework\gui\widgets</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_framework\misc\jura_DeletionRequester.h">
@@ -6583,6 +6625,9 @@
       <Filter>Juce Modules\jura_processors\effects</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_MultiComp.h">
+      <Filter>Juce Modules\jura_processors\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_NodeShaper.h">
       <Filter>Juce Modules\jura_processors\effects</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\effects\jura_PitchShifter.h">
@@ -6675,6 +6720,9 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\misc\jura_ChannelMatrix2x2.h">
       <Filter>Juce Modules\jura_processors\misc</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\misc\jura_DebugAudioModule.h">
+      <Filter>Juce Modules\jura_processors\misc</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\jura_processors\misc\jura_DspWorkbench.h">
       <Filter>Juce Modules\jura_processors\misc</Filter>
     </ClInclude>
@@ -6739,6 +6787,9 @@
       <Filter>Juce Modules\rapt\Data</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Data\MatrixTools.h">
+      <Filter>Juce Modules\rapt\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Data\StandardContainerTools.h">
       <Filter>Juce Modules\rapt\Data</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Filters\Basic\OnePoleFilter.h">
@@ -6828,7 +6879,13 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\IntegerFunctions.h">
       <Filter>Juce Modules\rapt\Math\Functions</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\Mappers.h">
+      <Filter>Juce Modules\rapt\Math\Functions</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\MoebiusTransform.h">
+      <Filter>Juce Modules\rapt\Math\Functions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\NodeBasedFunction.h">
       <Filter>Juce Modules\rapt\Math\Functions</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\RealFunctions.h">

@@ -614,6 +614,8 @@ void ModulatableParameter::setNormalizedValue(double newValue, bool sendNotifica
 
   modulatedValue = unmodulatedValue = value; 
 
+  callValueChangeCallbacks(mapper->map(value));  // test
+
   // maybe we need to call the callbacks here - at leats when there's no smoothing and no modulation?
 
 }

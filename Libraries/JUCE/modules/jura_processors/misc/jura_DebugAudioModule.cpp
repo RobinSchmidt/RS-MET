@@ -12,8 +12,8 @@ void DebugAudioModule::createParameters()
 
   //typedef Parameter Param;
   //typedef rsSmoothableParameter Param;
-  typedef MetaControlledParameter Param;
-  //typedef ModulatableParameter Param;
+  //typedef MetaControlledParameter Param;
+  typedef ModulatableParameter Param;
   Param* p;
 
   leftParam = p = new Param("Left" , -1.0, 1.0, 0.0, Parameter::LINEAR, 0.01);
