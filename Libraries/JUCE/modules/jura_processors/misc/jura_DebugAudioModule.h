@@ -27,6 +27,9 @@ public:
 
 protected:
 
+  /** Tries to cast passed Parameter int rsSmoothableParameter - if successful, sets the smoothing 
+  time for it. */
+  void setSmoothingTime(Parameter* p, double newTime);
 
   static const int numValues = 2;
   double values[numValues] = { 0, 0 };

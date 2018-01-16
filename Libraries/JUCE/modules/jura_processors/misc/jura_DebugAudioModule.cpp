@@ -12,8 +12,8 @@ void DebugAudioModule::createParameters()
 
   //typedef Parameter Param;
   //typedef rsSmoothableParameter Param;
-  //typedef MetaControlledParameter Param;
-  typedef ModulatableParameter Param;
+  typedef MetaControlledParameter Param;
+  //typedef ModulatableParameter Param; // has wrong value when being smoothed
   Param* p;
 
   leftParam = p = new Param("Left" , -1.0, 1.0, 0.0, Parameter::LINEAR, 0.01);
@@ -87,8 +87,17 @@ void DebugAudioModule::setRightValue(double newValue)
 
 void DebugAudioModule::setSmoothingTime(double newTime) 
 {
-  if(smoothingManager) 
-    smoothingManager->setSmoothingTime(newTime);
+  setSmoothingTime(leftParam,  newTime);
+  setSmoothingTime(rightParam, newTime);
+  //if(smoothingManager) 
+  //  smoothingManager->setSmoothingTime(newTime);
+}
+
+void DebugAudioModule::setSmoothingTime(Parameter* p, double newTime)
+{
+  rsSmoothableParameter *sp = dynamic_cast<rsSmoothableParameter*>(p);
+  if(sp)
+    sp->setSmoothingTime(newTime);
 }
 
 //=================================================================================================
