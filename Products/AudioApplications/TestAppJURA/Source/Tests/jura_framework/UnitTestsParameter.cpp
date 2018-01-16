@@ -64,12 +64,42 @@ void UnitTestParameter::runTestParameter()
 
 void UnitTestParameter::runTestSmoothableParameter()
 {
+  beginTest("SmoothableParameter");
+  resetCounters();
 
+  jura::rsSmoothableParameter p("SmoothableParameter", 0.0, 10.0, 5.0);
+  p.registerParameterObserver(this);
+  p.setValueChangeCallback<UnitTestParameter>(this, &UnitTestParameter::callbackTargetDouble);
+  p.setSmoothingManager(&smoothingManager);
+  expectEquals(numNotificationsReceived, 0);
+  expectEquals(numCallbacksReceived,     1);
+  expectEquals(lastCallbackValue,        5.0);
+  expectEquals(p.getValue(),             5.0);
+  expectEquals(p.getNormalizedValue(),   0.5);
+
+  testParameter(  &p);
+  testSmoothable( &p);
 }
 
 void UnitTestParameter::runTestMetaControlledParameter()
 {
+  beginTest("MetaControlledParameter");
+  resetCounters();
 
+  jura::MetaControlledParameter p("MetaControlledParameter", 0.0, 10.0, 5.0);
+  p.registerParameterObserver(this);
+  p.setValueChangeCallback<UnitTestParameter>(this, &UnitTestParameter::callbackTargetDouble);
+  p.setSmoothingManager(&smoothingManager);
+  p.setMetaParameterManager(&metaManager);
+  expectEquals(numNotificationsReceived, 0);
+  expectEquals(numCallbacksReceived,     1);
+  expectEquals(lastCallbackValue,        5.0);
+  expectEquals(p.getValue(),             5.0);
+  expectEquals(p.getNormalizedValue(),   0.5);
+
+  testParameter(  &p);
+  testSmoothable( &p);
+  testMetaControl(&p);
 }
 
 void UnitTestParameter::runTestModulatableParameter()
@@ -88,7 +118,6 @@ void UnitTestParameter::runTestModulatableParameter()
   expectEquals(lastCallbackValue,        5.0);
   expectEquals(p.getValue(),             5.0);
   expectEquals(p.getNormalizedValue(),   0.5);
-
 
   testParameter(  &p);
   testSmoothable( &p);

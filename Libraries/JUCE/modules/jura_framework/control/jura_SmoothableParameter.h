@@ -51,7 +51,7 @@ public:
 
 protected:
 
-  double smoothingTime = -1.0; // in milliseconds, -1.0 is code for using global smoothing time
+  double smoothingTime = 0.0; // in milliseconds, -1.0 is code for using global smoothing time
   bool isSmoothing = false;
   rsSmoothingManager* smoothingManager = nullptr; 
 
