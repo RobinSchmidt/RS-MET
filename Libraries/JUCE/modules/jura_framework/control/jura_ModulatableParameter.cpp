@@ -619,19 +619,15 @@ void ModulatableParameter::setNormalizedValue(double newValue, bool sendNotifica
 
 void ModulatableParameter::setSmoothedValue(double newValue)
 {
-  modulatedValue = unmodulatedValue = newValue;
-  callValueChangeCallbacks(newValue); 
-
-  // no - this is wrong: the smoothed value is still normalized (but with the 1st mapper already 
-  // applied)
+  modulatedValue = unmodulatedValue = mapper->map(newValue);
+  callValueChangeCallbacks(unmodulatedValue); 
 
   // later do:
   //if( hasConnectedSources() )
-  //  callValueChangeCallbacks(newValue); 
+  //  callValueChangeCallbacks(unmodulatedValue); 
   // to avoid a superfluous callback call with the unmodulated value - but for this to make sense, 
   // we need a more efficient hasConnectedSources function - ModulationTarget must keep track of
   // the number of connected sources
-
 
   //callValueChangeCallbacks(mapper->map(newValue)); 
     // why - maybe it's wrong? maybe only needed when there's no mod-connection?

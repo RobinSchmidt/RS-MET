@@ -25,7 +25,7 @@ void UnitTestParameter::runTest()
   runTestParameter();
   runTestSmoothableParameter();
   runTestMetaControlledParameter();
-  //runTestModulatableParameter();
+  runTestModulatableParameter();
 }
 
 void UnitTestParameter::parameterChanged(Parameter* parameterThatHasChanged)
@@ -256,6 +256,9 @@ void UnitTestParameter::testMetaControl(jura::MetaControlledParameter* p)
   p->setSmoothingTime(0.0); 
 
   // todo: test meta-attachment, cross-coupling
+
+
+  mapper->initToDefaults(); // to not thwart subsequent tests
 }
 
 void UnitTestParameter::testModulation(jura::ModulatableParameter* p)
@@ -272,6 +275,13 @@ void UnitTestParameter::testModulation(jura::ModulatableParameter* p)
   modManager.addConnection(&modSource, p);
   jura::ModulationConnection* modCon = modManager.getConnectionBetween(&modSource, p);
   modCon->setDepthRangeAndValue(-10.0, +10.0, 1.0);
+
+  // init:
+  p->setNormalizedValue(0.0, false, false); 
+   // maybe get rid of this, but then we will hit a jassert because setting the normalizedValue in 
+   // the next call will immediately return, normalized and unnormalized are out of sync because
+   // of the resetting of the mapping function which didn't trigger an update of dependent 
+   // variables
 
   p->setNormalizedValue(0.5, true, true);
   expectEquals(p->getNormalizedValue(),  0.5);
