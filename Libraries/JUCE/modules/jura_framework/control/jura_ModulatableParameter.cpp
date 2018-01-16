@@ -614,7 +614,9 @@ void ModulatableParameter::setNormalizedValue(double newValue, bool sendNotifica
 
   modulatedValue = unmodulatedValue = value; 
 
-  callValueChangeCallbacks(mapper->map(value));  // test
+  callValueChangeCallbacks(value); // might result in redundant call since baseclass may already call it?
+
+  //callValueChangeCallbacks(mapper->map(value));  // test
 
   // maybe we need to call the callbacks here - at leats when there's no smoothing and no modulation?
 
@@ -624,7 +626,8 @@ void ModulatableParameter::setSmoothedValue(double newValue)
 {
   modulatedValue = unmodulatedValue = newValue;
 
-  callValueChangeCallbacks(mapper->map(newValue)); 
+  callValueChangeCallbacks(newValue); 
+  //callValueChangeCallbacks(mapper->map(newValue)); 
     // why - maybe it's wrong? maybe only needed when there's no mod-connection?
 
   // old:                                                
