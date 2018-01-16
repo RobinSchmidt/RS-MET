@@ -14,11 +14,14 @@ public:
   UnitTestParameter();
 
   virtual void runTest() override;
+
+  /** Overriden to increment our notification counter. */
   virtual void parameterChanged(jura::Parameter* parameterThatHasChanged) override;
 
   /** Used as target function for the callback in parameter objects. */
   void callbackTargetDouble(double value);
 
+  /** Resets counters for recived notifications and callbacks. */
   void resetCounters();
 
 protected:
@@ -39,7 +42,6 @@ protected:
   iterations that were needed. */
   int doSmoothingUntilDone();
 
-
   // bookkeeping data:
   double lastCallbackValue;
   int numCallbacksReceived;
@@ -51,9 +53,7 @@ protected:
   jura::MetaParameterManager metaManager;
   jura::ModulationManager    modManager;
 
-
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UnitTestParameter)
 };
-
 
 #endif

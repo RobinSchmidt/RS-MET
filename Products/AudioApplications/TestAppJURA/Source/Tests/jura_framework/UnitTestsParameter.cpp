@@ -25,7 +25,7 @@ void UnitTestParameter::runTest()
   runTestParameter();
   runTestSmoothableParameter();
   runTestMetaControlledParameter();
-  runTestModulatableParameter();
+  //runTestModulatableParameter();
 }
 
 void UnitTestParameter::parameterChanged(Parameter* parameterThatHasChanged)
@@ -77,8 +77,8 @@ void UnitTestParameter::runTestSmoothableParameter()
   expectEquals(p.getValue(),             5.0);
   expectEquals(p.getNormalizedValue(),   0.5);
 
-  testParameter(  &p);
-  testSmoothable( &p);
+  testParameter( &p);
+  testSmoothable(&p);
 }
 
 void UnitTestParameter::runTestMetaControlledParameter()
@@ -190,7 +190,45 @@ void UnitTestParameter::testSmoothable(jura::rsSmoothableParameter* p)
 
 void UnitTestParameter::testMetaControl(jura::MetaControlledParameter* p)
 {
+  resetCounters();
 
+  // set up a nonmonotonic mapping function:
+  rsMetaParameterMapper* mapper = p->getMetaMapper(); // (0,0),(1,1)
+  mapper->addNode(0.5, 1.0);                          // (0,0),(0.5,1),(1,1)
+  mapper->moveNode(2, 1.0, 0.0);                      // (0,0),(0.5,1),(1,0)
+
+  // init:
+  p->setNormalizedValue(0.0, false, false);
+  expectEquals(p->getValue(),            0.0);
+  expectEquals(p->getNormalizedValue(),  0.0);
+  expectEquals(numCallbacksReceived,     0);
+  expectEquals(numNotificationsReceived, 0);
+
+  p->setNormalizedValue(0.25, true, true);
+  expectEquals(p->getValue(),            5.0);
+  expectEquals(p->getNormalizedValue(),  0.25);
+  expectEquals(numCallbacksReceived,     1);
+  expectEquals(numNotificationsReceived, 1);
+
+  p->setNormalizedValue(0.5, true, true);
+  expectEquals(p->getValue(),            10.0);
+  expectEquals(p->getNormalizedValue(),   0.5);
+  expectEquals(numCallbacksReceived,      2);
+  expectEquals(numNotificationsReceived,  2);
+
+  p->setNormalizedValue(0.75, true, true);
+  expectEquals(p->getValue(),            5.0);
+  expectEquals(p->getNormalizedValue(),  0.75);
+  expectEquals(numCallbacksReceived,     3);
+  expectEquals(numNotificationsReceived, 3);
+
+  // maybe somehow adding/moving/removing nodes should also trigger callbacks
+
+  // test with mapping with smoothing
+
+
+
+  int dummy = 0;
 }
 
 void UnitTestParameter::testModulation(jura::ModulatableParameter* p)
