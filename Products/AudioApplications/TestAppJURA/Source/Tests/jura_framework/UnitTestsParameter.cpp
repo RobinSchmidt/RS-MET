@@ -180,16 +180,21 @@ void UnitTestParameter::testModulation(jura::ModulatableParameter* p)
   jura::ModulationConnection* modCon = modManager.getConnectionBetween(&modSource, p);
   modCon->setDepthRangeAndValue(-10.0, +10.0, 1.0);
 
+  p->setNormalizedValue(0.5, true, true);
+  expectEquals(p->getNormalizedValue(),  0.5);
+  expectEquals(p->getValue(),            5.0);
+  expectEquals(lastCallbackValue,        5.0);
+  expectEquals(numCallbacksReceived,     1);
+  expectEquals(numNotificationsReceived, 1);
+
   // applying modulations should result in a callback to be called with value 6, the results 
   // returned by get(Normalized)Value should not be affected:
-  /*
-  p->setNormalizedValue(0.5, false, false);
   modManager.applyModulations();
-  expectEquals(numCallbacksReceived,    1);
-  expectEquals(lastCallbackValue,       6.0);
-  expectEquals(p->getValue(),           5.0);
-  expectEquals(p->getNormalizedValue(), 0.5);
-  */
+  expectEquals(lastCallbackValue,        6.0);
+  expectEquals(p->getValue(),            5.0);
+  expectEquals(p->getNormalizedValue(),  0.5);
+  expectEquals(numCallbacksReceived,     2);  
+  expectEquals(numNotificationsReceived, 1);
 
   modManager.deRegisterModulationTarget(p);
   modManager.deRegisterModulationSource(&modSource);

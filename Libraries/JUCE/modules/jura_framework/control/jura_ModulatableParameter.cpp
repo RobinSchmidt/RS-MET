@@ -610,23 +610,26 @@ void ModulationManager::sendModulationChangeNotificationFor(ModulationTarget* ta
 void ModulatableParameter::setNormalizedValue(double newValue, bool sendNotification, bool callCallbacks)
 {
   MetaControlledParameter::setNormalizedValue(newValue, sendNotification, callCallbacks);
-    // sets up our "value" member
-
   modulatedValue = unmodulatedValue = value; 
 
   //callValueChangeCallbacks(value); // might result in redundant call since baseclass may already call it?
-
-  //callValueChangeCallbacks(mapper->map(value));  // test
-
-  // maybe we need to call the callbacks here - at leats when there's no smoothing and no modulation?
-
+  // maybe we should use "false" for the callCallbacks parameter in the baseclass call and call it here 
+  // manually only when there is no smoothing and no modulation
 }
 
 void ModulatableParameter::setSmoothedValue(double newValue)
 {
   modulatedValue = unmodulatedValue = newValue;
-
   callValueChangeCallbacks(newValue); 
+
+  // later do:
+  //if( hasConnectedSources() )
+  //  callValueChangeCallbacks(newValue); 
+  // to avoid a superfluous callback call with the unmodulated value - but for this to make sense, 
+  // we need a more efficient hasConnectedSources function - ModulationTarget must keep track of
+  // the number of connected sources
+
+
   //callValueChangeCallbacks(mapper->map(newValue)); 
     // why - maybe it's wrong? maybe only needed when there's no mod-connection?
 
