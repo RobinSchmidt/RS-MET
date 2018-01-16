@@ -614,7 +614,7 @@ void ModulatableParameter::setNormalizedValue(double newValue, bool sendNotifica
 
   modulatedValue = unmodulatedValue = value; 
 
-  callValueChangeCallbacks(value); // might result in redundant call since baseclass may already call it?
+  //callValueChangeCallbacks(value); // might result in redundant call since baseclass may already call it?
 
   //callValueChangeCallbacks(mapper->map(value));  // test
 
