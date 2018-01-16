@@ -196,6 +196,15 @@ void UnitTestParameter::testModulation(jura::ModulatableParameter* p)
   expectEquals(numCallbacksReceived,     2);  
   expectEquals(numNotificationsReceived, 1);
 
+  modCon->setDepth(2.0);
+  modManager.applyModulations();
+  expectEquals(lastCallbackValue,    7.0);
+  expectEquals(numCallbacksReceived, 3); 
+
+  // todo: test different mod-modes, limiting of the final modulated value, how it works together
+  // with smoothing
+
+
   modManager.deRegisterModulationTarget(p);
   modManager.deRegisterModulationSource(&modSource);
 }
