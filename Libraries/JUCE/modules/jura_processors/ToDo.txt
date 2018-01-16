@@ -1,8 +1,3 @@
-next: 
--when i attach a modulator to left or right in the DebugModule, there's an offset (i think, 0.5)
- ...maybe it's somehow possible to write a unit-test for parameter handling...maybe make a class
- rsUnitTestsForJura and make it a friend class of all to-be-tested classes - try all cases
-
 -add features to automation setup: meta slider, attachment menu, sliders for node x,y, smoothing
  maybe midi
 -check tolerance condition ins rsSmoothableParameter::setvalue
