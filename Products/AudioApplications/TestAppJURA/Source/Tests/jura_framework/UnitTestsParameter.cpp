@@ -161,7 +161,7 @@ void UnitTestParameter::testSmoothable(jura::rsSmoothableParameter* p)
   smoothingManager.setSampleRate(1000.0);
 
   expectEquals(p->getSmoothingTime(), 0.0); // 0 should be the default setting
-  p->setSmoothingTime(1.0);                 // 1 millisecond
+  p->setSmoothingTime(2.0);                 // 1 millisecond
 
   // init:
   p->setNormalizedValue(0.0, false, false);
@@ -170,8 +170,20 @@ void UnitTestParameter::testSmoothable(jura::rsSmoothableParameter* p)
   expectEquals(numCallbacksReceived,     0);
   expectEquals(numNotificationsReceived, 0);
 
+  // set a target value:
+  p->setNormalizedValue(0.5, true, true);
+  expectEquals(p->getValue(),            5.0);
+  expectEquals(p->getNormalizedValue(),  0.5);
+  expectEquals(numCallbacksReceived,     0);   // callback should be defered to smoother update
+  expectEquals(numNotificationsReceived, 1);
 
-
+  // perform smoothing:
+  int i = doSmoothingUntilDone();
+  expectEquals(p->getValue(),            5.0);
+  expectEquals(lastCallbackValue,        5.0);
+  expectEquals(p->getNormalizedValue(),  0.5);
+  expectEquals(numCallbacksReceived,     i);
+  expectEquals(numNotificationsReceived, 2);   // receives pre- and post-smoothing notification
 
   p->setSmoothingTime(0.0); // reset to not thwart subsequent tests
 }
@@ -225,3 +237,13 @@ void UnitTestParameter::testModulation(jura::ModulatableParameter* p)
   modManager.deRegisterModulationSource(&modSource);
 }
 
+int UnitTestParameter::doSmoothingUntilDone()
+{
+  int i = 0; // iteration counter
+  while(smoothingManager.needsSmoothing())
+  {
+    smoothingManager.updateSmoothedValuesNoLock();
+    i++;
+  }
+  return i;
+}

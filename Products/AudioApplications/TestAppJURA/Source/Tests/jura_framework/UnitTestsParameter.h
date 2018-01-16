@@ -35,6 +35,10 @@ protected:
   void testMetaControl(jura::MetaControlledParameter* p);
   void testModulation( jura::ModulatableParameter* p);
 
+  /** Performs smoothing iterations until target value has been reached and returns the number of
+  iterations that were needed. */
+  int doSmoothingUntilDone();
+
 
   // bookkeeping data:
   double lastCallbackValue;
