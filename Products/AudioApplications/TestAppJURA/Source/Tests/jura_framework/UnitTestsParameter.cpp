@@ -238,12 +238,24 @@ void UnitTestParameter::testMetaControl(jura::MetaControlledParameter* p)
   expectEquals(numCallbacksReceived,     3);
   int i = 3;  // number of callbacks
   i += doSmoothingUntilDone();
-  expectGreaterThan(i, 4); // should actually be around 15
+  expectEquals(i, 4);         // 0.25 and 0.75 both map to 5, so we reach it immediately
   expectEquals(numCallbacksReceived,     i);
+  expectEquals(numNotificationsReceived, 5);  // because of post-smoothing notification
   expectEquals(lastCallbackValue,        5.0);
+
+  p->setNormalizedValue(0.5, true, true);
+  expectEquals(p->getValue(),           10.0);
+  expectEquals(p->getNormalizedValue(),  0.5);
+  expectEquals(numNotificationsReceived, 6);
+  expectEquals(numCallbacksReceived,     i);
+  i += doSmoothingUntilDone();
+  expectEquals(i, 16);  
+  expectEquals(numCallbacksReceived,     i);
+  expectEquals(lastCallbackValue,       10.0);
+
   p->setSmoothingTime(0.0); 
 
-
+  // todo: test meta-attachment, cross-coupling
 }
 
 void UnitTestParameter::testModulation(jura::ModulatableParameter* p)
