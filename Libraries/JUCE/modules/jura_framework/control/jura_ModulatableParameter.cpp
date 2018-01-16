@@ -622,6 +622,9 @@ void ModulatableParameter::setSmoothedValue(double newValue)
   modulatedValue = unmodulatedValue = newValue;
   callValueChangeCallbacks(newValue); 
 
+  // no - this is wrong: the smoothed value is still normalized (but with the 1st mapper already 
+  // applied)
+
   // later do:
   //if( hasConnectedSources() )
   //  callValueChangeCallbacks(newValue); 

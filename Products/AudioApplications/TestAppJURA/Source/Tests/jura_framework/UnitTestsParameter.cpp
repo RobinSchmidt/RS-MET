@@ -161,7 +161,7 @@ void UnitTestParameter::testSmoothable(jura::rsSmoothableParameter* p)
   smoothingManager.setSampleRate(1000.0);
 
   expectEquals(p->getSmoothingTime(), 0.0); // 0 should be the default setting
-  p->setSmoothingTime(2.0);                 // 1 millisecond
+  p->setSmoothingTime(2.0);                 // 2 milliseconds
 
   // init:
   p->setNormalizedValue(0.0, false, false);
