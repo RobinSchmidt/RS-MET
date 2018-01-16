@@ -192,6 +192,8 @@ void UnitTestParameter::testMetaControl(jura::MetaControlledParameter* p)
 {
   resetCounters();
 
+  // test remapping:
+
   // set up a nonmonotonic mapping function:
   rsMetaParameterMapper* mapper = p->getMetaMapper(); // (0,0),(1,1)
   mapper->addNode(0.5, 1.0);                          // (0,0),(0.5,1),(1,1)
@@ -205,18 +207,21 @@ void UnitTestParameter::testMetaControl(jura::MetaControlledParameter* p)
   expectEquals(numNotificationsReceived, 0);
 
   p->setNormalizedValue(0.25, true, true);
+  expectEquals(lastCallbackValue,        5.0);
   expectEquals(p->getValue(),            5.0);
   expectEquals(p->getNormalizedValue(),  0.25);
   expectEquals(numCallbacksReceived,     1);
   expectEquals(numNotificationsReceived, 1);
 
   p->setNormalizedValue(0.5, true, true);
+  expectEquals(lastCallbackValue,        10.0);
   expectEquals(p->getValue(),            10.0);
   expectEquals(p->getNormalizedValue(),   0.5);
   expectEquals(numCallbacksReceived,      2);
   expectEquals(numNotificationsReceived,  2);
 
   p->setNormalizedValue(0.75, true, true);
+  expectEquals(lastCallbackValue,        5.0);
   expectEquals(p->getValue(),            5.0);
   expectEquals(p->getNormalizedValue(),  0.75);
   expectEquals(numCallbacksReceived,     3);
@@ -224,11 +229,21 @@ void UnitTestParameter::testMetaControl(jura::MetaControlledParameter* p)
 
   // maybe somehow adding/moving/removing nodes should also trigger callbacks
 
-  // test with mapping with smoothing
+  // test mapping with smoothing:
+  p->setSmoothingTime(2.0);
+  p->setNormalizedValue(0.25, true, true);
+  expectEquals(p->getValue(),            5.0);
+  expectEquals(p->getNormalizedValue(),  0.25);
+  expectEquals(numNotificationsReceived, 4);
+  expectEquals(numCallbacksReceived,     3);
+  int i = 3;  // number of callbacks
+  i += doSmoothingUntilDone();
+  expectGreaterThan(i, 4); // should actually be around 15
+  expectEquals(numCallbacksReceived,     i);
+  expectEquals(lastCallbackValue,        5.0);
+  p->setSmoothingTime(0.0); 
 
 
-
-  int dummy = 0;
 }
 
 void UnitTestParameter::testModulation(jura::ModulatableParameter* p)
