@@ -39,6 +39,12 @@ void UnitTestParameter::callbackTargetDouble(double value)
   numCallbacksReceived++;
 }
 
+void UnitTestParameter::resetCounters()
+{
+  numCallbacksReceived = 0;
+  numNotificationsReceived = 0; 
+}
+
 void UnitTestParameter::runTestParameter()
 {
   beginTest("Parameter");
@@ -72,11 +78,9 @@ void UnitTestParameter::runTestParameter()
   expectEquals(numCallbacksReceived,     3);
   expectEquals(numNotificationsReceived, 2);
 
-  // test custom mapper, value quantization
+  // test custom mapper, value quantization, values outside range, calling multiple times with
+  // the same value
 
-
-
-  // test, if callbacks and notifications work correctly
 
   int dummy = 0;
 }
@@ -130,8 +134,23 @@ void UnitTestParameter::runTestModulatableParameter()
   int dummy = 0;
 }
 
-void UnitTestParameter::resetCounters()
+void UnitTestParameter::testParameter(jura::Parameter* p)
 {
-  numCallbacksReceived = 0;
-  numNotificationsReceived = 0; 
+
 }
+
+void UnitTestParameter::testSmoothable(jura::rsSmoothableParameter* p)
+{
+
+}
+
+void UnitTestParameter::testMetaControl(jura::MetaControlledParameter* p)
+{
+
+}
+
+void UnitTestParameter::testModulation(jura::ModulatableParameter* p)
+{
+
+}
+

@@ -19,22 +19,30 @@ public:
   /** Used as target function for the callback in parameter objects. */
   void callbackTargetDouble(double value);
 
+  void resetCounters();
+
 protected:
 
+  // called from runTest:
   void runTestParameter();
   void runTestSmoothableParameter();
   void runTestMetaControlledParameter();
   void runTestModulatableParameter();
 
-  void resetCounters();
+  // functions that perform tests on the passed Parameter pointers:
+  void testParameter(  jura::Parameter* p);
+  void testSmoothable( jura::rsSmoothableParameter* p);
+  void testMetaControl(jura::MetaControlledParameter* p);
+  void testModulation( jura::ModulatableParameter* p);
 
+
+  // bookkeeping data:
   double lastCallbackValue;
   int numCallbacksReceived;
   int numNotificationsReceived;
 
-  juce::CriticalSection lock;
-
   // managers:
+  juce::CriticalSection lock;
   jura::rsSmoothingManager   smoothingManager;
   jura::MetaParameterManager metaManager;
   jura::ModulationManager    modManager;
