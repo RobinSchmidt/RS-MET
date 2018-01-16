@@ -157,7 +157,23 @@ void UnitTestParameter::testParameter(jura::Parameter* p)
 
 void UnitTestParameter::testSmoothable(jura::rsSmoothableParameter* p)
 {
+  resetCounters();
+  smoothingManager.setSampleRate(1000.0);
 
+  expectEquals(p->getSmoothingTime(), 0.0); // 0 should be the default setting
+  p->setSmoothingTime(1.0);                 // 1 millisecond
+
+  // init:
+  p->setNormalizedValue(0.0, false, false);
+  expectEquals(p->getValue(),            0.0);
+  expectEquals(p->getNormalizedValue(),  0.0);
+  expectEquals(numCallbacksReceived,     0);
+  expectEquals(numNotificationsReceived, 0);
+
+
+
+
+  p->setSmoothingTime(0.0); // reset to not thwart subsequent tests
 }
 
 void UnitTestParameter::testMetaControl(jura::MetaControlledParameter* p)
