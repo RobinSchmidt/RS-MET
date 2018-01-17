@@ -60,6 +60,7 @@ public:
   // overriden from AudioModule baseclass:
   virtual AudioModuleEditor *createEditor() override;
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
+  virtual void processStereoFrame(double *left, double *right) override;
   virtual void setSampleRate(double newSampleRate) override; 
   virtual void reset() override;
   virtual void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName, 

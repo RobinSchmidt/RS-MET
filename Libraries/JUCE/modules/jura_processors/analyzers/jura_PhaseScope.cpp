@@ -239,18 +239,20 @@ AudioModuleEditor* PhaseScope::createEditor()
 
 void PhaseScope::processBlock(double **inOutBuffer, int numChannels, int numSamples)
 {
-  ScopedLock scopedLock(*lock);
   jassert(numChannels == 2);
   for(int n = 0; n < numSamples; n++)
+    processStereoFrame(&inOutBuffer[0][n], &inOutBuffer[1][n]);
+}
+
+void PhaseScope::processStereoFrame(double *left, double *right)
+{
+  phaseScopeBuffer->processSampleFrame((float)(*left), (float)(*right));
+  repaintCounter++;
+  if(repaintCounter > repaintIntervalInSamples)
   {
-    phaseScopeBuffer->processSampleFrame((float)inOutBuffer[0][n], (float)inOutBuffer[1][n]);
-    repaintCounter++;
-    if(repaintCounter > repaintIntervalInSamples)
-    {
-      updateScopeImage();
-      sendImageUpdateNotification(&image);
-      repaintCounter = 0;
-    }
+    updateScopeImage();
+    sendImageUpdateNotification(&image);
+    repaintCounter = 0;
   }
 }
 
