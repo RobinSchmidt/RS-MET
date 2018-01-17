@@ -87,19 +87,21 @@ bool interpolatingFunctionUnitTest()
 
 bool rootFinderUnitTest()
 {
-  bool result = true;
+  bool r = true;  // test result
+  float x, y;     // function in/out values
 
-  std::function<float(float)> f = [] (float x)->float { return (x-1)*(x+1)*(x+2); };
-  //auto f = [](float x)->float { return (x-1)*(x+1)*(x+2); };
+  // create example function with roots at -1,+1,+2 and verify positions of roots:
+  std::function<float(float)> f = [] (float x)->float { return (x+1)*(x-1)*(x-2); };
+  y = f(-1.f); r &= y == 0.f;
+  y = f( 1.f); r &= y == 0.f;
+  y = f( 2.f); r &= y == 0.f;
 
-  float y = f(1.f);  // should be 0
-  
-  float xr = rsRootFinderFF::bisection(f, 0.8f, 1.3f);
+  // find the roots via bisection:
+  x = rsRootFinderFF::bisection(f, -1.3f, -0.8f); r &= x == -1.f;
+  x = rsRootFinderFF::bisection(f,  0.8f,  1.3f); r &= x ==  1.f;
+  x = rsRootFinderFF::bisection(f,  1.7f,  2.2f); r &= x ==  2.f;
 
-  result &= xr == 1.f;
-
-
-  return result;
+  return r;
 }
 
 
