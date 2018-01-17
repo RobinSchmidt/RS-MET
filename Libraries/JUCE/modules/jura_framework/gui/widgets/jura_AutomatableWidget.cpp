@@ -76,6 +76,22 @@ void rsAutomationSetup::createWidgets()
   addWidget(boxMetaAttach = new RComboBox);
   boxMetaAttach->setDescription("Select meta parameter to attach");
   // todo: fill the box
+
+  addWidget(sliderSmoothing = new RSlider("Smoothing"));
+  sliderSmoothing->setDescription("Smoothing time in milliseconds");
+
+  addWidget(sliderNodeX = new RSlider("X"));
+  sliderNodeX->setDescription("X-coordinate of selected node");
+
+  addWidget(sliderNodeY = new RSlider("Y"));
+  sliderNodeY->setDescription("Y-coordinate of selected node");
+
+  addWidget(boxShapeType = new RComboBox);
+  boxShapeType->setDescription("Shape of segment approaching selected node");
+  // fill the box: left/right/nearest neighbour, linear, cubic, etc.
+
+  addWidget(sliderNodeShapeParam = new RSlider("Shape Parameter"));
+  sliderNodeShapeParam->setDescription("Parameter of curve shape");
 }
 
 //=================================================================================================

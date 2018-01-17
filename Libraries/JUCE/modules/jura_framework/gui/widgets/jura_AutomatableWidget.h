@@ -58,9 +58,11 @@ protected:
 
   rsNodeBasedFunctionEditor* metaMapEditor;
   RComboBox* boxMetaAttach;
+  RSlider *sliderSmoothing;  // smoothing time
+
   RComboBox* boxShapeType;
   RSlider *sliderNodeX, *sliderNodeY, *sliderNodeShapeParam;
-  RSlider *sliderSmoothing;  // smoothing time
+
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsAutomationSetup)
