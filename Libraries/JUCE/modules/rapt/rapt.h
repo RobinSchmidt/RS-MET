@@ -31,6 +31,7 @@
 #include <ctgmath>       // template generic math?
 #include <complex>       // included already by ctgmath ...but not on gcc/windows?
 #include <vector>
+#include <functional>
 #include <algorithm>
 #include <cstring>
 //#include <xmmintrin.h>
