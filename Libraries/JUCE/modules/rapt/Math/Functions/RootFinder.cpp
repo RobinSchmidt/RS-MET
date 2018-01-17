@@ -1,26 +1,27 @@
 template<class Tx, class Ty>
-Tx rsRootFinder<Tx, Ty>::bisection(std::function<Ty(Tx)>& f, Tx a, Tx b, Ty y)
+Tx rsRootFinder<Tx, Ty>::bisection(std::function<Ty(Tx)>& f, Tx xL, Tx xR, Ty y)
 {
-  Tx tol = Tx(0.000001);      // tolerance, make parameter..and/or use machine epsilon
-  Ty fa = f(a) - y;  
-  //Ty fb = f(b) - y;
+  //Tx tol = Tx(0.0000001);      // tolerance, make parameter..and/or use machine epsilon
+  Tx tol = Tx(0.5) * std::numeric_limits<Tx>::epsilon();
+  Ty fL = f(xL) - y;  
   int its = 0;                // iteration counter - for development
-  while(b-a > tol) {
-    Tx mid  = Tx(0.5)*(a+b);
-    Ty fMid = f(mid) - y;
-    if(fa*fMid > 0) 
+  while(xR-xL > tol) {
+    Tx xM  = Tx(0.5)*(xL+xR);
+    Ty fM = f(xM) - y;
+    if(fL*fM > 0) 
     { 
-      a  = mid; 
-      fa = fMid; 
+      xL = xM; 
+      fL = fM; 
     }
     else          
     { 
-      b  = mid; 
-      //fb = fMid; // not needed?
+      xR = xM; 
     }
     its++;
   }
-  return Tx(0.5)*(a+b);
+  return Tx(0.5)*(xL+xR);
+  // maybe have a maximum number of iterations after which to return and maybe trigger an assertion
+  // when it is exceeded
 
   /*
   // too simple - works only for ascending functions:

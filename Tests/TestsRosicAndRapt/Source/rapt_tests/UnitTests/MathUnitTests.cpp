@@ -96,6 +96,8 @@ bool rootFinderUnitTest()
   
   float xr = rsRootFinderFF::bisection(f, 0.8f, 1.3f);
 
+  result &= xr == 1.f;
+
 
   return result;
 }
