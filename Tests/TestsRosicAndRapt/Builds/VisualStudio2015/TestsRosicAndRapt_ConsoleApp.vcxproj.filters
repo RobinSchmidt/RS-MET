@@ -445,10 +445,16 @@
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\IntegerFunctions.cpp">
       <Filter>Juce Modules\rapt\Math\Functions</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\InterpolatingFunction.cpp">
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\Mappers.cpp">
+      <Filter>Juce Modules\rapt\Math\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\NodeBasedFunction.cpp">
       <Filter>Juce Modules\rapt\Math\Functions</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\RealFunctions.cpp">
+      <Filter>Juce Modules\rapt\Math\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\RootFinder.cpp">
       <Filter>Juce Modules\rapt\Math\Functions</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\Sigmoids.cpp">
@@ -2010,13 +2016,19 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\IntegerFunctions.h">
       <Filter>Juce Modules\rapt\Math\Functions</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\InterpolatingFunction.h">
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\Mappers.h">
       <Filter>Juce Modules\rapt\Math\Functions</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\MoebiusTransform.h">
       <Filter>Juce Modules\rapt\Math\Functions</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\NodeBasedFunction.h">
+      <Filter>Juce Modules\rapt\Math\Functions</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\RealFunctions.h">
+      <Filter>Juce Modules\rapt\Math\Functions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\RootFinder.h">
       <Filter>Juce Modules\rapt\Math\Functions</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\Sigmoids.h">

@@ -19,6 +19,7 @@ bool runAllUnitTests()
 
   // Math:
   passed &= runUnitTest(&interpolatingFunctionUnitTest, "rsInterpolatingFunction");
+  passed &= runUnitTest(&rootFinderUnitTest,            "rsRootFinder");
 
   // Filters:
   //passed &= runUnitTest(&prototypeDesignUnitTest, "rsPrototypeDesigner");

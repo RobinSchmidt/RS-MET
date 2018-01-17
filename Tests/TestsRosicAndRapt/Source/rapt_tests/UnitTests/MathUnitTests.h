@@ -4,5 +4,6 @@
 #include "../../Shared/Shared.h"
 
 bool interpolatingFunctionUnitTest();
+bool rootFinderUnitTest();
 
 #endif
