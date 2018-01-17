@@ -53,8 +53,15 @@ protected:
   /** Shows the popup menu with the attachable MetaParameters. */
   void showMetaAttachPopUp();
 
-  RComboBox* metaAttachBox;
+  void createWidgets();
+
+
   rsNodeBasedFunctionEditor* metaMapEditor;
+  RComboBox* boxMetaAttach;
+  RComboBox* boxShapeType;
+  RSlider *sliderNodeX, *sliderNodeY, *sliderNodeShapeParam;
+  RSlider *sliderSmoothing;  // smoothing time
+
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsAutomationSetup)
 };

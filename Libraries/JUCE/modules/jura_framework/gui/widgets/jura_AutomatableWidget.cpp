@@ -14,29 +14,13 @@ rsAutomationSetup::rsAutomationSetup(AutomatableWidget* widgetToAutomate,
   : rsParameterSetupBase(widgetToAutomate, metaManagerToUse)
 {
   closeButton->setDescription("Closes the automation setup window");
-
-  addWidget(metaAttachBox = new RComboBox);
-  metaAttachBox->setDescription("Select meta parameter to attach");
-  // todo: fill the box
-
-  addWidget(metaMapEditor = new rsNodeBasedFunctionEditor);
-  metaMapEditor->setDescription("Mapping between meta-parameter and parameter");
-  metaMapEditor->setValueRange(0, 1, 0, 1);
-  metaMapEditor->setClipCoordinatesToRange(true);
-
-  MetaControlledParameter* mcp = widget->getMetaControlledParameter();
-  if(mcp != nullptr)
-  {
-    metaMapEditor->setFunctionToEdit(mcp->getMetaMapper());
-    metaMapEditor->setMutexToUse(mcp->getUsedMutex());
-  }
-
+  createWidgets();
   setSize(250, 200);
 }
 
 rsAutomationSetup::~rsAutomationSetup() 
 {
-  delete metaAttachBox;
+  //delete boxMetaAttach; // why? shouldn't that happen automatically? ..ok, no memleak warning
 }
 
 void rsAutomationSetup::rButtonClicked(RButton *b)
@@ -47,9 +31,13 @@ void rsAutomationSetup::rButtonClicked(RButton *b)
 
 void rsAutomationSetup::rComboBoxChanged(RComboBox* cb)
 {
-  if(cb == metaAttachBox)
+  if(cb == boxMetaAttach)
   {
     // ...retrieve selected item and attach meta accordingly
+  }
+  else if(cb == boxShapeType)
+  {
+    // set shape type fo selecetd node
   }
 }
 
@@ -69,6 +57,25 @@ void rsAutomationSetup::resized()
   y = closeButton->getBottom() + d;
   h = getHeight()-y;
   metaMapEditor->setBounds(0, y, w, h);
+}
+
+void rsAutomationSetup::createWidgets()
+{
+  addWidget(metaMapEditor = new rsNodeBasedFunctionEditor);
+  metaMapEditor->setDescription("Mapping between meta-parameter and parameter");
+  metaMapEditor->setValueRange(0, 1, 0, 1);
+  metaMapEditor->setClipCoordinatesToRange(true);
+
+  MetaControlledParameter* mcp = widget->getMetaControlledParameter();
+  if(mcp != nullptr)
+  {
+    metaMapEditor->setFunctionToEdit(mcp->getMetaMapper());
+    metaMapEditor->setMutexToUse(mcp->getUsedMutex());
+  }
+
+  addWidget(boxMetaAttach = new RComboBox);
+  boxMetaAttach->setDescription("Select meta parameter to attach");
+  // todo: fill the box
 }
 
 //=================================================================================================
