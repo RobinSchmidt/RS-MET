@@ -206,15 +206,19 @@ void MetaControlledParameter::recallFromXml(const XmlElement& xml)
     metaMapper.initToDefaults();
 }
 
-/*
 void MetaControlledParameter::setValue(double newValue, bool sendNotification, bool callCallbacks)
 {
-  jassertfalse;
+  //jassertfalse;
   // For a meta-controlled parameter, client code, widgets, etc. should always call
   // setNormalizedValue
+
+  // preliminary
   rsSmoothableParameter::setValue(newValue, sendNotification, callCallbacks);
+
+  // todo: find normalized value that corresponds to desired "value" and call setNormalizedValue
+  // with that value
 }
-*/
+
 void MetaControlledParameter::setMetaParameterManager(MetaParameterManager *newManager)
 {
   if(newManager != nullptr)

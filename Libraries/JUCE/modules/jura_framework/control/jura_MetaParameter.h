@@ -127,14 +127,10 @@ public:
   virtual void setFromMetaValue(double newMetaValue, bool sendNotification,
     bool callCallbacks);
 
-protected:
-  /** Overriden to trigger jassert - we should not call setValue directly on meta-controlled 
-  parameters. Instead, always go through setNormalizedValue so we can store it here. The reason is 
-  the arbitrary, possibly nonmonotonic mapping function between the normalized and actual value. 
-  When setting the actual value directly, we have no way to convert back to the normalized 
-  value. */
-  //virtual void setValue(double newValue, bool sendNotification, bool callCallbacks) override;
-public:
+  /** Overriden to find the normalized value that corresponds to the passed desired value, taking
+  both mapping functions into account. If there are several normalized values possible that map to
+  the desired value, the first one will be used. If there is no possible value, ...  */
+  virtual void setValue(double newValue, bool sendNotification, bool callCallbacks) override;
 
   /** Sets up the MetaParameterManager to use. This function should be called once shortly after
   this MetaControlledParameter object has been created and the passed manager object should remain
