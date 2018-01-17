@@ -59,7 +59,8 @@ public:
   // construction/destruction:
 
   /** Constructor. */
-  RSlider(const juce::String& componentName = "");
+  RSlider(const juce::String& sliderName = "");
+  //RSlider(const juce::String& componentName = "");
 
   /** Destructor. */
   virtual ~RSlider();

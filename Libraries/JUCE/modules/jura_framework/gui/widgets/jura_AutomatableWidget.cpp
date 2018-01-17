@@ -75,7 +75,7 @@ void rsAutomationSetup::resized()
   // plot:
   y = sliderSmoothing->getBottom() + d;
   w = getWidth();
-  h = sliderNodeX->getY()-y-2*d;
+  h = sliderNodeX->getY()-y-d;
   metaMapEditor->setBounds(0, y, w, h);
 }
 

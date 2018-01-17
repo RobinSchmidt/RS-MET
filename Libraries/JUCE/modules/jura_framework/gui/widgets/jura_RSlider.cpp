@@ -3,6 +3,7 @@
 
 RSlider::RSlider(const String& name)
 {
+  sliderName               = name;
   currentValue             = 0.5;
   defaultValue             = 0.5;
   minValue                 = 0.0;
