@@ -122,6 +122,23 @@ void MetaControlledParameter::setFromMetaValue(double newMetaValue, bool sendNot
   setNormalizedValue(newMetaValue, sendNotification, callCallbacks);
 }
 
+void MetaControlledParameter::setValue(double newValue, bool sendNotification, bool callCallbacks)
+{
+  //jassertfalse;
+  // For a meta-controlled parameter, client code, widgets, etc. should always call
+  // setNormalizedValue
+
+  double y = mapper->unmap(newValue);
+  double x = metaMapper.unmap(y);
+  setNormalizedValue(x, sendNotification, callCallbacks);
+
+  // preliminary
+  //rsSmoothableParameter::setValue(newValue, sendNotification, callCallbacks);
+
+  // todo: find normalized value that corresponds to desired "value" and call setNormalizedValue
+  // with that value
+}
+
 void MetaControlledParameter::setNormalizedValue(double newNormalizedValue, bool sendNotification,
   bool callCallbacks)
 {
@@ -204,19 +221,6 @@ void MetaControlledParameter::recallFromXml(const XmlElement& xml)
     metaMapper.setStateFromXml(*mapXml);
   else
     metaMapper.initToDefaults();
-}
-
-void MetaControlledParameter::setValue(double newValue, bool sendNotification, bool callCallbacks)
-{
-  //jassertfalse;
-  // For a meta-controlled parameter, client code, widgets, etc. should always call
-  // setNormalizedValue
-
-  // preliminary
-  rsSmoothableParameter::setValue(newValue, sendNotification, callCallbacks);
-
-  // todo: find normalized value that corresponds to desired "value" and call setNormalizedValue
-  // with that value
 }
 
 void MetaControlledParameter::setMetaParameterManager(MetaParameterManager *newManager)

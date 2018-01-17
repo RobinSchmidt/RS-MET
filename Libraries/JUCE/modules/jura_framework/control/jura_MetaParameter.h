@@ -78,9 +78,12 @@ public:
   virtual size_t constrainNode(size_t index) override;
 
 
-  /** Maps an incoming normalized parameter in the range 0..1 to mapped 0..1 range suing the 
+  /** Maps an incoming normalized parameter in the range 0..1 to mapped 0..1 range using the 
   function defined by the nodes in our rsNodeBasedFunction baseclass. */
-  double map(double x) { return rsNodeBasedFunction<double>::getValue(x); }
+  double map(double x) { return rsNodeBasedFunction<double>::getValue(x); } // rename to applyFunction
+
+  /** Tries to find a normalized x-value that corresponds to the given normalized y-value... */
+  double unmap(double y) { return rsNodeBasedFunction<double>::applyInverseFunction(y); } 
 
   /** Returns true, if this map is the default identity map. */
   bool isDefaultMap() const;

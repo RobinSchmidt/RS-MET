@@ -185,6 +185,14 @@ public:
       return nodes[i-1].y;
     return getValueLinear(x, i-1);
   }
+  // rename to applyFunction
+
+  /** Tries to invert the function by finding an x-value for which this function produces the 
+  given y value. The implementation is based on root-finding and will succeed only, if the given y 
+  is within the range of the function. If there are several possible x-values that yield the given 
+  y value (as could be the case for nonmonotonic functions), the first (leftmost) x-value will be
+  returned. */
+  T applyInverseFunction(T y);
 
 protected:
 

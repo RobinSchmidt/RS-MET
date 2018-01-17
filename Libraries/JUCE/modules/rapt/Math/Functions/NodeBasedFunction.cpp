@@ -43,3 +43,9 @@ size_t rsNodeBasedFunction<T>::moveNodeToSortedIndex(size_t i)
     i++; }
   return i;
 }
+
+template<class T>
+T rsNodeBasedFunction<T>::applyInverseFunction(T y)
+{
+  return y; // preliminary
+}
