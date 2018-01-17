@@ -265,6 +265,8 @@ public:
   /** Destructor */
   //virtual ~rsSmoothableParameter() = default;
 
+  // override setValue too
+
   /** Overrides setNormalizedValue in order to use the passed newValue as target-value for smoothing 
   instead of immediatly setting it and calling the callback. */
   virtual void setNormalizedValue(double newValue, bool sendNotification, bool callCallbacks) override;

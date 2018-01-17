@@ -12,6 +12,7 @@ namespace RAPT
 #include "Functions/RealFunctions.h"
 #include "Functions/ComplexFunctions.h"
 #include "Functions/FunctionIterators.h"
+#include "Functions/RootFinder.h"
 #include "Functions/Mappers.h"
 #include "Functions/MoebiusTransform.h"
 #include "Functions/BellFunctions.h"

@@ -88,14 +88,12 @@ void RSlider::setValue(double newValue, const bool sendUpdateMessage,
   if(currentValue != newValue)
   {
     currentValue = newValue;
-    /*
     if(assignedParameter != nullptr)
     {
       ParameterObserver::setLocalAutomationSwitch(false);    // to not recursively notify ourselves
       assignedParameter->setValue(currentValue, true, true); // ...in this call
       ParameterObserver::setLocalAutomationSwitch(true);
     }
-    */
     notifyListeners();
     repaintOnMessageThread();
   }

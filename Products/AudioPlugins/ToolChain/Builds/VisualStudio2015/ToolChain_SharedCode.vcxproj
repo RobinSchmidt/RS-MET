@@ -2314,6 +2314,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\RealFunctions.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\RootFinder.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\Sigmoids.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -4597,6 +4600,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\MoebiusTransform.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\NodeBasedFunction.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\RealFunctions.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\RootFinder.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\Sigmoids.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\SinCosTable.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Geometry\ConicSection.h"/>
