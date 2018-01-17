@@ -57,11 +57,11 @@ protected:
 
 
   rsNodeBasedFunctionEditor* metaMapEditor;
-  RComboBox* boxMetaAttach;
+  RNamedComboBox* boxMetaAttach;
   RSlider *sliderSmoothing;  // smoothing time
 
-  RComboBox* boxShapeType;
-  RSlider *sliderNodeX, *sliderNodeY, *sliderNodeShapeParam;
+  RNamedComboBox* boxShapeType;
+  RSlider *sliderNodeX, *sliderNodeY, *sliderShapeParam;
 
 
 

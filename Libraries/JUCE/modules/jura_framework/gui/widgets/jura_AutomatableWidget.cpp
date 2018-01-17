@@ -15,7 +15,7 @@ rsAutomationSetup::rsAutomationSetup(AutomatableWidget* widgetToAutomate,
 {
   closeButton->setDescription("Closes the automation setup window");
   createWidgets();
-  setSize(250, 200);
+  setSize(300, 250);
 }
 
 rsAutomationSetup::~rsAutomationSetup() 
@@ -55,7 +55,27 @@ void rsAutomationSetup::resized()
   //automationLabel->setBounds(x, y, w-8-16, sh); y += inc; 
 
   y = closeButton->getBottom() + d;
-  h = getHeight()-y;
+
+  // top row:
+  w = getWidth()/2 - 2*d;
+  boxMetaAttach->setBounds(  x, y, w, sh);
+  x = getWidth()/2 + d;
+  sliderSmoothing->setBounds(x, y, w, sh); 
+
+  // bottom row:
+  x = d;
+  y = getHeight() - 2*sh - d + 2;
+  w = getWidth()/2 - 2*d;
+  sliderNodeX->setBounds(x, y,      w, sh);
+  sliderNodeY->setBounds(x, y+sh-2, w, sh);
+  x = getWidth()/2 + d;
+  boxShapeType    ->setBounds(x, y,      w, sh);
+  sliderShapeParam->setBounds(x, y+sh-2, w, sh);
+
+  // plot:
+  y = sliderSmoothing->getBottom() + d;
+  w = getWidth();
+  h = sliderNodeX->getY()-y-2*d;
   metaMapEditor->setBounds(0, y, w, h);
 }
 
@@ -73,7 +93,7 @@ void rsAutomationSetup::createWidgets()
     metaMapEditor->setMutexToUse(mcp->getUsedMutex());
   }
 
-  addWidget(boxMetaAttach = new RComboBox);
+  addWidget(boxMetaAttach = new RNamedComboBox("", "Meta:"));
   boxMetaAttach->setDescription("Select meta parameter to attach");
   // todo: fill the box
 
@@ -86,12 +106,12 @@ void rsAutomationSetup::createWidgets()
   addWidget(sliderNodeY = new RSlider("Y"));
   sliderNodeY->setDescription("Y-coordinate of selected node");
 
-  addWidget(boxShapeType = new RComboBox);
+  addWidget(boxShapeType = new RNamedComboBox("", "Shape:"));
   boxShapeType->setDescription("Shape of segment approaching selected node");
   // fill the box: left/right/nearest neighbour, linear, cubic, etc.
 
-  addWidget(sliderNodeShapeParam = new RSlider("Shape Parameter"));
-  sliderNodeShapeParam->setDescription("Parameter of curve shape");
+  addWidget(sliderShapeParam = new RSlider("Shape Parameter"));
+  sliderShapeParam->setDescription("Parameter of curve shape");
 }
 
 //=================================================================================================
