@@ -154,7 +154,7 @@ public:
   // callbacks:
 
   virtual void parameterChanged(Parameter* parameterThatHasChanged);
-  virtual void parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted);
+  virtual void parameterWillBeDeleted(Parameter* parameterThatWillBeDeleted);
   virtual void mouseDown(const MouseEvent &e);
   virtual void mouseDrag(const MouseEvent &e);
   virtual void mouseMove(const MouseEvent &e);

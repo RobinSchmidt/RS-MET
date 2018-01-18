@@ -83,15 +83,15 @@ public:
   // callbacks:
 
   /** Overrides the purely virtual parameterChanged() method inherited from ParameterObserver. */
-  virtual void parameterChanged(Parameter* parameterThatHasChanged);
+  virtual void parameterChanged(Parameter* p) override;
 
   /** Overrides the virtual parameterRangeChanged() method inherited from ParameterObserver. */
-  virtual void parameterRangeChanged(Parameter* parameterThatHasChanged);
+  virtual void parameterRangeChanged(Parameter* p) override;
 
   /** Overrides the purely virtual method of the ParameterObserver base class in order to
   invalidate our pointer-member
   'assignedParameter'. */
-  virtual void parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted);
+  virtual void parameterWillBeDeleted(Parameter* p) override;
 
   /** Overrides the changeListenerCallback in order to receive messages which this object sends to
   itself. */

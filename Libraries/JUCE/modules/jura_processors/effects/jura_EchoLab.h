@@ -227,7 +227,7 @@ public:
 
   /** Implements the purely virtual callback function inherited from ParameterObserver - but has 
   nothing to do. */
-  virtual void parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted) { }
+  virtual void parameterWillBeDeleted(Parameter* parameterThatWillBeDeleted) { }
 
   /** Overrides mouseMove in order to update the cursor according to what is under the mouse. */
   virtual void mouseMove(const MouseEvent &e);

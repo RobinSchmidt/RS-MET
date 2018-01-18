@@ -74,7 +74,7 @@ public:
   /** Overrides the inherited parameterIsGoingToBeDeleted function in order to delete the 
   to-be-deleted parameter from our array of observed parameters (if it is in there, otherwise does 
   nothing). */
-  virtual void parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted);
+  virtual void parameterWillBeDeleted(Parameter* parameterThatWillBeDeleted);
 
 
 protected:

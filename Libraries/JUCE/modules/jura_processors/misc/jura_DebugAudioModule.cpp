@@ -25,7 +25,7 @@ void DebugAudioModule::createParameters()
   addObservedParameter(p);
 
   // Smoothing itself should not be smoothed:
-  smoothParam = new Parameter("Smoothing" , 0.0, 100.0, 0.0, Parameter::LINEAR, 1.0);
+  smoothParam = new Parameter("Smoothing" , 0.0, 1000.0, 0.0, Parameter::LINEAR, 1.0);
   smoothParam->setValueChangeCallback<DebugAudioModule>(this, &DebugAudioModule::setSmoothingTime);
   addObservedParameter(smoothParam);
 }

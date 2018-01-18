@@ -572,7 +572,7 @@ void ModulatorCurveEditor::parameterChanged(Parameter* parameterThatHasChanged)
 
 }
 
-void ModulatorCurveEditor::parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted)
+void ModulatorCurveEditor::parameterWillBeDeleted(Parameter* parameterThatWillBeDeleted)
 {
 
   // invalidate references to any assigned parameter

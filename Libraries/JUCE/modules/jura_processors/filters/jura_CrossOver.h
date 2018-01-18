@@ -144,7 +144,7 @@ public:
   virtual void assignParameterSlope(int treeLevel, int indexInLevel, Parameter* parameterToAssign);
 
   virtual void parameterChanged(Parameter* parameterThatHasChanged);
-  virtual void parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted) {}
+  virtual void parameterWillBeDeleted(Parameter* parameterThatWillBeDeleted) {}
 
   //-------------------------------------------------------------------------------------------------------------------------------------
   // inquiry:

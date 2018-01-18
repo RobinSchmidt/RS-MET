@@ -87,7 +87,7 @@ void StereoPanPlotEditor::parameterChanged(Parameter* parameterThatHasChanged)
   sendChangeMessage();
 }
 
-void StereoPanPlotEditor::parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted)
+void StereoPanPlotEditor::parameterWillBeDeleted(Parameter* parameterThatWillBeDeleted)
 {
 
 }

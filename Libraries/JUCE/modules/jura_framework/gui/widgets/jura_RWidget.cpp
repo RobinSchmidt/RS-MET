@@ -180,12 +180,13 @@ void RWidget::parameterRangeChanged(Parameter* parameterThatHasChanged)
   }
 }
 
-void RWidget::parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted)
+// was formerly parameterIsGoingToBeDeleted
+void RWidget::parameterWillBeDeleted(Parameter* p)
 {
-  if( assignedParameter == parameterThatWillBeDeleted )
+  if( assignedParameter == p )
   {
     assignedParameter->deRegisterParameterObserver(this);
-    assignedParameter = NULL;
+    assignedParameter = nullptr;
   }
 }
 /*

@@ -101,7 +101,7 @@ public:
   // callbacks:
 
   virtual void parameterChanged(Parameter* parameterThatHasChanged);
-  virtual void parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted) {}
+  virtual void parameterWillBeDeleted(Parameter* parameterThatWillBeDeleted) {}
 
   /** Overrides the changeListetnerCcallback in order to receive messages which this object sends
   to itself. */

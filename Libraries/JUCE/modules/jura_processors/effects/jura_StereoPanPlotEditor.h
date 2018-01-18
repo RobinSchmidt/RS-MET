@@ -34,7 +34,7 @@ public:
   // callbacks:
 
   virtual void parameterChanged(Parameter* parameterThatHasChanged);
-  virtual void parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted);
+  virtual void parameterWillBeDeleted(Parameter* parameterThatWillBeDeleted);
 
   /** This method is called when one of the assigned rosic::Parameter has been changed
   - we override it here in the subclass to do the actual GUI update. */

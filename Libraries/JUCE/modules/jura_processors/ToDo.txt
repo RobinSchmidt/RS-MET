@@ -1,3 +1,9 @@
+BUGS:
+-Equalizer crashes when removing the selected band
+ -seems like the parameter objects get destroyed before unassigning their widgets
+  ..don't we implement parameterWillBeDeleted in RWidget?
+
+
 -add features to automation setup: meta slider, attachment menu, sliders for node x,y, smoothing
  maybe midi
 -check tolerance condition ins rsSmoothableParameter::setvalue

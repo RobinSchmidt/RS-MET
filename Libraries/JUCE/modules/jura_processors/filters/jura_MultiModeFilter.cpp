@@ -308,7 +308,7 @@ void MultiModeFreqResponseEditor::parameterChanged(Parameter* parameterThatHasCh
   updatePlot();
 }
 
-void MultiModeFreqResponseEditor::parameterIsGoingToBeDeleted(Parameter* p)
+void MultiModeFreqResponseEditor::parameterWillBeDeleted(Parameter* p)
 {
 
   // clear reference to parameter that will be deleted

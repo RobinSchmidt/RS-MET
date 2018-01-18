@@ -268,13 +268,14 @@ void EqualizerAudioModule::addBand(int channel, int mode, double frequency, doub
                                    bool selectNewBand, bool suppressNotification)
 {
   ScopedLock scopedLock(*lock);
-
   int newIndex = wrappedEqualizerStereo->addBand(channel, mode, frequency, gain, bandwidth);
 
   std::vector<double> defaultValues;
-  ModulatableParameter* p;
+  typedef ModulatableParameter Param;
+  Param* p;
 
-  p = new ModulatableParameter("Mode", 0.0, 8.0, 0.0, Parameter::STRING, 1.0);
+  p = new Param("Mode", 0.0, 8.0, 0.0, Parameter::STRING, 1.0);
+  p->setMutexToUse(lock);
   p->addStringValue(juce::String("Bypass"));
   p->addStringValue(juce::String("Peak/Dip"));
   p->addStringValue(juce::String("Low Shelving"));
@@ -289,7 +290,8 @@ void EqualizerAudioModule::addBand(int channel, int mode, double frequency, doub
   setupManagers(p);
   filterModeParameters[channel].add(p);
 
-  p = new ModulatableParameter("Frequency", 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL, 0.0);
+  p = new Param("Frequency", 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL, 0.0);
+  p->setMutexToUse(lock);
   defaultValues.clear();
   defaultValues.push_back(   31.25);
   defaultValues.push_back(   62.5);
@@ -307,7 +309,8 @@ void EqualizerAudioModule::addBand(int channel, int mode, double frequency, doub
   setupManagers(p);
   frequencyParameters[channel].add(p);
 
-  p = new ModulatableParameter("Gain", -48.0, 48.0, 0.0, Parameter::LINEAR_BIPOLAR, 0.1);
+  p = new Param("Gain", -48.0, 48.0, 0.0, Parameter::LINEAR_BIPOLAR, 0.1);
+  p->setMutexToUse(lock);
   defaultValues.clear();
   defaultValues.push_back(-24.0);
   defaultValues.push_back(-18.0);
@@ -326,7 +329,8 @@ void EqualizerAudioModule::addBand(int channel, int mode, double frequency, doub
   gainParameters[channel].add(p);
 
   double defaultBandwidth = 2.0*asinh(1.0/sqrt(2.0))/log(2.0);  // ca. 1.9, Q = sqrt(1/2), maximum steepness without overshoot for shelves
-  p = new ModulatableParameter("Bandwidth", 0.25, 6.0, defaultBandwidth, Parameter::EXPONENTIAL, 0.01);
+  p = new Param("Bandwidth", 0.25, 6.0, defaultBandwidth, Parameter::EXPONENTIAL, 0.01);
+  p->setMutexToUse(lock);
   defaultValues.clear();
   defaultValues.push_back(1.0/3.0);
   defaultValues.push_back(0.5);
@@ -1322,11 +1326,11 @@ void EqualizerModuleEditor::updateWidgetsAccordingToState()
     return;
   }
 
-  // un-assign widgets:
-  filterModeComboBox->assignParameter(NULL);
-  frequencySlider->assignParameter(NULL);
-  gainSlider->assignParameter(NULL);
-  bandwidthSlider->assignParameter(NULL);
+  // un-assign widgets (maybe we should do this first?):
+  filterModeComboBox->assignParameter(nullptr);
+  frequencySlider->assignParameter(nullptr);
+  gainSlider->assignParameter(nullptr);
+  bandwidthSlider->assignParameter(nullptr);
 
   // connect the sliders to the parameters of the band selected channel/band:
   int channel = plotEditor->equalizerModuleToEdit->selectedChannel;

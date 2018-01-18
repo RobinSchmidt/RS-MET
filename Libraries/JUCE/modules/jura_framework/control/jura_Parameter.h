@@ -9,7 +9,7 @@ class Parameter; // forward declaration
 /** This class is the baseclass for objects that are interested in callbacks from Parameter objects
 via parameterChanged. Subclasses must implement this purely virtual callback method which will be
 called back whenever a Parameter's value was changed. Furthermore, they must implement and the
-parameterIsGoingToBeDeleted method which will be called from the destructor of Parameter objects.
+parameterWillBeDeleted method which will be called from the destructor of Parameter objects.
 If your subclass maintains pointers to the observed parameters, it should invalidate them inside
 this callback and not use them anymore thereafter. */
 
@@ -37,6 +37,7 @@ public:
   give ParameterObserver objects an opportunity to invalidate any pointers to a particular
   Parameter object that they may hold. */
   virtual void parameterWillBeDeleted(Parameter* /*parameterThatWillBeDeleted*/) {};
+    // was formerly parameterIsGoingToBeDeleted
 
   /** The callback method that will get called when one of our observed parameters has changed its
   range. */
@@ -121,7 +122,7 @@ later via deRegisterParameterObserver. Such observer objects often like to maint
 observees, mainly to compare the stored pointers to the argument of the callback function in order
 to trigger particular actions depending on which particular Parameter was changed. In order to
 avoid dangling pointers inside ParameterObserver objects when Parameter obejcts get deleted, the
-Parameter class calls another callback parameterIsGoingToBeDeleted in its destructor to give the
+Parameter class calls another callback parameterWillBeDeleted in its destructor to give the
 obervers an opportunity to invalidate their pointers.
 
 The second callback mechanism relies on pointers to member-functions of the interested object. The
@@ -310,7 +311,11 @@ public:
 
   /** Returns the raw value of our "value" member without the possibility of any wrangling by 
   subclass overrides. */
-  double getRawValue() const { ScopedPointerLock spl(mutex); return value; }
+  double getRawValue() const 
+  { 
+    ScopedPointerLock spl(mutex); 
+    return value; 
+  }
     // what is this good for
 
   /** Returns the current value of the parameter. Normally, this is the value of our "value" 

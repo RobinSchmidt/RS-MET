@@ -107,7 +107,7 @@ void ParameterManager::parameterChanged(Parameter *parameterThatHasChanged)
 
 }
 
-void ParameterManager::parameterIsGoingToBeDeleted(Parameter* parameterThatWillBeDeleted)
+void ParameterManager::parameterWillBeDeleted(Parameter* parameterThatWillBeDeleted)
 {
   ScopedLock scopedLock(*lock);
   removeObservedParameter(parameterThatWillBeDeleted, false);

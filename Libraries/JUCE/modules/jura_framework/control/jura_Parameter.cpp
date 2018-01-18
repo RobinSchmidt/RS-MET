@@ -86,7 +86,7 @@ Parameter::~Parameter()
     deRegisterParameterObserver(o);
   }
   // remark: we use a while-loop to account for the possibility that the observer de-registers
-  // itself in the callback to parameterIsGoingToBeDeleted in which case the array-size shrinks
+  // itself in the callback to parameterWillBeDeleted in which case the array-size shrinks
   // inside the iteration which would make a for-loop ...mmm...a bug
 
   delete mapper;
