@@ -182,6 +182,8 @@ protected:
   double *xValues;
   double **yValues;
 
+  //RButtonPainter3D buttonPainter; // for test
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FuncShaperModuleEditor)
 };
 

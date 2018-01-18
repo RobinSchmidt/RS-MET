@@ -359,6 +359,12 @@ EngineersFilterModuleEditor::EngineersFilterModuleEditor(CriticalSection *newPlu
    // then be (N*11) x (M*25). We choose N=57, M=9 here.
 }
 
+EngineersFilterModuleEditor::~EngineersFilterModuleEditor()
+{
+  sciFilterModuleToEdit->getParameterByName("Mode")->deRegisterParameterObserver(this);
+  sciFilterModuleToEdit->getParameterByName("Method")->deRegisterParameterObserver(this);
+}
+
 // callbacks:
 
 void EngineersFilterModuleEditor::updateWidgetsAccordingToState()
@@ -400,6 +406,11 @@ void EngineersFilterModuleEditor::resized()
   //plotEditor->setBounds(0, 0, getWidth(), getHeight()); // for figuring out ideal size
 }
 
+void EngineersFilterModuleEditor::parameterChanged(Parameter* param)
+{
+  updateWidgetVisibility();
+}
+
 void EngineersFilterModuleEditor::createWidgets()
 {
   typedef AutomatableSlider Sld;
@@ -422,12 +433,14 @@ void EngineersFilterModuleEditor::createWidgets()
 
   addWidget( modeComboBox = new RNamedComboBox("modeComboBox", "Mode:") );
   modeComboBox->assignParameter( p = sciFilterModuleToEdit->getParameterByName("Mode") );
+  p->registerParameterObserver(this);
   plotEditor->assignParameterMode(p);
   modeComboBox->setDescription("Mode or type of the filter");
   modeComboBox->setDescriptionField(infoField);
 
   addWidget( methodComboBox = new RNamedComboBox("methodComboBox", "Method:") );
   methodComboBox->assignParameter( p = sciFilterModuleToEdit->getParameterByName("Method") );
+  p->registerParameterObserver(this);
   plotEditor->assignParameterMethod(p);
   methodComboBox->setDescription("Approximation method for the filter design");
   methodComboBox->setDescriptionField(infoField);

@@ -411,6 +411,7 @@ void FuncShaperModuleEditor::createWidgets()
   inputLabel->setDescriptionField(infoField);
 
   addWidget( preFilterButton = b = new Btn("Filter") );
+  //b->setPainter(&buttonPainter);  // test
   b->assignParameter(funcShaperAudioModule->getParameterByName("InputFilterUsed"));
   b->setDescription("Switch input filter on/off");
   b->setDescriptionField(infoField);

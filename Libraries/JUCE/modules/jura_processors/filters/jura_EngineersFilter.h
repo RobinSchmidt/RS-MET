@@ -176,7 +176,7 @@ protected:
 
 /** Editor for EngineersFilterAudioModule */
 
-class EngineersFilterModuleEditor : public AudioModuleEditor
+class EngineersFilterModuleEditor : public AudioModuleEditor, public ParameterObserver
 {
 
 public:
@@ -188,10 +188,13 @@ public:
     EngineersFilterAudioModule* newEngineersFilterAudioModule);
   // todo: get rid of newPlugInLock parameter
 
+  virtual ~EngineersFilterModuleEditor();
+
   //---------------------------------------------------------------------------------------------
   // callbacks:
 
   virtual void resized() override;
+  virtual void parameterChanged(Parameter* param) override;
   virtual void updateWidgetsAccordingToState() override;
 
 
