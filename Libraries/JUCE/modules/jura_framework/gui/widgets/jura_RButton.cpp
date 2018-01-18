@@ -44,11 +44,6 @@ void RButton::setButtonText(const String& newText) throw()
   }
 }
 
-void RButton::setButtonPainter(RButtonPainter *painterToUse)
-{
-  painter = painterToUse;
-}
-
 void RButton::setClickingTogglesState(const bool shouldToggle)
 {
   clickTogglesState = shouldToggle;
@@ -135,11 +130,7 @@ void RButton::clicked()
 
 void RButton::paint(Graphics &g)
 {
-  if(painter != nullptr)
-  {
-    painter->paintButton(g, this);
-    return;
-  }
+  if(painter != nullptr) { painter->paint(g, this); return; }
 
   //int x = 0;
   //int y = 0;

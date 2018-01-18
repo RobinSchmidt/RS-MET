@@ -1,9 +1,9 @@
 #ifndef jura_RButton_h
 #define jura_RButton_h  // maybe rename to RButtons
 
-
-
 class RButton;
+
+//=================================================================================================
 
 /** A class to receive callbacks when a button is clicked. */
 
@@ -19,6 +19,7 @@ public:
 
 };
 
+//=================================================================================================
 
 /** Baseclass for custom painting of buttons. In a concrete subclass, you overrided the
 paintButton method to actually paint the button. To assign a custom painter to a button, you would
@@ -27,17 +28,16 @@ RButtonPainter subclass. */
 
 class JUCE_API RButtonPainter
 {
-
 public:
-
+  RButtonPainter() {}
   virtual ~RButtonPainter() {}
 
-  /** Called, when a button wants to paint itself. */
-  virtual void paintButton(Graphics& g, RButton *button) = 0;
+  /** You need to override this method to actually paint the slider using the passed Graphics 
+   object. */
+  virtual void paint(Graphics& g, RButton* button) = 0;
 
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RButtonPainter)
 };
-
-
 
 //=================================================================================================
 
@@ -88,9 +88,6 @@ public:
   /** Changes the button's text. */
   void setButtonText(const juce::String& newText) throw(); // why throw?
 
-  /** Sets a custom painter object to paint this button. This is used for customized GUIs. */
-  void setButtonPainter(RButtonPainter *painterToUse);
-
   /** Decides, whether or not this button should change its on/off state when clicked. */
   void setClickingTogglesState(const bool shouldToggle);
 
@@ -103,6 +100,9 @@ public:
   sets it to "on" when the
   string-as-integer is != 0 (presumably "1"). */
   virtual void setStateFromString(const juce::String &stateString, bool sendChangeMessage = true);
+
+  /** Sets up a painter object that can be used for custom painting. */
+  virtual void setPainter(RButtonPainter* painterToUse) { painter = painterToUse; }
 
   //-----------------------------------------------------------------------------------------------
   // inquiry:
