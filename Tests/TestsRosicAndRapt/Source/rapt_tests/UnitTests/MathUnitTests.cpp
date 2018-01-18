@@ -101,6 +101,11 @@ bool rootFinderUnitTest()
   x = rsRootFinderFF::bisection(f,  0.8f,  1.3f); r &= x ==  1.f;
   x = rsRootFinderFF::bisection(f,  1.7f,  2.2f); r &= x ==  2.f;
 
+  // find the roots via false position:
+  x = rsRootFinderFF::falsePosition(f, -1.3f, -0.8f); r &= x == -1.f;
+  x = rsRootFinderFF::falsePosition(f,  0.8f,  1.3f); r &= x ==  1.f;
+  x = rsRootFinderFF::falsePosition(f,  1.7f,  2.2f); r &= x ==  2.f;
+
   return r;
 }
 
