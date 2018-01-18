@@ -124,7 +124,7 @@ void PingPongEcho::setupDelayInSamples()
   tapOut   = tapIn - dInt;
   tapOut   = wrapAround(tapOut, length);
       
-  reset();
+  //reset(); // don't reset to allow delaytime modulation
 }
 
 void PingPongEcho::calculateGainFactors()
