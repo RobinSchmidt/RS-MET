@@ -469,7 +469,7 @@ void RHyperlinkButton::paint(Graphics& g)
 
 //=================================================================================================
 
-void RButtonPainter3D::paintButton(Graphics& g, RButton *button)
+void RButtonPainter3D::paint(Graphics& g, RButton *button)
 {
   // experimental
 

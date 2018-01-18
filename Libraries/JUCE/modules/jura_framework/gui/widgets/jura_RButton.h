@@ -349,7 +349,7 @@ class JUCE_API RButtonPainter3D : public RButtonPainter
 {
 public:
   RButtonPainter3D(){}
-  virtual void paintButton(Graphics& g, RButton *button);
+  virtual void paint(Graphics& g, RButton *button) override;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RButtonPainter3D)
 };
 
