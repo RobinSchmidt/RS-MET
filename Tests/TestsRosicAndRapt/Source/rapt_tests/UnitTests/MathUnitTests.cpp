@@ -85,12 +85,28 @@ bool interpolatingFunctionUnitTest()
   return r;
 }
 
+
+
+float testFunction(float x)
+{
+  return (x+1)*(x-1)*(x-2);
+}
+
+class TestFunctor
+{
+public:
+  inline float operator()(const float x)
+  {
+    return (x+1)*(x-1)*(x-2);
+  }
+};
+
 bool rootFinderUnitTest()
 {
   bool r = true;  // test result
   float x, y;     // function in/out values
 
-  // create example function with roots at -1,+1,+2 and verify positions of roots:
+  // create example (lambda) function with roots at -1,+1,+2 and verify positions of roots:
   std::function<float(float)> f = [] (float x)->float { return (x+1)*(x-1)*(x-2); };
   y = f(-1.f); r &= y == 0.f;
   y = f( 1.f); r &= y == 0.f;
@@ -102,6 +118,20 @@ bool rootFinderUnitTest()
   x = rsRootFinderF::bisection(f,  1.7f,  2.2f); r &= x ==  2.f;
 
   // find the roots via false position:
+  x = rsRootFinderF::falsePosition(f, -1.3f, -0.8f); r &= x == -1.f;
+  x = rsRootFinderF::falsePosition(f,  0.8f,  1.3f); r &= x ==  1.f;
+  x = rsRootFinderF::falsePosition(f,  1.7f,  2.2f); r &= x ==  2.f;
+
+  // use a function pointer:
+  f = &testFunction;
+  x = rsRootFinderF::falsePosition(f, -1.3f, -0.8f); r &= x == -1.f;
+  x = rsRootFinderF::falsePosition(f,  0.8f,  1.3f); r &= x ==  1.f;
+  x = rsRootFinderF::falsePosition(f,  1.7f,  2.2f); r &= x ==  2.f;
+
+  // use a function object (functor):
+  TestFunctor functor;
+  //f = [&] (float x)->float { return functor(x); }; // works too, but too complicated
+  f = functor;
   x = rsRootFinderF::falsePosition(f, -1.3f, -0.8f); r &= x == -1.f;
   x = rsRootFinderF::falsePosition(f,  0.8f,  1.3f); r &= x ==  1.f;
   x = rsRootFinderF::falsePosition(f,  1.7f,  2.2f); r &= x ==  2.f;

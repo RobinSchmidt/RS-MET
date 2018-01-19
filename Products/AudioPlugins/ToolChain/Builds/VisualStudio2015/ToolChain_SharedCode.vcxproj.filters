@@ -461,6 +461,9 @@
     <Filter Include="Juce Modules\rapt\Math\Misc">
       <UniqueIdentifier>{DEEB57E5-E46E-1D4B-3CE9-8685142BFFC9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Juce Modules\rapt\Math\Numerics">
+      <UniqueIdentifier>{6C4EDA50-3C6D-4402-A68A-0CACA9552FCA}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Juce Modules\rapt\Math\Types">
       <UniqueIdentifier>{B938E14E-1310-4394-37B8-FFACEF07E0CB}</UniqueIdentifier>
     </Filter>
@@ -2920,9 +2923,6 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\RealFunctions.cpp">
       <Filter>Juce Modules\rapt\Math\Functions</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\RootFinder.cpp">
-      <Filter>Juce Modules\rapt\Math\Functions</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\Sigmoids.cpp">
       <Filter>Juce Modules\rapt\Math\Functions</Filter>
     </ClCompile>
@@ -2943,6 +2943,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\Statistics.cpp">
       <Filter>Juce Modules\rapt\Math\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\RootFinder.cpp">
+      <Filter>Juce Modules\rapt\Math\Numerics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Types\Matrix.cpp">
       <Filter>Juce Modules\rapt\Math\Types</Filter>
@@ -6867,9 +6870,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\RealFunctions.h">
       <Filter>Juce Modules\rapt\Math\Functions</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\RootFinder.h">
-      <Filter>Juce Modules\rapt\Math\Functions</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Functions\Sigmoids.h">
       <Filter>Juce Modules\rapt\Math\Functions</Filter>
     </ClInclude>
@@ -6890,6 +6890,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Misc\Statistics.h">
       <Filter>Juce Modules\rapt\Math\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Numerics\RootFinder.h">
+      <Filter>Juce Modules\rapt\Math\Numerics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\rapt\Math\Types\Matrix.h">
       <Filter>Juce Modules\rapt\Math\Types</Filter>

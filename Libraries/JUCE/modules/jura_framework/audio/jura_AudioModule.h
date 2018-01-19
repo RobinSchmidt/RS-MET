@@ -120,7 +120,8 @@ public:
     saveAndRecallMetas = shouldSaveAndRecall; 
   }
 
-
+  /** Loads a preset from the given path. The path is assumed to be relative to the preset 
+  directory, i.e. the directory that is returned by getPresetDirectory(). */
   virtual void loadPreset(const juce::String& pathFromPresetFolder);
 
   /** Tries to load the default preset from the location that your subclass can specify by 
