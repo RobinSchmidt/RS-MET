@@ -15,7 +15,7 @@ References
 
 */
 
-template<class Tx, class Ty> // maybe it's overkill to allow different types for input and output
+template<class T>
 class rsRootFinder
 {
 public:
@@ -26,19 +26,16 @@ public:
   iteration, the size of the interval is halved. The order of convergence is linear (in each 
   iteration, we get one more correct binary digit in the root estimate) and convergence is 
   guaranteed. */
-  static Tx bisection(std::function<Ty(Tx)>& func, Tx xLeft, Tx xRight, Ty y = 0);
+  static T bisection(std::function<T(T)>& func, T xLeft, T xRight, T y = 0);
 
   /** Similar to bisection but doesn't use the midpoint of the current bracketing interval, but the
   point where a line between (xLeft,yLeft), (xRight,yRight) crosses the x-axis. Convergence is
   typically (for smooth functions, that are well approxiamted by a line near the root) faster than
   for bisection and convergence is guranteed. */
-  static Tx falsePosition(std::function<Ty(Tx)>& func, Tx xLeft, Tx xRight, Ty y = 0);
-
+  static T falsePosition(std::function<T(T)>& func, T xLeft, T xRight, T y = 0);
 
   
-  //Tx secant(Tx xLeft, Tx xRight, Ty y = 0);
-  
-  // newton, ridders, brent, ...
+  // secant, newton, ridders, brent, ...
 
   // see RSLib::UnivariateScalarFunction in file FunctionObjects.h/cpp
   

@@ -18,7 +18,7 @@ PhaseScopeBufferFFD typedef wouldn't exist. */
 typedef RAPT::rsConicSection<float> rsConicSectionF;
 typedef RAPT::rsEllipse<float> rsEllipseF;
 
-typedef RAPT::rsRootFinder<float, float> rsRootFinderFF;
+typedef RAPT::rsRootFinder<float> rsRootFinderF;
 typedef RAPT::rsNodeBasedFunction<float> rsNodeBasedFunctionF;
 typedef RAPT::rsSinCosTable<float> rsSinCosTableF;
 typedef RAPT::rsSinCosTable<double> rsSinCosTableD;

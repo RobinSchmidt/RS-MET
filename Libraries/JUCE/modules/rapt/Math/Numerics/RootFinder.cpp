@@ -1,12 +1,12 @@
-template<class Tx, class Ty>
-Tx rsRootFinder<Tx, Ty>::bisection(std::function<Ty(Tx)>& f, Tx xL, Tx xR, Ty y)
+template<class T>
+T rsRootFinder<T>::bisection(std::function<T(T)>& f, T xL, T xR, T y)
 {
   static const int maxNumIterations = 60; // should be enough for double-precision
-  Tx tol = std::numeric_limits<Tx>::epsilon();
-  Ty fL  = f(xL) - y;
-  Tx xM; Ty fM;
+  T tol = std::numeric_limits<T>::epsilon();
+  T fL  = f(xL) - y;
+  T xM, fM;
   for(int i = 1; i <= maxNumIterations; i++) {
-    xM = Tx(0.5)*(xL+xR);
+    xM = T(0.5)*(xL+xR);
     fM = f(xM) - y;
     if(fM == 0 || xR-xL <= fabs(xM*tol)) 
       return xM; // done
@@ -17,16 +17,16 @@ Tx rsRootFinder<Tx, Ty>::bisection(std::function<Ty(Tx)>& f, Tx xL, Tx xR, Ty y)
   return xM;
 }
 
-template<class Tx, class Ty>
-Tx rsRootFinder<Tx, Ty>::falsePosition(std::function<Ty(Tx)>& f, Tx xL, Tx xR, Ty y)
+template<class T>
+T rsRootFinder<T>::falsePosition(std::function<T(T)>& f, T xL, T xR, T y)
 {
   static const int maxNumIterations = 60; // should be enough for double-precision
-  Tx tol = std::numeric_limits<Tx>::epsilon();
-  Ty fL  = f(xL) - y;
-  Ty fR  = f(xR) - y;
-  Tx xM; Ty fM;
+  T tol = std::numeric_limits<T>::epsilon();
+  T fL  = f(xL) - y;
+  T fR  = f(xR) - y;
+  T xM, fM;
   for(int i = 1; i <= maxNumIterations; i++) {
-    xM = xL - (xR-xL) * Tx(fL/(fR-fL));
+    xM = xL - (xR-xL) * fL / (fR-fL);
     fM = f(xM) - y;
     if(fM == 0 || xR-xL <= fabs(xM*tol)) 
       return xM; // done
