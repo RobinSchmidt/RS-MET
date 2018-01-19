@@ -5,6 +5,9 @@ rsParameterSetupBase::rsParameterSetupBase(AutomatableWidget* widgetToSetup,
   addWidget( closeButton = new RClickButtonNotifyOnMouseUp(RButton::CLOSE) );
   closeButton->setClickingTogglesState(false);
   closeButton->addRButtonListener(this);
+
+  // i think, here is a good place to set up our colorscheme - inquire the widget for its 
+  // colorscheme and maybe also its parent-editor...
 }
 
 //=================================================================================================

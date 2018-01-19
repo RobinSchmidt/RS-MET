@@ -144,7 +144,7 @@ void rosic::writeDataToFile(const char* path, int numValues, double *x, double *
   }
 
   writeStringToFile(path, str);
-  delete str;
+  delete[] str;
 }
 
 /*
