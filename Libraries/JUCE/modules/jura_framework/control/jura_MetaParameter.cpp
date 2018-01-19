@@ -128,6 +128,7 @@ void MetaControlledParameter::setValue(double newValue, bool sendNotification, b
   // For a meta-controlled parameter, client code, widgets, etc. should always call
   // setNormalizedValue
 
+  newValue = restrictValueToParameterRange(newValue);
   double y = mapper->unmap(newValue);
   double x = metaMapper.unmap(y);
   setNormalizedValue(x, sendNotification, callCallbacks);

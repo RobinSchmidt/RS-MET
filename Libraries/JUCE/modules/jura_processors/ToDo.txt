@@ -1,7 +1,6 @@
 BUGS:
--Equalizer crashes when removing the selected band
- -seems like the parameter objects get destroyed before unassigning their widgets
-  ..don't we implement parameterWillBeDeleted in RWidget?
+-mod-menu colorscheme wrong
+-sometimes modulators are not immediately availabe after plugging them in, only after reload
 
 
 -add features to automation setup: meta slider, attachment menu, sliders for node x,y, smoothing
