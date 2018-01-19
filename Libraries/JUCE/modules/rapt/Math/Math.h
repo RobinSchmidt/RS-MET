@@ -12,7 +12,6 @@ namespace RAPT
 #include "Functions/RealFunctions.h"
 #include "Functions/ComplexFunctions.h"
 #include "Functions/FunctionIterators.h"
-#include "Functions/RootFinder.h" // maybe move to Numerics
 #include "Functions/Mappers.h"
 #include "Functions/MoebiusTransform.h"
 #include "Functions/BellFunctions.h"
@@ -28,6 +27,9 @@ namespace RAPT
 #include "Geometry/ConicSection.h"
 #include "Geometry/Ellipse.h"
 #include "Geometry/GeometricTransformations.h"
+
+#include "Numerics/RootFinder.h"
+// todo: Optimizer, CurveFitter, Interpolator, Differentiator, Integrator, InitialValueSolver, 
 
 #include "Misc/Statistics.h"
 

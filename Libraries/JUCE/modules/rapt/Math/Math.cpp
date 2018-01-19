@@ -9,7 +9,6 @@ namespace RAPT
 #include "Functions/RealFunctions.cpp"
 #include "Functions/ComplexFunctions.cpp"
 #include "Functions/FunctionIterators.cpp"
-#include "Functions/RootFinder.cpp"
 #include "Functions/Mappers.cpp"
 #include "Functions/BellFunctions.cpp"
 #include "Functions/Sigmoids.cpp"
@@ -25,5 +24,7 @@ namespace RAPT
 #include "Geometry/GeometricTransformations.cpp"
 
 #include "Misc/Statistics.cpp"
+
+#include "Numerics/RootFinder.cpp"
 
 }
