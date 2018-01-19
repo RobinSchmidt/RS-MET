@@ -15,7 +15,7 @@ References
 
 */
 
-template<class Tx, class Ty>
+template<class Tx, class Ty> // maybe it's overkill to allow different types for input and output
 class rsRootFinder
 {
 public:
