@@ -154,6 +154,7 @@ void Parameter::setRange(double newMinValue, double newMaxValue)
 {
   ScopedPointerLock spl(mutex);
   mapper->setRange(newMinValue, newMaxValue);
+  normalizedValue = mapper->unmap(value);
   valueSanityCheck();
   for(int i=0; i < (int) parameterObservers.size(); i++)
   {

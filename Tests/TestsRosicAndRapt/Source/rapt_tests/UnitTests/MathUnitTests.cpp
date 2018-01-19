@@ -85,22 +85,21 @@ bool interpolatingFunctionUnitTest()
   return r;
 }
 
-
-
+// For testing the root-finder, we use a 3rd oder polynomial as example function with roots at
+// -1, +1, +2. We define a function and a functor that implements that function in order to pass it
+// to the root finder:
 float testFunction(float x)
 {
   return (x+1)*(x-1)*(x-2);
 }
-
 class TestFunctor
 {
 public:
   inline float operator()(const float x)
   {
-    return (x+1)*(x-1)*(x-2);
+    return (x+1)*(x-1)*(x-2); // the roots could be adjustable member data
   }
 };
-
 bool rootFinderUnitTest()
 {
   bool r = true;  // test result
@@ -130,7 +129,6 @@ bool rootFinderUnitTest()
 
   // use a function object (functor):
   TestFunctor functor;
-  //f = [&] (float x)->float { return functor(x); }; // works too, but too complicated
   f = functor;
   x = rsRootFinderF::falsePosition(f, -1.3f, -0.8f); r &= x == -1.f;
   x = rsRootFinderF::falsePosition(f,  0.8f,  1.3f); r &= x ==  1.f;
