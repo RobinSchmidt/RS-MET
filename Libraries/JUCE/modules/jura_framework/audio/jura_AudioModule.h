@@ -172,6 +172,10 @@ public:
   /** Returns the name of this module, for example "Filter1". */
   virtual juce::String getModuleName() const { return moduleName; }
 
+  /** Returns the appendix that should be added to the module name for display on the GUI, such as
+  "Demo Version" or whatever (mostly, this is empty). */
+  inline juce::String getModuleNameAppendix() const { return moduleNameAppendix; }
+
   /** Returns the type name of this module, for example "LadderFilter". */
   virtual juce::String getModuleTypeName() const { return moduleTypeName; }
 
@@ -214,8 +218,11 @@ public:
   AudioModule* getTopLevelModule();
 
   /** Returns a string that gives the "path" of the AudioModule, for example a string like
-  Straightliner/OscSection/Osc2/ would be returned from the 2nd oscillator of Straightliner. */
+  Straightliner.OscSection.Osc2. would be returned from the 2nd oscillator of Straightliner. */
   juce::String getAudioModulePath();
+   // todo: get rid of the final dot - i think, it is used to uniquely identify parameters in xml
+   // files (for mod-connections, meta-assignements, etc.) so after the dot, there will be the 
+   // parameter name
 
   /** Your subclass may override this to return an object of an appropriate subclass of
   AudioModuleEditor. The baseclass implementation will return a generic editor with sliders, 
