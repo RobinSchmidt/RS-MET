@@ -12,11 +12,11 @@ namespace RAPT
 #include "Functions/RealFunctions.h"
 #include "Functions/ComplexFunctions.h"
 #include "Functions/FunctionIterators.h"
-#include "Functions/RootFinder.h"
+#include "Functions/RootFinder.h" // maybe move to Numerics
 #include "Functions/Mappers.h"
 #include "Functions/MoebiusTransform.h"
 #include "Functions/BellFunctions.h"
-#include "Functions/FunctionObjects.h"
+#include "Functions/FunctionObjects.h" // obsolete thx to std::function?
 #include "Functions/Sigmoids.h"
 #include "Functions/SinCosTable.h"
 

@@ -1,3 +1,4 @@
+/*
 template<class Tx, class Ty>
 Tx rsRootFinder<Tx, Ty>::bisection(std::function<Ty(Tx)>& f, Tx xL, Tx xR, Ty y)
 {
@@ -17,8 +18,31 @@ Tx rsRootFinder<Tx, Ty>::bisection(std::function<Ty(Tx)>& f, Tx xL, Tx xR, Ty y)
   }
   return xM;
 }
+*/
 
-// move to somewhere else:
+// old code above has been replaced with code that is structurally the same as falsePosition
+// ...maybe something can be factored out
+template<class Tx, class Ty>
+Tx rsRootFinder<Tx, Ty>::bisection(std::function<Ty(Tx)>& f, Tx xL, Tx xR, Ty y)
+{
+  static const int maxNumIterations = 60; // should be enough for double-precision
+  Tx tol = std::numeric_limits<Tx>::epsilon();
+  Ty fL  = f(xL) - y;
+  Tx xM; Ty fM;
+  for(int i = 1; i <= maxNumIterations; i++) {
+    xM = Tx(0.5)*(xL+xR);
+    fM = f(xM) - y;
+    if(fM == 0 || xR-xL <= fabs(xM*tol)) 
+      return xM; // done
+    if(fL*fM > 0) { xL = xM; fL = fM; }
+    else          { xR = xM;          }
+  }
+  //rsError("rsRootFinder::bisection failed to converge");
+  return xM;
+}
+
+
+// move to somewhere else (maybe rsLine):
 template<class T>
 inline T lineZeroCrossing(T xL, T yL, T xR, T yR)
 {
@@ -34,7 +58,7 @@ template<class Tx, class Ty>
 Tx rsRootFinder<Tx, Ty>::falsePosition(std::function<Ty(Tx)>& f, Tx xL, Tx xR, Ty y)
 {
   static const int maxNumIterations = 60; // should be enough for double-precision
-  Tx tol = 4*std::numeric_limits<Tx>::epsilon();
+  Tx tol = std::numeric_limits<Tx>::epsilon();
   Ty fL  = f(xL) - y;
   Ty fR  = f(xR) - y;
   Tx xM; Ty fM;
