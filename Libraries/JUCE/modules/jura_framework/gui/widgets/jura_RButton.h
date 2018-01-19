@@ -21,7 +21,7 @@ public:
 
 //=================================================================================================
 
-/** Baseclass for custom painting of buttons. In a concrete subclass, you overrided the
+/** Baseclass for custom painting of buttons. In a concrete subclass, you override the
 paintButton method to actually paint the button. To assign a custom painter to a button, you would
 call myButton->setPainter(myButtonPainter) where myButtonPainter is asumed to be an object of your
 RButtonPainter subclass. */
@@ -32,7 +32,7 @@ public:
   RButtonPainter() {}
   virtual ~RButtonPainter() {}
 
-  /** You need to override this method to actually paint the slider using the passed Graphics 
+  /** You need to override this method to actually paint the button using the passed Graphics 
    object. */
   virtual void paint(Graphics& g, RButton* button) = 0;
 

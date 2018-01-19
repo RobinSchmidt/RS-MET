@@ -26,7 +26,8 @@ T rsRootFinder<T>::falsePosition(std::function<T(T)>& f, T xL, T xR, T y)
   T fR  = f(xR) - y;
   T xM, fM;
   for(int i = 1; i <= maxNumIterations; i++) {
-    xM = xL - (xR-xL) * fL / (fR-fL);
+    //xM = xL - (xR-xL) * fL / (fR-fL);
+    xM = rsLine2D<T>::zeroCrossing(xL, fL, xR, fR);
     fM = f(xM) - y;
     if(fM == 0 || xR-xL <= fabs(xM*tol)) 
       return xM; // done

@@ -79,6 +79,9 @@ public:
   //virtual juce::String getStateAsString() const = 0;
   virtual juce::String getStateAsString() const { return juce::String::empty; }
 
+  /** Returns a pointer to the (bitmap) font that is used for drawing text on widgets. */
+  inline const BitmapFont* getFont() { return font; }
+
   //-----------------------------------------------------------------------------------------------
   // callbacks:
 
