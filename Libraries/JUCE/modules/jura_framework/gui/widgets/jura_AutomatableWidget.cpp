@@ -6,8 +6,11 @@ rsParameterSetupBase::rsParameterSetupBase(AutomatableWidget* widgetToSetup,
   closeButton->setClickingTogglesState(false);
   closeButton->addRButtonListener(this);
 
-  // i think, here is a good place to set up our colorscheme - inquire the widget for its 
-  // colorscheme and maybe also its parent-editor...
+  ColourSchemeComponent* csc = (ColourSchemeComponent*) 
+    widget->getWrappedWidget()->getParentComponent();
+  editorColourScheme = csc->getEditorColourScheme();
+  widgetColourScheme = csc->getWidgetColourScheme();
+  plotColourScheme   = csc->getPlotColourScheme();
 }
 
 //=================================================================================================

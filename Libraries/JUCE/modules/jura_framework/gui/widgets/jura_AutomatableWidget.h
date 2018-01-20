@@ -196,7 +196,8 @@ public:
   any - a nullptr otherwise. */
   MetaParameterManager* getMetaParameterManager();
 
-
+  /** Returns a pointer to the wrapped widget. */
+  RWidget* getWrappedWidget() const { return  wrappedWidget; }
 
   // overrides:
   void rPopUpMenuChanged(RPopUpMenu* menuThatHasChanged) override;

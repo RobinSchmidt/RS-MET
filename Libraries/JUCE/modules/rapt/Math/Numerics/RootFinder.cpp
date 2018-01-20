@@ -37,3 +37,6 @@ T rsRootFinder<T>::falsePosition(std::function<T(T)>& f, T xL, T xR, T y)
   //rsError("rsRootFinder::falsePosition failed to converge");
   return xM;
 }
+// todo: implement the modified false position method describen in Hamming's "Numerical Methods 
+// for Scientists and Enginners (2nd Ed)", pages 65-67 - should converge better for functions with
+// flat regions
