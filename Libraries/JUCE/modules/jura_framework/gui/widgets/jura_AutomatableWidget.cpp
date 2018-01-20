@@ -6,11 +6,13 @@ rsParameterSetupBase::rsParameterSetupBase(AutomatableWidget* widgetToSetup,
   closeButton->setClickingTogglesState(false);
   closeButton->addRButtonListener(this);
 
-  ColourSchemeComponent* csc = (ColourSchemeComponent*) 
-    widget->getWrappedWidget()->getParentComponent();
-  editorColourScheme = csc->getEditorColourScheme();
-  widgetColourScheme = csc->getWidgetColourScheme();
-  plotColourScheme   = csc->getPlotColourScheme();
+  ColourSchemeComponent* csc = dynamic_cast<ColourSchemeComponent*>
+    (widget->getWrappedWidget()->getParentComponent());
+  if(csc){
+    editorColourScheme = csc->getEditorColourScheme();
+    widgetColourScheme = csc->getWidgetColourScheme();
+    plotColourScheme   = csc->getPlotColourScheme();
+  }
 }
 
 //=================================================================================================

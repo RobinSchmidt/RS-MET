@@ -1,6 +1,4 @@
 BUGS:
--mod-menu colorscheme wrong
--sometimes modulators are not immediately availabe after plugging them in, only after reload
 
 
 -add features to automation setup: meta slider, attachment menu, sliders for node x,y, smoothing
