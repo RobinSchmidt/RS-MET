@@ -163,6 +163,8 @@ protected:
   juce::Array<CoordinateSystemOld*>   plots;
   juce::Array<ColourSchemeComponent*> childColourSchemeComponents;
   CriticalSection arrayLock; // used to access all the arrays
+  // use std::vector, maybe have also arrays of non-owned widgets, etc. in order to allow client 
+  // code to use non-pointer variables ...maybe use references
 
   bool drawWithEnclosingRectangle;
 

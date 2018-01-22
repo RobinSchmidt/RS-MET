@@ -102,11 +102,12 @@ public:
 };
 bool rootFinderUnitTest()
 {
-  bool r = true;  // test result
-  float x, y;     // function in/out values
+  bool r = true;                 // test result
+  float x, y;                    // function in/out values
+  std::function<float(float)> f; // the function to find the roots of
 
   // create example (lambda) function with roots at -1,+1,+2 and verify positions of roots:
-  std::function<float(float)> f = [] (float x)->float { return (x+1)*(x-1)*(x-2); };
+  f = [] (float x)->float { return (x+1)*(x-1)*(x-2); };
   y = f(-1.f); r &= y == 0.f;
   y = f( 1.f); r &= y == 0.f;
   y = f( 2.f); r &= y == 0.f;
@@ -128,8 +129,8 @@ bool rootFinderUnitTest()
   x = rsRootFinderF::falsePosition(f,  1.7f,  2.2f); r &= x ==  2.f;
 
   // use a function object (functor):
-  TestFunctor functor;
-  f = functor;
+  //TestFunctor functor; f = functor;
+  f = TestFunctor();  // shorter syntax
   x = rsRootFinderF::falsePosition(f, -1.3f, -0.8f); r &= x == -1.f;
   x = rsRootFinderF::falsePosition(f,  0.8f,  1.3f); r &= x ==  1.f;
   x = rsRootFinderF::falsePosition(f,  1.7f,  2.2f); r &= x ==  2.f;

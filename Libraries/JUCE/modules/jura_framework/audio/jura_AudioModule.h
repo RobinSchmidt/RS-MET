@@ -281,9 +281,16 @@ public:
   //virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) = 0;
   virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) 
   {
+    // We provide a baseclass implementation for the important special case of 2 channels here, so
+    // subclasses do not necessarily override this (they can get away with just overriding 
+    // processStereoFrame). But for optimization purposes, you may want to override this function,
+    // anyway.
     if(numChannels == 2)
       for(int n = 0; n < numSamples; n++)
         processStereoFrame(&inOutBuffer[0][n], &inOutBuffer[1][n]);
+    else
+      jassertfalse;
+
   }
 
   /** A function to override in case you are producing a stereo-signal and need your module to work

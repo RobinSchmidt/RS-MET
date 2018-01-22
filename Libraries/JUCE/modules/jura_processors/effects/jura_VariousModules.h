@@ -302,7 +302,7 @@ public:
     wrappedLimiter->getSampleFrameStereo(left, right); 
   }
 protected:
-  virtual void createStaticParameters();
+  virtual void createParameters();
   rosic::Limiter *wrappedLimiter;
   bool wrappedLimiterIsOwned = false;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LimiterAudioModule)
@@ -313,12 +313,13 @@ class LimiterModuleEditor : public AudioModuleEditor
 public:
   LimiterModuleEditor(CriticalSection *newPlugInLock, LimiterAudioModule* newLimiterAudioModule);
   virtual void resized();
-  juce_UseDebuggingNewOperator;
 protected:
+  virtual void createWidgets();
   juce::Rectangle<int> curveParametersRect, timeParametersRect, otherParametersRect;
   RTextField *curveLabel, *timeLabel, *othersLabel;
   ModulatableSlider *attackSlider, *releaseSlider, *lookAheadSlider, *inLevelSlider, 
     *outLevelSlider, *dryWetSlider, *limitSlider;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LimiterModuleEditor)
 };
 
 //-----------------------------------------------------------------------------------------------
