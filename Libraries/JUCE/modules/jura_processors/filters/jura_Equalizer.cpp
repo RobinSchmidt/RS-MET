@@ -271,20 +271,21 @@ void EqualizerAudioModule::addBand(int channel, int mode, double frequency, doub
   int newIndex = wrappedEqualizerStereo->addBand(channel, mode, frequency, gain, bandwidth);
 
   std::vector<double> defaultValues;
-  typedef ModulatableParameter Param;
+  typedef Parameter Param;
+  //typedef ModulatableParameter Param; // experimental, does not yet work right
   Param* p;
 
   p = new Param("Mode", 0.0, 8.0, 0.0, Parameter::STRING, 1.0);
   p->setMutexToUse(lock);
-  p->addStringValue(juce::String("Bypass"));
-  p->addStringValue(juce::String("Peak/Dip"));
-  p->addStringValue(juce::String("Low Shelving"));
-  p->addStringValue(juce::String("High Shelving"));
-  p->addStringValue(juce::String("Lowpass 6 dB/oct"));
-  p->addStringValue(juce::String("Lowpass 12 dB/oct"));
-  p->addStringValue(juce::String("Highpass 6 dB/oct"));
-  p->addStringValue(juce::String("Highpass 12 dB/oct"));
-  p->addStringValue(juce::String("Notch 2*6 dB/oct"));
+  p->addStringValue("Bypass");
+  p->addStringValue("Peak/Dip");
+  p->addStringValue("Low Shelving");
+  p->addStringValue("High Shelving");
+  p->addStringValue("Lowpass 6 dB/oct");
+  p->addStringValue("Lowpass 12 dB/oct");
+  p->addStringValue("Highpass 6 dB/oct");
+  p->addStringValue("Highpass 12 dB/oct");
+  p->addStringValue("Notch 2*6 dB/oct");
   p->setValue(mode, false, false);
   p->registerParameterObserver(this);
   setupManagers(p);

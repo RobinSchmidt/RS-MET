@@ -154,10 +154,10 @@ protected:
   int selectedIndex;   // index of currently selected band (-1 if none)
 
   // arrays for the per-band parameters (later: ModulatableParameter):
-  juce::OwnedArray<ModulatableParameter> filterModeParameters[2];
-  juce::OwnedArray<ModulatableParameter> frequencyParameters[2];
-  juce::OwnedArray<ModulatableParameter> gainParameters[2];
-  juce::OwnedArray<ModulatableParameter> bandwidthParameters[2];
+  juce::OwnedArray<Parameter> filterModeParameters[2];
+  juce::OwnedArray<Parameter> frequencyParameters[2];
+  juce::OwnedArray<Parameter> gainParameters[2];
+  juce::OwnedArray<Parameter> bandwidthParameters[2];
 
 
   juce_UseDebuggingNewOperator;
