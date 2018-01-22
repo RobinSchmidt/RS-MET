@@ -1550,6 +1550,9 @@ void LimiterModuleEditor::createWidgets()
   limitSlider->setDescription(juce::String(("Limit above which the signal will be attenuated")));
   limitSlider->setDescriptionField(infoField);
   limitSlider->setStringConversionFunction(&decibelsToStringWithUnit1);
+
+  // refctor some of that into a DynamicsEditor baseclass (compressor, expander, etc. also have attack, 
+  // release etc)
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2934,12 +2937,12 @@ void TwoPoleFilterModuleEditor::updateWidgetEnablement()
 //-------------------------------------------------------------------------------------------------
 // PingPongEcho:
 
-PingPongEchoAudioModule::PingPongEchoAudioModule(CriticalSection *newPlugInLock, rosic::PingPongEcho *newPingPongEchoToWrap)
- : ModulatableAudioModule(newPlugInLock)
+PingPongEchoAudioModule::PingPongEchoAudioModule(CriticalSection *lockTouse, 
+  rosic::PingPongEcho *echoToWrap) : ModulatableAudioModule(lockTouse)
 {
   ScopedLock scopedLock(*lock);
-  jassert( newPingPongEchoToWrap != NULL ); // you must pass a valid rosic-object
-  wrappedPingPongEcho = newPingPongEchoToWrap;
+  wrappedEcho = echoToWrap;
+  if(wrappedEcho == nullptr) { wrappedEcho = new rosic::PingPongEcho; wrappedEchoIsOwned = true; }
   setModuleTypeName("PingPongEcho");
   createStaticParameters();
 }
@@ -2953,43 +2956,43 @@ void PingPongEchoAudioModule::createStaticParameters()
 
   p = new Param("DelayTime", 0.125, 1.0, 0.5, Parameter::LINEAR, 0.0125);
   addObservedParameter(p);
-  p->setValueChangeCallback(wrappedPingPongEcho, &PingPongEcho::setDelayTime);
+  p->setValueChangeCallback(wrappedEcho, &PingPongEcho::setDelayTime);
 
   p = new Param("DryWetRatio", 0.0, 1.0, 0.5, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
-  p->setValueChangeCallback(wrappedPingPongEcho, &PingPongEcho::setDryWetRatio);
+  p->setValueChangeCallback(wrappedEcho, &PingPongEcho::setDryWetRatio);
 
   p = new Param("Feedback", -100.0, 100.0, 50.0, Parameter::LINEAR, 0.1);
   addObservedParameter(p);
-  p->setValueChangeCallback(wrappedPingPongEcho, &PingPongEcho::setFeedbackInPercent);
+  p->setValueChangeCallback(wrappedEcho, &PingPongEcho::setFeedbackInPercent);
 
   p = new Param("Pan", -1.0, 1.0, -0.4, Parameter::LINEAR, 0.01);
   addObservedParameter(p);
-  p->setValueChangeCallback(wrappedPingPongEcho, &PingPongEcho::setPan);
+  p->setValueChangeCallback(wrappedEcho, &PingPongEcho::setPan);
 
   p = new Param("HighDamp", 20.0, 20000.0, 4000.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
-  p->setValueChangeCallback(wrappedPingPongEcho, &PingPongEcho::setHighDamp);
+  p->setValueChangeCallback(wrappedEcho, &PingPongEcho::setHighDamp);
 
   p = new Param("LowDamp", 20.0, 20000.0, 250.0, Parameter::EXPONENTIAL, 0.0);
   addObservedParameter(p);
-  p->setValueChangeCallback(wrappedPingPongEcho, &PingPongEcho::setLowDamp);
+  p->setValueChangeCallback(wrappedEcho, &PingPongEcho::setLowDamp);
 
   p = new Param("PingPong", 0.0, 1.0, 1.0, Parameter::BOOLEAN, 1.0);
   addObservedParameter(p);
-  p->setValueChangeCallback(wrappedPingPongEcho, &PingPongEcho::setPingPongMode);
+  p->setValueChangeCallback(wrappedEcho, &PingPongEcho::setPingPongMode);
 
   p = new Param("TrueStereo", 0.0, 1.0, 0.0, Parameter::BOOLEAN, 1.0);
   addObservedParameter(p);
-  p->setValueChangeCallback(wrappedPingPongEcho, &PingPongEcho::setTrueStereoMode);
+  p->setValueChangeCallback(wrappedEcho, &PingPongEcho::setTrueStereoMode);
 
   p = new Param("TempoSync", 0.0, 1.0, 1.0, Parameter::BOOLEAN, 1.0);
   addObservedParameter(p);
-  p->setValueChangeCallback(wrappedPingPongEcho, &PingPongEcho::setSyncMode);
+  p->setValueChangeCallback(wrappedEcho, &PingPongEcho::setSyncMode);
 
   p = new Param("Activated", 0.0, 1.0, 1.0, Parameter::BOOLEAN, 1.0);
   addObservedParameter(p);
-  p->setValueChangeCallback(wrappedPingPongEcho, &PingPongEcho::setActive);
+  p->setValueChangeCallback(wrappedEcho, &PingPongEcho::setActive);
 }
 
 PingPongEchoModuleEditor::PingPongEchoModuleEditor(CriticalSection *newPlugInLock, PingPongEchoAudioModule* newPingPongEchoAudioModule)

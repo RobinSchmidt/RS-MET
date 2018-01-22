@@ -560,17 +560,22 @@ protected:
 class PingPongEchoAudioModule : public ModulatableAudioModule
 {
 public:
-  PingPongEchoAudioModule(CriticalSection *newPlugInLock, rosic::PingPongEcho *newPingPongEchoToWrap);
+  PingPongEchoAudioModule(CriticalSection *lockTouse, rosic::PingPongEcho *echoToWrap = nullptr);
+  virtual ~PingPongEchoAudioModule() { if(wrappedEchoIsOwned) delete wrappedEcho; }
   virtual void setBeatsPerMinute(double newBpm)
   {
     ScopedLock scopedLock(*lock);
-    if(wrappedPingPongEcho != NULL)
-      wrappedPingPongEcho->setTempoInBPM((float)newBpm);
+    wrappedEcho->setTempoInBPM(newBpm);
   }
-  juce_UseDebuggingNewOperator;
+  virtual void processStereoFrame(double *left, double *right) override 
+  { 
+    wrappedEcho->getSampleFrameStereo(left, right); 
+  }
 protected:
   virtual void createStaticParameters();
-  rosic::PingPongEcho *wrappedPingPongEcho;
+  rosic::PingPongEcho *wrappedEcho;
+  bool wrappedEchoIsOwned = false;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PingPongEchoAudioModule)
 };
 
 class PingPongEchoModuleEditor : public AudioModuleEditor
@@ -579,11 +584,11 @@ public:
   PingPongEchoModuleEditor(CriticalSection *newPlugInLock, PingPongEchoAudioModule* newPingPongEchoAudioModule);
   virtual void rButtonClicked(RButton *buttonThatWasClicked);
   virtual void resized();
-  juce_UseDebuggingNewOperator;
 protected:
   ModulatableSlider *delayTimeSlider, *dryWetSlider, *feedbackSlider, *panSlider, *highDampSlider,
     *lowDampSlider;
   RButton *pingPongButton, *tempoSyncButton, *trueStereoButton;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PingPongEchoModuleEditor)
 };
 
 //-----------------------------------------------------------------------------------------------
