@@ -30,6 +30,7 @@ AudioModule* AudioModuleFactory::createModule(const juce::String& type, Critical
 
   if(type == "AlgoVerb")         return new AlgoVerbAudioModule(        lock);
   if(type == "EchoLab")          return new EchoLabAudioModule(         lock);
+  if(type == "PingPongEcho")     return new PingPongEchoAudioModule(    lock);
   if(type == "StereoDelay")      return new StereoDelayAudioModule(     lock);
   if(type == "PitchShifter")     return new PitchShifterAudioModule(    lock);
   if(type == "Quadrifex")        return new QuadrifexAudioModule(       lock, metaMan, modMan);
@@ -69,62 +70,7 @@ juce::String AudioModuleFactory::getModuleType(AudioModule *m)
 {
   return m->getModuleTypeName();
     // replaces code below, needs testing, then old code can be deleted
-
-  /*
-  if(dynamic_cast<DummyModule*>  (m))              return "None";
-
-  // modulators:
-  if(dynamic_cast<BreakpointModulatorAudioModule*> (m))  return "BreakpointModulator";
-
-  // analysis:
-  //if(dynamic_cast<PhaseScope2*>  (m))            return "Scope2"; // always check subclasses before...
-  if(dynamic_cast<PhaseScope*>   (m))              return "Scope";  // ...their superclasses
-  if(dynamic_cast<MultiAnalyzerAudioModule*> (m))  return "MultiAnalyzer";
-  if(dynamic_cast<TrackMeterAudioModule*> (m))     return "TrackMeter";
-  if(dynamic_cast<MidiMonitorAudioModule*> (m))    return "MidiMonitor";
-
-  // generators:
-  if(dynamic_cast<RotationOscillatorAudioModule*>(m))  return "Oscillator3D";
-  if(dynamic_cast<RayBouncerAudioModule*>(m))          return "RayBouncer";
-
-  // filters:
-  if(dynamic_cast<EqualizerAudioModule*>(m))       return "Equalizer";
-  if(dynamic_cast<Ladder*>(m))                     return "Ladder";
-  if(dynamic_cast<PhasorFilter*>(m))               return "PhasorFilter";
-  if(dynamic_cast<EngineersFilterAudioModule*>(m)) return "EngineersFilter";
-  if(dynamic_cast<CrossOverAudioModule*>(m))       return "CrossOver";
-
-  // effects:
-  if(dynamic_cast<Enveloper*>(m))                   return "Enveloper";
-  if(dynamic_cast<FuncShaperAudioModule*>(m))       return "FuncShaper";
-  if(dynamic_cast<MultiCompAudioModule*>(m))        return "MultiComp";
-  if(dynamic_cast<AlgoVerbAudioModule*>(m))         return "AlgoVerb";
-  if(dynamic_cast<EchoLabAudioModule*>(m))          return "EchoLab";
-  if(dynamic_cast<StereoDelayAudioModule*>(m))      return "StereoDelay";
-  if(dynamic_cast<PitchShifterAudioModule*>(m))     return "PitchShifter";
-  if(dynamic_cast<QuadrifexAudioModule*>(m))        return "Quadrifex";
-  if(dynamic_cast<ModuluxuryAudioModule*>(m))       return "Moduluxury";
-  if(dynamic_cast<ChannelMatrix2x2AudioModule*>(m)) return "ChannelMatrix2x2";
-  if(dynamic_cast<DspWorkbenchAudioModule*>(m))     return "DspWorkbench";
-
-  // instruments:
-  if(dynamic_cast<AciDevilAudioModule*> (m))       return "AcidDevil";
-  if(dynamic_cast<StraightlinerAudioModule*> (m))  return "Straightliner";
-  if(dynamic_cast<MagicCarpetAudioModule*> (m))    return "MagicCarpet";
-  if(dynamic_cast<SimpleSamplerAudioModule*> (m))  return "SimpleSampler";
-  if(dynamic_cast<KeyShotAudioModule*> (m))        return "KeyShot";
-  if(dynamic_cast<QuadrigaAudioModule*> (m))       return "Quadriga";
-  if(dynamic_cast<WorkhorseAudioModule*> (m))      return "Workhorse";
-
-#ifdef _MSC_VER
-  if(dynamic_cast<LibertyAudioModule*> (m))        return "Liberty";
-#endif
-
-  return m->getModuleTypeName();
-  */
-
-  //jassertfalse;  // unknown module type was passed
-  //return "UnknownType";
+    // ...actually, this function itself is superfluous now
 }
 
 //=================================================================================================
@@ -154,6 +100,7 @@ AudioModuleSelector::AudioModuleSelector() : RComboBox("ModuleSelector")
   //node->addChildNode(new RTreeViewNode("PitchShifter",  i++)); // include in Quadrifex
   node->addChildNode(new RTreeViewNode("EchoLab",       i++));
   node->addChildNode(new RTreeViewNode("Quadrifex",     i++));
+  node->addChildNode(new RTreeViewNode("PingPongEcho",  i++));
   //node->addChildNode(new RTreeViewNode("AlgoVerb",      i++));
   node->setOpen(false);
   popUpMenu->addTreeNodeItem(node);

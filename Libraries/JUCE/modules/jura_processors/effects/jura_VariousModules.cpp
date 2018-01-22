@@ -2944,10 +2944,15 @@ PingPongEchoAudioModule::PingPongEchoAudioModule(CriticalSection *lockTouse,
   wrappedEcho = echoToWrap;
   if(wrappedEcho == nullptr) { wrappedEcho = new rosic::PingPongEcho; wrappedEchoIsOwned = true; }
   setModuleTypeName("PingPongEcho");
-  createStaticParameters();
+  createParameters();
 }
 
-void PingPongEchoAudioModule::createStaticParameters()
+AudioModuleEditor* PingPongEchoAudioModule::createEditor()
+{
+  return new PingPongEchoModuleEditor(lock, this);
+}
+
+void PingPongEchoAudioModule::createParameters()
 {
   ScopedLock scopedLock(*lock);
 
@@ -3058,6 +3063,8 @@ PingPongEchoModuleEditor::PingPongEchoModuleEditor(CriticalSection *newPlugInLoc
   tempoSyncButton->setDescriptionField(infoField);
   tempoSyncButton->setClickingTogglesState(true);
   tempoSyncButton->addRButtonListener(this);
+
+  setSize(420, 180);
 }
 
 void PingPongEchoModuleEditor::rButtonClicked(RButton *buttonThatWasClicked)

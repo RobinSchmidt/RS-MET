@@ -567,12 +567,13 @@ public:
     ScopedLock scopedLock(*lock);
     wrappedEcho->setTempoInBPM(newBpm);
   }
+  virtual AudioModuleEditor* createEditor() override;
   virtual void processStereoFrame(double *left, double *right) override 
   { 
     wrappedEcho->getSampleFrameStereo(left, right); 
   }
 protected:
-  virtual void createStaticParameters();
+  virtual void createParameters();
   rosic::PingPongEcho *wrappedEcho;
   bool wrappedEchoIsOwned = false;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PingPongEchoAudioModule)
