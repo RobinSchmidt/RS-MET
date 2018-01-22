@@ -328,7 +328,10 @@ public:
   /** Constructor. You must pass a pointer to the ModulationConnection object on which this slider
   operates such that we can use our popup menu to set up the modulation mode (absolute vs 
   relative), too. */
-  rsModulationDepthSlider(ModulationConnection* connection) : modConnection(connection) {}
+  rsModulationDepthSlider(ModulationConnection* connection) : modConnection(connection) 
+  {
+    setStringConversionFunction(&valueToStringTotal5);
+  }
 
   virtual ~rsModulationDepthSlider() {}
 
