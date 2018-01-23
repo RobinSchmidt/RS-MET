@@ -227,9 +227,10 @@ inline rsFloat64x2 operator/(const rsFloat64x2& a, const rsFloat64x2& b) { retur
 //inline rsFloat64x2 operator/(const rsFloat64x2& a, const double& b) { return rsFloat64x2(_mm_div_pd(a, rsFloat64x2(b))); }
 
 // functions:
-inline rsFloat64x2& rsMin(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_min_pd(a, b)); }
-inline rsFloat64x2& rsMax(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_max_pd(a, b)); }
-inline rsFloat64x2& rsSqrt(const rsFloat64x2& a) { return rsFloat64x2(_mm_sqrt_pd(a)); }
+inline rsFloat64x2 rsMin(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_min_pd(a, b)); }
+inline rsFloat64x2 rsMax(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_max_pd(a, b)); }
+inline rsFloat64x2 rsSqrt(const rsFloat64x2& a) { return rsFloat64x2(_mm_sqrt_pd(a)); }
+  // declaring return values as rsFloat64x2& gives compiler warning (unit test passes anyway)
 
 /*
 for implementing SIMD vectors, see:

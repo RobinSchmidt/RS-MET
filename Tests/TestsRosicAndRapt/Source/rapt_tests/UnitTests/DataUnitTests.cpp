@@ -70,6 +70,12 @@ bool float64x2UnitTest()
   y  = -y;  r &= y.get0() == -3.0; r &= y.get1() ==  -4.0;
 
   // functions: sqrt,min,max
+  y = x34 * x34;
+  y = rsSqrt(y);       r &= y.get0() == 3.0; r &= y.get1() == 4.0;
+  y = rsMin(x12, x34); r &= y.get0() == 1.0; r &= y.get1() == 2.0;
+  y = rsMin(x34, x12); r &= y.get0() == 1.0; r &= y.get1() == 2.0;
+  y = rsMax(x12, x34); r &= y.get0() == 3.0; r &= y.get1() == 4.0;
+  y = rsMax(x34, x12); r &= y.get0() == 3.0; r &= y.get1() == 4.0;
 	  
   return r;
 }
