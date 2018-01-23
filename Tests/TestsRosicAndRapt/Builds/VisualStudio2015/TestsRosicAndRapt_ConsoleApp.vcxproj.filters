@@ -238,6 +238,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\DataUnitTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\FilterUnitTests.cpp">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
     </ClCompile>
@@ -1791,6 +1794,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\DataUnitTests.h">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\FilterUnitTests.h">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
     </ClInclude>
@@ -1917,7 +1923,7 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\TypeDefinitions.h">
       <Filter>Juce Modules\rapt\Basics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Data\Simd\Float32x4.h">
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Data\Simd\FloatSimdVectors.h">
       <Filter>Juce Modules\rapt\Data\Simd</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Data\ArrayTools.h">

@@ -147,6 +147,7 @@
     <Lib/>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\DataUnitTests.cpp"/>
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\FilterUnitTests.cpp"/>
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\ImageUnitTests.cpp"/>
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\MathUnitTests.cpp"/>
@@ -1621,6 +1622,7 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_rosic.cpp"/>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\rapt_tests\UnitTests\DataUnitTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\FilterUnitTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\ImageUnitTests.h"/>
     <ClInclude Include="..\..\Source\rapt_tests\UnitTests\MathUnitTests.h"/>
@@ -1663,7 +1665,7 @@
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\MacroDefinitions.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\SortAndSearch.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Basics\TypeDefinitions.h"/>
-    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Data\Simd\Float32x4.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Data\Simd\FloatSimdVectors.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Data\ArrayTools.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Data\Data.h"/>
     <ClInclude Include="..\..\..\..\Libraries\JUCE\modules\rapt\Data\MatrixTools.h"/>

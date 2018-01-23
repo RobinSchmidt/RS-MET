@@ -162,7 +162,11 @@ public:
   //rsFloat64x2(double value) { *this = _mm_load1_pd(&value); }
 
   /** Constructor that initializes the elements from a 2-value array of doubles. */
-  rsFloat64x2(double* values) { *this = _mm_load_pd(values); }
+  rsFloat64x2(double* values) 
+  { 
+    //*this = _mm_load_pd(values); // doesnt work
+    *this = _mm_setr_pd(values[0], values[1]);
+  }
 
   /** Constructor that initializes the elements from two doubles. */
   rsFloat64x2(double a, double b) { *this = _mm_setr_pd(a, b); }

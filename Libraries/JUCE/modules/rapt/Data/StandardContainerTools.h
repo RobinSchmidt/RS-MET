@@ -1,8 +1,11 @@
 #ifndef RAPT_STANDARDCONTAINER_H_INCLUDED
 #define RAPT_STANDARDCONTAINER_H_INCLUDED
 
-/** A collection of functions for the container classes of the C++ standard library such as 
-std::vector, etc. */
+/** A collection of (convenience) functions for the container classes of the C++ standard library 
+such as std::vector, etc. */
+
+//=================================================================================================
+// functions for std::vector
 
 template<class T>
 inline size_t rsSize(const std::vector<T>& v)
@@ -28,7 +31,7 @@ inline size_t rsFind(std::vector<T>& v, T elementToFind)
   for(size_t i = 0; i < size(v); i++)
     if(v[i] == elementToFind)
       return i;
-  return -1;
+  return size(v); // as convention, return vector-length, if element is not found
 }
 
 template<class T>
@@ -64,6 +67,8 @@ inline T rsGetAndRemoveLast(std::vector<T>& v)
   v.pop_back();
   return result;
 }
+
+//=================================================================================================
 
 
 
