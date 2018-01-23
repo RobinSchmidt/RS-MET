@@ -205,18 +205,34 @@ public:
   }
 };
 
+// binary arithmetic operators:
 inline rsFloat64x2 operator+(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_add_pd(a, b)); }
 inline rsFloat64x2 operator-(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_sub_pd(a, b)); }
 inline rsFloat64x2 operator*(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_mul_pd(a, b)); }
 inline rsFloat64x2 operator/(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_div_pd(a, b)); }
   // declaring return values as rsFloat64x2& gives compiler warning (unit test passes anyway)
 
+// binary arithmetic operators with scalar lhs:
+//inline rsFloat64x2 operator+(const double& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_add_pd(rsFloat64x2(a), b)); }
+//inline rsFloat64x2 operator-(const double& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_sub_pd(rsFloat64x2(a), b)); }
+//inline rsFloat64x2 operator*(const double& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_mul_pd(rsFloat64x2(a), b)); }
+//inline rsFloat64x2 operator/(const double& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_div_pd(rsFloat64x2(a), b)); }
+  // we don't seem to need them for the compiler, maybe it can implicitly convert the lhs? but 
+  // maybe, we should implement them anyway because they may be more efficient?
+
+// binary arithmetic operators with scalar rhs:
+//inline rsFloat64x2 operator+(const rsFloat64x2& a, const double& b) { return rsFloat64x2(_mm_add_pd(a, rsFloat64x2(b))); }
+//inline rsFloat64x2 operator-(const rsFloat64x2& a, const double& b) { return rsFloat64x2(_mm_sub_pd(a, rsFloat64x2(b))); }
+//inline rsFloat64x2 operator*(const rsFloat64x2& a, const double& b) { return rsFloat64x2(_mm_mul_pd(a, rsFloat64x2(b))); }
+//inline rsFloat64x2 operator/(const rsFloat64x2& a, const double& b) { return rsFloat64x2(_mm_div_pd(a, rsFloat64x2(b))); }
+
+// functions:
 inline rsFloat64x2& rsMin(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_min_pd(a, b)); }
 inline rsFloat64x2& rsMax(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(_mm_max_pd(a, b)); }
-
 inline rsFloat64x2& rsSqrt(const rsFloat64x2& a) { return rsFloat64x2(_mm_sqrt_pd(a)); }
+
 /*
-for implementid SIMD vectors, see:
+for implementing SIMD vectors, see:
 http://johanmabille.github.io/blog/2014/10/10/writing-c-plus-plus-wrappers-for-simd-intrinsics-3/
 https://github.com/p12tic/libsimdpp
 ...maybe it's possible to make a template baseclass, templated on the vector and element types 

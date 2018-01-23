@@ -47,6 +47,20 @@ bool float64x2UnitTest()
   y = x12 * x34; r &= y.get0() == 3.0; r &= y.get1() == 8.0;
   y = x34 / x12; r &= y.get0() == 3.0; r &= y.get1() == 2.0;
 
+  // binary arithmetic operators with scalar lhs:
+  y  = x12;
+  y  = 1.0  + y; r &= y.get0() == 2.0; r &= y.get1() == 3.0;
+  y  = 5.0  - y; r &= y.get0() == 3.0; r &= y.get1() == 2.0;
+  y  = 2.0  * y; r &= y.get0() == 6.0; r &= y.get1() == 4.0;
+  y  = 12.0 / y; r &= y.get0() == 2.0; r &= y.get1() == 3.0;
+
+  // binary arithmetic operators with scalar rhs:
+  y  = x34;
+  y  = y + 2.0; r &= y.get0() == 5.0; r &= y.get1() == 6.0;
+  y  = y - 2.0; r &= y.get0() == 3.0; r &= y.get1() == 4.0;
+  y  = y * 2.0; r &= y.get0() == 6.0; r &= y.get1() == 8.0;
+  y  = y / 2.0; r &= y.get0() == 3.0; r &= y.get1() == 4.0;
+
   // unary arithmetic operators -,+=,... :
   y  = x12;
   y += x34; r &= y.get0() ==  4.0; r &= y.get1() ==   6.0;
@@ -54,10 +68,6 @@ bool float64x2UnitTest()
   y *= x34; r &= y.get0() ==  9.0; r &= y.get1() ==  16.0;
   y /= x34; r &= y.get0() ==  3.0; r &= y.get1() ==   4.0;
   y  = -y;  r &= y.get0() == -3.0; r &= y.get1() ==  -4.0;
-
-  // arithemetic operators with scalar lhs:
-
-  // arithemetic operators with scalar rhs:
 
   // functions: sqrt,min,max
 	  
