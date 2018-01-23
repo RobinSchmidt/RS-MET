@@ -67,6 +67,32 @@ void matrixAdressingTest()
   delete[] b;
 }
 
+void simdPerformanceFloat64x2()
+{
+  // We compare computations with arrays of rsFloat64x2 of length N to corresponding computations
+  // with arrays of double of length 2*N
+
+  static const int N = 20; // array length
+  rsFloat64x2 x1v[N],   x2v[N],   yv[N];   // vector arrays
+  double      x1s[2*N], x2s[2*N], ys[2*N]; // scalar arrays
+
+  // fill arrays with random values:
+  rsNoiseGenerator<double> ng;
+  ng.setRange(-100, +100);
+  int n;
+  for(n = 0; n < N; n++)
+  {
+    x1s[2*n]   = ng.getSample();
+    x1s[2*n+1] = ng.getSample();
+    x1v[n]     = rsFloat64x2(x1s[2*n], x1s[2*n+1]);
+    x2s[2*n]   = ng.getSample();
+    x2s[2*n+1] = ng.getSample();
+    x2v[n]     = rsFloat64x2(x2s[2*n], x2s[2*n+1]);
+  }
+
+
+  int dummy = 0;
+}
 
 void rsSinCos1(double x, double* s, double* c)
 {

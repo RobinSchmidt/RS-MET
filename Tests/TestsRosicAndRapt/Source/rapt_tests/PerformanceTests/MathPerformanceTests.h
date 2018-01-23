@@ -4,6 +4,7 @@
 #include "../../Shared/Shared.h"
 
 void matrixAdressingTest();
+void simdPerformanceFloat64x2();
 void sinCosPerformance();
 
 #endif
