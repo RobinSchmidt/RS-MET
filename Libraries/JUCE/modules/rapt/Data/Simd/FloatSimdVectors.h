@@ -192,17 +192,16 @@ public:
   /** \name Operators */
 
   // arithmetic operators:
-  inline rsFloat64x2& operator+=(const rsFloat64x2& b) { return rsFloat64x2(_mm_add_pd(*this, b)); }
-  inline rsFloat64x2& operator-=(const rsFloat64x2& b) { return rsFloat64x2(_mm_sub_pd(*this, b)); }
-  inline rsFloat64x2& operator*=(const rsFloat64x2& b) { return rsFloat64x2(_mm_mul_pd(*this, b)); }
-  inline rsFloat64x2& operator/=(const rsFloat64x2& b) { return rsFloat64x2(_mm_div_pd(*this, b)); }
+  inline rsFloat64x2& operator+=(const rsFloat64x2& b) { return *this = rsFloat64x2(_mm_add_pd(*this, b)); }
+  inline rsFloat64x2& operator-=(const rsFloat64x2& b) { return *this = rsFloat64x2(_mm_sub_pd(*this, b)); }
+  inline rsFloat64x2& operator*=(const rsFloat64x2& b) { return *this = rsFloat64x2(_mm_mul_pd(*this, b)); }
+  inline rsFloat64x2& operator/=(const rsFloat64x2& b) { return *this = rsFloat64x2(_mm_div_pd(*this, b)); }
 
   // unary minus (can we do better than that?):
   inline rsFloat64x2& operator-()
   { 
-    rsFloat64x2 r = rsFloat64x2(_mm_setzero_pd());
-    r -= *this;
-    return r; 
+    static const rsFloat64x2 zero; // standard constructor constructs a zero
+    return *this = rsFloat64x2(_mm_sub_pd(zero, *this));
   }
 };
 

@@ -47,8 +47,19 @@ bool float64x2UnitTest()
   y = x12 * x34; r &= y.get0() == 3.0; r &= y.get1() == 8.0;
   y = x34 / x12; r &= y.get0() == 3.0; r &= y.get1() == 2.0;
 
+  // unary arithmetic operators -,+=,... :
+  y  = x12;
+  y += x34; r &= y.get0() ==  4.0; r &= y.get1() ==   6.0;
+  y -= x12; r &= y.get0() ==  3.0; r &= y.get1() ==   4.0;
+  y *= x34; r &= y.get0() ==  9.0; r &= y.get1() ==  16.0;
+  y /= x34; r &= y.get0() ==  3.0; r &= y.get1() ==   4.0;
+  y  = -y;  r &= y.get0() == -3.0; r &= y.get1() ==  -4.0;
 
+  // arithemetic operators with scalar lhs:
 
+  // arithemetic operators with scalar rhs:
+
+  // functions: sqrt,min,max
 	  
   return r;
 }
